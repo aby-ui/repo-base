@@ -1,0 +1,39 @@
+﻿## Interface: 80000
+## Title: EventAlertMod
+## Title-zhTW: [EventAlertMod] 法術監控觸發提示
+## Title-zhCN: [EventAlertMod] 法术监控触发提示
+## Author: 死鬥
+## Version: 7.0.3.20160822
+## Notes: To notice or warning the specific Spells/Skills in large icon for the player. Command: /eam opt. By |cff69ccf0ACDACD@TW-REALM|r
+## Notes-zhTW: 監控的法術觸發時, 以大型法術圖示來提示玩家, 法術設定指令:/eam opt. 指令說明:/eam help.
+## Notes-zhCN: 监控的法术触发时, 以大型法术图示来提示玩家, 法术设定指令:/eam opt. 指令说明:/eam help.
+## Notes-enTW: To notice or warning the specific Spells/Skills in large icon for the player. Command: /eam opt. By |cff69ccf0ACDACD@TW-REALM|r
+## DefaultState: Enabled
+## LoadOnDemand: 0
+## SavedVariables: EA_Config,EA_Position,EA_Items,EA_AltItems,EA_TarItems,EA_ScdItems,EA_GrpItems,EA_Pos,EA_Deleted
+
+libs\ActionButton\EventAlert_ActionBarButtonSpellActivationAlert.xml
+libs\ActionButton\EventAlert_ActionButtonOverlayGlow.lua
+
+locale\localization.comm.lua
+locale\localization.tw.lua
+locale\localization.en.lua
+locale\localization.cn.lua
+
+EventAlertMod.xml
+EAM_Options\EventAlert_Options.xml
+EAM_IconOptions\EventAlert_IconOptions.xml
+EAM_ClassAlerts\EventAlert_ClassAlerts.xml
+EAM_OtherAlerts\EventAlert_OtherAlerts.xml
+EAM_TargetAlerts\EventAlert_TargetAlerts.xml
+EAM_SCDAlerts\EventAlert_SCDAlerts.xml
+EAM_GroupAlerts\EventAlert_GroupAlerts.xml
+
+
+## Title-zhCN: |cff880303[有爱]|r EventAlert 技能特效警报
+## Title-zhTW: |cff880303[有爱]|r EventAlert 法術觸發提示
+## Notes-zhCN: 监控的法术触发时, 以大型法术图示来提示玩家, 法术设定指令:/eam opt. 指令说明:/eam help.
+## Notes-zhTW: 監控的法術觸發時, 以大型法術圖示來提示玩家, 法術設定指令:/eam opt. 指令說明:/eam help.
+## X-Vendor: AbyUI
+
+

@@ -1,0 +1,35 @@
+## Interface: 80000
+## Title: BattlegroundTargets
+## Notes: A Friend-Enemy-Unit-Frame for battlegrounds.
+## Notes-deDE: Eine Freund-Feind-Anzeige für Schlachtfelder.
+## Author: kunda
+## Version: 70000-1
+## SavedVariables: BattlegroundTargets_Options
+## X-Curse-Packaged-Version: 70000-6
+## X-Curse-Project-Name: BattlegroundTargets
+## X-Curse-Project-ID: battlegroundtargets
+## X-Curse-Packaged-Version: 70000-1
+## X-Curse-Project-Name: BattlegroundTargets
+## X-Curse-Project-ID: battlegroundtargets
+## X-Curse-Repository-ID: wow/battlegroundtargets/mainline
+
+BattlegroundTargets-localized-carrier.lua
+BattlegroundTargets-localized-racenames.lua
+BattlegroundTargets-localized-talents.lua
+BattlegroundTargets-localized-transliteration.lua
+
+BattlegroundTargets-localization-enUS.lua
+BattlegroundTargets-localization-zhCN.lua
+BattlegroundTargets-localization-zhTW.lua
+
+utf8.lua
+
+BattlegroundTargets_templates.lua
+BattlegroundTargets.lua
+
+
+
+## Title: |cff880303[有爱]|r Battle 战场PVP框体
+## Notes-zhCN: 显示全部战场敌人。战场简洁敌对单位框体。
+## Notes-zhTW: 顯示全部戰場敵人。戰場簡潔敵對單位框體。
+## X-Vendor: AbyUI

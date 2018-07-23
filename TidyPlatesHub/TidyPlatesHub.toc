@@ -1,0 +1,29 @@
+## Interface: 80000
+## Title: Tidy Plates Hub
+## Notes: Provides a common configuration panel for supported themes.
+## Author: Daniel/Binbwen
+## Dependencies: TidyPlates, TidyPlatesWidgets
+## OptionalDeps: TidyPlatesHubDE, TidyPlatesHubES, TidyPlatesHubMX, TidyPlatesHubFR, TidyPlatesHubKR, TidyPlatesHubRU, TidyPlatesHubCN, TidyPlatesHubTW
+## SavedVariables: TidyPlatesHubCache, TidyPlatesHubGlobal
+## SavedVariablesPerCharacter: TidyPlatesHubSettings
+
+Defaults.lua
+Helpers.lua
+Templates.lua
+
+functions\Core.lua
+functions\Filter.lua
+functions\Style.lua
+functions\Alpha.lua
+functions\Scale.lua
+functions\Color.lua
+functions\Text.lua
+functions\Widgets.lua
+
+Hub.lua
+
+## Title-zhCN: |cff880303[有爱]|r Tidy 姓名板主题核心接口
+## Title-zhTW: |cff880303[有爱]|r Tidy 姓名板主题核心接口
+## Notes-zhCN: 强大到爆的多功能姓名版美化插件-风格兼容模块。
+## Notes-zhTW: 強大到爆的多功能姓名版美化插件-風格兼容模塊。
+## X-Vendor: AbyUI

@@ -1,0 +1,169 @@
+<Ui xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+  <Texture horizTile="true" vertTile="true" name="NetEaseBlockerBgTemplate" file="Interface\FrameGeneral\UI-Background-Marble" virtual="true" />
+  <Frame virtual="true" name="NetEasePanelTemplate">
+    <Size x="338" y="424" />
+    <Layers>
+      <Layer level="BACKGROUND" textureSubLevel="-6">
+        <Texture horizTile="true" vertTile="true" file="Interface\FrameGeneral\UI-Background-Rock">
+          <Anchors>
+            <Anchor x="2" point="TOPLEFT" y="-21" />
+            <Anchor x="-2" point="BOTTOMRIGHT" y="2" />
+          </Anchors>
+        </Texture>
+        <Texture inherits="_UI-Frame-TitleTileBG">
+          <Anchors>
+            <Anchor x="2" point="TOPLEFT" y="-3" />
+            <Anchor x="-25" point="TOPRIGHT" y="-3" />
+          </Anchors>
+        </Texture>
+      </Layer>
+      <Layer level="OVERLAY" textureSubLevel="-1">
+        <Texture parentKey="Portrait">
+          <Size x="60" y="60" />
+          <Anchors>
+            <Anchor x="-6" point="TOPLEFT" y="7" />
+          </Anchors>
+        </Texture>
+      </Layer>
+      <Layer level="OVERLAY">
+        <Texture inherits="UI-Frame-Portrait" parentKey="_PortraitFrame">
+          <Anchors>
+            <Anchor x="-14" point="TOPLEFT" y="11" />
+          </Anchors>
+        </Texture>
+        <Texture inherits="UI-Frame-TopCornerRight" parentKey="TopRightCorner">
+          <Anchors>
+            <Anchor x="0" point="TOPRIGHT" y="1" />
+          </Anchors>
+        </Texture>
+        <Texture inherits="UI-Frame-TopLeftCorner" hidden="true" parentKey="topLeftCorner">
+          <Anchors>
+            <Anchor x="-6" point="TOPLEFT" y="1" />
+          </Anchors>
+        </Texture>
+        <Texture inherits="_UI-Frame-TitleTile" parentKey="TopBorderBar">
+          <Anchors>
+            <Anchor x="0" point="TOPLEFT" relativeKey="$parent._PortraitFrame" y="-10" relativePoint="TOPRIGHT" />
+            <Anchor relativePoint="TOPLEFT" point="TOPRIGHT" relativeKey="$parent.TopRightCorner" />
+          </Anchors>
+        </Texture>
+        <FontString inherits="GameFontNormal" parentKey="TitleText">
+          <Anchors>
+            <Anchor x="0" point="TOP" y="-4" />
+            <Anchor x="60" point="LEFT" />
+            <Anchor x="-60" point="RIGHT" />
+          </Anchors>
+        </FontString>
+      </Layer>
+      <Layer level="BORDER">
+        <Texture inherits="_UI-Frame-TopTileStreaks">
+          <Anchors>
+            <Anchor x="0" point="TOPLEFT" y="-21" />
+            <Anchor x="-2" point="TOPRIGHT" y="-21" />
+          </Anchors>
+        </Texture>
+        <Texture inherits="UI-Frame-BotCornerLeft" parentKey="BotLeftCorner">
+          <Anchors>
+            <Anchor x="-6" point="BOTTOMLEFT" y="-5" />
+          </Anchors>
+        </Texture>
+        <Texture inherits="UI-Frame-BotCornerRight" parentKey="BotRightCorner">
+          <Anchors>
+            <Anchor x="0" point="BOTTOMRIGHT" y="-5" />
+          </Anchors>
+        </Texture>
+        <Texture inherits="_UI-Frame-Bot">
+          <Anchors>
+            <Anchor point="BOTTOMLEFT" relativeKey="$parent.BotLeftCorner" y="0" relativePoint="BOTTOMRIGHT" />
+            <Anchor point="BOTTOMRIGHT" relativeKey="$parent.BotRightCorner" y="0" relativePoint="BOTTOMLEFT" />
+          </Anchors>
+        </Texture>
+        <Texture inherits="!UI-Frame-LeftTile" parentKey="LeftBorderBar">
+          <Anchors>
+            <Anchor x="8" point="TOPLEFT" relativeKey="$parent._PortraitFrame" y="0" relativePoint="BOTTOMLEFT" />
+            <Anchor relativePoint="TOPLEFT" point="BOTTOMLEFT" relativeKey="$parent.BotLeftCorner" />
+          </Anchors>
+        </Texture>
+        <Texture inherits="!UI-Frame-RightTile">
+          <Anchors>
+            <Anchor x="1" point="TOPRIGHT" relativeKey="$parent.TopRightCorner" relativePoint="BOTTOMRIGHT" />
+            <Anchor relativePoint="TOPRIGHT" point="BOTTOMRIGHT" relativeKey="$parent.BotRightCorner" />
+          </Anchors>
+        </Texture>
+      </Layer>
+    </Layers>
+    <Frames>
+      <Button inherits="UIPanelCloseButton" parentKey="CloseButton">
+        <Anchors>
+          <Anchor point="TOPRIGHT" relativePoint="TOPRIGHT">
+            <Offset x="4" y="5" />
+          </Anchor>
+        </Anchors>
+        <Scripts>
+          <OnClick function="HideParentPanel" />
+        </Scripts>
+      </Button>
+      <Frame inherits="InsetFrameTemplate" useParentLevel="true" parentKey="Inset">
+        <Anchors>
+          <Anchor x="4" point="TOPLEFT" y="-60" />
+          <Anchor x="-6" point="BOTTOMRIGHT" y="26" />
+        </Anchors>
+      </Frame>
+      <Frame hidden="true" useParentLevel="true" parentKey="Inset2">
+        <Anchors>
+          <Anchor x="4" point="TOPLEFT" y="-60" />
+          <Anchor x="-6" point="BOTTOMRIGHT" y="26" />
+        </Anchors>
+      </Frame>
+      <Button parentKey="PortraitFrame">
+        <HitRectInsets>
+          <AbsInset top="1" bottom="13" right="9" left="5" />
+        </HitRectInsets>
+        <Size x="78" y="78" />
+        <Anchors>
+          <Anchor x="-14" point="TOPLEFT" y="11" />
+        </Anchors>
+        <HighlightTexture file="Interface\Minimap\UI-Minimap-ZoomButton-Highlight" alphaMode="ADD" />
+        <Scripts>
+          <OnMouseDown>if self:IsEnabled() then
+                            self:GetParent().Portrait:SetSize(58, 58)
+                        end</OnMouseDown>
+          <OnMouseUp>self:GetParent().Portrait:SetSize(60, 60)</OnMouseUp>
+        </Scripts>
+      </Button>
+    </Frames>
+    <Scripts>
+      <OnLoad>self.PortraitFrame:EnableMouse(false)
+                self.PortraitFrame:Disable()
+                self.Portrait:SetParent(self.PortraitFrame)
+                self.Portrait:ClearAllPoints()
+                self.Portrait:SetPoint(&apos;CENTER&apos;, -1, 5)
+                self._PortraitFrame:SetParent(self.PortraitFrame)
+                self._PortraitFrame:ClearAllPoints()
+                self._PortraitFrame:SetAllPoints(self.PortraitFrame)
+                self._PortraitFrame = nil
+                self.BotLeftCorner = nil
+                self.BotRightCorner = nil</OnLoad>
+    </Scripts>
+  </Frame>
+  <Frame virtual="true" hidden="true" name="NetEaseLoadingTemplate">
+    <Size x="64" y="64" />
+    <Animations>
+      <AnimationGroup looping="REPEAT" parentKey="Anim">
+        <Rotation targetKey="Icon" duration="2" degrees="-360" />
+      </AnimationGroup>
+    </Animations>
+    <Layers>
+      <Layer level="ARTWORK">
+        <Texture alphaMode="ADD" parentKey="Icon" file="INTERFACE\COMMON\StreamCircle" setAllPoints="true">
+          <Color r="0.5" a="0.8" g="1" b="0.5" />
+        </Texture>
+      </Layer>
+    </Layers>
+    <Scripts>
+      <OnShow>self.Anim:Play()</OnShow>
+      <OnHide>self.Anim:Stop()</OnHide>
+    </Scripts>
+  </Frame>
+</Ui>

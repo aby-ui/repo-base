@@ -1,0 +1,210 @@
+<Ui>
+
+	<!-- template for the tab buttons; these buttons are created on demand -->
+	<Button name="RematchTeamTabTemplate" virtual="true">
+		<Size x="44" y="44"/>
+		<!-- main part of button is 40x44 from topleft with 40x4 at bottom for shadow -->
+		<HitRectInsets>
+			<AbsInset left="0" right="0" top="-2" bottom="2"/>
+		</HitRectInsets>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture parentKey="Background" file="Interface\AddOns\Rematch\Textures\teamtab"/>
+			</Layer>
+			<Layer level="ARTWORK">
+				<Texture parentKey="Icon">
+					<Size x="30" y="30"/>
+					<Anchors>
+						<Anchor point="CENTER"/>
+					</Anchors>
+					<TexCoords left="0.075" right="0.925" top="0.075" bottom="0.925"/>
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY">
+				<Texture parentKey="Custom" file="Interface\Buttons\UI-GuildButton-PublicNote-Up" hidden="true">
+					<Size x="16" y="16"/>
+					<Anchors>
+						<Anchor point="BOTTOMLEFT" relativeKey="$parent.Icon" relativePoint="BOTTOMLEFT" x="-1" y="0"/>
+					</Anchors>
+				</Texture>
+				<Texture parentKey="Preferences" file="Interface\AddOns\Rematch\textures\footnotes" hidden="true">
+					<Size x="16" y="16"/>
+					<Anchors>
+						<Anchor point="TOPRIGHT" relativeKey="$parent.Icon" relativePoint="TOPRIGHT"/>
+					</Anchors>
+					<TexCoords left="0.25" right="0.375" top="0" bottom="0.25"/>
+				</Texture>
+			</Layer>
+		</Layers>
+		<HighlightTexture file="Interface\Buttons\ButtonHilight-Square" alphaMode="ADD">
+			<Anchors>
+				<Anchor point="TOPLEFT" relativeKey="$parent.Icon" relativePoint="TOPLEFT" x="-2" y="2"/>
+				<Anchor point="BOTTOMRIGHT" relativeKey="$parent.Icon" relativePoint="BOTTOMRIGHT" x="2" y="-2"/>
+			</Anchors>
+		</HighlightTexture>
+		<Scripts>
+			<OnMouseDown>
+				Rematch.TeamTabs.TabButtonOnMouseDown(self)
+			</OnMouseDown>
+			<OnMouseUp>
+				Rematch.TeamTabs.TabButtonOnMouseUp(self)
+			</OnMouseUp>
+			<OnShow>
+				Rematch.TeamTabs.TabButtonOnMouseUp(self)
+			</OnShow>
+			<OnEnter>
+				Rematch.TeamTabs.TabButtonOnEnter(self)
+			</OnEnter>
+			<OnLeave>
+				Rematch:HideTooltip()
+			</OnLeave>
+			<OnClick>
+				Rematch.TeamTabs.TabOnClick(self,button)
+			</OnClick>
+		</Scripts>
+	</Button>
+
+	<!-- TeamTabs panel where TeamTab buttons are created and anchored to -->
+	<ScrollFrame name="RematchTeamTabs" flattenRenderLayers="true" hidden="true">
+		<Size x="44" y="500"/>
+		<Frames>
+			<Button parentKey="UpButton" inherits="RematchTeamTabTemplate">
+				<Anchors>
+					<Anchor point="BOTTOMLEFT" relativePoint="TOPLEFT"/>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						self:GetParent():ScrollTabs(1)
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Button parentKey="DownButton" inherits="RematchTeamTabTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT"/>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						self:GetParent():ScrollTabs(-1)
+					</OnClick>
+				</Scripts>
+			</Button>
+		</Frames>
+		<ScrollChild>
+			<Frame parentKey="Layout">
+				<Size x="44" y="500"/>
+			</Frame>
+		</ScrollChild>
+		<Scripts>
+			<OnMouseWheel>
+				self:ScrollTabs(delta)
+			</OnMouseWheel>
+		</Scripts>
+	</ScrollFrame>
+
+	<!-- the following is for the new-tab icon picker dialog with the grid of icons to choose from -->
+
+	<!-- template for each icon within the icon picker rows -->
+	<Button name="RematchTeamTabPickerIconTemplate" virtual="true">
+		<Size x="30" y="30"/>
+		<Layers>
+			<Layer level="ARTWORK">
+				<Texture parentKey="Texture" file="Interface\Icons\INV_Misc_QuestionMark" setAllPoints="true"/>
+			</Layer>
+			<Layer level="OVERLAY">
+				<Texture parentKey="Selected" file="Interface\Buttons\CheckButtonHilight" alphaMode="ADD" setAllPoints="true" hidden="true"/>
+			</Layer>
+		</Layers>
+		<HighlightTexture file="Interface\Buttons\ButtonHilight-Square" alphaMode="ADD" setAllPoints="true"/>
+		<Scripts>
+			<OnClick>
+				Rematch.TeamTabs.IconOnClick(self)
+			</OnClick>
+		</Scripts>
+	</Button>
+
+	<!-- horizontal row of 7 icons in tab icon picker (when choosing icon for a tab) -->
+	<Button name="RematchTeamTabPickerListTemplate" virtual="true">
+		<Size x="210" y="30"/>
+		<Frames>
+			<Button parentArray="Icons" inherits="RematchTeamTabPickerIconTemplate">
+				<Anchors>
+					<Anchor point="LEFT"/>
+				</Anchors>
+			</Button>
+			<Button parentArray="Icons" inherits="RematchTeamTabPickerIconTemplate">
+				<Anchors>
+					<Anchor point="LEFT" x="30" y="0"/>
+				</Anchors>
+			</Button>
+			<Button parentArray="Icons" inherits="RematchTeamTabPickerIconTemplate">
+				<Anchors>
+					<Anchor point="LEFT" x="60" y="0"/>
+				</Anchors>
+			</Button>
+			<Button parentArray="Icons" inherits="RematchTeamTabPickerIconTemplate">
+				<Anchors>
+					<Anchor point="LEFT" x="90" y="0"/>
+				</Anchors>
+			</Button>
+			<Button parentArray="Icons" inherits="RematchTeamTabPickerIconTemplate">
+				<Anchors>
+					<Anchor point="LEFT" x="120" y="0"/>
+				</Anchors>
+			</Button>
+			<Button parentArray="Icons" inherits="RematchTeamTabPickerIconTemplate">
+				<Anchors>
+					<Anchor point="LEFT" x="150" y="0"/>
+				</Anchors>
+			</Button>
+			<Button parentArray="Icons" inherits="RematchTeamTabPickerIconTemplate">
+				<Anchors>
+					<Anchor point="LEFT" x="180" y="0"/>
+				</Anchors>
+			</Button>
+			<Button parentArray="Icons" inherits="RematchTeamTabPickerIconTemplate">
+				<Anchors>
+					<Anchor point="LEFT" x="210" y="0"/>
+				</Anchors>
+			</Button>
+			<Button parentArray="Icons" inherits="RematchTeamTabPickerIconTemplate">
+				<Anchors>
+					<Anchor point="LEFT" x="240" y="0"/>
+				</Anchors>
+			</Button>
+			<Button parentArray="Icons" inherits="RematchTeamTabPickerIconTemplate">
+				<Anchors>
+					<Anchor point="LEFT" x="270" y="0"/>
+				</Anchors>
+			</Button>
+		</Frames>
+	</Button>
+
+	<!-- note: this is a child of the dialog! -->
+	<Frame parentKey="TeamTabIconPicker" parent="RematchDialog" inherits="RematchInsetFrameTemplate" hidden="true">
+		<Size x="330" y="306"/>
+		<Frames>
+			<ScrollFrame parentKey="ScrollFrame" name="RematchTeamTabIconPickerScrollFrame" inherits="HybridScrollFrameTemplate">
+				<Size x="330" y="306"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" x="4" y="-3"/>
+					<Anchor point="BOTTOMRIGHT" x="-26" y="3"/>
+				</Anchors>
+				<Frames>
+					<Slider name="RematchTeamTabIconPickerScrollBar" inherits="HybridScrollBarTrimTemplate" parentKey="ScrollBar">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" x="4" y="-14"/>
+							<Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT" x="4" y="13"/>
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								self.trackBG:Show()
+								self.trackBG:SetVertexColor(0, 0, 0, 0.75)
+							</OnLoad>
+						</Scripts>
+					</Slider>
+				</Frames>
+			</ScrollFrame>
+		</Frames>
+	</Frame>
+
+</Ui>

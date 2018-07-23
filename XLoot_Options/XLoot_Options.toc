@@ -1,0 +1,17 @@
+## Interface: 80000
+## Title: XLoot Options
+## Notes: Configuration interface for XLoot
+## Version: 8.0-3
+## Author: Xuerian
+## X-Category: Inventory
+
+## Dependencies: XLoot
+## LoadOnDemand: 1
+
+load.xml
+
+## Title: |cff880303[有爱]|r XLoot 配置界面模块
+## Notes: XLoot拾取界面增强的配置界面
+## X-Vendor: AbyUI
+
+

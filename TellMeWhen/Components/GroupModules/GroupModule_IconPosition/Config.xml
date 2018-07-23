@@ -1,0 +1,63 @@
+<Ui>
+
+	<Frame name="TellMeWhen_GM_IconPosition" inherits="TellMeWhen_OptionsModuleContainer" virtual="true">
+		<Size y="34"/>
+		<Frames>
+			<Slider parentKey="X" inherits="TellMeWhen_SliderTemplate">
+				<Anchors>
+					<Anchor point="LEFT" x="10"/>
+					<Anchor point="RIGHT" relativePoint="CENTER" x="-10" />
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						TMW:CInit(self)
+
+						self:SetTexts(TMW.L["UIPANEL_ICONSPACINGX"], TMW.L["UIPANEL_ICONSPACING_DESC"])
+						self:SetSetting("SpacingX")
+
+						self:SetMinMaxValues(-100, 100)
+						self:SetRange(10)
+						self:SetValueStep(0.1)
+						self:SetWheelStep(1)
+						self:SetMode(self.MODE_ADJUSTING)
+						self:SetTextFormatter(TMW.C.Formatter.PIXELS, TMW.C.Formatter.PASS)
+					</OnLoad>
+				</Scripts>
+			</Slider>
+			<Slider parentKey="Y" inherits="TellMeWhen_SliderTemplate">
+				<Anchors>
+					<Anchor point="RIGHT" x="-10" />
+					<Anchor point="LEFT" relativePoint="CENTER" x="10" />
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						TMW:CInit(self)
+
+						self:SetTexts(TMW.L["UIPANEL_ICONSPACINGY"], TMW.L["UIPANEL_ICONSPACING_DESC"])
+						self:SetSetting("SpacingY")
+
+						self:SetMinMaxValues(-100, 100)
+						self:SetRange(10)
+						self:SetValueStep(0.1)
+						self:SetWheelStep(1)
+						self:SetMode(self.MODE_ADJUSTING)
+						self:SetTextFormatter(TMW.C.Formatter.PIXELS, TMW.C.Formatter.PASS)
+
+					</OnLoad>
+				</Scripts>
+			</Slider>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				TMW:CInit(self)
+				
+				self:SetTitle(TMW.L["UIPANEL_ICONSPACING"])
+				
+				self:CScriptAdd("SettingTableRequested", function(requester)
+					return TMW.CI.group:GetSettingsPerView()
+				end)
+			</OnLoad>
+		</Scripts>
+	</Frame>
+ 
+</Ui>

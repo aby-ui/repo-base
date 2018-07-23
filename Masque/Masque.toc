@@ -1,0 +1,41 @@
+## Interface: 80000
+## Title: Masque
+## Version: 8.0.0
+## Author: StormFX, JJSheets
+## Notes: A dynamic button-skinning engine.
+## Notes-deDE: Ein Addon zur dynamischen Änderung der Buttonoptiken.
+## Notes-esES: Cambiar dinamicamente la aparencia de botones.
+## Notes-esMX: Cambiar dinamicamente la aparencia de botones.
+## Notes-frFR: Un add-on de skinnage dynamique des boutons.
+## Notes-itIT: Un'add-on per lo skinning dinamico dei pulsanti.
+## Notes-koKR: 동적인 버튼 스킨 입히기 애드온 입니다.
+## Notes-ptBR: Um add-on de skin dinâmico de botões.
+## Notes-ruRU: Аддон для добавления скинов к панелям команд.
+## Notes-zhCN: 一个动态按钮皮肤插件。
+## Notes-zhTW: 動態套用按鈕佈景主題的插件。
+## X-Website: https://www.wowace.com/projects/masque
+## X-Category: Interface Enhancements
+## X-WoWI-ID: 12097
+## OptionalDeps: Ace3, LibDBIcon-1.0
+## SavedVariables: MasqueDB
+
+# Locales
+Core\Locales.lua
+
+# Add-On
+Masque.lua
+
+# Skins
+Skins\Skins.lua
+Skins\Blizzard.lua
+Skins\Dream.lua
+Skins\Zoomed.lua
+
+# Core
+Core\Button.lua
+Core\Groups.lua
+Core\Options.lua
+
+
+## Title-zhCN: |cff880303[有爱]|r Masque 按钮美化
+## X-Vendor: AbyUI

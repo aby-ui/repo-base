@@ -1,0 +1,1285 @@
+﻿<Ui>
+	
+
+	<Frame name="TellMeWhen_TextLayout_ListItem" virtual="true" >
+		<Size y="18" />
+		<Anchors>
+			<Anchor point="LEFT" />
+			<Anchor point="RIGHT" />
+		</Anchors>
+		<Frames>
+			<CheckButton parentKey="Layout" inherits="TellMeWhen_FlatFrame" >
+				<Size y="18"/>
+				<Anchors>
+					<Anchor point="TOP" />
+					<Anchor point="LEFT" />
+					<Anchor point="RIGHT" />
+				</Anchors>
+				<Layers>
+					<Layer level="OVERLAY">
+						<FontString parentKey="Name" inherits="GameFontHighlightSmall" wordwrap="false" justifyH="LEFT">
+							<Anchors>
+								<Anchor point="LEFT" x="5"/>
+								<Anchor point="RIGHT" x="-5"/>
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+			</CheckButton>
+		</Frames>
+	</Frame>
+
+	<CheckButton name="TellMeWhen_TextDisplay_ListItem" inherits="TellMeWhen_FlatFrame" virtual="true">
+		<Size y="18"/>
+		<Anchors>
+			<Anchor point="LEFT" x="20"/>
+			<Anchor point="RIGHT" />
+		</Anchors>
+		<Layers>
+			<Layer level="OVERLAY">
+				<FontString parentKey="Name" inherits="GameFontNormalSmall" justifyH="LEFT">
+					<Anchors>
+						<Anchor point="LEFT" x="5"/>
+						<Anchor point="RIGHT" x="-5"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+	</CheckButton>
+
+	<Frame name="TellMeWhen_TextDisplay_Anchor" inherits="TellMeWhen_OptionsModuleContainer" virtual="true">
+		<Size y="120"/>
+		<Frames>
+			<Button parentKey="Delete" inherits="TellMeWhen_DeleteButtonTemplate">
+				<Size x="14" y="14"/>
+				<Anchors>
+					<Anchor point="TOPRIGHT" x="-1" y="-1"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						TMW:CInit(self, "Config_Button")
+
+						self:SetTooltip(TMW.L["TEXTLAYOUTS_DELANCHOR"], TMW.L["TEXTLAYOUTS_DELANCHOR_DESC"])
+
+						self:CScriptAdd("ReloadRequested", function()
+							local _, displaySettings = TMW.TEXT:GetCurrentLayoutAndDisplaySettings()
+							if displaySettings then
+								self:SetEnabled(displaySettings.Anchors.n > 1)
+							end
+						end)
+					</OnLoad>
+					<OnClick>
+						local _, displaySettings = TMW.TEXT:GetCurrentLayoutAndDisplaySettings()
+						local Anchors = displaySettings.Anchors
+						local anchorNum = self:GetParent():GetID()
+						
+						tremove(Anchors, anchorNum)
+						Anchors.n = Anchors.n - 1
+						
+						self:OnSettingSaved()
+					</OnClick>
+				</Scripts>
+			</Button>
+
+			<Frame parentKey="RelativeTo" inherits="TMW_DropDownMenuTemplate">
+				<Anchors>
+					<Anchor point="TOP" y="-16"/>
+					<Anchor point="LEFT" x="9" />
+					<Anchor point="RIGHT" relativeKey="$parent.Delete" relativePoint="LEFT" x="-9" />
+				</Anchors>
+
+				<Scripts>
+					<OnLoad>
+						TMW:CInit(self)
+
+						self:SetSetting("relativeTo")
+						self:SetTexts(TMW.L["UIPANEL_RELATIVETO"], TMW.L["TEXTLAYOUTS_RELATIVETO_DESC"])
+						self:SetLabel(TMW.L["UIPANEL_RELATIVETO"])
+						self:SetEasyFunctions(
+							function()
+								return TMW:OrderedPairs(TMW.TEXT.Anchor_DropdownGenerator(self))
+							end,
+							function(info, value, text)
+								info.text = text
+								info.value = value
+							end
+						)
+					</OnLoad>
+				</Scripts>
+			</Frame>
+
+			<Frame parentKey="Point" inherits="TellMeWhen_PointSelectTemplate">
+				<Size x="65" y="55"/>
+				<Anchors>
+					<Anchor point="TOP" relativeKey="$parent.RelativeTo" relativePoint="BOTTOM" y="-19"/>
+					<Anchor point="LEFT" x="8" />
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						TMW:CInit(self)
+
+						self:SetTexts(TMW.L["TEXTLAYOUTS_POINT2"], TMW.L["TEXTLAYOUTS_POINT2_DESC"])
+						self:SetSetting("point")
+					</OnLoad>
+				</Scripts>
+			</Frame>
+
+			<Frame parentKey="RelativePoint" inherits="TellMeWhen_PointSelectTemplate">
+				<Size x="65" />
+				<Anchors>
+					<Anchor point="LEFT" relativeKey="$parent.Point" relativePoint="RIGHT" x="10" />
+
+					<Anchor point="TOP" relativeKey="$parent.Point" />
+					<Anchor point="BOTTOM" relativeKey="$parent.Point" />
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						TMW:CInit(self)
+
+						self:SetTexts(TMW.L["UIPANEL_RELATIVEPOINT"], TMW.L["TEXTLAYOUTS_RELATIVEPOINT2_DESC"])
+						self:SetSetting("relativePoint")
+					</OnLoad>
+				</Scripts>
+			</Frame>
+
+			<Slider parentKey="X" inherits="TellMeWhen_SliderTemplate">
+				<Anchors>
+					<Anchor point="TOP" relativeKey="$parent.Point" y="2"/>
+					<Anchor point="LEFT" relativeKey="$parent.RelativePoint" relativePoint="RIGHT" x="10" />
+					<Anchor point="RIGHT" x="-10" />
+				</Anchors>
+				<Scripts>
+					<OnLoad>						
+						TMW:CInit(self)
+
+						self:SetTexts(TMW.L["UIPANEL_FONT_XOFFS"], TMW.L["UIPANEL_FONT_XOFFS_DESC"])
+						self:SetSetting("x")
+
+						self:SetMode(self.MODE_ADJUSTING)
+						self:SetMinMaxValues(-200, 200)
+						self:SetRange(20)
+						self:SetValueStep(0.1)
+						self:SetWheelStep(1)
+
+						self:SetTextFormatter(TMW.C.Formatter.F_1, TMW.C.Formatter.F_0)
+					</OnLoad>
+				</Scripts>
+			</Slider>
+			<Slider parentKey="Y" inherits="TellMeWhen_SliderTemplate">
+				<Anchors>
+					<Anchor point="LEFT" relativeKey="$parent.X"/>
+					<Anchor point="RIGHT" relativeKey="$parent.X"/>
+					<Anchor point="BOTTOM" relativeKey="$parent.Point" y="4"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>						
+						TMW:CInit(self)
+
+						self:SetTexts(TMW.L["UIPANEL_FONT_YOFFS"], TMW.L["UIPANEL_FONT_YOFFS_DESC"])
+						self:SetSetting("y")
+
+						self:SetMode(self.MODE_ADJUSTING)
+						self:SetMinMaxValues(-200, 200)
+						self:SetRange(20)
+						self:SetValueStep(0.1)
+						self:SetWheelStep(1)
+						
+						self:SetTextFormatter(TMW.C.Formatter.F_1, TMW.C.Formatter.F_0)
+					</OnLoad>
+				</Scripts>
+			</Slider>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				TMW:CInit(self)
+
+				self:SetTitle(TMW.L["UIPANEL_ANCHORNUM"]:format(self:GetID()))
+
+				self:CScriptAdd("SettingTableRequested", function()
+					local _, displaySettings = TMW.TEXT:GetCurrentLayoutAndDisplaySettings()
+					local Anchors = displaySettings and displaySettings.Anchors
+					return Anchors and Anchors.n >= self:GetID() and Anchors[self:GetID()] or false
+				end)
+
+				self:CScriptAdd("PanelSetup", function(self, panel, panelInfo)
+					local layoutSettings, displaySettings = TMW.TEXT:GetCurrentLayoutAndDisplaySettings()
+					if
+						not displaySettings
+						or not layoutSettings
+						or layoutSettings.NoEdit
+						or self:GetID() > displaySettings.Anchors.n
+					then
+						self:Hide()
+					end
+				end)
+			</OnLoad>
+		</Scripts>
+	</Frame>
+
+
+
+	<Frame parentKey="TextLayouts" inherits="TellMeWhen_IE_PageTemplate">
+		<Frames>
+			<CheckButton parentKey="AddLayout" inherits="TellMeWhen_FlatFrame">
+				<Size x="200" y="25"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" x="12" y="-21"/>
+				</Anchors>
+				<Layers>
+					<Layer level="OVERLAY">
+						<Texture parentKey="Plus" file="Interface\PaperDollInfoFrame\Character-Plus">
+							<Size x="20" y="20"/>
+							<Anchors>
+								<Anchor point="LEFT" x="5"/>
+							</Anchors>
+						</Texture>
+						<FontString parentKey="Text" inherits="GameFontNormalSmall" justifyH="LEFT">
+							<Anchors>
+								<Anchor point="LEFT" relativeKey="$parent.Plus" relativePoint="RIGHT" x="5"/>
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+
+				<Scripts>
+					<OnLoad>
+						self.Text:SetText(TMW.L["TEXTLAYOUTS_ADDLAYOUT"])
+						TMW:TT(self, "TEXTLAYOUTS_ADDLAYOUT", "TEXTLAYOUTS_ADDLAYOUT_DESC")
+
+					</OnLoad>
+					<OnClick>
+						TMW:ClickSound()
+						local layoutSettings = TMW.TEXT:AddTextLayout()
+						TMW.TEXT:SetCurrentLayout(layoutSettings.GUID)
+					</OnClick>
+				</Scripts>
+			</CheckButton>
+
+			<Frame parentKey="LayoutList" >
+				<Anchors>
+					<Anchor point="TOP" relativeKey="$parent.AddLayout" relativePoint="BOTTOM" y="-2"/>
+					<Anchor point="LEFT" relativeKey="$parent.AddLayout"/>
+					<Anchor point="RIGHT" relativeKey="$parent.AddLayout"/>
+					<Anchor point="BOTTOM" y="0"/>
+				</Anchors>
+
+				
+				<Scripts>
+					<OnLoad>
+						TMW:CInit(self, "Config_TextLayout_List")
+					</OnLoad>
+				</Scripts>
+			</Frame>
+
+			<Frame parentKey="Panels" inherits="TellMeWhen_IE_PanelColumn">
+				<KeyValues>
+					<KeyValue key="scrollbarOffset" type="number" value="3" />
+					<KeyValue key="scrollbarWidth" type="number" value="10" />
+				</KeyValues>
+
+				<Anchors>
+					<Anchor point="TOP" y="-7"/>
+					<Anchor point="LEFT" relativeKey="$parent.LayoutList" relativePoint="RIGHT" x="15"/>
+					<Anchor point="RIGHT" x="-15"/>
+				</Anchors>
+
+				<Frames>
+					<Frame parentKey="LayoutSettings" inherits="TellMeWhen_OptionsModuleContainer" >
+						<Size y="100"/>
+						<Anchors>
+							<Anchor point="TOP" y="-20"/>
+						</Anchors>
+
+						<Frames>
+							<EditBox parentKey="Name" inherits="TellMeWhen_InputBoxTemplate">
+								<Size y="15"/>
+								<Anchors>
+									<Anchor point="TOP" y="-7"/>
+									<Anchor point="LEFT" x="10" />
+									<Anchor point="RIGHT" x="-10" />
+								</Anchors>
+								<Scripts>
+									<OnLoad>						
+										TMW:CInit(self)
+
+										self:SetTexts(TMW.L["TEXTLAYOUTS_RENAME"], TMW.L["TEXTLAYOUTS_RENAME_DESC"])
+										self:SetSetting("Name")
+										
+										self:CScriptAdd("ModifyValueForSave", function(self, value)
+											return strtrim(value)
+										end)
+
+										self:CScriptAdd("ReloadRequested", function()
+											local layoutSettings = self:GetSettingTable()
+											self:SetEnabled(layoutSettings and not layoutSettings.NoEdit)
+										end)
+									</OnLoad>
+								</Scripts>
+							</EditBox>
+
+							<Button parentKey="Clone" inherits="TellMeWhen_ButtonTemplate">
+								<Size y="15"/>
+								<Anchors>
+									<Anchor point="TOP" relativeKey="$parent.Name" relativePoint="BOTTOM" y="-7"/>
+									<Anchor point="LEFT" relativeKey="$parent.Name" />
+									<Anchor point="RIGHT" relativePoint="TOP" x="-25" />
+								</Anchors>
+
+								<Scripts>
+									<OnLoad>
+										TMW:CInit(self)
+
+										self:SetTexts(TMW.L["TEXTLAYOUTS_CLONELAYOUT"], TMW.L["TEXTLAYOUTS_CLONELAYOUT_DESC"])
+									</OnLoad>
+									<OnClick>
+										local layoutGUID = TMW.TEXT:GetCurrentLayoutAndDisplay()
+										local newGUID = TMW.TEXT:Clonelayout(layoutGUID)
+
+										TMW.TEXT:SetCurrentLayout(newGUID)
+									</OnClick>
+								</Scripts>
+							</Button>
+
+							<Button parentKey="Delete" inherits="TellMeWhen_ButtonTemplate">
+								<Size y="15"/>
+								<Anchors>
+									<Anchor point="TOP" relativeKey="$parent.Name" relativePoint="BOTTOM" y="-7"/>
+									<Anchor point="LEFT" relativePoint="TOP" x="25" />
+									<Anchor point="RIGHT" relativeKey="$parent.Name" />
+								</Anchors>
+								
+								<NormalFont style="GameFontNormal"/>
+								<HighlightFont style="GameFontRed"/>
+
+								<Scripts>
+									<OnLoad>
+										TMW:CInit(self)
+
+										self:SetTexts(TMW.L["TEXTLAYOUTS_DELETELAYOUT"], TMW.L["TEXTLAYOUTS_DELETELAYOUT_DESC2"])
+
+										self:CScriptAdd("ReloadRequested", function()
+											local layoutSettings = self:GetSettingTable()
+											self:SetEnabled(layoutSettings and not layoutSettings.NoEdit)
+										end)
+									</OnLoad>
+									<OnClick>
+										local layoutGUID = TMW.TEXT:GetCurrentLayoutAndDisplay()
+										local layoutSettings = self:GetSettingTable()
+
+										local usageString = TMW.TEXT:GetNumTimesUsed(layoutGUID)
+
+										local confirm = TMW.L["CONFIRM_DELETE_GENERIC_DESC"]:format(TMW.TEXT:GetLayoutName(layoutSettings))
+										if usageString ~= "" then
+											confirm = confirm .. "\r\n\r\n" .. TMW.L["TEXTLAYOUTS_DELETELAYOUT_CONFIRM_NUM2"] .. "\r\n\r\n" .. usageString
+
+										end
+
+										TMW.IE:ShowConfirmation(
+											TMW.L["CONFIRM_DELLAYOUT"],
+											confirm,
+											function()
+												TMW.db.global.TextLayouts[layoutGUID] = nil
+												TMW.TEXT:SetCurrentLayout(nil)
+											end
+										)
+									</OnClick>
+								</Scripts>
+							</Button>
+						</Frames>
+
+						<Layers>
+							<Layer level="OVERLAY">
+								<FontString parentKey="Usage" inherits="GameFontHighlight" justifyH="LEFT">
+									<Anchors>
+										<Anchor point="TOP" relativeKey="$parent.Clone" relativePoint="BOTTOM" y="-10"/>
+										<Anchor point="LEFT" relativeKey="$parent.Name" />
+										<Anchor point="RIGHT" relativeKey="$parent.Name" />
+									</Anchors>
+								</FontString>
+							</Layer>
+						</Layers>
+
+						<Frames>
+							<Button parentKey="AddDisplay" inherits="TellMeWhen_ButtonTemplate">
+								<Size y="15"/>
+								<Anchors>
+									<Anchor point="TOP" relativeKey="$parent.Usage" relativePoint="BOTTOM" y="0"/>
+									<Anchor point="LEFT" x="25" />
+									<Anchor point="RIGHT" x="-25" />
+								</Anchors>
+
+								<Scripts>
+									<OnLoad>
+										TMW:CInit(self)
+
+										self:SetTexts(TMW.L["TEXTLAYOUTS_ADDSTRING"], TMW.L["TEXTLAYOUTS_ADDSTRING_DESC"])
+
+										self:CScriptAdd("ReloadRequested", function()
+											local layoutSettings = self:GetSettingTable()
+											self:SetEnabled(layoutSettings and not layoutSettings.NoEdit)
+										end)
+									</OnLoad>
+									<OnClick>
+										local layoutSettings = self:GetSettingTable()
+										layoutSettings.n = layoutSettings.n + 1
+
+										self:OnSettingSaved()
+
+										TMW.TEXT:SetCurrentDisplay(layoutSettings.n)
+									</OnClick>
+								</Scripts>
+							</Button>
+						</Frames>
+						
+						<Scripts>
+							<OnLoad>
+								TMW:CInit(self)
+
+								self:SetTitle(TMW.L["TEXTLAYOUTS_HEADER_LAYOUT"])
+
+								self:CScriptAdd("SettingTableRequested", function()
+									local layoutSettings = TMW.TEXT:GetCurrentLayoutAndDisplaySettings()
+									return layoutSettings or false
+								end)
+
+								self:CScriptAdd("ReloadRequested", function()
+									local layoutSettings = self:GetSettingTable()
+									if not layoutSettings then
+										self:Hide()
+									end
+
+									if layoutSettings and layoutSettings.NoEdit then
+										self.Usage:SetText(TMW.L["TEXTLAYOUTS_NOEDIT_DESC"] .. "\n\n")
+									else
+										self.Usage:SetText(nil)
+									end
+
+									self:AdjustHeight(10)
+								end)
+							</OnLoad>
+						</Scripts>
+					</Frame>
+
+					<Frame parentKey="MasqueWarn" inherits="TellMeWhen_OptionsModuleContainer" >
+						<Size y="50"/>
+						<Layers>
+							<Layer level="OVERLAY">
+								<FontString parentKey="Text" inherits="GameFontHighlightSmall" justifyH="LEFT">
+									<Anchors>
+										<Anchor point="TOP" y="-10"/>
+										<Anchor point="LEFT" x="15"/>
+										<Anchor point="RIGHT" x="-15"/>
+									</Anchors>
+								</FontString>
+							</Layer>
+						</Layers>
+						<Scripts>
+							<OnLoad>
+								TMW:CInit(self)
+
+								self:SetTitle(TMW.L["TEXTLAYOUTS_SKINAS"])
+
+								self.Text:SetText(TMW.L["TEXTLAYOUTS_SKINAS_SKINNEDINFO"])
+
+								self:CScriptAdd("PanelSetup", function()
+									local layoutSettings, displaySettings = TMW.TEXT:GetCurrentLayoutAndDisplaySettings()
+
+									if not displaySettings
+									   or layoutSettings.NoEdit
+									   or displaySettings.SkinAs == ""
+									   or not LibStub("Masque", true)
+									then
+										self:Hide()
+									end
+								end)
+
+								self:AdjustHeight()
+							</OnLoad>
+							<OnSizeChanged>
+								self:AdjustHeight()
+							</OnSizeChanged>
+						</Scripts>
+
+					</Frame>
+
+					<Frame parentKey="DisplaySettings" inherits="TellMeWhen_OptionsModuleContainer" >
+						<Size y="200"/>
+
+						<Frames>
+							<EditBox parentKey="StringName" inherits="TellMeWhen_InputBoxTemplate" >
+								<Anchors>
+									<Anchor point="TOP" y="-10"/>
+									<Anchor point="LEFT" x="10" />
+									<Anchor point="RIGHT" x="-10" />
+								</Anchors>
+								<Scripts>
+									<OnLoad>						
+										TMW:CInit(self)
+
+										self:SetTexts(TMW.L["TEXTLAYOUTS_RENAMESTRING"], TMW.L["TEXTLAYOUTS_RENAMESTRING_DESC"])
+										self:SetSetting("StringName")
+									</OnLoad>
+								</Scripts>
+							</EditBox>
+
+							<EditBox parentKey="DefaultText" inherits="TellMeWhen_InputBoxTemplate" multiline="true">
+								<Anchors>
+									<Anchor point="TOP" relativeKey="$parent.StringName" relativePoint="BOTTOM" y="-10"/>
+									<Anchor point="LEFT" x="10" />
+									<Anchor point="RIGHT" x="-10" />
+								</Anchors>
+								<Scripts>
+									<OnLoad>						
+										TMW:CInit(self, "Config_EditBox_DogTags")
+
+										self:SetTexts(TMW.L["TEXTLAYOUTS_DEFAULTTEXT"], TMW.L["TEXTLAYOUTS_DEFAULTTEXT_DESC"])
+										self:SetSetting("DefaultText")
+									</OnLoad>
+									<OnTextChanged>
+										if self:GetParent().AdjustHeight then
+											self:GetParent():AdjustHeight()
+										end
+									</OnTextChanged>
+								</Scripts>
+							</EditBox>
+
+							<Frame parentKey="SkinAs" inherits="TMW_DropDownMenuTemplate">
+								<Anchors>
+									<Anchor point="TOP" relativeKey="$parent.DefaultText" relativePoint="BOTTOM" y="-20"/>
+									<Anchor point="LEFT" relativeKey="$parent.DefaultText" />
+									<Anchor point="RIGHT" relativePoint="TOP" x="-10" />
+								</Anchors>
+								<Scripts>
+									<OnLoad>
+										TMW:CInit(self)
+
+										self:SetTexts(TMW.L["TEXTLAYOUTS_SKINAS"], TMW.L["TEXTLAYOUTS_SKINAS_DESC"])
+										self:SetLabel(TMW.L["TEXTLAYOUTS_SKINAS"])
+
+										self:SetSetting("SkinAs")
+										--self:SetEasyTitlePrepend(TMW.L["TEXTLAYOUTS_SKINAS"])
+										self:SetEasyFunctions(
+											function()
+												return TMW:OrderedPairs(TMW.TEXT.MasqueSkinnableTexts)
+											end,
+											function(info, value, text)
+												info.text = text
+												info.value = value
+											end
+										)
+
+										-- Remove the SkinAs value that we just set from any other displays in this layout that use it.
+										-- This is done so we don't have multiple string strying to be skinned as the t ime thing.
+										self:CScriptAddPre("SettingSaved", function()
+											local TEXT = TMW.TEXT
+											local layoutSettings, displaySettings = TEXT:GetCurrentLayoutAndDisplaySettings()
+											local displayID = TMW.tContains(layoutSettings, displaySettings)
+											local newValue = displaySettings[self.setting]
+
+											for otherDisplayID, otherDisplaySettings in TMW:InNLengthTable(layoutSettings) do
+												if otherDisplaySettings[self.setting] == newValue
+												   and newValue ~= ""
+												   and otherDisplayID ~= displayID
+												then
+													otherDisplaySettings[self.setting] = ""
+
+													TMW:Printf(TMW.L["TEXTLAYOUTS_RESETSKINAS"],
+														TMW.L["TEXTLAYOUTS_SKINAS"],
+														TEXT:GetStringName(otherDisplaySettings, otherDisplayID),
+														TEXT:GetStringName(displaySettings, displayID)
+													)
+												end
+											end
+										end)
+									</OnLoad>
+								</Scripts>
+							</Frame>
+
+							<Button parentKey="Delete" inherits="TellMeWhen_ButtonTemplate">
+								<Size y="15"/>
+								<Anchors>
+									<Anchor point="LEFT" relativeKey="$parent.SkinAs" relativePoint="RIGHT" x="30"/>
+									<Anchor point="RIGHT" x="-10" />
+								</Anchors>
+								
+								<NormalFont style="GameFontNormal"/>
+								<HighlightFont style="GameFontRed"/>
+
+								<Scripts>
+									<OnLoad>
+										TMW:CInit(self)
+
+										self:SetTexts(TMW.L["TEXTLAYOUTS_DELETESTRING"], TMW.L["TEXTLAYOUTS_DELETESTRING_DESC2"])
+									</OnLoad>
+									<OnClick>
+										local layoutGUID, displayID = TMW.TEXT:GetCurrentLayoutAndDisplay()
+
+										TMW.TEXT:DeleteDisplay(layoutGUID, displayID)
+
+										self:OnSettingSaved()
+									</OnClick>
+								</Scripts>
+							</Button>
+						</Frames>
+						
+						<Scripts>
+							<OnLoad>
+								TMW:CInit(self)
+
+								self:SetTitle(TMW.L["TEXTLAYOUTS_HEADER_DISPLAY"])
+
+								self:CScriptAdd("SettingTableRequested", function()
+									local _, displaySettings = TMW.TEXT:GetCurrentLayoutAndDisplaySettings()
+									return displaySettings or false
+								end)
+
+								self:CScriptAdd("PanelSetup", function()
+									local layoutSettings, displaySettings = TMW.TEXT:GetCurrentLayoutAndDisplaySettings()
+									if not displaySettings or not layoutSettings or layoutSettings.NoEdit then
+										self:Hide()
+									end
+								end)
+							</OnLoad>
+						</Scripts>
+					</Frame>
+
+					<Frame parentKey="DisplayFontSettings" inherits="TellMeWhen_OptionsModuleContainer" >
+						<Size y="190"/>
+
+						<Frames>
+							<Frame parentKey="Font" inherits="TMW_DropDownMenuTemplate">
+								<Anchors>
+									<Anchor point="TOP" y="-10"/>
+									<Anchor point="LEFT" x="10" />
+								</Anchors>
+								<Scripts>
+									<OnLoad>
+										TMW:CInit(self)
+										self:SetWidth(200)
+										self:SetTexts(TMW.L["UIPANEL_FONTFACE"], TMW.L["UIPANEL_FONT_DESC"])
+
+										local LSM = LibStub("LibSharedMedia-3.0")
+										self:SetSetting("Name")
+										self:SetEasyFunctions(
+											function()
+												return pairs(LSM:List("font"))
+											end,
+											function(info, id, name)
+												info.text = name
+												info.font = LSM:Fetch("font", name)
+												info.value = name
+											end
+										)
+
+										self:SetScrollable(true)
+									</OnLoad>
+								</Scripts>
+							</Frame>
+
+							<Frame parentKey="Outline" inherits="TMW_DropDownMenuTemplate">
+								<Anchors>
+									<Anchor point="LEFT" relativeKey="$parent.Font" relativePoint="RIGHT" x="15" />
+									<Anchor point="RIGHT" x="-10" />
+								</Anchors>
+								<Scripts>
+									<OnLoad>
+										TMW:CInit(self)
+
+										self:SetTexts(TMW.L["UIPANEL_FONT_OUTLINE"], TMW.L["UIPANEL_FONT_OUTLINE_DESC2"])
+
+										local outlines =  {
+											[""] = TMW.L["OUTLINE_NO"],
+											OUTLINE = TMW.L["OUTLINE_THIN"],
+											THICKOUTLINE = TMW.L["OUTLINE_THICK"],
+										}
+										self:SetSetting("Outline")
+										self:SetEasyFunctions(
+											function()
+												return TMW:OrderedPairs(outlines)
+											end,
+											function(info, value, text)
+												info.text = text
+												info.value = value
+											end
+										)
+									</OnLoad>
+								</Scripts>
+							</Frame>
+
+							<Slider parentKey="Size" inherits="TellMeWhen_SliderTemplate">
+								<Anchors>
+									<Anchor point="TOP" relativeKey="$parent.Font" relativePoint="BOTTOM" y="-15"/>
+									<Anchor point="LEFT" x="10" />
+									<Anchor point="RIGHT" relativePoint="TOP" x="-10" />
+								</Anchors>
+								<Scripts>
+									<OnLoad>
+										TMW:CInit(self)
+										
+										self:SetTexts(TMW.L["UIPANEL_FONT_SIZE"], TMW.L["UIPANEL_FONT_SIZE_DESC2"])
+										self:SetSetting("Size")
+										self:SetMinMaxValues(6, 270)
+										self:SetMode(self.MODE_ADJUSTING)
+										self:SetRange(30)
+										self:SetValueStep(1)
+									</OnLoad>
+								</Scripts>
+							</Slider>
+
+							<Slider parentKey="Shadow" inherits="TellMeWhen_SliderTemplate">
+								<Anchors>
+									<Anchor point="TOP" relativeKey="$parent.Size"/>
+									<Anchor point="LEFT" relativePoint="TOP" x="10" />
+									<Anchor point="RIGHT" x="-10" />
+								</Anchors>
+								<Scripts>
+									<OnLoad>
+										TMW:CInit(self)
+
+										self:SetTexts(TMW.L["UIPANEL_FONT_SHADOW"], TMW.L["UIPANEL_FONT_SHADOW_DESC"])
+										self:SetSetting("Shadow")
+										self:SetMinMaxValues(0, math.huge)
+										self:SetRange(3)
+										self:SetValueStep(0.1)
+										self:SetWheelStep(0.5)
+										self:SetMode(self.MODE_ADJUSTING)
+
+										self:SetTextFormatter(TMW.C.Formatter.PIXELS, TMW.C.Formatter.F_0)
+									</OnLoad>
+								</Scripts>
+							</Slider>
+
+							<Frame parentKey="Justify" inherits="TMW_DropDownMenuTemplate">
+								<Anchors>
+									<Anchor point="TOP" relativeKey="$parent.Size" relativePoint="BOTTOM" y="-25"/>
+									<Anchor point="LEFT" relativeKey="$parent.Font" />
+									<Anchor point="RIGHT" relativePoint="TOP" x="-10" />
+								</Anchors>
+								<Scripts>
+									<OnLoad>
+										TMW:CInit(self)
+
+										self:SetTexts(TMW.L["UIPANEL_FONT_JUSTIFY"], TMW.L["UIPANEL_FONT_JUSTIFY_DESC"])
+										self:SetLabel(TMW.L["UIPANEL_FONT_JUSTIFY"])
+
+										self:SetSetting("Justify")
+										--self:SetEasyTitlePrepend(TMW.L["UIPANEL_ICONSPACINGX"])
+										self:SetEasyFunctions(
+											function()
+												return TMW:OrderedPairs(TMW.justifyPoints)
+											end,
+											function(info, value, text)
+												info.text = text
+												info.value = value
+											end
+										)
+									</OnLoad>
+								</Scripts>
+							</Frame>
+
+							<Frame parentKey="JustifyV" inherits="TMW_DropDownMenuTemplate">
+								<Anchors>
+									<Anchor point="TOP" relativeKey="$parent.Justify"/>
+									<Anchor point="LEFT" relativePoint="TOP" x="10" />
+									<Anchor point="RIGHT" x="-10" />
+								</Anchors>
+								<Scripts>
+									<OnLoad>
+										TMW:CInit(self)
+
+										self:SetTexts(TMW.L["UIPANEL_FONT_JUSTIFYV"], TMW.L["UIPANEL_FONT_JUSTIFYV_DESC"])
+										self:SetLabel(TMW.L["UIPANEL_FONT_JUSTIFYV"])
+
+										self:SetSetting("JustifyV")
+										--self:SetEasyTitlePrepend(TMW.L["UIPANEL_ICONSPACINGY"])
+										self:SetEasyFunctions(
+											function()
+												return TMW:OrderedPairs(TMW.justifyVPoints)
+											end,
+											function(info, value, text)
+												info.text = text
+												info.value = value
+											end
+										)
+									</OnLoad>
+								</Scripts>
+							</Frame>
+
+							<Slider parentKey="Width" inherits="TellMeWhen_SliderTemplate">
+								<Anchors>
+									<Anchor point="TOP" relativeKey="$parent.Justify" relativePoint="BOTTOM" y="-15"/>
+									<Anchor point="LEFT" relativeKey="$parent.Size" />
+									<Anchor point="RIGHT" relativePoint="TOP" x="-10" />
+								</Anchors>
+								<Scripts>
+									<OnLoad>
+										TMW:CInit(self)
+
+										self:SetTexts(TMW.L["UIPANEL_FONT_WIDTH"], TMW.L["UIPANEL_FONT_WIDTH_DESC"])
+										self:SetSetting("Width")
+										self:SetMinMaxValues(0, math.huge)
+										self:SetRange(100)
+										self:SetValueStep(1)
+										self:SetMode(self.MODE_ADJUSTING)
+
+										local formatter = TMW.C.Formatter:New(function(value)
+											if value == 0 then
+												return TMW.L["TEXTLAYOUTS_SIZE_AUTO"]
+											else
+												return TMW.C.Formatter.PIXELS:Format(value)
+											end
+										end)
+										self:SetTextFormatter(formatter, TMW.C.Formatter.F_0)
+									</OnLoad>
+								</Scripts>
+							</Slider>
+
+							<Slider parentKey="Height" inherits="TellMeWhen_SliderTemplate">
+								<Anchors>
+									<Anchor point="TOP" relativeKey="$parent.Width"/>
+									<Anchor point="LEFT" relativePoint="TOP" x="10" />
+									<Anchor point="RIGHT" x="-10" />
+								</Anchors>
+								<Scripts>
+									<OnLoad>
+										TMW:CInit(self)
+
+										self:SetTexts(TMW.L["UIPANEL_FONT_HEIGHT"], TMW.L["UIPANEL_FONT_HEIGHT_DESC"])
+										self:SetSetting("Height")
+										self:SetMinMaxValues(0, math.huge)
+										self:SetRange(100)
+										self:SetValueStep(1)
+										self:SetMode(self.MODE_ADJUSTING)
+
+										local formatter = TMW.C.Formatter:New(function(value)
+											if value == 0 then
+												return TMW.L["TEXTLAYOUTS_SIZE_AUTO"]
+											else
+												return TMW.C.Formatter.PIXELS:Format(value)
+											end
+										end)
+										self:SetTextFormatter(formatter, TMW.C.Formatter.F_0)
+									</OnLoad>
+								</Scripts>
+							</Slider>
+
+							<Slider parentKey="Rotate" inherits="TellMeWhen_SliderTemplate">
+								<Anchors>
+									<Anchor point="TOP" relativeKey="$parent.Width" relativePoint="BOTTOM" y="-20"/>
+									<Anchor point="LEFT" x="10" />
+									<Anchor point="RIGHT" relativePoint="TOP" x="-10" />
+								</Anchors>
+								<Scripts>
+									<OnLoad>
+										TMW:CInit(self)
+
+										self:SetTexts(TMW.L["UIPANEL_FONT_ROTATE"], TMW.L["UIPANEL_FONT_ROTATE_DESC"])
+										self:SetSetting("Rotate")
+										self:SetMinMaxValues(0, 360)
+										self:SetValueStep(1)
+										self:SetWheelStep(90)
+
+										self:SetTextFormatter(TMW.C.Formatter:New(TMW.L["TEXTLAYOUTS_DEGREES"]), TMW.C.Formatter.F_0)
+									</OnLoad>
+								</Scripts>
+							</Slider>
+
+							<Button parentKey="AddAnchor" inherits="TellMeWhen_ButtonTemplate">
+								<Size y="15"/>
+								<Anchors>
+									<Anchor point="LEFT" relativeKey="$parent.Rotate" relativePoint="RIGHT" x="20"/>
+									<Anchor point="RIGHT" x="-10" />
+								</Anchors>
+
+								<Scripts>
+									<OnLoad>
+										TMW:CInit(self)
+
+										self:SetTexts(TMW.L["TEXTLAYOUTS_ADDANCHOR"], TMW.L["TEXTLAYOUTS_ADDANCHOR_DESC"])
+									</OnLoad>
+									<OnClick>
+										local _, displaySettings = TMW.TEXT:GetCurrentLayoutAndDisplaySettings()
+										displaySettings.Anchors.n = displaySettings.Anchors.n + 1
+
+										self:OnSettingSaved()
+									</OnClick>
+								</Scripts>
+							</Button>
+						</Frames>
+						
+						<Scripts>
+							<OnLoad>
+								TMW:CInit(self)
+
+								self:SetTitle(TMW.L["TEXTLAYOUTS_FONTSETTINGS"])
+
+								self:CScriptAdd("SettingTableRequested", function()
+									local _, displaySettings = TMW.TEXT:GetCurrentLayoutAndDisplaySettings()
+
+									return displaySettings or false
+								end)
+
+								self:CScriptAdd("PanelSetup", function()
+									local layoutSettings, displaySettings = TMW.TEXT:GetCurrentLayoutAndDisplaySettings()
+									if not displaySettings or not layoutSettings or layoutSettings.NoEdit then
+										self:Hide()
+									end
+								end)
+							</OnLoad>
+						</Scripts>
+					</Frame>
+				</Frames>
+			</Frame>
+		</Frames>
+
+		<Layers>
+			<Layer level="OVERLAY">
+				<FontString parentKey="LayoutListHeader" inherits="GameFontNormalLarge" justifyH="LEFT">
+					<Anchors>
+						<Anchor point="BOTTOM" relativeKey="$parent.AddLayout" relativePoint="TOP" y="-1"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+				
+		<Scripts>
+			<OnLoad>
+				TMW:CInit(self)
+
+				self.LayoutListHeader:SetText(TMW.L["TEXTLAYOUTS"])
+
+				self:CScriptAdd("ReloadRequested", function()
+					TMW.TEXT:SetupPanels()
+				end)
+
+				self:CScriptAdd("DescendantSettingSaved", function()
+					local layoutGUID = TMW.TEXT:GetCurrentLayoutAndDisplay()
+					if layoutGUID then
+						TMW.TEXT:UpdateIconsUsingTextLayout(layoutGUID)
+					end
+				end)
+			</OnLoad>
+		</Scripts>
+	</Frame>
+
+
+
+	<!--
+		A single text display in the icon editor.
+		Contains the editbox, the copy menu, and the rest to default button.
+		
+		Height of this frame is adjusted based on the height of the editbox.
+		Height of TellMeWhen_TextDisplayOptions is adjusted based on heights of these frames.
+	-->
+	<Frame name="TellMeWhen_TextDisplayGroup" virtual="true">
+		<Size y="40"/>
+		<Anchors>
+			<Anchor point="LEFT" x="0"/>
+			<Anchor point="RIGHT" x="0"/>
+		</Anchors>
+		<Frames>
+			<!--
+				Resets this text display to the default, as provided by the current text layout.
+			-->
+			<Button parentKey="Default" >
+				<Size x="15" y="15"/>
+				<Anchors>
+					<Anchor point="TOPRIGHT" x="-8" y="-2"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						TMW:CInit(self, "Config_Button")
+
+						self:SetFrameLevel(self:GetFrameLevel()+2)
+					</OnLoad>
+					<OnClick>
+						TMW:ClickSound()
+						
+						if TMW.CI.icon then
+							local id = self:GetParent():GetID()
+							
+							TMW.CI.icon:GetSettingsPerView().Texts[id] = nil
+							
+							self:OnSettingSaved()
+						end
+					</OnClick>
+				</Scripts>
+				<NormalTexture urgency="5" file="Interface\PaperDollInfoFrame\UI-GearManager-Undo" alphaMode="ADD">
+					<TexCoords left="0.125" right="0.859375" top="0.140625" bottom="0.875"/>
+					<Color r=".7" g=".7" b=".7" a="1"/>
+				</NormalTexture>
+				<HighlightTexture urgency="5" file="Interface\PaperDollInfoFrame\UI-GearManager-Undo" alphaMode="ADD">
+					<TexCoords left="0.125" right="0.859375" top="0.140625" bottom="0.875"/>
+					<Color r="1" g="1" b="1" a="0.3"/>
+				</HighlightTexture>
+			</Button>
+			
+			<!--
+				Show a list of other text displays to copy to this display.
+			-->
+			<Button parentKey="Copy" >
+				<Size x="16" y="16"/>
+				<Anchors>
+					<Anchor point="RIGHT" relativeKey="$parent.Default"  relativePoint="LEFT" x="-5" y="-0.5"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						self.DD = TMW.C.Config_DropDownMenu_NoFrame:New()
+						self.DD:SetFunction(TMW.TEXT.CopyString_DropDown)
+						self.DD:SetScrollable(true)
+
+						self:SetFrameLevel(self:GetFrameLevel()+2)
+						TMW:TT(self, "TEXTLAYOUTS_STRING_COPYMENU", "TEXTLAYOUTS_STRING_COPYMENU_DESC")
+					</OnLoad>
+					<OnClick>
+						TMW:ClickSound()
+
+						self.DD:Toggle(1, nil, self, 0, 0)
+					</OnClick>
+				</Scripts>
+				<NormalTexture urgency="5" file="Interface\AddOns\TellMeWhen\Textures\Copy">
+				</NormalTexture>
+				<HighlightTexture urgency="5" file="Interface\AddOns\TellMeWhen\Textures\Copy" alphaMode="ADD">
+					<Color r="1" g="1" b="1" a="0.3"/>
+				</HighlightTexture>
+			</Button>
+			
+			<!--
+				Set the text for this text display
+			-->
+			<EditBox parentKey="EditBox" inherits="TellMeWhen_InputBoxTemplate" multiline="true">
+				<Size y="15"/>
+				<Anchors>
+					<Anchor point="TOP" y="-2"/>
+					<Anchor point="LEFT" x="25" />
+					<Anchor point="RIGHT" relativeKey="$parent.Copy" relativePoint="LEFT" x="-5" />
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						TMW:CInit(self, "Config_EditBox_DogTags")
+						self:SetSetting(self:GetParent():GetID())
+		
+						-- This is handled manually because texts use fallback settings onto the layout.
+						self:CScriptRemove("ReloadRequested")
+
+						self:CScriptAdd("SettingTableRequested", function()
+							return TMW.CI.icon and TMW.CI.icon:GetSettingsPerView().Texts or false
+						end)
+					</OnLoad>
+					<OnSizeChanged>
+						if not self.class then return end
+						TMW.TEXT:ResizeTextDisplayFrame(self:GetParent())
+					</OnSizeChanged>
+				</Scripts>
+			</EditBox>
+
+		</Frames>
+		<Layers>
+			<Layer level="OVERLAY">
+				<FontString parentKey="StringNum" inherits="GameFontHighlight" justifyH="RIGHT">
+					<!-- <Size x="25"/> -->
+					<Anchors>
+						<Anchor point="TOP" y="-5"/>
+						<Anchor point="LEFT" x="2" />
+						<Anchor point="RIGHT" x="-3" relativeKey="$parent.EditBox" relativePoint="LEFT"/>
+					</Anchors>
+				</FontString>
+				<FontString parentKey="Error" inherits="GameFontRed" justifyH="LEFT" >
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeKey="$parent.EditBox" relativePoint="BOTTOMLEFT" x="0" y="-2"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				self.Error:SetWidth(self:GetWidth() - 27)
+				self.StringNum:SetText(self:GetID() .. ".")
+			</OnLoad>
+		</Scripts>
+	</Frame>
+	
+	<!--
+		Frame that holds icon options.
+		Implemented by Texts:RegisterConfigPanel_XMLTemplate(400, "TellMeWhen_TextDisplayOptions")
+	-->
+	<Frame name="TellMeWhen_TextDisplayOptions" inherits="TellMeWhen_OptionsModuleContainer" virtual="true">
+		<Size y="200"/>
+		<Frames>
+			<!--
+				The container that holds:
+					The choose layout dropdown
+					The shortcut to layout settings
+					The reset all button
+			-->
+			<Frame parentKey="Layout" name="$parentLayout">
+				<Size y="26"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" x="0" y="-7"/>
+					<Anchor point="RIGHT"/>
+				</Anchors>
+				<Frames>
+					<!--
+						Resets all text displays (the editboxes) to their defaults as defined by the current layout.
+					-->
+					<Button parentKey="Default">
+						<Size x="18" y="18"/>
+						<Anchors>
+							<Anchor point="TOPRIGHT" x="-5" y="-2"/>
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								TMW:CInit(self, "Config_Button")
+
+								self:SetFrameLevel(self:GetFrameLevel()+2)
+								TMW:TT(self, "TEXTLAYOUTS_LAYOUT_SETDEFAULTS", "TEXTLAYOUTS_LAYOUT_SETDEFAULTS_DESC")
+							</OnLoad>
+							<OnClick>							
+								if TMW.CI.icon then
+									wipe(TMW.CI.icon:GetSettingsPerView().Texts)
+
+									self:OnSettingSaved()
+								end
+							</OnClick>
+						</Scripts>
+						<NormalTexture urgency="5" file="Interface\PaperDollInfoFrame\UI-GearManager-Undo" alphaMode="ADD">
+							<TexCoords left="0.125" right="0.859375" top="0.140625" bottom="0.875"/>
+							<Color r=".7" g=".7" b=".7" a="1"/>
+						</NormalTexture>
+						<HighlightTexture urgency="5" file="Interface\PaperDollInfoFrame\UI-GearManager-Undo" alphaMode="ADD">
+							<TexCoords left="0.125" right="0.859375" top="0.140625" bottom="0.875"/>
+							<Color r="1" g="1" b="1" a="0.3"/>
+						</HighlightTexture>
+					</Button>
+					
+					<!--
+						Shortcut to the settings for the current layout (via the group settings tab, currently),
+					-->
+					<Button parentKey="LayoutSettings">
+						<Size x="17" y="17"/>
+						<Anchors>
+							<Anchor point="RIGHT" relativeKey="$parent.Default" relativePoint="LEFT" x="-5" y="0"/>
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								self:SetFrameLevel(self:GetParent():GetFrameLevel()+4)
+								
+								-- The tooltip is handled in TEXT:LoadConfig()
+							</OnLoad>
+							<OnClick>
+								local GUID, layoutSettings = TMW.TEXT:GetTextLayoutForIcon(TMW.CI.icon)
+								
+								TMW.TEXT.LayoutTab:Click()
+								TMW.TEXT:SetCurrentLayout(GUID)
+								
+							</OnClick>
+						</Scripts>
+						<NormalTexture urgency="5" file="Interface\AddOns\TellMeWhen\Textures\Config">
+						</NormalTexture>
+						<HighlightTexture urgency="5" file="Interface\AddOns\TellMeWhen\Textures\Config" alphaMode="ADD">
+							<Color r="1" g="1" b="1" a="0.3"/>
+						</HighlightTexture>
+					</Button>
+					
+					<!--
+						Dropdown to change the text layout of the icon for the current view.
+					-->
+					<Frame parentKey="PickLayout" inherits="TMW_DropDownMenuTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" x="9" y="0"/>
+							<Anchor point="RIGHT" relativeKey="$parent.LayoutSettings"  relativePoint="LEFT" x="-7" />
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								TMW:CInit(self)
+						
+								self:SetTexts(TMW.L["TEXTLAYOUTS_CHOOSELAYOUT"], TMW.L["TEXTLAYOUTS_CHOOSELAYOUT_DESC"])
+								self:SetFunction(TMW.TEXT.Layout_DropDown)
+
+								self:SetScrollable(true)
+
+								-- Save settings before changing the layout (most notably, save the text for the text displays)
+								self.Button:HookScript("OnClick", function(self)
+									TMW.IE:SaveSettings()
+								end)
+							</OnLoad>
+						</Scripts>
+					</Frame>
+				</Frames>
+				<Layers>
+					<Layer level="OVERLAY">
+						<FontString parentKey="Error" inherits="GameFontRed" wordwrap="true">
+							<Anchors>
+								<Anchor point="TOP" y="-28"/>
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnLoad>
+						self.Error:SetWidth(self:GetWidth() - 20)
+					</OnLoad>
+				</Scripts>
+			</Frame>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				TMW:CInit(self)
+
+				self:CScriptAdd("ReloadRequested", function()
+					TMW.TEXT:LoadConfig()
+				end)
+				
+				self:SetTitle(TMW.L["TEXTLAYOUTS_TAB"])
+			</OnLoad>
+		</Scripts>
+	</Frame>	
+
+
+	<Frame name="TellMeWhen_GM_TextLayout" inherits="TellMeWhen_OptionsModuleContainer" virtual="true">
+		<Size y="32"/>
+		<Frames>
+			<Frame parentKey="PickLayout" inherits="TMW_DropDownMenuTemplate">
+			<Anchors>
+				<Anchor point="TOP" y="-5"/>
+				<Anchor point="LEFT" x="9" />
+				<Anchor point="RIGHT" x="-9" />
+			</Anchors>
+			<Scripts>
+				<OnLoad>
+					TMW:CInit(self)
+			
+					self:SetTexts(TMW.L["TEXTLAYOUTS_SETGROUPLAYOUT"], TMW.L["TEXTLAYOUTS_SETGROUPLAYOUT_DESC"])
+					self:SetFunction(TMW.TEXT.Layout_Group_DropDown)
+
+					self:SetScrollable(true)
+
+					-- Save settings before changing the layout (most notably, save the text for the text displays)
+					self.Button:HookScript("OnClick", function(self)
+						TMW.IE:SaveSettings()
+					end)
+
+					self:CScriptAdd("ReloadRequested", function()
+						local gspv = TMW.CI.group and TMW.CI.group:GetSettingsPerView()
+						if gspv and gspv.TextLayout then
+							local layoutName = TMW.TEXT:GetLayoutName(nil, gspv.TextLayout, true)
+							self:SetText("|cff666666" .. TMW.L["TEXTLAYOUTS_HEADER_LAYOUT"] .. ": |r" .. layoutName)
+						end
+					end)
+				</OnLoad>
+			</Scripts>
+		</Frame>
+		</Frames>
+		<Scripts>
+			<OnLoad>		
+				TMW:CInit(self)
+				
+				self:SetTitle(TMW.L["TEXTLAYOUTS_HEADER_LAYOUT"])
+			</OnLoad>
+		</Scripts>
+	</Frame>
+
+
+	
+
+</Ui>

@@ -1,0 +1,141 @@
+﻿<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+
+
+
+<Frame name="MYSLOT_ReportFrame" toplevel="true" movable="true" parent="UIParent" enableMouse="true" hidden="true">
+		<Size>
+			<AbsDimension x="550" y="500"/>
+		</Size>
+		<Anchors>
+			<Anchor point="CENTER"/>
+		</Anchors>
+		<Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="Interface\DialogFrame\UI-DialogBox-Border" tile="true">
+			<BackgroundInsets>
+				<AbsInset left="8" right="8" top="10" bottom="10"/>
+			</BackgroundInsets>
+			<TileSize>
+				<AbsValue val="32"/>
+			</TileSize>
+			<EdgeSize>
+				<AbsValue val="32"/>
+			</EdgeSize>
+		</Backdrop>
+		<Layers>
+			<Layer level="ARTWORK">
+				<Texture name="$parentHeaderTexture" file="Interface\DialogFrame\UI-DialogBox-Header">
+					<Size>
+						<AbsDimension x="256" y="64"/>
+					</Size>
+					<Anchors>
+						<Anchor point="TOP">
+							<Offset>
+								<AbsDimension x="0" y="12"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</Texture>
+				<FontString name="$parentHeaderText" inherits="GameFontNormal" text="My Slot 5">
+					<Anchors>
+						<Anchor point="TOP" relativeTo="$parentHeaderTexture">
+							<Offset>
+								<AbsDimension x="0" y="-14"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+
+		<Frames>
+		<ScrollFrame name="MYSLOT_ScrollFrame" inherits="UIPanelScrollFrameTemplate">
+				<Size>
+					<AbsDimension x="500" y="430"/>
+				</Size>
+				<Anchors>
+					<Anchor point="TOPLEFT">
+						<Offset>
+							<AbsDimension x="15" y="-30"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<ScrollChild>
+					<Frame name="MYSLOT_ScrollFrame_Child" enableMouse="true">
+						<Size>
+							<AbsDimension x="500" y="430"/>
+						</Size>
+						<Anchors>
+							<Anchor point="TOPLEFT"/>
+						</Anchors>
+						<Frames>
+							<EditBox name="MYSLOT_ReportFrame_EditBox"  letters="99999999" enableMouse="false" multiLine="true" autoFocus="true">
+										<Size>
+											<AbsDimension x="480" y="400"/>
+										</Size>
+										<Anchors>
+											<Anchor point="TOPLEFT">
+												<Offset>
+													<AbsDimension x="10" y="0"/>
+												</Offset>
+											</Anchor>
+										</Anchors>
+										<Scripts>
+											<OnTextChanged>
+												ScrollingEdit_OnTextChanged(self,MYSLOT_ScrollFrame);
+											</OnTextChanged>
+											<OnCursorChanged>
+												ScrollingEdit_OnCursorChanged(self,x, y-10, w, h);
+											</OnCursorChanged>
+											<OnEscapePressed>
+												self:ClearFocus();
+											</OnEscapePressed>
+											<OnClick>
+												self:SetFocus();
+											</OnClick>
+										</Scripts>
+										<FontString inherits="GameTooltipTextSmall"/>
+									</EditBox>
+						</Frames>
+					</Frame>
+				</ScrollChild>
+			</ScrollFrame>
+			<Button name="$parentCloseButton" hidden="false" inherits="GameMenuButtonTemplate" text="Close">
+				<Size>
+					<AbsDimension x="125" y="25"/>
+				</Size>
+				<Anchors>
+					<Anchor point="BOTTOM" >
+						<Offset>
+							<AbsDimension x="150" y="15"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Button>
+			<Button name="$parentImportButton" hidden="false" inherits="GameMenuButtonTemplate" text="Import">
+				<Size>
+					<AbsDimension x="125" y="25"/>
+				</Size>
+				<Anchors>
+					<Anchor point="BOTTOM" >
+						<Offset>
+							<AbsDimension x="-180" y="15"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Button>						
+			<Button name="$parentExportButton" hidden="false" inherits="GameMenuButtonTemplate" text="Export">
+				<Size>
+					<AbsDimension x="125" y="25"/>
+				</Size>
+				<Anchors>
+					<Anchor point="BOTTOM" >
+						<Offset>
+							<AbsDimension x="0" y="15"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Button>			
+		</Frames>
+</Frame>
+
+</Ui>

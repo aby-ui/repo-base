@@ -1,0 +1,62 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+
+	<Script file="textentry.lua"/>
+
+	<EditBox name="DetailsFrameworkEditBoxTemplate2" virtual="true">
+		<Size x="232" y="20"/>
+		
+		<Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="Interface\DialogFrame\UI-DialogBox-Border" tile="true">
+			<EdgeSize>
+				<AbsValue val="10"/>
+			</EdgeSize>
+			<TileSize>
+				<AbsValue val="16"/>
+			</TileSize>
+			<BackgroundInsets>
+				<AbsInset left="1" right="1" top="0" bottom="1"/>
+			</BackgroundInsets>
+		</Backdrop>
+		
+		<Layers>
+		
+			<Layer level="OVERLAY">
+				<!-- box description -->
+				<FontString name="$parent_Desc" text="" parentKey="label" inherits="GameFontHighlightSmall" justifyH="LEFT" nonspacewrap="false">
+					<Color r = "0.8" g = "0.8" b = "0.8" a = "1"/>
+					<Anchors>
+						<Anchor point="RIGHT" relativeTo="$parent" relativePoint="LEFT" x="-2" y="0" />
+					</Anchors>
+				</FontString>
+			
+			</Layer>
+		
+		</Layers>
+		
+	</EditBox>
+	
+	<ScrollFrame name="DetailsFrameworkEditBoxMultiLineTemplate" inherits="UIPanelScrollFrameTemplate" virtual="true">
+		<Size x="232" y="20"/>
+		<ScrollChild>
+			<EditBox name="$parentEditBox" multiLine="true" letters="255" autoFocus="false" countInvisibleLetters="true" parentKey="editbox">
+				<Size x="232" y="20"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parent" relativePoint="TOPLEFT" />
+					<Anchor point="BOTTOMLEFT" relativeTo="$parent" relativePoint="BOTTOMLEFT" />
+					<Anchor point="TOPRIGHT" relativeTo="$parent" relativePoint="TOPRIGHT" />
+					<Anchor point="BOTTOMRIGHT" relativeTo="$parent" relativePoint="BOTTOMRIGHT" />
+				</Anchors>
+				<Scripts>
+					<OnTextChanged>
+						<!-- ScrollingEdit_OnTextChanged (self, self:GetParent()); -->
+					</OnTextChanged>
+					<OnCursorChanged function="ScrollingEdit_OnCursorChanged"/>
+					<OnUpdate>
+						<!-- ScrollingEdit_OnUpdate (self, elapsed, self:GetParent());-->
+					</OnUpdate>
+					<OnEscapePressed function="EditBox_ClearFocus"/>
+				</Scripts>
+				<FontString inherits="GameFontHighlightSmall"/>
+			</EditBox>
+		</ScrollChild>
+	</ScrollFrame>
+</Ui>

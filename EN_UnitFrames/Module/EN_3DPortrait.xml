@@ -1,0 +1,158 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+E:\PROGRA~1\Altova\XMLSpy2006\UI.xsd">
+	<Script file="EN_3DPortrait.lua"/>
+	<Frame name="EUF_3DPortraitFrame" hidden="true">
+		<Scripts>
+			<OnLoad>
+				EUF_3DPortrait_OnLoad(self);
+			</OnLoad>
+			<OnEvent>
+				EUF_3DPortrait_OnEvent(self, event,...);
+			</OnEvent>
+			<OnUpdate>
+				EUF_3DPortrait_Update(self, elapsed);
+			</OnUpdate>
+		</Scripts>
+	</Frame>	
+
+	<Frame name="EUF_3DPortrait_PlayerFrame"  frameStrata="BACKGROUND" hidden="true" parent="PlayerFrame">
+		<Size>
+			<AbsDimension x="58" y="58"/>
+		</Size>
+		<Anchors>
+			<Anchor point="TOPLEFT">
+				<AbsDimension x="0" y="0"/>
+			</Anchor>
+		</Anchors>
+		<Frames>
+			<Frame name="$parentBorder">
+				<Anchors>
+					<Anchor point="CENTER" relativePoint="CENTER" relativeTo="PlayerPortrait">
+						<Offset>
+							<AbsDimension x="0" y="-2"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Size>
+					<AbsDimension x="58" y="58"/>
+				</Size>
+				<Layers>
+					<Layer level="ARTWORK">
+						<Texture file="Interface\AddOns\EN_UnitFrames\Texture\3dborder">
+							<Size>
+								<AbsDimension x="58" y="58"/>
+							</Size>
+							<TexCoords left="0.0" right="0.90625" top="0.0" bottom="0.90625"/>
+						</Texture>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnLoad>
+						self:SetFrameLevel(self:GetFrameLevel() - 2);
+					</OnLoad>
+				</Scripts>
+			</Frame>
+			<PlayerModel name="EUF_3DPortrait_PlayerModel">
+				<Size>
+					<AbsDimension x="49" y="49"/>
+				</Size>
+				<Anchors>
+					<Anchor point="CENTER" relativePoint="CENTER" relativeTo="PlayerPortrait">
+						<Offset>
+							<AbsDimension x="0" y="-2"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture>
+							<Size>
+								<AbsDimension x="49" y="49"/>
+							</Size>
+							<Anchors>
+								<Anchor point="TOPLEFT"/>
+							</Anchors>
+							<Color r="0" g="0" b="0" a="1.0"/>
+						</Texture>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnLoad>
+						self:SetFrameLevel(self:GetFrameLevel() - 2);
+					</OnLoad>
+					<OnShow>
+						self:SetCamera(0);
+					</OnShow>
+				</Scripts>
+			</PlayerModel>			
+		</Frames>
+	</Frame>
+	
+	<Frame name="EUF_3DPortrait_TargetFrame"  frameStrata="BACKGROUND" hidden="true" parent="TargetFrame">
+		<Size>
+			<AbsDimension x="58" y="58"/>
+		</Size>
+		<Anchors>
+			<Anchor point="TOPLEFT">
+				<AbsDimension x="0" y="0"/>
+			</Anchor>
+		</Anchors>
+		<Frames>	
+			<Frame name="$parentBorder">
+				<Anchors>
+					<Anchor point="CENTER" relativePoint="CENTER" relativeTo="TargetFramePortrait">
+						<Offset>
+							<AbsDimension x="0" y="-2"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Size>
+					<AbsDimension x="58" y="58"/>
+				</Size>
+				<Layers>
+					<Layer level="ARTWORK">
+						<Texture file="Interface\AddOns\EN_UnitFrames\Texture\3dborder">
+							<Size>
+								<AbsDimension x="58" y="58"/>
+							</Size>
+							<TexCoords left="0.0" right="0.90625" top="0.0" bottom="0.90625"/>
+						</Texture>
+					</Layer>
+				</Layers>
+			</Frame>
+			<PlayerModel name="EUF_3DPortrait_TargetModel">
+				<Size>
+					<AbsDimension x="49" y="49"/>
+				</Size>
+				<Anchors>
+					<Anchor point="CENTER" relativePoint="CENTER" relativeTo="TargetFramePortrait">
+						<Offset>
+							<AbsDimension x="0" y="-2"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture>
+							<Size>
+								<AbsDimension x="49" y="49"/>
+							</Size>
+							<Anchors>
+								<Anchor point="TOPLEFT"/>
+							</Anchors>
+							<Color r="0" g="0" b="0" a="1.0"/>
+						</Texture>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnLoad>
+						self:SetFrameLevel(self:GetFrameLevel() - 2);
+					</OnLoad>
+					<OnShow>
+						self:SetCamera(0);
+					</OnShow>
+				</Scripts>
+			</PlayerModel>			
+		</Frames>
+	</Frame>
+</Ui>

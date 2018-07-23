@@ -1,0 +1,17 @@
+## Interface: 80000
+## Title: GridStatusRaidDebuff(WoD)
+## Notes: Debuff List for WoD
+## Author: Doadin (Malorne-US)
+## Version: 8.0.1.2
+## Grid Author: Pastamancer & Maia
+## Dependencies: GridStatusRaidDebuff
+
+
+CheckCompat.lua
+BlackrockFoundry.lua
+Highmaul.lua
+HellfireCitadel.lua
+
+## Title: |cff880303[有爱]|r Grid 团队减益WoD
+## X-Vendor: AbyUI
+

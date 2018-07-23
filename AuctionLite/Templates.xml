@@ -1,0 +1,58 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\..\FrameXML\UI.xsd">
+	<Button name="SortButtonLeftTemplate" virtual="true">
+		<ButtonText name="$parentText" justifyH="RIGHT">
+			<Anchors>
+				<Anchor point="LEFT">
+					<Offset>
+						<AbsDimension x="0" y="0"/>
+					</Offset>
+				</Anchor>
+			</Anchors>
+		</ButtonText>
+		<NormalFont style="GameFontNormalSmall"/>
+		<NormalTexture name="$parentArrow" file="Interface\Buttons\UI-SortArrow">
+			<Size>
+				<AbsDimension x="9" y="8"/>
+			</Size>
+			<Anchors>
+				<Anchor point="LEFT" relativeTo="$parentText" relativePoint="RIGHT">
+					<Offset>
+						<AbsDimension x="2" y="-1"/>
+					</Offset>
+				</Anchor>
+			</Anchors>
+			<TexCoords left="0" right="0.5625" top="0" bottom="1.0"/>
+		</NormalTexture>
+	</Button>
+	<Button name="SortButtonRightTemplate" virtual="true">
+		<ButtonText name="$parentText" justifyH="RIGHT">
+			<Anchors>
+				<Anchor point="LEFT">
+					<Offset>
+						<AbsDimension x="10" y="0"/>
+					</Offset>
+				</Anchor>
+				<Anchor point="RIGHT">
+					<Offset>
+						<AbsDimension x="0" y="0"/>
+					</Offset>
+				</Anchor>
+			</Anchors>
+		</ButtonText>
+		<NormalFont style="GameFontNormalSmall"/>
+		<NormalTexture name="$parentArrow" file="Interface\Buttons\UI-SortArrow">
+			<Size>
+				<AbsDimension x="9" y="8"/>
+			</Size>
+			<Anchors>
+				<Anchor point="RIGHT" relativeTo="$parentText" relativePoint="LEFT">
+					<Offset>
+						<AbsDimension x="0" y="-1"/>
+					</Offset>
+				</Anchor>
+			</Anchors>
+			<TexCoords left="0" right="0.5625" top="0" bottom="1.0"/>
+		</NormalTexture>
+	</Button>
+</Ui>

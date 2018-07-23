@@ -1,0 +1,10 @@
+## Interface: 80000
+## Title: WorldFlightMap
+## Notes: Replaces the taxi map with the world map
+## Author: Semlar
+## Version: 8.0.0.1
+
+WorldFlightMap.lua
+
+## Title-zhCN: |cff880303[有爱]|r World 世界飞行地图
+## X-Vendor: AbyUI

@@ -1,0 +1,53 @@
+
+--[[
+
+GUI table arguments:
+
+    ---- All
+        type:           [string]
+        label:          [string]
+        horizontalArgs  [table: width, xOffset, yOffsetTop, yOffsetBottom]
+        verticalArgs    [table: height, yOffset, xOffsetLeft, xOffsetRight]
+        
+        width           [number]
+        height          [number]
+        point           [table]
+        points          [table: point]
+        
+        scripts         [table: key: script name, value: script function]
+        
+    ---- Control
+        profile         [table: addonname or tablename, pathkeys...]
+        depend          [string]
+        note            [string]
+        
+    ---- View
+        orientation     [string: HORIZONTAL, VERTICAL]
+        padding         [table: left, right, top, bottom]
+        
+    -- MainFrame
+        allowEscape     [boolean]
+    
+    -- Slider
+        minValue        [number]
+        maxValue        [number]
+        valueStep       [number]
+    
+    -- LineEdit
+        numeric         [boolean]
+        
+    -- TextEdit
+        readonly        [boolean]
+    
+    -- ListWidget
+        autoSize        [boolean]
+        itemHeight      [number]
+        itemList        [table]
+        itemObject      [object]
+        listObject      [object]
+        itemSpacing     [number]
+        maxCount        [number]    
+        allowOrder      [boolean]
+        selectMode      [string, NONE: can't select; RADIO: radio select, MULTI: multi select]
+    
+--]]

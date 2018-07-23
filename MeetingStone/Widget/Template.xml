@@ -1,0 +1,40 @@
+<Ui xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+  <Frame virtual="true" name="NetEaseCoverAnimation">
+    <Layers>
+      <Layer level="ARTWORK">
+        <Texture atlas="groupfinder-waitdot" parentKey="Waitdot2" hidden="false" alpha="0">
+          <Size x="16" y="16" />
+          <Anchors>
+            <Anchor x="0" point="CENTER" y="0" />
+          </Anchors>
+        </Texture>
+        <Texture atlas="groupfinder-waitdot" parentKey="Waitdot1" hidden="false" alpha="0">
+          <Size x="16" y="16" />
+          <Anchors>
+            <Anchor x="-17" point="CENTER" relativeKey="$parent.Waitdot2" y="0" />
+          </Anchors>
+        </Texture>
+        <Texture atlas="groupfinder-waitdot" parentKey="Waitdot3" hidden="false" alpha="0">
+          <Size x="16" y="16" />
+          <Anchors>
+            <Anchor x="17" point="CENTER" relativeKey="$parent.Waitdot2" y="0" />
+          </Anchors>
+        </Texture>
+      </Layer>
+    </Layers>
+    <Animations>
+      <AnimationGroup looping="REPEAT" parentKey="WaitAnim">
+        <Alpha startDelay="0.65" fromAlpha="0" toAlpha="1" order="1" duration="0.15" childKey="Waitdot1" />
+        <Alpha startDelay="0.50" fromAlpha="0" toAlpha="1" order="2" duration="0.15" childKey="Waitdot2" />
+        <Alpha startDelay="0.50" fromAlpha="0" toAlpha="1" order="3" duration="0.15" childKey="Waitdot3" />
+        <Alpha startDelay="0.50" fromAlpha="1" toAlpha="0" order="4" duration="0.15" childKey="Waitdot1" />
+        <Alpha startDelay="0.50" fromAlpha="1" toAlpha="0" order="4" duration="0.15" childKey="Waitdot2" />
+        <Alpha startDelay="0.50" fromAlpha="1" toAlpha="0" order="4" duration="0.15" childKey="Waitdot3" />
+      </AnimationGroup>
+    </Animations>
+    <Scripts>
+      <OnLoad>self.WaitAnim:Play();</OnLoad>
+    </Scripts>
+  </Frame>
+</Ui>

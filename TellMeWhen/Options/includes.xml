@@ -1,0 +1,150 @@
+
+
+
+<Ui>
+	<!-- ..\Options\includes.xml -->
+<Script  file="FAIAP.lua" />
+<Script  file="CHANGELOG.lua" />
+<Script  file="TellMeWhen_Options.lua" />
+<Script  file="ImportExport.lua" />
+<Script  file="TMWUIDropDownMenu.lua" />
+<Include file="TMWUIDropDownMenuTemplates.xml" />
+<Include file="TellMeWhen_Options.xml" />
+<Include file="Bindings.xml" />
+<Script  file="MainConfig.lua" />
+<Include file="MainConfig.xml" />
+<Script  file="GroupConfig.lua" />
+<Include file="GroupConfig.xml" />
+<Script  file="IconConfig.lua" />
+<Include file="IconConfig.xml" />
+
+<!-- ..\Components\includes.config.xml -->
+
+<!-- ..\Components\Core\includes.config.xml -->
+
+<!-- ..\Components\Core\Resizer_Generic\includes.config.xml -->
+<Include file="..\Components\Core\Resizer_Generic\ResizeButton.xml" />
+<Script  file="..\Components\Core\Resizer_Generic\Resizer_Generic.lua" />
+
+<!-- ..\Components\Core\Help\includes.config.xml -->
+<Script  file="..\Components\Core\Help\Help.lua" />
+<Include file="..\Components\Core\Help\Help.xml" />
+
+<!-- ..\Components\Core\Spells\includes.config.xml -->
+<Script  file="..\Components\Core\Spells\ItemCache.lua" />
+<Script  file="..\Components\Core\Spells\SpellCache.lua" />
+
+<!-- ..\Components\Core\Suggester\includes.config.xml -->
+<Script  file="..\Components\Core\Suggester\Suggester.lua" />
+<Include file="..\Components\Core\Suggester\Suggester.xml" />
+
+<!-- ..\Components\Core\Common\includes.config.xml -->
+<Script  file="..\Components\Core\Common\IconDragger.lua" />
+<Include file="..\Components\Core\Common\IconDragger.xml" />
+
+<!-- ..\Components\Core\Common\DogTags\includes.config.xml -->
+<Script  file="..\Components\Core\Common\DogTags\config.lua" />
+
+<!-- ..\Components\Core\Conditions\includes.config.xml -->
+<Script  file="..\Components\Core\Conditions\Config.lua" />
+<Include file="..\Components\Core\Conditions\Config.xml" />
+
+<!-- ..\Components\Core\Conditions\Categories\includes.config.xml -->
+<Script  file="..\Components\Core\Conditions\Categories\Spells_config.lua" />
+<Script  file="..\Components\Core\Conditions\Categories\Talents_config.lua" />
+<Script  file="..\Components\Core\Conditions\Categories\PlayerAttributes_config.lua" />
+<Script  file="..\Components\Core\Conditions\Categories\UnitAttributes_config.lua" />
+<Script  file="..\Components\Core\Conditions\Categories\Misc_config.lua" />
+
+<!-- ..\Components\Core\Units\includes.config.xml -->
+<Include file="..\Components\Core\Units\unitInput.xml" />
+<Script  file="..\Components\Core\Units\suggesterModule.lua" />
+<Script  file="..\Components\Core\Units\unitInput.lua" />
+
+<!-- ..\Components\Core\IconEvents\includes.config.xml -->
+<Script  file="..\Components\Core\IconEvents\config.lua" />
+<Include file="..\Components\Core\IconEvents\config.xml" />
+
+<!-- ..\Components\Core\Snippets\includes.config.xml -->
+<Script  file="..\Components\Core\Snippets\config.lua" />
+<Include file="..\Components\Core\Snippets\config.xml" />
+
+<!-- ..\Components\EventHandlers\includes.config.xml -->
+
+<!-- ..\Components\EventHandlers\Sound\includes.config.xml -->
+<Script  file="..\Components\EventHandlers\Sound\Config.lua" />
+<Include file="..\Components\EventHandlers\Sound\Config.xml" />
+
+<!-- ..\Components\EventHandlers\Announcements\includes.config.xml -->
+<Script  file="..\Components\EventHandlers\Announcements\Config.lua" />
+<Include file="..\Components\EventHandlers\Announcements\Config.xml" />
+
+<!-- ..\Components\EventHandlers\Animations\includes.config.xml -->
+<Script  file="..\Components\EventHandlers\Animations\Config.lua" />
+<Include file="..\Components\EventHandlers\Animations\Config.xml" />
+
+<!-- ..\Components\EventHandlers\Counter\includes.config.xml -->
+<Script  file="..\Components\EventHandlers\Counter\Config.lua" />
+<Include file="..\Components\EventHandlers\Counter\Config.xml" />
+
+<!-- ..\Components\EventHandlers\Timer\includes.config.xml -->
+<Script  file="..\Components\EventHandlers\Timer\Config.lua" />
+<Include file="..\Components\EventHandlers\Timer\Config.xml" />
+
+<!-- ..\Components\EventHandlers\Lua\includes.config.xml -->
+<Script  file="..\Components\EventHandlers\Lua\Config.lua" />
+<Include file="..\Components\EventHandlers\Lua\Config.xml" />
+
+<!-- ..\Components\IconDataProcessorHooks\includes.config.xml -->
+<Include file="..\Components\IconDataProcessorHooks\IconDataProcessorHook_Alpha_DurationReq\Config.xml" />
+<Include file="..\Components\IconDataProcessorHooks\IconDataProcessorHook_Alpha_StackReq\Config.xml" />
+<Include file="..\Components\IconDataProcessorHooks\IconDataProcessorHook_Texture_CustomTex\Config.xml" />
+<Script  file="..\Components\IconDataProcessorHooks\IconDataProcessorHook_Texture_CustomTex\Config.lua" />
+
+<!-- ..\Components\GroupModules\includes.config.xml -->
+<Include file="..\Components\GroupModules\GroupModule_BaseConfig\Config.xml" />
+<Script  file="..\Components\GroupModules\GroupModule_Resizer\module.lua" />
+<Include file="..\Components\GroupModules\GroupModule_GroupPosition\Config.xml" />
+<Script  file="..\Components\GroupModules\GroupModule_GroupPosition\Config.lua" />
+<Include file="..\Components\GroupModules\GroupModule_IconPosition\Config.xml" />
+<Include file="..\Components\GroupModules\GroupModule_IconPosition_Sortable\Config.xml" />
+<Script  file="..\Components\GroupModules\GroupModule_IconPosition_Sortable\Config.lua" />
+<Include file="..\Components\GroupModules\GroupModule_Alpha\Config.xml" />
+
+<!-- ..\Components\IconModules\includes.config.xml -->
+<Include file="..\Components\IconModules\IconModule_IconEventConditionHandler\Config.xml" />
+<Include file="..\Components\IconModules\IconModule_PowerBar_Overlay\Config.xml" />
+<Script  file="..\Components\IconModules\IconModule_Texts\Config.lua" />
+<Include file="..\Components\IconModules\IconModule_Texts\Config.xml" />
+<Include file="..\Components\IconModules\IconModule_Backdrop\Config.xml" />
+<Include file="..\Components\IconModules\IconModule_TimerBar\Config.xml" />
+<Include file="..\Components\IconModules\IconModule_TimerBar_BarDisplay\Config.xml" />
+<Include file="..\Components\IconModules\IconModule_TimerBar_Overlay\Config.xml" />
+<Script  file="..\Components\IconModules\IconModule_GroupMover\module.lua" />
+<Script  file="..\Components\IconModules\IconModule_IconDragger\module.lua" />
+<Script  file="..\Components\IconModules\IconModule_IconEditorLoader\module.lua" />
+<Script  file="..\Components\IconModules\IconModule_RecieveSpellDrags\module.lua" />
+<Script  file="..\Components\IconModules\IconModule_Tooltip\module.lua" />
+
+<!-- ..\Components\IconViews\includes.config.xml -->
+<Include file="..\Components\IconViews\Bar\Config.xml" />
+
+<!-- ..\Components\IconTypes\includes.config.xml -->
+<Include file="..\Components\IconTypes\IconType_cleu\Config.xml" />
+<Script  file="..\Components\IconTypes\IconType_cleu\Config.lua" />
+<Include file="..\Components\IconTypes\IconType_conditionicon\Config.xml" />
+<Include file="..\Components\IconTypes\IconType_default\Config.xml" />
+<Script  file="..\Components\IconTypes\IconType_dr\Config.lua" />
+<Script  file="..\Components\IconTypes\IconType_guardian\Config.lua" />
+<Script  file="..\Components\IconTypes\IconType_item\Config.lua" />
+<Include file="..\Components\IconTypes\IconType_losecontrol\Config.xml" />
+<Script  file="..\Components\IconTypes\IconType_losecontrol\Config.lua" />
+<Include file="..\Components\IconTypes\IconType_meta\Config.xml" />
+<Script  file="..\Components\IconTypes\IconType_meta\Config.lua" />
+<Include file="..\Components\IconTypes\IconType_runes\Config.xml" />
+<Include file="..\Components\IconTypes\IconType_swingtimer\Config.xml" />
+<Include file="..\Components\IconTypes\IconType_uierror\Config.xml" />
+<Script  file="..\Components\IconTypes\IconType_wpnenchant\Config.lua" />
+</Ui>
+
+

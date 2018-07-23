@@ -1,0 +1,18 @@
+## Interface: 80000
+## Title: HandyNotes_Legion R & T
+## Version: 1.1
+## Notes: Shows location of treasures and rares in Legion
+## Author: Katjes (Coronet - Dun Morogh(EU))
+## OptionalDeps: Ace3
+## RequiredDeps: HandyNotes
+## X-Embeds: Ace3
+## SavedVariables: LegionRaresTreasuresDB
+
+#@no-lib-strip@
+#@end-no-lib-strip@
+
+HandyNotes_LegionRaresTreasures.lua
+
+## Title-zhCN: |cff880303[有爱]|r HandyNotes 军团再临宝箱
+## X-Vendor: AbyUI
+

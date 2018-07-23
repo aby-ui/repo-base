@@ -1,0 +1,82 @@
+﻿<Ui>
+	
+	<Frame parentKey="Timer" name="$parentTimer" inherits="TellMeWhen_EventContainer">
+		<Layers>
+			<Layer level="OVERLAY">
+				<FontString parentKey="Header" inherits="GameFontNormalLarge" justifyH="LEFT" text="">
+					<Anchors>
+						<Anchor point="BOTTOM" relativePoint="TOP" y="1"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+
+		<Frames>
+			
+			<EditBox parentKey="Timer" inherits="TellMeWhen_InputBoxTemplate" autoFocus="false">
+				<Size x="130" y="15"/>
+
+  				<Anchors>
+					<Anchor point="TOPLEFT" x="10" y="-22"/>
+				</Anchors>
+
+				<Layers>
+					<Layer level="OVERLAY">
+						<FontString parentKey="Title" inherits="GameFontNormalSmall" justifyH="CENTER">
+							<Anchors>
+								<Anchor point="BOTTOMLEFT" relativePoint="TOPLEFT" y="2"/>
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+
+				<Scripts>
+					<OnLoad>
+						self.Title:SetText(TMW.L["EVENTS_SETTINGS_TIMER_NAME"])
+
+						TMW:CInit(self)
+
+						self:SetTexts(TMW.L["EVENTS_SETTINGS_TIMER_NAME"], TMW.L["EVENTS_SETTINGS_TIMER_NAME_DESC"])
+						self:SetSetting("Counter")
+						
+						self:CScriptAdd("ModifyValueForSave", function(self, value)
+							local Timer = TMW.EVENTS:GetEventHandler("Timer")
+							return Timer:SanitizeTimerName(value)
+						end)
+
+						TMW.SUG:EnableEditBox(self, "timerName", true)
+
+					</OnLoad>
+				</Scripts>
+			</EditBox>
+			<Frame parentKey="Operation" inherits="TMW_DropDownMenuTemplate">
+				<Anchors>
+					<Anchor point="LEFT" relativeKey="$parent.Timer" relativePoint="RIGHT" x="6" y="0"/>
+				</Anchors>
+
+				<Layers>
+					<Layer level="OVERLAY">
+						<FontString parentKey="Title" inherits="GameFontNormalSmall" justifyH="CENTER">
+							<Anchors>
+								<Anchor point="BOTTOMLEFT" relativePoint="TOPLEFT" x="20" y="0"/>
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+
+				<Scripts>
+					<OnLoad>
+						TMW:CInit(self)
+
+						self:SetTexts(TMW.L["EVENTS_SETTINGS_COUNTER_OP"], TMW.L["EVENTS_SETTINGS_TIMER_OP_DESC"])
+						self:SetFunction(TMW.EVENTS:GetEventHandler("Timer").OperationMenu_DropDown)
+
+						self:SetWidth(163)
+					</OnLoad>
+				</Scripts>
+			</Frame>
+		</Frames>
+
+	</Frame>
+	
+</Ui>

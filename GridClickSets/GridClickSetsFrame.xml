@@ -1,0 +1,416 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+    <Script file="GridClickSetsFrame.lua"/>
+    <Frame name="GridClickSetButtonOptionTemplate" parent="GridClickSetsFramePanelContainer" virtual="true">
+        <Size> <AbsDimension x="450" y="25"/> </Size>
+        <Layers>
+            <Layer level="ARTWORK">
+                <FontString name="$parentTitle" inherits="GameFontNormal" justifyH="RIGHT" text="Ctrl+Shift">
+                    <Size> <AbsDimension x="90"/> </Size>
+                    <Anchors>
+                        <Anchor point="TOPLEFT">
+                            <Offset> <AbsDimension x="0" y="-10"/> </Offset>
+                        </Anchor>
+                    </Anchors>
+                </FontString>
+            </Layer>
+        </Layers>
+
+        <Frames>
+            <Frame name="$parentType" inherits="UIDropDownMenuTemplate">
+                <Anchors>
+                    <Anchor point="TOPRIGHT">
+                        <Offset> <AbsDimension x="0" y="-5"/> </Offset>
+                    </Anchor>
+                </Anchors>
+                <Scripts>
+                    <OnLoad>
+                        UIDropDownMenu_SetWidth(self, 270);
+                        UIDropDownMenu_Initialize(self, GridClickSetButton_TypeDropDown_Initialize)
+                        UIDropDownMenu_SetSelectedValue(self, "NONE");
+                        UIDropDownMenu_JustifyText(self, "LEFT");
+                    </OnLoad>
+                    <OnEnter>
+                        local value = UIDropDownMenu_GetSelectedValue(self)
+                        if type(value)=="string" then
+                            local _, _, spellId = value:find("spellId:([0-9]+)")
+                            if spellId then
+                                GameTooltip_SetDefaultAnchor(GameTooltip, self)
+                                GameTooltip:SetSpellByID(spellId)
+                                GameTooltip:Show()
+                            end
+                        end
+                    </OnEnter>
+                    <OnLeave>
+                        GameTooltip:Hide()
+                    </OnLeave>
+                </Scripts>
+            </Frame>
+            <EditBox name="$parentArg"  autoFocus="false" multiLine="true" letters="255">
+                <Anchors>
+                    <Anchor point="LEFT">
+                        <Offset> <AbsDimension x="50" y="0"/> </Offset>
+                    </Anchor>
+                    <Anchor point="RIGHT">
+                        <Offset> <AbsDimension x="-15" y="0"/> </Offset>
+                    </Anchor>
+                    <Anchor point="TOP" relativePoint="BOTTOM" relativeTo="$parentType">
+                        <Offset> <AbsDimension x="0" y="6"/> </Offset>
+                    </Anchor>
+                </Anchors>
+                <FontString inherits="ChatFontSmall"/>
+
+                <TextInsets>
+                    <AbsInset left="6" right="6" top="6" bottom="6"/>
+                </TextInsets>
+
+                <Backdrop edgeFile="Interface\Tooltips\UI-Tooltip-Border" bgFile = "" tile="true">
+                    <EdgeSize><AbsValue val="16"/></EdgeSize>
+                    <TileSize><AbsValue val="16"/></TileSize>
+                    <BackgroundInsets>
+                        <AbsInset left="3" right="3" top="3" bottom="3"/>
+                    </BackgroundInsets>
+                </Backdrop>
+
+                <Scripts>
+                    <OnLoad>
+                        --self:SetBackdropColor(0,0,0)
+                    </OnLoad>
+                    <OnTabPressed></OnTabPressed>
+                    <OnEnterPressed>
+                        if IsShiftKeyDown() or IsControlKeyDown() or IsAltKeyDown() then
+                            self:Insert("\n")
+                        else
+                            self:ClearFocus()
+                            GridClickSetsFrame_ApplyOnClick()
+                        end
+                    </OnEnterPressed>
+                    <OnEscapePressed>
+                        self:ClearFocus()
+                    </OnEscapePressed>
+                    <OnTextChanged>
+                        if UIDropDownMenu_GetSelectedValue(getglobal(self:GetParent():GetName().."Type")) == "spell" then
+                        local p = string.find(self:GetText(), "\n")
+                        if p then
+                        self:ClearFocus();
+                        local spell = string.sub(self:GetText(), 1, p-1);
+                        spell = tonumber(spell) and GetSpellInfo(tonumber(spell)) or spell;
+                        self:SetText(spell)
+                        end
+                        end
+                        GridClickSetsFrame_Resize()
+                    </OnTextChanged>
+                    <OnEditFocusLost>
+                        --this:HighlightText(0, 0);
+                    </OnEditFocusLost>
+                    <OnEditFocusGained>
+                        --this:HighlightText();
+                    </OnEditFocusGained>
+                </Scripts>
+            </EditBox>
+
+        </Frames>
+    </Frame>
+
+    <Frame name="GridClickSetsFrame" parent="UIParent" hidden="true" enableMouse="true" frameStrata="HIGH">
+        <Size>
+            <AbsDimension x="500" y="520"/>
+        </Size>
+        <Anchors>
+            <Anchor point="CENTER"/>
+        </Anchors>
+        <Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="Interface\DialogFrame\UI-DialogBox-Border" tile="true">
+            <BackgroundInsets>
+                <AbsInset left="11" right="11" top="12" bottom="10"/>
+            </BackgroundInsets>
+            <TileSize>
+                <AbsValue val="32"/>
+            </TileSize>
+            <EdgeSize>
+                <AbsValue val="32"/>
+            </EdgeSize>
+        </Backdrop>
+        <Layers>
+            <Layer level="ARTWORK">
+                <Texture name="$parentHeader" file="Interface\DialogFrame\UI-DialogBox-Header">
+                    <Size>
+                        <AbsDimension x="300" y="68"/>
+                    </Size>
+                    <Anchors>
+                        <Anchor point="TOP">
+                            <Offset>
+                                <AbsDimension x="0" y="12"/>
+                            </Offset>
+                        </Anchor>
+                    </Anchors>
+                </Texture>
+                <FontString name="$parentHeaderText" inherits="GameFontNormal" text="GRIDCLICKSETS_TITLE">
+                    <Anchors>
+                        <Anchor point="TOP" relativeTo="$parentHeader">
+                            <Offset>
+                                <AbsDimension x="0" y="-14"/>
+                            </Offset>
+                        </Anchor>
+                    </Anchors>
+                </FontString>
+                <FontString name="$parentTalentText" inherits="GameFontNormal" text="AAA">
+                    <Anchors>
+                        <Anchor point="BOTTOMLEFT">
+                            <Offset>
+                                <AbsDimension x="120" y="19"/>
+                            </Offset>
+                        </Anchor>
+                    </Anchors>
+                </FontString>
+            </Layer>
+        </Layers>
+        <Frames>
+            <Button name="$parentClose" inherits="UIPanelButtonTemplate" text="CLOSE">
+                <Size>
+                    <AbsDimension x="76" y="22"/>
+                </Size>
+                <Anchors>
+                    <!--
+                         <Anchor point="BOTTOMRIGHT" relativeTo="$parentApply" relativePoint="BOTTOMLEFT"/>
+                         -->
+                    <Anchor point="BOTTOMRIGHT">
+                        <Offset>
+                            <AbsDimension x="-16" y="16"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+                <Scripts>
+                    <OnClick>
+                        GridClickSetsFrame_CloseOnClick(self)
+                    </OnClick>
+                </Scripts>
+            </Button>
+            <Button name="$parentCancel" inherits="UIPanelButtonTemplate" text="CANCEL">
+                <Size>
+                    <AbsDimension x="76" y="22"/>
+                </Size>
+                <Anchors>
+                    <Anchor point="BOTTOMRIGHT" relativeTo="$parentClose" relativePoint="BOTTOMLEFT"/>
+                </Anchors>
+                <Scripts>
+                    <OnClick>
+                        GridClickSetsFrame_CancelOnClick();
+                    </OnClick>
+                </Scripts>
+            </Button>
+            <Button name="$parentApply" inherits="UIPanelButtonTemplate" text="APPLY">
+                <Size>
+                    <AbsDimension x="76" y="22"/>
+                </Size>
+                <Anchors>
+                    <Anchor point="BOTTOMRIGHT" relativeTo="$parentCancel" relativePoint="BOTTOMLEFT"/>
+                </Anchors>
+                <Scripts>
+                    <OnClick>
+                        GridClickSetsFrame_ApplyOnClick();
+                    </OnClick>
+                </Scripts>
+            </Button>
+            <Button name="$parentDefaults" inherits="UIPanelButtonGrayTemplate" text="DEFAULTS">
+                <Size>
+                    <AbsDimension x="96" y="22"/>
+                </Size>
+                <Anchors>
+                    <Anchor point="BOTTOMLEFT">
+                        <Offset>
+                            <AbsDimension x="16" y="16"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+                <Scripts>
+                    <OnClick>
+                        GridClickSetsFrame_DefaultsOnClick();
+                    </OnClick>
+                </Scripts>
+            </Button>
+
+            <Frame name="$parentPanelContainer">
+                <Anchors>
+                    <Anchor point="TOPLEFT">
+                        <Offset>
+                            <AbsDimension x="22" y="-50"/>
+                        </Offset>
+                    </Anchor>
+                    <Anchor point="BOTTOMRIGHT">
+                        <Offset>
+                            <AbsDimension x="-22" y="40"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+                <Backdrop edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
+                    <EdgeSize>
+                        <AbsValue val="16"/>
+                    </EdgeSize>
+                    <TileSize>
+                        <AbsValue val="16"/>
+                    </TileSize>
+                    <BackgroundInsets>
+                        <AbsInset left="5" right="5" top="5" bottom="5"/>
+                    </BackgroundInsets>
+                </Backdrop>
+                <Scripts>
+                    <OnLoad>
+                        self:SetBackdropBorderColor(.6, .6, .6, 1);
+                    </OnLoad>
+                </Scripts>
+            </Frame>
+
+            <Button name="$parentTab1" inherits="OptionsFrameTabButtonTemplate" text="KEY_BUTTON1" id="1" hidden="false">
+                <Anchors>
+                    <Anchor point="BOTTOMLEFT" relativeTo="$parentPanelContainer" relativePoint="TOPLEFT">
+                        <Offset>
+                            <AbsDimension x="-2" y="-1"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+                <Scripts>
+                    <OnClick>
+                        PlaySound163("igCharacterInfoTab");
+                        GridClickSetsFrame_SaveOnClick()
+                        PanelTemplates_Tab_OnClick(self, GridClickSetsFrame);
+                        PanelTemplates_UpdateTabs(GridClickSetsFrame);
+                        GridClickSetsFrame_TabOnClick();
+                    </OnClick>
+                </Scripts>
+            </Button>
+            <Button name="$parentTab2" inherits="OptionsFrameTabButtonTemplate" text="KEY_BUTTON2" id="2" hidden="false">
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeTo="$parentTab1" relativePoint="TOPRIGHT">
+                        <Offset>
+                            <AbsDimension x="-16" y="0"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+                <Scripts>
+                    <OnClick>
+                        PlaySound163("igCharacterInfoTab");
+                        GridClickSetsFrame_SaveOnClick()
+                        PanelTemplates_Tab_OnClick(self, GridClickSetsFrame);
+                        PanelTemplates_UpdateTabs(GridClickSetsFrame);
+                        GridClickSetsFrame_TabOnClick();
+                    </OnClick>
+                </Scripts>
+            </Button>
+            <Button name="$parentTab3" inherits="OptionsFrameTabButtonTemplate" text="KEY_BUTTON3" id="3" hidden="false">
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeTo="$parentTab2" relativePoint="TOPRIGHT">
+                        <Offset>
+                            <AbsDimension x="-16" y="0"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+                <Scripts>
+                    <OnClick>
+                        PlaySound163("igCharacterInfoTab");
+                        GridClickSetsFrame_SaveOnClick()
+                        PanelTemplates_Tab_OnClick(self, GridClickSetsFrame);
+                        PanelTemplates_UpdateTabs(GridClickSetsFrame);
+                        GridClickSetsFrame_TabOnClick();
+                    </OnClick>
+                </Scripts>
+            </Button>
+            <Button name="$parentTab4" inherits="OptionsFrameTabButtonTemplate" text="4" id="4" hidden="false">
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeTo="$parentTab3" relativePoint="TOPRIGHT">
+                        <Offset>
+                            <AbsDimension x="-16" y="0"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+                <Scripts>
+                    <OnClick>
+                        PlaySound163("igCharacterInfoTab");
+                        GridClickSetsFrame_SaveOnClick()
+                        PanelTemplates_Tab_OnClick(self, GridClickSetsFrame);
+                        PanelTemplates_UpdateTabs(GridClickSetsFrame);
+                        GridClickSetsFrame_TabOnClick();
+                    </OnClick>
+                </Scripts>
+            </Button>
+            <Button name="$parentTab5" inherits="OptionsFrameTabButtonTemplate" text="5" id="5" hidden="false">
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeTo="$parentTab4" relativePoint="TOPRIGHT">
+                        <Offset>
+                            <AbsDimension x="-16" y="0"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+                <Scripts>
+                    <OnClick>
+                        PlaySound163("igCharacterInfoTab");
+                        GridClickSetsFrame_SaveOnClick()
+                        PanelTemplates_Tab_OnClick(self, GridClickSetsFrame);
+                        PanelTemplates_UpdateTabs(GridClickSetsFrame);
+                        GridClickSetsFrame_TabOnClick();
+                    </OnClick>
+                </Scripts>
+            </Button>
+            <Button name="$parentTab6" inherits="OptionsFrameTabButtonTemplate" text="GRIDCLICKSETS_SET_WHEEL_UP" id="6" hidden="false">
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeTo="$parentTab5" relativePoint="TOPRIGHT">
+                        <Offset>
+                            <AbsDimension x="-16" y="0"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+                <Scripts>
+                    <OnClick>
+                        PlaySound163("igCharacterInfoTab");
+                        GridClickSetsFrame_SaveOnClick()
+                        PanelTemplates_Tab_OnClick(self, GridClickSetsFrame);
+                        PanelTemplates_UpdateTabs(GridClickSetsFrame);
+                        GridClickSetsFrame_TabOnClick();
+                    </OnClick>
+                </Scripts>
+            </Button>
+            <Button name="$parentTab7" inherits="OptionsFrameTabButtonTemplate" text="GRIDCLICKSETS_SET_WHEEL_DOWN" id="7" hidden="false">
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeTo="$parentTab6" relativePoint="TOPRIGHT">
+                        <Offset>
+                            <AbsDimension x="-16" y="0"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+                <Scripts>
+                    <OnClick>
+                        PlaySound163("igCharacterInfoTab");
+                        GridClickSetsFrame_SaveOnClick()
+                        PanelTemplates_Tab_OnClick(self, GridClickSetsFrame);
+                        PanelTemplates_UpdateTabs(GridClickSetsFrame);
+                        GridClickSetsFrame_TabOnClick();
+                    </OnClick>
+                </Scripts>
+            </Button>
+
+            <Frame name="GridClickSetButton1" inherits="GridClickSetButtonOptionTemplate" ID="1">
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeTo="GridClickSetsFramePanelContainer">
+                        <Offset> <AbsDimension x="10" y="0"/>	</Offset>
+                    </Anchor>
+                </Anchors>
+            </Frame>
+            <Frame name="GridClickSetButton2" inherits="GridClickSetButtonOptionTemplate" ID="2"/>
+            <Frame name="GridClickSetButton3" inherits="GridClickSetButtonOptionTemplate" ID="3"/>
+            <Frame name="GridClickSetButton4" inherits="GridClickSetButtonOptionTemplate" ID="4"/>
+            <Frame name="GridClickSetButton5" inherits="GridClickSetButtonOptionTemplate" ID="5"/>
+            <Frame name="GridClickSetButton6" inherits="GridClickSetButtonOptionTemplate" ID="6"/>
+            <Frame name="GridClickSetButton7" inherits="GridClickSetButtonOptionTemplate" ID="7"/>
+            <Frame name="GridClickSetButton8" inherits="GridClickSetButtonOptionTemplate" ID="8"/>
+        </Frames>
+
+        <Scripts>
+            <OnLoad function="GridClickSetsFrame_OnLoad"/>
+            <OnEvent function="GridClickSetsFrame_OnEvent"/>
+            <OnShow>
+                GridClickSetsFrameClose:SetText(self.lastFrame and PREVIOUS or CLOSE)
+                GridClickSetsFrame_TabOnClick();
+            </OnShow>
+        </Scripts>
+    </Frame>
+
+</Ui>

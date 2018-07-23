@@ -1,0 +1,32 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/ .. \FrameXML\UI.xsd">
+
+	<Script file="panel.lua"/>
+	
+	<Frame name="DetailsFrameworkPanelTemplate" virtual="true">
+	
+		<Size x="100" y="100"/>
+	
+		<Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="Interface\DialogFrame\UI-DialogBox-Border" tile="true">
+			<EdgeSize>
+				<AbsValue val="10"/>
+			</EdgeSize>
+			<TileSize>
+				<AbsValue val="16"/>
+			</TileSize>
+			<BackgroundInsets>
+				<AbsInset left="1" right="1" top="0" bottom="1"/>
+			</BackgroundInsets>
+		  </Backdrop>
+	
+		<Scripts>
+			<OnLoad>
+				self.Gradient = {
+					["OnEnter"] = {0.3, 0.3, 0.3, 0.5},
+					["OnLeave"] = {0.9, 0.7, 0.7, 1}
+				}
+			</OnLoad>
+		</Scripts>
+	
+	</Frame>
+	
+</Ui>

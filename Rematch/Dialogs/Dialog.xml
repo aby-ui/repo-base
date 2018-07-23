@@ -1,0 +1,335 @@
+<!-- Dialog.xml: UI for the common dialog -->
+<Ui>
+
+	<!-- a pet+3 abilities for use in dialog teams -->
+	<Button name="RematchDialogTeamPetTemplate" inherits="RematchPetSlotTemplate,RematchPetClicks" virtual="true">
+		<Size x="44" y="44"/>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture parentKey="Missing" file="Interface\PetBattles\PetBattle-GoldSpeedFrame">
+					<Size x="54" y="54"/>
+					<Anchors>
+						<Anchor point="CENTER"/>
+					</Anchors>
+					<TexCoords left="0.1171875" right="0.7421875" top="0.1171875" bottom="0.734375"/>
+					<Color r="1" g="0" b="0"/>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Button parentArray="Abilities" inherits="RematchAbilitySlotTemplate">
+				<Size x="24" y="24"/>
+				<Anchors>
+					<Anchor point="BOTTOMLEFT" relativePoint="RIGHT" x="6" y="12"/>
+				</Anchors>
+			</Button>
+			<Button parentArray="Abilities" inherits="RematchAbilitySlotTemplate">
+				<Size x="24" y="24"/>
+				<Anchors>
+					<Anchor point="LEFT" relativePoint="RIGHT" x="6" y="0"/>
+				</Anchors>
+			</Button>
+			<Button parentArray="Abilities" inherits="RematchAbilitySlotTemplate">
+				<Size x="24" y="24"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativePoint="RIGHT" x="6" y="-12"/>
+				</Anchors>
+			</Button>
+		</Frames>
+	</Button>
+
+	<!-- for dialog.Team and dialog.Replace -->
+	<Frame name="RematchDialogTeamTemplate" virtual="true">
+		<Size x="254" y="72"/>
+		<Frames>
+			<Button parentArray="Pets" inherits="RematchDialogTeamPetTemplate">
+				<Anchors>
+					<Anchor point="BOTTOMLEFT" x="0" y="14"/>
+				</Anchors>
+			</Button>
+			<Button parentArray="Pets" inherits="RematchDialogTeamPetTemplate">
+				<Anchors>
+					<Anchor point="BOTTOMLEFT" x="90" y="14"/>
+				</Anchors>
+			</Button>
+			<Button parentArray="Pets" inherits="RematchDialogTeamPetTemplate">
+				<Anchors>
+					<Anchor point="BOTTOMLEFT" x="180" y="14"/>
+				</Anchors>
+			</Button>
+		</Frames>
+	</Frame>
+
+	<Frame name="RematchDialog" frameStrata="DIALOG" parent="UIParent" clampedToScreen="true" enableMouse="true" movable="true"  toplevel="true" inherits="BasicFrameTemplateWithInset" hidden="true">
+		<Size x="420" y="200"/>
+		<Anchors>
+			<Anchor point="CENTER"/>
+		</Anchors>
+		<Layers>
+			<Layer level="ARTWORK">
+				<!-- the text in the title bar -->
+				<FontString parentKey="Title" inherits="GameFontNormal" wordwrap="false">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="8" y="-5"/>
+						<Anchor point="TOPRIGHT" x="-8" y="-5"/>
+					</Anchors>
+				</FontString>
+				<!-- reused text widget -->
+				<FontString parentKey="Text" inherits="GameFontNormal" nonspacewrap="true" justifyH="LEFT" justifyV="CENTER"/>
+				<!-- another text widget with small grey text -->
+				<FontString parentKey="SmallText" inherits="GameFontNormalSmall" justifyH="CENTER" justifyV="CENTER">
+					<Color r="0.8" g="0.8" b="0.8"/>
+				</FontString>
+				<!-- test widget for text placement -->
+				<Texture parentKey="TextTest" hidden="true">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeKey="$parent.Text"/>
+						<Anchor point="BOTTOMRIGHT" relativeKey="$parent.Text"/>
+					</Anchors>
+					<Color r="0" g="1" b="0" a="0.15"/>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Frames>
+			<!-- for some reason, when parent frame has this OnKeyDown, SetPropagateKeyboardInput(true) wasn't working -->
+			<Button parentKey="KeyCapture">
+				<Scripts>
+					<OnKeyDown>
+						RematchDialog.OnKeyDown(self,key)
+					</OnKeyDown>
+				</Scripts>
+			</Button>
+			<!-- the bottomright-most red button to cancel/decline/okay dialog -->
+			<Button parentKey="Cancel" inherits="MagicButtonTemplate">
+				<Size x="96" y="22"/>
+				<Anchors>
+					<Anchor point="BOTTOMRIGHT"/>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						RematchDialog:CancelOnClick()
+					</OnClick>
+				</Scripts>
+			</Button>
+			<!-- the button just to the left to accept/yes -->
+			<Button parentKey="Accept" inherits="MagicButtonTemplate">
+				<Size x="96" y="22"/>
+				<Anchors>
+					<Anchor point="TOPRIGHT" relativeKey="$parent.Cancel" relativePoint="TOPLEFT"/>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						RematchDialog.AcceptOnClick(self)
+					</OnClick>
+				</Scripts>
+			</Button>
+			<!-- a wider button in bottomleft for other misc stuff (default name) -->
+			<Button parentKey="Other" inherits="MagicButtonTemplate" text="OTHER" hidden="true">
+				<Size x="96" y="22"/>
+				<Anchors>
+					<Anchor point="BOTTOMLEFT"/>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						RematchDialog.OtherOnClick(self)
+					</OnClick>
+				</Scripts>
+			</Button>
+			<!-- this is a line across the bottom of the insert portion of the dialog with text -->
+			<Frame parentKey="Prompt" inherits="HorizontalBarTemplate">
+				<Size x="0" y="2"/>
+				<Anchors>
+					<Anchor point="BOTTOMLEFT" x="4" y="52"/>
+					<Anchor point="BOTTOMRIGHT" x="-4" y="52"/>
+				</Anchors>
+				<Layers>
+					<Layer level="ARTWORK">
+						<!-- prompt text (Do you want to prompt?) -->
+						<FontString parentKey="Text" inherits="GameFontHighlight" wordwrap="false" text="Do you want to prompt?">
+							<Anchors>
+								<Anchor point="TOPLEFT" x="4" y="-8"/>
+								<Anchor point="TOPRIGHT" x="-4" y="-8"/>
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+			</Frame>
+			<!-- this is a PetListButtonTemplate pet slot -->
+			<Button parentKey="Pet" useParentLevel="true" inherits="RematchBasePetListButtonTemplate">
+				<Size x="236" y="44"/>
+				<Layers>
+					<Layer level="ARTWORK">
+						<!-- the same function that fills the pet/queue listbutton fills this TypeIcon -->
+						<Texture parentKey="TypeIcon" file="Interface\AddOns\Rematch\Textures\pettypedecals" alpha="0.4">
+							<Size x="55" y="38"/>
+							<Anchors>
+								<Anchor point="RIGHT" x="-3" y="0"/>
+							</Anchors>
+						</Texture>
+					</Layer>
+				</Layers>
+			</Button>
+			<!-- warning -->
+			<Frame parentKey="Warning" useParentLevel="true">
+				<Size x="268" y="32"/>
+				<Layers>
+					<Layer level="ARTWORK">
+						<Texture file="Interface\DialogFrame\UI-Dialog-Icon-AlertNew">
+							<Size x="32" y="32"/>
+							<Anchors>
+								<Anchor point="TOPLEFT" x="0" y="-2"/>
+							</Anchors>
+						</Texture>
+						<FontString parentKey="Text" inherits="GameFontNormal" justifyH="CENTER" justifyV="CENTER">
+							<Size x="232" y="32"/>
+							<Anchors>
+								<Anchor point="TOPRIGHT"/>
+							</Anchors>
+							<Color r="1" g="0.25" b="0.25"/>
+						</FontString>
+					</Layer>
+				</Layers>
+			</Frame>
+			<!-- single-line editbox -->
+			<EditBox parentKey="EditBox" autoFocus="true" inherits="RematchInputBoxTemplate" hidden="true">
+				<Size x="220" y="24"/>
+			</EditBox>
+			<!-- slot -->
+			<Button parentKey="Slot" inherits="RematchSlotTemplate" enableMouse="false">
+				<Size x="36" y="36"/>
+			</Button>
+			<!-- checkbutton -->
+			<CheckButton parentKey="CheckButton" inherits="UICheckButtonTemplate,RematchTooltipScripts">
+				<Size x="26" y="26"/>
+				<Scripts>
+					<OnShow>
+						self:SetHitRectInsets(0,-self.text:GetStringWidth(),0,0)
+					</OnShow>
+				</Scripts>
+			</CheckButton>
+			<!-- team -->
+			<Frame parentKey="Team" inherits="RematchDialogTeamTemplate"/>
+			<!-- "old team" for overwrite dialog -->
+			<Frame parentKey="OldTeam" inherits="RematchDialogTeamTemplate">
+				<Layers>
+					<Layer level="ARTWORK">
+						<Texture file="Interface\Minimap\Minimap-VignetteArrow">
+							<Size x="32" y="32"/>
+							<Anchors>
+								<Anchor point="TOP" relativePoint="BOTTOM"/>
+							</Anchors>
+							<TexCoords left="0" right="1" top="1" bottom="0"/>
+							<Color r="0.25" g="1" b="0.25"/>
+						</Texture>
+					</Layer>
+				</Layers>
+			</Frame>
+			<!-- tab combo box for save as, import and receive -->
+			<Frame parentKey="TabPicker" inherits="RematchComboBoxWithIconTemplate">
+				<Layers>
+					<Layer level="ARTWORK">
+						<FontString parentKey="Label" inherits="GameFontNormal">
+							<Anchors>
+								<Anchor point="RIGHT" relativePoint="LEFT" x="-2" y="0"/>
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+			</Frame>
+			<!-- multiline editbox (note: resize at will but border will extend -7,8 to 7,-8 beyond edge) -->
+			<ScrollFrame parentKey="MultiLine" name="RematchDialogMultiLineScrollFrame" inherits="MinimalScrollFrameTemplate" hidden="true">
+				<Size x="360" y="264"/>
+				<ScrollChild>
+					<EditBox parentKey="EditBox" multiLine="true" autoFocus="false">
+						<Size x="64" y="64"/>
+						<FontString inherits="GameFontHighlight"/>
+						<Scripts>
+							<OnEscapePressed>
+								self:ClearFocus()
+							</OnEscapePressed>
+							<OnTabPressed>
+								self:Insert("  ")
+							</OnTabPressed>
+							<OnCursorChanged>
+								ScrollingEdit_OnCursorChanged(self, x, y, w, h)
+							</OnCursorChanged>
+							<OnUpdate>
+								ScrollingEdit_OnUpdate(self, elapsed, self:GetParent())
+							</OnUpdate>
+						</Scripts>
+					</EditBox>
+				</ScrollChild>
+				<Frames>
+					<!-- this is a focus grabber for the editbox -->
+					<Button useParentLevel="true">
+						<Anchors>
+							<Anchor point="TOPLEFT" x="-7" y="8"/>
+							<Anchor point="BOTTOMRIGHT" x="7" y="-8"/>
+						</Anchors>
+						<Backdrop bgFile="Interface\ChatFrame\ChatFrameBackground" edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
+							<EdgeSize val="16"/>
+							<TileSize val="16"/>
+							<BackgroundInsets>
+								<AbsInset left="3" right="3" top="3" bottom="3"/>
+							</BackgroundInsets>
+							<Color r="0.05" g="0.05" b="0.05"/>
+							<BorderColor r="0.5" g="0.5" b="0.5"/>
+						</Backdrop>
+						<Scripts>
+							<OnClick>
+								-- if this is clicked at all, it's because notes don't take up whole editBox
+								-- safe to set cursor to end
+								local editBox = self:GetParent().EditBox
+								editBox:SetCursorPosition(editBox:GetText():len())
+								editBox:SetFocus(true)
+							</OnClick>
+						</Scripts>
+					</Button>
+				</Frames>
+				<Scripts>
+					<OnLoad>
+						local scrollBar = self.ScrollBar
+						scrollBar:ClearAllPoints()
+						scrollBar:SetPoint("TOPRIGHT",4,-12)
+						scrollBar:SetPoint("BOTTOMRIGHT",4,11)
+						local up = _G[scrollBar:GetName().."ScrollUpButton"]
+						local down = _G[scrollBar:GetName().."ScrollDownButton"]
+						scrollBar.trackBG:SetColorTexture(0.03,0.03,0.03)
+						scrollBar.trackBG:SetPoint("TOPLEFT",up,"TOPLEFT",0,-4)
+						scrollBar.trackBG:SetPoint("BOTTOMRIGHT",down,"BOTTOMRIGHT",-1,4)
+						up:SetPoint("TOP",0,13)
+						down:SetPoint("BOTTOM",0,-13)
+					</OnLoad>
+					<OnSizeChanged>
+						self.EditBox:SetWidth(w-23)
+					</OnSizeChanged>
+				</Scripts>
+			</ScrollFrame> <!-- MultiLine -->
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				self.InsetBg:SetPoint("BOTTOMRIGHT",-6,26)
+			</OnLoad>
+			<OnMouseDown>
+				self:StartMoving()
+			</OnMouseDown>
+			<OnMouseUp>
+				self:StopMovingOrSizing()
+				RematchSettings.DialogXPos,RematchSettings.DialogYPos = self:GetCenter()
+			</OnMouseUp>
+			<OnShow>
+				Rematch.timeUIChanged = GetTime()
+				self:ClearAllPoints()
+				if RematchSettings.DialogXPos then
+					self:SetPoint("CENTER",UIParent,"BOTTOMLEFT",RematchSettings.DialogXPos,RematchSettings.DialogYPos)
+				else
+					self:SetPoint("CENTER")
+				end
+			</OnShow>
+			<OnHide>
+				RematchDialog:OnHide()
+			</OnHide>
+		</Scripts>
+	</Frame>
+
+</Ui>

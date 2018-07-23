@@ -1,0 +1,67 @@
+## Interface: 80000
+## Title: TradeSkillInfo
+## Notes: Complete tradeskill information.
+## Notes-zhTW: 完整的商業技能百科
+## Notes-zhCN: 完整的商业技能百科
+## Notes-esES: Informarcion Completa de las Habilidades de Comercio
+## Notes-koKR: 전문기술 정보의 모든 것!
+## Author: Ethan Centaurai
+## Version: v2.3.11-27-gc4ba23d
+## OptionalDeps: LibStub, CallbackHandler-1.0, Ace3, LibBabble-SubZone-3.0, LibBabble-Faction-3.0, Auc-Advanced, TradeSkillMaster
+## SavedVariables: TradeSkillInfoDB
+## LoadManagers: AddonLoader
+## X-LoadOn-Always: delayed
+## X-Credits: Dys, wmrojer, Evenue, Fieroivan, Viruscamp, CMTitan
+## X-Icon: Interface\Icons\INV_Elemental_SpiritOfHarmony_2
+## X-Category: Professions
+
+#@no-lib-strip@
+Libs\LibStub\LibStub.lua
+Libs\CallbackHandler-1.0\CallbackHandler-1.0.lua
+Libs\AceAddon-3.0\AceAddon-3.0.lua
+Libs\AceEvent-3.0\AceEvent-3.0.lua
+Libs\AceHook-3.0\AceHook-3.0.lua
+Libs\AceDB-3.0\AceDB-3.0.lua
+Libs\AceDBOptions-3.0\AceDBOptions-3.0.lua
+Libs\AceGUI-3.0\AceGUI-3.0.xml
+Libs\AceLocale-3.0\AceLocale-3.0.lua
+Libs\AceConsole-3.0\AceConsole-3.0.lua
+Libs\AceConfig-3.0\AceConfig-3.0.xml
+Libs\AceTimer-3.0\AceTimer-3.0.lua
+Libs\LibBabble-Faction-3.0\lib.xml
+Libs\LibBabble-SubZone-3.0\lib.xml
+Libs\LibDataBroker-1.1\LibDataBroker-1.1.lua
+Libs\LibDBIcon-1.0\LibDBIcon-1.0.lua
+#@end-no-lib-strip@
+
+Locale\enUS.lua
+Locale\deDE.lua
+Locale\esES.lua
+Locale\esMX.lua
+Locale\frFR.lua
+Locale\itIT.lua
+Locale\koKR.lua
+Locale\ptBR.lua
+Locale\ruRU.lua
+Locale\zhCN.lua
+Locale\zhTW.lua
+
+LibRevision.lua
+LibExtraTip.lua
+
+TradeskillInfo.lua
+
+Data.lua
+TradeskillData.lua
+TradeskillInfoOptions.lua
+
+#@debug@
+# TradeSkillInfoUI\TradeSkillInfoUI.lua
+# TradeSkillInfoUI\TradeSkillInfoUI.xml
+#@end-debug@
+
+PatchBy163UI.lua
+## Title-zhCN: |cff880303[有爱]|r TradeSkill 商业技能百科
+## Notes-zhTW: 完整的商業技能百科
+## Notes-zhCN: 完整的商业技能百科
+## X-Vendor: AbyUI

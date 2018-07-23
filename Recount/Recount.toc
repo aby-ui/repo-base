@@ -1,0 +1,61 @@
+## Interface: 80000
+## Version: v8.0.1a
+## Title: Recount
+## Notes: Records Damage and Healing for Graph Based Display.
+## Notes-ruRU: Записывает урон и исцеления и отоброжает различные графики.
+## Notes-zhCN: 基于 Graph 裤开发的伤害/治疗统计插件.
+## Notes-zhTW: 圖形化顯示的傷害/治療統計插件.
+## Author: Cryect, ported to 2.4 by Elsia, maintained by Resike from 5.4
+## OptionalDeps:  Ace3, LibDropdown-1.0, LibSharedMedia-3.0, LibBossIDs-1.0, LibGraph-2.0
+## SavedVariables: RecountDB
+## SavedVariablesPerCharacter: RecountPerCharDB
+
+#@no-lib-strip@
+embeds.xml
+#@end-no-lib-strip@
+
+locales\Recount-enUS.lua
+locales\Recount-deDE.lua
+locales\Recount-esES.lua
+locales\Recount-esMX.lua
+locales\Recount-frFR.lua
+locales\Recount-ptBR.lua
+locales\Recount-ruRU.lua
+locales\Recount-koKR.lua
+locales\Recount-zhTW.lua
+locales\Recount-zhCN.lua
+
+Recount.lua
+
+Fonts.lua
+colors.lua
+Widgets.lua
+WindowOrder.lua
+
+Fights.lua
+Recount_Modes.lua
+TrackerModules\TrackerModule_Dispels.lua
+TrackerModules\TrackerModule_Interrupts.lua
+TrackerModules\TrackerModule_Resurrection.lua
+TrackerModules\TrackerModule_CCBreakers.lua
+TrackerModules\TrackerModule_PowerGains.lua
+Tracker.lua
+roster.lua
+LazySync.lua
+deletion.lua
+zonefilters.lua
+debug.lua
+
+GUI_Main.lua
+GUI_Detail.lua
+GUI_DeathGraph.lua
+GUI_Graph.lua
+GUI_Reset.lua
+GUI_Report.lua
+GUI_Config.lua
+GUI_Realtime.lua
+
+## Title: |cff880303[有爱]|r Recount 伤害统计
+## Notes-zhCN: 基于 Graph 裤开发的伤害/治疗统计插件.
+## Notes-zhTW: 圖形化顯示的傷害/治療統計插件.
+## X-Vendor: AbyUI

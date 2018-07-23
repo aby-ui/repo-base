@@ -1,0 +1,17 @@
+<Bindings>
+	<Binding name="REMATCH_WINDOW" header="REMATCH" category="ADDONS">
+		RematchFrame:Toggle()
+	</Binding>
+	<Binding name="REMATCH_PETS" category="ADDONS">
+		Rematch:ToggleFrameTab(1)
+	</Binding>
+	<Binding name="REMATCH_TEAMS" category="ADDONS">
+		Rematch:ToggleFrameTab(2)
+	</Binding>
+	<Binding name="REMATCH_QUEUE" category="ADDONS">
+		Rematch:ToggleFrameTab(3)
+	</Binding>
+	<Binding name="REMATCH_NOTES" category="ADDONS">
+		Rematch:ToggleNotes()
+	</Binding>
+</Bindings>

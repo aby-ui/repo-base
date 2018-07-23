@@ -1,0 +1,31 @@
+## Interface: 80000
+
+## Title: Garrison Mission Manager
+## Version: v55
+## Notes: Assists you with selecting best team for Legion's Class Hall and WoD's Garrison/Shipyard missions and other followers management tasks
+## Author: Oleg "Rowaa[SR13]" Volkov
+
+## LoadOnDemand: 1
+## LoadWith: Blizzard_GarrisonUI, Blizzard_OrderHallUI
+## RequiredDeps: Blizzard_GarrisonUI, Blizzard_OrderHallUI
+## OptionalDeps: LibStub, LibDataBroker-1.1, Bagnon, Titan, LibTTScan-1.0, SR13-TimeRecord
+
+## SavedVariables: SV_GarrisonMissionManager
+## SavedVariablesPerCharacter: SVPC_GarrisonMissionManager
+
++DEVEL.lua
+LazyWidget.lua
+C_Garrison_cache.lua
+FindBestFollowersForMission.lua
+GarrisonMissionManager.lua
+MissionUI_Shared.lua
+MissionUI_Shared_UpgradeItems.lua
+MissionUI_Garrison.lua
+MissionUI_Shipyard.lua
+MissionUI_OrderHall.lua
+GarrisonBuilding.lua
+Broker.lua
+
+## Title-zhCN: |cff880303[有爱]|r Garrison 要塞任务管家
+## Notes-zhCN: 在要塞追随者任务面板增加帮助你选取最佳队伍的功能
+## X-Vendor: AbyUI

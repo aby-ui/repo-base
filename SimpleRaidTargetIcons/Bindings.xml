@@ -1,0 +1,32 @@
+<Bindings>
+	<Binding name="SRTI_SHOW" header="SRTI_TITLE">
+		SRTI.ShowFromBinding();
+	</Binding>
+	<Binding name="SRTI_STAR">
+		SetRaidTarget("mouseover",1);
+	</Binding>
+	<Binding name="SRTI_CIRCLE">
+		SetRaidTarget("mouseover",2);
+	</Binding>
+	<Binding name="SRTI_DIAMOND">
+		SetRaidTarget("mouseover",3);
+	</Binding>
+	<Binding name="SRTI_TRIANGLE">
+		SetRaidTarget("mouseover",4);
+	</Binding>
+	<Binding name="SRTI_MOON">
+		SetRaidTarget("mouseover",5);
+	</Binding>
+	<Binding name="SRTI_SQUARE">
+		SetRaidTarget("mouseover",6);
+	</Binding>
+	<Binding name="SRTI_CROSS">
+		SetRaidTarget("mouseover",7);
+	</Binding>
+	<Binding name="SRTI_SKULL">
+		SetRaidTarget("mouseover",8);
+	</Binding>
+	<Binding name="SRTI_CLEAR">
+		SetRaidTarget("mouseover",0);
+	</Binding>
+</Bindings>

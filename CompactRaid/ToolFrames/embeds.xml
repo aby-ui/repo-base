@@ -1,0 +1,7 @@
+﻿<Ui xmlns="http://www.blizzard.com/wow/ui/">
+	<Script file="Templates.lua"/>
+	<Script file="General.lua"/>
+	<Script file="RaidTargets.lua"/>
+	<Script file="WorldMarks.lua"/>
+	<Script file="GroupFilters.lua"/>
+</Ui>

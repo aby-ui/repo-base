@@ -1,0 +1,32 @@
+<Ui>
+	<Script>
+		if AltGameTooltip then return end
+		local alt = CreateFrame("GameTooltip", "AltGameTooltip", UIParent, "GameTooltipTemplate")
+		local a0, g0, metaindex, ip = alt[0], GameTooltip[0], getmetatable(alt).__index, nil
+		AltGameTooltipRaw, AltGameTooltip = alt, setmetatable({[0]=a0}, {__index=function(t,k)
+			t[0] = GameTooltip:IsForbidden() and a0 or g0
+			return metaindex[k]
+		end})
+		local function OnGameTooltipShow()
+			alt:Hide()
+			if ip then
+				ip:Show()
+			end
+		end
+		local function OnAltTooltipShow()
+			if not GameTooltip:IsForbidden() then
+				GameTooltip:Hide()
+			elseif ip then
+				ip:Hide()
+			end
+		end
+		if not GameTooltip:IsForbidden() then
+			ip = CreateFrame("Frame", "GameTooltipIsolatingParent", UIParent)
+			ip:SetAllPoints()
+			GameTooltip:SetParent(ip)
+			GameTooltip:SetFrameStrata("TOOLTIP")
+		end
+		hooksecurefunc(GameTooltip, "SetOwner", OnGameTooltipShow)
+		alt:HookScript("OnShow", OnAltTooltipShow)
+	</Script>
+</Ui>

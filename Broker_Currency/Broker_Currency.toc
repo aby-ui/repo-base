@@ -1,0 +1,33 @@
+## Author: Torhal
+## DefaultState: enabled
+## Interface: 80000
+## LoadManagers: AddonLoader
+## OptionalDeps: Ace3, LibDataBroker-1.1, LibQTip-1.0, TipTac
+## SavedVariables: Broker_CurrencyDB
+## SavedVariablesPerCharacter: Broker_CurrencyCharDB
+## Title: Broker: Currency
+## Version:  8.0.1.3
+
+## Notes: LDB display of currencies, gold totals and session / daily / weekly statistics for all characters on a server.
+## Notes-deDE: LDB-Anzeige von Währungen, Summe des Goldes und Gold-Statistik pro Sitzung / Tag / Woche für alle Charaktere auf einem Server.
+## Notes-esES: LDB display of currencies, gold totals and session / daily / weekly statistics for all characters on a server.
+## Notes-frFR: LDB display of currencies, gold totals and session / daily / weekly statistics for all characters on a server.
+## Notes-koKR: 자동으로LDB display of currencies, gold totals and session / daily / weekly statistics for all characters on a server.
+## Notes-ruRU: Динамические LDB display of currencies, gold totals and session / daily / weekly statistics for all characters on a server.
+## Notes-zhCN: 一组LDB display of currencies, gold totals and session / daily / weekly statistics for all characters on a server.。
+## Notes-zhTW: 一組LDB display of currencies, gold totals and session / daily / weekly statistics for all characters on a server.。
+
+## X-BrokerName: Currency
+## X-Category: Interface Enhancements
+## X-LoadOn-Always: Delayed
+## X-Website: http://www.wowace.com/projects/broker-currency
+
+#@no-lib-strip@
+# Libraries
+#@end-no-lib-strip@
+
+Currencies.lua
+Broker_Currency.lua
+
+## Title-zhCN: |cff880303[有爱]|r Broker 信息条货币模块
+## X-Vendor: AbyUI

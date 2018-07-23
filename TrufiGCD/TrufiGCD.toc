@@ -1,0 +1,13 @@
+## Interface: 80000
+## Title: TrufiGCD
+## Notes: View queue of last spells
+## SavedVariables: TrufiGCDGlSave
+## SavedVariablesPerCharacter: TrufiGCDChSave
+## OptionalDeps: ButtonFacade, Masque
+
+Locales.lua
+TrufiGCD.lua
+
+## Title: |cff880303[有爱]|r TrufiGCD 技能序列
+## X-Vendor: AbyUI
+

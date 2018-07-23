@@ -1,0 +1,19 @@
+﻿## Author: Shinisuryu
+## Interface: 80000 
+## Notes: Enhances shift-click interface at vendors.
+## Title: BuyEmAll
+## Version: 3.5.0
+## SavedVariablesPerCharacter: BEAConfirmToggle
+## LoadManagers: AddonLoader
+## X-LoadOn-Merchant: true
+## X-LoadOn-Slash: /buyemall
+
+Localization.enUS.lua
+Localization.zhCN.lua
+Localization.zhTW.lua
+BuyEmAll.lua
+BuyEmAll.xml
+
+## Title: |cff880303[有爱]|r BuyEmAll 批量购买
+## X-Vendor: AbyUI
+

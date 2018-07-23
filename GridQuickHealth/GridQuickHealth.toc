@@ -1,0 +1,10 @@
+## Interface: 80000
+# Title: GridQuickHealth
+# Notes: 团队框体中的快速治疗功能
+## Author: yleaf, warbaby
+## Dependencies: Grid
+
+GridQuickHealth.lua
+
+## Title: |cff880303[有爱]|r Grid 快速血条变化
+## X-Vendor: AbyUI

@@ -1,0 +1,30 @@
+﻿<Ui>
+	
+	<Frame name="TellMeWhen_DefaultInstructions" inherits="TellMeWhen_OptionsModuleContainer" virtual="true">
+		<Size y="50"/>
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString parentKey="text" name="$parentText" wordwrap="true" inherits="GameFontHighlightSmall">
+					<Anchors>
+						<Anchor point="TOP" y="-10"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				TMW:CInit(self)
+				
+				self:SetTitle(TMW.L["ICONTYPE_DEFAULT_HEADER"])
+				self.text:SetText(TMW.L["ICONTYPE_DEFAULT_INSTRUCTIONS"])
+				
+				self.text:SetWidth(self:GetWidth() - 15)
+				self:SetHeight(self.text:GetStringHeight() + 20)
+			</OnLoad>
+			<OnSizeChanged>
+				self:SetHeight(self.text:GetStringHeight() + 20)
+			</OnSizeChanged>
+		</Scripts>
+	</Frame>
+	
+</Ui>

@@ -1,0 +1,377 @@
+<Ui>
+
+	<!-- default team list template -->
+
+	<!-- pets listed to left of team in TeamListButtonTemplate -->
+	<Button name="RematchTeamListPetTemplate" inherits="RematchSlotTemplate" virtual="true">
+		<Size x="28" y="28"/>
+		<Scripts>
+			<OnEnter>
+				Rematch:ShowPetCard(self,self.petID)
+			</OnEnter>
+			<OnLeave>
+				Rematch:HidePetCard(true)
+			</OnLeave>
+			<OnClick>
+				RematchTeamPanel.PetButtonOnClick(self,button)
+			</OnClick>
+			<OnDoubleClick>
+				Rematch.PetListButtonOnDoubleClick(self)
+			</OnDoubleClick>
+		</Scripts>
+	</Button>
+
+	<!-- team in scrollable list -->
+	<Button name="RematchTeamListButtonTemplate" virtual="true">
+		<Size x="249" y="44"/>
+		<Backdrop edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
+			<EdgeSize val="12"/>
+			<BorderColor r="0.33" g="0.33" b="0.33"/>
+		</Backdrop>
+		<Layers>
+			<Layer level="BACKGROUND" textureSubLevel="-1">
+				<Texture parentKey="Backplate">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="2" y="-2"/>
+						<Anchor point="BOTTOMRIGHT" x="-2" y="2"/>
+					</Anchors>
+					<Color r="0.15" g="0.15" b="0.15"/>
+				</Texture>
+			</Layer>
+			<Layer level="BACKGROUND">
+				<Texture parentKey="Faceplate" file="Interface\PetBattles\PetJournal">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="2" y="-2"/>
+						<Anchor point="BOTTOMRIGHT" x="-2" y="2"/>
+					</Anchors>
+					<TexCoords left="0.5" right="0.904296875" top="0.12890625" bottom="0.171875"/>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<FontString parentKey="Name" inherits="GameFontNormal" justifyH="LEFT" justifyV="CENTER">
+					<Size x="0" y="21"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="8" y="-4"/>
+						<Anchor point="TOPRIGHT" x="-8" y="-4"/>
+					</Anchors>
+				</FontString>
+				<FontString parentKey="SubName" inherits="GameFontNormalSmall" justifyH="LEFT" justifyV="CENTER">
+					<Size x="0" y="12"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeKey="$parent.Name" relativePoint="BOTTOMLEFT" x="0" y="1"/>
+						<Anchor point="TOPRIGHT" relativeKey="$parent.Name" relativePoint="BOTTOMRIGHT" x="0" y="1"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<!-- footnotes (notes, preferences, winrecord) -->
+			<Button parentKey="Notes" inherits="RematchNotesButtonTemplate">
+				<Size x="20" y="20"/>
+			</Button>
+			<Button parentKey="Preferences" inherits="RematchPreferencesButtonTemplate">
+				<Size x="20" y="20"/>
+			</Button>
+			<Button parentKey="WinRecord" inherits="RematchWinRecordButtonTemplate">
+				<Anchors>
+					<Anchor point="BOTTOMRIGHT" x="-3" y="3"/>
+				</Anchors>
+				<HitRectInsets>
+					<AbsInset left="0" right="0" top="0" bottom="-2"/>
+				</HitRectInsets>
+			</Button>
+			<!-- three pets to the left of the main body of button -->
+			<Button parentArray="Pets" inherits="RematchTeamListPetTemplate" id="1">
+				<Anchors>
+					<Anchor point="LEFT" x="-83" y="-1"/> <!-- 28 px between pets -->
+				</Anchors>
+			</Button>
+			<Button parentArray="Pets" inherits="RematchTeamListPetTemplate" id="2">
+				<Anchors>
+					<Anchor point="LEFT" x="-55" y="-1"/>
+				</Anchors>
+			</Button>
+			<Button parentArray="Pets" inherits="RematchTeamListPetTemplate" id="3">
+				<Anchors>
+					<Anchor point="LEFT" x="-27" y="-1"/>
+				</Anchors>
+			</Button>
+			<Frame parentKey="Favorite" hidden="true">
+				<Size x="25" y="25"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" x="-90" y="2"/>
+				</Anchors>
+				<Layers>
+					<Layer level="OVERLAY">
+						<Texture parentKey="Texture" atlas="PetJournal-FavoritesIcon" useAtlasSize="true"/>
+					</Layer>
+				</Layers>
+			</Frame>
+		</Frames>
+		<Scripts>
+			<OnEnter>
+				RematchTeamPanel.TeamOnEnter(self)
+			</OnEnter>
+			<OnLeave>
+				RematchTeamPanel.TeamOnLeave(self)
+			</OnLeave>
+			<OnShow>
+				self.Backplate:SetAlpha(1)
+			</OnShow>
+			<OnMouseDown>
+				self.Backplate:SetAlpha(0.5)
+			</OnMouseDown>
+			<OnMouseUp>
+				self.Backplate:SetAlpha(1)
+			</OnMouseUp>
+			<OnClick>
+				RematchTeamPanel.TeamOnClick(self,button)
+			</OnClick>
+		</Scripts>
+	</Button>
+
+	<!-- Slim (Compact List Format) list template -->
+
+	<Button name="RematchSlimTeamListPetTemplate" inherits="RematchTinyListPetTemplate" virtual="true">
+		<Scripts>
+			<OnEnter>
+				Rematch:ShowPetCard(self,self.petID)
+			</OnEnter>
+			<OnLeave>
+				Rematch:HidePetCard(true)
+			</OnLeave>
+			<OnClick>
+				RematchTeamPanel.PetButtonOnClick(self,button)
+			</OnClick>
+			<OnDoubleClick>
+				Rematch.PetListButtonOnDoubleClick(self)
+			</OnDoubleClick>
+		</Scripts>
+	</Button>
+
+	<Button name="RematchSlimTeamListButtonTemplate" virtual="true">
+		<Size x="169" y="26"/>
+		<Backdrop edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
+			<EdgeSize val="12"/>
+			<BorderColor r="0.33" g="0.33" b="0.33"/>
+		</Backdrop>
+		<KeyValues>
+			<KeyValue key="slim" value="true" type="boolean"/>
+		</KeyValues>
+		<Layers>
+			<Layer level="BACKGROUND" textureSubLevel="-1">
+				<Texture parentKey="Backplate">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="2" y="-2"/>
+						<Anchor point="BOTTOMRIGHT" x="-2" y="2"/>
+					</Anchors>
+					<Color r="0.15" g="0.15" b="0.15"/>
+				</Texture>
+			</Layer>
+			<Layer level="BACKGROUND">
+				<Texture parentKey="Faceplate" file="Interface\PetBattles\PetJournal">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="2" y="-2"/>
+						<Anchor point="BOTTOMRIGHT" x="-2" y="2"/>
+					</Anchors>
+					<TexCoords left="0.5" right="0.904296875" top="0.12890625" bottom="0.171875"/>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<FontString parentKey="Name" inherits="GameFontNormal" justifyH="LEFT">
+					<Size x="0" y="21"/>
+					<Anchors>
+						<Anchor point="LEFT" x="6" y="0"/>
+						<Anchor point="RIGHT" x="-6" y="0"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Button parentKey="WinRecord" inherits="RematchWinRecordButtonTemplate">
+				<Anchors>
+					<Anchor point="RIGHT" x="-3" y="1"/>
+				</Anchors>
+				<HitRectInsets>
+					<AbsInset left="0" right="0" top="-4" bottom="-4"/>
+				</HitRectInsets>
+			</Button>
+			<!-- notes button is clickable -->
+			<Button parentKey="Notes" inherits="RematchNotesButtonTemplate">
+				<Size x="18" y="18"/>
+			</Button>
+			<Button parentKey="Preferences" inherits="RematchPreferencesButtonTemplate">
+				<Size x="18" y="18"/>
+			</Button>
+			<Button parentArray="Pets" inherits="RematchSlimTeamListPetTemplate" id="1">
+				<Anchors>
+					<Anchor point="LEFT" x="-75" y="0"/>
+				</Anchors>
+			</Button>
+			<Button parentArray="Pets" inherits="RematchSlimTeamListPetTemplate" id="2">
+				<Anchors>
+					<Anchor point="LEFT" x="-50" y="0"/>
+				</Anchors>
+			</Button>
+			<Button parentArray="Pets" inherits="RematchSlimTeamListPetTemplate" id="3">
+				<Anchors>
+					<Anchor point="LEFT" x="-25" y="0"/>
+				</Anchors>
+			</Button>
+			<Frame parentKey="Favorite" hidden="true">
+				<Size x="18" y="18"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" x="-82" y="4"/>
+				</Anchors>
+				<Layers>
+					<Layer level="OVERLAY">
+						<Texture parentKey="Texture" atlas="PetJournal-FavoritesIcon" useAtlasSize="true"/>
+					</Layer>
+				</Layers>
+			</Frame>
+		</Frames>
+		<Scripts>
+			<OnEnter>
+				RematchTeamPanel.TeamOnEnter(self)
+			</OnEnter>
+			<OnLeave>
+				RematchTeamPanel.TeamOnLeave(self)
+			</OnLeave>
+			<OnShow>
+				self.Backplate:SetAlpha(1)
+			</OnShow>
+			<OnMouseDown>
+				self.Backplate:SetAlpha(0.5)
+			</OnMouseDown>
+			<OnMouseUp>
+				self.Backplate:SetAlpha(1)
+			</OnMouseUp>
+			<OnClick>
+				RematchTeamPanel.TeamOnClick(self,button)
+			</OnClick>
+		</Scripts>
+	</Button>
+
+	<!-- Main team panel -->
+
+	<Frame name="RematchTeamPanel" inherits="RematchPanelTemplate" hidden="true">
+
+		<Frames>
+			<Frame parentKey="Top" inherits="RematchInsetFrameTemplate">
+				<Size x="280" y="29"/>
+				<Anchors>
+					<Anchor point="TOPLEFT"/>
+				</Anchors>
+				<Frames>
+					<!-- toggle button to left of search bar to expand top "search" area -->
+					<Button parentKey="Toggle" inherits="RematchTopToggleButtonTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" x="3" y="-3"/>
+						</Anchors>
+						<Scripts>
+							<OnClick>
+								RematchTeamPanel.ToggleLoadedTeam(self)
+							</OnClick>
+						</Scripts>
+					</Button>
+					<!-- "Teams" filter button to right of team search box -->
+					<Button parentKey="Teams" inherits="RematchFilterButtonTemplate">
+						<Anchors>
+							<Anchor point="TOPRIGHT" x="-3" y="-3"/>
+						</Anchors>
+						<Scripts>
+							<OnClick>
+								Rematch:ToggleMenu("TeamOptions","TOPLEFT",self,"TOPRIGHT")
+							</OnClick>
+						</Scripts>
+					</Button>
+					<!-- search bar at top of panel -->
+					<EditBox parentKey="SearchBox" inherits="RematchSearchBoxTemplate">
+						<Size x="0" y="24"/>
+						<Anchors>
+							<Anchor point="LEFT" relativeKey="$parent.Toggle" relativePoint="RIGHT" x="-1" y="0"/>
+							<Anchor point="RIGHT" relativeKey="$parent.Teams" relativePoint="LEFT" x="1" y="0"/>
+						</Anchors>
+						<Scripts>
+							<OnTextChanged>
+								RematchTeamPanel.SearchBoxOnTextChanged(self)
+							</OnTextChanged>
+							<OnEnterPressed>
+								self:ClearFocus()
+							</OnEnterPressed>
+						</Scripts>
+					</EditBox>
+					<Button parentKey="Team" inherits="RematchTeamListButtonTemplate">
+						<Size x="185" y="44"/>
+						<Anchors>
+							<Anchor point="BOTTOMRIGHT" x="-5" y="4"/>
+						</Anchors>
+						<Layers>
+							<Layer level="ARTWORK">
+								<FontString parentKey="Label" inherits="GameFontNormalSmall">
+									<Anchors>
+										<Anchor point="BOTTOM" relativePoint="TOP"/>
+									</Anchors>
+									<Color r="0.5" g="0.5" b="0.5"/>
+								</FontString>
+							</Layer>
+						</Layers>
+					</Button>
+				</Frames>
+			</Frame>
+
+			<!-- the list of teams -->
+			<Frame parentKey="List" inherits="RematchInsetFrameTemplate">
+				<Size x="280" y="503"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeKey="$parent.Top" relativePoint="BOTTOMLEFT" x="0" y="-2"/>
+					<Anchor point="BOTTOMRIGHT"/>
+				</Anchors>
+				<Frames>
+					<ScrollFrame parentKey="ScrollFrame" name="RematchTeamListScrollFrame" inherits="HybridScrollFrameTemplate">
+						<Size x="248" y="503"/>
+						<Anchors>
+							<Anchor point="TOPLEFT" x="4" y="-3"/>
+							<Anchor point="BOTTOMRIGHT" x="-6" y="3"/>
+						</Anchors>
+						<Frames>
+							<Slider name="RematchTeamListScrollBar" inherits="HybridScrollBarTrimTemplate" parentKey="ScrollBar">
+								<Anchors>
+									<Anchor point="TOPRIGHT" x="2" y="-14"/>
+									<Anchor point="BOTTOMRIGHT" x="2" y="13"/>
+								</Anchors>
+								<Scripts>
+									<OnLoad>
+										self.trackBG:Show()
+										self.trackBG:SetVertexColor(0, 0, 0, 0.75)
+									</OnLoad>
+								</Scripts>
+							</Slider>
+						</Frames>
+						<Scripts>
+							<OnSizeChanged>
+								RematchTeamPanel:Update()
+							</OnSizeChanged>
+						</Scripts>
+					</ScrollFrame>
+				</Frames>
+			</Frame>
+			<!-- Selected gets reparented and positioned onto team buttons that are loaded -->
+			<Frame parentKey="Selected" useParentLevel="true" hidden="true">
+				<Layers>
+					<Layer level="BORDER">
+						<Texture parentKey="Texture" file="Interface\LevelUp\LevelUpTex" alpha="0.2">
+							<Size x="0" y="20"/>
+							<Anchors>
+								<Anchor point="BOTTOMLEFT" x="4" y="4"/>
+								<Anchor point="BOTTOMRIGHT" x="-4" y="4"/>
+							</Anchors>
+							<TexCoords left="0.56054688" right="0.99609375" top="0.24218750" bottom="0.46679688"/>
+						</Texture>
+					</Layer>
+				</Layers>
+			</Frame>
+		</Frames>
+	</Frame>
+
+</Ui>

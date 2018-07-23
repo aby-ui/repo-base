@@ -1,0 +1,107 @@
+<Ui>
+
+	<!-- template for the reference buttons at top of script dialog -->
+	<Button name="RematchScriptReferenceButtonTemplate" inherits="RematchStretchButtonTemplate,RematchTooltipScripts" virtual="true">
+		<Size x="120" y="24"/>
+		<NormalFont style="GameFontNormalSmall"/>
+		<Scripts>
+			<OnClick>
+				self:GetParent().ReferenceButtonOnClick(self)
+			</OnClick>
+		</Scripts>
+	</Button>
+
+	<Frame parentKey="ScriptFilter" parent="RematchDialog" hidden="true">
+		<Size x="380" y="336"/>
+		<Layers>
+			<Layer level="ARTWORK">
+				<!-- text near the bottom to display the lua error if one happens -->
+				<FontString parentKey="TestResult" inherits="GameFontNormal">
+					<Size x="300" y="0"/>
+					<Anchors>
+						<Anchor point="BOTTOM" x="0" y="2"/>
+					</Anchors>
+				</FontString>
+				<!-- this is a duplicate fontstring to use following flash animation -->
+				<FontString parentKey="TestResultFlash" inherits="GameFontHighlight" alpha="0">
+					<Size x="300" y="0"/>
+					<Anchors>
+						<Anchor point="BOTTOM" x="0" y="2"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Animations>
+			<AnimationGroup parentKey="FlashAnimation">
+				<Alpha childKey="TestResultFlash" change="1" duration="0.1" order="1"/>
+				<Alpha childKey="TestResultFlash" change="-1" duration="0.25" order="2"/>
+				<Scripts>
+					<OnFinished>
+						self:GetParent().TestResultFlash:Hide()
+					</OnFinished>
+				</Scripts>
+			</AnimationGroup>
+		</Animations>
+		<Frames>
+			<!-- technical notes -->
+			<Button parentArray="ReferenceButtons" inherits="RematchScriptReferenceButtonTemplate" id="1">
+				<Anchors>
+					<Anchor point="TOPRIGHT" relativePoint="TOP" x="-65" y="2"/>
+				</Anchors>
+			</Button>
+			<!-- pet variables -->
+			<Button parentArray="ReferenceButtons" inherits="RematchScriptReferenceButtonTemplate" id="2">
+				<Anchors>
+					<Anchor point="TOP" x="-1" y="2"/>
+				</Anchors>
+			</Button>
+			<!-- exposed API -->
+			<Button parentArray="ReferenceButtons" inherits="RematchScriptReferenceButtonTemplate" id="3">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativePoint="TOP" x="63" y="2"/>
+				</Anchors>
+			</Button>
+
+			<EditBox parentKey="Name" autoFocus="false">
+				<Size x="300" y="24"/>
+				<Anchors>
+					<Anchor point="TOP" x="0" y="-28"/>
+				</Anchors>
+				<TextInsets>
+					<AbsInset left="6" right="6"/>
+				</TextInsets>
+				<Backdrop edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
+					<EdgeSize val="16"/>
+					<BorderColor r="0.5" g="0.5" b="0.5"/>
+				</Backdrop>
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture>
+							<Anchors>
+								<Anchor point="TOPLEFT" x="3" y="-3"/>
+								<Anchor point="BOTTOMRIGHT" x="-3" y="3"/>
+							</Anchors>
+							<Color r="0" g="0" b="0"/>
+						</Texture>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnEscapePressed>
+						self:ClearFocus()
+					</OnEscapePressed>
+					<OnEditFocusLost>
+						self:HighlightText(0,0)
+					</OnEditFocusLost>
+					<OnTabPressed>
+						RematchDialog.MultiLine.EditBox:SetFocus(true)
+					</OnTabPressed>
+					<OnTextChanged>
+						self:GetParent():UpdatePanelButtons()
+					</OnTextChanged>
+				</Scripts>
+				<FontString inherits="GameFontHighlight" justifyH="CENTER"/>
+			</EditBox>
+
+		</Frames>
+	</Frame>
+</Ui>

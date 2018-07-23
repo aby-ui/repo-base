@@ -1,0 +1,14 @@
+## Interface: 80000
+## Title: BagBrother
+## Notes: Stores your characters inventory, bank, vault and guild bank, so that you may view them from anywhere.
+## Author: Jaliborc (João Cardoso)
+## SavedVariables: BrotherBags
+## OptionalDeps: WoWUnit
+Startup.lua
+Events.lua
+API.lua
+Interface.lua
+
+## Title-zhCN: |cff880303[有爱]|r BagBrother 离线背包
+## Notes-zhCN: 储存银行、背包的离线信息
+## X-Vendor: AbyUI

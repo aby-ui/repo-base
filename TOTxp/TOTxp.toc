@@ -1,0 +1,11 @@
+## Interface: 80000
+## LoadOnDemand: 0
+## Title: |cFF00FF00[B]|rTOTxp-目标的目标
+## SavedVariables: TOTxpAggroMode, TOTxpIgnoreWarriorOT, TOTxp_SHOW_TOTOT, TOTxpThreatMode
+
+TOTxp.xml
+
+
+## Title: |cff880303[有爱]|r TOT 信息增强
+## Notes-zhCN: 目标的目标信息增强,OT提示等。warbaby最早期的作品之一，很古老了，但一直都还能用）
+## X-Vendor: AbyUI

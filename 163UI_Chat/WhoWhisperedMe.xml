@@ -1,0 +1,32 @@
+﻿<Ui xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.blizzard.com/wow/ui/">
+	<Script file="WhoWhisperedMe.lua" />
+	<Frame name="WhoWhisperedMe" hidden="true" parent="UIParent" movable="true" enableMouse="true">
+
+	<Backdrop bgFile="Interface\Tooltips\UI-Tooltip-Background" edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
+			<EdgeSize>
+				<AbsValue val="16"/>
+			</EdgeSize>
+			<TileSize>
+				<AbsValue val="16"/>
+			</TileSize>
+			<BackgroundInsets>
+				<AbsInset left="5" right="5" top="5" bottom="5"/>
+			</BackgroundInsets>
+		</Backdrop>
+		<Size>
+			<AbsDimension x="1" y="1"/>
+		</Size>
+		<Anchors>
+			<Anchor point="TOPLEFT">
+				<Offset>
+					<AbsDimension x="0" y="-104"/>
+				</Offset>
+			</Anchor>
+		</Anchors>
+
+		<Scripts>
+			<OnEvent>WhoWhisperedMe_OnEvent(self, event, ...);</OnEvent>
+			<OnLoad>WhoWhisperedMe_OnLoad(self);</OnLoad>
+		</Scripts>
+	</Frame>
+</Ui>

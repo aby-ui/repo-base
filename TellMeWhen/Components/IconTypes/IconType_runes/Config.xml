@@ -1,0 +1,91 @@
+﻿<Ui>
+
+	<Button name="TellMeWhen_TypeCheckRuneTemplate" virtual="true">
+		<Size x="27.5" y="27.5"/>
+
+		<KeyValues>
+			<KeyValue key="tmwClass" type="string" value="Config_Button_Rune"/>
+		</KeyValues>
+
+		<Layers>
+			<Layer level="OVERLAY">
+				<Texture parentKey="Check" name="$parentCheck" file="">
+					<Size x="24" y="24"/>
+					<Anchors>
+						<Anchor point="CENTER"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<Texture parentKey="texture" file="Interface\PlayerFrame\UI-PlayerFrame-Deathknight-Blood">
+					<Size x="28" y="28"/>
+					<Anchors>
+						<Anchor point="CENTER"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnClick>
+				self:SetChecked(not self:GetChecked())
+			</OnClick>
+			<OnLoad>
+				TMW:CInit(self)
+
+				self:SetSetting("RuneSlots")
+			</OnLoad>
+		</Scripts>
+	</Button>
+	<Frame name="TellMeWhen_Runes" inherits="TellMeWhen_OptionsModuleContainer" virtual="true">
+		<Size y="39.5"/>
+		<Frames>
+			<Button parentKey="1" inherits="TellMeWhen_TypeCheckRuneTemplate" id="1">
+				<Anchors>
+					<Anchor point="TOPLEFT" x="7" y="-6"/>
+				</Anchors>
+			</Button>
+			<Button parentKey="2" inherits="TellMeWhen_TypeCheckRuneTemplate" id="2">
+				<Anchors>
+					<Anchor point="LEFT" relativeKey="$parent.1" relativePoint="RIGHT"/>
+				</Anchors>
+			</Button>
+			<Button parentKey="3" inherits="TellMeWhen_TypeCheckRuneTemplate" id="3">
+				<Anchors>
+					<Anchor point="LEFT" relativeKey="$parent.2" relativePoint="RIGHT"/>
+				</Anchors>
+			</Button>
+			<Button parentKey="4" inherits="TellMeWhen_TypeCheckRuneTemplate" id="4">
+				<Anchors>
+					<Anchor point="LEFT" relativeKey="$parent.3" relativePoint="RIGHT"/>
+				</Anchors>
+			</Button>
+			<Button parentKey="5" inherits="TellMeWhen_TypeCheckRuneTemplate" id="5">
+				<Anchors>
+					<Anchor point="LEFT" relativeKey="$parent.4" relativePoint="RIGHT"/>
+				</Anchors>
+			</Button>
+			<Button parentKey="6" inherits="TellMeWhen_TypeCheckRuneTemplate" id="6">
+				<Anchors>
+					<Anchor point="LEFT" relativeKey="$parent.5" relativePoint="RIGHT"/>
+				</Anchors>
+			</Button>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				TMW:CInit(self)
+				
+				self:SetTitle(TMW.L["RUNES"])
+				TMW.IE:DistributeFrameAnchorsLaterally(self, 6,
+					self["1"],
+					self["2"],
+					self["3"],
+					self["4"],
+					self["5"],
+					self["6"]
+				)
+				
+			</OnLoad>
+		</Scripts>
+	</Frame>
+ 
+</Ui>

@@ -1,0 +1,38 @@
+<Ui>
+
+	<Frame name="RematchJournal" toplevel="true" ignoreParentAlpha="true" enableMouse="true" inherits="PortraitFrameTemplate" hidden="true">
+		<Size x="855" y="606"/>
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString inherits="GameFontNormal" text="PET_JOURNAL">
+					<Anchors>
+						<Anchor point="TOP" x="0" y="-5"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<!-- tabs along the bottom of the frame -->
+			<Frame parentKey="PanelTabs">
+				<Size x="570" y="32"/>
+				<Anchors>
+					<Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" x="-16" y="1"/>
+				</Anchors>
+				<Frames>
+					<Button parentArray="Tabs" inherits="RematchPanelTabButtonTemplate" id="1"/>
+					<Button parentArray="Tabs" inherits="RematchPanelTabButtonTemplate" id="2"/>
+					<Button parentArray="Tabs" inherits="RematchPanelTabButtonTemplate" id="3"/>
+				</Frames>
+			</Frame>
+		</Frames>
+		<Scripts>
+			<OnShow>
+				self.OnShow(self)
+			</OnShow>
+			<OnHide>
+				self.OnHide(self)
+			</OnHide>
+		</Scripts>
+	</Frame>
+
+</Ui>

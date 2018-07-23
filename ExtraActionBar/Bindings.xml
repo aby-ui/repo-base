@@ -1,0 +1,62 @@
+<Bindings>
+<Binding name="CLICK U1BAR1AB1:LeftButton" header="MOGUBAR1"/>
+<Binding name="CLICK U1BAR1AB2:LeftButton"/>
+<Binding name="CLICK U1BAR1AB3:LeftButton"/>
+<Binding name="CLICK U1BAR1AB4:LeftButton"/>
+<Binding name="CLICK U1BAR1AB5:LeftButton"/>
+<Binding name="CLICK U1BAR1AB6:LeftButton"/>
+<Binding name="CLICK U1BAR1AB7:LeftButton"/>
+<Binding name="CLICK U1BAR1AB8:LeftButton"/>
+<Binding name="CLICK U1BAR1AB9:LeftButton"/>
+<Binding name="CLICK U1BAR1AB10:LeftButton"/>
+<Binding name="CLICK U1BAR1AB11:LeftButton"/>
+<Binding name="CLICK U1BAR1AB12:LeftButton"/>
+<Binding name="CLICK U1BAR2AB1:LeftButton" header="MOGUBAR2"/>
+<Binding name="CLICK U1BAR2AB2:LeftButton"/>
+<Binding name="CLICK U1BAR2AB3:LeftButton"/>
+<Binding name="CLICK U1BAR2AB4:LeftButton"/>
+<Binding name="CLICK U1BAR2AB5:LeftButton"/>
+<Binding name="CLICK U1BAR2AB6:LeftButton"/>
+<Binding name="CLICK U1BAR2AB7:LeftButton"/>
+<Binding name="CLICK U1BAR2AB8:LeftButton"/>
+<Binding name="CLICK U1BAR2AB9:LeftButton"/>
+<Binding name="CLICK U1BAR2AB10:LeftButton"/>
+<Binding name="CLICK U1BAR2AB11:LeftButton"/>
+<Binding name="CLICK U1BAR2AB12:LeftButton"/>
+<Binding name="CLICK U1BAR3AB1:LeftButton" header="MOGUBAR3"/>
+<Binding name="CLICK U1BAR3AB2:LeftButton"/>
+<Binding name="CLICK U1BAR3AB3:LeftButton"/>
+<Binding name="CLICK U1BAR3AB4:LeftButton"/>
+<Binding name="CLICK U1BAR3AB5:LeftButton"/>
+<Binding name="CLICK U1BAR3AB6:LeftButton"/>
+<Binding name="CLICK U1BAR3AB7:LeftButton"/>
+<Binding name="CLICK U1BAR3AB8:LeftButton"/>
+<Binding name="CLICK U1BAR3AB9:LeftButton"/>
+<Binding name="CLICK U1BAR3AB10:LeftButton"/>
+<Binding name="CLICK U1BAR3AB11:LeftButton"/>
+<Binding name="CLICK U1BAR3AB12:LeftButton"/>
+<Binding name="CLICK U1BAR4AB1:LeftButton" header="MOGUBAR4"/>
+<Binding name="CLICK U1BAR4AB2:LeftButton"/>
+<Binding name="CLICK U1BAR4AB3:LeftButton"/>
+<Binding name="CLICK U1BAR4AB4:LeftButton"/>
+<Binding name="CLICK U1BAR4AB5:LeftButton"/>
+<Binding name="CLICK U1BAR4AB6:LeftButton"/>
+<Binding name="CLICK U1BAR4AB7:LeftButton"/>
+<Binding name="CLICK U1BAR4AB8:LeftButton"/>
+<Binding name="CLICK U1BAR4AB9:LeftButton"/>
+<Binding name="CLICK U1BAR4AB10:LeftButton"/>
+<Binding name="CLICK U1BAR4AB11:LeftButton"/>
+<Binding name="CLICK U1BAR4AB12:LeftButton"/>
+<Binding name="CLICK U1BAR5AB1:LeftButton" header="MOGUBAR5"/>
+<Binding name="CLICK U1BAR5AB2:LeftButton"/>
+<Binding name="CLICK U1BAR5AB3:LeftButton"/>
+<Binding name="CLICK U1BAR5AB4:LeftButton"/>
+<Binding name="CLICK U1BAR5AB5:LeftButton"/>
+<Binding name="CLICK U1BAR5AB6:LeftButton"/>
+<Binding name="CLICK U1BAR5AB7:LeftButton"/>
+<Binding name="CLICK U1BAR5AB8:LeftButton"/>
+<Binding name="CLICK U1BAR5AB9:LeftButton"/>
+<Binding name="CLICK U1BAR5AB10:LeftButton"/>
+<Binding name="CLICK U1BAR5AB11:LeftButton"/>
+<Binding name="CLICK U1BAR5AB12:LeftButton"/>
+</Bindings>

@@ -1,0 +1,323 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+<Frame name="EA_SCD_Events_Frame" toplevel="true" frameStrata="HIGH" movable="true" enableMouse="true" hidden="true" parent="EA_Options_Frame" enableKeyboard="true">
+
+		<Size>
+			<AbsDimension x="325" y="470"/>
+		</Size>
+
+		<Anchors>
+			<Anchor point="LEFT" relativepoint="RIGHT"/>
+		</Anchors>
+
+		<Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="Interface\DialogFrame\UI-DialogBox-Border" tile="true">
+			<BackgroundInsets>
+				<AbsInset left="11" right="12" top="12" bottom="11"/>
+			</BackgroundInsets>
+			<TileSize>
+				<AbsValue val="32"/>
+			</TileSize>
+			<EdgeSize>
+				<AbsValue val="32"/>
+			</EdgeSize>
+		</Backdrop>
+
+		<Layers>
+			<Layer level="ARTWORK">
+				<Texture name="$parent_Header" file="Interface\DialogFrame\UI-DialogBox-Header">
+					<Size>
+						<AbsDimension x="500" y="64"/>
+					</Size>
+					<Anchors>
+						<Anchor point="TOP">
+							<Offset>
+								<AbsDimension x="0" y="12"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</Texture>
+
+				<FontString inherits="GameFontNormal" text="Enable/Disable Spells' Cooldown">
+					<Anchors>
+						<Anchor point="TOP" relativeTo="$parent_Header">
+							<Offset>
+								<AbsDimension x="0" y="-14"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+
+				<FontString name="$parent_SpellText" inherits="GameFontNormal" text="">
+					<Anchors>
+						<Anchor point="Bottom" relativeTo="$parent">
+							<Offset>
+								<!-- <AbsDimension x="-120" y="105"/> -->
+								<AbsDimension x="-120" y="21"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+
+				<FontString name="$parent_HelpText1" inherits="GameFontNormal" text="">
+					<Anchors>
+						<Anchor point="Bottom" relativeTo="$parent">
+							<Offset>
+								<AbsDimension x="0" y="85"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+
+				<FontString name="$parent_HelpText2" inherits="GameFontNormal" text="">
+					<Anchors>
+						<Anchor point="Bottom" relativeTo="$parent">
+							<Offset>
+								<AbsDimension x="0" y="65"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+
+				<FontString name="$parent_HelpText3" inherits="GameFontNormal" text="">
+					<Anchors>
+						<Anchor point="Bottom" relativeTo="$parent">
+							<Offset>
+								<AbsDimension x="0" y="35"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+
+		<Frames>
+			<Button name="$parent_SelAll" inherits="OptionsButtonTemplate" text="">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parent">
+						<Offset>
+							<AbsDimension x="13" y="-25"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Size>
+					<AbsDimension x="75" y="25"/>
+				</Size>
+				<Scripts>
+					<OnLoad>
+						_G[self:GetName().."Text"]:SetText(EX_XCLSALERT_SELALL);
+					</OnLoad>
+					<OnClick>
+						CreateFrames_EventsFrame_SelAll(5, true);
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Button name="$parent_ClrAll" inherits="OptionsButtonTemplate" text="">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parent_SelAll" relativePoint="TOPRIGHT">
+						<Offset>
+							<AbsDimension x="0" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Size>
+					<AbsDimension x="75" y="25"/>
+				</Size>
+				<Scripts>
+					<OnLoad>
+						_G[self:GetName().."Text"]:SetText(EX_XCLSALERT_CLRALL);
+					</OnLoad>
+					<OnClick>
+						CreateFrames_EventsFrame_SelAll(5, false);
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Button name="$parent_LoadDefault" inherits="OptionsButtonTemplate" text="">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parent_ClrAll" relativePoint="TOPRIGHT">
+						<Offset>
+							<AbsDimension x="0" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Size>
+					<AbsDimension x="75" y="25"/>
+				</Size>
+				<Scripts>
+					<OnLoad>
+						_G[self:GetName().."Text"]:SetText(EX_XCLSALERT_LOADDEFAULT);
+					</OnLoad>
+					<OnClick>
+						CreateFrames_EventsFrame_LoadDefault(5);
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Button name="$parent_RemoveAll" inherits="OptionsButtonTemplate" text="">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parent_LoadDefault" relativePoint="TOPRIGHT">
+						<Offset>
+							<AbsDimension x="0" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Size>
+					<AbsDimension x="75" y="25"/>
+				</Size>
+				<Scripts>
+					<OnLoad>
+						_G[self:GetName().."Text"]:SetText(EX_XCLSALERT_REMOVEALL);
+					</OnLoad>
+					<OnClick>
+						CreateFrames_EventsFrame_RemoveAllSpells(5);
+					</OnClick>
+				</Scripts>
+			</Button>
+			<!-- <EditBox name="$parent_EditBox" letters="41" multiLine="false" ignoreArrows="false" autoFocus="false">
+				<Size>
+					<AbsDimension x="330" y="20" />
+				</Size>
+				<Anchors>
+					<Anchor point="BOTTOM" relativeTo="$parent">
+						<Offset>
+							<AbsDimension x="15" y="15"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<FontString inherits="ChatFontNormal" />
+			</EditBox> -->
+
+			<ScrollFrame name="$parent_SpellScrollFrame" inherits="UIPanelScrollFrameTemplate">
+				<Size>
+				    <AbsDimension x="280" y="375"/>
+				</Size>
+				<Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="" tile="false">
+					<BackgroundInsets>
+						<AbsInset left="0" right="0" top="0" bottom="0" />
+					</BackgroundInsets>
+					<TileSize>
+						<AbsValue val="0" />
+					</TileSize>
+					<EdgeSize>
+						<AbsValue val="0" />
+					</EdgeSize>
+				</Backdrop>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parent">
+						<Offset>
+							<AbsDimension x="15" y="-55"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<ScrollChild>
+					<Frame name="$parentList">
+						<Size>
+							<AbsDimension x="280" y="375"/>
+						</Size>
+		                                <Frames>
+		                                </Frames>
+					</Frame>
+				</ScrollChild>
+			</ScrollFrame>	
+
+			<EditBox name="$parent_SpellEditBox" letters="6" multiLine="false" numeric="true" ignoreArrows="false" autoFocus="false">
+				<Size>
+					<AbsDimension x="60" y="25" />
+				</Size>
+				<Anchors>
+					<Anchor point="BOTTOM" relativeTo="$parent">
+						<Offset>
+							<!-- <AbsDimension x="-50" y="100"/> -->
+							<AbsDimension x="-50" y="16"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture file="Interface\ChatFrame\UI-ChatInputBorder-Left">
+							<Size>
+								<AbsDimension x="40" y="25"></AbsDimension>
+							</Size>
+							<Anchors>
+								<Anchor point="LEFT">
+									<Offset>
+										<AbsDimension x="-10" y="0"></AbsDimension>
+									</Offset>
+								</Anchor>
+							</Anchors>
+							<TexCoords left="0" right="0.2" top="0" bottom="1.0"></TexCoords>
+						</Texture>
+						<Texture file="Interface\ChatFrame\UI-ChatInputBorder-Right">
+							<Size>
+								<AbsDimension x="40" y="25"></AbsDimension>
+							</Size>
+							<Anchors>
+								<Anchor point="RIGHT">
+									<Offset>
+										<AbsDimension x="5" y="0"></AbsDimension>
+									</Offset>
+								</Anchor>
+							</Anchors>
+							<TexCoords left="0.7" right="1.0" top="0" bottom="1.0"></TexCoords>
+						</Texture>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnEnterPressed>
+						CreateFrames_EventsFrame_AddSpell(5);
+					</OnEnterPressed>
+					<OnEscapePressed>
+						self:ClearFocus();
+					</OnEscapePressed>
+				</Scripts>
+				<FontString inherits="ChatFontNormal" />
+			</EditBox>
+			<Button name="$parent_AddSpell" inherits="OptionsButtonTemplate" text="">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parent_SpellEditBox" relativePoint="TOPRIGHT">
+						<Offset>
+							<AbsDimension x="15" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Size>
+					<AbsDimension x="75" y="25"/>
+				</Size>
+				<Scripts>
+					<OnLoad>
+						_G[self:GetName().."Text"]:SetText(EX_XCLSALERT_ADDSPELL);
+					</OnLoad>
+					<OnClick>
+						CreateFrames_EventsFrame_AddSpell(5);
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Button name="$parent_DelSpell" inherits="OptionsButtonTemplate" text="">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parent_AddSpell" relativePoint="TOPRIGHT">
+						<Offset>
+							<AbsDimension x="0" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Size>
+					<AbsDimension x="75" y="25"/>
+				</Size>
+				<Scripts>
+					<OnLoad>
+						_G[self:GetName().."Text"]:SetText(EX_XCLSALERT_DELSPELL);
+					</OnLoad>
+					<OnClick>
+						CreateFrames_EventsFrame_DelSpell(5);
+					</OnClick>
+				</Scripts>
+			</Button>
+		</Frames>
+
+		<Scripts>
+			<OnLoad>
+				EA_SCD_Events_Frame_SpellText:SetText(EX_XCLSALERT_SPELL);
+				EA_SCD_Events_Frame_SpellEditBox:SetFontObject(ChatFontNormal);
+				EA_SCD_Events_Frame_SpellEditBox:SetText("");
+			</OnLoad>
+		</Scripts>
+</Frame>
+</Ui>

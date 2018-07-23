@@ -1,0 +1,27 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+	<Script file="Localization\enUS.lua" />
+	<Script file="Localization\frFR.lua" />
+	<Script file="Localization\koKR.lua" />
+	<Script file="Localization\zhCN.lua" />
+	<Script file="Localization\zhTW.lua" />
+	<Script file="Localization\ruRU.lua" />
+	<Script file="LibDogTag-Unit-3.0.lua" />
+	<Script file="Categories\Auras.lua" />
+	<Script file="Categories\Cast.lua" />
+	<Script file="Categories\Characteristics.lua" />
+	<Script file="Categories\DruidMana.lua" />
+	<Script file="Categories\MonkMana.lua" />
+	<Script file="Categories\Experience.lua" />
+	<Script file="Categories\GuildNote.lua" />
+	<Script file="Categories\Health.lua" />
+	<Script file="Categories\Misc.lua" />
+	<Script file="Categories\Power.lua" />
+	<Script file="Categories\Range.lua" />
+	<Script file="Categories\Reputation.lua" />
+	<Script file="Categories\Status.lua" />
+	<Script file="Categories\Talent.lua" />
+	<Script file="Categories\Threat.lua" />
+	<Script file="Categories\TooltipScanning.lua" />
+	<Script file="Cleanup.lua" />
+</Ui>

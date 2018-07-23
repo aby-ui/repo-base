@@ -1,0 +1,36 @@
+﻿<Ui>
+	
+	<Frame parentKey="Lua" name="$parentLua" inherits="TellMeWhen_EventContainer">
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString parentKey="Error" name="$parentError" inherits="GameFontRed" justifyH="LEFT">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="5" y="0"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<EditBox parentKey="Code" name="$parentCode" inherits="TellMeWhen_InputBoxTemplate" multiline="true">
+				<Size y="15"/>
+				<Anchors>
+					<Anchor point="TOP" relativeTo="$parentError" relativePoint="BOTTOM" y="-0"/>
+					<Anchor point="LEFT" />
+					<Anchor point="RIGHT" x="-15"/>
+					<Anchor point="BOTTOM" y="15"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						TMW:CInit(self, "Config_EditBox_Lua")
+
+						self:MakeScrollable(true, 2, 7)
+
+						self:SetTexts(TMW.L["EVENTHANDLER_LUA_CODE"], TMW.L["EVENTHANDLER_LUA_CODE_DESC"])
+						self:SetSetting("Lua")					
+					</OnLoad>
+				</Scripts>
+			</EditBox>
+		</Frames>
+	</Frame>
+	
+</Ui>

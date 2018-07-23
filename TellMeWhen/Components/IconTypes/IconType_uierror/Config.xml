@@ -1,0 +1,69 @@
+﻿<Ui>
+
+	<Frame name="TellMeWhen_UIErrorOptions" inherits="TellMeWhen_OptionsModuleContainer" virtual="true">
+		<Size y="30"/>
+		<Frames>
+		
+			
+			<EditBox parentKey="CLEUDur" name="$parentCLEUDur" inherits="TellMeWhen_TimeEditBoxTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentCLEUEvents" relativePoint="BOTTOMLEFT" y="3"/>
+				</Anchors>
+				<Layers>
+					<Layer level="ARTWORK">
+						<FontString parentKey="text2" wordwrap="true" justifyH="LEFT" inherits="GameFontHighlightSmall">
+							<Anchors>
+								<Anchor point="LEFT" relativePoint="RIGHT" x="5"/>
+								<Anchor point="RIGHT" relativeto="TellMeWhen_CLEUOptions" x="-5"/>
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnLoad>
+						self.text2:SetText(TMW.L["CLEU_TIMER"])
+						
+						TMW:CInit(self)
+
+						self:SetTexts(TMW.L["CLEU_TIMER"], TMW.L["UIERROR_TIMER_DESC"])
+						self:SetSetting("CLEUDur")
+					</OnLoad>
+				</Scripts>
+			</EditBox>
+
+			<CheckButton parentKey="CLEUNoRefresh" name="$parentCLEUNoRefresh" inherits="TellMeWhen_CheckTemplate">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentCLEUDur" relativePoint="RIGHT" x="2" y="-1"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						self:SetFrameLevel(self:GetFrameLevel() + 2) -- sometimes it ends up under the type dropdown which makes half of the checkbox unclickable
+					
+						TMW:CInit(self)
+
+						self:SetTexts(TMW.L["ICONMENU_CLEU_NOREFRESH"], TMW.L["ICONMENU_CLEU_NOREFRESH_DESC"])
+						self:SetSetting("CLEUNoRefresh")
+					</OnLoad>
+				</Scripts>
+			</CheckButton>
+			
+
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				TMW:CInit(self)
+				
+				self:SetTitle(TMW.L["ICONMENU_UIERROR"])
+				
+				TMW.IE:DistributeFrameAnchorsLaterally(self, 2, self.CLEUDur, self.CLEUNoRefresh)
+				self.CLEUDur:SetPoint("LEFT", 8, 0)
+				
+				self.CLEUNoRefresh:ConstrainLabel(self, "RIGHT")
+
+				self.CLEUDur.text2:SetPoint("RIGHT", self.CLEUNoRefresh, "LEFT")
+				self.CLEUDur.text2:SetHeight(30)
+			</OnLoad>
+		</Scripts>
+	</Frame>
+	
+</Ui>

@@ -1,0 +1,36 @@
+## Interface: 80000
+## Title: HandyNotes
+## Notes: Handy notes for your maps
+## Notes-frFR: Notes pratiques pour vos cartes.
+## Author: Xinhuan
+## Version: v1.5.2
+## DefaultState: enabled
+## X-Category: Map
+## X-eMail: xinhuan @ gmail DOT com
+## OptionalDeps: Ace3, TomTom, HereBeDragons
+
+## LoadManagers: AddonLoader
+## X-LoadOn-Always: delayed
+
+## SavedVariables: HandyNotesDB, HandyNotes_HandyNotesDB
+
+# Library files
+#@no-lib-strip@
+#@end-no-lib-strip@
+
+# Locale files
+Locales\Locale-enUS.lua
+Locales\Locale-zhCN.lua
+Locales\Locale-zhTW.lua
+
+# Core files
+HandyNotes.lua
+HandyNotes.xml
+HandyNotes_HandyNotes.lua
+HandyNotes_EditFrame.lua
+
+## Title-zhCN: |cff880303[有爱]|r HandyNotes 地图标记
+## Title-zhTW: |cff880303[有爱]|r HandyNotes 地圖標記
+## Notes-zhCN: 一个小巧且全能的地图标记注释功能类插件. 设置口令：/handynotes
+## Notes-zhTW: 一個小巧且全能的地圖標記註釋功能類插件. 設置口令：/handynotes.
+## X-Vendor: AbyUI

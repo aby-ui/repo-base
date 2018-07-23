@@ -1,0 +1,15 @@
+## Interface: 80000
+## Author: Shaboo Frostmourne (Based on ABDefender by Riel Kil'Jaeden GER EU, based on FaraFrames by Farang).  Updated by Shoogi of Wyrmrest Accord
+## Title: Battleground Defender
+## Notes: Announce incoming enemies in battle grounds with a single mouse click
+## Version: 1.6.10
+## OptionalDeps:
+## Dependencies:
+## SavedVariables:
+## SavedVariablesPerCharacter: BGD_Prefs
+
+BGDefender.xml
+
+## Title-zhCN:  |cff880303[有爱]|r BGDefender 战场通报
+## Notes-zhCN: 一个小框架方便跟对战场内的其他玩家交流或求助.
+## X-Vendor: AbyUI

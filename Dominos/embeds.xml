@@ -1,0 +1,4 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+	<Include file="libs\LibKeyBound-1.0\lib.xml"/>
+	<Script file="libs\FlyPaper\FlyPaper.lua"/>
+</Ui>

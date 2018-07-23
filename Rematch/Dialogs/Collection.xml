@@ -1,0 +1,230 @@
+<Ui>
+
+	<Button name="RematchChartColumnTemplate" virtual="true">
+		<Size x="24" y="24"/>
+		<Layers>
+			<Layer level="ARTWORK">
+				<Texture parentKey="Icon">
+					<Size x="22" y="22"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="1" y="-1"/>
+					</Anchors>
+				</Texture>
+				<Texture parentKey="Bar" file="Interface\UnitPowerBarAlt\Generic1_Vertical_Fill">
+					<Size x="24" y="50"/>
+					<Anchors>
+						<Anchor point="BOTTOM" relativePoint="TOP" x="0" y="2"/>
+					</Anchors>
+					<TexCoords left="0.296875" right="0.703125" top="0.1953125" bottom="0.8046875"/>
+				</Texture>
+				<FontString parentKey="Value" inherits="GameFontHighlightSmall">
+					<Anchors>
+						<Anchor point="BOTTOM" relativeKey="$parent.Bar" relativePoint="TOP" x="0" y="2"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+			<Layer level="OVERLAY">
+				<Texture parentKey="IconBorder" file="Interface\Buttons\UI-QuickSlot2" setAllPoints="true">
+					<TexCoords left="0.1875" right="0.796875" top="0.1875" bottom="0.796875"/>
+				</Texture>
+			</Layer>
+		</Layers>
+		<HighlightTexture file="Interface\Buttons\ButtonHilight-Square" alphaMode="ADD"/>
+	</Button>
+
+	<Frame parentKey="CollectionReport" parent="RematchDialog" hidden="true">
+		<Size x="272" y="210"/>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture hidden="true">
+					<Color r="0" g="1" b="0" a="0.15"/>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<!-- "There are X unique pets in the game." -->
+				<FontString parentKey="InGame" inherits="GameFontNormal">
+					<Anchors>
+						<Anchor point="TOP"/>
+					</Anchors>
+				</FontString>
+				<!-- labels along the left side of the numbers table -->
+				<FontString parentKey="OwnedLabel" inherits="GameFontNormal">
+					<Anchors>
+						<Anchor point="TOPRIGHT" relativePoint="TOP" x="-8" y="-86"/>
+					</Anchors>
+				</FontString>
+				<FontString parentKey="MaxLevelLabel" inherits="GameFontNormal">
+					<Anchors>
+						<Anchor point="TOPRIGHT" relativePoint="TOP" x="-8" y="-102"/>
+					</Anchors>
+				</FontString>
+				<FontString parentKey="RaresLabel" inherits="GameFontNormal">
+					<Anchors>
+						<Anchor point="TOPRIGHT" relativePoint="TOP" x="-8" y="-118"/>
+					</Anchors>
+				</FontString>
+				<!-- the numbers -->
+				<FontString parentKey="OwnedTotal" inherits="GameFontHighlight">
+					<Anchors>
+						<Anchor point="TOPRIGHT" relativePoint="TOP" x="38" y="-86"/>
+					</Anchors>
+				</FontString>
+				<FontString parentKey="OwnedUnique" inherits="GameFontHighlight">
+					<Anchors>
+						<Anchor point="TOPRIGHT" relativePoint="TOP" x="100" y="-86"/>
+					</Anchors>
+				</FontString>
+				<FontString parentKey="MaxLevelTotal" inherits="GameFontHighlight">
+					<Anchors>
+						<Anchor point="TOPRIGHT" relativePoint="TOP" x="38" y="-102"/>
+					</Anchors>
+				</FontString>
+				<FontString parentKey="MaxLevelUnique" inherits="GameFontHighlight">
+					<Anchors>
+						<Anchor point="TOPRIGHT" relativePoint="TOP" x="100" y="-102"/>
+					</Anchors>
+				</FontString>
+				<FontString parentKey="RaresTotal" inherits="GameFontHighlight">
+					<Anchors>
+						<Anchor point="TOPRIGHT" relativePoint="TOP" x="38" y="-118"/>
+					</Anchors>
+				</FontString>
+				<FontString parentKey="RaresUnique" inherits="GameFontHighlight">
+					<Anchors>
+						<Anchor point="TOPRIGHT" relativePoint="TOP" x="100" y="-118"/>
+					</Anchors>
+				</FontString>
+				<!-- "Total" and "Unique" labels across top -->
+				<FontString parentKey="TotalLabel" inherits="GameFontNormal">
+					<Anchors>
+						<Anchor point="TOP" relativeKey="$parent.OwnedTotal" x="0" y="16"/>
+					</Anchors>
+				</FontString>
+				<FontString parentKey="UniqueLabel" inherits="GameFontNormal">
+					<Anchors>
+						<Anchor point="TOP" relativeKey="$parent.OwnedUnique" x="0" y="16"/>
+					</Anchors>
+				</FontString>
+
+				<!-- middle stats labels -->
+				<FontString parentKey="DuplicatesLabel" inherits="GameFontNormal">
+					<Anchors>
+						<Anchor point="TOPRIGHT" relativePoint="TOP" x="36" y="-144"/>
+					</Anchors>
+				</FontString>
+				<FontString parentKey="AvgLevelLabel" inherits="GameFontNormal">
+					<Anchors>
+						<Anchor point="TOPRIGHT" relativePoint="TOP" x="36" y="-160"/>
+					</Anchors>
+				</FontString>
+				<FontString parentKey="MissingLabel" inherits="GameFontNormal">
+					<Anchors>
+						<Anchor point="TOPRIGHT" relativePoint="TOP" x="36" y="-176"/>
+					</Anchors>
+				</FontString>
+				<!-- middle stats numbers -->
+				<FontString parentKey="Duplicates" inherits="GameFontHighlight">
+					<Anchors>
+						<Anchor point="TOPRIGHT" relativePoint="TOP" x="82" y="-144"/>
+					</Anchors>
+				</FontString>
+				<FontString parentKey="AvgLevel" inherits="GameFontHighlight">
+					<Anchors>
+						<Anchor point="TOPRIGHT" relativePoint="TOP" x="82" y="-160"/>
+					</Anchors>
+				</FontString>
+				<FontString parentKey="Missing" inherits="GameFontHighlight">
+					<Anchors>
+						<Anchor point="TOPRIGHT" relativePoint="TOP" x="82" y="-176"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+			<Layer level="OVERLAY">
+				<Texture parentKey="RarityBarBorder" file="Interface\AchievementFrame\UI-Achievement-ProgressBar-Border">
+					<Size x="224" y="25"/>
+					<Anchors>
+						<Anchor point="TOP" x="0" y="-36"/>
+					</Anchors>
+					<TexCoords left="0" right="0.875" top="0" bottom="0.78125"/>
+					<Color r="0.75" g="0.75" b="0.75"/>
+				</Texture>
+				<FontString parentKey="Complete" inherits="GameFontNormal">
+					<Anchors>
+						<Anchor point="TOP" relativeKey="$parent.RarityBarBorder" x="0" y="14"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+			<Layer level="ARTWORK">
+				<!-- these are the rarity bars that fill the border above; max 210 px width total -->
+				<Texture parentArray="RarityBar" file="Interface\TargetingFrame\UI-TargetingFrame-BarFill">
+					<Size x="20" y="13"/>
+				</Texture>
+				<Texture parentArray="RarityBar" file="Interface\TargetingFrame\UI-TargetingFrame-BarFill">
+					<Size x="20" y="13"/>
+				</Texture>
+				<Texture parentArray="RarityBar" file="Interface\TargetingFrame\UI-TargetingFrame-BarFill">
+					<Size x="20" y="13"/>
+				</Texture>
+				<Texture parentArray="RarityBar" file="Interface\TargetingFrame\UI-TargetingFrame-BarFill">
+					<Size x="20" y="13"/>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Frame parentKey="ChartTypeComboBox" inherits="RematchComboBoxTemplate">
+				<Size x="266" y="26"/>
+				<Anchors>
+					<Anchor point="TOP" x="0" y="-202"/>
+				</Anchors>
+			</Frame>
+			<Frame parentKey="Chart">
+				<Size x="266" y="156"/>
+				<Anchors>
+					<Anchor point="TOP" relativeKey="$parent.ChartTypeComboBox" relativePoint="BOTTOM" x="0" y="0"/>
+				</Anchors>
+				<Backdrop edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
+					<EdgeSize val="16"/>
+					<BorderColor r="0.5" g="0.5" b="0.5"/>
+				</Backdrop>
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture>
+							<Anchors>
+								<Anchor point="TOPLEFT" x="3" y="-3"/>
+								<Anchor point="BOTTOMRIGHT" x="-3" y="3"/>
+							</Anchors>
+							<Color r="0" g="0" b="0"/>
+						</Texture>
+					</Layer>
+				</Layers>
+			</Frame>
+			<CheckButton parentKey="ChartTypesRadioButton" inherits="RematchRadioButtonTemplate" id="1">
+				<Anchors>
+					<Anchor point="TOPRIGHT" relativeKey="$parent.Chart" relativePoint="BOTTOM" x="-64" y="-1"/>
+				</Anchors>
+				<HitRectInsets>
+					<AbsInset left="-4" right="-64" top="-4" bottom="-4"/>
+				</HitRectInsets>
+				<Scripts>
+					<OnClick>
+						RematchDialog.CollectionReport.ChartRadioOnClick(self)
+					</OnClick>
+				</Scripts>
+			</CheckButton>
+			<CheckButton parentKey="ChartSourcesRadioButton" inherits="RematchRadioButtonTemplate" id="2">
+				<Anchors>
+					<Anchor point="TOPRIGHT" relativeKey="$parent.Chart" relativePoint="BOTTOM" x="32" y="-1"/>
+				</Anchors>
+				<HitRectInsets>
+					<AbsInset left="-4" right="-64" top="-4" bottom="-4"/>
+				</HitRectInsets>
+				<Scripts>
+					<OnClick>
+						RematchDialog.CollectionReport.ChartRadioOnClick(self)
+					</OnClick>
+				</Scripts>
+			</CheckButton>
+		</Frames>
+	</Frame>
+
+</Ui>

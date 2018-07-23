@@ -1,0 +1,116 @@
+<Ui>
+
+	<!-- thin panel to display loaded team (or "Battle Pet Slots" if no loaded team) -->
+	<Button name="RematchLoadedTeamPanel" ignoreParentAlpha="true" inherits="RematchBigPanelButtonTemplate" hidden="true">
+		<Size x="280" y="26"/>
+		<Layers>
+			<Layer level="BACKGROUND" textureSubLevel="-5">
+				<!-- darker brown background used on default Battle Pet Slots header -->
+				<Texture parentKey="InsetBack" file="Interface\PetBattles\_PetJournalHorizTile" horizTile="true">
+					<Anchors>
+						<Anchor point="TOPLEFT"/>
+						<Anchor point="BOTTOMRIGHT"/>
+					</Anchors>
+					<TexCoords left="0" right="1" top="0.23437500" bottom="0.42187500"/>	
+				</Texture>
+			</Layer>
+			<Layer level="BACKGROUND">
+				<!-- doodads in topleft and topright corners -->
+				<Texture file="Interface\Collections\Collections" alpha="0.65">
+					<Size x="28" y="26"/> <!-- original texture is 86x64 -->
+					<Anchors>
+						<Anchor point="TOPLEFT" x="3" y="-3"/>
+					</Anchors>
+					<TexCoords left="0.00390625" right="0.169921875" top="0.015625" bottom="0.138671875"/>
+					<Color r="0.75" g="0.75" b="0.75"/>
+				</Texture>
+				<Texture file="Interface\Collections\Collections" alpha="0.65">
+					<Size x="28" y="26"/>
+					<Anchors>
+						<Anchor point="TOPRIGHT" x="-3" y="-3"/>
+					</Anchors>
+					<TexCoords left="0.169921875" right="0.00390625" top="0.015625" bottom="0.138671875"/>
+					<Color r="0.75" g="0.75" b="0.75"/>
+				</Texture>
+			</Layer>
+			<Layer level="BORDER">
+				<!-- favorite star -->
+				<Texture parentKey="Favorite" atlas="PetJournal-FavoritesIcon">
+					<Size x="20" y="20"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="-1" y="1"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<!-- name of team -->
+				<FontString parentKey="Name" inherits="GameFontNormal" wordwrap="false">
+					<Size x="0" y="26"/>
+					<Anchors>
+						<Anchor point="LEFT" x="8" y="0"/>
+						<Anchor point="RIGHT" x="-8" y="0"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Frame parentKey="Bling" inherits="RematchPanelBlingTemplate"/>
+			<Frame parentKey="Footnotes" inherits="RematchInsetFrameTemplate">
+				<Size x="52" y="26"/>
+				<Anchors>
+					<Anchor point="LEFT" relativePoint="RIGHT" x="2" y="0"/>
+				</Anchors>
+				<KeyValues>
+					<KeyValue key="forLoadedTeam" value="true" type="boolean"/>
+				</KeyValues>
+				<Frames>
+					<Button parentKey="Notes" inherits="RematchNotesButtonTemplate"/>
+					<Button parentKey="Preferences" inherits="RematchPreferencesPauseButtonTemplate"/>
+					<Button parentKey="WinRecord" inherits="RematchWinRecordButtonTemplate">
+						<HitRectInsets>
+							<AbsInset left="0" right="0" top="-4" bottom="-4"/>
+						</HitRectInsets>
+						<Scripts>
+							<OnClick>
+								Rematch.WinRecordOnClick(self,true)
+							</OnClick>
+						</Scripts>
+					</Button>
+					<Button parentKey="Close" inherits="UIPanelCloseButtonNoScripts">
+						<Scripts>
+							<OnClick>
+								RematchFrame:Hide()
+							</OnClick>
+						</Scripts>
+					</Button>
+					<Button parentKey="Maximize" inherits="RematchTitlebarButtonTemplate">
+						<Size x="32" y="32"/>
+						<Scripts>
+							<OnClick>
+								RematchFrame:ToggleSize()
+							</OnClick>
+						</Scripts>
+					</Button>
+				</Frames>
+			</Frame>
+		</Frames>
+		<Scripts>
+			<OnDragStart>
+				self:OnDragStart()
+			</OnDragStart>
+			<OnDragStop>
+				self:OnDragStop()
+			</OnDragStop>
+			<OnClick>
+				self:OnClick(button) <!-- the loadedteam panel is a button itself to reload the team -->
+			</OnClick>
+			<OnEnter>
+				self:OnEnter()
+			</OnEnter>
+			<OnLeave>
+				Rematch:HideTooltip()
+			</OnLeave>
+		</Scripts>
+	</Button>
+
+</Ui>

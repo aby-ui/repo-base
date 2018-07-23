@@ -1,0 +1,311 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+C:\Projects\WoW\Bin\Interface\FrameXML\UI.xsd">
+
+    <Script file="MOGUBar.lua"/>
+    <CheckButton name="MOGUBarButtonTemplate" virtual="true" inherits="ActionBarButtonTemplate">
+        <Scripts>
+            <OnLoad>
+                MOGUBarButton_OnLoad(self)
+            </OnLoad>
+        </Scripts>
+    </CheckButton>
+
+    <Button name="MOGUBarTabTemplate" frameStrata="HIGH" hidden="false" alpha="0.4" virtual="true">
+        <Size>
+            <AbsDimension x="64" y="16"/>
+        </Size>
+        <Layers>
+            <Layer level="BACKGROUND">
+                <Texture name="$parentTexture" file="Interface\Addons\ExtraActionBar\MOGUBarTab">
+                    <Size>
+                        <AbsDimension x="64" y="16"/>
+                    </Size>
+                </Texture>
+            </Layer>
+            <Layer level="ARTWORK">
+                <FontString name="$parentTitle" font="Fonts\FRIZQT__.TTF" outline="NORMAL" justifyH="CENTER" justifyV="CENTER">
+                    <FontHeight>
+                        <AbsValue val="10"/>
+                    </FontHeight>
+                    <Anchors>
+                        <Anchor point="CENTER">
+                            <Offset><AbsDimension x="0" y="0.5"/></Offset>
+                        </Anchor>
+                    </Anchors>
+                    <Color r="1.0" g="1.0" b="1.0"/>
+                </FontString>
+            </Layer>
+        </Layers>
+        <Frames>
+            <Frame name="$parentDropDown" inherits="UIDropDownMenuTemplate" id="1" hidden="true">
+                <Anchors>
+                    <Anchor point="TOP">
+                        <Offset>
+                            <AbsDimension x="-80" y="-35"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+                <Scripts>
+                    <OnLoad>
+                        MOGUBarDropDown_OnLoad(self);
+                    </OnLoad>
+                    <OnShow>
+                        MOGUBarDropDown_OnLoad(self);
+                    </OnShow>
+                </Scripts>
+            </Frame>
+        </Frames>
+        <Scripts>
+            <OnEnter>
+                MOGUBarTab_OnEnter(self);
+            </OnEnter>
+            <OnLeave>
+                MOGUBarTab_OnLeave(self);
+            </OnLeave>
+            <OnLoad>
+                self:RegisterForClicks("LeftButtonDown", "LeftButtonUp", "RightButtonUp");
+                self:RegisterForDrag("LeftButton");
+                self:EnableMouseWheel(true);
+                self:RegisterEvent("PLAYER_REGEN_DISABLED");
+                self:RegisterEvent("PLAYER_REGEN_ENABLED");
+            </OnLoad>
+            <OnClick>
+                MOGUBarTab_OnClick(self, button)
+            </OnClick>
+            <OnMouseWheel>
+                if (delta>0) then
+                    U1BAR_IncreaseButton(nil, self:GetParent());
+                else
+                    U1BAR_DecreaseButton(nil, self:GetParent());
+                end
+            </OnMouseWheel>
+            <OnEvent>
+                local frame = self:GetParent();
+                if (event == "PLAYER_REGEN_DISABLED") then
+                getglobal(self:GetName().."DropDown"):Hide();
+                frame.inCombat = 1;
+                if ( frame.moving) then
+                frame:StopMovingOrSizing();
+                end
+                else
+                frame.inCombat = nil;
+                end
+            </OnEvent>
+            <OnMouseDown>
+                MOGUBar_OnMouseDown(self, button);
+            </OnMouseDown>
+            <OnMouseUp>
+                MOGUBar_OnMouseUp(self, button);
+            </OnMouseUp>
+        </Scripts>
+        <HighlightTexture file="Interface\Addons\ExtraActionBar\MOGUBarTabHighlight" alphaMode="ADD"/>
+    </Button>
+
+    <Frame name="MOGUBarFrameTemplate" toplevel="true" frameStrata="LOW" enableMouse="true" parent="UIParent" movable="true" hidden="false" virtual="true">
+        <Size>
+            <AbsDimension x="40" y="40"/>
+        </Size>
+        <Anchors>
+            <Anchor point="CENTER" relativeTo="UIParent" relativePoint="CENTER">
+                <Offset>
+                    <AbsDimension x="0" y="60"/>
+                </Offset>
+            </Anchor>
+        </Anchors>
+        <Frames>
+            <Button name="$parentTab" inherits="MOGUBarTabTemplate">
+                <Anchors>
+                    <Anchor point="TOPRIGHT">
+                        <Offset>
+                            <AbsDimension x="12" y="0"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+            </Button>
+            <CheckButton name="$parentAB1" inherits="MOGUBarButtonTemplate" id="-1">
+                <Anchors>
+                    <Anchor point="TOPRIGHT" relativePoint="TOPRIGHT">
+                        <Offset>
+                            <AbsDimension x="-2" y="-15"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+            </CheckButton>
+            <CheckButton name="$parentAB2" inherits="MOGUBarButtonTemplate" id="-2">
+                <Anchors>
+                    <Anchor point="TOP" relativeTo="$parentAB1" relativePoint="BOTTOM">
+                        <Offset>
+                            <AbsDimension x="0" y="-6"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+            </CheckButton>
+            <CheckButton name="$parentAB3" inherits="MOGUBarButtonTemplate" id="-3">
+                <Anchors>
+                    <Anchor point="TOP" relativeTo="$parentAB2" relativePoint="BOTTOM">
+                        <Offset>
+                            <AbsDimension x="0" y="-6"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+            </CheckButton>
+            <CheckButton name="$parentAB4" inherits="MOGUBarButtonTemplate" id="-4">
+                <Anchors>
+                    <Anchor point="TOP" relativeTo="$parentAB3" relativePoint="BOTTOM">
+                        <Offset>
+                            <AbsDimension x="0" y="-6"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+            </CheckButton>
+            <CheckButton name="$parentAB5" inherits="MOGUBarButtonTemplate" id="-5">
+                <Anchors>
+                    <Anchor point="TOP" relativeTo="$parentAB4" relativePoint="BOTTOM">
+                        <Offset>
+                            <AbsDimension x="0" y="-6"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+            </CheckButton>
+            <CheckButton name="$parentAB6" inherits="MOGUBarButtonTemplate" id="-6">
+                <Anchors>
+                    <Anchor point="TOP" relativeTo="$parentAB5" relativePoint="BOTTOM">
+                        <Offset>
+                            <AbsDimension x="0" y="-6"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+            </CheckButton>
+            <CheckButton name="$parentAB7" inherits="MOGUBarButtonTemplate" id="-7">
+                <Anchors>
+                    <Anchor point="TOP" relativeTo="$parentAB6" relativePoint="BOTTOM">
+                        <Offset>
+                            <AbsDimension x="0" y="-6"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+            </CheckButton>
+            <CheckButton name="$parentAB8" inherits="MOGUBarButtonTemplate" id="-8">
+                <Anchors>
+                    <Anchor point="TOP" relativeTo="$parentAB7" relativePoint="BOTTOM">
+                        <Offset>
+                            <AbsDimension x="0" y="-6"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+            </CheckButton>
+            <CheckButton name="$parentAB9" inherits="MOGUBarButtonTemplate" id="-9">
+                <Anchors>
+                    <Anchor point="TOP" relativeTo="$parentAB8" relativePoint="BOTTOM">
+                        <Offset>
+                            <AbsDimension x="0" y="-6"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+            </CheckButton>
+            <CheckButton name="$parentAB10" inherits="MOGUBarButtonTemplate" id="-10">
+                <Anchors>
+                    <Anchor point="TOP" relativeTo="$parentAB9" relativePoint="BOTTOM">
+                        <Offset>
+                            <AbsDimension x="0" y="-6"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+            </CheckButton>
+            <CheckButton name="$parentAB11" inherits="MOGUBarButtonTemplate" id="-11">
+                <Anchors>
+                    <Anchor point="TOP" relativeTo="$parentAB10" relativePoint="BOTTOM">
+                        <Offset>
+                            <AbsDimension x="0" y="-6"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+            </CheckButton>
+            <CheckButton name="$parentAB12" inherits="MOGUBarButtonTemplate" id="-12">
+                <Anchors>
+                    <Anchor point="TOP" relativeTo="$parentAB11" relativePoint="BOTTOM">
+                        <Offset>
+                            <AbsDimension x="0" y="-6"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+            </CheckButton>
+        </Frames>
+        <Scripts>
+            <OnLoad>
+                MOGUBarFrame_OnLoad(self);
+            </OnLoad>
+        </Scripts>
+    </Frame>
+
+    <Slider name="MOGUBarOpacitySlider" parent="UIParent" hidden="true" frameStrata="HIGH" orientation="VERTICAL">
+        <Size>
+            <AbsDimension x="24" y="128"/>
+        </Size>
+        <Anchors>
+            <Anchor point="TOPLEFT">
+                <Offset>
+                    <AbsDimension x="0" y="0"/>
+                </Offset>
+            </Anchor>
+        </Anchors>
+        <Backdrop bgFile="Interface\Buttons\UI-SliderBar-Background" edgeFile="Interface\Buttons\UI-SliderBar-Border" tile="true">
+            <EdgeSize>
+                <AbsValue val="8"/>
+            </EdgeSize>
+            <TileSize>
+                <AbsValue val="8"/>
+            </TileSize>
+            <BackgroundInsets>
+                <AbsInset left="3" right="3" top="6" bottom="6"/>
+            </BackgroundInsets>
+        </Backdrop>
+        <Layers>
+            <Layer level="ARTWORK">
+                <FontString name="$parentText" inherits="GameFontNormalSmall">
+                    <Anchors>
+                        <Anchor point="RIGHT" relativePoint="CENTER">
+                            <Offset>
+                                <AbsDimension x="-20" y="0"/>
+                            </Offset>
+                        </Anchor>
+                    </Anchors>
+                </FontString>
+                <FontString inherits="GameFontHighlightSmall" text="50%">
+                    <Anchors>
+                        <Anchor point="BOTTOM" relativePoint="TOP">
+                            <Offset>
+                                <AbsDimension x="0" y="0"/>
+                            </Offset>
+                        </Anchor>
+                    </Anchors>
+                </FontString>
+                <FontString inherits="GameFontHighlightSmall" text="150%">
+                    <Anchors>
+                        <Anchor point="TOP" relativePoint="BOTTOM">
+                            <Offset>
+                                <AbsDimension x="0" y="0"/>
+                            </Offset>
+                        </Anchor>
+                    </Anchors>
+                </FontString>
+            </Layer>
+        </Layers>
+        <ThumbTexture name="$parentThumb" file="Interface\Buttons\UI-SliderBar-Button-Vertical">
+            <Size>
+                <AbsDimension x="32" y="32"/>
+            </Size>
+        </ThumbTexture>
+        <Scripts>
+            <OnValueChanged>
+                MOGUBarOpacitySlider_OnValueChanged(self, value);
+            </OnValueChanged>
+            <OnEnter>
+                MOGUBarOpacitySlider_OnEnter(self);
+            </OnEnter>
+            <OnLeave>
+                MOGUBarOpacitySlider_OnLeave(self);
+            </OnLeave>
+        </Scripts>
+    </Slider>
+</Ui>

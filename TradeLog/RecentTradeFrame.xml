@@ -1,0 +1,197 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+
+	<Script file="RecentTradeFrame.lua"/>
+
+	<Button name="RecentTradeFrameItemButtonTemplate" virtual="true">
+		<Size>
+			<AbsDimension x="165" y="52"/>
+		</Size>
+		<Layers>
+			<Layer level="BORDER">
+				<FontString name="$parentText" inherits="ChatFontSmall" justifyH="LEFT" text="test\\ntest" spacing="3">
+					<Color r="1.0" g="1.0" b="0.0"/>
+					<Size>
+						<AbsDimension x="300" y="48"/>
+					</Size>
+					<Anchors>
+						<Anchor point="TOPLEFT">
+							<Offset>
+								<AbsDimension x="-1" y="-3"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				self:RegisterForClicks("LeftButtonUp");
+			</OnLoad>
+			<OnClick>
+				if(self.offset and TradeLog_TradesHistory[self.offset] and TradeListFrame_ShowDetail) then
+					TradeListFrame_ShowDetail(TradeLog_TradesHistory[self.offset]);
+				end
+			</OnClick>
+			<OnEnter>
+				if(self.offset and TradeLog_TradesHistory[self.offset]) then
+					TradeLog_TradeTooltip(self, TradeLog_TradesHistory[self.offset]);
+				end
+			</OnEnter>
+			<OnLeave>
+				GameTooltip:Hide();
+			</OnLeave>
+		</Scripts>
+		<HighlightTexture file="Interface\FriendsFrame\UI-FriendsFrame-HighlightBar" alphaMode="ADD">
+			<Size>
+				<AbsDimension x="168" y="50"/>
+			</Size>
+			<Anchors>
+				<Anchor point="TOPLEFT">
+					<Offset>
+						<AbsDimension x="-4" y="-3"/>
+					</Offset>
+				</Anchor>
+			</Anchors>
+		</HighlightTexture>
+	</Button>
+
+	<Frame name="RecentTradeFrame" parent="TradeFrame" hidden="false">
+		<TitleRegion setAllPoints="true"/>
+		<Backdrop bgFile="Interface\Tooltips\UI-Tooltip-Background" edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
+			<EdgeSize>
+				<AbsValue val="16"/>
+			</EdgeSize>
+			<TileSize>
+				<AbsValue val="16"/>
+			</TileSize>
+			<BackgroundInsets>
+				<AbsInset left="5" right="5" top="5" bottom="5"/>
+			</BackgroundInsets>
+		</Backdrop>
+		<Size>
+			<AbsDimension x="180" y="451"/>
+		</Size>
+		<Anchors>
+			<Anchor point="TOPLEFT" relativePoint="TOPRIGHT">
+				<Offset>
+					<AbsDimension x="0" y="3"/>
+				</Offset>
+			</Anchor>
+		</Anchors>
+		<Layers>
+			<Layer level="BORDER">
+				<FontString name="$parentTitle" inherits="GameFontNormalSmall" justifyH="LEFT" text="Recent Trade With Abcdefghabcd">
+					<Size>
+						<AbsDimension x="155" y="20"/>
+					</Size>
+					<Anchors>
+						<Anchor point="TOPLEFT">
+							<Offset>
+								<AbsDimension x="10" y="-5"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+
+		<Frames>
+			<Button name="$parentClose" inherits="UIPanelCloseButton">
+				<Anchors>
+					<Anchor point="TOPRIGHT">
+						<Offset>
+							<AbsDimension x="3" y="3"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Button>
+
+			<Button name="$parentButton1" inherits="RecentTradeFrameItemButtonTemplate" id="1">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentTitle" relativePoint="BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x="0" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Button>
+			<Button name="$parentButton2" inherits="RecentTradeFrameItemButtonTemplate" id="2">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentButton1" relativePoint="BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x="0" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Button>
+			<Button name="$parentButton3" inherits="RecentTradeFrameItemButtonTemplate" id="3">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentButton2" relativePoint="BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x="0" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Button>
+			<Button name="$parentButton4" inherits="RecentTradeFrameItemButtonTemplate" id="4">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentButton3" relativePoint="BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x="0" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Button>
+			<Button name="$parentButton5" inherits="RecentTradeFrameItemButtonTemplate" id="5">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentButton4" relativePoint="BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x="0" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Button>
+			<Button name="$parentButton6" inherits="RecentTradeFrameItemButtonTemplate" id="6">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentButton5" relativePoint="BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x="0" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Button>
+			<Button name="$parentButton7" inherits="RecentTradeFrameItemButtonTemplate" id="7">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentButton6" relativePoint="BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x="0" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Button>
+			<Button name="$parentButton8" inherits="RecentTradeFrameItemButtonTemplate" id="8">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentButton7" relativePoint="BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x="0" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Button>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				self:RegisterEvent("TRADE_SHOW")
+			</OnLoad>
+			<OnEvent>
+				<!--RecentTradeFrame_UpdateList(GetUnitName("NPC", true):gsub(" %- ", "-"))-->
+				RecentTradeFrame_UpdateList(GetUnitName("NPC", true))
+			</OnEvent>
+			<OnShow>
+				self:SetBackdropColor(0,0,0);
+			</OnShow>
+		</Scripts>
+	</Frame>
+
+</Ui>

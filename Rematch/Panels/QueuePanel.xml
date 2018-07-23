@@ -1,0 +1,243 @@
+﻿<Ui>
+
+	<Frame name="RematchQueuePanel" inherits="RematchPanelTemplate" hidden="true">
+		<Frames>
+
+			<Frame parentKey="Top" inherits="RematchInsetFrameTemplate">
+				<Size x="280" y="29"/>
+				<Anchors>
+					<Anchor point="TOPLEFT"/>
+				</Anchors>
+				<KeyValues> <!-- will make preferences button react for both team+tab combo -->
+					<KeyValue key="forLoadedTeam" value="true" type="boolean"/>
+				</KeyValues>
+				<Layers>
+					<Layer level="ARTWORK">
+						<FontString parentKey="Count" inherits="GameFontNormal">
+							<Anchors>
+								<Anchor point="LEFT" relativePoint="TOPLEFT" x="52" y="-15"/>
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+				<Frames>
+					<!-- filter button to the right of the search bar -->
+					<Button parentKey="QueueButton" inherits="RematchFilterButtonTemplate">
+						<Anchors>
+							<Anchor point="TOPRIGHT" x="-3" y="-3"/>
+						</Anchors>
+						<Scripts>
+							<OnClick> 
+								Rematch:ToggleMenu("QueueMenu","TOPLEFT",self,"TOPRIGHT")
+							</OnClick>	
+						</Scripts>						
+					</Button>
+					<Button parentKey="Toggle" inherits="RematchTopToggleButtonTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" x="3" y="-3"/>
+						</Anchors>
+						<Scripts>
+							<OnClick>
+								RematchQueuePanel:ToggleTop()
+							</OnClick>
+						</Scripts>
+					</Button>
+					<!-- Preferences button to right of toggle when preferences active -->
+					<Button parentKey="Preferences" inherits="RematchPreferencesPauseButtonTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" x="28" y="-5"/>
+						</Anchors>
+						<HitRectInsets>
+							<AbsInset left="-2" right="-220" top="-2" bottom="-2"/>
+						</HitRectInsets>
+					</Button>
+					<Button parentKey="LevelingSlot" inherits="RematchPetListButtonTemplate" useParentLevel="true">
+						<Size x="222" y="44"/>
+						<Anchors>
+							<Anchor point="BOTTOMRIGHT" x="-8" y="4"/>
+						</Anchors>
+						<KeyValues>
+							<KeyValue key="forQueuePanel" value="true" type="boolean"/>
+						</KeyValues>
+						<Layers>
+							<Layer level="ARTWORK">
+								<FontString parentKey="Label" inherits="GameFontNormalSmall">
+									<Anchors>
+										<Anchor point="BOTTOM" relativeTo="RematchQueuePanel" relativePoint="TOP" x="0" y="-39"/>
+									</Anchors>
+									<Color r="0.5" g="0.5" b="0.5"/>
+								</FontString>
+								<!-- line beneath "Pets Leveling: x" -->
+								<Texture parentKey="Underline" inherits="_UI-Frame-InnerTopTile">
+									<Size x="158" y="3"/>
+									<Anchors>
+										<Anchor point="TOPLEFT" relativeTo="RematchQueuePanel" x="32" y="-22"/>
+									</Anchors>
+								</Texture>
+							</Layer>
+						</Layers>
+					</Button>
+				</Frames>
+			</Frame>
+
+			<!-- status bar that appears when queue is actively sorted -->
+			<Frame parentKey="Status" inherits="RematchInsetFrameTemplate">
+				<Size x="280" y="26"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeKey="$parent.Top" relativePoint="BOTTOMLEFT" x="0" y="-2"/>
+				</Anchors>
+				<Layers>
+					<Layer level="ARTWORK">
+						<FontString parentKey="Text" inherits="GameFontNormal" justifyH="LEFT" justifyV="CENTER">
+							<Size x="0" y="24"/>
+							<Anchors>
+								<Anchor point="LEFT" x="8" y="0"/>
+							</Anchors>
+						</FontString>
+						<Texture parentKey="Icon">
+							<Size x="18" y="18"/>
+							<Anchors>
+								<Anchor point="LEFT" relativeKey="$parent.Text" relativePoint="RIGHT" x="4" y="0"/>
+							</Anchors>
+							<TexCoords left="0.085" right="0.915" top="0.085" bottom="0.915"/>
+						</Texture>
+						<FontString parentKey="Sort" inherits="GameFontHighlight" justifyH="LEFT" justifyV="CENTER">
+							<Size x="0" y="24"/>
+							<Anchors>
+								<Anchor point="LEFT" relativeKey="$parent.Icon" relativePoint="RIGHT" x="2" y="0"/>
+								<Anchor point="RIGHT" x="-8"/>
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+				<Frames>
+					<Button parentKey="Clear" inherits="RematchClearButtonTemplate,RematchTooltipScripts">
+						<Anchors>
+							<Anchor point="RIGHT" x="-5" y="0"/>
+						</Anchors>
+						<Scripts>
+							<OnClick>
+								RematchSettings.QueueActiveSort = nil
+								Rematch:UpdateQueue()
+							</OnClick>
+						</Scripts>
+					</Button>
+				</Frames>
+			</Frame>
+
+			<!-- the list of pets in the queue -->
+			<Frame parentKey="List" inherits="RematchInsetFrameTemplate">
+				<Size x="280" y="503"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeKey="$parent.Top" relativePoint="BOTTOMLEFT" x="0" y="-2"/>
+					<Anchor point="BOTTOMRIGHT"/>
+				</Anchors>
+				<Frames>
+					<ScrollFrame parentKey="ScrollFrame" name="RematchQueueListScrollFrame" inherits="HybridScrollFrameTemplate">
+						<Size x="248" y="503"/>
+						<Anchors>
+							<Anchor point="TOPLEFT" x="4" y="-3"/>
+							<Anchor point="BOTTOMRIGHT" x="-6" y="3"/>
+						</Anchors>
+						<Layers>
+							<Layer level="ARTWORK">
+								<FontString parentKey="Help" inherits="GameFontNormal" justifyH="LEFT" justifyV="CENTER" hidden="true">
+									<Size x="200" y="300"/>
+									<Anchors>
+										<Anchor point="CENTER" x="-8" y="16"/>
+									</Anchors>
+									<Color r="0.75" g="0.75" b="0.75"/>
+								</FontString>
+							</Layer>
+						</Layers>
+						<Frames>
+							<Slider name="RematchQueueListScrollBar" inherits="HybridScrollBarTrimTemplate" parentKey="ScrollBar">
+								<Anchors>
+									<Anchor point="TOPRIGHT" x="2" y="-14"/>
+									<Anchor point="BOTTOMRIGHT" x="2" y="13"/>
+								</Anchors>
+								<Scripts>
+									<OnLoad>
+										self.trackBG:Show()
+										self.trackBG:SetVertexColor(0, 0, 0, 0.75)
+									</OnLoad>
+								</Scripts>
+							</Slider>
+						</Frames>
+						<Scripts>
+							<OnSizeChanged>
+								RematchQueuePanel:Update()
+							</OnSizeChanged>
+						</Scripts>
+					</ScrollFrame>
+				</Frames>
+			</Frame>
+
+			<!-- this button only receives pets; the parent frame only picks up pets -->
+			<!-- this button gets reparented to MiniQueue in its OnShow and returned in its OnHide -->
+			<Button parentKey="DropButton" setAllPoints="true" hidden="true">
+				<Animations>
+					<AnimationGroup parentKey="Glow" looping="REPEAT">
+						<Alpha fromAlpha="1" toAlpha="0" change="-1.0" duration="0.9" order="1"/>
+						<Alpha fromAlpha="0" toAlpha="1" change="1.0" duration="0.9" order="2"/>
+					</AnimationGroup>
+				</Animations>
+				<Layers>
+					<Layer level="ARTWORK">
+						<Texture parentKey="SlotBorder" file="Interface/BUTTONS/CheckButtonHilight" alphaMode="ADD">
+							<Size x="44" y="44"/>
+							<Anchors>
+								<Anchor point="TOPLEFT" x="6" y="-40"/>
+							</Anchors>
+						</Texture>
+					</Layer>
+				</Layers>
+				<Frames>
+					<!-- this button intercepts the mouse while it's over the queue scrollframe -->
+					<!-- it's continually positioned under the mouse in parent (DropButton) OnUpdate -->
+					<Button parentKey="InsertLine">
+						<Size x="206" y="88"/> <!-- this needs to stay big to capture large mouse movements -->
+						<!-- this is anchored in InsertLineOnUpdate -->
+						<Layers>
+							<Layer level="ARTWORK">
+								<Texture parentKey="Texture" file="Interface\Buttons\CheckButtonHilight" alphaMode="ADD">
+									<Size x="202" y="6"/>
+									<Anchors>
+										<Anchor point="CENTER"/>
+									</Anchors>
+									<TexCoords left="0.28125" right="0.71875" top="0.875" bottom="1"/>
+								</Texture>
+							</Layer>
+						</Layers>
+						<Scripts>
+							<OnClick>
+								RematchQueuePanel.LevelingSlotReceiveDrag(self:GetParent(),self.index)
+							</OnClick>
+							<OnReceiveDrag>
+								RematchQueuePanel.LevelingSlotReceiveDrag(self:GetParent(),self.index)
+							</OnReceiveDrag>
+						</Scripts>
+					</Button>
+					<!-- this capture frame is stretched over blank areas of an incomplete scrollFrame -->
+					<Frame parentKey="Capture"/>
+				</Frames>
+				<Scripts>
+					<OnShow>
+						self:SetFrameLevel(self:GetParent():GetFrameLevel()+10)
+					</OnShow>
+					<OnClick>
+						RematchQueuePanel.LevelingSlotReceiveDrag(self,1)
+					</OnClick>
+					<OnReceiveDrag>
+						RematchQueuePanel.LevelingSlotReceiveDrag(self,1)
+					</OnReceiveDrag>
+					<OnUpdate>
+						RematchQueuePanel.InsertLineOnUpdate(self,elapsed)
+					</OnUpdate>
+				</Scripts>
+			</Button>
+
+		</Frames>
+	</Frame>
+
+</Ui>

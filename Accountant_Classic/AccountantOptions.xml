@@ -1,0 +1,142 @@
+<!--
+$Id: AccountantOptions.xml 69 2012-09-26 09:54:33Z arith $
+-->
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/ C:\Projects\WoW\Bin\Interface\FrameXML\UI.xsd">
+	<Script file="AccountantOptions.lua"/>
+	<Frame name="AccountantOptionsFrame" toplevel="true" frameStrata="DIALOG" movable="true" enableMouse="true" hidden="true" parent="UIParent" enableKeyboard="true">
+		<Size>
+			<AbsDimension x="300" y="200"/>
+		</Size>
+		<Anchors>
+			<Anchor point="CENTER"/>
+		</Anchors>
+		<Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="Interface\DialogFrame\UI-DialogBox-Border" tile="true">
+			<BackgroundInsets>
+				<AbsInset left="11" right="12" top="12" bottom="11"/>
+			</BackgroundInsets>
+			<TileSize>
+				<AbsValue val="32"/>
+			</TileSize>
+			<EdgeSize>
+				<AbsValue val="32"/>
+			</EdgeSize>
+		</Backdrop>
+		<Layers>
+			<Layer level="ARTWORK">
+				<Texture name="AccountantOptionsFrameHeader" file="Interface\DialogFrame\UI-DialogBox-Header">
+					<Size>
+						<AbsDimension x="300" y="64"/>
+					</Size>
+					<Anchors>
+						<Anchor point="TOP">
+							<Offset>
+								<AbsDimension x="0" y="12"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</Texture>
+				<FontString inherits="GameFontNormal" text="ACCOUNTANT_OPTIONS_TITLE">
+					<Anchors>
+						<Anchor point="TOP" relativeTo="AccountantOptionsFrameHeader">
+							<Offset>
+								<AbsDimension x="0" y="-14"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<CheckButton name="AccountantOptionsFrameToggleButton" inherits="OptionsCheckButtonTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT">
+						<Offset>
+							<AbsDimension x="40" y="-30"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						AccountantButton_Toggle();
+					</OnClick>
+				</Scripts>
+			</CheckButton>
+			<Slider name="AccountantSliderButtonPos" inherits="OptionsSliderTemplate">
+				<Size>
+					<AbsDimension x="220" y="16"/>
+				</Size>
+				<Anchors>
+					<Anchor point="TOP">
+						<Offset>
+							<AbsDimension x="0" y="-75" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						_G[self:GetName().."High"]:SetText();
+						_G[self:GetName().."Low"]:SetText();
+						AccountantSliderButtonPos:SetMinMaxValues(0,360);
+						AccountantSliderButtonPos:SetValueStep(1);
+					</OnLoad>
+					<OnValueChanged>
+						Accountant_SaveData[GetRealmName()][UnitName("player")]["options"].buttonpos = AccountantSliderButtonPos:GetValue();
+						AccountantButton_UpdatePosition();
+					</OnValueChanged>
+				</Scripts>
+			</Slider>
+			<Frame name="$parentWeek" inherits="UIDropDownMenuTemplate" enableMouse="true">
+				<Anchors>
+					<Anchor point="TOP" relativeTo="$parent" relativePoint="TOPLEFT">
+						<Offset>
+							<AbsDimension x="87" y="-110"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Layers>
+					<Layer level="BACKGROUND">
+						<FontString name="$parentLabel" inherits="GameFontNormalSmall" text="ACCLOC_STARTWEEK">
+							<Anchors>
+								<Anchor point="BOTTOMLEFT" relativePoint="TOPLEFT">
+									<Offset>
+										<AbsDimension x="21" y="0"/>
+									</Offset>
+								</Anchor>
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnLoad>
+						--AccountantOptionsFrameWeek_Init();
+					</OnLoad>
+				</Scripts>
+			</Frame>
+			<Button name="AccountantOptionsFrameDone" inherits="OptionsButtonTemplate" text="ACCLOC_DONE">
+				<Anchors>
+					<Anchor point="BOTTOM">
+						<Offset>
+							<AbsDimension x="0" y="20"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						AccountantOptions_Toggle();
+					</OnClick>
+				</Scripts>
+			</Button>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				AccountantOptions_OnLoad(self);
+			</OnLoad>
+			<OnShow>
+				AccountantOptions_OnShow(self);
+			</OnShow>
+			<OnHide>
+				AccountantOptions_OnHide(self);
+			</OnHide>
+		</Scripts>
+	</Frame>
+</Ui>

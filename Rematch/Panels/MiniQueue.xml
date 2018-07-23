@@ -1,0 +1,248 @@
+<Ui>
+
+	<!-- standard/large list button template simply contains a PetSlotTemplate button -->
+	<Button name="RematchMiniQueueListButtonTemplate" virtual="true">
+		<Size x="44" y="44"/>
+		<Frames>
+			<!-- the pet icon is a pushable slot -->
+			<Button parentKey="Pet" inherits="RematchPetSlotTemplate,RematchPetClicks">
+				<Size x="38" y="38"/>
+				<Anchors>
+					<Anchor point="LEFT" x="3" y="0"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						self:RegisterForClicks("AnyUp")
+						self:RegisterForDrag("LeftButton")
+					</OnLoad>
+					<OnDragStart>
+						Rematch.PetListButtonOnDragStart(self)
+					</OnDragStart>
+					<OnDragStop>
+						self:GetScript("OnMouseUp")(self)
+					</OnDragStop>
+				</Scripts>
+			</Button>
+		</Frames>
+	</Button>
+
+	<!-- slim version does not have a pet button that can be picked up -->
+	<Button name="RematchMiniQueueSlimListButtonTemplate" inherits="RematchPetClicks" virtual="true">
+		<Size x="55" y="26"/>
+		<KeyValues>
+			<KeyValue key="slim" value="true" type="boolean"/>
+		</KeyValues>
+		<HitRectInsets>
+			<AbsInset left="-25" right="0" top="0" bottom="0"/>
+		</HitRectInsets>
+		<Frames>
+			<Frame useParentLevel="true">
+				<Size x="30" y="26"/>
+				<Anchors>
+					<Anchor point="RIGHT"/>
+				</Anchors>
+				<Backdrop edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
+					<EdgeSize val="12"/>
+					<BorderColor r="0.33" g="0.33" b="0.33"/>
+				</Backdrop>
+			</Frame>
+		</Frames>
+		<Layers>
+			<Layer level="BACKGROUND" textureSubLevel="-1">
+				<Texture parentKey="Backplate">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="29" y="-4"/>
+						<Anchor point="BOTTOMRIGHT" x="-4" y="4"/>
+					</Anchors>
+					<Color r="0.15" g="0.15" b="0.15"/>
+				</Texture>
+			</Layer>
+			<Layer level="BACKGROUND">
+				<Texture parentKey="Faceplate" file="Interface\AddOns\Rematch\Textures\faceplate" alpha="0.75">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="27" y="-2"/>
+						<Anchor point="BOTTOMRIGHT" x="-2" y="2"/>
+					</Anchors>
+					<TexCoords left="0" right="0.82421875" top="0" bottom="0.75"/>
+				</Texture>
+			</Layer>
+			<Layer level="BORDER">
+				<Texture parentKey="Icon" file="Interface\Icons\INV_Misc_QuestionMark">
+					<Size x="24" y="24"/>
+					<Anchors>
+						<Anchor point="LEFT"/>
+					</Anchors>
+					<TexCoords left="0.075" right="0.925" top="0.075" bottom="0.925"/>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<Texture parentKey="Type" file="Interface\PetBattles\PetIcon-Beast">
+					<Size x="20" y="20"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="29" y="-3"/>
+					</Anchors>
+					<TexCoords left="0.4921875" right="0.796875" top="0.50390625" bottom="0.65625"/>
+				</Texture>
+				<Texture parentKey="IsDead" file="Interface\PetBattles\DeadPetIcon" hidden="true">
+					<Size x="24" y="24"/>
+					<Anchors>
+						<Anchor point="LEFT"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY">
+				<!-- the level of the pet -->
+				<FontString parentKey="Level" inherits="SystemFont_Outline_Small" text="24">
+					<Anchors>
+						<Anchor point="BOTTOM" relativePoint="BOTTOMLEFT" x="46" y="3"/>
+					</Anchors>
+					<FontHeight>
+						<AbsValue val="9"/>
+					</FontHeight>
+					<Color r=".9" g=".9" b=".9"/>
+				</FontString>
+				<Texture parentKey="Favorite" atlas="PetJournal-FavoritesIcon" hidden="true">
+					<Size x="18" y="18"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="-7" y="4"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="HIGHLIGHT">
+				<Texture file="Interface\Buttons\ButtonHilight-Square" setAllPoints="true" alphaMode="ADD">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeKey="$parent.Icon" x="-1" y="1"/>
+						<Anchor point="BOTTOMRIGHT" relativeKey="$parent.Icon" x="1" y="-1"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				-- these are hooks so the buttons inheriting this can do their OnEnter/OnLeave too
+				self:HookScript("OnEnter",function(self) self.Backplate:SetColorTexture(0.25,0.5,0.75) end)
+				self:HookScript("OnLeave",function(self) self.Backplate:SetColorTexture(0.15,0.15,0.15) end)
+				self:RegisterForDrag("LeftButton")
+				self:RegisterForClicks("AnyUp")
+			</OnLoad>
+			<OnShow>
+				self.Backplate:SetAlpha(1)
+			</OnShow>
+			<OnMouseDown>
+				self.Backplate:SetAlpha(0.5)
+			</OnMouseDown>
+			<OnMouseUp>
+				self.Backplate:SetAlpha(1)
+			</OnMouseUp>
+			<OnDragStart>
+				Rematch.PetListButtonOnDragStart(self)
+			</OnDragStart>
+			<OnDragStop>
+				self:GetScript("OnMouseUp")(self)
+			</OnDragStop>
+		</Scripts>
+	</Button>
+
+	<Frame name="RematchMiniQueue" hidden="true">
+		<Size x="88" y="417"/>
+
+		<Frames>
+			<Frame parentKey="Top" inherits="RematchInsetFrameTemplate">
+				<Size x="0" y="29"/>
+				<Anchors>
+					<Anchor point="TOPLEFT"/>
+					<Anchor point="TOPRIGHT"/>
+				</Anchors>
+				<Frames>
+					<Button parentKey="QueueButton" inherits="RematchFilterButtonTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" x="3" y="-3"/>
+							<Anchor point="TOPRIGHT" x="-3" y="-3"/>
+						</Anchors>
+						<Scripts>
+							<OnClick> 
+								Rematch:ToggleMenu("QueueMenu","TOPLEFT",self,"TOPRIGHT")
+							</OnClick>	
+						</Scripts>						
+					</Button>
+				</Frames>
+			</Frame>
+			<Frame parentKey="Status" inherits="RematchInsetFrameTemplate">
+				<Size x="0" y="26"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" x="0" y="-31"/>
+					<Anchor point="TOPRIGHT" x="0" y="-31"/>
+				</Anchors>
+				<Layers>
+					<Layer level="ARTWORK">
+						<FontString parentKey="Text" inherits="GameFontNormal" justifyH="CENTER">
+							<Anchors>
+								<Anchor point="LEFT" x="8" y="0"/>
+								<Anchor point="RIGHT" x="-8" y="0"/>
+							</Anchors>
+						</FontString>
+						<Texture parentKey="Icon">
+							<Size x="18" y="18"/>
+							<Anchors>
+								<Anchor point="RIGHT" x="-24" y="0"/>
+							</Anchors>
+							<TexCoords left="0.085" right="0.915" top="0.085" bottom="0.915"/>
+						</Texture>
+					</Layer>
+				</Layers>
+				<Frames>
+					<Button parentKey="Clear" inherits="RematchClearButtonTemplate,RematchTooltipScripts">
+						<Anchors>
+							<Anchor point="RIGHT" x="-3" y="0"/>
+						</Anchors>
+						<Scripts>
+							<OnClick>
+								RematchSettings.QueueActiveSort = nil
+								Rematch:UpdateQueue()
+							</OnClick>
+						</Scripts>
+					</Button>
+				</Frames>
+			</Frame>
+			<Frame parentKey="List" inherits="RematchInsetFrameTemplate">
+				<Size x="0" y="358"/> <!-- was 386 -->
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeKey="$parent.Status" relativePoint="BOTTOMLEFT" x="0" y="-2"/>
+					<Anchor point="BOTTOMRIGHT"/>
+				</Anchors>
+				<Frames>
+					<ScrollFrame parentKey="ScrollFrame" name="RematchMiniQueueListScrollFrame" inherits="HybridScrollFrameTemplate">
+						<Size x="88" y="358"/>
+						<Anchors>
+							<Anchor point="TOPLEFT" x="4" y="-3"/>
+							<Anchor point="BOTTOMRIGHT" x="-6" y="3"/>
+						</Anchors>
+						<Frames>
+							<Slider name="RematchMiniQueueListScrollBar" inherits="HybridScrollBarTrimTemplate" parentKey="ScrollBar">
+								<Anchors>
+									<Anchor point="TOPRIGHT" x="2" y="-14"/>
+									<Anchor point="BOTTOMRIGHT" x="2" y="13"/>
+								</Anchors>
+								<Scripts>
+									<OnLoad>
+										self.trackBG:Show()
+										self.trackBG:SetVertexColor(0, 0, 0, 0.75)
+									</OnLoad>
+								</Scripts>
+							</Slider>
+						</Frames>
+					</ScrollFrame>
+				</Frames>
+			</Frame>
+		</Frames>
+		<Scripts>
+			<OnShow>
+				self:OnShow()
+			</OnShow>
+			<OnHide>
+				self:OnHide()
+			</OnHide>
+		</Scripts>
+	</Frame>
+
+</Ui>

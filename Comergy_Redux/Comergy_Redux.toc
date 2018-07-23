@@ -1,0 +1,24 @@
+## Title: Comergy Redux
+## Version: r32
+## Interface: 80000
+## Author: Asymptote
+## Notes: Simple, nice-looking power bar addon for all classes.
+## DefaultState: Enabled
+## SavedVariablesPerCharacter: Comergy_Config
+## X-Curse-Packaged-Version: r32
+## X-Curse-Project-Name: Comergy Redux
+## X-Curse-Project-ID: comergy-redux
+## X-Curse-Repository-ID: wow/comergy-redux/mainline
+
+locales\localization.enUS.lua
+locales\localization.zhCN.lua
+#locales\localization.zhTW.lua
+
+comergy.lua
+comergy_utils.lua
+
+comergy.xml
+
+## Title-zhCN: |cff880303[有爱]|r Comergy 能量监视
+## Notes-zhCN: 轻量美观能量值及资源点数监视的插件
+## X-Vendor: AbyUI

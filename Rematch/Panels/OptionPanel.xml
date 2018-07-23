@@ -1,0 +1,357 @@
+<Ui>
+
+	<CheckButton name="RematchOptionGrowthTemplate" inherits="RematchSlotTemplate" virtual="true">
+		<Size x="40" y="40"/>
+		<CheckedTexture file="Interface\Buttons\CheckButtonHilight" alphaMode="ADD" alpha="0.5"/>
+		<Layers>
+			<Layer level="ARTWORK">
+				<Texture parentKey="Arrow" file="Interface\Minimap\Minimap-QuestArrow">
+					<Size x="32" y="32"/>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnMouseDown>
+				self.Arrow:SetSize(30,30)
+			</OnMouseDown>
+			<OnMouseUp>
+				self.Arrow:SetSize(32,32)
+			</OnMouseUp>
+			<OnEnter>
+				RematchOptionPanel.GrowthOnEnter(self)
+			</OnEnter>
+			<OnLeave>
+				Rematch:HideTooltip()
+			</OnLeave>
+			<OnClick>
+				RematchOptionPanel.GrowthOnClick(self)
+			</OnClick>
+		</Scripts>
+	</CheckButton>
+
+	<Button name="RematchOptionListButtonTemplate" virtual="true">
+		<Size x="248" y="24"/>
+		<Frames>
+			<CheckButton parentKey="CheckButton" motionScriptsWhileDisabled="true">
+				<Size x="26" y="26"/>
+				<Anchors>
+					<Anchor point="LEFT" x="4" y="0"/>
+				</Anchors>
+				<HitRectInsets>
+					<AbsInset left="-2" right="-200" top="1" bottom="1"/>
+				</HitRectInsets>
+				<NormalTexture file="Interface\Buttons\UI-CheckBox-Up"/>
+				<PushedTexture file="Interface\Buttons\UI-CheckBox-Down"/>
+				<HighlightTexture file="Interface\Buttons\UI-CheckBox-Highlight" alphaMode="ADD"/>
+				<CheckedTexture file="Interface\Buttons\UI-CheckBox-Check"/>
+				<DisabledCheckedTexture file="Interface\Buttons\UI-CheckBox-Check-Disabled"/>
+				<Scripts>
+					<OnClick>
+						RematchOptionPanel.CheckButtonOnClick(self)
+					</OnClick>
+					<OnEnter>
+						RematchOptionPanel.ListButtonOnEnter(self)
+					</OnEnter>
+					<OnLeave>
+						Rematch:HideTooltip()
+					</OnLeave>
+				</Scripts>
+			</CheckButton>
+			<CheckButton parentKey="RadioButton" motionScriptsWhileDisabled="true">
+				<Size x="22" y="22"/>
+				<Anchors>
+					<Anchor point="LEFT" x="6" y="0"/>
+				</Anchors>
+				<HitRectInsets>
+					<AbsInset left="-2" right="-200" top="1" bottom="1"/>
+				</HitRectInsets>
+				<NormalTexture file="Interface\Garrison\GarrLanding-TradeskilLTimerFill">
+					<Size x="14" y="14"/>
+					<Anchors>
+						<Anchor point="CENTER"/>
+					</Anchors>
+					<Color r="0.65" g="0.65" b="0.65"/>
+				</NormalTexture>
+				<HighlightTexture file="Interface\Buttons\UI-RadioButton" alphaMode="ADD">
+					<TexCoords left="0.5" right="0.75" top="0" bottom="1"/>
+				</HighlightTexture>
+				<CheckedTexture file="Interface\Common\Indicator-Yellow">
+					<Size x="16" y="16"/>
+					<Anchors>
+						<Anchor point="CENTER" x="0" y="-1"/>
+					</Anchors>
+				</CheckedTexture>
+				<Scripts>
+					<OnLoad>
+						self:GetNormalTexture():SetDesaturated(true)
+					</OnLoad>
+					<OnClick>
+						RematchOptionPanel.RadioButtonOnClick(self)
+					</OnClick>
+					<OnEnter>
+						RematchOptionPanel.ListButtonOnEnter(self)
+					</OnEnter>
+					<OnLeave>
+						Rematch:HideTooltip()
+					</OnLeave>
+				</Scripts>
+			</CheckButton>
+			<Button parentKey="Header" setAllPoints="true">
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture file="Interface\Buttons\CollapsibleHeader">
+							<Size x="76" y="18"/>
+							<Anchors>
+								<Anchor point="LEFT" x="4" y="0"/>
+							</Anchors>
+							<TexCoords left="0.17578125" right="0.47265625" top="0.29687500" bottom="0.54687500"/>
+							<Color r="0.75" g="0.75" b="0.75"/>
+						</Texture>
+						<Texture file="Interface\Buttons\CollapsibleHeader">
+							<Size x="76" y="18"/>
+							<Anchors>
+								<Anchor point="RIGHT" x="-4" y="0"/>
+							</Anchors>
+							<TexCoords left="0.17578125" right="0.47265625" top="0.01562500" bottom="0.26562500"/>	
+							<Color r="0.75" g="0.75" b="0.75"/>
+						</Texture>
+						<Texture file="Interface\Buttons\CollapsibleHeader">
+							<Size x="0" y="18"/>
+							<Anchors>
+								<Anchor point="LEFT" x="60" y="0"/>
+								<Anchor point="RIGHT" x="-60" y="0"/>
+							</Anchors>
+							<TexCoords left="0.48046875" right="0.98046875" top="0.01562500" bottom="0.26562500"/>	
+							<Color r="0.75" g="0.75" b="0.75"/>
+						</Texture>
+					</Layer>
+					<Layer level="ARTWORK">
+						<Texture parentKey="ExpandIcon" file="Interface\Buttons\UI-PlusMinus-Buttons">
+							<Size x="7" y="7"/>
+							<Anchors>
+								<Anchor point="LEFT" x="10" y="0"/>
+							</Anchors>
+						</Texture>
+					</Layer>
+				</Layers>
+				<HighlightTexture file="Interface\TokenFrame\UI-TokenFrame-CategoryButton" alphaMode="ADD" alpha="0.25">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="6" y="-5"/>
+						<Anchor point="BOTTOMRIGHT" x="-6" y="5"/>
+					</Anchors>
+					<TexCoords left="0" right="1" top="0.609375" bottom="0.796875"/>
+				</HighlightTexture>
+				<ButtonText parentKey="Text">
+					<Anchors>
+						<Anchor point="LEFT" x="24" y="0"/>
+						<Anchor point="RIGHT" x="-8" y="0"/>
+					</Anchors>
+				</ButtonText>
+				<NormalFont style="GameFontNormalLeft"/>
+				<HighlightFont style="GameFontHighlightLeft"/>
+				<Scripts>
+					<OnClick>
+						RematchOptionPanel.HeaderOnClick(self)
+					</OnClick>
+				</Scripts>
+			</Button>
+		</Frames>
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString parentKey="Text" inherits="GameFontHighlight" justifyH="LEFT">
+					<Size x="0" y="24"/>
+					<Anchors>
+						<Anchor point="LEFT" relativeKey="$parent.CheckButton" relativePoint="RIGHT" x="2" y="0"/>
+						<Anchor point="RIGHT" x="-8" y="0"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+	</Button>
+
+	<Frame name="RematchOptionPanel" inherits="RematchPanelTemplate" hidden="true">
+		<Frames>
+
+			<Frame parentKey="List" inherits="RematchInsetFrameTemplate">
+				<Size x="280" y="503"/>
+				<Anchors>
+					<Anchor point="TOPLEFT"/>
+					<Anchor point="BOTTOMRIGHT"/>
+				</Anchors>
+				<Frames>
+					<ScrollFrame parentKey="ScrollFrame" name="RematchOptionListScrollFrame" inherits="HybridScrollFrameTemplate">
+						<Size x="248" y="503"/>
+						<Anchors>
+							<Anchor point="TOPLEFT" x="4" y="-3"/>
+							<Anchor point="BOTTOMRIGHT" x="-6" y="3"/>
+						</Anchors>
+						<Frames>
+							<Slider name="RematchOptionListScrollBar" inherits="HybridScrollBarTrimTemplate" parentKey="ScrollBar">
+								<Anchors>
+									<Anchor point="TOPRIGHT" x="2" y="-14"/>
+									<Anchor point="BOTTOMRIGHT" x="2" y="13"/>
+								</Anchors>
+								<Scripts>
+									<OnLoad>
+										self.trackBG:Show()
+										self.trackBG:SetVertexColor(0, 0, 0, 0.75)
+									</OnLoad>
+								</Scripts>
+							</Slider>
+						</Frames>
+					</ScrollFrame>
+				</Frames>
+			</Frame>
+
+			<Frame parentKey="Growth">
+				<Size x="248" y="48"/>
+				<Layers>
+					<Layer level="ARTWORK">
+						<FontString parentKey="Label" inherits="GameFontHighlight">
+							<Anchors>
+								<Anchor point="LEFT" x="8" y="0"/>
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+				<Frames>
+					<CheckButton parentArray="Corners" inherits="RematchOptionGrowthTemplate" id="1">
+						<Anchors>
+							<Anchor point="LEFT" x="64" y="0"/>
+						</Anchors>
+						<KeyValues>
+							<KeyValue key="corner" value="BOTTOMRIGHT"/>
+						</KeyValues>
+					</CheckButton>
+					<CheckButton parentArray="Corners" inherits="RematchOptionGrowthTemplate" id="2">
+						<Anchors>
+							<Anchor point="LEFT" x="108" y="0"/>
+						</Anchors>
+						<KeyValues>
+							<KeyValue key="corner" value="TOPRIGHT"/>
+						</KeyValues>
+					</CheckButton>
+					<CheckButton parentArray="Corners" inherits="RematchOptionGrowthTemplate" id="3">
+						<Anchors>
+							<Anchor point="LEFT" x="152" y="0"/>
+						</Anchors>
+						<KeyValues>
+							<KeyValue key="corner" value="BOTTOMLEFT"/>
+						</KeyValues>
+					</CheckButton>
+					<CheckButton parentArray="Corners" inherits="RematchOptionGrowthTemplate" id="4">
+						<Anchors>
+							<Anchor point="LEFT" x="196" y="0"/>
+						</Anchors>
+						<KeyValues>
+							<KeyValue key="corner" value="TOPLEFT"/>
+						</KeyValues>
+					</CheckButton>
+				</Frames>
+			</Frame> <!-- Growth -->
+
+			<!-- this looks just like a regular check option but has an editbox too -->
+			<Frame parentKey="CustomScale">
+				<Size x="248" y="24"/>
+				<Frames>
+					<CheckButton parentKey="CheckButton" motionScriptsWhileDisabled="true">
+						<Size x="26" y="26"/>
+						<Anchors>
+							<Anchor point="LEFT" x="4" y="0"/>
+						</Anchors>
+						<NormalTexture file="Interface\Buttons\UI-CheckBox-Up"/>
+						<PushedTexture file="Interface\Buttons\UI-CheckBox-Down"/>
+						<HighlightTexture file="Interface\Buttons\UI-CheckBox-Highlight" alphaMode="ADD"/>
+						<CheckedTexture file="Interface\Buttons\UI-CheckBox-Check"/>
+						<DisabledCheckedTexture file="Interface\Buttons\UI-CheckBox-Check-Disabled"/>
+						<Scripts>
+							<OnClick>
+								RematchOptionPanel.CheckButtonOnClick(self)
+							</OnClick>
+							<OnEnter>
+								RematchOptionPanel.ListButtonOnEnter(self)
+							</OnEnter>
+							<OnLeave>
+								Rematch:HideTooltip()
+							</OnLeave>
+						</Scripts>
+					</CheckButton>
+				</Frames>
+				<Layers>
+					<Layer level="ARTWORK">
+						<FontString parentKey="Text" inherits="GameFontHighlight" justifyH="LEFT">
+						<Size x="0" y="24"/>
+							<Anchors>
+								<Anchor point="LEFT" relativeKey="$parent.CheckButton" relativePoint="RIGHT" x="2" y="0"/>
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+				<Frames>
+					<Button parentKey="ScaleButton" inherits="RematchStretchButtonTemplate,RematchTooltipScripts">
+						<Size x="64" y="24"/>
+						<Anchors>
+							<Anchor point="LEFT" relativeKey="$parent.Text" relativePoint="RIGHT" x="2" y="0"/>
+						</Anchors>
+						<Scripts>
+							<OnClick>
+								RematchOptionPanel.ShowCustomScaleDialog(self)
+							</OnClick>
+						</Scripts>
+					</Button>
+				</Frames>
+			</Frame> <!-- CustomScale -->
+
+		</Frames>
+	</Frame>
+
+	<!-- this slider widget is a child of RematchDialog for use in the custom scale dialog -->
+	<Slider parentKey="ScaleSlider" orientation="HORIZONTAL" minValue="50" maxValue="200" valuestep="5" obeyStepOnDrag="true" parent="RematchDialog" enableMouse="true" hidden="true">
+		<Size x="220" y="17"/>
+		<HitRectInsets>
+			<AbsInset left="0" right="0" top="-10" bottom="-10"/>
+		</HitRectInsets>
+		<Backdrop bgFile="Interface\Buttons\UI-SliderBar-Background" edgeFile="Interface\Buttons\UI-SliderBar-Border" tile="true">
+			<EdgeSize val="8"/>
+			<TileSize val="8"/>
+			<BackgroundInsets>
+				<AbsInset left="3" right="3" top="6" bottom="6"/>
+			</BackgroundInsets>
+		</Backdrop>
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString inherits="GameFontHighlightSmall" text="50%">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" x="-4" y="3"/>
+					</Anchors>
+				</FontString>
+				<FontString inherits="GameFontHighlightSmall" text="100%">
+					<Anchors>
+						<Anchor point="TOP" relativePoint="BOTTOMLEFT" x="82" y="3"/>
+					</Anchors>
+				</FontString>
+				<FontString inherits="GameFontHighlightSmall" text="200%">
+					<Anchors>
+						<Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" x="4" y="3"/>
+					</Anchors>
+				</FontString>
+				<FontString parentKey="Value" inherits="GameFontHighlightLarge">
+					<Anchors>
+						<Anchor point="BOTTOM" relativePoint="TOP" x="0" y="8"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<ThumbTexture file="Interface\Buttons\UI-SliderBar-Button-Horizontal">
+			<Size>
+				<AbsDimension x="32" y="32"/>
+			</Size>
+		</ThumbTexture>
+		<Scripts>
+			<OnValueChanged>
+				RematchOptionPanel.CustomScaleSliderOnValueChanged(self,value)
+			</OnValueChanged>
+		</Scripts>
+	</Slider>
+
+</Ui>

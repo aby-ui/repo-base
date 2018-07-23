@@ -1,0 +1,52 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+	<Button name="BigDebuffsUnitFrameTemplate" inherits="ActionButtonTemplate" parent="UIParent" hidden="true" dontSavePosition="true" virtual="true">
+		<Size>
+			<AbsDimension x="36" y="36"/>
+		</Size>
+		<Anchors>
+			<Anchors>
+				<Anchor point="CENTER"/>
+			</Anchors>
+		</Anchors>
+		<NormalTexture name="$parentNormalTexture" parentKey="NormalTexture">
+			<Anchors>
+				<Anchor point="TOPLEFT" x="-15" y="15"/>
+				<Anchor point="BOTTOMRIGHT" x="15" y="-15"/>
+			</Anchors>
+		</NormalTexture>
+		<HighlightTexture/>
+		<PushedTexture/>
+		<Frames>
+			<Cooldown name="$parentCooldown" inherits="CooldownFrameTemplate" parentKey="cooldown" reverse="true" drawBling="false" drawEdge="false" hidden="true">
+				<Size x="36" y="36"/>
+				<Anchors>
+					<Anchor point="CENTER" x="0" y="-1"/>
+				</Anchors>
+			</Cooldown>
+		</Frames>
+		<Scripts>
+			<OnDragStart>
+				self:StartMoving()
+			</OnDragStart>
+			<OnDragStop>
+				self:StopMovingOrSizing()
+				BigDebuffs:SaveUnitFramePosition(self)
+			</OnDragStop>
+			<OnUpdate>
+				if ( self:IsMouseOver() and BigDebuffs.db.profile.unitFrames.tooltips ) then
+					GameTooltip:SetOwner(self, "ANCHOR_RIGHT", 0, 0);
+					if self.interrupt then
+						GameTooltip:SetSpellByID(self.interrupt)
+					elseif self.buff then
+						GameTooltip:SetUnitBuff(self.unit, self:GetID());
+					else
+						GameTooltip:SetUnitDebuff(self.unit, self:GetID());
+					end
+				elseif GameTooltip:IsOwned(self) then
+					GameTooltip:Hide();
+				end
+			</OnUpdate>
+		</Scripts>
+	</Button>
+</Ui>

@@ -1,0 +1,8 @@
+<Bindings>
+    <Binding name="HHTDP" header="HHTD" category="ADDONS">
+        if SlashCmdList["ACECONSOLE_HHTDP"] then
+            SlashCmdList["ACECONSOLE_HHTDP"]();
+        end
+    </Binding>
+</Bindings>
+

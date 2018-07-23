@@ -1,0 +1,31 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+    http://wowprogramming.com/FrameXML/UI.xsd">
+
+    <Script>
+        local T = DecursiveRootTable or {};
+
+        T._LoadedFiles["load.xml"] = false;
+        T._CatchAllErrors = "locals...";
+        
+    </Script>
+
+    <Script file="enUS.lua"/>
+    <Script file="deDE.lua"/>
+    <Script file="esES.lua"/>
+    <Script file="esMX.lua"/>
+    <Script file="frFR.lua"/>
+    <Script file="koKR.lua"/>
+    <Script file="ruRU.lua"/>
+    <Script file="zhCN.lua"/>
+    <Script file="zhTW.lua"/>
+    <Script file="ptBR.lua"/>
+    <Script file="itIT.lua"/>
+
+    <Script>
+        local T = DecursiveRootTable or {};
+
+        T._CatchAllErrors = false;
+        T._LoadedFiles["load.xml"] = "2.7.5.8";
+    </Script>
+
+</Ui>

@@ -1,0 +1,312 @@
+v1.12.0:
+* fix bug with sticky crits in 6.0
+* mark compatible with 6.0
+
+v1.11.4:
+* mark compatible with wow 5.4
+
+v1.11.3:
+* mark compatible with wow 5.3
+* fix bug in raid-difficulty detection
+
+v1.11.2:
+* mark update for WoW 5.2
+
+v1.11.1:
+* fix configuration-menu not working correctly
+* fix Friendly-check in UnitHealth and UnitPower triggerconditions
+
+v1.11.0:
+* add Monk as valid class
+* add option to enable triggers only for specific specs
+* color triggers in options according to whether they are active or not
+* extract "Style"-tab for triggers
+* add error-handling to color-text-field
+* fix possible nil-error when 3rd party addons show messages way early
+* fix taint-bug that could break the glyph-UI
+* allow value 0 in aura-stack-count in triggers to fire on every stack gain
+* fix "Ready, Set, Aim..."-Trigger
+* added new default-triggers:
+  + Warrior - Fury:
+    - Bloodsurge
+    - Raging Blow!
+  + Deathknight - Unholy:
+    - Sudden Doom
+  + Mage - Arcane:
+    - Arcane Missiles
+  + Mage - Fire:
+    - Pyroblast
+    - Heating Up
+  + Monk - Windwalker:
+    - Combo Breaker
+  + Paladin - Protection:
+    - Grand Crusader
+  + Shaman - Elemental:
+    - Lava Surge
+  + Warlock - Demonology:
+    - Molten Core
+  + Warlock - Destruction:
+    - Backlash
+
+v1.10.33:
+* fix frost-trap-spell ids
+* fix absorb-amount for Periodic damage
+* update for patch 5.1.0
+
+v1.10.32:
+* update for patch 5.0.4
+* localize environmental damage
+
+v1.10.31:
+* adapt new powertypes from MoP
+* improve accuracy of loot-events
+* also fire Miss-Triggers for other melee-misses
+* fix missing missed-amounts
+
+v1.10.30:
+* [223] fix combat-events not being enabled properly
+
+v1.10.29:
+* fix filters for outgoing DoTs
+* fix automatic renabling after login
+
+v1.10.28:
+* mark compatible with WoW 4.3
+* play all sounds on master-channel
+* increase max-value for filters to 100000 (from 1000)
+
+v1.10.27:
+* compatibility to WoW 4.2
+* fix problem with user-settings that might be left behind after removing default-triggers
+
+v1.10.26:
+* compatibility to WoW 4.1
+
+v1.10.25:
+* fix bug in alternate power bars text
+* extended options to hide full overheals (Hots/direct heals)
+* make sucessful spellcast trigger working
+* reduce minimum fontsize to 6 (down from 12)
+* replace honor-gain-events by currency-gain-events
+
+v1.10.24:
+* properly display alternate powertypes (like Sound or Corruption)
+
+v1.10.23:
+* add "Cast started"-Trigger condition
+
+v1.10.22:
+* fix missing spell-ids
+* remove no longer valid triggers
+* round honor-gains to 3 digits
+* fix trap-cooldown-grouping
+* remove judgements from cooldown groups
+* fix power-triggers for units with multiple power types
+* do not forcefully disable blizzard fct on login
+
+v1.10.21:
+* fix triggers for Eclipse
+* add new powertypes to options
+* add new Triggers for:
+    + Slam! (Warrior)
+    + Blood Swarm (Deathknight)
+    + Shadow Infusion (Deathknight)
+    + Focus Fire (Hunter)
+    + Ready, Set, Aim... (Hunter)
+* fix Trigger Lock and Load
+
+v1.10.20a:
+* fix possible nil-errors in Triggers
+
+v1.10.20:
+* make compatible with 4.0 (port cooldown-module and honor-notifications)
+
+v1.10.19a:
+* fix lua-error when casting Shadow Word: Death
+
+v1.10.19:
+* fix icons showing in aura- and cooldowns-notifications
+* prevent parrot from completely failing when spellIds are missing
+    (this means, that parrot will kind of work when the patch hits US.
+    The real 4.0-update will be pushed on when it hits EU)
+* add option to shorten amounts and modifiers (like 26k)
+* fix behaviour of the hide-realm-option
+
+v1.10.18:
+* slightly improve combatlog-parsing cpu-usage
+* make sure triggers that are default-disabled stay enabled
+
+v1.10.17:
+* remove the aura-polling-hack
+* fix bug that cause triggers to always go back to being sticky
+
+v1.10.16:
+* fix short text setting
+
+v1.10.15:
+* cleanup the default spellfilters
+
+v1.10.14:
+* spell-filters should start working without reloading the interface now
+
+v1.10.13:
+* add Triggers for "Fingers of Frost" and "Decimation"
+* add option to color names by class (for party/raid members)
+* only truncate the realm name from players
+* add option to flash screen on triggers
+* add secondary condition "Battle stance" to Overpower trigger
+* add option to check the stackcount for "Buff active"-secondary Condition
+* reorganize some options (i.e. move them to more proper category)
+
+v1.10.12:
+* add missile-barrage to default-triggers
+* add item cooldown ready Trigger Condition
+* fix bug with AceGUI-3.0-SharedMediaWidgets embed
+
+v1.10.11:
+* really fix short throttle-texts not disabling properly for healing events (#136)
+* fix error in embedding of AceGUI-3.0-SharedMediaWidgets
+* upgrade to LibDeformat-3.0 and get rid of Ace2 for good
+
+v1.10.10:
+* fix short throttle-texts not disabling properly for healing events (#136)
+* add "ad-hoc-fix" to stop spamming of berserk-triggers
+* fix possible error with SharedMediaWidgets-embed
+* add default-trigger for Serendipity
+
+v1.10.9:
+* fire both Trigger-conditions (aura gain, and aura stack gain) when a stackable
+		aura is gained. When a additional stack is gained (to a buff already
+		present) only Aura stack gain fires.
+* fix more possible memory-leaks
+* add default-trigger for Warlock's "Molten Core"
+
+v1.10.8:
+* fix memory leak in the new Aura-Trigger-module
+
+v1.10.7:
+* add hack to make some broken Proc-triggers work again
+* add option to shorten throttled text
+* add functionality to throttle reputation-gains
+
+v1.10.6:
+* do not show outgoing heals to pets.
+* bump toc to 30300 (for patch 3.3)
+
+v1.10.5:
+* make "disable in raid"-options for combat-events work with 3.2s heroic raids
+
+v1.10.4:
+* do not trigger soulshard-gain on every item created
+
+v1.10.3:
+* fix Soulshard gains
+
+v1.10.1:
+* fix "Own Aura"-field in buff-active-conditions
+* use SharedMediaWidgets for Sounds and Master font settings
+* set more default-values when creating a new trigger-condition
+* make options use a bit less memory
+* fix cooldown-module missing to report finshed cooldowns sometimes
+* add config-mode-support (http://www.wowwiki.com/ConfigMode)
+* fix Pet-misses showing the tag in the text (like "Pet absorb [Amount]")
+
+v1.10:
+* Move to Ace3 (got rid of the rest of LibRock)
+* major changes to the Trigger-System
+  + TriggerCondition now support multiple arguments
+  + Most TriggerConditions can be used more than once
+  + simplified the List of built-in conditions
+* add Primary Trigger Conditions:
+  + Incoming damage
+  + Outgoing damage
+* add Secondary Trigger Conditions:
+  + Item buff active
+* use ingame-translations for damage-types
+* Fix the double-combo-point-issue (Ticket #41)
+* add support for CombatEvents:
+  + Pet skill interrupts
+  + Outgoing Siege damage
+  + Pet buff gain/fade (disabled by default)
+  + Pet debuff gain/fade (disabled by default)
+  + Enemy buff gain/fade (disabled by default)
+  + Enemy debuff gain/fade (disabled by default)
+* optimize the Cooldown-module to use much less CPU-time
+* continue showing events when dead
+* Do not control Game Damage/Healing by default
+* only schedule "Check for XX seconds"-timer when a Trigger is using it
+
+v1.9.4:
+* properly update scroll-area-choices when profile is changed
+
+v1.9.3:
+* fix locale-error
+
+v1.9.2:
+* Direction-choices in ScrollAreas-options now update properly
+
+v1.9.1:
+* remove Dependency of LibBabble-Class (and use built-in class-translations)
+* add options for always hiding unit- and skill names (except Cooldowns)
+* add secondary condition "Active talents"
+* new Triggers' class-lists contain only one entry by default
+    (the current player)
+
+v1.9.0:
+* add support for per-spell-filtering (by name or ID) (fixes Ticket #42)
+* add support for per-spell-throttling
+* add default-filters for Unleashed Rage, Ferocious Inspiration, and
+    Abominable Might (fixes Ticket #16)
+* Hide realm name in tags (fixes Ticket #83)
+* allow spell-ids as parameters in aura-trigger-conditions
+* add 2 triggers for Eclipse (Wrath and Starfire)
+* add trigger for The Art of War
+* add trigger for Kill shot
+* add secondary conditions "Target minimum health" and "Target is player"
+* add secondary condition "Lua function" to run custom lua-code for checks
+* add more options for Cooldowns (treshold and filters)
+* hide full overheals (but add option for making them visible again)
+* show player's heals on pets only as incoming pet heal (Ticket #92)
+* show correct icon when using "Wild Quiver" (Ticket #93)
+
+v1.8.3:
+* fix some issues with the Config when Ace3 is not installed seperatly
+
+v1.8.1:
+* fix new shared cooldowns of hunter traps
+* remove windshock from shared cooldowns
+* fix bugs in new ace-config (fixes Tickets #80 and #81)
+* rewrite the db-import of default-triggers (uses a versioncheck now)
+   This means default-triggers do not get recreated when deleting them.
+* bugfixes in profile-switching
+    profile-applying to submodules
+    profile-copying and reseting
+
+v1.8.0:
+* use ace3 for config-stuff
+* make profile-switching work again (by using AceDB-3.0)
+    Note: The profile now defaults to your Character-profile instead of
+    "Default". Try switching profiles to regain all saved settings.
+* add Parrot to the Blizzard-Addon-Options
+* add new Primary TriggerCondition: Successful Spell Cast (Ticket #65)
+* add secondary Trigger Conditions (Minimum/Maximum Target Health Percent)
+    (Ticket #55)
+* add Dispel- and Spellsteal CombetEvents (Ticket #74)
+* make Heals show properly in 3.2 (fixes Ticket #78)
+
+v1.7.2:
+* add support for throttling miss-events (avoids like parry, block, etc.)
+* add "minimum power percent"-secondary trigger condition
+* add secondary conditions for "in vehicle" and "mounted"
+
+v1.7.1:
+* make dot-crits show as sticky.
+* fix optdeps.
+* add Options to disable CombatEvents when in a raid-instance.
+* add icon-override for mutilate.
+* add support for AddonLoader (http://www.wowace.com/addons/addon-loader/).
+
+v1.7.0:
+* add Judgements to its own group, like shocks.
+* remove blackout- and deathtrance-trigger from default-triggers.
+

@@ -1,0 +1,343 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+E:\PROGRA~1\Altova\XMLSpy2006\UI.xsd">
+	<Script file="EN_HpMpXp.lua"/>
+	<!-- General -->
+	<Frame name="EUF_HpMpXp_Genreal" parent="UIParent" hidden="true">
+		<Scripts>
+			<OnLoad>
+				EUF_HpMpXp_OnLoad(self);
+			</OnLoad>
+			<OnEvent>
+				EUF_HpMpXp_OnEvent(event, ...);
+			</OnEvent>
+		</Scripts>
+	</Frame>
+	<!-- Player Frame -->
+	<Frame name="EUF_PlayerFrame" parent="PlayerFrame">
+		<Frames>
+			<Frame>
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture name="$parentBackground">
+							<Size x="215" y="41"/>
+							<Anchors>
+								<Anchor point="TOPLEFT" relativeTo="PlayerFrame">
+									<Offset x="106" y="-22"/>
+								</Anchor>
+							</Anchors>
+							<Color r="0" g="0" b="0" a="0.5"/>
+						</Texture>
+					</Layer>
+					<Layer level="OVERLAY">						
+						<Texture name="$parentTextureExt" file="Interface\AddOns\EN_UnitFrames\Texture\dwPlayerFrame">
+							<Size x="325" y="80"/>
+							<Anchors>
+								<Anchor point="TOPLEFT" relativeTo="PlayerFrame" relativePoint="TOPLEFT">
+									<Offset x="0" y="0"/>
+								</Anchor>
+							</Anchors>
+							<TexCoords left="0" right="0.634765625" top="0" bottom="0.625"/>
+						</Texture>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnLoad>
+						self:SetFrameLevel(self:GetFrameLevel() - 1);
+					</OnLoad>
+					<!-- <OnUpdate> -->
+					<!-- 	EUF_Frame_Update(); -->
+					<!-- </OnUpdate> -->
+				</Scripts>
+			</Frame>
+			
+			<StatusBar name="$parentXPBar" inherits="TextStatusBar">
+				<Size x="173" y="9"/>
+				<Anchors>
+					<Anchor point="CENTER" relativeTo="PlayerFrame" relativePoint="CENTER">
+						<Offset x="90" y="-28"/>
+					</Anchor>
+				</Anchors>				
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture name="$parentBkg">
+							<Size x="173" y="9"/>
+							<Anchors>
+								<Anchor point="TOPLEFT">
+									<Offset x="0" y="0"/>
+								</Anchor>
+							</Anchors>
+							<Color r="0" g="0" b="0" a="0.5"/>
+						</Texture>								
+					</Layer>
+					<Layer level="OVERLAY">
+						<Texture name="$parentBorders" file="Interface\AddOns\EN_UnitFrames\Texture\dwPlayerFrame">
+							<Size x="177" y="20"/>
+							<Anchors>
+								<Anchor point="BOTTOMLEFT">
+									<Offset x="-3" y="-2"/>
+								</Anchor>
+							</Anchors>
+							<TexCoords left="0.244140625" right="0.587890625" top="0.71875" bottom="0.875"/>
+						</Texture>								
+					</Layer>
+				</Layers>
+				<BarTexture file="Interface\TargetingFrame\UI-StatusBar"/>
+				<BarColor r="0.1" g="0.5" b="0"/>
+			</StatusBar>
+			
+			<Frame>
+				<Layers>
+					<Layer level="OVERLAY">
+						<!-- 显示生命值 -->
+						<FontString name="$parentHP" inherits="dwTextStatusBarText">
+							<Anchors>
+								<Anchor point="CENTER" relativeTo="PlayerFrameHealthBar" relativePoint="RIGHT">
+									<Offset x="51" y="16"/>
+								</Anchor>
+							</Anchors>
+							<Color r="0.1" g="1" b="0.1"/>
+						</FontString>
+						<!-- 显示生命百分比 -->
+						<FontString name="$parentHPPercent" inherits="dwTextStatusBarTextSmall">
+							<Anchors>
+								<Anchor point="CENTER" relativeTo="PlayerFrameHealthBar" relativePoint="RIGHT">
+									<Offset x="51" y="1"/>
+								</Anchor>
+							</Anchors>
+							<Color r="0" g="1" b="0"/>
+						</FontString>
+						<!-- 显示魔法百分比 -->
+						<FontString name="$parentMP" inherits="dwTextStatusBarTextSmall">
+							<Anchors>
+								<Anchor point="CENTER" relativeTo="PlayerFrameManaBar" relativePoint="RIGHT">
+									<Offset x="51" y="1"/>
+								</Anchor>
+							</Anchors>
+							<Color r="0.75" g="0.75" b="1"/>
+						</FontString>
+						<!-- 经验值 -->
+						<FontString name="$parentXP" inherits="dwTextStatusBarTextSmall">
+							<Anchors>
+								<Anchor point="CENTER" relativeTo="$parentXPBar" relativePoint="CENTER">
+									<Offset x="0" y="0"/>
+								</Anchor>
+							</Anchors>
+							<Color r="1" g="1" b="0" a="0.8"/>
+						</FontString>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnLoad>
+						self:SetFrameLevel(self:GetFrameLevel() + 1);
+					</OnLoad>
+				</Scripts>
+			</Frame>
+		</Frames>
+<!--
+		<Scripts>
+			<OnUpdate>
+				EUF_PlayerFramePosition_Update();
+			</OnUpdate>
+		</Scripts>
+-->
+	</Frame>
+	<!-- Pet Frame -->
+	<Frame name="EUF_PetFrame" parent="PetFrame">
+		<Frames>
+			<Frame>
+				<Layers>			
+					<Layer level="OVERLAY">
+						<FontString name="$parentHP" inherits="dwTextStatusBarTextSmall">
+							<Anchors>
+								<Anchor point="TOPLEFT" relativeTo="PetFrame" relativePoint="TOPLEFT">
+									<Offset x="122" y="-25"/>
+								</Anchor>
+							</Anchors>
+							<Color r="0.1" g="1" b="0.1"/>
+						</FontString>
+						<FontString name="$parentMP" inherits="dwTextStatusBarTextSmall" hidden="true">
+							<Anchors>
+								<Anchor point="TOPLEFT" relativeTo="PetFrame" relativePoint="TOPLEFT">
+									<Offset x="122" y="-30"/>
+								</Anchor>
+							</Anchors>
+							<Color r="0.75" g="0.75" b="1"/>
+							<Shadow>
+								<Offset x="1" y="-1"/>
+								<Color r="0" g="0" b="0"/>
+							</Shadow>
+						</FontString>
+					</Layer>
+				</Layers>
+			</Frame>
+		</Frames>
+	</Frame>
+	<!-- TargetFrame -->
+	<Frame name="EUF_TargetFrame" parent="TargetFrame">
+		<Size x="200" y="150"/>
+		<Anchors>
+			<Anchor point="TOPLEFT" relativePoint="TOPLEFT"/>
+		</Anchors>
+		<Layers>
+			<Layer level="OVERLAY">
+				<FontString name="$parentHP" inherits="dwTextStatusBarText" text="">
+					<Anchors>
+						<Anchor point="BOTTOM" relativeTo="TargetFrameHealthBar">
+							<Offset x="-2" y="0"/>
+						</Anchor>
+					</Anchors>
+					<Color r="1" g="1" b="1" a="0.9"/>
+				</FontString>
+				<FontString name="$parentMP" inherits="dwTextStatusBarText" text="">
+					<Anchors>
+						<Anchor point="BOTTOM" relativeTo="TargetFrameManaBar">
+							<Offset x="-2" y="0"/>
+						</Anchor>
+					</Anchors>
+					<Color r="1" g="1" b="1" a="0.9"/>
+				</FontString>
+				<FontString name="$parentHPPercent" inherits="ChatFontNormal" text="">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parent" relativePoint="TOPLEFT">
+							<Offset x="8" y="-6"/>
+						</Anchor>
+					</Anchors>
+					<Color r="1" g="0.75" b="0"/>
+					<Shadow>
+						<Offset x="1" y="-1"/>
+						<Color r="0" g="0" b="0"/>
+					</Shadow>
+				</FontString>
+				<FontString name="$parentMPPercent" inherits="ChatFontNormal" text="">
+					<Anchors>
+						<Anchor point="TOPRIGHT" relativeTo="$parent" relativePoint="TOPLEFT">
+							<Offset x="2" y="-52"/>
+						</Anchor>
+					</Anchors>
+					<Color r="0.75" g="0.75" b="1"/>
+					<Shadow>
+						<Offset x="1" y="-1"/>
+						<Color r="0" g="0" b="0"/>
+					</Shadow>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				--self:SetFrameLevel("3");
+			</OnLoad>
+		</Scripts>
+	</Frame>
+	<!-- Focus Frame -->
+	<Frame name="EUF_FocusFrame" parent="FocusFrame">
+		<Size x="200" y="150"/>
+		<Anchors>
+			<Anchor point="TOPLEFT" relativePoint="TOPLEFT"/>
+		</Anchors>
+		<Layers>
+			<Layer level="OVERLAY">
+				<FontString name="$parentHP" inherits="dwTextStatusBarText" text="">
+					<Anchors>
+						<Anchor point="BOTTOM" relativeTo="FocusFrameHealthBar">
+							<Offset x="-2" y="0"/>
+						</Anchor>
+					</Anchors>
+					<Color r="1" g="1" b="1" a="0.9"/>
+				</FontString>
+				<FontString name="$parentMP" inherits="dwTextStatusBarText" text="">
+					<Anchors>
+						<Anchor point="BOTTOM" relativeTo="FocusFrameManaBar">
+							<Offset x="-2" y="0"/>
+						</Anchor>
+					</Anchors>
+					<Color r="1" g="1" b="1" a="0.9"/>
+				</FontString>
+				<FontString name="$parentHPPercent" inherits="ChatFontNormal" text="">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativePoint="TOPLEFT">
+							<Offset x="8" y="-6"/>
+						</Anchor>
+					</Anchors>
+					<Color r="1" g="0.75" b="0"/>
+					<Shadow>
+						<Offset x="1" y="-1"/>
+						<Color r="0" g="0" b="0"/>
+					</Shadow>
+				</FontString>
+				<FontString name="$parentMPPercent" inherits="ChatFontNormal" text="">
+					<Anchors>
+						<Anchor point="TOPRIGHT" relativeTo="$parent" relativePoint="TOPLEFT">
+							<Offset x="2" y="-52"/>
+						</Anchor>
+					</Anchors>
+					<Color r="0.75" g="0.75" b="1"/>
+					<Shadow>
+						<Offset x="1" y="-1"/>
+						<Color r="0" g="0" b="0"/>
+					</Shadow>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				--self:SetFrameLevel("3");
+			</OnLoad>
+		</Scripts>
+	</Frame>
+	<!-- Party Frame -->
+	<Frame name="EUF_PartyFrameTemplate" frameStrata="MEDIUM" virtual="true">
+		<Size x="75" y="21"/>
+		<Anchors>
+			<Anchor point="TOPLEFT" relativeTo="$parent" relativePoint="TOPLEFT"/>
+		</Anchors>
+		<Frames>
+			<Frame  setAllPoints="true">
+				<Layers>
+					<Layer level="OVERLAY">
+						<FontString name="$parentHP" inherits="dwTextStatusBarTextSmall">
+							<Anchors>
+								<Anchor point="CENTER" relativeTo="$parent" relativePoint="CENTER">
+									<Offset x="121" y="-6"/>
+								</Anchor>
+							</Anchors>
+							<Color r="0.3" g="1" b="0.5"/>
+						</FontString>
+						<FontString name="$parentHPPercent" inherits="dwTextStatusBarTextSmall" hidden="true">
+							<Anchors>
+								<Anchor point="CENTER" relativeTo="$parent" relativePoint="CENTER">
+									<Offset x="121" y="-6"/>
+								</Anchor>
+							</Anchors>
+							<Color r="0.3" g="1" b="0.5"/>
+						</FontString>
+						<FontString name="$parentMP" inherits="dwTextStatusBarTextTiny">
+							<Anchors>
+								<Anchor point="CENTER" relativeTo="$parent" relativePoint="CENTER">
+									<Offset x="121" y="-14"/>
+								</Anchor>
+							</Anchors>
+							<Color r="0.75" g="0.75" b="1"/>
+						</FontString>
+						<FontString name="$parentMPPercent" inherits="dwTextStatusBarTextTiny" hidden="true">
+							<Anchors>
+								<Anchor point="CENTER" relativeTo="$parent" relativePoint="CENTER">
+									<Offset x="121" y="-14"/>
+								</Anchor>
+							</Anchors>
+							<Color r="0.75" g="0.75" b="1"/>
+						</FontString>
+					</Layer>
+				</Layers>
+			</Frame>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				EUF_PartyFrame_OnLoad(self);
+			</OnLoad>
+		</Scripts>
+	</Frame>
+	<Frame name="EUF_PartyFrame1" inherits="EUF_PartyFrameTemplate" parent="PartyMemberFrame1" id="1"/>
+	<Frame name="EUF_PartyFrame2" inherits="EUF_PartyFrameTemplate" parent="PartyMemberFrame2" id="2"/>
+	<Frame name="EUF_PartyFrame3" inherits="EUF_PartyFrameTemplate" parent="PartyMemberFrame3" id="3"/>
+	<Frame name="EUF_PartyFrame4" inherits="EUF_PartyFrameTemplate" parent="PartyMemberFrame4" id="4"/>
+</Ui>

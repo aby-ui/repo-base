@@ -1,0 +1,44 @@
+## Interface: 80000
+## Title: Exorsus Raid Tools
+## Author: ykiigor
+## Notes: Exorsus Raid Tools
+## SavedVariables: VExRT
+## Version: 3930
+core.lua
+Functions.lua
+ExLib.lua
+localization\localization.en.lua
+localization\localization.cn.lua
+localization\localization.tw.lua
+localization\localization.lua
+BlizzFix.lua
+Options.lua
+ExCD2.lua
+BattleRes.lua
+BossWatcher.lua
+InspectViewer.lua
+Note.lua
+RaidCheck.lua
+InviteTool.lua
+MarksBar.lua
+Marks.lua
+Timers.lua
+Coins.lua
+RaidAttendance.lua
+Bossmods.lua
+Encounter.lua
+WhoPulled.lua
+Pets.lua
+Arrow.lua
+AutoLogging.lua
+LootLink.lua
+WAChecker.lua
+PartyTalents.lua
+Bindings.lua
+Bindings.xml
+Blank.lua
+Profiles.lua
+
+## Title: |cff880303[有爱]|r ExRT 团长工具
+## X-Vendor: AbyUI
+

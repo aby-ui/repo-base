@@ -1,0 +1,15 @@
+## Interface: 80000
+## Version: 18.07.19
+## Title: TipTacOptions
+## Author: Aezay (Earthen Ring EU)
+## Author-zhCN: Aezay (Earthen Ring EU), Localized by springsnow (Feathermoon CN)
+## Notes: Option Dialog for TipTac
+## Dependencies: TipTac
+## LoadOnDemand: 1
+Libs\AzDropDown.lua
+Libs\AzOptionsFactory.lua
+DropDowns.lua
+Options.lua
+
+## Title-zhCN: |cff880303[有爱]|r TipTac 配置模块
+## X-Vendor: AbyUI

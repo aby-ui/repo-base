@@ -1,0 +1,500 @@
+<Ui>
+
+	<!-- this is for the two flyout buttons and also the base of the main ability buttons -->
+	<CheckButton name="RematchFlyoutAbilityTemplate" inherits="RematchAbilitySlotTemplate" virtual="true">
+		<Size x="36" y="36"/>
+		<Layers>
+			<Layer level="OVERLAY">
+				<Texture parentKey="Cover" hidden="true">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="3" y="-3"/>
+						<Anchor point="BOTTOMRIGHT" x="-3" y="3"/>
+					</Anchors>
+					<Color r="0" g="0" b="0" a="0.6"/>
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY" textureSubLevel="1">
+				<FontString parentKey="Level" inherits="GameFontNormalHuge" justifyH="CENTER" justifyV="MIDDLE">
+					<Anchors>
+						<Anchor point="CENTER"/>
+					</Anchors>
+					<Color r="1.0" g="0.1" b="0.1"/>
+				</FontString>
+			</Layer>
+		</Layers>
+		<CheckedTexture file="Interface\Buttons\CheckButtonHilight" alphaMode="ADD"/>
+	</CheckButton>
+
+	<CheckButton name="RematchLoadoutAbilityTemplate" inherits="RematchFlyoutAbilityTemplate" virtual="true">
+		<Layers>
+			<Layer level="ARTWORK">
+				<Texture parentKey="NumberBG" file="Interface\Common\Icon-Shadow" alpha="0.75">
+					<Size x="18" y="18"/>
+					<Anchors>
+						<Anchor point="BOTTOM" relativePoint="BOTTOMRIGHT" x="-9" y="1"/>
+					</Anchors>
+				</Texture>
+				<FontString parentKey="Number" inherits="GameFontHighlight" text="2">
+					<Anchors>
+						<Anchor point="BOTTOM" relativePoint="BOTTOMRIGHT" x="-9" y="4"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+			<Layer level="OVERLAY" textureSubLevel="1">
+				<Texture parentKey="Arrow" file="Interface\Buttons\ActionBarFlyoutButton">
+					<Size x="23" y="11"/>	
+					<Anchors>
+						<Anchor point="BOTTOM" x="0" y="-3"/>
+					</Anchors>
+					<TexCoords left="0.62500000" right="0.98437500" top="0.82812500" bottom="0.74218750"/>	
+				</Texture>
+			</Layer>
+		</Layers>
+		<HitRectInsets>
+			<AbsInset left="-5" right="-5" top="0" bottom="0"/>
+		</HitRectInsets>
+		<Scripts>
+			<OnLoad>
+				self:RegisterForClicks("AnyUp")
+			</OnLoad>
+			<OnClick>
+				RematchLoadoutPanel.AbilityButtonOnClick(self,button)
+			</OnClick>
+		</Scripts>
+	</CheckButton>
+
+	<Button name="RematchLoadoutTemplate" inherits="RematchBigPanelButtonTemplate,RematchPetClicks" virtual="true">
+		<Size x="280" y="133"/> <!-- y was 118 -->
+		<Layers>
+			<Layer level="BACKGROUND" textureSubLevel="-5">
+				<Texture parentKey="InsetBack" file="Interface\PetBattles\PetJournal" setAllPoints="true">
+					<TexCoords left="0" right="0.44296875" top="0.486328125" bottom="0.591796875"/>
+				</Texture>
+			</Layer>
+		</Layers>
+      <KeyValues>
+         <KeyValue key="isLoadoutSlot" value="true"/>
+      </KeyValues>
+		<Frames>
+			<StatusBar parentKey="XP" inherits="RematchStatusBarTemplate">
+				<Anchors>
+					<Anchor point="BOTTOM" x="0" y="9"/>
+				</Anchors>
+			</StatusBar>
+			<StatusBar parentKey="HP">
+				<Size x="64" y="7"/>
+				<Anchors>
+					<Anchor point="BOTTOMLEFT" x="12" y="24"/>
+				</Anchors>
+				<Layers>
+					<Layer level="ARTWORK">
+						<!-- heart icon -->
+						<Texture parentKey="Icon" file="Interface\PetBattles\PetBattle-StatIcons">
+							<Size x="14" y="14"/>
+							<Anchors>
+								<Anchor point="BOTTOMLEFT" relativePoint="TOPLEFT" x="0" y="3"/>
+							</Anchors>
+							<TexCoords left="0.5" right="1.0" top="0.5" bottom="1.0"/>
+						</Texture>
+						<!-- health percent -->
+						<FontString parentKey="Health" inherits="GameFontHighlight">
+							<Anchors>
+								<Anchor point="BOTTOM" relativePoint="TOPRIGHT" x="-28" y="4"/>
+							</Anchors>
+						</FontString>
+						<FontString parentKey="MiniHP" inherits="GameFontWhiteTiny" text="HP" alpha="0.5">
+							<Anchors>
+								<Anchor point="BOTTOMLEFT" relativeKey="$parent.Health" relativePoint="BOTTOMRIGHT" x="0" y="0"/>
+							</Anchors>
+							<Color r="1" g="0.82" b="0.5"/>
+						</FontString>
+					</Layer>
+					<Layer level="OVERLAY">
+						<Texture parentKey="Left" atlas="PetJournal-HealthBar-Left" useAtlasSize="true">
+							<Anchors>
+								<Anchor point="RIGHT" relativePoint="LEFT"  x="9" y="0"/>
+							</Anchors>	
+						</Texture>
+						<Texture parentKey="Right" atlas="PetJournal-HealthBar-Right" useAtlasSize="true">
+							<Anchors>
+								<Anchor point="LEFT" relativePoint="RIGHT"  x="-9" y="0"/>
+							</Anchors>										
+						</Texture>
+						<Texture atlas="PetJournal-HealthBar-Mid">
+							<Anchors>
+								<Anchor point="TOPLEFT" relativeKey="$parent.Left" relativePoint="TOPRIGHT"/>
+								<Anchor point="BOTTOMRIGHT" relativeKey="$parent.Right" relativePoint="BOTTOMLEFT"/>
+							</Anchors>	
+						</Texture>
+					</Layer>
+					<Layer level="BACKGROUND">
+						<Texture atlas="PetJournal-HealthBar-Background" useAtlasSize="true">
+							<Anchors>
+								<Anchor point="TOPLEFT" relativeKey="$parent.Left" x="2"/>
+								<Anchor point="BOTTOMRIGHT" relativeKey="$parent.Right" x="-2"/>
+							</Anchors>
+						</Texture>
+					</Layer>
+				</Layers>
+				<BarTexture file="Interface\TargetingFrame\UI-StatusBar"/>
+				<BarColor r="0.1" g="1.0" b="0.1" />
+			</StatusBar>
+			<ModelScene parentKey="ModelScene" useParentLevel="true" inherits="ModelSceneMixinTemplate">
+				<Size x="88" y="100"/>
+				<Anchors>
+					<Anchor point="BOTTOMRIGHT" x="-1" y="1"/>
+				</Anchors>
+				<Layers>
+					<Layer level="ARTWORK">
+						<Texture parentKey="Shadows" atlas="PetJournal-BattleSlot-Shadow">
+							<Size x="69" y="42"/>
+							<Anchors>
+								<Anchor point="BOTTOM" x="4" y="8"/>
+							</Anchors>
+						</Texture>
+					</Layer>
+				</Layers>
+			</ModelScene>
+			<Button parentKey="Pet" useParentLevel="true" enableMouse="false" inherits="RematchBasePetListButtonTemplate">
+				<Size x="209" y="44"/>
+				<Anchors>
+					<Anchor point="TOPRIGHT" x="-8" y="-16"/>
+				</Anchors>
+				<Layers>
+					<Layer level="ARTWORK">
+						<!-- the same function that fills the pet/queue listbutton array fills this TypeIcons -->
+		            <Texture parentKey="TypeIcon">
+							<Size x="77" y="77"/>
+							<Anchors>
+								<Anchor point="TOPRIGHT" x="5" y="12"/>
+							</Anchors>
+							<!-- this texcoord points to the icon at the top of the PetIcon-x texture -->
+							<TexCoords left="0.03125" right="0.84375" top="0" bottom="0.421875"/>
+						</Texture>
+					</Layer>
+				</Layers>
+			</Button>
+			<!-- ability buttons -->
+			<CheckButton parentArray="Abilities" inherits="RematchLoadoutAbilityTemplate" id="1">
+				<Anchors>
+					<Anchor point="BOTTOMRIGHT" relativePoint="BOTTOM" x="-18" y="24"/>
+				</Anchors>
+			</CheckButton>
+			<CheckButton parentArray="Abilities" inherits="RematchLoadoutAbilityTemplate" id="2">
+				<Anchors>
+					<Anchor point="BOTTOM" x="4" y="24"/>
+				</Anchors>
+			</CheckButton>
+			<CheckButton parentArray="Abilities" inherits="RematchLoadoutAbilityTemplate" id="3">
+				<Anchors>
+					<Anchor point="BOTTOMLEFT" relativePoint="BOTTOM" x="26" y="24"/>
+				</Anchors>
+			</CheckButton>
+			<!-- this invisible frame covers the whole loadout slot to receive clicks -->
+			<Button parentKey="DropButton" setAllPoints="true" hidden="true">
+				<Animations>
+					<AnimationGroup parentKey="Glow" looping="REPEAT">
+						<Alpha fromAlpha="1" toAlpha="0" change="-1.0" duration="0.9" order="1"/>
+						<Alpha fromAlpha="0" toAlpha="1" change="1.0" duration="0.9" order="2"/>
+					</AnimationGroup>
+				</Animations>
+				<Layers>
+					<Layer level="ARTWORK">
+						<Texture file="Interface/BUTTONS/CheckButtonHilight" alphaMode="ADD">
+							<Size x="54" y="54"/>
+							<Anchors>
+								<Anchor point="TOPLEFT" x="11" y="-11"/>
+							</Anchors>
+						</Texture>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnShow>
+						self:SetFrameLevel(self:GetParent():GetFrameLevel()+4)
+					</OnShow>
+					<OnClick>
+						Rematch.LoadoutPanel.LoadoutButtonReceivePet(self)
+					</OnClick>
+					<OnReceiveDrag>
+						Rematch.LoadoutPanel.LoadoutButtonReceivePet(self)
+					</OnReceiveDrag>
+				</Scripts>
+			</Button>
+			<Button parentKey="LockOverlay" setAllPoints="true" hidden="true">
+				<Layers>
+					<Layer level="ARTWORK">
+						<Texture>
+							<Color r="0" g="0" b="0" a="0.5"/>
+						</Texture>
+					</Layer>
+					<Layer level="OVERLAY">
+						<Texture file="Interface\PetBattles\PetBattle-LockIcon">
+							<Size x="32" y="32"/>
+							<Anchors>
+								<Anchor point="TOPLEFT" x="4" y="-4"/>
+							</Anchors>
+						</Texture>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnShow>
+						self:SetFrameLevel(self:GetParent():GetFrameLevel()+6)
+					</OnShow>
+					<OnEnter>
+						Rematch.LoadoutPanel.LockedButtonOnEnter(self)
+					</OnEnter>
+					<OnLeave>
+						Rematch:HideTooltip()
+					</OnLeave>
+				</Scripts>
+			</Button>
+			<Frame parentKey="Bling" inherits="RematchPanelBlingTemplate"/>
+		</Frames>
+		<Scripts>
+			<OnDragStart>
+				Rematch.PetListButtonOnDragStart(self)
+			</OnDragStart>
+			<OnDragStop>
+				self:GetScript("OnMouseUp")(self)
+			</OnDragStop>
+		</Scripts>
+	</Button>
+
+	<Frame name="RematchLoadoutPanel" inherits="RematchPanelTemplate">
+		<Frames>
+
+			<!-- the three loadout slots -->
+			<Button parentArray="Loadouts" parentKey="TopLoadout" parent="RematchLoadoutPanel" inherits="RematchLoadoutTemplate" id="1">
+				<Anchors>
+					<Anchor point="BOTTOMLEFT" x="0" y="270"/> <!-- y was 240 -->
+				</Anchors>
+			</Button>
+			<Button parentArray="Loadouts" parent="RematchLoadoutPanel" inherits="RematchLoadoutTemplate" id="2">
+				<Anchors>
+					<Anchor point="BOTTOMLEFT" x="0" y="135"/> <!-- y was 120" -->
+				</Anchors>
+			</Button>
+			<Button parentArray="Loadouts" parent="RematchLoadoutPanel" inherits="RematchLoadoutTemplate" id="3">
+				<Anchors>
+					<Anchor point="BOTTOMLEFT" x="0" y="0"/> <!-- y was 0 -->
+				</Anchors>
+			</Button>
+
+			<Frame parentKey="Target" inherits="RematchBaseInsetFrameTemplate">
+				<Size x="280" y="88"/>
+				<Anchors>
+					<Anchor point="TOPLEFT"/>
+					<Anchor point="BOTTOMLEFT" relativeKey="$parent.TopLoadout" relativePoint="TOPLEFT" x="0" y="30"/>
+				</Anchors>
+				<Layers>
+					<Layer level="BACKGROUND" textureSubLevel="-5">
+						<Texture parentKey="InsetBack" file="Interface\PetBattles\PetJournalBigChunks" setAllPoints="true">
+							<TexCoords left="0.171875" right="0.625" top="0" bottom="0.337890625"/>
+						</Texture>
+					</Layer>
+					<Layer level="ARTWORK">
+						<!-- name of target -->
+						<FontString parentKey="Name" inherits="GameFontHighlight" justifyH="LEFT" justifyV="CENTER">
+							<Anchors>
+								<Anchor point="LEFT" relativePoint="TOPLEFT" x="8" y="-15"/>
+								<Anchor point="RIGHT" relativePoint="TOPLEFT" x="190" y="-15"/>
+							</Anchors>
+						</FontString>
+						<!-- the line beneath the name -->
+						<Texture inherits="_UI-Frame-InnerTopTile">
+							<Size x="182" y="3"/>
+							<Anchors>
+								<Anchor point="TOPLEFT" x="8" y="-22"/>
+							</Anchors>
+						</Texture>
+						<!-- green check when a team is saved for the target -->
+						<Texture parentKey="GreenCheck" file="Interface\RaidFrame\ReadyCheck-Ready">
+							<Size x="20" y="20"/>
+							<Anchors>
+								<Anchor point="LEFT" x="64" y="7"/>
+							</Anchors>
+						</Texture>
+						<!-- "Team saved for this target" or "No team saved for this target" text -->
+						<FontString parentKey="SaveStatus" inherits="GameFontNormal">
+							<Anchors>
+								<Anchor point="LEFT" relativeKey="$parent.GreenCheck" relativePoint="RIGHT"/>
+							</Anchors>
+						</FontString>
+						<!-- the "Vs" that appears when showing saved team instead of target pets -->
+						<FontString parentKey="Vs" inherits="GameFontNormal" text="Vs" hidden="true">
+							<Anchors>
+								<Anchor point="TOPLEFT" relativePoint="LEFT" x="65" y="-16"/>
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+				<Frames>
+					<Button parentKey="Clear" inherits="RematchClearButtonTemplate">
+						<Anchors>
+							<Anchor point="TOPRIGHT" x="-3" y="-28"/>
+						</Anchors>
+						<Scripts>
+							<OnClick>
+								Rematch.recentTarget = nil
+								Rematch:UpdateUI()
+							</OnClick>
+						</Scripts>
+					</Button>
+					<Button parentKey="TargetButton" inherits="RematchFilterButtonTemplate" text="TARGET">
+						<Anchors>
+							<Anchor point="TOPRIGHT" x="-3" y="-3"/>
+						</Anchors>
+						<Scripts>
+							<OnClick>
+								Rematch:ToggleMenu("NotableNPCs","TOPLEFT",self,"TOPRIGHT")
+							</OnClick>
+						</Scripts>
+					</Button>
+					<Button parentKey="LoadSaveButton" inherits="RematchStretchButtonTemplate,RematchTooltipScripts" text="Load">
+						<Size x="82" y="34"/>
+						<Anchors>
+							<Anchor point="BOTTOMRIGHT" x="-3" y="3"/>
+						</Anchors>
+						<Scripts>
+							<OnClick>
+								RematchLoadoutPanel.LoadSaveButtonOnClick(self,button)
+							</OnClick>
+						</Scripts>
+						<NormalFont style="GameFontNormal"/>
+						<HighlightFont style="GameFontHighlight"/>
+					</Button>
+					<PlayerModel parentKey="Model">
+						<Size x="48" y="0"/>
+						<Anchors>
+							<Anchor point="TOPLEFT" x="10" y="-32"/>
+							<Anchor point="BOTTOMLEFT" x="10" y="8"/>
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								Model_OnLoad(self)
+								self:SetRotation(MODELFRAME_DEFAULT_ROTATION)
+								self:SetPortraitZoom(0.75)
+								self:SetPosition(0,0,-0.075)
+							</OnLoad>
+							<OnEvent function="Model_OnEvent"/>
+						</Scripts>
+					</PlayerModel>
+					<!-- border of model is separate so we don't need to make model a sub-frame -->
+					<Frame parentKey="ModelBorder" useParentLevel="true">
+						<Backdrop edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
+							<EdgeSize val="12"/>
+							<BorderColor r="0.5" g="0.5" b="0.5"/>
+						</Backdrop>
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeKey="$parent.Model" x="-5" y="5"/>
+							<Anchor point="BOTTOMRIGHT" relativeKey="$parent.Model" x="5" y="-5"/>
+						</Anchors>
+						<Layers>
+							<Layer level="BACKGROUND" textureSubLevel="2">
+								<Texture file="Interface\Destiny\EndScreenBG">
+									<Anchors>
+										<Anchor point="TOPLEFT" x="3" y="-3"/>
+										<Anchor point="BOTTOMRIGHT" x="-3" y="3"/>
+									</Anchors>
+									<Color r="0.25" g="0.25" b="0.25"/>
+								</Texture>
+							</Layer>
+						</Layers>
+					</Frame>
+					<Button parentArray="Pets" parentKey="Pet1" inherits="RematchSlotTemplate,RematchPetClicks"/>
+					<Button parentArray="Pets" parentKey="Pet2" inherits="RematchSlotTemplate,RematchPetClicks">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeKey="$parent.Pet1" relativePoint="TOPRIGHT" x="2" y="0"/>
+						</Anchors>
+					</Button>
+					<Button parentArray="Pets" parentKey="Pet3" inherits="RematchSlotTemplate,RematchPetClicks">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeKey="$parent.Pet2" relativePoint="TOPRIGHT" x="2" y="0"/>
+						</Anchors>
+					</Button>
+					<Frame parentKey="Bling" inherits="RematchPanelBlingTemplate"/>
+				</Frames>
+			</Frame> <!-- Target -->
+
+			<!-- this is the ability flyout, reparented to the ability it's swapping -->
+			<Frame parentKey="Flyout" enableMouse="true" hidden="true">
+				<Size x="44" y="80"/>
+				<Backdrop bgFile="Interface\ChatFrame\ChatFrameBackground" edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
+					<BackgroundInsets>
+						<AbsInset left="3" right="3" top="3" bottom="3"/>
+					</BackgroundInsets>
+					<EdgeSize val="16"/>
+					<TileSize val="32"/>
+					<Color r="0" g="0" b="0"/>
+					<BorderColor r="0.5" g="0.5" b="0.5"/>
+				</Backdrop>
+				<Frames>
+					<CheckButton parentArray="Abilities" inherits="RematchFlyoutAbilityTemplate">
+						<Anchors>
+							<Anchor point="TOP" x="0" y="-4"/>
+						</Anchors>
+						<Layers>
+							<Layer level="ARTWORK">
+								<Texture parentKey="NumberBG" file="Interface\Common\Icon-Shadow" alpha="0.75">
+									<Size x="18" y="18"/>
+									<Anchors>
+										<Anchor point="BOTTOM" relativePoint="BOTTOMRIGHT" x="-9" y="0"/>
+									</Anchors>
+								</Texture>
+								<FontString parentKey="Number" inherits="GameFontHighlight" text="1">
+									<Anchors>
+										<Anchor point="BOTTOM" relativePoint="BOTTOMRIGHT" x="-9" y="3"/>
+									</Anchors>
+								</FontString>
+							</Layer>
+						</Layers>
+						<Scripts>
+							<OnClick>
+								RematchLoadoutPanel.FlyoutAbilityOnClick(self)
+							</OnClick>
+						</Scripts>
+					</CheckButton>
+					<CheckButton parentArray="Abilities" inherits="RematchFlyoutAbilityTemplate">
+						<Anchors>
+							<Anchor point="BOTTOM" x="0" y="4"/>
+						</Anchors>
+						<Layers>
+							<Layer level="ARTWORK">
+								<Texture parentKey="NumberBG" file="Interface\Common\Icon-Shadow" alpha="0.75">
+									<Size x="18" y="18"/>
+									<Anchors>
+										<Anchor point="BOTTOM" relativePoint="BOTTOMRIGHT" x="-9" y="0"/>
+									</Anchors>
+								</Texture>
+								<FontString parentKey="Number" inherits="GameFontHighlight" text="2">
+									<Anchors>
+										<Anchor point="BOTTOM" relativePoint="BOTTOMRIGHT" x="-9" y="3"/>
+									</Anchors>
+								</FontString>
+							</Layer>
+						</Layers>
+						<Scripts>
+							<OnClick>
+								RematchLoadoutPanel.FlyoutAbilityOnClick(self)
+							</OnClick>
+						</Scripts>
+					</CheckButton>
+				</Frames>
+				<Scripts>
+					<OnUpdate>
+						self.timer = (self.timer or 0)+elapsed
+						if self.timer>2 then
+							self.timer = 0
+							if not MouseIsOver(self) and not MouseIsOver(self:GetParent()) then
+								Rematch:HideFlyout()
+							end
+						end
+					</OnUpdate>
+				</Scripts>
+			</Frame>
+			
+		</Frames>
+
+	</Frame>
+
+</Ui>

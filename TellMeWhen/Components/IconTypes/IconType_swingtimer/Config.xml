@@ -1,0 +1,57 @@
+﻿<Ui>
+	
+	<Frame name="TellMeWhen_AutoshootSwingTimerTip" inherits="TellMeWhen_OptionsModuleContainer" virtual="true">
+		<Size y="50"/>
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString parentKey="Text" wordwrap="true" inherits="GameFontHighlightSmall">
+					<Anchors>
+						<Anchor point="TOP" y="-10"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Button parentKey="ApplySettings" inherits="TellMeWhen_ButtonTemplate">
+				<Size y="15"/>
+				<Anchors>
+					<Anchor point="BOTTOM" y="8"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						self:SetFrameLevel(self:GetParent():GetFrameLevel() + 4)
+						
+						self:SetText(TMW.L["ICONTYPE_SWINGTIMER_TIP_APPLYSETTINGS"])
+						
+						self:SetWidth(self:GetTextWidth() + 15)
+					</OnLoad>
+					<OnClick>
+						local ics = TMW.CI.ics
+						
+						ics.Type = "cooldown"
+						ics.Name = 75
+						
+						TMW.IE:LoadIcon(1)
+					</OnClick>
+				</Scripts>
+			</Button>
+
+		</Frames>
+
+		<Scripts>
+			<OnLoad>
+				TMW:CInit(self)
+				
+				self:SetTitle(GetSpellInfo(75))
+				self.Text:SetText(TMW.L["ICONTYPE_SWINGTIMER_TIP"])
+				
+				self.Text:SetWidth(self:GetWidth() - 15)
+				self:SetHeight(self.Text:GetStringHeight() + 43)
+			</OnLoad>
+			<OnSizeChanged>
+				self:SetHeight(self.Text:GetStringHeight() + 43)
+			</OnSizeChanged>
+		</Scripts>
+	</Frame>
+	
+</Ui>

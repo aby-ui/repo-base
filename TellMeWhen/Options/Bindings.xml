@@ -1,0 +1,14 @@
+﻿	
+<Bindings>
+<!-- User interface key bindings -->
+	<Binding name="TELLMEWHEN_ICONEDITOR_UNDO" header="TELLMEWHEN">
+		if TellMeWhen_IconEditor and TellMeWhen_IconEditor:IsShown() then
+			TMW.IE:DoUndoRedo(-1)
+		end
+	</Binding>
+	<Binding name="TELLMEWHEN_ICONEDITOR_REDO" >
+		if TellMeWhen_IconEditor and TellMeWhen_IconEditor:IsShown() then
+			TMW.IE:DoUndoRedo(1)
+		end
+	</Binding>
+</Bindings>

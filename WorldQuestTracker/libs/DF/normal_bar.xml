@@ -1,0 +1,98 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/ .. \FrameXML\UI.xsd">
+	<Script file="normal_bar.lua"/>
+	
+	<StatusBar name="DetailsFrameworkNormalBarTemplate" virtual="true">
+		<Size x="300" y="14"/>
+		
+		<Layers>
+		
+			<Layer level="BACKGROUND">
+				<!-- background texture -->
+				<Texture name="$parent_background" hidden="false" setAllPoints="true" parentKey="background" file = "Interface\PaperDollInfoFrame\UI-Character-Skills-Bar" horizTile="false" vertTile="false">
+					<Size x="300" y="14" />
+					<Color a = "0.3" r = "0.3" g = "0.3" b = "0.3" />
+				</Texture>
+			</Layer>
+			
+			<Layer level="ARTWORK">
+				<!-- timer texture -->
+				<Texture name="$parent_timerTexture" hidden="true" parentKey="timertexture" file = "Interface\PaperDollInfoFrame\UI-Character-Skills-Bar" horizTile="false" vertTile="false">
+					<Size x="300" y="14" />
+					<Color a = "1" r = "1" g = "1" b = "1" />
+					<Anchors>
+						<Anchor point="LEFT" relativeTo="$parent" />
+					</Anchors>
+				</Texture>
+				<Texture name="$parent_timerTextureR" hidden="true" parentKey="timertextureR" file = "Interface\PaperDollInfoFrame\UI-Character-Skills-Bar" horizTile="false" vertTile="false">
+					<Size x="300" y="14" />
+					<Color a = "1" r = "1" g = "1" b = "1" />
+					<Anchors>
+						<Anchor point="TOPRIGHT" relativeTo="$parent" x="0" y="0"/>
+						<Anchor point="BOTTOMRIGHT" relativeTo="$parent" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+
+				<!-- statusbar texture -->
+				<Texture name="$parent_statusbarTexture" hidden="false" parentKey="texture" file = "Interface\PaperDollInfoFrame\UI-Character-Skills-Bar" horizTile="false" vertTile="false">
+					<Size x="300" y="14" />
+					<Color a = "1" r = "1" g = "1" b = "1" />
+				</Texture>
+			</Layer>
+			
+			<Layer level="OVERLAY">
+				<!-- icon texture -->
+				<Texture name="$parent_icon" parentKey="icontexture">
+					<Size x="14" y="14" />
+					<Anchors>
+						<Anchor point="LEFT" relativeTo="$parent" relativePoint="LEFT" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+				
+				<!-- spark mouse over -->
+				<Texture name="$parent_sparkMouseover" hidden="true" parentKey="sparkmouseover" file = "Interface\CastingBar\UI-CastingBar-Spark" alphaMode="ADD">
+					<Size>
+						<AbsDimension x="32" y="32"/>
+					</Size>
+					<Anchors>
+						<Anchor point="LEFT" relativeTo="$parent" relativePoint="RIGHT" x="-16" y="-1"/>
+					</Anchors>
+				</Texture>
+				
+				<!-- timer spark -->
+				<Texture name="$parent_sparkTimer" hidden="true" parentKey="sparktimer" file = "Interface\CastingBar\UI-CastingBar-Spark"  alphaMode="ADD">
+					<Size>
+						<AbsDimension x="32" y="32"/>
+					</Size>
+					<Anchors>
+						<Anchor point="LEFT" relativeTo="$parent_timerTexture" relativePoint="RIGHT" x="-16" y="-1"/>
+					</Anchors>
+				</Texture>				
+				
+				<!-- left text -->
+				<FontString name="$parent_TextLeft" parentKey="lefttext" inherits="GameFontHighlight" justifyH="LEFT" nonspacewrap="false">
+					<FontHeight val="10.5"/>
+					<Anchors>
+						<Anchor point="LEFT" relativeTo="$parent_icon" relativePoint="RIGHT" x="3" y="0"/>
+					</Anchors>
+				</FontString>
+
+				<!-- right text -->
+				<FontString name="$parent_TextRight" parentKey="righttext" inherits="GameFontHighlight" justifyH="RIGHT" nonspacewrap="false">
+					<FontHeight val="10.5"/>
+					<Anchors>
+						<Anchor point="RIGHT" relativeTo="$parent" relativePoint="RIGHT" x="-3" y="0"/>
+					</Anchors>
+				</FontString>
+				
+			</Layer>
+
+		</Layers>
+	
+	<Scripts>
+		<OnLoad>
+			self:SetStatusBarTexture (self.texture);
+			DetailsFrameworkNormalBar_OnCreate (self);
+		</OnLoad>
+	</Scripts>
+	</StatusBar>
+</Ui>

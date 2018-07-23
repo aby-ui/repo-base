@@ -1,0 +1,13 @@
+## Interface: 80000
+## Title: Bagnon Config
+## Author: Tuller and Jaliborc (João Cardoso)
+## Notes: An options menu for Bagnon
+## Dependencies: Bagnon
+## LoadOnDemand: 1
+## Version: 8.0.0
+main.lua
+common\Wildpants_Config.xml
+
+
+## Title-zhCN: |cff880303[有爱]|r Bagnon 整合背包配置
+## X-Vendor: AbyUI

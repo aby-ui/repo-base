@@ -1,0 +1,11 @@
+<Bindings>
+	<Binding name = "Toggle TrinketMenu" header = "TRINKETMENU" category = "ADDONS">
+		TrinketMenu.ToggleFrame(TrinketMenuOptions.DisableToggle == "ON" and TrinketMenu_OptFrame or TrinketMenu_MainFrame)
+	</Binding>
+	<Binding name = "CLICK TrinketMenu_Trinket0:LeftButton" category = "ADDONS">
+		<!-- Top Trinket -->
+	</Binding>
+	<Binding name = "CLICK TrinketMenu_Trinket1:LeftButton" category = "ADDONS">
+		<!-- Bottom Trinket -->
+	</Binding>
+</Bindings>

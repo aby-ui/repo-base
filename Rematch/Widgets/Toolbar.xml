@@ -1,0 +1,365 @@
+<Ui>
+	<!-- secure button template for heal, bandage, treats, etc buttons -->
+	<Button name="RematchToolbarButtonTemplate" inherits="RematchSlotTemplate,SecureActionButtonTemplate" virtual="true">
+		<Size x="32" y="32"/>
+		<Layers>
+			<Layer level="OVERLAY">
+				<FontString parentKey="Count" inherits="SystemFont_Shadow_Med1_Outline">
+					<Anchors>
+						<Anchor point="BOTTOMRIGHT" x="-1" y="5"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Cooldown parentKey="Cooldown" inherits="CooldownFrameTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" x="2" y="-2"/>
+					<Anchor point="BOTTOMRIGHT" x="-2" y="2"/>
+				</Anchors>
+			</Cooldown>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				if self.defaultIcon then
+					self.Icon:SetTexture(self.defaultIcon)
+					self.defaultIcon = nil
+				end
+				self:RegisterForClicks("AnyUp")
+			</OnLoad>
+			<OnEnter>
+				RematchToolbar.ButtonOnEnter(self)
+			</OnEnter>
+			<OnLeave>
+				RematchToolbar.ButtonOnLeave(self)
+			</OnLeave>
+			<PreClick>
+				RematchToolbar.ButtonPreClick(self,button)
+			</PreClick>
+			<PostClick>
+				RematchToolbar.ButtonPostClick(self,button)
+			</PostClick>
+		</Scripts>
+	</Button>
+
+	<!-- the Toolbar is reparented between TopPanel and Frame (when minimized) -->
+	<Frame name="RematchToolbar" ignoreParentAlpha="true" hidden="true">
+		<Size x="0" y="32"/>
+		<Anchors>
+			<Anchor point="RIGHT" x="-6" y="0"/>
+		</Anchors>
+		<Frames>
+			<!-- PetCount is at far left of toolbar -->
+			<Button parentKey="PetCount" inherits="InsetFrameTemplate3">
+				<Size x="112" y="32"/>
+				<Anchors>
+					<Anchor point="LEFT"/>
+				</Anchors>
+				<Layers>
+					<Layer level="ARTWORK">
+						<FontString parentKey="TotalLabel" inherits="GameFontNormalSmall">
+							<Anchors>
+								<Anchor point="TOPRIGHT" relativePoint="TOP" x="14" y="-5"/>
+							</Anchors>
+						</FontString>
+						<FontString parentKey="UniqueLabel" inherits="GameFontNormalSmall">
+							<Anchors>
+								<Anchor point="BOTTOMRIGHT" relativePoint="BOTTOM" x="14" y="5"/>
+							</Anchors>
+						</FontString>
+						<FontString parentKey="Total" inherits="GameFontHighlightSmall">
+							<Anchors>
+								<Anchor point="TOPRIGHT" x="-10" y="-5"/>
+							</Anchors>
+						</FontString>
+						<FontString parentKey="Unique" inherits="GameFontHighlightSmall">
+							<Anchors>
+								<Anchor point="BOTTOMRIGHT" x="-10" y="5"/>
+							</Anchors>
+						</FontString>
+					</Layer>
+					<Layer level="HIGHLIGHT">
+						<Texture file="Interface\Buttons\UI-SilverButtonLG-Left-Hi">
+							<Size x="22" y="32"/>
+							<Anchors>
+								<Anchor point="LEFT" x="-1" y="0"/>
+							</Anchors>
+							<TexCoords left="0" right="1" top="0" bottom="0.71875"/>
+						</Texture>
+						<Texture file="Interface\Buttons\UI-SilverButtonLG-Right-Hi">
+							<Size x="22" y="32"/>
+							<Anchors>
+								<Anchor point="RIGHT" x="1" y="0"/>
+							</Anchors>
+							<TexCoords left="0" right="1" top="0" bottom="0.71875"/>
+						</Texture>
+						<Texture file="Interface\Buttons\UI-SilverButtonLG-Mid-Hi">
+							<Size x="0" y="32"/>
+							<Anchors>
+								<Anchor point="LEFT" x="21" y="0"/>
+								<Anchor point="RIGHT" x="-21" y="0"/>
+							</Anchors>
+							<TexCoords left="0" right="1" top="0" bottom="0.71875"/>
+						</Texture>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnEnter>
+						RematchToolbar:PetCountOnEnter()
+					</OnEnter>
+					<OnLeave>
+						Rematch:HideTooltip()
+					</OnLeave>
+					<OnClick>
+						Rematch:ShowCollectionReport()
+					</OnClick>
+				</Scripts>
+			</Button>
+
+			<!-- Achievement stretches between PetCount and the first encountered toolbar button -->
+			<Frame parentKey="Achievement" useParentLevel="true">
+				<Size x="0" y="32"/>	
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture parentKey="Highlight" atlas="PetJournal-PetBattleAchievementGlow" hidden="true">
+							<Anchors>
+								<Anchor point="TOP"/>
+							</Anchors>
+							<Size x="180" y="34"/>		
+						</Texture>
+					</Layer>
+					<Layer level="OVERLAY">
+						<!-- Text and its attendant textures are anchored relative to center of stretched frame -->
+						<Fontstring parentKey="Text" inherits="GameFontNormalLarge">
+							<Anchors>
+								<Anchor point="CENTER" x="-15" y="0"/>
+							</Anchors>
+						</Fontstring>
+						<Texture parentKey="Icon" file="Interface\AchievementFrame\UI-Achievement-Shields-NoPoints">
+							<Size x="30" y="30"/>
+							<Anchors>
+								<Anchor point="LEFT" relativeKey="$parent.Text" relativePoint="RIGHT" x="2" y="-2"/>
+							</Anchors>
+							<TexCoords left="0" right=".5" top="0" bottom="0.5"/>
+						</Texture>
+						<Texture parentKey="RightFlair" atlas="PetJournal-PetBattleAchievementBG">
+							<Size x="39" y="15"/>
+							<Anchors>
+								<Anchor point="RIGHT" relativeKey="$parent.Text" relativePoint="LEFT" x="0" y="0"/>
+							</Anchors>
+						</Texture>
+						<Texture parentKey="LeftFlair" atlas="PetJournal-PetBattleAchievementBG">
+							<Size x="39" y="15"/>
+							<Anchors>
+								<Anchor point="LEFT" relativeKey="$parent.Text" relativePoint="RIGHT" x="32" y="0"/>
+							</Anchors>	
+							<TexCoords left="1.0" right="0" top="0" bottom="1.0"/>
+						</Texture>
+					</Layer>
+				</Layers>
+				<Frames>
+					<!-- this button captures mouseover/click for text+icon portion of this stretched frame;
+							 we don't want the whole span of the achievement frame clickable -->
+					<Button>
+						<Size x="0" y="32"/>
+						<Anchors>
+							<Anchor point="LEFT" relativeKey="$parent.Text" x="-2" y="0"/>
+							<Anchor point="RIGHT" relativeKey="$parent.Text" x="34" y="0"/>
+						</Anchors>
+						<Scripts>
+							<OnClick>
+								ToggleAchievementFrame()
+								local i = 1
+								local button = _G["AchievementFrameCategoriesContainerButton"..i]
+								while button do
+									if button.element.id == 15117 then
+										button:Click()
+										return
+									end
+									i = i + 1
+									button = _G["AchievementFrameCategoriesContainerButton"..i]
+								end
+							</OnClick>
+							<OnEnter>
+								self:GetParent().Highlight:Show()
+								Rematch.ShowTooltip(self,BATTLE_PETS_ACHIEVEMENT,BATTLE_PETS_ACHIEVEMENT_TOOLTIP)
+							</OnEnter>
+							<OnLeave>
+								self:GetParent().Highlight:Hide()
+								Rematch:HideTooltip()
+							</OnLeave>
+						</Scripts>
+					</Button>
+				</Frames>
+			</Frame>
+
+			<!-- Toolbar Buttons: Heal,Bandage,PetTreat,LesserPetTreat,SafariHat,SummonRandom,Save,SaveAs,FindBattle -->
+			<Button parentArray="Buttons" parentKey="Heal" name="RematchHealButton" inherits="RematchToolbarButtonTemplate">
+				<Attribute name="spell" value="125439"/>
+				<Attributes>
+					<Attribute name="type" value="spell"/>
+					<Attribute name="spell" value="125439"/>
+				</Attributes>
+				<KeyValues>
+					<KeyValue key="defaultIcon" value="Interface\Icons\spell_misc_petheal"/>
+				</KeyValues>
+			</Button>
+			<Button parentArray="Buttons" parentKey="Bandage" name="RematchBandageButton" inherits="RematchToolbarButtonTemplate">
+				<Attributes>
+					<Attribute name="type" value="item"/>
+					<Attribute name="item" value="item:86143"/>
+				</Attributes>
+				<KeyValues>
+					<KeyValue key="defaultIcon" value="Interface\Icons\inv_misc_bandage_05"/>
+				</KeyValues>
+			</Button>
+			<Button parentArray="Buttons" parentKey="PetTreat" name="RematchPetTreatButton" inherits="RematchToolbarButtonTemplate">
+				<Attributes>
+					<Attribute name="type" value="item"/>
+					<Attribute name="item" value="item:98114"/>
+				</Attributes>
+				<KeyValues>
+					<KeyValue key="defaultIcon" value="Interface\Icons\INV_Misc_Food_65"/>
+				</KeyValues>
+			</Button>
+			<Button parentArray="Buttons" parentKey="LesserPetTreat" name="RematchLesserPetTreatButton" inherits="RematchToolbarButtonTemplate">
+				<Attributes>
+					<Attribute name="type" value="item"/>
+					<Attribute name="item" value="item:98112"/>
+				</Attributes>
+				<KeyValues>
+					<KeyValue key="defaultIcon" value="Interface\Icons\INV_Misc_Food_53"/>
+				</KeyValues>
+			</Button>
+			<Button parentArray="Buttons" parentKey="SafariHat" inherits="RematchToolbarButtonTemplate">
+				<Attributes>
+					<Attribute name="type" value="item"/>
+				</Attributes>
+				<KeyValues>
+					<KeyValue key="defaultIcon" value="Interface\Icons\INV_Helm_Cloth_PetSafari_A_01"/>
+				</KeyValues>
+				<Layers>
+					<Layer level="OVERLAY">
+						<Texture parentKey="Cancel" file="Interface\Buttons\UI-MicroStream-Red" hidden="true">
+							<Size x="24" y="24"/>
+							<Anchors>
+								<Anchor point="BOTTOMRIGHT" x="2" y="-2"/>
+							</Anchors>
+						</Texture>
+					</Layer>
+				</Layers>
+				<Frames>
+					<!-- when .Shine shown, the safari hat has a "starburst" fade in/out as it grows and rotates -->
+					<Frame parentKey="Shine" setAllPoints="true" hidden="true">
+						<Animations>
+							<AnimationGroup parentKey="Fade" looping="REPEAT">
+								<Alpha fromAlpha="0" toAlpha="1" duration="0.5" order="1"/>
+								<Alpha fromAlpha="1" toAlpha="0" duration="0.5" order="2"/>
+							</AnimationGroup>
+							<AnimationGroup parentKey="Grow" looping="REPEAT">
+								<Scale scaleX="1.75" scaleY="1.75" duration="1.0" smoothing="IN_OUT" order="1"/>
+							</AnimationGroup>
+							<AnimationGroup parentKey="Rotate" looping="REPEAT">
+								<Rotation order="1" duration="4.0" degrees="-180"/>
+							</AnimationGroup>
+						</Animations>
+						<Layers>
+							<Layer level="OVERLAY">
+								<Texture file="Interface\Cooldown\starburst" alphaMode="ADD">
+									<Size x="40" y="40"/>
+									<Anchors>
+										<Anchor point="CENTER"/>
+									</Anchors>
+									<Color r="1" g="0.82" b="0.5"/>
+								</Texture>
+							</Layer>
+						</Layers>
+						<Scripts>
+							<OnShow>
+								self.Fade:Play()
+								self.Grow:Play()
+								self.Rotate:Play()
+								self:SetFrameLevel(self:GetParent():GetFrameLevel()+5)
+							</OnShow>
+						</Scripts>
+					</Frame>
+				</Frames>
+			</Button>
+			<Button parentArray="Buttons" parentKey="SummonRandom" inherits="RematchToolbarButtonTemplate">
+				<KeyValues>
+					<KeyValue key="defaultIcon" value="Interface\Icons\Achievement_GuildPerk_MountUp"/>
+				</KeyValues>
+				<Layers>
+					<Layer level="OVERLAY">
+						<Texture parentKey="Cancel" file="Interface\Buttons\UI-MicroStream-Red" hidden="true">
+							<Size x="24" y="24"/>
+							<Anchors>
+								<Anchor point="BOTTOMRIGHT" x="2" y="-2"/>
+							</Anchors>
+						</Texture>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnClick>
+						RematchToolbar.ButtonOnClick(self,button)
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Button parentArray="Buttons" parentKey="Save" inherits="RematchToolbarButtonTemplate">
+				<KeyValues>
+					<KeyValue key="defaultIcon" value="Interface\AddOns\Rematch\Textures\saveconfirm"/>
+					<KeyValue key="redirect" value="SaveButton"/>
+				</KeyValues>
+				<Scripts>
+					<OnClick>
+						RematchToolbar.ButtonOnClick(self,button)
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Button parentArray="Buttons" parentKey="SaveAs" inherits="RematchToolbarButtonTemplate">
+				<KeyValues>
+					<KeyValue key="defaultIcon" value="Interface\AddOns\Rematch\Textures\save"/>
+					<KeyValue key="redirect" value="SaveAsButton"/>
+				</KeyValues>
+				<Scripts>
+					<OnClick>
+						RematchToolbar.ButtonOnClick(self,button)
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Button parentArray="Buttons" parentKey="FindBattle" inherits="RematchToolbarButtonTemplate">
+				<KeyValues>
+					<KeyValue key="defaultIcon" value="Interface\Icons\PetBattle_Attack"/>
+					<KeyValue key="redirect" value="FindBattleButton"/>
+				</KeyValues>
+				<Layers>
+					<Layer level="OVERLAY">
+						<Texture parentKey="Cancel" file="Interface\Buttons\UI-MicroStream-Red" hidden="true">
+							<Size x="24" y="24"/>
+							<Anchors>
+								<Anchor point="BOTTOMRIGHT" x="2" y="-2"/>
+							</Anchors>
+						</Texture>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnClick>
+						RematchToolbar.ButtonOnClick(self,button)
+					</OnClick>
+				</Scripts>
+			</Button>
+		</Frames>
+		<Scripts>
+			<OnEvent>
+				self:OnEvent(event,...)
+			</OnEvent>
+			<OnShow>
+				self:OnShow()
+			</OnShow>
+			<OnHide>
+				self:OnHide()
+			</OnHide>
+		</Scripts>
+	</Frame>
+
+</Ui>

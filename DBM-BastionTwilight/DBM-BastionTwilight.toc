@@ -1,0 +1,40 @@
+﻿## Interface: 80000
+## X-Min-Interface: 80000
+## Title:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Bastion of Twilight|r
+## Title-deDE:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Die Bastion des Zwielichts|r
+## Title-esES:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0El Bastión del Crepúsculo|r
+## Title-koKR:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0황혼의 요새|r
+## Title-ruRU:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Сумеречный бастион|r
+## Title-zhTW:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0暮光堡壘|r
+## Title-zhCN:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0暮光堡垒|r
+## Title-ptBR:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Bastião do Crepúsculo|r
+## Author: MysticalOS
+## LoadOnDemand: 1
+## RequiredDeps: DBM-Core
+## SavedVariables: DBMBastionTwilight_AllSavedVars
+## SavedVariablesPerCharacter: DBMBastionTwilight_SavedStats
+## X-DBM-Mod: 1
+## X-DBM-Mod-Type: RAID
+## X-DBM-Mod-Category: CATA
+## X-DBM-Mod-MapID: 671
+## X-DBM-Mod-Sort: 804
+## X-DBM-Mod-MinCoreRevision: 14002
+localization.en.lua
+localization.de.lua
+localization.es.lua
+localization.fr.lua
+localization.kr.lua
+localization.ru.lua
+localization.tw.lua
+localization.cn.lua
+localization.br.lua
+HalfusWyrmbreaker.lua
+ValionaTheralion.lua
+AscendantCouncil.lua
+Chogall.lua
+Sinestra.lua
+BoTTrash.lua
+
+
+
+## X-Vendor: AbyUI

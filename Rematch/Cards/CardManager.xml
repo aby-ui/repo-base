@@ -1,0 +1,231 @@
+<Ui>
+
+	<Frame name="RematchCardManagerTemplate" virtual="true">
+		<Frames>
+			<Frame parentKey="LockFrame" enableMouse="true" inherits="BasicFrameTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" x="-4" y="24"/>
+					<Anchor point="BOTTOMRIGHT" x="6" y="-5"/>
+				</Anchors>
+				<Frames>
+					<Button parentKey="PinButton" inherits="RematchTitlebarButtonTemplate,RematchTooltipScripts">
+						<Size x="32" y="32"/>
+						<Anchors>
+							<Anchor point="TOPLEFT" x="-5" y="5"/>
+						</Anchors>
+						<Layers>
+							<Layer level="OVERLAY">
+								<!-- little texture to add bracket texture -->
+								<Texture file="Interface\FrameGeneral\UI-Frame">
+									<Size x="11" y="22"/>
+									<Anchors>
+										<Anchor point="RIGHT"/>
+									</Anchors>
+									<TexCoords left="0.6640625" right="0.75" top="0.015625" bottom="0.1875"/>
+								</Texture>
+							</Layer>
+						</Layers>
+						<Scripts>
+							<OnClick>
+								Rematch.CardManager.PinButtonOnClick(self)
+							</OnClick>
+						</Scripts>
+					</Button>
+				</Frames>
+				<Scripts>
+					<OnShow>
+						Rematch.CardManager.LockFrameOnShow(self)
+					</OnShow>
+					<OnMouseDown>
+						Rematch.CardManager.LockFrameOnMouseDown(self)
+					</OnMouseDown>
+					<OnMouseUp>
+						Rematch.CardManager.LockFrameOnMouseUp(self)
+					</OnMouseUp>
+				</Scripts>
+			</Frame>
+		</Frames>
+	</Frame>
+
+
+	<!-- CardTest: remove before posting -->
+
+	<Button name="CardTestButtonTemplate" virtual="true">
+		<Size x="200" y="24"/>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="1" y="-1"/>
+						<Anchor point="BOTTOMRIGHT" x="-1" y="1"/>
+					</Anchors>
+					<Color r="0.1" g="0.1" b="0.1"/>
+				</Texture>
+			</Layer>
+			<Layer level="HIGHLIGHT">
+				<Texture alphaMode="ADD">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="2" y="-2"/>
+						<Anchor point="BOTTOMRIGHT" x="-2" y="2"/>
+					</Anchors>
+					<Color r="0" g="0.25" b="0.5" a="0.5"/>
+				</Texture>
+			</Layer>
+		</Layers>
+		<NormalFont style="GameFontNormal"/>
+		<HighlightFont style="GameFontHighlight"/>
+		<Scripts>
+			<OnLoad>
+				self:SetText("Button "..self:GetID())
+			</OnLoad>
+			<OnEnter>
+				Rematch.CardManager.ButtonOnEnter(self,"CardTest",self:GetID())
+			</OnEnter>
+			<OnLeave>
+				Rematch.CardManager.ButtonOnLeave(self,"CardTest")
+			</OnLeave>
+			<OnClick>
+				Rematch.CardManager.ButtonOnClick(self,"CardTest",self:GetID())
+			</OnClick>
+		</Scripts>
+	</Button>
+
+	<Button name="CardTestListButtonTemplate" virtual="true">
+		<Size x="120" y="34"/>
+		<Frames>
+			<Button parentKey="Pet">
+				<Size x="32" y="32"/>
+				<Anchors>
+					<Anchor point="LEFT"/>
+				</Anchors>
+				<Layers>
+					<Layer level="ARTWORK">
+						<Texture parentKey="Icon"/>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnShow>
+						self.Icon:SetPoint("TOPLEFT")
+						self.Icon:SetPoint("BOTTOMRIGHT")
+					</OnShow>
+					<OnMouseDown>
+						self.Icon:SetPoint("TOPLEFT",1,-1)
+						self.Icon:SetPoint("BOTTOMRIGHT",-1,1)
+					</OnMouseDown>
+					<OnMouseUp>
+						self.Icon:SetPoint("TOPLEFT")
+						self.Icon:SetPoint("BOTTOMRIGHT")
+					</OnMouseUp>
+				</Scripts>
+			</Button>
+		</Frames>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="1" y="-1"/>
+						<Anchor point="BOTTOMRIGHT" x="-1" y="1"/>
+					</Anchors>
+					<Color r="0.15" g="0.15" b="0.15"/>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<FontString parentKey="Text" inherits="GameFontHighlight" justifyH="LEFT">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="36" y="0"/>
+						<Anchor point="BOTTOMRIGHT"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+			<Layer level="HIGHLIGHT">
+				<Texture file="Interface\Buttons\YellowOrange64_faded" alpha="0.2">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="33" y="-1"/>
+						<Anchor point="BOTTOMRIGHT" x="-1" y="1"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnEnter>
+				Rematch.CardManager.ButtonOnEnter(self,"CardTest",self.petID)
+			</OnEnter>
+			<OnLeave>
+				Rematch.CardManager.ButtonOnLeave(self,"CardTest")
+			</OnLeave>
+			<OnClick>
+				Rematch.CardManager.ButtonOnClick(self,"CardTest",self.petID)
+			</OnClick>
+		</Scripts>
+	</Button>
+
+	<Frame name="CardTestCard" parent="UIParent" frameStrata="FULLSCREEN" movable="true" clampedToScreen="true" inherits="RematchCardManagerTemplate" hidden="true">
+		<Size x="196" y="256"/>
+		<Layers>
+			<Layer level="ARTWORK">
+				<Texture file="Interface\FrameGeneral\UI-Background-Rock"/>
+				<FontString parentKey="Text" inherits="GameFontHighlight" text="Card">
+					<Anchors>
+						<Anchor point="TOPLEFT"/>
+						<Anchor point="BOTTOMRIGHT" relativePoint="TOPRIGHT" x="0" y="-80"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Button parentKey="Icon">
+				<Size x="36" y="36"/>
+				<Anchors>
+					<Anchor point="TOP" relativeKey="$parent.Text" relativePoint="BOTTOM" x="0" y="-16"/>
+				</Anchors>
+			</Button>
+		</Frames>
+	</Frame>
+
+	<!--
+	<Frame name="CardTest" parent="UIParent" movable="true" enableMouse="true" inherits="BasicFrameTemplate" hidden="false">
+		<Size x="212" y="221"/>
+		<Anchors>
+			<Anchor point="CENTER"/>
+		</Anchors>
+		<Frames>
+			<Button parentArray="Buttons" inherits="CardTestButtonTemplate" id="1"/>
+			<Button parentArray="Buttons" inherits="CardTestButtonTemplate" id="2"/>
+			<Button parentArray="Buttons" inherits="CardTestButtonTemplate" id="3"/>
+			<Button parentArray="Buttons" inherits="CardTestButtonTemplate" id="4"/>
+			<Button parentArray="Buttons" inherits="CardTestButtonTemplate" id="5"/>
+			<Button parentArray="Buttons" inherits="CardTestButtonTemplate" id="6"/>
+			<Button parentArray="Buttons" inherits="CardTestButtonTemplate" id="7"/>
+			<Button parentArray="Buttons" inherits="CardTestButtonTemplate" id="8"/>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				for i=1,#self.Buttons do
+					self.Buttons[i]:SetPoint("TOPLEFT",4,-(i*24))
+				end
+			</OnLoad>
+			<OnMouseDown>
+				self:StartMoving()
+			</OnMouseDown>
+			<OnMouseUp>
+				self:StopMovingOrSizing()
+			</OnMouseUp>
+		</Scripts>
+	</Frame> -->
+
+	<Frame name="CardTest" parent="UIParent" movable="true" enableMouse="true" inherits="BasicFrameTemplate" hidden="false">
+		<Size x="300" y="400"/>
+		<Anchors>
+			<Anchor point="CENTER"/>
+		</Anchors>
+		<Scripts>
+			<OnMouseDown>
+				self:StartMoving()
+			</OnMouseDown>
+			<OnMouseUp>
+				self:StopMovingOrSizing()
+			</OnMouseUp>
+		</Scripts>
+	</Frame>
+
+</Ui>

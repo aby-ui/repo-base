@@ -1,0 +1,45 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchemainstance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/ ..\FrameXML\UI.xsd">
+  <Script file="Localization\zhCN.lua" />
+  <Script file="Localization\zhTW.lua" />
+  <Script file="Localization\Boss.lua" />
+  <Script file="GTFO_Recount.lua" />
+  <Script file="GTFO_Skada.lua" />
+  <Script file="GTFO_PowerAuras.lua" />
+  <Script file="GTFO_WeakAuras.lua" />
+  <Script file="GTFO.lua" />
+	<Script file="GTFO_Ignore.lua" />
+  <Script file="GTFO_Spells_Generic.lua" />
+  <Script file="GTFO_Spells_Classic.lua" />
+  <Script file="GTFO_Spells_BC.lua" />
+  <Script file="GTFO_Spells_LK.lua" />
+  <Script file="GTFO_Spells_CAT.lua" />
+  <Script file="GTFO_Spells_MP.lua" />
+  <Script file="GTFO_Spells_WOD.lua" />
+  <Script file="GTFO_Spells_LGN.lua" />
+  <Script file="GTFO_Spells_BFA.lua" />
+  <Script file="GTFO_Spells_Special.lua" />
+  <Script file="GTFO_Fail_Generic.lua" />
+  <Script file="GTFO_Fail_Classic.lua" />
+  <Script file="GTFO_Fail_BC.lua" />
+  <Script file="GTFO_Fail_LK.lua" />
+  <Script file="GTFO_Fail_CAT.lua" />
+  <Script file="GTFO_Fail_MP.lua" />
+  <Script file="GTFO_Fail_WOD.lua" />
+  <Script file="GTFO_Fail_LGN.lua" />
+  <Script file="GTFO_Fail_BFA.lua" />
+  <Script file="GTFO_FF_BC.lua" />
+  <Script file="GTFO_FF_LK.lua" />
+  <Script file="GTFO_FF_CAT.lua" />
+  <Script file="GTFO_FF_MP.lua" />
+  <Script file="GTFO_FF_WOD.lua" />
+  <Script file="GTFO_FF_LGN.lua" />
+  <Script file="GTFO_FF_BFA.lua" />
+  <Script file="GTFO_Mobs.lua" />
+     <GameTooltip name="GTFOSpellTooltip" frameStrata="TOOLTIP" hidden="true" parent="UIParent" inherits="GameTooltipTemplate"/>
+     <Frame name="GTFOFrame" parent="UIParent" hidden="false">
+     <Scripts>
+      <OnEvent>GTFO_OnEvent(self, event, ...);</OnEvent>
+      <OnLoad>GTFO_OnLoad();</OnLoad>
+    </Scripts>
+  </Frame>
+</Ui>

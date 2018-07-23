@@ -1,0 +1,205 @@
+<Ui xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.blizzard.com/wow/ui/">
+    <Script file="Locales\Locale-enUS.lua" />
+    <Script file="Locales\Locale-zhCN.lua" />
+    <Script file="Locales\Locale-zhTW.lua" />
+    <Script file="RayCast.lua" />
+    <Script file="RayCastSilvershardMines.lua" />
+    <Script file="RayCastDeepwindGorge.lua" />
+    <Script file="BGDefender.lua" />
+    <Frame name="BGD_Opt_Frame" parent="UIParent" hidden="true">
+        <Scripts>
+            <OnLoad>
+                BGD_Opt_Frame_OnLoad(self);
+            </OnLoad>
+            <OnShow>
+                BGD_Opt_Frame_OnShow(self);
+            </OnShow>
+        </Scripts>
+    </Frame>
+    <Frame name="BGDefenderDialog" virtual="true" hidden="true" parent="UIParent">
+        <Anchors>
+            <Anchor point="CENTER"/>
+        </Anchors>
+        <Layers> 
+            <Layer level="BACKGROUND"> 
+                <Texture name="$parent_Background" setAllPoints="true">
+                    <!-- Texture has blue color wit 50% alpha -->
+                    <Color r="0" g="0" b="0" a="0.3" /> 
+                </Texture> 
+            </Layer> 
+        </Layers> 
+    </Frame>
+    <Frame name="BGDefenderFrame" hidden="true" inherits="BGDefenderDialog" movable="true" enableMouse="true"> 
+        <Size>
+            <AbsDimension x="157" y="56" />
+        </Size>
+        <Frames>
+            <Button name="Button1" inherits="UIPanelButtonTemplate" id="11" text="1">
+                <Size>
+                    <AbsDimension x="22" y="20" />
+                </Size>
+                <Anchors>
+                    <Anchor point="TOPLEFT">
+                        <Offset x="5" y="-12" />
+                    </Anchor>
+                </Anchors>
+                <Scripts>
+                    <OnClick>BGD_NumCall(1);</OnClick>
+                </Scripts>
+            </Button>
+            <Button name="Button2" inherits="UIPanelButtonTemplate" id="12" text="2">
+                <Size>
+                    <AbsDimension x="22" y="20" />
+                </Size>
+                <Anchors>
+                    <Anchor point="TOPLEFT">
+                        <Offset>
+                            <AbsDimension x="30" y="-12" />
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+                <Scripts>
+                    <OnClick>BGD_NumCall(2);</OnClick>
+                </Scripts>
+            </Button>
+            <Button name="Button3" inherits="UIPanelButtonTemplate" id="13" text="3">
+                <Size>
+                    <AbsDimension x="22" y="20" />
+                </Size>
+                <Anchors>
+                    <Anchor point="TOPLEFT">
+                        <Offset x="55" y="-12" />
+                    </Anchor>
+                </Anchors>
+                <Scripts>
+                    <OnClick>BGD_NumCall(3);</OnClick>
+                </Scripts>
+            </Button>
+            <Button name="Button4" inherits="UIPanelButtonTemplate" id="14" text="4">
+                <Size>
+                    <AbsDimension x="22" y="20" />
+                </Size>
+                <Anchors>
+                    <Anchor point="TOPLEFT">
+                        <Offset x="80" y="-12" />
+                    </Anchor>
+                </Anchors>
+                <Scripts>
+                    <OnClick>BGD_NumCall(4);</OnClick>
+                </Scripts>
+            </Button>
+            <Button name="Button5" inherits="UIPanelButtonTemplate" id="15" text="5">
+                <Size>
+                    <AbsDimension x="22" y="20" />
+                </Size>
+                <Anchors>
+                    <Anchor point="TOPLEFT">
+                        <Offset x="105" y="-12" />
+                    </Anchor>
+                </Anchors>
+                <Scripts>
+                    <OnClick>BGD_NumCall(5);</OnClick>
+                </Scripts>
+            </Button>
+            <Button name="Button6" inherits="UIPanelButtonTemplate" id="16" text="&gt;5">
+                <Size>
+                    <AbsDimension x="22" y="20" />
+                </Size>
+                <Anchors>
+                    <Anchor point="TOPLEFT">
+                        <Offset x="130" y="-12" />
+                    </Anchor>
+                </Anchors>
+                <Scripts>
+                    <OnClick>BGD_NumCall(6);</OnClick>
+                </Scripts>
+            </Button>
+            <Button name="Button7" inherits="UIPanelButtonTemplate" id="17" text="求助">
+                <Size>
+                    <AbsDimension x="55" y="20" />
+                </Size>
+                <Anchors>
+                    <Anchor point="TOPLEFT">
+                        <Offset x="5" y="-32" />
+                    </Anchor>
+                </Anchors>
+                <Scripts>
+                    <OnClick>BGD_NumCall(7);</OnClick>
+                </Scripts>
+            </Button>
+            <Button name="Button8" inherits="UIPanelButtonTemplate" id="18" text="安全">
+                <Size>
+                    <AbsDimension x="55" y="20" />
+                </Size>
+                <Anchors>
+                    <Anchor point="TOPLEFT">
+                        <Offset x="97" y="-32" />
+                    </Anchor>
+                </Anchors>
+                <Scripts>
+                    <OnClick>BGD_NumCall(8);</OnClick>
+                </Scripts>
+            </Button>
+            <Button name="Button9" inherits="UIPanelButtonTemplate" id="19" text=" x ">
+                <Size>
+                    <AbsDimension x="8" y="8" />
+                </Size>
+                <Anchors>
+                    <Anchor point="TOPRIGHT">
+                        <Offset x="-2" y="-2" />
+                    </Anchor>
+                </Anchors>
+                <Scripts>
+                    <OnClick>BGD_Close();</OnClick>
+                </Scripts>
+            </Button>
+            <Button name="Button10" inherits="UIPanelButtonTemplate" id="19" text=" o ">
+                <Size>
+                    <AbsDimension x="8" y="8" />
+                </Size>
+                <Anchors>
+                    <Anchor point="TOPRIGHT">
+                        <Offset x="-20" y="-2" />
+                    </Anchor>
+                </Anchors>
+                <Scripts>
+                    <OnClick>BGD_Options_Open();</OnClick>
+                </Scripts>
+            </Button>
+            <Button name="Button11" inherits="UIPanelButtonTemplate" id="19" text=" m ">
+                <Size>
+                    <AbsDimension x="8" y="8" />
+                </Size>
+                <Anchors>
+                    <Anchor point="TOPRIGHT">
+                        <Offset x="-40" y="-2" />
+                    </Anchor>
+                </Anchors>
+                <Scripts>
+                    <OnClick>BGD_Toggle_Movable();</OnClick>
+                </Scripts>
+            </Button>
+        </Frames>
+        <Layers>
+            <Layer>
+                <FontString name="Text1" inherits="GameFontNormal" text="战场防御者">
+                    <Anchors>
+                        <Anchor point="LEFT" relativePoint="TOPLEFT">
+                            <Offset>
+                                <AbsDimension x="5" y="-5" />
+                            </Offset>
+                        </Anchor>
+                    </Anchors>
+                </FontString>
+            </Layer>
+        </Layers>
+        <Scripts>
+            <OnMouseDown>BGD_StartMoving(self);</OnMouseDown>
+            <OnMouseUp>BGD_StopMovingOrSizing(self);</OnMouseUp>
+            <OnDragStart>BGD_StopMovingOrSizing(self);</OnDragStart>
+            <OnDragStop>BGD_StopMovingOrSizing(self);</OnDragStop>
+            <OnLoad>BGD_OnLoad(self);</OnLoad>
+            <OnEvent>BGD_OnEvent(self, event, ...);</OnEvent>
+        </Scripts>
+    </Frame>
+</Ui>

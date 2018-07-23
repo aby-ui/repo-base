@@ -1,0 +1,82 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/ .. \FrameXML\UI.xsd">
+
+	<Script file="split_bar.lua"/>
+
+	<StatusBar name="DetailsFrameworkSplitBarTemplate" virtual="true">
+		<Size x="300" y="14"/>
+		
+		<Layers>
+		
+			<Layer level="BACKGROUND">
+				<!-- background texture -->
+				<Texture name="$parent_StatusBarBackground" setAllPoints="true" parentKey="background" file = "Interface\PaperDollInfoFrame\UI-Character-Skills-Bar" horizTile="false" vertTile="false">
+					<Color a = "1" r = ".5" g = ".5" b = ".5" />
+				</Texture>
+			</Layer>
+			
+			<Layer level="ARTWORK">
+				<!-- statusbar texture -->
+				<Texture name="$parent_StatusBarTexture" hidden="true" parentKey="texture" file = "Interface\PaperDollInfoFrame\UI-Character-Skills-Bar" horizTile="false" vertTile="false">
+					<Size x="300" y="14" />
+					<Color a = "1" r = "1" g = "1" b = "1" />
+				</Texture>
+			</Layer>
+			
+			<Layer level="OVERLAY">
+				<!-- left icon -->
+				<Texture name="$parent_IconLeft" parentKey="lefticon">
+					<Size x="14" y="14" />
+					<Anchors>
+						<Anchor point="LEFT" relativeTo="$parent" relativePoint="LEFT" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+				
+				<!-- right icon -->
+				<Texture name="$parent_IconRight" parentKey="righticon">
+					<Size x="14" y="14" />
+					<Anchors>
+						<Anchor point="RIGHT" relativeTo="$parent" relativePoint="RIGHT" x="0" y="0"/>
+					</Anchors>
+				</Texture>				
+
+				<!-- left text -->
+				<FontString name="$parent_TextLeft" parentKey="lefttext" inherits="GameFontHighlight" justifyH="LEFT" nonspacewrap="false">
+					<FontHeight val="10.5"/>
+					<Anchors>
+						<Anchor point="LEFT" relativeTo="$parent_IconLeft" relativePoint="RIGHT" x="3" y="0"/>
+					</Anchors>
+				</FontString>
+				
+				<!-- right text -->
+				<FontString name="$parent_TextRight" parentKey="righttext" inherits="GameFontHighlight" justifyH="RIGHT" nonspacewrap="false">
+					<FontHeight val="10.5"/>
+					<Anchors>
+						<Anchor point="RIGHT" relativeTo="$parent_IconRight" relativePoint="LEFT" x="-3" y="0"/>
+					</Anchors>
+				</FontString>
+				
+				<!-- div spark -->
+				<Texture name="$parent_Spark" parentKey="spark" file = "Interface\CastingBar\UI-CastingBar-Spark"  alphaMode="ADD">
+					<Size>
+						<AbsDimension x="32" y="32"/>
+					</Size>
+					<Anchors>
+						<Anchor point="LEFT" relativeTo="$parent" relativePoint="RIGHT" x="-17" y="-1"/>
+					</Anchors>
+				</Texture>
+				
+			</Layer>
+			
+		</Layers>
+		
+		<Scripts>
+			<OnLoad>
+				self:SetStatusBarTexture (self.texture);
+				self:SetMinMaxValues (1, 100);
+				self:SetValue (50);
+				DetailsFrameworkSplitlBar_OnCreate (self);
+			</OnLoad>
+		</Scripts>
+		
+	</StatusBar>
+</Ui>

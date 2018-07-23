@@ -1,0 +1,33 @@
+## Interface: 80000
+## X-Min-Interface: 80000
+## Title:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff0055FFSpell Timers|r
+## Title-deDE:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff0055FFSpell Timers|r
+## Title-zhCN:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff0055FF冷却助手|r
+## Title-zhTW:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff0055FF冷卻助手|r
+## Title-koKR:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff0055FF스펠 타이머|r
+## Title-esES:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff0055FFTemporizadores de hechizos y facultades|r
+## Title-frFR:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff0055FFSpell Timers|r
+## Title-ruRU:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff0055FFNТаймеры заклинаний|r
+## Notes: Creates bars for Long term cooldowns or durations
+## Notes-deDE: Erzeugt Balken für lange Abklingzeiten oder Aktivitätdauern von Zaubern und Fähigkeiten
+## Notes-koKR: 공격대 쿨다운 및 시전 바 생성 플러그인
+## Notes-esES: Muestra barras con los tiempos de reutilización y duraciones de los hechizos y facultades de tu grupo o banda.
+## LoadOnDemand: 0
+## RequiredDeps: DBM-Core
+## DefaultState: enabled
+## Author: Nitram and Tandanu
+## URL: http://www.deadlybossmods.com
+## SavedVariables: DBM_SpellTimers_Settings
+localization.en.lua
+localization.de.lua
+localization.cn.lua
+localization.tw.lua
+localization.kr.lua
+localization.es.lua
+localization.fr.lua
+localization.it.lua
+SpellTimers.lua
+
+
+
+## X-Vendor: AbyUI

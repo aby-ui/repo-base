@@ -1,0 +1,214 @@
+<Ui>
+
+	<!-- template for the typebar tabs -->
+	<Button name="RematchTypeBarTabTemplate" inherits="RematchTabTemplate" virtual="true">
+		<Size x="84" y="24"/>
+		<Scripts>
+			<OnClick>
+				RematchPetPanel.TypeBarTabOnClick(self)
+			</OnClick>
+		</Scripts>
+	</Button>
+
+	<!-- template for the type buttons within the typebar -->
+	<CheckButton name="RematchTypeBarButtonTemplate" inherits="RematchSlotTemplate" virtual="true">
+		<Size x="25" y="25"/>
+		<CheckedTexture file="Interface\Buttons\CheckButtonHilight" alphaMode="ADD"/>
+		<Scripts>
+			<OnClick>
+				RematchPetPanel.TypeBarButtonOnClick(self)
+			</OnClick>
+		</Scripts>
+	</CheckButton>
+
+	<Frame name="RematchPetPanel" inherits="RematchPanelTemplate" hidden="true">
+		<Frames>
+
+			<!-- section above petList with search bar, filter button and type bar -->
+			<Frame parentKey="Top" inherits="RematchInsetFrameTemplate">
+				<Size x="280" y="32"/>
+				<Anchors>
+					<Anchor point="TOPLEFT"/>
+				</Anchors>
+				<Frames>
+					<!-- typebar toggle button to left of search bar -->
+					<Button parentKey="Toggle" inherits="RematchTopToggleButtonTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" x="3" y="-3"/>
+						</Anchors>
+						<Scripts>
+							<OnClick>
+								RematchPetPanel:ToggleTypeBar()
+							</OnClick>
+						</Scripts>
+					</Button>
+					<!-- filter button to the right of the search bar -->
+					<Button parentKey="Filter" inherits="RematchFilterButtonTemplate" text="FILTER">
+						<Anchors>
+							<Anchor point="TOPRIGHT" x="-3" y="-3"/>
+						</Anchors>
+						<Scripts>
+							<OnClick>
+								Rematch:ToggleMenu("PetFilter","TOPLEFT",self,"TOPRIGHT")
+							</OnClick>	
+						</Scripts>						
+					</Button>
+					<!-- search bar between typebar toggle and filter buttons -->
+					<EditBox parentKey="SearchBox" inherits="RematchSearchBoxTemplate">
+						<Size x="0" y="24"/>
+						<Anchors>
+							<Anchor point="LEFT" relativeKey="$parent.Toggle" relativePoint="RIGHT" x="-1" y="0"/>
+							<Anchor point="RIGHT" relativeKey="$parent.Filter" relativePoint="LEFT" x="1" y="0"/>
+						</Anchors>
+						<Scripts>
+							<OnTextChanged>
+								RematchPetPanel.SearchBoxOnTextChanged(self)
+							</OnTextChanged>
+							<OnEnterPressed>
+								self:ClearFocus()
+							</OnEnterPressed>
+						</Scripts>
+					</EditBox>
+					<!-- the actual typebar -->
+					<Frame parentKey="TypeBar" hidden="true">
+						<Size x="270" y="36"/>
+						<Anchors>
+							<Anchor point="BOTTOM" x="0" y="3"/>
+						</Anchors>
+						<Backdrop edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
+							<EdgeSize val="16"/>
+							<BorderColor r="0.6" g="0.6" b="0.6"/>
+						</Backdrop>
+						<Frames>
+							<!-- type tab -->
+							<Button parentArray="Tabs" inherits="RematchTypeBarTabTemplate" id="1">
+								<Anchors>
+									<Anchor point="BOTTOMLEFT" relativePoint="TOPLEFT" x="4" y="-4"/>
+								</Anchors>
+							</Button>
+							<!-- strong vs tab -->
+							<Button parentArray="Tabs" inherits="RematchTypeBarTabTemplate" id="2">
+								<Anchors>
+									<Anchor point="BOTTOMLEFT" relativePoint="TOPLEFT" x="83" y="-4"/>
+								</Anchors>
+							</Button>
+							<!-- tough vs tab -->
+							<Button parentArray="Tabs" inherits="RematchTypeBarTabTemplate" id="3">
+								<Anchors>
+									<Anchor point="BOTTOMLEFT" relativePoint="TOPLEFT" x="162" y="-4"/>
+								</Anchors>
+							</Button>
+							<Button parentKey="Clear" inherits="RematchClearButtonTemplate">
+								<Anchors>
+									<Anchor point="BOTTOMRIGHT" relativePoint="TOPRIGHT" x="-5" y="0"/>
+								</Anchors>
+								<Scripts>
+									<OnClick>
+										RematchPetPanel.TypeBarClear(self)
+									</OnClick>
+								</Scripts>
+							</Button>
+							<CheckButton parentArray="Buttons" inherits="RematchTypeBarButtonTemplate" id="1"/>
+							<CheckButton parentArray="Buttons" inherits="RematchTypeBarButtonTemplate" id="2"/>
+							<CheckButton parentArray="Buttons" inherits="RematchTypeBarButtonTemplate" id="3"/>
+							<CheckButton parentArray="Buttons" inherits="RematchTypeBarButtonTemplate" id="4"/>
+							<CheckButton parentArray="Buttons" inherits="RematchTypeBarButtonTemplate" id="5"/>
+							<CheckButton parentArray="Buttons" inherits="RematchTypeBarButtonTemplate" id="6"/>
+							<CheckButton parentArray="Buttons" inherits="RematchTypeBarButtonTemplate" id="7"/>
+							<CheckButton parentArray="Buttons" inherits="RematchTypeBarButtonTemplate" id="8"/>
+							<CheckButton parentArray="Buttons" inherits="RematchTypeBarButtonTemplate" id="9"/>
+							<CheckButton parentArray="Buttons" inherits="RematchTypeBarButtonTemplate" id="10"/>
+						</Frames>
+					</Frame>
+				</Frames>
+			</Frame>
+
+			<!-- results bar only shows when there's a filter active -->
+			<Frame parentKey="Results" inherits="RematchInsetFrameTemplate" hidden="true">
+				<Size x="280" y="26"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeKey="$parent.Top" relativePoint="BOTTOMLEFT" x="0" y="-2"/>
+				</Anchors>
+				<Layers>
+					<Layer level="ARTWORK">
+						<FontString parentKey="Pets" inherits="GameFontNormal">
+							<Anchors>
+								<Anchor point="LEFT" x="8" y="0"/>
+							</Anchors>
+						</FontString>
+						<FontString parentKey="Filters" inherits="GameFontNormal" wordwrap="false" justifyH="RIGHT">
+							<Anchors>
+								<Anchor point="LEFT" relativeKey="$parent.Pets" relativePoint="RIGHT" x="1" y="0"/>
+								<Anchor point="RIGHT" x="-25" y="0"/>
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+				<Frames>
+					<Button parentKey="Clear" inherits="RematchClearButtonTemplate">
+						<Anchors>
+							<Anchor point="RIGHT" x="-5" y="0"/>
+						</Anchors>
+						<Scripts>
+							<OnClick>
+								Rematch.Roster:ClearAllFilters(true)
+							</OnClick>
+						</Scripts>
+					</Button>
+				</Frames>
+			</Frame>
+
+			<!-- this contains the list of pets -->
+			<Frame parentKey="List" inherits="RematchInsetFrameTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeKey="$parent.Top" relativePoint="BOTTOMLEFT" x="0" y="-2"/>
+					<Anchor point="BOTTOMRIGHT"/>
+				</Anchors>
+				<Frames>
+					<ScrollFrame parentKey="ScrollFrame" name="RematchPetListScrollFrame" inherits="HybridScrollFrameTemplate">
+						<Size x="248" y="503"/>
+						<Anchors>
+							<Anchor point="TOPLEFT" x="4" y="-3"/>
+							<Anchor point="BOTTOMRIGHT" x="-6" y="3"/>
+						</Anchors>
+						<Frames>
+							<Slider name="RematchPetListScrollBar" inherits="HybridScrollBarTrimTemplate" parentKey="ScrollBar">
+								<Anchors>
+									<Anchor point="TOPRIGHT" x="2" y="-14"/>
+									<Anchor point="BOTTOMRIGHT" x="2" y="13"/>
+								</Anchors>
+								<Scripts>
+									<OnLoad>
+										self.trackBG:Show()
+										self.trackBG:SetVertexColor(0, 0, 0, 0.75)
+									</OnLoad>
+								</Scripts>
+							</Slider>
+						</Frames>
+						<Scripts>
+							<OnSizeChanged>
+								RematchPetPanel:Update()
+							</OnSizeChanged>
+						</Scripts>
+					</ScrollFrame>
+				</Frames>
+			</Frame>
+			<!-- Selected gets reparented and positioned onto team buttons that are loaded -->
+			<Frame parentKey="Selected" useParentLevel="true" hidden="true">
+				<Layers>
+					<Layer level="BORDER">
+						<Texture parentKey="Texture" file="Interface\LevelUp\LevelUpTex" alpha="0.2">
+							<Size x="0" y="20"/>
+							<Anchors>
+								<Anchor point="BOTTOMLEFT" x="4" y="4"/>
+								<Anchor point="BOTTOMRIGHT" x="-4" y="4"/>
+							</Anchors>
+							<TexCoords left="0.56054688" right="0.99609375" top="0.24218750" bottom="0.46679688"/>
+						</Texture>
+					</Layer>
+				</Layers>
+			</Frame>
+		</Frames>
+	</Frame>
+
+</Ui>

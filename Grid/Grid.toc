@@ -1,0 +1,73 @@
+## Interface: 80000
+## Version: 7.3.5.0 WarbabyPack-20180700
+
+## Title: Grid
+## Notes: A compact grid of party/raid unit frames.
+## Notes-deDE: Ein kompakter Gitter von Gruppen- und Schlachtzugsfenstern.
+## Notes-esES: Una cuadrícula compacta de marcos de unidades para tu grupo o banda.
+## Notes-esMX: Una cuadrícula compacta de marcos de unidades para su grupo o banda.
+## Notes-frFR: Une grille compacte de fenêtres des unités de votre groupe ou raid.
+## Notes-itIT: Una griglia compatta di riquadri delle unità nel tuo gruppo o incursione.
+## Notes-ptBR: Uma grade compacta de quadros das unidades do grupo ou banda.
+## Notes-zhCN: 紧凑方格队伍/团队框架。
+## Notes-zhTW: 緊湊方格隊伍/團隊框架。
+
+## Author: Phanx, Pastamancer, Maia
+## X-Credits: Greltok, Jerry, jlam
+## X-License: All Rights Reserved
+## X-Website: https://wow.curseforge.com/projects/grid/
+## X-Curse-Project-ID: 7000
+## X-WoWI-ID: 5747
+
+## OptionalDeps: Ace3, LibDBIcon-1.0, LibDualSpec-1.0, LibResInfo-1.0, LibSharedMedia-3.0, AceGUI-3.0-SharedMediaWidgets, UTF8, Clique
+## SavedVariables: GridDB
+
+#@no-lib-strip@
+Libs\LibResInfo-1.0\LibResInfo-1.0.lua
+#@end-no-lib-strip@
+
+Locales\Locale-zhCN.lua
+Locales\Locale-zhTW.lua
+
+Core.lua
+Roster.lua
+Layout.lua
+Layouts.lua
+Frame.lua
+Status.lua
+#Help.lua
+
+Indicators\Alpha.lua
+Indicators\Bar.lua
+Indicators\Border.lua
+Indicators\Corner.lua
+Indicators\HealingBar.lua
+Indicators\Icon.lua
+Indicators\Text.lua
+
+Statuses\Overflow.lua
+Statuses\Absorbs.lua
+Statuses\Aggro.lua
+Statuses\Auras.lua
+Statuses\Group.lua
+Statuses\Heals.lua
+Statuses\Health.lua
+Statuses\Mana.lua
+Statuses\Mouseover.lua
+Statuses\Name.lua
+Statuses\RaidIcon.lua
+Statuses\Range.lua
+Statuses\ReadyCheck.lua
+Statuses\Resurrect.lua
+Statuses\Role.lua
+Statuses\Stagger.lua
+Statuses\Target.lua
+Statuses\Vehicle.lua
+
+Statuses\AurasByClass.lua
+_warbaby_.lua
+
+## Title: |cff880303[有爱]|r Grid 团队框架
+## Notes-zhCN: 强大的团队框体，支持多种功能。
+## X-Vendor: AbyUI
+

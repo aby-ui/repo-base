@@ -1,0 +1,49 @@
+﻿## Interface: 80000
+## X-Min-Interface: 80000
+## Title:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Challenges|r
+## Title-deDE:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Herausforderungen|r
+## Title-esES:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Terreno de Pruebas|r
+## Title-koKR:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0수련의 장|r
+## Title-zhTW:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0挑戰|r
+## Title-zhCN:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0个人挑战|r
+## Title-ruRU:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Арена испытаний|r
+## Author: MysticalOS
+## LoadOnDemand: 1
+## RequiredDeps: DBM-Core
+## SavedVariables: DBMChallenges_AllSavedVars
+## SavedVariablesPerCharacter: DBMChallenges_SavedStats
+## X-DBM-Mod: 1
+## X-DBM-Mod-Type: SCENARIO
+## X-DBM-Mod-Category: LEG
+## X-DBM-Mod-SubCategories: Proving Grounds,Legion Artifacts
+## X-DBM-Mod-SubCategories-deDE: Feuerprobe,Legion Artefakte
+## X-DBM-Mod-SubCategories-zhTW: 白虎寺試煉場, 神器外觀挑戰
+## X-DBM-Mod-SubCategories-zhCN: 白虎寺试炼场, 神器外观挑战
+## X-DBM-Mod-Name: Challenges
+## X-DBM-Mod-Name-deDE: Herausforderungen
+## X-DBM-Mod-Name-esES: Terreno de Pruebas
+## X-DBM-Mod-Name-koKR: 수련의 장
+## X-DBM-Mod-Name-zhTW: 挑戰
+## X-DBM-Mod-Name-zhCN: 个人挑战
+## X-DBM-Mod-Name-ruRU: Арена испытаний
+## X-DBM-Mod-Sort: 516
+## X-DBM-Mod-MapID: 1148, 1698, 1710, 1703, 1702, 1684, 1673, 1616
+## X-DBM-Mod-MinCoreRevision: 16130
+localization.en.lua
+localization.de.lua
+localization.es.lua
+localization.kr.lua
+localization.tw.lua
+localization.cn.lua
+localization.ru.lua
+PGWhiteTiger.lua
+LegionArtifacts\DPSFelTotem.lua
+LegionArtifacts\DPSImpossibleFoe.lua
+LegionArtifacts\DPSQueen.lua
+LegionArtifacts\DPSTwins.lua
+LegionArtifacts\DPSXylem.lua
+LegionArtifacts\Healer.lua
+LegionArtifacts\Tank.lua
+
+
+## X-Vendor: AbyUI

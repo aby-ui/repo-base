@@ -1,0 +1,5 @@
+<Bindings>
+    <Binding name="MEETINGSTONE_TOGGLE" category="BINDING_HEADER_NETEASE" header="MEETINGSTONE">
+        LibStub('AceAddon-3.0'):GetAddon('MeetingStone'):Toggle()
+    </Binding>
+</Bindings>

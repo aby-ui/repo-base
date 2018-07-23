@@ -1,0 +1,964 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\..\FrameXML\UI.xsd">
+
+	<Font name="TSIRecipeFont" font="Fonts\FRIZQT__.TTF" virtual="true">
+		<FontHeight>
+			<AbsValue val="10"/>
+		</FontHeight>
+		<Color r="1.0" g="0.82" b="0"/>
+	</Font>
+
+	<!-- SKILL TEMPLATE -->
+	<Button name="TradeskillInfoSkillButtonTemplate" hidden="false" virtual="true">
+		<Size>
+			<AbsDimension x="293" y="16"/>
+		</Size>
+		<Scripts>
+			<OnLoad>
+				self:RegisterForClicks("LeftButtonUp", "RightButtonUp");
+			</OnLoad>	
+			<OnClick>
+				TradeskillInfoUI:SkillButton_OnClick(self, button, down)
+			</OnClick>
+		</Scripts>
+		<NormalTexture urgency="5" file="Interface\Buttons\UI-MinusButton-UP">
+			<Size>
+				<AbsDimension x="16" y="16"/>
+			</Size>
+			<Anchors>
+				<Anchor point="LEFT">
+					<Offset>
+						<AbsDimension x="3" y="0"/>
+					</Offset>
+				</Anchor>
+			</Anchors>
+		</NormalTexture>
+		<HighlightTexture name="$parentHighlight" file="Interface\Buttons\UI-PlusButton-Hilight" alphaMode="ADD">
+			<Size>
+				<AbsDimension x="16" y="16"/>
+			</Size>
+			<Anchors>
+				<Anchor point="LEFT">
+					<Offset>
+						<AbsDimension x="3" y="0"/>
+					</Offset>
+				</Anchor>
+			</Anchors>
+		</HighlightTexture>
+		<DisabledTexture file="Interface\Buttons\UI-PlusButton-Disabled">
+			<Size>
+				<AbsDimension x="16" y="16"/>
+			</Size>
+			<Anchors>
+				<Anchor point="LEFT">
+					<Offset>
+						<AbsDimension x="3" y="0"/>
+					</Offset>
+				</Anchor>
+			</Anchors>
+		</DisabledTexture>
+		<ButtonText name="$parentText">
+			<Size x="270" y="13"/>
+			<Anchors>
+				<Anchor point="LEFT" relativeTo="$parentHighlight" relativePoint="RIGHT">
+					<Offset>
+						<AbsDimension x="2" y="1"/>
+					</Offset>
+				</Anchor>
+			</Anchors>
+		</ButtonText>
+		<NormalFont style="GameFontNormalLeft"/>
+		<HighlightFont style="GameFontHighlightLeft"/>
+		<DisabledFont style="GameFontDisableLeft"/>
+	</Button>
+
+	<!-- REAGENT TEMPLATE -->
+	<Button name="TradeskillInfoItemTemplate" inherits="QuestItemTemplate" virtual="true">
+		<Scripts>
+			<OnLoad>
+				self:RegisterForClicks("LeftButtonUp", "RightButtonUp")
+			</OnLoad>
+			<OnEnter>
+				TradeskillInfoUI:ShowReagentTooltip(self)
+			</OnEnter>
+			<OnLeave>
+				GameTooltip:Hide()
+				ResetCursor()
+			</OnLeave>
+			<OnUpdate>
+				CursorOnUpdate(self)
+			</OnUpdate>
+			<OnClick>
+				TradeskillInfoUI:ReagentIcon_OnClick(self, button)
+			</OnClick>
+		</Scripts>
+	</Button>
+
+	<!-- BUTTON TEMPLATE -->
+	<Button name="TradeskillInfoButtonTemplate" inherits="UIPanelButtonGrayTemplate" virtual="true">
+		<Size>
+			<AbsDimension x="145" y="25"/>
+		</Size>
+		<NormalText inherits="GameFontHighlightSmall"/>
+		<DisabledText inherits="GameFontDisableSmall"/>
+		<HighlightText inherits="GameFontHighlightSmall"/>
+		<Scripts>
+			<OnClick>
+				PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
+			</OnClick>
+			<OnEnter>
+				if ( self.tooltipText ) then
+					GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+					GameTooltip:SetText(self.tooltipText, nil, nil, nil, nil, 1)
+				end
+			</OnEnter>
+			<OnLeave>
+				GameTooltip:Hide()
+			</OnLeave>
+		</Scripts>
+	</Button>
+
+	<!-- SCROLLFRAME TEMPLATE -->
+	<ScrollFrame name="TradeskillInfoListScrollFrameTemplate" inherits="FauxScrollFrameTemplate" virtual="true">
+		<Layers>
+			<Layer level="ARTWORK">
+				<Texture name="$parentTop" file="Interface\PaperDollInfoFrame\UI-Character-ScrollBar">
+					<Size>
+						<AbsDimension x="31" y="192"/>
+					</Size>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativePoint="TOPRIGHT">
+							<Offset>
+								<AbsDimension x="-2" y="5"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+					<TexCoords left="0" right="0.484375" top="0" bottom="0.75"/>
+				</Texture>
+				<Texture name="$parentBottom" file="Interface\PaperDollInfoFrame\UI-Character-ScrollBar">
+					<Size>
+						<AbsDimension x="31" y="106"/>
+					</Size>
+					<Anchors>
+						<Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT">
+							<Offset>
+								<AbsDimension x="-2" y="-2"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+					<TexCoords left="0.515625" right="1.0" top="0" bottom="0.4140625"/>
+				</Texture>
+				<Texture name="$parentMiddle" file="Interface\PaperDollInfoFrame\UI-Character-ScrollBar">
+					<Size>
+						<AbsDimension x="31" y="60"/>
+					</Size>
+					<Anchors>
+						<Anchor point="TOP" relativeTo="$parentTop" relativePoint="BOTTOM"/>
+						<Anchor point="BOTTOM" relativeTo="$parentBottom" relativePoint="TOP"/>
+					</Anchors>
+					<TexCoords left="0" right="0.484375" top=".75" bottom="1.0"/>
+				</Texture>
+			</Layer>
+		</Layers>
+	</ScrollFrame>
+
+	<ScrollFrame name="TradeskillInfoDetailScrollFrameTemplate" inherits="UIPanelScrollFrameTemplate" virtual="true">
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentTop" file="Interface\PaperDollInfoFrame\UI-Character-ScrollBar">
+					<Size>
+						<AbsDimension x="31" y="192"/>
+					</Size>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativePoint="TOPRIGHT">
+							<Offset>
+								<AbsDimension x="-2" y="5"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+					<TexCoords left="0" right="0.46875" top="0" bottom="0.75"/>
+				</Texture>
+				<Texture name="$parentBottom" file="Interface\PaperDollInfoFrame\UI-Character-ScrollBar">
+					<Size>
+						<AbsDimension x="30" y="106"/>
+					</Size>
+					<Anchors>
+						<Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT">
+							<Offset>
+								<AbsDimension x="-2" y="-1"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+					<TexCoords left="0.515625" right="1.0" top="0" bottom="0.4140625"/>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				self.scrollBarHideable = 1
+				ScrollFrame_OnLoad(self)
+			</OnLoad>
+		</Scripts>
+	</ScrollFrame>
+
+	<Frame name="TradeskillInfoFrame" toplevel="true" frameStrata="LOW" movable="true" resizable="true" parent="UIParent" enableMouse="true" hidden="true">
+		<Size>
+			<AbsDimension x="712" y="345"/>
+		</Size>
+		<ResizeBounds>
+			<minResize>
+				<AbsDimension x="712" y="345"/>
+			</minResize>
+			<maxResize>
+				<AbsDimension x="800" y="900"/>
+			</maxResize>
+		</ResizeBounds>
+		<Anchors>
+			<Anchor point="CENTER" />
+		</Anchors>
+		<Backdrop bgFile="Interface\ChatFrame\ChatFrameBackground" edgeFile="Interface\ChatFrame\ChatFrameBackground" tile="false">
+			<BackgroundInsets>
+				<AbsInset left="0" right="0" top="0" bottom="0" />
+			</BackgroundInsets>
+			<EdgeSize>
+				<AbsValue val="2" />
+			</EdgeSize>
+		</Backdrop>
+
+		<!-- Window Title -->
+		<Layers>
+			<Layer level="BORDER">
+				<FontString name="TradeskillInfoFrameTitleText" inherits="GameFontNormal" text="Tradeskill Info">
+					<Anchors>
+						<Anchor point="TOP" relativeTo="TradeskillInfoFrame" relativePoint="TOP">
+							<Offset>
+								<AbsDimension x="0" y="-4"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+
+		<Frames>
+			<ScrollFrame name="TradeskillInfoDetailScrollFrame" inherits="TradeskillInfoDetailScrollFrameTemplate">
+				<Size>
+					<AbsDimension x="320" y="286"/>
+				</Size>
+				<Anchors>
+					<Anchor point="TOPRIGHT" relativePoint="TOPRIGHT">
+						<Offset>
+							<AbsDimension x="-30" y="-75"/>
+						</Offset>
+					</Anchor>
+					<Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMRIGHT">
+						<Offset>
+							<AbsDimension x="-30" y="25"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<ScrollChild>
+					<Frame name="TradeskillInfoDetailScrollChildFrame">
+						<Size>
+							<AbsDimension x="320" y="260"/>
+						</Size>
+						<Layers>
+							<Layer level="BACKGROUND">
+								<FontString name="TradeskillInfoSkillName" inherits="GameFontNormal" text="Skill Name" justifyH="LEFT">
+									<Size>
+										<AbsDimension x="244" y="0"/>
+									</Size>
+									<Anchors>
+										<Anchor point="TOPLEFT">
+											<Offset>
+												<AbsDimension x="50" y="-5"/>
+											</Offset>
+										</Anchor>
+									</Anchors>
+								</FontString>
+								<FontString name="TradeskillInfoRequirementLabel" inherits="GameFontHighlightSmall" text="REQUIRES_LABEL">
+									<Anchors>
+										<Anchor point="TOPLEFT" relativeTo="TradeskillInfoSkillName" relativePoint="BOTTOMLEFT">
+											<Offset>
+												<AbsDimension x="0" y="0"/>
+											</Offset>
+										</Anchor>
+									</Anchors>
+								</FontString>
+								<FontString name="TradeskillInfoRequirementText" inherits="GameFontHighlightSmall" justifyV="TOP" justifyH="LEFT">
+									<Size>
+										<AbsDimension x="180" y="0"/>
+									</Size>
+									<Anchors>
+										<Anchor point="TOPLEFT" relativeTo="TradeskillInfoRequirementLabel" relativePoint="TOPRIGHT" >
+											<Offset>
+												<AbsDimension x="4" y="0"/>
+											</Offset>
+										</Anchor>
+									</Anchors>
+								</FontString>
+
+								<Texture name="TradeskillInfoDetailHeaderLeft" file="Interface\ClassTrainerFrame\UI-ClassTrainer-DetailHeaderLeft">
+									<Size>
+										<AbsDimension x="256" y="64"/>
+									</Size>
+									<Anchors>
+										<Anchor point="TOPLEFT">
+											<Offset>
+												<AbsDimension x="0" y="3"/>
+											</Offset>
+										</Anchor>
+									</Anchors>
+								</Texture>
+								<Texture file="Interface\ClassTrainerFrame\UI-ClassTrainer-DetailHeaderRight">
+									<Size>
+										<AbsDimension x="64" y="64"/>
+									</Size>
+									<Anchors>
+										<Anchor point="TOPLEFT" relativeTo="TradeskillInfoDetailHeaderLeft" relativePoint="TOPRIGHT">
+											<Offset>
+												<AbsDimension x="0" y="0"/>
+											</Offset>
+										</Anchor>
+									</Anchors>
+								</Texture>
+								<FontString name="TradeskillInfoDescription" inherits="GameFontNormalSmall" justifyV="TOP" justifyH="LEFT">
+									<Size>
+										<AbsDimension x="305" y="0"/>
+									</Size>
+									<Anchors>
+										<Anchor point="TOPLEFT">
+											<Offset>
+												<AbsDimension x="8" y="-47"/>
+											</Offset>
+										</Anchor>
+									</Anchors>
+								</FontString>
+
+								<FontString name="TradeskillInfoRecipe1" hidden="true" inherits="GameFontNormalSmall" justifyV="TOP" justifyH="LEFT">
+									<Size>
+										<AbsDimension x="305" y="0"/>
+									</Size>
+									<Anchors>
+										<Anchor point="TOPLEFT" relativeTo="TradeskillInfoDescription" relativePoint="BOTTOMLEFT">
+											<Offset>
+												<AbsDimension x="0" y="-3"/>
+											</Offset>
+										</Anchor>
+									</Anchors>
+								</FontString>
+
+								<FontString name="TradeskillInfoKnown" inherits="GameFontNormalSmall" justifyV="TOP" justifyH="LEFT">
+									<Size>
+										<AbsDimension x="305" y="0"/>
+									</Size>
+									<Anchors>
+										<Anchor point="TOPLEFT" relativeTo="TradeskillInfoRecipe1" relativePoint="BOTTOMLEFT">
+											<Offset>
+												<AbsDimension x="0" y="-3"/>
+											</Offset>
+										</Anchor>
+									</Anchors>
+								</FontString>
+
+								<FontString name="TradeskillInfoReagentLabel" inherits="GameFontNormalSmall" text="SPELL_REAGENTS" justifyH="LEFT">
+									<Anchors>
+										<Anchor point="TOPLEFT" relativeTo="TradeskillInfoKnown" relativePoint="BOTTOMLEFT">
+											<Offset>
+												<AbsDimension x="0" y="-3"/>
+											</Offset>
+										</Anchor>
+									</Anchors>
+								</FontString>
+							</Layer>
+						</Layers>
+
+						<Frames>
+							<Button name="TradeskillInfoSkillIcon">
+								<Size>
+									<AbsDimension x="37" y="37"/>
+								</Size>
+								<Anchors>
+									<Anchor point="TOPLEFT">
+										<Offset>
+											<AbsDimension x="8" y="-3"/>
+										</Offset>
+									</Anchor>
+								</Anchors>
+								<Layers>
+									<Layer level="ARTWORK">
+										<FontString name="TradeskillInfoSkillIconCount" inherits="NumberFontNormal" justifyH="RIGHT" hidden="false">
+											<Anchors>
+												<Anchor point="BOTTOMRIGHT">
+													<Offset>
+														<AbsDimension x="-5" y="2"/>
+													</Offset>
+												</Anchor>
+											</Anchors>
+										</FontString>
+									</Layer>
+								</Layers>
+								<Scripts>
+									<OnLoad>
+										self:RegisterForClicks("LeftButtonUp", "RightButtonUp")
+									</OnLoad>
+									<OnClick>
+										TradeskillInfoUI:ReagentIcon_OnClick(self, button)
+									</OnClick>
+									<OnEnter>
+										TradeskillInfoUI:ShowReagentTooltip(self)
+									</OnEnter>
+									<OnLeave>
+										GameTooltip:Hide()
+										ResetCursor()
+									</OnLeave>
+									<OnUpdate>
+										CursorOnUpdate(self)
+									</OnUpdate>
+								</Scripts>
+							</Button>
+							<SimpleHTML name="TradeskillInfoExtraData">
+								<Size>
+									<AbsDimension x="305" y="80"/>
+								</Size>
+								<Anchors>
+									<Anchor point="TOPLEFT" relativeTo="TradeskillInfoDescription" relativePoint="BOTTOMLEFT">
+										<Offset>
+											<AbsDimension x="0" y="-3"/>
+										</Offset>
+									</Anchor>
+								</Anchors>
+								<FontString inherits="GameFontNormalSmall" justifyV="TOP" justifyH="LEFT"/>
+							</SimpleHTML>
+							<SimpleHTML name="TradeskillInfoRecipe">
+								<Size>
+									<AbsDimension x="305" y="1"/>
+								</Size>
+								<Anchors>
+									<Anchor point="TOPLEFT" relativeTo="TradeskillInfoDescription" relativePoint="BOTTOMLEFT">
+										<Offset>
+											<AbsDimension x="0" y="-3"/>
+										</Offset>
+									</Anchor>
+								</Anchors>
+								<FontString inherits="GameFontNormalSmall" justifyV="TOP" justifyH="LEFT"/>
+								<Scripts>
+									<OnHyperlinkClick>TradeskillInfoUI:RecipeSource_OnHyperlinkClick(self, link)</OnHyperlinkClick>
+								</Scripts>
+							</SimpleHTML>
+							<Button name="TradeskillInfoReagent1" inherits="TradeskillInfoItemTemplate" id="1">
+								<Anchors>
+									<Anchor point="TOPLEFT" relativeTo="TradeskillInfoReagentLabel" relativePoint="BOTTOMLEFT">
+										<Offset>
+											<AbsDimension x="-5" y="-3"/>
+										</Offset>
+									</Anchor>
+								</Anchors>
+							</Button>
+							<Button name="TradeskillInfoReagent2" inherits="TradeskillInfoItemTemplate" id="2">
+								<Anchors>
+									<Anchor point="LEFT" relativeTo="TradeskillInfoReagent1" relativePoint="RIGHT">
+										<Offset>
+											<AbsDimension x="0" y="0"/>
+										</Offset>
+									</Anchor>
+								</Anchors>
+							</Button>
+							<Button name="TradeskillInfoReagent3" inherits="TradeskillInfoItemTemplate" id="3">
+								<Anchors>
+									<Anchor point="TOPLEFT" relativeTo="TradeskillInfoReagent1" relativePoint="BOTTOMLEFT">
+										<Offset>
+											<AbsDimension x="0" y="-2"/>
+										</Offset>
+									</Anchor>
+								</Anchors>
+							</Button>
+							<Button name="TradeskillInfoReagent4" inherits="TradeskillInfoItemTemplate" id="4">
+								<Anchors>
+									<Anchor point="LEFT" relativeTo="TradeskillInfoReagent3" relativePoint="RIGHT">
+										<Offset>
+											<AbsDimension x="0" y="0"/>
+										</Offset>
+									</Anchor>
+								</Anchors>
+							</Button>
+							<Button name="TradeskillInfoReagent5" inherits="TradeskillInfoItemTemplate" id="5">
+								<Anchors>
+									<Anchor point="TOPLEFT" relativeTo="TradeskillInfoReagent3" relativePoint="BOTTOMLEFT">
+										<Offset>
+											<AbsDimension x="0" y="-2"/>
+										</Offset>
+									</Anchor>
+								</Anchors>
+							</Button>
+							<Button name="TradeskillInfoReagent6" inherits="TradeskillInfoItemTemplate" id="6">
+								<Anchors>
+									<Anchor point="LEFT" relativeTo="TradeskillInfoReagent5" relativePoint="RIGHT">
+										<Offset>
+											<AbsDimension x="0" y="0"/>
+										</Offset>
+									</Anchor>
+								</Anchors>
+							</Button>
+							<Button name="TradeskillInfoReagent7" inherits="TradeskillInfoItemTemplate" id="7">
+								<Anchors>
+									<Anchor point="TOPLEFT" relativeTo="TradeskillInfoReagent5" relativePoint="BOTTOMLEFT">
+										<Offset>
+											<AbsDimension x="0" y="-2"/>
+										</Offset>
+									</Anchor>
+								</Anchors>
+							</Button>
+							<Button name="TradeskillInfoReagent8" inherits="TradeskillInfoItemTemplate" id="8">
+								<Anchors>
+									<Anchor point="LEFT" relativeTo="TradeskillInfoReagent7" relativePoint="RIGHT">
+										<Offset>
+											<AbsDimension x="0" y="0"/>
+										</Offset>
+									</Anchor>
+								</Anchors>
+							</Button>
+						</Frames>
+					</Frame>
+				</ScrollChild>
+			</ScrollFrame>
+
+			<Button name="TradeskillInfoSearchButton" inherits="TradeskillInfoButtonTemplate" text="Search">
+				<Size>
+					<AbsDimension x="80" y="22"/>
+				</Size>
+				<Anchors>
+					<Anchor point="BOTTOMRIGHT" relativeTo="TradeskillInfoFrame" relativePoint="BOTTOMRIGHT">
+						<Offset>
+							<AbsDimension x="-18" y="5"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						TradeskillInfoInputBox:ClearFocus()
+						TradeskillInfoUI:OnTradeskillInfoUpdate()
+					</OnClick>
+				</Scripts>
+			</Button>
+
+			<Button name="TradeskillInfoResetButton" inherits="TradeskillInfoButtonTemplate" text="Reset">
+				<Size>
+					<AbsDimension x="80" y="22"/>
+				</Size>
+				<Anchors>
+					<Anchor point="BOTTOMLEFT" relativeTo="TradeskillInfoFrame" relativePoint="BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x="5" y="5"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						TradeskillInfoInputBox:ClearFocus()
+						TradeskillInfoUI:Reset_OnClick()
+					</OnClick>
+				</Scripts>
+			</Button>
+
+			<EditBox name="TradeskillInfoInputBox" letters="32" historyLines="0" numeric="false" autoFocus="false">
+				<Size>
+					<AbsDimension x="210" y="20"/>
+				</Size>
+				<Anchors>
+					<Anchor point="RIGHT" relativeTo="TradeskillInfoSearchButton" relativePoint="LEFT">
+						<Offset>
+							<AbsDimension x="-4" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture name="$parentLeft" file="Interface\Common\Common-Input-Border">
+							<Size>
+								<AbsDimension x="8" y="20"/>
+							</Size>
+							<Anchors>
+								<Anchor point="TOPLEFT">
+									<Offset>
+										<AbsDimension x="-5" y="0"/>
+									</Offset>
+								</Anchor>
+							</Anchors>
+							<TexCoords left="0" right="0.0625" top="0" bottom="0.625"/>
+						</Texture>
+						<Texture name="$parentRight" file="Interface\Common\Common-Input-Border">
+							<Size>
+								<AbsDimension x="8" y="20"/>
+							</Size>
+							<Anchors>
+								<Anchor point="RIGHT">
+									<Offset>
+										<AbsDimension x="0" y="0"/>
+									</Offset>
+								</Anchor>
+							</Anchors>
+							<TexCoords left="0.9375" right="1.0" top="0" bottom="0.625"/>
+						</Texture>
+						<Texture name="$parentMiddle" file="Interface\Common\Common-Input-Border">
+							<Size>
+								<AbsDimension x="10" y="20"/>
+							</Size>
+							<Anchors>
+								<Anchor point="LEFT" relativeTo="$parentLeft" relativePoint="RIGHT"/>
+								<Anchor point="RIGHT" relativeTo="$parentRight" relativePoint="LEFT"/>
+							</Anchors>
+							<TexCoords left="0.0625" right="0.9375" top="0" bottom="0.625"/>
+						</Texture>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnEnterPressed>
+						self:ClearFocus()
+						TradeskillInfoUI:OnTradeskillInfoUpdate()
+					</OnEnterPressed>
+					<OnEscapePressed>
+						self:ClearFocus()
+					</OnEscapePressed>
+					<OnEditFocusLost>
+						self:HighlightText(0, 0)
+					</OnEditFocusLost>
+					<OnEditFocusGained>
+						self:HighlightText()
+					</OnEditFocusGained>
+				</Scripts>
+				<FontString inherits="ChatFontNormal"/>
+			</EditBox>
+
+			<Button name="TradeskillInfoReagentButton" inherits="TradeskillInfoButtonTemplate" text="Reagent">
+				<Size>
+					<AbsDimension x="80" y="22"/>
+				</Size>
+				<Anchors>
+					<Anchor point="RIGHT" relativeTo="TradeskillInfoInputBox" relativePoint="LEFT">
+						<Offset>
+							<AbsDimension x="-5" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						TradeskillInfoUI:ToggleButton(self, button)
+					</OnClick>
+				</Scripts>
+			</Button>
+
+			<Button name="TradeskillInfoNameButton" inherits="TradeskillInfoButtonTemplate" text="Name">
+				<Size>
+					<AbsDimension x="80" y="22"/>
+				</Size>
+				<Anchors>
+					<Anchor point="RIGHT" relativeTo="TradeskillInfoReagentButton" relativePoint="LEFT">
+						<Offset>
+							<AbsDimension x="-5" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						TradeskillInfoUI:ToggleButton(self, button)
+					</OnClick>
+				</Scripts>
+			</Button>
+
+			<Button name="TradeskillInfoOpposingButton" inherits="TradeskillInfoButtonTemplate" text="Opposing">
+				<Size>
+					<AbsDimension x="80" y="22"/>
+				</Size>
+				<Anchors>
+					<Anchor point="RIGHT" relativeTo="TradeskillInfoNameButton" relativePoint="LEFT">
+						<Offset>
+							<AbsDimension x="-5" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						TradeskillInfoUI:ToggleButton(self, button)
+					</OnClick>
+				</Scripts>
+			</Button>
+
+			<Frame name="TradeskillInfoListFrame">
+				<Anchors>
+					<Anchor point="TOPLEFT">
+						<Offset>
+							<AbsDimension x="10" y="-50"/>
+						</Offset>
+					</Anchor>
+					<Anchor point="BOTTOM" relativeTo="TradeskillInfoResetButton" relativePoint="TOP">
+						<Offset>
+							<AbsDimension x="0" y="5"/>
+						</Offset>
+					</Anchor>
+					<Anchor point="RIGHT" relativeTo="TradeskillInfoDetailScrollFrame" relativePoint="LEFT">
+						<Offset>
+							<AbsDimension x="-20" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Frames>
+					<Button name="TradeskillInfoCollapseAllButton" text="ALL">
+						<Size>
+							<AbsDimension x="40" y="22"/>
+						</Size>
+						<Anchors>
+							<Anchor point="TOPLEFT">
+								<Offset>
+									<AbsDimension x="8" y="-3"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+						<NormalTexture urgency="5" file="Interface\Buttons\UI-MinusButton-UP">
+							<Size>
+								<AbsDimension x="16" y="16"/>
+							</Size>
+							<Anchors>
+								<Anchor point="LEFT">
+									<Offset>
+										<AbsDimension x="3" y="0"/>
+									</Offset>
+								</Anchor>
+							</Anchors>
+						</NormalTexture>
+						<HighlightTexture name="$parentHighlight" file="Interface\Buttons\UI-PlusButton-Hilight" alphaMode="ADD">
+							<Size>
+								<AbsDimension x="16" y="16"/>
+							</Size>
+							<Anchors>
+								<Anchor point="LEFT">
+									<Offset>
+										<AbsDimension x="3" y="0"/>
+									</Offset>
+								</Anchor>
+							</Anchors>
+						</HighlightTexture>
+						<DisabledTexture file="Interface\Buttons\UI-PlusButton-Disabled">
+							<Size>
+								<AbsDimension x="16" y="16"/>
+							</Size>
+							<Anchors>
+								<Anchor point="LEFT">
+									<Offset>
+										<AbsDimension x="3" y="0"/>
+									</Offset>
+								</Anchor>
+							</Anchors>
+						</DisabledTexture>
+						<ButtonText name="$parentText">
+							<Size x="270" y="13"/>
+							<Anchors>
+								<Anchor point="LEFT" relativeTo="$parentHighlight" relativePoint="RIGHT">
+									<Offset>
+										<AbsDimension x="2" y="1"/>
+									</Offset>
+								</Anchor>
+							</Anchors>
+						</ButtonText>
+						<NormalFont style="GameFontNormalLeft"/>
+						<HighlightFont style="GameFontHighlightLeft"/>
+						<DisabledFont style="GameFontDisableLeft"/>
+						<Scripts>
+							<OnClick>
+								TradeskillInfoUI:CollapseAllButton_OnClick(self)
+							</OnClick>
+						</Scripts>
+					</Button>
+
+					<Frame name="TradeskillInfoHighlightFrame" hidden="true">
+						<Size>
+							<AbsDimension x="293" y="16"/>
+						</Size>
+						<Anchors>
+							<Anchor point="TOPLEFT"/>
+							<Anchor point="RIGHT">
+								<Offset>
+									<AbsDimension x="-34" y="0"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+						<Layers>
+							<Layer level="ARTWORK">
+								<Texture name="TradeskillInfoHighlight" file="Interface\Buttons\UI-Listbox-Highlight2"/>
+							</Layer>
+						</Layers>
+					</Frame>
+
+					<Button name="TradeskillInfoSkill1" inherits="TradeskillInfoSkillButtonTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="TradeskillInfoListFrame">
+								<Offset>
+									<AbsDimension x="12" y="-30"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</Button>
+					<ScrollFrame name="TradeskillInfoListScrollFrame" inherits="TradeskillInfoListScrollFrameTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="TradeskillInfoListFrame" relativePoint="TOPLEFT">
+								<Offset>
+									<AbsDimension x="0" y="-30"/>
+								</Offset>
+							</Anchor>
+							<Anchor point="BOTTOMRIGHT" relativeTo="TradeskillInfoListFrame" relativePoint="BOTTOMRIGHT">
+								<Offset>
+									<AbsDimension x="-33" y="0"/>
+								</Offset>
+							</Anchor>
+
+						</Anchors>
+						<Scripts>
+							<OnVerticalScroll>
+								FauxScrollFrame_OnVerticalScroll(self, offset, TradeskillInfoUI.cons.skillHeight, TradeskillInfoUI.Frame_Update)
+							</OnVerticalScroll>
+						</Scripts>
+					</ScrollFrame>
+				</Frames>
+			</Frame>
+
+			<Button name="$parentCloseButton" inherits="UIPanelCloseButton">
+				<Anchors>
+					<Anchor point="TOPRIGHT" relativeTo="TradeskillInfoFrame" relativePoint="TOPRIGHT">
+						<Offset>
+							<AbsDimension x="2" y="2"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Button>
+
+			<Button name="$parentResizeCorner">
+				<Size x="16" y="16"/>
+				<Anchors>
+					<Anchor point="BOTTOMRIGHT">
+						<Offset x="-2" y="2"/>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnMouseDown>
+						if button == "LeftButton" then
+							self:GetParent():StartSizing()
+							self:GetParent().isResizing = true
+						end
+					</OnMouseDown>
+					<OnLoad>
+						local tex = self:GetNormalTexture()
+
+						tex:SetTexCoord(0.619, 0.760, 0.612, 0.762)
+						tex:SetDesaturated(true)
+					</OnLoad>
+					<OnMouseUp>
+						if button == "LeftButton" then
+							self:GetParent():StopMovingOrSizing()
+							self:GetParent().isResizing = false
+
+							TradeskillInfoUI:Frame_Update()
+							TradeskillInfoUI:SaveFramePosition()
+						end
+					</OnMouseUp>
+					<OnHide>
+						self:GetParent():StopMovingOrSizing()
+					</OnHide>
+					<OnEnter>
+						self:GetNormalTexture():SetDesaturated(false)
+					</OnEnter>
+					<OnLeave>
+						self:GetNormalTexture():SetDesaturated(true)
+					</OnLeave>
+				</Scripts>
+				<NormalTexture file="Interface\BUTTONS\UI-AutoCastableOverlay"/>
+			</Button>
+
+			<!-- Sort DropDown -->
+			<Frame name="TradeskillInfoSortDropDown" inherits="UIDropDownMenuTemplate" id="3">
+				<Anchors>
+					<Anchor point="TOPLEFT">
+						<Offset>
+							<AbsDimension x="10" y="-25"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						TradeskillInfoUI:SortDropDown_OnLoad()
+					</OnLoad>
+					<OnShow>
+						TradeskillInfoUI:SortDropDown_OnShow(self)
+					</OnShow>
+				</Scripts>
+			</Frame>
+
+			<!-- Tradeskill DropDown -->
+			<Frame name="TradeskillInfoTradeskillsDropDown" inherits="UIDropDownMenuTemplate" id="1">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="TradeskillInfoSortDropDown" relativePoint="RIGHT">
+						<Offset>
+							<AbsDimension x="-20" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						TradeskillInfoUI:TradeskillsDropDown_OnLoad()
+					</OnLoad>
+					<OnShow>
+						TradeskillInfoUI:TradeskillsDropDown_OnShow(self)
+					</OnShow>
+				</Scripts>
+			</Frame>
+
+			<!-- Availability DropDown -->
+			<Frame name="TradeskillInfoAvailabilityDropDown" inherits="UIDropDownMenuTemplate" id="2">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="TradeskillInfoTradeskillsDropDown" relativePoint="RIGHT">
+						<Offset>
+							<AbsDimension x="-20" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						TradeskillInfoUI:AvailabilityDropDown_OnLoad()
+					</OnLoad>
+					<OnShow>
+						TradeskillInfoUI:AvailabilityDropDown_OnShow(self)
+					</OnShow>
+				</Scripts>
+			</Frame>
+			<Frame name="TradeskillInfoIgnoredDropDownFrame" inherits="UIDropDownMenuTemplate" hidden="true" />
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				self:SetBackdropColor(.05,.05,.05,.8)
+				self:SetBackdropBorderColor(.4,.4,.4,1)
+				tinsert(UISpecialFrames,self:GetName())
+			</OnLoad>
+			<OnShow>
+				TradeskillInfoUI:OnShow()
+			</OnShow>
+			<OnHide>
+				PlaySound(SOUNDKIT.IG_CHARACTER_INFO_CLOSE)
+			</OnHide>
+			<OnMouseDown>
+				if button == "LeftButton" then
+					self:StartMoving()
+				end
+			</OnMouseDown>
+			<OnMouseUp>
+				if button == "LeftButton" then
+					self:StopMovingOrSizing()
+					self.isResizing = false
+					TradeskillInfoUI:Frame_Update()
+					TradeskillInfoUI:SaveFramePosition()
+				end
+			</OnMouseUp>
+			<OnSizeChanged>
+				TradeskillInfoUI:Frame_Update()
+			</OnSizeChanged>
+		</Scripts>
+	</Frame>
+</Ui>

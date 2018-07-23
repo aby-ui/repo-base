@@ -1,0 +1,18 @@
+<Bindings>
+	<Binding name="BAGNON_TOGGLE" header="BAGNON" category="ADDONS">
+		Bagnon:ToggleFrame('inventory')
+	</Binding>
+	<Binding name="BAGNON_BANK_TOGGLE" category="ADDONS">
+		Bagnon:ToggleFrame('bank')
+	</Binding>
+	<Binding name="BAGNON_GUILD_TOGGLE" category="ADDONS">
+		if LoadAddOn('Bagnon_GuildBank') then
+			Bagnon:ToggleFrame('guild')
+		end
+	</Binding>
+	<Binding name="BAGNON_VAULT_TOGGLE" category="ADDONS">
+		if LoadAddOn('Bagnon_VoidStorage') then
+			Bagnon:ToggleFrame('vault')
+		end
+	</Binding>
+</Bindings>

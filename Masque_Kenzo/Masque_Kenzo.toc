@@ -1,0 +1,25 @@
+## Interface: 80000
+## Title: Masque: |c0099ff00Kenzo|r
+## Version: 2.0.0
+## Author: icw82
+## Notes: Kenzo is a skin for Masque
+## Notes-ruRU: Kenzo — скин для Masque
+## Dependencies: Masque
+## Notes-zhCN: Masque的kenzo皮肤。
+
+## X-eMail: icw82@ya.ru
+## X-Website: http://www.wowace.com/projects/masque_kenzo
+## X-Category: Interface Enhancements
+## X-Credits: Kenzo
+## X-Curse-Packaged-Version: 2
+## X-Curse-Project-Name: Masque: Kenzo
+## X-Curse-Project-ID: masque_kenzo
+## X-Curse-Repository-ID: wow/masque_kenzo/mainline
+## X-Curse-Packaged-Version: release
+## X-Curse-Project-Name: Masque: Kenzo
+## X-Curse-Project-ID: masque-kenzo
+## X-Curse-Repository-ID: wow/masque-kenzo/mainline
+
+masque_kenzo.lua
+## Title: |cff880303[有爱]|r Masque 皮肤Kenzo
+## X-Vendor: AbyUI

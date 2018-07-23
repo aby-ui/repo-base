@@ -1,0 +1,9 @@
+<Ui>
+<Script file="WidgetWrapper.lua"/><!--28-->
+<Script file="WidgetModification.lua"/><!--1-->
+<!--<Script file="..\_DEV\WidgetWrapper.test.lua"/>-->
+<Script file="CoreUI.lua"/><!--20-->
+<Script file="CoreUITemplates.lua"/><!--16-->
+<Script file="CoreUIScrollFrame.lua"/><!--13-->
+<Script file="CoreUISearchBox.lua"/><!--6-->
+</Ui>

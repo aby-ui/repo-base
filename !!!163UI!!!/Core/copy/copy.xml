@@ -1,0 +1,4 @@
+<Ui>
+    <Script file="copyAnimationSystem.lua"/>
+    <Script file="copyUIParent.lua"/>
+</Ui>

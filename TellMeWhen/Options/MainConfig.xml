@@ -1,0 +1,528 @@
+<Ui>
+
+	<Frame parentKey="Changelog" inherits="TellMeWhen_IE_PageTemplate">
+		<Frames>
+
+			<Frame parentKey="Container">
+				<Anchors>
+					<Anchor point="TOP" y="-5"/>
+					<Anchor point="BOTTOM" y="5"/>
+					<Anchor point="LEFT" x="5" />
+					<Anchor point="RIGHT" x="-2" />
+				</Anchors>
+
+				<Frames>
+					<SimpleHTML parentKey="HTML" justifyH="LEFT" justifyV="TOP">
+						<Size x="1" y="1"/>
+						<Anchors>
+							<Anchor point="TOPLEFT" y="-10" X="10" />
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								local font = "Interface/Addons/TellMeWhen/Fonts/OpenSans-Regular.ttf"
+
+								-- Just incase they haven't restarted after installing the version
+								-- that first included this font (v7.3.5)
+								if not self:SetFont(font, 12) then
+									font = "Fonts\\FRIZQT__.TTF"
+								end
+
+								self:SetFont(font, 12)
+								self:SetFont("h1", font, 20)
+								self:SetFont("h2", font, 14)
+
+								self:SetSpacing("h1", 10)
+								self:SetSpacing("h2", 6)
+								self:SetSpacing("p", 5)
+								self:SetIndentedWordWrap("p", true)
+
+								self:SetTextColor("h1", 0xFF/0xFF, 0x63/0xFF, 0x00/0xFF)
+								self:SetTextColor("h2", 0x00/0xFF, 0xF1/0xFF, 0xFF/0xFF)
+							</OnLoad>
+						</Scripts>
+					</SimpleHTML>
+				</Frames>
+				<Scripts>
+					<OnLoad>
+						TMW:ConvertContainerToScrollFrame(self, false, 0, 12)
+						self.ScrollFrame:SetWheelStepAmount(25)
+					</OnLoad>
+					<OnShow>
+						TMW.IE:ShowChangelog()
+						self:GetScript("OnSizeChanged")(self)
+					</OnShow>
+					<OnSizeChanged>
+						-- SimpleHTML doesn't wrap properly with anchors set on the left and right.
+						-- We have to set one only on the left, and use this to adjust the wrappping.
+						-- The SetText call is absolutely required for the wrapping to get recalculated.
+
+						self.HTML:SetWidth(self:GetWidth()-35)
+						self.HTML:SetText(self.HTML.text)
+					</OnSizeChanged>
+				</Scripts>
+			</Frame>
+
+		</Frames>
+	</Frame>
+
+
+	<Frame parentKey="Main" inherits="TellMeWhen_IE_PageTemplate">
+		<Frames>
+
+			<Frame parentKey="PanelsLeft" inherits="TellMeWhen_IE_PanelColumn">
+				<Anchors>
+					<Anchor point="LEFT" x="7"/>
+					<Anchor point="RIGHT" relativePoint="TOP" x="-6"/>
+				</Anchors>
+			</Frame>
+
+			<Frame parentKey="PanelsRight" inherits="TellMeWhen_IE_PanelColumn">
+				<Anchors>
+					<Anchor point="LEFT" relativePoint="TOP" x="5"/>
+					<Anchor point="RIGHT" x="-9"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad inherit="prepend">
+						self:CScriptAdd("SettingTableRequested", function()
+							return TMW.db.global
+						end)
+					</OnLoad>
+				</Scripts>
+			</Frame>
+
+			<Frame parentKey="Profile" inherits="TMW_DropDownMenuTemplate">
+				<Anchors>
+					<Anchor point="TOP" y="-8"/>
+					<Anchor point="LEFT" relativeKey="$parent.PanelsLeft" x="7" />
+					<Anchor point="RIGHT" relativeKey="$parent.PanelsLeft" x="-7" />
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						TMW:CInit(self)
+
+						self:SetTexts(TMW.L["PROFILES_SET"], TMW.L["PROFILES_SET_DESC"])
+
+						self:SetEasyFunctions(
+							function()
+								return TMW:OrderedPairs(TMW.db:GetProfiles(), nil, true)
+							end,
+							function(info, i, name)
+								info.text = name
+								info.tooltipTitle = name
+								info.value = name
+								info.checked = name == TMW.db:GetCurrentProfile()
+							end,
+							function(button, dropdown)
+								TMW.db:SetProfile(button.value)
+
+								dropdown:CloseDropDownMenus()
+							end
+						)
+
+						self:CScriptAdd("ReloadRequested", function()
+							self:SetText("|cff666666" .. TMW.L["PROFILES_SET_LABEL"] .. ": |r" .. TMW.db:GetCurrentProfile())
+						end)
+
+						self:SetScrollable(true)
+					</OnLoad>
+				</Scripts>
+			</Frame>
+
+			<CheckButton parentKey="Locked" inherits="TellMeWhen_CheckTemplate">
+				<Anchors>
+					<Anchor point="TOP" relativeKey="$parent" relativePoint="TOP" x="0" y="-4"/>
+					<Anchor point="LEFT" relativeKey="$parent.PanelsRight" relativePoint="LEFT" />
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						TMW:CInit(self)
+
+						self:SetTexts(TMW.L["UIPANEL_LOCKUNLOCK"], TMW.L["UIPANEL_SUBTEXT2"])
+						self:SetSetting("Locked")
+
+					</OnLoad>
+				</Scripts>
+			</CheckButton>
+
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				TMW:CInit(self)
+
+				self:CScriptAdd("SettingTableRequested", function(requester)
+					return TMW.db.profile
+				end)
+
+				self:CScriptAdd("DescendantSettingSaved", function(requester)
+					TMW:ScheduleUpdate(0.1)
+				end)
+
+				self:CScriptAdd("ReloadRequested", function(requester)
+
+					local panelList = {}
+					for ComponentClass in pairs(TMW.C.GenericComponent.inheritedBy) do
+						for _, panelInfo in pairs(ComponentClass.ConfigPanels) do
+							if panelInfo.panelSet == "profile" then
+								panelInfo:SetColumnIndex(1)
+								tinsert(panelList, panelInfo)
+							elseif panelInfo.panelSet == "global" then
+								panelInfo:SetColumnIndex(2)
+								tinsert(panelList, panelInfo)
+							end
+						end		
+					end
+
+					TMW.tRemoveDuplicates(panelList)
+
+					TMW.IE:PositionPanels("Main", panelList)
+				end)
+
+			</OnLoad>
+		</Scripts>
+	</Frame>
+
+
+
+	<Frame name="TellMeWhen_Main_Efficiency" inherits="TellMeWhen_OptionsModuleContainer" virtual="true">
+		<Size y="110"/>
+		<Frames>
+			<Slider parentKey="Interval" inherits="TellMeWhen_SliderTemplate">
+				<Anchors>
+					<Anchor point="TOP" y="-20"/>
+					<Anchor point="LEFT" x="10"/>
+					<Anchor point="RIGHT" relativePoint="CENTER" x="-10" />
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						TMW:CInit(self)
+
+						self:SetTexts(TMW.L["UIPANEL_UPDATEINTERVAL"], TMW.L["UIPANEL_TOOLTIP_UPDATEINTERVAL"])
+						self:SetSetting("Interval")
+
+						self:SetMinMaxValues(0, 0.5)
+						self:SetValueStep(0.01)
+						self:SetTextFormatter(TMW.C.Formatter.S_SECONDS, TMW.C.Formatter.F_1)
+					</OnLoad>
+				</Scripts>
+			</Slider>
+			<!-- No longer applicable in WoW BfA - UnitAura doesn't allow query by name anymore. -->
+			<!-- <Slider parentKey="EffThreshold" inherits="TellMeWhen_SliderTemplate">
+				<Anchors>
+					<Anchor point="TOP" relativeKey="$parent.Interval" />
+					<Anchor point="RIGHT" x="-10" />
+					<Anchor point="LEFT" relativePoint="CENTER" x="10" />
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						TMW:CInit(self)
+
+						self:SetTexts(TMW.L["UIPANEL_EFFTHRESHOLD"], TMW.L["UIPANEL_EFFTHRESHOLD_DESC"])
+						self:SetSetting("EffThreshold")
+
+						self:SetMinMaxValues(1, 40)
+						self:SetValueStep(1)
+					</OnLoad>
+				</Scripts>
+			</Slider> -->
+
+			<CheckButton parentKey="BackupDbInOptions" inherits="TellMeWhen_CheckTemplate">
+				<Anchors>
+					<Anchor point="TOP" relativeKey="$parent.Interval" relativePoint="BOTTOM" y="-8"/>
+					<Anchor point="LEFT" x="5"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						TMW:CInit(self)
+
+						self:SetTexts(TMW.L["UIPANEL_ENABLEBACKUP"], TMW.L["UIPANEL_ENABLEBACKUP_DESC"])
+						self:SetSetting("BackupDbInOptions")
+					</OnLoad>
+				</Scripts>
+			</CheckButton>
+
+			<CheckButton parentKey="CreateImportBackup" inherits="TellMeWhen_CheckTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeKey="$parent.BackupDbInOptions" relativePoint="BOTTOMLEFT"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						TMW:CInit(self)
+
+						self:SetTexts(TMW.L["UIPANEL_ENABLEIMPORTBACKUP"], TMW.L["UIPANEL_ENABLEIMPORTBACKUP_DESC"])
+						self:SetSetting("CreateImportBackup")
+					</OnLoad>
+				</Scripts>
+			</CheckButton>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				TMW:CInit(self)
+				
+				self:SetTitle(TMW.L["DOMAIN_GLOBAL_NC"] .. ": " .. TMW.L["UIPANEL_PERFORMANCE"])
+			</OnLoad>
+		</Scripts>
+	</Frame>
+
+	<Frame name="TellMeWhen_Main_Media" inherits="TellMeWhen_OptionsModuleContainer" virtual="true">
+		<Size y="45"/>
+		<Frames>
+			<Frame parentKey="SoundChannel" inherits="TMW_DropDownMenuTemplate">
+				<Anchors>
+					<Anchor point="LEFT" x="10"/>
+					<Anchor point="RIGHT" relativePoint="CENTER" x="-10" />
+					<Anchor point="BOTTOM" y="7"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						TMW:CInit(self)
+						self:SetTexts(TMW.L["SOUND_CHANNEL"], TMW.L["SOUND_CHANNEL_DESC"])
+						self:SetLabel(TMW.L["SOUND_CHANNEL"])
+
+						local values = {
+							SFX = SOUND_VOLUME,
+							Music = MUSIC_VOLUME,
+							Ambience = AMBIENCE_VOLUME,
+							Dialog = DIALOG_VOLUME,
+							Master = TMW.L["SOUND_CHANNEL_MASTER"],
+						}
+
+						self:SetSetting("SoundChannel")
+						self:SetEasyFunctions(
+							function()
+								return TMW:OrderedPairs(values, nil, true)
+							end,
+							function(info, id, name)
+								info.text = name
+								info.tooltipTitle = name
+								info.value = id
+							end
+						)
+					</OnLoad>
+				</Scripts>
+			</Frame>
+
+			<Frame parentKey="Texture" inherits="TMW_DropDownMenuTemplate">
+				<Anchors>
+					<Anchor point="RIGHT" x="-10" />
+					<Anchor point="LEFT" relativePoint="CENTER" x="10" />
+					<Anchor point="BOTTOM" y="7"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						TMW:CInit(self)
+						self:SetWidth(200)
+						self:SetTexts(TMW.L["UIPANEL_BARTEXTURE"])
+						self:SetLabel(TMW.L["UIPANEL_BARTEXTURE"])
+						self.BUTTON_HEIGHT = 20
+
+						local f, s = self.Text:GetFont()
+						self.Text:SetFont(f, s, "THINOUTLINE")
+
+						local values = {
+							SFX = SOUND_VOLUME,
+							Music = MUSIC_VOLUME,
+							Ambience = AMBIENCE_VOLUME,
+							Dialog = DIALOG_VOLUME,
+							Master = TMW.L["SOUND_CHANNEL_MASTER"],
+						}
+
+						local LSM = LibStub("LibSharedMedia-3.0")
+						self:SetSetting("TextureName")
+						self:SetEasyFunctions(
+							function()
+								return pairs(LSM:List("statusbar"))
+							end,
+							function(info, id, name)
+								info.text = name
+								info.tooltipTitle = name
+								info.texture = LSM:Fetch("statusbar", name)
+								info.value = name
+							end
+						)
+
+						self:SetScrollable(true)
+					</OnLoad>
+				</Scripts>
+			</Frame>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				TMW:CInit(self)
+				
+				self:SetTitle(TMW.L["DOMAIN_PROFILE"] .. ": " .. TMW.L["CONFIGPANEL_MEDIA_HEADER"])
+			</OnLoad>
+		</Scripts>
+	</Frame>
+
+
+	<Frame name="TellMeWhen_Main_Profiles" inherits="TellMeWhen_OptionsModuleContainer" virtual="true">
+		<Size y="66"/>
+		<Frames>
+			<!-- <Frame parentKey="Set" inherits="TMW_DropDownMenuTemplate">
+				<Anchors>
+					<Anchor point="LEFT" x="10"/>
+					<Anchor point="RIGHT" x="-10"/>
+					<Anchor point="TOP" y="-10"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad >
+						TMW:CInit(self)
+
+						self:SetTexts(TMW.L["PROFILES_SET"], TMW.L["PROFILES_SET_DESC"])
+
+
+						self:SetEasyFunctions(
+							function()
+								return TMW:OrderedPairs(TMW.db:GetProfiles(), nil, true)
+							end,
+							function(info, i, name)
+								info.text = name
+								info.tooltipTitle = name
+								info.value = name
+								info.checked = name == TMW.db:GetCurrentProfile()
+							end,
+							function(button, dropdown)
+								TMW.db:SetProfile(button.value)
+
+								dropdown:CloseDropDownMenus()
+							end
+						)
+
+						self:CScriptAdd("ReloadRequested", function()
+							self:SetText(TMW.db:GetCurrentProfile())
+						end)
+
+						self:SetScrollable(true)
+					</OnLoad>
+				</Scripts>
+			</Frame> -->
+
+			<EditBox parentKey="New" inherits="TellMeWhen_InputBoxTemplate">
+				<Anchors>
+					<!-- <Anchor point="TOP" relativeKey="$parent.Set" relativePoint="BOTTOM" y="-10"/> -->
+					<Anchor point="TOP" y="-10"/>
+					<Anchor point="LEFT" x="10"/>
+					<Anchor point="RIGHT" x="-10"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						TMW:CInit(self)
+						self:SetTexts(TMW.L["PROFILES_NEW"], TMW.L["PROFILES_NEW_DESC"])
+					</OnLoad>
+					<OnEnterPressed>
+						local name = self:GetText():trim()
+						if name ~= "" then
+							TMW.db:SetProfile(name)
+							self:SetText("")
+						end
+					</OnEnterPressed>
+				</Scripts>
+			</EditBox>
+
+			<Frame parentKey="Copy" inherits="TMW_DropDownMenuTemplate">
+				<Anchors>
+					<Anchor point="LEFT" x="10"/>
+					<Anchor point="TOP" relativeKey="$parent.New" relativePoint="BOTTOM" y="-10"/>
+					<Anchor point="RIGHT" relativePoint="CENTER" x="-5" />
+				</Anchors>
+				<Scripts>
+					<OnLoad >
+						TMW:CInit(self)
+
+						self:SetTexts(TMW.L["PROFILES_COPY"], TMW.L["PROFILES_COPY_DESC"])
+
+
+						self:SetEasyFunctions(
+							function()
+								local currentProfile = TMW.db:GetCurrentProfile()
+								local profiles = {}
+								for i, v in pairs(TMW.db:GetProfiles()) do 
+									if v ~= currentProfile then 
+										tinsert(profiles, v)
+									end 
+								end
+
+								return TMW:OrderedPairs(profiles, nil, true)
+							end,
+							function(info, i, name)
+								info.text = name
+								info.tooltipTitle = name
+								info.value = name
+							end,
+							function(button, dropdown)
+								local value = button.value
+								TMW.IE:ShowConfirmation(
+									TMW.L["PROFILES_COPY_CONFIRM"], 
+									TMW.L["PROFILES_COPY_CONFIRM_DESC"]:format(TMW.db:GetCurrentProfile(), value), 
+									function()
+										TMW.db:CopyProfile(value)
+									end
+								)
+
+								dropdown:CloseDropDownMenus()
+							end
+						)
+
+						self:SetScrollable(true)
+					</OnLoad>
+				</Scripts>
+			</Frame>
+
+			<Frame parentKey="Delete" inherits="TMW_DropDownMenuTemplate">
+				<Anchors>
+					<Anchor point="RIGHT" x="-10"/>
+					<Anchor point="TOP" relativeKey="$parent.Copy" relativePoint="TOP"/>
+					<Anchor point="LEFT" relativePoint="CENTER" x="5" />
+				</Anchors>
+				<Scripts>
+					<OnLoad >
+						TMW:CInit(self)
+
+						self:SetTexts(TMW.L["PROFILES_DELETE"], TMW.L["PROFILES_DELETE_DESC"])
+
+
+						self:SetEasyFunctions(
+							function()
+								local currentProfile = TMW.db:GetCurrentProfile()
+								local profiles = {}
+								for i, v in pairs(TMW.db:GetProfiles()) do 
+									if v ~= currentProfile then 
+										tinsert(profiles, v)
+									end 
+								end
+
+								return TMW:OrderedPairs(profiles, nil, true)
+							end,
+							function(info, i, name)
+								info.text = name
+								info.tooltipTitle = name
+								info.value = name
+							end,
+							function(button, dropdown)
+								local value = button.value
+								TMW.IE:ShowConfirmation(
+									TMW.L["PROFILES_DELETE_CONFIRM"], 
+									TMW.L["PROFILES_DELETE_CONFIRM_DESC"]:format(value), 
+									function()
+										TMW.db:DeleteProfile(value)
+									end
+								)
+
+								dropdown:CloseDropDownMenus()
+							end
+						)
+
+						self:SetScrollable(true)
+					</OnLoad>
+				</Scripts>
+			</Frame>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				TMW:CInit(self)
+				
+				self:SetTitle(TMW.L["UIPANEL_PROFILES"])
+			</OnLoad>
+		</Scripts>
+	</Frame>
+</Ui>

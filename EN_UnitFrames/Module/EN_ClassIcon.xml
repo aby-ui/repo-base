@@ -1,0 +1,127 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+E:\PROGRA~1\Altova\XMLSpy2006\UI.xsd">
+	<Script file="EN_ClassIcon.lua"/>
+	<Frame name="EUF_PlayerFramePortrait" parent="PlayerFrame" hidden="true">
+		<Layers>
+			<Layer level="ARTWORK">
+				<Texture name="$parentIcon">
+					<Size>
+						<AbsDimension x="20" y="20"/>
+					</Size>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="PlayerFrame" relativePoint="TOPLEFT">
+							<Offset>
+								<AbsDimension x="85" y="-63"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY">
+				<Texture file="Interface\Minimap\MiniMap-TrackingBorder">
+					<Size>
+						<AbsDimension x="52" y="52"/>
+					</Size>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="PlayerFrame" relativePoint="TOPLEFT">
+							<Offset>
+								<AbsDimension x="80" y="-58"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				self:SetFrameLevel(self:GetFrameLevel() + 3);
+			</OnLoad>
+		</Scripts>
+	</Frame>
+	<Frame name="EUF_TargetFramePortrait" parent="TargetFrame" hidden="true">
+		<Layers>
+			<Layer level="ARTWORK">
+				<Texture name="$parentIcon">
+					<Size>
+						<AbsDimension x="20" y="20"/>
+					</Size>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="TargetFrame" relativePoint="TOPLEFT">
+							<Offset>
+								<AbsDimension x="125" y="-7"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY">
+				<Texture file="Interface\Minimap\MiniMap-TrackingBorder">
+					<Size>
+						<AbsDimension x="52" y="52"/>
+					</Size>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="TargetFrame" relativePoint="TOPLEFT">
+							<Offset>
+								<AbsDimension x="120" y="-2"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				self:SetFrameLevel(self:GetFrameLevel() + 2);
+			</OnLoad>
+		</Scripts>
+	</Frame>
+	<Frame name="EUF_PartyFramePortraitTemplate" virtual="true" hidden="false" toplevel="true">
+		<Size>
+			<AbsDimension x="40" y="40"/>
+		</Size>
+		<Anchors>
+			<Anchor point="TOPLEFT" relativeTo="$parent" relativePoint="TOPLEFT">
+				<Offset x="-2" y="0"/>
+			</Anchor>
+		</Anchors>
+		<Layers>
+			<Layer level="ARTWORK">
+				<Texture name="$parentIcon">
+					<Size>
+						<AbsDimension x="14" y="14"/>
+					</Size>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parent" relativePoint="TOPLEFT">
+							<Offset>
+								<AbsDimension x="33" y="-1"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY">
+				<Texture file="Interface\Minimap\MiniMap-TrackingBorder">
+					<Size>
+						<AbsDimension x="36" y="36"/>
+					</Size>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parent" relativePoint="TOPLEFT">
+							<Offset>
+								<AbsDimension x="30" y="3"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				self:SetFrameLevel(self:GetFrameLevel() + 2);
+			</OnLoad>
+		</Scripts>
+	</Frame>
+	<Frame name="EUF_PartyFrame1Portrait" inherits="EUF_PartyFramePortraitTemplate" parent="PartyMemberFrame1" toplevel="true" id="1"/>
+	<Frame name="EUF_PartyFrame2Portrait" inherits="EUF_PartyFramePortraitTemplate" parent="PartyMemberFrame2" toplevel="true" id="2"/>
+	<Frame name="EUF_PartyFrame3Portrait" inherits="EUF_PartyFramePortraitTemplate" parent="PartyMemberFrame3" toplevel="true" id="3"/>
+	<Frame name="EUF_PartyFrame4Portrait" inherits="EUF_PartyFramePortraitTemplate" parent="PartyMemberFrame4" toplevel="true" id="4"/>
+</Ui>

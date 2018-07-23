@@ -1,0 +1,11 @@
+## Interface: 80000
+## Title: Dominos Roll
+## Title-zhCN: |cFF0099FF[Dominos]|r Roll窗口模块
+## Notes: Makes the set of frames for rolling on items when in a group movable
+## Author: Tuller
+## Dependencies: Dominos
+rollBar.lua
+
+
+## Title-zhCN: |cff880303[有爱]|r Dominos 掷骰模块
+## X-Vendor: AbyUI

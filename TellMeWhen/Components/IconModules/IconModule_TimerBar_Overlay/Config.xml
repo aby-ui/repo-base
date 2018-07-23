@@ -1,0 +1,131 @@
+﻿<Ui>
+
+	<Frame name="TellMeWhen_CBarOptions" inherits="TellMeWhen_OptionsModuleContainer" virtual="true">
+		<Size y="90"/>
+		<Frames>
+			<CheckButton parentKey="ShowCBar" name="$parentShowCBar" inherits="TellMeWhen_CheckTemplate">
+				<Anchors>
+					<Anchor point="TOP" y="-1"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						TMW:CInit(self)
+
+						self:SetTexts(TMW.L["ICONMENU_ENABLE"], TMW.L["ICONMENU_SHOWCBAR_DESC"])
+						self:SetSetting("ShowCBar")
+					</OnLoad>
+				</Scripts>
+			</CheckButton>
+			<CheckButton parentKey="InvertCBar" name="$parentInvertCBar" inherits="TellMeWhen_CheckTemplate">
+				<Scripts>
+					<OnLoad>
+						TMW:CInit(self)
+
+						self:SetTexts(TMW.L["ICONMENU_INVERTBARS"], TMW.L["ICONMENU_INVERTCBAR_DESC"])
+						self:SetSetting("InvertCBar")
+						
+						self:CScriptAdd("ReloadRequested", function()
+							local settings = self:GetSettingTable()
+							self:SetShown(settings.ShowCBar)
+						end)
+					</OnLoad>
+				</Scripts>
+			</CheckButton>
+			<EditBox parentKey="CBarOffs" name="$parentCBarOffs" inherits="TellMeWhen_TimeEditBoxTemplate" autoFocus="false">
+				<Size x="45" y="15"/>
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentInvertCBar" relativePoint="RIGHT" y="1"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						self.text:SetText(TMW.L["ICONMENU_OFFS"])
+						self.text:SetWidth(50)
+						self.setting = "CBarOffs"
+						
+						self.text:ClearAllPoints()
+						self.text:SetPoint("LEFT", self, "RIGHT", 1, 0)
+						
+						TMW:CInit(self)
+
+						self:SetTexts(TMW.L["ICONMENU_OFFS"], TMW.L["ICONMENU_BAROFFS"])
+						self:SetSetting("CBarOffs")
+						
+						self:CScriptAdd("ReloadRequested", function()
+							local settings = self:GetSettingTable()
+							self:SetShown(settings.ShowCBar)
+						end)
+					</OnLoad>
+				</Scripts>
+			</EditBox>
+			
+
+			<CheckButton parentKey="EnableColors" inherits="TellMeWhen_CheckTemplate">
+				<Anchors>
+					<Anchor point="TOP" relativeTo="$parentShowCBar" relativePoint="BOTTOM" y="2"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						TMW:CInit(self)
+
+						self:SetTexts(TMW.L["COLOR_OVERRIDE_GROUP"], TMW.L["COLOR_OVERRIDE_GROUP_DESC"])
+						self:SetSetting("TimerBar_EnableColors")
+						
+						self:CScriptAdd("ReloadRequested", function()
+							local settings = self:GetSettingTable()
+							self:SetShown(settings.ShowCBar)
+						end)
+					</OnLoad>
+				</Scripts>
+			</CheckButton>
+			
+			<CheckButton parentKey="Overlay_BarGCD" name="$parentOverlay_BarGCD" inherits="TellMeWhen_CheckTemplate">
+				<!-- Left anchor is handled by DistributeFrameAnchorsLaterally in parent's OnLoad -->
+				<Scripts>
+					<OnLoad>
+						TMW:CInit(self)
+
+						self:SetTexts(TMW.L["ICONMENU_ALLOWGCD"], TMW.L["ICONMENU_ALLOWGCD_DESC"])
+						self:SetSetting("Overlay_BarGCD")
+						
+						self:CScriptAdd("ReloadRequested", function()
+							local settings = self:GetSettingTable()
+
+							self:SetShown(settings.ShowCBar and not TMW.CI.icon.typeData.hasNoGCD)
+						end)
+					</OnLoad>
+				</Scripts>
+			</CheckButton>
+
+
+			<Frame inherits="TellMeWhen_TimerBarColorsTemplate">
+				<Scripts>
+					<OnLoad inherit="prepend">
+						self:CScriptAdd("ReloadRequested", function()
+							local settings = self:GetSettingTable()
+							self:SetShown(settings.ShowCBar and settings.TimerBar_EnableColors)
+						end)
+					</OnLoad>
+				</Scripts>
+			</Frame>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				TMW:CInit(self)
+				
+				self:SetTitle(TMW.L["CONFIGPANEL_CBAR_HEADER"])
+				
+				self.ShowCBar:ConstrainLabel(self.InvertCBar)
+				self.InvertCBar:ConstrainLabel(self.CBarOffs)
+
+				self.EnableColors:ConstrainLabel(self.Overlay_BarGCD)
+				self.Overlay_BarGCD:ConstrainLabel(self, "RIGHT")
+				
+				TMW.IE:DistributeFrameAnchorsLaterally(self, 3, self.ShowCBar, self.InvertCBar, self.CBarOffs)
+				TMW.IE:DistributeFrameAnchorsLaterally(self, 2, self.EnableColors, self.Overlay_BarGCD)
+
+				self:SetAutoAdjustHeight(true)
+			</OnLoad>
+		</Scripts>
+	</Frame>
+ 
+</Ui>

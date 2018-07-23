@@ -1,0 +1,12 @@
+## Interface: 80000
+## Title: Tidy Plates Widgets
+## Notes: Library of Widgets
+## Dependencies: TidyPlates
+
+Widgets.xml
+
+## Title-zhCN: |cff880303[有爱]|r Tidy 姓名板界面组件
+## Title-zhTW: |cff880303[有爱]|r Tidy 姓名板界面组件
+## Notes-zhCN: 强大到爆的多功能姓名版美化插件-设置模块。
+## Notes-zhTW: 強大到爆的多功能姓名版美化插件-設置模塊。
+## X-Vendor: AbyUI

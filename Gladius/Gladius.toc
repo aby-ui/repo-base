@@ -1,0 +1,35 @@
+## Interface: 80000
+## Title: Gladius
+## Version: 6.0.1
+## Notes: Arena enemy unit frames.
+## Author: Resike and Firebunny. Original author: Proditor
+## SavedVariables: Gladius2DB
+## OptionalDeps: Ace3, LibStub, LibSharedMedia-3.0
+
+#@no-lib-strip@
+Embeds.xml
+#@end-no-lib-strip@
+
+Gladius.lua
+Localizations.lua
+Options.lua
+
+Modules\HealthBar.lua
+Modules\PowerBar.lua
+Modules\CastBar.lua
+Modules\Auras.lua
+Modules\ClassIcon.lua
+Modules\Trinket.lua
+Modules\Highlight.lua
+Modules\Clicks.lua
+Modules\TargetBar.lua
+Modules\Tags.lua
+Modules\Announcements.lua
+Modules\DRTracker.lua
+Modules\Timer.lua
+Modules\Layout.lua
+Modules\Dispel.lua
+
+## Title-zhCN: |cff880303[有爱]|r Gladius 竞技场头像
+## Notes-zhCN: 竞技场显示对方的头像框体
+## X-Vendor: AbyUI

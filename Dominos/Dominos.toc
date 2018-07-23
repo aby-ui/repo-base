@@ -1,0 +1,41 @@
+## Interface: 80000
+## Title: Dominos
+## Notes: A main actionbar replacement
+## Author: Tuller
+## Version: 8.0.5
+## SavedVariables: DominosDB, DominosVersion
+## OptionalDeps: Ace3, LibKeyBound-1.0, LibSharedMedia-3.0, Masque, FlyPaper
+embeds.xml
+localization.xml
+Dominos.lua
+core\helpers.lua
+core\frame.lua
+core\buttonBar.lua
+core\configOverlay.lua
+core\bindableButton.lua
+core\fadeManager.lua
+core\overrideController.lua
+core\tooltipController.lua
+core\bindingsController.lua
+bars\barStates.lua
+bars\multiActionBarFixer.lua
+bars\actionButton.lua
+bars\actionBar.lua
+bars\petBar.lua
+bars\stanceBar.lua
+bars\bagBar.lua
+bars\menuBar.lua
+bars\extraActionBar.lua
+bars\vehicleBar.lua
+## bars\castBar.lua
+plugins\slashCommands.lua
+plugins\launcher.lua
+plugins\blizzardHider.lua
+plugins\buttonThemer.lua
+
+## Title-zhCN: |cff880303[有爱]|r Dominos 多米诺动作条
+## Notes-zhCN: 一个简单易用的动作条移动插件|n可以移动动作条、施法条、宠物条等等|n右键点击方案可以复制
+## X-Vendor: AbyUI
+
+pagebar.lua
+163UI-patch.lua

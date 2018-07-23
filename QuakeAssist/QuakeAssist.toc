@@ -1,0 +1,17 @@
+## Interface: 80000
+## Title: QuakeAssist
+## Version: 1.03
+## Author: Abin
+## X-Category: Combat
+## SavedVariables: QuakeAssistDB
+
+Includes\LibAddonManager.lua
+Includes\InterfaceOptionPage-1.0.lua
+
+Localization.lua
+Core.lua
+MainFrame.lua
+OptionFrame.lua
+
+## Title: |cff880303[有爱]|r QuakeAssist 震荡助手
+## X-Vendor: AbyUI

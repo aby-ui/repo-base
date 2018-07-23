@@ -1,0 +1,49 @@
+﻿<Ui>
+
+	<Frame name="TellMeWhen_DurationRequirements" inherits="TellMeWhen_OptionsModuleContainer" virtual="true">
+		<Size y="40"/>
+		<Frames>
+
+			<Frame parentKey="DurationMin" inherits="TellMeWhen_TimeEditBoxWithCheckTemplate">
+				<Size x="67" y="33"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" x="6" y="-5"/>
+					<Anchor point="RIGHT" relativePoint="CENTER" x="-7"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						TMW:CInit(self)
+
+						self:SetSettings("DurationMinEnabled", "DurationMin")
+						self:SetTexts(MINIMUM, TMW.L["ICONMENU_DURATION_MIN_DESC"])
+					</OnLoad>
+				</Scripts>
+			</Frame>
+
+			<Frame parentKey="DurationMax" inherits="TellMeWhen_TimeEditBoxWithCheckTemplate">
+				<Size x="67" y="33"/>
+				<Anchors>
+					<Anchor point="TOP" relativeKey="$parent.DurationMin"/>
+					<Anchor point="LEFT" relativePoint="CENTER" x="7"/>
+					<Anchor point="RIGHT" x="-10"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						TMW:CInit(self)
+
+						self:SetSettings("DurationMaxEnabled", "DurationMax")
+						self:SetTexts(MAXIMUM, TMW.L["ICONMENU_DURATION_MAX_DESC"])
+					</OnLoad>
+				</Scripts>
+			</Frame>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				TMW:CInit(self)
+				
+				self:SetTitle(TMW.L["DURATIONPANEL_TITLE2"])
+			</OnLoad>
+		</Scripts>
+	</Frame>
+ 
+</Ui>

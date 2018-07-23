@@ -1,0 +1,24 @@
+## Interface: 50100
+## Title: lua-pb
+## Author: tg123
+## X-Curse-Packaged-Version: beta1.0
+## X-Curse-Project-Name: lua-pb
+## X-Curse-Project-ID: lua-pb
+## X-Curse-Repository-ID: wow/lua-pb/mainline
+
+pb\fakerequire.lua
+pb\utils.lua
+pb\handlers.lua
+pb\standard\buffer.lua
+pb\standard\unknown.lua
+pb\standard\repeated.lua
+
+pb\standard\dump.lua
+pb\standard\message.lua
+
+pb\standard\pack.lua
+pb\standard\unpack.lua
+pb\standard.lua
+
+pb-wow.lua
+

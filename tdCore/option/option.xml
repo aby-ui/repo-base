@@ -1,0 +1,6 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+    <Script file="main.lua"/>
+    <Script file="frame.lua"/>
+    <Script file="option.lua"/>
+    <Script file="minimap.lua"/>
+</Ui>

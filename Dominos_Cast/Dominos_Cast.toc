@@ -1,0 +1,14 @@
+## Interface: 80000
+## Title: Dominos Cast
+## Title-zhCN: |cFF0099FF[Dominos]|r 施法条模块
+## Notes: A movable casting bar, with timer
+## Author: Tuller
+## Dependencies: Dominos
+localization.xml
+castBar.lua
+main.lua
+
+
+## Title-zhCN: |cff880303[有爱]|r Dominos 施法条
+## Notes-zhCN: 多米诺-施法条模块
+## X-Vendor: AbyUI

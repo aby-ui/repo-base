@@ -1,0 +1,278 @@
+<Ui>
+	<Frame name="RematchNotes" frameStrata="DIALOG" parent="UIParent" clampedToScreen="true" enableMouse="true" movable="true" resizable="true" toplevel="true" inherits="BasicFrameTemplate" hidden="true">
+		<Size x="250" y="200"/>
+		<Anchors>
+			<Anchor point="CENTER"/>
+		</Anchors>
+		<ResizeBounds>
+			<minResize>
+				<AbsDimension x="234" y="150"/>
+			</minResize>
+			<maxResize>
+				<AbsDimension x="700" y="700"/>
+			</maxResize>
+		</ResizeBounds>
+		<Layers>
+			<Layer level="ARTWORK">
+				<!-- the "Pet Card" title in titlebar (not to be confused with "Title" frame that contains top portion of card -->
+				<FontString parentKey="Title" inherits="GameFontNormal" justifyH="CENTER" justifyV="TOP">
+					<Size x="0" y="14"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="6" y="-5"/>
+						<Anchor point="TOPRIGHT" x="-6" y="-5"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<!-- lock to left of titlebar -->
+			<CheckButton parentKey="LockButton" inherits="RematchTitlebarButtonTemplate,RematchTooltipScripts">
+				<Size x="32" y="32"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" x="-5" y="5"/>
+				</Anchors>
+				<Layers>
+					<Layer level="OVERLAY">
+						<Texture file="Interface\FrameGeneral\UI-Frame">
+							<Size x="11" y="22"/>
+							<Anchors>
+								<Anchor point="RIGHT"/>
+							</Anchors>
+							<TexCoords left="0.6640625" right="0.75" top="0.015625" bottom="0.1875"/>
+						</Texture>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnClick>
+						RematchNotes.LockButtonOnClick(self)
+					</OnClick>
+				</Scripts>
+			</CheckButton>
+			<!-- this is a bar across bottom of notes for delete/undo/save buttons and resize grip;
+					 it's ordinarily hidden but shown when the editbox gains focus -->
+			<Frame parentKey="Controls" hidden="true">
+				<Size x="0" y="26"/>
+				<Anchors>
+					<Anchor point="BOTTOMLEFT"/>
+					<Anchor point="BOTTOMRIGHT"/>
+				</Anchors>
+				<Frames>
+					<!-- the bottomright-most red button to save the notes -->
+					<Button parentKey="SaveButton" inherits="UIPanelButtonTemplate" text="SAVE">
+						<Size x="72" y="22"/>
+						<Anchors>
+							<Anchor point="BOTTOMRIGHT" x="-6" y="4"/>
+						</Anchors>
+						<Scripts>
+							<OnClick>
+								RematchNotes.Content.ScrollFrame.EditBox:ClearFocus()
+							</OnClick>
+						</Scripts>
+					</Button>
+					<!-- undo button in the middle -->
+					<Button parentKey="UndoButton" inherits="UIPanelButtonTemplate" text="Undo">
+						<Size x="72" y="22"/>
+						<Anchors>
+							<Anchor point="BOTTOM" x="-1" y="4"/>
+						</Anchors>
+						<Scripts>
+							<OnClick>
+								RematchNotes.UndoButtonOnClick(self)
+							</OnClick>
+						</Scripts>
+					</Button>
+					<!-- delete button in the bottomleft -->
+					<Button parentKey="DeleteButton" inherits="UIPanelButtonTemplate" text="DELETE">
+						<Size x="72" y="22"/>
+						<Anchors>
+							<Anchor point="BOTTOMLEFT" x="4" y="4"/>
+						</Anchors>
+						<Scripts>
+							<OnClick>
+								RematchNotes.DeleteButtonOnClick(self)
+							</OnClick>
+						</Scripts>
+					</Button>
+				</Frames>
+			</Frame>
+			<Frame parentKey="Content" ignoreParentAlpha="true" useParentLevel="true">
+				<Anchors>
+					<Anchor point="TOPLEFT" x="2" y="-22"/>
+					<Anchor point="BOTTOMRIGHT" x="-4" y="2"/>
+				</Anchors>
+				<Backdrop edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
+					<EdgeSize val="16"/>
+					<BorderColor r="0.5" g="0.5" b="0.5"/>
+				</Backdrop>
+				<Layers>
+					<Layer level="BACKGROUND">
+						<!-- brown background to title area -->
+						<Texture file="Interface\PetBattles\PetJournal">
+							<Size x="0" y="32"/>
+							<Anchors>
+								<Anchor point="TOPLEFT" x="3" y="-3"/>
+								<Anchor point="TOPRIGHT" x="-3" y="-3"/>
+							</Anchors>
+							<TexCoords left="0.19140625" right="0.65625" top="0.4873046875" bottom="0.5654296875"/>
+						</Texture>
+						<!-- grey rock background to middle area -->
+						<Texture file="Interface\FrameGeneral\UI-Background-Marble" horizTile="true" vertTile="true">
+							<Anchors>
+								<Anchor point="TOPLEFT" x="3" y="-35"/>
+								<Anchor point="BOTTOMRIGHT" x="-3" y="3"/>
+							</Anchors>
+						</Texture>
+					</Layer>
+					<Layer level="BORDER">
+						<!-- line below title area -->
+						<Texture file="Interface\Tooltips\UI-Tooltip-Border">
+							<Size x="0" y="5"/>
+							<Anchors>
+								<Anchor point="LEFT" relativePoint="TOPLEFT" x="3" y="-35"/>
+								<Anchor point="RIGHT" relativePoint="TOPRIGHT" x="-3" y="-35"/>
+							</Anchors>
+							<TexCoords left="0.8125" right="0.9453125" top="0.625" bottom="0.9375"/>
+							<Color r="0.5" g="0.5" b="0.5"/>
+						</Texture>
+						<!-- icon to left of titlebar -->
+						<Texture parentKey="LeftIcon" mask="Textures\MinimapMask">
+							<Size x="28" y="28"/>
+							<Anchors>
+								<Anchor point="TOPLEFT" x="5" y="-5"/>
+							</Anchors>
+						</Texture>
+						<!-- icon to right of titlebar -->
+						<Texture parentKey="RightIcon" mask="Textures\MinimapMask">
+							<Size x="28" y="28"/>
+							<Anchors>
+								<Anchor point="TOPRIGHT" x="-5" y="-5"/>
+							</Anchors>
+						</Texture>
+					</Layer>
+					<Layer level="ARTWORK">
+						<!-- thin gold border around LeftIcon in titlebar -->
+						<Texture file="Interface\PetBattles\PetBattleHUD">
+							<Anchors>
+								<Anchor point="TOPLEFT" relativeKey="$parent.LeftIcon" x="0" y="1"/>
+								<Anchor point="BOTTOMRIGHT" relativeKey="$parent.LeftIcon" x="1" y="0"/>
+							</Anchors>
+							<TexCoords left="0.884765625" right="0.943359375" top="0.681640625" bottom="0.798828125"/>
+						</Texture>
+						<!-- thin gold border around RightIcon in titlebar -->
+						<Texture file="Interface\PetBattles\PetBattleHUD">
+							<Anchors>
+								<Anchor point="TOPLEFT" relativeKey="$parent.RightIcon" x="0" y="1"/>
+								<Anchor point="BOTTOMRIGHT" relativeKey="$parent.RightIcon" x="1" y="0"/>
+							</Anchors>
+							<TexCoords left="0.884765625" right="0.943359375" top="0.681640625" bottom="0.798828125"/>
+						</Texture>
+						<FontString parentKey="Name" inherits="GameFontNormalOutline" text="Name of Team Goes Here" justifyH="CENTER" justifyV="CENTER">
+							<Size x="0" y="30"/>
+							<Anchors>
+								<Anchor point="LEFT" relativeKey="$parent.LeftIcon" relativePoint="RIGHT" x="2" y="0"/>
+								<Anchor point="RIGHT" relativeKey="$parent.RightIcon" relativePoint="LEFT" x="-2" y="0"/>
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+				<Frames>
+					<!-- the scrollable notes section -->
+					<ScrollFrame parentKey="ScrollFrame" name="RematchNotesScrollFrame" ignoreParentAlpha="true" inherits="MinimalScrollFrameTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" x="12" y="-46"/>
+							<Anchor point="BOTTOMRIGHT" x="-34" y="10"/>
+						</Anchors>
+						<ScrollChild>
+							<EditBox parentKey="EditBox" multiLine="true" letters="4096" autoFocus="false" ignoreParentAlpha="true">
+								<Size x="64" y="64"/> <!-- an arbitrary size is necessary -->
+								<FontString inherits="GameFontHighlight"/>
+								<Scripts>
+									<OnShow>
+										self:SetFrameLevel(self:GetParent():GetFrameLevel()+2) -- make sure focusgrabber beneath
+									</OnShow>
+									<OnEscapePressed>
+										self:ClearFocus()
+									</OnEscapePressed>
+									<OnCursorChanged>
+										ScrollingEdit_OnCursorChanged(self, x, y, w, h)
+									</OnCursorChanged>
+									<OnUpdate>
+										ScrollingEdit_OnUpdate(self, elapsed, self:GetParent())
+									</OnUpdate>
+									<OnTextChanged>
+										RematchNotes.UpdateControlButtons(self)
+									</OnTextChanged>
+									<OnEditFocusGained>
+										RematchNotes.OnFocusGained(self)
+									</OnEditFocusGained>
+									<OnEditFocusLost>
+										RematchNotes.OnFocusLost(self)
+									</OnEditFocusLost>
+								</Scripts>
+							</EditBox>
+						</ScrollChild>
+						<Frames>
+							<!-- this is a focus grabber for the editbox -->
+							<Button parentKey="FocusGrabber">
+								<Anchors>
+									<Anchor point="TOPLEFT" relativeKey="$parent.ScrollFrame"/>
+									<Anchor point="BOTTOMRIGHT" relativeKey="$parent.ScrollFrame"/>
+								</Anchors>
+								<Scripts>
+									<OnClick>
+										-- if this is clicked at all, it's because notes don't take up whole editBox
+										-- safe to set cursor to end
+										local editBox = self:GetParent().EditBox
+										editBox:SetCursorPosition(editBox:GetText():len())
+										editBox:SetFocus(true)
+									</OnClick>
+								</Scripts>
+							</Button>
+							<Button parentKey="ResizeGrip">
+								<Size x="16" y="16"/>
+								<Anchors>
+									<Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT" x="15" y="-7"/>
+								</Anchors>
+								<NormalTexture file="Interface\ChatFrame\UI-ChatIM-SizeGrabber-Up"/>
+								<PushedTexture file="Interface\ChatFrame\UI-ChatIM-SizeGrabber-Down"/>
+								<HighlightTexture file="Interface\ChatFrame\UI-ChatIM-SizeGrabber-Highlight" alphaMode="ADD"/>
+								<Scripts>
+									<OnMouseDown>
+										RematchNotes:StartSizing()
+									</OnMouseDown>
+									<OnMouseUp>
+										RematchNotes:StopSizing()
+									</OnMouseUp>
+								</Scripts>
+							</Button>
+						</Frames>
+						<Scripts>
+							<OnLoad>
+								self.ScrollBar:SetPoint("TOPLEFT",self,"TOPRIGHT",8,-10)
+								self.ScrollBar:SetPoint("BOTTOMLEFT",self,"BOTTOMRIGHT",8,13)
+								self.ScrollBar.trackBG:SetAlpha(0.25)
+							</OnLoad>
+						</Scripts>
+					</ScrollFrame>
+				</Frames>
+			</Frame> <!-- Content -->
+
+		</Frames>
+		<Scripts>
+			<OnShow>
+				self:OnShow()
+			</OnShow>
+			<OnHide>
+				self:OnHide()
+			</OnHide>
+			<OnMouseDown>
+				if not RematchSettings.LockNotesPosition or IsShiftKeyDown() then
+					self:StartMoving()
+				end
+			</OnMouseDown>
+			<OnMouseUp>
+				self:StopSizing()
+			</OnMouseUp>
+		</Scripts>
+	</Frame>
+</Ui>

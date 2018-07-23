@@ -1,0 +1,574 @@
+<Ui xmlns = "http://www.blizzard.com/wow/ui/" xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation = "http://www.blizzard.com/wow/ui/ ..\FrameXML\UI.xsd">
+	<Button name = "TrinketMenu_TabTemplate" inherits = "UIPanelButtonGrayTemplate" virtual = "true">
+		<Size>
+			<AbsDimension x = "96" y = "28"/>
+		</Size>
+		<Scripts>
+			<OnClick>
+				TrinketMenu.Tab_OnClick(self:GetID())
+			</OnClick>
+		</Scripts>
+		<NormalFont style = "GameFontHighlightSmall"/>
+		<DisabledFont style = "GameFontDisableSmall"/>
+		<HighlightFont style = "GameFontHighlightSmall"/>
+	</Button>
+	<Button name = "TrinketMenu_SmallButtonTemplate" virtual = "true">
+		<Size>
+			<AbsDimension x = "16" y = "16"/>
+		</Size>
+		<Scripts>
+			<OnClick>
+				TrinketMenu.SmallButton_OnClick(self)
+			</OnClick>
+			<OnEnter>
+				TrinketMenu.OnTooltip(self)
+			</OnEnter>
+			<OnLeave>
+				GameTooltip:Hide()
+			</OnLeave>
+		</Scripts>
+		<HighlightTexture file = "Interface\AddOns\TrinketMenu\Textures\Buttons" alphaMode = "ADD">
+			<TexCoords left = ".25" right = ".375" top = "0" bottom = ".125"/>
+		</HighlightTexture>
+	</Button>
+	<CheckButton name = "TrinketMenu_CheckButtonTemplate" inherits = "UICheckButtonTemplate" virtual = "true">
+		<Size>
+			<AbsDimension x = "24" y = "24"/>
+		</Size>
+		<Scripts>
+			<OnClick>
+				TrinketMenu.CheckButton_OnClick(self)
+			</OnClick>
+			<OnEnter>
+				TrinketMenu.OnTooltip(self)
+			</OnEnter>
+			<OnLeave>
+				GameTooltip:Hide()
+			</OnLeave>
+		</Scripts>
+	</CheckButton>
+	<!-- Minimap button -->
+	<Button name = "TrinketMenu_IconFrame" frameStrata = "LOW" parent = "Minimap" enableMouse = "true" movable = "true" toplevel = "true" hidden = "false">
+		<Size>
+			<AbsDimension x = "32" y = "32"/>
+		</Size>
+		<Anchors>
+			<Anchor point = "TOPLEFT"/>
+		</Anchors>
+		<Scripts>
+			<OnLoad>
+				self:RegisterForClicks("LeftButtonUp", "RightButtonUp")
+				self:RegisterForDrag("LeftButton")
+			</OnLoad>
+			<OnEnter>
+				TrinketMenu.OnTooltip(self,"TrinketMenu",(TrinketMenuOptions.DisableToggle == "ON") and "Click: toggle options\nDrag: move icon" or "Left click: toggle trinkets\nRight click: toggle options\nDrag: move icon")
+			</OnEnter>
+			<OnLeave>
+				GameTooltip:Hide()
+			</OnLeave>
+			<OnDragStart>
+				self:LockHighlight()
+				TrinketMenu.StartTimer("DragMinimapButton")
+			</OnDragStart>
+			<OnDragStop>
+				TrinketMenu.StopTimer("DragMinimapButton")
+				self:UnlockHighlight()
+			</OnDragStop>
+			<OnClick>
+				TrinketMenu.MinimapButton_OnClick()
+			</OnClick>
+		</Scripts>
+		<NormalTexture file = "Interface\AddOns\TrinketMenu\Textures\TrinketMenu-Icon-Up"/>
+		<PushedTexture file = "Interface\AddOns\TrinketMenu\Textures\TrinketMenu-Icon-Down"/>
+		<HighlightTexture alphaMode = "ADD" file = "Interface\Minimap\UI-Minimap-ZoomButton-Highlight"/>
+	</Button>
+	<Frame name = "TrinketMenu_OptFrame" parent = "UIParent" movable = "true" toplevel = "true" clampedToScreen = "true" hidden = "true">
+		<Size x = "300" y = "336"/>
+		<Anchors>
+			<Anchor point = "CENTER"/>
+		</Anchors>
+		<Backdrop edgeFile = "Interface\Tooltips\UI-Tooltip-Border">
+			<EdgeSize>
+				<AbsValue val = "16" />
+			</EdgeSize>
+		</Backdrop>
+		<Layers>
+			<Layer level = "BACKGROUND">
+				<Texture file = "Interface\ChatFrame\ChatFrameBackground">
+					<Anchors>
+						<Anchor point = "TOPLEFT">
+							<Offset>
+								<AbsDimension x = "4" y = "-4"/>
+							</Offset>
+						</Anchor>
+						<Anchor point = "BOTTOMRIGHT" relativePoint = "BOTTOMRIGHT">
+							<Offset>
+								<AbsDimension x = "-4" y = "4"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+					<Gradient orientation = "VERTICAL">
+						<MinColor r = "0.1" g = "0.1" b = "0.1" a = ".5"/>
+						<MaxColor r = ".25" g = ".25" b = ".25" a = "1"/>
+					</Gradient>
+				</Texture>
+			</Layer>
+			<Layer level = "OVERLAY">
+				<FontString name = "TrinketMenu_Title" inherits = "GameFontHighlightSmall">
+					<Anchors>
+						<Anchor point = "TOP">
+							<Offset>
+								<AbsDimension x = "0" y = "-8"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+					<Color r = ".55" g = ".55" b = ".55"/>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Button name = "TrinketMenu_CloseButton" inherits = "TrinketMenu_SmallButtonTemplate">
+				<Anchors>
+					<Anchor point = "TOPRIGHT">
+						<Offset>
+							<AbsDimension x = "-6" y = "-6"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<NormalTexture file = "Interface\AddOns\TrinketMenu\Textures\Buttons">
+					<TexCoords left = ".375" right = ".5" top = ".25" bottom = ".375"/>
+				</NormalTexture>
+				<PushedTexture file = "Interface\AddOns\TrinketMenu\Textures\Buttons">
+					<TexCoords left = ".5" right = ".625" top = ".25" bottom = ".375"/>
+				</PushedTexture>
+				<DisabledTexture file = "Interface\AddOns\TrinketMenu\Textures\Buttons">
+					<TexCoords left = ".625" right = ".75" top = ".25" bottom = ".375"/>
+				</DisabledTexture>
+			</Button>
+			<Button name = "TrinketMenu_LockButton" inherits = "TrinketMenu_SmallButtonTemplate">
+				<Anchors>
+					<Anchor point = "TOPRIGHT" relativeTo = "TrinketMenu_CloseButton" relativePoint = "TOPLEFT">
+						<Offset>
+							<AbsDimension x = "-2" y = "0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<NormalTexture file = "Interface\AddOns\TrinketMenu\Textures\Buttons">
+					<TexCoords left = ".75" right = ".875" top = ".125" bottom = ".25"/>
+				</NormalTexture>
+				<PushedTexture file = "Interface\AddOns\TrinketMenu\Textures\Buttons">
+					<TexCoords left = ".875" right = "1" top = ".125" bottom = ".25"/>
+				</PushedTexture>
+			</Button>
+			<Button name = "TrinketMenu_Tab1" inherits = "TrinketMenu_TabTemplate" text = "Options" id = "1">
+				<Anchors>
+					<Anchor point = "TOPRIGHT">
+						<Offset>
+							<AbsDimension x = "-6" y = "-22"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Button>
+			<Frame name = "TrinketMenu_SubOptFrame" hidden = "true">
+				<Anchors>
+					<Anchor point = "TOPLEFT">
+						<Offset>
+							<AbsDimension x = "8" y = "-50"/>
+						</Offset>
+					</Anchor>
+					<Anchor point = "BOTTOMRIGHT">
+						<Offset>
+							<AbsDimension x = "-8" y = "8"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Backdrop edgeFile = "Interface\Tooltips\UI-Tooltip-Border">
+					<EdgeSize>
+						<AbsValue val = "16" />
+					</EdgeSize>
+				</Backdrop>
+				<Layers>
+					<Layer level = "BACKGROUND">
+						<Texture file = "Interface\ChatFrame\ChatFrameBackground">
+							<Anchors>
+								<Anchor point = "TOPLEFT">
+									<Offset>
+										<AbsDimension x = "4" y = "-4"/>
+									</Offset>
+								</Anchor>
+								<Anchor point = "BOTTOMRIGHT" relativePoint = "BOTTOMRIGHT">
+									<Offset>
+										<AbsDimension x = "-4" y = "4"/>
+									</Offset>
+								</Anchor>
+							</Anchors>
+							<Gradient orientation = "VERTICAL">
+								<MinColor r = ".15" g = ".15" b = ".15" a = "1"/>
+								<MaxColor r = ".33" g = ".33" b = ".33" a = "1"/>
+							</Gradient>
+						</Texture>
+					</Layer>
+				</Layers>
+				<Frames>
+					<CheckButton name = "TrinketMenu_OptLocked" inherits = "TrinketMenu_CheckButtonTemplate">
+						<Anchors>
+							<Anchor point = "TOPLEFT">
+								<Offset>
+									<AbsDimension x = "8" y = "-8"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</CheckButton>
+					<CheckButton name = "TrinketMenu_OptShowIcon" inherits = "TrinketMenu_CheckButtonTemplate">
+						<Anchors>
+							<Anchor point = "TOPLEFT" relativeTo = "TrinketMenu_OptLocked" relativePoint = "BOTTOMLEFT">
+								<Offset>
+									<AbsDimension x = "0" y = "4"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</CheckButton>
+					<CheckButton name = "TrinketMenu_OptDisableToggle" inherits = "TrinketMenu_CheckButtonTemplate">
+						<Anchors>
+							<Anchor point = "TOPLEFT" relativeTo = "TrinketMenu_OptShowIcon" relativePoint = "BOTTOMLEFT">
+								<Offset>
+									<AbsDimension x = "16" y = "4"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</CheckButton>
+					<CheckButton name = "TrinketMenu_OptSquareMinimap" inherits = "TrinketMenu_CheckButtonTemplate">
+						<Anchors>
+							<Anchor point = "TOPLEFT" relativeTo = "TrinketMenu_OptDisableToggle" relativePoint = "BOTTOMLEFT">
+								<Offset>
+									<AbsDimension x = "0" y = "4"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</CheckButton>
+					<CheckButton name = "TrinketMenu_OptCooldownCount" inherits = "TrinketMenu_CheckButtonTemplate">
+						<Anchors>
+							<Anchor point = "TOPLEFT" relativeTo = "TrinketMenu_OptSquareMinimap" relativePoint = "BOTTOMLEFT">
+								<Offset>
+									<AbsDimension x = "-16" y = "4"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</CheckButton>
+					<CheckButton name = "TrinketMenu_OptLargeCooldown" inherits = "TrinketMenu_CheckButtonTemplate">
+						<Anchors>
+							<Anchor point = "TOPLEFT" relativeTo = "TrinketMenu_OptCooldownCount" relativePoint = "BOTTOMLEFT">
+								<Offset>
+									<AbsDimension x = "16" y = "4"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</CheckButton>
+					<CheckButton name = "TrinketMenu_OptShowTooltips" inherits = "TrinketMenu_CheckButtonTemplate">
+						<Anchors>
+							<Anchor point = "TOPLEFT" relativeTo = "TrinketMenu_OptLargeCooldown" relativePoint = "BOTTOMLEFT">
+								<Offset>
+									<AbsDimension x = "-16" y = "4"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</CheckButton>
+					<CheckButton name = "TrinketMenu_OptTooltipFollow" inherits = "TrinketMenu_CheckButtonTemplate">
+						<Anchors>
+							<Anchor point = "TOPLEFT" relativeTo = "TrinketMenu_OptShowTooltips" relativePoint = "BOTTOMLEFT">
+								<Offset>
+									<AbsDimension x = "16" y = "4"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</CheckButton>
+					<CheckButton name = "TrinketMenu_OptTinyTooltips" inherits = "TrinketMenu_CheckButtonTemplate">
+						<Anchors>
+							<Anchor point = "TOPLEFT" relativeTo = "TrinketMenu_OptTooltipFollow" relativePoint = "BOTTOMLEFT">
+								<Offset>
+									<AbsDimension x = "0" y = "4"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</CheckButton>
+					<CheckButton name = "TrinketMenu_OptShowHotKeys" inherits = "TrinketMenu_CheckButtonTemplate">
+						<Anchors>
+							<Anchor point = "TOPLEFT" relativeTo = "TrinketMenu_OptTinyTooltips" relativePoint = "BOTTOMLEFT">
+								<Offset>
+									<AbsDimension x = "-16" y = "4"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</CheckButton>
+					<CheckButton name = "TrinketMenu_OptStopOnSwap" inherits = "TrinketMenu_CheckButtonTemplate">
+						<Anchors>
+							<Anchor point = "TOPLEFT" relativeTo = "TrinketMenu_OptShowHotKeys" relativePoint = "BOTTOMLEFT">
+								<Offset>
+									<AbsDimension x = "0" y = "4"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</CheckButton>
+					<CheckButton name = "TrinketMenu_OptRedRange" inherits = "TrinketMenu_CheckButtonTemplate">
+						<Anchors>
+							<Anchor point = "TOPLEFT" relativeTo = "TrinketMenu_OptStopOnSwap" relativePoint = "BOTTOMLEFT">
+								<Offset>
+									<AbsDimension x = "0" y = "4"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</CheckButton>
+					<CheckButton name = "TrinketMenu_OptHidePetBattle" inherits = "TrinketMenu_CheckButtonTemplate">
+						<Anchors>
+							<Anchor point = "TOPLEFT" relativeTo = "TrinketMenu_OptRedRange" relativePoint = "BOTTOMLEFT">
+								<Offset>
+									<AbsDimension x = "0" y = "4"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</CheckButton>
+
+					<CheckButton name = "TrinketMenu_OptKeepDocked" inherits = "TrinketMenu_CheckButtonTemplate">
+						<Anchors>
+							<Anchor point = "TOPLEFT" relativePoint = "TOP">
+								<Offset>
+									<AbsDimension x = "0" y = "-8"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</CheckButton>
+					<CheckButton name = "TrinketMenu_OptKeepOpen" inherits = "TrinketMenu_CheckButtonTemplate">
+						<Anchors>
+							<Anchor point = "TOPLEFT" relativeTo = "TrinketMenu_OptKeepDocked" relativePoint = "BOTTOMLEFT">
+								<Offset>
+									<AbsDimension x = "0" y = "4"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</CheckButton>
+					<CheckButton name = "TrinketMenu_OptMenuOnShift" inherits = "TrinketMenu_CheckButtonTemplate">
+						<Anchors>
+							<Anchor point = "TOPLEFT" relativeTo = "TrinketMenu_OptKeepOpen" relativePoint = "BOTTOMLEFT">
+								<Offset>
+									<AbsDimension x = "0" y = "4"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</CheckButton>
+					<CheckButton name = "TrinketMenu_OptMenuOnRight" inherits = "TrinketMenu_CheckButtonTemplate">
+						<Anchors>
+							<Anchor point = "TOPLEFT" relativeTo = "TrinketMenu_OptMenuOnShift" relativePoint = "BOTTOMLEFT">
+								<Offset>
+									<AbsDimension x = "0" y = "4"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</CheckButton>
+					<CheckButton name = "TrinketMenu_OptNotify" inherits = "TrinketMenu_CheckButtonTemplate">
+						<Anchors>
+							<Anchor point = "TOPLEFT" relativeTo = "TrinketMenu_OptMenuOnRight" relativePoint = "BOTTOMLEFT">
+								<Offset>
+									<AbsDimension x = "0" y = "4"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</CheckButton>
+					<CheckButton name = "TrinketMenu_OptNotifyThirty" inherits = "TrinketMenu_CheckButtonTemplate">
+						<Anchors>
+							<Anchor point = "TOPLEFT" relativeTo = "TrinketMenu_OptNotify" relativePoint = "BOTTOMLEFT">
+								<Offset>
+									<AbsDimension x = "0" y = "4"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</CheckButton>
+					<CheckButton name = "TrinketMenu_OptNotifyChatAlso" inherits = "TrinketMenu_CheckButtonTemplate">
+						<Anchors>
+							<Anchor point = "TOPLEFT" relativeTo = "TrinketMenu_OptNotifyThirty" relativePoint = "BOTTOMLEFT">
+								<Offset>
+									<AbsDimension x = "0" y = "4"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</CheckButton>
+					<CheckButton name = "TrinketMenu_OptSetColumns" inherits = "TrinketMenu_CheckButtonTemplate">
+						<Anchors>
+							<Anchor point = "TOPLEFT" relativeTo = "TrinketMenu_OptNotifyChatAlso" relativePoint = "BOTTOMLEFT">
+								<Offset>
+									<AbsDimension x = "0" y = "4"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</CheckButton>
+					<Slider name = "TrinketMenu_OptColumnsSlider" orientation = "HORIZONTAL" enableMouse = "true" minValue = "1" maxValue = "30" defaultValue = "4" valueStep = "1">
+						<Size>
+							<AbsDimension x = "104" y = "17"/>
+						</Size>
+						<Anchors>
+							<Anchor point = "TOPLEFT" relativeTo = "TrinketMenu_OptSetColumns" relativePoint = "BOTTOMLEFT">
+								<Offset>
+									<AbsDimension x = "16" y = "4"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+						<HitRectInsets>
+							<AbsInset left = "0" right = "0" top = "-5" bottom = "-5"/>
+						</HitRectInsets>
+						<Backdrop bgFile = "Interface\Buttons\UI-SliderBar-Background" edgeFile = "Interface\Buttons\UI-SliderBar-Border" tile = "true">
+							<EdgeSize>
+								<AbsValue val = "8"/>
+							</EdgeSize>
+							<TileSize>
+								<AbsValue val = "8"/>
+							</TileSize>
+							<BackgroundInsets>
+								<AbsInset left = "3" right = "3" top = "6" bottom = "6"/>
+							</BackgroundInsets>
+						</Backdrop>
+						<Layers>
+							<Layer level = "ARTWORK">
+								<FontString name = "TrinketMenu_OptColumnsSliderText" inherits = "GameFontHighlightSmall" text = "5 trinkets">
+									<Anchors>
+										<Anchor point = "LEFT" relativeTo = "TrinketMenu_OptSetColumnsText" relativePoint = "RIGHT">
+											<Offset>
+												<AbsDimension x = "0" y = "0"/>
+											</Offset>
+										</Anchor>
+									</Anchors>
+								</FontString>
+							</Layer>
+						</Layers>
+						<Scripts>
+							<OnValueChanged>
+								TrinketMenu.OptColumnsSlider_OnValueChanged(self, value)
+							</OnValueChanged>
+							<OnMouseWheel>
+								TrinketMenu.SliderOnMouseWheel(self, delta)
+							</OnMouseWheel>
+						</Scripts>
+						<ThumbTexture name = "$parentThumb" file = "Interface\Buttons\UI-SliderBar-Button-Horizontal">
+							<Size>
+								<AbsDimension x = "32" y = "32"/>
+							</Size>
+						</ThumbTexture>
+					</Slider>
+					<Slider name = "TrinketMenu_OptMainScaleSlider" orientation = "HORIZONTAL" enableMouse = "true" minValue = "0.2" maxValue = "2.5" defaultValue = "1.0" valueStep = "0.01">
+						<Size>
+							<AbsDimension x = "104" y = "17"/>
+						</Size>
+						<Anchors>
+							<Anchor point = "TOPLEFT" relativeTo = "TrinketMenu_OptSetColumns" relativePoint = "BOTTOMLEFT">
+								<Offset>
+									<AbsDimension x = "16" y = "-28"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+						<HitRectInsets>
+							<AbsInset left = "0" right = "0" top = "-5" bottom = "-5"/>
+						</HitRectInsets>
+						<Backdrop bgFile = "Interface\Buttons\UI-SliderBar-Background" edgeFile = "Interface\Buttons\UI-SliderBar-Border" tile = "true">
+							<EdgeSize>
+								<AbsValue val = "8"/>
+							</EdgeSize>
+							<TileSize>
+								<AbsValue val = "8"/>
+							</TileSize>
+							<BackgroundInsets>
+								<AbsInset left = "3" right = "3" top = "6" bottom = "6"/>
+							</BackgroundInsets>
+						</Backdrop>
+						<Layers>
+							<Layer level = "ARTWORK">
+								<FontString name = "TrinketMenu_OptMainScaleSliderText" inherits = "GameFontHighlightSmall" text = "Main Scale: 1.0">
+									<Anchors>
+										<Anchor point = "TOPLEFT" relativeTo = "TrinketMenu_OptSetColumnsText" relativePoint = "BOTTOMLEFT">
+											<Offset>
+												<AbsDimension x = "0" y = "-24"/>
+											</Offset>
+										</Anchor>
+									</Anchors>
+								</FontString>
+							</Layer>
+						</Layers>
+						<Scripts>
+							<OnValueChanged>
+								TrinketMenu.OptMainScaleSlider_OnValueChanged(self, value)
+							</OnValueChanged>
+							<OnMouseWheel>
+								TrinketMenu.SliderOnMouseWheel(self, delta)
+							</OnMouseWheel>
+						</Scripts>
+						<ThumbTexture name = "$parentThumb" file = "Interface\Buttons\UI-SliderBar-Button-Horizontal">
+							<Size>
+								<AbsDimension x = "32" y = "32"/>
+							</Size>
+						</ThumbTexture>
+					</Slider>
+					<Slider name = "TrinketMenu_OptMenuScaleSlider" orientation = "HORIZONTAL" enableMouse = "true" minValue = "0.2" maxValue = "2.5" defaultValue = "1.0" valueStep = "0.01">
+						<Size>
+							<AbsDimension x = "104" y = "17"/>
+						</Size>
+						<Anchors>
+							<Anchor point = "TOPLEFT" relativeTo = "TrinketMenu_OptMainScaleSlider" relativePoint = "BOTTOMLEFT">
+								<Offset>
+									<AbsDimension x = "0" y = "-16"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+						<HitRectInsets>
+							<AbsInset left = "0" right = "0" top = "-5" bottom = "-5"/>
+						</HitRectInsets>
+						<Backdrop bgFile = "Interface\Buttons\UI-SliderBar-Background" edgeFile = "Interface\Buttons\UI-SliderBar-Border" tile = "true">
+							<EdgeSize>
+								<AbsValue val = "8"/>
+							</EdgeSize>
+							<TileSize>
+								<AbsValue val = "8"/>
+							</TileSize>
+							<BackgroundInsets>
+								<AbsInset left = "3" right = "3" top = "6" bottom = "6"/>
+							</BackgroundInsets>
+						</Backdrop>
+						<Layers>
+							<Layer level = "ARTWORK">
+								<FontString name = "TrinketMenu_OptMenuScaleSliderText" inherits = "GameFontHighlightSmall" text = "Menu Scale: 1.0">
+									<Anchors>
+										<Anchor point = "TOPLEFT" relativeTo = "TrinketMenu_OptMainScaleSliderText" relativePoint = "BOTTOMLEFT">
+											<Offset>
+												<AbsDimension x = "0" y = "-22"/>
+											</Offset>
+										</Anchor>
+									</Anchors>
+								</FontString>
+							</Layer>
+						</Layers>
+						<Scripts>
+							<OnValueChanged>
+								TrinketMenu.OptMenuScaleSlider_OnValueChanged(self, value)
+							</OnValueChanged>
+							<OnMouseWheel>
+								TrinketMenu.SliderOnMouseWheel(self, delta)
+							</OnMouseWheel>
+						</Scripts>
+						<ThumbTexture name = "$parentThumb" file = "Interface\Buttons\UI-SliderBar-Button-Horizontal">
+							<Size>
+								<AbsDimension x = "32" y = "32"/>
+							</Size>
+						</ThumbTexture>
+					</Slider>
+				</Frames>
+			</Frame>
+		</Frames>
+		<Scripts>
+			<OnMouseDown>
+				self:StartMoving()
+			</OnMouseDown>
+			<OnMouseUp>
+				self:StopMovingOrSizing()
+			</OnMouseUp>
+			<OnShow>
+				TrinketMenu.OptFrame_OnShow()
+			</OnShow>
+		</Scripts>
+	</Frame>
+</Ui>

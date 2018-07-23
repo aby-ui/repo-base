@@ -1,0 +1,8 @@
+<Bindings>
+    <Binding name="LITEBUFF_MOUNT_NORMAL" header="LITEBUFF_MOUNT">LBIntelliMountSummon("normal")</Binding>
+    <Binding name="LITEBUFF_MOUNT_PASSENGER">LBIntelliMountSummon("passenger")</Binding>
+    <Binding name="LITEBUFF_MOUNT_SURFACE">LBIntelliMountSummon("surface")</Binding>
+    <Binding name="LITEBUFF_MOUNT_VENDOR">LBIntelliMountSummon("vendor")</Binding>
+    <Binding name="LITEBUFF_MOUNT_UNDERWATER">LBIntelliMountSummon("underwater")</Binding>
+    <Binding name="LITEBUFF_MOUNT_NOFLY">LBIntelliMountSummon("nofly")</Binding>
+</Bindings>

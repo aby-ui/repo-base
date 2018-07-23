@@ -1,0 +1,103 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+
+	<!--  Dominos CastBar - Puts the casting bar in a movable bar -->
+
+	<!--
+		Copyright (c) 2008-2009 Jason Greer
+		All rights reserved.
+
+		Redistribution and use in source and binary forms, with or without
+		modification, are permitted provided that the following conditions are met:
+
+			* Redistributions of source code must retain the above copyright notice,
+			  this list of conditions and the following disclaimer.
+			* Redistributions in binary form must reproduce the above copyright
+			  notice, this list of conditions and the following disclaimer in the
+			  documentation and/or other materials provided with the distribution.
+			* Neither the name of the author nor the names of its contributors may
+			  be used to endorse or promote products derived from this software
+			  without specific prior written permission.
+
+		THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+		AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+		IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+		ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+		LIABLE FORANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+		CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+		SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+		INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+		CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+		ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+		POSSIBILITY OF SUCH DAMAGE.
+	-->
+	<Script file="castBar.lua"/>
+
+	<StatusBar name="DominosCastingBarTemplate" drawLayer="BORDER" hidden="true" virtual="true">
+		<Size x="210" y="14"/>
+
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture setAllPoints="true">
+					<Color r="0" g="0" b="0" a="0.5"/>
+				</Texture>
+			</Layer>
+
+			<Layer level="ARTWORK">
+				<FontString name="$parentText" font="GameFontHighlight">
+					<Anchors>
+						<Anchor point="CENTER">
+							<Offset x="0" y="0"/>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString name="$parentTime" font="GameFontHighlight" hidden="true">
+					<Anchors>
+						<Anchor point="RIGHT">
+							<Offset x="-4" y="0"/>
+						</Anchor>
+					</Anchors>
+				</FontString>
+
+				<Texture name="$parentBorder" file="Interface\CastingBar\UI-CastingBar-Border-Small">
+					<Size x="275" y="68"/>
+					<Anchors>
+						<Anchor point="CENTER"/>
+					</Anchors>
+				</Texture>
+
+				<Texture name="$parentBorderShield" file="Interface\CastingBar\UI-CastingBar-Small-Shield" hidden="true">
+					<Size x="275" y="68"/>
+					<Anchors>
+						<Anchor point="CENTER"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+
+			<Layer level="OVERLAY">
+				<Texture name="$parentSpark" file="Interface\CastingBar\UI-CastingBar-Spark" alphaMode="ADD">
+					<Size x="32" y="32"/>
+					<Anchors>
+						<Anchor point="CENTER">
+							<Offset x="0" y="-4"/>
+						</Anchor>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentFlash" file="Interface\CastingBar\UI-CastingBar-Flash-Small" alphaMode="ADD">
+					<Size x="275" y="78"/>
+					<Anchors>
+						<Anchor point="CENTER"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+
+		<Scripts>
+			<OnLoad>
+				CastingBarFrame_OnLoad(self, 'player', true)
+			</OnLoad>
+		</Scripts>
+
+		<BarTexture file="Interface\TargetingFrame\UI-StatusBar"/>
+		<BarColor r="1.0" g="0.7" b="0.0"/>
+	</StatusBar>
+</Ui>

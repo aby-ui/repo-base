@@ -1,0 +1,11 @@
+<Ui>
+    <Include file="Controls.lua"/>
+    <Include file="CheckBox.lua"/>
+    <Include file="Button.lua"/>
+    <Include file="RadioList.lua"/>
+    <Include file="SpinBox.lua"/>
+    <Include file="DropDownList.lua"/>
+    <Include file="SubGroup.lua"/>
+    <Include file="TextTitle.lua"/>
+    <Include file="TextInput.lua"/>
+</Ui>

@@ -1,0 +1,40 @@
+## Interface: 80000
+## Title: CompactRaid
+## Version: 4.33
+## Author: Abin
+## SavedVariables: CompactRaidDB
+## SavedVariablesPerCharacter: CompactRaidCharDB
+## OptionalDeps: Clique, TomTom
+## X-Category: UnitFrame
+## X-eMail: abinn32@yahoo.com
+## X-Curse-Packaged-Version: v4.33
+## X-Curse-Project-Name: CompactRaid
+## X-Curse-Project-ID: compactraid
+## X-Curse-Repository-ID: wow/compactraid/mainline
+
+Includes\LibAddonManager.lua
+Includes\utf8.lua
+Includes\InterfaceOptionPage-1.0.lua
+Includes\VirtualScrollList-1.0.lua
+Includes\TabFrame-1.0.lua
+Includes\LibAuraGroups-1.0.lua
+Includes\ModularOptionFrame.lua
+Includes\LibPlayerSpells-1.0.lua
+
+Locales\enUS.lua
+Locales\zhCN.lua
+Locales\zhTW.lua
+
+Core.lua
+Supports\embeds.xml
+UnitFrames\embeds.xml
+ToolFrames\embeds.xml
+OptionFrames\embeds.xml
+Modules\embeds.xml
+
+## Title: |cff880303[有爱]|r CompactRaid 团队框架
+## Title-zhCN: |cff880303[有爱]|r CompactRaid 团队框架
+## Title-zhTW: |cff880303[有爱]|r CompactRaid 團隊框架
+## Notes-zhCN: 增强和美化暴雪自带的团队框架。包括点击施法、减益DEBUFF显示等功能。
+## Notes-zhTW: 增强和美化暴雪自带的团队框架。包括点击施法、减益DEBUFF显示等功能。
+## X-Vendor: AbyUI

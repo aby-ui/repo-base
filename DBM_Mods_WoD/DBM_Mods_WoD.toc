@@ -1,0 +1,6 @@
+## Interface: 80000
+## X-Vendor: AbyUI
+## LoadOnDemand: 1
+
+## Title: |cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r 旧版-德拉诺之王
+## Notes: 虚拟插件，用来放置DBM一个资料片的模块

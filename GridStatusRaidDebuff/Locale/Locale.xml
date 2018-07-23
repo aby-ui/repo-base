@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Ui xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.blizzard.com/wow/ui/" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+
+<!-- Locales isolated to allow permission based editing -->
+
+<Include file="enUS.lua"/>
+<Include file="zhCN.lua"/>
+<Include file="zhTW.lua"/>
+
+</Ui>

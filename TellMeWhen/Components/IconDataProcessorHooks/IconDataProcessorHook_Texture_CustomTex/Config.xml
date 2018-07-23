@@ -1,0 +1,99 @@
+﻿<Ui>
+
+	<Frame name="TellMeWhen_CustomTex" inherits="TellMeWhen_OptionsModuleContainer" virtual="true">
+		<Frames>
+			<EditBox parentKey="CustomTex" name="$parentCustomTex" inherits="TellMeWhen_InputBoxTemplate" multiline="true" autoFocus="false">
+				<Size y="15"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" x="9" y="-5"/>
+					<Anchor point="TOPRIGHT" x="-7" y="-5"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						TMW.SUG:EnableEditBox(self, "texture_withVarTex", true)	
+						self.label = TMW.L["ICONMENU_CUSTOMTEX"]
+						
+						self.__ttMinWidth = 300
+						TMW:CInit(self)
+
+						self:SetTexts(TMW.L["ICONMENU_CUSTOMTEX"], TMW.L["ICONMENU_CUSTOMTEX_DESC"])
+						self:SetSetting("CustomTex")
+						
+						self:CScriptAdd("ModifyValueForSave", function(self, value)
+							return TMW:CleanPath(value)
+						end)
+						
+						
+						function self:DragReceived(icon, t, data, subType)
+							local ics = icon:GetSettings()
+
+							local _, input
+							if t == "spell" then
+								_, input = GetSpellBookItemInfo(data, subType)
+							elseif t == "item" then
+								input = GetItemIcon(data)
+							end
+							if not input then
+								return
+							end
+
+							ics.CustomTex = TMW:CleanString(input)
+							return true -- signal success
+						end
+						
+						TMW.Classes.ChatEdit_InsertLink_Hook:New(self, function(self, text, linkType, linkData)
+							-- if the custom texture box is active,
+							-- attempt to extract either a spellID or a texture path from the data to use.
+
+							local tex
+							local linkID = strmatch(linkData, "^(%d+)")
+
+							if linkType == "spell" or linkType == "enchant" then
+								-- spells and enchants can just use their spellID
+								tex = linkID
+							elseif linkType == "item" then
+								-- items must get the texture path
+								tex = GetItemIcon(linkID)
+							elseif linkType == "achievement" then
+								-- achievements also must get their texture path
+								tex = select(10, GetAchievementInfo(linkID))
+							end
+
+							if tex then
+								-- clean off the first part of the path, it does not need to be saved
+								-- it will be appended when the texture is used.
+								tex = TMW:CleanPath(tex)
+								tex = gsub(tex, "INTERFACE/ICONS/", "")
+								tex = gsub(tex, "Interface/Icons/", "")
+
+								-- set the text
+								self.editbox:SetText(tex)
+
+								-- notify success
+								return true
+							end
+						end)
+
+					</OnLoad>
+					<OnTextChanged>
+						self:GetParent():AdjustHeight()
+					</OnTextChanged>
+					<OnReceiveDrag>
+						TMW.IE:SpellItemToIcon(TMW.CI.icon, self.DragReceived, self)
+					</OnReceiveDrag>
+					<OnMouseUp>
+						TMW.IE:SpellItemToIcon(TMW.CI.icon, self.DragReceived, self)
+					</OnMouseUp>
+				</Scripts>
+			</EditBox>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				TMW:CInit(self)
+				
+				self:SetTitle(TMW.L["ICONMENU_CUSTOMTEX"])
+			</OnLoad>
+		</Scripts>
+	</Frame>
+	
+</Ui>

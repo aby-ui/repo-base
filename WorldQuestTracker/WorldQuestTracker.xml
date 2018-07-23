@@ -1,0 +1,28 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+
+	<Frame name="WorldQuestTrackerProviderTemplate" mixin="WorldMapMixin, MapCanvasDataProviderMixin MapCanvasPinMixin MapCanvasPinMixin" virtual="true">
+		<Scripts>
+			<OnLoad>
+				WorldMapFrame:AddDataProvider (self);
+				self:RefreshAllData();
+			</OnLoad>
+		</Scripts>
+	</Frame>
+	
+	<Frame name="WorldQuestTrackerDataProvider" inherits="WorldQuestTrackerProviderTemplate">
+	</Frame>
+
+	<Frame name="WorldQuestTrackerPinProviderTemplate" mixin="MapCanvasPinMixin" virtual="true">
+		<Scripts>
+			<OnLoad>
+				self:UseFrameLevelType ("PIN_FRAME_LEVEL_AREA_POI");
+			</OnLoad>
+		</Scripts>
+	</Frame>
+
+	<Frame name="WorldQuestTrackerPinMixin" inherits="WorldQuestTrackerPinProviderTemplate">
+	</Frame>
+
+</Ui>
+

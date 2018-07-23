@@ -1,0 +1,13 @@
+## Interface: 80000
+## Title: tullaRange Config
+## Notes: GUI based configuration for tullaRange
+## Author: Tuller
+## Dependencies: tullaRange
+## LoadOnDemand: 1
+localization\localization.xml
+widgets\widgets.xml
+colorOptions.lua
+
+## Title-zhCN: |cff880303[有爱]|r tullaRange 配置界面
+## Notes-zhCN: 技能超距提示-配置界面
+## X-Vendor: AbyUI

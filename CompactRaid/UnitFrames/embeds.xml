@@ -1,0 +1,9 @@
+﻿<Ui xmlns="http://www.blizzard.com/wow/ui/">	
+	<Script file="Container.lua"/>
+	<Script file="UnitButton.lua"/>
+	<Include file="UnitButton.xml"/>
+	<Script file="SoloFrames.lua"/>
+	<Script file="PartyFrames.lua"/>
+	<Script file="RaidFrames.lua"/>
+	<Script file="FriendlyNpc.lua"/>	
+</Ui>

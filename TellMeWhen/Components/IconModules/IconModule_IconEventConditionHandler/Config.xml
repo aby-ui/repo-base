@@ -1,0 +1,42 @@
+﻿<Ui>
+
+	<Button parentKey="IconEventOnCondition" parent="TellMeWhen_IconEditorPagesEventsEventSettingsContainer" inherits="TellMeWhen_ButtonTemplate">
+		<Size x="200" y="16"/>
+		<Anchors>
+			<Anchor point="TOP" relativeKey="$parent.OnlyShown" relativePoint="BOTTOM" y="-7"/>
+			<Anchor point="LEFT" />
+			<Anchor point="RIGHT" />
+		</Anchors>
+		<Scripts>
+			<OnLoad>
+
+				self:SetScale(0.9)
+				self:SetFrameLevel(self:GetParent():GetFrameLevel()+2)
+				self.Background:SetAlpha(0.7)
+				
+				TMW:TT(self, "EVENTCONDITIONS", "EVENTCONDITIONS_DESC")
+			</OnLoad>
+			<OnUpdate>
+				local text = TMW.CNDT:GetTabText("IconEventOnCondition")
+				
+				self:SetText(text)
+				self:SetWidth(self:GetTextWidth()+20)
+			</OnUpdate>
+			<OnClick>
+				TMW.CNDT:LoadConfig("IconEventOnCondition")
+			</OnClick>
+			<OnShow>
+				self:SetHeight(16)
+				if self:GetParent().AdjustHeight then
+					self:GetParent():AdjustHeight()
+				end
+			</OnShow>
+			<OnHide>
+				self:SetHeight(-7)
+				if self:GetParent().AdjustHeight then
+					self:GetParent():AdjustHeight()
+				end
+			</OnHide>
+		</Scripts>
+	</Button>
+</Ui>

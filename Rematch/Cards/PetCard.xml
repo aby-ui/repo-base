@@ -1,0 +1,997 @@
+<Ui>
+
+	<Frame name="RematchBreedTableTemplate" virtual="true">
+		<Size x="168" y="16"/>
+		<Layers>
+			<Layer level="BORDER">
+				<FontString parentKey="Breed" inherits="GameFontNormal" justifyH="CENTER" justifyV="CENTER">
+					<Size x="42" y="16"/>
+					<Anchors>
+						<Anchor point="LEFT"/>
+					</Anchors>
+				</FontString>
+				<FontString parentKey="Health" inherits="GameFontHighlight" justifyH="CENTER" justifyV="CENTER">
+					<Size x="42" y="16"/>
+					<Anchors>
+						<Anchor point="LEFT" relativeKey="$parent.Breed" relativePoint="RIGHT"/>
+					</Anchors>
+				</FontString>
+				<FontString parentKey="Power" inherits="GameFontHighlight" justifyH="CENTER" justifyV="CENTER">
+					<Size x="42" y="16"/>
+					<Anchors>
+						<Anchor point="LEFT" relativeKey="$parent.Health" relativePoint="RIGHT"/>
+					</Anchors>
+				</FontString>
+				<FontString parentKey="Speed" inherits="GameFontHighlight" justifyH="CENTER" justifyV="CENTER">
+					<Size x="42" y="16"/>
+					<Anchors>
+						<Anchor point="LEFT" relativeKey="$parent.Power" relativePoint="RIGHT"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+	</Frame>		
+
+	<!-- skurri is not used in all clients (and ruRU uses a different skurri)
+			 this is the cursive-like font used for the lore text on the back of the card -->
+	<FontFamily name="RematchLoreFont" virtual="true">
+		<Member alphabet="roman">
+			<Font font="Fonts\skurri.ttf" height="15">
+				<Color r="0" g="0" b="0"/>
+			</Font>
+		</Member>
+		<Member alphabet="korean">
+			<Font font="Fonts\K_Damage.ttf" height="12">
+				<Color r="0" g="0" b="0"/>
+			</Font>
+		</Member>
+		<Member alphabet="simplifiedchinese">
+			<Font font="Fonts\ARKai_C.ttf" height="12">
+				<Color r="0" g="0" b="0"/>
+			</Font>
+		</Member>
+		<Member alphabet="traditionalchinese">
+			<Font font="Fonts\bKAI00M.ttf" height="12">
+				<Color r="0" g="0" b="0"/>
+			</Font>
+		</Member>
+		<Member alphabet="russian">
+			<Font font="Fonts\SKURRI_CYR.TTF" height="15">
+				<Color r="0" g="0" b="0"/>
+			</Font>
+		</Member>
+	</FontFamily>
+
+	<!-- icon+text stat that appears to the left of the front middle -->
+	<Button name="RematchPetCardStatTemplate" virtual="true">
+		<Size x="90" y="20"/>
+		<Layers>
+			<Layer level="ARTWORK">
+				<Texture parentKey="Icon">
+					<Size x="18" y="18"/>
+					<Anchors>
+						<Anchor point="LEFT"/>
+					</Anchors>
+				</Texture>
+				<FontString parentKey="Text" inherits="GameFontHighlight">
+					<Anchors>
+						<Anchor point="LEFT" x="20" y="0"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+			<Layer level="HIGHLIGHT">
+				<Texture parentKey="Highlight" file="Interface\Buttons\UI-Common-MouseHilight" alphaMode="ADD" alpha="0.35">
+					<Size x="92" y="18"/>
+					<Anchors>
+						<Anchor point="LEFT" x="-2" y="0"/>
+					</Anchors>
+					<TexCoords left="0.25" right="0.75" top="0.25" bottom="0.75"/>
+				</Texture>
+			</Layer>
+		</Layers>
+		<ButtonText parentKey="ButtonText">
+			<Anchors>
+				<Anchor point="LEFT" x="20" y="0"/>
+			</Anchors>
+		</ButtonText>
+		<NormalFont style="GameFontHighlight"/>
+		<Scripts>
+			<OnEnter>
+				if not IsMouseButtonDown() then
+					Rematch.ShowTooltip(self)
+				end
+			</OnEnter>
+			<OnLeave>
+				Rematch:HideTooltip()
+			</OnLeave>
+		</Scripts>
+	</Button>
+
+	<!-- abilities that appear at the front bottom -->
+	<Button name="RematchPetCardAbilityTemplate" virtual="true">
+		<Size x="114" y="32"/>
+		<HitRectInsets>
+			<AbsInset left="-2" right="-2" top="-2" bottom="-2"/>
+		</HitRectInsets>
+		<Layers>
+			<Layer level="ARTWORK">
+				<Texture parentKey="Icon" file="Interface\Icons\INV_Misc_QuestionMark">
+					<Size x="27" y="27"/>
+					<Anchors>
+						<Anchor point="LEFT"/>
+					</Anchors>
+					<TexCoords left="0.085" right="0.915" top="0.085" bottom="0.915"/>
+				</Texture>
+				<Texture parentKey="Type" file="Interface\AddOns\Rematch\Textures\pettypedecals" alpha="0.35">
+					<Size x="38" y="26"/>
+					<Anchors>
+						<Anchor point="RIGHT"/>
+					</Anchors>
+				</Texture>
+				<FontString parentKey="Name" inherits="GameFontNormal" text="Ability Name" justifyH="LEFT" justifyV="CENTER">
+					<Size x="0" y="30"/>
+					<Anchors>
+						<Anchor point="LEFT" x="31" y="0"/>
+						<Anchor point="RIGHT"/>
+					</Anchors>
+					<Color r="1" g="0.82" b="0.5"/>
+				</FontString>
+			</Layer>
+			<Layer level="OVERLAY">
+				<Texture parentKey="IconBorder" file="Interface\Buttons\UI-QuickSlot2">
+					<Size x="29" y="29"/>
+					<Anchors>
+						<Anchor point="LEFT" x="-1" y="0"/>
+					</Anchors>
+					<TexCoords left="0.1875" right="0.796875" top="0.1875" bottom="0.796875"/>
+					<Color r="1" g="0.82" b="0"/>
+				</Texture>
+				<Texture parentKey="Hint">
+					<Size x="20" y="20"/>
+					<Anchors>
+						<Anchor point="BOTTOMRIGHT" relativeKey="$parent.IconBorder" x="4" y="-3"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY" textureSubLevel="1">
+				<!-- the silver border around an icon to note abilities that qualified the pet for a search -->
+				<Texture parentKey="SearchHit" file="Interface\PetBattles\PetBattleHUD" hidden="true">
+					<Size x="33" y="33"/>
+					<Anchors>
+						<Anchor point="LEFT" x="-3" y="0"/>
+					</Anchors>
+					<TexCoords left="0.8798828125" right="0.9521484375" top="0.07421875" bottom="0.216796875"/>
+					<Color r="1" g="0.82" b="0.25"/>
+				</Texture>
+			</Layer>
+			<Layer level="HIGHLIGHT">
+				<Texture file="Interface\Buttons\UI-Common-MouseHilight" alphaMode="ADD" alpha="0.35">
+					<Size x="0" y="28"/>
+					<Anchors>
+						<Anchor point="LEFT" relativeKey="$parent.Name" x="-2" y="0"/>
+						<Anchor point="RIGHT"/>
+					</Anchors>
+					<TexCoords left="0.25" right="0.75" top="0.25" bottom="0.75"/>
+				</Texture>
+				<Texture file="Interface\Buttons\ButtonHilight-Square" alphaMode="ADD">
+					<Size x="28" y="28"/>
+					<Anchors>
+						<Anchor point="LEFT"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnEnter>
+				Rematch:ShowAbilityCard(self,RematchPetCard.petID,self.abilityID)
+			</OnEnter>
+			<OnLeave>
+				Rematch:HideAbilityCard()
+			</OnLeave>
+			<OnClick>
+				RematchPetCard.AbilityOnClick(self,button)
+			</OnClick>
+			<OnDoubleClick>
+				Rematch:SearchAbility(self.abilityID)
+			</OnDoubleClick>
+		</Scripts>
+	</Button>
+
+	<!-- the card itself -->
+	<Frame name="RematchPetCard" frameStrata="FULLSCREEN" parent="UIParent" clampedToScreen="true" enableMouse="true" movable="true" enableKeyboard="true" inherits="BasicFrameTemplate" hidden="true">
+		<Size x="260" y="428"/>
+		<Anchors>
+			<Anchor point="CENTER"/>
+		</Anchors>
+		<Layers>
+			<Layer level="ARTWORK">
+				<!-- the "Pet Card" title in titlebar (not to be confused with "Title" frame that contains top portion of card -->
+				<FontString parentKey="PetCardTitle" inherits="GameFontNormal" justifyH="CENTER" justifyV="TOP">
+					<Size x="0" y="14"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="6" y="-5"/>
+						<Anchor point="TOPRIGHT" x="-6" y="-5"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+
+			<!-- lock to left of titlebar -->
+			<Button parentKey="PinButton" inherits="RematchTitlebarButtonTemplate,RematchTooltipScripts">
+				<Size x="32" y="32"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" x="-5" y="5"/>
+				</Anchors>
+				<Layers>
+					<Layer level="OVERLAY">
+						<Texture file="Interface\FrameGeneral\UI-Frame">
+							<Size x="11" y="22"/>
+							<Anchors>
+								<Anchor point="RIGHT"/>
+							</Anchors>
+							<TexCoords left="0.6640625" right="0.75" top="0.015625" bottom="0.1875"/>
+						</Texture>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnClick>
+						RematchPetCard.PinOnClick(self)
+					</OnClick>
+				</Scripts>
+			</Button>
+
+			<!-- title area of card is visible on front and back -->
+			<Frame parentKey="Title" useParentLevel="true" ignoreParentAlpha="true">
+				<Size x="248" y="48"/>
+				<Anchors>
+					<Anchor point="TOP" x="0" y="-25"/>
+				</Anchors>
+				<Layers>
+					<Layer level="BACKGROUND">
+						<!-- background to title area -->
+						<Texture parentKey="TitleBG" file="Interface\PetBattles\PetJournal" setAllPoints="true">
+							<TexCoords left="0.19140625" right="0.65625" top="0.4873046875" bottom="0.5654296875"/>
+						</Texture>
+					</Layer>
+					<Layer level="ARTWORK">
+						<!-- large name in title -->
+						<FontString parentKey="Name" inherits="SystemFont_Shadow_Med1_Outline" justifyH="CENTER" justifyV="CENTER" text="Name Of Pet">
+							<Color r="1" g=".82" b=".5"/>
+							<Size x="0" y="54"/>
+							<Anchors>
+								<Anchor point="TOPLEFT" x="48" y="2"/>
+								<Anchor point="TOPRIGHT" x="-48" y="2"/>
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+				<Frames>
+					<Button parentKey="Icon">
+						<Size x="40" y="40"/>
+						<Anchors>
+							<Anchor point="TOPLEFT" x="4" y="-4"/>
+						</Anchors>
+						<Layers>
+							<Layer level="BORDER">
+								<Texture parentKey="Texture" setAllPoints="true"/>
+							</Layer>
+							<Layer level="ARTWORK">
+								<!-- thin gold border around Icon -->
+								<Texture file="Interface\PetBattles\PetBattleHUD">
+									<Anchors>
+										<Anchor point="TOPLEFT" x="0" y="1"/>
+										<Anchor point="BOTTOMRIGHT" x="1" y="0"/>
+									</Anchors>
+									<TexCoords left="0.884765625" right="0.943359375" top="0.681640625" bottom="0.798828125"/>
+								</Texture>
+							</Layer>
+							<Layer level="OVERLAY">
+								<!-- search hit thick silver border -->
+								<Texture parentKey="SearchHit" file="Interface\Garrison\GarrLanding-TradeSkillTimerFill" hidden="true">
+									<Size x="43" y="43"/>
+									<Anchors>
+										<Anchor point="CENTER"/>
+									</Anchors>
+								</Texture>
+							</Layer>
+						</Layers>
+						<HighlightTexture file="Interface\Minimap\UI-Minimap-ZoomButton-Highlight" alphaMode="ADD">
+							<Anchors>
+								<Anchor point="TOPLEFT" x="-6" y="4"/>
+								<Anchor point="BOTTOMRIGHT" x="6" y="-8"/>
+							</Anchors>
+							<Color r="1" g="1" b="0.75"/>
+						</HighlightTexture>
+						<Scripts>
+							<OnEnter>
+								RematchPetCard.TitleButtonOnEnter(self)
+							</OnEnter>
+							<OnLeave>
+								RematchPetCard.TitleButtonOnLeave(self)
+							</OnLeave>
+						</Scripts>
+					</Button>
+					<!-- type icon in topright corner -->
+					<Button parentKey="Type">
+						<Size x="41" y="41"/>
+						<Anchors>
+							<Anchor point="TOPRIGHT" x="-4" y="-3"/>
+						</Anchors>
+						<Layers>
+							<Layer level="BORDER">
+								<!-- the icon texture itself -->
+								<Texture parentKey="Texture" file="Interface\PetBattles\PetIcon-Beast">
+									<Size x="41" y="41"/>
+									<TexCoords left="0.4921875" right="0.796875" top="0.50390625" bottom="0.65625"/>
+								</Texture>
+							</Layer>
+							<Layer level="ARTWORK">
+								<!-- thin gold border around Type (which already has one but not a matching color) -->
+								<Texture file="Interface\PetBattles\PetBattleHUD" setAllPoints="true">
+									<TexCoords left="0.884765625" right="0.943359375" top="0.681640625" bottom="0.798828125"/>
+								</Texture>
+							</Layer>
+							<Layer level="OVERLAY">
+								<!-- search hit thick silver border -->
+								<Texture parentKey="SearchHit" file="Interface\Garrison\GarrLanding-TradeSkillTimerFill" hidden="true">
+									<Size x="43" y="43"/>
+									<Anchors>
+										<Anchor point="CENTER"/>
+									</Anchors>
+								</Texture>
+							</Layer>
+						</Layers>
+						<HighlightTexture file="Interface\Minimap\UI-Minimap-ZoomButton-Highlight" alphaMode="ADD">
+							<Anchors>
+								<Anchor point="TOPLEFT" x="-6" y="4"/>
+								<Anchor point="BOTTOMRIGHT" x="6" y="-8"/>
+							</Anchors>
+							<Color r="1" g="1" b="0.75"/>
+						</HighlightTexture>
+						<Scripts>
+							<OnEnter>
+								RematchPetCard.TitleButtonOnEnter(self)
+							</OnEnter>
+							<OnLeave>
+								RematchPetCard.TitleButtonOnLeave(self)
+							</OnLeave>
+						</Scripts>
+					</Button>
+
+				</Frames>
+			</Frame> <!-- Title -->
+			
+			<!-- front is border encompassing whole card inset -->
+			<Frame parentKey="Front" ignoreParentAlpha="true">
+				<Anchors> <!-- 254 width -->
+					<Anchor point="TOPLEFT" x="2" y="-22"/>
+					<Anchor point="BOTTOMRIGHT" x="-4" y="2"/>
+				</Anchors>
+				<Backdrop edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
+					<EdgeSize val="16"/>
+					<BorderColor r="0.5" g="0.5" b="0.5"/>
+				</Backdrop>
+
+				<Frames>
+
+					<!-- bottom portion of front with abilities -->
+					<Frame parentKey="Bottom" useParentLevel="true">
+						<Size x="248" y="116"/>
+						<Anchors>
+							<Anchor point="BOTTOM" x="0" y="3"/>
+						</Anchors>
+						<Layers>
+							<Layer level="BACKGROUND">
+								<!-- background to abilities area -->
+								<Texture parentKey="AbilitiesBG" file="Interface\PetBattles\PetJournal" setAllPoints="true">
+									<TexCoords left="0.19140625" right="0.65625" top="0.4873046875" bottom="0.5654296875"/>
+								</Texture>
+							</Layer>
+							<Layer level="ARTWORK">
+								<!-- line above abilities area -->
+								<Texture file="Interface\Tooltips\UI-Tooltip-Border">
+									<Size x="0" y="5"/>
+									<Anchors>
+										<Anchor point="LEFT" relativePoint="TOPLEFT"/>
+										<Anchor point="RIGHT" relativePoint="TOPRIGHT"/>
+									</Anchors>
+									<TexCoords left="0.8125" right="0.9453125" top="0.625" bottom="0.9375"/>
+									<Color r="0.5" g="0.5" b="0.5"/>
+								</Texture>
+								<!-- This creature cannot battle text -->
+								<FontString parentKey="CantBattle" inherits="GameFontNormal" justifyH="CENTER" justifyV="CENTER" text="BATTLE_PET_CANNOT_BATTLE">
+									<Anchors>
+										<Anchor point="TOPLEFT" x="40" y="-20"/>
+										<Anchor point="BOTTOMRIGHT" x="-40" y="20"/>
+									</Anchors>
+								</FontString>
+							</Layer>
+						</Layers>
+						<Frames>
+							<Button parentArray="Abilities" inherits="RematchPetCardAbilityTemplate">
+								<Anchors>
+									<Anchor point="BOTTOMLEFT" x="7" y="75"/>
+								</Anchors>
+							</Button>
+							<Button parentArray="Abilities" inherits="RematchPetCardAbilityTemplate">
+								<Anchors>
+									<Anchor point="BOTTOMLEFT" x="7" y="41"/>
+								</Anchors>
+							</Button>
+							<Button parentArray="Abilities" inherits="RematchPetCardAbilityTemplate">
+								<Anchors>
+									<Anchor point="BOTTOMLEFT" x="7" y="7"/>
+								</Anchors>
+							</Button>
+							<Button parentArray="Abilities" inherits="RematchPetCardAbilityTemplate">
+								<Anchors>
+									<Anchor point="BOTTOMRIGHT" x="-7" y="75"/>
+								</Anchors>
+							</Button>
+							<Button parentArray="Abilities" inherits="RematchPetCardAbilityTemplate">
+								<Anchors>
+									<Anchor point="BOTTOMRIGHT" x="-7" y="41"/>
+								</Anchors>
+							</Button>
+							<Button parentArray="Abilities" inherits="RematchPetCardAbilityTemplate">
+								<Anchors>
+									<Anchor point="BOTTOMRIGHT" x="-7" y="7"/>
+								</Anchors>
+							</Button>
+						</Frames>
+					</Frame> <!-- Bottom -->
+
+					<!-- middle portion anchored to bottom so must come after -->
+					<Frame parentKey="Middle" useParentLevel="true">
+						<Size x="248" y="0"/>
+						<Anchors>
+							<Anchor point="TOP" x="0" y="-51"/> <!-- 48 (title) + 3 -->
+							<Anchor point="BOTTOM" relativeKey="$parent.Bottom" relativePoint="TOP"/>
+						</Anchors>
+						<Layers>
+							<Layer level="BACKGROUND">
+								<!-- background to middle area -->
+								<Texture parentKey="MiddleBG" file="Interface\FrameGeneral\UI-Background-Rock" horizTile="true" vertTile="true" setAllPoints="true"/>
+							</Layer>
+							<Layer level="BACKGROUND" textureSubLevel="1">
+								<Texture file="Interface\Common\ShadowOverlay-Corner" setAllPoints="true">
+									<TexCoords left="0" right="1" top="1" bottom="0"/>
+								</Texture>
+							</Layer>
+							<Layer level="BORDER">
+								<!-- shadow under pet model -->
+								<Texture file="Interface\PetBattles\PetJournal" alpha="0.85">
+									<Size x="192" y="128"/>	
+									<Anchors>
+										<Anchor point="BOTTOMRIGHT" relativePoint="TOPRIGHT" x="-3" y="-190"/>
+									</Anchors>
+									<TexCoords left="0.52734375" right="0.75" top="0.02246094" bottom="0.09277344"/>	
+								</Texture>
+								<!-- pennant texture behind level -->
+								<Texture parentKey="LevelBG" file="Interface\AchievementFrame\UI-Achievement-Guild">
+									<Size x="40" y="45"/>
+									<Anchors>
+										<Anchor point="TOPRIGHT" x="-8" y="-2"/>
+									</Anchors>
+									<TexCoords left="0.765625" right="0.890625" top="0" bottom="0.140625"/>
+								</Texture>
+								<FontString parentKey="Level" inherits="GameFontHighlight">
+									<Anchors>
+										<Anchor point="CENTER" relativeKey="$parent.LevelBG" x="1" y="-1"/>
+									</Anchors>
+								</FontString>
+								<FontString parentKey="LevelLabel" inherits="GameFontHighlightSmall" text="LEVEL">
+									<Anchors>
+										<Anchor point="BOTTOM" relativeKey="$parent.Level" relativePoint="TOP" x="0" y="1"/>
+									</Anchors>
+								</FontString>
+								<FontString parentKey="AltFlipHelp" inherits="GameFontNormalSmall" justifyH="LEFT">
+									<Size x="232" y="0"/>
+									<Color r="0.75" g="0.75" b="0.75"/>
+								</FontString>
+								<FontString parentKey="Collected" inherits="GameFontNormal" justifyH="LEFT">
+									<Size x="232" y="0"/>
+								</FontString>
+								<FontString parentKey="PossibleBreeds" inherits="GameFontNormal" justifyH="LEFT">
+									<Size x="232" y="0"/>
+								</FontString>
+								<Texture parentKey="PossibleBreedsHighlight" file="Interface\Buttons\UI-Common-MouseHilight" alphaMode="ADD" alpha="0.35" hidden="true">
+									<Anchors>
+										<Anchor point="TOPLEFT" relativeKey="$parent.PossibleBreeds" x="-2" y="2"/>
+										<Anchor point="BOTTOMRIGHT" relativeKey="$parent.PossibleBreeds" x="2" y="-2"/>
+									</Anchors>
+									<TexCoords left="0.25" right="0.75" top="0.25" bottom="0.75"/>
+								</Texture>
+								<FontString parentKey="RealName" inherits="GameFontNormal" text="Real Name of Pet" justifyH="LEFT" justifyV="CENTER">
+									<Size x="194" y="0"/>
+									<Anchors>
+										<Anchor point="TOPLEFT" x="8" y="-8"/>
+									</Anchors>
+								</FontString>
+							</Layer>
+							<Layer level="ARTWORK">
+								<!-- line below title area -->
+								<Texture file="Interface\Tooltips\UI-Tooltip-Border">
+									<Size x="0" y="5"/>
+									<Anchors>
+										<Anchor point="LEFT" relativePoint="TOPLEFT"/>
+										<Anchor point="RIGHT" relativePoint="TOPRIGHT"/>
+									</Anchors>
+									<TexCoords left="0.8125" right="0.9453125" top="0.625" bottom="0.9375"/>
+									<Color r="0.5" g="0.5" b="0.5"/>
+								</Texture>
+							</Layer>
+						</Layers>
+						<Frames>
+							<!-- statButtons are created here on demand -->
+
+							<!-- frame to capture mouse being over PossibleBreeds for OnEnter/OnLeave -->
+							<Frame parentKey="PossibleBreedsCapture">
+								<Anchors>
+									<Anchor point="TOPLEFT" relativeKey="$parent.PossibleBreeds" x="-2" y="16"/>
+									<Anchor point="BOTTOMRIGHT" relativeKey="$parent.PossibleBreeds" x="2" y="-4"/>
+								</Anchors>
+								<Scripts>
+									<OnEnter>
+										RematchPetCard.PossibleBreedsOnEnter(self)
+									</OnEnter>
+									<OnLeave>
+										RematchPetCard.PossibleBreedsOnLeave(self)
+									</OnLeave>
+								</Scripts>
+							</Frame>
+
+							<!-- xp bar along bottom of card -->
+							<StatusBar parentKey="XP" inherits="RematchStatusBarTemplate">
+								<Size x="232" y="6"/>
+								<Anchors>
+									<Anchor point="BOTTOM" x="0" y="6"/>
+								</Anchors>
+								<Layers>
+									<Layer level="OVERLAY">
+										<FontString parentKey="Text" inherits="GameFontHighlightSmall" text="XP: 951/1020">
+											<Anchors>
+												<Anchor point="CENTER"/>
+											</Anchors>
+										</FontString>
+									</Layer>
+								</Layers>
+							</StatusBar>
+
+							<!-- breed table that appears when mouseover PossibleBreeds -->
+							<Frame parentKey="BreedTable" hidden="true">
+								<Size x="184" y="180"/>
+								<Anchors>
+									<Anchor point="BOTTOMRIGHT" relativeKey="$parent.PossibleBreeds" relativePoint="TOPRIGHT" x="12" y="0"/>
+								</Anchors>
+								<Backdrop edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
+									<EdgeSize val="16"/>
+									<BorderColor r="0.5" g="0.5" b="0.5"/>
+								</Backdrop>
+								<Layers>
+									<Layer level="BACKGROUND" textureSubLevel="-1">
+										<Texture>
+											<Anchors>
+												<Anchor point="TOPLEFT" x="3" y="-3"/>
+												<Anchor point="BOTTOMRIGHT" x="-3" y="3"/>
+											</Anchors>
+											<Color r=".2" g=".2" b=".2"/>
+										</Texture>
+									</Layer>
+									<Layer level="BACKGROUND">
+										<Texture parentKey="Shadow" file="Interface\Common\ShadowOverlay-Corner">
+											<Anchors>
+												<Anchor point="TOPLEFT" x="3" y="-3"/>
+												<Anchor point="BOTTOMRIGHT" x="-3" y="3"/>
+											</Anchors>
+											<TexCoords left="0" right="1" top="0" bottom="1"/>
+										</Texture>
+									</Layer>
+									<Layer level="BORDER">
+										<!-- the highlight to appear behind the breed of the viewed pet -->
+										<Texture parentKey="Highlight" file="Interface\Buttons\UI-Common-MouseHilight" alphaMode="ADD" alpha="0.35">
+											<Size x="164" y="16"/>
+											<TexCoords left="0.25" right="0.75" top="0.25" bottom="0.75"/>
+										</Texture>
+									</Layer>
+									<Layer level="ARTWORK">
+										<!-- across top "Breed Stats at 25 Rare" -->
+										<FontString parentKey="Title" inherits="GameFontNormal" justifyH="CENTER">
+											<Anchors>
+												<Anchor point="TOP" x="0" y="-8"/>
+											</Anchors>
+										</FontString>
+										<!-- across bottom "All breed data pulled from Battle Pet BreedID". -->
+										<FontString parentKey="Footnote" inherits="GameFontNormalSmall" justifyH="CENTER">
+											<Size x="160" y="0"/>
+											<Anchors>
+												<Anchor point="BOTTOM" x="0" y="8"/>
+											</Anchors>
+											<Color r="0.65" g="0.65" b="0.65"/>
+										</FontString>
+										<!-- line above footer -->
+										<Texture inherits="_UI-Frame-InnerTopTile">
+											<Size x="164" y="3"/>
+											<Anchors>
+												<Anchor point="BOTTOM" relativeKey="$parent.Footnote" relativePoint="TOP" x="0" y="2"/>
+											</Anchors>
+										</Texture>
+
+										<!-- breed header -->
+										<Texture file="Interface\AchievementFrame\UI-Achievement-Progressive-Shield">
+											<Size x="16" y="16"/>
+											<Anchors>
+												<Anchor point="TOPLEFT" x="21" y="-26"/>
+											</Anchors>
+											<TexCoords left="0.09375" right="0.578125" top="0.140625" bottom="0.625"/>
+										</Texture>
+										<!-- health header -->
+										<Texture file="Interface\PetBattles\PetBattle-StatIcons">
+											<Size x="16" y="16"/>
+											<Anchors>
+												<Anchor point="TOPLEFT" x="63" y="-26"/>
+											</Anchors>
+											<TexCoords left="0.5" right="1.0" top="0.5" bottom="1.0"/>
+										</Texture>
+										<!-- power header -->
+										<Texture file="Interface\PetBattles\PetBattle-StatIcons">
+											<Size x="16" y="16"/>
+											<Anchors>
+												<Anchor point="TOPLEFT" x="105" y="-26"/>
+											</Anchors>
+											<TexCoords left="0" right="0.5" top="0" bottom="0.5"/>
+										</Texture>
+										<!-- speed header -->
+										<Texture file="Interface\PetBattles\PetBattle-StatIcons">
+											<Size x="16" y="16"/>
+											<Anchors>
+												<Anchor point="TOPLEFT" x="147" y="-26"/>
+											</Anchors>
+											<TexCoords left="0" right="0.5" top="0.5" bottom="1.0"/>
+										</Texture>
+										<!-- line beneath headers -->
+										<Texture inherits="_UI-Frame-InnerTopTile">
+											<Size x="164" y="3"/>
+											<Anchors>
+												<Anchor point="TOP" x="0" y="-44"/>
+											</Anchors>
+										</Texture>
+
+										<FontString parentKey="NoBreeds" inherits="GameFontNormal" justifyH="CENTER" justifyV="CENTER">
+											<Size x="164" y="32"/>
+											<Anchors>
+												<Anchor point="TOPLEFT" x="8" y="-50"/>
+											</Anchors>
+										</FontString>
+
+									</Layer>
+								</Layers>
+
+							</Frame>
+
+
+							<!-- the model for the pet on the front of the card -->
+                     <!-- BfA beta: removed collections mixin: mixin doesn't exist before journal loads -->
+							<ModelScene parentKey="ModelScene" useParentLevel="true" inherits="ModelSceneMixinTemplate">
+								<KeyValues>
+									<KeyValue key="normalIntensity" value="0.75" type="number"/>
+									<KeyValue key="highlightIntensity" value="1.2" type="number"/>
+								</KeyValues>
+
+								<Size x="168" y="172"/>
+								<Anchors>
+									<Anchor point="TOPRIGHT" x="-3" y="-3"/>
+								</Anchors>
+
+                        <!-- BfA beta: removed script handlers relating to collections mixing -->
+								<Animations>
+									<AnimationGroup parentKey="UnwrapAnim" setToFinalAlpha="true">
+										<Alpha parentKey="WrappedAnim" startDelay="1.2" fromAlpha="1" toAlpha="0" duration=".3" order="1"/>
+										<Alpha parentKey="UnwrappedAnim" startDelay="1.2" fromAlpha="0" toAlpha="1" duration=".3" order="1"/>
+									</AnimationGroup>
+								</Animations>
+							</ModelScene>
+
+							<!-- separate leveling model since SetModel() and SetDisplayInfo() can't co-exist -->
+							<PlayerModel parentKey="LevelingModel">
+								<Size x="168" y="172"/>
+								<Anchors>
+									<Anchor point="TOPRIGHT" x="-3" y="-3"/>
+								</Anchors>
+								<Scripts>
+									<OnShow>
+										-- old style models require a little more maintenance
+										self:SetCamDistanceScale(0.45)
+										self:SetPosition(0,0,0.25)
+										self:SetModel("Interface\\Buttons\\talktomequestion_ltblue.m2")
+									</OnShow>
+								</Scripts>
+							</PlayerModel>
+
+						</Frames>
+
+					</Frame> <!-- Middle -->
+				</Frames>
+			</Frame> <!-- Front -->
+
+			<!-- back of card -->
+			<Frame parentKey="Back" ignoreParentAlpha="true">
+				<Anchors> <!-- 254 width -->
+					<Anchor point="TOPLEFT" x="2" y="-22"/>
+					<Anchor point="BOTTOMRIGHT" x="-4" y="2"/>
+				</Anchors>
+				<Backdrop edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
+					<EdgeSize val="16"/>
+					<BorderColor r="0.5" g="0.5" b="0.5"/>
+				</Backdrop>
+				<Frames>
+					<Frame parentKey="Source" useParentLevel="true">
+						<Size x="248" y="80"/>
+						<Anchors>
+							<Anchor point="TOP" x="0" y="-51"/> <!-- 48 (title) + 3 -->
+						</Anchors>
+						<Layers>
+							<Layer level="BACKGROUND">
+								<Texture file="Interface\FrameGeneral\UI-Background-Rock" horizTile="true" vertTile="true" setAllPoints="true"/>
+							</Layer>
+							<Layer level="BACKGROUND" textureSubLevel="1">
+								<Texture file="Interface\Common\ShadowOverlay-Corner" setAllPoints="true">
+									<TexCoords left="0" right="1" top="1" bottom="0"/>
+								</Texture>
+							</Layer>
+							<Layer level="ARTWORK">
+								<!-- line below title area -->
+								<Texture file="Interface\Tooltips\UI-Tooltip-Border">
+									<Size x="0" y="5"/>
+									<Anchors>
+										<Anchor point="LEFT" relativePoint="TOPLEFT"/>
+										<Anchor point="RIGHT" relativePoint="TOPRIGHT"/>
+									</Anchors>
+									<TexCoords left="0.8125" right="0.9453125" top="0.625" bottom="0.9375"/>
+									<Color r="0.5" g="0.5" b="0.5"/>
+								</Texture>
+								<!-- the actual source text -->
+								<FontString parentKey="Text" inherits="GameFontHighlight" justifyH="LEFT">
+									<Size x="232" y="0"/>
+									<Anchors>
+										<Anchor point="CENTER"/>
+									</Anchors>
+								</FontString>
+							</Layer>
+						</Layers>
+					</Frame> <!-- Source -->
+					<Frame parentKey="Bottom" useParentLevel="true">
+						<Size x="248" y="140"/>
+						<Anchors>
+							<Anchor point="BOTTOM" x="0" y="3"/>
+						</Anchors>
+						<Layers>
+							<Layer level="BACKGROUND">
+								<!-- background to abilities area -->
+								<Texture parentKey="BottomBG" file="Interface\PetBattles\PetJournal" setAllPoints="true">
+									<TexCoords left="0.19140625" right="0.65625" top="0.4873046875" bottom="0.5654296875"/>
+								</Texture>
+							</Layer>
+							<Layer level="ARTWORK">
+								<!-- line above bottom area -->
+								<Texture file="Interface\Tooltips\UI-Tooltip-Border">
+									<Size x="0" y="5"/>
+									<Anchors>
+										<Anchor point="LEFT" relativePoint="TOPLEFT"/>
+										<Anchor point="RIGHT" relativePoint="TOPRIGHT"/>
+									</Anchors>
+									<TexCoords left="0.8125" right="0.9453125" top="0.625" bottom="0.9375"/>
+									<Color r="0.5" g="0.5" b="0.5"/>
+								</Texture>
+								<FontString parentKey="DamageTaken" inherits="GameFontNormal" justifyH="CENTER">
+									<Anchors>
+										<Anchor point="RIGHT" relativePoint="BOTTOMLEFT" x="68" y="32"/>
+									</Anchors>
+									<Color r="1" g="0.82" b="0.5"/>
+								</FontString>
+								<!-- Damage taken: Strong from X -->
+								<Texture parentKey="StrongBadge" file="Interface\PetBattles\BattleBar-AbilityBadge-Strong">
+									<Size x="30" y="30"/>
+									<Anchors>
+										<Anchor point="BOTTOMLEFT" relativeKey="$parent.DamageTaken" relativePoint="RIGHT" x="8" y="-1"/>
+									</Anchors>
+								</Texture>
+								<FontString parentKey="StrongFrom" inherits="GameFontNormal">
+									<Anchors>
+										<Anchor point="LEFT" relativeKey="$parent.StrongBadge" relativePoint="RIGHT" x="2" y="0"/>
+									</Anchors>
+									<Color r="1" g="0.82" b="0.5"/>
+								</FontString>
+								<Texture parentKey="StrongType" file="Interface\PetBattles\PetIcon-Beast">
+									<Size x="26" y="26"/>
+									<Anchors>
+										<Anchor point="LEFT" relativeKey="$parent.StrongFrom" relativePoint="RIGHT" x="4" y="0"/>
+									</Anchors>
+									<TexCoords left="0.4921875" right="0.796875" top="0.50390625" bottom="0.65625"/>
+								</Texture>
+								<FontString parentKey="StrongAbilities" inherits="GameFontNormal">
+									<Anchors>
+										<Anchor point="LEFT" relativeKey="$parent.StrongType" relativePoint="RIGHT" x="4" y="0"/>
+									</Anchors>
+									<Color r="1" g="0.82" b="0.5"/>
+								</FontString>
+								<!-- red down arrow -->
+								<Texture parentKey="WeakBadge" file="Interface\PetBattles\BattleBar-AbilityBadge-Weak">
+									<Size x="30" y="30"/>
+									<Anchors>
+										<Anchor point="TOPLEFT" relativeKey="$parent.DamageTaken" relativePoint="RIGHT" x="8" y="1"/>
+									</Anchors>
+								</Texture>
+								<FontString parentKey="WeakFrom" inherits="GameFontNormal">
+									<Anchors>
+										<Anchor point="LEFT" relativeKey="$parent.WeakBadge" relativePoint="RIGHT" x="2" y="0"/>
+									</Anchors>
+									<Color r="1" g="0.82" b="0.5"/>
+								</FontString>
+								<Texture parentKey="WeakType" file="Interface\PetBattles\PetIcon-Beast">
+									<Size x="26" y="26"/>
+									<Anchors>
+										<Anchor point="LEFT" relativeKey="$parent.WeakFrom" relativePoint="RIGHT" x="4" y="0"/>
+									</Anchors>
+									<TexCoords left="0.4921875" right="0.796875" top="0.50390625" bottom="0.65625"/>
+								</Texture>
+								<FontString parentKey="WeakAbilities" inherits="GameFontNormal">
+									<Anchors>
+										<Anchor point="LEFT" relativeKey="$parent.WeakType" relativePoint="RIGHT" x="4" y="0"/>
+									</Anchors>
+									<Color r="1" g="0.82" b="0.5"/>
+								</FontString>
+
+								<FontString parentKey="Racial" inherits="GameFontNormal" justifyH="LEFT">
+									<Size x="232" y="0"/>
+									<Anchors>
+										<Anchor point="BOTTOM" x="0" y="66"/>
+									</Anchors>
+								</FontString>
+
+								<FontString parentKey="TypeName" inherits="GameFontHighlight" text="Dragonkin">
+									<Anchors>
+										<Anchor point="BOTTOM" relativeKey="$parent.Racial" relativePoint="TOP" x="15" y="12"/>
+									</Anchors>
+								</FontString>
+								<Texture parentKey="TypeIcon" file="Interface\PetBattles\PetIcon-Beast">
+									<Size x="26" y="26"/>
+									<Anchors>
+										<Anchor point="RIGHT" relativeKey="$parent.TypeName" relativePoint="LEFT" x="-2" y="0"/>
+									</Anchors>
+									<TexCoords left="0.4921875" right="0.796875" top="0.50390625" bottom="0.65625"/>
+								</Texture>
+								<!-- curly doodad to right of TypeName -->
+								<Texture file="Interface\PetBattles\PetJournal">
+									<Size x="48" y="20"/>
+									<Anchors>
+										<Anchor point="LEFT" relativeKey="$parent.TypeName" relativePoint="RIGHT" x="4" y="0"/>
+									</Anchors>
+									<TexCoords left="0.296875" right="0.396484375" top="0.3115234375" bottom="0.333984375"/>
+								</Texture>
+								<!-- curly doodad to left of TypeName -->
+								<Texture file="Interface\PetBattles\PetJournal">
+									<Size x="48" y="20"/>
+									<Anchors>
+										<Anchor point="RIGHT" relativeKey="$parent.TypeIcon" relativePoint="LEFT" x="-4" y="0"/>
+									</Anchors>
+									<TexCoords left="0.396484375" right="0.296875" top="0.3115234375" bottom="0.333984375"/>
+								</Texture>
+							</Layer>
+						</Layers>
+					</Frame> <!-- Bottom -->
+					<!-- Middle part of back is where lore "description" text goes -->
+					<Frame parentKey="Middle" useParentLevel="true">
+						<Size x="248" y="0"/>
+						<Anchors>
+							<Anchor point="TOP" relativeKey="$parent.Source" relativePoint="BOTTOM"/>
+							<Anchor point="BOTTOM" relativeKey="$parent.Bottom" relativePoint="TOP"/>
+						</Anchors>
+						<Layers>
+							<Layer level="BACKGROUND">
+								<!-- loreBG background to lore -->
+								<Texture parentKey="LoreBG" file="Interface\Store\receipt-parchment-middle" setAllPoints="true">
+									<TexCoords left="0" right="0.734375" top="0" bottom="1"/>
+									<Color r="0.85" g="0.85" b="0.85"/>
+								</Texture>
+							</Layer>
+							<Layer level="BACKGROUND" textureSubLevel="1">
+								<!-- shadow for loreBG -->
+								<Texture parentKey="Shadow" file="Interface\AddOns\Rematch\Textures\unshadow" setAllPoints="true">
+									<TexCoords left="0" right="1" top="1" bottom="0"/>
+									<Color r="0.1" g="0" b="0"/>
+								</Texture>
+							</Layer>
+							<Layer level="BORDER">
+								<!-- topleft doodad -->
+								<Texture file="Interface\Collections\Collections">
+									<Size x="32" y="28"/>
+									<Anchors>
+										<Anchor point="TOPLEFT"/>
+									</Anchors>
+									<TexCoords left="0.00390625" right="0.169921875" top="0.015625" bottom="0.138671875"/>
+									<Color r="0.75" g="0.75" b="0.75"/>
+								</Texture>
+								<!-- topright doodad -->
+								<Texture file="Interface\Collections\Collections">
+									<Size x="32" y="28"/>
+									<Anchors>
+										<Anchor point="TOPRIGHT"/>
+									</Anchors>
+									<TexCoords left="0.169921875" right="0.00390625" top="0.015625" bottom="0.138671875"/>
+									<Color r="0.75" g="0.75" b="0.75"/>
+								</Texture>
+								<!-- bottomright doodad -->
+								<Texture file="Interface\Collections\Collections">
+									<Size x="32" y="28"/>
+									<Anchors>
+										<Anchor point="BOTTOMRIGHT"/>
+									</Anchors>
+									<TexCoords left="0.169921875" right="0.00390625" top="0.138671875" bottom="0.015625"/>
+									<Color r="0.75" g="0.75" b="0.75"/>
+								</Texture>
+								<!-- bottomleft doodad -->
+								<Texture file="Interface\Collections\Collections">
+									<Size x="32" y="28"/>
+									<Anchors>
+										<Anchor point="BOTTOMLEFT"/>
+									</Anchors>
+									<TexCoords left="0.00390625" right="0.169921875" top="0.138671875" bottom="0.015625"/>
+									<Color r="0.75" g="0.75" b="0.75"/>
+								</Texture>
+							</Layer>
+
+								<!-- background to middle area -->
+<!--								<Texture parentKey="LoreBG" file="Interface\Archeology\Arch-BookCompletedLeft" setAllPoints="true">
+									<Color r=".85" g=".85" b=".85"/>
+									<TexCoords left="0.140625" right="1" top="0" bottom="0.9648375"/>
+								</Texture> -->
+							<Layer level="ARTWORK">
+								<!-- line above middle area (below source) -->
+								<Texture file="Interface\Tooltips\UI-Tooltip-Border">
+									<Size x="0" y="5"/>
+									<Anchors>
+										<Anchor point="LEFT" relativePoint="TOPLEFT"/>
+										<Anchor point="RIGHT" relativePoint="TOPRIGHT"/>
+									</Anchors>
+									<TexCoords left="0.8125" right="0.9453125" top="0.625" bottom="0.9375"/>
+									<Color r="0.5" g="0.5" b="0.5"/>
+								</Texture>
+								<!-- actual lore text -->
+								<FontString parentKey="Lore" inherits="RematchLoreFont" justifyH="CENTER" justifyV="CENTER">
+									<Anchors>
+										<Anchor point="TOPLEFT" x="14" y="-4"/>
+										<Anchor point="BOTTOMRIGHT" x="-18" y="4"/>
+									</Anchors>
+								</FontString>
+							</Layer>
+						</Layers>
+					</Frame> <!-- Middle -->
+				</Frames>
+			</Frame> <!-- Back -->
+
+		</Frames>
+		<Scripts>
+			<OnShow>
+				RematchPetCard.OnShow(self)
+			</OnShow>
+			<OnHide>
+				RematchPetCard.OnHide(self)
+			</OnHide>
+			<OnMouseDown>
+				RematchPetCard.OnMouseDown(self,button)
+			</OnMouseDown>
+			<OnMouseUp>
+				RematchPetCard.OnMouseUp(self,button)
+			</OnMouseUp>
+			<OnEvent>
+				RematchPetCard:FlipCardIfAltDown()
+			</OnEvent>
+			<OnKeyDown>
+				RematchPetCard.OnKeyDown(self,key)
+			</OnKeyDown>
+		</Scripts>
+	</Frame> <!-- RematchPetCard -->
+
+</Ui>

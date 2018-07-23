@@ -1,0 +1,5 @@
+## Interface: 60200
+## Title: FlyPaper
+## Notes: Library for sticking frames together
+## LoadOnDemand: 1
+FlyPaper.lua

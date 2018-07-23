@@ -1,0 +1,36 @@
+## Interface: 80000
+##
+# Title: Broker [RaidSave]
+## Version:  2.1.2-beta
+## Notes: 监控账号下各个角色的团队副本进度。
+## Author: torhal
+## X-Email: zhinjio@gmail.com
+## X-Category: Raid
+##
+## X-Date: 2011-10-12T08:59:40Z
+## X-WoWI-ID: 11237
+##
+# LoadManagers: AddonLoader
+# X-LoadOn-Always: Delayed
+##
+## SavedVariables: Broker_RaidSaveConfig
+##
+## OptionalDeps: Ace3, LibAbacus-3.0, LibQTip-1.0
+## X-Curse-Packaged-Version: 2.1.2-beta
+## X-Curse-Project-Name: Broker_RaidSave
+## X-Curse-Project-ID: broker_raidsave
+## X-Curse-Repository-ID: wow/broker_raidsave/mainline
+
+embeds.xml
+
+# Localizations...
+Locales\enUS.lua
+Locales\zhTW.lua
+Locales\zhCN.lua
+
+Broker_RaidSave.lua
+
+
+## Title: |cff880303[有爱]|r Broker 团本进度
+## Notes-zhCN: 监控账号下各个角色的团队副本进度。
+## X-Vendor: AbyUI

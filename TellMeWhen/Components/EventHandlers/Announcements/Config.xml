@@ -1,0 +1,258 @@
+﻿<Ui>
+ 
+ 
+	<Frame parentKey="Announcements" name="$parentAnnouncements" inherits="TellMeWhen_EventContainer">
+		<Frames>
+			<EditBox parentKey="EditBox" name="$parentEditBox" inherits="TellMeWhen_InputBoxTemplate" multiline="true" autoFocus="false">
+				<Size y="20"/>
+
+				<Anchors>
+					<Anchor point="TOPLEFT" x="5"/>
+					<Anchor point="RIGHT" x="-20"/>
+				</Anchors>
+
+				<Layers>
+					<Layer level="OVERLAY">
+						<FontString parentKey="Header" name="$parentHeader" inherits="GameFontNormalLarge" justifyH="LEFT" text="">
+							<Anchors>
+								<Anchor point="BOTTOM" relativePoint="TOP" y="1"/>
+							</Anchors>
+						</FontString>
+						<FontString parentKey="Error" name="$parentError" inherits="GameFontRed" justifyH="LEFT" >
+							<Anchors>
+								<Anchor point="TOPLEFT" relativeTo="$parent" relativePoint="BOTTOMLEFT" x="0" y="-2"/>
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+				
+				<Scripts>
+					<OnLoad>
+						TMW:CInit(self, "Config_EditBox_DogTags")
+
+						self:SetLabel("|cFFFF5050" .. TMW.L["ANN_EDITBOX_WARN"], nil)
+						self:SetTexts(TMW.L["ANN_EDITBOX"], TMW.L["ANN_EDITBOX_DESC"])
+						self:SetSetting("Text")
+						self:EnableLinkInsertion()
+						
+						self.Header:SetText(TMW.L["ANN_EDITBOX"])
+						self.Error:SetWidth(self:GetWidth() - 27)
+
+					</OnLoad>
+				</Scripts>
+			</EditBox>
+			
+			
+			<Frame parentKey="SubHandlerList" name="$parentSubHandlerList">
+				<Size x="150" y="10"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentEditBoxError" relativePoint="BOTTOMLEFT" x="-5" y="-25"/>
+					<Anchor point="BOTTOM" y="-0"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						TMW:ConvertContainerToScrollFrame(self, true, nil, 8)
+					</OnLoad>
+				</Scripts>
+			</Frame>
+
+			<Frame parentKey="ConfigFrames" name="$parentConfigFrames">
+				<KeyValues>
+					<KeyValue key="tmwClass" type="string" value="Events_ColumnConfigContainer"/>
+				</KeyValues>
+
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentSubHandlerListScrollFrame" relativePoint="TOPRIGHT" x="5" y="0"/>
+					<Anchor point="BOTTOMRIGHT" x="-0" y="0"/>
+				</Anchors>
+				<Frames>
+					<Frame parentKey="Location" name="$parentLocation" inherits="TMW_DropDownMenuTemplate">
+						<Anchors>
+							<Anchor point="LEFT" x="13" />
+							<Anchor point="RIGHT" x="-17" />
+						</Anchors>
+
+						<Scripts>
+							<OnLoad>
+								TMW:CInit(self)
+
+								local Announcements = TMW.EVENTS:GetEventHandler("Announcements")
+
+								self:SetTexts(TMW.L["ANN_SUB_CHANNEL"], nil)
+								self:SetLabel(TMW.L["ANN_SUB_CHANNEL"])
+								self:SetFunction(Announcements.Location_DropDown)
+								self.paddingTop, self.paddingBottom = 14, 4
+
+
+								self:CScriptAdd("ReloadRequested", function()
+									local settings = self:GetSettingTable()
+									if not settings then
+										return
+									end
+
+									local channelData = Announcements.currentSubHandlerData
+
+									if not channelData or not self:IsShown() then
+										return
+									end
+
+									local defaultlocation = TMW.get(channelData.defaultlocation)
+									local location = settings.Location
+									
+									location = location and location ~= "" and location or defaultlocation
+									location = channelData.ddtext(location) and location or defaultlocation
+									
+
+									if settings.Location ~= location then
+										settings.Location = location
+										self:OnSettingSaved()
+									end
+									
+									self.selectedValue = location
+									self:SetText(channelData.ddtext(location))
+								end)
+
+							</OnLoad>
+						</Scripts>
+					</Frame>
+
+					<EditBox parentKey="WhisperTarget" name="$parentWhisperTarget" inherits="TellMeWhen_InputBoxTemplate" autoFocus="false">
+						<Size x="135" y="15"/>
+						<Anchors>
+							<Anchor point="LEFT" x="30"/>
+						</Anchors>
+						<Layers>
+							<Layer level="OVERLAY">
+								<FontString parentKey="Header" name="$parentHeader" inherits="GameFontNormal" justifyH="LEFT" text="">
+									<Anchors>
+										<Anchor point="BOTTOM" relativePoint="TOP" y="1"/>
+									</Anchors>
+								</FontString>
+							</Layer>
+						</Layers>
+						<Scripts>
+							<OnLoad>
+								TMW:CInit(self, "Config_EditBox_DogTags")
+
+								self:SetTexts(TMW.L["ANN_WHISPERTARGET"], TMW.L["ANN_WHISPERTARGET_DESC"])
+								self:SetSetting("Location")
+								self.paddingTop, self.paddingBottom = 14, 4
+
+								self.Header:SetText(TMW.L["ANN_WHISPERTARGET"])
+								TMW.SUG:EnableEditBox(self, "dogtags")
+							</OnLoad>
+						</Scripts>
+					</EditBox>
+
+					<CheckButton parentKey="Sticky" name="$parentSticky" inherits="TellMeWhen_EventHandler_ColumnConfig_CheckTemplate">
+						<Size x="30" y="30"/>
+						<Scripts>
+							<OnLoad>
+								TMW:CInit(self)
+
+								self:SetTexts(TMW.L["ANN_STICKY"], nil)
+								self:SetSetting("Sticky")
+							</OnLoad>
+						</Scripts>
+					</CheckButton>
+
+					<CheckButton parentKey="ShowIconTex" name="$parentShowIconTex" inherits="TellMeWhen_EventHandler_ColumnConfig_CheckTemplate">
+						<Size x="30" y="30"/>
+						<Scripts>
+							<OnLoad>
+								TMW:CInit(self)
+
+								self:SetTexts(TMW.L["ANN_SHOWICON"], TMW.L["ANN_SHOWICON_DESC"])
+								self:SetSetting("ShowIconTex")
+							</OnLoad>
+						</Scripts>
+					</CheckButton>
+
+					<Button parentKey="Color" name="$parentColor" inherits="TellMeWhen_ColorButtonTemplate">
+						<Anchors>
+							<Anchor point="LEFT" x="15" />
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								TMW:CInit(self)
+
+								self:SetTexts(TMW.L["FONTCOLOR"], nil)
+								self:SetHasOpacity(false)
+								self:SetSetting("TextColor")
+
+								self.paddingTop, self.paddingBottom = 4, 4
+							</OnLoad>
+						</Scripts>
+					</Button>
+
+					<Slider parentKey="Size" name="$parentSize" inherits="TellMeWhen_EventHandler_ColumnConfig_SliderTemplate" valuestep="1">
+						<Anchors>
+							<Anchor point="LEFT" x="10" />
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								TMW:CInit(self)
+
+								self:SetTexts(TMW.L["FONTSIZE"], nil)
+								self:SetSetting("Size")
+								
+								self:SetMinMaxValues(0, 38)
+
+								local formatter = TMW.C.Formatter:New(function(value)
+									return value == 0 and TMW.L["DEFAULT"] or value
+								end)
+								self:SetTextFormatter(formatter, formatter)
+
+								self:UseLightColor()
+							</OnLoad>
+						</Scripts>
+					</Slider>
+
+					<Slider parentKey="TextDuration" name="$parentTextDuration" inherits="TellMeWhen_EventHandler_ColumnConfig_SliderTemplate" minvalue="0" valuestep="0.5">
+						<Anchors>
+							<Anchor point="LEFT" x="10" />
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								TMW:CInit(self)
+
+								self:SetTexts(TMW.L["DURATION"], nil)
+								self:SetSetting("TextDuration")
+								
+								self:SetTextFormatter(TMW.C.Formatter.S_SECONDS, TMW.C.Formatter.F_1)
+								self:SetMode(self.MODE_ADJUSTING)
+								self:SetMinMaxValues(0, math.huge)
+								self:SetRange(10)
+
+								self:UseLightColor()
+							</OnLoad>
+						</Scripts>
+					</Slider>
+				</Frames>
+				<Scripts>
+					<OnLoad>
+						TMW:CInit(self)
+					</OnLoad>
+				</Scripts>
+			</Frame>
+		</Frames>
+
+		<Layers>
+			<Layer level="OVERLAY">
+				<FontString parentKey="SubHandlerListHeader" name="$parentSubHandlerListHeader" inherits="GameFontNormalLarge" justifyH="LEFT" >
+					<Anchors>
+						<Anchor point="BOTTOM" relativeTo="$parentSubHandlerListScrollFrame" relativePoint="TOP" y="1"/>
+					</Anchors>
+				</FontString>
+				
+				<FontString parentKey="SettingsHeader" name="$parentSettingsHeader" inherits="GameFontNormalLarge" justifyH="CENTER" text="">
+					<Anchors>
+						<Anchor point="BOTTOM" relativeTo="$parentSubHandlerListScrollFrame" relativePoint="TOP" />
+						<Anchor point="LEFT" relativeTo="$parentConfigFrames"/>
+						<Anchor point="RIGHT" relativeTo="$parentConfigFrames"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+	</Frame>
+</Ui>

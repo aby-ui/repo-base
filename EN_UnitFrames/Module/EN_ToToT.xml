@@ -1,0 +1,176 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+C:\Projects\WoW\Bin\Interface\FrameXML\UI.xsd">
+	<!-- TargetTargetTarget -->
+	<Script file="EN_ToToT.lua"/>
+    <Button name="EN_TargetTargetTarget" toplevel="true" movable="true" inherits="SecureUnitButtonTemplate" parent="TargetFrameToT">
+        <Size>
+            <AbsDimension x="93" y="45"/>
+        </Size>
+        <Anchors>
+            <Anchor point="TOP" relativePoint="BOTTOM">
+                <Offset>
+                    <AbsDimension x="74" y="0"/>
+                </Offset>
+            </Anchor>
+        </Anchors>
+        <Layers>
+            <Layer level="BACKGROUND">
+                <Texture name="EN_TargetTargetTargetBackground">
+                    <Size>
+                        <AbsDimension x="46" y="15"/>
+                    </Size>
+                    <Anchors>
+                        <Anchor point="BOTTOMLEFT">    
+                            <Offset>
+                                <AbsDimension x="42" y="13"/>
+                            </Offset>
+                        </Anchor>
+                    </Anchors>
+                    <Color r="0" g="0" b="0" a="0.5"/>
+                </Texture>
+            </Layer>
+            <Layer level="BORDER">
+                <Texture name="EN_TargetTargetTargetPortrait">
+                    <Size>
+                        <AbsDimension x="35" y="35"/>
+                    </Size>
+                    <Anchors>
+                        <Anchor point="TOPLEFT">
+                            <Offset>
+                                <AbsDimension x="5" y="-5"/>
+                            </Offset>
+                        </Anchor>
+                    </Anchors>
+                </Texture>
+            </Layer>
+        </Layers>
+        <Frames>
+            <Frame setAllPoints="true">
+                    <Layers>
+                            <Layer level="BORDER">
+                                <Texture name="EN_TargetTargetTargetTexture" file="Interface\TargetingFrame\UI-TargetofTargetFrame">
+                                    <TexCoords left="0.015625" right="0.7265625" top="0" bottom="0.703125"/>
+                                </Texture>
+                                <FontString name="EN_TargetTargetTargetName" inherits="GameFontNormalSmall" justifyH="LEFT">
+                                    <Size>
+                                        <AbsDimension x="100" y="10"/>
+                                    </Size>
+                                    <Anchors>
+                                        <Anchor point="BOTTOMLEFT">
+                                            <Offset>
+                                                <AbsDimension x="42" y="2"/>
+                                            </Offset>
+                                        </Anchor>
+                                    </Anchors>
+                                </FontString>
+								 <FontString name="EN_TargetTargetTargetHPText" inherits="GameFontNormalSmall">
+                                    <Anchors>
+                                            <Anchor point="CENTER">
+                                                <Offset>
+                                                    <AbsDimension x="20" y="1"/>
+                                                </Offset>
+                                            </Anchor>
+                                    </Anchors>
+									<Color r="1" g="1" b="1" a="0.8"/>
+                                </FontString>
+                                <FontString name="EN_TargetTargetTargetDeadText" inherits="GameFontNormalSmall" text="DEAD">
+                                    <Anchors>
+                                            <Anchor point="CENTER">
+                                                <Offset>
+                                                    <AbsDimension x="15" y="1"/>
+                                                </Offset>
+                                            </Anchor>
+                                    </Anchors>
+                                </FontString>
+                            </Layer>
+                    </Layers>
+                    <Scripts>
+                            <OnLoad>
+                                    RaiseFrameLevel(self);
+                            </OnLoad>
+                    </Scripts>
+            </Frame>
+            <StatusBar name="EN_TargetTargetTargetHealthBar" inherits="TextStatusBar">
+                <Size>
+                    <AbsDimension x="46" y="7"/>
+                </Size>
+                <Anchors>
+                    <Anchor point="TOPRIGHT">
+                        <Offset>
+                            <AbsDimension x="-2" y="-15"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+                <BarTexture file="Interface\TargetingFrame\UI-StatusBar"/>
+                <BarColor r="0" g="1" b="0"/>
+            </StatusBar>
+            <StatusBar name="EN_TargetTargetTargetManaBar" inherits="TextStatusBar">
+                <Size>
+                    <AbsDimension x="46" y="7"/>
+                </Size>
+                <Anchors>
+                    <Anchor point="TOPRIGHT">
+                        <Offset>
+                            <AbsDimension x="-2" y="-23"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+                <BarTexture file="Interface\TargetingFrame\UI-StatusBar"/>
+                <BarColor r="0" g="0" b="1"/>
+            </StatusBar>
+            <Frame name="$parentDebuff1" inherits="TargetofTargetDebuffFrameTemplate" id="1">
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativePoint="TOPRIGHT">
+                        <Offset>
+                            <AbsDimension x="4" y="-10"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+            </Frame>
+            <Frame name="$parentDebuff2" inherits="TargetofTargetDebuffFrameTemplate" id="2">
+                <Anchors>
+                    <Anchor point="LEFT" relativeTo="$parentDebuff1" relativePoint="RIGHT">
+                        <Offset>
+                            <AbsDimension x="1" y="0"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+            </Frame>
+            <Frame name="$parentDebuff3" inherits="TargetofTargetDebuffFrameTemplate" id="3">
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeTo="$parentDebuff1" relativePoint="BOTTOMLEFT">
+                        <Offset>
+                            <AbsDimension x="0" y="-1"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+            </Frame>
+            <Frame name="$parentDebuff4" inherits="TargetofTargetDebuffFrameTemplate" id="4">
+                <Anchors>
+                    <Anchor point="LEFT" relativeTo="$parentDebuff3" relativePoint="RIGHT">
+                        <Offset>
+                            <AbsDimension x="1" y="0"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+            </Frame>
+        </Frames>
+        <Scripts>
+            <OnLoad>
+               EN_TargetTargetTarget_OnLoad(self);
+            </OnLoad>
+            <OnShow>
+               --TargetFrame_UpdateAuras(self:GetParent():GetParent());
+            </OnShow>
+            <OnHide>
+               --TargetFrame_UpdateAuras(self:GetParent():GetParent());
+            </OnHide>
+            <OnEvent>
+                UnitFrame_OnEvent(self, event, ...);
+            </OnEvent>
+            <OnUpdate>
+                EN_TargetTargetTarget_Update(self, elapsed);
+            </OnUpdate>
+        </Scripts>
+    </Button>	
+</Ui>

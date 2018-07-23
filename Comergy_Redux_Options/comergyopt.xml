@@ -1,0 +1,576 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\..\FrameXML\UI.xsd">
+
+    <Script file="comergyopt.lua" />
+
+    <Button name="ComergyOptTabTemplate" inherits="UIPanelButtonGrayTemplate" virtual="true">
+        <Size>
+            <AbsDimension x="144" y="28"/>
+        </Size>
+        <NormalFont inherits="GameFontHighlightSmall"/>
+        <DisabledFont inherits="GameFontDisableSmall"/>
+        <HighlightFont inherits="GameFontHighlightSmall"/>
+        <Scripts>
+            <OnClick>
+                ComergyOptTabOnClick(self:GetID())
+            </OnClick>
+        </Scripts>
+    </Button>
+
+    <EditBox name="ComergyOptEditBoxTemplate" numeric="true" virtual="true" letters="3" autoFocus="false" inherits="InputBoxTemplate">
+        <Size x="30" y="40"/>
+        <Scripts>
+            <OnEnterPressed>
+                self:ClearFocus()
+            </OnEnterPressed>
+            <OnTabPressed>
+                self:ClearFocus()
+            </OnTabPressed>
+            <OnEscapePressed>
+                self:ClearFocus()
+            </OnEscapePressed>
+            <OnEditFocusLost>
+                ComergyOptEditBoxOnTextChanged(self)
+            </OnEditFocusLost>
+        </Scripts>
+    </EditBox>
+
+    <Frame name="ComergyOptFrameTemplate" virtual="true">
+        <Anchors>
+            <Anchor point="TOPLEFT">
+                <Offset>
+                    <AbsDimension x="8" y="-80"/>
+                </Offset>
+            </Anchor>
+            <Anchor point="BOTTOMRIGHT">
+                <Offset>
+                    <AbsDimension x="-8" y="8"/>
+                </Offset>
+            </Anchor>
+        </Anchors>
+        <Backdrop edgeFile="Interface\Tooltips\UI-Tooltip-Border">
+            <EdgeSize>
+                <AbsValue val="16" />
+            </EdgeSize>
+        </Backdrop>
+        <Layers>
+            <Layer level="BACKGROUND">
+                <Texture file="Interface\ChatFrame\ChatFrameBackground">
+                    <Anchors>
+                        <Anchor point="TOPLEFT">
+                            <Offset>
+                                <AbsDimension x="4" y="-4"/>
+                            </Offset>
+                        </Anchor>
+                        <Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMRIGHT">
+                            <Offset>
+                                <AbsDimension x="-4" y="4"/>
+                            </Offset>
+                        </Anchor>
+                    </Anchors>
+                    <Gradient orientation="VERTICAL">
+                        <MinColor r=".15" g=".15" b=".15" a="1"/>
+                        <MaxColor r=".33" g=".33" b=".33" a="1"/>
+                    </Gradient>
+                </Texture>
+            </Layer>
+        </Layers>
+    </Frame>
+
+
+    <Frame name="ComergyOptFrame" parent="UIParent" movable="true" toplevel="true" clampedToScreen="true" hidden="true">
+        <Size x="310" y="475"/>
+        <Anchors>
+            <Anchor point="CENTER">
+                <Offset>
+                    <AbsDimension x="-400" y=""/>
+                </Offset>
+            </Anchor>
+        </Anchors>
+        <Backdrop edgeFile="Interface\Tooltips\UI-Tooltip-Border">
+            <EdgeSize>
+                <AbsValue val="16" />
+            </EdgeSize>
+        </Backdrop>
+        <Layers>
+            <Layer level="BACKGROUND">
+                <Texture file="Interface\ChatFrame\ChatFrameBackground">
+                    <Anchors>
+                        <Anchor point="TOPLEFT">
+                            <Offset>
+                                <AbsDimension x="4" y="-4"/>
+                            </Offset>
+                        </Anchor>
+                        <Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMRIGHT">
+                            <Offset>
+                                <AbsDimension x="-4" y="4"/>
+                            </Offset>
+                        </Anchor>
+                    </Anchors>
+                    <Gradient orientation="VERTICAL">
+                        <MinColor r="0.1" g="0.1" b="0.1" a=".5"/>
+                        <MaxColor r=".25" g=".25" b=".25" a=".5"/>
+                    </Gradient>
+                </Texture>
+            </Layer>
+            <Layer level="OVERLAY">
+                <FontString name="ComergyOptTitle" inherits="GameFontHighlightSmall">
+                    <Anchors>
+                        <Anchor point="TOP">
+                            <Offset>
+                                <AbsDimension x="0" y="-8"/>
+                            </Offset>
+                        </Anchor>
+                    </Anchors>
+                    <Color r="1" g="1" b="1"/>
+                </FontString>
+            </Layer>
+        </Layers>
+
+        <Frames>
+            <Button name="ComergyOptCloseButton" inherits="UIPanelCloseButton">
+                <Size>
+                    <AbsDimension x="32" y="32"/>
+                </Size>
+                <Scripts>
+                    <OnClick>
+                        ComergyOptToggle()
+                    </OnClick>
+                </Scripts>
+                <Anchors>
+                    <Anchor point="TOPRIGHT">
+                    </Anchor>
+                </Anchors>
+            </Button>
+
+            <Button name="ComergyOptTab1" inherits="ComergyOptTabTemplate" id="1">
+                <Anchors>
+                    <Anchor point="TOPLEFT">
+                        <Offset>
+                            <AbsDimension x="6" y="-22"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+            </Button>
+
+            <Button name="ComergyOptTab2" inherits="ComergyOptTabTemplate" id="2">
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeTo="ComergyOptTab1" relativePoint="TOPRIGHT" />
+                </Anchors>
+            </Button>
+
+            <Button name="ComergyOptTab3" inherits="ComergyOptTabTemplate" id="3">
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeTo="ComergyOptTab1" relativePoint="BOTTOMLEFT" />
+                </Anchors>
+            </Button>
+
+            <Button name="ComergyOptTab4" inherits="ComergyOptTabTemplate" id="4">
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeTo="ComergyOptTab3" relativePoint="TOPRIGHT" />
+                </Anchors>
+            </Button>
+
+            <Button name="ComergyOptTab5" inherits="ComergyOptTabTemplate" id="5">
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeTo="ComergyOptTab4" relativePoint="TOPRIGHT" />
+                </Anchors>
+            </Button>
+
+
+            <Frame name="ComergyOptGeneralFrame" hidden="true" inherits="ComergyOptFrameTemplate">
+                <Layers>
+                    <Layer level="ARTWORK">
+                    </Layer>
+                </Layers>
+            </Frame>
+            
+            <Frame name="ComergyOptBarFrame" hidden="true" inherits="ComergyOptFrameTemplate">
+                <Layers>
+                    <Layer level="ARTWORK">
+                        <FontString name="ComergyOptBarTextTexture" inherits="GameFontHighlightSmall">
+                            <Color r="1" g="1" b="1" />
+                        </FontString>
+
+                        <FontString name="ComergyOptGeneralTextText" inherits="GameFontHighlightSmall">
+                            <Color r="1" g="1" b="1" />
+                        </FontString>
+
+                        <FontString name="ComergyOptBarTextTargetHealth" inherits="GameFontHighlightSmall">
+                            <Color r="1" g="1" b="1" />
+                        </FontString>
+                    </Layer>
+                </Layers>
+            </Frame>
+            
+            <Frame name="ComergyOptEnergyFrame" hidden="true" inherits="ComergyOptFrameTemplate">
+                <Layers>
+                    <Layer level="ARTWORK">
+                        <FontString name="ComergyOptEnergyTextZero" inherits="GameFontHighlightSmall" text="0">
+                            <Anchors>
+                                <Anchor point="TOPRIGHT" relativeTo="ComergyOptEnergyFrame" relativePoint="TOPLEFT">
+                                    <Offset>
+                                        <AbsDimension x="60" y="-36"/>
+                                    </Offset>
+                                </Anchor>
+                            </Anchors>
+                            <Color r="1" g="1" b="1" />
+                        </FontString>
+
+                        <FontString name="ComergyOptEnergyTextMax" inherits="GameFontHighlightSmall" text="Max">
+                            <Anchors>
+                                <Anchor point="TOPRIGHT" relativeTo="ComergyOptEnergyFrame" relativePoint="TOPLEFT">
+                                    <Offset>
+                                        <AbsDimension x="60" y="-186"/>
+                                    </Offset>
+                                </Anchor>
+                            </Anchors>
+                            <Color r="1" g="1" b="1" />
+                        </FontString>
+
+                        <FontString name="ComergyOptEnergyTextSound" inherits="GameFontHighlightSmall">
+                            <Anchors>
+                                <Anchor point="TOPRIGHT" relativeTo="ComergyOptEnergyFrame" relativePoint="TOPLEFT">
+                                    <Offset>
+                                        <AbsDimension x="110" y="-16"/>
+                                    </Offset>
+                                </Anchor>
+                            </Anchors>
+                            <Color r="1" g="1" b="1" />
+                        </FontString>
+
+                        <FontString name="ComergyOptEnergyTextSplit" inherits="GameFontHighlightSmall">
+                            <Anchors>
+                                <Anchor point="TOPRIGHT" relativeTo="ComergyOptEnergyFrame" relativePoint="TOPLEFT">
+                                    <Offset>
+                                        <AbsDimension x="155" y="-16"/>
+                                    </Offset>
+                                </Anchor>
+                            </Anchors>
+                            <Color r="1" g="1" b="1" />
+                        </FontString>
+
+                        <FontString name="ComergyOptEnergyTextColor" inherits="GameFontHighlightSmall">
+                            <Anchors>
+                                <Anchor point="TOPRIGHT" relativeTo="ComergyOptEnergyFrame" relativePoint="TOPLEFT">
+                                    <Offset>
+                                        <AbsDimension x="230" y="-16"/>
+                                    </Offset>
+                                </Anchor>
+                            </Anchors>
+                            <Color r="1" g="1" b="1" />
+                        </FontString>
+                    </Layer>
+                </Layers>
+            </Frame>
+
+            <Frame name="ComergyOptManaFrame" hidden="true" inherits="ComergyOptFrameTemplate">
+                <Layers>
+                    <Layer level="ARTWORK">
+                        <FontString name="ComergyOptManaTextZero" inherits="GameFontHighlightSmall" text="0">
+                            <Anchors>
+                                <Anchor point="TOPRIGHT" relativeTo="ComergyOptManaFrame" relativePoint="TOPLEFT">
+                                    <Offset>
+                                        <AbsDimension x="60" y="-36"/>
+                                    </Offset>
+                                </Anchor>
+                            </Anchors>
+                            <Color r="1" g="1" b="1" />
+                        </FontString>
+
+                        <FontString name="ComergyOptManaTextMax" inherits="GameFontHighlightSmall" text="Max">
+                            <Anchors>
+                                <Anchor point="TOPRIGHT" relativeTo="ComergyOptManaFrame" relativePoint="TOPLEFT">
+                                    <Offset>
+                                        <AbsDimension x="60" y="-186"/>
+                                    </Offset>
+                                </Anchor>
+                            </Anchors>
+                            <Color r="1" g="1" b="1" />
+                        </FontString>
+
+                        <FontString name="ComergyOptManaTextSound" inherits="GameFontHighlightSmall">
+                            <Anchors>
+                                <Anchor point="TOPRIGHT" relativeTo="ComergyOptManaFrame" relativePoint="TOPLEFT">
+                                    <Offset>
+                                        <AbsDimension x="110" y="-16"/>
+                                    </Offset>
+                                </Anchor>
+                            </Anchors>
+                            <Color r="1" g="1" b="1" />
+                        </FontString>
+
+                        <FontString name="ComergyOptManaTextSplit" inherits="GameFontHighlightSmall">
+                            <Anchors>
+                                <Anchor point="TOPRIGHT" relativeTo="ComergyOptManaFrame" relativePoint="TOPLEFT">
+                                    <Offset>
+                                        <AbsDimension x="155" y="-16"/>
+                                    </Offset>
+                                </Anchor>
+                            </Anchors>
+                            <Color r="1" g="1" b="1" />
+                        </FontString>
+
+                        <FontString name="ComergyOptManaTextColor" inherits="GameFontHighlightSmall">
+                            <Anchors>
+                                <Anchor point="TOPRIGHT" relativeTo="ComergyOptManaFrame" relativePoint="TOPLEFT">
+                                    <Offset>
+                                        <AbsDimension x="230" y="-16"/>
+                                    </Offset>
+                                </Anchor>
+                            </Anchors>
+                            <Color r="1" g="1" b="1" />
+                        </FontString>
+
+                        <FontString name="ComergyOptManaTextFlash" inherits="GameFontHighlightSmall">
+                            <Anchors>
+                                <Anchor point="TOPLEFT" relativeTo="ComergyOptManaFrame" relativePoint="TOPLEFT">
+                                    <Offset>
+                                        <AbsDimension x="20" y="-315"/>
+                                    </Offset>
+                                </Anchor>
+                            </Anchors>
+                            <Color r="1" g="1" b="1" />
+                        </FontString>
+                    </Layer>
+                </Layers>
+            </Frame>
+
+            <Frame name="ComergyOptComboFrame" hidden="true" inherits="ComergyOptFrameTemplate">
+                <Layers>
+                    <Layer level="ARTWORK">
+                        <FontString name="ComergyOptComboTextSound" inherits="GameFontHighlightSmall" text="0">
+                            <Anchors>
+                                <Anchor point="TOPRIGHT" relativeTo="ComergyOptEnergyFrame" relativePoint="TOPLEFT">
+                                    <Offset>
+                                        <AbsDimension x="130" y="-16"/>
+                                    </Offset>
+                                </Anchor>
+                            </Anchors>
+                            <Color r="1" g="1" b="1" />
+                        </FontString>
+
+                        <FontString name="ComergyOptComboTextColor" inherits="GameFontHighlightSmall">
+                            <Anchors>
+                                <Anchor point="TOPRIGHT" relativeTo="ComergyOptEnergyFrame" relativePoint="TOPLEFT">
+                                    <Offset>
+                                        <AbsDimension x="205" y="-16"/>
+                                    </Offset>
+                                </Anchor>
+                            </Anchors>
+                            <Color r="1" g="1" b="1" />
+                        </FontString>
+
+                        <FontString name="ComergyOptComboText0" inherits="GameFontHighlightSmall">
+                            <Anchors>
+                                <Anchor point="TOPRIGHT" relativeTo="ComergyOptEnergyFrame" relativePoint="TOPLEFT">
+                                    <Offset>
+                                        <AbsDimension x="80" y="-36"/>
+                                    </Offset>
+                                </Anchor>
+                            </Anchors>
+                            <Color r="1" g="1" b="1" />
+                        </FontString>
+
+                        <FontString name="ComergyOptComboText1" inherits="GameFontHighlightSmall">
+                            <Anchors>
+                                <Anchor point="TOPRIGHT" relativeTo="ComergyOptEnergyFrame" relativePoint="TOPLEFT">
+                                    <Offset>
+                                        <AbsDimension x="80" y="-66"/>
+                                    </Offset>
+                                </Anchor>
+                            </Anchors>
+                            <Color r="1" g="1" b="1" />
+                        </FontString>
+
+                        <FontString name="ComergyOptComboText2" inherits="GameFontHighlightSmall">
+                            <Anchors>
+                                <Anchor point="TOPRIGHT" relativeTo="ComergyOptEnergyFrame" relativePoint="TOPLEFT">
+                                    <Offset>
+                                        <AbsDimension x="80" y="-96"/>
+                                    </Offset>
+                                </Anchor>
+                            </Anchors>
+                            <Color r="1" g="1" b="1" />
+                        </FontString>
+
+                        <FontString name="ComergyOptComboText3" inherits="GameFontHighlightSmall">
+                            <Anchors>
+                                <Anchor point="TOPRIGHT" relativeTo="ComergyOptEnergyFrame" relativePoint="TOPLEFT">
+                                    <Offset>
+                                        <AbsDimension x="80" y="-126"/>
+                                    </Offset>
+                                </Anchor>
+                            </Anchors>
+                            <Color r="1" g="1" b="1" />
+                        </FontString>
+
+                        <FontString name="ComergyOptComboText4" inherits="GameFontHighlightSmall">
+                            <Anchors>
+                                <Anchor point="TOPRIGHT" relativeTo="ComergyOptEnergyFrame" relativePoint="TOPLEFT">
+                                    <Offset>
+                                        <AbsDimension x="80" y="-156"/>
+                                    </Offset>
+                                </Anchor>
+                            </Anchors>
+                            <Color r="1" g="1" b="1" />
+                        </FontString>
+
+                        <FontString name="ComergyOptComboText5" inherits="GameFontHighlightSmall">
+                            <Anchors>
+                                <Anchor point="TOPRIGHT" relativeTo="ComergyOptEnergyFrame" relativePoint="TOPLEFT">
+                                    <Offset>
+                                        <AbsDimension x="80" y="-186"/>
+                                    </Offset>
+                                </Anchor>
+                            </Anchors>
+                            <Color r="1" g="1" b="1" />
+                        </FontString>
+
+                        <FontString name="ComergyOptComboText6" inherits="GameFontHighlightSmall">
+                            <Anchors>
+                                <Anchor point="TOPRIGHT" relativeTo="ComergyOptEnergyFrame" relativePoint="TOPLEFT">
+                                    <Offset>
+                                        <AbsDimension x="80" y="-216"/>
+                                    </Offset>
+                                </Anchor>
+                            </Anchors>
+                            <Color r="1" g="1" b="1" />
+                        </FontString>
+                    </Layer>
+                </Layers>
+            </Frame>
+
+            <Frame name="ComergyOptRuneFrame" hidden="true" inherits="ComergyOptFrameTemplate">
+                <Layers>
+                    <Layer level="ARTWORK">
+                        <FontString name="ComergyOptRuneTextSound" inherits="GameFontHighlightSmall" text="0">
+                            <Anchors>
+                                <Anchor point="TOPRIGHT" relativeTo="ComergyOptEnergyFrame" relativePoint="TOPLEFT">
+                                    <Offset>
+                                        <AbsDimension x="150" y="-16"/>
+                                    </Offset>
+                                </Anchor>
+                            </Anchors>
+                            <Color r="1" g="1" b="1" />
+                        </FontString>
+
+                        <FontString name="ComergyOptRuneTextColor" inherits="GameFontHighlightSmall">
+                            <Anchors>
+                                <Anchor point="TOPRIGHT" relativeTo="ComergyOptEnergyFrame" relativePoint="TOPLEFT">
+                                    <Offset>
+                                        <AbsDimension x="225" y="-16"/>
+                                    </Offset>
+                                </Anchor>
+                            </Anchors>
+                            <Color r="1" g="1" b="1" />
+                        </FontString>
+
+                        <FontString name="ComergyOptRuneText1" inherits="GameFontHighlightSmall">
+                            <Anchors>
+                                <Anchor point="TOPRIGHT" relativeTo="ComergyOptEnergyFrame" relativePoint="TOPLEFT">
+                                    <Offset>
+                                        <AbsDimension x="100" y="-36"/>
+                                    </Offset>
+                                </Anchor>
+                            </Anchors>
+                            <Color r="1" g="1" b="1" />
+                        </FontString>
+
+                        <FontString name="ComergyOptRuneText2" inherits="GameFontHighlightSmall">
+                            <Anchors>
+                                <Anchor point="TOPRIGHT" relativeTo="ComergyOptEnergyFrame" relativePoint="TOPLEFT">
+                                    <Offset>
+                                        <AbsDimension x="100" y="-66"/>
+                                    </Offset>
+                                </Anchor>
+                            </Anchors>
+                            <Color r="1" g="1" b="1" />
+                        </FontString>
+
+                        <FontString name="ComergyOptRuneText3" inherits="GameFontHighlightSmall">
+                            <Anchors>
+                                <Anchor point="TOPRIGHT" relativeTo="ComergyOptEnergyFrame" relativePoint="TOPLEFT">
+                                    <Offset>
+                                        <AbsDimension x="100" y="-96"/>
+                                    </Offset>
+                                </Anchor>
+                            </Anchors>
+                            <Color r="1" g="1" b="1" />
+                        </FontString>
+
+                        <FontString name="ComergyOptRuneText4" inherits="GameFontHighlightSmall">
+                            <Anchors>
+                                <Anchor point="TOPRIGHT" relativeTo="ComergyOptEnergyFrame" relativePoint="TOPLEFT">
+                                    <Offset>
+                                        <AbsDimension x="100" y="-126"/>
+                                    </Offset>
+                                </Anchor>
+                            </Anchors>
+                            <Color r="1" g="1" b="1" />
+                        </FontString>
+                    </Layer>
+                </Layers>
+            </Frame>
+
+            <Frame name="ComergyOptRogueFrame" hidden="true" inherits="ComergyOptFrameTemplate">
+                <Layers>
+                    <Layer level="ARTWORK">
+                        <FontString name="ComergyOptRogueTextFlash" inherits="GameFontHighlightSmall">
+                            <Anchors>
+                                <Anchor point="TOPLEFT" relativeTo="ComergyOptRogueFrame" relativePoint="TOPLEFT">
+                                    <Offset>
+                                        <AbsDimension x="20" y="-65"/>
+                                    </Offset>
+                                </Anchor>
+                            </Anchors>
+                            <Color r="1" g="1" b="1" />
+                        </FontString>
+                        <FontString name="ComergyOptRogueTextAnticipation" inherits="GameFontHighlightSmall">
+                            <Anchors>
+                                <Anchor point="TOPLEFT" relativeTo="ComergyOptRogueFrame" relativePoint="TOPLEFT">
+                                    <Offset>
+                                        <AbsDimension x="20" y="-115"/>
+                                    </Offset>
+                                </Anchor>
+                            </Anchors>
+                            <Color r="1" g="1" b="1" />
+                        </FontString>
+                        <FontString name="ComergyOptRogueTextAnticipation2" inherits="GameFontHighlightSmall">
+                            <Anchors>
+                                <Anchor point="TOPLEFT" relativeTo="ComergyOptRogueFrame" relativePoint="TOPLEFT">
+                                    <Offset>
+                                        <AbsDimension x="20" y="-160"/>
+                                    </Offset>
+                                </Anchor>
+                            </Anchors>
+                            <Color r="1" g="1" b="1" />
+                        </FontString>
+                    </Layer>
+                </Layers>
+            </Frame>
+
+        </Frames>
+
+        <Scripts>
+            <OnLoad>
+                ComergyOptOnLoad()
+            </OnLoad>
+            <OnMouseDown>
+                if ((button == "LeftButton") or (button == "RightButton")) then
+                    self:StartMoving()
+                end
+            </OnMouseDown>
+            <OnMouseUp>
+                self:StopMovingOrSizing()
+            </OnMouseUp>
+            <OnShow>
+                PlaySound163("GAMEDIALOGOPEN")
+            </OnShow>
+            <OnHide>
+                PlaySound163("GAMEDIALOGCLOSE")
+            </OnHide>
+        </Scripts>
+    </Frame>
+</Ui>

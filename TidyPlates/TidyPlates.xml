@@ -1,0 +1,265 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+
+
+<FontFamily name="TidyPlatesFontNormal" virtual="true">
+    <Member alphabet="roman">
+        <Font font="Fonts\FRIZQT__.TTF" height="10"/>
+    </Member>
+    <Member alphabet="korean">
+        <Font font="Fonts\2002.TTF" height="12" spacing="1"/>
+    </Member>
+    <Member alphabet="simplifiedchinese">
+        <Font font="Fonts\ARKai_T.ttf" height="12"/>
+    </Member>
+    <Member alphabet="traditionalchinese">
+        <Font font="Fonts\bKAI00M.TTF" height="12"/>
+    </Member>
+    <Member alphabet="russian">
+        <Font font="Fonts\FRIZQT___CYR.TTF" height="10"/>
+    </Member>
+</FontFamily>
+
+<FontFamily name="TidyPlatesFontSmall" virtual="true">
+    <Member alphabet="roman">
+        <Font font="Fonts\FRIZQT__.TTF" height="8"/>
+    </Member>
+    <Member alphabet="korean">
+        <Font font="Fonts\2002.TTF" height="10" spacing="1"/>
+    </Member>
+    <Member alphabet="simplifiedchinese">
+        <Font font="Fonts\ARKai_T.ttf" height="10"/>
+    </Member>
+    <Member alphabet="traditionalchinese">
+        <Font font="Fonts\bKAI00M.TTF" height="10"/>
+    </Member>
+    <Member alphabet="russian">
+        <Font font="Fonts\FRIZQT___CYR.TTF" height="8"/>
+    </Member>
+</FontFamily>
+
+
+<Button name="TidyPlatesPanelButtonTemplate" virtual="true">
+		<Size>
+			<AbsDimension x="40" y="22"/>
+		</Size>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentLeft" urgency="5" file="Interface\Buttons\UI-Panel-Button-Up">
+					<Size>
+						<AbsDimension x="12" y="22"/>
+					</Size>
+					<Anchors>
+						<Anchor point="TOPLEFT"/>
+						<Anchor point="BOTTOMLEFT"/>
+					</Anchors>
+					<TexCoords left="0" right="0.09375" top="0" bottom="0.6875"/>
+				</Texture>
+				<Texture name="$parentRight" urgency="5" file="Interface\Buttons\UI-Panel-Button-Up">
+					<Size>
+						<AbsDimension x="12" y="22"/>
+					</Size>
+					<Anchors>
+						<Anchor point="TOPRIGHT"/>
+						<Anchor point="BOTTOMRIGHT"/>
+					</Anchors>
+					<TexCoords left="0.53125" right="0.625" top="0" bottom="0.6875"/>
+				</Texture>
+				<Texture name="$parentMiddle" urgency="5" file="Interface\Buttons\UI-Panel-Button-Up">
+					<Size>
+						<AbsDimension x="12" y="22"/>
+					</Size>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentLeft" relativePoint="TOPRIGHT"/>
+						<Anchor point="BOTTOMRIGHT" relativeTo="$parentRight" relativePoint="BOTTOMLEFT"/>
+					</Anchors>
+					<TexCoords left="0.09375" right="0.53125" top="0" bottom="0.6875"/>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				if ( not self:IsEnabled() ) then
+					local name = self:GetName();
+					_G[name.."Left"]:SetTexture("Interface\\Buttons\\UI-Panel-Button-Disabled");
+					_G[name.."Middle"]:SetTexture("Interface\\Buttons\\UI-Panel-Button-Disabled");
+					_G[name.."Right"]:SetTexture("Interface\\Buttons\\UI-Panel-Button-Disabled");
+				end
+			</OnLoad>
+			<OnMouseDown>
+				if ( self:IsEnabled() ) then
+					local name = self:GetName();
+					_G[name.."Left"]:SetTexture("Interface\\Buttons\\UI-Panel-Button-Down");
+					_G[name.."Middle"]:SetTexture("Interface\\Buttons\\UI-Panel-Button-Down");
+					_G[name.."Right"]:SetTexture("Interface\\Buttons\\UI-Panel-Button-Down");
+				end
+			</OnMouseDown>
+			<OnMouseUp>
+				if ( self:IsEnabled() ) then
+					local name = self:GetName();
+					_G[name.."Left"]:SetTexture("Interface\\Buttons\\UI-Panel-Button-Up");
+					_G[name.."Middle"]:SetTexture("Interface\\Buttons\\UI-Panel-Button-Up");
+					_G[name.."Right"]:SetTexture("Interface\\Buttons\\UI-Panel-Button-Up");
+				end
+			</OnMouseUp>
+			<OnShow>
+				if ( self:IsEnabled() ) then
+					-- we need to reset our textures just in case we were hidden before a mouse up fired
+					local name = self:GetName();
+					_G[name.."Left"]:SetTexture("Interface\\Buttons\\UI-Panel-Button-Up");
+					_G[name.."Middle"]:SetTexture("Interface\\Buttons\\UI-Panel-Button-Up");
+					_G[name.."Right"]:SetTexture("Interface\\Buttons\\UI-Panel-Button-Up");
+				end
+			</OnShow>
+			<OnDisable>
+				local name = self:GetName();
+				_G[name.."Left"]:SetTexture("Interface\\Buttons\\UI-Panel-Button-Disabled");
+				_G[name.."Middle"]:SetTexture("Interface\\Buttons\\UI-Panel-Button-Disabled");
+				_G[name.."Right"]:SetTexture("Interface\\Buttons\\UI-Panel-Button-Disabled");
+			</OnDisable>
+			<OnEnable>
+				local name = self:GetName();
+				_G[name.."Left"]:SetTexture("Interface\\Buttons\\UI-Panel-Button-Up");
+				_G[name.."Middle"]:SetTexture("Interface\\Buttons\\UI-Panel-Button-Up");
+				_G[name.."Right"]:SetTexture("Interface\\Buttons\\UI-Panel-Button-Up");
+			</OnEnable>
+			<OnEnter>
+				if(self.tooltipText ~= nil) then
+					GameTooltip_AddNewbieTip(self, self.tooltipText, 1.0, 1.0, 1.0, self.newbieText);
+				end
+			</OnEnter>
+			<OnLeave>
+				if(self.tooltipText ~= nil) then
+					GameTooltip:Hide();
+				end
+			</OnLeave>
+		</Scripts>
+		<ButtonText name="$parentText"/>
+		<NormalFont style="GameFontNormal"/>
+		<HighlightFont style="GameFontHighlight"/>
+		<DisabledFont style="GameFontDisable"/>
+		<HighlightTexture inherits="UIPanelButtonHighlightTexture"/>
+	</Button>
+
+
+
+    <Frame name="TidyPlatesDropdownDrawerTemplate" virtual="true">
+            <Size>
+                    <AbsDimension x="40" y="32"/>
+            </Size>
+            <Layers>
+                    <Layer level="ARTWORK">
+                            <Texture name="$parentLeft" file="Interface\Glues\CharacterCreate\CharacterCreate-LabelFrame">
+                                    <Size>
+                                            <AbsDimension x="25" y="64"/>
+                                    </Size>
+                                    <Anchors>
+                                            <Anchor point="TOPLEFT">
+                                                    <Offset>
+                                                            <AbsDimension x="0" y="17"/>
+                                                    </Offset>
+                                            </Anchor>
+                                    </Anchors>
+                                    <TexCoords left="0" right="0.1953125" top="0" bottom="1"/>
+                            </Texture>
+                            <Texture name="$parentMiddle" file="Interface\Glues\CharacterCreate\CharacterCreate-LabelFrame">
+                                    <Size>
+                                            <AbsDimension x="115" y="64"/>
+                                    </Size>
+                                    <Anchors>
+                                            <Anchor point="LEFT" relativeTo="$parentLeft" relativePoint="RIGHT"/>
+                                    </Anchors>
+                                    <TexCoords left="0.1953125" right="0.8046875" top="0" bottom="1"/>
+                            </Texture>
+                            <Texture name="$parentRight" file="Interface\Glues\CharacterCreate\CharacterCreate-LabelFrame">
+                                    <Size>
+                                            <AbsDimension x="25" y="64"/>
+                                    </Size>
+                                    <Anchors>
+                                            <Anchor point="LEFT" relativeTo="$parentMiddle" relativePoint="RIGHT"/>
+                                    </Anchors>
+                                    <TexCoords left="0.8046875" right="1" top="0" bottom="1"/>
+                            </Texture>
+                            <FontString name="$parentText" inherits="GameFontHighlightSmall" wordwrap="false" justifyH="RIGHT">
+                                    <Size>
+                                            <AbsDimension x="0" y="10"/>
+                                    </Size>
+                                    <Anchors>
+                                            <Anchor point="RIGHT" relativeTo="$parentRight">
+                                                    <Offset>
+                                                            <AbsDimension x="-43" y="2"/>
+                                                    </Offset>
+                                            </Anchor>
+                                    </Anchors>
+                            </FontString>
+                    </Layer>
+                    <Layer level="OVERLAY">
+                            <Texture name="$parentIcon" hidden="true">
+                                    <Size>
+                                            <AbsDimension x="16" y="16"/>
+                                    </Size>
+                                    <Anchors>
+                                            <Anchor point="LEFT">
+                                                    <Offset x="30" y="2"/>
+                                            </Anchor>
+                                    </Anchors>
+                            </Texture>
+                    </Layer>
+            </Layers>
+            <Frames>
+                    <Button name="$parentButton"  motionScriptsWhileDisabled="true" >
+                            <Size>
+                                    <AbsDimension x="24" y="24"/>
+                            </Size>
+                            <Anchors>
+                                    <Anchor point="TOPRIGHT" relativeTo="$parentRight">
+                                            <Offset>
+                                                    <AbsDimension x="-16" y="-18"/>
+                                            </Offset>
+                                    </Anchor>
+                            </Anchors>
+
+                            <NormalTexture name="$parentNormalTexture" file="Interface\ChatFrame\UI-ChatIcon-ScrollDown-Up">
+                                    <Size>
+                                            <AbsDimension x="24" y="24"/>
+                                    </Size>
+                                    <Anchors>
+                                            <Anchor point="RIGHT"/>
+                                    </Anchors>
+                            </NormalTexture>
+                            <PushedTexture name="$parentPushedTexture" file="Interface\ChatFrame\UI-ChatIcon-ScrollDown-Down">
+                                    <Size>
+                                            <AbsDimension x="24" y="24"/>
+                                    </Size>
+                                    <Anchors>
+                                            <Anchor point="RIGHT"/>
+                                    </Anchors>
+                            </PushedTexture>
+                            <DisabledTexture name="$parentDisabledTexture" file="Interface\ChatFrame\UI-ChatIcon-ScrollDown-Disabled">
+                                    <Size>
+                                            <AbsDimension x="24" y="24"/>
+                                    </Size>
+                                    <Anchors>
+                                            <Anchor point="RIGHT"/>
+                                    </Anchors>
+                            </DisabledTexture>
+                            <HighlightTexture name="$parentHighlightTexture" file="Interface\Buttons\UI-Common-MouseHilight" alphaMode="ADD">
+                                    <Size>
+                                            <AbsDimension x="24" y="24"/>
+                                    </Size>
+                                    <Anchors>
+                                            <Anchor point="RIGHT"/>
+                                    </Anchors>
+                            </HighlightTexture>
+                    </Button>
+            </Frames>
+    </Frame>
+
+	<Script file="TidyPlatesStatusbar.lua"/>
+	<Script file="TidyPlatesCore.lua"/>
+	<Script file="TidyPlatesUtility.lua"/>
+	<Script file="TidyPlatesTemplate.lua"/>
+	<Script file="TidyPlatesParser.lua"/>
+	<Script file="TidyPlatesPanel.lua"/>
+	<Script file="TidyPlatesMinimapButton.lua"/>
+</Ui>

@@ -1,0 +1,36 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+C:\Projects\WoW\Bin\Interface\FrameXML\UI.xsd">
+	<Script file="EN_TargetInfo.lua"/>
+<!-- Target Info -->
+	<Frame name="EUF_TargetInfo_General" parent="UIParent">
+		<Scripts>
+			<OnLoad>
+				EUF_TargetInfo_OnLoad(self)
+			</OnLoad>
+			<OnEvent>
+				EUF_TargetInfo_OnEvent(self, event, ...);
+			</OnEvent>
+		</Scripts>
+	</Frame>
+
+	<Frame parent="TargetFrame">
+		<Layers>
+			<Layer level="OVERLAY">
+				<FontString name="EUF_TargetInfo" inherits="GameTooltipTextSmall" text="">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativePoint="TOPLEFT" relativeTo="TargetFrame">
+							<Offset x="5" y="-7"/>
+						</Anchor>
+					</Anchors>
+					<Color r="1" g="0.75" b="0"/>
+					<Shadow>
+						<Offset>
+							<AbsDimension x="1" y="-1"/>
+						</Offset>
+						<Color r="0" g="0" b="0"/>
+					</Shadow>
+				</FontString>
+			</Layer>
+		</Layers>
+	</Frame>
+</Ui>

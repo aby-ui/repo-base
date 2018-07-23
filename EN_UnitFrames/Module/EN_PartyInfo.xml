@@ -1,0 +1,59 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+E:\repos\Duowan-Work\UI.xsd">
+	<Script file="EN_PartyInfo.lua"/>
+	<Frame name="EUF_PartyInfo_General" parent="UIParent" hidden="true">
+		<Scripts>
+			<OnLoad>
+				EUF_PartyInfo_OnLoad(self)
+			</OnLoad>
+			<OnEvent>
+				EUF_PartyInfo_OnEvent(self, event, ...);
+			</OnEvent>
+		</Scripts>
+	</Frame>
+	<!-- Party Frame -->
+	<Frame name="EUF_PartyInfoTemplate" virtual="true" hidden="true">
+		<Size>
+			<AbsDimension x="220" y="100"/>
+		</Size>
+		<Anchors>
+			<Anchor point="TOPLEFT" relativeTo="$parent" relativePoint="TOPLEFT"/>
+		</Anchors>
+		<Layers>
+			<Layer level="OVERLAY">
+				<FontString name="$parentLevel" inherits="dwTextStatusBarText">
+					<Anchors>
+						<Anchor point="CENTER" relativePoint="TOPLEFT">
+							<Offset x="24" y="4"/>
+						</Anchor>
+					</Anchors>
+					<Color r="1" g="0.75" b="0"/>
+					<Shadow>
+						<Offset>
+							<AbsDimension x="1" y="-1"/>
+						</Offset>
+						<Color r="0" g="0" b="0"/>
+					</Shadow>
+				</FontString>
+				<FontString name="$parentClass" inherits="GameTooltipTextSmall">
+					<Anchors>
+						<Anchor point="TOPLEFT">
+							<Offset x="-6" y="-51"/>
+						</Anchor>
+					</Anchors>
+					<Color r="1" g="0.75" b="0"/>
+					<Shadow>
+						<Offset>
+							<AbsDimension x="1" y="-1"/>
+						</Offset>
+						<Color r="0" g="0" b="0"/>
+					</Shadow>
+				</FontString>
+			</Layer>
+		</Layers>
+	</Frame>
+	<Frame name="EUF_PartyInfo1" inherits="EUF_PartyInfoTemplate" parent="PartyMemberFrame1" hidden="false" id="1"/>
+	<Frame name="EUF_PartyInfo2" inherits="EUF_PartyInfoTemplate" parent="PartyMemberFrame2" hidden="false" id="2"/>
+	<Frame name="EUF_PartyInfo3" inherits="EUF_PartyInfoTemplate" parent="PartyMemberFrame3" hidden="false" id="3"/>
+	<Frame name="EUF_PartyInfo4" inherits="EUF_PartyInfoTemplate" parent="PartyMemberFrame4" hidden="false" id="4"/>
+</Ui>

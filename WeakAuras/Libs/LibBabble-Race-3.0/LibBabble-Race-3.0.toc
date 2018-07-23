@@ -1,0 +1,14 @@
+## Interface: 80000
+## LoadOnDemand: 1
+## Title: Lib: Babble-Race-3.0
+## Notes: A library to help with localization of races.
+## Notes-deDE: BabbleLib ist eine Bibliothek, die bei der Lokalisierung helfen soll.
+## Notes-frFR: Une bibliothèque d'aide à la localisation.
+## Notes-esES: Una biblioteca para ayudar con las localizaciones.
+## Author: ckknight
+## X-eMail: ckknight@gmail.com
+## X-Category: Library
+## X-License: MIT
+
+LibStub\LibStub.lua
+lib.xml

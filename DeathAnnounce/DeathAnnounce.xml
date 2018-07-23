@@ -1,0 +1,14 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+C:\Projects\WoW\Bin\Interface\FrameXML\UI.xsd">
+	<Script file="DeathAnnounce.lua"/>
+	<Frame name="DEATH_ANNOUNCE_Frame" hidden="true">
+		<Scripts>
+			<OnLoad>
+				DEATH_ANNOUNCE_OnLoad(self);
+			</OnLoad>
+			<OnEvent>
+				DEATH_ANNOUNCE_OnEvent(self, event, ...);
+			</OnEvent>
+		</Scripts>
+	</Frame>
+</Ui>

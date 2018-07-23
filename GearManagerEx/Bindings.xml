@@ -1,0 +1,13 @@
+<Bindings>
+	<Binding name="GEARMANAGEREX_QUICKSTRIP" header="GEARMANAGEREX_TITLE"> GearManagerEx:QuickStrip() </Binding>
+	<Binding name="GEARMANAGEREX_WEARSET1"> GearManagerEx:EquipSetByIndex(1) </Binding>
+	<Binding name="GEARMANAGEREX_WEARSET2"> GearManagerEx:EquipSetByIndex(2) </Binding>
+	<Binding name="GEARMANAGEREX_WEARSET3"> GearManagerEx:EquipSetByIndex(3) </Binding>
+	<Binding name="GEARMANAGEREX_WEARSET4"> GearManagerEx:EquipSetByIndex(4) </Binding>
+	<Binding name="GEARMANAGEREX_WEARSET5"> GearManagerEx:EquipSetByIndex(5) </Binding>
+	<Binding name="GEARMANAGEREX_WEARSET6"> GearManagerEx:EquipSetByIndex(6) </Binding>
+	<Binding name="GEARMANAGEREX_WEARSET7"> GearManagerEx:EquipSetByIndex(7) </Binding>
+	<Binding name="GEARMANAGEREX_WEARSET8"> GearManagerEx:EquipSetByIndex(8) </Binding>
+	<Binding name="GEARMANAGEREX_WEARSET9"> GearManagerEx:EquipSetByIndex(9) </Binding>
+	<Binding name="GEARMANAGEREX_WEARSET10"> GearManagerEx:EquipSetByIndex(10) </Binding>
+</Bindings>

@@ -1,0 +1,105 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+	<Script file="EventAlert_CreateFrames.lua" />	
+	<script file="EventAlert_SpellArray.lua" />	
+	<Script file="EventAlertMod.lua" />
+	<Frame visible="true" name="EA_Main_Frame" parent="UIParent" toplevel="true" frameStrata="HIGH">
+		<Size>
+			<AbsDimension x="1" y="1" />
+		</Size>
+		<Scripts>
+			<OnLoad>
+			EventAlert_OnLoad(self);
+		</OnLoad>
+			<OnEvent>
+			EventAlert_OnEvent(self, event, ...);
+		</OnEvent>
+		</Scripts>
+	</Frame>
+	<Frame name="EA_Version_Frame" hidden="true" parent="UIParent" movable="true" frameStrata="HIGH">
+		<Size>
+			<AbsDimension x="450" y="350" />
+		</Size>
+		<Anchors>
+			<Anchor relativepoint="CENTER" point="CENTER" />
+		</Anchors>
+		<Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="Interface\DialogFrame\UI-DialogBox-Border" tile="true">
+			<BackgroundInsets>
+				<AbsInset left="11" right="12" top="12" bottom="11" />
+			</BackgroundInsets>
+			<TileSize>
+				<AbsValue val="32" />
+			</TileSize>
+			<EdgeSize>
+				<AbsValue val="32" />
+			</EdgeSize>
+		</Backdrop>
+		<Frames>
+			<Button name="$parent_Okay" inherits="OptionsButtonTemplate" text="Okay">
+				<Size>
+					<AbsDimension x="75" y="21" />
+				</Size>
+				<Anchors>
+					<Anchor relativepoint="BOTTOM" point="CENTER">
+						<Offset>
+							<AbsDimension x="0" y="25" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+					PlaySound163("gsTitleOptionOK");
+					HideUIPanel(EA_Version_Frame);
+				</OnClick>
+				</Scripts>
+			</Button>
+		</Frames>
+		<Layers>
+			<Layer>
+				<Texture name="$parent_Header" file="Interface\DialogFrame\UI-DialogBox-Header">
+					<Size>
+						<AbsDimension x="400" y="64" />
+					</Size>
+					<Anchors>
+						<Anchor point="TOP">
+							<Offset>
+								<AbsDimension x="0" y="12" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</Texture>
+				<FontString name="$parent_HeaderText" inherits="GameFontNormal" text="New EventAlertMod Version!">
+					<Anchors>
+						<Anchor point="TOP" relativeTo="$parent_Header">
+							<Offset>
+								<AbsDimension x="0" y="-14" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnMouseDown>
+				if button == "LeftButton" then
+					self:StartMoving();
+				end
+			</OnMouseDown>
+			<OnMouseUp>
+				if button == "LeftButton" then
+					self:StopMovingOrSizing();
+				end
+			</OnMouseUp>
+		</Scripts>
+	</Frame>
+	<FontString name="FontString1" inherits="GameFontNormal" text="FontString1">
+		<Size>
+			<AbsDimension x="80" y="20" />
+		</Size>
+		<Anchors>
+			<Anchor point="TOPLEFT">
+				<Offset x="867" y="-738" />
+			</Anchor>
+		</Anchors>
+	</FontString>
+</Ui>

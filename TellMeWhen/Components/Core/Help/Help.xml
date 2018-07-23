@@ -1,0 +1,87 @@
+﻿<Ui>
+
+	<Frame parentKey="Help" name="TellMeWhen_HelpFrame" parent="TellMeWhen_IconEditor" inherits="GlowBoxArrowTemplate" enableMouse="true" hidden="true">
+		<Size x="21" y="53"/>
+		<Frames>
+			<Frame parentKey="body" name="$parentBody" enableMouse="true" inherits="GlowBoxTemplate" clampedToScreen="true" >
+				<Size x="250"/>
+				<Anchors>
+					<Anchor point="TOPRIGHT" relativePoint="TOPLEFT" x="-2"/>
+				</Anchors>
+				<Layers>
+					<Layer level="OVERLAY">
+						<FontString parentKey="text" name="$parentText" inherits="GameFontHighlightLeft" justifyV="TOP" >
+							<Size x="238"/>
+							<Anchors>
+								<Anchor point="TOPLEFT" x="10" y="-24"/>
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+				<Frames>
+					<Button name="$parentClose" inherits="UIPanelCloseButton">
+						<Anchors>
+							<Anchor point="TOPRIGHT" x="6" y="6"/>
+						</Anchors>
+						<Scripts>
+							<OnClick>
+								self:GetParent():GetParent():Hide()
+								TMW.HELP:OnClose()
+							</OnClick>
+						</Scripts>
+					</Button>
+				</Frames>
+				<Scripts>
+					<OnSizeChanged>
+						self:SetHeight(self.text:GetHeight() + 38)
+						self:SetWidth(min(280, self.text:GetStringWidth() + 30))
+					</OnSizeChanged>
+				</Scripts>
+			</Frame>
+		</Frames>
+		
+		<Scripts>
+			<OnLoad>
+				self.current = {}
+				
+				self:SetFrameLevel(200)
+				self:SetFrameStrata("FULLSCREEN_DIALOG")
+				self:SetToplevel(true)
+
+				local arrow = self
+
+				arrow.arrow = _G[arrow:GetName() .. "Arrow"]
+				arrow.arrow:SetAllPoints(true)
+				arrow.arrow:SetTexCoord(0.78515625, 0.54687500, 0.99218750, 0.54687500, 0.78515625, 0.58789063, 0.99218750, 0.58789063)
+
+				arrow.glow = _G[arrow:GetName() .. "Glow"]
+				arrow.glow:SetAllPoints(true)
+				arrow.glow:SetTexCoord(0.40625000, 0.77343750, 0.66015625, 0.77343750, 0.40625000, 0.82812500, 0.66015625, 0.82812500)
+
+				self.body.text:SetSpacing(4)
+			</OnLoad>
+			<OnShow>
+				self:SetFrameLevel(self:GetParent():GetFrameLevel() + 100)
+			</OnShow>
+			<OnHide>
+				wipe(self.current)
+			</OnHide>
+		</Scripts>
+
+	</Frame><!-- 
+
+	<Frame parentKey="Help" name="TellMeWhen_HelpFrame" parent="TellMeWhen_IconEditor" inherits="GlowBoxTemplate" enableMouse="true" hidden="true" >
+		<Size x="250"/>
+		<Layers>
+			<Layer level="OVERLAY">
+				<FontString parentKey="text" name="$parentText" inherits="GameFontHighlightLeft" justifyV="TOP" >
+					<Size x="208"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="10" y="-24"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+	</Frame> -->
+			
+</Ui>

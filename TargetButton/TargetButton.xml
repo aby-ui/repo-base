@@ -1,0 +1,126 @@
+﻿<Ui xmlns="http://www.blizzard.com/wow/ui/"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xsi:schemaLocation="http://www.blizzard.com/wow/ui/ 
+..\FrameXML\UI.xsd">
+
+    <Script file="Localization.lua"/>
+    <Script file="TargetButton.lua"/>
+    <Frame name="TargetButtonsFrame" parent="UIParent">
+		<Frames>
+			<Button name="$parent_WhisperButton" toplevel="true">
+				<Size>
+					<AbsDimension x="20" y="20"/>
+				</Size>
+				<Scripts>
+					<OnEnter>
+						GameTooltip:SetOwner(self, "ANCHOR_LEFT");
+						GameTooltip:SetText(TargetButton_Whisper, 1.0, 1.0, 1.0);
+						GameTooltip:Show();
+					</OnEnter>
+					<OnLoad>
+						self:GetFrameLevel(self:GetFrameLevel()+5)
+					</OnLoad>
+					<OnLeave>
+						GameTooltip:Hide();
+					</OnLeave>
+					<OnClick>
+						ChatFrame_SendTell(GetUnitName("target", true), nil);
+					</OnClick>
+				</Scripts>
+				<NormalTexture file="Interface\AddOns\TargetButton\Images\Whisper-Up"/>
+				<PushedTexture file="Interface\AddOns\TargetButton\Images\Whisper-Down"/>
+				<HighlightTexture alphaMode="ADD" file="Interface\Minimap\UI-Minimap-ZoomButton-Highlight"/>
+			</Button>
+			<Button name="$parent_TradeButton" toplevel="true">
+				<Size>
+					<AbsDimension x="20" y="20"/>
+				</Size>
+				<Scripts>
+					<OnEnter>
+						GameTooltip:SetOwner(self, "ANCHOR_LEFT");
+						GameTooltip:SetText(TargetButton_Trade, 1.0, 1.0, 1.0);
+						GameTooltip:Show();
+					</OnEnter>
+					<OnLoad>
+                        self:SetMotionScriptsWhileDisabled(true);
+						self:GetFrameLevel(self:GetFrameLevel()+5)
+					</OnLoad>
+					<OnLeave>
+						GameTooltip:Hide();
+					</OnLeave>
+					<OnClick>
+						InitiateTrade("target");
+					</OnClick>
+				</Scripts>
+				<NormalTexture file="Interface\AddOns\TargetButton\Images\Trade-Up"/>
+				<PushedTexture file="Interface\AddOns\TargetButton\Images\Trade-Down"/>
+				<DisabledTexture file="Interface\AddOns\TargetButton\Images\Trade-Disabled"/>
+				<HighlightTexture alphaMode="ADD" file="Interface\Minimap\UI-Minimap-ZoomButton-Highlight"/>
+			</Button>
+			<Button name="$parent_FollowButton" toplevel="true">
+				<Size>
+					<AbsDimension x="20" y="20"/>
+				</Size>
+				<Scripts>
+					<OnEnter>
+						GameTooltip:SetOwner(self, "ANCHOR_LEFT");
+						GameTooltip:SetText(TargetButton_Follow, 1.0, 1.0, 1.0);
+						GameTooltip:Show();
+					</OnEnter>
+					<OnLoad>
+						self:SetMotionScriptsWhileDisabled(true);
+						self:GetFrameLevel(self:GetFrameLevel()+5)
+					</OnLoad>
+					<OnLeave>
+						GameTooltip:Hide();
+					</OnLeave>
+					<OnClick>
+						FollowUnit("target");
+					</OnClick>
+				</Scripts>
+				<NormalTexture file="Interface\AddOns\TargetButton\Images\Follow-Up"/>
+				<PushedTexture file="Interface\AddOns\TargetButton\Images\Follow-Down"/>
+				<DisabledTexture file="Interface\AddOns\TargetButton\Images\Follow-Disabled"/>
+				<HighlightTexture alphaMode="ADD" file="Interface\Minimap\UI-Minimap-ZoomButton-Highlight"/>
+			</Button>
+			<Button name="$parent_InspectButton" toplevel="true">
+				<Size>
+					<AbsDimension x="20" y="20"/>
+				</Size>
+				<Scripts>
+					<OnEnter>
+						GameTooltip:SetOwner(self, "ANCHOR_LEFT");
+						GameTooltip:SetText(TargetButton_Inspect, 1.0, 1.0, 1.0);
+						GameTooltip:Show();
+					</OnEnter>
+					<OnLoad>
+                        self:SetMotionScriptsWhileDisabled(true);
+						self:GetFrameLevel(self:GetFrameLevel()+5)
+					</OnLoad>
+					<OnLeave>
+						GameTooltip:Hide();
+					</OnLeave>
+					<OnClick>
+						InspectUnit("target");
+					</OnClick>
+				</Scripts>
+				<NormalTexture file="Interface\AddOns\TargetButton\Images\Inspect-Up"/>
+				<PushedTexture file="Interface\AddOns\TargetButton\Images\Inspect-Down"/>
+				<DisabledTexture file="Interface\AddOns\TargetButton\Images\Inspect-Disabled"/>
+				<HighlightTexture alphaMode="ADD" file="Interface\Minimap\UI-Minimap-ZoomButton-Highlight"/>
+			</Button>
+		</Frames>
+        <Scripts>
+            <OnLoad>
+                self:RegisterEvent("PLAYER_TARGET_CHANGED");
+                self:RegisterEvent("VARIABLES_LOADED");
+            </OnLoad>
+            <OnEvent>
+                TargetButton_Redraw(self);
+            </OnEvent>
+            <OnUpdate>
+                TargetButton_CheckRange(self, elapsed);
+            </OnUpdate>
+        </Scripts>
+    </Frame>
+</Ui>

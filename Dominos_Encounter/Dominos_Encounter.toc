@@ -1,0 +1,11 @@
+## Interface: 80000
+## Title: Dominos Encounter
+## Notes: Makes the PlayerPowerBarAlt movable
+## Author: Tuller (with help from Goranaws)
+## Dependencies: Dominos
+bar.lua
+controller.lua
+
+## Title-zhCN: |cff880303[有爱]|r Dominos 特殊能量条
+## Notes-zhCN: 多米诺-特殊能量条模块
+## X-Vendor: AbyUI

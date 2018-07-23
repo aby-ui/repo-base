@@ -1,0 +1,69 @@
+<Ui>
+
+	<Frame name="RematchTooltip" frameStrata="TOOLTIP" parent="UIParent" hidden="true">
+		<Backdrop edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
+			<EdgeSize val="16"/>
+			<BorderColor r="0.5" g="0.5" b="0.5"/>
+		</Backdrop>
+		<Layers>
+			<Layer level="BACKGROUND" textureSubLevel="-1">
+				<Texture>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="3" y="-3"/>
+						<Anchor point="BOTTOMRIGHT" x="-3" y="3"/>
+					</Anchors>
+					<Color r=".2" g=".2" b=".2"/>
+				</Texture>
+			</Layer>
+			<Layer level="BACKGROUND">
+				<Texture parentKey="Shadow" file="Interface\Common\ShadowOverlay-Corner" setAllPoints="true" alpha="1">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="3" y="-3"/>
+						<Anchor point="BOTTOMRIGHT" x="-3" y="3"/>
+					</Anchors>
+					<TexCoords left="0" right="1" top="0" bottom="1"/>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<FontString parentKey="Title" inherits="GameFontHighlight" justifyH="LEFT" text="tooltip title">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="8" y="-8"/>
+					</Anchors>
+				</FontString>
+				<FontString parentKey="Body" inherits="GameFontNormal" justifyH="LEFT" text="tooltip body">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeKey="$parent.Title" relativePoint="BOTTOMLEFT" x="0" y="-2"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+	</Frame>
+
+	<Frame name="RematchTableTooltip" frameStrata="TOOLTIP" parent="UIParent" hidden="true">
+		<Backdrop edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
+			<EdgeSize val="16"/>
+			<BorderColor r="0.5" g="0.5" b="0.5"/>
+		</Backdrop>
+		<Layers>
+			<Layer level="BACKGROUND" textureSubLevel="-1">
+				<Texture>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="3" y="-3"/>
+						<Anchor point="BOTTOMRIGHT" x="-3" y="3"/>
+					</Anchors>
+					<Color r=".2" g=".2" b=".2"/>
+				</Texture>
+			</Layer>
+			<Layer level="BACKGROUND">
+				<Texture parentKey="Shadow" file="Interface\Common\ShadowOverlay-Corner" setAllPoints="true" alpha="1">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="3" y="-3"/>
+						<Anchor point="BOTTOMRIGHT" x="-3" y="3"/>
+					</Anchors>
+					<TexCoords left="0" right="1" top="0" bottom="1"/>
+				</Texture>
+			</Layer>
+		</Layers>
+	</Frame>
+
+</Ui>

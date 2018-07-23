@@ -1,0 +1,22 @@
+## Interface: 80000
+## Title: Angry Keystones
+## Notes: Displays additional information for Mythic Keystone dungeons
+## Author: Ermad
+## SavedVariables: AngryKeystones_Config, AngryKeystones_Data
+## SavedVariablesPerCharacter: AngryKeystones_CharacterConfig
+## X-Packaged-Version: v0.13.1
+
+Core.lua
+Locale.lua
+Config.lua
+
+ObjectiveTracker.lua
+ProgressTracker.lua
+Keystone.lua
+Gossip.lua
+Splits.lua
+Schedule.lua
+
+## Title-zhCN: |cff880303[有爱]|r AngryKS 秘境计时增强
+## X-Vendor: AbyUI
+

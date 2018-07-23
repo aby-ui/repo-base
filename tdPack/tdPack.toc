@@ -1,0 +1,13 @@
+## Interface: 80000
+## Title: tdPack
+## Author: ldz5
+## Version: 50100.04
+# Dependencies: tdCore
+## OptionalDeps: Bagnon, Combuctor, BaudBag
+## SavedVariables: TDDB_TDPACK
+
+load.xml
+
+## Title: |cff880303[有爱]|r tdPack 背包整理
+## Notes-zhCN: 背包整理
+## X-Vendor: AbyUI

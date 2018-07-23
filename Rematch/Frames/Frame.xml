@@ -1,0 +1,295 @@
+<Ui>
+
+	<Button name="RematchFrameTabButtonTemplate" inherits="CharacterFrameTabButtonTemplate" virtual="true">
+		<Scripts>
+			<OnClick>
+				RematchFrame.TabOnClick(self)
+			</OnClick>
+			<PostClick>
+				self:Enable()
+			</PostClick>
+		</Scripts>
+	</Button>
+
+	<Button name="RematchFrame" parent="UIParent" frameStrata="MEDIUM" topLevel="true" enableMouse="true" movable="true" clampedToScreen="true" hidden="true">
+		<Size x="570" y="604"/>
+		<Anchors>
+			<Anchor point="CENTER"/>
+		</Anchors>
+		<Frames>
+			<!-- TitleBar is a separate frame across top that can be hidden -->
+			<Frame parentKey="TitleBar" useParentLevel="true">
+				<Size x="0" y="33"/>
+				<Anchors>
+					<Anchor point="TOPLEFT"/>
+					<Anchor point="TOPRIGHT"/>
+				</Anchors>
+				<Frames>
+					<Button parentKey="CloseButton" inherits="UIPanelCloseButtonNoScripts">
+						<Anchors>
+							<Anchor point="TOPRIGHT" relativePoint="TOPRIGHT">
+								<Offset x="4" y="5"/>
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnClick>
+								RematchFrame:Hide()
+							</OnClick>
+						</Scripts>
+					</Button>
+					<Button parentKey="LockButton" inherits="RematchTitlebarButtonTemplate">
+						<Size x="32" y="32"/>
+						<Anchors>
+							<Anchor point="TOPLEFT" x="-5" y="5"/>
+						</Anchors>
+						<Layers>
+							<Layer level="OVERLAY">
+								<!-- little texture to add bracket texture -->
+								<Texture file="Interface\FrameGeneral\UI-Frame">
+									<Size x="11" y="22"/>
+									<Anchors>
+										<Anchor point="RIGHT"/>
+									</Anchors>
+									<TexCoords left="0.6640625" right="0.75" top="0.015625" bottom="0.1875"/>
+								</Texture>
+							</Layer>
+						</Layers>
+						<Scripts>
+							<OnClick>
+								RematchFrame:LockButtonOnClick()
+							</OnClick>
+						</Scripts>
+					</Button>
+					<Button parentKey="MinimizeButton" inherits="RematchTitlebarButtonTemplate">
+						<Size x="32" y="32"/>
+						<Anchors>
+							<Anchor point="TOPRIGHT" x="-18" y="5"/>
+						</Anchors>
+						<Layers>
+							<Layer level="OVERLAY">
+								<!-- little texture to add bracket texture -->
+								<Texture file="Interface\FrameGeneral\UI-Frame">
+									<Size x="11" y="22"/>
+									<Anchors>
+										<Anchor point="LEFT" x="-1" y="0"/>
+									</Anchors>
+									<TexCoords left="0.6640625" right="0.75" top="0.015625" bottom="0.1875"/>
+								</Texture>
+							</Layer>
+						</Layers>
+						<Scripts>
+							<OnClick>
+								RematchFrame:ToggleSize()
+								RematchFrame:UpdateCorner()
+							</OnClick>
+						</Scripts>
+					</Button>
+					<!-- Single Panel toggle button in topleft -->
+					<Button parentKey="SinglePanelButton" inherits="RematchTitlebarButtonTemplate,RematchTooltipScripts">
+						<Size x="32" y="32"/>
+						<Anchors>
+							<Anchor point="TOPLEFT" x="18" y="5"/>
+						</Anchors>
+						<Layers>
+							<Layer level="OVERLAY">
+								<!-- little texture to add bracket texture -->
+								<Texture file="Interface\FrameGeneral\UI-Frame">
+									<Size x="11" y="22"/>
+									<Anchors>
+										<Anchor point="RIGHT"/>
+									</Anchors>
+									<TexCoords left="0.6640625" right="0.75" top="0.015625" bottom="0.1875"/>
+								</Texture>
+							</Layer>
+						</Layers>
+						<Scripts>
+							<OnClick>
+								RematchSettings.SinglePanel = not RematchSettings.SinglePanel
+								Rematch.Frame:ConfigureFrame()
+							</OnClick>
+						</Scripts>
+					</Button>
+				</Frames>
+				<Layers>
+					<Layer level="BACKGROUND" textureSubLevel="-1">
+						<!-- background of just the titlebar -->
+						<Texture inherits="_UI-Frame-TitleTileBg">
+							<Anchors>
+								<Anchor point="TOPLEFT" x="2" y="-3"/>
+								<Anchor point="TOPRIGHT" x="-25" y="-3"/>
+							</Anchors>
+						</Texture>
+					</Layer>
+					<Layer level="OVERLAY">
+						<!-- topleft of titlebar -->
+						<Texture inherits="UI-Frame-TopLeftCorner">
+							<Anchors>
+								<Anchor point="TOPLEFT" x="-6" y="1"/>
+							</Anchors>
+						</Texture>
+						<!-- topright of titlebar -->
+						<Texture inherits="UI-Frame-TopCornerRight">
+							<Anchors>
+								<Anchor point="TOPRIGHT" x="0" y="1"/>
+							</Anchors>
+						</Texture>
+						<!-- foreground of titlebar (top to a normal BasicFrameTemplate) -->
+						<Texture inherits="_UI-Frame-TitleTile">
+							<Anchors>
+								<Anchor point="TOPLEFT" x="26" y="1"/>
+								<Anchor point="TOPRIGHT" x="-33" y="1"/>
+							</Anchors>
+						</Texture>
+						<!-- title text -->
+						<FontString parentKey="Title" inherits="GameFontNormal" justifyH="CENTER" justifyV="TOP">
+							<Anchors>
+								<Anchor point="TOP" x="0" y="-5"/>
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+			</Frame>
+			<!-- tabs along the bottom of the frame -->
+			<Frame parentKey="PanelTabs">
+				<Size x="570" y="32"/>
+				<Frames>
+					<Button parentArray="Tabs" inherits="RematchPanelTabButtonTemplate" id="1"/>
+					<Button parentArray="Tabs" inherits="RematchPanelTabButtonTemplate" id="2"/>
+					<Button parentArray="Tabs" inherits="RematchPanelTabButtonTemplate" id="3"/>
+					<Button parentArray="Tabs" inherits="RematchPanelTabButtonTemplate" id="4"/>
+					<Button parentArray="Tabs" inherits="RematchPanelTabButtonTemplate" id="5"/>
+				</Frames>
+			</Frame>
+		</Frames>
+		<!-- all this is the main body of the frame (without titlebar) -->
+		<Layers>
+			<Layer level="BACKGROUND" textureSubLevel="-1">
+				<!-- grey background within center of frame -->
+				<Texture file="Interface\FrameGeneral\UI-Background-Rock" horizTile="true" vertTile="true">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="2" y="-22"/>
+						<Anchor point="BOTTOMRIGHT" x="-2" y="1"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="BACKGROUND">
+				<!-- top tile streaks (darkened shadow at top of frame (beneath titlebar)) -->
+				<Texture inherits="_UI-Frame-TopTileStreaks">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="0" y="-21"/>
+						<Anchor point="TOPRIGHT" x="-2" y="-21"/>
+					</Anchors>
+				</Texture>
+				<!-- these are the streaks behind the toolbar buttons at the bottom -->
+				<Texture parentKey="BottomTileStreaks" inherits="_UI-Frame-TopTileStreaks">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" x="-2" y="38"/>
+						<Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" x="0" y="38"/>
+					</Anchors>
+				</Texture>
+				<!-- two shadows corners fill the empty space in the bottomleft/bottomright corners -->
+				<Texture parentKey="ShadowCornerBottomLeft" file="Interface\Common\ShadowOverlay-Corner" alpha="0.75">
+					<Size x="32" y="32"/>
+					<Anchors>
+						<Anchor point="BOTTOMLEFT" x="2" y="3"/>
+					</Anchors>
+					<TexCoords left="0" right="1" top="1" bottom="0"/>
+				</Texture>
+				<Texture parentKey="ShadowCornerBottomRight" file="Interface\Common\ShadowOverlay-Corner" alpha="0.75">
+					<Size x="32" y="32"/>
+					<Anchors>
+						<Anchor point="BOTTOMRIGHT" x="-4" y="3"/>
+					</Anchors>
+					<TexCoords left="1" right="0" top="1" bottom="0"/>
+				</Texture>
+			</Layer>
+			<Layer level="BORDER">
+				<!-- topleft -->
+				<Texture file="Interface\FrameGeneral\UI-Frame">
+					<Size x="16" y="16"/>	
+					<Anchors>
+						<Anchor point="TOPLEFT" x="-6" y="-18"/>
+					</Anchors>
+					<TexCoords left="0.63281250" right="0.7578125" top="0.28125000" bottom="0.40625"/>	
+				</Texture>
+				<!-- topright -->
+				<Texture file="Interface\FrameGeneral\UI-Frame">
+					<Size x="16" y="16"/>	
+					<Anchors>
+						<Anchor point="TOPRIGHT" x="0" y="-18"/>
+					</Anchors>
+					<TexCoords left="0.765625" right="0.89062500" top="0.00781250" bottom="0.1328125"/>	
+				</Texture>
+				<!-- top -->
+				<Texture file="Interface\FrameGeneral\_UI-Frame" horizTile="true">
+					<Size x="0" y="16"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="10" y="-18"/>
+						<Anchor point="TOPRIGHT" x="-16" y="-18"/>
+					</Anchors>
+					<TexCoords left="0.00000000" right="1.00000000" top="0.43750000" bottom="0.5625"/>	
+				</Texture>
+				<!-- bottomleft -->
+				<Texture file="Interface\FrameGeneral\UI-Frame">
+					<Size x="14" y="14"/>	
+					<Anchors>
+						<Anchor point="BOTTOMLEFT" x="-6" y="-5"/>
+					</Anchors>
+					<TexCoords left="0.00781250" right="0.11718750" top="0.63281250" bottom="0.74218750"/>	
+				</Texture>
+				<!-- bottomright -->
+				<Texture file="Interface\FrameGeneral\UI-Frame">
+					<Size x="11" y="11"/>	
+					<Anchors>
+						<Anchor point="BOTTOMRIGHT" x="0" y="-5"/>
+					</Anchors>
+					<TexCoords left="0.13281250" right="0.21875000" top="0.89843750" bottom="0.98437500"/>	
+				</Texture>
+				<!-- bottom -->
+				<Texture file="Interface\FrameGeneral\_UI-Frame" horizTile="true">
+					<Size x="0" y="9"/>
+					<Anchors>
+						<Anchor point="BOTTOMLEFT" x="8" y="-5"/>
+						<Anchor point="BOTTOMRIGHT" x="-11" y="-5"/>
+					</Anchors>
+					<TexCoords left="0.00000000" right="1.00000000" top="0.20312500" bottom="0.27343750"/>	
+				</Texture>
+				<!-- left -->
+				<Texture file="Interface\FrameGeneral\!UI-Frame" vertTile="true" >
+					<Size x="16" y="0"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="-6" y="-34"/>
+						<Anchor point="BOTTOMLEFT" x="0" y="9"/>
+					</Anchors>
+					<TexCoords left="0.35937500" right="0.60937500" top="0.00000000" bottom="1.00000000"/>	
+				</Texture>
+				<!-- right -->
+				<Texture file="Interface\FrameGeneral\!UI-Frame" vertTile="true" >
+					<Size x="10" y="0"/>
+					<Anchors>
+						<Anchor point="TOPRIGHT" x="1" y="-34"/>
+						<Anchor point="BOTTOMRIGHT" x="1" y="6"/>
+					</Anchors>
+					<TexCoords left="0.17187500" right="0.32812500" top="0.00000000" bottom="1.00000000"/>	
+				</Texture>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnShow>
+				self:OnShow()
+			</OnShow>
+			<OnHide>
+				self:OnHide()
+			</OnHide>
+			<OnMouseDown>
+				self:MoveStart()
+			</OnMouseDown>
+			<OnMouseUp>
+				self:MoveStop()
+			</OnMouseUp>
+			<OnDoubleClick>
+				self:ToggleSize()
+			</OnDoubleClick>
+		</Scripts>
+	</Button>
+</Ui>

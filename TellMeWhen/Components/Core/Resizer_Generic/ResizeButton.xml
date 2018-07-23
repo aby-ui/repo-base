@@ -1,0 +1,33 @@
+﻿<Ui>
+
+	<Button parentKey="resizeButton" name="TellMeWhen_ResizeButton" virtual="true">
+		<Size x="10" y="10"/>
+		<Anchors>
+			<Anchor point="BOTTOMRIGHT" x="3" y="-3"/>
+		</Anchors>
+		<HitRectInsets left="3" right="0" top="3" bottom="0" />
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture parentKey="texture" file="Interface\AddOns\TellMeWhen\Textures\Resize">
+					<Size x="10" y="10"/>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				self.texture:SetVertexColor(0.6, 0.6, 0.6)
+			</OnLoad>
+			<OnEnter>
+				self.texture:SetVertexColor(1, 1, 1)
+			</OnEnter>
+			<OnLeave>
+				self.texture:SetVertexColor(0.6, 0.6, 0.6)
+			</OnLeave>
+		</Scripts>
+	</Button>
+	
+</Ui>
+
+
+
+

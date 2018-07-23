@@ -1,0 +1,154 @@
+﻿<Ui>
+
+	<Frame name="TellMeWhen_MetaGroup" virtual="true">
+		<Size y="30"/>
+		<Frames>
+			<Frame parentKey="Icon" inherits="TMW_IconDropDownMenuTemplate">
+				<Anchors>
+					<Anchor point="LEFT" x="7"/>
+					<Anchor point="RIGHT" x="-26"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						TMW:CInit(self)
+				
+						self:RegisterForDrag("LeftButton", "RightButton")
+						self:SetTexts(TMW.L["CHOOSEICON"], TMW.L["CHOOSEICON_DESC"])
+						self:SetFunction(TMW.Types.meta.Config.IconMenu)
+
+						self:SetPreviewSize(21)
+					</OnLoad>
+					<OnDragStart>
+						local Config = TMW.Types.meta.Config
+
+						Config.draggingFrame = self
+						Config.draggingButton = button
+						Config.draggingOriginalFrame = self
+					</OnDragStart>
+					<OnDragStop>
+						local Config = TMW.Types.meta.Config
+
+						Config.draggingFrame = nil
+						Config.draggingButton = nil
+						Config.draggingOriginalFrame = nil
+					</OnDragStop>
+					<OnUpdate>
+						local Config = TMW.Types.meta.Config
+
+						if (self:IsMouseOver() or self.IconPreview:IsMouseOver()) and Config.draggingFrame and self ~= Config.draggingFrame then
+							if Config.draggingButton == "LeftButton" then
+								local sourceID = Config.draggingFrame:GetParent():GetID()
+								local destID = self:GetParent():GetID()
+								local delta = abs(sourceID - destID)
+								
+								if sourceID > destID then
+									for i = destID, sourceID - 1, 1 do
+										Config:SwapIcons(i, i + 1)
+									end
+								else
+									for i = sourceID, destID - 1, 1 do
+										Config:SwapIcons(i, i + 1)
+									end
+								end
+								
+								Config.draggingFrame = self
+								
+							elseif Config.draggingButton == "RightButton" then
+							
+								Config:SwapIcons(Config.draggingFrame:GetParent():GetID(), Config.draggingOriginalFrame:GetParent():GetID())
+								Config:SwapIcons(self:GetParent():GetID(), Config.draggingOriginalFrame:GetParent():GetID())
+								
+								Config.draggingFrame = self
+							end
+						end
+					</OnUpdate>
+				</Scripts>
+			</Frame>
+			
+			<Button parentKey="Delete" inherits="TellMeWhen_DeleteButtonTemplate">
+				<Anchors>
+					<Anchor point="LEFT" relativeKey="$parent.Icon" relativePoint="RIGHT" x="5" y="0"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						TMW:TT(self, "METAPANEL_REMOVE", "METAPANEL_REMOVE_DESC")
+					</OnLoad>
+					<OnClick>
+						TMW:ClickSound()
+
+						TMW.Types.meta.Config:Delete(self)
+					</OnClick>
+				</Scripts>
+			</Button>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				TMW.Types.meta.Config[self:GetID()] = self
+			</OnLoad>
+		</Scripts>
+	</Frame>
+
+	<Frame name="TellMeWhen_MetaIconOptions" inherits="TellMeWhen_OptionsModuleContainer" virtual="true">
+		<Size y="20"/>
+		<Frames>
+			<Button parentKey="Add" inherits="TellMeWhen_ButtonTemplate">
+				<Size x="160" y="16"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" x="7" y="-7"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+					
+						self:SetText([[|TInterface\PaperDollInfoFrame\Character-Plus:0|t ]] .. TMW.L["META_ADDICON"])
+						
+						TMW:TT(self, "META_ADDICON", "META_ADDICON_DESC")
+						
+						self:SetWidth(self:GetTextWidth()+15)
+						self:SetFrameLevel(self:GetParent():GetFrameLevel()+4)
+						self.Background:SetAlpha(0.7)
+					</OnLoad>
+					<OnClick>
+						TMW:ClickSound()
+						
+						tinsert(TMW.CI.ics.Icons, "")
+						TMW.Types.meta.Config:Reload()
+					</OnClick>
+				</Scripts>
+			</Button>
+			
+			<CheckButton parentKey="CheckNext" inherits="TellMeWhen_CheckTemplate">
+				<Anchors>
+					<!-- <Anchor point="TOPLEFT" x="5" y="-6"/> -->
+					<Anchor point="LEFT" relativeKey="$parent.Add" relativePoint="RIGHT" x="8" />
+				</Anchors>
+				<Scripts>
+					<OnLoad>						
+						TMW:CInit(self)
+
+						self:SetTexts(TMW.L["ICONMENU_CHECKNEXT"], TMW.L["ICONMENU_CHECKNEXT_DESC"])
+						self:SetSetting("CheckNext")
+					</OnLoad>
+				</Scripts>
+			</CheckButton>
+			
+			<Frame name="$parent1" inherits="TellMeWhen_MetaGroup" id="1">
+				<Anchors>
+					<Anchor point="TOP" relativeKey="$parent.CheckNext" relativePoint="BOTTOM" y="1"/>
+					<Anchor point="LEFT" />
+					<Anchor point="RIGHT" />
+				</Anchors>
+			</Frame>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				TMW:CInit(self)
+
+				self:CScriptAdd("ReloadRequested", function()
+					TMW.Types.meta.Config:LoadConfig()
+				end)
+				
+				self:SetTitle(TMW.L["ICONMENU_COMPONENTICONS"])
+			</OnLoad>
+		</Scripts>
+	</Frame>
+</Ui>

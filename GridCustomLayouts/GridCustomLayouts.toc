@@ -1,0 +1,17 @@
+## Interface: 80000
+## Title: GridCustomLayouts
+## Notes: Adds custom layouts for Grid
+## Author: Warbaby
+## Dependencies: Grid
+## X-Curse-Packaged-Version: r25
+## X-Curse-Project-Name: GridCustomLayouts
+## X-Curse-Project-ID: gridcustomlayouts
+## X-Curse-Repository-ID: wow/gridcustomlayouts/mainline
+
+SecureGroupHeadersCopy.lua
+Locales.lua
+GridCustomLayouts.lua
+GridCustomLayoutsFrame.xml
+
+## Title: |cff880303[有爱]|r Grid 自定义布局
+## X-Vendor: AbyUI

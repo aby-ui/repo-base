@@ -1,0 +1,19 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+	<Script file="utility.lua"/>
+
+	<!-- base elements -->
+	<Script file="panel.lua"/>
+	<Script file="scrollableContainer.lua"/>
+
+	<Script file="button.lua"/>
+	<Script file="checkButton.lua"/>
+	<Script file="colorPicker.lua"/>
+	<Script file="slider.lua"/>
+	<Script file="textInput.lua"/>
+	<Script file="dropdown.lua"/>
+	<Script file="textureSelector.lua"/>
+	<Script file="fontSelector.lua"/>
+
+	<Script file="menu.lua"/>
+	<Script file="panelSelector.lua"/>
+</Ui>

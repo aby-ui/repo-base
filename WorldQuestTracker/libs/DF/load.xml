@@ -1,0 +1,25 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+
+	<Script file="fw.lua"/>
+	<Script file="addon.lua"/>
+	<Script file="colors.lua"/>
+	<Script file="help.lua"/>
+	<Script file="label.lua"/>
+	<Script file="picture.lua"/>
+	<Script file="slider.lua"/>
+	<Script file="scrollbar.lua"/>
+	<Script file="spells.lua"/>
+	<Script file="math.lua"/>
+	
+	<Include file="tutorial_alert.xml"/>
+	<Include file="split_bar.xml"/>
+	<Include file="textentry.xml"/>
+	<Include file="button.xml"/>
+	<Include file="cooltip.xml"/>
+	<Include file="dropdown.xml"/>
+	<Include file="normal_bar.xml"/>
+	<Include file="panel.xml"/>
+
+	<Script file="pictureedit.lua"/>
+	<Script file="auras.lua"/>
+</Ui>

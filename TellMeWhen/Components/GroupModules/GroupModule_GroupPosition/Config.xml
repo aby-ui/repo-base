@@ -1,0 +1,365 @@
+<Ui>
+
+	<Frame name="TellMeWhen_GM_GroupPosition" inherits="TellMeWhen_OptionsModuleContainer" virtual="true">
+		<Size y="196"/>
+		<Frames>
+			<!--  TODO: add a message underneath this box if the target can't be found, and also add one if the target is a GUID. -->
+			<EditBox parentKey="RelativeTo" inherits="TellMeWhen_InputBoxTemplate">
+				<Anchors>
+					<Anchor point="TOP" y="-16"/>
+					<Anchor point="LEFT" x="9" />
+					<Anchor point="RIGHT" x="-9" />
+				</Anchors>
+				<Layers>
+					<Layer level="ARTWORK">
+						<FontString parentKey="headerText" inherits="GameFontHighlightSmall" justifyH="CENTER" justifyV="BOTTOM">
+							<Anchors>
+								<Anchor point="BOTTOM" relativePoint="TOP" y="1"/>
+								<Anchor point="LEFT" x="-5"/>
+								<Anchor point="RIGHT" x="5"/>
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnLoad>
+						TMW:CInit(self)
+
+						self:SetTexts(TMW.L["UIPANEL_RELATIVETO"], TMW.L["UIPANEL_RELATIVETO_DESC"])
+						self:SetSetting("relativeTo")
+						TMW.SUG:EnableEditBox(self, "frameName", true)
+
+						self:CScriptAdd("ModifyValueForSave", function(self, value)
+							value = value:trim()
+
+							if value == "" then
+								value = "UIParent"
+								self:SetText("UIParent")
+							elseif value:match("|H") then
+								value = value:match("|H(.-)|h.*|h")
+							else
+								-- Match by the return of GetGroupName(). This allows copy/paste of this value from one group to another.
+								local trimmed = value:trim(" \t[]")
+								for group in TMW:InGroups() do
+									local groupName = group:GetGroupName():gsub("|c........", ""):gsub("|r", "")
+									if groupName == trimmed then
+										value = group:GetGUID()
+									end
+								end
+							end
+
+							return value
+						end)
+
+						self:CScriptAdd("ModifyValueForLoad", function(self, value)
+							if TMW:ParseGUID(value) then
+								local group = TMW.GUIDToOwner[value]
+								local groupName = group and group.GetGroupName and group:GetGroupName() or value
+
+								-- Strip out the color reset after "Global" so the "link" stays pretty
+								groupName = groupName:gsub("|r", "|cff7fffff")
+
+								return "|H" .. value .. "|h|cff7fffff[" .. groupName .. "]|r|h"
+							end
+							return value
+						end)
+
+						-- Keep the group in the same place after changing this setting - modify the offsets accordingly.
+						self:CScriptAddPre("SettingSaved", function()
+							local group = TMW.CI.group
+
+							local GroupModule_GroupPosition = group:GetModuleOrModuleChild("GroupModule_GroupPosition")
+							GroupModule_GroupPosition:UpdatePositionAfterMovement()
+						end)
+
+						self.headerText:SetText(TMW.L["UIPANEL_RELATIVETO"])
+
+						-- TODO: make a cool sug module for this.
+					--	TMW.SUG:EnableEditBox(self, "texture", true)
+					</OnLoad>
+				</Scripts>
+			</EditBox>
+
+			<Frame parentKey="Point" inherits="TellMeWhen_PointSelectTemplate">
+				<Size x="65" y="55"/>
+				<Anchors>
+					<Anchor point="TOP" relativeKey="$parent.RelativeTo" relativePoint="BOTTOM" y="-19"/>
+					<Anchor point="LEFT" x="8" />
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						TMW:CInit(self)
+
+						self:SetTexts(TMW.L["UIPANEL_POINT"], TMW.L["UIPANEL_POINT2_DESC"])
+						self:SetSetting("point")
+
+						-- Keep the group in the same place after changing this setting - modify the offsets accordingly.
+						self:CScriptAddPre("SettingSaved", function()
+							local group = TMW.CI.group
+
+							local GroupModule_GroupPosition = group:GetModuleOrModuleChild("GroupModule_GroupPosition")
+							GroupModule_GroupPosition:UpdatePositionAfterMovement()
+						end)
+
+					</OnLoad>
+				</Scripts>
+			</Frame>
+
+			<Frame parentKey="RelativePoint" inherits="TellMeWhen_PointSelectTemplate">
+				<Size x="65" />
+				<Anchors>
+					<Anchor point="LEFT" relativeKey="$parent.Point" relativePoint="RIGHT" x="10" />
+
+					<Anchor point="TOP" relativeKey="$parent.Point" />
+					<Anchor point="BOTTOM" relativeKey="$parent.Point" />
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						TMW:CInit(self)
+
+						self:SetTexts(TMW.L["UIPANEL_RELATIVEPOINT"], TMW.L["UIPANEL_RELATIVEPOINT2_DESC"])
+						self:SetSetting("relativePoint")
+
+						-- Keep the group in the same place after changing this setting - modify the offsets accordingly.
+						self:CScriptAddPre("SettingSaved", function()
+							local group = TMW.CI.group
+
+							local GroupModule_GroupPosition = group:GetModuleOrModuleChild("GroupModule_GroupPosition")
+							GroupModule_GroupPosition:UpdatePositionAfterMovement()
+						end)
+
+					</OnLoad>
+				</Scripts>
+			</Frame>
+
+			<Slider parentKey="X" inherits="TellMeWhen_SliderTemplate">
+				<Anchors>
+					<Anchor point="TOP" relativeKey="$parent.Point" y="-1"/>
+					<Anchor point="LEFT" relativeKey="$parent.RelativePoint" relativePoint="RIGHT" x="10" />
+					<Anchor point="RIGHT" x="-10" />
+				</Anchors>
+				<Scripts>
+					<OnLoad>						
+						TMW:CInit(self)
+
+						self:SetTexts(TMW.L["UIPANEL_FONT_XOFFS"], TMW.L["UIPANEL_FONT_XOFFS_DESC"])
+						self:SetSetting("x")
+
+						self:SetMode(self.MODE_ADJUSTING)
+						self:SetMinMaxValues(-2000, 2000)
+						self:SetRange(20)
+						self:SetValueStep(0.1)
+						self:SetWheelStep(1)
+
+						self:SetTextFormatter(TMW.C.Formatter.F_1, TMW.C.Formatter.F_0)
+					</OnLoad>
+				</Scripts>
+			</Slider>
+			<Slider parentKey="Y" inherits="TellMeWhen_SliderTemplate">
+				<Anchors>
+					<Anchor point="LEFT" relativeKey="$parent.X"/>
+					<Anchor point="RIGHT" relativeKey="$parent.X"/>
+					<Anchor point="BOTTOM" relativeKey="$parent.Point" y="1"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>						
+						TMW:CInit(self)
+
+						self:SetTexts(TMW.L["UIPANEL_FONT_YOFFS"], TMW.L["UIPANEL_FONT_YOFFS_DESC"])
+						self:SetSetting("y")
+
+						self:SetMode(self.MODE_ADJUSTING)
+						self:SetMinMaxValues(-2000, 2000)
+						self:SetRange(20)
+						self:SetValueStep(0.1)
+						self:SetWheelStep(1)
+						
+						self:SetTextFormatter(TMW.C.Formatter.F_1, TMW.C.Formatter.F_0)
+					</OnLoad>
+				</Scripts>
+			</Slider>
+
+			<Slider parentKey="Strata" inherits="TellMeWhen_SliderTemplate">
+				<Anchors>
+					<Anchor point="TOP" relativeKey="$parent.Point" relativePoint="BOTTOM"  y="-13"/>
+					<Anchor point="LEFT" x="10" />
+					<Anchor point="RIGHT" relativeKey="$parent.RelativePoint" x="-5" />
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						local stratas = {
+							"BACKGROUND",
+							"LOW",
+							"MEDIUM",
+							"HIGH",
+							"DIALOG",
+							"FULLSCREEN",
+							"FULLSCREEN_DIALOG",
+							"TOOLTIP",
+						}
+
+						TMW:CInit(self)
+
+						self:SetTexts(TMW.L["UIPANEL_STRATA"], TMW.L["UIPANEL_STRATA_DESC"])
+						self:SetSetting("Strata")
+
+						self:SetMinMaxValues(1, #stratas)
+						self:SetValueStep(1)
+
+						self:CScriptAdd("ModifyValueForSave", function(self, value)
+							return stratas[value]
+						end)
+
+						self:CScriptAdd("ModifyValueForLoad", function(self, value)
+							return TMW.tContains(stratas, value)
+						end)
+
+						self:CScriptAdd("SettingTableRequested", function(requester)
+							return TMW.CI.gs
+						end)
+
+						self:SetTextFormatter(TMW.C.Formatter:New(function(value)
+							if value and stratas[value] then
+								return TMW.L["STRATA_" .. stratas[value]]
+							else
+								return ""
+							end
+						end), TMW.C.Formatter.NONE)
+					</OnLoad>
+				</Scripts>
+			</Slider>
+
+			<Slider parentKey="Level" inherits="TellMeWhen_SliderTemplate">
+				<Anchors>
+					<Anchor point="TOP" relativeKey="$parent.Strata"/>
+					<Anchor point="LEFT" relativeKey="$parent.Y" />
+					<Anchor point="RIGHT" relativeKey="$parent.Y" />
+				</Anchors>
+				<Scripts>
+					<OnLoad>						
+						TMW:CInit(self)
+
+						self:SetTexts(TMW.L["UIPANEL_LEVEL"], TMW.L["UIPANEL_LEVEL_DESC"])
+						self:SetSetting("Level")
+
+						self:SetMode(self.MODE_ADJUSTING)
+						self:SetMinMaxValues(5, 1000)
+						self:SetRange(20)
+						self:SetValueStep(1)
+
+						self:CScriptAdd("SettingTableRequested", function(requester)
+							return TMW.CI.gs
+						end)
+
+						-- self:SetTextFormatter(TMW.C.Formatter:New(UNIT_LEVEL_TEMPLATE), TMW.C.Formatter.PASS)
+					</OnLoad>
+				</Scripts>
+			</Slider>
+
+			<Slider parentKey="Scale" inherits="TellMeWhen_SliderTemplate">
+				<Anchors>
+					<Anchor point="TOP" relativeKey="$parent.Strata" relativePoint="BOTTOM"  y="-20"/>
+					<Anchor point="LEFT" relativeKey="$parent.Strata" />
+					<Anchor point="RIGHT" relativeKey="$parent.Strata" />
+				</Anchors>
+				<Scripts>
+					<OnLoad>						
+						TMW:CInit(self)
+
+						self:SetTexts(TMW.L["UIPANEL_SCALE"], nil)
+						self:SetSetting("Scale")
+
+						self:SetMode(self.MODE_ADJUSTING)
+						self:SetMinMaxValues(0.4, 30)
+						self:SetRange(0.5)
+						self:SetValueStep(0.0001)
+						self:SetWheelStep(0.01)
+
+						self:SetTextFormatter(TMW.C.Formatter.PERCENT100, TMW.C.Formatter.PERCENT100_F0)
+
+						self:CScriptAddPre("SettingSaved", function()
+							local group = TMW.CI.group
+
+							local GroupModule_GroupPosition = group:GetModuleOrModuleChild("GroupModule_GroupPosition")
+							GroupModule_GroupPosition:SetNewScale(self:GetValue())
+						end)
+
+						self:CScriptAdd("SettingTableRequested", function(requester)
+							return TMW.CI.gs
+						end)
+
+					</OnLoad>
+				</Scripts>
+			</Slider>
+
+
+							
+			<CheckButton parentKey="Locked" inherits="TellMeWhen_CheckTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeKey="$parent.Level" relativePoint="BOTTOMLEFT" x="-6" y="-7"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						TMW:CInit(self)
+
+						self:SetTexts(TMW.L["UIPANEL_LOCK"], TMW.L["UIPANEL_LOCK_DESC"])
+						self:SetSetting("Locked")
+						self:ConstrainLabel(self:GetParent(), "RIGHT")
+
+						self:CScriptAdd("SettingTableRequested", function(requester)
+							return TMW.CI.gs
+						end)
+					</OnLoad>
+				</Scripts>
+			</CheckButton>
+
+			<Button parentKey="ResetButton" inherits="TellMeWhen_ButtonTemplate" text="RESET">
+				<Size y="14"/>
+				<Anchors>
+					<Anchor point="BOTTOMRIGHT" x="-11" y="7"/>
+				</Anchors>
+				
+				<NormalFont style="GameFontNormalSmall"/>
+				<HighlightFont style="GameFontHighlightSmall"/>
+
+				<Scripts>
+					<OnLoad>
+						self:SetText(TMW.L["UIPANEL_GROUPRESET"])
+						TMW:TT(self, "UIPANEL_GROUPRESET", "UIPANEL_TOOLTIP_GROUPRESET")
+
+						-- Fill the "right column", or fit the text, whichever is bigger.
+						self:SetWidth(self:GetParent().Level:GetWidth()/self:GetScale())
+
+						self:SetFrameLevel(self:GetFrameLevel()+2)
+					</OnLoad>
+					<OnClick>
+						TMW:ClickSound()
+
+						local group = TMW.CI.group
+						local module = group:GetModuleOrModuleChild("GroupModule_GroupPosition")
+						module:Reset()
+					</OnClick>
+				</Scripts>
+			</Button>
+
+
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				TMW:CInit(self)
+				
+				self:SetTitle(TMW.L["UIPANEL_POSITION"])
+				
+				self:CScriptAdd("SettingTableRequested", function(requester)
+					return TMW.CI.gs.Point
+				end)
+
+				-- These have to go AFTER we declare SettingTableRequested.
+				-- That's why they aren't above with the sliders' OnLoads
+				--self.X:UseEditBox()
+				--self.Y:UseEditBox()
+			</OnLoad>
+		</Scripts>
+	</Frame>
+ 
+</Ui>

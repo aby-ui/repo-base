@@ -1,0 +1,71 @@
+<Ui>
+
+	<!-- the red panel buttons along bottom of window -->
+	<Button name="RematchMagicButtonTemplate" inherits="MagicButtonTemplate" motionScriptsWhileDisabled="true" virtual="true">
+		<Size x="120" y="22"/>
+		<Scripts>
+			<OnLoad>
+				MagicButton_OnLoad(self)
+			</OnLoad>
+			<OnClick>
+				RematchBottomPanel.ButtonOnClick(self)
+			</OnClick>
+		</Scripts>
+	</Button>
+
+	<!-- BottomPanel of red buttons reparented between RematchFrame and RematchJournal -->
+	<Frame name="RematchBottomPanel" useParentLevel="true" hidden="true">
+		<Size x="0" y="22"/>
+		<Frames>
+			<!-- red panel buttons across bottom -->
+			<Button parentKey="FindBattleButton" inherits="RematchMagicButtonTemplate,RematchTooltipScripts" text="FIND_BATTLE">
+				<Anchors>
+					<Anchor point="BOTTOMRIGHT"/>
+				</Anchors>
+			</Button>
+			<Button parentKey="SaveAsButton" inherits="RematchMagicButtonTemplate,RematchTooltipScripts">
+				<Anchors>
+					<Anchor point="RIGHT" relativeKey="$parent.FindBattleButton" relativePoint="LEFT"/>
+				</Anchors>
+			</Button>
+			<Button parentKey="SaveButton" inherits="RematchMagicButtonTemplate,RematchTooltipScripts" text="SAVE">
+				<Anchors>
+					<Anchor point="RIGHT" relativeKey="$parent.SaveAsButton" relativePoint="LEFT"/>
+				</Anchors>
+			</Button>
+			<Button parentKey="SummonButton" inherits="RematchMagicButtonTemplate,RematchTooltipScripts" text="BATTLE_PET_SUMMON">
+				<Anchors>
+					<Anchor point="BOTTOMLEFT"/>
+				</Anchors>
+			</Button>
+			<CheckButton parentKey="UseDefault" inherits="UICheckButtonTemplate,RematchTooltipScripts">
+				<Size x="26" y="26"/>
+				<HitRectInsets>
+					<AbsInset left="-2" right="-56" top="-2" bottom="-2"/>
+				</HitRectInsets>
+				<Anchors>
+					<Anchor point="LEFT" relativeKey="$parent.SummonButton" relativePoint="RIGHT" x="4" y="-1"/>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						PetJournal_UpdatePetLoadOut()
+						RematchSettings.UseDefaultJournal = true
+						Rematch.Journal:ConfigureJournal()
+					</OnClick>
+				</Scripts>
+			</CheckButton>
+		</Frames>
+		<Scripts>
+			<OnEvent>
+				self:OnEvent(event,...)
+			</OnEvent>
+			<OnShow>
+				self:OnShow()
+			</OnShow>
+			<OnHide>
+				self:OnHide()
+			</OnHide>
+		</Scripts>
+	</Frame>
+
+</Ui>

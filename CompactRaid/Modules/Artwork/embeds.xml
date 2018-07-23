@@ -1,0 +1,7 @@
+﻿<Ui xmlns="http://www.blizzard.com/wow/ui/">
+	<Script file="Locales\enUS.lua"/>
+	<Script file="Locales\zhCN.lua"/>
+	<Script file="Locales\zhTW.lua"/>
+	<Script file="Core.lua"/>
+	<Script file="OptionFrame.lua"/>
+</Ui>

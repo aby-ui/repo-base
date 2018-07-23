@@ -1,0 +1,19 @@
+## Interface: 80000
+## Title: HandyNotes_DraenorTreasures
+## Version: 1.21
+## Notes: Shows location of treasures and rares in Draenor
+## Author: Katjes (Coronet - Dun Morogh(EU))
+## OptionalDeps: Ace3
+## RequiredDeps: HandyNotes
+## X-Embeds: Ace3
+## SavedVariables: DraenorTreasuresDB
+
+#@no-lib-strip@
+#@end-no-lib-strip@
+
+HandyNotes_DraenorTreasures.lua
+
+## Title-zhCN: |cff880303[有爱]|r HandyNotes 德拉诺宝箱
+## X-Vendor: AbyUI
+
+

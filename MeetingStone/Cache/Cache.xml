@@ -1,0 +1,15 @@
+<Ui xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+  <Script file="Object.lua" />
+  <Script file="Serializer.lua" />
+  <Script file="ActivityProto.lua" />
+  <Script file="BaseActivity.lua" />
+  <Script file="Activity.lua" />
+  <Script file="CurrentActivity.lua" />
+  <Script file="Applicant.lua" />
+  <Script file="DataCache.lua" />
+  <Script file="ServerDataCache.lua" />
+  <Script file="FollowQuery.lua" />
+  <Script file="RecentPlayer.lua" />
+  <Script file="RecentManager.lua" />
+</Ui>

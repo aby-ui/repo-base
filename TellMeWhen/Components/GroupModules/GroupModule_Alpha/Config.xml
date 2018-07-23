@@ -1,0 +1,30 @@
+﻿<Ui>
+
+	<Frame name="TellMeWhen_GM_Alpha" inherits="TellMeWhen_OptionsModuleContainer" virtual="true">
+		<Size y="34"/>
+		<Frames>
+			<Slider parentKey="Alpha" inherits="TellMeWhen_SliderTemplate_Alpha">
+				<Anchors>
+					<Anchor point="LEFT" x="10" />
+					<Anchor point="RIGHT" x="-10" />
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						TMW:CInit(self)
+
+						self:SetTexts(TMW.L["UIPANEL_GROUPALPHA"], TMW.L["UIPANEL_GROUPALPHA_DESC"])
+						self:SetSetting("Alpha")
+					</OnLoad>
+				</Scripts>
+			</Slider>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				TMW:CInit(self)
+				
+				self:SetTitle(TMW.L["ALPHA"])
+			</OnLoad>
+		</Scripts>
+	</Frame>
+ 
+</Ui>

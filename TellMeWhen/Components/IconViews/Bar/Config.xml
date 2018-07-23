@@ -1,0 +1,217 @@
+<Ui>
+
+	<Frame name="TellMeWhen_GM_Bar" inherits="TellMeWhen_OptionsModuleContainer" virtual="true">
+		<Size y="136"/>
+		<Frames>
+
+			<CheckButton parentKey="Icon" inherits="TellMeWhen_CheckTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT"  x="5" y="-1"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						TMW:CInit(self)
+
+						self:SetTexts(TMW.L["UIPANEL_BAR_SHOWICON"], TMW.L["UIPANEL_BAR_SHOWICON_DESC"])
+						self:SetSetting("Icon")
+					</OnLoad>
+				</Scripts>
+			</CheckButton>
+
+			<CheckButton parentKey="Flip" inherits="TellMeWhen_CheckTemplate">
+				<Anchors>
+					<Anchor point="TOP" relativeKey="$parent.Icon"/>
+					<Anchor point="LEFT" relativePoint="CENTER" x="5" />
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						TMW:CInit(self)
+
+						self:SetTexts(TMW.L["UIPANEL_BAR_FLIP"], TMW.L["UIPANEL_BAR_FLIP_DESC"])
+						self:SetSetting("Flip")
+
+						self:CScriptAdd("ReloadRequested", function()
+							local settings = self:GetSettingTable()
+							if settings then
+								self:SetEnabled(settings.Icon)
+							end
+						end)
+					</OnLoad>
+				</Scripts>
+			</CheckButton>
+
+			<Button parentKey="BorderColor" inherits="TellMeWhen_ColorButtonTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeKey="$parent.Icon" relativePoint="BOTTOMLEFT" x="4" y="-6" />
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						TMW:CInit(self)
+
+						self:SetTexts(TMW.L["UIPANEL_BAR_BORDERCOLOR"], TMW.L["UIPANEL_BAR_BORDERCOLOR_DESC"])
+						self:SetSetting("BorderColor")
+						self:SetHasOpacity(true)
+					</OnLoad>
+				</Scripts>
+			</Button>
+
+			<Slider parentKey="Padding" inherits="TellMeWhen_SliderTemplate">
+				<Anchors>
+					<Anchor point="TOP" relativeKey="$parent.BorderColor" />
+					<Anchor point="LEFT" relativePoint="CENTER" x="10" />
+					<Anchor point="RIGHT" x="-10" />
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						TMW:CInit(self)
+
+						self:SetTexts(TMW.L["UIPANEL_BAR_PADDING"], TMW.L["UIPANEL_BAR_PADDING_DESC"])
+						self:SetSetting("Padding")
+						
+						self:SetMinMaxValues(0, math.huge)
+						self:SetRange(10)
+						self:SetMode(self.MODE_ADJUSTING)
+						self:SetValueStep(0.1)
+						self:SetWheelStep(0.5)
+
+						self:SetTextFormatter(TMW.C.Formatter.PIXELS, TMW.C.Formatter.F_0)
+
+						self:CScriptAdd("ReloadRequested", function()
+							local settings = self:GetSettingTable()
+							if settings then
+								self:SetEnabled(settings.Icon)
+							end
+						end)
+					</OnLoad>
+				</Scripts>
+			</Slider>
+
+			<Slider parentKey="BorderIcon" inherits="TellMeWhen_SliderTemplate">
+				<Anchors>
+					<Anchor point="LEFT" x="10" />
+					<Anchor point="TOP" relativeKey="$parent.BorderColor" relativePoint="BOTTOM" y="-14"/>
+					<Anchor point="RIGHT" relativePoint="CENTER" x="-10" />
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						TMW:CInit(self)
+
+						self:SetTexts(TMW.L["UIPANEL_BAR_BORDERICON"], TMW.L["UIPANEL_BAR_BORDERICON_DESC"])
+						self:SetSetting("BorderIcon")
+
+						self:SetMinMaxValues(0, 5)
+						--self:SetRange(3)
+						--self:SetMode(self.MODE_ADJUSTING)
+						self:SetValueStep(0.1)
+						self:SetWheelStep(0.5)
+
+						self:SetTextFormatter(TMW.C.Formatter.PIXELS, TMW.C.Formatter.F_0)
+
+						self:CScriptAdd("ReloadRequested", function()
+							local settings = self:GetSettingTable()
+							if settings then
+								self:SetEnabled(settings.Icon)
+							end
+						end)
+					</OnLoad>
+				</Scripts>
+			</Slider>
+
+			<Slider parentKey="BorderBar" inherits="TellMeWhen_SliderTemplate">
+				<Anchors>
+					<Anchor point="TOP" relativeKey="$parent.BorderIcon" />
+					<Anchor point="RIGHT" x="-10" />
+					<Anchor point="LEFT" relativePoint="CENTER" x="10" />
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						TMW:CInit(self)
+
+						self:SetTexts(TMW.L["UIPANEL_BAR_BORDERBAR"], TMW.L["UIPANEL_BAR_BORDERBAR_DESC"])
+						self:SetSetting("BorderBar")
+
+						self:SetMinMaxValues(0, 5)
+						--self:SetRange(3)
+						--self:SetMode(self.MODE_ADJUSTING)
+						self:SetValueStep(0.1)
+						self:SetWheelStep(0.5)
+
+						self:SetTextFormatter(TMW.C.Formatter.PIXELS, TMW.C.Formatter.F_0)
+					</OnLoad>
+				</Scripts>
+			</Slider>
+
+			<Slider parentKey="SizeX" inherits="TellMeWhen_SliderTemplate">
+				<Anchors>
+					<Anchor point="TOP" relativeKey="$parent.BorderIcon" relativePoint="BOTTOM"  y="-14"/>
+					<Anchor point="LEFT" relativeKey="$parent.BorderIcon" />
+					<Anchor point="RIGHT" relativeKey="$parent.BorderIcon" />
+					
+				</Anchors>
+				<Scripts>
+					<OnLoad>						
+						TMW:CInit(self)
+
+						self:SetTexts(TMW.L["UIPANEL_BAR_SIZE_X"], TMW.L["UIPANEL_BAR_SIZE_X_DESC"])
+						self:SetSetting("SizeX")
+
+						self:SetMode(self.MODE_ADJUSTING)
+						self:SetMinMaxValues(1, 2000)
+						self:SetRange(20)
+						self:SetValueStep(0.1)
+						self:SetWheelStep(1)
+						
+						self:SetTextFormatter(TMW.C.Formatter.F_1, TMW.C.Formatter.F_0)
+					</OnLoad>
+				</Scripts>
+			</Slider>
+
+			<Slider parentKey="SizeY" inherits="TellMeWhen_SliderTemplate">
+				<Anchors>
+					<Anchor point="TOP" relativeKey="$parent.SizeX" />
+					<Anchor point="LEFT" relativeKey="$parent.BorderBar" />
+					<Anchor point="RIGHT" relativeKey="$parent.BorderBar" />
+					
+				</Anchors>
+				<Scripts>
+					<OnLoad>						
+						TMW:CInit(self)
+
+						self:SetTexts(TMW.L["UIPANEL_BAR_SIZE_Y"], TMW.L["UIPANEL_BAR_SIZE_Y_DESC"])
+						self:SetSetting("SizeY")
+
+						self:SetMode(self.MODE_ADJUSTING)
+						self:SetMinMaxValues(1, 2000)
+						self:SetRange(20)
+						self:SetValueStep(0.1)
+						self:SetWheelStep(1)
+						
+						self:SetTextFormatter(TMW.C.Formatter.F_1, TMW.C.Formatter.F_0)
+					</OnLoad>
+				</Scripts>
+			</Slider>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				TMW:CInit(self)
+				
+				self.Icon:ConstrainLabel(self.Flip)
+				self.Flip:ConstrainLabel(self, "RIGHT")
+
+				self:CScriptAdd("ReloadRequested", function()
+					self:SetTitle(TMW.CI.group.viewData.name)
+				end)
+				
+				self:CScriptAdd("SettingTableRequested", function(requester)
+					if TMW.CI.gs.View == "bar" or TMW.CI.gs.View == "barv" then
+						return TMW.CI.group:GetSettingsPerView()
+					else
+						-- prevent the settings from loading if the current view is wrong.
+						return false
+					end
+				end)
+			</OnLoad>
+		</Scripts>
+	</Frame>
+ 
+</Ui>

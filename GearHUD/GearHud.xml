@@ -1,0 +1,136 @@
+<Ui xmlns="http//www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/FrameXML/UI.xsd">
+	<Script file="GearHUD.lua"/>
+	<Frame name="GearHud" toplevel="true" parent="UIParent" hidden="true" alpha="1.0" movable="true" resizable="true">
+		<Size>
+			<AbsDimension x="148" y="148"/>
+		</Size>
+		<Layers>
+			<Layer level="ARTWORK">
+				<Texture name="GearHudTexture" file="Interface\Addons\GearHud\GEAR_HUD" alphaMode="BLEND">
+					<Anchors><Anchor point="CENTER"/></Anchors>
+				</Texture>
+				<Texture name="GearHudTexture2" file="Interface\Addons\GearHud\GEAR_HUD" alphaMode="BLEND" hidden="true">
+					<Anchors><Anchor point="CENTER"/></Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Button name="$parentResizeButton" parentKey="resizeButton" hidden="true">
+				<Size x="32" y="32"/>
+				<Anchors>
+					<Anchor point="BOTTOMRIGHT">
+						<Offset>
+							<AbsDimension x="0" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnEnter>
+						GameTooltip_AddNewbieTip(self, "调整尺寸\n请横向拖动按钮，结束后会按比例放大\n\n按鼠标右键可锁定位置.", 1, 1, 1)
+					</OnEnter>
+					<OnLeave>
+						GameTooltip:Hide();
+					</OnLeave>
+					<OnMouseDown>
+						if(button=="RightButton") then
+							GearHud_Lock();
+							return
+						end
+						local chatFrame = self:GetParent();
+						chatFrame.w = chatFrame:GetWidth();
+						chatFrame.h = chatFrame:GetHeight();
+						self:SetButtonState("PUSHED", true);
+                        SetCursor("Interface\\CURSOR\\openhandglow");
+
+						self:GetHighlightTexture():Hide();
+
+						chatFrame:StartSizing("RIGHT");
+					</OnMouseDown>
+					<OnMouseUp>
+						self:SetButtonState("NORMAL", false);
+						SetCursor(nil); --Show the cursor again
+
+						self:GetHighlightTexture():Show();
+						
+						self:GetParent():StopMovingOrSizing();
+						GearHudSettings.scale = self:GetParent():GetWidth()*self:GetParent():GetScale()/self:GetParent().w;
+						self:GetParent():SetWidth(self:GetParent().w)
+						self:GetParent():SetHeight(self:GetParent().h)
+						GearHud_UpdateScale();
+						GearHud_SavePos();
+					</OnMouseUp>
+					<OnShow>
+						GearHudDebug:Show();
+					</OnShow>
+					<OnHide>
+						GearHudDebug:Hide();
+						GearHud_Update();
+					</OnHide>
+				</Scripts>
+				<NormalTexture file="Interface\ChatFrame\UI-ChatIM-SizeGrabber-Up"/>
+				<HighlightTexture file="Interface\ChatFrame\UI-ChatIM-SizeGrabber-Highlight"/>
+				<PushedTexture file="Interface\ChatFrame\UI-ChatIM-SizeGrabber-Down"/>
+			</Button>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				GearHud_OnLoad(self);
+			</OnLoad>
+			<OnEvent>
+				GearHud_OnEvent(event, ...);
+			</OnEvent>
+		</Scripts>
+	</Frame>
+	<Frame name="GearHudIndicator" toplevel="true" parent="UIParent" hidden="true" alpha="1.0">
+		<Size>
+			<AbsDimension x="160" y="160"/>
+		</Size>
+		<Anchors>
+			<Anchor point="CENTER" relativePoint="CENTER" relativeTo="GearHud">
+				<Offset>
+					<AbsDimension x="6" y="35"/>
+				</Offset>
+			</Anchor>
+		</Anchors>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture file="Interface\Addons\GearHud\GEAR_HUD" alphaMode="ADD">
+					<TexCoords left="0.005859375" right="0.318359375" top="0.328125" bottom="0.640625"/>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnShow>
+				self.timer = GEARHUD_INDICATOR_SHOWTIME + GEARHUD_INDICATOR_FADETIME; 
+				self:SetAlpha(1);
+			</OnShow>
+			<OnUpdate>
+				GearHudIndicator_OnUpdate(self, elapsed);
+			</OnUpdate>
+			<OnHide>
+				self.timer = 0;
+			</OnHide>
+		</Scripts>
+	</Frame>
+
+	<Frame name="GearHudDebug" hidden="true">
+		<Scripts>
+			<OnLoad>
+				GearHud_Count = 0
+			</OnLoad>
+			<OnUpdate>
+				if GearHud_Count &lt;= 0 then self:Hide() return end
+
+				GearHud_Left = GearHud_Left or GEAR_HUD_THRESH_HOLD[1] + 5
+				GearHud_Update(GearHud_Left);
+				if( GearHud_Left &lt; 0 ) then
+					GearHudIndicator:Show();
+					GearHud_Left = nil;
+					GearHud_Count = GearHud_Count - 1;
+				else
+					GearHud_Left = GearHud_Left - elapsed * 20;
+				end
+			</OnUpdate>
+		</Scripts>
+	</Frame>
+</Ui>

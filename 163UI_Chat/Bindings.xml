@@ -1,0 +1,17 @@
+<Bindings>
+	<Binding name="SAYMESSAGE" header="EASYCHATCHANGE">
+		U1Chat_SetChatType("SAY")
+	</Binding>
+	<Binding name="YELLMESSAGE">
+		U1Chat_SetChatType("YELL")
+	</Binding>
+	<Binding name="PARTYMESSAGE">
+		U1Chat_SetChatType("PARTY")
+	</Binding>
+	<Binding name="GUILDMESSAGE">
+		U1Chat_SetChatType("GUILD")
+	</Binding>
+	<Binding name="RAIDMESSAGE">
+		U1Chat_SetChatType("RAID")
+	</Binding>
+</Bindings>

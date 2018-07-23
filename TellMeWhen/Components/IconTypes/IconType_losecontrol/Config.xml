@@ -1,0 +1,40 @@
+﻿<Ui>
+
+	<Frame name="TellMeWhen_LoseControlTypes" inherits="TellMeWhen_OptionsModuleContainer" virtual="true">
+		<Size y="33"/>
+		<Frames>
+		
+			<Frame parentKey="LocTypes" name="$parentLocTypes" inherits="TMW_DropDownMenuTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" x="7" y="-6"/>
+					<Anchor point="RIGHT" x="-7" />
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						TMW:CInit(self)
+				
+						self:SetTexts(TMW.L["LOSECONTROL_DROPDOWNLABEL"], TMW.L["LOSECONTROL_DROPDOWNLABEL_DESC"])
+						self:SetFunction(TMW.Types.losecontrol.Config.DropdownMenu_SelectTypes)
+
+						self:CScriptAdd("ReloadRequested", function()
+							TMW.Types.losecontrol.Config:DropdownMenu_SetText()
+						end)
+						
+						self.Button:HookScript("OnClick", function(self)
+							TMW.IE:SaveSettings()
+						end)
+					</OnLoad>
+				</Scripts>
+			</Frame>
+			
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				TMW:CInit(self)
+				
+				self:SetTitle(TMW.L["LOSECONTROL_DROPDOWNLABEL"])
+			</OnLoad>
+		</Scripts>
+	</Frame>
+	
+</Ui>

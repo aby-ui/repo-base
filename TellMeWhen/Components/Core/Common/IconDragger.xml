@@ -1,0 +1,26 @@
+﻿<Ui>
+	<Button name="TellMeWhen_IconDragger" hidden="true" enableMouse="false" frameStrata="HIGH">
+		<Size x="30" y="30"/>
+		<Layers>
+			<Layer level="ARTWORK">
+				<Texture parentKey="texture" name="$parentIcon" file="Interface\Icons\INV_Misc_QuestionMark">
+					<Size x="30" y="30"/>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				self:SetAlpha(0.5)
+				
+				TMW.IconDragger.DraggerFrame = self
+			</OnLoad>
+			<OnUpdate>
+				local x, y = GetCursorPosition()
+				local scale = self:GetScale()
+				
+				self.texture:ClearAllPoints()
+				self.texture:SetPoint("CENTER", UIParent, "BOTTOMLEFT", x/scale, y/scale)
+			</OnUpdate>
+		</Scripts>
+	</Button>
+</Ui>

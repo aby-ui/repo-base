@@ -1,0 +1,12 @@
+## Interface: 30200
+## LoadOnDemand: 1
+## Title: Lib: Crayon-3.0
+## Notes: A library to provide coloring tools.
+## Author: ckknight, TheKarn
+## X-eMail: ckknight@gmail.com, thekarn@gmail.com
+## X-Category: Library
+## X-AceLibrary-Crayon-2.0: true
+## X-License: LGPL v2.1
+
+LibStub\LibStub.lua
+lib.xml

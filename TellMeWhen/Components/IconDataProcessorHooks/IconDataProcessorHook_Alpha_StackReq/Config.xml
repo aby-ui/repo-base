@@ -1,0 +1,71 @@
+﻿<Ui>
+
+	<Frame name="TellMeWhen_StackRequirements" inherits="TellMeWhen_OptionsModuleContainer" virtual="true">
+		<Size y="40"/>
+		<Frames>
+			<Frame parentKey="StackMin" inherits="TellMeWhen_EditBoxWithCheckTemplate">
+				<Size x="67" y="33"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" x="6" y="-5"/>
+					<Anchor point="RIGHT" relativePoint="CENTER" x="-7"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						TMW:CInit(self)
+
+						self:SetSettings("StackMinEnabled", "StackMin")
+						self:SetTexts(MINIMUM, TMW.L["ICONMENU_STACKS_MIN_DESC"])
+					</OnLoad>
+				</Scripts>
+			</Frame>
+
+			<Frame parentKey="StackMax" inherits="TellMeWhen_EditBoxWithCheckTemplate">
+				<Size x="67" y="33"/>
+				<Anchors>
+					<Anchor point="TOP" relativeKey="$parent.StackMin"/>
+					<Anchor point="LEFT" relativePoint="CENTER" x="7"/>
+					<Anchor point="RIGHT" x="-10"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						TMW:CInit(self)
+
+						self:SetSettings("StackMaxEnabled", "StackMax")
+						self:SetTexts(MAXIMUM, TMW.L["ICONMENU_STACKS_MAX_DESC"])
+					</OnLoad>
+				</Scripts>
+			</Frame>
+			
+			<!-- <Slider parentKey="StackAlpha" name="$parentStackAlpha" inherits="TellMeWhen_SliderTemplate_Alpha" valuestep="1">
+				<Anchors>
+					<Anchor point="LEFT" relativeKey="$parent.StackMax" relativePoint="RIGHT" x="10" />
+					<Anchor point="RIGHT" x="-10" />
+					<Anchor point="TOP" y="-13" />
+				</Anchors>
+				<Scripts>
+					<OnLoad>						
+						TMW:CInit(self)
+
+						self:SetTexts(TMW.L["REQFAILED_ALPHA"], TMW.L["STACKALPHA_DESC"])
+						self:SetSetting("StackAlpha")
+
+						self:CScriptAdd("ReloadRequested", function()
+							local settings = self:GetSettingTable()
+							self:SetEnabled(settings.StackMinEnabled or settings.StackMaxEnabled)
+						end)
+
+						self:SetTextFormatter(self.OrangeAt100Formatter)
+					</OnLoad>
+				</Scripts>
+			</Slider> -->
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				TMW:CInit(self)
+				
+				self:SetTitle(TMW.L["STACKSPANEL_TITLE2"])
+			</OnLoad>
+		</Scripts>
+	</Frame>
+ 
+</Ui>

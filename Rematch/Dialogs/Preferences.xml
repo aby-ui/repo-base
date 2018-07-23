@@ -1,0 +1,169 @@
+<Ui>
+
+	<EditBox name="RematchPreferencesInputBoxTemplate" autoFocus="true" inherits="RematchInputBoxTemplate,RematchTooltipScripts" virtual="true">
+		<Size x="80" y="24"/>
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString parentKey="Label" inherits="GameFontNormal">
+					<Anchors>
+						<Anchor point="RIGHT" relativePoint="LEFT" x="-2" y="0"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnEscapePressed>
+				Rematch:HideDialog()
+			</OnEscapePressed>
+			<OnEnterPressed>
+				Rematch:PreferencesSave()
+			</OnEnterPressed>
+			<OnTabPressed>
+				Rematch.PreferencesOnTabPressed(self)
+			</OnTabPressed>
+			<OnChar>
+				Rematch.PreferencesOnChar(self)
+			</OnChar>
+			<OnTextChanged>
+				Rematch.PreferencesOnTextChanged(self)
+			</OnTextChanged>
+		</Scripts>
+	</EditBox>
+
+	<Frame parentKey="Preferences" parent="RematchDialog" hidden="true">
+		<Size x="212" y="210"/>
+		<Frames>
+			<Frame parentKey="Top">
+				<Size x="280" y="48"/>
+				<Anchors>
+					<Anchor point="TOP"/>
+				</Anchors>
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture hidden="true">
+							<Color r="0" g="1" b="0" a="0.15"/>
+						</Texture>
+					</Layer>
+					<Layer level="ARTWORK">
+						<FontString parentKey="Label" inherits="GameFontNormal">
+							<Size x="260" y="20"/>
+							<Anchors>
+								<Anchor point="TOP"/>
+							</Anchors>
+						</FontString>
+						<FontString parentKey="PrefKey" inherits="GameFontNormal">
+							<Size x="260" y="20"/>
+							<Anchors>
+								<Anchor point="TOP" x="0" y="-22"/>
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+				<Frames>
+					<CheckButton parentKey="RadioTeam" inherits="RematchRadioButtonTemplate">
+						<Anchors>
+							<Anchor point="BOTTOM" x="-44" y="0"/>
+						</Anchors>
+						<HitRectInsets>
+							<AbsInset left="-2" right="-40" top="-2" bottom="-2"/>
+						</HitRectInsets>
+						<KeyValues>
+							<KeyValue key="prefSet" value="team"/>
+						</KeyValues>
+						<Scripts>
+							<OnClick>
+								Rematch.PreferencesRadioOnClick(self)
+							</OnClick>
+						</Scripts>
+					</CheckButton>
+					<CheckButton parentKey="RadioTab" inherits="RematchRadioButtonTemplate">
+						<Anchors>
+							<Anchor point="BOTTOM" x="22" y="0"/>
+						</Anchors>
+						<HitRectInsets>
+							<AbsInset left="-2" right="-40" top="-2" bottom="-2"/>
+						</HitRectInsets>
+						<KeyValues>
+							<KeyValue key="prefSet" value="tab"/>
+						</KeyValues>
+						<Scripts>
+							<OnClick>
+								Rematch.PreferencesRadioOnClick(self)
+							</OnClick>
+						</Scripts>
+					</CheckButton>
+				</Frames>
+			</Frame> <!-- Top -->
+		</Frames>
+		<Layers>
+			<Layer level="ARTWORK">
+				<!-- line below "Leveling Preferences" label at top -->
+				<Texture inherits="_UI-Frame-InnerTopTile">
+					<Size x="220" y="3"/>
+					<Anchors>
+						<Anchor point="TOP" relativeKey="$parent.Top" relativePoint="BOTTOM"/>
+					</Anchors>
+				</Texture>
+				<!-- "expected damage taken" -->
+				<FontString parentKey="ExpectedDDLabel" inherits="GameFontNormal">
+					<Anchors>
+						<Anchor point="TOP" relativeKey="$parent.Top" relativePoint="BOTTOM" x="0" y="-76"/>
+					</Anchors>
+				</FontString>
+				<!-- line below expectedDD -->
+				<Texture inherits="_UI-Frame-InnerTopTile">
+					<Size x="220" y="3"/>
+					<Anchors>
+						<Anchor point="TOP" relativeKey="$parent.Top" relativePoint="BOTTOM" x="0" y="-136"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Frames>
+			<EditBox parentKey="MinHP" inherits="RematchPreferencesInputBoxTemplate" id="1">
+				<Anchors>
+					<Anchor point="TOP" relativeKey="$parent.Top" relativePoint="BOTTOM" x="60" y="-14"/>
+				</Anchors>
+				<KeyValues>
+					<KeyValue key="var" value="minHP"/>
+				</KeyValues>
+			</EditBox>
+			<CheckButton parentKey="AllowMM" inherits="UICheckButtonTemplate,RematchTooltipScripts">
+				<Size x="28" y="28"/>
+				<Anchors>
+					<Anchor point="TOP" relativeKey="$parent.Top" relativePoint="BOTTOM" x="-55" y="-42"/>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						Rematch.PreferencesAllowMMOnClick(self)
+					</OnClick>
+				</Scripts>
+			</CheckButton>
+			<EditBox parentKey="MaxHP" inherits="RematchPreferencesInputBoxTemplate" id="2">
+				<Anchors>
+					<Anchor point="TOP" relativeKey="$parent.Top" relativePoint="BOTTOM" x="60" y="-150"/>
+				</Anchors>
+				<KeyValues>
+					<KeyValue key="var" value="maxHP"/>
+				</KeyValues>
+			</EditBox>
+			<EditBox parentKey="MinXP" inherits="RematchPreferencesInputBoxTemplate" id="3">
+				<Anchors>
+					<Anchor point="TOP" relativeKey="$parent.Top" relativePoint="BOTTOM" x="60" y="-180"/>
+				</Anchors>
+				<KeyValues>
+					<KeyValue key="var" value="minXP"/>
+				</KeyValues>
+			</EditBox>
+			<EditBox parentKey="MaxXP" inherits="RematchPreferencesInputBoxTemplate" id="4">
+				<Anchors>
+					<Anchor point="TOP" relativeKey="$parent.Top" relativePoint="BOTTOM" x="60" y="-210"/>
+				</Anchors>
+				<KeyValues>
+					<KeyValue key="var" value="maxXP"/>
+				</KeyValues>
+			</EditBox>
+		</Frames>
+	</Frame>
+
+</Ui>

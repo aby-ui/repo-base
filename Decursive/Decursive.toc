@@ -1,0 +1,70 @@
+## Interface: 80000
+## X-Max-Interface: 80000
+## X-Min-Interface: 70300
+
+## Title: Decursive |cffff00ff -Ace3-|r
+## Notes: Afflictions display and cleaning for solo, group and raid with advanced filtering and priority system.
+## Notes-frFR: Affichage et guérison des affections avec un système évolué de filtrage et de priorité.
+## Notes-deDE: Anzeige und Reinigung von Gebrechen für Solo, Gruppe und Schlachtzug mit erweitertem Filter- und Prioritäten-System.
+## Notes-koKR: 쏠로, 파티, 공격대를 위한 고급화된 필터링과 시스템 우선권으로 고통들의 표시와 제거를 합니다.
+## Notes-ruRU: Отображение и инструменты для развеивания дебаффов для одиночной игры, игры в группе и рейде, с развитой системой фильтрации и приоритетов.
+## Notes-zhCN: 当单独、小队和团队时清除有害状态，并可使用高级过滤和优先等级系统。
+## Notes-zhTW: 當單獨、小隊和團隊時清除有害狀態，並可使用高級過濾和優先等級系統。
+
+
+## SavedVariables: DecursiveDB
+
+## Version: 2.7.5.8
+## Author: John Wellesz
+
+## X-License: All Rights Reserved
+
+## OptionalDeps: Ace3, LibQTip-1.0, LibDataBroker-1.1, LibDBIcon-1.0, !BugGrabber
+
+## LoadManagers: AddonLoader
+## X-LoadOn-Class: Mage, Priest, Paladin, Druid, Hunter, Warlock, Shaman, Monk, Deathknight
+## X-LoadOn-Slash: /decursive, /dcr
+
+
+## X-Embeds: Ace3, LibQTip-1.0, LibDataBroker-1.1, LibDBIcon-1.0, !BugGrabber
+
+## X-ReleaseDate: "2018-07-18T0:42:34Z"
+## X-Category: Combat
+## X-Website: http://www.2072productions.com/to/decursive.php
+## X-Credits: Sylvin (Full french translation), Peter Sun, Ananhaid (ZhTW and zhCN translation), Fenlis, Chkid (koKR translation), Hemathio, Swix, Athariel, StingerSoft (Russian Translation), Freydis88, Floyddotnet, Vilogity, Dessa, Farook (German translation)
+
+## X-AceForum: 4195
+
+## X-eMail: decursive@2072productions.com
+
+embeds.xml
+
+Dcr_DIAG.lua
+Dcr_DIAG.xml
+
+Localization\load.xml
+
+DCR_init.lua
+Dcr_LDB.lua
+Dcr_utils.lua
+
+
+Dcr_opt.lua
+Dcr_Events.lua
+
+Dcr_Raid.lua
+
+Decursive.lua
+Decursive.xml
+
+Dcr_lists.lua
+Dcr_lists.xml
+
+Dcr_DebuffsFrame.lua
+Dcr_DebuffsFrame.xml
+
+Dcr_LiveList.lua
+Dcr_LiveList.xml
+
+## Title: |cff880303[有爱]|r Decursive 一键驱散
+## X-Vendor: AbyUI

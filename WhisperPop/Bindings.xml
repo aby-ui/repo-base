@@ -1,0 +1,3 @@
+<Bindings>
+	<Binding name="WHISPERPOP_TOGGLE" header="WHISPERPOP_TITLE" category="ADDONS"> WhisperPop:ToggleFrame() </Binding>
+</Bindings>

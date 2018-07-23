@@ -1,0 +1,370 @@
+﻿<Ui>
+	<Button name="TellMeWhen_SpellSuggestTemplate" virtual="true" hidden="true">
+		<Size y="19"/>
+		<Anchors>
+			<Anchor point="LEFT" x="3"/>
+			<Anchor point="RIGHT" x="-3"/>
+		</Anchors>
+		<Scripts>
+			<OnLoad>
+				self.Background:SetVertexColor(0, 1, 0)
+				self:RegisterForClicks("LeftButtonUp", "RightButtonUp")
+			</OnLoad>
+			<OnClick>
+				TMW.SUG.CurrentModule:Entry_OnClick(self, button)
+			</OnClick>
+			<OnEnter>
+				TMW:TT_Anchor(self)
+				if self.tooltiptitle then
+					GameTooltip:AddLine(self.tooltiptitle, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b, self.tooltiptitlewrap)
+					GameTooltip:AddLine(self.tooltiptext, NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, 1)
+				end
+				if self.tooltipmethod and self.tooltiparg then
+					GameTooltip[self.tooltipmethod](GameTooltip, self.tooltiparg)
+				end
+
+				local first, second
+
+				if type(self.insert) == "number" then
+					first = self.overrideInsertID or TMW.L["SUG_INSERTID"]
+				else
+					first = self.overrideInsertName or TMW.L["SUG_INSERTNAME"]
+				end
+				if type(self.insert2) == "number" then
+					second = self.overrideInsertID or TMW.L["SUG_INSERTID"]
+				else
+					second = self.overrideInsertName or TMW.L["SUG_INSERTNAME"]
+				end
+
+				GameTooltip:AddLine(" ")
+				if self.insert2 then
+					local text = TMW.L["SUG_INSERT_LEFT"]
+					if not TMW.SUG.CurrentModule.noTab and self:GetID() == TMW.SUG.tabIndex then
+						text = text .. TMW.L["SUG_INSERT_TAB"]
+					end
+					GameTooltip:AddLine(first:format(text), 0, .5, 1, nil)
+					GameTooltip:AddLine(second:format(TMW.L["SUG_INSERT_RIGHT"]), 0, .5, 1, nil)
+				else
+					local text = TMW.L["SUG_INSERT_ANY"]
+					if not TMW.SUG.CurrentModule.noTab and self:GetID() == TMW.SUG.tabIndex then
+						text = text .. TMW.L["SUG_INSERT_TAB"]
+					end
+					GameTooltip:AddLine(first:format(text), 0, .5, 1, nil)
+				end
+
+				GameTooltip:Show()
+
+				TMW.SUG.mousedOver = self
+			</OnEnter>
+			<OnLeave>
+				GameTooltip:Hide()
+
+				if TMW.SUG.mousedOver == self then
+					TMW.SUG.mousedOver = nil
+				end
+			</OnLeave>
+			<OnMouseWheel>
+				if (not TMW.SUG[TMW.SUG:GetNumFramesNeeded()]:IsShown() and delta > 0) or TMW.SUG[TMW.SUG:GetNumFramesNeeded()]:IsShown() then
+					if IsShiftKeyDown() then
+						delta = delta*5
+					elseif IsControlKeyDown() then
+						delta = delta*(#TMW.SUG-1)
+					end
+					
+					TMW.SUG.offset = max(0, TMW.SUG.offset - delta)
+				end
+				TMW.SUG:SuggestingComplete()
+			</OnMouseWheel>
+		</Scripts><!-- 
+		<NormalFont style="GameFontNormal"/>
+		<HighlightFont style="GameFontHighlight"/> -->
+		<HighlightTexture file="Interface\BUTTONS\UI-Listbox-Highlight2" alphaMode="ADD" alpha="0.5">
+			<Anchors>
+				<Anchor point="TOPLEFT" y="-0.5"/>
+				<Anchor point="BOTTOMRIGHT" y="0.5"/>
+			</Anchors>
+		</HighlightTexture>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture parentKey="Background" name="$parentBackground">
+					<Color r="0.5" g="0.5" b="0.5" a="0.9"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" y="-0.5"/>
+						<Anchor point="BOTTOMRIGHT" y="0.5"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY">
+				<Texture parentKey="Icon" name="$parentIcon" file="Interface\Icons\INV_Misc_QuestionMark">
+					<Size x="18" y="18"/>
+					<TexCoords left="0.07" right="0.93" top="0.07" bottom="0.93"/>
+					<Anchors>
+						<Anchor point="LEFT"/>
+					</Anchors>
+				</Texture>
+				<FontString parentKey="ID" name="$parentID" inherits="GameFontHighlight" justifyH="RIGHT">
+					<Anchors>
+						<Anchor point="RIGHT" x="-1" y="0"/>
+					</Anchors>
+				</FontString>
+				<FontString parentKey="Name" name="$parentName" inherits="GameFontHighlight" justifyH="LEFT">
+					<Size y="1"/> <!-- Fix for WoW 6.1's issues with text anchoring and wrapping -->
+					<Anchors>
+						<Anchor point="LEFT" relativeTo="$parentIcon" relativePoint="RIGHT" x="2"/>
+						<Anchor point="RIGHT" relativeTo="$parentID" relativePoint="LEFT" x="-1"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+	</Button>
+	
+	<Frame parentKey="Suggest" name="$parentSuggest" parent="TellMeWhen_IconEditor" hidden="true" enableMouse="true" toplevel="true">
+		<Size x="200"/>
+		<Anchors>
+			<Anchor point="TOP" y="-0"/> 
+			<Anchor point="BOTTOM" y="0" />
+			<Anchor point="LEFT" relativePoint="RIGHT" x="1"/>
+		</Anchors>
+		
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture parentKey="Background">
+					<Color r="0.05" g="0.05" b="0.05" a="0.970"/>
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY">
+				<FontString parentKey="Header" inherits="GameFontNormalLarge" justifyH="LEFT">
+					<Anchors>
+						<Anchor point="TOP" y="-4"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			
+			<Frame parentKey="Caching" setAllPoints="true" hidden="true">
+				<Layers>
+					<Layer level="ARTWORK">
+						<FontString parentKey="InfoText" inherits="GameFontHighlight">
+							<Size x="180"/>
+							<Anchors>
+								<Anchor point="TOP" y="-45"/>
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+				<Frames>
+
+					<!-- <Slider parentKey="Speed" inherits="TellMeWhen_SliderTemplate" hidden="true">
+						<Anchors>
+							<Anchor point="TOP" relativeKey="$parent.InfoText" relativePoint="BOTTOM" y="-25"/>
+							<Anchor point="LEFT" x="17"/>
+							<Anchor point="RIGHT" x="-17"/>
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								self.exponent = 4
+								self.max = 5000
+								self.Left:SetText(TMW.L["CACHINGSPEED"])
+								
+								self.SpellCache = TMW:GetModule("SpellCache")
+								
+								function self:SetActualValue(val)
+									if val ~= self:GetActualValue() then
+										self:SetValue(val^(1/self.exponent))
+									end
+								end
+								function self:GetActualValue()
+									return min(floor(self:GetValue()^self.exponent+0.5), self.max)
+								end
+								
+								TMW:RegisterCallback("TMW_SPELLCACHE_NUMCACHEPERFRAME_CHANGED", function(event, num)
+									self:SetActualValue(num)
+								end)
+								
+								self:SetMinMaxValues(1, self.max^(1/self.exponent))
+								
+								self.Right:SetText(self.SpellCache:GetNumCachePerFrame())
+								self:SetActualValue(self.SpellCache:GetNumCachePerFrame())
+							</OnLoad>
+							<OnValueChanged>
+								local value = self:GetActualValue()
+								self.SpellCache:SetNumCachePerFrame(value)
+								self.Right:SetText(value)
+							</OnValueChanged>
+							<OnShow>
+								self:GetParent().InfoText:Show()
+							</OnShow>
+							<OnHide>
+								self:GetParent().InfoText:Hide()
+							</OnHide>
+						</Scripts>
+					</Slider> -->
+
+					<StatusBar parentKey="Status">
+						<Size x="175" y="25"/>
+						<Anchors>
+							<!-- <Anchor point="TOP" relativeKey="$parent.Speed" relativePoint="BOTTOM" y="-15"/> -->
+							<Anchor point="TOP" relativeKey="$parent.InfoText" relativePoint="BOTTOM" y="-15"/>
+						</Anchors>
+						<Layers>
+							<Layer level="ARTWORK">
+								<Texture parentKey="texture" file="Interface\TargetingFrame\UI-StatusBar"/>
+							</Layer>
+
+							<Layer level="OVERLAY">
+								<FontString parentKey="text" inherits="GameFontHighlight">
+									<Anchors>
+										<Anchor point="CENTER"/>
+									</Anchors>
+								</FontString>
+							</Layer>
+						</Layers>
+						<Scripts>
+							<OnLoad>
+								self.SpellCache = TMW:GetModule("SpellCache")
+								
+								self:SetStatusBarTexture(self.texture)
+								self.texture:SetTexture(LibStub("LibSharedMedia-3.0"):Fetch("statusbar", TMW.db.profile.TextureName))
+								
+								TMW:RegisterCallback("TMW_SPELLCACHE_EXPECTEDCACHELENGTH_UPDATED", function(event, max)
+									self:SetMinMaxValues(1, max)
+								end)
+								
+								TMW:RegisterCallback("TMW_SPELLCACHE_NUMCACHED_CHANGED", function(event, num)
+									self:SetValue(num)
+								end)
+							</OnLoad>
+							<OnValueChanged>
+								if self:IsShown() then
+									self.text:SetText(self:GetValue() .. " / ~" .. self.SpellCache:GetExpectedCacheLength())
+								end
+							</OnValueChanged>
+						</Scripts>
+					</StatusBar>
+					<Button parentKey="Finish" inherits="TellMeWhen_ButtonTemplate">
+						<Size x="190" y="25"/>
+						<Anchors>
+							<Anchor point="TOP" relativeKey="$parent.Status" relativePoint="BOTTOM" y="-15"/>
+							<Anchor point="LEFT" x="10"/>
+							<Anchor point="RIGHT" x="-10"/>
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								self:SetText(TMW.L["SUG_FINISHHIM"])
+								TMW:TT(self, "SUG_FINISHHIM", "SUG_FINISHHIM_DESC")
+								self:RegisterEvent("UNIT_FLAGS") -- accurately detects changes to InCombatLockdown
+							</OnLoad>
+							<OnUpdate>
+								-- Don't allow this when in combat because of Blizzard's new throttling system in Mists of Pandaria
+								if InCombatLockdown() then
+									self:Disable()
+								else
+									self:Enable()
+								end
+							</OnUpdate>
+							<OnClick>
+								TMW:GetModule("SpellCache"):SetNumCachePerFrame(15000)
+							</OnClick>
+						</Scripts>
+					</Button>
+				</Frames>
+				<Scripts>
+					<OnLoad>
+						self.InfoText:SetText(TMW.L["CACHING"])
+					</OnLoad>
+				</Scripts>
+			</Frame>
+
+			<Button parentKey="Help" inherits="MainMenuBarMicroButton" hidden="false">
+				<Anchors>
+					<Anchor point="TOPRIGHT" x="-5" y="16"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						self:SetNormalTexture("Interface\\Buttons\\UI-MicroButton-Help-Up")
+						self:SetPushedTexture("Interface\\Buttons\\UI-MicroButton-Help-Up")
+						self:SetDisabledTexture("Interface\\Buttons\\UI-MicroButton-Help-Up")
+						self:SetHighlightTexture("Interface\\Buttons\\UI-MicroButton-Hilight")
+						self:SetScale(.58)
+					</OnLoad>
+					<OnEnter>
+						TMW.SUG:ColorHelp(self)
+					</OnEnter>
+					<OnLeave>
+						GameTooltip:Hide()
+					</OnLeave>
+					<OnClick>
+						if TMW.SUG.CurrentModule.helpOnClick then
+							TMW.SUG.CurrentModule.helpOnClick(self)
+						end
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Button parentKey="blocker" setAllPoints="true" hidden="true">
+				<Layers>
+					<Layer level="OVERLAY">
+						<Texture parentKey="tex" setAllPoints="true">
+							<Color r="0" g="0" b="0" a="0.6"/>
+						</Texture>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnShow>
+						self:SetFrameLevel(self:GetParent():GetFrameLevel() + 100)
+					</OnShow>
+				</Scripts>
+			</Button>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				TMW.SUG.SuggestionList = self
+				self.Header:SetText(TMW.L["SUGGESTIONS"])
+
+  				TMW.HELP:NewCode("SUG_FIRSTHELP", 100, true)
+				
+				local firstItem = TMW.SUG:GetFrame(1)
+				firstItem:SetPoint("TOP", 0, -6 - TMW.SUG[1]:GetHeight())
+
+				self.blocker:SetPoint("TOPLEFT", firstItem)
+
+				TMW.SUG[1]:HookScript("OnShow", function(self)
+					TMW.HELP:Show{
+						code = "SUG_FIRSTHELP",
+						icon = nil,
+						relativeTo = self,
+						x = 3,
+						y = 0,
+						text = format(TMW.L["SUG_FIRSTHELP_DESC"])
+					}
+				end)
+				
+				-- Tukui_Skins tries to reposition this frame, but it totally ruins the resizability of it,
+				-- so just disallow repositioning.
+				--	self.SetPoint = TMW.NULLFUNC
+				--self.ClearAllPoints = TMW.NULLFUNC
+			</OnLoad>
+			<OnUpdate>
+				if TMW.SUG.Box then
+					self:SetFrameLevel(TMW.SUG.Box:GetFrameLevel() + 50)
+				end
+			</OnUpdate>
+			<OnSizeChanged>						
+				if TMW.SUG:GetNumFramesNeeded() ~= #TMW.SUG and self:IsShown() then
+					TMW.SUG:SuggestingComplete()
+				end
+			</OnSizeChanged>
+			<OnHide>
+				-- Hide the tooltip if it is showing for a suggestion entry.
+				-- This is needed because we show the tooltip manually (not in an OnEnter script)
+				-- sometimes, and when the parent of the frame that it is shown for is hidden,
+				-- the tooltip isnt automatically hidden.
+				local ttOwner = GameTooltip:GetOwner()
+				if ttOwner and ttOwner:GetParent() == self then
+					GameTooltip:Hide()
+				end
+			</OnHide>
+		</Scripts>
+	</Frame>
+
+</Ui>

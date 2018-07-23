@@ -1,0 +1,17 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+    <Script file="localization\zhCN.lua"/>
+    <Script file="localization\zhTW.lua"/>
+    <Script file="main.lua"/>
+    <Script file="option.lua"/>
+    <Script file="config.lua"/>
+    <Script file="rule.lua"/>
+    <Script file="item.lua"/>
+    <Script file="slot.lua"/>
+    <Script file="group.lua"/>
+    <Script file="bag.lua"/>
+    <Script file="pack.lua"/>
+    <Script file="extra\PackButton.lua"/>
+    <Script file="extra\BlizzardBag.lua"/>
+    <Script file="extra\Bagnon.lua"/>
+    <Script file="extra\Combuctor.lua"/>
+</Ui>

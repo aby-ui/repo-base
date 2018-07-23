@@ -1,0 +1,189 @@
+<Ui>
+	<!-- ability card has no frames/buttons with mouse enabled -->
+	<Frame name="RematchAbilityCard" frameStrata="FULLSCREEN_DIALOG" parent="UIParent" clampedToScreen="true" hidden="true">
+		<Size x="260" y="200"/>
+		<Backdrop edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
+			<EdgeSize val="16"/>
+			<BorderColor r="0.5" g="0.5" b="0.5"/>
+		</Backdrop>
+		<Anchors>
+			<Anchor point="CENTER"/>
+		</Anchors>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<!-- background to title -->
+				<Texture parentKey="TitleBG" file="Interface\PetBattles\PetJournal">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="3" y="-3"/>
+						<Anchor point="BOTTOMRIGHT" relativePoint="TOPRIGHT" x="-3" y="-51"/>
+					</Anchors>
+					<TexCoords left="0.19140625" right="0.65625" top="0.4873046875" bottom="0.5654296875"/>
+				</Texture>
+				<!-- background to main area -->
+				<Texture parentKey="MiddleBG" file="Interface\FrameGeneral\UI-Background-Rock" horizTile="true" vertTile="true">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="3" y="-51"/>
+						<Anchor point="BOTTOMRIGHT" x="-3" y="3"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="BACKGROUND" textureSubLevel="1">
+				<!-- shadow for MiddleBG -->
+				<Texture file="Interface\Common\ShadowOverlay-Corner">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeKey="$parent.MiddleBG"/>
+						<Anchor point="BOTTOMRIGHT" relativeKey="$parent.MiddleBG"/>
+					</Anchors>
+					<TexCoords left="0" right="1" top="1" bottom="0"/>
+				</Texture>
+			</Layer>
+			<Layer level="BORDER">
+				<!-- icon of ability in topleft -->
+				<Texture parentKey="Icon" file="Interface\Icons\INV_Misc_QuestionMark" mask="Textures\MinimapMask">
+					<Size x="40" y="40"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="7" y="-7"/>
+					</Anchors>
+				</Texture>
+				<!-- type of ability in topright -->
+				<Texture parentKey="Type" file="Interface\PetBattles\PetIcon-Beast">
+					<Size x="41" y="41"/>
+					<Anchors>
+						<Anchor point="TOPRIGHT" x="-7" y="-6"/>
+					</Anchors>
+					<TexCoords left="0.4921875" right="0.796875" top="0.50390625" bottom="0.65625"/>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<!-- line below title area -->
+				<Texture file="Interface\Tooltips\UI-Tooltip-Border">
+					<Size x="0" y="5"/>
+					<Anchors>
+						<Anchor point="LEFT" relativePoint="TOPLEFT" x="3" y="-51"/>
+						<Anchor point="RIGHT" relativePoint="TOPRIGHT" x="-3" y="-51"/>
+					</Anchors>
+					<TexCoords left="0.8125" right="0.9453125" top="0.625" bottom="0.9375"/>
+					<Color r="0.5" g="0.5" b="0.5"/>
+				</Texture>
+				<!-- thin gold border around ability icon in titlebar -->
+				<Texture file="Interface\PetBattles\PetBattleHUD">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeKey="$parent.Icon" x="0" y="1"/>
+						<Anchor point="BOTTOMRIGHT" relativeKey="$parent.Icon" x="1" y="0"/>
+					</Anchors>
+					<TexCoords left="0.884765625" right="0.943359375" top="0.681640625" bottom="0.798828125"/>
+				</Texture>
+				<!-- thin gold border around ability type in titlebar -->
+				<Texture file="Interface\PetBattles\PetBattleHUD">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeKey="$parent.Type"/>
+						<Anchor point="BOTTOMRIGHT" relativeKey="$parent.Type"/>
+					</Anchors>
+					<TexCoords left="0.884765625" right="0.943359375" top="0.681640625" bottom="0.798828125"/>
+				</Texture>
+				<!-- large name in title -->
+				<FontString parentKey="Name" inherits="SystemFont_Shadow_Med1_Outline" justifyH="CENTER" justifyV="CENTER" text="Name Of Ability">
+					<Size x="0" y="54"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="48" y="0"/>
+						<Anchor point="TOPRIGHT" x="-48" y="0"/>
+					</Anchors>
+					<Color r="1" g=".82" b=".5"/>
+				</FontString>
+				<!-- text in the ability tooltip -->
+				<FontString parentKey="Duration" inherits="GameFontHighlight" text="BATTLE_PET_ABILITY_MULTIROUND">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="9" y="-58"/>
+					</Anchors>
+				</FontString>
+				<FontString parentKey="Cooldown" inherits="GameFontHighlight"/>
+				<FontString parentKey="Description" inherits="GameFontNormal" justifyH="LEFT">
+					<Size x="242" y="0"/>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<!-- hints across bottom to show strong/weak vs (not shown all the time) -->
+			<Frame parentKey="Hints" useParentLevel="true">
+				<Size x="260" y="42"/>
+				<Anchors>
+					<Anchor point="BOTTOM"/>
+				</Anchors>
+				<Layers>
+					<!-- brown background is sublevel 2 to show above sublevel 1 of shadow (useParentLevel true) -->
+					<Layer level="BACKGROUND" textureSubLevel="2">
+						<Texture parentKey="HintsBG" file="Interface\PetBattles\PetJournal">
+							<Anchors>
+								<Anchor point="TOPLEFT" x="3" y="0"/>
+								<Anchor point="BOTTOMRIGHT" x="-3" y="3"/>
+							</Anchors>
+							<TexCoords left="0.19140625" right="0.65625" top="0.4873046875" bottom="0.5654296875"/>
+						</Texture>
+					</Layer>
+					<Layer level="ARTWORK">
+						<!-- line above hints area -->
+						<Texture file="Interface\Tooltips\UI-Tooltip-Border">
+							<Size x="0" y="5"/>
+							<Anchors>
+								<Anchor point="LEFT" relativePoint="TOPLEFT" x="3" y="0"/>
+								<Anchor point="RIGHT" relativePoint="TOPRIGHT" x="-3" y="0"/>
+							</Anchors>
+							<TexCoords left="0.8125" right="0.9453125" top="0.625" bottom="0.9375"/>
+							<Color r="0.5" g="0.5" b="0.5"/>
+						</Texture>
+						<!-- "Vs" text between strong badge and strong type -->
+						<FontString parentKey="StrongVs" inherits="GameFontNormal">
+							<Anchors>
+								<Anchor point="CENTER" relativePoint="BOTTOMLEFT" x="60" y="22"/>
+							</Anchors>
+						</FontString>
+						<!-- StrongType is type attack is strong against; in lowerleft -->
+						<Texture parentKey="StrongType" file="Interface\PetBattles\PetIcon-Beast">
+							<Size x="30" y="30"/>
+							<Anchors>
+								<Anchor point="LEFT" relativeKey="$parent.StrongVs" relativePoint="CENTER" x="12" y="0"/>
+							</Anchors>
+							<TexCoords left="0.4921875" right="0.796875" top="0.50390625" bottom="0.65625"/>
+						</Texture>
+						<!-- strong badge -->
+						<Texture file="Interface\PetBattles\BattleBar-AbilityBadge-Strong">
+							<Size x="30" y="30"/>
+							<Anchors>
+								<Anchor point="RIGHT" relativeKey="$parent.StrongVs" relativePoint="CENTER" x="-10" y="0"/>
+							</Anchors>
+						</Texture>
+						<!-- "Vs" text between weak badge and weak type -->
+						<FontString parentKey="WeakVs" inherits="GameFontNormal">
+							<Anchors>
+								<Anchor point="CENTER" relativePoint="BOTTOMRIGHT" x="-62" y="22"/>
+							</Anchors>
+						</FontString>
+						<!-- WeakType is type attack is weak against; in lowerright -->
+						<Texture parentKey="WeakType" file="Interface\PetBattles\PetIcon-Beast">
+							<Size x="30" y="30"/>
+							<Anchors>
+								<Anchor point="LEFT" relativeKey="$parent.WeakVs" relativePoint="CENTER" x="12" y="0"/>
+							</Anchors>
+							<TexCoords left="0.4921875" right="0.796875" top="0.50390625" bottom="0.65625"/>
+						</Texture>
+						<!-- weak badge -->
+						<Texture file="Interface\PetBattles\BattleBar-AbilityBadge-Weak">
+							<Size x="30" y="30"/>
+							<Anchors>
+								<Anchor point="RIGHT" relativeKey="$parent.WeakVs" relativePoint="CENTER" x="-10" y="0"/>
+							</Anchors>
+						</Texture>
+						<!-- doodad between weak and strong -->
+						<Texture file="Interface\PetBattles\PetJournal">
+							<Size x="40" y="17"/>
+							<Anchors>
+								<Anchor point="BOTTOM" x="0" y="12"/>
+							</Anchors>
+							<TexCoords left="0.396484375" right="0.296875" top="0.3115234375" bottom="0.333984375"/>
+						</Texture>
+					</Layer>
+				</Layers>
+			</Frame>
+		</Frames>
+	</Frame>
+</Ui>

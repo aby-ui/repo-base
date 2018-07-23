@@ -1,0 +1,232 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.blizzard.com/wow/ui/">
+    <Script file="BaudAuction.lua"/>
+
+    <Frame name="BaudAuctionFrame" parent="AuctionFrameBrowse" setAllPoints="true">
+        <Frames>
+            <Frame name="BaudAuctionBrowseScrollBox">
+                <Size>
+                    <AbsDimension x="600" y="314"/>
+                </Size>
+                <Anchors>
+                    <Anchor point="TOPLEFT">
+                        <Offset>
+                            <AbsDimension x="186" y="-101"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+                <Layers>
+                    <Layer level="ARTWORK">
+                        <Texture name="$parentHighlight" file="Interface\Buttons\UI-Listbox-Highlight2">
+                            <Size>
+                                <AbsDimension x="1" y="16"/>
+                            </Size>
+                            <Anchors>
+                                <Anchor point="LEFT">
+                                    <Offset>
+                                        <AbsDimension x="8"/>
+                                    </Offset>
+                                </Anchor>
+                                <Anchor point="RIGHT">
+                                    <Offset>
+                                        <AbsDimension x="-8"/>
+                                    </Offset>
+                                </Anchor>
+                            </Anchors>
+                        </Texture>
+                    </Layer>
+                </Layers>
+                <Frames>
+                    <Frame>
+                        <Layers>
+                            <Layer level="ARTWORK">
+                                <Texture name="BaudAuctionArrow" file="Interface\Buttons\UI-SortArrow">
+                                    <Size>
+                                        <AbsDimension x="9" y="8"/>
+                                    </Size>
+                                </Texture>
+                            </Layer>
+                        </Layers>
+                        <Scripts>
+                            self:SetFrameLevel(self:GetFrameLevel() + 1);
+                        </Scripts>
+                    </Frame>
+                    <Frame setAllPoints="true">
+                        <Frames>
+                            <Frame name="BaudAuctionProgress" enableMouse="true" hidden="true">
+                                <Size>
+                                    <AbsDimension x="160" y="60"/>
+                                </Size>
+                                <Anchors>
+                                    <Anchor point="CENTER"/>
+                                </Anchors>
+                                <Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background"
+                                          edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
+                                    <BackgroundInsets>
+                                        <AbsInset left="5" right="5" top="5" bottom="5"/>
+                                    </BackgroundInsets>
+                                    <TileSize>
+                                        <AbsValue val="32"/>
+                                    </TileSize>
+                                    <EdgeSize>
+                                        <AbsValue val="16"/>
+                                    </EdgeSize>
+                                </Backdrop>
+                                <Frames>
+                                    <StatusBar name="BaudAuctionProgressBar" minValue="0" maxValue="1">
+                                        <Size>
+                                            <AbsDimension x="95" y="11"/>
+                                        </Size>
+                                        <Anchors>
+                                            <Anchor point="CENTER">
+                                                <Offset>
+                                                    <AbsDimension x="10" y="-5"/>
+                                                </Offset>
+                                            </Anchor>
+                                        </Anchors>
+                                        <Layers>
+                                            <Layer level="ARTWORK">
+                                                <Texture name="$parentBorder"
+                                                         file="Interface\Tooltips\UI-StatusBar-Border">
+                                                    <Size>
+                                                        <AbsDimension x="104" y="15"/>
+                                                    </Size>
+                                                    <Anchors>
+                                                        <Anchor point="CENTER">
+                                                            <Offset>
+                                                                <AbsDimension x="-2"/>
+                                                            </Offset>
+                                                        </Anchor>
+                                                    </Anchors>
+                                                </Texture>
+                                            </Layer>
+                                            <Layer level="OVERLAY">
+                                                <Texture name="$parentIcon"
+                                                         file="Interface\Icons\Spell_Nature_TimeStop">
+                                                    <Size>
+                                                        <AbsDimension x="25" y="25"/>
+                                                    </Size>
+                                                    <Anchors>
+                                                        <Anchor point="RIGHT" relativePoint="LEFT"/>
+                                                    </Anchors>
+                                                </Texture>
+                                                <FontString name="$parentText" inherits="GameFontHighlightSmall">
+                                                    <Anchors>
+                                                        <Anchor point="CENTER"/>
+                                                    </Anchors>
+                                                </FontString>
+                                                <FontString name="$parentText2" inherits="GameFontHighlightSmall"
+                                                            text="Searching">
+                                                    <Anchors>
+                                                        <Anchor point="BOTTOM" relativePoint="TOP">
+                                                            <Offset>
+                                                                <AbsDimension y="3"/>
+                                                            </Offset>
+                                                        </Anchor>
+                                                    </Anchors>
+                                                </FontString>
+                                                <FontString name="$parentDots" inherits="GameFontHighlightSmall">
+                                                    <Anchors>
+                                                        <Anchor point="LEFT" relativeTo="$parentText2"
+                                                                relativePoint="RIGHT"/>
+                                                    </Anchors>
+                                                </FontString>
+                                            </Layer>
+                                        </Layers>
+                                        <BarTexture file="Interface\TargetingFrame\UI-StatusBar"/>
+                                        <BarColor r="1.0" g="0.7" b="0.0"/>
+                                    </StatusBar>
+                                    <Button name="BaudAuctionCancelButton">
+                                        <Size>
+                                            <AbsDimension x="32" y="32"/>
+                                        </Size>
+                                        <Anchors>
+                                            <Anchor point="TOPRIGHT"/>
+                                        </Anchors>
+                                        <HitRectInsets>
+                                            <AbsInset left="9" right="7" top="7" bottom="10"/>
+                                        </HitRectInsets>
+                                        <Scripts>
+                                            <OnClick>
+                                                BaudAuctionSearchCancelButton_OnClick();
+                                            </OnClick>
+                                        </Scripts>
+                                        <NormalTexture file="Interface\Buttons\CancelButton-Up"/>
+                                        <PushedTexture file="Interface\Buttons\CancelButton-Down"/>
+                                        <HighlightTexture file="Interface\Buttons\CancelButton-Highlight"
+                                                          alphaMode="ADD"/>
+                                    </Button>
+                                </Frames>
+                                <Scripts>
+                                    <OnLoad>
+                                        self:SetBackdropBorderColor(0.4, 0.4, 0.4);
+                                    </OnLoad>
+                                    <OnUpdate>
+                                        BaudAuctionProgress_OnUpdate(self);
+                                    </OnUpdate>
+                                </Scripts>
+                            </Frame>
+                        </Frames>
+                    </Frame>
+
+                    <ScrollFrame name="$parentScrollBar" inherits="FauxScrollFrameTemplate">
+                        <Anchors>
+                            <Anchor point="BOTTOMRIGHT" relativeTo="BrowseScrollFrame"/>
+                            <Anchor point="TOP" relativeTo="BrowseScrollFrame"/>
+                            <Anchor point="LEFT"/>
+                        </Anchors>
+                        <Layers>
+                            <Layer level="ARTWORK">
+                                <Texture file="Interface\PaperDollInfoFrame\UI-Character-ScrollBar">
+                                    <Size>
+                                        <AbsDimension x="31" y="256"/>
+                                    </Size>
+                                    <Anchors>
+                                        <Anchor point="TOPLEFT" relativePoint="TOPRIGHT">
+                                            <Offset>
+                                                <AbsDimension x="-2" y="5"/>
+                                            </Offset>
+                                        </Anchor>
+                                    </Anchors>
+                                    <TexCoords left="0" right="0.484375" top="0" bottom="1.0"/>
+                                </Texture>
+                                <Texture file="Interface\PaperDollInfoFrame\UI-Character-ScrollBar">
+                                    <Size>
+                                        <AbsDimension x="31" y="106"/>
+                                    </Size>
+                                    <Anchors>
+                                        <Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT">
+                                            <Offset>
+                                                <AbsDimension x="-2" y="-2"/>
+                                            </Offset>
+                                        </Anchor>
+                                    </Anchors>
+                                    <TexCoords left="0.515625" right="1.0" top="0" bottom="0.4140625"/>
+                                </Texture>
+                            </Layer>
+                        </Layers>
+                        <Scripts>
+                            <OnVerticalScroll>
+                                FauxScrollFrame_OnVerticalScroll(self, offset, 16, BaudAuctionBrowseScrollBar_Update);
+                            </OnVerticalScroll>
+                        </Scripts>
+                    </ScrollFrame>
+                </Frames>
+            </Frame>
+        </Frames>
+        <Scripts>
+            <OnLoad>
+                BaudAuction_OnLoad(self);
+            </OnLoad>
+            <OnEvent>
+                BaudAuction_OnEvent(self, event);
+            </OnEvent>
+            <OnShow>
+                BaudAuction_OnShow(self);
+            </OnShow>
+            <OnHide>
+                BaudAuction_OnHide(self);
+            </OnHide>
+        </Scripts>
+    </Frame>
+</Ui>

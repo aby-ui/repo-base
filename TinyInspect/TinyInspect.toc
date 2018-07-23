@@ -1,0 +1,31 @@
+## Interface: 80000
+## Title: TinyInspect
+## Version: 7.3.1
+## Notes: Show ItemLevel For Inspect & Party & Raid & Mouse & Bag & Bank ...
+## Notes-zhCN: 装等观察,装等显示
+## Notes-zhTW: 裝等觀察,裝等顯示
+## Author: M
+## SavedVariables: TinyInspectDB
+
+libs\lib.xml
+
+locales\locales.xml
+Options.lua
+
+ItemBorder.lua
+ItemLevel.lua
+
+InspectCore.lua
+
+InspectUnit.lua
+InspectUnitStats.lua
+InspectUnitGemAndEnchant.lua
+InspectUnitSpecialization.lua
+InspectParty.lua
+InspectMouse.lua
+InspectRaid.lua
+
+
+## Title: |cff880303[有爱]|r TinyInspect 装等显示
+## X-Vendor: AbyUI
+

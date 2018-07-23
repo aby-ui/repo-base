@@ -1,0 +1,82 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+C:\Projects\WoW\Bin\Interface\FrameXML\UI.xsd">
+	<!-- TargetTargetTarget -->
+	<Script file="EN_Focus.lua"/>
+    <Frame name="MGFocusFrameTitle" parent="FocusFrame">
+				<Size>
+					<AbsDimension x="71" y="16"/>
+				</Size>
+				<Anchors>
+					<Anchor point="BOTTOMLEFT" relativePoint="TOPLEFT">
+						<Offset>
+							<AbsDimension x="67" y="-20"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture name="MGFocusFrameTitleLeft" file="Interface\CharacterFrame\UI-CharacterFrame-GroupIndicator">
+							<Size>
+								<AbsDimension x="24" y="16"/>
+							</Size>
+							<Anchors>
+								<Anchor point="TOPLEFT"/>
+							</Anchors>
+							<TexCoords left="0" right="0.1875" top="0" bottom="1"/>
+						</Texture>
+						<Texture name="MGFocusFrameTitleRight" file="Interface\CharacterFrame\UI-CharacterFrame-GroupIndicator">
+							<Size>
+								<AbsDimension x="24" y="16"/>
+							</Size>
+							<Anchors>
+								<Anchor point="TOPRIGHT"/>
+							</Anchors>
+							<TexCoords left="0.53125" right="0.71875" top="0" bottom="1"/>
+						</Texture>
+						<Texture name="MGFocusFrameTitleMiddle" file="Interface\CharacterFrame\UI-CharacterFrame-GroupIndicator">
+							<Size>
+								<AbsDimension x="0" y="16"/>
+							</Size>
+							<Anchors>
+								<Anchor point="LEFT" relativeTo="MGFocusFrameTitleLeft" relativePoint="RIGHT"/>
+								<Anchor point="RIGHT" relativeTo="MGFocusFrameTitleRight" relativePoint="LEFT"/>
+							</Anchors>
+							<TexCoords left="0.1875" right="0.53125" top="0" bottom="1"/>
+						</Texture>
+						<FontString name="MGFocusFrameTitleText" inherits="GameFontHighlightSmall" text="FOCUSFRAME_TITLE">
+							<Anchors>
+								<Anchor point="LEFT">
+									<Offset>
+										<AbsDimension x="20" y="-2"/>
+									</Offset>
+								</Anchor>
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnLoad>
+						MGFocusFrameTitleLeft:SetAlpha(0.3);
+						MGFocusFrameTitleRight:SetAlpha(0.3);
+						MGFocusFrameTitleMiddle:SetAlpha(0.3);
+						MGFocusFrameTitleText:SetAlpha(0.7);
+						self:SetWidth(MGFocusFrameTitleText:GetWidth()+40);
+						self:RegisterForDrag("LeftButton");
+					</OnLoad>
+					<OnDragStart>
+						MGFocusFrame_OnDragStart(self);
+					</OnDragStart>
+					<OnDragStop>
+						MGFocusFrame_OnDragStop(self);
+					</OnDragStop>
+					<OnEnter>
+						MGFocusFrame_OnEnter(self);
+					</OnEnter>
+					<OnLeave>
+						GameTooltip:Hide();
+					</OnLeave>
+				</Scripts>
+				<Frames>
+				</Frames>
+			</Frame>
+</Ui>

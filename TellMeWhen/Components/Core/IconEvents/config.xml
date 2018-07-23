@@ -1,0 +1,727 @@
+﻿<Ui>
+
+
+	<CheckButton name="TellMeWhen_Event" motionScriptsWhileDisabled="true" inherits="TellMeWhen_FlatFrame" virtual="true" >
+		<Size y="31"/>
+		<Layers>
+			<Layer level="OVERLAY">
+				<FontString parentKey="EventName" inherits="GameFontNormalSmall" justifyH="LEFT">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="17" y="-4"/>
+						<Anchor point="RIGHT" x="-15"/>
+					</Anchors>
+				</FontString>
+				<FontString parentKey="DataText" inherits="GameFontHighlightSmall" justifyH="LEFT" justifyV="TOP" wordwrap="false">
+					<Anchors>
+						<Anchor point="BOTTOMLEFT" x="17" y="4"/>
+						<Anchor point="RIGHT" x="-15"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Button parentKey="Delete" inherits="TellMeWhen_DeleteButtonTemplate">
+				<Size x="14" y="14"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" x="1" y="-1"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						TMW:CInit(self, "Config_Button")
+					</OnLoad>
+					<OnClick>
+						local Events = TMW.CI.ics.Events
+
+						tremove(Events, self:GetParent():GetID())
+						Events.n = Events.n - 1
+						
+						self:OnSettingSaved()
+					</OnClick>
+				</Scripts>
+			</Button>
+
+			<Button parentKey="Play">
+				<Size x="15" y="15"/>
+				<Anchors>
+					<!--Anchor point="TOPRIGHT" x="-2" y="-3"/-->
+					<Anchor point="RIGHT" x="-2" y="0"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						self:SetScale(0.8)
+						TMW:TT(self, "EVENTS_HANDLERS_PLAY", "EVENTS_HANDLERS_PLAY_DESC")
+					</OnLoad>
+					<OnClick>
+						TMW:ClickSound()
+
+						local ID = self:GetParent():GetID()
+						local Module = TMW.EVENTS:GetEventHandlerForEventSettings(ID)
+						if Module then
+							if not Module:TestEvent(ID) then
+								TMW:Print("Event test failed, unknown reason.")
+							end
+						end
+					</OnClick>
+					<OnDisable>
+						self:GetNormalTexture():SetDesaturated(1)
+					</OnDisable>
+					<OnEnable>
+						self:GetNormalTexture():SetDesaturated(nil)
+					</OnEnable>
+					<OnEnter>
+						self:GetParent():LockHighlight()
+					</OnEnter>
+					<OnLeave>
+						self:GetParent():UnlockHighlight()
+					</OnLeave>
+				</Scripts>
+				<NormalTexture urgency="5" file="Interface\Buttons\UI-SpellbookIcon-NextPage-Up" alphaMode="ADD">
+					<TexCoords left="0.3125" right="0.625" top="0.3" bottom="0.71857"/>
+				</NormalTexture>
+				<HighlightTexture urgency="5" file="Interface\Buttons\UI-SpellbookIcon-NextPage-Up" alphaMode="ADD">
+					<TexCoords left="0.3125" right="0.625" top="0.3" bottom="0.71857"/>
+				</HighlightTexture>
+			</Button>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				TMW:CInit(self, "Config_CheckButton")
+
+				self.DD = TMW.C.Config_DropDownMenu_NoFrame:New()
+				self.DD:SetFunction(TMW.EVENTS.ChangeEvent_Dropdown)
+
+				self:RegisterForClicks("LeftButtonUp", "RightButtonUp")
+				self:RegisterForDrag("LeftButton", "RightButton")
+			</OnLoad>
+			<OnDragStart>
+				local parent = self:GetParent()
+				
+				parent.draggingFrame = self
+				parent.ScrollFrame:SetEdgeScrollEnabled(true)
+			</OnDragStart>
+			<OnDragStop>
+				local parent = self:GetParent()
+				
+				parent.draggingFrame = nil
+				parent.ScrollFrame:SetEdgeScrollEnabled(false)
+			</OnDragStop>
+			<OnUpdate>
+				local parent = self:GetParent()
+				
+				if self:IsMouseOver() and parent.draggingFrame and self ~= parent.draggingFrame then
+					local selfSettings = TMW.CI.ics.Events[self:GetID()]
+					local dragSettings = TMW.CI.ics.Events[parent.draggingFrame:GetID()]
+
+					TMW.CI.ics.Events[self:GetID()] = dragSettings
+					TMW.CI.ics.Events[parent.draggingFrame:GetID()] = selfSettings
+					parent.draggingFrame = self
+					
+					self:OnSettingSaved()
+				end
+			</OnUpdate>
+			
+			<OnMouseUp>
+				-- This is handled in OnMouseUp so that it will still fire when the button is disabled.
+
+				local EventHandler = TMW.EVENTS:GetEventHandlerForEventSettings(self:GetID())
+				if button == "RightButton" then
+					TMW:ClickSound()
+					self.DD.eventButton = self
+					self.DD:Toggle(1, nil, self, 0, 0)
+				end
+			</OnMouseUp>
+			<OnClick>
+				if button ~= "RightButton" then
+					TMW:ClickSound()
+
+					TMW.IE:SaveSettings()
+					
+					TMW.EVENTS.currentEventID = self:GetID()
+					self:OnSettingSaved()
+				end
+			</OnClick>
+			<OnDisable>
+				self.EventName:SetFontObject(GameFontDisableSmall)
+				self.DataText:SetFontObject(GameFontDisableSmall)
+				if self.Play then
+					self.Play:Disable()
+				end
+			</OnDisable>
+			<OnEnable>
+				self.EventName:SetFontObject(GameFontNormalSmall)
+				self.DataText:SetFontObject(GameFontHighlightSmall)
+				if self.Play then
+					self.Play:Enable()
+				end
+			</OnEnable>
+		</Scripts>
+		<NormalFont style="GameFontNormal"/>
+		<HighlightFont style="GameFontHighlight"/>
+		<HighlightTexture alphaMode="ADD" alpha="0.1">
+			<Color r="1" g="1" b="1"/>
+			<Anchors>
+				<Anchor point="TOPLEFT" x="0.5" y="-0.5"/>
+				<Anchor point="BOTTOMRIGHT" x="-0.5" y="0.5"/>
+			</Anchors>
+		</HighlightTexture>
+	</CheckButton>
+
+
+	<Button name="TellMeWhen_HandlerPicker" motionScriptsWhileDisabled="true" inherits="TellMeWhen_FlatFrame" virtual="true" >
+		<Size y="55"/>
+		<Anchors>
+			<Anchor point="LEFT" x="2" y="0"/>
+			<Anchor point="RIGHT" x="-2" y="0"/>
+		</Anchors>
+		<Layers>
+			<Layer level="OVERLAY">
+				<FontString parentKey="Title" inherits="GameFontNormalLarge" justifyH="CENTER">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="10" y="-5"/>
+						<Anchor point="RIGHT" x="-10"/>
+					</Anchors>
+				</FontString>
+				<FontString parentKey="Desc" wordwrap="true" inherits="GameFontHighlightSmall" justifyH="CENTER" justifyV="CENTER" >
+					<Size x="1" y="1"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeKey="$parent.Title" relativePoint="BOTTOMLEFT" x="0" y="-0"/>
+						<Anchor point="BOTTOMRIGHT" x="-10" y="3"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+
+		<Scripts>
+			<OnLoad>
+				self:RegisterForClicks("LeftButtonUp", "RightButtonUp")
+			</OnLoad>
+			<OnClick>
+				TMW:ClickSound()
+
+				TMW.EVENTS.pickedHandler = self.handlerIdentifier
+				TMW.EVENTS:ShowEventPickerButtons()
+			</OnClick>
+		</Scripts>
+	</Button>
+
+	<Button name="TellMeWhen_EventPicker" motionScriptsWhileDisabled="true" inherits="TellMeWhen_FlatFrame" virtual="true" >
+		<Size y="18"/>
+		<Anchors>
+			<Anchor point="LEFT" x="9" y="0"/>
+			<Anchor point="RIGHT" x="-2" y="0"/>
+		</Anchors>
+		<Layers>
+			<Layer level="OVERLAY">
+				<FontString parentKey="Title" name="$parentTitle" inherits="GameFontHighlight" justifyH="LEFT">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="6" y="-4"/>
+						<Anchor point="RIGHT" x="-6"/>
+					</Anchors>
+				</FontString>
+				<FontString parentKey="Header" name="$parentHeader" inherits="GameFontNormal" justifyH="LEFT" text="TEST">
+					<Anchors>
+						<Anchor point="BOTTOMLEFT" x="-9" y="1" relativePoint="TOPLEFT"/>
+						<Anchor point="RIGHT" x="0"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+
+		<Scripts>
+			<OnLoad>
+				self:RegisterForClicks("LeftButtonUp", "RightButtonUp")
+			</OnLoad>
+			<OnClick>
+				TMW:ClickSound()
+
+				TMW.EVENTS:PickEvent(self.event)
+			</OnClick>
+		</Scripts>
+	</Button>
+
+	<CheckButton name="TellMeWhen_EventHandler_SubHandlerListButton" inherits="TellMeWhen_FlatFrame" virtual="true" >
+		<Size y="15"/>
+		<Layers>
+			<Layer level="OVERLAY">
+				<FontString parentKey="Name" name="$parentName" inherits="GameFontHighlightSmall" justifyH="LEFT">
+					<Anchors>
+						<Anchor point="LEFT" x="3"/>
+						<Anchor point="RIGHT" x="-1"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnClick>
+				TMW:ClickSound()
+
+				self.EventHandler:SetSubHandler(self.subHandlerIdentifier)
+			</OnClick>
+		</Scripts>
+	</CheckButton>
+
+	
+	<CheckButton name="TellMeWhen_EventSettings_CheckTemplate" inherits="TellMeWhen_CheckTemplate" virtual="true">
+		<Size x="26" y="26"/>
+	</CheckButton>
+
+	<CheckButton name="TellMeWhen_EventHandler_ColumnConfig_CheckTemplate" inherits="TellMeWhen_EventSettings_CheckTemplate" virtual="true">
+		<Anchors>
+			<Anchor point="LEFT" x="10" />
+		</Anchors>
+	</CheckButton>
+
+	<Slider name="TellMeWhen_EventHandler_ColumnConfig_SliderTemplate" inherits="TellMeWhen_SliderTemplate" virtual="true">
+		<KeyValues>
+			<KeyValue key="paddingTop" type="number" value="8"/>
+			<KeyValue key="paddingBottom" type="number" value="8"/>
+		</KeyValues>
+		<Anchors>
+			<Anchor point="LEFT" x="15" />
+			<Anchor point="RIGHT" x="-20"/>
+		</Anchors>
+	</Slider>
+
+	<Frame name="TellMeWhen_EventContainer" parent="TellMeWhen_IconEditorPagesEvents" hidden="true" virtual="true">
+		<Anchors>
+			<Anchor point="TOPLEFT" relativeKey="$parent.AddEvent" relativePoint="TOPRIGHT" x="16" y="0"/>
+			<Anchor point="RIGHT"/>
+			<Anchor point="BOTTOM"/>
+		</Anchors>
+		<Scripts>
+			<OnLoad>
+				TMW:CInit(self, "Config_Frame")
+
+				local EventHandler
+				for k, v in pairs(self:GetParent()) do
+					if self == v then
+						EventHandler = TMW.EVENTS:GetEventHandler(k)
+						break
+					end
+				end
+				
+				if not EventHandler then
+					error(("TellMeWhen: Couldn't match an EventHandler instance to the TellMeWhen_EventContainer %q"):format(self:GetName()))
+				end
+
+				EventHandler.ConfigContainer = self
+				self:RegisterForDrag("LeftButton")
+				self:Hide()
+			</OnLoad>
+		</Scripts>
+	</Frame>
+
+	
+	<Frame parentKey="Events" name="$parentEvents" inherits="TellMeWhen_IE_PageTemplate">
+		<Frames>
+			<Frame parentKey="EventHandlerFrames" >
+				<Size x="210" y="10"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" x="12" y="-55"/>
+					<Anchor point="BOTTOM" relativePoint="LEFT" y="0"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						self.originalParent = self:GetParent()
+						
+						TMW:ConvertContainerToScrollFrame(self, true, nil, 8)
+						self.ScrollFrame:SetWheelStepAmount(20)
+						
+						self.ScrollFrame.edgeScrollScrollDistancePerSecond = 100
+						
+						self.ScrollFrame:HookScript("OnScrollRangeChanged", function(self)
+							TMW.EVENTS:AdjustScrollFrame()
+						end)
+					</OnLoad>
+					<OnUpdate>
+						local lastShownChild
+						for i = 1, #self.frames do
+							if self.frames[i]:IsShown() then
+								lastShownChild = self.frames[i]
+							else
+								break
+							end
+						end
+						
+						self.originalParent.EventSettingsContainer.ScrollFrame:SetPoint("TOP", self.ScrollFrame, "BOTTOM", 0, -36)
+
+						if lastShownChild and lastShownChild:GetBottom() > self.ScrollFrame:GetBottom() + 5 then
+							self.originalParent.EventSettingsContainer.ScrollFrame:SetPoint("TOP", lastShownChild, "BOTTOM", 0, -36)
+						end
+					</OnUpdate>
+				</Scripts>
+			</Frame>
+
+			<CheckButton parentKey="AddEvent" inherits="TellMeWhen_FlatFrame">
+				<Size y="30"/>
+				<Anchors>
+					<Anchor point="BOTTOMLEFT" relativeKey="$parent.EventHandlerFrames.ScrollFrame" relativePoint="TOPLEFT" y="2"/>
+					<Anchor point="BOTTOMRIGHT" relativeKey="$parent.EventHandlerFrames.ScrollFrame" relativePoint="TOPRIGHT" y="2"/>
+				</Anchors>
+				<Layers>
+					<Layer level="OVERLAY">
+						<Texture parentKey="Plus" file="Interface\PaperDollInfoFrame\Character-Plus">
+							<Size x="20" y="20"/>
+							<Anchors>
+								<Anchor point="LEFT" x="5"/>
+							</Anchors>
+						</Texture>
+						<FontString parentKey="Text" inherits="GameFontNormalSmall" justifyH="LEFT">
+							<Anchors>
+								<Anchor point="LEFT" relativeKey="$parent.Plus" relativePoint="RIGHT" x="5"/>
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+
+				<Scripts>
+					<OnLoad>
+						self.Text:SetText(TMW.L["EVENTS_HANDLERS_ADD"])
+						TMW:TT(self, "EVENTS_HANDLERS_ADD", "EVENTS_HANDLERS_ADD_DESC", nil, nil, "ShouldShowTooltip")
+
+						function self:ShouldShowTooltip()
+							return not self:GetParent().HandlerPickers:IsShown()
+						end
+
+						-- Fix text wrapping:
+						self.Text:SetPoint("RIGHT", self, "RIGHT")
+						-- Have to do this or else the text won't multiline/wordwrap when it should.
+						-- 30 is just an arbitrarily large number.
+						self.Text:SetHeight(30)
+						self.Text:SetMaxLines(3)
+					</OnLoad>
+					<OnClick>
+						TMW:ClickSound()
+
+						TMW.EVENTS:ShowHandlerPickerButtons()
+						TMW:TT_Update(self)
+					</OnClick>
+				</Scripts>
+			</CheckButton>
+
+			<Frame parentKey="HandlerPickers" hidden="true">
+				<Size y="50"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeKey="$parent.AddEvent" relativePoint="TOPRIGHT" x="15" y="0"/>
+					<Anchor point="RIGHT" x="-15"/>
+					<Anchor point="BOTTOM" y="0"/>
+				</Anchors>
+
+				<Layers>
+					<Layer level="OVERLAY">
+						<FontString parentKey="Header" inherits="GameFontNormalLarge" justifyH="CENTER" hidden="true" text=""/>
+					</Layer>
+				</Layers>
+
+				<Scripts>
+					<OnLoad>
+						self.originalParent = self:GetParent()
+						
+						TMW:ConvertContainerToScrollFrame(self, true, nil, 8)
+						self.ScrollFrame:SetWheelStepAmount(20)
+
+						self.Header:SetParent(self.ScrollFrame)
+						self.Header:SetText(TMW.L["EVENTS_CHOOSE_HANDLER"])
+						self.Header:SetPoint("BOTTOM", self.ScrollFrame, "TOP", 0, 1)
+
+					</OnLoad>
+					<OnShow>
+						self.Header:Show()
+					</OnShow>
+					<OnHide>
+						self.Header:Hide()
+					</OnHide>
+				</Scripts>
+			</Frame>
+
+			<Frame parentKey="EventPickers" hidden="true">
+				<Size y="50"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeKey="$parent.AddEvent" relativePoint="TOPRIGHT" x="15" y="0"/>
+					<Anchor point="RIGHT" x="-15"/>
+					<Anchor point="BOTTOM" y="0"/>
+				</Anchors>
+
+				<Layers>
+					<Layer level="OVERLAY">
+						<FontString parentKey="Header" inherits="GameFontNormalLarge" justifyH="CENTER" hidden="true" text=""/>
+					</Layer>
+				</Layers>
+
+				<Scripts>
+					<OnLoad>
+						self.originalParent = self:GetParent()
+						
+						TMW:ConvertContainerToScrollFrame(self, true, nil, 8)
+						self.ScrollFrame:SetWheelStepAmount(20)
+
+						self.Header:SetParent(self.ScrollFrame)
+						self.Header:SetText(TMW.L["EVENTS_CHOOSE_EVENT"])
+						self.Header:SetPoint("BOTTOM", self.ScrollFrame, "TOP", 0, 1)
+
+					</OnLoad>
+					<OnShow>
+						self.Header:Show()
+					</OnShow>
+					<OnHide>
+						self.Header:Hide()
+					</OnHide>
+				</Scripts>
+			</Frame>
+
+			<Frame parentKey="EventSettingsContainer" name="$parentEventSettingsContainer">
+				<Size x="210" y="10"/>
+				<Anchors>
+					<Anchor point="TOP" relativeKey="$parent.EventHandlerFrames.ScrollFrame" relativePoint="BOTTOM" y="-36"/>
+					<Anchor point="LEFT" relativeKey="$parent.EventHandlerFrames.ScrollFrame" />
+					<Anchor point="RIGHT" relativeKey="$parent.EventHandlerFrames.ScrollFrame" />
+					<Anchor point="BOTTOM" y="0"/>
+				</Anchors>
+				<Frames>
+					<CheckButton parentKey="PassThrough" inherits="TellMeWhen_EventSettings_CheckTemplate" motionScriptsWhileDisabled="true">
+						<Anchors>
+							<Anchor point="TOPLEFT" y="-3"/>
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								TMW:CInit(self)
+
+								self:SetTexts(TMW.L["EVENTS_SETTINGS_PASSTHROUGH"], TMW.L["EVENTS_SETTINGS_PASSTHROUGH_DESC"])
+								self:SetSetting("PassThrough")
+
+								self:ConstrainLabel(self:GetParent(), "RIGHT")
+							</OnLoad>
+						</Scripts>
+					</CheckButton>
+
+					<CheckButton parentKey="SimplyShown" inherits="TellMeWhen_EventSettings_CheckTemplate" motionScriptsWhileDisabled="true">
+						<Anchors>
+							<Anchor point="TOPLEFT" y="-3"/>
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								TMW:CInit(self)
+
+								self:SetTexts(TMW.L["EVENTS_SETTINGS_SIMPLYSHOWN"], TMW.L["EVENTS_SETTINGS_SIMPLYSHOWN_DESC"])
+								self:SetSetting("OnlyShown")
+								
+								self:ConstrainLabel(self:GetParent(), "RIGHT")
+							</OnLoad>
+						</Scripts>
+					</CheckButton>
+
+					<CheckButton parentKey="OnlyShown" inherits="TellMeWhen_EventSettings_CheckTemplate" motionScriptsWhileDisabled="true">
+						<Anchors>
+							<Anchor point="TOP" relativeKey="$parent.PassThrough" relativePoint="BOTTOM" y="4"/>
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								TMW:CInit(self)
+
+								self:SetTexts(TMW.L["EVENTS_SETTINGS_ONLYSHOWN"], TMW.L["EVENTS_SETTINGS_ONLYSHOWN_DESC"])
+								self:SetSetting("OnlyShown")
+								
+								self:ConstrainLabel(self:GetParent(), "RIGHT")
+							</OnLoad>
+						</Scripts>
+					</CheckButton>
+
+					<CheckButton parentKey="PassingCndt" inherits="TellMeWhen_EventSettings_CheckTemplate" motionScriptsWhileDisabled="true">
+						<Anchors>
+							<Anchor point="TOP" relativeKey="$parent.OnlyShown" relativePoint="BOTTOM" y="4"/>
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								TMW:CInit(self)
+
+								self:SetTexts(TMW.L["EVENTS_SETTINGS_PASSINGCNDT"], TMW.L["EVENTS_SETTINGS_PASSINGCNDT_DESC"])
+								self:SetSetting("PassingCndt")
+								
+								self:ConstrainLabel(self:GetParent(), "RIGHT")
+							</OnLoad>
+						</Scripts>
+					</CheckButton>
+
+					<Frame parentKey="Operator" inherits="TMW_DropDownMenuTemplate">
+						<Anchors>
+							<Anchor point="TOP" relativeKey="$parent.PassingCndt" relativePoint="BOTTOM" x="105" y="3"/>
+						</Anchors>
+						<Layers>
+							<Layer level="OVERLAY">
+								<FontString parentKey="ValueLabel" name="$parentValueLabel" inherits="GameFontHighlight" justifyH="RIGHT">
+									<Anchors>
+										<Anchor point="RIGHT" relativePoint="LEFT" x="-5" y="0"/>
+									</Anchors>
+								</FontString>
+							</Layer>
+						</Layers>
+						<Scripts>
+							<OnLoad>
+								TMW:CInit(self)
+								
+								self:SetFunction(TMW.EVENTS.OperatorMenu_DropDown)
+
+								self.Text:SetFont("Interface/Addons/TellMeWhen/Fonts/OpenSans-Regular.ttf", 20, "THINOUTLINE")
+
+								self:SetWidth(63)
+							</OnLoad>
+						</Scripts>
+					</Frame>
+
+					<EditBox parentKey="Value" inherits="TellMeWhen_InputBoxTemplate" autoFocus="false">
+						<Size x="45" y="18"/>
+						<Anchors>
+							<Anchor point="LEFT" relativeKey="$parent.Operator" relativePoint="RIGHT" x="12" y="0"/>
+						</Anchors>
+						<Layers>
+							<Layer level="OVERLAY">
+								<FontString parentKey="ValueLabel" inherits="GameFontHighlightLarge" justifyH="RIGHT">
+									<Anchors>
+										<Anchor point="RIGHT" relativePoint="RIGHT" x="-3" y="0"/>
+									</Anchors>
+								</FontString>
+							</Layer>
+						</Layers>
+						<Scripts>
+							<OnLoad>
+								TMW:CInit(self)
+
+								self:SetSetting("Value")
+
+								self:CScriptAdd("ModifyValueForSave", function(self, value)
+									return tonumber(value) or 0
+								end)
+							</OnLoad>
+						</Scripts>
+					</EditBox>
+
+					<CheckButton parentKey="CndtJustPassed" inherits="TellMeWhen_EventSettings_CheckTemplate" motionScriptsWhileDisabled="true">
+						<Anchors>
+							<Anchor point="TOP" relativeKey="$parent.PassingCndt" relativePoint="BOTTOM" y="-15" x="8"/>
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								TMW:CInit(self)
+
+								self:SetTexts(TMW.L["EVENTS_SETTINGS_CNDTJUSTPASSED"], TMW.L["EVENTS_SETTINGS_CNDTJUSTPASSED_DESC"])
+								self:SetSetting("CndtJustPassed")
+								
+								self:ConstrainLabel(self:GetParent(), "RIGHT")
+							</OnLoad>
+						</Scripts>
+					</CheckButton>
+
+
+					<Button parentKey="IconEventWhileCondition" inherits="TellMeWhen_ButtonTemplate">
+						<Size x="175" y="16"/>
+						<Anchors>
+							<Anchor point="TOP" relativeKey="$parent.SimplyShown" relativePoint="BOTTOM" y="-7"/>
+							<Anchor point="LEFT" />
+							<Anchor point="RIGHT" />
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								self:SetFrameLevel(self:GetParent():GetFrameLevel()+2)
+								self.Background:SetAlpha(0.7)
+								self:SetScale(0.9)
+								
+								TMW:TT(self, "EVENT_WHILECONDITIONS", "EVENT_WHILECONDITIONS_DESC")
+								
+							</OnLoad>
+							<OnUpdate>
+								local text = TMW.CNDT:GetTabText("IconEventWhileCondition")
+								
+								self:SetText(text)
+								self:SetWidth(self:GetTextWidth()+10)
+							</OnUpdate>
+							<OnClick>
+								TMW.CNDT:LoadConfig("IconEventWhileCondition")
+							</OnClick>
+						</Scripts>
+					</Button>
+
+
+					<Slider parentKey="Frequency" inherits="TellMeWhen_SliderTemplate" valuestep="0.1" >
+						<Anchors>
+							<Anchor point="TOP" relativeKey="$parent.IconEventWhileCondition" relativePoint="BOTTOM" y="-18"/>
+							<Anchor point="LEFT"/>
+							<Anchor point="RIGHT"/>
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								TMW:CInit(self)
+
+								self:SetTexts(TMW.L["EVENT_FREQUENCY"], TMW.L["EVENT_FREQUENCY_DESC"])
+								self:SetSetting("Frequency")
+								
+								self:SetTextFormatter(TMW.C.Formatter.S_SECONDS, TMW.C.Formatter.F_1)
+								self:SetMode(self.MODE_ADJUSTING)
+								self:SetMinMaxValues(0.1, math.huge)
+								self:SetRange(2)
+
+								self:UseLightColor()
+							</OnLoad>
+						</Scripts>
+					</Slider>
+
+					
+				</Frames>
+				<Scripts>
+					<OnLoad>
+						self.originalParent = self:GetParent()
+						TMW:ConvertContainerToScrollFrame(self, true, nil, 8)
+					</OnLoad>
+					<OnHide>
+						self.originalParent.EventSettingsHeader:Hide()
+						self.originalParent.EventSettingsEventName:Hide()
+					</OnHide>
+					<OnShow>
+						self.originalParent.EventSettingsHeader:Show()
+						self.originalParent.EventSettingsEventName:Show()
+					</OnShow>
+				</Scripts>
+			</Frame>
+		</Frames>
+		
+		<Layers>
+			<Layer level="OVERLAY">
+				<FontString parentKey="EventListHeader" inherits="GameFontNormalLarge" justifyH="LEFT">
+					<Anchors>
+						<Anchor point="BOTTOM" relativeKey="$parent.AddEvent" relativePoint="TOP" y="1"/>
+					</Anchors>
+				</FontString>
+				<FontString parentKey="EventSettingsHeader" hidden="true" inherits="GameFontNormalLarge" justifyH="CENTER">
+					<Anchors>
+						<Anchor point="TOP" relativeKey="$parent.EventSettingsContainer.ScrollFrame" y="30"/>
+					</Anchors>
+				</FontString>
+				<FontString parentKey="EventSettingsEventName" inherits="GameFontDisableSmall" hidden="true" justifyH="CENTER">
+					<Anchors>
+						<Anchor point="TOP" relativeKey="$parent.EventSettingsHeader" relativePoint="BOTTOM" y="-3"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				TMW:CInit(self)
+
+				self:CScriptAdd("SettingTableRequested", function(self)
+					return TMW.EVENTS:GetEventSettings() or false
+				end)
+
+				self:CScriptAdd("ReloadRequested", function()
+					TMW.EVENTS:LoadConfig()
+				end)
+				
+				self.EventListHeader:SetText(TMW.L["EVENTS_HANDLERS_HEADER"])
+				self.EventSettingsHeader:SetText(TMW.L["EVENTS_SETTINGS_HEADER"])
+				
+				TMW.EVENTS.EventHandlerFrames = self.EventHandlerFrames
+				TMW.EVENTS.EventSettingsContainer = self.EventSettingsContainer
+				
+			</OnLoad>
+		</Scripts>
+	</Frame>
+		
+</Ui>

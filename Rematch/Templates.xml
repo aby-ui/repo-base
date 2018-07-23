@@ -1,0 +1,1210 @@
+<!-- Templates.xml: common templates used across multiple modules -->
+<Ui>
+
+	<Frame name="RematchPanelTemplate" hidden="true" virtual="true">
+		<Size x="280" y="520"/>
+		<Scripts>
+			<OnHide>
+				Rematch:HideWidgets()
+			</OnHide>
+		</Scripts>
+	</Frame>
+
+	<Frame name="RematchTooltipScripts" virtual="true">
+		<Scripts>
+			<OnEnter>
+				Rematch.ShowTooltip(self)
+			</OnEnter>
+			<OnLeave>
+				Rematch:HideTooltip()
+			</OnLeave>
+		</Scripts>
+	</Frame>
+
+	<Button name="RematchSlotTemplate" virtual="true">
+		<Size x="32" y="32"/> <!-- any size 24+ -->
+		<Layers>
+			<Layer level="BORDER">
+				<Texture parentKey="Icon" file="Interface\Icons\INV_Misc_QuestionMark">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="2" y="-2"/>
+						<Anchor point="BOTTOMRIGHT" x="-2" y="2"/>
+					</Anchors>
+					<TexCoords left="0.075" right="0.925" top="0.075" bottom="0.925"/>
+				</Texture>
+			</Layer>
+			<!-- a standard grey border to make icons look consistent -->
+			<Layer level="BORDER" textureSubLevel="1">
+				<Texture parentKey="IconBorder" file="Interface\Buttons\UI-QuickSlot2" setAllPoints="true">
+					<TexCoords left="0.1875" right="0.796875" top="0.1875" bottom="0.796875"/>
+				</Texture>
+			</Layer>
+			<!-- highlight is the standard blue highlight -->
+			<Layer level="HIGHLIGHT">
+				<Texture file="Interface\Buttons\ButtonHilight-Square" setAllPoints="true" alphaMode="ADD"/>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnMouseDown>
+				self.Icon:SetPoint("TOPLEFT",3,-3)
+				self.Icon:SetPoint("BOTTOMRIGHT",-3,3)
+				self.Icon:SetAlpha(0.75)
+			</OnMouseDown>
+			<OnMouseUp>
+				self.Icon:SetPoint("TOPLEFT",2,-2)
+				self.Icon:SetPoint("BOTTOMRIGHT",-2,2)
+				self.Icon:SetAlpha(1)
+			</OnMouseUp>
+			<OnShow>
+				self:GetScript("OnMouseUp")(self)
+			</OnShow>
+		</Scripts>
+	</Button>
+
+	<!-- Template for pets -->
+	<Button name="RematchPetSlotTemplate" inherits="RematchSlotTemplate" virtual="true">
+		<Size x="38" y="38"/>
+		<Layers>
+			<Layer level="ARTWORK">
+				<!-- red tint around edge of icon for when pet is injured -->
+				<Texture parentKey="Blood" file="Interface\ContainerFrame\Bags" alpha="0.75" hidden="true">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeKey="$parent.Icon"/>
+						<Anchor point="BOTTOMRIGHT" relativeKey="$parent.Icon"/>
+					</Anchors>
+					<TexCoords left="0" right="0.16015625" top="0.51953125" bottom="0.6796875"/>
+					<Color r="1" g="0" b="0"/>
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY">
+				<Texture parentKey="IsDead" file="Interface\PetBattles\DeadPetIcon" setAllPoints="true" hidden="true"/>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Frame parentKey="Favorite" hidden="true">
+				<Size x="25" y="25"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" x="-8" y="8"/>
+				</Anchors>
+				<Layers>
+					<Layer level="ARTWORK">
+						<Texture parentKey="Texture" atlas="PetJournal-FavoritesIcon" useAtlasSize="true"/>
+					</Layer>
+				</Layers>
+			</Frame>
+			<Frame parentKey="Level" hidden="true">
+				<Size x="22" y="22"/>
+				<Anchors>
+					<Anchor point="BOTTOMRIGHT" x="3" y="-3"/>
+				</Anchors>
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture parentKey="BG" atlas="PetJournal-LevelBubble" setAllPoints="true"/>
+					</Layer>
+					<Layer level="ARTWORK">
+						<FontString parentKey="Text" inherits="GameFontNormalSmall" setAllPoints="true">
+							<Anchors>
+								<Anchor point="CENTER" x="1" y="-1"/>
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+			</Frame>
+		</Frames>
+	</Button>
+
+	<!-- Inset template without a background (bg) texture -->
+	<Frame name="RematchBaseInsetFrameTemplate" virtual="true">
+		<Layers>
+			<Layer level="BORDER" textureSubLevel="-5">
+				<Texture parentKey="InsetTopLeft" inherits="UI-Frame-InnerTopLeft">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeKey="$parent.bg"/>
+					</Anchors>
+				</Texture>
+				<Texture parentKey="InsetTopRight" inherits="UI-Frame-InnerTopRight">
+					<Anchors>
+						<Anchor point="TOPRIGHT" relativeKey="$parent.bg"/>
+					</Anchors>
+				</Texture>
+				<Texture parentKey="InsetBottomLeft" inherits="UI-Frame-InnerBotLeftCorner">
+					<Anchors>
+						<Anchor point="BOTTOMLEFT" relativeKey="$parent.bg" y="-1"/>
+					</Anchors>
+				</Texture>
+				<Texture parentKey="InsetBottomRight" inherits="UI-Frame-InnerBotRight">
+					<Anchors>
+						<Anchor point="BOTTOMRIGHT" relativeKey="$parent.bg" y="-1"/>
+					</Anchors>
+				</Texture>
+				<Texture inherits="_UI-Frame-InnerTopTile">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeKey="$parent.InsetTopLeft" relativePoint="TOPRIGHT"/>
+						<Anchor point="TOPRIGHT" relativeKey="$parent.InsetTopRight" relativePoint="TOPLEFT"/>
+					</Anchors>
+				</Texture>
+				<Texture inherits="_UI-Frame-InnerBotTile">
+					<Anchors>
+						<Anchor point="BOTTOMLEFT" relativeKey="$parent.InsetBottomLeft" relativePoint="BOTTOMRIGHT"/>
+						<Anchor point="BOTTOMRIGHT" relativeKey="$parent.InsetBottomRight" relativePoint="BOTTOMLEFT"/>
+					</Anchors>
+				</Texture>
+				<Texture inherits="!UI-Frame-InnerLeftTile">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeKey="$parent.InsetTopLeft" relativePoint="BOTTOMLEFT"/>
+						<Anchor point="BOTTOMLEFT" relativeKey="$parent.InsetBottomLeft" relativePoint="TOPLEFT"/>
+					</Anchors>
+				</Texture>
+				<Texture inherits="!UI-Frame-InnerRightTile">
+					<Anchors>
+						<Anchor point="TOPRIGHT" relativeKey="$parent.InsetTopRight" relativePoint="BOTTOMRIGHT"/>
+						<Anchor point="BOTTOMRIGHT" relativeKey="$parent.InsetBottomRight" relativePoint="TOPRIGHT"/>
+					</Anchors>
+				</Texture>	
+			</Layer>
+		</Layers>
+	</Frame>
+
+	<!-- Inset template with a background (bg) texture -->
+	<Frame name="RematchInsetFrameTemplate" inherits="RematchBaseInsetFrameTemplate" virtual="true">
+		<Layers>
+			<Layer level="BACKGROUND" textureSubLevel="-5">
+				<Texture parentKey="InsetBack" file="Interface\FrameGeneral\UI-Background-Marble" horizTile="true" vertTile="true" setAllPoints="true"/>
+			</Layer>
+		</Layers>
+	</Frame>
+
+	<!-- Little X in a circle to be used for clearing editboxes -->
+	<Button name="RematchClearButtonTemplate" virtual="true" ignoreParentAlpha="true">
+		<Size x="18" y="18"/>
+		<HitRectInsets>
+			<AbsInset left="-2" right="-2" top="-2" bottom="-2"/>
+		</HitRectInsets>
+		<Layers>
+			<Layer level="ARTWORK">
+				<Texture parentKey="Texture" file="Interface\FriendsFrame\ClearBroadcastIcon" alpha="0.5">
+					<Size x="18" y="18"/>
+					<Anchors>
+						<Anchor point="TOPLEFT"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				self:HookScript("OnEnter",function(self) self.Texture:SetAlpha(1.0) end)
+				self:HookScript("OnLeave",function(self) self.Texture:SetAlpha(0.5) end)
+			</OnLoad>
+			<OnMouseDown>
+				self.Texture:SetPoint("TOPLEFT",1,-1)
+			</OnMouseDown>
+			<OnMouseUp>
+				self.Texture:SetPoint("TOPLEFT",0,0)
+			</OnMouseUp>
+			<OnShow>
+				self.Texture:SetAlpha(0.5)
+				self.Texture:SetPoint("TOPLEFT",0,0)
+			</OnShow>
+		</Scripts>
+	</Button>
+
+	<EditBox name="RematchInputBoxTemplate" enableMouse="true" autoFocus="false" virtual="true">
+		<Size x="0" y="24"/>
+		<TextInsets>
+			<AbsInset left="6" right="19"/>
+		</TextInsets>
+		<Backdrop edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
+			<EdgeSize val="16"/>
+			<BorderColor r="0.5" g="0.5" b="0.5"/>
+		</Backdrop>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="3" y="-3"/>
+						<Anchor point="BOTTOMRIGHT" x="-3" y="3"/>
+					</Anchors>
+					<Color r="0" g="0" b="0"/>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Button parentKey="Clear" inherits="RematchClearButtonTemplate" hidden="true">
+				<Anchors>
+					<Anchor point="RIGHT" x="-3" y="0"/>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						self:GetParent():SetText("")
+						self:GetParent():ClearFocus()
+						self:Hide()
+						if self:GetParent().Instructions then
+							self:GetParent().Instructions:Show()
+						end
+					</OnClick>
+				</Scripts>
+			</Button>
+		</Frames>
+		<Scripts>
+			<OnEscapePressed>
+				self:ClearFocus()
+			</OnEscapePressed>
+			<OnEditFocusLost>
+				self.Clear:SetShown(self:GetText():len()>0)
+			</OnEditFocusLost>
+			<OnEditFocusGained>
+				self.Clear:Show()
+			</OnEditFocusGained>
+		</Scripts>
+		<FontString inherits="GameFontHighlight"/>
+	</EditBox>
+
+	<EditBox name="RematchSearchBoxTemplate" inherits="RematchInputBoxTemplate" virtual="true">
+		<TextInsets>
+			<AbsInset left="24" right="19"/>
+		</TextInsets>
+		<Layers>
+			<Layer level="ARTWORK">
+				<Texture parentKey="SearchIcon" file="Interface\Common\UI-Searchbox-Icon">
+					<Size x="18" y="18"/>
+					<Anchors>
+						<Anchor point="LEFT" x="6" y="-2"/>
+					</Anchors>
+					<Color r="0.6" g="0.6" b="0.6"/>
+				</Texture>
+				<FontString parentKey="Instructions" inherits="GameFontDisable" text="SEARCH">
+					<Anchors>
+						<Anchor point="LEFT" x="24" y="0"/>
+					</Anchors>
+					<Color r="0.35" g="0.35" b="0.35"/>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnEditFocusLost>
+				self.SearchIcon:SetVertexColor(0.6,0.6,0.6)
+				self.Clear:SetShown(self:GetText():len()>0)
+				self.Instructions:SetShown(self:GetText():len()==0)
+			</OnEditFocusLost>
+			<OnEditFocusGained>
+				self.SearchIcon:SetVertexColor(1.0,1.0,1.0)
+				self.Clear:Show()
+				self.Instructions:Hide()
+			</OnEditFocusGained>
+		</Scripts>
+	</EditBox>
+
+	<!-- tabs used for typebar -->
+	<Button name="RematchTabTemplate" virtual="true">
+		<Size x="80" y="24"/>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture file="Interface\ChatFrame\ChatFrameTab-BGLeft">
+					<Size x="16" y="24"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="0" y="2"/>
+					</Anchors>
+					<TexCoords left="0" right="1" top="0.25" bottom="1"/>
+				</Texture>
+				<Texture file="Interface\ChatFrame\ChatFrameTab-BGRight">
+					<Size x="16" y="24"/>
+					<Anchors>
+						<Anchor point="TOPRIGHT" x="0" y="2"/>
+					</Anchors>
+					<TexCoords left="0" right="1" top="0.25" bottom="1"/>
+				</Texture>
+				<Texture file="Interface\ChatFrame\ChatFrameTab-BGMid" horizTile="true" parentKey="middleBack">
+					<Size x="3" y="24"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="16" y="2"/>
+						<Anchor point="TOPRIGHT" x="-16" y="2"/>
+					</Anchors>
+					<TexCoords left="0" right="1" top="0.25" bottom="1"/>
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY">
+				<Texture parentKey="HasStuff" file="Interface\PaperDollInfoFrame\UI-Character-Tab-Highlight" alphaMode="ADD" alpha=".75" hidden="true">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="3" y="-6"/>
+						<Anchor point="BOTTOMRIGHT" x="-3" y="2"/>
+					</Anchors>
+					<TexCoords left="0" right="1" top="0.40625" bottom="0.75"/>
+					<Color r="1" g="1" b=".75"/>
+				</Texture>
+			</Layer>
+			<Layer level="HIGHLIGHT">
+				<Texture file="Interface\ChatFrame\ChatFrameTab-HighlightLeft" alphaMode="ADD">
+					<Size x="16" y="24"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="0" y="2"/>
+					</Anchors>
+					<TexCoords left="0" right="1" top="0.25" bottom="1"/>
+					<Color r="0.1" g=".25" b=".5"/>
+				</Texture>
+				<Texture file="Interface\ChatFrame\ChatFrameTab-HighlightRight" alphaMode="ADD">
+					<Size x="16" y="24"/>
+					<Anchors>
+						<Anchor point="TOPRIGHT" x="0" y="2"/>
+					</Anchors>
+					<TexCoords left="0" right="1" top="0.25" bottom="1"/>
+					<Color r="0.1" g=".25" b=".5"/>
+				</Texture>
+				<Texture file="Interface\ChatFrame\ChatFrameTab-HighlightMid" horizTile="true" alphaMode="ADD" parentKey="middleHighlight">
+					<Size x="3" y="24"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="16" y="2"/>
+						<Anchor point="TOPRIGHT" x="-16" y="2"/>
+					</Anchors>
+					<TexCoords left="0" right="1" top="0.25" bottom="1"/>
+					<Color r="0.1" g=".25" b=".5"/>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Frame parentKey="Selected" setAllPoints="true" hidden="false">
+				<Layers>
+					<Layer level="OVERLAY">
+						<Texture parentKey="LeftSelected" file="Interface\ChatFrame\ChatFrameTab-SelectedLeft" alphaMode="ADD">
+							<Size x="16" y="24"/>
+							<Anchors>
+								<Anchor point="TOPLEFT" x="2" y="0"/>
+							</Anchors>
+							<TexCoords left="0" right="1" top="0.25" bottom="1"/>
+							<Color r=".3" g=".246" b="0"/>
+						</Texture>
+						<Texture parentKey="RightSelected" file="Interface\ChatFrame\ChatFrameTab-SelectedRight" alphaMode="ADD">
+							<Size x="16" y="24"/>
+							<Anchors>
+								<Anchor point="TOPRIGHT" x="-2" y="0"/>
+							</Anchors>
+							<TexCoords left="0" right="1" top="0.25" bottom="1"/>
+							<Color r=".3" g=".246" b="0"/>
+						</Texture>
+						<Texture parentKey="MidSelected" file="Interface\ChatFrame\ChatFrameTab-SelectedMid" horizTile="true" alphaMode="ADD">
+							<Size x="3" y="24"/>
+							<Anchors>
+								<Anchor point="TOPLEFT" x="18" y="0"/>
+								<Anchor point="TOPRIGHT" x="-18" y="0"/>
+							</Anchors>
+							<TexCoords left="0" right="1" top="0.25" bottom="1"/>
+							<Color r=".3" g=".246" b="0"/>
+						</Texture>
+					</Layer>
+					<Layer level="ARTWORK">
+						<!-- nearly-black line along bottom of selected frame to block out portion of top of inset -->
+						<Texture>
+							<Anchors>
+								<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" x="6" y="2"/>
+								<Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMRIGHT" x="-6" y="-2"/>
+							</Anchors>
+							<Color r="0.065" g="0.065" b="0.065" a="1"/>
+						</Texture>
+					</Layer>
+				</Layers>
+			</Frame>
+		</Frames>
+		<NormalFont style="GameFontHighlightSmall"/>
+		<HighlightFont style="GameFontHighlightSmall"/>
+		<DisabledFont style="GameFontDisableSmall"/>
+	</Button>
+
+	<!-- this defines behavior for the large panels that are themselves buttons -->
+	<Button name="RematchBigPanelButtonTemplate" inherits="RematchBaseInsetFrameTemplate" virtual="true">
+		<Layers>
+			<Layer level="BACKGROUND" textureSubLevel="-4">
+				<Texture parentKey="InsetHighlight" file="Interface\ChatFrame\ChatFrameBackground">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="3" y="-3"/>
+						<Anchor point="BOTTOMRIGHT" x="-3" y="3"/>
+					</Anchors>
+					<Gradient orientation="VERTICAL">
+						<MinColor r="0.25" g="0.5" b="1.0" a="0.25"/>
+						<MaxColor r="0.25" g="0.5" b="1.0" a="0"/>
+					</Gradient>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				self:HookScript("OnEnter",function(self) self.InsetHighlight:Show() end)
+				self:HookScript("OnLeave",function(self) if not self.lockHighlight then self.InsetHighlight:Hide() end end)
+			</OnLoad>
+			<OnMouseDown>
+				self.InsetBack:SetVertexColor(0.5,0.5,0.5)
+			</OnMouseDown>
+			<OnMouseUp>
+				self.InsetBack:SetVertexColor(1,1,1)
+			</OnMouseUp>
+			<OnShow>
+				self:GetScript("OnMouseUp")(self)
+				self.InsetHighlight:Hide()
+			</OnShow>
+		</Scripts>
+	</Button>
+
+	<StatusBar name="RematchStatusBarTemplate" virtual="true">
+		<Size x="260" y="6"/>
+		<Layers>
+			<Layer level="OVERLAY">
+				<Texture atlas="PetJournal-ExpBar-Left">
+					<Size x="11" y="11"/>
+					<Anchors>
+						<Anchor point="RIGHT" relativePoint="LEFT"  x="11" y="0"/>
+					</Anchors>	
+				</Texture>
+				<Texture atlas="PetJournal-ExpBar-Right">
+					<Size x="11" y="11"/>
+					<Anchors>
+						<Anchor point="LEFT" relativePoint="RIGHT"  x="-11" y="0"/>
+					</Anchors>						
+				</Texture>
+				<Texture atlas="PetJournal-ExpBar-Mid">
+					<Size x="0" y="11"/>
+					<Anchors>
+						<Anchor point="LEFT" x="11" y="0"/>
+						<Anchor point="RIGHT" x="-11" y="0"/>
+					</Anchors>	
+				</Texture>
+				<Texture parentArray="divider" atlas="PetJournal-ExpBar-Divider">
+					<Size x="9" y="7"/>
+				</Texture>
+				<Texture parentArray="divider" atlas="PetJournal-ExpBar-Divider">
+					<Size x="9" y="7"/>
+				</Texture>
+				<Texture parentArray="divider" atlas="PetJournal-ExpBar-Divider">
+					<Size x="9" y="7"/>
+				</Texture>
+				<Texture parentArray="divider" atlas="PetJournal-ExpBar-Divider">
+					<Size x="9" y="7"/>
+				</Texture>
+				<Texture parentArray="divider" atlas="PetJournal-ExpBar-Divider">
+					<Size x="9" y="7"/>
+				</Texture>
+				<Texture parentArray="divider" atlas="PetJournal-ExpBar-Divider">
+					<Size x="9" y="7"/>
+				</Texture>
+				<Texture parentArray="divider" atlas="PetJournal-ExpBar-Divider">
+					<Size x="9" y="7"/>
+				</Texture>
+			</Layer>				
+			<Layer level="BACKGROUND">
+				<!-- the background texure behind bar -->
+				<Texture>
+					<Size x="0" y="8"/>
+					<Anchors>
+						<Anchor point="LEFT" x="0" y="0"/>
+						<Anchor point="RIGHT" x="0" y="0"/>
+					</Anchors>
+					<Color r="0.1" g="0.082" b="0"/>
+				</Texture>
+			</Layer>
+		</Layers>
+		<BarTexture name="$parentBar" file="Interface\PaperDollInfoFrame\UI-Character-Skills-Bar" />
+		<BarColor r="0.2" g="0.6" b="1.0" />
+		<Scripts>
+			<OnLoad>
+				self:SetMinMaxValues(0,100)
+				self:SetValue(45)
+				for i,percent in ipairs({0.125,0.25,0.375,0.5,0.625,0.75,0.875}) do
+					self.divider[i]:ClearAllPoints()
+					self.divider[i]:SetPoint("CENTER",self,"LEFT",self:GetWidth()*percent,0)
+				end
+			</OnLoad>
+		</Scripts>
+	</StatusBar>
+
+	<!-- slimmed down UIStretchButtonTemplate for small header-type buttons (Reload, Typebar toggle, etc -->
+	<Button name="RematchTopToggleButtonTemplate" virtual="true">
+		<Size x="24" y="24"/>
+		<HitRectInsets>
+			<AbsInset left="-2" right="-2" top="-2" bottom="-2"/>
+		</HitRectInsets>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture parentKey="TopLeft" file="Interface\Buttons\UI-Silver-Button-Up">
+					<Size x="13" y="6"/>
+					<Anchors>
+						<Anchor point="TOPLEFT"/>
+					</Anchors>
+					<TexCoords left="0" right="0.1015625" top="0" bottom="0.1875"/>
+					<Color r="0.65" g="0.65" b="0.65"/>
+				</Texture>
+				<Texture parentKey="TopRight" file="Interface\Buttons\UI-Silver-Button-Up">
+					<Size x="13" y="6"/>
+					<Anchors>
+						<Anchor point="TOPRIGHT"/>
+					</Anchors>
+					<TexCoords left="0.5234375" right="0.625" top="0" bottom="0.1875"/>
+					<Color r="0.65" g="0.65" b="0.65"/>
+				</Texture>
+				<Texture parentKey="BottomLeft" file="Interface\Buttons\UI-Silver-Button-Up">
+					<Size x="13" y="6"/>
+					<Anchors>
+						<Anchor point="BOTTOMLEFT"/>
+					</Anchors>
+					<TexCoords left="0" right="0.1015625" top="0.625" bottom="0.8125"/>
+					<Color r="0.65" g="0.65" b="0.65"/>
+				</Texture>
+				<Texture parentKey="BottomRight" file="Interface\Buttons\UI-Silver-Button-Up">
+					<Size x="13" y="6"/>
+					<Anchors>
+						<Anchor point="BOTTOMRIGHT"/>
+					</Anchors>
+					<TexCoords left="0.5234375" right="0.625" top="0.625" bottom="0.8125"/>
+					<Color r="0.65" g="0.65" b="0.65"/>
+				</Texture>
+				<Texture parentKey="MiddleLeft" file="Interface\Buttons\UI-Silver-Button-Up">
+					<Size x="12" y="14"/>
+					<Anchors>
+						<Anchor point="TOPRIGHT" relativeKey="$parent.TopLeft" relativePoint="BOTTOMRIGHT"/>
+						<Anchor point="BOTTOMLEFT" relativeKey="$parent.BottomLeft" relativePoint="TOPLEFT"/>
+					</Anchors>
+					<TexCoords left="0" right="0.09375" top="0.1875" bottom="0.625"/>
+					<Color r="0.65" g="0.65" b="0.65"/>
+				</Texture>
+				<Texture parentKey="MiddleRight" file="Interface\Buttons\UI-Silver-Button-Up">
+					<Size x="12" y="14"/>
+					<Anchors>
+						<Anchor point="TOPRIGHT" relativeKey="$parent.TopRight" relativePoint="BOTTOMRIGHT"/>
+						<Anchor point="BOTTOMLEFT" relativeKey="$parent.BottomRight" relativePoint="TOPLEFT"/>
+					</Anchors>
+					<TexCoords left="0.53125" right="0.625" top="0.1875" bottom="0.625"/>
+					<Color r="0.65" g="0.65" b="0.65"/>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<Texture parentKey="Icon" file="Interface\ChatFrame\ChatFrameExpandArrow">
+					<Size x="14" y="14"/>
+					<Anchors>
+						<Anchor point="CENTER" x="0" y="-1"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<HighlightTexture file="Interface\Buttons\UI-Common-MouseHilight" alpha="0.75" alphaMode="ADD"/>
+		<Scripts>
+			<OnMouseUp>
+				Rematch.TopToggleButtonOnMouseUp(self)
+			</OnMouseUp>
+			<OnMouseDown>
+				Rematch.TopToggleButtonOnMouseDown(self)
+			</OnMouseDown>
+			<OnEnable>
+				self.Icon:SetDesaturated(false)
+			</OnEnable>
+			<OnDisable>
+				self.Icon:SetDesaturated(true)
+			</OnDisable>
+			<OnShow>
+				self:GetScript("OnMouseUp")(self)
+			</OnShow>
+		</Scripts>
+	</Button>
+
+	<Button name="RematchAbilitySlotTemplate" inherits="RematchSlotTemplate" virtual="true">
+		<Size x="26" y="26"/>
+		<Scripts>
+			<OnEnter>
+				Rematch:ShowAbilityCard(self,self:GetParent().petID,self.abilityID)
+			</OnEnter>
+			<OnLeave>
+				Rematch:HideAbilityCard()
+			</OnLeave>
+			<OnClick>
+				Rematch.ChatLinkAbility(self)
+			</OnClick>
+		</Scripts>
+	</Button>
+
+	<!-- buttons that show/hide a pet card should inherit this -->
+	<Button name="RematchPetClicks" virtual="true">
+		<Scripts>
+			<OnEnter>
+				Rematch.PetListButtonOnEnter(self)
+			</OnEnter>
+			<OnLeave>
+				Rematch.PetListButtonOnLeave(self)
+			</OnLeave>
+			<OnClick>
+				Rematch.PetListButtonOnClick(self,button)
+			</OnClick>
+			<OnDoubleClick>
+				Rematch.PetListButtonOnDoubleClick(self)
+			</OnDoubleClick>
+		</Scripts>
+	</Button>
+
+	<Frame name="RematchComboBoxTemplate" virtual="true">
+		<Size x="180" y="26"/>
+		<Backdrop edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
+			<EdgeSize val="16"/>
+			<BorderColor r="0.5" g="0.5" b="0.5"/>
+		</Backdrop>
+		<HitRectInsets>
+			<AbsInset left="-2" right="-2" top="-2" bottom="-2"/>
+		</HitRectInsets>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="3" y="-3"/>
+						<Anchor point="BOTTOMRIGHT" x="-3" y="3"/>
+					</Anchors>
+					<Color r="0" g="0" b="0"/>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<FontString parentKey="Text" inherits="GameFontHighlight" justifyH="RIGHT" justifyV="CENTER" wordwrap="false">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="5" y="-2"/>
+						<Anchor point="BOTTOMRIGHT" x="-26" y="3"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Button>
+				<Size x="24" y="24"/>
+				<Anchors>
+					<Anchor point="RIGHT" x="-1" y="0"/>
+				</Anchors>
+				<NormalTexture file="Interface\ChatFrame\UI-ChatIcon-ScrollDown-Up"/>
+				<PushedTexture file="Interface\ChatFrame\UI-ChatIcon-ScrollDown-Down"/>
+				<HighlightTexture file="Interface\Buttons\UI-Common-MouseHilight" alphaMode="ADD"/>
+				<Scripts>
+					<OnEnter>
+						local parent = self:GetParent()
+						if parent.OnEnter then
+							parent.OnEnter(self)
+						end
+					</OnEnter>
+					<OnLeave>
+						local parent = self:GetParent()
+						if parent.OnLeave then
+							parent.OnLeave(self)
+						end
+					</OnLeave>
+					<OnClick>
+						local parent = self:GetParent()
+						if parent.OnClick then
+							parent.OnClick(self,button)
+						end
+					</OnClick>
+				</Scripts>
+			</Button>
+		</Frames>
+	</Frame>		
+
+	<Frame name="RematchComboBoxWithIconTemplate" inherits="RematchComboBoxTemplate" virtual="true">
+		<Layers>
+			<Layer level="BACKGROUND" textureSubLevel="1">
+				<Texture parentKey="Icon">
+					<Size x="20" y="20"/>
+					<Anchors>
+						<Anchor point="LEFT" x="3" y="0"/>
+					</Anchors>
+					<TexCoords left="0.075" right="0.925" top="0.075" bottom="0.925"/>
+				</Texture>
+			</Layer>
+			<Layer level="BORDER">
+				<Texture file="Interface\Tooltips\UI-Tooltip-Border">
+					<Size x="7" y="20"/>
+					<Anchors>
+						<Anchor point="LEFT" x="20" y="0"/>
+					</Anchors>
+					<TexCoords left="0" right="0.0546875" top="0" bottom="1"/>
+					<Color r="0.5" g="0.5" b="0.5"/>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				self.Text:SetPoint("TOPLEFT",24,-2)
+			</OnLoad>
+		</Scripts>
+	</Frame>
+
+	<Button name="RematchStretchButtonTemplate" virtual="true">
+		<Size x="82" y="24"/>
+		<Layers>
+			<Layer level="BACKGROUND" textureSubLevel="-1">
+				<!-- UI-Silver-Button is semi-transparent; this backdrop makes them all a consistent color -->
+				<Texture>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="3" y="-3"/>
+						<Anchor point="BOTTOMRIGHT" x="-3" y="3"/>
+					</Anchors>
+					<Color r="0.1" g="0.1" b="0.1"/>
+				</Texture>
+			</Layer>
+			<Layer level="BACKGROUND">
+				<Texture parentKey="TopLeft" file="Interface\Buttons\UI-Silver-Button-Up">
+					<Size x="12" y="6"/>
+					<Anchors>
+						<Anchor point="TOPLEFT"/>
+					</Anchors>
+					<TexCoords left="0" right="0.09375" top="0" bottom="0.1875"/>
+				</Texture>
+				<Texture parentKey="TopRight" file="Interface\Buttons\UI-Silver-Button-Up">
+					<Size x="12" y="6"/>
+					<Anchors>
+						<Anchor point="TOPRIGHT"/>
+					</Anchors>
+					<TexCoords left="0.53125" right="0.625" top="0" bottom="0.1875"/>
+				</Texture>
+				<Texture parentKey="BottomLeft" file="Interface\Buttons\UI-Silver-Button-Up">
+					<Size x="12" y="6"/>
+					<Anchors>
+						<Anchor point="BOTTOMLEFT"/>
+					</Anchors>
+					<TexCoords left="0" right="0.09375" top="0.625" bottom="0.8125"/>
+				</Texture>
+				<Texture parentKey="BottomRight" file="Interface\Buttons\UI-Silver-Button-Up">
+					<Size x="12" y="6"/>
+					<Anchors>
+						<Anchor point="BOTTOMRIGHT"/>
+					</Anchors>
+					<TexCoords left="0.53125" right="0.625" top="0.625" bottom="0.8125"/>
+				</Texture>
+				<Texture parentKey="TopMiddle" file="Interface\Buttons\UI-Silver-Button-Up">
+					<Size x="56" y="6"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeKey="$parent.TopLeft" relativePoint="TOPRIGHT"/>
+						<Anchor point="BOTTOMRIGHT" relativeKey="$parent.TopRight" relativePoint="BOTTOMLEFT"/>
+					</Anchors>
+					<TexCoords left="0.09375" right="0.53125" top="0" bottom="0.1875"/>
+				</Texture>
+				<Texture parentKey="MiddleLeft" file="Interface\Buttons\UI-Silver-Button-Up">
+					<Size x="12" y="14"/>
+					<Anchors>
+						<Anchor point="TOPRIGHT" relativeKey="$parent.TopLeft" relativePoint="BOTTOMRIGHT"/>
+						<Anchor point="BOTTOMLEFT" relativeKey="$parent.BottomLeft" relativePoint="TOPLEFT"/>
+					</Anchors>
+					<TexCoords left="0" right="0.09375" top="0.1875" bottom="0.625"/>
+				</Texture>
+				<Texture parentKey="MiddleRight" file="Interface\Buttons\UI-Silver-Button-Up">
+					<Size x="12" y="14"/>
+					<Anchors>
+						<Anchor point="TOPRIGHT" relativeKey="$parent.TopRight" relativePoint="BOTTOMRIGHT"/>
+						<Anchor point="BOTTOMLEFT" relativeKey="$parent.BottomRight" relativePoint="TOPLEFT"/>
+					</Anchors>
+					<TexCoords left="0.53125" right="0.625" top="0.1875" bottom="0.625"/>
+				</Texture>
+				<Texture parentKey="BottomMiddle" file="Interface\Buttons\UI-Silver-Button-Up">
+					<Size x="56" y="6"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeKey="$parent.BottomLeft" relativePoint="TOPRIGHT"/>
+						<Anchor point="BOTTOMRIGHT" relativeKey="$parent.BottomRight" relativePoint="BOTTOMLEFT"/>
+					</Anchors>
+					<TexCoords left="0.09375" right="0.53125" top="0.625" bottom="0.8125"/>
+				</Texture>
+				<Texture parentKey="MiddleMiddle" file="Interface\Buttons\UI-Silver-Button-Up">
+					<Size x="56" y="14"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeKey="$parent.TopLeft" relativePoint="BOTTOMRIGHT"/>
+						<Anchor point="BOTTOMRIGHT" relativeKey="$parent.BottomRight" relativePoint="TOPLEFT"/>
+					</Anchors>
+					<TexCoords left="0.09375" right="0.53125" top="0.1875" bottom="0.625"/>
+				</Texture>
+			</Layer>
+		</Layers>
+		<NormalFont style="GameFontHighlightSmall"/>
+		<HighlightFont style="GameFontHighlightSmall"/>
+		<DisabledFont style="GameFontDisableSmall"/>
+		<HighlightTexture file="Interface\Buttons\UI-Silver-Button-Highlight" alphaMode="ADD" alpha="0.75">
+			<TexCoords left="0" right="1.0" top="0.03" bottom="0.7175"/>	
+		</HighlightTexture>
+		<Scripts>
+			<OnLoad>
+				self.elements =  { "TopLeft", "TopRight", "BottomLeft", "BottomRight", "TopMiddle", "MiddleLeft", "MiddleRight", "BottomMiddle", "MiddleMiddle" }
+				for _,element in pairs(self.elements) do
+					self[element]:SetVertexColor(0.65,0.65,0.65)
+				end
+			</OnLoad>
+			<OnMouseDown>
+				if self:IsEnabled() then
+					for _,element in pairs(self.elements) do
+						self[element]:SetTexture("Interface\\Buttons\\UI-Silver-Button-Down")
+					end
+					if self.Arrow then
+						self.Arrow:SetPoint("RIGHT",-4,-1)
+					end
+				end
+			</OnMouseDown>
+			<OnMouseUp>
+				if self:IsEnabled() then
+					for _,element in pairs(self.elements) do
+						self[element]:SetTexture("Interface\\Buttons\\UI-Silver-Button-Up")
+					end
+					if self.Arrow then
+						self.Arrow:SetPoint("RIGHT",-5,0)
+					end
+				end				
+			</OnMouseUp>
+			<OnShow>
+				self:GetScript("OnMouseUp")(self)
+			</OnShow>
+		</Scripts>
+	</Button>
+
+	<Button name="RematchFilterButtonTemplate" inherits="RematchStretchButtonTemplate" virtual="true">
+		<Layers>
+			<Layer level="ARTWORK">
+				<Texture parentKey="Arrow" file="Interface\ChatFrame\ChatFrameExpandArrow">
+					<Size x="10" y="12"/>
+					<Anchors>
+						<Anchor point="RIGHT" x="-5" y="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+	</Button>
+
+	<CheckButton name="RematchRadioButtonTemplate" virtual="true">
+		<Size x="22" y="22"/>
+		<NormalTexture file="Interface\Garrison\GarrLanding-TradeskilLTimerFill">
+			<Size x="14" y="14"/>
+			<Anchors>
+				<Anchor point="CENTER"/>
+			</Anchors>
+			<Color r="0.65" g="0.65" b="0.65"/>
+		</NormalTexture>
+		<HighlightTexture file="Interface\Buttons\UI-RadioButton" alphaMode="ADD">
+			<TexCoords left="0.5" right="0.75" top="0" bottom="1"/>
+		</HighlightTexture>
+		<CheckedTexture file="Interface\Common\Indicator-Yellow">
+			<Size x="16" y="16"/>
+			<Anchors>
+				<Anchor point="CENTER" x="0" y="-1"/>
+			</Anchors>
+		</CheckedTexture>
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString parentKey="Text" inherits="GameFontNormal">
+					<Anchors>
+						<Anchor point="LEFT" relativePoint="RIGHT" x="0" y="1"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				self:GetNormalTexture():SetDesaturated(true)
+			</OnLoad>
+		</Scripts>
+	</CheckButton>
+
+	<!-- for use with slim list buttons: 24x24 pet button with no border -->
+	<Button name="RematchTinyListPetTemplate" virtual="true">
+		<Size x="24" y="24"/>
+		<Layers>
+			<Layer level="ARTWORK">
+				<Texture parentKey="Icon">
+					<Anchors>
+						<Anchor point="TOPLEFT"/>
+						<Anchor point="BOTTOMRIGHT"/>
+					</Anchors>
+					<TexCoords left="0.075" right="0.925" top="0.075" bottom="0.925"/>
+				</Texture>
+			</Layer>
+			<!-- highlight is the standard blue highlight -->
+			<Layer level="HIGHLIGHT">
+				<Texture file="Interface\Buttons\ButtonHilight-Square" alphaMode="ADD">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="-1" y="1"/>
+						<Anchor point="BOTTOMRIGHT" x="1" y="-2"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnMouseDown>
+				self.Icon:SetPoint("TOPLEFT",1,-1)
+				self.Icon:SetPoint("BOTTOMRIGHT",-1,1)
+				self.Icon:SetAlpha(0.75)
+			</OnMouseDown>
+			<OnMouseUp>
+				self.Icon:SetPoint("TOPLEFT")
+				self.Icon:SetPoint("BOTTOMRIGHT")
+				self.Icon:SetAlpha(1)
+			</OnMouseUp>
+			<OnShow>
+				self:GetScript("OnMouseUp")(self)
+			</OnShow>
+		</Scripts>
+	</Button>
+
+	<!-- makes a panel (MiniPanel, LoadoutPanels, etc) flash when shown -->
+	<Frame name="RematchPanelBlingTemplate" setAllPoints="true" useParentLevel="true" hidden="true" virtual="true">
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture file="Interface\Archeology\arch-flareeffect" alphaMode="ADD" alpha="0.5">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="3" y="-3"/>
+						<Anchor point="BOTTOMRIGHT" x="-3" y="3"/>
+					</Anchors>
+					<TexCoords left="0.201171875" right="0.716796875" top="0.125" bottom="0.208984375"/>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Animations>
+			<AnimationGroup parentKey="anim">
+				<Alpha fromAlpha="0" toAlpha="1" change="1" duration="0.1" order="1"/>
+				<Alpha fromAlpha="1" toAlpha="0" change="-1" duration="0.5" order="2"/>
+				<Scripts>
+					<OnFinished>
+						self:GetParent():Hide()
+					</OnFinished>
+				</Scripts>
+			</AnimationGroup>
+		</Animations>
+		<Scripts>
+			<OnShow>
+				self.anim:Play()
+			</OnShow>
+		</Scripts>
+	</Frame>
+
+
+	<Button name="RematchLevelingToastTemplate" parent="UIParent" hidden="true" frameStrata="DIALOG" virtual="true" inherits="AlertFrameTemplate">
+		<Size x="256" y="52"/>
+		<Anchors>
+			<Anchor point="BOTTOM" x="0" y="0"/>
+		</Anchors>
+		<Animations>
+			<AnimationGroup parentKey="animIn">
+				<Alpha fromAlpha="1" toAlpha="0" duration="0" order="1"/>
+				<Alpha fromAlpha="0" toAlpha="1" duration="0.2" order="2"/>
+			</AnimationGroup>
+			<AnimationGroup parentKey="waitAndAnimOut">
+				<Alpha startDelay="4.05" fromAlpha="1" toAlpha="0" duration="1.5" parentKey="animOut">
+					<Scripts>
+						<OnFinished>
+							self:GetRegionParent():Hide();
+						</OnFinished>
+					</Scripts>
+				</Alpha>
+			</AnimationGroup>
+		</Animations>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture parentKey="Background" file="Interface\AchievementFrame\UI-Achievement-Alert-Background-Mini">
+					<Anchors>
+						<Anchor point="LEFT" x="23" y="0"/>
+					</Anchors>
+				</Texture>
+				<FontString parentKey="Title" inherits="GameFontBlackTiny">
+					<Size x="200" y="0"/>
+					<Anchors>
+						<Anchor point="TOP">
+							<Offset x="23" y="-14"/>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString parentKey="Name" inherits="GameFontHighlight">
+					<Size x="200" y="16"/>
+					<Anchors>
+						<Anchor point="TOP">
+							<Offset x="23" y="-26"/>
+						</Anchor>
+					</Anchors>
+				</FontString>
+			</Layer>
+			<Layer level="OVERLAY">
+				<Texture file="Interface\AchievementFrame\UI-Achievement-Alert-Glow" alphaMode="ADD" hidden="true" parentKey="glow">
+					<Size x="257" y="52"/>
+					<Anchors>
+						<Anchor point="CENTER" x="23" y="0"/>
+					</Anchors>
+					<Animations>
+						<AnimationGroup parentKey="animIn">
+							<Alpha fromAlpha="0" toAlpha="1" duration="0.2" order="1"/>
+							<Alpha fromAlpha="1" toAlpha="0" duration="0.5" order="2"/>
+							<Scripts>
+								<OnFinished>
+									self:GetParent():Hide();
+								</OnFinished>
+							</Scripts>
+						</AnimationGroup>
+					</Animations>
+					<TexCoords left="0" right="0.78125" top="0" bottom="0.66796875"/>
+				</Texture>
+				<Texture file="Interface\AchievementFrame\UI-Achievement-Alert-Glow" alphaMode="ADD" hidden="true" parentKey="shine">
+					<Size x="67" y="52"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="23" y="0"/>
+					</Anchors>
+					<Animations>
+						<AnimationGroup parentKey="animIn">
+							<Alpha fromAlpha="0" toAlpha="1" duration="0.2" order="1"/>
+							<Translation offsetX="210" offsetY="0" duration="0.85" order="2"/>
+							<Alpha startDelay="0.35" fromAlpha="1" toAlpha="0" duration="0.5" order="2"/>
+							<Scripts>
+								<OnFinished>
+									self:GetParent():Hide();
+								</OnFinished>
+							</Scripts>
+						</AnimationGroup>
+					</Animations>
+					<TexCoords left="0.78125" right="0.912109375" top="0" bottom="0.28125"/>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Frame parentKey="Icon">
+				<Size x="116" y="116"/>
+				<Anchors>
+					<Anchor point="LEFT" x="-44" y="0"/>
+				</Anchors>
+				<Layers>
+					<Layer level="BORDER">
+						<Texture parentKey="Bling" file="Interface\AchievementFrame\UI-Achievement-Bling" hidden="true">
+							<Anchors>
+								<Anchor point="CENTER" x="-1" y="1"/>
+							</Anchors>
+							<Size x="116" y="116"/>
+						</Texture>
+					</Layer>
+					<Layer level="ARTWORK">
+						<Texture parentKey="Texture">
+							<Anchors>
+								<Anchor point="CENTER" x="0" y="3"/>
+							</Anchors>
+							<Size x="50" y="50"/>
+						</Texture>
+					</Layer>
+					<Layer level="OVERLAY">
+						<Texture parentKey="Overlay" file="Interface\AchievementFrame\UI-Achievement-IconFrame">
+							<Anchors>
+								<Anchor point="CENTER" x="-1" y="2"/>
+							</Anchors>
+							<Size x="72" y="72"/>
+							<TexCoords left="0" right="0.5625" top="0" bottom="0.5625"/>
+						</Texture>
+					</Layer>
+				</Layers>
+			</Frame>
+		</Frames>
+		<Scripts>
+			<OnClick function="AchievementAlertFrame_OnClick"/>
+		</Scripts>
+	</Button>
+
+	<!-- these are for titlebar buttons such as close, minimize, lock, pin, etc -->
+	<Button name="RematchTitlebarButtonTemplate" virtual="true">
+		<Size x="32" y="32"/>
+		<Backdrop bgFile="Interface\Buttons\LockButton-Border"/>
+		<NormalTexture file="Interface\AddOns\Rematch\Textures\TitlebarButtons">
+			<TexCoords left="0" right="0.25" top="0" bottom="0.25"/>
+		</NormalTexture>
+		<PushedTexture file="Interface\AddOns\Rematch\Textures\TitlebarButtons">
+			<TexCoords left="0.25" right="0.5" top="0" bottom="0.25"/>
+		</PushedTexture>
+		<HighlightTexture file="Interface\Buttons\UI-Panel-MinimizeButton-Highlight" alphaMode="ADD"/>
+		<Layers>
+			<Layer level="OVERLAY">
+				<Texture parentKey="Icon" file="Interface\AddOns\Rematch\Textures\TitlebarButtons">
+					<Size x="32" y="32"/>
+					<Anchors>
+						<Anchor point="CENTER"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnMouseDown>
+				Rematch.TitlebarButtonOnMouseDown(self)
+			</OnMouseDown>
+			<OnMouseUp>
+				Rematch.TitlebarButtonOnMouseUp(self)
+			</OnMouseUp>
+			<OnShow>
+				Rematch.TitlebarButtonOnMouseUp(self)
+			</OnShow>
+		</Scripts>
+	</Button>
+
+	<Button name="RematchFootnoteButtonTemplate" hidden="true" virtual="true">
+		<Size x="20" y="20"/>
+		<HitRectInsets>
+			<AbsInset left="-2" right="-2" top="-2" bottom="-2"/>
+		</HitRectInsets>
+		<NormalTexture file="Interface\AddOns\Rematch\Textures\Footnotes"/>
+		<PushedTexture file="Interface\AddOns\Rematch\Textures\Footnotes">
+			<Anchors>
+				<Anchor point="TOPLEFT" x="1" y="-1"/>
+				<Anchor point="BOTTOMRIGHT" x="-1" y="1"/>
+			</Anchors>
+		</PushedTexture>
+		<HighlightTexture file="Interface\Store\minimap-delivery-highlight" blend="ADD"	alpha="0.5"/>
+		<Scripts>
+			<OnLoad>
+				Rematch.FootnoteButtonOnLoad(self)
+			</OnLoad>
+		</Scripts>
+	</Button>
+
+
+	<Button name="RematchNotesButtonTemplate" inherits="RematchFootnoteButtonTemplate" hidden="true" virtual="true">
+		<KeyValues>
+			<KeyValue key="icon" value="notes"/>
+		</KeyValues>
+		<Scripts>
+			<OnEnter>
+				Rematch.Notes.OnEnter(self)
+			</OnEnter>
+			<OnLeave>
+				Rematch.Notes.OnLeave(self)
+			</OnLeave>
+			<OnClick>
+				Rematch.Notes.OnClick(self)
+			</OnClick>
+		</Scripts>
+	</Button>
+
+	<Button name="RematchLevelingFootnoteTemplate" inherits="RematchFootnoteButtonTemplate" virtual="true">
+		<KeyValues>
+			<KeyValue key="icon" value="leveling"/>
+		</KeyValues>
+	</Button>
+
+	<Button name="RematchPreferencesButtonTemplate" inherits="RematchFootnoteButtonTemplate" hidden="true" virtual="true">
+		<KeyValues>
+			<KeyValue key="icon" value="preferences"/>
+		</KeyValues>
+		<Scripts>
+			<OnEnter>
+				Rematch.ShowPreferencesTooltip(self)
+			</OnEnter>
+			<OnLeave>
+				Rematch:HideTooltip()
+			</OnLeave>
+			<OnClick>
+				Rematch.ShowPreferencesDialog(self)
+			</OnClick>
+		</Scripts>
+	</Button>
+
+	<Button name="RematchPreferencesPauseButtonTemplate" inherits="RematchPreferencesButtonTemplate" virtual="true">
+		<Layers>
+			<Layer level="OVERLAY">
+				<Texture parentKey="Paused" file="Interface\Buttons\UI-GroupLoot-Pass-Down">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="-1" y="2"/>
+						<Anchor point="BOTTOMRIGHT" x="2" y="-1"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				Rematch.FootnoteButtonOnLoad(self)				
+				self:RegisterForClicks("AnyUp")
+			</OnLoad>
+			<OnClick>
+				Rematch.PreferencesPauseButtonOnClick(self,button)
+			</OnClick>
+		</Scripts>
+	</Button>		
+
+</Ui>

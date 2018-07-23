@@ -1,0 +1,38 @@
+## Interface: 80000
+## Title: |cff880303[有爱]|r 163UI 小功能集合
+## X-Vendor: AbyUI
+
+163UI_Plugins.lua
+163UI_Quest.lua
+AlreadyKnown.lua
+BattleField.lua
+CopyFriendList.lua
+ChatFrameAddMessage.lua
+ExtraActionButton.lua
+FriendsGuildTab.lua
+GuildRosterButtons.lua
+MerchantFilterButtons.lua
+PingPing.lua
+ProfessionTabs.lua
+QuestFont.lua
+SlashCommands.lua
+
+yClassColors\core.lua
+yClassColors\battlefield.lua
+yClassColors\friends.lua
+#blizzard already colored yClassColors\guild.lua
+yClassColors\lfr.lua
+yClassColors\who.lua
+
+7.0\CloudyTradeSkill.lua
+7.0\CompletedTip.lua
+7.0\FixArchievementUIFreeze.lua
+7.0\QuestWatchSort.lua
+7.0\SpecSwitchButtons.lua
+7.0\ReplaceTalentSpell.lua
+7.0\BattlePetCurrentStats.lua
+7.0\GarrisonMinimapButton.lua
+7.0\EncounterJournalPlus_InstanceInfo.lua
+7.0\HideQuickJoin.lua
+7.0\ExaltedPlus.lua
+7.0\ArtifactPowerDouble.lua

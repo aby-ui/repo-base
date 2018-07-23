@@ -1,0 +1,168 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+	<Script file="Tutorial.lua"/>
+	<Frame name="TutorialU1Frame" toplevel="true" parent="UIParent" movable="true" clampedToScreen="true" enableMouse="true" frameStrata="HIGH" hidden="true">
+		<Anchors>
+			<Anchor point="BOTTOM" x="0" y="100"/>
+		</Anchors>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentBackground">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="13" y="-35"/>
+						<Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMRIGHT" x="-3" y="5"/>
+					</Anchors>
+					<Color r="0" g="0" b="0" a="1"/>
+				</Texture>
+			</Layer>
+			<Layer level="BORDER">
+				<Texture name="$parentTop" file="Interface\TutorialFrame\UI-TUTORIAL-FRAME">
+					<Size x="364" y="80"/>
+					<Anchors>
+						<Anchor point="TOP" x="0" y="0"/>
+					</Anchors>
+					<TexCoords left="0.0019531" right="0.7109375" top="0.0019531" bottom="0.1562500"/>
+				</Texture>
+				<Texture name="$parentBottom" file="Interface\TutorialFrame\UI-TUTORIAL-FRAME">
+					<Size x="356" y="30"/>
+					<TexCoords left="0.0019531" right="0.6953125" top="0.1621094" bottom="0.2187500"/>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<FontString name="$parentTitle" inherits="GameFontHighlight" justifyH="LEFT" justifyV="TOP">
+					<Anchors>
+						<Anchor point="TOP" x="15" y="-17"/>
+					</Anchors>
+					<Color r="1.0" g="0.82" b="0"/>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<ScrollFrame name="$parentTextScrollFrame" inherits="UIPanelScrollFrameTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" x="30" y="-100"/>
+					<Anchor point="BOTTOMRIGHT" x="-30" y="40"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						self.scrollBarHideable = true;
+						ScrollFrame_OnLoad(self);
+					</OnLoad>
+				</Scripts>
+				<ScrollChild>
+					<Frame name="TutorialU1FrameTextScrollChildFrame">
+						<Size x="1" y="1"/>
+						<Layers>
+							<Layer level="OVERLAY">
+								<FontString name="TutorialU1FrameText" inherits="GameFontNormal" justifyH="LEFT">
+									<Size x="300" y="0"/>
+									<Anchors>
+										<Anchor point="TOPLEFT"/>
+									</Anchors>
+									<Color r="1.0" g="1.0" b="1.0"/>
+								</FontString>
+							</Layer>
+						</Layers>
+					</Frame>
+				</ScrollChild>
+			</ScrollFrame>
+			<Frame name="$parentCallOut" frameStrata="TOOLTIP" hidden="true">
+ 				<Animations>
+					<AnimationGroup looping="BOUNCE">
+						<Alpha name="$parentPulser" change="-.7" duration=".75"/>
+					</AnimationGroup>
+				</Animations>
+				<Backdrop edgeFile="Interface\TutorialFrame\UI-TutorialFrame-CalloutGlow" alphaMode="ADD">
+					<EdgeSize>
+						<AbsValue val="16"/>
+					</EdgeSize>
+				</Backdrop>
+			</Frame>
+            <Button name="$parentCloseButton" inherits="UIPanelCloseButton">
+                <Anchors>
+                    <Anchor point="TOPRIGHT" x="4" y="-8"/>
+                </Anchors>
+				<Scripts>
+					<OnClick function="TutorialU1Frame_Hide"/>
+				</Scripts>
+            </Button>
+			<Button name="$parentOkayButton">
+				<Size>
+					<AbsDimension x="108" y="22"/>
+				</Size>
+				<Anchors>
+					<Anchor point="BOTTOMRIGHT">
+						<Offset>
+							<AbsDimension x="-7" y="7"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick function="TutorialU1Frame_Hide"/>
+				</Scripts>
+				<NormalTexture inherits="DialogButtonNormalTexture"/>
+				<PushedTexture inherits="DialogButtonPushedTexture"/>
+				<HighlightTexture inherits="DialogButtonHighlightTexture"/>
+				<ButtonText text="CLOSE"/>
+				<NormalFont style="GameFontNormal"/>
+				<HighlightFont style="GameFontHighlight"/>
+			</Button>
+			<Button name="$parentPrevButton">
+				<Size x="26" y="26"/>
+				<Anchors>
+					<Anchor point="BOTTOMLEFT" x="30" y="3"/>
+				</Anchors>
+				<Layers>
+					<Layer level="BACKGROUND">
+						<FontString inherits="GameFontHighlightSmall" justifyH="LEFT" text="PREV">
+							<Size x="60" y="10"/>
+							<Anchors>
+								<Anchor point="LEFT" relativePoint="RIGHT"/>
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnClick>
+						TutorialU1FramePrevButton_OnClick(self);
+					</OnClick>
+				</Scripts>
+				<NormalTexture file="Interface\Buttons\UI-SpellbookIcon-PrevPage-Up"/>
+				<PushedTexture file="Interface\Buttons\UI-SpellbookIcon-PrevPage-Down"/>
+				<DisabledTexture file="Interface\Buttons\UI-SpellbookIcon-PrevPage-Disabled"/>
+				<HighlightTexture file="Interface\Buttons\UI-Common-MouseHilight" alphaMode="ADD"/>
+			</Button>
+			<Button name="$parentNextButton">
+				<Size x="26" y="26"/>
+				<Anchors>
+					<Anchor point="BOTTOMRIGHT" x="-132" y="3"/>
+				</Anchors>
+				<Layers>
+					<Layer level="BACKGROUND">
+						<FontString inherits="GameFontHighlightSmall" justifyH="RIGHT" text="NEXT">
+							<Size x="60" y="10"/>
+							<Anchors>
+								<Anchor point="RIGHT" relativePoint="LEFT"/>
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnClick>
+						TutorialU1FrameNextButton_OnClick(self);
+					</OnClick>
+				</Scripts>
+				<NormalTexture file="Interface\Buttons\UI-SpellbookIcon-NextPage-Up"/>
+				<PushedTexture file="Interface\Buttons\UI-SpellbookIcon-NextPage-Down"/>
+				<DisabledTexture file="Interface\Buttons\UI-SpellbookIcon-NextPage-Disabled"/>
+				<HighlightTexture file="Interface\Buttons\UI-Common-MouseHilight" alphaMode="ADD"/>
+			</Button>
+		</Frames>
+		<Scripts>
+			<OnLoad function="TutorialU1Frame_OnLoad"/>
+			<OnEvent function="TutorialU1Frame_OnEvent"/>
+			<OnShow function="TutorialU1Frame_OnShow"/>
+			<OnHide function="TutorialU1Frame_OnHide"/>
+		</Scripts>
+	</Frame>
+</Ui>

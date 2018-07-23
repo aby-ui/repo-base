@@ -1,0 +1,11 @@
+## Interface: 80000
+## Version: 1.0
+## Title: GridBorderStyle
+## Notes: Add Border Style to Grid Frames
+## Author: hokohuang@ngacn
+## Version: 0.9
+## Dependencies: Grid, GridManaBars
+
+GBSLocal-enUS.lua
+GBSLocal-zhCN.lua
+GridBorderStyle.lua

@@ -1,0 +1,40 @@
+<!-- 
+/////////////////////////////////////////////////////////////////////////////
+	This is a modified version of Blizzard's WorldMapFrameTemplates.xml file (v5.0.4 r16016)
+/////////////////////////////////////////////////////////////////////////////
+-->
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+	<Button name="KeyButtonTemplate"  virtual="true" enableMouse="false" >
+				<Size x="5" y="35"/>
+				      <Texture>
+        <Color a="1" r="1" g="1" b="1" />
+      </Texture>
+		<ButtonText name="$parentText"/>
+		<NormalFont style="GameFontNormal"/>
+		<HighlightFont style="GameFontHighlight"/>
+				<Scripts>
+							<OnLoad>
+				self:RegisterForClicks("LeftButtonUp", "RightButtonUp")
+				</OnLoad>
+					<OnEnter>
+						
+					</OnEnter>
+					<OnLeave>
+						
+					</OnLeave>
+					<OnClick>
+					if button == "LeftButton" then
+						
+					elseif button == "RightButton" then
+						
+					end
+				
+					</OnClick>
+				</Scripts>
+				<NormalTexture file="Interface\TARGETINGFRAME\BarFill2"/>
+
+
+			</Button>
+
+</Ui>

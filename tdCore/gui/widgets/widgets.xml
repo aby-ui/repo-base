@@ -1,0 +1,17 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+    <Script file="button.lua"/>
+    <Script file="checkbox.lua"/>
+    <Script file="slider.lua"/>
+    <Script file="lineedit.lua"/>
+    <Script file="tabwidget.lua"/>
+    <Script file="mainframe.lua"/>
+    <Script file="scrollbar.lua"/>
+    <Script file="widget.lua"/>
+    <Script file="textedit.lua"/>
+    <Script file="listwidgetbutton.lua"/>
+    <Script file="listwidgetitem.lua"/>
+    <Script file="listwidget.lua"/>
+    <Script file="colorbox.lua"/>
+    <Script file="combobox.lua"/>
+    <Script file="minimapbutton.lua"/>
+</Ui>

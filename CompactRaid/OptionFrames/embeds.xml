@@ -1,0 +1,6 @@
+﻿<Ui xmlns="http://www.blizzard.com/wow/ui/">
+	<Script file="Templates.lua"/>
+	<Script file="OptionFrame.lua"/>
+	<Script file="GroupSwap.lua"/>	
+	<Script file="DisableBlizzard.lua"/>
+</Ui>

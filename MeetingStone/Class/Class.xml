@@ -1,0 +1,7 @@
+<Ui xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+  <Script file="BaseApply.lua" />
+  <Script file="WorldQuestApply.lua" />
+  <Script file="RemoteApply.lua" />
+  <Script file="Throttle.lua" />
+</Ui>

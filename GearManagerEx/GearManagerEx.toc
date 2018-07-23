@@ -1,0 +1,18 @@
+## Interface: 80000
+## Title: GearManagerEx
+## Version: 3.01
+## Author: Abin
+## SavedVariablesPerCharacter: GearManagerExDB
+
+Locales\enUS.lua
+Locales\zhCN.lua
+Locales\zhTW.lua
+Core.lua
+QuickStrip.lua
+Menu.lua
+ToolBar.lua
+EquipmentFlyoutHook.lua
+
+## Title-zhCN: |cff880303[有爱]|r GearManager 套装管理
+## Notes-zhCN:提供快捷切换套装按钮
+## X-Vendor: AbyUI

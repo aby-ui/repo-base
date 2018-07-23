@@ -1,0 +1,840 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+	<Script file="EventAlert_IconOptions.lua" />
+	<Frame name="EA_Icon_Options_Frame" hidden="true" parent="EA_Options_Frame" toplevel="true" movable="true" frameStrata="HIGH" enableMouse="true" enableKeyboard="true">
+		<Size>
+			<AbsDimension x="370" y="600" />
+		</Size>
+		<Anchors>
+			<Anchor relativepoint="RIGHT" point="LEFT" />
+		</Anchors>
+		<Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="Interface\DialogFrame\UI-DialogBox-Border" tile="true">
+			<BackgroundInsets>
+				<AbsInset left="11" right="12" top="12" bottom="11" />
+			</BackgroundInsets>
+			<TileSize>
+				<AbsValue val="32" />
+			</TileSize>
+			<EdgeSize>
+				<AbsValue val="32" />
+			</EdgeSize>
+		</Backdrop>
+		<Frames>
+			<CheckButton name="$parent_LockFrame" inherits="OptionsCheckButtonTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT">
+						<Offset>
+							<AbsDimension x="50" y="-30" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						_G[self:GetName().."Text"]:SetText(EA_XICON_LOCKFRAME);
+					</OnLoad>
+					<OnClick>
+						if (self:GetChecked()) then
+							EA_Config.LockFrame = true;
+						else
+							EA_Config.LockFrame = false;
+						end
+					</OnClick>
+					<OnEnter>
+						GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+						GameTooltip:SetText(EA_TTIP_LOCKFRAME);
+					</OnEnter>
+					<OnLeave>
+						GameTooltip:Hide();
+					</OnLeave>
+				</Scripts>
+			</CheckButton>
+			<CheckButton name="$parent_ShareSettings" inherits="OptionsCheckButtonTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parent_LockFrame" relativePoint="TOPRIGHT">
+						<Offset>
+							<AbsDimension x="100" y="0" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						_G[self:GetName().."Text"]:SetText(EA_XICON_SHARESETTING);
+					</OnLoad>
+					<OnClick>
+						if (self:GetChecked()) then
+							EA_Config.ShareSettings = true;
+						else
+							EA_Config.ShareSettings = false;
+						end
+					</OnClick>
+					<OnEnter>
+						GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+						GameTooltip:SetText(EA_TTIP_SHARESETTINGS);
+					</OnEnter>
+					<OnLeave>
+						GameTooltip:Hide();
+					</OnLeave>
+				</Scripts>
+			</CheckButton>
+			<Slider name="$parent_IconSize" inherits="OptionsSliderTemplate">
+				<Anchors>
+					<Anchor point="TOP" relativeTo="$parent_LockFrame" relativePoint="BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x="100" y="-10" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						_G[self:GetName().."Text"]:SetText(EA_XICON_ICONSIZE.."(60)");
+						_G[self:GetName().."High"]:SetText(EA_XICON_LARGE.."(90)");
+						_G[self:GetName().."Low"]:SetText(EA_XICON_SMALL.."(30)");
+						self:SetMinMaxValues(30.0,90.0);
+						self:SetValueStep(5.0);
+					</OnLoad>
+					<OnValueChanged>
+						EA_Config.IconSize = floor(self:GetValue())
+						_G[self:GetName().."Text"]:SetText(EA_XICON_ICONSIZE.."("..EA_Config.IconSize..")");
+						EventAlert_Icon_Options_Frame_AdjustTimerFontSize();
+						EventAlert_Icon_Options_Frame_PaintAlertFrame();
+					</OnValueChanged>
+					<OnEnter>
+						GameTooltip:SetOwner(self, "ANCHOR_CENTER");
+						GameTooltip:SetText(EA_TTIP_ICONSIZE);
+					</OnEnter>
+					<OnLeave>
+						GameTooltip:Hide();
+					</OnLeave>
+				</Scripts>
+			</Slider>
+			<Slider name="$parent_IconXOffset" inherits="OptionsSliderTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parent_IconSize" relativePoint="BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x="0" y="-30" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						_G[self:GetName().."Text"]:SetText(EA_XICON_HORSPACE.."(100)");
+						_G[self:GetName().."High"]:SetText(EA_XICON_MORE.."(200)");
+						_G[self:GetName().."Low"]:SetText(EA_XICON_LESS.."(-200)");
+						self:SetMinMaxValues(-200.0,200.0);
+						self:SetValueStep(5.0);
+					</OnLoad>
+					<OnValueChanged>
+						EA_Position.xOffset = floor(self:GetValue()) 
+						_G[self:GetName().."Text"]:SetText(EA_XICON_HORSPACE.."("..(EA_Position.xOffset+100)..")");
+						EventAlert_Icon_Options_Frame_PaintAlertFrame();
+					</OnValueChanged>
+					<OnEnter>
+						GameTooltip:SetOwner(self, "ANCHOR_CENTER");
+						GameTooltip:SetText(EA_TTIP_ICONXOFFSET);
+					</OnEnter>
+					<OnLeave>
+						GameTooltip:Hide();
+					</OnLeave>
+				</Scripts>
+			</Slider>
+			<Slider name="$parent_IconYOffset" inherits="OptionsSliderTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parent_IconXOffset" relativePoint="BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x="0" y="-30" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						_G[self:GetName().."Text"]:SetText(EA_XICON_VERSPACE.."(0)");
+						_G[self:GetName().."High"]:SetText(EA_XICON_MORE.."(200)");
+						_G[self:GetName().."Low"]:SetText(EA_XICON_LESS.."(-200)");
+						self:SetMinMaxValues(-200.0,200.0);
+						self:SetValueStep(5.0);
+					</OnLoad>
+					<OnValueChanged>
+						EA_Position.yOffset = floor(self:GetValue())
+						_G[self:GetName().."Text"]:SetText(EA_XICON_VERSPACE.."("..EA_Position.yOffset..")");
+						EventAlert_Icon_Options_Frame_PaintAlertFrame();
+					</OnValueChanged>
+					<OnEnter>
+						GameTooltip:SetOwner(self, "ANCHOR_CENTER");
+						GameTooltip:SetText(EA_TTIP_ICONYOFFSET);
+					</OnEnter>
+					<OnLeave>
+						GameTooltip:Hide();
+					</OnLeave>
+				</Scripts>
+			</Slider>
+			<Slider name="$parent_IconRedDebuff" inherits="OptionsSliderTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parent_IconYOffset" relativePoint="BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x="0" y="-30" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						_G[self:GetName().."Text"]:SetText(EA_XICON_REDDEBUFF.."(50%)");
+						_G[self:GetName().."High"]:SetText(EA_XICON_LIGHT.."(0%)");
+						_G[self:GetName().."Low"]:SetText(EA_XICON_DEEP.."(100%)");
+						self:SetMinMaxValues(-50.0,50.0);
+						self:SetValueStep(1.0);
+					</OnLoad>
+					<OnValueChanged>
+						EA_Position.RedDebuff = (floor(self:GetValue()) + 50) / 100
+						_G[self:GetName().."Text"]:SetText(EA_XICON_REDDEBUFF.."("..(100 - 100*EA_Position.RedDebuff).."%)");
+						EventAlert_Icon_Options_Frame_PaintAlertFrame();
+					</OnValueChanged>
+					<OnEnter>
+						GameTooltip:SetOwner(self, "ANCHOR_CENTER");
+						GameTooltip:SetText(EA_TTIP_ICONREDDEBUFF);
+					</OnEnter>
+					<OnLeave>
+						GameTooltip:Hide();
+					</OnLeave>
+				</Scripts>
+			</Slider>
+			<Slider name="$parent_IconGreenDebuff" inherits="OptionsSliderTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parent_IconRedDebuff" relativePoint="BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x="0" y="-30" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						_G[self:GetName().."Text"]:SetText(EA_XICON_GREENDEBUFF.."(50%)");
+						_G[self:GetName().."High"]:SetText(EA_XICON_LIGHT.."(0%)");
+						_G[self:GetName().."Low"]:SetText(EA_XICON_DEEP.."(100%)");
+						self:SetMinMaxValues(-50.0,50.0);
+						self:SetValueStep(1.0);
+					</OnLoad>
+					<OnValueChanged>
+						EA_Position.GreenDebuff = (floor(self:GetValue()) + 50) / 100
+						_G[self:GetName().."Text"]:SetText(EA_XICON_GREENDEBUFF.."("..(100 - 100*EA_Position.GreenDebuff).."%)");
+						EventAlert_Icon_Options_Frame_PaintAlertFrame();
+					</OnValueChanged>
+					<OnEnter>
+						GameTooltip:SetOwner(self, "ANCHOR_CENTER");
+						GameTooltip:SetText(EA_TTIP_ICONGREENDEBUFF);
+					</OnEnter>
+					<OnLeave>
+						GameTooltip:Hide();
+					</OnLeave>
+				</Scripts>
+			</Slider>
+			<Slider name="$parent_IconExecution" inherits="OptionsSliderTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parent_IconGreenDebuff" relativePoint="BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x="0" y="-30" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						_G[self:GetName().."Text"]:SetText(EA_XICON_EXECUTION.."(25%)");
+						_G[self:GetName().."High"]:SetText(EA_XICON_EXEFULL);
+						_G[self:GetName().."Low"]:SetText(EA_XICON_EXECLOSE);
+						self:SetMinMaxValues(0,50.0);
+						self:SetValueStep(5.0);
+					</OnLoad>
+					<OnValueChanged>
+						EA_Position.Execution = self:GetValue();
+						_G[self:GetName().."Text"]:SetText(EA_XICON_EXECUTION.."("..self:GetValue().."%)");
+					</OnValueChanged>
+					<OnEnter>
+						GameTooltip:SetOwner(self, "ANCHOR_CENTER");
+						GameTooltip:SetText(EA_TTIP_ICONEXECUTION);
+					</OnEnter>
+					<OnLeave>
+						GameTooltip:Hide();
+					</OnLeave>
+				</Scripts>
+			</Slider>
+			<CheckButton name="$parent_PlayerLv2BOSS" inherits="OptionsCheckButtonTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parent_IconExecution" relativePoint="TOPRIGHT">
+						<Offset>
+							<AbsDimension x="10" y="0" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						_G[self:GetName().."Text"]:SetText("Lv2");
+					</OnLoad>
+					<OnClick>
+						if (self:GetChecked()) then
+							EA_Position.PlayerLv2BOSS = true;
+						else
+							EA_Position.PlayerLv2BOSS = false;
+						end
+					</OnClick>
+					<OnEnter>
+						GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+						GameTooltip:SetText(EA_TTIP_PLAYERLV2BOSS);
+					</OnEnter>
+					<OnLeave>
+						GameTooltip:Hide();
+					</OnLeave>
+				</Scripts>
+			</CheckButton>
+			<CheckButton name="$parent_SCD_UseCooldown" inherits="OptionsCheckButtonTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parent_IconExecution" relativePoint="BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x="-40" y="-15" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						_G[self:GetName().."Text"]:SetText(EA_XICON_SCD_USECOOLDOWN);
+					</OnLoad>
+					<OnClick>
+						if (self:GetChecked()) then
+							EA_Position.SCD_UseCooldown = true;
+						else
+							EA_Position.SCD_UseCooldown = false;
+						end
+					</OnClick>
+					<OnEnter>
+						GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+						GameTooltip:SetText(EA_TTIP_SCD_USECOOLDOWN);
+					</OnEnter>
+					<OnLeave>
+						GameTooltip:Hide();
+					</OnLeave>
+				</Scripts>
+			</CheckButton>
+			<CheckButton name="$parent_SpecFlag_HolyPower" inherits="OptionsCheckButtonTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parent_SCD_UseCooldown" relativePoint="BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x="0" y="0" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						_G[self:GetName().."Text"]:SetText(EA_XOPT_SPECFLAG_HOLYPOWER);
+					</OnLoad>
+					<OnClick>
+						
+						EA_Config.SpecPowerCheck.HolyPower = self:GetChecked()
+						
+						EventAlert_SpecialFrame_Update();
+					</OnClick>
+					<OnEnter>
+						GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+						GameTooltip:SetText(EA_TTIP_SPECFLAG_CHECK_HOLYPOWER);
+					</OnEnter>
+					<OnLeave>
+						GameTooltip:Hide();
+					</OnLeave>
+				</Scripts>
+			</CheckButton>
+			<CheckButton name="$parent_SpecFlag_RunicPower" inherits="OptionsCheckButtonTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parent_SpecFlag_HolyPower" relativePoint="TOPRIGHT">
+						<Offset>
+							<AbsDimension x="100" y="0" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						_G[self:GetName().."Text"]:SetText(EA_XOPT_SPECFLAG_RUNICPOWER);
+					</OnLoad>
+					<OnClick>
+						
+						EA_Config.SpecPowerCheck.RunicPower = self:GetChecked()						
+						EventAlert_SpecialFrame_Update();
+					</OnClick>
+					<OnEnter>
+						GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+						GameTooltip:SetText(EA_TTIP_SPECFLAG_CHECK_RUNICPOWER);
+					</OnEnter>
+					<OnLeave>
+						GameTooltip:Hide();
+					</OnLeave>
+				</Scripts>
+			</CheckButton>
+			<CheckButton name="$parent_SpecFlag_SoulShards" inherits="OptionsCheckButtonTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parent_SpecFlag_HolyPower" relativePoint="BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x="0" y="0" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						_G[self:GetName().."Text"]:SetText(EA_XOPT_SPECFLAG_SOULSHARDS);
+					</OnLoad>
+					<OnClick>
+						
+						EA_Config.SpecPowerCheck.SoulShards = self:GetChecked()
+						EventAlert_SpecialFrame_Update();
+					</OnClick>
+					<OnEnter>
+						GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+						GameTooltip:SetText(EA_TTIP_SPECFLAG_CHECK_SOULSHARDS);
+					</OnEnter>
+					<OnLeave>
+						GameTooltip:Hide();
+					</OnLeave>
+				</Scripts>
+			</CheckButton>
+			<CheckButton name="$parent_SpecFlag_LunarPower" inherits="OptionsCheckButtonTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parent_SpecFlag_SoulShards" relativePoint="TOPRIGHT">
+						<Offset>
+							<AbsDimension x="100" y="0" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						_G[self:GetName().."Text"]:SetText(EA_XOPT_SPECFLAG_LUNARPOWER);
+					</OnLoad>
+					<OnClick>						
+						EA_Config.SpecPowerCheck.LunarPower = self:GetChecked()
+						EventAlert_SpecialFrame_Update();
+					</OnClick>
+					<OnEnter>
+						GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+						GameTooltip:SetText(EA_TTIP_SPECFLAG_CHECK_LUNARPOWER);
+					</OnEnter>
+					<OnLeave>
+						GameTooltip:Hide();
+					</OnLeave>
+				</Scripts>
+			</CheckButton>
+			<CheckButton name="$parent_SpecFlag_ComboPoint" inherits="OptionsCheckButtonTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parent_SpecFlag_SoulShards" relativePoint="BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x="0" y="0" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						_G[self:GetName().."Text"]:SetText(EA_XOPT_SPECFLAG_COMBOPOINT);
+					</OnLoad>
+					<OnClick>
+						
+						EA_Config.SpecPowerCheck.ComboPoint = self:GetChecked()						
+						EventAlert_SpecialFrame_Update();
+					</OnClick>
+					<OnEnter>
+						GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+						GameTooltip:SetText(EA_TTIP_SPECFLAG_CHECK_COMBOPOINT);
+					</OnEnter>
+					<OnLeave>
+						GameTooltip:Hide();
+					</OnLeave>
+				</Scripts>
+			</CheckButton>
+			<CheckButton name="$parent_SpecFlag_LifeBloom" inherits="OptionsCheckButtonTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parent_SpecFlag_ComboPoint" relativePoint="TOPRIGHT">
+						<Offset>
+							<AbsDimension x="100" y="0" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						_G[self:GetName().."Text"]:SetText(EA_XOPT_SPECFLAG_LIFEBLOOM);
+					</OnLoad>
+					<OnClick>
+						
+						EA_Config.SpecPowerCheck.LifeBloom = self:GetChecked()						
+						EventAlert_SpecialFrame_Update();
+					</OnClick>
+					<OnEnter>
+						GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+						GameTooltip:SetText(EA_TTIP_SPECFLAG_CHECK_LIFEBLOOM);
+					</OnEnter>
+					<OnLeave>
+						GameTooltip:Hide();
+					</OnLeave>
+				</Scripts>
+			</CheckButton>
+			<CheckButton name="$parent_SpecFlag_LightForce" inherits="OptionsCheckButtonTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parent_SpecFlag_ComboPoint" relativePoint="BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x="0" y="0" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						_G[self:GetName().."Text"]:SetText(EA_XOPT_SPECFLAG_LIGHTFORCE);
+					</OnLoad>
+					<OnClick>
+						
+						EA_Config.SpecPowerCheck.LightForce = self:GetChecked()
+						EventAlert_SpecialFrame_Update();
+					</OnClick>
+					<OnEnter>
+						GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+						GameTooltip:SetText(EA_TTIP_SPECFLAG_CHECK_LIGHTFORCE);
+					</OnEnter>
+					<OnLeave>
+						GameTooltip:Hide();
+					</OnLeave>
+				</Scripts>
+			</CheckButton>
+			<CheckButton name="$parent_SpecFlag_Energy" inherits="OptionsCheckButtonTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parent_SpecFlag_LightForce" relativePoint="TOPRIGHT">
+						<Offset>
+							<AbsDimension x="100" y="0" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						_G[self:GetName().."Text"]:SetText(EA_XOPT_SPECFLAG_ENERGY);
+					</OnLoad>
+					<OnClick>
+						EA_Config.SpecPowerCheck.Energy = self:GetChecked()						
+						EventAlert_SpecialFrame_Update();
+					</OnClick>
+					<OnEnter>
+						GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+						GameTooltip:SetText(EA_TTIP_SPECFLAG_CHECK_ENERGY);
+					</OnEnter>
+					<OnLeave>
+						GameTooltip:Hide();
+					</OnLeave>
+				</Scripts>
+			</CheckButton>
+			<CheckButton name="$parent_SpecFlag_Rage" inherits="OptionsCheckButtonTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parent_SpecFlag_LightForce" relativePoint="BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x="0" y="0" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						_G[self:GetName().."Text"]:SetText(EA_XOPT_SPECFLAG_RAGE);
+					</OnLoad>
+					<OnClick>
+						
+						EA_Config.SpecPowerCheck.Rage = self:GetChecked()
+						EventAlert_SpecialFrame_Update();
+					</OnClick>
+					<OnEnter>
+						GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+						GameTooltip:SetText(EA_TTIP_SPECFLAG_CHECK_RAGE);
+					</OnEnter>
+					<OnLeave>
+						GameTooltip:Hide();
+					</OnLeave>
+				</Scripts>
+			</CheckButton>
+			<CheckButton name="$parent_SpecFlag_Focus" inherits="OptionsCheckButtonTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parent_SpecFlag_Rage" relativePoint="TOPRIGHT">
+						<Offset>
+							<AbsDimension x="100" y="0" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						_G[self:GetName().."Text"]:SetText(EA_XOPT_SPECFLAG_FOCUS);
+					</OnLoad>
+					<OnClick>
+						
+						EA_Config.SpecPowerCheck.Focus = self:GetChecked()
+						EventAlert_SpecialFrame_Update();
+						EventAlert_UpdateFocus();						
+					</OnClick>
+					<OnEnter>
+						GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+						GameTooltip:SetText(EA_TTIP_SPECFLAG_CHECK_FOCUS);
+					</OnEnter>
+					<OnLeave>
+						GameTooltip:Hide();
+					</OnLeave>
+				</Scripts>
+			</CheckButton>
+			<CheckButton name="$parent_SpecFlag_Insanity" inherits="OptionsCheckButtonTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parent_SpecFlag_Rage" relativePoint="BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x="0" y="0" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						_G[self:GetName().."Text"]:SetText(EA_XOPT_SPECFLAG_INSANITY);
+					</OnLoad>
+					<OnClick>
+						
+						EA_Config.SpecPowerCheck.Insanity = self:GetChecked()
+						EventAlert_SpecialFrame_Update();
+					</OnClick>
+					<OnEnter>
+						GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+						GameTooltip:SetText(EA_TTIP_SPECFLAG_CHECK_INSANITY);
+					</OnEnter>
+					<OnLeave>
+						GameTooltip:Hide();
+					</OnLeave>
+				</Scripts>
+			</CheckButton>
+			<CheckButton name="$parent_SpecFlag_ArcaneCharges" inherits="OptionsCheckButtonTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parent_SpecFlag_Insanity" relativePoint="TOPRIGHT">
+						<Offset>
+							<AbsDimension x="100" y="0" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						_G[self:GetName().."Text"]:SetText(EA_XOPT_SPECFLAG_ARCANECHARGES);
+					</OnLoad>
+					<OnClick>
+						
+						EA_Config.SpecPowerCheck.ArcaneCharges  = self:GetChecked()
+						EventAlert_SpecialFrame_Update();
+					</OnClick>
+					<OnEnter>
+						GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+						GameTooltip:SetText(EA_TTIP_SPECFLAG_CHECK_ARCANECHARGES);
+					</OnEnter>
+					<OnLeave>
+						GameTooltip:Hide();
+					</OnLeave>
+				</Scripts>
+			</CheckButton>
+			<CheckButton name="$parent_SpecFlag_Maelstrom" inherits="OptionsCheckButtonTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parent_SpecFlag_Insanity" relativePoint="BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x="0" y="0" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						_G[self:GetName().."Text"]:SetText(EA_XOPT_SPECFLAG_MAELSTROM);
+					</OnLoad>
+					<OnClick>
+						
+						EA_Config.SpecPowerCheck.Maelstrom  = self:GetChecked()
+						
+						EventAlert_SpecialFrame_Update();
+					</OnClick>
+					<OnEnter>
+						GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+						GameTooltip:SetText(EA_TTIP_SPECFLAG_CHECK_MAELSTROM);
+					</OnEnter>
+					<OnLeave>
+						GameTooltip:Hide();
+					</OnLeave>
+				</Scripts>
+			</CheckButton>
+			<CheckButton name="$parent_SpecFlag_Runes" inherits="OptionsCheckButtonTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parent_SpecFlag_Maelstrom" relativePoint="TOPRIGHT">
+						<Offset>
+							<AbsDimension x="100" y="0" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						_G[self:GetName().."Text"]:SetText(EA_XOPT_SPECFLAG_RUNES);
+					</OnLoad>
+					<OnClick>
+						
+						EA_Config.SpecPowerCheck.Runes  = self:GetChecked()						
+						EventAlert_SpecialFrame_Update();
+					</OnClick>
+					<OnEnter>
+						GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+						GameTooltip:SetText(EA_TTIP_SPECFLAG_CHECK_RUNES);
+					</OnEnter>
+					<OnLeave>
+						GameTooltip:Hide();
+					</OnLeave>
+				</Scripts>
+			</CheckButton>
+			<CheckButton name="$parent_SpecFlag_Fury" inherits="OptionsCheckButtonTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parent_SpecFlag_RunicPower" relativePoint="TOPRIGHT">
+						<Offset>
+							<AbsDimension x="100" y="0" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						_G[self:GetName().."Text"]:SetText(EA_XOPT_SPECFLAG_FURY);
+					</OnLoad>
+					<OnClick>
+						
+						EA_Config.SpecPowerCheck.Fury = self:GetChecked()						
+						EventAlert_SpecialFrame_Update();
+					</OnClick>
+					<OnEnter>
+						GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+						GameTooltip:SetText(EA_TTIP_SPECFLAG_CHECK_FURY);
+					</OnEnter>
+					<OnLeave>
+						GameTooltip:Hide();
+					</OnLeave>
+				</Scripts>
+			</CheckButton>
+			<CheckButton name="$parent_SpecFlag_Pain" inherits="OptionsCheckButtonTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parent_SpecFlag_Fury" relativePoint="BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x="0" y="0" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						_G[self:GetName().."Text"]:SetText(EA_XOPT_SPECFLAG_PAIN);
+					</OnLoad>
+					<OnClick>
+						
+						EA_Config.SpecPowerCheck.Pain = self:GetChecked()						
+						EventAlert_SpecialFrame_Update();
+					</OnClick>
+					<OnEnter>
+						GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+						GameTooltip:SetText(EA_TTIP_SPECFLAG_CHECK_PAIN);
+					</OnEnter>
+					<OnLeave>
+						GameTooltip:Hide();
+					</OnLeave>
+				</Scripts>
+			</CheckButton>
+			<CheckButton name="$parent_SpecFlag_Focus_Pet" inherits="OptionsCheckButtonTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parent_SpecFlag_Pain" relativePoint="BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x="0" y="0" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						_G[self:GetName().."Text"]:SetText(EA_XOPT_SPECFLAG_FOCUS_PET);
+					</OnLoad>
+					<OnClick>
+						
+						EA_Config.SpecPowerCheck.FocusPet = self:GetChecked()						
+						EventAlert_SpecialFrame_Update();
+						EventAlert_UpdateFocus();
+					</OnClick>
+					<OnEnter>
+						GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+						GameTooltip:SetText(EA_TTIP_SPECFLAG_CHECK_FOCUS_PET);
+					</OnEnter>
+					<OnLeave>
+						GameTooltip:Hide();
+					</OnLeave>
+				</Scripts>
+			</CheckButton>
+			<Button name="$parent_ToggleAlertFrame" inherits="OptionsButtonTemplate" text="">
+				<Size>
+					<AbsDimension x="175" y="21" />
+				</Size>
+				<Anchors>
+					<Anchor point="CENTER" relativePoint="BOTTOM">
+						<Offset>
+							<AbsDimension x="0" y="50" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						_G[self:GetName().."Text"]:SetText(EA_XICON_TOGGLE_ALERTFRAME);
+					</OnLoad>
+					<OnClick>
+						PlaySound163("gsTitleOptionOK");
+						EventAlert_Icon_Options_Frame_ToggleAlertFrame();
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Button name="$parent_ResetAlertPosition" inherits="OptionsButtonTemplate" text="">
+				<Size>
+					<AbsDimension x="150" y="21" />
+				</Size>
+				<Anchors>
+					<Anchor point="CENTER" relativeTo="$parent_ToggleAlertFrame" relativePoint="BOTTOM">
+						<Offset>
+							<AbsDimension x="0" y="-13" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						_G[self:GetName().."Text"]:SetText(EA_XICON_RESET_FRAMEPOS);
+					</OnLoad>
+					<OnClick>
+						PlaySound163("gsTitleOptionOK");
+						EventAlert_Icon_Options_Frame_ResetFrame();
+					</OnClick>
+				</Scripts>
+			</Button>
+		</Frames>
+		<Layers>
+			<Layer>
+				<Texture name="$parent_Header" file="Interface\DialogFrame\UI-DialogBox-Header">
+					<Size>
+						<AbsDimension x="400" y="64" />
+					</Size>
+					<Anchors>
+						<Anchor point="TOP">
+							<Offset>
+								<AbsDimension x="0" y="12" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</Texture>
+				<FontString inherits="GameFontNormal" text="Icon Position Options">
+					<Anchors>
+						<Anchor point="TOP" relativeTo="$parent_Header">
+							<Offset>
+								<AbsDimension x="0" y="-14" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				self:RegisterForDrag("LeftButton");
+				EventAlert_Icon_Options_Frame_OnLoad();
+			</OnLoad>
+			<OnMouseDown>
+				EventAlert_Icon_Options_Frame_MouseDown(button);
+			</OnMouseDown>
+			<OnMouseUp>
+				EventAlert_Icon_Options_Frame_MouseUp(button);
+			</OnMouseUp>
+		</Scripts>
+	</Frame>
+</Ui>

@@ -1,0 +1,163 @@
+<Ui>
+	<!-- This file must load after Dialog.xml!
+
+	It contains these children of RematchDialog:
+
+	Share: instructions for export and import (multi-line editbox is now common dialog MultiLine)
+	ConflictRadios: radio buttons and instructions for "copy new team" or "overwrite existing team"
+	Send: single-line editbox and instructions for sending a team to another	-->
+
+	<!-- note the parent is the dialog! -->
+	<Frame parentKey="Share" parent="RematchDialog" hidden="true">
+		<Size x="320" y="224"/>
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString parentKey="TopText" inherits="GameFontNormal" justifyH="LEFT">
+					<Size x="220" y="32"/>
+					<Anchors>
+						<Anchor point="TOP"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+	</Frame>
+
+	<Frame parentKey="ShareIncludes" parent="RematchDialog" hidden="true">
+		<Size x="260" y="26"/>
+		<Frames>
+			<!-- include preferences checkbox for export -->
+			<CheckButton parentKey="IncludePreferences" inherits="UICheckButtonTemplate">
+				<Size x="26" y="26"/>
+				<Anchors>
+					<Anchor point="LEFT" />
+				</Anchors>
+				<HitRectInsets>
+					<AbsInset left="-2" right="-100" top="-2" bottom="-2"/>
+				</HitRectInsets>
+				<KeyValues>
+					<KeyValue key="var" value="DontIncludePreferences"/>
+				</KeyValues>
+				<Scripts>
+					<OnClick>
+						Rematch.ShareIncludeOnClick(self)
+					</OnClick>
+				</Scripts>
+			</CheckButton>
+			<!-- include notes checkbox for export -->
+			<CheckButton parentKey="IncludeNotes" inherits="UICheckButtonTemplate">
+				<Size x="26" y="26"/>
+				<Anchors>
+					<Anchor point="CENTER" x="20" y="0"/>
+				</Anchors>
+				<HitRectInsets>
+					<AbsInset left="-2" right="-100" top="-2" bottom="-2"/>
+				</HitRectInsets>
+				<KeyValues>
+					<KeyValue key="var" value="DontIncludeNotes"/>
+				</KeyValues>
+				<Scripts>
+					<OnClick>
+						Rematch.ShareIncludeOnClick(self)
+					</OnClick>
+				</Scripts>
+			</CheckButton>
+		</Frames>
+	</Frame>
+
+	<!-- for import and receive, "Create New Copies"/"Overwrite Existing Teams" radio buttons -->
+	<Frame parentKey="ConflictRadios" parent="RematchDialog" hidden="true">
+		<Size x="280" y="64"/>
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString parentKey="Text" inherits="GameFontNormal">
+					<Size x="280" y="20"/>
+					<Anchors>
+						<Anchor point="TOP"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<CheckButton parentKey="MakeUnique" inherits="UIRadioButtonTemplate" id="1">
+				<Anchors>
+					<Anchor point="TOPRIGHT" relativePoint="TOP" x="-70" y="-24"/>
+				</Anchors>
+				<HitRectInsets>
+					<AbsInset left="-2" right="-180" top="-2" bottom="-2"/>
+				</HitRectInsets>
+				<Scripts>
+					<OnClick>
+						Rematch.Dialog.Share.ConflictRadioOnClick(self)
+					</OnClick>
+				</Scripts>
+			</CheckButton>
+			<CheckButton parentKey="Overwrite" inherits="UIRadioButtonTemplate" id="2">
+				<Anchors>
+					<Anchor point="TOPRIGHT" relativePoint="TOP" x="-70" y="-44"/>
+				</Anchors>
+				<HitRectInsets>
+					<AbsInset left="-2" right="-180" top="-2" bottom="-2"/>
+				</HitRectInsets>
+				<Scripts>
+					<OnClick>
+						Rematch.Dialog.Share.ConflictRadioOnClick(self)
+					</OnClick>
+				</Scripts>
+			</CheckButton>
+		</Frames>
+	</Frame>
+
+	<!-- send editbox and assorted bits; team and title are .Team and .Text -->
+	<Frame parentKey="Send" parent="RematchDialog" hidden="true">
+		<Size x="260" y="100"/>
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString parentKey="TopText" inherits="GameFontNormal" justifyH="CENTER">
+					<Size x="180" y="32"/>
+					<Anchors>
+						<Anchor point="TOP"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<EditBox parentKey="EditBox" inherits="RematchInputBoxTemplate">
+				<Size x="180" y="24"/>
+				<Anchors>
+					<Anchor point="TOP" relativeKey="$parent.TopText" relativePoint="BOTTOM" x="0" y="-4"/>
+				</Anchors>
+				<Scripts>
+					<OnEscapePressed>
+						Rematch:HideDialog()
+					</OnEscapePressed>
+					<OnEnterPressed>
+						if RematchDialog.Accept:IsEnabled() then
+							RematchDialog.Accept:Click()
+						end
+					</OnEnterPressed>
+					<OnTextChanged>
+						local text = self:GetText()
+						RematchDialog.Accept:SetEnabled(text and text:len()>0)
+					</OnTextChanged>
+				</Scripts>
+			</EditBox>
+		</Frames>
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString parentKey="ResultText" inherits="GameFontNormal" justifyH="CENTER">
+					<Size x="212" y="32"/>
+					<Anchors>
+						<Anchor point="TOP" relativeKey="$parent.EditBox" relativePoint="BOTTOM" x="2" y="-2"/>
+					</Anchors>
+				</FontString>
+				<Texture parentKey="ResultIcon" file="Interface\RaidFrame\ReadyCheck-NotReady">
+					<Size x="24" y="24"/>
+					<Anchors>
+						<Anchor point="RIGHT" relativeKey="$parent.ResultText" relativePoint="LEFT" x="-2" y="0"/>
+					</Anchors>
+					<TexCoords left="0.05" right="0.95" top="0.05" bottom="0.95"/>
+				</Texture>
+			</Layer>
+		</Layers>
+	</Frame>
+</Ui>

@@ -1,0 +1,9 @@
+﻿<Ui xmlns="http://www.blizzard.com/wow/ui/">	
+	<Script file="PartyDungeons.lua"/>
+	<Script file="BaradinHold.lua"/>
+	<Script file="BlackwingDescent.lua"/>
+	<Script file="TheBastionOfTwilight.lua"/>
+	<Script file="ThroneOfTheFourWinds.lua"/>
+	<Script file="Firelands.lua"/>
+	<Script file="DragonSoul.lua"/>
+</Ui>

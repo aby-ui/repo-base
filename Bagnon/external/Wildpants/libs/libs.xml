@@ -1,0 +1,6 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+	<Script file="Unfit-1.0\Unfit-1.0.lua"/>
+	<Script file="CustomSearch-1.0\CustomSearch-1.0.lua"/>
+	<Script file="LibItemSearch-1.2\LibItemSearch-1.2.lua"/>
+	<Include file="LibItemCache-1.1\LibItemCache-1.1.xml"/>
+</Ui>

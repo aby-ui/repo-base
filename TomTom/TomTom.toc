@@ -1,0 +1,35 @@
+## Interface: 80000
+## Title: TomTom
+## Author: jnwhiteh
+## Version: v80001-1.0.2-beta
+## License: All Rights Reserved
+## Notes: Acts as your portable navigation assistant
+## Notes-frFR: Agit comme un assistant de navigation portable
+## Notes-zhCN:一个简单的导航助手。
+## Notes-ruRU: Удобный портативный навигатор по игровой карте
+## Author: Cladhaire
+## SavedVariables: TomTomDB, TomTomWaypoints, TomTomWaypointsM
+## OptionalDeps: HereBeDragons-2.0
+
+## X-Localizations: enUS, enGB, deDE, frFR, zhCN, ruRU, zhTW
+## X-CompatibleLocales: enUS, enGB, deDE, frFR, esES, esMX, zhCN, zhTW, koKR, ruRU
+
+AddonCore.lua
+
+Localization.enUS.lua
+Localization.zhCN.lua
+Localization.zhTW.lua
+
+TomTom.lua
+TomTom_Waypoints.lua
+TomTom_CrazyArrow.lua
+TomTom_Corpse.lua
+TomTom_POIIntegration.lua
+
+TomTom_Config.lua
+
+## Title-zhCN: |cff880303[有爱]|r TomTom 路径指示
+## Title-zhTW: |cff880303[有爱]|r TomTom 路徑指示
+## Notes-zhCN:指示目标路径点的方向 距离 到达时间等功能.
+## Notes-zhTW:指示目標路徑點的方向 距離 到達時間等功能.
+## X-Vendor: AbyUI

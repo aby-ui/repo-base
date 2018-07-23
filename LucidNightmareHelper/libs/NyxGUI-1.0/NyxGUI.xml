@@ -1,0 +1,32 @@
+<UI xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+
+	<!-- Fonts -->
+	<Font name="NyxGUIDefaultFont_Label" inherits="Tooltip_Small"></Font>
+	<Font name="NyxGUIDefaultFont_Button" inherits="Tooltip_Med"></Font>
+	
+	<!-- global vars for the init process -->
+	<Script>
+		NyxGUImajor = "1.0"
+		NyxGUIminor = 9
+	</Script>
+
+	<Script file="NyxGUI.lua"/>
+	<Script file="Animation.lua"/>
+
+	<Script file="Frames.lua"/>
+	<Script file="Editbox.lua"/>
+	<Script file="Button.lua"/>
+	<Script file="Slider.lua"/>
+	<Include file="Listbox.xml"/>
+	<Script file="Listbox.lua"/>
+	<Script file="Dropdown.lua"/>
+	<Include file="Dropdown.xml"/>
+	<Script file="Progressbar.lua"/>
+	
+	<!-- clear init process global vars -->
+	<Script>
+		NyxGUImajor = nil
+		NyxGUIminor = nil
+		NyxGUIPass = nil
+	</Script>
+</UI>

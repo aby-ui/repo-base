@@ -1,0 +1,26 @@
+<Bindings>
+	<Binding name="DWCSAY" header="DWCTITLE">		
+		DWC_SetChatType("SAY")
+	</Binding>
+	<Binding name="DWCPARTYCHANNEL" >		
+		DWC_SetChatType("PARTY")
+	</Binding>
+	<Binding name="DWCRAIDCHANNEL" >		
+		DWC_SetChatType("RAID")
+	</Binding>
+	<Binding name="DWCBGCHANNEL" >		
+		DWC_SetChatType("BATTLEGROUND")
+	</Binding>
+	<Binding name="DWCGUILDCHANNEL" >		
+		DWC_SetChatType("GUILD")
+	</Binding>
+	<Binding name="DWCYELL" >		
+		DWC_SetChatType("YELL")
+	</Binding>
+	<Binding name="DWCWHISPER" >
+		DWC_SetChatType("WHISPER")
+	</Binding>
+	<Binding name="DWCOFFICER" >
+		DWC_SetChatType("OFFICER")
+	</Binding>
+</Bindings>

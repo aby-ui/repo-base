@@ -1,0 +1,131 @@
+<Ui>
+
+	<Frame name="TellMeWhen_TimerBarColorsTemplate" virtual="true">>
+		<Size y="30"/>
+		<Anchors>
+			<Anchor point="TOP" relativeKey="$parent.EnableColors" relativePoint="BOTTOM" y="-3" />
+			<Anchor point="LEFT" />
+			<Anchor point="RIGHT" />
+		</Anchors>
+		<Frames>
+			<Button parentKey="ColorStart" inherits="TellMeWhen_ColorButtonTemplate">
+				<Anchors>
+					<Anchor point="TOP" />
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						TMW:CInit(self)
+
+						self:SetTexts(TMW.L["ICONMENU_BAR_COLOR_START"], TMW.L["ICONMENU_BAR_COLOR_START_DESC"])
+						self:SetSetting("TimerBar_StartColor")
+						self:SetHasOpacity(true)
+					</OnLoad>
+				</Scripts>
+			</Button>
+
+			<Button parentKey="ColorMiddle" inherits="TellMeWhen_ColorButtonTemplate">
+				<Anchors>
+					<Anchor point="TOP" relativeKey="$parent.ColorStart" />
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						TMW:CInit(self)
+
+						self:SetTexts(TMW.L["ICONMENU_BAR_COLOR_MIDDLE"], TMW.L["ICONMENU_BAR_COLOR_MIDDLE_DESC"])
+						self:SetSetting("TimerBar_MiddleColor")
+						self:SetHasOpacity(true)
+					</OnLoad>
+				</Scripts>
+			</Button>
+
+			<Button parentKey="ColorComplete" inherits="TellMeWhen_ColorButtonTemplate">
+				<Anchors>
+					<Anchor point="TOP" relativeKey="$parent.ColorStart" />
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						TMW:CInit(self)
+
+						self:SetTexts(TMW.L["ICONMENU_BAR_COLOR_COMPLETE"], TMW.L["ICONMENU_BAR_COLOR_COMPLETE_DESC"])
+						self:SetSetting("TimerBar_CompleteColor")
+						self:SetHasOpacity(true)
+					</OnLoad>
+				</Scripts>
+			</Button>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				TMW:CInit(self, "Config_Frame")
+
+				self.ColorStart:ConstrainLabel(self.ColorMiddle)
+				self.ColorMiddle:ConstrainLabel(self.ColorComplete)
+				self.ColorComplete:ConstrainLabel(self, "RIGHT")
+
+				TMW.IE:DistributeFrameAnchorsLaterally(self, 3, self.ColorStart, self.ColorMiddle, self.ColorComplete)
+
+				self.ColorStart:SetPoint("LEFT", 10, 0)
+			</OnLoad>
+		</Scripts>
+	</Frame>
+
+
+	<Frame name="TellMeWhen_TimerBar_GroupColors" inherits="TellMeWhen_OptionsModuleContainer" virtual="true">
+		<Size y="90"/>
+		<Frames>
+			<CheckButton parentKey="EnableColors" inherits="TellMeWhen_CheckTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" x="5" y="-1"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						TMW:CInit(self)
+
+						self:SetTexts(TMW.L["COLOR_OVERRIDE_GLOBAL"], TMW.L["COLOR_OVERRIDE_GLOBAL_DESC"])
+						self:SetSetting("TimerBar_EnableColors")
+					</OnLoad>
+				</Scripts>
+			</CheckButton>
+
+			<Frame inherits="TellMeWhen_TimerBarColorsTemplate">
+				<Scripts>
+					<OnLoad inherit="prepend">
+						self:CScriptAdd("ReloadRequested", function()
+							local settings = self:GetSettingTable()
+							self:SetShown(settings.TimerBar_EnableColors)
+
+							self:GetParent():AdjustHeight()
+						end)
+					</OnLoad>
+				</Scripts>
+			</Frame>
+		</Frames>
+
+		<Scripts>
+			<OnLoad>
+				TMW:CInit(self)
+				
+				self:SetTitle(TMW.L["CONFIGPANEL_TIMERBAR_BARDISPLAY_HEADER"])
+			</OnLoad>
+		</Scripts>
+	</Frame>
+
+
+	<Frame name="TellMeWhen_TimerBar_GlobalColors" inherits="TellMeWhen_OptionsModuleContainer" virtual="true">
+		<Size y="30"/>
+		<Frames>
+			<Frame inherits="TellMeWhen_TimerBarColorsTemplate">
+				<Anchors>
+					<Anchor point="TOP" y="-5"/>
+				</Anchors>
+			</Frame>
+		</Frames>
+
+		<Scripts>
+			<OnLoad>
+				TMW:CInit(self)
+				
+				self:SetTitle(TMW.L["DOMAIN_GLOBAL_NC"] .. ": " .. TMW.L["CONFIGPANEL_TIMERBAR_BARDISPLAY_HEADER"])
+			</OnLoad>
+		</Scripts>
+	</Frame>
+</Ui>

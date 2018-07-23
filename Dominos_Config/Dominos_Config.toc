@@ -1,0 +1,16 @@
+## Interface: 80000
+## Title: Dominos Config
+## Title-zhCN: Dominos 设置
+## Title-zhTW: Dominos 設置
+## Notes: GUI based configuration for Dominos
+## Author: Tuller
+## Dependencies: Dominos
+## LoadOnDemand: 1
+localization.xml
+widgets\include.xml
+panels\include.xml
+
+
+## Title-zhCN: |cff880303[有爱]|r Dominos 设置界面
+## Notes-zhCN: 多米诺-设置界面模块
+## X-Vendor: AbyUI

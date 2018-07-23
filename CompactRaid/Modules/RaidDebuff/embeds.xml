@@ -1,0 +1,11 @@
+﻿<Ui xmlns="http://www.blizzard.com/wow/ui/">	
+	<Script file="Locales\enUS.lua"/>
+	<Script file="Locales\zhCN.lua"/>
+	<Script file="Locales\zhTW.lua"/>	
+	<Script file="Core.lua"/>
+	<Script file="API.lua"/>
+	<Script file="Visual.lua"/>
+	<Script file="OptionFrame.lua"/>
+	<Include file="Data\embeds.xml"/>
+	<Include file="Overrides\embeds.xml"/>
+</Ui>

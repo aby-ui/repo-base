@@ -1,0 +1,183 @@
+<Ui>
+
+	<Frame name="RematchMenuFrameTemplate" enableMouse="true" clampedToScreen="true" hidden="true" virtual="true">
+		<Backdrop edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
+			<EdgeSize val="16"/>
+			<BorderColor r="0.5" g="0.5" b="0.5"/>
+		</Backdrop>		
+		<Layers>
+			<Layer level="BACKGROUND" textureSubLevel="-1">
+				<Texture>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="3" y="-3"/>
+						<Anchor point="BOTTOMRIGHT" x="-3" y="3"/>
+					</Anchors>
+					<Color r=".15" g=".15" b=".15"/>
+				</Texture>
+			</Layer>
+			<Layer level="BACKGROUND">
+				<Texture parentKey="Shadow" file="Interface\Common\ShadowOverlay-Corner" setAllPoints="true" alpha="1">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="3" y="-3"/>
+						<Anchor point="BOTTOMRIGHT" x="-3" y="3"/>
+					</Anchors>
+					<TexCoords left="0" right="1" top="0" bottom="1"/>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Frame parentKey="Title" useParentLevel="true">
+				<Anchors>
+					<Anchor point="TOPLEFT" x="3" y="-3"/>
+					<Anchor point="BOTTOMRIGHT" relativePoint="TOPRIGHT" x="-3" y="-23"/>
+				</Anchors>
+				<Layers>
+					<Layer level="BACKGROUND" textureSubLevel="1">
+						<Texture file="Interface\PetBattles\PetJournal" setAllPoints="true">
+							<TexCoords left="0.189453125" right="0.658203125" top="0.486328125" bottom="0.5708203125"/>
+						</Texture>
+					</Layer>
+					<Layer level="BORDER">
+						<Texture file="Interface\Tooltips\UI-Tooltip-Border">
+							<Size x="0" y="5"/>
+							<Anchors>
+								<Anchor point="BOTTOMLEFT" x="0" y="-3"/>
+								<Anchor point="BOTTOMRIGHT" x="0" y="-3"/>
+							</Anchors>
+							<TexCoords left="0.8125" right="0.9453125" top="0.625" bottom="0.9375"/>
+							<Color r="0.5" g="0.5" b="0.5"/>
+						</Texture>
+						<FontString parentKey="Text" inherits="GameFontNormal" justifyH="CENTER" justifyV="CENTER">
+							<Size x="0" y="18"/>
+							<Anchors>
+								<Anchor point="LEFT" x="0" y="0"/>
+								<Anchor point="RIGHT" x="0" y="0"/>
+							</Anchors>
+							<Color r="1" g="0.82" b="0.5"/>
+						</FontString>
+					</Layer>
+				</Layers>
+			</Frame>
+		</Frames>
+	</Frame>
+
+	<Button name="RematchMenuButtonTemplate" motionScriptsWhileDisabled="true" virtual="true">
+		<Size x="200" y="20"/>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture hidden="true">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="0" y="-1"/>
+						<Anchor point="BOTTOMRIGHT" x="0" y="1"/>
+					</Anchors>
+					<Color r="0" g="1" b="0" a="0.2"/>
+				</Texture>
+				<Texture parentKey="Highlight" hidden="true">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="-2" y="0"/>
+						<Anchor point="BOTTOMRIGHT" x="2" y="0"/>
+					</Anchors>
+					<Color r=".25" g=".5" b="1" a=".25"/>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<Texture parentKey="Check" file="Interface\Addons\Rematch\Textures\checkbuttons" hidden="true">
+					<Size x="22" y="22"/>
+					<Anchors>
+						<Anchor point="LEFT" x="-2" y="0"/>
+					</Anchors>
+					<TexCoords left="0" right="0.25" top="0.5" bottom="0.75"/>
+				</Texture>
+				<Texture parentKey="Icon" hidden="true">
+					<Size x="18" y="18"/>
+					<Anchors>
+						<Anchor point="LEFT" x="4" y="0"/>
+					</Anchors>
+					<TexCoords left="0.075" right="0.925" top="0.075" bottom="0.925"/>
+				</Texture>
+				<FontString parentKey="Text" inherits="GameFontHighlight" justifyH="LEFT">
+					<Size x="0" y="18"/>
+					<Anchors>
+						<Anchor point="LEFT"/>
+						<Anchor point="RIGHT"/>
+					</Anchors>
+				</FontString>
+				<Texture parentKey="Arrow" file="Interface\Buttons\Arrow-Up-Up" hidden="true">
+					<Size x="18" y="18"/>
+					<Anchors>
+						<Anchor point="RIGHT" x="8" y="-1"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+	</Button>
+
+	<!-- single frame contains the delete and edit buttons for menus with deleteButton or editButton -->
+	<Frame name="RematchMenuSideButtons">
+		<Size x="32" y="16"/>
+		<Frames>
+			<Button parentKey="Delete">
+				<Size x="16" y="16"/>
+				<Anchors>
+					<Anchor point="RIGHT"/>
+				</Anchors>
+				<KeyValues>
+					<KeyValue key="func" value="deleteFunc"/>
+				</KeyValues>
+				<NormalTexture file="Interface\Buttons\UI-GroupLoot-Pass-Up"/>
+				<PushedTexture file="Interface\Buttons\UI-GroupLoot-Pass-Up">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="2" y="-2"/>
+						<Anchor point="BOTTOMRIGHT" x="-2" y="2"/>
+					</Anchors>
+				</PushedTexture>
+				<HighlightTexture file="Interface\Buttons\UI-GroupLoot-Pass-Up" alpha="0.5" alphaMode="ADD"/>
+				<Scripts>
+					<OnEnter>
+						Rematch.MenuSideButtonOnEnter(self)
+					</OnEnter>
+					<OnLeave>
+						Rematch.MenuSideButtonOnLeave(self)
+					</OnLeave>
+					<OnClick>
+						Rematch.MenuSideButtonOnClick(self)
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Button parentKey="Edit">
+				<Size x="16" y="16"/>
+				<Anchors>
+					<Anchor point="LEFT"/>
+				</Anchors>
+				<KeyValues>
+					<KeyValue key="func" value="editFunc"/>
+				</KeyValues>
+				<NormalTexture file="Interface\WorldMap\Gear_64Grey">
+					<TexCoords left="0.0625" right="0.9375" top="0.0625" bottom="0.9375"/>
+				</NormalTexture>
+				<PushedTexture file="Interface\WorldMap\Gear_64Grey">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="2" y="-2"/>
+						<Anchor point="BOTTOMRIGHT" x="-2" y="2"/>
+					</Anchors>
+					<TexCoords left="0.0625" right="0.9375" top="0.0625" bottom="0.9375"/>
+				</PushedTexture>
+				<HighlightTexture file="Interface\WorldMap\Gear_64Grey" alpha="0.5" alphaMode="ADD">
+					<TexCoords left="0.0625" right="0.9375" top="0.0625" bottom="0.9375"/>
+				</HighlightTexture>
+				<Scripts>
+					<OnEnter>
+						Rematch.MenuSideButtonOnEnter(self)
+					</OnEnter>
+					<OnLeave>
+						Rematch.MenuSideButtonOnLeave(self)
+					</OnLeave>
+					<OnClick>
+						Rematch.MenuSideButtonOnClick(self)
+					</OnClick>
+				</Scripts>
+			</Button>
+		</Frames>
+	</Frame>
+
+</Ui>

@@ -1,0 +1,377 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+	<Script file="core.lua"/>
+	<!-- <Script file="core_dev.lua"/> -->
+	<Script file="DuowanStat.lua"/>
+	<Script file="chatchannel.lua"/>
+	<Script file="chatframe.lua"/>
+	<Script file="iconframe.lua"/>
+	<!--<Script file="YY.lua"/>-->
+	<Script file="config.lua"/>
+
+	<Font name="DWCFontNormal" inherits="QuestFont_Large" virtual="true">
+		<Color  r="1.0" g="0.82" b="0"/>
+	</Font>
+
+	<Button name="DWCIconButtonTemplate" virtual="true" hidden="true" enableMouse="true">
+		<Size>
+			<AbsDimension x="23" y="23"/>
+		</Size>
+		<Anchors>
+			<Anchor point="LEFT" relativeTo="ChatFrameMenuButton" relativePoint="RIGHT"/>
+		</Anchors>
+		<Scripts>		
+			<OnClick>
+				DWCIconButton_OnClick(self, button);
+			</OnClick>
+			<OnEnter>
+				GameTooltip:SetOwner(_G.DWCIconFrame, "ANCHOR_TOPLEFT");
+				GameTooltip:SetText(self.text);
+				DWC_StopCount(self)
+			</OnEnter>
+			<OnLeave>
+				DWC_StartCount(self)	
+				GameTooltip:Hide()
+			</OnLeave>
+		</Scripts>		
+		<HighlightTexture file="Interface\Buttons\UI-Common-MouseHilight" alphaMode="ADD"/>
+	</Button>
+
+	<Button name="DWCChatTabTemplate" frameStrata="MEDIUM" virtual="true" hidden="true" toplevel="true" enableMouse="true">
+		<Size>
+			<AbsDimension x="25" y="24"/>
+		</Size>
+		<ButtonText name="$parentText" font="DWCFontNormal">
+			<Anchors>
+				<Anchor point="CENTER">
+					<Offset>
+						<AbsDimension x="-1.5" y="0.5"/>
+					</Offset>
+				</Anchor>
+			</Anchors>
+		</ButtonText>			
+		<Scripts>		
+			<OnLoad>
+				self:SetAlpha(0.8)
+				self:RegisterForDrag("LeftButton");
+			</OnLoad>
+			<OnClick>
+				if button=="LeftButton" then
+					DWC_SetChatType(self.chatTypeCmd or self.chatType, self.index)
+				end
+			</OnClick>
+			<OnDragStart>
+				if DWCChatFrame:IsMovable() then
+					DWCChatFrame:StartMoving();	
+				end
+			</OnDragStart>
+			<OnDragStop>				
+				if DWCChatFrame:IsMovable() then
+					DWCChatFrame:StopMovingOrSizing();					
+				end
+			</OnDragStop>
+		</Scripts>		
+		<NormalTexture  file="Interface\AddOns\DuowanChat\icon\text_nor_frame" />		
+		<PushedTexture  file="Interface\AddOns\DuowanChat\icon\text_push_frame" />		
+		<HighlightTexture file="Interface\Buttons\UI-Common-MouseHilight" alphaMode="ADD"/>		
+	</Button>
+
+	<Button name="DWCIconFrameCalloutButton" frameStrata="MEDIUM" parent="UIParent" hidden="true" toplevel="true">
+		<Size>
+			<AbsDimension x="24" y="24"/>
+		</Size>
+		<NormalTexture file="Interface\AddOns\DuowanChat\icon\text_nor_icon"/>
+		<PushedTexture file="Interface\AddOns\DuowanChat\icon\text_push_icon"/>
+		<HighlightTexture file="Interface\Buttons\UI-Common-MouseHilight" alphaMode="ADD"/>
+		<Scripts>
+			<OnLoad>
+				self:SetAlpha(0.8)
+				self:RegisterForDrag("LeftButton");
+			</OnLoad>
+			<OnDragStart>
+				if DWCChatFrame:IsMovable() then
+					DWCChatFrame:StartMoving();
+				end
+			</OnDragStart>
+			<OnDragStop>
+				if DWCChatFrame:IsMovable() then
+					DWCChatFrame:StopMovingOrSizing();					
+				end
+			</OnDragStop>
+		</Scripts>
+	</Button>
+	
+	<Button name="DWCChatFrame" frameStrata ="LOW" parent="UIParent" enableKeyBoard="true" enableMouse="true" movable="true" hidden="true">
+		<Size>
+			<AbsDimension x="235" y="27"/>
+		</Size>			
+		<Scripts>
+			<OnLoad>
+				<!--dwRegisterForSaveFrame(self);-->
+				self:SetClampedToScreen(true)
+			</OnLoad>
+		</Scripts>
+	</Button>
+	
+	<Button name="DWCReportStatButton" frameStrata="MEDIUM" parent="UIParent" toplevel="true" hidden="false">
+		<Size>
+			<AbsDimension x="24" y="24"/>
+		</Size>		
+		<Scripts>
+			<OnLoad>
+				self:SetAlpha(0.8)
+				self:RegisterForClicks("LeftButtonDown", "RightButtonDown");
+				self:RegisterForDrag("LeftButton");
+			</OnLoad>
+			<OnDragStart>
+				if DWCChatFrame:IsMovable() then
+					DWCChatFrame:StartMoving();
+				end
+			</OnDragStart>
+			<OnClick>
+				DWCReportStatButton_OnClick(self, button);
+			</OnClick>
+			<OnDragStop>
+				if DWCChatFrame:IsMovable() then
+					DWCChatFrame:StopMovingOrSizing();					
+				end
+			</OnDragStop>
+		</Scripts>
+		<NormalTexture file="Interface\AddOns\DuowanChat\icon\link_nor_frame"/>
+		<PushedTexture file="Interface\AddOns\DuowanChat\icon\link_push_frame"/>
+		<HighlightTexture file="Interface\Buttons\UI-Common-MouseHilight" alphaMode="ADD"/>
+	</Button>
+
+	<Button name="DWCRandomButton" frameStrata="MEDIUM" parent="UIParent" toplevel="true" hidden="false">
+		<Size>
+			<AbsDimension x="24" y="24"/>
+		</Size>
+		<Anchors>
+			<Anchor point="LEFT" relativeTo="DWCReportStatButton" relativePoint="RIGHT">
+				<Offset><AbsDimension x="1" y="0"/></Offset>
+			</Anchor>
+		</Anchors>
+		<Scripts>
+			<OnLoad>
+				self:SetAlpha(0.8)
+				self:RegisterForClicks("LeftButtonDown", "RightButtonDown");
+				self:RegisterForDrag("LeftButton");
+			</OnLoad>
+			<OnDragStart>
+				if DWCChatFrame:IsMovable() then
+					DWCChatFrame:StartMoving();
+				end
+			</OnDragStart>
+			<OnClick>
+				RandomRoll("1", "100");
+			</OnClick>
+			<OnDragStop>
+				if DWCChatFrame:IsMovable() then
+					DWCChatFrame:StopMovingOrSizing();					
+				end
+			</OnDragStop>
+		</Scripts>
+		<NormalTexture file="Interface\AddOns\DuowanChat\icon\roll_nor_frame"/>
+		<PushedTexture file="Interface\AddOns\DuowanChat\icon\roll_push_frame"/>
+		<HighlightTexture file="Interface\Buttons\UI-Common-MouseHilight" alphaMode="ADD"/>
+	</Button>
+
+	<Button name="DWCIconFrame" frameStrata="TOOLTIP" parent="UIParent" hidden="true" enableKeyBoard="true" enableMouse="true">
+		<Size>
+			<AbsDimension x="260" y="160"/>
+		</Size>
+		<Backdrop  bgFile="Interface\DialogFrame\UI-DialogBox-Gold-Background" tile="true">
+			<EdgeSize>
+				<AbsValue val="7"/>
+			</EdgeSize>
+			<TileSize>
+				<AbsValue val="32"/>
+			</TileSize>
+			<BackgroundInsets>
+				<AbsInset left="4" right="4" top="4" bottom="4"/>
+			</BackgroundInsets>
+		</Backdrop>
+		<Anchors>
+			<Anchor point="BOTTOMLEFT" relativeTo="DWCIconFrameCalloutButton" relativePoint="TOPRIGHT"/>
+		</Anchors>
+		<Scripts>		
+			<OnUpdate>
+				DWC_OnUpdate(self,elapsed)
+			</OnUpdate>
+			
+			<OnEnter>
+				DWC_StopCount(self)
+			</OnEnter>
+			<OnLeave>
+				DWC_StartCount(self)				
+			</OnLeave>
+		</Scripts>		
+	</Button>	
+
+
+	 <Frame name="DWCCopyFrame" parent="UIParent" movable="true" enableMouse="true" inherits="DialogBoxFrame">
+		<Size>
+			<AbsDimension x="500" y="400"/>
+		</Size>
+		<Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
+			<BackgroundInsets>
+				<AbsInset left="5" right="5" top="5" bottom="5"/>
+			</BackgroundInsets>
+			<TileSize>
+				<AbsValue val="16"/>
+			</TileSize>
+			<EdgeSize>
+				<AbsValue val="16"/>
+			</EdgeSize>
+		</Backdrop>
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString name="$parentText" inherits="GameFontHighlight">
+					<Anchors>
+						<Anchor point="TOPLEFT">
+							<Offset>
+								<AbsDimension x="5" y="-5"/>
+							</Offset>
+						</Anchor>
+				</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<ScrollFrame name="$parentScroll" inherits="UIPanelScrollFrameTemplate" toplevel="true">
+				<Anchors>
+					<Anchor point="TOP">
+						<Offset>
+							<AbsDimension x="-10" y="-30"/>
+						</Offset>
+					</Anchor>
+					<Anchor point="BOTTOM" relativeTo="$parentButton" relativePoint="TOP">
+						<Offset>
+							<AbsDimension x="0" y="5"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Size>
+					<AbsDimension x="455" y="330"/>
+				</Size>
+				<ScrollChild>
+					<EditBox name="$parentText" letters="99999" multiLine="true" autoFocus="true" enableMouse="true">
+						<Size>
+						  <AbsDimension x="450" y="344"/>
+						</Size>
+						<Scripts>
+							<OnEscapePressed>
+								DWCCopyFrame:Hide();
+							</OnEscapePressed>
+						</Scripts>
+						<FontString inherits="ChatFontNormal"/>
+					</EditBox>
+				</ScrollChild>
+			</ScrollFrame>
+		</Frames>
+		<Scripts>
+			<OnMouseDown>
+				if (button == "LeftButton") then
+					self:StartMoving()
+				end
+			</OnMouseDown>
+			<OnMouseUp>
+				self:StopMovingOrSizing()
+			</OnMouseUp>			
+		</Scripts>
+	</Frame>
+
+	<Button name="dwChannelMuteButton" frameStrata="MEDIUM" parent="UIParent" hidden ="false">
+
+		<Size>
+			<AbsDimension x="24" y="24"/>
+		</Size>
+		<Anchors>
+			<Anchor point="LEFT" relativeTo="DWCRandomButton" relativePoint="RIGHT">
+				<Offset><AbsDimension x="1" y="0"/></Offset>
+			</Anchor>
+		</Anchors>
+		<Layers>
+			<Layer level="OVERLAY">
+				<Texture name="$parentIcon" file="Interface\AddOns\DuowanChat\icon\popo.tga" setAllPoints="true">
+					<Size>
+						<AbsDimension x="16" y="16"/>
+					</Size>
+					<Anchors>
+						<Anchor point="CENTER"/>
+					</Anchors>
+				</Texture>				
+			</Layer>
+			<Layer level="OVERLAY">
+				<Texture name="$parentMute" file="Interface\AddOns\DuowanChat\icon\mute.tga" hidden="true">
+					<Size>
+						<AbsDimension x="20" y="20"/>
+					</Size>
+					<Anchors>
+						<Anchor point="CENTER">
+							<Offset>
+								<AbsDimension x="-1" y="0"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnClick>
+				dwChannelMuteButton_OnClick(self, button);
+			</OnClick>
+			<OnEnter>
+				dwChannelMuteButton_OnEnter(self);
+			</OnEnter>
+			<OnLeave>
+				GameTooltip:Hide();
+			</OnLeave>
+		</Scripts>
+
+		<NormalTexture  file="Interface\AddOns\DuowanChat\icon\text_nor_frame" />
+        <PushedTexture  file="Interface\AddOns\DuowanChat\icon\text_push_frame" />
+        <HighlightTexture file="Interface\Buttons\UI-Common-MouseHilight" alphaMode="ADD"/>
+	</Button>
+
+	<!--
+	<Button name="163scButton" frameStrata="MEDIUM" parent="UIParent" hidden ="false">
+
+		<Size>
+			<AbsDimension x="24" y="24"/>
+		</Size>
+		<Anchors>
+			<Anchor point="LEFT" relativeTo="dwChannelMuteButton" relativePoint="RIGHT">
+				<Offset><AbsDimension x="1" y="0"/></Offset>
+			</Anchor>
+		</Anchors>
+		<Layers>
+			<Layer level="OVERLAY">
+				<Texture name="$parentIcon" file="Interface\AddOns\DuowanChat\icon\cupture.tga" setAllPoints="true">
+					<Size>
+						<AbsDimension x="16" y="16"/>
+					</Size>
+					<Anchors>
+						<Anchor point="CENTER"/>
+					</Anchors>
+				</Texture>				
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnClick>
+				scButton_OnClick(self, button);
+			</OnClick>
+			<OnEnter>
+				scButton_OnEnter(self);
+			</OnEnter>
+			<OnLeave>
+				GameTooltip:Hide();
+			</OnLeave>
+		</Scripts>
+
+		<NormalTexture  file="Interface\AddOns\DuowanChat\icon\text_nor_frame" />
+        <PushedTexture  file="Interface\AddOns\DuowanChat\icon\text_push_frame" />
+        <HighlightTexture file="Interface\Buttons\UI-Common-MouseHilight" alphaMode="ADD"/>
+	</Button>
+	-->
+</Ui>

@@ -1,0 +1,207 @@
+<Ui>
+
+	<Button name="TellMeWhen_GM_IPS_IconSortTemplate" inherits="TellMeWhen_FlatFrame" virtual="true">
+		<Size y="18"/>
+		<Layers>
+			<Layer level="OVERLAY">
+				<FontString parentKey="Name" inherits="GameFontHighlightSmall" justifyH="LEFT">
+					<Anchors>
+						<Anchor point="LEFT" x="3"/>
+						<Anchor point="RIGHT" relativePoint="CENTER" x="-1"/>
+					</Anchors>
+				</FontString>
+				<FontString parentKey="Number" inherits="GameFontHighlightSmall" justifyH="LEFT">
+					<Anchors>
+						<Anchor point="RIGHT" relativePoint="LEFT" x="-2"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+
+		<ButtonText parentKey="Order" inherits="GameFontHighlightSmall" justifyH="LEFT">
+			<Anchors>
+				<Anchor point="RIGHT" x="-3"/>
+				<Anchor point="LEFT" relativePoint="CENTER" x="3"/>
+			</Anchors>
+		</ButtonText>
+
+	</Button>
+
+	<CheckButton name="TellMeWhen_ArrowButton_Template" virtual="true">
+		<KeyValues>
+			<KeyValue key="tmwClass" type="string" value="Config_ArrowButton"/>
+		</KeyValues>
+
+		<Size x="18" y="18"/>
+		<!-- <HitRectInsets left="-2" right="-2" top="-2" bottom="-2" /> -->
+
+		<NormalTexture urgency="5" file="Interface\AddOns\TellMeWhen\Textures\Arrow" >
+			<Color r="1.0" g="0.92" b="0.9" a="0.25"/>
+		</NormalTexture>
+		<DisabledTexture urgency="5" file="Interface\AddOns\TellMeWhen\Textures\Arrow" >
+			<Color r="0" g="0" b="0" a="1"/>
+		</DisabledTexture>
+		<HighlightTexture urgency="5" file="Interface\AddOns\TellMeWhen\Textures\Arrow" alphaMode="ADD">
+			<Color r="1" g="1" b="1" a="0.4"/>
+		</HighlightTexture>
+		<CheckedTexture urgency="6" file="Interface\AddOns\TellMeWhen\Textures\Arrow" >
+			<Color r="1.0" g="0.82" b="0" a="1"/>
+		</CheckedTexture>
+	</CheckButton>
+
+
+	<Frame name="TellMeWhen_ArrowButtonSet_Template" virtual="true">
+		<Size x="48" y="48"/>
+
+		<KeyValues>
+			<KeyValue key="tmwClass" type="string" value="Config_ArrowButtonSet"/>
+		</KeyValues>
+
+		<Layers>
+			<Layer level="OVERLAY">
+				<FontString parentKey="Header" inherits="GameFontHighlightSmall" justifyH="CENTER">
+					<Anchors>
+						<Anchor point="BOTTOM" relativePoint="TOP" x="0" y="3"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+	</Frame>
+
+
+	<Frame name="TellMeWhen_GM_IconPosition_Sortable_Dir" inherits="TellMeWhen_OptionsModuleContainer" virtual="true">
+		<Size y="73"/>
+
+		<KeyValues>
+			<KeyValue key="tmwClass" type="string" value="TellMeWhen_GM_IconPosition_Sortable_Dir"/>
+		</KeyValues>
+
+		<Frames>
+			<Frame parentKey="Primary" inherits="TellMeWhen_ArrowButtonSet_Template">
+				<Anchors>
+					<Anchor point="TOP" y="-18" />
+					<Anchor point="LEFT" relativePoint="LEFT" x="25" />
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						TMW:CInit(self)
+
+						self:SetTexts(PRIMARY, TMW.L["LAYOUTDIRECTION_PRIMARY_DESC"])
+					</OnLoad>
+				</Scripts>
+			</Frame>
+			<Frame parentKey="Secondary" inherits="TellMeWhen_ArrowButtonSet_Template">
+				<Anchors>
+					<Anchor point="LEFT" relativePoint="RIGHT" relativeKey="$parent.Primary" x="30" />
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						TMW:CInit(self)
+
+						self:SetTexts(SECONDARY, TMW.L["LAYOUTDIRECTION_SECONDARY_DESC"])
+					</OnLoad>
+				</Scripts>
+			</Frame>
+
+			<CheckButton parentKey="ShrinkGroup" inherits="TellMeWhen_CheckTemplate">
+				<Anchors>
+					<Anchor point="TOP" y="-12" />
+					<Anchor point="LEFT" relativePoint="RIGHT" relativeKey="$parent.Secondary" x="25" />
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						TMW:CInit(self)
+
+						self:SetTexts(TMW.L["ICONMENU_SHRINKGROUP"], TMW.L["ICONMENU_SHRINKGROUP_DESC"])
+						self:SetSetting("ShrinkGroup")
+						self:ConstrainLabel(self:GetParent(), "RIGHT")
+					</OnLoad>
+				</Scripts>
+			</CheckButton>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				TMW:CInit(self)
+				
+				self:SetTitle(TMW.L["LAYOUTDIRECTION"])
+			</OnLoad>
+		</Scripts>
+	</Frame>
+
+	<Frame name="TellMeWhen_GM_IconPosition_Sortable" inherits="TellMeWhen_OptionsModuleContainer" virtual="true">
+		<Size y="200"/>
+		<Frames>
+			<Button parentKey="Add" inherits="TellMeWhen_ButtonTemplate">
+				<Size x="160" y="15"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" x="11" y="-10"/>
+				</Anchors>
+				
+				<NormalFont style="GameFontNormalSmall"/>
+				<HighlightFont style="GameFontHighlightSmall"/>
+
+				<Scripts>
+					<OnLoad>
+						self.DD = TMW.C.Config_DropDownMenu_NoFrame:New()
+						self.DD:SetFunction(TMW.C.GroupModule_IconPosition_Sortable.AddDropdown)
+
+						self:SetText([[|TInterface\PaperDollInfoFrame\Character-Plus:0|t ]] .. TMW.L["UIPANEL_GROUPSORT_ADD"])
+						
+						TMW:TT(self, "UIPANEL_GROUPSORT_ADD", "UIPANEL_GROUPSORT_ADD_DESC")
+						
+						self:SetWidth(self:GetTextWidth()+15)
+						self:SetFrameLevel(self:GetParent():GetFrameLevel()+4)
+					</OnLoad>
+					<OnClick>
+						TMW:ClickSound()
+
+						self.DD:Toggle(1, nil, self, 0, 0)
+						
+					</OnClick>
+				</Scripts>
+			</Button>
+
+			<Button parentKey="Presets" inherits="TellMeWhen_ButtonTemplate">
+				<Size x="160" y="15"/>
+				<Anchors>
+					<Anchor point="TOPRIGHT" x="-11" y="-10"/>
+				</Anchors>
+
+				<NormalFont style="GameFontNormalSmall"/>
+				<HighlightFont style="GameFontHighlightSmall"/>
+
+				<Scripts>
+					<OnLoad>
+						self.DD = TMW.C.Config_DropDownMenu_NoFrame:New()
+						self.DD:SetFunction(TMW.C.GroupModule_IconPosition_Sortable.PresetDropdown)
+					
+						self:SetText(TMW.L["UIPANEL_GROUPSORT_PRESETS"])
+						
+						TMW:TT(self, "UIPANEL_GROUPSORT_PRESETS", "UIPANEL_GROUPSORT_PRESETS_DESC")
+						
+						self:SetWidth(self:GetTextWidth()+15)
+						self:SetFrameLevel(self:GetParent():GetFrameLevel()+4)
+					</OnLoad>
+					<OnClick>
+						TMW:ClickSound()
+
+						self.DD:Toggle(1, nil, self, 0, 0)
+					</OnClick>
+				</Scripts>
+			</Button>
+
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				TMW:CInit(self)
+				
+				self:SetTitle(TMW.L["UIPANEL_GROUPSORT"])
+
+				self:CScriptAdd("ReloadRequested", function(self, panel, panelInfo)
+					TMW.C.GroupModule_IconPosition_Sortable:LoadConfig()
+				end)
+			</OnLoad>
+		</Scripts>
+	</Frame>
+ 
+</Ui>

@@ -1,0 +1,899 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\..\FrameXML\UI.xsd">
+	<Button name="SellButtonTemplate" hidden="false" virtual="true">
+		<Size>
+			<AbsDimension x="576" y="21"/>
+		</Size>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<FontString name="$parentCount" inherits="GameFontNormal" justifyH="CENTER">
+					<Size>
+						<AbsDimension x="43" y="18"/>
+					</Size>
+					<Anchors>
+						<Anchor point="TOPLEFT">
+							<Offset>
+								<AbsDimension x="0" y="0"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString name="$parentName" inherits="GameFontNormal" justifyH="LEFT">
+					<Size>
+						<AbsDimension x="175" y="18"/>
+					</Size>
+					<Anchors>
+						<Anchor point="TOPLEFT">
+							<Offset>
+								<AbsDimension x="43" y="0"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString name="$parentPlus" inherits="GameFontNormal" justifyH="LEFT" text="+">
+					<Size>
+						<AbsDimension x="0" y="18"/>
+					</Size>
+					<Anchors>
+						<Anchor point="LEFT" relativeTo="$parentName">
+							<Offset>
+								<AbsDimension x="0" y="0"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+					<Color r="1.0" g="0.0" b="0.0" a="1.0"/>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Frame name="$parentBuyoutEachFrame" inherits="SmallMoneyFrameTemplate">
+				<Anchors>
+					<Anchor point="RIGHT">
+						<Offset>
+							<AbsDimension x="-150" y="2"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						SmallMoneyFrame_OnLoad(self);
+						MoneyFrame_SetType(self, "AUCTION");
+					</OnLoad>
+				</Scripts>
+			</Frame>
+			<Frame name="$parentBuyoutFrame" inherits="SmallMoneyFrameTemplate">
+				<Anchors>
+					<Anchor point="RIGHT">
+						<Offset>
+							<AbsDimension x="10" y="2"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						SmallMoneyFrame_OnLoad(self);
+						MoneyFrame_SetType(self, "AUCTION");
+					</OnLoad>
+				</Scripts>
+			</Frame>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				self.UpdateTooltip =
+					function() AuctionLite:SellButton_OnEnter(self) end;
+			</OnLoad>
+			<OnEnter>
+				AuctionLite:SellButton_OnEnter(self);
+			</OnEnter>
+			<OnLeave>
+				AuctionLite:SellButton_OnLeave(self);
+			</OnLeave>
+			<OnClick>
+				AuctionLite:SellButton_OnClick(self:GetID());
+			</OnClick>
+		</Scripts>
+		<HighlightTexture name="$parentHighlight" file="Interface\HelpFrame\HelpFrameButton-Highlight" alphaMode="ADD">
+			<Size>
+				<AbsDimension x="572" y="18"/>
+			</Size>
+			<Anchors>
+				<Anchor point="TOPLEFT">
+					<Offset>
+						<AbsDimension x="0" y="0"/>
+					</Offset>
+				</Anchor>
+			</Anchors>
+			<TexCoords left="0" right="1.0" top="0" bottom="0.578125"/>
+		</HighlightTexture>
+	</Button>
+	<Frame name="AuctionFrameSell" hidden="true">
+		<Size>
+			<AbsDimension x="758" y="447"/>
+		</Size>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<FontString name="SellTitle" inherits="GameFontNormal" text="AuctionLite - Sell">
+					<Anchors>
+						<Anchor point="TOP">
+							<Offset>
+								<AbsDimension x="0" y="-18"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+			</Layer>
+			<Layer level="ARTWORK">
+				<FontString name="SellTabText" inherits="GameFontHighlightSmall" text="CREATE_AUCTION">
+					<Anchors>
+						<Anchor point="TOP" relativePoint="TOPLEFT">
+							<Offset>
+								<AbsDimension x="121" y="-55"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString name="SellItemText" inherits="GameFontHighlightSmall" text="AUCTION_ITEM">
+					<Anchors>
+						<Anchor point="TOPLEFT">
+							<Offset>
+								<AbsDimension x="28" y="-83"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString name="SellStackText" inherits="GameFontHighlightSmall" text="Number of Items">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="SellItemText">
+							<Offset>
+								<AbsDimension x="0" y="-60"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<!--<FontString name="SellStacksOfText" inherits="GameFontHighlightSmall" text="stacks of">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="SellStackText">
+							<Offset>
+								<AbsDimension x="38" y="-18"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+					<Color r="0.75" g="0.75" b="0.75"/>
+				</FontString>-->
+				<FontString name="SellStacksOfText" inherits="GameFontHighlightSmall" text="stacks of">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="SellStackText">
+							<Offset>
+								<AbsDimension x="65" y="-18"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+					<Color r="0.75" g="0.75" b="0.75"/>
+				</FontString>
+				<FontString name="SellBidText" inherits="GameFontHighlightSmall" text="STARTING_PRICE">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="SellStackText">
+							<Offset>
+								<AbsDimension x="0" y="-38"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString name="SellBidStackText" inherits="GameFontHighlightSmall">
+					<Anchors>
+						<Anchor point="LEFT" relativeTo="SellBidText" relativePoint="RIGHT">
+							<Offset>
+								<AbsDimension x="3" y="0"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString name="SellBuyoutText" inherits="GameFontHighlightSmall" text="Buyout Price">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="SellBidText">
+							<Offset>
+								<AbsDimension x="0" y="-38"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString name="SellBuyoutStackText" inherits="GameFontHighlightSmall">
+					<Anchors>
+						<Anchor point="LEFT" relativeTo="SellBuyoutText" relativePoint="RIGHT">
+							<Offset>
+								<AbsDimension x="2" y="0"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString name="SellStatusText" inherits="GameFontHighlightSmall">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="SellBuyoutText">
+							<Offset>
+								<AbsDimension x="0" y="-38"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString name="SellDurationText" inherits="GameFontHighlightSmall" text="AUCTION_DURATION">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="SellStatusText">
+							<Offset>
+								<AbsDimension x="0" y="-25"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString name="SellMethodText" inherits="GameFontHighlightSmall" text="Pricing Method">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="SellDurationText">
+							<Offset>
+								<AbsDimension x="0" y="-36"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString name="SellDepositText" inherits="GameFontNormal" text="DEPOSIT_COLON">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="SellMethodText">
+							<Offset>
+								<AbsDimension x="0" y="-46"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+            <Button name="$parentConfig" inherits="UIPanelButtonTemplate" text="配置压价选项">
+                <Size>
+                    <AbsDimension x="110" y="18"/>
+                </Size>
+                <Anchors>
+                    <Anchor point="TOPRIGHT">
+                        <Offset>
+                            <AbsDimension x="73" y="-33"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+                <Scripts>
+                    <OnClick>
+                        CoreIOF_OTC(LibStub("AceLocale-3.0"):GetLocale("AuctionLite", false)["Sell Tab"])
+                    </OnClick>
+                </Scripts>
+            </Button>
+			<Button name="SellItemNameButton" inherits="SortButtonLeftTemplate">
+				<Size>
+					<AbsDimension x="125" y="21"/>
+				</Size>
+				<Anchors>
+					<Anchor point="TOPLEFT">
+						<Offset>
+							<AbsDimension x="230" y="-49"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						AuctionLite:SellSortButton_OnClick("ItemName");
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Button name="SellBuyoutAllButton" inherits="SortButtonRightTemplate">
+				<Size>
+					<AbsDimension x="155" y="21"/>
+				</Size>
+				<Anchors>
+					<Anchor point="TOPRIGHT">
+						<Offset>
+							<AbsDimension x="35" y="-49"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						AuctionLite:SellSortButton_OnClick("BuyoutAll");
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Button name="SellBuyoutEachButton" inherits="SortButtonRightTemplate">
+				<Size>
+					<AbsDimension x="155" y="21"/>
+				</Size>
+				<Anchors>
+					<Anchor point="TOPRIGHT" relativeTo="SellBuyoutAllButton">
+						<Offset>
+							<AbsDimension x="-165" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						AuctionLite:SellSortButton_OnClick("BuyoutEach");
+					</OnClick>
+				</Scripts>
+			</Button>
+			<ScrollFrame name="SellScrollFrame" inherits="FauxScrollFrameTemplate">
+				<Size>
+					<AbsDimension x="435" y="339"/>
+				</Size>
+				<Anchors>
+					<Anchor point="TOPRIGHT">
+						<Offset>
+							<AbsDimension x="40" y="-72"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Layers>
+					<Layer level="ARTWORK">
+						<Texture file="Interface\PaperDollInfoFrame\UI-Character-ScrollBar">
+							<Size>
+								<AbsDimension x="31" y="256"/>
+							</Size>
+							<Anchors>
+								<Anchor point="TOPLEFT" relativePoint="TOPRIGHT">
+									<Offset>
+										<AbsDimension x="-2" y="5"/>
+									</Offset>
+								</Anchor>
+							</Anchors>
+							<TexCoords left="0" right="0.484375" top="0" bottom="1.0"/>
+						</Texture>
+						<Texture file="Interface\PaperDollInfoFrame\UI-Character-ScrollBar">
+							<Size>
+								<AbsDimension x="31" y="106"/>
+							</Size>
+							<Anchors>
+								<Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT">
+									<Offset>
+										<AbsDimension x="-2" y="-2"/>
+									</Offset>
+								</Anchor>
+							</Anchors>
+							<TexCoords left="0.515625" right="1.0" top="0" bottom="0.4140625"/>
+						</Texture>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnLoad>
+						FauxScrollFrame_SetOffset(self, 0);
+					</OnLoad>
+					<OnVerticalScroll>
+						AuctionLite:SellScrollFrame_OnVerticalScroll(offset);
+					</OnVerticalScroll>
+				</Scripts>
+			</ScrollFrame>
+			<Button name="SellButton1" inherits="SellButtonTemplate" id="1">
+				<Anchors>
+					<Anchor point="TOPLEFT">
+						<Offset>
+							<AbsDimension x="219" y="-76"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Button>
+			<Button name="SellButton2" inherits="SellButtonTemplate" id="2">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="SellButton1" relativePoint="BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x="0" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Button>
+			<Button name="SellButton3" inherits="SellButtonTemplate" id="3">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="SellButton2" relativePoint="BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x="0" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Button>
+			<Button name="SellButton4" inherits="SellButtonTemplate" id="4">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="SellButton3" relativePoint="BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x="0" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Button>
+			<Button name="SellButton5" inherits="SellButtonTemplate" id="5">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="SellButton4" relativePoint="BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x="0" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Button>
+			<Button name="SellButton6" inherits="SellButtonTemplate" id="6">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="SellButton5" relativePoint="BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x="0" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Button>
+			<Button name="SellButton7" inherits="SellButtonTemplate" id="7">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="SellButton6" relativePoint="BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x="0" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Button>
+			<Button name="SellButton8" inherits="SellButtonTemplate" id="8">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="SellButton7" relativePoint="BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x="0" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Button>
+			<Button name="SellButton9" inherits="SellButtonTemplate" id="9">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="SellButton8" relativePoint="BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x="0" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Button>
+			<Button name="SellButton10" inherits="SellButtonTemplate" id="10">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="SellButton9" relativePoint="BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x="0" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Button>
+			<Button name="SellButton11" inherits="SellButtonTemplate" id="11">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="SellButton10" relativePoint="BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x="0" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Button>
+			<Button name="SellButton12" inherits="SellButtonTemplate" id="12">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="SellButton11" relativePoint="BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x="0" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Button>
+			<Button name="SellButton13" inherits="SellButtonTemplate" id="13">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="SellButton12" relativePoint="BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x="0" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Button>
+			<Button name="SellButton14" inherits="SellButtonTemplate" id="14">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="SellButton13" relativePoint="BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x="0" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Button>
+			<Button name="SellButton15" inherits="SellButtonTemplate" id="15">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="SellButton14" relativePoint="BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x="0" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Button>
+			<Button name="SellButton16" inherits="SellButtonTemplate" id="16">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="SellButton15" relativePoint="BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x="0" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Button>
+			<Button name="SellRememberButton">
+				<Size>
+					<AbsDimension x="16" y="16"/>
+				</Size>
+				<Anchors>
+					<Anchor point="TOPLEFT">
+						<Offset>
+							<AbsDimension x="187" y="-81"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						AuctionLite:SellRememberButton_OnClick(self);
+					</OnClick>
+				</Scripts>
+				<Size>
+					<AbsDimension x="24" y="24"/>
+				</Size>
+				<Anchors>
+					<Anchor point="TOPRIGHT">
+						<Offset>
+							<AbsDimension x="60" y="-44"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<NormalTexture name="$parentNormalTexture" file="Interface\ChatFrame\UI-ChatIcon-ScrollDown-Up">
+					<Size>
+						<AbsDimension x="24" y="24"/>
+					</Size>
+					<Anchors>
+						<Anchor point="RIGHT"/>
+					</Anchors>
+				</NormalTexture>
+				<PushedTexture name="$parentPushedTexture" file="Interface\ChatFrame\UI-ChatIcon-ScrollDown-Down">
+					<Size>
+						<AbsDimension x="24" y="24"/>
+					</Size>
+					<Anchors>
+						<Anchor point="RIGHT"/>
+					</Anchors>
+				</PushedTexture>
+				<DisabledTexture name="$parentDisabledTexture" file="Interface\ChatFrame\UI-ChatIcon-ScrollDown-Disabled">
+					<Size>
+						<AbsDimension x="24" y="24"/>
+					</Size>
+					<Anchors>
+						<Anchor point="RIGHT"/>
+					</Anchors>
+				</DisabledTexture>
+				<HighlightTexture name="$parentHighlightTexture" file="Interface\Buttons\UI-Common-MouseHilight" alphaMode="ADD">
+					<Size>
+						<AbsDimension x="24" y="24"/>
+					</Size>
+					<Anchors>
+						<Anchor point="RIGHT"/>
+					</Anchors>
+				</HighlightTexture>
+			</Button>
+			<Frame name="SellRememberDropDown" inherits="UIDropDownMenuTemplate" id="1" hidden="true">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="SellRememberButton">
+						<Offset>
+							<AbsDimension x="0" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Frame>
+			<Button name="SellItemButton">
+				<Size>
+					<AbsDimension x="37" y="37"/>
+				</Size>
+				<Anchors>
+					<Anchor point="TOPLEFT">
+						<Offset>
+							<AbsDimension x="28" y="-98"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Layers>
+					<Layer level="BACKGROUND">
+						<FontString name="$parentName" inherits="GameFontNormal">
+							<Size>
+								<AbsDimension x="124" y="30"/>
+							</Size>
+							<Anchors>
+								<Anchor point="TOPLEFT" relativePoint="TOPRIGHT">
+									<Offset>
+										<AbsDimension x="5" y="0"/>
+									</Offset>
+								</Anchor>
+							</Anchors>
+						</FontString>
+					</Layer>
+					<Layer level="OVERLAY">
+						<FontString name="$parentCount" inherits="NumberFontNormal" justifyH="RIGHT" hidden="true">
+							<Anchors>
+								<Anchor point="BOTTOMRIGHT">
+									<Offset>
+										<AbsDimension x="-5" y="2"/>
+									</Offset>
+								</Anchor>
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnLoad>
+						self:RegisterForDrag("LeftButton");
+					</OnLoad>
+					<OnClick>
+						ClickAuctionSellItemButton(self, button);
+						AuctionsFrameAuctions_ValidateAuction();
+					</OnClick>
+					<OnDragStart>
+						ClickAuctionSellItemButton(self, button);
+						AuctionsFrameAuctions_ValidateAuction();
+					</OnDragStart>
+					<OnReceiveDrag>
+						ClickAuctionSellItemButton(self, button);
+						AuctionsFrameAuctions_ValidateAuction();
+					</OnReceiveDrag>
+					<OnEnter>
+						GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+						if ( GetAuctionSellItemInfo() ) then
+							local hasCooldown, speciesID, level, breedQuality, maxHealth, power, speed, name = GameTooltip:SetAuctionSellItem();
+							if(speciesID and speciesID > 0) then
+								BattlePetToolTip_Show(speciesID, level, breedQuality, maxHealth, power, speed, name);
+							end
+						else
+							GameTooltip:SetText(AUCTION_ITEM_TEXT, 1.0, 1.0, 1.0);
+						end
+					</OnEnter>
+					<OnLeave>
+						GameTooltip:Hide();
+					</OnLeave>
+				</Scripts>
+				<HighlightTexture alphaMode="ADD" file="Interface\Buttons\ButtonHilight-Square"/>
+			</Button>
+			<EditBox name="SellStacks" numeric="true" autoFocus="false" inherits="InputBoxTemplate">
+				<Size>
+					<AbsDimension x="30" y="20"/>
+				</Size>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="SellStackText" relativePoint="BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x="3" y="-2"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnTextChanged>
+						AuctionLite:UserChangedStacks();
+					</OnTextChanged>
+					<OnTabPressed>
+						if IsShiftKeyDown() then
+							SellBuyoutPriceCopper:SetFocus();
+						else
+							SellSize:SetFocus();
+						end
+					</OnTabPressed>
+					<OnEnterPressed>
+						--AuctionLite:SellCreateAuctionButton_OnClick();
+						self:ClearFocus();
+					</OnEnterPressed>
+				</Scripts>
+			</EditBox>
+			<Button name="SellStacksMaxButton" inherits="UIPanelButtonTemplate" text="Max">
+				<Size>
+					<AbsDimension x="30" y="20"/>
+				</Size>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="SellStacks" relativePoint="TOPRIGHT">
+						<Offset>
+							<AbsDimension x="1" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						AuctionLite:SellStacksMaxButton_OnClick();
+					</OnClick>
+				</Scripts>
+			</Button>
+			<EditBox name="SellSize" numeric="true" autoFocus="false" inherits="InputBoxTemplate">
+				<Size>
+					<AbsDimension x="30" y="20"/>
+				</Size>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="SellStacksMaxButton" relativePoint="TOPRIGHT">
+						<Offset>
+							<AbsDimension x="52" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnTextChanged>
+						AuctionLite:UserChangedSize();
+					</OnTextChanged>
+					<OnTabPressed>
+						if IsShiftKeyDown() then
+							SellStacks:SetFocus();
+						else
+							SellBidPriceGold:SetFocus();
+						end
+					</OnTabPressed>
+					<OnEnterPressed>
+						--AuctionLite:SellCreateAuctionButton_OnClick();
+						self:ClearFocus();
+					</OnEnterPressed>
+				</Scripts>
+			</EditBox>
+			<Button name="SellSizeMaxButton" inherits="UIPanelButtonTemplate" text="Max">
+				<Size>
+					<AbsDimension x="30" y="20"/>
+				</Size>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="SellSize" relativePoint="TOPRIGHT">
+						<Offset>
+							<AbsDimension x="1" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						AuctionLite:SellSizeMaxButton_OnClick();
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Frame name="SellBidPrice" inherits="MoneyInputFrameTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="SellBidText" relativePoint="BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x="3" y="-2"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						MoneyInputFrame_SetOnValueChangedFunc(self, function()
+							AuctionLite:UserChangedPrices();
+							AuctionLite:ValidateAuction();
+						end);
+						SellBidPriceGold:SetMaxLetters(6);
+					</OnLoad>
+				</Scripts>
+			</Frame>
+			<Frame name="SellBuyoutPrice" inherits="MoneyInputFrameTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="SellBuyoutText" relativePoint="BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x="3" y="-2"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						MoneyInputFrame_SetOnValueChangedFunc(self, function()
+							AuctionLite:UserChangedPrices();
+							AuctionLite:ValidateAuction();
+						end);
+					</OnLoad>
+				</Scripts>
+			</Frame>
+			<CheckButton name="SellShortAuctionButton" inherits="UIRadioButtonTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="SellDurationText" relativePoint="BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x="3" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						AuctionLite:ChangeAuctionDuration(self:GetID());
+					</OnClick>
+				</Scripts>
+			</CheckButton>
+			<CheckButton name="SellMediumAuctionButton" inherits="UIRadioButtonTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="SellShortAuctionButton">
+						<Offset>
+							<AbsDimension x="55" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						AuctionLite:ChangeAuctionDuration(self:GetID());
+					</OnClick>
+				</Scripts>
+			</CheckButton>
+			<CheckButton name="SellLongAuctionButton" inherits="UIRadioButtonTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="SellMediumAuctionButton">
+						<Offset>
+							<AbsDimension x="55" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						AuctionLite:ChangeAuctionDuration(self:GetID());
+					</OnClick>
+				</Scripts>
+			</CheckButton>
+			<CheckButton name="SellPerItemButton" inherits="UIRadioButtonTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="SellMethodText" relativePoint="BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x="3" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						AuctionLite:ChangePricingMethod(self:GetID());
+					</OnClick>
+				</Scripts>
+			</CheckButton>
+			<CheckButton name="SellPerStackButton" inherits="UIRadioButtonTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="SellPerItemButton">
+						<Offset>
+							<AbsDimension x="80" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						AuctionLite:ChangePricingMethod(self:GetID());
+					</OnClick>
+				</Scripts>
+			</CheckButton>
+			<Frame name="SellDepositMoneyFrame" inherits="SmallMoneyFrameTemplate">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="SellDepositText" relativePoint="RIGHT">
+						<Offset>
+							<AbsDimension x="5" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						self.small = 1;
+					</OnLoad>
+				</Scripts>
+			</Frame>
+			<Button name="SellCreateAuctionButton" inherits="UIPanelButtonTemplate" text="CREATE_AUCTION">
+				<Size>
+					<AbsDimension x="191" y="20"/>
+				</Size>
+				<Anchors>
+					<Anchor point="BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x="18" y="39"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						AuctionLite:SellCreateAuctionButton_OnClick();
+					</OnClick>
+				</Scripts>
+			</Button>
+            <Button name="AuctionLiteStopAuction" inherits="UIPanelButtonTemplate" text="CANCEL" hidden="true">
+                <Size>
+                    <AbsDimension x="50" y="20"/>
+                </Size>
+                <Anchors>
+                    <Anchor point="BOTTOMLEFT">
+                        <Offset>
+                            <AbsDimension x="158" y="172"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+                <Scripts>
+                    <OnClick>
+                        self.query.total = 0
+                        self.query.state = 2 --QUERY_STATE_WAIT
+                        self.query.batch = 0
+                        self.query.getAll = false
+                        AuctionLite:QueryNewData()
+                        self:Hide()
+                    </OnClick>
+                </Scripts>
+            </Button>
+		</Frames>
+	</Frame>
+</Ui>

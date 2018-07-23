@@ -1,0 +1,657 @@
+<Ui>
+
+
+	<Frame name="TellMeWhen_ChooseName" inherits="TellMeWhen_OptionsModuleContainer" virtual="true">
+		<!-- <Size y="50"/> -->
+		<Frames>
+			<EditBox parentKey="Name" inherits="TellMeWhen_InputBoxTemplate" multiline="true" autoFocus="false">
+				<Size x="545" y="15"/>
+				<Anchors>
+					<Anchor point="TOP" y="-5"/>
+					<Anchor point="LEFT" x="9" />
+					<Anchor point="RIGHT" x="-9" />
+				</Anchors>
+				<Layers>
+					<Layer level="ARTWORK">
+						<FontString parentKey="text" inherits="GameFontHighlightSmall" justifyH="LEFT">
+							<Anchors>
+								<Anchor point="LEFT" relativePoint="RIGHT" x="19" y="-1"/>
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnLoad>
+						TMW:CInit(self)
+						self:SetSetting("Name")
+
+						self:CScriptAdd("ModifyValueForSave", function(self, value)
+							return TMW:CleanString(value)
+						end)
+
+						TMW.Classes.ChatEdit_InsertLink_Hook:New(self, function(self, text, linkType, linkData)
+							if TMW.Types[TMW.CI.ics.Type].checksItems and linkType ~= "item" then
+								-- notify failure if the icon is an item cooldown icon and the link is not an item link
+								return false
+							elseif not TMW.Types[TMW.CI.ics.Type].checksItems and linkType ~= "spell" and linkType ~= "enchant" then
+								-- notify failure if the icon is not an item cooldown and the link isn't a spell or enchant link
+								-- DONT just check (not TMW.Types[TMW.CI.ics.Type].checksItems and linkType == "item")
+								-- because there are link types we want to exclude, like achievements.
+								return false
+							end
+
+							local editbox = self.editbox
+
+							-- find the next semicolon in the string
+							local NameText = editbox:GetText()
+
+							local start = #NameText
+							for i = editbox:GetCursorPosition()-1, #NameText, 1 do
+								if strsub(NameText, i, i) == ";" then
+									start = i+1
+									break
+								end
+							end
+
+							local linkID = strmatch(linkData, "^(%d+)")
+
+							-- put the cursor right after the semicolon
+							editbox:SetCursorPosition(start)
+							-- insert the text
+							editbox:Insert("; " .. linkID .. "; ")
+							-- clean the text
+							TMW:CleanString(editbox)
+							-- put the cursor after the newly inserted text
+							editbox:SetCursorPosition(start + #linkID + 2)
+
+							-- notify success
+							return true
+						end)
+
+
+						TMW:RegisterCallback("TMW_ICON_SETUP_POST", function(event, icon)
+							-- Warnings for missing durations and first-time instructions for duration syntax
+							if icon.typeData and icon.typeData.DurationSyntax and icon:IsBeingEdited() == "MAIN" then
+								TMW.HELP:Show{
+									code = "ICON_DURS_FIRSTSEE",
+									icon = nil,
+									relativeTo = TMW.IE.Pages.IconMain.Type,
+									x = 20,
+									y = 0,
+									text = format(TMW.L["HELP_FIRSTUCD"])
+								}
+
+								local s = ""
+								local array = TMW:GetSpells(self:GetText()).ArrayNoLower
+								for k, v in pairs(TMW:GetSpells(self:GetText()).Durations) do
+									if v == 0 then
+										s = s .. (s ~= "" and "; " or "") .. array[k]
+									end
+								end
+								if s ~= "" then
+									TMW.HELP:Show{
+										code = "ICON_DURS_MISSING",
+										icon = icon,
+										relativeTo = self,
+										x = 0,
+										y = 0,
+										text = format(TMW.L["HELP_MISSINGDURS"], s)
+									}
+								else
+									TMW.HELP:Hide("ICON_DURS_MISSING")
+								end
+							end
+						end)
+
+					</OnLoad>
+					<OnEnter>
+						TMW:TT_Anchor(self)
+						GameTooltip:AddLine(self.__title, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)
+						GameTooltip:AddLine(self.__text, NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, 1)
+
+						if not self:GetParent().noBreakdown then
+							TMW.IE:TooltipAddSpellBreakdown(TMW.IE:GetRealNames(self:GetText()))
+						end
+
+						GameTooltip:Show()
+					</OnEnter>
+					<OnLeave>
+						GameTooltip:Hide()
+					</OnLeave>
+					<OnReceiveDrag>
+						TMW.IE:SpellItemToIcon(TMW.CI.icon)
+					</OnReceiveDrag>
+					<OnMouseUp>
+						TMW.IE:SpellItemToIcon(TMW.CI.icon)
+					</OnMouseUp>
+					<OnTextChanged>
+						local text = self:GetText()
+						if text == "" then
+							local label = self.label
+							local append = TMW.Types[TMW.CI.ics.Type].appendNameLabel
+							if append then
+								label = label .. " " .. append
+							end
+							self.BackgroundText:SetText(label)
+						else
+							self.BackgroundText:SetText(nil)
+						end
+
+						self:GetParent():AdjustHeight()
+
+
+						TMW:CancelTimer(self.ttUpdateHandler, 1)
+						self.ttUpdateHandler = TMW:ScheduleTimer("TT_Update", 1, self)
+					</OnTextChanged>
+				</Scripts>
+			</EditBox>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				TMW:CInit(self)
+
+				function self:SetTexts(title, text)
+					self:SetTitle(title)
+					self.Name:SetLabel(title)
+					self.Name.__title = title
+					self.Name.__text = text
+				end
+
+				self:CScriptAdd("PanelSetup", function(self, panel, panelInfo)
+					local supplementalData = panelInfo.supplementalData
+
+					local title = TMW.L["ICONMENU_CHOOSENAME3"]
+					local tooltip = TMW.L["CHOOSENAME_DIALOG"]
+
+					self.noBreakdown = false
+					if supplementalData then
+						title = supplementalData.title or title
+						tooltip = supplementalData.text or tooltip
+
+						self.noBreakdown = supplementalData.noBreakdown
+						TMW.SUG:EnableEditBox(self.Name, supplementalData.SUGType or "spell")
+					else
+						TMW.SUG:EnableEditBox(self.Name, "spell")
+					end
+
+					self:SetTexts(title, tooltip)
+				end)
+			</OnLoad>
+		</Scripts>
+	</Frame>
+
+	<Frame name="TellMeWhen_Unit" inherits="TellMeWhen_OptionsModuleContainer" virtual="true">
+		<Frames>
+			<EditBox parentKey="Unit" inherits="TellMeWhen_UnitEditBox">
+				<Anchors>
+					<Anchor point="TOP" y="-5"/>
+					<Anchor point="LEFT" x="9" />
+					<Anchor point="RIGHT" x="-9" />
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						TMW:CInit(self)
+
+						-- Texts and tooltip are handled by the panel
+
+						self:SetSetting("Unit")
+
+						self:CScriptAdd("ModifyValueForSave", function(self, value)
+							return TMW:CleanString(value)
+						end)
+
+						self:CScriptAdd("SettingSaved", function()
+							local unitTable = TMW.UNITS:GetOriginalUnitTable(self:GetText())
+
+							if #unitTable == 0 then
+								TMW.HELP:Show{
+									code = "ICON_UNIT_MISSING",
+									icon = TMW.CI.icon,
+									relativeTo = self,
+									x = 0,
+									y = 0,
+									text = format(TMW.L["HELP_NOUNITS"])
+								}
+							else
+								TMW.HELP:Hide("ICON_UNIT_MISSING")
+							end
+						end)
+
+						self:RegisterEvent("MODIFIER_STATE_CHANGED")
+					</OnLoad>
+					<OnEvent>
+						TMW:TT_Update(self)
+					</OnEvent>
+					<OnTextChanged>
+						self:GetParent():AdjustHeight()
+					</OnTextChanged>
+				</Scripts>
+			</EditBox>
+
+			<Button parentKey="UnitConditions" name="$parentUnitConditions" inherits="TellMeWhen_ButtonTemplate">
+				<Size x="160" y="16"/>
+				<Anchors>
+					<Anchor point="TOP" relativeKey="$parent.Unit" relativePoint="BOTTOM" y="-7"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						self:SetScale(0.9)
+						self:SetFrameLevel(self:GetParent():GetFrameLevel()+2)
+						self.Background:SetAlpha(0.7)
+
+						TMW:TT(self, "UNITCONDITIONS", "UNITCONDITIONS_DESC")
+
+					</OnLoad>
+					<OnUpdate>
+						local text = TMW.CNDT:GetTabText("Unit")
+
+						self:SetText(text)
+						self:SetWidth(self:GetTextWidth()+20)
+					</OnUpdate>
+					<OnClick>
+						TMW.CNDT:LoadConfig("Unit")
+					</OnClick>
+				</Scripts>
+			</Button>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				TMW:CInit(self)
+
+				local tooltip = function(self)
+					if IsModifierKeyDown() then
+						self.__noWrapTooltipText = true
+						return TMW.UNITS:GetUnitInputDetailedTooltip(self)
+					else
+						self.__noWrapTooltipText = false
+						return self.normalTooltip
+					end
+				end
+
+				function self:SetTexts(title, normalTooltip)
+					self:SetTitle(title)
+					self.Unit:SetLabel(title)
+					self.Unit.normalTooltip = normalTooltip
+					self.Unit:SetTooltip(title, tooltip)
+				end
+
+				self:CScriptAdd("PanelSetup", function(self, panel, panelInfo)
+					local supplementalData = panelInfo.supplementalData
+
+					self.UnitConditions:SetShown(supplementalData and supplementalData.implementsConditions)
+
+					self:AdjustHeight()
+
+
+					local title = TMW.L["ICONMENU_UNITSTOWATCH"]
+					local tooltip = TMW.L["ICONMENU_UNIT_DESC"]
+
+					if supplementalData then
+						title = supplementalData.title or title
+						tooltip = supplementalData.text or tooltip
+
+						TMW.SUG:EnableEditBox(self.Unit, supplementalData.SUGType or "units")
+					else
+						TMW.SUG:EnableEditBox(self.Unit, "units")
+					end
+
+					self:SetTexts(title, tooltip)
+				end)
+
+			</OnLoad>
+		</Scripts>
+	</Frame>
+
+	<Frame name="TellMeWhen_IconStateSet" virtual="true">
+		<Size y="34"/>
+
+		<KeyValues>
+			<KeyValue key="tmwClass" type="string" value="Config_Frame_IconStateSet"/>
+		</KeyValues>
+
+		<Anchors>
+			<Anchor point="LEFT" />
+			<Anchor point="RIGHT" />
+		</Anchors>
+
+		<Frames>
+
+			<Button parentKey="Color" inherits="TellMeWhen_ColorButtonTemplate">
+				<Size x="20" y="20"/>
+				<Anchors>
+					<Anchor point="RIGHT" x="-10" />
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						TMW:CInit(self)
+
+						self:SetTexts(nil, nil)
+						self:SetTooltip(TMW.L["ICONMENU_STATECOLOR"], TMW.L["ICONMENU_STATECOLOR_DESC"])
+						self:SetHasOpacity(false)
+						self:SetHasDesaturate(true)
+						self:SetHasTextureConfig(true, "Texture")
+						self:SetSetting("Color")
+
+						self:CScriptAdd("ReloadRequested", function()
+							local textureSetting = self:GetSettingTable().Texture
+							local base = TMW.CI.icon.attributes.texture
+							if textureSetting ~= "" then
+								local texture = TMW.COMMON.Textures:EvaluateTexturePath(textureSetting, TMW.NULLFUNC)
+								self:SetSwatchTexture(base, texture)
+							else
+								self:SetSwatchTexture(base, nil)
+							end
+						end)
+					</OnLoad>
+				</Scripts>
+			</Button>
+
+
+			<Slider parentKey="Alpha" inherits="TellMeWhen_SliderTemplate_Alpha" valuestep="1">
+				<Anchors>
+					<Anchor point="LEFT" x="11" />
+					<Anchor point="RIGHT" relativeKey="$parent.Color" relativePoint="LEFT" x="-10" />
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						TMW:CInit(self)
+
+						self:SetSetting("Alpha")
+					</OnLoad>
+					<OnValueChanged>
+						local alpha = self:GetValue()
+						local colorButton = self:GetParent().Color
+						colorButton:SetAlpha(alpha)
+						colorButton:SetShown(alpha > 0)
+					</OnValueChanged>
+				</Scripts>
+			</Slider>
+
+		</Frames>
+		<Scripts>
+			<OnShow>
+				self:GetParent():AdjustHeight()
+			</OnShow>
+			<OnHide>
+				self:GetParent():AdjustHeight()
+			</OnHide>
+		</Scripts>
+	</Frame>
+	<Frame name="TellMeWhen_IconStates" inherits="TellMeWhen_OptionsModuleContainer" virtual="true">
+		<Size y="68"/>
+		<Scripts>
+			<OnLoad>
+				TMW:CInit(self)
+
+				self.frames = {}
+
+				self:CScriptAdd("PanelSetup", function(self, panel, panelInfo)
+					local settings = self:GetSettingTable()
+					local supplementalData = panelInfo.supplementalData
+					
+					local configData = {}
+					for _, stateManager in pairs(TMW.IconStateArbitrator.StateHandlers) do
+						local managerConfigData = stateManager:GetConfigData(TMW.CI.icon, panelInfo)
+
+						if managerConfigData then
+							local compFunction = nil
+							if next(managerConfigData) and select(2, next(managerConfigData)).order then
+								compFunction = TMW.OrderSort
+							end
+
+							for state, data in TMW:OrderedPairs(managerConfigData, compFunction, not not compFunction) do
+								if not data.requires or settings[data.requires] then
+									data.state = state
+									tinsert(configData, data)
+								end
+							end
+						end
+					end
+
+					assert(supplementalData, "Supplemental data (arg5 to RegisterConfigPanel_XMLTemplate) must be provided for TellMeWhen_IconStates!")
+					
+					-- Set the title for the frame
+					panel.Header:SetText(supplementalData.text or TMW.L["ICONMENU_SHOWWHEN"])
+
+					for i, set in pairs(self.frames) do
+						set:Hide()
+					end
+
+					if #configData == 0 then
+						self:Hide()
+					end
+					
+					for i, data in ipairs(configData) do
+						local set = self.frames[i]
+						if not set then
+							set = TMW.C.Config_Frame_IconStateSet:New("Frame", nil, self, "TellMeWhen_IconStateSet", i)
+							self.frames[i] = set
+							if i == 1 then
+								set:SetPoint("TOP")
+							else
+								set:SetPoint("TOP", self.frames[i-1], "BOTTOM")
+							end
+						end
+
+						set:SetSetting(data.state)
+						set:SetConfigData(data)
+
+						set:Show()
+					end
+				end)
+			</OnLoad>
+		</Scripts>
+	</Frame>
+
+
+
+
+
+
+
+	<Frame parentKey="IconMain" inherits="TellMeWhen_IE_PageTemplate">
+		<Frames>
+
+			<Frame parentKey="PanelsLeft" inherits="TellMeWhen_IE_PanelColumn">
+				<Anchors>
+					<Anchor point="LEFT" x="7"/>
+					<Anchor point="RIGHT" relativePoint="TOP" x="-6"/>
+				</Anchors>
+			</Frame>
+
+			<Frame parentKey="PanelsRight" inherits="TellMeWhen_IE_PanelColumn">
+				<Anchors>
+					<Anchor point="LEFT" relativePoint="TOP" x="5"/>
+					<Anchor point="RIGHT" x="-9"/>
+				</Anchors>
+			</Frame>
+
+			<Frame parentKey="Type" inherits="TMW_DropDownMenuTemplate">
+				<Anchors>
+					<Anchor point="TOP" y="-8"/>
+					<Anchor point="LEFT" relativeKey="$parent.PanelsLeft" x="7" />
+					<Anchor point="RIGHT" relativeKey="$parent.PanelsLeft" x="-7" />
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						TMW:CInit(self)
+
+						local title = function()
+							return TMW.Types[TMW.CI.ics.Type].name
+						end
+
+						local tooltip = function()
+							return TMW.Types[TMW.CI.ics.Type].desc
+						end
+
+						self:SetTooltip(title, tooltip)
+						self:SetFunction(TMW.IE.IconType_DropDown)
+
+						self:CScriptAdd("ReloadRequested", function()
+							local ics = TMW.CI.ics
+
+							if ics.Type == "" then
+								self:SetText(TMW.L["ICONMENU_TYPE"])
+							else
+								local Type = rawget(TMW.Types, ics.Type)
+								if Type then
+									self:SetText(TMW.get(Type.name))
+								else
+									self:SetText(ics.Type .. ": UNKNOWN TYPE")
+								end
+							end
+						end)
+
+						self.Button:HookScript("OnClick", function(self)
+							TMW.IE:SaveSettings()
+						end)
+					</OnLoad>
+				</Scripts>
+			</Frame>
+
+			<CheckButton parentKey="Enabled" inherits="TellMeWhen_CheckTemplate">
+				<Anchors>
+					<Anchor point="TOP" relativeKey="$parent" relativePoint="TOP" x="0" y="-4"/>
+					<Anchor point="LEFT" relativeKey="$parent.PanelsRight" relativePoint="LEFT" />
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						TMW:CInit(self)
+
+						self:SetTexts(TMW.L["ICONMENU_ENABLE"], TMW.L["ICONMENU_ENABLE_DESC"])
+						self:SetSetting("Enabled")
+					</OnLoad>
+				</Scripts>
+			</CheckButton>
+
+			<CheckButton parentKey="GroupController" inherits="TellMeWhen_CheckTemplate">
+				<Anchors>
+					<Anchor point="TOP" relativeKey="$parent.Enabled" relativePoint="TOP"/>
+					<Anchor point="LEFT" relativeKey="$parent.PanelsRight" relativePoint="CENTER" x="-15" />
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						TMW:CInit(self)
+
+						self:SetSetting("Controlled")
+
+						self:CScriptAdd("SettingTableRequested", function()
+							return TMW.CI.icon.group:GetSettings()
+						end)
+
+						self:CScriptAdd("ReloadRequested", function()
+							self:SetEnabled(TMW.CI.icon.ID == 1 and TMW.CI.icon.typeData.canControlGroup)
+
+							if self:IsEnabled() then
+								self:SetTexts(TMW.L["ICONMENU_CTRLGROUP"], TMW.L["ICONMENU_CTRLGROUP_DESC"])
+							else
+								if TMW.CI.icon.ID ~= 1 then
+									self:SetTexts(TMW.L["ICONMENU_CTRLGROUP"], TMW.L["ICONMENU_CTRLGROUP_UNAVAILABLEID_DESC"])
+								else
+									self:SetTexts(TMW.L["ICONMENU_CTRLGROUP"], TMW.L["ICONMENU_CTRLGROUP_UNAVAILABLE_DESC"])
+								end
+							end
+						end)
+
+						self:CScriptAdd("SettingSaved", function()
+							TMW.CI.icon.group:Setup()
+							TMW.IE:LoadIcon(1)
+						end)
+
+						self:GetParent().Enabled:ConstrainLabel(self)
+						self:ConstrainLabel(self:GetParent(), "RIGHT")
+					</OnLoad>
+				</Scripts>
+			</CheckButton>
+
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				TMW:CInit(self)
+
+				self:CScriptAdd("SettingTableRequested", function(requester)
+					return TMW.CI.ics
+				end)
+
+				self:CScriptAdd("ReloadRequested", function()
+					local icon = TMW.CI.icon
+
+					if icon then
+						local panelList = {}
+						for _, Component in pairs(icon.Components) do
+							if Component:ShouldShowConfigPanels(icon) then
+								for _, panelInfo in pairs(Component.ConfigPanels) do
+									if panelInfo.panelSet == "icon" then
+										tinsert(panelList, panelInfo)
+									end
+								end		
+							end
+						end
+						TMW.IE:PositionPanels("IconMain", panelList)
+					end
+				end)
+
+				self:RegisterForDrag("LeftButton")
+			</OnLoad>
+			<OnReceiveDrag>
+				TMW.IE:SpellItemToIcon(TMW.CI.icon)
+			</OnReceiveDrag>
+			<OnMouseUp>
+				TMW.IE:SpellItemToIcon(TMW.CI.icon)
+			</OnMouseUp>
+			<OnDragStart>
+				TMW.IE:StartMoving()
+			</OnDragStart>
+			<OnDragStop>
+				TMW.IE:StopMovingOrSizing()
+			</OnDragStop>
+		</Scripts>
+	</Frame>
+
+
+	<Frame parentKey="IconNotLoaded" inherits="TellMeWhen_IE_PageTemplate">
+		<Frames>
+			<Frame parentKey="Message" name="$parentMessage" inherits="TellMeWhen_FlatFrame">
+				<Size y="1"/>
+				<Anchors>
+					<Anchor point="LEFT" x="15" />
+					<Anchor point="RIGHT" x="-15" />
+
+				</Anchors>
+				<Layers>
+					<Layer level="ARTWORK">
+						<FontString parentKey="title" inherits="GameFontNormalHuge3">
+							<Anchors>
+								<Anchor point="TOP" y="-10"/>
+							</Anchors>
+						</FontString>
+						<FontString parentKey="text" wordwrap="true" inherits="GameFontHighlight">
+							<Anchors>
+								<Anchor point="TOP" relativeKey="$parent.title" relativePoint="BOTTOM" y="-10"/>
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnLoad>
+						self.title:SetText(TMW.L["IE_NOLOADED_ICON"])
+						self.text:SetText(TMW.L["IE_NOLOADED_ICON_DESC"])
+
+						self.text:SetWidth(self:GetWidth() - 25)
+						self:SetHeight(self.text:GetStringHeight() + self.title:GetStringHeight() + 32)
+					</OnLoad>
+					<OnSizeChanged>
+						self:SetHeight(self.text:GetStringHeight() + self.title:GetStringHeight() + 32)
+					</OnSizeChanged>
+				</Scripts>
+			</Frame>
+		</Frames>
+
+		<Scripts>
+			<OnLoad>
+				TMW:CInit(self)
+			</OnLoad>
+		</Scripts>
+	</Frame>
+
+</Ui>

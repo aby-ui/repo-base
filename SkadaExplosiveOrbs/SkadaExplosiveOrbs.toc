@@ -1,0 +1,10 @@
+## Interface: 80000
+## Title: SkadaExplosiveOrbs
+## Author: warbaby
+## Dependencies: Skada
+
+Locale.lua
+SkadaExplosiveOrbs.lua
+
+## Title: |cff880303[有爱]|r Skada 易爆打球
+## X-Vendor: AbyUI

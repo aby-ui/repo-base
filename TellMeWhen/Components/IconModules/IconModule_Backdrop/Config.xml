@@ -1,0 +1,129 @@
+﻿<Ui>
+
+	<Button name="TellMeWhen_BackdropOptions_Color" parentKey="Color" inherits="TellMeWhen_ColorButtonTemplate" virtual="true">
+		<Scripts>
+			<OnLoad>
+				TMW:CInit(self)
+
+				self:SetTexts(TMW.L["ICONMENU_BAR_COLOR_BACKDROP"], TMW.L["ICONMENU_BAR_COLOR_BACKDROP_DESC"])
+				self:SetSetting("BackdropColor")
+				self:SetHasOpacity(true)
+			</OnLoad>
+		</Scripts>
+	</Button>
+
+
+
+	<Frame name="TellMeWhen_BackdropOptions_Icon" inherits="TellMeWhen_OptionsModuleContainer" virtual="true">
+		<Size y="32"/>
+		<Frames>
+
+			<CheckButton parentKey="EnableColor" inherits="TellMeWhen_CheckTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" x="5" y="-1"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						TMW:CInit(self)
+
+						self:SetTexts(TMW.L["COLOR_OVERRIDE_GROUP"], TMW.L["COLOR_OVERRIDE_GROUP_DESC"])
+						self:SetSetting("BackdropColor_Enable")
+					</OnLoad>
+				</Scripts>
+			</CheckButton>
+
+			<Button inherits="TellMeWhen_BackdropOptions_Color">
+				<Scripts>
+					<OnLoad inherit="prepend">
+						self:CScriptAdd("ReloadRequested", function()
+							local settings = self:GetSettingTable()
+							self:SetShown(settings.BackdropColor_Enable)
+						end)
+					</OnLoad>
+				</Scripts>
+			</Button>
+
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				TMW:CInit(self)
+				
+				self:SetTitle(TMW.L["CONFIGPANEL_BACKDROP_HEADER"])
+
+				self.EnableColor:ConstrainLabel(self.Color)
+				self.Color:ConstrainLabel(self, "RIGHT")
+
+				TMW.IE:DistributeFrameAnchorsLaterally(self, 2, self.EnableColor, self.Color)
+			</OnLoad>
+		</Scripts>
+	</Frame>
+
+	<Frame name="TellMeWhen_BackdropOptions_Group" inherits="TellMeWhen_OptionsModuleContainer" virtual="true">
+		<Size y="32"/>
+		<Frames>
+
+			<CheckButton parentKey="EnableColor" inherits="TellMeWhen_CheckTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" x="5" y="-1"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						TMW:CInit(self)
+
+						self:SetTexts(TMW.L["COLOR_OVERRIDE_GLOBAL"], TMW.L["COLOR_OVERRIDE_GLOBAL_DESC"])
+						self:SetSetting("BackdropColor_Enable")
+					</OnLoad>
+				</Scripts>
+			</CheckButton>
+
+			<Button inherits="TellMeWhen_BackdropOptions_Color">
+				<Scripts>
+					<OnLoad inherit="prepend">
+						self:CScriptAdd("ReloadRequested", function()
+							local settings = self:GetSettingTable()
+							self:SetShown(settings.BackdropColor_Enable)
+						end)
+					</OnLoad>
+				</Scripts>
+			</Button>
+
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				TMW:CInit(self)
+				
+				self:SetTitle(TMW.L["CONFIGPANEL_BACKDROP_HEADER"])
+
+				self.EnableColor:ConstrainLabel(self.Color)
+				self.Color:ConstrainLabel(self, "RIGHT")
+
+				TMW.IE:DistributeFrameAnchorsLaterally(self, 2, self.EnableColor, self.Color)
+			</OnLoad>
+		</Scripts>
+	</Frame>
+
+
+	<Frame name="TellMeWhen_BackdropOptions_Global" inherits="TellMeWhen_OptionsModuleContainer" virtual="true">
+		<Size y="32"/>
+		<Frames>
+
+			<Button inherits="TellMeWhen_BackdropOptions_Color">
+				<Anchors>
+					<Anchor point="LEFT" x="5" />
+				</Anchors>
+			</Button>
+
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				TMW:CInit(self)
+				
+				self:SetTitle(TMW.L["DOMAIN_GLOBAL_NC"] .. ": " .. TMW.L["CONFIGPANEL_BACKDROP_HEADER"])
+			</OnLoad>
+		</Scripts>
+	</Frame>
+
+
+
+ 
+</Ui>

@@ -1,0 +1,15 @@
+## Interface: 80000
+## Title: !BaudErrorFrame
+## Notes: 收集和汇总错误信息
+## Author: Baudzilla
+## Version: 1.3
+## SavedVariables: BaudErrorFrameConfig
+
+..\!!!Libs\Ace3\LibStub\LibStub.lua
+..\!!!Libs\Ace3\CallbackHandler-1.0\CallbackHandler-1.0.lua
+..\!!!Libs\LibDataBroker-1.1\LibDataBroker-1.1.lua
+..\!!!Libs\LibDBIcon-1.0\LibDBIcon-1.0\LibDBIcon-1.0.lua
+BaudErrorFrame.xml
+
+## Title: |cff880303[有爱]|r !BaudError 错误信息收集
+## X-Vendor: AbyUI

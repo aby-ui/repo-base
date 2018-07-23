@@ -1,0 +1,27 @@
+## Interface: 80000
+## Title: Accountant Classic
+## Notes: 统计个人金钱花费和收入，以表格的形式呈现。
+## Author: Arith Hsu
+## Version: 2.5.18
+## X-eMail: arithmandarjp @ yahoo.co.jp
+## X-Credits: Sabaki, Shadow, Rophy
+## X-License: GPLv2
+## X-Website: http://wow.curseforge.com/addons/accountant-classic/
+## X-Category: Information
+## X-Localizations: enUS, frFR, deDE, zhCN, zhTW, koKR
+## X-Donate: https://www.paypal.com/cgi-bin/webscr?return=http%3A%2F%2Fwow.curseforge.com%2Faddons%2Faccountant-classic%2F&cn=Add+special+instructions+to+the+addon+author%28s%29&business=arithmandar%40gmail.com&bn=PP-DonationsBF%3Abtn_donateCC_LG.gif%3ANonHosted&cancel_return=http%3A%2F%2Fwow.curseforge.com%2Faddons%2Faccountant-classic%2F&lc=US&item_name=Accountant+Classic+%28from+CurseForge.com%29&cmd=_donations&rm=1&no_shipping=1&currency_code=USD
+## Description: Logs your WoW incomings / outgoings
+## OptionalDeps: LibAboutPanel, CallbackHandler-1.0
+## SavedVariables: Accountant_SaveData, Accountant_Options
+## X-Curse-Packaged-Version: v2.5.18
+## X-Curse-Project-Name: Accountant Classic
+## X-Curse-Project-ID: accountant-classic
+## X-Curse-Repository-ID: wow/accountant-classic/mainline
+
+Locale\Locales.xml
+Accountant.xml
+AccountantButton.xml
+AccountantOptions.xml
+
+## Title: |cff880303[有爱]|r Accountant 收支统计
+## X-Vendor: AbyUI

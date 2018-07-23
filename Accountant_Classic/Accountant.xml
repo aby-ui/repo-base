@@ -1,0 +1,559 @@
+<!-- $Id: Accountant.xml 69 2012-09-26 09:54:33Z arith $ -->
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+	<Script file="Accountant.lua"/>
+
+	<!-- Item Row Template -->
+	<Button name="AccountantTabTemplate" inherits="CharacterFrameTabButtonTemplate" virtual="true">
+		<Scripts>
+			<OnClick>
+				AccountantTab_OnClick(self);
+			</OnClick>
+		</Scripts>
+	</Button>
+	<!-- Text rows -->
+	<Frame name="AccountantRowTemplate" virtual="true">
+		<Size>
+			<AbsDimension x="482" y="19"/>
+		</Size>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<FontString name="$parentTitle" inherits="GameFontNormal">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativePoint="TOPLEFT">
+							<Offset>
+								<AbsDimension x="3" y="-2"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<Button name="$parentDelete" inherits="UIPanelButtonTemplate">
+					<Anchors>
+						<Anchor point="TOPRIGHT" relativePoint="TOPLEFT">
+							<Offset>
+								<AbsDimension x="3" y="-4"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</Button>
+				<FontString name="$parentIn" inherits="GameFontHighlightSmall">
+					<Anchors>
+						<Anchor point="TOPRIGHT" relativePoint="TOPLEFT">
+							<Offset>
+								<AbsDimension x="323" y="-4"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString name="$parentOut" inherits="GameFontHighlightSmall">
+					<Anchors>
+						<Anchor point="TOPRIGHT" relativePoint="TOPLEFT">
+							<Offset>
+								<AbsDimension x="480" y="-4"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+	</Frame>
+
+	<!-- Compact Money Frame -->
+	<Frame name="AccountantMoneyFrameTemplate" virtual="true">
+		<Frames>
+			<Frame name="$parentMoney"  inherits="SmallMoneyFrameTemplate">
+				<Size>
+					<AbsDimension x="100" y="25"/>
+				</Size>
+				<Anchors>
+					<Anchor point="TOPRIGHT" relativeTo="$parent" relativePoint="TOPRIGHT">
+						<Offset>
+							<AbsDimension x="7" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						SmallMoneyFrame_OnLoad();
+						MoneyFrame_SetType("STATIC");
+					</OnLoad>
+				</Scripts>
+			</Frame>
+		</Frames>
+		<Backdrop bgFile="Interface\Tooltips\ChatBubble-Background" edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
+			<EdgeSize>
+				<AbsValue val="16"/>
+			</EdgeSize>
+			<TileSize>
+				<AbsValue val="16"/>
+			</TileSize>
+			<BackgroundInsets>
+				<AbsInset left="5" right="5" top="5" bottom="5"/>
+			</BackgroundInsets>
+		</Backdrop>
+	</Frame>
+
+	<!-- Main Window -->
+	<Frame name="AccountantFrame" toplevel="true" enableMouse="true" frameStrata="HIGH" movable="true" parent="UIParent" hidden="true">
+		<Size>
+			<AbsDimension x="512" y="512"/>
+		</Size>
+		<Anchors>
+			<Anchor point="TOPLEFT">
+				<Offset>
+					<AbsDimension x="400" y="-104"/>
+				</Offset>
+			</Anchor>
+		</Anchors>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture name="AccountantFramePortrait">
+					<Size>
+						<AbsDimension x="60" y="60"/>
+					</Size>
+					<Anchors>
+						<Anchor point="TOPLEFT">
+							<Offset>
+								<AbsDimension x="7" y="-6"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<Texture name="$parentTopLeft" file="Interface\AddOns\Accountant_Classic\Images\AccountantFrame-TopLeft">
+					<Size>
+						<AbsDimension x="256" y="256"/>
+					</Size>
+					<Anchors>
+						<Anchor point="TOPLEFT"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentTopRight" file="Interface\AddOns\Accountant_Classic\Images\AccountantFrame-TopRight">
+					<Size>
+						<AbsDimension x="256" y="256"/>
+					</Size>
+					<Anchors>
+						<Anchor point="TOPRIGHT"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentBotLeft" file="Interface\AddOns\Accountant_Classic\Images\AccountantFrame-BotLeft">
+					<Size>
+						<AbsDimension x="256" y="256"/>
+					</Size>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativePoint="TOPLEFT">
+							<Offset>
+								<AbsDimension x="0" y="-256"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentBotRight" file="Interface\AddOns\Accountant_Classic\Images\AccountantFrame-BotRight">
+					<Size>
+						<AbsDimension x="256" y="256"/>
+					</Size>
+					<Anchors>
+						<Anchor point="TOPRIGHT" relativePoint="TOPRIGHT">
+							<Offset>
+								<AbsDimension x="0" y="-256"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</Texture>
+				<FontString name="$parentTitleText" inherits="GameFontHighlight" text="SOME_TITLE">
+					<Size>
+						<AbsDimension x="300" y="14"/>
+					</Size>
+					<Anchors>
+						<Anchor point="TOP" relativePoint="TOP">
+							<Offset>
+								<AbsDimension x="0" y="-16"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString name="$parentSource" inherits="GameFontHighlight">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativePoint="TOPLEFT">
+							<Offset>
+								<AbsDimension x="24" y="-93"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString name="$parentIn" inherits="GameFontHighlight">
+					<Anchors>
+						<Anchor point="TOP" relativePoint="TOPLEFT">
+							<Offset>
+								<AbsDimension x="265" y="-93"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString name="$parentOut" inherits="GameFontHighlight">
+					<Anchors>
+						<Anchor point="TOP" relativePoint="TOPLEFT">
+							<Offset>
+								<AbsDimension x="422" y="-93"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString name="$parentTotalIn" inherits="GameFontHighlightSmall">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativePoint="TOPLEFT">
+							<Offset>
+								<AbsDimension x="75" y="-39"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString name="$parentTotalInValue" inherits="GameFontHighlightSmall">
+					<Anchors>
+						<Anchor point="TOPRIGHT" relativePoint="TOPLEFT">
+							<Offset>
+								<AbsDimension x="350" y="-39"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString name="$parentTotalOut" inherits="GameFontHighlightSmall">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativePoint="TOPLEFT">
+							<Offset>
+								<AbsDimension x="75" y="-55"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString name="$parentTotalOutValue" inherits="GameFontHighlightSmall">
+					<Anchors>
+						<Anchor point="TOPRIGHT" relativePoint="TOPLEFT">
+							<Offset>
+								<AbsDimension x="350" y="-55"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString name="$parentTotalFlow" inherits="GameFontHighlightSmall">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativePoint="TOPLEFT">
+							<Offset>
+								<AbsDimension x="75" y="-71"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString name="$parentTotalFlowValue" inherits="GameFontHighlightSmall">
+					<Anchors>
+						<Anchor point="TOPRIGHT" relativePoint="TOPLEFT">
+							<Offset>
+								<AbsDimension x="350" y="-71"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString name="$parentExtra" inherits="GameFontHighlightSmall">
+					<Anchors>
+						<Anchor point="TOP" relativePoint="TOPLEFT">
+							<Offset>
+								<AbsDimension x="450" y="-39"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString name="$parentExtraValue" inherits="GameFontNormalSmall">
+					<Anchors>
+						<Anchor point="TOP" relativeTo="$parentExtra" relativePoint="BOTTOM">
+							<Offset>
+								<AbsDimension x="0" y="0"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Frame name="$parentRow1" inherits="AccountantRowTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parent" relativePoint="TOPLEFT">
+						<Offset>
+							<AbsDimension x="21" y="-111"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Frame>
+			<Frame name="$parentRow2" inherits="AccountantRowTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentRow1" relativePoint="BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x="0" y="-1"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Frame>
+			<Frame name="$parentRow3" inherits="AccountantRowTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentRow2" relativePoint="BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x="0" y="-1"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Frame>
+			<Frame name="$parentRow4" inherits="AccountantRowTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentRow3" relativePoint="BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x="0" y="-1"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Frame>
+			<Frame name="$parentRow5" inherits="AccountantRowTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentRow4" relativePoint="BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x="0" y="-1"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Frame>
+			<Frame name="$parentRow6" inherits="AccountantRowTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentRow5" relativePoint="BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x="0" y="-1"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Frame>
+			<Frame name="$parentRow7" inherits="AccountantRowTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentRow6" relativePoint="BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x="0" y="-1"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Frame>
+			<Frame name="$parentRow8" inherits="AccountantRowTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentRow7" relativePoint="BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x="0" y="-1"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Frame>
+			<Frame name="$parentRow9" inherits="AccountantRowTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentRow8" relativePoint="BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x="0" y="-1"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Frame>
+			<Frame name="$parentRow10" inherits="AccountantRowTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentRow9" relativePoint="BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x="0" y="-1"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Frame>
+			<Frame name="$parentRow11" inherits="AccountantRowTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentRow10" relativePoint="BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x="0" y="-1"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Frame>
+			<Frame name="$parentRow12" inherits="AccountantRowTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentRow11" relativePoint="BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x="0" y="-1"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Frame>
+			<Frame name="$parentRow13" inherits="AccountantRowTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentRow12" relativePoint="BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x="0" y="-1"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Frame>
+			<Frame name="$parentRow14" inherits="AccountantRowTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentRow13" relativePoint="BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x="0" y="-1"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Frame>
+			<Frame name="$parentRow15" inherits="AccountantRowTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentRow14" relativePoint="BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x="0" y="-1"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Frame>
+			<Button name="$parentCloseButton" inherits="UIPanelCloseButton">
+				<Anchors>
+					<Anchor point="TOPRIGHT" relativeTo="$parent" relativePoint="TOPRIGHT">
+						<Offset>
+							<AbsDimension x="4" y="-8"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Button>
+			<Button name="$parentOptionsButton" inherits="UIPanelButtonTemplate" text="ACCLOC_OPTBUT">
+				<Size>
+					<AbsDimension x="80" y="22"/>
+				</Size>
+				<Anchors>
+					<Anchor point="TOPRIGHT" relativeTo="$parentCloseButton" relativePoint="TOPLEFT">
+						<Offset>
+							<AbsDimension x="6" y="-4"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						AccountantOptions_Toggle();
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Button name="$parentExitButton" inherits="UIPanelButtonTemplate" text="ACCLOC_EXIT">
+				<Size>
+					<AbsDimension x="77" y="21"/>
+				</Size>
+				<Anchors>
+					<Anchor point="BOTTOMRIGHT" relativeTo="$parentBotRight" relativePoint="BOTTOMRIGHT">
+						<Offset>
+							<AbsDimension x="-10" y="81"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						HideUIPanel(self:GetParent());
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Button name="$parentResetButton" inherits="UIPanelButtonTemplate" text="ACCLOC_RESET">
+				<Size>
+					<AbsDimension x="80" y="22"/>
+				</Size>
+				<Anchors>
+					<Anchor point="TOPRIGHT" relativeTo="$parentExitButton" relativePoint="TOPLEFT">
+						<Offset>
+							<AbsDimension x="0" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						Accountant_ResetData();
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Frame name="AccountantMoneyFrame" inherits="SmallMoneyFrameTemplate">
+				<Anchors>
+					<Anchor point="TOPRIGHT" relativeTo="$parent" relativePoint="BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x="266" y="98"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Frame>
+			<Button name="$parentTab1" inherits="AccountantTabTemplate" id="1" text="Session">
+				<Anchors>
+					<Anchor point="BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x="15" y="44"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Button>
+			<Button name="$parentTab2" inherits="AccountantTabTemplate" id="2" text="Day">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentTab1" relativePoint="RIGHT">
+						<Offset>
+							<AbsDimension x="-15" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Button>
+			<Button name="$parentTab3" inherits="AccountantTabTemplate" id="3" text="Week">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentTab2" relativePoint="RIGHT">
+						<Offset>
+							<AbsDimension x="-15" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Button>
+			<Button name="$parentTab4" inherits="AccountantTabTemplate" id="4" text="Total">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentTab3" relativePoint="RIGHT">
+						<Offset>
+							<AbsDimension x="-15" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Button>
+			<Button name="$parentTab5" inherits="AccountantTabTemplate" id="5" text="All Chars">
+				<Anchors>
+					<Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMRIGHT">
+						<Offset>
+							<AbsDimension x="0" y="44"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Button>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				<!-- Make Frame Moveable.-->
+				tinsert(UISpecialFrames, "AccountantFrame");
+				UIPanelWindows["AccountantFrame"] = { area = "left", pushable = 11 };
+				self:RegisterForDrag("LeftButton");
+
+				<!-- Setup -->
+				Accountant_RegisterEvents(self);
+			</OnLoad>
+			<OnShow>
+				Accountant_OnShow(self);
+			</OnShow>
+			<OnHide>
+				Accountant_OnHide(self);
+			</OnHide>
+			<OnEvent>
+				Accountant_OnEvent(self, event, ...);
+			</OnEvent>
+			<OnDragStart>
+				self:StartMoving();
+			</OnDragStart>
+			<OnDragStop>
+				self:StopMovingOrSizing();
+			</OnDragStop>
+			<OnMouseUp>
+				self:StopMovingOrSizing();
+			</OnMouseUp>
+		</Scripts>
+	</Frame>
+	<GameTooltip name="AccountantTooltip" inherits="GameTooltipTemplate" parent="UIParent" hidden="true"/>
+</Ui>

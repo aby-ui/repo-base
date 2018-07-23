@@ -1,0 +1,303 @@
+<Ui>
+
+	<Button name="RematchSlimPetListButtonTemplate" inherits="RematchPetClicks" virtual="true">
+		<Size x="206" y="26"/>
+		<Backdrop edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
+			<EdgeSize val="12"/>
+			<BorderColor r="0.33" g="0.33" b="0.33"/>
+		</Backdrop>
+		<KeyValues>
+			<KeyValue key="slim" value="true" type="boolean"/>
+		</KeyValues>
+		<Layers>
+			<Layer level="BACKGROUND" textureSubLevel="-1">
+				<Texture parentKey="Backplate">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="4" y="-4"/>
+						<Anchor point="BOTTOMRIGHT" x="-4" y="4"/>
+					</Anchors>
+					<Color r="0.15" g="0.15" b="0.15"/>
+				</Texture>
+			</Layer>
+			<Layer level="BACKGROUND">
+				<Texture parentKey="Faceplate" file="Interface\AddOns\Rematch\Textures\faceplate" alpha="0.75">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="2" y="-2"/>
+						<Anchor point="BOTTOMRIGHT" x="-2" y="2"/>
+					</Anchors>
+					<TexCoords left="0" right="0.82421875" top="0" bottom="0.75"/>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<FontString parentKey="Name" inherits="GameFontNormal" justifyH="LEFT">
+					<Size x="0" y="21"/>
+					<Anchors>
+						<Anchor point="LEFT" x="29" y="0"/>
+						<Anchor point="RIGHT" x="-6" y="0"/>
+					</Anchors>
+				</FontString>
+				<Texture parentKey="Type" file="Interface\PetBattles\PetIcon-Beast">
+					<Size x="20" y="20"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="3" y="-3"/>
+					</Anchors>
+					<TexCoords left="0.4921875" right="0.796875" top="0.50390625" bottom="0.65625"/>
+				</Texture>
+				<FontString parentKey="Breed" inherits="SystemFont_Tiny">
+					<Anchors>
+						<Anchor point="CENTER" relativePoint="RIGHT" x="-18" y="0"/>
+					</Anchors>
+				</FontString>
+				<!-- blue arrow icon to note a leveling pet -->
+				<Texture parentKey="Leveling" file="Interface\AddOns\Rematch\textures\footnotes" hidden="true">
+					<Size x="18" y="18"/>
+					<Anchors>
+						<Anchor point="RIGHT" x="-6" y="0"/>
+					</Anchors>
+					<TexCoords left="0.125" right="0.25" top="0" bottom="0.25"/>
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY">
+				<!-- the level of the pet -->
+				<FontString parentKey="Level" inherits="SystemFont_Outline_Small">
+					<Anchors>
+						<Anchor point="BOTTOM" relativePoint="BOTTOMLEFT" x="20" y="3"/>
+					</Anchors>
+					<FontHeight>
+						<AbsValue val="9"/>
+					</FontHeight>
+					<Color r=".9" g=".9" b=".9"/>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<!-- pet button to the left of the list button -->
+			<Button parentKey="Pet" inherits="RematchTinyListPetTemplate">
+				<Anchors>
+					<Anchor point="LEFT" x="-25" y="0"/>
+				</Anchors>
+				<Layers>
+					<Layer level="OVERLAY">
+						<Texture parentKey="IsDead" file="Interface\PetBattles\DeadPetIcon" setAllPoints="true" hidden="true"/>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnLoad>
+						self:RegisterForClicks("AnyUp")
+						self:RegisterForDrag("LeftButton")
+					</OnLoad>
+					<OnClick>
+						Rematch.PetListButtonPetOnClick(self,button)
+					</OnClick>
+					<OnDragStart>
+						Rematch.PetListButtonOnDragStart(self)
+					</OnDragStart>
+					<OnDragStop>
+						self:GetScript("OnMouseUp")(self)
+					</OnDragStop>
+				</Scripts>
+			</Button>
+			<Frame parentKey="Favorite" hidden="true">
+				<Size x="18" y="18"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" x="-32" y="4"/>
+				</Anchors>
+				<Layers>
+					<Layer level="OVERLAY">
+						<Texture parentKey="Texture" atlas="PetJournal-FavoritesIcon" useAtlasSize="true"/>
+					</Layer>
+				</Layers>
+			</Frame>
+			<!-- notes button along the right of the list button -->
+			<Button parentKey="Notes" inherits="RematchNotesButtonTemplate" hidden="true">
+				<Size x="18" y="18"/>
+				<Anchors>
+					<Anchor point="RIGHT" x="-6" y="0"/>
+				</Anchors>
+			</Button>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				-- these are hooks so the buttons inheriting this can do their OnEnter/OnLeave too
+				self:HookScript("OnEnter",function(self) self.Backplate:SetColorTexture(0.25,0.5,0.75) end)
+				self:HookScript("OnLeave",function(self) if not self.lockHighlight then self.Backplate:SetColorTexture(0.15,0.15,0.15) end end)
+				self:RegisterForDrag("LeftButton")
+				self:RegisterForClicks("AnyUp")
+			</OnLoad>
+			<OnShow>
+				self.Backplate:SetAlpha(1)
+			</OnShow>
+			<OnMouseDown>
+				self.Backplate:SetAlpha(0.5)
+			</OnMouseDown>
+			<OnMouseUp>
+				self.Backplate:SetAlpha(1)
+			</OnMouseUp>
+			<OnDragStart>
+				Rematch.PetListButtonOnDragStart(self)
+			</OnDragStart>
+			<OnDragStop>
+				self:GetScript("OnMouseUp")(self)
+			</OnDragStop>
+		</Scripts>
+	</Button>
+
+	<!-- this is shared by pet, queue and loadout panels -->
+	<Button name="RematchBasePetListButtonTemplate" inherits="RematchPetClicks" virtual="true">
+		<Size x="206" y="44"/>
+		<HitRectInsets>
+			<AbsInset left="-2" right="0" top="0" bottom="0"/>
+		</HitRectInsets>
+		<Layers>
+			<Layer level="OVERLAY">
+				<FontString parentKey="Name" inherits="GameFontNormal" justifyH="LEFT" justifyV="CENTER" text="Pet Name">
+					<Size x="0" y="21"/> <!-- 36 when subname not shown -->
+					<Anchors>
+						<Anchor point="TOPLEFT" x="8" y="-4"/>
+						<Anchor point="TOPRIGHT" x="-8" y="-4"/>
+					</Anchors>
+				</FontString>
+				<FontString parentKey="SubName" inherits="GameFontHighlightSmall" justifyH="LEFT" justifyV="TOP" text="Pet subname">
+					<Size x="0" y="12"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeKey="$parent.Name" relativePoint="BOTTOMLEFT"/>
+						<Anchor point="TOPRIGHT" relativeKey="$parent.Name" relativePoint="BOTTOMRIGHT"/>
+					</Anchors>
+				</FontString>
+				<Texture parentKey="Leveling" file="Interface\AddOns\Rematch\textures\footnotes" hidden="true">
+					<Size x="20" y="20"/>
+					<Anchors>
+						<Anchor point="TOPRIGHT"/>
+					</Anchors>
+					<TexCoords left="0.125" right="0.25" top="0" bottom="0.25"/>
+				</Texture>
+				<FontString parentKey="Breed" inherits="GameFontNormal">
+					<Size x="0" y="12"/>
+					<Anchors>
+						<Anchor point="BOTTOMRIGHT" x="-3" y="5"/>
+					</Anchors>
+					<Color r="0.9" g="0.9" b="0.9"/>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<!-- the pet icon is a pushable slot -->
+			<Button parentKey="Pet" inherits="RematchPetSlotTemplate">
+				<Size x="38" y="38"/>
+				<Anchors>
+					<Anchor point="RIGHT" relativePoint="LEFT" x="-3" y="0"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						self:RegisterForClicks("AnyUp")
+						self:RegisterForDrag("LeftButton")
+					</OnLoad>
+					<OnClick>
+						Rematch.PetListButtonPetOnClick(self,button)
+					</OnClick>
+					<OnDragStart>
+						Rematch.PetListButtonOnDragStart(self)
+					</OnDragStart>
+					<OnDragStop>
+						self:GetScript("OnMouseUp")(self)
+					</OnDragStop>
+				</Scripts>
+			</Button>
+			<!-- notes button is clickable; leveling button is a texture defined above -->
+			<Button parentKey="Notes" inherits="RematchNotesButtonTemplate"/>
+		</Frames>
+	</Button>
+
+	<!-- this is used for the list in the pet and queue panel -->
+	<Button name="RematchPetListButtonTemplate" inherits="RematchBasePetListButtonTemplate" virtual="true">
+		<Backdrop edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
+			<EdgeSize val="12"/>
+			<BorderColor r="0.33" g="0.33" b="0.33"/>
+		</Backdrop>
+		<Layers>
+			<Layer level="BACKGROUND" textureSubLevel="-1">
+				<Texture parentKey="Backplate">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="2" y="-2"/>
+						<Anchor point="BOTTOMRIGHT" x="-2" y="2"/>
+					</Anchors>
+					<Color r="0.15" g="0.15" b="0.15"/>
+				</Texture>
+			</Layer>
+			<Layer level="BACKGROUND">
+				<Texture parentKey="Faceplate" file="Interface\PetBattles\PetJournal">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="2" y="-2"/>
+						<Anchor point="BOTTOMRIGHT" x="-2" y="2"/>
+					</Anchors>
+					<TexCoords left="0.5" right="0.904296875" top="0.12890625" bottom="0.171875"/>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<!-- the big type "icon" on right side of listbutton; the default textures were too faint -->
+				<Texture parentKey="TypeIcon" file="Interface\AddOns\Rematch\Textures\pettypedecals" alpha="0.4">
+					<Size x="55" y="38"/>
+					<Anchors>
+						<Anchor point="RIGHT" x="-3" y="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				-- these are hooks so the buttons inheriting this can do their OnEnter/OnLeave too
+				self:HookScript("OnEnter",function(self) self.Backplate:SetColorTexture(0.25,0.5,0.75) end)
+				self:HookScript("OnLeave",function(self) self.Backplate:SetColorTexture(0.15,0.15,0.15) end)
+				self:RegisterForDrag("LeftButton")
+				self:RegisterForClicks("AnyUp")
+			</OnLoad>
+			<OnShow>
+				self.Backplate:SetAlpha(1)
+			</OnShow>
+			<OnMouseDown>
+				self.Backplate:SetAlpha(0.5)
+			</OnMouseDown>
+			<OnMouseUp>
+				self.Backplate:SetAlpha(1)
+			</OnMouseUp>
+			<OnDragStart>
+				Rematch.PetListButtonOnDragStart(self)
+			</OnDragStart>
+			<OnDragStop>
+				self:GetScript("OnMouseUp")(self)
+			</OnDragStop>
+		</Scripts>
+	</Button>
+
+	<!-- flash shown over list buttons -->
+	<Button name="RematchPetListBling" hidden="true">
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture file="Interface\Archeology\arch-flareeffect" alphaMode="ADD" alpha="0.5">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="3" y="-3"/>
+						<Anchor point="BOTTOMRIGHT" x="-3" y="3"/>
+					</Anchors>
+					<TexCoords left="0.201171875" right="0.716796875" top="0.125" bottom="0.208984375"/>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Animations>
+			<AnimationGroup parentKey="anim">
+				<Alpha fromAlpha="0" toAlpha="1" change="1" duration="0.1" order="1"/>
+				<Alpha fromAlpha="1" toAlpha="0" change="-1" duration="0.5" order="2"/>
+				<Scripts>
+					<OnFinished>
+						self:GetParent():Hide()
+					</OnFinished>
+				</Scripts>
+			</AnimationGroup>
+		</Animations>
+		<Scripts>
+			<OnShow>
+				self.anim:Play()
+			</OnShow>
+		</Scripts>
+	</Button>
+
+</Ui>

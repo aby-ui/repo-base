@@ -1,0 +1,74 @@
+﻿<Ui>
+
+	<Frame name="TellMeWhen_PBarOptions" inherits="TellMeWhen_OptionsModuleContainer" virtual="true">
+		<Size y="30"/>
+		<Frames>
+			<CheckButton parentKey="ShowPBar" name="$parentShowPBar" inherits="TellMeWhen_CheckTemplate">
+				<Anchors>
+					<Anchor point="TOP" y="-1"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						TMW:CInit(self)
+
+						self:SetTexts(TMW.L["ICONMENU_ENABLE"], TMW.L["ICONMENU_SHOWPBAR_DESC"])
+						self:SetSetting("ShowPBar")
+					</OnLoad>
+				</Scripts>
+			</CheckButton>
+			<CheckButton parentKey="InvertPBar" name="$parentInvertPBar" inherits="TellMeWhen_CheckTemplate">
+				<Scripts>
+					<OnLoad>
+						TMW:CInit(self)
+
+						self:SetTexts(TMW.L["ICONMENU_INVERTBARS"], TMW.L["ICONMENU_INVERTPBAR_DESC"])
+						self:SetSetting("InvertPBar")
+						
+						self:CScriptAdd("ReloadRequested", function()
+							local settings = self:GetSettingTable()
+							self:SetShown(settings.ShowPBar)
+						end)
+					</OnLoad>
+				</Scripts>
+			</CheckButton>
+			<EditBox parentKey="PBarOffs" name="$parentPBarOffs" inherits="TellMeWhen_TimeEditBoxTemplate" autoFocus="false">
+				<Size x="45" y="15"/>
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentInvertPBar" relativePoint="RIGHT" y="1"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						self.text:SetText(TMW.L["ICONMENU_OFFS"])
+						self.text:SetWidth(50)
+						
+						self.text:ClearAllPoints()
+						self.text:SetPoint("LEFT", self, "RIGHT", 1, 0)
+						
+						TMW:CInit(self)
+
+						self:SetTexts(TMW.L["ICONMENU_OFFS"], TMW.L["ICONMENU_BAROFFS"])
+						self:SetSetting("PBarOffs")
+						
+						self:CScriptAdd("ReloadRequested", function()
+							local settings = self:GetSettingTable()
+							self:SetShown(settings.ShowPBar)
+						end)
+					</OnLoad>
+				</Scripts>
+			</EditBox>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				TMW:CInit(self)
+				
+				self:SetTitle(TMW.L["CONFIGPANEL_PBAR_HEADER"])			
+				
+				self.ShowPBar:ConstrainLabel(self.InvertPBar)
+				self.InvertPBar:ConstrainLabel(self.PBarOffs)
+				
+				TMW.IE:DistributeFrameAnchorsLaterally(self, 3, self.ShowPBar, self.InvertPBar, self.PBarOffs)
+			</OnLoad>
+		</Scripts>
+	</Frame>
+ 
+</Ui>

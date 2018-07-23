@@ -1,0 +1,18 @@
+## Interface: 80000
+## Name: Masque_Goldpaw
+## Title: Masque: |cffff7d0aGoldpaw|r
+## Version: 1.0
+## Author: Lars Norberg
+## Notes: Various Masque skins to match |cffff7d0aGoldpaw's UI|r.
+## Notes-zhCN: Masque的 Goldpaw皮肤。
+## DefaultState: Enabled
+## Dependencies: Masque
+## OptionalDeps: gUI4
+## X-Website: http://www.cogwerkz.org
+## X-Donate: PayPal:paypal@cogwerkz.org
+## X-License: The MIT License (MIT)
+## X-Category: Artwork
+
+Masque_Goldpaw.lua
+## Title: |cff880303[有爱]|r Masque 皮肤Goldpaw
+## X-Vendor: AbyUI

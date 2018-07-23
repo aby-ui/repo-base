@@ -1,0 +1,18 @@
+## Interface: 80000
+## Title: OmniCC Config
+## Notes: OmniCC's configuration menu
+## Notes-koKR: OmniCC의 설정 메뉴
+## Author: Tuller
+## Dependencies: OmniCC
+## LoadOnDemand: 1
+
+libs\libs.xml
+localization\localization.xml
+widgets\widgets.xml
+
+mainPanel.lua
+panels\panels.xml
+
+## Title-zhCN: |cff880303[有爱]|r OmniCC 配置界面
+## Notes-zhCN: 技能冷却计时-配置界面模块
+## X-Vendor: AbyUI

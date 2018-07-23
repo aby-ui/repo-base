@@ -1,0 +1,16 @@
+## Interface: 80000
+## Title: XLoot Frame
+## Notes: A customizable, skinnable loot frame.
+## Version: 8.0-3
+## Author: Xuerian
+## X-Category: Inventory
+
+## Dependencies: XLoot
+
+load.xml
+
+## Title: |cff880303[有爱]|r XLoot 拾取框架模块
+## Notes: 可以自定义美化样式的拾取框架
+## X-Vendor: AbyUI
+
+

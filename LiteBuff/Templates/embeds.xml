@@ -1,0 +1,14 @@
+﻿<Ui xmlns="http://www.blizzard.com/wow/ui/">	
+	<Script file="Main.lua"/>
+	<Script file="IconFrame.lua"/>
+	<Script file="FlyProtection.lua"/>
+	<Script file="Scrollable.lua"/>
+	<Script file="Requirements.lua"/>
+	<Script file="Group.lua"/>
+	<Script file="GroupAura.lua"/>
+	<Script file="GroupUnique.lua"/>
+	<Script file="Item.lua"/>
+	<Script file="WeaponEnchant.lua"/>
+	<Script file="Stance.lua"/>
+	<Script file="Totem.lua"/>
+</Ui>

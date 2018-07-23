@@ -1,0 +1,29 @@
+<Bindings>
+    <Binding name="BGDEFENDER_OPTIONS" description="BINDING_NAME_BGDEFENDER_OPTIONS" header="BGDEFENDER">
+        BGD_Options_Open()
+    </Binding>
+    <Binding name="BGDEFENDER_ANNOUNCE1" description="BINDING_NAME_BGDEFENDER_ANNOUNCE1">
+        BGD_NumCall(1)
+    </Binding>
+    <Binding name="BGDEFENDER_ANNOUNCE2" description="BINDING_NAME_BGDEFENDER_ANNOUNCE2">
+        BGD_NumCall(2)
+    </Binding>
+    <Binding name="BGDEFENDER_ANNOUNCE3" description="BINDING_NAME_BGDEFENDER_ANNOUNCE3">
+        BGD_NumCall(3)
+    </Binding>
+    <Binding name="BGDEFENDER_ANNOUNCE4" description="BINDING_NAME_BGDEFENDER_ANNOUNCE4">
+        BGD_NumCall(4)
+    </Binding>
+    <Binding name="BGDEFENDER_ANNOUNCE5" description="BINDING_NAME_BGDEFENDER_ANNOUNCE5">
+        BGD_NumCall(5)
+    </Binding>
+    <Binding name="BGDEFENDER_ANNOUNCE6" description="BINDING_NAME_BGDEFENDER_ANNOUNCE6">
+        BGD_NumCall(6)
+    </Binding>
+    <Binding name="BGDEFENDER_ANNOUNCE_HELP" description="BINDING_NAME_BGDEFENDER_ANNOUNCE_HELP">
+        BGD_NumCall(7)
+    </Binding>
+    <Binding name="BGDEFENDER_ANNOUNCE_SAFE" description="BINDING_NAME_BGDEFENDER_ANNOUNCE_SAFE">
+        BGD_NumCall(8)
+    </Binding>
+</Bindings>

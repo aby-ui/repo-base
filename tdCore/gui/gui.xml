@@ -1,0 +1,13 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+    <Script file="gui.lua"/>
+    <Script file="enums.lua"/>
+    <Script file="list.lua"/>
+    <Script file="media.lua"/>
+    <Script file="uiobject.lua"/>
+    <Script file="view.lua"/>
+    <Script file="control.lua"/>
+    
+    <Include file="widgets\widgets.xml"/>
+    <Include file="dialogs\dialogs.xml"/>
+    <Include file="menus\menus.xml"/>
+</Ui>

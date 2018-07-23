@@ -1,0 +1,199 @@
+﻿<Ui xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.blizzard.com/wow/ui/">
+<Frame name="RaidAchievement_reminder">
+	<Scripts>
+	<OnLoad>icllonload()</OnLoad>
+	<OnEvent>icllonevent(self,event,...)</OnEvent>
+	<OnUpdate>icll_OnUpdate(GetTime())</OnUpdate>
+	</Scripts>
+
+</Frame>
+
+
+<Frame name="ARmain" hidden="true" toplevel="true" virtual="true" frameStrata="DIALOG" movable="true" enableMouse="true" parent="UIParent">
+	<Size x="750" y="500"/>
+	<Anchors>
+		<Anchor point="CENTER"/>
+	</Anchors>
+
+<Scripts>
+	<OnMouseDown>ARmain1:StartMoving()</OnMouseDown>
+	<OnMouseUp>ARmain1:StopMovingOrSizing()</OnMouseUp>
+	<OnDragStop>ARmain1:StopMovingOrSizing()</OnDragStop>
+
+	</Scripts>
+ </Frame>
+ 
+<Frame name="ARmain1" hidden="true" inherits="ARmain">
+	<Size x="750" y="500"/>
+	<Anchors>
+	<Anchor point="LEFT"/>
+	</Anchors>
+
+<frames>
+
+
+<Frame name="icralistach" hidden="true" parent="ARmain1">
+
+<Size x="750" y="500"/>
+	<Anchors>
+	<Anchor point="RIGHT"/>
+	</Anchors>
+	<Layers>
+	<Layer level="ARTWORK">
+<FontString name="$parent_Text" inherits="GameFontNormal" text="rallmenutxt1">
+	<Anchors><Anchor point="LEFT" relativePoint="TOPLEFT"/></Anchors>
+	</FontString>
+	</Layer>
+	</Layers>
+	<Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="Interface\DialogFrame\UI-DialogBox-Border" tile="true">
+	<TileSize>
+	<AbsValue val="32"/>
+	</TileSize>
+	<EdgeSize>
+	<AbsValue val="32"/>
+	</EdgeSize>
+	<BackgroundInsets>
+	<AbsInset left="11" right="12" top="12" bottom="11"/>
+	</BackgroundInsets>
+	</Backdrop>
+<frames>
+<Button name="$parent_Button7" inherits="UIPanelButtonTemplate" text="rallsend">
+	<Size x="130" y="21"/><Anchors><Anchor point="TOPLEFT"><Offset x="610" y="-385"/></Anchor></Anchors>
+	<Scripts><OnClick>rallwhispbutfun()</OnClick></Scripts>
+		</Button>
+<Button name="$parent_Button11" inherits="UIPanelButtonTemplate" text="rallbutton2">
+	<Size x="240" y="36"/><Anchors><Anchor point="TOPRIGHT"><Offset x="-30" y="-100"/></Anchor></Anchors>
+	<Scripts><OnClick>PSFea_listachmanual()</OnClick></Scripts>
+	</Button>
+</frames>
+
+	</Frame>
+
+<Frame name="icralistach2" hidden="true" parent="ARmain1">
+
+<Size x="750" y="500"/>
+	<Anchors>
+	<Anchor point="RIGHT"/>
+	</Anchors>
+	<Layers>
+	<Layer level="ARTWORK">
+<FontString name="$parent_Text" inherits="GameFontNormal" text="rallmenutxt2">
+	<Anchors><Anchor point="LEFT" relativePoint="TOPLEFT"/></Anchors>
+	</FontString>
+	</Layer>
+	</Layers>
+	<Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="Interface\DialogFrame\UI-DialogBox-Border" tile="true">
+	<TileSize>
+	<AbsValue val="32"/>
+	</TileSize>
+	<EdgeSize>
+	<AbsValue val="32"/>
+	</EdgeSize>
+	<BackgroundInsets>
+	<AbsInset left="11" right="12" top="12" bottom="11"/>
+	</BackgroundInsets>
+	</Backdrop>
+<frames>
+<Button name="$parent_Button7" inherits="UIPanelButtonTemplate" text="rallsend">
+	<Size x="130" y="21"/><Anchors><Anchor point="TOPLEFT"><Offset x="610" y="-385"/></Anchor></Anchors>
+	<Scripts><OnClick>rallwhispbutfun2()</OnClick></Scripts>
+		</Button>
+<Button name="$parent_Button11" inherits="UIPanelButtonTemplate" text="rallbutton3">
+	<Size x="180" y="30"/><Anchors><Anchor point="TOPLEFT"><Offset x="25" y="-55"/></Anchor></Anchors>
+	<Scripts><OnClick>icll_buttonnew2()</OnClick></Scripts>
+	</Button>
+<Button name="$parent_Buttontact" inherits="UIPanelButtonTemplate" text="ralluilooktactic1">
+	<Size x="170" y="30"/><Anchors><Anchor point="TOPLEFT"><Offset x="567" y="-217"/></Anchor></Anchors>
+	<Scripts><OnClick>rallonlycurrzone=nil icll_button3()</OnClick></Scripts>
+	</Button>
+</frames>
+
+	</Frame>
+
+<Frame name="icralistach3" hidden="true" parent="ARmain1">
+
+<Size x="750" y="500"/>
+	<Anchors>
+	<Anchor point="RIGHT"/>
+	</Anchors>
+	<Layers>
+	<Layer level="ARTWORK">
+<FontString name="$parent_Text" inherits="GameFontNormal" text="rallmenutxt3">
+	<Anchors><Anchor point="LEFT" relativePoint="TOPLEFT"/></Anchors>
+	</FontString>
+	</Layer>
+	</Layers>
+	<Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="Interface\DialogFrame\UI-DialogBox-Border" tile="true">
+	<TileSize>
+	<AbsValue val="32"/>
+	</TileSize>
+	<EdgeSize>
+	<AbsValue val="32"/>
+	</EdgeSize>
+	<BackgroundInsets>
+	<AbsInset left="11" right="12" top="12" bottom="11"/>
+	</BackgroundInsets>
+	</Backdrop>
+<frames>
+<Button name="$parent_Button7" inherits="UIPanelButtonTemplate" text="rallsend">
+	<Size x="130" y="21"/><Anchors><Anchor point="TOPLEFT"><Offset x="610" y="-385"/></Anchor></Anchors>
+	<Scripts><OnClick>rallwhispbutfun3()</OnClick></Scripts>
+		</Button>
+<Button name="$parent_Button11" inherits="UIPanelButtonTemplate" text="rallbutton2">
+	<Size x="220" y="30"/><Anchors><Anchor point="TOPLEFT"><Offset x="25" y="-156"/></Anchor></Anchors>
+	<Scripts><OnClick>PSFea_listachmanual()</OnClick></Scripts>
+	</Button>
+<Button name="$parent_Button1" inherits="UIPanelButtonTemplate" text="ralltacticbutsave1">
+	<Size x="190" y="30"/><Anchors><Anchor point="TOPLEFT"><Offset x="548" y="-216"/></Anchor></Anchors>
+	<Scripts><OnClick>rallsavetact()</OnClick></Scripts>
+	</Button>
+<Button name="$parent_Button2" inherits="UIPanelButtonTemplate" text="ralltacticbutsave2">
+	<Size x="190" y="30"/><Anchors><Anchor point="TOPLEFT"><Offset x="548" y="-256"/></Anchor></Anchors>
+	<Scripts><OnClick>rallsavetact2()</OnClick></Scripts>
+	</Button>
+<Button name="$parent_ButtonN" inherits="UIPanelButtonTemplate">
+		<NormalTexture file="Interface\Buttons\UI-SpellbookIcon-NextPage-Up"/>
+		<PushedTexture file="Interface\Buttons\UI-SpellbookIcon-NextPage-Down"/>
+		<DisabledTexture file="Interface\Buttons\UI-SpellbookIcon-NextPage-Disabled"/>
+		<HighlightTexture file="Interface\Buttons\UI-ScrollBar-ScrollDownButton-Highlight" alphaMode="ADD"/>
+	<Size x="32" y="32"/><Anchors><Anchor point="TOPLEFT"><Offset x="635" y="-128"/></Anchor></Anchors>
+	<Scripts><OnClick>openmenullch34(1)</OnClick></Scripts>
+	</Button>
+<Button name="$parent_ButtonP" inherits="UIPanelButtonTemplate">
+		<NormalTexture file="Interface\Buttons\UI-SpellbookIcon-PrevPage-Up"/>
+		<PushedTexture file="Interface\Buttons\UI-SpellbookIcon-PrevPage-Down"/>
+		<DisabledTexture file="Interface\Buttons\UI-SpellbookIcon-PrevPage-Disabled"/>
+		<HighlightTexture file="Interface\Buttons\UI-ScrollBar-ScrollDownButton-Highlight" alphaMode="ADD"/>
+	<Size x="32" y="32"/><Anchors><Anchor point="TOPLEFT"><Offset x="405" y="-128"/></Anchor></Anchors>
+	<Scripts><OnClick>openmenullch34(0)</OnClick></Scripts>
+	</Button>
+</frames>
+
+	</Frame>
+
+<Button name="$parent_Button1" inherits="UIPanelCloseButton">
+	<Anchors>
+	<Anchor point="TOPRIGHT">
+	<Offset x="-2" y="-3"/>
+	</Anchor>
+	</Anchors>
+	<Scripts>
+	<OnClick>ARmain1:Hide() icralistach:Hide() icralistach2:Hide() icralistach3:Hide()</OnClick>
+	</Scripts>
+	</Button>
+
+
+<Button name="$parent_Button11" inherits="UIPanelButtonTemplate" text="arallbuttonmaint">
+	<Size x="190" y="26"/><Anchors><Anchor point="BOTTOMLEFT"><Offset x="145" y="-20"/></Anchor></Anchors>
+	<Scripts><OnClick>icll_buttonnew2()</OnClick></Scripts>
+	</Button>
+
+<Button name="$parent_Button12" inherits="UIPanelButtonTemplate" text="arallbuttontak">
+	<Size x="190" y="26"/><Anchors><Anchor point="BOTTOMLEFT"><Offset x="400" y="-20"/></Anchor></Anchors>
+	<Scripts><OnClick>icll_button33()</OnClick></Scripts>
+	</Button>
+
+</frames>
+</Frame>
+
+</Ui>

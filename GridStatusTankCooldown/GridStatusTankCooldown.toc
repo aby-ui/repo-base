@@ -1,0 +1,15 @@
+## Interface: 80000
+## Author: Slaren
+## Version: v1.9
+## Dependencies: Grid
+## Grid Author: Pastamancer & Maia
+## X-Curse-Packaged-Version: v1.9
+## X-Curse-Project-Name: GridStatusTankCooldown
+## X-Curse-Project-ID: gridstatustankcooldown
+## X-Curse-Repository-ID: wow/gridstatustankcooldown/mainline
+
+SpellsWidget.lua
+GridStatusTankCooldown.lua
+
+## Title: |cff880303[有爱]|r Grid 坦克救命技能
+## X-Vendor: AbyUI

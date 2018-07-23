@@ -1,0 +1,5 @@
+﻿<Ui xmlns="http://www.blizzard.com/wow/ui/">
+	<Script file="Media.lua"/>
+	<Script file="Clique.lua"/>	
+	<Script file="TomTom.lua"/>
+</Ui>

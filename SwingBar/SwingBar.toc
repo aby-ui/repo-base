@@ -1,0 +1,11 @@
+﻿## Interface: 80000
+## Title: SwingBar
+## Notes: Shows the progress of the normal attack
+## Author: 独孤傲雪,Warbaby
+
+SwingBar.lua
+
+## Title: |cff880303[有爱]|r SwingBar 普攻计时
+## Notes-zhCN: 显示普通攻击的的进度。
+## Notes-zhTW: 顯示普通攻擊的的進度。
+## X-Vendor: AbyUI

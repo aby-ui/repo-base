@@ -1,0 +1,14 @@
+## Interface: 80000
+## Notes: 顯示額外動作條
+## SavedVariablesPerCharacter: MOGUBar_Info
+Library\MoguLibrary.lua
+Library\MoguEvent.lua
+Library\MoguScale.lua
+
+toggle.lua
+Bindings.lua
+MOGUBar.xml
+
+## Title:  |cff880303[有爱]|r ExtraAct 额外动作条
+## Notes-zhCN: 显示额外动作条
+## X-Vendor: AbyUI

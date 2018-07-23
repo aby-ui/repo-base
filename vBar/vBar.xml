@@ -1,0 +1,23 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://www.blizzard.com/wow/ui/ ..\..\FrameXML\UI.xsd"> 
+<Frame name="VB_EventFrame">
+	<Scripts>
+		<OnLoad>
+			VB_DoLoad(self)
+		</OnLoad>
+		<OnEvent>
+			VB_DoEvent(self,event)
+		</OnEvent>
+	</Scripts>
+</Frame>
+<Frame name="VB_MenuFrame" inherits="UIDropDownMenuTemplate" id="1" hidden="true">
+	<Scripts>
+		<OnLoad>
+			UIDropDownMenu_Initialize(self, VB_InitializeMenu, 'MENU')
+			-- this.initialize = VB_InitializeMenu  -- alternate way
+			-- this.displayMode = 'MENU'
+		</OnLoad>
+	</Scripts>
+</Frame>
+
+</Ui>

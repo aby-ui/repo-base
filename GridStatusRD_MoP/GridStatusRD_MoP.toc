@@ -1,0 +1,18 @@
+## Interface: 80000
+## Title: GridStatusRaidDebuff(MoP)
+## Notes: Debuff List for MoP
+## Author: Evilsithgirl (Reckoning-Mannoroth-US) & Doadin (Malorne-US)
+## Version: 8.0.1.2
+## Grid Author: Pastamancer & Maia
+## Dependencies: GridStatusRaidDebuff
+
+CheckCompat.lua
+MogushanVaults.lua
+HeartOfFear.lua
+ShaofAnger.lua
+TerraceofEndlessSpring.lua
+ThroneofThunder.lua
+SiegeofOrgrimmar.lua
+
+## Title: |cff880303[有爱]|r Grid 团队减益MoP
+## X-Vendor: AbyUI

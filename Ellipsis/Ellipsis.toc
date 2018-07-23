@@ -1,0 +1,34 @@
+## Interface: 80000
+## Title: Ellipsis (|cff67b1e9K|cff4779ceith|cff67b1e9M|cff4779ceod|r)
+## Notes: A full-featured, multi-target Aura (DoTs and HoTs) tracker.
+## Author: Kith
+## Version: 4.2.8
+## SavedVariables: EllipsisDB, EllipsisVersion
+## OptionalDeps: Ace3, LibSharedMedia-3.0, LibSink-2.0
+## X-Embeds: Ace3, LibSharedMedia-3.0, LibSink-2.0
+## X-Category: Interface Enhancements
+
+embeds.xml 
+
+Locales\Local_enUS.lua
+Locales\Local_zhCN.lua
+Locales\Local_zhTW.lua
+
+Core.lua
+Defaults.lua
+
+Anchor.lua
+Overlays.lua
+Aura.lua
+Unit.lua
+
+AuraData.lua
+Control.lua
+
+Cooldown.lua
+
+Notify.lua
+
+## Title: |cff880303[有爱]|r Ellipsis 法术计时
+## Notes-zhCN: 提供实用、多目标的法术计时
+## X-Vendor: AbyUI

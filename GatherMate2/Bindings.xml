@@ -1,0 +1,12 @@
+<Bindings>
+	<Binding name="TOGGLE_GATHERMATE2_MINIMAPICONS" header="GatherMate2" category="ADDONS">
+		GatherMate2.db.profile["showMinimap"] = not GatherMate2.db.profile["showMinimap"]
+		GatherMate2:GetModule("Config"):UpdateConfig()
+		--LibStub("AceConfigRegistry-3.0"):NotifyChange("GatherMate2")
+	</Binding>
+	<Binding name="TOGGLE_GATHERMATE2_MAINMAPICONS" category="ADDONS">
+		GatherMate2.db.profile["showWorldMap"] = not GatherMate2.db.profile["showWorldMap"]
+		GatherMate2:GetModule("Config"):UpdateConfig()
+		--LibStub("AceConfigRegistry-3.0"):NotifyChange("GatherMate2")
+	</Binding>
+</Bindings>

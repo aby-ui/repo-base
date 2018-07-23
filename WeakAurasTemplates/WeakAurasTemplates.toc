@@ -1,0 +1,19 @@
+## Interface: 80000
+## Title: WeakAuras Templates
+## Author: Infus
+## Version: 2.6.0
+## Notes: Templates for WeakAuras
+## X-Category: Interface Enhancements
+## Globe-Main: WeakAuras
+## DefaultState: Enabled
+## LoadOnDemand: 1
+## Dependencies: WeakAuras, WeakAurasOptions
+
+locales.xml
+
+TriggerTemplates.lua
+TriggerTemplatesData.lua
+
+AceGUI-Widgets\AceGUIContainer-WeakAurasTemplateGroup.lua
+
+## X-Vendor: AbyUI

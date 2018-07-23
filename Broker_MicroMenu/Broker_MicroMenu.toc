@@ -1,0 +1,19 @@
+## Interface: 80000
+## Title: Broker: |cff00ff00MicroMenu|r
+## Version: v1.4.4
+## Notes: Shows the mirco menu and game menu in a clickable broker tooltip.
+## Author: yess
+## X-eMail: yess@xan.at
+## OptionalDeps: LibQTip-1.0
+## SavedVariables: Broker_MicroMenuDB
+
+#@no-lib-strip@
+#@end-no-lib-strip@
+
+localization.lua
+Broker_MicroMenu.lua
+Options.lua
+
+## Title: |cff880303[有爱]|r Broker 微型菜单
+## Notes-zhCN: 在信息栏中显示微型菜单
+## X-Vendor: AbyUI

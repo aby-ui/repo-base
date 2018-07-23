@@ -1,0 +1,24 @@
+## Interface: 80000
+## Title: HandyNotes_SuramarTelemancy
+## Notes: Teleporters in Suramar? Sure, why not?
+## Author: Kemayo
+## Version: 1
+## DefaultState: enabled
+## X-Category: Achievements
+## X-eMail: kemayo @ gmail DOT com
+## SavedVariables: HandyNotes_SuramarTelemancyDB
+## RequiredDeps: HandyNotes
+
+# Locale files
+Locales\enUS.lua
+Locales\zhCN.lua
+Locales\zhTW.lua
+
+handler.lua
+config.lua
+nodes.lua
+
+## Title-zhCN: |cff880303[有爱]|r HandyNotes 苏拉玛传送门
+## X-Vendor: AbyUI
+
+

@@ -1,0 +1,8 @@
+<!--
+$Id: Bindings.xml 17 2009-06-06 14:07:52Z arith $
+-->
+<Bindings>
+	<Binding name="ACCOUNTANTTOG" header="ACCOUNTANT">
+		AccountantButton_OnClick();
+	</Binding>
+</Bindings>

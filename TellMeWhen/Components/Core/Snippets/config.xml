@@ -1,0 +1,467 @@
+<Ui>
+
+	<CheckButton name="TellMeWhen_SnippetListItem_Template" virtual="true" >
+		<Size y="18" />
+
+		<Anchors>
+			<Anchor point="LEFT" x="0"/>
+			<Anchor point="RIGHT" x="0"/>
+		</Anchors>
+
+		<Layers>
+			<Layer level="OVERLAY">
+				<Texture parentKey="Texture">
+					<Size x="16" y="16"/>
+					<Anchors>
+						<Anchor point="RIGHT" />
+					</Anchors>
+				</Texture>
+
+				<FontString parentKey="Name" inherits="GameFontHighlightSmall" wordwrap="false" justifyH="LEFT">
+					<Anchors>
+						<Anchor point="LEFT" x="3"/>
+						<Anchor point="RIGHT" relativeKey="$parent.Texture" relativePoint="LEFT" x="0"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+
+		<HighlightTexture alphaMode="ADD" setAllPoints="true" alpha="0.06">
+			<Color r="1" g="1" b="1"/>
+		</HighlightTexture>
+		<CheckedTexture alphaMode="ADD" setAllPoints="true" alpha="0.13">
+			<Color r="1" g="1" b="1"/>
+		</CheckedTexture>
+	</CheckButton>
+
+	<Frame name="TellMeWhen_SnippetList_Template" virtual="true">
+		<Size x="200" />
+
+		<KeyValues>
+			<KeyValue key="tmwClass" type="string" value="Config_SnippetList"/>
+		</KeyValues>
+
+		<Frames>
+			<Button parentKey="Add" inherits="TellMeWhen_SnippetListItem_Template" >
+				<Anchors>
+					<Anchor point="TOP" y="0"/>
+				</Anchors>
+
+				<Scripts>
+					<OnLoad>
+						TMW:CInit(self, "Config_Button")
+
+						self.Texture:SetTexture("Interface/PaperDollInfoFrame/Character-Plus")
+					</OnLoad>
+					<OnClick>
+						local domain = self:GetParent():GetDomain()
+
+						TMW.SNIPPETS:AddSnippet(domain)
+
+						self:OnSettingSaved()
+					</OnClick>
+				</Scripts>
+			</Button>
+		</Frames>
+	</Frame>
+
+
+
+	<Frame parentKey="Snippets" inherits="TellMeWhen_IE_PageTemplate">
+		<Frames>
+			<Frame parentKey="SnippetSelect">
+				<Size y="110"  />
+
+				<Anchors>
+					<Anchor point="TOP" y="-10"/>
+					<Anchor point="LEFT" x="12"/>
+					<Anchor point="RIGHT" x="-12"/>
+				</Anchors>
+
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture setAllPoints="true">
+							<Color r="0.03" g="0.03" b="0.03" a="1"/>
+						</Texture>
+					</Layer>
+				</Layers>
+				<Frames>
+					<Frame inherits="TellMeWhen_GenericBorder" />
+
+					<Frame parentKey="Profile" inherits="TellMeWhen_SnippetList_Template">
+						<Anchors>
+							<Anchor point="TOP" y="-15"/>
+							<Anchor point="BOTTOM" />
+							<Anchor point="LEFT" x="15" />
+							<Anchor point="RIGHT" relativePoint="TOP" x="-15" />
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								TMW:CInit(self)
+
+								self:SetDomain("profile")
+
+								local domainName = TMW.L["DOMAIN_PROFILE"]
+								local title = TMW.L["CODESNIPPET_ADD2"]:format(domainName)
+								local tooltip = TMW.L["CODESNIPPET_ADD2_DESC"]:format(domainName)
+
+								self.Add.Name:SetText(title)
+								TMW:TT(self.Add, title, tooltip, 1, 1)
+							</OnLoad>
+						</Scripts>
+					</Frame>
+
+					<Frame parentKey="Global" inherits="TellMeWhen_SnippetList_Template">
+						<Anchors>
+							<Anchor point="TOP" relativeKey="$parent.Profile"/>
+							<Anchor point="BOTTOM" />
+							<Anchor point="LEFT" relativePoint="TOP" x="15" />
+							<Anchor point="RIGHT" x="-15" />
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								TMW:CInit(self)
+
+								self:SetDomain("global")
+
+								local domainName = TMW.L["DOMAIN_GLOBAL"]
+								local title = TMW.L["CODESNIPPET_ADD2"]:format(domainName)
+								local tooltip = TMW.L["CODESNIPPET_ADD2_DESC"]:format(domainName)
+
+								self.Add.Name:SetText(title)
+								TMW:TT(self.Add, title, tooltip, 1, 1)
+							</OnLoad>
+						</Scripts>
+					</Frame>
+				</Frames>
+
+				<Layers>
+					<Layer level="OVERLAY">
+						<FontString parentKey="ProfileHeader" inherits="GameFontNormal">
+							<Anchors>
+								<Anchor point="BOTTOM" relativeKey="$parent.Profile.$parent" relativePoint="TOP" />
+							</Anchors>
+						</FontString>
+
+						<FontString parentKey="GlobalHeader" inherits="GameFontNormal">
+							<Anchors>
+								<Anchor point="BOTTOM" relativeKey="$parent.Global.$parent" relativePoint="TOP" />
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+
+				<Scripts>
+					<OnLoad>
+						self.ProfileHeader:SetText(TMW.L["DOMAIN_PROFILE"])
+						self.GlobalHeader:SetText(TMW.L["DOMAIN_GLOBAL"])
+
+						self.border:SetBorderSize(2)
+						self.border:SetColor(.25, .25, .25, 1)
+					</OnLoad>
+				</Scripts>
+			</Frame>
+
+			<Frame parentKey="Config">
+				<Anchors>
+					<Anchor point="TOP" relativeKey="$parent.SnippetSelect" relativePoint="BOTTOM" />
+					<Anchor point="BOTTOM" />
+					<Anchor point="LEFT"  x="10"/>
+					<Anchor point="RIGHT" x="-10"/>
+				</Anchors>
+
+				<Frames>
+					<EditBox parentKey="Order" inherits="TellMeWhen_InputBoxTemplate" multiline="true">
+						<Size x="100" y="15"/>
+						<Anchors>
+							<Anchor point="TOP" y="-20"/>
+							<Anchor point="RIGHT" />
+						</Anchors>
+
+						<Layers>
+							<Layer level="OVERLAY">
+								<FontString parentKey="Title" inherits="GameFontNormalSmall" justifyH="CENTER">
+									<Anchors>
+										<Anchor point="BOTTOMLEFT" relativePoint="TOPLEFT" y="2"/>
+									</Anchors>
+								</FontString>
+							</Layer>
+						</Layers>
+
+						<Scripts>
+							<OnLoad>
+								TMW:CInit(self)
+
+								self:SetSetting("Order")
+								self:SetTexts(TMW.L["CODESNIPPET_ORDER"], TMW.L["CODESNIPPET_ORDER_DESC"])
+								self.Title:SetText(TMW.L["CODESNIPPET_ORDER"])
+
+								self:CScriptAdd("ModifyValueForSave", function(self, value)
+									return tonumber(value) or 1
+								end)
+							</OnLoad>
+						</Scripts>
+					</EditBox>
+
+					<EditBox parentKey="Name" inherits="TellMeWhen_InputBoxTemplate" multiline="true">
+						<Size x="250" y="15"/>
+						<Anchors>
+							<Anchor point="TOP" relativeKey="$parent.Order"/>
+							<Anchor point="LEFT" />
+							<Anchor point="RIGHT" relativeKey="$parent.Order" relativePoint="LEFT" x="-15"/>
+						</Anchors>
+
+						<Layers>
+							<Layer level="OVERLAY">
+								<FontString parentKey="Title" inherits="GameFontNormalSmall" justifyH="CENTER">
+									<Anchors>
+										<Anchor point="BOTTOMLEFT" relativePoint="TOPLEFT" y="2"/>
+									</Anchors>
+								</FontString>
+							</Layer>
+						</Layers>
+
+						<Scripts>
+							<OnLoad>
+								TMW:CInit(self)
+
+								self:SetSetting("Name")
+								self:SetTexts(TMW.L["CODESNIPPET_RENAME"], TMW.L["CODESNIPPET_RENAME_DESC"])
+								self.Title:SetText(TMW.L["CODESNIPPET_RENAME"])
+							</OnLoad>
+						</Scripts>
+					</EditBox>
+
+					<Button parentKey="Delete" inherits="TellMeWhen_ButtonTemplate">
+						<Size y="15"/>
+						<Anchors>
+							<Anchor point="TOP" relativeKey="$parent.Order" relativePoint="BOTTOM" y="-10"/>
+							<Anchor point="RIGHT" />
+						</Anchors>
+
+						<Scripts>
+							<OnLoad>
+								TMW:CInit(self)
+
+								self:SetTexts(TMW.L["CODESNIPPET_DELETE"], nil)
+
+								self:SetWidth(self:GetTextWidth() + 20)
+							</OnLoad>
+							<OnClick>
+								local SNIPPETS = TMW.SNIPPETS
+
+								local domain = SNIPPETS.selectedDomain
+								local id = SNIPPETS.selectedID
+
+								local snippet = self:GetSettingTable()
+
+								if snippet.Code ~= "" then
+									local name = snippet.Name
+									if name:trim() == "" then
+										name = TMW.L["TEXTLAYOUTS_UNNAMED"]
+									end
+
+									TMW.IE:ShowConfirmation(
+										TMW.L["CODESNIPPET_DELETE"],
+										TMW.L["CODESNIPPET_DELETE_CONFIRM"]:format(name),
+										function()
+											SNIPPETS:DeleteSnippet(domain, id)
+											self:OnSettingSaved()
+										end
+									)
+								else
+									SNIPPETS:DeleteSnippet(domain, id)
+									self:OnSettingSaved()
+								end
+							</OnClick>
+						</Scripts>
+					</Button>
+
+					<Button parentKey="Run" inherits="TellMeWhen_ButtonTemplate">
+						<Size y="15"/>
+						<Anchors>
+							<Anchor point="TOP" relativeKey="$parent.Name" relativePoint="BOTTOM" y="-10"/>
+							<Anchor point="LEFT" />
+						</Anchors>
+
+						<Scripts>
+							<OnLoad>
+								TMW:CInit(self)
+
+								self:CScriptAdd("ReloadRequested", function()
+									self:SetTexts(TMW.L["CODESNIPPET_RUNNOW"], TMW.L["CODESNIPPET_RUNNOW_DESC"])
+
+									local snippet = self:GetSettingTable()
+									if snippet then
+										local hasRan = TMW.SNIPPETS:HasRanSnippet(snippet)
+										if hasRan then
+											self:SetTexts(TMW.L["CODESNIPPET_RUNAGAIN"], TMW.L["CODESNIPPET_RUNAGAIN_DESC"])
+										end
+									end
+
+									self:SetWidth(self:GetTextWidth() + 20)
+								end)
+							</OnLoad>
+							<OnClick>
+								local snippet = self:GetSettingTable()
+
+								TMW.SNIPPETS:RunSnippet(snippet)
+
+								self:RequestReload()
+							</OnClick>
+						</Scripts>
+					</Button>
+
+					<CheckButton parentKey="Enabled" inherits="TellMeWhen_CheckTemplate">
+						<Anchors>
+							<Anchor point="LEFT" relativeKey="$parent.Run" relativePoint="RIGHT" x="5"/>
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								TMW:CInit(self)
+
+								self:SetTexts(TMW.L["CODESNIPPET_AUTORUN"], TMW.L["CODESNIPPET_AUTORUN_DESC"])
+								self:SetSetting("Enabled")
+
+								self:ConstrainLabel(self, "RIGHT", 120, 0)
+							</OnLoad>
+						</Scripts>
+					</CheckButton>
+				</Frames>
+
+				<Layers>
+					<Layer level="ARTWORK">
+						<FontString parentKey="Error" inherits="GameFontRed" justifyH="LEFT">
+							<Anchors>
+								<Anchor point="TOP" relativeKey="$parent.Run" relativePoint="BOTTOM" y="-10"/>
+								<Anchor point="LEFT" />
+								<Anchor point="RIGHT" />
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+
+
+				<Frames>
+					<EditBox parentKey="Code" inherits="TellMeWhen_InputBoxTemplate" multiline="true">
+						<Size y="15"/>
+						<Anchors>
+							<Anchor point="TOP" relativeKey="$parent.Error" relativePoint="BOTTOM" y="-20"/>
+							<Anchor point="BOTTOM" y="10" />
+							<Anchor point="LEFT" />
+							<Anchor point="RIGHT" />
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								TMW:CInit(self, "Config_EditBox_Lua")
+
+								self:MakeScrollable(true, 2, 7)
+
+								self:SetSetting("Code")
+								self:SetLabel(TMW.L["CODESNIPPET_CODE"])
+								self:SetNewlineOnEnter(true)
+
+								self:CScriptAdd("ReloadRequested", function()
+									local error = TMW.SNIPPETS:TestForErrors(self:GetText())
+
+									self.ScrollFrame:GetParent().Error:SetText(error)
+								end)
+							</OnLoad>
+							<OnCursorChanged>
+								local CodeLineNum = self.ScrollFrame:GetParent().CodeLineNum
+								if self:HasFocus() then
+									CodeLineNum:SetText(self:GetCursorLineNumber())
+								else
+									CodeLineNum:SetText(nil)
+								end
+							</OnCursorChanged>
+						</Scripts>
+					</EditBox>
+				</Frames>
+
+				<Layers>
+					<Layer level="OVERLAY">
+						<FontString parentKey="CodeTitle" inherits="GameFontNormalSmall" justifyH="CENTER">
+							<Anchors>
+								<Anchor point="BOTTOMLEFT" relativeKey="$parent.Code.ScrollFrame" relativePoint="TOPLEFT" y="2"/>
+							</Anchors>
+						</FontString>
+
+						<FontString parentKey="CodeLineNum" inherits="GameFontNormal" justifyH="CENTER">
+							<Anchors>
+								<Anchor point="BOTTOMLEFT" relativeKey="$parent.Code.ScrollFrame" relativePoint="TOP" y="2"/>
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+
+				<Scripts>
+					<OnLoad>
+						self.CodeTitle:SetText(TMW.L["CODESNIPPET_CODE"])
+					</OnLoad>
+				</Scripts>
+			</Frame>
+
+			<Frame parentKey="NoSnippetsMessage" hidden="true" inherits="TellMeWhen_FlatFrame">
+				<Size y="1"/>
+				<Anchors>
+					<Anchor point="TOP" relativeKey="$parent.SnippetSelect" relativePoint="BOTTOM" y="-30" />
+					<Anchor point="LEFT"  x="30" />
+					<Anchor point="RIGHT" x="-30" />
+
+				</Anchors>
+				<Layers>
+					<Layer level="ARTWORK">
+						<FontString parentKey="title" inherits="GameFontNormalHuge3">
+							<Anchors>
+								<Anchor point="TOP" y="-10"/>
+							</Anchors>
+						</FontString>
+						<FontString parentKey="text" wordwrap="true" inherits="GameFontHighlight">
+							<Anchors>
+								<Anchor point="TOP" relativeKey="$parent.title" relativePoint="BOTTOM" y="-10"/>
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnLoad>
+						self.title:SetText(TMW.L["CODESNIPPETS_TITLE"])
+						self.text:SetText(TMW.L["CODESNIPPETS_DESC"])
+
+						self.text:SetWidth(self:GetWidth() - 25)
+						self:SetHeight(self.text:GetStringHeight() + self.title:GetStringHeight() + 32)
+					</OnLoad>
+					<OnSizeChanged>
+						self:SetHeight(self.text:GetStringHeight() + self.title:GetStringHeight() + 32)
+					</OnSizeChanged>
+				</Scripts>
+			</Frame>
+		</Frames>
+
+
+
+
+		<Scripts>
+			<OnLoad>
+				TMW:CInit(self)
+
+				self:CScriptAdd("SettingTableRequested", function()
+					local domain = TMW.SNIPPETS.selectedDomain
+					local id = TMW.SNIPPETS.selectedID
+
+					local settings = TMW.db[domain].CodeSnippets
+
+					if settings and id > 0 and settings.n >= id then
+						return settings[id]
+					end
+
+					return false
+				end)
+
+			</OnLoad>
+		</Scripts>
+	</Frame>
+
+
+</Ui>

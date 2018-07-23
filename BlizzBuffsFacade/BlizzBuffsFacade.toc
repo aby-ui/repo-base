@@ -1,0 +1,17 @@
+## Interface: 80000
+## Title: Masque Skinner: Blizz Buffs
+## Version: 5.1.0
+## Author: Cybeloras of Detheroc/Mal'Ganis
+## Notes: Skins the Blizzard buff and debuff frames with Masque
+## RequiredDeps: Masque
+## X-Curse-Packaged-Version: 5.1.0
+## X-Curse-Project-Name: Masque Skinner: Blizz Buffs
+## X-Curse-Project-ID: blizzbuffsfacade
+## X-Curse-Repository-ID: wow/blizzbuffsfacade/mainline
+
+BlizzBuffsFacade.lua
+
+
+## Title: |cff880303[有爱]|r Masque 皮肤BlizzBuff
+## Notes-zhCN: 用来美化暴雪默认按钮的插件。
+## X-Vendor: AbyUI

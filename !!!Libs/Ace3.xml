@@ -1,0 +1,21 @@
+<Ui>
+<Include file="Ace3\LibStub\LibStub.lua"/>
+<Include file="Ace3\CallbackHandler-1.0\CallbackHandler-1.0.lua"/>
+<Include file="Ace3\AceAddon-3.0\AceAddon-3.0.lua"/>
+<Include file="Ace3\AceEvent-3.0\AceEvent-3.0.lua"/>
+<Include file="Ace3\AceTimer-3.0\AceTimer-3.0.lua"/>
+
+<Include file="Ace3\AceBucket-3.0\AceBucket-3.0.lua"/>
+<Include file="Ace3\AceHook-3.0\AceHook-3.0.lua"/>
+<Include file="Ace3\AceDB-3.0\AceDB-3.0.lua"/>
+<Include file="Ace3\AceDBOptions-3.0\AceDBOptions-3.0.lua"/>
+<Include file="Ace3\AceLocale-3.0\AceLocale-3.0.lua"/>
+<Include file="Ace3\AceConsole-3.0\AceConsole-3.0.lua"/>
+<Include file="Ace3\AceGUI-3.0\AceGUI-3.0.xml"/>
+<Include file="Ace3\AceConfig-3.0\AceConfig-3.0.xml"/>
+<Include file="Ace3\AceComm-3.0\ChatThrottleLib.lua"/>
+<Include file="Ace3\AceComm-3.0\AceComm-3.0.lua"/>
+<Include file="Ace3\AceTab-3.0\AceTab-3.0.lua"/>
+<Include file="Ace3\AceSerializer-3.0\AceSerializer-3.0.lua"/>
+<Include file="Ace3\Ace3.lua"/>
+</Ui>

@@ -1,0 +1,15 @@
+## Interface: 80000
+## LoadOnDemand: 0
+## Title: TradeLog
+## Notes: 交易日志，最近交易情况
+## SavedVariablesPerCharacter: TradeLog_TradesHistory, TradeLog_Announce_Checked, TradeLog_AnnounceChannel
+localization-enUS.lua
+localization-zhCN.lua
+localization-zhTW.lua
+TradeLog.lua
+RecentTradeFrame.xml
+TradeLogFrame.xml
+
+## Title: |cff880303[有爱]|r TradeLog 交易记录
+## Notes-zhCN: 交易记录 by Warbaby (三月十二@聖光之願<冰封十字軍>)
+## X-Vendor: AbyUI

@@ -1,0 +1,14 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+    <Texture name="U1T_OuterBG" virtual="true" horizTile="true" vertTile="true" file="Interface\AddOns\!!!163UI!!!\Textures\UI2-bg-main"/>
+    <Texture name="U1T_OuterBorderL" virtual="true" vertTile="true" file="Interface\AddOns\!!!163UI!!!\Textures\UI2-border-outter-LR"><TexCoords left="0" right="0.5" top="0" bottom="1"/></Texture>
+    <Texture name="U1T_OuterBorderR" virtual="true" vertTile="true" file="Interface\AddOns\!!!163UI!!!\Textures\UI2-border-outter-LR"><TexCoords left="0.5" right="1" top="0" bottom="1"/></Texture>
+    <Texture name="U1T_OuterBorderT" virtual="true" horizTile="true" file="Interface\AddOns\!!!163UI!!!\Textures\UI2-border-outter-TB"><TexCoords left="0" right="1" top="0" bottom="0.5"/></Texture>
+    <Texture name="U1T_OuterBorderB" virtual="true" horizTile="true" file="Interface\AddOns\!!!163UI!!!\Textures\UI2-border-outter-TB"><TexCoords left="0" right="1" top="0.5" bottom="1"/></Texture>
+    <Texture name="U1T_InnerBorderL" virtual="true" vertTile="true" file="Interface\AddOns\!!!163UI!!!\Textures\UI2-border-inner-LR"><TexCoords left="0" right="0.5" top="0" bottom="1"/></Texture>
+    <Texture name="U1T_InnerBorderR" virtual="true" vertTile="true" file="Interface\AddOns\!!!163UI!!!\Textures\UI2-border-inner-LR"><TexCoords left="0.5" right="1" top="0" bottom="1"/></Texture>
+    <Texture name="U1T_InnerBorderT" virtual="true" horizTile="true" file="Interface\AddOns\!!!163UI!!!\Textures\UI2-border-inner-TB"><TexCoords left="0" right="1" top="0" bottom="0.5"/></Texture>
+    <Texture name="U1T_InnerBorderB" virtual="true" horizTile="true" file="Interface\AddOns\!!!163UI!!!\Textures\UI2-border-inner-TB"><TexCoords left="0" right="1" top="0.5" bottom="1"/></Texture>
+    <Texture name="U1T_ScrollMid" virtual="true" vertTile="true" file="Interface\AddOns\!!!163UI!!!\Textures\UI2-scroll-track"/>
+    <Texture name="U1T_BottomMid" virtual="true" horizTile="true" file="Interface\AddOns\!!!163UI!!!\Textures\UI2-bg-bottom-mid"/>
+    <Texture name="U1T_ChainMid" virtual="true" vertTile="true" file="Interface\AddOns\!!!163UI!!!\Textures\UI2-chain-mid"/>
+</Ui>

@@ -1,0 +1,14 @@
+## Interface: 80000
+## Title: GridStatusEnemyTarget
+
+## Dependencies: Grid
+## OptionalDeps: Ace3
+## X-Curse-Packaged-Version: 1.04.29
+## X-Curse-Project-Name: GridStatusBanzai
+## X-Curse-Project-ID: gridstatusbanzai
+## X-Curse-Repository-ID: wow/gridstatusbanzai/mainline
+
+GridStatusEnemyTarget.lua
+
+## Title: |cff880303[有爱]|r Grid 敌方施法目标
+## X-Vendor: AbyUI

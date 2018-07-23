@@ -1,0 +1,70 @@
+<Ui>
+	<!-- styled like default's CharacterFrameTabButtonTemplate but buttons are never disabled -->
+	<Button name="RematchPanelTabButtonTemplate" virtual="true">
+		<Size x="100" y="32"/>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture parentArray="Inactive" file="Interface\PaperDollInfoFrame\UI-Character-InActiveTab">
+					<Size x="20" y="32"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="0" y="-1"/>
+					</Anchors>
+					<TexCoords left="0" right="0.15625" top="0" bottom="1"/>
+				</Texture>
+				<Texture parentArray="Inactive" file="Interface\PaperDollInfoFrame\UI-Character-InActiveTab">
+					<Size x="20" y="32"/>
+					<Anchors>
+						<Anchor point="TOPRIGHT" x="0" y="-1"/>
+					</Anchors>
+					<TexCoords left="0.84375" right="1" top="0" bottom="1"/>
+				</Texture>
+				<Texture parentArray="Inactive" file="Interface\PaperDollInfoFrame\UI-Character-InActiveTab">
+					<Size x="0" y="32"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="20" y="-1"/>
+						<Anchor point="TOPRIGHT" x="-20" y="-1"/>
+					</Anchors>
+					<TexCoords left="0.15625" right="0.84375" top="0" bottom="1"/>
+				</Texture>
+				<Texture parentArray="Active" file="Interface\PaperDollInfoFrame\UI-Character-ActiveTab" hidden="true">
+					<Size x="20" y="35"/>
+					<Anchors>
+						<Anchor point="TOPLEFT"/>
+					</Anchors>
+					<TexCoords left="0" right="0.15625" top="0" bottom="0.546875"/>
+				</Texture>
+				<Texture parentArray="Active" file="Interface\PaperDollInfoFrame\UI-Character-ActiveTab" hidden="true">
+					<Size x="20" y="35"/>
+					<Anchors>
+						<Anchor point="TOPRIGHT"/>
+					</Anchors>
+					<TexCoords left="0.84375" right="1" top="0" bottom="0.546875"/>
+				</Texture>
+				<Texture parentArray="Active" file="Interface\PaperDollInfoFrame\UI-Character-ActiveTab" hidden="true">
+					<Size x="0" y="35"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="20" y="0"/>
+						<Anchor point="TOPRIGHT" x="-20" y="0"/>
+					</Anchors>
+					<TexCoords left="0.15625" right="0.84375" top="0" bottom="0.546875"/>
+				</Texture>
+			</Layer>
+		</Layers>
+		<HighlightTexture parentKey="Highlight" file="Interface\PaperDollInfoFrame\UI-Character-Tab-RealHighlight" alphaMode="ADD">
+			<Anchors>
+				<Anchor point="TOPLEFT" x="12" y="-1"/>
+				<Anchor point="BOTTOMRIGHT" x="-12" y="7"/>
+			</Anchors>
+			<TexCoords left="0.1015625" right="0.90625" top="0.15625" bottom="0.71875"/>
+		</HighlightTexture>
+		<ButtonText parentKey="Text">
+			<Size x="0" y="10"/>
+			<Anchors>
+				<Anchor point="CENTER" x="0" y="2"/>
+			</Anchors>
+		</ButtonText>
+		<NormalFont style="GameFontNormalSmall"/>
+		<HighlightFont style="GameFontHighlightSmall"/>
+		<DisabledFont style="GameFontHighlightSmall"/>
+	</Button>
+</Ui>

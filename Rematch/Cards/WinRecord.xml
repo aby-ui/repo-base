@@ -1,0 +1,416 @@
+<Ui>
+
+	<!-- this template is for the footnote button beside each team -->
+	<Button name="RematchWinRecordButtonTemplate" virtual="true">
+		<Size x="38" y="18"/>
+		<NormalTexture file="Interface\AddOns\Rematch\Textures\winrecord-back">
+			<TexCoords left="0" right="0.296875" top="0" bottom="0.28125"/>
+		</NormalTexture>
+		<PushedTexture file="Interface\AddOns\Rematch\Textures\winrecord-back">
+			<Anchors>
+				<Anchor point="TOPLEFT" x="1" y="-1"/>
+				<Anchor point="BOTTOMRIGHT" x="-1" y="1"/>
+			</Anchors>
+			<TexCoords left="0" right="0.296875" top="0" bottom="0.28125"/>
+		</PushedTexture>
+		<HighlightTexture file="Interface\AddOns\Rematch\Textures\winrecord-back" alphaMode="ADD" alpha="0.5">
+			<Anchors>
+				<Anchor point="TOPLEFT" x="1" y="-1"/>
+				<Anchor point="BOTTOMRIGHT" x="-1" y="1"/>
+			</Anchors>
+			<TexCoords left="0.5" right="0.796875" top="0" bottom="0.28125"/>
+		</HighlightTexture>
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString parentKey="Text" inherits="GameFontNormal" text="100%"/>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnEnter>
+				Rematch.WinRecordOnEnter(self)
+			</OnEnter>
+			<OnLeave>
+				Rematch.WinRecordOnLeave(self)
+			</OnLeave>
+			<OnClick>
+				Rematch.WinRecordOnClick(self)
+			</OnClick>
+			<OnMouseDown>
+				Rematch.WinRecordOnMouseDown(self)
+			</OnMouseDown>
+			<OnMouseUp>
+				Rematch.WinRecordOnMouseUp(self)
+			</OnMouseUp>
+			<OnShow>
+				Rematch.WinRecordOnMouseUp(self)
+			</OnShow>
+		</Scripts>
+	</Button>
+
+
+	<!-- makes a "+1 Stat" float over a WinRecord button -->
+	<Frame name="RematchWinRecordToast" hidden="true">
+		<Size x="80" y="24"/>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<FontString parentKey="Text" inherits="GameFontNormal" setAllPoints="true"/>
+				<Texture file="Interface\Common\icon-shadow" alpha="0.75">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeKey="$parent.Text" relativePoint="TOPLEFT" x="-4" y="4"/>
+						<Anchor point="BOTTOMRIGHT" relativeKey="$parent.Text" relativePoint="BOTTOMRIGHT" x="4" y="-4"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Animations>
+			<AnimationGroup parentKey="anim">
+				<Translation offsetY="24" duration="0.75" order="1"/>
+				<Alpha change="-1" duration="0.5" order="1" startDelay="0.2"/>
+				<Scripts>
+					<OnFinished>
+						self:GetParent():Hide()
+					</OnFinished>
+				</Scripts>
+			</AnimationGroup>
+		</Animations>
+		<Scripts>
+			<OnShow>
+				self.anim:Play()
+			</OnShow>
+		</Scripts>
+	</Frame>
+
+	<!-- template for the Win/Loss/Draw editbox/add button/text in the card -->
+	<Frame name="RematchWinRecordCardStatTemplate" virtual="true">
+		<Size x="200" y="30"/>
+		<Frames>
+			<EditBox parentKey="EditBox" numeric="true" autoFocus="false" justifyH="CENTER">
+				<Size x="64" y="28"/>
+				<Anchors>
+					<Anchor point="CENTER"/>
+				</Anchors>
+				<TextInsets>
+					<AbsInset left="6" right="6"/>
+				</TextInsets>
+				<Backdrop edgeFile="Interface\Tooltips\UI-Tooltip-Border" bgFile="Interface\ChatFrame\ChatFrameBackground" tile="true">
+					<EdgeSize val="16"/>
+					<BorderColor r="0.5" g="0.5" b="0.5"/>
+					<Color r="0" g="0" b="0"/>
+					<BackgroundInsets left="3" right="3" top="3" bottom="3"/>
+				</Backdrop>
+				<FontString inherits="GameFontHighlightLarge" justifyH="CENTER"/>
+				<Scripts>
+					<OnEscapePressed>
+						self:ClearFocus()
+					</OnEscapePressed>
+					<OnEnterPressed>
+						RematchWinRecordCard.Controls.SaveButton:Click()
+					</OnEnterPressed>
+					<OnTabPressed>
+						RematchWinRecordCard.OnTabPressed(self)
+					</OnTabPressed>
+					<OnEditFocusGained>
+						self:HighlightText()
+						RematchWinRecordCard.Content.AltFlipHelp:SetAlpha(0.4)
+					</OnEditFocusGained>
+					<OnEditFocusLost>
+						self:HighlightText(0,0)
+						RematchWinRecordCard.Content.AltFlipHelp:SetAlpha(1)
+					</OnEditFocusLost>
+				</Scripts>
+			</EditBox>
+			<Button parentKey="Add" inherits="RematchToolbarButtonTemplate">
+				<Size x="24" y="24"/>
+				<KeyValues>
+					<KeyValue key="defaultIcon" value="Interface\Garrison\GarrisonBuildingUI"/>
+				</KeyValues>
+				<Anchors>
+					<Anchor point="LEFT" relativeKey="$parent.EditBox" relativePoint="RIGHT" x="4" y="0"/>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						RematchWinRecordCard.AddButtonOnClick(self)
+					</OnClick>
+				</Scripts>
+			</Button>
+		</Frames>
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString parentKey="Label" inherits="GameFontNormal" text="Wins:">
+					<Anchors>
+						<Anchor point="RIGHT" relativeKey="$parent.EditBox" relativePoint="LEFT" x="-2" y="1"/>
+					</Anchors>
+				</FontString>
+				<FontString parentKey="Value" inherits="GameFontHighlightLarge" text="999">
+					<Anchors>
+						<Anchor point="CENTER"/>
+					</Anchors>
+				</FontString>
+				<FontString parentKey="Percent" inherits="GameFontNormal" text="99%">
+					<Anchors>
+						<Anchor point="RIGHT" relativeKey="$parent.EditBox" relativePoint="RIGHT" x="42" y="0"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+	</Frame>
+
+	<Frame name="RematchWinRecordCard" frameStrata="DIALOG" parent="UIParent" clampedToScreen="true" enableMouse="true" movable="true" inherits="BasicFrameTemplate" hidden="true">
+		<Size x="260" y="238"/>
+		<Anchors>
+			<Anchor point="CENTER"/>
+		</Anchors>
+		<Layers>
+			<Layer level="ARTWORK">
+				<!-- the "Win Record" title in titlebar (not to be confused with "Title" frame that contains top portion of card -->
+				<FontString parentKey="Title" inherits="GameFontNormal" justifyH="CENTER" justifyV="TOP">
+					<Size x="0" y="14"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="6" y="-5"/>
+						<Anchor point="TOPRIGHT" x="-6" y="-5"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Button parentKey="KeyCapture">
+				<Scripts>
+					<OnKeyDown>
+						RematchWinRecordCard.OnKeyDown(self,key)
+					</OnKeyDown>
+				</Scripts>
+			</Button>
+			<!-- this is a bar across bottom for reset/save/cancel buttons -->
+			<Frame parentKey="Controls">
+				<Size x="0" y="26"/>
+				<Anchors>
+					<Anchor point="BOTTOMLEFT"/>
+					<Anchor point="BOTTOMRIGHT"/>
+				</Anchors>
+				<Frames>
+					<!-- the bottomright-most red button to cancel -->
+					<Button parentKey="CancelButton" inherits="UIPanelButtonTemplate" text="CANCEL">
+						<Size x="84" y="22"/>
+						<Anchors>
+							<Anchor point="BOTTOMRIGHT" x="-6" y="4"/>
+						</Anchors>
+						<Scripts>
+							<OnClick>
+								RematchWinRecordCard:Hide()
+							</OnClick>
+						</Scripts>
+					</Button>
+					<!-- save button in the middle -->
+					<Button parentKey="SaveButton" inherits="UIPanelButtonTemplate" text="SAVE">
+						<Size x="84" y="22"/>
+						<Anchors>
+							<Anchor point="BOTTOM" x="-1" y="4"/>
+						</Anchors>
+						<Scripts>
+							<OnClick>
+								RematchWinRecordCard:SaveWinRecord()
+							</OnClick>
+						</Scripts>
+					</Button>
+					<!-- reset button in the bottomleft -->
+					<Button parentKey="ResetButton" inherits="UIPanelButtonTemplate" text="RESET">
+						<Size x="84" y="22"/>
+						<Anchors>
+							<Anchor point="BOTTOMLEFT" x="4" y="4"/>
+						</Anchors>
+						<Scripts>
+							<OnClick>
+								RematchWinRecordCard:ShowResetDialog()
+							</OnClick>
+						</Scripts>
+					</Button>
+				</Frames>
+			</Frame>
+			<!-- this is the main visible portion that's shown even when rest is hidden -->
+			<Frame parentKey="Content" ignoreParentAlpha="true" useParentLevel="true">
+				<Anchors>
+					<Anchor point="TOPLEFT" x="2" y="-22"/>
+					<Anchor point="BOTTOMRIGHT" x="-4" y="25"/>
+				</Anchors>
+				<Backdrop edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
+					<EdgeSize val="16"/>
+					<BorderColor r="0.5" g="0.5" b="0.5"/>
+				</Backdrop>
+				<Layers>
+					<Layer level="BACKGROUND">
+						<!-- brown background to title area -->
+						<Texture file="Interface\PetBattles\PetJournal">
+							<Size x="0" y="32"/>
+							<Anchors>
+								<Anchor point="TOPLEFT" x="3" y="-3"/>
+								<Anchor point="TOPRIGHT" x="-3" y="-3"/>
+							</Anchors>
+							<TexCoords left="0.19140625" right="0.65625" top="0.4873046875" bottom="0.5654296875"/>
+						</Texture>
+						<!-- grey rock background to middle area -->
+						<Texture file="Interface\FrameGeneral\UI-Background-Marble" horizTile="true" vertTile="true">
+							<Anchors>
+								<Anchor point="TOPLEFT" x="3" y="-35"/>
+								<Anchor point="BOTTOMRIGHT" x="-3" y="3"/>
+							</Anchors>
+						</Texture>
+					</Layer>
+					<Layer level="BORDER">
+						<!-- line below title area -->
+						<Texture file="Interface\Tooltips\UI-Tooltip-Border">
+							<Size x="0" y="5"/>
+							<Anchors>
+								<Anchor point="LEFT" relativePoint="TOPLEFT" x="3" y="-35"/>
+								<Anchor point="RIGHT" relativePoint="TOPRIGHT" x="-3" y="-35"/>
+							</Anchors>
+							<TexCoords left="0.8125" right="0.9453125" top="0.625" bottom="0.9375"/>
+							<Color r="0.5" g="0.5" b="0.5"/>
+						</Texture>
+					</Layer>
+					<Layer level="ARTWORK">
+						<!-- name of team in the title area -->
+						<FontString parentKey="Name" inherits="GameFontNormalOutline" text="Name of Team Goes Here" justifyH="CENTER" justifyV="CENTER">
+							<Size x="0" y="30"/>
+							<Anchors>
+								<Anchor point="LEFT" relativePoint="TOPLEFT" x="35" y="-19"/>
+								<Anchor point="RIGHT" relativePoint="TOPRIGHT" x="-35" y="-19"/>
+							</Anchors>
+						</FontString>
+						<!-- number of battles in top of middle area -->
+						<FontString parentKey="BattleCount" inherits="GameFontNormal">
+							<Anchors>
+								<Anchor point="TOP" x="0" y="-48"/>
+							</Anchors>
+						</FontString>
+						<!-- "Hold [Alt] to view totals for all teams." help text at bottom of middle -->
+						<FontString parentKey="AltFlipHelp" inherits="GameFontNormalSmall">
+							<Anchors>
+								<Anchor point="BOTTOM" x="0" y="10"/>
+							</Anchors>
+							<Color r="0.75" g="0.75" b="0.75"/>
+						</FontString>
+					</Layer>
+				</Layers>
+				<Frames>
+					<!-- icon to left of titlebar -->
+					<Button parentKey="LeftIcon">
+						<Size x="28" y="28"/>
+						<Anchors>
+							<Anchor point="TOPLEFT" x="5" y="-5"/>
+						</Anchors>
+						<Layers>
+							<Layer level="BACKGROUND">
+								<Texture parentKey="Texture" mask="Textures\MinimapMask" setAllPoints="true"/>
+							</Layer>
+							<Layer level="BORDER">
+								<!-- thin gold border around above texture -->
+								<Texture file="Interface\PetBattles\PetBattleHUD">
+									<Anchors>
+										<Anchor point="TOPLEFT" x="0" y="1"/>
+										<Anchor point="BOTTOMRIGHT" x="1" y="0"/>
+									</Anchors>
+									<TexCoords left="0.884765625" right="0.943359375" top="0.681640625" bottom="0.798828125"/>
+								</Texture>
+							</Layer>
+						</Layers>
+						<HighlightTexture file="Interface\Minimap\UI-Minimap-ZoomButton-Highlight" alphaMode="ADD">
+							<Anchors>
+								<Anchor point="TOPLEFT" x="-4" y="2"/>
+								<Anchor point="BOTTOMRIGHT" x="4" y="-6"/>
+							</Anchors>
+							<Color r="1" g="1" b="0.75"/>
+						</HighlightTexture>
+						<Scripts>
+							<OnEnter>
+								RematchWinRecordCard:UpdateWinRecord()
+							</OnEnter>
+							<OnLeave>
+								RematchWinRecordCard:UpdateWinRecord()
+							</OnLeave>
+						</Scripts>
+					</Button>
+					<!-- icon to right of titlebar -->
+					<Button parentKey="RightIcon">
+						<Size x="28" y="28"/>
+						<Anchors>
+							<Anchor point="TOPRIGHT" x="-5" y="-5"/>
+						</Anchors>
+						<Layers>
+							<Layer level="BACKGROUND">
+								<Texture parentKey="Texture" mask="Textures\MinimapMask" setAllPoints="true"/>
+							</Layer>
+							<Layer level="BORDER">
+								<!-- thin gold border around above texture -->
+								<Texture file="Interface\PetBattles\PetBattleHUD">
+									<Anchors>
+										<Anchor point="TOPLEFT" x="0" y="1"/>
+										<Anchor point="BOTTOMRIGHT" x="1" y="0"/>
+									</Anchors>
+									<TexCoords left="0.884765625" right="0.943359375" top="0.681640625" bottom="0.798828125"/>
+								</Texture>
+							</Layer>
+						</Layers>
+						<HighlightTexture file="Interface\Minimap\UI-Minimap-ZoomButton-Highlight" alphaMode="ADD">
+							<Anchors>
+								<Anchor point="TOPLEFT" x="-4" y="2"/>
+								<Anchor point="BOTTOMRIGHT" x="4" y="-6"/>
+							</Anchors>
+							<Color r="1" g="1" b="0.75"/>
+						</HighlightTexture>
+						<Scripts>
+							<OnEnter>
+								RematchWinRecordCard:UpdateWinRecord()
+							</OnEnter>
+							<OnLeave>
+								RematchWinRecordCard:UpdateWinRecord()
+							</OnLeave>
+						</Scripts>
+					</Button>
+					<!-- the stats in the middle of the card -->
+					<Frame parentKey="Wins" parentArray="Stats" inherits="RematchWinRecordCardStatTemplate" id="1">
+						<Anchors>
+							<Anchor point="TOP" x="0" y="-70"/>
+						</Anchors>
+						<KeyValues>
+							<KeyValue key="stat" value="wins"/>
+						</KeyValues>
+					</Frame>
+					<Frame parentKey="Losses" parentArray="Stats" inherits="RematchWinRecordCardStatTemplate" id="2">
+						<Anchors>
+							<Anchor point="TOP" relativeKey="$parent.Wins" relativePoint="BOTTOM"/>
+						</Anchors>
+						<KeyValues>
+							<KeyValue key="stat" value="losses"/>
+						</KeyValues>
+					</Frame>
+					<Frame parentKey="Draws" parentArray="Stats" inherits="RematchWinRecordCardStatTemplate" id="3">
+						<Anchors>
+							<Anchor point="TOP" relativeKey="$parent.Losses" relativePoint="BOTTOM"/>
+						</Anchors>
+						<KeyValues>
+							<KeyValue key="stat" value="draws"/>
+						</KeyValues>
+					</Frame>
+				</Frames>
+			</Frame> <!-- Content -->
+		</Frames>
+		<Scripts>
+			<OnMouseDown>
+				self:StartMoving()
+			</OnMouseDown>
+			<OnMouseUp>
+				self:StopMovingOrSizing()
+			</OnMouseUp>
+			<OnShow>
+				self:RegisterEvent("MODIFIER_STATE_CHANGED")
+			</OnShow>
+			<OnHide>
+				self:OnHide()
+			</OnHide>
+			<OnEvent>
+				self:UpdateWinRecord()
+			</OnEvent>
+		</Scripts>
+	</Frame>
+
+</Ui>

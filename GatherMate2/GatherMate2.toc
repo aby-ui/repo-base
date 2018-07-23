@@ -1,0 +1,62 @@
+## Interface: 80000
+## Notes: Collects Herbs, Mines, Gas Clouds, Archaeology, Treasure and Fishing locations and adds them to the worldmap and minimap
+## Notes-frFR: Enregistre les positions des herbes, mines, nuages de gaz et poissons et les ajoute sur la carte du monde et la minicarte.
+## Notes-ruRU: Собирает информацию о расположении трав, руды, газовых облаков и рыбных мест и показывает её на карте и миникарте
+## Notes-koKR: 약초, 광맥, 가스, 낚시 위치를 저장하여 월드맵과 미니맵에 표시합니다.
+## Notes-zhTW: 收集草藥、礦、氣雲和釣魚的地點，並增加他們到世界地圖和小地圖。
+## Notes-zhCN: 收集草药、矿、气云和钓鱼的地点，并增加他们到世界地图和小地图。
+## Title: GatherMate2
+## Title-zhTW: GatherMate2 採集助手
+## Title-zhCN: GatherMate2 采集助手
+## Author: kagaro, xinhuan, nevcairiel
+## X-Email: sal.scotto@gmail.com
+## X-Credits: OttoDeFe for the launher icon.
+## SavedVariables: GatherMate2DB, GatherMate2HerbDB, GatherMate2MineDB, GatherMate2FishDB, GatherMate2GasDB, GatherMate2TreasureDB, GatherMate2ArchaeologyDB, GatherMate2LoggingDB
+## X-Category: Map
+## Version: 1.42.1-1-gf1846bd
+## X-License: ARR
+## OptionalDeps: Ace3, LibDataBroker-1.1, HereBeDragons
+## LoadManagers: AddonLoader
+## X-LoadOn-Always: delayed
+
+
+#@no-lib-strip@
+Libs\LibStub\LibStub.lua
+Libs\CallbackHandler-1.0\CallbackHandler-1.0.xml
+Libs\AceAddon-3.0\AceAddon-3.0.xml
+Libs\AceEvent-3.0\AceEvent-3.0.xml
+Libs\AceDB-3.0\AceDB-3.0.xml
+Libs\AceLocale-3.0\AceLocale-3.0.xml
+Libs\AceGUI-3.0\AceGUI-3.0.xml
+Libs\AceConsole-3.0\AceConsole-3.0.xml
+Libs\AceConfig-3.0\AceConfig-3.0.xml
+Libs\AceDBOptions-3.0\AceDBOptions-3.0.xml
+
+Libs\HereBeDragons\HereBeDragons-2.0.lua
+Libs\HereBeDragons\HereBeDragons-Migrate.lua
+#@end-no-lib-strip@
+
+Locales\GatherMate2-enUS.lua
+Locales\GatherMate2-esES.lua
+Locales\GatherMate2-frFR.lua
+Locales\GatherMate2-deDE.lua
+Locales\GatherMate2-koKR.lua
+Locales\GatherMate2-zhCN.lua
+Locales\GatherMate2-zhTW.lua
+Locales\GatherMate2-ruRU.lua
+Locales\GatherMate2-ptBR.lua
+Locales\GatherMate2-itIT.lua
+
+## Order is important
+GatherMate2.lua
+Collector.lua
+Display.lua
+Constants.lua
+Config.lua
+
+## XML loads last because it only contains the pin template
+GatherMate2.xml
+
+## Title-zhCN: |cff880303[有爱]|r GatherMate2 采集助手
+## X-Vendor: AbyUI
+

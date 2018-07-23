@@ -1,0 +1,4 @@
+<Bindings>
+	<Binding name="CLICK NPCScan_RecentTargetButton:LeftButton" header="NPCSCAN" category="ADDONS" />
+	<Binding name="CLICK NPCScan_SearchMacroButton:LeftButton" category="ADDONS" />
+</Bindings>

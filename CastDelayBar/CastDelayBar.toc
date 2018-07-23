@@ -1,0 +1,13 @@
+## Interface: 80000
+## Title: CastDelayBar
+## Notes-zhCN: 在施法条上增加一延迟条, 用以判断施法是否成功
+## Notes-zhTW: 在施法條上增加一延遲條, 用以判斷施法是否成功
+## Author: dugu@bigfoot
+## LoadOnDemand:
+## SavedVariables: 
+
+CastDelayBar.lua
+
+## Title: |cff880303[有爱]|r CastDelayBar 施法条延迟
+## Notes-zhCN: 在施法条上增加一延迟条, 用以判断施法是否成功
+## X-Vendor: AbyUI

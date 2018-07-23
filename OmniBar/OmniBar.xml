@@ -1,0 +1,192 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+	<Font name="OmniBarFont" font="Fonts\skurri.ttf" inherits="GameFontHighlightSmallOutline" virtual="true">
+		<FontHeight>
+			<AbsValue val="8"/>
+		</FontHeight>
+	</Font>
+	<Frame name="OmniBarTemplate" virtual="true" parent="UIParent" frameStrata="MEDIUM" movable="true" clampedToScreen="true" dontSavePosition="true">
+		<Size>
+			<AbsDimension x="1" y="1"/>
+		</Size>
+		<Anchors>
+			<Anchor point="CENTER"/>
+		</Anchors>
+		<Frames>
+			<Frame name="$parentAnchor" parentKey="anchor" enableMouse="true" clampedToScreen="true">
+				<Size>
+					<AbsDimension x="80" y="30"/>
+				</Size>
+				<Anchors>
+					<Anchor point="CENTER"/>
+				</Anchors>
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture name="$parentBG" setAllPoints="true" parentKey="background">
+							<Color r="0" g="0" b="0" a="0.3"/>
+						</Texture>
+					</Layer>
+					<Layer level="ARTWORK">
+						<FontString name="$parentText" inherits="GameFontNormal" parentKey="text" text="OmniBar">
+							<Color r="1" g="1" b="0" a="1"/>
+							<Anchors>
+								<Anchor point="CENTER"/>
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnMouseDown>
+						local bar = self:GetParent()
+						OmniBar_Center(bar)
+						bar:StartMoving()
+					</OnMouseDown>
+					<OnMouseUp>
+						local bar = self:GetParent()
+						bar:StopMovingOrSizing()
+						OmniBar_SavePosition(bar)
+						LibStub("AceConfigRegistry-3.0"):NotifyChange("OmniBar")
+					</OnMouseUp>
+				</Scripts>
+			</Frame>
+			<Frame name="$parentIcons" parentKey="container" clampedToScreen="true">
+				<Size>
+					<AbsDimension x="1" y="1"/>
+				</Size>
+				<Anchors>
+					<Anchor point="CENTER" relativeTo="$parentAnchor"/>
+				</Anchors>
+			</Frame>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				self:RegisterEvent("ADDON_LOADED")
+			</OnLoad>
+			<OnEvent function="OmniBar_OnEvent"/>
+		</Scripts>
+	</Frame>
+	<Button name="OmniBarButtonTemplate" inherits="ActionButtonTemplate" hidden="true" virtual="true">
+		<Size>
+			<AbsDimension x="36" y="36"/>
+		</Size>
+		<Anchors>
+			<Anchors>
+				<Anchor point="CENTER"/>
+			</Anchors>
+		</Anchors>
+		<Animations>
+			<AnimationGroup parentKey="newitemglowAnim" setToFinalAlpha="true">
+				<Alpha childKey="NewItemTexture" smoothing="NONE" duration="1" order="1" fromAlpha="1" toAlpha="0.4"/>
+				<Alpha childKey="NewItemTexture" smoothing="NONE" duration="1" order="2" fromAlpha="0.4" toAlpha="1"/>
+				<Alpha childKey="NewItemTexture" smoothing="NONE" duration="1" order="3" fromAlpha="1" toAlpha="0"/>
+			</AnimationGroup>
+			<AnimationGroup parentKey="flashAnim" setToFinalAlpha="true">
+				<Alpha childKey="flash" smoothing="OUT" duration="1" order="1" fromAlpha="1" toAlpha="0"/>
+			</AnimationGroup>
+		</Animations>
+		<NormalTexture name="$parentNormalTexture" parentKey="NormalTexture">
+			<Anchors>
+				<Anchor point="TOPLEFT" x="-15" y="15"/>
+				<Anchor point="BOTTOMRIGHT" x="15" y="-15"/>
+			</Anchors>
+		</NormalTexture>
+		<HighlightTexture/>
+		<PushedTexture/>
+		<Layers>
+			<Layer level="OVERLAY" textureSubLevel="1">
+				<FontString name="$parentName" parentKey="Name" inherits="OmniBarFont">
+					<Size>
+						<AbsDimension x="36" y="10"/>
+					</Size>
+					<FontHeight>
+						<AbsValue val="6"/>
+					</FontHeight>
+					<Anchors>
+						<Anchor point="BOTTOM">
+							<Offset>
+								<AbsDimension x="0" y="2"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<Texture parentKey="flash" hidden="false" alpha="0" alphaMode="ADD" atlas="bags-glow-flash" useAtlasSize="true">
+					<Anchors>
+						<Anchor point="CENTER"/>
+					</Anchors>
+				</Texture>
+				<Texture parentKey="NewItemTexture" alpha="0" alphaMode="ADD" atlas="bags-glow-blue" useAtlasSize="true">
+					<Anchors>
+						<Anchor point="CENTER"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="BACKGROUND" textureSubLevel="-1">
+				<Texture parentKey="TargetTexture" alpha="0" alphaMode="ADD" atlas="bags-glow-purple" useAtlasSize="true">
+					<Anchors>
+						<Anchor point="CENTER"/>
+					</Anchors>
+				</Texture>
+				<Texture parentKey="FocusTexture" alpha="0" alphaMode="ADD" atlas="bags-glow-white" useAtlasSize="true">
+					<Anchors>
+						<Anchor point="CENTER"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Cooldown name="$parentCooldown" inherits="CooldownFrameTemplate" parentKey="cooldown" reverse="true" drawBling="false" drawEdge="false" hidden="true">
+				<Size x="36" y="36"/>
+				<Anchors>
+					<Anchor point="CENTER" x="0" y="-1"/>
+				</Anchors>
+				<SwipeTexture>
+					<Color r="1" g="1" b="1" a="0.8"/>
+				</SwipeTexture>
+				<Scripts>
+					<OnHide function="OmniBar_CooldownFinish"/>
+				</Scripts>
+			</Cooldown>
+		</Frames>
+		<Scripts>
+			<OnEnter>
+				local bar = self:GetParent():GetParent()
+				if not bar.settings.tooltips or self:GetAlpha() == 0 then return end
+				GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+				GameTooltip:SetSpellByID(self.spellID)
+			</OnEnter>
+			<OnLeave>
+				GameTooltip:Hide()
+			</OnLeave>
+			<OnShow>
+				local bar = self:GetParent():GetParent()
+				table.insert(bar.active, self)
+				OmniBar_Position(bar)
+				OmniBar_UpdateBorders(bar)
+			</OnShow>
+			<OnHide>
+				local bar = self:GetParent():GetParent()
+				for i = 1, #bar.active do
+					if bar.active[i] == self then
+						table.remove(bar.active, i)
+						break
+					end
+				end
+			</OnHide>
+			<OnMouseDown>
+				local bar = self:GetParent():GetParent()
+				if button == "LeftButton" and not bar.settings.locked then
+					OmniBar_Center(bar)
+					bar:StartMoving()
+				end
+			</OnMouseDown>
+			<OnMouseUp>
+				local bar = self:GetParent():GetParent()
+				if button == "LeftButton" and not bar.settings.locked then
+					bar:StopMovingOrSizing()
+					OmniBar_SavePosition(bar)
+					LibStub("AceConfigRegistry-3.0"):NotifyChange("OmniBar")
+				end
+			</OnMouseUp>
+		</Scripts>
+	</Button>
+</Ui>

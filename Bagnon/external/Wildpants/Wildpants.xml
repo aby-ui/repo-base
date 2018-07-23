@@ -1,0 +1,7 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+	<Include file="libs\libs.xml"/>
+	<Include file="localization\localization.xml"/>
+	<Include file="core\core.xml"/>
+	<Include file="components\components.xml"/>
+	<Include file="features\features.xml"/>
+</Ui>

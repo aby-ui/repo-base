@@ -1,0 +1,32 @@
+## Interface: 80000
+## Version: 800r105
+## Title: |cff00c0ffDejaCharacterStats|r
+## Author: Dejablue, Kakjens, loudsoul
+## Notes: Dejablue's improved character stats panel view.
+## SavedVariables: DejaCharacterStatsDB
+## SavedVariables: DCS_ClassSpecDB
+## SavedVariablesPerCharacter: DejaCharacterStatsDBPC
+
+## X-Category: Class
+## X-License: MIT License: Use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so on condition this MIT notice and attribution is included with distribution.
+## X-Website: https://github.com/dejoblue/DejaCharacterStats
+## X-Curse-Project-ID: 99861
+## X-WoWI-ID: 24060
+
+Localization\localization.core.lua
+Localization\localization.enUS.lua
+Localization\localization.zhCN.lua
+Localization\localization.zhTW.lua
+
+DejaCharacterStats.lua
+DCSTables.lua
+DCSLayouts.lua
+DCSExpand.lua
+DCSDecimals.lua
+DCSDuraRepair.lua
+DCSAbout.lua
+
+
+## Title: |cff880303[有爱]|r Deja 角色详细属性
+## Notes: 在角色面板上显示详细的属性，类似7.0之前，而且可以进一步选择要显示的内容
+## X-Vendor: AbyUI

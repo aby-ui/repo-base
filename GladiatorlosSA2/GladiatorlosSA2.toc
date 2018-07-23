@@ -1,0 +1,18 @@
+﻿## Interface: 80000
+## Title: GladiatorlosSA
+## Notes: PvP Sound Alerter
+## Notes-zhTW: PVP技能語音提示
+## Author: Abatorlos(of Spinebreaker), DuskAshes, superk521, zuhligan, Grit (Legion Update), Mini_Dragon, LordKuper
+## SavedVariables: GladiatorlosSADB
+## Version: B1
+
+embeds.xml
+Locales\locales.xml
+
+GladiatorlosSA2.lua
+spelllist.lua
+options.lua
+
+## Title: |cff880303[有爱]|r Gladiator PVP语音提示
+## X-Vendor: AbyUI
+

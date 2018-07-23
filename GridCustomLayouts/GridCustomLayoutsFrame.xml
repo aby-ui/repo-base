@@ -1,0 +1,243 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+
+	<Frame name="GridCustomLayoutsFrame" parent="UIParent" hidden="true" toplevel="true" enableMouse="true" frameStrata="DIALOG" frameLevel="2">
+		<Size>
+			<AbsDimension x="600" y="280"/>
+		</Size>
+		<Anchors>
+			<Anchor point="CENTER"/>
+		</Anchors>
+		<Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="Interface\DialogFrame\UI-DialogBox-Border" tile="true">
+			<BackgroundInsets>
+				<AbsInset left="11" right="11" top="12" bottom="10"/>
+			</BackgroundInsets>
+			<TileSize>
+				<AbsValue val="32"/>
+			</TileSize>
+			<EdgeSize>
+				<AbsValue val="32"/>
+			</EdgeSize>
+		</Backdrop>
+		<Layers>
+			<Layer level="ARTWORK">
+				<Texture name="$parentHeader" file="Interface\DialogFrame\UI-DialogBox-Header">
+					<Size>
+						<AbsDimension x="300" y="68"/>
+					</Size>
+					<Anchors>
+						<Anchor point="TOP">
+							<Offset>
+								<AbsDimension x="0" y="12"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</Texture>
+				<FontString name="$parentHeaderText" inherits="GameFontNormal" text="">
+					<Anchors>
+						<Anchor point="TOP" relativeTo="$parentHeader">
+							<Offset>
+								<AbsDimension x="0" y="-14"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+        <Frames>
+            <Frame name="$parentArgHitRect" enableMouse="false" frameLevel="1">
+                <Anchors>
+                    <Anchor point="TOPLEFT">
+                        <Offset> <AbsDimension x="20" y="-60"/> </Offset>
+                    </Anchor>
+                    <Anchor point="BOTTOMRIGHT">
+                        <Offset> <AbsDimension x="-20" y="22"/> </Offset>
+                    </Anchor>
+                </Anchors>
+                <Backdrop edgeFile="Interface\Tooltips\UI-Tooltip-Border" bgFile = "Interface\Tooltips\UI-Tooltip-Background" tile="true">
+                    <EdgeSize><AbsValue val="16"/></EdgeSize>
+                    <TileSize><AbsValue val="16"/></TileSize>
+                    <BackgroundInsets>
+                        <AbsInset left="3" right="3" top="3" bottom="3"/>
+                    </BackgroundInsets>
+                </Backdrop>
+            </Frame>
+			<Button name="$parentClose" inherits="UIPanelButtonTemplate" text="CLOSE" frameLevel="3">
+				<Size>
+					<AbsDimension x="50" y="24"/>
+				</Size>
+				<Anchors>
+					<Anchor point="TOPRIGHT">
+						<Offset>
+							<AbsDimension x="-20" y="-31"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						self:GetParent():Hide();
+                        local last = self:GetParent().lastFrame
+                        self:GetParent().lastFrame = nil
+                        if last then
+                            if type(last) == "function" then
+                                last()
+                            else
+                                last:Show()
+                            end
+                        end
+					</OnClick>
+                    <OnShow>
+                        self:SetText(self:GetParent().lastFrame and PREVIOUS or CLOSE)
+                    </OnShow>
+				</Scripts>
+			</Button>
+            <Button name="$parentCancel" inherits="UIPanelButtonTemplate" text="CANCEL" frameLevel="3">
+                <Size>
+                    <AbsDimension x="50" y="24"/>
+                </Size>
+                <Anchors>
+                    <Anchor point="BOTTOMRIGHT" relativeTo="$parentClose" relativePoint="BOTTOMLEFT"/>
+                </Anchors>
+                <Scripts>
+                    <OnClick>
+                        GridCustomLayoutsFrame_CancelOnClick();
+                    </OnClick>
+                </Scripts>
+            </Button>
+			<Button name="$parentDelete" inherits="UIPanelButtonTemplate" text="DELETE" frameLevel="3">
+				<Size>
+					<AbsDimension x="50" y="24"/>
+				</Size>
+				<Anchors>
+					<Anchor point="BOTTOMRIGHT" relativeTo="$parentCancel" relativePoint="BOTTOMLEFT"/>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						GridCustomLayoutsFrame_DeleteOnClick();
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Button name="$parentSave" inherits="UIPanelButtonTemplate" text="SAVE" frameLevel="3">
+				<Size>
+					<AbsDimension x="50" y="24"/>
+				</Size>
+				<Anchors>
+					<Anchor point="BOTTOMRIGHT" relativeTo="$parentDelete" relativePoint="BOTTOMLEFT"/>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						GridCustomLayoutsFrame_SaveOnClick();
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Button name="$parentTargetName" inherits="UIPanelButtonTemplate" text="NAME" frameLevel="10">
+				<Size>
+					<AbsDimension x="50" y="24"/>
+				</Size>
+				<Anchors>
+					<Anchor point="BOTTOMRIGHT" relativeTo="$parentSave" relativePoint="BOTTOMLEFT" x="-30"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						self:SetText(TARGET.." "..NAME);
+                        self:SetWidth(self:GetFontString():GetStringWidth() + 12)
+					</OnLoad>
+					<OnClick>
+						if UnitName("target") then
+                            local name, realm = UnitName("target")
+                            name = name .. (realm ~= GetRealmName() and "-"..realm or "")
+							GridCustomLayoutsFrameArg:Insert(name..",")
+						end
+					</OnClick>
+				</Scripts>
+			</Button>
+
+			<Frame name="$parentDropDown" inherits="UIDropDownMenuTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT">
+						<Offset> <AbsDimension x="5" y="-30"/> </Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						UIDropDownMenu_SetWidth(self, 120);
+						UIDropDownMenu_Initialize(self, GridCustomLayouts_DropDown_Initialize)
+						--UIDropDownMenu_SetSelectedValue(self, "NONE");
+						--UIDropDownMenu_JustifyText(self, "LEFT");
+					</OnLoad>
+				</Scripts>
+			</Frame>
+
+			<Button name="$parentNew" inherits="UIPanelButtonTemplate" text="NEW">
+				<Size>
+					<AbsDimension x="40" y="24"/>
+				</Size>
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentDropDown" relativePoint="RIGHT">
+						<Offset> <AbsDimension x="-10" y="3"/> </Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						GridCustomLayoutsFrame_NewOnClick();
+					</OnClick>
+				</Scripts>
+			</Button>
+
+			<EditBox name="$parentArg"  autoFocus="false" multiLine="true" letters="2000" parentKey="argBox" frameLevel="3">
+				<Anchors>
+					<Anchor point="TOPLEFT">
+						<Offset> <AbsDimension x="20" y="-60"/> </Offset>
+					</Anchor>
+					<Anchor point="RIGHT">
+						<Offset> <AbsDimension x="-20" y="22"/> </Offset>
+					</Anchor>
+				</Anchors>
+				<FontString inherits="ChatFontSmall"/>
+
+				<TextInsets>
+				  <AbsInset left="6" right="6" top="6" bottom="6"/>
+				</TextInsets>
+
+				<Scripts>
+					<OnLoad>
+						--self:SetBackdropColor(0,0,0)
+					</OnLoad>
+					<OnTabPressed></OnTabPressed>
+					<OnEnterPressed></OnEnterPressed>
+					<OnEscapePressed>
+						self:ClearFocus()
+					</OnEscapePressed>
+					<OnTextChanged>
+						local height = self:GetHeight() + 100
+						if(height > 270) then
+							self:GetParent():SetHeight(height);
+						else
+							self:GetParent():SetHeight(270);
+						end
+                        GridCustomLayouts_UpdateFrame()
+					</OnTextChanged>
+					<OnEditFocusLost>
+						--this:HighlightText(0, 0);
+					</OnEditFocusLost>
+					<OnEditFocusGained>
+						--this:HighlightText();
+					</OnEditFocusGained>
+				</Scripts>
+			</EditBox>
+
+		</Frames>
+
+ 		<Scripts>
+			<OnLoad>
+				GridCustomLayoutsFrame_OnLoad(self)
+			</OnLoad>
+			<OnEvent>
+				--GridCustomLayoutsFrame_OnEvent(self, event);
+			</OnEvent>
+			<OnShow>
+			</OnShow>
+		</Scripts>
+	</Frame>
+ 
+</Ui>
