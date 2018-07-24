@@ -650,6 +650,66 @@ function DetailsFrameworkNormalBar_OnCreate (self)
 	return true
 end
 
+local build_statusbar = function (self)
+
+	self:SetSize (300, 14)
+	
+	self.background = self:CreateTexture ("$parent_background", "BACKGROUND")
+	self.background:Hide()
+	self.background:SetAllPoints()
+	self.background:SetTexture ([[Interface\PaperDollInfoFrame\UI-Character-Skills-Bar]])
+	self.background:SetVertexColor (.3, .3, .3, .3)
+
+	self.timertexture = self:CreateTexture ("$parent_timerTexture", "ARTWORK")
+	self.timertexture:Hide()
+	self.timertexture:SetSize (300, 14)
+	self.timertexture:SetTexture ([[Interface\PaperDollInfoFrame\UI-Character-Skills-Bar]])
+	self.timertexture:SetPoint ("LEFT", self, "LEFT")
+
+	self.timertextureR = self:CreateTexture ("$parent_timerTextureR", "ARTWORK")
+	self.timertextureR:Hide()
+	self.timertextureR:SetSize (300, 14)
+	self.timertextureR:SetTexture ([[Interface\PaperDollInfoFrame\UI-Character-Skills-Bar]])
+	self.timertextureR:SetPoint ("TOPRIGHT", self, 0, 0)
+	self.timertextureR:SetPoint ("BOTTOMRIGHT", self, 0, 0)
+
+	self.texture = self:CreateTexture ("$parent_statusbarTexture", "ARTWORK")
+	self.texture:SetSize (300, 14)
+	self.texture:SetTexture ([[Interface\PaperDollInfoFrame\UI-Character-Skills-Bar]])
+	
+	self:SetStatusBarTexture (self.texture)
+	
+	self.icontexture = self:CreateTexture ("$parent_icon", "OVERLAY")
+	self.icontexture:SetSize (14, 14)
+	self.icontexture:SetPoint ("LEFT", self, "LEFT")
+	
+	self.sparkmouseover = self:CreateTexture ("$parent_sparkMouseover", "OVERLAY")
+	self.sparkmouseover:SetSize (32, 32)
+	self.sparkmouseover:SetTexture ([[Interface\CastingBar\UI-CastingBar-Spark]])
+	self.sparkmouseover:SetBlendMode ("ADD")
+	self.sparkmouseover:SetPoint ("LEFT", self, "RIGHT", -16, -1)
+	self.sparkmouseover:Hide()
+	
+	self.sparktimer = self:CreateTexture ("$parent_sparkTimer", "OVERLAY")
+	self.sparktimer:SetSize (32, 32)
+	self.sparktimer:SetPoint ("LEFT", self.timertexture, "RIGHT", -16, -1)
+	self.sparktimer:SetTexture ([[Interface\CastingBar\UI-CastingBar-Spark]])
+	self.sparktimer:SetBlendMode ("ADD")
+	self.sparktimer:Hide()
+	
+	self.lefttext = self:CreateFontString ("$parent_TextLeft", "OVERLAY", "GameFontHighlight")
+	self.lefttext:SetJustifyH ("LEFT")
+	self.lefttext:SetPoint ("LEFT", self.icontexture, "RIGHT", 3, 0)
+	DF:SetFontSize (self.lefttext, 10)
+
+	self.righttext = self:CreateFontString ("$parent_TextRight", "OVERLAY", "GameFontHighlight")
+	self.righttext:SetJustifyH ("LEFT")
+	DF:SetFontSize (self.righttext, 10)
+	self.righttext:SetPoint ("RIGHT", self, "RIGHT", -3, 0)
+	
+	DetailsFrameworkNormalBar_OnCreate (self)
+end
+
 function DF:CreateBar (parent, texture, w, h, value, member, name)
 	return DF:NewBar (parent, parent, name, member, w, h, value, texture)
 end
@@ -695,7 +755,9 @@ function DF:NewBar (parent, container, name, member, w, h, value, texture_name)
 	BarObject.container = container
 	
 	--> create widgets
-		BarObject.statusbar = CreateFrame ("statusbar", name, parent, "DetailsFrameworkNormalBarTemplate")
+		BarObject.statusbar = CreateFrame ("statusbar", name, parent)
+		build_statusbar (BarObject.statusbar)
+		
 		BarObject.widget = BarObject.statusbar
 		
 		if (not APIBarFunctions) then

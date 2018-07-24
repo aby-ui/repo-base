@@ -86,7 +86,7 @@ local function createWaypoint(button, mapFile, coord)
     if TomTom then
         local mapId = HandyNotes:GetMapFiletoMapID(mapFile)
         local x, y = HandyNotes:getXY(coord)
-        TomTom:AddMFWaypoint(mapId, nil, x, y, {
+        TomTom:AddWaypoint(mapId, x, y, {
             title = get_point_info_by_coord(mapFile, coord),
             persistent = nil,
             minimap = true,

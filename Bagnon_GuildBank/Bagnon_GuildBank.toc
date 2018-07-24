@@ -5,6 +5,7 @@
 ## RequiredDeps: Bagnon
 ## LoadOnDemand: 1
 ## Version: 8.0.0
+
 main.lua
 components\components.xml
 

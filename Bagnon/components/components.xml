@@ -2,7 +2,7 @@
 	<Include file="style.xml"/>
 
 	<Script file="optionsToggle.lua"/>
-	<Script file="playerSelector.lua"/>
+	<Script file="ownerSelector.lua"/>
 
 	<Script file="searchFrame.lua"/>
 	<Script file="searchToggle.lua"/>

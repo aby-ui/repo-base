@@ -93,8 +93,7 @@ end
 function ChocolateBar:SetDropPoins(parent)
 	if not dropPoints then
 		createDropPoint("ChocolateTextDrop", dropText, 0,L["Toggle Text"],"Interface/ICONS/INV_Inscription_Tradeskill01")
-		createDropPoint("ChocolateCenterDrop", dropOptions,150,L["Options"],"Interface/Icons/Spell_Holy_GreaterBlessingofSalvation")
-		createDropPoint("ChocolateCenterDrop", dropOptions,150,L["Options"],"Interface/Icons/INV_Gizmo_02")
+		createDropPoint("ChocolateCenterDrop", dropOptions,150,"CB "..L["Options"],"Interface/Icons/INV_Gizmo_02")
 		createDropPoint("ChocolateDisableDrop", dropDisable, 300,L["Disable Plugin"], "Interface/ICONS/Spell_ChargeNEgative")
 	end
 

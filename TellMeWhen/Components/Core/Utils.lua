@@ -1551,10 +1551,5 @@ end
 
 
 function TMW:ClickSound()
-	 -- SOUNDKIT is patch 7.3 compat
-	if SOUNDKIT then
-		PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_OFF)
-	else
-		PlaySound("igMainMenuOptionCheckBoxOn")
-	end
+	PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_OFF)
 end

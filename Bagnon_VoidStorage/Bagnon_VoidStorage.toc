@@ -1,0 +1,13 @@
+## Interface: 80000
+## Title: Bagnon Void Storage
+## Author: Jaliborc (João Cardoso)
+## Notes: Single window display for your void storage
+## RequiredDeps: Bagnon
+## LoadOnDemand: 1
+## Version: 8.0.0
+
+localization\localization.xml
+main.lua
+components\components.xml
+
+## X-Vendor: AbyUI

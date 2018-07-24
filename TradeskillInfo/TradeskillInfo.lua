@@ -120,23 +120,23 @@ function TradeskillInfo:OnInitialize()
 			TooltipUsedIn = true,
 			TooltipUsableBy = true,
 			TooltipColorUsableBy = true,
-			TooltipKnownBy     = { R = true, A = true, B = true, D = true, E = true, J = true, L = true, T = true, W = false, X = false, Z = true, Y = true, I = true },
-			TooltipLearnableBy = { R = true, A = true, B = true, D = true, E = true, J = true, L = true, T = true, W = false, X = false, Z = true, Y = true, I = true },
-			TooltipAvailableTo = { R = true, A = true, B = true, D = true, E = true, J = true, L = true, T = true, W = false, X = false, Z = true, Y = true, I = true },
+			TooltipKnownBy     = { R = true, A = true, B = true, D = true, E = true, J = true, L = true, T = true, W = false, Z = true, Y = true, I = true },
+			TooltipLearnableBy = { R = true, A = true, B = true, D = true, E = true, J = true, L = true, T = true, W = false, Z = true, Y = true, I = true },
+			TooltipAvailableTo = { R = true, A = true, B = true, D = true, E = true, J = true, L = true, T = true, W = false, Z = true, Y = true, I = true },
 			TooltipMarketValue = true,
 			TooltipID = false,
 			TooltipStack = false,
 
-			ColorSource			= { r = 0.75, g = 0.75, b = 0.25 },
+			ColorSource		= { r = 0.75, g = 0.75, b = 0.25 },
 			ColorRecipeSource	= { r = 0.75, g = 0.75, b = 0.25 },
 			ColorRecipePrice	= { r = 1, g = 1, b = 1 },
-			ColorUsedIn			= { r = 1, g = 1, b = 1 },
+			ColorUsedIn		= { r = 1, g = 1, b = 1 },
 			ColorUsableBy		= { r = 1, g = 1, b = 1 },
 			ColorKnownBy		= { r = 1, g = 0, b = 0 },
 			ColorLearnableBy	= { r = 0.25, g = 0.75, b = 0.25 },
 			ColorAvailableTo	= { r = 1, g = 0.5, b = 0.25 },
-			ColorID				= { r = 0.75, g = 0.5, b = 0.5 },
-			ColorStack			= { r = 1, g = 1, b = 1 },
+			ColorID			= { r = 0.75, g = 0.5, b = 0.5 },
+			ColorStack		= { r = 1, g = 1, b = 1 },
 			ColorMarketValue	= { r = 0.8, g = 0.9, b = 0 },
 
 			ColorAHRecipes = true,
@@ -364,7 +364,7 @@ function TradeskillInfo:UpdateKnownRecipes()
 end
 
 function TradeskillInfo:UpdateSkills()
-	local prof1, prof2, _, _, cook, firstAid = GetProfessions()
+	local prof1, prof2, _, _, cook = GetProfessions()
 	local userData = self.db.realm[self.vars.playername]
 	local name, rank
 
@@ -380,11 +380,6 @@ function TradeskillInfo:UpdateSkills()
 
 	if cook then
 		name, _, rank = GetProfessionInfo(cook)
-		userData.skills[self.vars.skillnames[name]] = rank
-	end
-
-	if firstAid then
-		name, _, rank = GetProfessionInfo(firstAid)
 		userData.skills[self.vars.skillnames[name]] = rank
 	end
 end
@@ -1891,7 +1886,6 @@ local defaultNames = {
 	[2108] = L["Leatherworking"],
 	[3908] = L["Tailoring"],
 	[2550] = L["Cooking"],
-	[3273] = L["First Aid"],
 	[2575] = L["Mining"],
 	[8613] = L["Skinning"],
 	[170691] = L["Herbalism"],

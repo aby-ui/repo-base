@@ -5,8 +5,8 @@
 
 	<Script file="sortButton.lua"/>
 	<Script file="moneyFrame.lua"/>
-	<Script file="playerDropdown.lua"/>
-	
+	<Script file="ownerDropdown.lua"/>
+
 	<Script file="item.lua"/>
 	<Script file="itemFrame.lua"/>
 

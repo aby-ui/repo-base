@@ -1,6 +1,6 @@
 --[[
 Name: LibJostle-3.0
-Revision: $Rev: 61 $
+Revision: $Rev: 63 $
 Author(s): ckknight (ckknight@gmail.com)
 Website: http://ckknight.wowinterface.com/
 Documentation: http://www.wowace.com/addons/libjostle-3-0/
@@ -10,7 +10,7 @@ License: LGPL v2.1
 --]]
 
 local MAJOR_VERSION = "LibJostle-3.0"
-local MINOR_VERSION = tonumber(("$Revision: 61 $"):match("(%d+)")) + 90000
+local MINOR_VERSION = tonumber(("$Revision: 63 $"):match("(%d+)")) + 90000
 
 if not LibStub then error(MAJOR_VERSION .. " requires LibStub") end
 
@@ -132,6 +132,7 @@ local JostleFrame = Jostle.frame
 local start = GetTime()
 local nextTime = 0
 local fullyInitted = false
+
 JostleFrame:SetScript("OnUpdate", function(this, elapsed)
 	local now = GetTime()
 	if now - start >= 3 then
@@ -420,7 +421,7 @@ function Jostle:Refresh(...)
 
 				if frame:GetRight() and frame:GetLeft() then
 					local anchorFrame = UIParent
-					if frame == MainMenuBar or frame == GroupLootFrame1 or frame == FramerateLabel then
+					if frame == GroupLootFrame1 or frame == FramerateLabel then
 						x = 0
 						anchor = ""
 					elseif frame:GetRight() / framescale <= width / 2 then
@@ -465,14 +466,6 @@ function Jostle:Refresh(...)
 						if MultiBarBottomRight:IsShown() then
 							offset = offset + MultiBarBottomRight:GetHeight() * MultiBarBottomRight:GetScale() - 21
 						end
-					elseif frame == CastingBarFrame then
-						y = MainMenuBar:GetHeight() * MainMenuBar:GetScale() + 17
-						if StanceBarFrame and (PetActionBarFrame:IsShown() or StanceBarFrame:IsShown()) then
-							offset = offset + StanceBarFrame:GetHeight() * StanceBarFrame:GetScale()
-						end
-						if MultiBarBottomLeft:IsShown() or MultiBarBottomRight:IsShown() then
-							offset = offset + MultiBarBottomLeft:GetHeight() * MultiBarBottomLeft:GetScale()
-						end
 					elseif frame == GroupLootFrame1 or frame == TutorialFrameParent or frame == FramerateLabel then
 						if MultiBarBottomLeft:IsShown() or MultiBarBottomRight:IsShown() then
 							offset = offset + MultiBarBottomLeft:GetHeight() * MultiBarBottomLeft:GetScale()
@@ -509,6 +502,10 @@ function Jostle:Refresh(...)
 					blizzardFramesData[frame].lastY = frame:GetTop()
 					blizzardFramesData[frame].lastScale = framescale
 
+					if frame == MainMenuBar then
+						MainMenuBar:SetMovable(true)
+						MainMenuBar:SetUserPlaced(true)
+					end
 					if frame == OrderHallCommandBar then
 						frame:SetPoint("RIGHT", "UIParent" ,"RIGHT",0, 0);
 					end

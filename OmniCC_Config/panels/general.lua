@@ -26,7 +26,7 @@ function GeneralOptions:AddWidgets()
     aniUpdate:SetPoint('TOPLEFT', scaleText, 'BOTTOMLEFT', 0, -BUTTON_SPACING)
 
 	local finishEffect = self:CreateFinishEffectPicker()
-	finishEffect:SetPoint('TOPLEFT', aniUpdate, 'BOTTOMLEFT', -16, -(BUTTON_SPACING + 16))
+	finishEffect:SetPoint('TOPLEFT', aniUpdate, 'BOTTOMLEFT', 4, -BUTTON_SPACING)
 
 	--sliders
 	local spiralOpacity = self:CreateSpiralOpacitySlider()
@@ -300,46 +300,33 @@ end
 --[[ Dropdown ]]--
 
 function GeneralOptions:CreateFinishEffectPicker()
-	local parent = self
-	local dd = OmniCCOptions.Dropdown:New(L.FinishEffect, parent, 120)
-	local effects = {}
+	local dd = _G.OmniCCOptions.Dropdown:New{
+		parent = self,
 
-	for id, effect in pairs(OmniCC.effects) do
-		tinsert(effects, {
-			name = effect.name,
-			tooltip = effect.desc,
-			value = id
-		})
-	end
+		name = L.FinishEffect,
 
-	table.sort(effects, function(a, b)
-		return a.name < b.name
-	end)
+		get = function()
+			return self:GetGroupSets().effect
+		end,
 
-	dd.SetSavedValue = function(self, value)
-		parent:GetGroupSets().effect = value
-	end
+		set = function(_, value)
+			self:GetGroupSets().effect = value
+		end,
 
-	dd.GetSavedValue = function(self)
-		return parent:GetGroupSets().effect
-	end
+		items = function()
+			local t = {}
 
-	dd.GetSavedText = function(self)
-		local effect = OmniCC:GetEffect(self:GetSavedValue())
-		if effect then
-			return effect.name
+			for id, effect in pairs(OmniCC.effects) do
+				tinsert(t, {
+					text = effect.name,
+					tooltip = effect.desc,
+					value = id
+				})
+			end
+
+			return t
 		end
-		return NONE
-	end
-
-	UIDropDownMenu_Initialize(dd, function(self)
-		for n, v in ipairs(effects) do
-			self:AddItem(v.name, v.value, v.tooltip)
-		end
-	end)
-
-	self.dropdowns = self.dropdowns or {}
-	table.insert(self.dropdowns, dd)
+	}
 
 	return dd
 end

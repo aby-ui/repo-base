@@ -526,6 +526,50 @@ function DF:CreateSplitBar (parent, parent, w, h, member, name)
 	return DF:NewSplitBar (parent, container, name, member, w, h)
 end
 
+local build_statusbar = function (self)
+	self:SetSize (300, 14)
+	
+	self.background = self:CreateTexture ("$parent_StatusBarBackground", "BACKGROUND")
+	self.background:SetAllPoints()
+	self.background:SetTexture ([[Interface\PaperDollInfoFrame\UI-Character-Skills-Bar]])
+	self.background:SetVertexColor (.5, .5, .5, 1)
+	
+	self.texture = self:CreateTexture ("$parent_StatusBarTexture", "ARTWORK")
+	self.texture:Hide()
+	self.texture:SetSize (300, 14)
+	self.texture:SetTexture ([[Interface\PaperDollInfoFrame\UI-Character-Skills-Bar]])
+	
+	self.lefticon = self:CreateTexture ("$parent_IconLeft", "OVERLAY")
+	self.lefticon:SetSize (14, 14)
+	self.lefticon:SetPoint ("LEFT", self, "LEFT")
+	
+	self.righticon = self:CreateTexture ("$parent_IconRight", "OVERLAY")
+	self.righticon:SetSize (14, 14)
+	self.righticon:SetPoint ("RIGHT", self, "RIGHT")
+	
+	self.spark = self:CreateTexture ("$parent_Spark", "OVERLAY")
+	self.spark:SetTexture ([[Interface\CastingBar\UI-CastingBar-Spark]])
+	self.spark:SetBlendMode ("ADD")
+	self.spark:SetSize (32, 32)
+	self.spark:SetPoint ("LEFT", self, "RIGHT", -17, -1)
+	
+	self.lefttext = self:CreateFontString ("$parent_TextLeft", "OVERLAY", "GameFontHighlight")
+	DF:SetFontSize (self.lefttext, 10)
+	self.lefttext:SetJustifyH ("left")
+	self.lefttext:SetPoint ("LEFT", self.lefticon, "RIGHT", 3, 0)
+	
+	self.righttext = self:CreateFontString ("$parent_TextRight", "OVERLAY", "GameFontHighlight")
+	DF:SetFontSize (self.righttext, 10)
+	self.righttext:SetJustifyH ("right")
+	self.righttext:SetPoint ("RIGHT", self.righticon, "LEFT", -3, 0)
+
+	self:SetStatusBarTexture (self.texture)
+	self:SetMinMaxValues (1, 100)
+	self:SetValue (50)
+	DetailsFrameworkSplitlBar_OnCreate (self)
+end
+
+
 function DF:NewSplitBar (parent, container, name, member, w, h)
 	
 	if (not name) then
@@ -563,7 +607,8 @@ function DF:NewSplitBar (parent, container, name, member, w, h)
 		SplitBarObject.container = container
 	
 	--> create widgets
-		SplitBarObject.statusbar = CreateFrame ("statusbar", name, parent, "DetailsFrameworkSplitBarTemplate")
+		SplitBarObject.statusbar = CreateFrame ("statusbar", name, parent)
+		build_statusbar (SplitBarObject.statusbar)
 		SplitBarObject.widget = SplitBarObject.statusbar
 		
 		if (not APISplitBarFunctions) then

@@ -189,6 +189,10 @@ L["Cross"] = "Cross"
 L["Crowd Controlled"] = "被控制"
 L["Crushing"] = "碾压"
 --[[Translation missing --]]
+L["Cunning"] = "Cunning"
+--[[Translation missing --]]
+L["Current Zone Group ID: "] = "Current Zone Group ID: "
+--[[Translation missing --]]
 L["Current Zone ID: "] = "Current Zone ID: "
 L["Curse"] = "诅咒"
 L["Custom"] = "自定义"
@@ -271,6 +275,8 @@ L["Falling"] = "掉落"
 L["False"] = "假"
 L["Fatigue"] = "疲倦"
 L["Feet"] = "脚"
+--[[Translation missing --]]
+L["Ferocity"] = "Ferocity"
 L["Finger 1"] = "戒指1"
 L["Finger 2"] = "戒指2"
 L["Fire"] = "火焰"
@@ -334,6 +340,8 @@ L["Import"] = "Import"
 --[[Translation missing --]]
 L["Import disabled"] = "Import disabled"
 L["In Combat"] = "战斗中"
+--[[Translation missing --]]
+L["In Encounter"] = "In Encounter"
 L["In Group"] = "在群组中"
 L["In Pet Battle"] = "宠物对战中"
 --[[Translation missing --]]
@@ -353,6 +361,8 @@ L["Instance Type"] = "副本类型"
 L["Interrupt"] = "打断"
 L["Interruptible"] = "可打断"
 L["Inverse"] = "反向"
+--[[Translation missing --]]
+L["Inverse Pet Behavior"] = "Inverse Pet Behavior"
 L["Is Exactly"] = "完全匹配"
 L["Is Moving"] = "移动中"
 L["Is Off Hand"] = "是副手"
@@ -440,6 +450,8 @@ L["No Children:"] = "没有子元素:"
 L["No Instance"] = "没有队伍"
 --[[Translation missing --]]
 L["No Profiling information saved."] = "No Profiling information saved."
+--[[Translation missing --]]
+L["none"] = "none"
 L["None"] = "无"
 L["Non-player Character"] = "NPC"
 L["Normal"] = "正常形态"
@@ -485,6 +497,8 @@ L["Periodic Spell"] = "周期法术"
 L["Personal Resource Display"] = "Personal Resource Display"
 L["Pet"] = "宠物"
 L["Pet Behavior"] = "宠物姿态"
+--[[Translation missing --]]
+L["Pet Specialization"] = "Pet Specialization"
 L["Pet Spell"] = "宠物法术"
 --[[Translation missing --]]
 L["Play"] = "Play"
@@ -693,6 +707,8 @@ L["Tank"] = "坦克"
 L["Tanking And Highest"] = "做T并且最高"
 L["Tanking But Not Highest"] = "做T但不是最高"
 L["Target"] = "目标"
+--[[Translation missing --]]
+L["Tenacity"] = "Tenacity"
 L["Thick Outline"] = "粗轮廓"
 --[[Translation missing --]]
 L["Third"] = "Third"
@@ -757,6 +773,8 @@ L["X-Offset"] = "X-Offset"
 L["Yell"] = "大喊"
 --[[Translation missing --]]
 L["Y-Offset"] = "Y-Offset"
+--[[Translation missing --]]
+L["Zone Group ID(s)"] = "Zone Group ID(s)"
 --[[Translation missing --]]
 L["Zone ID(s)"] = "Zone ID(s)"
 --[[Translation missing --]]

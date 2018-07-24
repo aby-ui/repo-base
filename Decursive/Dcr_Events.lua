@@ -1,7 +1,7 @@
 --[[
     This file is part of Decursive.
 
-    Decursive (v 2.7.5.8) add-on for World of Warcraft UI
+    Decursive (v 2.7.6) add-on for World of Warcraft UI
     Copyright (C) 2006-2018 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Starting from 2009-10-31 and until said otherwise by its author, Decursive
@@ -17,7 +17,7 @@
     Decursive is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY.
 
-    This file was last updated on 2018-07-18T0:42:34Z
+    This file was last updated on 2018-07-20T1:08:26Z
 --]]
 -------------------------------------------------------------------------------
 
@@ -666,10 +666,9 @@ do -- Combat log event handling {{{1
     
     function D:COMBAT_LOG_EVENT_UNFILTERED(selfevent, timestamp, event, hideCaster, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destFlags, destRaidFlags, spellID, spellNAME, _spellSCHOOL, auraTYPE_failTYPE)
 
-        if DC.WOW8 and event == nil then
+        if event == nil then
             timestamp, event, hideCaster, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destFlags, destRaidFlags, spellID, spellNAME, _spellSCHOOL, auraTYPE_failTYPE = CombatLogGetCurrentEventInfo()
         end
-
         -- check for exceptions
         if SpecialDebuffs[spellID] and event == SpecialDebuffs[spellID] then
             event = "SPELL_AURA_APPLIED";
@@ -1176,6 +1175,6 @@ do
     end
 end
 
-T._LoadedFiles["Dcr_Events.lua"] = "2.7.5.8";
+T._LoadedFiles["Dcr_Events.lua"] = "2.7.6";
 
 -- The Great Below

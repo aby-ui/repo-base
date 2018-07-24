@@ -1,5 +1,5 @@
 ## Interface: 80000
-## Version: 18.07.19
+## Version: 18.07.24
 ## Title: TipTacOptions
 ## Author: Aezay (Earthen Ring EU)
 ## Author-zhCN: Aezay (Earthen Ring EU), Localized by springsnow (Feathermoon CN)
@@ -9,7 +9,7 @@
 Libs\AzDropDown.lua
 Libs\AzOptionsFactory.lua
 DropDowns.lua
-Options.lua
+ttOptions.lua
 
 ## Title-zhCN: |cff880303[有爱]|r TipTac 配置模块
 ## X-Vendor: AbyUI

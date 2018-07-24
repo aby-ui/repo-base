@@ -1,7 +1,7 @@
 --[[
     This file is part of Decursive.
 
-    Decursive (v 2.7.5.8) add-on for World of Warcraft UI
+    Decursive (v 2.7.6) add-on for World of Warcraft UI
     Copyright (C) 2006-2018 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Starting from 2009-10-31 and until said otherwise by its author, Decursive
@@ -17,7 +17,7 @@
     Decursive is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY.
 
-    This file was last updated on 2018-07-18T0:42:34Z
+    This file was last updated on 2018-07-22T10:20:47Z
 --]]
 -------------------------------------------------------------------------------
 
@@ -409,22 +409,20 @@ do
     };
 
     -- This local function only sets interesting values of UnitDebuff()
-    local Name, Rank, Texture, Applications, TypeName, Duration, ExpirationTime, _, SpellID;
+    local Name, Texture, Applications, TypeName, Duration, ExpirationTime, _, SpellID;
     local function GetUnitDebuff  (Unit, i) --{{{
 
         if D.LiveList.TestItemDisplayed and UnitExists(Unit) then -- and not UnTrustedUnitIDs[Unit] then
             if i == 1 then
-                Name, Rank, Texture, Applications, TypeName, Duration, ExpirationTime, SpellID = "Test item", 1, "Interface\\AddOns\\Decursive\\iconON.tga", 2, DC.TypeNames[D.Status.ReversedCureOrder[1]], 70, (D.LiveList.TestItemDisplayed + 70), 0;
-                -- D:Debug("|cFFFF0000Setting test debuff for ", Unit, " (debuff ", i, ")|r");--, Name, Rank, Texture, Applications, TypeName, Duration, ExpirationTime);
+                Name, Texture, Applications, TypeName, Duration, ExpirationTime, SpellID = "Test item", "Interface\\AddOns\\Decursive\\iconON.tga", 2, DC.TypeNames[D.Status.ReversedCureOrder[1]], 70, (D.LiveList.TestItemDisplayed + 70), 0;
+                -- D:Debug("|cFFFF0000Setting test debuff for ", Unit, " (debuff ", i, ")|r");--, Name, Texture, Applications, TypeName, Duration, ExpirationTime);
                 return true;
             else
                 i = i - 1;
             end
         end
 
-        --    Name, Rank, Texture, Applications, TypeName, duration, ExpirationTime, unitCaster, isStealable = UnitAura("unit", index or ["name", "rank"][, "filter"])
-
-        Name, Texture, Applications, TypeName, Duration, ExpirationTime, _, _, _, SpellID = UnitDebuff (Unit, i); --aby8
+        Name, Texture, Applications, TypeName, Duration, ExpirationTime, _, _, _, SpellID = UnitDebuff (Unit, i);
 
         if Name then
             return true;
@@ -470,7 +468,7 @@ do
             IsCharmed = false;
         end
 
-        if self.LiveList.TestItemDisplayed and not UnTrustedUnitIDs[Unit] and D.Status.ReversedCureOrder[1] == DC.CHARMED then
+        if self.LiveList.TestItemDisplayed and not UnTrustedUnitIDs[Unit] and (D.Status.ReversedCureOrder[1] == DC.CHARMED or D.Status.ReversedCureOrder[1] == DC.ENEMYMAGIC) then
             IsCharmed = true;
         end
 
@@ -825,19 +823,15 @@ do
 
 
     local function UnitBuff(unit, BuffNameToCheck)
-        if DC.WOW8 then
-            for i = 1, 40 do
-                buffName = G_UnitBuff(unit, i)
-                if not buffName then
-                    return
-                else
-                    if BuffNameToCheck == buffName then
-                        return G_UnitBuff(unit, i)
-                    end
+        for i = 1, 40 do
+            buffName = G_UnitBuff(unit, i)
+            if not buffName then
+                return
+            else
+                if BuffNameToCheck == buffName then
+                    return G_UnitBuff(unit, i)
                 end
             end
-        else
-            return G_UnitBuff(unit, BuffNameToCheck)
         end
     end
 
@@ -877,6 +871,6 @@ end
 
 
 
-T._LoadedFiles["Decursive.lua"] = "2.7.5.8";
+T._LoadedFiles["Decursive.lua"] = "2.7.6";
 
 -- Sin

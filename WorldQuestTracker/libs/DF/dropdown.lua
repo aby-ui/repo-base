@@ -602,7 +602,6 @@ function DetailsFrameworkDropDownOnMouseDown (button)
 						local name = button:GetName() .. "Row" .. i
 						local parent = scrollChild
 						
-						--_this_row = CreateFrame ("Button", name, parent, "DetailsFrameworkDropDownOptionTemplate")
 						_this_row = DF:CreateDropdownButton (parent, name)
 						local anchor_i = i-1
 						_this_row:SetPoint ("topleft", parent, "topleft", 5, (-anchor_i*20)-5)
@@ -947,7 +946,6 @@ function DF:NewDropDown (parent, container, name, member, w, h, func, default, t
 		--> misc
 		DropDownObject.container = container
 		
-	--DropDownObject.dropdown = CreateFrame ("Button", name, parent, "DetailsFrameworkDropDownTemplate")
 	DropDownObject.dropdown = DF:CreateNewDropdownFrame (parent, name)
 	
 	DropDownObject.widget = DropDownObject.dropdown

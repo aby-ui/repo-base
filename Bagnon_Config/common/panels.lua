@@ -17,8 +17,7 @@ tinsert(SLOT_COLOR_TYPES, 1, 'normal')
 
 local Expanded = {}
 local SetProfile = function(profile)
-	Addon:SetProfile(profile)
-	Addon.profile = Addon:GetProfile()
+	Addon:SetCurrentProfile(profile)
 	Addon:UpdateFrames()
 	Addon.GeneralOptions:Update()
 end
@@ -48,12 +47,12 @@ Addon.GeneralOptions = Addon.Options:NewPanel(nil, ADDON, L.GeneralDesc, functio
 
 	local global = self:Create('Check')
 	global:SetLabel(L.CharacterSpecific)
-	global:SetValue(Addon:GetSpecificProfile())
+	global:SetValue(Addon.profile ~= Addon.sets.global)
 	global:SetCall('OnInput', function(_, v)
-		if Addon:GetSpecificProfile() then
-			StaticPopup_Show(CONFIG .. '_ConfirmGlobals')
-		else
+		if Addon.profile == Addon.sets.global then
 			SetProfile(CopyTable(Addon.sets.global))
+		else
+			StaticPopup_Show(CONFIG .. '_ConfirmGlobals')
 		end
 	end)
 end)

@@ -966,6 +966,30 @@ end
 ------------------------------------------------------------------------------------------------------------
 --> object constructor
 
+local build_button = function (self)
+	self:SetSize (100, 20)
+	
+	self.text = self:CreateFontString ("$parent_Text", "ARTWORK", "GameFontNormal")
+	self.text:SetJustifyH ("CENTER")
+	DF:SetFontSize (self.text, 10)
+	self.text:SetPoint ("CENTER", self, "CENTER", 0, 0)
+	
+	self.texture_disabled = self:CreateTexture ("$parent_TextureDisabled", "OVERLAY")
+	self.texture_disabled:SetAllPoints()
+	self.texture_disabled:Hide()
+	self.texture_disabled:SetTexture ("Interface\\Tooltips\\UI-Tooltip-Background")
+	
+	self:SetScript ("OnDisable", function (self)
+		self.texture_disabled:Show()
+		self.texture_disabled:SetVertexColor (0, 0, 0)
+		self.texture_disabled:SetAlpha (.5)
+	end)
+	
+	self:SetScript ("OnEnable", function (self)
+		self.texture_disabled:Hide()
+	end)
+end
+
 function DF:CreateButton (parent, func, w, h, text, param1, param2, texture, member, name, short_method, button_template, text_template)
 	return DF:NewButton (parent, parent, name, member, w, h, func, param1, param2, texture, text, short_method, button_template, text_template)
 end
@@ -1006,7 +1030,9 @@ function DF:NewButton (parent, container, name, member, w, h, func, param1, para
 		ButtonObject.container = container
 		ButtonObject.options = {OnGrab = false}
 
-	ButtonObject.button = CreateFrame ("button", name, parent, "DetailsFrameworkButtonTemplate")
+	ButtonObject.button = CreateFrame ("button", name, parent)
+	build_button (ButtonObject.button)
+	
 	ButtonObject.widget = ButtonObject.button
 
 	--ButtonObject.button:SetBackdrop ({bgFile = DF.folder .. "background", tileSize = 64, edgeFile = DF.folder .. "border_2", edgeSize = 10, insets = {left = 1, right = 1, top = 1, bottom = 1}})

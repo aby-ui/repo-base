@@ -1,5 +1,5 @@
 ## Interface: 80000
-## Version: 18.07.22
+## Version: 18.07.24
 ## Title: TipTac
 ## Author: Aezay (Earthen Ring EU)
 ## Author-zhCN: Aezay (Earthen Ring EU), Localized by springsnow (Feathermoon CN)
@@ -9,7 +9,7 @@
 Local_enUS.lua
 Local_zhCN.lua
 Local_zhTW.lua
-core.lua
+ttCore.lua
 
 ## Title-zhCN: |cff880303[有爱]|r TipTac 鼠标提示增强
 ## X-Vendor: AbyUI

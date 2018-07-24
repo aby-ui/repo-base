@@ -4,7 +4,7 @@
 --]]
 
 local ADDON, Addon = ...
-
+local Cache = LibStub('LibItemCache-2.0')
 
 --[[ Slot Type ]]--
 
@@ -33,32 +33,6 @@ function Addon:IsBankBag(bag)
 end
 
 
---[[ Bag State ]]--
-
-function Addon:GetBagInfo(...)
- 	return self.Cache:GetBagInfo(...)
-end
-
-function Addon:IsBagCached(...)
-  return self.Cache:GetBagType(...)
-end
-
-function Addon:IsBagLocked(player, bag)
-	if not self:IsBackpack(bag) and not self:IsBank(bag) then
-    local slot, size, cached = select(4, self:GetBagInfo(player, bag))
-		return not cached and IsInventoryItemLocked(slot)
-	end
-end
-
-function Addon:GetBagSize(player, bag)
-  	return select(5, self:GetBagInfo(player, bag))
-end
-
-function Addon:BagToInventorySlot(...)
-  return select(4, self:GetBagInfo(...))
-end
-
-
 --[[ Bag Type ]]--
 
 Addon.BAG_TYPES = {
@@ -78,13 +52,17 @@ function Addon:GetBagType(...)
 	return Addon.BAG_TYPES[self:GetBagFamily(...)] or 'normal'
 end
 
-function Addon:GetBagFamily(player, bag)
+function Addon:GetBagFamily(owner, bag)
 	if self:IsBank(bag) or self:IsBackpack(bag) then
 		return 0
 	elseif self:IsReagents(bag) then
 		return -1
 	end
 
-	local link = self:GetBagInfo(player, bag)
+	local link = self:GetBagInfo(owner, bag)
 	return link and GetItemFamily(link) or 0
+end
+
+function Addon:GetBagInfo(...)
+ 	return Cache:GetBagInfo(...)
 end

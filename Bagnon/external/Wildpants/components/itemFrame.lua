@@ -34,7 +34,7 @@ end
 
 function ItemFrame:RegisterEvents()
 	self:UnregisterEvents()
-	self:RegisterFrameMessage('PLAYER_CHANGED', 'Update')
+	self:RegisterFrameMessage('OWNER_CHANGED', 'Update')
 	self:RegisterFrameMessage('FILTERS_CHANGED', 'RequestLayout')
 	self:RegisterMessage('UPDATE_ALL', 'RequestLayout')
 	self:RegisterEvent('GET_ITEM_INFO_RECEIVED')
@@ -81,7 +81,7 @@ end
 function ItemFrame:GET_ITEM_INFO_RECEIVED(_,itemID)
 	if not self:PendingLayout() then
 		for i, button in ipairs(self.buttons) do
-			if button:GetItemID() == itemID then
+			if button.info.id == itemID then
 				button:Update()
 			end
 		end
@@ -205,7 +205,7 @@ function ItemFrame:IsShowingBag(bag)
 end
 
 function ItemFrame:NumSlots(bag)
-	return Addon:GetBagSize(self:GetPlayer(), bag)
+	return Addon:GetBagInfo(self:GetOwner(), bag).count or 0
 end
 
 function ItemFrame:NumButtons()

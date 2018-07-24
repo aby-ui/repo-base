@@ -1,4 +1,4 @@
-local internalVersion = 3;
+local internalVersion = 5;
 
 -- Lua APIs
 local tinsert, tconcat, tremove, tContains, wipe = table.insert, table.concat, table.remove, tContains, wipe
@@ -133,6 +133,8 @@ local in_loading_screen = false;
 
 -- Load functions, keyed on id
 local loadFuncs = {};
+-- Load functions for the Options window that ignore various load options
+local loadFuncsForOptions = {};
 
 -- Check Conditions Functions, keyed on id
 local checkConditions = {};
@@ -533,7 +535,7 @@ end
 
 -- Used for the load function, could be simplified a bit
 -- It used to be also used for the generic trigger system
-function WeakAuras.ConstructFunction(prototype, trigger)
+function WeakAuras.ConstructFunction(prototype, trigger, skipOptional)
   local input = {"event"};
   local required = {};
   local tests = {};
@@ -557,7 +559,9 @@ function WeakAuras.ConstructFunction(prototype, trigger)
         if(arg.init == "arg") then
           tinsert(input, name);
         end
-        if(arg.hidden or arg.type == "tristate" or arg.type == "toggle" or (arg.type == "multiselect" and trigger["use_"..name] ~= nil) or ((trigger["use_"..name] or arg.required) and trigger[name])) then
+        if (arg.optional and skipOptional) then
+        -- Do nothing
+        elseif(arg.hidden or arg.type == "tristate" or arg.type == "toggle" or (arg.type == "multiselect" and trigger["use_"..name] ~= nil) or ((trigger["use_"..name] or arg.required) and trigger[name])) then
           if(arg.init and arg.init ~= "arg") then
             init = init.."local "..name.." = "..arg.init.."\n";
           end
@@ -838,9 +842,9 @@ local function CreateActivateCondition(ret, id, condition, conditionNumber, prop
           elseif (propertyData.action) then
             local pathToCustomFunction = "nil";
             if (WeakAuras.customConditionsFunctions[id]
-                and WeakAuras.customConditionsFunctions[id][conditionNumber]
-                and  WeakAuras.customConditionsFunctions[id][conditionNumber].changes
-                and WeakAuras.customConditionsFunctions[id][conditionNumber].changes[changeNum]) then
+              and WeakAuras.customConditionsFunctions[id][conditionNumber]
+              and  WeakAuras.customConditionsFunctions[id][conditionNumber].changes
+              and WeakAuras.customConditionsFunctions[id][conditionNumber].changes[changeNum]) then
               pathToCustomFunction = string.format("WeakAuras.customConditionsFunctions[%q][%s].changes[%s]", id, conditionNumber, changeNum);
             end
             ret = ret .. "     if (not skipActions) then\n";
@@ -1367,16 +1371,18 @@ function WeakAuras.ScanForLoads(self, event, arg1)
 
   local player, realm, spec, zone = UnitName("player"), GetRealmName(), GetSpecialization(), GetRealZoneText();
   local zoneId = C_Map.GetBestMapForUnit("player")
+  local zonegroupId = zoneId and C_Map.GetMapGroupID(zoneId)
   local _, race = UnitRace("player")
   local faction = UnitFactionGroup("player")
 
-  local role = select(5, GetSpecializationInfo(GetSpecialization()));
+  local role = select(5, GetSpecializationInfo(spec));
 
   local _, class = UnitClass("player");
   -- 0:none 1:5N 2:5H 3:10N 4:25N 5:10H 6:25H 7:LFR 8:5CH 9:40N
   local inInstance, Type = IsInInstance()
   local size, difficulty
   local incombat = UnitAffectingCombat("player") -- or UnitAffectingCombat("pet");
+  local inencounter = encounter_id ~= 0;
   local inpetbattle = C_PetBattles.IsInBattle()
   local vehicle = UnitInVehicle('player')
   local vehicleUi = UnitHasVehicleUI('player') or HasOverrideActionBar()
@@ -1472,8 +1478,9 @@ function WeakAuras.ScanForLoads(self, event, arg1)
   for id, data in pairs(db.displays) do
     if (data and not data.controlledChildren) then
       local loadFunc = loadFuncs[id];
-      shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", incombat, vehicle, vehicleUi, inpetbattle, group, player, realm, class, spec, race, faction, playerLevel, zone, zoneId, encounter_id, size, difficulty, role);
-      couldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", true, vehicle, vehicleUi, true, group, player, realm, class, spec, race, faction, playerLevel, zone, zoneId, encounter_id, size, difficulty, role);
+      local loadOpt = loadFuncsForOptions[id];
+      shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", incombat, inencounter, inpetbattle, vehicle, vehicleUi, group, player, realm, class, spec, race, faction, playerLevel, zone, zoneId, zonegroupId, encounter_id, size, difficulty, role);
+      couldBeLoaded =  loadOpt and loadOpt("ScanForLoads_Auras",   incombat, inencounter, inpetbattle, vehicle, vehicleUi, group, player, realm, class, spec, race, faction, playerLevel, zone, zoneId, zonegroupId, encounter_id, size, difficulty, role);
 
       if(shouldBeLoaded and not loaded[id]) then
         WeakAuras.LoadDisplay(id);
@@ -1658,6 +1665,9 @@ function WeakAuras.Delete(data)
           tremove(parentData.controlledChildren, index);
         end
       end
+      if parentData.sortHybridTable then
+        parentData.sortHybridTable[id] = nil
+      end
     end
   end
 
@@ -1698,6 +1708,7 @@ function WeakAuras.Delete(data)
   regions[id] = nil;
   loaded[id] = nil;
   loadFuncs[id] = nil;
+  loadFuncsForOptions[id] = nil;
   checkConditions[id] = nil;
   conditionChecksTimers.recheckTime[id] = nil;
   if (conditionChecksTimers.recheckHandle[id]) then
@@ -1731,6 +1742,10 @@ function WeakAuras.Rename(data, newid)
           parentData.controlledChildren[index] = newid;
         end
       end
+      if parentData.sortHybridTable then
+        parentData.sortHybridTable[newid] = true
+        parentData.sortHybridTable[oldid] = nil
+      end
     end
   end
 
@@ -1746,6 +1761,9 @@ function WeakAuras.Rename(data, newid)
   loaded[oldid] = nil;
   loadFuncs[newid] = loadFuncs[oldid];
   loadFuncs[oldid] = nil;
+
+  loadFuncsForOptions[newid] = loadFuncsForOptions[oldid]
+  loadFuncsForOptions[oldid] = nil;
 
   checkConditions[newid] = checkConditions[oldid];
   checkConditions[oldid] = nil;
@@ -2047,7 +2065,7 @@ function WeakAuras.Modernize(data)
         };
         load.use_ingroup = false;
       elseif (load.use_ingroup == false) then
-          load.ingroup.single = "solo";
+        load.ingroup.single = "solo";
         load.ingroup.multi = {};
         load.use_ingroup = true;
       end
@@ -2294,9 +2312,48 @@ function WeakAuras.Modernize(data)
         data.yOffset = 0;
       end
     end
-
   end
 
+  -- Version 4 was introduced July 2018 in BfA
+  if (data.internalVersion < 4) then
+    if (data.conditions) then
+      for conditionIndex, condition in ipairs(data.conditions) do
+        if (condition.check) then
+          local triggernum = condition.check.trigger;
+          if (triggernum) then
+            local trigger;
+            if (triggernum == 0) then
+              trigger = data.trigger;
+            elseif(data.additional_triggers and data.additional_triggers[triggernum]) then
+              trigger = data.additional_triggers[triggernum].trigger;
+            end
+            if (trigger and trigger.event == "Cooldown Progress (Spell)") then
+              if (condition.check.variable == "stacks") then
+                condition.check.variable = "charges";
+              end
+            end
+          end
+        end
+      end
+    end
+  end
+
+  -- Version 5 was introduced July 2018 in BFA
+  if data.internalVersion < 5 then
+    -- this is to fix hybrid sorting
+    if data.sortHybridTable then
+      if data.controlledChildren then
+        local newSortTable = {}
+        for index, isHybrid in pairs(data.sortHybridTable) do
+          local childID = data.controlledChildren[index]
+          if childID then
+            newSortTable[childID] = isHybrid
+          end
+        end
+        data.sortHybridTable = newSortTable
+      end
+    end
+  end
 
   for _, triggerSystem in pairs(triggerSystems) do
     triggerSystem.Modernize(data);
@@ -2385,14 +2442,15 @@ function WeakAuras.AddMany(table)
       loaded[id] = true;
     end
   end
+  local dynGroups = {}
   for id, data in pairs(idtable) do
     load(id, {});
-  end
-  for id, data in pairs(idtable) do
-    if(data.regionType == "dynamicgroup") then
-      WeakAuras.Add(data);
-      regions[id].region:ControlChildren();
+    if data.regionType == "dynamicgroup" then
+      dynGroups[id] = true
     end
+  end
+  for id in pairs(dynGroups) do
+    regions[id].region:ControlChildren()
   end
 end
 
@@ -2400,15 +2458,6 @@ end
 function WeakAuras.Add(data)
   WeakAuras.Modernize(data);
   WeakAuras.pAdd(data);
--- local status, err = pcall(WeakAuras.pAdd, data);
--- if not(status) then
--- local id = type(data.id) == "string" and data.id or "WeakAurasOptions tempGroup";
--- print("|cFFFF0000WeakAuras "..id..": "..err);
--- debug(id..": "..err, 3);
--- debug(debugstack(1, 6));
--- WeakAurasFrame:Hide();
--- error(err);
--- end
 end
 
 local function removeSpellNames(data)
@@ -2460,16 +2509,19 @@ function WeakAuras.pAdd(data)
     data.actions.start = data.actions.start or {};
     data.actions.finish = data.actions.finish or {};
     local loadFuncStr = WeakAuras.ConstructFunction(load_prototype, data.load);
+    local loadForOptionsFuncStr = WeakAuras.ConstructFunction(load_prototype, data.load, true);
     local loadFunc = WeakAuras.LoadFunction(loadFuncStr);
+    local loadForOptionsFunc = WeakAuras.LoadFunction(loadForOptionsFuncStr);
     local triggerLogicFunc = WeakAuras.LoadFunction("return "..(data.customTriggerLogic or ""), id);
     WeakAuras.LoadCustomActionFunctions(data);
     WeakAuras.LoadConditionPropertyFunctions(data);
     local checkConditionsFuncStr = WeakAuras.ConstructConditionFunction(data);
     local checkCondtionsFunc = checkConditionsFuncStr and WeakAuras.LoadFunction(checkConditionsFuncStr);
-    WeakAuras.debug(id.." - Load", 1);
-    WeakAuras.debug(loadFuncStr);
+    debug(id.." - Load", 1);
+    debug(loadFuncStr);
 
     loadFuncs[id] = loadFunc;
+    loadFuncsForOptions[id] = loadForOptionsFunc;
     checkConditions[id] = checkCondtionsFunc;
     clones[id] = clones[id] or {};
 
@@ -2484,15 +2536,15 @@ function WeakAuras.pAdd(data)
       timers[id] = nil;
     end
 
-
-    triggerState[id] = {};
-    triggerState[id].disjunctive = data.disjunctive or "all";
-    triggerState[id].numTriggers = data.numTriggers;
-    triggerState[id].activeTriggerMode = data.activeTriggerMode or 0;
-    triggerState[id].triggerLogicFunc = triggerLogicFunc;
-    triggerState[id].triggers = {};
-    triggerState[id].triggerCount = 0;
-    triggerState[id].activatedConditions = {};
+    triggerState[id] = {
+      disjunctive = data.disjunctive or "all",
+      numTriggers = data.numTriggers,
+      activeTriggerMode = data.activeTriggerMode or 0,
+      triggerLogicFunc = triggerLogicFunc,
+      triggers = {},
+      triggerCount = 0,
+      activatedConditions = {},
+    };
 
     WeakAuras.LoadEncounterInitScripts(id);
 
@@ -2977,7 +3029,7 @@ function WeakAuras.Animate(namespace, data, type, anim, region, inverse, onFinis
     if(anim.use_translate) then
       if not(anim.translateType == "custom" and anim.translateFunc) then
         anim.translateType = anim.translateType or "straightTranslate";
-        anim.translateFunc = anim_function_strings[anim.translateType] or anim_function_strings.straightTranslate;
+        anim.translateFunc = anim_function_strings[anim.translateType]
       end
       translateFunc = WeakAuras.LoadFunction("return " .. anim.translateFunc, id);
     else
@@ -2990,7 +3042,7 @@ function WeakAuras.Animate(namespace, data, type, anim, region, inverse, onFinis
     if(anim.use_alpha) then
       if not(anim.alphaType == "custom" and anim.alphaFunc) then
         anim.alphaType = anim.alphaType or "straight";
-        anim.alphaFunc = anim_function_strings[anim.alphaType] or anim_function_strings.straight;
+        anim.alphaFunc = anim_function_strings[anim.alphaType]
       end
       alphaFunc = WeakAuras.LoadFunction("return " .. anim.alphaFunc, id);
     else
@@ -2999,7 +3051,7 @@ function WeakAuras.Animate(namespace, data, type, anim, region, inverse, onFinis
     if(anim.use_scale) then
       if not(anim.scaleType == "custom" and anim.scaleFunc) then
         anim.scaleType = anim.scaleType or "straightScale";
-        anim.scaleFunc = anim_function_strings[anim.scaleType] or anim_function_strings.straightScale;
+        anim.scaleFunc = anim_function_strings[anim.scaleType]
       end
       scaleFunc = WeakAuras.LoadFunction("return " .. anim.scaleFunc, id);
     elseif(region.Scale) then
@@ -3008,7 +3060,7 @@ function WeakAuras.Animate(namespace, data, type, anim, region, inverse, onFinis
     if(anim.use_rotate) then
       if not(anim.rotateType == "custom" and anim.rotateFunc) then
         anim.rotateType = anim.rotateType or "straight";
-        anim.rotateFunc = anim_function_strings[anim.rotateType] or anim_function_strings.straight;
+        anim.rotateFunc = anim_function_strings[anim.rotateType]
       end
       rotateFunc = WeakAuras.LoadFunction("return " .. anim.rotateFunc, id);
     elseif(region.Rotate) then
@@ -3017,7 +3069,7 @@ function WeakAuras.Animate(namespace, data, type, anim, region, inverse, onFinis
     if(anim.use_color) then
       if not(anim.colorType == "custom" and anim.colorFunc) then
         anim.colorType = anim.colorType or "straightColor";
-        anim.colorFunc = anim_function_strings[anim.colorType] or anim_function_strings.straightColor;
+        anim.colorFunc = anim_function_strings[anim.colorType]
       end
       colorFunc = WeakAuras.LoadFunction("return " .. anim.colorFunc, id);
     elseif(region.ColorAnim) then
@@ -3043,44 +3095,46 @@ function WeakAuras.Animate(namespace, data, type, anim, region, inverse, onFinis
       end
     end
 
-    animations[key] = animations[key] or {};
-    animations[key].progress = progress
-    animations[key].startX = startX
-    animations[key].startY = startY
-    animations[key].startAlpha = startAlpha
-    animations[key].startWidth = startWidth
-    animations[key].startHeight = startHeight
-    animations[key].startRotation = startRotation
-    animations[key].dX = (anim.use_translate and anim.x)
-    animations[key].dY = (anim.use_translate and anim.y)
-    animations[key].dAlpha = (anim.use_alpha and (anim.alpha - startAlpha))
-    animations[key].scaleX = (anim.use_scale and anim.scalex)
-    animations[key].scaleY = (anim.use_scale and anim.scaley)
-    animations[key].rotate = anim.rotate
-    animations[key].colorR = (anim.use_color and anim.colorR)
-    animations[key].colorG = (anim.use_color and anim.colorG)
-    animations[key].colorB = (anim.use_color and anim.colorB)
-    animations[key].colorA = (anim.use_color and anim.colorA)
-    animations[key].translateFunc = translateFunc
-    animations[key].alphaFunc = alphaFunc
-    animations[key].scaleFunc = scaleFunc
-    animations[key].rotateFunc = rotateFunc
-    animations[key].colorFunc = colorFunc
-    animations[key].region = region
-    animations[key].selfPoint = selfPoint
-    animations[key].anchor = anchor
-    animations[key].anchorPoint = anchorPoint
-    animations[key].duration = duration
-    animations[key].duration_type = anim.duration_type or "seconds"
-    animations[key].inverse = inverse
-    animations[key].type = type
-    animations[key].loop = loop
-    animations[key].onFinished = onFinished
-    animations[key].name = id
-    animations[key].cloneId = cloneId or ""
-    animations[key].namespace = namespace;
-    animations[key].data = data;
-    animations[key].anim = anim;
+    local animation = animations[key] or {}
+    animations[key] = animation
+
+    animation.progress = progress
+    animation.startX = startX
+    animation.startY = startY
+    animation.startAlpha = startAlpha
+    animation.startWidth = startWidth
+    animation.startHeight = startHeight
+    animation.startRotation = startRotation
+    animation.dX = (anim.use_translate and anim.x)
+    animation.dY = (anim.use_translate and anim.y)
+    animation.dAlpha = (anim.use_alpha and (anim.alpha - startAlpha))
+    animation.scaleX = (anim.use_scale and anim.scalex)
+    animation.scaleY = (anim.use_scale and anim.scaley)
+    animation.rotate = anim.rotate
+    animation.colorR = (anim.use_color and anim.colorR)
+    animation.colorG = (anim.use_color and anim.colorG)
+    animation.colorB = (anim.use_color and anim.colorB)
+    animation.colorA = (anim.use_color and anim.colorA)
+    animation.translateFunc = translateFunc
+    animation.alphaFunc = alphaFunc
+    animation.scaleFunc = scaleFunc
+    animation.rotateFunc = rotateFunc
+    animation.colorFunc = colorFunc
+    animation.region = region
+    animation.selfPoint = selfPoint
+    animation.anchor = anchor
+    animation.anchorPoint = anchorPoint
+    animation.duration = duration
+    animation.duration_type = anim.duration_type or "seconds"
+    animation.inverse = inverse
+    animation.type = type
+    animation.loop = loop
+    animation.onFinished = onFinished
+    animation.name = id
+    animation.cloneId = cloneId or ""
+    animation.namespace = namespace;
+    animation.data = data;
+    animation.anim = anim;
 
     if not(updatingAnimations) then
       frame:SetScript("OnUpdate", WeakAuras.UpdateAnimations);
@@ -3674,7 +3728,7 @@ do
         if coroutine.status(func) ~= "dead" then
           local err,ret1,ret2 = assert(coroutine.resume(func))
           if err then
-            WeakAuras.debug(debugstack(func))
+            debug(debugstack(func))
           end
         else
           dynFrame:RemoveAction(name);
@@ -3980,9 +4034,9 @@ function WeakAuras.UpdatedTriggerState(id)
       if (not activeTriggerState[cloneId] or not activeTriggerState[cloneId].show) then
         clone:Collapse();
       end
-    end
-    -- Show new states
-    ApplyStatesToRegions(id, newActiveTrigger, activeTriggerState);
+  end
+  -- Show new states
+  ApplyStatesToRegions(id, newActiveTrigger, activeTriggerState);
   end
 
   for cloneId, state in pairs(activeTriggerState) do
@@ -4086,20 +4140,20 @@ function WeakAuras.ReplacePlaceHolders(textStr, region, customFunc)
         if (value) then
           textStr = string.sub(textStr, 1, currentPos - 1) .. value .. string.sub(textStr, endPos + 1);
         end
-      elseif (endPos > currentPos and regionState) then
-        local symbol = string.sub(textStr, currentPos + 1, endPos);
-        local value = regionState[symbol] and tostring(regionState[symbol]);
-        if (value) then
-          textStr = string.sub(textStr, 1, currentPos - 1) .. value .. string.sub(textStr, endPos + 1);
-        else
-          value = ReplaceValuePlaceHolders(string.sub(textStr, currentPos, currentPos + 1), region, customFunc);
-          value = value or "";
-          textStr = string.sub(textStr, 1, currentPos - 1) .. value .. string.sub(textStr, currentPos + 2);
-        end
+    elseif (endPos > currentPos and regionState) then
+      local symbol = string.sub(textStr, currentPos + 1, endPos);
+      local value = regionState[symbol] and tostring(regionState[symbol]);
+      if (value) then
+        textStr = string.sub(textStr, 1, currentPos - 1) .. value .. string.sub(textStr, endPos + 1);
+      else
+        value = ReplaceValuePlaceHolders(string.sub(textStr, currentPos, currentPos + 1), region, customFunc);
+        value = value or "";
+        textStr = string.sub(textStr, 1, currentPos - 1) .. value .. string.sub(textStr, currentPos + 2);
       end
-      endPos = currentPos - 1;
+    end
+    endPos = currentPos - 1;
     elseif (char >= 65 and char <= 90) or (char >= 97 and char <= 122) then
-      -- a-zA-Z character
+    -- a-zA-Z character
     else
       endPos = currentPos - 1;
     end

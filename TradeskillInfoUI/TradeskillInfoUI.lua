@@ -51,8 +51,8 @@ TradeskillInfoUI.vars.TradeSkillTypeColor = {
 function TradeskillInfoUI:OnInitialize()
 	local dbDefaults = {
 		profile = {
-			tradeskills = {['A']=true,['B']=true,['D']=true,['E']=true,['J']=true,['L']=true,['T']=true,['W']=true,['X']=true,['Y']=true,['I']=true},
-			expanded = {['A']=true,['B']=true,['D']=true,['E']=true,['J']=true,['L']=true,['T']=true,['W']=true,['X']=true,['Y']=true,['I']=true},
+			tradeskills = {['A']=true,['B']=true,['D']=true,['E']=true,['J']=true,['L']=true,['T']=true,['W']=true,['Y']=true,['I']=true},
+			expanded = {['A']=true,['B']=true,['D']=true,['E']=true,['J']=true,['L']=true,['T']=true,['W']=true,['Y']=true,['I']=true},
 			availability = {true,true,true,true,true,true,true},
 			ShowOpposing = false,
 			SearchName = true,

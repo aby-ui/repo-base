@@ -69,11 +69,11 @@ local options = {
 		[0] = L["Colors"],
 		{ type = "Check", var = "colorGuildByReaction", label = L["Color Guild by Reaction"], tip = L["Guild color will have the same color as the reacion"], y = 8 },
 		{ type = "Color", subType = 2, var = "colGuild", label = L["Guild Color"], tip = L["Color of the guild name, when not using the option to make it the same as reaction color"] },
-		{ type = "Color", subType = 2, var = "colSameGuild", label = L["Same Guild Color"], tip = L["To better recognise players from your guild, you can configure the color of your guild name individually"], y = 16 },
+		{ type = "Color", subType = 2, var = "colSameGuild", label = L["Your Guild Color"], tip = L["To better recognise players from your guild, you can configure the color of your guild name individually"], y = 16 },
 		{ type = "Color", subType = 2, var = "colRace", label = L["Race & Creature Type Color"], tip = L["The color of the race and creature type text"] },
 		{ type = "Color", subType = 2, var = "colLevel", label = L["Neutral Level Color"], tip = L["Units you cannot attack will have their level text shown in this color"], y = 12 },
 		{ type = "Check", var = "colorNameByClass", label = L["Color Player Names by Class Color"], tip = L["With this option on, player names are colored by their class color, otherwise they will be colored by reaction"] },
-		{ type = "Check", var = "classColoredBorder", label = L["Color Tip Border by Class Color"], tip = L["For players, the border color will be colored to match the color of their class"] },
+		{ type = "Check", var = "classColoredBorder", label = L["Color Tip Border by Class Color"], tip = L["For players, the border color will be colored to match the color of their class\nNOTE: This option is overridden by reaction colored border"] },
 	},
 	-- Reactions
 	{
@@ -105,7 +105,7 @@ local options = {
 		[0] = L["Backdrop"],
 		{ type = "DropDown", var = "tipBackdropBG", label = L["Background Texture"], media = "background" },
 		{ type = "DropDown", var = "tipBackdropEdge", label = L["Border Texture"], media = "border", y = 8 },
-		{ type = "Slider", var = "backdropEdgeSize", label = L["Backdrop Edge Size"], min = 0, max = 64, step = 0.5 },
+		{ type = "Slider", var = "backdropEdgeSize", label = L["Backdrop Edge Size"], min = -20, max = 64, step = 0.5 },
 		{ type = "Slider", var = "backdropInsets", label = L["Backdrop Insets"], min = -20, max = 20, step = 0.5, y = 18 },
 		{ type = "Color", var = "tipColor", label = L["Tip Background Color"] },
 		{ type = "Color", var = "tipBorderColor", label = L["Tip Border Color"], y = 10 },
@@ -138,7 +138,7 @@ local options = {
 		{ type = "Check", var = "overrideFade", label = L["Override Default GameTooltip Fade"], tip = L["Overrides the default fadeout function of the GameTooltip. If you are seeing problems regarding fadeout, please disable."], y = 16 },
 		{ type = "Slider", var = "preFadeTime", label = L["Prefade Time"], min = 0, max = 5, step = 0.05 },
 		{ type = "Slider", var = "fadeTime", label = L["Fadeout Time"], min = 0, max = 5, step = 0.05, y = 16 },
-		{ type = "Check", var = "hideWorldTips", label = L["Instantly Hide World Frame Tips"], tip = L["This option will make tips which appear from objects in the world disappear instantly when you take the mouse off the object. Examples such as mailboxes, herbs or chests.\nNOTE: Does not work for all world objects."] },
+		{ type = "Check", var = "hideWorldTips", label = L["Instantly Hide World Frame Tips"], tip = L["This option will make most tips which appear from objects in the world disappear instantly when you take the mouse off the object. Examples such as mailboxes, herbs or chests.\nNOTE: Does not work for all world objects."] },
 	},
 	-- Bars
 	{
@@ -185,7 +185,7 @@ local options = {
 		{ type = "Check", var = "iconCombat", label = L["Show Combat Icon"], tip = L["Shows a combat icon next to the tip, if the unit is in combat"] },
 		{ type = "Check", var = "iconClass", label = L["Show Class Icon"], tip = L["For players, this will display the class icon next to the tooltip"], y = 12 },
 		{ type = "DropDown", var = "iconAnchor", label = L["Icon Anchor"], list = DROPDOWN_ANCHORPOS },
-		{ type = "Slider", var = "iconSize", label = L["Icon Dimension"], min = 8, max = 60, step = 1 },
+		{ type = "Slider", var = "iconSize", label = L["Icon Dimension"], min = 8, max = 100, step = 1 },
 	},
 	-- Anchors
 	{

@@ -367,7 +367,7 @@ function IE:LoadGroup(isRefresh, group)
 		local group_old = CI.group
 
 		if type(group) == "table" then
-			PlaySound(SOUNDKIT and SOUNDKIT.IG_CHARACTER_INFO_TAB or "igCharacterInfoTab") -- SOUNDKIT is patch 7.3 compat
+			PlaySound(SOUNDKIT.IG_CHARACTER_INFO_TAB)
 			IE:SaveSettings()
 			
 			CI.group = group

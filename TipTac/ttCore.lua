@@ -8,6 +8,13 @@ end)
 
 local L = LibStub("AceLocale-3.0"):GetLocale("TipTac")
 
+--[[
+	18.07.24 BfA fix notes
+	- Disabled all references to "gtt_newHeight", as its being replaced with gtt:SetPadding()
+	- Remove the gttShow hook as it no longer contains any code.
+	- Remove the TipHook_OnHide hook as it no longer contains any code.
+--]]
+
 local _G = getfenv(0);
 local abs = abs;
 local gtt = GameTooltip;
@@ -72,8 +79,9 @@ local TT_DefaultConfig = {
 	tipBackdropEdge = "Interface\\Tooltips\\UI-Tooltip-Border",
 	backdropEdgeSize = 14,
 	backdropInsets = 2.5,
-	tipColor = { 0.1, 0.1, 0.2 },
-	tipBorderColor = { 0.3, 0.3, 0.4 },
+
+	tipColor = { 0.1, 0.1, 0.2 },			-- UI Default: For most: (0.1,0.1,0.2), World Objects?: (0,0.2,0.35)
+	tipBorderColor = { 0.3, 0.3, 0.4 },		-- UI Default: (1,1,1,1)
 	gradientTip = true,
 	gradientColor = { 0.8, 0.8, 0.8, 0.2 },
 
@@ -247,15 +255,12 @@ local TT_TipsToModify = {
 	"GameTooltip",
 	"ShoppingTooltip1",
 	"ShoppingTooltip2",
-	"ShoppingTooltip3",			-- does #3 exist anymore?
 	"ItemRefTooltip",
 	"ItemRefShoppingTooltip1",
 	"ItemRefShoppingTooltip2",
-	"ItemRefShoppingTooltip3",	-- does #3 exist anymore?
 	--"WorldMapTooltip",
 	"WorldMapCompareTooltip1",
 	"WorldMapCompareTooltip2",
-	"WorldMapCompareTooltip3",	-- does #3 exist anymore?
 	-- 3rd party addon tooltips
 	"AtlasLootTooltip",
 	"QuestHelperTooltip",
@@ -263,7 +268,21 @@ local TT_TipsToModify = {
 };
 tt.tipsToModify = TT_TipsToModify;
 
-local tipBackdrop = { tile = false, insets = {} };
+--local tipBackdrop = { tile = false, insets = {} };
+-- Hi-jack the GTT backdrop table for our own evil needs
+local tipBackdrop = GAME_TOOLTIP_BACKDROP_STYLE_DEFAULT;
+tipBackdrop.backdropColor = CreateColor(1,1,1);
+tipBackdrop.backdropBorderColor = CreateColor(1,1,1);
+
+-- To ensure that the alpha channel is applied to the backdrop color, we have to cheat a bit, by pointing the GetRGB() function to GetRGBA().
+tipBackdrop.backdropColor.GetRGB = ColorMixin.GetRGBA;
+tipBackdrop.backdropBorderColor.GetRGB = ColorMixin.GetRGBA;
+
+-- blizzards "GameTooltip_SetBackdropStyle" function will set the backdrop color using just RGB and no alpha, this fixes that
+--hooksecurefunc("GameTooltip_SetBackdropStyle",function(self,style)
+--	self:SetBackdropBorderColor((style.backdropBorderColor or TOOLTIP_DEFAULT_COLOR):GetRGBA());
+--	self:SetBackdropColor((style.backdropColor or TOOLTIP_DEFAULT_BACKGROUND_COLOR):GetRGBA());
+--end);
 
 -- String Constants
 local TT_LevelMatch = "^"..TOOLTIP_UNIT_LEVEL:gsub("%%s",".+"); -- Was changed to match other localizations properly, used to match: "^"..LEVEL.." .+" -- Az: doesn't actually match the level line on the russian client! 14.02.24: Doesn't match for Italian client either.
@@ -322,10 +341,17 @@ local supportedHyperLinks = {
 	glyph = true,
 };
 
+-- Valid units to filter the aurs in DisplayAuras() with the "cfg.selfAurasOnly" setting on
+local validSelfCasterUnits = {
+	player = true,
+	pet = true,
+	vehicle = true,
+};
+
 -- GTT Control Variables
 local gtt_lastUpdate = 0;		-- time since last update
 local gtt_numLines = 0;			-- number of lines at last check, if this differs from gtt:NumLines() an update should be performed
-local gtt_newHeight;			-- the new height of the tooltip, this value accommodates the inclusion of health/power bars inside the tooltip
+--local gtt_newHeight;			-- the new height of the tooltip, this value accommodates the inclusion of health/power bars inside the tooltip
 local gtt_anchorType;			-- valid types: normal/mouse/parent
 local gtt_anchorPoint;          -- standard UI anchor point
 
@@ -510,12 +536,18 @@ SlashCmdList[modName] = function(cmd)
 	-- Show Anchor
 	elseif (param1 == "anchor") then
 		tt:Show();
+	-- Reset settings
+	elseif (param1 == "reset") then
+		wipe(cfg);
+		tt:ApplySettings();
+		AzMsg("All |2"..modName.."|r settings has been reset to their default values.");
 	-- Invalid or No Command
 	else
 		UpdateAddOnMemoryUsage();
 		AzMsg(format("----- |2%s|r |1%s|r ----- |1%.2f |2kb|r -----",modName,GetAddOnMetadata(modName,"Version"),GetAddOnMemoryUsage(modName)));
 		AzMsg(L["The following |2parameters|r are valid for this addon:"]);
 		AzMsg(L[" |2anchor|r = Shows the anchor where the tooltip appears"]);
+		AzMsg(L[" |2reset|r = Resets all settings back to their default values"]);
 	end
 end
 --------------------------------------------------------------------------------------------------------
@@ -565,7 +597,7 @@ local function GetDifficultyLevelColor(level)
 end
 
 -- Add target
-local function AddTarget(lineList,target)
+local function AddTarget(lineList,targetName)
 	local targetUnit = u.token.."target";
 	if (UnitIsUnit("player",targetUnit)) then
 		lineList[#lineList + 1] = COL_WHITE;
@@ -577,10 +609,10 @@ local function AddTarget(lineList,target)
 		if (UnitIsPlayer(targetUnit)) then
 			local _, targetClass = UnitClass(targetUnit);
 			lineList[#lineList + 1] = (TT_ClassColors[targetClass] or COL_LIGHTGRAY);
-			lineList[#lineList + 1] = target;
+			lineList[#lineList + 1] = targetName;
 			lineList[#lineList + 1] = targetReaction;
 		else
-			lineList[#lineList + 1] = target;
+			lineList[#lineList + 1] = targetName;
 		end
 		lineList[#lineList + 1] = "]";
 	end
@@ -653,7 +685,6 @@ local function ModifyUnitTooltip()
 			GameTooltipTextLeft2:SetFormattedText(cfg.showGuildRank and guildRank and "%s<%s> %s%s" or "%s<%s>",guildColor,guild,COL_LIGHTGRAY,guildRank);
 			lineInfoIndex = (lineInfoIndex + 1);
 		end
-
 	-- BattlePets
 	elseif (cfg.showBattlePetTip) and (isPetWild or isPetCompanion) then
 		lineOne[#lineOne + 1] = reaction;
@@ -668,7 +699,7 @@ local function ModifyUnitTooltip()
 		else
 			if not (petLevelLineIndex) then
 				for i = 2, gtt:NumLines() do
-					local gttLineText = _G["GameTooltipTextLeft"..i]:GetText(); 
+					local gttLineText = _G["GameTooltipTextLeft"..i]:GetText();
 					if (type(gttLineText) == "string") and (gttLineText:find(TT_LevelMatchPet)) then
 						petLevelLineIndex = i;
 						break;
@@ -728,12 +759,9 @@ local function ModifyUnitTooltip()
 	end
 	-- Line One
 	GameTooltipTextLeft1:SetFormattedText(("%s"):rep(#lineOne),unpack(lineOne));
-	-- print( string.format(("%s"):rep(#lineOne),unpack(lineOne)):gsub("%|","I") )
-
 	-- Info Line
 	local gttLine = _G["GameTooltipTextLeft"..lineInfoIndex];
 	gttLine:SetFormattedText(("%s"):rep(#lineInfo),unpack(lineInfo));
-
 	gttLine:SetTextColor(1,1,1);
 end
 
@@ -884,23 +912,19 @@ local function FormatBarValues(fs,val,max,type,type2)
 	end
 end
 
+-- Update Bar
+local function UpdateBar(bar,val,max,fmtType)
+	if (bar:IsShown()) then
+		bar:SetMinMaxValues(0,max);
+		bar:SetValue(val);
+		FormatBarValues(bar.text,val,max,fmtType);
+	end
+end
+
 -- Update Health & Power
 local function UpdateHealthAndPowerBar()
-	-- Health
-	if (bars[1]:IsShown()) then
-		local val, max = UnitHealth(u.token), UnitHealthMax(u.token);
-		bars[1]:SetMinMaxValues(0,max);
-		bars[1]:SetValue(val);
-		FormatBarValues(bars[1].text,val,max,cfg.healthBarText,cfg.barsCondenseType);
-	end
-	-- Power
-	if (bars[2]:IsShown()) then
-		local val, max = UnitPower(u.token,u.powerType), UnitPowerMax(u.token,u.powerType);
-		bars[2]:SetMinMaxValues(0,max);
-		bars[2]:SetValue(val);
-		local barText = (u.powerType == 0 and cfg.manaBarText or cfg.powerBarText);
-		FormatBarValues(bars[2].text,val,max,barText,cfg.barsCondenseType);
-	end
+	UpdateBar(bars[1],UnitHealth(u.token),UnitHealthMax(u.token),cfg.healthBarText)
+	UpdateBar(bars[2],UnitPower(u.token,u.powerType),UnitPowerMax(u.token,u.powerType),(u.powerType == 0 and cfg.manaBarText or cfg.powerBarText))
 end
 
 --------------------------------------------------------------------------------------------------------
@@ -944,7 +968,7 @@ local function DisplayAuras(auraType,startingAuraFrameIndex)
 	local horzAnchor1 = (auraType == "HELPFUL" and "LEFT" or "RIGHT");
 	local horzAnchor2 = TT_MirrorAnchors[horzAnchor1];
 
-	local vertAnchor = (aurasAtBottom and "TOP" or "BOTTOM");
+	local vertAnchor = (cfg.aurasAtBottom and "TOP" or "BOTTOM");
 	local anchor1 = vertAnchor..horzAnchor1;
 	local anchor2 = TT_MirrorAnchors[vertAnchor]..horzAnchor1;
 
@@ -954,7 +978,7 @@ local function DisplayAuras(auraType,startingAuraFrameIndex)
 		if (not iconTexture) or (auraFrameIndex / aurasPerRow > cfg.auraMaxRows) then
 			break;
 		end
-		if (not cfg.selfAurasOnly or casterUnit == "player" or casterUnit == "pet" or casterUnit == "vehicle") then
+		if (not cfg.selfAurasOnly or validSelfCasterUnits[casterUnit]) then
 			local aura = auras[auraFrameIndex] or CreateAuraFrame();
 
 			-- Anchor It
@@ -969,6 +993,17 @@ local function DisplayAuras(auraType,startingAuraFrameIndex)
 				-- anchor to last
 				aura:SetPoint(horzAnchor1,auras[auraFrameIndex - 1],horzAnchor2,xOffsetBasis,0);
 			end
+
+			-- Cooldown
+			if (cfg.showAuraCooldown) and (duration and duration > 0 and endTime and endTime > 0) then
+				aura.cooldown:SetCooldown(endTime - duration,duration);
+			else
+				aura.cooldown:Hide();
+			end
+
+			-- Set Texture + Count
+			aura.icon:SetTexture(iconTexture);
+			aura.count:SetText(count and count > 1 and count or "");
 
 			-- Border -- Only shown for debuffs
 			if (auraType == "HARMFUL") then
@@ -992,132 +1027,42 @@ end
 
 -- display buffs and debuffs and hide unused aura frames
 local function SetupAuras()
-	local buffCount = DisplayAuras("HELPFUL",1);
-	local debuffCount = DisplayAuras("HARMFUL",buffCount + 1);
-
-	-- Hide the Unused
-	for i = (buffCount + debuffCount + 1), #auras do
-		auras[i]:Hide();
-	end
-end
-
---[[
--- [18.07.19] Old SetupAuras() function. Re-enable if the new one above causes issues.
--- The outer variable "pos" is the actual index of the shown auras we are actually going to use, in case certain auras are filtered. The "index" variable is for querying the auras.
-local function SetupAuras()
-	-- Init
-	local pos = 1;
-	local aurasPerRow = floor((gtt:GetWidth() - 4) / (cfg.auraSize + 1));
-	-- Get Buffs
+	local auraCount = 0;
 	if (cfg.showBuffs) then
-		local index = 1;
-		while (true) do
-			local _, iconTexture, count, debuffType, duration, endTime, casterUnit = UnitAura(u.token,index,"HELPFUL");	-- [18.07.19] 8.0/BfA: "dropped second parameter"
-			if (not iconTexture) or (pos / aurasPerRow > cfg.auraMaxRows) then
-				break;
-			end
-			if (not cfg.selfAurasOnly or casterUnit == "player" or casterUnit == "pet" or casterUnit == "vehicle") then
-				local aura = auras[pos] or CreateAuraFrame();
-				-- Anchor It
-				aura:ClearAllPoints();
-				if ((pos - 1) % aurasPerRow == 0) or (pos == 1) then
-					-- new aura line
-					local x, y = 2, (cfg.auraSize + 1) * floor((pos - 1) / aurasPerRow);
-					if (cfg.aurasAtBottom) then
-						aura:SetPoint("TOPLEFT",gtt,"BOTTOMLEFT",x,-y);
-					else
-						aura:SetPoint("BOTTOMLEFT",gtt,"TOPLEFT",x,y);
-					end
-				else
-					-- anchor to last
-					aura:SetPoint("LEFT",auras[pos - 1],"RIGHT",1,0);
-				end
-				-- Cooldown
-				if (cfg.showAuraCooldown) and (duration and duration > 0 and endTime and endTime > 0) then
-					aura.cooldown:SetCooldown(endTime - duration,duration);
-				else
-					aura.cooldown:Hide();
-				end
-				-- Set Texture + Count
-				aura.icon:SetTexture(iconTexture);
-				aura.count:SetText(count and count > 1 and count or "");
-				-- Border
-				aura.border:Hide();
-				-- Show + Next, Break if exceed max desired rows of auras
-				aura:Show();
-				pos = (pos + 1);
-			end
-			index = (index + 1);
-		end
+		auraCount = auraCount + DisplayAuras("HELPFUL",auraCount + 1);
 	end
-	-- Get Debuffs
-	if (cfg.showDebuffs) and (pos / aurasPerRow <= cfg.auraMaxRows) then
-		local index = 1;
-		local buffCount = (pos - 1);
-		while (true) do
-			local _, iconTexture, count, debuffType, duration, endTime, casterUnit = UnitAura(u.token,index,"HARMFUL");	-- [18.07.19] 8.0/BfA: "dropped second parameter"
-			if (not iconTexture) or (pos / aurasPerRow > cfg.auraMaxRows) then
-				break;
-			end
-			if (not cfg.selfAurasOnly or casterUnit == "player" or casterUnit == "pet" or casterUnit == "vehicle") then
-				local aura = auras[pos] or CreateAuraFrame();
-				-- Anchor It
-				aura:ClearAllPoints();
-				if ((pos - 1) % aurasPerRow == 0) or (pos == buffCount + 1) then
-					-- new aura line
-					local x, y = -2, (cfg.auraSize + 1) * floor((pos - 1) / aurasPerRow);
-					if (cfg.aurasAtBottom) then
-						aura:SetPoint("TOPRIGHT",gtt,"BOTTOMRIGHT",x,-y);
-					else
-						aura:SetPoint("BOTTOMRIGHT",gtt,"TOPRIGHT",x,y);
-					end
-				else
-					-- anchor to last
-					aura:SetPoint("RIGHT",auras[pos - 1],"LEFT",-1,0);
-				end
-				-- Cooldown
-				if (cfg.showAuraCooldown) and (duration and duration > 0 and endTime and endTime > 0) then
-					aura.cooldown:SetCooldown(endTime - duration,duration);
-				else
-					aura.cooldown:Hide();
-				end
-				-- Set Texture + Count
-				aura.icon:SetTexture(iconTexture);
-				aura.count:SetText(count and count > 1 and count or "");
-				-- Border -- Az: more optimizations to come
---				if ("HARMFUL") then
-					local color = DebuffTypeColor[debuffType] or DebuffTypeColor["none"];
-					aura.border:SetVertexColor(color.r,color.g,color.b);
-					aura.border:Show();
---				else
---					aura.border:Hide();
---				end
-				-- Show + Next, Break if exceed max desired rows of aura
-				aura:Show();
-				pos = (pos + 1);
-			end
-			index = (index + 1);
-		end
+	if (cfg.showDebuffs) then
+		auraCount = auraCount + DisplayAuras("HARMFUL",auraCount + 1);
 	end
+
 	-- Hide the Unused
-	for i = pos, #auras do
+	for i = (auraCount + 1), #auras do
 		auras[i]:Hide();
 	end
 end
---]]
 
 --------------------------------------------------------------------------------------------------------
 --                                          GameTooltip Hooks                                         --
 --------------------------------------------------------------------------------------------------------
 
 --[[
-	USEFUL NOTES :: This is apparently the order at which the GTT construsts the tip
+	GameTooltip Construction Call Order -- Tested for BfA (18.07.24)
+	This is apparently the order in which the GTT construsts unit tips
+	------------------------------------------------------------------
 	- GameTooltip_SetDefaultAnchor()
-	- Internal_Function_Which_Fills_Tip()		-- GTT:GetUnit() becomes valid after this!
+	- GTT.OnTooltipSetUnit()					-- GTT:GetUnit() becomes valid here
+	- GTT.OnShow()
 	- GTT:Show()								-- Will Resize the tip
-	- GTT.OnTooltipSetUnit()
+	- GTT.OnTooltipCleared()
 	- Something that resizes the tip, Show() already does this, but it's also done after OnTooltipSetUnit() again. Or maybe it's just another addon's hook doing it. Tested without any addons loaded, and it still resizes after.
 --]]
+
+-- table with GameTooltip events to hook into (k = eventName, v = hookFunction)
+local gttEventHooks = {};
+
+-- FadeOut constants
+local FADE_ENABLE = 1;
+local FADE_BLOCK = 2;
 
 -- Get The Anchor Position Depending on the Tip Content and Parent Frame -- Do not depend on "u.token" here, as it might not have been cleared yet!
 -- Checking "mouseover" here isn't ideal due to actionbars, it will sometimes return true because of selfcast.
@@ -1132,54 +1077,62 @@ end
 local gttFadeOut = gtt.FadeOut;
 gtt.FadeOut = function(self,...)
 	if (not u.token) or (not cfg.overrideFade) then
-		self.fadeOut = 2; -- Don't allow the OnUpdate handler to run the fadeout/update code
+		self.fadeOut = FADE_BLOCK; -- Don't allow the OnUpdate handler to run the fadeout/update code
 		gttFadeOut(self,...);
 	elseif (cfg.preFadeTime == 0 and cfg.fadeTime == 0) then
 		self:Hide();
 	else
-		self.fadeOut = 1;
+		self.fadeOut = FADE_ENABLE;
 		gtt_lastUpdate = 0;
 	end
 end
 
 -- HOOK: GTT:Show -- If there are any bar offsets, resize the tip
-local gttShow = gtt.Show;
+--local gttShow = gtt.Show;
 --gtt.Show = function(self,...)
-hooksecurefunc(GameTooltip, "Show", function(self, ...)
-    --gttShow(self,...);
-   	if (bars.offset) then
-   		gtt_numLines = self:NumLines();
-   		gtt_newHeight = (self:GetHeight() + bars.offset);
-   --		self:SetHeight(gtt_newHeight);	-- Az: Setting height here seems to cause a conflict with the XToLevel addon, which causes an empty line. But I was certain this got added to fix the very same issue, just with another addon
-   	end
-end)
+--hooksecurefunc(GameTooltip, "Show", function(self, ...)
+--	gttShow(self,...);
+--		tt:ApplyBackdrop(self)
+--	if (bars.offset) and (self:GetUnit()) then
+--		self:SetPadding(0,bars.offset);
+--		gtt_numLines = self:NumLines();
+--		gtt_newHeight = (self:GetHeight() + bars.offset);
+--		self:SetHeight(gtt_newHeight);	-- Az: Setting height here seems to cause a conflict with the XToLevel addon, which causes an empty line. But I was certain this got added to fix the very same issue, just with another addon
+--	end
+--end)
 
--- HOOK: GTT OnShow -- This ensures that default anchored world frame tips have the proper color, their internal function seems to set them to a dark blue color
-local function GTTHook_OnShow(self,...)
+-- EventHook: OnShow
+function gttEventHooks.OnShow(self,...)
 	gtt_anchorType, gtt_anchorPoint = GetAnchorPosition();
-	local gttAnchor = self:GetAnchorType();
-	if (self.default) and (gtt_anchorType == "mouse") and (gttAnchor ~= "ANCHOR_CURSOR") and (gttAnchor ~= "ANCHOR_CURSOR_RIGHT") then
+
+	-- Anchor GTT to Mouse
+	if (gtt_anchorType == "mouse") and (self.default) then
+		local gttAnchor = self:GetAnchorType();
+		if (gttAnchor ~= "ANCHOR_CURSOR") and (gttAnchor ~= "ANCHOR_CURSOR_RIGHT") then
         if not fixInCombat() then
-		    tt:AnchorFrameToMouse(self);
+			tt:AnchorFrameToMouse(self);
         end
+		end
 	end
+
+	-- Ensures that default anchored world frame tips have the proper color, their internal function seems to set them to a dark blue color
 	if (self:IsOwned(UIParent)) and (not self:GetUnit()) then
 		self:SetBackdropColor(unpack(cfg.tipColor));
 	end
 end
 
--- HOOK: GTT OnUpdate
-local function GTTHook_OnUpdate(self,elapsed)
+-- EventHook: OnUpdate
+function gttEventHooks.OnUpdate(self,elapsed)
 	-- This ensures that mouse anchored world frame tips have the proper color, their internal function seems to set them to a dark blue color
 	local gttAnchor = self:GetAnchorType();
 	if (gttAnchor == "ANCHOR_CURSOR") or (gttAnchor == "ANCHOR_CURSOR_RIGHT") then
-		self:SetBackdropColor(unpack(cfg.tipColor));
-		self:SetBackdropBorderColor(unpack(cfg.tipBorderColor));
+		self:SetBackdropColor(tipBackdrop.backdropColor:GetRGBA());
+		self:SetBackdropBorderColor(tipBackdrop.backdropBorderColor:GetRGBA());
 		return;
 	-- Anchor GTT to Mouse
 	elseif (gtt_anchorType == "mouse") and (self.default) then
         if not fixInCombat() then
-		    tt:AnchorFrameToMouse(self);
+		tt:AnchorFrameToMouse(self);
         end
 	end
 
@@ -1189,8 +1142,8 @@ local function GTTHook_OnUpdate(self,elapsed)
 	end
 
 	-- Fadeout / Update Tip if Showing a Unit
-	-- Do not allow (fadeOut == 2), as that is only for non overridden fadeouts, but we still need to keep resizing the tip
-	if (u.token) and (self.fadeOut ~= 2) then
+	-- Do not allow (fadeOut == FADE_BLOCK), as that is only for non overridden fadeouts, but we still need to keep resizing the tip
+	if (u.token) and (self.fadeOut ~= FADE_BLOCK) then
 		gtt_lastUpdate = (gtt_lastUpdate + elapsed);
 		if (self.fadeOut) then
 			self:Show(); -- Overrides self:FadeOut()
@@ -1210,63 +1163,78 @@ local function GTTHook_OnUpdate(self,elapsed)
 				gtt_numLines = gttCurrentLines;
 				gtt_lastUpdate = 0;
 				tt:ApplyGeneralAppearance();
-			end	
+			end
 		end
 	end
 
 	-- Resize the Tooltip if it's size has changed more than 0.1 units
-	local gttHeight = self:GetHeight();
-	if (gtt_newHeight) and (abs(gttHeight - gtt_newHeight) > 0.1) then
+--	local gttHeight = self:GetHeight();
+--	if (gtt_newHeight) and (abs(gttHeight - gtt_newHeight) > 0.1) then
 		--gtt_newHeight = (gttHeight + bars.offset);	-- Az: Recalculating the height here would possibly fix every issue (I think), but it also adds extra cpu cycles I'd rather be without. For now just stay with the Show() recalc.
-		self:SetHeight(gtt_newHeight);
-	end
+--		self:SetHeight(gtt_newHeight);
+--	end
 end
 
--- HOOK: GTT OnTooltipSetUnit
-local function GTTHook_OnTooltipSetUnit(self,...)
+-- EventHook: OnTooltipSetUnit
+function gttEventHooks.OnTooltipSetUnit(self,...)
 	-- Hides the tip in combat if one of those options are set. Also checks if the Shift key is pressed, and cancels hiding of the tip (if that option is set, that is)
 	if (cfg.hideAllTipsInCombat or cfg.hideUFTipsInCombat and self:GetOwner() ~= UIParent) and (not cfg.showHiddenTipsOnShift or not IsShiftKeyDown()) and (UnitAffectingCombat("player")) then
 		self:Hide();
 		return;
 	end
+
 	local _, unit = self:GetUnit();
+
 	-- Concated unit tokens such as "targettarget" cannot be returned as the unit by GTT:GetUnit() and it will return as "mouseover", but the "mouseover" unit is still invalid at this point for those unitframes!
 	-- To overcome this problem, we look if the mouse is over a unitframe, and if that unitframe has a unit attribute set?
 	if (not unit) then
 		local mouseFocus = GetMouseFocus();
 		unit = mouseFocus and mouseFocus.GetAttribute and mouseFocus:GetAttribute("unit");
 	end
+
 	-- A mage's mirror images sometimes doesn't return a unit, this would fix it
 	if (not unit) and (UnitExists("mouseover")) then
 		unit = "mouseover";
 	end
+
 	-- Sometimes when you move your mouse quicky over units in the worldframe, we can get here without a unit
 	if (not unit) then
 		self:Hide();
 		return;
 	end
+
 	-- A "mouseover" unit is better to have as we can then safely say the tip should no longer show when it becomes invalid. Harder to say with a "party2" unit.
 	-- This also helps fix the problem that "mouseover" units aren't valid for group members out of range, a bug that has been in WoW since 3.0.2 I think.
 	if (UnitIsUnit(unit,"mouseover")) then
 		unit = "mouseover";
 	end
+
 	-- We're done, apply appearance
 	u.token = unit;
 	self.fadeOut = nil; -- Az: Sometimes this wasn't getting reset, the fact a cleanup isn't performed at this point, now that it was moved to "OnTooltipCleared" is very bad, so this is a fix
 	tt:ApplyGeneralAppearance(true);
+
+	-- When there are any bar offsets, set tip padding
+	if (bars.offset) and (self:GetUnit()) then
+		self:SetPadding(0,bars.offset);
+		gtt_numLines = self:NumLines();
+	end
 end
 
--- HOOK: GTT OnTooltipCleared -- This will clean up auras, bars, raid icon and vars for the gtt when we aren't showing a unit
-local function GTTHook_OnTooltipCleared(self,...)
+-- EventHook: OnTooltipCleared -- This will clean up auras, bars, raid icon and vars for the gtt when we aren't showing a unit
+function gttEventHooks.OnTooltipCleared(self,...)
 	-- WoD: resetting the back/border color seems to be a necessary action, otherwise colors may stick when showing the next tooltip thing (world object tips)
 	-- BfA: The tooltip now also clears the backdrop in adition to color and bordercolor, so set it again here
 	tt:ApplyBackdrop(self);
+
+	-- remove the padding that might have been set to fit health/power bars
+	self:SetPadding(0,0);
 
 	-- wipe the vars
 	wipe(u);
 	gtt_lastUpdate = 0;
 	gtt_numLines = 0;
-	gtt_newHeight = nil;
+--	gtt_newHeight = nil;
 	petLevelLineIndex = nil;
 	self.fadeOut = nil;
 	bars.offset = nil;
@@ -1283,7 +1251,7 @@ end
 
 -- OnHide Script -- Used to default the background and border color
 local function TipHook_OnHide(self,...)
-	tt:ApplyBackdrop(self);
+--	tt:ApplyBackdrop(self);
 end
 
 -- Resolves the given table array of string names into their global objects
@@ -1305,39 +1273,22 @@ local function ResolveGlobalNamedObjects(tipTable)
 	end
 end
 
--- Function to loop through tips to modify and hook
-function tt:HookTips()
-	-- Need to be called as late as possible during load, as we want to try and be the last addon to hook "OnTooltipSetUnit" so we always have a "completed" tip to work on
-	gtt:HookScript("OnShow",GTTHook_OnShow);
-	gtt:HookScript("OnUpdate",GTTHook_OnUpdate);
-	gtt:HookScript("OnTooltipSetUnit",GTTHook_OnTooltipSetUnit);
-	gtt:HookScript("OnTooltipCleared",GTTHook_OnTooltipCleared);
-
-	-- Resolve the TipsToModify and hook their OnHide script
-	ResolveGlobalNamedObjects(TT_TipsToModify);
-	for index, tipName in ipairs(TT_TipsToModify) do
-		if (type(tip) == "table") and (type(tip.GetObjectType) == "function") then
-			tip:HookScript("OnHide",TipHook_OnHide);
-		end
+-- HOOK: GameTooltip_SetDefaultAnchor
+local function GTT_SetDefaultAnchor(tooltip,parent)
+	-- Return if no tooltip or parent
+	if (not tooltip or not parent) then
+		return;
 	end
-
-	-- Replace GameTooltip_SetDefaultAnchor (For Re-Anchoring) -- Patch 3.2 made this function secure for some reason
-	hooksecurefunc("GameTooltip_SetDefaultAnchor",function(tooltip,parent)
-		-- tooltip:ClearAllPoints()
-		-- Return if no tooltip or parent
-		if (not tooltip or not parent) then
-			return;
-        end
         if fixInCombat() then
             return
         end
-		-- Position Tip to Normal, Mouse or Parent anchor
-		gtt_anchorType, gtt_anchorPoint = GetAnchorPosition();
-		tooltip:SetOwner(parent,"ANCHOR_NONE");
-		tooltip:ClearAllPoints();
-		if (gtt_anchorType == "mouse") then
-			tt:AnchorFrameToMouse(tooltip);
-		elseif (gtt_anchorType == "parent") then
+	-- Position Tip to Normal, Mouse or Parent anchor
+	gtt_anchorType, gtt_anchorPoint = GetAnchorPosition();
+	tooltip:SetOwner(parent,"ANCHOR_NONE");
+	tooltip:ClearAllPoints();
+	if (gtt_anchorType == "mouse") then
+		tt:AnchorFrameToMouse(tooltip);
+	elseif (gtt_anchorType == "parent") and (parent ~= UIParent) then
 			
 			-------------------------------------------------
 			-- 移除 默认位置
@@ -1354,15 +1305,31 @@ function tt:HookTips()
 				tooltip:SetPoint(unpack(points[i]))
 			end
 			-- by alee
+			
+		tooltip:SetPoint(TT_MirrorAnchorsSmart[gtt_anchorPoint] or TT_MirrorAnchors[gtt_anchorPoint],parent,gtt_anchorPoint);
+	else
+		tooltip:SetPoint(gtt_anchorPoint,tt);
+	end
+	tooltip.default = 1;
+end
 
+-- Function to loop through tips to modify and hook
+function tt:HookTips()
+	-- Hooks needs to be applied as late as possible during load, as we want to try and be the last addon to hook "OnTooltipSetUnit" so we always have a "completed" tip to work on
+	for eventName, funcHook in next, gttEventHooks do
+		gtt:HookScript(eventName,funcHook);
+	end
 
-			tooltip:SetPoint(TT_MirrorAnchorsSmart[gtt_anchorPoint] or TT_MirrorAnchors[gtt_anchorPoint],parent,gtt_anchorPoint);
-
-		else
-			tooltip:SetPoint(gtt_anchorPoint,tt);
+	-- Resolve the TipsToModify and hook their OnHide script
+	ResolveGlobalNamedObjects(TT_TipsToModify);
+	for index, tipName in ipairs(TT_TipsToModify) do
+		if (type(tip) == "table") and (type(tip.GetObjectType) == "function") then
+			tip:HookScript("OnHide",TipHook_OnHide);
 		end
-		tooltip.default = 1;
-	end);
+	end
+
+	-- Replace GameTooltip_SetDefaultAnchor (For Re-Anchoring) -- Patch 3.2 made this function secure
+	hooksecurefunc("GameTooltip_SetDefaultAnchor",GTT_SetDefaultAnchor);
 
 	-- Clear this function as it's not needed anymore
 	self.HookTips = nil;
@@ -1413,6 +1380,7 @@ function tt:ApplySettings()
 	else
 		self:UnregisterEvent("CURSOR_UPDATE");
 	end
+
 	-- Set Backdrop
 	tipBackdrop.bgFile = cfg.tipBackdropBG;
 	tipBackdrop.edgeFile = cfg.tipBackdropEdge;
@@ -1421,6 +1389,10 @@ function tt:ApplySettings()
 	tipBackdrop.insets.right = cfg.backdropInsets;
 	tipBackdrop.insets.top = cfg.backdropInsets;
 	tipBackdrop.insets.bottom = cfg.backdropInsets;
+
+	tipBackdrop.backdropColor:SetRGBA(unpack(cfg.tipColor));
+	tipBackdrop.backdropBorderColor:SetRGBA(unpack(cfg.tipBorderColor));
+
 	-- Set Scale, Backdrop, Gradient
 	for _, tip in ipairs(TT_TipsToModify) do
 		if (type(tip) == "table") and (type(tip.GetObjectType) == "function") then
@@ -1435,6 +1407,7 @@ function tt:ApplySettings()
 			tt:ApplyBackdrop(tip);
 		end
 	end
+
 	-- Bar Appearances
 	GameTooltipStatusBar:SetStatusBarTexture(cfg.barTexture);
 	GameTooltipStatusBar:GetStatusBarTexture():SetHorizTile(false);	-- Az: 3.3.3 fix
@@ -1447,6 +1420,7 @@ function tt:ApplySettings()
 		bar:SetHeight(cfg.barHeight);
 		bar.text:SetFont(cfg.barFontFace,cfg.barFontSize,cfg.barFontFlags);
 	end
+
 	-- If disabled, hide auras, else set their size
 	local gameFont = GameFontNormal:GetFont();
 	for _, aura in ipairs(auras) do
@@ -1459,12 +1433,14 @@ function tt:ApplySettings()
 			aura:Hide();
 		end
 	end
+
 	-- GameTooltip Font Templates
 	if (cfg.modifyFonts) then
 		GameTooltipHeaderText:SetFont(cfg.fontFace,cfg.fontSize + cfg.fontSizeDelta,cfg.fontFlags);
 		GameTooltipText:SetFont(cfg.fontFace,cfg.fontSize,cfg.fontFlags);
 		GameTooltipTextSmall:SetFont(cfg.fontFace,cfg.fontSize - cfg.fontSizeDelta,cfg.fontFlags);
 	end
+
 	-- Special Tooltip Icon
 	local isIconNeeded = (cfg.iconRaid or cfg.iconFaction or cfg.iconCombat or cfg.iconClass);
 	if (isIconNeeded) and (not tipIcon) then
@@ -1480,6 +1456,7 @@ function tt:ApplySettings()
 			tipIcon:Hide();
 		end
 	end
+
 	-- ChatFrame Hyperlink Hover -- Az: this may need some more testing, code seems wrong
 	if (cfg.enableChatHoverTips or self.hookedHoverHyperlinks) then
 		for i = 1, NUM_CHAT_WINDOWS do
@@ -1497,6 +1474,7 @@ function tt:ApplySettings()
 --			GuildBankMessageFrame:SetScript("OnHyperlinkLeave",cfg.enableChatHoverTips and OnHyperlinkLeave or nil);
 --		end
 	end
+
 	-- TipTacItemRef Support
 	if (TipTacItemRef and TipTacItemRef.ApplySettings) then
 		TipTacItemRef:ApplySettings();
@@ -1505,9 +1483,7 @@ end
 
 -- Applies the backdrop, color and border color. The GTT will often reset these internally.
 function tt:ApplyBackdrop(tip)
-	tip:SetBackdrop(tipBackdrop);
-	tip:SetBackdropColor(unpack(cfg.tipColor));				-- Default: For most: (0.1,0.1,0.2), World Objects?: (0,0.2,0.35)
-	tip:SetBackdropBorderColor(unpack(cfg.tipBorderColor));	-- Default: (1,1,1,1)
+	GameTooltip_SetBackdropStyle(tip,tipBackdrop)
 end
 
 --------------------------------------------------------------------------------------------------------
@@ -1576,9 +1552,7 @@ local function ApplyTipTacAppearance(first)
 		SetupHealthAndPowerBar();
 	end
 	UpdateHealthAndPowerBar();
-	-- Remove PVP Line, which makes the tip look a bit bad
-	-- MoP: Now removes alliance and horde faction text as well
-	-- 5.4: Added removal of the coalesced realm line(s)
+	-- Remove PVP Line, which makes the tip look a bit bad -- MoP: Now removes alliance and horde faction text as well -- 5.4: Added removal of the coalesced realm line(s)
 	for i = 2, gtt:NumLines() do
 		local line = _G["GameTooltipTextLeft"..i];
 		local text = line:GetText();
@@ -1604,6 +1578,7 @@ end
 function tt:ApplyGeneralAppearance(first)
 	u.isPlayer = UnitIsPlayer(u.token);
 	u.reactionIndex = GetUnitReactionIndex(u.token);
+
 	-- Reaction Backdrop/Border Color
 	if (cfg.reactColoredBackdrop) then
 		gtt:SetBackdropColor(unpack(cfg["colReactBack"..u.reactionIndex]));
@@ -1616,6 +1591,7 @@ function tt:ApplyGeneralAppearance(first)
 		local color = CLASS_COLORS[classEng] or CLASS_COLORS["PRIEST"];
 		gtt:SetBackdropBorderColor(color.r,color.g,color.b);
 	end
+
 	-- Special Tooltip Icon
 	if (cfg.iconRaid or cfg.iconFaction or cfg.iconCombat or cfg.iconClass) then
 		local raidIconIndex = GetRaidTargetIndex(u.token);
@@ -1645,10 +1621,12 @@ function tt:ApplyGeneralAppearance(first)
 			tipIcon:Hide();
 		end
 	end
+
 	-- TipTac Appearance
 	if (cfg.showUnitTip) then
 		ApplyTipTacAppearance(first);
 	end
+
 	-- Auras - Has to be updated last because it depends on the tips new dimention
 	-- Check token, because if the GTT was hidden in OnShow (called in ApplyTipTacAppearance), it would be nil here due to "u" being cleared in the OnTooltipCleared() function
 	if (u.token) and (cfg.showBuffs or cfg.showDebuffs) then

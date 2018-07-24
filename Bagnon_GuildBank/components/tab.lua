@@ -20,18 +20,13 @@ function Tab:New(...)
 	return tab
 end
 
-function Tab:GetSlot()
-	return 'guild' .. self:GetID()
-end
-
-
 --[[ Interaction ]]--
 
 function Tab:OnClick()
 	local tab = self:GetID()
-	local _,_, viewable = self:GetInfo()
+	local info = self:GetInfo()
 
-	if viewable then
+	if info.viewable then
 		SetCurrentGuildBankTab(tab)
 		QueryGuildBankTab(tab)
 		self:SendMessage('GUILD_TAB_CHANGED')
@@ -55,40 +50,40 @@ function Tab:RegisterEvents()
 end
 
 function Tab:Update()
-	local name, icon, viewable = self:GetInfo()
-	if icon then
-		local color = viewable and 1 or 0.1
+	local info = self:GetInfo()
+	if info.icon then
+		local color = info.viewable and 1 or 0.1
 
-		self.Icon:SetTexture(tonumber(icon) or icon)
+		self.Icon:SetTexture(tonumber(info.icon) or info.icon)
 		self.Icon:SetVertexColor(1, color, color)
-		self.Icon:SetDesaturated(not viewable)
+		self.Icon:SetDesaturated(not info.viewable)
 		self:UpdateStatus()
 	end
 
-	self:EnableMouse(icon)
-	self:SetAlpha(icon and 1 or 0)
+	self:EnableMouse(info.icon)
+	self:SetAlpha(info.icon and 1 or 0)
 end
 
 function Tab:UpdateStatus()
 	self:SetChecked(self:GetID() == GetCurrentGuildBankTab())
 
-	local _,_,_,_,_, numWithdrawals, cached = self:GetInfo()
-	if self:GetChecked() and not cached then
-		self.Count:SetText(numWithdrawals >= 0 and numWithdrawals or '∞')
+	local info = self:GetInfo()
+	if self:GetChecked() and not info.cached then
+		self.Count:SetText(info.numWithdrawals >= 0 and info.numWithdrawals or '∞')
 	end
 end
 
 function Tab:UpdateTooltip()
-	local name, icon, _, canDeposit, numWithdrawals = self:GetInfo()
-	if name then
-		GameTooltip:SetText(name)
+	local info = self:GetInfo()
+	if info.name then
+		GameTooltip:SetText(info.name)
 
 		local access
-		if not canDeposit and numWithdrawals == 0 then
+		if not info.canDeposit and info.numWithdrawals == 0 then
 			access = RED_FONT_COLOR_CODE .. "(" .. GUILDBANK_TAB_LOCKED .. ")" .. FONT_COLOR_CODE_CLOSE;
-		elseif not canDeposit then
+		elseif not info.canDeposit then
 			access = RED_FONT_COLOR_CODE .."(" .. GUILDBANK_TAB_WITHDRAW_ONLY .. ")" .. FONT_COLOR_CODE_CLOSE;
-		elseif numWithdrawals == 0 then
+		elseif info.numWithdrawals == 0 then
 			access = RED_FONT_COLOR_CODE .."(" .. GUILDBANK_TAB_DEPOSIT_ONLY .. ")" .. FONT_COLOR_CODE_CLOSE;
 		else
 			access = GREEN_FONT_COLOR_CODE .. "(" .. GUILDBANK_TAB_FULL_ACCESS .. ")" .. FONT_COLOR_CODE_CLOSE;

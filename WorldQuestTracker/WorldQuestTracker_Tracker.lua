@@ -77,7 +77,10 @@ end
 function WorldQuestTracker.AddQuestTomTom (questID, mapID, noRemove)
 	local x, y = C_TaskQuest.GetQuestLocation (questID, mapID)
 	local title, factionID, tagID, tagName, worldQuestType, rarity, isElite, tradeskillLineIndex = WorldQuestTracker.GetQuest_Info (questID)
-	local alreadyExists = TomTom:WaypointMFExists (mapID, nil, x, y, title)
+	
+	--
+	
+	local alreadyExists = TomTom:WaypointExists (mapID, x, y, title)
 	
 	if (alreadyExists and WorldQuestTracker.db.profile.tomtom.uids [questID]) then
 		if (noRemove) then
@@ -89,7 +92,7 @@ function WorldQuestTracker.AddQuestTomTom (questID, mapID, noRemove)
 	end
 	
 	if (not alreadyExists) then
-		local uid = TomTom:AddMFWaypoint (mapID, nil, x, y, {title=title, persistent=WorldQuestTracker.db.profile.tomtom.persistent})
+		local uid = TomTom:AddWaypoint (mapID, x, y, {title = title, persistent=WorldQuestTracker.db.profile.tomtom.persistent})
 		WorldQuestTracker.db.profile.tomtom.uids [questID] = uid
 	end
 	return

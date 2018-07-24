@@ -63,7 +63,7 @@ function MoneyFrame:OnEnter()
 	if CanWithdrawGuildBankMoney() then
 		local withdrawMoney = min(GetGuildBankWithdrawMoney(), GetGuildBankMoney())
 		if withdrawMoney > 0 then
-			GameTooltip:AddLine(format(L.TipWithdrawRemaining, GetCoinTextureString(withdrawMoney, 11)), 1,1,1)
+			GameTooltip:AddLine(format(L.TipWithdrawRemaining, GetMoneyString(withdrawMoney, true)), 1,1,1)
 		else
 			GameTooltip:AddLine(L.TipWithdraw, 1,1,1)
 		end

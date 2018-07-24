@@ -471,7 +471,7 @@ function DD.Button_OnClick(self)
 	local func = self.func;
 	if ( func ) then
 		func(self, self.arg1, self.arg2, checked);
-		PlaySound(SOUNDKIT and SOUNDKIT.U_CHAT_SCROLL_BUTTON or "UChatScrollButton") -- SOUNDKIT is patch 7.3 compat
+		PlaySound(SOUNDKIT.U_CHAT_SCROLL_BUTTON)
 	end
 
 end

@@ -961,6 +961,10 @@ L["UIPANEL_WARNINVALIDS_DESC"] = [[If this setting is enabled, TellMeWhen when w
 
 It is HIGHLY RECOMMENDED that you keep this setting enabled, as some of these configuration errors can cause particularly poor performance]]
 
+L["UIPANEL_DRDURATION"] = "DR Duration"
+L["UIPANEL_DRDURATION_DESC"] = [[Set the duration that diminishing returns last.
+
+The official time stated by Blizzard is 18 seconds, but in many cases, this can be too short and will cause your DR icons to report completed DR when it isn't quite done. You may wish to add a second or two to compensate for that.]]
 
 L["UIPANEL_GROUPSORT"] = "Icon Sorting"
 

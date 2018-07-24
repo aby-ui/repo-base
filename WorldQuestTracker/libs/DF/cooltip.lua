@@ -161,10 +161,118 @@ function DF:CreateCoolTip()
 		
 	--> create frames
 	
+		local build_main_frame = function (self)
+		
+			self:SetSize (500, 500)
+			self:SetPoint ("CENTER", UIParent, "CENTER")
+			self:SetBackdrop ({bgFile = [[Interface\DialogFrame\UI-DialogBox-Background-Dark]], edgeFile = [[Interface\Buttons\WHITE8X8]], tile = true, edgeSize = 1, tileSize = 16, insets = {left = 0, right = 0, top = 0, bottom = 0}})
+			self:SetBackdropColor (0.09019, 0.09019, 0.18823, 1)
+			self:SetBackdropBorderColor (0, 0, 0, 1)
+			
+			if (not self.framebackgroundCenter) then
+				self.framebackgroundCenter = self:CreateTexture ("$parent_FrameBackgroundCenter", "BACKGROUND")
+				self.framebackgroundCenter:SetDrawLayer ("BACKGROUND", 2)
+				self.framebackgroundCenter:SetColorTexture (0, 0, 0, .5)
+				self.framebackgroundCenter:SetPoint ("TOPLEFT", self, "TOPLEFT", 35, -3)
+				self.framebackgroundCenter:SetPoint ("TOPRIGHT", self, "TOPRIGHT", -35, -3)
+				self.framebackgroundCenter:SetPoint ("BOTTOMLEFT", self, "BOTTOMLEFT", 35, 3)
+				self.framebackgroundCenter:SetPoint ("BOTTOMRIGHT", self, "BOTTOMRIGHT", -35, 3)
+			end
+			
+			if (not self.framebackgroundLeft) then
+				self.framebackgroundLeft = self:CreateTexture ("$parent_FrameBackgroundLeft", "BACKGROUND")
+				self.framebackgroundLeft:SetDrawLayer ("BACKGROUND", 3)
+				self.framebackgroundLeft:SetColorTexture (0, 0, 0, .5)
+				self.framebackgroundLeft:SetPoint ("TOPLEFT", self, "TOPLEFT", 3, -3)
+				self.framebackgroundLeft:SetPoint ("BOTTOMLEFT", self, "BOTTOMLEFT", 3, 3)
+				self.framebackgroundLeft:SetWidth (32)
+			end
+
+			if (not self.framebackgroundRight) then
+				self.framebackgroundRight = self:CreateTexture ("$parent_FrameBackgroundRight", "BACKGROUND")
+				self.framebackgroundRight:SetDrawLayer ("BACKGROUND", 3)
+				self.framebackgroundRight:SetColorTexture (0, 0, 0, .5)
+				self.framebackgroundRight:SetPoint ("TOPRIGHT", self, "TOPRIGHT", -3, -3)
+				self.framebackgroundRight:SetPoint ("BOTTOMRIGHT", self, "BOTTOMRIGHT", -3, 3)
+				self.framebackgroundRight:SetWidth (32)
+			end
+			
+			if (not self.frameWallpaper) then
+				self.frameWallpaper = self:CreateTexture ("$parent_FrameWallPaper", "BACKGROUND")
+				self.frameWallpaper:SetDrawLayer ("BACKGROUND", 4)
+				self.frameWallpaper:SetPoint ("TOPLEFT", self, "TOPLEFT", 0, 0)
+				self.frameWallpaper:SetPoint ("BOTTOMRIGHT", self, "BOTTOMRIGHT", 0, 0)
+			end
+			
+			if (not self.selectedTop) then
+				self.selectedTop = self:CreateTexture ("$parent_SelectedTop", "ARTWORK")
+				self.selectedTop:SetColorTexture (.5, .5, .5, .75)
+				self.selectedTop:SetHeight (3)
+			end
+			
+			if (not self.selectedBottom) then
+				self.selectedBottom = self:CreateTexture ("$parent_SelectedBottom", "ARTWORK")
+				self.selectedBottom:SetColorTexture (.5, .5, .5, .75)
+				self.selectedBottom:SetHeight (3)
+			end
+			
+			if (not self.selectedMiddle) then
+				self.selectedMiddle = self:CreateTexture ("$parent_Selected", "ARTWORK")
+				self.selectedMiddle:SetColorTexture (.5, .5, .5, .75)
+				self.selectedMiddle:SetPoint ("TOPLEFT", self.selectedTop, "BOTTOMLEFT")
+				self.selectedMiddle:SetPoint ("BOTTOMRIGHT", self.selectedBottom, "TOPRIGHT")
+			end
+			
+			if (not self.upperImage2) then
+				self.upperImage2 = self:CreateTexture ("$parent_UpperImage2", "ARTWORK")
+				self.upperImage2:Hide()
+				self.upperImage2:SetPoint ("CENTER", self, "CENTER", 0, -3)
+				self.upperImage2:SetPoint ("BOTTOM", self, "TOP", 0, -3)
+			end
+			
+			if (not self.upperImage) then
+				self.upperImage = self:CreateTexture ("$parent_UpperImage", "OVERLAY")
+				self.upperImage:Hide()
+				self.upperImage:SetPoint ("CENTER", self, "CENTER", 0, -3)
+				self.upperImage:SetPoint ("BOTTOM", self, "TOP", 0, -3)
+			end
+			
+			if (not self.upperImageText) then
+				self.upperImageText = self:CreateFontString ("$parent_UpperImageText", "OVERLAY", "GameTooltipHeaderText")
+				self.upperImageText:SetJustifyH ("LEFT")
+				self.upperImageText:SetPoint ("LEFT", self.upperImage, "RIGHT", 5, 0)
+				DF:SetFontSize (self.upperImageText, 13)
+			end
+			
+			if (not self.upperImageText2) then
+				self.upperImageText2 = self:CreateFontString ("$parent_UpperImageText2", "OVERLAY", "GameTooltipHeaderText")
+				self.upperImageText2:SetJustifyH ("LEFT")
+				self.upperImageText2:SetPoint ("BOTTOMRIGHT", self, "LEFT", 0, 3)
+				DF:SetFontSize (self.upperImageText2, 13)
+			end
+			
+			if (not self.titleIcon) then
+				self.titleIcon = self:CreateTexture ("$parent_TitleIcon", "OVERLAY")
+				self.titleIcon:SetTexture ("Interface\\Challenges\\challenges-main")
+				self.titleIcon:SetTexCoord (0.1521484375, 0.563671875, 0.160859375, 0.234375)
+				self.titleIcon:SetPoint ("CENTER", self, "CENTER")
+				self.titleIcon:SetPoint ("BOTTOM", self, "TOP", 0, -22)
+				self.titleIcon:Hide()
+			end
+			
+			if (not self.titleText) then
+				self.titleText = self:CreateFontString ("$parent_TitleText", "OVERLAY", "GameFontHighlightSmall")
+				self.titleText:SetJustifyH ("LEFT")
+				DF:SetFontSize (self.titleText, 10)
+				self.titleText:SetPoint ("CENTER", self.titleIcon, "CENTER", 0, 6)
+			end
+		end
+	
 		--> main frame
 		local frame1
 		if (not GameCooltipFrame1) then
-			frame1 = CreateFrame ("Frame", "GameCooltipFrame1", UIParent, "DFCooltipMainFrameTemplate")
+			frame1 = CreateFrame ("Frame", "GameCooltipFrame1", UIParent)
+			
 			tinsert (UISpecialFrames, "GameCooltipFrame1")
 			DF:CreateFlashAnimation (frame1)
 			
@@ -174,6 +282,9 @@ function DF:CreateCoolTip()
 		else
 			frame1 = GameCooltipFrame1
 		end
+		
+		--> build widgets for frame
+		build_main_frame (frame1)
 		
 		GameCooltipFrame1_FrameBackgroundCenter:SetTexture (DF.folder .. "cooltip_background")
 		GameCooltipFrame1_FrameBackgroundCenter:SetTexCoord (0.10546875, 0.89453125, 0, 1)
@@ -185,7 +296,8 @@ function DF:CreateCoolTip()
 		--> secondary frame
 		local frame2
 		if (not GameCooltipFrame2) then
-			frame2 = CreateFrame ("Frame", "GameCooltipFrame2", UIParent, "DFCooltipMainFrameTemplate")
+			frame2 = CreateFrame ("Frame", "GameCooltipFrame2", UIParent)
+			
 			tinsert (UISpecialFrames, "GameCooltipFrame2")
 			DF:CreateFlashAnimation (frame2)
 			frame2:SetClampedToScreen (true)
@@ -196,6 +308,9 @@ function DF:CreateCoolTip()
 		else
 			frame2 = GameCooltipFrame2
 		end
+		
+		--> build widgets for frame
+		build_main_frame (frame2)
 
 		frame2:SetPoint ("bottomleft", frame1, "bottomright", 4, 0)
 		
@@ -380,6 +495,109 @@ function DF:CreateCoolTip()
 	--> Button Creation Functions
 ----------------------------------------------------------------------
 	
+		local build_button = function (self)
+		
+			self:SetSize (1, 20)
+		
+			--> status bar
+			self.statusbar = CreateFrame ("StatusBar", "$Parent_StatusBar", self)
+			self.statusbar:SetPoint ("LEFT", self, "LEFT", 10, 0)
+			self.statusbar:SetPoint ("RIGHT", self, "RIGHT", -10, 0)
+			self.statusbar:SetPoint ("TOP", self, "TOP", 0, 0)
+			self.statusbar:SetPoint ("BOTTOM", self, "BOTTOM", 0, 0)
+			self.statusbar:SetHeight (20)
+
+			local statusbar = self.statusbar
+			
+			statusbar.texture = statusbar:CreateTexture ("$parent_Texture", "BACKGROUND")
+			statusbar.texture:SetTexture ("Interface\\PaperDollInfoFrame\\UI-Character-Skills-Bar")
+			statusbar.texture:SetSize (300, 14)
+			statusbar:SetStatusBarTexture (statusbar.texture)
+			statusbar:SetMinMaxValues (0, 100)
+			
+			statusbar.spark = statusbar:CreateTexture ("$parent_Spark", "BACKGROUND")
+			statusbar.spark:Hide()
+			statusbar.spark:SetTexture ("Interface\\CastingBar\\UI-CastingBar-Spark")
+			statusbar.spark:SetBlendMode ("ADD")
+			statusbar.spark:SetSize (12, 24)
+			statusbar.spark:SetPoint ("LEFT", statusbar, "RIGHT", -20, -1)
+			
+			statusbar.background = statusbar:CreateTexture ("$parent_Background", "ARTWORK")
+			statusbar.background:Hide()
+			statusbar.background:SetTexture ("Interface\\FriendsFrame\\UI-FriendsFrame-HighlightBar")
+			statusbar.background:SetPoint ("LEFT", statusbar, "LEFT", -6, 0)
+			statusbar.background:SetPoint ("RIGHT", statusbar, "RIGHT", 6, 0)
+			statusbar.background:SetPoint ("TOP", statusbar, "TOP", 0, 0)
+			statusbar.background:SetPoint ("BOTTOM", statusbar, "BOTTOM", 0, 0)
+			
+			self.background = statusbar.background
+			
+			statusbar.leftIcon = statusbar:CreateTexture ("$parent_LeftIcon", "OVERLAY")
+			statusbar.leftIcon:SetSize (16, 16)
+			statusbar.leftIcon:SetPoint ("LEFT", statusbar, "LEFT", 0, 0)
+			
+			statusbar.rightIcon = statusbar:CreateTexture ("$parent_RightIcon", "OVERLAY")
+			statusbar.rightIcon:SetSize (16, 16)
+			statusbar.rightIcon:SetPoint ("RIGHT", statusbar, "RIGHT", 0, 0)
+			
+			statusbar.spark2 = statusbar:CreateTexture ("$parent_Spark2", "OVERLAY")
+			statusbar.spark2:SetSize (32, 32)
+			statusbar.spark2:SetPoint ("LEFT", statusbar, "RIGHT", -17, -1)
+			statusbar.spark2:SetBlendMode ("ADD")
+			statusbar.spark2:SetTexture ("Interface\\CastingBar\\UI-CastingBar-Spark")
+			statusbar.spark2:Hide()
+			
+			statusbar.subMenuArrow = statusbar:CreateTexture ("$parent_SubMenuArrow", "OVERLAY")
+			statusbar.subMenuArrow:SetSize (12, 12)
+			statusbar.subMenuArrow:SetPoint ("RIGHT", statusbar, "RIGHT", 3, 0)
+			statusbar.subMenuArrow:SetBlendMode ("ADD")
+			statusbar.subMenuArrow:SetTexture ("Interface\\CHATFRAME\\ChatFrameExpandArrow")
+			statusbar.subMenuArrow:Hide()
+			
+			statusbar.leftText = statusbar:CreateFontString ("$parent_LeftText", "OVERLAY", "GameTooltipHeaderText")
+			statusbar.leftText:SetJustifyH ("LEFT")
+			statusbar.leftText:SetPoint ("LEFT", statusbar.leftIcon, "RIGHT", 3, 0)
+			DF:SetFontSize (statusbar.leftText, 10)
+			
+			statusbar.rightText = statusbar:CreateFontString ("$parent_TextRight", "OVERLAY", "GameTooltipHeaderText")
+			statusbar.rightText:SetJustifyH ("RIGHT")
+			statusbar.rightText:SetPoint ("RIGHT", statusbar.rightIcon, "LEFT", -3, 0)
+			DF:SetFontSize (statusbar.leftText, 10)
+
+			--> background status bar
+			self.statusbar2 = CreateFrame ("StatusBar", "$Parent_StatusBarBackground", self)
+			self.statusbar2:SetPoint ("LEFT", self.statusbar, "LEFT")
+			self.statusbar2:SetPoint ("RIGHT", self.statusbar, "RIGHT")
+			self.statusbar2:SetPoint ("TOP", self.statusbar, "TOP")
+			self.statusbar2:SetPoint ("BOTTOM", self.statusbar, "BOTTOM")
+
+			local statusbar2 = self.statusbar2
+			
+			statusbar2.texture = statusbar2:CreateTexture ("$parent_Texture", "BACKGROUND")
+			statusbar2.texture:SetTexture ("Interface\\PaperDollInfoFrame\\UI-Character-Skills-Bar")
+			statusbar2.texture:SetSize (300, 14)
+			statusbar2:SetStatusBarTexture (statusbar2.texture)
+			statusbar2:SetMinMaxValues (0, 100)
+		
+			--> on load
+			self:RegisterForClicks ("LeftButtonDown")
+			self.leftIcon = self.statusbar.leftIcon
+			self.rightIcon = self.statusbar.rightIcon
+			self.texture = self.statusbar.texture
+			self.spark = self.statusbar.spark
+			self.spark2 = self.statusbar.spark2
+			self.leftText = self.statusbar.leftText
+			self.rightText = self.statusbar.rightText
+			self.statusbar:SetFrameLevel (self:GetFrameLevel()+2)
+			self.statusbar2:SetFrameLevel (self.statusbar:GetFrameLevel()-1)
+			self.statusbar2:SetValue (0)
+			
+			--> scripts
+			self:SetScript ("OnMouseDown", GameCooltipButtonMouseDown)
+			self:SetScript ("OnMouseUp", GameCooltipButtonMouseUp)
+			
+		end
+	
 		function GameCooltipButtonMouseDown (button)
 			local mod = CoolTip.OptionsTable.TextHeightMod or 0
 			button.leftText:SetPoint ("center", button.leftIcon, "center", 0, 0+mod)
@@ -393,7 +611,9 @@ function DF:CreateCoolTip()
 		end
 	
 		function CoolTip:CreateButton (index, frame, name)
-			local new_button = CreateFrame ("Button", name, frame, "DFCooltipButtonTemplate")
+			local new_button = CreateFrame ("Button", name, frame)
+			build_button (new_button)
+			
 			frame.Lines [index] = new_button
 			return new_button
 		end

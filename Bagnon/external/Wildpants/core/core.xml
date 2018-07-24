@@ -2,8 +2,8 @@
 	<Script file="classes.lua"/>
 	<Script file="settings.lua"/>
 
+	<Script file="owners.lua"/>
 	<Script file="bags.lua"/>
-	<Script file="players.lua"/>
 
 	<Script file="events.lua"/>
 	<Script file="frames.lua"/>

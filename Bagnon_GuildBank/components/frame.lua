@@ -7,7 +7,7 @@ local MODULE =  ...
 local ADDON, Addon = MODULE:match('[^_]+'), _G[MODULE:match('[^_]+')]
 local Frame = Addon:NewClass('GuildFrame', 'Frame', Addon.Frame)
 
-Frame.Title = LibStub('AceLocale-3.0'):GetLocale(ADDON).TitleGuild
+Frame.Title = LibStub('AceLocale-3.0'):GetLocale(ADDON).TitleBank
 Frame.MoneyFrame = Addon.GuildMoneyFrame
 Frame.ItemFrame = Addon.GuildItemFrame
 Frame.BagFrame = Addon.GuildTabFrame
@@ -73,13 +73,13 @@ function Frame:ListMenuButtons()
 	Addon.Frame.ListMenuButtons(self)
 end
 
-function Frame:IsCached()
-	return Addon:IsBagCached(self:GetPlayer(), 'guild1')
-end
-
-function Frame:HasPlayerSelector() end
+function Frame:HasOwnerSelector() end
 function Frame:HasSortButton() end
 function Frame:HasBagToggle() end
 function Frame:IsBagFrameShown()
 	return true
+end
+
+function Frame:GetOwner()
+	return self.owner or LibStub('LibItemCache-2.0'):GetOwnerInfo().guild
 end

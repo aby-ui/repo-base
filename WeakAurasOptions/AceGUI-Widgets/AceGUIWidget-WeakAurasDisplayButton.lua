@@ -2,7 +2,7 @@ local tinsert, tconcat, tremove, wipe = table.insert, table.concat, table.remove
 local select, pairs, next, type, unpack = select, pairs, next, type, unpack
 local tostring, error = tostring, error
 
-local Type, Version = "WeakAurasDisplayButton", 36
+local Type, Version = "WeakAurasDisplayButton", 37
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
@@ -27,7 +27,8 @@ local ignoreForCopyingDisplay = {
   numTriggers = true,
   controlledChildren = true,
   customTriggerLogic = true,
-  disjunctive = true
+  disjunctive = true,
+  additional_triggers = true,
 }
 
 local function copyAuraPart(source, destination, part)
@@ -35,11 +36,11 @@ local function copyAuraPart(source, destination, part)
   if (part == "display" or all) then
     for k, v in pairs(source) do
       if (not ignoreForCopyingDisplay[k]) then
-           if (type(v) == "table") then
-             destination[k] = CopyTable(v);
-           else
-             destination[k] = v;
-           end
+        if (type(v) == "table") then
+          destination[k] = CopyTable(v);
+        else
+          destination[k] = v;
+        end
       end
     end
   end
@@ -561,15 +562,9 @@ local methods = {
 
     function self.callbacks.OnDeleteClick()
       if (WeakAuras.IsImporting()) then return end;
-      local parentData = data.parent and WeakAuras.GetData(data.parent);
-      local parentButton = data.parent and WeakAuras.GetDisplayButton(data.parent);
-      WeakAuras.DeleteOption(data);
-      if(parentData) then
-        WeakAuras.UpdateGroupOrders(parentData);
-      end
-      if(parentButton) then
-        parentButton.callbacks.UpdateExpandButton();
-      end
+      local toDelete = {data}
+      local parents = data.parent and {[data.parent] = true}
+      WeakAuras.ConfirmDelete(toDelete, parents)
     end
 
     function self.callbacks.OnDuplicateClick()
@@ -582,6 +577,7 @@ local methods = {
 
     function self.callbacks.OnDeleteAllClick()
       if (WeakAuras.IsImporting()) then return end;
+      local toDelete = {}
       if(data.controlledChildren) then
 
         local region = WeakAuras.regions[data.id];
@@ -589,15 +585,12 @@ local methods = {
           region:Pause();
         end
 
-        local toDelete = {};
-        for index, id in pairs(data.controlledChildren) do
-          toDelete[index] = WeakAuras.GetData(id);
-        end
-        for index, childData in pairs(toDelete) do
-          WeakAuras.DeleteOption(childData);
+        for _, id in pairs(data.controlledChildren) do
+          tinsert(toDelete, WeakAuras.GetData(id));
         end
       end
-      WeakAuras.DeleteOption(data);
+      tinsert(toDelete, data)
+      WeakAuras.ConfirmDelete(toDelete);
     end
 
     function self.callbacks.OnUngroupClick()

@@ -25,7 +25,7 @@
         local T = DecursiveRootTable or {};
 
         T._CatchAllErrors = false;
-        T._LoadedFiles["load.xml"] = "2.7.5.8";
+        T._LoadedFiles["load.xml"] = "2.7.6";
     </Script>
 
 </Ui>

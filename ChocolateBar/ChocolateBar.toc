@@ -2,7 +2,7 @@
 ## Title: ChocolateBar
 ## Notes: A display for LibDataBroker-1.1
 ## Author: yess
-## Version: v3.1.8
+## Version: v3.1.10
 ## X-Email: starfire@fantasymail.de
 ## OptionalDeps: Ace3, LibSharedMedia-3.0, LibJostle-3.0
 ## X-WoWI-ID: 12326
@@ -10,7 +10,7 @@
 ## SavedVariables: ChocolateBarDB
 
 #@no-lib-strip@
-libs\LibJostle-3.0\LibJostle-3.0.lua
+libs\libs.xml
 #@end-no-lib-strip@
 
 localization\enUS.lua
@@ -26,8 +26,8 @@ modules\Placeholder.lua
 modules\MoreChocolate.lua
 Options.lua
 #@debug@
-# modules\Bindings.xml
-# modules\Stuff.lua
+# #modules\Bindings.xml
+# #modules\Stuff.lua
 #@end-debug@
 
 Brokers.lua

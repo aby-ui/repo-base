@@ -127,7 +127,7 @@ end
 function Mod:CHALLENGE_MODE_COMPLETED()
 	if not challengeMapID then return end
 	local mapID, level, timeElapsed, onTime, keystoneUpgradeLevels = C_ChallengeMode.GetCompletionInfo()
-	local name, _, timeLimit = C_ChallengeMode.GetMapInfo(challengeMapID)
+	local name, _, timeLimit = C_ChallengeMode.GetMapUIInfo(challengeMapID)
 	local _, affixes, wasEnergized = C_ChallengeMode.GetActiveKeystoneInfo()
 	local splits = Mod.splits
 

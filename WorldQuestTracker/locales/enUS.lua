@@ -50,9 +50,6 @@ L["S_GROUPFINDER_SECONDS"] = "Seconds"
 L["S_GROUPFINDER_TITLE"] = "Group Finder"
 L["S_GROUPFINDER_TUTORIAL1"] = "Do world quests faster by joining a group doing the same quest!"
 L["S_MAPBAR_AUTOWORLDMAP"] = "Auto World Map"
-L["S_MAPBAR_AUTOWORLDMAP_DESC"] = [=[When in Dalaran or Class Hall, pressing 'M' goes directly to Broken Isles map.
-
-Double tap 'M' goes to the map you are standing in.]=]
 L["S_MAPBAR_FILTER"] = "Filter"
 L["S_MAPBAR_FILTERMENU_FACTIONOBJECTIVES"] = "Faction Objectives"
 L["S_MAPBAR_FILTERMENU_FACTIONOBJECTIVES_DESC"] = "Show faction quests even if they has been filtered out."
@@ -132,13 +129,7 @@ L["S_SUMMARYPANEL_LIFETIMESTATISTICS_CHARACTER"] = "Character Life Time Statisti
 L["S_SUMMARYPANEL_OTHERCHARACTERS"] = "Other Characters"
 L["S_TUTORIAL_AMOUNT"] = "indicates the amount to receive"
 L["S_TUTORIAL_CLICKTOTRACK"] = "Click to track a quest."
-L["S_TUTORIAL_CLOSE"] = "Close Tutorial"
-L["S_TUTORIAL_FACTIONBOUNTY"] = "indicates the quest counts towards the selected faction."
-L["S_TUTORIAL_FACTIONBOUNTY_AMOUNTQUESTS"] = "indicates how many quest are on the map for the selected faction."
-L["S_TUTORIAL_HOWTOADDTRACKER"] = "Left click to track a quest. On the tracker, you may |cFFFFFFFFright click|r to untrack it."
 L["S_TUTORIAL_PARTY"] = "When in party, a blue star is shown on quests that all party members have!"
-L["S_TUTORIAL_RARITY"] = "indicates the rarity (common, rare, epic)"
-L["S_TUTORIAL_REWARD"] = "indicates the reward (equipment, gold, artifact power, resources, reagents)"
 L["S_TUTORIAL_TIMELEFT"] = "indicates the time left (+4 hours, +90 minutes, +30 minutes, less than 30 minutes)"
 L["S_TUTORIAL_WORLDMAPBUTTON"] = "This button brings to you the Broken Isles map."
 L["S_UNKNOWNQUEST"] = "Unknown Quest"

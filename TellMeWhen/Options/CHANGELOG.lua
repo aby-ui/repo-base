@@ -6,6 +6,8 @@ TMW.CHANGELOG = [==[
 
 ===v8.5.2===
 * Includes latest LibDogTag-Unit with fixes for [SoulShardParts] and others.
+* Updated Guardian icon type for 8.0 Warlock changes.
+* Back by angry demand, DR reset duration is now an icon-specific setting, and once again defaults to 18.
 
 ===v8.5.1===
 * Changed DR reset duration to 20 seconds from 18 to increase consistency.

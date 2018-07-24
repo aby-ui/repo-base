@@ -8,8 +8,7 @@ local L = WeakAuras.L
 	L["Ability Charges"] = "技能可用次數"
 	L["Add Triggers"] = "新增觸發"
 	L["Always Active"] = "永遠有效"
-	--[[Translation missing --]]
-	L["Azerite Traits"] = "Azerite Traits"
+	L["Azerite Traits"] = "艾澤萊特長"
 	L["Back"] = "上一步"
 	L["Bloodlust/Heroism"] = "嗜血/英勇"
 	L["buff"] = "種族特長"

@@ -67,7 +67,7 @@ L["Color Guild by Reaction"] = true;
 L["Guild color will have the same color as the reacion"] = true;
 L["Guild Color"] = true;
 L["Color of the guild name, when not using the option to make it the same as reaction color"] = true;
-L["Same Guild Color"] = true;
+L["Your Guild Color"] = true;
 L["To better recognise players from your guild, you can configure the color of your guild name individually"] = true;
 L["Race & Creature Type Color"] = true;
 L["The color of the race and creature type text"] = true;
@@ -76,7 +76,7 @@ L["Units you cannot attack will have their level text shown in this color"] = tr
 L["Color Player Names by Class Color"] = true;
 L["With this option on, player names are colored by their class color, otherwise they will be colored by reaction"] = true;
 L["Color Tip Border by Class Color"] = true;
-L["For players, the border color will be colored to match the color of their class"] = true;
+L["For players, the border color will be colored to match the color of their class\nNOTE: This option is overridden by reaction colored border"] = true;
 -- Reactions		
 L["Reactions"] = true;
 L["Show the unit's reaction as text"] = true;
@@ -137,7 +137,7 @@ L["Overrides the default fadeout function of the GameTooltip. If you are seeing 
 L["Prefade Time"] = true;
 L["Fadeout Time"] = true;
 L["Instantly Hide World Frame Tips"] = true;
-L["This option will make tips which appear from objects in the world disappear instantly when you take the mouse off the object. Examples such as mailboxes, herbs or chests.\nNOTE: Does not work for all world objects."] = true;
+L["This option will make most tips which appear from objects in the world disappear instantly when you take the mouse off the object. Examples such as mailboxes, herbs or chests.\nNOTE: Does not work for all world objects."] = true;
 -- Bars		
 L["Bars"] = true;
 -- L["Font Face"] = true;
@@ -313,6 +313,7 @@ L["Could not open TicTac Options: |1"] = true;
 L["|r. Please make sure the addon is enabled from the character selection screen."] = true;
 L["The following |2parameters|r are valid for this addon:"] = true;
 L[" |2anchor|r = Shows the anchor where the tooltip appears"] = true;
+L[" |2reset|r = Resets all settings back to their default values"] = true;
 L["Female"] = true;
 L["Male"] = true;
 L[" <DC>"] = true;

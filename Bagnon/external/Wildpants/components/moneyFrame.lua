@@ -4,6 +4,7 @@
 --]]
 
 local ADDON, Addon = ...
+local Cache = LibStub('LibItemCache-2.0')
 local L = LibStub('AceLocale-3.0'):GetLocale(ADDON)
 local MoneyFrame = Addon:NewClass('MoneyFrame', 'Frame')
 MoneyFrame.Type = 'PLAYER'
@@ -62,20 +63,31 @@ function MoneyFrame:OnClick()
 end
 
 function MoneyFrame:OnEnter()
-	if not Addon.Cache:HasCache() then
-    return
-  end
-
 	-- Total
 	local total = 0
-	for i, player in Addon.Cache:IteratePlayers() do
-		total = total + Addon.Cache:GetPlayerMoney(player)
+	for name in Cache:IterateOwners() do
+		local player = Cache:GetOwnerInfo(name)
+		if not player.isguild and player.money then
+			total = total + player.money
+		end
 	end
 
 	GameTooltip:SetOwner(self, self:GetTop() > (GetScreenHeight() / 2) and 'ANCHOR_BOTTOM' or 'ANCHOR_TOP')
-	GameTooltip:AddDoubleLine(L.Total, self:GetCoinTextureString(total), nil,nil,nil, 1,1,1)
+	GameTooltip:AddDoubleLine(L.Total, GetMoneyString(total, true), nil,nil,nil, 1,1,1)
 	GameTooltip:AddLine(' ')
 
+	-- Each player
+	for name in Cache:IterateOwners() do
+		local player = Cache:GetOwnerInfo(name)
+		if not player.isguild and player.money then
+			local icon = format('|T%s:12:12|t ', Addon:GetOwnerIcon(player))
+			local coins = GetMoneyString(player.money, true)
+			local color = Addon:GetOwnerColor(player)
+
+			GameTooltip:AddDoubleLine(icon .. player.name, coins, color.r, color.g, color.b, 1,1,1)
+		end
+	end
+	--[==[ --TODO aby8 只显示几个
     Addon.tplayer = Addon.tplayer or {} wipe(Addon.tplayer)
     Addon.tmoney = Addon.tmoney or {}   wipe(Addon.tmoney)
 
@@ -121,6 +133,7 @@ function MoneyFrame:OnEnter()
             GameTooltip:AddDoubleLine(format("|T%s:16:16:0:0|t %s", icon, name), count, nil, nil, nil, 1, 1, 1)
         end
     end
+	--]==]
 	
 	GameTooltip:Show()
 end
@@ -133,7 +146,7 @@ end
 --[[ Update ]]--
 
 function MoneyFrame:RegisterEvents()
-	self:RegisterFrameMessage('PLAYER_CHANGED', 'Update')
+	self:RegisterFrameMessage('OWNER_CHANGED', 'Update')
 	self:RegisterEvent('PLAYER_MONEY', 'Update')
 	self:Update()
 end
@@ -147,45 +160,7 @@ end
 --[[ API ]]--
 
 function MoneyFrame:GetMoney()
-	return Addon.Cache:GetPlayerMoney(self:GetPlayer())
-end
-
-function MoneyFrame:GetCoinTextureString(money)
-	if ENABLE_COLORBLIND_MODE == '1' then
-		return self:GetCoinText(money)
-	else
-		local gold, silver, copper = self:GetCoins(money)
-		local text = ''
-
-		if gold > 0 then
-			text = format('%s|TInterface/MoneyFrame/UI-MoneyIcons:10:10:2:0:32:16:0:8:0:16|t', BreakUpLargeNumbers(gold))
-		end
-		if silver > 0 then
-			text = text .. format(' %d|TInterface/MoneyFrame/UI-MoneyIcons:10:10:2:0:32:16:8:16:0:16|t', silver)
-		end
-		if copper > 0 or money == 0 then
-			text = text .. format(' %d|TInterface/MoneyFrame/UI-MoneyIcons:10:10:2:0:32:16:16:24:0:16|t', copper)
-		end
-
-		return text
-	end
-end
-
-function MoneyFrame:GetCoinText(money)
-	local gold, silver, copper = self:GetCoins(money)
-	local text = ''
-
-	if gold > 0 then
-		text = format('%s|cffffd700%s|r', BreakUpLargeNumbers(gold), GOLD_AMOUNT_SYMBOL)
-	end
-	if silver > 0 then
-		text = text .. format(' %d|cffc7c7cf%s|r', silver, SILVER_AMOUNT_SYMBOL)
-	end
-	if copper > 0 or money == 0 then
-		text = text .. format(' %d|cffeda55f%s|r', copper, COPPER_AMOUNT_SYMBOL)
-	end
-
-	return text
+	return self:GetOwnerInfo().money or 0
 end
 
 function MoneyFrame:GetCoins(money)

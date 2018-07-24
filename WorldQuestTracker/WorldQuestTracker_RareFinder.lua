@@ -19,6 +19,8 @@ if (not L) then
 	return
 end
 
+local GameCooltip = GameCooltip2
+
 local ff = WorldQuestTrackerFinderFrame
 local rf = WorldQuestTrackerRareFrame
 

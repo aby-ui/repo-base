@@ -5,6 +5,7 @@
 
 
 local ADDON, Addon = ...
+local Cache = LibStub('LibItemCache-2.0')
 local L = LibStub('AceLocale-3.0'):GetLocale(ADDON)
 local Frame = Addon:NewClass('Frame', 'Frame')
 Frame.OpenSound = SOUNDKIT.IG_BACKPACK_OPEN
@@ -22,7 +23,7 @@ function Frame:OnHide()
 	self:UnregisterMessages()
 
 	if Addon.sets.resetPlayer then
-		self.player = nil
+		self.owner = nil
 	end
 end
 
@@ -86,7 +87,7 @@ function Frame:GetPosition()
 	return self.profile.point or 'CENTER', self.profile.x, self.profile.y
 end
 
-function Frame:UpdateRules()
+function Frame:FindRules()
 	local sorted = {}
 	for i, id in ipairs(self.profile.rules) do
 		sorted[id] = true
@@ -121,7 +122,7 @@ function Frame:IsShowingItem(bag, slot)
 
 	if rule and rule.func then
 		local bagLink = self:GetBagInfo(bag)
-		if not rule.func(self.player, bag, slot, bagLink, itemLink, count) then
+		if not rule.func(self.owner, bag, slot, bagLink, itemLink, count) then
 			return
 		end
 	end
@@ -134,28 +135,32 @@ function Frame:IsShowingQuality(quality)
 end
 
 function Frame:IsCached()
-	return Addon:IsBagCached(self.player, self.Bags[1])
+	return Cache:GetBagInfo(self:GetOwner(), self.Bags[1]).cached
 end
 
 function Frame:GetBagInfo(bag)
-	return Addon.Cache:GetBagInfo(self.player, bag)
+	return Cache:GetBagInfo(self:GetOwner(), bag)
 end
 
 function Frame:GetItemInfo(bag, slot)
-	return Addon.Cache:GetItemInfo(self.player, bag, slot)
+	return Cache:GetItemInfo(self:GetOwner(), bag, slot)
 end
 
 function Frame:GetProfile()
-	return Addon:GetProfile(self.player)[self.frameID]
+	return Addon:GetProfile(self:GetOwner())[self.frameID]
 end
 
-function Frame:SetPlayer(player)
-	self.player = player
-  self:SendFrameMessage('PLAYER_CHANGED', player)
+function Frame:GetBaseProfile()
+	return Addon.profile[self.frameID]
 end
 
-function Frame:GetPlayer()
-	return self.player or UnitName('player')
+function Frame:SetOwner(owner)
+	self.owner = owner
+  self:SendFrameMessage('OWNER_CHANGED', owner)
+end
+
+function Frame:GetOwner()
+	return self.owner or UnitName('player')
 end
 
 function Frame:GetFrameID()

@@ -490,7 +490,14 @@ function DF:NewPanel (parent, container, name, member, w, h, backdrop, backdropc
 		PanelObject.container = container
 		PanelObject.rightButtonClose = false
 	
-	PanelObject.frame = CreateFrame ("frame", name, parent, "DetailsFrameworkPanelTemplate")
+	PanelObject.frame = CreateFrame ("frame", name, parent)
+	PanelObject.frame:SetSize (100, 100)
+	PanelObject.frame.Gradient = {
+					["OnEnter"] = {0.3, 0.3, 0.3, 0.5},
+					["OnLeave"] = {0.9, 0.7, 0.7, 1}
+	}
+	PanelObject.frame:SetBackdrop ({bgFile = [[Interface\DialogFrame\UI-DialogBox-Background]], edgeFile = "Interface\DialogFrame\UI-DialogBox-Border", edgeSize = 10, tileSize = 64, tile = true})
+	
 	PanelObject.widget = PanelObject.frame
 	
 	if (not APIFrameFunctions) then

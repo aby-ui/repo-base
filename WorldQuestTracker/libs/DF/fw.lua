@@ -1,5 +1,5 @@
 
-local dversion = 85
+local dversion = 86
 local major, minor = "DetailsFramework-1.0", dversion
 local DF, oldminor = LibStub:NewLibrary (major, minor)
 
@@ -265,7 +265,7 @@ else
 		elseif (numero > 999) then
 			return format ("%.1f", (numero/1000)) .. "K"
 		end
-		return format ("%.1f", numero)
+		return floor (numero)
 	end
 end
 
@@ -926,42 +926,15 @@ end
 	
 	function DF:ShowTutorialAlertFrame (maintext, desctext, clickfunc)
 		
-		local TutorialAlertFrame = _G.DetailsFrameworkTutorialAlertFrame
+		local TutorialAlertFrame = _G.DetailsFrameworkAlertFrame
 		
 		if (not TutorialAlertFrame) then
-			
-			TutorialAlertFrame = CreateFrame ("ScrollFrame", "DetailsFrameworkTutorialAlertFrame", UIParent, "DetailsFrameworkTutorialAlertFrameTemplate")
+
+			TutorialAlertFrame = CreateFrame ("frame", "DetailsFrameworkAlertFrame", UIParent, "MicroButtonAlertTemplate")
 			TutorialAlertFrame.isFirst = true
 			TutorialAlertFrame:SetPoint ("left", UIParent, "left", -20, 100)
-			
-			TutorialAlertFrame:SetWidth (290)
-			TutorialAlertFrame.ScrollChild:SetWidth (256)
-			
-			local scrollname = TutorialAlertFrame.ScrollChild:GetName()
-			_G [scrollname .. "BorderTopLeft"]:SetVertexColor (1, 0.8, 0, 1)
-			_G [scrollname .. "BorderTopRight"]:SetVertexColor (1, 0.8, 0, 1)
-			_G [scrollname .. "BorderBotLeft"]:SetVertexColor (1, 0.8, 0, 1)
-			_G [scrollname .. "BorderBotRight"]:SetVertexColor (1, 0.8, 0, 1)	
-			_G [scrollname .. "BorderLeft"]:SetVertexColor (1, 0.8, 0, 1)
-			_G [scrollname .. "BorderRight"]:SetVertexColor (1, 0.8, 0, 1)
-			_G [scrollname .. "BorderBottom"]:SetVertexColor (1, 0.8, 0, 1)
-			_G [scrollname .. "BorderTop"]:SetVertexColor (1, 0.8, 0, 1)
-			
-			local iconbg = _G [scrollname .. "QuestIconBg"]
-			iconbg:SetTexture ([[Interface\MainMenuBar\UI-MainMenuBar-EndCap-Human]])
-			iconbg:SetTexCoord (0, 1, 0, 1)
-			iconbg:SetSize (100, 100)
-			iconbg:ClearAllPoints()
-			iconbg:SetPoint ("bottomleft", TutorialAlertFrame.ScrollChild, "bottomleft")
-			
-			_G [scrollname .. "Exclamation"]:SetVertexColor (1, 0.8, 0, 1)
-			_G [scrollname .. "QuestionMark"]:SetVertexColor (1, 0.8, 0, 1)
-			
-			_G [scrollname .. "TopText"]:SetText ("Details!") --string
-			_G [scrollname .. "QuestName"]:SetText ("") --string
-			_G [scrollname .. "BottomText"]:SetText ("") --string
-			
-			TutorialAlertFrame.ScrollChild.IconShine:SetTexture ([[Interface\MainMenuBar\UI-MainMenuBar-EndCap-Human]])
+			TutorialAlertFrame:SetFrameStrata ("TOOLTIP")
+			TutorialAlertFrame:Hide()
 			
 			TutorialAlertFrame:SetScript ("OnMouseUp", function (self) 
 				if (self.clickfunc and type (self.clickfunc) == "function") then
@@ -972,21 +945,13 @@ end
 			TutorialAlertFrame:Hide()
 		end
 		
-		if (type (maintext) == "string") then
-			TutorialAlertFrame.ScrollChild.QuestName:SetText (maintext)
-		else
-			TutorialAlertFrame.ScrollChild.QuestName:SetText ("")
-		end
-		
-		if (type (desctext) == "string") then
-			TutorialAlertFrame.ScrollChild.BottomText:SetText (desctext)
-		else
-			TutorialAlertFrame.ScrollChild.BottomText:SetText ("")
-		end
+		--
+		TutorialAlertFrame.label = type (maintext) == "string" and maintext or type (desctext) == "string" and desctext or ""
+		MicroButtonAlert_SetText (TutorialAlertFrame, alert.label)
+		--
 		
 		TutorialAlertFrame.clickfunc = clickfunc
 		TutorialAlertFrame:Show()
-		DetailsTutorialAlertFrame_SlideInFrame (TutorialAlertFrame, "AUTOQUEST")
 	end
 	
 	local refresh_options = function (self)

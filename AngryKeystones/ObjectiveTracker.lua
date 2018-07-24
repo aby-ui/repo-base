@@ -67,12 +67,6 @@ local function Deaths_OnLeave()
 	GameTooltip:Hide()
 end
 
-local function CheckHideDefaultDeathTracher(self)
-	if Addon.Config.deathTracker then
-		self:Hide()
-	end
-end
-
 local function GetTimerFrame(block)
 	if not block.TimerFrame then
 		local TimerFrame = CreateFrame("Frame", nil, block)
@@ -96,46 +90,11 @@ local function GetTimerFrame(block)
 		TimerFrame.Bar2:SetTexture("Interface\\Addons\\AngryKeystones\\bar")
 		TimerFrame.Bar2:SetTexCoord(0.5, 1, 0, 1)
 
-		TimerFrame.DeathsFrame = CreateFrame("Frame", nil, TimerFrame)
-		TimerFrame.DeathsFrame:SetSize(32, 16)
-		TimerFrame.DeathsFrame:SetScript("OnEnter", Deaths_OnEnter)
-		TimerFrame.DeathsFrame:SetScript("OnLeave", Deaths_OnLeave)
-		TimerFrame.DeathsFrame:SetPoint("BOTTOMRIGHT", TimerFrame, "BOTTOMRIGHT", -27, 27)
-
-		TimerFrame.DeathsFrame.Text = TimerFrame.DeathsFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
-		TimerFrame.DeathsFrame.Text:SetPoint("RIGHT", TimerFrame.DeathsFrame, "RIGHT", 0, 0)
-		TimerFrame.DeathsFrame.Text:Show()
-
-		TimerFrame.DeathsFrame.Icon = TimerFrame.DeathsFrame:CreateTexture(nil, "OVERLAY")
-		TimerFrame.DeathsFrame.Icon:SetPoint("RIGHT", TimerFrame.DeathsFrame.Text, "LEFT", 0, 0)
-		TimerFrame.DeathsFrame.Icon:SetSize(16, 16)
-		TimerFrame.DeathsFrame.Icon:SetTexture("Interface\\Minimap\\POIIcons")
-		TimerFrame.DeathsFrame.Icon:SetTexCoord( GetPOITextureCoords(8) )
-		TimerFrame.DeathsFrame.Icon:Show()
-
-		hooksecurefunc(block.DeathCount, "Update", CheckHideDefaultDeathTracher)
-		CheckHideDefaultDeathTracher(block.DeathCount)
-
 		TimerFrame:Show()
 
 		block.TimerFrame = TimerFrame
 	end
 	return block.TimerFrame
-end
-
-local function UpdatePlayerDeaths(block)
-	local TimerFrame = GetTimerFrame(block)
-
-	local deathsCount = 0
-	for unit,count in pairs(Addon.ProgressTracker.playerDeaths) do
-		deathsCount = deathsCount + count
-	end
-	if Addon.Config.deathTracker and deathsCount > 0 then
-		TimerFrame.DeathsFrame:Show()
-		TimerFrame.DeathsFrame.Text:SetText(deathsCount)
-	else
-		TimerFrame.DeathsFrame:Hide()
-	end
 end
 
 local function UpdateTime(block, elapsedTime)
@@ -171,8 +130,6 @@ local function UpdateTime(block, elapsedTime)
 	if elapsedTime > block.timeLimit then
 		block.TimeLeft:SetText(GetTimeStringFromSeconds(elapsedTime - block.timeLimit, false, true))
 	end
-
-	UpdatePlayerDeaths(block)
 end
 
 local function SetUpAffixes(block, affixes)
@@ -207,11 +164,6 @@ hooksecurefunc("Scenario_ChallengeMode_UpdateTime", UpdateTime)
 --hooksecurefunc("Scenario_ChallengeMode_SetUpAffixes", SetUpAffixes)
 hooksecurefunc("Scenario_ChallengeMode_ShowBlock", ShowBlock)
 
-
-function Mod:UpdatePlayerDeaths()
-	UpdatePlayerDeaths(ScenarioChallengeModeBlock)
-end
-
 local keystoneWasCompleted = false
 function Mod:PLAYER_ENTERING_WORLD()
 	if keystoneWasCompleted and Addon.Config.resetPopup and IsInGroup() and UnitIsGroupLeader("player") then
@@ -235,7 +187,7 @@ function Mod:CHALLENGE_MODE_COMPLETED()
 	if not challengeMapID then return end
 
 	local mapID, level, time, onTime, keystoneUpgradeLevels = C_ChallengeMode.GetCompletionInfo()
-	local name, _, timeLimit = C_ChallengeMode.GetMapInfo(challengeMapID)
+	local name, _, timeLimit = C_ChallengeMode.GetMapUIInfo(challengeMapID)
 
 	timeLimit = timeLimit * 1000
 	local timeLimit2 = timeLimit * TIME_FOR_2
@@ -263,10 +215,6 @@ function Mod:Startup()
 	self:RegisterEvent("CHALLENGE_MODE_RESET")
 	self:RegisterEvent("PLAYER_ENTERING_WORLD")
 
-	Addon.Config:RegisterCallback('deathTracker', function()
-		self:UpdatePlayerDeaths()
-		ScenarioChallengeModeBlock.DeathCount:Update()
-	end)
 	Addon.Config:RegisterCallback('smallAffixes', function()
 		local level, affixes, wasEnergized = C_ChallengeMode.GetActiveKeystoneInfo()
 		if affixes then

@@ -556,6 +556,8 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	L["Y Scale"] = "长度比例"
 	L["Yellow Rune"] = "黄色符文"
 	L["Yes"] = "是"
+	--[[Translation missing --]]
+	L["You are about to delete %d aura(s). |cFFFF0000This cannot be undone!|r Would you like to continue?"] = "You are about to delete %d aura(s). |cFFFF0000This cannot be undone!|r Would you like to continue?"
 	L["Z Offset"] = "深度 偏移"
 	L["Z Rotation"] = "Z旋转"
 	L["Zoom"] = "缩放"

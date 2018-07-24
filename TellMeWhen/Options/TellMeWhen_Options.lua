@@ -3342,7 +3342,7 @@ TMW:NewClass("IconEditorTabGroup", "IconEditorTabBase"){
 	end,
 
 	OnClick = function(self)
-		PlaySound(SOUNDKIT and SOUNDKIT.IG_CHARACTER_INFO_TAB or "igCharacterInfoTab") -- SOUNDKIT is patch 7.3 compat
+		PlaySound(SOUNDKIT.IG_CHARACTER_INFO_TAB)
 
 		IE.CurrentTabGroup = self
 
@@ -3443,7 +3443,7 @@ TMW:NewClass("IconEditorTab", "IconEditorTabBase"){
 	end,
 
 	OnClick = function(self)
-		PlaySound(SOUNDKIT and SOUNDKIT.IG_CHARACTER_INFO_TAB or "igCharacterInfoTab") -- SOUNDKIT is patch 7.3 compat
+		PlaySound(SOUNDKIT.IG_CHARACTER_INFO_TAB)
 
 		if IE.CurrentTabGroup ~= self.parent then
 			self.parent:Click()

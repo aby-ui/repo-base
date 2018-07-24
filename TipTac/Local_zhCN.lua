@@ -67,7 +67,7 @@ L["Color Guild by Reaction"] = "按反应来对公会进行着色";
 L["Guild color will have the same color as the reacion"] = "公会颜色将与反应具有相同颜色";
 L["Guild Color"] = "公会颜色";
 L["Color of the guild name, when not using the option to make it the same as reaction color"] = "公会名称颜色, 当未使用此选项则使其与公会反应颜色相同";
-L["Same Guild Color"] = "相同公会颜色";
+L["Your Guild Color"] = "你的公会颜色";
 L["To better recognise players from your guild, you can configure the color of your guild name individually"] = "为更好辨认来自你公会的玩家, 你可以单独配置你的公会名称的颜色";
 L["Race & Creature Type Color"] = "种族 & 生物类型颜色";
 L["The color of the race and creature type text"] = "种族及生物类型文本颜色";
@@ -76,7 +76,7 @@ L["Units you cannot attack will have their level text shown in this color"] = "�
 L["Color Player Names by Class Color"] = "玩家姓名按职业颜色着色";
 L["With this option on, player names are colored by their class color, otherwise they will be colored by reaction"] = "此选项开启时, 玩家姓名将按他们的职业颜色着色, 除非他们被按反应着色";
 L["Color Tip Border by Class Color"] = "提示边框按职业颜色着色";
-L["For players, the border color will be colored to match the color of their class"] = "对于玩家, 边框颜色将被着色来匹配他们的职业";
+L["For players, the border color will be colored to match the color of their class\nNOTE: This option is overridden by reaction colored border"] = "对于玩家, 边框颜色将被着色来匹配他们的职业\n注意：此选项可能会被阵营颜色屏蔽";
 -- Reactions		
 L["Reactions"] = "反应";
 L["Show the unit's reaction as text"] = "以文本显示单位反应";
@@ -137,7 +137,7 @@ L["Overrides the default fadeout function of the GameTooltip. If you are seeing 
 L["Prefade Time"] = "退色时间";
 L["Fadeout Time"] = "渐隐时间";
 L["Instantly Hide World Frame Tips"] = "立刻隐藏世界框体提示";
-L["This option will make tips which appear from objects in the world disappear instantly when you take the mouse off the object. Examples such as mailboxes, herbs or chests.\nNOTE: Does not work for all world objects."] = "此选项将在你的鼠标离开世界单位后使来自该单位的提示立刻消失. 例如邮箱, 草药或箱子.\n注意: 不对所有世界单位起作用.";
+L["This option will make most tips which appear from objects in the world disappear instantly when you take the mouse off the object. Examples such as mailboxes, herbs or chests.\nNOTE: Does not work for all world objects."] = "此选项将在你的鼠标离开世界单位后使来自该单位的提示立刻消失. 例如邮箱, 草药或箱子.\n注意: 不对所有世界单位起作用.";
 -- Bars		
 L["Bars"] = "状态条";
 -- L["Font Face"] = "字体名称";

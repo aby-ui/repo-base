@@ -1,5 +1,5 @@
 --[[
-Copyright 2011-2017 João Cardoso
+Copyright 2011-2018 João Cardoso
 BagBrother is distributed under the terms of the GNU General Public License (Version 3).
 As a special exception, the copyright holders of this addon do not give permission to
 redistribute and/or modify it.
@@ -31,7 +31,7 @@ local Reagents = REAGENTBANK_CONTAINER
 
 function BagBrother:BAG_UPDATE(bag)
 	local isBag = bag > Bank and bag <= BagSlots
-	
+
 	if isBag then
   		self:SaveBag(bag, bag == Backpack)
 	end
@@ -108,16 +108,17 @@ end
 function BagBrother:GUILDBANKBAGSLOTS_CHANGED()
 	if self.atGuild then
 		local id = GetGuildInfo('player') .. '*'
-		local tab = GetCurrentGuildBankTab()
-		local tabs = self.Realm[id] or {}
+		local guild = self.Realm[id] or {}
+		guild.faction = UnitFactionGroup('player') == 'Alliance'
 
 		for i = 1, GetNumGuildBankTabs() do
-			tabs[i] = tabs[i] or {}
-			tabs[i].name, tabs[i].icon, tabs[i].view, tabs[i].deposit, tabs[i].withdraw = GetGuildBankTabInfo(i)
-			tabs[i].info = nil
+			guild[i] = guild[i] or {}
+			guild[i].name, guild[i].icon, guild[i].view, guild[i].deposit, guild[i].withdraw = GetGuildBankTabInfo(i)
+			guild[i].info = nil
 		end
 
-		local items = tabs[tab]
+		local tab = GetCurrentGuildBankTab()
+		local items = guild[tab]
 		if items then
 			for i = 1, 98 do
 				local link = GetGuildBankItemLink(tab, i)
@@ -127,6 +128,6 @@ function BagBrother:GUILDBANKBAGSLOTS_CHANGED()
 			end
 		end
 
-		self.Realm[id] = tabs
+		self.Realm[id] = guild
 	end
 end

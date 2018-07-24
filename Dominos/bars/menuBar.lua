@@ -319,7 +319,10 @@ end
 local MenuBarController = Addon:NewModule('MenuBar')
 
 function MenuBarController:OnInitialize()
-
+	-- fix blizzard nil bug
+	if not _G['AchievementMicroButton_Update'] then
+		_G['AchievementMicroButton_Update'] = function() end
+	end
 end
 
 function MenuBarController:Load()

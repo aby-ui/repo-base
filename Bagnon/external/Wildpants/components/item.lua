@@ -4,6 +4,7 @@
 --]]
 
 local ADDON, Addon = ...
+local Cache = LibStub('LibItemCache-2.0')
 local ItemSlot = Addon:NewClass('ItemSlot', 'Button')
 ItemSlot.unused = {}
 ItemSlot.nextID = 0
@@ -145,15 +146,15 @@ end
 
 function ItemSlot:OnPreClick(button)
 	if not IsModifiedClick() and button == 'RightButton' then
-		if Addon.Cache.AtBank and IsReagentBankUnlocked() and GetContainerNumFreeSlots(REAGENTBANK_CONTAINER) > 0 then
-			if not Addon:IsReagents(self:GetBag()) and ItemSearch:TooltipPhrase(self:GetItem(), PROFESSIONS_USED_IN_COOKING) then
-				local stack = select(8, GetItemInfo(self:GetItem()))
+		if Cache.AtBank and IsReagentBankUnlocked() and GetContainerNumFreeSlots(REAGENTBANK_CONTAINER) > 0 then
+			if not Addon:IsReagents(self:GetBag()) and ItemSearch:TooltipPhrase(self.info.link, PROFESSIONS_USED_IN_COOKING) then
+				local maxstack = select(8, GetItemInfo(self.info.id))
 
 				for _, bag in ipairs {BANK_CONTAINER, 5, 6, 7, 8, 9, 10, 11} do
 					for slot = 1, GetContainerNumSlots(bag) do
-						if GetContainerItemLink(bag, slot) == self:GetItem() then
+						if GetContainerItemID(bag, slot) == self.info.id then
 							local _,count = GetContainerItemInfo(bag, slot)
-							local free = stack - count
+							local free = maxstack - count
 
 							if (free > 0) then
 								SplitContainerItem(self:GetBag(), self:GetID(), min(self.count, free))
@@ -180,8 +181,8 @@ end
 
 function ItemSlot:OnClick(button)
 	if IsAltKeyDown() and button == 'LeftButton' then
-		if Addon.sets.flashFind and self:GetItem() then
-			self:SendMessage('FLASH_ITEM', self:GetItem())
+		if Addon.sets.flashFind and self.info.id then
+			self:SendMessage('FLASH_ITEM', self.info.id)
 		end
 	elseif GetNumVoidTransferDeposit() > 0 and button == 'RightButton' then
 		if self.canDeposit and self.depositSlot then
@@ -193,7 +194,7 @@ function ItemSlot:OnClick(button)
 end
 
 function ItemSlot:OnModifiedClick(...)
-	local link = self:IsCached() and self:GetItem()
+	local link = self:IsCached() and self.info.link
 	if link and not HandleModifiedItemClick(link) then
 		self:OnClick(...)
 	end
@@ -205,7 +206,7 @@ function ItemSlot:OnEnter()
 		dummy:SetParent(self)
 		dummy:SetAllPoints(self)
 		dummy:Show()
-	elseif self:GetItem() then
+	elseif self.info.id then
 		self:ShowTooltip()
 		self:UpdateBorder()
 	else
@@ -223,15 +224,15 @@ end
 --[[ Update ]]--
 
 function ItemSlot:Update()
-	local icon, count, locked, quality, readable, lootable, link = self:GetInfo()
-	self:SetItem(link)
-	self:SetTexture(icon)
-	self:SetCount(count)
-	self:SetLocked(locked)
-	self:SetReadable(readable)
+	local info = self:GetInfo()
 
-	self:UpdateCooldown()
+	self.info, self.hasItem, self.readable = info, info.id and true, info.readable
 	self:After(0.1, 'SecondaryUpdate')
+	self:SetLocked(info.locked)
+	self:UpdateCooldown()
+
+	SetItemButtonTexture(self, info.icon or self:GetEmptyItemIcon())
+	SetItemButtonCount(self, info.count)
 end
 
 function ItemSlot:SecondaryUpdate()
@@ -246,51 +247,18 @@ function ItemSlot:SecondaryUpdate()
 end
 
 
---[[ Item ]]--
-
-function ItemSlot:SetItem(item)
-	self.hasItem = item -- CursorUpdate
-end
-
-function ItemSlot:GetItem()
-	return self.hasItem
-end
-
-function ItemSlot:GetItemID()
-	return self.hasItem and tonumber(self.hasItem:match('item:(%d+)'))
-end
-
-
---[[ Icon ]]--
-
-function ItemSlot:SetTexture(texture)
-	SetItemButtonTexture(self, texture or self:GetEmptyItemIcon())
-end
-
-function ItemSlot:GetEmptyItemIcon()
-	return Addon.sets.emptySlots and 'Interface/PaperDoll/UI-Backpack-EmptySlot'
-end
-
-
---[[ Locked ]]--
+--[[ Basic Features ]]--
 
 function ItemSlot:UpdateLocked()
-	self:SetLocked(self:IsLocked())
+	self:SetLocked(self:GetInfo().locked)
 end
 
 function ItemSlot:SetLocked(locked)
 	SetItemButtonDesaturated(self, locked)
 end
 
-function ItemSlot:IsLocked()
-	return select(3, self:GetInfo())
-end
-
-
---[[ Other ]]--
-
 function ItemSlot:UpdateCooldown()
-	if self:GetItem() and (not self:IsCached()) then
+	if self.info.id and (not self:IsCached()) then
 		ContainerFrame_UpdateCooldown(self:GetBag(), self)
 	else
 		self.Cooldown:Hide()
@@ -308,7 +276,7 @@ function ItemSlot:UpdateUpgradeIcon()
 end
 
 function ItemSlot:UpdateSlotColor()
-	if not self:GetItem() and Addon.sets.colorSlots then
+	if not self.info.id and Addon.sets.colorSlots then
 		local color = Addon.sets[self:GetBagType() .. 'Color']
 		self:SetSlotColor(color[1], color[2], color[3])
 	else
@@ -321,23 +289,14 @@ function ItemSlot:SetSlotColor(...)
 	self:GetNormalTexture():SetVertexColor(...)
 end
 
-function ItemSlot:SetCount(count)
-	SetItemButtonCount(self, count)
-end
-
-function ItemSlot:SetReadable(readable)
-	self.readable = readable
-end
-
 
 --[[ Border Glow ]]--
 
 function ItemSlot:UpdateBorder()
-	local _,_,_, quality = self:GetInfo()
-	local item = self:GetItem()
 	self:HideBorder()
 
-	if item then
+	local link = self.info.link
+	if link then
 		local isQuestItem, isQuestStarter = self:IsQuestItem()
 		if isQuestStarter then
 			self.QuestBorder:SetTexture(TEXTURE_ITEM_QUEST_BANG)
@@ -345,6 +304,7 @@ function ItemSlot:UpdateBorder()
 			return
 		end
 
+		local quality = self.info.quality
 		if Addon.sets.glowNew and self:IsNew() then
 			if not self.flashAnim:IsPlaying() then
 				self.flashAnim:Play()
@@ -365,11 +325,11 @@ function ItemSlot:UpdateBorder()
 			return self:SetBorderColor(1, .82, .2)
 		end
 
-		if Addon.sets.glowSets and ItemSearch:InSet(item) then
+		if Addon.sets.glowSets and ItemSearch:InSet(link) then
 	   		return self:SetBorderColor(.1, 1, 1)
 	  	end
 
-		if Addon.sets.glowUnusable and Unfit:IsItemUnusable(item) then
+		if Addon.sets.glowUnusable and Unfit:IsItemUnusable(link) then
 			return self:SetBorderColor(RED_FONT_COLOR.r, RED_FONT_COLOR.g, RED_FONT_COLOR.b)
 		end
 
@@ -396,7 +356,7 @@ end
 
 function ItemSlot:UpdateSearch()
 	local search = Addon.canSearch and Addon.search or ''
-	local matches = search == '' or ItemSearch:Matches(self:GetItem(), search)
+	local matches = search == '' or ItemSearch:Matches(self.info.link, search)
 
 	if matches then
 		self:SetAlpha(1)
@@ -417,11 +377,9 @@ function ItemSlot:UpdateFocus()
 	end
 end
 
-function ItemSlot:OnItemFlashed(_,item)
+function ItemSlot:OnItemFlashed(_,itemID)
 	self.Flash:Stop()
-
-	local link = self:GetItem()
-	if link and link:match('item:(%d+)') == item:match('item:(%d+)') then
+	if self.info.id == itemID then
 		self.Flash:Play()
 	end
 end
@@ -460,16 +418,13 @@ end
 --[[ Data ]]--
 
 function ItemSlot:IsQuestItem()
-	local item = self:GetItem()
-	if not item then
-		return
-	end
-
-	if self:IsCached() then
-		return select(12, GetItemInfo(item)) == LE_ITEM_CLASS_QUESTITEM or ItemSearch:Tooltip(item, QUEST_LOWER), false
-	else
-		local isQuestItem, questID, isActive = GetContainerItemQuestInfo(self:GetBag(), self:GetID())
-		return isQuestItem, (questID and not isActive)
+	if self.info.id then
+		if self:IsCached() then
+			return select(12, GetItemInfo(self.info.id)) == LE_ITEM_CLASS_QUESTITEM or ItemSearch:Tooltip(self.info.link, QUEST_LOWER), false
+		else
+			local isQuestItem, questID, isActive = GetContainerItemQuestInfo(self:GetBag(), self:GetID())
+			return isQuestItem, (questID and not isActive)
+		end
 	end
 end
 
@@ -494,11 +449,19 @@ function ItemSlot:GetInfo()
 end
 
 function ItemSlot:GetBagType()
-	return Addon:GetBagType(self:GetPlayer(), self:GetBag())
+	return Addon:GetBagType(self:GetOwner(), self:GetBag())
+end
+
+function ItemSlot:GetItem() -- for legacy purposes
+	return self.info.link
 end
 
 function ItemSlot:GetBag()
 	return self.bag
+end
+
+function ItemSlot:GetEmptyItemIcon()
+	return Addon.sets.emptySlots and 'Interface/PaperDoll/UI-Backpack-EmptySlot'
 end
 
 
@@ -547,7 +510,7 @@ function ItemSlot:CreateDummySlot()
 
 	local function Slot_OnEnter(self)
 		local parent = self:GetParent()
-		local item = parent:IsCached() and parent:GetItem()
+		local item = parent:IsCached() and parent.info.link
 
 		if item then
 			parent.AnchorTooltip(self)

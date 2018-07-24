@@ -34,6 +34,7 @@ dataobj = ldb:NewDataObject("Broker_MicroMenu", {
 	label = "MicroMenu",
 	text  = "",
 	OnClick = function(self, button, ...)
+   Debug("OnClick", self, button, ...)
 		if button == "RightButton" then
 			if _G.IsModifierKeyDown() then
 				mainmenu(self, button, ...)
@@ -87,24 +88,25 @@ function dataobj:UpdateText()
 	--bandwidthIn, bandwidthOut, latencyHome, latencyWorld
 	local _, _, latencyHome, latencyWorld = GetNetStats()
 
+  local colorGrey = "|cff808080"
 	local fpsColor, colorHome, colorWorld = "", "", ""
 	if not db.disableColoring then
 		if fps > 30 then
-			fpsColor = "|cff00ff00"
+			fpsColor = colorGrey
 		elseif fps > 20 then
 			fpsColor = "|cffffd200"
 		else
 			fpsColor = "|cffdd3a00"
 		end
 		if latencyHome < 300 then
-			colorHome = "|cff00ff00"
+			colorHome = colorGrey
 		elseif latencyHome < 500 then
 			colorHome = "|cffffd200"
 		else
 			colorHome = "|cffdd3a00"
 		end
 		if latencyWorld < 300 then
-			colorWorld = "|cff00ff00"
+			colorWorld = colorGrey
 			dataobj.icon = path.."green.tga"
 		elseif latencyWorld < 500 then
 			colorWorld = "|cffffd200"
@@ -159,6 +161,8 @@ function dataobj:OnLeave()
 end
 
 function dataobj:OnEnter()
+  Debug(_G.StoreMicroButton)
+
 	if tooltip then
 		LibQTip:Release(tooltip)
 	end
@@ -282,7 +286,7 @@ function dataobj:OnEnter()
 
 	if _G.StoreMicroButton then
 		local y, x = tooltip:AddLine()
-		tooltip:SetCell(y, 1, path.."raid.tga", myProvider)
+		tooltip:SetCell(y, 1, "", myProvider)
 		tooltip:SetCell(y, 2, _G.StoreMicroButton.tooltipText)
 		tooltip:SetLineScript(y, "OnMouseUp", MouseHandler, _G.StoreMicroButton)
 	end
@@ -295,7 +299,7 @@ function dataobj:OnEnter()
 	tooltip:AddSeparator(10,0,0,0,0)
 
 	local y, x = tooltip:AddLine()
-	tooltip:SetCell(y, 1, "", myProvider)
+	tooltip:SetCell(y, 1, nil, myProvider)
 	tooltip:SetCell(y, 2, _G.GameMenuButtonOptions:GetText())
 	tooltip:SetLineScript(y, "OnMouseUp", MouseHandler, function() _G.VideoOptionsFrame:Show() end)
 
@@ -317,7 +321,7 @@ function dataobj:OnEnter()
 		tooltip:SetLineScript(y, "OnMouseUp", MouseHandler, _G.GameMenuButtonAddons)
 	end
 
-	tooltip:SetAutoHideDelay(0.1, self)
+	tooltip:SetAutoHideDelay(0.01, self)
 	tooltip:SmartAnchorTo(self)
 	tooltip:Show()
 end

@@ -12,7 +12,6 @@ TradeskillInfo.vars.tradeskillspells = {
 	['L'] = 2108,  -- Leatherworking
 	['T'] = 3908,  -- Tailoring
 	['W'] = 2550,  -- Cooking
-	['X'] = 3273,  -- First Aid
 	['Y'] = 2575,  -- Mining
 	['S'] = 8613,  -- Skinning
 	['H'] = 170691,  -- Herb Gathering

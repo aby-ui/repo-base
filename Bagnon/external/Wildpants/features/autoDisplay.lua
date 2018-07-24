@@ -54,13 +54,10 @@ function Addon:RegisterDisplayEvents(setting, showEvent, hideEvent)
 end
 
 function Addon:BANK_OPENED()
-	local bankFrame = self:GetFrame('bank')
-	if bankFrame then
-		bankFrame:SetPlayer(nil)
+	local bank = self:ShowFrame('bank')
+	if bank then
+		bank:SetOwner(nil)
 	end
-
-	self.Cache.AtBank = true
-	self:ShowFrame('bank')
 
 	if self.sets.displayBank then
 		self:ShowFrame('inventory')
@@ -68,7 +65,6 @@ function Addon:BANK_OPENED()
 end
 
 function Addon:BANKFRAME_CLOSED()
-	self.Cache.AtBank = nil
 	self:HideFrame('bank')
 
 	if self.sets.closeBank then

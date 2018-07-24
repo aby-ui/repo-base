@@ -259,7 +259,7 @@ Panel_OnRefresh = function(self)
 		checkboxes = {}
 		dropdowns = {}
 
-		local checkboxes_order = { "silverGoldTimer", "deathTracker", "autoGossip", "progressTooltip", "completionMessage", "hideTalkingHead", "resetPopup" }
+		local checkboxes_order = { "silverGoldTimer", "autoGossip", "progressTooltip", "completionMessage", "hideTalkingHead", "resetPopup" }
 		if Addon.Locale:HasRumors() then table.insert(checkboxes_order, 5, "cosRumors") end
 
 		for i,key in ipairs(checkboxes_order) do

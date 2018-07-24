@@ -5,43 +5,41 @@
 
 local ADDON, Addon = ...
 local Mixins = {'RegisterEvent', 'UnregisterEvent', 'UnregisterEvents', 'RegisterMessage', 'UnregisterMessage', 'UnregisterMessages', 'SendMessage'}
-local Messages = {}
+local Events = LibStub('AceEvent-3.0')
 
-LibStub('AceEvent-3.0'):Embed(Messages)
 LibStub('AceAddon-3.0'):NewAddon(Addon, ADDON)
-Addon.Cache = LibStub('LibItemCache-1.1')
 _G[ADDON] = Addon
 
 
 --[[ Messaging ]]--
 
-function Addon:RegisterMessage(msg, call, ...)
-	Messages.RegisterMessage(self, 'BAGNON_' .. msg, call or msg, ...)
-end
-
-function Addon:UnregisterMessage(msg)
-	Messages.UnregisterMessage(self, 'BAGNON_' .. msg)
-end
-
-function Addon:SendMessage(msg, ...)
-	Messages.SendMessage(self, 'BAGNON_' .. msg, ...)
-end
-
 function Addon:RegisterEvent(...)
-	Messages.RegisterEvent(self, ...)
+	Events.RegisterEvent(self, ...)
 end
 
 function Addon:UnregisterEvent(...)
-	Messages.UnregisterEvent(self, ...)
-end
-
-function Addon:UnregisterMessages()
-	Messages.UnregisterAllMessages(self)
+	Events.UnregisterEvent(self, ...)
 end
 
 function Addon:UnregisterEvents()
-	Messages.UnregisterAllEvents(self)
-	Messages.UnregisterAllMessages(self)
+	Events.UnregisterAllEvents(self)
+	Events.UnregisterAllMessages(self)
+end
+
+function Addon:RegisterMessage(msg, call, ...)
+	Events.RegisterMessage(self, 'BAGNON_' .. msg, call or msg, ...)
+end
+
+function Addon:UnregisterMessage(msg)
+	Events.UnregisterMessage(self, 'BAGNON_' .. msg)
+end
+
+function Addon:SendMessage(msg, ...)
+	Events.SendMessage(self, 'BAGNON_' .. msg, ...)
+end
+
+function Addon:UnregisterMessages()
+	Events.UnregisterAllMessages(self)
 end
 
 
@@ -83,9 +81,18 @@ function Addon:NewClass(name, type, parent)
 			return frame and frame:GetProfile()
 		end
 
-		class.GetPlayer = function(self)
+		class.GetBaseProfile = function(self)
 			local frame = self:GetFrame()
-			return frame and frame:GetPlayer()
+			return frame and frame:GetBaseProfile()
+		end
+
+		class.GetOwner = function(self)
+			local frame = self:GetFrame()
+			return frame and frame:GetOwner()
+		end
+
+		class.GetOwnerInfo = function(self)
+			return LibStub('LibItemCache-2.0'):GetOwnerInfo(self:GetOwner())
 		end
 
 		class.IsCached = function(self)

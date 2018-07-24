@@ -24,7 +24,6 @@ L.Updated = 'Updated to v%s'
 --frame titles
 L.TitleBags = '%s\'s Inventory'
 L.TitleBank = '%s\'s Bank'
-L.TitleGuild = '%s\'s Guild Bank'
 L.TitleVault = '%s\'s Void Storage'
 
 --tooltips
@@ -64,9 +63,9 @@ L.CannotPurchaseVault = 'You do not have enough money to unlock the Void Storage
 L.AskMafia = 'Ask Mafia'
 
 --item tooltips
-L.TipCount1 = 'Equipped: %d'
-L.TipCount2 = 'Bags: %d'
-L.TipCount3 = 'Bank: %d'
-L.TipCount4 = 'Vault: %d'
-L.TipCount5 = 'Guild: %d'
+L.TipCountEquip = 'Equipped: %d'
+L.TipCountBags = 'Bags: %d'
+L.TipCountBank = 'Bank: %d'
+L.TipCountVault = 'Vault: %d'
+L.TipCountGuild = 'Guild: %d'
 L.TipDelimiter = '|'

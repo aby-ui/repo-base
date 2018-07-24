@@ -7,24 +7,38 @@ local ADDON, Addon = ...
 local L = LibStub('AceLocale-3.0'):GetLocale(ADDON)
 
 local SILVER = '|cffc7c7cf%s|r'
-local HEARTHSTONE = tostring(HEARTHSTONE_ITEM_ID)
+local LAST_BANK_SLOT = NUM_BAG_SLOTS + NUM_BANKBAGSLOTS
+local FIRST_BANK_SLOT = NUM_BAG_SLOTS + 1
 local TOTAL = SILVER:format(L.Total)
 
-local Cache = LibStub('LibItemCache-1.1')
+local Cache = LibStub('LibItemCache-2.0')
 local ItemText, ItemCount, Hooked = {}, {}
 
 
 --[[ Adding Text ]]--
 
+local function FindItemCount(owner, bag, itemID)
+	local count = 0
+	local info = Cache:GetBagInfo(owner, bag)
+
+	for slot = 1, (info.count or 0) do
+		local stack = Cache:GetItemInfo(owner, bag, slot)
+		if stack.id == itemID then
+			count = count + (stack.count or 1)
+		end
+	end
+
+	return count
+end
+
 local function FormatCounts(color, ...)
-	local places = 0
-	local total = 0
+	local total, places = 0, 0
 	local text = ''
 
-	for i = 1, select('#', ...) - (Addon.sets.countGuild and 1 or 0) do
-		local count = select(i, ...)
-		if count > 0 and i ~= 5 then --163ui hide guild count
-			text = text .. L.TipDelimiter .. L['TipCount' .. i]:format(count)
+	for i = 1, select('#', ...), 2 do
+		local title, count = select(i, ...)
+		if count > 0 then  --and i~=5 TODO aby8 hide guild count
+			text = text .. L.TipDelimiter .. title:format(count)
 			total = total + count
 			places = places + 1
 		end
@@ -45,30 +59,60 @@ local function AddOwners(tooltip, link)
 		return
 	end
 
-	local id = link and GetItemInfo(link) and link:match('item:(%d+)') -- Blizzard doing craziness when doing GetItemInfo
-	if not id or id == HEARTHSTONE then
+	local itemID = tonumber(link and GetItemInfo(link) and link:match('item:(%d+)')) -- Blizzard doing craziness when doing GetItemInfo
+	if not itemID or itemID == HEARTHSTONE_ITEM_ID then
 		return
 	end
 
 	local players = 0
 	local total = 0
 
-	for i, player in Cache:IterateAlliedPlayers() do
-		local color = Addon:GetPlayerColorString(player)
-		local countText = ItemText[player][id]
-		local count = ItemCount[player][id]
+	for owner in Cache:IterateOwners() do
+		local info = Cache:GetOwnerInfo(owner)
+		local color = Addon:GetOwnerColorString(info)
+		local count, countText = ItemCount[owner][itemID], ItemText[owner][itemID]
 
 		if countText == nil then
-			count, countText = FormatCounts(color, Cache:GetItemCounts(player, id))
+			if not info.isguild then
+				local equip = FindItemCount(owner, 'equip', itemID)
+				local vault = FindItemCount(owner, 'vault', itemID)
+				local bags, bank = 0,0
 
-			if Cache:IsPlayerCached(player) then
-				ItemText[player][id] = countText or false
-				ItemCount[player][id] = count
+				if info.cached then
+					for i = BACKPACK_CONTAINER, NUM_BAG_SLOTS do
+						bags = bags + FindItemCount(owner, i, itemID)
+					end
+
+					for i = FIRST_BANK_SLOT, LAST_BANK_SLOT do
+						bank = bank + FindItemCount(owner, i, itemID)
+					end
+					bank = bank + FindItemCount(owner, REAGENTBANK_CONTAINER, itemID)
+				else
+					local owned = GetItemCount(itemID, true)
+					local carrying = GetItemCount(itemID)
+
+					bags = carrying - equip
+					bank = owned - carrying
+				end
+
+				count, countText = FormatCounts(color, L.TipCountEquip, equip, L.TipCountBags, bags, L.TipCountBank, bank, L.TipCountVault, vault)
+			elseif Addon.sets.countGuild then
+				local guild = 0
+				for i = 1, GetNumGuildBankTabs() do
+					guild = guild + FindItemCount(owner, i, itemID)
+				end
+
+				count, countText = FormatCounts(color, L.TipCountGuild, guild)
+			end
+
+			if info.cached then
+				ItemText[owner][itemID] = countText or false
+				ItemCount[owner][itemID] = count
 			end
 		end
 
 		if countText then
-			tooltip:AddDoubleLine(color:format(player), countText)
+			tooltip:AddDoubleLine(format('|T%s:12:12|t ', Addon:GetOwnerIcon(info)) .. color:format(info.name), countText)
 			total = total + count
 			players = players + 1
 		end
@@ -122,11 +166,11 @@ end
 --[[ Public Methods ]]--
 
 function Addon:HookTooltips()
-	if Cache:HasCache() and self.sets.tipCount then
+	if self:MultipleOwnersFound() and self.sets.tipCount then
 		if not Hooked then
-			for i, player in Cache:IterateAlliedPlayers() do
-				ItemCount[player] = {}
-				ItemText[player] = {}
+			for owner in Cache:IterateOwners() do
+				ItemCount[owner] = {}
+				ItemText[owner] = {}
 			end
 
 			HookTip(GameTooltip)

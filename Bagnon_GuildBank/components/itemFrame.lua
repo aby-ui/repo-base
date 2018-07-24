@@ -11,11 +11,11 @@ ItemFrame.Transposed = true
 
 function ItemFrame:RegisterEvents()
 	self:UnregisterEvents()
-	self:RegisterFrameMessage('PLAYER_CHANGED', 'Update')
+	self:RegisterFrameMessage('OWNER_CHANGED', 'Update')
 	self:RegisterMessage('UPDATE_ALL', 'RequestLayout')
 
 	if self:IsCached() then
-		self:RegisterMessage('GUILDBANK_TAB_CHANGED', 'ForAll', 'Update')
+		self:RegisterMessage('GUILD_TAB_CHANGED', 'ForAll', 'Update')
   else
     self:RegisterEvent('GUILDBANKBAGSLOTS_CHANGED', 'ForAll', 'Update')
     self:RegisterEvent('GUILDBANK_ITEM_LOCK_CHANGED', 'ForAll', 'UpdateLocked')

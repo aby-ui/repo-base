@@ -5,7 +5,7 @@ end
 local L = WeakAuras.L
 
 -- WeakAuras/Options
-	L["-- Do not remove this comment, it is part of this trigger: "] = "-- 不要刪除此註釋，它是此觸發器的一部分: "
+	L["-- Do not remove this comment, it is part of this trigger: "] = "-- Do not remove this comment, it is part of this trigger: "
 	L["% of Progress"] = "進度%"
 	L["%i Matches"] = "%i 個符合"
 	L["%s Color"] = "%s 顏色"
@@ -231,8 +231,7 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 |cFF00CC00> 1/2|r 當 %s 中受到影響的人數超過一半時會觸發
 |cFF00CC00>= 0|r 無論如何永遠都會觸發]=]
 	L["Group Member Count"] = "群組成員總數"
-	--[[Translation missing --]]
-	L["Group Scale"] = "Group Scale"
+	L["Group Scale"] = "群組縮放大小"
 	L["Grow"] = "增長"
 	L["Hawk"] = "老鷹"
 	L["Height"] = "高度"
@@ -456,10 +455,8 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	L["Up"] = "上移"
 	L["Update Custom Text On..."] = "更新自訂文字於..."
 	L["Use Full Scan (High CPU)"] = "使用完整掃描 (高 CPU)"
-	--[[Translation missing --]]
-	L["Use nth value from tooltip:"] = "Use nth value from tooltip:"
-	--[[Translation missing --]]
-	L["Use SetTransform"] = "Use SetTransform"
+	L["Use nth value from tooltip:"] = "使用滑鼠提示中的第 N 個值:"
+	L["Use SetTransform"] = "使用 SetTransform"
 	L["Use tooltip \"size\" instead of stacks"] = "使用滑鼠提示的 \"大小\" 而不是堆疊"
 	L["Used in auras:"] = "用於光環:"
 	L["Version: "] = "版本: "
@@ -475,6 +472,7 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	L["Y Scale"] = "垂直縮放"
 	L["Yellow Rune"] = "黃色符文"
 	L["Yes"] = "是的"
+	L["You are about to delete %d aura(s). |cFFFF0000This cannot be undone!|r Would you like to continue?"] = "你正準備要刪除 %d 個提醒效果，刪除後將|cFFFF0000無法還原!|r 請問是否要繼續?"
 	L["Z Offset"] = "Z軸位置"
 	L["Z Rotation"] = "Z軸旋轉"
 	L["Zoom"] = "縮放"

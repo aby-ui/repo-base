@@ -583,7 +583,14 @@ function DF:NewTextEntry (parent, container, name, member, w, h, func, param1, p
 		TextEntryObject.container = container
 		TextEntryObject.have_tooltip = nil
 
-	TextEntryObject.editbox = CreateFrame ("EditBox", name, parent, "DetailsFrameworkEditBoxTemplate2")
+	TextEntryObject.editbox = CreateFrame ("EditBox", name, parent)
+	TextEntryObject.editbox:SetSize (232, 20)
+	TextEntryObject.editbox:SetBackdrop ({bgFile = [["Interface\DialogFrame\UI-DialogBox-Background"]], tileSize = 64, tile = true, edgeFile = [[Interface\DialogFrame\UI-DialogBox-Border]], edgeSize = 10, insets = {left = 1, right = 1, top = 0, bottom = 0}})
+	
+	TextEntryObject.editbox.label = TextEntryObject.editbox:CreateFontString ("$parent_Desc", "OVERLAY", "GameFontHighlightSmall")
+	TextEntryObject.editbox.label:SetJustifyH ("left")
+	TextEntryObject.editbox.label:SetPoint ("RIGHT", TextEntryObject.editbox, "LEFT", -2, 0)
+	
 	TextEntryObject.widget = TextEntryObject.editbox
 	
 	TextEntryObject.editbox:SetTextInsets (3, 0, 0, -3)
@@ -1079,7 +1086,22 @@ function DF:NewSpecialLuaEditorEntry (parent, w, h, member, name, nointent)
 		parent [member] = borderframe
 	end
 	
-	local scrollframe = CreateFrame ("ScrollFrame", name, borderframe, "DetailsFrameworkEditBoxMultiLineTemplate")
+	local scrollframe = CreateFrame ("ScrollFrame", name, borderframe, "UIPanelScrollFrameTemplate")
+	scrollframe:SetSize (232, 20)
+	scrollframe.editbox = CreateFrame ("editbox", "$parentEditBox", scrollframe)
+	scrollframe.editbox:SetMultiLine (true)
+	scrollframe.editbox:SetAutoFocus (false)
+	scrollframe.editbox:SetSize (232, 20)
+	scrollframe.editbox:SetAllPoints()
+	
+	scrollframe.editbox:SetScript ("OnCursorChanged", _G.ScrollingEdit_OnCursorChanged)
+	scrollframe.editbox:SetScript ("OnEscapePressed", _G.EditBox_ClearFocus)
+	scrollframe.editbox:SetFontObject ("GameFontHighlightSmall")
+	
+	scrollframe:SetScrollChild (scrollframe.editbox)
+	
+	--letters="255"
+	--countInvisibleLetters="true"
 
 	borderframe.SetAsAutoComplete = TextEntryMetaFunctions.SetAsAutoComplete
 	

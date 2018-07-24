@@ -1,43 +1,40 @@
---[[
-	startup.lua
-		initializes OmniCC
---]]
-
-local OmniCC = CreateFrame('Frame', 'OmniCC')
-local Classy = LibStub('Classy-1.0')
-local L = OMNICC_LOCALS
-
-
---[[ Startup ]]--
+local OmniCC = CreateFrame('Frame', 'OmniCC', InterfaceOptionsFrame)
+local L = _G.OMNICC_LOCALS
 
 function OmniCC:Startup()
 	self.effects = {}
-	self:SetupConfig()
+
 	self:SetupCommands()
-	self:RegisterEvent('VARIABLES_LOADED')
-	self:SetScript('OnEvent', function(self, event)
-		self[event](self)
+
+	self:SetScript('OnEvent', function(f, event, ...)
+		f[event](f, event, ...)
 	end)
-	
+
+	self:SetScript('OnShow', function(f)
+		LoadAddOn('OmniCC_Config')
+
+		f:SetScript('OnShow', nil)
+	end)
+
 	SetCVar('countdownForCooldowns', 0)
+
+	self:RegisterEvent('VARIABLES_LOADED')
 end
 
-function OmniCC:VARIABLES_LOADED()
-	self:StartupSettings()
-	self.Actions:AddDefaults()
-	self:SetupEvents()
-	self:SetupHooks()
-end
+function OmniCC:SetupCommands()
+	SLASH_OmniCC1 = '/omnicc'
 
+	SLASH_OmniCC2 = '/occ'
 
---[[ Setup ]]--
-
-function OmniCC:SetupHooks()
-	self.Meta = getmetatable(ActionButton1Cooldown).__index
-
-	hooksecurefunc(self.Meta, 'SetCooldown', self.Cooldown.Start)
-	hooksecurefunc(self.Meta, 'SetSwipeColor', self.Cooldown.OnColorSet)
-	hooksecurefunc('SetActionUIButton', self.Actions.Add)
+	SlashCmdList['OmniCC'] = function(...)
+		if ... == 'version' then
+			print(L.Version:format(self:GetVersion()))
+		elseif self.ShowOptionsMenu or LoadAddOn('OmniCC_Config') then
+			if type(self.ShowOptionsMenu) == "function" then
+				self:ShowOptionsMenu()
+			end
+		end
+	end
 end
 
 function OmniCC:SetupEvents()
@@ -46,39 +43,20 @@ function OmniCC:SetupEvents()
 	self:RegisterEvent('PLAYER_ENTERING_WORLD')
 end
 
-function OmniCC:SetupConfig()
-	local config = CreateFrame('Frame', 'OmniCC_Config', InterfaceOptionsFrame)
-	config.name = 'OmniCC'
-	config:SetScript('OnShow', function()
-		local loaded, reason = LoadAddOn('OmniCC_Config')
-		if not loaded then
-			local string = config:CreateFontString(nil, nil, 'GameFontHighlight')
-			local reason = _G['ADDON_'..reason]:lower()
-			
-			string:SetText(L.ConfigMissing:format('OmniCC_Config', reason))
-			string:SetPoint('RIGHT', -40, 0)
-			string:SetPoint('LEFT', 40, 0)
-			string:SetHeight(30)
-		end 
+function OmniCC:SetupHooks()
+	self.Meta = getmetatable(ActionButton1Cooldown).__index
 
-		InterfaceOptions_AddCategory(config)
-		config:SetScript('OnShow', nil)
+	hooksecurefunc("CooldownFrame_SetDisplayAsPercentage", function(cooldown)
+		cooldown.noCooldownCount = true
+		self.Cooldown.Stop(cooldown)
 	end)
-end
 
-function OmniCC:SetupCommands()
-	SLASH_OmniCC1 = '/omnicc'
-	SLASH_OmniCC2 = '/occ'
-	SlashCmdList['OmniCC'] = function(...)
-		if comand == 'version' then
-			print(L.Version:format(self:GetVersion()))
-		elseif LoadAddOn('OmniCC_Config') then
-			InterfaceOptionsFrame:Show()
-			InterfaceOptionsFrame_OpenToCategory('OmniCC')
-		end
-	end
-end
+	hooksecurefunc(self.Meta, 'SetCooldown', self.Cooldown.Start)
+	hooksecurefunc(self.Meta, 'SetSwipeColor', self.Cooldown.OnColorSet)
+	hooksecurefunc('SetActionUIButton', self.Actions.Add)
 
+
+end
 
 --[[ Events ]]--
 
@@ -90,11 +68,17 @@ function OmniCC:PLAYER_ENTERING_WORLD()
 	self.Timer:ForAll('UpdateText')
 end
 
+function OmniCC:VARIABLES_LOADED()
+	self:StartupSettings()
+	self.Actions:AddDefaults()
+	self:SetupEvents()
+	self:SetupHooks()
+end
 
 --[[ Modules ]]--
 
 function OmniCC:New(name, module)
-	self[name] = module or Classy:New('Frame')
+	self[name] = module or LibStub('Classy-1.0'):New('Frame')
 	return self[name]
 end
 

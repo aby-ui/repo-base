@@ -122,81 +122,50 @@ else
 	})
 end
 
+local function Guardian(duration, spell, triggerMatch)
+	return {
+		duration = duration,
+		texture = GetSpellTexture(spell),
+		triggerSpell = spell,
+		triggerMustMatch = triggerMatch,
+	}
+end
 
 Type.GuardianInfo = {
-	-- Dreadstalker
-	[ 98035] = {
-		duration = 12,
-		texture = GetSpellTexture(104316),
-		triggerSpell = 104316,
-	}, 
-	-- Wild Imp (Call Dreadstalkers w/ improved dreadstalkers)
-	[ 99737] = {
-		duration = 12,
-		texture = GetSpellTexture(211158),
-		triggerSpell = 196272,
-	}, 
+	
+	[ 98035] = Guardian(12, 104316, false), -- Dreadstalker
+	[    89] = Guardian(30, 1122, false), -- Infernal (Destro)
+	[103673] = Guardian(20, 205180, false), -- Darkglare (Afflic)
+	
 	-- Wild Imp (HoG)
 	[ 55659] = {
 		duration = 12,
 		texture = GetSpellTexture(211158),
-		triggerSpell = 105174,
-	}, 
-	-- Doomguard
-	[ 11859] = {
-		duration = 25,
-		texture = GetSpellTexture(18540),
-		triggerSpell = 18540,
-	},  
-	-- Infernal
-	[    89] = {
-		duration = 25,
-		texture = GetSpellTexture(1122),
-		triggerSpell = 1122,
-	},
-	-- Darkglare
-	[103673] = {
-		duration = 12,
-		texture = GetSpellTexture(205180),
-		triggerSpell = 205180,
+		triggerSpell = 105174, -- Not the real trigger spell. Set for the tooltip only.
+		-- triggerSpell = 104317,
 	}, 
 
-	-- Grimorie: Imp
-	[416] = {
-		duration = 25,
-		texture = GetSpellTexture(111859),
-		triggerSpell = 111859,
-		triggerMustMatch = true,
-	}, 
-	-- Grimorie: Voidwalker
-	[1860] = {
-		duration = 25,
-		texture = GetSpellTexture(111895),
-		triggerSpell = 111895,
-		triggerMustMatch = true,
-	}, 
-	-- Grimorie: Succubus
-	[1863] = {
-		duration = 25,
-		texture = GetSpellTexture(111896),
-		triggerSpell = 111896,
-		triggerMustMatch = true,
-	}, 
-	-- Grimorie: Felhunter
-	[417] = {
-		duration = 25,
-		texture = GetSpellTexture(111897),
-		triggerSpell = 111897,
-		triggerMustMatch = true,
-	}, 
-	-- Grimorie: Felguard
-	[17252] = {
-		duration = 25,
-		texture = GetSpellTexture(111898),
-		triggerSpell = 111898,
-		triggerMustMatch = true,
-	}, 
+	[143622] = Guardian(12, 279910, true), -- Wild Imp (Inner Demons passive)
+	[136398] = Guardian(15, 267987, true), -- Illidari Satyr (Inner Demons passive)
+	[136402] = Guardian(15, 268001, true), -- Ur'zul (Inner Demons passive)
+	[136403] = Guardian(15, 267991, true), -- Void Terror (Inner Demons passive)
+	[136404] = Guardian(15, 267992, true), -- Bilescourge (Inner Demons passive)
+	[136397] = Guardian(15, 267986, true), -- Prince Malchezzar (Inner Demons passive)
+	[136399] = Guardian(15, 267988, true), -- Vicious Hellhound (Inner Demons passive)
+	[136401] = Guardian(15, 267989, true), -- Eyes of Gul'dan (Inner Demons passive)
+	[136406] = Guardian(15, 267994, true), -- Shivarra (Inner Demons passive)
+	[136407] = Guardian(15, 267995, true), -- Wrathguard (Inner Demons passive)
+	[136408] = Guardian(15, 267996, true), -- Darkhound (Inner Demons passive)
+
+
+	[135816] = Guardian(15, 264119, true), -- Summon Vilefiend
+	[135002] = Guardian(15, 265187, true), -- Summon Demonic Tyrant
+
+	[17252] = Guardian(15, 111898, true), -- Grimorie: Felguard
+	[107024] = Guardian(15, 212459, true), -- Call Fel Lord
+	[107100] = Guardian(20, 201996, true), -- Call Observer
 }
+
 local GuardianInfo = Type.GuardianInfo
 
 function Type:RefreshNames()
@@ -250,16 +219,9 @@ local Guardian = TMW:NewClass(){
 	end,	
 
 	Empower = function(self)
-		local remaining = self.empowerDuration - (TMW.time - self.empowerStart)
-		if remaining < 0 then remaining = 0 end
-
-		-- Add the duration of empower to the remaining duration
-		remaining = remaining + 12
-		-- Cap off the duration at +30% (for refreshes)
-		remaining = min(12*1.3, remaining)
-
+		self.duration = self.duration + 15
 		self.empowerStart = TMW.time
-		self.empowerDuration = remaining
+		self.empowerDuration = 15
 	end,
 
 	GetTimeRemaining = function(self, durationMode)
@@ -310,10 +272,12 @@ function Type:COMBAT_LOG_EVENT_UNFILTERED(e)
 		else
 			return
 		end
-	elseif (event == "SPELL_AURA_APPLIED" or event == "SPELL_AURA_REFRESH") and sourceGUID == pGUID and spellID == 193396 then
-		local existingGuardian = Guardians[destGUID]
-		if existingGuardian then
-			existingGuardian:Empower()
+	elseif (event == "SPELL_CAST_SUCCESS") and sourceGUID == pGUID and spellID == 265187 then
+		-- summon tyrant: duration +15 to all demons.
+		-- Note that this event comes before the tyrant summon event,
+		-- so we won't accidentally give the
+		for guid, guardian in pairs(Guardians) do
+			guardian:Empower()
 		end
 	elseif event == "UNIT_DIED" or event == "SPELL_INSTAKILL" then
 		Guardians[destGUID] = nil

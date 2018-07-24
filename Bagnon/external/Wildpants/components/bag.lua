@@ -79,7 +79,7 @@ end
 
 function Bag:OnClick(button)
 	if button == 'RightButton' then
-		if not self:IsCached() and not self:IsReagents() and not self:IsPurchasable() then
+		if not self:IsReagents() and not self:IsPurchasable() then
 			ContainerFrame1FilterDropDown:SetParent(self)
 			PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
 			ToggleDropDownMenu(1, nil, ContainerFrame1FilterDropDown, self, 0, 0)
@@ -90,7 +90,7 @@ function Bag:OnClick(button)
 		if self:IsBackpack() then
 			PutItemInBackpack()
 		else
-			PutItemInBag(self:GetInventorySlot())
+			PutItemInBag(self:GetInfo().slot)
 		end
 	elseif self:CanToggle() then
 		self:Toggle()
@@ -102,7 +102,7 @@ end
 function Bag:OnDrag()
 	if self:IsCustomSlot() and not self:IsCached() then
 		PlaySound(SOUNDKIT.IG_BACKPACK_OPEN)
-		PickupBagFromSlot(self:GetInventorySlot())
+		PickupBagFromSlot(self:GetInfo().slot)
 	end
 end
 
@@ -132,7 +132,7 @@ function Bag:RegisterEvents()
 	self:Update()
 
 	self:UnregisterEvents()
-	self:RegisterFrameMessage('PLAYER_CHANGED', 'RegisterEvents')
+	self:RegisterFrameMessage('OWNER_CHANGED', 'RegisterEvents')
 	self:RegisterFrameMessage('FILTERS_CHANGED', 'UpdateToggle')
 	self:RegisterEvent('BAG_CLOSED', 'BAG_UPDATE')
 	self:RegisterEvent('BAG_UPDATE')
@@ -164,18 +164,22 @@ end
 --[[ Update ]]--
 
 function Bag:Update()
-	local link, count, texture, _,_, cached = self:GetInfo()
+	local info = self:GetInfo()
+
+	self.FilterIcon:SetShown(not info.cached)
+	self.Count:SetText(info.free and info.free > 0 and info.free)
 
   if self:IsBackpack() or self:IsBank() then
 		self:SetIcon('Interface/Buttons/Button-Backpack-Up')
 	elseif self:IsReagents() then
 		self:SetIcon('Interface/Icons/Achievement_GuildPerk_BountifulBags')
 	else
-		texture = texture or link and GetItemIcon(link)
-		count = texture and count or 0
+		self:SetIcon(info.icon or 'Interface/PaperDoll/UI-PaperDoll-Slot-Bag')
+	  self.link = info.link
 
-		self:SetIcon(texture or 'Interface/PaperDoll/UI-PaperDoll-Slot-Bag')
-	  	self.link = link
+		if not info.icon then
+			self.Count:SetText()
+		end
 	end
 
 	for i = LE_BAG_FILTER_FLAG_EQUIPMENT, NUM_LE_BAG_FILTER_FLAGS do
@@ -187,9 +191,6 @@ function Bag:Update()
 		end
 	end
 
-	self.FilterIcon:SetShown(not cached)
-	self.Count:SetText(count > 0 and count)
-
 	self:UpdateLock()
 	self:UpdateCursor()
 	self:UpdateToggle()
@@ -197,13 +198,13 @@ end
 
 function Bag:UpdateLock()
 	if self:IsCustomSlot() then
-    	SetItemButtonDesaturated(self, self:IsLocked())
+    	SetItemButtonDesaturated(self, self:GetInfo().locked)
  	end
 end
 
 function Bag:UpdateCursor()
 	if not self:IsCustomSlot() then
-		if CursorCanGoInSlot(self:GetInventorySlot()) then
+		if CursorCanGoInSlot(self:GetInfo().slot) then
 			self:LockHighlight()
 		else
 			self:UnlockHighlight()
@@ -329,12 +330,8 @@ end
 
 --[[ Info ]]--
 
-function Bag:GetInfo()
-	return Addon:GetBagInfo(self:GetPlayer(), self:GetSlot())
-end
-
-function Bag:GetInventorySlot()
-	return Addon:BagToInventorySlot(self:GetPlayer(), self:GetSlot())
+function Bag:IsCached()
+ 	return self:GetInfo().cached
 end
 
 function Bag:GetCost()
@@ -351,10 +348,6 @@ function Bag:IsHidden()
 	return not self:GetFrame():IsShowingBag(self:GetSlot())
 end
 
-function Bag:IsLocked()
-	return Addon:IsBagLocked(self:GetPlayer(), self:GetSlot())
-end
-
-function Bag:IsCached()
- 	return Addon:IsBagCached(self:GetPlayer(), self:GetSlot())
+function Bag:GetInfo()
+	return Addon:GetBagInfo(self:GetOwner(), self:GetSlot())
 end

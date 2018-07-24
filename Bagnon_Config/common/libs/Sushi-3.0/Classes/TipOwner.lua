@@ -1,5 +1,5 @@
 --[[
-Copyright 2008-2017 João Cardoso
+Copyright 2008-2018 João Cardoso
 Sushi is distributed under the terms of the GNU General Public License (or the Lesser GPL).
 This file is part of Sushi.
 

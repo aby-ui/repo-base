@@ -1,6 +1,6 @@
 --[[
 Name: LibBabble-Faction-3.0
-Revision: $Rev: 217 $
+Revision: $Rev: 221 $
 Maintainers: ckknight, nevcairiel, Ackis
 Website: http://www.wowace.com/projects/libbabble-faction-3-0/
 Dependencies: None
@@ -8,7 +8,7 @@ License: MIT
 ]]
 
 local MAJOR_VERSION = "LibBabble-Faction-3.0"
-local MINOR_VERSION = 90000 + tonumber(("$Rev: 217 $"):match("%d+"))
+local MINOR_VERSION = 90000 + tonumber(("$Rev: 221 $"):match("%d+"))
 
 if not LibStub then error(MAJOR_VERSION .. " requires LibStub.") end
 local lib = LibStub("LibBabble-3.0"):New(MAJOR_VERSION, MINOR_VERSION)
@@ -221,25 +221,25 @@ elseif GAME_LOCALE == "deDE" then
 	lib:SetCurrentTranslations {
 	["Acquaintance"] = "Bekannter",
 	["Aeda Brightdawn"] = "Aeda Morgenglanz",
-	--Translation missing 
-	-- ["Akule Riverhorn"] = "Akule Riverhorn",
+	--[[Translation missing --]]
+	--[[ ["Akule Riverhorn"] = "Akule Riverhorn",--]] 
 	["Alliance"] = "Allianz",
 	["Alliance Vanguard"] = "Vorposten der Allianz",
 	["Arakkoa Outcasts"] = "Ausgestoßene Arakkoa",
 	["Argent Crusade"] = "Argentumkreuzzug",
 	["Argent Dawn"] = "Argentumdämmerung",
-	--Translation missing 
-	-- ["Argussian Reach"] = "Argussian Reach",
-	--Translation missing 
-	-- ["Argussian Reach (Paragon)"] = "Argussian Reach (Paragon)",
-	--Translation missing 
-	-- ["Armies of Legionfall"] = "Armies of Legionfall",
-	--Translation missing 
-	-- ["Armies of Legionfall (Paragon)"] = "Armies of Legionfall (Paragon)",
-	--Translation missing 
-	-- ["Army of the Light"] = "Army of the Light",
-	--Translation missing 
-	-- ["Army of the Light (Paragon)"] = "Army of the Light (Paragon)",
+	--[[Translation missing --]]
+	--[[ ["Argussian Reach"] = "Argussian Reach",--]] 
+	--[[Translation missing --]]
+	--[[ ["Argussian Reach (Paragon)"] = "Argussian Reach (Paragon)",--]] 
+	--[[Translation missing --]]
+	--[[ ["Armies of Legionfall"] = "Armies of Legionfall",--]] 
+	--[[Translation missing --]]
+	--[[ ["Armies of Legionfall (Paragon)"] = "Armies of Legionfall (Paragon)",--]] 
+	--[[Translation missing --]]
+	--[[ ["Army of the Light"] = "Army of the Light",--]] 
+	--[[Translation missing --]]
+	--[[ ["Army of the Light (Paragon)"] = "Army of the Light (Paragon)",--]] 
 	["Ashtongue Deathsworn"] = "Die Todeshörigen",
 	["Avengers of Hyjal"] = "Rächer des Hyjal",
 	["Baradin's Wardens"] = "Wächter von Baradin",
@@ -255,12 +255,12 @@ elseif GAME_LOCALE == "deDE" then
 	["Cenarion Circle"] = "Zirkel des Cenarius",
 	["Cenarion Expedition"] = "Expedition des Cenarius",
 	["Chee Chee"] = "Chi-Chi",
-	--Translation missing 
-	-- ["Corbyn"] = "Corbyn",
+	--[[Translation missing --]]
+	--[[ ["Corbyn"] = "Corbyn",--]] 
 	["Council of Exarchs"] = "Exarchenrat",
 	["Court of Farondis"] = "Farondis' Hofstaat",
-	--Translation missing 
-	-- ["Court of Farondis (Paragon)"] = "Court of Farondis (Paragon)",
+	--[[Translation missing --]]
+	--[[ ["Court of Farondis (Paragon)"] = "Court of Farondis (Paragon)",--]] 
 	["Darkmoon Faire"] = "Dunkelmond-Jahrmarkt",
 	["Darkspear Trolls"] = "Dunkelspeertrolle",
 	["Darnassus"] = "Darnassus",
@@ -269,8 +269,8 @@ elseif GAME_LOCALE == "deDE" then
 	["Dominance Offensive"] = "Herrschaftsoffensive",
 	["Dragonmaw Clan"] = "Drachenmalklan",
 	["Dreamweavers"] = "Die Traumweber",
-	--Translation missing 
-	-- ["Dreamweavers (Paragon)"] = "Dreamweavers (Paragon)",
+	--[[Translation missing --]]
+	--[[ ["Dreamweavers (Paragon)"] = "Dreamweavers (Paragon)",--]] 
 	["Ella"] = "Ella",
 	["Everlook"] = "Ewige Warte",
 	["Exalted"] = "Ehrfürchtig",
@@ -299,8 +299,8 @@ elseif GAME_LOCALE == "deDE" then
 	["Haohan Mudclaw"] = "Haohan Lehmkrall",
 	["Hellscream's Reach"] = "Höllschreis Hand",
 	["Highmountain Tribe"] = "Der Hochbergstamm",
-	--Translation missing 
-	-- ["Highmountain Tribe (Paragon)"] = "Highmountain Tribe (Paragon)",
+	--[[Translation missing --]]
+	--[[ ["Highmountain Tribe (Paragon)"] = "Highmountain Tribe (Paragon)",--]] 
 	["Honor Hold"] = "Ehrenfeste",
 	["Honored"] = "Wohlwollend",
 	["Horde"] = "Horde",
@@ -308,15 +308,15 @@ elseif GAME_LOCALE == "deDE" then
 	["Huojin Pandaren"] = "Die Huojin",
 	["Hydraxian Waterlords"] = "Hydraxianer",
 	["Illidari"] = "Illidari",
-	--Translation missing 
-	-- ["Ilyssia of the Waters"] = "Ilyssia of the Waters",
-	--Translation missing 
-	-- ["Impus"] = "Impus",
+	--[[Translation missing --]]
+	--[[ ["Ilyssia of the Waters"] = "Ilyssia of the Waters",--]] 
+	--[[Translation missing --]]
+	--[[ ["Impus"] = "Impus",--]] 
 	["Ironforge"] = "Eisenschmiede",
 	["Jandvik Vrykul"] = "Vrykul von Jandvik",
 	["Jogu the Drunk"] = "Jogu der Betrunkene",
-	--Translation missing 
-	-- ["Keeper Raynae"] = "Keeper Raynae",
+	--[[Translation missing --]]
+	--[[ ["Keeper Raynae"] = "Keeper Raynae",--]] 
 	["Keepers of Time"] = "Hüter der Zeit",
 	["Kirin Tor"] = "Kirin Tor",
 	["Kirin Tor Offensive"] = "Offensive der Kirin Tor",
@@ -333,8 +333,8 @@ elseif GAME_LOCALE == "deDE" then
 	["Nomi"] = "Nomi",
 	["Ogri'la"] = "Ogri'la",
 	["Old Hillpaw"] = "Der alte Hügelpranke",
-	--Translation missing 
-	-- ["Operation: Aardvark"] = "Operation: Aardvark",
+	--[[Translation missing --]]
+	--[[ ["Operation: Aardvark"] = "Operation: Aardvark",--]] 
 	["Operation: Shieldwall"] = "Operation Schildwall",
 	["Order of the Awakened"] = "Orden der Erwachten",
 	["Order of the Cloud Serpent"] = "Der Orden der Wolkenschlange",
@@ -355,8 +355,8 @@ elseif GAME_LOCALE == "deDE" then
 	["Shado-Pan"] = "Shado-Pan",
 	["Shado-Pan Assault"] = "Shado-Pan-Vorstoß",
 	["Shadowmoon Exiles"] = "Exilanten des Schattenmondklans",
-	--Translation missing 
-	-- ["Sha'leth"] = "Sha'leth",
+	--[[Translation missing --]]
+	--[[ ["Sha'leth"] = "Sha'leth",--]] 
 	["Shang Xi's Academy"] = "Akademie des Shang Xi",
 	["Sha'tari Defense"] = "Sha'tarverteidigung",
 	["Sha'tari Skyguard"] = "Himmelswache der Sha'tari",
@@ -392,8 +392,8 @@ elseif GAME_LOCALE == "deDE" then
 	["The Lorewalkers"] = "Die Lehrensucher",
 	["The Mag'har"] = "Die Mag'har",
 	["The Nightfallen"] = "Die Nachtsüchtigen",
-	--Translation missing 
-	-- ["The Nightfallen (Paragon)"] = "The Nightfallen (Paragon)",
+	--[[Translation missing --]]
+	--[[ ["The Nightfallen (Paragon)"] = "The Nightfallen (Paragon)",--]] 
 	["The Oracles"] = "Die Orakel",
 	["The Saberstalkers"] = "Die Säbelzahnpirscher",
 	["The Scale of the Sands"] = "Die Wächter der Sande",
@@ -406,8 +406,8 @@ elseif GAME_LOCALE == "deDE" then
 	["The Tillers"] = "Die Ackerbauern",
 	["The Violet Eye"] = "Das Violette Auge",
 	["The Wardens"] = "Die Wächterinnen",
-	--Translation missing 
-	-- ["The Wardens (Paragon)"] = "The Wardens (Paragon)",
+	--[[Translation missing --]]
+	--[[ ["The Wardens (Paragon)"] = "The Wardens (Paragon)",--]] 
 	["The Wyrmrest Accord"] = "Der Wyrmruhpakt",
 	["Therazane"] = "Therazane",
 	["Thorium Brotherhood"] = "Thoriumbruderschaft",
@@ -420,8 +420,8 @@ elseif GAME_LOCALE == "deDE" then
 	["Tushui Pandaren"] = "Die Tushui",
 	["Undercity"] = "Unterstadt",
 	["Valarjar"] = "Valarjar",
-	--Translation missing 
-	-- ["Valarjar (Paragon)"] = "Valarjar (Paragon)",
+	--[[Translation missing --]]
+	--[[ ["Valarjar (Paragon)"] = "Valarjar (Paragon)",--]] 
 	["Valiance Expedition"] = "Expedition Valianz",
 	["Vivianne"] = "Vivianne",
 	["Vol'jin's Headhunters"] = "Vol'jins Kopfjäger",
@@ -438,25 +438,25 @@ elseif GAME_LOCALE == "frFR" then
 	lib:SetCurrentTranslations {
 	["Acquaintance"] = "Connaissance",
 	["Aeda Brightdawn"] = "Aeda Brillaube",
-	--Translation missing 
-	-- ["Akule Riverhorn"] = "Akule Riverhorn",
+	--[[Translation missing --]]
+	--[[ ["Akule Riverhorn"] = "Akule Riverhorn",--]] 
 	["Alliance"] = "Alliance",
 	["Alliance Vanguard"] = "Avant-garde de l'Alliance",
 	["Arakkoa Outcasts"] = "Parias arakkoa",
 	["Argent Crusade"] = "La Croisade d'argent",
 	["Argent Dawn"] = "Aube d'argent",
-	--Translation missing 
-	-- ["Argussian Reach"] = "Argussian Reach",
-	--Translation missing 
-	-- ["Argussian Reach (Paragon)"] = "Argussian Reach (Paragon)",
-	--Translation missing 
-	-- ["Armies of Legionfall"] = "Armies of Legionfall",
-	--Translation missing 
-	-- ["Armies of Legionfall (Paragon)"] = "Armies of Legionfall (Paragon)",
-	--Translation missing 
-	-- ["Army of the Light"] = "Army of the Light",
-	--Translation missing 
-	-- ["Army of the Light (Paragon)"] = "Army of the Light (Paragon)",
+	--[[Translation missing --]]
+	--[[ ["Argussian Reach"] = "Argussian Reach",--]] 
+	--[[Translation missing --]]
+	--[[ ["Argussian Reach (Paragon)"] = "Argussian Reach (Paragon)",--]] 
+	--[[Translation missing --]]
+	--[[ ["Armies of Legionfall"] = "Armies of Legionfall",--]] 
+	--[[Translation missing --]]
+	--[[ ["Armies of Legionfall (Paragon)"] = "Armies of Legionfall (Paragon)",--]] 
+	--[[Translation missing --]]
+	--[[ ["Army of the Light"] = "Army of the Light",--]] 
+	--[[Translation missing --]]
+	--[[ ["Army of the Light (Paragon)"] = "Army of the Light (Paragon)",--]] 
 	["Ashtongue Deathsworn"] = "Ligemort cendrelangue",
 	["Avengers of Hyjal"] = "Vengeurs d’Hyjal",
 	["Baradin's Wardens"] = "Gardiens de Baradin",
@@ -472,12 +472,12 @@ elseif GAME_LOCALE == "frFR" then
 	["Cenarion Circle"] = "Cercle cénarien",
 	["Cenarion Expedition"] = "Expédition cénarienne",
 	["Chee Chee"] = "Chii Chii",
-	--Translation missing 
-	-- ["Corbyn"] = "Corbyn",
+	--[[Translation missing --]]
+	--[[ ["Corbyn"] = "Corbyn",--]] 
 	["Council of Exarchs"] = "Conseil des exarques",
 	["Court of Farondis"] = "Cour de Farondis",
-	--Translation missing 
-	-- ["Court of Farondis (Paragon)"] = "Court of Farondis (Paragon)",
+	--[[Translation missing --]]
+	--[[ ["Court of Farondis (Paragon)"] = "Court of Farondis (Paragon)",--]] 
 	["Darkmoon Faire"] = "Foire de Sombrelune",
 	["Darkspear Trolls"] = "Trolls Sombrelance",
 	["Darnassus"] = "Darnassus",
@@ -486,8 +486,8 @@ elseif GAME_LOCALE == "frFR" then
 	["Dominance Offensive"] = "Offensive Domination",
 	["Dragonmaw Clan"] = "Clan Gueule-de-dragon",
 	["Dreamweavers"] = "Tisse-Rêves",
-	--Translation missing 
-	-- ["Dreamweavers (Paragon)"] = "Dreamweavers (Paragon)",
+	--[[Translation missing --]]
+	--[[ ["Dreamweavers (Paragon)"] = "Dreamweavers (Paragon)",--]] 
 	["Ella"] = "Ella",
 	["Everlook"] = "Long-Guet",
 	["Exalted"] = "Exalté",
@@ -516,8 +516,8 @@ elseif GAME_LOCALE == "frFR" then
 	["Haohan Mudclaw"] = "Haohan Griffe de Tourbe",
 	["Hellscream's Reach"] = "Poing de Hurlenfer",
 	["Highmountain Tribe"] = "Tribu de Haut-Roc",
-	--Translation missing 
-	-- ["Highmountain Tribe (Paragon)"] = "Highmountain Tribe (Paragon)",
+	--[[Translation missing --]]
+	--[[ ["Highmountain Tribe (Paragon)"] = "Highmountain Tribe (Paragon)",--]] 
 	["Honor Hold"] = "Bastion de l'Honneur",
 	["Honored"] = "Honoré",
 	["Horde"] = "Horde",
@@ -525,15 +525,15 @@ elseif GAME_LOCALE == "frFR" then
 	["Huojin Pandaren"] = "Les pandarens huojin",
 	["Hydraxian Waterlords"] = "Les Hydraxiens",
 	["Illidari"] = "Illidari",
-	--Translation missing 
-	-- ["Ilyssia of the Waters"] = "Ilyssia of the Waters",
-	--Translation missing 
-	-- ["Impus"] = "Impus",
+	--[[Translation missing --]]
+	--[[ ["Ilyssia of the Waters"] = "Ilyssia of the Waters",--]] 
+	--[[Translation missing --]]
+	--[[ ["Impus"] = "Impus",--]] 
 	["Ironforge"] = "Forgefer",
 	["Jandvik Vrykul"] = "Vrykuls de Jandvik",
 	["Jogu the Drunk"] = "Jogu l’Ivrogne",
-	--Translation missing 
-	-- ["Keeper Raynae"] = "Keeper Raynae",
+	--[[Translation missing --]]
+	--[[ ["Keeper Raynae"] = "Keeper Raynae",--]] 
 	["Keepers of Time"] = "Gardiens du Temps",
 	["Kirin Tor"] = "Kirin Tor",
 	["Kirin Tor Offensive"] = "Offensive du Kirin Tor",
@@ -571,8 +571,8 @@ elseif GAME_LOCALE == "frFR" then
 	["Shado-Pan"] = "Pandashan",
 	["Shado-Pan Assault"] = "Assaut des Pandashan",
 	["Shadowmoon Exiles"] = "Exilés ombrelunes",
-	--Translation missing 
-	-- ["Sha'leth"] = "Sha'leth",
+	--[[Translation missing --]]
+	--[[ ["Sha'leth"] = "Sha'leth",--]] 
 	["Shang Xi's Academy"] = "Académie de Shang Xi",
 	["Sha'tari Defense"] = "Défense sha'tari",
 	["Sha'tari Skyguard"] = "Garde-ciel sha'tari",
@@ -608,8 +608,8 @@ elseif GAME_LOCALE == "frFR" then
 	["The Lorewalkers"] = "Les Chroniqueurs",
 	["The Mag'har"] = "Les Mag'har",
 	["The Nightfallen"] = "Souffrenuit",
-	--Translation missing 
-	-- ["The Nightfallen (Paragon)"] = "The Nightfallen (Paragon)",
+	--[[Translation missing --]]
+	--[[ ["The Nightfallen (Paragon)"] = "The Nightfallen (Paragon)",--]] 
 	["The Oracles"] = "Les Oracles",
 	["The Saberstalkers"] = "Traquesabres",
 	["The Scale of the Sands"] = "La Balance des sables",
@@ -622,8 +622,8 @@ elseif GAME_LOCALE == "frFR" then
 	["The Tillers"] = "Les Laboureurs",
 	["The Violet Eye"] = "L'Œil pourpre",
 	["The Wardens"] = "Les Gardiennes",
-	--Translation missing 
-	-- ["The Wardens (Paragon)"] = "The Wardens (Paragon)",
+	--[[Translation missing --]]
+	--[[ ["The Wardens (Paragon)"] = "The Wardens (Paragon)",--]] 
 	["The Wyrmrest Accord"] = "L'Accord du Repos du ver",
 	["Therazane"] = "Therazane",
 	["Thorium Brotherhood"] = "Confrérie du thorium",
@@ -636,8 +636,8 @@ elseif GAME_LOCALE == "frFR" then
 	["Tushui Pandaren"] = "Les pandarens tushui",
 	["Undercity"] = "Fossoyeuse",
 	["Valarjar"] = "Valarjar",
-	--Translation missing 
-	-- ["Valarjar (Paragon)"] = "Valarjar (Paragon)",
+	--[[Translation missing --]]
+	--[[ ["Valarjar (Paragon)"] = "Valarjar (Paragon)",--]] 
 	["Valiance Expedition"] = "Expédition de la Bravoure",
 	["Vivianne"] = "Vivianne",
 	["Vol'jin's Headhunters"] = "Chasseurs de têtes de Vol'jin",
@@ -654,25 +654,25 @@ elseif GAME_LOCALE == "koKR" then
 	lib:SetCurrentTranslations {
 	["Acquaintance"] = "지인",
 	["Aeda Brightdawn"] = "에이다 브라이트돈",
-	--Translation missing 
-	-- ["Akule Riverhorn"] = "Akule Riverhorn",
+	--[[Translation missing --]]
+	--[[ ["Akule Riverhorn"] = "Akule Riverhorn",--]] 
 	["Alliance"] = "얼라이언스",
 	["Alliance Vanguard"] = "얼라이언스 선봉대",
 	["Arakkoa Outcasts"] = "추방된 아라코아",
 	["Argent Crusade"] = "은빛십자군",
 	["Argent Dawn"] = "은빛 여명회",
-	--Translation missing 
-	-- ["Argussian Reach"] = "Argussian Reach",
-	--Translation missing 
-	-- ["Argussian Reach (Paragon)"] = "Argussian Reach (Paragon)",
-	--Translation missing 
-	-- ["Armies of Legionfall"] = "Armies of Legionfall",
-	--Translation missing 
-	-- ["Armies of Legionfall (Paragon)"] = "Armies of Legionfall (Paragon)",
-	--Translation missing 
-	-- ["Army of the Light"] = "Army of the Light",
-	--Translation missing 
-	-- ["Army of the Light (Paragon)"] = "Army of the Light (Paragon)",
+	--[[Translation missing --]]
+	--[[ ["Argussian Reach"] = "Argussian Reach",--]] 
+	--[[Translation missing --]]
+	--[[ ["Argussian Reach (Paragon)"] = "Argussian Reach (Paragon)",--]] 
+	--[[Translation missing --]]
+	--[[ ["Armies of Legionfall"] = "Armies of Legionfall",--]] 
+	--[[Translation missing --]]
+	--[[ ["Armies of Legionfall (Paragon)"] = "Armies of Legionfall (Paragon)",--]] 
+	--[[Translation missing --]]
+	--[[ ["Army of the Light"] = "Army of the Light",--]] 
+	--[[Translation missing --]]
+	--[[ ["Army of the Light (Paragon)"] = "Army of the Light (Paragon)",--]] 
 	["Ashtongue Deathsworn"] = "잿빛혓바닥 결사단",
 	["Avengers of Hyjal"] = "하이잘의 복수자",
 	["Baradin's Wardens"] = "바라딘 집행단",
@@ -688,12 +688,12 @@ elseif GAME_LOCALE == "koKR" then
 	["Cenarion Circle"] = "세나리온 의회",
 	["Cenarion Expedition"] = "세나리온 원정대",
 	["Chee Chee"] = "치 치",
-	--Translation missing 
-	-- ["Corbyn"] = "Corbyn",
+	--[[Translation missing --]]
+	--[[ ["Corbyn"] = "Corbyn",--]] 
 	["Council of Exarchs"] = "총독의 의회",
 	["Court of Farondis"] = "파론디스의 궁정",
-	--Translation missing 
-	-- ["Court of Farondis (Paragon)"] = "Court of Farondis (Paragon)",
+	--[[Translation missing --]]
+	--[[ ["Court of Farondis (Paragon)"] = "Court of Farondis (Paragon)",--]] 
 	["Darkmoon Faire"] = "다크문 유랑단",
 	["Darkspear Trolls"] = "검은창 트롤",
 	["Darnassus"] = "다르나서스",
@@ -702,8 +702,8 @@ elseif GAME_LOCALE == "koKR" then
 	["Dominance Offensive"] = "지배령 선봉대",
 	["Dragonmaw Clan"] = "용아귀 부족",
 	["Dreamweavers"] = "몽술사",
-	--Translation missing 
-	-- ["Dreamweavers (Paragon)"] = "Dreamweavers (Paragon)",
+	--[[Translation missing --]]
+	--[[ ["Dreamweavers (Paragon)"] = "Dreamweavers (Paragon)",--]] 
 	["Ella"] = "엘라",
 	["Everlook"] = "눈망루 마을",
 	["Exalted"] = "확고한 동맹",
@@ -719,8 +719,8 @@ elseif GAME_LOCALE == "koKR" then
 	["Frostwolf Orcs"] = "서리늑대 오크",
 	["Gadgetzan"] = "가젯잔",
 	["Gelkis Clan Centaur"] = "겔키스 부족 켄타로우스",
-	--Translation missing 
-	-- ["Gilnean Survivors"] = "Gilnean Survivors",
+	--[[Translation missing --]]
+	--[[ ["Gilnean Survivors"] = "Gilnean Survivors",--]] 
 	["Gilneas"] = "길니아스",
 	["Gina Mudclaw"] = "지나 머드클로",
 	["Gnomeregan"] = "놈리건",
@@ -733,26 +733,26 @@ elseif GAME_LOCALE == "koKR" then
 	["Haohan Mudclaw"] = "하오한 머드클로",
 	["Hellscream's Reach"] = "헬스크림 세력단",
 	["Highmountain Tribe"] = "높은산 부족",
-	--Translation missing 
-	-- ["Highmountain Tribe (Paragon)"] = "Highmountain Tribe (Paragon)",
+	--[[Translation missing --]]
+	--[[ ["Highmountain Tribe (Paragon)"] = "Highmountain Tribe (Paragon)",--]] 
 	["Honor Hold"] = "명예의 요새",
 	["Honored"] = "우호적",
 	["Horde"] = "호드",
 	["Horde Expedition"] = "호드 원정대",
 	["Huojin Pandaren"] = "후오진 판다렌",
 	["Hydraxian Waterlords"] = "히드락시안 물의 군주",
-	--Translation missing 
-	-- ["Illidari"] = "Illidari",
-	--Translation missing 
-	-- ["Ilyssia of the Waters"] = "Ilyssia of the Waters",
-	--Translation missing 
-	-- ["Impus"] = "Impus",
+	--[[Translation missing --]]
+	--[[ ["Illidari"] = "Illidari",--]] 
+	--[[Translation missing --]]
+	--[[ ["Ilyssia of the Waters"] = "Ilyssia of the Waters",--]] 
+	--[[Translation missing --]]
+	--[[ ["Impus"] = "Impus",--]] 
 	["Ironforge"] = "아이언포지",
-	--Translation missing 
-	-- ["Jandvik Vrykul"] = "Jandvik Vrykul",
+	--[[Translation missing --]]
+	--[[ ["Jandvik Vrykul"] = "Jandvik Vrykul",--]] 
 	["Jogu the Drunk"] = "주정뱅이 조구",
-	--Translation missing 
-	-- ["Keeper Raynae"] = "Keeper Raynae",
+	--[[Translation missing --]]
+	--[[ ["Keeper Raynae"] = "Keeper Raynae",--]] 
 	["Keepers of Time"] = "시간의 수호자",
 	["Kirin Tor"] = "키린 토",
 	["Kirin Tor Offensive"] = "키린 토 선봉대",
@@ -762,16 +762,16 @@ elseif GAME_LOCALE == "koKR" then
 	["Leorajh"] = "레오라즈",
 	["Lower City"] = "고난의 거리",
 	["Magram Clan Centaur"] = "마그람 부족 켄타로우스",
-	--Translation missing 
-	-- ["Moon Guard"] = "Moon Guard",
+	--[[Translation missing --]]
+	--[[ ["Moon Guard"] = "Moon Guard",--]] 
 	["Nat Pagle"] = "내트 페이글",
 	["Netherwing"] = "황천의 용군단",
 	["Neutral"] = "중립적",
 	["Nomi"] = "노미",
 	["Ogri'la"] = "오그릴라",
 	["Old Hillpaw"] = "늙은 힐포우",
-	--Translation missing 
-	-- ["Operation: Aardvark"] = "Operation: Aardvark",
+	--[[Translation missing --]]
+	--[[ ["Operation: Aardvark"] = "Operation: Aardvark",--]] 
 	["Operation: Shieldwall"] = "철벽방패 작전대",
 	["Order of the Awakened"] = "깨어난 자들의 의회",
 	["Order of the Cloud Serpent"] = "운룡단",
@@ -792,8 +792,8 @@ elseif GAME_LOCALE == "koKR" then
 	["Shado-Pan"] = "음영파",
 	["Shado-Pan Assault"] = "음영파 강습단",
 	["Shadowmoon Exiles"] = "어둠달 유배자",
-	--Translation missing 
-	-- ["Sha'leth"] = "Sha'leth",
+	--[[Translation missing --]]
+	--[[ ["Sha'leth"] = "Sha'leth",--]] 
 	["Shang Xi's Academy"] = "샹 시 도장",
 	["Sha'tari Defense"] = "샤타리 수호대",
 	["Sha'tari Skyguard"] = "샤타리 하늘경비대",
@@ -820,8 +820,8 @@ elseif GAME_LOCALE == "koKR" then
 	["The Consortium"] = "무역연합",
 	["The Defilers"] = "포세이큰 파멸단",
 	["The Earthen Ring"] = "대지 고리회",
-	--Translation missing 
-	-- ["The First Responders"] = "The First Responders",
+	--[[Translation missing --]]
+	--[[ ["The First Responders"] = "The First Responders",--]] 
 	["The Frostborn"] = "서릿결부족 드워프",
 	["The Hand of Vengeance"] = "복수의 대리인",
 	["The Kalu'ak"] = "칼루아크",
@@ -830,8 +830,8 @@ elseif GAME_LOCALE == "koKR" then
 	["The Lorewalkers"] = "전승지기",
 	["The Mag'har"] = "마그하르",
 	["The Nightfallen"] = "나이트폴른",
-	--Translation missing 
-	-- ["The Nightfallen (Paragon)"] = "The Nightfallen (Paragon)",
+	--[[Translation missing --]]
+	--[[ ["The Nightfallen (Paragon)"] = "The Nightfallen (Paragon)",--]] 
 	["The Oracles"] = "점쟁이 조합",
 	["The Saberstalkers"] = "서슬추적자",
 	["The Scale of the Sands"] = "시간의 중재자",
@@ -843,10 +843,10 @@ elseif GAME_LOCALE == "koKR" then
 	["The Taunka"] = "타운카",
 	["The Tillers"] = "농사꾼 연합",
 	["The Violet Eye"] = "보랏빛 눈의 감시자",
-	--Translation missing 
-	-- ["The Wardens"] = "The Wardens",
-	--Translation missing 
-	-- ["The Wardens (Paragon)"] = "The Wardens (Paragon)",
+	--[[Translation missing --]]
+	--[[ ["The Wardens"] = "The Wardens",--]] 
+	--[[Translation missing --]]
+	--[[ ["The Wardens (Paragon)"] = "The Wardens (Paragon)",--]] 
 	["The Wyrmrest Accord"] = "고룡쉼터 사원 용군단",
 	["Therazane"] = "테라제인",
 	["Thorium Brotherhood"] = "토륨 대장조합 ",
@@ -859,8 +859,8 @@ elseif GAME_LOCALE == "koKR" then
 	["Tushui Pandaren"] = "투슈이 판다렌",
 	["Undercity"] = "언더시티",
 	["Valarjar"] = "발라리아르",
-	--Translation missing 
-	-- ["Valarjar (Paragon)"] = "Valarjar (Paragon)",
+	--[[Translation missing --]]
+	--[[ ["Valarjar (Paragon)"] = "Valarjar (Paragon)",--]] 
 	["Valiance Expedition"] = "용맹의 원정대",
 	["Vivianne"] = "비비안",
 	["Vol'jin's Headhunters"] = "볼진의 인간사냥꾼",
@@ -877,25 +877,25 @@ elseif GAME_LOCALE == "esES" then
 	lib:SetCurrentTranslations {
 	["Acquaintance"] = "Conocido",
 	["Aeda Brightdawn"] = "Aeda Alba Brillante",
-	--Translation missing 
-	-- ["Akule Riverhorn"] = "Akule Riverhorn",
+	--[[Translation missing --]]
+	--[[ ["Akule Riverhorn"] = "Akule Riverhorn",--]] 
 	["Alliance"] = "Alianza",
 	["Alliance Vanguard"] = "Vanguardia de la Alianza",
 	["Arakkoa Outcasts"] = "Arakkoa desterrados",
 	["Argent Crusade"] = "Cruzada Argenta",
 	["Argent Dawn"] = "El Alba Argenta",
-	--Translation missing 
-	-- ["Argussian Reach"] = "Argussian Reach",
-	--Translation missing 
-	-- ["Argussian Reach (Paragon)"] = "Argussian Reach (Paragon)",
-	--Translation missing 
-	-- ["Armies of Legionfall"] = "Armies of Legionfall",
-	--Translation missing 
-	-- ["Armies of Legionfall (Paragon)"] = "Armies of Legionfall (Paragon)",
-	--Translation missing 
-	-- ["Army of the Light"] = "Army of the Light",
-	--Translation missing 
-	-- ["Army of the Light (Paragon)"] = "Army of the Light (Paragon)",
+	--[[Translation missing --]]
+	--[[ ["Argussian Reach"] = "Argussian Reach",--]] 
+	--[[Translation missing --]]
+	--[[ ["Argussian Reach (Paragon)"] = "Argussian Reach (Paragon)",--]] 
+	--[[Translation missing --]]
+	--[[ ["Armies of Legionfall"] = "Armies of Legionfall",--]] 
+	--[[Translation missing --]]
+	--[[ ["Armies of Legionfall (Paragon)"] = "Armies of Legionfall (Paragon)",--]] 
+	--[[Translation missing --]]
+	--[[ ["Army of the Light"] = "Army of the Light",--]] 
+	--[[Translation missing --]]
+	--[[ ["Army of the Light (Paragon)"] = "Army of the Light (Paragon)",--]] 
 	["Ashtongue Deathsworn"] = "Juramorte Lengua de ceniza",
 	["Avengers of Hyjal"] = "Vengadores de Hyjal",
 	["Baradin's Wardens"] = "Celadores de Baradin",
@@ -911,13 +911,13 @@ elseif GAME_LOCALE == "esES" then
 	["Cenarion Circle"] = "Círculo Cenarion",
 	["Cenarion Expedition"] = "Expedición Cenarion",
 	["Chee Chee"] = "Chee Chee",
-	--Translation missing 
-	-- ["Corbyn"] = "Corbyn",
+	--[[Translation missing --]]
+	--[[ ["Corbyn"] = "Corbyn",--]] 
 	["Council of Exarchs"] = "Consejo de Exarcas",
-	--Translation missing 
-	-- ["Court of Farondis"] = "Court of Farondis",
-	--Translation missing 
-	-- ["Court of Farondis (Paragon)"] = "Court of Farondis (Paragon)",
+	--[[Translation missing --]]
+	--[[ ["Court of Farondis"] = "Court of Farondis",--]] 
+	--[[Translation missing --]]
+	--[[ ["Court of Farondis (Paragon)"] = "Court of Farondis (Paragon)",--]] 
 	["Darkmoon Faire"] = "Feria de la Luna Negra",
 	["Darkspear Trolls"] = "Trols Lanza Negra",
 	["Darnassus"] = "Darnassus",
@@ -925,10 +925,10 @@ elseif GAME_LOCALE == "esES" then
 	["Delvar Ironfist"] = "Delvar Puño de Hierro",
 	["Dominance Offensive"] = "Ofensiva de Dominancia",
 	["Dragonmaw Clan"] = "Clan Faucedraco",
-	--Translation missing 
-	-- ["Dreamweavers"] = "Dreamweavers",
-	--Translation missing 
-	-- ["Dreamweavers (Paragon)"] = "Dreamweavers (Paragon)",
+	--[[Translation missing --]]
+	--[[ ["Dreamweavers"] = "Dreamweavers",--]] 
+	--[[Translation missing --]]
+	--[[ ["Dreamweavers (Paragon)"] = "Dreamweavers (Paragon)",--]] 
 	["Ella"] = "Ella",
 	["Everlook"] = "Vista Eterna",
 	["Exalted"] = "Exaltado",
@@ -944,8 +944,8 @@ elseif GAME_LOCALE == "esES" then
 	["Frostwolf Orcs"] = "Orcos Lobo Gélido",
 	["Gadgetzan"] = "Gadgetzan",
 	["Gelkis Clan Centaur"] = "Centauros del clan Gelkis",
-	--Translation missing 
-	-- ["Gilnean Survivors"] = "Gilnean Survivors",
+	--[[Translation missing --]]
+	--[[ ["Gilnean Survivors"] = "Gilnean Survivors",--]] 
 	["Gilneas"] = "Gilneas",
 	["Gina Mudclaw"] = "Gina Zarpa Fangosa",
 	["Gnomeregan"] = "Gnomeran",
@@ -954,32 +954,32 @@ elseif GAME_LOCALE == "esES" then
 	["Good Friend"] = "Buen amigo",
 	["Guardians of Hyjal"] = "Guardianes de Hyjal",
 	["Guild"] = "Hermandad",
-	--Translation missing 
-	-- ["Hand of the Prophet"] = "Hand of the Prophet",
+	--[[Translation missing --]]
+	--[[ ["Hand of the Prophet"] = "Hand of the Prophet",--]] 
 	["Haohan Mudclaw"] = "Haohan Zarpa Fangosa",
 	["Hellscream's Reach"] = "Mando Grito Infernal",
-	--Translation missing 
-	-- ["Highmountain Tribe"] = "Highmountain Tribe",
-	--Translation missing 
-	-- ["Highmountain Tribe (Paragon)"] = "Highmountain Tribe (Paragon)",
+	--[[Translation missing --]]
+	--[[ ["Highmountain Tribe"] = "Highmountain Tribe",--]] 
+	--[[Translation missing --]]
+	--[[ ["Highmountain Tribe (Paragon)"] = "Highmountain Tribe (Paragon)",--]] 
 	["Honor Hold"] = "Bastión del Honor",
 	["Honored"] = "Honorable",
 	["Horde"] = "Horda",
 	["Horde Expedition"] = "Expedición de la Horda",
 	["Huojin Pandaren"] = "Pandaren Huojin",
 	["Hydraxian Waterlords"] = "Srs. del Agua de Hydraxis",
-	--Translation missing 
-	-- ["Illidari"] = "Illidari",
-	--Translation missing 
-	-- ["Ilyssia of the Waters"] = "Ilyssia of the Waters",
-	--Translation missing 
-	-- ["Impus"] = "Impus",
+	--[[Translation missing --]]
+	--[[ ["Illidari"] = "Illidari",--]] 
+	--[[Translation missing --]]
+	--[[ ["Ilyssia of the Waters"] = "Ilyssia of the Waters",--]] 
+	--[[Translation missing --]]
+	--[[ ["Impus"] = "Impus",--]] 
 	["Ironforge"] = "Forjaz",
-	--Translation missing 
-	-- ["Jandvik Vrykul"] = "Jandvik Vrykul",
+	--[[Translation missing --]]
+	--[[ ["Jandvik Vrykul"] = "Jandvik Vrykul",--]] 
 	["Jogu the Drunk"] = "Jogo el Ebrio",
-	--Translation missing 
-	-- ["Keeper Raynae"] = "Keeper Raynae",
+	--[[Translation missing --]]
+	--[[ ["Keeper Raynae"] = "Keeper Raynae",--]] 
 	["Keepers of Time"] = "Vigilantes del Tiempo",
 	["Kirin Tor"] = "Kirin Tor",
 	["Kirin Tor Offensive"] = "Ofensiva del Kirin Tor",
@@ -989,8 +989,8 @@ elseif GAME_LOCALE == "esES" then
 	["Leorajh"] = "Leorajh",
 	["Lower City"] = "Bajo Arrabal",
 	["Magram Clan Centaur"] = "Centauros del clan Magram",
-	--Translation missing 
-	-- ["Moon Guard"] = "Moon Guard",
+	--[[Translation missing --]]
+	--[[ ["Moon Guard"] = "Moon Guard",--]] 
 	["Nat Pagle"] = "Nat Pagle",
 	["Netherwing"] = "Ala Abisal",
 	["Neutral"] = "Neutral",
@@ -999,8 +999,8 @@ elseif GAME_LOCALE == "esES" then
 	["Old Hillpaw"] = "Viejo Zarpa Collado",
 	["Operation: Aardvark"] = "Operación: Oricteropo",
 	["Operation: Shieldwall"] = "Muro de escudos",
-	--Translation missing 
-	-- ["Order of the Awakened"] = "Order of the Awakened",
+	--[[Translation missing --]]
+	--[[ ["Order of the Awakened"] = "Order of the Awakened",--]] 
 	["Order of the Cloud Serpent"] = "Orden del dragón nimbo",
 	["Orgrimmar"] = "Orgrimmar",
 	["Pearlfin Jinyu"] = "Jinyu Aleta de Nácar",
@@ -1019,8 +1019,8 @@ elseif GAME_LOCALE == "esES" then
 	["Shado-Pan"] = "Shadopan",
 	["Shado-Pan Assault"] = "Asalto del Shadopan",
 	["Shadowmoon Exiles"] = "Exiliados Sombraluna",
-	--Translation missing 
-	-- ["Sha'leth"] = "Sha'leth",
+	--[[Translation missing --]]
+	--[[ ["Sha'leth"] = "Sha'leth",--]] 
 	["Shang Xi's Academy"] = "Academia de Shang Xi",
 	["Sha'tari Defense"] = "Defensa Sha'tari",
 	["Sha'tari Skyguard"] = "Guardia del cielo Sha'tari",
@@ -1047,8 +1047,8 @@ elseif GAME_LOCALE == "esES" then
 	["The Consortium"] = "El Consorcio",
 	["The Defilers"] = "Los Rapiñadores",
 	["The Earthen Ring"] = "Anillo de la Tierra",
-	--Translation missing 
-	-- ["The First Responders"] = "The First Responders",
+	--[[Translation missing --]]
+	--[[ ["The First Responders"] = "The First Responders",--]] 
 	["The Frostborn"] = "Los Natoescarcha",
 	["The Hand of Vengeance"] = "La Mano de la Venganza",
 	["The Kalu'ak"] = "Los Kalu'ak",
@@ -1056,13 +1056,13 @@ elseif GAME_LOCALE == "esES" then
 	["The League of Arathor"] = "Liga de Arathor",
 	["The Lorewalkers"] = "Los Eremitas",
 	["The Mag'har"] = "Los Mag'har",
-	--Translation missing 
-	-- ["The Nightfallen"] = "The Nightfallen",
-	--Translation missing 
-	-- ["The Nightfallen (Paragon)"] = "The Nightfallen (Paragon)",
+	--[[Translation missing --]]
+	--[[ ["The Nightfallen"] = "The Nightfallen",--]] 
+	--[[Translation missing --]]
+	--[[ ["The Nightfallen (Paragon)"] = "The Nightfallen (Paragon)",--]] 
 	["The Oracles"] = "Los Oráculos",
-	--Translation missing 
-	-- ["The Saberstalkers"] = "The Saberstalkers",
+	--[[Translation missing --]]
+	--[[ ["The Saberstalkers"] = "The Saberstalkers",--]] 
 	["The Scale of the Sands"] = "La Escama de las Arenas",
 	["The Scryers"] = "Los Arúspices",
 	["The Sha'tar"] = "Los Sha'tar",
@@ -1072,10 +1072,10 @@ elseif GAME_LOCALE == "esES" then
 	["The Taunka"] = "Los Taunka",
 	["The Tillers"] = "Los Labradores",
 	["The Violet Eye"] = "El Ojo Violeta",
-	--Translation missing 
-	-- ["The Wardens"] = "The Wardens",
-	--Translation missing 
-	-- ["The Wardens (Paragon)"] = "The Wardens (Paragon)",
+	--[[Translation missing --]]
+	--[[ ["The Wardens"] = "The Wardens",--]] 
+	--[[Translation missing --]]
+	--[[ ["The Wardens (Paragon)"] = "The Wardens (Paragon)",--]] 
 	["The Wyrmrest Accord"] = "El Acuerdo del Reposo del Dragón",
 	["Therazane"] = "Therazane",
 	["Thorium Brotherhood"] = "Hermandad del Torio",
@@ -1087,14 +1087,14 @@ elseif GAME_LOCALE == "esES" then
 	["Tranquillien"] = "Tranquillien",
 	["Tushui Pandaren"] = "Pandaren Tushui",
 	["Undercity"] = "Entrañas",
-	--Translation missing 
-	-- ["Valarjar"] = "Valarjar",
-	--Translation missing 
-	-- ["Valarjar (Paragon)"] = "Valarjar (Paragon)",
+	--[[Translation missing --]]
+	--[[ ["Valarjar"] = "Valarjar",--]] 
+	--[[Translation missing --]]
+	--[[ ["Valarjar (Paragon)"] = "Valarjar (Paragon)",--]] 
 	["Valiance Expedition"] = "Expedición de Denuedo",
 	["Vivianne"] = "Vivianne",
-	--Translation missing 
-	-- ["Vol'jin's Headhunters"] = "Vol'jin's Headhunters",
+	--[[Translation missing --]]
+	--[[ ["Vol'jin's Headhunters"] = "Vol'jin's Headhunters",--]] 
 	["Vol'jin's Spear"] = "Lanza de Vol'jin",
 	["Warsong Offensive"] = "Ofensiva Grito de Guerra",
 	["Warsong Outriders"] = "Escoltas Grito de Guerra",
@@ -1107,33 +1107,33 @@ elseif GAME_LOCALE == "esES" then
 elseif GAME_LOCALE == "esMX" then
 	lib:SetCurrentTranslations {
 	["Acquaintance"] = "Conocido",
-	--Translation missing 
-	-- ["Aeda Brightdawn"] = "Aeda Brightdawn",
-	--Translation missing 
-	-- ["Akule Riverhorn"] = "Akule Riverhorn",
+	--[[Translation missing --]]
+	--[[ ["Aeda Brightdawn"] = "Aeda Brightdawn",--]] 
+	--[[Translation missing --]]
+	--[[ ["Akule Riverhorn"] = "Akule Riverhorn",--]] 
 	["Alliance"] = "Alianza",
 	["Alliance Vanguard"] = "Vanguardia de la Alianza",
-	--Translation missing 
-	-- ["Arakkoa Outcasts"] = "Arakkoa Outcasts",
+	--[[Translation missing --]]
+	--[[ ["Arakkoa Outcasts"] = "Arakkoa Outcasts",--]] 
 	["Argent Crusade"] = "Cruzada Argenta",
 	["Argent Dawn"] = "El Alba Argenta",
-	--Translation missing 
-	-- ["Argussian Reach"] = "Argussian Reach",
-	--Translation missing 
-	-- ["Argussian Reach (Paragon)"] = "Argussian Reach (Paragon)",
-	--Translation missing 
-	-- ["Armies of Legionfall"] = "Armies of Legionfall",
-	--Translation missing 
-	-- ["Armies of Legionfall (Paragon)"] = "Armies of Legionfall (Paragon)",
-	--Translation missing 
-	-- ["Army of the Light"] = "Army of the Light",
-	--Translation missing 
-	-- ["Army of the Light (Paragon)"] = "Army of the Light (Paragon)",
+	--[[Translation missing --]]
+	--[[ ["Argussian Reach"] = "Argussian Reach",--]] 
+	--[[Translation missing --]]
+	--[[ ["Argussian Reach (Paragon)"] = "Argussian Reach (Paragon)",--]] 
+	--[[Translation missing --]]
+	--[[ ["Armies of Legionfall"] = "Armies of Legionfall",--]] 
+	--[[Translation missing --]]
+	--[[ ["Armies of Legionfall (Paragon)"] = "Armies of Legionfall (Paragon)",--]] 
+	--[[Translation missing --]]
+	--[[ ["Army of the Light"] = "Army of the Light",--]] 
+	--[[Translation missing --]]
+	--[[ ["Army of the Light (Paragon)"] = "Army of the Light (Paragon)",--]] 
 	["Ashtongue Deathsworn"] = "Juramorte Lengua de ceniza",
 	["Avengers of Hyjal"] = "Vengadores de Hyjal",
 	["Baradin's Wardens"] = "Celadores de Baradin",
-	--Translation missing 
-	-- ["Barracks Bodyguards"] = "Barracks Bodyguards",
+	--[[Translation missing --]]
+	--[[ ["Barracks Bodyguards"] = "Barracks Bodyguards",--]] 
 	["Best Friend"] = "Mejor Amigo",
 	["Bilgewater Cartel"] = "Cártel Pantoque",
 	["Bizmo's Brawlpub"] = "Club de Lucha de Bizmo",
@@ -1141,32 +1141,32 @@ elseif GAME_LOCALE == "esMX" then
 	["Booty Bay"] = "Bahía del Botín",
 	["Brawl'gar Arena"] = "Arena Liza'gar",
 	["Brood of Nozdormu"] = "Linaje de Nozdormu",
-	--Translation missing 
-	-- ["Buddy"] = "Buddy",
+	--[[Translation missing --]]
+	--[[ ["Buddy"] = "Buddy",--]] 
 	["Cenarion Circle"] = "Círculo Cenarion",
 	["Cenarion Expedition"] = "Expedición Cenarion",
 	["Chee Chee"] = "Chee Chee",
-	--Translation missing 
-	-- ["Corbyn"] = "Corbyn",
-	--Translation missing 
-	-- ["Council of Exarchs"] = "Council of Exarchs",
-	--Translation missing 
-	-- ["Court of Farondis"] = "Court of Farondis",
-	--Translation missing 
-	-- ["Court of Farondis (Paragon)"] = "Court of Farondis (Paragon)",
+	--[[Translation missing --]]
+	--[[ ["Corbyn"] = "Corbyn",--]] 
+	--[[Translation missing --]]
+	--[[ ["Council of Exarchs"] = "Council of Exarchs",--]] 
+	--[[Translation missing --]]
+	--[[ ["Court of Farondis"] = "Court of Farondis",--]] 
+	--[[Translation missing --]]
+	--[[ ["Court of Farondis (Paragon)"] = "Court of Farondis (Paragon)",--]] 
 	["Darkmoon Faire"] = "Feria de la Luna Negra",
 	["Darkspear Trolls"] = "Trols Lanza Negra",
 	["Darnassus"] = "Darnassus",
-	--Translation missing 
-	-- ["Defender Illona"] = "Defender Illona",
-	--Translation missing 
-	-- ["Delvar Ironfist"] = "Delvar Ironfist",
+	--[[Translation missing --]]
+	--[[ ["Defender Illona"] = "Defender Illona",--]] 
+	--[[Translation missing --]]
+	--[[ ["Delvar Ironfist"] = "Delvar Ironfist",--]] 
 	["Dominance Offensive"] = "Ofensiva de Dominancia",
 	["Dragonmaw Clan"] = "Clan Faucedraco",
-	--Translation missing 
-	-- ["Dreamweavers"] = "Dreamweavers",
-	--Translation missing 
-	-- ["Dreamweavers (Paragon)"] = "Dreamweavers (Paragon)",
+	--[[Translation missing --]]
+	--[[ ["Dreamweavers"] = "Dreamweavers",--]] 
+	--[[Translation missing --]]
+	--[[ ["Dreamweavers (Paragon)"] = "Dreamweavers (Paragon)",--]] 
 	["Ella"] = "Ella",
 	["Everlook"] = "Vista Eterna",
 	["Exalted"] = "Exaltado",
@@ -1179,12 +1179,12 @@ elseif GAME_LOCALE == "esMX" then
 	["Friend"] = "Amigo",
 	["Friendly"] = "Amistoso",
 	["Frostwolf Clan"] = "Clan Lobo Gélido",
-	--Translation missing 
-	-- ["Frostwolf Orcs"] = "Frostwolf Orcs",
+	--[[Translation missing --]]
+	--[[ ["Frostwolf Orcs"] = "Frostwolf Orcs",--]] 
 	["Gadgetzan"] = "Gadgetzan",
 	["Gelkis Clan Centaur"] = "Centauros del clan Gelkis",
-	--Translation missing 
-	-- ["Gilnean Survivors"] = "Gilnean Survivors",
+	--[[Translation missing --]]
+	--[[ ["Gilnean Survivors"] = "Gilnean Survivors",--]] 
 	["Gilneas"] = "Gilneas",
 	["Gina Mudclaw"] = "Gina Zarpa Fangosa",
 	["Gnomeregan"] = "Gnomeregan",
@@ -1193,56 +1193,56 @@ elseif GAME_LOCALE == "esMX" then
 	["Good Friend"] = "Buen Amigo",
 	["Guardians of Hyjal"] = "Guardianes de Hyjal",
 	["Guild"] = "Hermandad",
-	--Translation missing 
-	-- ["Hand of the Prophet"] = "Hand of the Prophet",
+	--[[Translation missing --]]
+	--[[ ["Hand of the Prophet"] = "Hand of the Prophet",--]] 
 	["Haohan Mudclaw"] = "Haohan Zarpa Fangosa",
 	["Hellscream's Reach"] = "Mando Grito Infernal",
-	--Translation missing 
-	-- ["Highmountain Tribe"] = "Highmountain Tribe",
-	--Translation missing 
-	-- ["Highmountain Tribe (Paragon)"] = "Highmountain Tribe (Paragon)",
+	--[[Translation missing --]]
+	--[[ ["Highmountain Tribe"] = "Highmountain Tribe",--]] 
+	--[[Translation missing --]]
+	--[[ ["Highmountain Tribe (Paragon)"] = "Highmountain Tribe (Paragon)",--]] 
 	["Honor Hold"] = "Bastión del Honor",
 	["Honored"] = "Honorable",
 	["Horde"] = "Horda",
 	["Horde Expedition"] = "Expedición de la Horda",
 	["Huojin Pandaren"] = "Pandaren Houjin",
 	["Hydraxian Waterlords"] = "Srs. del Agua de Hydraxis",
-	--Translation missing 
-	-- ["Illidari"] = "Illidari",
-	--Translation missing 
-	-- ["Ilyssia of the Waters"] = "Ilyssia of the Waters",
-	--Translation missing 
-	-- ["Impus"] = "Impus",
+	--[[Translation missing --]]
+	--[[ ["Illidari"] = "Illidari",--]] 
+	--[[Translation missing --]]
+	--[[ ["Ilyssia of the Waters"] = "Ilyssia of the Waters",--]] 
+	--[[Translation missing --]]
+	--[[ ["Impus"] = "Impus",--]] 
 	["Ironforge"] = "Forjaz",
-	--Translation missing 
-	-- ["Jandvik Vrykul"] = "Jandvik Vrykul",
+	--[[Translation missing --]]
+	--[[ ["Jandvik Vrykul"] = "Jandvik Vrykul",--]] 
 	["Jogu the Drunk"] = "Jogu el Ebrio",
-	--Translation missing 
-	-- ["Keeper Raynae"] = "Keeper Raynae",
+	--[[Translation missing --]]
+	--[[ ["Keeper Raynae"] = "Keeper Raynae",--]] 
 	["Keepers of Time"] = "Vigilantes del Tiempo",
 	["Kirin Tor"] = "Kirin Tor",
 	["Kirin Tor Offensive"] = "Ofensiva del Kirin Tor",
 	["Knights of the Ebon Blade"] = "Caballeros de la Espada de Ébano",
 	["Kurenai"] = "Kurenai",
-	--Translation missing 
-	-- ["Laughing Skull Orcs"] = "Laughing Skull Orcs",
-	--Translation missing 
-	-- ["Leorajh"] = "Leorajh",
+	--[[Translation missing --]]
+	--[[ ["Laughing Skull Orcs"] = "Laughing Skull Orcs",--]] 
+	--[[Translation missing --]]
+	--[[ ["Leorajh"] = "Leorajh",--]] 
 	["Lower City"] = "Bajo Arrabal",
 	["Magram Clan Centaur"] = "Centauros del clan Magram",
-	--Translation missing 
-	-- ["Moon Guard"] = "Moon Guard",
+	--[[Translation missing --]]
+	--[[ ["Moon Guard"] = "Moon Guard",--]] 
 	["Nat Pagle"] = "Nat Pagle",
 	["Netherwing"] = "Ala Abisal",
 	["Neutral"] = "Neutral",
 	["Nomi"] = "Nomi",
 	["Ogri'la"] = "Ogri'la",
 	["Old Hillpaw"] = "Viejo Zarpa Collado",
-	--Translation missing 
-	-- ["Operation: Aardvark"] = "Operation: Aardvark",
+	--[[Translation missing --]]
+	--[[ ["Operation: Aardvark"] = "Operation: Aardvark",--]] 
 	["Operation: Shieldwall"] = "Muro de Escudos",
-	--Translation missing 
-	-- ["Order of the Awakened"] = "Order of the Awakened",
+	--[[Translation missing --]]
+	--[[ ["Order of the Awakened"] = "Order of the Awakened",--]] 
 	["Order of the Cloud Serpent"] = "Orden del Dragón Nimbo",
 	["Orgrimmar"] = "Orgrimmar",
 	["Pearlfin Jinyu"] = "Jinyu Aleta de Nácar",
@@ -1260,13 +1260,13 @@ elseif GAME_LOCALE == "esMX" then
 	["Revered"] = "Reverenciado",
 	["Shado-Pan"] = "Shadopan",
 	["Shado-Pan Assault"] = "Asalto del Shadopan",
-	--Translation missing 
-	-- ["Shadowmoon Exiles"] = "Shadowmoon Exiles",
-	--Translation missing 
-	-- ["Sha'leth"] = "Sha'leth",
+	--[[Translation missing --]]
+	--[[ ["Shadowmoon Exiles"] = "Shadowmoon Exiles",--]] 
+	--[[Translation missing --]]
+	--[[ ["Sha'leth"] = "Sha'leth",--]] 
 	["Shang Xi's Academy"] = "Academia de Shang Xi",
-	--Translation missing 
-	-- ["Sha'tari Defense"] = "Sha'tari Defense",
+	--[[Translation missing --]]
+	--[[ ["Sha'tari Defense"] = "Sha'tari Defense",--]] 
 	["Sha'tari Skyguard"] = "Guardia del cielo Sha'tari",
 	["Shattered Sun Offensive"] = "Ofensiva Sol Devastado",
 	["Shen'dralar"] = "Shen'dralar",
@@ -1274,17 +1274,17 @@ elseif GAME_LOCALE == "esMX" then
 	["Silvermoon City"] = "Ciudad de Lunargenta",
 	["Silverwing Sentinels"] = "Centinelas Ala de Plata",
 	["Sporeggar"] = "Esporaggar",
-	--Translation missing 
-	-- ["Steamwheedle Draenor Expedition"] = "Steamwheedle Draenor Expedition",
-	--Translation missing 
-	-- ["Steamwheedle Preservation Society"] = "Steamwheedle Preservation Society",
+	--[[Translation missing --]]
+	--[[ ["Steamwheedle Draenor Expedition"] = "Steamwheedle Draenor Expedition",--]] 
+	--[[Translation missing --]]
+	--[[ ["Steamwheedle Preservation Society"] = "Steamwheedle Preservation Society",--]] 
 	["Stormpike Guard"] = "Guardia Pico Tormenta",
 	["Stormwind"] = "Ventormenta",
 	["Stranger"] = "Extraño",
 	["Sunreaver Onslaught"] = "Embate de los Atracasol",
 	["Syndicate"] = "La Hermandad",
-	--Translation missing 
-	-- ["Talonpriest Ishaal"] = "Talonpriest Ishaal",
+	--[[Translation missing --]]
+	--[[ ["Talonpriest Ishaal"] = "Talonpriest Ishaal",--]] 
 	["The Aldor"] = "Los Aldor",
 	["The Anglers"] = "Los Pescadores",
 	["The Ashen Verdict"] = "El Veredicto Cinéreo",
@@ -1294,8 +1294,8 @@ elseif GAME_LOCALE == "esMX" then
 	["The Consortium"] = "El Consorcio",
 	["The Defilers"] = "Los Rapiñadores",
 	["The Earthen Ring"] = "El Anillo de la Tierra",
-	--Translation missing 
-	-- ["The First Responders"] = "The First Responders",
+	--[[Translation missing --]]
+	--[[ ["The First Responders"] = "The First Responders",--]] 
 	["The Frostborn"] = "Los Natoescarcha",
 	["The Hand of Vengeance"] = "La Mano de la Venganza",
 	["The Kalu'ak"] = "Los Kalu'ak",
@@ -1303,13 +1303,13 @@ elseif GAME_LOCALE == "esMX" then
 	["The League of Arathor"] = "Liga de Arathor",
 	["The Lorewalkers"] = "Los Eremitas",
 	["The Mag'har"] = "Los Mag'har",
-	--Translation missing 
-	-- ["The Nightfallen"] = "The Nightfallen",
-	--Translation missing 
-	-- ["The Nightfallen (Paragon)"] = "The Nightfallen (Paragon)",
+	--[[Translation missing --]]
+	--[[ ["The Nightfallen"] = "The Nightfallen",--]] 
+	--[[Translation missing --]]
+	--[[ ["The Nightfallen (Paragon)"] = "The Nightfallen (Paragon)",--]] 
 	["The Oracles"] = "Los Oráculos",
-	--Translation missing 
-	-- ["The Saberstalkers"] = "The Saberstalkers",
+	--[[Translation missing --]]
+	--[[ ["The Saberstalkers"] = "The Saberstalkers",--]] 
 	["The Scale of the Sands"] = "La Escama de las Arenas",
 	["The Scryers"] = "Los Arúspices",
 	["The Sha'tar"] = "Los Sha'tar",
@@ -1319,10 +1319,10 @@ elseif GAME_LOCALE == "esMX" then
 	["The Taunka"] = "Los taunka",
 	["The Tillers"] = "Los Labradores",
 	["The Violet Eye"] = "El Ojo Violeta",
-	--Translation missing 
-	-- ["The Wardens"] = "The Wardens",
-	--Translation missing 
-	-- ["The Wardens (Paragon)"] = "The Wardens (Paragon)",
+	--[[Translation missing --]]
+	--[[ ["The Wardens"] = "The Wardens",--]] 
+	--[[Translation missing --]]
+	--[[ ["The Wardens (Paragon)"] = "The Wardens (Paragon)",--]] 
 	["The Wyrmrest Accord"] = "El Acuerdo del Reposo del Dragón",
 	["Therazane"] = "Therazane",
 	["Thorium Brotherhood"] = "Hermandad del Torio",
@@ -1330,61 +1330,61 @@ elseif GAME_LOCALE == "esMX" then
 	["Thunder Bluff"] = "Cima del Trueno",
 	["Timbermaw Hold"] = "Bastión Fauces de Madera",
 	["Tina Mudclaw"] = "Tina Zarpa Fangosa",
-	--Translation missing 
-	-- ["Tormmok"] = "Tormmok",
+	--[[Translation missing --]]
+	--[[ ["Tormmok"] = "Tormmok",--]] 
 	["Tranquillien"] = "Tranquillien",
 	["Tushui Pandaren"] = "Pandaren Tushui",
 	["Undercity"] = "Entrañas",
-	--Translation missing 
-	-- ["Valarjar"] = "Valarjar",
-	--Translation missing 
-	-- ["Valarjar (Paragon)"] = "Valarjar (Paragon)",
+	--[[Translation missing --]]
+	--[[ ["Valarjar"] = "Valarjar",--]] 
+	--[[Translation missing --]]
+	--[[ ["Valarjar (Paragon)"] = "Valarjar (Paragon)",--]] 
 	["Valiance Expedition"] = "Expedición de Denuedo",
-	--Translation missing 
-	-- ["Vivianne"] = "Vivianne",
-	--Translation missing 
-	-- ["Vol'jin's Headhunters"] = "Vol'jin's Headhunters",
-	--Translation missing 
-	-- ["Vol'jin's Spear"] = "Vol'jin's Spear",
+	--[[Translation missing --]]
+	--[[ ["Vivianne"] = "Vivianne",--]] 
+	--[[Translation missing --]]
+	--[[ ["Vol'jin's Headhunters"] = "Vol'jin's Headhunters",--]] 
+	--[[Translation missing --]]
+	--[[ ["Vol'jin's Spear"] = "Vol'jin's Spear",--]] 
 	["Warsong Offensive"] = "Ofensiva Grito de Guerra",
 	["Warsong Outriders"] = "Escoltas Grito de Guerra",
 	["Wildhammer Clan"] = "Clan Martillo Salvaje",
 	["Winterfin Retreat"] = "Retiro Aleta Invernal",
 	["Wintersaber Trainers"] = "Instructores de sableinvernales",
-	--Translation missing 
-	-- ["Wrynn's Vanguard"] = "Wrynn's Vanguard",
+	--[[Translation missing --]]
+	--[[ ["Wrynn's Vanguard"] = "Wrynn's Vanguard",--]] 
 	["Zandalar Tribe"] = "Tribu Zandalar"
 }
 elseif GAME_LOCALE == "ptBR" then
 	lib:SetCurrentTranslations {
 	["Acquaintance"] = "Conhecido",
-	--Translation missing 
-	-- ["Aeda Brightdawn"] = "Aeda Brightdawn",
-	--Translation missing 
-	-- ["Akule Riverhorn"] = "Akule Riverhorn",
+	--[[Translation missing --]]
+	--[[ ["Aeda Brightdawn"] = "Aeda Brightdawn",--]] 
+	--[[Translation missing --]]
+	--[[ ["Akule Riverhorn"] = "Akule Riverhorn",--]] 
 	["Alliance"] = "Aliança",
 	["Alliance Vanguard"] = "Vanguarda da Aliança",
-	--Translation missing 
-	-- ["Arakkoa Outcasts"] = "Arakkoa Outcasts",
+	--[[Translation missing --]]
+	--[[ ["Arakkoa Outcasts"] = "Arakkoa Outcasts",--]] 
 	["Argent Crusade"] = "Cruzada Argêntea",
 	["Argent Dawn"] = "Aurora Argêntea",
-	--Translation missing 
-	-- ["Argussian Reach"] = "Argussian Reach",
-	--Translation missing 
-	-- ["Argussian Reach (Paragon)"] = "Argussian Reach (Paragon)",
-	--Translation missing 
-	-- ["Armies of Legionfall"] = "Armies of Legionfall",
-	--Translation missing 
-	-- ["Armies of Legionfall (Paragon)"] = "Armies of Legionfall (Paragon)",
-	--Translation missing 
-	-- ["Army of the Light"] = "Army of the Light",
-	--Translation missing 
-	-- ["Army of the Light (Paragon)"] = "Army of the Light (Paragon)",
+	--[[Translation missing --]]
+	--[[ ["Argussian Reach"] = "Argussian Reach",--]] 
+	--[[Translation missing --]]
+	--[[ ["Argussian Reach (Paragon)"] = "Argussian Reach (Paragon)",--]] 
+	--[[Translation missing --]]
+	--[[ ["Armies of Legionfall"] = "Armies of Legionfall",--]] 
+	--[[Translation missing --]]
+	--[[ ["Armies of Legionfall (Paragon)"] = "Armies of Legionfall (Paragon)",--]] 
+	--[[Translation missing --]]
+	--[[ ["Army of the Light"] = "Army of the Light",--]] 
+	--[[Translation missing --]]
+	--[[ ["Army of the Light (Paragon)"] = "Army of the Light (Paragon)",--]] 
 	["Ashtongue Deathsworn"] = "Devotos da Morte Grislíngua",
 	["Avengers of Hyjal"] = "Vingadores de Hyjal",
 	["Baradin's Wardens"] = "Protetores de Baradin",
-	--Translation missing 
-	-- ["Barracks Bodyguards"] = "Barracks Bodyguards",
+	--[[Translation missing --]]
+	--[[ ["Barracks Bodyguards"] = "Barracks Bodyguards",--]] 
 	["Best Friend"] = "Melhor Amigo",
 	["Bilgewater Cartel"] = "Cartel Bondebico",
 	["Bizmo's Brawlpub"] = "Bar Brigalhada do Bizmo",
@@ -1396,27 +1396,27 @@ elseif GAME_LOCALE == "ptBR" then
 	["Cenarion Circle"] = "Círculo Cenariano",
 	["Cenarion Expedition"] = "Expedição Cenariana",
 	["Chee Chee"] = "Tchi Tchi",
-	--Translation missing 
-	-- ["Corbyn"] = "Corbyn",
-	--Translation missing 
-	-- ["Council of Exarchs"] = "Council of Exarchs",
-	--Translation missing 
-	-- ["Court of Farondis"] = "Court of Farondis",
-	--Translation missing 
-	-- ["Court of Farondis (Paragon)"] = "Court of Farondis (Paragon)",
+	--[[Translation missing --]]
+	--[[ ["Corbyn"] = "Corbyn",--]] 
+	--[[Translation missing --]]
+	--[[ ["Council of Exarchs"] = "Council of Exarchs",--]] 
+	--[[Translation missing --]]
+	--[[ ["Court of Farondis"] = "Court of Farondis",--]] 
+	--[[Translation missing --]]
+	--[[ ["Court of Farondis (Paragon)"] = "Court of Farondis (Paragon)",--]] 
 	["Darkmoon Faire"] = "Feira de Negraluna",
 	["Darkspear Trolls"] = "Trolls Lançanegra",
 	["Darnassus"] = "Darnassus",
-	--Translation missing 
-	-- ["Defender Illona"] = "Defender Illona",
-	--Translation missing 
-	-- ["Delvar Ironfist"] = "Delvar Ironfist",
+	--[[Translation missing --]]
+	--[[ ["Defender Illona"] = "Defender Illona",--]] 
+	--[[Translation missing --]]
+	--[[ ["Delvar Ironfist"] = "Delvar Ironfist",--]] 
 	["Dominance Offensive"] = "Ofensiva de Dominância",
 	["Dragonmaw Clan"] = "Clã Presa do Dragão",
-	--Translation missing 
-	-- ["Dreamweavers"] = "Dreamweavers",
-	--Translation missing 
-	-- ["Dreamweavers (Paragon)"] = "Dreamweavers (Paragon)",
+	--[[Translation missing --]]
+	--[[ ["Dreamweavers"] = "Dreamweavers",--]] 
+	--[[Translation missing --]]
+	--[[ ["Dreamweavers (Paragon)"] = "Dreamweavers (Paragon)",--]] 
 	["Ella"] = "Ella",
 	["Everlook"] = "Visteterna",
 	["Exalted"] = "Exaltado",
@@ -1429,12 +1429,12 @@ elseif GAME_LOCALE == "ptBR" then
 	["Friend"] = "Amigo",
 	["Friendly"] = "Respeitado",
 	["Frostwolf Clan"] = "Clã Lobo do Gelo",
-	--Translation missing 
-	-- ["Frostwolf Orcs"] = "Frostwolf Orcs",
+	--[[Translation missing --]]
+	--[[ ["Frostwolf Orcs"] = "Frostwolf Orcs",--]] 
 	["Gadgetzan"] = "Geringontzan",
 	["Gelkis Clan Centaur"] = "Clã dos Centauros Gelkis",
-	--Translation missing 
-	-- ["Gilnean Survivors"] = "Gilnean Survivors",
+	--[[Translation missing --]]
+	--[[ ["Gilnean Survivors"] = "Gilnean Survivors",--]] 
 	["Gilneas"] = "Guilnéas",
 	["Gina Mudclaw"] = "Gina Garra de Barro",
 	["Gnomeregan"] = "Gnomeregan",
@@ -1443,56 +1443,56 @@ elseif GAME_LOCALE == "ptBR" then
 	["Good Friend"] = "Bom Amigo",
 	["Guardians of Hyjal"] = "Guardiões de Hyjal",
 	["Guild"] = "Guilda",
-	--Translation missing 
-	-- ["Hand of the Prophet"] = "Hand of the Prophet",
+	--[[Translation missing --]]
+	--[[ ["Hand of the Prophet"] = "Hand of the Prophet",--]] 
 	["Haohan Mudclaw"] = "Haohan Garra de Barro",
 	["Hellscream's Reach"] = "Confins do Grito Infernal",
-	--Translation missing 
-	-- ["Highmountain Tribe"] = "Highmountain Tribe",
-	--Translation missing 
-	-- ["Highmountain Tribe (Paragon)"] = "Highmountain Tribe (Paragon)",
+	--[[Translation missing --]]
+	--[[ ["Highmountain Tribe"] = "Highmountain Tribe",--]] 
+	--[[Translation missing --]]
+	--[[ ["Highmountain Tribe (Paragon)"] = "Highmountain Tribe (Paragon)",--]] 
 	["Honor Hold"] = "Fortaleza da Honra",
 	["Honored"] = "Honrado",
 	["Horde"] = "Horda",
 	["Horde Expedition"] = "Expedição da Horda",
 	["Huojin Pandaren"] = "Pandarens Huojin",
 	["Hydraxian Waterlords"] = "Senhores das Águas Hidraxianos",
-	--Translation missing 
-	-- ["Illidari"] = "Illidari",
-	--Translation missing 
-	-- ["Ilyssia of the Waters"] = "Ilyssia of the Waters",
-	--Translation missing 
-	-- ["Impus"] = "Impus",
+	--[[Translation missing --]]
+	--[[ ["Illidari"] = "Illidari",--]] 
+	--[[Translation missing --]]
+	--[[ ["Ilyssia of the Waters"] = "Ilyssia of the Waters",--]] 
+	--[[Translation missing --]]
+	--[[ ["Impus"] = "Impus",--]] 
 	["Ironforge"] = "Altaforja",
-	--Translation missing 
-	-- ["Jandvik Vrykul"] = "Jandvik Vrykul",
+	--[[Translation missing --]]
+	--[[ ["Jandvik Vrykul"] = "Jandvik Vrykul",--]] 
 	["Jogu the Drunk"] = "Be Bum, o Ébrio",
-	--Translation missing 
-	-- ["Keeper Raynae"] = "Keeper Raynae",
+	--[[Translation missing --]]
+	--[[ ["Keeper Raynae"] = "Keeper Raynae",--]] 
 	["Keepers of Time"] = "Defensores do Tempo",
 	["Kirin Tor"] = "Kirin Tor",
 	["Kirin Tor Offensive"] = "Ofensiva do Kirin Tor",
 	["Knights of the Ebon Blade"] = "Cavaleiros da Lâmina de Ébano",
 	["Kurenai"] = "Kurenai",
-	--Translation missing 
-	-- ["Laughing Skull Orcs"] = "Laughing Skull Orcs",
-	--Translation missing 
-	-- ["Leorajh"] = "Leorajh",
+	--[[Translation missing --]]
+	--[[ ["Laughing Skull Orcs"] = "Laughing Skull Orcs",--]] 
+	--[[Translation missing --]]
+	--[[ ["Leorajh"] = "Leorajh",--]] 
 	["Lower City"] = "Bairro Inferior",
 	["Magram Clan Centaur"] = "Clã dos Centauros Magram",
-	--Translation missing 
-	-- ["Moon Guard"] = "Moon Guard",
+	--[[Translation missing --]]
+	--[[ ["Moon Guard"] = "Moon Guard",--]] 
 	["Nat Pagle"] = "Nat Pagle",
 	["Netherwing"] = "Asa Etérea",
 	["Neutral"] = "Tolerado",
 	["Nomi"] = "Nomi",
 	["Ogri'la"] = "Ogri'la",
 	["Old Hillpaw"] = "Velho Pata do Monte",
-	--Translation missing 
-	-- ["Operation: Aardvark"] = "Operation: Aardvark",
+	--[[Translation missing --]]
+	--[[ ["Operation: Aardvark"] = "Operation: Aardvark",--]] 
 	["Operation: Shieldwall"] = "Operação: Muralha de Escudos",
-	--Translation missing 
-	-- ["Order of the Awakened"] = "Order of the Awakened",
+	--[[Translation missing --]]
+	--[[ ["Order of the Awakened"] = "Order of the Awakened",--]] 
 	["Order of the Cloud Serpent"] = "Ordem da Serpente das Nuvens",
 	["Orgrimmar"] = "Orgrimmar",
 	["Pearlfin Jinyu"] = "Jinyus Barbatana de Pérola",
@@ -1510,13 +1510,13 @@ elseif GAME_LOCALE == "ptBR" then
 	["Revered"] = "Reverenciado",
 	["Shado-Pan"] = "Shado-pan",
 	["Shado-Pan Assault"] = "Ataque Shado-pan",
-	--Translation missing 
-	-- ["Shadowmoon Exiles"] = "Shadowmoon Exiles",
-	--Translation missing 
-	-- ["Sha'leth"] = "Sha'leth",
+	--[[Translation missing --]]
+	--[[ ["Shadowmoon Exiles"] = "Shadowmoon Exiles",--]] 
+	--[[Translation missing --]]
+	--[[ ["Sha'leth"] = "Sha'leth",--]] 
 	["Shang Xi's Academy"] = "Academia de Shang Xi",
-	--Translation missing 
-	-- ["Sha'tari Defense"] = "Sha'tari Defense",
+	--[[Translation missing --]]
+	--[[ ["Sha'tari Defense"] = "Sha'tari Defense",--]] 
 	["Sha'tari Skyguard"] = "Guarda Aérea de Sha'tari",
 	["Shattered Sun Offensive"] = "Ofensiva Sol Partido",
 	["Shen'dralar"] = "Shen'dralar",
@@ -1524,17 +1524,17 @@ elseif GAME_LOCALE == "ptBR" then
 	["Silvermoon City"] = "Luaprata",
 	["Silverwing Sentinels"] = "Sentinelas da Asa de Prata",
 	["Sporeggar"] = "Sporeggar",
-	--Translation missing 
-	-- ["Steamwheedle Draenor Expedition"] = "Steamwheedle Draenor Expedition",
-	--Translation missing 
-	-- ["Steamwheedle Preservation Society"] = "Steamwheedle Preservation Society",
+	--[[Translation missing --]]
+	--[[ ["Steamwheedle Draenor Expedition"] = "Steamwheedle Draenor Expedition",--]] 
+	--[[Translation missing --]]
+	--[[ ["Steamwheedle Preservation Society"] = "Steamwheedle Preservation Society",--]] 
 	["Stormpike Guard"] = "Guarda de Lançatroz",
 	["Stormwind"] = "Ventobravo",
 	["Stranger"] = "Estranho",
 	["Sunreaver Onslaught"] = "Investida Fendessol",
 	["Syndicate"] = "Camarilha",
-	--Translation missing 
-	-- ["Talonpriest Ishaal"] = "Talonpriest Ishaal",
+	--[[Translation missing --]]
+	--[[ ["Talonpriest Ishaal"] = "Talonpriest Ishaal",--]] 
 	["The Aldor"] = "Os Aldor",
 	["The Anglers"] = "Os Pescadores",
 	["The Ashen Verdict"] = "Veredito Cinzento",
@@ -1544,8 +1544,8 @@ elseif GAME_LOCALE == "ptBR" then
 	["The Consortium"] = "O Consórcio",
 	["The Defilers"] = "Os Profanadores",
 	["The Earthen Ring"] = "Harmonia Telúrica",
-	--Translation missing 
-	-- ["The First Responders"] = "The First Responders",
+	--[[Translation missing --]]
+	--[[ ["The First Responders"] = "The First Responders",--]] 
 	["The Frostborn"] = "Os Gelonatos",
 	["The Hand of Vengeance"] = "A Mão da Vingança",
 	["The Kalu'ak"] = "Os Kalu'ak",
@@ -1553,13 +1553,13 @@ elseif GAME_LOCALE == "ptBR" then
 	["The League of Arathor"] = "A Liga de Arathor",
 	["The Lorewalkers"] = "Os Andarilhos das Lendas",
 	["The Mag'har"] = "Os Mag'har",
-	--Translation missing 
-	-- ["The Nightfallen"] = "The Nightfallen",
-	--Translation missing 
-	-- ["The Nightfallen (Paragon)"] = "The Nightfallen (Paragon)",
+	--[[Translation missing --]]
+	--[[ ["The Nightfallen"] = "The Nightfallen",--]] 
+	--[[Translation missing --]]
+	--[[ ["The Nightfallen (Paragon)"] = "The Nightfallen (Paragon)",--]] 
 	["The Oracles"] = "Os Oráculos",
-	--Translation missing 
-	-- ["The Saberstalkers"] = "The Saberstalkers",
+	--[[Translation missing --]]
+	--[[ ["The Saberstalkers"] = "The Saberstalkers",--]] 
 	["The Scale of the Sands"] = "A Escama das Areias",
 	["The Scryers"] = "Os Áugures",
 	["The Sha'tar"] = "Os Sha'tar",
@@ -1569,10 +1569,10 @@ elseif GAME_LOCALE == "ptBR" then
 	["The Taunka"] = "Os Taunka",
 	["The Tillers"] = "Os Lavradores",
 	["The Violet Eye"] = "O Olho Violeta",
-	--Translation missing 
-	-- ["The Wardens"] = "The Wardens",
-	--Translation missing 
-	-- ["The Wardens (Paragon)"] = "The Wardens (Paragon)",
+	--[[Translation missing --]]
+	--[[ ["The Wardens"] = "The Wardens",--]] 
+	--[[Translation missing --]]
+	--[[ ["The Wardens (Paragon)"] = "The Wardens (Paragon)",--]] 
 	["The Wyrmrest Accord"] = "A Aliança do Repouso das Serpes",
 	["Therazane"] = "Therazane",
 	["Thorium Brotherhood"] = "Irmandade do Tório",
@@ -1580,54 +1580,54 @@ elseif GAME_LOCALE == "ptBR" then
 	["Thunder Bluff"] = "Penhasco do Trovão",
 	["Timbermaw Hold"] = "Domínio dos Presamatos",
 	["Tina Mudclaw"] = "Tina Garra de Barro",
-	--Translation missing 
-	-- ["Tormmok"] = "Tormmok",
+	--[[Translation missing --]]
+	--[[ ["Tormmok"] = "Tormmok",--]] 
 	["Tranquillien"] = "Tranquillien",
 	["Tushui Pandaren"] = "Pandarens Tushui",
 	["Undercity"] = "Cidade Baixa",
-	--Translation missing 
-	-- ["Valarjar"] = "Valarjar",
-	--Translation missing 
-	-- ["Valarjar (Paragon)"] = "Valarjar (Paragon)",
+	--[[Translation missing --]]
+	--[[ ["Valarjar"] = "Valarjar",--]] 
+	--[[Translation missing --]]
+	--[[ ["Valarjar (Paragon)"] = "Valarjar (Paragon)",--]] 
 	["Valiance Expedition"] = "Expedição Valentia",
-	--Translation missing 
-	-- ["Vivianne"] = "Vivianne",
-	--Translation missing 
-	-- ["Vol'jin's Headhunters"] = "Vol'jin's Headhunters",
-	--Translation missing 
-	-- ["Vol'jin's Spear"] = "Vol'jin's Spear",
+	--[[Translation missing --]]
+	--[[ ["Vivianne"] = "Vivianne",--]] 
+	--[[Translation missing --]]
+	--[[ ["Vol'jin's Headhunters"] = "Vol'jin's Headhunters",--]] 
+	--[[Translation missing --]]
+	--[[ ["Vol'jin's Spear"] = "Vol'jin's Spear",--]] 
 	["Warsong Offensive"] = "Ofensiva Brado Guerreiro",
 	["Warsong Outriders"] = "Pioneiros do Brado Guerreiro",
 	["Wildhammer Clan"] = "Clã Martelo Feroz",
 	["Winterfin Retreat"] = "Retiro da Falésia Invernal",
 	["Wintersaber Trainers"] = "Treinadores de Sabres-do-inverno",
-	--Translation missing 
-	-- ["Wrynn's Vanguard"] = "Wrynn's Vanguard",
+	--[[Translation missing --]]
+	--[[ ["Wrynn's Vanguard"] = "Wrynn's Vanguard",--]] 
 	["Zandalar Tribe"] = "Tribo dos Zandalar"
 }
 elseif GAME_LOCALE == "itIT" then
 	lib:SetCurrentTranslations {
 	["Acquaintance"] = "Conoscente",
 	["Aeda Brightdawn"] = "Aeda Albaluce",
-	--Translation missing 
-	-- ["Akule Riverhorn"] = "Akule Riverhorn",
+	--[[Translation missing --]]
+	--[[ ["Akule Riverhorn"] = "Akule Riverhorn",--]] 
 	["Alliance"] = "Alleanza",
 	["Alliance Vanguard"] = "Avanguardia Dell'Alleanza",
 	["Arakkoa Outcasts"] = "Esiliati Arakkoa",
 	["Argent Crusade"] = "Crociata d'Argento",
 	["Argent Dawn"] = "Alba D'Argento",
-	--Translation missing 
-	-- ["Argussian Reach"] = "Argussian Reach",
-	--Translation missing 
-	-- ["Argussian Reach (Paragon)"] = "Argussian Reach (Paragon)",
-	--Translation missing 
-	-- ["Armies of Legionfall"] = "Armies of Legionfall",
-	--Translation missing 
-	-- ["Armies of Legionfall (Paragon)"] = "Armies of Legionfall (Paragon)",
-	--Translation missing 
-	-- ["Army of the Light"] = "Army of the Light",
-	--Translation missing 
-	-- ["Army of the Light (Paragon)"] = "Army of the Light (Paragon)",
+	--[[Translation missing --]]
+	--[[ ["Argussian Reach"] = "Argussian Reach",--]] 
+	--[[Translation missing --]]
+	--[[ ["Argussian Reach (Paragon)"] = "Argussian Reach (Paragon)",--]] 
+	--[[Translation missing --]]
+	--[[ ["Armies of Legionfall"] = "Armies of Legionfall",--]] 
+	--[[Translation missing --]]
+	--[[ ["Armies of Legionfall (Paragon)"] = "Armies of Legionfall (Paragon)",--]] 
+	--[[Translation missing --]]
+	--[[ ["Army of the Light"] = "Army of the Light",--]] 
+	--[[Translation missing --]]
+	--[[ ["Army of the Light (Paragon)"] = "Army of the Light (Paragon)",--]] 
 	["Ashtongue Deathsworn"] = "Congiurati di Linguamorta",
 	["Avengers of Hyjal"] = "Vendicatori di Hyjal",
 	["Baradin's Wardens"] = "Custodi di Baradin",
@@ -1643,12 +1643,12 @@ elseif GAME_LOCALE == "itIT" then
 	["Cenarion Circle"] = "Circolo Cenariano",
 	["Cenarion Expedition"] = "Spedizione Cenariana",
 	["Chee Chee"] = "Ghi Ghi",
-	--Translation missing 
-	-- ["Corbyn"] = "Corbyn",
+	--[[Translation missing --]]
+	--[[ ["Corbyn"] = "Corbyn",--]] 
 	["Council of Exarchs"] = "Concilio degli Esarchi",
 	["Court of Farondis"] = "Corte di Farondis",
-	--Translation missing 
-	-- ["Court of Farondis (Paragon)"] = "Court of Farondis (Paragon)",
+	--[[Translation missing --]]
+	--[[ ["Court of Farondis (Paragon)"] = "Court of Farondis (Paragon)",--]] 
 	["Darkmoon Faire"] = "Fiera di Lunacupa",
 	["Darkspear Trolls"] = "Troll Lanciascura",
 	["Darnassus"] = "Darnassus",
@@ -1657,8 +1657,8 @@ elseif GAME_LOCALE == "itIT" then
 	["Dominance Offensive"] = "Offensiva del Dominio",
 	["Dragonmaw Clan"] = "Clan Fauci di Drago",
 	["Dreamweavers"] = "PLasmasogni",
-	--Translation missing 
-	-- ["Dreamweavers (Paragon)"] = "Dreamweavers (Paragon)",
+	--[[Translation missing --]]
+	--[[ ["Dreamweavers (Paragon)"] = "Dreamweavers (Paragon)",--]] 
 	["Ella"] = "Ella",
 	["Everlook"] = "Lungavista",
 	["Exalted"] = "Osannato",
@@ -1687,8 +1687,8 @@ elseif GAME_LOCALE == "itIT" then
 	["Haohan Mudclaw"] = "Haoran Palmo Florido",
 	["Hellscream's Reach"] = "Avanguardia di Malogrido",
 	["Highmountain Tribe"] = "Tribù Alto Monte",
-	--Translation missing 
-	-- ["Highmountain Tribe (Paragon)"] = "Highmountain Tribe (Paragon)",
+	--[[Translation missing --]]
+	--[[ ["Highmountain Tribe (Paragon)"] = "Highmountain Tribe (Paragon)",--]] 
 	["Honor Hold"] = "Rocca dell'Onore",
 	["Honored"] = "Onorato",
 	["Horde"] = "Orda",
@@ -1696,15 +1696,15 @@ elseif GAME_LOCALE == "itIT" then
 	["Huojin Pandaren"] = "Pandaren Huojin",
 	["Hydraxian Waterlords"] = "Seguaci di Hydraxian",
 	["Illidari"] = "Illidari",
-	--Translation missing 
-	-- ["Ilyssia of the Waters"] = "Ilyssia of the Waters",
-	--Translation missing 
-	-- ["Impus"] = "Impus",
+	--[[Translation missing --]]
+	--[[ ["Ilyssia of the Waters"] = "Ilyssia of the Waters",--]] 
+	--[[Translation missing --]]
+	--[[ ["Impus"] = "Impus",--]] 
 	["Ironforge"] = "Forgiardente",
 	["Jandvik Vrykul"] = "Vrykul di Jandvik",
 	["Jogu the Drunk"] = "Jogu l'Ubriaco",
-	--Translation missing 
-	-- ["Keeper Raynae"] = "Keeper Raynae",
+	--[[Translation missing --]]
+	--[[ ["Keeper Raynae"] = "Keeper Raynae",--]] 
 	["Keepers of Time"] = "Custodi del Tempo",
 	["Kirin Tor"] = "Kirin Tor",
 	["Kirin Tor Offensive"] = "Rivalsa del Kirin Tor",
@@ -1742,8 +1742,8 @@ elseif GAME_LOCALE == "itIT" then
 	["Shado-Pan"] = "Shandaren",
 	["Shado-Pan Assault"] = "Avanzata degli Shandaren",
 	["Shadowmoon Exiles"] = "Esiliati Torvaluna",
-	--Translation missing 
-	-- ["Sha'leth"] = "Sha'leth",
+	--[[Translation missing --]]
+	--[[ ["Sha'leth"] = "Sha'leth",--]] 
 	["Shang Xi's Academy"] = "Accademia di Shang Xi",
 	["Sha'tari Defense"] = "Protettori Sha'tari",
 	["Sha'tari Skyguard"] = "Guardiacieli Sha'tari",
@@ -1779,8 +1779,8 @@ elseif GAME_LOCALE == "itIT" then
 	["The Lorewalkers"] = "Raminghi della Sapienza",
 	["The Mag'har"] = "Mag'har",
 	["The Nightfallen"] = "Esuli Oscuri",
-	--Translation missing 
-	-- ["The Nightfallen (Paragon)"] = "The Nightfallen (Paragon)",
+	--[[Translation missing --]]
+	--[[ ["The Nightfallen (Paragon)"] = "The Nightfallen (Paragon)",--]] 
 	["The Oracles"] = "Tribù degli Oracoli",
 	["The Saberstalkers"] = "Bracconieri Selvaggi",
 	["The Scale of the Sands"] = "Scale delle Sabbie",
@@ -1793,8 +1793,8 @@ elseif GAME_LOCALE == "itIT" then
 	["The Tillers"] = "Coltivatori",
 	["The Violet Eye"] = "Occhio Violaceo",
 	["The Wardens"] = "Custodi",
-	--Translation missing 
-	-- ["The Wardens (Paragon)"] = "The Wardens (Paragon)",
+	--[[Translation missing --]]
+	--[[ ["The Wardens (Paragon)"] = "The Wardens (Paragon)",--]] 
 	["The Wyrmrest Accord"] = "Lega dei Draghi",
 	["Therazane"] = "Therazane",
 	["Thorium Brotherhood"] = "Fratellanza del Torio",
@@ -1807,8 +1807,8 @@ elseif GAME_LOCALE == "itIT" then
 	["Tushui Pandaren"] = "Pandaren Tushui",
 	["Undercity"] = "Sepulcra",
 	["Valarjar"] = "Valarjar",
-	--Translation missing 
-	-- ["Valarjar (Paragon)"] = "Valarjar (Paragon)",
+	--[[Translation missing --]]
+	--[[ ["Valarjar (Paragon)"] = "Valarjar (Paragon)",--]] 
 	["Valiance Expedition"] = "Spedizione degli Arditi",
 	["Vivianne"] = "Vivianne",
 	["Vol'jin's Headhunters"] = "Cacciatori di Teste di Vol'jin",
@@ -1824,33 +1824,33 @@ elseif GAME_LOCALE == "itIT" then
 elseif GAME_LOCALE == "ruRU" then
 	lib:SetCurrentTranslations {
 	["Acquaintance"] = "Знакомый",
-	--Translation missing 
-	-- ["Aeda Brightdawn"] = "Aeda Brightdawn",
-	--Translation missing 
-	-- ["Akule Riverhorn"] = "Akule Riverhorn",
+	--[[Translation missing --]]
+	--[[ ["Aeda Brightdawn"] = "Aeda Brightdawn",--]] 
+	--[[Translation missing --]]
+	--[[ ["Akule Riverhorn"] = "Akule Riverhorn",--]] 
 	["Alliance"] = "Альянс",
 	["Alliance Vanguard"] = "Авангард Альянса",
-	--Translation missing 
-	-- ["Arakkoa Outcasts"] = "Arakkoa Outcasts",
+	--[[Translation missing --]]
+	--[[ ["Arakkoa Outcasts"] = "Arakkoa Outcasts",--]] 
 	["Argent Crusade"] = "Серебряный Авангард",
 	["Argent Dawn"] = "Серебряный Рассвет",
-	--Translation missing 
-	-- ["Argussian Reach"] = "Argussian Reach",
-	--Translation missing 
-	-- ["Argussian Reach (Paragon)"] = "Argussian Reach (Paragon)",
-	--Translation missing 
-	-- ["Armies of Legionfall"] = "Armies of Legionfall",
-	--Translation missing 
-	-- ["Armies of Legionfall (Paragon)"] = "Armies of Legionfall (Paragon)",
-	--Translation missing 
-	-- ["Army of the Light"] = "Army of the Light",
-	--Translation missing 
-	-- ["Army of the Light (Paragon)"] = "Army of the Light (Paragon)",
+	--[[Translation missing --]]
+	--[[ ["Argussian Reach"] = "Argussian Reach",--]] 
+	--[[Translation missing --]]
+	--[[ ["Argussian Reach (Paragon)"] = "Argussian Reach (Paragon)",--]] 
+	--[[Translation missing --]]
+	--[[ ["Armies of Legionfall"] = "Armies of Legionfall",--]] 
+	--[[Translation missing --]]
+	--[[ ["Armies of Legionfall (Paragon)"] = "Armies of Legionfall (Paragon)",--]] 
+	--[[Translation missing --]]
+	--[[ ["Army of the Light"] = "Army of the Light",--]] 
+	--[[Translation missing --]]
+	--[[ ["Army of the Light (Paragon)"] = "Army of the Light (Paragon)",--]] 
 	["Ashtongue Deathsworn"] = "Пеплоусты-служители",
 	["Avengers of Hyjal"] = "Хиджальские мстители",
 	["Baradin's Wardens"] = "Защитники Тол Барада",
-	--Translation missing 
-	-- ["Barracks Bodyguards"] = "Barracks Bodyguards",
+	--[[Translation missing --]]
+	--[[ ["Barracks Bodyguards"] = "Barracks Bodyguards",--]] 
 	["Best Friend"] = "Лучший друг",
 	["Bilgewater Cartel"] = "Картель Трюмных Вод",
 	["Bizmo's Brawlpub"] = "потасовочная \"У Бизмо\"",
@@ -1862,27 +1862,27 @@ elseif GAME_LOCALE == "ruRU" then
 	["Cenarion Circle"] = "Круг Кенария",
 	["Cenarion Expedition"] = "Кенарийская экспедиция",
 	["Chee Chee"] = "Чи-Чи",
-	--Translation missing 
-	-- ["Corbyn"] = "Corbyn",
-	--Translation missing 
-	-- ["Council of Exarchs"] = "Council of Exarchs",
-	--Translation missing 
-	-- ["Court of Farondis"] = "Court of Farondis",
-	--Translation missing 
-	-- ["Court of Farondis (Paragon)"] = "Court of Farondis (Paragon)",
+	--[[Translation missing --]]
+	--[[ ["Corbyn"] = "Corbyn",--]] 
+	--[[Translation missing --]]
+	--[[ ["Council of Exarchs"] = "Council of Exarchs",--]] 
+	--[[Translation missing --]]
+	--[[ ["Court of Farondis"] = "Court of Farondis",--]] 
+	--[[Translation missing --]]
+	--[[ ["Court of Farondis (Paragon)"] = "Court of Farondis (Paragon)",--]] 
 	["Darkmoon Faire"] = "Ярмарка Новолуния",
 	["Darkspear Trolls"] = "Тролли Черного Копья",
 	["Darnassus"] = "Дарнас",
-	--Translation missing 
-	-- ["Defender Illona"] = "Defender Illona",
-	--Translation missing 
-	-- ["Delvar Ironfist"] = "Delvar Ironfist",
+	--[[Translation missing --]]
+	--[[ ["Defender Illona"] = "Defender Illona",--]] 
+	--[[Translation missing --]]
+	--[[ ["Delvar Ironfist"] = "Delvar Ironfist",--]] 
 	["Dominance Offensive"] = "Армия Покорителей",
 	["Dragonmaw Clan"] = "Клан Драконьей Пасти",
-	--Translation missing 
-	-- ["Dreamweavers"] = "Dreamweavers",
-	--Translation missing 
-	-- ["Dreamweavers (Paragon)"] = "Dreamweavers (Paragon)",
+	--[[Translation missing --]]
+	--[[ ["Dreamweavers"] = "Dreamweavers",--]] 
+	--[[Translation missing --]]
+	--[[ ["Dreamweavers (Paragon)"] = "Dreamweavers (Paragon)",--]] 
 	["Ella"] = "Элла",
 	["Everlook"] = "Круговзор",
 	["Exalted"] = "Превознесение",
@@ -1895,12 +1895,12 @@ elseif GAME_LOCALE == "ruRU" then
 	["Friend"] = "Друг",
 	["Friendly"] = "Дружелюбие",
 	["Frostwolf Clan"] = "Клан Северного Волка",
-	--Translation missing 
-	-- ["Frostwolf Orcs"] = "Frostwolf Orcs",
+	--[[Translation missing --]]
+	--[[ ["Frostwolf Orcs"] = "Frostwolf Orcs",--]] 
 	["Gadgetzan"] = "Прибамбасск",
 	["Gelkis Clan Centaur"] = "Кентавры из племени Гелкис",
-	--Translation missing 
-	-- ["Gilnean Survivors"] = "Gilnean Survivors",
+	--[[Translation missing --]]
+	--[[ ["Gilnean Survivors"] = "Gilnean Survivors",--]] 
 	["Gilneas"] = "Гилнеас",
 	["Gina Mudclaw"] = "Джина Грязный Коготь",
 	["Gnomeregan"] = "Гномреган",
@@ -1909,56 +1909,56 @@ elseif GAME_LOCALE == "ruRU" then
 	["Good Friend"] = "Хороший друг",
 	["Guardians of Hyjal"] = "Стражи Хиджала",
 	["Guild"] = "Гильдия",
-	--Translation missing 
-	-- ["Hand of the Prophet"] = "Hand of the Prophet",
+	--[[Translation missing --]]
+	--[[ ["Hand of the Prophet"] = "Hand of the Prophet",--]] 
 	["Haohan Mudclaw"] = "Хаохань Грязный Коготь",
 	["Hellscream's Reach"] = "Батальон Адского Крика",
-	--Translation missing 
-	-- ["Highmountain Tribe"] = "Highmountain Tribe",
-	--Translation missing 
-	-- ["Highmountain Tribe (Paragon)"] = "Highmountain Tribe (Paragon)",
+	--[[Translation missing --]]
+	--[[ ["Highmountain Tribe"] = "Highmountain Tribe",--]] 
+	--[[Translation missing --]]
+	--[[ ["Highmountain Tribe (Paragon)"] = "Highmountain Tribe (Paragon)",--]] 
 	["Honor Hold"] = "Оплот Чести",
 	["Honored"] = "Уважение",
 	["Horde"] = "Орда",
 	["Horde Expedition"] = "Экспедиция Орды",
 	["Huojin Pandaren"] = "Пандарены Хоцзинь",
 	["Hydraxian Waterlords"] = "Гидраксианские Повелители Вод",
-	--Translation missing 
-	-- ["Illidari"] = "Illidari",
-	--Translation missing 
-	-- ["Ilyssia of the Waters"] = "Ilyssia of the Waters",
-	--Translation missing 
-	-- ["Impus"] = "Impus",
+	--[[Translation missing --]]
+	--[[ ["Illidari"] = "Illidari",--]] 
+	--[[Translation missing --]]
+	--[[ ["Ilyssia of the Waters"] = "Ilyssia of the Waters",--]] 
+	--[[Translation missing --]]
+	--[[ ["Impus"] = "Impus",--]] 
 	["Ironforge"] = "Стальгорн",
-	--Translation missing 
-	-- ["Jandvik Vrykul"] = "Jandvik Vrykul",
+	--[[Translation missing --]]
+	--[[ ["Jandvik Vrykul"] = "Jandvik Vrykul",--]] 
 	["Jogu the Drunk"] = "Йогу Пьяный",
-	--Translation missing 
-	-- ["Keeper Raynae"] = "Keeper Raynae",
+	--[[Translation missing --]]
+	--[[ ["Keeper Raynae"] = "Keeper Raynae",--]] 
 	["Keepers of Time"] = "Хранители Времени",
 	["Kirin Tor"] = "Кирин-Тор",
 	["Kirin Tor Offensive"] = "Армия Кирин-Тора",
 	["Knights of the Ebon Blade"] = "Рыцари Черного Клинка",
 	["Kurenai"] = "Куренай",
-	--Translation missing 
-	-- ["Laughing Skull Orcs"] = "Laughing Skull Orcs",
-	--Translation missing 
-	-- ["Leorajh"] = "Leorajh",
+	--[[Translation missing --]]
+	--[[ ["Laughing Skull Orcs"] = "Laughing Skull Orcs",--]] 
+	--[[Translation missing --]]
+	--[[ ["Leorajh"] = "Leorajh",--]] 
 	["Lower City"] = "Нижний Город",
 	["Magram Clan Centaur"] = "Кентавры из племени Маграм",
-	--Translation missing 
-	-- ["Moon Guard"] = "Moon Guard",
+	--[[Translation missing --]]
+	--[[ ["Moon Guard"] = "Moon Guard",--]] 
 	["Nat Pagle"] = "Нат Пэгл",
 	["Netherwing"] = "Крылья Пустоты",
 	["Neutral"] = "Равнодушие",
 	["Nomi"] = "Номи",
 	["Ogri'la"] = "Огри'ла",
 	["Old Hillpaw"] = "Старик Горная Лапа",
-	--Translation missing 
-	-- ["Operation: Aardvark"] = "Operation: Aardvark",
+	--[[Translation missing --]]
+	--[[ ["Operation: Aardvark"] = "Operation: Aardvark",--]] 
 	["Operation: Shieldwall"] = "Операция \"Заслон\"",
-	--Translation missing 
-	-- ["Order of the Awakened"] = "Order of the Awakened",
+	--[[Translation missing --]]
+	--[[ ["Order of the Awakened"] = "Order of the Awakened",--]] 
 	["Order of the Cloud Serpent"] = "Орден Облачного Змея",
 	["Orgrimmar"] = "Оргриммар",
 	["Pearlfin Jinyu"] = "Цзинь-юй Жемчужного Плавника",
@@ -1976,13 +1976,13 @@ elseif GAME_LOCALE == "ruRU" then
 	["Revered"] = "Почтение",
 	["Shado-Pan"] = "Шадо-Пан",
 	["Shado-Pan Assault"] = "Натиск Шадо-Пан",
-	--Translation missing 
-	-- ["Shadowmoon Exiles"] = "Shadowmoon Exiles",
-	--Translation missing 
-	-- ["Sha'leth"] = "Sha'leth",
+	--[[Translation missing --]]
+	--[[ ["Shadowmoon Exiles"] = "Shadowmoon Exiles",--]] 
+	--[[Translation missing --]]
+	--[[ ["Sha'leth"] = "Sha'leth",--]] 
 	["Shang Xi's Academy"] = "Академия Шан Си",
-	--Translation missing 
-	-- ["Sha'tari Defense"] = "Sha'tari Defense",
+	--[[Translation missing --]]
+	--[[ ["Sha'tari Defense"] = "Sha'tari Defense",--]] 
 	["Sha'tari Skyguard"] = "Стражи Небес Ша'тар",
 	["Shattered Sun Offensive"] = "Армия Расколотого Солнца",
 	["Shen'dralar"] = "Шен'дралар",
@@ -1990,17 +1990,17 @@ elseif GAME_LOCALE == "ruRU" then
 	["Silvermoon City"] = "Луносвет",
 	["Silverwing Sentinels"] = "Среброкрылые Часовые",
 	["Sporeggar"] = "Спореггар",
-	--Translation missing 
-	-- ["Steamwheedle Draenor Expedition"] = "Steamwheedle Draenor Expedition",
-	--Translation missing 
-	-- ["Steamwheedle Preservation Society"] = "Steamwheedle Preservation Society",
+	--[[Translation missing --]]
+	--[[ ["Steamwheedle Draenor Expedition"] = "Steamwheedle Draenor Expedition",--]] 
+	--[[Translation missing --]]
+	--[[ ["Steamwheedle Preservation Society"] = "Steamwheedle Preservation Society",--]] 
 	["Stormpike Guard"] = "Стража Грозовой Вершины",
 	["Stormwind"] = "Штормград",
 	["Stranger"] = "Незнакомец",
 	["Sunreaver Onslaught"] = "Войска Похитителей Солнца",
 	["Syndicate"] = "Синдикат",
-	--Translation missing 
-	-- ["Talonpriest Ishaal"] = "Talonpriest Ishaal",
+	--[[Translation missing --]]
+	--[[ ["Talonpriest Ishaal"] = "Talonpriest Ishaal",--]] 
 	["The Aldor"] = "Алдоры",
 	["The Anglers"] = "Рыболовы",
 	["The Ashen Verdict"] = "Пепельный союз",
@@ -2010,8 +2010,8 @@ elseif GAME_LOCALE == "ruRU" then
 	["The Consortium"] = "Консорциум",
 	["The Defilers"] = "Осквернители",
 	["The Earthen Ring"] = "Служители Земли",
-	--Translation missing 
-	-- ["The First Responders"] = "The First Responders",
+	--[[Translation missing --]]
+	--[[ ["The First Responders"] = "The First Responders",--]] 
 	["The Frostborn"] = "Зиморожденные",
 	["The Hand of Vengeance"] = "Карающая Длань",
 	["The Kalu'ak"] = "Калу'ак",
@@ -2019,13 +2019,13 @@ elseif GAME_LOCALE == "ruRU" then
 	["The League of Arathor"] = "Лига Аратора",
 	["The Lorewalkers"] = "Хранители истории",
 	["The Mag'har"] = "Маг'хары",
-	--Translation missing 
-	-- ["The Nightfallen"] = "The Nightfallen",
-	--Translation missing 
-	-- ["The Nightfallen (Paragon)"] = "The Nightfallen (Paragon)",
+	--[[Translation missing --]]
+	--[[ ["The Nightfallen"] = "The Nightfallen",--]] 
+	--[[Translation missing --]]
+	--[[ ["The Nightfallen (Paragon)"] = "The Nightfallen (Paragon)",--]] 
 	["The Oracles"] = "Оракулы",
-	--Translation missing 
-	-- ["The Saberstalkers"] = "The Saberstalkers",
+	--[[Translation missing --]]
+	--[[ ["The Saberstalkers"] = "The Saberstalkers",--]] 
 	["The Scale of the Sands"] = "Песчаная Чешуя",
 	["The Scryers"] = "Провидцы",
 	["The Sha'tar"] = "Ша'тар",
@@ -2035,10 +2035,10 @@ elseif GAME_LOCALE == "ruRU" then
 	["The Taunka"] = "Таунка",
 	["The Tillers"] = "Земледельцы",
 	["The Violet Eye"] = "Аметистовое Око",
-	--Translation missing 
-	-- ["The Wardens"] = "The Wardens",
-	--Translation missing 
-	-- ["The Wardens (Paragon)"] = "The Wardens (Paragon)",
+	--[[Translation missing --]]
+	--[[ ["The Wardens"] = "The Wardens",--]] 
+	--[[Translation missing --]]
+	--[[ ["The Wardens (Paragon)"] = "The Wardens (Paragon)",--]] 
 	["The Wyrmrest Accord"] = "Драконий союз",
 	["Therazane"] = "Теразан",
 	["Thorium Brotherhood"] = "Братство Тория",
@@ -2046,53 +2046,47 @@ elseif GAME_LOCALE == "ruRU" then
 	["Thunder Bluff"] = "Громовой Утес",
 	["Timbermaw Hold"] = "Древобрюхи",
 	["Tina Mudclaw"] = "Тина Грязный Коготь",
-	--Translation missing 
-	-- ["Tormmok"] = "Tormmok",
+	--[[Translation missing --]]
+	--[[ ["Tormmok"] = "Tormmok",--]] 
 	["Tranquillien"] = "Транквиллион",
 	["Tushui Pandaren"] = "Пандарены Тушуй",
 	["Undercity"] = "Подгород",
-	--Translation missing 
-	-- ["Valarjar"] = "Valarjar",
-	--Translation missing 
-	-- ["Valarjar (Paragon)"] = "Valarjar (Paragon)",
+	--[[Translation missing --]]
+	--[[ ["Valarjar"] = "Valarjar",--]] 
+	--[[Translation missing --]]
+	--[[ ["Valarjar (Paragon)"] = "Valarjar (Paragon)",--]] 
 	["Valiance Expedition"] = "Экспедиция Отважных",
-	--Translation missing 
-	-- ["Vivianne"] = "Vivianne",
-	--Translation missing 
-	-- ["Vol'jin's Headhunters"] = "Vol'jin's Headhunters",
-	--Translation missing 
-	-- ["Vol'jin's Spear"] = "Vol'jin's Spear",
+	--[[Translation missing --]]
+	--[[ ["Vivianne"] = "Vivianne",--]] 
+	--[[Translation missing --]]
+	--[[ ["Vol'jin's Headhunters"] = "Vol'jin's Headhunters",--]] 
+	--[[Translation missing --]]
+	--[[ ["Vol'jin's Spear"] = "Vol'jin's Spear",--]] 
 	["Warsong Offensive"] = "Армия Песни Войны",
 	["Warsong Outriders"] = "Всадники Песни Войны",
 	["Wildhammer Clan"] = "Клан Громового Молота",
 	["Winterfin Retreat"] = "Холодный Плавник",
 	["Wintersaber Trainers"] = "Укротители ледопардов",
-	--Translation missing 
-	-- ["Wrynn's Vanguard"] = "Wrynn's Vanguard",
+	--[[Translation missing --]]
+	--[[ ["Wrynn's Vanguard"] = "Wrynn's Vanguard",--]] 
 	["Zandalar Tribe"] = "Племя Зандалар"
 }
 elseif GAME_LOCALE == "zhCN" then
 	lib:SetCurrentTranslations {
 	["Acquaintance"] = "熟人",
 	["Aeda Brightdawn"] = "艾达·晨光",
-	--Translation missing 
-	-- ["Akule Riverhorn"] = "Akule Riverhorn",
+	["Akule Riverhorn"] = "阿库勒·河角",
 	["Alliance"] = "联盟",
 	["Alliance Vanguard"] = "联盟先遣军",
 	["Arakkoa Outcasts"] = "鸦人流亡者",
 	["Argent Crusade"] = "银色北伐军",
 	["Argent Dawn"] = "银色黎明",
-	--Translation missing 
-	-- ["Argussian Reach"] = "Argussian Reach",
-	--Translation missing 
-	-- ["Argussian Reach (Paragon)"] = "Argussian Reach (Paragon)",
+	["Argussian Reach"] = "阿古斯防卫军",
+	["Argussian Reach (Paragon)"] = "阿古斯防卫军（巅峰）",
 	["Armies of Legionfall"] = "抗魔联军",
-	--Translation missing 
-	-- ["Armies of Legionfall (Paragon)"] = "Armies of Legionfall (Paragon)",
-	--Translation missing 
-	-- ["Army of the Light"] = "Army of the Light",
-	--Translation missing 
-	-- ["Army of the Light (Paragon)"] = "Army of the Light (Paragon)",
+	["Armies of Legionfall (Paragon)"] = "抗魔联军（巅峰）",
+	["Army of the Light"] = "圣光军团",
+	["Army of the Light (Paragon)"] = "圣光军团（巅峰）",
 	["Ashtongue Deathsworn"] = "灰舌死誓者",
 	["Avengers of Hyjal"] = "海加尔复仇者",
 	["Baradin's Wardens"] = "巴拉丁典狱官",
@@ -2108,12 +2102,10 @@ elseif GAME_LOCALE == "zhCN" then
 	["Cenarion Circle"] = "塞纳里奥议会",
 	["Cenarion Expedition"] = "塞纳里奥远征队",
 	["Chee Chee"] = "吱吱",
-	--Translation missing 
-	-- ["Corbyn"] = "Corbyn",
+	["Corbyn"] = "科尔宾",
 	["Council of Exarchs"] = "主教议会",
 	["Court of Farondis"] = "法罗迪斯宫廷",
-	--Translation missing 
-	-- ["Court of Farondis (Paragon)"] = "Court of Farondis (Paragon)",
+	["Court of Farondis (Paragon)"] = "法罗迪斯宫廷（巅峰）",
 	["Darkmoon Faire"] = "暗月马戏团",
 	["Darkspear Trolls"] = "暗矛巨魔",
 	["Darnassus"] = "达纳苏斯",
@@ -2122,8 +2114,7 @@ elseif GAME_LOCALE == "zhCN" then
 	["Dominance Offensive"] = "统御先锋军",
 	["Dragonmaw Clan"] = "龙喉氏族",
 	["Dreamweavers"] = "织梦者",
-	--Translation missing 
-	-- ["Dreamweavers (Paragon)"] = "Dreamweavers (Paragon)",
+	["Dreamweavers (Paragon)"] = "织梦者（巅峰）",
 	["Ella"] = "艾拉",
 	["Everlook"] = "永望镇",
 	["Exalted"] = "崇拜",
@@ -2152,8 +2143,7 @@ elseif GAME_LOCALE == "zhCN" then
 	["Haohan Mudclaw"] = "郝瀚·泥爪",
 	["Hellscream's Reach"] = "地狱咆哮近卫军",
 	["Highmountain Tribe"] = "高岭部族",
-	--Translation missing 
-	-- ["Highmountain Tribe (Paragon)"] = "Highmountain Tribe (Paragon)",
+	["Highmountain Tribe (Paragon)"] = "高岭部族（巅峰）",
 	["Honor Hold"] = "荣耀堡",
 	["Honored"] = "尊敬",
 	["Horde"] = "部落",
@@ -2161,15 +2151,12 @@ elseif GAME_LOCALE == "zhCN" then
 	["Huojin Pandaren"] = "火金派熊猫人",
 	["Hydraxian Waterlords"] = "海达希亚水元素",
 	["Illidari"] = "伊利达雷",
-	--Translation missing 
-	-- ["Ilyssia of the Waters"] = "Ilyssia of the Waters",
-	--Translation missing 
-	-- ["Impus"] = "Impus",
+	["Ilyssia of the Waters"] = "“活水”伊丽西娅",
+	["Impus"] = "英帕斯",
 	["Ironforge"] = "铁炉堡",
 	["Jandvik Vrykul"] = "贾德维克维库人",
 	["Jogu the Drunk"] = "醉鬼贾古",
-	--Translation missing 
-	-- ["Keeper Raynae"] = "Keeper Raynae",
+	["Keeper Raynae"] = "守护者蕾娜",
 	["Keepers of Time"] = "时光守护者",
 	["Kirin Tor"] = "肯瑞托",
 	["Kirin Tor Offensive"] = "肯瑞托远征军",
@@ -2207,8 +2194,7 @@ elseif GAME_LOCALE == "zhCN" then
 	["Shado-Pan"] = "影踪派",
 	["Shado-Pan Assault"] = "影踪突袭营",
 	["Shadowmoon Exiles"] = "影月流亡者",
-	--Translation missing 
-	-- ["Sha'leth"] = "Sha'leth",
+	["Sha'leth"] = "莎乐丝",
 	["Shang Xi's Academy"] = "尚喜武院",
 	["Sha'tari Defense"] = "沙塔尔防御者",
 	["Sha'tari Skyguard"] = "沙塔尔天空卫士",
@@ -2244,8 +2230,7 @@ elseif GAME_LOCALE == "zhCN" then
 	["The Lorewalkers"] = "游学者",
 	["The Mag'har"] = "玛格汉",
 	["The Nightfallen"] = "堕夜精灵",
-	--Translation missing 
-	-- ["The Nightfallen (Paragon)"] = "The Nightfallen (Paragon)",
+	["The Nightfallen (Paragon)"] = "堕夜精灵（巅峰）",
 	["The Oracles"] = "神谕者",
 	["The Saberstalkers"] = "刃牙追猎者",
 	["The Scale of the Sands"] = "流沙之鳞",
@@ -2258,8 +2243,7 @@ elseif GAME_LOCALE == "zhCN" then
 	["The Tillers"] = "阡陌客",
 	["The Violet Eye"] = "紫罗兰之眼",
 	["The Wardens"] = "守望者",
-	--Translation missing 
-	-- ["The Wardens (Paragon)"] = "The Wardens (Paragon)",
+	["The Wardens (Paragon)"] = "守望者（巅峰）",
 	["The Wyrmrest Accord"] = "龙眠联军",
 	["Therazane"] = "塞拉赞恩",
 	["Thorium Brotherhood"] = "瑟银兄弟会",
@@ -2272,8 +2256,7 @@ elseif GAME_LOCALE == "zhCN" then
 	["Tushui Pandaren"] = "土水派熊猫人",
 	["Undercity"] = "幽暗城",
 	["Valarjar"] = "瓦拉加尔",
-	--Translation missing 
-	-- ["Valarjar (Paragon)"] = "Valarjar (Paragon)",
+	["Valarjar (Paragon)"] = "瓦拉加尔（巅峰）",
 	["Valiance Expedition"] = "无畏远征军",
 	["Vivianne"] = "薇薇安",
 	["Vol'jin's Headhunters"] = "沃金之锋",
@@ -2290,24 +2273,24 @@ elseif GAME_LOCALE == "zhTW" then
 	lib:SetCurrentTranslations {
 	["Acquaintance"] = "熟識",
 	["Aeda Brightdawn"] = "愛伊達‧明曦",
-	--Translation missing 
-	-- ["Akule Riverhorn"] = "Akule Riverhorn",
+	--[[Translation missing --]]
+	--[[ ["Akule Riverhorn"] = "Akule Riverhorn",--]] 
 	["Alliance"] = "聯盟",
 	["Alliance Vanguard"] = "聯盟先鋒",
 	["Arakkoa Outcasts"] = "阿拉卡流亡者",
 	["Argent Crusade"] = "銀白十字軍",
 	["Argent Dawn"] = "銀色黎明",
-	--Translation missing 
-	-- ["Argussian Reach"] = "Argussian Reach",
-	--Translation missing 
-	-- ["Argussian Reach (Paragon)"] = "Argussian Reach (Paragon)",
+	--[[Translation missing --]]
+	--[[ ["Argussian Reach"] = "Argussian Reach",--]] 
+	--[[Translation missing --]]
+	--[[ ["Argussian Reach (Paragon)"] = "Argussian Reach (Paragon)",--]] 
 	["Armies of Legionfall"] = "軍團之殞部隊",
-	--Translation missing 
-	-- ["Armies of Legionfall (Paragon)"] = "Armies of Legionfall (Paragon)",
-	--Translation missing 
-	-- ["Army of the Light"] = "Army of the Light",
-	--Translation missing 
-	-- ["Army of the Light (Paragon)"] = "Army of the Light (Paragon)",
+	--[[Translation missing --]]
+	--[[ ["Armies of Legionfall (Paragon)"] = "Armies of Legionfall (Paragon)",--]] 
+	--[[Translation missing --]]
+	--[[ ["Army of the Light"] = "Army of the Light",--]] 
+	--[[Translation missing --]]
+	--[[ ["Army of the Light (Paragon)"] = "Army of the Light (Paragon)",--]] 
 	["Ashtongue Deathsworn"] = "灰舌死亡誓言者",
 	["Avengers of Hyjal"] = "海加爾復仇者",
 	["Baradin's Wardens"] = "巴拉丁鐵衛",
@@ -2323,12 +2306,12 @@ elseif GAME_LOCALE == "zhTW" then
 	["Cenarion Circle"] = "塞納里奧議會",
 	["Cenarion Expedition"] = "塞納里奧遠征隊",
 	["Chee Chee"] = "奇奇",
-	--Translation missing 
-	-- ["Corbyn"] = "Corbyn",
+	--[[Translation missing --]]
+	--[[ ["Corbyn"] = "Corbyn",--]] 
 	["Council of Exarchs"] = "主教議會",
 	["Court of Farondis"] = "法隆迪斯廷衛",
-	--Translation missing 
-	-- ["Court of Farondis (Paragon)"] = "Court of Farondis (Paragon)",
+	--[[Translation missing --]]
+	--[[ ["Court of Farondis (Paragon)"] = "Court of Farondis (Paragon)",--]] 
 	["Darkmoon Faire"] = "暗月馬戲團",
 	["Darkspear Trolls"] = "暗矛食人妖",
 	["Darnassus"] = "達納蘇斯",
@@ -2337,8 +2320,8 @@ elseif GAME_LOCALE == "zhTW" then
 	["Dominance Offensive"] = "制霸先鋒軍",
 	["Dragonmaw Clan"] = "龍喉氏族",
 	["Dreamweavers"] = "織夢者",
-	--Translation missing 
-	-- ["Dreamweavers (Paragon)"] = "Dreamweavers (Paragon)",
+	--[[Translation missing --]]
+	--[[ ["Dreamweavers (Paragon)"] = "Dreamweavers (Paragon)",--]] 
 	["Ella"] = "艾拉",
 	["Everlook"] = "永望鎮",
 	["Exalted"] = "崇拜",
@@ -2367,8 +2350,8 @@ elseif GAME_LOCALE == "zhTW" then
 	["Haohan Mudclaw"] = "好漢·泥爪",
 	["Hellscream's Reach"] = "地獄吼先鋒",
 	["Highmountain Tribe"] = "高嶺部族",
-	--Translation missing 
-	-- ["Highmountain Tribe (Paragon)"] = "Highmountain Tribe (Paragon)",
+	--[[Translation missing --]]
+	--[[ ["Highmountain Tribe (Paragon)"] = "Highmountain Tribe (Paragon)",--]] 
 	["Honor Hold"] = "榮譽堡",
 	["Honored"] = "尊敬",
 	["Horde"] = "部落",
@@ -2376,15 +2359,15 @@ elseif GAME_LOCALE == "zhTW" then
 	["Huojin Pandaren"] = "火金熊貓人",
 	["Hydraxian Waterlords"] = "海達希亞水元素",
 	["Illidari"] = "伊利達瑞",
-	--Translation missing 
-	-- ["Ilyssia of the Waters"] = "Ilyssia of the Waters",
-	--Translation missing 
-	-- ["Impus"] = "Impus",
+	--[[Translation missing --]]
+	--[[ ["Ilyssia of the Waters"] = "Ilyssia of the Waters",--]] 
+	--[[Translation missing --]]
+	--[[ ["Impus"] = "Impus",--]] 
 	["Ironforge"] = "鐵爐堡",
 	["Jandvik Vrykul"] = "詹德維克維酷人",
 	["Jogu the Drunk"] = "『酒鬼』酒骨",
-	--Translation missing 
-	-- ["Keeper Raynae"] = "Keeper Raynae",
+	--[[Translation missing --]]
+	--[[ ["Keeper Raynae"] = "Keeper Raynae",--]] 
 	["Keepers of Time"] = "時光守望者",
 	["Kirin Tor"] = "祈倫托",
 	["Kirin Tor Offensive"] = "祈倫托先遣軍",
@@ -2422,8 +2405,8 @@ elseif GAME_LOCALE == "zhTW" then
 	["Shado-Pan"] = "影潘",
 	["Shado-Pan Assault"] = "影潘之襲",
 	["Shadowmoon Exiles"] = "影月流亡者",
-	--Translation missing 
-	-- ["Sha'leth"] = "Sha'leth",
+	--[[Translation missing --]]
+	--[[ ["Sha'leth"] = "Sha'leth",--]] 
 	["Shang Xi's Academy"] = "尚羲學院",
 	["Sha'tari Defense"] = "撒塔斯守軍",
 	["Sha'tari Skyguard"] = "薩塔禦天者",
@@ -2459,8 +2442,8 @@ elseif GAME_LOCALE == "zhTW" then
 	["The Lorewalkers"] = "博學行者",
 	["The Mag'har"] = "瑪格哈",
 	["The Nightfallen"] = "夜落精靈",
-	--Translation missing 
-	-- ["The Nightfallen (Paragon)"] = "The Nightfallen (Paragon)",
+	--[[Translation missing --]]
+	--[[ ["The Nightfallen (Paragon)"] = "The Nightfallen (Paragon)",--]] 
 	["The Oracles"] = "神諭者",
 	["The Saberstalkers"] = "劍齒潛獵者",
 	["The Scale of the Sands"] = "流沙之鱗",
@@ -2473,8 +2456,8 @@ elseif GAME_LOCALE == "zhTW" then
 	["The Tillers"] = "耕者工會",
 	["The Violet Eye"] = "紫羅蘭之眼",
 	["The Wardens"] = "看守者",
-	--Translation missing 
-	-- ["The Wardens (Paragon)"] = "The Wardens (Paragon)",
+	--[[Translation missing --]]
+	--[[ ["The Wardens (Paragon)"] = "The Wardens (Paragon)",--]] 
 	["The Wyrmrest Accord"] = "龍眠協調者",
 	["Therazane"] = "瑟拉贊恩",
 	["Thorium Brotherhood"] = "瑟銀兄弟會",
@@ -2487,8 +2470,8 @@ elseif GAME_LOCALE == "zhTW" then
 	["Tushui Pandaren"] = "土水熊貓人",
 	["Undercity"] = "幽暗城",
 	["Valarjar"] = "華爾拉亞",
-	--Translation missing 
-	-- ["Valarjar (Paragon)"] = "Valarjar (Paragon)",
+	--[[Translation missing --]]
+	--[[ ["Valarjar (Paragon)"] = "Valarjar (Paragon)",--]] 
 	["Valiance Expedition"] = "驍勇遠征軍",
 	["Vivianne"] = "薇薇安妮",
 	["Vol'jin's Headhunters"] = "沃金獵頭者",

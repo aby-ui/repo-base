@@ -5,6 +5,7 @@
 ## Dependencies: Bagnon
 ## LoadOnDemand: 1
 ## Version: 8.0.0
+
 main.lua
 common\Wildpants_Config.xml
 

@@ -13,10 +13,11 @@ local Dropdown = CreateFrame('Frame', ADDON .. 'BagToggleDropdown', nil, 'UIDrop
 
 function BagToggle:New(parent)
 	local b = self:Bind(CreateFrame('CheckButton', nil, parent, ADDON .. self.Name .. 'Template'))
+	b:SetScript('OnHide', b.UnregisterMessages)
 	b:SetScript('OnClick', b.OnClick)
 	b:SetScript('OnEnter', b.OnEnter)
 	b:SetScript('OnLeave', b.OnLeave)
-	b:SetScript('OnShow', b.Update)
+	b:SetScript('OnShow', b.OnShow)
 	b:RegisterForClicks('anyUp')
 	b:Update()
 
@@ -26,6 +27,11 @@ end
 
 --[[ Events ]]--
 
+function BagToggle:OnShow()
+	self:RegisterFrameMessage('OWNER_CHANGED', 'Update')
+	self:Update()
+end
+
 function BagToggle:OnClick(button)
 	if button == 'LeftButton' then
 		local profile = self:GetProfile()
@@ -33,13 +39,13 @@ function BagToggle:OnClick(button)
 		self:SendFrameMessage('BAG_FRAME_TOGGLED')
 	else
 		local menu = {}
-		local function addLine(id, name, addon)
+		local function addLine(id, name, addon, owner)
 			if id ~= self:GetFrameID() and (not addon or GetAddOnEnableState(UnitName('player'), addon) >= 2) then
 				tinsert(menu, {
 					text = name,
 					notCheckable = 1,
 					func = function()
-						self:OpenFrame(id, addon)
+						self:OpenFrame(id, addon, owner)
 					end
 				})
 			end
@@ -49,8 +55,9 @@ function BagToggle:OnClick(button)
 		addLine('bank', BANK)
 		addLine('vault', VOID_STORAGE, ADDON .. '_VoidStorage')
 
-		if Addon.Cache:GetPlayerGuild(self:GetPlayer()) then
-			addLine('guild', GUILD_BANK, ADDON .. '_GuildBank')
+		local guild = self:GetOwnerInfo().guild
+		if guild then
+			addLine('guild', GUILD_BANK, ADDON .. '_GuildBank', guild)
 		end
 
 		if #menu > 1 then
@@ -86,9 +93,9 @@ end
 
 --[[ API ]]--
 
-function BagToggle:OpenFrame(id, addon)
+function BagToggle:OpenFrame(id, addon, owner)
 	if not addon or LoadAddOn(addon) then
-		Addon:CreateFrame(id):SetPlayer(self:GetPlayer())
+		Addon:CreateFrame(id):SetOwner(owner or self:GetOwner())
 		Addon:ShowFrame(id)
 	end
 end

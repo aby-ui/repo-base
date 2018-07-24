@@ -1,6 +1,5 @@
 local ADDON, Addon = ...
 local Mod = Addon:NewModule('ProgressTracker')
-Mod.playerDeaths = {}
 
 local lastQuantity
 local lastDied
@@ -26,35 +25,6 @@ local function ProcessLasts()
 	end
 end
 
-local surrenderSoul
-function Mod:COMBAT_LOG_EVENT_UNFILTERED()
-    local timestamp, event, hideCaster, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destFlags, destRaidFlags = CombatLogGetCurrentEventInfo()
-	if event == "UNIT_DIED" then
-		if bit.band(destFlags, COMBATLOG_OBJECT_TYPE_NPC) > 0
-				and bit.band(destFlags, COMBATLOG_OBJECT_CONTROL_NPC) > 0
-				and (bit.band(destFlags, COMBATLOG_OBJECT_REACTION_HOSTILE) > 0 or bit.band(destFlags, COMBATLOG_OBJECT_REACTION_NEUTRAL) > 0) then
-			local type, zero, server_id, instance_id, zone_uid, npc_id, spawn_uid = strsplit("-", destGUID)
-			lastDied = tonumber(npc_id)
-			lastDiedTime = GetTime()
-			lastDiedName = destName
-			ProcessLasts()
-		end
-		if not surrenderSoul then surrenderSoul = GetSpellInfo(212570) end
-		if bit.band(destFlags, COMBATLOG_OBJECT_TYPE_PLAYER) > 0 then
-			if UnitIsFeignDeath(destName) then
-				-- Feign Death
-			elseif Aby_UnitDebuff(destName, surrenderSoul) == surrenderSoul then
-				-- Surrender to Madness
-			elseif Mod.playerDeaths[destName] then
-				Mod.playerDeaths[destName] = Mod.playerDeaths[destName] + 1
-			else
-				Mod.playerDeaths[destName] = 1
-			end
-			Addon.ObjectiveTracker:UpdatePlayerDeaths()
-		end
-	end
-end
-
 function Mod:SCENARIO_CRITERIA_UPDATE()
 	local scenarioType = select(10, C_Scenario.GetInfo())
 	if scenarioType == LE_SCENARIO_TYPE_CHALLENGE_MODE then
@@ -75,7 +45,6 @@ function Mod:SCENARIO_CRITERIA_UPDATE()
 end
 
 local function StartTime()
-	Mod:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 	local numCriteria = select(3, C_Scenario.GetStepInfo())
 	for criteriaIndex = 1, numCriteria do
 		local criteriaString, criteriaType, _, quantity, totalQuantity, _, _, quantityString, _, _, _, _, isWeightedProgress = C_Scenario.GetCriteriaInfo(criteriaIndex)
@@ -87,7 +56,7 @@ local function StartTime()
 end
 
 local function StopTime()
-	Mod:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+	return
 end
 
 local function CheckTime(...)
@@ -188,7 +157,7 @@ function Mod:PLAYER_ENTERING_WORLD(...) CheckTime(GetWorldElapsedTimers()) end
 function Mod:WORLD_STATE_TIMER_START(...) local timerID = ...; CheckTime(timerID) end
 function Mod:WORLD_STATE_TIMER_STOP(...) local timerID = ...; StopTime(timerID) end
 function Mod:CHALLENGE_MODE_START(...) CheckTime(GetWorldElapsedTimers()) end
-function Mod:CHALLENGE_MODE_RESET(...) wipe(Mod.playerDeaths) end
+function Mod:CHALLENGE_MODE_RESET(...) return end
 
 local function ProgressBar_SetValue(self, percent)
 	if self.criteriaIndex then
@@ -220,13 +189,6 @@ function Mod:Startup()
 		AngryKeystones_Data = { progress = AngryKeystones_Data }
 	end
 	if not AngryKeystones_Data.state then AngryKeystones_Data.state = {} end
-	local mapID = C_ChallengeMode.GetActiveChallengeMapID()
-	if select(10, C_Scenario.GetInfo()) == LE_SCENARIO_TYPE_CHALLENGE_MODE and mapID and mapID == AngryKeystones_Data.state.mapID and AngryKeystones_Data.state.playerDeaths then
-		Mod.playerDeaths = AngryKeystones_Data.state.playerDeaths
-	else
-		AngryKeystones_Data.state.mapID = nil
-		AngryKeystones_Data.state.playerDeaths = Mod.playerDeaths
-	end
 
 	self:RegisterEvent("SCENARIO_CRITERIA_UPDATE")
 	self:RegisterEvent("PLAYER_ENTERING_WORLD")

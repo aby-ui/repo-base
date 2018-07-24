@@ -50,6 +50,7 @@ end
 function Module:Entry_AddToList_1(f, id)
 	local data = Type.GuardianInfo[id]
 	local name = data.name
+	local triggerSpellName = GetSpellInfo(data.triggerSpell)
 
 	if data.nameKnown then
 		f.insert = SUG.inputType == "number" and id or name
@@ -60,7 +61,7 @@ function Module:Entry_AddToList_1(f, id)
 	end
 
 	f.tooltiptitle = name
-	f.tooltiptext = L["ICONMENU_GUARDIAN_TRIGGER"]:format(GetSpellInfo(data.triggerSpell))
+	f.tooltiptext = L["ICONMENU_GUARDIAN_TRIGGER"]:format(triggerSpellName or "<Invalid spell " .. data.triggerSpell .. ">")
 	f.Name:SetText(name)
 	f.ID:SetText(id)	
 

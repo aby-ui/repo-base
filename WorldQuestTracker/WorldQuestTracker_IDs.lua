@@ -62,6 +62,8 @@ WorldQuestTracker.MapData.ZoneIDs = {
 		MCCAREE = 	882,
 		
 	--BFA
+		DARKSHORE = 	62,
+		ARATHI =		14,
 		ZANDALAR = 	875,
 		KULTIRAS = 	876,
 		ZULDAZAAR = 	862,
@@ -98,7 +100,11 @@ WorldQuestTracker.MapData.WorldQuestZones = {
 		--kul'tiras
 		[WorldQuestTracker.MapData.ZoneIDs.TIRAGARDE] = 	true,
 		[WorldQuestTracker.MapData.ZoneIDs.STORMSONG] = 	true,
-		[WorldQuestTracker.MapData.ZoneIDs.DRUSTVAR] = 	true,
+		[WorldQuestTracker.MapData.ZoneIDs.DRUSTVAR] = 		true,
+		
+		--PRE PATCH
+		[WorldQuestTracker.MapData.ZoneIDs.DARKSHORE] = 	true,
+		[WorldQuestTracker.MapData.ZoneIDs.ARATHI] 	= 	true,
 }
 
 --list of map ids for world quest hubs

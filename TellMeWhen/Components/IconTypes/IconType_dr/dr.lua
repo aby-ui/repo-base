@@ -32,7 +32,6 @@ local CL_CONTROL_PLAYER = COMBATLOG_OBJECT_CONTROL_PLAYER
 local DRData = LibStub("DRData-1.0")
 
 local DRSpells = DRData.spells
-local DRReset = 20
 local PvEDRs = {}
 for spellID, category in pairs(DRSpells) do
 	if DRData.pveDR[category] then
@@ -79,6 +78,11 @@ Type:RegisterIconDefaults{
 
 	-- Show the icon even when no units have been known to have an effect put on them.
 	ShowWhenNone			= false,
+
+	-- Despite the fact that Blizzard says this is always 18 seconds, it really isn't.
+	-- My testing with stuns on a training dummy showed there is still significant variance.
+	-- So, we're bringing back the config setting on a per-icon basis.
+	DRDuration = 18,
 }
 
 
@@ -142,6 +146,19 @@ Type:RegisterConfigPanel_ConstructorFunc(150, "TellMeWhen_DRSettings", function(
 			check:SetSetting("ShowWhenNone")
 		end,
 	})
+
+	local slider = TMW.C.Config_Slider:New("Slider", nil, self, "TellMeWhen_SliderTemplate")
+	self.DRDuration = slider
+	slider:SetTexts(L["UIPANEL_DRDURATION"], L["UIPANEL_DRDURATION_DESC"])
+	slider:SetPoint("TOP", self.checks[1], "BOTTOM", 0, -10)
+	slider:SetPoint("LEFT", 10, 0)
+	slider:SetPoint("RIGHT", -10, 0)
+	slider:SetSetting("DRDuration")
+	slider:SetMinMaxValues(15, 22)
+	slider:SetValueStep(1)
+	slider:SetTextFormatter(TMW.C.Formatter.S_SECONDS, TMW.C.Formatter.F_0)
+
+	self:AdjustHeight(5)
 end)
 
 
@@ -213,7 +230,7 @@ local function DR_OnEvent(icon, event, arg1)
 							dr = {
 								amt = 50,
 								start = TMW.time,
-								duration = DRReset,
+								duration = icon.DRDuration,
 								tex = GetSpellTexture(spellID)
 							}
 							icon.DRInfo[destGUID] = dr
@@ -223,7 +240,7 @@ local function DR_OnEvent(icon, event, arg1)
 							local amt = dr.amt
 							if amt and amt ~= 0 then
 								dr.amt = amt > 25 and amt/2 or 0
-								dr.duration = DRReset
+								dr.duration = icon.DRDuration
 								dr.start = TMW.time
 								dr.tex = GetSpellTexture(spellID)
 							end

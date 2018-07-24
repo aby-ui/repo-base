@@ -1,7 +1,7 @@
 --[[
     This file is part of Decursive.
 
-    Decursive (v 2.7.5.8) add-on for World of Warcraft UI
+    Decursive (v 2.7.6) add-on for World of Warcraft UI
     Copyright (C) 2006-2018 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Starting from 2009-10-31 and until said otherwise by its author, Decursive
@@ -17,7 +17,7 @@
     Decursive is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY.
 
-    This file was last updated on 2018-07-18T0:42:34Z
+    This file was last updated on 2018-07-22T8:40:14Z
 --]]
 -------------------------------------------------------------------------------
 
@@ -89,7 +89,7 @@ local DebugTextTable    = T._DebugTextTable;
 local Reported          = {};
 
 local UNPACKAGED = "@pro" .. "ject-version@";
-local VERSION = "2.7.5.8";
+local VERSION = "2.7.6";
 
 T._LoadedFiles = {};
 T._LoadedFiles["Dcr_DIAG.lua"] = false; -- here for consistency but useless in this particular file
@@ -284,7 +284,7 @@ do
         _Debug(unpack(TIandBI));
 
 
-        DebugHeader = ("%s\n2.7.5.8  %s(%s)  CT: %0.4f D: %s %s %s BDTHFAd: %s nDrE: %d Embeded: %s W: %d (LA: %d TAMU: %d) TA: %d NDRTA: %d BUIE: %d TI: [dc:%d, lc:%d, y:%d, LEBY:%d, LB:%d, TTE:%u] (%s, %s, %s, %s)"):format(instructionsHeader, -- "%s\n
+        DebugHeader = ("%s\n2.7.6  %s(%s)  CT: %0.4f D: %s %s %s BDTHFAd: %s nDrE: %d Embeded: %s W: %d (LA: %d TAMU: %d) TA: %d NDRTA: %d BUIE: %d TI: [dc:%d, lc:%d, y:%d, LEBY:%d, LB:%d, TTE:%u] (%s, %s, %s, %s)"):format(instructionsHeader, -- "%s\n
         tostring(DC.MyClass), tostring(UnitLevel("player") or "??"), NiceTime(), date(), GetLocale(), -- %s(%s)  CT: %0.4f D: %s %s
         BugGrabber and "BG" .. (T.BugGrabber and "e" or "") or "NBG", -- %s
         tostring(T._BDT_HotFix1_applyed), -- BDTHFAd: %s
@@ -623,7 +623,7 @@ function T._DecursiveErrorHandler(err, ...)
             end
 
             if (T._NonDecursiveErrors - T._NDRTaintingAccusations - T._BlizzardUIErrors) > 999 then
-                T._ErrorLimitStripped = true;
+		T._ErrorLimitStripped = NiceTime() > 10; -- allow a graceful period of 10s after startup
                 T._TooManyErrors();
             end
         end
@@ -650,16 +650,24 @@ function T._TooManyErrors()
 
     -- T._NDRTaintingAccusations
 
-    -- if tainting accusation and Blizzard's UI errors represent more than 90% of errors then yield and don't display anything
-    if not ((T._NDRTaintingAccusations + T._BlizzardUIErrors) > T._NonDecursiveErrors * 0.9) then
-        if not WarningDisplayed and T.Dcr and T.Dcr.L and not (#DebugTextTable > 0 or T._TaintingAccusations > 10) then -- if we can and should display the alert
-            _Print(T.Dcr:ColorText((T.Dcr.L["TOO_MANY_ERRORS_ALERT"]):format(T._NonDecursiveErrors), "FFFF0000"));
-            _Print(T.Dcr:ColorText(T.Dcr.L["DONT_SHOOT_THE_MESSENGER"], "FFFF9955"));
-            _Print('|cFF47C2A1Last UI error:|r', LastErrorMessage);
-            WarningDisplayed = true;
+    -- If the game just started (or Decursive), we ignore error burst as the
+    -- new LUA_WARNING feature reveals many loading issues in other add-ons
+    -- without gameplay consequences
+    if (NiceTime() > 10) then
+
+        -- if tainting accusation and Blizzard's UI errors represent more than 90% of errors then yield and don't display anything
+        if not ((T._NDRTaintingAccusations + T._BlizzardUIErrors) > T._NonDecursiveErrors * 0.9) then
+            if not WarningDisplayed and T.Dcr and T.Dcr.L and not (#DebugTextTable > 0 or T._TaintingAccusations > 10) then -- if we can and should display the alert
+                _Print(T.Dcr:ColorText((T.Dcr.L["TOO_MANY_ERRORS_ALERT"]):format(T._NonDecursiveErrors), "FFFF0000"));
+                _Print(T.Dcr:ColorText(T.Dcr.L["DONT_SHOOT_THE_MESSENGER"], "FFFF9955"));
+                _Print('|cFF47C2A1Last UI error:|r', LastErrorMessage);
+                WarningDisplayed = true;
+            end
+        else
+            _Debug("_TooManyErrors()'s message not displayed NDR-TA being predominent...");
         end
     else
-        _Debug("_TooManyErrors()'s message not displayed NDR-TA being predominent...");
+            _Debug("_TooManyErrors()'s message not displayed Decursive was just started...");
     end
 
     _Debug("Error handler disabled");
@@ -862,7 +870,7 @@ do
             ["LibDataBroker-1.1"] = 4,
             ["LibDBIcon-1.0"] = 36,
             ["LibQTip-1.0"] = 46,
-            ["CallbackHandler-1.0"] = 6,
+            ["CallbackHandler-1.0"] = 7,
         };
 
         local GenericErrorMessage1 = "Decursive could not initialize properly because one or several of the required shared libraries (at least |cFF00FF00LibStub|r) could not be found.\n";
@@ -1059,4 +1067,4 @@ do
     end
 end
 
-T._LoadedFiles["Dcr_DIAG.lua"] = "2.7.5.8";
+T._LoadedFiles["Dcr_DIAG.lua"] = "2.7.6";

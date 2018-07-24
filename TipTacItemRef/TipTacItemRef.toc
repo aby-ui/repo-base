@@ -9,7 +9,8 @@ Local_enUS.lua
 Local_zhCN.lua
 Local_zhTW.lua
 LibItemString.lua
-core.lua
+
+ttItemRef.lua
 
 ## Title-zhCN: |cff880303[有爱]|r TipTac 物品提示模块
 ## X-Vendor: AbyUI

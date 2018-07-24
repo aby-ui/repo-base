@@ -5,11 +5,8 @@
 ## Author: Tuller
 ## Dependencies: OmniCC
 ## LoadOnDemand: 1
-
-libs\libs.xml
 localization\localization.xml
 widgets\widgets.xml
-
 mainPanel.lua
 panels\panels.xml
 

@@ -3,7 +3,7 @@ H.H.T.D. World of Warcraft Add-on
 Copyright (c) 2009-2018 by John Wellesz (hhtd@2072productions.com)
 All rights reserved
 
-Version 2.4.7
+Version 2.4.8
 
 In World of Warcraft healers have to die. This is a cruel truth that you're
 taught very early in the game. This add-on helps you influence this unfortunate
@@ -148,6 +148,12 @@ L["OPT_NPH_MARKER_X_OFFSET"] = "Horizontal offset"
 L["OPT_NPH_MARKER_X_OFFSET_DESC"] = "Move markers horizontally"
 L["OPT_NPH_MARKER_Y_OFFSET"] = "Vertical offset"
 L["OPT_NPH_MARKER_Y_OFFSET_DESC"] = "Move markers vertically"
+L["OPT_NPH_MAX_NAMEPLATE_DISTANCE"] = "Maximum distance of nameplates"
+L["OPT_NPH_MAX_NAMEPLATE_DISTANCE_DESC"] = [=[Set the maximum distance at which to display nameplates.
+
+(H.H.T.D. requires nameplates in order to display its symbols on top of them)
+
+This setting might have an impact on performances depending on your computer.]=]
 L["OPT_NPH_WARNING1"] = [=[WARNING: *Enemies*' nameplates are currently disabled. HHTD cannot add its symbol on enemies.
         You can enable nameplates display through the WoW UI's options or by using the assigned key-stroke.]=]
 L["OPT_NPH_WARNING2"] = [=[WARNING: *Allies*' nameplates are currently disabled. HHTD cannot add its symbol on allies.
@@ -334,6 +340,12 @@ L["OPT_NPH_MARKER_X_OFFSET"] = "Offset horizontale"
 L["OPT_NPH_MARKER_X_OFFSET_DESC"] = "Déplacer les marqueurs horizontalement"
 L["OPT_NPH_MARKER_Y_OFFSET"] = "Offset verticale"
 L["OPT_NPH_MARKER_Y_OFFSET_DESC"] = "Déplacer les marqueurs verticalement"
+L["OPT_NPH_MAX_NAMEPLATE_DISTANCE"] = "Distance maximale des barres"
+L["OPT_NPH_MAX_NAMEPLATE_DISTANCE_DESC"] = [=[Règle la distance maximale d'affichage des barres d'info.
+
+(H.H.T.D. a besoin des barres d'info pour y mettre ses symbols)
+
+Ce réglage peut avoir un impacte sur les performances en fonction de votre ordinateur.]=]
 L["OPT_NPH_WARNING1"] = [=[ATTENTION : Les barres d'infos des unités ennemies sont désactivées. HHTD ne peut pas ajouter sa croix rouge.
 Vous pouvez activer les barres d'infos dans les options d'interface de WoW ou en utilisant le raccourcis.]=]
 L["OPT_NPH_WARNING2"] = [=[ATTENTION : Les barres d'infos des unités alliées sont désactivées. HHTD ne peut pas ajouter son symbole de soigneur.
@@ -522,6 +534,10 @@ L["OPT_NPH_MARKER_X_OFFSET"] = "Horizontale Verschiebung"
 L["OPT_NPH_MARKER_X_OFFSET_DESC"] = "Verschiebt Markierungen horizontal."
 L["OPT_NPH_MARKER_Y_OFFSET"] = "Vertikale Verschiebung"
 L["OPT_NPH_MARKER_Y_OFFSET_DESC"] = "Verschiebt Markierungen vertikal."
+--[[Translation missing --]]
+--[[ L["OPT_NPH_MAX_NAMEPLATE_DISTANCE"] = ""--]] 
+--[[Translation missing --]]
+--[[ L["OPT_NPH_MAX_NAMEPLATE_DISTANCE_DESC"] = ""--]] 
 L["OPT_NPH_WARNING1"] = [=[WARNUNG: Die Namensplaketten feindlicher Einheiten sind deaktiviert. So kann HHTD sein Symbol auf feindlichen Heilern nicht anzeigen.
 Du kannst die Anzeige der Namensplaketten aktivieren über Interface > Spiel > Namen oder durch Drücken der zugewiesenen Taste(nkombination).]=]
 L["OPT_NPH_WARNING2"] = [=[WARNUNG: Die Namensplaketten befreundeter Einheiten sind deaktiviert. So kann HHTD sein Symbol nicht auf Verbündeten anzeigen.
@@ -755,6 +771,10 @@ L["OPT_NPH_MARKER_X_OFFSET"] = "Punto horizontal"
 L["OPT_NPH_MARKER_X_OFFSET_DESC"] = "Mueve el marcador horizontalmente"
 L["OPT_NPH_MARKER_Y_OFFSET"] = "Punto vertical"
 L["OPT_NPH_MARKER_Y_OFFSET_DESC"] = "Mueve el marcador verticalmente"
+--[[Translation missing --]]
+--[[ L["OPT_NPH_MAX_NAMEPLATE_DISTANCE"] = ""--]] 
+--[[Translation missing --]]
+--[[ L["OPT_NPH_MAX_NAMEPLATE_DISTANCE_DESC"] = ""--]] 
 L["OPT_NPH_WARNING1"] = [=[AVISO: Las placas de nombre de enemigos están desactivadas. HHTD no puede añadir el símbolo de sanador.
 Puedes activar las placas de nombre a través de las opciones de interfaz de WoW o usando la tecla asignada.]=]
 L["OPT_NPH_WARNING2"] = [=[AVISO: Las placas de nombre de aliados están desactivadas. HHTD no puede añadir el símbolo de sanador.
@@ -1037,6 +1057,10 @@ do
 --[[Translation missing --]]
 --[[ L["OPT_NPH_MARKER_Y_OFFSET_DESC"] = ""--]] 
 --[[Translation missing --]]
+--[[ L["OPT_NPH_MAX_NAMEPLATE_DISTANCE"] = ""--]] 
+--[[Translation missing --]]
+--[[ L["OPT_NPH_MAX_NAMEPLATE_DISTANCE_DESC"] = ""--]] 
+--[[Translation missing --]]
 --[[ L["OPT_NPH_WARNING1"] = ""--]] 
 --[[Translation missing --]]
 --[[ L["OPT_NPH_WARNING2"] = ""--]] 
@@ -1278,6 +1302,10 @@ L["OPT_NPH_MARKER_X_OFFSET"] = "수평 위치"
 L["OPT_NPH_MARKER_X_OFFSET_DESC"] = "힐러 기호의 위치를 수평으로 이동합니다."
 L["OPT_NPH_MARKER_Y_OFFSET"] = "수직 위치"
 L["OPT_NPH_MARKER_Y_OFFSET_DESC"] = "힐러 기호의 위치를 수직으로 이동합니다."
+--[[Translation missing --]]
+--[[ L["OPT_NPH_MAX_NAMEPLATE_DISTANCE"] = ""--]] 
+--[[Translation missing --]]
+--[[ L["OPT_NPH_MAX_NAMEPLATE_DISTANCE_DESC"] = ""--]] 
 L["OPT_NPH_WARNING1"] = [=[경고: 적대적 이름표가 현재 비활성화되어 있습니다. HHTD가 적에게 표시를 추가할 수 없습니다.
         와우 인터페이스 설정이나 지정된 단축키로 이름표 표시를 활성화시킬 수 있습니다.]=]
 L["OPT_NPH_WARNING2"] = [=[경고: 우호적 이름표가 현재 비활성되어 있습니다. HHTD가 아군에게 표시를 추가할 수 없습니다.
@@ -1512,6 +1540,10 @@ L["OPT_NPH_MARKER_X_OFFSET"] = "水平偏移量"
 L["OPT_NPH_MARKER_X_OFFSET_DESC"] = "水平移动标记"
 L["OPT_NPH_MARKER_Y_OFFSET"] = "垂直偏移量"
 L["OPT_NPH_MARKER_Y_OFFSET_DESC"] = "垂直移动标记"
+--[[Translation missing --]]
+--[[ L["OPT_NPH_MAX_NAMEPLATE_DISTANCE"] = ""--]] 
+--[[Translation missing --]]
+--[[ L["OPT_NPH_MAX_NAMEPLATE_DISTANCE_DESC"] = ""--]] 
 L["OPT_NPH_WARNING1"] = [=[提示：敌方姓名版未被启用。HHTD 不能添加治疗标记。
 可以通过游戏内界面选项开启姓名版显示或使用快捷键。]=]
 L["OPT_NPH_WARNING2"] = [=[提示：友方姓名版未被启用。HHTD 不能添加治疗标记。
@@ -1699,6 +1731,12 @@ L["OPT_NPH_MARKER_X_OFFSET"] = "水平偏移量"
 L["OPT_NPH_MARKER_X_OFFSET_DESC"] = "水平移動標記"
 L["OPT_NPH_MARKER_Y_OFFSET"] = "垂直偏移量"
 L["OPT_NPH_MARKER_Y_OFFSET_DESC"] = "垂直移動標記"
+L["OPT_NPH_MAX_NAMEPLATE_DISTANCE"] = "血條最大視野距離"
+L["OPT_NPH_MAX_NAMEPLATE_DISTANCE_DESC"] = [=[設定顯示血條的最遠距離。
+
+(H.H.T.D. 需要血條才能在上面顯示圖案)
+
+這個設定可能會影響效能，視你的電腦而定。]=]
 L["OPT_NPH_WARNING1"] = [=[警告：敵方血條目前是關閉的，HHTD無法加入紅十字標記。
 你可以在遊戲的介面選項中啟用顯示名稱/血條，或使用指定的按鍵。]=]
 L["OPT_NPH_WARNING2"] = [=[警告：友方血條目前是關閉的，HHTD無法加入紅十字標記。
@@ -1921,6 +1959,10 @@ L["OPT_NPH_MARKER_X_OFFSET"] = "отступ по горизонтали"
 L["OPT_NPH_MARKER_X_OFFSET_DESC"] = "сдвинуть маркеры по горизонтали"
 L["OPT_NPH_MARKER_Y_OFFSET"] = "отступ по вертикали"
 L["OPT_NPH_MARKER_Y_OFFSET_DESC"] = "сдвинуть маркеры по вертикали"
+--[[Translation missing --]]
+--[[ L["OPT_NPH_MAX_NAMEPLATE_DISTANCE"] = ""--]] 
+--[[Translation missing --]]
+--[[ L["OPT_NPH_MAX_NAMEPLATE_DISTANCE_DESC"] = ""--]] 
 L["OPT_NPH_WARNING1"] = [=[ВНИМАНИЕ: Индикаторы здоровья врагов выключены! HHTD не сможет добавлять символ красного креста!
 Вы можете включить индикаторы здоровья через опции интерфейса WoW или используя горячую клавишу.]=]
 L["OPT_NPH_WARNING2"] = [=[ВНИМАНИЕ: Индикаторы здоровья союзников выключены! HHTD не сможет добавлять символ лекаря!
@@ -2147,6 +2189,10 @@ L["OPT_NPH_MARKER_X_OFFSET"] = "Offset orizzontale"
 L["OPT_NPH_MARKER_X_OFFSET_DESC"] = "Muove il marcatore orizzontalmente"
 L["OPT_NPH_MARKER_Y_OFFSET"] = "Offset verticale"
 L["OPT_NPH_MARKER_Y_OFFSET_DESC"] = "Muove il marcatore verticalmente"
+--[[Translation missing --]]
+--[[ L["OPT_NPH_MAX_NAMEPLATE_DISTANCE"] = ""--]] 
+--[[Translation missing --]]
+--[[ L["OPT_NPH_MAX_NAMEPLATE_DISTANCE_DESC"] = ""--]] 
 L["OPT_NPH_WARNING1"] = [=[ATTENZIONE: I name-plate dei nemici sono disattivati. HHTD non può aggiungere la croce rossa.
 Puoi attivare i name-plate attraverso le opzioni di interfaccia di WoW.]=]
 L["OPT_NPH_WARNING2"] = [=[ATTENZIONE: I name-plate per gli alleati sono disattivati. HHTD non può aggiungere il simbolo di curatore.

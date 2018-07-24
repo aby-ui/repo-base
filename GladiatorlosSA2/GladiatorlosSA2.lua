@@ -6,7 +6,7 @@
  local LSM = LibStub("LibSharedMedia-3.0")
  local self, GSA, PlaySoundFile = GladiatorlosSA, GladiatorlosSA, PlaySoundFile
  local GSA_TEXT = "|cff69CCF0GladiatorlosSA2|r (|cffFFF569/gsa|r)"
- local GSA_VERSION = "|cffFF7D0A vB1 |r(|cFF00FF968.0 Battle for Azeroth [BETA]|r)"
+ local GSA_VERSION = "|cffFF7D0A vB2 |r(|cFF00FF968.0 Battle for Azeroth [BETA]|r)"
  local GSA_AUTHOR = " "
  local gsadb
  local soundz,sourcetype,sourceuid,desttype,destuid = {},{},{},{},{}
@@ -548,24 +548,24 @@
  end
 
 -- play drinking in arena
- local DRINK_SPELL, REFRESHMENT_SPELL, FOOD_SPELL = GetSpellInfo(104270), GetSpellInfo(167152), GetSpellInfo(5006), GetSpellInfo(138292)
+ --local DRINK_SPELL, REFRESHMENT_SPELL, FOOD_SPELL = GetSpellInfo(104270), GetSpellInfo(167152), GetSpellInfo(5006), GetSpellInfo(138292)
  function GladiatorlosSA:UNIT_AURA(event,uid)
- 
- 	local _,currentZoneType = IsInInstance()
-
-	if uid:find("arena") and gsadb.drinking then
-	-- if gsadb.drinking then
-		if (UnitAura(uid,DRINK_SPELL) or UnitAura(uid,REFRESHMENT_SPELL) or UnitAura(uid,FOOD_SPELL)) and currentZoneType == "arena" then
-
-			local genderZ
-			if gsadb.genderVoice then
-				genderZ = UnitSex(uid)
-			end
-
-			if self:Throttle(tostring(104270) .. uid, 4) then return end
-			self:PlaySound("drinking",extend,genderZ)
-		end
-	end
+ --
+ --	local _,currentZoneType = IsInInstance()
+--
+--	if uid:find("arena") and gsadb.drinking then
+--	-- if gsadb.drinking then
+--		if (UnitAura(uid,DRINK_SPELL) or UnitAura(uid,REFRESHMENT_SPELL) or UnitAura(uid,FOOD_SPELL)) and currentZoneType == "arena" then
+--
+--			local genderZ
+--			if gsadb.genderVoice then
+--				genderZ = UnitSex(uid)
+--			end
+--
+--			if self:Throttle(tostring(104270) .. uid, 4) then return end
+--			self:PlaySound("drinking",extend,genderZ)
+--		end
+--	end
  end
 
  function GladiatorlosSA:Throttle(key,throttle)

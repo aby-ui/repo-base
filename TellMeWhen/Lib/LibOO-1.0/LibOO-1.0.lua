@@ -2,7 +2,7 @@
 -- @class file
 -- @name LibOO-1.0.lua
 
-local MAJOR, MINOR = "LibOO-1.0", 22
+local MAJOR, MINOR = "LibOO-1.0", 23
 local LibOO, oldminor = LibStub:NewLibrary(MAJOR, MINOR)
 
 if not LibOO then return end
@@ -13,9 +13,7 @@ local assert, error, loadstring, xpcall = assert, error, loadstring, xpcall
 local setmetatable, getmetatable, rawset, rawget = setmetatable, getmetatable, rawset, rawget
 local select, pairs, ipairs, type, tostring = select, pairs, ipairs, type, tostring
 
-
 local clientVersion = select(4, GetBuildInfo())
-local wow_701 = clientVersion >= 70100 or GetBuildInfo() == "7.1.0" -- they haven't updated the interface number yet.
 
 local safecall
 do
@@ -344,6 +342,7 @@ end
 
 --- Creates a new class.
 -- @name Namespace:NewClass
+-- @paramsig className, ...
 -- @param className [String] The name of the class to be created.
 -- @param ... [...] A list of things to inherit from. Valid parameters include the following (and each will be checked in the following order):
 -- * The name of another LibOO-1.0 class in the same namespace as the class being created.
@@ -503,9 +502,7 @@ function Class:NewFromExisting(instance, ...)
 		if not self.isFrameObject then
 			error("Non-widget classes must be instantiated on non-widgets.", 2)
 
-			-- For some bizarre reason, ScrollFrames return "Frame" as their widget type in patch 7.1. What the hell.
-			-- I reported it to http://us.battle.net/forums/en/wow/topic/20749674808#1, so we'll see what happens.
-		elseif instance:GetObjectType() ~= self.isFrameObject and (not wow_701 or self.isFrameObject ~= "ScrollFrame") then
+		elseif instance:GetObjectType() ~= self.isFrameObject then
 			error("Expected a " .. self.isFrameObject .. " widget, got a " .. instance:GetObjectType(), 2)
 		end
 	end
@@ -537,8 +534,6 @@ end
 
 
 --- Pre-hooks the specified method so that it when called, it will first call newFunction, and then it will call the original method being hooked.
--- 
--- Effectively functions as a post-hook.
 -- 
 -- If the requested method is not defined when this is called, newFunction will simply be set as that method with no hooking involved.
 -- @param method [String] The name of the method on the class that should be hooked.
