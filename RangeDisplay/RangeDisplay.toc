@@ -16,18 +16,8 @@
 ## X-CompatibleLocales: enUS, enGB, deDE, frFR, esES, zhCN, zhTW, koKR, ruRU
 
 #@no-lib-strip@
-libs\LibStub-1.0\LibStub.lua
-libs\CallbackHandler-1.0\CallbackHandler-1.0.xml
 libs\LibRangeCheck-2.0\LibRangeCheck-2.0.lua
-libs\Ace3\AceAddon-3.0\AceAddon-3.0.xml
-libs\Ace3\AceEvent-3.0\AceEvent-3.0.xml
-libs\Ace3\AceDB-3.0\AceDB-3.0.xml
-libs\Ace3\AceLocale-3.0\AceLocale-3.0.xml
-libs\LibSharedMedia-3.0\lib.xml
-libs\LibDualSpec-1.0\LibDualSpec-1.0.lua
-libs\LibDataBroker-1.1\LibDataBroker-1.1.lua
 #@end-no-lib-strip@
-libs\LibDataBroker-1.1\LibDataBroker-1.1.lua
 
 localizations.lua
 RangeDisplay.lua

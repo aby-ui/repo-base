@@ -1,0 +1,13 @@
+## Interface: 80000
+## Title: Combuctor Config
+## Author: Tuller and Jaliborc (João Cardoso)
+## Notes: An options menu for Combuctor
+## Dependencies: Combuctor
+## LoadOnDemand: 1
+## Version: 8.0
+
+main.lua
+common\Wildpants_Config.xml
+
+## Title: |cff880303[有爱]|r Combuctor 配置
+## X-Vendor: AbyUI

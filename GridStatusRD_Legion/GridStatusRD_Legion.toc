@@ -1,10 +1,10 @@
 ## Interface: 80000
 ## Title: GridStatusRaidDebuff(Legion)
 ## Notes: Debuff List for Legion
-## Author: Stassart (Treliss-Sargeras-US) & Doadin (Malorne-US)
-## Version: 8.0.1.2
+## Author: Stassart (Treliss-Sargeras-US),tptbk(Doadin-Malorne-US)
+## Version: 8.0.1.3
 ## Grid Author: Pastamancer & Maia
-## Dependencies: GridStatusRaidDebuff
+## Dependencies: Grid, GridStatusRaidDebuff
 
 CheckCompat.lua
 AntorustheBurningThrone.lua

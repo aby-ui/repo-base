@@ -1061,7 +1061,7 @@ function CreateFrames_CreateGroupCheckFrame(iGroupIndex)
 				aGroupFrameIndexs[sEventType][iGroupIndex][iEventSeq].Spells = iInd_i;
 				aGroupFrameIndexs[sEventType][iGroupIndex][iEventSeq].Checks = iInd_j;
 				aGroupFrameIndexs[sEventType][iGroupIndex][iEventSeq].SubChecks = iInd_k;
-				if (sEventType == "UNIT_POWER_FREQUENT") then
+				if (sEventType == "UNIT_POWER_UPDATE") then
 					eaf.GC.Spells[iInd_i].Checks[iInd_j].SubChecks[iInd_k].PowerType = GC_PowerType[aValue_k.PowerTypeNum];
 				end
 				eaf.GC.Spells[iInd_i].Checks[iInd_j].SubChecks[iInd_k].SubCheckResult = false;
@@ -1093,7 +1093,7 @@ function CreateFrames_CreateGroupCheckFrame(iGroupIndex)
 
 	eaf:UnregisterAllEvents();
 	for sEventType, iEventSeq in pairs(aGroupFrameEvents) do
-		eaf:RegisterEvent(sEventType == "UNIT_POWER" and "UNIT_POWER_FREQUENT" or sEventType);
+		eaf:RegisterEvent(sEventType == "UNIT_POWER" and "UNIT_POWER_UPDATE" or sEventType);
 		if GC_IndexOfGroupFrame[sEventType] == nil then GC_IndexOfGroupFrame[sEventType] = {} end;
 		if GC_IndexOfGroupFrame[sEventType][iGroupIndex] == nil then GC_IndexOfGroupFrame[sEventType][iGroupIndex] = {} end;
 		GC_IndexOfGroupFrame[sEventType][iGroupIndex] = aGroupFrameIndexs[sEventType][iGroupIndex];

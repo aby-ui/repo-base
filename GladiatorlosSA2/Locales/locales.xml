@@ -2,7 +2,4 @@
 	<Script file="enUS.lua"/>
 	<Script file="zhTW.lua"/>
 	<Script file="zhCN.lua"/>
-	<Script file="frFR.lua"/>
-	<Script file="koKR.lua"/>
-	<Script file="ruRU.lua"/>
 </Ui>

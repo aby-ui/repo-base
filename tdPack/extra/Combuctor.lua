@@ -1,3 +1,4 @@
+do return end --TODO aby8
 local tdPack = tdCore(...)
 
 CoreDependCall("Combuctor", function()

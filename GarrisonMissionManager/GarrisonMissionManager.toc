@@ -13,7 +13,7 @@
 ## SavedVariables: SV_GarrisonMissionManager
 ## SavedVariablesPerCharacter: SVPC_GarrisonMissionManager
 
-+DEVEL.lua
+#+DEVEL.lua
 LazyWidget.lua
 C_Garrison_cache.lua
 FindBestFollowersForMission.lua

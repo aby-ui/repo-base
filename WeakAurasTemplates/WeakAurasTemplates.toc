@@ -16,4 +16,5 @@ TriggerTemplatesData.lua
 
 AceGUI-Widgets\AceGUIContainer-WeakAurasTemplateGroup.lua
 
+## Title-zhCN: |cff880303[有爱]|r WeakAuras 模板
 ## X-Vendor: AbyUI

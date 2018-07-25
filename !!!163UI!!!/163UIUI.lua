@@ -13,7 +13,7 @@ UUI.DropDownItems = U1_QuickMenus or {}
 --[[------------------------------------------------------------
 配置常量
 ---------------------------------------------------------------]]
-UUI.URL = "http://wowui.w.163.com/163ui";
+UUI.URL = "https://github.com/aby-ui/repo-base";
 UUI.DEFAULT_ICON = "Interface\\HelpFrame\\HelpIcon-CharacterStuck" --"Interface\\HelpFrame\\HelpIcon-KnowledgeBase"  --"Interface\\Icons\\INV_Misc_QuestionMark" --[[Interface\ICONS\INV_Egg_07]]
 UUI.PICS_ADDON = "!!!163UI.pics!!!"
 

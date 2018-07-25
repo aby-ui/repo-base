@@ -1,0 +1,12 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+	<Script file="qualityButton.lua"/>
+	<Script file="qualityFilter.lua"/>
+
+	<Script file="sideTab.lua"/>
+	<Script file="bottomTab.lua"/>
+	<Script file="ruleFilter.lua"/>
+
+	<Include file="frame.xml"/>
+	<Script file="frame.lua"/>
+	<Script file="itemFrame.lua"/>
+</Ui>

@@ -462,7 +462,7 @@ function EAFun_GroupEvent_SaveFrameToGroupEvent()
 					if (sReturnValue == 1 or sReturnValue == true) then sReturnValue = true else sReturnValue = false end;
 					aTempSubCheckItem.SubCheckAndOp = sReturnValue;
 
-					-- EventType "UNIT_POWER"
+					-- EventType "UNIT_POWER_UPDATE"
 					fGetValue, sReturnValue = EAFun_GroupEvent_GetValueFromFrameItem(sSubCheckFramePrefix.."_SubCheckEventTypeDowndown", true);
 					
 					aTempSubCheckItem.EventType = sReturnValue;
@@ -476,7 +476,7 @@ function EAFun_GroupEvent_SaveFrameToGroupEvent()
 					fGetValue, sReturnValue = EAFun_GroupEvent_GetValueFromFrameItem(sSubCheckFramePrefix.."_SubCheckCDTextBox");
 					if (fGetValue) then aTempSubCheckItem.CheckCD = sReturnValue else aTempSubCheckItem.CheckCD = nil end;
 
-					if (aTempSubCheckItem.EventType == "UNIT_POWER_FREQUENT") then
+					if (aTempSubCheckItem.EventType == "UNIT_POWER_UPDATE") then
 						-- PowerType
 						fGetValue, sReturnValue = EAFun_GroupEvent_GetValueFromFrameItem(sSubCheckFramePrefix.."_SubCheckPowerTypeDowndown", true);
 						
@@ -1284,7 +1284,7 @@ function EAFun_GroupEvent_AddNewSubCheckBtn_Click(self)
 	if (SubCheckEventTypeDowndown == nil) then
 		SubCheckEventTypeDowndown = CreateFrame("CheckButton", sSubCheckFramePrefix.."_SubCheckEventTypeDowndown", SubCheckFrame, "UIDropDownMenuTemplate");
 	end	-- Get GroupItem Value
-		sDefaultValue = "UNIT_POWER_FREQUENT";
+		sDefaultValue = "UNIT_POWER_UPDATE";
 		fGetValue, sReturnValue = EAFun_GroupEvent_GetValueFromGroupItem("EventType", iSpellIndex, iCheckIndex, iSubCheckIndex);
 		if (fGetValue) then
 			sDefaultValue = sReturnValue;
@@ -1342,7 +1342,7 @@ function EAFun_GroupEvent_AddNewSubCheckBtn_Click(self)
 	-- <------------- Create SubCheck Configuration Items Ends ---------------> --
 end
 
--- Create UNIT_POWER, UNIT_HEALTH, UNIT_AURA, UNIT_COMBO_POINTS EventItems
+-- Create UNIT_POWER_UPDATE, UNIT_HEALTH, UNIT_AURA, UNIT_COMBO_POINTS EventItems
 -- Show 1 sub-frame from 3 sub-frames, and Hide the other 2 sub-frames.
 function EAFun_GroupEvent_ChangeEventType_Click(EventType, ExtraInfo)
 	local iSpellIndex = ExtraInfo.SpellIndex;
@@ -1354,7 +1354,7 @@ function EAFun_GroupEvent_ChangeEventType_Click(EventType, ExtraInfo)
 	local SubCheckFrame = _G[sSubCheckFramePrefix];
 	local SubEventFrame, iShowEventIndex = nil, 1;
 
-	if (EventType == "UNIT_POWER_FREQUENT") then
+	if (EventType == "UNIT_POWER_UPDATE") then
 		iShowEventIndex = 1;
 	elseif (EventType == "UNIT_HEALTH") then
 		iShowEventIndex = 2;
@@ -1378,9 +1378,9 @@ function EAFun_GroupEvent_ChangeEventType_Click(EventType, ExtraInfo)
 			SubEventFrame:SetWidth(590);
 			SubEventFrame:SetHeight(50);
 			if (iLoop == 1) then
-				-- <------------ Create UNIT_POWER EventItems Starts ------------> --
-				-- <------------ Create UNIT_POWER EventItems Starts ------------> --
-				-- print ("Create UNIT_POWER EventItems");
+				-- <------------ Create UNIT_POWER_UPDATE EventItems Starts ------------> --
+				-- <------------ Create UNIT_POWER_UPDATE EventItems Starts ------------> --
+				-- print ("Create UNIT_POWER_UPDATE EventItems");
 				local SubEventPowerText1 = _G[sSubCheckFramePrefix.."_SubEventPowerText1"];
 				if (SubEventPowerText1 == nil) then
 					SubEventPowerText1 = SubEventFrame:CreateFontString(sSubCheckFramePrefix.."_SubEventPowerText1", "ARTWORK", "GameFontNormal");
@@ -1454,8 +1454,8 @@ function EAFun_GroupEvent_ChangeEventType_Click(EventType, ExtraInfo)
 				SubCheckPowerTextBox:SetText(sDefaultValue);
 				SubCheckPowerTextBox:SetPoint("TOPLEFT", SubCheckPowerCompTypeDowndown, "TOPRIGHT", -5, -2);
 				SubCheckPowerTextBox:Show();
-				-- <------------ Create UNIT_POWER EventItems Ends ------------> --
-				-- <------------ Create UNIT_POWER EventItems Ends ------------> --
+				-- <------------ Create UNIT_POWER_UPDATE EventItems Ends ------------> --
+				-- <------------ Create UNIT_POWER_UPDATE EventItems Ends ------------> --
 
 			elseif (iLoop == 2) then
 				-- <------------ Create UNIT_HEALTH EventItems Starts ------------> --
@@ -1668,7 +1668,7 @@ function EAFun_GroupEvent_ChangeAuraCheck_Click(AuraCheck, ExtraInfo)
 
 		-- <------------ Contiune Create UNIT_AURA AuraChcekItems Starts ------------> --
 		-- <------------ Contiune Create UNIT_AURA AuraChcekItems Starts ------------> --
-		-- Create UNIT_POWER EventItems
+		-- Create UNIT_POWER_UPDATE EventItems
 		-- print ("Create ContiuneUNIT_AURA EventItems");
 		local SubEventAuraText2 = _G[sSubCheckFramePrefix.."_SubEventAuraText2"];
 		if (SubEventAuraText2 == nil) then

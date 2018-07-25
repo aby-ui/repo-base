@@ -1449,7 +1449,7 @@ function ComergyOnLoad(self)
                 return
             end
             -- Events that need to be associated with player
-            if ((event == "UNIT_MAXPOWER") or (event == "UNIT_POWER") or (event == "UNIT_POWER_FREQUENT") or (event == "UNIT_MAXHEALTH") or (event == "UNIT_HEALTH") or (event == "PLAYER_SPECIALIZATION_CHANGED")) then
+            if ((event == "UNIT_MAXPOWER") or (event == "UNIT_POWER_UPDATE") or (event == "UNIT_MAXHEALTH") or (event == "UNIT_HEALTH") or (event == "PLAYER_SPECIALIZATION_CHANGED")) then
                 if (arg1 ~= "player" and arg1 ~= "vehicle") then
                     return
                 end
@@ -1471,8 +1471,7 @@ function ComergyOnLoad(self)
     self:RegisterEvent("UPDATE_SHAPESHIFT_FORM")
 
     self:RegisterEvent("UNIT_MAXPOWER")
-    --self:RegisterEvent("PLAYER_TALENT_UPDATE")
-    self:RegisterEvent("UNIT_POWER_FREQUENT")
+    self:RegisterEvent("UNIT_POWER_UPDATE")
     self:RegisterEvent("UNIT_MAXHEALTH")
     self:RegisterEvent("UNIT_HEALTH")
     self:RegisterEvent("UNIT_ENTERED_VEHICLE")
@@ -1829,7 +1828,7 @@ function EventHandlers.PLAYER_SPECIALIZATION_CHANGED_inner(event, unit)
     ReadStatus()
 end
 
-function EventHandlers.UNIT_POWER_FREQUENT()
+function EventHandlers.UNIT_POWER_UPDATE()
     status.curEnergy = UnitPower(status.curUnit)
     status.curMana = UnitPower(status.curUnit, SPELL_POWER_MANA)
     MainFrameToggle()

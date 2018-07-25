@@ -3389,11 +3389,11 @@ function EventAlert_GroupFrameCheck_OnEvent(self, event, ...)
 					end
 				end
 			end
-		elseif (event == "UNIT_POWER_FREQUENT") then
+		elseif (event == "UNIT_POWER_UPDATE") then
 			local sUnitType, sPowerType = ...;
 			
 			-- SPEC EVENT FIRED, To check all INDEXD-EVENTCFG about this frame(by GroupIndex).
-			-- GC_IndexOfGroupFrame["UNIT_POWER"] = {[1]={Spells=1,Checks=1,SubChecks=1,},};
+			-- GC_IndexOfGroupFrame["UNIT_POWER_UPDATE"] = {[1]={Spells=1,Checks=1,SubChecks=1,},};
 			for iIndex, aValue in ipairs(GC_IndexOfGroupFrame[event][iGroupIndex]) do
 				iSpells = GC_IndexOfGroupFrame[event][iGroupIndex][iIndex].Spells;
 				iChecks = GC_IndexOfGroupFrame[event][iGroupIndex][iIndex].Checks;
@@ -3992,8 +3992,7 @@ EA_EventList={
 		--["UNIT_COMBO_POINTS"]			=EventAlert_COMBO_POINTS,
 		["UNIT_DISPLAYPOWER"]			=EventAlert_DISPLAYPOWER,
 		["UNIT_HEALTH"]					=EventAlert_UNIT_HEALTH	,
-		--["UNIT_POWER"]					=EventAlert_UNIT_POWER, --aby8
-		["UNIT_POWER_FREQUENT"]			=EventAlert_UNIT_POWER,
+		["UNIT_POWER_UPDATE"]			=EventAlert_UNIT_POWER,
 		--["RUNE_TYPE_UPDATE"]			=EventAlert_UpdateRunes, --aby8
 		["RUNE_POWER_UPDATE"]			=EventAlert_UpdateRunes,
 		["UNIT_SPELLCAST_SUCCEEDED"]	=EventAlert_UNIT_SPELLCAST_SUCCEEDED,

@@ -872,7 +872,7 @@ local function UnitFrame_RegisterEvents(self)
 	self:RegisterEvent("GROUP_ROSTER_UPDATE")
 	self:RegisterEvent("UNIT_HEALTH")
 	self:RegisterEvent("UNIT_MAXHEALTH")
-	--self:RegisterEvent("UNIT_POWER")
+	self:RegisterEvent("UNIT_POWER_UPDATE")
 	self:RegisterEvent("UNIT_MAXPOWER")
 	self:RegisterEvent("UNIT_DISPLAYPOWER")
 	self:RegisterEvent("UNIT_POWER_BAR_SHOW")
@@ -1045,7 +1045,7 @@ local function UnitFrame_OnEvent(self, event, unit)
 		elseif event == "UNIT_MAXPOWER" then
 			UnitFrame_UpdatePowerMax(self)
 			UnitFrame_UpdatePower(self)
-		elseif event == "UNIT_POWER" then
+		elseif event == "UNIT_POWER_UPDATE" then
 			UnitFrame_UpdatePower(self)
 		elseif event == "UNIT_DISPLAYPOWER" or event == "UNIT_POWER_BAR_SHOW" or event == "UNIT_POWER_BAR_HIDE" then
 			UnitFrame_UpdatePowerMax(self)

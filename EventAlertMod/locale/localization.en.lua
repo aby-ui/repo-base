@@ -42,14 +42,14 @@ EA_TTIP_SPECFLAG_CHECK_SOULSHARDS = "Show SoulShards in the left 1st position of
 EA_TTIP_SPECFLAG_CHECK_LUNARPOWER = "Show Lunar Power in the left 1st position of Self-Buffs";
 EA_TTIP_SPECFLAG_CHECK_COMBOPOINT = "Show ComboPoint in the left 1st position of Target-DeBuffs";
 EA_TTIP_SPECFLAG_CHECK_LIFEBLOOM = "Show the LifeBloom timer and stack in the left 1st position of Self-Buffs"
-EA_TTIP_SPECFLAG_CHECK_RAGE = "Show Rage in the left 1st position of Self-Buffs";					-- ¤ä´©«ã®ð(¾Ô¤h,ºµD)
-EA_TTIP_SPECFLAG_CHECK_FOCUS = "Show Focus in the left 1st position of Self-Buffs";					--  ¤ä´©¶°¤¤­È(Ây¤H)
-EA_TTIP_SPECFLAG_CHECK_FOCUS_PET = "Show Focus in the left 2nd position of Self-Buffs";				--  ¤ä´©Ãdª«¶°¤¤­È(Ây¤H)
-EA_TTIP_SPECFLAG_CHECK_ENERGY = "Show Energy in the left 1st position of Self-Buffs";				--  ¤ä´©¯à¶q(¸é,¿ßD,ªZ¹¬)
-EA_TTIP_SPECFLAG_CHECK_LIGHTFORCE = "Show Chi of Monk in the left 1st position of Self-Buffs";		--  ¤ä´©ªZ¹¬¯u®ð
-EA_TTIP_SPECFLAG_CHECK_INSANITY = "Show Insanity in the left 1st position of Self-Buffs";			--  ¤ä´©·t¼vºÆ¨g(·tªª)
-EA_TTIP_SPECFLAG_CHECK_DEMONICFURY = "Show Demonic Fury in the left 1st position of Self-Buffs";	--  ¤ä´©´cÅ]¤§«ã
-EA_TTIP_SPECFLAG_CHECK_BURNINGEMBERS = "Show Burning Embers in the left 1st position of Self-Buffs";--  ¤ä´©¿U¤õ¾lÂu
+EA_TTIP_SPECFLAG_CHECK_RAGE = "Show Rage in the left 1st position of Self-Buffs";					-- ï¿½ä´©ï¿½ï¿½ï¿½(ï¿½Ô¤h,ï¿½ï¿½D)
+EA_TTIP_SPECFLAG_CHECK_FOCUS = "Show Focus in the left 1st position of Self-Buffs";					--  ï¿½ä´©ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(ï¿½yï¿½H)
+EA_TTIP_SPECFLAG_CHECK_FOCUS_PET = "Show Focus in the left 2nd position of Self-Buffs";				--  ï¿½ä´©ï¿½dï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(ï¿½yï¿½H)
+EA_TTIP_SPECFLAG_CHECK_ENERGY = "Show Energy in the left 1st position of Self-Buffs";				--  ï¿½ä´©ï¿½ï¿½q(ï¿½ï¿½,ï¿½ï¿½D,ï¿½Zï¿½ï¿½)
+EA_TTIP_SPECFLAG_CHECK_LIGHTFORCE = "Show Chi of Monk in the left 1st position of Self-Buffs";		--  ï¿½ä´©ï¿½Zï¿½ï¿½ï¿½uï¿½ï¿½
+EA_TTIP_SPECFLAG_CHECK_INSANITY = "Show Insanity in the left 1st position of Self-Buffs";			--  ï¿½ä´©ï¿½tï¿½vï¿½Æ¨g(ï¿½tï¿½ï¿½)
+EA_TTIP_SPECFLAG_CHECK_DEMONICFURY = "Show Demonic Fury in the left 1st position of Self-Buffs";	--  ï¿½ä´©ï¿½cï¿½]ï¿½ï¿½ï¿½ï¿½
+EA_TTIP_SPECFLAG_CHECK_BURNINGEMBERS = "Show Burning Embers in the left 1st position of Self-Buffs";--  ï¿½ä´©ï¿½Uï¿½ï¿½ï¿½lï¿½u
 EA_TTIP_SPECFLAG_CHECK_ARCANECHARGES = "Show Arcane Charges in the left 1st position of Self-Buffs";--  Support Mage's Arcane Charges
 EA_TTIP_SPECFLAG_CHECK_MAELSTROM = "Show Maelstrom in the left 1st position of Self-Buffs";			--  Support Shaman's Maelstrom
 EA_TTIP_SPECFLAG_CHECK_FURY = "Show Fury in the left 1st position of Self-Buffs";					--  Support Demonhunter's Fury 
@@ -168,7 +168,7 @@ EA_XGRPALERT_LOGICS = {
 	[2]={text="Or", value=0}, };
 EA_XGRPALERT_EVENTTYPE = "EventType:";
 EA_XGRPALERT_EVENTTYPES = {
-	[1]={text="Unit Power Changes", value="UNIT_POWER"},
+	[1]={text="Unit Power Changes", value="UNIT_POWER_UPDATE"},
 	[2]={text="Unit Health Changes", value="UNIT_HEALTH"},
 	[3]={text="Unit Aura Changes", value="UNIT_AURA"},
 	[4]={text="Combo Point Changes", value="UNIT_COMBO_POINTS"}, };

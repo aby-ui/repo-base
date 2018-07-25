@@ -114,7 +114,7 @@ end
 local WatcherFrame = CreateFrame("Frame", nil, WorldFrame )
 local isEnabled = false
 --WatcherFrame:RegisterEvent("UNIT_COMBO_POINTS")
-WatcherFrame:RegisterEvent("UNIT_POWER_FREQUENT")
+WatcherFrame:RegisterEvent("UNIT_POWER_UPDATE")
 WatcherFrame:RegisterEvent("UNIT_DISPLAYPOWER")
 WatcherFrame:RegisterEvent("UNIT_AURA")
 WatcherFrame:RegisterEvent("UNIT_FLAGS")

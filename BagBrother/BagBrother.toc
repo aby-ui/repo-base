@@ -5,7 +5,6 @@
 ## SavedVariables: BrotherBags
 ## OptionalDeps: LibStub, WoWUnit
 
-LibStub.lua
 Startup.lua
 Events.lua
 API.lua

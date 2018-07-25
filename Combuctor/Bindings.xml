@@ -1,0 +1,8 @@
+<Bindings>
+	<Binding name="COMBUCTOR_TOGGLE" header="COMBUCTOR" category="ADDONS">
+		Combuctor:ToggleFrame('inventory')
+	</Binding>
+	<Binding name="COMBUCTOR_BANK_TOGGLE" category="ADDONS">
+		Combuctor:ToggleFrame('bank')
+	</Binding>
+</Bindings>

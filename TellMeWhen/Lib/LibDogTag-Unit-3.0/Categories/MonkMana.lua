@@ -33,7 +33,7 @@ if isMonk then
 	end
 end
 
-local mpEvents = "MonkMana;UNIT_POWER#$unit;UNIT_MAXPOWER#$unit"
+local mpEvents = "MonkMana;UNIT_POWER_UPDATE#$unit;UNIT_MAXPOWER#$unit"
 
 DogTag:AddTag("Unit", "MonkMP", {
 	code = function(args)

@@ -10,16 +10,8 @@
     </Script>
 
     <Script file="enUS.lua"/>
-    <Script file="deDE.lua"/>
-    <Script file="esES.lua"/>
-    <Script file="esMX.lua"/>
-    <Script file="frFR.lua"/>
-    <Script file="koKR.lua"/>
-    <Script file="ruRU.lua"/>
     <Script file="zhCN.lua"/>
     <Script file="zhTW.lua"/>
-    <Script file="ptBR.lua"/>
-    <Script file="itIT.lua"/>
 
     <Script>
         local T = DecursiveRootTable or {};

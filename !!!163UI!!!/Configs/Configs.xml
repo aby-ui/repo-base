@@ -111,6 +111,7 @@
     <Include file="..\..\TradeskillInfo\CfgTradeskillInfo.lua"/>
     <Include file="..\..\TrinketMenu\CfgTrinketMenu.lua"/>
     <Include file="..\..\TrufiGCD\CfgTrufiGCD.lua"/>
+    <Include file="..\..\WeakAuras\CfgWeakAuras.lua"/>
     <Include file="..\..\WhisperPop\CfgWhisperPop.lua"/>
     <Include file="..\..\Wholly\CfgWholly.lua"/>
     <Include file="..\..\WorldFlightMap\CfgWorldFlightMap.lua"/>

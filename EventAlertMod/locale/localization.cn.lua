@@ -170,7 +170,7 @@ EA_XGRPALERT_LOGICS = {
 	[2]={text="或者", value=0}, };
 EA_XGRPALERT_EVENTTYPE = "事件类型:";
 EA_XGRPALERT_EVENTTYPES = {
-	[1]={text="对象能量异动类", value="UNIT_POWER"},
+	[1]={text="对象能量异动类", value="UNIT_POWER_UPDATE"},
 	[2]={text="对象血量异动类", value="UNIT_HEALTH"},
 	[3]={text="对象增减益异动类", value="UNIT_AURA"},
 	[4]={text="连击数异动类", value="UNIT_COMBO_POINTS"}, };

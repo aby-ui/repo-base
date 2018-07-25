@@ -550,6 +550,7 @@ local function ChatFilter_Rubbish(self, event, msg, player, _, _, _, flag, _, _,
 			Name = player
 		end
 		if (not Server or strlen(Server) == 0) then Server = GetRealmName() end
+		if not Name then return end
 		player, fullName = Name, Name.."-"..Server
 		if (Server ~= GetRealmName()) then player = fullName end
 		if (not Config.ScanOurself and UnitIsUnit(player,"player")) then return end
