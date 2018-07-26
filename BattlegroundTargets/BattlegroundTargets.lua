@@ -752,7 +752,7 @@ local classes = {
 -- roles: 1 = HEALER | 2 = TANK | 3 = DAMAGER
 local classROLES = {HEALER = {}, TANK = {}, DAMAGER = {}}
 for classID = 1, MAX_CLASSES do
-	local _, classTag = GetClassInfoByID(classID)
+	local classTag = C_CreatureInfo.GetClassInfo(classID).classFile
 	local numTabs = GetNumSpecializationsForClassID(classID)
 	--print(numTabs, classID, "#", GetNumSpecializationsForClassID(classID))
 	classes[classTag].spec = {}
