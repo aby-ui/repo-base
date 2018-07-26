@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(333, "DBM-DragonSoul", nil, 187)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 190 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 191 $"):sub(12, -3))
 mod:SetCreatureID(56173)
 mod:SetEncounterID(1299)
 mod:SetZone()
@@ -122,7 +122,7 @@ function mod:ScanParasite()
 		end
 	end
 	if founded then
-		local _, _, _, _, startTime, endTime = UnitCastingInfo(unitID)
+		local _, _, _, startTime, endTime = UnitCastingInfo(unitID)
 		local castTime = ((endTime or 0) - (startTime or 0)) / 1000
 		timerUnstableCorruption:Update(parasiteScan * 0.1, castTime)
 		countdownUnstableCorruption:Start(castTime - (parasiteScan * 0.1))

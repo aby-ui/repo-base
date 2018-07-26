@@ -121,8 +121,8 @@ function MySlot:GetActionInfo(slotId)
     -- { slotId, slotType and high 16 ,high 8 , low 8, }
     local slotType, index = GetActionInfo(slotId)
     if MySlot.SLOT_TYPE[slotType] == MYSLOT_EQUIPMENTSET then
-        for i = 1, GetNumEquipmentSets() do
-            if GetEquipmentSetInfo(i) == index then
+        for i = 1, C_EquipmentSet.GetNumEquipmentSets() do
+            if C_EquipmentSet.GetEquipmentSetInfo(i) == index then
                 index = i
                 break
             end

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(325, "DBM-DragonSoul", nil, 187)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 190 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 192 $"):sub(12, -3))
 mod:SetCreatureID(55312)
 mod:SetEncounterID(1295)
 --mod:DisableRegenDetection()--Uncomment in next dbm release
@@ -225,7 +225,7 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 end
 
 -- support Yor'sahj raid leading tools (eg YorsahjAnnounce) who want to broadcast a target arrow
-RegisterAddonMessagePrefix("DBM-YORSAHJARROW")
+C_ChatInfo.RegisterAddonMessagePrefix("DBM-YORSAHJARROW")
 --mod:RegisterEvents("CHAT_MSG_ADDON") -- for debugging
 local oozePos = {
 	["BLUE"] = 	{ 71, 34 },

@@ -82,12 +82,5 @@ function TradeskillInfo:ColoringAH(recipeLink,iconTexture)
 --				elseif knownBy then
 --					iconTexture:SetVertexColor(1.0, 0.1, 0.1)
 --				end
-	elseif button.id then  -- button.id is set only by Compact-UI we need to fix texture colors.
-		local _, _, _, _, canUse =  GetAuctionItemInfo("list", index)
-		if ( not canUse ) then
-			iconTexture:SetVertexColor(1.0, 0.1, 0.1)  -- item is not usable
-		else
-			iconTexture:SetVertexColor(1.0, 1.0, 1.0)  -- usable, non-recipe item
-		end
 	end
 end

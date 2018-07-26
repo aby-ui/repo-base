@@ -5,6 +5,7 @@
 local ADDON = ...
 local L = LibStub('AceLocale-3.0'):NewLocale(ADDON, 'zhCN')
 if not L then return end
+L[ADDON] = '分类背包整合'
 
 --keybinding text
 L.ToggleBags = '开关 背包'

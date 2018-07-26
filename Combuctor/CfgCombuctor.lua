@@ -9,8 +9,6 @@ U1RegisterAddon("Combuctor", {
     icon = [[Interface\Icons\INV_Misc_Bag_29]],
     optdeps = { "BagBrother" },
 
-    modifier = "y368413@MaoRUI",
-
     {
         text = "配置选项",
         callback = function(cfg, v, loading)

@@ -112,7 +112,7 @@ local TT_DefaultConfig = {
 
 	hideDefaultBar = true,
 	barsCondenseValues = false,
-	barsCondenseType = "kmg",
+	barsCondenseType = "wanyi",
 
 	healthBar = true,
 	healthBarClassColor = true,
@@ -917,7 +917,7 @@ local function UpdateBar(bar,val,max,fmtType)
 	if (bar:IsShown()) then
 		bar:SetMinMaxValues(0,max);
 		bar:SetValue(val);
-		FormatBarValues(bar.text,val,max,fmtType);
+		FormatBarValues(bar.text,val,max,fmtType,cfg.barsCondenseType);
 	end
 end
 

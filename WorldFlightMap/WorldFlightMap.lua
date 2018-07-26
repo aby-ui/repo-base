@@ -202,7 +202,7 @@ local function GetMapSize() -- Return dimensions and offset of current map
 end
 --]]
 
-function GetMapSize(currentMapID) -- Return dimensions and offset of current map
+local function GetMapSize(currentMapID) -- Return dimensions and offset of current map
 	local currentMapID = currentMapID or WorldMapFrame:GetMapID()
 	if not currentMapID then return end
 	

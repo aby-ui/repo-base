@@ -66,9 +66,9 @@ function U1GetItemLevelByScanTooltip(itemLink, slot)
     local v = GetDetailedItemLevelInfo(itemLink)
     if v then
         if quality ~= 6 and extract then cache[extract] = v end --目前发现神器不能缓存
-        if (slot == 16 or slot == 17) and v ~= 750 and not UnitIsUnit(itemLink, "player") then
-            v = v + 15 --假设观察的玩家都加出第一层
-        end
+        --if (slot == 16 or slot == 17) and v ~= 750 and not UnitIsUnit(itemLink, "player") then
+        --    v = v + 15 --假设观察的玩家都加出第一层
+        --end
         return v
     end
 

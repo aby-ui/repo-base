@@ -334,7 +334,7 @@ AceGUI:RegisterLayout("AbsoluteList", function(content, children)
   end
 end);
 
-AceGUI:RegisterLayout("ButtonsScrollLayout", function(content, children)
+AceGUI:RegisterLayout("ButtonsScrollLayout", function(content, children, skipLayoutFinished)
   local yOffset = 0
   local scrollTop, scrollBottom = content.obj:GetScrollPos()
   for i = 1, #children do
@@ -361,7 +361,7 @@ AceGUI:RegisterLayout("ButtonsScrollLayout", function(content, children)
     end
 
   end
-  if(content.obj.LayoutFinished) then
+  if(content.obj.LayoutFinished and not skipLayoutFinished) then
     content.obj:LayoutFinished(nil, yOffset * -1)
   end
 end)
@@ -483,6 +483,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, subPrefix, subS
               else
                 trigger["use_"..realname] = false
                 if(trigger[realname].single) then
+                  trigger[realname].multi = trigger[realname].multi or {};
                   trigger[realname].multi[trigger[realname].single] = true;
                 end
               end
@@ -990,6 +991,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, subPrefix, subS
           disabled = function() return not trigger["use_"..realname]; end,
           get = function() return trigger["use_"..realname] and trigger[realname] and trigger[realname].single or nil; end,
           set = function(info, v)
+            trigger[realname] = trigger[realname] or {};
             trigger[realname].single = v;
             WeakAuras.Add(data);
             if (reloadOptions) then
@@ -1031,6 +1033,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, subPrefix, subS
             end
           end,
           set = function(info, v, calledFromSetAll)
+            trigger[realname].multi = trigger[realname].multi or {};
             if (calledFromSetAll) then
               trigger[realname].multi[v] = calledFromSetAll;
             elseif(trigger[realname].multi[v]) then
@@ -2531,9 +2534,11 @@ end
 -- which AceConfig doesn't like.
 -- Thus Reload the options after a very small delay.
 function WeakAuras.ScheduleReloadOptions(data)
-  C_Timer.After(0.1, function()
-    WeakAuras.ReloadOptions(data.id)
-  end );
+  if (type(data.id) ~= "table") then
+    C_Timer.After(0.1, function()
+      WeakAuras.ReloadOptions(data.id)
+    end );
+  end
 end
 
 function WeakAuras.ReloadOptions(id)

@@ -4,6 +4,7 @@
 
 local ADDON = ...
 local L = LibStub('AceLocale-3.0'):NewLocale(ADDON, 'enUS', true)
+L[ADDON] = ADDON
 
 --keybindings
 L.ToggleBags = 'Toggle Inventory'

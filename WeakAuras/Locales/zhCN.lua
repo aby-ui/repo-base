@@ -441,6 +441,8 @@ L["Multistrike"] = "溅射"
 L["Multi-target"] = "多目标"
 L["Music"] = "音乐"
 L["Mythic"] = "史诗"
+--[[Translation missing --]]
+L["Mythic+ Affix"] = "Mythic+ Affix"
 L["Name"] = "名称"
 L["Neck"] = "项链"
 L["Neutral"] = "中立"

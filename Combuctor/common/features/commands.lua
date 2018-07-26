@@ -78,7 +78,7 @@ end
 
 function Addon:ShowOptions()
 	if LoadAddOn(ADDON .. '_Config') then
-		InterfaceOptionsFrame_OpenToCategory(ADDON)
-		InterfaceOptionsFrame_OpenToCategory(ADDON) -- sometimes once not enough
+		InterfaceOptionsFrame_OpenToCategory(L[ADDON])
+		InterfaceOptionsFrame_OpenToCategory(L[ADDON]) -- sometimes once not enough
 	end
 end

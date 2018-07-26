@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(726, "DBM-MogushanVaults", nil, 317)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 114 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 123 $"):sub(12, -3))
 mod:SetCreatureID(60410)--Energy Charge (60913), Emphyreal Focus (60776), Cosmic Spark (62618), Celestial Protector (60793)
 mod:SetEncounterID(1500)
 mod:DisableESCombatDetection()
@@ -170,7 +170,7 @@ function mod:SPELL_CAST_START(args)
 		self:Unschedule(warnClosedCircuitTargets)
 		self:Schedule(0.3, warnClosedCircuitTargets)
 	elseif spellId == 119358 then
-		local _, _, _, _, startTime, endTime = UnitCastingInfo("boss1")
+		local _, _, _, startTime, endTime = UnitCastingInfo("boss1")
 		local castTime
 		if startTime and endTime then
 			castTime = ((endTime or 0) - (startTime or 0)) / 1000

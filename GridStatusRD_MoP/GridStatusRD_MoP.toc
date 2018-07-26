@@ -4,7 +4,7 @@
 ## Author: Evilsithgirl (Reckoning-Mannoroth-US),tptbk(Doadin-Malorne-US)
 ## Version: 8.0.1.3
 ## Grid Author: Pastamancer & Maia
-## Dependencies: Grid, GridStatusRaidDebuff
+## Dependencies: GridStatusRaidDebuff
 
 CheckCompat.lua
 MogushanVaults.lua

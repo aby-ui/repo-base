@@ -4,6 +4,6 @@
 --]]
 
 local CONFIG, Config = ...
-Config.addon = '分类背包整合'
+Config.addon = 'Combuctor'
 Config.displayRowHeight = 35
 Config.tabs = true

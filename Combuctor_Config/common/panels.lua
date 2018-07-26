@@ -6,6 +6,7 @@
 local CONFIG, Config = ...
 local ADDON, Addon = Config.addon, _G[Config.addon]
 local L = LibStub('AceLocale-3.0'):GetLocale(CONFIG)
+local LADDON = (LibStub('AceLocale-3.0'):GetLocale(Config.addon))[Config.addon]
 
 local SLOT_COLOR_TYPES = {}
 for id, name in pairs(Addon.BAG_TYPES) do
@@ -33,7 +34,7 @@ StaticPopupDialogs[CONFIG .. '_ConfirmGlobals'] = {
 
 --[[ Panels ]]--
 
-Addon.GeneralOptions = Addon.Options:NewPanel(nil, ADDON, L.GeneralDesc, function(self)
+Addon.GeneralOptions = Addon.Options:NewPanel(nil, LADDON, L.GeneralDesc, function(self)
 	self:CreateCheck('locked')
 	self:CreateCheck('tipCount')
 	self:CreateSmallCheck('tipCount', 'countGuild')
@@ -57,7 +58,7 @@ Addon.GeneralOptions = Addon.Options:NewPanel(nil, ADDON, L.GeneralDesc, functio
 	end)
 end)
 
-Addon.FrameOptions = Addon.Options:NewPanel(ADDON, L.FrameSettings, L.FrameSettingsDesc, function(self)
+Addon.FrameOptions = Addon.Options:NewPanel(LADDON, L.FrameSettings, L.FrameSettingsDesc, function(self)
 	self.sets = Addon.profile[self.frameID]
 	self:CreateFramesDropdown()
 	self:CreateCheck('enabled'):SetDisabled(self.frameID ~= 'inventory' and self.frameID ~= 'bank')
@@ -130,7 +131,7 @@ Addon.FrameOptions = Addon.Options:NewPanel(ADDON, L.FrameSettings, L.FrameSetti
 	end
 end)
 
-Addon.DisplayOptions = Addon.Options:NewPanel(ADDON, L.DisplaySettings, L.DisplaySettingsDesc, function(self)
+Addon.DisplayOptions = Addon.Options:NewPanel(LADDON, L.DisplaySettings, L.DisplaySettingsDesc, function(self)
 	self:CreateHeader(L.DisplayInventory, 'GameFontHighlight', true)
 	for i, event in ipairs {'Bank', 'Auction', 'Guildbank', 'Mail', 'Player', 'Trade', 'Gems', 'Craft'} do
 		self:CreateCheck('display' .. event)
@@ -142,7 +143,7 @@ Addon.DisplayOptions = Addon.Options:NewPanel(ADDON, L.DisplaySettings, L.Displa
 	end
 end)
 
-Addon.ColorOptions = Addon.Options:NewPanel(ADDON, L.ColorSettings, L.ColorSettingsDesc, function(self)
+Addon.ColorOptions = Addon.Options:NewPanel(LADDON, L.ColorSettings, L.ColorSettingsDesc, function(self)
 	self:CreateCheck('glowQuality')
 	self:CreateCheck('glowNew')
 	self:CreateCheck('glowQuest')
@@ -162,7 +163,7 @@ Addon.ColorOptions = Addon.Options:NewPanel(ADDON, L.ColorSettings, L.ColorSetti
 	self:CreatePercentSlider('glowAlpha', 1, 100):SetWidth(585)
 end)
 
-Addon.RulesOptions = Addon.Options:NewPanel(ADDON, L.RuleSettings, L.RuleSettingsDesc, function(self)
+Addon.RulesOptions = Addon.Options:NewPanel(LADDON, L.RuleSettings, L.RuleSettingsDesc, function(self)
 	self.sets = Addon.profile[self.frameID]
 	self:CreateFramesDropdown()
 

@@ -1,24 +1,11 @@
 ## Interface: 80000
-## Title: MySlot
+## Title: Myslot
 ## Notes: Myslot is for transferring settings between accounts. Feedback farmer1992@gmail.com
-## Notes-deDE: Myslot is for transferring settings between accounts. Feedback farmer1992@gmail.com
-## Notes-esES: Myslot is for transferring settings between accounts. Feedback farmer1992@gmail.com
-## Notes-esMX: Myslot is for transferring settings between accounts. Feedback farmer1992@gmail.com
-## Notes-frFR: Myslot is for transferring settings between accounts. Feedback farmer1992@gmail.com
-## Notes-itIT: Myslot is for transferring settings between accounts. Feedback farmer1992@gmail.com
-## Notes-koKR: Myslot is for transferring settings between accounts. Feedback farmer1992@gmail.com
-## Notes-ptBR: Myslot is for transferring settings between accounts. Feedback farmer1992@gmail.com
-## Notes-ruRU: Myslot is for transferring settings between accounts. Feedback farmer1992@gmail.com
 ## Notes-zhCN: 保存你的技能按钮位置 farmer1992@gmail.com
 ## Notes-zhTW: Myslot可以跨帳號綁定技能與按鍵設置。反饋通道：farmer1992@gmail.com
 ## Author: tg123
-## Version: v5.2.2
-## X-Curse-Packaged-Version: v5.2.2
-## X-Curse-Project-Name: Myslot
-## X-Curse-Project-ID: myslot
-## X-Curse-Repository-ID: wow/myslot/mainline
+## Version: v5.2.6
 
-libs\LibStub\LibStub.lua
 libs\base64.lua
 libs\crc32.lua
 
@@ -40,11 +27,11 @@ libs\lua-pb\pb-wow.lua
 
 locales.lua
 keys.lua
-MySlot.xml
+Myslot.xml
 
-PbMySlot.lua
-MySlot.lua
+PbMyslot.lua
+Myslot.lua
+
 
 ## Title-zhCN: |cff880303[有爱]|r MySlot 技能栏保存
 ## X-Vendor: AbyUI
-

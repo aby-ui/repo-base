@@ -2,7 +2,7 @@
 ## Title: WorldFlightMap
 ## Notes: Replaces the taxi map with the world map
 ## Author: Semlar
-## Version: 8.0.0.1
+## Version: 8.0.0.2
 
 WorldFlightMap.lua
 
