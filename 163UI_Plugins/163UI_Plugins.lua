@@ -156,10 +156,10 @@ local function CoShelper(tooltip)
 		end
 		return
 	end
-	local mapid,_ = GetCurrentMapAreaID()
+	local mapid,_ = C_Map.GetBestMapForUnit("player")
 	local _,unit = tooltip:GetUnit()
 	if unit == nil then return; end;
-	if mapid == 1087 and UnitGUID(unit) then
+	if mapid == 761 and UnitGUID(unit) then
 		local npcid = string.sub(UnitGUID(unit),-17,-12)
 		local line = ""
 		if npcid == "105117" then line = "炼金,潜行者 [下毒]" --Flask of the Solemn Night

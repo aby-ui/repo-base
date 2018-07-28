@@ -156,13 +156,19 @@ function MouseXY()
 end
 
 local cursor, player = L["Cursor"], L["Player"]
+local HBD = LibStub("HereBeDragons-2.0")
 function OnUpdate()
 	local cx, cy = MouseXY()
 	local px, py
+    if WorldMapFrame:GetMapID() == C_Map.GetBestMapForUnit("player") then
+        px, py = HBD:GetPlayerZonePosition()
+    end
+    --[[
 	local xy = GetPlayerMapPosition(WorldMapFrame:GetMapID(), "player")
 	if xy then
 		px, py = xy:GetXY()
 	end
+	]]
 
 	if cx then
 		cursortext:SetFormattedText(text, cursor, 100 * cx, 100 * cy)

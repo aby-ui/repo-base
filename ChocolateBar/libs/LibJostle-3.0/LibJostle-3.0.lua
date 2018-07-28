@@ -1,6 +1,6 @@
 --[[
 Name: LibJostle-3.0
-Revision: $Rev: 63 $
+Revision: $Rev: 65 $
 Author(s): ckknight (ckknight@gmail.com)
 Website: http://ckknight.wowinterface.com/
 Documentation: http://www.wowace.com/addons/libjostle-3-0/
@@ -10,7 +10,7 @@ License: LGPL v2.1
 --]]
 
 local MAJOR_VERSION = "LibJostle-3.0"
-local MINOR_VERSION = tonumber(("$Revision: 63 $"):match("(%d+)")) + 90000
+local MINOR_VERSION = tonumber(("$Revision: 65 $"):match("(%d+)")) + 90000
 
 if not LibStub then error(MAJOR_VERSION .. " requires LibStub") end
 
@@ -34,6 +34,7 @@ local blizzardFrames = {
 	'Gypsy_PlayerFrameCapsule',
 	'Gypsy_TargetFrameCapsule',
 	'GMChatStatusFrame',
+	--'ConsolidatedBuffs',
 	'BuffFrame',
 	'DEFAULT_CHAT_FRAME',
 	'ChatFrame2',
@@ -161,6 +162,17 @@ JostleFrame:RegisterEvent("PLAYER_REGEN_DISABLED")
 JostleFrame:RegisterEvent("PLAYER_REGEN_ENABLED")
 JostleFrame:RegisterEvent("PLAYER_CONTROL_GAINED")
 JostleFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
+JostleFrame:RegisterEvent("UNIT_ENTERED_VEHICLE")
+JostleFrame:RegisterEvent("UNIT_EXITED_VEHICLE")
+
+function Jostle:UNIT_ENTERED_VEHICLE()
+	MainMenuBar:SetMovable(true)
+	MainMenuBar:SetUserPlaced(false)
+end
+
+function Jostle:UNIT_EXITED_VEHICLE()
+	self:Refresh(MainMenuBar)
+end
 
 function Jostle:PLAYER_ENTERING_WORLD()
 	self:Refresh(BuffFrame, PlayerFrame, TargetFrame)
@@ -171,7 +183,8 @@ function Jostle:WorldMapFrame_Hide()
 end
 
 function Jostle:TicketStatusFrame_OnEvent()
-	self:Refresh(TicketStatusFrame, GMChatStatusFrame, BuffFrame)
+	--self:Refresh(TicketStatusFrame, ConsolidatedBuffs)
+    self:Refresh(TicketStatusFrame, GMChatStatusFrame, BuffFrame)
 end
 
 function Jostle:FCF_UpdateDockPosition()
@@ -444,7 +457,7 @@ function Jostle:Refresh(...)
 						offset = offset + MinimapBorderTop:GetHeight() * 3/5
                     elseif GMChatStatusFrame and frame == GMChatStatusFrame then
                         if ( TicketStatusFrame:IsShown() ) then
-                            offset = offset - TicketStatusFrame:GetHeight() * TicketStatusFrame:GetScale()
+						offset = offset - TicketStatusFrame:GetHeight() * TicketStatusFrame:GetScale()
                         end
                     elseif frame == BuffFrame then
                         if ( TicketStatusFrame:IsShown() ) then

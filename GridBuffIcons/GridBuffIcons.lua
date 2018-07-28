@@ -231,6 +231,7 @@ local options = {
                 GridBuffIcons:UpdateAllUnitsBuffs();
             end,
         },
+        --[[ --8.0 removed because performance problem
         nameforce = {
             order = 201, width = "full",
             type = "input",
@@ -246,6 +247,7 @@ local options = {
                 GridBuffIcons:UpdateAllUnitsBuffs();
             end,
         },
+        --]]
     }
 }
 
@@ -429,13 +431,16 @@ local function updateFrame(v)
     local n = 1
     local setting = GridBuffIcons.db.profile
     local showbuff = setting.showbuff
+
+    --[[ --8.0 removed because of performance problem
     for name, _ in pairs(GridBuffIcons.nameforce) do
-        local name, rank, icon, count, debuffType, duration, expires, caster, isStealable, _, spellID = Aby_UnitAura(v.unit, name);
+        local name, rank, icon, count, debuffType, duration, expires, caster, isStealable, _, spellID = UnitAura(v.unit, name);
         if name then
             showBuffIcon(v, n, setting, icon, expires, duration)
             n=n+1
         end
     end
+    --]]
     local filter = setting.bufffilter
     if showbuff then
         filter = filter and (setting.buffmine and "HELPFUL|RAID|PLAYER" or "HELPFUL|RAID") or (setting.buffmine and "HELPFUL|PLAYER" or "HELPFUL")

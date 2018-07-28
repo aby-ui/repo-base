@@ -444,7 +444,7 @@ function GridStatusRaidDebuff:UpdateAllUnits()
 end
 
 function GridStatusRaidDebuff:ScanNewDebuff(e)
-    local ts, event, hideCaster, srcguid, srcname, srcflg, srcraidflg, dstguid, dstname, dstflg, dstraidflg, spellId, name = CombatLogGetCurrentEventInfo()
+    local ts, event, hideCaster, srcguid, srcname, srcflg, srcraidflg, dstguid, dstname, dstflg, dstraidflg, spellId, name, _, buffType= CombatLogGetCurrentEventInfo()
 	if not name then return end
 	local settings = self.db.profile["alert_RaidDebuff"]
 	if (settings.enable and debuff_list[realzone]) then
@@ -456,12 +456,12 @@ function GridStatusRaidDebuff:ScanNewDebuff(e)
 			-- No reason to detect buffs too
 			local unitid, debuff
 			unitid = GridRoster:GetUnitidByGUID(dstguid)
-			debuff = false
-			if (Aby_UnitDebuff(unitid, name)) then
-				debuff = true
+			debuff = buffType == 'DEBUFF' --aby8
+			--if (UnitDebuff(unitid, name)) then
+			--	debuff = true
 			-- else
 			-- 	self:Debug("Debuff not found", name)
-			end
+			--end
 			if not debuff then return end
 
 			self:Debug("New Debuff", srcname, dstname, name, unitid, tostring(debuff))
@@ -910,12 +910,13 @@ function GridStatusRaidDebuff:LoadZoneDebuff(zone, name)
 end
 
 local zoneOrder = {
-    [GetMapNameByID(909)] = 1,
-    [GetMapNameByID(850)] = 2,
-    [GetMapNameByID(764)] = 3,
-    [GetMapNameByID(807)] = 4,
-    [GetMapNameByID(777)] = 5,
+    [C_Map.GetMapInfo(909).name] = 1,
+    [C_Map.GetMapInfo(850).name] = 2,
+    [C_Map.GetMapInfo(764).name] = 3,
+    [C_Map.GetMapInfo(807).name] = 4,
+    [C_Map.GetMapInfo(777).name] = 5,
 }
+dump(zoneOrder)
 function GridStatusRaidDebuff:CreateZoneMenu(zone)
 	local args
 	if not debuff_list[zone] then

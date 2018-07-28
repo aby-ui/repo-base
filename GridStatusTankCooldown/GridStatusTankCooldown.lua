@@ -8,7 +8,7 @@ if GetLocale():find'^zh' then
     LL["Check the spells that you want GridStatusTankCooldown to keep track of. Their position on the list defines their priority in the case that a unit has more than one of them."] = "选择要提示的坦克救命技能，如果开启的救命技能多于一个，则排在前面的会优先显示。"
     LL["Options"] = "选项"
     LL["Spells"] = "选择要提示的技能"
-    LL["Tanking cooldowns secondary"] = "团员重要技能"
+    LL["Tanking cooldowns secondary"] = "坦克救命技能(次级)"
     LL["Those not chosen in alert_tankcd and have cooldown more than 1 minutes, will be shown here."] = "部分没有在坦克救命技能里选择的、但仍然比较重要的状态，会在这里集中显示，如果需要关注，请启用并指定一个关联的指示器"
 end
 ------------------------------------------------------------------------------
@@ -18,11 +18,11 @@ GridStatusTankCooldown = Grid:GetModule("GridStatus"):NewModule("GridStatusTankC
 GridStatusTankCooldown.menuName = L"Tanking cooldowns"
 
 local debuffs = {
-        [124273]    = 1, --重度醉拳 debuff
-        [124274]    = 1, --中度醉拳 debuff
-        [25771]     = 2, --自律 debuff
-        [187464]    = 2, -- 暗影愈合 debuff 6s
-        [219521]    = 2, -- 暗影盟约 debuff 6s
+        [124273]    = true, --重度醉拳 debuff
+        [124274]    = true, --中度醉拳 debuff
+        [25771]     = true, --自律 debuff
+        [187464]    = true, -- 暗影愈合 debuff 6s
+        [219521]    = true, -- 暗影盟约 debuff 6s
 }
 local interest_buffs = { -- 1表示本职业自身 2表示可以给其他职业 负数表示不显示在次要状态中
     ["DEATHKNIGHT"] = {
@@ -78,7 +78,7 @@ local interest_buffs = { -- 1表示本职业自身 2表示可以给其他职业 
         [86659]     = 1, -- 远古诸王守护者 5min 8s
         [31884]     = 1, -- 复仇之怒 2min 20 治疗大招
         [184662]    = 1, -- 复仇圣盾 2min 15s
-        [1044]      = -2, -- 自由祝福  25s 8s
+        [1044]      = 2, -- 自由祝福  25s 8s
         --[132403]  = 1, -- 公正之盾  [正义盾击] 16s冲能 3次
         [31850]     = 1, -- 忠诚防卫者  [炽热防御者] 2min 8s
         [204150]    = 1, -- 圣光御盾 群体-20% 6s 骑士自己的
@@ -101,8 +101,8 @@ local interest_buffs = { -- 1表示本职业自身 2表示可以给其他职业 
         [64843]     = 1, -- 神圣礼颂 [神圣赞美诗] 3min 7.2s
         [64901]     = 1, -- 希望象征 [希望象征] 6min 治疗大招
         [200183]    = 1, -- 神化 神圣化神 3min 30s 治疗大招
-        [187464]    = 2, -- 暗影愈合 debuff 6s
-        [219521]    = 2, -- 暗影盟约 debuff 6s
+        --[187464]    = 2, -- 暗影愈合 debuff 6s
+        --[219521]    = 2, -- 暗影盟约 debuff 6s
     },
     ["ROGUE"] = {
         [31224]     = 1, -- 暗影披风 [暗影斗篷] 1.5min 5s
@@ -165,22 +165,13 @@ GridStatusTankCooldown.tankingbuffs = tankingbuffs
 -- locals
 local GridRoster = Grid:GetModule("GridRoster")
 local GetSpellInfo = GetSpellInfo
-local UnitBuff = UnitBuff
-local UnitDebuff = UnitDebuff
+local UnitAura = UnitAura
 local UnitGUID = UnitGUID
 
 local spellnames = {}
 
 GridStatusTankCooldown.defaultDB = {
 	debug = false,
-    alert_tankcd_secondary = {
-        enable = false,
-        color = { r = 0, g = 1, b = 1, a = 1 },
-        priority = 98,
-        range = false,
-        showtextas = "spell",
-        showlatest = false,
-    },
 	alert_tankcd = {
 		enable = true,
 		color = { r = 1, g = 1, b = 0, a = 1 },
@@ -220,33 +211,39 @@ GridStatusTankCooldown.defaultDB = {
 		inactive_spellids = { -- used to remember priority of disabled spells
 		}
     },
+    alert_tankcd_secondary = {
+        enable = false,
+        color = { r = 0, g = 1, b = 1, a = 1 },
+        priority = 98,
+        range = false,
+        showtextas = "spell",
+    },
 }
 
 local active_by_class = { OTHER = {} } for i=1, GetNumClasses() do active_by_class[select(2, GetClassInfo(i))] = {} end
 local active_by_class_2nd = { OTHER = {} } for i=1, GetNumClasses() do active_by_class_2nd[select(2, GetClassInfo(i))] = {} end
+GridStatusTankCooldown.active_by_class_2nd = active_by_class_2nd
+GridStatusTankCooldown.active_by_class = active_by_class
 local active_spells_map = {}
 function GridStatusTankCooldown:OnSpellListChanged()
     for k, v in pairs(active_by_class) do wipe(v) end
     wipe(active_spells_map)
-    for _, id in ipairs(self.db.profile.alert_tankcd.active_spellids) do
+    for order, id in ipairs(self.db.profile.alert_tankcd.active_spellids) do
         active_spells_map[id] = true
         if flags[id] == 2 or flags[id] == -2 then
-            for k, v in pairs(active_by_class) do
-                tinsert(v, id)
-            end
+            for k, v in pairs(active_by_class) do v[id] = order end
         else
-            tinsert(active_by_class[class_of_spell[id]], id)
+            active_by_class[class_of_spell[id]][id] = order
         end
     end
+    -- 次级重要的没有优先级
     for k, v in pairs(active_by_class_2nd) do wipe(v) end
     for id, flag in pairs(flags) do
         if flag > 0 and not active_spells_map[id] then
             if flags[id] == 2 or flags[id] == -2 then
-                for k, v in pairs(active_by_class_2nd) do
-                    tinsert(v, id)
-                end
+                for k, v in pairs(active_by_class_2nd) do v[id] = true end
             else
-                tinsert(active_by_class_2nd[class_of_spell[id]], id)
+                active_by_class_2nd[class_of_spell[id]][id] = true
             end
         end
     end
@@ -297,7 +294,7 @@ local myoptions = {
 
 local myoptions_2nd = {
     ["desc"] = {
-        order = 0,
+        order = 200,
         type = "description",
         name = L"Those not chosen in alert_tankcd and have cooldown more than 1 minutes, will be shown here.",
     },
@@ -310,15 +307,6 @@ local myoptions_2nd = {
         style = "radio",
         get = function() return GridStatusTankCooldown.db.profile.alert_tankcd_secondary.showtextas end,
         set = function(_, v) GridStatusTankCooldown.db.profile.alert_tankcd_secondary.showtextas = v end,
-    },
-    ["showlatest"] = {
-        order = 202,
-        type = "toggle",
-        name = L"显示最后释放的技能",
-        width = "full",
-        desc = L"始终显示最后释放的技能，而不是按照优先级顺序显示。",
-        get = function() return GridStatusTankCooldown.db.profile.alert_tankcd_secondary.showlatest end,
-        set = function(_, v) GridStatusTankCooldown.db.profile.alert_tankcd_secondary.showlatest = v end,
     },
 }
 
@@ -401,54 +389,72 @@ function GridStatusTankCooldown:UpdateAllUnits()
 	end
 end
 
-function GridStatusTankCooldown:ScanSpells(active_spells, unitid, unitguid, status_name)
-    local settings = self.db.profile[status_name]
-    if not settings.enable then return end
+function GridStatusTankCooldown:ScanSpells(active_spells, status_name, active_spells2, status_name2, unitid, unitguid)
+    local settings1 = self.db.profile[status_name]
+    local settings2 = self.db.profile[status_name2]
+    if not settings1.enable and not settings2.enable then return end
 
-    local l_starttime, l_text, l_icon, l_count, l_duration, l_expirationTime;
+    local l_starttime, l_text, l_icon, l_count, l_duration, order;
+    local l_starttime2, l_text2, l_icon2, l_count2, l_duration2;
+    local enable1, enable2 = settings1.enable, settings2.enable
 
-    for _, spellid in ipairs(active_spells) do
-        local name, _, icon, count, _, duration, expirationTime, caster;
-        local spellname = spellnames[spellid]
-        if spellname then
-            if debuffs[spellid] then
-                name, _, icon, count, _, duration, expirationTime, caster = Aby_UnitDebuff(unitid, spellname)
-            else
-                name, _, icon, count, _, duration, expirationTime, caster = Aby_UnitBuff(unitid, spellname)
-            end
-        end
+    -- Buff和Debuff必须循环两次
+    for i=1, 40 do
+        local name, icon, count, _, duration, expirationTime, caster, _, _, spellId = UnitAura(unitid, i)
+        if not name then break end
 
-        if name then
-            local text
-            if settings.showtextas == "caster" then
-                if caster then
-                    text = UnitName(caster)
+        local spell_order = active_spells[spellId]
+        local active = settings1.enable and spell_order and 1 or settings2.enable and active_spells2[spellId] and 2
+        if active then
+            local settings = active == 1 and settings1 or settings2
+            local text = settings.showtextas == "caster" and (caster and UnitName(caster) or '') or name
+            local starttime = expirationTime - duration
+            if active == 1 then
+                -- 如果显示最后释放，则比较时间，否则比较次序
+                if settings.showlatest and (not l_starttime or l_starttime < starttime)
+                        or (not order or order > spell_order) then
+                    l_starttime, l_text, l_icon, l_count, l_duration = starttime, text, icon, count, duration
+                    order = spell_order
                 end
             else
-                text = name
+                --次级技能没有次序，只能按时间比较
+                if not l_starttime2 or l_starttime2 < starttime then
+                    l_starttime2, l_text2, l_icon2, l_count2, l_duration2 = starttime, text, icon, count, duration
+                end
             end
+        end
+    end
 
+    -- 本来是可以根据有没有debuff来循环，但考虑到自律技能，所以都要循环
+    -- 这段代码除了加了一个'HARMFUL'其他一模一样
+    for i=1, 40 do
+        local name, icon, count, _, duration, expirationTime, caster, _, _, spellId = UnitAura(unitid, i, 'HARMFUL')
+        if not name then break end
+
+        local spell_order = active_spells[spellId]
+        local active = settings1.enable and spell_order and 1 or settings2.enable and active_spells2[spellId] and 2
+        if active then
+            local settings = active == 1 and settings1 or settings2
+            local text = settings.showtextas == "caster" and (caster and UnitName(caster) or '') or name
             local starttime = expirationTime - duration
-
-            if not l_starttime or l_starttime < starttime then
-                l_starttime = starttime
-                l_text = text
-                l_count = count
-                l_duration = duration
-                l_expirationTime = expirationTime
-                l_icon = icon
+            if active == 1 then
+                -- 如果显示最后释放，则比较时间，否则比较次序
+                if settings.showlatest and (not l_starttime or l_starttime < starttime)
+                        or (not order or order > spell_order) then
+                    l_starttime, l_text, l_icon, l_count, l_duration = starttime, text, icon, count, duration
+                    order = spell_order
+                end
+            else
+                --次级技能没有次序，只能按时间比较
+                if not l_starttime2 or l_starttime2 < starttime then
+                    l_starttime2, l_text2, l_icon2, l_count2, l_duration2 = starttime, text, icon, count, duration
+                end
             end
-
-            if not settings.showlatest then break end
         end
     end
 
     if l_starttime then
-        self.core:SendStatusGained(unitguid,
-            status_name,
-            settings.priority,
-            (settings.range and 40),
-            settings.color,
+        self.core:SendStatusGained(unitguid, status_name, settings1.priority, (settings1.range and 40), settings1.color,
             l_text,
             0,							-- value
             nil,						-- maxValue
@@ -456,17 +462,29 @@ function GridStatusTankCooldown:ScanSpells(active_spells, unitid, unitguid, stat
             l_starttime,	            -- start
             l_duration,					-- duration
             l_count)					-- stack
-        return
+    else
+        self.core:SendStatusLost(unitguid, status_name)
     end
 
-    self.core:SendStatusLost(unitguid, status_name)
+    if l_starttime2 then
+        self.core:SendStatusGained(unitguid, status_name2, settings2.priority, (settings2.range and 40), settings2.color,
+            l_text2,
+            0,							-- value
+            nil,						-- maxValue
+            l_icon2,					-- icon
+            l_starttime2,	            -- start
+            l_duration2,				-- duration
+            l_count2)					-- stack
+    else
+        self.core:SendStatusLost(unitguid, status_name2)
+    end
 end
+
 function GridStatusTankCooldown:ScanUnit(event, unitid, unitguid)
 	unitguid = unitguid or UnitGUID(unitid)
 	if not GridRoster:IsGUIDInRaid(unitguid) then
 		return
     end
     local _, clz = UnitClass(unitid)
-    GridStatusTankCooldown:ScanSpells(active_by_class[clz] or active_by_class.OTHER, unitid, unitguid, "alert_tankcd")
-    GridStatusTankCooldown:ScanSpells(active_by_class_2nd[clz] or active_by_class_2nd.OTHER, unitid, unitguid, "alert_tankcd_secondary")
+    GridStatusTankCooldown:ScanSpells(active_by_class[clz] or active_by_class.OTHER, "alert_tankcd", active_by_class_2nd[clz] or active_by_class_2nd.OTHER, "alert_tankcd_secondary", unitid, unitguid)
 end

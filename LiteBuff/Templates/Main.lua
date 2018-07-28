@@ -186,7 +186,7 @@ end
 
 local function Button_OnUpdate(self, elapsed)
 	self.updateElapsed = (self.updateElapsed or 0) + elapsed
-	if self.updateElapsed > 0.2 then
+	if self.updateElapsed > 0.5 then
 		self.updateElapsed = 0
 		Button_UpdateText(self)
 		Button_Call(self, "OnTick")

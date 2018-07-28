@@ -1,4 +1,4 @@
-local VERSION = 66
+local VERSION = 67
 
 --[[
 Special icons for rares, pvp or pet battle quests in list
@@ -178,6 +178,9 @@ Added reward type on icons on map [in testmode, you can enable it in options]
 Added "Start a group" button after success search
 Bigger icons on general map in fullscreen map mode
 More blacklisted quests (kirin tor & tortollan puzzles)
+
+LFG: "Convert to raid" popup must not be displayed for non-elite quests
+Minor fixes
 ]]
 
 local GlobalAddonName, WQLdb = ...
@@ -1044,7 +1047,7 @@ WorldQuestList:SetScript("OnEvent",function(self,event,...)
 		end
 		if not (type(VWQL.VERSION)=='number') or VWQL.VERSION < 66 then
 			VWQL.DisableRewardIcons = true
-		end			
+		end
 		
 		WorldQuestList.modeSwitcherCheck:AutoSetValue()
 
@@ -5404,6 +5407,8 @@ function WorldQuestList_Update(preMapID)
 	end
 end
 
+WorldQuestList.UpdateList = WorldQuestList_Update
+
 C_Timer.NewTicker(.8,function()
 	if UpdateTicker then
 		UpdateTicker = nil
@@ -6323,6 +6328,7 @@ do
 		end
 		for i=1,16 do
 			pointsFrames[i]:Show()
+			pointsFrames[i].M:ClearModel()
 		end
 		OkButton:Show()
 		CloseButton:Show()
@@ -7117,6 +7123,7 @@ function WQL_LFG_StartQuest(questID)
 			
 			edit:ClearAllPoints()
 			edit:SetPoint(unpack(defPoints[edit]))
+			edit.Instructions:SetText(LFG_LIST_ENTER_NAME)
 
 			PVEFrame_ToggleFrame()
 			QuestCreationBox:Hide()						
@@ -7137,6 +7144,7 @@ function WQL_LFG_StartQuest(questID)
 	
 	edit:ClearAllPoints()
 	edit:SetPoint("TOP",QuestCreationBox,"TOP",0,-50)
+	edit.Instructions:SetText(questID)
 end
 WorldQuestList.LFG_StartQuest = WQL_LFG_StartQuest
 
@@ -7148,6 +7156,7 @@ LFGListFrame.EntryCreation:HookScript("OnShow",function()
 
 	edit:ClearAllPoints()
 	edit:SetPoint(unpack(defPoints[edit]))
+	edit.Instructions:SetText(LFG_LIST_ENTER_NAME)
 end)
 
 QuestCreationBox:SetScript("OnHide",function()
@@ -7158,6 +7167,7 @@ QuestCreationBox:SetScript("OnHide",function()
 
 	edit:ClearAllPoints()
 	edit:SetPoint(unpack(defPoints[edit]))
+	edit.Instructions:SetText(LFG_LIST_ENTER_NAME)
 
 	edit:ClearFocus()
 	
@@ -7308,6 +7318,7 @@ LFGListFrameSearchPanelShowerFrame:SetScript("OnHide",function()
 end)
 
 QuestCreationBox:RegisterEvent("LFG_LIST_SEARCH_RESULTS_RECEIVED")
+QuestCreationBox:RegisterEvent("LFG_LIST_APPLICANT_LIST_UPDATED")
 QuestCreationBox:RegisterEvent("QUEST_TURNED_IN")
 QuestCreationBox:RegisterEvent("QUEST_ACCEPTED")
 QuestCreationBox:RegisterEvent("QUEST_REMOVED")
@@ -7331,6 +7342,21 @@ QuestCreationBox:SetScript("OnEvent",function (self,event,arg1,arg2)
 				end
 			end
 		end
+	elseif event == "LFG_LIST_APPLICANT_LIST_UPDATED" then
+		if not VWQL or VWQL.DisableLFG or not UnitIsGroupLeader("player", LE_PARTY_CATEGORY_HOME) or not select(9, C_LFGList.GetActiveEntryInfo()) then
+			return
+		end
+		local active, activityID, ilvl, honorLevel, name, comment, voiceChat, duration, autoAccept, privateGroup, lfg_questID = C_LFGList.GetActiveEntryInfo()
+		local questID = tonumber(name or "?")
+		if not questID then
+			questID = lfg_questID
+		end
+		if questID and questID > 10000 and questID < 1000000 then
+			local tagID, tagName, worldQuestType, rarity, isElite, tradeskillLineIndex, displayTimeLeft = GetQuestTagInfo(questID)
+			if rarity and not isElite then
+				StaticPopup_Hide("LFG_LIST_AUTO_ACCEPT_CONVERT_TO_RAID")
+			end			
+		end		
 	elseif event == "QUEST_TURNED_IN" then
 		if not VWQL or VWQL.DisableLFG or not arg1 then
 			return
@@ -7399,7 +7425,7 @@ local objectiveTrackerButtons = {}
 WorldQuestList.LFG_objectiveTrackerButtons = objectiveTrackerButtons
 
 local function objectiveTrackerButtons_OnClick(self,button)
-	if C_LFGList.GetActiveEntryInfo() or (GetNumGroupMembers() or 0) > 1 then
+	if C_LFGList.GetActiveEntryInfo() or ((GetNumGroupMembers() or 0) > 1 and not UnitIsGroupLeader("player")) then
 		StaticPopupDialogs["WQL_LFG_LEAVE"] = {
 			text = PARTY_LEAVE,
 			button1 = YES,
@@ -7574,7 +7600,7 @@ do
 					
 					local tagID, tagName, worldQuestType, rarity, isElite, tradeskillLineIndex, displayTimeLeft = GetQuestTagInfo(obj.questID)
 					
-					local iconAtlas,iconTexture = nil
+					local iconAtlas,iconTexture,iconVirtual = nil
 					local ajustSize,ajustMask = 0
 					local amount,amountIcon,amountColor = 0
 					
@@ -7663,6 +7689,19 @@ do
 								end
 							elseif itemID == 152960 or itemID == 152957 then
 								iconAtlas = "poi-workorders"
+							elseif itemID == 163857 then
+								iconTexture = icon
+								ajustMask = true
+								ajustSize = 4
+							end
+							if worldQuestType == LE.LE_QUEST_TAG_TYPE_PET_BATTLE then
+								iconVirtual = true
+								amountIcon = icon
+								amount = numItems
+							elseif worldQuestType == LE.LE_QUEST_TAG_TYPE_DUNGEON or worldQuestType == LE.LE_QUEST_TAG_TYPE_RAID then
+								iconVirtual = true
+								amountIcon = icon
+								amount = itemLevel or numItems								
 							end
 						end
 					end
@@ -7673,22 +7712,24 @@ do
 						iconAtlas,iconTexture = nil
 					end
 					
-					if iconTexture or iconAtlas then
-						icon:SetSize(26+ajustSize,26+ajustSize)
-						obj.WQL_rewardIconWMask:SetSize(26+ajustSize,26+ajustSize)
-						if iconTexture then
-							if ajustMask then
-								obj.WQL_rewardIconWMask:SetTexture(iconTexture)
-								icon:SetTexture()
+					if iconTexture or iconAtlas or iconVirtual then
+						if not iconVirtual then
+							icon:SetSize(26+ajustSize,26+ajustSize)
+							obj.WQL_rewardIconWMask:SetSize(26+ajustSize,26+ajustSize)
+							if iconTexture then
+								if ajustMask then
+									obj.WQL_rewardIconWMask:SetTexture(iconTexture)
+									icon:SetTexture()
+								else
+									obj.WQL_rewardIconWMask:SetTexture()
+									icon:SetTexture(iconTexture)
+								end
 							else
 								obj.WQL_rewardIconWMask:SetTexture()
-								icon:SetTexture(iconTexture)
+								icon:SetAtlas(iconAtlas)
 							end
-						else
-							obj.WQL_rewardIconWMask:SetTexture()
-							icon:SetAtlas(iconAtlas)
+							obj.Texture:SetTexture()
 						end
-						obj.Texture:SetTexture()
 						
 						if GENERAL_MAPS[GetCurrentMapAreaID()] then
 							amount = 0

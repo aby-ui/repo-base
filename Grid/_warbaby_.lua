@@ -17,7 +17,7 @@ Grid.options.args.Extra163 = {
         header = {
             order = 0,
             type = "description",
-            name = "您正在使用的是有爱发布的 Warbaby's Grid整合包，虽然并非核心框架的作者，但原创、修改、优化的内容仍耗费了上百小时，转发分享时请保留此信息，万谢!\n如有问题或建议欢迎到有爱官网 [ http://w.163.com/163ui ] 反馈"
+            name = "您正在使用的是有爱发布的 Warbaby's Grid整合包，虽然并非核心框架的作者，但原创、修改、优化的内容仍耗费了上百小时，转发分享时请保留此信息，万谢!"
         }
     }
 }
@@ -629,6 +629,8 @@ DependCall("GridStatusTankCooldown", function()
     local options = Grid.options.args.GridStatus.args.alert_tankcd
     options.order = 80
     extra163.alert_tankcd = options
+    local options = Grid.options.args.GridStatus.args.alert_tankcd_secondary
+    options.order = 81
 end)
 
 DependCall("BigDebuffs", function()

@@ -515,8 +515,9 @@ function U1_MMBCreateCoordsButton()
     tex:SetAllPoints(btn)
     local fot= btn:CreateFontString(nil,"ARTWORK","GameFontNormal")
     fot:SetPoint("CENTER")
+    local HBD = LibStub("HereBeDragons-2.0")
     local function MinimapCoordsButton_OnUpdate()
-        local px, py = GetPlayerMapPosition("player");
+        local px, py = HBD:GetPlayerZonePosition(false)
         if not px or not py then btn.originShown = btn:IsShown() btn:Hide() return end
         if btn.originShown then btn:Show() btn.originShown = nil end
         if(px == 0 and py == 0) then

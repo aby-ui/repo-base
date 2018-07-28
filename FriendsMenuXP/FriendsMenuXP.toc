@@ -1,5 +1,5 @@
 ## Interface: 80000
-## Author: Warbaby @ 有爱 w.163.com/163ui
+## Author: Warbaby @ 有爱 github.com/aby-ui
 ## Title: FriendsMenuXP
 ## Notes: Greatly extends the player drop down menu without secure taint.
 localization.enUS.lua

@@ -780,7 +780,7 @@ function TomTom:AddWaypointToCurrentZone(x, y, desc)
         return
     end
 
-    return self:AddMFWaypoint(m, f, x/100, y/100, {title = desc})
+    return self:AddWaypoint(m, x/100, y/100, {title = desc})
 end
 
 -- Return a set of default callbacks that can be used by addons to provide

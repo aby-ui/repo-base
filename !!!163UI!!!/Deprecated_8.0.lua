@@ -2,12 +2,15 @@ TEXT = TEXT or function(text)
     return text
 end
 
+local hbdp = LibStub("HereBeDragons-2.0")
 GetPlayerMapPosition = GetPlayerMapPosition or function(unit)
-    local mapId = C_Map.GetBestMapForUnit(unit)
-    if not mapId then return end
-    local player = C_Map.GetPlayerMapPosition(mapId, unit)
-    if not player then return end
-    return player:GetXY()
+    local x, y, instance = hbdp:GetPlayerZonePosition(false)
+    return x, y
+    --local mapId = C_Map.GetBestMapForUnit(unit)
+    --if not mapId then return end
+    --local player = C_Map.GetPlayerMapPosition(mapId, unit)
+    --if not player then return end
+    --return player:GetXY()
 end
 
 GetCurrentMapAreaID = GetCurrentMapAreaID or function()
@@ -48,15 +51,15 @@ UnitPopupFrames = UnitPopupFrames or {}
 UnitAura, UnitDebuff
 ---------------------------------------------------------------]]
 function Aby_UnitAura_Proxy(UnitAuraFunc, unit, indexOrName, filterOrNil, filter, ...)
-    if type(indexOrName) == "number" then
-        return UnitAuraFunc(unit, indexOrName, filterOrNil, filter, ...)
-    else
+    --if type(indexOrName) == "number" then
+    --    return UnitAuraFunc(unit, indexOrName, filterOrNil, filter, ...)
+    --else
         for i = 1, 40 do
             local name, icon, count, dispelType, duration, expires, caster, isStealable, nameplateShowPersonal, spellID, canApplyAura, isBossDebuff, v1, nameplateShowAll, timeMod, value1, value2, value3, v3, v4, v5 = UnitAuraFunc(unit, i, filterOrNil, filter, ...)
             if not name then return end
             if name == indexOrName then return name, nil, icon, count, dispelType, duration, expires, caster, isStealable, nameplateShowPersonal, spellID, canApplyAura, isBossDebuff, v1, nameplateShowAll, timeMod, value1, value2, value3, v3, v4, v5 end
         end
-    end
+    --end
 end
 function Aby_UnitAura(unit, indexOrName, filterOrNil, filter, ...) return Aby_UnitAura_Proxy(UnitAura, unit, indexOrName, filterOrNil, filter, ...) end
 function Aby_UnitBuff(unit, indexOrName, filterOrNil, filter, ...) return Aby_UnitAura_Proxy(UnitBuff, unit, indexOrName, filterOrNil, filter, ...) end

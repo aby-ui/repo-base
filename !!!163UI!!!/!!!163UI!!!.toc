@@ -10,7 +10,6 @@
 
 #U1DBG 23K, U1DB.addons=25K, configs=3K, tags=2K, frames=3K,
 
-Deprecated_8.0.lua
 SoundKitMap.lua
 RunFirst.lua
 
@@ -23,6 +22,8 @@ Libs\CoreLibs.xml
 Core\copy\copy.xml
 Core\Core.lua
 Core\UI\UI.xml
+
+Deprecated_8.0.lua
 
 #4K
 RunSecond.lua

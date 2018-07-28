@@ -43,7 +43,7 @@ function GridClickSetsFrame_OnEvent(self, event, arg1)
     elseif(event=="VARIABLES_LOADED") then
         if not U1 then
             if(GetLocale()=="zhCN") then
-                DEFAULT_CHAT_FRAME:AddMessage("GridClickSets - |cffff3333有爱|r (w.163.com/163ui)")
+                DEFAULT_CHAT_FRAME:AddMessage("GridClickSets - |cffff3333有爱|r (github.com/aby-ui)")
             elseif(GetLocale()=="zhTW") then
                 DEFAULT_CHAT_FRAME:AddMessage("GridClickSets - |cff3399FF三月十二|r@聖光之願|cffFF00FF<冰封十字軍>|r.")
             end

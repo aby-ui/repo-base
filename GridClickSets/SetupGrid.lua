@@ -78,7 +78,6 @@ addon.DependOn("Grid", function()
     local function initializeFrame(gridFrameObj, frame)
         frame.dropDown = CreateFrame("Frame", frame:GetName().."DropDown", frame, "UIDropDownMenuTemplate");
         frame.dropDown:SetPoint("TOPLEFT", frame, "BOTTOMLEFT", 0, 2);
-        tinsert(UnitPopupFrames, frame.dropDown:GetName());
         UIDropDownMenu_Initialize(frame.dropDown, GridFrameDropDown_Initialize, "MENU");
         frame.menu = function()
             ToggleDropDownMenu(1, nil, frame.dropDown, frame:GetName(), 0, 0);

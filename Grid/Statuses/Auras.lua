@@ -1065,13 +1065,13 @@ function GridStatusAuras:AddAura(name, isBuff)
         name = GetSpellInfo(spellID)
         if not name then
             return DEFAULT_CHAT_FRAME:AddMessage("AddAura failed, no spell for id " .. name, 1, 0, 0)
-        elseif isBuff then
-            DEFAULT_CHAT_FRAME:AddMessage("Buff Auras can only be scan by name.", 1, 1, 0)
         end
-        desc = isBuff and format(L["Buff: %s"], name) or format(L["Debuff: %s"], "ID-"..name)
+        desc = isBuff and format(L["Buff: %s"], "ID-"..name) or format(L["Debuff: %s"], "ID-"..name)
         settings.text = self:TextForSpell(name)
         settings.desc = desc
-        if not isBuff then
+        if isBuff then
+            settings.buffID = spellID
+        else
             settings.debuffID = spellID
         end
     end
@@ -1682,10 +1682,10 @@ function GridStatusAuras:UpdateAuraScanList()
 				if isBuff then
 					if settings.mine then
 						self:Debug("Added to player_buff_names")
-						player_buff_names[name] = status
+						player_buff_names[settings.buffID or name] = status
 					else
 						self:Debug("Added to buff_names")
-						buff_names[name] = status
+						buff_names[settings.buffID or name] = status
 					end
 				else
 					self:Debug("Added to debuff_names")
@@ -1735,22 +1735,29 @@ function GridStatusAuras:ScanUnitAuras(event, unit, guid)
 
 	if UnitIsVisible(unit) then
 		-- scan for buffs
-		for buff_name in pairs(buff_names) do
-			local name, rank, icon, count, debuffType, duration, expirationTime, caster, isStealable = Aby_UnitAura(unit, buff_name, nil, "HELPFUL")
-			if name then
-				buff_names_seen[name] = true
-				self:UnitGainedBuff(guid, class, name, rank, icon, count, debuffType, duration, expirationTime, caster, isStealable)
-			end
-		end
 
-		-- scan for buffs cast by the player
-		for buff_name in pairs(player_buff_names) do
-			local name, rank, icon, count, debuffType, duration, expirationTime, caster, isStealable = Aby_UnitAura(unit, buff_name, nil, "HELPFUL|PLAYER")
-			if name then
-				player_buff_names_seen[name] = true
-				self:UnitGainedPlayerBuff(guid, class, name, rank, icon, count, debuffType, duration, expirationTime, caster, isStealable)
-			end
-		end
+        -- aby8 优化
+        for i = 1, 40 do
+            local name, icon, count, debuffType, duration, expirationTime, caster, isStealable, _, spellID = UnitAura(unit, i, "HELPFUL")
+            if not name then break end
+            if buff_names[spellID] then
+                buff_names[spellID] = true
+                self:UnitGainedBuff(guid, class, spellID, nil, icon, count, debuffType, duration, expirationTime, caster, isStealable)
+            elseif buff_names[name] then
+                buff_names_seen[name] = true
+                self:UnitGainedBuff(guid, class, name, nil, icon, count, debuffType, duration, expirationTime, caster, isStealable)
+            end
+    		-- scan for buffs cast by the player
+            if caster == 'player' then
+                if player_buff_names[spellID] then
+                    player_buff_names_seen[spellID] = true
+                    self:UnitGainedPlayerBuff(guid, class, spellID, nil, icon, count, debuffType, duration, expirationTime, caster, isStealable)
+                elseif player_buff_names[name] then
+                    player_buff_names_seen[name] = true
+                    self:UnitGainedPlayerBuff(guid, class, name, nil, icon, count, debuffType, duration, expirationTime, caster, isStealable)
+                end
+            end
+        end
 
 		-- scan for debuffs
 		for index = 1, 40 do
@@ -1760,19 +1767,19 @@ function GridStatusAuras:ScanUnitAuras(event, unit, guid)
             end
             if debuff_names[spellID] then
                 debuff_names_seen[spellID] = true
-                self:UnitGainedDebuff(guid, class, spellID, rank, icon, count, debuffType, duration, expirationTime, casterUnit, canStealOrPurge, shouldConsolidate, spellID, canApply, isBossAura, isCastByPlayer)
+                self:UnitGainedDebuff(guid, class, spellID, nil, icon, count, debuffType, duration, expirationTime, casterUnit, canStealOrPurge, shouldConsolidate, spellID, canApply, isBossAura, isCastByPlayer)
             elseif debuff_names[name] then
 				debuff_names_seen[name] = true
-				self:UnitGainedDebuff(guid, class, name, rank, icon, count, debuffType, duration, expirationTime, casterUnit, canStealOrPurge, shouldConsolidate, spellID, canApply, isBossAura, isCastByPlayer)
+				self:UnitGainedDebuff(guid, class, name, nil, icon, count, debuffType, duration, expirationTime, casterUnit, canStealOrPurge, shouldConsolidate, spellID, canApply, isBossAura, isCastByPlayer)
 			--[[
 			elseif isBossAura then
 				seenBossAura = true
-				self:UnitGainedBossDebuff(guid, class, name, rank, icon, count, debuffType, duration, expirationTime, casterUnit, canStealOrPurge, shouldConsolidate, spellID, canApply, isBossAura, isCastByPlayer)
+				self:UnitGainedBossDebuff(guid, class, name, nil, icon, count, debuffType, duration, expirationTime, casterUnit, canStealOrPurge, shouldConsolidate, spellID, canApply, isBossAura, isCastByPlayer)
 			]]
 			elseif debuff_types[debuffType] then
 				-- elseif so that a named debuff doesn't trigger the type status
 				debuff_types_seen[debuffType] = true
-				self:UnitGainedDebuffType(guid, class, name, rank, icon, count, debuffType, duration, expirationTime, casterUnit, canStealOrPurge, shouldConsolidate, spellID, canApply, isBossAura, isCastByPlayer)
+				self:UnitGainedDebuffType(guid, class, name, nil, icon, count, debuffType, duration, expirationTime, casterUnit, canStealOrPurge, shouldConsolidate, spellID, canApply, isBossAura, isCastByPlayer)
 			end
 		end
 	end

@@ -172,7 +172,7 @@ local function poi_OnClick(self, button)
     SetCVar("questPOI", 1)
 
     -- Run our logic, and set a waypoint for this button
-    local m = C_Map.GetBestMapForUnit("player")
+    local m
 
     QuestPOIUpdateIcons()
 
@@ -182,6 +182,12 @@ local function poi_OnClick(self, button)
     if questIndex and questIndex ~= 0 then
         title = GetQuestLogTitle(questIndex)
         completed, x, y = QuestPOIGetIconInfo(self.questID)
+        -- If the WorldMap is open, use the map's MapID, else guess the current players' map
+        if WorldMapFrame:IsShown() then
+            m = WorldMapFrame:GetMapID()
+        else
+            m = C_Map.GetBestMapForUnit("player")
+        end
     else
         -- Must be a World Quest
         title = C_TaskQuest.GetQuestInfoByQuestID(self.questID)
@@ -226,14 +232,9 @@ local function poi_OnClick(self, button)
     SetCVar("questPOI", cvar and 1 or 0)
 end
 
----LFO: Something needs to replace this!
----hooksecurefunc("TaskPOI_OnClick", function(self, button)
----    poi_OnClick(self, button)
----end)
----
----hooksecurefunc("QuestPOIButton_OnClick", function(self, button)
----    poi_OnClick(self, button)
----end)
+hooksecurefunc("QuestPOIButton_OnClick", function(self, button)
+    poi_OnClick(self, button)
+end)
 
 function TomTom:EnableDisablePOIIntegration()
     enableClicks= TomTom.profile.poi.enable
