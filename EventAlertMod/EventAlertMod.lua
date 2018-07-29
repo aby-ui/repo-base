@@ -3503,7 +3503,7 @@ function EventAlert_GroupFrameCheck_OnEvent(self, event, ...)
 						if (SubCheck.CheckAuraExist ~= nil) then
 							fShowResult = false;
 							local sSpellName, sSpellRank = GetSpellInfo(SubCheck.CheckAuraExist);
-							local sCurrSpellName, _, iStack, _, _, iExpireTime = UnitBuff(sUnitType, sSpellName, sSpellRank, sAuraFilter); --aby8
+							local sCurrSpellName, _, _, iStack, _, _, iExpireTime = Aby_UnitBuff(sUnitType, sSpellName, sSpellRank, sAuraFilter);
 							if sCurrSpellName ~= nil then
 								fShowResult = true;
 							else
@@ -3528,7 +3528,7 @@ function EventAlert_GroupFrameCheck_OnEvent(self, event, ...)
 						if (SubCheck.CheckAuraNotExist ~= nil) then
 							fShowResult = false;
 							local sSpellName, sSpellRank = GetSpellInfo(SubCheck.CheckAuraNotExist);
-							local sCurrSpellName = UnitBuff(sUnitType, sSpellName, sSpellRank, sAuraFilter);
+							local sCurrSpellName = Aby_UnitBuff(sUnitType, sSpellName, sSpellRank, sAuraFilter);
 							if sCurrSpellName == nil then
 								sCurrSpellName = Aby_UnitDebuff(sUnitType, sSpellName, sSpellRank, sAuraFilter);
 								if sCurrSpellName == nil then

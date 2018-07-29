@@ -1341,6 +1341,7 @@ do
   local itemCdDurs = {};
   local itemCdExps = {};
   local itemCdHandles = {};
+  local itemCdEnabled = {};
 
   local itemSlots = {};
   local itemSlotsCdDurs = {};
@@ -1441,9 +1442,9 @@ do
 
   function WeakAuras.GetItemCooldown(id)
     if(items[id] and itemCdExps[id] and itemCdDurs[id]) then
-      return itemCdExps[id] - itemCdDurs[id], itemCdDurs[id];
+      return itemCdExps[id] - itemCdDurs[id], itemCdDurs[id], itemCdEnabled[id];
     else
-      return 0, 0;
+      return 0, 0, itemCdEnabled[id] or 1;
     end
   end
 
@@ -1511,6 +1512,7 @@ do
     itemCdHandles[id] = nil;
     itemCdDurs[id] = nil;
     itemCdExps[id] = nil;
+    itemCdEnabled[id] = 1;
     WeakAuras.ScanEvents("ITEM_COOLDOWN_READY", id);
   end
 
@@ -1725,9 +1727,15 @@ do
   function WeakAuras.CheckItemCooldowns()
     for id, _ in pairs(items) do
       local startTime, duration, enabled = GetItemCooldown(id);
+      if (duration == 0) then
+        enabled = 1;
+      end
       if (enabled == 0) then
         startTime, duration = 0, 0
       end
+
+      local itemCdEnabledChanged = (itemCdEnabled[id] ~= enabled);
+      itemCdEnabled[id] = enabled;
       startTime = startTime or 0;
       duration = duration or 0;
       local time = GetTime();
@@ -1742,6 +1750,7 @@ do
           itemCdExps[id] = endTime;
           itemCdHandles[id] = timer:ScheduleTimerFixed(ItemCooldownFinished, endTime - time, id);
           WeakAuras.ScanEvents("ITEM_COOLDOWN_STARTED", id);
+          itemCdEnabledChanged = false;
         elseif(itemCdExps[id] ~= endTime) then
           -- Cooldown is now different
           if(itemCdHandles[id]) then
@@ -1751,6 +1760,7 @@ do
           itemCdExps[id] = endTime;
           itemCdHandles[id] = timer:ScheduleTimerFixed(ItemCooldownFinished, endTime - time, id);
           WeakAuras.ScanEvents("ITEM_COOLDOWN_CHANGED", id);
+          itemCdEnabledChanged = false;
         end
       elseif(duration > 0) then
       -- GCD, do nothing
@@ -1762,7 +1772,11 @@ do
             timer:CancelTimer(itemCdHandles[id]);
           end
           ItemCooldownFinished(id);
+          itemCdEnabledChanged = false;
         end
+      end
+      if (itemCdEnabledChanged) then
+        WeakAuras.ScanEvents("ITEM_COOLDOWN_CHANGED", id);
       end
     end
   end
@@ -1915,7 +1929,14 @@ do
 
     if not(items[id]) then
       items[id] = true;
-      local startTime, duration = GetItemCooldown(id);
+      local startTime, duration, enabled = GetItemCooldown(id);
+      if (duration == 0) then
+        enabled = 1;
+      end
+      if (enabled == 0) then
+        startTime, duration = 0, 0
+      end
+      itemCdEnabled[id] = enabled;
       if(duration > 0 and duration ~= WeakAuras.gcdDuration()) then
         local time = GetTime();
         local endTime = startTime + duration;
@@ -2112,18 +2133,21 @@ do
     return bars;
   end
 
-  function WeakAuras.GetDBMTimer(id, message, operator, spellId)
+  function WeakAuras.GetDBMTimer(id, message, operator, spellId, extendTimer)
     local bar;
     for k, v in pairs(bars) do
       if (WeakAuras.DBMTimerMatches(k, id, message, operator, spellId)
-        and (bar == nil or bars[k].expirationTime < bar.expirationTime)) then
+        and (bar == nil or bars[k].expirationTime < bar.expirationTime)
+        and (bars[k].expirationTime + extendTimer > GetTime() )) then
         bar = bars[k];
       end
     end
     return bar;
   end
 
-  function WeakAuras.CopyBarToState(bar, states, id)
+  function WeakAuras.CopyBarToState(bar, states, id, extendTimer)
+    extendTimer = extendTimer or 0;
+    if extendTimer + bar.duration < 0 then return end
     states[id] = states[id] or {};
     local state = states[id];
     state.show = true;
@@ -2131,13 +2155,17 @@ do
     state.icon = bar.icon;
     state.message = bar.message;
     state.name = bar.message;
-    state.expirationTime = bar.expirationTime;
+    state.expirationTime = bar.expirationTime + extendTimer;
     state.progressType = 'timed';
     state.resort = true;
-    state.duration = bar.duration;
+    state.duration = bar.duration + extendTimer;
     state.timerType = bar.timerType;
     state.spellId = bar.spellId;
     state.colorId = bar.colorId;
+    state.extend = extendTimer;
+    if extendTimer ~= 0 then
+        state.autoHide = true
+    end
   end
 
   function WeakAuras.RegisterDBMCallback(event)
@@ -2257,7 +2285,9 @@ do
     WeakAuras.RegisterBigWigsCallback("BigWigs_OnBossDisable");
   end
 
-  function WeakAuras.CopyBigWigsTimerToState(bar, states, id)
+  function WeakAuras.CopyBigWigsTimerToState(bar, states, id, extendTimer)
+    extendTimer = extendTimer or 0;
+    if extendTimer + bar.duration < 0 then return end
     states[id] = states[id] or {};
     local state = states[id];
     state.show = true;
@@ -2266,11 +2296,15 @@ do
     state.spellId = bar.spellId;
     state.text = bar.text;
     state.name = bar.text;
-    state.duration = bar.duration;
-    state.expirationTime = bar.expirationTime;
+    state.duration = bar.duration + extendTimer;
+    state.expirationTime = bar.expirationTime + extendTimer;
     state.resort = true;
     state.progressType = "timed";
     state.icon = bar.icon;
+    state.extend = extendTimer;
+    if extendTimer ~= 0 then
+      state.autoHide = true
+    end
   end
 
   function WeakAuras.BigWigsTimerMatches(id, addon, spellId, textOperator, text)
@@ -2312,12 +2346,14 @@ do
     return bars[id];
   end
 
-  function WeakAuras.GetBigWigsTimer(addon, spellId, operator, text)
+  function WeakAuras.GetBigWigsTimer(addon, spellId, operator, text, extendTimer)
     local bestMatch
     for id, bar in pairs(bars) do
       if (WeakAuras.BigWigsTimerMatches(id, addon, spellId, operator, text)) then
         if (bestMatch == nil or bar.expirationTime < bestMatch.expirationTime) then
-          bestMatch = bar;
+          if (bar.expirationTime + extendTimer > GetTime()) then
+            bestMatch = bar;
+          end
         end
       end
     end

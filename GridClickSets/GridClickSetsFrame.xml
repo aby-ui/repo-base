@@ -270,7 +270,7 @@
                 </Anchors>
                 <Scripts>
                     <OnClick>
-                        PlaySound163("igCharacterInfoTab");
+                        PlaySound(841);
                         GridClickSetsFrame_SaveOnClick()
                         PanelTemplates_Tab_OnClick(self, GridClickSetsFrame);
                         PanelTemplates_UpdateTabs(GridClickSetsFrame);
@@ -288,7 +288,7 @@
                 </Anchors>
                 <Scripts>
                     <OnClick>
-                        PlaySound163("igCharacterInfoTab");
+                        PlaySound(841);
                         GridClickSetsFrame_SaveOnClick()
                         PanelTemplates_Tab_OnClick(self, GridClickSetsFrame);
                         PanelTemplates_UpdateTabs(GridClickSetsFrame);
@@ -306,7 +306,7 @@
                 </Anchors>
                 <Scripts>
                     <OnClick>
-                        PlaySound163("igCharacterInfoTab");
+                        PlaySound(841);
                         GridClickSetsFrame_SaveOnClick()
                         PanelTemplates_Tab_OnClick(self, GridClickSetsFrame);
                         PanelTemplates_UpdateTabs(GridClickSetsFrame);
@@ -324,7 +324,7 @@
                 </Anchors>
                 <Scripts>
                     <OnClick>
-                        PlaySound163("igCharacterInfoTab");
+                        PlaySound(841);
                         GridClickSetsFrame_SaveOnClick()
                         PanelTemplates_Tab_OnClick(self, GridClickSetsFrame);
                         PanelTemplates_UpdateTabs(GridClickSetsFrame);
@@ -342,7 +342,7 @@
                 </Anchors>
                 <Scripts>
                     <OnClick>
-                        PlaySound163("igCharacterInfoTab");
+                        PlaySound(841);
                         GridClickSetsFrame_SaveOnClick()
                         PanelTemplates_Tab_OnClick(self, GridClickSetsFrame);
                         PanelTemplates_UpdateTabs(GridClickSetsFrame);
@@ -360,7 +360,7 @@
                 </Anchors>
                 <Scripts>
                     <OnClick>
-                        PlaySound163("igCharacterInfoTab");
+                        PlaySound(841);
                         GridClickSetsFrame_SaveOnClick()
                         PanelTemplates_Tab_OnClick(self, GridClickSetsFrame);
                         PanelTemplates_UpdateTabs(GridClickSetsFrame);
@@ -378,7 +378,7 @@
                 </Anchors>
                 <Scripts>
                     <OnClick>
-                        PlaySound163("igCharacterInfoTab");
+                        PlaySound(841);
                         GridClickSetsFrame_SaveOnClick()
                         PanelTemplates_Tab_OnClick(self, GridClickSetsFrame);
                         PanelTemplates_UpdateTabs(GridClickSetsFrame);

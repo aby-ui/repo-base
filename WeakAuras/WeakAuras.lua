@@ -664,8 +664,10 @@ local function formatValueForAssignment(vtype, value, pathToCustomFunction)
   if (value == nil) then
     value = false;
   end
-  if (vtype == "bool" or vtype == "number") then
-    return tostring(value);
+  if (vtype == "bool") then
+    return value and tostring(value) or "false";
+  elseif(vtype == "number") then
+    return value and tostring(value) or "0";
   elseif (vtype == "list") then
     return type(value) == "string" and string.format("%q", value) or "nil";
   elseif(vtype == "color") then
@@ -1737,6 +1739,8 @@ function WeakAuras.Delete(data)
   if (WeakAuras.mouseFrame) then
     WeakAuras.mouseFrame:delete(id);
   end
+
+  WeakAuras.customActionsFunctions[id] = nil;
 end
 
 function WeakAuras.Rename(data, newid)
@@ -1826,6 +1830,9 @@ function WeakAuras.Rename(data, newid)
   if (WeakAuras.mouseFrame) then
     WeakAuras.mouseFrame:rename(oldid, newid);
   end
+
+  WeakAuras.customActionsFunctions[newid] = WeakAuras.customActionsFunctions[oldid];
+  WeakAuras.customActionsFunctions[oldid] = nil;
 
   WeakAuras.ProfileRenameAura(oldid, newid);
 end
@@ -2523,7 +2530,7 @@ function WeakAuras.pAdd(data)
     WeakAuras.LoadCustomActionFunctions(data);
     WeakAuras.LoadConditionPropertyFunctions(data);
     local checkConditionsFuncStr = WeakAuras.ConstructConditionFunction(data);
-    local checkCondtionsFunc = checkConditionsFuncStr and WeakAuras.LoadFunction(checkConditionsFuncStr);
+    local checkCondtionsFunc = checkConditionsFuncStr and WeakAuras.LoadFunction(checkConditionsFuncStr, id);
     debug(id.." - Load", 1);
     debug(loadFuncStr);
 
@@ -3466,6 +3473,8 @@ function WeakAuras.GetAuraTooltipInfo(unit, index, filter)
   local tooltipSize = {};
   if(tooltipText) then
     for t in tooltipText:gmatch("(%d[%d%.,]*)") do
+      t = t:gsub(",", "");
+      t = t:gsub("%.", "");
       tinsert(tooltipSize, tonumber(t));
     end
   end
@@ -4092,12 +4101,18 @@ end
 local function ReplaceValuePlaceHolders(textStr, region, customFunc)
   local regionValues = region.values;
   local value;
-  if (textStr == "%c" and customFunc) then
-    WeakAuras.ActivateAuraEnvironment(region.id, region.cloneId, region.state);
-    local _;
-    _, value = xpcall(customFunc, geterrorhandler(), region.expirationTime, region.duration, regionValues.progress, regionValues.duration, regionValues.name, regionValues.icon, regionValues.stacks);
-    WeakAuras.ActivateAuraEnvironment(nil);
-    value = value or "";
+  if textStr:find("%%?c") then
+    if customFunc then
+      WeakAuras.ActivateAuraEnvironment(region.id, region.cloneId, region.state);
+      regionValues.custom = {select(2, xpcall(customFunc, geterrorhandler(), region.expirationTime, region.duration,
+            regionValues.progress, regionValues.duration, regionValues.name, regionValues.icon, regionValues.stacks))}
+      WeakAuras.ActivateAuraEnvironment(nil)
+    end
+    if not regionValues.custom then
+      return ""
+    end
+    local index = tonumber(textStr:match("%d+") or 1)
+    value = WeakAuras.EnsureString(regionValues.custom[index])
   else
     local variable = WeakAuras.dynamic_texts[textStr];
     if (not variable) then
@@ -4115,12 +4130,11 @@ function WeakAuras.ReplacePlaceHolders(textStr, region, customFunc)
   if (not regionState and not regionValues) then
     return;
   end
-
   -- We look backwards through the string
   -- Invariant currentPos - endPos is a ascii "alphabetic" string
   -- So on finding a "%" we extract  currentPos - endPos and depending
   -- on how long the string is look it up in regionState or in regionValues
-  -- textStr is in UTF-8 encoding. We assume all state variables are pure alphabetic strings
+  -- textStr is in UTF-8 encoding. We assume all state variables are pure alphanumeric strings
   local endPos = textStr:len();
   if (endPos < 2) then
     textStr = textStr:gsub("\\n", "\n");
@@ -4147,20 +4161,28 @@ function WeakAuras.ReplacePlaceHolders(textStr, region, customFunc)
         if (value) then
           textStr = string.sub(textStr, 1, currentPos - 1) .. value .. string.sub(textStr, endPos + 1);
         end
-    elseif (endPos > currentPos and regionState) then
-      local symbol = string.sub(textStr, currentPos + 1, endPos);
-      local value = regionState[symbol] and tostring(regionState[symbol]);
-      if (value) then
-        textStr = string.sub(textStr, 1, currentPos - 1) .. value .. string.sub(textStr, endPos + 1);
-      else
-        value = ReplaceValuePlaceHolders(string.sub(textStr, currentPos, currentPos + 1), region, customFunc);
-        value = value or "";
-        textStr = string.sub(textStr, 1, currentPos - 1) .. value .. string.sub(textStr, currentPos + 2);
+      elseif (endPos > currentPos) then
+        local symbol = string.sub(textStr, currentPos + 1, endPos);
+        local value
+        if symbol:find("^c%d*$") and regionValues then -- custom value
+          value = ReplaceValuePlaceHolders(symbol, region, customFunc)
+          if value then
+            textStr = string.sub(textStr, 1, currentPos - 1) .. value .. string.sub(textStr, endPos + 1);
+          end
+        elseif regionState then -- state value
+          value = regionState[symbol] and tostring(regionState[symbol]);
+          if (value) then
+            textStr = string.sub(textStr, 1, currentPos - 1) .. value .. string.sub(textStr, endPos + 1);
+          else
+            value = ReplaceValuePlaceHolders(string.sub(textStr, currentPos, currentPos + 1), region, customFunc);
+            value = value or "";
+            textStr = string.sub(textStr, 1, currentPos - 1) .. value .. string.sub(textStr, currentPos + 2);
+          end
+        end
       end
-    end
-    endPos = currentPos - 1;
-    elseif (char >= 65 and char <= 90) or (char >= 97 and char <= 122) then
-    -- a-zA-Z character
+      endPos = currentPos - 1;
+    elseif (char >= 48 and char <= 57) or (char >= 65 and char <= 90) or (char >= 97 and char <= 122) then
+      -- 0-9a-zA-Z character
     else
       endPos = currentPos - 1;
     end
@@ -4721,11 +4743,12 @@ function WeakAuras.ProfileRenameAura(oldid, id)
 end
 
 function WeakAuras.StartProfile()
-  prettyPrint(L["Profiling started."])
   if (profileData.systems.time and profileData.systems.time.count == 1) then
     prettyPrint(L["Profiling already started."]);
     return;
   end
+
+  prettyPrint(L["Profiling started."])
 
   profileData.systems = {};
   profileData.auras = {};
@@ -4743,11 +4766,12 @@ local function doNothing()
 end
 
 function WeakAuras.StopProfile()
-  prettyPrint(L["Profiling stopped."])
-  if (not profileData.systems.time or not profileData.systems.time.count == 1) then
+  if (not profileData.systems.time or profileData.systems.time.count ~= 1) then
     prettyPrint(L["Profiling not running."]);
     return;
   end
+
+  prettyPrint(L["Profiling stopped."])
 
   profileData.systems.time.elapsed = debugprofilestop() - profileData.systems.time.start;
   profileData.systems.time.count = 0;

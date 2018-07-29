@@ -1,7 +1,7 @@
 ## Interface: 80000
 ## Title: GridBuffIcons
 
-## Author: Warbaby @ 有爱
+## Author: warbaby @ 爱不易
 ## Grid Author: Pastamancer & Maia
 ## Dependencies: Grid
 

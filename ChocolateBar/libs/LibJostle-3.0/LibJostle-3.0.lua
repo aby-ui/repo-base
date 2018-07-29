@@ -27,7 +27,7 @@ local blizzardFrames = {
 	'PartyMemberFrame1',
 	'TicketStatusFrame',
 	'WorldStateAlwaysUpFrame',
-	'MainMenuBar',
+	--'MainMenuBar',
 	'MultiBarRight',
 	'CT_PlayerFrame_Drag',
 	'CT_TargetFrame_Drag',
@@ -44,7 +44,7 @@ local blizzardFrames = {
 	'DurabilityFrame',
 	'CastingBarFrame',
 	'OrderHallCommandBar',
-	'MicroButtonAndBagsBar',
+	--'MicroButtonAndBagsBar',
 }
 local blizzardFramesData = {}
 
@@ -166,12 +166,14 @@ JostleFrame:RegisterEvent("UNIT_ENTERED_VEHICLE")
 JostleFrame:RegisterEvent("UNIT_EXITED_VEHICLE")
 
 function Jostle:UNIT_ENTERED_VEHICLE()
-	MainMenuBar:SetMovable(true)
+    MainMenuBar:SetMovable(true)
 	MainMenuBar:SetUserPlaced(false)
+    --MicroButtonAndBagsBar:SetMovable(true)
+    --MicroButtonAndBagsBar:SetUserPlaced(false)
 end
 
 function Jostle:UNIT_EXITED_VEHICLE()
-	self:Refresh(MainMenuBar)
+	--self:Refresh(MainMenuBar)
 end
 
 function Jostle:PLAYER_ENTERING_WORLD()

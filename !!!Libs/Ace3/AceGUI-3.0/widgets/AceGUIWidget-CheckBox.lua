@@ -1,7 +1,7 @@
 --[[-----------------------------------------------------------------------------
 Checkbox Widget
 -------------------------------------------------------------------------------]]
-local Type, Version = "CheckBox", 25
+local Type, Version = "CheckBox", 26
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
@@ -91,7 +91,7 @@ local methods = {
 		if self.desc then
 			self.desc:SetWidth(width - 30)
 			if self.desc:GetText() and self.desc:GetText() ~= "" then
-				self:SetHeight(28 + self.desc:GetHeight())
+				self:SetHeight(28 + self.desc:GetStringHeight())
 			end
 		end
 	end,
@@ -211,7 +211,7 @@ local methods = {
 			self.desc:Show()
 			--self.text:SetFontObject(GameFontNormal)
 			self.desc:SetText(desc)
-			self:SetHeight(28 + self.desc:GetHeight())
+			self:SetHeight(28 + self.desc:GetStringHeight())
 		else
 			if self.desc then
 				self.desc:SetText("")

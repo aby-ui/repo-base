@@ -63,6 +63,8 @@ L["Absorbed"] = "已吸收"
 L["Action Usable"] = "动作可以使用"
 L["Active"] = "活跃"
 L["Additional Trigger Replacements"] = "额外触发器替代品"
+--[[Translation missing --]]
+L["Adjust Timer"] = "Adjust Timer"
 L["Affected"] = "受到影响"
 L["Aggro"] = "引起仇恨"
 L["Alert Type"] = "警报类型"

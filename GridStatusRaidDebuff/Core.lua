@@ -916,7 +916,6 @@ local zoneOrder = {
     [C_Map.GetMapInfo(807).name] = 4,
     [C_Map.GetMapInfo(777).name] = 5,
 }
-dump(zoneOrder)
 function GridStatusRaidDebuff:CreateZoneMenu(zone)
 	local args
 	if not debuff_list[zone] then

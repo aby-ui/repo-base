@@ -42,7 +42,7 @@ function ButtonThemer:Reskin()
 
     local Masque = LibStub('Masque', true)
     if Masque then
-        for _, groupName in pairs(Masque:Group(AddonName).SubList) do
+        for _, groupName in pairs(Masque:Group(AddonName).SubList or {}) do
             Masque:Group(AddonName, groupName):ReSkin()
         end
     end

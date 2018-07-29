@@ -7,7 +7,7 @@ for i=0, 100 do n2s_small[i] = tostring(i) end
 for i=0, 9 do for j=0, 9 do n2s_float[i+j/10] = format("%.1f", i+j/10) end end
 
 function noop() end
-function pdebug() print(debugstack(2)) end
+function pdebug(...) print("params", ...); print(debugstack(2)) end
 
 _empty_table = {};
 _temp_table = {};

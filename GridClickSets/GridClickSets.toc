@@ -2,7 +2,6 @@
 ## Title: GridClickSets
 
 ## Author: Warbaby
-## Version: 5.03.08
 ## OptionalDeps: Grid
 ## SavedVariablesPerCharacter: GridClickSetsForTalents
 

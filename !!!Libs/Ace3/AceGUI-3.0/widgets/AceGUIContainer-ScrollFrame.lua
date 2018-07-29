@@ -2,7 +2,7 @@
 ScrollFrame Container
 Plain container that scrolls its content and doesn't grow in height.
 -------------------------------------------------------------------------------]]
-local Type, Version = "ScrollFrame", 25
+local Type, Version = "ScrollFrame", 26
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
@@ -53,7 +53,7 @@ local methods = {
 		self.scrollframe:SetPoint("BOTTOMRIGHT")
 		self.scrollbar:Hide()
 		self.scrollBarShown = nil
-		self.content.height, self.content.width = nil, nil
+		self.content.height, self.content.width, self.content.original_width = nil, nil, nil
 	end,
 
 	["SetScroll"] = function(self, value)
@@ -103,6 +103,9 @@ local methods = {
 				self.scrollbar:Hide()
 				self.scrollbar:SetValue(0)
 				self.scrollframe:SetPoint("BOTTOMRIGHT")
+				if self.content.original_width then
+					self.content.width = self.content.original_width
+				end
 				self:DoLayout()
 			end
 		else
@@ -110,6 +113,9 @@ local methods = {
 				self.scrollBarShown = true
 				self.scrollbar:Show()
 				self.scrollframe:SetPoint("BOTTOMRIGHT", -20, 0)
+				if self.content.original_width then
+					self.content.width = self.content.original_width - 20
+				end
 				self:DoLayout()
 			end
 			local value = (offset / (viewheight - height) * 1000)
@@ -146,7 +152,8 @@ local methods = {
 
 	["OnWidthSet"] = function(self, width)
 		local content = self.content
-		content.width = width
+		content.width = width - (self.scrollBarShown and 20 or 0)
+		content.original_width = width
 	end,
 
 	["OnHeightSet"] = function(self, height)

@@ -337,6 +337,18 @@ local function BuildInterfacePanel(panel)
 	panel.ProfileLabel:SetPoint("TOPLEFT", panel.ActiveThemeDropdown, "BOTTOMLEFT", 20, -20)
 	panel.ProfileLabel:SetTextColor(255/255, 105/255, 6/255)
 
+    panel.LoadProfileOptionButton = CreateFrame("Button", "TidyPlatesLoadProfileOptionButton", panel, "UIPanelButtonTemplate")
+    panel.LoadProfileOptionButton:SetText("加载选项\n\n8.0以后加载选项会造成卡顿，所以改成手工加载")
+    panel.LoadProfileOptionButton:SetSize(410, 120)
+    panel.LoadProfileOptionButton:SetPoint("TOPRIGHT", panel, "TOPRIGHT", -15, -40)
+    panel.LoadProfileOptionButton:SetScript("OnClick", function(self)
+        if not IsAddOnLoaded("TidyPlatesHub") then
+            LoadAddOn("TidyPlatesHub")
+        end
+        ShowTidyPlatesHubPanel()
+        self:Hide()
+    end)
+
 	---------------
 	-- Column 1
 	---------------

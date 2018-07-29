@@ -481,31 +481,34 @@ local function BuildHubPanel(panel)
 	--panel:Hide()
 end
 
-
--- Create Instances of Panels
-local TankPanel = CreateHubInterfacePanel( "HubPanelSettingsTank", "|cFF3782D1坦克", "Tidy Plates" )
 TidyPlatesPanel:AddProfile("Tank")
-BuildHubPanel(TankPanel)
-function ShowTidyPlatesHubTankPanel() TidyPlatesUtility.OpenInterfacePanel(TankPanel) end
-
-
-local DamagePanel = CreateHubInterfacePanel( "HubPanelSettingsDamage", "|cFFFF1100输出", "Tidy Plates" )
 TidyPlatesPanel:AddProfile("Damage")
-BuildHubPanel(DamagePanel)
-function ShowTidyPlatesHubDamagePanel() TidyPlatesUtility.OpenInterfacePanel(DamagePanel) end
-
-
-
-local HealerPanel = CreateHubInterfacePanel( "HubPanelSettingsHealer", "|cFF44DD55治疗", "Tidy Plates"  )
 TidyPlatesPanel:AddProfile("Healer")
-BuildHubPanel(HealerPanel)
-function ShowTidyPlatesHubHealerPanel() TidyPlatesUtility.OpenInterfacePanel(HealerPanel) end
-
-
-local GladiatorPanel = CreateHubInterfacePanel( "HubPanelSettingsGladiator", "|cFFAA6600竞技场", "Tidy Plates"  )
 TidyPlatesPanel:AddProfile("Gladiator")
-BuildHubPanel(GladiatorPanel)
-function ShowTidyPlatesHubGladiatorPanel() TidyPlatesUtility.OpenInterfacePanel(GladiatorPanel) end
+
+-- 8.0 会导致缩放界面很慢，需要时再创建（而且创建很慢，加载的时候明显卡顿）
+local function CreateOptionsPanels()
+    -- Create Instances of Panels
+    local TankPanel = CreateHubInterfacePanel( "HubPanelSettingsTank", "|cFF3782D1坦克", "Tidy Plates" )
+    BuildHubPanel(TankPanel)
+    function ShowTidyPlatesHubTankPanel() TidyPlatesUtility.OpenInterfacePanel(TankPanel) end
+
+
+    local DamagePanel = CreateHubInterfacePanel( "HubPanelSettingsDamage", "|cFFFF1100输出", "Tidy Plates" )
+    BuildHubPanel(DamagePanel)
+    function ShowTidyPlatesHubDamagePanel() TidyPlatesUtility.OpenInterfacePanel(DamagePanel) end
+
+
+
+    local HealerPanel = CreateHubInterfacePanel( "HubPanelSettingsHealer", "|cFF44DD55治疗", "Tidy Plates"  )
+    BuildHubPanel(HealerPanel)
+    function ShowTidyPlatesHubHealerPanel() TidyPlatesUtility.OpenInterfacePanel(HealerPanel) end
+
+
+    local GladiatorPanel = CreateHubInterfacePanel( "HubPanelSettingsGladiator", "|cFFAA6600竞技场", "Tidy Plates"  )
+    BuildHubPanel(GladiatorPanel)
+    function ShowTidyPlatesHubGladiatorPanel() TidyPlatesUtility.OpenInterfacePanel(GladiatorPanel) end
+end
 
 
 
@@ -514,6 +517,7 @@ function ShowTidyPlatesHubGladiatorPanel() TidyPlatesUtility.OpenInterfacePanel(
 ---------------------------------------------
 
 function ShowTidyPlatesHubPanel()
+    if CreateOptionsPanels then CreateOptionsPanels() CreateOptionsPanels = nil end
 	local profile = TidyPlatesOptions.ActiveProfile
 	if profile == "Tank" then
 		ShowTidyPlatesHubTankPanel()

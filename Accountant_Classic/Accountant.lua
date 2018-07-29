@@ -661,7 +661,7 @@ end
 function AccountantTab_OnClick(self)
 	PanelTemplates_SetTab(AccountantFrame, self:GetID());
 	Accountant_CurrentTab = self:GetID();
-	PlaySound163("igCharacterInfoTab");
+	PlaySound(841);
 	Accountant_OnShow();
 end
 
