@@ -14,6 +14,6 @@ Localization.zhTW.lua
 BuyEmAll.lua
 BuyEmAll.xml
 
-## Title: |cff880303[有爱]|r BuyEmAll 批量购买
+## Title: |cff880303[爱不易]|r BuyEmAll 批量购买
 ## X-Vendor: AbyUI
 

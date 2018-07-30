@@ -8,6 +8,6 @@ Arrow.lua
 templates.xml
 WorldQuestsList.lua
 
-## Title-zhCN: |cff880303[有爱]|r World 世界任务列表
+## Title-zhCN: |cff880303[爱不易]|r World 世界任务列表
 ## X-Vendor: AbyUI
 

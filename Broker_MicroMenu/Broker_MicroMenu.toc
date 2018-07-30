@@ -15,6 +15,6 @@ localization.lua
 Broker_MicroMenu.lua
 Options.lua
 
-## Title: |cff880303[有爱]|r Broker 微型菜单
+## Title: |cff880303[爱不易]|r Broker 微型菜单
 ## Notes-zhCN: 在信息栏中显示微型菜单
 ## X-Vendor: AbyUI

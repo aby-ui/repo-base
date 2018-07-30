@@ -37,5 +37,5 @@ Core\Groups.lua
 Core\Options.lua
 
 
-## Title-zhCN: |cff880303[有爱]|r Masque 按钮美化
+## Title-zhCN: |cff880303[爱不易]|r Masque 按钮美化
 ## X-Vendor: AbyUI

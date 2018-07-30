@@ -39,7 +39,7 @@ TradeskillInfoOptions.lua
 #@end-debug@
 
 PatchBy163UI.lua
-## Title-zhCN: |cff880303[有爱]|r TradeSkill 商业技能百科
+## Title-zhCN: |cff880303[爱不易]|r TradeSkill 商业技能百科
 ## Notes-zhTW: 完整的商業技能百科
 ## Notes-zhCN: 完整的商业技能百科
 ## X-Vendor: AbyUI

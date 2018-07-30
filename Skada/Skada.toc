@@ -33,6 +33,6 @@ Version.lua
 modules.xml
 
 
-## Title: |cff880303[有爱]|r Skada 伤害统计
+## Title: |cff880303[爱不易]|r Skada 伤害统计
 ## Notes-zhCN: 与Recount统计方式不同的伤害统计插件.
 ## X-Vendor: AbyUI

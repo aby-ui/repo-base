@@ -12,6 +12,6 @@
 config.lua
 core.lua
 
-## Title: |cff880303[有爱]|r TargetNamepl 目标姓名版标记
+## Title: |cff880303[爱不易]|r TargetNamepl 目标姓名版标记
 ## X-Vendor: AbyUI
 

@@ -16,5 +16,5 @@ OmniBar.xml
 OmniBar.lua
 Options.lua
 
-## Title: |cff880303[有爱]|r OmniBar 敌方冷却监控
+## Title: |cff880303[爱不易]|r OmniBar 敌方冷却监控
 ## X-Vendor: AbyUI

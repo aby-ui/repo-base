@@ -18,7 +18,7 @@ handler.lua
 config.lua
 nodes.lua
 
-## Title-zhCN: |cff880303[有爱]|r HandyNotes 苏拉玛传送门
+## Title-zhCN: |cff880303[爱不易]|r HandyNotes 苏拉玛传送门
 ## X-Vendor: AbyUI
 
 

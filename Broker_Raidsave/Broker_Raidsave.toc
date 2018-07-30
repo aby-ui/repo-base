@@ -31,6 +31,6 @@ Locales\zhCN.lua
 Broker_RaidSave.lua
 
 
-## Title: |cff880303[有爱]|r Broker 团本进度
+## Title: |cff880303[爱不易]|r Broker 团本进度
 ## Notes-zhCN: 监控账号下各个角色的团队副本进度。
 ## X-Vendor: AbyUI

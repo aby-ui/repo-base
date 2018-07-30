@@ -30,6 +30,6 @@ Modules\Timer.lua
 Modules\Layout.lua
 Modules\Dispel.lua
 
-## Title-zhCN: |cff880303[有爱]|r Gladius 竞技场头像
+## Title-zhCN: |cff880303[爱不易]|r Gladius 竞技场头像
 ## Notes-zhCN: 竞技场显示对方的头像框体
 ## X-Vendor: AbyUI

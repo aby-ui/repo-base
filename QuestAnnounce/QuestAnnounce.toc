@@ -20,7 +20,7 @@ Localization.lua
 QuestAnnounce.lua
 Config.lua
 
-## Title: |cff880303[有爱]|r QuestAnn 任务进度通报
+## Title: |cff880303[爱不易]|r QuestAnn 任务进度通报
 ## Notes-zhCN: 任务进度通报，可以设置通报间隔及声音提示
 ## X-Vendor: AbyUI
 

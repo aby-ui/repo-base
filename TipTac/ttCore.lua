@@ -178,7 +178,7 @@ local TT_DefaultConfig = {
 };
 
 -- ----------------------------------------
--- 有爱设置showGuildRank
+-- 爱不易设置showGuildRank
 --    暴雪样式
 for k,v in pairs({
 	["fontSizeDelta"] = 2,

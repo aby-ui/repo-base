@@ -18,6 +18,6 @@ stacks.lua
 helpers.lua
 
 
-## Title: |cff880303[有爱]|r XLoot 拾取框增强
+## Title: |cff880303[爱不易]|r XLoot 拾取框增强
 ## Notes-zhCN: 美化拾取框,方便快捷的通告掉落到团队 工会 小队等频道.
 ## X-Vendor: AbyUI

@@ -96,5 +96,5 @@ Process\Battle.lua
 Process\Breeds.lua
 
 
-## Title-zhCN: |cff880303[有爱]|r Rematch 宠物战队
+## Title-zhCN: |cff880303[爱不易]|r Rematch 宠物战队
 ## X-Vendor: AbyUI

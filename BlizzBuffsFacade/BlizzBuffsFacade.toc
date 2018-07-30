@@ -12,6 +12,6 @@
 BlizzBuffsFacade.lua
 
 
-## Title: |cff880303[有爱]|r Masque 皮肤BlizzBuff
+## Title: |cff880303[爱不易]|r Masque 皮肤BlizzBuff
 ## Notes-zhCN: 用来美化暴雪默认按钮的插件。
 ## X-Vendor: AbyUI

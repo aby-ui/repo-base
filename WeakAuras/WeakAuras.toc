@@ -39,5 +39,5 @@ RegionTypes\Group.lua
 RegionTypes\DynamicGroup.lua
 RegionTypes\Model.lua
 
-## Title-zhCN: |cff880303[有爱]|r WeakAuras
+## Title-zhCN: |cff880303[爱不易]|r WeakAuras
 ## X-Vendor: AbyUI

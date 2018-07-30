@@ -21,6 +21,6 @@ wMarker.lua
 config.lua
 Bindings.xml
 
-## Title: |cff880303[有爱]|r wMarker 标记助手
+## Title: |cff880303[爱不易]|r wMarker 标记助手
 ## Notes-zhCN: 在界面上显示标记按钮和世界标记按钮
 ## X-Vendor: AbyUI

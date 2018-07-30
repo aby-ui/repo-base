@@ -21,6 +21,6 @@ Locales\zhTW.lua
 Broker_DurabilityInfo.lua
 
 
-## Title-zhCN: |cff880303[有爱]|r Broker 装备耐久信息
+## Title-zhCN: |cff880303[爱不易]|r Broker 装备耐久信息
 ## Notes-zhCN: 在信息条中显示人物装备耐久信息.
 ## X-Vendor: AbyUI

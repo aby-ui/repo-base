@@ -26,6 +26,6 @@ modules\Ability.lua
 #modules\AutoSelectPet.lua
 #modules\WatchPetBattle.lua
 
-## Title-zhCN: |cff880303[有爱]|r HPetBattle 宠物对战增强
-## Title-zhTW: |cff880303[有爱]|r HPetBattle 寵物對戰增強
+## Title-zhCN: |cff880303[爱不易]|r HPetBattle 宠物对战增强
+## Title-zhTW: |cff880303[爱不易]|r HPetBattle 寵物對戰增強
 ## X-Vendor: AbyUI

@@ -33,6 +33,6 @@ Options.lua
 
 Brokers.lua
 
-## Title: |cff880303[有爱]|r Chocolate 巧克力信息条
+## Title: |cff880303[爱不易]|r Chocolate 巧克力信息条
 ## Notes-zhCN: 可以自定义显示在屏幕边缘的信息条框体
 ## X-Vendor: AbyUI

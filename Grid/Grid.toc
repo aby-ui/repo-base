@@ -67,7 +67,7 @@ Statuses\Vehicle.lua
 Statuses\AurasByClass.lua
 _warbaby_.lua
 
-## Title: |cff880303[有爱]|r Grid 团队框架
+## Title: |cff880303[爱不易]|r Grid 团队框架
 ## Notes-zhCN: 强大的团队框体，支持多种功能。
 ## X-Vendor: AbyUI
 

@@ -10,5 +10,5 @@
 Core.lua
 Data.lua
 
-## Title-zhCN: |cff880303[有爱]|r HandyNotes春节长者
+## Title-zhCN: |cff880303[爱不易]|r HandyNotes春节长者
 ## X-Vendor: AbyUI

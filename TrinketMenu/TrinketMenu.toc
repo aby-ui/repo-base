@@ -14,6 +14,6 @@ TrinketMenuQueue.lua
 TrinketMenuQueue.xml
 localization.lua
 
-## Title: |cff880303[有爱]|r TrinketMenu 饰品管理
+## Title: |cff880303[爱不易]|r TrinketMenu 饰品管理
 ## Notes-zhCN: 便捷更换和监视饰品
 ## X-Vendor: AbyUI

@@ -39,6 +39,6 @@ Bindings.xml
 Blank.lua
 Profiles.lua
 
-## Title: |cff880303[有爱]|r ExRT 团长工具
+## Title: |cff880303[爱不易]|r ExRT 团长工具
 ## X-Vendor: AbyUI
 

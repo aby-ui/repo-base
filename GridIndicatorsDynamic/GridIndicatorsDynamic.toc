@@ -15,5 +15,5 @@ Texts.lua
 Icons.lua
 Box.lua
 
-## Title: |cff880303[有爱]|r Grid 边角文字图标
+## Title: |cff880303[爱不易]|r Grid 边角文字图标
 ## X-Vendor: AbyUI

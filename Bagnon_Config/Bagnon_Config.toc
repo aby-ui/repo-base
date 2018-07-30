@@ -10,5 +10,5 @@ main.lua
 common\Wildpants_Config.xml
 
 
-## Title-zhCN: |cff880303[有爱]|r Bagnon 整合背包配置
+## Title-zhCN: |cff880303[爱不易]|r Bagnon 整合背包配置
 ## X-Vendor: AbyUI

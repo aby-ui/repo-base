@@ -36,8 +36,8 @@ Tooltip.lua
 
 Util.lua
 
-## Title-zhCN: |cff880303[有爱]|r AuctionLite 拍卖助手
-## Title-zhTW: |cff880303[有爱]|r AuctionLite 拍賣助手
+## Title-zhCN: |cff880303[爱不易]|r AuctionLite 拍卖助手
+## Title-zhTW: |cff880303[爱不易]|r AuctionLite 拍賣助手
 ## Notes-zhCN: 拍卖行批量拍卖助手，一次性拍卖N件同样物品，Alt点击自动添加物品.
 ## Notes-zhTW: 拍賣行批量拍賣助手，一次性拍賣N件同樣物品，Alt點擊自動添加物品.
 ## X-Vendor: AbyUI

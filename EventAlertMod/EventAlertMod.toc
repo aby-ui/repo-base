@@ -30,8 +30,8 @@ EAM_SCDAlerts\EventAlert_SCDAlerts.xml
 EAM_GroupAlerts\EventAlert_GroupAlerts.xml
 
 
-## Title-zhCN: |cff880303[有爱]|r EventAlert 技能特效警报
-## Title-zhTW: |cff880303[有爱]|r EventAlert 法術觸發提示
+## Title-zhCN: |cff880303[爱不易]|r EventAlert 技能特效警报
+## Title-zhTW: |cff880303[爱不易]|r EventAlert 法術觸發提示
 ## Notes-zhCN: 监控的法术触发时, 以大型法术图示来提示玩家, 法术设定指令:/eam opt. 指令说明:/eam help.
 ## Notes-zhTW: 監控的法術觸發時, 以大型法術圖示來提示玩家, 法術設定指令:/eam opt. 指令說明:/eam help.
 ## X-Vendor: AbyUI

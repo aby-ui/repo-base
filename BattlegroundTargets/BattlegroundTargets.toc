@@ -29,7 +29,7 @@ BattlegroundTargets.lua
 
 
 
-## Title: |cff880303[有爱]|r Battle 战场PVP框体
+## Title: |cff880303[爱不易]|r Battle 战场PVP框体
 ## Notes-zhCN: 显示全部战场敌人。战场简洁敌对单位框体。
 ## Notes-zhTW: 顯示全部戰場敵人。戰場簡潔敵對單位框體。
 ## X-Vendor: AbyUI

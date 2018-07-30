@@ -35,6 +35,6 @@ Modules\BlackBook.lua
 Modules\DoNotWant.lua
 Modules\CarbonCopy.lua
 
-## Title-zhCN: |cff880303[有爱]|r Postal 邮箱助手
+## Title-zhCN: |cff880303[爱不易]|r Postal 邮箱助手
 ## Notes-zhCN: 邮箱功能增强助手
 ## X-Vendor: AbyUI

@@ -8,6 +8,6 @@
 locale.lua
 TheBurningTrade.lua
 
-## Title: |cff880303[有爱]|r TheBurning 交易界面
+## Title: |cff880303[爱不易]|r TheBurning 交易界面
 ## Notes-zhCN: 交易界面增强 造水助手,交易界面增强 by Warbaby (三月十二@聖光之願<冰封十字軍>)记录交易日期 内容等信息.
 ## X-Vendor: AbyUI

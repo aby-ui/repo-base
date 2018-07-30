@@ -11,7 +11,7 @@ Locales\locales.xml
 Core.lua
 Inspect.lua
 
-## Title: |cff880303[有爱]|r Fizzle 装备耐久显示
+## Title: |cff880303[爱不易]|r Fizzle 装备耐久显示
 ## Notes-zhCN: 边框品质着色、人物界面耐久度显示.
 ## Notes-zhTW: 邊框品質著色、人物界面耐久度顯示.
 ## X-Vendor: AbyUI

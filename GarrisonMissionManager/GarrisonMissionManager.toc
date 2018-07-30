@@ -26,6 +26,6 @@ MissionUI_OrderHall.lua
 GarrisonBuilding.lua
 Broker.lua
 
-## Title-zhCN: |cff880303[有爱]|r Garrison 要塞任务管家
+## Title-zhCN: |cff880303[爱不易]|r Garrison 要塞任务管家
 ## Notes-zhCN: 在要塞追随者任务面板增加帮助你选取最佳队伍的功能
 ## X-Vendor: AbyUI

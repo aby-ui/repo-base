@@ -10,6 +10,6 @@ main.lua
 components\components.xml
 
 
-## Title: |cff880303[有爱]|r Bagnon 公会银行整合
+## Title: |cff880303[爱不易]|r Bagnon 公会银行整合
 ## Notes: 在一个窗口中显示所有公会银行内的物品
 ## X-Vendor: AbyUI

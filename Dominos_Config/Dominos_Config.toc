@@ -11,6 +11,6 @@ widgets\include.xml
 panels\include.xml
 
 
-## Title-zhCN: |cff880303[有爱]|r Dominos 设置界面
+## Title-zhCN: |cff880303[爱不易]|r Dominos 设置界面
 ## Notes-zhCN: 多米诺-设置界面模块
 ## X-Vendor: AbyUI

@@ -6,6 +6,6 @@
 ## SavedVariables: TULLARANGE_COLORS
 tullaRange.lua
 
-## Title-zhCN: |cff880303[有爱]|r tulla 技能超距提示
+## Title-zhCN: |cff880303[爱不易]|r tulla 技能超距提示
 ## Notes-zhCN: 动作条技能距离提示插件，当你的法术或技能超出距离或者没有足够的法力值时，将该动作条按钮着色，颜色可以修改为你想要的任意颜色，在界面选项的插件里进行设置。
 ## X-Vendor: AbyUI

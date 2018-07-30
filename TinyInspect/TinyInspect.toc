@@ -26,6 +26,6 @@ InspectMouse.lua
 InspectRaid.lua
 
 
-## Title: |cff880303[有爱]|r TinyInspect 装等显示
+## Title: |cff880303[爱不易]|r TinyInspect 装等显示
 ## X-Vendor: AbyUI
 

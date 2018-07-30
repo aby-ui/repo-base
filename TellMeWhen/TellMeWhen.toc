@@ -208,6 +208,6 @@ LDB.lua
 
 TellMeWhen.xml
 
-## Title-zhCN: |cff880303[有爱]|r TellMeWhen
+## Title-zhCN: |cff880303[爱不易]|r TellMeWhen
 ## X-Vendor: AbyUI
 

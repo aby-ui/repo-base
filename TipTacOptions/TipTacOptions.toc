@@ -11,5 +11,5 @@ Libs\AzOptionsFactory.lua
 DropDowns.lua
 ttOptions.lua
 
-## Title-zhCN: |cff880303[有爱]|r TipTac 配置模块
+## Title-zhCN: |cff880303[爱不易]|r TipTac 配置模块
 ## X-Vendor: AbyUI

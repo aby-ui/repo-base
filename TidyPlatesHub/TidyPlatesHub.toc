@@ -22,8 +22,8 @@ functions\Widgets.lua
 
 Hub.lua
 
-## Title-zhCN: |cff880303[有爱]|r Tidy 姓名板主题核心接口
-## Title-zhTW: |cff880303[有爱]|r Tidy 姓名板主题核心接口
+## Title-zhCN: |cff880303[爱不易]|r Tidy 姓名板主题核心接口
+## Title-zhTW: |cff880303[爱不易]|r Tidy 姓名板主题核心接口
 ## Notes-zhCN: 强大到爆的多功能姓名版美化插件-风格兼容模块。
 ## Notes-zhTW: 強大到爆的多功能姓名版美化插件-風格兼容模塊。
 ## X-Vendor: AbyUI

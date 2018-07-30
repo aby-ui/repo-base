@@ -239,20 +239,20 @@ U1REASON_SHORT_DEP_NOT_DEMAND_LOADED = "Deps Err"
 --[[ 338]] L["原因"] = "Reason"
 --[[ 345]] L["依赖"] = "Depends"
 --[[ 354]] L["单体插件"] = "Individual Addon" --"Independent"
---[[ 356]] L["有爱整合版"] = "AbyUI Packed"
+--[[ 356]] L["爱不易整合版"] = "AbyUI Packed"
 --[[ 409]] L['|cffFFA3A3没有启用插件|r'] = '|cffFFA3A3No Loaded Addons|r'
---[[ 429]] L["　有爱整合　"] = "   AbyUI   "
+--[[ 429]] L[" 爱不易整合 "] = "   AbyUI   "
 --[[ 430]] L["　其他插件　"] = "   Uncategoried   "
 --[[ 430]] L["　单体插件　"] = "   Individual   "
 --[[ 494]] L["地图任务"] = "Map & Quest"
 --[[ 577]] L["正常模式"] = "UNUSED"
 --[[ 577]] L["将界面还原成普通模式，而不是半透明的精简模式"] = "UNUSED"
---[[ 581]] L["有爱设置"] = "Settings"
---[[ 597]] --L["有爱设置"] = true
---[[ 597]] L["直接显示有爱的介绍和配置项，再次点击则恢复当前的选择插件"] = "Jump to AbyUI's option page. Click the button again to go back to the former selected addon."
+--[[ 581]] L["爱不易设置"] = "Settings"
+--[[ 597]] --L["爱不易设置"] = true
+--[[ 597]] L["直接显示爱不易的介绍和配置项，再次点击则恢复当前的选择插件"] = "Jump to AbyUI's option page. Click the button again to go back to the former selected addon."
 --[[ 598]] L["快捷设置"] = "Quick Menu"
 --[[ 598]] L["一些常用的选项，以下拉菜单方式列出，可迅速进行设置。"] = "Some frequently used toggle options, shown in a dropdown menu."
---[[ 599]] --L["有爱设置"] = true
+--[[ 599]] --L["爱不易设置"] = true
 --[[ 599]] L["设置"] = "Opt"
 --[[ 621]] L["重载界面"] = "ReloadUI"
 --[[ 627]] --L["重载界面"] = true
@@ -360,7 +360,7 @@ L["Change profile name: "] = true
 
 --[[    ]] -- File: RunFirst.lua
 
---[[  32]] L["|cffcd1a1c【有爱】|r- "] = "|cffcd1a1cAbyUI|r - "
+--[[  32]] L["|cffcd1a1c【爱不易】|r- "] = "|cffcd1a1cAbyUI|r - "
 
 --[[    ]] -- File: Tags.lua
 

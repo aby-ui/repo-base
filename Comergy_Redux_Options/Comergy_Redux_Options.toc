@@ -16,7 +16,7 @@ locales\localization.zhTW.lua
 
 comergyopt.xml
 
-## Title-zhCN: |cff880303[有爱]|r Comergy 配置选项
+## Title-zhCN: |cff880303[爱不易]|r Comergy 配置选项
 ## Notes-zhCN: 轻量美观能量值及资源点数监视的插件
 ## X-Vendor: AbyUI
 

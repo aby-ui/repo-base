@@ -6,5 +6,5 @@ SBuff_BuffTimer.lua
 CastBy.lua
 BuffSizeAndCooldown.lua
 
-## Title-zhCN: |cff880303[有爱]|r 163UI 增益显示增强
+## Title-zhCN: |cff880303[爱不易]|r AbyUI 增益显示增强
 ## X-Vendor: AbyUI

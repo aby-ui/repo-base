@@ -29,7 +29,8 @@ local defaultDB = {
     CollectionsJournal = {save = true, },
     GuildFrame = {save = true, },
     FriendsFrame = {save = true, },
-    ObjectiveTrackerFrame = { save = true, }
+    ObjectiveTrackerFrame = { save = true, },
+    WorldMapFrame = {save = true, },
 }
 
 local userPlaced = {

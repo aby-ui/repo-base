@@ -12,7 +12,7 @@ c_core.lua
 d_config.lua
 e_finalize.lua
 
-## Title: |cff880303[有爱]|r KibQuest 任务怪物标记
+## Title: |cff880303[爱不易]|r KibQuest 任务怪物标记
 ## X-Vendor: AbyUI
 
 

@@ -14,5 +14,5 @@ TerraceofEndlessSpring.lua
 ThroneofThunder.lua
 SiegeofOrgrimmar.lua
 
-## Title: |cff880303[有爱]|r Grid 团队减益MoP
+## Title: |cff880303[爱不易]|r Grid 团队减益MoP
 ## X-Vendor: AbyUI

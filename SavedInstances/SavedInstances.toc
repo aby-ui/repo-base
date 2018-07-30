@@ -23,6 +23,6 @@ locale.lua
 SavedInstances.lua
 config.lua
 
-## Title-zhCN: |cff880303[有爱]|r SavedInstances 副本进度
+## Title-zhCN: |cff880303[爱不易]|r SavedInstances 副本进度
 ## X-Vendor: AbyUI
 

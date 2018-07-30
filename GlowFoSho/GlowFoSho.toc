@@ -25,7 +25,7 @@ locales\locales.xml
 enchants.lua
 GlowFoSho.lua
 
-## Title-zhCN: |cff880303[有爱]|r GlowFoSho 附魔特效预览
+## Title-zhCN: |cff880303[爱不易]|r GlowFoSho 附魔特效预览
 ## Notes-zhCN: 可以在试衣间预览武器附魔效果。
 ## Notes-zhTW: 可以在試衣間預覽武器附魔效果。
 ## X-Vendor: AbyUI

@@ -29,5 +29,5 @@
 Currencies.lua
 Broker_Currency.lua
 
-## Title-zhCN: |cff880303[有爱]|r Broker 信息条货币模块
+## Title-zhCN: |cff880303[爱不易]|r Broker 信息条货币模块
 ## X-Vendor: AbyUI

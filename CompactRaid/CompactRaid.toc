@@ -32,9 +32,9 @@ ToolFrames\embeds.xml
 OptionFrames\embeds.xml
 Modules\embeds.xml
 
-## Title: |cff880303[有爱]|r CompactRaid 团队框架
-## Title-zhCN: |cff880303[有爱]|r CompactRaid 团队框架
-## Title-zhTW: |cff880303[有爱]|r CompactRaid 團隊框架
+## Title: |cff880303[爱不易]|r CompactRaid 团队框架
+## Title-zhCN: |cff880303[爱不易]|r CompactRaid 团队框架
+## Title-zhTW: |cff880303[爱不易]|r CompactRaid 團隊框架
 ## Notes-zhCN: 增强和美化暴雪自带的团队框架。包括点击施法、减益DEBUFF显示等功能。
 ## Notes-zhTW: 增强和美化暴雪自带的团队框架。包括点击施法、减益DEBUFF显示等功能。
 ## X-Vendor: AbyUI

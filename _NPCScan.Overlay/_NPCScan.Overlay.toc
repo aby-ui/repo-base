@@ -77,5 +77,5 @@ Modules\Minimap.lua
 Modules\OmegaMap.lua
 Modules\Carbonite.lua
 
-## Title: |cff880303[有爱]|r _NPCScan 稀有精英路径
+## Title: |cff880303[爱不易]|r _NPCScan 稀有精英路径
 ## X-Vendor: AbyUI

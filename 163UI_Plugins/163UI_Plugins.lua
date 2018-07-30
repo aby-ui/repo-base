@@ -182,7 +182,7 @@ local function CoShelper(tooltip)
 			npccheck[npcid] = true
 		end
 		if npccheck[npcid] or IsShiftKeyDown() then
-			SendChatMessage("【有爱】"..GetUnitName(unit)..": "..line ,"PARTY" ,nil ,"1");
+			SendChatMessage("【爱不易】"..GetUnitName(unit)..": "..line ,"PARTY" ,nil ,"1");
 			SetRaidTarget(unit, tarIndex)
 			tarIndex=tarIndex+1
 			if tarIndex == 9 then tarIndex = 1 end;
@@ -235,7 +235,7 @@ CoreOnEvent("CHAT_MSG_SYSTEM", function(event, msg)
                 UIErrorsFrame:AddMessage("团长：" .. leader, 1, 0.5, 0)
                 UIErrorsFrame:AddMessage(ERR_PARTY_CONVERTED_TO_RAID, 1, 0.5, 0)
             end
-            SendChatMessage("【有爱】转团提醒，团长：" .. leader, "RAID")
+            SendChatMessage("【爱不易】转团提醒，团长：" .. leader, "RAID")
         end
     end
 end)
@@ -261,6 +261,6 @@ U1PLUG["FixBlizGuild"] = function()
                 --self:ClearAllPoints() self:SetPoint("TOPRIGHT", -1, 33) self:SetSize(50, 30) self:SetText("刷新")
             end)
             :un()
-            CoreUIEnableTooltip(btn, '有爱', '手工加载公会新闻，减少卡顿，可以在"有爱设置-小功能集合"里关闭此功能')
+            CoreUIEnableTooltip(btn, '有爱', '手工加载公会新闻，减少卡顿，可以在"爱不易设置-小功能集合"里关闭此功能')
         end)
 end

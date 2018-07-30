@@ -13,7 +13,7 @@
 
 Blizzmove.lua
 
-## Title: |cff880303[有爱]|r BlizzMove 框架移动
+## Title: |cff880303[爱不易]|r BlizzMove 框架移动
 ## Notes-zhCN: 方便快捷的移动游戏内某些原生的框体.比如游戏原生头像框体.
 ## X-Vendor: AbyUI
 

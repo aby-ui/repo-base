@@ -29,6 +29,6 @@ Cooldown.lua
 
 Notify.lua
 
-## Title: |cff880303[有爱]|r Ellipsis 法术计时
+## Title: |cff880303[爱不易]|r Ellipsis 法术计时
 ## Notes-zhCN: 提供实用、多目标的法术计时
 ## X-Vendor: AbyUI

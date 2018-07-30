@@ -368,7 +368,7 @@ function UUI.SetAddonTooltip(addonName, tip)
     if(not info.vendor)then
         tip:AddLine(L["单体插件"])
     else
-        tip:AddLine(L["有爱整合版"], 0, 0.82, 0)
+        tip:AddLine(L["爱不易整合版"], 0, 0.82, 0)
     end
 end
 
@@ -442,7 +442,7 @@ end
 function UUI.Left.Create(main)
     local left = main:Frame(nil, nil, "left"):TL(0, -UUI.TOP_HEIGHT-1):BR(main, "BL", UUI.LEFT_WIDTH, 0);
 
-    left:Button():Key("btn163"):Size(128,32):TL(-14,-6):Set3Fonts("U1FBannerHei"):SetText(L["　有爱整合　"])
+    left:Button():Key("btn163"):Size(128,32):TL(-14,-6):Set3Fonts("U1FBannerHei"):SetText(L[" 爱不易整合 "])
     :Texture(nil, nil, UUI.Tex'UI2-banner', 0,1,0,0.5):ToTexture("Normal"):ALL():up():un()
     left:Button():Key("btnSingle"):Size(128,32):BL(-14,16):Set3Fonts("U1FBannerHei"):SetText(UI163_USER_MODE and L["　其他插件　"] or L["　单体插件　"])
     :Texture(nil, nil, UUI.Tex'UI2-banner', 0,1,0.5,1):ToTexture("Normal"):TL(0,-1):BR(0,-1):up()
@@ -604,9 +604,9 @@ function UUI.Top.Create(main)
 	:SetHighlightTexture("Interface/Buttons/UI-Common-MouseHilight")
     :SetScript("OnClick", UUI.Top.ToggleQuickSettingDropDown):up()
     :un()
-    CoreUIEnableTooltip(main.setting, L["有爱设置"], L["直接显示有爱的介绍和配置项，再次点击则恢复当前的选择插件"])
+    CoreUIEnableTooltip(main.setting, L["爱不易设置"], L["直接显示爱不易的介绍和配置项，再次点击则恢复当前的选择插件"])
     CoreUIEnableTooltip(main.setting.dropbutton, L["快捷设置"], L["一些常用的选项，以下拉菜单方式列出，可迅速进行设置。"])
-    UUI.AddChangeWithColsButton(main.setting, L["有爱设置"], L["设置"])
+    UUI.AddChangeWithColsButton(main.setting, L["爱不易设置"], L["设置"])
 
     do
         --音量调整按钮

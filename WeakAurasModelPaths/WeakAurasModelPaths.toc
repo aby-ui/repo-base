@@ -15,5 +15,5 @@
 
 ModelPaths.lua
 
-## Title-zhCN: |cff880303[有爱]|r WeakAuras 模型库
+## Title-zhCN: |cff880303[爱不易]|r WeakAuras 模型库
 ## X-Vendor: AbyUI

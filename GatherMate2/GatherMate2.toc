@@ -57,6 +57,6 @@ Config.lua
 ## XML loads last because it only contains the pin template
 GatherMate2.xml
 
-## Title-zhCN: |cff880303[有爱]|r GatherMate2 采集助手
+## Title-zhCN: |cff880303[爱不易]|r GatherMate2 采集助手
 ## X-Vendor: AbyUI
 

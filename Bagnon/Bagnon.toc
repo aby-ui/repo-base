@@ -12,5 +12,5 @@ main.lua
 external\external.xml
 components\components.xml
 
-## Title-zhCN: |cff880303[有爱]|r Bagnon 背包整合
+## Title-zhCN: |cff880303[爱不易]|r Bagnon 背包整合
 ## X-Vendor: AbyUI

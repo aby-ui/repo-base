@@ -12,5 +12,5 @@ Core.lua
 Alliance.lua
 Horde.lua
 
-## Title-zhCN: |cff880303[有爱]|r HandyNotes万圣节糖罐
+## Title-zhCN: |cff880303[爱不易]|r HandyNotes万圣节糖罐
 ## X-Vendor: AbyUI

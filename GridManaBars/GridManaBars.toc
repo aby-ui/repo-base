@@ -24,5 +24,5 @@ GridBorderStyle\GBSLocal-enUS.lua
 GridBorderStyle\GBSLocal-zhCN.lua
 GridBorderStyle\GridBorderStyle.lua
 
-## Title: |cff880303[有爱]|r Grid 法力条与美化
+## Title: |cff880303[爱不易]|r Grid 法力条与美化
 ## X-Vendor: AbyUI

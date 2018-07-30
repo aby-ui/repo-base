@@ -9,8 +9,8 @@
 EN_UnitFrames.xml
 
 SBuff_Buffs.lua
-## Title: |cff880303[有爱]|r EN_UnitF 头像增强
-## Title-zhCN: |cff880303[有爱]|r EN _UnitFrames头像增强
+## Title: |cff880303[爱不易]|r EN_UnitF 头像增强
+## Title-zhCN: |cff880303[爱不易]|r EN _UnitFrames头像增强
 ## Notes-zhCN: 增强显示头像，显示目标的目标的目标，小队头像显示队员职业等级，并显示生命值及法力值
 ## Notes-zhTW: 增強顯示頭像，顯示目標的目標的目標，小隊頭像顯示隊員職業等級，並顯示生命值及法力值
 ## X-Vendor: AbyUI

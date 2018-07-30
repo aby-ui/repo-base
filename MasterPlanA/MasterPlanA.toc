@@ -6,6 +6,6 @@
 ## Version: A
 ..\MasterPlan\PlanA\PlanA.xml
 
-## Title: |cff880303[有爱]|r MasterPlan 库
+## Title: |cff880303[爱不易]|r MasterPlan 库
 ## Notes-zhCN: 要塞任务大师依赖插件
 ## X-Vendor: AbyUI

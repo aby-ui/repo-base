@@ -6,8 +6,8 @@
 
 Neon.lua
 
-## Title-zhCN: |cff880303[有爱]|r Tidy 姓名板Neon主题
-## Title-zhTW: |cff880303[有爱]|r Tidy 姓名板Neon主题
+## Title-zhCN: |cff880303[爱不易]|r Tidy 姓名板Neon主题
+## Title-zhTW: |cff880303[爱不易]|r Tidy 姓名板Neon主题
 ## Notes-zhCN: 强大到爆的多功能姓名版美化插件-NeonTheme风格模块。
 ## Notes-zhTW: 強大到爆的多功能姓名版美化插件-NeonTheme風格模塊。
 ## X-Vendor: AbyUI

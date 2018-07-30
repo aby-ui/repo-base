@@ -24,8 +24,8 @@ ShipMoI.lua
 LandingCache.lua
 LandingAlts.lua
 
-## Title-zhCN: |cff880303[有爱]|r MasterPlan 要塞任务大师
-## Title-zhTW: |cff880303[有爱]|r MasterPlan 要塞任務大師
+## Title-zhCN: |cff880303[爱不易]|r MasterPlan 要塞任务大师
+## Title-zhTW: |cff880303[爱不易]|r MasterPlan 要塞任務大師
 ## Notes-zhCN: 修改并简化追随者任务面板的操作
 ## Notes-zhTW: 修改并簡化追隨者任務面板的操作
 ## X-Vendor: AbyUI

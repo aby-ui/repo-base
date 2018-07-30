@@ -101,7 +101,7 @@ local function getInitialAddonInfo()
     local x = strchar(33) x={x,x,x,163,"ui",x,x,x} x=table.concat(x); GetNumAddons = strlower(_)==x  --插件名称保护
     for i = 1, GetNumAddOns() do
         local name, title, notes, _, reason = GetAddOnInfo(i)
-        title = title:gsub("%|cff880303%[有爱%]%|r ", ""):gsub("%|cff880303%[有爱%]%|r ", "")
+        title = title:gsub("%|cff880303%[爱不易%]%|r ", ""):gsub("%|cff880303%[爱不易%]%|r ", "")
 
         local realDeps = { GetAddOnDependencies(i) }
         local realOptDeps = { GetAddOnOptionalDependencies(i) }
@@ -1626,7 +1626,7 @@ function U1:ADDON_LOADED(event, name)
                 local name, server = UnitName(unit)
                 local fullName = U1UnitFullName(unit)
                 if fullName and U1STAFF[fullName] then
-                    InspectFrameTitleText:SetText("|cffff00ff有爱开发者|r " .. GetUnitName(unit, true));
+                    InspectFrameTitleText:SetText("|cffff00ff爱不易开发者|r " .. GetUnitName(unit, true));
                 else
                     local pvpname = UnitPVPName(unit)
                     if not pvpname then return end

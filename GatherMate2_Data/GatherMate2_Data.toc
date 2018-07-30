@@ -22,6 +22,6 @@ ArchaeologyData.lua
 GatherMateData.lua
 #Data_Legion.lua
 
-## Title-zhCN: |cff880303[有爱]|r GatherMate2 采集数据库
+## Title-zhCN: |cff880303[爱不易]|r GatherMate2 采集数据库
 ## X-Vendor: AbyUI
 

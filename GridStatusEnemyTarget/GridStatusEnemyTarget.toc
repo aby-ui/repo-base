@@ -10,5 +10,5 @@
 
 GridStatusEnemyTarget.lua
 
-## Title: |cff880303[有爱]|r Grid 敌方施法目标
+## Title: |cff880303[爱不易]|r Grid 敌方施法目标
 ## X-Vendor: AbyUI

@@ -291,7 +291,7 @@ function DEATH_ANNOUNCE_Print(msg, announce, link, deadName)
         if (announce=="FORCE" or DEATH_ANNOUNCE_IsEnabled()) and IsInGroup() then
             local channel = (IsInGroup(LE_PARTY_CATEGORY_INSTANCE) and "INSTANCE_CHAT") or (IsInRaid() and "RAID") or "PARTY"
             msg = msg:gsub("\124cffff0000(.-)\124r", "%1");
-            SendChatMessage(advised and msg or ("【有爱】"..msg), channel);
+            SendChatMessage(advised and msg or ("【爱不易】"..msg), channel);
             advised = true
             if(ChatFrame2) then
                 ChatFrame2:AddMessage(printMsg, .6, .6, .6);

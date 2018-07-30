@@ -23,5 +23,5 @@ Accountant.xml
 AccountantButton.xml
 AccountantOptions.xml
 
-## Title: |cff880303[有爱]|r Accountant 收支统计
+## Title: |cff880303[爱不易]|r Accountant 收支统计
 ## X-Vendor: AbyUI

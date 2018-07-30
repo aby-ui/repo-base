@@ -9,6 +9,6 @@ toggle.lua
 Bindings.lua
 MOGUBar.xml
 
-## Title:  |cff880303[有爱]|r ExtraAct 额外动作条
+## Title:  |cff880303[爱不易]|r ExtraAct 额外动作条
 ## Notes-zhCN: 显示额外动作条
 ## X-Vendor: AbyUI

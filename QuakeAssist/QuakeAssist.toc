@@ -13,5 +13,5 @@ Core.lua
 MainFrame.lua
 OptionFrame.lua
 
-## Title: |cff880303[有爱]|r QuakeAssist 震荡助手
+## Title: |cff880303[爱不易]|r QuakeAssist 震荡助手
 ## X-Vendor: AbyUI

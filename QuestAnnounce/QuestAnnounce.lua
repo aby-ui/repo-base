@@ -121,7 +121,7 @@ function QuestAnnounce:SendMsg(msg, abyui)
 	local announceTo = self.db.profile.announceTo
 
 	if (msg ~= nil and self.db.profile.settings.enable) then
-        if GetLocale():sub(1,2)=="zh" and (adviseSend <= 0 or abyui) then msg = L["【有爱】"]..msg end
+        if GetLocale():sub(1,2)=="zh" and (adviseSend <= 0 or abyui) then msg = L["【爱不易】"]..msg end
         local send_one = false
 
 		if(announceTo.chatFrame) then

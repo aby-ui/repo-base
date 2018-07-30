@@ -31,7 +31,7 @@ tooltipScanner.lua
 Overlay\_overlays.xml
 Plugins\_plugins.xml
 
-## Title: |cff880303[有爱]|r CanIMogIt 幻化提示
+## Title: |cff880303[爱不易]|r CanIMogIt 幻化提示
 ## Notes-zhCN: 在物品的鼠标提示上添加一行，告知是否已经收集此物品的幻化，或者哪个角色可以收集此幻化。
 ## X-Vendor: AbyUI
 

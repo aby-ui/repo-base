@@ -66,5 +66,5 @@ Dcr_DebuffsFrame.xml
 Dcr_LiveList.lua
 Dcr_LiveList.xml
 
-## Title: |cff880303[有爱]|r Decursive 一键驱散
+## Title: |cff880303[爱不易]|r Decursive 一键驱散
 ## X-Vendor: AbyUI

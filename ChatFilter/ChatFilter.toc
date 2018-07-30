@@ -15,5 +15,5 @@ core.lua
 BadBoy_Levels.lua
 #NoGoldSeller.lua
 
-## Title: |cff880303[有爱]|r ChatFilter 聊天过滤
+## Title: |cff880303[爱不易]|r ChatFilter 聊天过滤
 ## X-Vendor: AbyUI

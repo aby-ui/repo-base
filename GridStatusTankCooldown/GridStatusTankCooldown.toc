@@ -11,5 +11,5 @@
 SpellsWidget.lua
 GridStatusTankCooldown.lua
 
-## Title: |cff880303[有爱]|r Grid 坦克救命技能
+## Title: |cff880303[爱不易]|r Grid 坦克救命技能
 ## X-Vendor: AbyUI

@@ -10,6 +10,6 @@ TradeLog.lua
 RecentTradeFrame.xml
 TradeLogFrame.xml
 
-## Title: |cff880303[有爱]|r TradeLog 交易记录
+## Title: |cff880303[爱不易]|r TradeLog 交易记录
 ## Notes-zhCN: 交易记录 by Warbaby (三月十二@聖光之願<冰封十字軍>)
 ## X-Vendor: AbyUI

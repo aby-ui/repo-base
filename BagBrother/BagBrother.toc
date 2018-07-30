@@ -10,6 +10,6 @@ Events.lua
 API.lua
 Interface.lua
 
-## Title-zhCN: |cff880303[有爱]|r BagBrother 离线背包
+## Title-zhCN: |cff880303[爱不易]|r BagBrother 离线背包
 ## Notes-zhCN: 储存银行、背包的离线信息
 ## X-Vendor: AbyUI
