@@ -31,10 +31,10 @@ local function FindAura(unit, aura, selfcast, lacks, similar)
 	if similar then
 		name, icon, count, dispelType, duration, expires, caster, harmful = auraGroups:UnitAura(unit, aura)
 	else
-		name, icon, count, _, duration, expires = Aby_UnitBuff(unit, aura, nil, filter)
+		name, icon, count, _, _, duration, expires = Aby_UnitBuff(unit, aura, nil, filter)
 		if not name then
 			harmful = 1
-			name, icon, count, _, duration, expires = Aby_UnitDebuff(unit, aura, nil, filter)
+			name, icon, count, _, _, duration, expires = Aby_UnitDebuff(unit, aura, nil, filter)
 		end
 	end
 
@@ -89,11 +89,12 @@ local function Indicator_UpdateStatus(self)
 	text:SetTextColor(r, g, b)
 
 	if timeLeft then
-		if count > 1 then
+		text:SetFormattedText("%d", timeLeft)
+		--[[if count > 1 then
 			text:SetFormattedText("%d-%d", count, timeLeft)
 		else
 			text:SetFormattedText("%d", timeLeft)
-		end
+		end]]
 	else
 		text:SetText("N")
 	end
