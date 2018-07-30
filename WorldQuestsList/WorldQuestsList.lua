@@ -1,4 +1,4 @@
-local VERSION = 67
+local VERSION = 68
 
 --[[
 Special icons for rares, pvp or pet battle quests in list
@@ -181,6 +181,11 @@ More blacklisted quests (kirin tor & tortollan puzzles)
 
 LFG: "Convert to raid" popup must not be displayed for non-elite quests
 Minor fixes
+
+Added "Map icons scale" option
+Hovered world quest icon will be on top
+Added reward-on-icons for the flightmap
+Autotoggle all languages for LFG fliter search
 ]]
 
 local GlobalAddonName, WQLdb = ...
@@ -264,48 +269,50 @@ local LOCALE =
 		lfgDisablePopup = "Отключить всплывающее окно",
 		lfgDisableRightClickIcons = "Отключить правый клик по иконкам на карте",
 		disableRewardIcons = "Включить награду на иконках на карте",
+		mapIconsScale = "Масштаб иконок на карте",
 	} or
-	locale == "deDE" and {	--by Sunflow72
-		gear = "Ausrüstung",
-		gold = "Gold",
-		blood = "Blut von Sargeras",
-		knowledgeTooltip = "** Kann nach dem Erreichen des nächsten Artefaktwissens abgeschlossen werden",
-		disableArrow = "Deaktiviert den Pfeil",
-		anchor = "Anker",
-		totalap = "Artefaktmacht insgesamt: ",
-		totalapdisable = 'Deaktiviert "Gesamt-Artefaktmacht"',
-		timeToComplete = "Zeit zum Abschließen: ",
-		bountyIgnoreFilter = "Abgesandten Quests",
-		enigmaHelper = "Aktiviert Rätsel Helfer",
-		barrelsHelper = "Aktiviert Fässer Helfer",
-		honorIgnoreFilter = "PVP Quests",
-		ignoreFilter = "Filter ignorieren für",
-		epicIgnoreFilter = '"ELITE" Quests',
-		wantedIgnoreFilter = "GESUCHT:... Quests",    
-		apFormatSetup = "Artifaktmacht Format",
-		headerEnable = "Aktiviert die Kopfzeile",
-		disabeHighlightNewQuests = "Deaktiviert die Markierung für neue Quests",
-		distance = "Entfernung",
-		disableBountyIcon = "Deaktiviert die Abgesandtensymbole für Fraktionsnamen",
-		arrow = "Pfeil",
-		invasionPoints = "Invasions-Punkte",
-		argusMap = "Aktiviert Argus Karte",
-		ignoreList = "Ignorier-Liste",
-		addQuestsOpposite = "Füge Quests vom anderen Kontinent hinzu",
-		hideLegion = "Verberge Quests von Legion",
-		disableArrowMove = "Deaktiviert das Bewegen",
-		shellGameHelper = "Aktiviert Schalen-Spiel Helfer",
-		iconsOnMinimap = "Aktiviert die Symbole auf allgemeinen Karten",
-		addQuestsArgus = "Füge Quests von Argus hinzu",
-		lfgSearchOption = "Aktiviert die LFG-Suche",
-		lfgAutoinvite = "Aktiviert die automatische Einladungsoption",
-		lfgTypeText = "Gib die zu bearbeitenden Nummern (QuestID) ein ",
-		lfgLeftButtonClick = "Linksklick - Gruppe finden",
-		lfgLeftButtonClick2 = "Linksklick + Shift - Finde die Gruppe nach Namen",
-		lfgRightButtonClick = "Rechtsklick - Gruppe erstellen",
-		lfgDisablePopup = "Deaktiviert Popup im Questbereich",
-		lfgDisableRightClickIcons = "Deaktiviert die rechte Maustaste auf Kartensymbole",
-		disableRewardIcons = "Enable reward on map icons",
+	locale == "deDE" and {    --by Sunflow72
+	        gear = "Ausrüstung",
+	        gold = "Gold",
+	        blood = "Blut von Sargeras",
+	        knowledgeTooltip = "** Kann nach dem Erreichen des nächsten Artefaktwissens abgeschlossen werden",
+	        disableArrow = "Deaktiviert den Pfeil",
+	        anchor = "Anker",
+	        totalap = "Artefaktmacht insgesamt: ",
+	        totalapdisable = 'Deaktiviert "Gesamt-Artefaktmacht"',
+	        timeToComplete = "Zeit zum Abschließen: ",
+	        bountyIgnoreFilter = "Abgesandten Quests",
+	        enigmaHelper = "Aktiviert Rätsel Helfer",
+	        barrelsHelper = "Aktiviert Fässer Helfer",
+	        honorIgnoreFilter = "PVP Quests",
+	        ignoreFilter = "Filter ignorieren für",
+	        epicIgnoreFilter = '"ELITE" Quests',
+	        wantedIgnoreFilter = "GESUCHT:... Quests",    
+	        apFormatSetup = "Artefaktmacht Format",
+	        headerEnable = "Aktiviert die Kopfzeile",
+	        disabeHighlightNewQuests = "Deaktiviert die Markierung für neue Quests",
+	        distance = "Entfernung",
+	        disableBountyIcon = "Deaktiviert die Abgesandtensymbole für Fraktionsnamen",
+	        arrow = "Pfeil",
+	        invasionPoints = "Invasions-Punkte",
+	        argusMap = "Aktiviert Argus Karte",
+	        ignoreList = "Ignorier-Liste",
+	        addQuestsOpposite = "Fügt Quests vom anderen Kontinent hinzu",
+	        hideLegion = "Verbergt Quests von Legion",
+	        disableArrowMove = "Deaktiviert das Bewegen",
+	        shellGameHelper = "Aktiviert Schalen-Spiel Helfer",
+	        iconsOnMinimap = "Aktiviert die Symbole auf allgemeinen Karten",
+	        addQuestsArgus = "Fügt Quests von Argus hinzu",
+	        lfgSearchOption = "Aktiviert die LFG-Suche",
+	        lfgAutoinvite = "Aktiviert die automatische Einladungsoption",
+	        lfgTypeText = "Gib die zu bearbeitenden Nummern (QuestID) ein ",
+	        lfgLeftButtonClick = "Linksklick - Gruppe finden",
+	        lfgLeftButtonClick2 = "Linksklick + Shift - Gruppe finden nach Namen",
+	        lfgRightButtonClick = "Rechtsklick - Gruppe erstellen",
+	        lfgDisablePopup = "Deaktiviert Popup im Questbereich",
+	        lfgDisableRightClickIcons = "Deaktiviert die rechte Maustaste auf Kartensymbolen",
+	        disableRewardIcons = "Aktiviert die Belohnungssymbole auf Karten",
+		mapIconsScale = "Map icons scale",
 	} or
 	locale == "frFR" and {
 		gear = "Équipement",
@@ -348,6 +355,7 @@ local LOCALE =
 		lfgDisablePopup = "Disable popup in questarea",
 		lfgDisableRightClickIcons = "Disable right click on map icons",
 		disableRewardIcons = "Enable reward on map icons",
+		mapIconsScale = "Map icons scale",
 	} or
 	(locale == "esES" or locale == "esMX") and {
 		gear = "Equipo",
@@ -390,6 +398,7 @@ local LOCALE =
 		lfgDisablePopup = "Disable popup in questarea",
 		lfgDisableRightClickIcons = "Disable right click on map icons",
 		disableRewardIcons = "Enable reward on map icons",
+		mapIconsScale = "Map icons scale",
 	} or	
 	locale == "itIT" and {
 		gear = "Equipaggiamento",
@@ -432,6 +441,7 @@ local LOCALE =
 		lfgDisablePopup = "Disable popup in questarea",
 		lfgDisableRightClickIcons = "Disable right click on map icons",
 		disableRewardIcons = "Enable reward on map icons",
+		mapIconsScale = "Map icons scale",
 	} or
 	locale == "ptBR" and {
 		gear = "Equipamento",
@@ -474,6 +484,7 @@ local LOCALE =
 		lfgDisablePopup = "Disable popup in questarea",
 		lfgDisableRightClickIcons = "Disable right click on map icons",
 		disableRewardIcons = "Enable reward on map icons",
+		mapIconsScale = "Map icons scale",
 	} or
 	locale == "koKR" and {
 		gear = "장비",
@@ -516,6 +527,7 @@ local LOCALE =
 		lfgDisablePopup = "Disable popup in questarea",
 		lfgDisableRightClickIcons = "Disable right click on map icons",
 		disableRewardIcons = "Enable reward on map icons",
+		mapIconsScale = "Map icons scale",
 	} or
 	(locale == "zhCN" or locale == "zhTW") and {	--by dxlmike, cuihuanyu1986
 		gear = "装备",
@@ -558,6 +570,7 @@ local LOCALE =
 		lfgDisablePopup = "Disable popup in questarea",
 		lfgDisableRightClickIcons = "Disable right click on map icons",
 		disableRewardIcons = "Enable reward on map icons",
+		mapIconsScale = "Map icons scale",
 	} or	
 	{
 		gear = "Gear",
@@ -600,6 +613,7 @@ local LOCALE =
 		lfgDisablePopup = "Disable popup in questarea",
 		lfgDisableRightClickIcons = "Disable right click on map icons",
 		disableRewardIcons = "Enable reward on map icons",
+		mapIconsScale = "Map icons scale",
 	}
 
 local filters = {
@@ -1057,21 +1071,23 @@ WorldQuestList:SetScript("OnEvent",function(self,event,...)
 		
 		WorldQuestList.ViewAllButton:Update()
 		
-		if VWQL.Arrow_PointX and VWQL.Arrow_PointY and VWQL.Arrow_Point1 and VWQL.Arrow_Point2 then
-			WQLdb.Arrow:LoadPosition(VWQL.Arrow_Point1,UIParent,VWQL.Arrow_Point2,VWQL.Arrow_PointX,VWQL.Arrow_PointY)
-		else
-			WQLdb.Arrow:LoadPosition("TOP",UIParent,"TOP",0,-100)
+		if WQLdb.Arrow then
+			if VWQL.Arrow_PointX and VWQL.Arrow_PointY and VWQL.Arrow_Point1 and VWQL.Arrow_Point2 then
+				WQLdb.Arrow:LoadPosition(VWQL.Arrow_Point1,UIParent,VWQL.Arrow_Point2,VWQL.Arrow_PointX,VWQL.Arrow_PointY)
+			else
+				WQLdb.Arrow:LoadPosition("TOP",UIParent,"TOP",0,-100)
+			end
+			
+			if VWQL.Arrow_Scale then
+				WQLdb.Arrow:Scale(tonumber(VWQL.Arrow_Scale) or 1)
+			end
+			
+			if VWQL.DisableArrowMove then
+				WQLdb.Arrow.frame:SetMovable(false)
+			end
 		end
 		
-		if VWQL.Arrow_Scale then
-			WQLdb.Arrow:Scale(tonumber(VWQL.Arrow_Scale) or 1)
-		end
-		
-		if VWQL.DisableArrowMove then
-			WQLdb.Arrow.frame:SetMovable(false)
-		end
-		
-		if VWQL.AnchorQCBLeft and VWQL.AnchorQCBTop then
+		if WorldQuestList.QuestCreationBox and VWQL.AnchorQCBLeft and VWQL.AnchorQCBTop then
 			WorldQuestList.QuestCreationBox:ClearAllPoints()
 			WorldQuestList.QuestCreationBox:SetPoint("TOPLEFT",UIParent,"BOTTOMLEFT",VWQL.AnchorQCBLeft,VWQL.AnchorQCBTop)
 		end
@@ -2736,7 +2752,7 @@ do
 			text = LOCALE.lfgDisablePopup,
 			func = function()
 				VWQL.DisableLFG_Popup = not VWQL.DisableLFG_Popup
-				ELib.ScrollDropDown.Close()
+				--ELib.ScrollDropDown.Close()
 				WorldQuestList_Update()
 			end,
 			checkable = true,
@@ -2745,7 +2761,7 @@ do
 			text = LOCALE.lfgDisableRightClickIcons,
 			func = function()
 				VWQL.DisableLFG_RightClickIcon = not VWQL.DisableLFG_RightClickIcon
-				ELib.ScrollDropDown.Close()
+				--ELib.ScrollDropDown.Close()
 				WorldQuestList_Update()
 			end,
 			checkable = true,
@@ -2756,7 +2772,7 @@ do
 		text = LOCALE.lfgSearchOption,
 		func = function()
 			VWQL.DisableLFG = not VWQL.DisableLFG
-			ELib.ScrollDropDown.Close()
+			--ELib.ScrollDropDown.Close()
 			WorldQuestList_Update()
 		end,
 		checkable = true,
@@ -2765,7 +2781,7 @@ do
 	
 	local function SetScaleArrow(_, arg1)
 		VWQL.Arrow_Scale = arg1
-		ELib.ScrollDropDown.Close()
+		--ELib.ScrollDropDown.Close()
 		WQLdb.Arrow:Scale(arg1 or 1)
 	end
 	
@@ -2774,7 +2790,7 @@ do
 			text = LOCALE.disableArrow,
 			func = function()
 				VWQL.DisableArrow = not VWQL.DisableArrow
-				ELib.ScrollDropDown.Close()
+				--ELib.ScrollDropDown.Close()
 				WorldQuestList_Update()				
 			end,
 			checkable = true,
@@ -2800,7 +2816,7 @@ do
 			func = function()
 				VWQL.DisableArrowMove = not VWQL.DisableArrowMove
 				WQLdb.Arrow.frame:SetMovable(not VWQL.DisableArrowMove)
-				ELib.ScrollDropDown.Close()
+				--ELib.ScrollDropDown.Close()
 				WorldQuestList_Update()				
 			end,
 			checkable = true,
@@ -2929,7 +2945,7 @@ do
 	
 	local function SetIconGeneral(_, arg1)
 		VWQL["DisableIconsGeneralMap"..arg1] = not VWQL["DisableIconsGeneralMap"..arg1]
-		ELib.ScrollDropDown.Close()
+		--ELib.ScrollDropDown.Close()
 		WorldQuestList.IconsGeneralLastMap = -1
 		WorldQuestList_Update()	  
 	end
@@ -2945,13 +2961,14 @@ do
 		text = LOCALE.iconsOnMinimap,
 		func = function()
 			VWQL.DisableIconsGeneral = not VWQL.DisableIconsGeneral
-			ELib.ScrollDropDown.Close()
+			--ELib.ScrollDropDown.Close()
 			WorldQuestList.IconsGeneralLastMap = -1
 			WorldQuestList_Update()
 		end,
 		checkable = true,
 		subMenu = iconsGeneralSubmenu,
 	}
+	
 	
 	list[#list+1] = {
 		text = LOCALE.disableRewardIcons,
@@ -2966,7 +2983,21 @@ do
 			end
 		end,
 		checkable = true,
-	}	
+	}
+	
+	local mapIconsScaleSubmenu = {
+		{text = "",	isTitle = true,	slider = {min = 100, max = 300, val = 100, afterText = "%", func = nil}	},	
+	}
+	mapIconsScaleSubmenu[1].slider.func = function(self,val)
+		mapIconsScaleSubmenu[1].slider.val = val
+		VWQL.MapIconsScale = val / 100
+		WorldMapFrame:TriggerEvent("WorldQuestsUpdate", WorldMapFrame:GetNumActivePinsByTemplate("WorldMap_WorldQuestPinTemplate"))
+	end
+	list[#list+1] = {
+		text = LOCALE.mapIconsScale,
+		padding = 16,
+		subMenu = mapIconsScaleSubmenu,
+	}
 	
 	list[#list+1] = {
 		text = LOCALE.headerEnable,
@@ -3146,6 +3177,7 @@ do
 		end
 		lfgSubMenu[1].checkState = VWQL.DisableLFG_Popup
 		lfgSubMenu[2].checkState = VWQL.DisableLFG_RightClickIcon
+		mapIconsScaleSubmenu[1].slider.val = (VWQL.MapIconsScale or 1) * 100
 	end	
 end
 
@@ -3431,8 +3463,8 @@ if WQ_provider then
 				end
 				local pin = WorldQuestList.WMF_activePins[questId]
 		
-				pin:SetScalingLimits(1, 0.425, 0.425)
-				pin:ApplyCurrentScale()
+				--pin:SetScalingLimits(1, 0.425, 0.425)
+				--pin:ApplyCurrentScale()
 		
 				WQ_provider:GetMap():RemovePin(pin)
 			end
@@ -5128,8 +5160,8 @@ function WorldQuestList_Update(preMapID)
 						maxScale = maxScale * 1.5
 					end
 					
-					pin:SetScalingLimits(1, minScale, maxScale)
-					pin:ApplyCurrentScale()
+					--pin:SetScalingLimits(1, minScale, maxScale)
+					--pin:ApplyCurrentScale()
 				end
 			end
 			isUpdateReq = true
@@ -5141,15 +5173,16 @@ function WorldQuestList_Update(preMapID)
 			end
 			local pin = WorldQuestList.WMF_activePins[questId]
 	
-			pin:SetScalingLimits(1, 0.425, 0.425)
-			pin:ApplyCurrentScale()
+			--pin:SetScalingLimits(1, 0.425, 0.425)
+			--pin:ApplyCurrentScale()
 	
 			WQ_provider:GetMap():RemovePin(pin)
 			WorldQuestList.WMF_activePins[questId] = nil
 		end
 		
 		if isUpdateReq then
-			WorldQuestList:WQIcons_AddIcons()
+			--WorldQuestList:WQIcons_AddIcons()
+			WorldMapFrame:TriggerEvent("WorldQuestsUpdate", WorldMapFrame:GetNumActivePinsByTemplate("WorldMap_WorldQuestPinTemplate"))
 		end	
 	end
 	
@@ -5165,7 +5198,6 @@ function WorldQuestList_Update(preMapID)
 		lfgEyeStatus = false
 	end
 	
-	--taskIconIndex = taskIconIndex + 1
 	for i=1,#result do
 		local data = result[i]
 		local line = WorldQuestList.l[taskIconIndex]
@@ -5524,6 +5556,10 @@ SlashCmdList["WQLSlash"] = function(arg)
 		UpdateScale()
 		print("Scale set to "..(VWQL.Scale * 100).."%")
 		return
+	elseif argL:find("^iconscale %d+") then 
+		VWQL.MapIconsScale = tonumber( argL:match("%d+"),nil ) / 100
+		print("Icons scale set to "..(VWQL.MapIconsScale * 100).."%")
+		return		
 	elseif argL == "options" then 
 		WorldQuestList.optionsDropDown.Button:Click()
 		return
@@ -5764,21 +5800,6 @@ local KirinTorQuests = {
 	[43778]=true,	--SU
 }
 
---[[
-local KirinTorPatt = {
-	[1] = {	[41]=2,[40]=1,[39]=1,[32]=1,[25]=1,[26]=1,[19]=1,[12]=1,[11]=1,[10]=1,[9]=1,},
-	[2] = {	[9]=1,[10]=1,[17]=1,[24]=1,[25]=1,[32]=1,[33]=1,[40]=1,[41]=2,},
-	[3] = {	[9]=1,[16]=1,[17]=1,[18]=1,[19]=1,[20]=1,[27]=1,[34]=1,[41]=2,},
-	[4] = {	[9]=1,[10]=1,[11]=1,[12]=1,[13]=1,[20]=1,[27]=1,[26]=1,[25]=1,[24]=1,[23]=1,[30]=1,[37]=1,[38]=1,[39]=1,[40]=1,[41]=2,},
-	[5] = {	[9]=1,[16]=1,[23]=1,[24]=1,[25]=1,[18]=1,[11]=1,[12]=1,[13]=1,[20]=1,[27]=1,[34]=1,[41]=2,},
-	[6] = {	[9]=1,[16]=1,[23]=1,[30]=1,[31]=1,[32]=1,[25]=1,[18]=1,[11]=1,[12]=1,[13]=1,[20]=1,[27]=1,[34]=1,[41]=2,},
-	[7] = { [9]=1,[10]=1,[11]=1,[12]=1,[13]=1,[16]=1,[23]=1,[30]=1,[37]=1,[38]=1,[39]=1,[40]=1,[41]=2,},
-	[8] = { [9]=1,[10]=1,[11]=1,[12]=1,[13]=1,[16]=1,[23]=1,[30]=1,[37]=1,[38]=1,[39]=1,[32]=1,[25]=1,[26]=1,[27]=1,[34]=1,[41]=2,},
-	[9] = { [9]=1,[10]=1,[11]=1,[12]=1,[13]=1,[16]=1,[23]=1,[24]=1,[25]=1,[32]=1,[39]=1,[40]=1,[41]=2,},
-}
-
-]]
-
 local KirinTorPatt = {		--Patterns created by flow0284
 	[1] = { [9]=1,[10]=1,[11]=1,[12]=1,[13]=1,[20]=1,[23]=1,[24]=1,[25]=1,[26]=1,[27]=1,[30]=1,[37]=1,[38]=1,[39]=1,[40]=1,[41]=2,},
 	[2] = { [9]=1,[11]=1,[12]=1,[13]=1,[16]=1,[18]=1,[20]=1,[23]=1,[24]=1,[25]=1,[27]=1,[34]=1,[41]=2,},
@@ -5920,7 +5941,7 @@ KirinTorHelper:RegisterEvent('QUEST_ACCEPTED')
 KirinTorHelper:RegisterEvent('QUEST_REMOVED')
 KirinTorHelper:SetScript("OnEvent",function(self,event,arg1,arg2)
 	if event == 'QUEST_ACCEPTED' then
-		if (arg1 and KirinTorQuests[arg1]) or (arg2 and KirinTorQuests[arg2]) then
+		if arg2 and KirinTorQuests[arg2] then
 			if not VWQL.EnableEnigma then
 				print('"|cff00ff00/enigmahelper|r" - to see all patterns')
 				return
@@ -5929,7 +5950,7 @@ KirinTorHelper:SetScript("OnEvent",function(self,event,arg1,arg2)
 			self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 		end
 	elseif event == 'QUEST_REMOVED' then
-		if (arg1 and KirinTorQuests[arg1]) or (arg2 and KirinTorQuests[arg2]) then
+		if arg1 and KirinTorQuests[arg1] then
 			self:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 		end
 	elseif event == 'COMBAT_LOG_EVENT_UNFILTERED' then
@@ -5974,7 +5995,7 @@ BarrelsHelper:RegisterEvent('QUEST_REMOVED')
 BarrelsHelper:RegisterEvent('PLAYER_ENTERING_WORLD')
 BarrelsHelper:SetScript("OnEvent",function(self,event,arg1,arg2, hideCaster,sourceGUID,sourceName,sourceFlags,sourceFlags2,destGUID,destName,destFlags,destFlags2,spellId)
 	if event == 'QUEST_ACCEPTED' then
-		if (arg1 and BarrelsHelperQuests[arg1]) or (arg2 and BarrelsHelperQuests[arg2]) then
+		if arg2 and BarrelsHelperQuests[arg2] then
 			if VWQL.DisableBarrels then
 				return
 			end
@@ -5983,7 +6004,7 @@ BarrelsHelper:SetScript("OnEvent",function(self,event,arg1,arg2, hideCaster,sour
 			self:RegisterEvent("UPDATE_MOUSEOVER_UNIT")
 		end
 	elseif event == 'QUEST_REMOVED' then
-		if (arg1 and BarrelsHelperQuests[arg1]) or (arg2 and BarrelsHelperQuests[arg2]) then
+		if arg1 and BarrelsHelperQuests[arg1] then
 			self:UnregisterEvent("UPDATE_MOUSEOVER_UNIT")
 			BarrelsHelper_count = 8
 		end
@@ -6353,7 +6374,7 @@ do
 	ShellGameHelper:RegisterEvent('PLAYER_ENTERING_WORLD')
 	ShellGameHelper:SetScript("OnEvent",function(self,event,arg1,arg2)
 		if event == 'QUEST_ACCEPTED' then
-			if (arg1 and ShellGameQuests[arg1]) or (arg2 and ShellGameQuests[arg2]) then
+			if arg2 and ShellGameQuests[arg2] then
 				if VWQL.DisableShellGame then
 					return
 				end
@@ -6361,7 +6382,7 @@ do
 				self:RegisterEvent('UNIT_EXITED_VEHICLE')
 			end
 		elseif event == 'QUEST_REMOVED' then
-			if (arg1 and ShellGameQuests[arg1]) or (arg2 and ShellGameQuests[arg2]) then
+			if arg1 and ShellGameQuests[arg1] then
 				ShellGameDisable()
 				self:UnregisterEvent('UNIT_ENTERED_VEHICLE')
 				self:UnregisterEvent('UNIT_EXITED_VEHICLE')
@@ -6384,7 +6405,7 @@ do
 			for i=1,GetNumQuestLogEntries() do
 				local title, _, _, _, _, _, _, questID = GetQuestLogTitle(i)
 				if questID and ShellGameQuests[questID] then
-					return self:GetScript("OnEvent")(self,'QUEST_ACCEPTED',questID)
+					return self:GetScript("OnEvent")(self,'QUEST_ACCEPTED',i,questID)
 				end
 			end
 		end
@@ -7183,7 +7204,7 @@ function WQL_LFG_Search(questID)
 	if C_LFGList.GetActiveEntryInfo() then
 		return
 	end
-
+	
 	if not GroupFinderFrame:IsVisible() then
 		LFGListUtil_OpenBestWindow()
 	end
@@ -7195,7 +7216,19 @@ function WQL_LFG_Search(questID)
 	else
 		questName = tostring(questID)
 	end
-
+	
+	local languagesOn = C_LFGList.GetLanguageSearchFilter()
+	local languagesAll = C_LFGList.GetAvailableLanguageSearchFilter()
+	local languagesCount = 0
+	for _ in pairs(languagesOn) do languagesCount = languagesCount + 1 end
+	if languagesCount ~= #languagesAll then
+	        local languages = {}
+	        for _,lang in pairs(languagesAll) do 
+	        	languages[lang]=true 
+	        end
+		C_LFGList.SaveLanguageSearchFilter(languages)
+	end
+	
 	local panel = LFGListFrame.CategorySelection
 	LFGListCategorySelection_SelectCategory(panel, 1, 0)
 	LFGListCategorySelection_StartFindGroup(panel, questName)
@@ -7355,7 +7388,7 @@ QuestCreationBox:SetScript("OnEvent",function (self,event,arg1,arg2)
 			local tagID, tagName, worldQuestType, rarity, isElite, tradeskillLineIndex, displayTimeLeft = GetQuestTagInfo(questID)
 			if rarity and not isElite then
 				StaticPopup_Hide("LFG_LIST_AUTO_ACCEPT_CONVERT_TO_RAID")
-			end			
+			end
 		end		
 	elseif event == "QUEST_TURNED_IN" then
 		if not VWQL or VWQL.DisableLFG or not arg1 then
@@ -7514,27 +7547,28 @@ C_Timer.After(5,function() ObjectiveTracker_Update_hook(2) end)
 --Add Map Icons
 
 function WorldQuestList:WQIcons_RemoveIcons()
-	local pins = WorldMapFrame.pinPools["WorldMap_WorldQuestPinTemplate"]
-	if pins then
-		for obj,_ in pairs(pins.activeObjects) do
-			if obj.WQL_rewardIcon then
-				obj.WQL_rewardIconWMask:SetTexture()
-				obj.WQL_rewardIcon:SetTexture()
-				obj.WQL_rewardRibbon:Hide()
-				obj.WQL_rewardRibbonText:SetText("")
-				obj.TimeLowFrame:SetPoint("CENTER",-17,-17)
+	for _,frames in pairs({{WorldMapFrame,"WorldMap_WorldQuestPinTemplate"},{FlightMapFrame,"FlightMap_WorldQuestPinTemplate"}}) do
+		local frame = frames[1]
+		if frame then
+			local pins = frame.pinPools[ frames[2] ]
+			if pins then
+				for i,pinsPool in pairs({pins.activeObjects,pins.inactiveObjects}) do
+					for k,v in pairs(pinsPool) do
+						local obj = i == 1 and k or v
+						if obj.WQL_rewardIcon then
+							obj.WQL_rewardIconWMask:SetTexture()
+							obj.WQL_rewardIconWMask.curr = nil
+							obj.WQL_rewardIcon:SetTexture()
+							obj.WQL_rewardIcon.curr = nil
+							obj.WQL_rewardRibbon:Hide()
+							obj.WQL_rewardRibbonText:SetText("")
+							obj.TimeLowFrame:SetPoint("CENTER",-17,-17)
+						end
+					end
+				end
+				frame:RefreshAllDataProviders()
 			end
 		end
-		for _,obj in pairs(pins.inactiveObjects) do
-			if obj.WQL_rewardIcon then
-				obj.WQL_rewardIconWMask:SetTexture()
-				obj.WQL_rewardIcon:SetTexture()
-				obj.WQL_rewardRibbon:Hide()
-				obj.WQL_rewardRibbonText:SetText("")
-				obj.TimeLowFrame:SetPoint("CENTER",-17,-17)
-			end
-		end
-		WorldMapFrame:RefreshAllDataProviders()
 	end
 end
 
@@ -7566,8 +7600,29 @@ do
 		[select(3,GetItemInfoInstant(141265))] = "Warlock-ReadyShard",
 	}
 	
-	function WorldQuestList:WQIcons_AddIcons()
-		local pins = WorldMapFrame.pinPools["WorldMap_WorldQuestPinTemplate"]
+	local function RibbonSetPos(self,onTop)
+		self:ClearAllPoints()
+		if onTop then
+			self:SetPoint("BOTTOM",self:GetParent(),"TOP",0,-16)
+			self:SetTexCoord(0,1,1,0)
+		else
+			self:SetPoint("TOP",self:GetParent(),"BOTTOM",0,16)
+			self:SetTexCoord(0,1,0,1)
+		end
+	end
+	
+	local function HookOnEnter(self)
+		self.pinFrameLevelType = "PIN_FRAME_LEVEL_TOPMOST"
+		self:ApplyFrameLevel()
+	end
+	local function HookOnLeave(self)
+		self.pinFrameLevelType = "PIN_FRAME_LEVEL_WORLD_QUEST"
+		self:ApplyFrameLevel()
+	end	
+	
+	function WorldQuestList:WQIcons_AddIcons(frame,pinName)
+		frame = frame or WorldMapFrame
+		local pins = frame.pinPools[pinName or "WorldMap_WorldQuestPinTemplate"]
 		if pins and VWQL and not VWQL.DisableRewardIcons then
 			for obj,_ in pairs(pins.activeObjects) do
 				local icon = obj.WQL_rewardIcon
@@ -7586,16 +7641,21 @@ do
 						
 						local ribbon = obj:CreateTexture(nil,"BACKGROUND")
 						obj.WQL_rewardRibbon = ribbon
-						ribbon:SetPoint("TOP",obj,"BOTTOM",0,14)
+						ribbon:SetPoint("TOP",obj,"BOTTOM",0,16)
 						ribbon:SetSize(100,40)
 						ribbon:SetAtlas("UI-Frame-Neutral-Ribbon")
+						--ribbon.SetPos = RibbonSetPos
+						--ribbon:SetPos()
 						
 						local ribbonText = obj:CreateFontString(nil,"ARTWORK","GameFontWhite")
 						obj.WQL_rewardRibbonText = ribbonText
 						local a1,a2 = ribbonText:GetFont()
 						ribbonText:SetFont(a1,18)
-						ribbonText:SetPoint("CENTER",ribbon)
+						ribbonText:SetPoint("CENTER",ribbon,0,-1)
 						ribbonText:SetTextColor(0,0,0,1)
+						
+						obj:HookScript("OnEnter",HookOnEnter)
+						obj:HookScript("OnLeave",HookOnLeave)
 					end
 					
 					local tagID, tagName, worldQuestType, rarity, isElite, tradeskillLineIndex, displayTimeLeft = GetQuestTagInfo(obj.questID)
@@ -7718,15 +7778,33 @@ do
 							obj.WQL_rewardIconWMask:SetSize(26+ajustSize,26+ajustSize)
 							if iconTexture then
 								if ajustMask then
-									obj.WQL_rewardIconWMask:SetTexture(iconTexture)
-									icon:SetTexture()
+									if obj.WQL_rewardIconWMask.curr ~= iconTexture then
+										obj.WQL_rewardIconWMask:SetTexture(iconTexture)
+										obj.WQL_rewardIconWMask.curr = iconTexture
+									end
+									if icon.curr then
+										icon:SetTexture()
+										icon.curr = nil
+									end
 								else
-									obj.WQL_rewardIconWMask:SetTexture()
-									icon:SetTexture(iconTexture)
+									if obj.WQL_rewardIconWMask.curr then
+										obj.WQL_rewardIconWMask:SetTexture()
+										obj.WQL_rewardIconWMask.curr = nil
+									end
+									if icon.curr ~= iconTexture then
+										icon:SetTexture(iconTexture)
+										icon.curr = iconTexture
+									end
 								end
 							else
-								obj.WQL_rewardIconWMask:SetTexture()
-								icon:SetAtlas(iconAtlas)
+								if obj.WQL_rewardIconWMask.curr then
+									obj.WQL_rewardIconWMask:SetTexture()
+									obj.WQL_rewardIconWMask.curr = nil
+								end
+								if icon.curr ~= iconAtlas then
+									icon:SetAtlas(iconAtlas)
+									icon.curr = iconAtlas
+								end
 							end
 							obj.Texture:SetTexture()
 						end
@@ -7740,15 +7818,23 @@ do
 								obj.WQL_rewardRibbon:Show()
 							end
 							obj.WQL_rewardRibbonText:SetText((amountIcon and "|T"..amountIcon..":0|t" or "")..(amountColor or "")..amount)
-							obj.TimeLowFrame:SetPoint("CENTER",-22,-8)
+							obj.WQL_rewardRibbon:SetWidth( (#tostring(amount) + (amountIcon and 1.5 or 0)) * 16 + 40 )
+							
+							obj.TimeLowFrame:SetPoint("CENTER",-22,-8)							
 						elseif obj.WQL_rewardRibbon:IsShown() then
 							obj.WQL_rewardRibbon:Hide()
 							obj.WQL_rewardRibbonText:SetText("")	
 							obj.TimeLowFrame:SetPoint("CENTER",-17,-17)				
 						end				
 					else
-						obj.WQL_rewardIconWMask:SetTexture()
-						icon:SetTexture()
+						if obj.WQL_rewardIconWMask.curr then
+							obj.WQL_rewardIconWMask:SetTexture()
+							obj.WQL_rewardIconWMask.curr = nil
+						end
+						if icon.curr then
+							icon:SetTexture()
+							icon.curr = nil
+						end
 						if obj.WQL_rewardRibbon:IsShown() then
 							obj.WQL_rewardRibbon:Hide()
 							obj.WQL_rewardRibbonText:SetText("")
@@ -7767,8 +7853,14 @@ do
 			end
 			for _,obj in pairs(pins.inactiveObjects) do
 				if obj.WQL_rewardIcon then
-					obj.WQL_rewardIconWMask:SetTexture()
-					obj.WQL_rewardIcon:SetTexture()
+					if obj.WQL_rewardIconWMask.curr then
+						obj.WQL_rewardIconWMask:SetTexture()
+						obj.WQL_rewardIconWMask.curr = nil
+					end
+					if obj.WQL_rewardIcon.curr then
+						obj.WQL_rewardIcon:SetTexture()
+						obj.WQL_rewardIcon.curr = nil
+					end
 					obj.WQL_rewardRibbon:Hide()
 					obj.WQL_rewardRibbonText:SetText("")
 					obj.TimeLowFrame:SetPoint("CENTER",-17,-17)
@@ -7781,4 +7873,75 @@ end
 
 WorldMapFrame:RegisterCallback("WorldQuestsUpdate", function()
 	WorldQuestList:WQIcons_AddIcons()
+end)
+
+local WQIcons_FlightMapLoad = CreateFrame("Frame")
+WQIcons_FlightMapLoad:RegisterEvent("ADDON_LOADED")
+WQIcons_FlightMapLoad:SetScript("OnEvent",function (self, event, arg)
+	if arg == "Blizzard_FlightMap" then
+		self:UnregisterAllEvents()
+		FlightMapFrame:RegisterCallback("WorldQuestsUpdate", function()
+			WorldQuestList:WQIcons_AddIcons(FlightMapFrame,"FlightMap_WorldQuestPinTemplate")
+		end)
+	end
+end)
+
+
+--- Icons size on map
+
+local defScaleFactor, defStartScale, defEndScale = 1, 0.425, 0.425
+if WorldMap_WorldQuestPinMixin then
+	local f = CreateFrame("Frame")
+	f.SetScalingLimits = function(_,scaleFactor, startScale, endScale) 
+		defScaleFactor = scaleFactor or defScaleFactor
+		defStartScale = startScale or defStartScale
+		defEndScale = endScale or defEndScale
+	end
+	pcall(function() WorldMap_WorldQuestPinMixin.OnLoad(f) end)
+end
+
+function WorldQuestList:WQIcons_RemoveScale()
+	local pins = WorldMapFrame.pinPools["WorldMap_WorldQuestPinTemplate"]
+	if pins then
+		for obj,_ in pairs(pins.activeObjects) do
+			obj:SetScalingLimits(defScaleFactor, defStartScale, defEndScale)
+			obj:ApplyCurrentScale()
+		end
+		for _,obj in pairs(pins.inactiveObjects) do
+			obj:SetScalingLimits(defScaleFactor, defStartScale, defEndScale)
+			obj:ApplyCurrentScale()
+		end
+	end
+end
+
+function WorldQuestList:WQIcons_UpdateScale()
+	local pins = WorldMapFrame.pinPools["WorldMap_WorldQuestPinTemplate"]
+	--if pins and VWQL and charKey and VWQL[charKey] and not VWQL[charKey].HideMap then
+	if pins and VWQL then
+		local startScale, endScale = defStartScale, defEndScale
+		local generalMap = GENERAL_MAPS[GetCurrentMapAreaID()]
+		local scaleFactor = (WorldMapFrame:IsMaximized() and 1.5 or 1) * (VWQL.MapIconsScale or 1)
+		if not generalMap then
+			startScale, endScale = defStartScale, defEndScale
+		elseif generalMap == 2 then
+			startScale, endScale = 0.15, 0.2
+		elseif generalMap == 4 then
+			startScale, endScale = 0.3, 0.425
+		else
+			startScale, endScale = 0.35, 0.425
+		end
+		startScale, endScale = startScale * scaleFactor, endScale * scaleFactor
+	
+		for obj,_ in pairs(pins.activeObjects) do
+			--scaleFactor, startScale, endScale
+			if obj.startScale ~= startScale or obj.endScale ~= endScale then
+				obj:SetScalingLimits(1, startScale, endScale)
+				obj:ApplyCurrentScale()
+			end
+		end
+	end
+end
+
+WorldMapFrame:RegisterCallback("WorldQuestsUpdate", function()
+	WorldQuestList:WQIcons_UpdateScale()
 end)

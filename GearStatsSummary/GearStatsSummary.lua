@@ -88,7 +88,7 @@ local function ScanItemTooltip(unit, slot)
 	end
 	
 	tip:Hide();
-    if (slot == 16 or slot == 17) and itemLevel ~= 750 and not UnitIsUnit(unit, "player") then itemLevel=itemLevel+15 end
+    --if (slot == 16 or slot == 17) and itemLevel ~= 750 and not UnitIsUnit(unit, "player") then itemLevel=itemLevel+15 end
 	return itemLevel, itemSet, GemsSlotCount, GemsEmptyCount
 end
 

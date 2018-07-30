@@ -1,7 +1,7 @@
 ## Interface: 80000
 ## Title: Can I Mog It?
 ## Author: TorelTwiddler, Ami Yuy
-## Version: 8.0.0v1.9
+## Version: 8.0.0v1.10
 ## Notes: Adds tooltips to items showing if you have learned a transmog appearance.
 ## Notes-deDE: Fügt Gegenständen Tooltips hinzu, ob eine Transmogrifikationsvorlage bereits bekannt ist.
 ## Notes-esES: Añade a la descripción del objeto si se conoce la apariencia.
@@ -10,7 +10,7 @@
 ## Notes-itIT: Aggiunge un suggerimento, sull'oggetto che stai osservando, se è stato memorizzato nella tua collezione di aspetti.
 ## Notes-koKR: 아이템의 형상변환 등록 여부를 툴팁에 표시
 ## Notes-ptBR: Adiciona dicas de ferramentas para itens exibindo se você aprendeu uma aparência de transmogrificação
-## Notes-ruRU: Добавляет предметам подсказку, показывающую, выучен предмет для трансмогрификации или нет.
+## Notes-ruRU: Добавляет предметам подсказку, показывающую, изучен предмет для трансмогрификации или нет.
 ## Notes-zhCN: 当你解锁幻化外观时，将添加一个提示到物品信息。
 ## Notes-zhTW: 加入到物品提示顯示你已經收藏一個塑形外觀
 ## X-Category: Transmogrify

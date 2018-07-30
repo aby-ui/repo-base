@@ -11,6 +11,7 @@ local prevSpell, curSpell, foundTarget, gatherEvents, ga
 Convert for 2.4 spell IDs
 ]]
 local miningSpell = (GetSpellInfo(2575))
+local miningSpell2 = (GetSpellInfo(195122))
 local herbSpell = (GetSpellInfo(2366))
 local herbSkill = (string.gsub((GetSpellInfo(9134)),"%A",""))
 local fishSpell = (GetSpellInfo(7620)) or (GetSpellInfo(131476))
@@ -25,6 +26,7 @@ local loggingSpell = (GetSpellInfo(167895))
 
 local spells = { -- spellname to "database name"
 	[miningSpell] = "Mining",
+	[miningSpell2] = "Mining",
 	[herbSpell] = "Herb Gathering",
 	[fishSpell] = "Fishing",
 	[gasSpell] = "Extract Gas",
@@ -179,7 +181,7 @@ end
 function Collector:UIError(event,token,msg)
 	local what = tooltipLeftText1:GetText();
 	if not what then return end
-	if strfind(msg, miningSpell) then
+	if strfind(msg, miningSpell) or strfind(msg, miningSpell2) then
 		self:addItem(miningSpell,what)
 	elseif strfind(msg, herbSkill) then
 		self:addItem(herbSpell,what)

@@ -769,7 +769,7 @@ local function UnitFrame_UpdateFlags(self)
 		flag = "spirit"
 		texture = SPIRIT_TEXTURE
 		text = DEAD
-	elseif self.unitClass == "MAGE" and select(10, Aby_UnitDebuff(unit, CAUTERIZE_AURA)) == 87023 then --aby8
+	elseif self.unitClass == "MAGE" and select(10, Aby_UnitDebuff(unit, CAUTERIZE_AURA)) == 87023 then
 		flag = "dying"
 		texture = CAUTERIZE_TEXTURE
 		text = CAUTERIZE_AURA

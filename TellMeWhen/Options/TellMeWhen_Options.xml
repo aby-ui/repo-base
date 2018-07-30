@@ -1679,7 +1679,9 @@
 						self.ScrollFrame:SetWheelStepAmount(25)
 						self.Code:SetWidth(self:GetWidth()-15)
 						self.Code:SetNonSpaceWrap(1)
-						self.Code:SetSpacing(2)
+					  	-- Cursor location displays incorrectly with non-zero spacing in WoW 8.0.
+					  	-- We used to use a value of 2 here, but can't anymore.
+						self.Code:SetSpacing(0)
 					</OnLoad>
 				</Scripts>
 			</Frame>
@@ -1760,7 +1762,9 @@
 					if #currentDetections > self.currentResult then
 						self.currentResult = self.currentResult + 1
 
-						local code = currentDetections[self.currentResult].code
+						-- Code will have raw, unescaped pipes. 
+						-- We need to escape them because we're about to display the code as text.
+						local code = currentDetections[self.currentResult].code:gsub("|", "||")
 						local codeLower = code:lower()
 						local flagged
 

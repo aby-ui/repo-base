@@ -1,5 +1,5 @@
 ## Interface: 80000
-## Version: 800r105
+## Version: 800r106
 ## Title: |cff00c0ffDejaCharacterStats|r
 ## Author: Dejablue, Kakjens, loudsoul
 ## Notes: Dejablue's improved character stats panel view.

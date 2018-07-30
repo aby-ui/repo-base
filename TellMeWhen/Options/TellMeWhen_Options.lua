@@ -1920,7 +1920,9 @@ TMW:NewClass("Config_EditBox", "EditBox", "Config_Frame"){
 	
 	-- Constructor
 	OnNewInstance_EditBox = function(self)
-		self:SetSpacing(2)
+	  	-- Cursor location displays incorrectly with non-zero spacing in WoW 8.0.
+	  	-- We used to use a value of 2 here, but can't anymore.
+		self:SetSpacing(0)
 
 		self.BackgroundText:SetWidth(self:GetWidth())
 

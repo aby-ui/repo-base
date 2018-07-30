@@ -184,6 +184,7 @@ local function createIconFrame()
         if IsControlKeyDown() then
             DuowanChat.db.profile.enablechatchannelmove = not DuowanChat.db.profile.enablechatchannelmove;
             U1Message(DuowanChat.db.profile.enablechatchannelmove and "频道按钮栏已解锁" or "频道按钮栏已锁定");
+            DWCChatFrame:ClearAllPoints();
             DuowanChat:Refresh();
             return
         end
@@ -222,6 +223,7 @@ local function createIconFrame()
 			i=i+1 
 		end 
 	end)
+    DuowanChat:Refresh()
 end 
 
 function DWChatIconFrame:OnInitialize() 

@@ -52,7 +52,7 @@ local defaults = {
         enablesubgroup = true,
         useshortname =true,
         enablecopy = false, 
-        enablechatchannelmove=true,
+        enablechatchannelmove=false,
         userPlaced = false,
         mute = false,
         modules = {
@@ -746,9 +746,9 @@ function DuowanChat:Refresh()
     		    _G["ChatFrame"..i.."EditBox"]:SetPoint(point,rel,relp,x,-2)
             end
         end
-        if DWCChatFrame:GetPoint() == nil then
-            DWCChatFrame:SetPoint("TOPLEFT", "ChatFrame1", "BOTTOMLEFT", -5, -3)
-        end
+        --if DWCChatFrame:GetPoint() == nil then
+        --    DWCChatFrame:SetPoint("TOPLEFT", "ChatFrame1", "BOTTOMLEFT", -5, -3)
+        --end
     else
         local a,b,c,d = ChatFrame1:GetClampRectInsets()
         if d == 0 and DWCChatFrame:IsVisible() then

@@ -544,26 +544,6 @@ function Type:Setup(icon)
 		if icon.Filterh then icon.Filterh = icon.Filterh .. "|PLAYER" end
 	end
 
-
-
-	icon.buffdebuff_iterateByAuraIndex = false
-
-	-- Sorting is only handled if this value is true.
-	-- EffThreshold is a value that determines if we will switch to iterating by index instead of
-	-- iterating by spell if we are checking a large number of spells.
-	if icon.Sort or icon.StackSort or #icon.Spells.Array > TMW.db.global.EffThreshold then
-		icon.buffdebuff_iterateByAuraIndex = true
-	end
-
-	for k, spell in pairs(icon.Spells.StringArray) do
-		if TMW.DS[spell] then
-			-- Dispel types are only handled in the part of the code that is ran if this var is true.
-			icon.buffdebuff_iterateByAuraIndex = true
-		end
-	end
-
-
-
 	-- There are lots of spells (RPPM enchants) that don't report a source.
 	-- Because of this, you can't track them while OnlyMine is enabled.
 	-- So, tell the user about this so I can stop getting millions of comments from confused people.

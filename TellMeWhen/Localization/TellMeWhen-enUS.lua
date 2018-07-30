@@ -683,7 +683,7 @@ L["SORTBYNONE_DURATION"] = "Normal Duration"
 L["SORTBYNONE_STACKS"] = "Normal Stacks"
 L["SORTBYNONE_DESC"] = [[If checked, spells will be checked in and appear in the order that they were entered into the "%s" editbox.
 
-If this icon is a buff/debuff icon and the number of auras being checked exceeds the efficiency threshold setting, auras will be checked in the order that they would normally appear on the unit's unit frame.]]
+If this icon is a buff/debuff icon, auras will be checked in the order that they would normally appear on the unit's unit frame.]]
 L["SORTBYNONE_META_DESC"] = [[If checked, icons will be checked in the order that was configured above.]]
 L["ICONMENU_SORTASC"] = "Low duration"
 L["ICONMENU_SORTASC_DESC"] = "Check this box to prioritize and show spells with the lowest duration."
