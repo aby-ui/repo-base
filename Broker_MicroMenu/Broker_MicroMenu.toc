@@ -1,10 +1,11 @@
 ## Interface: 80000
 ## Title: Broker: |cff00ff00MicroMenu|r
-## Version: v1.4.6
+## Version: v1.5.8
 ## Notes: Shows the mirco menu and game menu in a clickable broker tooltip.
 ## Author: yess
 ## OptionalDeps: LibQTip-1.0
 ## SavedVariables: Broker_MicroMenuDB
+## X-Curse-Project-ID: 21420
 
 #@no-lib-strip@
 #libs\libs.xml

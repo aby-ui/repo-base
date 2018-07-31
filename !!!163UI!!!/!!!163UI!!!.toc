@@ -60,6 +60,8 @@ QuickMenus.lua
 Profiles.lua
 ProfilesUI.lua
 
+Donators.lua
+
 RunLast.lua
 
 PluginCore\BlizzBugsSuck.lua

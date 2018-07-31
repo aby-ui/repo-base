@@ -114,11 +114,11 @@ local function UpdateButton(button, treeline, selected, canExpand, isExpanded)
 	
 	if canExpand then
 		if not isExpanded then
-			toggle:SetNormalTexture("Interface\\Buttons\\UI-PlusButton-UP")
-			toggle:SetPushedTexture("Interface\\Buttons\\UI-PlusButton-DOWN")
+			toggle:SetNormalTexture(130838) -- Interface\\Buttons\\UI-PlusButton-UP
+			toggle:SetPushedTexture(130836) -- Interface\\Buttons\\UI-PlusButton-DOWN
 		else
-			toggle:SetNormalTexture("Interface\\Buttons\\UI-MinusButton-UP")
-			toggle:SetPushedTexture("Interface\\Buttons\\UI-MinusButton-DOWN")
+			toggle:SetNormalTexture(130821) -- Interface\\Buttons\\UI-MinusButton-UP
+			toggle:SetPushedTexture(130820) -- Interface\\Buttons\\UI-MinusButton-DOWN
 		end
 		toggle:Show()
 	else

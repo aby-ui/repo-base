@@ -1,4 +1,4 @@
-MainMenuBarPerformanceBar:SetPoint("CENTER", 0, 11) --SetSize(28,36) --因为8.0之前按钮大小是28,58，暴雪忘了改了
+MainMenuBarPerformanceBar:SetPoint("CENTER", MainMenuMicroButton, "CENTER", 0, 11) --SetSize(28,36) --因为8.0之前按钮大小是28,58，暴雪忘了改了
 
 TEXT = TEXT or function(text)
     return text

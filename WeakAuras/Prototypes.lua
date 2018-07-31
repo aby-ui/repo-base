@@ -76,7 +76,7 @@ local function get_encounters_list()
     encounter_list = encounter_list .. "\n"
   end
 
-  return encounter_list:sub(1, -3) .. L["\n\nSupports multiple entries, separated by commas\n"]
+  return encounter_list:sub(1, -3) .. "\n\n" .. L["Supports multiple entries, separated by commas\n"]
 end
 
 WeakAuras.function_strings = {
@@ -1783,17 +1783,6 @@ WeakAuras.event_prototypes = {
         conditionType = "bool"
       },
       {
-        name = "multistrike",
-        display = L["Multistrike"],
-        type = "tristate",
-        init = "arg",
-        enable = function(trigger)
-          return trigger.subeventSuffix and trigger.subeventPrefix and (trigger.subeventSuffix == "_DAMAGE" or trigger.subeventPrefix == "DAMAGE_SHIELD" or trigger.subeventPrefix == "DAMAGE_SPLIT" or trigger.subeventSuffix == "_HEAL")
-        end,
-        store = true,
-        conditionType = "bool"
-      },
-      {
         name = "number",
         display = L["Number"],
         type = "number",
@@ -1933,6 +1922,7 @@ WeakAuras.event_prototypes = {
         end
         local showOn = %s
         local expirationTime = startTime + duration
+        state.spellname = spellname;
       ]=];
       if (not trigger.use_trackcharge or not trigger.trackcharge) then
         ret = ret .. [=[
@@ -2098,6 +2088,19 @@ WeakAuras.event_prototypes = {
         name = "gcdCooldown",
         store = true,
         test = "true"
+      },
+      {
+        name = "spellUsable",
+        display = L["Spell Usable"],
+        hidden = true,
+        test = "true",
+        conditionType = "bool",
+        conditionTest = "(state and state.show and (IsUsableSpell(state.spellname) == (%s == 1)))",
+        conditionEvents = {
+          "SPELL_UPDATE_USABLE",
+          "PLAYER_TARGET_CHANGED",
+          "UNIT_POWER_FREQUENT",
+        }
       },
       {
         hidden = true,

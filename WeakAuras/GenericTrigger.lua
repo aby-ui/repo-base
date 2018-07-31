@@ -2013,8 +2013,9 @@ function WeakAuras.GetEquipmentSetInfo(itemSetName, partial)
   local bestMatchName = nil;
   local bestMatchIcon = nil;
 
-  for i = 0, C_EquipmentSet.GetNumEquipmentSets() do
-    local name, icon, _, _, numItems, numEquipped = C_EquipmentSet.GetEquipmentSetInfo(i);
+  local equipmentSetIds = C_EquipmentSet.GetEquipmentSetIDs();
+  for index, id in pairs(equipmentSetIds) do
+    local name, icon, _, _, numItems, numEquipped = C_EquipmentSet.GetEquipmentSetInfo(id);
     if (itemSetName == nil or (name and itemSetName == name)) then
       if (name ~= nil) then
         local match = (not partial and numItems == numEquipped)
@@ -2927,6 +2928,9 @@ function GenericTrigger.GetTriggerConditions(data, triggernum)
             end
             if (v.conditionTest) then
               result[v.name].test = v.conditionTest;
+            end
+            if (v.conditionEvents) then
+              result[v.name].events = v.conditionEvents;
             end
             if (v.operator_types_without_equal) then
               result[v.name].operator_types_without_equal = true;

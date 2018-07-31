@@ -7,6 +7,26 @@
     icon = [[Interface\Icons\Spell_Holy_PowerInfusion]],
 
     {
+        text = U1_NEW_ICON .. "出入副本自动开关聊天泡泡",
+        tip = '说明`进入副本自动开启聊天泡泡，出副本自动关闭，防止广告骚扰',
+        var = "AutoBubble",
+        default = false,
+        callback = function(info, v, loading)
+            if(loading) then
+                local func = function()
+                    if not U1GetCfgValue("ChatFilter/AutoBubble") then return end
+                    SetCVar("chatBubbles", IsInInstance() and 1 or 0)
+                end
+                CoreOnEvent("PLAYER_ENTERING_WORLD", func)
+                func()
+            else
+                -- 如果在副本外取消设置, 则设置为1, 防止在副本里忘了开
+                if not v and not IsInInstance() then SetCVar("chatBubbles", 1) end
+            end
+        end
+    },
+
+    {
         text = "过滤重复信息",
         var = "FilterRepeat",
         default = false,
