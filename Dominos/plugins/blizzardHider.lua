@@ -49,7 +49,7 @@ do
     disableFrame('PetActionBarFrame')
     disableFrame('MultiCastActionBarFrame')
     disableFrame('MicroButtonAndBagsBar')
-    disableFrame('MainMenuBarPerformanceBar')
+    --disableFrame('MainMenuBarPerformanceBar')
 
     _G.StatusTrackingBarManager:UnregisterAllEvents()
     _G.StatusTrackingBarManager:Hide()

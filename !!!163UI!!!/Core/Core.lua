@@ -894,7 +894,7 @@ CoreOnEvent("PLAYER_LOGIN", function()
 end)
 --]==]
 
----ChatFrame_OnUpdate只是为了显示滚动到最下面的那个按钮闪烁
+--[=[-ChatFrame_OnUpdate只是为了显示滚动到最下面的那个按钮闪烁
 do
     local function onupdate(self, elapsed)
         self._flashTimer163 = self._flashTimer163 + elapsed
@@ -918,6 +918,8 @@ do
         self:SetScript("OnUpdate", self._flash163 and onupdate or nil)
     end
 end
+--]=]
+
 --[[
 do
     local militaryTime = GetCVarBool("timeMgrUseMilitaryTime")
