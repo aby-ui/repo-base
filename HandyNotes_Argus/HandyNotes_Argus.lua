@@ -1482,7 +1482,7 @@ end
 
 local updateInvasionPOI = CreateFrame("Frame");
 updateInvasionPOI:SetScript("OnEvent", function( self, event, ... )
-	local numPOI = GetNumMapLandmarks();
+	local numPOI = 0; --GetNumMapLandmarks(); --TODO aby8
 	for i = 1, numPOI do
 		local landmarkType, name, description, textureIndex, x, y, maplinkID, showInBattleMap,_,_,poiId,_,something = C_WorldMap.GetMapLandmarkInfo( i );
 		local invasionPOI = _G["WorldMapFramePOI" .. i];
