@@ -41,7 +41,7 @@
 --  Globals/Default Options  --
 -------------------------------
 DBM = {
-	Revision = tonumber(("$Revision: 17655 $"):sub(12, -3)),
+	Revision = tonumber(("$Revision: 17657 $"):sub(12, -3)),
 	DisplayVersion = "8.0.2 alpha", -- the string that is shown as version
 	ReleaseRevision = 17635 -- the revision of the latest stable version that is available
 }
@@ -3751,7 +3751,7 @@ do
 		self:Debug("LOADING_SCREEN_DISABLED fired")
 		self:Unschedule(SecondaryLoadCheck)
 		--SecondaryLoadCheck(self)
-		self:Schedule(1, SecondaryLoadCheck, self)--Now delayed by one second to work around an issue on beta where spec info isn't available yet on reloadui
+		self:Schedule(1, SecondaryLoadCheck, self)--Now delayed by one second to work around an issue on 8.x where spec info isn't available yet on reloadui
 		self:TransitionToDungeonBGM(false, true)
 		self:Schedule(5, SecondaryLoadCheck, self)
 		if DBM:HasMapRestrictions() then
