@@ -745,16 +745,24 @@ end
 protection area
 ---------------------------------------------------------------]]
 
-U1STAFF = { ["桂花猫猫-暗影之月"]=1, ["你生气嗎-风暴峡湾"]=1, ["心耀-冰风岗"]=1, }
+U1STAFF = { ["你生气嗎-风暴峡湾"]=1, ["心耀-冰风岗"]=1, }
 RunOnNextFrame(function()
     CoreRegisterEvent("INIT_COMPLETED", { INIT_COMPLETED = function()
         GameTooltip:HookScript("OnTooltipSetUnit", function(self)
             local _, unit = self:GetUnit();
             if not unit or not UnitIsPlayer(unit) or not self:IsVisible() then return end
             local fullName = U1UnitFullName(unit)
-            if fullName and U1STAFF[fullName] then
-                self:AddLine("有爱开发者", 1, 0, 1)
-                if not self.fadeOut then self:Show() end
+            if fullName then
+                if U1STAFF[fullName] then
+                    self:AddLine("爱不易开发者", 1, 0, 1)
+                    if not self.fadeOut then self:Show() end
+                else
+                    local donate = U1Donators and U1Donators.players[fullName]
+                    if donate then
+                        self:AddLine("爱不易" .. (donate > 0 and "顶级" or "") .. "捐助者", 1, 0, 1)
+                        if not self.fadeOut then self:Show() end
+                    end
+                end
             end
         end)
     end })
