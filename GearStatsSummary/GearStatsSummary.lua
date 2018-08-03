@@ -309,7 +309,7 @@ function GearStatsSummary_GetSpecName(unit)
         end
     end
     if name and (GetLocale() == "zhCN" or GetLocale() == "zhTW") then
-        name = name:utf8sub(1,2)
+        name = string.utf8sub(name,1,2)
     end
     return name, classID, specID
 end
@@ -454,7 +454,7 @@ function GearStatsSummary_ShowFrame(frame,target,tiptitle,anchorx,anchory,ready)
             end
 
             local _, _, ccode, linkp1, itemname = v:find("(\124c.-)(\124Hitem.-)\124h%[(.-)%]\124h\124r")
-            if (GetLocale() == "zhCN" or GetLocale() == "zhTW") and itemname:utf8len() > 6 then itemname = itemname:utf8sub(1,5).."…" end
+            if (GetLocale() == "zhCN" or GetLocale() == "zhTW") and string.utf8len(itemname) > 6 then itemname = string.utf8sub(itemname,1,5).."…" end
             --v = v:gsub("(\124c.-)(\124Hitem.-)\124h%[(.-)%]\124h\124r", "%2\124h" .. sum["ItemLevels"][k] .. " %1%3\124r\124h")
             v = sum["ItemLevels"][k] .. " " .. ccode..linkp1.."\124h"..itemname.."\124h\124r"
 

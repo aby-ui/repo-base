@@ -13,7 +13,7 @@ local SearchToggle = Addon:NewClass('SearchToggle', 'CheckButton')
 function SearchToggle:New(parent)
 	local b = self:Bind(CreateFrame('CheckButton', nil, parent, ADDON .. 'MenuCheckButtonTemplate'))
 	b.Icon:SetTexture([[Interface\Icons\INV_Misc_Spyglass_03]])
-	b:SetScript('OnHide', b.UnregisterMessages)
+	b:SetScript('OnHide', b.UnregisterSignals)
 	b:SetScript('OnShow', b.OnShow)
 	b:SetScript('OnClick', b.OnClick)
 	b:SetScript('OnEnter', b.OnEnter)
@@ -27,7 +27,7 @@ end
 --[[ Events ]]--
 
 function SearchToggle:OnShow()
-	self:RegisterMessage('SEARCH_TOGGLED', 'OnToggle')
+	self:RegisterSignal('SEARCH_TOGGLED', 'OnToggle')
 	self:OnToggle()
 end
 
@@ -37,7 +37,7 @@ end
 
 function SearchToggle:OnClick()
 	Addon.canSearch = self:GetChecked()
-	Addon:SendMessage('SEARCH_TOGGLED', self:GetChecked() and self:GetFrameID())
+	Addon:SendSignal('SEARCH_TOGGLED', self:GetChecked() and self:GetFrameID())
 end
 
 function SearchToggle:OnEnter()

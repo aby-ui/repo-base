@@ -29,9 +29,6 @@ end
 function ItemSlot:GetBlizzard()
 end
 
-function ItemSlot:UpdatedLocked()
-	print(self:GetID())
-end
 
 --[[ Events ]]--
 
@@ -41,7 +38,7 @@ function ItemSlot:OnClick(button)
 	end
 
 	if IsModifiedClick('SPLITSTACK') then
-		if not self:IsLocked() then
+		if not self:GetInfo().locked then
 			self.SplitStack = ItemSlot.SplitStack -- have no idea why is necessary
 			OpenStackSplitFrame(select(2, self:GetInfo()), self, 'BOTTOMLEFT', 'TOPLEFT')
 		end

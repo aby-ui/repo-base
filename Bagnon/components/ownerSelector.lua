@@ -12,7 +12,7 @@ local OwnerSelector = Addon:NewClass('OwnerSelector', 'Button')
 
 function OwnerSelector:New(parent)
 	local b = self:Bind(CreateFrame('Button', nil, parent, ADDON .. 'MenuButtonTemplate'))
-	b:RegisterFrameMessage('OWNER_CHANGED', 'Update')
+	b:RegisterFrameSignal('OWNER_CHANGED', 'Update')
 	b:SetScript('OnClick', b.OnClick)
 	b:SetScript('OnEnter', b.OnEnter)
 	b:SetScript('OnLeave', b.OnLeave)

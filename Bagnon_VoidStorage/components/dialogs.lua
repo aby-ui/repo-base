@@ -42,11 +42,11 @@ StaticPopupDialogs[ADDON .. 'COMFIRM_TRANSFER'] = {
 
 	OnAccept = function(dialog, frame)
 		ExecuteVoidTransfer()
-		frame:SendFrameMessage('TRANFER_TOGGLED')
+		frame:SendFrameSignal('TRANFER_TOGGLED')
 	end,
 
 	OnCancel = function(dialog, frame)
-		frame:SendFrameMessage('TRANFER_TOGGLED')
+		frame:SendFrameSignal('TRANFER_TOGGLED')
 	end,
 
 	timeout = 0, preferredIndex = STATICPOPUP_NUMDIALOGS,

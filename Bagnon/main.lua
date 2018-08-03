@@ -8,13 +8,10 @@ Addon.ItemScale = 1
 
 function Addon:OnEnable()
 	self:StartupSettings()
-	self:SetupAutoDisplay()
-	self:AddSlashCommands(ADDON:lower(), 'bgn')
-	self:HookTooltips()
-
 	self:CreateFrame('inventory')
 	self:CreateFrameLoader('GuildBank', 'GuildBankFrame_LoadUI')
 	self:CreateFrameLoader('VoidStorage', 'VoidStorage_LoadUI')
+	self:CreateSlashCommands(ADDON:lower(), 'bgn')
 	self:CreateOptionsLoader()
 end
 

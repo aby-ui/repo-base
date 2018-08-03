@@ -21,7 +21,7 @@
 	<Script file="Paladin\BeaconOfLight.lua"/>
 
 	<!--<Script file="Priest\ShadowForm.lua"/>-->
-	<!--<Script file="Priest\Fortitude.lua"/>	-->
+	<Script file="Priest\Fortitude.lua"/>
 	<!--<Script file="Priest\Chakra.lua"/>-->
 
 	<Script file="Rogue\WeaponPoison.lua"/>

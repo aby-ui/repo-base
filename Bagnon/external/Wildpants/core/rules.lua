@@ -60,5 +60,5 @@ end
 
 function Rules:BroadcastAddition()
 	self:SetScript('OnUpdate', nil)
-	self:SendMessage('RULES_LOADED')
+	self:SendSignal('RULES_LOADED')
 end

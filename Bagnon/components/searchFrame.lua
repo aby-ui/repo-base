@@ -32,7 +32,7 @@ function SearchFrame:New(parent)
 	f:SetBackdropColor(0, 0, 0, 0.8)
 	f:SetBackdropBorderColor(1, 1, 1, 0.8)
 
-	f:RegisterMessage('SEARCH_TOGGLED', 'OnToggle')
+	f:RegisterSignal('SEARCH_TOGGLED', 'OnToggle')
 	f:SetScript('OnTextChanged', f.OnTextChanged)
 	f:SetScript('OnEscapePressed', f.OnEscape)
 	f:SetScript('OnEnterPressed', f.OnEscape)
@@ -62,12 +62,12 @@ function SearchFrame:OnToggle(_, shownFrame)
 end
 
 function SearchFrame:OnShow()
-	self:RegisterMessage('SEARCH_CHANGED', 'UpdateText')
+	self:RegisterSignal('SEARCH_CHANGED', 'UpdateText')
 	self:UpdateText()
 end
 
 function SearchFrame:OnHide()
-	self:UnregisterMessage('SEARCH_CHANGED')
+	self:UnregisterSignal('SEARCH_CHANGED')
 	self:ClearFocus()
 end
 
@@ -75,13 +75,13 @@ function SearchFrame:OnTextChanged()
 	local text = self:GetText():lower()
 	if text ~= Addon.search then
 		Addon.search = text
-		Addon:SendMessage('SEARCH_CHANGED', text)
+		Addon:SendSignal('SEARCH_CHANGED', text)
 	end
 end
 
 function SearchFrame:OnEscape()
 	Addon.canSearch = nil
-	Addon:SendMessage('SEARCH_TOGGLED', nil)
+	self:SendSignal('SEARCH_TOGGLED', nil)
 	self:Hide()
 end
 

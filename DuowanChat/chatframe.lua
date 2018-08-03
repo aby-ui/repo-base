@@ -14,8 +14,22 @@ local defaults = {
 	} 
 }
 
+local function GetChannelNameWithCommunity(index)
+    local channelNum, channelName = GetChannelName(index);
+    if channelNum == 0 then return channelNum, channelName end
+    if channelName then
+        local _, _, clubId = channelName:find("Community:(%d+)")
+        if clubId then
+            local info = C_Club.GetClubInfo(tonumber(clubId))
+            return channelNum, info.name
+        else
+            return channelNum, channelName
+        end
+    end
+end
+
 local function DWC_ChannelShortText(index)
-	local channelNum, channelName = GetChannelName(index);
+	local channelNum, channelName = GetChannelNameWithCommunity(index);
 
 	if (channelNum ~= 0) then
 		if (strfind(channelName, L["General"])) then
@@ -40,7 +54,7 @@ end
 local short = DWC_ChannelShortText;
 
 local function DWC_ShowChannel(index)
-	local channelNum, channelName = GetChannelName(index);	
+	local channelNum, channelName = GetChannelNameWithCommunity(index);
 	if (channelNum ~= 0 and (not (strfind(channelName, L["LocalDefense"]) or strfind(channelName, "^QuestHelperLite"))) and not strfind(channelName, "LFGForwarder") and not strfind(channelName, "TCForwarder") ) then
 		return true;
 	end	

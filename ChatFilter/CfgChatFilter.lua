@@ -62,7 +62,7 @@
                     if IsInInstance() or guid == playerGUID or not U1GetCfgValue("ChatFilter", "FilterYell") then
                         return
                     end
-                    if msg and msg:utf8len() > (U1GetCfgValue("ChatFilter/FilterYell/YellLen") or 80) then
+                    if msg and string.utf8len(msg) > (U1GetCfgValue("ChatFilter/FilterYell/YellLen") or 80) then
                         return true
                     end
                 end
@@ -93,7 +93,7 @@
                     if guid == playerGUID or not U1GetCfgValue("ChatFilter", "FilterChannel") then
                         return
                     end
-                    if msg and msg:utf8len() > (U1GetCfgValue("ChatFilter/FilterChannel/MaxLen") or 80) then
+                    if msg and string.utf8len(msg) > (U1GetCfgValue("ChatFilter/FilterChannel/MaxLen") or 80) then
                         return true
                     end
                 end

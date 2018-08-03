@@ -46,7 +46,7 @@ end
 function EditFrame:RegisterEvents()
 	QueryGuildBankText(GetCurrentGuildBankTab())
 
-	self:RegisterMessage('GUILD_TAB_CHANGED', 'Update')
+	self:RegisterSignal('GUILD_TAB_CHANGED', 'Update')
 	self:RegisterEvent('GUILDBANKBAGSLOTS_CHANGED', 'Update')
 	self:RegisterEvent('GUILDBANK_UPDATE_TEXT')
 	self:RegisterEvent('GUILDBANK_TEXT_CHANGED')
@@ -105,6 +105,6 @@ function EditFrame:OnEditFocusLost()
 end
 
 function EditFrame:OnHide()
-	self:UnregisterEvents()
+	self:UnregisterSignals()
 	self:GetScrollChild():ClearFocus()
 end

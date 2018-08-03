@@ -65,6 +65,8 @@ local function SendInspect()
     end
 end
 
+local SendAddonMessage = SendAddonMessage or function() end
+
 --发送自己的信息
 local function SendPlayerInfo()
     local ilvl = select(2, GetAverageItemLevel())

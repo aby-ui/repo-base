@@ -22,6 +22,7 @@ ns.L = {
     EnableMouseItemLevel        = "开启鼠标装等",
     EnableMouseSpecialization   = "显示鼠标天赋",
     EnableMouseWeaponLevel      = "显示武器等级",
+    ShowPluginGreenState        = "显示绿字属性前缀 |cffcccc33(重载生效)|r",
     Bag                         = "背包",
     Bank                        = "银行",
     Merchant                    = "商人",
@@ -32,6 +33,7 @@ ns.L = {
     GuildNews                   = "公会新闻",
     PaperDoll                   = "人物面板",
     Chat                        = "聊天",
+    Loot                        = "拾取",
 }
 
 BINDING_NAME_InspectRaidFrame = "显示团队观察面板"

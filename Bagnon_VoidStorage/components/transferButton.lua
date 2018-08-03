@@ -39,7 +39,7 @@ end
 
 function TransferButton:OnClick()
 	if self:HasTransfer() then
-		self:SendFrameMessage('TRANFER_TOGGLED', self.Button:GetChecked())
+		self:SendFrameSignal('TRANFER_TOGGLED', self.Button:GetChecked())
 	end
 end
 
@@ -73,7 +73,7 @@ end
 --[[ Update ]]--
 
 function TransferButton:RegisterEvents()
-	self:RegisterFrameMessage('TRANFER_TOGGLED', 'OnToggle')
+	self:RegisterFrameSignal('TRANFER_TOGGLED', 'OnToggle')
 	self:RegisterEvent('VOID_STORAGE_DEPOSIT_UPDATE', 'Update')
 	self:RegisterEvent('VOID_STORAGE_CONTENTS_UPDATE', 'Update')
 	self:RegisterEvent('VOID_TRANSFER_DONE', 'Update')

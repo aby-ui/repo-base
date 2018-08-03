@@ -36,7 +36,7 @@ end
 --[[ Frame Control ]]--
 
 function Addon:UpdateFrames()
-	self:SendMessage('UPDATE_ALL')
+	self:SendSignal('UPDATE_ALL')
 end
 
 function Addon:ToggleFrame(id)

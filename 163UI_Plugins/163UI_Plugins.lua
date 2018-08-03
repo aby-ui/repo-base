@@ -245,22 +245,16 @@ end)
 ---------------------------------------------------------------]]
 U1PLUG["FixBlizGuild"] = function()
     U1QueryGuildNews = QueryGuildNews
-        QueryGuildNews = function() end
-        CoreDependCall("Blizzard_GuildUI", function()
-            local btn = WW:Button("GuildGetNewsButton", GuildNewsFrame, "UIMenuButtonStretchTemplate")
-            :SetTextFont(ChatFontNormal, 13, "")
-            :SetAlpha(0.8)
-            :SetText("加载新闻")
-            :Size(100,30)
-            :CENTER(0, 0)
-            :AddFrameLevel(3, GuildNewsFrame)
-            :SetScript("OnClick", function(self)
-                U1QueryGuildNews()
-                QueryGuildNews = U1QueryGuildNews
-                self:Hide()
-                --self:ClearAllPoints() self:SetPoint("TOPRIGHT", -1, 33) self:SetSize(50, 30) self:SetText("刷新")
-            end)
-            :un()
-            CoreUIEnableTooltip(btn, '有爱', '手工加载公会新闻，减少卡顿，可以在"爱不易设置-小功能集合"里关闭此功能')
-        end)
+    QueryGuildNews = function() end
+    local createLoadButton = function(parent)
+        local btn = WW:Button("$parentGetNewsButton", parent, "UIMenuButtonStretchTemplate"):SetTextFont(ChatFontNormal, 13, ""):SetAlpha(0.8):SetText("加载新闻"):Size(100, 30):CENTER(0, 0):AddFrameLevel(3, parent):SetScript("OnClick", function(self)
+            U1QueryGuildNews()
+            QueryGuildNews = U1QueryGuildNews
+            self:Hide()
+            --self:ClearAllPoints() self:SetPoint("TOPRIGHT", -1, 33) self:SetSize(50, 30) self:SetText("刷新")
+        end):un()
+        CoreUIEnableTooltip(btn, '有爱', '手工加载公会新闻，减少卡顿，可以在"爱不易设置-小功能集合"里关闭此功能')
+    end
+    CoreDependCall("Blizzard_GuildUI", function() createLoadButton(GuildNewsFrame) end)
+    CoreDependCall("Blizzard_Communities", function() createLoadButton(CommunitiesFrameGuildDetailsFrameNews) end)
 end

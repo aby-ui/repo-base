@@ -69,7 +69,7 @@ local function ShortenNumber(number)
 	if GetLocale() == "zhCN" then
 		if number > 100000000 then
 			return (ceil((number/1000000))/100).." 亿"
-		elseif number > 1000 then
+		elseif number > 100000 then
 			return (ceil((number/1000))/10).." 万"
 		else
 			return number

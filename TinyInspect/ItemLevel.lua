@@ -14,7 +14,7 @@ local RELICSLOT = RELICSLOT or "Relic"
 local ARTIFACT_POWER = ARTIFACT_POWER or "Artifact"
 if (GetLocale():sub(1,2) == "zh") then ARTIFACT_POWER = "能量" end
 
---框架 #category Bag|Bank|Merchant|Trade|GuildBank|Auction|AltEquipment|PaperDoll
+--框架 #category Bag|Bank|Merchant|Trade|GuildBank|Auction|AltEquipment|PaperDoll|Loot
 local function GetItemLevelFrame(self, category)
     if (not self.ItemLevelFrame) then
         local fontAdjust = GetLocale():sub(1,2) == "zh" and 0 or -3
@@ -162,6 +162,20 @@ hooksecurefunc("TradeFrame_UpdateTargetItem", function(id)
     SetItemLevel(_G["TradeRecipientItem"..id.."ItemButton"], GetTradeTargetItemLink(id), "Trade")
 end)
 
+-- Loot
+hooksecurefunc("LootFrame_UpdateButton", function(index)
+    local button = _G["LootButton"..index]
+    local numLootItems = LootFrame.numLootItems
+    local numLootToShow = LOOTFRAME_NUMBUTTONS
+    if (numLootItems > LOOTFRAME_NUMBUTTONS) then
+		numLootToShow = numLootToShow - 1
+	end
+    local slot = (numLootToShow * (LootFrame.page - 1)) + index
+    if (button:IsShown()) then
+        SetItemLevel(button, GetLootSlotLink(slot), "Loot")
+    end
+end)
+
 -- GuildBank
 LibEvent:attachEvent("ADDON_LOADED", function(self, addonName)
     if (addonName == "Blizzard_GuildBankUI") then
@@ -246,17 +260,17 @@ end
 -- ForAddons: Bagnon Combuctor LiteBag ArkInventory
 LibEvent:attachEvent("PLAYER_LOGIN", function()
     -- For Bagnon
-    if (Bagnon and Bagnon.ItemSlot) then
+    if (Bagnon and Bagnon.ItemSlot and Bagnon.ItemSlot.Update) then
         hooksecurefunc(Bagnon.ItemSlot, "Update", function(self)
             SetItemLevel(self, self:GetItem(), "Bag", self:GetBag(), self:GetID())
         end)
     end
     -- For Combuctor
-    if (Combuctor and Combuctor.ItemSlot) then
+    if (Combuctor and Combuctor.ItemSlot and Combuctor.ItemSlot.Update) then
         hooksecurefunc(Combuctor.ItemSlot, "Update", function(self)
             SetItemLevel(self, self:GetItem(), "Bag", self:GetBag(), self:GetID())
         end)
-    elseif (Combuctor and Combuctor.Item) then
+    elseif (Combuctor and Combuctor.Item and Combuctor.Item.Update) then
         hooksecurefunc(Combuctor.Item, "Update", function(self)
             SetItemLevel(self, self.hasItem, "Bag", self.bag, self.GetID and self:GetID())
         end)
@@ -280,9 +294,9 @@ end)
 
 -- GuildNews
 LibEvent:attachEvent("ADDON_LOADED", function(self, addonName)
-    if (addonName == "Blizzard_GuildUI") then
-        GuildNewsItemCache = {}
-        hooksecurefunc("GuildNewsButton_SetText", function(button, text_color, text, text1, text2, ...)
+    if (addonName == "Blizzard_Communities" or addonName == "Blizzard_GuildUI") then
+        GuildNewsItemCache = GuildNewsItemCache or {}
+        hooksecurefunc(addonName == "Blizzard_Communities" and "CommunitiesGuildNewsButton_SetText" or "GuildNewsButton_SetText", function(button, text_color, text, text1, text2, ...)
             if (not TinyInspectDB or 
                 not TinyInspectDB.EnableItemLevel or 
                 not TinyInspectDB.EnableItemLevelGuildNews) then
@@ -294,11 +308,11 @@ LibEvent:attachEvent("ADDON_LOADED", function(self, addonName)
                     local level = GuildNewsItemCache[link] or GetDetailedItemLevelInfo(link) or 0 --163ui fix GuildNewsItemCache[link] or select(2, LibItemInfo:GetItemInfo(link))
                     if (level > 0) then
                         GuildNewsItemCache[link] = level
-                        if level > 940 then
+                        if level > 220 then
                             local r,g,b = U1GetInventoryLevelColor(level)
                             local hex = ("%.2x%.2x%.2x"):format(r*255, g*255, b*255)
                             text2 = text2:gsub("%|cff......(%|Hitem:%d+:.-%|h%[)(.-)(%]%|h)", "|cff" .. hex .. "%1"..level..":%2%3")
-                        elseif level >= 910 then
+                        elseif level >= 192 then
                             text2 = text2:gsub("(%|Hitem:%d+:.-%|h%[)(.-)(%]%|h)", "%1"..level..":%2%3")
                         end
                         button.text:SetFormattedText(text, text1, text2, ...)
@@ -369,17 +383,21 @@ end)
 --  Chat ItemLevel  --
 ----------------------
 
-local replaceCache = {}
 local itemStatTable = {}
-_G.TI_REPLACE_CACHE = replaceCache
 local ARMOR_TYPES = {} --{["板甲"]=true, ...}
 for i=1, 4 do ARMOR_TYPES[GetItemSubClassInfo(4,i)] = true end
 local typeTexts = { INVTYPE_HEAD = "头", INVTYPE_SHOULDER = "肩", INVTYPE_CHEST = "胸", INVTYPE_WAIST = "腰", INVTYPE_LEGS = "腿", INVTYPE_HAND = "手", INVTYPE_FEET = "鞋", INVTYPE_WRIST = "腕", }
+local Caches = {}
+_G.TI_REPLACE_CACHE = Caches
+
 local function ChatItemLevel(Hyperlink)
-    if replaceCache[Hyperlink] then return replaceCache[Hyperlink] end
+    if (Caches[Hyperlink]) then
+        return Caches[Hyperlink]
+    end
     local link = string.match(Hyperlink, "|H(.-)|h")
     local name, _, quality, _, _, class, subclass, _, equipSlot, texture = GetItemInfo(link)
     if (not texture) then return end
+	local Origin = Hyperlink
     local level = GetDetailedItemLevelInfo(link)
     local yes = true
     if (level) then
@@ -395,7 +413,7 @@ local function ChatItemLevel(Hyperlink)
         if (yes) then
             local gem = ""
             if quality ~= 6 then
-                -- 神器不显示
+                -- 神器不显示宝石孔
                 wipe(itemStatTable)
                 GetItemStats(link, itemStatTable)
                 for key, num in pairs(itemStatTable) do
@@ -404,26 +422,16 @@ local function ChatItemLevel(Hyperlink)
                         break
                     end
                 end
-                --for i = 1, num do
-                --    gem = gem .. "|TInterface\\ItemSocketingFrame\\UI-EmptySocket-Prismatic:0|t"
-                --end
-                --if (gem ~= "") then gem = gem.." " end
             end
-
-            local replaced = Hyperlink:gsub("|h%[(.-)%]|h", "|h["..level..":"..name.."]|h"..gem)
-            replaceCache[Hyperlink] = replaced
-            Hyperlink = replaced
+			--[[
+            for i = 1, num do
+                gem = gem .. "|TInterface\\ItemSocketingFrame\\UI-EmptySocket-Prismatic:0|t"
+            end
+            if (gem ~= "") then gem = gem.." " end
+			--]]
+            Hyperlink = Hyperlink:gsub("|h%[(.-)%]|h", "|h["..level..":"..name.."]|h"..gem)
         end
-    end
-    return Hyperlink
-end
-
-local function KeystoneLevel(Hyperlink)
-    do return Hyperlink end
-    local _, map, level, name = string.match(Hyperlink, "|Hkeystone:(%d+):(%d+):(%d+).-|h(.-)|h")
-    if (map and level and name and not string.find(name, level)) then
-        name = C_ChallengeMode.GetMapUIInfo(map)
-        Hyperlink = Hyperlink:gsub("|h%[(.-)%]|h", "|h["..level..":"..name.."]|h")
+        Caches[Origin] = Hyperlink
     end
     return Hyperlink
 end
@@ -431,7 +439,6 @@ end
 local function filter(self, event, msg, ...)
     if (TinyInspectDB and TinyInspectDB.EnableItemLevelChat) then
         msg = msg:gsub("(|Hitem:%d+:.-|h.-|h)", ChatItemLevel)
-        msg = msg:gsub("(|Hkeystone:%d+:%d+:.-|h.-|h)", KeystoneLevel)
     end
     return false, msg, ...
 end

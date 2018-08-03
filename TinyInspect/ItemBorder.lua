@@ -10,18 +10,23 @@ local function SetItemAngularBorder(self, quality, itemIDOrLink)
     if (not self) then return end
     if (not self.angularFrame) then
         local parent = self.IconBorder or self
+        local w, h = parent:GetSize()
+        if (parent ~= self) then 
+            local sw, sh = self:GetSize()
+            w, h = min(w, sw), min(h, sh)
+        end
         self.angularFrame = CreateFrame("Frame", nil, self)
         self.angularFrame:SetFrameLevel(5)
-        self.angularFrame:SetSize(parent:GetSize())
+        self.angularFrame:SetSize(w, h)
         self.angularFrame:SetPoint("CENTER", parent, "CENTER")
         self.angularFrame:Hide()
         self.angularFrame.mask = CreateFrame("Frame", nil, self.angularFrame)
-        self.angularFrame.mask:SetSize(parent:GetWidth()-2, parent:GetHeight()-2)
+        self.angularFrame.mask:SetSize(w-2, h-2)
         self.angularFrame.mask:SetPoint("CENTER")
         self.angularFrame.mask:SetBackdrop({edgeFile = "Interface\\Tooltips\\UI-Tooltip-Background", edgeSize = 2})
         self.angularFrame.mask:SetBackdropBorderColor(0, 0, 0)
         self.angularFrame.border = CreateFrame("Frame", nil, self.angularFrame)
-        self.angularFrame.border:SetSize(parent:GetWidth(), parent:GetHeight())
+        self.angularFrame.border:SetSize(w, h)
         self.angularFrame.border:SetPoint("CENTER")
         self.angularFrame.border:SetBackdrop({edgeFile = "Interface\\Buttons\\WHITE8X8", edgeSize = 1})
     end
@@ -58,3 +63,13 @@ LibEvent:attachTrigger("SET_ITEM_ANGULARBORDER", function(self, frame, quality, 
         frame:Hide()
     end
 end)
+
+--直角邊框时需要调整艾泽拉斯项链等级框架
+local RankFrame = CharacterNeckSlot and CharacterNeckSlot.RankFrame
+if (RankFrame) then
+    RankFrame.Texture:Hide()
+    RankFrame:SetPoint("CENTER", CharacterNeckSlot, "BOTTOM", 0, 8)
+    local fontFile, fontSize, fontFlags = TextStatusBarText:GetFont()
+    RankFrame.Label:SetFont(fontFile, fontSize, "THINOUTLINE")
+    RankFrame.Label:SetTextColor(0, 0.9, 0.9)
+end

@@ -12,37 +12,8 @@ else return end
 
 local LibItemInfo = LibStub:GetLibrary("LibItemInfo.7000")
 
-local states = {
-    --迴避 /80
-    [ITEM_MOD_CR_AVOIDANCE_SHORT]   = function(value) return value/80 end,
-    --速度 /101.2
-    [ITEM_MOD_CR_SPEED_SHORT]       = function(value) return value/101.2 end,
-    --精通 /800
-    [ITEM_MOD_MASTERY_RATING_SHORT] = function(value) return value/800 end,
-    --臨機應變 /475
-    [ITEM_MOD_VERSATILITY]          = function(value) return value/475 end,
-    --致命一擊 /400
-    [ITEM_MOD_CRIT_RATING_SHORT]    = function(value) return value/400 end,
-    --汲取 /225
-    [ITEM_MOD_CR_LIFESTEAL_SHORT]   = function(value) return value/225 end,
-    --加速 /375
-    [ITEM_MOD_HASTE_RATING_SHORT]   = function(value) return value/375 end,
-}
-
-local function GetStatePercent(unit, state, value, default)
-    local _, race = UnitRace(unit)
-    local _, class = UnitClass(unit)
-    local specID = GetInspectSpecialization(unit)
-    local level = UnitLevel(unit)
-    if (TinyInspectDB and TinyInspectDB.DisplayPercentageStats and tonumber(value) and level == 110) then
-        if (states[state]) then
-            return format("+%.2f%%", states[state](value))
-        else
-            return value
-        end
-    else
-        return value or default
-    end
+local function GetStateValue(unit, state, value, default)
+    return value or default
 end
 
 function ShowInspectItemStatsFrame(frame, unit)
@@ -107,9 +78,9 @@ function ShowInspectItemStatsFrame(frame, unit)
         if (v.r + v.g + v.b < 1.2) then
             frame.statsFrame["stat"..index].Label:SetText(k)
             frame.statsFrame["stat"..index].Label:SetTextColor(v.r, v.g, v.b)
-            frame.statsFrame["stat"..index].Value:SetText(GetStatePercent(unit,k,v.value))
+            frame.statsFrame["stat"..index].Value:SetText(GetStateValue(unit,k,v.value))
             frame.statsFrame["stat"..index].Value:SetTextColor(v.r, v.g, v.b)
-            frame.statsFrame["stat"..index].PlayerValue:SetText(GetStatePercent("player",k,playerStats[k] and playerStats[k].value,"-"))
+            frame.statsFrame["stat"..index].PlayerValue:SetText(GetStateValue("player",k,playerStats[k] and playerStats[k].value,"-"))
             frame.statsFrame["stat"..index].PlayerValue:SetTextColor(v.r, v.g, v.b)
             frame.statsFrame["stat"..index].Background:SetShown(index%2~=0)
             frame.statsFrame["stat"..index]:Show()
@@ -122,7 +93,7 @@ function ShowInspectItemStatsFrame(frame, unit)
             frame.statsFrame["stat"..index].Label:SetTextColor(v.r, v.g, v.b)
             frame.statsFrame["stat"..index].Value:SetText("-")
             frame.statsFrame["stat"..index].Value:SetTextColor(v.r, v.g, v.b)
-            frame.statsFrame["stat"..index].PlayerValue:SetText(GetStatePercent("player",k,v.value))
+            frame.statsFrame["stat"..index].PlayerValue:SetText(GetStateValue("player",k,v.value))
             frame.statsFrame["stat"..index].PlayerValue:SetTextColor(v.r, v.g, v.b)
             frame.statsFrame["stat"..index].Background:SetShown(index%2~=0)
             frame.statsFrame["stat"..index]:Show()
@@ -166,10 +137,13 @@ function ShowInspectItemStatsFrame(frame, unit)
     end
 end
 
-hooksecurefunc("ShowInspectItemListFrame", function(unit, parent, itemLevel)
+hooksecurefunc("ShowInspectItemListFrame", function(unit, parent, itemLevel, maxLevel)
     local frame = parent.inspectFrame
     if (not frame) then return end
     if (unit == "player") then return end
-    if (TinyInspectDB and not TinyInspectDB.ShowItemStats) then return end
+    if (TinyInspectDB and not TinyInspectDB.ShowItemStats) then
+        if (frame.statsFrame) then frame.statsFrame:Hide() end
+        return
+    end
     ShowInspectItemStatsFrame(frame, unit)
 end)

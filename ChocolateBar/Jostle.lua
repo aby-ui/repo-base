@@ -72,9 +72,8 @@ JostleFrame:RegisterEvent("PLAYER_REGEN_DISABLED")
 JostleFrame:RegisterEvent("PLAYER_REGEN_ENABLED")
 JostleFrame:RegisterEvent("PLAYER_CONTROL_GAINED")
 JostleFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
-JostleFrame:RegisterEvent("UNIT_ENTERED_VEHICLE")
+JostleFrame:RegisterEvent("UNIT_ENTERING_VEHICLE")
 JostleFrame:RegisterEvent("UNIT_EXITED_VEHICLE")
-
 
 if not Jostle.hooks.WorldMapFrame_Hide then
 	Jostle.hooks.WorldMapFrame_Hide = true
@@ -144,7 +143,7 @@ function Jostle:PlayerFrame_SequenceFinished()
 	self:Refresh(PlayerFrame)
 end
 
-function Jostle:UNIT_ENTERED_VEHICLE()
+function Jostle:UNIT_ENTERING_VEHICLE()
 	MainMenuBar:SetMovable(true)
 	MainMenuBar:SetUserPlaced(false)
 end
@@ -154,7 +153,7 @@ function Jostle:UNIT_EXITED_VEHICLE()
 end
 
 function Jostle:PLAYER_ENTERING_WORLD()
-	--self:Refresh(BuffFrame, PlayerFrame, TargetFrame)
+	self:Refresh(BuffFrame, PlayerFrame, TargetFrame)
 end
 
 function Jostle:WorldMapFrame_Hide()
@@ -420,7 +419,6 @@ function Jostle:Refresh(...)
 					if frame == FramerateLabel then
 						anchorFrame = WorldFrame
 					end
-          Debug("bottomOffset", bottomOffset, "topOffset", topOffset)
 
 					frame:ClearAllPoints()
 					frame:SetPoint(anchor, anchorFrame, anchorAlt or anchor, x, y + offset)

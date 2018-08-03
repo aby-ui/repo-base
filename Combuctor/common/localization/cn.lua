@@ -60,6 +60,6 @@ L.TipCount4 = '虚空仓库: %d'
 L.TipDelimiter = '|'
 
 --databroker tooltips
-L.TipShowBank = 'Shift-单击 开关银行'
+L.TipShowBank = '右击 开关银行'
 L.TipShowInventory = '单击 开关背包'
-L.TipShowOptions = '右击 打开设置菜单'
+L.TipShowOptions = 'Shift-单击 打开设置菜单'

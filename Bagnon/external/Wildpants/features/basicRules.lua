@@ -23,9 +23,9 @@ local Quest = GetItemClassInfo(LE_ITEM_CLASS_QUESTITEM)
 local Misc = GetItemClassInfo(LE_ITEM_CLASS_MISCELLANEOUS)
 
 local function ClassRule(id, name, icon, classes)
-	local filter = function(_,_,_,_, itemLink)
-		if itemLink then
-			local _,_,_,_,_, itemType = GetItemInfo(itemLink)
+	local filter = function(_,_,_,_, item)
+		if item.link then
+			local _,_,_,_,_, itemType = GetItemInfo(item.link)
 			for i, class in ipairs(classes) do
 				if itemType == class then
 					return true
@@ -39,16 +39,16 @@ local function ClassRule(id, name, icon, classes)
 end
 
 local function ClassSubrule(id, class)
-	Addon.Rules:New(id, class, nil, function(_,_,_,_, itemLink)
-		if itemLink then
-			local _,_,_,_,_, itemType = GetItemInfo(itemLink)
+	Addon.Rules:New(id, class, nil, function(_,_,_,_, item)
+		if item.link then
+			local _,_,_,_,_, itemType = GetItemInfo(item.link)
 			return itemType == class
 		end
 	end)
 end
 
-local function GetBagFamily(bagLink)
-	return bagLink and GetItemFamily(bagLink) or 0
+local function GetBagFamily(bag)
+	return bag.link and GetItemFamily(bag.link) or 0
 end
 
 
@@ -56,8 +56,8 @@ end
 
 Addon.Rules:New('all', ALL, 'Interface/Icons/INV_Misc_EngGizmos_17')
 Addon.Rules:New('all/all', ALL)
-Addon.Rules:New('all/normal', Normal, nil, function(_, bag,_, bagLink) return Addon:IsBasicBag(bag) or GetBagFamily(bagLink) == 0 end)
-Addon.Rules:New('all/trade', TRADE, nil, function(_,_,_, bagLink) return GetBagFamily(bagLink) > 0 end)
+Addon.Rules:New('all/normal', Normal, nil, function(_, bag,_, info) return Addon:IsBasicBag(bag) or not Addon:IsReagents(bag) and GetBagFamily(info) == 0 end)
+Addon.Rules:New('all/trade', TRADE, nil, function(_,_,_, info) return GetBagFamily(info) > 0 end)
 Addon.Rules:New('all/reagent', Reagents, nil, function(_, bag) return Addon:IsReagents(bag) end)
 
 
@@ -83,16 +83,16 @@ ClassSubrule('trade/glyph', Glyph)
 ClassRule('equip', Equipment, 'Interface/Icons/INV_Chest_Chain_04', {Armor, Weapon})
 ClassSubrule('equip/weapon', Weapon)
 
-Addon.Rules:New('equip/armor', Armor, nil, function(item)
-	if item then
-		local _,_,_,_,_, class, _, equipSlot = GetItemInfo(item)
+Addon.Rules:New('equip/armor', Armor, nil, function(_,_,_,_, item)
+	if item.link then
+		local _,_,_,_,_, class, _,_, equipSlot = GetItemInfo(item.link)
 		return class == Armor and equipSlot ~= 'INVTYPE_TRINKET'
 	end
 end)
 
-Addon.Rules:New('equip/trinket', Trinket, nil, function(item)
-	if item then
-		local _,_,_,_,_,_,_, equipSlot = GetItemInfo(item)
+Addon.Rules:New('equip/trinket', Trinket, nil, function(_,_,_,_, item)
+	if item.link then
+		local _,_,_,_,_,_,_,_, equipSlot = GetItemInfo(item.link)
 		return equipSlot == 'INVTYPE_TRINKET'
 	end
 end)

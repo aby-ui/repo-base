@@ -68,7 +68,7 @@ function Bag:New(parent, id)
 	bag:SetScript('OnDragStart', bag.OnDrag)
 	bag:SetScript('OnReceiveDrag', bag.OnClick)
 	bag:SetScript('OnShow', bag.RegisterEvents)
-	bag:SetScript('OnHide', bag.UnregisterEvents)
+	bag:SetScript('OnHide', bag.UnregisterSignals)
 	bag:RegisterEvents()
 
 	return bag
@@ -131,15 +131,15 @@ end
 function Bag:RegisterEvents()
 	self:Update()
 
-	self:UnregisterEvents()
-	self:RegisterFrameMessage('OWNER_CHANGED', 'RegisterEvents')
-	self:RegisterFrameMessage('FILTERS_CHANGED', 'UpdateToggle')
+	self:UnregisterSignals()
+	self:RegisterFrameSignal('OWNER_CHANGED', 'RegisterEvents')
+	self:RegisterFrameSignal('FILTERS_CHANGED', 'UpdateToggle')
 	self:RegisterEvent('BAG_CLOSED', 'BAG_UPDATE')
 	self:RegisterEvent('BAG_UPDATE')
 
 	if self:IsBank() or self:IsBankBag() or self:IsReagents() then
-		self:RegisterMessage('BANK_OPENED', 'RegisterEvents')
-		self:RegisterEvent('BANKFRAME_CLOSED', 'RegisterEvents')
+		self:RegisterMessage('CACHE_BANK_OPENED', 'RegisterEvents')
+		self:RegisterMessage('CACHE_BANK_CLOSED', 'RegisterEvents')
 	end
 
 	if self:IsCustomSlot() then
@@ -280,14 +280,14 @@ function Bag:Toggle()
 	local slot = profile.exclusiveReagent and not hidden[REAGENTBANK_CONTAINER] and REAGENTBANK_CONTAINER or self:GetSlot()
 	hidden[slot] = not hidden[slot]
 
-	self:SendFrameMessage('FILTERS_CHANGED')
+	self:SendFrameSignal('FILTERS_CHANGED')
 	self:SetFocus(true)
 end
 
 function Bag:SetFocus(focus)
 	local state = focus and self:GetSlot()
 	self:GetFrame().focusedBag = state
-	self:SendFrameMessage('FOCUS_BAG', state)
+	self:SendFrameSignal('FOCUS_BAG', state)
 end
 
 function Bag:SetIcon(icon)

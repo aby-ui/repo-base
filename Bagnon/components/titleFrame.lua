@@ -28,7 +28,7 @@ function TitleFrame:New(title, parent)
 	b:SetScript('OnClick', b.OnClick)
 	b.title = title
 
-	b:RegisterFrameMessage('OWNER_CHANGED', 'Update')
+	b:RegisterFrameSignal('OWNER_CHANGED', 'Update')
 	b:Update()
 
 	return b
@@ -51,8 +51,8 @@ function TitleFrame:OnMouseUp()
 end
 
 function TitleFrame:OnDoubleClick()
-	Addon.canSearch = true
-	Addon:SendMessage('SEARCH_TOGGLED', self:GetFrameID())
+	self.canSearch = true
+	self:SendSignal('SEARCH_TOGGLED', self:GetFrameID())
 end
 
 function TitleFrame:OnClick(button)

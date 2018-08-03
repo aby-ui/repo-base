@@ -202,7 +202,7 @@ local function utf8sub (s, i, j)
 	local len = 0
 
 	-- only set l if i or j is negative
-	local l = (i >= 0 and j >= 0) or s:utf8len()
+	local l = (i >= 0 and j >= 0) or string.utf8len(s)
 	local startChar = (i >= 0) and i or l + i + 1
 	local endChar   = (j >= 0) and j or l + j + 1
 

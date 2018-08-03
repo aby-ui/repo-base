@@ -42,11 +42,11 @@ function Frame:New(id)
 	return f
 end
 
-function Frame:RegisterMessages()
-	self:RegisterMessage('UPDATE_ALL', 'Update')
-	self:RegisterMessage('RULES_LOADED', 'FindRules')
-	self:RegisterFrameMessage('BAG_FRAME_TOGGLED', 'Layout')
-	self:RegisterFrameMessage('ITEM_FRAME_RESIZED', 'Layout')
+function Frame:RegisterSignals()
+	self:RegisterSignal('UPDATE_ALL', 'Update')
+	self:RegisterSignal('RULES_LOADED', 'FindRules')
+	self:RegisterFrameSignal('BAG_FRAME_TOGGLED', 'Layout')
+	self:RegisterFrameSignal('ITEM_FRAME_RESIZED', 'Layout')
 	self:Update()
 end
 

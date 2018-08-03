@@ -12,9 +12,6 @@ but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License
-along with the library. If not, see <http://www.gnu.org/licenses/gpl-3.0.txt>.
-
 This file is part of Unfit.
 --]]
 
@@ -82,7 +79,7 @@ do
 	elseif Class == 'SHAMAN' then
 		Unusable = {
 			{LE_ITEM_WEAPON_BOWS, LE_ITEM_WEAPON_GUNS, LE_ITEM_WEAPON_POLEARM, LE_ITEM_WEAPON_SWORD1H, LE_ITEM_WEAPON_SWORD2H, LE_ITEM_WEAPON_WARGLAIVE, LE_ITEM_WEAPON_THROWN, LE_ITEM_WEAPON_CROSSBOW, LE_ITEM_WEAPON_WAND},
-			{LE_ITEM_ARMOR_PLATEM}
+			{LE_ITEM_ARMOR_PLATE}
 		}
 	elseif Class == 'WARLOCK' then
 		Unusable = {
@@ -105,7 +102,7 @@ do
 		for _, subclass in ipairs(Unusable[i]) do
 			list[subclass] = true
 		end
-		
+
 		Lib.unusable[class] = list
 	end
 end

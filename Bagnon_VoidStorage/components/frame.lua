@@ -34,9 +34,9 @@ function Frame:New(id)
 	return f
 end
 
-function Frame:RegisterMessages()
-	Addon.Frame.RegisterMessages(self)
-	self:RegisterFrameMessage('TRANFER_TOGGLED', 'OnTransferToggled')
+function Frame:RegisterSignals()
+	Addon.Frame.RegisterSignals(self)
+	self:RegisterFrameSignal('TRANFER_TOGGLED', 'OnTransferToggled')
 end
 
 function Frame:OnHide()

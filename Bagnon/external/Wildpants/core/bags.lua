@@ -59,8 +59,8 @@ function Addon:GetBagFamily(owner, bag)
 		return -1
 	end
 
-	local link = self:GetBagInfo(owner, bag)
-	return link and GetItemFamily(link) or 0
+	local info = self:GetBagInfo(owner, bag)
+	return info.link and GetItemFamily(info.link) or 0
 end
 
 function Addon:GetBagInfo(...)

@@ -39,9 +39,9 @@ function Frame:New(id)
 	return f
 end
 
-function Frame:RegisterMessages()
-	Addon.Frame.RegisterMessages(self)
-	self:RegisterFrameMessage('LOG_SELECTED', 'OnLogSelected')
+function Frame:RegisterSignals()
+	Addon.Frame.RegisterSignals(self)
+	self:RegisterFrameSignal('LOG_SELECTED', 'OnLogSelected')
 end
 
 

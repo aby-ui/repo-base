@@ -1,4 +1,4 @@
-local Lib = LibStub:NewLibrary('LibItemCache-2.0', 8)
+local Lib = LibStub:NewLibrary('LibItemCache-2.0', 9)
 if not Lib then
 	return
 end
@@ -12,9 +12,10 @@ local PET_LINK = '|c%s|Hbattlepet:%sx0|h[%s]|h|r'
 local PET_STRING = '^' .. strrep('%d+:', 6) .. '%d+$'
 local EMPTY_FUNC = function() end
 local BROKEN_REALMS = {
+	['Aggra(Português)'] = 'Aggra (Português)',
 	['AzjolNerub'] = 'Azjol-Nerub',
 	['Arakarahm'] = 'Arak-arahm',
-	['Корольлич'] = 'Король-лич'
+	['Корольлич'] = 'Король-лич',
 }
 
 local Realms = GetAutoCompleteRealms()
@@ -52,7 +53,7 @@ Lib:RegisterEvent('GUILDBANKFRAME_OPENED', function() Lib.AtGuild = true; Lib:Se
 Lib:RegisterEvent('GUILDBANKFRAME_CLOSED', function() Lib.AtGuild = false; Lib:SendMessage('CACHE_GUILD_CLOSED') end)
 
 
---[[ API ]]--
+--[[ Owners ]]--
 
 function Lib:GetOwnerInfo(owner)
 	local realm, name, isguild = self:GetOwnerAddress(owner)
@@ -93,6 +94,36 @@ function Lib:DeleteOwnerInfo(owner)
 		end
 	end
 end
+
+function Lib:IterateOwners()
+	local i, players, guilds, suffix = 0
+
+	return function()
+		while i <= #Realms do
+			local owner = players and players()
+			if owner then
+				return owner .. suffix
+			else
+				players = nil
+			end
+
+			local owner = guilds and guilds()
+			if owner then
+				return '® ' .. owner .. suffix
+			end
+
+			i = i + 1
+			if i <= #Realms then
+				players = Caches:GetPlayers(Realms[i])
+				guilds = Caches:GetGuilds(Realms[i])
+				suffix = Realms[i] ~= REALM and ' - ' .. Realms[i] or ''
+			end
+		end
+	end
+end
+
+
+--[[ Items and Bags ]]--
 
 function Lib:GetBagInfo(owner, bag)
 	local realm, name, isguild = self:GetOwnerAddress(owner)
@@ -157,32 +188,27 @@ function Lib:GetItemInfo(owner, bag, slot)
 	return self:RestoreItemData(item)
 end
 
-function Lib:IterateOwners()
-	local i, players, guilds, suffix = 0
+function Lib:GetItemID(owner, bag, slot)
+	local realm, name, isguild = self:GetOwnerAddress(owner)
+	local cached = self:IsBagCached(realm, name, isguild, bag)
 
-	return function()
-		while i <= #Realms do
-			local owner = players and players()
-			if owner then
-				return owner .. suffix
-			else
-				players = nil
-			end
+	if cached then
+		local api = isguild and 'GetGuildItem' or 'GetItem'
+		local item = Caches[api](Caches, realm, name, bag, slot)
 
-			local owner = guilds and guilds()
-			if owner then
-				return '® ' .. owner .. suffix
-			end
-
-			i = i + 1
-			if i <= #Realms then
-				players = Caches:GetPlayers(Realms[i])
-				guilds = Caches:GetGuilds(Realms[i])
-				suffix = Realms[i] ~= REALM and ' - ' .. Realms[i] or ''
-			end
-		end
+		return item and (item.id or item.link and tonumber(item.link:match('(%d+)')))
+	elseif isguild then
+		local link = GetGuildBankItemLink(bag, slot)
+		return link and tonumber(link:match('item:(%d+)'))
+	elseif bag == 'equip' then
+		return GetInventoryItemID('player', slot)
+	elseif bag == 'vault' then
+		return GetVoidItemInfo(1, slot)
+	else
+		return GetContainerItemID(bag, slot)
 	end
 end
+
 
 --[[ Advanced ]]--
 
@@ -191,7 +217,7 @@ function Lib:GetOwnerAddress(owner)
 		return REALM, PLAYER
 	end
 
-	local first, realm = strmatch(owner, '^(.-) *%- *(%S+)$')
+	local first, realm = strmatch(owner, '^(.-) *%- *(.+)$')
 	local isguild, name = strmatch(first or owner, '^(®) *(.+)')
 	return realm or REALM, name or first or owner, isguild and true
 end

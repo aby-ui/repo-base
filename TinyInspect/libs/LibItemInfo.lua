@@ -3,7 +3,7 @@
 -- 物品信息庫 Author: M
 ---------------------------------
 
-local MAJOR, MINOR = "LibItemInfo.7000", 1
+local MAJOR, MINOR = "LibItemInfo.7000", 2
 local lib = LibStub:NewLibrary(MAJOR, MINOR)
 
 if not lib then return end
@@ -161,14 +161,16 @@ function lib:GetUnitItemInfo(unit, index, stats)
 end
 
 --獲取UNIT的裝備等級
+--@return unknownCount, 平均装等, 装等总和, 最大武器等级, 是否神器, 最大装等
 function lib:GetUnitItemLevel(unit, stats)
-    local total, counts = 0, 0
+    local total, counts, maxlevel = 0, 0, 0
     local _, count, level
     for i = 1, 15 do
         if (i ~= 4) then
             count, level = self:GetUnitItemInfo(unit, i, stats)
             total = total + level
             counts = counts + count
+            maxlevel = max(maxlevel, level)
         end
     end
     local mcount, mlevel, mquality, mslot, ocount, olevel, oquality, oslot
@@ -182,5 +184,6 @@ function lib:GetUnitItemLevel(unit, stats)
     else
         total = total + mlevel + olevel
     end
-    return counts, total/max(16-counts,1), total, max(mlevel,olevel), (mquality == 6 or oquality == 6)
+    maxlevel = max(maxlevel, mlevel, olevel)
+    return counts, total/max(16-counts,1), total, max(mlevel,olevel), (mquality == 6 or oquality == 6), maxlevel
 end

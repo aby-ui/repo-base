@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2031, "DBM-AntorusBurningThrone", nil, 946)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17656 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 17659 $"):sub(12, -3))
 mod:SetCreatureID(124828)
 mod:SetEncounterID(2092)
 mod:SetZone()
@@ -552,6 +552,9 @@ function mod:SPELL_AURA_APPLIED(args)
 					specWarnSoulrendingScythe:Play("stackhigh")
 				else
 					warnSoulRendingScythe:Show(args.destName, amount)
+					if amount >= 4 then
+						warnSoulRendingScythe:Play("swapsoon")
+					end
 				end
 			end
 		end
