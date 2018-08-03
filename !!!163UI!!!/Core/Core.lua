@@ -759,7 +759,7 @@ RunOnNextFrame(function()
                 else
                     local donate = U1Donators and U1Donators.players[fullName]
                     if donate then
-                        self:AddLine("爱不易" .. (donate > 0 and "顶级" or "") .. "捐助者", 1, 0, 1)
+                        self:AddLine("爱不易" .. (donate > 0 and "" or "") .. "捐助者", 1, 0, 1)
                         if not self.fadeOut then self:Show() end
                     end
                 end
