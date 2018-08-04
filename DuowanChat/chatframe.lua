@@ -21,7 +21,7 @@ local function GetChannelNameWithCommunity(index)
         local _, _, clubId = channelName:find("Community:(%d+)")
         if clubId then
             local info = C_Club.GetClubInfo(tonumber(clubId))
-            return channelNum, info.name
+            return info and channelNum or 0, info and info.name
         else
             return channelNum, channelName
         end
@@ -305,7 +305,8 @@ function DWC_RefreshPosition()
 end
 function DWChatFrame:OnEnable()
 	self:Refresh()
-	--self:RegisterEvent("UPDATE_WORLD_STATES", "UpdateChatBar");
+	self:RegisterEvent("CHANNEL_UI_UPDATE", "UpdateChatBar");
+    self:RegisterEvent("INITIAL_CLUBS_LOADED", "UpdateChatBar");
 	self:RegisterEvent("CHAT_MSG_CHANNEL_NOTICE", "UpdateChatBar");
     self:RegisterEvent("PLAYER_GUILD_UPDATE", "UpdateChatBar");
     self:RegisterEvent("GROUP_ROSTER_UPDATE", "UpdateChatBar");

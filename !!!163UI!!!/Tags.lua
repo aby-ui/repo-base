@@ -2,7 +2,7 @@ local _, U1 = ...;
 local L = U1.L
 
 
---判断是否是有爱官方插件
+--判断是否是爱不易官方插件
 function U1IsAbyUIVendor(name)
     local reg, vendor = U1IsAddonRegistered(name)
     if U1AddonHasTag(name, "BETA") then return nil end

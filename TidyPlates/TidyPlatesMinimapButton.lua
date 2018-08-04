@@ -28,7 +28,7 @@ end
 
 local function ConfigureCurrentTheme()
     --[[
-	local theme = TidyPlatesThemeList[TidyPlatesOptions[GetCurrentSpec()]]
+	local theme = TidyPlatesThemeList[TidyPlatesOptions[GetCurrentSpec()
 	if theme and theme.ShowConfigPanel and type(theme.ShowConfigPanel) == 'function' then theme.ShowConfigPanel() end
 	--]]
     ShowTidyPlatesHubPanel()
@@ -121,8 +121,8 @@ local function CreateStandaloneIcon()
 
 	local function OnEnter()
 		GameTooltip_SetDefaultAnchor(GameTooltip,UIParent)
-		GameTooltip:AddLine("Tidy Plates")
-		GameTooltip:AddLine("Right-Click: Quick Menu|nLeft-Click: Theme Panel|nMiddle-Click: Tidy Plates Panel",.8,.8,.8,1)
+		GameTooltip:AddLine("姓名板美化(Tidy Plates)")
+		GameTooltip:AddLine("左键点击：选择主题|n右键点击：主题设置|n中键点击：Tidy Plates设置",.8,.8,.8,1)
 		GameTooltip:Show()
 	end
 
@@ -144,11 +144,12 @@ local function CreateStandaloneIcon()
 			ToggleDropDownMenu(1, nil, DropdownFrame, frame);
 		elseif button =="MiddleButton"  then
 			--InterfaceOptionsFrame_OpenToCategory("TidyPlatesInterfaceOptions")
+            ConfigureCurrentTheme()
 			InterfaceOptionsFrame_OpenToCategory("Tidy Plates")
 		elseif button == "RightButton"  then
 			ConfigureCurrentTheme()
 		end
-		PlaySound163("igMainMenuOptionCheckBoxOn");
+		PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON);
 	end
 
 	ButtonFrame:EnableMouse(true)
@@ -193,16 +194,17 @@ local function CreateDataBrokerIcon()
 				UIDropDownMenu_Initialize(DropdownFrame, InitializeDropdownMenu, "MENU")
 				ToggleDropDownMenu(1, nil, DropdownFrame, frame)
 			elseif button =="MiddleButton" then
+                ConfigureCurrentTheme()
 				InterfaceOptionsFrame_OpenToCategory("Tidy Plates")
 			elseif button == "RightButton"  then
 				ConfigureCurrentTheme()
 			end
-			PlaySound163("igMainMenuOptionCheckBoxOn")
+			PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
 		end,
 		OnTooltipShow = function(tooltip)
 			if tooltip and tooltip.AddLine then
-				tooltip:SetText("Tidy Plates")
-				tooltip:AddLine("Right-Click: Quick Menu|nLeft-Click: Theme Panel|nMiddle-Click: Tidy Plates Panel",.8,.8,.8,1)
+				tooltip:SetText("姓名板美化(Tidy Plates)")
+				tooltip:AddLine("左键点击：选择主题|n右键点击：主题设置|n中键点击：Tidy Plates设置",.8,.8,.8,1)
 				tooltip:Show()
 			end
 		end,

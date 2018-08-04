@@ -6,7 +6,7 @@ U1RegisterAddon("163UI_Buff", {
     icon = [[Interface\Icons\Achievement_Reputation_KirinTor]],
 
     author = "SonicBuff",
-    modifier = "|cffcd1a1c[有爱]|r",
+    modifier = "|cffcd1a1c[爱不易]|r",
 
     desc = "玩家的增益效果和负面效果显示精确到秒，无持续时间的状态可以显示'N/A'。``鼠标移动到状态图标上可以显示此效果的施法者",
 

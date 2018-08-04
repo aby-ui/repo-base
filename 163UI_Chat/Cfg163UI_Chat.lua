@@ -7,7 +7,7 @@ U1RegisterAddon("163UI_Chat", {
     tags = { TAG_CHAT, TAG_DEV },
 
     --icon = [[Interface\Icons\Achievement_WorldEvent_ChildrensWeek]],
-    author = "|cffcd1a1c[有爱原创]|r",
+    author = "|cffcd1a1c[爱不易原创]|r",
     icon = [[Interface\Icons\Spell_Holy_HolyGuidance]],
     ------- Options --------
     {

@@ -5,6 +5,7 @@
 @Version : $Id$
 ]]
 
+do return end --TODO aby8 会污染社区
 do
     ---- fix Blizzard IsIgnored
 

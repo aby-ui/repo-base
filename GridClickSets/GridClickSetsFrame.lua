@@ -49,7 +49,7 @@ function GridClickSetsFrame_OnEvent(self, event, arg1)
             end
         else
             if _G.ClassMods and _G.ClassMods.Options.DB.clicktocast.enabled then
-                U1Message("ClassMods的ClickToCast模块和有爱点击施法冲突，请关闭")
+                U1Message("ClassMods的ClickToCast模块和爱不易点击施法冲突，请关闭")
             end
         end
     end

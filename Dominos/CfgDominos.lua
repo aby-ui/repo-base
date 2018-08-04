@@ -8,9 +8,9 @@
     tags = { TAG_INTERFACE, },
     icon = 'Interface\\Addons\\Dominos\\Dominos',
 
-    modifier = "|cffcd1a1c[有爱]|r",
+    modifier = "|cffcd1a1c[爱不易]|r",
 
-    desc = "一个简单易用的动作条移动插件，可以移动动作条、施法条、姿态条、宠物条、图腾条等等。`初次使用会自动加载我们预设的'三行紧凑型'布局，如果以前用过此插件，可能需要手工在控制台里设置一下。`可以左键点击小地图按钮进入设置模式，然后用鼠标拖动位置，或者右键点击打开设置菜单。如果按住shift点击则可以按键绑定模式，鼠标悬停在动作条按钮上就可以快速设置此按钮的热键。`建议配合按钮美化插件一起使用。`特别提示萨满同学，图腾条第一个按钮按Alt点击或鼠标中键点击，就是召回图腾，所以默认隐藏召回按钮了。`有爱在原版基础上进行了较彻底的中文化，增加了预设方案、修复了若干BUG，并增加了保留默认载具界面的功能，敬请试用。",
+    desc = "一个简单易用的动作条移动插件，可以移动动作条、施法条、姿态条、宠物条、图腾条等等。`初次使用会自动加载我们预设的'三行紧凑型'布局，如果以前用过此插件，可能需要手工在控制台里设置一下。`可以左键点击小地图按钮进入设置模式，然后用鼠标拖动位置，或者右键点击打开设置菜单。如果按住shift点击则可以按键绑定模式，鼠标悬停在动作条按钮上就可以快速设置此按钮的热键。`建议配合按钮美化插件一起使用。`特别提示萨满同学，图腾条第一个按钮按Alt点击或鼠标中键点击，就是召回图腾，所以默认隐藏召回按钮了。`爱不易在原版基础上进行了较彻底的中文化，增加了预设方案、修复了若干BUG，并增加了保留默认载具界面的功能，敬请试用。",
 
     runBeforeLoad = function(info, name)
         SLASH_DOMINO_CONFIG1 = '/dmn' SlashCmdList["DOMINO_CONFIG"] = function() Dominos:ToggleLockedFrames() end
@@ -37,7 +37,7 @@
         options = {'三行紧凑型', 'MINI', '暴雪布局型', 'NORM', "小屏紧凑型", "COMPACT"},
         secure = 1,
         confirm = "注意：当前的动作条设置将重置并无法恢复，您是否确定？",
-        tip = "说明`有爱预设了几套动作条布局方案，可以选择后自行微调。",
+        tip = "说明`爱不易预设了几套动作条布局方案，可以选择后自行微调。",
         callback = function(cfg, v, loading)
             if(loading) then return end
             Dominos:Unload()
@@ -114,7 +114,7 @@
         text = '选择商店按钮和帮助按钮',
         secure = 1,
         confirm = "注意：请重载界面来显示相应按钮",
-        tip = "说明`有爱默认显示商店按钮，可以在此修改显示设置。",
+        tip = "说明`爱不易默认显示商店按钮，可以在此修改显示设置。",
         callback = function(cfg, v, loading)
             if(loading) then return end
 			Dominos.db.profile['showButton'] = v

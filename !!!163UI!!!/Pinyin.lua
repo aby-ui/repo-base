@@ -246,6 +246,6 @@ U1.PINYIN={
     ['神器能量助手']={'shenqinengliangzhushou','sqnlzs'},
     ['橙装闪换']={'chengzhuangshanhuan','czsh'},
     ['战斗计时']={'zhandoujishi','zdjs'},
-    ['有爱装备搜索']={'youaizhuangbeisousuo','yazbss'},
+    ['爱不易装备搜索']={'aibuyizhuangbeisousuo','abyzbss'},
     ['装等显示']={'zhuangdengxianshi','zdxs'},
 }

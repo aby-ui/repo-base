@@ -250,6 +250,7 @@ end
 function DWChatIconFrame:Refresh()
 end
 
+local ICON_TAG_LIST, ICON_LIST = {}, {}
 function DWChatIconFrame:OnEnable() 
    for _, v in next, DWC_IconTable do
       local tag, icon = unpack(v)
@@ -261,6 +262,30 @@ function DWChatIconFrame:OnEnable()
    end
    
    return createIconFrame() 
+end
+
+if CoreOnEvent then
+    CoreOnEvent("PLAYER_ENTERING_WORLD", function()
+        local origs = {}
+        local function ChatFrame_ReplaceIconAndGroupExpressions(message, noIconReplacement)
+            for tag in string.gmatch(message, "%b{}") do
+                local term = strlower(string.gsub(tag, "[{}]", ""));
+                if ( not noIconReplacement and ICON_TAG_LIST[term] and ICON_LIST[ICON_TAG_LIST[term]] ) then
+                    message = string.gsub(message, tag, ICON_LIST[ICON_TAG_LIST[term]] .. "0|t");
+                end
+            end
+            return message;
+        end
+        local addMessageReplace = function(self, msg, ...)
+            origs[self](self, msg and ChatFrame_ReplaceIconAndGroupExpressions(msg) or msg, ...)
+        end
+        WithAllChatFrame(function(cf)
+            if cf:GetID() == 2 then return end
+            origs[cf] = cf.AddMessage
+            cf.AddMessage = addMessageReplace
+        end)
+        return "remove"
+    end)
 end
 
 function DWChatIconFrame:OnDisable() 

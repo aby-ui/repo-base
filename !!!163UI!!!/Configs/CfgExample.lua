@@ -29,8 +29,8 @@ U1RegisterAddon("$NAME$", {
     --pics = 2, -- 一共多少张图片，都在图片Pics/插件名.tga里，高度128，宽度200。
     --picsWidth = 1024, -- 图片材质的宽度，默认为1024，可以存两张图
 
-    --author = "|cffcd1a1c[有爱原创]|r",
-    --modifier = "|cffcd1a1c[有爱]|r",
+    --author = "|cffcd1a1c[爱不易原创]|r",
+    --modifier = "|cffcd1a1c[爱不易]|r",
 
     --toggle = function(name, info, enable, justload) end, --如果未开插件，则初始不会调用。
 
@@ -81,4 +81,4 @@ U1RegisterAddon("$NAME$", {
     --]]
 });
 
---如果提供 UI163_USER_MODE = 1 则不需要写alwaysRegister，而且插件会列在有爱整合里，如果不提供USER_MODE，只写alwaysRegister，则插件会列在分类里，但仍然在单体插件里，而不是有爱整合里
+--如果提供 UI163_USER_MODE = 1 则不需要写alwaysRegister，而且插件会列在爱不易整合里，如果不提供USER_MODE，只写alwaysRegister，则插件会列在分类里，但仍然在单体插件里，而不是爱不易整合里

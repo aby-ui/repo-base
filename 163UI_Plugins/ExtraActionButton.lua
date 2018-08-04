@@ -62,7 +62,7 @@ CoreUIEnableTooltip(btn, nil, function(self, tip)
     if HasExtraActionBar() then
         tip:SetAction(121)
     else
-        tip:SetText("有爱替代额外按钮")
+        tip:SetText("爱不易替代额外按钮")
         tip:AddLine("右键拖动位置")
         tip:AddLine("Ctrl+Alt点击暂时隐藏")
     end

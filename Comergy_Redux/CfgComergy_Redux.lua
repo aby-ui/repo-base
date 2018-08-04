@@ -8,7 +8,7 @@ U1RegisterAddon("Comergy_Redux", {
     icon = [[Interface\Icons\INV_Artifact_XP04]],
     nopic = 1,
 
-    modifier = "|cffcd1a1c[有爱]|r",
+    modifier = "|cffcd1a1c[爱不易]|r",
 
     desc = "轻量美观的能量及资源点数监控插件。``可以作为潜行者和死亡骑士的连击点/符文监控，也支持神圣能量、灵魂碎片、奥术冲能、真气的显示，适用于各个职业。",
 

@@ -192,7 +192,7 @@ local aceoptions = {
 						barRightClick = {
 							type = 'select',
 							values = {NONE=L["none"],OPTIONS=L["ChocolateBar Options"],
-										BLIZZ=L["Blizzard Options"], ["163UI"]="有爱控制台", },
+										BLIZZ=L["Blizzard Options"], ["163UI"]="爱不易控制台", },
 							order = 8,
 							name = L["Bar Right Click"],
 							desc = L["Select the action when right clicking on a bar."],

@@ -329,7 +329,7 @@ function UUI.SetAddonTooltip(addonName, tip)
     if(info.version)then tip:AddLine(UUI.formatTip(L["版本"], info.version), 1, 1, 1, true); end
 
     if(info.dummy) then
-        tip:AddLine(L["有爱插件集"], 0, 0.82, 0);
+        tip:AddLine(L["爱不易插件集"], 0, 0.82, 0);
         return
     end
 
@@ -688,7 +688,7 @@ function UUI.Top.QuickSettingDropDownMenuInitialize(frame, level, menuList)
     --UIDropDownMenu_SetAnchor(main.setting.drop, 0, 0, "TOPRIGHT", main.setting.dropbutton, "BOTTOMRIGHT")
     frame.point = "TOPRIGHT"; frame.relativePoint = "BOTTOMRIGHT";
     local info = UIDropDownMenu_CreateInfo();
-    info.isNotRadio = 1; info.notCheckable = 1; info.isTitle = 1; info.justifyH = "CENTER"; info.text = L["有爱快捷设置"];
+    info.isNotRadio = 1; info.notCheckable = 1; info.isTitle = 1; info.justifyH = "CENTER"; info.text = L["爱不易快捷设置"];
     UIDropDownMenu_AddButton(info);
     info.text = "";
     UIDropDownMenu_AddButton(info);
@@ -779,7 +779,7 @@ function UUI.Center.Create(main)
     center:Frame():CreateTexture(nil, "OVERLAY"):SetTexture(UUI.Tex'UI2-shade-dark-deeper'):ALL():up():SetHeight(32):BL(l,"TL"):BR(r,"TR"):AddFrameLevel(2, center)
 
     StaticPopupDialogs["163UIUI_LOAD_ALL_CONFIRM"] = {preferredIndex = 3,
-        text = "您确认吗？不建议您加载全部插件\n\n有爱整合了非常多的优秀插件，但玩家一般用不到全部功能。建议您在默认方案的基础上选择几个自己需要的，不然会显得有点杂乱。",
+        text = "您确认吗？不建议您加载全部插件\n\n爱不易整合了非常多的优秀插件，但玩家一般用不到全部功能。建议您在默认方案的基础上选择几个自己需要的，不然会显得有点杂乱。",
         button1 = TEXT(YES),
         button2 = TEXT(CANCEL),
         OnAccept = function(self, data)
@@ -1761,7 +1761,7 @@ function UUI.CreateUI()
         tip:AddLine(" ");
         tip:AddLine(L["可以搜索插件名称或原名、以及选项中的任意文本，在当前标签下符合条件的插件会被显示出来，被搜索到的选项会被高亮显示。"], nil,nil,nil,true);
         tip:AddLine(" ");
-        tip:AddLine(L["只有有爱官方支持的插件才能用拼音搜索名称。"], 0,0.82,0,true);
+        tip:AddLine(L["仅爱不易官方支持的插件才能用拼音搜索名称。"], 0,0.82,0,true);
     end)
 
     search.onTextChanged = function(self)
@@ -1853,7 +1853,7 @@ function UUI.CreateUI()
     :CreateTexture():SetTexture(UUI.Tex"UI2-logo"):Size(87):TL(-14, 18):up()
     :CreateTexture():TL(-20,20):BR(20, -20):SetTexture("Interface\\UnitPowerBarAlt\\Atramedes_Circular_Flash"):SetAlpha(0.8):ToTexture("Highlight"):up()
     :un()
-    CoreUIEnableTooltip(GameMenuFrame.btn163, L["有爱"], L["点击有爱标志开启插件控制中心\n \nCtrl点击小地图图标可以收集/还原"])
+    CoreUIEnableTooltip(GameMenuFrame.btn163, L["爱不易"], L["点击爱不易标志开启插件控制中心\n \nCtrl点击小地图图标可以收集/还原"])
 
 end
 
@@ -1862,7 +1862,7 @@ function U1_CreateMinimapButton()
 
     local ldb = LibStub("LibDataBroker-1.1"):NewDataObject(U1Name, {
         type = "launcher",
-        label = L["有爱"],
+        label = L["爱不易"],
         icon = UUI.Tex'UI2-icon',
         iconCoords = {0.04+0.05, 26/32-0.06+0.05, 0.06, 26/32-0.10},
         OnEnter = CoreUIShowTooltip,
@@ -1876,8 +1876,8 @@ function U1_CreateMinimapButton()
             end
         end,
         OnTooltipShow = function(tip)
-            tip:AddLine(L["有爱插件中心"])
-            tip:AddLine(L["有爱是新一代整合插件。其设计理念是兼顾整合插件的易用性和单体插件的灵活性，同时适合普通和高级用户群体。|n|n    功能上，有爱实现了任意插件的随需加载，并可先进入游戏再逐一加载插件，此为全球首创。此外还有标签分类、拼音检索、界面缩排等特色功能。"], nil, nil, nil, 1)
+            tip:AddLine(L["爱不易插件中心"])
+            tip:AddLine(L["爱不易是新一代整合插件。其设计理念是兼顾整合插件的易用性和单体插件的灵活性，同时适合普通和高级用户群体。|n|n    功能上，爱不易实现了任意插件的随需加载，并可先进入游戏再逐一加载插件，此为全球首创。此外还有标签分类、拼音检索、界面缩排等特色功能。"], nil, nil, nil, 1)
             tip:AddLine(" ")
             tip:AddLine(L["鼠标右键点击可打开快捷设置"], 0, 0.82, 0)
             tip:AddLine(L["Ctrl点击任意小地图按钮可收集"], 0, 0.82, 0)

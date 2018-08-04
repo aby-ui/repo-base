@@ -41,6 +41,7 @@ function Misc:OnEnable()
         ChatFrame_AddMessageEventFilter(v, chatMessageFilter)
     end
 
+    --[[ --TODO aby8 会导致社区无法使用
     self:RawHook('AddOrDelIgnore', true)
     self:RawHook('GetNumIgnores', true)
     self:RawHook('DelIgnore', true)
@@ -49,6 +50,7 @@ function Misc:OnEnable()
     self:RawHook('GetSelectedIgnore', true)
     self:RawHook('SetSelectedIgnore', true)
     self:RawHook('IsIgnored', true)
+    --]]
     self:Hook('ChatFrame_OnHyperlinkShow', true)
 end
 

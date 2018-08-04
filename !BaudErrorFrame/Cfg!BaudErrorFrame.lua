@@ -1,9 +1,9 @@
 U1RegisterAddon("!BaudErrorFrame", {
     title = "错误提示增强",
     tags = { TAG_MANAGEMENT, TAG_DEV, TAG_CHAT },
-    modifier = "|cffcd1a1c[有爱]|r",
+    modifier = "|cffcd1a1c[爱不易]|r",
     optionsAfterVar = 1,
-    desc = "收集插件错误的信息，不弹出窗口防止影响正常游戏，同时可以屏蔽'介面导致动作失效'的对话框。右键点击小地图按钮可进行一些设置，例如出错时在聊天框中显示信息。`如果小地图按钮被有爱收集，则出错时有爱的图标会闪烁。",
+    desc = "收集插件错误的信息，不弹出窗口防止影响正常游戏，同时可以屏蔽'介面导致动作失效'的对话框。右键点击小地图按钮可进行一些设置，例如出错时在聊天框中显示信息。`如果小地图按钮被爱不易收集，则出错时爱不易的图标会闪烁。",
     load = "NORMAL",
     defaultEnable = 1,
     icon = [[Interface\Icons\INV_Inscription_Pigment_Bug04]],

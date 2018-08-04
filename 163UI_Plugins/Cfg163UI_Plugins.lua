@@ -17,7 +17,7 @@ U1RegisterAddon("163UI_Plugins", {
     load = "NORMAL",
     tags = { TAG_MANAGEMENT },
     icon = "Interface\\ICONS\\INV_Misc_Blizzcon09_GraphicsCard",
-    desc = "各种贴心小功能，组合在一起，原来和有爱核心在一起，现在独立出来了。",
+    desc = "各种贴心小功能，组合在一起，原来和爱不易核心在一起，现在独立出来了。",
     nopic = 1,
 
     {
@@ -85,7 +85,7 @@ U1RegisterAddon("163UI_Plugins", {
         default = false,
         text = U1_NEW_ICON.."完全屏蔽剧情台词窗口",
         confirm = "建议通过双击空格关闭台词窗口，\n完全屏蔽可能会导致剧情不连贯。\n您确定吗?",
-        tip = "说明`7.0新增的窗口，如果启用此选项，则完全屏蔽，毫无痕迹。建议不要启用，有爱提供了双击空格直接关闭当前台词的功能。",
+        tip = "说明`7.0新增的窗口，如果启用此选项，则完全屏蔽，毫无痕迹。建议不要启用，爱不易提供了双击空格直接关闭当前台词的功能。",
         callback = function(cfg, v, loading) U1Toggle_SkipTalkingHead(v) end,
     },
 
@@ -93,7 +93,7 @@ U1RegisterAddon("163UI_Plugins", {
         var = "HideQuickJoin",
         text = "屏蔽快速加入提示",
         default = false,
-        tip = "说明`7.1新增的快速加入提示消息，有爱贴心提供屏蔽功能。",
+        tip = "说明`7.1新增的快速加入提示消息，爱不易贴心提供屏蔽功能。",
         callback = function(cfg, v, loading) U1Toggle_QuickJoinToasts(not v, loading) end,
     },
 
@@ -123,7 +123,7 @@ U1RegisterAddon("163UI_Plugins", {
 
 --    {
 --        var = "QuestWatchSort", text = U1_NEW_ICON.."任务追踪按距离排序", default = true, callback = load,
---        tip = "说明`按任务远近进行排序``暴雪的任务排序功能失效很久了,有爱为您临时提供解决方案",
+--        tip = "说明`按任务远近进行排序``暴雪的任务排序功能失效很久了,爱不易为您临时提供解决方案",
 --    },
 
     {

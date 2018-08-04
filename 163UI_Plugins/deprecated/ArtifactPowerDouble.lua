@@ -63,9 +63,9 @@ CoreOnEvent("CHAT_MSG_SYSTEM", function(event, msg)
                 U1DBG.ap_spell = U1DBG.ap_spell or {}
                 U1DBG.ap_spell[cast_id] = 1
                 U1Message("恭喜！本次能量翻倍，" .. more_info)
-                PlaySound163("UI_WorldQuest_Complete")
+                PlaySound(73277)
                 PlaySoundFile("Sound\\character\\Human\\HumanVocalFemale\\HumanFemaleCheer02.ogg")
-                --PlaySound163("UI_Challenges_NewRecord")
+                --PlaySound(33338)
                 --PlaySoundFile("Sound\\Event Sounds\\OgreEventCheerUnique.ogg")
             else
                 if sum then sum[1] = sum[1] + 1 end

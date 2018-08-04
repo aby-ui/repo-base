@@ -867,7 +867,7 @@ end
 --[[
 function scButton_OnEnter(self)
     GameTooltip_SetDefaultAnchor(GameTooltip, self);
-    GameTooltip:SetText("|cff880303[有爱]|r 截图分享", 1, 1, 1);
+    GameTooltip:SetText("|cff880303[爱不易]|r 截图分享", 1, 1, 1);
     GameTooltip:AddLine("快捷键：Ctrl+PrtScr");
     GameTooltip:Show();
 end 

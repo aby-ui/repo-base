@@ -1,4 +1,4 @@
---如果 UI163_USER_MODE = 1 则不需要写alwaysRegister，而且插件会列在有爱整合里，如果不提供USER_MODE，只写alwaysRegister，则插件会列在分类里，但仍然在单体插件里，而不是有爱整合里
+--如果 UI163_USER_MODE = 1 则不需要写alwaysRegister，而且插件会列在爱不易整合里，如果不提供USER_MODE，只写alwaysRegister，则插件会列在分类里，但仍然在单体插件里，而不是爱不易整合里
 --UI163_USER_MODE = 1
 
 U1RegisterAddon("DailyTamerCheck", {

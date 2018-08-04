@@ -236,7 +236,7 @@ function TS.CreateButtons(f)
     CoreUIEnableTooltip(btnLink(),L["BtnLinkTipTitle"],L["BtnLinkTip"]);
 
     --信息广播
-    --【有爱：团员信息统计】 - 总览：
+    --【爱不易：团员信息统计】 - 总览：
     --★桂花猫猫 圣骑 装等:896.3 橙装:肩,手 引领:萨,海 秘境:174 15层:10天 M翡翠:2/7 H勇气:3/3 暗夜:10/10 H暗夜:9/10
     local annLine = {}
     local function GetPlayerAnnText(name)
@@ -305,7 +305,7 @@ function TS.CreateButtons(f)
         button2 = TEXT(CANCEL),
         OnAccept = function(self)
             local tab = TS.TABS[f.tabIdx]
-            SendChatMessage("【有爱：团员信息统计】 - "..tab.tab.."：", self.data);
+            SendChatMessage("【爱不易：团员信息统计】 - "..tab.tab.."：", self.data);
             for i=1,#names do
                 local line = GetPlayerAnnText(names[i])
                 if line then

@@ -4,7 +4,7 @@ U1RegisterAddon("TradeSkillInfo", {
     minimap = "LibDBIcon10_TradeSkillInfo",
 
     tags = { TAG_TRADING, TAG_BIG },
-    modifier = "|cffcd1a1c[有爱]|r",
+    modifier = "|cffcd1a1c[爱不易]|r",
     desc = "商业技能资料库插件，全商业技能查看，材料用途，商业技能配方出处，拍卖行里通过染色提示配方是否可学",
     icon = [[Interface\Icons\INV_Enchant_FormulaGood_01]],
 

@@ -53,7 +53,7 @@ if QueueStatusMinimapButton then
     QueueStatusMinimapButton:SetFrameStrata("HIGH")
 end
 
---按ESC时, AceConfigDialog先关闭, 并阻止界面窗口和有爱关闭
+--按ESC时, AceConfigDialog先关闭, 并阻止界面窗口和爱不易关闭
 hooksecurefunc("StaticPopup_EscapePressed", function()
     if LibStub("AceConfigDialog-3.0"):CloseAll() then
         GameMenuFrame:Show()

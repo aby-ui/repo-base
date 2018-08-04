@@ -100,7 +100,7 @@ EncounterJournal_Loot_OnClick_ELP = function(self)
         NavBar_Reset(EncounterJournal.navBar)
         EncounterJournal_DisplayInstance(insID)
     end
-    PlaySound163("igSpellBookOpen");
+    PlaySound(829) --"igSpellBookOpen";
     EncounterJournal_DisplayEncounter(self.encounterID);
     EncounterJournal.encounter.info.lootScroll.scrollBar:SetValue(old)
     ELP.display_by_us = nil

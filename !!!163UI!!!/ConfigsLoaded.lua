@@ -55,7 +55,7 @@ function U1ConfigsLoaded()
 
         if v.dummy then
             if v.defaultEnable == nil then v.defaultEnable = 1 end --dummy默认启用
-            v.author = v.author or L["有爱插件集"]
+            v.author = v.author or L["爱不易插件集"]
             v.desc = v.desc or L["此项功能为一系列功能相关的小插件组合，可以分别开启或关闭，为您提供最清晰的分类和最强大的灵活性。"]
         end
 

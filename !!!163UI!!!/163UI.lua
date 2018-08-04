@@ -38,9 +38,9 @@ local function dbLoaded(db)
     if (db.verison or 0) < 2014082904 then
         tinsert(addonToLoad, "tdPack")
     end
-]]
 
     db.verison = tonumber(GetAddOnMetadata("!!!163UI!!!","X-163UI-Version")or"0")
+]]
 end
 
 --[[ --fix7
@@ -60,7 +60,7 @@ end
 --]]
 
 local defaultDB = {
-    --checkVendor = 1, --没有有爱标记的插件但是在整合包列表中，是否算有爱的。现在用 UI163_USER_MODE
+    --checkVendor = 1, --无爱不易标记的插件但是在整合包列表中，是否算爱不易的。现在用 UI163_USER_MODE
     selectedTag = UI163_USER_MODE and "ALL" or "ABYUI",
     showOrigin = nil, --插件原名
     disableLaterLoading = false,
@@ -1706,7 +1706,7 @@ function EnableOrLoadDependencies(name, info, loaded)
 end
 
 function U1:VARIABLES_LOADED(calledFromLogin)
-    SetCVar("scriptErrors", 0) --TODO aby8
+    SetCVar("scriptErrors", DEBUG_MODE and 1 or 0) --TODO aby8
 
     if calledFromLogin~=1 then
         if not U1.playerLogin then

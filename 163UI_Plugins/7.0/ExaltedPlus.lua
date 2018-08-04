@@ -1,4 +1,4 @@
---## Interface: 70200
+--## Interface: 80000
 --## Title: ExaltedPlus
 --## Notes: Enhancements for paragon reputations
 --## Version: 7

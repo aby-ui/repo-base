@@ -17,7 +17,7 @@ Grid.options.args.Extra163 = {
         header = {
             order = 0,
             type = "description",
-            name = "您正在使用的是有爱发布的 Warbaby's Grid整合包，虽然并非核心框架的作者，但原创、修改、优化的内容仍耗费了上百小时，转发分享时请保留此信息，万谢!"
+            name = "您正在使用的是爱不易发布的Warbaby's Grid整合包，虽然并非核心框架的作者，但原创、修改、优化的内容仍耗费了上百小时，转发分享时请保留此信息，万谢!"
         }
     }
 }
@@ -680,12 +680,12 @@ do
                         end
                     end
                     if not self.advised then
-                        DEFAULT_CHAT_FRAME:AddMessage("有爱 - 已暂时屏蔽载具单位切换")
+                        DEFAULT_CHAT_FRAME:AddMessage("爱不易 - 已暂时屏蔽载具单位切换")
                         self.advised = 1
                     end
                 else
                     if not self.advised then
-                        DEFAULT_CHAT_FRAME:AddMessage("有爱 - 下一把会屏蔽载具单位切换")
+                        DEFAULT_CHAT_FRAME:AddMessage("爱不易 - 下一把会屏蔽载具单位切换")
                         self.advised = 1
                     end
                     self.needToggle = 1

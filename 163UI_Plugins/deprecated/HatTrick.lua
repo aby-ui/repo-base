@@ -1,7 +1,7 @@
 
 local function CheckSound(self)
 	local sound = self:GetChecked() and 'On' or 'Off'
-	PlaySound163('igMainMenuOptionCheckBox'.. sound)
+	PlaySound(self:GetChecked() and 856 or 857) --'igMainMenuOptionCheckBox'.. sound
 end
 
 

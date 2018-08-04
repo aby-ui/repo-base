@@ -3,7 +3,7 @@ U1RegisterAddon("GearManagerEx", {
     defaultEnable = 1,
     load = "LOGIN",
     frames = {"GearManagerExToolBarFrame"},
-    modifier = "|cffcd1a1c[有爱]|r, doneykoo",
+    modifier = "|cffcd1a1c[爱不易]|r, doneykoo",
 
     tags = { TAG_ITEM, },
     icon = [[Interface\Icons\INV_Gizmo_03]],
