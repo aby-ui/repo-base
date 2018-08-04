@@ -349,7 +349,7 @@ local function BuildInterfacePanel(panel)
         self:Hide()
     end)
     panel.LoadProfileOptionButton:SetScript("OnShow", function(self)
-        if ShowTidyPlatesHubPanel then self:Hide() end
+        if ShowTidyPlatesHubTankPanel then self:Hide() end
     end)
 
 	---------------
