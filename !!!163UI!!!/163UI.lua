@@ -1489,6 +1489,7 @@ function U1:ADDON_LOADED(event, name)
         db = U1DB or defaultDB;
         --print("ADDON_LOADED2", db, U1DB, db==U1DB, db==defaultDB)
         U1DB = db;
+        db.LS = nil;
 
         dbLoaded(U1DB)
 

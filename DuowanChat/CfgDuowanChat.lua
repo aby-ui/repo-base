@@ -3,6 +3,7 @@ U1RegisterAddon("DuowanChat", {
     defaultEnable = 1,
     tags = {TAG_CHAT},
     load = "LOGIN", --5.0 script ran too long
+    optdeps = {"163UI_Chat"},
     frames = {"DWCChatFrame"},
 
     desc = "来自魔盒及大脚的聊天条插件，在聊天框下方显示各个频道的切换按钮，此外还提供表情图标、世界频道、属性报告、整页复制（聊天框左上角按钮）等功能。`其他功能参见设置窗口。",

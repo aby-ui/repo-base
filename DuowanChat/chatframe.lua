@@ -273,7 +273,7 @@ function DWCReportStatButton_OnClick(self, button)
 	end	
 end
 
-function DWChatFrame:UpdateChatBar(event)	
+function DWChatFrame:UpdateChatBar(event)
 	self:Refresh() 
 end
 
