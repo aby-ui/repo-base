@@ -23,7 +23,7 @@ elseif locale == "itIT" then
 elseif locale == "koKR" then
 elseif locale == "ptBR" then
 elseif locale == "ruRU" then
-elseif locale == "zhCN" then
+elseif locale == "zhCN" or locale == "zhTW" then
 	L.RESET_MODEL = "重置"
 	L.PLAYER_BUTTON_TEXT = "自"
 	L.PLAYER_BUTTON_TOOLTIP = "玩家自身模型"

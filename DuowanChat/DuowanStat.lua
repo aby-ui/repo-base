@@ -31,7 +31,7 @@ function D:UpdateStat()
 	self.data["CLASS"], self.data["CLASS_EN"] = UnitClass("player");
 	self.data["LV"] = UnitLevel("player");
 	self.data["HP"] = UnitHealthMax("player");
-	self.data["MP"] = UnitManaMax("player");
+	self.data["MP"] = UnitPowerMax("player");
 	self.data["TALENT"] = self:GetTalent(); 
 	self.data["ILV"] = self:GetINVLevel();
 	self.data["GS"] = self:GetGS();

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1987, "DBM-AntorusBurningThrone", nil, 946)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17623 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 17666 $"):sub(12, -3))
 mod:SetCreatureID(122477, 122135)--122477 F'harg, 122135 Shatug
 mod:SetEncounterID(2074)
 mod:SetZone()
@@ -284,13 +284,13 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif spellId == 244054 then--Flametouched
 		if args:IsPlayer() then
 			specWarnFlameTouched:Show(self:IconNumToTexture(7))--Red X for flame (more voted on red x than orange circle)
-			specWarnFlameTouched:Play("flameonyou")
+			specWarnFlameTouched:Play("firerun")
 			yellTouched:Yell(7, "", 7)
 		end
 	elseif spellId == 244055 then--Shadowtouched
 		if args:IsPlayer() then
 			specWarnShadowtouched:Show(self:IconNumToTexture(3))--Purple diamond for shadow
-			specWarnShadowtouched:Play("shadowonyou")
+			specWarnShadowtouched:Play("shadowrun")
 			yellTouched:Yell(3, "", 3)
 		end
 	end

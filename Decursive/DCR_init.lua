@@ -1,7 +1,7 @@
 --[[
     This file is part of Decursive.
 
-    Decursive (v 2.7.6) add-on for World of Warcraft UI
+    Decursive (v 2.7.6.1_beta_1) add-on for World of Warcraft UI
     Copyright (C) 2006-2018 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Starting from 2009-10-31 and until said otherwise by its author, Decursive
@@ -66,7 +66,7 @@ local function RegisterDecursive_Once() -- {{{
     --@end-debug@]===]
 
     D.name = "Decursive";
-    D.version = "2.7.6";
+    D.version = "2.7.6.1_beta_1";
     D.author = "John Wellesz";
 
     D.DcrFullyInitialized = false;
@@ -447,12 +447,12 @@ local function InitVariables_Once() -- {{{
     -- A table UnitID=>IsDebuffed (boolean)
     D.UnitDebuffed = {};
 
-    D.Revision = "7e9aaad"; -- not used here but some other add-on may request it from outside
-    D.date = "2018-07-22T12:46:37Z";
-    D.version = "2.7.6";
+    D.Revision = "a36a67c"; -- not used here but some other add-on may request it from outside
+    D.date = "2018-08-04T10:34:05Z";
+    D.version = "2.7.6.1_beta_1";
 
     if D.date ~= "@project".."-date-iso@" then
-        -- 1532263597 doesn't work
+        -- 1533378845 doesn't work
 
         --local example =  "2008-05-01T12:34:56Z";
 
@@ -518,7 +518,7 @@ function D:VersionWarnings(forceDisplay) -- {{{
 
             if time() - self.db.global.LastExpirationAlert > 48 * 3600 or forceDisplay then
 
-                T._ShowNotice ("|cff00ff00Decursive version: 2.7.6|r\n\n" .. "|cFFFFAA66" .. L["TOC_VERSION_EXPIRED"] .. "|r");
+                T._ShowNotice ("|cff00ff00Decursive version: 2.7.6.1_beta_1|r\n\n" .. "|cFFFFAA66" .. L["TOC_VERSION_EXPIRED"] .. "|r");
 
                 self.db.global.LastExpirationAlert = time();
             end
@@ -527,7 +527,7 @@ function D:VersionWarnings(forceDisplay) -- {{{
         self.db.global.TocExpiredDetection = false;
     end
 
-    if (("2.7.6"):lower()):find("beta") or ("2.7.6"):find("RC") or ("2.7.6"):find("Candidate") or alpha then
+    if (("2.7.6.1_beta_1"):lower()):find("beta") or ("2.7.6.1_beta_1"):find("RC") or ("2.7.6.1_beta_1"):find("Candidate") or alpha then
 
         D.RunningADevVersion = true;
 
@@ -540,7 +540,7 @@ function D:VersionWarnings(forceDisplay) -- {{{
                 DC.DevVersionExpired = true;
                 -- Display the expiration notice only once evry 48 hours
                 if time() - self.db.global.LastExpirationAlert > 48 * 3600 or forceDisplay then
-                    --T._ShowNotice ("|cff00ff00Decursive version: 2.7.6|r\n\n" .. "|cFFFFAA66" .. L["DEV_VERSION_EXPIRED"] .. "|r");
+                    --T._ShowNotice ("|cff00ff00Decursive version: 2.7.6.1_beta_1|r\n\n" .. "|cFFFFAA66" .. L["DEV_VERSION_EXPIRED"] .. "|r");
 
                     self.db.global.LastExpirationAlert = time();
                 end
@@ -551,16 +551,16 @@ function D:VersionWarnings(forceDisplay) -- {{{
         end
 
         -- display a warning if this is a developpment version (avoid insults from people who don't know what they're doing)
-        if self.db.global.NonRelease ~= "2.7.6" then
-            self.db.global.NonRelease = "2.7.6";
-            --T._ShowNotice ("|cff00ff00Decursive version: 2.7.6|r\n\n" .. "|cFFFFAA66" .. L["DEV_VERSION_ALERT"] .. "|r");
+        if self.db.global.NonRelease ~= "2.7.6.1_beta_1" then
+            self.db.global.NonRelease = "2.7.6.1_beta_1";
+            --T._ShowNotice ("|cff00ff00Decursive version: 2.7.6.1_beta_1|r\n\n" .. "|cFFFFAA66" .. L["DEV_VERSION_ALERT"] .. "|r");
         end
     end
 
     --[===[@debug@
     fromCheckOut = true;
     if time() - self.db.global.LastUnpackagedAlert > 24 * 3600  then
-        T._ShowNotice ("|cff00ff00Decursive version: 2.7.6|r\n\n" .. "|cFFFFAA66" ..
+        T._ShowNotice ("|cff00ff00Decursive version: 2.7.6.1_beta_1|r\n\n" .. "|cFFFFAA66" ..
         [[
         |cFFFF0000You're using an unpackaged version of Decursive.|r
         Decursive is not meant to be used this way.
@@ -598,7 +598,7 @@ function D:VersionWarnings(forceDisplay) -- {{{
         if D.db.global.NewerVersionDetected > D.VersionTimeStamp and D.db.global.NewerVersionName ~= D.version then -- it's still newer than this one
             if time() - D.db.global.NewerVersionAlert > 3600 * 24 * 4 then -- it's been more than 4 days since the new version alert was shown
                 if not D.db.global.NewVersionsBugMeNot then -- the user did not disable new version alerts
-                    T._ShowNotice ("|cff55ff55Decursive version: 2.7.6|r\n\n" .. "|cFF55FFFF" .. (L["NEW_VERSION_ALERT"]):format(D.db.global.NewerVersionName or "none", date("%Y-%m-%d", D.db.global.NewerVersionDetected)) .. "|r");
+                    T._ShowNotice ("|cff55ff55Decursive version: 2.7.6.1_beta_1|r\n\n" .. "|cFF55FFFF" .. (L["NEW_VERSION_ALERT"]):format(D.db.global.NewerVersionName or "none", date("%Y-%m-%d", D.db.global.NewerVersionDetected)) .. "|r");
                     D.db.global.NewerVersionAlert = time();
                 end
             end
@@ -1543,7 +1543,7 @@ end -- }}}
 
 
 
-T._LoadedFiles["DCR_init.lua"] = "2.7.6";
+T._LoadedFiles["DCR_init.lua"] = "2.7.6.1_beta_1";
 
 -------------------------------------------------------------------------------
 
@@ -1555,18 +1555,18 @@ Simple replacements
 915edd829c031df2b84f025d2d0c34a0a0cb13b9
     Turns into the current revision of the file in integer form. e.g. 1234
     Note: does not work for git
-7e9aaad1a1bee14ef916f8cd107fb7ae72ddabc3
+a36a67c61906bbab681e21f3ef1d1791136dd4e3
     Turns into the highest revision of the entire project in integer form. e.g. 1234
     Note: does not work for git
 915edd829c031df2b84f025d2d0c34a0a0cb13b9
     Turns into the hash of the file in hex form. e.g. 106c634df4b3dd4691bf24e148a23e9af35165ea
     Note: does not work for svn
-7e9aaad1a1bee14ef916f8cd107fb7ae72ddabc3
+a36a67c61906bbab681e21f3ef1d1791136dd4e3
     Turns into the hash of the entire project in hex form. e.g. 106c634df4b3dd4691bf24e148a23e9af35165ea
     Note: does not work for svn
 915edd8
     Turns into the abbreviated hash of the file in hex form. e.g. 106c63 Note: does not work for svn
-7e9aaad
+a36a67c
     Turns into the abbreviated hash of the entire project in hex form. e.g. 106c63
     Note: does not work for svn
 Archarodim
@@ -1575,19 +1575,19 @@ Archarodim
     Turns into the last author of the entire project. e.g. ckknight
 2018-07-22T10:18:51Z
     Turns into the last changed date (by UTC) of the file in ISO 8601. e.g. 2008-05-01T12:34:56Z
-2018-07-22T12:46:37Z
+2018-08-04T10:34:05Z
     Turns into the last changed date (by UTC) of the entire project in ISO 8601. e.g. 2008-05-01T12:34:56Z
 20180722101851
     Turns into the last changed date (by UTC) of the file in a readable integer fashion. e.g. 20080501123456
-20180722124637
+20180804103405
     Turns into the last changed date (by UTC) of the entire project in a readable integer fashion. e.g. 2008050123456
 1532254731
     Turns into the last changed date (by UTC) of the file in POSIX timestamp. e.g. 1209663296
     Note: does not work for git
-1532263597
+1533378845
     Turns into the last changed date (by UTC) of the entire project in POSIX timestamp. e.g. 1209663296
     Note: does not work for git
-2.7.6
+2.7.6.1_beta_1
     Turns into an approximate version of the project. The tag name if on a tag, otherwise it's up to the repo.
     :SVN returns something like "r1234"
     :Git returns something like "v0.1-873fc1"

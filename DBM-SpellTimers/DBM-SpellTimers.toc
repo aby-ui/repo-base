@@ -19,13 +19,8 @@
 ## URL: http://www.deadlybossmods.com
 ## SavedVariables: DBM_SpellTimers_Settings
 localization.en.lua
-localization.de.lua
 localization.cn.lua
 localization.tw.lua
-localization.kr.lua
-localization.es.lua
-localization.fr.lua
-localization.it.lua
 SpellTimers.lua
 
 

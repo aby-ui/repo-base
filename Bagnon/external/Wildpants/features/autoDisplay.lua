@@ -39,6 +39,12 @@ function AutoDisplay:RegisterGameEvents()
 		self:RegisterEvent('MAIL_SHOW', 'HideInventory') -- reverse default behaviour
 	end
 
+	WorldMapFrame:HookScript('OnShow', function()
+		if Addon.sets.closeMap then
+			Addon:HideFrame('inventory', true)
+		end
+	end)
+
 	if Addon:IsFrameEnabled('bank') then
 		BankFrame:UnregisterAllEvents()
 	else

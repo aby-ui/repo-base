@@ -76,6 +76,7 @@ L.CloseCombat = 'Entering Combat'
 L.CloseVehicle = 'Entering a Vehicle'
 L.CloseBank = 'Leaving the Bank'
 L.CloseVendor = 'Leaving a Vendor'
+L.CloseMap = 'Opening the World Map'
 
 -- colors
 L.ColorSettings = 'Color Settings'

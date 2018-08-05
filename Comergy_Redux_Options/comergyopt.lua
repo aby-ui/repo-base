@@ -876,7 +876,7 @@ end
 function ComergyOptEditBoxOnTextChanged(self)
     local _, _, name = string.find(self:GetName(), "ComergyOptEditBox(.+)")
     if (name) then
-        if ((self:GetNumber() > 0) and (self:GetNumber() < UnitManaMax("player"))) then
+        if ((self:GetNumber() > 0) and (self:GetNumber() < UnitPowerMax("player"))) then
             Comergy_Settings[name] = self:GetNumber()
         else
             self:SetNumber(Comergy_Settings[name])

@@ -3,7 +3,7 @@
     <!--
     This file is part of Decursive.
 
-    Decursive (v 2.7.6) add-on for World of Warcraft UI
+    Decursive (v 2.7.6.1_beta_1) add-on for World of Warcraft UI
     Copyright (C) 2006-2018 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Starting from 2009-10-31 and until said otherwise by its author, Decursive
@@ -347,7 +347,7 @@
     <Script>
         local T = DecursiveRootTable or {};
 
-        T._LoadedFiles["Decursive.xml"] = "2.7.6";
+        T._LoadedFiles["Decursive.xml"] = "2.7.6.1_beta_1";
     </Script>
 
 

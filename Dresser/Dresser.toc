@@ -2,8 +2,9 @@
 ## Title: Dresser
 ## Notes: Adds functionality to the dressing room!
 ## Author: Vladinator
-## Version: 8.0.0.180630
+## Version: 8.0.1.180804
 ## SavedVariables: DresserDB
+locale.lua
 core.lua
 
 ## Title: |cff880303[爱不易]|r Dresser 试穿助手

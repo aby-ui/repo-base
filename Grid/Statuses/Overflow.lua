@@ -18,15 +18,15 @@ GridStatusOverflow.defaultDB = {
 		enable = true,
 		priority = 99,
 		color = { r = 1, g = 0.5, b = 0.5, a = 1 },
-		minimumValue = 10,
+		minimumValue = 100,
 	},
 }
 
 local extraOptionsForStatus = {
 	minimumValue = {
 		width = "double",
-		type = "range", min = 0, max = 100, step = 5, isPercent = false,
-		name = L["Minimum Value"].. " (单位:万)",
+		type = "range", min = 0, max = 10000, step = 100, isPercent = false,
+		name = L["Minimum Value"].. "",
 		get = function()
 			return GridStatusOverflow.db.profile.alert_overflow.minimumValue
 		end,
@@ -76,7 +76,7 @@ function GridStatusOverflow:UpdateUnit(event, unit)
 	local duration, expires = nil, nil --select(6, UnitDebuff(unit, SPELL_NAME))
 
 	local amount = UnitIsVisible(unit) and UnitGetTotalHealAbsorbs(unit) or 0
-	if amount > (settings.minimumValue or 0) * 10000 then
+	if amount > (settings.minimumValue or 0) then
         self.core:SendStatusGained(guid, "alert_overflow",
             settings.priority,
             nil,

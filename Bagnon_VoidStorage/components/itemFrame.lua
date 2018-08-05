@@ -24,7 +24,7 @@ function ItemFrame:New(parent, bags, title)
 end
 
 function ItemFrame:RegisterEvents()
-	self:UnregisterEvents()
+	self:UnregisterSignals()
 	self:RegisterFrameSignal('PLAYER_CHANGED', 'Update')
 	self:RegisterSignal('UPDATE_ALL', 'RequestLayout')
 

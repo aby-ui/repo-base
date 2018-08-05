@@ -961,7 +961,14 @@ do
 		local plate = PlatesByUnit[unitid]
 
 		if plate then OnHealthUpdate(plate) end
-	end
+    end
+
+    function CoreEvents:UNIT_HEALTH(...)
+   		local unitid = ...
+   		local plate = PlatesByUnit[unitid]
+
+   		if plate then OnHealthUpdate(plate) end
+   	end
 
 	function CoreEvents:PLAYER_REGEN_ENABLED()
 		InCombat = false

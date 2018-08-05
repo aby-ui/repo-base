@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1984, "DBM-AntorusBurningThrone", nil, 946)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17623 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 17670 $"):sub(12, -3))
 mod:SetCreatureID(121975)
 mod:SetEncounterID(2063)
 mod:SetZone()
@@ -611,6 +611,7 @@ function mod:UNIT_DIED(args)
 	local cid = self:GetCIDFromGUID(args.destGUID)
 	if cid == 122532 then
 		DBM.Nameplate:Hide(true, args.destGUID)
+		unitTracked[args.destGUID] = nil
 	end
 end
 

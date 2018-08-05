@@ -745,7 +745,7 @@ end
 protection area
 ---------------------------------------------------------------]]
 
-U1STAFF = { ["Time-奥杜尔"]=1, ["天灾軍团-奥杜尔"]=1, ["Timeà-霜之哀伤"]=1, ["心耀-冰风岗"]=1, ["水之记忆-冰风岗"]="Banshee Queen", ["小倍倍猪-冰风岗"]="Banshee小仙女" }
+U1STAFF = { ["Time-奥杜尔"]=1, ["天灾軍团-奥杜尔"]=1, ["Timeà-霜之哀伤"]=1, ["心耀-冰风岗"]=1, }
 RunOnNextFrame(function()
     CoreRegisterEvent("INIT_COMPLETED", { INIT_COMPLETED = function()
         GameTooltip:HookScript("OnTooltipSetUnit", function(self)
