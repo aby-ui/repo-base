@@ -6,8 +6,8 @@
 ## LoadOnDemand: 1
 ## RequiredDeps: Blizzard_GarrisonUI, MasterPlanA
 ## SavedVariablesPerCharacter: MasterPlanPC
-## Version: 0.113
-## X-Version-Key: vortex
+## Version: 0.114
+## X-Version-Key: thorn
 Libs/Evie.lua
 Libs/AltGameTooltip.xml
 Libs/Reframe.lua

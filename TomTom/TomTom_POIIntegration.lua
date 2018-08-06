@@ -156,7 +156,7 @@ local function poi_OnClick(self, button)
         return
     end
 
-    if button == "LeftButton" then
+    if button == "RightButton" then
         for i = 1, #modifier do
             local mod = modifier:sub(i, i)
             local func = modTbl[mod]

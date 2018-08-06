@@ -294,7 +294,7 @@ local function createconfig()
 						order = 4,
 						name = L["Alpha"],
 						desc = L["This setting allows you to change the opacity of the waypoint arrow, making it transparent or opaque"],
-						min = 0, max = 1.0, step = 0.05,
+						min = 0.1, max = 1.0, step = 0.05,
 						arg = "arrow.alpha",
 					},
 					title_width = {

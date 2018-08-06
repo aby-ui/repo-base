@@ -643,7 +643,7 @@ end
 
 function TomTom:SendWaypoint(uid, channel)
     local data = uid
-    local m, f, x, y = unpack(data)
+    local m, x, y = unpack(data)
     local msg = string.format("%d:%f:%f:%s", m, x, y, data.title or "")
     C_ChatInfo.SendAddonMessage("TOMTOM4", msg, channel)
 end
@@ -1076,7 +1076,7 @@ end
 
 function TomTom:GetClosestWaypoint()
     local m,x,y = self:GetCurrentPlayerPosition()
-	local c = TomTom:GetCZWFromMapID(m)
+    local c,w,z = TomTom:GetCZWFromMapID(m)
 
     local closest_waypoint = nil
     local closest_dist = nil
@@ -1085,7 +1085,7 @@ function TomTom:GetClosestWaypoint()
 		-- Simple search within this zone
 		if waypoints[m] then
 			for key, waypoint in pairs(waypoints[m]) do
-				local dist, x, y = TomTom:GetDistanceToWaypoint(waypoint)
+				local dist = TomTom:GetDistanceToWaypoint(waypoint)
 				if (dist and closest_dist == nil) or (dist and dist < closest_dist) then
 					closest_dist = dist
 					closest_waypoint = waypoint
@@ -1095,9 +1095,9 @@ function TomTom:GetClosestWaypoint()
 	else
 		-- Search all waypoints on this continent
 		for map, waypoints in pairs(waypoints) do
-			if c == TomTom:GetCZWFromMapID(m) then
+			if c == TomTom:GetCZWFromMapID(map) then
 				for key, waypoint in pairs(waypoints) do
-					local dist, x, y = TomTom:GetDistanceToWaypoint(waypoint)
+					local dist = TomTom:GetDistanceToWaypoint(waypoint)
 					if (dist and closest_dist == nil) or (dist and dist < closest_dist) then
 						closest_dist = dist
 						closest_waypoint = waypoint
@@ -1117,6 +1117,21 @@ function TomTom:SetClosestWaypoint()
     if uid then
         local data = uid
         TomTom:SetCrazyArrow(uid, TomTom.profile.arrow.arrival, data.title)
+        local m, x, y = unpack(data)
+        local zoneName = hbd:GetLocalizedMap(m)
+        local ctxt = RoundCoords(x, y, 2)
+        local desc = data.title and data.title or ""
+        local sep = data.title and " - " or ""
+        local msg = string.format(L["|cffffff78TomTom:|r Selected waypoint (%s%s%s) in %s"], desc, sep, ctxt, zoneName)
+        ChatFrame1:AddMessage(msg)
+    else
+        local msg
+        if not self.profile.arrow.closestusecontinent then
+           msg = L["|cffffff78TomTom:|r Could not find a closest waypoint in this zone."]
+        else
+           msg = L["|cffffff78TomTom:|r Could not find a closest waypoint in this continent."]
+        end
+        ChatFrame1:AddMessage(msg)
     end
 end
 
