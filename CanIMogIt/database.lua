@@ -254,6 +254,10 @@ CanIMogIt.itemsToAdd = {}
 
 local function LateAddItems(event, itemID)
     if event == "GET_ITEM_INFO_RECEIVED" and itemID then
+        -- The 8.0.1 update is causing this event to return a bunch of itemID=0
+        if itemID <= 0 then
+            return
+        end
         if CanIMogIt.itemsToAdd[itemID] then
             for sourceID, _ in pairs(CanIMogIt.itemsToAdd[itemID]) do
                 local appearanceID = CanIMogIt:GetAppearanceIDFromSourceID(sourceID)
@@ -282,8 +286,9 @@ function CanIMogIt:_DBSetItem(itemLink, appearanceID, sourceID)
         if self:GetItemSubClassName(itemLink) == nil then
             CanIMogIt:Print("nil subclass: " .. itemLink)
         end
-        -- For testing:
-        -- CanIMogIt:Print("New item found: " .. itemLink .. " itemID: " .. CanIMogIt:GetItemID(itemLink) .. " sourceID: " .. sourceID .. " appearanceID: " .. appearanceID)
+        if CanIMogItOptions['databaseDebug'] then
+            CanIMogIt:Print("New item found: " .. itemLink .. " itemID: " .. CanIMogIt:GetItemID(itemLink) .. " sourceID: " .. sourceID .. " appearanceID: " .. appearanceID)
+        end
     else
         local itemID = CanIMogIt:GetItemID(itemLink)
         if not CanIMogIt.itemsToAdd[itemID] then
@@ -317,8 +322,9 @@ function CanIMogIt:DBRemoveItem(appearanceID, sourceID, itemLink)
         if next(self.db.global.appearances[hash].sources) == nil then
             self:DBRemoveAppearance(appearanceID, itemLink)
         end
-        -- For testing:
-        -- CanIMogIt:Print("Item removed: " .. CanIMogIt:GetItemLinkFromSourceID(sourceID) .. " itemID: " .. CanIMogIt:GetItemID(itemLink) .. " sourceID: " .. sourceID .. " appearanceID: " .. appearanceID)
+        if CanIMogItOptions['databaseDebug'] then
+            CanIMogIt:Print("Item removed: " .. CanIMogIt:GetItemLinkFromSourceID(sourceID) .. " itemID: " .. CanIMogIt:GetItemID(itemLink) .. " sourceID: " .. sourceID .. " appearanceID: " .. appearanceID)
+        end
     end
 end
 
@@ -371,7 +377,7 @@ local transmogEvents = {
 }
 
 local function TransmogCollectionUpdated(event, sourceID, ...)
-    if transmogEvents[event] then
+    if transmogEvents[event] and sourceID then
         -- Get the appearanceID from the sourceID
         if event == "TRANSMOG_COLLECTION_SOURCE_ADDED" then
             local itemLink = CanIMogIt:GetItemLinkFromSourceID(sourceID)

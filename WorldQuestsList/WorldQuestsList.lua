@@ -1,4 +1,4 @@
-local VERSION = 70
+local VERSION = 71
 
 --[[
 Special icons for rares, pvp or pet battle quests in list
@@ -201,6 +201,11 @@ TomTom arrow is back as option
 Fixed WQ icons random shifting
 WQ icons on world map will stay if list is hidden
 Minor fixes
+
+Fixed free mode anchor
+Some tweaks for fullscreen map mode
+Added option "Disable eye for quest tracker on right"
+Minor fixes
 ]]
 
 local GlobalAddonName, WQLdb = ...
@@ -291,6 +296,8 @@ local LOCALE =
 		tryWithQuestID = "Поиск по quest ID",
 		lfgDisableAll = "Отключить все, кроме LFG",
 		lfgDisableAll2 = "Все настройки аддона будут сброшены. Отключить все функции, кроме LFG?",
+		lfgDisableEyeRight = "Отключить кнопку глаза в меню заданий справа",
+		lfgDisableEyeList = "Скрыть кнопку глаза в списке",
 	} or
 	locale == "deDE" and {    --by Sunflow72
 		gear = "Ausrüstung",
@@ -313,33 +320,35 @@ local LOCALE =
 		headerEnable = "Aktiviert die Kopfzeile",
 		disabeHighlightNewQuests = "Deaktiviert die Markierung für neue Quests",
 		distance = "Entfernung",
-		disableBountyIcon = "Deaktiviert die Abgesandtensymbole für Fraktionsnamen",
+		disableBountyIcon = "Deaktiviert die Fraktionssymbole für Abgesandten Quests",
 		arrow = "Pfeil",
 		invasionPoints = "Invasions-Punkte",
 		argusMap = "Aktiviert Argus Karte",
 		ignoreList = "Ignorier-Liste",
-		addQuestsOpposite = "Fügt Quests vom anderen Kontinent hinzu",
+		addQuestsOpposite = "Fügt Quests von anderen Kontinent hinzu",
 		hideLegion = "Verbergt Quests von Legion",
-		disableArrowMove = "Deaktiviert das Bewegen",
+		disableArrowMove = "Deaktiviert das Verschieben",
 		shellGameHelper = "Aktiviert Schalen-Spiel Helfer",
-		iconsOnMinimap = "Aktiviert die Symbole auf allgemeinen Karten",
+		iconsOnMinimap = "Aktiviert Symbole auf Kontinentkarten",
 		addQuestsArgus = "Fügt Quests von Argus hinzu",
 		lfgSearchOption = "Aktiviert die LFG-Suche",
 		lfgAutoinvite = "Aktiviert die automatische Einladungsoption",
-		lfgTypeText = "Gib die zu bearbeitenden Nummern (QuestID) ein ",
+		lfgTypeText = "Gib die Quest-ID in das Eingabefeld ein",
 		lfgLeftButtonClick = "Linksklick - Gruppe finden",
 		lfgLeftButtonClick2 = "Linksklick + Shift - Gruppe finden nach Namen",
 		lfgRightButtonClick = "Rechtsklick - Gruppe erstellen",
 		lfgDisablePopup = "Deaktiviert Popup im Questbereich",
-		lfgDisableRightClickIcons = "Deaktiviert die rechte Maustaste auf Kartensymbolen",
+		lfgDisableRightClickIcons = "Deaktiviert die rechte Maustaste auf Symbole der Karte",
 		disableRewardIcons = "Aktiviert die Belohnungssymbole auf Karten",
 		mapIconsScale = "Kartensymbole skalieren",
-		disableRibbon = "Deaktiviert die Farbbandgrafik",
-		enableRibbonGeneralMap = "Aktiviert das Farbband auf allgemeinen Karten",
-		enableArrowQuests = "Aktiviert den Pfeil für reguläre Quests",
-		tryWithQuestID = "Versuche es mit|n der Quest-ID",
-		lfgDisableAll = "Disable all, except LFG",
-		lfgDisableAll2 = "All addon settings will be lost. Disable all options, except LFG?",
+		disableRibbon = "Deaktiviert die Bandgrafiken",
+		enableRibbonGeneralMap = "Aktiviert die Bandgrafik auf Kontinentkarten",
+		enableArrowQuests = "Aktiviert den Pfeil für normale Quests",
+		tryWithQuestID = "Suche nach Quest-ID",
+		lfgDisableAll = "Deaktiviert alle, außer LFG",
+		lfgDisableAll2 = "Alle Add-In Einstellungen werden zurückgesetzt. Deaktiviert alle Optionen, außer LFG?",
+		lfgDisableEyeRight = "Disable eye for quest tracker on right",
+		lfgDisableEyeList = "Hide eye in list",
 	} or
 	locale == "frFR" and {
 		gear = "Équipement",
@@ -389,6 +398,8 @@ local LOCALE =
 		tryWithQuestID = "Try by quest ID",
 		lfgDisableAll = "Disable all, except LFG",
 		lfgDisableAll2 = "All addon settings will be lost. Disable all options, except LFG?",
+		lfgDisableEyeRight = "Disable eye for quest tracker on right",
+		lfgDisableEyeList = "Hide eye in list",
 	} or
 	(locale == "esES" or locale == "esMX") and {
 		gear = "Equipo",
@@ -438,6 +449,8 @@ local LOCALE =
 		tryWithQuestID = "Try by quest ID",
 		lfgDisableAll = "Disable all, except LFG",
 		lfgDisableAll2 = "All addon settings will be lost. Disable all options, except LFG?",
+		lfgDisableEyeRight = "Disable eye for quest tracker on right",
+		lfgDisableEyeList = "Hide eye in list",
 	} or	
 	locale == "itIT" and {
 		gear = "Equipaggiamento",
@@ -487,6 +500,8 @@ local LOCALE =
 		tryWithQuestID = "Try by quest ID",
 		lfgDisableAll = "Disable all, except LFG",
 		lfgDisableAll2 = "All addon settings will be lost. Disable all options, except LFG?",
+		lfgDisableEyeRight = "Disable eye for quest tracker on right",
+		lfgDisableEyeList = "Hide eye in list",
 	} or
 	locale == "ptBR" and {
 		gear = "Equipamento",
@@ -536,6 +551,8 @@ local LOCALE =
 		tryWithQuestID = "Try by quest ID",
 		lfgDisableAll = "Disable all, except LFG",
 		lfgDisableAll2 = "All addon settings will be lost. Disable all options, except LFG?",
+		lfgDisableEyeRight = "Disable eye for quest tracker on right",
+		lfgDisableEyeList = "Hide eye in list",
 	} or
 	locale == "koKR" and {
 		gear = "장비",
@@ -585,6 +602,8 @@ local LOCALE =
 		tryWithQuestID = "Try by quest ID",
 		lfgDisableAll = "Disable all, except LFG",
 		lfgDisableAll2 = "All addon settings will be lost. Disable all options, except LFG?",
+		lfgDisableEyeRight = "Disable eye for quest tracker on right",
+		lfgDisableEyeList = "Hide eye in list",
 	} or
 	(locale == "zhCN" or locale == "zhTW") and {	--by dxlmike, cuihuanyu1986
 		gear = "装备",
@@ -634,6 +653,8 @@ local LOCALE =
 		tryWithQuestID = "用任务ID尝试",
 		lfgDisableAll = "禁用除了寻求组队的其他全部",
 		lfgDisableAll2 = "设置将丢失，是否禁用除了寻求组队的其他全部选项?",
+		lfgDisableEyeRight = "Disable eye for quest tracker on right",
+		lfgDisableEyeList = "Hide eye in list",
 	} or	
 	{
 		gear = "Gear",
@@ -683,6 +704,8 @@ local LOCALE =
 		tryWithQuestID = "Try by quest ID",
 		lfgDisableAll = "Disable all, except LFG",
 		lfgDisableAll2 = "All addon settings will be lost. Disable all options, except LFG?",
+		lfgDisableEyeRight = "Disable eye for quest tracker on right",
+		lfgDisableEyeList = "Hide eye in list",
 	}
 
 local filters = {
@@ -1014,7 +1037,9 @@ WorldQuestList.Close:SetPoint("BOTTOMLEFT",WorldQuestList,"TOPRIGHT",1,1)
 WorldQuestList.Close:SetSize(22,22)
 WorldQuestList.Close:SetScript("OnClick",function()
 	WorldQuestList:Hide()
-	WorldQuestList:Show()
+	if not (WorldMapFrame:IsVisible() and WorldMapFrame:IsMaximized() and (VWQL.Anchor == 1 or not VWQL.Anchor)) then
+		WorldQuestList:Show()
+	end
 end)
 WorldQuestList.Close:Hide()
 
@@ -1110,6 +1135,7 @@ WorldQuestList:SetScript("OnEvent",function(self,event,...)
 				VERSION = VERSION,
 				Scale = 0.8,
 				DisableIconsGeneralMap947 = true,
+                DisableLFG_Popup = true,
 				AzeriteFormat = 20,
 				--DisableRewardIcons = true,
 			}
@@ -1142,13 +1168,17 @@ WorldQuestList:SetScript("OnEvent",function(self,event,...)
 			VWQL.DisableIconsGeneralMap947 = true
 		end
 		if not (type(VWQL.VERSION)=='number') or VWQL.VERSION < 66 then
-			VWQL.DisableRewardIcons = true
+			--VWQL.DisableRewardIcons = true
 		end
 		if not (type(VWQL.VERSION)=='number') or VWQL.VERSION < 69 then
 			if type(VWQL.MapIconsScale)=='number' and VWQL.MapIconsScale < 1 then
 				VWQL.MapIconsScale = 1
 			end
-		end		
+		end
+		if not (type(VWQL.VERSION)=='number') or VWQL.VERSION < 71 then
+			VWQL.Anchor3PosLeft = nil
+			VWQL.Anchor3PosTop = nil
+		end
 		
 		WorldQuestList.modeSwitcherCheck:AutoSetValue()
 
@@ -2775,7 +2805,7 @@ function UpdateAnchor(forceFreeMode)
 			WorldQuestList:SetParent(WorldMapFrame)
 		end
 		if VWQL.Anchor3PosLeft and VWQL.Anchor3PosTop and not forceFreeMode then
-			WorldQuestList:SetPoint("TOPLEFT",WorldMapFrame,"BOTTOMRIGHT",VWQL.Anchor3PosLeft,VWQL.Anchor3PosTop)
+			WorldQuestList:SetPoint("TOPLEFT",UIParent,"BOTTOMLEFT",VWQL.Anchor3PosLeft,VWQL.Anchor3PosTop)
 		else
 			WorldQuestList:SetPoint("TOPLEFT",WorldMapFrame,"TOPRIGHT",10,-4)
 		end
@@ -2839,6 +2869,26 @@ do
 			end,
 			checkable = true,
 		},
+		{
+			text = LOCALE.lfgDisableEyeRight,
+			func = function()
+				VWQL.DisableLFG_EyeRight = not VWQL.DisableLFG_EyeRight
+				if ObjectiveTracker_Update then
+					ObjectiveTracker_Update(2)
+				end
+			end,
+			checkable = true,
+		},
+		{
+			text = LOCALE.lfgDisableEyeList,
+			func = function()
+				VWQL.LFG_HideEyeInList = not VWQL.LFG_HideEyeInList
+				WorldQuestList_Update()
+			end,
+			checkable = true,
+		},		
+		
+		
 		{
 			text = LOCALE.lfgDisableAll,
 			func = function()
@@ -3273,6 +3323,8 @@ do
 		end
 		lfgSubMenu[1].checkState = VWQL.DisableLFG_Popup
 		lfgSubMenu[2].checkState = VWQL.DisableLFG_RightClickIcon
+		lfgSubMenu[3].checkState = VWQL.DisableLFG_EyeRight
+		lfgSubMenu[4].checkState = VWQL.LFG_HideEyeInList
 		mapIconsScaleSubmenu[1].slider.val = (VWQL.MapIconsScale or 1) * 100
 		rewardsIconsSubMenu[1].checkState = VWQL.DisableRibbon
 		rewardsIconsSubMenu[2].checkState = VWQL.EnableRibbonGeneralMaps
@@ -3468,6 +3520,7 @@ WorldQuestList.moveHeader.Button:SetScript("OnDragStart", function(self)
 	WorldQuestList:SetMovable(true)
 	--WorldQuestList:SetClampedToScreen(true)
 	WorldQuestList:StartMoving()
+	WorldQuestList.IsOnMove = true
 	self.ticker = C_Timer.NewTicker(0.5,function()
 		WorldQuestList_Update()
 	end)
@@ -3476,13 +3529,20 @@ WorldQuestList.moveHeader.Button:SetScript("OnDragStop", function(self)
 	WorldQuestList:StopMovingOrSizing()
 	WorldQuestList:SetMovable(false)
 	WorldQuestList:SetClampedToScreen(false)
+	WorldQuestList.IsOnMove = nil
 	if WorldQuestList.IsSoloRun then
 		VWQL.PosLeft = WorldQuestList:GetLeft()
 		VWQL.PosTop = WorldQuestList:GetTop()
+		
+		WorldQuestList:ClearAllPoints()
+		WorldQuestList:SetPoint("TOPLEFT",UIParent,"BOTTOMLEFT",VWQL.PosLeft,VWQL.PosTop)
 	end
 	if VWQL.Anchor == 3 and WorldMapFrame:IsVisible() then
-		VWQL.Anchor3PosLeft = WorldQuestList:GetLeft() - WorldMapFrame:GetRight()
-		VWQL.Anchor3PosTop = WorldQuestList:GetTop() - WorldMapFrame:GetBottom()
+		VWQL.Anchor3PosLeft = WorldQuestList:GetLeft()
+		VWQL.Anchor3PosTop = WorldQuestList:GetTop()
+
+		WorldQuestList:ClearAllPoints()
+		WorldQuestList:SetPoint("TOPLEFT",UIParent,"BOTTOMLEFT",VWQL.Anchor3PosLeft,VWQL.Anchor3PosTop)
 	end
 	if self.ticker then
 		self.ticker:Cancel()
@@ -4473,7 +4533,7 @@ function WorldQuestList_Update(preMapID)
 	
 	if mapAreaID == 947 and VWQL.HideLegion then
 		for i=#taskInfo,1,-1 do
-			if taskInfo[i].mapID and WorldQuestList:IsLegionZone(taskInfo[i].mapID) then
+			if taskInfo[i].mapID and (WorldQuestList:IsLegionZone(taskInfo[i].mapID) or taskInfo[i].mapID == 62) then
 				tremove(taskInfo,i)
 			end
 		end	
@@ -5501,12 +5561,20 @@ WorldMapButton_HookShowHide:SetScript('OnShow',function()
 		WorldQuestList:Hide()
 		return
 	end
-	--if WorldQuestList:IsVisible() and not WorldQuestList.IsSoloRun then
+	if WorldMapFrame:IsMaximized() and (VWQL.Anchor == 1 or not VWQL.Anchor) then
+		if not WorldQuestList.IsSoloRun then
+			WorldQuestList:Hide()
+		end
+		return
+	elseif not WorldQuestList:IsVisible() then
+		WorldQuestList:Show()
+	end
 	if WorldQuestList:IsVisible() then
 		WorldQuestList:Hide()
 		WorldQuestList:Show()
 	end
 end)
+
 local prevZone
 WorldMapButton_HookShowHide:SetScript('OnUpdate',function()
 	local currZone = GetCurrentMapAreaID()
@@ -6489,8 +6557,9 @@ QuestCreationBox:SetScript("OnEvent",function (self,event,arg1,arg2)
 		if not VWQL or VWQL.DisableLFG or not arg1 then
 			return
 		end
-		local name = select(5,C_LFGList.GetActiveEntryInfo())
-		if name and name == tostring(arg1) and (not QuestCreationBox:IsVisible() or (QuestCreationBox.type ~= 1)) then
+		--local name = select(5,C_LFGList.GetActiveEntryInfo())
+		--if name and name == tostring(arg1) and (not QuestCreationBox:IsVisible() or (QuestCreationBox.type ~= 1)) then
+		if C_LFGList.GetActiveEntryInfo() and QuestUtils_IsQuestWorldQuest(arg1) and CheckQuestPassPopup(arg1) and (not QuestCreationBox:IsVisible() or (QuestCreationBox.type ~= 1) or (QuestCreationBox.type == 1 and QuestCreationBox.questID == arg1)) then
 			QuestCreationBox.Text1:SetText("WQL")
 			QuestCreationBox.Text2:SetText("")
 			QuestCreationBox.PartyLeave:Show()
@@ -6600,14 +6669,17 @@ end
 
 local function ObjectiveTracker_Update_hook(reason, questID)
 	for _,b in pairs(objectiveTrackerButtons) do
-		if b:IsShown() and ((b.questID ~= b.parent.id or not VWQL or VWQL.DisableLFG) or (b.parent.hasGroupFinderButton)) then
+		if b:IsShown() and ((b.questID ~= b.parent.id or not VWQL or VWQL.DisableLFG or VWQL.DisableLFG_EyeRight) or (b.parent.hasGroupFinderButton)) then
 			b:Hide()
 		end
 	end
-	if not VWQL or VWQL.DisableLFG then
+	if not VWQL or VWQL.DisableLFG or VWQL.DisableLFG_EyeRight then
 		return
 	end
 	if reason and reason ~= 1 then
+		if not ObjectiveTrackerFrame or not ObjectiveTrackerFrame.MODULES then
+			return
+		end
 		for _,module in pairs(ObjectiveTrackerFrame.MODULES) do
 			if module.usedBlocks then
 				for _,block in pairs(module.usedBlocks) do

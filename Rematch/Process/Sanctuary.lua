@@ -80,7 +80,7 @@ end
 -- this is safe to call anytime, but should be called after an UpdateOwned() which
 -- flags whether a petID is known to exist
 function rematch:UpdateSanctuary(force)
-	if rematch.isLoaded and (rematch.sanctuaryNeedsUpdated or force) then
+	if rematch.isLoaded and (rematch.sanctuaryNeedsUpdated or force) and not settings.DebugNoSanctuary then
 		-- reset counters for all pets
 		for petID,info in pairs(sanctuary) do
 			sanctuary[petID][1] = 0 -- team counter

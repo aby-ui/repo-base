@@ -3,7 +3,7 @@
 ## Author: ykiigor
 ## Notes: Exorsus Raid Tools
 ## SavedVariables: VExRT
-## Version: 3930
+## Version: 3940
 core.lua
 Functions.lua
 ExLib.lua

@@ -161,7 +161,7 @@ local SkinNormal
 do
 	local Base = {}
 
-	-- Hook to catch changes to a button's 'Normal' texture. 
+	-- Hook to catch changes to a button's 'Normal' texture.
 	local function Hook_SetNormalTexture(Button, Texture)
 		local Region = Button.__MSQ_NormalTexture
 		local Normal = Button:GetNormalTexture()
@@ -176,7 +176,7 @@ do
 			Region:SetTexCoord(GetTexCoords(Skin.EmptyCoords or Skin.TexCoords))
 			Region:SetVertexColor(GetColor(Skin.EmptyColor or Button.__MSQ_NormalColor))
 			Button.__MSQ_Empty = true
-			if Gloss then 
+			if Gloss then
 				Gloss:Hide()
 			end
 		elseif Texture == "Interface\\Buttons\\UI-Quickslot2" then

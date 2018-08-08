@@ -71,8 +71,8 @@ module.db.hsSpells = {
 }
 module.db.raidBuffs = {
 	{ATTACK_POWER_TOOLTIP or "AP","WARRIOR",6673,264761},
-	{ITEM_MOD_STAMINA_SHORT or "Stamina","PRIEST",21562,264764},
-	{ITEM_MOD_INTELLECT_SHORT or "Int","MAGE",1459,264760},
+	{SPELL_STAT3_NAME or "Stamina","PRIEST",21562,264764},
+	{SPELL_STAT4_NAME or "Int","MAGE",1459,264760},
 }
 module.db.potionList = {}
 module.db.hsList = {}
@@ -517,7 +517,7 @@ local function GetRaidBuffs(checkType)
 	end
 	
 	if true then
-		local result = format("|cff00ff00%s|r: ",GARRISON_MISSION_PARTY_BUFFS)
+		local result = format("|cff00ff00%s|r ",GARRISON_MISSION_PARTY_BUFFS)
 	
 		local isAnyBuff = true
 		for k=1,buffsListLen do

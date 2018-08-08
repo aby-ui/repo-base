@@ -16,7 +16,9 @@ local rematch = Rematch
 ]]
 
 rematch:InitModule(function()
-	rematch:CacheNpcIDs()
+	if not RematchSettings.DebugNoCache then
+		rematch:CacheNpcIDs()
+	end
 	rematch:CreateNpcMenus()
 end)
 
@@ -460,7 +462,7 @@ end
 
 -- creates the "NotableNPCs" menu and its submenus
 function rematch:CreateNpcMenus()
-	if not rematch.notablesCached then -- not all notables cached, try again later
+	if not rematch.notablesCached and not RematchSettings.DebugNoCache then -- not all notables cached, try again later
 		C_Timer.After(1,rematch.CreateNpcMenus)
 		return
 	end
