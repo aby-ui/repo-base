@@ -10,5 +10,5 @@ Local_zhCN.lua
 Local_zhTW.lua
 ttTalents.lua
 
-## Title-zhCN: |cff880303[有爱]|r TipTac 天赋模块
+## Title-zhCN: |cff880303[爱不易]|r TipTac 天赋模块
 ## X-Vendor: AbyUI

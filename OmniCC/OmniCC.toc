@@ -13,6 +13,6 @@ settings\settings.xml
 engines\engines.xml
 effects\effects.xml
 
-## Title-zhCN: |cff880303[有爱]|r OmniCC 冷却文字
+## Title-zhCN: |cff880303[爱不易]|r OmniCC 冷却文字
 ## Notes-zhCN: 给所有的技能冷却动画添加文字显示及冷却后的效果。
 ## X-Vendor: AbyUI

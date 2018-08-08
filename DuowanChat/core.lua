@@ -52,7 +52,7 @@ local defaults = {
         enablesubgroup = true,
         useshortname =true,
         enablecopy = false, 
-        enablechatchannelmove=true,
+        enablechatchannelmove=false,
         userPlaced = false,
         mute = false,
         modules = {
@@ -106,8 +106,8 @@ end
 local leaveChannelFunc = SlashCmdList["LEAVE"]
 
 local joinChannelFunc = function(channel)
-    JoinTemporaryChannel(channel)
-    DuowanChat:UnregisterEvent("CHAT_MSG_CHANNEL_NOTICE")
+    local channelId = JoinTemporaryChannel(channel)
+    if channelId == nil then return false end
 
     local worldChannels = db.worldChannels
     --检查所有窗口看看是否有一个加入了世界频道
@@ -129,6 +129,7 @@ local joinChannelFunc = function(channel)
         ChatFrame_RemoveChannel(DEFAULT_CHAT_FRAME, L["BigFootChannel"])
         ChatFrame_AddChannel(DEFAULT_CHAT_FRAME, L["BigFootChannel"])
     end
+    return true
 end
 
 local OriginReloadUI = ReloadUI
@@ -145,38 +146,7 @@ function ConsoleExec(cmd, ...)
     OriginConsoleExec(cmd, ...);
 end
 
--- local function IsBFChannelSysMessage(text)
---     if text:find(L["JoinChannel1"]) and text:find(L["BigFootChannel"]) then 
---         return true 
---     end
---     if text:find(L["LeaveChannel"]) and text:find(L["BigFootChannel"]) then
---         return true 
---     end
---     if text:find(L["ModifyChannel"]) and text:find(L["BigFootChannel"]) then
---         return true 
---     end 
---     if text:find(L["OwnChannel"]) and text:find(L["BigFootChannel"]) then 
---         return true 
---     end 
--- 
---     if text:find(L["PasswordChange"]) and text:find(L["BigFootChannel"]) then 
---         return true 
---     end 
--- end
-
-local function IsBFChannelMessage(text) 
-    if text:find(L["BigFootChannel"]) then 
-        return true
-    end 
-end
-
-function checkResetPassword(text) 
-    if type(text) == "string" and text:find(L["OwnChannel"]) and text:find(UnitName("player")) then
-        SetChannelPassword(DuowanChat.nextChannel or L["BigFootChannel"],"")
-    end 
-end 
-
-local function getNextChannel(channelName) 
+local function getNextChannel(channelName)
     local i = 1 
     local cur 
     if channelName:find(L["BigFootChannel"]) then
@@ -244,7 +214,6 @@ function DuowanChat:OnInitialize()
     self.db.RegisterCallback(self, "OnProfileReset", "Refresh")
     hooksecurefunc("FCF_SetButtonSide", self.Refresh)
 
-    self:RegisterEvent("CHAT_MSG_CHANNEL_NOTICE") 
     -- self:RegisterEvent("CHANNEL_PASSWORD_REQUEST")
     self:RegisterEvent("PLAYER_ENTERING_WORLD")
 
@@ -622,26 +591,22 @@ function DuowanChat:PLAYER_ENTERING_WORLD(...)
             db.worldChannels[_G[chatframe:GetName().."Tab"]:GetText()] = nil
         end
     end)
-    if select("#", GetChannelList()) > 2 then
-        for i=2, select("#", GetChannelList()), 2 do
-            if select(i,GetChannelList()) == L["BigFootChannel"] then
-                DuowanChat:UnregisterEvent("CHAT_MSG_CHANNEL_NOTICE")
-                break; --仍然需要joinChannelFunc加入频道列表
+
+    if U1GetCfgValue and IsAddOnLoaded("163ui_chat") and not U1GetCfgValue("163ui_chat/worldchannel") then
+        self:SetBFChannelMuted(true)
+        dwChannel_RefreshMuteButton()
+        return
+    else
+        local tryJoin;
+        tryJoin = function()
+            local success = joinChannelFunc(L["BigFootChannel"])
+            if not success then
+                self:ScheduleTimer(tryJoin, 1)
             end
         end
-        joinChannelFunc(L["BigFootChannel"])
+        tryJoin();
     end
 end
-
-function DuowanChat:CHAT_MSG_CHANNEL_NOTICE(...)
-    local _,message,_,_,_,_,_,_,_,channelName = ... 
-
-    if message =="YOU_JOINED" and not channelName:find(L["BigFootChannel"]) then
-        if self.timer then self:CancelTimer(self.timer, true) end
-        LeaveChannelByName(L["BigFootChannel"])
-        self.timer = self:ScheduleTimer(function() joinChannelFunc(L["BigFootChannel"]) self.timer = nil end,2)
-    end 
-end 
 
 function DuowanChat:CHANNEL_PASSWORD_REQUEST(...)
     local _,channelName = ... 
@@ -746,9 +711,9 @@ function DuowanChat:Refresh()
     		    _G["ChatFrame"..i.."EditBox"]:SetPoint(point,rel,relp,x,-2)
             end
         end
-        if DWCChatFrame:GetPoint() == nil then
-            DWCChatFrame:SetPoint("TOPLEFT", "ChatFrame1", "BOTTOMLEFT", -5, -3)
-        end
+        --if DWCChatFrame:GetPoint() == nil then
+        --    DWCChatFrame:SetPoint("TOPLEFT", "ChatFrame1", "BOTTOMLEFT", -5, -3)
+        --end
     else
         local a,b,c,d = ChatFrame1:GetClampRectInsets()
         if d == 0 and DWCChatFrame:IsVisible() then
@@ -820,6 +785,7 @@ function DuowanChat:SetBFChannelMuted(muted)
             return ChatFrame_AddMessageEventFilter('CHAT_MSG_CHANNEL', _bfchannel_filter)
         end
     else
+        joinChannelFunc(L["BigFootChannel"])
         if(_filter_registed) then
             _filter_registed = false
             return ChatFrame_RemoveMessageEventFilter('CHAT_MSG_CHANNEL', _bfchannel_filter)
@@ -848,9 +814,13 @@ function dwChannelMuteButton_OnClick(self, button)
     DuowanChat:SetBFChannelMuted(not db.mute)
 
     if db.mute then
-        print(L["BigFoot Channel has been blocked"]) 
+        print(L["BigFoot Channel has been blocked"])
     else
         print(L["BigFoot Channel has been unblocked"])
+    end
+
+    if(IsAddOnLoaded("163ui_chat") and U1DB and U1DB.configs) then
+        U1DB.configs["163ui_chat/worldchannel"] = not db.mute
     end
 
     LFW_SHOW = db.mute
@@ -867,7 +837,7 @@ end
 --[[
 function scButton_OnEnter(self)
     GameTooltip_SetDefaultAnchor(GameTooltip, self);
-    GameTooltip:SetText("|cff880303[有爱]|r 截图分享", 1, 1, 1);
+    GameTooltip:SetText("|cff880303[爱不易]|r 截图分享", 1, 1, 1);
     GameTooltip:AddLine("快捷键：Ctrl+PrtScr");
     GameTooltip:Show();
 end 

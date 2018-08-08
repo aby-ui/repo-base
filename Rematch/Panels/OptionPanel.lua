@@ -45,6 +45,7 @@ local newIcon = " \124TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:1
 		9 = Toolbar Options
 		10 = Team Options
 		11 = Confirmation Options
+		12 = Debugging Options
 ]]
 
 panel.opts = {
@@ -101,9 +102,9 @@ panel.opts = {
 	{ "check", "ShowNotesOnce", L["Only Once Per Team"], L["Only display notes automatically the first time entering battle, until another team is loaded."], "ShowNotesInBattle" },
 	{ "check", "BoringLoreFont", L["Alternate Lore Font"], L["Use a more normal-looking font for lore text on the back of the pet card."], nil, true, true },
 	{ "check", "ShowSpeciesID", L["Show Species ID & Ability ID"], L["Display the numerical species ID of a pet as a stat on their pet card and the numerical ability ID on ability tooltips."] },
-	{ "header", L["Team Options"]..newIcon, 10 },
-   { "check", "LoadHealthiest", L["Load Healthiest Pets"], L["When a team loads, if any pet is injured or dead and there's another version with more health \124cffffffffand identical stats\124r, load the healthier version.\n\nPets in the leveling queue are exempt from this option.\n\n\124cffffffffNote:\124r This is only when a team loads. It will not automatically swap in healthier pets when you leave battle."] },
-   { "check", "LoadHealthiestAny", L["Allow Any Version"], L["Instead of choosing only the healthiest pet with identical stats, choose the healthiest version of the pet regardless of stats."], "LoadHealthiest" },
+	{ "header", L["Team Options"], 10 },
+	{ "check", "LoadHealthiest", L["Load Healthiest Pets"], L["When a team loads, if any pet is injured or dead and there's another version with more health \124cffffffffand identical stats\124r, load the healthier version.\n\nPets in the leveling queue are exempt from this option.\n\n\124cffffffffNote:\124r This is only when a team loads. It will not automatically swap in healthier pets when you leave battle."] },
+	{ "check", "LoadHealthiestAny", L["Allow Any Version"], L["Instead of choosing only the healthiest pet with identical stats, choose the healthiest version of the pet regardless of stats."], "LoadHealthiest" },
 	{ "check", "HideTargetNames", L["Hide Targets Below Teams"], L["Hide the target name that appears beneath a team that is not named the same as its target."] },
 	{ "check", "AlwaysTeamTabs", L["Always Show Team Tabs"], L["Show team tabs along the right side of the window even if you're not on the team panel."], nil, true },
 	{ "check", "TeamTabsToLeft", L["Move Team Tabs To Left"], L["Move the team tabs along the right side of the standalone window to the left side."], "AlwaysTeamTabs", true },
@@ -111,10 +112,10 @@ panel.opts = {
 	{ "check", "AutoWinRecordPVPOnly", L["For PVP Battles Only"], L["Automatically track whether the loaded team won or lost only in a PVP battle and never for a PVE battle."], "AutoWinRecord" },
 	{ "check", "AlternateWinRecord", L["Display Total Wins Instead"], L["Instead of displaying the win percentage of a team on the win record button, display the total number of wins.\n\nTeam tabs that are sorted by win record will sort by total wins also."], nil, true },
 	{ "check", "HideWinRecord", L["Hide Win Record Buttons"], L["Hide the win record button displayed to the right of each team.\n\nYou can still manually edit a team's win record from its right-click menu and automatic tracking will continue if enabled."], nil, true },
-   { "check", "UseLegacyExport", L["Share In Legacy Format"], L["When exporting teams or sending to another Rematch user, use the old format.\n\nUse this option when sharing teams with someone on an older Rematch that's unable to import or receive newer teams."] },
-   { "check", "PrioritizeBreedOnImport", L["Prioritize Breed On Import"], L["When importing or receiving teams, fill the team with the best matched breed as the first priority instead of the highest level."] },
-   { "check", "RandomAbilitiesToo", L["Randomize Abilities Too"], L["For random pets, randomize the pets' abilities also."]},
-   { "check", "AllowRandomPetsFromTeams", L["Allow Random Pets From Teams"]..newIcon, L["The default behavior for a random pet slot is to not choose a random pet saved in another team, unless all three pet slots are random.\n\nEnable this option to always allow pets from other teams to be included in the random pool."] },
+	{ "check", "UseLegacyExport", L["Share In Legacy Format"], L["When exporting teams or sending to another Rematch user, use the old format.\n\nUse this option when sharing teams with someone on an older Rematch that's unable to import or receive newer teams."] },
+	{ "check", "PrioritizeBreedOnImport", L["Prioritize Breed On Import"], L["When importing or receiving teams, fill the team with the best matched breed as the first priority instead of the highest level."] },
+	{ "check", "RandomAbilitiesToo", L["Randomize Abilities Too"], L["For random pets, randomize the pets' abilities also."]},
+	{ "check", "AllowRandomPetsFromTeams", L["Allow Random Pets From Teams"], L["The default behavior for a random pet slot is to not choose a random pet saved in another team, unless all three pet slots are random.\n\nEnable this option to always allow pets from other teams to be included in the random pool."] },
 	{ "header", L["Leveling Queue Options"], 5 },
 	{ "check", "QueueSkipDead", L["Prefer Living Pets"], L["When loading pets from the queue, skip dead pets and load living ones first."], nil, true },
 	{ "check", "QueuePreferFullHP", L["And At Full Health"], L["Also prefer uninjured pets when loading pets from the queue."], "QueueSkipDead", true },
@@ -123,15 +124,15 @@ panel.opts = {
 	{ "check", "QueueAutoLearn", L["Automatically Level New Pets"], L["When you capture or learn a pet, automatically add it to the leveling queue."] },
 	{ "check", "QueueAutoLearnOnly", L["Only Pets Without A 25"], L["Only automatically level pets which don't have a version already at 25 or in the queue."], "QueueAutoLearn" },
 	{ "check", "QueueAutoLearnRare", L["Only Rare Pets"], L["Only automatically level rare quality pets."], "QueueAutoLearn" },
-	{ "header", L["Pet Filter Options"]..newIcon, 8 },
-   { "check", "StrongVsLevel", L["Use Level In Strong Vs Filter"]..newIcon, L["When doing a Strong Vs filter, take the level of the pet into account. If a pet is not high enough level to use a Strong Vs ability, do not list the pet.\n\n\124cffffffffNote:\124r A Strong Vs filter is sometimes useful for identifying pets you want to level or capture. This option will hide those pets while the Strong Vs filter is active."], nil, true },
+	{ "header", L["Pet Filter Options"], 8 },
+	{ "check", "StrongVsLevel", L["Use Level In Strong Vs Filter"], L["When doing a Strong Vs filter, take the level of the pet into account. If a pet is not high enough level to use a Strong Vs ability, do not list the pet.\n\n\124cffffffffNote:\124r A Strong Vs filter is sometimes useful for identifying pets you want to level or capture. This option will hide those pets while the Strong Vs filter is active."], nil, true },
 	{ "check", "ResetFilters", L["Reset Filters On Login"], L["When logging in, start with all pets listed and no filters active."] },
 	{ "check", "ResetSortWithFilters", L["Reset Sort With Filters"], L["When clearing filters, also reset the sort back to the default: Sort by Name, Favorites First."], nil, true },
 	{ "check", "ResetExceptSearch", L["Don't Reset Search With Filters"], L["When manually clearing filters, don't clear the search box too.\n\nSome actions, such as logging in or Find Similar, will always clear search regardless of this setting."] },
 	{ "check", "SortByNickname", L["Sort By Chosen Name"], L["When pets are sorted by name, sort them by the name given with the Rename option instead of their original name."], nil, true },
 	{ "check", "DontSortByRelevance", L["Don't Sort By Relevance"], L["When searching for something by name in the search box, do not sort the results by relevance.\n\nWhen sorted by relevance, pets with the search term in their name are listed first, followed by terms in notes, then abilities and then source text last."], nil, true },
-   { "check", "HideNonBattlePets", L["Hide Non-Battle Pets"], L["Only list pets that can battle. Do not list pets like balloons, squires and other companion pets that cannot battle."], nil, true },
-   { "check", "AllowHiddenPets", L["Allow Hidden Pets"], L["Allow the ability to hide specific pet species in the pet list with a 'Hide Pet' in the list's right-click menu.\n\nYou can view pets you've hidden from the Other -> Hidden Pets filter."], nil, true },
+	{ "check", "HideNonBattlePets", L["Hide Non-Battle Pets"], L["Only list pets that can battle. Do not list pets like balloons, squires and other companion pets that cannot battle."], nil, true },
+	{ "check", "AllowHiddenPets", L["Allow Hidden Pets"], L["Allow the ability to hide specific pet species in the pet list with a 'Hide Pet' in the list's right-click menu.\n\nYou can view pets you've hidden from the Other -> Hidden Pets filter."], nil, true },
 	{ "header", L["Confirmation Options"], 11 },
 	{ "check", "DontWarnMissing", L["Don't Warn About Missing Pets"], L["Don't display a popup when a team loads and a pet within the team can't be found."] },
 	{ "check", "DontConfirmHidePets", L["Don't Ask When Hiding Pets"], L["Don't ask for confirmation when hiding a pet.\n\nYou can view hidden pets in the 'Other' pet filter."] },
@@ -144,8 +145,11 @@ panel.opts = {
 	{ "check", "NoSummonOnDblClick", L["No Summon On Double Click"], L["Do nothing when pets within Rematch are double-clicked. The normal behavior of double click throughout Rematch is to summon or dismiss the pet."] },
 	{ "check", "HideTooltips", L["Hide Tooltips"], L["Hide the more common tooltips in Rematch."] },
 	{ "check", "HideMenuHelp", L["Hide Extra Help"], L["Hide the informational \"Help\" items found in many menus and on the pet card."] },
-   { "check", "UseDefaultJournal", L["Use Default Pet Journal"], L["Turn off Rematch integration with the default pet journal.\n\nYou can still use Rematch in its standalone window, accessed via key binding, /rematch command or from the Minimap button if enabled in options."], nil, true },
-   { "check", "DebugJournalFrameLevel", L["Debug: Journal FrameLevel"], L["If you experience problems opening Rematch in the Collections window, and the standalone window works fine, then check this to see if it helps. Let me know if it does or doesn't, thanks!"] },
+	{ "check", "UseDefaultJournal", L["Use Default Pet Journal"], L["Turn off Rematch integration with the default pet journal.\n\nYou can still use Rematch in its standalone window, accessed via key binding, /rematch command or from the Minimap button if enabled in options."], nil, true },
+	{ "header", L["Debugging Options"]..newIcon, 12 },
+	{ "check", "DebugJournalFrameLevel", L["Debug: Journal FrameLevel"], L["Check this to less aggressively try to take over the default pet journal. Specifically, it will give up sooner if it can't raise frame level above all other addons' frames in the journal."] },
+	{ "check", "DebugNoCache", L["Debug: No Cache"]..newIcon, L["Check this to disable the automatic caching of NPC names when the addon launches.\n\n\124cffffffffNote:\124r If a target's name appears as something like 'NPC 1234' while this option is enabled, it's probably because of this option. It should correct itself on its own over time."] },
+	{ "check", "DebugNoSanctuary", L["Debug: No Sanctuary"]..newIcon, L["Check this to disable the 'Sanctuary' system that acts as a safety net for server petID reassignments.\n\n\124cffffffffNote:\124r While this option is enabled, any pets in teams will become greyed out if their petID changes. When the team loads, an arbitrary one of the same species will be loaded in its place.\n\n\124cffff4040WARNING!\124r While this option is enabled, make frequent backups of your teams with the 'Backup All Teams' options in the Teams button at the top of the Teams Tab."] },
 	{ "text", format(L["Rematch version %s"],GetAddOnMetadata("Rematch","Version")) },
 	{ "text", format(L["The%s icon indicates new options."],newIcon) },
 }
@@ -191,7 +195,7 @@ rematch:InitModule(function()
       end
    end
 
-	-- remove leveling toast option if ElvUI is enabled
+	-- add warning to leveling toast option if ElvUI is enabled
 	if IsAddOnLoaded("ElvUI") then
 		for i=#panel.opts,1,-1 do
 			if panel.opts[i][2]=="HidePetToast" then
@@ -202,6 +206,10 @@ rematch:InitModule(function()
 					settings.HidePetToast = true
 				end
 			end
+		end
+		-- and add skin version to options
+		if IsAddOnLoaded("RematchElvUISkin") then
+			tinsert(panel.opts,#panel.opts,{"text",format(L["ElvUISkin version %s"],GetAddOnMetadata("RematchElvUISkin","Version"))})
 		end
 	end
 

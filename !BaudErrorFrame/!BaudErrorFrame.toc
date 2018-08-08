@@ -11,5 +11,5 @@
 ..\!!!Libs\LibDBIcon-1.0\LibDBIcon-1.0\LibDBIcon-1.0.lua
 BaudErrorFrame.xml
 
-## Title: |cff880303[有爱]|r !BaudError 错误信息收集
+## Title: |cff880303[爱不易]|r !BaudError 错误信息收集
 ## X-Vendor: AbyUI

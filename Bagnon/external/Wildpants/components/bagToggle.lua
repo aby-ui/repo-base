@@ -13,7 +13,7 @@ local Dropdown = CreateFrame('Frame', ADDON .. 'BagToggleDropdown', nil, 'UIDrop
 
 function BagToggle:New(parent)
 	local b = self:Bind(CreateFrame('CheckButton', nil, parent, ADDON .. self.Name .. 'Template'))
-	b:SetScript('OnHide', b.UnregisterMessages)
+	b:SetScript('OnHide', b.UnregisterSignals)
 	b:SetScript('OnClick', b.OnClick)
 	b:SetScript('OnEnter', b.OnEnter)
 	b:SetScript('OnLeave', b.OnLeave)
@@ -28,7 +28,7 @@ end
 --[[ Events ]]--
 
 function BagToggle:OnShow()
-	self:RegisterFrameMessage('OWNER_CHANGED', 'Update')
+	self:RegisterFrameSignal('OWNER_CHANGED', 'Update')
 	self:Update()
 end
 
@@ -36,7 +36,7 @@ function BagToggle:OnClick(button)
 	if button == 'LeftButton' then
 		local profile = self:GetProfile()
 		profile.showBags = not profile.showBags or nil
-		self:SendFrameMessage('BAG_FRAME_TOGGLED')
+		self:SendFrameSignal('BAG_FRAME_TOGGLED')
 	else
 		local menu = {}
 		local function addLine(id, name, addon, owner)

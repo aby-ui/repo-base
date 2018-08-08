@@ -1,5 +1,5 @@
 ## Interface: 80000
-## Title: |cff880303[有爱]|r 163UI 小功能集合
+## Title: |cff880303[爱不易]|r AbyUI 小功能集合
 ## X-Vendor: AbyUI
 
 163UI_Plugins.lua
@@ -35,4 +35,3 @@ yClassColors\who.lua
 7.0\EncounterJournalPlus_InstanceInfo.lua
 7.0\HideQuickJoin.lua
 7.0\ExaltedPlus.lua
-7.0\ArtifactPowerDouble.lua

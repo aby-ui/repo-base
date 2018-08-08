@@ -8,5 +8,5 @@
 vBar.lua
 vBar.xml
 
-## Title-zhCN: |cff880303[有爱]|r vBar 额外动作条
+## Title-zhCN: |cff880303[爱不易]|r vBar 额外动作条
 ## X-Vendor: AbyUI

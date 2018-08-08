@@ -59,6 +59,6 @@ modules\Range.lua
 modules\Flight.lua
 modules\EnemyCasts.lua
 
-## Title: |cff880303[有爱]|r Quartz 美化施法条
+## Title: |cff880303[爱不易]|r Quartz 美化施法条
 ## Notes-zhCN: 美化和增强施法条，支持延迟显示等贴心功能
 ## X-Vendor: AbyUI

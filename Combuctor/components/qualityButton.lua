@@ -34,7 +34,7 @@ function QualityButton:New(parent, quality, qualityColor)
 	button.qualityColor = qualityColor
 	button.flag = self.Flags[quality]
 
-	button:RegisterFrameMessage('QUALITY_CHANGED', 'UpdateHighlight')
+	button:RegisterFrameSignal('QUALITY_CHANGED', 'UpdateHighlight')
 	button:SetScript('OnClick', self.OnClick)
 	button:SetScript('OnEnter', self.OnEnter)
 	button:SetScript('OnLeave', self.OnLeave)
@@ -65,8 +65,8 @@ function QualityButton:OnClick()
 		frame.quality = self.flag
 	end
 
-	self:SendFrameMessage('QUALITY_CHANGED')
-	self:SendFrameMessage('FILTERS_CHANGED')
+	self:SendFrameSignal('QUALITY_CHANGED')
+	self:SendFrameSignal('FILTERS_CHANGED')
 end
 
 function QualityButton:OnEnter()

@@ -11,7 +11,7 @@ debug = true
 
 local L = AL3:NewLocale("QuestAnnounce", "enUS", true, debug)
 if L then
-L["【有爱】"] = true
+L["【爱不易】"] = true
 L["Accepted: "] = true
 L["Quest Done: "] = true
 L["Announce Every"] = true
@@ -201,7 +201,7 @@ end
 
 local L = AL3:NewLocale("QuestAnnounce", "zhCN")
 if L then
-L["【有爱】"] = "【有爱】"
+L["【爱不易】"] = "【爱不易】"
 L["Accepted: "] = "接受任务："
 L["Quest Done: "] = "任务完成："
 L["Announce Every"] = "任务通报方式"
@@ -235,7 +235,7 @@ end
 
 local L = AL3:NewLocale("QuestAnnounce", "zhTW")
 if L then
-L["【有爱】"] = "【有.愛】"
+L["【爱不易】"] = "【愛不易】"
 L["Accepted: "] = "接受任務："
 L["Quest Done: "] = "任務完成："
 L["Announce Every"] = "任務進度廣播方式"

@@ -798,6 +798,7 @@ function module.options:Load()
 											itemLevel = max(items_ilvl[16] or 0,items_ilvl[17] or 0)
 										end
 									end
+									itemLevel = items_ilvl[slotID] or itemLevel
 									line.items[j].text:SetText("|c"..(itemColor or "ffffffff")..(itemLevel or ""))
 									
 									if (enchantID == 0 and ((slotID == 2 and UnitLevel'player' < 120) or (slotID == 15 and UnitLevel'player' < 120) or slotID == 11 or slotID == 12 or (slotID == 16 and UnitLevel'player' == 120)) and module.db.colorizeNoEnch) or
@@ -974,7 +975,8 @@ function module.options:Load()
 								icon.texture:SetTexture(power.icon)
 								icon.link = "spell:"..power.spellID
 								icon.sid = nil
-								icon.text:SetText("")
+								local ilvl = select(4,GetItemInfo(power.itemLink))
+								icon.text:SetText(ilvl or "")
 								icon:Show()
 								
 								icon.azerite = power

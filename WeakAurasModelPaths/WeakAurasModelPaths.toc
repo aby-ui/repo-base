@@ -1,7 +1,7 @@
 ## Interface: 80000
 ## Title: WeakAuras Model Paths
 ## Author: Mirrored and the WeakAuras Team
-## Version: 2.6.5
+## Version: 2.6.6
 ## Notes: Model paths for WeakAuras
 ## Notes-esES: Las rutas de archivos de modelos en 3D para WeakAuras
 ## Notes-deDE: 3D-Model Pfade für WeakAuras
@@ -15,5 +15,5 @@
 
 ModelPaths.lua
 
-## Title-zhCN: |cff880303[有爱]|r WeakAuras 模型库
+## Title-zhCN: |cff880303[爱不易]|r WeakAuras 模型库
 ## X-Vendor: AbyUI

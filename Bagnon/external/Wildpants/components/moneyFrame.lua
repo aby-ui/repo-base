@@ -15,7 +15,7 @@ MoneyFrame.Type = 'PLAYER'
 function MoneyFrame:New(parent)
 	local f = self:Bind(CreateFrame('Button', parent:GetName() .. 'MoneyFrame', parent, 'SmallMoneyFrameTemplate'))
 	f.trialErrorButton:SetPoint('LEFT', -14, 0)
-	f:SetScript('OnHide', f.UnregisterEvents)
+	f:SetScript('OnHide', f.UnregisterSignals)
 	f:SetScript('OnShow', f.RegisterEvents)
 	f:SetScript('OnEvent', nil)
 	f:UnregisterAllEvents()
@@ -146,7 +146,7 @@ end
 --[[ Update ]]--
 
 function MoneyFrame:RegisterEvents()
-	self:RegisterFrameMessage('OWNER_CHANGED', 'Update')
+	self:RegisterFrameSignal('OWNER_CHANGED', 'Update')
 	self:RegisterEvent('PLAYER_MONEY', 'Update')
 	self:Update()
 end

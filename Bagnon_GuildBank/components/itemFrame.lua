@@ -10,12 +10,12 @@ ItemFrame.Button = Addon.GuildItemSlot
 ItemFrame.Transposed = true
 
 function ItemFrame:RegisterEvents()
-	self:UnregisterEvents()
-	self:RegisterFrameMessage('OWNER_CHANGED', 'Update')
-	self:RegisterMessage('UPDATE_ALL', 'RequestLayout')
+	self:UnregisterSignals()
+	self:RegisterFrameSignal('OWNER_CHANGED', 'Update')
+	self:RegisterSignal('UPDATE_ALL', 'RequestLayout')
 
 	if self:IsCached() then
-		self:RegisterMessage('GUILD_TAB_CHANGED', 'ForAll', 'Update')
+		self:RegisterSignal('GUILD_TAB_CHANGED', 'ForAll', 'Update')
   else
     self:RegisterEvent('GUILDBANKBAGSLOTS_CHANGED', 'ForAll', 'Update')
     self:RegisterEvent('GUILDBANK_ITEM_LOCK_CHANGED', 'ForAll', 'UpdateLocked')

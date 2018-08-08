@@ -12,12 +12,13 @@ local UnitClass = UnitClass
 local _, addon = ...
 local L = addon.L
 
-local spellList = {}
-addon:BuildSpellList(spellList, 6673, "ATTACK_POWER")
-addon:BuildSpellList(spellList, 469, "STAMINA")
+-- local spellList = {}
+-- addon:BuildSpellList(spellList, 6673, "ATTACK_POWER")
+-- addon:BuildSpellList(spellList, 469, "STAMINA")
 
-local button = addon:CreateActionButton("WarriorShouts", L["shouts"], nil, 120, "GROUP_AURA")
-button:SetScrollable(spellList)
+local button = addon:CreateActionButton("WarriorShouts", L["shouts"], nil, 3600, "GROUP_AURA")
+button:SetSpell(6673, "ATTACK_POWER")
+button:SetAttribute("spell", button.spell)
 button:RequireSpell(6673)
 button:SetFlyProtect()
 

@@ -187,7 +187,7 @@ U1REASON_SHORT_DEP_NOT_DEMAND_LOADED = "Deps Err"
 
 --[[ 142]] L["强制加载"] = "Load now"
 --[[ 142]] L["说明`本插件会在满足条件时自动加载，如果现在就要加载请点击此按钮` `|cffff0000注意：有可能会出错|r"] = "Hint`This addon is designed for loading on demand. But if you can load it anytime by pressing this button.` `|cffff0000Warning: Errors may occur.|r"
---[[ 164]] L["有爱插件集"] = "AbyUI Bundle"
+--[[ 164]] L["爱不易插件集"] = "AbyUI Bundle"
 --[[ 165]] L["此项功能为一系列功能相关的小插件组合，可以分别开启或关闭，为您提供最清晰的分类和最强大的灵活性。"] = "The bundle is a series of functional related small addons, which are shown together in the Control Panel."
 --[[ 737]] L["插件-|cffffd100%s|r-"] = "addon |cffffd100%s|r"
 --[[ 744]] L["%s加载成功"] = "%s loaded"
@@ -231,7 +231,7 @@ U1REASON_SHORT_DEP_NOT_DEMAND_LOADED = "Deps Err"
 --[[ 294]] --L["作者"] = true
 --[[ 315]] L["目录"] = "Folder"
 --[[ 315]] L["版本"] = "Version"
---[[ 318]] --L["有爱插件集"] = true
+--[[ 318]] --L["爱不易插件集"] = true
 --[[ 329]] L["全部"] = "Total"
 --[[ 331]] L["内存"] = "Mem"
 --[[ 334]] L["状态"] = "Status"
@@ -239,20 +239,20 @@ U1REASON_SHORT_DEP_NOT_DEMAND_LOADED = "Deps Err"
 --[[ 338]] L["原因"] = "Reason"
 --[[ 345]] L["依赖"] = "Depends"
 --[[ 354]] L["单体插件"] = "Individual Addon" --"Independent"
---[[ 356]] L["有爱整合版"] = "AbyUI Packed"
+--[[ 356]] L["爱不易整合版"] = "AbyUI Packed"
 --[[ 409]] L['|cffFFA3A3没有启用插件|r'] = '|cffFFA3A3No Loaded Addons|r'
---[[ 429]] L["　有爱整合　"] = "   AbyUI   "
+--[[ 429]] L[" 爱不易整合 "] = "   AbyUI   "
 --[[ 430]] L["　其他插件　"] = "   Uncategoried   "
 --[[ 430]] L["　单体插件　"] = "   Individual   "
 --[[ 494]] L["地图任务"] = "Map & Quest"
 --[[ 577]] L["正常模式"] = "UNUSED"
 --[[ 577]] L["将界面还原成普通模式，而不是半透明的精简模式"] = "UNUSED"
---[[ 581]] L["有爱设置"] = "Settings"
---[[ 597]] --L["有爱设置"] = true
---[[ 597]] L["直接显示有爱的介绍和配置项，再次点击则恢复当前的选择插件"] = "Jump to AbyUI's option page. Click the button again to go back to the former selected addon."
+--[[ 581]] L["爱不易设置"] = "Settings"
+--[[ 597]] --L["爱不易设置"] = true
+--[[ 597]] L["直接显示爱不易的介绍和配置项，再次点击则恢复当前的选择插件"] = "Jump to AbyUI's option page. Click the button again to go back to the former selected addon."
 --[[ 598]] L["快捷设置"] = "Quick Menu"
 --[[ 598]] L["一些常用的选项，以下拉菜单方式列出，可迅速进行设置。"] = "Some frequently used toggle options, shown in a dropdown menu."
---[[ 599]] --L["有爱设置"] = true
+--[[ 599]] --L["爱不易设置"] = true
 --[[ 599]] L["设置"] = "Opt"
 --[[ 621]] L["重载界面"] = "ReloadUI"
 --[[ 627]] --L["重载界面"] = true
@@ -268,7 +268,7 @@ U1REASON_SHORT_DEP_NOT_DEMAND_LOADED = "Deps Err"
 --[[ 649]] L["将已启用的插件列表等保存为方案，例如任务模式、副本模式等，亦可以在多个角色之间共用。"] = "Save addons status and control panel settings, and share the profile among characters."
 --[[ 650]] --L["方案管理"] = true
 --[[ 650]] L["方案"] = "Prf"
---[[ 666]] L["有爱快捷设置"] = "AbyUI Quick Menu"
+--[[ 666]] L["爱不易快捷设置"] = "AbyUI Quick Menu"
 --[[ 682]] L["以下操作需要重载界面："] = "Operations require reloading: "
 --[[ 691]] L["|cffff0000停用|r - "] = "|cffff0000Disable|r - "
 --[[ 691]] L["配置 - "] = "Config - "
@@ -312,13 +312,13 @@ U1REASON_SHORT_DEP_NOT_DEMAND_LOADED = "Deps Err"
 --[[1653]] L["搜索插件及选项"] = "Search addons"
 --[[1654]] L["输入汉字、全拼或简拼进行检索，只有一个结果时可按回车选定。"] = ""
 --[[1656]] L["可以搜索插件名称或原名、以及选项中的任意文本，在当前标签下符合条件的插件会被显示出来，被搜索到的选项会被高亮显示。"] = ""
---[[1658]] L["只有有爱官方支持的插件才能用拼音搜索名称。"] = ""
+--[[1658]] L["仅爱不易官方支持的插件才能用拼音搜索名称。"] = ""
 --[[1679]] L["这里可以输入汉字或者拼音，例如'|cffffd200对比|r'或者'|cffffd200Grid|r'。不但能查询插件名称，还能查询插件的选项呢！试试输入'|cffffd200对比|r'，然后选|cffffd200\"鼠标提示\"|r插件，选项里就会显示：\n|cffffd200\"是否自动|r|cff00d200对比|r|cffffd200装备\"|r。\n\n让一切功能手到擒来，现在就试试吧！"] = ""
---[[1745]] L["有爱"] = "AbyUI"
---[[1745]] L["点击有爱标志开启插件控制中心\n \nCtrl点击小地图图标可以收集/还原"] = "Click the icon to open AbyUI control panel.\n \nCtrl click minimap buttons to gather/restore them."
---[[1754]] --L["有爱"] = true
---[[1771]] L["有爱插件中心"] = "AbyUI Control Panel"
---[[1773]] L["    有爱（163UI）是新一代整合插件。其设计理念是兼顾整合插件的易用性和单体插件的灵活性，同时适合普通和高级用户群体。|n|n    功能上，有爱实现了任意插件的随需加载，并可先进入游戏再逐一加载插件，此为全球首创。此外还有标签分类、拼音检索、界面缩排等特色功能。"] = "An advanced in-game addon control center, which combines Categoring, Searching, Loading and Setting of wow addons all together."
+--[[1745]] L["爱不易"] = "AbyUI"
+--[[1745]] L["点击爱不易标志开启插件控制中心\n \nCtrl点击小地图图标可以收集/还原"] = "Click the icon to open AbyUI control panel.\n \nCtrl click minimap buttons to gather/restore them."
+--[[1754]] --L["爱不易"] = true
+--[[1771]] L["爱不易插件中心"] = "AbyUI Control Panel"
+--[[1773]] L["    爱不易（AbyUI）是新一代整合插件。其设计理念是兼顾整合插件的易用性和单体插件的灵活性，同时适合普通和高级用户群体。|n|n    功能上，爱不易实现了任意插件的随需加载，并可先进入游戏再逐一加载插件，此为全球首创。此外还有标签分类、拼音检索、界面缩排等特色功能。"] = "An advanced in-game addon control center, which combines Categoring, Searching, Loading and Setting of wow addons all together."
 --[[1775]] L["鼠标右键点击可打开快捷设置"] = "Right click to open quick menu."
 --[[1776]] L["Ctrl点击任意小地图按钮可收集"] = "Ctrl click minimap buttons to gather them."
 --[[1779]] L["图标闪光表示有新的小地图按钮被收集到控制台中， 请点击查看，下次就不再闪烁了"] = "New buttons are gathered by the control panel."
@@ -360,13 +360,13 @@ L["Change profile name: "] = true
 
 --[[    ]] -- File: RunFirst.lua
 
---[[  32]] L["|cffcd1a1c【有爱】|r- "] = "|cffcd1a1cAbyUI|r - "
+--[[  32]] L["|cffcd1a1c【爱不易】|r- "] = "|cffcd1a1cAbyUI|r - "
 
 --[[    ]] -- File: Tags.lua
 
 --[[  31]] L["全部插件"] = "All"
 --[[  38]] L["精新推荐"] = "New"
---[[  43]] --L["有爱"] = true
+--[[  43]] --L["爱不易"] = true
 --[[  51]] --L["单体插件"] = true
 --[[  58]] L["专用"] = ""
 --[[  65]] --L["已启用"] = true
@@ -390,11 +390,11 @@ L["Change profile name: "] = true
 
 --[[    ]] -- File: Configs\Cfg!!!163UI!!!.lua
 
---[[   3]] --L["有爱"] = true
---[[   5]] L["有爱是新一代整合插件。其设计理念是兼顾整合插件的易用性和单体插件的灵活性，同时适合普通和高级用户群体。|n|n    功能上，有爱实现了任意插件的随需加载，并可先进入游戏再逐一加载插件，此为全球首创。此外还有标签分类、拼音检索、界面缩排等特色功能。"] = "AbyUI is an advanced in-game addon control center, which combines Categoring, Searching, Loading and Setting of wow addons all together.``The most advanced feature is that ANY addons can be loaded immediately at ANYTIME, even those are not load-on-demands.``And it provides a complete solution for registering addons options to the control panel. It provides a series option widgets like AceGUI does, and saves and loads variables automatically. You can easily add commonly used slash commands or toggle options to the addon page by add some lua codes in CfgCustom.lua. The detailed development guide is on the website."
---[[   9]] L["|cffcd1a1c[有爱原创]|r"] = "|cffcd1a1c[AbyUI]|r"
+--[[   3]] --L["爱不易"] = true
+--[[   5]] L["爱不易是新一代整合插件。其设计理念是兼顾整合插件的易用性和单体插件的灵活性，同时适合普通和高级用户群体。|n|n    功能上，爱不易实现了任意插件的随需加载，并可先进入游戏再逐一加载插件，此为全球首创。此外还有标签分类、拼音检索、界面缩排等特色功能。"] = "AbyUI is an advanced in-game addon control center, which combines Categoring, Searching, Loading and Setting of wow addons all together.``The most advanced feature is that ANY addons can be loaded immediately at ANYTIME, even those are not load-on-demands.``And it provides a complete solution for registering addons options to the control panel. It provides a series option widgets like AceGUI does, and saves and loads variables automatically. You can easily add commonly used slash commands or toggle options to the addon page by add some lua codes in CfgCustom.lua. The detailed development guide is on the website."
+--[[   9]] L["|cffcd1a1c[爱不易原创]|r"] = "|cffcd1a1c[AbyUI]|r"
 --[[  13]] L["延迟加载插件"] = "Delay AddOns Loading"
---[[  14]] L["说明`有爱独家支持，可以先读完蓝条然后再逐一加载插件。会大大加快读条速度，但是加载大型插件时会有卡顿。如果不喜欢这种方式，请取消勾选即可，下次进游戏时就会采用新设置。` `对比测试：`未开启时，在第7.5秒后读完蓝条同时加载完全部插件`开启后，在第3.8秒读完蓝条，第8.0秒加载完全部插件"] = "Hint`Addons that registered with \"loading='LATER'\" will be loaded after player entering world, to decrease the time spends on Blizzard loading screen."
+--[[  14]] L["说明`爱不易独家支持，可以先读完蓝条然后再逐一加载插件。会大大加快读条速度，但是加载大型插件时会有卡顿。如果不喜欢这种方式，请取消勾选即可，下次进游戏时就会采用新设置。` `对比测试：`未开启时，在第7.5秒后读完蓝条同时加载完全部插件`开启后，在第3.8秒读完蓝条，第8.0秒加载完全部插件"] = "Hint`Addons that registered with \"loading='LATER'\" will be loaded after player entering world, to decrease the time spends on Blizzard loading screen."
 --[[  22]] L["插件加载速度（个/秒）"] = "Loading Speed (Addons per Second)"
 --[[  23]] L["说明`　控制进入游戏时插件加载的速度，如果数值大，则单次卡顿的时间长，但总的加载时间会短，比如设置成100就会大卡一下后插件就全部加载好了。而设置成5则是每秒只会小卡一下，但要很久才能加载完全部插件。` `　另外可以使用/rl2命令来强制最慢速度加载，适合副本战斗中界面出错后（比如上载具没出动作条）迅速重载界面。"] = "Hint`The game client will freeze if loading too much addons together. Decrease the loading speed to reduce the freezing time."
 --[[  36]] L["允许加载过期插件"] = "Load out of date AddOns"

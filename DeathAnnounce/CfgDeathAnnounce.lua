@@ -7,8 +7,8 @@ U1RegisterAddon("DeathAnnounce", {
     icon = [[Interface\Icons\Ability_Hunter_RapidKilling]],
     desc = "在队员死亡时显示最终致死的技能、伤害量、攻击者、死亡时间、以及死亡时目标的血量百分比。` `'/da on'开启或'/da off'关闭自动发送功能。另外放弃战斗后，可以通过/da命令临时屏蔽自动发送，防止无意义的刷屏。",
 
-    --author = "|cffcd1a1c[有爱原创]|r",
-    modifier = "|cffcd1a1c[有爱]|r",
+    --author = "|cffcd1a1c[爱不易原创]|r",
+    modifier = "|cffcd1a1c[爱不易]|r",
 
     toggle = function(name, info, enable, justload)
         if not justload then
@@ -70,7 +70,7 @@ U1RegisterAddon("DeathAnnounce", {
         var = "yell_spell",
         default = 1,
         text = "重要技能喊话",
-        tip = "说明`目前仅支持圣疗/守护之魂/激活/作茧缚命`如有其他长CD技能，请与有爱作者联系",
+        tip = "说明`目前仅支持圣疗/守护之魂/激活/作茧缚命`如有其他长CD技能，请与爱不易作者联系",
     },
 
 });

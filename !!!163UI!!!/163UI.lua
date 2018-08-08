@@ -38,9 +38,9 @@ local function dbLoaded(db)
     if (db.verison or 0) < 2014082904 then
         tinsert(addonToLoad, "tdPack")
     end
-]]
 
     db.verison = tonumber(GetAddOnMetadata("!!!163UI!!!","X-163UI-Version")or"0")
+]]
 end
 
 --[[ --fix7
@@ -60,7 +60,7 @@ end
 --]]
 
 local defaultDB = {
-    --checkVendor = 1, --没有有爱标记的插件但是在整合包列表中，是否算有爱的。现在用 UI163_USER_MODE
+    --checkVendor = 1, --无爱不易标记的插件但是在整合包列表中，是否算爱不易的。现在用 UI163_USER_MODE
     selectedTag = UI163_USER_MODE and "ALL" or "ABYUI",
     showOrigin = nil, --插件原名
     disableLaterLoading = false,
@@ -101,7 +101,7 @@ local function getInitialAddonInfo()
     local x = strchar(33) x={x,x,x,163,"ui",x,x,x} x=table.concat(x); GetNumAddons = strlower(_)==x  --插件名称保护
     for i = 1, GetNumAddOns() do
         local name, title, notes, _, reason = GetAddOnInfo(i)
-        title = title:gsub("%|cff880303%[有爱%]%|r ", ""):gsub("%|cff880303%[有爱%]%|r ", "")
+        title = title:gsub("%|cff880303%[爱不易%]%|r ", ""):gsub("%|cff880303%[爱不易%]%|r ", "")
 
         local realDeps = { GetAddOnDependencies(i) }
         local realOptDeps = { GetAddOnOptionalDependencies(i) }
@@ -1489,6 +1489,7 @@ function U1:ADDON_LOADED(event, name)
         db = U1DB or defaultDB;
         --print("ADDON_LOADED2", db, U1DB, db==U1DB, db==defaultDB)
         U1DB = db;
+        db.LS = nil;
 
         dbLoaded(U1DB)
 
@@ -1626,7 +1627,7 @@ function U1:ADDON_LOADED(event, name)
                 local name, server = UnitName(unit)
                 local fullName = U1UnitFullName(unit)
                 if fullName and U1STAFF[fullName] then
-                    InspectFrameTitleText:SetText("|cffff00ff有爱开发者|r " .. GetUnitName(unit, true));
+                    InspectFrameTitleText:SetText("|cffff00ff爱不易开发者|r " .. GetUnitName(unit, true));
                 else
                     local pvpname = UnitPVPName(unit)
                     if not pvpname then return end
@@ -1706,7 +1707,7 @@ function EnableOrLoadDependencies(name, info, loaded)
 end
 
 function U1:VARIABLES_LOADED(calledFromLogin)
-    SetCVar("scriptErrors", 0) --TODO aby8
+    SetCVar("scriptErrors", DEBUG_MODE and 1 or 0) --TODO aby8
 
     if calledFromLogin~=1 then
         if not U1.playerLogin then

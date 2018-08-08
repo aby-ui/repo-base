@@ -41,6 +41,7 @@ CanIMogItOptions_Defaults = {
     ["options"] = {
         ["version"] = CanIMogIt_OptionsVersion,
         ["debug"] = false,
+        ["databaseDebug"] = false,
         ["showEquippableOnly"] = true,
         ["showTransmoggableOnly"] = true,
         ["showUnknownOnly"] = false,
@@ -327,6 +328,9 @@ function CanIMogIt:SlashCommands(input)
         CanIMogIt.Tests:RunTests()
     elseif input == 'PleaseDeleteMyDB' then
         self:DBReset()
+    elseif input == 'dbprint' then
+        CanIMogItOptions['databaseDebug'] = not CanIMogItOptions['databaseDebug']
+        self:Print("Database prints: " .. tostring(CanIMogItOptions['databaseDebug']))
     elseif input == 'refresh' then
         self:ResetCache()
     else

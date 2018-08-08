@@ -25,7 +25,7 @@ end
 
 local L = AceLocale:NewLocale("Broker_MicroMenu", "deDE")
 if L then 
-L["Advanced"] = "Erweitert"
+	L["Advanced"] = "Erweitert"
 L["Custom Text"] = "Eigener Text"
 L["Disable Coloring"] = "Farben deaktivieren"
 L["Enable"] = "Aktivieren"
@@ -44,19 +44,19 @@ end
 
 local L = AceLocale:NewLocale("Broker_MicroMenu", "frFR")
 if L then
-
+	
 	return
 end
 
 local L = AceLocale:NewLocale("Broker_MicroMenu", "koKR")
 if L then
-
+	
 	return
 end
 
 local L = AceLocale:NewLocale("Broker_MicroMenu", "zhTW")
 if L then
-L["Advanced"] = "進階"
+	L["Advanced"] = "進階"
 L["Custom Text"] = "自訂文字"
 L["Disable Coloring"] = "禁用著色"
 L["Enable"] = "啟用"
@@ -75,7 +75,7 @@ end
 
 local L = AceLocale:NewLocale("Broker_MicroMenu", "zhCN")
 if L then
-L["Disable Coloring"] = "禁止着色"
+	L["Disable Coloring"] = "禁止着色"
 L["fps"] = "FPS"
 L["General"] = "综合"
 L["ms"] = "ms" -- Needs review
@@ -89,13 +89,13 @@ end
 
 local L = AceLocale:NewLocale("Broker_MicroMenu", "ruRU")
 if L then
-
+	
 	return
 end
 
 local L = AceLocale:NewLocale("Broker_MicroMenu", "esES")
 if L then
-L["Advanced"] = "Avanzado"
+	L["Advanced"] = "Avanzado"
 L["Custom Text"] = "Texto personalizado"
 L["Disable Coloring"] = "Desactivar coloración"
 L["Enable"] = "Activar"
@@ -114,7 +114,7 @@ end
 
 local L = AceLocale:NewLocale("Broker_MicroMenu", "esMX")
 if L then
-L["Advanced"] = "Avanzado"
+	L["Advanced"] = "Avanzado"
 L["Custom Text"] = "Texto personalizado"
 L["Disable Coloring"] = "Desactivar coloración"
 L["Enable"] = "Activar"
@@ -132,7 +132,7 @@ L["Show World Latency"] = "Mostrar latencia del servidor"
 end
 local L = AceLocale:NewLocale("Broker_MicroMenu", "ptBR")
 if L then
-L["Disable Coloring"] = "Desabilitar cores"
+	L["Disable Coloring"] = "Desabilitar cores"
 L["fps"] = "fps"
 L["General"] = "Geral"
 L["ms"] = "ms"

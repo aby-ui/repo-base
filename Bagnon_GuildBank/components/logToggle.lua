@@ -32,7 +32,7 @@ end
 
 function LogToggle:New(parent, id)
 	local b = self:Bind(CreateFrame('CheckButton', nil, parent, ADDON..'MenuCheckButtonTemplate'))
-	b:RegisterFrameMessage('LOG_SELECTED', 'OnLogSelected')
+	b:RegisterFrameSignal('LOG_SELECTED', 'OnLogSelected')
 	b:SetScript('OnClick', b.OnClick)
 	b:SetScript('OnEnter', b.OnEnter)
 	b:SetScript('OnLeave', b.OnLeave)
@@ -50,7 +50,7 @@ function LogToggle:OnLogSelected(_, logID)
 end
 
 function LogToggle:OnClick()
-	self:SendFrameMessage('LOG_SELECTED', self:GetChecked() and self.id)
+	self:SendFrameSignal('LOG_SELECTED', self:GetChecked() and self.id)
 end
 
 function LogToggle:OnEnter()

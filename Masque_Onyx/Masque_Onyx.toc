@@ -17,5 +17,5 @@
 Onyx.lua
 
 
-## Title-zhCN: |cff880303[有爱]|r Masque 皮肤Onyx
+## Title-zhCN: |cff880303[爱不易]|r Masque 皮肤Onyx
 ## X-Vendor: AbyUI

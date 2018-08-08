@@ -4,8 +4,12 @@
 --]]
 
 local ADDON, Addon = ...
+local AutoDisplay = Addon:NewModule('AutoDisplay', 'AceEvent-3.0')
 
-function Addon:SetupAutoDisplay()
+
+--[[ Startup ]]--
+
+function AutoDisplay:OnEnable()
 	self:RegisterGameEvents()
 	self:HookInterfaceEvents()
 end
@@ -13,11 +17,13 @@ end
 
 --[[ Game Events ]]--
 
-function Addon:RegisterGameEvents()
-	self:UnregisterEvents()
-	self:RegisterEvent('BANKFRAME_CLOSED')
-	self:RegisterMessage('UPDATE_ALL', 'RegisterGameEvents')
-	self:RegisterMessage('BANK_OPENED')
+function AutoDisplay:RegisterGameEvents()
+	self:UnregisterAllEvents()
+	self:UnregisterAllMessages()
+
+	self:RegisterMessage('BAGNON_UPDATE_ALL', 'RegisterGameEvents')
+	self:RegisterMessage('CACHE_BANK_CLOSED')
+	self:RegisterMessage('CACHE_BANK_OPENED')
 
 	self:RegisterDisplayEvents('displayAuction', 'AUCTION_HOUSE_SHOW', 'AUCTION_HOUSE_CLOSED')
 	self:RegisterDisplayEvents('displayGuild', 'GUILDBANKFRAME_OPENED', 'GUILDBANKFRAME_CLOSED')
@@ -29,11 +35,17 @@ function Addon:RegisterGameEvents()
 	self:RegisterDisplayEvents('closeVehicle', nil, 'UNIT_ENTERED_VEHICLE')
 	self:RegisterDisplayEvents('closeVendor', nil, 'MERCHANT_CLOSED')
 
-	if not self.sets.displayMail then
-		self:RegisterEvent('MAIL_SHOW', 'HideFrame', 'inventory') -- reverse default behaviour
+	if not Addon.sets.displayMail then
+		self:RegisterEvent('MAIL_SHOW', 'HideInventory') -- reverse default behaviour
 	end
 
-	if self:IsFrameEnabled('bank') then
+	WorldMapFrame:HookScript('OnShow', function()
+		if Addon.sets.closeMap then
+			Addon:HideFrame('inventory', true)
+		end
+	end)
+
+	if Addon:IsFrameEnabled('bank') then
 		BankFrame:UnregisterAllEvents()
 	else
 		BankFrame:RegisterEvent('BANKFRAME_OPENED')
@@ -41,51 +53,59 @@ function Addon:RegisterGameEvents()
 	end
 end
 
-function Addon:RegisterDisplayEvents(setting, showEvent, hideEvent)
-	if self.sets[setting] then
+function AutoDisplay:RegisterDisplayEvents(setting, showEvent, hideEvent)
+	if Addon.sets[setting] then
 		if showEvent then
-			self:RegisterEvent(showEvent, 'ShowFrame', 'inventory')
+			self:RegisterEvent(showEvent, 'ShowInventory')
 		end
 
 		if hideEvent then
-			self:RegisterEvent(hideEvent, 'HideFrame', 'inventory')
+			self:RegisterEvent(hideEvent, 'HideInventory')
 		end
 	end
 end
 
-function Addon:BANK_OPENED()
-	local bank = self:ShowFrame('bank')
+function AutoDisplay:ShowInventory()
+	Addon:ShowFrame('inventory')
+end
+
+function AutoDisplay:HideInventory()
+	Addon:HideFrame('inventory')
+end
+
+function AutoDisplay:CACHE_BANK_OPENED()
+	local bank = Addon:ShowFrame('bank')
 	if bank then
 		bank:SetOwner(nil)
 	end
 
-	if self.sets.displayBank then
-		self:ShowFrame('inventory')
+	if Addon.sets.displayBank then
+		Addon:ShowFrame('inventory')
 	end
 end
 
-function Addon:BANKFRAME_CLOSED()
-	self:HideFrame('bank')
+function AutoDisplay:CACHE_BANK_CLOSED()
+	Addon:HideFrame('bank')
 
-	if self.sets.closeBank then
-		self:HideFrame('inventory')
+	if Addon.sets.closeBank then
+		Addon:HideFrame('inventory')
 	end
 end
 
 
 --[[ Interface Events ]]--
 
-function Addon:HookInterfaceEvents()
+function AutoDisplay:HookInterfaceEvents()
 	-- interaction with character frame
 	CharacterFrame:HookScript('OnShow', function()
-		if self.sets.displayPlayer then
-			self:ShowFrame('inventory')
+		if Addon.sets.displayPlayer then
+			Addon:ShowFrame('inventory')
 		end
 	end)
 
 	CharacterFrame:HookScript('OnHide', function()
-		if self.sets.displayPlayer then
-			self:HideFrame('inventory')
+		if Addon.sets.displayPlayer then
+			Addon:HideFrame('inventory')
 		end
 	end)
 
@@ -94,7 +114,7 @@ function Addon:HookInterfaceEvents()
 	local onMerchantHide = MerchantFrame:GetScript('OnHide')
 	local hideInventory = function()
 		if canHide then
-			self:HideFrame('inventory')
+			Addon:HideFrame('inventory')
 		end
 	end
 
@@ -110,14 +130,14 @@ function Addon:HookInterfaceEvents()
 	-- backpack
 	local oToggleBackpack = ToggleBackpack
 	ToggleBackpack = function()
-		if not self:ToggleBag('inventory', BACKPACK_CONTAINER) then
+		if not Addon:ToggleBag('inventory', BACKPACK_CONTAINER) then
 			oToggleBackpack()
 		end
 	end
 
 	local oOpenBackpack = OpenBackpack
 	OpenBackpack = function()
-		if not self:ShowBag('inventory', BACKPACK_CONTAINER) then
+		if not Addon:ShowBag('inventory', BACKPACK_CONTAINER) then
 			oOpenBackpack()
 		end
 	end
@@ -125,16 +145,16 @@ function Addon:HookInterfaceEvents()
 	-- single bag
 	local oToggleBag = ToggleBag
 	ToggleBag = function(bag)
-		local frame = self:IsBankBag(bag) and 'bank' or 'inventory'
-		if not self:ToggleBag(frame, bag) then
+		local frame = Addon:IsBankBag(bag) and 'bank' or 'inventory'
+		if not Addon:ToggleBag(frame, bag) then
 			oToggleBag(bag)
 		end
 	end
 
 	local oOpenBag = OpenBag
 	OpenBag = function(bag)
-		local frame = self:IsBankBag(bag) and 'bank' or 'inventory'
-		if not self:ShowBag(frame, bag) then
+		local frame = Addon:IsBankBag(bag) and 'bank' or 'inventory'
+		if not Addon:ShowBag(frame, bag) then
 			oOpenBag(bag)
 		end
 	end
@@ -142,7 +162,7 @@ function Addon:HookInterfaceEvents()
 	-- all bags
 	local oOpenAllBags = OpenAllBags
 	OpenAllBags = function(frame)
-		if not self:ShowFrame('inventory') then
+		if not Addon:ShowFrame('inventory') then
 			oOpenAllBags(frame)
 		end
 	end
@@ -150,7 +170,7 @@ function Addon:HookInterfaceEvents()
 	if ToggleAllBags then
 		local oToggleAllBags = ToggleAllBags
 		ToggleAllBags = function()
-			if not self:ToggleFrame('inventory') then
+			if not Addon:ToggleFrame('inventory') then
 				oToggleAllBags()
 			end
 		end
@@ -158,8 +178,8 @@ function Addon:HookInterfaceEvents()
 
 	-- checked state
 	local function checkIfInventoryShown(button)
-		if self:IsFrameEnabled('inventory') then
-			button:SetChecked(self:IsFrameShown('inventory'))
+		if Addon:IsFrameEnabled('inventory') then
+			button:SetChecked(Addon:IsFrameShown('inventory'))
 		end
 	end
 

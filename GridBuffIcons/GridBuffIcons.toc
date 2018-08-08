@@ -9,5 +9,5 @@ localization.zhCN.lua
 localization.zhTW.lua
 GridBuffIcons.lua
 
-## Title: |cff880303[有爱]|r Grid 状态图标
+## Title: |cff880303[爱不易]|r Grid 状态图标
 ## X-Vendor: AbyUI

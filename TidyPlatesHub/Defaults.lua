@@ -82,9 +82,9 @@ TidyPlatesHubDefaults = {
 	UnitSpotlightScaleEnable = true,
 	UnitSpotlightBarEnable = true,
 	UnitSpotlightGlowEnable = false,
-	UnitSpotlightList = "邪能炸药\nTest地下城训练假人",
+	UnitSpotlightList = "爆炸物\n邪能炸药\nTest地下城训练假人",
 	UnitSpotlightLookup = {},
-    UnitSpotlightVersion = "20170610",
+    UnitSpotlightVersion = "20180804",
 
 	-- Filter
 	---------------------------------------
@@ -211,7 +211,7 @@ TidyPlatesHubDefaults = {
 	--WidgetsAuraMode = 1,
 	WidgetsMyDebuff = true,
 	WidgetsMyBuff = false,
-	WidgetsDebuffTrackList = "My Rake\nMy Rip\nMy Moonfire\nAll 339\nMy Regrowth\nMy Rejuvenation\nNot Facepalm Bolt",
+	WidgetsDebuffTrackList = "", --"My Rake\nMy Rip\nMy Moonfire\nAll 339\nMy Regrowth\nMy Rejuvenation\nNot Facepalm Bolt",
 	WidgetsDebuffLookup = {},
 	WidgetsDebuffPriority = {},
 	WidgetAuraTrackDispelFriendly = false,

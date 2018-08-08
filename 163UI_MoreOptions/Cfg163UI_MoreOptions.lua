@@ -13,7 +13,7 @@ U1RegisterAddon("163UI_MoreOptions", {
     desc = "额外设置",
     nopic = 1,
     protected = 1,
-    author = "|cffcd1a1c[有爱原创]|r",
+    author = "|cffcd1a1c[爱不易原创]|r",
     defaultEnable = 1,
 
     U1CfgMakeCVarOption(U1_NEW_ICON.."简易原汁原味", "overrideArchive", {
@@ -93,7 +93,7 @@ U1RegisterAddon("163UI_MoreOptions", {
     {
         var = 'profanityFilter',
         text = '强制关闭语言过滤器',
-        tip = '说明`4.3版本后出现的BUG，玩家即使不开启过滤器，系统有时也会强制过滤，而且在界面选项里无法修改。开启此选项后，有爱会强制关闭语言过滤器选项。',
+        tip = '说明`4.3版本后出现的BUG，玩家即使不开启过滤器，系统有时也会强制过滤，而且在界面选项里无法修改。开启此选项后，爱不易会强制关闭语言过滤器选项。',
         default = true,
         --getvalue = function() return GetCVar'profanityFilter' == '1' end,
         callback = function(cfg, v, loading)

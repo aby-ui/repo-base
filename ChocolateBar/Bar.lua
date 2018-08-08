@@ -4,7 +4,7 @@ local LSM = LibStub("LibSharedMedia-3.0")
 local Bar = ChocolateBar.Bar
 local chocolate = ChocolateBar.ChocolatePiece
 local Debug = ChocolateBar.Debug
-local jostle = LibStub("LibJostle-3.0", true)
+local jostle = ChocolateBar.Jostle
 local pairs, ipairs, table, math, mod = pairs, ipairs, table, math, mod
 local CreateFrame, UIParent = CreateFrame, UIParent
 local db
@@ -93,6 +93,7 @@ function Bar:UpdateAutoHide(db)
 end
 
 function Bar:UpdateJostle(db)
+  Debug("Bar:UpdateJostle(db)")
 	if jostle then
 		jostle:Unregister(self)
 		if db.moveFrames then

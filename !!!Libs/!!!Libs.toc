@@ -1,5 +1,5 @@
 ## Interface: 80000
-## Title: |cff880303[有爱]|r !! 通用库
+## Title: |cff880303[爱不易]|r !! 通用库
 ## OptionalDeps: !!!163UI!!!
 ## X-Vendor: AbyUI
 

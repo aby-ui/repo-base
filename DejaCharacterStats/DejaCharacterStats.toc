@@ -1,5 +1,5 @@
 ## Interface: 80000
-## Version: 800r105
+## Version: 800r106
 ## Title: |cff00c0ffDejaCharacterStats|r
 ## Author: Dejablue, Kakjens, loudsoul
 ## Notes: Dejablue's improved character stats panel view.
@@ -27,6 +27,6 @@ DCSDuraRepair.lua
 DCSAbout.lua
 
 
-## Title: |cff880303[有爱]|r Deja 角色详细属性
+## Title: |cff880303[爱不易]|r Deja 角色详细属性
 ## Notes: 在角色面板上显示详细的属性，类似7.0之前，而且可以进一步选择要显示的内容
 ## X-Vendor: AbyUI

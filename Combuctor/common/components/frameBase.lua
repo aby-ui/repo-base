@@ -15,12 +15,12 @@ Frame.CloseSound = SOUNDKIT.IG_BACKPACK_CLOSE
 
 function Frame:OnShow()
 	PlaySound(self.OpenSound)
-	self:RegisterMessages()
+	self:RegisterSignals()
 end
 
 function Frame:OnHide()
 	PlaySound(self.CloseSound)
-	self:UnregisterMessages()
+	self:UnregisterSignals()
 
 	if Addon.sets.resetPlayer then
 		self.owner = nil
@@ -101,7 +101,7 @@ function Frame:FindRules()
 	end
 
 	if #self.profile.rules > count then
-		self:SendFrameMessage('RULES_UPDATED')
+		self:SendFrameSignal('RULES_UPDATED')
 	end
 end
 
@@ -155,7 +155,7 @@ end
 
 function Frame:SetOwner(owner)
 	self.owner = owner
-  self:SendFrameMessage('OWNER_CHANGED', owner)
+  self:SendFrameSignal('OWNER_CHANGED', owner)
 end
 
 function Frame:GetOwner()

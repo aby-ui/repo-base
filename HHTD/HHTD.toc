@@ -49,5 +49,5 @@ GraphicalReporter.lua
 
 Announcer.lua
 
-## Title: |cff880303[有爱]|r HHTD 治疗必须死
+## Title: |cff880303[爱不易]|r HHTD 治疗必须死
 ## X-Vendor: AbyUI

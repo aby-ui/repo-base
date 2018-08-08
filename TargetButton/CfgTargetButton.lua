@@ -8,7 +8,7 @@ U1RegisterAddon("TargetButton", {
     desc = "占用很小的插件，在目标头像上增加交易/跟随/观察的快捷按钮。",
 
     author = "取自Isler包，少量修改",
-    --modifier = "|cffcd1a1c[有爱]|r",
+    --modifier = "|cffcd1a1c[爱不易]|r",
 
     toggle = function(name, info, enable, justload)
         if not justload then

@@ -9,7 +9,7 @@
 Localization.lua
 GearStatsSummary.xml
 
-## Title: |cff880303[有爱]|r GearStats 装备统计
+## Title: |cff880303[爱不易]|r GearStats 装备统计
 ## Notes-zhCN: 显示玩家或观察目标的装备列表及等级信息
 ## X-Vendor: AbyUI
 

@@ -14,5 +14,5 @@
 ## X-Category: Artwork
 
 Masque_Goldpaw.lua
-## Title: |cff880303[有爱]|r Masque 皮肤Goldpaw
+## Title: |cff880303[爱不易]|r Masque 皮肤Goldpaw
 ## X-Vendor: AbyUI

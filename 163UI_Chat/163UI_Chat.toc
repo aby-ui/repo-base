@@ -12,5 +12,5 @@ BNCharacterName.lua
 Tiny_ChatAtFriends.lua
 #Tiny_ChatLinkLevel.lua
 
-## Title-zhCN: |cff880303[有爱]|r 163UI 聊天框增强
+## Title-zhCN: |cff880303[爱不易]|r AbyUI 聊天框增强
 ## X-Vendor: AbyUI

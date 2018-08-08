@@ -14,6 +14,6 @@ locale\locale.cn.lua
 locale\locale.tw.lua
 frame.xml
 
-## Title: |cff880303[有爱]|r DWChat 聊天增强
+## Title: |cff880303[爱不易]|r DWChat 聊天增强
 ## Notes-zhCN: 聊天增加插件，提供快捷切换频道和聊天表情等。
 ## X-Vendor: AbyUI

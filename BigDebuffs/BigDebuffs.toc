@@ -16,5 +16,5 @@ BigDebuffs.xml
 BigDebuffs.lua
 Options.lua
 
-## Title: |cff880303[有爱]|r BigDebuffs 控制技能提示
+## Title: |cff880303[爱不易]|r BigDebuffs 控制技能提示
 ## X-Vendor: AbyUI

@@ -27,5 +27,6 @@ HailstoneConstruct.lua
 Azurethos.lua
 DoomsHowl.lua
 Yenajz.lua
+Kraulok.lua
 
 ## X-Vendor: AbyUI

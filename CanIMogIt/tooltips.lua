@@ -142,6 +142,11 @@ local function printDebug(tooltip, itemLink, bag, slot)
     end
 
     addLine(tooltip, '--------')
+
+    addDoubleLine(tooltip, "Tooltip:", tostring(CanIMogIt:CalculateTooltipText(itemLink, bag, slot)))
+
+    addLine(tooltip, '--------')
+
 end
 
 

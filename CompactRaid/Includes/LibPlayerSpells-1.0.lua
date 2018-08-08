@@ -481,7 +481,7 @@ local function UpdateSpec()
 	end
 
 	prevSpecIndex, prevSpecId = index, id
-	CallHooks("OnSpecChanged", index, id, name, description, icon, background, role, class)
+	CallHooks("OnSpecChanged", index, id, name, description, icon, nil, role, class)
 end
 
 function lib:GetSpecialization()

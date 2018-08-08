@@ -2667,7 +2667,7 @@ end
 function core:OnInitialize()
   local versionString = GetAddOnMetadata(addonName, "version")
   --[===[@debug@
-  if versionString == "8.0.3" then
+  if versionString == "8.0.3-1-g0ce0558" then
     versionString = "Dev"
   end
   --@end-debug@]===]
@@ -3127,7 +3127,7 @@ local function doExplicitReset(instancemsg, failed)
   local reportchan = addon:InGroup()
   if reportchan then
     if not failed then
-      SendAddonMessage(addonName, "GENERATION_ADVANCE", reportchan)
+      C_ChatInfo.SendAddonMessage(addonName, "GENERATION_ADVANCE", reportchan)
     end
     if vars.db.Tooltip.ReportResets then
       local msg = instancemsg or RESET_INSTANCES

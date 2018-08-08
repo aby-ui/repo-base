@@ -19,7 +19,7 @@ AR_database.lua
 AchievementsReminder.lua
 AchievementsReminder.xml
 
-## Title: |cff880303[有爱]|r AchieveR 副本成就提示
+## Title: |cff880303[爱不易]|r AchieveR 副本成就提示
 ## Notes-zhCN: 自动检测你所在的副本类型加载相应的模块，检测通报副本成就的失败与否，显示失败的原因和失败者的名字。如演示图，显示成就失败，并显示导致成就失败的队友名字.
 ## Notes-zhTW: 自動檢測你所在的副本類型加載相應的模塊，檢測通報副本成就的失敗與否，顯示失敗的原因和失敗者的名字。如演示圖，顯示成就失敗，並顯示導致成就失敗的隊友名字.
 ## X-Vendor: AbyUI

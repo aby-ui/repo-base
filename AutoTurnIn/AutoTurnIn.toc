@@ -29,7 +29,7 @@ ui\main_options.lua
 ui\reward_options.lua
 
 
-## Title: |cff880303[有爱]|r AutoTurnIn 自动交接任务
+## Title: |cff880303[爱不易]|r AutoTurnIn 自动交接任务
 ## Notes-zhCN: 自动交接任务
 ## X-Vendor: AbyUI
 

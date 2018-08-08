@@ -10,7 +10,7 @@ BottomTab.ID = 1
 
 function BottomTab:New(parent)
 	local b = self:Bind(CreateFrame('Button', ADDON .. 'BottomTab' .. self.ID, parent, ADDON..'BottomTabTemplate'))
-	b:HookScript('OnHide', b.UnregisterEvents)
+	b:HookScript('OnHide', b.UnregisterSignals)
 	b:HookScript('OnShow', b.OnShow)
 	b:SetScript('OnClick', b.OnClick)
 
@@ -19,14 +19,14 @@ function BottomTab:New(parent)
 end
 
 function BottomTab:OnShow()
-	self:RegisterFrameMessage('SUBRULE_CHANGED', 'UpdateHighlight')
+	self:RegisterFrameSignal('SUBRULE_CHANGED', 'UpdateHighlight')
 	self:UpdateHighlight()
 end
 
 function BottomTab:OnClick()
 	self:GetFrame().subrule = self.id
-	self:SendFrameMessage('SUBRULE_CHANGED', self.id)
-	self:SendFrameMessage('FILTERS_CHANGED')
+	self:SendFrameSignal('SUBRULE_CHANGED', self.id)
+	self:SendFrameSignal('FILTERS_CHANGED')
 end
 
 function BottomTab:Setup(id, name)

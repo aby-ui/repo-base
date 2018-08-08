@@ -9,7 +9,7 @@
 
 load.xml
 
-## Title: |cff880303[有爱]|r XLoot 拾取分配模块
+## Title: |cff880303[爱不易]|r XLoot 拾取分配模块
 ## Notes: XLoot配置拾取分配的界面
 ## X-Vendor: AbyUI
 

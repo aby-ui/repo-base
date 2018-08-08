@@ -84,7 +84,7 @@ L.General = '通用'
 L.CreateProfile = '创建方案...'
 L.ResetProfile = '重置方案...'
 L.CopyProfile = '复制方案...'
-L.ConfirmResetProfile = '你确定要重置此方案为多米诺默认值(非有爱默认值)?'
+L.ConfirmResetProfile = '你确定要重置此方案为多米诺默认值(非爱不易默认值)?'
 L.ConfirmCopyProfile = '复制方案 %s 的内容到当前方案?'
 L.ConfirmDeleteProfile = '删除方案 %s?'
 

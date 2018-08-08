@@ -236,7 +236,7 @@ function TutorialU1Frame_ClearTextures()
 end
 
 function TutorialU1FramePrevButton_OnClick(self)
-	PlaySound163("igMainMenuOptionCheckBoxOn");
+    PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON);
 	local prevTutorial = GetPrevCompleatedTutorial(TutorialU1Frame.id);
 	while ( prevTutorial and DISPLAY_DATA[prevTutorial].tileHeight == 0) do
 		prevTutorial = GetPrevCompleatedTutorial(prevTutorial);
@@ -247,7 +247,7 @@ function TutorialU1FramePrevButton_OnClick(self)
 end
 
 function TutorialU1FrameNextButton_OnClick(self)
-	PlaySound163("igMainMenuOptionCheckBoxOn");
+	PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON);
 	local nextTutorial = GetNextCompleatedTutorial(TutorialU1Frame.id);
 	while ( nextTutorial and DISPLAY_DATA[nextTutorial].tileHeight == 0) do
 		nextTutorial = GetNextCompleatedTutorial(nextTutorial);
@@ -258,7 +258,7 @@ function TutorialU1FrameNextButton_OnClick(self)
 end
 
 function TutorialU1Frame_Hide()
-	PlaySound163("igMainMenuClose");
+	PlaySound(851); --"igMainMenuClose"
 	HideUIPanel(TutorialU1Frame);
 end
 

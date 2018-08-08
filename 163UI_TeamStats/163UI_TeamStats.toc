@@ -12,5 +12,5 @@ Local.TABS.lua
 TeamStats.lua
 TeamStatsUI.lua
 
-## Title: |cff880303[有爱]|r 163UI 团员信息统计
+## Title: |cff880303[爱不易]|r AbyUI 团员信息统计
 ## X-Vendor: AbyUI

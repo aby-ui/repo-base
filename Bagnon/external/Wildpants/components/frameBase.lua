@@ -15,12 +15,12 @@ Frame.CloseSound = SOUNDKIT.IG_BACKPACK_CLOSE
 
 function Frame:OnShow()
 	PlaySound(self.OpenSound)
-	self:RegisterMessages()
+	self:RegisterSignals()
 end
 
 function Frame:OnHide()
 	PlaySound(self.CloseSound)
-	self:UnregisterMessages()
+	self:UnregisterSignals()
 
 	if Addon.sets.resetPlayer then
 		self.owner = nil
@@ -101,7 +101,7 @@ function Frame:FindRules()
 	end
 
 	if #self.profile.rules > count then
-		self:SendFrameMessage('RULES_UPDATED')
+		self:SendFrameSignal('RULES_UPDATED')
 	end
 end
 
@@ -117,17 +117,16 @@ function Frame:IsShowingBag(bag)
 end
 
 function Frame:IsShowingItem(bag, slot)
-	local icon, count, locked, quality, readable, lootable, itemLink = self:GetItemInfo(bag, slot)
+	local info = self:GetItemInfo(bag, slot)
 	local rule = Addon.Rules:Get(self.subrule or self.rule)
 
 	if rule and rule.func then
-		local bagLink = self:GetBagInfo(bag)
-		if not rule.func(self.owner, bag, slot, bagLink, itemLink, count) then
+		if not rule.func(self.owner, bag, slot, self:GetBagInfo(bag), info) then
 			return
 		end
 	end
 
-	return self:IsShowingQuality(quality)
+	return self:IsShowingQuality(info.quality)
 end
 
 function Frame:IsShowingQuality(quality)
@@ -156,7 +155,7 @@ end
 
 function Frame:SetOwner(owner)
 	self.owner = owner
-  self:SendFrameMessage('OWNER_CHANGED', owner)
+  self:SendFrameSignal('OWNER_CHANGED', owner)
 end
 
 function Frame:GetOwner()

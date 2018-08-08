@@ -29,7 +29,7 @@ function Core:LoadOptions()
 		args.Icon = {
 			type = "toggle",
 			name = L["Minimap Icon"],
-			desc = L["Enable the minimap icon."],
+			desc = L["Enable the Minimap icon."],
 			get = function()
 				return not Core.db.profile.LDB.hide
 			end,
@@ -286,7 +286,7 @@ do
 						Color = {
 							type = "color",
 							name = L["Color"],
-							desc = L["Set the color of the gloss texture."],
+							desc = L["Set the color of the Gloss texture."],
 							get = GetColor,
 							set = SetColor,
 							arg = Group,
@@ -295,7 +295,7 @@ do
 						Gloss = {
 							type = "range",
 							name = L["Opacity"],
-							desc = L["Set the intensity of the gloss color."],
+							desc = L["Set the intensity of the Gloss color."],
 							get = GetOption,
 							set = SetOption,
 							arg = Group,
@@ -316,7 +316,7 @@ do
 						Backdrop = {
 							type = "toggle",
 							name = L["Enable"],
-							desc = L["Enable the backdrop texture."],
+							desc = L["Enable the Backdrop texture."],
 							get = GetOption,
 							set = SetOption,
 							arg = Group,
@@ -326,7 +326,7 @@ do
 						Color = {
 							type = "color",
 							name = L["Color"],
-							desc = L["Set the color of the backdrop texture."],
+							desc = L["Set the color of the Backdrop texture."],
 							get = GetColor,
 							set = SetColor,
 							arg = Group,
@@ -348,7 +348,7 @@ do
 						Normal = {
 							type = "color",
 							name = L["Normal"],
-							desc = L["Set the color of the normal texture."],
+							desc = L["Set the color of the Normal texture."],
 							arg = Group,
 							hasAlpha = true,
 							order = 1,
@@ -356,7 +356,7 @@ do
 						Highlight = {
 							type = "color",
 							name = L["Highlight"],
-							desc = L["Set the color of the highlight texture."],
+							desc = L["Set the color of the Highlight texture."],
 							arg = Group,
 							hasAlpha = true,
 							order = 2,
@@ -364,7 +364,7 @@ do
 						Checked = {
 							type = "color",
 							name = L["Checked"],
-							desc = L["Set the color of the checked texture."],
+							desc = L["Set the color of the Checked texture."],
 							arg = Group,
 							hasAlpha = true,
 							order = 3,
@@ -372,7 +372,7 @@ do
 						Border = {
 							type = "color",
 							name = L["Equipped"],
-							desc = L["Set the color of the equipped item texture."],
+							desc = L["Set the color of the Equipped item texture."],
 							arg = Group,
 							hasAlpha = true,
 							order = 4,
@@ -380,7 +380,7 @@ do
 						Flash = {
 							type = "color",
 							name = L["Flash"],
-							desc = L["Set the color of the flash texture."],
+							desc = L["Set the color of the Flash texture."],
 							arg = Group,
 							hasAlpha = true,
 							order = 5,
@@ -388,7 +388,7 @@ do
 						Pushed = {
 							type = "color",
 							name = L["Pushed"],
-							desc = L["Set the color of the pushed texture."],
+							desc = L["Set the color of the Pushed texture."],
 							arg = Group,
 							hasAlpha = true,
 							order = 6,
@@ -396,7 +396,7 @@ do
 						Disabled = {
 							type = "color",
 							name = L["Disabled"],
-							desc = L["Set the color of the disabled texture."],
+							desc = L["Set the color of the Disabled texture."],
 							arg = Group,
 							hasAlpha = true,
 							order = 7,
@@ -404,7 +404,7 @@ do
 						Cooldown = {
 							type = "color",
 							name = L["Cooldown"],
-							desc = L["Set the color of the cooldown animation."],
+							desc = L["Set the color of the Cooldown animation."],
 							arg = Group,
 							hasAlpha = true,
 							order = 8,

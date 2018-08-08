@@ -17,5 +17,5 @@
 
 Serenity.lua
 
-## Title: |cff880303[有爱]|r Masque 皮肤Serenity
+## Title: |cff880303[爱不易]|r Masque 皮肤Serenity
 ## X-Vendor: AbyUI

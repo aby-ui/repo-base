@@ -74,7 +74,7 @@ eventFrame:SetScript("OnUpdate", function(self, elapsed)
         return
     else
         counter = 0
-        if TomTom.profile.general.corpse_arrow then
+        if TomTom and TomTom.profile and TomTom.profile.general and TomTom.profile.general.corpse_arrow then
             if GetCorpseLocation() then
                 if SetCorpseArrow() then
                     self:Hide()
@@ -103,7 +103,12 @@ eventFrame:SetScript("OnEvent", function(self, event, arg1, ...)
     elseif event == "PLAYER_DEAD" then
         m = C_Map.GetBestMapForUnit("player")
         if not IsInInstance() then
-            x,y = C_Map.GetPlayerMapPosition(m, "player"):GetXY()
+            x = nil
+            y = nil
+            local player = C_Map.GetPlayerMapPosition(m, "player")
+            if player then
+                x,y = player:GetXY()
+            end
         end
         StartCorpseSearch()
     elseif event == "PLAYER_UNGHOST" then

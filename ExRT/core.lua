@@ -1,14 +1,20 @@
---	06.07.2018
+--	08.08.2018
 
 --[[
 3930
 * BFA Update
 
+3940
+* Raid Cooldowns: Some tweak for quick setup spells
+* Raid Cooldowns: fixes for test mode
+* Invite tools: removed loot method options
+* Minor fixes
+
 
 ]]
 local GlobalAddonName, ExRT = ...
 
-ExRT.V = 3930
+ExRT.V = 3940
 ExRT.T = "R"
 
 ExRT.OnUpdate = {}		--> таймеры, OnUpdate функции

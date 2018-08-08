@@ -180,8 +180,8 @@ L["Searching:"] = "搜索中："
 L["Select a Favorites List"] = "選擇我的最愛清單"
 L["Selected Stack Size"] = "已選擇堆疊大小"
 L["Sell Tab"] = "出售標籤"
---Translation missing 
--- L["Shift-click to search for the exact name. Normal click to perform a regular search."] = ""
+--[[Translation missing --]]
+--[[ L["Shift-click to search for the exact name. Normal click to perform a regular search."] = ""--]] 
 L["Show auction house value in tooltips."] = "在滑鼠提示中顯示拍賣行價格。"
 L["Show Auction Value"] = "顯示拍賣行價格"
 L["Show Deals"] = "顯示交易"

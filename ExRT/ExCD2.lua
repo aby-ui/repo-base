@@ -75,22 +75,22 @@ module.db.spellDB = {
 module.db.Cmirror = module._C
 module.db.dbCountDef = #module.db.spellDB
 module.db.findspecspells = {
-	[224968] = 62, [30451] = 62, [7268] = 62,
+	[30451] = 62, [7268] = 62,
 	[194466] = 63, [133] = 63, [11366] = 63,
 	[214634] = 64, [116] = 64, [30455] = 64,
 	
-	[200652] = 65, [20473] = 65, [82326] = 65,
-	[209202] = 66, [53600] = 66, [31935] = 66,
-	[205273] = 70, [85256] = 70, [53385] = 70, 
+	[20473] = 65, [82326] = 65,
+	[53600] = 66, [31935] = 66,
+	[85256] = 70, [53385] = 70, 
 
 	[209577] = 71, [12294] = 71, [167105] = 71,
 	[205546] = 72, [23881] = 72, [184367] = 72,
 	[203524] = 73, [20243] = 73, [23922] = 73,
 	
-	[202767] = 102, --[190984] = 102, [78674] = 102, 
+	[202767] = 102, [190984] = 102, --[78674] = 102, 
 	[210722] = 103, [52610] = 103, --[1822] = 103, 
 	[200851] = 104, [33917] = 104, --[22842] = 104,
-	[208253] = 105, [188550] = 105, [48438] = 105, 
+	[208253] = 105, [188550] = 105, [8936] = 105, 
 
 	[205223] = 250, [206930] = 250, [50842] = 250,
 	[190778] = 251, [49143] = 251, [49184] = 251,
@@ -2561,54 +2561,57 @@ do
 				local spellID = data.db[1]
 				
 				local barParent = columnsTable[col]
-				if barParent.methodsNewSpellNewLine and barParent.lastSpell ~= spellID then
-					local fix = 0
-					for j=numberInCol,maxLinesInCol do
-						local bar_now = barParent.lines[numberInCol + fix]
-						if bar_now then
-							if bar_now.IsNewLine then
-								break
-							else
-								if bar_now.data then
-									bar_now.data = nil
-									bar_now:Update()
+				
+				if numberInCol <= barParent.optionLinesMax then
+					if barParent.methodsNewSpellNewLine and barParent.lastSpell ~= spellID then
+						local fix = 0
+						for j=numberInCol,maxLinesInCol do
+							local bar_now = barParent.lines[numberInCol + fix]
+							if bar_now then
+								if bar_now.IsNewLine then
+									break
+								else
+									if bar_now.data then
+										bar_now.data = nil
+										bar_now:Update()
+									end
+									fix = fix + 1
 								end
-								fix = fix + 1
 							end
 						end
+						numberInCol = numberInCol + fix
 					end
-					numberInCol = numberInCol + fix
-				end
-				if barParent.optionIconTitles and barParent.lastSpell ~= spellID then
-					local bar = barParent.lines[numberInCol]
-					if bar and (bar.data ~= data or not bar.isTitle) then
-						bar.data = data
-						bar:CreateTitle()
-					end
-					numberInCol = numberInCol + 1
-				end
-				if barParent.methodsNewSpellNewLine and barParent.optionIconTitles and barParent.frameColumns > 1 and barParent.lastSpell == spellID then
-					local bar_now = barParent.lines[numberInCol]
-					if bar_now and bar_now.IsNewLine then
-						if bar_now.data then
-							bar_now.data = nil
-							bar_now:Update()
+					if barParent.optionIconTitles and barParent.lastSpell ~= spellID then
+						local bar = barParent.lines[numberInCol]
+						if bar and (bar.data ~= data or not bar.isTitle) then
+							bar.data = data
+							bar:CreateTitle()
 						end
 						numberInCol = numberInCol + 1
 					end
-				end
-
-				barParent.lastSpell = spellID
-				
-				inColsCount[col] = numberInCol
-				local bar = barParent.lines[numberInCol]
-				if bar and bar.data ~= data then
-					bar.data = data
+					if barParent.methodsNewSpellNewLine and barParent.optionIconTitles and barParent.frameColumns > 1 and barParent.lastSpell == spellID then
+						local bar_now = barParent.lines[numberInCol]
+						if bar_now and bar_now.IsNewLine then
+							if bar_now.data then
+								bar_now.data = nil
+								bar_now:Update()
+							end
+							numberInCol = numberInCol + 1
+						end
+					end
+	
+					barParent.lastSpell = spellID
 					
-					data.bar = bar
-				
-					bar:Update()
-					bar:UpdateStatus()
+					inColsCount[col] = numberInCol
+					local bar = barParent.lines[numberInCol]
+					if bar and bar.data ~= data then
+						bar.data = data
+						
+						data.bar = bar
+					
+						bar:Update()
+						bar:UpdateStatus()
+					end
 				end
 			end
 		end
@@ -2698,7 +2701,7 @@ end
 
 function RaidResurrectSpecialCheck()
 	local _,_,difficulty = GetInstanceInfo()
-	if difficulty == 14 or difficulty == 15 or difficulty == 16 or difficulty == 7 or difficulty == 17 then
+	if difficulty == 14 or difficulty == 15 or difficulty == 16 or difficulty == 7 or difficulty == 17 or difficulty == 8 then
 		return true
 	end
 end
@@ -3958,7 +3961,7 @@ function module.options:Load()
 	end
 	self.fastSetupFrame = ELib:ListButton(self.tab.tabs[1],L.cd2fastSetupTitle..":",200,7):Size(18,18):Point("TOPRIGHT",-15,-9):Left():OnClick(function(self)
 		local list = {
-			{L.cd2fastSetupTitle1,{31821,204150,62618,98008,97462,31842,64843,108280,740,115310,196718,207399}},					--Raid Save
+			{L.cd2fastSetupTitle1,{31821,204150,62618,98008,97462,31884,64843,108280,740,115310,15286,196718,207399,265202,216331,271466}},		--Raid Save
 			{L.cd2fastSetupTitle2,{102342,47788,33206,6940,633,116849,1022,204018}},								--Direct Save
 			{L.cd2fastSetupTitle3,{20484,20707,61999,20608,161642}},										--Battle Res
 			{L.cd2fastSetupTitle4,{6552,96231,147362,1766,15487,47528,47476,57994,2139,116705,106839,19647,91802,115781,78675,183752,}},	--Kicks
@@ -7622,7 +7625,8 @@ function module:ReloadAllSplits(argScaleFix)
 		columnFrame.optionAlphaCooldown = (not VExRT_ColumnOptions[i].textureGeneral and VExRT_ColumnOptions[i].textureAlphaCooldown) or (VExRT_ColumnOptions[i].textureGeneral and VExRT_ColumnOptions[module.db.maxColumns+1].textureAlphaCooldown) or module.db.colsDefaults.textureAlphaCooldown
 
 		if VExRT_ColumnOptions[i].enabled then
-			for n=1,linesTotal do
+			--for n=1,linesTotal do
+			for n=1,#columnFrame.lines do
 				columnFrame.lines[n]:UpdateStyle()
 				if columnFrame.lines[n]:IsVisible() then
 					columnFrame.lines[n]:UpdateStatus()

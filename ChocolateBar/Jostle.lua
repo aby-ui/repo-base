@@ -1,24 +1,11 @@
---[[
-Name: LibJostle-3.0
-Revision: $Rev: 65 $
-Author(s): ckknight (ckknight@gmail.com)
-Website: http://ckknight.wowinterface.com/
-Documentation: http://www.wowace.com/addons/libjostle-3-0/
-SVN: svn://svn.wowace.com/wow/libjostle-3-0/mainline/trunk
-Description: A library to handle rearrangement of blizzards frames when bars are added to the sides of the screen.
-License: LGPL v2.1
---]]
-
-local MAJOR_VERSION = "LibJostle-3.0"
-local MINOR_VERSION = tonumber(("$Revision: 65 $"):match("(%d+)")) + 90000
-
-if not LibStub then error(MAJOR_VERSION .. " requires LibStub") end
-
-local oldLib = LibStub:GetLibrary(MAJOR_VERSION, true)
-local Jostle = LibStub:NewLibrary(MAJOR_VERSION, MINOR_VERSION)
-if not Jostle then
-	return
-end
+local ChocolateBar = LibStub("AceAddon-3.0"):GetAddon("ChocolateBar")
+local Jostle = ChocolateBar.Jostle
+local bottomFrames = {}
+local topFrames = {}
+Jostle.hooks = {}
+local Debug = ChocolateBar.Debug
+local JostleUpdate = CreateFrame("Frame")
+local _G, pairs = _G, pairs
 
 local blizzardFrames = {
 	'PlayerFrame',
@@ -27,7 +14,7 @@ local blizzardFrames = {
 	'PartyMemberFrame1',
 	'TicketStatusFrame',
 	'WorldStateAlwaysUpFrame',
-	--'MainMenuBar',
+	'MainMenuBar',
 	'MultiBarRight',
 	'CT_PlayerFrame_Drag',
 	'CT_TargetFrame_Drag',
@@ -44,23 +31,49 @@ local blizzardFrames = {
 	'DurabilityFrame',
 	'CastingBarFrame',
 	'OrderHallCommandBar',
-	--'MicroButtonAndBagsBar',
+	'MicroButtonAndBagsBar',
 }
+
 local blizzardFramesData = {}
 
-local _G = _G
+local start = GetTime()
+local nextTime = 0
+local fullyInitted = false
 
-Jostle.hooks = oldLib and oldLib.hooks or {}
-Jostle.topFrames = oldLib and oldLib.topFrames or {}
-Jostle.bottomFrames = oldLib and oldLib.bottomFrames or {}
-Jostle.topAdjust = oldLib and oldLib.topAdjust
-Jostle.bottomAdjust = oldLib and oldLib.bottomAdjust
-if Jostle.topAdjust == nil then
-	Jostle.topAdjust = true
+local JostleFrame = CreateFrame("Frame")
+Jostle.Frame  = JostleFrame
+JostleFrame:SetScript("OnUpdate", function(this, elapsed)
+	local now = GetTime()
+	if now - start >= 3 then
+		fullyInitted = true
+		for k,v in pairs(blizzardFramesData) do
+			blizzardFramesData[k] = nil
+		end
+		this:SetScript("OnUpdate", function(this, elapsed)
+			if GetTime() >= nextTime then
+				Jostle:Refresh()
+				this:Hide()
+			end
+		end)
+	end
+end)
+
+function JostleFrame:Schedule(time)
+	time = time or 0
+	nextTime = GetTime() + time
+	self:Show()
 end
-if Jostle.bottomAdjust == nil then
-	Jostle.bottomAdjust = true
-end
+
+JostleFrame:UnregisterAllEvents()
+JostleFrame:SetScript("OnEvent", function(this, event, ...)
+	return Jostle[event](Jostle, ...)
+end)
+JostleFrame:RegisterEvent("PLAYER_REGEN_DISABLED")
+JostleFrame:RegisterEvent("PLAYER_REGEN_ENABLED")
+JostleFrame:RegisterEvent("PLAYER_CONTROL_GAINED")
+JostleFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
+JostleFrame:RegisterEvent("UNIT_ENTERING_VEHICLE")
+JostleFrame:RegisterEvent("UNIT_EXITED_VEHICLE")
 
 if not Jostle.hooks.WorldMapFrame_Hide then
 	Jostle.hooks.WorldMapFrame_Hide = true
@@ -76,24 +89,6 @@ if not Jostle.hooks.TicketStatusFrame_OnEvent then
     SetOrHookScript(TicketStatusFrame, "OnEvent", function()
 		if Jostle.TicketStatusFrame_OnEvent then
 			Jostle:TicketStatusFrame_OnEvent()
-		end
-	end)
-end
-
-if not Jostle.hooks.FCF_UpdateDockPosition then
-	Jostle.hooks.FCF_UpdateDockPosition = true
-	hooksecurefunc("FCF_UpdateDockPosition", function()
-		if Jostle.FCF_UpdateDockPosition then
-			Jostle:FCF_UpdateDockPosition()
-		end
-	end)
-end
-
-if FCF_UpdateCombatLogPosition and not Jostle.hooks.FCF_UpdateCombatLogPosition then
-	Jostle.hooks.FCF_UpdateCombatLogPosition = true
-	hooksecurefunc("FCF_UpdateCombatLogPosition", function()
-		if Jostle.FCF_UpdateCombatLogPosition then
-			Jostle:FCF_UpdateCombatLogPosition()
 		end
 	end)
 end
@@ -128,52 +123,33 @@ end
 
 hooksecurefunc("UIParent_UpdateTopFramePositions", function() Jostle:Refresh() end)
 
-Jostle.frame = oldLib and oldLib.frame or CreateFrame("Frame")
-local JostleFrame = Jostle.frame
-local start = GetTime()
-local nextTime = 0
-local fullyInitted = false
-
-JostleFrame:SetScript("OnUpdate", function(this, elapsed)
-	local now = GetTime()
-	if now - start >= 3 then
-		fullyInitted = true
-		for k,v in pairs(blizzardFramesData) do
-			blizzardFramesData[k] = nil
-		end
-		this:SetScript("OnUpdate", function(this, elapsed)
-			if GetTime() >= nextTime then
-				Jostle:Refresh()
-				this:Hide()
-			end
-		end)
-	end
-end)
-function JostleFrame:Schedule(time)
-	time = time or 0
-	nextTime = GetTime() + time
-	self:Show()
+function Jostle:UIParent_UpdateTopFramePositions()
+	self:Refresh(PlayerFrame, TargetFrame, TicketStatusFrame, GMChatStatusFrame, BuffFrame)
 end
-JostleFrame:UnregisterAllEvents()
-JostleFrame:SetScript("OnEvent", function(this, event, ...)
-	return Jostle[event](Jostle, ...)
-end)
-JostleFrame:RegisterEvent("PLAYER_REGEN_DISABLED")
-JostleFrame:RegisterEvent("PLAYER_REGEN_ENABLED")
-JostleFrame:RegisterEvent("PLAYER_CONTROL_GAINED")
-JostleFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
-JostleFrame:RegisterEvent("UNIT_ENTERED_VEHICLE")
-JostleFrame:RegisterEvent("UNIT_EXITED_VEHICLE")
 
-function Jostle:UNIT_ENTERED_VEHICLE()
-    MainMenuBar:SetMovable(true)
+function Jostle:WorldMapFrame_Hide()
+	--JostleFrame:Schedule()
+end
+
+function Jostle:TicketStatusFrame_OnEvent()
+	self:Refresh(TicketStatusFrame, GMChatStatusFrame, BuffFrame)
+end
+
+function Jostle:UIParent_ManageFramePositions()
+	self:Refresh(MainMenuBar, GroupLootFrame1, TutorialFrameParent, FramerateLabel, DurabilityFrame)
+end
+
+function Jostle:PlayerFrame_SequenceFinished()
+	self:Refresh(PlayerFrame)
+end
+
+function Jostle:UNIT_ENTERING_VEHICLE()
+	MainMenuBar:SetMovable(true)
 	MainMenuBar:SetUserPlaced(false)
-    --MicroButtonAndBagsBar:SetMovable(true)
-    --MicroButtonAndBagsBar:SetUserPlaced(false)
 end
 
 function Jostle:UNIT_EXITED_VEHICLE()
-	--self:Refresh(MainMenuBar)
+	self:Refresh(MainMenuBar)
 end
 
 function Jostle:PLAYER_ENTERING_WORLD()
@@ -181,37 +157,17 @@ function Jostle:PLAYER_ENTERING_WORLD()
 end
 
 function Jostle:WorldMapFrame_Hide()
-	JostleFrame:Schedule()
-end
-
-function Jostle:TicketStatusFrame_OnEvent()
-	--self:Refresh(TicketStatusFrame, ConsolidatedBuffs)
-    self:Refresh(TicketStatusFrame, GMChatStatusFrame, BuffFrame)
-end
-
-function Jostle:FCF_UpdateDockPosition()
-	self:Refresh(DEFAULT_CHAT_FRAME)
-end
-
-function Jostle:FCF_UpdateCombatLogPosition()
-	self:Refresh(ChatFrame2)
+	--JostleFrame:Schedule()
 end
 
 function Jostle:UIParent_ManageFramePositions()
-	self:Refresh(GroupLootFrame1, TutorialFrameParent, FramerateLabel, DurabilityFrame)
+	--self:Refresh(MainMenuBar, GroupLootFrame1, TutorialFrameParent, FramerateLabel, DurabilityFrame)
 end
 
-function Jostle:PlayerFrame_SequenceFinished()
-	self:Refresh(PlayerFrame)
-end
-
-function Jostle:UIParent_UpdateTopFramePositions()
-	self:Refresh(PlayerFrame, TargetFrame, TicketStatusFrame, GMChatStatusFrame, BuffFrame)
-end
-
-function Jostle:GetScreenTop()
+local function GetScreenTop()
 	local bottom = GetScreenHeight()
-	for _,frame in ipairs(self.topFrames) do
+	for _,frame in pairs(topFrames) do
+    Debug(frame)
 		if frame.IsShown and frame:IsShown() and frame.GetBottom and frame:GetBottom() and frame:GetBottom() < bottom then
 			bottom = frame:GetBottom()
 		end
@@ -219,99 +175,49 @@ function Jostle:GetScreenTop()
 	return bottom
 end
 
-function Jostle:GetScreenBottom()
+local function GetScreenBottom()
 	local top = 0
-	for _,frame in ipairs(self.bottomFrames) do
+	local isBottomAdjusting = false
+	for _,frame in pairs(bottomFrames) do
 		if frame.IsShown and frame:IsShown() and frame.GetTop and frame:GetTop() and frame:GetTop() > top then
 			top = frame:GetTop()
+			isBottomAdjusting = true
 		end
 	end
 	return top
 end
 
-function Jostle:RegisterTop(frame)
-	for k,f in ipairs(self.bottomFrames) do
-		if f == frame then
-			table.remove(self.bottomFrames, k)
-			break
-		end
-	end
-	for _,f in ipairs(self.topFrames) do
-		if f == frame then
-			return
-		end
-	end
-	table.insert(self.topFrames, frame)
-	JostleFrame:Schedule()
-	return true
+local function UpdateBottom()
+
+end
+
+local function UpdateTop()
+
+end
+
+local function Adjust()
 end
 
 function Jostle:RegisterBottom(frame)
-	for k,f in ipairs(self.topFrames) do
-		if f == frame then
-			table.remove(self.topFrames, k)
-			break
-		end
+	if frame and not bottomFrames[frame] then
+		bottomFrames[frame] = frame
+		JostleFrame:Schedule()
 	end
-	for _,f in ipairs(self.bottomFrames) do
-		if f == frame then
-			return
-		end
+end
+
+function Jostle:RegisterTop(frame)
+  Debug("RegisterTop")
+	if frame and not topFrames[frame] then
+		topFrames[frame] = frame
+		JostleFrame:Schedule()
 	end
-	table.insert(self.bottomFrames, frame)
-	JostleFrame:Schedule()
-	return true
 end
 
 function Jostle:Unregister(frame)
-	for k,f in ipairs(self.topFrames) do
-		if f == frame then
-			table.remove(self.topFrames, k)
-			JostleFrame:Schedule()
-			return true
-		end
-	end
-	for k,f in ipairs(self.bottomFrames) do
-		if f == frame then
-			table.remove(self.bottomFrames, k)
-			JostleFrame:Schedule()
-			return true
-		end
-	end
-end
-
-function Jostle:IsTopAdjusting()
-	return self.topAdjust
-end
-
-function Jostle:EnableTopAdjusting()
-	if not self.topAdjust then
-		self.topAdjust = not self.topAdjust
-		JostleFrame:Schedule()
-	end
-end
-
-function Jostle:DisableTopAdjusting()
-	if self.topAdjust then
-		self.topAdjust = not self.topAdjust
-		JostleFrame:Schedule()
-	end
-end
-
-function Jostle:IsBottomAdjusting()
-	return self.bottomAdjust
-end
-
-function Jostle:EnableBottomAdjusting()
-	if not self.bottomAdjust then
-		self.bottomAdjust = not self.bottomAdjust
-		JostleFrame:Schedule()
-	end
-end
-
-function Jostle:DisableBottomAdjusting()
-	if self.bottomAdjust then
-		self.bottomAdjust = not self.bottomAdjust
+	if frame and topFrames[frame] then
+		topFrames[frame] = nil
+	elseif frame and bottomFrames[frame] then
+		bottomFrames[frame] = nil
 		JostleFrame:Schedule()
 	end
 end
@@ -350,8 +256,8 @@ function Jostle:Refresh(...)
 	end
 
 	local screenHeight = GetScreenHeight()
-	local topOffset = self:IsTopAdjusting() and self:GetScreenTop() or screenHeight
-	local bottomOffset = self:IsBottomAdjusting() and self:GetScreenBottom() or 0
+	local topOffset = GetScreenTop() or screenHeight
+	local bottomOffset = GetScreenBottom() or 0
 	if topOffset ~= screenHeight or bottomOffset ~= 0 then
 		JostleFrame:Schedule(10)
 	end
@@ -413,6 +319,8 @@ function Jostle:Refresh(...)
 		if ((frame and frame.IsUserPlaced and not frame:IsUserPlaced()) or ((frame == DEFAULT_CHAT_FRAME or frame == ChatFrame2) and SIMPLE_CHAT == "1") or frame == FramerateLabel) and (frame ~= ChatFrame2 or SIMPLE_CHAT == "1") then
 			local frameData = blizzardFramesData[frame]
 			if (select(2, frame:GetPoint(1)) ~= UIParent and select(2, frame:GetPoint(1)) ~= WorldFrame) then
+				-- do nothing
+			elseif bottomOffset == 0 and (frame == MainMenuBar or frame == CastingBarFrame or frame == FramerateLabel or ((frame == DEFAULT_CHAT_FRAME or frame == ChatFrame2))) then
 				-- do nothing
 			elseif frame == PlayerFrame and (CT_PlayerFrame_Drag or Gypsy_PlayerFrameCapsule) then
 				-- do nothing
@@ -511,6 +419,7 @@ function Jostle:Refresh(...)
 					if frame == FramerateLabel then
 						anchorFrame = WorldFrame
 					end
+
 					frame:ClearAllPoints()
 					frame:SetPoint(anchor, anchorFrame, anchorAlt or anchor, x, y + offset)
 					blizzardFramesData[frame].lastX = frame:GetLeft()
@@ -526,76 +435,6 @@ function Jostle:Refresh(...)
 					end
 				end
 			end
-		end
-	end
-end
-
-local function compat()
-	local Jostle20 = {}
-	function Jostle20:RegisterTop(...)
-		Jostle:RegisterTop(...)
-	end
-	function Jostle20:RegisterBottom(...)
-		Jostle:RegisterBottom(...)
-	end
-	function Jostle20:GetScreenTop(...)
-		Jostle:GetScreenTop(...)
-	end
-	function Jostle20:GetScreenBottom(...)
-		Jostle:GetScreenBottom(...)
-	end
-	function Jostle20:Unregister(...)
-		Jostle:Unregister(...)
-	end
-	function Jostle20:IsTopAdjusting(...)
-		Jostle:IsTopAdjusting(...)
-	end
-	function Jostle20:EnableTopAdjusting(...)
-		Jostle:EnableTopAdjusting(...)
-	end
-	function Jostle20:DisableTopAdjusting(...)
-		Jostle:DisableTopAdjusting(...)
-	end
-	function Jostle20:IsBottomAdjusting(...)
-		Jostle:IsBottomAdjusting(...)
-	end
-	function Jostle20:EnableBottomAdjusting(...)
-		Jostle:EnableBottomAdjusting(...)
-	end
-	function Jostle20:DisableBottomAdjusting(...)
-		Jostle:DisableBottomAdjusting(...)
-	end
-	function Jostle20:Refresh(...)
-		Jostle:Refresh(...)
-	end
-	local function activate(self, oldLib)
-		Jostle20 = self
-		if oldLib and oldLib.topFrames and oldLib.bottomFrames then
-			for i,v in ipairs(oldLib.topFrames) do
-				Jostle:RegisterTop(v)
-			end
-			for i,v in ipairs(oldLib.bottomFrames) do
-				Jostle:RegisterBottom(v)
-			end
-		end
-	end
-	local function external(self, instance, major)
-		if major == "AceEvent-2.0" then
-			instance:embed(self)
-
-			self:UnregisterAllEvents()
-			self:CancelAllScheduledEvents()
-		end
-	end
-	AceLibrary:Register(Jostle20, "Jostle-2.0", MINOR_VERSION*1000, activate, external)
-	Jostle20 = AceLibrary("Jostle-2.0")
-end
-if AceLibrary then
-	compat()
-elseif Rock then
-	function Jostle:OnLibraryLoad(major, version)
-		if major == "AceLibrary" then
-			compat()
 		end
 	end
 end

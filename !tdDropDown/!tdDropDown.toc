@@ -9,5 +9,5 @@ localization.lua
 tdDropDown.lua
 tdDropDown_Option.lua
 
-## Title:  |cff880303[有爱]|r !tdDrop 下拉框增强
+## Title:  |cff880303[爱不易]|r !tdDrop 下拉框增强
 ## X-Vendor: AbyUI

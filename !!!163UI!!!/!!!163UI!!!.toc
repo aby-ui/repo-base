@@ -1,5 +1,5 @@
 ## Interface: 80000
-## Title: !!!|cff880303[有爱]|r 控制台和基本库
+## Title: !!!|cff880303[爱不易]|r 控制台和基本库
 ## Author: AbyUI (warbaby & yleaf)
 
 ## SavedVariables: U1DBG
@@ -59,6 +59,8 @@ QuickMenus.lua
 #--- 其他 ---
 Profiles.lua
 ProfilesUI.lua
+
+Donators.lua
 
 RunLast.lua
 

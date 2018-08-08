@@ -169,10 +169,17 @@ function TomTom:SetWaypoint(waypoint, callbacks, show_minimap, show_world)
     point.uid = waypoint
 
     -- Place the waypoint
-    hbdp:AddMinimapIconMap(self, point.minimap, m, x, y, true)
+    -- AddMinimapIconMap(ref, icon, uiMapID, x, y, showInParentZone, floatOnEdge)
+    hbdp:AddMinimapIconMap(self, point.minimap, m, x, y, true, true)
 
     if show_world then
-        hbdp:AddWorldMapIconMap(self, point.worldmap, m, x, y)
+        -- show worldmap pin on its parent zone map (if any)
+        -- HBD_PINS_WORLDMAP_SHOW_PARENT    = 1
+        -- show worldmap pin on the continent map
+        -- HBD_PINS_WORLDMAP_SHOW_CONTINENT = 2
+        -- show worldmap pin on the continent and world map
+        -- HBD_PINS_WORLDMAP_SHOW_WORLD     = 3
+        hbdp:AddWorldMapIconMap(self, point.worldmap, m, x, y, 3)
     else
         point.worldmap.disabled = true
     end

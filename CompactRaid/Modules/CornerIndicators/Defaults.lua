@@ -30,10 +30,12 @@ module.DEFAULT_SPELLS = {
 	DRUID = {
 		774, -- Rejuvenation
 		8936, -- Regrowth
+		22812, -- Barkskin
 		33763, -- Lifebloom
 		48438, -- Wild Growth
 		29166, -- Innervate
 		102342, -- Ironbark
+		155777, -- Germination
 	},
 
 	SHAMAN = {

@@ -6,5 +6,5 @@
 
 WorldFlightMap.lua
 
-## Title-zhCN: |cff880303[有爱]|r World 世界飞行地图
+## Title-zhCN: |cff880303[爱不易]|r World 世界飞行地图
 ## X-Vendor: AbyUI

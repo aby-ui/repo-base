@@ -1,7 +1,7 @@
 local filename, fontHeight, flags = dwTextStatusBarTextSmall:GetFont() dwTextStatusBarTextSmall:SetFont(filename, 11, flags)
 local filename, fontHeight, flags = dwTextStatusBarTextTiny:GetFont() dwTextStatusBarTextTiny:SetFont(filename, 9, flags)
 
-EN_RealmName = GetCVar("realmName");
+EN_RealmName = GetRealmName();
 if not EN_RealmName then
 	EN_RealmName = "Enigma";
 end

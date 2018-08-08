@@ -4,5 +4,5 @@
 ## Version: 2.4.5-deprecated
 ## SavedVariables: Healers_Have_To_Die
 
-## Title: |cff880303[有爱]|r HHTD 老版本兼容
+## Title: |cff880303[爱不易]|r HHTD 老版本兼容
 ## X-Vendor: AbyUI

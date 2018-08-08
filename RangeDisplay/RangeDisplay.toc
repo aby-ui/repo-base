@@ -1,7 +1,7 @@
 ## Interface: 80000
 ## Title: RangeDisplay
 ## Author: mitch0
-## Version: v4.8.2
+## Version: v4.8.3
 ## Notes: Estimated range display. Type /rangedisplay for config
 ## Notes-ruRU: Дисплей с указанием расстояния до цели. Введите /rangedisplay для справки
 ## LoadManagers: AddonLoader
@@ -22,6 +22,6 @@ libs\LibRangeCheck-2.0\LibRangeCheck-2.0.lua
 localizations.lua
 RangeDisplay.lua
 
-## Title: |cff880303[有爱]|r RangeDis 距离显示
+## Title: |cff880303[爱不易]|r RangeDis 距离显示
 ## Notes-zhCN: 显示你与目标的距离，鼠标滑过的目标距离等
 ## X-Vendor: AbyUI

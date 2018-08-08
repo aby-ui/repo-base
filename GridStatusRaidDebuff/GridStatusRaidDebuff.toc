@@ -20,5 +20,5 @@ Locale\Locale.xml
 
 Core.lua
 
-## Title: |cff880303[有爱]|r Grid 团队减益
+## Title: |cff880303[爱不易]|r Grid 团队减益
 ## X-Vendor: AbyUI

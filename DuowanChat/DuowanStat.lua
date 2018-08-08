@@ -31,7 +31,7 @@ function D:UpdateStat()
 	self.data["CLASS"], self.data["CLASS_EN"] = UnitClass("player");
 	self.data["LV"] = UnitLevel("player");
 	self.data["HP"] = UnitHealthMax("player");
-	self.data["MP"] = UnitManaMax("player");
+	self.data["MP"] = UnitPowerMax("player");
 	self.data["TALENT"] = self:GetTalent(); 
 	self.data["ILV"] = self:GetINVLevel();
 	self.data["GS"] = self:GetGS();
@@ -100,7 +100,7 @@ function D:GenerateStatText(detail)
     addLine("%s%.1f%%", STAT_HASTE, GetHaste())
     addLine("%s%.1f%%", STAT_VERSATILITY, GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_DONE) + GetVersatilityBonus(CR_VERSATILITY_DAMAGE_DONE))
     addLine("%s%.1f%%", STAT_MASTERY, GetMasteryEffect())
-    do return "有爱简报：" .. table.concat(lines, ",") end
+    do return "爱不易简报：" .. table.concat(lines, ",") end
 
 	self:UpdateStat();
 	local text = L["HEAD"];

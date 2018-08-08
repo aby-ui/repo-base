@@ -1,13 +1,15 @@
 ## Interface: 80000
 ## Title: World Quests List
 ## Author: ykiigor
-## Version: 67
+## Version: 71
 ## SavedVariables: VWQL
+db.lua
 util.lua
 Arrow.lua
 templates.xml
+games.lua
 WorldQuestsList.lua
 
-## Title-zhCN: |cff880303[有爱]|r World 世界任务列表
+## Title-zhCN: |cff880303[爱不易]|r World 世界任务列表
 ## X-Vendor: AbyUI
 

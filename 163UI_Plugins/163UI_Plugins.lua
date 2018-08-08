@@ -177,12 +177,12 @@ local function CoShelper(tooltip)
 		elseif npcid == "106108" then line = "死骑,武僧 [回复能力]" -- Starlight Rose Brew
 		else return
 		end
-		tooltip:AddLine("有爱: "..line, 255/255, 106/255, 0/255, true)
+		tooltip:AddLine("爱不易: "..line, 255/255, 106/255, 0/255, true)
 		if npccheck[npcid] == nil then
 			npccheck[npcid] = true
 		end
 		if npccheck[npcid] or IsShiftKeyDown() then
-			SendChatMessage("【有爱】"..GetUnitName(unit)..": "..line ,"PARTY" ,nil ,"1");
+			SendChatMessage("【爱不易】"..GetUnitName(unit)..": "..line ,"PARTY" ,nil ,"1");
 			SetRaidTarget(unit, tarIndex)
 			tarIndex=tarIndex+1
 			if tarIndex == 9 then tarIndex = 1 end;
@@ -211,7 +211,7 @@ CoreOnEvent("CHAT_MSG_SYSTEM", function(event, msg)
     if msg == ERR_PARTY_CONVERTED_TO_RAID and not IsInInstance() and U1IsDoingWorldQuest() then
         if DBM and not U1DBMAlert then
             U1DBMAlert = DBM:NewMod("U1DBMAlert")
-            DBM:GetModLocalization("U1DBMAlert"):SetGeneralLocalization{ name = "有爱" }
+            DBM:GetModLocalization("U1DBMAlert"):SetGeneralLocalization{ name = "爱不易" }
             U1DBMAlert.warn = U1DBMAlert:NewSpecialWarning("%s") --:NewAnnounce("%s", 1, "Interface\\Icons\\Spell_Nature_WispSplode")
         end
         local leader
@@ -235,7 +235,7 @@ CoreOnEvent("CHAT_MSG_SYSTEM", function(event, msg)
                 UIErrorsFrame:AddMessage("团长：" .. leader, 1, 0.5, 0)
                 UIErrorsFrame:AddMessage(ERR_PARTY_CONVERTED_TO_RAID, 1, 0.5, 0)
             end
-            SendChatMessage("【有爱】转团提醒，团长：" .. leader, "RAID")
+            SendChatMessage("【爱不易】转团提醒，团长：" .. leader, "RAID")
         end
     end
 end)
@@ -245,22 +245,16 @@ end)
 ---------------------------------------------------------------]]
 U1PLUG["FixBlizGuild"] = function()
     U1QueryGuildNews = QueryGuildNews
-        QueryGuildNews = function() end
-        CoreDependCall("Blizzard_GuildUI", function()
-            local btn = WW:Button("GuildGetNewsButton", GuildNewsFrame, "UIMenuButtonStretchTemplate")
-            :SetTextFont(ChatFontNormal, 13, "")
-            :SetAlpha(0.8)
-            :SetText("加载新闻")
-            :Size(100,30)
-            :CENTER(0, 0)
-            :AddFrameLevel(3, GuildNewsFrame)
-            :SetScript("OnClick", function(self)
-                U1QueryGuildNews()
-                QueryGuildNews = U1QueryGuildNews
-                self:Hide()
-                --self:ClearAllPoints() self:SetPoint("TOPRIGHT", -1, 33) self:SetSize(50, 30) self:SetText("刷新")
-            end)
-            :un()
-            CoreUIEnableTooltip(btn, '有爱', '手工加载公会新闻，减少卡顿，可以在"有爱设置-小功能集合"里关闭此功能')
-        end)
+    QueryGuildNews = function() end
+    local createLoadButton = function(parent)
+        local btn = WW:Button("$parentGetNewsButton", parent, "UIMenuButtonStretchTemplate"):SetTextFont(ChatFontNormal, 13, ""):SetAlpha(0.8):SetText("加载新闻"):Size(100, 30):CENTER(0, 0):AddFrameLevel(3, parent):SetScript("OnClick", function(self)
+            U1QueryGuildNews()
+            QueryGuildNews = U1QueryGuildNews
+            self:Hide()
+            --self:ClearAllPoints() self:SetPoint("TOPRIGHT", -1, 33) self:SetSize(50, 30) self:SetText("刷新")
+        end):un()
+        CoreUIEnableTooltip(btn, '爱不易', '手工加载公会新闻，减少卡顿，可以在"爱不易设置-小功能集合"里关闭此功能')
+    end
+    CoreDependCall("Blizzard_GuildUI", function() createLoadButton(GuildNewsFrame) end)
+    CoreDependCall("Blizzard_Communities", function() createLoadButton(CommunitiesFrameGuildDetailsFrameNews) end)
 end

@@ -6,8 +6,8 @@
 ## SavedVariablesPerCharacter: TidyPlatesOptions
 
 TidyPlates.xml
-## Title-zhCN: |cff880303[有爱]|r TidyPlates 姓名版增强
-## Title-zhTW: |cff880303[有爱]|r TidyPlates 姓名板增强
+## Title-zhCN: |cff880303[爱不易]|r TidyPlates 姓名版增强
+## Title-zhTW: |cff880303[爱不易]|r TidyPlates 姓名板增强
 ## Notes-zhCN: 强大到爆的多功能姓名版美化插件。
 ## Notes-zhTW: 強大到爆的多功能姓名版美化插件。
 ## X-Vendor: AbyUI

@@ -48,13 +48,13 @@ function Frame:New(id)
 	return f
 end
 
-function Frame:RegisterMessages()
-	self:RegisterMessage('UPDATE_ALL', 'Update')
-	self:RegisterMessage('RULES_LOADED', 'FindRules')
-	self:RegisterMessage('SEARCH_CHANGED', 'UpdateSearch')
-	self:RegisterFrameMessage('PLAYER_CHANGED', 'UpdateTitle')
-	self:RegisterFrameMessage('BAG_FRAME_TOGGLED', 'UpdateItems')
-	self:RegisterFrameMessage('RULES_UPDATED', 'UpdateSize')
+function Frame:RegisterSignals()
+	self:RegisterSignal('UPDATE_ALL', 'Update')
+	self:RegisterSignal('RULES_LOADED', 'FindRules')
+	self:RegisterSignal('SEARCH_CHANGED', 'UpdateSearch')
+	self:RegisterFrameSignal('PLAYER_CHANGED', 'UpdateTitle')
+	self:RegisterFrameSignal('BAG_FRAME_TOGGLED', 'UpdateItems')
+	self:RegisterFrameSignal('RULES_UPDATED', 'UpdateSize')
 	self:Update()
 end
 
@@ -70,7 +70,7 @@ end
 function Frame:OnSearchTextChanged(text)
 	if text ~= Addon.search then
 		Addon.search = text
-		Addon:SendMessage('SEARCH_CHANGED', text)
+		Addon:SendSignal('SEARCH_CHANGED', text)
 	end
 end
 

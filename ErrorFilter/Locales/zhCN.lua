@@ -12,8 +12,8 @@ L["Choose the errors you want to see:"] = "选择你想看到的错误信息:"
 L["Delete"] = "删除"
 L["Delete a string from the list"] = "删除一个字符串"
 L["Do nothing"] = "什么都不做"
---Translation missing 
--- L["Enable Error Speech."] = ""
+--[[Translation missing --]]
+--[[ L["Enable Error Speech."] = ""--]] 
 L["Filter all errors"] = "过滤所有错误"
 L["Filter only ..."] = "只过滤..."
 L["Filter only in combat."] = "仅在战斗中过滤"
@@ -34,8 +34,8 @@ L["Throttle"] = "阈值"
 L["Throttle messages."] = "阈值消息."
 L["Toggle to allow each message only once every 5 seconds."] = "不在5秒内重复现实同样的提示."
 L["Toggle to allow this error."] = "选择不过滤该信息."
---Translation missing 
--- L["Toggle to enable the game's sound option error speech."] = ""
+--[[Translation missing --]]
+--[[ L["Toggle to enable the game's sound option error speech."] = ""--]] 
 L["Toggle to filter this error."] = "选择过滤该信息."
 L["Toggle to stop filtering while out of combat."] = "开启当脱离战斗后停止过滤."
 L["Warning! This will prevent all error messages from appearing in the UI Error Frame."] = "警告! 这将过滤所有的错误信息."

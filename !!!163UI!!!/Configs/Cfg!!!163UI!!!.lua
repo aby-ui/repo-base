@@ -43,18 +43,18 @@ end
 
 U1RegisterAddon("!!!Libs", { load = "NORMAL", protected = 1, hide = 1 }) EnableAddOn("!!!Libs") --163UI必须第一个加载，不能依赖其他的，只能这样
 U1RegisterAddon("!!!163UI.pics!!!", { title = "插件说明图片", hide = 1, defaultEnable = 0 });
-U1RegisterAddon("!!!163UI.3dcodecmd!!!", { title = "有爱核心", load = "NORMAL", hide = 1, protected = 1, defaultEnable = 1 });
+U1RegisterAddon("!!!163UI.3dcodecmd!!!", { title = "爱不易核心", load = "NORMAL", hide = 1, protected = 1, defaultEnable = 1 });
 
 U1RegisterAddon("!!!163UI!!!", {
-    title = L["有爱"],
+    title = L["爱不易"],
     tags = {TAG_MANAGEMENT},
-    desc = L["有爱是新一代整合插件。其设计理念是兼顾整合插件的易用性和单体插件的灵活性，同时适合普通和高级用户群体。|n|n    功能上，有爱实现了任意插件的随需加载，并可先进入游戏再逐一加载插件，此为全球首创。此外还有标签分类、拼音检索、界面缩排等特色功能。"],
+    desc = L["爱不易是新一代整合插件。其设计理念是兼顾整合插件的易用性和单体插件的灵活性，同时适合普通和高级用户群体。|n|n    功能上，爱不易实现了任意插件的随需加载，并可先进入游戏再逐一加载插件，此为全球首创。此外还有标签分类、拼音检索、界面缩排等特色功能。"],
     protected = 1,
     icon = "Interface\\AddOns\\!!!163UI!!!\\Textures\\UI2-logo",
 
     nopic = 1,
 
-    author = L["|cffcd1a1c[有爱原创]|r"],
+    author = L["|cffcd1a1c[爱不易原创]|r"],
 
     {
         text = "额外设置",
@@ -68,30 +68,6 @@ U1RegisterAddon("!!!163UI!!!", {
             U1SelectAddon("163UI_Plugins") UUI.Right.TabChange(1)
         end
     },
-        --[[text = L["有爱客户端相关"], type = "text",
-        {
-            var = "displayLinkageStatusAsBuff",
-            default = false,
-            text = "有爱连接状态显示为Buff",
-            tip = "说明`关闭此选项*不会*导致有爱连接断开，以及影响签到的时间积累",
-            callback = function(cfg, v, loading)
-                if Toggle3DCodeCmdBuff  then
-                    Toggle3DCodeCmdBuff()
-                end
-            end
-        },]]
-        {
-            var = "displayScrshotEmoticonBtn",
-            default = false,
-            text = "显示有爱截图和表情按钮",
-            tip = "说明`在聊天条里显示爱有截图和自定义表情按钮",
-            callback = function(cfg, v, loading)
-                U1DB.configs["!!!163ui!!!/displayLinkageStatusAsBuff"] = false
-                if Toggle3DCodeCmdChatFrameBtnShown  then
-                    Toggle3DCodeCmdChatFrameBtnShown()
-                end
-            end
-        },
     {
         var = "alwaysCompareItems",
         default = '1',
@@ -198,7 +174,7 @@ U1RegisterAddon("!!!163UI!!!", {
     {
         var = "disableLaterLoading",
         text = L["延迟加载插件"],
-        tip = L["说明`有爱独家支持，可以先读完蓝条然后再逐一加载插件。会大大加快读条速度，但是加载大型插件时会有卡顿。如果不喜欢这种方式，请取消勾选即可，下次进游戏时就会采用新设置。` `对比测试：`未开启时，在第7.5秒后读完蓝条同时加载完全部插件`开启后，在第3.8秒读完蓝条，第8.0秒加载完全部插件"],
+        tip = L["说明`爱不易独家支持，可以先读完蓝条然后再逐一加载插件。会大大加快读条速度，但是加载大型插件时会有卡顿。如果不喜欢这种方式，请取消勾选即可，下次进游戏时就会采用新设置。` `对比测试：`未开启时，在第7.5秒后读完蓝条同时加载完全部插件`开启后，在第3.8秒读完蓝条，第8.0秒加载完全部插件"],
         default = 1,
         getvalue = function() return not U1DB.disableLaterLoading end,
         callback = function(cfg, v, loading)
@@ -324,7 +300,7 @@ U1RegisterAddon("!!!163UI!!!", {
     {
         text = "重置界面框体顺序",
         confirm = "此操作需要重载界面，您是否确定？",
-        tip = "说明`经过有爱团队的测试，暴雪目前的界面存在一个BUG，当打开过多界面时，框体层次顺序可能会出错，使得某些按钮被遮挡无法看到，或者无法点击。` `当出现类似问题的时候，尝试点击此按钮，会重置所有框体的层次并重载界面，问题一般就会修复。",
+        tip = "说明`经过爱不易团队的测试，暴雪目前的界面存在一个BUG，当打开过多界面时，框体层次顺序可能会出错，使得某些按钮被遮挡无法看到，或者无法点击。` `当出现类似问题的时候，尝试点击此按钮，会重置所有框体的层次并重载界面，问题一般就会修复。",
         callback = function(cfg, v, loading)
             local f = EnumerateFrames()
             while f do

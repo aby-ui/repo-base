@@ -2,7 +2,7 @@
 ## Title: GTFO
 ## Notes: GTFO, you're dying!
 ## Author: Zensunim of Dragonblight
-## Version: 4.46.1
+## Version: 4.46.2
 ## DefaultState: Enabled
 ## SavedVariables: GTFOData
 Localization\enUS.lua
@@ -41,8 +41,8 @@ GTFO_FF_BFA.lua
 GTFO_Mobs.lua
 GTFO.xml
 
-## Title-zhCN: |cff880303[有爱]|r GTFO 站位提醒
-## Title-zhTW: |cff880303[有爱]|r GTFO 站位提醒
+## Title-zhCN: |cff880303[爱不易]|r GTFO 站位提醒
+## Title-zhTW: |cff880303[爱不易]|r GTFO 站位提醒
 ## Notes-zhCN: 自动声音提示站位危险插件.
 ## Notes-zhTW: 自動聲音提示站位危險插件.
 ## X-Vendor: AbyUI

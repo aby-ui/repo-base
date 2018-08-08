@@ -10,6 +10,6 @@ libs\NyxGUI-1.0\NyxGUI.xml
 localization.lua
 LucidNightmareHelper.lua
 
-## Title: |cff880303[有爱]|r LucidNightmare 清醒梦魇助手
+## Title: |cff880303[爱不易]|r LucidNightmare 清醒梦魇助手
 ## X-Vendor: AbyUI
 

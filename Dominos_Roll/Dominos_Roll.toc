@@ -7,5 +7,5 @@
 rollBar.lua
 
 
-## Title-zhCN: |cff880303[有爱]|r Dominos 掷骰模块
+## Title-zhCN: |cff880303[爱不易]|r Dominos 掷骰模块
 ## X-Vendor: AbyUI

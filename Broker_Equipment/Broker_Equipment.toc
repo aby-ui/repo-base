@@ -11,6 +11,6 @@ Localization.lua
 Config.lua
 Broker_Equipment.lua
 
-## Title: |cff880303[有爱]|r Broker 套装菜单
+## Title: |cff880303[爱不易]|r Broker 套装菜单
 ## Notes-zhCN: 快捷显示套装名称
 ## X-Vendor: AbyUI

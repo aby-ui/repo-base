@@ -6,5 +6,5 @@
 Locale.lua
 SkadaExplosiveOrbs.lua
 
-## Title: |cff880303[有爱]|r Skada 易爆打球
+## Title: |cff880303[爱不易]|r Skada 易爆打球
 ## X-Vendor: AbyUI

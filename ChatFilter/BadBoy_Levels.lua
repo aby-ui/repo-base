@@ -6,15 +6,15 @@ local addedOrder = {} --添加好友的顺序，提示找不到时去掉
 local login = nil
 local whisp = "BadBoy_Levels: You need to be level %d to whisper me."
 local err = "You have reached the maximum amount of friends, remove 2 for this addon to function properly!"
-local whisp100 = "有爱: 刚100级的角色无法密语我，请通过其他方式联系。"
+local whisp100 = "爱不易: 刚100级的角色无法密语我，请通过其他方式联系。"
 
 do
 	local L = GetLocale()
 	if L == "zhTW" then
-		whisp = "有爱: 你起碼要達到 %d 級才能密我。"
+		whisp = "愛不易: 你起碼要達到 %d 級才能密我。"
 		err = "你的好友列表滿了，按等级过滤需要你騰出2個好友空位!"
 	elseif L == "zhCN" then
-		whisp = "有爱: 你起码要达到 %d 级才能和我讲话。"
+		whisp = "爱不易: 你起码要达到 %d 级才能和我讲话。"
 		err = "你的好友列表已满，按等级过滤需要你腾出2个好友空位！"
 	end
 end
@@ -259,7 +259,7 @@ ChatFrame_AddMessageEventFilter("CHAT_MSG_WHISPER_INFORM", function(_,_,msg,play
 	local trimmedPlayer = Ambiguate(player, "none")
 	if good[trimmedPlayer] then return end --Do nothing if on safe list
 	if filterTable[trimmedPlayer] and msg:find("^BadBoy.*"..filterTable[trimmedPlayer]) then return true end --Filter auto-response
-    if filterTable[trimmedPlayer] and msg:find("^有爱.*"..filterTable[trimmedPlayer]) then return true end --Filter auto-response
+    if filterTable[trimmedPlayer] and msg:find("^爱不易.*"..filterTable[trimmedPlayer]) then return true end --Filter auto-response
     if filterTable[trimmedPlayer] and msg:find(whisp100) then return true end --Filter auto-response
 	good[trimmedPlayer] = true --If we want to whisper someone, they're good
 end)

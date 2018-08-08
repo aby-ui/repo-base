@@ -1,0 +1,10 @@
+﻿## Interface: 80000
+## Title: BlinkHealthText
+## Notes: BlinkHealthText 2.1
+## Author: Kill & dugu @ Duowan
+
+locale\locale.xml
+SimpleInfo.lua
+
+## Title: |cff880303[爱不易]|r BlinkHealthText 简易状态
+## X-Vendor: AbyUI

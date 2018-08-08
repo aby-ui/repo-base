@@ -8,6 +8,6 @@
 
 CastDelayBar.lua
 
-## Title: |cff880303[有爱]|r CastDelayBar 施法条延迟
+## Title: |cff880303[爱不易]|r CastDelayBar 施法条延迟
 ## Notes-zhCN: 在施法条上增加一延迟条, 用以判断施法是否成功
 ## X-Vendor: AbyUI

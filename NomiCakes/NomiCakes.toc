@@ -6,6 +6,6 @@
 ## Notes: Shows what recipes can be learned from Nomi in Dalaran
 NomiCakes.lua
 
-## Title: |cff880303[有爱]|r NomiCakes 诺米大厨
+## Title: |cff880303[爱不易]|r NomiCakes 诺米大厨
 ## X-Vendor: AbyUI
 

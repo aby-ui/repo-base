@@ -29,5 +29,5 @@ Preferences\Manifest.xml
 TargetButton\Manifest.xml
 
 
-## Title: |cff880303[有爱]|r NPCScan 稀有精英提示
+## Title: |cff880303[爱不易]|r NPCScan 稀有精英提示
 ## X-Vendor: AbyUI

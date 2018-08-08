@@ -4,10 +4,10 @@
 ## Notes: An options menu for Combuctor
 ## Dependencies: Combuctor
 ## LoadOnDemand: 1
-## Version: 8.0
+## Version: 8.0.1
 
 main.lua
 common\Wildpants_Config.xml
 
-## Title: |cff880303[有爱]|r Combuctor 配置
+## Title: |cff880303[爱不易]|r Combuctor 配置
 ## X-Vendor: AbyUI

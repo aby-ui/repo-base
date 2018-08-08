@@ -47,7 +47,7 @@ function U1GroupLootRoll()
             InterfaceOptionsDisplayPanelDetailedLootInfo:Disable()
             InterfaceOptionsDisplayPanelDetailedLootInfo:SetMotionScriptsWhileDisabled(true)
             InterfaceOptionsDisplayPanelDetailedLootInfo:SetScript("OnEnter", function(self)
-                self.tooltipText = "\"ROLL点界面增强\"功能需要您始终开启此选项。\n如果您一定要关闭此设置，请先关闭\"有爱控制台-有爱设置-启用ROLL点界面增强\"功能。"
+                self.tooltipText = "\"ROLL点界面增强\"功能需要您始终开启此选项。\n如果您一定要关闭此设置，请先关闭\"有爱控制台-爱不易设置-启用ROLL点界面增强\"功能。"
                 CoreUIShowTooltip(self);
             end)
         end

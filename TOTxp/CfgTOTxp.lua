@@ -8,7 +8,7 @@ U1RegisterAddon("TOTxp", {
     icon = [[Interface\Icons\INV_Gizmo_Scope02]],
     desc = "目标的目标框体增强，可以给系统自带的目标的目标框体增加伤害提示和文字、显示仇恨百分比、并且可以按住SHIFT拖动位置。`插件整合了仇恨警报的功能，会根据当前选择的模式显示OT警报。可以运行/tot mode命令在坦克、治疗、输出三个模式之间切换。`其他功能参见/tot帮助。",
 
-    author = "|cffcd1a1c[有爱原创]|r",
+    author = "|cffcd1a1c[爱不易原创]|r",
 
     frames = {"TargetFrameToT"},
 

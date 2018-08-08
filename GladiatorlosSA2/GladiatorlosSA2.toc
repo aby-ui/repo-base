@@ -13,6 +13,6 @@ GladiatorlosSA2.lua
 spelllist.lua
 options.lua
 
-## Title: |cff880303[有爱]|r Gladiator PVP语音提示
+## Title: |cff880303[爱不易]|r Gladiator PVP语音提示
 ## X-Vendor: AbyUI
 

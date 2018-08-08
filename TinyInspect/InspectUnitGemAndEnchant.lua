@@ -5,6 +5,8 @@
 -- @DepandsOn: InspectUnit.lua
 -------------------------------------
 
+local addon, ns = ...
+
 local LibItemGem = LibStub:GetLibrary("LibItemGem.7000")
 local LibSchedule = LibStub:GetLibrary("LibSchedule.7000")
 local LibItemEnchant = LibStub:GetLibrary("LibItemEnchant.7000")
@@ -15,7 +17,10 @@ local EnchantParts = {
     [11] = {1, FINGER1SLOT},
     [12] = {1, FINGER1SLOT},
     [15] = {1, BACKSLOT},
+    [16] = {1, MAINHANDSLOT},
+    [17] = {1, SECONDARYHANDSLOT},
 --  [3]  = {0, SHOULDERSLOT},
+--  [9]  = {0, WRISTSLOT},
 --  [10] = {0, HANDSSLOT},
 }
 
@@ -52,8 +57,7 @@ local function CreateIconFrame(frame, index)
     icon.bg = icon:CreateTexture(nil, "BACKGROUND")
     icon.bg:SetSize(16, 16)
     icon.bg:SetPoint("CENTER")
-    icon.bg:SetTexture("Interface\\Artifacts\\Artifacts")
-    icon.bg:SetTexCoord(64/1024, 113/1024, 958/1024, 1010/1024)
+    icon.bg:SetTexture("Interface\\AddOns\\"..addon.."\\texture\\GemBg")
     icon.texture = icon:CreateTexture(nil, "BORDER")
     icon.texture:SetSize(12, 12)
     icon.texture:SetPoint("CENTER")
@@ -128,7 +132,7 @@ end
 --讀取並顯示圖標
 local function ShowGemAndEnchant(frame, ItemLink, anchorFrame, itemframe)
     if (not ItemLink) then return 0 end
-    local num, info = LibItemGem:GetItemGemInfo(ItemLink)
+    local num, info, qty = LibItemGem:GetItemGemInfo(ItemLink)
     local _, quality, texture, icon, r, g, b
     for i, v in ipairs(info) do
         icon = GetIconFrame(frame)
@@ -136,7 +140,7 @@ local function ShowGemAndEnchant(frame, ItemLink, anchorFrame, itemframe)
             _, _, quality, _, _, _, _, _, _, texture = GetItemInfo(v.link)
             r, g, b = GetItemQualityColor(quality or 0)
             icon.bg:SetVertexColor(r, g, b)
-            icon.texture:SetTexture(texture)
+            icon.texture:SetTexture(texture or "Interface\\Cursor\\Quest")
             UpdateIconTexture(icon, texture, v.link, "item")
         else
             icon.bg:SetVertexColor(1, 0.82, 0, 0.5)
@@ -180,28 +184,30 @@ local function ShowGemAndEnchant(frame, ItemLink, anchorFrame, itemframe)
         num = num + 1
         icon = GetIconFrame(frame)
         icon.title = "#" .. enchantID
-        icon.bg:SetVertexColor(0.4, 0.4, 0.4, 0.5)
-        icon.texture:SetTexture("Interface\\Cursor\\Item")
+        icon.bg:SetVertexColor(0.1, 0.1, 0.1)
+        icon.texture:SetTexture("Interface\\FriendsFrame\\InformationIcon")
         icon:ClearAllPoints()
         icon:SetPoint("LEFT", anchorFrame, "RIGHT", num == 1 and 6 or 1, 0)
         icon:Show()
         anchorFrame = icon
     elseif (not enchantID and EnchantParts[itemframe.index]) then
-        num = num + 1
-        icon = GetIconFrame(frame)
-        icon.title = ENCHANTS .. ":" .. EnchantParts[itemframe.index][2]
-        icon.bg:SetVertexColor(1, 0.2, 0.2, 0.5)
-        icon.texture:SetTexture("Interface\\Cursor\\" .. (EnchantParts[itemframe.index][1]==1 and "Quest" or "QuestRepeatable"))
-        icon:ClearAllPoints()
-        icon:SetPoint("LEFT", anchorFrame, "RIGHT", num == 1 and 6 or 1, 0)
-        icon:Show()
-        anchorFrame = icon
+        if (qty == 6 and (itemframe.index==16 or itemframe.index==17)) then else
+            num = num + 1
+            icon = GetIconFrame(frame)
+            icon.title = ENCHANTS .. ": " .. EnchantParts[itemframe.index][2]
+            icon.bg:SetVertexColor(1, 0.2, 0.2, 0.6)
+            icon.texture:SetTexture("Interface\\Cursor\\" .. (EnchantParts[itemframe.index][1]==1 and "Quest" or "QuestRepeatable"))
+            icon:ClearAllPoints()
+            icon:SetPoint("LEFT", anchorFrame, "RIGHT", num == 1 and 6 or 1, 0)
+            icon:Show()
+            anchorFrame = icon
+        end
     end
     return num * 18
 end
 
 --功能附着
-hooksecurefunc("ShowInspectItemListFrame", function(unit, parent, itemLevel)
+hooksecurefunc("ShowInspectItemListFrame", function(unit, parent, itemLevel, maxLevel)
     local frame = parent.inspectFrame
     if (not frame) then return end
     local i = 1

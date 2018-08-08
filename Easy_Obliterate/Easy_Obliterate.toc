@@ -9,6 +9,6 @@
 Easy_Obliterate.lua
 Bindings.xml
 
-## Title: |cff880303[有爱]|r Easy 抑魔金助手
+## Title: |cff880303[爱不易]|r Easy 抑魔金助手
 ## X-Vendor: AbyUI
 

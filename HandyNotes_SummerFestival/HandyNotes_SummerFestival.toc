@@ -16,6 +16,6 @@ Core.lua
 Alliance.lua
 Horde.lua
 
-## Title-zhCN: |cff880303[有爱]|r HandyNotes 仲夏节篝火
+## Title-zhCN: |cff880303[爱不易]|r HandyNotes 仲夏节篝火
 ## X-Vendor: AbyUI
 

@@ -234,6 +234,8 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	L["From Template"] = "从模板"
 	L["Full Scan"] = "完整扫描"
 	L["General Text Settings"] = "通用字体设置"
+	--[[Translation missing --]]
+	L["Global Conditions"] = "Global Conditions"
 	L["Glow"] = "发光"
 	L["Glow Action"] = "发光动作"
 	L["Green Rune"] = "绿色符文"
@@ -266,6 +268,8 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	L["Hybrid Position"] = "混合定位"
 	L["Hybrid Sort Mode"] = "混合排序模式"
 	L["Icon"] = "图标"
+	--[[Translation missing --]]
+	L["Icon Alpha"] = "Icon Alpha"
 	L["Icon Color"] = "图标颜色"
 	L["Icon Info"] = "图标信息"
 	L["Icon Inset"] = "项目插入"

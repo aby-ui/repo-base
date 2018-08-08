@@ -1,5 +1,5 @@
 ## Interface: 80000
-## Title: |cff880303[有爱]|r 163UI 手册装备搜索
+## Title: |cff880303[爱不易]|r AbyUI 手册装备搜索
 ## Notes: 增强冒险指南里副本掉落装备的筛选功能
 ## SavedVariables: ELPDATA
 ## X-Vendor: AbyUI

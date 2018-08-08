@@ -21,5 +21,5 @@
 ## X-Curse-Repository-ID: wow/masque-kenzo/mainline
 
 masque_kenzo.lua
-## Title: |cff880303[有爱]|r Masque 皮肤Kenzo
+## Title: |cff880303[爱不易]|r Masque 皮肤Kenzo
 ## X-Vendor: AbyUI

@@ -1,6 +1,6 @@
 --[[
 	events.lua
-		Custom item events for better performance
+		Custom ace item events for better performance
 
 	BAG_UPDATE_SIZE
 	args: bag
@@ -9,25 +9,23 @@
 	BAG_UPDATE_CONTENT
 	args: bag
 		called when the items of a bag change
-
-	BANK_OPENED
-	args: none
-		called when the bank has opened and all of other events have been fired
-
 --]]
 
-local _, Addon = ...
-local Events = Addon:NewClass('Events')
+local ADDON, Addon = ...
+local Events = Addon:NewModule('Events', 'AceEvent-3.0')
 
 
 --[[ Events ]]--
 
-function Events:PLAYER_LOGIN()
+function Events:OnEnable()
+	self.firstVisit = true
+	self.sizes, self.types = {}, {}
+
 	self:RegisterEvent('BAG_UPDATE')
 	self:RegisterEvent('PLAYERBANKSLOTS_CHANGED')
 	self:RegisterEvent('PLAYERREAGENTBANKSLOTS_CHANGED')
 	self:RegisterEvent('REAGENTBANK_PURCHASED')
-	self:RegisterEvent('BANKFRAME_OPENED')
+	self:RegisterMessage('CACHE_BANK_OPENED')
 	self:UpdateSize(BACKPACK_CONTAINER)
 	self:UpdateBags()
 end
@@ -50,15 +48,13 @@ function Events:REAGENTBANK_PURCHASED()
 	self:UpdateContent(REAGENTBANK_CONTAINER)
 end
 
-function Events:BANKFRAME_OPENED()
+function Events:CACHE_BANK_OPENED()
 	if self.firstVisit then
 		self.firstVisit = nil
 		self:UpdateSize(BANK_CONTAINER)
 		self:UpdateSize(REAGENTBANK_CONTAINER)
 		self:UpdateBankBags()
 	end
-
-	self:SendMessage('BANK_OPENED')
 end
 
 
@@ -89,7 +85,7 @@ function Events:UpdateSize(bag)
 		self.types[bag] = kind
 		self.sizes[bag] = new
 
-		self:SendMessage('BAG_UPDATE_SIZE', bag)
+		Addon:SendSignal('BAG_UPDATE_SIZE', bag)
 		return true
 	end
 end
@@ -100,17 +96,10 @@ function Events:UpdateType(bag)
 
 	if old ~= new then
 		self.types[bag] = new
-		self:SendMessage('BAG_UPDATE_CONTENT', bag)
+		Addon:SendSignal('BAG_UPDATE_CONTENT', bag)
 	end
 end
 
 function Events:UpdateContent(bag)
-	self:SendMessage('BAG_UPDATE_CONTENT', bag)
+	Addon:SendSignal('BAG_UPDATE_CONTENT', bag)
 end
-
-
---[[ Startup ]]--
-
-Events.firstVisit = true
-Events.sizes, Events.types = {}, {}
-Events:RegisterEvent('PLAYER_LOGIN')

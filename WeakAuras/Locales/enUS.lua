@@ -1,13 +1,6 @@
 local L = WeakAuras.L
 
 -- WeakAuras
-L[ [=[
-
-Supports multiple entries, separated by commas
-]=] ] = [=[
-
-Supports multiple entries, separated by commas
-]=]
 L["!="] = "!="
 L["%s - %i. Trigger"] = "%s - %i. Trigger"
 L["%s - 1. Trigger"] = "%s - 1. Trigger"
@@ -64,6 +57,7 @@ L["Alive"] = "Alive"
 L["All Triggers"] = "All Triggers"
 L["Alliance"] = "Alliance"
 L["Allow partial matches"] = "Allow partial matches"
+L["Alpha"] = "Alpha"
 L["Alternate Power"] = "Alternate Power"
 L["Always"] = "Always"
 L["Always active trigger"] = "Always active trigger"
@@ -99,7 +93,6 @@ L["Back"] = "Back"
 L["Back and Forth"] = "Back and Forth"
 L["Backdrop Color"] = "Backdrop Color"
 L["Background Color"] = "Background Color"
-L["Bar Alpha"] = "Bar Alpha"
 L["Bar Color"] = "Bar Color"
 L["Battle.net Whisper"] = "Battle.net Whisper"
 L["Battleground"] = "Battleground"
@@ -272,6 +265,7 @@ L["Grow"] = "Grow"
 L["GTFO Alert"] = "GTFO Alert"
 L["Guild"] = "Guild"
 L["Hands"] = "Hands"
+L["Has Target"] = "Has Target"
 L["Has Vehicle UI"] = "Has Vehicle UI"
 L["HasPet"] = "HasPet"
 L["Head"] = "Head"
@@ -374,7 +368,6 @@ L["Monster Yell"] = "Monster Yell"
 L["Moon"] = "Moon"
 L["Mounted"] = "Mounted"
 L["Mouse Cursor"] = "Mouse Cursor"
-L["Multistrike"] = "Multistrike"
 L["Multi-target"] = "Multi-target"
 L["Music"] = "Music"
 L["Mythic"] = "Mythic"
@@ -545,6 +538,7 @@ L["Spell ID"] = "Spell ID"
 L["Spell Id"] = "Spell Id"
 L["Spell Known"] = "Spell Known"
 L["Spell Name"] = "Spell Name"
+L["Spell Usable"] = "Spell Usable"
 L["Spell/Encounter Id"] = "Spell/Encounter Id"
 L["Spin"] = "Spin"
 L["Spiral"] = "Spiral"

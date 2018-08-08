@@ -3,7 +3,7 @@ U1RegisterAddon("!tdDropDown", {
     defaultEnable = 1,
 
     tags = { TAG_INTERFACE },
-    modifier = "|cffcd1a1c[有爱]|r",
+    modifier = "|cffcd1a1c[爱不易]|r",
 
     desc = "在邮箱收件人、拍卖行和商业技能的搜索框上，添加下拉菜单，用来保存之前输入过的文字。`特别方便的是可以自动记录拍卖行的搜索历史，而且选中之后会直接搜索拍卖。（此功能可通过选项关闭）``如需添加选项，请先输入文字然后点下拉按钮，选择'添加选项'；如需修改选项，请先从下拉菜单中点击要删除的项，然后再次点击下拉按钮，选择'删除选项'",
     icon = [[Interface\Icons\misc_arrowdown]],

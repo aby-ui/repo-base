@@ -22,7 +22,7 @@ end
 
 --[[ Slash Commands ]]--
 
-function Addon:AddSlashCommands(...)
+function Addon:CreateSlashCommands(...)
 	for i = 1, select('#', ...) do
 		local command = select(i, ...)
 		SlashCmdList[command] = function(...) self:OnSlashCommand(...) end

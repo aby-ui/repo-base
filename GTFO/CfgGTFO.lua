@@ -13,7 +13,7 @@ U1RegisterAddon("GTFO", {
                 if lastPlayTime and GetTime() - lastPlayTime < 1.5 then return end
                 if not InCombatLockdown() then return end
                 if UnitExists("boss1") then return end
-                local timestamp, subEvent, hideCaster, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destFlags, destRaidFlags, spellID = ...
+                local timestamp, subEvent, hideCaster, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destFlags, destRaidFlags, spellID = CombatLogGetCurrentEventInfo()
                 if spellID == 226510 and (subEvent == "SPELL_AURA_APPLIED" or subEvent == "SPELL_PERIODIC_HEAL") then
                     if subEvent == "SPELL_PERIODIC_HEAL" or bit.band(destFlags, COMBATLOG_OBJECT_TYPE_NPC) > 0 then --and bit.band(destFlags, COMBATLOG_OBJECT_CONTROL_NPC) > 0 and (bit.band(destFlags, COMBATLOG_OBJECT_REACTION_HOSTILE) > 0 or bit.band(destFlags, COMBATLOG_OBJECT_REACTION_NEUTRAL) > 0) then
                         PlaySoundFile("Interface\\AddOns\\GTFO\\Sounds\\mythic_blood.ogg")

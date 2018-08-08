@@ -1,5 +1,0 @@
-## Interface: 80000
-## Title: |cff880303[有爱]|r LegSwitch 橙装闪换
-## X-Vendor: AbyUI
-
-LegiondarySwitch.lua

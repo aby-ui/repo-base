@@ -39,6 +39,6 @@ filters\quality.lua
 
 
 
-## Title: |cff880303[有爱]|r oGlow 物品边框染色
+## Title: |cff880303[爱不易]|r oGlow 物品边框染色
 ## Notes-zhCN: 在人物栏高亮物品品质
 ## X-Vendor: AbyUI

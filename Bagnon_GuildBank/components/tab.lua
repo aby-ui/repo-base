@@ -29,7 +29,7 @@ function Tab:OnClick()
 	if info.viewable then
 		SetCurrentGuildBankTab(tab)
 		QueryGuildBankTab(tab)
-		self:SendMessage('GUILD_TAB_CHANGED')
+		self:SendSignal('GUILD_TAB_CHANGED')
 	end
 
 	self:SetChecked(viewable)
@@ -38,11 +38,11 @@ end
 --[[ Update ]]--
 
 function Tab:RegisterEvents()
-	self:UnregisterEvents()
+	self:UnregisterSignals()
 	self:Update()
 
 	if self:IsCached() then
-		self:RegisterMessage('GUILD_TAB_CHANGED', 'UpdateStatus')
+		self:RegisterSignal('GUILD_TAB_CHANGED', 'UpdateStatus')
 	else
 		self:RegisterEvent('GUILDBANK_UPDATE_TABS', 'Update')
 		self:RegisterEvent('GUILDBANKBAGSLOTS_CHANGED', 'UpdateStatus')

@@ -3,7 +3,7 @@ U1RegisterAddon("GearHUD", {
     tags = {TAG_COMBATINFO, },
     icon = [[Interface\Icons\INV_Misc_Gear_01]],
     desc = "当血量危急时，在屏幕中央显示红色齿轮警示（模仿单机游戏战争机器），防止在紧张的战斗中忘记自身的血量信息。`运行/gh解锁框体可缩放和拖动，运行/gh debug可显示各种警告程度的演示。",
-    author = "|cffcd1a1c[有爱原创]|r",
+    author = "|cffcd1a1c[爱不易原创]|r",
 
     frames = {"GearHud"},
     defaultEnable  = 1,

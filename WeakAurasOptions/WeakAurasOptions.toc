@@ -1,7 +1,7 @@
 ## Interface: 80000
 ## Title: WeakAuras Options
 ## Author: Mirrored and the WeakAuras Team
-## Version: 2.6.5
+## Version: 2.6.6
 ## Notes: Options for WeakAuras
 ## Notes-esES: Opciones para WeakAuras
 ## Notes-deDE: Optionen für WeakAuras
@@ -60,5 +60,5 @@ AceGUI-Widgets\AceGUIWidget-WeakAurasNewButton.lua
 AceGUI-Widgets\AceGUIWidget-WeakAurasImportButton.lua
 AceGUI-Widgets\AceGUIWidget-WeakAurasSortedDropDown.lua
 
-## Title-zhCN: |cff880303[有爱]|r WeakAuras 配置
+## Title-zhCN: |cff880303[爱不易]|r WeakAuras 配置
 ## X-Vendor: AbyUI

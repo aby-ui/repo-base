@@ -365,7 +365,7 @@ do
 	local function click(self)
 		if self.OnClick and self.clickable then
 			self.OnClick(self)
-			PlaySound163("igMainMenuOptionCheckBoxOn")
+			PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
 			self:GetParent():GetRoot():Refresh()
 		end
 	end

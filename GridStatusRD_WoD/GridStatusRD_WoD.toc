@@ -12,6 +12,6 @@ BlackrockFoundry.lua
 Highmaul.lua
 HellfireCitadel.lua
 
-## Title: |cff880303[有爱]|r Grid 团队减益WoD
+## Title: |cff880303[爱不易]|r Grid 团队减益WoD
 ## X-Vendor: AbyUI
 

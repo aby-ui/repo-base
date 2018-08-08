@@ -5,7 +5,7 @@
 
 SwingBar.lua
 
-## Title: |cff880303[有爱]|r SwingBar 普攻计时
+## Title: |cff880303[爱不易]|r SwingBar 普攻计时
 ## Notes-zhCN: 显示普通攻击的的进度。
 ## Notes-zhTW: 顯示普通攻擊的的進度。
 ## X-Vendor: AbyUI

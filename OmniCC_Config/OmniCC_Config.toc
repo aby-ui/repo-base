@@ -10,6 +10,6 @@ widgets\widgets.xml
 mainPanel.lua
 panels\panels.xml
 
-## Title-zhCN: |cff880303[有爱]|r OmniCC 配置界面
+## Title-zhCN: |cff880303[爱不易]|r OmniCC 配置界面
 ## Notes-zhCN: 技能冷却计时-配置界面模块
 ## X-Vendor: AbyUI

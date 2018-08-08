@@ -19,7 +19,7 @@ function BagFrame:New(parent, from, x, y)
 	end
 
 	f:SetSize(k * abs(x) + button:GetWidth(), k * abs(y) + button:GetHeight())
-	f:RegisterFrameMessage('BAG_FRAME_TOGGLED', 'UpdateShown')
+	f:RegisterFrameSignal('BAG_FRAME_TOGGLED', 'UpdateShown')
 	f:UpdateShown()
 	
 	return f

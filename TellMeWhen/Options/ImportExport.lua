@@ -1023,10 +1023,8 @@ String.displayDescription = L["IMPORT_FROMSTRING_DESC"]
 function String:HandleTopLevelMenu()
 	local t = strtrim(EDITBOX:GetText())
 
-	-- There is an escaped link. Unescape it.
-	if t:find("||H") then
-		t = t:gsub("||", "|")
-	end
+	-- Unescape escaped pipes. Any pipes pasted into an editbox in wow will be escaped.
+	t = t:gsub("||", "|")
 
 	local editboxResults = t ~= "" and TMW:DeserializeData(t)
 
@@ -1163,7 +1161,9 @@ String.Export_DescriptionPrepend = L["EXPORT_TOSTRING_DESC"]
 function String:Export(type, settings, defaults, ...)
 	local strings = TMW:GetSettingsStrings(nil, type, settings, defaults, ...)
 
-	local str = table.concat(strings, "\r\n\r\n"):gsub("|", "||")
+	local str = table.concat(strings, "\r\n\r\n")
+		-- Escape any pipes so they can be copied correctly out of the textbox.
+		:gsub("|", "||")
 
 	str = TMW:MakeSerializedDataPretty(str)
 	TMW.LastExportedString = str

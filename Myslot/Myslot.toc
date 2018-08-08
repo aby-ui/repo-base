@@ -33,5 +33,5 @@ PbMyslot.lua
 Myslot.lua
 
 
-## Title-zhCN: |cff880303[有爱]|r MySlot 技能栏保存
+## Title-zhCN: |cff880303[爱不易]|r MySlot 技能栏保存
 ## X-Vendor: AbyUI

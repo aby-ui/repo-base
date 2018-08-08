@@ -241,6 +241,51 @@ function rematch:InitSavedVars()
 		end
 	end
 	settings.SelectedTab = settings.SelectedTab or 1
+
+	rematch:ValidateTeams() -- make sure teams are okay
+end
+
+-- this will go through the RematchSaved savedvar and make sure everything is normal
+function rematch:ValidateTeams()
+	local found = false
+	for key,team in pairs(saved) do
+		-- verify the team is a table
+		if type(team)~="table" then
+			rematch:print(format("Corrupt team found: %s. Unrecoverable, sorry!", key))
+			saved[key] = nil
+			found = true
+		end
+		-- validate npcID is a legitimate number if it's a number
+		if saved[key] and type(key)=="number" and key>(2^32/2-1) then
+			local newKey = tostring(key)
+			local newName = format("%s %s",team.teamName or "NPC", newKey)
+			rematch:print(format("Corrupt team found: its new name is %s",newName))
+			saved[newName] = CopyTable(team)
+			saved[key] = nil
+			found = true
+		end
+		-- validate the team has 3 pet slots
+		if saved[key] then
+			for i=1,3 do
+				if type(team[i])~="table" then
+					rematch:print(format("Corrupt team found: bad pet in team %s", rematch:GetTeamTitle(key)))
+					team[i] = {}
+					found = true
+				end
+			end
+		end
+	end
+	if found then
+		rematch:print("At least one team appears corrupt. Your saved data may be lost. To recover:")
+		rematch:print("- Before exiting the game, make a backup of your World of Warcraft\\WTF folder.")
+		rematch:print("- ALL TEAMS ARE STORED IN WTF. NO TEAMS ARE STORED IN INTERFACE\\ADDONS!")
+		rematch:print("- Exit the game after making a backup. (Any changes while logged in will have no effect.)")
+		rematch:print("- Go to WTF\\Account\\accountname\\SavedVariables")
+		rematch:print("- Rename Rematch.lua to Rematch-old.lua")
+		rematch:print("- If there's a Rematch.lua.bak, make a backup of it and rename it Rematch.lua")
+		rematch:print("- If there is not a Rematch.lua.bak, you will need to restore teams from a prior backup.")
+		rematch:print("- If you have no prior backup, you can try continuing with the current data but it may cause severe problems.")
+	end
 end
 
 function rematch:PLAYER_TARGET_CHANGED()

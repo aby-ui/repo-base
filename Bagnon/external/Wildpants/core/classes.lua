@@ -4,42 +4,33 @@
 --]]
 
 local ADDON, Addon = ...
-local Mixins = {'RegisterEvent', 'UnregisterEvent', 'UnregisterEvents', 'RegisterMessage', 'UnregisterMessage', 'UnregisterMessages', 'SendMessage'}
-local Events = LibStub('AceEvent-3.0')
+local Mixins = {
+	'RegisterEvent', 'UnregisterEvent', 'UnregisterAllEvents',
+	'RegisterMessage', 'UnregisterMessage', 'UnregisterAllMessages', 'SendMessage',
+	'RegisterSignal', 'UnregisterSignal', 'UnregisterSignals', 'SendSignal'
+}
 
-LibStub('AceAddon-3.0'):NewAddon(Addon, ADDON)
+LibStub('AceAddon-3.0'):NewAddon(Addon, ADDON, 'AceEvent-3.0')
 _G[ADDON] = Addon
 
 
 --[[ Messaging ]]--
 
-function Addon:RegisterEvent(...)
-	Events.RegisterEvent(self, ...)
+function Addon:RegisterSignal(msg, call, ...)
+	self:RegisterMessage(ADDON .. msg, call or msg, ...)
 end
 
-function Addon:UnregisterEvent(...)
-	Events.UnregisterEvent(self, ...)
+function Addon:UnregisterSignal(msg)
+	self:UnregisterMessage(ADDON .. msg)
 end
 
-function Addon:UnregisterEvents()
-	Events.UnregisterAllEvents(self)
-	Events.UnregisterAllMessages(self)
+function Addon:SendSignal(msg, ...)
+	self:SendMessage(ADDON .. msg, ...)
 end
 
-function Addon:RegisterMessage(msg, call, ...)
-	Events.RegisterMessage(self, 'BAGNON_' .. msg, call or msg, ...)
-end
-
-function Addon:UnregisterMessage(msg)
-	Events.UnregisterMessage(self, 'BAGNON_' .. msg)
-end
-
-function Addon:SendMessage(msg, ...)
-	Events.SendMessage(self, 'BAGNON_' .. msg, ...)
-end
-
-function Addon:UnregisterMessages()
-	Events.UnregisterAllMessages(self)
+function Addon:UnregisterSignals()
+	self:UnregisterAllMessages()
+	self:UnregisterAllEvents()
 end
 
 
@@ -59,16 +50,16 @@ function Addon:NewClass(name, type, parent)
 			return setmetatable(obj, self)
 		end
 
-		class.RegisterFrameMessage = function(self, msg, ...)
-			self:RegisterMessage(self:GetFrameID() .. msg, ...)
+		class.RegisterFrameSignal = function(self, msg, ...)
+			self:RegisterSignal(self:GetFrameID() .. msg, ...)
 		end
 
-		class.UnregisterFrameMessage = function(self, msg, ...)
-			self:UnregisterMessage(self:GetFrameID() .. msg, ...)
+		class.UnregisterFrameSignal = function(self, msg, ...)
+			self:UnregisterSignal(self:GetFrameID() .. msg, ...)
 		end
 
-		class.SendFrameMessage = function(self, msg, ...)
-			self:SendMessage(self:GetFrameID() .. msg, ...)
+		class.SendFrameSignal = function(self, msg, ...)
+			self:SendSignal(self:GetFrameID() .. msg, ...)
 		end
 
 		class.GetFrameID = function(self)

@@ -2,7 +2,7 @@
 ## Title: ChocolateBar
 ## Notes: A display for LibDataBroker-1.1
 ## Author: yess
-## Version: v3.1.10
+## Version: v3.2.1
 ## X-Email: starfire@fantasymail.de
 ## OptionalDeps: Ace3, LibSharedMedia-3.0, LibJostle-3.0
 ## X-WoWI-ID: 12326
@@ -10,7 +10,7 @@
 ## SavedVariables: ChocolateBarDB
 
 #@no-lib-strip@
-libs\libs.xml
+#libs\libs.xml
 #@end-no-lib-strip@
 
 localization\enUS.lua
@@ -18,6 +18,7 @@ localization\zhCN.lua
 localization\zhTW.lua
 
 Core.lua
+Jostle.lua
 DragAndDrop.lua
 Chocolate.lua
 Bar.lua
@@ -32,6 +33,6 @@ Options.lua
 
 Brokers.lua
 
-## Title: |cff880303[有爱]|r Chocolate 巧克力信息条
+## Title: |cff880303[爱不易]|r Chocolate 巧克力信息条
 ## Notes-zhCN: 可以自定义显示在屏幕边缘的信息条框体
 ## X-Vendor: AbyUI

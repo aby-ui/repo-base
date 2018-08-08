@@ -8,6 +8,6 @@
 
 GladiatorlosSA_zhCN.lua
 
-## Title-zhCN: |cff880303[有爱]|r Gladiator 中文包
+## Title-zhCN: |cff880303[爱不易]|r Gladiator 中文包
 ## X-Vendor: AbyUI
 

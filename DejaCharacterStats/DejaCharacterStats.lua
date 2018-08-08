@@ -34,7 +34,6 @@ local loader = CreateFrame("Frame")
 
 			DejaCharacterStatsDB = initDB(DejaCharacterStatsDB, gdbprivate.gdbdefaults) --the first per account saved variable. The second per-account variable DCS_ClassSpecDB is handled in DCS_Layouts.lua
 			gdbprivate.gdb = DejaCharacterStatsDB --fast access for checkbox states
-
 			self:UnregisterEvent("ADDON_LOADED")
 		end
 	end)

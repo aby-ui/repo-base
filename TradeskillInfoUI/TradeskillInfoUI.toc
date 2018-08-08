@@ -15,7 +15,7 @@
 TradeskillInfoUI.lua
 TradeskillInfoUI.xml
 
-## Title: |cff880303[有爱]|r TradeSkill 设置
+## Title: |cff880303[爱不易]|r TradeSkill 设置
 ## Notes-zhCN: 商业技能资料库设置窗口
 ## Notes-zhTW: 商業技能資料庫設置窗口
 ## X-Vendor: AbyUI

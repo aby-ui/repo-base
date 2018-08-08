@@ -55,7 +55,7 @@ GUI_Report.lua
 GUI_Config.lua
 GUI_Realtime.lua
 
-## Title: |cff880303[有爱]|r Recount 伤害统计
+## Title: |cff880303[爱不易]|r Recount 伤害统计
 ## Notes-zhCN: 基于 Graph 裤开发的伤害/治疗统计插件.
 ## Notes-zhTW: 圖形化顯示的傷害/治療統計插件.
 ## X-Vendor: AbyUI

@@ -14,5 +14,5 @@
 ## X-DBM-Voice-Version: 7
 ## X-DBM-Voice-HasCount: 1
 
-## Title-zhCN: |cff880303[有爱]|r DBM 夏一可语音包
+## Title-zhCN: |cff880303[爱不易]|r DBM 夏一可语音包
 ## X-Vendor: AbyUI

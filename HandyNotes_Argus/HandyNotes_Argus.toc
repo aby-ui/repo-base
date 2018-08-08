@@ -15,6 +15,6 @@ localization\zhCN.lua
 localization\zhTW.lua
 HandyNotes_Argus.lua
 
-## Title-zhCN: |cff880303[有爱]|r HandyNotes 阿古斯宝箱
+## Title-zhCN: |cff880303[爱不易]|r HandyNotes 阿古斯宝箱
 ## X-Vendor: AbyUI
 

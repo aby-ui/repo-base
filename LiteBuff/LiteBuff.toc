@@ -28,6 +28,6 @@ Buttons\embeds.xml
 Options.lua
 
 
-## Title-zhCN: |cff880303[有爱]|r LiteBuff 职业快捷按钮
+## Title-zhCN: |cff880303[爱不易]|r LiteBuff 职业快捷按钮
 ## Notes-zhCN: 针对每个职业配置的快捷施法条
 ## X-Vendor: AbyUI

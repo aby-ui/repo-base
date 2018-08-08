@@ -138,7 +138,7 @@ Addon.DisplayOptions = Addon.Options:NewPanel(LADDON, L.DisplaySettings, L.Displ
 	end
 
 	self:CreateHeader(L.CloseInventory, 'GameFontHighlight', true)
-	for i, event in ipairs {'Bank', 'Combat', 'Vehicle', 'Vendor'} do
+	for i, event in ipairs {'Bank', 'Combat', 'Vehicle', 'Vendor', 'Map'} do
 		self:CreateCheck('close' .. event)
 	end
 end)

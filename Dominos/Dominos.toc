@@ -33,7 +33,7 @@ plugins\launcher.lua
 plugins\blizzardHider.lua
 plugins\buttonThemer.lua
 
-## Title-zhCN: |cff880303[有爱]|r Dominos 多米诺动作条
+## Title-zhCN: |cff880303[爱不易]|r Dominos 多米诺动作条
 ## Notes-zhCN: 一个简单易用的动作条移动插件|n可以移动动作条、施法条、宠物条等等|n右键点击方案可以复制
 ## X-Vendor: AbyUI
 

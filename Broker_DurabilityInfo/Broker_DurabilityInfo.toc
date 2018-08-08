@@ -1,7 +1,7 @@
 ## Interface: 80000
 ## Title: Broker: DurabilityInfo
 ## Notes: Displays item durability and repair cost.
-## Version: v1.28
+## Version: v1.29
 ## Author: iceeagle
 ## OptionalDeps: Ace3, LibDataBroker-1.1, LibDialog-1.0, LibCrayon-3.0
 ## SavedVariables: Broker_DurabilityInfoDB
@@ -21,6 +21,6 @@ Locales\zhTW.lua
 Broker_DurabilityInfo.lua
 
 
-## Title-zhCN: |cff880303[有爱]|r Broker 装备耐久信息
+## Title-zhCN: |cff880303[爱不易]|r Broker 装备耐久信息
 ## Notes-zhCN: 在信息条中显示人物装备耐久信息.
 ## X-Vendor: AbyUI

@@ -79,7 +79,7 @@ do
 	elseif Class == 'SHAMAN' then
 		Unusable = {
 			{LE_ITEM_WEAPON_BOWS, LE_ITEM_WEAPON_GUNS, LE_ITEM_WEAPON_POLEARM, LE_ITEM_WEAPON_SWORD1H, LE_ITEM_WEAPON_SWORD2H, LE_ITEM_WEAPON_WARGLAIVE, LE_ITEM_WEAPON_THROWN, LE_ITEM_WEAPON_CROSSBOW, LE_ITEM_WEAPON_WAND},
-			{LE_ITEM_ARMOR_PLATEM}
+			{LE_ITEM_ARMOR_PLATE}
 		}
 	elseif Class == 'WARLOCK' then
 		Unusable = {
@@ -102,7 +102,7 @@ do
 		for _, subclass in ipairs(Unusable[i]) do
 			list[subclass] = true
 		end
-		
+
 		Lib.unusable[class] = list
 	end
 end

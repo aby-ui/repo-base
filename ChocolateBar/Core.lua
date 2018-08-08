@@ -4,6 +4,7 @@ local L = LibStub("AceLocale-3.0"):GetLocale("ChocolateBar")
 local _G, pairs, ipairs, table, string, tostring = _G, pairs, ipairs, table, string, tostring
 local select, strjoin, CreateFrame = select, strjoin, CreateFrame
 
+ChocolateBar.Jostle = {}
 ChocolateBar.Bar = {}
 ChocolateBar.ChocolatePiece = {}
 ChocolateBar.Drag = {}

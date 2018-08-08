@@ -1,6 +1,6 @@
 --[[
 Name: RangeDisplay
-Revision: $Revision: 384 $
+Revision: $Revision: 387 $
 Author(s): mitch0
 Website: http://www.wowace.com/projects/range-display/
 SVN: svn://svn.wowace.com/wow/range-display/mainline/trunk
@@ -10,9 +10,9 @@ License: Public Domain
 
 local AppName, RangeDisplay = ...
 local OptionsAppName = AppName .. "_Options"
-local VERSION = AppName .. "-v4.8.2"
+local VERSION = AppName .. "-v4.8.3"
 --[===[@debug@
-local VERSION = AppName .. "-r" .. ("$Revision: 384 $"):match("%d+")
+local VERSION = AppName .. "-r" .. ("$Revision: 387 $"):match("%d+")
 --@end-debug@]===]
 
 local rc = LibStub("LibRangeCheck-2.0")
@@ -120,7 +120,7 @@ local defaults = {
                 font = DefaultFontName,
                 fontSize = 24,
                 fontOutline = "",
-                strata = "HIGH",
+                strata = "MEDIUM",
                 enemyOnly = false,
                 warnEnemyOnly = true,
                 reverse = false,

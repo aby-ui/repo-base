@@ -13,6 +13,6 @@
 
 HandyNotes_LegionRaresTreasures.lua
 
-## Title-zhCN: |cff880303[有爱]|r HandyNotes 军团再临宝箱
+## Title-zhCN: |cff880303[爱不易]|r HandyNotes 军团再临宝箱
 ## X-Vendor: AbyUI
 

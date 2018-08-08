@@ -18,5 +18,5 @@
 Apathy.lua
 
 
-## Title-zhCN: |cff880303[有爱]|r Masque 皮肤Apathy
+## Title-zhCN: |cff880303[爱不易]|r Masque 皮肤Apathy
 ## X-Vendor: AbyUI

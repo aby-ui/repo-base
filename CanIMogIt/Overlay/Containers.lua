@@ -157,12 +157,19 @@ CanIMogIt.frame:AddEventFunction(OnVoidStorageOpened)
 
 
 local function ContainersOverlayEvents(event, ...)
+    --[[
+        Adding C_Timer.After to cause it to run next frame. Something changed
+        with 8.0 that is causing bigger bags to update items being moved
+        in to/out of bags in a different order. This is causing the icon to
+        not update on some characters. The After(0,...) call makes it update
+        next frame instead.
+    ]]
     -- bags
     for i=1,NUM_CONTAINER_FRAMES do
         for j=1,MAX_CONTAINER_ITEMS do
             local frame = _G["ContainerFrame"..i.."Item"..j]
             if frame then
-                ContainerFrameItemButton_CIMIUpdateIcon(frame.CanIMogItOverlay)
+                C_Timer.After(0, function() ContainerFrameItemButton_CIMIUpdateIcon(frame.CanIMogItOverlay) end)
             end
         end
     end
@@ -171,7 +178,7 @@ local function ContainersOverlayEvents(event, ...)
     for i=1,NUM_BANKGENERIC_SLOTS do
         local frame = _G["BankFrameItem"..i]
         if frame then
-            ContainerFrameItemButton_CIMIUpdateIcon(frame.CanIMogItOverlay)
+            C_Timer.After(0, function() ContainerFrameItemButton_CIMIUpdateIcon(frame.CanIMogItOverlay) end)
         end
     end
 

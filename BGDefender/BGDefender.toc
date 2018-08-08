@@ -10,6 +10,6 @@
 
 BGDefender.xml
 
-## Title-zhCN:  |cff880303[有爱]|r BGDefender 战场通报
+## Title-zhCN:  |cff880303[爱不易]|r BGDefender 战场通报
 ## Notes-zhCN: 一个小框架方便跟对战场内的其他玩家交流或求助.
 ## X-Vendor: AbyUI

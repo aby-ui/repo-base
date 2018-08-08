@@ -361,7 +361,7 @@
 					</OnLeave>
 					<OnClick>
 						Lib_ToggleDropDownMenu(nil, nil, self:GetParent());
-						PlaySound163("igMainMenuOptionCheckBoxOn");
+						PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON);
 					</OnClick>
 				</Scripts>
 				<NormalTexture name="$parentNormalTexture" file="Interface\ChatFrame\UI-ChatIcon-ScrollDown-Up">

@@ -1,7 +1,7 @@
 ## Interface: 80000
 ## Title: RangeDisplay Options
 ## Author: mitch0
-## Version: v4.8.2
+## Version: v4.8.3
 ## Notes: Configuration options for RangeDisplay
 ## X-Repple: 辅助
 ## OptionalDeps: AceGUI-3.0-SharedMediaWidgets
@@ -21,7 +21,7 @@ libs\AceGUI-3.0-SharedMediaWidgets\widget.xml
 localizations.lua
 Options.lua
 
-## Title: |cff880303[有爱]|r RangeDis 距离显示设置
+## Title: |cff880303[爱不易]|r RangeDis 距离显示设置
 ## Notes-zhCN: 距离显示设置模块
 ## Notes-zhTW: 目標距離 設置模組
 ## X-Vendor: AbyUI

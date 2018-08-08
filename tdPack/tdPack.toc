@@ -8,6 +8,6 @@
 
 load.xml
 
-## Title: |cff880303[有爱]|r tdPack 背包整理
+## Title: |cff880303[爱不易]|r tdPack 背包整理
 ## Notes-zhCN: 背包整理
 ## X-Vendor: AbyUI

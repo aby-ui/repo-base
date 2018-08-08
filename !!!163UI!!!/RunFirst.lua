@@ -34,7 +34,7 @@ function normalize(num, min, max)
 end
 
 function U1Message(text, r, g, b, chatFrame)
-    (chatFrame or DEFAULT_CHAT_FRAME):AddMessage(L["|cffcd1a1c【有爱】|r- "]..text, r, g, b);
+    (chatFrame or DEFAULT_CHAT_FRAME):AddMessage(L["|cffcd1a1c【爱不易】|r- "]..text, r, g, b);
 end
 
 local cfNames = {} for i=1, NUM_CHAT_WINDOWS do cfNames[i] = "ChatFrame"..i end

@@ -17,6 +17,6 @@ Gossip.lua
 Splits.lua
 Schedule.lua
 
-## Title-zhCN: |cff880303[有爱]|r AngryKS 秘境计时增强
+## Title-zhCN: |cff880303[爱不易]|r AngryKS 秘境计时增强
 ## X-Vendor: AbyUI
 

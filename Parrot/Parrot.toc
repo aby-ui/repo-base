@@ -42,7 +42,7 @@ Data\Cooldowns.lua
 Data\Loot.lua
 Data\CombatStatus.lua
 
-## Title: |cff880303[有爱]|r Parrot 浮动战斗信息
+## Title: |cff880303[爱不易]|r Parrot 浮动战斗信息
 ## Notes-zhCN: 绝妙的浮动战斗记录指示器。
 ## Notes-zhTW: 絕妙的浮動戰鬥記錄指示器。
 ## X-Vendor: AbyUI

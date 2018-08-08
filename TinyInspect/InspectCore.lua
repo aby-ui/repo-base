@@ -47,11 +47,12 @@ function ReInspect(unit)
         data      = data,
         unit      = unit,
         onExecute = function(self)
-            local count, ilevel, _, weaponLevel, isArtifact = LibItemInfo:GetUnitItemLevel(self.unit)
+            local count, ilevel, _, weaponLevel, isArtifact, maxLevel = LibItemInfo:GetUnitItemLevel(self.unit)
             if (ilevel <= 0) then return true end
             if (count == 0 and ilevel > 0) then
                 self.data.timer = time()
                 self.data.ilevel = U1GetInventoryLevel(self.data.unit) --ilevel
+                self.data.maxLevel = maxLevel
                 self.data.weaponLevel = weaponLevel
                 self.data.isArtifact = isArtifact
                 LibEvent:trigger("UNIT_REINSPECT_READY", self.data)
@@ -108,7 +109,7 @@ hooksecurefunc("NotifyInspect", function(unit)
     if (not data.realm) then
         data.realm = GetRealmName()
     end
-    data.expired = time() + 4
+    data.expired = time() + 3
     inspecting = data
     LibEvent:trigger("UNIT_INSPECT_STARTED", data)
 end)
@@ -124,7 +125,7 @@ LibEvent:attachEvent("INSPECT_READY", function(this, guid)
         data      = guids[guid],
         onTimeout = function(self) inspecting = false end,
         onExecute = function(self)
-            local count, ilevel, _, weaponLevel, isArtifact = LibItemInfo:GetUnitItemLevel(self.data.unit)
+            local count, ilevel, _, weaponLevel, isArtifact, maxLevel = LibItemInfo:GetUnitItemLevel(self.data.unit)
             if (ilevel <= 0) then return true end
             if (count == 0 and ilevel > 0) then
                 --if (UnitIsVisible(self.data.unit) or self.data.ilevel == ilevel) then
@@ -132,6 +133,7 @@ LibEvent:attachEvent("INSPECT_READY", function(this, guid)
                     self.data.name = UnitName(self.data.unit)
                     self.data.class = select(2, UnitClass(self.data.unit))
                     self.data.ilevel = U1GetInventoryLevel(self.data.unit) --ilevel
+                    self.data.maxLevel = maxLevel
                     self.data.spec = GetInspectSpec(self.data.unit)
                     self.data.hp = UnitHealthMax(self.data.unit)
                     self.data.weaponLevel = weaponLevel
@@ -141,6 +143,7 @@ LibEvent:attachEvent("INSPECT_READY", function(this, guid)
                     return true
                 --else
                 --    self.data.ilevel = ilevel
+                --    self.data.maxLevel = maxLevel
                 --end
             end
         end,

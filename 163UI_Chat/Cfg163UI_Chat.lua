@@ -2,12 +2,13 @@ U1_CHAT_WORLD_CHANNEL = "大脚世界频道";
 U1RegisterAddon("163UI_Chat", {
     title = "聊天增强",
     defaultEnable = 1,
+    load = "LOGIN",
     desc = "和聊天框相关的小插件，提供聊天框缩放、鼠标滚轮增强、TAB切换频道、点击时间标记复制文本等功能，详情参见设置页面。` `此外还整合了'自动查询密语详情'及'智能切换声望条'的功能。",
 
     tags = { TAG_CHAT, TAG_DEV },
 
     --icon = [[Interface\Icons\Achievement_WorldEvent_ChildrensWeek]],
-    author = "|cffcd1a1c[有爱原创]|r",
+    author = "|cffcd1a1c[爱不易原创]|r",
     icon = [[Interface\Icons\Spell_Holy_HolyGuidance]],
     ------- Options --------
     {
@@ -16,7 +17,13 @@ U1RegisterAddon("163UI_Chat", {
         text="加入世界频道",
         callback = function(cfg, v, loading)
             if v then
-                JoinChannelByName(U1_CHAT_WORLD_CHANNEL)
+                local id, name = JoinChannelByName(U1_CHAT_WORLD_CHANNEL)
+                if not id then
+                    CoreOnEvent("INITIAL_CLUBS_LOADED", function()
+                        JoinChannelByName(U1_CHAT_WORLD_CHANNEL)
+                        return true
+                    end)
+                end
             else
                 LeaveChannelByName(U1_CHAT_WORLD_CHANNEL)
             end

@@ -8,6 +8,6 @@
 Locales.lua
 TrufiGCD.lua
 
-## Title: |cff880303[有爱]|r TrufiGCD 技能序列
+## Title: |cff880303[爱不易]|r TrufiGCD 技能序列
 ## X-Vendor: AbyUI
 

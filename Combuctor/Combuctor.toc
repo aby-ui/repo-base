@@ -5,7 +5,7 @@
 ## SavedVariables: Combuctor_Sets
 
 ## OptionalDeps: BagBrother, WoWUnit
-## Version: 8.0
+## Version: 8.0.1
 
 main.lua
 
@@ -15,6 +15,6 @@ style.xml
 
 legacy.lua
 
-## Title: |cff880303[有爱]|r Combuctor 背包整合
+## Title: |cff880303[爱不易]|r Combuctor 背包整合
 ## Notes-zhCN: 可以按照类型过滤的背包&银行整合插件，标签风格。可按任务物品，装备，消耗品、物品品质等分类查看，让你查询物品更直观方便。
 ## X-Vendor: AbyUI

@@ -5,14 +5,14 @@
 -- @DepandsOn: InspectUnit.lua
 -------------------------------------
 
-hooksecurefunc("ShowInspectItemListFrame", function(unit, parent, itemLevel)
+hooksecurefunc("ShowInspectItemListFrame", function(unit, parent, itemLevel, maxLevel)
     local frame = parent.inspectFrame
     if (not frame) then return end
     if (not frame.specicon) then
         frame.specicon = frame:CreateTexture(nil, "BORDER")
         frame.specicon:SetSize(42, 42)
         frame.specicon:SetPoint("TOPRIGHT", -6, -6)
-        frame.specicon:SetAlpha(0.3)
+        frame.specicon:SetAlpha(0.4)
         frame.specicon:SetMask("Interface\\Minimap\\UI-Minimap-Background")
         frame.spectext = frame:CreateFontString(nil, "BORDER")
         frame.spectext:SetFont(SystemFont_Outline_Small:GetFont(), 10, "THINOUTLINE")

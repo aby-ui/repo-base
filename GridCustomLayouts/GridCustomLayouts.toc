@@ -13,5 +13,5 @@ Locales.lua
 GridCustomLayouts.lua
 GridCustomLayoutsFrame.xml
 
-## Title: |cff880303[有爱]|r Grid 自定义布局
+## Title: |cff880303[爱不易]|r Grid 自定义布局
 ## X-Vendor: AbyUI

@@ -347,89 +347,6 @@ function module.options:Load()
 	
 	self.dropDownRaidDiffText = ELib:Text(self,L.InviteRaidDiff,11):Size(150,20):Point("TOPLEFT",self.dropDownRaidDiff,-180,0)
 	
-	local LootMethodDropDown = {
-		{"freeforall",LOOT_FREE_FOR_ALL},
-		{"group",LOOT_GROUP_LOOT},
-		{"master",LOOT_MASTER_LOOTER},
-		{"needbeforegreed",LOOT_NEED_BEFORE_GREED},
-		{"personalloot",LOOT_PERSONAL_LOOT},
-		{"roundrobin",LOOT_ROUND_ROBIN},
-	}
-	self.dropDownLootMethod = ELib:DropDown(self,235,10):Point(185,-395):Size(250)
-	function self.dropDownLootMethod:SetValue(newValue)
-		VExRT.InviteTool.LootMethod = LootMethodDropDown[newValue][1]
-		module.options.dropDownLootMethod:SetText( LootMethodDropDown[newValue][2] )
-		ELib:DropDownClose()
-		for i=1,#module.options.dropDownLootMethod.List do
-			module.options.dropDownLootMethod.List[i].checkState = VExRT.InviteTool.LootMethod == LootMethodDropDown[ module.options.dropDownLootMethod.List[i].arg1 ][1]
-		end
-	end
-	for i=1,#LootMethodDropDown do
-		self.dropDownLootMethod.List[i] = {
-			text = LootMethodDropDown[i][2],
-			checkState = VExRT.InviteTool.LootMethod == LootMethodDropDown[i][1],
-			radio = true,
-			arg1 = i,
-			func = self.dropDownLootMethod.SetValue,
-		}
-	end
-	self.dropDownLootMethod.Lines = #self.dropDownLootMethod.List
-	do
-		local methodName = ""
-		for i=1,#LootMethodDropDown do
-			if LootMethodDropDown[i][1] == VExRT.InviteTool.LootMethod then
-				methodName = LootMethodDropDown[i][2]
-				break
-			end
-		end
-		self.dropDownLootMethod:SetText( methodName or "" )
-	end
-	self.dropDownLootMethodText = ELib:Text(self,LOOT_METHOD..":",11):Size(150,20):Point("TOPLEFT",self.dropDownLootMethod,-180,0)
-	
-	
-	self.masterlotersInput = ELib:Edit(self):Size(250,20):Point(185,-420):Tooltip(L.InviteMasterlootersTooltip):Text(VExRT.InviteTool.MasterLooters):OnChange(function(self)
-		VExRT.InviteTool.MasterLooters = self:GetText()
-		createMastelootersArray()
-	end) 
-	self.masterlotersInputText = ELib:Text(self,L.InviteMasterlooters,11):Size(180,20):Point("TOPLEFT",self.masterlotersInput,-180,0)
-	
-	
-	local LootThresholdDropDown = {
-		{2,"|c"..select(4,GetItemQualityColor(2))..ITEM_QUALITY2_DESC},
-		{3,"|c"..select(4,GetItemQualityColor(3))..ITEM_QUALITY3_DESC},
-		{4,"|c"..select(4,GetItemQualityColor(4))..ITEM_QUALITY4_DESC},
-	}
-	self.dropDownLootThreshold = ELib:DropDown(self,235,10):Point(185,-445):Size(250)
-	function self.dropDownLootThreshold:SetValue(newValue)
-		VExRT.InviteTool.LootThreshold = LootThresholdDropDown[newValue][1]
-		module.options.dropDownLootThreshold:SetText( LootThresholdDropDown[newValue][2] )
-		ELib:DropDownClose()
-		for i=1,#module.options.dropDownLootThreshold.List do
-			module.options.dropDownLootThreshold.List[i].checkState = VExRT.InviteTool.LootThreshold == LootThresholdDropDown[ module.options.dropDownLootThreshold.List[i].arg1 ][1]
-		end
-
-	end
-	for i=1,#LootThresholdDropDown do
-		self.dropDownLootThreshold.List[i] = {
-			text = LootThresholdDropDown[i][2],
-			checkState = VExRT.InviteTool.LootThreshold == LootThresholdDropDown[i][1],
-			radio = true,
-			arg1 = i,
-			func = self.dropDownLootThreshold.SetValue,
-		}
-	end
-	self.dropDownLootThreshold.Lines = #self.dropDownLootThreshold.List
-	do
-		local diffName = ""
-		for i=1,#LootThresholdDropDown do
-			if LootThresholdDropDown[i][1] == VExRT.InviteTool.LootThreshold then
-				diffName = LootThresholdDropDown[i][2]
-				break
-			end
-		end
-		self.dropDownLootThreshold:SetText( diffName or "" )
-	end
-	self.dropDownLootThresholdText = ELib:Text(self,LOOT_THRESHOLD..":",11):Size(150,20):Point("TOPLEFT",self.dropDownLootThreshold,-180,0)
 
 	
 	self.HelpPlate = {
@@ -582,9 +499,9 @@ local function AutoRaidSetup()
 				module.db.sessionInRaidLoot = true
 				
 				SetRaidDifficultyID(VExRT.InviteTool.RaidDiff)
-				SetLootMethod(VExRT.InviteTool.LootMethod,UnitName("player"),nil)
+				--SetLootMethod(VExRT.InviteTool.LootMethod,UnitName("player"),nil)
 				--SetLootThreshold(VExRT.InviteTool.LootThreshold)	--http://us.battle.net/wow/en/forum/topic/14610481537
-				ExRT.F.ScheduleTimer(SetLootThreshold, 2, VExRT.InviteTool.LootThreshold)
+				--ExRT.F.ScheduleTimer(SetLootThreshold, 2, VExRT.InviteTool.LootThreshold)
 			end
 		elseif not inRaid and module.db.sessionInRaid then
 			module.db.sessionInRaid = nil
@@ -593,8 +510,8 @@ local function AutoRaidSetup()
 		if inRaid and not module.db.sessionInRaidLoot then
 			module.db.sessionInRaidLoot = true
 			if RaidLeader then
-				SetLootMethod(VExRT.InviteTool.LootMethod,UnitName("player"),nil)
-				ExRT.F.ScheduleTimer(SetLootThreshold, 2, VExRT.InviteTool.LootThreshold)
+				--SetLootMethod(VExRT.InviteTool.LootMethod,UnitName("player"),nil)
+				--ExRT.F.ScheduleTimer(SetLootThreshold, 2, VExRT.InviteTool.LootThreshold)
 			end
 		end	
 	end
@@ -608,7 +525,7 @@ local function AutoRaidSetup()
 				local nameNow = UnitName(name)
 				if nameNow then
 					if masterlooterName ~= nameNow then
-						SetLootMethod("master",name)
+						--SetLootMethod("master",name)
 					end
 					break
 				end

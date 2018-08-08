@@ -1,5 +1,5 @@
 ## Interface: 80000
-## Title: |cff880303[有爱]|r 163UI 聊天记录
+## Title: |cff880303[爱不易]|r AbyUI 聊天记录
 ## Notes: 聊天历史增强。不丢失历史记录,而且可以使用上次登入及其他角色的聊天历史。                                     |cffff0000注意：开启本插件后无法记录安全命令,比如"/target 怪物",必要时请关闭|r
 ## X-Vendor: AbyUI
 

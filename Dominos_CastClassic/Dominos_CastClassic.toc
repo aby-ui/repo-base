@@ -7,6 +7,6 @@
 castBar.lua
 
 
-## Title-zhCN: |cff880303[有爱]|r Dominos 经典施法条
+## Title-zhCN: |cff880303[爱不易]|r Dominos 经典施法条
 ## Notes-zhCN: 多米诺-经典施法条模块
 ## X-Vendor: AbyUI

@@ -18,7 +18,7 @@ L["BtnAnnNoSelect"] = "请至少选择一个团员";
 
 L["CopyDialogTitleText"] = "请按Ctrl+C复制到浏览器中打开";
 
-L["TitleText"] = "有爱团员信息统计";
+L["TitleText"] = "爱不易团员信息统计";
 L["HeaderClass"] = CLASS;
 L["HeaderPlayerName"] = "成员名称";
 L["HeaderGS"] = "装等";

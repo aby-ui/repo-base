@@ -13,7 +13,7 @@ SideTab.ID = 1
 function SideTab:New(parent)
 	local b = self:Bind(CreateFrame('CheckButton', ADDON .. 'SideTab' .. self.ID, parent, ADDON .. 'SideTabTemplate'))
 	b:GetNormalTexture():SetTexCoord(0.06, 0.94, 0.06, 0.94)
-	b:SetScript('OnHide', b.UnregisterEvents)
+	b:SetScript('OnHide', b.UnregisterSignals)
 	b:SetScript('OnClick', b.OnClick)
 	b:SetScript('OnEnter', b.OnEnter)
 	b:SetScript('OnLeave', b.OnLeave)
@@ -22,20 +22,20 @@ function SideTab:New(parent)
 	self.ID = self.ID + 1
 	return b
 end
-	
-	
+
+
 --[[ Frame Events ]]--
 
 function SideTab:OnShow()
-	self:RegisterFrameMessage('RULE_CHANGED', 'UpdateHighlight')
+	self:RegisterFrameSignal('RULE_CHANGED', 'UpdateHighlight')
 	self:UpdateHighlight()
 end
 
 function SideTab:OnClick()
 	self:GetFrame().subrule = nil
 	self:GetFrame().rule = self.id
-	self:SendFrameMessage('RULE_CHANGED', self.id)
-	self:SendFrameMessage('FILTERS_CHANGED')
+	self:SendFrameSignal('RULE_CHANGED', self.id)
+	self:SendFrameSignal('FILTERS_CHANGED')
 end
 
 function SideTab:OnEnter()

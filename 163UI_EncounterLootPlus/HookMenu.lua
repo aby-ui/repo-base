@@ -17,7 +17,7 @@ end
 local function EncounterJournal_InitLootFilter_Mine(self, level)
     local info = UIDropDownMenu_CreateInfo();
     if (level == 1) then
-        info.text = "有爱装备搜索"
+        info.text = "爱不易装备搜索"
         info.func = nil
         info.notCheckable = true
         info.hasArrow = true

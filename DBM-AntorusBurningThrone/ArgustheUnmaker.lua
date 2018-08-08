@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2031, "DBM-AntorusBurningThrone", nil, 946)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17623 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 17659 $"):sub(12, -3))
 mod:SetCreatureID(124828)
 mod:SetEncounterID(2092)
 mod:SetZone()
@@ -53,7 +53,7 @@ local warnCosmicBeaconCast			= mod:NewCastAnnounce(252616, 2)
 local warnCosmicBeacon				= mod:NewTargetAnnounce(252616, 2)
 local warnDiscsofNorg				= mod:NewCastAnnounce(252516, 1)
 --Stage Three Mythic
-local warnSargSentence				= mod:NewTargetAnnounce(257966, 3)
+local warnSargSentence				= mod:NewTargetNoFilterAnnounce(257966, 3)
 local warnEdgeofAnni				= mod:NewCountAnnounce(258834, 4)
 local warnSoulRendingScythe			= mod:NewStackAnnounce(258838, 2, nil, "Tank")
 --Stage Four: The Gift of Life, The Forge of Loss (Non Mythic)
@@ -552,6 +552,9 @@ function mod:SPELL_AURA_APPLIED(args)
 					specWarnSoulrendingScythe:Play("stackhigh")
 				else
 					warnSoulRendingScythe:Show(args.destName, amount)
+					if amount >= 4 then
+						warnSoulRendingScythe:Play("swapsoon")
+					end
 				end
 			end
 		end

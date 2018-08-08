@@ -13,6 +13,6 @@ artifactBar.lua
 azeriteBar.lua
 honorBar.lua
 
-## Title-zhCN: |cff880303[有爱]|r Dominos 进度条模块
+## Title-zhCN: |cff880303[爱不易]|r Dominos 进度条模块
 ## Notes-zhCN: 多米诺-经验,声望,荣誉,神器能量进度条模块
 ## X-Vendor: AbyUI

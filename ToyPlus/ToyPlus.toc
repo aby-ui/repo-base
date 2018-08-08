@@ -8,5 +8,5 @@
 locales.lua
 ToyPlus.lua
 
-## Title: |cff880303[有爱]|r ToyPlus 玩具箱
+## Title: |cff880303[爱不易]|r ToyPlus 玩具箱
 ## X-Vendor: AbyUI

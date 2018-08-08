@@ -345,7 +345,8 @@ ConditionCategory:RegisterCondition(13,   "LOC_CONTINENT", {
 	funcstr = [[BITFLAGSMAPANDCHECK( GetCurrentMapContinent() )]],
 	events = function(ConditionObject, c)
 		return
-			ConditionObject:GenerateNormalEventString("WORLD_MAP_UPDATE")
+			ConditionObject:GenerateNormalEventString("ZONE_CHANGED"),
+			ConditionObject:GenerateNormalEventString("ZONE_CHANGED_NEW_AREA")
 	end,
 })
 

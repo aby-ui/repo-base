@@ -11,7 +11,7 @@ U1RegisterAddon("Accountant_Classic", {
 
     desc = "追踪每个角色的所有收入与支出状况，并可显示当日小计、当周小计、以及自有记录起的总计。并可显示所有角色的总金额。``快捷命令：/accountant",
 
-    modifier = "|cffcd1a1c[有爱]|r",
+    modifier = "|cffcd1a1c[爱不易]|r",
 
     ------- Options --------
     {

@@ -15,5 +15,5 @@
 ## X-WoWI-ID: 8918
 
 Gears.lua
-## Title-zhCN: |cff880303[有爱]|r Masque 皮肤Gears
+## Title-zhCN: |cff880303[爱不易]|r Masque 皮肤Gears
 ## X-Vendor: AbyUI

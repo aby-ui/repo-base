@@ -19,6 +19,6 @@ db_tw.lua
 
 AtlasLootReverse.lua
 
-## Title-zhCN: |cff880303[有爱]|r AtlasLootR 物品来源查询
+## Title-zhCN: |cff880303[爱不易]|r AtlasLootR 物品来源查询
 ## Notes-zhCN: 装备掉落出处显示
 ## X-Vendor: AbyUI

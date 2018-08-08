@@ -8,7 +8,7 @@ U1RegisterAddon("163UI_ChatHistory", {
     --parent = "163UI_Chat",
 
 
-    author = "|cffcd1a1c[有爱原创]|r",
+    author = "|cffcd1a1c[爱不易原创]|r",
     
     icon = [[Interface\ICONS\INV_Inscription_Scroll]],
 

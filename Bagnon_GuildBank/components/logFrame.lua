@@ -15,7 +15,7 @@ local MAX_TRANSACTIONS = 22
 
 function LogFrame:New(parent)
 	local f = self:Bind(CreateFrame('ScrollingMessageFrame', nil, parent))
-	f:RegisterFrameMessage('LOG_SELECTED', 'OnLogSelected')
+	f:RegisterFrameSignal('LOG_SELECTED', 'OnLogSelected')
 	f:SetScript('OnHyperlinkClick', f.OnHyperlink)
 	f:SetMaxLines(MAX_TRANSACTIONS)
 	f:SetFontObject(GameFontHighlight)
@@ -31,11 +31,11 @@ end
 function LogFrame:OnLogSelected(_, logID)
 	if logID == 1 or logID == 2 then
 		self.isMoney = logID == 2
-		self:RegisterMessage('GUILD_TAB_CHANGED', 'Update')
+		self:RegisterSignal('GUILD_TAB_CHANGED', 'Update')
 		self:RegisterEvent('GUILDBANKLOG_UPDATE', 'UpdateContent')
 		self:Update()
 	else
-		self:UnregisterMessage('GUILD_TAB_CHANGED')
+		self:UnregisterSignal('GUILD_TAB_CHANGED')
 		self:UnregisterEvent('GUILDBANKLOG_UPDATE')
 	end
 end

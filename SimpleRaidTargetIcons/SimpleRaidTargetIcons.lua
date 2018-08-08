@@ -174,7 +174,7 @@ function srti.frame:Show()
                                         	self:Hide();
 						return;
 					end
-					PlaySound163("igMainMenuOptionCheckBoxOn");
+					PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON);
 					SetPortraitTexture( srti.frame.p, "target" );
 --]]		                end
 
@@ -193,7 +193,7 @@ function srti.frame:Show()
 						self.lingering = nil;
 						self.hiding = curtime;
 						self.showinghowing = nil;
-						PlaySound163("igMainMenuOptionCheckBoxOff");
+						PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_OFF);
 					elseif ( not self.lingering ) then
 						self.lingering = curtime;
 					end
@@ -321,7 +321,7 @@ function srti.frame:Show()
 					self.lingering = nil
 					self.showing = nil
 					self.index = nil;
-					PlaySound163("igMainMenuOptionCheckBoxOff");
+					PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_OFF);
 				end
 			end
 		end);
@@ -340,7 +340,7 @@ function srti.frame:Show()
 					PlaySound163("igMiniMapZoomIn");
 					srti.SetRaidTarget(self.index);
 				else
-					PlaySound163("igMainMenuOptionCheckBoxOff");
+					PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_OFF);
 				end
 				self.showing = nil;
 				self.hiding = GetTime();
@@ -395,7 +395,7 @@ srti.frame:SetScript("OnEvent", function(self,event,...)
 			self.index = nil;
 			self.showing = nil;
 			self.hiding = GetTime();
-			PlaySound163("igMainMenuOptionCheckBoxOff");
+			PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_OFF);
 			self.exists = nil;
 		elseif ( self.exists ) then
 			self.exists = nil;

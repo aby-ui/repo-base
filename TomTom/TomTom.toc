@@ -1,7 +1,7 @@
 ## Interface: 80000
 ## Title: TomTom
 ## Author: jnwhiteh
-## Version: v80001-1.0.1
+## Version: v80001-1.0.2
 ## License: All Rights Reserved
 ## Notes: Acts as your portable navigation assistant
 ## Notes-frFR: Agit comme un assistant de navigation portable
@@ -28,8 +28,8 @@ TomTom_POIIntegration.lua
 
 TomTom_Config.lua
 
-## Title-zhCN: |cff880303[有爱]|r TomTom 路径指示
-## Title-zhTW: |cff880303[有爱]|r TomTom 路徑指示
+## Title-zhCN: |cff880303[爱不易]|r TomTom 路径指示
+## Title-zhTW: |cff880303[爱不易]|r TomTom 路徑指示
 ## Notes-zhCN:指示目标路径点的方向 距离 到达时间等功能.
 ## Notes-zhTW:指示目標路徑點的方向 距離 到達時間等功能.
 ## X-Vendor: AbyUI

@@ -1,7 +1,7 @@
 ## Interface: 80000
 ## Title: ErrorFilter
 ## Notes: Filters the errors displayed in the UIErrorsFrame.
-## Version: v3.4
+## Version: v3.5
 ## Author: iceeagle
 ## OptionalDeps: Ace3, LibSink-2.0
 ## SavedVariables: ErrorFilterDB
@@ -13,6 +13,6 @@
 ErrorFilter.xml
 
 
-## Title: |cff880303[有爱]|r ErrorFilter 错误过滤
+## Title: |cff880303[爱不易]|r ErrorFilter 错误过滤
 ## Notes-zhCN: 自动过滤掉屏幕上方的红色提示文字.
 ## X-Vendor: AbyUI

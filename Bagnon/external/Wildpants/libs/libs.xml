@@ -2,5 +2,5 @@
 	<Script file="Unfit-1.0\Unfit-1.0.lua"/>
 	<Script file="CustomSearch-1.0\CustomSearch-1.0.lua"/>
 	<Script file="LibItemSearch-1.2\LibItemSearch-1.2.lua"/>
-	<Include file="LibItemCache-2.0\LibItemCache-2.0.lua"/>
+	<Script file="LibItemCache-2.0\LibItemCache-2.0.lua"/>
 </Ui>

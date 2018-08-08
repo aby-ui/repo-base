@@ -388,7 +388,7 @@ local function PasteSettings(panel)
 
 	SetPanelValues(panel, LocalVars)
 	OnPanelItemChange(panel)
-	PlaySound163("igMainMenuOptionCheckBoxOn")
+	PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
 end
 
 local function CopySettings(panel)
@@ -413,7 +413,7 @@ local function CopySettings(panel)
 	-- Store the panel values into the LocalVars/Cache table
 	GetPanelValues(panel, LocalVars)
 
-	PlaySound163("igMainMenuOptionCheckBoxOn")
+	PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
 end
 
 local function ResetSettings(panel)
@@ -597,7 +597,7 @@ local function CreateInterfacePanel( objectName, panelTitle, parentFrameName)
 	ReloadThemeDataButton:SetText("重置")
 
 	ReloadThemeDataButton:SetScript("OnClick", function()
-		PlaySound163("igMainMenuOptionCheckBoxOn"); ResetSettings(panel);
+		PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON); ResetSettings(panel);
 	end)
 
 -- [[
@@ -617,7 +617,7 @@ local function CreateInterfacePanel( objectName, panelTitle, parentFrameName)
 	end
 
 	local function OnClickBookmarkDrawer(frame)
-		PlaySound163("igMainMenuOptionCheckBoxOn")
+		PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
 
 		if not (panel.AlignmentColumn and panel.AlignmentColumn.Headings) then return end
 		local BookmarkMenu = {}

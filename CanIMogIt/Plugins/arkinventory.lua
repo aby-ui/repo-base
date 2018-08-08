@@ -11,27 +11,35 @@ if IsAddOnLoaded("ArkInventory") then
 
     function ArkInventoryItemButton_CIMIUpdateIcon(self)
         if not self or not self:GetParent() then return end
+        local frame = self:GetParent()
+        if not frame.ARK_Data then return end
         if not CIMI_CheckOverlayIconEnabled(self) then
             self.CIMIIconTexture:SetShown(false)
             self:SetScript("OnUpdate", nil)
             return
         end
-        local bag = self:GetParent():GetParent():GetID()
-        local slot = self:GetParent():GetID()
-        CIMI_SetIcon(self, ArkInventoryItemButton_CIMIUpdateIcon, CanIMogIt:GetTooltipText(nil, bag, slot))
-    end
+        local itemLink, bag, slot
+        bag = ArkInventory.InternalIdToBlizzardBagId(frame.ARK_Data.loc_id, frame.ARK_Data.bag_id)
+        slot = frame.ARK_Data.slot_id
 
-    function ArkInventoryGuildBank_CIMIUpdateIcon(self)
-        if not self or not self:GetParent() then return end
-        if not CIMI_CheckOverlayIconEnabled(self) then
-            self.CIMIIconTexture:SetShown(false)
-            self:SetScript("OnUpdate", nil)
-            return
+        if ArkInventory.Global.Location[frame.ARK_Data.loc_id].isOffline or bag >= 1000 then
+            --[[
+                Two things of note here:
+                1) isOffline should treat the item as if it's on a different
+                character, ignoring soulbound status.
+                2) Guild Bank lists the bag as 1000+, which is incorrect.
+                Grabbing the item from the frame directly, since they
+                can't be soulbound anyway.
+            ]]
+            local i = ArkInventory.Frame_Item_GetDB(frame)
+            if i and i.h then
+                itemLink = i.h
+            end
+            -- Nil out bag and slot, so it uses the itemlink instead.
+            bag = nil
+            slot = nil
         end
-        local tab = GetCurrentGuildBankTab()
-        local slot = self:GetParent():GetID()
-        local itemLink = GetGuildBankItemLink(tab, slot)
-        CIMI_SetIcon(self, ArkInventoryGuildBank_CIMIUpdateIcon, CanIMogIt:GetTooltipText(itemLink))
+        CIMI_SetIcon(self, ArkInventoryItemButton_CIMIUpdateIcon, CanIMogIt:GetTooltipText(itemLink, bag, slot))
     end
 
 
@@ -40,45 +48,14 @@ if IsAddOnLoaded("ArkInventory") then
     ----------------------------
 
 
-    function CIMI_ArkInventoryAddFrame(event)
-        if event == "PLAYER_LOGIN" or event == "BANKFRAME_OPENED" or event == "GUILDBANKFRAME_OPENED" then
+    function CIMI_ArkInventoryAddFrame(frame,tainted)
+        if not tainted then
             -- Add to frames
-            -- Bags
-            for i=1,NUM_CONTAINER_FRAMES do
-                for j=1,MAX_CONTAINER_ITEMS do
-                    local frame = _G["ARKINV_Frame1ScrollContainerBag"..i.."Item"..j]
-                    if frame then
-                        CIMI_AddToFrame(frame, ArkInventoryItemButton_CIMIUpdateIcon)
-                    end
-                end
-            end
-            -- Bank
-            for i=1,12 do
-                for j=1,200 do
-                    local frame = _G["ARKINV_Frame3ScrollContainerBag"..i.."Item"..j]
-                    if frame then
-                        CIMI_AddToFrame(frame, ArkInventoryItemButton_CIMIUpdateIcon)
-                    end
-                end
-            end
-            -- Guild Bank
-            C_Timer.After(.1, CIMI_ArkInventoryAddGuildBankFrame)
+            CIMI_AddToFrame(frame, ArkInventoryItemButton_CIMIUpdateIcon)
         end
     end
 
-    CanIMogIt.frame:AddEventFunction(CIMI_ArkInventoryAddFrame)
-
-
-    function CIMI_ArkInventoryAddGuildBankFrame()
-        for i=1,12 do
-            for j=1,200 do
-                local frame = _G["ARKINV_Frame4ScrollContainerBag"..i.."Item"..j]
-                if frame then
-                    CIMI_AddToFrame(frame, ArkInventoryGuildBank_CIMIUpdateIcon)
-                end
-            end
-        end
-    end
+    hooksecurefunc(ArkInventory, "Frame_Item_OnLoad", CIMI_ArkInventoryAddFrame)
 
 
     ------------------------
@@ -86,9 +63,7 @@ if IsAddOnLoaded("ArkInventory") then
     ------------------------
 
 
-    function CIMI_ArkInventoryUpdate()
-        -- Make sure all CIMI frames exist
-        CIMI_ArkInventoryAddFrame(nil, "BANKFRAME_OPENED")
+    function CIMI_ArkInventoryUpdate(loc_id, bag_id, slot_id)
         -- Bags
         for i=1,NUM_CONTAINER_FRAMES do
             for j=1,MAX_CONTAINER_ITEMS do
@@ -103,7 +78,6 @@ if IsAddOnLoaded("ArkInventory") then
             for j=1,200 do
                 local frame = _G["ARKINV_Frame3ScrollContainerBag"..i.."Item"..j]
                 if frame then
-                    -- ArkInventoryItemButton_CIMIUpdateIcon(frame.CanIMogItOverlay)
                     C_Timer.After(.1, function() ArkInventoryItemButton_CIMIUpdateIcon(frame.CanIMogItOverlay) end)
                 end
             end
@@ -115,12 +89,20 @@ if IsAddOnLoaded("ArkInventory") then
                 if frame then
                     -- The guild bank frame does extra stuff after the CIMI icon shows up,
                     -- so need to add a slight delay.
-                    C_Timer.After(.2, function() ArkInventoryGuildBank_CIMIUpdateIcon(frame.CanIMogItOverlay) end)
+                    C_Timer.After(.2, function() ArkInventoryItemButton_CIMIUpdateIcon(frame.CanIMogItOverlay) end)
                 end
             end
         end
     end
 
+    function CIMI_ArkInventoryUpdateSingle(loc_id, bag_id, slot_id)
+        local _, frame = ArkInventory.ContainerItemNameGet( loc_id, bag_id, slot_id )
+        if frame then
+            ArkInventoryItemButton_CIMIUpdateIcon(frame.CanIMogItOverlay)
+        end
+    end
+
+    hooksecurefunc(ArkInventory, "Frame_Item_Update", CIMI_ArkInventoryUpdateSingle)
     CanIMogIt:RegisterMessage("ResetCache", CIMI_ArkInventoryUpdate)
 
     function CIMI_ArkInventoryEvents(self, event)

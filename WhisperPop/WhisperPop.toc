@@ -22,6 +22,6 @@ Frames\OptionFrame.lua
 
 Broker\Embeds.xml
 
-## Title: |cff880303[有爱]|r WhisperPop 密语管理
+## Title: |cff880303[爱不易]|r WhisperPop 密语管理
 ## Notes-zhCN: 当你不在屏幕前的时候可以帮你记录M语,以防漏掉某些重要信息.通过图标闪烁的方式提醒你.
 ## X-Vendor: AbyUI

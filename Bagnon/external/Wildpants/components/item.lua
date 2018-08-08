@@ -121,10 +121,10 @@ end
 --[[ Interaction ]]--
 
 function ItemSlot:OnShow()
-	self:RegisterFrameMessage('FOCUS_BAG', 'UpdateFocus')
-	self:RegisterMessage('SEARCH_CHANGED', 'UpdateSearch')
-	self:RegisterMessage('SEARCH_TOGGLED', 'UpdateSearch')
-	self:RegisterMessage('FLASH_ITEM', 'OnItemFlashed')
+	self:RegisterFrameSignal('FOCUS_BAG', 'UpdateFocus')
+	self:RegisterSignal('SEARCH_CHANGED', 'UpdateSearch')
+	self:RegisterSignal('SEARCH_TOGGLED', 'UpdateSearch')
+	self:RegisterSignal('FLASH_ITEM', 'OnItemFlashed')
 	if(self:GetID()) then self:Update() end --163ui
 end
 
@@ -137,7 +137,7 @@ function ItemSlot:OnHide()
 		C_NewItems.RemoveNewItem(self:GetBag(), self:GetID())
 	end
 
-	self:UnregisterMessages()
+	self:UnregisterSignals()
 end
 
 function ItemSlot:OnDragStart()
@@ -182,7 +182,7 @@ end
 function ItemSlot:OnClick(button)
 	if IsAltKeyDown() and button == 'LeftButton' then
 		if Addon.sets.flashFind and self.info.id then
-			self:SendMessage('FLASH_ITEM', self.info.id)
+			self:SendSignal('FLASH_ITEM', self.info.id)
 		end
 	elseif GetNumVoidTransferDeposit() > 0 and button == 'RightButton' then
 		if self.canDeposit and self.depositSlot then
@@ -393,8 +393,17 @@ function ItemSlot:ShowTooltip()
 
 	if getSlot then
 		self:AnchorTooltip()
-		GameTooltip:SetInventoryItem('player', getSlot(self:GetID()))
-		GameTooltip:Show()
+
+		local _, _, _, speciesID, level, breedQuality, maxHealth, power, speed, name = GameTooltip:SetInventoryItem('player', getSlot(self:GetID()))
+		if speciesID and speciesID > 0 then
+			BattlePetToolTip_Show(speciesID, level, breedQuality, maxHealth, power, speed, name)
+		else
+			if BattlePetTooltip then
+				BattlePetTooltip:Hide()
+			end
+			GameTooltip:Show()
+		end
+
 		CursorUpdate(self)
 	else
 		ContainerFrameItemButton_OnEnter(self)

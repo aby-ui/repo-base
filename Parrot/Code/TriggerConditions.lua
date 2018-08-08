@@ -232,7 +232,7 @@ Example:
 			if UnitIsDeadOrGhost("player") then
 				return false
 			end
-			return UnitMana("player")/UnitManaMax("player") >= param
+			return UnitPower("player")/UnitPowerMax("player") >= param
 		end,
 	}
 ------------------------------------------------------------------------------------]]

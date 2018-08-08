@@ -1,6 +1,6 @@
 ## Interface: 80000
 
-## Title: |cff880303[有爱]|r 163UI 战斗提示计时
+## Title: |cff880303[爱不易]|r AbyUI 战斗提示计时
 ## Author: 桂花猫猫-暗影之月
 ## X-Vendor: AbyUI
 

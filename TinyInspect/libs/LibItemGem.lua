@@ -38,5 +38,5 @@ function lib:GetItemGemInfo(ItemLink)
             end
         end
     end
-    return total, info
+    return total, info, quality
 end

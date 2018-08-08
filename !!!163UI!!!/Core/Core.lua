@@ -745,17 +745,28 @@ end
 protection area
 ---------------------------------------------------------------]]
 
-U1STAFF = { ["桂花猫猫-暗影之月"]=1, ["你生气嗎-风暴峡湾"]=1, ["心耀-冰风岗"]=1, }
+U1STAFF={["Time-奥杜尔"]=1,["天灾軍团-奥杜尔"]=1,["Timeà-霜之哀伤"]=1,["心耀-冰风岗"]=1,["Majere-冰风岗"]="爱不易开发者的会长",["乄阿蛮乄-冰风岗"]="Banshee元素领主",["水之记忆-冰风岗"]="Banshee小仙女",["小倍倍猪-冰风岗"]="Banshee小仙女",["丶晞-冰风岗"]="Banshee小仙女",}
 RunOnNextFrame(function()
     CoreRegisterEvent("INIT_COMPLETED", { INIT_COMPLETED = function()
-        GameTooltip:HookScript("OnTooltipSetUnit", function(self)
-            local _, unit = self:GetUnit();
-            if not unit or not UnitIsPlayer(unit) or not self:IsVisible() then return end
-            local fullName = U1UnitFullName(unit)
-            if fullName and U1STAFF[fullName] then
-                self:AddLine("有爱开发者", 1, 0, 1)
-                if not self.fadeOut then self:Show() end
-            end
+        CoreScheduleTimer(false, 1, function()
+            GameTooltip:HookScript("OnTooltipSetUnit", function(self)
+                local _, unit = self:GetUnit();
+                if not unit or not UnitIsPlayer(unit) then return end --or not self:IsVisible()
+                local fullName = U1UnitFullName(unit)
+                if fullName then
+                    local staff = U1STAFF[fullName]
+                    if staff then
+                        self:AddLine(staff == 1 and "爱不易开发者" or staff, 1, 0, 1)
+                        if not self.fadeOut then self:Show() end
+                    else
+                        local donate = U1Donators and U1Donators.players[fullName]
+                        if donate then
+                            self:AddLine("爱不易" .. (donate > 0 and "" or "") .. "捐助者", 1, 0, 1)
+                            if not self.fadeOut then self:Show() end
+                        end
+                    end
+                end
+            end)
         end)
     end })
 end)
@@ -894,7 +905,7 @@ CoreOnEvent("PLAYER_LOGIN", function()
 end)
 --]==]
 
----ChatFrame_OnUpdate只是为了显示滚动到最下面的那个按钮闪烁
+--[=[-ChatFrame_OnUpdate只是为了显示滚动到最下面的那个按钮闪烁
 do
     local function onupdate(self, elapsed)
         self._flashTimer163 = self._flashTimer163 + elapsed
@@ -918,6 +929,8 @@ do
         self:SetScript("OnUpdate", self._flash163 and onupdate or nil)
     end
 end
+--]=]
+
 --[[
 do
     local militaryTime = GetCVarBool("timeMgrUseMilitaryTime")
@@ -1929,8 +1942,8 @@ end)
 local InterfaceOptions_AddCategory_ORIGIN = InterfaceOptions_AddCategory
 function InterfaceOptions_AddCategory (frame, addOn, position)
     if ( not type(frame) == "table" or not frame.name ) then return end
-    frame.name = frame.name:gsub("%|cff880303%[有爱%]%|r ", ""):gsub("%|cff880303%[有爱%]%|r ", "")
-    frame.parent = frame.parent and frame.parent:gsub("%|cff880303%[有爱%]%|r ", ""):gsub("%|cff880303%[有爱%]%|r ", "")
+    frame.name = frame.name:gsub("%|cff880303%[网易有爱%]%|r ", ""):gsub("%|cff880303%[有爱%]%|r ", ""):gsub("%|cff880303%[爱不易%]%|r ", "")
+    frame.parent = frame.parent and frame.parent:gsub("%|cff880303%[网易有爱%]%|r ", ""):gsub("%|cff880303%[有爱%]%|r ", ""):gsub("%|cff880303%[爱不易%]%|r ", "")
     InterfaceOptions_AddCategory_ORIGIN(frame, addOn, position)
 end
 

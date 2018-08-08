@@ -10,7 +10,7 @@ U1RegisterAddon("Bagnon", {
     icon = [[Interface\Icons\INV_Misc_Bag_13]],
     optdeps = { "BagBrother" },
 
-    modifier = "|cffcd1a1c[有爱]|r",
+    modifier = "|cffcd1a1c[爱不易]|r",
 
     {
         text = "打开设置界面",

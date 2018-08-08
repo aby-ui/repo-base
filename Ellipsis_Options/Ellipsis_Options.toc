@@ -24,5 +24,5 @@ UnitConfiguration.lua
 CooldownOptions.lua
 NotificationOptions.lua
 
-## Title-zhCN: |cff880303[有爱]|r Ellipsis 选项
+## Title-zhCN: |cff880303[爱不易]|r Ellipsis 选项
 ## X-Vendor: AbyUI

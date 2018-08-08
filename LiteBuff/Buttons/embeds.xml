@@ -11,7 +11,7 @@
 	<Script file="Hunter\Pets.lua"/>
 	<Script file="Hunter\Traps.lua"/>
 
-	<!--<Script file="Mage\ArcaneBrilliance.lua"/>-->
+	<Script file="Mage\ArcaneBrilliance.lua"/>
 	<Script file="Mage\WaterElement.lua"/>
     <Script file="Mage\Portal.lua"/>
   	<Script file="Mage\ConjureRefreshment.lua"/>
@@ -21,7 +21,7 @@
 	<Script file="Paladin\BeaconOfLight.lua"/>
 
 	<!--<Script file="Priest\ShadowForm.lua"/>-->
-	<!--<Script file="Priest\Fortitude.lua"/>	-->
+	<Script file="Priest\Fortitude.lua"/>
 	<!--<Script file="Priest\Chakra.lua"/>-->
 
 	<Script file="Rogue\WeaponPoison.lua"/>
@@ -32,8 +32,8 @@
 	<Script file="Warlock\Pets.lua"/>
 	<Script file="Warlock\Healthstone.lua"/>
 
-	<Script file="Warrior\Stances.lua"/>
-	<!--<Script file="Warrior\Shouts.lua"/>-->
+	<!--<Script file="Warrior\Stances.lua"/>-->
+	<Script file="Warrior\Shouts.lua"/>
 
 	<Script file="Monk\Statues.lua"/>
 	<!--<Script file="Monk\Legacies.lua"/>-->

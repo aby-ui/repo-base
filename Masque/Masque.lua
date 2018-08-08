@@ -123,7 +123,7 @@ function Masque:OnEnable()
 				end
 			end,
 			OnTooltipShow = function(Tip)
-				if not Tip or not Tip.AddLine then 
+				if not Tip or not Tip.AddLine then
 					return
 				end
 				Tip:AddLine(MASQUE)
@@ -161,4 +161,18 @@ function Core:Update()
 	if LDBI then
 		LDBI:Refresh(MASQUE, Core.db.profile.LDB)
 	end
+end
+
+----------------------------------------
+-- Miscellaneous
+----------------------------------------
+
+-- Bridge for the DB:CopyProfile method.
+function Masque:CopyProfile(Name, Silent)
+	Core.db:CopyProfile(Name, Silent)
+end
+
+-- Bridge for the DB:SetProfile method.
+function Masque:SetProfile(Name)
+	Core.db:SetProfile(Name)
 end

@@ -6,5 +6,5 @@
 
 GridQuickHealth.lua
 
-## Title: |cff880303[有爱]|r Grid 快速血条变化
+## Title: |cff880303[爱不易]|r Grid 快速血条变化
 ## X-Vendor: AbyUI
