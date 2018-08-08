@@ -42,7 +42,7 @@ _L["Wrath-Lord Yarez"] = "愤怒领主亚雷兹";
 _L["Wrath-Lord Yarez_search"] = { "愤怒领主亚雷兹", "愤怒领主", "wrath-lord yarez" };
 _L["Wrath-Lord Yarez_note"] = "";
 _L["Inquisitor Vethroz"] = "审判官维斯洛兹";
-_L["Inquisitor Vethroz_search"] = { "审判官维斯洛兹", "审判官", "inquisitor vethroz" };
+_L["Inquisitor Vethroz_search"] = { "审判官维斯洛兹", "inquisitor vethroz" };
 _L["Inquisitor Vethroz_note"] = "";
 _L["Portal to Commander Texlaz"] = "传送到指挥官泰克拉兹";
 _L["Portal to Commander Texlaz_note"] = "";
@@ -293,7 +293,7 @@ _L["47752_51425958_note"] = "";
 _L["47752_55525237_note"] = "区域下层。需要跳过绿软。烦人的宝箱，从泽斯塔尔开始。";
 _L["47752_58375051_note"] = "";
 -- 47753
-_L["47753_53137304_note"] = "";
+_L["47753_53167308_note"] = "";
 _L["47753_55228114_note"] = "";
 _L["47753_59267341_note"] = "";
 _L["47753_56118037_note"] = "恶毒者泰勒斯塔建筑物外";
@@ -353,6 +353,7 @@ _L["48000_74996922_note"] = "";
 _L["48000_62946824_note"] = "上方洞穴内。爬上东面岩石到达上方洞穴。";
 _L["48000_69386278_note"] = "";
 _L["48000_67656999_note"] = "沿斜坡和倾斜的柱子到达宝箱。";
+_L["48000_69218397_note"] = "";
 -- 48336
 _L["48336_33575511_note"] = "泽尼达尔内上层，外面";
 _L["48336_32047441_note"] = "";
@@ -541,6 +542,7 @@ _L["48351_35535717_note"] = "在第二层";
 _L["48351_43666847_note"] = "建筑物废墟内";
 _L["48351_38386704_note"] = "";
 _L["48351_35635604_note"] = "位于第二层";
+_L["48351_33795558_note"] = "";
 -- 48357
 _L["48357_49412387_note"] = "";
 _L["48357_47672180_note"] = "";
@@ -559,6 +561,7 @@ _L["48357_44571860_note"] = "";
 _L["48357_53491281_note"] = "";
 _L["48357_45241327_note"] = "";
 _L["48357_48251289_note"] = "底层，吞噬者斯克里格旁边";
+_L["48357_44952483_note"] = "";
 -- 48371
 _L["48371_48604971_note"] = "";
 _L["48371_49865494_note"] = "";
@@ -592,6 +595,7 @@ _L["48362_61924258_note"] = "建筑物内";
 _L["48362_67235673_note"] = "建筑物内";
 _L["48362_70243379_note"] = "";
 _L["48362_69304993_note"] = "建筑物内，位于中层";
+_L["48362_61395555_note"] = "建筑物内";
 -- Void-Seeped Cache / Treasure Chest
 -- 49264
 _L["49264_38143985_note"] = "";
@@ -618,6 +622,7 @@ _L["48361_37754868_note"] = "下方的洞穴区域";
 _L["48361_39174733_note"] = "下方的洞穴区域";
 _L["48361_28784425_note"] = "";
 _L["48361_32583679_note"] = "";
+_L["48361_19804660_note"] = "";
 
 --
 --	KEEP THESE ENGLISH FOR THE GROUP BROWSER IN EU/US!! CHINA & CO ADJUST
@@ -692,6 +697,29 @@ _L["Lady Eldrathe"] = "艾黛拉丝夫人";
 _L["bsrare_eldrathe_search"] = { "艾黛拉丝夫人", "lady eldrathe" };
 _L["Aqueux"] = "阿奎克斯";
 _L["bsrare_aqueux_search"] = { "阿奎克斯", "aqueux" };
+_L["Doombringer Zar'thoz"] = "末日使者扎索斯";
+_L["bsrare_zarthoz_search"] = { "末日使者扎索斯", "doombringer zar'thoz" };
+_L["Felmaw Emberfiend"] = "魔喉烬魔";
+_L["bsrare_felmawemberfiend_search"] = { "魔喉烬魔", "felmaw emberfiend" };
+_L["Inquisitor Chillbane"] = "审判官奇尔班";
+_L["bsrare_chillbane_search"] = { "审判官奇尔班", "inquisitor chillbane" };
+_L["Brood Mother Nix"] = "巢母妮克丝";
+_L["bsrare_broodmothernix_search"] = { "巢母妮克丝", "brood mother nix" };
+
+_L["Lord Kazzak"] = "末日领主卡扎克";
+_L["kazzak_search"] = { "末日领主卡扎克", "lord kazzak" };
+_L["Azuregos"] = "艾索雷葛斯";
+_L["azuregos_search"] = { "艾索雷葛斯", "azuregos" };
+_L["Dragons of Nightmare"] = "梦魇之龙";
+_L["dragonsofnightmare_search"] = { "梦魇之龙", "伊森德雷", "莱索恩", "艾莫莉丝", "泰拉尔", "梦魇" };
+_L["Ysondre"] = "伊森德雷";
+_L["ysondre_search"] = { "伊森德雷", "ysondre" };
+_L["Lethon"] = "莱索恩";
+_L["lethon_search"] = { "莱索恩", "lethon" };
+_L["Emeriss"] = "艾莫莉丝";
+_L["emeriss_search"] = { "艾莫莉丝", "emeriss" };
+_L["Taerar"] = "泰拉尔";
+_L["taerar_search"] = { "泰拉尔", "taerar" };
 
 --
 --
@@ -721,7 +749,13 @@ _L["Fist"] = "拳套";
 _L["Polearm"] = "长柄武器";
 _L["Bow"] = "弓";
 _L["Gun"] = "枪";
+_L["Wand"] = "魔杖";
 _L["Crossbow"] = "弩";
+_L["Ring"] = "戒指";
+_L["Amulet"] = "项链";
+_L["Cloak"] = "披风";
+_L["Trinket"] = "饰品";
+_L["Off Hand"] = "副手";
 
 _L["groupBrowserOptionOne"] = "%s - %s 人(%d秒)";
 _L["groupBrowserOptionMore"] = "%s - %s 人(%d秒)";
@@ -818,5 +852,12 @@ _L["options_toggle_hideKnowLoot_desc"] = "当全部拾取收集完毕时隐藏�
 _L["options_toggle_alwaysTrackCoA"] = "总是追踪阿古斯指挥官";
 _L["options_toggle_alwaysTrackCoA_desc"] = "总是追踪阿古斯指挥官成就，帐号完成成就仍追踪，但不是根据角色。";
 _L["Missing for CoALink"] = "%s缺少的";
+
+_L["options_toggle_birthday13"] = "魔兽世界13周年世界首领";
+_L["options_toggle_birthday13_desc"] = "切换艾索雷葛斯，末日领主卡扎克和梦魇之龙";
+_L["options_toggle_alwaysShowBirthday13"] = "- 忽略今日已拾取";
+_L["options_toggle_alwaysShowBirthday13_desc"] = "";
+_L["Shared"] = "共享";
+_L["Somewhere"] = "某处";
 
 end

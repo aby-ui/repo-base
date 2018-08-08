@@ -147,7 +147,7 @@ _L["48383_58413097_note"] = "Inside building, floor level";
 _L["48383_53753556_note"] = "";
 _L["48383_51703529_note"] = "High up on the cliffs";
 _L["48383_59853583_note"] = "";
-_L["48383_58273570_note"] = "Inside building, entrance from Il'thendra platform"
+_L["48383_58273570_note"] = "Inside building, entrance from Il'thendra platform";
 -- 48384
 _L["48384_60872900_note"] = "";
 _L["48384_61332054_note"] = "Inside Munculus building";
@@ -203,7 +203,7 @@ _L["48390_72527293_note"] = "Behind Rel'var";
 _L["48390_77255876_note"] = "Down the slope";
 _L["48390_72215680_note"] = "Inside building";
 _L["48390_73277299_note"] = "Behind Rel'var";
-_L["48390_77975620_note"] = "Down the slope and further over the cliffs"
+_L["48390_77975620_note"] = "Down the slope and further over the cliffs";
 _L["48390_77246412_note"] = "Be careful on the way back. Don't jump down the cliffs!";
 _L["48390_76595659_note"] = "Inside Xanarian's building";
 -- 48391
@@ -217,7 +217,7 @@ _L["48391_68095075_note"] = "Inside small cave in spider area";
 _L["48391_69815522_note"] = "Outside in spider area";
 _L["48391_71205441_note"] = "Outside in spider area";
 _L["48391_66544668_note"] = "Exit the spider area north where the green zone is on the ground. Jump up the rocks.";
-_L["48391_65164951_note"] = "Inside small cave in spider area"
+_L["48391_65164951_note"] = "Inside small cave in spider area";
 
 -- Krokuun
 _L["Khazaduum"] = "Khazaduum";
@@ -293,7 +293,7 @@ _L["47752_51425958_note"] = "";
 _L["47752_55525237_note"] = "Lower level in the area. Need to jump through green shit. Annoying chest. Start at Xeth'tal.";
 _L["47752_58375051_note"] = "";
 -- 47753
-_L["47753_53137304_note"] = "";
+_L["47753_53167308_note"] = "";
 _L["47753_55228114_note"] = "";
 _L["47753_59267341_note"] = "";
 _L["47753_56118037_note"] = "Outside Talestra building";
@@ -350,7 +350,7 @@ _L["48000_73577146_note"] = "";
 _L["48000_71846166_note"] = "Climb up the tipped pillar";
 _L["48000_67886231_note"] = "Behind pillar";
 _L["48000_74996922_note"] = "";
-_L["48000_62946824_note"] = "In the upper cave. Ride up the rocks east from here to reach the upper cave."
+_L["48000_62946824_note"] = "In the upper cave. Ride up the rocks east from here to reach the upper cave.";
 _L["48000_69386278_note"] = "";
 _L["48000_67656999_note"] = "Ride up the slope and over the tipped pillars to reach this chest.";
 _L["48000_69218397_note"] = "";
@@ -474,7 +474,7 @@ _L["Corrupted Blood of Argus_note"] = "";
 _L["Shadeflicker"] = "Shadeflicker";
 _L["Shadeflicker_note"] = "";
 
-_L["Nabiru"] = "Nabiru"
+_L["Nabiru"] = "Nabiru";
 _L["Nabiru_note"] = "He is in a cave. Turn in 900 resources for an Order Hall follower.";
 
 -- Shoot First, Loot Later
@@ -604,7 +604,7 @@ _L["49264_37812344_note"] = "";
 _L["49264_33972078_note"] = "";
 _L["49264_33312952_note"] = "";
 _L["49264_37102005_note"] = "";
-_L["49264_33592361_note"] = "Hidden under tree"
+_L["49264_33592361_note"] = "Hidden under tree";
 _L["49264_31582553_note"] = "";
 _L["49264_32332131_note"] = "Kind of hidden in a corner";
 _L["49264_35293848_note"] = "";
@@ -616,7 +616,7 @@ _L["48361_29503999_note"] = "";
 _L["48361_29455043_note"] = "Under tree";
 _L["48361_18794171_note"] = "Outside, behind building";
 _L["48361_25293498_note"] = "";
-_L["48361_35283586_note"] = "Behind Umbraliss"
+_L["48361_35283586_note"] = "Behind Umbraliss";
 _L["48361_24654126_note"] = "";
 _L["48361_37754868_note"] = "Down in the cave area";
 _L["48361_39174733_note"] = "Down in the cave area";
@@ -823,8 +823,8 @@ _L["options_toggle_alreadylooted_treasures"] = "Already looted Treasures";
 _L["options_toggle_alreadylooted_treasures_desc"] = "Show every treasure regardless of looted status";
 _L["options_toggle_alreadylooted_sfll"] = "Already looted 'Shoot First, Loot Later' Treasures";
 _L["options_toggle_alreadylooted_sfll_desc"] = "Show every achievement treasure regardless of looted status";
-_L["options_toggle_nodeRareGlow"] = "Rares Icons glow"
-_L["options_toggle_nodeRareGlow_desc"] = "Adds a glow to Rares Icons depending on group availability. No glow = no groups, red glow = low availability, green glow = high availability."
+_L["options_toggle_nodeRareGlow"] = "Rares Icons glow";
+_L["options_toggle_nodeRareGlow_desc"] = "Adds a glow to Rares Icons depending on group availability. No glow = no groups, red glow = low availability, green glow = high availability.";
 _L["options_tooltip_settings"] = "Tooltip";
 _L["options_tooltip_settings_desc"] = "Tooltip";
 _L["options_toggle_show_loot"] = "Show Loot";
@@ -836,9 +836,9 @@ _L["options_general_settings"] = "General";
 _L["options_general_settings_desc"] = "General settings";
 _L["options_toggle_leave_group_on_search"] = "Leave groups";
 _L["options_toggle_leave_group_on_search_desc"] = "Leave groups when trying to search while grouped. Use with care!";
-_L["chatmsg_old_group_delisted_create"] = "|cFFF7C92AOld group delisted. Please click again to create a new group for %s."
+_L["chatmsg_old_group_delisted_create"] = "|cFFF7C92AOld group delisted. Please click again to create a new group for %s.";
 _L["chatmsg_left_group_create"] = "|cFFF7C92ALeft group. Please click again to create a new group for %s.";
-_L["chatmsg_old_group_delisted_search"] = "|cFFF7C92AOld group delisted. Please click again to search groups for %s."
+_L["chatmsg_old_group_delisted_search"] = "|cFFF7C92AOld group delisted. Please click again to search groups for %s.";
 _L["chatmsg_left_group_search"] = "|cFFF7C92ALeft group. Please click again to search groups for %s.";
 
 _L["options_toggle_include_player_seen"] = "Include player seen rares";

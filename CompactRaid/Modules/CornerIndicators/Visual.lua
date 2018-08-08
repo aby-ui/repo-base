@@ -89,11 +89,12 @@ local function Indicator_UpdateStatus(self)
 	text:SetTextColor(r, g, b)
 
 	if timeLeft then
-		if count > 1 then
+		text:SetFormattedText("%d", timeLeft)
+		--[[if count > 1 then
 			text:SetFormattedText("%d-%d", count, timeLeft)
 		else
 			text:SetFormattedText("%d", timeLeft)
-		end
+		end]]
 	else
 		text:SetText("N")
 	end
