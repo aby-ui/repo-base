@@ -558,7 +558,7 @@ nodes["NagrandDraenor"] = {
     [51001600]={ "37210", "奥盖克松", "热砂保护协会的声望物品", "", "swprare", "rare_s_ng","118654"},
     [62601680]={ "37211", "伯格鲁", "热砂保护协会的声望物品", "", "swprare", "rare_s_ng","118655"},
     [77006400]={ "35735", "狂暴T-300系列II型", "要塞物资", "在一个山洞内, 使用一个开关开启", "skull_grey", "rare_ng","824"},
-    [40001600]={ "37396", "碎骨者", "i620 敏捷/智力 锁甲腿", "", "skull_blue", "rare_h_ng","119370"},
+    [39501330]={ "37396", "碎骨者", "i620 敏捷/智力 锁甲腿", "", "skull_blue", "rare_h_ng","119370"},
     [43003640]={ "37400", "布塔格·利刃", "i620 智力/力量板甲鞋", "!!! 等级100 !!!", "skull_blue", "rare_h_ng","119380"},
     [34607700]={ "34727", "铁须队长", "玩具+i607 枪", "", "skull_green", "rare_ng","118244"},
     [64203000]={ "37221", "德考汉", "热砂保护协会的声望物品", "", "swprare", "rare_s_ng","118656"},
@@ -589,7 +589,7 @@ nodes["NagrandDraenor"] = {
     [42804920]={ "35875", "奥菲斯", "i602 布甲腿", "", "skull_grey", "rare_ng","116765"},
     [61806900]={ "35943", "侦察骑兵杜莉萨", "i598 敏捷/智力 皮甲鞋", "", "skull_grey", "rare_ng","116800"},
     [58201800]={ "37637", "竞技场野兽", "i620 敏捷/力量 坦克披风", "", "skull_blue", "rare_h_ng","120317"},
-    [38001960]={ "37397", "角斗场屠杀者", "i620 力量戒指", "", "skull_blue", "rare_h_ng","119389"},
+    [39701440]={ "37397", "角斗场屠杀者", "i620 力量戒指", "", "skull_blue", "rare_h_ng","119389"},
     [73605780]={ "35712", "狂野的赤爪", "i604 智力拳套", "", "skull_grey", "rare_ng","118243"},
     [58008400]={ "35900", "鲁克拉", "i608 智力/力量 板甲肩", "", "skull_grey", "rare_ng","118688"},
     [54806120]={ "35931", "斥候波卡尔", "i601 力量单手斧", "", "skull_grey", "rare_ng","116797"},
@@ -821,8 +821,8 @@ nodes["VaultOfTheWardensDH"] = {
 	[24421005]={ "40915", "小宝箱", "", "第三层", "default", "treasure_dh", "129210"},
 	[23268157]={ "40916", "小宝箱", "", "第三层", "default", "treasure_dh", "129210"},
 	
-	[68743628]={ "40301", "愤怒领主勒考斯", "", "第一层", "skull_grey", "rare_dh", "128958"},
-	[49543284]={ "40251", "科斯拉佐", "", "第一层", "skull_grey", "rare_dh", "128945"},
+	[68743628]={ "40301", "愤怒领主勒考斯", "", "", "skull_grey", "rare_dh", "128958"},
+	[49543284]={ "40251", "科斯拉佐", "", "", "skull_grey", "rare_dh", "128945"},
 }
 
 if (PlayerFaction == "Alliance") then
@@ -859,7 +859,7 @@ local function GetItem(ID)
         if (currency ~= nil) then
             return currency
         else
-            return "货币ID 载入错误"
+            return "货币 ID 载入错误"
         end
     else
         local _, item, _, _, _, _, _, _, _, _ = GetItemInfo(ID)
@@ -867,7 +867,7 @@ local function GetItem(ID)
         if (item ~= nil) then
             return item
         else
-            return "物品ID 载入错误"
+            return "物品 ID 载入错误"
         end
     end
 end 
@@ -975,7 +975,7 @@ local function generateMenu(button, level)
         info.notCheckable = 1
         UIDropDownMenu_AddButton(info, level)
 
-        info.text         = "恢复已移除物件"
+        info.text = "恢复已移除物件"
         info.func = DTResetDB
         info.arg1 = nil
         info.arg2 = nil
@@ -1041,7 +1041,6 @@ local options = {
             arg = "icon_alpha",
             order = 20,
         },
-
         VisibilityOptions = {
             type = "group",
             name = "可见性设定",
@@ -1063,15 +1062,15 @@ local options = {
                             type = "toggle",
                             arg = "treasure_smv",
                             name = "财宝",
-                            desc = "会提供多种物品的财宝",
+                            desc = "财宝会提供很多物品",
                             order = 1,
                             width = "half",
                         },
                         rareSMV = {
                             type = "toggle",
                             arg = "rare_smv",
-                            name = "低级稀有",
-                            desc = "玩家升级过程中会见到的稀有",
+                            name = "稀有",
+                            desc = "稀有刷新",
                             order = 2,
                             width = "half",
                         },
@@ -1093,7 +1092,7 @@ local options = {
                             type = "toggle",
                             arg = "treasure_ffr",
                             name = "财宝",
-                            desc = "会提供多种物品的财宝",
+                            desc = "财宝会提供很多物品",
                             width = "half",
                             order = 11,
                         },
@@ -1126,12 +1125,12 @@ local options = {
                             name = "戈尔隆德",
                             desc = "戈尔隆德",
                             order = 20,
-                        },	
+                        },  
                         treasureGG = {
                             type = "toggle",
                             arg = "treasure_gg",
                             name = "财宝",
-                            desc = "会提供多种物品的财宝",
+                            desc = "财宝会提供很多物品",
                             width = "half",
                             order = 21,
                         },
@@ -1139,7 +1138,7 @@ local options = {
                             type = "toggle",
                             arg = "rare_gg",
                             name = "稀有",
-                            desc = "玩家升级过程中会见到的稀有",
+                            desc = "稀有刷新",
                             width = "half",
                             order = 22,
                         },  
@@ -1147,7 +1146,7 @@ local options = {
                             type = "toggle",
                             arg = "rare_h_gg",
                             name = "100等级稀有",
-                            desc = "满级玩家才会遇到的稀有",
+                            desc = "玩家等级100出现的稀有",
                             width = "normal",
                             order = 23,
                         },  
@@ -1183,7 +1182,7 @@ local options = {
                             type = "toggle",
                             arg = "treasure_td",
                             name = "财宝",
-                            desc = "会提供多种物品的财宝",
+                            desc = "财宝会提供很多物品",
                             width = "half",
                             order = 31,
                         },
@@ -1191,7 +1190,7 @@ local options = {
                             type = "toggle",
                             arg = "rare_td",
                             name = "稀有",
-                            desc = "玩家升级过程中会见到的稀有",
+                            desc = "稀有刷新",
                             width = "half",
                             order = 32,
                         },  
@@ -1199,7 +1198,7 @@ local options = {
                             type = "toggle",
                             arg = "rare_h_td",
                             name = "100等级稀有",
-                            desc = "等级100 稀有出现地点",
+                            desc = "玩家等级100出现的稀有",
                             width = "normal",
                             order = 33,
                         },  
@@ -1213,7 +1212,7 @@ local options = {
                             type = "toggle",
                             arg = "treasure_soa",
                             name = "财宝",
-                            desc = "会提供多种物品的财宝",
+                            desc = "财宝会提供很多物品",
                             width = "half",
                             order = 41,
                         },
@@ -1221,7 +1220,7 @@ local options = {
                             type = "toggle",
                             arg = "rare_soa",
                             name = "稀有",
-                            desc = "玩家升级过程中会见到的稀有",
+                            desc = "稀有刷新",
                             width = "half",
                             order = 42,
                         },  
@@ -1229,7 +1228,7 @@ local options = {
                             type = "toggle",
                             arg = "rare_h_soa",
                             name = "100等级稀有",
-                            desc = "满级玩家才会遇到的稀有",
+                            desc = "玩家等级100出现的稀有",
                             width = "normal",
                             order = 43,
                         },
@@ -1251,7 +1250,7 @@ local options = {
                             type = "toggle",
                             arg = "treasure_ng",
                             name = "财宝",
-                            desc = "会提供多种物品的财宝",
+                            desc = "财宝会提供很多物品",
                             width = "half",
                             order = 51,
                         },
@@ -1259,7 +1258,7 @@ local options = {
                             type = "toggle",
                             arg = "rare_ng",
                             name = "稀有",
-                            desc = "玩家升级过程中会见到的稀有",
+                            desc = "稀有刷新",
                             width = "half",
                             order = 52,
                         },
@@ -1267,7 +1266,7 @@ local options = {
                             type = "toggle",
                             arg = "rare_h_ng",
                             name = "100等级稀有",
-                            desc = "满级玩家才会遇到的稀有",
+                            desc = "玩家等级100出现的稀有",
                             width = "normal",
                             order = 53,
                         },
@@ -1289,7 +1288,7 @@ local options = {
                             type = "toggle",
                             arg = "treasure_tj",
                             name = "财宝",
-                            desc = "会提供多种物品的财宝",
+                            desc = "财宝会提供很多物品",
                             width = "half",
                             order = 61,
                         },
@@ -1297,7 +1296,7 @@ local options = {
                             type = "toggle",
                             arg = "rare_h_tj",
                             name = "100等级稀有",
-                            desc = "满级玩家才会遇到的稀有",
+                            desc = "玩家等级100出现的稀有",
                             width = "normal",
                             order = 62,
                         },
@@ -1388,7 +1387,7 @@ local options = {
                             type = "toggle",
                             arg = "treasure_dh",
                             name = "财宝",
-                            desc = "会提供多种物品的财宝",
+                            desc = "财宝会提供很多物品",
                             width = "normal",
                             order = 81,
                         },
@@ -1405,8 +1404,8 @@ local options = {
                 alwaysshowrares = {
                     type = "toggle",
                     arg = "alwaysshowrares",
-                    name = "总是显示已经击杀过的稀有",
-                    desc = "显示每个稀有，无论是否曾经击杀过",
+                    name = "总是显示已拾取的稀有",
+                    desc = "显示每个稀有无论是否已拾取状态",
                     order = 100,
                     width = "full",
                 },
@@ -1414,7 +1413,7 @@ local options = {
                     type = "toggle",
                     arg = "alwaysshowtreasures",
                     name = "总是显示已拾取的财宝",
-                    desc = "显示每个财宝无论是否已经拾取过",
+                    desc = "显示每个财宝无论是否已拾取状态",
                     order = 101,
                     width = "full",
                 },
@@ -1429,7 +1428,7 @@ local options = {
                     type = "toggle",
                     arg = "show_notes",
                     name = "显示注释",
-                    desc = "显示每个财宝/稀有的注释如果可用的话",
+                    desc = "当可用时显示每个财宝/稀有的注释",
                     order = 103,
                 },
             },
@@ -1505,16 +1504,16 @@ end
 
 function DraenorTreasures:QuestCheck()
     do
-        if ((IsQuestFlaggedCompleted(36386) == false) or (IsQuestFlaggedCompleted(36390) == false) or (IsQuestFlaggedCompleted(36389) == false) or (IsQuestFlaggedCompleted(36392) == false) or (IsQuestFlaggedCompleted(36388) == false) or (IsQuestFlaggedCompleted(36381) == false)) then
+	if ((IsQuestFlaggedCompleted(36386) == false) or (IsQuestFlaggedCompleted(36390) == false) or (IsQuestFlaggedCompleted(36389) == false) or (IsQuestFlaggedCompleted(36392) == false) or (IsQuestFlaggedCompleted(36388) == false) or (IsQuestFlaggedCompleted(36381) == false)) then
             nodes["SpiresOfArak"][43901500]={ "36395", "暗影视觉药剂 1", "暗影视觉药剂", "药剂可以使用在泰罗卡圣物盒装等585武器6个其中之一 (参见安苏之赐) 一但您拾取所有安苏之赐后物件会立刻被删除", "default", "treasure_soa","115463"}
             nodes["SpiresOfArak"][43802470]={ "36397", "暗影视觉药剂 2", "暗影视觉药剂", "药剂可以使用在泰罗卡圣物盒装等585武器6个其中之一 (参见安苏之赐) 一但您拾取所有安苏之赐后物件会立刻被删除", "default", "treasure_soa","115463"}
             nodes["SpiresOfArak"][69204330]={ "36398", "暗影视觉药剂 3", "暗影视觉药剂", "药剂可以使用在泰罗卡圣物盒装等585武器6个其中之一 (参见安苏之赐) 一但您拾取所有安苏之赐后物件会立刻被删除", "default", "treasure_soa","115463"}
             nodes["SpiresOfArak"][48906250]={ "36399", "暗影视觉药剂 4", "暗影视觉药剂", "药剂可以使用在泰罗卡圣物盒装等585武器6个其中之一 (参见安苏之赐) 一但您拾取所有安苏之赐后物件会立刻被删除", "default", "treasure_soa","115463"}
             nodes["SpiresOfArak"][55602200]={ "36400", "暗影视觉药剂 5", "暗影视觉药剂", "药剂可以使用在泰罗卡圣物盒装等585武器6个其中之一 (参见安苏之赐) 一但您拾取所有安苏之赐后物件会立刻被删除", "default", "treasure_soa","115463"}
             nodes["SpiresOfArak"][53108450]={ "36401", "暗影视觉药剂 6", "暗影视觉药剂", "药剂可以使用在泰罗卡圣物盒装等585武器6个其中之一 (参见安苏之赐) 一但您拾取所有安苏之赐后物件会立刻被删除", "default", "treasure_soa","115463"}
-        end
-        if (IsQuestFlaggedCompleted(36249) or IsQuestFlaggedCompleted(36250) or DraenorTreasures.db.profile.gorgrond_override == true) then
-            --Gorgrond Lumber Mill is active if either of these Quest IDs are true
+	end
+	if (IsQuestFlaggedCompleted(36249) or IsQuestFlaggedCompleted(36250) or DraenorTreasures.db.profile.gorgrond_override == true) then
+		--Gorgrond Lumber Mill is active if either of these Quest IDs are true
             nodes["Gorgrond"][49074846]={ "35952", "古老的石质容器", "", "", "default", "treasure_gg_l","824"}
             nodes["Gorgrond"][42345477]={ "36003", "古老的石质容器", "", "", "default", "treasure_gg_l","824"}
             nodes["Gorgrond"][47514363]={ "36717", "古老的石质容器", "", "", "default", "treasure_gg_l","824"}
@@ -1540,9 +1539,9 @@ function DraenorTreasures:QuestCheck()
             nodes["Gorgrond"][42914350]={ "36001", "未知的石化之蛋", "", "", "default", "treasure_gg_l","824"}
             nodes["Gorgrond"][53007906]={ "36713", "未知的石化之蛋", "", "", "default", "treasure_gg_l","824"}
             nodes["Gorgrond"][47245180]={ "36718", "未知的石化之蛋", "", "", "default", "treasure_gg_l","824"}
-        end
-        if (IsQuestFlaggedCompleted(36251) or IsQuestFlaggedCompleted(36252) or DraenorTreasures.db.profile.gorgrond_override == true) then
-            --Gorgrond Sparring Arena is active if either of these Quest IDs are true
+	end
+	if (IsQuestFlaggedCompleted(36251) or IsQuestFlaggedCompleted(36252) or DraenorTreasures.db.profile.gorgrond_override == true) then
+		--Gorgrond Sparring Arena is active if either of these Quest IDs are true
             nodes["Gorgrond"][45634931]={ "36722", "古老的石质容器", "", "", "default", "treasure_gg_b","824"}
             nodes["Gorgrond"][43224574]={ "36723", "古老的石质容器", "", "", "default", "treasure_gg_b","824"}
             nodes["Gorgrond"][41764527]={ "36726", "古老的石质容器", "", "", "default", "treasure_gg_b","824"}
@@ -1737,15 +1736,15 @@ function DTAddDBMArrow(button, mapFile, coord)
 
         if (nodes[mapFile][coord][3] ~= nil) and (DraenorTreasures.db.profile.show_loot == true) then
             if ((nodes[mapFile][coord][7] ~= nil) and (nodes[mapFile][coord][7] ~= "")) then
-                    desc = desc.."\n掉落：" .. GetItem(nodes[mapFile][coord][7]);
-                    desc = desc.."\n掉落信息：" .. nodes[mapFile][coord][3];
+                desc = desc.."\n掉落：" .. GetItem(nodes[mapFile][coord][7]);
+                desc = desc.."\n掉落信息：" .. nodes[mapFile][coord][3];
             else
-                    desc = desc.."\n掉落：" .. nodes[mapFile][coord][3];
+                desc = desc.."\n掉落：" .. nodes[mapFile][coord][3];
             end
         end
 
         if (nodes[mapFile][coord][4] ~= "") and (DraenorTreasures.db.profile.show_notes == true) then
-                desc = desc.."\n注释：" .. nodes[mapFile][coord][4]
+            desc = desc.."\n注释：" .. nodes[mapFile][coord][4]
         end
 		if not DBMArrow.Desc:IsShown() then
 			DBMArrow.Desc:Show()
@@ -1764,7 +1763,7 @@ end
 
 function DraenorTreasures:LoginMessage()
 	if isHN_LRTloaded == false then
-	--print("|cff00E5EE<|cffFFC125HN:DraenorTreasures|cff00E5EE>|cff00ff00在军团再临前夕发布的财宝和稀有位于 |cffA330C9恶魔猎手|cff00ff00 开始体验已暂时加入到此插件。")
+	print("|cff00E5EE<|cffFFC125HN:DraenorTreasures|cff00E5EE>|cff00ff00在军团再临前夕发布的财宝和稀有位于 |cffA330C9恶魔猎手|cff00ff00 开始体验已暂时加入到此插件。")
 	--print("|cff00ff00These together with all the treasures and rares in the new legion zones can be found in the new addon |cffff0000Handynotes_LegionRares&Treasures |cff00ff00available through Curse.com")
 	--print("|cff00ccffhttp://www.curse.com/addons/wow/handynotes_legionrarestreasures")
 	end 
