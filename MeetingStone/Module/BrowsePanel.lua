@@ -165,7 +165,7 @@ function BrowsePanel:OnInitialize()
                             return NONE, GRAY_FONT_COLOR.r, GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b
                         else
                             local color = activity:IsUnusable() and GRAY_FONT_COLOR or activity:IsPvPRatingValid() and GREEN_FONT_COLOR or RED_FONT_COLOR
-                            return pvpRating, color.r, color.g, color.b
+                            return floor(pvpRating), color.r, color.g, color.b
                         end
                     else
                         local itemLevel = activity:GetItemLevel()
@@ -173,7 +173,7 @@ function BrowsePanel:OnInitialize()
                             return NONE, GRAY_FONT_COLOR.r, GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b
                         else
                             local color = activity:IsUnusable() and GRAY_FONT_COLOR or activity:IsItemLevelValid() and GREEN_FONT_COLOR or RED_FONT_COLOR
-                            return itemLevel, color.r, color.g, color.b
+                            return floor(itemLevel), color.r, color.g, color.b
                         end
                     end
                 end,
@@ -784,22 +784,16 @@ function BrowsePanel:Search()
     end
 
     local categoryId = activityItem.categoryId
-    local fullName = activityItem.fullName
-    local filters= activityItem.filters
     local baseFilter = activityItem.baseFilter
     local searchCode = activityItem.value
+    local activityId = activityItem.activityId
 
     if not categoryId or not MainPanel:IsVisible() then
         return
     end
 
-    local searchText = self:GetSearchCode(fullName)
-
-    searchText = LFGListSearchPanel_ParseSearchTerms(searchText)
-
     Profile:SetLastSearchCode(searchCode)
-
-    LfgService:Search(categoryId, searchText, baseFilter, searchCode)
+    LfgService:Search(categoryId, baseFilter, activityId)
 
     self.searchTimer = nil
     self.searchedInFrame = true

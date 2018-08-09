@@ -73,12 +73,12 @@ function SettingPanel:OnInitialize()
                 width = 'full',
                 order = order(),
             },
-            ignore = {
-                type = 'toggle',
-                name = L['启用屏蔽列表增强'],
-                width = 'full',
-                order = order(),
-            },
+            -- ignore = {
+            --     type = 'toggle',
+            --     name = L['启用屏蔽列表增强'],
+            --     width = 'full',
+            --     order = order(),
+            -- },
             -- onlyms = {
             --     type = 'toggle',
             --     name = L['只显示集合石活动'],

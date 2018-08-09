@@ -96,7 +96,7 @@ function LfgService:_CacheActivity(id)
         return
     end
 
-    if activity:IsSoloActivity() and self.searchCode ~= activity:GetCode() then
+    if self.activityId and activity:GetActivityID() ~= self.activityId then
         return
     end
 
@@ -163,10 +163,16 @@ function LfgService:LFG_LIST_SEARCH_RESULT_UPDATED(_, id)
     self:SendMessage('MEETINGSTONE_ACTIVITIES_RESULT_UPDATED')
 end
 
-function LfgService:Search(categoryId, searchText, baseFilter, searchCode)
+function LfgService:Search(categoryId, baseFilter, activityId)
     self.ourSearch = true
-    self.searchCode = searchCode
-    C_LFGList.Search(categoryId, searchText, 0, baseFilter)
+    self.activityId = activityId
+
+    if activityId then
+        C_LFGList.SetSearchToActivity(activityId)
+    end
+
+    C_LFGList.Search(categoryId, 0, baseFilter)
+    C_LFGList.ClearSearchTextFields()
     self.ourSearch = false
     self.dirty = false
 end

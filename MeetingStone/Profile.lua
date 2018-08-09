@@ -83,6 +83,9 @@ function Profile:OnInitialize()
         self.cdb.profile.lastSearchCode = self.cdb.profile.lastSearchValue or self.cdb.profile.lastSearchCode
         self.cdb.profile.lastSearchValue = nil
     end
+    if settingVersion < 80000.03 then
+        wipe(self.cdb.profile.searchHistoryList)
+    end
     self.cdb.profile.version = ADDON_VERSION
 
     self.cdb.RegisterCallback(self, 'OnDatabaseShutdown')

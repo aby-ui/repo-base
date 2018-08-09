@@ -250,7 +250,9 @@ do
 		wipe(sink.channelMappingIds)
 		for i = 1, select("#", ...), 2 do
 			local id, name = select(i, ...)
+            if name then
 			sink.channelMappingIds[name] = id
+            end
 		end
 		for k, v in next, sink.channelMapping do
 			if v == "CHANNEL" and not sink.channelMappingIds[k] then

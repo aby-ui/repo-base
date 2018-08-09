@@ -17,7 +17,7 @@ L.Sat = '六'
 
 L.FeedbackTitle = '意见建议'
 L.FeedbackPrompt = '请在这里输入反馈内容'
-L.FeedbackMail = '如有更多意见，可以发送电邮：wow_social@163.com'
+L.FeedbackMail = '如有更多意见，可以联系QQ群：317548615'
 L.FeedbackSummary = [[
 <html>
 <body>

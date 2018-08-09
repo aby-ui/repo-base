@@ -89,8 +89,11 @@ local function MakeGroupMenuTable(categoryId, groupId, baseFilter, menuType)
     data.categoryId = categoryId
     data.groupId = groupId
     data.baseFilter = baseFilter
-    data.notClickable = categoryId == 1 or not isClickable(menuType)
+    -- data.notClickable = categoryId == 1 or not isClickable(menuType)
+    data.notClickable = true
     data.value = not data.notClickable and GetActivityCode(nil, nil, categoryId, groupId)
+    data.tooltipTitle = L['请选择具体副本难度']
+    data.tooltipOnButton = true
 
     if data.value then
         currentCodeCache[data.value] = data

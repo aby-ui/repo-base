@@ -8,7 +8,6 @@
   <Script file="Memorize.lua" />
   <Script file="API.lua" />
   <Script file="AppData.lua" />
-  <Script file="FixBlizzardBug.lua" />
   <Script file="MenuTableAPI.lua" />
   <Script file="Main.lua" />
   <Script file="Profile.lua" />
