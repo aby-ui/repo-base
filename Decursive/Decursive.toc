@@ -1,6 +1,6 @@
 ## Interface: 80000
 ## X-Max-Interface: 80000
-## X-Min-Interface: 70300
+## X-Min-Interface: 80000
 
 ## Title: Decursive |cffff00ff -Ace3-|r
 ## Notes: Afflictions display and cleaning for solo, group and raid with advanced filtering and priority system.
@@ -14,7 +14,7 @@
 
 ## SavedVariables: DecursiveDB
 
-## Version: 2.7.6.1_beta_1
+## Version: 2.7.6.1
 ## Author: John Wellesz
 
 ## X-License: All Rights Reserved
@@ -28,7 +28,7 @@
 
 ## X-Embeds: Ace3, LibQTip-1.0, LibDataBroker-1.1, LibDBIcon-1.0, !BugGrabber
 
-## X-ReleaseDate: "2018-08-04T10:34:05Z"
+## X-ReleaseDate: "2018-08-10T0:55:58Z"
 ## X-Category: Combat
 ## X-Website: http://www.2072productions.com/to/decursive.php
 ## X-Credits: Sylvin (Full french translation), Peter Sun, Ananhaid (ZhTW and zhCN translation), Fenlis, Chkid (koKR translation), Hemathio, Swix, Athariel, StingerSoft (Russian Translation), Freydis88, Floyddotnet, Vilogity, Dessa, Farook (German translation)

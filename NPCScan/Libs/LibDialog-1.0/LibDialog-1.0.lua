@@ -115,13 +115,11 @@ local active_dialogs = lib.active_dialogs
 local active_buttons = lib.active_buttons
 local active_checkboxes = lib.active_checkboxes
 local active_editboxes = lib.active_editboxes
-local active_icons = lib.active_icons
 
 local dialog_heap = lib.dialog_heap
 local button_heap = lib.button_heap
 local checkbox_heap = lib.checkbox_heap
 local editbox_heap = lib.editbox_heap
-local icon_heap = lib.icon_heap
 
 -----------------------------------------------------------------------
 -- Helper functions.
@@ -259,7 +257,7 @@ local function _Dialog_OnHide(dialog)
         local delegate
         repeat
             delegate = _ProcessQueue()
-            until not delegate
+        until not delegate
     end
 end
 

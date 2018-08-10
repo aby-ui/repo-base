@@ -1,0 +1,16 @@
+## Interface: 80000
+## Title: Wholly
+## Author: Scott M Harrison
+## Notes: Shows quest database and map pins
+## Version: 067
+## Dependencies: Grail
+## OptionalDeps: LibStub, LibDataBroker, TomTom, Gatherer
+## SavedVariablesPerCharacter: WhollyDatabase
+
+Wholly.lua
+Wholly.xml
+
+## Title-zhCN: |cff880303[爱不易]|r Wholly 可接任务查询
+## Notes-zhCN: 在大地图上显示可接任务, 必须依赖Grail插件, 占用很大, 默认关闭, 请在需要时启用
+## X-Vendor: AbyUI
+

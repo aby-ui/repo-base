@@ -1,0 +1,986 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/">
+
+	<Button name="com_mithrandir_whollyButtonTemplate" virtual="true" inherits="SecureActionButtonTemplate">
+		<Size>
+			<AbsDimension x="299" y="16" />
+		</Size>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<FontString name="$parentTag" inherits="GameFontNormal" justifyH="RIGHT" parentKey="tag">
+					<Size>
+						<AbsDimension x="0" y="16" />
+					</Size>
+					<Anchors>
+						<Anchor point="RIGHT">
+							<Offset>
+								<AbsDimension x="-2" y="0" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				self:RegisterForClicks("AnyUp")
+			</OnLoad>
+			<OnEnter>
+				Wholly:ButtonEnter(self)
+			</OnEnter>
+			<OnLeave>
+				GameTooltip:Hide()
+			</OnLeave>
+			<PostClick>
+				Wholly:ButtonPostClick(self)
+			</PostClick>
+			<PreClick>
+				Wholly:ButtonPreClick(self)
+			</PreClick>
+		</Scripts>
+		<ButtonText name="$parentNormalText" nonspacewrap="true" parentKey="normalText">
+			<Size>
+				<AbsDimension x="0" y="10" />
+			</Size>
+			<Anchors>
+				<Anchor point="LEFT">
+					<Offset>
+						<AbsDimension x="10" y="0" />
+					</Offset>
+				</Anchor>
+			</Anchors> 
+		</ButtonText>
+		<NormalFont style="GameFontNormalLeft"/>
+		<HighlightFont style="GameFontHighlightLeft"/>
+		<DisabledFont style="GameFontHighlightLeft"/>
+	</Button>
+
+	<Button name="com_mithrandir_whollyButtonGenericTemplate" virtual="true">
+		<Size>
+			<AbsDimension x="299" y="16" />
+		</Size>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<FontString name="$parentTag" inherits="GameFontNormal" justifyH="RIGHT" parentKey="tag">
+					<Size>
+						<AbsDimension x="0" y="16" />
+					</Size>
+					<Anchors>
+						<Anchor point="RIGHT">
+							<Offset>
+								<AbsDimension x="-2" y="0" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<NormalTexture file="Interface\Buttons\UI-MinusButton-UP">
+			<Size>
+				<AbsDimension x="16" y="16"/>
+			</Size>
+			<Anchors>
+				<Anchor point="LEFT">
+					<Offset>
+						<AbsDimension x="3" y="0"/>
+					</Offset>
+				</Anchor>
+			</Anchors>
+		</NormalTexture>
+		<ButtonText name="$parentNormalText" nonspacewrap="true" parentKey="normalText">
+			<Size>
+				<AbsDimension x="0" y="10" />
+			</Size>
+			<Anchors>
+				<Anchor point="LEFT">
+					<Offset>
+						<AbsDimension x="20" y="0" />
+					</Offset>
+				</Anchor>
+			</Anchors> 
+		</ButtonText>
+		<NormalFont style="GameFontNormalLeft"/>
+		<HighlightFont style="GameFontHighlightLeft"/>
+		<DisabledFont style="GameFontHighlightLeft"/>
+	</Button>
+
+	<Button name="com_mithrandir_whollyButtonOneTemplate" virtual="true" inherits="com_mithrandir_whollyButtonGenericTemplate">
+		<Scripts>
+			<OnClick>
+				Wholly:ScrollOneClick(self)
+			</OnClick>
+		</Scripts>
+	</Button>
+
+	<Button name="com_mithrandir_whollyButtonTwoTemplate" virtual="true" inherits="com_mithrandir_whollyButtonGenericTemplate">
+		<Scripts>
+			<OnClick>
+				Wholly:ScrollTwoClick(self)
+			</OnClick>
+		</Scripts>
+	</Button>
+
+	<Frame name="com_mithrandir_whollyQuestInfoFrame" parent="QuestFrame" enableMouse="true">
+		<Size>
+			<AbsDimension x="60" y="14" />
+		</Size>
+		<Scripts>
+			<OnEnter>
+				Wholly:QuestInfoEnter(self)
+			</OnEnter>
+			<OnLeave>
+				GameTooltip:Hide()
+			</OnLeave>
+		</Scripts>
+		<Anchors>
+			<Anchor point="TOPRIGHT" relativePoint="TOPRIGHT">
+				<Offset>
+					<AbsDimension x="-40" y="-55" />
+				</Offset>
+			</Anchor>
+		</Anchors>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<FontString name="$parentText" inherits="GameFontNormal" justifyH="RIGHT" text="None">
+					<Size>
+						<AbsDimension x="60" y="20" />
+					</Size>
+				</FontString>
+			</Layer>
+		</Layers>
+	</Frame>
+
+	<Frame name="com_mithrandir_whollyPopupQuestInfoFrame" parent="QuestLogPopupDetailFrame" enableMouse="true">
+		<Size>
+			<AbsDimension x="60" y="14" />
+		</Size>
+		<Scripts>
+			<OnEnter>
+				Wholly:QuestInfoEnterPopup(self)
+			</OnEnter>
+			<OnLeave>
+				GameTooltip:Hide()
+			</OnLeave>
+		</Scripts>
+		<Anchors>
+			<Anchor point="TOPRIGHT" relativePoint="TOPRIGHT">
+				<Offset>
+					<AbsDimension x="-85" y="-4" />
+				</Offset>
+			</Anchor>
+		</Anchors>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<FontString name="$parentText" inherits="GameFontNormal" justifyH="RIGHT" text="None">
+					<Size>
+						<AbsDimension x="60" y="20" />
+					</Size>
+				</FontString>
+			</Layer>
+		</Layers>
+	</Frame>
+
+	<Frame name="com_mithrandir_whollyQuestInfoBuggedFrame" parent="QuestFrame" enableMouse="true">
+		<Size>
+			<AbsDimension x="180" y="14" />
+		</Size>
+		<Anchors>
+			<Anchor point="TOPLEFT" relativePoint="TOPLEFT">
+				<Offset>
+					<AbsDimension x="100" y="-55" />
+				</Offset>
+			</Anchor>
+		</Anchors>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<FontString name="$parentText" inherits="GameFontNormal" justifyH="LEFT" text="None">
+					<Size>
+						<AbsDimension x="180" y="20" />
+					</Size>
+				</FontString>
+			</Layer>
+		</Layers>
+	</Frame>
+
+	<Frame name="com_mithrandir_whollyBreadcrumbFrame" parent="QuestFrame" enableMouse="true" frameStrata="MEDIUM" hidden="true">
+		<Size>
+			<AbsDimension x="360" y="128" />
+		</Size>
+		<Scripts>
+			<OnMouseDown>
+				Wholly:BreadcrumbClick(self)
+			</OnMouseDown>
+			<OnEnter>
+				Wholly:BreadcrumbEnter(self)
+			</OnEnter>
+			<OnLeave>
+				GameTooltip:Hide()
+			</OnLeave>
+		</Scripts>
+		<Anchors>
+			<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT">
+				<Offset>
+					<AbsDimension x="16" y="70" />
+				</Offset>
+			</Anchor>
+		</Anchors>
+		<HitRectInsets>
+			<AbsInset left="0" right="0" top="0" bottom="0" />
+		</HitRectInsets>
+		<Layers>
+			<Layer level="ARTWORK">
+				<Texture file="Interface\TUTORIALFRAME\UI-TutorialFrame-QuestGiver">
+					<Anchors>
+						<Anchor point="BOTTOMLEFT">
+							<Offset>
+								<AbsDimension x="0" y="0" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</Texture>
+				<FontString name="$parentMessage" inherits="GameFontHighlightMedium" justifyH="LEFT" text="Breadcrumb Quest Available">
+					<Size>
+						<AbsDimension x="300" y="22"/>
+					</Size>
+					<Anchors>
+						<Anchor point="BOTTOMLEFT">
+							<Offset>
+								<AbsDimension x="75" y="54"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+	</Frame>
+
+	<Frame name="com_mithrandir_whollyFrameWide" toplevel="true" enableMouse="true" movable="true" parent="UIParent" hidden="true">
+		<Size>
+			<AbsDimension x="682" y="447" />
+		</Size>
+		<Anchors>
+			<Anchor point="TOPLEFT" />
+		</Anchors>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture file="Interface\QuestFrame\UI-QuestLog-BookIcon">
+					<Size>
+						<AbsDimension x="64" y="64" />
+					</Size>
+					<Anchors>
+						<Anchor point="TOPLEFT">
+							<Offset>
+								<AbsDimension x="3" y="-4" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</Texture>
+				<Texture file="Interface\QuestFrame\UI-QuestLogDualPane-Left">
+					<Size>
+						<AbsDimension x="512" y="445" />
+					</Size>
+					<Anchors>
+						<Anchor point="TOPLEFT" />
+					</Anchors>
+					<TexCoords left="0.0" right="1.0" top="0.0" bottom="0.86914" />
+				</Texture>
+				<Texture file="Interface\QuestFrame\UI-QuestLogDualPane-RIGHT">
+					<Size>
+						<AbsDimension x="170" y="445"/>
+					</Size>
+					<Anchors>
+						<Anchor point="TOPRIGHT"/>
+					</Anchors>
+					<TexCoords left="0.0" right="0.6640625" top="0.0" bottom="0.86914" />
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<FontString name="$parentTitleText" inherits="GameFontNormal" text="QUEST_LOG">
+					<Size>
+						<AbsDimension x="300" y="14" />
+					</Size>
+					<Anchors>
+						<Anchor point="TOP">
+							<Offset>
+								<AbsDimension x="0" y="-15" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+			</Layer>
+			<Layer level="BORDER">
+				<Texture file="Interface\QuestFrame\UI-QuestLogDualPane-RIGHT">
+					<Size>
+						<AbsDimension x="80" y="34"/>
+					</Size>
+					<Anchors>
+						<Anchor point="BOTTOMRIGHT">
+							<Offset>
+								<AbsDimension x="-80" y="2" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+					<TexCoords left="0.3046875" right="0.6171875" top="0.80273" bottom="0.86914" />
+				</Texture>
+				<Texture file="Interface\QuestFrame\UI-QuestLogDualPane-Left">
+					<Size>
+						<AbsDimension x="350" y="4"/>
+					</Size>
+					<Anchors>
+						<Anchor point="TOPLEFT">
+							<Offset>
+								<AbsDimension x="-1" y="-218" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+					<TexCoords left="0.0" right="0.625" top="0.7988275" bottom="0.80664" />
+				</Texture>
+				<Texture file="Interface\QuestFrame\UI-QuestLogDualPane-Left">
+					<Size>
+						<AbsDimension x="80" y="34"/>
+					</Size>
+					<Anchors>
+						<Anchor point="BOTTOMLEFT">
+							<Offset>
+								<AbsDimension x="270" y="2" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+					<TexCoords left="0.4765625" right="0.6328125" top="0.80273" bottom="0.86914" />
+				</Texture>
+
+				<Texture file="Interface\QuestFrame\UI-QuestLogDualPane-Left">
+					<Size>
+						<AbsDimension x="300" y="338"/>
+					</Size>
+					<Anchors>
+						<Anchor point="BOTTOMLEFT">
+							<Offset>
+								<AbsDimension x="350" y="36" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+					<TexCoords left="0.0390625" right="0.566640625" top="0.140625" bottom="0.80078063" />
+				</Texture>
+
+			</Layer>
+		</Layers>
+		<Frames>
+			<Button name="$parentCloseButton" inherits="UIPanelCloseButton">
+				<Anchors>
+					<Anchor point="TOPRIGHT">
+						<Offset>
+							<AbsDimension x="2" y="-8" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Button>
+			<Button name="$parentSwitchZoneButton" inherits="UIPanelButtonTemplate" text="MAP">
+				<Size>
+					<AbsDimension x="110" y="21" />
+				</Size>
+				<Anchors>
+					<Anchor point="BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x="18" y="15" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						Wholly:SetCurrentMapToPanel(self)
+					</OnClick>
+					<OnEnter>
+						Wholly:ZoneButtonEnter(self)
+					</OnEnter>
+					<OnLeave>
+						GameTooltip:Hide()
+					</OnLeave>
+				</Scripts>
+			</Button>
+			<Button name="$parentReallySwitchZoneButton" inherits="UIPanelButtonTemplate" text="ZONE">
+				<Size>
+					<AbsDimension x="96" y="21" />
+				</Size>
+				<Anchors>
+					<Anchor point="BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x="129" y="15" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						Wholly:SetCurrentZoneToPanel(self)
+					</OnClick>
+					<OnEnter>
+						Wholly:ZoneButtonEnter(self)
+					</OnEnter>
+					<OnLeave>
+						GameTooltip:Hide()
+					</OnLeave>
+				</Scripts>
+			</Button>
+			<Button name="$parentPreferencesButton" inherits="UIPanelButtonTemplate" text="PREFERENCES">
+				<Size>
+					<AbsDimension x="124" y="21" />
+				</Size>
+				<Anchors>
+					<Anchor point="BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x="224" y="15" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						Wholly:_OpenInterfaceOptions()
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Button name="$parentSortButton" inherits="UIPanelButtonTemplate" text="TRACKER_SORT_LABEL">
+				<Size>
+					<AbsDimension x="150" y="21" />
+				</Size>
+				<Anchors>
+					<Anchor point="BOTTOMRIGHT">
+						<Offset>
+							<AbsDimension x="-8" y="15" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						Wholly:Sort(self)
+					</OnClick>
+					<OnEnter>
+						Wholly:SortButtonEnter(self)
+					</OnEnter>
+					<OnLeave>
+						GameTooltip:Hide()
+					</OnLeave>
+				</Scripts>
+			</Button>
+			<ScrollFrame name="$parentScrollOneFrame" inherits="HybridScrollFrameTemplate">
+				<Size>
+					<AbsDimension x="305" y="140" />
+				</Size>
+				<Anchors>
+					<Anchor point="TOPLEFT">
+						<Offset>
+							<AbsDimension x="19" y="-75" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Frames>
+					<Slider name="$parentScrollBar" inherits="HybridScrollBarTemplate" parentKey="scrollBar">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativePoint="TOPRIGHT">
+								<Offset x="0" y="-13"/>
+							</Anchor>
+							<Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT">
+								<Offset x="0" y="14"/>
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								local name = self:GetName();
+								_G[name.."BG"]:Hide();
+								_G[name.."Top"]:Hide();
+								_G[name.."Bottom"]:Hide();
+								_G[name.."Middle"]:Hide();
+								self.doNotHide = true;
+							</OnLoad>
+						</Scripts>
+					</Slider>
+					<Frame name="$parentLogHighlightFrame" hidden="true">
+						<Anchors>
+							<Anchor point="TOPLEFT"/>
+							<Anchor point="BOTTOMRIGHT"/>
+						</Anchors>
+						<Layers>
+							<Layer level="ARTWORK">
+								<Texture name="$parentLogSkillHighlight" file="Interface\QuestFrame\UI-QuestLogTitleHighlight" alphaMode="ADD"/>
+							</Layer>
+						</Layers>
+						<Scripts>
+							<OnLoad>
+								self:SetParent(nil);
+							</OnLoad>
+						</Scripts>
+					</Frame>
+				</Frames>
+				<Scripts>
+					<OnLoad>
+						Wholly:ScrollFrameOne_OnLoad(self)
+					</OnLoad>
+				</Scripts>
+			</ScrollFrame>
+			<ScrollFrame name="$parentScrollTwoFrame" inherits="HybridScrollFrameTemplate">
+				<Size>
+					<AbsDimension x="305" y="180" />
+				</Size>
+				<Anchors>
+					<Anchor point="TOPLEFT">
+						<Offset>
+							<AbsDimension x="19" y="-224" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Frames>
+					<Slider name="$parentScrollBar" inherits="HybridScrollBarTemplate" parentKey="scrollBar">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativePoint="TOPRIGHT">
+								<Offset x="0" y="-13"/>
+							</Anchor>
+							<Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT">
+								<Offset x="0" y="14"/>
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								local name = self:GetName();
+								_G[name.."BG"]:Hide();
+								_G[name.."Top"]:Hide();
+								_G[name.."Bottom"]:Hide();
+								_G[name.."Middle"]:Hide();
+								self.doNotHide = true;
+							</OnLoad>
+						</Scripts>
+					</Slider>
+					<Frame name="$parentLogHighlightFrame" hidden="true">
+						<Anchors>
+							<Anchor point="TOPLEFT"/>
+							<Anchor point="BOTTOMRIGHT"/>
+						</Anchors>
+						<Layers>
+							<Layer level="ARTWORK">
+								<Texture name="$parentLogSkillHighlight" file="Interface\QuestFrame\UI-QuestLogTitleHighlight" alphaMode="ADD"/>
+							</Layer>
+						</Layers>
+						<Scripts>
+							<OnLoad>
+								self:SetParent(nil);
+							</OnLoad>
+						</Scripts>
+					</Frame>
+				</Frames>
+				<Scripts>
+					<OnLoad>
+						Wholly:ScrollFrameTwo_OnLoad(self)
+					</OnLoad>
+				</Scripts>
+			</ScrollFrame>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				tinsert(UISpecialFrames, self:GetName())
+			</OnLoad>
+			<OnShow>
+				Wholly:OnShow(self)
+				PlaySound(PlaySoundKitID and "igCharacterInfoOpen" or 839);
+			</OnShow>
+			<OnHide>
+				Wholly:OnHide(self)
+				PlaySound(PlaySoundKitID and "igCharacterInfoClose" or 840);
+				if self.isMoving then
+					self:StopMovingOrSizing()
+					self.isMoving = false
+				end
+			</OnHide>
+			<OnMouseUp>
+				if self.isMoving then
+					self:StopMovingOrSizing()
+					self.isMoving = false
+				end
+			</OnMouseUp>
+			<OnMouseDown>
+				if (not self.isLocked or self.isLocked == 0) and button == "LeftButton" then
+					self:StartMoving()
+					self.isMoving = true
+				end
+			</OnMouseDown>
+		</Scripts>
+	</Frame>
+
+	<Frame name="com_mithrandir_whollyFrame" toplevel="true" enableMouse="true" movable="true" parent="UIParent" hidden="true">
+		<Size>
+			<AbsDimension x="384" y="512" />
+		</Size>
+		<Anchors>
+			<Anchor point="TOPLEFT">
+				<Offset>
+					<AbsDimension x="0" y="-104" />
+				</Offset>
+			</Anchor>
+		</Anchors>
+		<Layers>
+			<Layer level="BORDER">
+				<Texture file="Interface\QuestFrame\UI-QuestLog-TopLeft">
+					<Size>
+						<AbsDimension x="256" y="256" />
+					</Size>
+					<Anchors>
+						<Anchor point="TOPLEFT" />
+					</Anchors>
+				</Texture>		
+				<Texture file="Interface\QuestFrame\UI-QuestLog-TopRight">
+					<Size>
+						<AbsDimension x="128" y="256" />
+					</Size>
+					<Anchors>
+						<Anchor point="TOPRIGHT" />
+					</Anchors>
+				</Texture>		
+				<Texture file="Interface\QuestFrame\UI-QuestLog-BotLeft">
+					<Size>
+						<AbsDimension x="256" y="256" />
+					</Size>
+					<Anchors>
+						<Anchor point="BOTTOMLEFT" />
+					</Anchors>
+				</Texture>		
+				<Texture file="Interface\QuestFrame\UI-QuestLog-BotRight">
+					<Size>
+						<AbsDimension x="128" y="256" />
+					</Size>
+					<Anchors>
+						<Anchor point="BOTTOMRIGHT" />
+					</Anchors>
+				</Texture>		
+			</Layer>
+			<Layer level="BACKGROUND">
+				<Texture file="Interface\QuestFrame\UI-QuestLog-BookIcon">
+					<Size>
+						<AbsDimension x="64" y="64" />
+					</Size>
+					<Anchors>
+						<Anchor point="TOPLEFT">
+							<Offset>
+								<AbsDimension x="3" y="-4" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<FontString name="$parentTitleText" inherits="GameFontNormal" text="QUEST_LOG">
+					<Size>
+						<AbsDimension x="300" y="14" />
+					</Size>
+					<Anchors>
+						<Anchor point="TOP">
+							<Offset>
+								<AbsDimension x="0" y="-15" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Button name="$parentCloseButton" inherits="UIPanelCloseButton">
+				<Anchors>
+					<Anchor point="TOPRIGHT">
+						<Offset>
+							<AbsDimension x="-30" y="-8" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Button>
+			<Button name="$parentSortButton" inherits="UIPanelButtonTemplate" text="TRACKER_SORT_LABEL">
+				<Size>
+					<AbsDimension x="110" y="21" />
+				</Size>
+				<Anchors>
+					<Anchor point="BOTTOMRIGHT">
+						<Offset>
+							<AbsDimension x="-43" y="80" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						Wholly:Sort(self)
+					</OnClick>
+					<OnEnter>
+						Wholly:SortButtonEnter(self)
+					</OnEnter>
+					<OnLeave>
+						GameTooltip:Hide()
+					</OnLeave>
+				</Scripts>
+			</Button>
+			<Button name="$parentPreferencesButton" inherits="UIPanelButtonTemplate" text="PREFERENCES">
+				<Size>
+					<AbsDimension x="110" y="21" />
+				</Size>
+				<Anchors>
+					<Anchor point="BOTTOMRIGHT">
+						<Offset>
+							<AbsDimension x="-151" y="80" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						Wholly:_OpenInterfaceOptions()
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Button name="$parentSwitchZoneButton" inherits="UIPanelButtonTemplate" text="MAP">
+				<Size>
+					<AbsDimension x="110" y="21" />
+				</Size>
+				<Anchors>
+					<Anchor point="BOTTOMRIGHT">
+						<Offset>
+							<AbsDimension x="-259" y="80" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						Wholly:SetCurrentMapToPanel(self)
+					</OnClick>
+					<OnEnter>
+						Wholly:ZoneButtonEnter(self)
+					</OnEnter>
+					<OnLeave>
+						GameTooltip:Hide()
+					</OnLeave>
+				</Scripts>
+			</Button>
+			<ScrollFrame name="$parentScrollFrame" inherits="HybridScrollFrameTemplate">
+				<Size>
+					<AbsDimension x="305" y="335" />
+				</Size>
+				<Anchors>
+					<Anchor point="TOPLEFT">
+						<Offset>
+							<AbsDimension x="19" y="-75" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Frames>
+					<Slider name="$parentScrollBar" inherits="HybridScrollBarTemplate" parentKey="scrollBar">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativePoint="TOPRIGHT">
+								<Offset x="0" y="-13"/>
+							</Anchor>
+							<Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT">
+								<Offset x="0" y="14"/>
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								local name = self:GetName();
+								_G[name.."BG"]:Hide();
+								_G[name.."Top"]:Hide();
+								_G[name.."Bottom"]:Hide();
+								_G[name.."Middle"]:Hide();
+								self.doNotHide = true;
+							</OnLoad>
+						</Scripts>
+					</Slider>
+					<Frame name="$parentLogHighlightFrame" hidden="true">
+						<Anchors>
+							<Anchor point="TOPLEFT"/>
+							<Anchor point="BOTTOMRIGHT"/>
+						</Anchors>
+						<Layers>
+							<Layer level="ARTWORK">
+								<Texture name="$parentLogSkillHighlight" file="Interface\QuestFrame\UI-QuestLogTitleHighlight" alphaMode="ADD"/>
+							</Layer>
+						</Layers>
+						<Scripts>
+							<OnLoad>
+								self:SetParent(nil);
+							</OnLoad>
+						</Scripts>
+					</Frame>
+				</Frames>
+				<Scripts>
+					<OnLoad>
+						Wholly:ScrollFrame_OnLoad(self)
+					</OnLoad>
+				</Scripts>
+			</ScrollFrame>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				Wholly:OnLoad(self)
+				tinsert(UISpecialFrames, self:GetName())
+			</OnLoad>
+			<OnShow>
+				Wholly:OnShow(self)
+				PlaySound(PlaySoundKitID and "igCharacterInfoOpen" or 839);
+			</OnShow>
+			<OnHide>
+				Wholly:OnHide(self)
+				PlaySound(PlaySoundKitID and "igCharacterInfoClose" or 840);
+				if self.isMoving then
+					self:StopMovingOrSizing()
+					self.isMoving = false
+				end
+			</OnHide>
+			<OnMouseUp>
+				if self.isMoving then
+					self:StopMovingOrSizing()
+					self.isMoving = false
+				end
+			</OnMouseUp>
+			<OnMouseDown>
+				if (not self.isLocked or self.isLocked == 0) and button == "LeftButton" then
+					self:StartMoving()
+					self.isMoving = true
+				end
+			</OnMouseDown>
+		</Scripts>
+	</Frame>
+
+	<Frame name="com_mithrandir_whollySearchFrame" parent="com_mithrandir_whollyFrame" hidden="true">
+		<Size>
+			<AbsDimension x="288" y="96" />
+		</Size>
+		<Anchors>
+			<Anchor point="BOTTOMLEFT" relativePoint="TOPLEFT">
+				<Offset>
+					<AbsDimension x="64" y="-14" />
+				</Offset>
+			</Anchor>
+		</Anchors>
+		<Backdrop bgFile="Interface\TutorialFrame\TutorialFrameBackground" edgeFile="Interface\DialogFrame\UI-DialogBox-Border" tile="true">
+			<EdgeSize>
+				<AbsValue val="16" />
+			</EdgeSize>
+			<TileSize>
+				<AbsValue val="32" />
+			</TileSize>
+			<BackgroundInsets>
+				<AbsInset left="5" right="5" top="5" bottom="5" />
+			</BackgroundInsets>
+		</Backdrop>
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString name="$parentTitle" inherits="ChatFontNormal" text="SEARCH">
+					<Anchors>
+						<Anchor point="TOP">
+							<Offset>
+								<AbsDimension x="0" y="-8" />
+							</Offset>
+						</Anchor>
+					</Anchors>	
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Button inherits="UIPanelCloseButton">
+				<Anchors>
+					<Anchor point="TOPRIGHT">
+						<Offset>
+							<AbsDimension x="-3" y="-3" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						com_mithrandir_whollySearchFrame:Hide()
+					</OnClick>
+				</Scripts>
+			</Button>	
+
+			<EditBox name="com_mithrandir_whollySearchEditBox" letters="50">
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture>
+							<Color r=".2" g=".2" b=".2" a="1"/>
+						</Texture>
+					</Layer>
+				</Layers>
+				<Size>
+					<AbsDimension x="190" y="20" />
+				</Size>
+				<Anchors>
+					<Anchor point="TOP">
+						<Offset>
+							<AbsDimension x="0" y="-32" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnEnterPressed>
+						Wholly:SearchEntered()
+					</OnEnterPressed>
+					<OnEscapePressed>
+						com_mithrandir_whollySearchFrame:Hide()
+					</OnEscapePressed>
+				</Scripts>
+				<FontString inherits="ChatFontNormal" />
+			</EditBox>
+
+			<Button inherits="OptionsButtonTemplate" text="SEARCH">
+				<Anchors>
+					<Anchor point="BOTTOM">
+						<Offset>
+							<AbsDimension x="0" y="8" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						Wholly:SearchEntered()
+					</OnClick>
+				</Scripts>
+			</Button>
+		</Frames>
+	</Frame>
+
+	<Frame name="com_mithrandir_whollyConfigFrame" parent="InterfaceOptionsFramePanelContainer">
+		<Scripts>
+			<OnShow>
+				Wholly:ConfigFrame_OnShow(self)
+			</OnShow>
+		</Scripts>
+	</Frame>
+
+	<Frame name="com_mithrandir_whollyTitleAppearanceConfigFrame" parent="InterfaceOptionsFramePanelContainer">
+		<Scripts>
+			<OnShow>
+				Wholly:ConfigFrame_OnShow(self)
+			</OnShow>
+		</Scripts>
+	</Frame>
+
+	<Frame name="com_mithrandir_whollyWorldMapConfigFrame" parent="InterfaceOptionsFramePanelContainer">
+		<Scripts>
+			<OnShow>
+				Wholly:ConfigFrame_OnShow(self)
+			</OnShow>
+		</Scripts>
+	</Frame>
+
+	<Frame name="com_mithrandir_whollyWidePanelConfigFrame" parent="InterfaceOptionsFramePanelContainer">
+		<Scripts>
+			<OnShow>
+				Wholly:ConfigFrame_OnShow(self)
+			</OnShow>
+		</Scripts>
+	</Frame>
+
+	<Frame name="com_mithrandir_whollyLoadDataConfigFrame" parent="InterfaceOptionsFramePanelContainer">
+		<Scripts>
+			<OnShow>
+				Wholly:ConfigFrame_OnShow(self)
+			</OnShow>
+		</Scripts>
+	</Frame>
+
+	<Frame name="com_mithrandir_whollyOtherConfigFrame" parent="InterfaceOptionsFramePanelContainer">
+		<Scripts>
+			<OnShow>
+				Wholly:ConfigFrame_OnShow(self)
+			</OnShow>
+		</Scripts>
+	</Frame>
+
+</Ui>

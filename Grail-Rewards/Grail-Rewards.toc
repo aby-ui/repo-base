@@ -1,0 +1,12 @@
+## Interface: 80000
+## Title: Grail |r|cff69ccf0Rewards|r
+## Author: Scott M Harrison
+## Notes: Provides (non-reputation) reward award information to Grail
+## Version: 001
+## Dependencies: Grail
+## LoadOnDemand: 1
+
+Grail-Rewards.lua
+
+## Title: |cff880303[爱不易]|r Grail 非声望奖励
+## X-Vendor: AbyUI

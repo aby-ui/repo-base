@@ -1,7 +1,7 @@
 --[[
     This file is part of Decursive.
 
-    Decursive (v 2.7.6.1_beta_1) add-on for World of Warcraft UI
+    Decursive (v 2.7.6.1) add-on for World of Warcraft UI
     Copyright (C) 2006-2018 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Starting from 2009-10-31 and until said otherwise by its author, Decursive
@@ -18,7 +18,7 @@
     but WITHOUT ANY WARRANTY.
 
 
-    This file was last updated on 2018-07-18T0:42:34Z
+    This file was last updated on 2018-08-09T22:29:16Z
 --]]
 -------------------------------------------------------------------------------
 
@@ -525,8 +525,6 @@ do
         local current_x, current_y = self.Frame:GetRect();
         current_x = current_x * FrameScale;
         current_y = current_y * FrameScale;
-
-        --D:Debug("xDelta=", current_x - saved_x, "yDelta=", current_y - saved_y); -- XXX will crash
 
         -- If executed for the very first time, then put it in the top right corner of the screen
         if (not saved_x or not saved_y) then
@@ -1860,6 +1858,6 @@ local MF_Textures = { -- unused
 
 -- }}}
 
-T._LoadedFiles["Dcr_DebuffsFrame.lua"] = "2.7.6.1_beta_1";
+T._LoadedFiles["Dcr_DebuffsFrame.lua"] = "2.7.6.1";
 
 -- Heresy

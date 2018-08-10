@@ -1,0 +1,62 @@
+<!--
+	Kaliel's Tracker
+	Copyright (c) 2012-2018, Marouan Sabbagh <mar.sabbagh@gmail.com>
+	All Rights Reserved.
+
+	This file is part of addon Kaliel's Tracker.
+-->
+
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+    <Frame name="KT_ObjectiveTrackerBlockTemplate" hidden="true" virtual="true">
+        <Size x="232" y="10"/>
+        <Layers>
+            <Layer level="ARTWORK">
+                <FontString parentKey="HeaderText" inherits="ObjectiveFont">
+                    <Size x="192" y="0"/>
+                    <Anchors>
+                        <Anchor point="TOPLEFT"/>
+                    </Anchors>
+                    <Color r="0.75" g="0.61" b="0"/>
+                </FontString>
+            </Layer>
+        </Layers>
+        <Frames>
+            <Frame name="$parentHeader" parentKey="HeaderButton">
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeKey="$parent.HeaderText"/>
+                    <Anchor point="BOTTOMRIGHT" relativeKey="$parent.HeaderText"/>
+                </Anchors>
+            </Frame>
+        </Frames>
+        <Scripts>
+            <OnEnter function="KT_ObjectiveTrackerBlock_OnEnter"/>
+            <OnLeave function="KT_ObjectiveTrackerBlock_OnLeave"/>
+            <OnMouseUp function="KT_ObjectiveTrackerBlock_OnClick"/>
+        </Scripts>
+    </Frame>
+
+    <Frame name="KT_ObjectiveTrackerLineTemplate" virtual="true">
+        <Size x="232" y="16"/>
+        <Layers>
+            <Layer level="ARTWORK">
+                <FontString parentKey="Dash" inherits="ObjectiveFont" text="KT_QUEST_DASH">
+                    <Anchors>
+                        <Anchor point="TOPLEFT" x="0" y="1"/>
+                    </Anchors>
+                </FontString>
+                <FontString parentKey="Text" inherits="ObjectiveFont">
+                    <Anchors>
+                        <Anchor point="TOP"/>
+                        <Anchor point="LEFT" relativeKey="$parent.Dash" relativePoint="RIGHT"/>
+                    </Anchors>
+                </FontString>
+            </Layer>
+        </Layers>
+        <Scripts>
+            <OnLoad>
+                self.Text:SetWidth(OBJECTIVE_TRACKER_TEXT_WIDTH);
+            </OnLoad>
+        </Scripts>
+    </Frame>
+</Ui>

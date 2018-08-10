@@ -7,7 +7,7 @@
 ## Notes-frFR: Un damage meter.
 ## Notes-zhCN: 模块化伤害统计。
 ## Author: Zarnivoop
-## Version: 1.7.3
+## Version: 1.7.5
 ## SavedVariables: SkadaDB
 ## SavedVariablesPerCharacter: SkadaPerCharDB
 

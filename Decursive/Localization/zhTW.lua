@@ -1,7 +1,7 @@
 --[[
     This file is part of Decursive.
 
-    Decursive (v 2.7.6.1_beta_1) add-on for World of Warcraft UI
+    Decursive (v 2.7.6.1) add-on for World of Warcraft UI
     Copyright (C) 2006-2018 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Starting from 2009-10-31 and until said otherwise by its author, Decursive
@@ -73,7 +73,7 @@ T._LoadedFiles["zhTW.lua"] = false;
 local L = LibStub("AceLocale-3.0"):NewLocale("Decursive", "zhTW");
 
 if not L then
-    T._LoadedFiles["zhTW.lua"] = "2.7.6.1_beta_1";
+    T._LoadedFiles["zhTW.lua"] = "2.7.6.1";
     return;
 end;
 
@@ -113,9 +113,9 @@ L["COLORSTATUS"] = "設定當玩家狀態是 '%s' 時的 MUF 顏色."
 L["CTRL"] = "Ctrl"
 L["CURE_PETS"] = "檢測並淨化寵物"
 L["CURSE"] = "詛咒"
-L["DEBUG_REPORT_HEADER"] = [=[|cFF11FF33請報告此視窗的內容給 <decursive+report@2072productions.com>|r
+L["DEBUG_REPORT_HEADER"] = [=[|cFF11FF33請報告此視窗的內容給 <%s>|r
 |cFF009999（使用 CTRL+A 選擇所有 CTRL+C 復制文本到剪切板）|r
-如果發現 Decursive 任何奇怪的行為也一并報告。
+如果發現 %s 任何奇怪的行為也一并報告。
 ]=]
 L["DECURSIVE_DEBUG_REPORT"] = "**** |cFFFF0000Decursive 除錯報告|r ****"
 L["DECURSIVE_DEBUG_REPORT_BUT_NEW_VERSION"] = [=[|cFF11FF33Decursive 啟動失敗但請勿擔心! 一個新版本的Decursive已經被偵測到 (%s)。你只需要執行更新。前往curse.com並搜索"Decursive" 或使用Curse Client，此服務會自動更新所有您最愛的UI。|r
@@ -485,4 +485,4 @@ L["UNSTABLERELEASE"] = "不穩定釋出版"
 
 
 
-T._LoadedFiles["zhTW.lua"] = "2.7.6.1_beta_1";
+T._LoadedFiles["zhTW.lua"] = "2.7.6.1";

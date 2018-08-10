@@ -2,17 +2,15 @@
 ## Title: NPCScan
 ## Notes: Uses various methods to scan your surroundings for rare or specified NPCs.
 ## Author: Torhal
-## Version: 8.0.1.2
+## Version: 8.0.1.3
 ## OptionalDeps: Ace3, AceGUI-3.0-SharedMediaWidgets, HereBeDragons, LibDataBroker-1.1, LibDialog-1.0, LibQTip-1.0, LibSharedMedia-3.0, LibSink-2.0, LibTextDump-1.0, LibToast-1.0, LibWindow-1.1
 ## SavedVariables: NPCScanDB
 
-## X-Date: 2018-07-17T7:35:01Z
+## X-Date: 2018-07-21T8:09:49Z
 ## X-Category: Achievements
 ## X-Email: jcallahan@curse.com
 
-#@no-lib-strip@
 embeds.xml
-#@end-no-lib-strip@
 
 Localization\Manifest.xml
 Constants\Manifest.xml

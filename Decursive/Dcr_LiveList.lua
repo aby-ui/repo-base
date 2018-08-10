@@ -1,7 +1,7 @@
 --[[
     This file is part of Decursive.
 
-    Decursive (v 2.7.6.1_beta_1) add-on for World of Warcraft UI
+    Decursive (v 2.7.6.1) add-on for World of Warcraft UI
     Copyright (C) 2006-2018 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Starting from 2009-10-31 and until said otherwise by its author, Decursive
@@ -17,7 +17,7 @@
     Decursive is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY.
 
-    This file was last updated on 2018-07-18T0:42:34Z
+    This file was last updated on 2018-08-09T22:29:16Z
 
 --]]
 -------------------------------------------------------------------------------
@@ -198,7 +198,7 @@ function LiveList.prototype:GiveAnchor() -- {{{
         if D.profile.ReverseLiveDisplay then
             return "BOTTOMLEFT", LiveList.ExistingPerID[self.ID - 1].Frame, "TOPLEFT", 0, 1;
         else
-            return "TOPLEFT", LiveList.ExistingPerID[self.ID - 1].Frame, "BOTTOMLEFT", 0, -1; -- TODO index is nil error received in a report by mail on 2012-11-02
+            return "TOPLEFT", LiveList.ExistingPerID[self.ID - 1].Frame, "BOTTOMLEFT", 0, -1;
         end
     end
 
@@ -586,4 +586,4 @@ function LiveList:Onclick() -- {{{
     D:Println(L["HLP_LL_ONCLICK_TEXT"]);
 end -- }}}
 
-T._LoadedFiles["Dcr_LiveList.lua"] = "2.7.6.1_beta_1";
+T._LoadedFiles["Dcr_LiveList.lua"] = "2.7.6.1";

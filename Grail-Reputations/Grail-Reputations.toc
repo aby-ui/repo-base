@@ -1,0 +1,12 @@
+## Interface: 80000
+## Title: Grail |r|cff69ccf0Reputations|r
+## Author: Scott M Harrison
+## Notes: Provides reputation award information to Grail
+## Version: 007
+## Dependencies: Grail
+## LoadOnDemand: 1
+
+Grail-Reputations.lua
+
+## Title: |cff880303[爱不易]|r Grail 声望奖励模块
+## X-Vendor: AbyUI

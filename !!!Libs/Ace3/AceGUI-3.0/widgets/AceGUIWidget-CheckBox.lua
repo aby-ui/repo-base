@@ -119,20 +119,20 @@ local methods = {
 		end
 	end,
 
-	["SetValue"] = function(self,value)
+	["SetValue"] = function(self, value)
 		local check = self.check
 		self.checked = value
 		if value then
-			SetDesaturation(self.check, false)
-			self.check:Show()
+			SetDesaturation(check, false)
+			check:Show()
 		else
 			--Nil is the unknown tristate value
 			if self.tristate and value == nil then
-				SetDesaturation(self.check, true)
-				self.check:Show()
+				SetDesaturation(check, true)
+				check:Show()
 			else
-				SetDesaturation(self.check, false)
-				self.check:Hide()
+				SetDesaturation(check, false)
+				check:Hide()
 			end
 		end
 		self:SetDisabled(self.disabled)

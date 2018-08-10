@@ -1,0 +1,13 @@
+## Interface: 80000
+## Title: Grail |r|cff69ccf0Achievements|r
+## Author: Scott M Harrison
+## Notes: Provides achievement information to Grail
+## Version: 011
+## Dependencies: Grail
+## LoadOnDemand: 1
+
+Grail-Achievements.lua
+
+
+## Title: |cff880303[爱不易]|r Grail 成就模块
+## X-Vendor: AbyUI

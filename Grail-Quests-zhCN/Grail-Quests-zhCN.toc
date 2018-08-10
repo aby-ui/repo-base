@@ -1,0 +1,14 @@
+## Interface: 80000
+## Title: Grail |r|cff69ccf0Quests zhCN|r
+## Author: Scott M Harrison
+## Notes: Provides localized zhCN quest names to Grail
+## Version: 25901
+## Dependencies: Grail
+## LoadOnDemand: 1
+
+Grail-Quests-zhCN.lua
+
+## Title: |cff880303[爱不易]|r Grail 任务名简体中文
+## X-Vendor: AbyUI
+
+

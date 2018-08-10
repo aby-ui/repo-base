@@ -1,7 +1,7 @@
 --[[
     This file is part of Decursive.
 
-    Decursive (v 2.7.6.1_beta_1) add-on for World of Warcraft UI
+    Decursive (v 2.7.6.1) add-on for World of Warcraft UI
     Copyright (C) 2006-2018 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Starting from 2009-10-31 and until said otherwise by its author, Decursive
@@ -20,7 +20,7 @@
     Decursive is distributed in the hope that it will be useful, but WITHOUT
     ANY WARRANTY.
 
-    This file was last updated on 2018-07-18T0:42:34Z
+    This file was last updated on 2018-08-09T22:30:55Z
 --]]
 -------------------------------------------------------------------------------
 
@@ -113,9 +113,9 @@ L["COLORSTATUS"] = "Set the color for the '%s' MUF status."
 L["CTRL"] = "Ctrl"
 L["CURE_PETS"] = "Scan and cure pets"
 L["CURSE"] = "Curse"
-L["DEBUG_REPORT_HEADER"] = [=[|cFF11FF33Please email the content of this window to <decursive+report@2072productions.com>|r
+L["DEBUG_REPORT_HEADER"] = [=[|cFF11FF33Please email the content of this window to <%s>|r
 |cFF009999(Use CTRL+A to select all and then CTRL+C to put the text in your clip-board)|r
-Also tell in your report if you noticed any strange behavior of Decursive.
+Also tell in your report if you noticed any strange behavior of %s.
 ]=]
 L["DECURSIVE_DEBUG_REPORT"] = "**** |cFFFF0000Decursive Debug Report|r ****"
 L["DECURSIVE_DEBUG_REPORT_BUT_NEW_VERSION"] = [=[|cFF11FF33Decursive crashed but fear not! A NEW version of Decursive has been detected (%s). You simply need to update. Go to curse.com and search for 'Decursive' or use Curse's client, it'll update automatically all your beloved add-ons.|r
@@ -492,4 +492,4 @@ L["UNSTABLERELEASE"] = "Unstable release"
 
 
 
-T._LoadedFiles["enUS.lua"] = "2.7.6.1_beta_1";
+T._LoadedFiles["enUS.lua"] = "2.7.6.1";

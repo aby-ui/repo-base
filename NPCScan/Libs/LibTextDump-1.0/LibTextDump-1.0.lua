@@ -259,25 +259,21 @@ end
 -- @return A handle for the dump frame.
 function lib:New(frameTitle, width, height, save)
 	local titleType = type(frameTitle)
-
 	if titleType ~= "nil" and titleType ~= "string" then
 		error(METHOD_USAGE_FORMAT:format("New", "frame title must be nil or a string."), 2)
 	end
 
 	local widthType = type(width)
-
 	if widthType ~= "nil" and widthType ~= "number" then
 		error(METHOD_USAGE_FORMAT:format("New", "frame width must be nil or a number."))
 	end
 
 	local heightType = type(height)
-
 	if heightType ~= "nil" and heightType ~= "number" then
 		error(METHOD_USAGE_FORMAT:format("New", "frame height must be nil or a number."))
 	end
 
 	local saveType = type(save)
-
 	if saveType ~= "nil" and saveType ~= "function" then
 		error(METHOD_USAGE_FORMAT:format("New", "save must be nil or a function."))
 	end

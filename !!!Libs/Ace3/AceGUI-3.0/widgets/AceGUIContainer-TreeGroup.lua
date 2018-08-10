@@ -59,7 +59,6 @@ end
 local function UpdateButton(button, treeline, selected, canExpand, isExpanded)
 	local self = button.obj
 	local toggle = button.toggle
-	local frame = self.frame
 	local text = treeline.text or ""
 	local icon = treeline.icon
 	local iconCoords = treeline.iconCoords
@@ -78,8 +77,6 @@ local function UpdateButton(button, treeline, selected, canExpand, isExpanded)
 		button:UnlockHighlight()
 		button.selected = false
 	end
-	local normalTexture = button:GetNormalTexture()
-	local line = button.line
 	button.level = level
 	if ( level == 1 ) then
 		button:SetNormalFontObject("GameFontNormal")
@@ -201,7 +198,6 @@ end
 
 local function Button_OnDoubleClick(button)
 	local self = button.obj
-	local status = self.status or self.localstatus
 	local status = (self.status or self.localstatus).groups
 	status[button.uniquevalue] = not status[button.uniquevalue]
 	self:RefreshTree()
@@ -376,7 +372,6 @@ local methods = {
 
 	["BuildLevel"] = function(self, tree, level, parent)
 		local groups = (self.status or self.localstatus).groups
-		local hasChildren = self.hasChildren
 		
 		for i, v in ipairs(tree) do
 			if v.children then
