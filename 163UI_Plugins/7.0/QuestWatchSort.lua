@@ -1,5 +1,3 @@
-do return end --TODO aby8
-
 local QuestPOIGetIconInfo, GetNumQuestWatches, GetSuperTrackedQuestID, GetDistanceSqToQuest, QuestHasPOIInfo = QuestPOIGetIconInfo, GetNumQuestWatches, GetSuperTrackedQuestID, GetDistanceSqToQuest, QuestHasPOIInfo
 local questsDis, orderedIndexes, GetQuestWatchInfo_old = {}, {}, GetQuestWatchInfo
 
@@ -73,7 +71,7 @@ local function UpdateQuestsDistance()
                 --PlaySoundFile("Sound\\Interface\\UI_BonusLootRoll_Start_01.ogg", "master")
                 --PlaySound(73276, "master") --"UI_WorldQuest_Map_Select"
                 --PlaySound(8939, "master") --"KeyRingClose"
-                WorldMapFrame_OnUserChangedSuperTrackedQuest(questID)
+                --WorldMapFrame_OnUserChangedSuperTrackedQuest(questID)
             end
         end
 

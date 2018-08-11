@@ -49,6 +49,18 @@ local have_prof_skill = {}
 local active_tracking = {}
 local tracking_spells = {}
 
+local continentZoneList = {
+	[12]  = true, -- Kalimdor
+	[13]  = true, -- Azeroth
+	[101] = true, -- Outlands
+	[113] = true, -- Northrend
+	[424] = true, -- Pandaria
+	[572] = true, -- Draenor
+	[619] = true, -- Broken Isles
+	[875] = true, -- Zandalar
+	[876] = true, -- Kul Tiras
+}
+
 --[[
 	recycle a pin
 ]]
@@ -327,39 +339,21 @@ local digSites = {}
 
 function Display:DigsitesChanged()
 	table.wipe(digSites)
-	-- TODO: digsites
-	--[[local continents = {GetMapContinents()}
-	for continent = 1, #continents / 2 do
-		SetMapZoom(continent)
-		local totalPOIs = GetNumMapLandmarks()
-		for index = 1,totalPOIs do
-			local landmarkType, name, description, textureIndex, px, py
-			if C_WorldMap and C_WorldMap.GetMapLandmarkInfo then
-				landmarkType, name, description, textureIndex, px, py = C_WorldMap.GetMapLandmarkInfo(index)
-			else
-				landmarkType, name, description, textureIndex, px, py = GetMapLandmarkInfo(index)
-			end
-			if textureIndex == 177 then
-				local zoneName, mapFile, texPctX, texPctY, texX, texY, scrollX, scrollY = UpdateMapHighlight(px, py)
-				if mapFile then
-					digSites[mapFile] = true
-					-- Hack for STV
-					if (mapFile == "StranglethornVale") then
-						digSites["StranglethornJungle"] = true
-						digSites["TheCapeOfStranglethorn"] = true
-					end
-				end
+	for continent in pairs(continentZoneList) do
+		local digSites = C_ResearchInfo.GetDigSitesForMap(continent)
+		for i, digSiteInfo in ipairs(digSites) do
+			local positionMapInfo = C_Map.GetMapInfoAtPosition(continent, digSiteInfo.position.x, digSiteInfo.position.y)
+			if positionMapInfo and positionMapInfo.mapID ~= continent then
+				digSites[positionMapInfo.mapID] = true
 			end
 		end
-	end]]
+	end
 	self:UpdateMaps()
 end
 
 local function IsActiveDigSite()
 	local showDig = _G.GetCVarBool("digSites")
-	-- TODO: digsites
-	--return digSites[(GetMapInfo())] and showDig
-	return false
+	return digSites[zone] and showDig
 end
 
 function Display:UpdateVisibility()

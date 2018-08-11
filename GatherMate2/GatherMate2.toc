@@ -13,7 +13,7 @@
 ## X-Credits: OttoDeFe for the launher icon.
 ## SavedVariables: GatherMate2DB, GatherMate2HerbDB, GatherMate2MineDB, GatherMate2FishDB, GatherMate2GasDB, GatherMate2TreasureDB, GatherMate2ArchaeologyDB, GatherMate2LoggingDB
 ## X-Category: Map
-## Version: 1.42.1-5-g5605b21
+## Version: 1.42.1-8-g20acc5f
 ## X-License: ARR
 ## OptionalDeps: Ace3, LibDataBroker-1.1, HereBeDragons
 ## LoadManagers: AddonLoader
@@ -37,8 +37,16 @@ Libs\HereBeDragons\HereBeDragons-Migrate.lua
 #@end-no-lib-strip@
 
 Locales\GatherMate2-enUS.lua
+Locales\GatherMate2-esES.lua
+Locales\GatherMate2-esMX.lua
+Locales\GatherMate2-frFR.lua
+Locales\GatherMate2-deDE.lua
+Locales\GatherMate2-koKR.lua
 Locales\GatherMate2-zhCN.lua
 Locales\GatherMate2-zhTW.lua
+Locales\GatherMate2-ruRU.lua
+Locales\GatherMate2-ptBR.lua
+Locales\GatherMate2-itIT.lua
 
 ## Order is important
 GatherMate2.lua

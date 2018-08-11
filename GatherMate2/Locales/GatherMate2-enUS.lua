@@ -280,6 +280,7 @@ NL["Dragon's Teeth"] = true
 NL["Dreamfoil"] = true
 NL["Dreaming Glory"] = true
 NL["Dreamleaf"] = true
+NL["Drust Archaeology Find"] = true
 NL["Dwarf Archaeology Find"] = true
 NL["Earthroot"] = true
 NL["Elementium Vein"] = true
@@ -559,4 +560,5 @@ NL["Windy Cloud"] = true
 NL["Winter's Kiss"] = true
 NL["Wintersbite"] = true
 NL["Withered Herb"] = true
+NL["Zandalari Archaeology Find"] = true
 

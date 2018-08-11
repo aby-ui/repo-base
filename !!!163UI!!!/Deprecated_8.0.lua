@@ -15,6 +15,10 @@ GetPlayerMapPosition = GetPlayerMapPosition or function(unit)
     --return player:GetXY()
 end
 
+SetMapToCurrentZone = SetMapToCurrentZone or function()
+    WorldMapFrame:SetMapID(C_Map.GetBestMapForUnit("player"))
+end
+
 GetCurrentMapAreaID = GetCurrentMapAreaID or function()
     if WorldMapFrame:IsVisible() then
         return WorldMapFrame:GetMapID()

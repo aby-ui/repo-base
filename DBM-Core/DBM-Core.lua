@@ -14,14 +14,14 @@
 --    * deDE: Ebmor						http://www.deadlybossmods.com/forum/memberlist.php?mode=viewprofile&u=79
 --    * ruRU: TOM_RUS					http://www.curseforge.com/profiles/TOM_RUS/
 --    * zhTW: Whyv						ultrashining@gmail.com
---    * koKR: nBlueWiz					everfinale@gmail.com
+--    * koKR: Elnarfim					---
 --    * zhCN: Mini Dragon				projecteurs@gmail.com
 --
 --
 -- Special thanks to:
 --    * Arta
 --    * Tennberg (a lot of fixes in the enGB/enUS localization)
---    * nBlueWiz (a lot of fixes in the koKR localization as well as boss mod work) Contact: everfinale@gmail.com
+--    * nBlueWiz (a lot of previous fixes in the koKR localization as well as boss mod work) Contact: everfinale@gmail.com
 --
 --
 -- The code of this addon is licensed under a Creative Commons Attribution-Noncommercial-Share Alike 3.0 License. (see license.txt)
@@ -41,7 +41,7 @@
 --  Globals/Default Options  --
 -------------------------------
 DBM = {
-	Revision = tonumber(("$Revision: 17682 $"):sub(12, -3)),
+	Revision = tonumber(("$Revision: 17687 $"):sub(12, -3)),
 	DisplayVersion = "8.0.2 alpha", -- the string that is shown as version
 	ReleaseRevision = 17635 -- the revision of the latest stable version that is available
 }
@@ -129,7 +129,6 @@ DBM.DefaultOptions = {
 	DisableStatusWhisper = false,
 	DisableGuildStatus = false,
 	HideBossEmoteFrame2 = true,
-	ShowMinimapButton = false,
 	ShowFlashFrame = true,
 	SWarningAlphabetical = true,
 	SWarnNameInNote = true,
@@ -405,8 +404,9 @@ local UpdateChestTimer
 local breakTimerStart
 local AddMsg
 local delayedFunction
+local dataBroker
 
-local fakeBWVersion, fakeBWHash = 102, "4dc3d9c"
+local fakeBWVersion, fakeBWHash = 103, "a1726b8"
 local versionQueryString, versionResponseString = "Q^%d^%s", "V^%d^%s"
 
 local enableIcons = true -- set to false when a raid leader or a promoted player has a newer version of DBM
@@ -1165,9 +1165,17 @@ do
 				C_TimerAfter(15, function() AddMsg(self, DBM_CORE_DPMCORE) end)
 				return
 			end
+			if GetAddOnEnableState(playerName, "DBM-LDB") >= 1 then
+				C_TimerAfter(15, function() AddMsg(self, DBM_CORE_DBMLDB) end)
+				return
+			end
 			self.Bars:LoadOptions("DBM")
 			self.Arrow:LoadPosition()
-			if not self.Options.ShowMinimapButton then self:HideMinimapButton() end
+			-- LibDBIcon setup
+			if type(DBM_MinimapIcon) ~= "table" then
+				DBM_MinimapIcon = {}
+			end
+			LibStub("LibDBIcon-1.0"):Register("DBM", dataBroker, DBM_MinimapIcon)
 			--[[local soundChannels = tonumber(GetCVar("Sound_NumChannels")) or 24--if set to 24, may return nil, Defaults usually do
 			--If this messes with your fps, stop raiding with a toaster. It's only fix for addon sound ducking.
 			if soundChannels < 64 then
@@ -2547,79 +2555,190 @@ end
 --  Minimap Button  --
 ----------------------
 do
-	local dragMode = nil
-
-	local function moveButton(self)
-		if dragMode == "free" then
-			local centerX, centerY = Minimap:GetCenter()
-			local x, y = GetCursorPosition()
-			x, y = x / self:GetEffectiveScale() - centerX, y / self:GetEffectiveScale() - centerY
-			self:ClearAllPoints()
-			self:SetPoint("CENTER", x, y)
-		else
-			local centerX, centerY = Minimap:GetCenter()
-			local x, y = GetCursorPosition()
-			x, y = x / self:GetEffectiveScale() - centerX, y / self:GetEffectiveScale() - centerY
-			centerX, centerY = math.abs(x), math.abs(y)
-			centerX, centerY = (centerX / math.sqrt(centerX^2 + centerY^2)) * 80, (centerY / sqrt(centerX^2 + centerY^2)) * 80
-			centerX = x < 0 and -centerX or centerX
-			centerY = y < 0 and -centerY or centerY
-			self:ClearAllPoints()
-			self:SetPoint("CENTER", centerX, centerY)
+	--Old LDB Functions
+	local frame = CreateFrame("Frame", "DBMLDBFrame")
+	local dropdownFrame = CreateFrame("Frame", "DBMLDBDropdownFrame", frame, "UIDropDownMenuTemplate")
+	local categories = {}
+	local initialize
+	local obj
+	local catBuilt = false
+	local function createBossModEntry(id, level)
+		local info
+		local mod = DBM:GetModByName(id)
+		if not mod then return end
+		info = UIDropDownMenu_CreateInfo()
+		info.text = mod.localization.general.name
+		info.isTitle = true
+		UIDropDownMenu_AddButton(info, level)
+		info = UIDropDownMenu_CreateInfo()
+		info.text = DBM_LDB_CAT_GENERAL
+		info.notCheckable = true
+		info.notClickable = true
+		UIDropDownMenu_AddButton(info, level)
+		info = UIDropDownMenu_CreateInfo()
+		info.text = DBM_LDB_ENABLE_BOSS_MOD
+		info.keepShownOnClick = 1
+		info.checked = mod.Options.Enabled
+		info.func = function() mod:Toggle() end
+		UIDropDownMenu_AddButton(info, level)
+		for i, v in ipairs(mod.categorySort) do
+			local cat = mod.optionCategories[v]
+			info = UIDropDownMenu_CreateInfo()
+			info.text = mod.localization.cats[v]
+			info.notCheckable = true
+			info.notClickable = true
+			UIDropDownMenu_AddButton(info, level)
+			if cat then
+				for i, v in ipairs(cat) do
+					if type(mod.Options[v]) == "boolean" then
+						info = UIDropDownMenu_CreateInfo()
+						info.text = mod.localization.options[v]
+						info.keepShownOnClick = 1
+						info.checked = mod.Options[v]
+						info.func = function() mod.Options[v] = not mod.Options[v] end
+						UIDropDownMenu_AddButton(info, level)
+					end
+				end
+			end
+		end
+	end
+	
+	-- ugly? yes!
+	function initialize(self, level, menuList)
+		if not catBuilt then
+			for i, v in ipairs(DBM.AddOns) do
+				if not categories[v.category] then
+					categories[v.category] = {}
+					table.insert(categories, v.category)
+				end
+				table.insert(categories[v.category], v)
+			end
+			catBuilt = true
+		end
+		local info
+		if menuList and menuList:sub(0, 3) == "mod" then
+			createBossModEntry(menuList:sub(4), level)
+		elseif level == 1 then
+			info = UIDropDownMenu_CreateInfo()
+			info.text = "Deadly Boss Mods"
+			info.isTitle = true
+			UIDropDownMenu_AddButton(info, 1)
+			for i, v in ipairs(DBM.AddOns) do
+				if IsAddOnLoaded(v.modId) then
+					info = UIDropDownMenu_CreateInfo()
+					info.text = v.name
+					info.notCheckable = true
+					info.hasArrow = true
+					info.menuList = "instance"..v.modId
+					UIDropDownMenu_AddButton(info, 1)
+				end
+			end
+			info = UIDropDownMenu_CreateInfo()
+			info.text = DBM_LDB_LOAD_MODS
+			info.notCheckable = true
+			info.hasArrow = true
+			info.menuList = "load"
+			UIDropDownMenu_AddButton(info, 1)
+		elseif level == 2 then
+			if menuList == "load" then
+				for i, v in ipairs(categories) do
+					info = UIDropDownMenu_CreateInfo()
+					info.text = getglobal("DBM_LDB_CAT_"..strupper(v)) or v
+					info.notCheckable = true
+					info.hasArrow = true
+					info.menuList = "load"..v
+					UIDropDownMenu_AddButton(info, 2)
+				end
+			elseif menuList and menuList:sub(0, 8) == "instance" then
+				local modId = menuList:sub(9)
+				for i, v in ipairs(DBM.AddOns) do
+					if v.modId == modId then
+						if v.subTabs then
+							for i, tab in ipairs(v.subTabs) do
+								info = UIDropDownMenu_CreateInfo()
+								info.text = tab
+								info.notCheckable = true
+								info.hasArrow = true
+								info.menuList = "instance\t"..v.modId.."\t"..i
+								UIDropDownMenu_AddButton(info, 2)
+							end
+							return
+						else
+							for i, v in ipairs(DBM.Mods) do
+								if v.modId == modId then
+									info = UIDropDownMenu_CreateInfo()
+									info.text = v.localization.general.name
+									info.notCheckable = true
+									info.hasArrow = true
+									info.menuList = "mod"..v.id
+									UIDropDownMenu_AddButton(info, 2)
+								end
+							end
+						end
+						break
+					end
+				end
+			end
+		elseif level == 3 then
+			if menuList and menuList:sub(0, 4) == "load" then
+				local k = menuList:sub(5)
+				for i, v in ipairs(categories[k]) do
+					if not IsAddOnLoaded(v.modId) then
+						info = UIDropDownMenu_CreateInfo()
+						info.text = v.name
+						info.notCheckable = true
+						info.func = function() DBM:LoadMod(v) CloseDropDownMenus() end
+						UIDropDownMenu_AddButton(info, 3)
+					end
+				end
+			elseif menuList and menuList:sub(0, 8) == "instance" then
+				local modId, subTab = select(2, string.split("\t", menuList))
+				for i, v in ipairs(DBM.Mods) do
+					if v.modId == modId and v.subTab == tonumber(subTab) then
+						info = UIDropDownMenu_CreateInfo()
+						info.text = v.localization.general.name
+						info.notCheckable = true
+						info.hasArrow = true
+						info.menuList = "mod"..v.id
+						UIDropDownMenu_AddButton(info, 3)
+					end
+				end
+			end
 		end
 	end
 
-	local button = CreateFrame("Button", "DBMMinimapButton", Minimap)
-	button:SetHeight(32)
-	button:SetWidth(32)
-	button:SetFrameStrata("MEDIUM")
-	button:SetPoint("CENTER", -65.35, -38.8)
-	button:SetMovable(true)
-	button:SetUserPlaced(true)
-	button:SetNormalTexture("Interface\\AddOns\\DBM-Core\\textures\\Minimap-Button-Up")
-	button:SetPushedTexture("Interface\\AddOns\\DBM-Core\\textures\\Minimap-Button-Down")
-	button:SetHighlightTexture("Interface\\Minimap\\UI-Minimap-ZoomButton-Highlight")
-
-	button:SetScript("OnMouseDown", function(self, button)
-		if IsShiftKeyDown() and IsAltKeyDown() then
-			dragMode = "free"
-			self:SetScript("OnUpdate", moveButton)
-		elseif IsShiftKeyDown() or button == "RightButton" then
-			dragMode = nil
-			self:SetScript("OnUpdate", moveButton)
-		end
-	end)
-	button:SetScript("OnMouseUp", function(self)
-		self:SetScript("OnUpdate", nil)
-	end)
-	button:SetScript("OnClick", function(self, button)
-		if IsShiftKeyDown() or button == "RightButton" then return end
-		DBM:LoadGUI()
-	end)
-	button:SetScript("OnEnter", function(self)
-		GameTooltip_SetDefaultAnchor(GameTooltip, self)
-		GameTooltip:SetText(DBM_CORE_MINIMAP_TOOLTIP_HEADER, 1, 1, 1)
-		GameTooltip:AddLine(ver, NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, 1)
-		GameTooltip:AddLine(" ")
-		GameTooltip:AddLine(DBM_CORE_MINIMAP_TOOLTIP_FOOTER, RAID_CLASS_COLORS.MAGE.r, RAID_CLASS_COLORS.MAGE.g, RAID_CLASS_COLORS.MAGE.b, 1)
-		GameTooltip:Show()
-	end)
-	button:SetScript("OnLeave", function(self)
-		GameTooltip:Hide()
-	end)
-
-	function DBM:ToggleMinimapButton()
-		self.Options.ShowMinimapButton = not self.Options.ShowMinimapButton
-		if self.Options.ShowMinimapButton then
-			button:Show()
-		else
-			button:Hide()
-		end
-	end
-
-	function DBM:HideMinimapButton()
-		return button:Hide()
-	end
+	--New LDB Object
+    dataBroker = LibStub("LibDataBroker-1.1"):NewDataObject("DBM",
+        {type = "launcher", label = "DBM", icon = "Interface\\AddOns\\DBM-Core\\textures\\Minimap-Button-Up"}
+    )
+ 
+    function dataBroker.OnClick(self, button)
+        if IsShiftKeyDown() then return end
+        if button == "RightButton" then
+			UIDropDownMenu_Initialize(dropdownFrame, initialize)
+			ToggleDropDownMenu(1, nil, dropdownFrame, "cursor", 5, -10)
+    	else
+       		DBM:LoadGUI()
+       	end
+    end
+ 
+    function dataBroker.OnTooltipShow(GameTooltip)
+        GameTooltip:SetText(DBM_CORE_MINIMAP_TOOLTIP_HEADER, 1, 1, 1)
+        GameTooltip:AddLine(ver, NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, 1)
+        GameTooltip:AddLine(" ")
+        GameTooltip:AddLine(DBM_CORE_MINIMAP_TOOLTIP_FOOTER, RAID_CLASS_COLORS.MAGE.r, RAID_CLASS_COLORS.MAGE.g, RAID_CLASS_COLORS.MAGE.b, 1)
+		GameTooltip:AddLine(DBM_LDB_TOOLTIP_HELP1, RAID_CLASS_COLORS.MAGE.r, RAID_CLASS_COLORS.MAGE.g, RAID_CLASS_COLORS.MAGE.b)
+		GameTooltip:AddLine(DBM_LDB_TOOLTIP_HELP2, RAID_CLASS_COLORS.MAGE.r, RAID_CLASS_COLORS.MAGE.g, RAID_CLASS_COLORS.MAGE.b)
+    end
+ 
+    function DBM:ToggleMinimapButton()
+        DBM_MinimapIcon.hide = not DBM_MinimapIcon.hide
+        if DBM_MinimapIcon.hide then
+            LibStub("LibDBIcon-1.0"):Hide("DBM")
+        else
+            LibStub("LibDBIcon-1.0"):Show("DBM")
+        end
+    end
 end
 
 -------------------------------------------------

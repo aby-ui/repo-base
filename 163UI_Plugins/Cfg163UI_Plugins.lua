@@ -121,10 +121,10 @@ U1RegisterAddon("163UI_Plugins", {
         end
     },
 
---    {
---        var = "QuestWatchSort", text = U1_NEW_ICON.."任务追踪按距离排序", default = true, callback = load,
---        tip = "说明`按任务远近进行排序``暴雪的任务排序功能失效很久了,爱不易为您临时提供解决方案",
---    },
+    {
+        var = "QuestWatchSort", text = U1_NEW_ICON.."任务追踪按距离排序", default = false, callback = load,
+        tip = "说明`按任务远近进行排序``暴雪的任务排序功能失效很久了,爱不易为您临时提供解决方案",
+    },
 
     {
         var = "163UI_Quest", text = "任务奖励信息与半自动交接", default = true, callback = load,

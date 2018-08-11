@@ -43,7 +43,7 @@
 --
 
 
-local revision =("$Revision: 17675 $"):sub(12, -3)
+local revision =("$Revision: 17683 $"):sub(12, -3)
 local FrameTitle = "DBM_GUI_Option_"	-- all GUI frames get automatically a name FrameTitle..ID
 
 local PanelPrototype = {}
@@ -1304,10 +1304,10 @@ local function CreateOptionsMenu()
 		local MiniMapIcon				= generaloptions:CreateCheckButton(L.EnableMiniMapIcon, true)
 		MiniMapIcon:SetScript("OnClick", function(self)
 			DBM:ToggleMinimapButton()
-			self:SetChecked( DBM.Options.ShowMinimapButton )
+			self:SetChecked( not DBM_MinimapIcon.hide )
 		end)
 		MiniMapIcon:SetScript("OnShow", function(self)
-			self:SetChecked( DBM.Options.ShowMinimapButton )
+			self:SetChecked( not DBM_MinimapIcon.hide )
 		end)
 		local soundChannelsList = {
 			{	text	= L.UseMasterChannel,	value 	= "Master"},

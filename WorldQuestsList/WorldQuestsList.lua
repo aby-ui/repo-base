@@ -1,4 +1,4 @@
-local VERSION = 73
+local VERSION = 74
 
 --[[
 Special icons for rares, pvp or pet battle quests in list
@@ -212,6 +212,8 @@ LFG Hotfixes, must work as before [Report any bugs/errors]
 More fixes for fullscreen map mode
 Added "max lines" option
 Minor LFG updates
+
+LFG Hotfixes
 ]]
 
 local GlobalAddonName, WQLdb = ...
@@ -6257,6 +6259,12 @@ QuestCreationBox.ListGroup:SetPoint("BOTTOM",0,5)
 QuestCreationBox.ListGroup:Hide()
 QuestCreationBox.ListGroup:SetText(LIST_GROUP)
 
+QuestCreationBox.FindGroup = ELib:Button(QuestCreationBox,SEARCH)
+QuestCreationBox.FindGroup:SetSize(220,25)
+QuestCreationBox.FindGroup:SetPoint("BOTTOM",0,5)
+QuestCreationBox.FindGroup:Hide()
+QuestCreationBox.FindGroup:SetText(SEARCH)
+
 QuestCreationBox:SetScript("OnDragStart", function(self)
 	self:SetMovable(true)
 	self:StartMoving()
@@ -6271,7 +6279,9 @@ QuestCreationBox:SetScript("OnDragStop", function(self)
 	end
 end)
 QuestCreationBox:SetScript("OnUpdate",function(self)
-	if LFGListFrame.EntryCreation.Name:GetText() == QuestCreationBox.Text2:GetText() then
+	if QuestCreationBox.type == 4 and LFGListFrame.SearchPanel.SearchBox:GetText() == QuestCreationBox.Text2:GetText() then
+		QuestCreationBox.Text2:SetTextColor(0,1,0)
+	elseif QuestCreationBox.type ~= 4 and LFGListFrame.EntryCreation.Name:GetText() == QuestCreationBox.Text2:GetText() then
 		QuestCreationBox.Text2:SetTextColor(0,1,0)
 	else
 		QuestCreationBox.Text2:SetTextColor(1,1,0)
@@ -6282,6 +6292,7 @@ ELib.Templates:Border(QuestCreationBox,.22,.22,.3,1,1)
 QuestCreationBox.shadow = ELib:Shadow2(QuestCreationBox,16)
 
 local defPoints
+local defPointsSearch
 
 local minIlvlReq = UnitLevel'player' >= 120 and 240 or 160
 
@@ -6294,6 +6305,7 @@ function WQL_LFG_StartQuest(questID)
 	QuestCreationBox:SetSize(350,120)
 	QuestCreationBox.PartyLeave:Hide()
 	QuestCreationBox.PartyFind:Hide()
+	QuestCreationBox.FindGroup:Hide()
 	QuestCreationBox.ListGroup:Show()
 
 	LFGListUtil_OpenBestWindow()
@@ -6368,19 +6380,35 @@ LFGListFrame.EntryCreation:HookScript("OnShow",function()
 end)
 
 QuestCreationBox:SetScript("OnHide",function()
-	if not defPoints then
-		return
-	end
-	local edit = LFGListFrame.EntryCreation.Name
-
-	edit:ClearAllPoints()
-	edit:SetPoint(unpack(defPoints[edit]))
-	edit.Instructions:SetText(LFG_LIST_ENTER_NAME)
-
-	edit:ClearFocus()
+	if defPoints then
+		local edit = LFGListFrame.EntryCreation.Name
 	
-	if GroupFinderFrame:IsVisible() then
-		PVEFrame_ToggleFrame()
+		edit:ClearAllPoints()
+		edit:SetPoint(unpack(defPoints[edit]))
+		edit.Instructions:SetText(LFG_LIST_ENTER_NAME)
+	
+		edit:ClearFocus()
+	end
+
+	if defPointsSearch then
+		local edit = LFGListFrame.SearchPanel.SearchBox
+	
+		edit:ClearAllPoints()
+		edit:SetPoint(unpack(defPointsSearch[edit]))
+		edit.Instructions:SetText(FILTER)
+	
+		edit:ClearFocus()
+		
+		local fb = LFGListFrame.SearchPanel.FilterButton
+	
+		fb:ClearAllPoints()
+		fb:SetPoint(unpack(defPointsSearch[fb]))
+	end
+	
+	if QuestCreationBox.type == 1 or QuestCreationBox.type == 4 then
+		if GroupFinderFrame:IsVisible() then
+			PVEFrame_ToggleFrame()
+		end
 	end
 end)
 
@@ -6389,15 +6417,11 @@ local function utf8len(s)
 end
 
 local searchQuestID = nil
-local searchQuestNameFilter = nil
-local searchQuestNameAllFilters = nil
 local isAfterSearch = nil
 local autoCreateQuestID = nil
 
 function WQL_LFG_Search(questID)
-	searchQuestNameFilter = nil
 	searchQuestID = nil
-	searchQuestNameAllFilters = nil
 
 	if C_LFGList.GetActiveEntryInfo() then
 		return
@@ -6406,63 +6430,38 @@ function WQL_LFG_Search(questID)
 	if not GroupFinderFrame:IsVisible() then
 		LFGListUtil_OpenBestWindow()
 	end
-	
-	if type(questID)=='number' and not IsShiftKeyDown() then
-		local activityID = C_LFGList.GetActivityIDForQuestID(questID)
-		searchQuestNameAllFilters = {
-			activityID,
-			"^"..tostring(questID),
-		}
 		
-		local name = C_TaskQuest.GetQuestInfoByQuestID(questID)
-		if not name then
-			name = GetQuestLogTitle(GetQuestLogIndexByID(questID))
-		end
-		
-		if name and name ~= "" then
-			searchQuestNameAllFilters[#searchQuestNameAllFilters + 1] = name:lower()
-			if activityID then
-				if name:find('"') then
-					local word = name:match('%b""')
-					if word then
-						searchQuestNameAllFilters[#searchQuestNameAllFilters + 1] = word:sub(2,-2):lower()
-					end
-					searchQuestNameAllFilters[#searchQuestNameAllFilters + 1] = name:gsub('"',""):lower()
-				end
-				if name:find("'") then
-					searchQuestNameAllFilters[#searchQuestNameAllFilters + 1] = name:gsub("'",""):lower()
-				end
-				if name:find(" ") then
-					local words = {strsplit(" ",name)}
-					local firstWord
-					for i=1,#words do
-						if utf8len(words[i]) > 3 and --filter short words
-							words[i] ~= words[i]:upper() and not words[i]:find(":$") --filter DANGER, WANTED quests
-						then
-							firstWord = words[i]
-							break
-						end
-					end
-					if firstWord then
-						searchQuestNameAllFilters[#searchQuestNameAllFilters + 1] = "^"..firstWord:lower()
-					end
-				end
-			end	
-		end	
-	end
+	PVEFrame:ClearAllPoints() 
+	PVEFrame:SetPoint("TOP",UIParent,"BOTTOM",0,-100)
 	
-	local questName
-	if type(questID)=='number' and IsShiftKeyDown() then
-		questName = C_TaskQuest.GetQuestInfoByQuestID(questID)
-		if not questName then
-			questName = GetQuestLogTitle(GetQuestLogIndexByID(questID))
-		end
-		questName = questName or tostring(questID)
-	else
-		questName = tostring(questID)
-	end
-	searchQuestNameFilter = questName
+	local edit = LFGListFrame.SearchPanel.SearchBox
+	local fb = LFGListFrame.SearchPanel.FilterButton
+	local button = QuestCreationBox.FindGroup
 
+	if not defPointsSearch then
+		defPointsSearch = {
+			[edit] = {edit:GetPoint()},
+			[fb] = {fb:GetPoint()},
+		}
+		button:SetScript("OnClick",function()
+			QuestCreationBox:Hide()
+
+			PVEFrame_ToggleFrame()
+			
+			edit:GetScript("OnEnterPressed")(edit)
+		end)
+		edit:HookScript("OnEnterPressed",function()
+			if not QuestCreationBox:IsShown() then
+				return
+			end
+			
+			QuestCreationBox:Hide()
+			PVEFrame_ToggleFrame()
+		end)
+	end
+
+	
+	local questName = tostring(questID)
 	
 	local languagesOn = C_LFGList.GetLanguageSearchFilter()
 	local languagesAll = C_LFGList.GetAvailableLanguageSearchFilter()
@@ -6477,92 +6476,63 @@ function WQL_LFG_Search(questID)
 	end
 	
 	local panel = LFGListFrame.CategorySelection
+	LFGListFrame_SetActivePanel(LFGListFrame, panel)
 	LFGListCategorySelection_SelectCategory(panel, 1, 0)
 	LFGListCategorySelection_StartFindGroup(panel)
+
+	QuestCreationBox:Show()
+	QuestCreationBox:SetSize(350,120)
+	QuestCreationBox.PartyLeave:Hide()
+	QuestCreationBox.PartyFind:Hide()
+	QuestCreationBox.ListGroup:Hide()
+	QuestCreationBox.FindGroup:Show()
+	
+	QuestCreationBox.Text1:SetText(SEARCH..": "..LOCALE.lfgTypeText)
+	QuestCreationBox.Text2:SetText(questID)
+	QuestCreationBox.questID = questID
+	QuestCreationBox.type = 4
+	
+	edit:ClearAllPoints()
+	edit:SetPoint("TOP",QuestCreationBox,"TOP",0,-50)
+	edit.Instructions:SetText(questID)
+	edit:SetFocus()
+	
+	fb:ClearAllPoints()
+	fb:SetPoint("TOP",UIParent,"BOTTOM",0,-100)
 	
 	searchQuestID = questID
 end
 WorldQuestList.LFG_Search = WQL_LFG_Search
 
-local function RemoveSearchFilter()
-	searchQuestNameFilter = nil
-	searchQuestNameAllFilters = nil
-end
-
-local function FilterSearchResults()
-	local totalResults, results = C_LFGList.GetSearchResults()
-	if searchQuestNameFilter then
-		for j = #results, 1, -1 do
-			local id, activityID, name = C_LFGList.GetSearchResultInfo(results[j])
-			if name then
-				local passFilter = false
-				if searchQuestNameAllFilters then
-					for i=2,#searchQuestNameAllFilters do
-						if name:lower():find(searchQuestNameAllFilters[i]) and (i <= 3 or activityID == searchQuestNameAllFilters[1]) then
-							passFilter = true
-						end
-					end
-				elseif name:find("^"..searchQuestNameFilter) then
-					passFilter = true
-				end
-				if not passFilter then
-					tremove(results, j)
-				end
-			end
-		end
-		totalResults = #results
-	end
-	return totalResults, results
-end
-
-
-hooksecurefunc("LFGListSearchPanel_UpdateResultList", function(self)
-	LFGListFrame.SearchPanel.SearchBox.Instructions:SetText(searchQuestNameFilter or FILTER)
-	if searchQuestNameFilter and searchQuestNameAllFilters then
-		local text = ""
-		for i=2,#searchQuestNameAllFilters do
-			text = text .. (text ~= "" and ", " or "") .. searchQuestNameAllFilters[i]:gsub("%^","")
-		end
-		LFGListFrame.SearchPanel.SearchBox.Instructions:SetText(text)
-	end
-	if not VWQL or VWQL.DisableLFG or not searchQuestNameFilter then
+LFGListFrame.SearchPanel:HookScript("OnShow",function()
+	if not defPointsSearch then
 		return
 	end
-	local totalResults, results = FilterSearchResults()
-	self.results = results
-	self.totalResults = totalResults
-	LFGListUtil_SortSearchResults(self.results)
-	C_Timer.After(2,RemoveSearchFilter)
+	local edit = LFGListFrame.SearchPanel.SearchBox
+	local fb = LFGListFrame.SearchPanel.FilterButton
+
+	edit:ClearAllPoints()
+	edit:SetPoint(unpack(defPointsSearch[edit]))
+	edit.Instructions:SetText(FILTER)
+	
+	fb:ClearAllPoints()
+	fb:SetPoint(unpack(defPointsSearch[fb]))
 end)
+
+local function IsTeoreticalWQ(name)
+	if name:find("k00000|") then
+		return true
+	end
+end
 
 hooksecurefunc("LFGListSearchPanel_SelectResult", function(self, resultID)
 	if not VWQL or VWQL.DisableLFG then
 		return
 	end
 	local id, activityID, name = C_LFGList.GetSearchResultInfo(resultID)
-	if name and LFGListFrame.SearchPanel.categoryID == 1 then
-		local qID = tonumber(name)
-		if qID and qID > 10000 and qID < 1000000 then
-			LFGListFrame.SearchPanel.SignUpButton:Click()
-			LFGListApplicationDialog.SignUpButton:Click()
-		end
-	end
-end)
-
-hooksecurefunc("LFGListSearchEntry_Update", function(self)
-	if not VWQL or VWQL.DisableLFG then
-		return
-	end
-	local resultID = self.resultID
-	local id, activityID, name = C_LFGList.GetSearchResultInfo(resultID)
-	if name and LFGListFrame.SearchPanel.categoryID == 1 then
-		local qID = tonumber(name)
-		if qID and qID > 10000 and qID < 1000000 then
-			local questName = C_TaskQuest.GetQuestInfoByQuestID(qID)
-			if questName then
-				self.Name:SetText(name.." |cff88ff00("..questName..")")
-			end
-		end
+	if name and LFGListFrame.SearchPanel.categoryID == 1 and IsTeoreticalWQ(name) then
+		LFGListFrame.SearchPanel.SignUpButton:Click()
+		LFGListApplicationDialog.SignUpButton:Click()
 	end
 end)
 
@@ -6574,13 +6544,7 @@ hooksecurefunc("LFGListGroupDataDisplayPlayerCount_Update", function(self, displ
 	end	
 	local id, activityID, name = C_LFGList.GetSearchResultInfo(line.resultID)
 	if name and LFGListFrame.SearchPanel.categoryID == 1 then
-		local qID = tonumber(name)
-		if qID and qID > 10000 and qID < 1000000 then
-			local tagID, tagName, worldQuestType, rarity, isElite, tradeskillLineIndex, displayTimeLeft = GetQuestTagInfo(qID)
-			if not isElite then
-				self.Count:SetText("|cffff0000"..numPlayers)
-			end
-		end
+		self.Count:SetText("|cffff0000"..numPlayers)
 	end
 end)
 
@@ -6720,14 +6684,14 @@ QuestCreationBox:SetScript("OnEvent",function (self,event,arg1,arg2)
 		if LFGListFrameSearchPanelStartGroup:IsShown() then
 			LFGListFrameSearchPanelStartGroup:Hide()
 		end
-		local total,results = FilterSearchResults()
+		local total,results = C_LFGList.GetSearchResults()
 		if total == 0 and searchQuestID and (VWQL and not VWQL.DisableLFG) then
 			isAfterSearch = true
 		else
 			isAfterSearch = nil
 			searchQuestID = nil
 			if total > 0 and LFGListFrame.SearchPanel.SearchBox:IsVisible() and LFGListFrame.SearchPanel.categoryID == 1 then
-				local searchQ = searchQuestNameFilter or LFGListFrame.SearchPanel.SearchBox:GetText()
+				local searchQ = LFGListFrame.SearchPanel.SearchBox:GetText()
 				searchQ = tonumber(searchQ)
 				if searchQ and searchQ > 10000 and searchQ < 1000000 then
 					LFGListFrameSearchPanelStartGroup.questID = searchQ
@@ -6751,15 +6715,8 @@ QuestCreationBox:SetScript("OnEvent",function (self,event,arg1,arg2)
 			return
 		end
 		local active, activityID, ilvl, honorLevel, name, comment, voiceChat, duration, autoAccept, privateGroup, lfg_questID = C_LFGList.GetActiveEntryInfo()
-		local questID = tonumber(name or "?")
-		if not questID then
-			questID = lfg_questID
-		end
-		if questID and questID > 10000 and questID < 1000000 then
-			local tagID, tagName, worldQuestType, rarity, isElite, tradeskillLineIndex, displayTimeLeft = GetQuestTagInfo(questID)
-			if rarity and not isElite then
-				StaticPopup_Hide("LFG_LIST_AUTO_ACCEPT_CONVERT_TO_RAID")
-			end
+		if IsTeoreticalWQ(name) then
+			StaticPopup_Hide("LFG_LIST_AUTO_ACCEPT_CONVERT_TO_RAID")
 			
 			if not autoAccept and
 				(IsInRaid() or (  GetNumGroupMembers(LE_PARTY_CATEGORY_HOME) + C_LFGList.GetNumInvitedApplicantMembers() + C_LFGList.GetNumPendingApplicantMembers() <= (MAX_PARTY_MEMBERS+1)  ))
@@ -6786,7 +6743,6 @@ QuestCreationBox:SetScript("OnEvent",function (self,event,arg1,arg2)
 				local _, _, _, _, _, _, _, _, _, _, _, _, groupLeader = C_LFGList.GetSearchResultInfo(id)
 				if name == groupLeader then
 					AcceptGroup()
-					--LFGInvitePopup:Hide()
 					StaticPopupSpecial_Hide(LFGInvitePopup)
 					for i = 1, 4 do
 						local frame = _G["StaticPopup"..i]
@@ -6809,13 +6765,14 @@ QuestCreationBox:SetScript("OnEvent",function (self,event,arg1,arg2)
 		end
 		--local name = select(5,C_LFGList.GetActiveEntryInfo())
 		--if name and name == tostring(arg1) and (not QuestCreationBox:IsVisible() or (QuestCreationBox.type ~= 1)) then
-		if C_LFGList.GetActiveEntryInfo() and QuestUtils_IsQuestWorldQuest(arg1) and CheckQuestPassPopup(arg1) and (not QuestCreationBox:IsVisible() or (QuestCreationBox.type ~= 1) or (QuestCreationBox.type == 1 and QuestCreationBox.questID == arg1)) then
+		if C_LFGList.GetActiveEntryInfo() and QuestUtils_IsQuestWorldQuest(arg1) and CheckQuestPassPopup(arg1) and (not QuestCreationBox:IsVisible() or (QuestCreationBox.type ~= 1 and QuestCreationBox.type ~= 4) or (QuestCreationBox.type == 1 and QuestCreationBox.questID == arg1) or (QuestCreationBox.type == 4 and QuestCreationBox.questID == arg1)) then
 			QuestCreationBox.Text1:SetText("WQL")
 			QuestCreationBox.Text2:SetText("")
 			QuestCreationBox.PartyLeave:Show()
 
 			QuestCreationBox.PartyFind:Hide()
 			QuestCreationBox.ListGroup:Hide()
+			QuestCreationBox.FindGroup:Hide()
 			
 			QuestCreationBox.type = 2
 			
@@ -6830,7 +6787,7 @@ QuestCreationBox:SetScript("OnEvent",function (self,event,arg1,arg2)
 			return
 		end
 		if QuestUtils_IsQuestWorldQuest(arg2) and 					--is WQ
-			(not QuestCreationBox:IsVisible() or (QuestCreationBox.type ~= 1)) and	--popup if not busy
+			(not QuestCreationBox:IsVisible() or (QuestCreationBox.type ~= 1 and QuestCreationBox.type ~= 4)) and	--popup if not busy
 			 CheckQuestPassPopup(arg2) 						--wq pass filters
 		 then
 			QuestCreationBox.Text1:SetText("WQL|n"..(C_TaskQuest.GetQuestInfoByQuestID(arg2) or ""))
@@ -6840,6 +6797,7 @@ QuestCreationBox:SetScript("OnEvent",function (self,event,arg1,arg2)
 
 			QuestCreationBox.PartyLeave:Hide()
 			QuestCreationBox.ListGroup:Hide()
+			QuestCreationBox.FindGroup:Hide()
 
 			QuestCreationBox.questID = arg2
 			QuestCreationBox.type = 3
@@ -7502,12 +7460,16 @@ function WorldQuestList:WQIcons_RemoveScale()
 	local pins = WorldMapFrame.pinPools["WorldMap_WorldQuestPinTemplate"]
 	if pins then
 		for obj,_ in pairs(pins.activeObjects) do
-			obj:SetScalingLimits(defScaleFactor, defStartScale, defEndScale)
-			obj:ApplyCurrentScale()
+			pcall(function() 
+				obj:SetScalingLimits(defScaleFactor, defStartScale, defEndScale)
+				obj:ApplyCurrentScale()
+			end)
 		end
 		for _,obj in pairs(pins.inactiveObjects) do
-			obj:SetScalingLimits(defScaleFactor, defStartScale, defEndScale)
-			obj:ApplyCurrentScale()
+			pcall(function() 
+				obj:SetScalingLimits(defScaleFactor, defStartScale, defEndScale)
+				obj:ApplyCurrentScale()
+			end)
 		end
 	end
 end
