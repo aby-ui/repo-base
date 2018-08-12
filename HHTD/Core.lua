@@ -3,7 +3,7 @@ H.H.T.D. World of Warcraft Add-on
 Copyright (c) 2009-2018 by John Wellesz (hhtd@2072productions.com)
 All rights reserved
 
-Version 2.4.8
+Version 2.4.9
 
 In World of Warcraft healers have to die. This is a cruel truth that you're
 taught very early in the game. This add-on helps you influence this unfortunate
@@ -37,7 +37,7 @@ local INFO      = 3;
 local INFO2     = 4;
 
 local UNPACKAGED = "@pro" .. "ject-version@";
-local VERSION = "2.4.8";
+local VERSION = "2.4.9";
 
 local ADDON_NAME, T = ...;
 
@@ -313,7 +313,7 @@ local function REGISTER_HEALERS_ONLY_SPELLS_ONCE ()
         [088423] = "DRUID", -- Nature's Cure
         -- [008936] = "DRUID", -- Regrowth -- (also available through restoration afinity talent)
         [033891] = "DRUID", -- Incarnation: Tree of Life
-        [048438] = "DRUID", -- Wild Growth
+        -- [048438] = "DRUID", -- Wild Growth -- disabled in WoW8: In the feral talents, level 45, you can choose Restoration Affinity, which includes Rejuv, Swiftmend, Wild Growth.
         [000740] = "DRUID", -- Tranquility
         -- [145108] = "DRUID", -- Ysera's Gift -- (also available through restoration afinity talent)
         -- [000774] = "DRUID", -- Rejuvination -- (also available through restoration afinity talent)
@@ -334,7 +334,7 @@ local function REGISTER_HEALERS_ONLY_SPELLS_ONCE ()
         -- Monks
         [115175] = "MONK", -- Soothing Mist
         [115310] = "MONK", -- Revival
-        [116670] = "MONK", -- Vivify
+        --[116670] = "MONK", -- Vivify all monks have it in WoW8
         [116680] = "MONK", -- Thunder Focus Tea
         [116849] = "MONK", -- Life Cocoon
         [119611] = "MONK", -- Renewing mist
@@ -527,7 +527,7 @@ do
                 name = L["OPT_VERSION"],
                 desc = L["OPT_VERSION_DESC"],
                 guiHidden = true,
-                func = function () HHTD:Print(L["VERSION"], '2.4.8,', L["RELEASE_DATE"], '2018-07-22T12:37:40Z') end,
+                func = function () HHTD:Print(L["VERSION"], '2.4.9,', L["RELEASE_DATE"], '2018-08-12T11:09:16Z') end,
                 order = -5,
             },
             ShowGUI = {
@@ -545,7 +545,7 @@ do
                 args = {
                     Info_Header = {
                         type = 'header',
-                        name = L["VERSION"] .. ' 2.4.8 -- ' .. L["RELEASE_DATE"] .. ' 2018-07-22T12:37:40Z',
+                        name = L["VERSION"] .. ' 2.4.9 -- ' .. L["RELEASE_DATE"] .. ' 2018-08-12T11:09:16Z',
                         order = 1,
                     },
                     Pve = {
@@ -894,9 +894,9 @@ do
         -- Catch people updating add-ons while WoW is running before they post "it doesn't work!!!!" comments.
         local versionInTOC = GetAddOnMetadata("HHTD", "Version");
         if versionInTOC and versionInTOC ~= VERSION and versionInTOC ~= UNPACKAGED and VERSION ~= UNPACKAGED then
-            T._DiagStatus = 2;
-            T._Diagmessage = "You have updated H.H.T.D while WoW was still running in the background.\n\nYou need to restart WoW completely or you might experience various issues with your add-ons until you do.";
-            T._FatalError(T._Diagmessage);
+            --T._DiagStatus = 2;
+            --T._Diagmessage = "You have updated H.H.T.D while WoW was still running in the background.\n\nYou need to restart WoW completely or you might experience various issues with your add-ons until you do.";
+            --T._FatalError(T._Diagmessage);
         end
 
 

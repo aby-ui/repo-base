@@ -3,7 +3,7 @@ local Recount = _G.Recount
 local AceLocale = LibStub("AceLocale-3.0")
 local L = AceLocale:GetLocale("Recount")
 
-local revision = tonumber(string.sub("$Revision: 1309 $", 12, -3))
+local revision = tonumber(string.sub("$Revision: 1460 $", 12, -3))
 if Recount.Version < revision then
 	Recount.Version = revision
 end
@@ -64,8 +64,8 @@ function me:CreateReportList()
 
 	local channels = {GetChannelList()}
 
-	for i = 1, table.getn(channels) / 2 do
-		table.insert(ReportList, {channels[i * 2 - 1]..". "..channels[i * 2], "CHANNEL", channels[i * 2 - 1]})
+	for i = 1, #channels / 3 do
+		table.insert(ReportList, {channels[i * 3 - 2]..". "..channels[i * 3 - 1], "CHANNEL", channels[i * 3 - 2]})
 	end
 end
 
@@ -116,7 +116,7 @@ end
 function me:UpdateReportWindow()
 	local Amount, Row
 	me:CreateReportList()
-	Amount = table.getn(ReportList)
+	Amount = #ReportList
 
 
 	for i = me.NumRows + 1, Amount do

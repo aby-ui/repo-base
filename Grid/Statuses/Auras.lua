@@ -13,6 +13,8 @@ local n2s,f2s,floor=n2s or tostring,f2s or function(time) return format("%.1f", 
 	Grid status module for tracking buffs/debuffs.
 ----------------------------------------------------------------------]]
 
+local IS_WOW_8 = GetBuildInfo():match("^8")
+
 local _, Grid = ...
 local L = Grid.L
 
@@ -42,8 +44,10 @@ local spell_names = {
 	["Wild Growth"] = GetSpellInfo(48438),
 -- Monk
 	["Enveloping Mist"] = GetSpellInfo(124682),
+	["Essence Font"] = GetSpellInfo(191837),
 	["Life Cocoon"] = GetSpellInfo(116849),
 	["Renewing Mist"] = GetSpellInfo(115151),
+	["Soothing Mist"] = GetSpellInfo(115175),
 -- Paladin
 	["Beacon of Faith"] = GetSpellInfo(156910),
 	["Beacon of Light"] = GetSpellInfo(53563),
@@ -56,10 +60,12 @@ local spell_names = {
 	["Clarity of Will"] = GetSpellInfo(152118),
 	["Guardian Spirit"] = GetSpellInfo(47788),
 	["Light of T'uure"] = GetSpellInfo(208065),
+	["Power Word: Fortitude"] = GetSpellInfo(21562),
 	["Power Word: Shield"] = GetSpellInfo(17),
 	["Prayer of Mending"] = GetSpellInfo(33076),
 	["Renew"] = GetSpellInfo(139),
 -- Shaman
+	["Earth Shield"] = GetSpellInfo(204288),
 	["Riptide"] = GetSpellInfo(61295),
 }
 
@@ -143,10 +149,10 @@ GridStatusAuras.defaultDB = {
 	["dispel_curse"] = {
 		desc = format(L["Debuff type: %s"], L["Curse"]),
 		text = DEBUFF_SYMBOL_CURSE,
-		color = { r = 0.6, g = 0, b =  1, a = 1 },
+		color = { r = 0.6, g = 0, b = 1, a = 1 },
 		durationColorLow = { r = 0.18, g = 0, b = 0.3, a = 1 },
 		durationColorMiddle = { r = 0.42, g = 0, b = 0.7, a = 1 },
-		durationColorHigh = { r = 0.6, g = 0, b =  1, a = 1 },
+		durationColorHigh = { r = 0.6, g = 0, b = 1, a = 1 },
 		dispellable = true,
 		order = 25,
 	},
@@ -163,10 +169,10 @@ GridStatusAuras.defaultDB = {
 	["dispel_magic"] = {
 		desc = format(L["Debuff type: %s"], L["Magic"]),
 		text = DEBUFF_SYMBOL_MAGIC,
-		color = { r = 0.2, g = 0.6, b =  1, a = 1 },
+		color = { r = 0.2, g = 0.6, b = 1, a = 1 },
 		durationColorLow = { r = 0.06, g = 0.18, b = 0.3, a = 1 },
 		durationColorMiddle = { r = 0.14, g = 0.42, b = 0.7, a = 1 },
-		durationColorHigh = { r = 0.2, g = 0.6, b =  1, a = 1 },
+		durationColorHigh = { r = 0.2, g = 0.6, b = 1, a = 1 },
 		dispellable = true,
 		order = 25,
 	},
@@ -258,10 +264,10 @@ GridStatusAuras.defaultDB = {
 		desc = format(L["Buff: %s"], spell_names["Regrowth"]),
 		buff = spell_names["Regrowth"],
 		text = GridStatusAuras:TextForSpell(spell_names["Regrowth"]),
-		color = { r =  1, g = 0.7, b = 0.1, a = 1 },
+		color = { r = 1, g = 0.7, b = 0.1, a = 1 },
 		durationColorLow = { r = 1, g = 0, b = 0, a = 1 },
 		durationColorMiddle = { r = 0.7, g = 0.49, b = 0.07, a = 1 },
-		durationColorHigh = { r =  1, g = 0.7, b = 0.1, a = 1 },
+		durationColorHigh = { r = 1, g = 0.7, b = 0.1, a = 1 },
 		mine = true,
 	},
 	[GridStatusAuras:StatusForSpell("Rejuvenation", true)] = {
@@ -309,6 +315,14 @@ GridStatusAuras.defaultDB = {
 		color = { r = 0.2, g = 1, b = 0.2, a = 1 },
 		mine = true,
 	},
+	[GridStatusAuras:StatusForSpell("Essence Font", true)] = {
+		-- 191837
+		buff = spell_names["Essence Font"],
+		desc = format(L["Buff: %s"], spell_names["Essence Font"]),
+		text = GridStatusAuras:TextForSpell(spell_names["Essence Font"]),
+		color = { r = 0, g = 0.7, b = 0.7, a = 1 },
+		mine = true,
+	},
 	[GridStatusAuras:StatusForSpell("Life Cocoon", true)] = {
 		-- 116849
 		buff = spell_names["Life Cocoon"],
@@ -322,6 +336,14 @@ GridStatusAuras.defaultDB = {
 		desc = format(L["Buff: %s"], spell_names["Renewing Mist"]),
 		text = GridStatusAuras:TextForSpell(spell_names["Renewing Mist"]),
 		color = { r = 0.4, g = 0, b = 0.8, a = 1 },
+		mine = true,
+	},
+	[GridStatusAuras:StatusForSpell("Soothing Mist", true)] = {
+		-- 115175
+		buff = spell_names["Soothing Mist"],
+		desc = format(L["Buff: %s"], spell_names["Soothing Mist"]),
+		text = GridStatusAuras:TextForSpell(spell_names["Soothing Mist"]),
+		color = { r = 0.8, g = 1, b = 0.3, a = 1 },
 		mine = true,
 	},
 
@@ -439,6 +461,14 @@ GridStatusAuras.defaultDB = {
 		durationColorHigh = { r = 0.17, g = 0.23, b = 0.5, a = 1 },
 		mine = true,
 	},
+	[GridStatusAuras:StatusForSpell("Power Word: Fortitude", true)] = {
+		-- 21562
+		desc = format(L["Buff: %s"], spell_names["Power Word: Fortitude"]),
+		buff = spell_names["Power Word: Fortitude"],
+		text = GridStatusAuras:TextForSpell(spell_names["Power Word: Fortitude"]),
+		color = { r = 0, g = 0.7, b = 0.3, a = 1 },
+		missing = true,
+	},
 	[GridStatusAuras:StatusForSpell("Power Word: Shield", true)] = {
 		-- 17
 		desc = format(L["Buff: %s"], spell_names["Power Word: Shield"]),
@@ -472,6 +502,13 @@ GridStatusAuras.defaultDB = {
 	---------------------
 	-- Shaman
 	---------------------
+	[GridStatusAuras:StatusForSpell("Earth Shield", true)] = {
+		-- 204288
+		desc = format(L["Buff: %s"], spell_names["Earth Shield"]),
+		buff = spell_names["Earth Shield"],
+		text = GridStatusAuras:TextForSpell(spell_names["Earth Shield"]),
+		color = { r = 0.2, g = 1, b = 0.2, a = 1 },
+	},
 	[GridStatusAuras:StatusForSpell("Riptide", true)] = {
 		-- 61295
 		desc = format(L["Buff: %s"], spell_names["Riptide"]),
@@ -1137,15 +1174,15 @@ function GridStatusAuras:UpdateDispellable()
 		PlayerCanDispel.Poison  = IsPlayerSpell(115450) or IsPlayerSpell(218164)
 
 	elseif PLAYER_CLASS == "PALADIN" then
-		 --   4987   Cleanse           Holy                        Disease, Poison, Magic
-		 -- 213644   Cleanse Toxins    Protection, Retribution     Disease, Poison
+		--   4987   Cleanse           Holy                        Disease, Poison, Magic
+		-- 213644   Cleanse Toxins    Protection, Retribution     Disease, Poison
 		PlayerCanDispel.Disease = IsPlayerSpell(4987) or IsPlayerSpell(213644)
 		PlayerCanDispel.Magic   = IsPlayerSpell(4987)
 		PlayerCanDispel.Poison  = IsPlayerSpell(4987) or IsPlayerSpell(213644)
 
 	elseif PLAYER_CLASS == "PRIEST" then
-		 --    527   Purify            Discipline, Holy            Disease, Magic
-		 -- 213634   Purify Disease    Shadow                      Disease
+		--    527   Purify            Discipline, Holy            Disease, Magic
+		-- 213634   Purify Disease    Shadow                      Disease
 		PlayerCanDispel.Disease = IsPlayerSpell(527) or IsPlayerSpell(213634)
 		PlayerCanDispel.Magic   = IsPlayerSpell(527)
 
@@ -1189,6 +1226,11 @@ end
 --   longer than the number of debuffs on the unit.  While scanning the debuffs
 --   keep track of each debuff type seen and information about the last debuff
 --   of that type seen.
+
+-- Note:
+-- * As of WoW 8.0, UnitAura no longer accepts a name, only an index, so we
+--   now necessarily iterate over all buffs on the unit. The above information
+--   is preserved for historical interest.
 
 -- durationAuras[status][guid] = { <aura properties> }
 GridStatusAuras.durationAuras = {}
@@ -1404,7 +1446,7 @@ function GridStatusAuras:RefreshActiveDurations()
 					ICON_TEX_COORDS)
 			end
 	--	else
-	--		self.core:SendStatusLost(guid, status)  -- XXX "guid" is undefined=nil here; what is the purpose?!
+	--		self.core:SendStatusLost(guid, status) -- XXX "guid" is undefined=nil here; what is the purpose?!
 		end
 	end
 end
@@ -1734,52 +1776,67 @@ function GridStatusAuras:ScanUnitAuras(event, unit, guid)
 	end
 
 	if UnitIsVisible(unit) then
-		-- scan for buffs
+		for i = 1, 40 do
+			local name, rank, icon, count, debuffType, duration, expirationTime, caster, isStealable, _, spellID
+			if IS_WOW_8 then
+				name, icon, count, debuffType, duration, expirationTime, caster, isStealable, _, spellID = UnitAura(unit, i, "HELPFUL")
+			else
+				name, rank, icon, count, debuffType, duration, expirationTime, caster, isStealable, _, spellID = UnitAura(unit, i, "HELPFUL")
+			end
 
-        -- aby8 优化
-        for i = 1, 40 do
-            local name, icon, count, debuffType, duration, expirationTime, caster, isStealable, _, spellID = UnitAura(unit, i, "HELPFUL")
-            if not name then break end
-            if buff_names[spellID] then
-                buff_names[spellID] = true
-                self:UnitGainedBuff(guid, class, spellID, nil, icon, count, debuffType, duration, expirationTime, caster, isStealable)
-            elseif buff_names[name] then
-                buff_names_seen[name] = true
-                self:UnitGainedBuff(guid, class, name, nil, icon, count, debuffType, duration, expirationTime, caster, isStealable)
-            end
-    		-- scan for buffs cast by the player
-            if caster == 'player' then
-                if player_buff_names[spellID] then
-                    player_buff_names_seen[spellID] = true
-                    self:UnitGainedPlayerBuff(guid, class, spellID, nil, icon, count, debuffType, duration, expirationTime, caster, isStealable)
-                elseif player_buff_names[name] then
-                    player_buff_names_seen[name] = true
-                    self:UnitGainedPlayerBuff(guid, class, name, nil, icon, count, debuffType, duration, expirationTime, caster, isStealable)
-                end
-            end
-        end
+			if not name then
+				break
+			end
+
+			-- scan for buffs
+			if buff_names[spellID] then
+				buff_names[spellID] = true
+				self:UnitGainedBuff(guid, class, spellID, rank, icon, count, debuffType, duration, expirationTime, caster, isStealable)
+			elseif buff_names[name] then
+				buff_names_seen[name] = true
+				self:UnitGainedBuff(guid, class, name, rank, icon, count, debuffType, duration, expirationTime, caster, isStealable)
+			end
+
+			-- scan for buffs cast by the player
+			if caster == 'player' then
+				if player_buff_names[spellID] then
+					player_buff_names_seen[spellID] = true
+					self:UnitGainedPlayerBuff(guid, class, spellID, nil, icon, count, debuffType, duration, expirationTime, caster, isStealable)
+				elseif player_buff_names[name] then
+				player_buff_names_seen[name] = true
+				self:UnitGainedPlayerBuff(guid, class, name, rank, icon, count, debuffType, duration, expirationTime, caster, isStealable)
+				end
+			end
+		end
 
 		-- scan for debuffs
 		for index = 1, 40 do
-			local name, icon, count, debuffType, duration, expirationTime, casterUnit, canStealOrPurge, shouldConsolidate, spellID, canApply, isBossAura, isCastByPlayer = UnitAura(unit, index, "HARMFUL")
+			local name, rank, icon, count, debuffType, duration, expirationTime, casterUnit, canStealOrPurge, shouldConsolidate, spellID, canApply, isBossAura, isCastByPlayer
+			if IS_WOW_8 then
+				name, icon, count, debuffType, duration, expirationTime, casterUnit, canStealOrPurge, shouldConsolidate, spellID, canApply, isBossAura, isCastByPlayer = UnitAura(unit, index, "HARMFUL")
+			else
+				name, rank, icon, count, debuffType, duration, expirationTime, casterUnit, canStealOrPurge, shouldConsolidate, spellID, canApply, isBossAura, isCastByPlayer = UnitAura(unit, index, "HARMFUL")
+			end
+
 			if not name then
 				break
-            end
-            if debuff_names[spellID] then
-                debuff_names_seen[spellID] = true
-                self:UnitGainedDebuff(guid, class, spellID, nil, icon, count, debuffType, duration, expirationTime, casterUnit, canStealOrPurge, shouldConsolidate, spellID, canApply, isBossAura, isCastByPlayer)
-            elseif debuff_names[name] then
+			end
+
+			if debuff_names[spellID] then
+                		debuff_names_seen[spellID] = true
+                		self:UnitGainedDebuff(guid, class, spellID, rank, icon, count, debuffType, duration, expirationTime, casterUnit, canStealOrPurge, shouldConsolidate, spellID, canApply, isBossAura, isCastByPlayer)
+            		elseif debuff_names[name] then
 				debuff_names_seen[name] = true
-				self:UnitGainedDebuff(guid, class, name, nil, icon, count, debuffType, duration, expirationTime, casterUnit, canStealOrPurge, shouldConsolidate, spellID, canApply, isBossAura, isCastByPlayer)
+				self:UnitGainedDebuff(guid, class, name, rank, icon, count, debuffType, duration, expirationTime, casterUnit, canStealOrPurge, shouldConsolidate, spellID, canApply, isBossAura, isCastByPlayer)
 			--[[
 			elseif isBossAura then
 				seenBossAura = true
-				self:UnitGainedBossDebuff(guid, class, name, nil, icon, count, debuffType, duration, expirationTime, casterUnit, canStealOrPurge, shouldConsolidate, spellID, canApply, isBossAura, isCastByPlayer)
+				self:UnitGainedBossDebuff(guid, class, name, rank, icon, count, debuffType, duration, expirationTime, casterUnit, canStealOrPurge, shouldConsolidate, spellID, canApply, isBossAura, isCastByPlayer)
 			]]
 			elseif debuff_types[debuffType] then
 				-- elseif so that a named debuff doesn't trigger the type status
 				debuff_types_seen[debuffType] = true
-				self:UnitGainedDebuffType(guid, class, name, nil, icon, count, debuffType, duration, expirationTime, casterUnit, canStealOrPurge, shouldConsolidate, spellID, canApply, isBossAura, isCastByPlayer)
+				self:UnitGainedDebuffType(guid, class, name, rank, icon, count, debuffType, duration, expirationTime, casterUnit, canStealOrPurge, shouldConsolidate, spellID, canApply, isBossAura, isCastByPlayer)
 			end
 		end
 	end

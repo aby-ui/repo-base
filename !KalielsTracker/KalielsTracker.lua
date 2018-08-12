@@ -319,7 +319,7 @@ local function SetFrames()
 	KTF:RegisterEvent("PLAYER_LEVEL_UP")
 
 	-- DropDown frame
-	KT.DropDown = CreateFrame("Frame", addonName.."DropDown", KTF, "MSA_DropDownMenuTemplate")
+	KT.DropDown = MSA_DropDownMenu_Create(addonName.."DropDown", KTF)
 	MSA_DropDownMenu_Initialize(KT.DropDown, nil, "MENU")
 
 	-- Minimize button

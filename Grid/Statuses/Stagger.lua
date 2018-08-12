@@ -12,6 +12,8 @@
 	Grid status module for Monk Stagger.
 ----------------------------------------------------------------------]]
 
+local IS_WOW_8 = GetBuildInfo():match("^8")
+
 local _, Grid = ...
 local L = Grid.L
 
@@ -33,13 +35,6 @@ GridStatusStagger.defaultDB = {
 		range = false,
 	},
 }
-
-local stagger_names = {
-	GetSpellInfo(124273),
-	GetSpellInfo(124274),
-	GetSpellInfo(124275),
-}
-local stagger_names_count = #stagger_names
 
 local spellID_severity = {
 	[124273] = "heavy",
@@ -169,10 +164,19 @@ function GridStatusStagger:UpdateUnit(event, unitid)
 	local guid = UnitGUID(unitid)
 	if monks[guid] then
 		for i = 1, 40 do
-			local name, icon, _, _, _, _, _, _, _, spellID = UnitDebuff(unitid, i)
-            if not name then break end
-			if spellID and spellID_severity[spellID] then
-				local severity = spellID_severity[spellID]
+			local name, icon, spellID, _
+			if IS_WOW_8 then
+				name, icon, _, _, _, _, _, _, _, spellID = UnitDebuff(unitid, i)
+			else
+				name, _, icon, _, _, _, _, _, _, _, spellID = UnitDebuff(unitid, i)
+			end
+
+			if not name then
+				break
+			end
+
+			local severity = spellID_severity[spellID]
+			if severity then
 				local settings = self.db.profile.alert_stagger
 				local color = severity and settings.colors[severity]
 				return self.core:SendStatusGained(guid,

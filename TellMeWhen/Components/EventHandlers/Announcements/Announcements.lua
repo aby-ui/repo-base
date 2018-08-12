@@ -298,8 +298,8 @@ Announcements:RegisterEventHandlerDataNonSpecific(40, "CHANNEL", {
 
 	defaultlocation = function() return select(2, GetChannelList()) end,
 	dropdown = function()
-		for i = 1, huge, 2 do
-			local num, name = select(i, GetChannelList())
+		for i = 1, huge, 3 do
+			local num, name, disabled = select(i, GetChannelList())
 			if not num then break end
 
 			local info = TMW.DD:CreateInfo()
@@ -313,8 +313,8 @@ Announcements:RegisterEventHandlerDataNonSpecific(40, "CHANNEL", {
 	end,
 	ddtext = function(value)
 		-- also a verification function
-		for i = 1, huge, 2 do
-			local num, name = select(i, GetChannelList())
+		for i = 1, huge, 3 do
+			local num, name, disabled = select(i, GetChannelList())
 			if not num then return end
 
 			if name == value then
@@ -323,8 +323,8 @@ Announcements:RegisterEventHandlerDataNonSpecific(40, "CHANNEL", {
 		end
 	end,
 	handler = function(icon, eventSettings, Text)
-		for i = 1, huge, 2 do
-			local num, name = select(i, GetChannelList())
+		for i = 1, huge, 3 do
+			local num, name, disabled = select(i, GetChannelList())
 			if not num then break end
 			if strlowerCache[name] == strlowerCache[eventSettings.Location] then
 				SendChatMessage(Text, eventSettings.Channel, nil, num)

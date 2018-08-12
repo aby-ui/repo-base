@@ -1,5 +1,5 @@
 ## Interface: 80000
-## Version: 7.3.5.0 WarbabyPack-20180700
+## Version: 8.0.1.0
 
 ## Title: Grid
 ## Notes: A compact grid of party/raid unit frames.
@@ -19,13 +19,10 @@
 ## X-Curse-Project-ID: 7000
 ## X-WoWI-ID: 5747
 
-## OptionalDeps: Ace3, LibDBIcon-1.0, LibDualSpec-1.0, LibResInfo-1.0, LibSharedMedia-3.0, AceGUI-3.0-SharedMediaWidgets, UTF8, Clique
+## OptionalDeps: Clique, Ace3, LibDBIcon-1.0, LibDualSpec-1.0, LibResInfo-1.0, LibSharedMedia-3.0, AceGUI-3.0-SharedMediaWidgets, UTF8
 ## SavedVariables: GridDB
 
-#@no-lib-strip@
 Libs\LibResInfo-1.0\LibResInfo-1.0.lua
-#@end-no-lib-strip@
-
 Locales\Locale-zhCN.lua
 Locales\Locale-zhTW.lua
 

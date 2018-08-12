@@ -37,8 +37,12 @@ if GetLocale() == "zhCN" then
 		["guild bank cannot afford repair, will repair by your own money"] = "|cffff0000公会银行可用金额不足，改用自己的金币修理。|r",
 		["refilled items"] = "购买材料 |cffff0000支出:|r ",
 		["sold"] = "售出 ",
-		["earned"] = "|cff00ff00本次交易获利:|r ",
-		["lost"] = "|cffff0000本次交易亏损:|r ",
-		["equal"] = "本次交易没有产生盈亏。",
+		["earned"] = "|cff00ff00自动修理贩卖获利:|r ",
+		["lost"] = "|cffff0000自动修理贩卖亏损:|r ",
+		["equal"] = "自动修理贩卖没有产生盈亏。",
+
+        ["earned final"] = "|cff00ff00本次交易总计获利:|r ",
+   		["lost final"] = "|cffff0000本次交易总计亏损:|r ",
+   		["equal final"] = "本次交易没有产生盈亏。",
 	}
 end

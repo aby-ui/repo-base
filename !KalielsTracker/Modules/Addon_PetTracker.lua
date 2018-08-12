@@ -111,7 +111,7 @@ local function SetHooks()
 
 	-- Sushi Lib - hack - revert back DropDownMenu
 	if SushiDropFrame then
-		local dropDownFrame = CreateFrame("Frame", "SushiDropDownFrameFix", nil, "MSA_DropDownMenuTemplate")
+		local dropDownFrame = MSA_DropDownMenu_Create("SushiDropDownFrameFix")
 		function dropDownFrame:AddLine(data)
 			MSA_DropDownMenu_AddButton(data)
 		end

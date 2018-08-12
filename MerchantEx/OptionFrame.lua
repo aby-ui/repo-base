@@ -448,6 +448,8 @@ end
 
 frame:RegisterEvent("VARIABLES_LOADED")
 frame:RegisterEvent("MERCHANT_SHOW")
+frame:RegisterEvent("MERCHANT_CLOSED")
+frame:RegisterEvent("PLAYER_MONEY")
 
 frame:SetScript("OnEvent", function(self, event)
 	if event == "VARIABLES_LOADED" then
@@ -511,6 +513,17 @@ frame:SetScript("OnEvent", function(self, event)
         end
 
 	elseif event == "MERCHANT_SHOW" then
-		addon:Interact()
+        if MerchantFrame:IsVisible() then
+            addon.moneyBefore = GetMoney() or 0
+        end
+        addon.balance = addon:Interact()
+    elseif event == "MERCHANT_CLOSED" then
+        if addon.moneyBefore then
+            local total = (GetMoney() or 0) - addon.moneyBefore
+            local balance = addon.balance or 0
+            addon:Final(total, balance)
+            addon.moneyBefore = nil
+            addon.balance = 0
+        end
 	end
 end)

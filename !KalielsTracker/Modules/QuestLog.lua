@@ -135,7 +135,7 @@ end
 
 local function SetFrames()
 	-- DropDown frame
-	dropDownFrame = CreateFrame("Frame", addonName.."QuestLogDropDown", QuestMapFrame, "MSA_DropDownMenuTemplate")
+	dropDownFrame = MSA_DropDownMenu_Create(addonName.."QuestLogDropDown", QuestMapFrame)
 	dropDownFrame.questID = 0	-- for QuestMapQuestOptionsDropDown_Initialize
 	MSA_DropDownMenu_Initialize(dropDownFrame, QuestMapQuestOptionsDropDown_Initialize, "MENU")
 end

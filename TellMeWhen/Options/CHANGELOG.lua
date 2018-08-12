@@ -4,6 +4,11 @@ TMW.CHANGELOG_LASTVER="7.4.0"
 
 TMW.CHANGELOG = [==[
 
+===v8.5.3===
+
+====Bug Fixes====
+* Fixed #1544 - Blizzard changed return values of GetChannelList(), breaking chat channel text notifications.
+
 ===v8.5.2===
 * Includes latest LibDogTag-Unit with fixes for [SoulShardParts] and others.
 * Updated Guardian icon type for 8.0 Warlock changes.

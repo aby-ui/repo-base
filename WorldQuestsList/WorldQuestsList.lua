@@ -1,4 +1,4 @@
-local VERSION = 74
+local VERSION = 75
 
 --[[
 Special icons for rares, pvp or pet battle quests in list
@@ -214,6 +214,8 @@ Added "max lines" option
 Minor LFG updates
 
 LFG Hotfixes
+
+LFG fixes
 ]]
 
 local GlobalAddonName, WQLdb = ...
@@ -362,11 +364,11 @@ local LOCALE =
 		lfgDisableAll2 = "Alle Add-In Einstellungen werden zurückgesetzt. Deaktiviert alle Optionen, außer LFG?",
 		lfgDisableEyeRight = "Deaktiviert Augenknopf bei Quest-Ziele auf der rechten Seite",
 		lfgDisableEyeList = "Augenknopf in Liste ausblenden",
-		listSize = "List size",
-		topLine = "Top line",
-		bottomLine = "Bottom line",
-		unlimited = "Unlimited",
-		maxLines = "Max lines",
+		listSize = "Listengröße",
+		topLine = "Obere Zeile",
+		bottomLine = "Untere Zeile",
+		unlimited = "Unbegrenzt",
+		maxLines = "maximale Anzahl an Zeilen",
 	} or
 	locale == "frFR" and {
 		gear = "Équipement",
@@ -6279,7 +6281,7 @@ QuestCreationBox:SetScript("OnDragStop", function(self)
 	end
 end)
 QuestCreationBox:SetScript("OnUpdate",function(self)
-	if QuestCreationBox.type == 4 and LFGListFrame.SearchPanel.SearchBox:GetText() == QuestCreationBox.Text2:GetText() then
+	if QuestCreationBox.type == 4 and LFGListFrame.SearchPanel.SearchBox:GetText():lower() == QuestCreationBox.Text2:GetText():lower() then
 		QuestCreationBox.Text2:SetTextColor(0,1,0)
 	elseif QuestCreationBox.type ~= 4 and LFGListFrame.EntryCreation.Name:GetText() == QuestCreationBox.Text2:GetText() then
 		QuestCreationBox.Text2:SetTextColor(0,1,0)
@@ -6412,10 +6414,6 @@ QuestCreationBox:SetScript("OnHide",function()
 	end
 end)
 
-local function utf8len(s)
-	return select(2, s:gsub('[^\128-\193]', ''))
-end
-
 local searchQuestID = nil
 local isAfterSearch = nil
 local autoCreateQuestID = nil
@@ -6445,23 +6443,24 @@ function WQL_LFG_Search(questID)
 		}
 		button:SetScript("OnClick",function()
 			QuestCreationBox:Hide()
-
 			PVEFrame_ToggleFrame()
 			
 			edit:GetScript("OnEnterPressed")(edit)
+			
+			searchQuestID = edit.WQL_questID
 		end)
-		edit:HookScript("OnEnterPressed",function()
+		edit:HookScript("OnEnterPressed",function(self)
 			if not QuestCreationBox:IsShown() then
 				return
 			end
 			
 			QuestCreationBox:Hide()
 			PVEFrame_ToggleFrame()
+			
+			searchQuestID = self.WQL_questID
 		end)
 	end
 
-	
-	local questName = tostring(questID)
 	
 	local languagesOn = C_LFGList.GetLanguageSearchFilter()
 	local languagesAll = C_LFGList.GetAvailableLanguageSearchFilter()
@@ -6497,10 +6496,27 @@ function WQL_LFG_Search(questID)
 	edit.Instructions:SetText(questID)
 	edit:SetFocus()
 	
+	edit.WQL_questID = questID
+	
 	fb:ClearAllPoints()
 	fb:SetPoint("TOP",UIParent,"BOTTOM",0,-100)
 	
 	searchQuestID = questID
+	
+	if type(questID)=='number' then
+		local questName = C_TaskQuest.GetQuestInfoByQuestID(questID)
+		if not questName then
+			questName = GetQuestLogTitle(GetQuestLogIndexByID(questID))
+		end
+		
+		if questName and IsShiftKeyDown() then
+			QuestCreationBox.Text2:SetText(questName)
+		end
+		if questName then
+			edit.Instructions:SetText(questID..", "..questName)
+		end
+	end	
+	
 end
 WorldQuestList.LFG_Search = WQL_LFG_Search
 
@@ -6690,13 +6706,14 @@ QuestCreationBox:SetScript("OnEvent",function (self,event,arg1,arg2)
 		else
 			isAfterSearch = nil
 			searchQuestID = nil
-			if total > 0 and LFGListFrame.SearchPanel.SearchBox:IsVisible() and LFGListFrame.SearchPanel.categoryID == 1 then
-				local searchQ = LFGListFrame.SearchPanel.SearchBox:GetText()
-				searchQ = tonumber(searchQ)
-				if searchQ and searchQ > 10000 and searchQ < 1000000 then
-					LFGListFrameSearchPanelStartGroup.questID = searchQ
-					LFGListFrameSearchPanelStartGroup:Show()
-				end
+		end
+		
+		if LFGListFrame.SearchPanel.SearchBox:IsVisible() and LFGListFrame.SearchPanel.categoryID == 1 then
+			local searchQ = LFGListFrame.SearchPanel.SearchBox:GetText()
+			searchQ = tonumber(searchQ)
+			if searchQ and searchQ > 10000 and searchQ < 1000000 then
+				LFGListFrameSearchPanelStartGroup.questID = searchQ
+				LFGListFrameSearchPanelStartGroup:Show()
 			end
 		end
 		

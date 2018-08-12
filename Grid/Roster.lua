@@ -275,15 +275,16 @@ do
 		if instanceType == "arena" then
 			return "arena", maxPlayers or 5
 		elseif instanceType == "pvp" or (instanceType == "none" and GetZonePVPInfo() == "combat") then
-			return "bg",    maxPlayers or 40
+			return "bg", maxPlayers or 40
 		elseif maxPlayers == 1 or not IsInGroup() then -- treat solo scenarios as solo, not party or raid
-			return "solo",  1
+			return "solo", 1
 		elseif IsInRaid() then
+			if instanceType == "none" then
+				-- GetInstanceInfo reports maxPlayers = 5 in Broken Isles
+				maxPlayers = 40
+			end
 			return "raid",  maxPlayers and maxPlayers > 5 and maxPlayers or 40
 		else
-			-- In the world, maxPlayers is 40 even when in just a party
-			-- when not in a raid, pvp, arena, or bg use 5
-			-- return "party", maxPlayers or 5
 			return "party", 5
 		end
 	end
@@ -301,6 +302,10 @@ do
 	end
 
 	function GridRoster:GetPartyState()
-		return self.db.profile.party_state, last_maxPlayers
+		if last_maxPlayers then
+			return self.db.profile.party_state, last_maxPlayers
+		else
+			return GetPartyState()
+		end
 	end
 end

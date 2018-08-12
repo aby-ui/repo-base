@@ -296,7 +296,7 @@ function addon:Interact(silent)
 	end
 
 	if silent or not balance then
-		return
+		return balance
 	end
 
 	if balance == 0 then
@@ -305,5 +305,19 @@ function addon:Interact(silent)
 		self:Print(L["earned"]..FormatMoney(balance, 1))
 	else
 		self:Print(L["lost"]..FormatMoney(balance, 1))
-	end
+    end
+
+    return balance
+end
+
+function addon:Final(total, balance)
+    if total == balance then
+        -- do nothing
+    elseif total == 0 then
+        self:Print(L["equal final"])
+    elseif total > 0 then
+        self:Print(L["earned final"]..FormatMoney(total, 1))
+    else
+        self:Print(L["lost final"]..FormatMoney(total, 1))
+    end
 end

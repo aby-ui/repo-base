@@ -1,3 +1,9 @@
+### Version 8.0.1.0
+
+- Updated for WoW 8.0
+- Fixed the class and role layouts not always showing all players ([ticket #855](https://wow.curseforge.com/addons/grid/tickets/855))
+- Thanks Attict, acastle, doadin, MGramolini, and rherzfeld for your help!
+
 ### Version 7.3.5.0
 
 - Fixed the option to disable the right-click menu

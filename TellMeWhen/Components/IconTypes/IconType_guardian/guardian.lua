@@ -122,13 +122,19 @@ else
 	})
 end
 
-local function Guardian(duration, spell, triggerMatch)
-	return {
+local function Guardian(duration, spell, triggerMatch, extraData)
+	local data = {
 		duration = duration,
 		texture = GetSpellTexture(spell),
 		triggerSpell = spell,
 		triggerMustMatch = triggerMatch,
 	}
+	if extraData then
+		for k, v in pairs(extraData) do
+			data[k] = v
+		end
+	end
+	return data
 end
 
 Type.GuardianInfo = {
@@ -138,14 +144,15 @@ Type.GuardianInfo = {
 	[103673] = Guardian(20, 205180, false), -- Darkglare (Afflic)
 	
 	-- Wild Imp (HoG)
-	[ 55659] = {
-		duration = 12,
-		texture = GetSpellTexture(211158),
+	[ 55659] = Guardian(12, 211158, false, { 
+		isWildImp = true, 
 		triggerSpell = 105174, -- Not the real trigger spell. Set for the tooltip only.
 		-- triggerSpell = 104317,
-	}, 
+	}),
 
-	[143622] = Guardian(12, 279910, true), -- Wild Imp (Inner Demons passive)
+ 	-- Wild Imp (Inner Demons passive)
+	[143622] = Guardian(12, 279910, true, { isWildImp = true, }),
+
 	[136398] = Guardian(15, 267987, true), -- Illidari Satyr (Inner Demons passive)
 	[136402] = Guardian(15, 268001, true), -- Ur'zul (Inner Demons passive)
 	[136403] = Guardian(15, 267991, true), -- Void Terror (Inner Demons passive)
@@ -213,6 +220,7 @@ local Guardian = TMW:NewClass(){
 
 		self.npcID = GetNPCID(GUID)
 		local info = GuardianInfo[self.npcID]
+		self.info = info
 
 		self.duration = info.duration
 		self.texture = info.texture
@@ -272,12 +280,28 @@ function Type:COMBAT_LOG_EVENT_UNFILTERED(e)
 		else
 			return
 		end
-	elseif (event == "SPELL_CAST_SUCCESS") and sourceGUID == pGUID and spellID == 265187 then
-		-- summon tyrant: duration +15 to all demons.
-		-- Note that this event comes before the tyrant summon event,
-		-- so we won't accidentally give the
-		for guid, guardian in pairs(Guardians) do
-			guardian:Empower()
+	elseif (event == "SPELL_CAST_SUCCESS") and sourceGUID == pGUID then
+		if spellID == 265187 then
+
+			local consumptionLearned = select(10, GetTalentInfoByID(22479))
+			-- Summon Tyrant: duration +15 to all demons.
+			for guid, guardian in pairs(Guardians) do
+				if consumptionLearned and guardian.info.isWildImp then
+					-- If the consumption talent is learned, kill all wild imps.
+					Guardians[guid] = nil
+				else
+					-- Note that this event comes before the tyrant summon event,
+					-- so we won't accidentally give the tyrant empowered.
+					guardian:Empower()
+				end
+			end
+		elseif spellID == 196277 then
+			-- Implosion. Annoyingly doesn't trigger UNIT_DIED or SPELL_INSTAKILL. 
+			for guid, guardian in pairs(Guardians) do
+				if guardian.info.isWildImp then 
+					Guardians[guid] = nil
+				end
+			end
 		end
 	elseif event == "UNIT_DIED" or event == "SPELL_INSTAKILL" then
 		Guardians[destGUID] = nil

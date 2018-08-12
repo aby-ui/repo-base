@@ -35,7 +35,11 @@ MERCHANTEX_LOCALE = {
 	["guild bank cannot afford repair, will use your own money"]="|cffff0000Guild bank cannot afford repair, will use your own money.|r",
 	["refilled items"] = "|cff00ff00Refilled items:|r ",
 	["sold"] = "Sold ",
-	["earned"] = "|cff00ff00You earned on this trade:|r ",
-	["lost"] = "|cffff0000You lost on this trade:|r ",
-	["equal"] = "You have no earning or losing on this trade.",
+	["earned"] = "|cff00ff00You earned by MerchantEx:|r ",
+	["lost"] = "|cffff0000You lost by MerchantEx:|r ",
+	["equal"] = "You have no earning or losing by MerchantEx.",
+
+    ["earned final"] = "|cff00ff00You earned on this trade:|r ",
+   	["lost final"] = "|cffff0000You lost on this trade:|r ",
+   	["equal final"] = "You have no earning or losing on this trade.",
 }
