@@ -6,8 +6,8 @@
 ## LoadOnDemand: 1
 ## RequiredDeps: Blizzard_GarrisonUI, MasterPlanA
 ## SavedVariablesPerCharacter: MasterPlanPC
-## Version: 0.114
-## X-Version-Key: thorn
+## Version: 0.114.1
+## X-Version-Key: swan
 Libs/Evie.lua
 Libs/AltGameTooltip.xml
 Libs/Reframe.lua

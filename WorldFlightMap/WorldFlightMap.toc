@@ -1,9 +1,11 @@
 ## Interface: 80000
 ## Title: WorldFlightMap
-## Notes: Replaces the taxi map with the world map
+## Notes: Replaces the regular flight map with the world map
 ## Author: Semlar
-## Version: 8.0.0.2
+## Version: 8.0.0.3b
+## Dependencies: Blizzard_FlightMap
 
+LinePool.lua
 WorldFlightMap.lua
 
 ## Title-zhCN: |cff880303[爱不易]|r World 世界飞行地图

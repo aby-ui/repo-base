@@ -448,13 +448,10 @@ local function modify(parent, region, data)
     UpdateText();
   end
 
-  function region:Scale(scalex, scaley)
-    if region.scalex == scalex and region.scaley == scaley then
-      return
-    end
-    region.scalex = scalex;
-    region.scaley = scaley;
+  function region:UpdateSize()
     local mirror_h, mirror_v, width, height;
+    local scalex = region.scalex;
+    local scaley = region.scaley;
     if(scalex < 0) then
       mirror_h = true;
       scalex = scalex * -1;
@@ -499,18 +496,27 @@ local function modify(parent, region, data)
     end
   end
 
+  function region:Scale(scalex, scaley)
+    if region.scalex == scalex and region.scaley == scaley then
+      return
+    end
+    region.scalex = scalex;
+    region.scaley = scaley;
+    region:UpdateSize();
+  end
+
   function region:SetDesaturated(b)
     icon:SetDesaturated(b);
   end
 
   function region:SetRegionWidth(width)
     region.width = width
-    region:Scale(region.scalex, region.scaley);
+    region:UpdateSize();
   end
 
   function region:SetRegionHeight(height)
     region.height = height
-    region:Scale(region.scalex, region.scaley);
+    region:UpdateSize();
   end
 
   function region:SetText1Color(r, g, b, a)
@@ -538,7 +544,13 @@ local function modify(parent, region, data)
   end
 
   function region:SetGlow(showGlow)
-    if (showGlow) then
+    if MSQ then
+      if (showGlow) then
+        WeakAuras.ShowOverlayGlow(region.button);
+      else
+        WeakAuras.HideOverlayGlow(region.button);
+      end
+    elseif (showGlow) then
       if (not region.__WAGlowFrame) then
         region.__WAGlowFrame = CreateFrame("Frame", nil, region);
         region.__WAGlowFrame:SetAllPoints();

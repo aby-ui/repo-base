@@ -1,5 +1,8 @@
 EnableAddOn("!!!Libs") LoadAddOn("!!!Libs") --不能在CoreLibs之前，不能在163UIUI之后。之后根据有没有软件用库来决定是否加载
 
+--TODO aby8
+GuildControlUIRankSettingsFrameRosterLabel = GuildControlUIRankSettingsFrameRosterLabel or CreateFrame("Frame")
+
 function U1RemovedAddOn(...)
     local removed = {}
     for i=1, select('#', ...) do
