@@ -176,10 +176,9 @@ local resetsOnCast = {
 	[11129] = { -- Combustion
 		[108853] = 1, -- Inferno Blast
 	},
-	[11958] = { -- coldsnap
+	[235219] = { -- coldsnap
 		[45438] = 1, -- iceblock
-		[31661] = 1, -- dragon's breath
-		[12043] = 1, -- presence of mind
+		[11426] = 1, -- ice barrier
 		[120] = 1, -- cone of cold
 		[122] = 1, -- frost nova
 	},

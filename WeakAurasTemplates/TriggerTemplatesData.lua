@@ -1373,7 +1373,7 @@ templates.class.PRIEST = {
         { spell = 204263, type = "ability", talent = 12}, -- Shining Force
         { spell = 214621, type = "ability", talent = 3}, -- Schism
         { spell = 246287, type = "ability"}, -- Evangelism
-        { spell = 271466, type = "ability", talent = 21}, -- Luminous Barrier
+        { spell = 271466, type = "ability", talent = 20}, -- Luminous Barrier
 
       },
       icon = 253400
@@ -3859,7 +3859,7 @@ templates.items[4] = {
     { spell = 268194, type = "debuff", unit = "multi", titleItemPrefix = 159619}, --debuff?
     { spell = 271071, type = "buff", unit = "player", titleItemPrefix = 159620},
     { spell = 268756, type = "debuff", unit = "multi", titleItemPrefix = 159623}, --debuff?
-    { spell = 268062, type = "buff", unit = "multi", titleItemPrefix = 159626}, --buff on spawned spores?
+    { spell = 268062, type = "buff", unit = "player", titleItemPrefix = 159626},
     { spell = 271194, type = "buff", unit = "player", titleItemPrefix = 159628},
     { spell = 278159, type = "buff", unit = "player", titleItemPrefix = 160653}, --tank
   }
@@ -4004,7 +4004,7 @@ tinsert(templates.class.MONK[3][8].args, createSimplePowerTemplate(12));
 templates.class.MONK[1][9] = {
   title = L["Ability Charges"],
   args = {
-    { spell = 115072, type = "ability", showOn = "showAlways"}, -- Expel Harm
+    { spell = 115072, type = "ability", buffShowOn = "showAlways"}, -- Expel Harm
   },
   icon = 627486,
 };
@@ -4255,6 +4255,27 @@ local function enrichDatabase()
     itemInfoReceived:UnregisterEvent("GET_ITEM_INFO_RECEIVED");
   end
 end
+
+local function fixupIcons()
+  for className, class in pairs(templates.class) do
+    for specIndex, spec in pairs(class) do
+      for _, section in pairs(spec) do
+        for _, item in pairs(section.args) do
+          if (item.spell and item.type ~= "item") then
+            local icon = select(3, GetSpellInfo(item.spell));
+            if (icon) then
+              item.icon = icon;
+            end
+          end
+        end
+      end
+    end
+  end
+end
+
+local fixupIconsFrame = CreateFrame("frame");
+fixupIconsFrame:RegisterEvent("PLAYER_TALENT_UPDATE")
+fixupIconsFrame:SetScript("OnEvent", fixupIcons);
 
 enrichDatabase();
 

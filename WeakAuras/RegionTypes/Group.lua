@@ -37,33 +37,36 @@ local function create(parent)
 end
 
 -- Calculate bounding box
-local function getRect(data)
+local function getRect(data, region)
   -- Temp variables
   local blx, bly, trx, try;
   blx, bly = data.xOffset or 0, data.yOffset or 0;
 
-  if (data.width == nil or data.height == nil) then
+  local width = data.width or (region and  region.width)
+  local height = data.height or (region and  region.height)
+
+  if width == nil or height == nil then
     return blx, bly, blx, bly;
   end
 
   -- Calc bounding box
   if(data.selfPoint:find("LEFT")) then
-    trx = blx + data.width;
+    trx = blx + width;
   elseif(data.selfPoint:find("RIGHT")) then
     trx = blx;
-    blx = blx - data.width;
+    blx = blx - width;
   else
-    blx = blx - (data.width/2);
-    trx = blx + data.width;
+    blx = blx - (width/2);
+    trx = blx + width;
   end
   if(data.selfPoint:find("BOTTOM")) then
-    try = bly + data.height;
+    try = bly + height;
   elseif(data.selfPoint:find("TOP")) then
     try = bly;
-    bly = bly - data.height;
+    bly = bly - height;
   else
-    bly = bly - (data.height/2);
-    try = bly + data.height;
+    bly = bly - (height/2);
+    try = bly + height;
   end
 
   -- Return data
@@ -84,8 +87,9 @@ local function modify(parent, region, data)
   local leftest, rightest, lowest, highest = 0, 0, 0, 0;
   for index, childId in ipairs(data.controlledChildren) do
     local childData = WeakAuras.GetData(childId);
+    local childRegion = WeakAuras.GetRegion(childId)
     if(childData) then
-      local blx, bly, trx, try = getRect(childData);
+      local blx, bly, trx, try = getRect(childData, childRegion);
       leftest = math.min(leftest, blx);
       rightest = math.max(rightest, trx);
       lowest = math.min(lowest, bly);
@@ -98,14 +102,7 @@ local function modify(parent, region, data)
   region.try = highest;
 
   -- Adjust frame-level sorting
-  local frameLevel = 1
-  for i=1,#data.controlledChildren do
-    local childRegion = WeakAuras.regions[data.controlledChildren[i]] and WeakAuras.regions[data.controlledChildren[i]].region
-    if(childRegion) then
-      frameLevel = frameLevel + 4
-      childRegion:SetFrameLevel(frameLevel)
-    end
-  end
+  WeakAuras.FixGroupChildrenOrderForGroup(data);
 
   -- Control children (does not happen with "group")
   function region:UpdateBorder(childRegion)

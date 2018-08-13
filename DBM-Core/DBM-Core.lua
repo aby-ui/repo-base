@@ -41,7 +41,7 @@
 --  Globals/Default Options  --
 -------------------------------
 DBM = {
-	Revision = tonumber(("$Revision: 17689 $"):sub(12, -3)),
+	Revision = tonumber(("$Revision: 17692 $"):sub(12, -3)),
 	DisplayVersion = "8.0.2 alpha", -- the string that is shown as version
 	ReleaseRevision = 17635 -- the revision of the latest stable version that is available
 }
@@ -406,7 +406,7 @@ local AddMsg
 local delayedFunction
 local dataBroker
 
-local fakeBWVersion, fakeBWHash = 103, "a1726b8"
+local fakeBWVersion, fakeBWHash = 104, "1585351"
 local versionQueryString, versionResponseString = "Q^%d^%s", "V^%d^%s"
 
 local enableIcons = true -- set to false when a raid leader or a promoted player has a newer version of DBM
@@ -438,7 +438,7 @@ end
 local LD
 if LibStub("LibDurability", true) then
 	LD = LibStub("LibDurability")
-end 
+end
 
 
 --------------------------------------------------------
@@ -1175,7 +1175,9 @@ do
 			if type(DBM_MinimapIcon) ~= "table" then
 				DBM_MinimapIcon = {}
 			end
-			LibStub("LibDBIcon-1.0"):Register("DBM", dataBroker, DBM_MinimapIcon)
+			if LibStub("LibDBIcon-1.0", true) then
+				LibStub("LibDBIcon-1.0"):Register("DBM", dataBroker, DBM_MinimapIcon)
+			end
 			--[[local soundChannels = tonumber(GetCVar("Sound_NumChannels")) or 24--if set to 24, may return nil, Defaults usually do
 			--If this messes with your fps, stop raiding with a toaster. It's only fix for addon sound ducking.
 			if soundChannels < 64 then
@@ -2687,7 +2689,7 @@ do
 						info = UIDropDownMenu_CreateInfo()
 						info.text = v.name
 						info.notCheckable = true
-						info.func = function() DBM:LoadMod(v) CloseDropDownMenus() end
+						info.func = function() DBM:LoadMod(v, true) CloseDropDownMenus() end
 						UIDropDownMenu_AddButton(info, 3)
 					end
 				end

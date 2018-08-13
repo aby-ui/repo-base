@@ -87,6 +87,10 @@ do
   aura_cache.max = 0;
   aura_cache.watched = {};
   aura_cache.players = {};
+  aura_cache.TANK = 0;
+  aura_cache.HEALER = 0;
+  aura_cache.DAMAGER = 0;
+  aura_cache.playerRole = "NONE";
 
   --- Tests if aura_cache data is consistent with trigger settings, eg. OwnOnly, RemainingTime, StackCount.
   -- Extra check needed because aura_cache can potentially contain data of two different triggers with different settings!
@@ -292,15 +296,15 @@ do
 end
 WeakAuras.aura_cache = aura_cache;
 
-function WeakAuras.SetAuraVisibility(id, triggernum, cloneId, showOn, unitExists, active, unit, duration, expirationTime, name, icon, count, index, spellId, unitCaster)
+function WeakAuras.SetAuraVisibility(id, triggernum, cloneId, buffShowOn, unitExists, active, unit, duration, expirationTime, name, icon, count, index, spellId, unitCaster)
   local triggerState = WeakAuras.GetTriggerStateForTrigger(id, triggernum);
 
   local show;
   if (not UnitExists(unit)) then
     show = unitExists;
-  elseif (showOn == "showActiveOrMissing") then
+  elseif (buffShowOn == "showAlways") then
     show = true;
-  elseif(showOn == "showOnMissing") then
+  elseif(buffShowOn == "showOnMissing") then
     show = not active;
   else
     show = active;
@@ -314,71 +318,73 @@ function WeakAuras.SetAuraVisibility(id, triggernum, cloneId, showOn, unitExists
 
   triggerState[cloneId] = triggerState[cloneId] or {};
   local state = triggerState[cloneId];
-  if (state.active ~= active) then
-    state.active = active;
-    state.changed = true;
-  end
-  if (state.index ~= index) then
-    state.index = index;
-    state.changed = true;
-  end
-
-  if (state.spellId ~= spellId) then
-    state.spellId = spellId;
-    state.changed = true;
-  end
-
   if (state.show ~= show) then
     state.show = show;
     state.changed = true;
   end
 
-  if (state.progressType ~= "timed") then
-    state.progressType = "timed";
-    state.changed = true;
-  end
+  if (state.show) then
+    if (state.active ~= active) then
+      state.active = active;
+      state.changed = true;
+    end
+    if (state.index ~= index) then
+      state.index = index;
+      state.changed = true;
+    end
 
-  if (state.expirationTime ~= expirationTime) then
-    state.resort = true;
-    state.expirationTime = expirationTime;
-    state.changed = true;
-  end
+    if (state.spellId ~= spellId) then
+      state.spellId = spellId;
+      state.changed = true;
+    end
 
-  if (state.duration ~= duration) then
-    state.duration = duration;
-    state.changed = true;
-  end
+    if (state.progressType ~= "timed") then
+      state.progressType = "timed";
+      state.changed = true;
+    end
 
-  local autoHide = false;
-  if (state.autoHide ~= autoHide) then
-    state.autoHide = autoHide;
-    state.changed = true;
-  end
+    if (state.expirationTime ~= expirationTime) then
+      state.resort = true;
+      state.expirationTime = expirationTime;
+      state.changed = true;
+    end
 
-  if (state.name ~= name) then
-    state.name = name;
-    state.changed = true;
-  end
+    if (state.duration ~= duration) then
+      state.duration = duration;
+      state.changed = true;
+    end
 
-  if (state.icon ~= icon) then
-    state.icon = icon;
-    state.changed = true;
-  end
+    local autoHide = false;
+    if (state.autoHide ~= autoHide) then
+      state.autoHide = autoHide;
+      state.changed = true;
+    end
 
-  if (state.stacks ~= count) then
-    state.stacks = count;
-    state.changed = true;
-  end
+    if (state.name ~= name) then
+      state.name = name;
+      state.changed = true;
+    end
 
-  unitCaster = unitCaster and UnitName(unitCaster);
-  if (state.unitCaster ~= unitCaster) then
-    state.unitCaster = unitCaster;
-    state.changed = true;
-  end
+    if (state.icon ~= icon) then
+      state.icon = icon;
+      state.changed = true;
+    end
 
-  if (state.GUID ~= UnitGUID(unit)) then
-    state.GUID = UnitGUID(unit);
-    state.changed = true;
+    if (state.stacks ~= count) then
+      state.stacks = count;
+      state.changed = true;
+    end
+
+    unitCaster = unitCaster and UnitName(unitCaster);
+    if (state.unitCaster ~= unitCaster) then
+      state.unitCaster = unitCaster;
+      state.changed = true;
+    end
+
+    if (state.GUID ~= UnitGUID(unit)) then
+      state.GUID = UnitGUID(unit);
+      state.changed = true;
+    end
   end
 
   if (state.changed) then
@@ -558,23 +564,38 @@ function WeakAuras.ScanAuras(unit)
                 local index = data.subcountCount or 1;
                 count = tooltipSize[index];
               end
-              if(name and ((not data.count) or data.count(count)) and (data.ownOnly ~= false or not UnitIsUnit("player", unitCaster or "")) and data.scanFunc(name, tooltip, isStealable, spellId, debuffClass)) then
-                -- Show display and handle clones
-                WeakAuras.SetDynamicIconCache(name, spellId, icon);
-                if(data.autoclone) then
-                  local cloneId = name .. spellId .."-"..(casGUID or "unknown");
-                  if (WeakAuras.SetAuraVisibility(id, triggernum, cloneId, data.showOn, data.unitExists, true, unit, duration, expirationTime, name, icon, count, index, spellId, unitCaster)) then
-                    updateTriggerState = true;
+              if(name and ((not data.count) or count and data.count(count)) and (data.ownOnly ~= false or not UnitIsUnit("player", unitCaster or "")) and data.scanFunc(name, tooltip, isStealable, spellId, debuffClass)) then
+                remaining = expirationTime - time;
+                checkPassed = true;
+                if(data.remFunc) then
+                  if not(data.remFunc(remaining)) then
+                    checkPassed = false;
                   end
-                  active = true;
-                  cloneIdList[cloneId] = true;
-                -- Simply show display (show)
-                else
-                  if (WeakAuras.SetAuraVisibility(id, triggernum, nil, data.showOn, data.unitExists, true, unit, duration, expirationTime, name, icon, count, index, spellId, unitCaster)) then
-                    updateTriggerState = true;
+
+                  -- Schedule remaining time, re-scan later
+                  if(remaining > data.rem) then
+                    WeakAuras.ScheduleAuraScan(unit, time + (remaining - data.rem));
                   end
-                  active = true;
-                  break;
+                end
+
+                if checkPassed then
+                  -- Show display and handle clones
+                  WeakAuras.SetDynamicIconCache(name, spellId, icon);
+                  if(data.autoclone) then
+                    local cloneId = name .. spellId .."-"..(casGUID or "unknown");
+                    if (WeakAuras.SetAuraVisibility(id, triggernum, cloneId, data.buffShowOn, data.unitExists, true, unit, duration, expirationTime, name, icon, count, index, spellId, unitCaster)) then
+                      updateTriggerState = true;
+                    end
+                    active = true;
+                    cloneIdList[cloneId] = true;
+                  -- Simply show display (show)
+                  else
+                    if (WeakAuras.SetAuraVisibility(id, triggernum, nil, data.buffShowOn, data.unitExists, true, unit, duration, expirationTime, name, icon, count, index, spellId, unitCaster)) then
+                      updateTriggerState = true;
+                    end
+                    active = true;
+                    break;
+                  end
                 end
               end
             end
@@ -583,7 +604,7 @@ function WeakAuras.ScanAuras(unit)
             if not(active) then
               local nameFromTrigger, iconFromTrigger;
               nameFromTrigger, iconFromTrigger = GetNameAndIconFromTrigger(data);
-              if (WeakAuras.SetAuraVisibility(id, triggernum, nil, data.showOn, data.unitExists, nil, unit, 0, math.huge, nameFromTrigger, iconFromTrigger)) then
+              if (WeakAuras.SetAuraVisibility(id, triggernum, nil, data.buffShowOn, data.unitExists, nil, unit, 0, math.huge, nameFromTrigger, iconFromTrigger)) then
                 updateTriggerState = true;
               end
             end
@@ -657,6 +678,15 @@ function WeakAuras.ScanAuras(unit)
               end
             end
 
+            local satisfies_role = true
+            if data.group_role then
+              satisfies_role = data.group_role == "ANY" or UnitGroupRolesAssigned(unit) == data.group_role
+            end
+            local satisfies_ignoreSelf = not data.ignoreSelf or not UnitIsUnit(unit, "player")
+            if not satisfies_role or not satisfies_ignoreSelf then
+              active = false
+            end
+
             -- Update aura cache (and clones)
             if (active) then
               if(aura_object and not data.specificUnit) then
@@ -665,7 +695,7 @@ function WeakAuras.ScanAuras(unit)
                   groupcloneToUpdate[uGUID] = GetUnitName(unit, true);
                 end
               else
-                if (WeakAuras.SetAuraVisibility(id, triggernum, nil, data.showOn, data.unitExists, true, unit, bestDuration, bestExpirationTime, bestName, bestIcon, bestCount, nil, bestSpellId, bestUnitCaster)) then
+                if (WeakAuras.SetAuraVisibility(id, triggernum, nil, data.buffShowOn, data.unitExists, true, unit, bestDuration, bestExpirationTime, bestName, bestIcon, bestCount, nil, bestSpellId, bestUnitCaster)) then
                   updateTriggerState = true;
                 end
               end
@@ -679,7 +709,7 @@ function WeakAuras.ScanAuras(unit)
               else
                 local nameFromTrigger, iconFromTrigger;
                 nameFromTrigger, iconFromTrigger = GetNameAndIconFromTrigger(data);
-                if (WeakAuras.SetAuraVisibility(id, triggernum, nil, data.showOn, data.unitExists, nil, unit, 0, math.huge, nameFromTrigger, iconFromTrigger)) then
+                if (WeakAuras.SetAuraVisibility(id, triggernum, nil, data.buffShowOn, data.unitExists, nil, unit, 0, math.huge, nameFromTrigger, iconFromTrigger)) then
                   updateTriggerState = true;
                 end
               end
@@ -690,7 +720,19 @@ function WeakAuras.ScanAuras(unit)
               -- unit=group require valid count function
               if(data.group_count) then
                 -- Query count from aura cache
-                local aura_count, max = aura_object:GetNumber(id, triggernum, data), aura_object:GetMaxNumber();
+                local aura_count = aura_object:GetNumber(id, triggernum, data)
+                local max
+                if (data.group_role) then
+                  max = aura_cache[data.group_role]
+                  if (data.ignoreSelf and aura_cache.playerRole == data.group_role) then
+                    max = max - 1;
+                  end
+                else
+                  max = aura_object:GetMaxNumber();
+                  if (data.ignoreSelf) then
+                    max = max - 1;
+                  end
+                end
                 local satisfies_count = data.group_count(aura_count, max);
 
                 if(data.hideAlone and not IsInGroup()) then
@@ -701,14 +743,14 @@ function WeakAuras.ScanAuras(unit)
                 if(satisfies_count) then
                   -- Update clones (show)
                   if(data.groupclone) then
-                    for guid, playerName in pairs(groupcloneToUpdate) do
+                    for guid, playerName in pairs(aura_cache.players) do
                       local duration, expirationTime, name, icon, count, spellId, unitCaster = aura_object:GetPlayerDynamicInfo(id, triggernum, guid, data);
                       if(name ~= "") then
-                        if (WeakAuras.SetAuraVisibility(id, triggernum, playerName, data.showOn, data.unitExists, true, unit, duration, expirationTime, playerName, icon, count, nil, spellId, unitCaster)) then
+                        if (WeakAuras.SetAuraVisibility(id, triggernum, playerName, data.buffShowOn, data.unitExists, true, unit, duration, expirationTime, playerName, icon, count, nil, spellId, unitCaster)) then
                           updateTriggerState = true;
                         end
                       else
-                        if (WeakAuras.SetAuraVisibility(id, triggernum, playerName, data.showOn, data.unitExists, nil, unit, duration, expirationTime, playerName, icon, count, nil, spellId, unitCaster)) then
+                        if (WeakAuras.SetAuraVisibility(id, triggernum, playerName, data.buffShowOn, data.unitExists, nil, unit, duration, expirationTime, playerName, icon, count, nil, spellId, unitCaster)) then
                           updateTriggerState = true;
                         end
                       end
@@ -757,7 +799,7 @@ function WeakAuras.ScanAuras(unit)
                     end
 
                     -- Update display visibility (show)
-                    if (WeakAuras.SetAuraVisibility(id, triggernum, nil, data.showOn, data.unitExists, true, unit, duration, expirationTime, name, icon, count, nil, spellId, unitCaster)) then
+                    if (WeakAuras.SetAuraVisibility(id, triggernum, nil, data.buffShowOn, data.unitExists, true, unit, duration, expirationTime, name, icon, count, nil, spellId, unitCaster)) then
                       updateTriggerState = true;
                     end
                   end
@@ -772,7 +814,7 @@ function WeakAuras.ScanAuras(unit)
                   else
                     local nameFromTrigger, iconFromTrigger;
                     nameFromTrigger, iconFromTrigger = GetNameAndIconFromTrigger(data);
-                    if (WeakAuras.SetAuraVisibility(id, triggernum, nil, data.showOn, data.unitExists, nil, unit, 0, math.huge, nameFromTrigger, iconFromTrigger)) then
+                    if (WeakAuras.SetAuraVisibility(id, triggernum, nil, data.buffShowOn, data.unitExists, nil, unit, 0, math.huge, nameFromTrigger, iconFromTrigger)) then
                       updateTriggerState = true;
                     end
                   end
@@ -810,11 +852,19 @@ end
 
 local function GroupRosterUpdate(event)
   WeakAuras.StartProfileSystem("bufftrigger");
+  aura_cache.TANK = 0;
+  aura_cache.HEALER = 0;
+  aura_cache.DAMAGER = 0;
+  aura_cache.playerRole = "NONE";
   local recheck = false;
-  local groupMembers,playerName,uid,guid = {};
+  local groupMembers,playerName,uid,guid, role = {};
   if IsInRaid() then
     for i=1, GetNumGroupMembers() do
       uid = WeakAuras.raidUnits[i];
+      role = UnitGroupRolesAssigned(uid)
+      if aura_cache[role] then
+        aura_cache[role] = aura_cache[role] + 1;
+      end
       playerName = GetUnitName(uid,true);
       playerName = playerName:gsub("-", " - ");
       if (playerName == UNKNOWNOBJECT) then
@@ -825,9 +875,15 @@ local function GroupRosterUpdate(event)
         groupMembers[guid] = playerName;
       end
     end
+    role = UnitGroupRolesAssigned("player")
+    aura_cache.playerRole = role;
   elseif IsInGroup() then
     for i=1, GetNumSubgroupMembers() do
       uid = WeakAuras.partyUnits[i];
+      role = UnitGroupRolesAssigned(uid)
+      if (aura_cache[role]) then
+        aura_cache[role] = aura_cache[role] + 1;
+      end
       guid = UnitGUID(uid);
       local playerName = GetUnitName(uid,true);
       if (playerName == UNKNOWNOBJECT) then
@@ -836,6 +892,11 @@ local function GroupRosterUpdate(event)
       if (guid) then
         groupMembers[guid] = playerName;
       end
+    end
+    role = UnitGroupRolesAssigned("player")
+    if (aura_cache[role]) then
+      aura_cache[role] = aura_cache[role] + 1;
+      aura_cache.playerRole = role;
     end
   end
 
@@ -1493,11 +1554,11 @@ function BuffTrigger.Add(data)
           WeakAuras.InitMultiAura();
         end
 
-        if (trigger.showOn == nil) then
-          trigger.showOn = "showOnActive";
+        if (trigger.buffShowOn == nil) then
+          trigger.buffShowOn = "showOnActive";
         end
 
-        local showOn = "showOnActive";
+        local buffShowOn = "showOnActive";
         local unitExists = true;
 
         if (not(trigger.unit ~= "group" and trigger.autoclone) and trigger.unit ~= "multi" and trigger.unit ~= "group" and trigger.unit ~= "player") then
@@ -1506,7 +1567,7 @@ function BuffTrigger.Add(data)
 
         if (trigger.type == "aura" and not(trigger.unit ~= "group" and trigger.autoclone)
           and trigger.unit ~= "multi" and not(trigger.unit == "group" and not trigger.groupclone)) then
-          showOn = trigger.showOn;
+          buffShowOn = trigger.buffShowOn;
         end
 
         auras[id] = auras[id] or {};
@@ -1530,12 +1591,14 @@ function BuffTrigger.Add(data)
           specificUnit = trigger.unit == "member",
           useCount = trigger.useCount,
           ownOnly = trigger.ownOnly,
-          showOn = showOn,
+          buffShowOn = buffShowOn,
           unitExists = unitExists,
           numAdditionalTriggers = data.additional_triggers and #data.additional_triggers or 0,
           hideAlone = trigger.hideAlone,
           stack_info = trigger.stack_info,
-          name_info = trigger.name_info
+          name_info = trigger.name_info,
+          group_role =  trigger.useGroupRole and trigger.group_role,
+          ignoreSelf = trigger.ignoreSelf
         };
       end
     end
@@ -1557,9 +1620,22 @@ function BuffTrigger.Modernize(data)
     if (data.internalVersion < 2) then
       if (trigger and trigger.type == "aura") then
         if (trigger.showOn == nil or trigger.showOn == "showOnCooldown" or trigger.showOn == "showOnReady" or trigger.showOn == "showAlways") then
-          trigger.showOn = trigger.inverse and "showOnMissing" or "showOnActive";
+          trigger.buffShowOn = trigger.inverse and "showOnMissing" or "showOnActive";
           trigger.inverse = nil;
         end
+      end
+    end
+
+    if data.internalVersion < 6 then
+      if trigger and trigger.type == "aura" then
+        if trigger.showOn == "showOnMissing" then
+          trigger.buffShowOn = "showOnMissing"
+        elseif trigger.showOn == "showActiveOrMissing" then
+          trigger.buffShowOn = "showAlways"
+        else
+          trigger.buffShowOn = "showOnActive"
+        end
+        trigger.showOn = nil
       end
     end
   end
@@ -1606,7 +1682,7 @@ function BuffTrigger.CanHaveDuration(data, triggernum)
     trigger = data.additional_triggers[triggernum].trigger;
   end
   if (trigger.type == "aura" and not(trigger.unit ~= "group" and trigger.autoclone) and trigger.unit ~= "multi" and not(trigger.unit == "group" and not trigger.groupclone)) then
-    if (trigger.showOn ~= "showOnMissing") then
+    if (trigger.buffShowOn ~= "showOnMissing") then
       return "timed";
     else
       return false;
@@ -1767,7 +1843,7 @@ function BuffTrigger.GetNameAndIcon(data, triggernum)
   else
     if (trigger.spellIds and trigger.spellIds[1]) then
       name, _, icon = GetSpellInfo(trigger.spellIds[1])
-    elseif(not (trigger.showOn == "showOnMissing" or BuffTrigger.CanGroupShowWithZero(data, triggernum)) and trigger.names) then
+    elseif(not (trigger.buffShowOn == "showOnMissing" or BuffTrigger.CanGroupShowWithZero(data, triggernum)) and trigger.names) then
       -- Try to get an icon from the icon cache
       for index, checkname in pairs(trigger.names) do
         local iconFromSpellCache = WeakAuras.spellCache.GetIcon(checkname);

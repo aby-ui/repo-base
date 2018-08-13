@@ -91,6 +91,7 @@ function WeakAuras.DuplicateAura(data)
   WeakAuras.DeepCopy(data, newData);
   newData.id = new_id;
   newData.parent = nil;
+  newData.uid = nil
   WeakAuras.Add(newData);
   WeakAuras.NewDisplayButton(newData);
   if(data.parent) then
@@ -438,8 +439,11 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, subPrefix, subS
               trigger["use_"..realname] = true;
             else
               local value = trigger["use_"..realname];
-              if(value == false) then trigger["use_"..realname] = nil;
-              else trigger["use_"..realname] = false end
+              if(value == false) then
+                trigger["use_"..realname] = nil;
+              else
+                trigger["use_"..realname] = false
+              end
             end
             WeakAuras.Add(data);
             if (reloadOptions) then
@@ -479,9 +483,11 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, subPrefix, subS
               trigger["use_"..realname] = true;
             else
               local value = trigger["use_"..realname];
-              if(value == false) then trigger["use_"..realname] = nil;
+              if(value == false) then
+                trigger["use_"..realname] = nil;
               else
                 trigger["use_"..realname] = false
+                trigger[realname] = trigger[realname] or {};
                 if(trigger[realname].single) then
                   trigger[realname].multi = trigger[realname].multi or {};
                   trigger[realname].multi[trigger[realname].single] = true;
@@ -2620,7 +2626,7 @@ function WeakAuras.ReloadTriggerOptions(data)
       end
     end
   else
-    optionTriggerChoices[id] = optionTriggerChoices[id] or 0;
+    optionTriggerChoices[id] = min(optionTriggerChoices[id] or 0, (data.numTriggers or 1) - 1);
     if(optionTriggerChoices[id] == 0) then
       trigger = data.trigger;
       untrigger = data.untrigger;
@@ -2636,12 +2642,16 @@ function WeakAuras.ReloadTriggerOptions(data)
         local childData = WeakAuras.GetData(childId);
         if(childData) then
           if (optionTriggerChoices[childId] == 0) then
-            childData.trigger = childData.additional_triggers[1].trigger;
-            childData.untrigger = childData.additional_triggers[1].untrigger;
-            tremove(childData.additional_triggers, 1);
+            if (childData.additional_triggers and childData.additional_triggers[1] and childData.additional_triggers[1].trigger) then
+              childData.trigger = childData.additional_triggers[1].trigger;
+              childData.untrigger = childData.additional_triggers[1].untrigger;
+              tremove(childData.additional_triggers, 1);
+            end
           else
-            tremove(childData.additional_triggers, optionTriggerChoices[childId]);
-            optionTriggerChoices[childId] = optionTriggerChoices[childId] - 1;
+            if (childData.additional_triggers) then
+              tremove(childData.additional_triggers, optionTriggerChoices[childId]);
+              optionTriggerChoices[childId] = optionTriggerChoices[childId] - 1;
+            end
           end
 
           WeakAuras.DeleteConditionsForTrigger(childData, optionTriggerChoices[childId]);
@@ -3187,8 +3197,10 @@ function WeakAuras.ReloadTriggerOptions(data)
 
     data.load.use_class = getAll(data, {"load", "use_class"});
     local single_class = getAll(data, {"load", "class"});
-    data.load.class = {}
-    data.load.class.single = single_class;
+    data.load.class = {
+      single = single_class,
+      multi = {},
+    }
 
     displayOptions[id].args.load.args = WeakAuras.ConstructOptions(WeakAuras.load_prototype, data, 10, nil, nil, optionTriggerChoices[id], "load");
     removeFuncs(displayOptions[id].args.load);

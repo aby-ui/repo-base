@@ -1,7 +1,7 @@
 local _, ELP = ...
 local db = ELP.db
 
-local ELP_CURRENT_TIER = 7 --Legion
+local ELP_CURRENT_TIER = 8 --Legion
 local ELP_RELIC_SLOT = 30
 
 local curr_items = {}

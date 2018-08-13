@@ -357,10 +357,10 @@ elseif locale == 'ruRU' then
 
 elseif locale == 'zhCN' then
 L["[WARN] Ignore slot due to an unknown error DEBUG INFO = [S=%s T=%s I=%s] Please send Importing Text and DEBUG INFO to %s"] = "[WARN] 忽略出错技能 DEBUG INFO = [S=%s T=%s I=%s] 请将出错的字符和 DEBUG INFO 发给作者 %s"
-L["[WARN] Ignore unsupported Key Binding [ %s ] , contact %s please"] = "[WARN]忽略不支持的绑定 K = [ %s ] 请通知作者 %s"
-L["[WARN] Ignore unsupported Slot Type [ %s ] , contact %s please"] = "[WARN]忽略不支持的按键类型[ %s ] 请通知作者 %s"
+L["[WARN] Ignore unsupported Key Binding [ %s ] , contact %s please"] = "[WARN] 忽略不支持的按键绑定 [ %s ]，请通知作者 %s"
+L["[WARN] Ignore unsupported Slot Type [ %s ] , contact %s please"] = "[WARN] 忽略不支持的按键类型 [ %s ]，请通知作者 %s"
 L["All slots were restored"] = "所有按钮及按键邦定位置恢复完毕"
-L["Are you SURE to import ?"] = "你 确定 要导入么？？？"
+L["Are you SURE to import ?"] = "你确定要导入吗？"
 L["Bad importing text [CRC32]"] = "导入字符码校验不合法 [CRC32]"
 L["Bad importing text [TEXT]"] = "导入字符不合法 [TEXT]"
 L["Close"] = "关闭"
@@ -370,10 +370,10 @@ L["Ignore unactived pet[id=%s], %s"] = "忽略未开启的战斗宠物[id=%s]：
 L["Ignore unlearned skill [id=%s], %s"] = "忽略未掌握技能[id=%s]：%s"
 L["Import"] = "导入"
 L["Import is not allowed when you are in combat"] = "请在非战斗时候使用导入功能"
-L["Importing text [ver:%s] is not compatible with current version"] = "导入串版本不兼容当前Myslot版本 导入版本号 %s"
+L["Importing text [ver:%s] is not compatible with current version"] = "导入字串 [ver:%s] 不兼容当前版本"
 L["Macro %s was ignored, check if there is enough space to create"] = "宏 [ %s ] 被忽略，请检查是否有足够的空格创建宏"
 L["Time"] = "时间"
-L["TOC_NOTES"] = "保存你的技能按钮位置 farmer1992@gmail.com"
+L["TOC_NOTES"] = "保存你的技能按钮位置。反馈：farmer1992@gmail.com"
 L["Use random mount instead of an unactived mount"] = "使用随机坐骑代替没有的坐骑"
 
 elseif locale == 'zhTW' then

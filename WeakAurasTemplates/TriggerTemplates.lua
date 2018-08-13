@@ -84,8 +84,8 @@ function WeakAuras.CreateTemplateView(frame)
             spellName = item.spell,
             type = "status",
             unevent = "auto",
-            use_showOn = true,
-            showOn = item.showOn or "showOnCooldown",
+            use_genericShowOn = true,
+            buffShowOn = item.buffShowOn or "showOnCooldown",
           }
         }
       }
@@ -97,8 +97,8 @@ function WeakAuras.CreateTemplateView(frame)
             type = "status",
             event = "Cooldown Progress (Item)",
             unevent = "auto",
-            use_showOn = true,
-            showOn = "showOnCooldown",
+            use_genericShowOn = true,
+            buffShowOn = "showOnCooldown",
             itemName = item.spell
           }
         }
@@ -245,6 +245,8 @@ function WeakAuras.CreateTemplateView(frame)
       templateButton:SetClick(function()
         newView.data = {};
         WeakAuras.DeepCopy(item.data, newView.data);
+        WeakAuras.validate(newView.data, WeakAuras.data_stub);
+        newView.data.internalVersion = WeakAuras.InternalVersion();
         newView.data.regionType = regionType;
         createButtons();
       end);
@@ -297,7 +299,7 @@ function WeakAuras.CreateTemplateView(frame)
             createButtons();
           else
             replaceTrigger(newView.data, item);
-            newView.data.id = createNewId(item.title);
+            newView.data.id = WeakAuras.FindUnusedId(item.title);
             newView.data.load = {};
             if (item.load) then
               WeakAuras.DeepCopy(item.load, newView.data.load);

@@ -745,7 +745,7 @@ end
 protection area
 ---------------------------------------------------------------]]
 
-U1STAFF={["Time-奥杜尔"]=1,["天灾軍团-奥杜尔"]=1,["Timeà-霜之哀伤"]=1,["心耀-冰风岗"]=1,["Majere-冰风岗"]="爱不易开发者的会长",["乄阿蛮乄-冰风岗"]="Banshee元素领主",["水之记忆-冰风岗"]="Banshee小仙女",["小倍倍猪-冰风岗"]="Banshee小仙女",["丶晞-冰风岗"]="Banshee小仙女",}
+U1STAFF={["Time-奥杜尔"]=1,["天灾軍团-奥杜尔"]=1,["Timeà-霜之哀伤"]=1,["心耀-冰风岗"]=1,["Majere-冰风岗"]="爱不易开发者的会长",["乄阿蛮乄-冰风岗"]="Banshee元素领主",["绯流琥-冰风岗"]="Banshee黑骑士",["水之记忆-冰风岗"]="Banshee小仙女",["小倍倍猪-冰风岗"]="Banshee小仙女",["丶晞-冰风岗"]="Banshee小仙女",}
 RunOnNextFrame(function()
     CoreRegisterEvent("INIT_COMPLETED", { INIT_COMPLETED = function()
         CoreScheduleTimer(false, 1, function()

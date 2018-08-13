@@ -89,9 +89,6 @@
 											<OnEscapePressed>
 												self:ClearFocus();
 											</OnEscapePressed>
-											<OnClick>
-												self:SetFocus();
-											</OnClick>
 										</Scripts>
 										<FontString inherits="GameTooltipTextSmall"/>
 									</EditBox>

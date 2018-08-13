@@ -1,5 +1,5 @@
 local MAJOR_VERSION = "LibDogTag-Stats-3.0"
-local MINOR_VERSION = 90000 + tonumber(("$Revision: 28 $"):match("%d+")) or 0
+local MINOR_VERSION = 90000 + tonumber(("$Revision: 33 $"):match("%d+")) or 0
 
 if MINOR_VERSION > _G.DogTag_Stats_MINOR_VERSION then
 	_G.DogTag_Stats_MINOR_VERSION = MINOR_VERSION
@@ -46,8 +46,14 @@ DogTag:AddTag("Stats", "SpellPower", {
 
 
 DogTag:AddTag("Stats", "SpellCrit", {
-	alias = "[CriticalStrike]",
-	noDoc = true,
+	code = function(school)
+		return GetSpellCritChance()
+	end,
+	ret = "number",
+	events = "PLAYER_DAMAGE_DONE_MODS;COMBAT_RATING_UPDATE",
+	doc = L["Returns your spell crit chance."],
+	example = '[SpellCrit:Round(1)] => "41.8"; [SpellCrit:Round(1):Percent] => "41.8%"',
+	category = L["Spell"],
 })
 
 DogTag:AddTag("Stats", "SpellHaste", {

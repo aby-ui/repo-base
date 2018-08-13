@@ -640,7 +640,7 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
     }
     order = order + 1;
 
-    local function customHiden()
+    local function customHidden()
       local message = type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.message;
       if (not message) then return true; end
       return not WeakAuras.ContainsPlaceHolders(message, "c");
@@ -653,7 +653,7 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
       desc = descIfNoValue2(data, conditions[i].changes[j], "value", "custom", propertyType),
       order = order,
       multiline = true,
-      hidden = customHiden,
+      hidden = customHidden,
       get = function()
         return type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.custom;
       end,
@@ -1011,21 +1011,6 @@ local function addControlsForCondition(args, order, data, conditionVariable, con
         end
         WeakAuras.ReloadTriggerOptions(data);
         return;
-      elseif (conditionTemplates.indexToTrigger[v] == "DELETE") then
-        if (data.controlledChildren) then
-          for id, reference in pairs(conditions[i].check.references) do
-            local auraData = WeakAuras.GetData(id);
-            tremove(auraData[conditionVariable], reference.conditionIndex);
-            WeakAuras.Add(auraData);
-          end
-          WeakAuras.ReloadTriggerOptions(data);
-          return;
-        else
-          tremove(conditions, i);
-          WeakAuras.Add(data);
-          WeakAuras.ReloadTriggerOptions(data);
-          return;
-        end
       end
 
       local trigger = conditionTemplates.indexToTrigger[v];
@@ -1348,10 +1333,6 @@ local function createConditionTemplates(data)
       end
     end
   end
-
-  conditionTemplates.display[9999] = "•" .. L["Remove this condition"] .. "•";
-  conditionTemplates.indexToTrigger[9999] = "DELETE";
-  conditionTemplates.indexToVariable[9999] = "DELETE";
 
   if (data.controlledChildren) then
     conditionTemplates.displayWithCopy = {};

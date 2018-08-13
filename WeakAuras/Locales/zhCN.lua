@@ -5,6 +5,12 @@ end
 local L = WeakAuras.L
 
 -- WeakAuras
+--[[Translation missing --]]
+L["   • %d auras added"] = "   • %d auras added"
+--[[Translation missing --]]
+L["   • %d auras deleted"] = "   • %d auras deleted"
+--[[Translation missing --]]
+L["   • %d auras modified"] = "   • %d auras modified"
 L["!="] = "≠"
 L["%s - %i. Trigger"] = "%s - %i. 触发器"
 L["%s - 1. Trigger"] = "%s - 1. 触发器"
@@ -53,7 +59,11 @@ L["Absorb"] = "吸收"
 L["Absorb Display"] = "吸收显示"
 L["Absorbed"] = "已吸收"
 L["Action Usable"] = "动作可以使用"
+--[[Translation missing --]]
+L["Actions"] = "Actions"
 L["Active"] = "活跃"
+--[[Translation missing --]]
+L["Add Missing Auras"] = "Add Missing Auras"
 L["Additional Trigger Replacements"] = "额外触发器替代品"
 --[[Translation missing --]]
 L["Adjust Timer"] = "Adjust Timer"
@@ -72,6 +82,8 @@ L["Always active trigger"] = "总是启用触发器"
 L["Ambience"] = "环境音"
 L["Amount"] = "数量"
 L["And Talent selected"] = "并且选择下列天赋时"
+--[[Translation missing --]]
+L["Animations"] = "Animations"
 L["Anticlockwise"] = "逆时针"
 --[[Translation missing --]]
 L["Any"] = "Any"
@@ -91,6 +103,8 @@ L["Aura Applied Dose"] = "光环堆叠"
 L["Aura Broken"] = "光环被打破"
 L["Aura Broken Spell"] = "打破光环法术"
 L["Aura Name"] = "光环名或ID"
+--[[Translation missing --]]
+L["Aura Names"] = "Aura Names"
 L["Aura Refresh"] = "光环被刷新"
 L["Aura Removed"] = "光环被移除"
 L["Aura Removed Dose"] = "光环效果减少"
@@ -156,6 +170,8 @@ L["Chat Frame"] = "聊天窗口"
 L["Chat Message"] = "聊天讯息"
 L["Chest"] = "胸部"
 L["Children:"] = "子元素:"
+--[[Translation missing --]]
+L["Choose a category"] = "Choose a category"
 L["Circle"] = "环形"
 --[[Translation missing --]]
 L["Clamp"] = "Clamp"
@@ -177,6 +193,8 @@ L["Cooldown Ready (Item)"] = "冷却完成(物品)"
 L["Cooldown Ready (Spell)"] = "冷却完成(法术)"
 L["Counter Clockwise"] = "逆时针"
 L["Create"] = "创造物品"
+--[[Translation missing --]]
+L["Create a Copy"] = "Create a Copy"
 L["Critical"] = "爆击(致命一击)"
 --[[Translation missing --]]
 L["Cross"] = "Cross"
@@ -221,6 +239,8 @@ L["Diamond"] = "Diamond"
 L["Disease"] = "疾病"
 L["Dispel"] = "驱散"
 L["Dispel Failed"] = "驱散失败"
+--[[Translation missing --]]
+L["Display"] = "Display"
 L["Distance"] = "距离"
 L["Dodge"] = "躲闪"
 L["Done"] = "完成"
@@ -301,6 +321,8 @@ L["Gradient"] = "梯度"
 L["Gradient Pulse"] = "梯度脉动"
 L["Group"] = "群组/队伍"
 L["Group %s"] = "群组 %s"
+--[[Translation missing --]]
+L["Group Arrangement"] = "Group Arrangement"
 L["Grow"] = "延伸"
 L["GTFO Alert"] = "GTFO警报"
 L["Guild"] = "公会"
@@ -334,7 +356,17 @@ L["Immune"] = "免疫"
 --[[Translation missing --]]
 L["Import"] = "Import"
 --[[Translation missing --]]
+L["Import as Copy"] = "Import as Copy"
+--[[Translation missing --]]
+L["Import as Update"] = "Import as Update"
+--[[Translation missing --]]
 L["Import disabled"] = "Import disabled"
+--[[Translation missing --]]
+L["Import Group"] = "Import Group"
+--[[Translation missing --]]
+L["Import in progress"] = "Import in progress"
+--[[Translation missing --]]
+L["Importing is disabled while in combat"] = "Importing is disabled while in combat"
 L["In Combat"] = "战斗中"
 --[[Translation missing --]]
 L["In Encounter"] = "In Encounter"
@@ -354,6 +386,8 @@ L["Instance"] = "即时"
 --[[Translation missing --]]
 L["Instance Difficulty"] = "Instance Difficulty"
 L["Instance Type"] = "副本类型"
+--[[Translation missing --]]
+L["Insufficient Resources"] = "Insufficient Resources"
 L["Interrupt"] = "打断"
 L["Interruptible"] = "可打断"
 L["Inverse"] = "反向"
@@ -368,6 +402,8 @@ L["It might not work correctly with your version!"] = "It might not work correct
 L["Item"] = "物品"
 L["Item Count"] = "物品数量"
 L["Item Equipped"] = "已装备物品"
+--[[Translation missing --]]
+L["Item in Range"] = "Item in Range"
 L["Item Set Equipped"] = "已装备物品组"
 --[[Translation missing --]]
 L["Item Set Id"] = "Item Set Id"
@@ -384,6 +420,8 @@ L["Legacy RGB Gradient"] = "Legacy RGB Gradient"
 L["Legacy RGB Gradient Pulse"] = "Legacy RGB Gradient Pulse"
 L["Legs"] = "腿部"
 L["Level"] = "等级"
+--[[Translation missing --]]
+L["Load Conditions"] = "Load Conditions"
 L["Looking for Raid"] = "随机团队"
 --[[Translation missing --]]
 L["Loop"] = "Loop"
@@ -411,6 +449,8 @@ L["Maximum Estimate"] = "Maximum Estimate"
 L["Message"] = "讯息"
 L["Message Type"] = "讯息类型"
 L["Message type:"] = "讯息类型:"
+--[[Translation missing --]]
+L["Meta Data"] = "Meta Data"
 --[[Translation missing --]]
 L["Minimum"] = "Minimum"
 --[[Translation missing --]]
@@ -443,7 +483,8 @@ L["Neck"] = "项链"
 L["Neutral"] = "中立"
 L["Never"] = "从不"
 L["Next"] = "下一个"
-L["No Children:"] = "没有子元素:"
+--[[Translation missing --]]
+L["No Children"] = "No Children"
 L["No Instance"] = "没有队伍"
 --[[Translation missing --]]
 L["No Profiling information saved."] = "No Profiling information saved."
@@ -553,7 +594,11 @@ L["Relative"] = "相对持续时间"
 L["Remaining Duration"] = "Remaining Duration"
 L["Remaining Time"] = "剩余时间"
 --[[Translation missing --]]
+L["Remove Obsolete Auras"] = "Remove Obsolete Auras"
+--[[Translation missing --]]
 L["Repeat"] = "Repeat"
+--[[Translation missing --]]
+L["Replace Aura"] = "Replace Aura"
 L["Requested display does not exist"] = "请求接收的图示不存在"
 L["Requested display not authorized"] = "请求接收的图示没有授权"
 --[[Translation missing --]]
@@ -628,6 +673,8 @@ L["Show if Charges"] = "Show if Charges"
 L["Show Incoming Heal"] = "Show Incoming Heal"
 L["Shrink"] = "收缩"
 --[[Translation missing --]]
+L["Size & Position"] = "Size & Position"
+--[[Translation missing --]]
 L["Skull"] = "Skull"
 L["Slide from Bottom"] = "从下开始滑动"
 L["Slide from Left"] = "从左开始滑动"
@@ -649,6 +696,8 @@ L["Source Name"] = "来源名称"
 --[[Translation missing --]]
 L["Source Raid Mark"] = "Source Raid Mark"
 L["Source Unit"] = "来源单位"
+--[[Translation missing --]]
+L["Source: "] = "Source: "
 L["Spacing"] = "间距"
 L["Spark Color"] = "闪光颜色"
 L["Spark Height"] = "闪光高度"
@@ -664,6 +713,8 @@ L["Spell Activation Overlay Glow"] = "Spell Activation Overlay Glow"
 L["Spell Cost"] = "Spell Cost"
 L["Spell ID"] = "法术ID"
 L["Spell Id"] = "法术Id"
+--[[Translation missing --]]
+L["Spell in Range"] = "Spell in Range"
 L["Spell Known"] = "学会的法术"
 L["Spell Name"] = "法术名称"
 --[[Translation missing --]]
@@ -715,6 +766,10 @@ L["Third"] = "Third"
 L["This aura contains custom Lua code."] = "This aura contains custom Lua code."
 --[[Translation missing --]]
 L["This aura was created with a newer version of WeakAuras."] = "This aura was created with a newer version of WeakAuras."
+--[[Translation missing --]]
+L["This is a modified version of your aura, |cff9900FF%s.|r"] = "This is a modified version of your aura, |cff9900FF%s.|r"
+--[[Translation missing --]]
+L["This is a modified version of your group, |cff9900FF%s.|r"] = "This is a modified version of your group, |cff9900FF%s.|r"
 L["Threat Situation"] = "仇恨状况"
 L["Tier "] = "层级"
 L["Timed"] = "指定时间"
@@ -735,6 +790,8 @@ L["Transmission error"] = "传输错误"
 --[[Translation missing --]]
 L["Triangle"] = "Triangle"
 --[[Translation missing --]]
+L["Trigger"] = "Trigger"
+--[[Translation missing --]]
 L["Trigger 1"] = "Trigger 1"
 L["Trigger State Updater"] = "触发器状态更新器"
 L["Trigger Update"] = "触发器更新"
@@ -753,14 +810,20 @@ L["Unit Died"] = "单位死亡"
 L["Unit is Unit"] = "Unit is Unit"
 L["Up"] = "上"
 --[[Translation missing --]]
+L["Update Auras"] = "Update Auras"
+--[[Translation missing --]]
 L["Values/Remaining Time above this value are displayed as full progress."] = "Values/Remaining Time above this value are displayed as full progress."
 --[[Translation missing --]]
 L["Values/Remaining Time below this value are displayed as no progress."] = "Values/Remaining Time below this value are displayed as no progress."
 --[[Translation missing --]]
 L["Version: "] = "Version: "
 L["Waist"] = "腰部"
+--[[Translation missing --]]
+L["War Mode Active"] = "War Mode Active"
 L["Weapon"] = "武器"
 L["Weapon Enchant"] = "武器附魔"
+--[[Translation missing --]]
+L["What do you want to do?"] = "What do you want to do?"
 L["Whisper"] = "密语"
 L["Width"] = "宽度"
 L["Wobble"] = "摇晃"
@@ -772,6 +835,8 @@ L["X-Offset"] = "X-Offset"
 L["Yell"] = "大喊"
 --[[Translation missing --]]
 L["Y-Offset"] = "Y-Offset"
+--[[Translation missing --]]
+L["You already have this group/aura. Importing will create a duplicate."] = "You already have this group/aura. Importing will create a duplicate."
 --[[Translation missing --]]
 L["Zone Group ID(s)"] = "Zone Group ID(s)"
 --[[Translation missing --]]

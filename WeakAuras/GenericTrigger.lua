@@ -435,10 +435,12 @@ function WeakAuras.ActivateEvent(id, triggernum, data, state)
         changed = true;
       end
 
-      if (state.autoHide or state.inverse) then
+      local autoHide = nil;
+      if (state.autoHide ~= autoHide) then
         changed = true;
+        state.autoHide = autoHide;
       end
-      state.autoHide = nil;
+
       if (state.value ~= arg1) then
         state.value = arg1;
         changed = true;
@@ -459,6 +461,11 @@ function WeakAuras.ActivateEvent(id, triggernum, data, state)
         state.resort = state.expirationTime ~= arg2;
         state.expirationTime = arg2;
         changed = true;
+      end
+      local autoHide = data.automaticAutoHide and arg1 > 0.01;
+      if (state.autoHide ~= autoHide) then
+        changed = true;
+        state.autoHide = autoHide;
       end
       if (state.value or state.total) then
         changed = true;
@@ -940,17 +947,20 @@ function GenericTrigger.Add(data, region)
           end
         end
 
-        local duration = nil;
+        local automaticAutoHide;
+        local duration;
         if(triggerType == "custom"
           and trigger.custom_type == "event"
           and trigger.custom_hide == "timed") then
-          duration = tonumber(trigger.duration);
+            automaticAutoHide = true;
+            if (not trigger.dynamicDuration) then
+              duration = tonumber(trigger.duration);
+            end
         end
 
-        local automaticAutoHide = true;
-        if ((triggerType == "status" or triggerType == "event")
-          and event_prototypes[trigger.event] and event_prototypes[trigger.event].automaticAutoHide ~= nil) then
-          automaticAutoHide = event_prototypes[trigger.event].automaticAutoHide;
+        if (triggerType == "event" and trigger.unevent == "timed") then
+          duration = tonumber(trigger.duration);
+          automaticAutoHide = true;
         end
 
         events[id] = events[id] or {};
@@ -976,23 +986,6 @@ function GenericTrigger.Add(data, region)
           duration = duration,
           automaticAutoHide = automaticAutoHide
         };
-
-        if(
-          (
-          (
-          triggerType == "status"
-          or triggerType == "event"
-          )
-          and trigger.unevent == "timed"
-          )
-          or (
-          triggerType == "custom"
-          and trigger.custom_type == "event"
-          and trigger.custom_hide == "timed"
-          )
-          ) then
-          events[id][triggernum].duration = tonumber(trigger.duration);
-        end
       end
     end
   end
@@ -1134,7 +1127,7 @@ function GenericTrigger.Modernize(data)
           end
 
           if (trigger.event == "Death Knight Rune") then
-            trigger.use_showOn = true;
+            trigger.use_genericShowOn = true;
           end
           trigger.use_inverse = nil
         end
@@ -1164,6 +1157,14 @@ function GenericTrigger.Modernize(data)
         end
         trigger.event = "Power";
         trigger.unit = "player";
+      end
+    end
+
+    if data.internalVersion < 6 then
+      if trigger and trigger.type ~= "aura" then
+        trigger.genericShowOn = trigger.showOn or "showOnActive"
+        trigger.showOn = nil
+        trigger.use_genericShowOn = trigger.use_showOn
       end
     end
   end
@@ -1373,10 +1374,11 @@ do
     cdReadyFrame:RegisterEvent("BAG_UPDATE_COOLDOWN");
     cdReadyFrame:RegisterEvent("UNIT_INVENTORY_CHANGED")
     cdReadyFrame:RegisterEvent("PLAYER_EQUIPMENT_CHANGED");
+    cdReadyFrame:RegisterEvent("ACTIONBAR_UPDATE_COOLDOWN");
     cdReadyFrame:SetScript("OnEvent", function(self, event, ...)
       WeakAuras.StartProfileSystem("generictrigger cd tracking");
       if(event == "SPELL_UPDATE_COOLDOWN" or event == "SPELL_UPDATE_CHARGES"
-        or event == "RUNE_POWER_UPDATE"
+        or event == "RUNE_POWER_UPDATE" or event == "ACTIONBAR_UPDATE_COOLDOWN"
         or event == "PLAYER_TALENT_UPDATE" or event == "PLAYER_PVP_TALENT_UPDATE") then
         WeakAuras.CheckCooldownReady();
       elseif(event == "UNIT_SPELLCAST_SENT") then
@@ -2814,10 +2816,36 @@ function GenericTrigger.CanHaveTooltip(data, triggernum)
     end
   end
 
+  if (trigger.type == "custom") then
+    if (trigger.custom_type == "stateupdate") then
+      local allStates = {};
+      WeakAuras.ActivateAuraEnvironment(data.id);
+      RunTriggerFunc(allStates, events[data.id][triggernum], data.id, triggernum, "OPTIONS");
+      WeakAuras.ActivateAuraEnvironment(nil);
+      for id, state in pairs(allStates) do
+        if (state.spellId or state.itemId or (state.unit and (state.unitBuffIndex or state.unitDebuffIndex))) then
+          return "custom";
+        end
+      end
+    end
+  end
+
   return false;
 end
 
 function GenericTrigger.SetToolTip(trigger, state)
+  if (trigger.type == "custom" and trigger.custom_type == "stateupdate") then
+    if (state.spellId) then
+      GameTooltip:SetSpellByID(state.spellId);
+    elseif (state.itemId) then
+      GameTooltip:SetHyperlink("item:"..state.itemId..":0:0:0:0:0:0:0");
+    elseif (state.unit and state.unitBuffIndex) then
+      GameTooltip:SetUnitBuff(state.unit, state.unitBuffIndex);
+    elseif (state.unit and state.unitDebuffIndex) then
+      GameTooltip:SetUnitDebuff(state.unit, state.unitDebuffIndex);
+    end
+  end
+
   if (trigger.type == "event" or trigger.type == "status") then
     if (trigger.event and WeakAuras.event_prototypes[trigger.event]) then
       if(WeakAuras.event_prototypes[trigger.event].hasSpellID) then

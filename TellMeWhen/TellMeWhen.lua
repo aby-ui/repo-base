@@ -18,7 +18,7 @@
 TELLMEWHEN_VERSION = "8.5.3"
 
 TELLMEWHEN_VERSION_MINOR = ""
-local projectVersion = "8.5.2-1-gb0337928" -- comes out like "6.2.2-21-g4e91cee"
+local projectVersion = "8.5.3" -- comes out like "6.2.2-21-g4e91cee"
 if projectVersion:find("project%-version") then
 	TELLMEWHEN_VERSION_MINOR = "dev"
 elseif strmatch(projectVersion, "%-%d+%-") then
