@@ -14,6 +14,6 @@ config.lua
 Treasure.lua
 Rares.lua
 
-## Title-zhCN: |cff880303[爱不易]|r HandyNotes 争霸艾酱宝箱
+## Title-zhCN: |cff880303[鐖变笉鏄揮|r HandyNotes 浜夐湼鑹鹃叡瀹濈
 ## X-Vendor: AbyUI
 
