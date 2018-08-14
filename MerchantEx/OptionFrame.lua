@@ -523,7 +523,7 @@ frame:SetScript("OnEvent", function(self, event)
             local balance = addon.balance or 0
             addon:Final(total, balance)
             addon.moneyBefore = nil
-            addon.balance = 0
+            addon.balance = nil
         end
 	end
 end)

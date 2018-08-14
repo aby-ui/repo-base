@@ -1415,6 +1415,7 @@ function Recount:AddTableDataStats(who, datatype, secondary, detailtype, amount,
 	Details.count = Details.count + 1
 	Details.amount = Details.amount + (amount or 0)
 
+    amount = amount or 0
 	if Details.max then
 		if amount > Details.max then
 			Details.max = amount
@@ -1460,6 +1461,7 @@ function Recount:AddTableDataStats(who, datatype, secondary, detailtype, amount,
 	Details.count = Details.count + 1
 	Details.amount = Details.amount + (amount or 0)
 
+    amount = amount or 0
 	if Details.max then
 		if amount > Details.max then
 			Details.max = amount

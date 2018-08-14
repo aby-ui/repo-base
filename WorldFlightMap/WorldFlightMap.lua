@@ -33,6 +33,8 @@ function GetMapSize(uiMapID, noLoop)
 	
 	local continentMapID = GetCurrentMapContinent(uiMapID)
 	
+	local mapInfo = C_Map.GetMapInfo(uiMapID)
+	
 	-- Transform coordinates for areas that draw on a different continent than the instance they belong to
 	if continentMapID and not noLoop then
 		local continentSize = GetMapSize(continentMapID, true)
@@ -45,7 +47,7 @@ function GetMapSize(uiMapID, noLoop)
 		end
 	end
 	
-	local mapSize = {left = left, top = top, right = right, bottom = bottom, width = width, height = height, mapID = uiMapID, continent = continentMapID}
+	local mapSize = {left = left, top = top, right = right, bottom = bottom, width = width, height = height, mapID = uiMapID, continent = continentMapID, mapInfo = mapInfo}
 	
 	-- Cache result so we don't have to do this again
 	MapSizeCache[uiMapID] = mapSize
@@ -65,12 +67,60 @@ function WorldFlightMapProvider:OnAdded(...)
 	self:RegisterEvent('TAXIMAP_CLOSED')
 end
 
+-- Arrow functions
+local PinArrows = {} -- [pin] = arrow frame
+local function BounceAnimation(self) -- SetLooping('BOUNCE') is producing broken animations, so we're just simulating what it's supposed to do
+	local tx, parent, bounce = self.tx, self.parent, self.bounce
+	tx:ClearAllPoints()
+	if self.up then
+		tx:SetPoint('BOTTOM', parent, 'TOP', 0, 10)
+		bounce:SetSmoothing('OUT')
+	else
+		tx:SetPoint('BOTTOM', parent, 'TOP')
+		bounce:SetSmoothing('IN')
+	end
+	bounce:SetOffset(0, self.up and -10 or 10)
+	self.up = not self.up
+	self:Play()
+end
+
+local function GetArrow(pin)
+	-- Add an arrow frame to a pin
+	if PinArrows[pin] then return PinArrows[pin] end
+	local f = CreateFrame('frame', nil, pin)
+	f:SetAllPoints(pin)
+	
+	local tx = f:CreateTexture(nil, 'OVERLAY')
+	tx:SetPoint('BOTTOM', f, 'TOP')
+	tx:SetSize(32, 32)
+	tx:SetTexture('interface/minimap/minimap-deadarrow')
+	tx:SetTexCoord(0, 1, 1, 0)
+	
+	local duration = 0.75
+	local group = tx:CreateAnimationGroup()
+	group.tx = tx
+	
+	local bounce = group:CreateAnimation('Translation')
+	bounce:SetOffset(0, 10)
+	bounce:SetDuration(0.5)
+	bounce:SetSmoothing('IN')
+	group.bounce = bounce
+	
+	group.up = true
+	
+	group:SetScript('OnFinished', BounceAnimation)
+	group.parent = f
+	f.arrow = tx
+	f.pin = pin
+	group:Play()
+	f.group = group
+	
+	PinArrows[pin] = f
+	return f
+end
+
 function WorldFlightMapProvider:OnEvent(event, ...)
 	if event == 'TAXIMAP_OPENED' then
-		if not self:GetMap():IsShown() then
-			ToggleWorldMap()
-		end
-
 		self:SetTaxiState(true)
 		self.taxiMap = GetMapSize(GetTaxiMapID())
 		
@@ -78,12 +128,15 @@ function WorldFlightMapProvider:OnEvent(event, ...)
 		local playerMapInfo = C_Map.GetMapInfo(playerMapID)
 		self.playerContinent = GetCurrentMapContinent(playerMapID)
 		
-		if self.playerContinent == 905 and playerMapInfo.mapType > 3 and playerMapInfo.parentMapID then
-			self:GetMap():SetMapID(playerMapInfo.parentMapID)
-		else
-			self:GetMap():SetMapID(self.playerContinent)
+		if not self:GetMap():IsShown() then
+			ToggleWorldMap()
+			if self.playerContinent == 905 and playerMapInfo.mapType > 3 and playerMapInfo.parentMapID then
+				self:GetMap():SetMapID(playerMapInfo.parentMapID)
+			else
+				self:GetMap():SetMapID(self.playerContinent)
+			end
 		end
-		
+
 		self:RefreshAllData()
 	elseif event == 'TAXIMAP_CLOSED' then
 		self:SetTaxiState(false)
@@ -143,6 +196,17 @@ function WorldFlightMapProvider:AddFlightNode(taxiNodeData)
 				-- For the sake of having other addons treat our buttons like normal taxi map buttons
 				_G['TaxiButton' .. taxiNodeData.slotIndex] = pin
 				pin:SetID(taxiNodeData.slotIndex)
+				
+				-- Only show arrows on zone maps
+				local arrow = GetArrow(pin)
+				if self.worldMap.mapInfo and self.worldMap.mapInfo.mapType and self.worldMap.mapInfo.mapType > 2 and taxiNodeData.state == Enum.FlightPathState.Reachable then
+					-- Restart animation so they stay synched
+					arrow.group:Stop()
+					arrow.group:Play()
+					arrow:Show()
+				else
+					arrow:Hide()
+				end
 				
 				self.slotIndexToPin[taxiNodeData.slotIndex] = pin;
 

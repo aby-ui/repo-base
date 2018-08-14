@@ -134,7 +134,7 @@ local function GetItemScore(link, blizzard, unit, slot)
 end
 
 function U1GetInventoryLevelColor(avgLevel, quality)
-    local STEP1, STEP2, STEP3, STEP4, STEP5 = 210, 250, 280, 325, 350
+    local STEP1, STEP2, STEP3, STEP4, STEP5 = 190, 250, 325, 350, 400
     --local STEP1, STEP2, STEP3, STEP4, STEP5 = 780, 865, 950, 985, 1000 --845=166,865=174,885=182,915=195,930=210,945=225,960=240
     if not avgLevel or avgLevel<=0 then return .5, .5, .5 end
     if avgLevel < STEP1 then

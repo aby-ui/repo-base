@@ -178,7 +178,7 @@ function Manager:GetGroupFilter()
 
 	local showOffline = Layout.db.profile.showOffline
 	local showWrongZone = Layout:ShowWrongZone()
-	local curMapID = C_Map.GetBestMapForPlayer("player")
+	local curMapID = C_Map.GetBestMapForUnit("player")
 
 	for i = 1, MAX_RAID_GROUPS do
 		hideGroup[i] = ""
@@ -186,7 +186,7 @@ function Manager:GetGroupFilter()
 
 	for i = 1, GetNumGroupMembers() do
 		local name, _, subgroup, _, _, _, _, online = GetRaidRosterInfo(i)
-		local mapID = C_Map.GetBestMapForPlayer("raid" .. i)
+		local mapID = C_Map.GetBestMapForUnit("raid" .. i)
 		if (showOffline or online) and (showWrongZone or curMapID == mapID) then
 			hideGroup[subgroup] = nil
 --[===[@debug@

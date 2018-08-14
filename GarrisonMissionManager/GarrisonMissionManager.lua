@@ -88,7 +88,7 @@ local events_top_for_mission_dirty = {
 }
 
 local events_for_buildings = {
-   --GARRISON_BUILDINGS_SWAPPED = true,
+   -- GARRISON_BUILDINGS_SWAPPED = true,
    GARRISON_BUILDING_ACTIVATED = true,
    GARRISON_BUILDING_PLACED = true,
    GARRISON_BUILDING_REMOVED = true,

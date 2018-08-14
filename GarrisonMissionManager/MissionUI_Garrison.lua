@@ -101,7 +101,7 @@ local function DrawAbilityCounters(frame, followerID, followerInfo)
 end
 
 local shipment_followers = {}
-CheckPartyForProfessionFollowers = function()
+local function CheckPartyForProfessionFollowers()
    if not MissionPage:IsVisible() then return end
    local party_followers_count = #MissionPageFollowers
    local present

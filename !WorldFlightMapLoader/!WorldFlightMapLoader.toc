@@ -1,0 +1,9 @@
+## Interface: 80000
+## Title: WorldFlightMap_Loader
+## Notes: Required to load WorldFlightMap before other flight map addons
+## Author: Semlar
+## Version: 8.0.0.3
+## Dependencies: Blizzard_FlightMap, WorldFlightMap
+
+## Title-zhCN: |cff880303[爱不易]|r World 世界飞行地图依赖
+## X-Vendor: AbyUI

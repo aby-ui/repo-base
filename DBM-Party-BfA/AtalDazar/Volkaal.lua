@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2036, "DBM-Party-BfA", 1, 968)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17428 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 17694 $"):sub(12, -3))
 mod:SetCreatureID(122965)
 mod:SetEncounterID(2085)
 mod:SetZone()
@@ -17,7 +17,7 @@ mod:RegisterEventsInCombat(
 
 --ability.id = 250258 and type = "begincast" or (ability.id = 250368 or ability.id = 259572 or ability.id = 250241) and type = "cast" or target.id = 125977 and type = "death"
 --TODO, stench says it's interruptable but cannot verify this. When I determine what to do with it, improve warning
-local warnPhase2					= mod:NewPhaseAnnounce(195254, 2, nil, nil, nil, nil, nil, 2)
+local warnPhase2					= mod:NewPhaseAnnounce(2, 2, nil, nil, nil, nil, nil, 2)
 local warnTotemsLeft				= mod:NewAddsLeftAnnounce(250190, 2, 250192)
 local warnNoxiousStench				= mod:NewSpellAnnounce(250368, 3)
 

@@ -134,6 +134,7 @@ local function FindBestFollowersForMission(mission, followers, mode)
 
    local baseCost, cost = GetMissionCost(mission_id)
    local increased_cost = cost > baseCost
+   local _, base_totalTimeSeconds = GetPartyMissionInfo(mission_id)
 
    for idx = 1, slots do
       max[idx] = followers_count - slots + idx
@@ -542,7 +543,7 @@ local function FindBestFollowersForMission(mission, followers, mode)
                         new.gold_rewards = gold_rewards
                         new.xpBonus = xpBonus
                         new.totalTimeSeconds = totalTimeSeconds
-                        new.isMissionTimeImproved = isMissionTimeImproved
+                        new.isMissionTimeImproved = isMissionTimeImproved or (base_totalTimeSeconds > totalTimeSeconds)
                         new.followers_maxed = followers_maxed
                         new.buffCount = buffCount
                         new.isEnvMechanicCountered = isEnvMechanicCountered
