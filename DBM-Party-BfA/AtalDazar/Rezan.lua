@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2083, "DBM-Party-BfA", 1, 968)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17616 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 17695 $"):sub(12, -3))
 mod:SetCreatureID(122963)
 mod:SetEncounterID(2086)
 mod:SetZone()
@@ -24,9 +24,9 @@ local specWarnFear				= mod:NewSpecialWarningMoveTo(255371, nil, nil, nil, 3, 2)
 local yellPursuit				= mod:NewYell(257407)
 local specWarnPursuit			= mod:NewSpecialWarningRun(257407, nil, nil, nil, 4, 2)
 
-local timerTeethCD				 mod:NewAITimer(13, 255434, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON)
-local timerFearCD				 mod:NewAITimer(13, 255371, nil, nil, nil, 2)
-local timerPursuitCD			 mod:NewAITimer(13, 257407, nil, nil, nil, 3)
+local timerTeethCD				= mod:NewAITimer(13, 255434, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON)
+local timerFearCD				= mod:NewAITimer(13, 255371, nil, nil, nil, 2)
+local timerPursuitCD			= mod:NewAITimer(13, 257407, nil, nil, nil, 3)
 
 function mod:OnCombatStart(delay)
 	timerTeethCD:Start(1-delay)

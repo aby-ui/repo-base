@@ -97,6 +97,9 @@ ns.points = {
         [29222534] = {quest=52833, achievement=12852, criteria=41019, note="Kill pirates in Freehold until the map drops",}, -- Fading Treasure Map
         [48983759] = {quest=52845, achievement=12852, criteria=41021, note="Kill pirates in Freehold until the map drops",}, -- Singed Treasure Map
         -- [] = {quest=52195, achievement=12852, criteria=41017, note="",}, -- Secret of the Depths
+        [79205050] = {quest=48607, junk=true, label="Small Treasure Chest",},
+        [76126733] = {quest=48608, junk=true, label="Small Treasure Chest",},
+        [68635108] = {quest=48609, junk=true, label="Small Treasure Chest",},
     },
     [896] = { -- Drustvar
         [33713008] = {quest=53356, achievement=12995, criteria=41697,}, -- Web-Covered Chest
@@ -121,5 +124,8 @@ ns.points = {
         [58608388] = {quest=49811, achievement=12853, criteria=41066, note="Under platform",}, -- Smuggler's Stash
         [44447353] = {quest=52429, achievement=12853, criteria=41068, note="Jump onto platform",}, -- Carved Wooden Chest
         [46003069] = {quest=52980, achievement=12853, criteria=41070, note="Behind pillar",}, -- Forgotten Chest
+    },
+    [1161] = { -- Boralus
+        [61901010] = {quest=52870, achievement=12852, criteria=41016, note="In cave",}, -- Scrimshaw Cache
     },
 }

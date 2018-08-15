@@ -16,6 +16,7 @@ local HandyNotes = HandyNotes
 local GetItemInfo = GetItemInfo
 local GetAchievementInfo = GetAchievementInfo
 local GetAchievementCriteriaInfo = GetAchievementCriteriaInfo
+local GetAchievementCriteriaInfoByID = GetAchievementCriteriaInfoByID
 local GetCurrencyInfo = GetCurrencyInfo
 
 local ARTIFACT_LABEL = '|cffff8000' .. ARTIFACT_POWER .. '|r'

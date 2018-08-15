@@ -1,7 +1,7 @@
 ## Interface: 80000
 
 ## Title: Garrison Mission Manager
-## Version: v55
+## Version: v56
 ## Notes: Assists you with selecting best team for Legion's Class Hall and WoD's Garrison/Shipyard missions and other followers management tasks
 ## Author: Oleg "Rowaa[SR13]" Volkov
 

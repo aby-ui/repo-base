@@ -72,9 +72,9 @@ function QuestAnnounce:UI_INFO_MESSAGE(event, id, msg)
 				if(stillNeeded == 0 and settings.every == 0) then
 					QuestAnnounce:SendMsg(L["Completed: "]..msg)
 				elseif(QuestAnnounce.db.profile.settings.every > 0) then
-                    --超过10个的则按比例来
+                    --超过10个的则按比例来, 但如果设置成1，则每一个都通知
                     local every = settings.every
-                    if iNumNeeded > 10 then every = math.ceil(iNumNeeded / 10 * every) end
+                    if iNumNeeded > 10 and every ~= 1 then every = math.ceil(iNumNeeded / 10 * (every - 1)) end
 					every = math.fmod(iNumItems, every)
 					QuestAnnounce:SendDebugMsg("Every fMod: "..every)
 				

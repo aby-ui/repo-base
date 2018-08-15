@@ -2,8 +2,8 @@
 ## Title: SavedInstances
 ## Notes: Tracks Raid, Instance, World Boss lockouts for all your characters, daily/weekly quests, currencies, trade cooldowns, and more!
 ## Author: Benjamin Staneck
-## Version: 8.0.3-1-g0ce0558
-## X-ReleaseDate: 2018-07-31T20:36:11Z
+## Version: 8.0.4
+## X-ReleaseDate: 2018-08-15T1:23:26Z
 ## X-License: All Rights Reserved
 ## X-Category: Raid
 ## OptionalDeps: Ace3, CallbackHandler-1.0, LibDataBroker-1.1, LibDBIcon-1.0, LibQTip-1.0

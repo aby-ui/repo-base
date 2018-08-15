@@ -2667,7 +2667,7 @@ end
 function core:OnInitialize()
   local versionString = GetAddOnMetadata(addonName, "version")
   --[===[@debug@
-  if versionString == "8.0.3-1-g0ce0558" then
+  if versionString == "8.0.4" then
     versionString = "Dev"
   end
   --@end-debug@]===]
@@ -2989,7 +2989,7 @@ end
 function core:RefreshDailyWorldQuestInfo()
   local t = vars.db.Toons[thisToon]
   t.DailyWorldQuest = {}
-  local BountyQuest = GetQuestBountyInfoForMapID(627)
+  local BountyQuest = GetQuestBountyInfoForMapID(876)
   for BountyIndex, BountyInfo in ipairs(BountyQuest) do
     local title = GetQuestLogTitle(GetQuestLogIndexByID(BountyInfo.questID))
     local timeleft = C_TaskQuest.GetQuestTimeLeftMinutes(BountyInfo.questID)

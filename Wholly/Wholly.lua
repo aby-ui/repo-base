@@ -362,6 +362,9 @@
 --			Changes to use for WORLD_QUEST Blizzard's TRACKER_HEADER_WORLD_QUESTS.
 --			Disables ability to hide Blizzard map items because Blizzard API has changed.
 --			Updates Simplified Chinese localization by dh0000 and Aladdinn.
+--		068	Corrects the issue where the map was caused to change unexpectedly.
+--			Corrects the problem where TomTom arrows were not being added properly with the new TomTom.
+--			Updates Latin American Spanish localization by danvar33.
 --
 --	Known Issues
 --
@@ -875,10 +878,6 @@ WorldMapFrame:AddDataProvider(self.mapPinsProvider)
 				end
 			end,
 			['PLAYER_ENTERING_WORLD'] = function(self, frame)
-				-- It turns out that GetCurrentMapAreaID() and GetCurrentMapDungeonLevel() are not working properly unless the map system is accessed.
-				-- This would manifest itself when the UI is reloaded, and then the map location would be lost.  By forcing the map to the current zone
-				-- the problem goes away.
-				Grail.SetMapToCurrentZone(true)
 				self.zoneInfo.zone.mapId = Grail.GetCurrentMapAreaID()
 				self:UpdateCoordinateSystem()
 			end,
@@ -888,7 +887,7 @@ WorldMapFrame:AddDataProvider(self.mapPinsProvider)
 
 				self.zoneInfo.zone.mapId = Grail.GetCurrentMapAreaID()
 				if WDB.updatesWorldMapOnZoneChange and WorldMapFrame:IsVisible() then
-					Grail.SetMapByID(self.zoneInfo.zone.mapId)
+					OpenWorldMap(self.zoneInfo.zone.mapId)
 				end
 				self:UpdateQuestCaches(false, false, WDB.updatesPanelWhenZoneChanges, true)
 
@@ -1096,7 +1095,7 @@ WorldMapFrame:AddDataProvider(self.mapPinsProvider)
 
 		_AddDirectionalArrows = function(self, questTable, npcType, groupNumberToUse)
 			local TomTom = TomTom
-			if not TomTom or not TomTom.AddMFWaypoint then return end
+			if not TomTom or not TomTom.AddWaypoint then return end
 			if nil == questTable or nil == npcType then return end
 			local locations
 			local WDB = WhollyDatabase
@@ -1120,7 +1119,7 @@ WorldMapFrame:AddDataProvider(self.mapPinsProvider)
 					for _, npc in pairs(locations) do
 						if nil ~= npc.x then
 							local npcName = self:_PrettyNPCString(npc.name, npc.kill, npc.realArea) or "***"
-							local uid = TomTom:AddMFWaypoint(npc.mapArea, npc.mapLevel, npc.x/100, npc.y/100,
+							local uid = TomTom:AddWaypoint(npc.mapArea, npc.x/100, npc.y/100,
 									{	persistent = false,
 										title = npcName .. " - " .. self:_QuestName(questId),
 									})
@@ -1385,7 +1384,7 @@ WorldMapFrame:AddDataProvider(self.mapPinsProvider)
 				if LightHeaded then self:ToggleLightHeaded() end
 				return
 			end
-			if not TomTom or not TomTom.AddMFWaypoint then return end	-- technically _AddDirectionalArrows does this check, but why do the extra work if not needed?
+			if not TomTom or not TomTom.AddWaypoint then return end	-- technically _AddDirectionalArrows does this check, but why do the extra work if not needed?
 			if IsControlKeyDown() then
 				local questsInMap = self.filteredPanelQuests
 				local numEntries = #questsInMap
@@ -4241,10 +4240,13 @@ end
 		BINDING_NAME_WHOLLY_TOGGLEMAPPINS = "Mostrar/ocultar marcas en el mapa"
 		BINDING_NAME_WHOLLY_TOGGLESHOWCOMPLETED = "Mostrar/ocultar misiones completadas"
 		BINDING_NAME_WHOLLY_TOGGLESHOWDAILIES = "Mostrar/ocultar misiones diarias"
+		BINDING_NAME_WHOLLY_TOGGLESHOWLOREMASTER = "Alternar muestra master Lore de las misiones"
 		BINDING_NAME_WHOLLY_TOGGLESHOWNEEDSPREREQUISITES = "Mostrar/ocultar misiones con prerequisitos obligatorios"
 		BINDING_NAME_WHOLLY_TOGGLESHOWREPEATABLES = "Mostrar/ocultar misiones repetibles"
 		BINDING_NAME_WHOLLY_TOGGLESHOWUNOBTAINABLES = "Mostrar/ocultar misiones no obtenibles"
 		BINDING_NAME_WHOLLY_TOGGLESHOWWEEKLIES = "Mostrar/ocultar misiones semanales"
+--[[Translation missing --]]
+		BINDING_NAME_WHOLLY_TOGGLESHOWWORLDQUESTS = "Toggle shows World Quests"
 		S["BLIZZARD_TOOLTIP"] = "Mostrar la Herramienta de información en el registro de busquedas de Blizzard"
 		S["BREADCRUMB"] = "Misiones de senderos migas de pan:"
 		S["BUGGED"] = "*** ERROR ***"
@@ -4270,6 +4272,8 @@ end
 		S["GENDER_NONE"] = "Ninguno"
 		S["GRAIL_NOT_HAVE"] = "Grail no tiene esta misión"
 		S["HIDE_BLIZZARD_WORLD_MAP_BONUS_OBJECTIVES"] = "Ocultar objetivos de bonificación de Blizzard"
+--[[Translation missing --]]
+		S["HIDE_BLIZZARD_WORLD_MAP_DUNGEON_ENTRANCES"] = "Hide Blizzard dungeon entrances"
 		S["HIDE_BLIZZARD_WORLD_MAP_QUEST_PINS"] = "Ocultar marcadores de mapa de busqueda de Blizzard"
 		S["HIDE_BLIZZARD_WORLD_MAP_TREASURES"] = "Ocultar tesoros de Blizzard"
 		S["HIDE_WORLD_MAP_FLIGHT_POINTS"] = "Ocultar puntos de vuelo"

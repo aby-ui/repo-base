@@ -436,6 +436,11 @@
 --			Reimplements GetMapNameByID() because Blizzard removed it for Battle for Azeroth.
 --			Starts reimplementing GetPlayerMapPosition() because Blizzard removes it for Battle for Azeroth.
 --			Handles Blizzard's change of calendar APIs.
+--		097	Updates some quest/NPC information.
+--			Removes map setting code as it is not needed.
+--			Checks whether locations have x and y coordinates before comparing.
+--			Checks whether Blizzard map returns are rational before asking for player coordinates.
+--			Ignores checking Thunder Isle for phasing for the moment.
 --
 --	Known Issues
 --
@@ -516,7 +521,6 @@ local QueryQuestsCompleted				= QueryQuestsCompleted					-- QueryQuestsCompleted
 local SelectQuestLogEntry				= SelectQuestLogEntry
 -- SendQuestChoiceResponse														-- we rewrite this to our own function
 -- SetAbandonQuest																-- we rewrite this to our own function
-local SetMapZoom						= SetMapZoom
 local UnitAura							= UnitAura
 local UnitClass							= UnitClass
 local UnitFactionGroup					= UnitFactionGroup
@@ -954,12 +958,13 @@ experimental = false,	-- currently this implementation does not reduce memory si
 							[882] = true,
 							[885] = true,
 							-- the following are the BfA maps (the three in Zandalar and three in Kul Tiras)
-							[862] = true,
-							[863] = true,
-							[864] = true,
-							[895] = true,
-							[896] = true,
-							[942] = true,
+							[862] = true, -- Zuldazar (primarily horde)
+							[863] = true, -- Nazmir (primarily horde)
+							[864] = true, -- Vol'dun (primarily horde)
+							[895] = true, -- Tiragarde Sound (primarily alliance)
+							[896] = true, -- Drustvar (primarily alliance)
+							[942] = true, -- Stormsong Valley (primarily alliance)
+							[1165] = true, -- Dazar'Alor (primarily horde)
 							}
 						self.quest.name = {
 							[51570]=GetMapNameByID(862),	-- Zuldazar
@@ -1602,10 +1607,6 @@ if GrailDatabase.debug then print("GARRISON_BUILDING_UPDATE ", buildingId) end
 			end,
 
 			['PLAYER_ENTERING_WORLD'] = function(self, frame)
-				-- It turns out that GetCurrentMapAreaID() and GetCurrentMapDungeonLevel() are not working properly unless the map system is accessed.
-				-- This would manifest itself when the UI is reloaded, and then the map location would be lost.  By forcing the map to the current zone
-				-- the problem goes away.
-				self.SetMapToCurrentZone(true)
 				frame:RegisterEvent("ARTIFACT_XP_UPDATE")
 			end,
 
@@ -2335,7 +2336,7 @@ if GrailDatabase.debug then print("GARRISON_BUILDING_UPDATE ", buildingId) end
 			[5] = { 1216, 1351, 1270, 1277, 1275, 1283, 1282, 1228, 1281, 1269, 1279, 1243, 1273, 1358, 1276, 1271, 1242, 1278, 1302, 1341, 1337, 1345, 1272, 1280, 1352, 1357, 1353, 1359, 1375, 1376, 1387, 1388, 1435, 1492, },
 			[6] = { 1445, 1515, 1520, 1679, 1681, 1682, 1708, 1710, 1711, 1731, 1732, 1733, 1735, 1736, 1737, 1738, 1739, 1740, 1741, 1847, 1848, 1849, 1850, },
 			[7] = { 1815, 1828, 1833, 1859, 1860, 1862, 1883, 1888, 1894, 1899, 1900, 1919, 1947, 1948, 1975, 1984, 1989, 2018, 2045, 2097, 2098, 2099, 2100, 2101, 2102, 2135, 2165, 2170, },
-			[8] = { 2103, 2111, 2120, 2156, 2157, 2158, 2159, 2160, 2161, 2162, 2163, 2164, 2233, },
+			[8] = { 2103, 2111, 2120, 2156, 2157, 2158, 2159, 2160, 2161, 2162, 2163, 2164, 2233, 2264, 2265, },
 			},
 
 		-- These reputations use the friendship names instead of normal reputation names
@@ -2537,7 +2538,7 @@ if GrailDatabase.debug then print("GARRISON_BUILDING_UPDATE ", buildingId) end
 			["729"]	= "Uncrowned",
 			["737"] = "Hand of the Prophet",
 			["738"] = "Vol'jin's Headhunters",
-			["739"] = "Order of the Awakened",
+			["739"] = "Order of the Awakened",	-- 1849
 			["73A"] = "The Saberstalkers",
 			["743"] = "The Nightfallen",
 			["744"] = "Arcane Thirst (Thalyssra)",
@@ -2565,19 +2566,22 @@ if GrailDatabase.debug then print("GARRISON_BUILDING_UPDATE ", buildingId) end
 			["83F"] = "Zandalari Dinosaurs",
 ["848"] = "Unknown",
 			["857"] = "Chromie",
-			["86C"] = "Nazmir Expedition",
-			["86D"] = "Horde War Effort",
-			["86E"] = "Vulpera",
-			["86F"] = "Alliance War Effort",
-			["870"] = "House Proudmoore",
-			["871"] = "House Waycrest",
-			["872"] = "House Stormsong",
-			["873"] = "Tortollan Seekers",
-			["874"] = "Voice of Azeroth",
+			["86C"] = "Talanji's Expedition",	-- 2156
+			["86D"] = "The Honorbound",	-- 2157
+			["86E"] = "Voldunai",	-- 2158
+			["86F"] = "7th Legion",	-- 2159
+			["870"] = "Proudmoore Admiralty",	-- 2160
+			["871"] = "Order of Embers",	-- 2161
+			["872"] = "Storm's Wake",	-- 2162
+			["873"] = "Tortollan Seekers",	-- 2163
+			["874"] = "Champions of Azeroth",	-- 2164
 			["875"] = "Army of the Light",
 			["87A"] = "Argussian Reach",
-			["8B9"] = "Dino Training - Pterrodax",
+			["8B9"] = "Dino Training - Pterrodax",	-- 2233
+			["8D8"] = "Kul Tiras - Drustvar",	-- 2264
+			["8D9"] = "Kul Tiras - Stormsong",	-- 2265
 			},
+
 
 		reputationMappingFaction = {
 			["015"] = 'Neutral',
@@ -2779,6 +2783,8 @@ if GrailDatabase.debug then print("GARRISON_BUILDING_UPDATE ", buildingId) end
 			["875"] = "Neutral",
 			["87A"] = "Neutral",
 			["8B9"] = "Neutral",	-- TODO: Determine faction
+			["8D8"] = "Neutral",	-- TODO: Determine faction
+			["8D9"] = "Neutral",	-- TODO: Determine faction
 			},
 
 		slashCommandOptions = {},
@@ -2837,24 +2843,6 @@ if GrailDatabase.debug then print("GARRISON_BUILDING_UPDATE ", buildingId) end
 --	works if we have shown the map.
 --			return Grail.battleForAzeroth and C_Map.GetCurrentMapID() or Grail.GetCurrentMapAreaID()
 			return WorldMapFrame:GetMapID() or Grail.GetCurrentMapAreaID()
-		end,
-
-		---
-		--	BfA beta 26567 removes SetMapToCurrentZone
-		SetMapToCurrentZone = function(shouldHide)
-			Grail.SetMapByID(Grail.GetCurrentMapAreaID(), shouldHide)
-		end,
-
-		---
-		--	BfA beta 26567 removes SetMapByID
-		SetMapByID = function(mapId, shouldHide)
-			if nil ~= mapId then
---					C_Map.RequestPreloadMap(mapId)	-- does not actually change the map
-				OpenWorldMap(mapId)
-				if shouldHide then
-					WorldMapFrameCloseButton:Click()
-				end
-			end
 		end,
 
 		---
@@ -3026,15 +3014,11 @@ if GrailDatabase.debug then print("GARRISON_BUILDING_UPDATE ", buildingId) end
 
 		--	This adds to our internal data structure the world quests found available
 		_AddWorldQuests = function(self)
-			local currentDisplayedMap = Grail.GetCurrentDisplayedMapAreaID()
-			local worldMapIsShowing = WorldMapFrame:IsShown()
-
 			self.invalidateControl[self.invalidateGroupCurrentWorldQuests] = {}
 --			self.availableWorldQuests = {}
 
 			local mapIdsForWorldQuests = { 62, 625, 630, 634, 641, 646, 650, 680, 790, 830, 882, 885, 862, 863, 864, 895, 896, 942, }
 			for _, mapId in pairs(mapIdsForWorldQuests) do
-				Grail.SetMapByID(mapId)
 				local tasks = C_TaskQuest.GetQuestsForPlayerByMapID(mapId)
 				if nil ~= tasks and 0 < #tasks then
 					for k,v in ipairs(tasks) do
@@ -3108,7 +3092,6 @@ if GrailDatabase.debug then print("GARRISON_BUILDING_UPDATE ", buildingId) end
 					end
 				end
 			end
-			Grail.SetMapByID(currentDisplayedMap, not worldMapIsShowing)
 			C_Timer.After(2, function() Grail:_AddWorldQuestsUpdateTimes() end)
 		end,
 
@@ -5798,6 +5781,7 @@ end
 		GetPlayerMapPositionTempVec2D = CreateVector2D(0,0),
 		GetPlayerMapPosition = function(unitName)
 			local MapID = C_Map.GetBestMapForUnit(unitName)
+			if not MapID or MapID < 1 then return 0, 0 end
 			local R,P,_ = Grail.GetPlayerMapPositionMapRects[MapID], Grail.GetPlayerMapPositionTempVec2D
 			if not R then
 				R = {}
@@ -6699,8 +6683,10 @@ end
 			if (l1.near or l2.near) and l1.mapArea == l2.mapArea then
 				retval = true
 			elseif l1.mapArea == l2.mapArea and l1.mapLevel == l2.mapLevel then
-				if sqrt((l1.x - l2.x)^2 + (l1.y - l2.y)^2) < self.locationCloseness then
-					retval = true
+				if l1.x and l2.x and l1.y and l2.y then
+					if sqrt((l1.x - l2.x)^2 + (l1.y - l2.y)^2) < self.locationCloseness then
+						retval = true
+					end
 				end
 			end
 			return retval
@@ -7425,12 +7411,15 @@ end
 		_PhaseMatches = function(self, typeOfMatch, phaseCode, phaseNumber)
 			local retval = false
 			local currentPhase = nil
-			if (not self.battleForAzeroth and 928 == phaseCode) or (self.battleForAzeroth and 504 == phaseCode) then
--- TODO: Determine if we will need to change the map to that of Thunder Isle to make use of this...I believe it will be the only way
-				if "THUNDER_ISLE" == C_MapBar.GetTag() then
-					currentPhase = C_MapBar.GetPhaseIndex() + 1	-- it starts with 0 for phase 1 (just like C)
-				end
-			elseif (not self.battleForAzeroth and (971 == phaseCode or 976 == phaseCode)) or (self.battleForAzeroth and (581 == phaseCode or 587 == phaseCode)) then
+-- SMH: This is commented out for the time being until we can investigate how to handle
+-- phasing on Thunder Isle.
+--			if (not self.battleForAzeroth and 928 == phaseCode) or (self.battleForAzeroth and 504 == phaseCode) then
+---- TODO: Determine if we will need to change the map to that of Thunder Isle to make use of this...I believe it will be the only way
+--				if "THUNDER_ISLE" == C_MapBar.GetTag() then
+--					currentPhase = C_MapBar.GetPhaseIndex() + 1	-- it starts with 0 for phase 1 (just like C)
+--				end
+--			else
+			if (not self.battleForAzeroth and (971 == phaseCode or 976 == phaseCode)) or (self.battleForAzeroth and (581 == phaseCode or 587 == phaseCode)) then
 				currentPhase = C_Garrison.GetGarrisonInfo(LE_GARRISON_TYPE_6_0) or 0	-- the API returns nil when there is no garrison
 			end
 			if nil ~= currentPhase then

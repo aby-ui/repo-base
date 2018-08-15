@@ -332,6 +332,7 @@ G[1228025]="Keluu's Belongings"
 G[1228026]='Pure Crystal Dust'
 G[1228483]='Rusted Lockbox'
 G[1229314]='Goblin Mind Control Device'
+G[1229330]='Mysterious Ring'
 G[1229331]='A Mystical Hat'
 G[1229333]='Mysterious Boots'
 G[1229344]='Buried Timewarped Staff'
@@ -398,7 +399,7 @@ G[1234147]="Outcast's Belongings"
 G[1234154]='Misplaced Scrolls'
 G[1234157]='Fractured Sunstone'
 G[1234159]='Lost Herb Satchel'
-G[1234243]='Note'
+G[1234243]='Overly Gaudy Note'
 G[1234432]='Ogron Plunder'
 G[1234449]='Relics of the Outcasts'
 G[1234456]='Shattered Hand Lockbox'
@@ -560,9 +561,11 @@ G[1277459]='Pig Effigy'
 G[1277885]="Wunja's Trove"
 G[1278252]='Job Flyer'
 G[1278313]='Sternly Worded Letter'
+G[1278585]='Cursed Effigy'
 G[1278669]='Fallhaven Ledger'
 G[1278675]='Cursed Effigy'
 G[1278808]='Gryphon Nest'
+G[1279042]="Smuggler's Stash"
 G[1279299]='Venomous Seal'
 G[1279337]='Heartsbane Grimoire'
 G[1279705]='Offering Vessel'
@@ -594,11 +597,6 @@ G[1290993]='Irontide Loot'
 G[1292523]='Wanted Poster'
 G[1293568]='Wanted Poster'
 G[1297492]='Bulletin Board'
-end
-
-if release >= 19243 then
-G[1229330]='Mysterious Ring'
-G[1234243]='Overly Gaudy Note'
 end
 
 --	End of localized NPC names

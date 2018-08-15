@@ -172,7 +172,7 @@ function WorldFlightMapProvider:AddFlightNode(taxiNodeData)
 			--if self.playerContinent == 905 then -- match against node names for argus because coordinates are useless here (plus the vindicaar moves)
 				local taxiNodes = C_TaxiMap.GetTaxiNodesForMap(self.worldMap.mapID)
 				for _, landmark in pairs(taxiNodes) do
-					if landmark.name == taxiNodeData.name then
+					if landmark.nodeID == taxiNodeData.nodeID then
 						taxiNodeData.position.x = landmark.position.x
 						taxiNodeData.position.y = landmark.position.y
 						drawPin = true
@@ -187,8 +187,6 @@ function WorldFlightMapProvider:AddFlightNode(taxiNodeData)
 			end
 			
 			if drawPin then
-				-- for k,v in pairs(taxiNodeData) do print(k, v) end
-				-- taxiNodeData.slotIndex
 				-- Duplicating all of this from frameXML because we need to raise the frame level of the pins
 				local playAnim = taxiNodeData.state ~= Enum.FlightPathState.Unreachable;
 				local pin = self:GetMap():AcquirePin("FlightMap_FlightPointPinTemplate", playAnim);
@@ -231,6 +229,8 @@ function WorldFlightMapProvider:AddFlightNode(taxiNodeData)
 		end
 	end
 end
+
+---[==[
 
 function WorldFlightMapProvider:HighlightRouteToPin(pin)
 	if self.playerContinent == 905 then return end -- don't draw lines on argus maps (we could if they're on the same zone map)
@@ -276,6 +276,51 @@ end
 function WorldFlightMapProvider:ShowBackgroundRoutesFromCurrent()
 	-- todo: show initial hoplines to direct routes
 end
+--]==]
+
+--[==[
+local WorldMapButton = CreateFrame('frame', 'SuperMapCanvas', WorldMapFrame:GetCanvas())
+WorldMapButton:SetAllPoints()
+WorldMapButton:SetFrameLevel(15000)
+
+function WorldFlightMapProvider:ShowBackgroundRoutesFromCurrent()
+	-- todo: show initial hoplines to direct routes
+	if not self.backgroundLinePool then
+		self.backgroundLinePool = CreateFramePool("FRAME", WorldMapButton, "FlightMap_BackgroundFlightLineTemplate", OnRelease);
+	end
+
+	for slotIndex, pin in pairs(self.slotIndexToPin) do
+		if pin:GetTaxiNodeState() == Enum.FlightPathState.Reachable then
+			for routeIndex = 1, 1 do
+				local sourceSlotIndex = TaxiGetNodeSlot(slotIndex, routeIndex, true);
+				local destinationSlotIndex = TaxiGetNodeSlot(slotIndex, routeIndex, false);
+				local startPin = self.slotIndexToPin[sourceSlotIndex];
+				local destinationPin = self.slotIndexToPin[destinationSlotIndex];
+
+				if not startPin or not destinationPin then
+					return; -- Incorrect flight data, will look broken until the data is adjusted
+				end
+				
+				if startPin:ShouldShowOutgoingFlightPathPreviews() and destinationPin:GetTaxiNodeState() == Enum.FlightPathState.Reachable and not startPin.linkedPins[destinationPin] and not destinationPin.linkedPins[startPin] then
+					startPin.linkedPins[destinationPin] = true;
+					destinationPin.linkedPins[startPin] = true;
+
+					local lineContainer = self.backgroundLinePool:Acquire();
+					lineContainer.Fill:SetThickness(self.lineThickness);
+
+					lineContainer.Fill:SetStartPoint("CENTER", startPin);
+					lineContainer.Fill:SetEndPoint("CENTER", destinationPin);
+
+					lineContainer:Show();
+
+					startPin:Show();
+					destinationPin:Show();
+				end
+			end
+		end
+	end
+end
+--]==]
 
 
 function WorldFlightMapProvider:OnHide()
@@ -291,5 +336,8 @@ end
 function WorldFlightMapProvider:SetTaxiState(state)
 	self.taxiOpen = state
 end
+
+--local TrickFrame = CreateFrame('frame', nil, nil, 'MapCanvasFrameTemplate') --CreateFromMixins(MapCanvasMixin); TrickFrame.ScrollContainer = WorldMapFrame.ScrollContainer
+--TrickFrame:Get
 
 WorldMapFrame:AddDataProvider(WorldFlightMapProvider)
