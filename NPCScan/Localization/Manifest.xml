@@ -1,15 +1,12 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\FrameXML\UI.xsd">
+	<!--@non-debug@-->
+	<Script file="enUS.lua"/>
+	<Script file="zhCN.lua"/>
+	<Script file="zhTW.lua"/>
+<!--	@end-non-debug@-->
 
-    <!--@non-debug@-->
-    <Script file="enUS.lua"/>
-    <Script file="zhTW.lua"/>
-    <Script file="zhCN.lua"/>
-<!--    @end-non-debug@-->
-
-    <!--@debug@
-    <Script file="devel-enUS.lua"/>
-    @end-debug@-->
-
-
+	<!--@debug@
+	<Script file="devel-enUS.lua"/>
+	@end-debug@-->
 </Ui>

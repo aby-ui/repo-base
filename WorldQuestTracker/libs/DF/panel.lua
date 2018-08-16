@@ -38,6 +38,10 @@ DF.OptionsFunctions = {
 			self.options = {}
 			self.options [optionName] = optionValue
 		end
+		
+		if (self.OnOptionChanged) then
+			DF:Dispatch (self.OnOptionChanged, self, optionName, optionValue)
+		end
 	end,
 	
 	GetOption = function (self, optionName)
@@ -2005,25 +2009,32 @@ end
 function DF:ShowPromptPanel (message, func_true, func_false)
 	
 	if (not DF.prompt_panel) then
-		local f = CreateFrame ("frame", "DetailsFrameworkPrompt", UIParent) 
-		f:SetSize (400, 65)
+		local f = CreateFrame ("frame", "DetailsFrameworkPromptSimple", UIParent) 
+		f:SetSize (400, 80)
 		f:SetFrameStrata ("DIALOG")
 		f:SetPoint ("center", UIParent, "center", 0, 300)
 		f:SetBackdrop ({edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1, bgFile = [[Interface\Tooltips\UI-Tooltip-Background]], tileSize = 64, tile = true})
 		f:SetBackdropColor (0, 0, 0, 0.8)
 		f:SetBackdropBorderColor (0, 0, 0, 1)
+		tinsert (UISpecialFrames, "DetailsFrameworkPromptSimple")
+		
+		DF:CreateTitleBar (f, "Prompt!")
+		DF:ApplyStandardBackdrop (f)
 		
 		local prompt = f:CreateFontString (nil, "overlay", "GameFontNormal")
-		prompt:SetPoint ("top", f, "top", 0, -15)
+		prompt:SetPoint ("top", f, "top", 0, -28)
 		prompt:SetJustifyH ("center")
 		f.prompt = prompt
 		
-		local button_true = DF:CreateButton (f, nil, 60, 20, "Yes")
-		button_true:SetPoint ("bottomleft", f, "bottomleft", 5, 5)
+		local button_text_template = DF:GetTemplate ("font", "OPTIONS_FONT_TEMPLATE")
+		local options_dropdown_template = DF:GetTemplate ("dropdown", "OPTIONS_DROPDOWN_TEMPLATE")
+		
+		local button_true = DF:CreateButton (f, nil, 60, 20, "Yes", nil, nil, nil, nil, nil, nil, options_dropdown_template)
+		button_true:SetPoint ("bottomright", f, "bottomright", -5, 5)
 		f.button_true = button_true
-
-		local button_false = DF:CreateButton (f, nil, 60, 20, "No")
-		button_false:SetPoint ("bottomright", f, "bottomright", -5, 5)
+		
+		local button_false = DF:CreateButton (f, nil, 60, 20, "No", nil, nil, nil, nil, nil, nil, options_dropdown_template)
+		button_false:SetPoint ("bottomleft", f, "bottomleft", 5, 5)
 		f.button_false = button_false
 		
 		button_true:SetClickFunction (function()
@@ -2067,34 +2078,42 @@ function DF:ShowTextPromptPanel (message, callback)
 	if (not DF.text_prompt_panel) then
 		
 		local f = CreateFrame ("frame", "DetailsFrameworkPrompt", UIParent) 
-		f:SetSize (400, 100)
-		f:SetFrameStrata ("DIALOG")
-		f:SetPoint ("center", UIParent, "center", 0, 300)
-		f:SetBackdrop ({edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1, bgFile = [[Interface\Tooltips\UI-Tooltip-Background]], tileSize = 64, tile = true})
-		f:SetBackdropColor (0, 0, 0, 0.8)
-		f:SetBackdropBorderColor (0, 0, 0, 1)
+		f:SetSize (400, 120)
+		f:SetFrameStrata ("FULLSCREEN")
+		f:SetPoint ("center", UIParent, "center", 0, 100)
+		f:EnableMouse (true)
+		f:SetMovable (true)
+		f:RegisterForDrag ("LeftButton")
+		f:SetScript ("OnDragStart", function() f:StartMoving() end)
+		f:SetScript ("OnDragStop", function() f:StopMovingOrSizing() end)
+		f:SetScript ("OnMouseDown", function (self, button) if (button == "RightButton") then f.EntryBox:ClearFocus() f:Hide() end end)
+		tinsert (UISpecialFrames, "DetailsFrameworkPrompt")
+		
+		DF:CreateTitleBar (f, "Prompt!")
+		DF:ApplyStandardBackdrop (f)
 		
 		local prompt = f:CreateFontString (nil, "overlay", "GameFontNormal")
-		prompt:SetPoint ("top", f, "top", 0, -15)
+		prompt:SetPoint ("top", f, "top", 0, -25)
 		prompt:SetJustifyH ("center")
+		prompt:SetSize (360, 36)
 		f.prompt = prompt
 
 		local button_text_template = DF:GetTemplate ("font", "OPTIONS_FONT_TEMPLATE")
 		local options_dropdown_template = DF:GetTemplate ("dropdown", "OPTIONS_DROPDOWN_TEMPLATE")
 
-		local button_true = DF:CreateButton (f, nil, 60, 20, "Okey", nil, nil, nil, nil, nil, nil, options_dropdown_template, button_text_template)
-		button_true:SetPoint ("bottomleft", f, "bottomleft", 10, 5)
-		f.button_true = button_true
-
-		local button_false = DF:CreateButton (f, function() f.textbox:ClearFocus(); f:Hide() end, 60, 20, "Cancel", nil, nil, nil, nil, nil, nil, options_dropdown_template, button_text_template)
-		button_false:SetPoint ("bottomright", f, "bottomright", -10, 5)
-		f.button_false = button_false
-		
 		local textbox = DF:CreateTextEntry (f, function()end, 380, 20, "textbox", nil, nil, options_dropdown_template)
-		textbox:SetPoint ("topleft", f, "topleft", 10, -45)
+		textbox:SetPoint ("topleft", f, "topleft", 10, -60)
 		f.EntryBox = textbox
 
-		button_true:SetClickFunction (function()
+		local button_true = DF:CreateButton (f, nil, 60, 20, "Okey", nil, nil, nil, nil, nil, nil, options_dropdown_template)
+		button_true:SetPoint ("bottomright", f, "bottomright", -10, 5)
+		f.button_true = button_true
+
+		local button_false = DF:CreateButton (f, function() f.textbox:ClearFocus(); f:Hide() end, 60, 20, "Cancel", nil, nil, nil, nil, nil, nil, options_dropdown_template)
+		button_false:SetPoint ("bottomleft", f, "bottomleft", 10, 5)
+		f.button_false = button_false
+		
+		local executeCallback = function()
 			local my_func = button_true.true_function
 			if (my_func) then
 				local okey, errormessage = pcall (my_func, textbox:GetText())
@@ -2104,6 +2123,14 @@ function DF:ShowTextPromptPanel (message, callback)
 				end
 				f:Hide()
 			end
+		end
+		
+		button_true:SetClickFunction (function()
+			executeCallback()
+		end)
+		
+		textbox:SetHook ("OnEnterPressed", function()
+			executeCallback()
 		end)
 	
 		f:Hide()
@@ -2115,7 +2142,6 @@ function DF:ShowTextPromptPanel (message, callback)
 	DetailsFrameworkPrompt.EntryBox:SetText ("")
 	DF.text_prompt_panel.prompt:SetText (message)
 	DF.text_prompt_panel.button_true.true_function = callback
-	
 	DF.text_prompt_panel.textbox:SetFocus (true)
 	
 end
@@ -4853,10 +4879,12 @@ DF.IconRowFunctions = {
 				iconFrame.Text:Hide()
 			end
 
+			iconFrame:SetSize (self.options.icon_width, self.options.icon_height)
 			iconFrame:Show()
 			
 			--> update the size of the frame
 			self:SetWidth ((self.options.left_padding * 2) + (self.options.icon_padding * (self.NextIcon-2)) + (self.options.icon_width * (self.NextIcon - 1)))
+			self:SetHeight (self.options.icon_height + (self.options.top_padding * 2))
 
 			--> show the frame
 			self:Show()
@@ -4903,7 +4931,12 @@ DF.IconRowFunctions = {
 		elseif (side == 13) then
 			return 1
 		end
-	end
+	end,
+	
+	OnOptionChanged = function (self, optionName)
+		self:SetBackdropColor (unpack (self.options.backdrop_color))
+		self:SetBackdropBorderColor (unpack (self.options.backdrop_border_color))
+	end,
 }
 
 local default_icon_row_options = {
@@ -4912,9 +4945,9 @@ local default_icon_row_options = {
 	texcoord = {.1, .9, .1, .9},
 	show_text = true,
 	text_color = {1, 1, 1, 1},
-	left_padding = 2, --distance between right and left
-	top_padding = 2, --distance between top and bottom 
-	icon_padding = 2, --distance between each icon
+	left_padding = 1, --distance between right and left
+	top_padding = 1, --distance between top and bottom 
+	icon_padding = 1, --distance between each icon
 	backdrop = {edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1, bgFile = [[Interface\Tooltips\UI-Tooltip-Background]], tileSize = 64, tile = true},
 	backdrop_color = {0, 0, 0, 0.5},
 	backdrop_border_color = {0, 0, 0, 1},
@@ -4936,6 +4969,220 @@ function DF:CreateIconRow (parent, name, options)
 	f:SetBackdrop (f.options.backdrop)
 	f:SetBackdropColor (unpack (f.options.backdrop_color))
 	f:SetBackdropBorderColor (unpack (f.options.backdrop_border_color))
+	
+	return f
+end
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+--> ~header
+
+DF.HeaderFunctions = {
+	AddFrameToHeaderAlignment = function (self, frame)
+		self.FramesToAlign = self.FramesToAlign or {}
+		tinsert (self.FramesToAlign, frame)
+	end,
+
+	AlignWithHeader = function (self, headerFrame, anchor)
+		local headerFrames = headerFrame.HeadersCreated
+		anchor = anchor or "topleft"
+		
+		for i = 1, #self.FramesToAlign do
+			local frame = self.FramesToAlign [i]
+			frame:ClearAllPoints()
+			
+			local headerFrame = headerFrames [i]
+			frame:SetPoint (anchor, self, anchor, headerFrame.XPosition, 0)
+		end
+	end,
+}
+
+DF.HeaderCoreFunctions = {
+	SetHeaderTable = function (self, newTable)
+		self.HeadersCreated = self.HeadersCreated or {}
+		self.HeaderTable = newTable
+		self.NextHeader = 1
+		self.HeaderWidth = 0
+		self.HeaderHeight = 0
+		self:Refresh()
+	end,
+	
+	Refresh = function (self)
+	
+		--> refresh background frame
+		self:SetBackdrop (self.options.backdrop)
+		self:SetBackdropColor (unpack (self.options.backdrop_color))
+		self:SetBackdropBorderColor (unpack (self.options.backdrop_border_color))
+	
+		--> reset all header frames
+		for i = 1, #self.HeadersCreated do
+			self.HeadersCreated [i].InUse = false
+			self.HeadersCreated [i]:Hide()
+		end
+	
+		local previousHeaderFrame
+		local growDirection = string.lower (self.options.grow_direction)
+	
+		--> update header frames
+		local headerSize = #self.HeaderTable
+		for i = 1, headerSize do
+			local headerFrame = self:GetNextHeader()
+			self:UpdateHeaderFrame (headerFrame, i)
+			
+			--> grow direction
+			if (not previousHeaderFrame) then
+				headerFrame:SetPoint ("topleft", self, "topleft", 0, 0)
+			else
+				if (growDirection == "right") then
+					headerFrame:SetPoint ("topleft", previousHeaderFrame, "topright", self.options.padding, 0)
+				elseif (growDirection == "left") then
+					headerFrame:SetPoint ("topright", previousHeaderFrame, "topleft", -self.options.padding, 0)
+				elseif (growDirection == "bottom") then
+					headerFrame:SetPoint ("topleft", previousHeaderFrame, "bottomleft", 0, -self.options.padding)
+				elseif (growDirection == "top") then
+					headerFrame:SetPoint ("bottomleft", previousHeaderFrame, "topleft", 0, self.options.padding)
+				end
+			end
+			
+			previousHeaderFrame = headerFrame
+		end
+		
+		self:SetSize (self.HeaderWidth, self.HeaderHeight)
+
+	end,
+	
+	UpdateHeaderFrame = function (self, headerFrame, headerIndex)
+		local headerData = self.HeaderTable [headerIndex]
+		
+		if (headerData.icon) then
+			headerFrame.Icon:SetTexture (headerData.icon)
+			
+			if (headerData.texcoord) then
+				headerFrame.Icon:SetTexCoord (unpack (headerData.texcoord))
+			else
+				headerFrame.Icon:SetTexCoord (0, 1, 0, 1)
+			end
+			
+			headerFrame.Icon:SetPoint ("left", headerFrame, "left", self.options.padding, 0)
+			headerFrame.Icon:Show()
+		end
+		
+		if (headerData.text) then
+			headerFrame.Text:SetText (headerData.text)
+			
+			--> text options
+			DF:SetFontColor (headerFrame.Text, self.options.text_color)
+			DF:SetFontSize (headerFrame.Text, self.options.text_size)
+			DF:SetFontOutline (headerFrame.Text, self.options.text_shadow)
+			
+			--> point
+			if (not headerData.icon) then
+				headerFrame.Text:SetPoint ("left", headerFrame, "left", self.options.padding, 0)
+			else
+				headerFrame.Text:SetPoint ("left", headerFrame.Icon, "right", self.options.padding, 0)
+			end
+			
+			headerFrame.Text:Show()
+		end
+		
+		--> size
+		if (headerData.width) then
+			headerFrame:SetWidth (headerData.width)
+		end
+		if (headerData.height) then
+			headerFrame:SetHeight (headerData.height)
+		end
+		
+		headerFrame.XPosition = self.HeaderWidth-- + self.options.padding
+		headerFrame.YPosition = self.HeaderHeight-- + self.options.padding
+		
+		--> add the header piece size to the total header size
+		local growDirection = string.lower (self.options.grow_direction)
+		
+		if (growDirection == "right" or growDirection == "left") then
+			self.HeaderWidth = self.HeaderWidth + headerFrame:GetWidth() + self.options.padding
+			self.HeaderHeight = math.max (self.HeaderHeight, headerFrame:GetHeight())
+			
+		elseif (growDirection == "top" or growDirection == "bottom") then
+			self.HeaderWidth =  math.max (self.HeaderWidth, headerFrame:GetWidth())
+			self.HeaderHeight = self.HeaderHeight + headerFrame:GetHeight() + self.options.padding
+		end
+
+		headerFrame:Show()
+		headerFrame.InUse = true
+	end,
+	
+	RefreshHeader = function (self, headerFrame)
+		headerFrame:SetSize (self.options.header_width, self.options.header_height)
+		headerFrame:SetBackdrop (self.options.header_backdrop)
+		headerFrame:SetBackdropColor (unpack (self.options.header_backdrop_color))
+		headerFrame:SetBackdropBorderColor (unpack (self.options.header_backdrop_border_color))
+		
+		headerFrame:ClearAllPoints()
+		
+		headerFrame.Icon:SetTexture ("")
+		headerFrame.Icon:Hide()
+		headerFrame.Text:SetText ("")
+		headerFrame.Text:Hide()
+	end,
+	
+	GetNextHeader = function (self)
+		local nextHeader = self.NextHeader
+		local headerFrame = self.HeadersCreated [nextHeader]
+		
+		if (not headerFrame) then
+			local newHeader = CreateFrame ("frame", "$parentHeaderIndex" .. nextHeader, self)
+			
+			DF:CreateImage (newHeader, "", self.options.header_height, self.options.header_height, "ARTWORK", nil, "Icon", "$parentIcon")
+			DF:CreateLabel (newHeader, "", self.options.text_size, self.options.text_color, "GameFontNormal", "Text", "$parentText", "ARTWORK")
+			
+			tinsert (self.HeadersCreated, newHeader)
+			headerFrame = newHeader
+		end
+		
+		self:RefreshHeader (headerFrame)
+		self.NextHeader = self.NextHeader + 1
+		return headerFrame
+	end,
+	
+	NextHeader = 1,
+	HeaderWidth = 0,
+	HeaderHeight = 0,
+}
+
+local default_header_options = {
+	backdrop = {edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1, bgFile = [[Interface\Tooltips\UI-Tooltip-Background]], tileSize = 64, tile = true},
+	backdrop_color = {0, 0, 0, 0.2},
+	backdrop_border_color = {0.1, 0.1, 0.1, .2},
+
+	text_color = {1, 1, 1, 1},
+	text_size = 10,
+	text_shadow = false,
+	grow_direction = "RIGHT",
+	padding = 2,
+	
+	--each piece of the header
+	header_backdrop = {bgFile = [[Interface\Tooltips\UI-Tooltip-Background]], tileSize = 64, tile = true},
+	header_backdrop_color = {0, 0, 0, 0.5},
+	header_backdrop_border_color = {0, 0, 0, 0},
+	header_width = 120,
+	header_height = 20,
+
+}
+
+function DF:CreateHeader (parent, headerTable, options)
+	local f = CreateFrame ("frame", "$parentHeaderLine", parent)
+	
+	DF:Mixin (f, DF.OptionsFunctions)
+	DF:Mixin (f, DF.HeaderCoreFunctions)
+	
+	f:BuildOptionsTable (default_header_options, options)
+	
+	f:SetBackdrop (f.options.backdrop)
+	f:SetBackdropColor (unpack (f.options.backdrop_color))
+	f:SetBackdropBorderColor (unpack (f.options.backdrop_border_color))
+	
+	f:SetHeaderTable (headerTable)
 	
 	return f
 end

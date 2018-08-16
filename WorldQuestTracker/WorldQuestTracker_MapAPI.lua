@@ -196,7 +196,7 @@ function WorldQuestTracker.IsASubLevel()
 	--end
 end
 
-function WorldQuestTracker.GetOrLoadQuestData (questID, canCache)
+function WorldQuestTracker.GetOrLoadQuestData (questID, canCache, dontCatchAP)
 	local data = WorldQuestTracker.CachedQuestData [questID]
 	if (data) then
 		return unpack (data)
@@ -206,8 +206,11 @@ function WorldQuestTracker.GetOrLoadQuestData (questID, canCache)
 	local gold, goldFormated = WorldQuestTracker.GetQuestReward_Gold (questID)
 	local rewardName, rewardTexture, numRewardItems = WorldQuestTracker.GetQuestReward_Resource (questID)
 	local title, factionID, tagID, tagName, worldQuestType, rarity, isElite, tradeskillLineIndex = WorldQuestTracker.GetQuest_Info (questID)
-
-	local itemName, itemTexture, itemLevel, quantity, quality, isUsable, itemID, isArtifact, artifactPower, isStackable, stackAmount = WorldQuestTracker.GetQuestReward_Item (questID)
+	
+	local itemName, itemTexture, itemLevel, quantity, quality, isUsable, itemID, isArtifact, artifactPower, isStackable, stackAmount
+	if (not dontCatchAP) then
+		itemName, itemTexture, itemLevel, quantity, quality, isUsable, itemID, isArtifact, artifactPower, isStackable, stackAmount = WorldQuestTracker.GetQuestReward_Item (questID)
+	end
 	
 	if (WorldQuestTracker.CanCacheQuestData and canCache) then
 		WorldQuestTracker.CachedQuestData [questID] = {title, factionID, tagID, tagName, worldQuestType, rarity, isElite, tradeskillLineIndex, tagID, tagName, worldQuestType, rarity, isElite, tradeskillLineIndex, allowDisplayPastCritical, gold, goldFormated, rewardName, rewardTexture, numRewardItems, itemName, itemTexture, itemLevel, quantity, quality, isUsable, itemID, isArtifact, artifactPower, isStackable, stackAmount}
@@ -647,8 +650,8 @@ end
 		if (numQuestCurrencies == 1) then
 			--is artifact power?
 			local name, texture, numItems = GetQuestLogRewardCurrencyInfo (1, questID)
-			
 			if (texture == 1830317 or texture == 2065624) then
+				--the taxi map tooltip is adding the reward to the world map quest tooltip
 				GameTooltip_AddQuestRewardsToTooltip (WorldMapTooltip, questID)
 				
 				local amount

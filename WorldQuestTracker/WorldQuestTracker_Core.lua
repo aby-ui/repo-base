@@ -661,7 +661,7 @@ hooksecurefunc ("ToggleWorldMap", function (self)
 							for questID, t in pairs (WorldQuestTracker.db.profile.tomtom.uids) do
 								if (type (questID) == "number" and QuestMapFrame_IsQuestWorldQuest (questID)) then
 									--procura o bot�o da quest
-									for _, widget in ipairs (all_widgets) do
+									for _, widget in ipairs (WorldQuestTracker.WorldMapWidgets) do
 										if (widget.questID == questID) then
 											WorldQuestTracker.AddQuestToTracker (widget)
 											TomTom:RemoveWaypoint (t)
@@ -671,7 +671,10 @@ hooksecurefunc ("ToggleWorldMap", function (self)
 								end
 							end
 							wipe (WorldQuestTracker.db.profile.tomtom.uids)
-							WorldQuestTracker.UpdateWorldQuestsOnWorldMap (true, false, false, true)
+							
+							if (WorldQuestTrackerAddon.GetCurrentZoneType() == "world") then
+								WorldQuestTracker.UpdateWorldQuestsOnWorldMap (true, false, false, true)
+							end
 						end
 					end
 					
@@ -2087,7 +2090,7 @@ hooksecurefunc ("ToggleWorldMap", function (self)
 					else
 						GameCooltip:AddIcon ([[Interface\BUTTONS\UI-AutoCastableOverlay]], 2, 1, 16, 16, .4, .6, .4, .6)
 					end
-					GameCooltip:AddMenu (2, ff.Options.SetEnabledFunc, not WorldQuestTracker.db.profile.groupfinder.enabled)
+					GameCooltip:AddMenu (2, ff.SetEnabledFunc, not WorldQuestTracker.db.profile.groupfinder.enabled)
 					
 					--find group for rares
 					GameCooltip:AddLine (L["S_GROUPFINDER_AUTOOPEN_RARENPC_TARGETED"], "", 2)
@@ -2096,18 +2099,8 @@ hooksecurefunc ("ToggleWorldMap", function (self)
 					else
 						GameCooltip:AddIcon ([[Interface\BUTTONS\UI-AutoCastableOverlay]], 2, 1, 16, 16, .4, .6, .4, .6)
 					end
-					GameCooltip:AddMenu (2, ff.Options.SetFindGroupForRares, not WorldQuestTracker.db.profile.rarescan.search_group)						
-					
-					--find invasion points
-					GameCooltip:AddLine (L["S_GROUPFINDER_INVASION_ENABLED"], "", 2)
-					if (WorldQuestTracker.db.profile.groupfinder.invasion_points) then
-						GameCooltip:AddIcon ([[Interface\BUTTONS\UI-CheckBox-Check]], 2, 1, 16, 16)
-					else
-						GameCooltip:AddIcon ([[Interface\BUTTONS\UI-AutoCastableOverlay]], 2, 1, 16, 16, .4, .6, .4, .6)
-					end
-					GameCooltip:AddMenu (2, ff.Options.SetFindInvasionPoints, not WorldQuestTracker.db.profile.groupfinder.invasion_points)					
-					
-					
+					GameCooltip:AddMenu (2, ff.SetFindGroupForRares, not WorldQuestTracker.db.profile.rarescan.search_group)						
+
 					--uses buttons on the quest tracker
 					GameCooltip:AddLine (L["S_GROUPFINDER_OT_ENABLED"], "", 2)
 					if (WorldQuestTracker.db.profile.groupfinder.tracker_buttons) then
@@ -2115,14 +2108,10 @@ hooksecurefunc ("ToggleWorldMap", function (self)
 					else
 						GameCooltip:AddIcon ([[Interface\BUTTONS\UI-AutoCastableOverlay]], 2, 1, 16, 16, .4, .6, .4, .6)
 					end
-					GameCooltip:AddMenu (2, ff.Options.SetOTButtonsFunc, not WorldQuestTracker.db.profile.groupfinder.tracker_buttons)					
+					GameCooltip:AddMenu (2, ff.SetOTButtonsFunc, not WorldQuestTracker.db.profile.groupfinder.tracker_buttons)					
 					
 					--
-					--GameCooltip:AddLine ("$div", nil, 1, nil, -5, -11)
-					--
 					GameCooltip:AddLine ("$div", nil, 2, nil, -7, -14)
-					--GameCooltip:AddLine ("Leave Group")
-					--GameCooltip:AddIcon ([[Interface\AddOns\WorldQuestTracker\media\ArrowGridT]], 1, 1, IconSize, IconSize, 944/1024, 993/1024, 272/1024, 324/1024)
 					
 					--leave group
 					GameCooltip:AddLine (L["S_GROUPFINDER_LEAVEOPTIONS_IMMEDIATELY"], "", 2)
@@ -2131,7 +2120,7 @@ hooksecurefunc ("ToggleWorldMap", function (self)
 					else
 						GameCooltip:AddIcon ([[Interface\BUTTONS\UI-AutoCastableOverlay]], 2, 1, 16, 16, .4, .6, .4, .6)
 					end
-					GameCooltip:AddMenu (2, ff.Options.SetAutoGroupLeaveFunc, not WorldQuestTracker.db.profile.groupfinder.autoleave, "autoleave")
+					GameCooltip:AddMenu (2, ff.SetAutoGroupLeaveFunc, not WorldQuestTracker.db.profile.groupfinder.autoleave, "autoleave")
 					
 					GameCooltip:AddLine (L["S_GROUPFINDER_LEAVEOPTIONS_AFTERX"], "", 2)
 					if (WorldQuestTracker.db.profile.groupfinder.autoleave_delayed) then
@@ -2139,7 +2128,7 @@ hooksecurefunc ("ToggleWorldMap", function (self)
 					else
 						GameCooltip:AddIcon ([[Interface\BUTTONS\UI-AutoCastableOverlay]], 2, 1, 16, 16, .4, .6, .4, .6)
 					end
-					GameCooltip:AddMenu (2, ff.Options.SetAutoGroupLeaveFunc, not WorldQuestTracker.db.profile.groupfinder.autoleave_delayed, "autoleave_delayed")
+					GameCooltip:AddMenu (2, ff.SetAutoGroupLeaveFunc, not WorldQuestTracker.db.profile.groupfinder.autoleave_delayed, "autoleave_delayed")
 					
 					GameCooltip:AddLine (L["S_GROUPFINDER_LEAVEOPTIONS_ASKX"], "", 2)
 					if (WorldQuestTracker.db.profile.groupfinder.askleave_delayed) then
@@ -2147,7 +2136,7 @@ hooksecurefunc ("ToggleWorldMap", function (self)
 					else
 						GameCooltip:AddIcon ([[Interface\BUTTONS\UI-AutoCastableOverlay]], 2, 1, 16, 16, .4, .6, .4, .6)
 					end
-					GameCooltip:AddMenu (2, ff.Options.SetAutoGroupLeaveFunc, not WorldQuestTracker.db.profile.groupfinder.askleave_delayed, "askleave_delayed")
+					GameCooltip:AddMenu (2, ff.SetAutoGroupLeaveFunc, not WorldQuestTracker.db.profile.groupfinder.askleave_delayed, "askleave_delayed")
 					
 					GameCooltip:AddLine (L["S_GROUPFINDER_LEAVEOPTIONS_DONTLEAVE"], "", 2)
 					if (WorldQuestTracker.db.profile.groupfinder.noleave) then
@@ -2155,7 +2144,7 @@ hooksecurefunc ("ToggleWorldMap", function (self)
 					else
 						GameCooltip:AddIcon ([[Interface\BUTTONS\UI-AutoCastableOverlay]], 2, 1, 16, 16, .4, .6, .4, .6)
 					end
-					GameCooltip:AddMenu (2, ff.Options.SetAutoGroupLeaveFunc, not WorldQuestTracker.db.profile.groupfinder.noleave, "noleave")					
+					GameCooltip:AddMenu (2, ff.SetAutoGroupLeaveFunc, not WorldQuestTracker.db.profile.groupfinder.noleave, "noleave")					
 					
 					--
 					GameCooltip:AddLine ("$div", nil, 2, nil, -5, -11)
@@ -2166,7 +2155,7 @@ hooksecurefunc ("ToggleWorldMap", function (self)
 					else
 						GameCooltip:AddIcon ([[Interface\BUTTONS\UI-AutoCastableOverlay]], 2, 1, 16, 16, .4, .6, .4, .6)
 					end
-					GameCooltip:AddMenu (2, ff.Options.SetGroupLeaveTimeoutFunc, 10)
+					GameCooltip:AddMenu (2, ff.SetGroupLeaveTimeoutFunc, 10)
 					
 					GameCooltip:AddLine ("15 " .. L["S_GROUPFINDER_SECONDS"], "", 2)
 					if (WorldQuestTracker.db.profile.groupfinder.leavetimer == 15) then
@@ -2174,7 +2163,7 @@ hooksecurefunc ("ToggleWorldMap", function (self)
 					else
 						GameCooltip:AddIcon ([[Interface\BUTTONS\UI-AutoCastableOverlay]], 2, 1, 16, 16, .4, .6, .4, .6)
 					end
-					GameCooltip:AddMenu (2, ff.Options.SetGroupLeaveTimeoutFunc, 15)
+					GameCooltip:AddMenu (2, ff.SetGroupLeaveTimeoutFunc, 15)
 					
 					GameCooltip:AddLine ("20 " .. L["S_GROUPFINDER_SECONDS"], "", 2)
 					if (WorldQuestTracker.db.profile.groupfinder.leavetimer == 20) then
@@ -2182,7 +2171,7 @@ hooksecurefunc ("ToggleWorldMap", function (self)
 					else
 						GameCooltip:AddIcon ([[Interface\BUTTONS\UI-AutoCastableOverlay]], 2, 1, 16, 16, .4, .6, .4, .6)
 					end
-					GameCooltip:AddMenu (2, ff.Options.SetGroupLeaveTimeoutFunc, 20)
+					GameCooltip:AddMenu (2, ff.SetGroupLeaveTimeoutFunc, 20)
 					
 					GameCooltip:AddLine ("30 " .. L["S_GROUPFINDER_SECONDS"], "", 2)
 					if (WorldQuestTracker.db.profile.groupfinder.leavetimer == 30) then
@@ -2190,7 +2179,7 @@ hooksecurefunc ("ToggleWorldMap", function (self)
 					else
 						GameCooltip:AddIcon ([[Interface\BUTTONS\UI-AutoCastableOverlay]], 2, 1, 16, 16, .4, .6, .4, .6)
 					end
-					GameCooltip:AddMenu (2, ff.Options.SetGroupLeaveTimeoutFunc, 30)
+					GameCooltip:AddMenu (2, ff.SetGroupLeaveTimeoutFunc, 30)
 					
 					GameCooltip:AddLine ("60 " .. L["S_GROUPFINDER_SECONDS"], "", 2)
 					if (WorldQuestTracker.db.profile.groupfinder.leavetimer == 60) then
@@ -2198,27 +2187,10 @@ hooksecurefunc ("ToggleWorldMap", function (self)
 					else
 						GameCooltip:AddIcon ([[Interface\BUTTONS\UI-AutoCastableOverlay]], 2, 1, 16, 16, .4, .6, .4, .6)
 					end
-					GameCooltip:AddMenu (2, ff.Options.SetGroupLeaveTimeoutFunc, 60)
+					GameCooltip:AddMenu (2, ff.SetGroupLeaveTimeoutFunc, 60)
 					
 					GameCooltip:AddLine ("$div", nil, 2, nil, -5, -11)
 					
-					--no pvp realms
-					GameCooltip:AddLine ("Avoid PVP Servers", "", 2)
-					if (WorldQuestTracker.db.profile.groupfinder.nopvp) then
-						GameCooltip:AddIcon ([[Interface\BUTTONS\UI-CheckBox-Check]], 2, 1, 16, 16)
-					else
-						GameCooltip:AddIcon ([[Interface\BUTTONS\UI-AutoCastableOverlay]], 2, 1, 16, 16, .4, .6, .4, .6)
-					end
-					GameCooltip:AddMenu (2, ff.Options.SetAvoidPVPFunc, not WorldQuestTracker.db.profile.groupfinder.nopvp)					
-					
-					--kick afk players
-					GameCooltip:AddLine ("Kick AFKs", "", 2)
-					if (WorldQuestTracker.db.profile.groupfinder.noafk) then
-						GameCooltip:AddIcon ([[Interface\BUTTONS\UI-CheckBox-Check]], 2, 1, 16, 16)
-					else
-						GameCooltip:AddIcon ([[Interface\BUTTONS\UI-AutoCastableOverlay]], 2, 1, 16, 16, .4, .6, .4, .6)
-					end
-					GameCooltip:AddMenu (2, ff.Options.SetNoAFKFunc, not WorldQuestTracker.db.profile.groupfinder.noafk)					
 				end
 				
 				--rare finder

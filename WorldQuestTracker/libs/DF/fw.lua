@@ -1,5 +1,5 @@
 
-local dversion = 86
+local dversion = 96
 local major, minor = "DetailsFramework-1.0", dversion
 local DF, oldminor = LibStub:NewLibrary (major, minor)
 
@@ -122,11 +122,19 @@ local embed_functions = {
 	"FormatNumber",
 	"IntegerToTimer",
 	"QuickDispatch",
+	"Dispatch",
 	"CommaValue",
 	"RemoveRealmName",
 	"Trim",
 	"CreateGlowOverlay",
+	"CreateAnts",
 	"CreateFrameShake",
+}
+
+DF.WidgetFunctions = {
+	GetCapsule = function (self)
+		return self.MyObject
+	end,
 }
 
 DF.table = {}
@@ -156,6 +164,22 @@ function DF:FadeFrame (frame, t)
 		frame:SetAlpha (0)
 		frame:Hide()
 	end
+end
+
+function DF.table.addunique (t, index, value)
+	if (not value) then
+		value = index
+		index = #t + 1
+	end
+
+	for i = 1, #t do
+		if (t[i] == value) then
+			return false
+		end
+	end
+	
+	tinsert (t, index, value)
+	return true
 end
 
 function DF.table.reverse (t)
@@ -237,6 +261,19 @@ elseif (GetLocale() == "zhCN") then
 	symbol_1K, symbol_10K, symbol_1B = "千", "万", "亿"
 elseif (GetLocale() == "zhTW") then
 	symbol_1K, symbol_10K, symbol_1B = "千", "萬", "億"
+end
+
+function DF:GetAsianNumberSymbols()
+	if (GetLocale() == "koKR") then
+		return "천", "만", "억"
+	elseif (GetLocale() == "zhCN") then
+		return "千", "万", "亿"
+	elseif (GetLocale() == "zhTW") then
+		return "千", "萬", "億"
+	else
+		--> return korean as default (if the language is western)
+		return "천", "만", "억"
+	end
 end
 
 if (symbol_1K) then
@@ -362,6 +399,18 @@ end
 function DF:trim (s)
 	local from = s:match"^%s*()"
 	return from > #s and "" or s:match(".*%S", from)
+end
+
+function DF:TruncateText (fontString, maxWidth)
+	local text = fontString:GetText()
+	
+	while (fontString:GetStringWidth() > maxWidth) do
+		text = strsub (text, 1, #text - 1)
+		fontString:SetText (text)
+		if (string.len (text) <= 1) then
+			break
+		end
+	end	
 end
 
 function DF:Msg (msg)
@@ -662,7 +711,7 @@ end
 	
 	local disable_on_combat = {}
 	
-	function DF:BuildMenu (parent, menu, x_offset, y_offset, height, use_two_points, text_template, dropdown_template, switch_template, switch_is_box, slider_template, button_template)
+	function DF:BuildMenu (parent, menu, x_offset, y_offset, height, use_two_points, text_template, dropdown_template, switch_template, switch_is_box, slider_template, button_template, value_change_hook)
 		
 		if (not parent.widget_list) then
 			DF:SetAsOptionsPanel (parent)
@@ -700,6 +749,18 @@ end
 				dropdown:SetPoint ("left", label, "right", 2)
 				label:SetPoint (cur_x, cur_y)
 				
+				--> global callback
+				if (value_change_hook) then
+					dropdown:SetHook ("OnOptionSelected", value_change_hook)
+				end
+				
+				--> hook list
+				if (widget_table.hooks) then
+					for hookName, hookFunc in pairs (widget_table.hooks) do
+						dropdown:SetHook (hookName, hookFunc)
+					end
+				end
+				
 				local size = label.widget:GetStringWidth() + 140 + 4
 				if (size > max_x) then
 					max_x = size
@@ -718,6 +779,17 @@ end
 				
 				if (switch_is_box) then
 					switch:SetAsCheckBox()
+				end
+				
+				if (value_change_hook) then
+					switch:SetHook ("OnSwitch", value_change_hook)
+				end
+				
+				--> hook list
+				if (widget_table.hooks) then
+					for hookName, hookFunc in pairs (widget_table.hooks) do
+						switch:SetHook (hookName, hookFunc)
+					end
 				end
 				
 				local label = DF:NewLabel (parent, nil, "$parentLabel" .. index, nil, widget_table.name .. (use_two_points and ": " or ""), "GameFontNormal", widget_table.text_template or text_template or 12)
@@ -743,6 +815,19 @@ end
 				
 				if (widget_table.thumbscale) then
 					slider:SetThumbSize (slider.thumb:GetWidth()*widget_table.thumbscale, nil)
+				else
+					slider:SetThumbSize (slider.thumb:GetWidth()*1.3, nil)
+				end
+				
+				if (value_change_hook) then
+					slider:SetHook ("OnValueChanged", value_change_hook)
+				end
+				
+				--> hook list
+				if (widget_table.hooks) then
+					for hookName, hookFunc in pairs (widget_table.hooks) do
+						slider:SetHook (hookName, hookFunc)
+					end
 				end
 				
 				local label = DF:NewLabel (parent, nil, "$parentLabel" .. index, nil, widget_table.name .. (use_two_points and ": " or ""), "GameFontNormal", widget_table.text_template or text_template or 12)
@@ -771,6 +856,17 @@ end
 					colorpick:SetColor (default_value, g, b, a)
 				end
 				
+				if (value_change_hook) then
+					colorpick:SetHook ("OnColorChanged", value_change_hook)
+				end
+				
+				--> hook list
+				if (widget_table.hooks) then
+					for hookName, hookFunc in pairs (widget_table.hooks) do
+						colorpick:SetHook (hookName, hookFunc)
+					end
+				end
+				
 				local label = DF:NewLabel (parent, nil, "$parentLabel" .. index, nil, widget_table.name .. (use_two_points and ": " or ""), "GameFontNormal", widget_table.text_template or text_template or 12)
 				colorpick:SetPoint ("left", label, "right", 2)
 				label:SetPoint (cur_x, cur_y)
@@ -795,6 +891,15 @@ end
 				button.tooltip = widget_table.desc
 				button.widget_type = "execute"
 				
+				--> execute doesn't trigger global callback
+				
+				--> hook list
+				if (widget_table.hooks) then
+					for hookName, hookFunc in pairs (widget_table.hooks) do
+						button:SetHook (hookName, hookFunc)
+					end
+				end				
+				
 				local size = button:GetWidth() + 4
 				if (size > max_x) then
 					max_x = size
@@ -817,6 +922,15 @@ end
 				textentry:SetPoint ("left", label, "right", 2)
 				label:SetPoint (cur_x, cur_y)
 
+				--> text entry doesn't trigger global callback
+				
+				--> hook list
+				if (widget_table.hooks) then
+					for hookName, hookFunc in pairs (widget_table.hooks) do
+						textentry:SetHook (hookName, hookFunc)
+					end
+				end
+				
 				local size = label.widget:GetStringWidth() + 60 + 4
 				if (size > max_x) then
 					max_x = size
@@ -1096,8 +1210,54 @@ end
 --fonts
 
 DF.font_templates = DF.font_templates or {}
-DF.font_templates ["ORANGE_FONT_TEMPLATE"] = {color = "orange", size = 11, font = "Accidental Presidency"}
-DF.font_templates ["OPTIONS_FONT_TEMPLATE"] = {color = "yellow", size = 12, font = "Accidental Presidency"}
+
+--> detect which language is the client and select the font accordingly
+local clientLanguage = GetLocale()
+if (clientLanguage == "enGB") then
+	clientLanguage = "enUS"
+end
+
+DF.ClientLanguage = clientLanguage
+
+--> returns which region the language the client is running, return "western", "russia" or "asia"
+function DF:GetClientRegion()
+	if (clientLanguage == "zhCN" or clientLanguage == "koKR" or clientLanguage == "zhTW") then
+		return "asia"
+	elseif (clientLanguage == "ruRU") then
+		return "russia"
+	else
+		return "western"
+	end
+end
+
+--> return the best font to use for the client language
+function DF:GetBestFontForLanguage (language, western, cyrillic, china, korean, taiwan)
+	if (not language) then
+		language = DF.ClientLanguage
+	end
+
+	if (language == "enUS" or language == "deDE" or language == "esES" or language == "esMX" or language == "frFR" or language == "itIT" or language == "ptBR") then
+		return western or "Accidental Presidency"
+		
+	elseif (language == "ruRU") then
+		return cyrillic or "Arial Narrow"
+		
+	elseif (language == "zhCN") then
+		return china or "AR CrystalzcuheiGBK Demibold"
+	
+	elseif (language == "koKR") then
+		return korean or "2002"
+		
+	elseif (language == "zhTW") then
+		return taiwan or "AR CrystalzcuheiGBK Demibold"
+	
+	end
+end
+
+--DF.font_templates ["ORANGE_FONT_TEMPLATE"] = {color = "orange", size = 11, font = "Accidental Presidency"}
+--DF.font_templates ["OPTIONS_FONT_TEMPLATE"] = {color = "yellow", size = 12, font = "Accidental Presidency"}
+DF.font_templates ["ORANGE_FONT_TEMPLATE"] = {color = "orange", size = 11, font = DF:GetBestFontForLanguage()}
+DF.font_templates ["OPTIONS_FONT_TEMPLATE"] = {color = "yellow", size = 12, font = DF:GetBestFontForLanguage()}
 
 -- dropdowns
 
@@ -1178,6 +1338,14 @@ function DF:InstallTemplate (widget_type, template_name, template, parent_name)
 	local template_table
 	if (widget_type == "font") then
 		template_table = DF.font_templates
+		
+		local font = template.font
+		if (font) then
+			--> fonts passed into the template has default to western
+			--> the framework will get the game client language and change the font if needed
+			font = DF:GetBestFontForLanguage (nil, font)
+		end
+		
 	elseif (widget_type == "dropdown") then
 		template_table = DF.dropdown_templates
 	elseif (widget_type == "button") then
@@ -1226,7 +1394,7 @@ function DF:RunHooksForWidget (event, ...)
 	local hooks = self.HookList [event]
 	
 	if (not hooks) then
-		print (self.widget:GetName(), "sem hook para", event)
+		print (self.widget:GetName(), "no hooks for", event)
 		return
 	end
 	
@@ -1363,6 +1531,7 @@ function DF:CreateAnimationHub (parent, onPlay, onFinished)
 	local newAnimation = parent:CreateAnimationGroup()
 	newAnimation:SetScript ("OnPlay", onPlay)
 	newAnimation:SetScript ("OnFinished", onFinished)
+	newAnimation:SetScript ("OnStop", onFinished)
 	newAnimation.NextAnimation = 1
 	return newAnimation
 end
@@ -1400,6 +1569,9 @@ end
 local frameshake_shake_finished = function (parent, shakeObject)
 	if (shakeObject.IsPlaying) then
 		shakeObject.IsPlaying = false
+		shakeObject.TimeLeft = 0
+		shakeObject.IsFadingOut = false
+		shakeObject.IsFadingIn = false
 		
 		--> update the amount of shake running on this frame
 		parent.__frameshakes.enabled = parent.__frameshakes.enabled - 1
@@ -1408,7 +1580,18 @@ local frameshake_shake_finished = function (parent, shakeObject)
 		for i = 1, #shakeObject.Anchors do
 			local anchor = shakeObject.Anchors [i]
 			
-			if (#anchor == 3) then
+			--> automatic anchoring and reanching needs to the reviwed in the future
+			if (#anchor == 1) then
+				local anchorTo = unpack (anchor)
+				parent:ClearAllPoints()
+				parent:SetPoint (anchorTo)
+				
+			elseif (#anchor == 2) then
+				local anchorTo, point1 = unpack (anchor)
+				parent:ClearAllPoints()
+				parent:SetPoint (anchorTo, point1)
+				
+			elseif (#anchor == 3) then
 				local anchorTo, point1, point2 = unpack (anchor)
 				parent:SetPoint (anchorTo, point1, point2)
 				
@@ -1427,9 +1610,8 @@ local frameshake_do_update = function (parent, shakeObject, deltaTime)
 	
 	--> update time left
 	shakeObject.TimeLeft = max (shakeObject.TimeLeft - deltaTime, 0)
-	
+
 	if (shakeObject.TimeLeft > 0) then
-	
 		--> update fade in and out
 		if (shakeObject.IsFadingIn) then
 			shakeObject.IsFadingInTime = shakeObject.IsFadingInTime + deltaTime
@@ -1451,7 +1633,7 @@ local frameshake_do_update = function (parent, shakeObject, deltaTime)
 		
 		--> update position
 		local scaleShake = min (shakeObject.IsFadingIn and (shakeObject.IsFadingInTime / shakeObject.FadeInTime) or 1, shakeObject.IsFadingOut and (1 - shakeObject.IsFadingOutTime / shakeObject.FadeOutTime) or 1)
-		
+
 		if (scaleShake > 0) then
 
 			--> delate the time by the frequency on both X and Y offsets
@@ -1477,12 +1659,16 @@ local frameshake_do_update = function (parent, shakeObject, deltaTime)
 			for i = 1, #shakeObject.Anchors do
 				local anchor = shakeObject.Anchors [i]
 				
-				if (#anchor == 3) then
+				if (#anchor == 1 or #anchor == 3) then
 					local anchorTo, point1, point2 = unpack (anchor)
+					point1 = point1 or 0
+					point2 = point2 or 0
 					parent:SetPoint (anchorTo, point1 + newX, point2 + newY)
 					
 				elseif (#anchor == 5) then
 					local anchorName1, anchorTo, anchorName2, point1, point2 = unpack (anchor)
+					--parent:ClearAllPoints()
+					
 					parent:SetPoint (anchorName1, anchorTo, anchorName2, point1 + newX, point2 + newY)
 				end
 			end
@@ -1507,6 +1693,10 @@ local frameshake_update_all = function (parent, deltaTime)
 	end
 end
 
+local frameshake_stop = function (parent, shakeObject)
+	frameshake_shake_finished (parent, shakeObject)
+end
+
 --> scale direction scales the X and Y coordinates, scale strength scales the amplitude and frequency
 local frameshake_play = function (parent, shakeObject, scaleDirection, scaleAmplitude, scaleFrequency, scaleDuration)
 
@@ -1529,7 +1719,6 @@ local frameshake_play = function (parent, shakeObject, scaleDirection, scaleAmpl
 			shakeObject.IsFadingOut = false
 			shakeObject.IsFadingOutTime = 0
 		end
-		
 	else
 		--> create a new random offset
 		shakeObject.XSineOffset = math.pi * 2 * math.random()
@@ -1571,6 +1760,10 @@ local frameshake_play = function (parent, shakeObject, scaleDirection, scaleAmpl
 		
 		--> update the amount of shake running on this frame
 		parent.__frameshakes.enabled = parent.__frameshakes.enabled + 1
+		
+		if (not parent:GetScript ("OnUpdate")) then
+			parent:SetScript ("OnUpdate", function()end)
+		end
 	end
 
 	shakeObject.IsPlaying = true
@@ -1615,6 +1808,7 @@ function DF:CreateFrameShake (parent, duration, amplitude, frequency, absoluteSi
 			enabled = 0,
 		}
 		parent.PlayFrameShake = frameshake_play
+		parent.StopFrameShake = frameshake_stop
 		parent.UpdateFrameShake = frameshake_do_update
 		parent.UpdateAllFrameShake = frameshake_update_all
 		parent:HookScript ("OnUpdate", frameshake_update_all)
@@ -1629,28 +1823,69 @@ end
 -----------------------------
 --> glow overlay
 
-local play_glow_overlay = function (self)
-	self:Show()
+local glow_overlay_play = function (self)
+	if (not self:IsShown()) then
+		self:Show()
+	end
 	if (self.animOut:IsPlaying()) then
 		self.animOut:Stop()
 	end
-	self.animIn:Play()
+	if (not self.animIn:IsPlaying()) then
+		self.animIn:Play()
+	end
 end
 
-local stop_glow_overlay = function (self)
-	self.animOut:Stop()
-	self.animIn:Stop()
-	self:Hide()
+local glow_overlay_stop = function (self)
+	if (self.animOut:IsPlaying()) then
+		self.animOut:Stop()
+	end
+	if (self.animIn:IsPlaying()) then
+		self.animIn:Stop()
+	end
+	if (self:IsShown()) then
+		self:Hide()
+	end
 end
 
-local defaultColor = {1, 1, 1, 1}
+local glow_overlay_setcolor = function (self, antsColor, glowColor)
+	if (antsColor) then
+		local r, g, b, a = DF:ParseColors (antsColor)
+		self.ants:SetVertexColor (r, g, b, a)
+		self.AntsColor.r = r
+		self.AntsColor.g = g
+		self.AntsColor.b = b
+		self.AntsColor.a = a
+	end
+	
+	if (glowColor) then
+		local r, g, b, a = DF:ParseColors (glowColor)
+		self.outerGlow:SetVertexColor (r, g, b, a)
+		self.GlowColor.r = r
+		self.GlowColor.g = g
+		self.GlowColor.b = b
+		self.GlowColor.a = a
+	end
+end
+
+local glow_overlay_onshow = function (self)
+	glow_overlay_play (self)
+end
+
+local glow_overlay_onhide = function (self)
+	glow_overlay_stop (self)
+end
 
 --this is most copied from the wow client code, few changes applied to customize it
 function DF:CreateGlowOverlay (parent, antsColor, glowColor)
 	local glowFrame = CreateFrame ("frame", parent:GetName() and "$parentGlow2" or "OverlayActionGlow" .. math.random (1, 10000000), parent, "ActionBarButtonSpellActivationAlert")
+	glowFrame:HookScript ("OnShow", glow_overlay_onshow)
+	glowFrame:HookScript ("OnHide", glow_overlay_onhide)
 	
-	glowFrame.Play = play_glow_overlay
-	glowFrame.Stop = stop_glow_overlay
+	glowFrame.Play = glow_overlay_play
+	glowFrame.Stop = glow_overlay_stop
+	glowFrame.SetColor = glow_overlay_setcolor
+	
+	glowFrame:Hide()
 	
 	parent.overlay = glowFrame
 	local frameWidth, frameHeight = parent:GetSize()
@@ -1659,19 +1894,66 @@ function DF:CreateGlowOverlay (parent, antsColor, glowColor)
 	
 	--Make the height/width available before the next frame:
 	parent.overlay:SetSize(frameWidth * scale, frameHeight * scale)
-	parent.overlay:SetPoint("TOPLEFT", parent, "TOPLEFT", -frameWidth * 0.2, frameHeight * 0.2)
-	parent.overlay:SetPoint("BOTTOMRIGHT", parent, "BOTTOMRIGHT", frameWidth * 0.2, -frameHeight * 0.2)
+	parent.overlay:SetPoint("TOPLEFT", parent, "TOPLEFT", -frameWidth * 0.32, frameHeight * 0.36)
+	parent.overlay:SetPoint("BOTTOMRIGHT", parent, "BOTTOMRIGHT", frameWidth * 0.32, -frameHeight * 0.36)
 	
 	local r, g, b, a = DF:ParseColors (antsColor or defaultColor)
 	glowFrame.ants:SetVertexColor (r, g, b, a)
+	glowFrame.AntsColor = {r, g, b, a}
 	
 	local r, g, b, a = DF:ParseColors (glowColor or defaultColor)
 	glowFrame.outerGlow:SetVertexColor (r, g, b, a)
+	glowFrame.GlowColor = {r, g, b, a}
 	
 	glowFrame.outerGlow:SetScale (1.2)
-	
 	return glowFrame
 end
+
+--> custom glow with ants animation
+local ants_set_texture_offset = function (self, leftOffset, rightOffset, topOffset, bottomOffset)
+	leftOffset = leftOffset or 0
+	rightOffset = rightOffset or 0
+	topOffset = topOffset or 0
+	bottomOffset = bottomOffset or 0
+
+	self:ClearAllPoints()
+	self:SetPoint ("topleft", leftOffset, topOffset)
+	self:SetPoint ("bottomright", rightOffset, bottomOffset)
+end
+
+function DF:CreateAnts (parent, antTable, leftOffset, rightOffset, topOffset, bottomOffset, antTexture)
+	leftOffset = leftOffset or 0
+	rightOffset = rightOffset or 0
+	topOffset = topOffset or 0
+	bottomOffset = bottomOffset or 0
+	
+	local f = CreateFrame ("frame", nil, parent)
+	f:SetPoint ("topleft", leftOffset, topOffset)
+	f:SetPoint ("bottomright", rightOffset, bottomOffset)
+	
+	f.SetOffset = ants_set_texture_offset
+	
+	local t = f:CreateTexture (nil, "overlay")
+	t:SetAllPoints()
+	t:SetTexture (antTable.Texture)
+	t:SetBlendMode (antTable.BlendMode or "ADD")
+	t:SetVertexColor (DF:ParseColors (antTable.Color or "white"))
+	f.Texture = t
+	
+	f.AntTable = antTable
+	
+	f:SetScript ("OnUpdate", function (self, deltaTime)
+		AnimateTexCoords (t, self.AntTable.TextureWidth, self.AntTable.TextureHeight, self.AntTable.TexturePartsWidth, self.AntTable.TexturePartsHeight, self.AntTable.AmountParts, deltaTime, self.AntTable.Throttle or 0.025)
+	end)
+	
+	return f
+end
+
+--[=[ --test ants
+do
+	local f = DF:CreateAnts (UIParent)
+end	
+--]=]
 
 -----------------------------
 --> borders
@@ -2093,6 +2375,21 @@ function DF:QuickDispatch (func, ...)
 	return true
 end
 
+function DF:Dispatch (func, ...)
+	if (type (func) ~= "function") then
+		return dispatch_error (_, "Dispatch required a function.")
+	end
+
+	local okay, result1, result2, result3, result4 = xpcall (func, geterrorhandler(), ...)
+	
+	if (not okay) then
+		return nil
+	end
+	
+	return result1, result2, result3, result4
+end
+
+--/run local a, b =32,3; local f=function(c,d) return c+d, 2, 3;end; print (xpcall(f,geterrorhandler(),a,b))
 
 
 --doo elsee 

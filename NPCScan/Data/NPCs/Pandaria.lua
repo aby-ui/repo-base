@@ -185,6 +185,14 @@ NPCs[58768] = { -- Cracklefang
 	isTameable = true,
 }
 
+NPCs[58771] = { -- Quid
+	achievementSpellID = 129949, -- Quid Kill Credit
+}
+
+NPCs[58778] = { -- Aetha
+	achievementSpellID = 129950, -- Aetha Kill Credit
+}
+
 NPCs[63509] = { -- Wulon
 	isTameable = true,
 }

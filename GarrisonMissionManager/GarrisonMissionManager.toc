@@ -23,6 +23,7 @@ MissionUI_Shared_UpgradeItems.lua
 MissionUI_Garrison.lua
 MissionUI_Shipyard.lua
 MissionUI_OrderHall.lua
+MissionUI_BFA.lua
 GarrisonBuilding.lua
 Broker.lua
 

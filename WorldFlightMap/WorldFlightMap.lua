@@ -1,7 +1,5 @@
 -- https://github.com/tomrus88/BlizzardInterfaceCode/blob/e2c02e9e3de67cc29adec8e5e2ef70b98c7d1031/Interface/AddOns/Blizzard_FlightMap/FM_FlightPathDataProvider.lua
 
-FlightMapFrame = WorldMapFrame -- for the sake of InFlight
-
 -- Map data functions
 local MapSizeCache = {} -- [uiMapID] = {left, top, right, bottom, etc}
 local function GetCurrentMapContinent(uiMapID)
@@ -65,6 +63,7 @@ function WorldFlightMapProvider:OnAdded(...)
 
 	self:RegisterEvent('TAXIMAP_OPENED')
 	self:RegisterEvent('TAXIMAP_CLOSED')
+	self:RegisterEvent('ADDON_LOADED')
 end
 
 -- Arrow functions
@@ -119,6 +118,7 @@ local function GetArrow(pin)
 	return f
 end
 
+local InFlightEnv = setmetatable({ FlightMapFrame = WorldMapFrame }, {__index = _G})
 function WorldFlightMapProvider:OnEvent(event, ...)
 	if event == 'TAXIMAP_OPENED' then
 		self:SetTaxiState(true)
@@ -147,6 +147,14 @@ function WorldFlightMapProvider:OnEvent(event, ...)
 		end
 
 		self:RemoveAllData()
+	elseif event == 'ADDON_LOADED' and ... == 'InFlight' and InFlight then
+		-- Somewhat hacky attempt to support InFlight without tainting
+		-- the ui by setting FlightMapFrame = WorldMapFrame globally
+		for k,v in pairs(InFlight) do
+			if type(v) == 'function' then
+				setfenv(v, InFlightEnv)
+			end
+		end
 	end
 end
 

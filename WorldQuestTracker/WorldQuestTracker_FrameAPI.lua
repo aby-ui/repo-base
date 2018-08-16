@@ -506,7 +506,7 @@ function WorldQuestTracker.CheckAddToTracker (self, button)
 		WorldQuestTracker.RemoveQuestFromTracker (questID)
 	else
 		--adicionar a quest ao track
-		WorldQuestTracker.AddQuestToTracker (self)
+		WorldQuestTracker.AddQuestToTracker (self, questID, mapID)
 	end
 	
 	if (self.IsZoneQuestButton) then

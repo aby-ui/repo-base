@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2099, "DBM-Party-BfA", 9, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17473 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 17702 $"):sub(12, -3))
 mod:SetCreatureID(127490)
 mod:SetEncounterID(2103)
 mod:SetZone()
@@ -30,9 +30,9 @@ local timerIgnitionCD				= mod:NewCDTimer(32.7, 256970, nil, nil, nil, 5)
 --mod:AddRangeFrameOption(5, 194966)
 
 function mod:OnCombatStart(delay)
-	timerIgnitionCD:Start(7-delay)
-	timerFuselighterCD:Start(15.1-delay)
-	timerCinderflameCD:Start(19.4-delay)
+	timerIgnitionCD:Start(6.1-delay)
+	timerFuselighterCD:Start(14.2-delay)--SUCCESS
+	timerCinderflameCD:Start(18.2-delay)--START
 end
 
 function mod:OnCombatEnd()

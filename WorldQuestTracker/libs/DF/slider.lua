@@ -806,7 +806,15 @@ local SwitchOnClick = function (self, button, forced_value, value)
 		if (slider.return_func) then
 			value = slider:return_func (value)
 		end
-		slider.OnSwitch (slider, slider.FixedValue, value)
+		
+		--> safe call
+		local success, errorText = pcall (slider.OnSwitch, slider, slider.FixedValue, value)
+		if (not success) then
+			error ("Details! Framework: OnSwitch() " .. (button:GetName() or "-NONAME-") ..  " error: " .. (errorText or ""))
+		end
+		
+		--> trigger hooks
+		slider:RunHooksForWidget ("OnSwitch", slider, slider.FixedValue, value)
 	end
 	
 end
@@ -935,6 +943,7 @@ function DF:NewSwitch (parent, container, name, member, w, h, ltext, rtext, defa
 	h = h or 20
 	
 	local slider = DF:NewButton (parent, container, name, member, w, h)
+	slider.HookList.OnSwitch = {}
 	
 	slider.switch_func = switch_func
 	slider.return_func = return_func

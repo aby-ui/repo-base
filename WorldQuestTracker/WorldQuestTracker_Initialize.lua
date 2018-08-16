@@ -2,8 +2,10 @@
 
 
 do
+	--> update quest type max when a new type of world quest is added to the filtering
+	WQT_QUESTTYPE_MAX = 		10			--[[global]]
 
-	WQT_QUESTTYPE_MAX = 		9			--[[global]]
+	--> all quest types current available
 	WQT_QUESTTYPE_GOLD = 		"gold"			--[[global]]
 	WQT_QUESTTYPE_RESOURCE = 	"resource"		--[[global]]
 	WQT_QUESTTYPE_APOWER = 	"apower"		--[[global]]
@@ -82,21 +84,24 @@ do
 			},
 			
 			groupfinder = {
-				enabled = false,
-				invasion_points = false,
+				enabled = true,
+				invasion_points = false, --deprecated
 				tracker_buttons = false,
 				autoleave = false,
 				autoleave_delayed = false,
 				askleave_delayed = true,
 				noleave = false,
 				leavetimer = 30,
-				noafk = true,
-				noafk_ticks = 5,
-				noafk_distance = 500,
-				nopvp = false,
+				noafk = true, --deprecated
+				noafk_ticks = 5, --deprecated
+				noafk_distance = 500, --deprecated
+				nopvp = false, --deprecated
 				frame = {},
 				tutorial = 0,
-				argus_min_itemlevel = 830,
+				argus_min_itemlevel = 830, --deprecated
+				ignored_quests = {},
+				send_whispers = true,
+				dont_open_in_group = true,
 			},
 
 			rarescan = {
@@ -193,12 +198,12 @@ do
 	end
 	
 	--create the addon object
-	DF:CreateAddOn ("WorldQuestTrackerAddon", "WQTrackerDB", default_config)
+	local WorldQuestTracker = DF:CreateAddOn ("WorldQuestTrackerAddon", "WQTrackerDB", default_config)
 
 	--create the group finder and rare finder frames
 	CreateFrame ("frame", "WorldQuestTrackerFinderFrame", UIParent)
 	CreateFrame ("frame", "WorldQuestTrackerRareFrame", UIParent)
-	
+
 	--create world quest tracker pin
 	WorldQuestTrackerPinMixin = CreateFromMixins (MapCanvasPinMixin)
 	
@@ -222,10 +227,7 @@ do
 	end
 	
 	WorldQuestTrackerAddon.CatchMapProvider()
-	
-	--WorldQuestTracker.WorldMapSquares store the world widgets
-	local WorldQuestTracker = WorldQuestTrackerAddon
-	
+
 	--store zone widgets
 	WorldQuestTracker.ZoneWidgetPool = {} 
 	--default world quest pins
@@ -235,6 +237,15 @@ do
 	WorldQuestTracker.AnchoringFrame = WorldMapFrame.BorderFrame
 	--frame level for things attached to the world map
 	WorldQuestTracker.DefaultFrameLevel = 5000
+	
+	--comms
+	WorldQuestTracker.CommFunctions = {}
+	function WorldQuestTracker.HandleComm (validData)
+		local prefix = validData [1]
+		if (WorldQuestTracker.CommFunctions [prefix]) then
+			WorldQuestTracker.CommFunctions [prefix] (validData)
+		end
+	end
 	
 	--register things we'll use
 	local color = OBJECTIVE_TRACKER_COLOR ["Header"]

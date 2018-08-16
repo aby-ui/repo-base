@@ -50,6 +50,23 @@ local taxyMapWidgets = {}
 --quando dar zoom mostrar o icone do reward no lugar da exclama��o
 
 function WorldQuestTracker:GetQuestFullInfo (questID)
+
+	--> attempt to get the quest information from the cache
+	--[=[
+	local can_cache = true
+	if (not HaveQuestRewardData (questID)) then
+		C_TaskQuest.RequestPreloadRewardData (questID)
+		can_cache = false
+	end
+	--]=]
+	
+	local title, factionID, tagID, tagName, worldQuestType, rarity, isElite, tradeskillLineIndex, tagID, tagName, worldQuestType, rarity, isElite, tradeskillLineIndex, allowDisplayPastCritical, gold, goldFormated, rewardName, rewardTexture, numRewardItems, itemName, itemTexture, itemLevel, quantity, quality, isUsable, itemID, isArtifact, artifactPower, isStackable, stackAmount = WorldQuestTracker.GetOrLoadQuestData (questID, false, true)
+	--local filter, order = WorldQuestTracker.GetQuestFilterTypeAndOrder (worldQuestType, gold, rewardName, itemName, isArtifact, stackAmount, numRewardItems, rewardTexture)
+
+	return title, factionID, tagID, tagName, worldQuestType, rarity, isElite, tradeskillLineIndex, tagID, tagName, worldQuestType, rarity, isElite, tradeskillLineIndex, allowDisplayPastCritical, gold, goldFormated, rewardName, rewardTexture, numRewardItems, itemName, itemTexture, itemLevel, quantity, quality, isUsable, itemID, isArtifact, artifactPower, isStackable, stackAmount
+	
+	--[=[
+	
 	--info
 	local title, factionID, tagID, tagName, worldQuestType, rarity, isElite, tradeskillLineIndex = WorldQuestTracker.GetQuest_Info (questID)
 	--tempo restante
@@ -93,8 +110,9 @@ function WorldQuestTracker:GetQuestFullInfo (questID)
 	end
 	
 	return title, questType, texture, factionID, tagID, tagName, worldQuestType, rarity, isElite, tradeskillLineIndex, selected, isSpellTarget, timeLeft, isCriteria, gold, goldFormated, rewardName, rewardTexture, numRewardItems, itemName, itemTexture, itemLevel, quantity, quality, isUsable, itemID, isArtifact, artifactPower, isStackable
+	
+	--]=]
 end
-
 
 function WorldQuestTracker.TaxyFrameHasZoom()
 	return true
@@ -265,10 +283,21 @@ function WorldQuestTracker:TAXIMAP_OPENED()
 		end)
 		
 		hooksecurefunc (FlightMapFrame, "ApplyPinPosition", function (self, pin, normalizedX, normalizedY, insetIndex)
-			--print ("setting pin poisition")
+			
+			if (pin.questID and QuestMapFrame_IsQuestWorldQuest (pin.questID)) then
+				--> setting a pin for a world quest
+				
+				
+				
+			end
+			
+			
+			--if true then return end
 			
 			if (not pin.questID or not QuestMapFrame_IsQuestWorldQuest (pin.questID)) then
-				--> invasion point
+			
+				--> invasion point (disable due to the end of Legion)
+				--[=[
 				if (pin.Texture and pin.Texture:GetTexture() == 1121272) then
 					pin:SetAlpha (1)
 					pin:Show()
@@ -278,7 +307,9 @@ function WorldQuestTracker:TAXIMAP_OPENED()
 						pin._UpdateTimer.Pin = pin
 					end
 				end
+				--]=]
 				
+				--fly map icons (feet with the wings)
 				if (pin.Icon and pin.Icon:GetTexture() == 1455734) then
 					if (not pin.Icon.ExtraShadow) then
 						pin.Icon:SetDrawLayer ("overlay")
@@ -294,38 +325,62 @@ function WorldQuestTracker:TAXIMAP_OPENED()
 
 			if (not pin._WQT_Twin) then
 				pin._WQT_Twin = WorldQuestTracker:GetOrCreateTaxyPOI (pin:GetParent())
+				
 				pin._WQT_Twin:RegisterForClicks ("LeftButtonUp", "RightButtonUp")
 				pin._WQT_Twin:SetFrameStrata (pin:GetFrameStrata())
 				pin._WQT_Twin:SetFrameLevel (pin:GetFrameLevel()+100)
 				pin._WQT_Twin:SetScale (1.3)
 				pin._WQT_Twin:SetScript ("OnClick", onTaxyWidgetClick)
-				pin._WQT_Twin:SetPoint ("center", pin, "center")
+				
+				--pin._WQT_Twin:SetPoint ("center", pin, "center")
+				pin._WQT_Twin.AnchorFrame:SetPoint ("center", pin, "center")
+				
+				--pin._WQT_Twin.AnchorFrame.questID = questID
+				--pin._WQT_Twin.AnchorFrame.numObjectives = pin._WQT_Twin.numObjectives
+				--WorldQuestTrackerAddon.DataProvider:GetMap():SetPinPosition (pin._WQT_Twin.AnchorFrame, pin._WQT_Twin.PosX, pin._WQT_Twin.PosY)
+				--pin._WQT_Twin.AnchorFrame:Show()
+				
 				--mixin
 				for member, func in pairs (pin) do
 					if (type (func) == "function") then
-						pin._WQT_Twin [member] = func
+						pin._WQT_Twin.AnchorFrame [member] = func
 					end
 				end
 				--override scripts
 				--pin._WQT_Twin:SetScript ("OnEnter", pin:GetScript ("OnEnter"))
+				--[=
 				pin._WQT_Twin:SetScript ("OnEnter", function (self)
-					--> the tooltip should get the scale from the taxi map pin
-					pin:GetScript ("OnEnter")(pin)
-					--TaskPOI_OnEnter (self)
-					--print (pin:GetScript ("OnEnter") == )
-					WorldQuestTracker.TaskPOI_OnEnterFunc (pin._WQT_Twin)
+					TaskPOI_OnEnter (pin._WQT_Twin)
 					pin._WQT_Twin.Texture:SetBlendMode ("ADD")
+					--> the tooltip should get the scale from the taxi map pin
+					--pin:GetScript ("OnEnter")(pin)
+					--print (pin:GetScript ("OnEnter") == )
+					--WorldQuestTracker.TaskPOI_OnEnterFunc (pin._WQT_Twin)
 				end)
 				
 				pin._WQT_Twin:SetScript ("OnLeave", function()
-					pin:GetScript ("OnLeave")(pin)
-					--TaskPOI_OnLeave (self)
-					WorldQuestTracker.TaskPOI_OnLeaveFunc (pin._WQT_Twin)
+					TaskPOI_OnLeave (pin._WQT_Twin)
 					pin._WQT_Twin.Texture:SetBlendMode ("BLEND")
+					--pin:GetScript ("OnLeave")(pin)
+					--WorldQuestTracker.TaskPOI_OnLeaveFunc (pin._WQT_Twin)
 				end)
+				--]=]
+				
+				pin._WQT_Twin.AnchorFrame.UpdateTooltip = function()end
+				pin._WQT_Twin.UpdateTooltip = function()end
 
 				tinsert (WorldQuestTracker.TaxyZoneWidgets, pin._WQT_Twin)
 			end
+			
+			local mapID, zoneID = C_TaskQuest.GetQuestZoneID (pin.questID)
+			
+			pin._WQT_Twin.questID = pin.questID
+			pin._WQT_Twin.numObjectives = pin.numObjectives
+			pin._WQT_Twin.mapID = mapID
+			
+			pin._WQT_Twin.AnchorFrame.mapID = mapID
+			pin._WQT_Twin.questID = pin.questID
+			pin._WQT_Twin.AnchorFrame.numObjectives = pin.numObjectives
 			
 			local isShowingQuests = WorldQuestTracker.db.profile.taxy_showquests
 			local isShowingOnlyTracked = WorldQuestTracker.db.profile.taxy_trackedonly
@@ -352,9 +407,11 @@ function WorldQuestTracker:TAXIMAP_OPENED()
 			end
 
 			pin._WQT_Twin:Show()
+			
 			WorldQuestTracker.Taxy_CurrentShownBlips [pin._WQT_Twin] = true
 			
-			local title, questType, texture, factionID, tagID, tagName, worldQuestType, rarity, isElite, tradeskillLineIndex, selected, isSpellTarget, timeLeft, isCriteria, gold, goldFormated, rewardName, rewardTexture, numRewardItems, itemName, itemTexture, itemLevel, quantity, quality, isUsable, itemID, isArtifact, artifactPower, isStackable = WorldQuestTracker:GetQuestFullInfo (pin.questID)
+			--esta linha esta dando problemas de travamento, a dica de ferramenta come�a a dar altos problemas
+			local title, factionID, tagID, tagName, worldQuestType, rarity, isElite, tradeskillLineIndex, tagID, tagName, worldQuestType, rarity, isElite, tradeskillLineIndex, allowDisplayPastCritical, gold, goldFormated, rewardName, rewardTexture, numRewardItems, itemName, itemTexture, itemLevel, quantity, quality, isUsable, itemID, isArtifact, artifactPower, isStackable, stackAmount = WorldQuestTracker:GetQuestFullInfo (pin.questID)
 			
 			--n�o mostrar quests que foram filtradas
 			local filter = WorldQuestTracker.GetQuestFilterTypeAndOrder (worldQuestType, gold, rewardName, itemName, isArtifact, quantity, numRewardItems, rewardTexture)
@@ -375,7 +432,10 @@ function WorldQuestTracker:TAXIMAP_OPENED()
 			pin._WQT_Twin.questID = pin.questID
 			pin._WQT_Twin.numObjectives = pin.numObjectives
 			local mapID, zoneID = C_TaskQuest.GetQuestZoneID (pin.questID)
-			pin._WQT_Twin.mapID = zoneID
+			pin._WQT_Twin.mapID = mapID
+			
+			pin._WQT_Twin.AnchorFrame.questID = pin.questID
+			pin._WQT_Twin.AnchorFrame.numObjectives = pin.numObjectives
 			
 			local nextZoomOutScale, nextZoomInScale = FlightMapFrame.ScrollContainer:GetCurrentZoomRange()
 			
@@ -391,12 +451,14 @@ function WorldQuestTracker:TAXIMAP_OPENED()
 			--print (minX, maxX, minY, maxY)
 			--/dump FlightMapFrame.ScrollContainer.Child:GetScale()
 			
+			
+			
 			--FlightMapFrame:ZoomOut()
 			if (scale < 0.3) then
 				--n�o tem zoom
 				if (isShowingOnlyTracked) then
 					if (questIDChanged or pin._WQT_Twin.zoomState or not pin._WQT_Twin.LastUpdate or pin._WQT_Twin.LastUpdate+20 < GetTime()) then
-						WorldQuestTracker.SetupWorldQuestButton (pin._WQT_Twin, questType, rarity, isElite, tradeskillLineIndex, inProgress, selected, isCriteria, isSpellTarget)
+						WorldQuestTracker.SetupWorldQuestButton (pin._WQT_Twin, worldQuestType, rarity, isElite, tradeskillLineIndex, inProgress, selected, isCriteria, isSpellTarget)
 						format_for_taxy_nozoom_tracked (pin._WQT_Twin, true)
 						pin._WQT_Twin.LastUpdate = GetTime()
 						pin._WQT_Twin.zoomState = nil
@@ -404,7 +466,7 @@ function WorldQuestTracker:TAXIMAP_OPENED()
 					end
 				else
 					if (questIDChanged or pin._WQT_Twin.zoomState or not pin._WQT_Twin.LastUpdate or pin._WQT_Twin.LastUpdate+20 < GetTime()) then
-						WorldQuestTracker.SetupWorldQuestButton (pin._WQT_Twin, questType, rarity, isElite, tradeskillLineIndex, inProgress, selected, isCriteria, isSpellTarget)
+						WorldQuestTracker.SetupWorldQuestButton (pin._WQT_Twin, worldQuestType, rarity, isElite, tradeskillLineIndex, inProgress, selected, isCriteria, isSpellTarget)
 						format_for_taxy_nozoom_all (pin._WQT_Twin)
 						pin._WQT_Twin.LastUpdate = GetTime()
 						pin._WQT_Twin.zoomState = nil
@@ -414,7 +476,7 @@ function WorldQuestTracker:TAXIMAP_OPENED()
 			else
 				--tem zoom
 				if (questIDChanged or not pin._WQT_Twin.zoomState or not pin._WQT_Twin.LastUpdate or pin._WQT_Twin.LastUpdate+20 < GetTime()) then
-					WorldQuestTracker.SetupWorldQuestButton (pin._WQT_Twin, questType, rarity, isElite, tradeskillLineIndex, inProgress, selected, isCriteria, isSpellTarget)
+					WorldQuestTracker.SetupWorldQuestButton (pin._WQT_Twin, worldQuestType, rarity, isElite, tradeskillLineIndex, inProgress, selected, isCriteria, isSpellTarget)
 					format_for_taxy_zoom_allquests (pin._WQT_Twin)
 					pin._WQT_Twin.LastUpdate = GetTime()
 					pin._WQT_Twin.zoomState = true
@@ -426,6 +488,7 @@ function WorldQuestTracker:TAXIMAP_OPENED()
 					--print ("UPDATED")
 				end
 			end
+			
 		end)
 		
 		WorldQuestTracker.FlyMapHook = true

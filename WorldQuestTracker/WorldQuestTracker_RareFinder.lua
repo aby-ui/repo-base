@@ -368,6 +368,10 @@ function WorldQuestTracker:CommReceived (_, data)
 			end
 			
 			WorldQuestTracker.Debug ("CommReceived() > added: " .. newRares .. " updated: " .. justUpdated)
+			
+		else
+			WorldQuestTracker.HandleComm (validData)
+			
 		end
 	end
 end
@@ -850,50 +854,53 @@ function rf.ScanMinimapForRares()
 	-- vignetteInfo.atlasName == "VignetteKill"
 	for i, vignetteID in ipairs (C_VignetteInfo.GetVignettes()) do
 		local vignetteInfo = C_VignetteInfo.GetVignetteInfo (vignetteID)
-		local serial = vignetteInfo.objectGUID
+		
+		if (vignetteInfo) then
+			local serial = vignetteInfo.objectGUID
 
-		if (serial) then
-			local name = vignetteInfo.name
-			local objectIcon = vignetteInfo.atlasName
-			
-			if (objectIcon and (objectIcon == "VignetteKill")) then
-			
-				local npcId = WorldQuestTracker.db.profile.rarescan.name_cache [name]
+			if (serial) then
+				local name = vignetteInfo.name
+				local objectIcon = vignetteInfo.atlasName
 				
-				if (npcId and WorldQuestTracker.MapData.RaresToScan [npcId]) then
-					if (not rf.MinimapScanCooldown [npcId] or rf.MinimapScanCooldown [npcId]+10 < time()) then
-						local isWorldQuest = rf.IsRareAWorldQuest (name)
-						if (not isWorldQuest) then
-							--> make sure the spotted minimap rare isn't the player target
-							local targetSerial = UnitGUID ("target") or ""
-							local targetNpcId = WorldQuestTracker:GetNpcIdFromGuid (targetSerial)
-						
-							if (npcId ~= targetNpcId) then
-								local mapPosition = C_Map.GetPlayerMapPosition (WorldQuestTracker.GetCurrentStandingMapAreaID(), "player")
-								if (not mapPosition) then
-									return
-								end
-								local x, y = mapPosition.x, mapPosition.y
-								
-								local map = WorldQuestTracker.GetCurrentMapAreaID()
-								local rareName = name
-								serial = "Creature-0-0000-0000-00000-" .. npcId .. "-0000000000"
-								
-								local data = LibStub ("AceSerializer-3.0"):Serialize ({rf.COMM_IDS.RARE_SPOTTED, UnitName ("player"), "GUILD", rareName, serial, map, x, y, true, time()})
-								
-								WorldQuestTracker:SendCommMessage (WorldQuestTracker.COMM_PREFIX, data, "GUILD")
-								
-								if (WorldQuestTracker.db.profile.rarescan.playsound and (not rf.MinimapScanCooldown [npcId] or rf.MinimapScanCooldown [npcId]+60 < time())) then
-									PlaySoundFile ("Interface\\AddOns\\WorldQuestTracker\\media\\rare_found" .. WorldQuestTracker.db.profile.rarescan.playsound_volume .. ".ogg", WorldQuestTracker.db.profile.rarescan.use_master and "Master" or "SFX")
-									if (WorldQuestTracker.db.profile.rarescan.playsound_warnings < 3) then
-										WorldQuestTracker.db.profile.rarescan.playsound_warnings = WorldQuestTracker.db.profile.rarescan.playsound_warnings + 1
-										WorldQuestTracker:Msg (L["S_RAREFINDER_SOUNDWARNING"])
+				if (objectIcon and (objectIcon == "VignetteKill")) then
+				
+					local npcId = WorldQuestTracker.db.profile.rarescan.name_cache [name]
+					
+					if (npcId and WorldQuestTracker.MapData.RaresToScan [npcId]) then
+						if (not rf.MinimapScanCooldown [npcId] or rf.MinimapScanCooldown [npcId]+10 < time()) then
+							local isWorldQuest = rf.IsRareAWorldQuest (name)
+							if (not isWorldQuest) then
+								--> make sure the spotted minimap rare isn't the player target
+								local targetSerial = UnitGUID ("target") or ""
+								local targetNpcId = WorldQuestTracker:GetNpcIdFromGuid (targetSerial)
+							
+								if (npcId ~= targetNpcId) then
+									local mapPosition = C_Map.GetPlayerMapPosition (WorldQuestTracker.GetCurrentStandingMapAreaID(), "player")
+									if (not mapPosition) then
+										return
 									end
+									local x, y = mapPosition.x, mapPosition.y
+									
+									local map = WorldQuestTracker.GetCurrentMapAreaID()
+									local rareName = name
+									serial = "Creature-0-0000-0000-00000-" .. npcId .. "-0000000000"
+									
+									local data = LibStub ("AceSerializer-3.0"):Serialize ({rf.COMM_IDS.RARE_SPOTTED, UnitName ("player"), "GUILD", rareName, serial, map, x, y, true, time()})
+									
+									WorldQuestTracker:SendCommMessage (WorldQuestTracker.COMM_PREFIX, data, "GUILD")
+									
+									if (WorldQuestTracker.db.profile.rarescan.playsound and (not rf.MinimapScanCooldown [npcId] or rf.MinimapScanCooldown [npcId]+60 < time())) then
+										PlaySoundFile ("Interface\\AddOns\\WorldQuestTracker\\media\\rare_found" .. WorldQuestTracker.db.profile.rarescan.playsound_volume .. ".ogg", WorldQuestTracker.db.profile.rarescan.use_master and "Master" or "SFX")
+										if (WorldQuestTracker.db.profile.rarescan.playsound_warnings < 3) then
+											WorldQuestTracker.db.profile.rarescan.playsound_warnings = WorldQuestTracker.db.profile.rarescan.playsound_warnings + 1
+											WorldQuestTracker:Msg (L["S_RAREFINDER_SOUNDWARNING"])
+										end
+									end
+									
+									rf.MinimapScanCooldown [npcId] = time()
+									
+									WorldQuestTracker.Debug ("ScanMinimapForRares > added npc from minimap: " .. rareName .. " ID: " .. npcId)
 								end
-								
-								rf.MinimapScanCooldown [npcId] = time()
-								
-								WorldQuestTracker.Debug ("ScanMinimapForRares > added npc from minimap: " .. rareName .. " ID: " .. npcId)
 							end
 						end
 					end

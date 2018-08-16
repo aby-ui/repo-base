@@ -98,7 +98,6 @@ local function CanAddToScanList(npcID)
 
 	if npc then
 		if npc.factionGroup == _G.UnitFactionGroup("player") then
-			private.Debug("Skipping %s (%d) - same faction group.", NPCScan:GetNPCNameFromID(npcID), npcID)
 			return false
 		end
 
@@ -326,6 +325,19 @@ do
 			})
 
 			return
+		end
+
+		local vignetteNPC = private.VignetteIDToNPCMapping[vignetteInfo.vignetteID]
+
+		if vignetteNPC then
+			if Data.Scanner.NPCs[vignetteNPC.npcID] then
+				ProcessDetection({
+					npcID = vignetteNPC.npcID,
+					sourceText = sourceText
+				})
+			end
+		else
+			private.Debug("Unknown vignette: %s - vignetteID %d (NPC ID %d) in mapID %d", vignetteInfo.name, vignetteInfo.vignetteID, npcID or -1, _G.C_Map.GetBestMapForUnit("player"))
 		end
 
 		local vignetteName = vignetteInfo.name

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2098, "DBM-Party-BfA", 9, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17615 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 17702 $"):sub(12, -3))
 mod:SetCreatureID(127484)
 mod:SetEncounterID(2102)
 mod:SetZone()
@@ -34,7 +34,7 @@ local timerFlashingDaggerCD			= mod:NewCDTimer(31.6, 257785, nil, nil, nil, 2, n
 function mod:OnCombatStart(delay)
 	timerCripShivCD:Start(7.2-delay)--SUCCESS
 	timerHowlingFearCD:Start(8.5-delay)
-	timerFlashingDaggerCD:Start(12.2-delay)
+	timerFlashingDaggerCD:Start(12.1-delay)
 end
 
 function mod:OnCombatEnd()

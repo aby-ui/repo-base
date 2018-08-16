@@ -113,7 +113,7 @@ local function UpdateContinentAndMapOptions()
 			}
 		}
 
-		for mapIDIndex = 1, #AlphabeticalContinentMaps[continentID] do
+		for mapIDIndex = 1, AlphabeticalContinentMaps[continentID] and #AlphabeticalContinentMaps[continentID] or 0 do
 			local mapID = AlphabeticalContinentMaps[continentID][mapIDIndex]
 
 			local mapOptions = {

@@ -244,8 +244,6 @@ function WorldQuestTracker.Debug (message, color)
 	end
 end
 
-
-
 function WorldQuestTracker:OnInit()
 	WorldQuestTracker.InitAt = GetTime()
 	WorldQuestTracker.LastMapID = WorldQuestTracker.GetCurrentMapAreaID()
@@ -281,6 +279,10 @@ function WorldQuestTracker:OnInit()
 			if (WorldQuestTracker.db.profile.tracker_is_movable) then
 				LibWindow.RestorePosition (WorldQuestTrackerScreenPanel)
 				WorldQuestTrackerScreenPanel.RegisteredForLibWindow = true
+			end
+			
+			if (not WorldQuestTrackerFinderFrame.IsRegistered) then
+				WorldQuestTracker.RegisterGroupFinderFrameOnLibWindow()
 			end
 		end
 	end
@@ -493,7 +495,8 @@ function WorldQuestTracker:OnInit()
 			FlashClientIcon()
 			
 			if (QuestMapFrame_IsQuestWorldQuest (questID)) then --wait, is this inception?
-				local title, questType, texture, factionID, tagID, tagName, worldQuestType, rarity, isElite, tradeskillLineIndex, selected, isSpellTarget, timeLeft, isCriteria, gold, goldFormated, rewardName, rewardTexture, numRewardItems, itemName, itemTexture, itemLevel, quantity, quality, isUsable, itemID, isArtifact, artifactPower, isStackable = WorldQuestTracker:GetQuestFullInfo (questID)
+				--local title, questType, texture, factionID, tagID, tagName, worldQuestType, rarity, isElite, tradeskillLineIndex, selected, isSpellTarget, timeLeft, isCriteria, gold, goldFormated, rewardName, rewardTexture, numRewardItems, itemName, itemTexture, itemLevel, quantity, quality, isUsable, itemID, isArtifact, artifactPower, isStackable = WorldQuestTracker:GetQuestFullInfo (questID)
+				local title, factionID, tagID, tagName, worldQuestType, rarity, isElite, tradeskillLineIndex, tagID, tagName, worldQuestType, rarity, isElite, tradeskillLineIndex, allowDisplayPastCritical, gold, goldFormated, rewardName, rewardTexture, numRewardItems, itemName, itemTexture, itemLevel, quantity, quality, isUsable, itemID, isArtifact, artifactPower, isStackable, stackAmount = WorldQuestTracker.GetOrLoadQuestData (questID)
 				
 				--print (title, questType, texture, factionID, tagID, tagName, worldQuestType, rarity, isElite, tradeskillLineIndex)
 				--Retake the Skyhorn 8 Interface\AddOns\WorldQuestTracker\media\icon_artifactpower_redT_round 1828 109 World Quest 3 1 false nil				

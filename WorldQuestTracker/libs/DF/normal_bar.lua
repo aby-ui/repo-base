@@ -121,6 +121,10 @@ local BarMetaFunctions = _G [DF.GlobalWidgetControlNames ["normal_bar"]]
 	local gmember_textcolor = function (_object)
 		return _object.textleft:GetTextColor()
 	end
+	--> alpha 
+	local gmember_alpha= function (_object)
+		return _object:GetAlpha()
+	end
 
 	BarMetaFunctions.GetMembers = BarMetaFunctions.GetMembers or {}
 	BarMetaFunctions.GetMembers ["tooltip"] = gmember_tooltip
@@ -139,6 +143,7 @@ local BarMetaFunctions = _G [DF.GlobalWidgetControlNames ["normal_bar"]]
 	BarMetaFunctions.GetMembers ["textsize"] = gmember_textsize --alias
 	BarMetaFunctions.GetMembers ["textfont"] = gmember_textfont --alias
 	BarMetaFunctions.GetMembers ["textcolor"] = gmember_textcolor --alias
+	BarMetaFunctions.GetMembers ["alpha"] = gmember_alpha
 	
 	BarMetaFunctions.__index = function (_table, _member_requested)
 
@@ -295,7 +300,11 @@ local BarMetaFunctions = _G [DF.GlobalWidgetControlNames ["normal_bar"]]
 		DF:SetFontOutline (_object.textleft, _value)
 		return DF:SetFontOutline (_object.textright, _value)
 	end
-
+	--> alpha 
+	local smember_alpha= function (_object, _value)
+		return _object:SetAlpha (_value)
+	end
+	
 	BarMetaFunctions.SetMembers = BarMetaFunctions.SetMembers or {}
 	BarMetaFunctions.SetMembers["tooltip"] = smember_tooltip
 	BarMetaFunctions.SetMembers["shown"] = smember_shown
@@ -317,6 +326,7 @@ local BarMetaFunctions = _G [DF.GlobalWidgetControlNames ["normal_bar"]]
 	BarMetaFunctions.SetMembers["textcolor"] = smember_textcolor --alias
 	BarMetaFunctions.SetMembers["shadow"] = smember_outline
 	BarMetaFunctions.SetMembers["outline"] = smember_outline --alias
+	BarMetaFunctions.SetMembers["alpha"] = smember_alpha
 	
 	BarMetaFunctions.__newindex = function (_table, _key, _value)
 	

@@ -1031,6 +1031,8 @@ function DF:NewButton (parent, container, name, member, w, h, func, param1, para
 		ButtonObject.options = {OnGrab = false}
 
 	ButtonObject.button = CreateFrame ("button", name, parent)
+	DF:Mixin (ButtonObject.button, DF.WidgetFunctions)
+	
 	build_button (ButtonObject.button)
 	
 	ButtonObject.widget = ButtonObject.button
@@ -1147,8 +1149,17 @@ end
 local pickcolor_callback = function (self, r, g, b, a, button)
 	a = abs (a-1)
 	button.MyObject.color_texture:SetVertexColor (r, g, b, a)
-	button.MyObject:color_callback (r, g, b, a)
+	
+	--> safecall
+	--button.MyObject:color_callback (r, g, b, a)
+	local success, errorText = pcall (button.MyObject.color_callback, button.MyObject, r, g, b, a)
+	if (not success) then
+		error ("Details! Framework: colorpick " .. (self:GetName() or "-NONAME-") ..  " error: " .. errorText)
+	end
+	
+	button.MyObject:RunHooksForWidget ("OnColorChanged", button.MyObject, r, g, b, a)
 end
+
 local pickcolor = function (self, alpha, param2)
 	local r, g, b, a = self.MyObject.color_texture:GetVertexColor()
 	a = abs (a-1)
@@ -1178,6 +1189,8 @@ function DF:NewColorPickButton (parent, name, member, callback, alpha, button_te
 	button.color_callback = callback
 	button.Cancel = colorpick_cancel
 	button.SetColor = set_colorpick_color
+	
+	button.HookList.OnColorChanged = {}
 	
 	if (not button_template) then
 		button:InstallCustomTexture()

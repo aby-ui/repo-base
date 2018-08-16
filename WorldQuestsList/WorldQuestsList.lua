@@ -1,4 +1,4 @@
-local VERSION = 75
+local VERSION = 76
 
 --[[
 Special icons for rares, pvp or pet battle quests in list
@@ -216,6 +216,9 @@ Minor LFG updates
 LFG Hotfixes
 
 LFG fixes
+
+Added option to highlight quest for selected factions reputations
+Minor fixes
 ]]
 
 local GlobalAddonName, WQLdb = ...
@@ -3272,8 +3275,36 @@ do
 		checkable = true,
 	}
 	
+	local GetFaction = function(id,non_translated) 
+		return FACTION.." "..(GetFactionInfoByID(id) or non_translated or ("ID "..tostring(id)))
+	end
+	local function SetHighlighFaction(_, arg1)
+		VWQL[charKey][arg1] = not VWQL[charKey][arg1]
+		ELib.ScrollDropDown.UpdateChecks()
+		WorldQuestList_Update()
+	end
+	local highlightingSubmenu = {
+		{text = GetFaction(2164),	func = SetHighlighFaction,	arg1 = "faction2164Highlight",	checkable = true,	shownFunc = function() return WorldQuestList:IsFactionAvailable(2164) end	},
+		{text = GetFaction(2163),	func = SetHighlighFaction,	arg1 = "faction2163Highlight",	checkable = true,	shownFunc = function() return WorldQuestList:IsFactionAvailable(2163) end	},
+		{text = GetFaction(2157),	func = SetHighlighFaction,	arg1 = "faction2157Highlight",	checkable = true,	shownFunc = function() return WorldQuestList:IsFactionAvailable(2157) end	},
+		{text = GetFaction(2156),	func = SetHighlighFaction,	arg1 = "faction2156Highlight",	checkable = true,	shownFunc = function() return WorldQuestList:IsFactionAvailable(2156) end	},
+		{text = GetFaction(2103),	func = SetHighlighFaction,	arg1 = "faction2103Highlight",	checkable = true,	shownFunc = function() return WorldQuestList:IsFactionAvailable(2103) end	},
+		{text = GetFaction(2158),	func = SetHighlighFaction,	arg1 = "faction2158Highlight",	checkable = true,	shownFunc = function() return WorldQuestList:IsFactionAvailable(2158) end	},
+		{text = GetFaction(2159),	func = SetHighlighFaction,	arg1 = "faction2159Highlight",	checkable = true,	shownFunc = function() return WorldQuestList:IsFactionAvailable(2159) end	},
+		{text = GetFaction(2160),	func = SetHighlighFaction,	arg1 = "faction2160Highlight",	checkable = true,	shownFunc = function() return WorldQuestList:IsFactionAvailable(2160) end	},
+		{text = GetFaction(2162),	func = SetHighlighFaction,	arg1 = "faction2162Highlight",	checkable = true,	shownFunc = function() return WorldQuestList:IsFactionAvailable(2162) end	},
+		{text = GetFaction(2161),	func = SetHighlighFaction,	arg1 = "faction2161Highlight",	checkable = true,	shownFunc = function() return WorldQuestList:IsFactionAvailable(2161) end	},
+	}
+	
 	list[#list+1] = {
-		text = LOCALE.addQuestsOpposite,
+		text = HIGHLIGHTING.." "..REPUTATION,
+		padding = 16,
+		subMenu = highlightingSubmenu,
+		shownFunc = function() return not WorldQuestList:IsLegionZone() or not WorldQuestList.optionsDropDown:IsVisible() end,
+	}	
+	
+	list[#list+1] = {
+		text = (UnitFactionGroup("player") == "Alliance" and "|TInterface\\FriendsFrame\\PlusManz-Alliance:16|t " or "|TInterface\\FriendsFrame\\PlusManz-Horde:16|t ")..LOCALE.addQuestsOpposite,
 		func = function()
 			VWQL.OppositeContinent = not VWQL.OppositeContinent
 			WorldQuestList_Update()
@@ -3291,7 +3322,7 @@ do
 		shownFunc = function() return WorldQuestList:IsLegionZone() or not WorldQuestList.optionsDropDown:IsVisible() end,
 	}
 	list[#list+1] = {
-		text = LOCALE.hideLegion,
+		text = "|T1339312:16:16:0:0:512:128:246:262:111:126|t "..LOCALE.hideLegion,
 		func = function()
 			VWQL.HideLegion = not VWQL.HideLegion
 			WorldQuestList_Update()
@@ -3412,6 +3443,9 @@ do
 		listSizeSubmenu[1].checkState = not VWQL.DisableHeader
 		listSizeSubmenu[2].checkState = not VWQL.DisableTotalAP
 		listSizeSubmenu[4].slider.val = (VWQL.MaxLinesShow or 9)
+		for i=1,#highlightingSubmenu do
+			highlightingSubmenu[i].checkState = VWQL[charKey][highlightingSubmenu[i].arg1]
+		end
 	end	
 end
 
@@ -4724,6 +4758,7 @@ function WorldQuestList_Update(preMapID)
 				local isUnlimited
 				local questColor	--nil - white, 1 - blue, 2 - epic, 3 - invasion
 				local reputationList
+				local highlightFaction
 				
 				local professionFix
 				local IsPvPQuest
@@ -4799,6 +4834,10 @@ function WorldQuestList_Update(preMapID)
 					if ( factionName ) then
 						faction = factionName
 					end
+					
+					if VWQL[charKey]["faction"..factionID.."Highlight"] then
+						highlightFaction = true
+					end
 				end
 				
 				for bountyQuestID,bountyIcon in pairs(bountiesInProgress) do
@@ -4817,6 +4856,10 @@ function WorldQuestList_Update(preMapID)
 				for bountyQuestID,bountyFactionID in pairs(BOUNTY_QUEST_TO_FACTION) do
 					if IsQuestCriteriaForBounty(questID, bountyQuestID) then
 						reputationList = reputationList and (reputationList..","..bountyFactionID) or bountyFactionID
+						
+						if VWQL[charKey]["faction"..bountyFactionID.."Highlight"] then
+							highlightFaction = true
+						end
 					end
 				end
 				
@@ -4946,6 +4989,10 @@ function WorldQuestList_Update(preMapID)
 									end
 									rewardType = 33	+ currencyID / 10000
 									rewardColor = WorldQuestList.ColorYellow	
+									
+									if VWQL[charKey]["faction"..WorldQuestList:FactionCurrencyToID(currencyID).."Highlight"] then
+										highlightFaction = true
+									end
 								end
 							elseif i > 1 and reward ~= "" then
 								if currencyID == 1342 then	--War Supplies
@@ -5237,6 +5284,7 @@ function WorldQuestList_Update(preMapID)
 						reputationList = reputationList,
 						professionIndex = tradeskillLineIndex and tradeskillLineID,
 						disableLFG = WorldQuestList:IsQuestDisabledForLFG(questID) or worldQuestType == LE.LE_QUEST_TAG_TYPE_PET_BATTLE,
+						highlightFaction = highlightFaction,
 					})
 				end
 				
@@ -5448,7 +5496,9 @@ function WorldQuestList_Update(preMapID)
 		line.isRewardLink = nil
 		
 		line.faction:SetText(data.faction)
-		if data.factionInProgress then
+		if data.highlightFaction then
+			line.faction:SetTextColor(.8,.35,1)
+		elseif data.factionInProgress then
 			line.faction:SetTextColor(.5,1,.5)
 		else
 			line.faction:SetTextColor(1,1,1)

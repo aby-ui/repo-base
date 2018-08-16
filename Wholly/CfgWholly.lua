@@ -1,4 +1,4 @@
-U1RegisterAddon("Wholly", { 
+U1RegisterAddon("Wholly", {
     title = "可接任务查询",
     tags = {TAG_MAPQUEST, TAG_BIG},
     load = "NORMAL",
@@ -10,6 +10,8 @@ U1RegisterAddon("Wholly", {
     desc = "Wholly & Grail``(请手工启用, 加载时间较长)``在大地图上显示'可接任务'按钮, 可以显示任务给予人的位置, 右键点击可以显示过滤设置。``/wholly可以在单独的窗口中显示当前地图可接任务列表。",
     nopic = 1,
     icon = [[Interface\AddOns\Wholly\exclamation.blp]],
+
+    runBeforeLoad = function() EnableAddOn("Grail-Quests-zhCN") end,
 
     {
         type="button",

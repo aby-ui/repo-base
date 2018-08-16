@@ -732,6 +732,8 @@ do
 							button:SetEnabled(true)
 						end
 						
+						text:SetWordWrap(false)
+						
 						if data.slider then	-- {func = onChangedFunc, val = currVal, min = currMin, max = currMax}
 							button.slider:SetMinMaxValues(data.slider.min,data.slider.max)
 							button.sliderAfterText = data.slider.afterText

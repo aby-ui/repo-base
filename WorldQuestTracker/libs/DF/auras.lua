@@ -486,7 +486,7 @@ function DF:CreateAuraConfigPanel (parent, name, db, change_callback, options, t
 			backdrop_color = {.8, .8, .8, 0.2},
 			panel_border_color = {.01, 0, 0, 1},
 			iconcoords = {.1, .9, .1, .9},
-			onenter = function(self, capsule, value) GameTooltip:SetOwner (self, "ANCHOR_RIGHT"); GameTooltip:SetSpellByID(value); GameTooltip:AddLine (" "); GameTooltip:Show() end, 
+			onenter = function(self, capsule, value) GameTooltip:SetOwner (self, "ANCHOR_CURSOR"); GameTooltip:SetSpellByID(value); GameTooltip:AddLine (" "); GameTooltip:Show() end, 
 			show_x_button = true,
 			x_button_func = 	function (spellId)
 				f.db.aura_tracker.debuff_banned [spellId] = nil; DF:QuickDispatch (change_callback);
@@ -507,7 +507,7 @@ function DF:CreateAuraConfigPanel (parent, name, db, change_callback, options, t
 			backdrop_color = {.8, .8, .8, 0.2},
 			panel_border_color = {.02, 0, 0, 1},
 			iconcoords = {.1, .9, .1, .9},
-			onenter = function(self, capsule, value) GameTooltip:SetOwner (self, "ANCHOR_RIGHT"); GameTooltip:SetSpellByID(value); GameTooltip:AddLine (" "); GameTooltip:Show() end, 
+			onenter = function(self, capsule, value) GameTooltip:SetOwner (self, "ANCHOR_CURSOR"); GameTooltip:SetSpellByID(value); GameTooltip:AddLine (" "); GameTooltip:Show() end, 
 			show_x_button = true,
 			x_button_func = 	function (spellId)
 				f.db.aura_tracker.buff_banned [spellId] = nil; DF:QuickDispatch (change_callback);
@@ -527,7 +527,7 @@ function DF:CreateAuraConfigPanel (parent, name, db, change_callback, options, t
 			backdrop_color = {.8, .8, .8, 0.2},
 			panel_border_color = {0, .02, 0, 1},
 			iconcoords = {.1, .9, .1, .9},
-			onenter = function(self, capsule, value) GameTooltip:SetOwner (self, "ANCHOR_RIGHT"); GameTooltip:SetSpellByID(value); GameTooltip:AddLine (" "); GameTooltip:Show() end, 
+			onenter = function(self, capsule, value) GameTooltip:SetOwner (self, "ANCHOR_CURSOR"); GameTooltip:SetSpellByID(value); GameTooltip:AddLine (" "); GameTooltip:Show() end, 
 			show_x_button = true,
 			x_button_func = 	function (spellId)
 				f.db.aura_tracker.debuff_tracked [spellId] = nil; DF:QuickDispatch (change_callback);
@@ -547,7 +547,7 @@ function DF:CreateAuraConfigPanel (parent, name, db, change_callback, options, t
 			backdrop_color = {.8, .8, .8, 0.2},
 			panel_border_color = {0, .01, 0, 1},
 			iconcoords = {.1, .9, .1, .9},
-			onenter = function(self, capsule, value) GameTooltip:SetOwner (self, "ANCHOR_RIGHT"); GameTooltip:SetSpellByID(value); GameTooltip:AddLine (" "); GameTooltip:Show() end, 
+			onenter = function(self, capsule, value) GameTooltip:SetOwner (self, "ANCHOR_CURSOR"); GameTooltip:SetSpellByID(value); GameTooltip:AddLine (" "); GameTooltip:Show() end, 
 			show_x_button = true,
 			x_button_func = 	function (spellId)
 				f.db.aura_tracker.buff_tracked [spellId] = nil; DF:QuickDispatch (change_callback);
@@ -610,7 +610,7 @@ function DF:CreateAuraConfigPanel (parent, name, db, change_callback, options, t
 		self:SetBackdropColor (unpack (backdrop_color_on_enter))
 		local spellid = select (7, GetSpellInfo (self.value))
 		if (spellid) then
-			GameTooltip:SetOwner (self, "ANCHOR_RIGHT");
+			GameTooltip:SetOwner (self, "ANCHOR_CURSOR")
 			GameTooltip:SetSpellByID (spellid)
 			GameTooltip:AddLine (" ")
 			GameTooltip:Show()
@@ -856,6 +856,14 @@ function DF:CreateAuraConfigPanel (parent, name, db, change_callback, options, t
 	
 	buffs_added:Refresh()
 	debuffs_added:Refresh()
+	
+	
+-----------------------	----------------------------------------------	----------------------------------------------	-----------------------
+	
+	f:SetScript ("OnShow", function()
+		buffs_added:Refresh()
+		debuffs_added:Refresh()
+	end)
 	
 	return f
 end

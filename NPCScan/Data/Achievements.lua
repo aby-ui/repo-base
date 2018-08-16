@@ -7,15 +7,20 @@ local pairs = _G.pairs
 -- AddOn namespace
 -- ----------------------------------------------------------------------------
 local AddOnFolderName, private = ...
-local ContinentID = private.Enum.ContinentID
 local Data = private.Data
 
 local AchievementID = {
 	AdventurerOfAzsuna = 11261,
+	AdventurerOfDrustvar = 12941,
 	AdventurerOfHighmountain = 11264,
+	AdventurerOfNazmir = 12942,
 	AdventurerOfStormheim = 11263,
+	AdventurerOfStormsongValley = 12940,
 	AdventurerOfSuramar = 11265,
+	AdventurerOfTiragardeSound = 12939,
 	AdventurerOfValsharah = 11262,
+	AdventurerOfVoldun = 12943,
+	AdventurerOfZuldazar = 12944,
 	AncientNoMore = 9678,
 	BloodyRare = 1312,
 	BrokeBackPrecipice = 9571,
@@ -34,6 +39,7 @@ local AchievementID = {
 	KingOfTheMonsters = 9601,
 	MakingTheCut = 9617,
 	MillionsOfYearsOfEvolutionVsMyFist = 8123,
+	MushroomHarvest = 13027,
 	NaxtVictim = 11841,
 	OneManArmy = 7317,
 	PraiseTheSun = 8028,
@@ -41,73 +47,27 @@ local AchievementID = {
 	TerrorsOfTheShore = 11786,
 	TheSongOfSilence = 9541,
 	TimelessChampion = 8714,
+	UnboundMonstrosities = 12587,
 	UnleashedMonstrosities = 11160,
 	ZulAgain = 8078
 }
 
 private.Enum.AchievementID = AchievementID
 
-Data.Achievements = {
-	[AchievementID.AdventurerOfAzsuna] = {
-		continentID = ContinentID.BrokenIsles
-	},
-	[AchievementID.AdventurerOfHighmountain] = {
-		continentID = ContinentID.BrokenIsles
-	},
-	[AchievementID.AdventurerOfStormheim] = {
-		continentID = ContinentID.BrokenIsles
-	},
-	[AchievementID.AdventurerOfSuramar] = {
-		continentID = ContinentID.BrokenIsles
-	},
-	[AchievementID.AdventurerOfValsharah] = {
-		continentID = ContinentID.BrokenIsles
-	},
+Data.Achievements = {}
+
+for _, achievementID in pairs(AchievementID) do
+	Data.Achievements[achievementID] = {}
+end
+
+local achievementDataDefaults = {
 	[AchievementID.AncientNoMore] = {
-		continentID = ContinentID.Draenor,
 		criteriaNPCs = {
 			[86258] = true, -- Nultra
 			[86259] = true, -- Valstil
 		},
 	},
-	[AchievementID.BloodyRare] = {
-		continentID = ContinentID.Outland
-	},
-	[AchievementID.BrokeBackPrecipice] = {
-		continentID = ContinentID.Draenor
-	},
-	[AchievementID.ChampionsOfLeiShen] = {
-		continentID = ContinentID.Pandaria
-	},
-	[AchievementID.CommanderOfArgus] = {
-		continentID = ContinentID.BrokenIsles
-	},
-	[AchievementID.CutOffTheHead] = {
-		continentID = ContinentID.Draenor
-	},
-	[AchievementID.FightThePower] = {
-		continentID = ContinentID.Draenor
-	},
-	[AchievementID.Frostbitten] = {
-		continentID = ContinentID.Northrend
-	},
-	[AchievementID.Glorious] = {
-		continentID = ContinentID.Pandaria
-	},
-	[AchievementID.GorgrondMonsterHunter] = {
-		continentID = ContinentID.Draenor
-	},
-	[AchievementID.Hellbane] = {
-		continentID = ContinentID.Draenor
-	},
-	[AchievementID.HeraldsOfTheLegion] = {
-		continentID = ContinentID.Draenor
-	},
-	[AchievementID.HighValueTargets] = {
-		continentID = ContinentID.Draenor
-	},
 	[AchievementID.ImInYourBaseKillingYourDudes] = {
-		continentID = ContinentID.Pandaria,
 		criteriaNPCs = {
 			[68317] = true, -- Mavis Harms
 			[68318] = true, -- Dalan Nightbreaker
@@ -117,50 +77,22 @@ Data.Achievements = {
 			[68322] = true, -- Muerta
 		},
 	},
-	[AchievementID.JungleStalker] = {
-		continentID = ContinentID.Draenor
-	},
-	[AchievementID.KingOfTheMonsters] = {
-		continentID = ContinentID.Draenor
-	},
-	[AchievementID.MakingTheCut] = {
-		continentID = ContinentID.Draenor
-	},
 	[AchievementID.MillionsOfYearsOfEvolutionVsMyFist] = {
-		continentID = ContinentID.Pandaria,
 		criteriaNPCs = {
 			[69161] = true, -- Oondasta
 		}
 	},
-	[AchievementID.NaxtVictim] = {
-		continentID = ContinentID.BrokenIsles
-	},
-	[AchievementID.OneManArmy] = {
-		continentID = ContinentID.Pandaria
-	},
 	[AchievementID.PraiseTheSun] = {
-		continentID = ContinentID.Pandaria,
 		criteriaNPCs = {
 			[69099] = true, -- Nalak¸
 		},
 	},
 	[AchievementID.Predator] = {
-		continentID = ContinentID.Draenor,
 		criteriaNPCs = {
 			[96235] = true, -- Xemirkol
 		}
 	},
-	[AchievementID.TerrorsOfTheShore] = {
-		continentID = ContinentID.BrokenIsles
-	},
-	[AchievementID.TheSongOfSilence] = {
-		continentID = ContinentID.Draenor
-	},
-	[AchievementID.TimelessChampion] = {
-		continentID = ContinentID.Pandaria
-	},
 	[AchievementID.UnleashedMonstrosities] = {
-		continentID = ContinentID.BrokenIsles,
 		criteriaNPCs = {
 			[106981] = true, -- Captain Hring
 			[106982] = true, -- Reaver Jdorn
@@ -168,7 +100,6 @@ Data.Achievements = {
 		},
 	},
 	[AchievementID.ZulAgain] = {
-		continentID = ContinentID.Pandaria,
 		criteriaNPCs = {
 			[69768] = true, -- Zandalari Warscout
 			[69769] = true, -- Zandalari Warbringer
@@ -177,6 +108,10 @@ Data.Achievements = {
 		},
 	},
 }
+
+for achievementID, data in pairs(achievementDataDefaults) do
+	Data.Achievements[achievementID] = data
+end
 
 -- ----------------------------------------------------------------------------
 -- Achievements.

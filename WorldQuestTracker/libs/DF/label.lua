@@ -206,7 +206,13 @@ local LabelMetaFunctions = _G [DF.GlobalWidgetControlNames ["label"]]
 	function LabelMetaFunctions:Hide()
 		return self.label:Hide()
 	end
-
+	
+--text text
+	function LabelMetaFunctions:SetTextTruncated (text, maxWidth)
+		self.widget:SetText (text)
+		DF:TruncateText (self.widget, maxWidth)
+	end
+	
 -- textcolor
 	function LabelMetaFunctions:SetTextColor (color, arg2, arg3, arg4)
 		if (arg2) then
