@@ -15,12 +15,12 @@ end
 function ProgressBarModule:Load()
 	if Addon.Config:OneBarMode() then
 		self.bars = {
-			Addon.ExperienceBar:New('exp', { 'xp', 'reputation', 'honor', 'artifact', 'azerite' }),
+			Addon.ExperienceBar:New('exp', { 'xp', 'reputation', 'honor', 'azerite' }),
 		}
 	else
 		self.bars = {
 			Addon.ExperienceBar:New('exp', { 'xp', 'reputation', 'honor' }),
-			Addon.ArtifactBar:New('artifact', { 'artifact', 'azerite' })
+			Addon.ArtifactBar:New('artifact', { 'azerite' })
 		}
 	end
 

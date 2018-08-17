@@ -39,7 +39,7 @@ local function mob_name(id)
     return name_cache[id]
 end
 
-local default_texture, npc_texture, follower_texture, currency_texture
+local default_texture, npc_texture, follower_texture, currency_texture, junk_texture
 local icon_cache = {}
 local trimmed_icon = function(texture)
     if not icon_cache[texture] then
@@ -160,6 +160,12 @@ local function work_out_texture(point)
             npc_texture = atlas_texture("DungeonSkull", 1)
         end
         return npc_texture
+    end
+    if point.junk then
+        if not junk_texture then
+            junk_texture = atlas_texture("VignetteLoot", 1.5)
+        end
+        return junk_texture
     end
     if not default_texture then
         default_texture = atlas_texture("Garr_TreasureIcon", 2.6)

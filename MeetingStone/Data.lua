@@ -281,6 +281,23 @@ CATEGORY = {
         activities = {
             [458] = true,
         },
+    },
+    [7] = {
+        groups = {
+            [136] = true,
+            [137] = true,
+            [138] = true,
+            [139] = true,
+            [140] = true,
+            [141] = true,
+            [142] = true,
+            [143] = true,
+            [144] = true,
+            [145] = true,
+            [146] = true,
+            [147] = true,
+        },
+        activities = {}
     }
 }
 

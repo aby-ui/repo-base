@@ -24,3 +24,4 @@ L.Display_remaining = '顯示升級剩餘'
 L.CompressValues = '顯示簡短的數值'
 
 L.Paragon = '巔峰'
+L.Azerite = '艾心能量'

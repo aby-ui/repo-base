@@ -305,7 +305,7 @@ LibEvent:attachEvent("ADDON_LOADED", function(self, addonName)
             if (text2 and type(text2) == "string") then
                 local link = string.match(text2, "|H(item:%d+:.-)|h.-|h")
                 if (link) then
-                    local level = GuildNewsItemCache[link] or GetDetailedItemLevelInfo(link) or 0 --163ui fix GuildNewsItemCache[link] or select(2, LibItemInfo:GetItemInfo(link))
+                    local level = GuildNewsItemCache[link] or select(2, LibItemInfo:GetItemInfo(link))
                     if (level > 0) then
                         GuildNewsItemCache[link] = level
                         if level > 220 then
@@ -398,7 +398,7 @@ local function ChatItemLevel(Hyperlink)
     local name, _, quality, _, _, class, subclass, _, equipSlot, texture = GetItemInfo(link)
     if (not texture) then return end
 	local Origin = Hyperlink
-    local level = GetDetailedItemLevelInfo(link)
+    local level = select(2, LibItemInfo:GetItemInfo(link))
     local yes = true
     if (level) then
         if (equipSlot and string.find(equipSlot, "INVTYPE_")) then

@@ -31,3 +31,4 @@ L.Color_honor_bonus = '奖励荣誉颜色'
 L.Color_artifact = '神奇能量颜色'
 
 L.Paragon = '巅峰'
+L.Azerite = '艾心能量'

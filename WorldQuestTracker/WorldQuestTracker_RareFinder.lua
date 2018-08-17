@@ -612,13 +612,13 @@ rf:SetScript ("OnEvent", function (self, event, ...)
 
 				--> check if the group finder window is shown with the mob we just killed
 				if (ff:IsShown()) then
-					if (ff.Label1.text == alvo_name) then
+					if (ff.QuestName2Text.text == alvo_name) then
 						ff.HideMainFrame()
 					end
 				end
 				
 				--> ask to leave the group
-				if (ff.Label1.text == alvo_name and ff.SearchCustom) then
+				if (ff.QuestName2Text.text == alvo_name and ff.SearchCustom) then
 					ff.WorldQuestFinished (0, true)
 				end
 				

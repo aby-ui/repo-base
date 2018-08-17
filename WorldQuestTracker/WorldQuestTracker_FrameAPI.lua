@@ -62,6 +62,15 @@ function WorldQuestTracker.CanLinkToChat (object, button)
 	end
 end
 
+--> force to show a blizzard pin in the zone map
+function WorldQuestTracker.ShowDefaultPinForQuest (questID)
+	local defaultPin = WorldQuestTracker.GetDefaultPinForQuest (questID)
+	if (defaultPin) then
+		defaultPin:Show()
+	end
+	WorldQuestTracker.ShowDefaultWorldQuestPin [questID] = true
+end
+
 --return the red and green color for the given percent, zero = green, one = red
 --expect a normalized float 0 ... 1
 function WorldQuestTracker.ColorScaleByPercent (percent_scaled)
@@ -543,7 +552,10 @@ function WorldQuestTracker.OnQuestButtonClick (self, button)
 
 	--was middle button and our group finder is enabled
 	if (button == "MiddleButton" and WorldQuestTracker.db.profile.groupfinder.enabled) then
-		WorldQuestTracker.FindGroupForQuest (self.questID)
+		--WorldQuestTracker.FindGroupForQuest (self.questID)
+		
+		--> simulate entering a quest to show the group finder window
+		ff:PlayerEnteredWorldQuestZone (self.questID)
 		return
 	end
 	

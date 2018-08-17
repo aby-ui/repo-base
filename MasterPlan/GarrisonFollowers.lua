@@ -204,7 +204,7 @@ HookOnShow(GarrisonMissionFrame.FollowerTab, function(self)
 	mechanicsFrame:Show()
 end)
 HookOnShow(GarrisonLandingPage.FollowerTab, function(self)
-	if GarrisonLandingPage.garrTypeID == 3 then
+	if GarrisonLandingPage.garrTypeID >= 3 then
 		if mechanicsFrame:GetParent() == self then
 			mechanicsFrame:Hide()
 		end
@@ -795,7 +795,7 @@ end)
 local function Portrait_OnShow(self)
 	local p = self:GetParent()
 	if p:IsVisible() and SpecAffinityFrame:GetParent() ~= self then
-		if self == GarrisonLandingPage.FollowerTab.PortraitFrame and GarrisonLandingPage.garrTypeID == 3 then
+		if self == GarrisonLandingPage.FollowerTab.PortraitFrame and GarrisonLandingPage.garrTypeID >= 3 then
 			SpecAffinityFrame:ReleaseFor(p)
 			return
 		end

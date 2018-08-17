@@ -25,9 +25,10 @@ function AzeriteBar:Update()
 
     local azeriteItemLocation = C_AzeriteItem.FindActiveAzeriteItem()
     local value, max = C_AzeriteItem.GetAzeriteItemXPInfo(azeriteItemLocation)
+    local level = C_AzeriteItem.GetPowerLevel(azeriteItemLocation)
 
     self:SetValues(value, max)
-    self:UpdateText(L.Azerite, value, max)
+    self:UpdateText(L.Azerite .. "(" .. level .. (GetLocale()=="zhCN" and "级)" or ")"), value, max)
 end
 
 function AzeriteBar:IsModeActive()

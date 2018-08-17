@@ -579,12 +579,7 @@ function WorldQuestTracker.UpdateZoneWidgets (forceUpdate)
 								if (timeLeft == 1) then
 									--let the default UI show the icon if the time is mess off
 									widget:Hide()
-									
-									local defaultPin = WorldQuestTracker.GetDefaultPinForQuest (questID)
-									if (defaultPin) then
-										defaultPin:Show()
-										WorldQuestTracker.ShowDefaultWorldQuestPin [questID] = true
-									end
+									WorldQuestTracker.ShowDefaultPinForQuest (questID)
 								end
 								
 							else
@@ -622,15 +617,14 @@ function WorldQuestTracker.UpdateZoneWidgets (forceUpdate)
 							if (not filter) then
 								--> if WTQ didn't identify the quest type, allow the default interface to show this quest
 								--> this is a safety measure with bugs or new quest types
-								local defaultPin = WorldQuestTracker.GetDefaultPinForQuest (questID)
-								if (defaultPin) then
-									defaultPin:Show()
-									WorldQuestTracker.ShowDefaultWorldQuestPin [questID] = true
-								end
+								WorldQuestTracker.ShowDefaultPinForQuest (questID)
 								
 							end
 						end --pass filters
 						
+					else
+						--show blizzard pin if the quest has an invalid time left
+						WorldQuestTracker.ShowDefaultPinForQuest (questID)
 					end --time left
 					
 				end --is world quest
@@ -644,8 +638,12 @@ function WorldQuestTracker.UpdateZoneWidgets (forceUpdate)
 					C_TaskQuest.RequestPreloadRewardData (questID)
 					WorldQuestTracker.ScheduleZoneMapUpdate (1, true)
 				end
+				
+				--show blizzard pin if the client doesn't have the quest data yet
+				WorldQuestTracker.ShowDefaultPinForQuest (questID)
 			end
-		end
+			
+		end --end foreach taskinfo
 		
 		if (needAnotherUpdate) then
 			if (UpdateDebug) then print ("NeedUpdate 2") end

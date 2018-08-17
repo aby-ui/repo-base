@@ -111,7 +111,7 @@ local function Ship_SetRecruit(ship)
 	return true
 end
 hooksecurefunc("GarrisonLandingPageReport_GetShipments", function(self)
-	if GarrisonLandingPage.garrTypeID == 3 then return end
+	if GarrisonLandingPage.garrTypeID >= 3 then return end
 	local index, ship = self.shipmentsPool.numActiveObjects, self.shipmentsPool:Acquire()
 	ship:SetPoint("TOPLEFT", 60 + mod(index, 3) * 105, -105 - floor(index / 3) * 100)
 	if Ship_SetRecruit(ship) then
@@ -157,7 +157,7 @@ hooksecurefunc(GarrisonLandingPage.Report.shipmentsPool, "ReleaseAll", function(
 end)
 
 local function ShowReportMissionExpirationTime()
-	if GarrisonLandingPage.garrTypeID == 3 then return end
+	if GarrisonLandingPage.garrTypeID >= 3 then return end
 	local items, buttons = GarrisonLandingPageReport.List.AvailableItems, GarrisonLandingPageReport.List.listScroll.buttons
 	for i=1,#buttons do
 		local item = buttons[i]:IsShown() and items[buttons[i].id]
@@ -178,7 +178,7 @@ hs:SetSize(24, 24)
 hs:SetPoint("LEFT", GarrisonLandingPage, "TOPLEFT", 40, -63)
 hs.Count:Hide()
 HookOnShow(GarrisonLandingPageReport, function()
-	local show = GarrisonLandingPage.garrTypeID ~= 3
+	local show = GarrisonLandingPage.garrTypeID < 3
 	GarrisonLandingPageReport.Title:SetPoint("LEFT", GarrisonLandingPage.HeaderBar, "LEFT", show and 40 or 20, 0)
 	hs:SetShown(show)
 end)

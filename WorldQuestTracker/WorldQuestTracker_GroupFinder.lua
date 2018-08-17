@@ -459,8 +459,11 @@ ff.LeaveButton:SetClickFunction (function() ff:HideFrame (true) end, false, fals
 --> BUTTON open group finder window
 local ignore_current_quest = function()
 	DF:ShowPromptPanel ("Don't Show Popups for the Quest: " .. (ff.QuestName2Text:GetText() or "-") .. "?", function() 
-		WorldQuestTracker.db.profile.groupfinder.ignored_quests [ff.CurrentWorldQuest] = true
-		WorldQuestTracker:Msg ("Quest " .. (ff.QuestName2Text:GetText() or "-") .. " added to ignore list.")
+		if (ff.CurrentWorldQuest) then
+			WorldQuestTracker.db.profile.groupfinder.ignored_quests [ff.CurrentWorldQuest] = true
+			WorldQuestTracker:Msg ("Quest " .. (ff.QuestName2Text:GetText() or "-") .. " added to ignore list.")
+		end
+		ff:HideFrame (true)
 	end, function() end)
 end
 

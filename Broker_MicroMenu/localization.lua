@@ -16,7 +16,7 @@ if L then
 	L["Show latency for combat data, data from the people around you (specs, gear, enchants, etc.)."] = true
 	L["Show Home Latency"] = true
 	L["Show latency for chat data, auction house stuff some addon data, and various other data."] = true
-	L["Disable Coloring"] = true
+	L["Enable Coloring"] = true
 	L["General"] = true
 	L["ms"] = true
 	L["fps"] = true
@@ -58,7 +58,7 @@ local L = AceLocale:NewLocale("Broker_MicroMenu", "zhTW")
 if L then
 	L["Advanced"] = "進階"
 L["Custom Text"] = "自訂文字"
-L["Disable Coloring"] = "禁用著色"
+L["Enable Coloring"] = "啟用著色"
 L["Enable"] = "啟用"
 L["Enable this if you want to fine tune the displayed text."] = "啟用此如果你想微調顯示文字。"
 L["fps"] = "fps"
@@ -75,7 +75,7 @@ end
 
 local L = AceLocale:NewLocale("Broker_MicroMenu", "zhCN")
 if L then
-	L["Disable Coloring"] = "禁止着色"
+	L["Enable Coloring"] = "启用着色"
 L["fps"] = "FPS"
 L["General"] = "综合"
 L["ms"] = "ms" -- Needs review

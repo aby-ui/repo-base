@@ -38,7 +38,6 @@ local item = GetInventoryItemLink("player", 1)
 --]]
 local ItemUpgradeInfo = LibStub("LibItemUpgradeInfo-1.0")
 
---[[
 local tip = CreateFrame("GameTooltip", "GameTooltipForItemLevel", nil, "ShoppingTooltipTemplate")
 for i=1, 4 do
     tip:AddFontStrings(
@@ -46,7 +45,6 @@ for i=1, 4 do
         tip:CreateFontString( "$parentTextRight"..i, nil, "GameTooltipText" )
     )
 end
---]]
 
 local pattern = ITEM_LEVEL:gsub("%%d", "(%%d+)") --ITEM_LEVEL=物品等级%d
 local extractLink = "\124H(item:.-)\124h.-\124h"
@@ -63,6 +61,7 @@ function U1GetItemLevelByScanTooltip(itemLink, slot)
         itemLink = GetInventoryItemLink(itemLink, slot)
     end
     if not itemLink then return end
+    --[[
     local v = GetDetailedItemLevelInfo(itemLink)
     if v then
         if quality ~= 6 and extract then cache[extract] = v end --目前发现神器不能缓存
@@ -71,8 +70,8 @@ function U1GetItemLevelByScanTooltip(itemLink, slot)
         --end
         return v
     end
+    --]]
 
-    --[[
     tip:SetOwner(WorldFrame, "ANCHOR_NONE")
     for i = 1,4 do
    		if _G[ tip:GetName() .."Texture"..i] then
@@ -92,16 +91,12 @@ function U1GetItemLevelByScanTooltip(itemLink, slot)
             if v then
                 v = tonumber(v)
                 if quality ~= 6 and extract then cache[extract] = v end --目前发现神器不能缓存
-                if (slot == 16 or slot == 17) and v ~= 750 and not UnitIsUnit(itemLink, "player") then
-                    v = v + 15 --假设观察的玩家都加出第一层
-                end
                 return v
             end
         end
     end
     --safe fallback
     return ItemUpgradeInfo:GetUpgradedItemLevel(itemLink) or ilevel
-    --]]
 end
 
 ---unit is optional, needed for artifact weapons, value is "player" or inspect unit.

@@ -17,16 +17,16 @@ local aceoptions = {
 			type="group",
 			order = 1,
 			args={
-				disableColoring = {
+				enableColoring = {
 					type = 'toggle',
 					order = 1,
-					name = L["Disable Coloring"],
-					desc = L["Disable Coloring"],
+					name = L["Enable Coloring"],
+					desc = L["Enable Coloring"],
 					get = function(info, value)
-						return db.disableColoring
+						return db.enableColoring
 					end,
 					set = function(info, value)
-						db.disableColoring = value
+						db.enableColoring = value
 						Broker_MicroMenu:UpdateText()
 					end,
 				},

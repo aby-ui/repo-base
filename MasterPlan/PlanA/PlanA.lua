@@ -83,20 +83,65 @@ local LoadMPOnShow, LoadMP do
 		end
 	end
 end
-GarrisonLandingPageMinimapButton:RegisterForClicks("LeftButtonUp", "RightButtonUp")
-GarrisonLandingPageMinimapButton:HookScript("OnClick", function(self, b)
-	if b == "RightButton" and GarrisonLandingPage.garrTypeID == 3 then
-		HideUIPanel(GarrisonLandingPage)
-		ShowGarrisonLandingPage(2)
-	elseif b == "LeftButton" and GarrisonLandingPage.garrTypeID ~= 3 and C_Garrison.GetLandingPageGarrisonType() == 3 then
-		ShowGarrisonLandingPage(3)
-	end
-	if GarrisonLandingPage.garrTypeID ~= 3 then
+local function ShowLanding(page)
+	HideUIPanel(GarrisonLandingPage)
+	ShowGarrisonLandingPage(page)
+	if page and page < 3 then
 		LoadMP()
 	end
+end
+local function MaybeStopSound(sound)
+	return sound and StopSound(sound)
+end
+local landingChoiceMenu, landingChoices
+GarrisonLandingPageMinimapButton:RegisterForClicks("LeftButtonUp", "RightButtonUp")
+GarrisonLandingPageMinimapButton:HookScript("PreClick", function(self, b)
+	self.landingVisiblePriorToClick = GarrisonLandingPage and GarrisonLandingPage:IsVisible() and GarrisonLandingPage.garrTypeID
+	if b == "RightButton" then
+		local openOK, openID = PlaySound(SOUNDKIT.UI_GARRISON_GARRISON_REPORT_OPEN)
+		local closeOK, closeID = PlaySound(SOUNDKIT.UI_GARRISON_GARRISON_REPORT_CLOSE)
+		self.openSoundID = openOK and openID
+		self.closeSoundID = closeOK and closeID
+	end
+end)
+GarrisonLandingPageMinimapButton:HookScript("OnClick", function(self, b)
+	if b == "LeftButton" then
+		if GarrisonLandingPage.garrTypeID ~= C_Garrison.GetLandingPageGarrisonType() then
+			ShowLanding(C_Garrison.GetLandingPageGarrisonType())
+		end
+		return
+	elseif b == "RightButton" then
+		if (C_Garrison.GetLandingPageGarrisonType() or 0) > 3 then
+			if self.landingVisiblePriorToClick then
+				ShowLanding(self.landingVisiblePriorToClick)
+			else
+				HideUIPanel(GarrisonLandingPage)
+			end
+			MaybeStopSound(self.openSoundID)
+			MaybeStopSound(self.closeSoundID)
+			if not landingChoiceMenu then
+				landingChoiceMenu = CreateFrame("Frame", "MP_LandingChoicesDrop", UIParent, "UIDropDownMenuTemplate")
+				local function ShowLanding_(_, ...)
+					return ShowLanding(...)
+				end
+				landingChoices = {
+					{text=GARRISON_LANDING_PAGE_TITLE, func=ShowLanding_, arg1=2, notCheckable=true},
+					{text=ORDER_HALL_LANDING_PAGE_TITLE, func=ShowLanding_, arg1=3, notCheckable=true},
+					{text=WAR_CAMPAIGN, func=ShowLanding_, arg1=C_Garrison.GetLandingPageGarrisonType(), notCheckable=true},
+				}
+			end
+			EasyMenu(landingChoices, landingChoiceMenu, "cursor", 0, 0, "MENU", 4)
+		elseif GarrisonLandingPage.garrTypeID == 3 then
+			ShowLanding(2)
+			MaybeStopSound(self.closeSoundID)
+		end
+	end
+end)
+GarrisonLandingPageMinimapButton:HookScript("PostClick", function(self)
+	self.closeSoundID, self.openSoundID = nil, nil
 end)
 hooksecurefunc("ShowGarrisonLandingPage", function(pg)
-	if pg ~= 3 then
+	if pg < 3 then
 		LoadMP()
 	end
 end)

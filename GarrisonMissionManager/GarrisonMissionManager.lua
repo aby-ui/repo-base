@@ -162,7 +162,6 @@ for event in pairs(events_for_buildings) do event_frame:RegisterEvent(event) end
 function event_handlers:GARRISON_LANDINGPAGE_SHIPMENTS()
    event_frame:UnregisterEvent("GARRISON_LANDINGPAGE_SHIPMENTS")
    if addon_env.CheckPartyForProfessionFollowers then addon_env.CheckPartyForProfessionFollowers() end
-   if addon_env.CheckIfArtifactResearchIsReady then addon_env.CheckIfArtifactResearchIsReady() end
 end
 
 function event_handlers:GARRISON_SHIPMENT_RECEIVED()

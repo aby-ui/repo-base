@@ -72,7 +72,7 @@ end
 
 --7.0 from Quartz
 function C:CURRENT_SPELL_CAST_CHANGED(event)
-	self.sendTime = GetTime()
+	self.sendTime = nil
 end
 
 function C:UNIT_SPELLCAST_SUCCEEDED(event, unit)
@@ -118,7 +118,7 @@ end
 --    RunOnNextFrame(C.UNIT_SPELLCAST_START_BACKEND, C, event, unit)
 --end
 function C:UNIT_SPELLCAST_START(event, unit)
-	if unit ~="player" or not self.sendTime then return end
+	if unit ~= "player" then return end
 	local _, _, _,startTime, endTime = UnitCastingInfo(unit);
 	self.startTime = startTime / 1000;
 	self.endTime = endTime / 1000;
@@ -128,7 +128,7 @@ function C:UNIT_SPELLCAST_START(event, unit)
 	self.fadeOut = nil;
     local maxValue = (endTime - startTime) / 1000
 
-	self.timeDiff = GetTime() - self.sendTime; --print(self.timeDiff)
+	self.timeDiff = self.sendTime and (GetTime() - self.sendTime) or self:GetLatency(); --print(self.timeDiff)
     self.sendTime = nil
 	local castlength = endTime - startTime;
 	self.timeDiff = self.timeDiff > castlength and castlength or self.timeDiff;
@@ -140,7 +140,7 @@ end
 --    RunOnNextFrame(C.UNIT_SPELLCAST_CHANNEL_START_BACKEND, C, event, unit)
 --end
 function C:UNIT_SPELLCAST_CHANNEL_START(event, unit)
-	if unit ~="player" then return end --or not self.sendTime
+	if unit ~= "player" then return end
 	local _, _, _,startTime,endTime = UnitChannelInfo(unit);
 	self.startTime = startTime / 1000;
 	self.endTime = endTime / 1000;
@@ -150,7 +150,7 @@ function C:UNIT_SPELLCAST_CHANNEL_START(event, unit)
 	self.fadeOut = nil;	
     local maxValue = (endTime - startTime) / 1000
 
-    self.timeDiff = GetTime() - self.sendTime; --print(self.timeDiff)
+    self.timeDiff = self.sendTime and (GetTime() - self.sendTime) or self:GetLatency();
     self.sendTime = nil;
 	local castlength = endTime - startTime;
 	self.timeDiff = self.timeDiff > castlength and castlength or self.timeDiff;
@@ -189,7 +189,8 @@ end
 
 function C:SpellOther(event, unit)
 	if unit ~="player" then return end
-	
+
+    self.sendTime = nil
 	if event == "UNIT_SPELLCAST_STOP" then
 		if self.casting then
 			self.targetName = nil;

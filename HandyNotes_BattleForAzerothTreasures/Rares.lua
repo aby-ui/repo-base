@@ -96,38 +96,38 @@ merge(ns.points[864], { -- Vol'dun
     [43905396] = {quest=nil, npc=129411, achievement=12943, criteria=41633,}, -- Zunashi the Exile
 })
 merge(ns.points[895], { -- Tiragarde Sound
-    [75147848] = {quest=nil, npc=132182, achievement=12939, criteria=41793,}, -- Auditor Dolp
-    [76218305] = {quest=nil, npc=129181, achievement=12939, criteria=41795,}, -- Barman Bill
+    [75147848] = {quest=50156, npc=132182, achievement=12939, criteria=41793,}, -- Auditor Dolp
+    [76218305] = {quest=50233, npc=129181, item=163717, achievement=12939, criteria=41795,}, -- Barman Bill
     [34013029] = {quest=nil, npc=132068, achievement=12939, criteria=41796,}, -- Bashmu
-    [56676994] = {quest=nil, npc=132086, achievement=12939, criteria=41797,}, -- Black-Eyed Bart
+    [56676994] = {quest=50096, npc=132086, item=163718, achievement=12939, criteria=41797,}, -- Black-Eyed Bart
     [84707385] = {quest=nil, npc=139145, achievement=12939, criteria=41798,}, -- Blackthorne
     [83364413] = {quest=49999, npc=130508, achievement=12939, criteria=41800,}, -- Broodmother Razora
     [38422066] = {quest=nil, npc=132088, achievement=12939, criteria=41806,}, -- Captain Wintersail
-    [72838146] = {quest=nil, npc=139152, achievement=12939, criteria=41812,}, -- Carla Smirk
-    [89787815] = {quest=nil, npc=132211, achievement=12939, criteria=41813,}, -- Fowlmouth
-    [59982275] = {quest=nil, npc=132127, achievement=12939, criteria=41814,}, -- Foxhollow Skyterror
+    [72838146] = {quest=51809, npc=139152, achievement=12939, criteria=41812,}, -- Carla Smirk
+    [89787815] = {quest=50155, npc=132211, achievement=12939, criteria=41813,}, -- Fowlmouth
+    [59982275] = {quest=50137, npc=132127, achievement=12939, criteria=41814,}, -- Foxhollow Skyterror
     [57725613] = {quest=53373, npc=139233, achievement=12939, criteria=41819,}, -- Gulliver
-    [48072334] = {quest=nil, npc=131520, achievement=12939, criteria=41820,}, -- Kulett the Ornery
-    [68352088] = {quest=nil, npc=134106, achievement=12939, criteria=41821,}, -- Lumbergrasp Sentinel
+    [48072334] = {quest=49984, npc=131520, achievement=12939, criteria=41820,}, -- Kulett the Ornery
+    [68352088] = {quest=50525, npc=134106, item=155524, achievement=12939, criteria=41821,}, -- Lumbergrasp Sentinel
     [58094870] = {quest=nil, npc=139290, achievement=12939, criteria=41822,}, -- Maison the Portable
-    [64291931] = {quest=nil, npc=137183, achievement=12939, criteria=41823,}, -- Imperiled Merchants (Honey-Coated Slitherer)
+    [64291931] = {quest=51321, npc=137183, item=160472, achievement=12939, criteria=41823,}, -- Imperiled Merchants (Honey-Coated Slitherer)
     [43801771] = {quest=nil, npc=131252, achievement=12939, criteria=41824,}, -- Merianae
     [65176460] = {quest=51833, npc=139205, achievement=12939, criteria=41825,}, -- P4-N73R4
     [39461517] = {quest=nil, npc=131262, achievement=12939, criteria=41826,}, -- Pack Leader Asenya
     [64805893] = {quest=50148, npc=132179, item=161446, achievement=12939, criteria=41827,}, -- Raging Swell
     [68336362] = {quest=51872, npc=139278, achievement=12939, criteria=41828,}, -- Ranja
-    [58541513] = {quest=nil, npc=127290, achievement=12939, criteria=41829,}, -- Saurolisk Tamer Mugg (Mugg)
+    [58541513] = {quest=48806, npc=127290, item=154416, achievement=12939, criteria=41829,}, -- Saurolisk Tamer Mugg (Mugg)
     [76022887] = {quest=51877, npc=139287, achievement=12939, criteria=41830,}, -- Sawtooth
-    [55703318] = {quest=nil, npc=139285, achievement=12939, criteria=41831,}, -- Shiverscale the Toxic
-    [81008166] = {quest=nil, npc=132280, achievement=12939, criteria=41832,}, -- Squacks
-    [49353613] = {quest=nil, npc=139135, achievement=12939, criteria=41833,}, -- Squirgle of the Depths
-    [66701427] = {quest=nil, npc=139280, achievement=12939, criteria=41834,}, -- Sythian the Swift
-    [60801727] = {quest=nil, npc=133356, achievement=12939, criteria=41835,}, -- Tempestria
+    [55703318] = {quest=51876, npc=139285, achievement=12939, criteria=41831,}, -- Shiverscale the Toxic
+    [80838277] = {quest=50160, npc=132280, achievement=12939, criteria=41832,}, -- Squacks
+    [49353613] = {quest=51807, npc=139135, achievement=12939, criteria=41833,}, -- Squirgle of the Depths
+    [66701427] = {quest=51873, npc=139280, achievement=12939, criteria=41834,}, -- Sythian the Swift
+    [60801727] = {quest=50301, npc=133356, achievement=12939, criteria=41835,}, -- Tempestria
     [55095056] = {quest=nil, npc=139289, achievement=12939, criteria=41836,}, -- Tentulos the Drifter
     [63735039] = {quest=49942, npc=131389, item=158556, achievement=12939, criteria=41837,}, -- Teres
     [70035567] = {quest=51835, npc=139235, achievement=12939, criteria=41838,}, -- Tort Jaw
     [46391997] = {quest=nil, npc=132076, item=160452, achievement=12939, criteria=41839,}, -- Totes
-    [70271283] = {quest=nil, npc=131984, achievement=12939, criteria=41840,}, -- Twin-hearted Construct
+    [70271283] = {quest=50073, npc=131984, item=160473, achievement=12939, criteria=41840,}, -- Twin-hearted Construct
     [52253215] = {quest=nil, npc=132052, item=155074,}, -- Vol'Jim
     [61515233] = {quest=49963, npc=130350, item=155571, note="Ride to Roan Berthold in Southwind Station; follow the road",}, -- Guardian of the Spring (49983 is the ride, 49963 is the loot)
 })

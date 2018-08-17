@@ -154,6 +154,12 @@ GTFO.SpellID["275823"] = {
   sound = 3;
 };
 
+GTFO.SpellID["273909"] = {
+  --desc = "Steelclaw Trap";
+  applicationOnly = true;
+  sound = 3;
+};
+
 
 -- ***********************
 -- * Shrine of the Storm *
