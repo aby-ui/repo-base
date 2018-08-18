@@ -136,6 +136,7 @@ NPCs[133539] = { -- Lo'kuno
 
 NPCs[135565] = { -- Guardian of Agussu
 	questID = 50888, -- Urn of Agussu
+	vignetteID = 2788, -- Urn of Agussu
 }
 
 NPCs[133812] = { -- Zanxib

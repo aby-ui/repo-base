@@ -5848,6 +5848,7 @@ end
 		end,
 
 		_HandleEventLootClosed = function(self)
+            do return end --TODO aby8
 			-- Since querying the server is a little noisy we force it to be less so, reseting values later
 			local silentValue, manualValue = GrailDatabase.silent, self.manuallyExecutingServerQuery
 			GrailDatabase.silent, self.manuallyExecutingServerQuery = true, false

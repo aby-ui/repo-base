@@ -86,7 +86,7 @@ ns.points = {
         [57746464] = {quest=51136, achievement=12849, criteria=40971,}, -- Excavator's Greed
         [56696469] = path(51136),
         [57061120] = {quest=52992, achievement=12849, criteria=41002, note="Enter at top of temple",}, -- Lost Offerings of Kimbul
-        -- [] = {quest=53004, achievement=12849, criteria=41004, note="",}, -- Sandsunken Treasure
+        [26504530] = {quest=53004, achievement=12849, criteria=41004,}, -- Sandsunken Treasure
     },
     [895] = { -- Tiragarde Sound
         [61515233] = {quest=49963, achievement=12852, criteria=41012, note="Ride the Guardian",}, -- Hay Covered Chest
@@ -94,6 +94,8 @@ ns.points = {
         [72482169] = {quest=52870, achievement=12852, criteria=41016, note="In cave",}, -- Scrimshaw Cache
         [72495814] = {quest=50442, item=155381, achievement=12852, criteria=41013,}, -- Cutwater Treasure Chest
         [61786275] = {quest=52867, achievement=12852, criteria=41015, note="In cave",}, -- Forgotten Smuggler's Stash
+        [73103950] = {quest=52195, item=161342, achievement=12852, criteria=41017, note="In Boralus, on Stomsong Monastary",}, -- Secret of the Depths
+        [55769095] = {quest=52195, hide_before={52134, 52135, 52136, 52137, 52138}, item=161342, achievement=12852, criteria=41017, note="Teleport here from Stormsong, pick up the gem",}, -- Secret of the Depths
         -- Freehold treasure maps
         [80007600] = {quest=52853, item=162571, achievement=12852, criteria=41018, note="Kill pirates in Freehold until the map drops",}, -- Soggy Treasure Map 162571 (q:52853)
         [80708050] = {quest=52859, item=162581, achievement=12852, criteria=41020, note="Kill pirates in Freehold until the map drops",}, -- Yellowed Treasure Map 162581 (q:52859)
@@ -104,22 +106,26 @@ ns.points = {
         [90507551] = {quest=52836, hide_before=52859, achievement=12852, criteria=41020, note="Kill pirates in Freehold until the map drops",}, -- Yellowed Treasure Map 162581 (q:52859)
         [29222534] = {quest=52833, hide_before=52854, achievement=12852, criteria=41019, note="Kill pirates in Freehold until the map drops",}, -- Fading Treasure Map 162580 (q:52854)
         [48983759] = {quest=52845, hide_before=52860, achievement=12852, criteria=41021, note="Kill pirates in Freehold until the map drops",}, -- Singed Treasure Map 162584 (q:52860)
-        -- [] = {quest=52195, achievement=12852, criteria=41017, note="",}, -- Secret of the Depths
+        -- junk:
         [76967543] = {quest=48593, junk=true, label="Small Treasure Chest",},
         [78008050] = {quest=48595, junk=true, label="Small Treasure Chest",},
         [76358090] = {quest=48595, junk=true, label="Small Treasure Chest",},
         [75758283] = {quest=48596, junk=true, label="Small Treasure Chest",},
+        [38432868] = {quest=48598, junk=true, label="Small Treasure Chest",},
+        [38762673] = {quest=48599, junk=true, label="Small Treasure Chest",},
         [78114901] = {quest=48607, junk=true, label="Small Treasure Chest",},
         [79205050] = {quest=48607, junk=true, label="Small Treasure Chest",},
         [81344938] = {quest=48607, junk=true, label="Small Treasure Chest",},
         [76126733] = {quest=48608, junk=true, label="Small Treasure Chest",},
         [68635108] = {quest=48609, junk=true, label="Small Treasure Chest",},
         [50842310] = {quest=48611, junk=true, label="Small Treasure Chest",},
+        [47442365] = {quest=48611, junk=true, label="Small Treasure Chest",},
         [61212836] = {quest=48612, junk=true, label="Small Treasure Chest",},
         [57311757] = {quest=48617, junk=true, label="Small Treasure Chest",},
         [87347379] = {quest=48618, junk=true, label="Small Treasure Chest",},
         [88387840] = {quest=48618, junk=true, label="Small Treasure Chest",},
         [69801270] = {quest=48619, junk=true, label="Small Treasure Chest",},
+        [46481829] = {quest=48621, junk=true, label="Small Treasure Chest",},
     },
     [896] = { -- Drustvar
         [33713008] = {quest=53356, achievement=12995, criteria=41697,}, -- Web-Covered Chest
@@ -131,10 +137,10 @@ ns.points = {
         [44222770] = {quest=53386, achievement=12995, criteria=41700, note="Left Right Down Up",}, -- Runebound Chest
         [18515133] = {quest=53471, achievement=12995, criteria=41702, note="Click on Witch Torch",}, -- Hexed Chest
         [67767367] = {quest=53473, achievement=12995, criteria=41704, note="Click on Witch Torch",}, -- Ensorcelled Chest
-        -- [] = {quest=53475, achievement=12995, criteria=41752, note=""}, -- Stolen Thornspeaker Cache
+        [24304840] = {quest=53475, achievement=12995, criteria=41752,}, -- Stolen Thornspeaker Cache
     },
     [942] = { -- Stormsong Valley
-        [53524173] = {quest=51449, achievement=12853, criteria=41061,}, -- Weathered Treasure Chest
+        [66901200] = {quest=51449, achievement=12853, criteria=41061,}, -- Weathered Treasure Chest
         [50118623] = {quest=50526, achievement=12853, criteria=41063,}, -- Frosty Treasure Chest
         [59913907] = {quest=50937, achievement=12853, criteria=41065, note="On roof",}, -- Hidden Scholar's Chest
         [58216368] = {quest=52326, achievement=12853, criteria=41067, note="Top shelf inside shed",}, -- Discarded Lunchbox
@@ -147,5 +153,15 @@ ns.points = {
     },
     [1161] = { -- Boralus
         [61901010] = {quest=52870, achievement=12852, criteria=41016, note="In cave",}, -- Scrimshaw Cache
+        -- Secret of the Depths:
+        [61518382] = {quest=52195, atlas="MagePortalAlliance", minimap=true, achievement=12852, criteria=41017, note="Entrance to the underwater cave",},
+        [55979126] = {quest=52134, atlas="poi-workorders", minimap=true, achievement=12852, criteria=41017, note="Read Damp Scrolls; in the underwater cave, from the monastary",},
+        [61527772] = {quest=52135, atlas="poi-workorders", minimap=true, achievement=12852, criteria=41017, note="Read Damp Scrolls; underground",},
+        [63078186] = {quest=52136, atlas="poi-workorders", minimap=true, achievement=12852, criteria=41017, note="Read Damp Scrolls; upstairs",},
+        [70328576] = {quest=52137, atlas="poi-workorders", minimap=true, achievement=12852, criteria=41017, note="Read Damp Scrolls; underground",},
+        [67147982] = {quest=52138, atlas="poi-workorders", minimap=true, achievement=12852, criteria=41017, note="Read Damp Scrolls",},
+        [55769095] = {quest=52195, atlas="DemonInvasion2", scale=1.4, minimap=true, hide_before={52134, 52135, 52136, 52137, 52138}, item=161342, achievement=12852, criteria=41017, note="Ominous Altar; use it, get teleported, pick up the gem",}, -- Secret of the Depths
+        -- junk
+        [66758031] = {quest=50952, junk=true, label="Small Treasure Chest",},
     },
 }

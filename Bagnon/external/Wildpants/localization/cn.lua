@@ -52,11 +52,21 @@ L.TipDoubleClickSearch = '<Alt-拖动> 移动\n<右击> 设置\n<双击> 搜索'
 L.Total = '总共'
 
 --itemcount tooltips
-L.TipCount1 = '装备: %d'
-L.TipCount2 = '背包: %d'
-L.TipCount3 = '银行: %d'
-L.TipCount4 = '虚空仓库: %d'
+L.TipCountEquip = '装备:%d'
+L.TipCountBags = '包里:%d'
+L.TipCountBank = '银行:%d'
+L.TipCountVault = '虚空仓库:%d'
+L.TipCountGuild = '公会银行:%d'
 L.TipDelimiter = '|'
+
+L.ConfirmTransfer = '储存这件物品将移除该物品上的一切改动并使其无法退还，且无法交易。|n|n你是否要继续？'
+L.PurchaseDialog = '你是否想解锁虚空仓库？|n|n|cffffd200花费:|r %s'
+L.CannotPurchaseDialog = '你没有足够的金钱来解锁虚空仓库。|n|n|cffff2020花费: %s|r'
+L.AskMafia = '向朋友索要'
+
+L.Title = [[%s 的虚空仓库]]
+L.NumDeposit = '%d 存放'
+L.NumWithdraw = '%d 提取'
 
 --databroker tooltips
 L.TipShowBank = '右击 开关银行'

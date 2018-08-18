@@ -192,6 +192,7 @@ function Activity:Match(search, bossFilter, enableSpamWord, spamLength, enableSp
     end
 
     if spamLength and ((summary and strlenutf8(summary) > spamLength) or (comment and strlenutf8(comment) > spamLength)) then
+
         return false
     end
 

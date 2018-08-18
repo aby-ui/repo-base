@@ -333,7 +333,7 @@ function ItemSlot:UpdateBorder()
 			return self:SetBorderColor(RED_FONT_COLOR.r, RED_FONT_COLOR.g, RED_FONT_COLOR.b)
 		end
 
-		if Addon.sets.glowQuality and quality and quality > 1 then
+		if Addon.sets.glowQuality and type(quality)=="number" and quality > 1 then
 			self:SetBorderColor(GetItemQualityColor(quality))
 		end
 	end

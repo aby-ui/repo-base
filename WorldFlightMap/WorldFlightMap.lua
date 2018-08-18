@@ -1,4 +1,14 @@
--- https://github.com/tomrus88/BlizzardInterfaceCode/blob/e2c02e9e3de67cc29adec8e5e2ef70b98c7d1031/Interface/AddOns/Blizzard_FlightMap/FM_FlightPathDataProvider.lua
+---------------------------------------------------------
+-- Change IconScale to adjust the size of flight icons
+-- Value is a decimal between 0 and 1
+local IconScale = 1.0
+
+---------------------------------------------------------
+-- End of user settings
+---------------------------------------------------------
+
+-- InFlight uses FlightMapFrame directly, so it's necessary to change references
+FlightMapFrame = WorldMapFrame
 
 -- Map data functions
 local MapSizeCache = {} -- [uiMapID] = {left, top, right, bottom, etc}
@@ -12,7 +22,7 @@ local function GetCurrentMapContinent(uiMapID)
 	end
 end
 
-function GetMapSize(uiMapID, noLoop)
+local function GetMapSize(uiMapID, noLoop)
 	local uiMapID = uiMapID or WorldMapFrame:GetMapID()
 	if not uiMapID then return end
 	
@@ -83,6 +93,12 @@ local function BounceAnimation(self) -- SetLooping('BOUNCE') is producing broken
 	self:Play()
 end
 
+local function ResetAnimation(self)
+	self:Stop()
+	self.up = true
+	BounceAnimation(self)
+end
+
 local function GetArrow(pin)
 	-- Add an arrow frame to a pin
 	if PinArrows[pin] then return PinArrows[pin] end
@@ -118,7 +134,6 @@ local function GetArrow(pin)
 	return f
 end
 
-local InFlightEnv = setmetatable({ FlightMapFrame = WorldMapFrame }, {__index = _G})
 function WorldFlightMapProvider:OnEvent(event, ...)
 	if event == 'TAXIMAP_OPENED' then
 		self:SetTaxiState(true)
@@ -128,7 +143,7 @@ function WorldFlightMapProvider:OnEvent(event, ...)
 		local playerMapInfo = C_Map.GetMapInfo(playerMapID)
 		self.playerContinent = GetCurrentMapContinent(playerMapID)
 		
-		if not self:GetMap():IsShown() then
+		if not self:GetMap():IsShown() and not InCombatLockdown() then
 			ToggleWorldMap()
 			if self.playerContinent == 905 and playerMapInfo.mapType > 3 and playerMapInfo.parentMapID then
 				self:GetMap():SetMapID(playerMapInfo.parentMapID)
@@ -142,19 +157,11 @@ function WorldFlightMapProvider:OnEvent(event, ...)
 		self:SetTaxiState(false)
 
 		CloseTaxiMap()
-		if self:GetMap():IsShown() then
+		if self:GetMap():IsShown() and not InCombatLockdown() then
 			ToggleWorldMap()
 		end
 
 		self:RemoveAllData()
-	elseif event == 'ADDON_LOADED' and ... == 'InFlight' and InFlight then
-		-- Somewhat hacky attempt to support InFlight without tainting
-		-- the ui by setting FlightMapFrame = WorldMapFrame globally
-		for k,v in pairs(InFlight) do
-			if type(v) == 'function' then
-				setfenv(v, InFlightEnv)
-			end
-		end
 	end
 end
 
@@ -206,9 +213,8 @@ function WorldFlightMapProvider:AddFlightNode(taxiNodeData)
 				-- Only show arrows on zone maps
 				local arrow = GetArrow(pin)
 				if self.worldMap.mapInfo and self.worldMap.mapInfo.mapType and self.worldMap.mapInfo.mapType > 2 and taxiNodeData.state == Enum.FlightPathState.Reachable then
-					-- Restart animation so they stay synched
-					arrow.group:Stop()
-					arrow.group:Play()
+					-- Restart animation so the arrows move in sync
+					ResetAnimation(arrow.group)
 					arrow:Show()
 				else
 					arrow:Hide()
@@ -228,7 +234,7 @@ function WorldFlightMapProvider:AddFlightNode(taxiNodeData)
 				
 				--pin:SetScalingLimits(1.25, 0.9625, 1.275)
 				
-				local initialScaleFactor = e ^ -(0.00000619843198095 * self.worldMap.width)
+				local initialScaleFactor = IconScale * (e ^ -(0.00000619843198095 * self.worldMap.width))
 				pin:SetScalingLimits(1.25, initialScaleFactor, initialScaleFactor * 1.25)
 				--pin:SetIgnoreGlobalPinScale(true)
 				
@@ -237,8 +243,6 @@ function WorldFlightMapProvider:AddFlightNode(taxiNodeData)
 		end
 	end
 end
-
----[==[
 
 function WorldFlightMapProvider:HighlightRouteToPin(pin)
 	if self.playerContinent == 905 then return end -- don't draw lines on argus maps (we could if they're on the same zone map)
@@ -284,52 +288,6 @@ end
 function WorldFlightMapProvider:ShowBackgroundRoutesFromCurrent()
 	-- todo: show initial hoplines to direct routes
 end
---]==]
-
---[==[
-local WorldMapButton = CreateFrame('frame', 'SuperMapCanvas', WorldMapFrame:GetCanvas())
-WorldMapButton:SetAllPoints()
-WorldMapButton:SetFrameLevel(15000)
-
-function WorldFlightMapProvider:ShowBackgroundRoutesFromCurrent()
-	-- todo: show initial hoplines to direct routes
-	if not self.backgroundLinePool then
-		self.backgroundLinePool = CreateFramePool("FRAME", WorldMapButton, "FlightMap_BackgroundFlightLineTemplate", OnRelease);
-	end
-
-	for slotIndex, pin in pairs(self.slotIndexToPin) do
-		if pin:GetTaxiNodeState() == Enum.FlightPathState.Reachable then
-			for routeIndex = 1, 1 do
-				local sourceSlotIndex = TaxiGetNodeSlot(slotIndex, routeIndex, true);
-				local destinationSlotIndex = TaxiGetNodeSlot(slotIndex, routeIndex, false);
-				local startPin = self.slotIndexToPin[sourceSlotIndex];
-				local destinationPin = self.slotIndexToPin[destinationSlotIndex];
-
-				if not startPin or not destinationPin then
-					return; -- Incorrect flight data, will look broken until the data is adjusted
-				end
-				
-				if startPin:ShouldShowOutgoingFlightPathPreviews() and destinationPin:GetTaxiNodeState() == Enum.FlightPathState.Reachable and not startPin.linkedPins[destinationPin] and not destinationPin.linkedPins[startPin] then
-					startPin.linkedPins[destinationPin] = true;
-					destinationPin.linkedPins[startPin] = true;
-
-					local lineContainer = self.backgroundLinePool:Acquire();
-					lineContainer.Fill:SetThickness(self.lineThickness);
-
-					lineContainer.Fill:SetStartPoint("CENTER", startPin);
-					lineContainer.Fill:SetEndPoint("CENTER", destinationPin);
-
-					lineContainer:Show();
-
-					startPin:Show();
-					destinationPin:Show();
-				end
-			end
-		end
-	end
-end
---]==]
-
 
 function WorldFlightMapProvider:OnHide()
 	if self:IsTaxiOpen() then
@@ -344,8 +302,5 @@ end
 function WorldFlightMapProvider:SetTaxiState(state)
 	self.taxiOpen = state
 end
-
---local TrickFrame = CreateFrame('frame', nil, nil, 'MapCanvasFrameTemplate') --CreateFromMixins(MapCanvasMixin); TrickFrame.ScrollContainer = WorldMapFrame.ScrollContainer
---TrickFrame:Get
 
 WorldMapFrame:AddDataProvider(WorldFlightMapProvider)

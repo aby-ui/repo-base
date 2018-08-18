@@ -7,7 +7,12 @@ local BINDING_KEY = 'MEETINGSTONE_TOGGLE'
 
 function SettingPanel:OnInitialize()
     GUI:Embed(self, 'Owner')
-    MainPanel:RegisterPanel(L['设置'], self, 3, 60, 1, true)
+    if not NO_SCAN_WORD then
+        MainPanel:RegisterPanel(L['设置'], self, 3, 60, 1)
+    else
+        MainPanel:RegisterPanel(L['设置'], self, 3)
+    end
+
 
     self.db = Profile:GetCharacterDB()
 
@@ -122,7 +127,7 @@ function SettingPanel:OnInitialize()
         }
     }
 
-    local filters = {
+    local filters = NO_SCAN_WORD and {
         type = 'group',
         name = L['过滤器'],
         get = function(item)
@@ -183,110 +188,118 @@ function SettingPanel:OnInitialize()
     end
 
     local optionGroup = createGroup('MeetingStone', options)
-    optionGroup.frame:SetPoint('TOPLEFT', 10, -10)
-    optionGroup.frame:SetPoint('BOTTOMRIGHT', self, 'BOTTOM', 0, 10)
+    if not NO_SCAN_WORD then
+        optionGroup.frame:SetPoint('TOPLEFT', 10, -10)
+        optionGroup.frame:SetPoint('BOTTOMRIGHT', self, 'BOTTOM', 0, 10)
+    else
+        optionGroup.frame:SetPoint('TOP', 0, -10)
+        optionGroup.frame:SetPoint('BOTTOM', 0, 10)
+        optionGroup.frame:SetWidth(400)
+    end
 
-    local filterGroup = createGroup('MeetingStone Filters', filters)
-    filterGroup.frame:SetPoint('TOPRIGHT', -10, -10)
-    filterGroup.frame:SetPoint('TOPLEFT', self, 'TOP', 0, -10)
-    filterGroup.frame:SetHeight(180)
+    if not NO_SCAN_WORD then
+        local filterGroup = createGroup('MeetingStone Filters', filters)
+        filterGroup.frame:SetPoint('TOPRIGHT', -10, -10)
+        filterGroup.frame:SetPoint('TOPLEFT', self, 'TOP', 0, -10)
+        filterGroup.frame:SetHeight(180)
 
 
-    do -- spam word.
-        local SpamWordWidget = GUI:GetClass('TitleWidget'):New(self) do
-            SpamWordWidget:SetPoint('TOPLEFT', filterGroup.frame, 'BOTTOMLEFT', 10, -10)
-            SpamWordWidget:SetPoint('BOTTOMRIGHT', -20, 30)
-            SpamWordWidget:SetText(L['关键字过滤'])
-            SpamWordWidget:SetBgShown(false)
-        end
+        do -- spam word.
+            local SpamWordWidget = GUI:GetClass('TitleWidget'):New(self) do
+                SpamWordWidget:SetPoint('TOPLEFT', filterGroup.frame, 'BOTTOMLEFT', 10, -10)
+                SpamWordWidget:SetPoint('BOTTOMRIGHT', -20, 30)
+                SpamWordWidget:SetText(L['关键字过滤'])
+                SpamWordWidget:SetBgShown(false)
+            end
 
-        local SpamWordInset = CreateFrame('Frame', nil, SpamWordWidget, 'InsetFrameTemplate') do
-            SpamWordInset:SetPoint('TOPLEFT', 2, -25)
-            SpamWordInset:SetPoint('BOTTOMRIGHT', -2, 5)
-        end
+            local SpamWordInset = CreateFrame('Frame', nil, SpamWordWidget, 'InsetFrameTemplate') do
+                SpamWordInset:SetPoint('TOPLEFT', 2, -25)
+                SpamWordInset:SetPoint('BOTTOMRIGHT', -2, 5)
+            end
 
-        local InputSpamWord = Addon:GetClass('InputDialog'):New(UIParent) do
-            InputSpamWord:SetTitle(L['请输入需要屏蔽的关键字'])
-            InputSpamWord:SetCheckBoxLabel(L['正则?'])
-            InputSpamWord:SetMaxLetters(50)
-            InputSpamWord:SetErrorHandler(function(text)
-                return pcall(strmatch, '', text)
-            end)
-            InputSpamWord:SetCallback('OnSubmit', function(_, text, checked)
-                Profile:AddSpamWord({
-                    text = text,
-                    pain = not checked and true or nil
-                })
-                Logic:SendCommand('SPWD', text, checked or nil)
-            end)
-            InputSpamWord:SetCallback('OnError', function(self)
-                self:SetError(L['正则有误，请检查'])
-            end)
-        end
-
-        local SpamWordList = GUI:GetClass('ListView'):New(SpamWordInset) do
-            SpamWordList:SetPoint('TOPLEFT', 5, -5)
-            SpamWordList:SetPoint('BOTTOMRIGHT', -5, 5)
-            SpamWordList:SetItemClass(Addon:GetClass('SpamWordItem'))
-            SpamWordList:SetItemHeight(20)
-            SpamWordList:SetItemSpacing(2)
-            SpamWordList:SetSelectMode('RADIO')
-            SpamWordList:SetItemHighlightWithoutChecked(true)
-            SpamWordList:SetCallback('OnItemFormatted', function(_, button, data)
-                button:SetData(data)
-            end)
-        end
-
-        local SpamWordAdd = CreateFrame('Button', nil, SpamWordWidget, 'UIPanelButtonTemplate') do
-            SpamWordAdd:SetPoint('LEFT', SpamWordWidget.Text, 'RIGHT', 0, 0)
-            SpamWordAdd:SetSize(50, 22)
-            SpamWordAdd:SetText(ADD)
-            SpamWordAdd:SetScript('OnClick', function()
-                self:AddSpamWord()
-            end)
-        end
-
-        local SpamWordReset = CreateFrame('Button', nil, SpamWordWidget, 'UIPanelButtonTemplate') do
-            SpamWordReset:SetPoint('TOPRIGHT', 0, -2)
-            SpamWordReset:SetSize(50, 22)
-            SpamWordReset:SetText(RESET)
-            SpamWordReset:SetScript('OnClick', function()
-                GUI:CallMessageDialog(L['确定重置关键字列表？'], function(result)
-                    if result then
-                        Profile:ResetSpamWord()
-                    end
+            local InputSpamWord = Addon:GetClass('InputDialog'):New(UIParent) do
+                InputSpamWord:SetTitle(L['请输入需要屏蔽的关键字'])
+                InputSpamWord:SetCheckBoxLabel(L['正则?'])
+                InputSpamWord:SetMaxLetters(50)
+                InputSpamWord:SetErrorHandler(function(text)
+                    return pcall(strmatch, '', text)
                 end)
-            end)
+                InputSpamWord:SetCallback('OnSubmit', function(_, text, checked)
+                    Profile:AddSpamWord({
+                        text = text,
+                        pain = not checked and true or nil
+                    })
+                    Logic:SendCommand('SPWD', text, checked or nil)
+                end)
+                InputSpamWord:SetCallback('OnError', function(self)
+                    self:SetError(L['正则有误，请检查'])
+                end)
+            end
+
+            local SpamWordList = GUI:GetClass('ListView'):New(SpamWordInset) do
+                SpamWordList:SetPoint('TOPLEFT', 5, -5)
+                SpamWordList:SetPoint('BOTTOMRIGHT', -5, 5)
+                SpamWordList:SetItemClass(Addon:GetClass('SpamWordItem'))
+                SpamWordList:SetItemHeight(20)
+                SpamWordList:SetItemSpacing(2)
+                SpamWordList:SetSelectMode('RADIO')
+                SpamWordList:SetItemHighlightWithoutChecked(true)
+                SpamWordList:SetCallback('OnItemFormatted', function(_, button, data)
+                    button:SetData(data)
+                end)
+            end
+
+            local SpamWordAdd = CreateFrame('Button', nil, SpamWordWidget, 'UIPanelButtonTemplate') do
+                SpamWordAdd:SetPoint('LEFT', SpamWordWidget.Text, 'RIGHT', 0, 0)
+                SpamWordAdd:SetSize(50, 22)
+                SpamWordAdd:SetText(ADD)
+                SpamWordAdd:SetScript('OnClick', function()
+                    self:AddSpamWord()
+                end)
+            end
+
+            local SpamWordReset = CreateFrame('Button', nil, SpamWordWidget, 'UIPanelButtonTemplate') do
+                SpamWordReset:SetPoint('TOPRIGHT', 0, -2)
+                SpamWordReset:SetSize(50, 22)
+                SpamWordReset:SetText(RESET)
+                SpamWordReset:SetScript('OnClick', function()
+                    GUI:CallMessageDialog(L['确定重置关键字列表？'], function(result)
+                        if result then
+                            Profile:ResetSpamWord()
+                        end
+                    end)
+                end)
+            end
+
+            local EditDialog = Addon:GetClass('EditDialog'):New(UIParent) do
+                EditDialog:SetCallback('OnSubmit', function(_, text)
+                    Profile:ImportSpamWord(text)
+                end)
+            end
+
+            local SpamWordExport = CreateFrame('Button', nil, SpamWordWidget, 'UIPanelButtonTemplate') do
+                SpamWordExport:SetPoint('TOPRIGHT', SpamWordWidget, 'BOTTOMRIGHT', 0, 0)
+                SpamWordExport:SetSize(50, 22)
+                SpamWordExport:SetText(L['导出'])
+                SpamWordExport:SetScript('OnClick', function()
+                    EditDialog:Open(L['导出关键字'], L['点击 Ctrl+A 全选，Ctrl+C 复制'], Profile:ExportSpamWord(), false)
+                end)
+            end
+
+            local SpamWordImport = CreateFrame('Button', nil, SpamWordWidget, 'UIPanelButtonTemplate') do
+                SpamWordImport:SetPoint('RIGHT', SpamWordExport, 'LEFT', -2, 0)
+                SpamWordImport:SetSize(50, 22)
+                SpamWordImport:SetText(L['导入'])
+                SpamWordImport:SetScript('OnClick', function()
+                    EditDialog:Open(L['导入关键字'], L['每行一个关键字，“!”开头启用正则'])
+                end)
+            end
+
+            self.SpamWordList = SpamWordList
+            self.InputSpamWord = InputSpamWord
+
+            self:RegisterMessage('MEETINGSTONE_SPAMWORD_UPDATE', 'RefreshSpamWord')
         end
-
-        local EditDialog = Addon:GetClass('EditDialog'):New(UIParent) do
-            EditDialog:SetCallback('OnSubmit', function(_, text)
-                Profile:ImportSpamWord(text)
-            end)
-        end
-
-        local SpamWordExport = CreateFrame('Button', nil, SpamWordWidget, 'UIPanelButtonTemplate') do
-            SpamWordExport:SetPoint('TOPRIGHT', SpamWordWidget, 'BOTTOMRIGHT', 0, 0)
-            SpamWordExport:SetSize(50, 22)
-            SpamWordExport:SetText(L['导出'])
-            SpamWordExport:SetScript('OnClick', function()
-                EditDialog:Open(L['导出关键字'], L['点击 Ctrl+A 全选，Ctrl+C 复制'], Profile:ExportSpamWord(), false)
-            end)
-        end
-
-        local SpamWordImport = CreateFrame('Button', nil, SpamWordWidget, 'UIPanelButtonTemplate') do
-            SpamWordImport:SetPoint('RIGHT', SpamWordExport, 'LEFT', -2, 0)
-            SpamWordImport:SetSize(50, 22)
-            SpamWordImport:SetText(L['导入'])
-            SpamWordImport:SetScript('OnClick', function()
-                EditDialog:Open(L['导入关键字'], L['每行一个关键字，“!”开头启用正则'])
-            end)
-        end
-
-        self.SpamWordList = SpamWordList
-        self.InputSpamWord = InputSpamWord
-
-        self:RegisterMessage('MEETINGSTONE_SPAMWORD_UPDATE', 'RefreshSpamWord')
     end
 end
 
@@ -295,6 +308,9 @@ function SettingPanel:OnEnable()
 end
 
 function SettingPanel:RefreshSpamWord(_, word)
+    if NO_SCAN_WORD then
+        return
+    end
     self.SpamWordList:SetItemList(Profile:GetSpamWords())
     self.SpamWordList:Refresh()
 

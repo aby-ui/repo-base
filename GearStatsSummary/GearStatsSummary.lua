@@ -37,7 +37,7 @@ end
 
 local function PraseItemSet(text)
 	local value = text:match(RATING_SUMMARY_ITEM_SUIT_FORMAT);
-	if(value) then
+	if(value and not value:find("已激活的艾泽里特之力")) then
 		return value;
 	end 
 end

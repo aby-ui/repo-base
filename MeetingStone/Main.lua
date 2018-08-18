@@ -8,10 +8,12 @@ Addon = LibStub('AceAddon-3.0'):NewAddon('MeetingStone', 'AceEvent-3.0', 'LibMod
 GUI = LibStub('NetEaseGUI-2.0')
 
 function Addon:OnInitialize()
+    --[[ aby8
     self:SecureHook('LFGListUtil_OpenBestWindow', function()
         HideUIPanel(PVEFrame)
         self:Toggle()
     end)
+    --]]
     -- self:RawHook('SetItemRef', true)
 
     self:RegisterMessage('MEETINGSTONE_NEW_VERSION')
