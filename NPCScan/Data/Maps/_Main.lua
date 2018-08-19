@@ -152,6 +152,7 @@ local MapID = {
 	WailingCaverns = 279,
 	WesternPlaguelands = 22,
 	Westfall = 52,
+	Wetlands = 56,
 	Winterspring = 83,
 	Zandalar = 875,
 	Zangarmarsh = 102,

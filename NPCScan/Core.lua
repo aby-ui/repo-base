@@ -20,7 +20,6 @@ local LibStub = _G.LibStub
 local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 local HereBeDragons = LibStub("HereBeDragons-2.0")
 local NPCScan = LibStub("AceAddon-3.0"):NewAddon(AddOnFolderName, "AceConsole-3.0", "AceEvent-3.0", "AceTimer-3.0", "AceBucket-3.0", "LibSink-2.0", "LibToast-1.0")
-local VL = LibStub("AceLocale-3.0"):GetLocale(AddOnFolderName .. "Vignette")
 
 -- ----------------------------------------------------------------------------
 -- Debugger.
@@ -54,12 +53,6 @@ end
 -- ----------------------------------------------------------------------------
 -- Variables.
 -- ----------------------------------------------------------------------------
-local AchievementLabel = {}
-
-for label, ID in pairs(Enum.AchievementID) do
-	AchievementLabel[ID] = label
-end
-
 local NPCIDFromName = {}
 private.NPCIDFromName = NPCIDFromName
 
@@ -69,39 +62,8 @@ private.QuestNPCs = QuestNPCs
 local QuestIDFromName = {}
 private.QuestIDFromName = QuestIDFromName
 
-local VignetteNPCs = {}
-private.VignetteNPCs = VignetteNPCs
-
 local VignetteIDToNPCMapping = {}
 private.VignetteIDToNPCMapping = VignetteIDToNPCMapping
-
--- ----------------------------------------------------------------------------
--- Helpers.
--- ----------------------------------------------------------------------------
-local function TryAssignNPCToAchievement(npcDataField, achievement, achievementAssetID, achievementCriteriaID, isCriteriaCompleted)
-	local foundMatch = false
-
-	for npcID in pairs(Data.NPCs) do
-		local npc = Data.NPCs[npcID]
-
-		if npc[npcDataField] == achievementAssetID then
-			foundMatch = true
-
-			npc.achievementID = achievement.ID
-			npc.achievementCriteriaID = achievementCriteriaID
-			npc.isCriteriaCompleted = isCriteriaCompleted
-
-			achievement.criteriaNPCs[npcID] = true
-
-			break;
-		end
-
-	end
-
-	if not foundMatch then
-		private.Debug("***** AchievementID.%s - not assigned to an NPC: %s = %d,", AchievementLabel[achievement.ID], npcDataField, achievementAssetID)
-	end
-end
 
 -- ----------------------------------------------------------------------------
 -- AddOn Methods.
@@ -218,92 +180,12 @@ function NPCScan:OnEnable()
 			end
 		end
 
-		if npc.vignetteName then
-			local vignetteName = VL[npc.vignetteName]
-
-			local npcIDs = VignetteNPCs[vignetteName]
-			if not npcIDs then
-				npcIDs = {}
-				VignetteNPCs[vignetteName] = npcIDs
-			end
-
-			npcIDs[npcID] = true
-		end
-
 		if npc.vignetteID then
 			VignetteIDToNPCMapping[npc.vignetteID] = npc
 		end
-
-		if npc.vignetteIDs then
-			for index = 1, #npc.vignetteIDs do
-				VignetteIDToNPCMapping[npc.vignetteIDs[index]] = npc
-			end
-		end
 	end
 
-	-- ----------------------------------------------------------------------------
-	-- Assign Achievement ID to appropriate NPCData entry.
-	-- ----------------------------------------------------------------------------
-	local CriteriaType = {
-		NPCKill = 0,
-		Quest = 27,
-		Spell = 28,
-		Item = 36,
-	}
-
-	for achievementID, achievement in pairs(Data.Achievements) do
-		local _, _, _, isAchievementCompleted = _G.GetAchievementInfo(achievementID)
-
-		achievement.ID = achievementID
-		achievement.isCompleted = isAchievementCompleted
-
-		for criteriaIndex = 1, _G.GetAchievementNumCriteria(achievementID) do
-			local assetName, criteriaType, isCriteriaCompleted, _, _, _, _, assetID, _, criteriaID = _G.GetAchievementCriteriaInfo(achievementID, criteriaIndex)
-
-			if criteriaType == CriteriaType.NPCKill then
-				if assetID > 0 then
-					local found
-
-					for _, mapData in pairs(Data.Maps) do
-						if mapData.NPCs[assetID] then
-							found = true
-							break
-						end
-					end
-
-					if found then
-						local npc = Data.NPCs[assetID]
-						npc.achievementID = achievementID
-						npc.achievementCriteriaID = criteriaID
-						npc.isCriteriaCompleted = isCriteriaCompleted
-
-						achievement.criteriaNPCs[assetID] = true
-					else
-						private.Debug("***** AchievementID.%s: NPC %s with assetID %d", AchievementLabel[achievementID], assetName, assetID)
-					end
-				end
-			elseif criteriaType == CriteriaType.Quest then
-				if QuestNPCs[assetID] then
-					for npcID in pairs(QuestNPCs[assetID]) do
-						local npc = Data.NPCs[npcID]
-						npc.achievementID = achievementID
-						npc.achievementCriteriaID = criteriaID
-						npc.isCriteriaCompleted = isCriteriaCompleted
-
-						achievement.criteriaNPCs[npcID] = true
-					end
-				else
-					private.Debug("***** AchievementID.%s: (criteriaID %d) questID = %d, -- %s", AchievementLabel[achievementID], criteriaID, assetID, assetName)
-				end
-			elseif criteriaType == CriteriaType.Item then
-				TryAssignNPCToAchievement("achievementItemID", achievement, assetID, criteriaID, isCriteriaCompleted)
-			elseif criteriaType == CriteriaType.Spell then
-				TryAssignNPCToAchievement("achievementSpellID", achievement, assetID, criteriaID, isCriteriaCompleted)
-			else
-				private.Debug("***** AchievementID.%s: Unknown criteria type %d, assetID %d", AchievementLabel[achievementID], criteriaType, assetID)
-			end
-		end
-	end
+	private.InitializeAchievements()
 
 	for mapID, map in pairs(Data.Maps) do
 		local mapHeaderPrinted

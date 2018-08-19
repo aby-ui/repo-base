@@ -387,7 +387,7 @@ Maps[MapID.SwampOfSorrows].NPCs = {
 -- ----------------------------------------------------------------------------
 -- Westfall
 -- ----------------------------------------------------------------------------
-Maps[39].NPCs = {
+Maps[MapID.Westfall].NPCs = {
     [462] = true, -- Vultros
     [506] = true, -- Sergeant Brashclaw
     [519] = true, -- Slark
@@ -402,7 +402,7 @@ Maps[39].NPCs = {
 -- ----------------------------------------------------------------------------
 -- Wetlands
 -- ----------------------------------------------------------------------------
-Maps[MapID.Westfall].NPCs = {
+Maps[MapID.Wetlands].NPCs = {
     [1112] = true, -- Leech Widow
     [1140] = true, -- Razormaw Matriarch
     [2090] = true, -- Ma'ruk Wyrmscale

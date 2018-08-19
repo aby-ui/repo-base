@@ -69,7 +69,7 @@ ff:EnableMouse (true)
 ff:SetMovable (true)
 ff:Hide()
 
-ff.RightClickClose = DF:CreateLabel (ff, "right click to close this window")
+ff.RightClickClose = DF:CreateLabel (ff, L["right click to close this window"])
 ff.RightClickClose:SetPoint ("bottom", ff, "bottom", 0, 2)
 ff.RightClickClose.color = "gray"
 
@@ -328,19 +328,19 @@ function WorldQuestTracker.OpenGroupFinderForQuest()
 end
 
 --> TEXT quest name
-ff.QuestNameText = WorldQuestTracker:CreateLabel (ff, "Quest Name:")
+ff.QuestNameText = WorldQuestTracker:CreateLabel (ff, L["Quest Name:"])
 ff.QuestName2Text = WorldQuestTracker:CreateLabel (ff, "")
 ff.QuestNameText:SetPoint ("topleft", ff, "topleft", 2, -ff.ButtonVerticalPadding - ff.TitleHeight)
 ff.QuestName2Text:SetPoint ("left", ff.QuestNameText, "right", 2, 0)
 
 --> TEXT quest ID
-ff.QuestIDText = WorldQuestTracker:CreateLabel (ff, "Quest ID:")
+ff.QuestIDText = WorldQuestTracker:CreateLabel (ff, L["Quest ID:"])
 ff.QuestID2Text = WorldQuestTracker:CreateLabel (ff, "")
 ff.QuestIDText:SetPoint ("topleft", ff.QuestNameText, "bottomleft", 0, -ff.ButtonVerticalPadding)
 ff.QuestID2Text:SetPoint ("left", ff.QuestIDText, "right", 2, 0)
 
 --> BUTTON open group finder window
-ff.OpenGroupFinderButton = WorldQuestTracker:CreateButton (ff, WorldQuestTracker.OpenGroupFinderForQuest, ff.ButtonWidth, ff.ButtonHeight, "Open Group Finder", -1, nil, nil, nil, nil, nil, WorldQuestTracker:GetTemplate ("button", "OPTIONS_BUTTON_TEMPLATE"))
+ff.OpenGroupFinderButton = WorldQuestTracker:CreateButton (ff, WorldQuestTracker.OpenGroupFinderForQuest, ff.ButtonWidth, ff.ButtonHeight, L["Open Group Finder"], -1, nil, nil, nil, nil, nil, WorldQuestTracker:GetTemplate ("button", "OPTIONS_BUTTON_TEMPLATE"))
 ff.OpenGroupFinderButton:SetPoint ("topleft", ff.QuestIDText, "bottomleft", 0, -ff.ButtonVerticalPadding)
 ff.OpenGroupFinderButton:SetClickFunction (function() ff:HideFrame (true) end, false, false, "right")
 
@@ -418,7 +418,7 @@ function ff.StartAutoInvites()
 	end)
 end
 
-ff.InvitePlayersButton = WorldQuestTracker:CreateButton (ff, ff.StartAutoInvites, ff.ButtonWidth, ff.ButtonHeight, "Invite Nearby Players", -1, nil, nil, nil, nil, nil, WorldQuestTracker:GetTemplate ("button", "OPTIONS_BUTTON_TEMPLATE"))
+ff.InvitePlayersButton = WorldQuestTracker:CreateButton (ff, ff.StartAutoInvites, ff.ButtonWidth, ff.ButtonHeight, L["Invite Nearby Players"], -1, nil, nil, nil, nil, nil, WorldQuestTracker:GetTemplate ("button", "OPTIONS_BUTTON_TEMPLATE"))
 ff.InvitePlayersButton:SetPoint ("top", ff.OpenGroupFinderButton, "bottom", 0, -ff.ButtonVerticalPadding)
 ff.InvitePlayersButton:SetClickFunction (function() ff:HideFrame (true) end, false, false, "right")
 
@@ -452,7 +452,7 @@ local leave_func = function()
 	LeaveParty()
 end
 
-ff.LeaveButton = WorldQuestTracker:CreateButton (ff, leave_func, ff.ButtonWidth, ff.ButtonHeight, "LeaveGroup", -1, nil, nil, nil, nil, nil, WorldQuestTracker:GetTemplate ("button", "OPTIONS_BUTTON_TEMPLATE"))
+ff.LeaveButton = WorldQuestTracker:CreateButton (ff, leave_func, ff.ButtonWidth, ff.ButtonHeight, L["LeaveGroup"], -1, nil, nil, nil, nil, nil, WorldQuestTracker:GetTemplate ("button", "OPTIONS_BUTTON_TEMPLATE"))
 ff.LeaveButton:SetPoint ("top", ff.InvitePlayersButton, "bottom", 0, -ff.ButtonVerticalPadding)
 ff.LeaveButton:SetClickFunction (function() ff:HideFrame (true) end, false, false, "right")
 
@@ -467,7 +467,7 @@ local ignore_current_quest = function()
 	end, function() end)
 end
 
-ff.IgnoreQuestButton = WorldQuestTracker:CreateButton (ff, ignore_current_quest, ff.ButtonWidth, ff.ButtonHeight, "Ignore Quest", -1, nil, nil, nil, nil, nil, WorldQuestTracker:GetTemplate ("button", "OPTIONS_BUTTON_TEMPLATE"))
+ff.IgnoreQuestButton = WorldQuestTracker:CreateButton (ff, ignore_current_quest, ff.ButtonWidth, ff.ButtonHeight, L["Ignore Quest"], -1, nil, nil, nil, nil, nil, WorldQuestTracker:GetTemplate ("button", "OPTIONS_BUTTON_TEMPLATE"))
 ff.IgnoreQuestButton:SetPoint ("top", ff.LeaveButton, "bottom", 0, -ff.ButtonVerticalPadding)
 ff.IgnoreQuestButton:SetClickFunction (function() ff:HideFrame (true) end, false, false, "right")
 
@@ -578,8 +578,10 @@ ff:RegisterEvent ("QUEST_REMOVED")
 
 ChatFrame_AddMessageEventFilter ("CHAT_MSG_WHISPER", function (_, _, msg)
 	if (not WorldQuestTracker.db.profile.groupfinder.send_whispers) then
-		if (msg:find ("[World Quest Tracker]")) then
-			return true
+		if (msg:find ("World Quest Tracker")) then
+			if (msg:find ("Invite for World Quest")) then
+				return true
+			end
 		end
 	end
 end)
@@ -596,7 +598,7 @@ function ff:PlayerEnteredWorldQuestZone (questID)
 		
 		ff:ShowFrame()
 		
-		ff:SetTitle ("World Quest Tracker")
+		ff:SetTitle (L["World Quest Tracker"])
 		
 		ff.QuestName2Text.text = title
 		ff.QuestID2Text.text = questID

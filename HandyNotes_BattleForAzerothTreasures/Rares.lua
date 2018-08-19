@@ -66,16 +66,16 @@ merge(ns.points[863], { -- Nazmir
     [52605489] = {quest=50040, npc=128930, achievement=12942, criteria=41479,}, -- Mala'kili and Rohnkor
 })
 merge(ns.points[864], { -- Vol'dun
-    [50378160] = {quest=nil, npc=135852, achievement=12943, criteria=41606,}, -- Ak'tar
-    [54661534] = {quest=nil, npc=130439, achievement=12943, criteria=41607,}, -- Ashmane
-    [49048904] = {quest=nil, npc=128553, achievement=12943, criteria=41608,}, -- Azer'tor
-    [31078111] = {quest=nil, npc=128497, achievement=12943, criteria=41609,}, -- Bajiani the Slick
+    [50378160] = {quest=51105, npc=135852, achievement=12943, criteria=41606,}, -- Ak'tar
+    [54661534] = {quest=51095, npc=130439, achievement=12943, criteria=41607,}, -- Ashmane
+    [49048904] = {quest=51096, npc=128553, achievement=12943, criteria=41608,}, -- Azer'tor
+    [31078111] = {quest=51117, npc=128497, achievement=12943, criteria=41609,}, -- Bajiani the Slick
     [49064989] = {quest=nil, npc=129476, achievement=12943, criteria=41610,}, -- Bloated Krolusk
-    [56005346] = {quest=nil, npc=136393, achievement=12943, criteria=41611,}, -- Bloodwing Bonepicker
-    [41412392] = {quest=nil, npc=136346, achievement=12943, criteria=41612,}, -- Captain Stef "Marrow" Quin
-    [42549216] = {quest=nil, npc=124722, achievement=12943, criteria=41613,}, -- Commodore Calhoun
-    [61433843] = {quest=nil, npc=136335, achievement=12943, criteria=41614,}, -- Enraged Krolusk
-    [63984784] = {quest=nil, npc=128674, achievement=12943, criteria=41615,}, -- Gut-Gut the Glutton
+    [56005346] = {quest=51118, npc=136393, achievement=12943, criteria=41611,}, -- Bloodwing Bonepicker
+    [41412392] = {quest=51120, npc=136346, achievement=12943, criteria=41612,}, -- Captain Stef "Marrow" Quin
+    [42549216] = {quest=51098, npc=124722, achievement=12943, criteria=41613,}, -- Commodore Calhoun
+    [61433843] = {quest=51121, npc=136335, achievement=12943, criteria=41614,}, -- Enraged Krolusk
+    [63984784] = {quest=51099, npc=128674, achievement=12943, criteria=41615,}, -- Gut-Gut the Glutton
     [53755340] = {quest=nil, npc=130443, achievement=12943, criteria=41616,}, -- Hivemother Kraxi
     [37688447] = {quest=nil, npc=129283, achievement=12943, criteria=41617,}, -- Jumbo Sandsnapper
     [60561756] = {quest=nil, npc=136341, achievement=12943, criteria=41618,}, -- Jungleweb Hunter
@@ -83,7 +83,7 @@ merge(ns.points[864], { -- Vol'dun
     [37964068] = {quest=nil, npc=137681, achievement=12943, criteria=41620,}, -- King Clickyclack
     [43768623] = {quest=nil, npc=128951, achievement=12943, criteria=41621,}, -- Nez'ara
     [49067187] = {quest=nil, npc=136340, achievement=12943, criteria=41622,}, -- Relic Hunter Hazaak
-    [44408053] = {quest=nil, npc=127776, achievement=12943, criteria=41623,}, -- Scaleclaw Broodmother
+    [44408053] = {quest=51107, npc=127776, achievement=12943, criteria=41623,}, -- Scaleclaw Broodmother
     [32716522] = {quest=nil, npc=136336, achievement=12943, criteria=41624,}, -- Scorpox
     [24566843] = {quest=nil, npc=136338, achievement=12943, criteria=41625,}, -- Sirokar
     [47062556] = {quest=nil, npc=134571, achievement=12943, criteria=41626,}, -- Skycaller Teskris
@@ -139,7 +139,7 @@ merge(ns.points[896], { -- Drustvar
     [59933466] = {quest=47884, npc=124548, achievement=12941, criteria=41706,}, -- Betsy
     [58901790] = {quest=48842, npc=127333, achievement=12941, criteria=41708,}, -- Barbthorn Queen
     [66585068] = {quest=48978, npc=126621, achievement=12941, criteria=41711,}, -- Bonesquall
-    [59245526] = {quest=48981, npc=127877, achievement=12941, criteria=41713, note="Pick one to fight",}, -- Longfang & Henry Breakwater
+    [59245526] = {quest=48981, npc=127877, achievement=12941, criteria=41713, note="Pick one to fight; Dagger from Longfang, mail gloves from Henry",}, -- Longfang & Henry Breakwater
     [52074697] = {quest=49216, npc=129904, achievement=12941, criteria=41715,}, -- Cottontail Matron
     [65002266] = {quest=49311, npc=128973, achievement=12941, criteria=41718,}, -- Whargarble the Ill-Tempered
     [50842040] = {quest=49388, npc=127129, achievement=12941, criteria=41720,}, -- Grozgore
@@ -158,7 +158,7 @@ merge(ns.points[896], { -- Drustvar
     [62956938] = {quest=48979, npc=127844, achievement=12941, criteria=41712,}, -- Gluttonous Yeti
     [43463611] = {quest=49137, achievement=12941, criteria=41714,}, -- Ancient Sarcophagus
     [59557181] = {quest=49269, npc=128707, achievement=12941, criteria=41717,}, -- Rimestone
-    [59557181] = {quest=49341, item=158598, achievement=12941, criteria=41719,}, -- Seething Cache
+    [67936683] = {quest=49341, item=158598, achievement=12941, criteria=41719,}, -- Seething Cache
     [57424380] = {quest=49480, npc=129835, achievement=12941, criteria=41721,}, -- Gorehorn
     [32204036] = {quest=49528, npc=129950, achievement=12941, criteria=41723,}, -- Talon
     [59874478] = {quest=49601, npc=130138, achievement=12941, criteria=41725,}, -- Nevermore

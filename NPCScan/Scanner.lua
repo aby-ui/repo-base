@@ -356,19 +356,6 @@ do
 			return
 		end
 
-		if private.VignetteNPCs[vignetteName] then
-			for ID in pairs(private.VignetteNPCs[vignetteName]) do
-				if Data.Scanner.NPCs[ID] then
-					ProcessDetection({
-						npcID = ID,
-						sourceText = sourceText
-					})
-				end
-			end
-
-			return
-		end
-
 		npcID = private.NPCIDFromName[vignetteName]
 
 		if npcID then

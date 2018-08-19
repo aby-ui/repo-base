@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2158, "DBM-Party-BfA", 8, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17588 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 17707 $"):sub(12, -3))
 mod:SetCreatureID(133007)
 mod:SetEncounterID(2123)
 mod:SetZone()
@@ -29,11 +29,11 @@ local timerCleansingLightCD			= mod:NewAITimer(13, 269310, nil, nil, nil, 5)
 
 mod:AddInfoFrameOption(269301, "Healer")
 
-mod.vb.remainingAdds = 10--Assumed based on 10% per link
+mod.vb.remainingAdds = 6
 local vileExpulsion = DBM:GetSpellInfo(269843)
 
 function mod:OnCombatStart(delay)
-	self.vb.remainingAdds = 10
+	self.vb.remainingAdds = 6
 	timerVileExpulsionCD:Start(1-delay)
 	timerCleansingLightCD:Start(1-delay)
 	if self.Options.InfoFrame then

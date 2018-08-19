@@ -24,7 +24,6 @@ NPCs[71665] = { -- Giant-Slayer Kul
 NPCs[71721] = { -- Canyon Icemother
 	isTameable = true,
 	questID = 32941, -- Oasis Icemother
-	vignetteName = "Oasis Icemother",
 }
 
 NPCs[72294] = { -- Cindermaw
@@ -33,7 +32,6 @@ NPCs[72294] = { -- Cindermaw
 
 NPCs[72364] = { -- Gorg'ak the Lava Guzzler
 	questID = 33512, -- Lava-Gorged Goren
-	vignetteName = "Lava-Gorged Goren",
 }
 
 NPCs[74613] = { -- Broodmother Reeg'ak
@@ -42,7 +40,6 @@ NPCs[74613] = { -- Broodmother Reeg'ak
 
 NPCs[74971] = { -- Firefury Giant
 	questID = 33504, -- Shaman Fire Stone
-	vignetteName = "Shaman Fire Stone",
 }
 
 NPCs[76914] = { -- Coldtusk
@@ -52,13 +49,11 @@ NPCs[76914] = { -- Coldtusk
 
 NPCs[76918] = { -- Primalist Mur'og
 	questID = 33938, -- Ogre Primalist
-	vignetteName = "Ogre Primalist",
 }
 
 NPCs[77513] = { -- Coldstomp the Griever
 	isTameable = true,
 	questID = 34129, -- Coldstomp
-	vignetteName = "Coldstomp",
 }
 
 NPCs[77519] = { -- Giantbane
@@ -75,7 +70,6 @@ NPCs[77527] = { -- The Beater
 
 NPCs[78151] = { -- Huntmaster Kuang
 	questID = 34130, -- Giantstalker Hunting Party
-	vignetteName = "Giantstalker Hunting Party",
 }
 
 NPCs[78265] = { -- The Bone Crawler
@@ -84,7 +78,6 @@ NPCs[78265] = { -- The Bone Crawler
 
 NPCs[78606] = { -- Pale Fishmonger
 	questID = 34470, -- Pale Gone Fishin'
-	vignetteName = "Pale Gone Fishin'",
 }
 
 NPCs[78621] = { -- Cyclonic Fury
@@ -112,7 +105,6 @@ NPCs[80190] = { -- Gruuk
 
 NPCs[80235] = { -- Gurun
 	questID = 34839, -- Skog
-	vignetteName = "Skog",
 }
 
 NPCs[80242] = { -- Chillfang
@@ -136,7 +128,7 @@ NPCs[81001] = { -- Nok-Karosh
 
 NPCs[82536] = { -- Gorivax
 	questID = 37388, -- Gorivax
-	vignetteName = "Soulgrinder Portal",
+	vignetteID = 372, -- Soulgrinder Portal
 }
 
 NPCs[82614] = { -- Moltnoma
@@ -151,7 +143,7 @@ NPCs[82616] = { -- Jabberjaw
 NPCs[82617] = { -- Slogtusk the Corpse-Eater
 	isTameable = true,
 	questID = 37385, -- Slogtusk the Corpse Eater
-	vignetteName = "Slogtusk",
+	vignetteID = 374, -- Slogtusk
 }
 
 NPCs[82618] = { -- Tor'goroth
@@ -194,7 +186,7 @@ NPCs[87352] = { -- Gibblette the Cowardly
 	toys = {
 		{ itemID = 119180 }, -- Goren "Log" Roller
 	},
-	vignetteName = "Giblette the Cowardly",
+	vignetteID = 546, -- Gibblette the Cowardly
 }
 
 NPCs[87356] = { -- Vrok the Ancient
@@ -207,7 +199,7 @@ NPCs[87357] = { -- Valkor
 
 NPCs[87600] = { -- Jaluk the Pacifist
 	questID = 37556, -- Jaluk the Pacifist
-	vignetteName = "Jaluk the Pacifist",
+	vignetteID = 601, -- Jaluk the Pacifist
 }
 
 NPCs[87622] = { -- Ogom the Mangler
@@ -236,7 +228,6 @@ NPCs[90094] = { -- Harbormaster Korak
 
 NPCs[90122] = { -- Zoug the Heavy
 	questID = 39045, -- Zoug
-	vignetteName = "Zoug",
 }
 
 NPCs[90429] = { -- Imp-Master Valessa
@@ -252,7 +243,7 @@ NPCs[90434] = { -- Ceraxas
 
 NPCs[90437] = { -- Jax'zor
 	questID = 38030, -- Houndmaster Jax'zor
-	vignetteName = "Houndmaster Jax'zor",
+	vignetteID = 703, -- Houndmaster Jax'zor
 }
 
 NPCs[90438] = { -- Lady Oran
@@ -265,7 +256,7 @@ NPCs[90442] = { -- Mistress Thavra
 
 NPCs[90519] = { -- Cindral the Wildfire
 	questID = 37990, -- Cindral
-	vignetteName = "Cindral",
+	vignetteID = 698, -- Cindral (TODO: possibly 699)
 }
 
 NPCs[90777] = { -- High Priest Ikzan
@@ -285,12 +276,10 @@ NPCs[90884] = { -- Bilkor the Thrower
 
 NPCs[90885] = { -- Rogond the Tracker
 	questID = 38263, -- Rogond
-	vignetteName = "Rogond",
 }
 
 NPCs[90887] = { -- Dorg the Bloody
 	questID = 38265, -- Dorg
-	vignetteName = "Dorg",
 }
 
 NPCs[90888] = { -- Drivnul
@@ -299,7 +288,6 @@ NPCs[90888] = { -- Drivnul
 
 NPCs[90936] = { -- Bloodhunter Zulk
 	questID = 38266, -- Zulk
-	vignetteName = "Zulk",
 }
 
 NPCs[91009] = { -- Putre'thar
@@ -326,22 +314,19 @@ NPCs[91227] = { -- Remnant of the Blood Moon
 	toys = {
 		{ itemID = 127666 }, -- Vial of Red Goo
 	},
-	vignetteName = "Remnant of the Blood Moon",
+	vignetteID = 730, -- Remnant of the Blood Moon
 }
 
 NPCs[91232] = { -- Commander Krag'goth
 	questID = 38746, -- Iron Front Captain 1
-	vignetteName = "Iron Front Captain 1",
 }
 
 NPCs[91243] = { -- Tho'gar Gorefist
 	questID = 38747, -- Iron Front Captain 2
-	vignetteName = "Iron Front Captain 2",
 }
 
 NPCs[91374] = { -- Podlord Wakkawam
 	questID = 38282, -- Wakkawam
-	vignetteName = "Wakkawam",
 }
 
 NPCs[91695] = { -- Grand Warlock Nethekurse
@@ -358,12 +343,12 @@ NPCs[91871] = { -- Argosh the Destroyer
 
 NPCs[92197] = { -- Relgor
 	questID = 38496, -- BH Master Scout
-	vignetteName = "BH Master Scout",
+	vignetteID = 798, -- Master Scout Relgor
 }
 
 NPCs[92274] = { -- Painmistress Selora
 	questID = 38557, -- Invasion Point: Devastation
-	vignetteName = "Invasion Point: Devastation",
+	vignetteID = 813, -- Invasion Point: Devastation
 }
 
 NPCs[92408] = { -- Xanzith the Everlasting
@@ -377,7 +362,7 @@ NPCs[92411] = { -- Overlord Ma'gruth
 NPCs[92429] = { -- Broodlord Ixkor
 	isTameable = true,
 	questID = 38589, -- Ravager Broodlord
-	vignetteName = "Ravager Broodlord",
+	vignetteID = 817, -- Broodlord Ixkor
 }
 
 NPCs[92451] = { -- Varyx the Damned
@@ -386,43 +371,43 @@ NPCs[92451] = { -- Varyx the Damned
 
 NPCs[92465] = { -- The Blackfang
 	questID = 38597, -- Panther Saberon Boss
-	vignetteName = "Panther Saberon Boss",
+	vignetteID = 818, -- The Blackfang
 }
 
 NPCs[92495] = { -- Soulslicer
 	questID = 38600, -- Fel Saberon Shaman
-	vignetteName = "Fel Saberon Shaman",
+	vignetteID = 819, -- Soulslicer
 }
 
 NPCs[92508] = { -- Gloomtalon
 	questID = 38604, -- Saberon Shaman
-	vignetteName = "Saberon Shaman",
+	vignetteID = 820, -- Gloomtalon
 }
 
 NPCs[92517] = { -- Krell the Serene
 	questID = 38605, -- Saberon Blademaster
-	vignetteName = "Saberon Blademaster",
+	vignetteID = 821, -- Krell the Serene
 }
 
 NPCs[92552] = { -- Belgork
 	questID = 38609, -- Iron Tunnel Foreman
-	vignetteName = "Iron Tunnel Foreman",
+	vignetteID = 822, -- Belgork
 }
 
 NPCs[92574] = { -- Thromma the Gutslicer
 	questID = 38620, -- Pale Assassin
-	vignetteName = "Pale Assassin",
+	vignetteID = 823, -- Thromma the Gutslicer
 }
 
 NPCs[92606] = { -- Sylissa
 	questID = 38628, -- Giant Python
-	vignetteName = "Giant Python",
+	vignetteID = 827, -- Sylissa
 }
 
 NPCs[92627] = { -- Rendrak
 	isTameable = true,
 	questID = 38631, -- Alpha Bat
-	vignetteName = "Alpha Bat",
+	vignetteID = 829, -- Rendrak
 }
 
 NPCs[92636] = { -- The Night Haunter
@@ -430,7 +415,6 @@ NPCs[92636] = { -- The Night Haunter
 	toys = {
 		{ itemID = 127652 }, -- Felflame Campfire
 	},
-	vignetteName = "Night Haunter",
 }
 
 NPCs[92645] = { -- The Night Haunter
@@ -448,7 +432,7 @@ NPCs[92657] = { -- Bleeding Hollow Horror
 NPCs[92694] = { -- The Goreclaw
 	isTameable = true,
 	questID = 38654, -- Giant Raptor
-	vignetteName = "Giant Raptor",
+	vignetteID = 834, -- The Goreclaw
 }
 
 NPCs[92887] = { -- Steelsnout
@@ -458,17 +442,17 @@ NPCs[92887] = { -- Steelsnout
 
 NPCs[92941] = { -- Gorabosh
 	questID = 38709, -- Cave Keeper
-	vignetteName = "Cave Keeper",
+	vignetteID = 846, -- Gorabosh
 }
 
 NPCs[92977] = { -- The Iron Houndmaster
 	questID = 38751, -- Iron Houndmaster
-	vignetteName = "Iron Houndmaster",
+	vignetteID = 860, -- The Iron Houndmaster
 }
 
 NPCs[93001] = { -- Szirek the Twisted
 	questID = 38752, -- Szirek
-	vignetteName = "Szirek",
+	vignetteID = 861, -- Szirek the Twisted
 }
 
 NPCs[93002] = { -- Magwia
@@ -478,12 +462,12 @@ NPCs[93002] = { -- Magwia
 
 NPCs[93028] = { -- Driss Vile
 	questID = 38736, -- IH Elite Sniper
-	vignetteName = "IH Elite Sniper",
+	vignetteID = 853, -- Driss Vile
 }
 
 NPCs[93057] = { -- Grannok
 	questID = 38750, -- Iron Front Captain 3
-	vignetteName = "Iron Front Captain 3",
+	vignetteID = 859, -- Grannok
 }
 
 NPCs[93076] = { -- Captain Ironbeard
@@ -491,12 +475,12 @@ NPCs[93076] = { -- Captain Ironbeard
 	toys = {
 		{ itemID = 127659 }, -- Ghostly Iron Buccaneer's Hat
 	},
-	vignetteName = "Dead Orc Captain",
+	vignetteID = 862, -- Captain Ironbeard
 }
 
 NPCs[93125] = { -- Glub'glok
 	questID = 38764, -- Murktide Alpha
-	vignetteName = "Murktide Alpha",
+	vignetteID = 864, -- Murktide Alpha
 }
 
 NPCs[93168] = { -- Felbore
@@ -588,10 +572,6 @@ NPCs[95056] = { -- Doomroller
 	questID = 39289, -- Doomroller
 }
 
-NPCs[96235] = { -- Xemirkol
-	achievementID = AchievementID.Predator,
-}
-
 NPCs[98283] = { -- Drakum
 	questID = 40105, -- Drakum
 	toys = {
@@ -638,8 +618,8 @@ NPCs[77561] = { -- Dr. Gloom
 }
 
 NPCs[77614] = { -- Frenzied Golem
-	questID = 34145, -- Frenzied Animus
-	vignetteName = "Frenzied Animus",
+	questID = 34145, -- Vignette: Frenzied Animus
+	vignetteID = 236, -- Frenzied Golem
 }
 
 NPCs[77620] = { -- Cro Fleshrender
@@ -658,7 +638,7 @@ NPCs[77634] = { -- Taladorantula
 
 NPCs[77664] = { -- Aarko
 	questID = 34182, -- Aarkos - Looted Treasure
-	vignetteName = "Aarkos - Looted Treasure",
+	vignetteID = 241, -- Aarko
 }
 
 NPCs[77715] = { -- Hammertooth
@@ -681,12 +661,12 @@ NPCs[77741] = { -- Ra'kahn
 
 NPCs[77750] = { -- Kaavu the Crimson Claw
 	questID = 34199, -- Anchorite's Sojourn
-	vignetteName = "Anchorite's Sojourn",
+	vignetteID = 248, -- Saving Anchorite's Sojourn
 }
 
 NPCs[77776] = { -- Wandering Vindicator
 	questID = 34205, -- Wandering Vindicator - Looted Treasure
-	vignetteName = "Wandering Vindicator - Looted Treasure",
+	vignetteID = 249, -- Wandering Vindicator
 }
 
 NPCs[77784] = { -- Lo'marg Jawcrusher
@@ -695,7 +675,7 @@ NPCs[77784] = { -- Lo'marg Jawcrusher
 
 NPCs[77795] = { -- Echo of Murmur
 	questID = 34221, -- Echo of Murmur
-	vignetteName = "Echo of Murmur",
+	vignetteID = 251, -- Echo of Murmur
 }
 
 NPCs[77828] = { -- Echo of Murmur
@@ -710,7 +690,7 @@ NPCs[78710] = { -- Kharazos the Triumphant
 	toys = {
 		{ itemID = 116122 }, -- Burning Legion Missive
 	},
-	vignetteName = "Kharazos the Triumphant",
+	vignetteID = 262, -- Kharazos the Triumphant
 }
 
 NPCs[78713] = { -- Galzomar
@@ -718,7 +698,7 @@ NPCs[78713] = { -- Galzomar
 	toys = {
 		{ itemID = 116122 }, -- Burning Legion Missive
 	},
-	vignetteName = "Galzomar",
+	vignetteID = 263, -- Galzomar
 }
 
 NPCs[78715] = { -- Sikthiss, Maiden of Slaughter
@@ -726,7 +706,7 @@ NPCs[78715] = { -- Sikthiss, Maiden of Slaughter
 	toys = {
 		{ itemID = 116122 }, -- Burning Legion Missive
 	},
-	vignetteName = "Sikthiss, Maiden of Slaughter",
+	vignetteID = 346, -- "Sikthiss, Maiden of Slaughter"
 }
 
 NPCs[78872] = { -- Klikixx
@@ -735,13 +715,13 @@ NPCs[78872] = { -- Klikixx
 	toys = {
 		{ itemID = 116125 }, -- Klikixx's Webspinner
 	},
-	vignetteName = "Klikixx",
+	vignetteID = 286, -- Klikixx
 }
 
 NPCs[79334] = { -- No'losh
 	isTameable = true,
 	questID = 34859, -- No'losh
-	vignetteName = "No'losh",
+	vignetteID = 331, -- No'losh
 }
 
 NPCs[79485] = { -- Talonpriest Zorkra
@@ -759,7 +739,7 @@ NPCs[80204] = { -- Felbark
 NPCs[80471] = { -- Gennadian
 	isTameable = true,
 	questID = 34929, -- Gennadian
-	vignetteName = "Gennadian",
+	vignetteID = 335, -- Gennadian,
 }
 
 NPCs[80524] = { -- Underseer Bloodmane
@@ -772,12 +752,12 @@ NPCs[82920] = { -- Lord Korinak
 
 NPCs[82922] = { -- Xothear, the Destroyer
 	questID = 37343, -- Xothear, The Destroyer
-	vignetteName = "Xothear, The Destroyer",
+	vignetteID = 589, -- "Xothear, the Destroyer"
 }
 
 NPCs[82930] = { -- Shadowflame Terrorwalker
 	questID = 37347, -- Shadowflame Terror
-	vignetteName = "Shadowflame Terror",
+	vignetteID = 576, -- Shadowflame Terrorwalker
 }
 
 NPCs[82942] = { -- Lady Demlash
@@ -798,7 +778,7 @@ NPCs[82998] = { -- Matron of Sin
 
 NPCs[83008] = { -- Haakun the All-Consuming
 	questID = 37312, -- Haakun, The All-Consuming
-	vignetteName = "Haakun, The All-Consuming",
+	vignetteID = 562, -- "Haakun, the All-Consuming"
 }
 
 NPCs[83019] = { -- Gug'tol
@@ -829,7 +809,7 @@ NPCs[87668] = { -- Orumo the Observer
 
 NPCs[88043] = { -- Avatar of Socrethar
 	questID = 37338, -- Avatar of Sothrecar
-	vignetteName = "Avatar of Sothrecar",
+	vignetteID = 561, -- Avatar of Socrethar
 }
 
 NPCs[88071] = { -- Strategist Ankor
@@ -866,12 +846,12 @@ NPCs[50883] = { -- Pathrunner
 
 NPCs[72362] = { -- Ku'targ the Voidseer
 	questID = 33039, -- The Voidseer
-	vignetteName = "The Voidseer",
+	vignetteID = 13, -- The Voidseer
 }
 
 NPCs[72537] = { -- Leaf-Reader Kurri
 	questID = 33055, -- Foreling Worship Circle
-	vignetteName = "Leaf-Reader Kurri",
+	vignetteID = 23, -- Leaf-Reader Kurri
 }
 
 NPCs[72606] = { -- Rockhoof
@@ -886,12 +866,12 @@ NPCs[74206] = { -- Killmaw
 
 NPCs[75071] = { -- Mother Om'ra
 	questID = 33642, -- Mother Om'ra
-	vignetteName = "Mother Om'ra",
+	vignetteID = 399, -- Mother Om'ra
 }
 
 NPCs[75434] = { -- Windfang Matriarch
 	questID = 33038, -- Embaari Defense Crystal
-	vignetteName = "Embaari Defense Crystal",
+	vignetteID = 16, -- Embaari Defense Crystal
 }
 
 NPCs[75435] = { -- Yggdrel
@@ -899,7 +879,7 @@ NPCs[75435] = { -- Yggdrel
 	toys = {
 		{ itemID = 113570 }, -- Ancient's Bloom
 	},
-	vignetteName = "Yggdrel",
+	vignetteID = 30, -- Yggdrel
 }
 
 NPCs[75482] = { -- Veloss
@@ -909,7 +889,7 @@ NPCs[75482] = { -- Veloss
 
 NPCs[75492] = { -- Venomshade
 	questID = 33643, -- Venomshade (Plant Hydra)
-	vignetteName = "Venomshade (Plant Hydra)",
+	vignetteID = 207, -- Venomshade
 }
 
 NPCs[76380] = { -- Gorum
@@ -918,7 +898,7 @@ NPCs[76380] = { -- Gorum
 
 NPCs[77085] = { -- Dark Emanation
 	questID = 33064, -- Shadowmoon Cultist Ritual
-	vignetteName = "Shadowmoon Cultist Ritual",
+	vignetteID = 215, -- Dark Emanation
 }
 
 NPCs[77140] = { -- Amaukwa
@@ -928,7 +908,7 @@ NPCs[77140] = { -- Amaukwa
 
 NPCs[77310] = { -- Mad "King" Sporeon
 	questID = 35906, -- Mad "King" Sporeon
-	vignetteName = "Mad \"King\" Sporeon",
+	vignetteID = 405, -- "Mad ""King"" Sporeon"
 }
 
 NPCs[79524] = { -- Hypnocroak
@@ -948,7 +928,7 @@ NPCs[81639] = { -- Brambleking Fili
 
 NPCs[82207] = { -- Faebright
 	questID = 35725, -- Faebright
-	vignetteName = "Faebright",
+	vignetteID = 385, -- Faebright
 }
 
 NPCs[82268] = { -- Darkmaster Go'vid
@@ -960,7 +940,7 @@ NPCs[82326] = { -- Ba'ruun
 	toys = {
 		{ itemID = 113540 }, -- Ba'ruun's Bountiful Bloom
 	},
-	vignetteName = "Ba'ruun",
+	vignetteID = 386, -- Ba'ruun
 }
 
 NPCs[82362] = { -- Morva Soultwister
@@ -983,17 +963,15 @@ NPCs[82415] = { -- Shinri
 	toys = {
 		{ itemID = 113543 }, -- Spirit of Shinri
 	},
-	vignetteName = "Shinri",
+	vignetteID = 387, -- Shinri
 }
 
 NPCs[82676] = { -- Enavra
 	questID = 35688, -- Enavra Varandi
-	vignetteName = "Enavra Varandi",
 }
 
 NPCs[82742] = { -- Enavra
 	questID = 35688, -- Enavra Varandi
-	vignetteName = "Enavra Varandi",
 }
 
 NPCs[83385] = { -- Voidseer Kalurg
@@ -1078,7 +1056,6 @@ NPCs[82050] = { -- Varasha
 
 NPCs[82247] = { -- Nas Dunberlin
 	questID = 36129, -- Nas Dunberlin
-	vignetteName = "Nas Dunberlin",
 }
 
 NPCs[83990] = { -- Solar Magnifier
@@ -1138,7 +1115,7 @@ NPCs[84890] = { -- Festerbloom
 NPCs[84912] = { -- Sunderthorn
 	isTameable = true,
 	questID = 36298, -- Spires - Vignette Boss 017 - Sunderthorn
-	vignetteName = "Stingtail Nest",
+	vignetteID = 457, -- Stingtail Nest
 }
 
 NPCs[84951] = { -- Gobblefin
@@ -1163,7 +1140,7 @@ NPCs[85036] = { -- Formless Nightmare
 
 NPCs[85037] = { -- Kenos the Unraveler
 	questID = 37361, -- Kenos the Unraveller
-	vignetteName = "Kenos the Unraveller",
+	vignetteID = 622, -- Kenos the Unraveler
 }
 
 NPCs[85078] = { -- Voidreaver Urnae
@@ -1227,7 +1204,7 @@ NPCs[50985] = { -- Poundfist
 NPCs[76473] = { -- Mother Araneae
 	isTameable = true,
 	questID = 34726, -- Pale Spider Broodmother
-	vignetteName = "Pale Spider Broodmother",
+	vignetteID = 336, -- Mother Araneae
 }
 
 NPCs[77093] = { -- Roardan the Sky Terror
@@ -1247,7 +1224,7 @@ NPCs[79629] = { -- Stomper Kreego
 	toys = {
 		{ itemID = 118224 }, -- Ogre Brewing Kit
 	},
-	vignetteName = "Stomper Kreego",
+	vignetteID = 409, -- Stomper Kreego
 }
 
 NPCs[80371] = { -- Typhon
@@ -1263,7 +1240,7 @@ NPCs[80725] = { -- Sulfurious
 
 NPCs[80868] = { -- Glut
 	questID = 36204, -- Gorger the Hungry
-	vignetteName = "Gorger the Hungry",
+	vignetteID = 434, -- Glut
 }
 
 NPCs[81038] = { -- Gelgor of the Blue Flame
@@ -1296,7 +1273,7 @@ NPCs[82311] = { -- Char the Burning
 NPCs[83522] = { -- Hive Queen Skrikka
 	isTameable = true,
 	questID = 35908, -- Stoneshard Broodmother
-	vignetteName = "Stoneshard Broodmother",
+	vignetteID = 406, -- Hive Queen Skrikka
 }
 
 NPCs[84406] = { -- Mandrakor
@@ -1307,7 +1284,7 @@ NPCs[84406] = { -- Mandrakor
 		},
 	},
 	questID = 36178, -- Mandrakor the Night Hunter
-	vignetteName = "Mandrakor the Night Hunter",
+	vignetteID = 428, -- Mandrakor
 }
 
 NPCs[84431] = { -- Greldrok the Cunning
@@ -1344,19 +1321,17 @@ NPCs[86257] = { -- Basten
 	toys = {
 		{ itemID = 119432 }, -- Botani Camouflage
 	},
-	vignetteName = "Protectors of the Grove",
+	vignetteID = 586, -- Protectors of the Grove
 }
 
 NPCs[86258] = { -- Nultra
-	achievementID = AchievementID.AncientNoMore,
 	questID = 37369, -- Protectors of the Grove
-	vignetteName = "Protectors of the Grove",
+	vignetteID = 586, -- Protectors of the Grove
 }
 
 NPCs[86259] = { -- Valstil
-	achievementID = AchievementID.AncientNoMore,
 	questID = 37369, -- Protectors of the Grove
-	vignetteName = "Protectors of the Grove",
+	vignetteID = 586, -- Protectors of the Grove
 }
 
 NPCs[86266] = { -- Venolasix
@@ -1450,7 +1425,7 @@ NPCs[50990] = { -- Nakk the Thunderer
 
 NPCs[78161] = { -- Hyperious
 	questID = 34862, -- Light the Braziers
-	vignetteName = "Light the Braziers",
+	vignetteID = 332, -- Light the Braziers
 }
 
 NPCs[79024] = { -- Warmaster Blugthol
@@ -1462,18 +1437,18 @@ NPCs[79725] = { -- Captain Ironbeard
 	toys = {
 		{ itemID = 118244 }, -- Iron Buccaneer's Hat
 	},
-	vignetteName = "Sea Lord Torglork",
+	vignetteID = 318, -- Captain Ironbeard
 }
 
 NPCs[80057] = { -- Soulfang
 	questID = 36128, -- Sabermaw - Saberon Vignette Boss
-	vignetteName = "Soulfang",
+	vignetteID = 424, -- Soulfang
 }
 
 NPCs[80122] = { -- Gaz'orda
 	isTameable = true,
 	questID = 34725, -- Sea Hydra
-	vignetteName = "Sea Hydra",
+	vignetteID = 339, -- Gaz'orda
 }
 
 NPCs[80370] = { -- Lernaea
@@ -1614,7 +1589,7 @@ NPCs[87234] = { -- Brutag Grimblade
 
 NPCs[87239] = { -- Krahl Deadeye
 	questID = 37473, -- Krahl Deathwind
-	vignetteName = "Krahl Deathwind",
+	vignetteID = 551, -- Krahl Deathwind
 }
 
 NPCs[87344] = { -- Gortag Steelgrip
@@ -1635,7 +1610,7 @@ NPCs[87837] = { -- Bonebreaker
 
 NPCs[87846] = { -- Pit Slayer
 	questID = 37397, -- Pit-Slayer
-	vignetteName = "Pit-Slayer",
+	vignetteID = 559, -- Pit Slayer
 }
 
 NPCs[88208] = { -- Pit Beast

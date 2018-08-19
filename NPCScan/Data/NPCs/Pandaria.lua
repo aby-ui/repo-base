@@ -2,14 +2,12 @@
 -- AddOn namespace
 -- ----------------------------------------------------------------------------
 local AddOnFolderName, private = ...
-local AchievementID = private.Enum.AchievementID
 local NPCs = private.Data.NPCs
 
 -- ----------------------------------------------------------------------------
 -- Multiple zones
 -- ----------------------------------------------------------------------------
 NPCs[69768] = { -- Zandalari Warscout
-	achievementID = AchievementID.ZulAgain,
 	mounts = {
 		{
 			itemID = 94230, -- Reins of the Amber Primordial Direhorn
@@ -19,7 +17,6 @@ NPCs[69768] = { -- Zandalari Warscout
 }
 
 NPCs[69769] = { -- Zandalari Warbringer
-	achievementID = AchievementID.ZulAgain,
 	mounts = {
 		{
 			itemID = 94229, -- Reins of the Slate Primordial Direhorn
@@ -29,7 +26,6 @@ NPCs[69769] = { -- Zandalari Warbringer
 }
 
 NPCs[69841] = { -- Zandalari Warbringer
-	achievementID = AchievementID.ZulAgain,
 	mounts = {
 		{
 			itemID = 94230, -- Reins of the Amber Primordial Direhorn
@@ -39,7 +35,6 @@ NPCs[69841] = { -- Zandalari Warbringer
 }
 
 NPCs[69842] = { -- Zandalari Warbringer
-	achievementID = AchievementID.ZulAgain,
 	mounts = {
 		{
 			itemID = 94231, -- Reins of the Jade Primordial Direhorn
@@ -209,32 +204,26 @@ NPCs[63978] = { -- Kri'chon
 -- Krasarang Wilds
 -- ----------------------------------------------------------------------------
 NPCs[68317] = { -- Mavis Harms
-	achievementID = AchievementID.ImInYourBaseKillingYourDudes,
 	factionGroup = "Alliance",
 }
 
 NPCs[68318] = { -- Dalan Nightbreaker
-	achievementID = AchievementID.ImInYourBaseKillingYourDudes,
 	factionGroup = "Alliance",
 }
 
 NPCs[68319] = { -- Disha Fearwarden
-	achievementID = AchievementID.ImInYourBaseKillingYourDudes,
 	factionGroup = "Alliance",
 }
 
 NPCs[68320] = { -- Ubunti the Shade
-	achievementID = AchievementID.ImInYourBaseKillingYourDudes,
 	factionGroup = "Horde",
 }
 
 NPCs[68321] = { -- Kar Warmaker
-	achievementID = AchievementID.ImInYourBaseKillingYourDudes,
 	factionGroup = "Horde",
 }
 
 NPCs[68322] = { -- Muerta
-	achievementID = AchievementID.ImInYourBaseKillingYourDudes,
 	factionGroup = "Horde",
 }
 
@@ -290,7 +279,6 @@ NPCs[50358] = { -- Haywire Sunreaver Construct
 }
 
 NPCs[69099] = { -- Nalak
-	achievementID = AchievementID.PraiseTheSun,
 	mounts = {
 		{
 			itemID = 95057, -- Reins of the Thundering Cobalt Cloud Serpent
@@ -308,7 +296,6 @@ NPCs[69998] = { -- Goda
 -- Isle of Giants
 -- ----------------------------------------------------------------------------
 NPCs[69161] = { -- Oondasta
-	achievementID = AchievementID.MillionsOfYearsOfEvolutionVsMyFist,
 	mounts = {
 		{
 			itemID = 94228, -- Reins of the Cobalt Primordial Direhorn
@@ -350,7 +337,7 @@ NPCs[71919] = { -- Zhu-Gon the Sour
 		},
 	},
 	questID = 32959, -- Tracking Quest - Daily - Zhu-Gon the Sour/Skunky Beer
-	vignetteName = "Really Skunky Beer",
+	vignetteID = 49, -- Really Skunky Beer
 }
 
 NPCs[72045] = { -- Chelon
@@ -361,7 +348,7 @@ NPCs[72045] = { -- Chelon
 }
 
 NPCs[72048] = { -- Rattleskew
-	vignetteName = "Battle of the Barnacle",
+	vignetteID = 61, -- Battle of the Barnacle
 }
 
 NPCs[72049] = { -- Cranegnasher

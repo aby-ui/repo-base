@@ -552,7 +552,7 @@ do
 		
 	local function ShellGameEnable()
 		CreateShellGame()
-		print("世界任务列表：小助手已加载")
+		print("世界任务列表：龟壳游戏助手已加载，拖动两根粗线缩放")
 		size,center = VWQL.ShellGameSize or size,VWQL.ShellGameCenter or center
 		UpdatePos(true)
 		if not VWQL.ShellGameLocked then

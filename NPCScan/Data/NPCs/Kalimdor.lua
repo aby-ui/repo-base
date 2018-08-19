@@ -698,5 +698,5 @@ NPCs[54338] = { -- Anthriss
 -- ----------------------------------------------------------------------------
 NPCs[110486] = { -- Huk'roth the Huntmaster
 	questID = 43480, -- Huk'roth the Houndmaster
-	vignetteName = "Huk'roth the Houndmaster",
+	vignetteID = 1506, -- Huk'roth the Houndmaster
 }

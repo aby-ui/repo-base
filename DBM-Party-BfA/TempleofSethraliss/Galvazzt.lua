@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2144, "DBM-Party-BfA", 6, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17674 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 17706 $"):sub(12, -3))
 mod:SetCreatureID(133389)
 mod:SetEncounterID(2126)
 mod:SetZone()
@@ -50,7 +50,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		warnCapacitance:Show(args.amount or 1)
 	elseif spellId == 266923 and args:IsPlayer() then
 		local amount = args.amount or 1
-		if amount >= 5 then
+		if (amount >= 5) and self:AntiSpam(3, 1) then
 			specWarnElectroshock:Show(amount)
 			specWarnElectroshock:Play("stackhigh")
 		end

@@ -141,7 +141,7 @@ ns.points = {
     },
     [942] = { -- Stormsong Valley
         [66901200] = {quest=51449, achievement=12853, criteria=41061,}, -- Weathered Treasure Chest
-        [50118623] = {quest=50526, achievement=12853, criteria=41063,}, -- Frosty Treasure Chest
+        [48968407] = {quest=50526, achievement=12853, criteria=41063,}, -- Frosty Treasure Chest
         [59913907] = {quest=50937, achievement=12853, criteria=41065, note="On roof",}, -- Hidden Scholar's Chest
         [58216368] = {quest=52326, achievement=12853, criteria=41067, note="Top shelf inside shed",}, -- Discarded Lunchbox
         [36692323] = {quest=52976, achievement=12853, criteria=41069, note="Climb ladder onto ship",}, -- Venture Co. Supply Chest
@@ -150,6 +150,9 @@ ns.points = {
         [58608388] = {quest=49811, achievement=12853, criteria=41066, note="Under platform",}, -- Smuggler's Stash
         [44447353] = {quest=52429, achievement=12853, criteria=41068, note="Jump onto platform",}, -- Carved Wooden Chest
         [46003069] = {quest=52980, achievement=12853, criteria=41070, note="Behind pillar",}, -- Forgotten Chest
+        -- junk
+        [64366899] = {quest=51939, junk=true, label="Small Treasure Chest",},
+        [62056563] = {quest=51184, junk=true, label="Small Treasure Chest",},
     },
     [1161] = { -- Boralus
         [61901010] = {quest=52870, achievement=12852, criteria=41016, note="In cave",}, -- Scrimshaw Cache

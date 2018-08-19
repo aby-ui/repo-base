@@ -65,7 +65,6 @@ Maps[MapID.Azsuna].NPCs = {
     [109653] = true, -- Marblub the Massive
     [109677] = true, -- Chief Treasurer Jabrill
     [109702] = true, -- Deepclaw
-    [110824] = true, -- Tideclaw
     [111434] = true, -- Sea King Tidross
     [111454] = true, -- Bestrix
     [111674] = true, -- Cinderwing

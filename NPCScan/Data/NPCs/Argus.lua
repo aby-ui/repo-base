@@ -84,7 +84,7 @@ NPCs[126419] = { -- Naroua
 		},
 	},
 	questID = 48667, -- Tracking Quest
-	vignetteName = "Naroua, King of the Forest",
+	vignetteID = 2229, -- Naroua, King of the Forest
 }
 
 -- ----------------------------------------------------------------------------

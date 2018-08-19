@@ -372,6 +372,7 @@ local function OnEvent(self, event, arg1, arg2)
         --SetCVar("lockedWorldMap", "0") --WorldMap
         WW(WorldMapFrame):Button("WMAPMover"):Size(150,22):TOP(WorldMapFrame, 0,0):up():un()
         BM_SetMoveHandler(WorldMapFrame, WMAPMover) --enable scale --abandoned because quest poi --TODO aby8
+        WorldMapFrame:SetClampedToScreen(true)
 
         BM_SetMoveHandler(TradeFrame)
 

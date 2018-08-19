@@ -168,16 +168,16 @@ local function GetNPCOptionsName(npcID)
 
 	local prefix = ""
 
-	if npc.questID then
+	if npc.questID or npc.achievementQuestID then
 		prefix = private.IsNPCQuestComplete(npc) and ICON_QUEST_COMPLETE or ICON_QUEST_ACTIVE
 	end
 
 	local npcName = NPCScan:GetNPCNameFromID(npcID)
-	local vignetteName = npc.vignetteName
+	local assetName = npc.achievementAssetName
 	local label = ""
 
-	if vignetteName and vignetteName ~= npcName then
-		label = (" %s"):format(_G.PARENS_TEMPLATE:format(vignetteName))
+	if assetName and assetName ~= npcName then
+		label = (" %s"):format(_G.PARENS_TEMPLATE:format(assetName))
 	end
 
 	return ("%s%s%s%s|r"):format(prefix, colorCode, npcName, label)
@@ -278,9 +278,7 @@ local function UpdateAchievementNPCOptions()
 		table.wipe(npcIDs)
 		table.wipe(npcNames)
 
-		for npcID in pairs(Data.Achievements[achievementID].criteriaNPCs) do
-			local npc = Data.NPCs[npcID]
-
+		for npcID, npc in pairs(Data.Achievements[achievementID].criteriaNPCs) do
 			if npc.factionGroup ~= _G.UnitFactionGroup("player") then
 				npcNames[npcID] = NPCScan:GetNPCNameFromID(npcID)
 				npcIDs[#npcIDs + 1] = npcID
@@ -579,8 +577,6 @@ local function UpdateNPCSearchOptions()
 end
 
 local function PerformNPCSearch(searchString)
-	local Data = private.Data
-
 	searchString = searchString:lower():trim()
 
 	table.wipe(npcIDs)
@@ -602,8 +598,12 @@ local function PerformNPCSearch(searchString)
 		end
 	end
 
-	for _, map in pairs(Data.Maps) do
-		if map.name:lower() == searchString then
+	for mapID, map in pairs(Data.Maps) do
+		if not map.name then
+			private.Debug("MapID %d: No map name", mapID)
+		end
+
+		if map.name and map.name:lower() == searchString then
 			for _, npc in pairs(map.NPCs) do
 				AddApplicableSearchID(npc)
 			end
