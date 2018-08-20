@@ -160,6 +160,34 @@ GTFO.SpellID["273909"] = {
   sound = 3;
 };
 
+GTFO.SpellID["250509"] = {
+  --desc = "Shadow Bomb (Icetusk Prophet)";
+  sound = 3;
+};
+
+GTFO.SpellID["263940"] = {
+  --desc = "Trample (Gahz'ralka)";
+  sound = 3;
+};
+
+GTFO.SpellID["260273"] = {
+  --desc = "Void Swipe (Overseer Bates)";
+  sound = 3;
+};
+
+GTFO.SpellID["280422"] = {
+  --desc = "Crushing Dread (Gorak Tul)";
+  sound = 3;
+  applicationOnly = true;
+};
+
+GTFO.SpellID["257336"] = {
+  --desc = "Mighty Slam (Lumbergrasp Sentinel)";
+  sound = 3;
+};
+
+
+
 
 -- ***********************
 -- * Shrine of the Storm *
@@ -339,7 +367,7 @@ GTFO.SpellID["257785"] = {
 };
 
 GTFO.SpellID["256710"] = {
-  --desc = "Burning Arsenal (nil)";
+  --desc = "Burning Arsenal";
   sound = 3;
 };
 

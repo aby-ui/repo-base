@@ -11,7 +11,7 @@
 
 local IS_WOW_8 = GetBuildInfo():match("^8")
 
-local MAJOR, MINOR = "LibResInfo-1.0", 26
+local MAJOR, MINOR = "LibResInfo-1.0", 27
 assert(LibStub, MAJOR.." requires LibStub")
 assert(LibStub("CallbackHandler-1.0", true), MAJOR.." requires CallbackHandler-1.0")
 local lib, oldminor = LibStub:NewLibrary(MAJOR, MINOR)

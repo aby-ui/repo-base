@@ -159,42 +159,40 @@ function NPCScan:OnEnable()
 
 			-- This sets values for NPCIDFromName, which is used for vignette detection.
 			self:GetNPCNameFromID(npcID)
-		end
-	end
 
-	for npcID, npc in pairs(Data.NPCs) do
-		table.sort(npc.mapIDs, private.SortByMapNameThenByID)
+			table.sort(npc.mapIDs, private.SortByMapNameThenByID)
 
-		if npc.questID then
-			local npcIDs = QuestNPCs[npc.questID]
-			if not npcIDs then
-				npcIDs = {}
-				QuestNPCs[npc.questID] = npcIDs
+			if npc.questID then
+				local npcIDs = QuestNPCs[npc.questID]
+				if not npcIDs then
+					npcIDs = {}
+					QuestNPCs[npc.questID] = npcIDs
+				end
+
+				npcIDs[npcID] = true
+
+				local questName = NPCScan:GetQuestNameFromID(npc.questID)
+				if questName and questName ~= _G.UNKNOWN then
+					QuestIDFromName[questName] = npc.questID
+				end
 			end
 
-			npcIDs[npcID] = true
-
-			local questName = NPCScan:GetQuestNameFromID(npc.questID)
-			if questName and questName ~= _G.UNKNOWN then
-				QuestIDFromName[questName] = npc.questID
+			if npc.vignetteID then
+				VignetteIDToNPCMapping[npc.vignetteID] = npc
 			end
-		end
-
-		if npc.vignetteID then
-			VignetteIDToNPCMapping[npc.vignetteID] = npc
 		end
 	end
 
 	private.InitializeAchievements()
 
 	for mapID, map in pairs(Data.Maps) do
-		local mapHeaderPrinted
+		if mapID >= Enum.MapID.Zuldazar then
+			local mapHeaderPrinted
 
-		for npcID in pairs(map.NPCs) do
-			if mapID >= Enum.MapID.Zuldazar then
+			for npcID in pairs(map.NPCs) do
 				local npc = map.NPCs[npcID]
 
-				if not npc.questID and not npc.achievementID then
+				if not npc.questID and not npc.achievementQuestID then
 					if not mapHeaderPrinted then
 						mapHeaderPrinted = true
 						private.Debug("-- ----------------------------------------------------------------------------")

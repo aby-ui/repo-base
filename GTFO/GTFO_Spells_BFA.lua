@@ -79,6 +79,20 @@ GTFO.SpellID["271715"] = {
   sound = 1;
 };
 
+GTFO.SpellID["261477"] = {
+  --desc = "Dervish (Faithless Watcher)";
+  sound = 1;
+};
+
+GTFO.SpellID["260378"] = {
+  --desc = "Nullifying Singularity";
+  sound = 1;
+};
+
+GTFO.SpellID["280446"] = {
+  --desc = "Bane of the Drust King (Gorak Tul)";
+  sound = 1;
+};
 
 -- ***********************
 -- * Shrine of the Storm *

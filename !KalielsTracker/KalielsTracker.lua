@@ -261,7 +261,9 @@ local function SetFrames()
 		elseif event == "QUEST_WATCH_LIST_CHANGED" then
 			local id, added = ...
 			if id and not added then
-				questState[id] = nil
+				if not KT.questStateStopUpdate then
+					questState[id] = nil
+				end
 				if KT.activeTask == id then
 					KT.activeTask = nil
 				end
@@ -1706,6 +1708,11 @@ function KT:SetSize()
 				KTF.Bar:Hide()
 			end
 		end
+		if height ~= KTF.height then
+			KTF:SetHeight(height)
+			KTF.height = height
+		end
+		self:MoveButtons()
 	else
 		OTF.height = height - 10
 		OTF:SetHeight(OTF.height)
@@ -1713,13 +1720,11 @@ function KT:SetSize()
 		if db.frameScrollbar then
 			KTF.Bar:Hide()
 		end
+		if height ~= KTF.height then
+			KTF:SetHeight(height)
+			KTF.height = height
+		end
 	end
-
-	if height == KTF.height then return end
-
-	KTF:SetHeight(height)
-	self:MoveButtons()
-	KTF.height = height
 end
 
 function KT:MoveTracker()
@@ -2155,6 +2160,7 @@ function KT:OnInitialize()
 	self.inWorld = false
 	self.inInstance = IsInInstance()
 	self.stopUpdate = true
+	self.questStateStopUpdate = false
 	self.wqInitialized = false
 	self.initialized = false
 

@@ -42,8 +42,3 @@ L["RIGHT"] = "Right"
 L["TOP"] = "Top"
 L["TOPLEFT"] = "Top Left"
 L["TOPRIGHT"] = "Top Right"
-
--- ----------------------------------------------------------------------------
--- Vignettes
--- ----------------------------------------------------------------------------
-local VL = _G.LibStub("AceLocale-3.0"):NewLocale(AddOnFolderName .. "Vignette", "enUS", true)

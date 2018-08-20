@@ -10,6 +10,8 @@ local Mapster = LibStub("AceAddon-3.0"):GetAddon("Mapster")
 local MODNAME= "Scale"
 local Scale = Mapster:NewModule(MODNAME)
 
+local LibWindow = LibStub("LibWindow-1.1")
+
 local scaler, mousetracker
 local SOS = { --Scaler Original State
 	dist = 0,
@@ -52,6 +54,7 @@ function Scale:OnEnable()
 			scaler.tex:SetDesaturated(true)
 		end)
 		mousetracker:SetScript("OnMouseUp", function(self)
+			LibWindow.SavePosition(WorldMapFrame)
 			self:SetScript("OnUpdate", nil)
 			self:SetAllPoints(scaler)
 			Mapster.db.profile.scale = WorldMapFrame:GetScale()

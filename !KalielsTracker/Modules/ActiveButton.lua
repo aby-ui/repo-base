@@ -228,7 +228,7 @@ function M:Update(id)
 	if InCombatLockdown() then return end
 
 	local closestQuestID
-	local minDistSqr = 22500
+	local minDistSqr = 30625
 
 	if not dbChar.collapsed then
 		for questID, button in pairs(KT.fixedButtons) do

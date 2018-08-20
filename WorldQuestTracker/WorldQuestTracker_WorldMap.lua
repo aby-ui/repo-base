@@ -57,12 +57,11 @@ local worldFramePOIs = WorldQuestTrackerWorldMapPOI
 --store the amount os quests for each faction on each map
 local factionAmountForEachMap = {}
 
-
 --local onenter function for worldmap buttons
 local questButton_OnEnter = function (self)
 	if (self.questID) then
 		WorldQuestTracker.CurrentHoverQuest = self.questID
-		self.UpdateTooltip = function()end
+		self.UpdateTooltip = TaskPOI_OnEnter -- function()end
 		TaskPOI_OnEnter (self)
 	end
 end

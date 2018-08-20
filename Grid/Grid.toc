@@ -1,5 +1,5 @@
 ## Interface: 80000
-## Version: 8.0.1.0
+## Version: 8.0.1.1
 
 ## Title: Grid
 ## Notes: A compact grid of party/raid unit frames.

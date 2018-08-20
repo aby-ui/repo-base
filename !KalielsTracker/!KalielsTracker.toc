@@ -1,7 +1,7 @@
 ## Interface: 80000
 ## Title: Kaliel's Tracker
 ## Notes: Improved Blizzard Objective Tracker
-## Version: 3.0.3
+## Version: 3.0.4
 ## Author: Kaliel (Marouan Sabbagh)
 
 ## SavedVariables: KalielsTrackerDB

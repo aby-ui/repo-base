@@ -4805,19 +4805,25 @@ DF.IconRowFunctions = {
 		local iconFrame = self.IconPool [self.NextIcon]
 		
 		if (not iconFrame) then
-			local newIconFrame = CreateFrame ("cooldown", "$parentIconCooldown" .. self.NextIcon, self, "CooldownFrameTemplate")
+			local newIconFrame = CreateFrame ("frame", "$parentIcon" .. self.NextIcon, self)
 			newIconFrame:SetSize (self.options.icon_width, self.options.icon_height)
 			
 			newIconFrame.Texture = newIconFrame:CreateTexture (nil, "background")
 			newIconFrame.Texture:SetAllPoints()
 			
-			newIconFrame.Text = newIconFrame:CreateFontString (nil, "overlay", "GameFontNormal")
-			newIconFrame.Text:SetPoint ("center")
-			newIconFrame.Text:Hide()
-			
 			newIconFrame:SetBackdrop ({edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1})
 			newIconFrame:SetBackdropBorderColor (0, 0, 0, 0)
 			newIconFrame:EnableMouse (false)
+			
+			local cooldownFrame = CreateFrame ("cooldown", "$parentIconCooldown" .. self.NextIcon, self, "CooldownFrameTemplate")
+			cooldownFrame:SetAllPoints()
+			cooldownFrame:EnableMouse (false)
+			
+			newIconFrame.Text = cooldownFrame:CreateFontString (nil, "overlay", "GameFontNormal")
+			newIconFrame.Text:SetPoint ("center")
+			newIconFrame.Text:Hide()
+			
+			newIconFrame.Cooldown = cooldownFrame
 			
 			self.IconPool [self.NextIcon] = newIconFrame
 			iconFrame = newIconFrame
@@ -4852,8 +4858,15 @@ DF.IconRowFunctions = {
 		return iconFrame
 	end,
 	
-	SetIcon = function (self, spellId, borderColor, startTime, duration)
-		local spellName, _, spellIcon = GetSpellInfo (spellId)
+	SetIcon = function (self, spellId, borderColor, startTime, duration, forceTexture)
+	
+		local spellName, _, spellIcon
+	
+		if (not forceTexture) then
+			spellName, _, spellIcon = GetSpellInfo (spellId)
+		else
+			spellIcon = forceTexture
+		end
 		
 		if (spellIcon) then
 			local iconFrame = self:GetIcon()
@@ -4864,10 +4877,10 @@ DF.IconRowFunctions = {
 				iconFrame:SetBackdropBorderColor (Plater:ParseColors (borderColor))
 			else
 				iconFrame:SetBackdropBorderColor (0, 0, 0 ,0)
-			end			
+			end	
 
 			if (startTime) then
-				CooldownFrame_Set (iconFrame, startTime, duration, true, true)
+				CooldownFrame_Set (iconFrame.Cooldown, startTime, duration, true, true)
 				
 				if (self.options.show_text) then
 					iconFrame.Text:Show()

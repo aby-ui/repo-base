@@ -6,13 +6,11 @@
 ## Author: Nevcairiel
 ## SavedVariables: MapsterDB
 ## X-Category: Map
-## Version: 1.8.0
+## Version: 1.8.0-6-g636af52
 ## X-License: All rights reserved.
 
-## OptionalDeps: Ace3
+## OptionalDeps: Ace3, LibWindow-1.1
 
-#@no-lib-strip@
-#@end-no-lib-strip@
 
 Locale\locale.xml
 

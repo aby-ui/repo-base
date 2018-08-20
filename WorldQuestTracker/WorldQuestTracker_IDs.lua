@@ -97,6 +97,9 @@ WorldQuestTracker.MapData.WorldQuestZones = {
 		[WorldQuestTracker.MapData.ZoneIDs.ZULDAZAAR] = 	true,
 		[WorldQuestTracker.MapData.ZoneIDs.NAZMIR] = 		true,
 		[WorldQuestTracker.MapData.ZoneIDs.VOLDUN] = 		true,
+		[1165] = 		true, --dazar'alor
+		[1161] = 		true, --boralus
+		
 		--kul'tiras
 		[WorldQuestTracker.MapData.ZoneIDs.TIRAGARDE] = 	true,
 		[WorldQuestTracker.MapData.ZoneIDs.STORMSONG] = 	true,

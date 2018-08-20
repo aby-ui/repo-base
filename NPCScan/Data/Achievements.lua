@@ -47,7 +47,6 @@ local AchievementID = {
 	PraiseTheSun = 8028,
 	Predator = 10334,
 	SabertronAssemble = 13054,
-	ShantyRaid = 13057,
 	TerrorsOfTheShore = 11786,
 	TheSongOfSilence = 9541,
 	TimelessChampion = 8714,
@@ -182,8 +181,8 @@ local function InitializeAchievements()
 				if assetID > 0 then
 					local found
 
-					for _, mapData in pairs(Data.Maps) do
-						if mapData.NPCs[assetID] then
+					for _, map in pairs(Data.Maps) do
+						if map.NPCs[assetID] then
 							found = true
 							break
 						end

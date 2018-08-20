@@ -1,5 +1,5 @@
 
-local dversion = 96
+local dversion = 98
 local major, minor = "DetailsFramework-1.0", dversion
 local DF, oldminor = LibStub:NewLibrary (major, minor)
 
@@ -1566,6 +1566,39 @@ function DF:CreateAnimation (animation, type, order, duration, arg1, arg2, arg3,
 	return anim
 end
 
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+--> frame shakes
+
+--> frame shakes rely on OnUpdate scripts, we are using a built-in OnUpdate so is guarantee it'll run
+local FrameshakeUpdateFrame = DetailsFrameworkFrameshakeControl or CreateFrame ("frame", "DetailsFrameworkFrameshakeControl", UIParent)
+--> store the frame which has frame shakes registered
+FrameshakeUpdateFrame.RegisteredFrames = FrameshakeUpdateFrame.RegisteredFrames or {}
+
+FrameshakeUpdateFrame.RegisterFrame = function (newFrame)
+	--> add the frame into the registered frames to update
+	DF.table.addunique (FrameshakeUpdateFrame.RegisteredFrames, newFrame)
+end
+
+--forward declared
+local frameshake_do_update
+
+FrameshakeUpdateFrame:SetScript ("OnUpdate", function (self, deltaTime)
+	for i = 1, #FrameshakeUpdateFrame.RegisteredFrames do
+		local parent = FrameshakeUpdateFrame.RegisteredFrames [i]
+		--> check if there's a shake running
+		if (parent.__frameshakes.enabled > 0) then
+			--update all shakes for this frame
+			for i = 1, #parent.__frameshakes do
+				local shakeObject = parent.__frameshakes [i]
+				if (shakeObject.IsPlaying) then
+					frameshake_do_update (parent, shakeObject, deltaTime)
+				end
+			end
+		end	
+	end
+end)
+
+
 local frameshake_shake_finished = function (parent, shakeObject)
 	if (shakeObject.IsPlaying) then
 		shakeObject.IsPlaying = false
@@ -1603,7 +1636,8 @@ local frameshake_shake_finished = function (parent, shakeObject)
 	end
 end
 
-local frameshake_do_update = function (parent, shakeObject, deltaTime)
+--already declared above the update function
+frameshake_do_update = function (parent, shakeObject, deltaTime)
 
 	--> check delta time
 	deltaTime = deltaTime or 0
@@ -1676,20 +1710,6 @@ local frameshake_do_update = function (parent, shakeObject, deltaTime)
 		end
 	else
 		frameshake_shake_finished (parent, shakeObject)
-	end
-end
-
-local frameshake_update_all = function (parent, deltaTime)
-	--> check if there's a shake running
-	--print ("Shakes Enabled: ", parent.__frameshakes.enabled)
-	if (parent.__frameshakes.enabled > 0) then
-		--update all shakes
-		for i = 1, #parent.__frameshakes do
-			local shakeObject = parent.__frameshakes [i]
-			if (shakeObject.IsPlaying) then
-				frameshake_do_update (parent, shakeObject, deltaTime)
-			end
-		end
 	end
 end
 
@@ -1810,8 +1830,9 @@ function DF:CreateFrameShake (parent, duration, amplitude, frequency, absoluteSi
 		parent.PlayFrameShake = frameshake_play
 		parent.StopFrameShake = frameshake_stop
 		parent.UpdateFrameShake = frameshake_do_update
-		parent.UpdateAllFrameShake = frameshake_update_all
-		parent:HookScript ("OnUpdate", frameshake_update_all)
+		
+		--> register the frame within the frame shake updater
+		FrameshakeUpdateFrame.RegisterFrame (parent)
 	end
 
 	tinsert (parent.__frameshakes, frameShake)

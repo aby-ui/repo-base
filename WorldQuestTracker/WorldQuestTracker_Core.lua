@@ -91,8 +91,23 @@ function WorldQuestTracker:WaitUntilWorldMapIsClose()
 	WorldQuestTracker.ScheduledMapFrameShownCheck = C_Timer.NewTicker (1, WorldQuestTracker.UpdateCurrentStandingZone)
 end
 
-hooksecurefunc (WorldMapFrame, "OnMapChanged", function()
+local check_for_quests_on_unknown_map = function()
+	local mapID = WorldMapFrame.mapID
+	
+	if (not WorldQuestTracker.MapData.WorldQuestZones [mapID] and not WorldQuestTracker.IsWorldQuestHub (mapID)) then
+		local taskInfo = C_TaskQuest.GetQuestsForPlayerByMapID (mapID, mapID)
+		if (taskInfo and #taskInfo > 0) then
+			--> there's quests on this map
+			--print ("found map with quests", mapID)
+			WorldQuestTracker.MapData.WorldQuestZones [mapID] = true
+			WorldQuestTracker.OnMapHasChanged (WorldMapFrame)
+		end
+	end
+	
+end
 
+WorldQuestTracker.OnMapHasChanged = function (self)
+	
 	local mapID = WorldMapFrame.mapID
 	WorldQuestTracker.InitializeWorldWidgets()
 	
@@ -113,6 +128,10 @@ hooksecurefunc (WorldMapFrame, "OnMapChanged", function()
 	for pin in map:EnumeratePinsByTemplate ("WorldQuestTrackerRarePinTemplate") do
 		pin.RareWidget:Hide()
 		map:RemovePin (pin)
+	end
+	
+	if (not WorldQuestTracker.MapData.WorldQuestZones [mapID] and not WorldQuestTracker.IsWorldQuestHub (mapID)) then
+		C_Timer.After (0.5, check_for_quests_on_unknown_map)
 	end
 	
 	--is the map a zone map with world quests?
@@ -164,7 +183,9 @@ hooksecurefunc (WorldMapFrame, "OnMapChanged", function()
 		end
 	end
 
-end)
+end
+
+hooksecurefunc (WorldMapFrame, "OnMapChanged", WorldQuestTracker.OnMapHasChanged)
 
 -- default world quest pins from the map
 hooksecurefunc (WorldMap_WorldQuestPinMixin, "RefreshVisuals", function (self)
@@ -1518,6 +1539,19 @@ hooksecurefunc ("ToggleWorldMap", function (self)
 				FixedValue = "none",
 				ShowSpeed = 0.05,
 				Options = function()
+				
+					if (WorldQuestTracker.db.profile.bar_anchor == "top") then
+						GameCooltip:SetOption ("MyAnchor", "top")
+						GameCooltip:SetOption ("RelativeAnchor", "bottom")
+						GameCooltip:SetOption ("WidthAnchorMod", 0)
+						GameCooltip:SetOption ("HeightAnchorMod", -10)
+					else
+						GameCooltip:SetOption ("MyAnchor", "bottom")
+						GameCooltip:SetOption ("RelativeAnchor", "top")
+						GameCooltip:SetOption ("WidthAnchorMod", 0)
+						GameCooltip:SetOption ("HeightAnchorMod", 0)
+					end				
+				
 				end
 			}
 			
@@ -1644,6 +1678,19 @@ hooksecurefunc ("ToggleWorldMap", function (self)
 				FixedValue = "none",
 				ShowSpeed = 0.05,
 				Options = function()
+				
+					if (WorldQuestTracker.db.profile.bar_anchor == "top") then
+						GameCooltip:SetOption ("MyAnchor", "top")
+						GameCooltip:SetOption ("RelativeAnchor", "bottom")
+						GameCooltip:SetOption ("WidthAnchorMod", 0)
+						GameCooltip:SetOption ("HeightAnchorMod", -10)
+					else
+						GameCooltip:SetOption ("MyAnchor", "bottom")
+						GameCooltip:SetOption ("RelativeAnchor", "top")
+						GameCooltip:SetOption ("WidthAnchorMod", 0)
+						GameCooltip:SetOption ("HeightAnchorMod", 0)
+					end				
+				
 				end,
 			}
 			
@@ -1747,6 +1794,19 @@ hooksecurefunc ("ToggleWorldMap", function (self)
 				FixedValue = "none",
 				ShowSpeed = 0.05,
 				Options = function()
+				
+					if (WorldQuestTracker.db.profile.bar_anchor == "top") then
+						GameCooltip:SetOption ("MyAnchor", "top")
+						GameCooltip:SetOption ("RelativeAnchor", "bottom")
+						GameCooltip:SetOption ("WidthAnchorMod", 0)
+						GameCooltip:SetOption ("HeightAnchorMod", -10)
+					else
+						GameCooltip:SetOption ("MyAnchor", "bottom")
+						GameCooltip:SetOption ("RelativeAnchor", "top")
+						GameCooltip:SetOption ("WidthAnchorMod", 0)
+						GameCooltip:SetOption ("HeightAnchorMod", 0)
+					end				
+				
 				end,
 			}
 			
@@ -1763,6 +1823,18 @@ hooksecurefunc ("ToggleWorldMap", function (self)
 				GameCooltip:SetOption ("FixedHeight", 185)
 				GameCooltip:AddLine (" ")
 				GameCooltip:AddLine (L["S_MAPBAR_SUMMARYMENU_TODAYREWARDS"] .. ":", _, _, _, _, 12)
+				
+					if (WorldQuestTracker.db.profile.bar_anchor == "top") then
+						GameCooltip:SetOption ("MyAnchor", "top")
+						GameCooltip:SetOption ("RelativeAnchor", "bottom")
+						GameCooltip:SetOption ("WidthAnchorMod", 0)
+						GameCooltip:SetOption ("HeightAnchorMod", -29)
+					else
+						GameCooltip:SetOption ("MyAnchor", "bottom")
+						GameCooltip:SetOption ("RelativeAnchor", "top")
+						GameCooltip:SetOption ("WidthAnchorMod", 0)
+						GameCooltip:SetOption ("HeightAnchorMod", 0)
+					end				
 				
 				--~sumary
 				button_onenter (self)
@@ -2403,6 +2475,17 @@ hooksecurefunc ("ToggleWorldMap", function (self)
 				FixedValue = "none",
 				ShowSpeed = 0.05,
 				Options = function()
+					if (WorldQuestTracker.db.profile.bar_anchor == "top") then
+						GameCooltip:SetOption ("MyAnchor", "top")
+						GameCooltip:SetOption ("RelativeAnchor", "bottom")
+						GameCooltip:SetOption ("WidthAnchorMod", 0)
+						GameCooltip:SetOption ("HeightAnchorMod", -10)
+					else
+						GameCooltip:SetOption ("MyAnchor", "bottom")
+						GameCooltip:SetOption ("RelativeAnchor", "top")
+						GameCooltip:SetOption ("WidthAnchorMod", 0)
+						GameCooltip:SetOption ("HeightAnchorMod", 0)
+					end
 				end
 			}
 			
@@ -2432,6 +2515,9 @@ hooksecurefunc ("ToggleWorldMap", function (self)
 				FixedValue = "none",
 				ShowSpeed = 0.05,
 				Options = function()
+				
+				
+				
 				end
 			}
 			
@@ -2592,6 +2678,18 @@ hooksecurefunc ("ToggleWorldMap", function (self)
 				GameCooltip:SetOption ("TextSize", 10)
 				GameCooltip:SetOption ("FixedWidth", 220)
 				
+				if (WorldQuestTracker.db.profile.bar_anchor == "top") then
+					GameCooltip:SetOption ("MyAnchor", "top")
+					GameCooltip:SetOption ("RelativeAnchor", "bottom")
+					GameCooltip:SetOption ("WidthAnchorMod", 0)
+					GameCooltip:SetOption ("HeightAnchorMod", -29)
+				else
+					GameCooltip:SetOption ("MyAnchor", "bottom")
+					GameCooltip:SetOption ("RelativeAnchor", "top")
+					GameCooltip:SetOption ("WidthAnchorMod", 0)
+					GameCooltip:SetOption ("HeightAnchorMod", 0)
+				end
+				
 				GameCooltip:AddLine (L["S_QUESTTYPE_GOLD"])
 				GameCooltip:AddIcon (WorldQuestTracker.MapData.QuestTypeIcons [WQT_QUESTTYPE_GOLD].icon, 1, 1, 20, 20)
 				
@@ -2609,6 +2707,18 @@ hooksecurefunc ("ToggleWorldMap", function (self)
 				GameCooltip:SetType ("tooltip")
 				GameCooltip:SetOption ("TextSize", 10)
 				GameCooltip:SetOption ("FixedWidth", 220)
+				
+				if (WorldQuestTracker.db.profile.bar_anchor == "top") then
+					GameCooltip:SetOption ("MyAnchor", "top")
+					GameCooltip:SetOption ("RelativeAnchor", "bottom")
+					GameCooltip:SetOption ("WidthAnchorMod", 0)
+					GameCooltip:SetOption ("HeightAnchorMod", -29)
+				else
+					GameCooltip:SetOption ("MyAnchor", "bottom")
+					GameCooltip:SetOption ("RelativeAnchor", "top")
+					GameCooltip:SetOption ("WidthAnchorMod", 0)
+					GameCooltip:SetOption ("HeightAnchorMod", 0)
+				end				
 				
 				GameCooltip:AddLine (L["S_QUESTTYPE_RESOURCE"])
 				GameCooltip:AddIcon (WorldQuestTracker.MapData.QuestTypeIcons [WQT_QUESTTYPE_RESOURCE].icon, 1, 1, 20, 20)
@@ -2628,6 +2738,18 @@ hooksecurefunc ("ToggleWorldMap", function (self)
 				GameCooltip:SetOption ("TextSize", 10)
 				GameCooltip:SetOption ("FixedWidth", 220)
 				GameCooltip:SetOption ("StatusBarTexture", [[Interface\RaidFrame\Raid-Bar-Hp-Fill]])
+				
+				if (WorldQuestTracker.db.profile.bar_anchor == "top") then
+					GameCooltip:SetOption ("MyAnchor", "top")
+					GameCooltip:SetOption ("RelativeAnchor", "bottom")
+					GameCooltip:SetOption ("WidthAnchorMod", 0)
+					GameCooltip:SetOption ("HeightAnchorMod", -29)
+				else
+					GameCooltip:SetOption ("MyAnchor", "bottom")
+					GameCooltip:SetOption ("RelativeAnchor", "top")
+					GameCooltip:SetOption ("WidthAnchorMod", 0)
+					GameCooltip:SetOption ("HeightAnchorMod", 0)
+				end
 				
 				GameCooltip:AddLine (L["S_QUESTTYPE_ARTIFACTPOWER"])
 				GameCooltip:AddIcon (WorldQuestTracker.MapData.QuestTypeIcons [WQT_QUESTTYPE_APOWER].icon, 1, 1, 20, 20)

@@ -5,6 +5,7 @@ All rights reserved.
 
 local Mapster = LibStub("AceAddon-3.0"):NewAddon("Mapster", "AceEvent-3.0", "AceHook-3.0")
 
+local LibWindow = LibStub("LibWindow-1.1")
 local L = LibStub("AceLocale-3.0"):GetLocale("Mapster")
 
 local defaults = {
@@ -19,12 +20,17 @@ local defaults = {
 		ejScale = 0.8,
 		alpha = 1,
 		disableMouse = false,
+		-- position defaults for LibWindow
+		x = 40,
+		y = 140,
+		point = "LEFT",
 	}
 }
 
 local format = string.format
 
-local wmfOnShow, dropdownScaleFix, WorldMapFrameGetAlpha
+local WorldMapFrameStartMoving, WorldMapFrameStopMoving
+local WorldMapUnitPin, WorldMapUnitPinSizes
 local db
 
 function Mapster:OnInitialize()
@@ -47,17 +53,50 @@ local realZone
 function Mapster:OnEnable()
 	self:SetupMapButton()
 
+	LibWindow.RegisterConfig(WorldMapFrame, db)
+
+	-- remove from UI panel system
+	UIPanelWindows["WorldMapFrame"] = nil
+	WorldMapFrame:SetAttribute("UIPanelLayout-area", nil)
+	WorldMapFrame:SetAttribute("UIPanelLayout-enabled", false)
+
+	-- make the map movable
+	WorldMapFrame:SetMovable(true)
+	WorldMapFrame:RegisterForDrag("LeftButton")
+	WorldMapFrame:SetScript("OnDragStart", WorldMapFrameStartMoving)
+	WorldMapFrame:SetScript("OnDragStop", WorldMapFrameStopMoving)
+
+	-- map transition
 	self:SecureHook(WorldMapFrame, "SynchronizeDisplayState", "WorldMapFrame_SynchronizeDisplayState")
 
+	-- hooks for scale
 	self:SecureHook("HelpPlate_Show")
 	self:SecureHook("HelpPlate_Hide")
 	self:SecureHook("HelpPlate_Button_AnimGroup_Show_OnFinished")
 	self:RawHook(WorldMapFrame.ScrollContainer, "GetCursorPosition", "WorldMapFrame_ScrollContainer_GetCursorPosition", true)
 
+	-- hook into EJ icons
+	self:SecureHook(EncounterJournalPinMixin, "OnAcquired", "EncounterJournalPin_OnAcquired")
+	for pin in WorldMapFrame:EnumeratePinsByTemplate("EncounterJournalPinTemplate") do
+		pin.OnAcquired = EncounterJournalPinMixin.OnAcquired
+	end
+
+	-- hook into unit provider
+	for pin in WorldMapFrame:EnumeratePinsByTemplate("GroupMembersPinTemplate") do
+		WorldMapUnitPin = pin
+		WorldMapUnitPinSizes = pin.dataProvider:GetUnitPinSizesTable()
+		break
+	end
+
+	-- close the map on escape
+	table.insert(UISpecialFrames, "WorldMapFrame")
+
 	-- load settings
 	--self:SetAlpha()
-	--self:SetArrow()
+	self:SetArrow()
+	self:SetEJScale()
 	self:SetScale()
+	self:SetPosition()
 end
 
 function Mapster:Refresh()
@@ -76,8 +115,10 @@ function Mapster:Refresh()
 
 	-- apply new settings
 	--self:SetAlpha()
-	--self:SetArrow()
+	self:SetArrow()
+	self:SetEJScale()
 	self:SetScale()
+	self:SetPosition()
 
 	if self.optionsButton then
 		if db.hideMapButton then
@@ -88,21 +129,28 @@ function Mapster:Refresh()
 	end
 end
 
+function WorldMapFrameStartMoving(frame)
+	if not WorldMapFrame:IsMaximized() then
+		WorldMapFrame:StartMoving()
+	end
+end
+
+function WorldMapFrameStopMoving(frame)
+	WorldMapFrame:StopMovingOrSizing()
+	if not WorldMapFrame:IsMaximized() then
+		LibWindow.SavePosition(WorldMapFrame)
+	end
+end
+
+function Mapster:SetPosition()
+	LibWindow.RestorePosition(WorldMapFrame)
+end
+
 function Mapster:SetScale(force)
 	if WorldMapFrame:IsMaximized() and WorldMapFrame:GetScale() ~= 1 then
 		WorldMapFrame:SetScale(1)
-		SetUIPanelAttribute(WorldMapFrame, "xoffset", 0)
-		SetUIPanelAttribute(WorldMapFrame, "yoffset", 0)
 	elseif not WorldMapFrame:IsMaximized() and (WorldMapFrame:GetScale() ~= db.scale or force) then
-		WorldMapFrame:SetScale(db.scale or 1)
-
-		-- adjust x/y offset to compensate for scale changes
-		local xOff = UIParent:GetAttribute("LEFT_OFFSET")
-		local yOff = UIParent:GetAttribute("TOP_OFFSET")
-		xOff = xOff / (db.scale or 1) - xOff
-		yOff = yOff / (db.scale or 1) - yOff
-		SetUIPanelAttribute(WorldMapFrame, "xoffset", xOff)
-		SetUIPanelAttribute(WorldMapFrame, "yoffset", yOff)
+		WorldMapFrame:SetScale(db.scale)
 	end
 end
 
@@ -114,6 +162,9 @@ end
 
 function Mapster:WorldMapFrame_SynchronizeDisplayState()
 	self:SetScale()
+	if not WorldMapFrame:IsMaximized() then
+		self:SetPosition()
+	end
 end
 
 function Mapster:HelpPlate_Show(plate, frame)
@@ -135,6 +186,27 @@ function Mapster:HelpPlate_Button_AnimGroup_Show_OnFinished()
 		HelpPlate:SetScale(1.0)
 		HelpPlate.__Mapster = nil
 	end
+end
+
+function Mapster:EncounterJournalPin_OnAcquired(pin)
+	pin:SetSize(50 * db.ejScale, 49 * db.ejScale)
+	pin.Background:SetScale(db.ejScale)
+end
+
+function Mapster:SetEJScale()
+	for pin in WorldMapFrame:EnumeratePinsByTemplate("EncounterJournalPinTemplate") do
+		pin:SetSize(50 * db.ejScale, 49 * db.ejScale)
+		pin.Background:SetScale(db.ejScale)
+	end
+end
+
+function Mapster:SetArrow()
+	if not WorldMapUnitPin or not WorldMapUnitPinSizes then
+		return
+	end
+
+	WorldMapUnitPinSizes.player = 27 * db.arrowScale
+	WorldMapUnitPin:SynchronizePinSizes()
 end
 
 function Mapster:GetModuleEnabled(module)

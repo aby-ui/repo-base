@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2153, "DBM-Party-BfA", 4, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17470 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 17712 $"):sub(12, -3))
 mod:SetCreatureID(134056)--134828 split forms
 mod:SetEncounterID(2130)
 mod:SetZone()
@@ -47,6 +47,7 @@ end
 function mod:OnCombatStart(delay)
 	timerChokingBrineCD:Start(10.5-delay)--SUCCESS
 	timerSurgingRushCD:Start(17-delay)
+	timerUndertowCD:Start(30-delay)
 end
 
 function mod:OnCombatEnd()

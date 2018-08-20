@@ -260,7 +260,12 @@ local function Filter_Achievements(self, spec)
 	if spec == "zone" then
 		local continentName = KT.GetCurrentMapContinent().name
 		local zoneName = GetRealZoneText() or ""
-		local categoryName = (KT.GetCurrentMapContinent().mapID == 619) and EXPANSION_NAME6 or continentName
+		local categoryName = continentName
+		if KT.GetCurrentMapContinent().mapID == 619 then
+			categoryName = EXPANSION_NAME6	-- Legion
+		elseif KT.GetCurrentMapContinent().mapID == 875 then
+			categoryName = EXPANSION_NAME7	-- Battle for Azeroth
+		end
 		local instance = KT.inInstance and 168 or nil
 		_DBG(zoneName.." ... "..KT.GetCurrentMapAreaID(), true)
 
@@ -652,7 +657,9 @@ local function SetFrames()
 					self:RegisterEvent("QUEST_POI_UPDATE")
 				end
 			elseif event == "QUEST_POI_UPDATE" then
+				KT.questStateStopUpdate = true
 				Filter_Quests(_, "zone")
+				KT.questStateStopUpdate = false
 				self:UnregisterEvent(event)
 			elseif event == "ZONE_CHANGED_NEW_AREA" then
 				if db.filterAuto[1] == "zone" then

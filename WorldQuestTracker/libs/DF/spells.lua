@@ -766,3 +766,65 @@ function DF:GetCooldownInfo (spellId)
 	return DF.CooldownsInfo [spellId]
 end
 
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+--consumables
+
+DF.FlaskIDs = {
+	[251836] = true, -- Flask of the Currents agility
+	[251837] = true, -- Flask of Endless Fathoms intellect
+	[251838] = true, -- Flask of the Vast Horizon stamina
+	[251839] = true, -- Flask of the Undertow strength
+}
+
+DF.FoodIDs = {
+	[257422] = 41, --Mon'Dazi versatility
+	[257413] = 41, --Ravenberry Tarts haste
+	[257418] = 41, --Loa Loaf mastery
+	[257408] = 41, --Kul Tiramisu critical
+	
+	[257424] =  55, --Spiced Snapper versatility
+	[257415] =  55, --Swamp Fish 'n Chips haste
+	[257420] =  55, --Sailor's Pie mastery
+	[257410] =  55, --Honey-Glazed Haunches critical
+	
+	[259448] = 75, --Galley Banquet agility
+	[259449] = 75, --Galley Banquet intellect
+	[259453] = 75, --Galley Banquet stamina
+	[259452] = 75, --Galley Banquet strength
+
+	[259454] = 100, --Bountiful Captain's Feast agility
+	[259455] = 100, --Bountiful Captain's Feast intellect
+	[259457] = 100, --Bountiful Captain's Feast stamina
+	[257427] = 100, --Bountiful Captain's Feast strength
+}
+
+DF.PotionIDs = {
+	[279152] = true, --Battle Potion of Agility
+	[279151] = true, --Battle Potion of Intellect
+	[279154] = true, --Battle Potion of Stamina
+	[279153] = true, --Battle Potion of Strength
+	
+	[269853] = true, --Potion of Rising Death (range)
+	[251316] = true, --Potion of Bursting Blood (melee)
+	[251231] = true, --Steelskin Potion (tank)
+}
+
+DF.RuneIDs = {
+	[270058] = true, --Battle-Scarred Augment Rune
+}
+
+--	/dump UnitAura ("player", 1)
+--	/dump UnitAura ("player", 2)
+
+
+
+
+
+
+
+
+
+
+
+
+

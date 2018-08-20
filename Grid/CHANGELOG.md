@@ -1,3 +1,8 @@
+### Version 8.0.1.1
+
+- Updated LibResInfo-1.0
+- Fixed a map API error (thanks rherzfeld)
+
 ### Version 8.0.1.0
 
 - Updated for WoW 8.0

@@ -281,8 +281,23 @@ function WorldQuestTracker.OpenGroupFinderForQuest()
 		LFGListFrame.SearchPanel.SearchBox.Instructions2.alpha = 0.3
 		LFGListFrame.SearchPanel.SearchBox.Instructions2.align = ">"
 		
+		--ballon popup
+		LFGListFrame.SearchPanel.SearchBox.QuestIDBalloon = CreateFrame ("frame", "WorldQuestTrackerGroupFinderPopup", LFGListFrame.EntryCreation.Name, "MicroButtonAlertTemplate")
+		LFGListFrame.SearchPanel.SearchBox.QuestIDBalloon:SetFrameLevel (2000)
+		LFGListFrame.SearchPanel.SearchBox.QuestIDBalloon.Text:SetSpacing (4)
+		LFGListFrame.SearchPanel.SearchBox.QuestIDBalloon:SetPoint ("bottomleft", LFGListFrame.SearchPanel.SearchBox, "topleft", 0, 20)
+		
 		LFGListFrame.SearchPanel.SearchBox:HookScript ("OnHide", function()
 			LFGListFrame.SearchPanel.SearchBox.Instructions2.text = ""
+			LFGListFrame.SearchPanel.SearchBox.QuestIDBalloon:Hide()
+		end)
+		
+		LFGListFrame.SearchPanel.SearchBox:HookScript ("OnTextChanged", function()
+			local text = LFGListFrame.SearchPanel.SearchBox:GetText()
+			if (tonumber (text) == ff.CurrentWorldQuest) then
+				LFGListFrame.SearchPanel.SearchBox.Instructions2.text = ""
+				LFGListFrame.SearchPanel.SearchBox.QuestIDBalloon:Hide()
+			end
 		end)
 		
 		LFGListFrame.EntryCreation.Name:HookScript ("OnEnterPressed", function()
@@ -300,14 +315,16 @@ function WorldQuestTracker.OpenGroupFinderForQuest()
 					
 					LFGListFrame.EntryCreation.Name:HookScript ("OnHide", function()
 						LFGListFrame.EntryCreation.Name.Instructions2.text = ""
+						LFGListFrame.SearchPanel.SearchBox.QuestIDBalloon:Hide()
 					end)
 				end
 
 				if (WorldQuestTracker.OpenSearchTime and WorldQuestTracker.OpenSearchTime+30 > GetTime()) then
+					LFGListFrame.SearchPanel.SearchBox.QuestIDBalloon:SetPoint ("bottomleft", LFGListFrame.EntryCreation.Name, "topleft", 0, 20)
+					LFGListFrame.SearchPanel.SearchBox.QuestIDBalloon:Show()
 					LFGListFrame.EntryCreation.Name.Instructions2.text = "Enter the QuestID: " .. ff.CurrentWorldQuest
 					LFGListFrame.EntryCreation.Name.Instructions:SetText("")
 				end
-				
 			end)
 		end)
 		
@@ -324,6 +341,11 @@ function WorldQuestTracker.OpenGroupFinderForQuest()
 		
 		LFGListFrame.SearchPanel.SearchBox.Instructions2.text = "Enter the QuestID: " .. ff.CurrentWorldQuest
 		WorldQuestTracker.OpenSearchTime = GetTime()
+		
+		LFGListFrame.SearchPanel.SearchBox.QuestIDBalloon.label = "Enter the QuestID: " .. ff.CurrentWorldQuest
+		MicroButtonAlert_SetText (LFGListFrame.SearchPanel.SearchBox.QuestIDBalloon, LFGListFrame.SearchPanel.SearchBox.QuestIDBalloon.label)
+		LFGListFrame.SearchPanel.SearchBox.QuestIDBalloon:Show()
+		LFGListFrame.SearchPanel.SearchBox.QuestIDBalloon:SetPoint ("bottomleft", LFGListFrame.SearchPanel.SearchBox, "topleft", 0, 20)
 	end
 end
 
@@ -403,7 +425,12 @@ function ff.StartAutoInvites()
 					else
 						ff.PlayersNearby [playerName] = nil
 					end
-					nextInviteWave = 0.498547
+					
+					if (numMembersInGroup >= 3) then
+						nextInviteWave = 3.498547
+					else
+						nextInviteWave = 1.498547
+					end
 				else
 					ff.PlayersNearby [playerName] = nil
 				end
@@ -570,11 +597,12 @@ function WorldQuestTracker.RegisterGroupFinderFrameOnLibWindow()
 	
 end
 
-ff:RegisterEvent ("QUEST_ACCEPTED")
 ff:RegisterEvent ("QUEST_TURNED_IN")
+ff:RegisterEvent ("QUEST_ACCEPTED")
+ff:RegisterEvent ("QUEST_REMOVED")
 ff:RegisterEvent ("GROUP_ROSTER_UPDATE")
 ff:RegisterEvent ("GROUP_INVITE_CONFIRMATION")
-ff:RegisterEvent ("QUEST_REMOVED")
+ff:RegisterEvent ("LFG_LIST_APPLICANT_LIST_UPDATED")
 
 ChatFrame_AddMessageEventFilter ("CHAT_MSG_WHISPER", function (_, _, msg)
 	if (not WorldQuestTracker.db.profile.groupfinder.send_whispers) then
@@ -707,6 +735,50 @@ ff:SetScript ("OnEvent", function (self, event, arg1, questID, arg3)
 					ff.PlayersNearby [target_name] = GetTime() --when the player got spotted
 					ff.UpdatePlayerNearbyCount (target_name)
 				end
+			end
+		end
+	
+	elseif (event == "LFG_LIST_APPLICANT_LIST_UPDATED") then
+
+		local active, activityID, ilvl, honorLevel, name, comment, voiceChat, duration, autoAccept, privateGroup, questID = C_LFGList.GetActiveEntryInfo()
+		
+		--> check if the player has a group listed in the LFG and if is the group leader
+		if (active and ff.CurrentWorldQuest and UnitIsGroupLeader ("player")) then
+			local title, factionID, tagID, tagName, worldQuestType, rarity, isElite, tradeskillLineIndex = WorldQuestTracker.GetQuest_Info (ff.CurrentWorldQuest)
+			
+			local isInQuest = false
+			
+			--> check if the player still have the quest from the popup
+			local numQuests = GetNumQuestLogEntries() 
+			for i = 1, numQuests do 
+				local questTitle, level, questTag, suggestedGroup, isHeader, isCollapsed, isComplete, isDaily, questID = GetQuestLogTitle (i)
+				if (questTitle == title) then
+					isInQuest = true
+				end
+			end
+			
+			if (isInQuest) then
+				if (GetNumGroupMembers() <= 4) then
+					local applicantInfo = C_LFGList.GetApplicants()
+					if (applicantInfo and #applicantInfo > 0) then
+						for i = 1, #applicantInfo do
+							local id, status, pendingStatus, numMembers, isNew, comment = C_LFGList.GetApplicantInfo (applicantInfo [i])
+							if (status == "applied") then
+								local name, class, localizedClass, level, itemLevel, honorLevel, tank, healer, damage, assignedRole, relationship = C_LFGList.GetApplicantMemberInfo (applicantInfo [i], 1)
+								if (name) then
+									InviteUnit (name)
+									WorldQuestTracker:Msg ("Auto Inviting " .. name .. " from the LFG apply.")
+								end
+							end
+						end
+					end
+				end
+			else
+				--> player doesn't have the quest from the popup window, the group should be deslisted or this is a group for another activity
+				--if (not ff:IsShown()) then
+					--> show the frame again so the player can click on the leave group
+				--	ff:ShowFrame()
+				--end
 			end
 		end
 	
