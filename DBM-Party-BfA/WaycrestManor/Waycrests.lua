@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2128, "DBM-Party-BfA", 10, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17710 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 17716 $"):sub(12, -3))
 mod:SetCreatureID(131527, 131545)
 mod:SetMainBossID(131545)
 mod:SetEncounterID(2116)
@@ -39,7 +39,7 @@ function mod:OnCombatStart(delay)
 	countdownWastingStrike:Start(6-delay)
 	timerVirulentPathogenCD:Start(10.5-delay)
 	countdownVirulentPathogen:Start(10.5-delay)
-	timerDiscordantCadenzaCD:Start(16-delay)
+	timerDiscordantCadenzaCD:Start(15.5-delay)
 	if self.Options.RangeFrame then
 		DBM.RangeCheck:Show(6)
 	end

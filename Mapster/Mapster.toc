@@ -6,7 +6,7 @@
 ## Author: Nevcairiel
 ## SavedVariables: MapsterDB
 ## X-Category: Map
-## Version: 1.8.0-6-g636af52
+## Version: 1.8.1-1-g09f4095
 ## X-License: All rights reserved.
 
 ## OptionalDeps: Ace3, LibWindow-1.1

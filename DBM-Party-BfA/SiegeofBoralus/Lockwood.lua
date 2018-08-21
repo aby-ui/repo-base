@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2173, "DBM-Party-BfA", 5, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17576 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 17719 $"):sub(12, -3))
 mod:SetCreatureID(129208)
 mod:SetEncounterID(2109)
 mod:SetZone()
@@ -25,7 +25,7 @@ local specWarnCleartheDeck			= mod:NewSpecialWarningDodge(269029, "Tank", nil, n
 --local specWarnGTFO				= mod:NewSpecialWarningGTFO(238028, nil, nil, nil, 1, 2)
 
 local timerCleartheDeckCD			= mod:NewAITimer(13, 269029, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON)
-local timerCrimsonSwipeCD			= mod:NewAITimer(13, 268230, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON)
+--local timerCrimsonSwipeCD			= mod:NewAITimer(13, 268230, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON)
 
 --mod:AddRangeFrameOption(5, 194966)
 
@@ -56,8 +56,10 @@ function mod:SPELL_CAST_START(args)
 		specWarnCleartheDeck:Play("shockwave")
 		timerCleartheDeckCD:Start()
 	elseif spellId == 268230 then
-		warnCrimsonSwipe:Show()
-		timerCrimsonSwipeCD:Start(nil, args.sourceGUID)
+		if self:AntiSpam(3, 1) then
+			warnCrimsonSwipe:Show()
+		end
+		--timerCrimsonSwipeCD:Start(nil, args.sourceGUID)
 	elseif spellId == 268260 and self:AntiSpam(3, 1) then
 		warnBroadside:Show()
 	end
@@ -84,7 +86,7 @@ mod.SPELL_PERIODIC_MISSED = mod.SPELL_PERIODIC_DAMAGE
 function mod:UNIT_DIED(args)
 	local cid = self:GetCIDFromGUID(args.destGUID)
 	if cid == 141532 then--Ashvane Deckhand
-		timerCrimsonSwipeCD:Stop(args.destGUID)
+		--timerCrimsonSwipeCD:Stop(args.destGUID)
 	end
 end
 

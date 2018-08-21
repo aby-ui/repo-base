@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("FreeholdTrash", "DBM-Party-BfA", 2)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17713 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 17714 $"):sub(12, -3))
 --mod:SetModelID(47785)
 mod:SetZone()
 
@@ -22,7 +22,7 @@ local specWarnSeaSpout					= mod:NewSpecialWarningInterrupt(258779, "HasInterrup
 local specWarnFrostBlast				= mod:NewSpecialWarningInterrupt(257784, "HasInterrupt", nil, nil, 1, 2)--Might prune or disable by default if it conflicts with higher priority interrupts in area
 local specWarnShatteringBellow			= mod:NewSpecialWarningCast(257732, "SpellCaster", nil, nil, 1, 2)
 local specWarnGoinBan					= mod:NewSpecialWarningRun(257756, "Melee", nil, nil, 4, 2)
-local specWarnShatteringToss			= mod:NewSpecialWarningSpell(274860, "Tank", nil, nil, 3, 2)
+local specWarnShatteringToss			= mod:NewSpecialWarningSpell(274860, "Tank", nil, nil, 1, 2)
 --local yellArrowBarrage				= mod:NewYell(200343)
 local specWarnGTFO						= mod:NewSpecialWarningGTFO(257274, nil, nil, nil, 1, 2)
 

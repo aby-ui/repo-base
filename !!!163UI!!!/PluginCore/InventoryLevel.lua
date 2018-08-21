@@ -233,12 +233,12 @@ end
 
 do
     local enchantables = {
-        BackSlot = "披",
         Finger0Slot = "戒",
         Finger1Slot = "戒",
-        NeckSlot = "颈",
-        --[[
         MainHandSlot = "武",
+        --[[
+        BackSlot = "披",
+        NeckSlot = "颈",
         ChestSlot = "胸",
         FeetSlot = "脚",
         HandsSlot = "手",

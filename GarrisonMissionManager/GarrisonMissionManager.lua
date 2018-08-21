@@ -63,7 +63,7 @@ local top_for_mission = {}
 addon_env.top_for_mission = top_for_mission
 addon_env.top_for_mission_dirty = true
 
-local supported_follower_types = { LE_FOLLOWER_TYPE_GARRISON_6_0, LE_FOLLOWER_TYPE_SHIPYARD_6_2, LE_FOLLOWER_TYPE_GARRISON_7_0 }
+local supported_follower_types = { LE_FOLLOWER_TYPE_GARRISON_6_0, LE_FOLLOWER_TYPE_SHIPYARD_6_2, LE_FOLLOWER_TYPE_GARRISON_7_0, LE_FOLLOWER_TYPE_GARRISON_8_0 }
 local filtered_followers = {}
 for _, type in pairs(supported_follower_types) do filtered_followers[type] = {} end
 local filtered_followers_dirty = true
@@ -88,7 +88,6 @@ local events_top_for_mission_dirty = {
 }
 
 local events_for_buildings = {
-   -- GARRISON_BUILDINGS_SWAPPED = true,
    GARRISON_BUILDING_ACTIVATED = true,
    GARRISON_BUILDING_PLACED = true,
    GARRISON_BUILDING_REMOVED = true,

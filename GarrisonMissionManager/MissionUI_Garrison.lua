@@ -198,18 +198,29 @@ local function MissionPage_WarningInit()
    end
 end
 
-addon_env.MissionPage_ButtonsInit("MissionPage", MissionPage)
-MissionPage_WarningInit()
-addon_env.mission_page_button_prefix_for_type_id[LE_FOLLOWER_TYPE_GARRISON_6_0] = "MissionPage"
-hooksecurefunc(GarrisonMissionFrame, "ShowMission", addon_env.ShowMission_More)
+local function GarrisonInitUI()
+   local follower_type = LE_FOLLOWER_TYPE_GARRISON_6_0
+   local o = addon_env.InitGMMFollowerOptions({
+      follower_type                = follower_type,
+      gmm_prefix                   = "",
+      ilevel_max                   = 675
+   })
 
-addon_env.MissionList_ButtonsInit(GarrisonMissionFrame.MissionTab.MissionList, "GarnisonMissionList")
-local MissionList_Update_More = addon_env.MissionList_Update_More
-local function GarrisonMissionFrame_MissionList_Update_More()
-   MissionList_Update_More(GarrisonMissionFrame.MissionTab.MissionList, GarrisonMissionFrame_MissionList_Update_More, "GarnisonMissionList", LE_FOLLOWER_TYPE_GARRISON_6_0, GARRISON_CURRENCY)
+   addon_env.MissionPage_ButtonsInit(follower_type)
+   MissionPage_WarningInit()
+   hooksecurefunc(GarrisonMissionFrame, "ShowMission", addon_env.ShowMission_More)
+
+   addon_env.MissionList_ButtonsInit(follower_type)
+   local MissionList_Update_More = addon_env.MissionList_Update_More
+   local function GarrisonMissionFrame_MissionList_Update_More()
+      MissionList_Update_More(GarrisonMissionFrame.MissionTab.MissionList, GarrisonMissionFrame_MissionList_Update_More, "MissionList", follower_type, GARRISON_CURRENCY)
+   end
+
+   hooksecurefunc(GarrisonMissionFrame.MissionTab.MissionList,            "Update", GarrisonMissionFrame_MissionList_Update_More)
+   hooksecurefunc(GarrisonMissionFrame.MissionTab.MissionList.listScroll, "update", GarrisonMissionFrame_MissionList_Update_More)
+
+   hooksecurefunc(GarrisonMissionFrame.FollowerList, "UpdateData", addon_env.GarrisonFollowerList_Update_More)
+
+   GarrisonInitUI = nil
 end
-
-hooksecurefunc(GarrisonMissionFrame.MissionTab.MissionList,            "Update", GarrisonMissionFrame_MissionList_Update_More)
-hooksecurefunc(GarrisonMissionFrame.MissionTab.MissionList.listScroll, "update", GarrisonMissionFrame_MissionList_Update_More)
-
-hooksecurefunc(GarrisonMissionFrame.FollowerList, "UpdateData", addon_env.GarrisonFollowerList_Update_More)
+GarrisonInitUI()

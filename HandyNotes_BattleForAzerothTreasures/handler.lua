@@ -69,12 +69,19 @@ local function work_out_label(point)
     if point.label then
         return point.label
     end
-    if point.achievement and point.criteria then
-        local criteria = GetAchievementCriteriaInfoByID(point.achievement, point.criteria)
-        if criteria then
-            return criteria
+    if point.achievement then
+        if point.criteria then
+            local criteria = GetAchievementCriteriaInfoByID(point.achievement, point.criteria)
+            if criteria then
+                return criteria
+            end
+            fallback = 'achievement:'..point.achievement..'.'..point.criteria
         end
-        fallback = 'achievement:'..point.achievement..'.'..point.criteria
+        local _, achievement = GetAchievementInfo(point.achievement)
+        if achievement then
+            return achievement
+        end
+        fallback = 'achievement:'..point.achievement
     end
     if point.follower then
         local follower = C_Garrison.GetFollowerInfo(point.follower)

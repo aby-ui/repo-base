@@ -27,10 +27,16 @@ function addon_env.OrderHallInitUI()
    -- Hardcoded
    local prefix = "OrderHall" -- hardcoded, because it is used in OUR frame names and should be static for GMM_Click
    local follower_type = LE_FOLLOWER_TYPE_GARRISON_7_0
+   local o = addon_env.InitGMMFollowerOptions({
+      follower_type                = follower_type,
+      gmm_prefix                   = prefix,
+      ilevel_max                   = 950,
+      party_requires_one_non_troop = true
+   })
 
    -- Detected/calculated
    local options = GarrisonFollowerOptions[follower_type]
-   local base_frame = _G[options.missionFrame]
+   local base_frame = o.base_frame
    local currency = C_Garrison.GetCurrencyTypes(options.garrisonType)
    local MissionTab = base_frame.MissionTab
    local MissionPage = MissionTab.MissionPage
@@ -38,12 +44,11 @@ function addon_env.OrderHallInitUI()
    local mission_page_prefix = prefix .. "MissionPage"
    local mission_list_prefix = prefix .. "MissionList"
 
-   addon_env.MissionPage_ButtonsInit(mission_page_prefix, MissionPage)
-   addon_env.mission_page_button_prefix_for_type_id[follower_type] = mission_page_prefix
+   addon_env.MissionPage_ButtonsInit(follower_type)
    hooksecurefunc(base_frame, "ShowMission", addon_env.ShowMission_More)
    addon_env.update_if_visible[MissionPage] = function() addon_env.ShowMission_More(base_frame, MissionPage.missionInfo) end
 
-   addon_env.MissionList_ButtonsInit(MissionList, mission_list_prefix)
+   addon_env.MissionList_ButtonsInit(follower_type)
    local MissionList_Update_More = addon_env.MissionList_Update_More
 
    local function MissionList_Update_More_With_Settings()
@@ -66,9 +71,4 @@ end
 
 -- Set an additional timer to catch load if we STILL manage to miss it?
 -- /dump C_Garrison.GetFollowers(LE_FOLLOWER_TYPE_GARRISON_7_0)
--- /dump C_Garrison.GetFollowerShipments(LE_GARRISON_TYPE_7_0)
--- /dump C_Garrison.GetLooseShipments(LE_GARRISON_TYPE_7_0)
--- /dump C_Garrison.GetLandingPageShipmentInfoByContainerID
--- local name, texture, shipmentCapacity, shipmentsReady, shipmentsTotal, creationTime, duration, timeleftString = C_Garrison.GetLandingPageShipmentInfoByContainerID(188)
--- C_Garrison.RequestLandingPageShipmentInfo();
 -- /dump OrderHallMissionFrame.FollowerList.UpdateData

@@ -19,6 +19,7 @@ local defaults = {
 		poiScale = 0.9,
 		ejScale = 0.8,
 		alpha = 1,
+		fadealpha = 0.5,
 		disableMouse = false,
 		-- position defaults for LibWindow
 		x = 40,
@@ -26,8 +27,6 @@ local defaults = {
 		point = "LEFT",
 	}
 }
-
-local format = string.format
 
 local WorldMapFrameStartMoving, WorldMapFrameStopMoving
 local WorldMapUnitPin, WorldMapUnitPinSizes
@@ -49,7 +48,6 @@ function Mapster:OnInitialize()
 	self:SetupOptions()
 end
 
-local realZone
 function Mapster:OnEnable()
 	self:SetupMapButton()
 
@@ -69,6 +67,9 @@ function Mapster:OnEnable()
 	-- map transition
 	self:SecureHook(WorldMapFrame, "SynchronizeDisplayState", "WorldMapFrame_SynchronizeDisplayState")
 
+	-- hook Show events for fading
+	self:SecureHook(WorldMapFrame, "OnShow", "WorldMapFrame_OnShow")
+
 	-- hooks for scale
 	self:SecureHook("HelpPlate_Show")
 	self:SecureHook("HelpPlate_Hide")
@@ -79,6 +80,16 @@ function Mapster:OnEnable()
 	self:SecureHook(EncounterJournalPinMixin, "OnAcquired", "EncounterJournalPin_OnAcquired")
 	for pin in WorldMapFrame:EnumeratePinsByTemplate("EncounterJournalPinTemplate") do
 		pin.OnAcquired = EncounterJournalPinMixin.OnAcquired
+	end
+
+	-- hook into Quest POI icons
+	self:SecureHook(BonusObjectivePinMixin, "OnAcquired", "BonusQuestPOI_OnAcquired")
+	self:SecureHook(QuestPinMixin, "OnAcquired", "QuestPOI_OnAcquired")
+	for pin in WorldMapFrame:EnumeratePinsByTemplate("BonusObjectivePinTemplate") do
+		pin.OnAcquired = BonusObjectivePinMixin.OnAcquired
+	end
+	for pin in WorldMapFrame:EnumeratePinsByTemplate("QuestPinTemplate") do
+		pin.OnAcquired = QuestPinMixin.OnAcquired
 	end
 
 	-- hook into unit provider
@@ -93,8 +104,10 @@ function Mapster:OnEnable()
 
 	-- load settings
 	--self:SetAlpha()
+	self:SetFadeAlpha()
 	self:SetArrow()
 	self:SetEJScale()
+	self:SetPOIScale()
 	self:SetScale()
 	self:SetPosition()
 end
@@ -115,8 +128,10 @@ function Mapster:Refresh()
 
 	-- apply new settings
 	--self:SetAlpha()
+	self:SetFadeAlpha()
 	self:SetArrow()
 	self:SetEJScale()
+	self:SetPOIScale()
 	self:SetScale()
 	self:SetPosition()
 
@@ -144,6 +159,15 @@ end
 
 function Mapster:SetPosition()
 	LibWindow.RestorePosition(WorldMapFrame)
+end
+
+function Mapster:SetFadeAlpha()
+	PlayerMovementFrameFader.RemoveFrame(WorldMapFrame)
+	PlayerMovementFrameFader.AddDeferredFrame(WorldMapFrame, db.fadealpha, 1.0, .5, function() return GetCVarBool("mapFade") and not WorldMapFrame:IsMouseOver() end)
+end
+
+function Mapster:WorldMapFrame_OnShow()
+	self:SetFadeAlpha()
 end
 
 function Mapster:SetScale(force)
@@ -195,8 +219,29 @@ end
 
 function Mapster:SetEJScale()
 	for pin in WorldMapFrame:EnumeratePinsByTemplate("EncounterJournalPinTemplate") do
-		pin:SetSize(50 * db.ejScale, 49 * db.ejScale)
-		pin.Background:SetScale(db.ejScale)
+		self:EncounterJournalPin_OnAcquired(pin)
+	end
+end
+
+function Mapster:BonusQuestPOI_OnAcquired(pin)
+	pin:SetSize(30 * db.poiScale, 30 * db.poiScale)
+	pin.Texture:SetScale(db.poiScale)
+end
+
+function Mapster:QuestPOI_OnAcquired(pin)
+	pin:SetSize(50 * db.poiScale, 50 * db.poiScale)
+	pin.Texture:SetScale(db.poiScale)
+	pin.PushedTexture:SetScale(db.poiScale)
+	pin.Number:SetScale(db.poiScale)
+	pin.Highlight:SetScale(db.poiScale)
+end
+
+function Mapster:SetPOIScale()
+	for pin in WorldMapFrame:EnumeratePinsByTemplate("BonusObjectivePinTemplate") do
+		self:BonusQuestPOI_OnAcquired(pin)
+	end
+	for pin in WorldMapFrame:EnumeratePinsByTemplate("QuestPinTemplate") do
+		self:QuestPOI_OnAcquired(pin)
 	end
 end
 

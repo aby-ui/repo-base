@@ -24,17 +24,17 @@ RATING_SUMMARY_ITEM_QUANLITY_NAME = {
 }
 
 RATING_SUMMARY_ENCHANTABLES = {
-		[INVSLOT_BACK] = "Back ",
+	--	[INVSLOT_BACK] = "Back ",
 	--	[INVSLOT_CHEST] = "Chest ",
 	--	[INVSLOT_FEET] = "Feet ",
 	--	[INVSLOT_HAND] = "Hands ",
 	--	[INVSLOT_LEGS] = "Legs ",
-		[INVSLOT_NECK] = "Neck",
-	--	[INVSLOT_MAINHAND] = "\nMainHand\n",
-	--	[INVSLOT_OFFHAND] = "\nOffHand\n",
+	--	[INVSLOT_NECK] = "Neck",
+		[INVSLOT_MAINHAND] = "MainHand",
+	--	[INVSLOT_OFFHAND] = "OffHand",
 	--	[INVSLOT_WRIST] = "Wrist ",
 		--HeadSlot = "Head ",
-	--	[INVSLOT_SHOULDER] = "\nShoulder\n",
+	--	[INVSLOT_SHOULDER] = "Shoulder",
 		[INVSLOT_FINGER1] = "Finger1 ",
 		[INVSLOT_FINGER2] = "Finger2 ",
 }
@@ -67,20 +67,20 @@ if(GetLocale()=="zhTW") then
 	RATING_SUMMARY_ITEM_SUIT_FORMAT = '.+%(%d/%d%)';
 	-- RATING_SUMMARY_TINKER = "修補"
 	RATING_SUMMARY_ENCHANTABLES = {
-		[INVSLOT_BACK] = "披",
+	--	[INVSLOT_BACK] = "披",
 	--	[INVSLOT_CHEST] = "胸",
 	--	[INVSLOT_FEET] = "腳",
 	--	[INVSLOT_HAND] = "手",
 	--	[INVSLOT_LEGS] = "腿",
-		[INVSLOT_NECK] = "頸",
-	--	[INVSLOT_MAINHAND] = "武",
+	--	[INVSLOT_NECK] = "頸",
+        [INVSLOT_MAINHAND] = "武",
 	--	[INVSLOT_OFFHAND] = "副",
 	--	[INVSLOT_WRIST] = "腕",
-		--HeadSlot = "頭",
+	--  HeadSlot = "頭",
 	--	[INVSLOT_SHOULDER] = "肩",
 
-		[INVSLOT_FINGER1] = "戒1",
-		[INVSLOT_FINGER2] = "戒2",
+		[INVSLOT_FINGER1] = "戒",
+		[INVSLOT_FINGER2] = "戒",
 	}
 	RATING_SUMMARY_BLACKSMITH = {
 	--	[INVSLOT_WAIST] = "腰",
@@ -110,19 +110,19 @@ elseif(GetLocale()=="zhCN") then
 	RATING_SUMMARY_ITEM_SUIT_FORMAT = '.+%（%d%/%d%）';
 	-- RATING_SUMMARY_TINKER = "修补"
 	RATING_SUMMARY_ENCHANTABLES = {
-		[INVSLOT_BACK] = "披",
+	--	[INVSLOT_BACK] = "披",
 	--	[INVSLOT_CHEST] = "胸",
 	--	[INVSLOT_FEET] = "脚",
 	--	[INVSLOT_HAND] = "手",
 	--	[INVSLOT_LEGS] = "腿",
-		[INVSLOT_NECK] = "颈",
-	--	[INVSLOT_MAINHAND] = "武",
+	--	[INVSLOT_NECK] = "颈",
+		[INVSLOT_MAINHAND] = "武",
 	--	[INVSLOT_OFFHAND] = "副",
 	--	[INVSLOT_WRIST] = "腕",
-		--HeadSlot = "头",
+	--  HeadSlot = "头",
 	--	[INVSLOT_SHOULDER] = "肩",
-		[INVSLOT_FINGER1] = "戒1",
-		[INVSLOT_FINGER2] = "戒2",
+		[INVSLOT_FINGER1] = "戒",
+		[INVSLOT_FINGER2] = "戒",
 	}
 	RATING_SUMMARY_BLACKSMITH = {
 	--	[INVSLOT_WAIST] = "腰",

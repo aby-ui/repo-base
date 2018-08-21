@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2127, "DBM-Party-BfA", 10, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17710 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 17716 $"):sub(12, -3))
 mod:SetCreatureID(131863)
 mod:SetEncounterID(2115)
 mod:SetZone()
@@ -33,7 +33,7 @@ mod.vb.tenderizeCount = 0
 function mod:OnCombatStart(delay)
 	self.vb.tenderizeCount = 0
 	--timerServantCD:Start(43.7-delay)--Verify not health based
-	timerRottenExpulsionCD:Start(6-delay)
+	timerRottenExpulsionCD:Start(5-delay)
 	timerTenderizeCD:Start(-delay)--Also 29.2
 end
 

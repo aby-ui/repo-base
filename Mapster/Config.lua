@@ -66,8 +66,6 @@ local function getOptions()
 							type = "range",
 							name = L["Faded Alpha"],
 							desc = L["The transparency of the map while you are moving and the map is faded."],
-							get = function() return WORLD_MAP_MIN_ALPHA end,
-							set = function(_, v) SetCVar("mapAnimMinAlpha", v); WORLD_MAP_MIN_ALPHA = v end,
 							min = 0, max = 1, bigStep = 0.01,
 							isPercent = true,
 							disabled = function() return not GetCVarBool("mapFade") end,

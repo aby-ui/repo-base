@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2145, "DBM-Party-BfA", 6, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17712 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 17715 $"):sub(12, -3))
 mod:SetCreatureID(133392)
 mod:SetEncounterID(2127)
 mod:SetZone()
@@ -12,7 +12,7 @@ mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
 	"SPELL_AURA_APPLIED 268008 269686 268024",
-	"SPELL_AURA_REMOVED 268008 269686",
+	"SPELL_AURA_REMOVED 268008 269686 274149",
 	"SPELL_CAST_START 268061",
 	"SPELL_CAST_SUCCESS 273677 274149",
 	"CHAT_MSG_RAID_BOSS_EMOTE"
@@ -79,6 +79,8 @@ function mod:SPELL_AURA_REMOVED(args)
 		end
 	elseif spellId == 269686 then
 		timerPlague:Stop(args.destName)
+	elseif spellId == 274149 then--Life Force Ending
+		timerPulseCD:Start(11)
 	end
 end
 
@@ -98,7 +100,6 @@ function mod:SPELL_CAST_SUCCESS(args)
 		timerPulseCD:Stop()
 		warnLifeForce:Show()
 		--timerLifeForce:Start()
-		timerPulseCD:Start(30)
 	end
 end
 

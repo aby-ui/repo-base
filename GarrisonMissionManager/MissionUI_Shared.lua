@@ -74,6 +74,36 @@ local salvage_textures = setmetatable({}, { __index = function(t, key)
    return --[[ some default texture ]]
 end})
 
+local ilevel_maximums = {}
+local gmm_follower_options = {}
+addon_env.gmm_follower_options = gmm_follower_options
+local function InitGMMFollowerOptions(gmm_options)
+   local follower_type = gmm_options.follower_type
+   local options = GarrisonFollowerOptions[follower_type]
+
+   local gmm_prefix = gmm_options.gmm_prefix
+   local base_frame = _G[options.missionFrame]
+   local MissionTab = base_frame.MissionTab
+
+   -- Calculated shortcuts
+   gmm_options.base_frame  = base_frame
+   gmm_options.currency    = C_Garrison.GetCurrencyTypes(options.garrisonType)
+   gmm_options.MissionTab  = MissionTab
+   gmm_options.MissionPage = MissionTab.MissionPage
+   gmm_options.MissionList = MissionTab.MissionList
+   gmm_options.gmm_button_mission_page_prefix = gmm_prefix .. "MissionPage"
+   gmm_options.gmm_button_mission_list_prefix = gmm_prefix .. "MissionList"
+
+   gmm_follower_options[follower_type] = gmm_options
+
+   if gmm_options.ilevel_max then
+      ilevel_maximums[gmm_options.ilevel_max] = true
+   end
+
+   return gmm_options
+end
+addon_env.InitGMMFollowerOptions = InitGMMFollowerOptions
+
 local function SetTeamButtonText(button, top_entry)
    if top_entry.successChance then
       local xp_bonus, xp_bonus_icon
@@ -194,11 +224,24 @@ end
 
 local function MissionList_PartyButtonOnClick(self)
    if addon_env.RegisterManualInterraction then addon_env.RegisterManualInterraction() end
-   addon_env.mission_page_pending_click = "MissionPage1"
+   local pending_click
+   local follower_type = self.follower_type
+   if follower_type then
+      pending_click = gmm_follower_options[follower_type].gmm_button_mission_page_prefix .. '1'
+   else
+      pending_click = "MissionPage1"
+   end
+   addon_env.mission_page_pending_click = pending_click
    return self:GetParent():Click()
 end
 
-function addon_env.MissionPage_ButtonsInit(button_prefix, parent_frame)
+function addon_env.MissionPage_ButtonsInit(follower_type)
+   local opt = gmm_follower_options[follower_type]
+
+   local button_prefix = opt.gmm_button_mission_page_prefix
+   local parent_frame  = opt.MissionPage
+   local method_base   = opt.base_frame
+
    local prev
    for suffix_idx = 1, #button_suffixes do
       local suffix = button_suffixes[suffix_idx]
@@ -206,17 +249,10 @@ function addon_env.MissionPage_ButtonsInit(button_prefix, parent_frame)
          local name = button_prefix .. suffix .. idx
          if not gmm_buttons[name] then
             local set_followers_button = CreateFrame("Button", nil, parent_frame, "UIPanelButtonTemplate")
-            -- TODO: all this stuff should be given to this function as args, not hardcoded
             -- Ugly, but I can't just parent to BorderFrame - buttons would be visible even on map screen
             set_followers_button:SetFrameLevel(set_followers_button:GetFrameLevel() + 4)
             set_followers_button.follower_frames = parent_frame.Followers
-            if button_prefix == "ShipyardMissionPage" then
-               set_followers_button.method_base = GarrisonShipyardFrame
-            elseif button_prefix == "OrderHallMissionPage" then
-               set_followers_button.method_base = OrderHallMissionFrame
-            else
-               set_followers_button.method_base = GarrisonMissionFrame
-            end
+            set_followers_button.method_base = method_base
             set_followers_button:SetText(idx)
             set_followers_button:SetWidth(100)
             set_followers_button:SetHeight(50)
@@ -273,7 +309,11 @@ function addon_env.MissionPage_ButtonsInit(button_prefix, parent_frame)
    end)
 end
 
-function addon_env.MissionList_ButtonsInit(blizzard_mission_list, frame_prefix)
+function addon_env.MissionList_ButtonsInit(follower_type)
+   local opt = gmm_follower_options[follower_type]
+   local blizzard_mission_list = opt.MissionList
+   local frame_prefix          = opt.gmm_button_mission_list_prefix
+
    local level_anchor = blizzard_mission_list.listScroll
    local blizzard_buttons = blizzard_mission_list.listScroll.buttons
    for idx = 1, #blizzard_buttons do
@@ -296,6 +336,7 @@ function addon_env.MissionList_ButtonsInit(blizzard_mission_list, frame_prefix)
          set_followers_button:SetHeight(40)
          set_followers_button:SetPoint("LEFT", blizzard_button, "RIGHT", -65, 0)
          set_followers_button:SetScript("OnClick", MissionList_PartyButtonOnClick)
+         set_followers_button.follower_type = follower_type
          gmm_buttons[frame_prefix .. idx] = set_followers_button
       end
 
@@ -359,18 +400,12 @@ local function BestForCurrentSelectedMission(type_id, mission_page, button_prefi
 
    local mission_page_pending_click = addon_env.mission_page_pending_click
    if mission_page_pending_click then
-      -- FIXME: ugly
-      if mission_page_pending_click == "MissionPage1" and not gmm_buttons[mission_page_pending_click]:IsVisible() and gmm_buttons['OrderHallMissionPage1']:IsVisible() then
-         mission_page_pending_click = 'OrderHallMissionPage1'
-      end
       MissionPage_PartyButtonOnClick(gmm_buttons[mission_page_pending_click])
       addon_env.mission_page_pending_click = nil
    end
 end
 addon_env.BestForCurrentSelectedMission = BestForCurrentSelectedMission
 
-local mission_page_button_prefix_for_type_id = {}
-addon_env.mission_page_button_prefix_for_type_id = mission_page_button_prefix_for_type_id
 local function ShowMission_More(self, missionInfo)
    local mission_page = self.MissionTab.MissionPage
    if not mission_page:IsShown() then return end
@@ -390,14 +425,15 @@ local function ShowMission_More(self, missionInfo)
       mission_page.ItemLevelHitboxFrame:Hide()
    end
 
-   BestForCurrentSelectedMission(follower_type_id, mission_page, mission_page_button_prefix_for_type_id[follower_type_id])
+   BestForCurrentSelectedMission(follower_type_id, mission_page, gmm_follower_options[follower_type_id].gmm_button_mission_page_prefix)
 end
 addon_env.ShowMission_More = ShowMission_More
 
 local function UpdateMissionListButton(mission, filtered_followers, blizzard_button, gmm_button, more_missions_to_cache, resources, inactive_alpha)
    local cant_complete = mission.cost > resources
    if not cant_complete then
-      if filtered_followers.type == LE_FOLLOWER_TYPE_GARRISON_7_0 then
+      local options = gmm_follower_options[filtered_followers.type]
+      if options.party_requires_one_non_troop then
          cant_complete = not filtered_followers.free_non_troop
       else
          cant_complete = mission.numFollowers > filtered_followers.free
@@ -582,7 +618,7 @@ local function GarrisonMissionFrame_SetFollowerPortrait_More(portraitFrame, foll
       local level_border = portraitFrame.LevelBorder
       level_border:SetAtlas("GarrMission_PortraitRing_iLvlBorder")
       level_border:SetWidth(70)
-      portraitFrame.Level:SetFormattedText("%s%s %d", ((i_level == 675 or i_level == 900) and not boosted) and maxed_follower_color_code or "", ITEM_LEVEL_ABBR, i_level)
+      portraitFrame.Level:SetFormattedText("%s%s %d", (ilevel_maximums[i_level] and not boosted) and maxed_follower_color_code or "", ITEM_LEVEL_ABBR, i_level)
    end
 end
 hooksecurefunc("GarrisonMissionPortrait_SetFollowerPortrait", GarrisonMissionFrame_SetFollowerPortrait_More)
@@ -626,7 +662,7 @@ local function GarrisonFollowerList_Update_More(self)
                   level_border:SetAtlas("GarrMission_PortraitRing_iLvlBorder")
                   level_border:SetWidth(70)
                   local i_level = follower.iLevel
-                  portrait_frame.Level:SetFormattedText("%s%s %d", (i_level == 675 or i_level == 900) and maxed_follower_color_code or "", ITEM_LEVEL_ABBR, i_level)
+                  portrait_frame.Level:SetFormattedText("%s%s %d", ilevel_maximums[i_level] and maxed_follower_color_code or "", ITEM_LEVEL_ABBR, i_level)
                   follower_frame.ILevel:SetText(nil)
                   show_ilevel = true
                end

@@ -440,7 +440,7 @@ end
 
 local function SetHooks()
 	local function SetFixedButton(block, idx, height, yOfs)
-		if block.fixedTag then
+		if block.fixedTag and KT.fixedButtons[block.id] then
 			idx = idx + 1
 			block.fixedTag.text:SetText(idx)
 			KT.fixedButtons[block.id].text:SetText(idx)

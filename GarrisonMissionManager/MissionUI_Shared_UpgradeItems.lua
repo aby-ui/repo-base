@@ -179,6 +179,7 @@ local function UpgradeItems_InitEvents(base_frame, upgrade_buttons_parent)
    local FollowerTab = base_frame.FollowerTab
 
    hooksecurefunc(FollowerList, "ShowFollower", function(self)
+      upgrade_buttons_parent:Hide()
       local followerID = FollowerTab.followerID
       if not followerID then return end
       local followerInfo = GetFollowerInfo(followerID)

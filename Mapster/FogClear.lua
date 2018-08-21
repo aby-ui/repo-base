@@ -10,7 +10,7 @@ local MODNAME = "FogClear"
 local FogClear = Mapster:NewModule(MODNAME, "AceHook-3.0", "AceEvent-3.0")
 
 local mod, floor, ceil, tonumber = math.fmod, math.floor, math.ceil, tonumber
-local wipe, concat, ipairs, pairs = table.wipe, table.concat, ipairs, pairs
+local ipairs, pairs = ipairs, pairs
 
 -- data
 -- [MapArtID] = {
@@ -1949,7 +1949,7 @@ function FogClear:MapExplorationPin_RefreshOverlays(pin, fullUpdate)
 	local TILE_SIZE_WIDTH = layerInfo.tileWidth
 	local TILE_SIZE_HEIGHT = layerInfo.tileHeight
 
-	local r, g, b, a = self.db.profile.colorR, self.db.profile.colorG, self.db.profile.colorB, self.db.profile.colorA
+	local r, g, b, a = self:GetOverlayColor()
 
 	for key, files in pairs(data) do
 		if not exploredTilesKeyed[key] then
@@ -2008,10 +2008,10 @@ function FogClear:MapExplorationPin_RefreshOverlays(pin, fullUpdate)
 end
 
 function FogClear:GetOverlayColor()
-	return self.db.profile.colorR, self.db.profile.colorG, self.db.profile.colorB, self.db.profile.colorA
+	return db.colorR, db.colorG, db.colorB, db.colorA
 end
 
 function FogClear:SetOverlayColor(info, r,g,b,a)
-	self.db.profile.colorR, self.db.profile.colorG, self.db.profile.colorB, self.db.profile.colorA = r,g,b,a
+	db.colorR, db.colorG, db.colorB, db.colorA = r,g,b,a
 	if self:IsEnabled() then self:Refresh() end
 end
