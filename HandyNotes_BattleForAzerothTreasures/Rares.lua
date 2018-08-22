@@ -195,7 +195,7 @@ merge(ns.points[942], { -- Stormsong Valley
     [62007340] = {quest=52329, npc=141059, item=155572, achievement=12940, criteria=41774,}, -- Grimscowl the Harebrained
     [53005200] = {quest=50692, npc=139385, item=160464, achievement=12940, criteria=41775,}, -- Deepfang
     [63003300] = {quest=52303, npc=140938, item=154460, achievement=12940, criteria=41776,}, -- Croaker
-    [66905200] = {quest=52121, npc=139968, item=154183, achievement=12940, criteria=41777,}, -- Corrupted Tideskipper
+    [66905200] = {quest=52121, npc=139968, item=154183, achievement=12940, criteria=41777,}, -- Corrupted Tideskipper (also i:162028)
     [51405540] = {quest=50731, npc=136183, item=154857, achievement=12940, criteria=nil,}, -- Crushtacean (shares q:50731 c:41778 with Dagrus)
     [67804000] = {quest=50731, npc=134897, item=160476, achievement=12940, criteria=nil,}, -- Dagrus the Scorned (shares q:50731 c:41778 with Crushtacean)
     [49807000] = {quest=50037, npc=135939, item=158299, achievement=12940, criteria=41782,}, -- Vinespeaker Ratha

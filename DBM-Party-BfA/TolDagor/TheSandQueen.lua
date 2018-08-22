@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2097, "DBM-Party-BfA", 9, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17711 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 17722 $"):sub(12, -3))
 mod:SetCreatureID(127479)
 mod:SetEncounterID(2101)
 mod:SetZone()
@@ -14,6 +14,7 @@ mod:RegisterEventsInCombat(
 	"CHAT_MSG_RAID_BOSS_EMOTE"
 )
 
+--TODO, figure out why cast time for upheavel isn't honoring 5 second pre coded
 local warnUpheavel					= mod:NewTargetAnnounce(257617, 2)
 local warnUpheavelCast				= mod:NewCastAnnounce(257617, 2, 5)--Cast time until we have a target
 

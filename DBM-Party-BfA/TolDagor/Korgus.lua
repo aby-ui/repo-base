@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2096, "DBM-Party-BfA", 9, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17711 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 17722 $"):sub(12, -3))
 mod:SetCreatureID(127503)
 mod:SetEncounterID(2104)
 mod:SetZone()
@@ -32,7 +32,7 @@ local specWarnMassiveBlast			= mod:NewSpecialWarningDodge(263345, nil, nil, nil,
 local timerARBlastCD				= mod:NewCDTimer(44.8, 256199, nil, nil, nil, 3)
 local timerARICD					= mod:NewCDTimer(44.8, 256198, nil, nil, nil, 3)
 local timerCrossIgnitionCD			= mod:NewCDTimer(44.8, 256083, nil, nil, nil, 2)
-local timerDeadeyeCD				= mod:NewCDTimer(26.7, 256038, nil, nil, nil, 3)
+local timerDeadeyeCD				= mod:NewCDTimer(23, 256038, nil, nil, nil, 3)
 local timerExplosiveBurstCD			= mod:NewCDTimer(44.8, 256105, nil, nil, nil, 3)
 local timerMassiveBlastCD			= mod:NewCDTimer(23, 263345, nil, nil, nil, 3)
 

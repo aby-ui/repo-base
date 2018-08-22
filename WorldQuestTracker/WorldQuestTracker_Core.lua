@@ -2185,6 +2185,25 @@ hooksecurefunc ("ToggleWorldMap", function (self)
 					--
 					GameCooltip:AddLine ("$div", nil, 2, nil, -7, -14)
 					
+					GameCooltip:AddLine ("Send Invite Whispers", "", 2)
+					if (WorldQuestTracker.db.profile.groupfinder.send_whispers) then
+						GameCooltip:AddIcon ([[Interface\BUTTONS\UI-CheckBox-Check]], 2, 1, 16, 16)
+					else
+						GameCooltip:AddIcon ([[Interface\BUTTONS\UI-AutoCastableOverlay]], 2, 1, 16, 16, .4, .6, .4, .6)
+					end
+					GameCooltip:AddMenu (2, ff.SendWhispersFunc, not WorldQuestTracker.db.profile.groupfinder.send_whispers)
+					
+					GameCooltip:AddLine ("Don't Show if Already in Group", "", 2)
+					if (WorldQuestTracker.db.profile.groupfinder.dont_open_in_group) then
+						GameCooltip:AddIcon ([[Interface\BUTTONS\UI-CheckBox-Check]], 2, 1, 16, 16)
+					else
+						GameCooltip:AddIcon ([[Interface\BUTTONS\UI-AutoCastableOverlay]], 2, 1, 16, 16, .4, .6, .4, .6)
+					end
+					GameCooltip:AddMenu (2, ff.AlreadyInGroupFunc, not WorldQuestTracker.db.profile.groupfinder.dont_open_in_group)
+					
+					--
+					GameCooltip:AddLine ("$div", nil, 2, nil, -7, -14)
+					
 					--leave group
 					GameCooltip:AddLine (L["S_GROUPFINDER_LEAVEOPTIONS_IMMEDIATELY"], "", 2)
 					if (WorldQuestTracker.db.profile.groupfinder.autoleave) then

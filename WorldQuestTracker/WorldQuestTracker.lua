@@ -660,6 +660,8 @@ function WorldQuestTracker:OnInit()
 		end
 	end
 	
+    WorldQuestTracker.TAXIMAP_OPENED = noop
+    WorldQuestTracker.TAXIMAP_CLOSED = noop  --aby8 disable WorldQuestTracker_Taxi.lua
 	WorldQuestTracker:RegisterEvent ("TAXIMAP_OPENED")
 	WorldQuestTracker:RegisterEvent ("TAXIMAP_CLOSED")
 	WorldQuestTracker:RegisterEvent ("ZONE_CHANGED_NEW_AREA")

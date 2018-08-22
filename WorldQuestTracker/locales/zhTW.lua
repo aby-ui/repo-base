@@ -133,4 +133,11 @@ L["S_TUTORIAL_WORLDMAPBUTTON"] = "按下這個按鈕會顯示整個破碎群島�
 L["S_UNKNOWNQUEST"] = "未知的任務"
 L["S_WORLDMAP_TOOGLEQUESTS"] = "切換顯示任務"
 L["S_WORLDQUESTS"] = "世界任務"
+L["Search for a Group in Group Finder"] = "用預創建尋找隊伍"
+L["Quest ID:"] = "任務ID:"
+L["Quest Name:"] = "任務名:"
+L["LeaveGroup"] = "離開隊伍"
+L["Ignore Quest"] = "忽略此任務"
+L["right click to close this window"] = "右鍵點擊關閉本窗口"
+L["Invite Nearby Players"] = "邀請附近的玩家"
 

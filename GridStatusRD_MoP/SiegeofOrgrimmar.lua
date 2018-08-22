@@ -9,14 +9,14 @@ end
 --zoneid, debuffID, order, icon_priority, color_priority, timer, stackable, color, default_disable, noicon
 --true, true is for stackable
 
---[[Ê¾Àı
-GridStatusRaidDebuff:DebuffId(zoneid, ·¨ÊõID, ĞòºÅ, ÓÅÏÈ¼¶1, ÓÅÏÈ¼¶2, Ê£ÓàÊ±¼ä, ¶Ñµş²ãÊı) --ÖĞÎÄÃû³Æ
-ĞòºÅµÚ1¸öBossÊÇ1¿ªÍ·£¬µÚ¶ş¸öÊÇ2¿ªÍ·£¬Èç¹ûÄ³¸öBoss¼¼ÄÜ¹ı¶à£¬×Ô¶¯Ë³ÑÓ
-ÓÅÏÈ¼¶1ºÍ2ÉèÖÃ³ÉÒ»ÑùµÄ¼´¿É£¬ÓÉÓÚGridÖ»ÄÜÏÔÊ¾Ò»¸öÖĞĞÄÍ¼±ê£¬ËùÒÔ¸ßÓÅÏÈ¼¶»á¸²¸ÇµôµÍÓÅÏÈ¼¶µÄ·¨Êõ
+--[[ç¤ºä¾‹
+GridStatusRaidDebuff:DebuffId(zoneid, æ³•æœ¯ID, åºå·, ä¼˜å…ˆçº§1, ä¼˜å…ˆçº§2, å‰©ä½™æ—¶é—´, å †å å±‚æ•°) --ä¸­æ–‡åç§°
+åºå·ç¬¬1ä¸ªBossæ˜¯1å¼€å¤´ï¼Œç¬¬äºŒä¸ªæ˜¯2å¼€å¤´ï¼Œå¦‚æœæŸä¸ªBossæŠ€èƒ½è¿‡å¤šï¼Œè‡ªåŠ¨é¡ºå»¶
+ä¼˜å…ˆçº§1å’Œ2è®¾ç½®æˆä¸€æ ·çš„å³å¯ï¼Œç”±äºGridåªèƒ½æ˜¾ç¤ºä¸€ä¸ªä¸­å¿ƒå›¾æ ‡ï¼Œæ‰€ä»¥é«˜ä¼˜å…ˆçº§ä¼šè¦†ç›–æ‰ä½ä¼˜å…ˆçº§çš„æ³•æœ¯
 ]]
 
---Ğ¡¹Ö
-GridStatusRaidDebuff:DebuffId(zoneid, 147554, 1, 1, 1, true, true) --ÑÇÉ·¼«Ö®Ñª
+--å°æ€ª
+GridStatusRaidDebuff:DebuffId(zoneid, 147554, 1, 1, 1, true, true) --äºšç…æä¹‹è¡€
 
 -- Gates of Orgrimmar
 -- Dragonmaw Bonecrusher
@@ -28,7 +28,7 @@ GridStatusRaidDebuff:DebuffId(zoneid, 147683, 1, 2, 2) -- Thunder Clap (Magic)
 
 -- Valley of Strength
 -- Mokvar the Treasurer
-GridStatusRaidDebuff:DebuffId(zoneid, 145553, 1, 2, 2) --»ßÂ¸
+GridStatusRaidDebuff:DebuffId(zoneid, 145553, 1, 2, 2) --è´¿èµ‚
 -- Kor'kron Overseer
 GridStatusRaidDebuff:DebuffId(zoneid, 15708, 1, 2, 2) -- Mortal Strike
 -- Kor'kron Shadowmage
@@ -36,7 +36,7 @@ GridStatusRaidDebuff:DebuffId(zoneid, 145551, 1, 2, 2) -- Shadowflame (Magic)
 
 -- Vault of Y'Shaar
 -- Lingering Corruption
-GridStatusRaidDebuff:DebuffId(zoneid, 149207, 1, 2, 2) --¸¯Ê´Ö®´¥
+GridStatusRaidDebuff:DebuffId(zoneid, 149207, 1, 2, 2) --è…èš€ä¹‹è§¦
 
 -- Scarred Vale
 -- Rook Stonetoe
@@ -46,201 +46,201 @@ GridStatusRaidDebuff:DebuffId(zoneid, 144396, 1, 2, 2) -- Vengeful Strikes (DoT/
 --  Enraged Mushan Beast
 GridStatusRaidDebuff:DebuffId(zoneid, 148136, 1, 2, 2) -- Lacerating Bite
 
--- ÒÁÄ«ËÕË¹
+-- ä¼Šå¢¨è‹æ–¯
 GridStatusRaidDebuff:BossNameId(zoneid, 10, "Immerseus")
-GridStatusRaidDebuff:DebuffId(zoneid, 143297, 11, 5, 5) --É·ÄÜÅç½¦
-GridStatusRaidDebuff:DebuffId(zoneid, 143459, 12, 4, 4, true, true) --É·ÄÜ²ĞÔü
-GridStatusRaidDebuff:DebuffId(zoneid, 143524, 13, 4, 4, true, true) --¾»»¯²ĞÔü
-GridStatusRaidDebuff:DebuffId(zoneid, 143286, 14, 4, 4) --ÉøÍ¸É·ÄÜ
-GridStatusRaidDebuff:DebuffId(zoneid, 143413, 15, 3, 3) --äöÎĞ
-GridStatusRaidDebuff:DebuffId(zoneid, 143411, 16, 3, 3) --ÔöËÙ
-GridStatusRaidDebuff:DebuffId(zoneid, 143436, 17, 2, 2, true, true) --¸¯Ê´³å»÷ (Ì¹¿Ë)
-GridStatusRaidDebuff:DebuffId(zoneid, 143579, 18, 3, 3, true, true) --É·ÄÜ¸¯Ê´ (½öÀ§ÄÑÄ£Ê½)
+GridStatusRaidDebuff:DebuffId(zoneid, 143297, 11, 5, 5) --ç…èƒ½å–·æº…
+GridStatusRaidDebuff:DebuffId(zoneid, 143459, 12, 4, 4, true, true) --ç…èƒ½æ®‹æ¸£
+GridStatusRaidDebuff:DebuffId(zoneid, 143524, 13, 4, 4, true, true) --å‡€åŒ–æ®‹æ¸£
+GridStatusRaidDebuff:DebuffId(zoneid, 143286, 14, 4, 4) --æ¸—é€ç…èƒ½
+GridStatusRaidDebuff:DebuffId(zoneid, 143413, 15, 3, 3) --æ¼©æ¶¡
+GridStatusRaidDebuff:DebuffId(zoneid, 143411, 16, 3, 3) --å¢é€Ÿ
+GridStatusRaidDebuff:DebuffId(zoneid, 143436, 17, 2, 2, true, true) --è…èš€å†²å‡» (å¦å…‹)
+GridStatusRaidDebuff:DebuffId(zoneid, 143579, 18, 3, 3, true, true) --ç…èƒ½è…èš€ (ä»…å›°éš¾æ¨¡å¼)
 
--- ¶éÂäµÄÊØ»¤Õß
+-- å •è½çš„å®ˆæŠ¤è€…
 GridStatusRaidDebuff:BossNameId(zoneid, 20, "Fallen Protectors")
-GridStatusRaidDebuff:DebuffId(zoneid, 143239, 21, 4, 4) --ÖÂÃü¾ç¶¾
+GridStatusRaidDebuff:DebuffId(zoneid, 143239, 21, 4, 4) --è‡´å‘½å‰§æ¯’
 GridStatusRaidDebuff:DebuffId(zoneid, 144176, 22, 2, 2, true, true) --Lingering Anguish
---GridStatusRaidDebuff:DebuffId(zoneid, 143023, 23, 3, 3) --Ê´¹Ç¾Æ£¬¸öÈËÈÏÎª²»ĞèÒª
-GridStatusRaidDebuff:DebuffId(zoneid, 143301, 24, 2, 2) --Ôä»÷
---GridStatusRaidDebuff:DebuffId(zoneid, 143564, 25, 3, 3) --Ú¤ÏëÁìÓò£¬¸öÈËÈÏÎª²»ĞèÒª
+--GridStatusRaidDebuff:DebuffId(zoneid, 143023, 23, 3, 3) --èš€éª¨é…’ï¼Œä¸ªäººè®¤ä¸ºä¸éœ€è¦
+GridStatusRaidDebuff:DebuffId(zoneid, 143301, 24, 2, 2) --å‡¿å‡»
+--GridStatusRaidDebuff:DebuffId(zoneid, 143564, 25, 3, 3) --å†¥æƒ³é¢†åŸŸï¼Œä¸ªäººè®¤ä¸ºä¸éœ€è¦
 GridStatusRaidDebuff:DebuffId(zoneid, 143010, 26, 3, 3) --Corruptive Kick
-GridStatusRaidDebuff:DebuffId(zoneid, 143434, 27, 6, 6) --°µÑÔÊõ£º¹Æ (ÇıÉ¢)
-GridStatusRaidDebuff:DebuffId(zoneid, 143840, 28, 6, 6) --¿àÍ´Ó¡¼Ç
-GridStatusRaidDebuff:DebuffId(zoneid, 143959, 29, 4, 4) --ÙôäÂ´óµØ
-GridStatusRaidDebuff:DebuffId(zoneid, 143423, 30, 6, 6) --É·ÄÜ×ÆÉÕ
-GridStatusRaidDebuff:DebuffId(zoneid, 143292, 31, 5, 5) --Ëø¶¨
---GridStatusRaidDebuff:DebuffId(zoneid, 144176, 32, 5, 5, true, true) ---°µÓ°ĞéÈõ£¬¸öÈËÈÏÎª²»ĞèÒª
-GridStatusRaidDebuff:DebuffId(zoneid, 147383, 33, 4, 4) --Ë¥½ß (Heroic Only)
-GridStatusRaidDebuff:DebuffId(zoneid, 143198, 34, 2, 2) --Ëøºí
+GridStatusRaidDebuff:DebuffId(zoneid, 143434, 27, 6, 6) --æš—è¨€æœ¯ï¼šè›Š (é©±æ•£)
+GridStatusRaidDebuff:DebuffId(zoneid, 143840, 28, 6, 6) --è‹¦ç—›å°è®°
+GridStatusRaidDebuff:DebuffId(zoneid, 143959, 29, 4, 4) --äºµæ¸å¤§åœ°
+GridStatusRaidDebuff:DebuffId(zoneid, 143423, 30, 6, 6) --ç…èƒ½ç¼çƒ§
+GridStatusRaidDebuff:DebuffId(zoneid, 143292, 31, 5, 5) --é”å®š
+--GridStatusRaidDebuff:DebuffId(zoneid, 144176, 32, 5, 5, true, true) ---æš—å½±è™šå¼±ï¼Œä¸ªäººè®¤ä¸ºä¸éœ€è¦
+GridStatusRaidDebuff:DebuffId(zoneid, 147383, 33, 4, 4) --è¡°ç«­ (Heroic Only)
+GridStatusRaidDebuff:DebuffId(zoneid, 143198, 34, 2, 2) --é”å–‰
 
 
--- ÅµÂ³Ê²
+-- è¯ºé²ä»€
 GridStatusRaidDebuff:BossNameId(zoneid, 35, "Norushen")
-GridStatusRaidDebuff:DebuffId(zoneid, 146124, 36, 2, 2, true, true) --×Ô»ó (Ì¹¿Ë)
-GridStatusRaidDebuff:DebuffId(zoneid, 146324, 37, 4, 4, true, true) --¶Ê¼É
---GridStatusRaidDebuff:DebuffId(zoneid, 144639, 38, 6, 6) --¸¯»¯£¬¸öÈËÈÏÎª²»ĞèÒª
-GridStatusRaidDebuff:DebuffId(zoneid, 144850, 39, 5, 5) --ĞÅÀµµÄÊÔÁ¶
-GridStatusRaidDebuff:DebuffId(zoneid, 145861, 40, 6, 6) --×ÔÁµ (ÇıÉ¢)
-GridStatusRaidDebuff:DebuffId(zoneid, 144851, 41, 2, 2) --×ÔĞÅµÄÊÔÁ¶ (Ì¹¿Ë)
-GridStatusRaidDebuff:DebuffId(zoneid, 146703, 42, 3, 3) --ÎŞµ×ÉîÔ¨
-GridStatusRaidDebuff:DebuffId(zoneid, 144514, 43, 6, 6) --¾À²ø¸¯Ê´
-GridStatusRaidDebuff:DebuffId(zoneid, 144849, 44, 4, 4) --Àä¾²µÄÊÔÁ¶
+GridStatusRaidDebuff:DebuffId(zoneid, 146124, 36, 2, 2, true, true) --è‡ªæƒ‘ (å¦å…‹)
+GridStatusRaidDebuff:DebuffId(zoneid, 146324, 37, 4, 4, true, true) --å¦’å¿Œ
+--GridStatusRaidDebuff:DebuffId(zoneid, 144639, 38, 6, 6) --è…åŒ–ï¼Œä¸ªäººè®¤ä¸ºä¸éœ€è¦
+GridStatusRaidDebuff:DebuffId(zoneid, 144850, 39, 5, 5) --ä¿¡èµ–çš„è¯•ç‚¼
+GridStatusRaidDebuff:DebuffId(zoneid, 145861, 40, 6, 6) --è‡ªæ‹ (é©±æ•£)
+GridStatusRaidDebuff:DebuffId(zoneid, 144851, 41, 2, 2) --è‡ªä¿¡çš„è¯•ç‚¼ (å¦å…‹)
+GridStatusRaidDebuff:DebuffId(zoneid, 146703, 42, 3, 3) --æ— åº•æ·±æ¸Š
+GridStatusRaidDebuff:DebuffId(zoneid, 144514, 43, 6, 6) --çº ç¼ è…èš€
+GridStatusRaidDebuff:DebuffId(zoneid, 144849, 44, 4, 4) --å†·é™çš„è¯•ç‚¼
 GridStatusRaidDebuff:DebuffId(zoneid, 145725, 45, 3, 3) --Despair
 
 -- Sha of Pride
 GridStatusRaidDebuff:BossNameId(zoneid, 50, "Sha of Pride")
-GridStatusRaidDebuff:DebuffId(zoneid, 144358, 51, 2, 2) --ÊÜËğ×Ô×ğ (Ì¹¿Ë)
-GridStatusRaidDebuff:DebuffId(zoneid, 144843, 52, 3, 3) --Ñ¹ÖÆ
-GridStatusRaidDebuff:DebuffId(zoneid, 146594, 53, 4, 4, true, false) --Ì©Ì¹Ö®´Í
-GridStatusRaidDebuff:DebuffId(zoneid, 144351, 54, 6, 6, true, true) --°ÁÂı±ê¼Ç
-GridStatusRaidDebuff:DebuffId(zoneid, 144364, 55, 4, 4, true, false) --Ì©Ì¹Ö®Á¦
-GridStatusRaidDebuff:DebuffId(zoneid, 146822, 56, 6, 6) --Í¶Ó°
-GridStatusRaidDebuff:DebuffId(zoneid, 146817, 57, 5, 5, true, false) --°ÁÆø¹â»·
-GridStatusRaidDebuff:DebuffId(zoneid, 144774, 58, 2, 2) --ÉìÕ¹´ò»÷ (Ì¹¿Ë)
-GridStatusRaidDebuff:DebuffId(zoneid, 144636, 59, 5, 5) --¸¯»¯ÇôÁı??????  ÏÂ´Î´ò¿´¿´µ½µ×ÊÇÄÄ¸öid
-GridStatusRaidDebuff:DebuffId(zoneid, 144574, 60, 6, 6) --¸¯»¯ÇôÁı£¬Ëæ»ú
-GridStatusRaidDebuff:DebuffId(zoneid, 145215, 61, 4, 4) --·ÅÖğ (½öÀ§ÄÑÄ£Ê½)
-GridStatusRaidDebuff:DebuffId(zoneid, 147207, 62, 4, 4) --¶¯Ò¡µÄ¾öĞÄ (½öÀ§ÄÑÄ£Ê½)
+GridStatusRaidDebuff:DebuffId(zoneid, 144358, 51, 2, 2) --å—æŸè‡ªå°Š (å¦å…‹)
+GridStatusRaidDebuff:DebuffId(zoneid, 144843, 52, 3, 3) --å‹åˆ¶
+GridStatusRaidDebuff:DebuffId(zoneid, 146594, 53, 4, 4, true, false) --æ³°å¦ä¹‹èµ
+GridStatusRaidDebuff:DebuffId(zoneid, 144351, 54, 6, 6, true, true) --å‚²æ…¢æ ‡è®°
+GridStatusRaidDebuff:DebuffId(zoneid, 144364, 55, 4, 4, true, false) --æ³°å¦ä¹‹åŠ›
+GridStatusRaidDebuff:DebuffId(zoneid, 146822, 56, 6, 6) --æŠ•å½±
+GridStatusRaidDebuff:DebuffId(zoneid, 146817, 57, 5, 5, true, false) --å‚²æ°”å…‰ç¯
+GridStatusRaidDebuff:DebuffId(zoneid, 144774, 58, 2, 2) --ä¼¸å±•æ‰“å‡» (å¦å…‹)
+GridStatusRaidDebuff:DebuffId(zoneid, 144636, 59, 5, 5) --è…åŒ–å›šç¬¼??????  ä¸‹æ¬¡æ‰“çœ‹çœ‹åˆ°åº•æ˜¯å“ªä¸ªid
+GridStatusRaidDebuff:DebuffId(zoneid, 144574, 60, 6, 6) --è…åŒ–å›šç¬¼ï¼Œéšæœº
+GridStatusRaidDebuff:DebuffId(zoneid, 145215, 61, 4, 4) --æ”¾é€ (ä»…å›°éš¾æ¨¡å¼)
+GridStatusRaidDebuff:DebuffId(zoneid, 147207, 62, 4, 4) --åŠ¨æ‘‡çš„å†³å¿ƒ (ä»…å›°éš¾æ¨¡å¼)
 GridStatusRaidDebuff:DebuffId(zoneid, 144574, 60, 6, 6) --Corrupted Prison
 GridStatusRaidDebuff:DebuffId(zoneid, 144574, 60, 6, 6) --Corrupted Prison
 
 
--- åÈÀ­¿¨Ë¹
+-- è¿¦æ‹‰å¡æ–¯
 GridStatusRaidDebuff:BossNameId(zoneid, 70, "Galakras")
-GridStatusRaidDebuff:DebuffId(zoneid, 146765, 71, 5, 5) --ÁÒÑæÖ®¼ı
-GridStatusRaidDebuff:DebuffId(zoneid, 147705, 72, 5, 5) --¶¾ĞÔÔÆÎí
-GridStatusRaidDebuff:DebuffId(zoneid, 146902, 73, 2, 2, true, false) --¾ç¶¾ÀûÈĞ
+GridStatusRaidDebuff:DebuffId(zoneid, 146765, 71, 5, 5) --çƒˆç„°ä¹‹ç®­
+GridStatusRaidDebuff:DebuffId(zoneid, 147705, 72, 5, 5) --æ¯’æ€§äº‘é›¾
+GridStatusRaidDebuff:DebuffId(zoneid, 146902, 73, 2, 2, true, false) --å‰§æ¯’åˆ©åˆƒ
 GridStatusRaidDebuff:DebuffId(zoneid, 147068, 74, 2, 2) --Flames of Galakrond
 
--- ¸ÖÌúÕ½Ğ«
+-- é’¢é“æˆ˜è
 GridStatusRaidDebuff:BossNameId(zoneid, 80, "Iron Juggernaut")
-GridStatusRaidDebuff:DebuffId(zoneid, 144467, 81, 2, 2, true, true) --È¼ÉÕ»¤¼×
-GridStatusRaidDebuff:DebuffId(zoneid, 144459, 82, 5, 5, true, true) --¼¤¹â×ÆÉÕ
-GridStatusRaidDebuff:DebuffId(zoneid, 144498, 83, 5, 5) --±¬ÁÑ½¹ÓÍ
-GridStatusRaidDebuff:DebuffId(zoneid, 144918, 84, 5, 5) --ÇĞ¸î¼¤¹â
-GridStatusRaidDebuff:DebuffId(zoneid, 146325, 84, 6, 6) --ÇĞ¸î¼¤¹âÃé×¼£¨ÖØµã¼à¿Ø£©
+GridStatusRaidDebuff:DebuffId(zoneid, 144467, 81, 2, 2, true, true) --ç‡ƒçƒ§æŠ¤ç”²
+GridStatusRaidDebuff:DebuffId(zoneid, 144459, 82, 5, 5, true, true) --æ¿€å…‰ç¼çƒ§
+GridStatusRaidDebuff:DebuffId(zoneid, 144498, 83, 5, 5) --çˆ†è£‚ç„¦æ²¹
+GridStatusRaidDebuff:DebuffId(zoneid, 144918, 84, 5, 5) --åˆ‡å‰²æ¿€å…‰
+GridStatusRaidDebuff:DebuffId(zoneid, 146325, 84, 6, 6) --åˆ‡å‰²æ¿€å…‰ç„å‡†ï¼ˆé‡ç‚¹ç›‘æ§ï¼‰
 
--- ¿â¿¨Â¡ºÚ°µÈøÂú
+-- åº“å¡éš†é»‘æš—è¨æ»¡
 GridStatusRaidDebuff:BossNameId(zoneid, 90, "Kor'kron Dark Shaman")
-GridStatusRaidDebuff:DebuffId(zoneid, 144089, 91, 6, 6, true, true) --¾ç¶¾Ö®Îí
-GridStatusRaidDebuff:DebuffId(zoneid, 144215, 92, 2, 2, true, true) --±ùËª·ç±©´ò»÷(Ì¹¿Ë)
-GridStatusRaidDebuff:DebuffId(zoneid, 143990, 93, 2, 2) --ÎÛË®ÅçÓ¿(Ì¹¿Ë)
-GridStatusRaidDebuff:DebuffId(zoneid, 144304, 94, 2, 2, true, true) --ËºÁÑ
-GridStatusRaidDebuff:DebuffId(zoneid, 144330, 95, 6, 6, true, false) --¸ÖÌúÇôÁı(½öÓ¢ĞÛÄ£Ê½)
+GridStatusRaidDebuff:DebuffId(zoneid, 144089, 91, 6, 6, true, true) --å‰§æ¯’ä¹‹é›¾
+GridStatusRaidDebuff:DebuffId(zoneid, 144215, 92, 2, 2, true, true) --å†°éœœé£æš´æ‰“å‡»(å¦å…‹)
+GridStatusRaidDebuff:DebuffId(zoneid, 143990, 93, 2, 2) --æ±¡æ°´å–·æ¶Œ(å¦å…‹)
+GridStatusRaidDebuff:DebuffId(zoneid, 144304, 94, 2, 2, true, true) --æ’•è£‚
+GridStatusRaidDebuff:DebuffId(zoneid, 144330, 95, 6, 6, true, false) --é’¢é“å›šç¬¼(ä»…è‹±é›„æ¨¡å¼)
 
--- ÄÉ×È¸êÁÖ½«¾ü
+-- çº³å…¹æˆˆæ—å°†å†›
 GridStatusRaidDebuff:BossNameId(zoneid, 100, "General Nazgrim")
-GridStatusRaidDebuff:DebuffId(zoneid, 143638, 101, 6, 6, true, true) --Ëé¹ÇÖØ´¸
-GridStatusRaidDebuff:DebuffId(zoneid, 143480, 102, 5, 5) --´Ì¿ÍÓ¡¼Ç
-GridStatusRaidDebuff:DebuffId(zoneid, 143431, 103, 6, 6, true, false) --Ä§·¨´ò»÷(ÇıÉ¢)
-GridStatusRaidDebuff:DebuffId(zoneid, 143494, 104, 2, 2, true, true) --Ëé¼×ÖØ»÷(Ì¹¿Ë) 
-GridStatusRaidDebuff:DebuffId(zoneid, 143882, 105, 5, 5) --ÁÔÈËÓ¡¼Ç
+GridStatusRaidDebuff:DebuffId(zoneid, 143638, 101, 6, 6, true, true) --ç¢éª¨é‡é”¤
+GridStatusRaidDebuff:DebuffId(zoneid, 143480, 102, 5, 5) --åˆºå®¢å°è®°
+GridStatusRaidDebuff:DebuffId(zoneid, 143431, 103, 6, 6, true, false) --é­”æ³•æ‰“å‡»(é©±æ•£)
+GridStatusRaidDebuff:DebuffId(zoneid, 143494, 104, 2, 2, true, true) --ç¢ç”²é‡å‡»(å¦å…‹) 
+GridStatusRaidDebuff:DebuffId(zoneid, 143882, 105, 5, 5) --çŒäººå°è®°
 
 -- Malkorok
 GridStatusRaidDebuff:BossNameId(zoneid, 110, "Malkorok")
-GridStatusRaidDebuff:DebuffId(zoneid, 142990, 111, 6, 6, true, true) --ÖÂÃü´ò»÷(Ì¹¿Ë)
-GridStatusRaidDebuff:DebuffId(zoneid, 142913, 112, 5, 5) --É¢ÒİÄÜÁ¿ (ÇıÉ¢)
-GridStatusRaidDebuff:DebuffId(zoneid, 143919, 113, 3, 3) --ÊÜÄÑ (½öÓ¢ĞÛÄ£Ê½)
+GridStatusRaidDebuff:DebuffId(zoneid, 142990, 111, 6, 6, true, true) --è‡´å‘½æ‰“å‡»(å¦å…‹)
+GridStatusRaidDebuff:DebuffId(zoneid, 142913, 112, 5, 5) --æ•£é€¸èƒ½é‡ (é©±æ•£)
+GridStatusRaidDebuff:DebuffId(zoneid, 143919, 113, 3, 3) --å—éš¾ (ä»…è‹±é›„æ¨¡å¼)
 GridStatusRaidDebuff:DebuffId(zoneid, 142861, 114, 2, 2) --Ancient Miasma
-GridStatusRaidDebuff:DebuffId(zoneid, 142863, 115, 4, 4) --ĞéÈõµÄÉÏ¹ÅÆÁÕÏ - Red
-GridStatusRaidDebuff:DebuffId(zoneid, 142864, 116, 4, 4) --ÉÏ¹ÅÆÁÕÏ - Orange
-GridStatusRaidDebuff:DebuffId(zoneid, 142865, 117, 4, 4) --Ç¿´óµÄÉÏ¹ÅÆÁÕÏ - Green
+GridStatusRaidDebuff:DebuffId(zoneid, 142863, 115, 4, 4) --è™šå¼±çš„ä¸Šå¤å±éšœ - Red
+GridStatusRaidDebuff:DebuffId(zoneid, 142864, 116, 4, 4) --ä¸Šå¤å±éšœ - Orange
+GridStatusRaidDebuff:DebuffId(zoneid, 142865, 117, 4, 4) --å¼ºå¤§çš„ä¸Šå¤å±éšœ - Green
 
 
--- ÅË´ïÀûÑÇÕ½ÀûÆ·
+-- æ½˜è¾¾åˆ©äºšæˆ˜åˆ©å“
 GridStatusRaidDebuff:BossNameId(zoneid, 120, "Spoils of Pandaria")
--- GridStatusRaidDebuff:DebuffId(zoneid, 145685, 121, 2, 2) --²»ÎÈ¶¨µÄ·ÀÓùÏµÍ³
-GridStatusRaidDebuff:DebuffId(zoneid, 144853, 122, 3, 3, true, true) --ÑªÈâËºÒ§
-GridStatusRaidDebuff:DebuffId(zoneid, 145987, 123, 5, 5) --ÉèÖÃÕ¨µ¯
-GridStatusRaidDebuff:DebuffId(zoneid, 145218, 124, 4, 4, true, true) --Ó²»¯ÑªÈâ
-GridStatusRaidDebuff:DebuffId(zoneid, 145230, 125, 1, 1) --½û¼ÉÄ§·¨
-GridStatusRaidDebuff:DebuffId(zoneid, 146217, 126, 4, 4) --Í¶ÖÀ¾ÆÍ°
-GridStatusRaidDebuff:DebuffId(zoneid, 146235, 127, 4, 4) --»ğÑæÖ®Ï¢
-GridStatusRaidDebuff:DebuffId(zoneid, 145523, 128, 4, 4) --»î»¯´ò»÷
-GridStatusRaidDebuff:DebuffId(zoneid, 142983, 129, 6, 6, true, true) --ÕÛÄ¥
-GridStatusRaidDebuff:DebuffId(zoneid, 145715, 130, 3, 3) --¼²·çÕ¨µ¯
-GridStatusRaidDebuff:DebuffId(zoneid, 145747, 131, 5, 5) --Å¨ËõĞÅÏ¢ËØ
-GridStatusRaidDebuff:DebuffId(zoneid, 146289, 132, 4, 4) --ÑÏÖØÌ±»¾
+-- GridStatusRaidDebuff:DebuffId(zoneid, 145685, 121, 2, 2) --ä¸ç¨³å®šçš„é˜²å¾¡ç³»ç»Ÿ
+GridStatusRaidDebuff:DebuffId(zoneid, 144853, 122, 3, 3, true, true) --è¡€è‚‰æ’•å’¬
+GridStatusRaidDebuff:DebuffId(zoneid, 145987, 123, 5, 5) --è®¾ç½®ç‚¸å¼¹
+GridStatusRaidDebuff:DebuffId(zoneid, 145218, 124, 4, 4, true, true) --ç¡¬åŒ–è¡€è‚‰
+GridStatusRaidDebuff:DebuffId(zoneid, 145230, 125, 1, 1) --ç¦å¿Œé­”æ³•
+GridStatusRaidDebuff:DebuffId(zoneid, 146217, 126, 4, 4) --æŠ•æ·é…’æ¡¶
+GridStatusRaidDebuff:DebuffId(zoneid, 146235, 127, 4, 4) --ç«ç„°ä¹‹æ¯
+GridStatusRaidDebuff:DebuffId(zoneid, 145523, 128, 4, 4) --æ´»åŒ–æ‰“å‡»
+GridStatusRaidDebuff:DebuffId(zoneid, 142983, 129, 6, 6, true, true) --æŠ˜ç£¨
+GridStatusRaidDebuff:DebuffId(zoneid, 145715, 130, 3, 3) --ç–¾é£ç‚¸å¼¹
+GridStatusRaidDebuff:DebuffId(zoneid, 145747, 131, 5, 5) --æµ“ç¼©ä¿¡æ¯ç´ 
+GridStatusRaidDebuff:DebuffId(zoneid, 146289, 132, 4, 4) --ä¸¥é‡ç˜«ç—ª
 
--- ÊÈÑªµÄË÷¿Ë
+-- å—œè¡€çš„ç´¢å…‹
 GridStatusRaidDebuff:BossNameId(zoneid, 140, "Thok the Bloodthirsty")
-GridStatusRaidDebuff:DebuffId(zoneid, 143766, 141, 2, 2, true, true) --¿Ö»Å(Ì¹¿Ë)
-GridStatusRaidDebuff:DebuffId(zoneid, 143773, 142, 2, 2, true, true) --±ù¶³ÍÂÏ¢(Ì¹¿Ë)
-GridStatusRaidDebuff:DebuffId(zoneid, 143452, 143, 1, 1) --ÏÊÑªÁÜÀì
-GridStatusRaidDebuff:DebuffId(zoneid, 146589, 144, 5, 5) --ÍòÄÜÔ¿³×(Ì¹¿Ë)
-GridStatusRaidDebuff:DebuffId(zoneid, 143445, 145, 6, 6, true, false) --Ëø¶¨
-GridStatusRaidDebuff:DebuffId(zoneid, 143791, 146, 5, 5, true, true) --¸¯Ê´Ö®Ñª
-GridStatusRaidDebuff:DebuffId(zoneid, 143777, 147, 3, 3) --¶³½á(Ì¹¿Ë)
-GridStatusRaidDebuff:DebuffId(zoneid, 143780, 148, 4, 4, true, true) --ËáĞÔÍÂÏ¢
-GridStatusRaidDebuff:DebuffId(zoneid, 143800, 149, 5, 5, true, true) --±ù¶³Ö®Ñª
-GridStatusRaidDebuff:DebuffId(zoneid, 143428, 150, 4, 4) --ÁúÎ²É¨»÷
+GridStatusRaidDebuff:DebuffId(zoneid, 143766, 141, 2, 2, true, true) --ææ…Œ(å¦å…‹)
+GridStatusRaidDebuff:DebuffId(zoneid, 143773, 142, 2, 2, true, true) --å†°å†»åæ¯(å¦å…‹)
+GridStatusRaidDebuff:DebuffId(zoneid, 143452, 143, 1, 1) --é²œè¡€æ·‹æ¼“
+GridStatusRaidDebuff:DebuffId(zoneid, 146589, 144, 5, 5) --ä¸‡èƒ½é’¥åŒ™(å¦å…‹)
+GridStatusRaidDebuff:DebuffId(zoneid, 143445, 145, 6, 6, true, false) --é”å®š
+GridStatusRaidDebuff:DebuffId(zoneid, 143791, 146, 5, 5, true, true) --è…èš€ä¹‹è¡€
+GridStatusRaidDebuff:DebuffId(zoneid, 143777, 147, 3, 3) --å†»ç»“(å¦å…‹)
+GridStatusRaidDebuff:DebuffId(zoneid, 143780, 148, 4, 4, true, true) --é…¸æ€§åæ¯
+GridStatusRaidDebuff:DebuffId(zoneid, 143800, 149, 5, 5, true, true) --å†°å†»ä¹‹è¡€
+GridStatusRaidDebuff:DebuffId(zoneid, 143428, 150, 4, 4) --é¾™å°¾æ‰«å‡»
 GridStatusRaidDebuff:DebuffId(zoneid, 143784, 151, 2, 2) --Burning Blood
 GridStatusRaidDebuff:DebuffId(zoneid, 143767, 152, 1, 1) --Scorching Breath
 -- This is good, don't need to show it
 GridStatusRaidDebuff:DebuffId(zoneid, 144115, 153, 1, 1, false, false, 0, true) --Flame Coating
 
--- ¹¥³Ç½³Ê¦ºÚË÷
+-- æ”»åŸåŒ å¸ˆé»‘ç´¢
 GridStatusRaidDebuff:BossNameId(zoneid, 160, "Siegecrafter Blackfuse")
-GridStatusRaidDebuff:DebuffId(zoneid, 144236, 161, 4, 4) --Í¼ÏñÊ¶±ğ
--- GridStatusRaidDebuff:DebuffId(zoneid, 144466, 162, 5, 5) --µç´ÅÕñµ´
-GridStatusRaidDebuff:DebuffId(zoneid, 143385, 163, 2, 2, true, true) --µçºÉ³å»÷(Ì¹¿Ë)
-GridStatusRaidDebuff:DebuffId(zoneid, 143856, 164, 6, 6, true, true) --¹ıÈÈ
+GridStatusRaidDebuff:DebuffId(zoneid, 144236, 161, 4, 4) --å›¾åƒè¯†åˆ«
+-- GridStatusRaidDebuff:DebuffId(zoneid, 144466, 162, 5, 5) --ç”µç£æŒ¯è¡
+GridStatusRaidDebuff:DebuffId(zoneid, 143385, 163, 2, 2, true, true) --ç”µè·å†²å‡»(å¦å…‹)
+GridStatusRaidDebuff:DebuffId(zoneid, 143856, 164, 6, 6, true, true) --è¿‡çƒ­
 
--- ¿¨À­¿ËÎ÷Ó¢½Ü
+-- å¡æ‹‰å…‹è¥¿è‹±æ°
 GridStatusRaidDebuff:BossNameId(zoneid, 170, "Paragons of the Klaxxi")
-GridStatusRaidDebuff:DebuffId(zoneid, 143701, 172, 5, 5) --ÔÎÍ·×ªÏò
-GridStatusRaidDebuff:DebuffId(zoneid, 143702, 173, 5, 5) --ÔÎÍ·×ªÏò ´òÒ»ÏÂ¸±±¾¿´¿´ÓĞÊ²Ã´Çø±ğ
-GridStatusRaidDebuff:DebuffId(zoneid, 142808, 174, 6, 6) --Ñ×½ç
-GridStatusRaidDebuff:DebuffId(zoneid, 142931, 177, 2, 2, true, true) --ÑªÂö±©Â¶
-GridStatusRaidDebuff:DebuffId(zoneid, 143735, 179, 6, 6) --¸¯Ê´çúçê
-GridStatusRaidDebuff:DebuffId(zoneid, 146452, 180, 5, 5) --¹²Ãùçúçê
-GridStatusRaidDebuff:DebuffId(zoneid, 142929, 181, 2, 2, true, true) --´àÈõ´ò»÷
-GridStatusRaidDebuff:DebuffId(zoneid, 142797, 182, 5, 5) --¾ç¶¾ÕôÆû
-GridStatusRaidDebuff:DebuffId(zoneid, 143939, 183, 5, 5) --Ôä»÷
-GridStatusRaidDebuff:DebuffId(zoneid, 143275, 184, 2, 2, true, true) --»Ó¿³
-GridStatusRaidDebuff:DebuffId(zoneid, 143768, 185, 2, 2) --Òô²¨·¢Éä
--- GridStatusRaidDebuff:DebuffId(zoneid, 142532, 186, 6, 6) --¶¾ËØ£ºÀ¶É«
-GridStatusRaidDebuff:DebuffId(zoneid, 142803, 187, 6, 6) --³ÈÉ«´ß»¯±¬Õ¨Ö®»·
-GridStatusRaidDebuff:DebuffId(zoneid, 143279, 188, 2, 2, true, true) --»ùÒò±äÒì
-GridStatusRaidDebuff:DebuffId(zoneid, 143339, 189, 6, 6, true, true) --×¢Éä
-GridStatusRaidDebuff:DebuffId(zoneid, 142649, 190, 4, 4) --ÍÌÊÉ
-GridStatusRaidDebuff:DebuffId(zoneid, 146556, 191, 6, 6) --´©´Ì
-GridStatusRaidDebuff:DebuffId(zoneid, 142671, 192, 6, 6) --´ßÃßÊõ
-GridStatusRaidDebuff:DebuffId(zoneid, 143979, 193, 2, 2, true, true) --¶ñÒâÍ»Ï®
-GridStatusRaidDebuff:DebuffId(zoneid, 143974, 199, 2, 2) --¶Ü»÷(Ì¹¿Ë)
-GridStatusRaidDebuff:DebuffId(zoneid, 143570, 197, 6, 6, true, true) --ÈÈ¹ŞÈ¼ÁÏ×¼±¸£¨3S£©
-GridStatusRaidDebuff:DebuffId(zoneid, 142547, 175, 6, 6) --¶¾ËØ£º³ÈÉ«
-GridStatusRaidDebuff:DebuffId(zoneid, 143572, 176, 6, 6, true, true) --×ÏÉ«´ß»¯ÈÈ¹ŞÈ¼ÁÏ
-GridStatusRaidDebuff:DebuffId(zoneid, 142549, 171, 6, 6) --¶¾ËØ£ºÂÌÉ«
-GridStatusRaidDebuff:DebuffId(zoneid, 142550, 194, 6, 6) --¶¾ËØ£º°×É«
-GridStatusRaidDebuff:DebuffId(zoneid, 142948, 195, 5, 5) -- Ãé×¼
-GridStatusRaidDebuff:DebuffId(zoneid, 148589, 196, 6, 6) -- ±äÒìÈ±Ïİ
-GridStatusRaidDebuff:DebuffId(zoneid, 142945, 198, 5, 5, true, true) --ÂÌÉ«´ß»¯¹îÒìÖ®Îí
-GridStatusRaidDebuff:DebuffId(zoneid, 143358, 200, 5, 5) -- ¼¢¶ö
-GridStatusRaidDebuff:DebuffId(zoneid, 142315, 201, 5, 5, true, true) --ËáĞÔÑªÒº
+GridStatusRaidDebuff:DebuffId(zoneid, 143701, 172, 5, 5) --æ™•å¤´è½¬å‘
+GridStatusRaidDebuff:DebuffId(zoneid, 143702, 173, 5, 5) --æ™•å¤´è½¬å‘ æ‰“ä¸€ä¸‹å‰¯æœ¬çœ‹çœ‹æœ‰ä»€ä¹ˆåŒºåˆ«
+GridStatusRaidDebuff:DebuffId(zoneid, 142808, 174, 6, 6) --ç‚ç•Œ
+GridStatusRaidDebuff:DebuffId(zoneid, 142931, 177, 2, 2, true, true) --è¡€è„‰æš´éœ²
+GridStatusRaidDebuff:DebuffId(zoneid, 143735, 179, 6, 6) --è…èš€ç¥ç€
+GridStatusRaidDebuff:DebuffId(zoneid, 146452, 180, 5, 5) --å…±é¸£ç¥ç€
+GridStatusRaidDebuff:DebuffId(zoneid, 142929, 181, 2, 2, true, true) --è„†å¼±æ‰“å‡»
+GridStatusRaidDebuff:DebuffId(zoneid, 142797, 182, 5, 5) --å‰§æ¯’è’¸æ±½
+GridStatusRaidDebuff:DebuffId(zoneid, 143939, 183, 5, 5) --å‡¿å‡»
+GridStatusRaidDebuff:DebuffId(zoneid, 143275, 184, 2, 2, true, true) --æŒ¥ç 
+GridStatusRaidDebuff:DebuffId(zoneid, 143768, 185, 2, 2) --éŸ³æ³¢å‘å°„
+-- GridStatusRaidDebuff:DebuffId(zoneid, 142532, 186, 6, 6) --æ¯’ç´ ï¼šè“è‰²
+GridStatusRaidDebuff:DebuffId(zoneid, 142803, 187, 6, 6) --æ©™è‰²å‚¬åŒ–çˆ†ç‚¸ä¹‹ç¯
+GridStatusRaidDebuff:DebuffId(zoneid, 143279, 188, 2, 2, true, true) --åŸºå› å˜å¼‚
+GridStatusRaidDebuff:DebuffId(zoneid, 143339, 189, 6, 6, true, true) --æ³¨å°„
+GridStatusRaidDebuff:DebuffId(zoneid, 142649, 190, 4, 4) --åå™¬
+GridStatusRaidDebuff:DebuffId(zoneid, 146556, 191, 6, 6) --ç©¿åˆº
+GridStatusRaidDebuff:DebuffId(zoneid, 142671, 192, 6, 6) --å‚¬çœ æœ¯
+GridStatusRaidDebuff:DebuffId(zoneid, 143979, 193, 2, 2, true, true) --æ¶æ„çªè¢­
+GridStatusRaidDebuff:DebuffId(zoneid, 143974, 199, 2, 2) --ç›¾å‡»(å¦å…‹)
+GridStatusRaidDebuff:DebuffId(zoneid, 143570, 197, 6, 6, true, true) --çƒ­ç½ç‡ƒæ–™å‡†å¤‡ï¼ˆ3Sï¼‰
+GridStatusRaidDebuff:DebuffId(zoneid, 142547, 175, 6, 6) --æ¯’ç´ ï¼šæ©™è‰²
+GridStatusRaidDebuff:DebuffId(zoneid, 143572, 176, 6, 6, true, true) --ç´«è‰²å‚¬åŒ–çƒ­ç½ç‡ƒæ–™
+GridStatusRaidDebuff:DebuffId(zoneid, 142549, 171, 6, 6) --æ¯’ç´ ï¼šç»¿è‰²
+GridStatusRaidDebuff:DebuffId(zoneid, 142550, 194, 6, 6) --æ¯’ç´ ï¼šç™½è‰²
+GridStatusRaidDebuff:DebuffId(zoneid, 142948, 195, 5, 5) -- ç„å‡†
+GridStatusRaidDebuff:DebuffId(zoneid, 148589, 196, 6, 6) -- å˜å¼‚ç¼ºé™·
+GridStatusRaidDebuff:DebuffId(zoneid, 142945, 198, 5, 5, true, true) --ç»¿è‰²å‚¬åŒ–è¯¡å¼‚ä¹‹é›¾
+GridStatusRaidDebuff:DebuffId(zoneid, 143358, 200, 5, 5) -- é¥¥é¥¿
+GridStatusRaidDebuff:DebuffId(zoneid, 142315, 201, 5, 5, true, true) --é…¸æ€§è¡€æ¶²
 
--- GridStatusRaidDebuff:DebuffId(zoneid, 143615, 198, 5, 5, true, true) --ºìÉ«Õ¨µ¯
--- GridStatusRaidDebuff:DebuffId(zoneid, 143609, 175, 5, 5, true, true) --»ÆÉ«³¤½£
--- GridStatusRaidDebuff:DebuffId(zoneid, 143610, 176, 5, 5, true, true) --ºìÉ«Õ½¹Ä
--- GridStatusRaidDebuff:DebuffId(zoneid, 143617, 171, 5, 5, true, true) --À¶É«Õ¨µ¯
--- GridStatusRaidDebuff:DebuffId(zoneid, 143607, 194, 5, 5, true, true) --À¶É«³¤½£
--- GridStatusRaidDebuff:DebuffId(zoneid, 143614, 195, 5, 5, true, true) --»ÆÉ«Õ½¹Ä
--- GridStatusRaidDebuff:DebuffId(zoneid, 143612, 196, 5, 5, true, true) --À¶É«Õ½¹Ä
--- GridStatusRaidDebuff:DebuffId(zoneid, 143619, 178, 5, 5, true, true) --»ÆÉ«Õ¨µ¯
+-- GridStatusRaidDebuff:DebuffId(zoneid, 143615, 198, 5, 5, true, true) --çº¢è‰²ç‚¸å¼¹
+-- GridStatusRaidDebuff:DebuffId(zoneid, 143609, 175, 5, 5, true, true) --é»„è‰²é•¿å‰‘
+-- GridStatusRaidDebuff:DebuffId(zoneid, 143610, 176, 5, 5, true, true) --çº¢è‰²æˆ˜é¼“
+-- GridStatusRaidDebuff:DebuffId(zoneid, 143617, 171, 5, 5, true, true) --è“è‰²ç‚¸å¼¹
+-- GridStatusRaidDebuff:DebuffId(zoneid, 143607, 194, 5, 5, true, true) --è“è‰²é•¿å‰‘
+-- GridStatusRaidDebuff:DebuffId(zoneid, 143614, 195, 5, 5, true, true) --é»„è‰²æˆ˜é¼“
+-- GridStatusRaidDebuff:DebuffId(zoneid, 143612, 196, 5, 5, true, true) --è“è‰²æˆ˜é¼“
+-- GridStatusRaidDebuff:DebuffId(zoneid, 143619, 178, 5, 5, true, true) --é»„è‰²ç‚¸å¼¹
 
--- ¼Ó¶ûÂ³Ê²¡¤µØÓüÅØÏø
+-- åŠ å°”é²ä»€Â·åœ°ç‹±å’†å“®
 GridStatusRaidDebuff:BossNameId(zoneid, 210, "Garrosh Hellscream")
-GridStatusRaidDebuff:DebuffId(zoneid, 144582, 211, 4, 4, true, false) --¶Ï½î
-GridStatusRaidDebuff:DebuffId(zoneid, 145183, 212, 2, 2, true, true) --¾øÍûÖ®ÎÕ(Ì¹¿Ë)
-GridStatusRaidDebuff:DebuffId(zoneid, 144762, 213, 4, 4) --ÙôäÂ
-GridStatusRaidDebuff:DebuffId(zoneid, 145071, 214, 5, 5) --ÑÇÉ·¼«Ö®´¥
-GridStatusRaidDebuff:DebuffId(zoneid, 148718, 215, 4, 4) --»ğ¿Ó
-GridStatusRaidDebuff:DebuffId(zoneid, 148983, 216, 4, 4) --ÓÂÆøÓÀ´ºÌ¨
-GridStatusRaidDebuff:DebuffId(zoneid, 147235, 217, 6, 6, true, true) -- ¶ñ¶¾³å»÷
-GridStatusRaidDebuff:DebuffId(zoneid, 148994, 218, 4, 4) -- ĞÅÄîÇàÁúËÂ
-GridStatusRaidDebuff:DebuffId(zoneid, 149004, 218, 4, 4) -- Ï£ÍûÖìº×ËÂ
-GridStatusRaidDebuff:DebuffId(zoneid, 147324, 219, 5, 5) -- »ÙÃğÖ®¾å
-GridStatusRaidDebuff:DebuffId(zoneid, 145171, 220, 5, 5) -- Ç¿»¯ÑÇÉ·¼«Ö®´¥£¨H£©
-GridStatusRaidDebuff:DebuffId(zoneid, 145175, 221, 5, 5) -- Ç¿»¯ÑÇÉ·¼«Ö®´¥£¨N£©
---GridStatusRaidDebuff:DebuffId(zoneid, 144954, 216, 4, 4) --ÑÇÉ·¼«Ö®¾³£¬¸öÈËÈÏÎªÎŞĞèÏÔÊ¾
+GridStatusRaidDebuff:DebuffId(zoneid, 144582, 211, 4, 4, true, false) --æ–­ç­‹
+GridStatusRaidDebuff:DebuffId(zoneid, 145183, 212, 2, 2, true, true) --ç»æœ›ä¹‹æ¡(å¦å…‹)
+GridStatusRaidDebuff:DebuffId(zoneid, 144762, 213, 4, 4) --äºµæ¸
+GridStatusRaidDebuff:DebuffId(zoneid, 145071, 214, 5, 5) --äºšç…æä¹‹è§¦
+GridStatusRaidDebuff:DebuffId(zoneid, 148718, 215, 4, 4) --ç«å‘
+GridStatusRaidDebuff:DebuffId(zoneid, 148983, 216, 4, 4) --å‹‡æ°”æ°¸æ˜¥å°
+GridStatusRaidDebuff:DebuffId(zoneid, 147235, 217, 6, 6, true, true) -- æ¶æ¯’å†²å‡»
+GridStatusRaidDebuff:DebuffId(zoneid, 148994, 218, 4, 4) -- ä¿¡å¿µé’é¾™å¯º
+GridStatusRaidDebuff:DebuffId(zoneid, 149004, 218, 4, 4) -- å¸Œæœ›æœ±é¹¤å¯º
+GridStatusRaidDebuff:DebuffId(zoneid, 147324, 219, 5, 5) -- æ¯ç­ä¹‹æƒ§
+GridStatusRaidDebuff:DebuffId(zoneid, 145171, 220, 5, 5) -- å¼ºåŒ–äºšç…æä¹‹è§¦ï¼ˆHï¼‰
+GridStatusRaidDebuff:DebuffId(zoneid, 145175, 221, 5, 5) -- å¼ºåŒ–äºšç…æä¹‹è§¦ï¼ˆNï¼‰
+--GridStatusRaidDebuff:DebuffId(zoneid, 144954, 216, 4, 4) --äºšç…æä¹‹å¢ƒï¼Œä¸ªäººè®¤ä¸ºæ— éœ€æ˜¾ç¤º

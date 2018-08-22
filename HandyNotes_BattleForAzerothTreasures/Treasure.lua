@@ -195,8 +195,11 @@ ns.points = {
         [46003069] = {quest=52980, achievement=12853, criteria=41070, note="Behind pillar",}, -- Forgotten Chest
         [41256950] = {achievement=13046, atlas="Food", note="Open an Unforgettable Luncheon here; buy them at the Inn, or loot one from the Discarded Lunchbox in Brennadam",}, -- These Hills Sing
         -- junk
-        [64366899] = {quest=51939, junk=true, label=CHEST_SM,},
+        [66567107] = {quest=50576, item=154476, label="Honey Vat", note="Strangely, not part of the achievement",},
         [62056563] = {quest=51184, junk=true, label=CHEST_SM,},
+        [51796523] = {quest=51184, junk=true, label=CHEST_SM,},
+        [70265958] = {quest=51927, junk=true, label=CHEST_SM,},
+        [64366899] = {quest=51939, junk=true, label=CHEST_SM,},
     },
     [1161] = { -- Boralus
         [61901010] = {quest=52870, achievement=12852, criteria=41016, note="In cave",}, -- Scrimshaw Cache

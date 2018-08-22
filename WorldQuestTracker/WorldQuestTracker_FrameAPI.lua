@@ -533,7 +533,7 @@ function WorldQuestTracker.OnQuestButtonClick (self, button)
 	end
 
 	local TaskPOI_OnClick = WorldMapFrameTaskPOI1 and WorldMapFrameTaskPOI1:GetScript("OnClick") or _G.TaskPOI_OnClick
-	if button == "RightButton" then return TaskPOI_OnClick(self, button) end
+	if button == "RightButton" and TaskPOI_OnClick then return TaskPOI_OnClick(self, button) end
 
 	if (not HaveQuestData (self.questID)) then
 		WorldQuestTracker:Msg (L["S_ERROR_NOTLOADEDYET"])
