@@ -186,7 +186,17 @@ GTFO.SpellID["257336"] = {
   sound = 3;
 };
 
+GTFO.SpellID["265720"] = {
+  --desc = "Poison Spray (Thu'zun the Vile)";
+  sound = 1;
+  applicationOnly = true;
+};
 
+GTFO.SpellID["266144"] = {
+  --desc = "Poison Bomb (Thu'zun the Vile)";
+  sound = 1;
+  applicationOnly = true;
+};
 
 
 -- ***********************
@@ -336,7 +346,6 @@ GTFO.SpellID["267523"] = {
 GTFO.SpellID["256594"] = {
   --desc = "Barrel Smash (Captain Raoul)";
   sound = 3;
-  test = true;
 };
 
 GTFO.SpellID["257310"] = {
@@ -350,6 +359,28 @@ GTFO.SpellID["257315"] = {
   sound = 3;
   test = true;
 };
+
+GTFO.SpellID["272397"] = {
+  --desc = "Whirlpool of Blades";
+  sound = 3;
+};
+
+GTFO.SpellID["276061"] = {
+  --desc = "Boulder Throw (Irontide Crusher)";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["258199"] = {
+  --desc = "Ground Shatter (Irontide Crusher)";
+  sound = 3;
+};
+
+GTFO.SpellID["257902"] = {
+  --desc = "Shell Bounce (Ludwig Von Tortollan)";
+  sound = 3;
+};
+
 
 -- *************
 -- * Tol Dagor *
@@ -435,6 +466,12 @@ GTFO.SpellID["265511"] = {
 
 GTFO.SpellID["272609"] = {
   --desc = "Maddening Gaze (Faceless Corruptor)";
+  sound = 3;
+  applicationOnly = true;
+};
+
+GTFO.SpellID["273475"] = {
+  --desc = "Rotten Breath (Rotmaw)";
   sound = 3;
   applicationOnly = true;
 };

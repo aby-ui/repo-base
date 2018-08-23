@@ -1348,19 +1348,8 @@ function ChocolateBar:OpenOptions(chocolateBars, data, input, pluginName, module
 
 	local AceCfgDlg = LibStub("AceConfigDialog-3.0")
 
-  ChocolateBar:UpdateOptions(chocolateBars)
-
 	if pluginName then
 		AceCfgDlg:SelectGroup("ChocolateBar", "chocolates",pluginName)
-	end
-
-	for name, obj in broker:DataObjectIterator() do
-		ChocolateBar:AddObjectOptions(name, obj)
-	end
-
-	for name, module in pairs(modules) do
-		self:AddModuleOptions(name ,module.options)
-		if module.OnOpenOptions then module:OnOpenOptions() end
 	end
 
 	if blizzard then

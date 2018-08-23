@@ -17,7 +17,7 @@
     },
     {
         text = "重置数据",
-        tip = "说明`为了加快载入速度，有爱修改HandyNotes每个版本只查询一次数据，把数据保存起来，如果有问题请重置一下",
+        tip = "说明`为了加快载入速度，爱不易修改HandyNotes每个版本只查询一次数据，把数据保存起来，如果有问题请重置一下",
         reload = 1,
         callback = function()
             HandyNotesDB._mapData = nil

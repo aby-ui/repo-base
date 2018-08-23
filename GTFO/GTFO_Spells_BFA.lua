@@ -94,6 +94,11 @@ GTFO.SpellID["280446"] = {
   sound = 1;
 };
 
+GTFO.SpellID["277972"] = {
+  --desc = "Firestorm (Adhara White)";
+  sound = 1;
+};
+
 -- ***********************
 -- * Shrine of the Storm *
 -- ***********************
@@ -155,7 +160,6 @@ GTFO.SpellID["268308"] = {
 GTFO.SpellID["257274"] = {
   --desc = "Vile Coating";
   sound = 1;
-  test = true;
 };
 
 GTFO.SpellID["256016"] = {
@@ -187,6 +191,17 @@ GTFO.SpellID["257871"] = {
 
 GTFO.SpellID["257460"] = {
   --desc = "Flaming Shrapnel (Harlan Sweete)";
+  sound = 1;
+};
+
+GTFO.SpellID["268287"] = {
+  --desc = "Rotten Food (Booty Fanatic)";
+  sound = 1;
+};
+
+GTFO.SpellID["268283"] = {
+  --desc = "Obscured Vision (Booty Fanatic)";
+  applicationOnly = true;
   sound = 1;
 };
 
@@ -225,6 +240,11 @@ GTFO.SpellID["265687"] = {
 
 GTFO.SpellID["269838"] = {
   --desc = "Vile Expulsion (Unbound Abomination)";
+  sound = 1;
+};
+
+GTFO.SpellID["278789"] = {
+  --desc = "Wave of Decay";
   sound = 1;
 };
 

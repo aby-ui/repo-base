@@ -50,6 +50,14 @@ function Addon:OnInitialize()
 	local kb = LibStub('LibKeyBound-1.0')
 	kb.RegisterCallback(self, 'LIBKEYBOUND_ENABLED')
 	kb.RegisterCallback(self, 'LIBKEYBOUND_DISABLED')
+
+    --aby8 force azerite
+    if self.db.profile and self.db.profile.frames and self.db.profile.frames.artifact then
+        if not self.db.profile.update801 then
+            self.db.profile.frames.artifact.mode = 'azerite';
+            self.db.profile.update801 = true
+        end
+    end
 end
 
 function Addon:OnEnable()

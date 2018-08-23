@@ -6,7 +6,7 @@ U1RegisterAddon("Grid", {
 
     tags = { TAG_RAID, },
     icon = "Interface\\AddOns\\Grid\\Media\\icon",
-    desc = "强大的团队框架Grid, 使用有爱warbaby的整合版，提供适合大部分玩家的默认配置。`Grid插件下有许多扩展子模块，可以根据自己的需要选择开启。``如需自行配置显示的内容，需要在设置界面中给不同的|cffffffff指示器|r配置上对应的|cffffffff状态|r，有一些状态自身也有选项，要在'状态页'中进行调整。",
+    desc = "强大的团队框架Grid, 使用爱不易warbaby的整合版，提供适合大部分玩家的默认配置。`Grid插件下有许多扩展子模块，可以根据自己的需要选择开启。``如需自行配置显示的内容，需要在设置界面中给不同的|cffffffff指示器|r配置上对应的|cffffffff状态|r，有一些状态自身也有选项，要在'状态页'中进行调整。",
     pics = 2,
 
     modifier = "|cffcd1a1c[爱不易]|r",

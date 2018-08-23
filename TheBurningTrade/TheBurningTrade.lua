@@ -421,7 +421,7 @@ local function SetTradeSkillFilter()
             local slotId = findEnchantSlot(v)
             if slotId then
                 if first then
-                    TradeSkillSetFilter(0, slotId, "", "有爱附魔助手 - ".._G[currentEnchantType]) --如果用1，则第一次进游戏时会报错
+                    TradeSkillSetFilter(0, slotId, "", "爱不易附魔助手 - ".._G[currentEnchantType]) --如果用1，则第一次进游戏时会报错
                     first = false
                 else
                     SetTradeSkillInvSlotFilter(slotId, 1, nil);
@@ -504,7 +504,7 @@ function ENHHelper:CreateButton()
         ToggleDropDownMenu(1, nil, ENHHelper.dropdown, self, 0, 0)
     end)
 
-    CoreUIEnableTooltip(btn, "有爱附魔助手", "点击此按钮可以方便的将身上或背包里的装备放入此栏。")
+    CoreUIEnableTooltip(btn, "爱不易附魔助手", "点击此按钮可以方便的将身上或背包里的装备放入此栏。")
 end
 
 local function isLock(item)

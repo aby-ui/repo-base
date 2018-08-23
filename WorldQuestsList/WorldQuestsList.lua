@@ -1,4 +1,4 @@
-local VERSION = 77
+local VERSION = 78
 
 --[[
 Special icons for rares, pvp or pet battle quests in list
@@ -225,10 +225,15 @@ LFG: leave party popup only for quest groups
 Added shift+right click to expand azerite gear rewards
 Localizations updates by sprider00
 Minor fixes
+
+Added requeue button for current quest (replace eye in quest tracker)
+Fix for "addon blocked" error
+Minor updates
 ]]
 
 local GlobalAddonName, WQLdb = ...
 
+--[[
 do
 	local version, buildVersion, buildDate, uiVersion = GetBuildInfo()
 	
@@ -238,6 +243,7 @@ do
 		return
 	end
 end
+]]
 
 local VWQL = nil
 
@@ -352,7 +358,7 @@ local LOCALE =
 		addQuestsOpposite = "Fügt Quests von anderen Kontinent hinzu",
 		hideLegion = "Verbergt Quests von Legion",
 		disableArrowMove = "Deaktiviert das Verschieben",
-		shellGameHelper = "Aktiviert Schalen-Spiel Helfer",
+		shellGameHelper = "Aktiviert Panzer-Spiel Helfer",
 		iconsOnMinimap = "Aktiviert Symbole auf Kontinentkarten",
 		addQuestsArgus = "Fügt Quests von Argus hinzu",
 		lfgSearchOption = "Aktiviert die LFG-Suche",
@@ -4413,15 +4419,17 @@ end
 
 
 do
+	local lastCheck = 0
 	local azeriteItemLocation
 	function WorldQuestList:FormatAzeriteNumber(azerite,ignorePercentForm)
 		if (VWQL.AzeriteFormat == 10 or VWQL.AzeriteFormat == 20) and not ignorePercentForm then
-			azeriteItemLocation = azeriteItemLocation or C_AzeriteItem.FindActiveAzeriteItem()
-			if azeriteItemLocation and not C_AzeriteItem.IsAzeriteItem(azeriteItemLocation) then
+			local currTime = GetTime()
+			if currTime - lastCheck > 5 then
 				azeriteItemLocation = C_AzeriteItem.FindActiveAzeriteItem()
+				lastCheck = currTime
 			end
 			
-			if azeriteItemLocation then 			
+			if azeriteItemLocation then		
 				local xp, totalLevelXP = C_AzeriteItem.GetAzeriteItemXPInfo(azeriteItemLocation)
 				--local currentLevel = C_AzeriteItem.GetPowerLevel(azeriteItemLocation)
 				--local xpToNextLevel = totalLevelXP - xp
@@ -6423,6 +6431,10 @@ function WQL_LFG_StartQuest(questID)
 	if GroupFinderFrame:IsVisible() or C_LFGList.GetActiveEntryInfo() then
 		return
 	end
+
+	local edit = LFGListFrame.EntryCreation.Name
+	local button = QuestCreationBox.ListGroup
+	local check = LFGListFrame.ApplicationViewer.AutoAcceptButton
 	
 	QuestCreationBox:Show()
 	QuestCreationBox:SetSize(350,120)
@@ -6436,16 +6448,20 @@ function WQL_LFG_StartQuest(questID)
 	PVEFrame:ClearAllPoints() 
 	PVEFrame:SetPoint("TOP",UIParent,"BOTTOM",0,-100)
 	
-	LFGListEntryCreation_Show(LFGListFrame.EntryCreation, LFGListFrame.baseFilters, 1, 0)
-	
+	local autoCreate = nil
+	if tostring(questID) == edit:GetText() then
+		LFGListEntryCreation_SetEditMode(LFGListFrame.EntryCreation, false)
+		LFGListEntryCreation_UpdateValidState(LFGListFrame.EntryCreation)
+		LFGListFrame_SetActivePanel(LFGListFrame.EntryCreation:GetParent(), LFGListFrame.EntryCreation)
+		autoCreate = true
+	else
+		LFGListEntryCreation_Show(LFGListFrame.EntryCreation, LFGListFrame.baseFilters, 1, 0)
+	end	
+
 	local activityID, categoryID, filters, questName = LFGListUtil_GetQuestCategoryData(questID)
 	if activityID then
 		LFGListEntryCreation_Select(LFGListFrame.EntryCreation, filters, categoryID, nil, activityID)
 	end
-
-	local edit = LFGListFrame.EntryCreation.Name
-	local button = QuestCreationBox.ListGroup
-	local check = LFGListFrame.ApplicationViewer.AutoAcceptButton
 	
 	if not defPoints then
 		defPoints = {
@@ -6469,14 +6485,18 @@ function WQL_LFG_StartQuest(questID)
 			edit.Instructions:SetText(LFG_LIST_ENTER_NAME)
 
 			PVEFrame_ToggleFrame()
-			QuestCreationBox:Hide()						
+			QuestCreationBox:Hide()		
+
+			if LFGListFrame:IsVisible() then
+				PVEFrame_ToggleFrame()
+			end				
 		end)
 		edit:HookScript("OnEnterPressed",function()
 			if not QuestCreationBox:IsShown() then
 				return
 			end
 			
-			button:Click()		
+			button:Click()
 		end)
 	end
 	
@@ -6488,6 +6508,18 @@ function WQL_LFG_StartQuest(questID)
 	edit:ClearAllPoints()
 	edit:SetPoint("TOP",QuestCreationBox,"TOP",0,-50)
 	edit.Instructions:SetText(questID)
+	if IsPlayerMoving() then
+		edit:ClearFocus()
+	end
+
+	local apps = C_LFGList.GetApplications()
+	for i=1, #apps do
+		C_LFGList.CancelApplication(apps[i])
+	end
+
+	if autoCreate then
+		button:Click()
+	end
 end
 WorldQuestList.LFG_StartQuest = WQL_LFG_StartQuest
 
@@ -6598,7 +6630,24 @@ function WQL_LFG_Search(questID)
 	local panel = LFGListFrame.CategorySelection
 	LFGListFrame_SetActivePanel(LFGListFrame, panel)
 	LFGListCategorySelection_SelectCategory(panel, 1, 0)
-	LFGListCategorySelection_StartFindGroup(panel)
+
+	local autoSearch = nil
+	if tostring(questID) == edit:GetText() then
+		--copy of LFGListCategorySelection_StartFindGroup
+		local baseFilters = panel:GetParent().baseFilters
+	
+		local searchPanel = panel:GetParent().SearchPanel
+		C_LFGList.ClearSearchResults()
+		searchPanel.selectedResult = nil
+		LFGListSearchPanel_UpdateResultList(searchPanel)
+		LFGListSearchPanel_UpdateResults(searchPanel)
+		LFGListSearchPanel_SetCategory(searchPanel, panel.selectedCategory, panel.selectedFilters, baseFilters)
+		LFGListSearchPanel_DoSearch(searchPanel)
+		LFGListFrame_SetActivePanel(panel:GetParent(), searchPanel)
+		autoSearch = true
+	else
+		LFGListCategorySelection_StartFindGroup(panel)
+	end
 
 	QuestCreationBox:Show()
 	QuestCreationBox:SetSize(350,120)
@@ -6640,6 +6689,10 @@ function WQL_LFG_Search(questID)
 			edit.Instructions:SetText(questID..", "..questName)
 		end
 	end	
+
+	if autoSearch then
+		button:Click()
+	end
 	
 end
 WorldQuestList.LFG_Search = WQL_LFG_Search
@@ -6660,7 +6713,7 @@ LFGListFrame.SearchPanel:HookScript("OnShow",function()
 end)
 
 local function IsTeoreticalWQ(name)
-	if name:find("k00000|") then
+	if name and name:find("k00000|") then
 		return true
 	end
 end
@@ -6819,6 +6872,8 @@ QuestCreationBox:RegisterEvent("PARTY_INVITE_REQUEST")
 QuestCreationBox:RegisterEvent("QUEST_TURNED_IN")
 QuestCreationBox:RegisterEvent("QUEST_ACCEPTED")
 QuestCreationBox:RegisterEvent("QUEST_REMOVED")
+QuestCreationBox:RegisterEvent("PARTY_LEADER_CHANGED")
+QuestCreationBox:RegisterEvent("GROUP_ROSTER_UPDATE")
 QuestCreationBox:SetScript("OnEvent",function (self,event,arg1,arg2)
 	if event == "LFG_LIST_SEARCH_RESULTS_RECEIVED" then
 		if LFGListFrameSearchPanelStartGroup:IsShown() then
@@ -6860,7 +6915,7 @@ QuestCreationBox:SetScript("OnEvent",function (self,event,arg1,arg2)
 			StaticPopup_Hide("LFG_LIST_AUTO_ACCEPT_CONVERT_TO_RAID")
 			
 			if not autoAccept and
-				(IsInRaid() or (  GetNumGroupMembers(LE_PARTY_CATEGORY_HOME) + C_LFGList.GetNumInvitedApplicantMembers() + C_LFGList.GetNumPendingApplicantMembers() <= (MAX_PARTY_MEMBERS+1)  ))
+				(  GetNumGroupMembers(LE_PARTY_CATEGORY_HOME) + C_LFGList.GetNumInvitedApplicantMembers() + C_LFGList.GetNumPendingApplicantMembers() <= 5  )
 			then
 				local applicants = C_LFGList.GetApplicants()
 				for _,applicantID in pairs(applicants) do
@@ -6876,6 +6931,11 @@ QuestCreationBox:SetScript("OnEvent",function (self,event,arg1,arg2)
 				end
 			end
 		end	
+	elseif event == "PARTY_LEADER_CHANGED" then
+		if not VWQL or VWQL.DisableLFG or not UnitIsGroupLeader("player", LE_PARTY_CATEGORY_HOME) or not C_LFGList.GetActiveEntryInfo() then
+			return
+		end
+		self:GetScript("OnEvent")(self,"LFG_LIST_APPLICANT_LIST_UPDATED")
 	elseif event == "PARTY_INVITE_REQUEST" then
 		local name = arg1
 		if name then
@@ -6959,6 +7019,10 @@ QuestCreationBox:SetScript("OnEvent",function (self,event,arg1,arg2)
 		if QuestCreationBox:IsVisible() and QuestCreationBox.type == 3 and QuestCreationBox.questID == arg1 then
 			QuestCreationBox:Hide()
 		end
+	elseif event == "GROUP_ROSTER_UPDATE" then
+		if GetNumGroupMembers() == 0 and QuestCreationBox:IsVisible() and QuestCreationBox.type == 2 and not C_LFGList.GetActiveEntryInfo() then
+			QuestCreationBox:Hide()
+		end
 	end
 end)
 
@@ -6991,8 +7055,17 @@ end)
 
 local objectiveTrackerButtons = {}
 WorldQuestList.LFG_objectiveTrackerButtons = objectiveTrackerButtons
+local objectiveTrackerMainFrame = CreateFrame("Frame",nil,UIParent)
+objectiveTrackerMainFrame:SetPoint("TOPRIGHT")
+objectiveTrackerMainFrame:SetSize(1,1)
 
 local function objectiveTrackerButtons_OnClick(self,button)
+	if C_LFGList.GetActiveEntryInfo() and tostring(self.questID) == LFGListFrame.EntryCreation.Name:GetText() then
+		return
+	elseif tostring(self.questID) == LFGListFrame.EntryCreation.Name:GetText() then
+		WorldQuestList.LFG_StartQuest(self.questID)
+		return
+	end
 	if C_LFGList.GetActiveEntryInfo() or ((GetNumGroupMembers() or 0) > 1 and not UnitIsGroupLeader("player")) then
 		StaticPopupDialogs["WQL_LFG_LEAVE"] = {
 			text = PARTY_LEAVE,
@@ -7027,6 +7100,11 @@ end
 local function objectiveTrackerButtons_OnLeave(self)
 	GameTooltip_Hide()
 end
+local function objectiveTrackerButtons_OnUpdate(self)
+	if not self.parent:IsVisible() then
+		self:Hide()
+	end
+end
 
 local function ObjectiveTracker_Update_hook(reason, questID)
 	for _,b in pairs(objectiveTrackerButtons) do
@@ -7041,6 +7119,7 @@ local function ObjectiveTracker_Update_hook(reason, questID)
 		if not ObjectiveTrackerFrame or not ObjectiveTrackerFrame.MODULES then
 			return
 		end
+		local createdID = LFGListFrame.EntryCreation.Name:GetText()
 		for _,module in pairs(ObjectiveTrackerFrame.MODULES) do
 			if module.usedBlocks then
 				for _,block in pairs(module.usedBlocks) do
@@ -7048,15 +7127,16 @@ local function ObjectiveTracker_Update_hook(reason, questID)
 					if questID and QuestUtils_IsQuestWorldQuest(questID) and not block.hasGroupFinderButton and not WorldQuestList:IsQuestDisabledForLFG(questID) then
 						local b = objectiveTrackerButtons[block]
 						if not b then
-							b = CreateFrame("Button",nil,block)
+							b = CreateFrame("Button",nil,objectiveTrackerMainFrame)
 							objectiveTrackerButtons[block] = b
+							b.parent = block
 							b:SetSize(26,26)
 							b:SetPoint("TOPLEFT",block,"TOPRIGHT",-18,0)
 							b:SetScript("OnClick",objectiveTrackerButtons_OnClick)
 							b:SetScript("OnEnter",objectiveTrackerButtons_OnEnter)
-							b:SetScript("OnLeave",objectiveTrackerButtons_OnLeave)							
+							b:SetScript("OnLeave",objectiveTrackerButtons_OnLeave)
+							b:SetScript("OnUpdate",objectiveTrackerButtons_OnUpdate)
 							b:RegisterForClicks("LeftButtonDown","RightButtonUp")
-							b.parent = block
 							
 							b.HighlightTexture = b:CreateTexture()
 							b.HighlightTexture:SetTexture("Interface\\Buttons\\UI-Common-MouseHilight")
@@ -7068,6 +7148,10 @@ local function ObjectiveTracker_Update_hook(reason, questID)
 							b.texture:SetPoint("CENTER")
 							b.texture:SetSize(26,26)
 							b.texture:SetAtlas("hud-microbutton-LFG-Up")
+
+							b.texture2 = b:CreateTexture(nil, "ARTWORK")
+							b.texture2:SetPoint("CENTER")
+							b.texture2:SetSize(14,14)
 						end
 						if block.itemButton and block.itemButton:IsVisible() and not b.icon_pos then
 							b:SetPoint("TOPLEFT",block,"TOPRIGHT",-44,0)
@@ -7076,8 +7160,26 @@ local function ObjectiveTracker_Update_hook(reason, questID)
 							b:SetPoint("TOPLEFT",block,"TOPRIGHT",-18,0)
 							b.icon_pos = false
 						end
+						b:SetFrameStrata(block:GetFrameStrata())
+						b:SetFrameLevel(block:GetFrameLevel()+1)
 						b.questID = questID
 						b:Show()
+						if createdID == tostring(questID) then
+							if C_LFGList.GetActiveEntryInfo() or (GetNumGroupMembers() >= 5) then
+								b:Hide()
+							end
+							if not b.texture.refresh then
+								b.texture:SetTexture("Interface\\Buttons\\UI-SquareButton-Up")
+								b.texture2:SetTexture("Interface\\Buttons\\UI-RefreshButton")
+								b.texture.refresh = true
+							end
+						else
+							if b.texture.refresh then
+								b.texture:SetAtlas("hud-microbutton-LFG-Up")
+								b.texture2:SetTexture()
+								b.texture.refresh = nil
+							end
+						end
 					end
 				end
 			end
@@ -7089,8 +7191,6 @@ WorldQuestList.ObjectiveTracker_Update_hook = ObjectiveTracker_Update_hook
 C_Timer.NewTicker(1,function()
 	WorldQuestList.ObjectiveTracker_Update_hook(2)
 end)
---hooksecurefunc("ObjectiveTracker_Update", ObjectiveTracker_Update_hook)
---C_Timer.After(5,function() ObjectiveTracker_Update_hook(2) end)
 
 
 --Add Map Icons

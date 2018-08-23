@@ -514,7 +514,11 @@ function addon:OnEnable() -- Construct addon option tables here
 				{ "loot_alpha", "alpha" },
 				{ "loot_icon_size", "range", 16, 64, 1, name = L.icon_size },
 				{ "loot_row_height", "range", 14, 64, 1 },
-				--{ "loot_slot_padding", "range", }
+				{ "loot_padding", "header", name = L.padding },
+				{ "loot_padding_top", "range", 0, 25, 1, name = L.top },
+				{ "loot_padding_left", "range", 0, 25, 1, name = L.left  },
+				{ "loot_padding_right", "range", 0, 25, 1, name = L.right },
+				{ "loot_padding_bottom", "range", 0, 25, 1, name = L.bottom },
 			}},
 			{ "link_button", "group", {
 				{ "linkall_show", "select", when_group },

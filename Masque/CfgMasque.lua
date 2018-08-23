@@ -106,7 +106,7 @@ U1RegisterAddon("Masque", {
 
     tags = { TAG_INTERFACE, },
     icon = [[Interface\Addons\Masque\Textures\Icon]],
-    desc = "为动作条按钮提供样式切换，拥有众多的皮肤类扩展，是此类美化插件的第一选择。`有爱在原版的基础上整合了玩家增益美化，并精选了几种有代表性的皮肤样式，可以用控制台轻松选择。当然，您也可以下载任意皮肤包放到插件目录里，有爱对此提供良好的兼容。",
+    desc = "为动作条按钮提供样式切换，拥有众多的皮肤类扩展，是此类美化插件的第一选择。`爱不易在原版的基础上整合了玩家增益美化，并精选了几种有代表性的皮肤样式，可以用控制台轻松选择。当然，您也可以下载任意皮肤包放到插件目录里，爱不易对此提供良好的兼容。",
 
     toggle = function(name, info, enable, justload)
         local Masque = LibStub("AceAddon-3.0"):GetAddon("Masque").Core

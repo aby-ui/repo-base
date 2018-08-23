@@ -41,7 +41,7 @@
 --  Globals/Default Options  --
 -------------------------------
 DBM = {
-	Revision = tonumber(("$Revision: 17722 $"):sub(12, -3)),
+	Revision = tonumber(("$Revision: 17725 $"):sub(12, -3)),
 	DisplayVersion = "8.0.5 alpha", -- the string that is shown as version
 	ReleaseRevision = 17719 -- the revision of the latest stable version that is available
 }
@@ -7402,10 +7402,14 @@ function bossModPrototype:IsTrivial(level)
 	return false
 end
 
-function bossModPrototype:IsValidWarning(sourceGUID)
-	for uId in DBM:GetGroupMembers() do
-		local target = uId.."target"
-		if UnitExists(target) and UnitGUID(target) == sourceGUID and UnitAffectingCombat(target) then return true end
+function bossModPrototype:IsValidWarning(sourceGUID, customunitID)
+	if customunitID then
+		if UnitExists(customunitID) and UnitGUID(customunitID) == sourceGUID and UnitAffectingCombat(customunitID) then return true end
+	else
+		for uId in DBM:GetGroupMembers() do
+			local target = uId.."target"
+			if UnitExists(target) and UnitGUID(target) == sourceGUID and UnitAffectingCombat(target) then return true end
+		end
 	end
 	return false
 end
