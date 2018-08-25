@@ -1,0 +1,8 @@
+## Interface: 80000
+## Notes: 显示副本boss的简易攻略。
+
+AbyBossGuide.lua
+
+## Title-zhCN: |cff880303[爱不易]|r Aby副本攻略
+## X-Vendor: AbyUI
+

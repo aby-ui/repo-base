@@ -28,7 +28,7 @@ function EP_FindFaction(faction)
         local name, description, standingID, barMin, barMax, barValue,_,_,_,_,_,_,_,factionID = GetFactionInfo(i)
         if name == faction then
             local oldName,_,_,_,_ = GetWatchedFactionInfo();
-            if not isGuild and oldName ~= name and U1GetCfgValue(addonName, 'ExaltedPlus/autotrace') then SetWatchedFactionIndex(i) end
+            if UnitLevel("player") == MAX_PLAYER_LEVEL and not isGuild and oldName ~= name and U1GetCfgValue(addonName, 'ExaltedPlus/autotrace') then SetWatchedFactionIndex(i) end
             return standingID, barValue - barMin, factionID
         end
     end

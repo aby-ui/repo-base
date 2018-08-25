@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("WaycrestTrash", "DBM-Party-BfA", 10)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17722 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 17732 $"):sub(12, -3))
 --mod:SetModelID(47785)
 mod:SetZone()
 
@@ -22,7 +22,7 @@ local specWarnDinnerBell			= mod:NewSpecialWarningInterrupt(265407, "HasInterrup
 local specWarnDecayingTouch			= mod:NewSpecialWarningSpell(265881, "Tank", nil, nil, 1, 2)
 local specWarnSplinterSpike			= mod:NewSpecialWarningDodge(265759, nil, nil, nil, 2, 2)
 local specWarnUproot				= mod:NewSpecialWarningDodge(264038, nil, nil, nil, 2, 2)
-local specWarnMarkingCleave			= mod:NewSpecialWarningDodge(263905, nil, nil, nil, 2, 2)
+local specWarnMarkingCleave			= mod:NewSpecialWarningDodge(263905, "Tank", nil, 2, 1, 2)
 local specWarnWardingCandle			= mod:NewSpecialWarningMove(263961, "Tank", nil, nil, 1, 2)
 local specWarnDreadMark				= mod:NewSpecialWarningMoveAway(265880, nil, nil, nil, 1, 2)
 local yellDreadMark					= mod:NewYell(265880)

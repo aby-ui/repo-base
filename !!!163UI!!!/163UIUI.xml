@@ -11,4 +11,20 @@
     <Texture name="U1T_ScrollMid" virtual="true" vertTile="true" file="Interface\AddOns\!!!163UI!!!\Textures\UI2-scroll-track"/>
     <Texture name="U1T_BottomMid" virtual="true" horizTile="true" file="Interface\AddOns\!!!163UI!!!\Textures\UI2-bg-bottom-mid"/>
     <Texture name="U1T_ChainMid" virtual="true" vertTile="true" file="Interface\AddOns\!!!163UI!!!\Textures\UI2-chain-mid"/>
+
+    <Frame name="U1CallOut" hidden="true">
+        <Backdrop edgeFile="Interface\TutorialFrame\UI-TutorialFrame-CalloutGlow" alphaMode="ADD">
+            <EdgeSize>
+                <AbsValue val="16"/>
+            </EdgeSize>
+        </Backdrop>
+        <Scripts>
+            <OnShow>
+                UICoreFrameFlash(self, .8, .8, -1, nil, 0.5, 0, "U1CallOut")
+            </OnShow>
+            <OnHide>
+                UICoreFrameFlashStop(self)
+            </OnHide>
+        </Scripts>
+    </Frame>
 </Ui>

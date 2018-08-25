@@ -76,7 +76,7 @@ U1RegisterAddon("163UI_Plugins", {
         {
             var = "autotrace",
             default = true,
-            text = "自动追踪刚提升的声望"
+            text = "满级后自动追踪刚提升的声望"
         }
     },
 

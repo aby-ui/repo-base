@@ -28,14 +28,24 @@ end
 
 -----------
 
--- Register Default Settings
-AzeriteTooltip:RegisterDefaultSetting("OnlySpec", false)
-AzeriteTooltip:RegisterDefaultSetting("Compact", false)
+local frame = CreateFrame("Frame")
 
 -- Option Frame
 local Options = CreateFrame("Frame", "AzeriteTooltipOptions", InterfaceOptionsFramePanelContainer)
 Options.name = GetAddOnMetadata(addon, "Title")
 InterfaceOptions_AddCategory(Options)
+Options:RegisterEvent("ADDON_LOADED")
+Options:SetScript("OnEvent", function(self, event, ...)
+	if ( event == "ADDON_LOADED" ) then
+        local name = ...
+        if ( name == "AzeriteTooltip" ) then
+            -- Register Default Settings
+			AzeriteTooltip:RegisterDefaultSetting("OnlySpec", false)
+			AzeriteTooltip:RegisterDefaultSetting("Compact", false)
+			Options:UnregisterEvent("ADDON_LOADED")
+        end
+    end
+end)
 
 Options:Hide()
 Options:SetScript("OnShow", function()
@@ -71,7 +81,7 @@ SLASH_AZERITETOOLTIP1 = "/azeritetooltip"
 SlashCmdList["AZERITETOOLTIP"] = function()
     InterfaceOptionsFrame_OpenToCategory(Options)
     InterfaceOptionsFrame_OpenToCategory(Options)
-end
+end 
 
 --------------
 -- FUNCTION --
@@ -97,7 +107,7 @@ end
 
 local currentLevel = 0
 
-function AzeriteTooltip_BuildTooltip(itemLink, tooltip, name)
+function AzeriteTooltip_BuildTooltip(itemLink, tooltip, name)	
 	-- Current Azerite Level
 	local azeriteItemLocation = C_AzeriteItem.FindActiveAzeriteItem()
 	if azeriteItemLocation then
@@ -122,41 +132,22 @@ function AzeriteTooltip_BuildTooltip(itemLink, tooltip, name)
 			for i, _ in pairs(allTierInfo[j]["azeritePowerIDs"]) do
 				local azeritePowerID = allTierInfo[j]["azeritePowerIDs"][i]
 				local azeriteSpellID = AzeriteTooltip_GetSpellID(azeritePowerID)
-
-				local azeritePowerName, _, icon = GetSpellInfo(azeriteSpellID)
-
-				if IsEquippedItem(name) then
-					if tierLevel <= currentLevel then
-						if AzeriteTooltip_ScanSelectedTraits(azeritePowerName) then
-							local azeriteIcon = '|T'..icon..':20:20:0:0:64:64:4:60:4:60:255:255:255|t'
-							azeriteTooltipText = azeriteTooltipText.."  "..azeriteIcon
-						elseif C_AzeriteEmpoweredItem.IsPowerAvailableForSpec(azeritePowerID, specID) then
-							local azeriteIcon = '|T'..icon..':20:20:0:0:64:64:4:60:4:60:127:127:127|t'
-							azeriteTooltipText = azeriteTooltipText.."  "..azeriteIcon
-						elseif not AzeriteTooltipDB.OnlySpec then
-							local azeriteIcon = '|T'..icon..':20:20:0:0:64:64:4:60:4:60:127:127:127|t'
-							azeriteTooltipText = azeriteTooltipText.."  "..azeriteIcon
-						end
-					else
+					
+				local azeritePowerName, _, icon = GetSpellInfo(azeriteSpellID)		
+				if tierLevel <= currentLevel then
+					if AzeriteTooltip_ScanSelectedTraits(azeritePowerName) then
+						local azeriteIcon = '|T'..icon..':20:20:0:0:64:64:4:60:4:60:255:255:255|t'
+						azeriteTooltipText = azeriteTooltipText.."  "..azeriteIcon
+					elseif C_AzeriteEmpoweredItem.IsPowerAvailableForSpec(azeritePowerID, specID) then
+						local azeriteIcon = '|T'..icon..':20:20:0:0:64:64:4:60:4:60:255:255:255|t'
+						azeriteTooltipText = azeriteTooltipText.."  "..azeriteIcon
+					elseif not AzeriteTooltipDB.OnlySpec then
 						local azeriteIcon = '|T'..icon..':20:20:0:0:64:64:4:60:4:60:127:127:127|t'
 						azeriteTooltipText = azeriteTooltipText.."  "..azeriteIcon
 					end
 				else
-					if tierLevel <= currentLevel then
-						if AzeriteTooltip_ScanSelectedTraits(azeritePowerName) then
-							local azeriteIcon = '|T'..icon..':20:20:0:0:64:64:4:60:4:60:255:255:255|t'
-							azeriteTooltipText = azeriteTooltipText.."  "..azeriteIcon
-						elseif C_AzeriteEmpoweredItem.IsPowerAvailableForSpec(azeritePowerID, specID) then
-							local azeriteIcon = '|T'..icon..':20:20:0:0:64:64:4:60:4:60:255:255:255|t'
-							azeriteTooltipText = azeriteTooltipText.."  "..azeriteIcon
-						elseif not AzeriteTooltipDB.OnlySpec then
-							local azeriteIcon = '|T'..icon..':20:20:0:0:64:64:4:60:4:60:127:127:127|t'
-							azeriteTooltipText = azeriteTooltipText.."  "..azeriteIcon
-						end
-					else
-						local azeriteIcon = '|T'..icon..':20:20:0:0:64:64:4:60:4:60:127:127:127|t'
-						azeriteTooltipText = azeriteTooltipText.."  "..azeriteIcon
-					end
+					local azeriteIcon = '|T'..icon..':20:20:0:0:64:64:4:60:4:60:127:127:127|t'
+					azeriteTooltipText = azeriteTooltipText.."  "..azeriteIcon
 				end
 			end
 

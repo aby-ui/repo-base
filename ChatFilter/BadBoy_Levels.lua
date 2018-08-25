@@ -143,7 +143,7 @@ badboy:SetScript("OnEvent", function(_, evt, msg)
 						print("|cFF33FF99BadBoy_Levels|r: Level wasn't a number, tell BadBoy author! It was:", level)
 						error("|cFF33FF99BadBoy_Levels|r: Level wasn't a number, tell BadBoy author! It was: ".. tostring(level))
 					end
-					if level < filterTable[player] or (U1GetCfgValue("ChatFilter", "FilterByLevel/just100") and level == 100) then
+					if level < filterTable[player] or (U1GetCfgValue("ChatFilter", "FilterByLevel/just100") and (level == 100 or level == 110)) then
 						--lower than level 2, or a level defined by the user = bad,
 						--or lower than 58 and class is a Death Knight,
 						--so whisper the bad player what level they must be to whisper us

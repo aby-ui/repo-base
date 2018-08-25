@@ -1,0 +1,11 @@
+## Interface: 80000
+## Title: Pa'ku Totems
+## Author: jaxdahl
+## Version: 1.32
+## Notes: Show Pa'ku totem positions on the map and destinations in the tooltip on mouseover.
+
+Paku_Totems.lua
+
+## Title: |cff880303[爱不易]|r Paku 帕库图腾标记
+## Notes-zhCN: 选择帕库神灵后，在达萨罗地图上标记处可以用于传送的图腾，鼠标指向后可以显示目的地。
+## X-Vendor: AbyUI

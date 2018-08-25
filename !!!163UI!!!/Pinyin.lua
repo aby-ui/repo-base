@@ -248,4 +248,7 @@ U1.PINYIN={
     ['战斗计时']={'zhandoujishi','zdjs'},
     ['爱不易装备搜索']={'aibuyizhuangbeisousuo','abyzbss'},
     ['装等显示']={'zhuangdengxianshi','zdxs'},
+    ['装备特质显示']={'zhuangbeitezhixianshi','zbtzxs'},
+    ['帕库图腾标记']={'pakututengbiaoji','pkttbj'},
+    ['SUF头像增强']={'suftouxiangzengqiang','suftxzq'},
 }

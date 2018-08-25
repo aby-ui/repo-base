@@ -2,7 +2,7 @@ U1RegisterAddon("AzeriteTooltip", {
     title = "装备特质显示",
     defaultEnable = 1,
     load = "LATER",
-    tags = {TAG_ITEM, },
+    tags = {TAG_ITEM, TAG_GOOD},
     icon = 1869493,
     {
         text = "配置选项",

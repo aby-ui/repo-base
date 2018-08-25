@@ -118,6 +118,9 @@
     <Include file="..\..\wMarker\CfgwMarker.lua"/>
     <Include file="..\..\!KalielsTracker\Cfg!KalielsTracker.lua"/>
     <Include file="..\..\AzeriteTooltip\CfgAzeriteTooltip.lua"/>
+    <Include file="..\..\AbyBossGuide\CfgAbyBossGuide.lua"/>
+    <Include file="..\..\Paku_Totems\CfgPaku_Totems.lua"/>
+    <Include file="..\..\ShadowedUnitFrames\CfgShadowedUnitFrames.lua"/>
 
     <!-- local
     <Include file="..\..\AtlasLoot\CfgAtlasLoot.lua"/>

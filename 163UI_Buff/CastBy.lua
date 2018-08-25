@@ -97,7 +97,7 @@ UpdateMountsData()
 local function hookMountBuffInfo(self, unit, index, filter)
     if InCombatLockdown() then return end
     if not UnitIsPlayer(unit) and not UnitPlayerControlled(unit) then return end
-    if UnitIsUnit(unit, "player") then return end
+    -- if UnitIsUnit(unit, "player") then return end
     local name, texture, count, debuffType, duration, expirationTime, _, _, _, spellId, _, _, _, _, timeMod = UnitAura(unit, index, filter);
     local mountID = mountsData[spellId]
     if (mountID) then

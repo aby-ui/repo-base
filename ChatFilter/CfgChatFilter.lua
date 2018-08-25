@@ -44,10 +44,10 @@
             ChatFilterConfig.FilterByLevel = false  --屏蔽ChatFilter的小号功能
         end,
 
-        { text = "屏蔽100级整的玩家", tip = "说明`暴雪开了100级试玩, 但是居然能发密语, 似乎还没被利用, 但是你懂的", var = "just100", default = false, },
-        { text = "允许的最低等级", var = "level", type = "spin", range = {1, 110, 1}, default = 5, },
-        { text = "死亡骑士允许等级", var = "level_dk", type = "spin", range = {55, 110, 1}, default = 57, },
-        { text = "恶魔猎手允许等级", var = "level_dh", type = "spin", range = {55, 110, 1}, default = 99, }
+        { text = "屏蔽110级整的玩家", tip = "说明`暴雪开了110级试玩, 但是居然能发密语, 似乎还没被利用, 但是你懂的", var = "just100", default = false, },
+        { text = "允许的最低等级", var = "level", type = "spin", range = {1, 120, 1}, default = 5, },
+        { text = "死亡骑士允许等级", var = "level_dk", type = "spin", range = {55, 120, 1}, default = 57, },
+        { text = "恶魔猎手允许等级", var = "level_dh", type = "spin", range = {55, 120, 1}, default = 99, }
     },
 
     {

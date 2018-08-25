@@ -161,9 +161,11 @@ local function BuildHubPanel(panel)
 	--panel.WidgetsAuraMode =  CreateQuickDropdown(objectName.."WidgetsAuraMode", "Filter Mode:", AuraWidgetModes, 1, AlignmentColumn, panel.WidgetsDebuffStyle, 16)		-- used to be WidgetsDebuffMode
 
 	panel.WidgetsMyDebuff = CreateQuickCheckbutton(objectName.."WidgetsMyDebuff", "包括我的Debuffs", AlignmentColumn, panel.WidgetsDebuff, 16)
-	panel.WidgetsMyBuff = CreateQuickCheckbutton(objectName.."WidgetsMyBuff", "包括我的Buffs", AlignmentColumn, panel.WidgetsMyDebuff, 16)
+	-- panel.WidgetsMyBuff = CreateQuickCheckbutton(objectName.."WidgetsMyBuff", "包括我的Buffs", AlignmentColumn, panel.WidgetsMyDebuff, 16)
+    panel.WidgetsHostileBuff = CreateQuickCheckbutton(objectName.."WidgetsHostileBuff", "包括敌方的Buffs", AlignmentColumn, panel.WidgetsMyDebuff, 16)
+    panel.WidgetsHostileBuffStealableOnly = CreateQuickCheckbutton(objectName.."WidgetsHostileBuffStealableOnly", "仅包括可进攻驱散或可偷取的", AlignmentColumn, panel.WidgetsHostileBuff, 32)
 
-	panel.WidgetsDebuffListLabel = CreateQuickItemLabel(nil, "额外的光环:", AlignmentColumn, panel.WidgetsMyBuff, 16)
+	panel.WidgetsDebuffListLabel = CreateQuickItemLabel(nil, "额外的光环:", AlignmentColumn, panel.WidgetsHostileBuffStealableOnly, 16)
 	panel.WidgetsDebuffTrackList = CreateQuickEditbox(objectName.."WidgetsDebuffTrackList", AlignmentColumn, panel.WidgetsDebuffListLabel, 16)
 
 	panel.WidgetsDebuffStyle =  CreateQuickDropdown(objectName.."WidgetsDebuffStyle", "图标样式:", DebuffStyles, 1, AlignmentColumn, panel.WidgetsDebuffTrackList, 16)
