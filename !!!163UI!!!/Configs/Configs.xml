@@ -38,6 +38,7 @@
     <Include file="..\..\DBM_Mods_MoP\CfgDBM_Mods_MoP.lua"/>
     <Include file="..\..\DBM_Mods_WoD\CfgDBM_Mods_WoD.lua"/>
     <Include file="..\..\DBM_Mods_WotLK\CfgDBM_Mods_WotLK.lua"/>
+    <Include file="..\..\DBM_Mods_Legion\CfgDBM_Mods_Legion.lua"/>
     <Include file="..\..\DeathAnnounce\CfgDeathAnnounce.lua"/>
     <Include file="..\..\Decursive\CfgDecursive.lua"/>
     <Include file="..\..\DejaCharacterStats\CfgDejaCharacterStats.lua"/>
@@ -45,7 +46,6 @@
     <Include file="..\..\Dresser\CfgDresser.lua"/>
     <Include file="..\..\DuowanChat\CfgDuowanChat.lua"/>
     <Include file="..\..\EN_UnitFrames\CfgEN_UnitFrames.lua"/>
-    <Include file="..\..\Easy_Obliterate\CfgEasy_Obliterate.lua"/>
     <Include file="..\..\Ellipsis\CfgEllipsis.lua"/>
     <Include file="..\..\ErrorFilter\CfgErrorFilter.lua"/>
     <Include file="..\..\EventAlertMod\CfgEventAlertMod.lua"/>
@@ -70,7 +70,6 @@
     <Include file="..\..\HandyNotes\CfgHandyNotes.lua"/>
     <Include file="..\..\Kib_QuestMobs\CfgKib_QuestMobs.lua"/>
     <Include file="..\..\LiteBuff\CfgLiteBuff.lua"/>
-    <Include file="..\..\LucidNightmareHelper\CfgLucidNightmareHelper.lua"/>
     <Include file="..\..\Mapster\CfgMapster.lua"/>
     <Include file="..\..\Masque\CfgMasque.lua"/>
     <Include file="..\..\MasterPlan\CfgMasterPlan.lua"/>
@@ -78,7 +77,6 @@
     <Include file="..\..\MerchantEx\CfgMerchantEx.lua"/>
     <Include file="..\..\MySlot\CfgMySlot.lua"/>
     <Include file="..\..\NPCScan\CfgNPCScan.lua"/>
-    <Include file="..\..\NomiCakes\CfgNomiCakes.lua"/>
     <Include file="..\..\OmniBar\CfgOmniBar.lua"/>
     <Include file="..\..\OmniCC\CfgOmniCC.lua"/>
     <Include file="..\..\Parrot\CfgParrot.lua"/>
@@ -86,17 +84,13 @@
     <Include file="..\..\QuakeAssist\CfgQuakeAssist.lua"/>
     <Include file="..\..\Quartz\CfgQuartz.lua"/>
     <Include file="..\..\QuestAnnounce\CfgQuestAnnounce.lua"/>
-    <Include file="..\..\RaidAchievement\CfgRaidAchievement.lua"/>
-    <Include file="..\..\RaidAlerter\CfgRaidAlerter.lua"/>
     <Include file="..\..\RangeDisplay\CfgRangeDisplay.lua"/>
     <Include file="..\..\Recount\CfgRecount.lua"/>
-    <Include file="..\..\RelicInspector\CfgRelicInspector.lua"/>
     <Include file="..\..\Rematch\CfgRematch.lua"/>
     <Include file="..\..\SavedInstances\CfgSavedInstances.lua"/>
     <Include file="..\..\SimpleRaidTargetIcons\CfgSimpleRaidTargetIcons.lua"/>
     <Include file="..\..\Skada\CfgSkada.lua"/>
     <Include file="..\..\SwingBar\CfgSwingBar.lua"/>
-    <Include file="..\..\TOTxp\CfgTOTxp.lua"/>
     <Include file="..\..\TargetButton\CfgTargetButton.lua"/>
     <Include file="..\..\TargetNameplateIndicator\CfgTargetNameplateIndicator.lua"/>
     <Include file="..\..\TellMeWhen\CfgTellMeWhen.lua"/>
@@ -123,26 +117,12 @@
     <Include file="..\..\vBar\CfgvBar.lua"/>
     <Include file="..\..\wMarker\CfgwMarker.lua"/>
     <Include file="..\..\!KalielsTracker\Cfg!KalielsTracker.lua"/>
+    <Include file="..\..\AzeriteTooltip\CfgAzeriteTooltip.lua"/>
+
+    <!-- local
     <Include file="..\..\AtlasLoot\CfgAtlasLoot.lua"/>
+    <Include file="..\..\RaidAchievement\CfgRaidAchievement.lua"/>
 
-    <!-- removed
-    <Include file="..\..\BetterPowerBarAlt\CfgBetterPowerBarAlt.lua"/>
-    <Include file="..\..\ExtraCD\CfgExtraCD.lua"/>
-    <Include file="..\..\GemPlus\CfgGemPlus.lua"/>
-    <Include file="..\..\Huanhua\CfgHuanhua.lua"/>
-    <Include file="..\..\LearningAid\CfgLearningAid.lua"/>
-    <Include file="..\..\SmartFollowerManager\CfgSmartFollowerManager.lua"/>
-    <Include file="..\..\ItemLevelDisplay\CfgItemLevelDisplay.lua"/>
-    <Include file="..\..\EquippedItemLevelTooltip\CfgEquippedItemLevelTooltip.lua"/>
-
-    <Include file="..\..\Archy\CfgArchy.lua"/>
-    <Include file="..\..\Collector\CfgCollector.lua"/>
-    <Include file="..\..\NPCMark\CfgNPCMark.lua"/>
-    <Include file="..\..\ArtifactPowerUser\CfgArtifactPowerUser.lua"/>
-    <Include file="..\..\Q-genius\CfgQ-genius.lua"/>
-    <Include file="..\..\WhistleMaster\CfgWhistleMaster.lua"/>
-    <Include file="..\..\Aph\CfgAph.lua"/>
-    <Include file="..\..\LegiondarySwitch\CfgLegiondarySwitch.lua"/>
     -->
 
     <Include file="Custom.xml"/>

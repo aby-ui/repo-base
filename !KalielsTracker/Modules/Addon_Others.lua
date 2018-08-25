@@ -173,6 +173,22 @@ local function Chinchilla_SetCompatibility()
     end
 end
 
+-- Dugi Questing Essential
+local function DQE_SetCompatibility()
+    if IsAddOnLoaded("DugisGuideViewerZ") then
+        function DugisGuideViewer:IncompatibleAddonLoaded()   -- R
+            return true
+        end
+        DugisGuideViewer.Modules.DugisWatchFrame = nil
+        function DugisGuideViewer.LargeFrameBorderDropdown_OnClick(button)  -- R
+            LibDugi_UIDropDownMenu_SetSelectedID(DGV_LargeFrameBorderDropdown, button:GetID() )
+            DugisGuideViewer:SetDB(button.value, DGV_LARGEFRAMEBORDER)
+            DugisGuideViewer:SetAllBorders( )
+            if DugisGuideViewer.NPCJournalFrame and DugisGuideViewer.NPCJournalFrame.UpdateBorders then DugisGuideViewer.NPCJournalFrame:UpdateBorders() end
+        end
+    end
+end
+
 --------------
 -- External --
 --------------
@@ -193,6 +209,7 @@ function M:OnEnable()
     SpartanUI_SetSupport()
     SVUI_SetSupport()
     Chinchilla_SetCompatibility()
+    DQE_SetCompatibility()
 end
 
 -- Masque

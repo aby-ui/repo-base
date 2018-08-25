@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2195, "DBM-Uldir", nil, 1031)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17670 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 17729 $"):sub(12, -3))
 mod:SetCreatureID(138967)
 mod:SetEncounterID(2145)
 mod:DisableESCombatDetection()--ES fires moment you throw out CC, so it can't be trusted for combatstart
@@ -451,7 +451,10 @@ do
 			for uId in DBM:GetGroupMembers() do
 				if UnitGUID(uId.."target") == self.vb.activeDecay then
 					self.vb.activeDecay = nil
-					SetRaidTarget(uId.."target", 8)
+					local icon = GetRaidTargetIndex(uId)
+					if not icon then
+						SetRaidTarget(uId.."target", 8)
+					end
 				end
 				if not (self.vb.activeDecay) then
 					break

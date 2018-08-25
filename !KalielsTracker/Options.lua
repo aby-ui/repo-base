@@ -99,8 +99,11 @@ local defaults = {
         menuWowheadURLModifier = "ALT",
         questDefaultActionMap = false,
 
+		messageQuest = true,
+		messageAchievement = true,
 		sink20OutputSink = "UIErrorsFrame",
 		sink20Sticky = false,
+		soundQuestComplete = "KT - Default",
 
 		modulesOrder = {
 			"SCENARIO_CONTENT_TRACKER_MODULE",
@@ -535,7 +538,7 @@ local options = {
 								   cBold.."Only for deDE, esES, frFR, ruRU locale."],
 							descStyle = "inline",
 							type = "toggle",
-							width = "double",
+							width = 2.2,
 							disabled = function()
 								return not IsSpecialLocale()
 							end,
@@ -1029,7 +1032,57 @@ local options = {
 					},
 				},
 				sec7 = {
-					-- LibSink
+					name = "Notification messages",
+					type = "group",
+					inline = true,
+					order = 7,
+					args = {
+						messageQuest = {
+							name = "Quest messages",
+							type = "toggle",
+							set = function()
+								db.messageQuest = not db.messageQuest
+							end,
+							order = 7.1,
+						},
+						messageAchievement = {
+							name = "Achievement messages",
+							width = 1.1,
+							type = "toggle",
+							set = function()
+								db.messageAchievement = not db.messageAchievement
+							end,
+							order = 7.2,
+						},
+						-- LibSink
+					},
+				},
+				sec8 = {
+					name = "Notification sounds",
+					type = "group",
+					inline = true,
+					order = 8,
+					args = {
+						soundQuestLabel = {
+							name = " Quest",
+							type = "description",
+							width = "half",
+							fontSize = "medium",
+							order = 8.1,
+						},
+						soundQuestComplete = {
+							name = "Complete Sound",
+							desc = "Addon sounds are prefixed \"KT - \".",
+							type = "select",
+							width = 1.2,
+							dialogControl = "LSM30_Sound",
+							values = WidgetLists.sound,
+							set = function(_, value)
+								db.soundQuestComplete = value
+							end,
+							order = 8.11,
+						},
+					},
 				},
 			},
 		},
@@ -1207,10 +1260,9 @@ function KT:SetupOptions()
 
 	general.sec2.args.classBorder.name = general.sec2.args.classBorder.name:format(RgbToHex(self.classColor))
 
-	general.sec7 = self:GetSinkAce3OptionsDataTable()
-	general.sec7.name = L"Output for tracker messages"
-	general.sec7.inline = true
-	general.sec7.order = 7
+	general.sec7.args.messageOutput = self:GetSinkAce3OptionsDataTable()
+	general.sec7.args.messageOutput.inline = true
+	general.sec7.args.messageOutput.disabled = function() return not (db.messageQuest or db.messageAchievement) end
 	self:SetSinkStorage(db)
 
 	options.args.profiles = LibStub("AceDBOptions-3.0"):GetOptionsTable(self.db)

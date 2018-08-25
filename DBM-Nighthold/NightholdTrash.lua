@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("NightholdTrash", "DBM-Nighthold")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17627 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 2 $"):sub(12, -3))
 --mod:SetModelID(47785)
 mod:SetZone()
 mod.isTrashMod = true

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1829, "DBM-TrialofValor", nil, 861)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17623 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 2 $"):sub(12, -3))
 mod:SetCreatureID(114537)
 mod:SetEncounterID(2008)
 mod:SetZone()

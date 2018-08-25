@@ -1,8 +1,0 @@
-## Interface: 80000
-## Title: Nyx GUI Widgets
-## Author: Vildiesel - EU Well of Eternity
-## Notes: A set of widgets with theming properties, used by addons
-## eMail: n_rhygar@yahoo.it
-## DefaultState: Enabled
-## LoadOnDemand: 0
-NyxGUI.xml

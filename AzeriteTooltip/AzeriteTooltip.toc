@@ -1,0 +1,13 @@
+## Interface: 80000
+## Title: AzeriteTooltip
+## Version: 1.6
+## Author: Kygo
+## Notes: Lightweight addon that shows azerite traits in the tooltip.
+## SavedVariables: AzeriteTooltipDB
+
+Locales.lua
+AzeriteTooltip.lua
+
+## Title-zhCN: |cff880303[爱不易]|r AzeriteTooltip 装备特质显示
+## Notes-zhCN: 在艾泽里特装备的鼠标提示中显示特质信息，不需要打开查看
+## X-Vendor: AbyUI

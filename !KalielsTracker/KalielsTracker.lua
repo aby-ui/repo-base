@@ -97,6 +97,9 @@ BONUS_OBJECTIVE_TRACKER_MODULE.blockPadding = 0
 WORLD_QUEST_TRACKER_MODULE.blockPadding = 0
 DEFAULT_OBJECTIVE_TRACKER_MODULE.blockTemplate = "KT_ObjectiveTrackerBlockTemplate"
 DEFAULT_OBJECTIVE_TRACKER_MODULE.lineTemplate = "KT_ObjectiveTrackerLineTemplate"
+QUEST_TRACKER_MODULE.buttonOffsets.groupFinder = { 2, 4 }
+BONUS_OBJECTIVE_TRACKER_MODULE.buttonOffsets.groupFinder = { 6, 4 }
+WORLD_QUEST_TRACKER_MODULE.buttonOffsets.groupFinder = { 6, 4 }
 
 --------------
 -- Internal --
@@ -153,27 +156,12 @@ local function SetMsgPatterns()
 		ERR_QUEST_ADD_FOUND_SII,
 		ERR_QUEST_ADD_ITEM_SII,
 		ERR_QUEST_ADD_KILL_SII,
+		ERR_QUEST_ADD_PLAYER_KILL_SII,
 	}
 	for _, patt in ipairs(patterns) do
 		patt = "^"..patt:gsub("%d+%$", ""):gsub("%%s", ".*"):gsub("%%d", "%%d+").."$"
 		tinsert(msgPatterns, patt)
 	end
-end
-
-local function SetMessage(text, pattern, r, g, b, icon, x, y)
-	if pattern then
-		text = format(pattern, text.." ...")
-	end
-	if icon then
-		x = x or 0
-		y = y or 0
-		if db.sink20OutputSink == "Blizzard" then
-			x = floor(x * 3 * COMBAT_TEXT_X_SCALE)
-			y = y - 8
-		end
-		text = format("|T%s:0:0:%d:%d|t%s", icon, x, y, text)
-	end
-	KT:Pour(text, r, g, b)
 end
 
 local function SlashHandler(msg, editbox)
@@ -220,9 +208,6 @@ local function Init()
 	KT:SetBackground()
 	KT:SetText()
 
-	KT:SetQuestsHeaderText()
-	KT:SetAchievsHeaderText()
-
 	KT.stopUpdate = false
 	KT.inWorld = true
 
@@ -231,6 +216,9 @@ local function Init()
 	end
 
 	C_Timer.After(0, function()
+		KT:SetQuestsHeaderText()
+		KT:SetAchievsHeaderText()
+
 		OTF:KTSetPoint("TOPLEFT", 30, -1)
 		OTF:KTSetPoint("BOTTOMRIGHT")
 		ObjectiveTracker_Update()
@@ -652,12 +640,17 @@ local function SetHooks()
 		if KT.inWorld and type(objectiveKey) == "string" then
 			if strfind(objectiveKey, "Complete") then
 				if not questState[block.id] or questState[block.id] ~= "complete" then
-					SetMessage(block.title, ERR_QUEST_COMPLETE_S, 0, 1, 0, "Interface\\GossipFrame\\ActiveQuestIcon", -2, 0)
+					if db.messageQuest then
+						KT:SetMessage(block.title, 0, 1, 0, ERR_QUEST_COMPLETE_S, "Interface\\GossipFrame\\ActiveQuestIcon", -2, 0)
+                    end
+                    KT:PlaySound(db.soundQuestComplete)
 					questState[block.id] = "complete"
 				end
 			elseif strfind(objectiveKey, "Failed") then
 				if not questState[block.id] or questState[block.id] ~= "failed" then
-					SetMessage(block.title, ERR_QUEST_FAILED_S, 1, 0, 0, "Interface\\GossipFrame\\AvailableQuestIcon", -2, 0)
+					if db.messageQuest then
+						KT:SetMessage(block.title, 1, 0, 0, ERR_QUEST_FAILED_S, "Interface\\GossipFrame\\AvailableQuestIcon", -2, 0)
+					end
 					questState[block.id] = "failed"
 				end
 			end
@@ -978,9 +971,9 @@ local function SetHooks()
 
 	local bck_QUEST_TRACKER_MODULE_SetBlockHeader = QUEST_TRACKER_MODULE.SetBlockHeader
 	function QUEST_TRACKER_MODULE:SetBlockHeader(block, text, questLogIndex, isQuestComplete, questID)
-		local _, level, _, _, _, _, frequency, _ = GetQuestLogTitle(questLogIndex)
+		local _, level, suggestedGroup, _, _, _, frequency, _ = GetQuestLogTitle(questLogIndex)
 		local tagID, _ = GetQuestTagInfo(questID)
-		text = KT:CreateQuestTag(level, tagID, frequency)..text
+		text = KT:CreateQuestTag(level, tagID, frequency, suggestedGroup)..text
 		bck_QUEST_TRACKER_MODULE_SetBlockHeader(self, block, text, questLogIndex, isQuestComplete, questID)
 		block.lineWidth = block.lineWidth or self.lineWidth - 8		-- mod default
 		block.level = level
@@ -1034,10 +1027,6 @@ local function SetHooks()
 		else
 			KT:RemoveFixedButton(block)
 		end
-	end
-
-	function QuestObjectiveSetupBlockButton_FindGroup(block, questID)
-		return nil
 	end
 
 	hooksecurefunc(WORLD_QUEST_TRACKER_MODULE, "Update", function(self)
@@ -1353,11 +1342,11 @@ local function SetHooks()
 
 	local bck_UIErrorsFrame_OnEvent = UIErrorsFrame:GetScript("OnEvent")
 	UIErrorsFrame:SetScript("OnEvent", function(self, event, ...)
-		if event == "UI_INFO_MESSAGE" then
+		if db.messageQuest and event == "UI_INFO_MESSAGE" then
 			local _, text = ...
 			for _, patt in ipairs(msgPatterns) do
 				if strfind(text, patt) then
-					SetMessage(text, nil, 1, 1, 0, "Interface\\GossipFrame\\AvailableQuestIcon", -2, 0)
+					KT:SetMessage(text, 1, 1, 0, nil, "Interface\\GossipFrame\\AvailableQuestIcon", -2, 0)
 					return
 				end
 			end
@@ -1990,7 +1979,7 @@ function KT:GetFixedButton(questID)
 	end
 end
 
-function KT:CreateQuestTag(level, questTag, frequency)
+function KT:CreateQuestTag(level, questTag, frequency, suggestedGroup)
 	local tag = ""
 
 	if level == -1 then
@@ -2001,6 +1990,9 @@ function KT:CreateQuestTag(level, questTag, frequency)
 
 	if questTag == Enum.QuestTag.Group then
 		tag = "g"
+		if suggestedGroup then
+			tag = tag..suggestedGroup
+		end
 	elseif questTag == Enum.QuestTag.Pvp then
 		tag = "pvp"
 	elseif questTag == Enum.QuestTag.Dungeon then
@@ -2079,6 +2071,26 @@ function KT:ToggleEmptyTracker(added)
 		KTF.QuestLogButton:EnableMouse(mouse)
 		KTF.AchievementsButton:EnableMouse(mouse)
 	end
+end
+
+function KT:SetMessage(text, r, g, b, pattern, icon, x, y)
+	if pattern then
+		text = format(pattern, text.." ...")
+	end
+	if icon then
+		x = x or 0
+		y = y or 0
+		if db.sink20OutputSink == "Blizzard" then
+			x = floor(x * 3 * COMBAT_TEXT_X_SCALE)
+			y = y - 8
+		end
+		text = format("|T%s:0:0:%d:%d|t%s", icon, x, y, text)
+	end
+	self:Pour(text, r, g, b)
+end
+
+function KT:PlaySound(key)
+	PlaySoundFile(LSM:Fetch("sound", key))
 end
 
 function KT:UpdateHotkey()

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("BoralusTrash", "DBM-Party-BfA", 5)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17725 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 17726 $"):sub(12, -3))
 --mod:SetModelID(47785)
 mod:SetZone()
 
@@ -51,7 +51,8 @@ end
 --Not in combat log what so ever, so this relies on unit event off a users target or nameplate unit IDs, then syncing to group
 function mod:UNIT_SPELLCAST_START(uId, _, spellId)
 	if spellId == 272874 then
-		if self:IsValidWarning(args.sourceGUID, uId) then
+		local guid = UnitGUID(uId)
+		if self:IsValidWarning(guid, uId) then
 			self:SendSync("Trample")
 		end
 	end

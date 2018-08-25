@@ -54,5 +54,5 @@
     }, 
 });
 
-U1RegisterAddon("SkadaFriendlyFire", { title = "Skada模块-友军误伤", load = "LATER" });
+-- U1RegisterAddon("SkadaFriendlyFire", { title = "Skada模块-友军误伤", load = "LATER" });
 U1RegisterAddon("SkadaExplosiveOrbs", { title = "Skada模块-易爆打球" });

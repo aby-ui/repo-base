@@ -1306,7 +1306,7 @@ function addon:LOOT_SLOT_CLEARED(slot)
 				if prev and next then
 					next:SetPoint('TOP', prev, 'BOTTOM', nil, XLootFrame.skin.row_offset)
 				elseif next then
-					next:SetPoint('TOP', 0, -10)
+					next:SetPoint('TOP', 0, -opt.loot_padding_top)
 				end
 				table.remove(slots, id)
 				XLootFrame:UpdateHeight()

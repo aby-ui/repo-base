@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2125, "DBM-Party-BfA", 10, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17722 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 17729 $"):sub(12, -3))
 mod:SetCreatureID(135358, 135359, 135360)
 mod:SetEncounterID(2113)
 mod:DisableESCombatDetection()--ES fires For entryway trash pull sometimes, for some reason.
@@ -154,7 +154,10 @@ do
 			for uId in DBM:GetGroupMembers() do
 				if UnitGUID(uId.."target") == self.vb.activeTriad then
 					self.vb.activeTriad = nil
-					SetRaidTarget(uId.."target", 8)
+					local icon = GetRaidTargetIndex(uId)
+					if not icon then
+						SetRaidTarget(uId.."target", 8)
+					end
 				end
 				if not (self.vb.activeTriad) then
 					break

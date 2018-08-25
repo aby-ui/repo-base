@@ -1,12 +1,10 @@
 local mod	= DBM:NewMod(2011, "DBM-Argus", nil, 959)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17548 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 3 $"):sub(12, -3))
 mod:SetCreatureID(124625)
 mod:SetEncounterID(2083)
---mod:SetReCombatTime(20)
 mod:SetZone()
---mod:SetMinSyncRevision(11969)
 
 mod:RegisterCombat("combat_yell", L.Pull)
 

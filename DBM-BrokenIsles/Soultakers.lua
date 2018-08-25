@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1756, "DBM-BrokenIsles", nil, 822)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17077 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 2 $"):sub(12, -3))
 mod:SetCreatureID(106981, 106982, 106984)--Captain Hring, Reaver Jdorn, Soultrapper Mevra
 mod:SetEncounterID(1879)
 mod:SetReCombatTime(20)

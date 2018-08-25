@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1867, "DBM-TombofSargeras", nil, 875)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17603 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 2 $"):sub(12, -3))
 mod:SetCreatureID(116691, 116689)--Belac (116691), Atrigan (116689)
 mod:SetEncounterID(2048)
 mod:SetZone()

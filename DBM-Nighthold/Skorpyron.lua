@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1706, "DBM-Nighthold", nil, 786)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17611 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 2 $"):sub(12, -3))
 mod:SetCreatureID(102263)
 mod:SetEncounterID(1849)
 mod:DisableESCombatDetection()--Remove if blizz fixes trash firing ENCOUNTER_START

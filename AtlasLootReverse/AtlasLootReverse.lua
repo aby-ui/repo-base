@@ -113,6 +113,56 @@ function AtlasLootReverse:OnTooltipSetItem(tooltip, item)
     end
 end
 
+--- 在atlasloot基础上遍历地下城手册
+function AtlasLootReverse:RebuildDatabaseFromEJ(db)
+    local db = db or AtlasLootReverseDBx
+    U1DBG.AtlasLootReverseDBx = db
+    print("正在添加手册物品...")
+    local sourceMap = {}
+    for i, name in ipairs(db.sources) do sourceMap[name] = i end
+
+    local ELP_CURRENT_TIER = 8
+    EJ_SelectTier(ELP_CURRENT_TIER)
+    EJ_SetSlotFilter(0)
+    EJ_SetLootFilter(0,0)
+    for i = 1, 2 do
+        local index = 1
+        while true do
+            local insID, name, _, _, _, _, _, _, link = EJ_GetInstanceByIndex(index, i == 1)
+            if not insID then break end
+            index = index + 1
+            EJ_SelectInstance(insID)
+            local instance_name,_,_,_,_,_,_,_,shouldDisplayDifficulty = EJ_GetInstanceInfo(insID)
+            local bossNames = {}
+            if shouldDisplayDifficulty then
+                EJ_SetDifficulty(i==1 and 16 or 23)
+            else
+                EJ_SetDifficulty(i==1 and 14 or 1)
+            end
+            local count = 0
+            for loot = 1, EJ_GetNumLoot() do
+                count = count + 1
+                local item_id, encounterID, name, icon, slot, armorType, link = EJ_GetLootInfoByIndex(loot)
+                if not bossNames[encounterID] then
+                    bossNames[encounterID] = EJ_GetEncounterInfo(encounterID)
+                end
+                local boss_name = bossNames[encounterID]
+                local source = instance_name .. " " .. boss_name
+                local source_id = sourceMap[source]
+                if not source_id then
+                    source_id = #db.sources + 1
+                    db.sources[source_id] = source
+                    sourceMap[source] = source_id
+                end
+                --有可能有多个来源, 不考虑了
+                db.whoTable[item_id] = source_id
+            end
+            print(instance_name, count)
+        end
+    end
+    print("添加手册物品完成...")
+end
+
 --- 仅开发人员调用, 生成文件暂存在U1DBG里, 完事删掉, 不要用IDEA编辑 DEBUG_MODE = true GetLocale = function() return "zhTW" end
 function AtlasLootReverse:RebuildDatabase()
     -- Sanity check for v6 of ALE
@@ -156,6 +206,7 @@ function AtlasLootReverse:RebuildDatabase()
         LoadAddOn("AtlasLoot_"..module)
     end
 
+    local count = 0
     --7.0 ["AtlasLoot_Legion"]["AssaultOnVioletHold"].items[i](boss)[DIFFCULITY] = { {1, id} }
     for module_name,module in pairs(AtlasLoot.ItemDB.Storage) do
         for k, v in pairs(module) do
@@ -182,6 +233,7 @@ function AtlasLootReverse:RebuildDatabase()
                                     end
                                     --有可能有多个来源, 不考虑了
                                     if not db.whoTable[item_id] then
+                                        count = count + 1
                                         db.whoTable[item_id] = source_id
                                     end
                                     if item_id == 102635 then
@@ -200,6 +252,8 @@ function AtlasLootReverse:RebuildDatabase()
     print(db.whoTable[102635])
 
     sourceMap = nil
+    print(AtlasLootReverse.title .. " 数据库已重建. 总数", count)
+
+    AtlasLootReverse:RebuildDatabaseFromEJ(db)
     collectgarbage("collect")
-    print(AtlasLootReverse.title .. " 数据库已重建.")
 end

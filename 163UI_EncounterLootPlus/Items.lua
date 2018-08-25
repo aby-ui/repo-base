@@ -1,7 +1,7 @@
 local _, ELP = ...
 local db = ELP.db
 
-local ELP_CURRENT_TIER = 8 --Legion
+local ELP_CURRENT_TIER = 8 --BfA
 local ELP_RELIC_SLOT = 30
 
 local curr_items = {}
@@ -85,7 +85,12 @@ function ELP_UpdateItemList()
             if not insID then break end
             index = index + 1
             EJ_SelectInstance(insID)
-            EJ_SetDifficulty(i==1 and 16 or 23)
+            local shouldDisplayDifficulty = select(9, EJ_GetInstanceInfo(insID))
+            if shouldDisplayDifficulty then
+                EJ_SetDifficulty(i==1 and 16 or 23)
+            else
+                EJ_SetDifficulty(i==1 and 14 or 1)
+            end
             for loot = 1, EJ_GetNumLoot() do
                 local itemID, encounterID, name, icon, slot, armorType, link = EJ_GetLootInfoByIndex(loot)
                 if not curr_encts[itemID] then

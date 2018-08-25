@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2116, "DBM-Party-BfA", 7, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17704 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 17731 $"):sub(12, -3))
 mod:SetCreatureID(129232)
 mod:SetEncounterID(2108)
 mod:SetZone()
@@ -17,8 +17,10 @@ mod:RegisterEventsInCombat(
 )
 
 --TODO: Maybe general range 6 for Micro Missiles from BOOMBA?
+--TODO, video this boss to track faster way to drill smash
 local warnDrill						= mod:NewStackAnnounce(260189, 2)
 local warnHomingMissile				= mod:NewTargetAnnounce(260811, 3)
+local warnDrillSmashCast			= mod:NewCastAnnounce(271456, 2)
 local warnDrillSmash				= mod:NewTargetNoFilterAnnounce(271456, 2)
 local warnSummonBooma				= mod:NewSpellAnnounce(276212, 2)
 
@@ -101,6 +103,8 @@ function mod:SPELL_CAST_START(args)
 		specWarnGatlingGun:Play("shockwave")
 		timerGatlingGunCD:Start()
 	elseif spellId == 271456 then
+		warnDrillSmashCast:Show()
+		--TODO, target scan? Unit aura scan?
 		timerDrillSmashCD:Start()
 	end
 end

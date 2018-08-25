@@ -1,12 +1,11 @@
 local mod	= DBM:NewMod(1656, "DBM-Party-Legion", 2, 762)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17603 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 3 $"):sub(12, -3))
 mod:SetCreatureID(99200)
 mod:SetEncounterID(1838)
 mod:DisableESCombatDetection()--Remove if blizz fixes trash firing ENCOUNTER_START
 mod:SetZone()
-mod:SetMinSyncRevision(15190)
 
 mod:RegisterCombat("combat")
 
