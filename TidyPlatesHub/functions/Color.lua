@@ -344,7 +344,7 @@ local function ThreatColorDelegate(unit)
 	else
 
 		-- NPCs
-		if LocalVars.ThreatGlowEnable then
+		if LocalVars.ThreatGlowEnable2 then
 			color = WarningBorderFunctionByThreat(unit)
 		end
 
@@ -559,7 +559,7 @@ end
 
 local function OnVariableChange(vars)
 	LocalVars = vars
-	if (EnemyBarFunctions[LocalVars.EnemyBarColorMode] == ColorFunctionByThreat) or LocalVars.ThreatGlowEnable then
+	if (EnemyBarFunctions[LocalVars.EnemyBarColorMode] == ColorFunctionByThreat) or LocalVars.ThreatGlowEnable2 then
 		SetCVar("threatWarning", 3)
 	end
 end

@@ -46,10 +46,10 @@ BG.data = {
         hide = true,
     },
     ["托尔达戈"] = {
-        [1] = { id = 2097, name = "泥沙女王", text = "躲开流沙陷阱", },
-        [2] = { id = 2098, name = "杰斯·豪里斯", text = "挺难的，卡视角躲闪光飞刃，P2开爆发追着BOSS杀", },
+        [1] = { id = 2097, name = "泥沙女王", text = "躲开流沙陷阱，BOSS钻地后顶飞一个人，好像没法躲", },
+        [2] = { id = 2098, name = "杰斯·豪里斯", text = "卡视角躲闪光飞刃，P2开爆发追着BOSS杀，小怪看情况，难度较高", },
         [3] = { id = 2099, name = "骑士队长瓦莱莉", text = "把桶搬到一侧，爆炸时躲到安全区", },
-        [4] = { id = 2096, name = "科古斯狱长", text = "移动就掉血还叠层，尽量别动，红箭头狙击只能抗一次，第二次别人挡", },
+        [4] = { id = 2096, name = "科古斯狱长", text = "移动会加能量槽，满了就完蛋。360度冲击波躲开黑线。红箭头狙击只能抗一次，第二次别人挡", },
         id = 1002,
     },
     ["暴富矿区！！"] = {
@@ -62,9 +62,9 @@ BG.data = {
     ["维克雷斯庄园"] = {
         [1] = { id = 2125, name = "女巫布里亚", name2 = "女巫马拉迪", name3 = "女巫索林娜", text = "挺难，打变大的那个，打被控制的队友", },
         [2] = { id = 2126, name = "魂缚巨像", text = "T看好boss层数，七八层就拉到火上消，被捆的尽快救", },
-        [3] = { id = 2127, name = "贪食的拉尔", text = "躲喷吐，打召唤的小怪，不能让他们走到", },
-        [4] = { id = 2128, name = "维克雷斯勋爵", text = "中毒的躲开人群，别立刻驱散，boss两管血，然后打女鬼", },
-        [5] = { id = 2129, name = "高莱克·图尔", text = "捡瓶子烧尸体，不然boss会复活他们", },
+        [3] = { id = 2127, name = "贪食的拉尔", text = "躲喷吐，不要让召唤的仆从走到BOSS", },
+        [4] = { id = 2128, name = "维克雷斯勋爵", text = "中毒的躲开人群，勋爵三管血，一直打死再打女鬼", },
+        [5] = { id = 2129, name = "高莱克·图尔", text = "先打小怪，然后捡瓶子烧尸体，不然boss会复活它们", },
         id = 1021,
     },
     ["自由镇"] = {
@@ -101,8 +101,8 @@ BG.data = {
     },
     ["风暴神殿"] = {
         [1] = { id = 2153, name = "阿库希尔", text = "BOSS会冲锋，会分裂，分裂了还会冲锋，别被冲下去，分裂后先打楼梯那边的小怪", },
-        [2] = { id = 2154, name = "唤风者菲伊", name2 = "铁舟修士", text = "先打远程boss，拉出结界，近战boss可以适当风筝", },
-        [3] = { id = 2155, name = "斯托颂勋爵", text = "被控制的人撞黑球，看好时间提前停，其他人躲球", },
+        [2] = { id = 2154, name = "唤风者菲伊", name2 = "铁舟修士", text = "先打远程BOSS，地上符文75%减伤，BOSS拉出去，队友可以站。近战BOSS听DBM提示要风筝", },
+        [3] = { id = 2155, name = "斯托颂勋爵", text = "被控制的人撞黑球，撞到解除控制就别再撞了。其他人包括T都要躲球", },
         [4] = { id = 2156, name = "低语者沃尔兹斯", text = "挺难，外场阶段拉boss放好水，不要让小怪摸到boss，内场阶段3个dps依次杀两只水母，必须分配好打断；T和奶面对一只大怪，风筝别硬抗", },
         id = 1036,
     },
@@ -206,6 +206,16 @@ function BG:Disable()
     BG.frame:Hide();
 end
 
+local function sendChat(message)
+    local channel = 'SAY'
+    if IsInGroup(LE_PARTY_CATEGORY_INSTANCE) then
+        channel = "INSTANCE_CHAT"
+    elseif IsInGroup(LE_PARTY_CATEGORY_HOME) then
+        channel = IsInRaid() and 'RAID' or 'PARTY'
+    end
+    SendChatMessage(message, channel)
+end
+
 local function bossOnClick(self, button)
     --local button = DBM_GUI_OptionsFrameBossModsButton1 button.element.showsub = false; DBM_GUI_OptionsFrame:ToggleSubCategories(button.toggle)
     if self.info then
@@ -235,13 +245,7 @@ local function bossOnClick(self, button)
                 if i==3 then
                     local header = "爱不易攻略"..(self.info.bosslink or "["..self.info.name.."]")..":";
                     if #header + #text > 254 then
-                        local channel = 'SAY'
-                        if(U1UseInstanceChat()) then
-                            channel = 'INSTANCE_CHAT'
-                        elseif(IsInGroup()) then
-                            channel = IsInRaid() and 'RAID' or 'PARTY'
-                        end
-                        SendChatMessage("爱不易"..header, channel)
+                        sendChat("爱不易"..header)
                     else
                         text = header..text;
                     end
@@ -249,11 +253,7 @@ local function bossOnClick(self, button)
                 if text and #text:trim() > 0 and not text:find(AUTHOR_PREFIX) then
                     lineNo = lineNo + 1
                     if lineNo > 1 then text = "["..lineNo.."] "..text end
-                    local channel = 'SAY'
-                    if(IsInGroup()) then
-                        channel = IsInRaid() and 'RAID' or 'PARTY'
-                    end
-                    SendChatMessage(text, channel)
+                    sendChat(text)
                 end
             end
         else

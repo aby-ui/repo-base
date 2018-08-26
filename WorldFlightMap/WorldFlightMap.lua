@@ -9,6 +9,7 @@ local IconScale = 1.0
 
 -- InFlight uses FlightMapFrame directly, so it's necessary to change references
 FlightMapFrame = WorldMapFrame
+-- TaxiFrame = WorldMapFrame
 
 -- Map data functions
 local MapSizeCache = {} -- [uiMapID] = {left, top, right, bottom, etc}
@@ -24,10 +25,15 @@ end
 
 local function GetParentZone(uiMapID)
 	if uiMapID then
-		local continent = MapUtil.GetMapParentInfo(uiMapID, Enum.UIMapType.Zone)
+		local zone = MapUtil.GetMapParentInfo(uiMapID, Enum.UIMapType.Zone)
+		if zone then
+			return zone.mapID
+		end
+		local continent = MapUtil.GetMapParentInfo(WorldMapFrame:GetMapID(), Enum.UIMapType.Continent)
 		if continent then
 			return continent.mapID
 		end
+		return uiMapID
 	end
 end
 
@@ -165,7 +171,9 @@ function WorldFlightMapProvider:OnEvent(event, ...)
 				-- We used to zoom out until we could fit multiple flight points on the same map, but this is simpler
 				if playerMapInfo.mapType > Enum.UIMapType.Zone and playerMapInfo.parentMapID then
 					local parentZone = GetParentZone(playerMapID)
-					self:GetMap():SetMapID(parentZone)
+					if parentZone then
+						self:GetMap():SetMapID(parentZone)
+					end
 				--else
 					--self:GetMap():SetMapID(self.playerContinent)
 				end

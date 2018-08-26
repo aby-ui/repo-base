@@ -530,7 +530,7 @@ end
 --不需要恢复的非安全Hook
 function CoreRawHook(obj, name, func, isscript)
     if type(obj) == "string" then name, func, isscript, obj = obj, name, func, _G end
-    if DEBUG_MODE and not isscript and name:find("^On") then debug(L["忘记设置isscript了？"], name) end
+    if DEBUG_MODE and not isscript and name:find("^On") then print(L["忘记设置isscript了？"], name) end
     if isscript then
         local origin = obj:GetScript(name)
         if not origin then
@@ -1770,7 +1770,7 @@ function CoreDebug(...)
     end
 end
 
-debug = DEBUG_MODE and CoreDebug or noop
+u1debug = DEBUG_MODE and CoreDebug or noop
 
 local CTAF = {}
 ---用来返回CreateFrame, hooksecurefunc, getreplacehook, togglefunc的工厂方法
@@ -1930,10 +1930,6 @@ end
 -- 避免误操作关闭taint的插件
 if(StaticPopupDialogs) then
     StaticPopupDialogs["ADDON_ACTION_FORBIDDEN"].OnAccept = function() end
-end
-
-function U1UseInstanceChat()
-    return IsInGroup(LE_PARTY_CATEGORY_INSTANCE) and IsInInstance() and "INSTANCE_CHAT"
 end
 
 --用命令打开界面设置时，会强制到"控制页", 参见 InterfaceOptionsFrame_OnShow 及 InterfaceOptionsFrame_OpenToCategory

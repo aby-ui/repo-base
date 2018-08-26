@@ -27,6 +27,30 @@ U1RegisterAddon("ShadowedUnitFrames", {
             SlashCmdList["SHADOWEDUF"]("lock")
         end,
     },
+
+    {
+        type = 'radio',
+        var = 'abbr',
+        default = 1,
+        options = {'万进位', 1, '千进位', 2},
+        text = '数值缩写方式',
+        callback = function(_, v)
+            ShadowUF.originFormatLargeNumber = ShadowUF.originFormatLargeNumber or ShadowUF.FormatLargeNumber
+            ShadowUF.chineseFormatLargeNumber = ShadowUF.chineseFormatLargeNumber or function(self, number)
+                if number <= 9999 then
+                    return n2s(number, nil, true);
+                elseif number <= 999999 then
+                    return f2s(number/1e4, 1).."万"
+                elseif number <= 99999999 then
+                    return n2s(number/1e4, nil, true).."万"
+                else
+                    return f2s(number/1e8, 2).."亿"
+                end
+            end
+            ShadowUF.FormatLargeNumber = v == 2 and ShadowUF.originFormatLargeNumber or ShadowUF.chineseFormatLargeNumber
+        end,
+    },
+
     {
         type = 'button',
         text = '配置选项',

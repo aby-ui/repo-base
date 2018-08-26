@@ -1,3 +1,4 @@
+if UnitFactionGroup("player") ~= "Horde" then return end
 local addonName, addonSpace = ...
 local addon = LibStub('AceAddon-3.0'):NewAddon(addonSpace, addonName, 'AceEvent-3.0')
 
@@ -162,7 +163,7 @@ function addon:PLAYER_ENTERING_WORLD(event, ...)
 
       --local xy, mapid, frame = totem.dst, totem.dstMapID, totem.totemDestFrame
       --Pins:AddMinimapIconMap(addonName.."dest", frame, mapid, xy[1],xy[2], true, true)
-      --addon:showTotemOnMap(totemID, "TaxiNode_Neutral", true, "dest")
+      --addon:showTotemOnMap(totemID, "WarlockPortalHorde", true, "dest")
   end)
 
   --GameTooltip:HookScript("OnUpdate",         function() Pins:RemoveAllWorldMapIcons(addonName.."dest") end)
@@ -176,26 +177,26 @@ function addon:PLAYER_ENTERING_WORLD(event, ...)
     -- convert them back so they are on the dazar'alor map only - i actually should convert my data to this perhaps
     local ix,iy = HBD:GetZoneCoordinatesFromWorld(x, y, 1165)
 
-    addon:showTotemOnMap(totemID, "TaxiNode_Alliance")
+    addon:showTotemOnMap(totemID, "WarlockPortalAlliance")
     totemFrames[""..totemID]:SetScript("OnEnter", addon.mapIconOnEnter)
     totemFrames[""..totemID]:SetScript("OnLeave", addon.mapIconOnLeave)
     totemFrames[""..totemID].totemID = totemID
 
     local minimapIconFrame = CreateFrame("frame", nil,nil)
-    minimapIconFrame:SetWidth(14)
-    minimapIconFrame:SetHeight(14)
+    minimapIconFrame:SetWidth(16)
+    minimapIconFrame:SetHeight(16)
     minimapIconFrame.icon = minimapIconFrame:CreateTexture(nil,"BACKGROUND")
-    minimapIconFrame.icon:SetAtlas("TaxiNode_Alliance")
+    minimapIconFrame.icon:SetAtlas("WarlockPortalAlliance")
     minimapIconFrame.icon:SetAllPoints()
     minimapIconFrame:SetScript("OnEnter", addon.mapIconOnEnter)
     minimapIconFrame:SetScript("OnLeave", addon.mapIconOnLeave)
     minimapIconFrame.totemID = totemID
 
     local minimapDestIconFrame = CreateFrame("frame", nil,nil)
-    minimapDestIconFrame:SetWidth(14)
-    minimapDestIconFrame:SetHeight(14)
+    minimapDestIconFrame:SetWidth(16)
+    minimapDestIconFrame:SetHeight(16)
     minimapDestIconFrame.icon = minimapDestIconFrame:CreateTexture(nil,"OVERLAY")
-    minimapDestIconFrame.icon:SetAtlas("TaxiNode_Neutral")
+    minimapDestIconFrame.icon:SetAtlas("WarlockPortalHorde")
     minimapDestIconFrame.icon:SetAllPoints()
     totems[totemID].totemDestFrame = minimapDestIconFrame
 
@@ -221,8 +222,8 @@ function addon:showTotemOnMap(totemID, atlasIcon, dst, layer, ref)
 
   if not totemFrames[ref..totemID] then
     local mapIconFrame = CreateFrame("frame", nil,nil)
-    mapIconFrame:SetWidth(14)
-    mapIconFrame:SetHeight(14)
+    mapIconFrame:SetWidth(16)
+    mapIconFrame:SetHeight(16)
     mapIconFrame.icon = mapIconFrame:CreateTexture(nil,layer)
     mapIconFrame.icon:SetAtlas(atlasIcon)
     mapIconFrame.icon:SetAllPoints()
@@ -238,7 +239,7 @@ function addon:mapIconOnEnter()
   local xy, mapid, frame = totem.dst, totem.dstMapID, totem.totemDestFrame
   -- print(totem.name, unpack(totem.dst))
   Pins:AddMinimapIconMap(addonName.."dest", frame, mapid, xy[1],xy[2], true, true)
-  addon:showTotemOnMap(self.totemID, "TaxiNode_Neutral", true, "OVERLAY", "dest")
+  addon:showTotemOnMap(self.totemID, "WarlockPortalHorde", true, "OVERLAY", "dest")
 end
 
 function addon:mapIconOnLeave()

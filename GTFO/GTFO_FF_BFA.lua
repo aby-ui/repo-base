@@ -6,7 +6,10 @@ GTFO Friendly Fire List - Battle for Azeroth
 Author: Zensunim of Malygos
 ]]--
 
---- ********************
---- * Placeholder .... *
---- ********************
+-- *********
+-- * Uldir *
+-- *********
 
+-- TODO: Malodorous Miasma (Fetid Devourer) -- Mythic, spreading
+-- TODO: Putrid Paroxysm (Fetid Devourer) -- Mythic, spreading
+-- TODO: Imminent Ruin (Mythrax the Unraveler) -- Not sure if this is trackable

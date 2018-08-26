@@ -99,6 +99,11 @@ GTFO.SpellID["277972"] = {
   sound = 1;
 };
 
+GTFO.SpellID["257065"] = {
+  --desc = "Decaying Ground (Matron Morana)";
+  sound = 1;
+};
+
 -- ***********************
 -- * Shrine of the Storm *
 -- ***********************
@@ -328,5 +333,90 @@ GTFO.SpellID["265625"] = {
   sound = 4;
   negatingDebuffSpellID = 265568;  -- Befouled Spirit
   negatingIgnoreTime = 1;
+  test = true;
+};
+
+-- ***************
+-- * King's Rest *
+-- ***************
+
+GTFO.SpellID["265914"] = {
+  --desc = "Molten Gold (The Golden Serpent)";
+  sound = 1;
+};
+
+GTFO.SpellID["267874"] = {
+  --desc = "Burning Ground (Mchimba the Embalmer)";
+  sound = 1;
+};
+
+-- TODO: Hunting Leap (Reban) - Is this escapable?  Only alert the current target or can current target run away?
+
+
+-- ********************
+-- * Siege of Boralus *
+-- ********************
+
+GTFO.SpellID["257886"] = {
+  --desc = "Brine Pools (Hadal Darkfathom)";
+  sound = 1;
+};
+
+GTFO.SpellID["280485"] = {
+  --desc = "Crushing Embrace (Viq'Goth)";
+  sound = 1;
+};
+
+-- *********
+-- * Uldir *
+-- *********
+
+GTFO.SpellID["270290"] = {
+  --desc = "Blood Storm (Taloc)";
+  sound = 1;
+  test = true;
+};
+
+-- TODO: Purifying Flame (MOTHER)
+-- TODO: Ruptured Blood (Zul) -- Supposed to avoid this?
+
+GTFO.SpellID["274113"] = {
+  --desc = "Obliteration Beam (Mythrax the Unraveler)";
+  sound = 1;
+  test = true;
+};
+
+GTFO.SpellID["270287"] = {
+  --desc = "Blighted Ground (G'huun)";
+  sound = 1;
+  test = true;
+};
+
+GTFO.SpellID["263326"] = {
+  --desc = "Undulating Mass (G'huun)";
+  sound = 1;
+  test = true;
+};
+
+-- TODO: Matrix Surge (G'huun)
+-- TODO: Unclean Contagion (G'huun)
+-- TODO: Putrid Blood (G'huun)
+-- TODO: Malignant Growth (G'huun)
+
+GTFO.SpellID["275432"] = {
+  --desc = "Uldir Defensive Beam";
+  sound = 1;
+  test = true;
+};
+
+GTFO.SpellID["275445"] = {
+  --desc = "Uldir Defensive Beam";
+  sound = 1;
+  test = true;
+};
+
+GTFO.SpellID["268253"] = {
+  --desc = "Uldir Defensive Beam";
+  sound = 1;
   test = true;
 };

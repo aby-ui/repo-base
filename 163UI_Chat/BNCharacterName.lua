@@ -14,7 +14,7 @@ local addMessageReplace = function(self, msg, ...)
     msg = msg and tostring(msg) or ""
     local _, _, text1, name1, bnId, bnId2, chatType, name2, name3, text2 = msg:find("^(.*)\124HBNplayer:([^%[]+):([0-9]+):([0-9]+):BN_WHISPER([A-Z_]*):([^%[]+)\124h%[([^\]]+)%]\124h(.*)$")
     if name1 then
-        --debug(name1, bnId, bnId2, name2, name3)
+        --u1debug(name1, bnId, bnId2, name2, name3)
         --{6,   "NAME",   "BN#5885",   true,   "CHAR_NAME",   72,   "WoW",   true,   1471711024,   false,   false,   "",   "",   true,   0,   false,   false,   false, }
         local _, _, _, _, charName, gameAccountId, gameId = BNGetFriendInfoByID(bnId)
         if gameId and gameId:lower() == "wow" then

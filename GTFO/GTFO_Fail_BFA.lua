@@ -198,6 +198,11 @@ GTFO.SpellID["266144"] = {
   applicationOnly = true;
 };
 
+GTFO.SpellID["275243"] = {
+  --desc = "Soulburst (Erupting Servant)";
+  sound = 3;
+};
+
 
 -- ***********************
 -- * Shrine of the Storm *
@@ -380,7 +385,6 @@ GTFO.SpellID["257902"] = {
   --desc = "Shell Bounce (Ludwig Von Tortollan)";
   sound = 3;
 };
-
 
 -- *************
 -- * Tol Dagor *
@@ -583,4 +587,64 @@ GTFO.SpellID["255371"] = {
   sound = 3;
   test = true; -- Bugged?
 };
+
+-- ***************
+-- * King's Rest *
+-- ***************
+
+-- TODO: Serpentine Gust (The Golden Serpent) -- Is this avoidable?
+-- TODO: Whirling Axes (Kula the Butcher) -- Is this avoidable?
+-- TODO: Torrent Totem (Zanazal the Wise) -- Is this avoidable?
+-- TODO: Gale Slash (Dazar, The First King) -- Is this avoidable?
+-- TODO: Impaling Spear (Dazar, The First King) -- Is this avoidable?
+
+-- ********************
+-- * Siege of Boralus *
+-- ********************
+
+-- TODO: Gore Crash (Chopper Redhook) -- Avoidable?  Different spell IDs for Knockback vs. non-knockback?
+-- TODO: Cannon Barrage (Chopper Redhook) -- Avoidable?
+-- TODO: Heavy Slash (Irontide Cleaver) -- Non-Tank only? Avoidable?
+-- TODO: Clear the Deck (Dread Captain Lockwood) -- Non-Tank only? Avoidable?
+-- TODO: Crimson Swipe (Ashvane Deckhand) -- Non-Tank only? Avoidable?
+-- TODO: Broadside (Ashvane Cannoneer) -- Avoidable?
+-- TODO: Crashing Tide (Hadal Darkfathom) -- Avoidable?
+
+GTFO.SpellID["257883"] = {
+  --desc = "Break Water (Hadal Darkfathom)";
+  sound = 3;
+  test = true;
+};
+
+-- TODO: Eradication (Viq'Goth) -- Avoidable?
+-- TODO: Slam (Demolishing Terror) -- Avoidable?
+
+
+-- *********
+-- * Uldir *
+-- *********
+
+-- TODO: Retrieve Cudgel (Taloc) -- Charge attack, avoidable?
+-- TODO: Sanguine Static (Taloc) -- Line attack, avoidable?
+-- TODO: Hardened Arteries (Taloc) -- Explosion, avoidable?
+-- TODO: Spreading Epidemic (MOTHER) -- What does this do?
+-- TODO: Sanitizing Strike (MOTHER) -- For tanks only, stack tracking
+-- TODO: Rotting Regurgitation (Fetid Devourer) -- Avoidable?
+-- TODO: Surging Darkness (Zek'voz) -- Avoidable for big pools? Different spell IDs for pool damage vs. incidental
+-- TODO: Void Lash (Zek'voz) -- For tanks only, stack tracking, fail at 100% reduction
+-- TODO: Ominous Cloud (Zek'voz) -- Touching the cloud failure
+-- TODO: Void Wall (Zek'voz) -- Mythic only - Avoidable?
+-- TODO: Blood Geyser (Vectis) -- What is this?
+-- TODO: Pit of Despair (Zul) -- Avoidable? 
+-- TODO: Bloody Cleave (Nazmani Crusher) -- For tanks only, cleave
+-- TODO: Essence Shear (Mythrax the Unraveler) -- For tanks only?
+-- TODO: Obliteration Blast (Mythrax the Unraveler) 
+-- TODO: Virulent Corruption (G'huun)
+-- TODO: Dark Bargain (G'huun)
+-- TODO: Tendrils of Corruption (G'huun) -- Mythic only
+-- TODO: Wave of Corruption (G'huun)
+-- TODO: Gaze of G'huun (G'huun)
+-- TODO: Explosive Corruption (G'huun) -- If standing too close to a player that's infected, not for the infected
+
+
 
