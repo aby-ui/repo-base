@@ -642,8 +642,10 @@ local function SetHooks()
 				if not questState[block.id] or questState[block.id] ~= "complete" then
 					if db.messageQuest then
 						KT:SetMessage(block.title, 0, 1, 0, ERR_QUEST_COMPLETE_S, "Interface\\GossipFrame\\ActiveQuestIcon", -2, 0)
-                    end
-                    KT:PlaySound(db.soundQuestComplete)
+					end
+					if db.soundQuest then
+						KT:PlaySound(db.soundQuestComplete)
+					end
 					questState[block.id] = "complete"
 				end
 			elseif strfind(objectiveKey, "Failed") then
@@ -1059,7 +1061,7 @@ local function SetHooks()
 
 	local bck_WORLD_QUEST_TRACKER_MODULE_OnFreeBlock = WORLD_QUEST_TRACKER_MODULE.OnFreeBlock
 	function WORLD_QUEST_TRACKER_MODULE:OnFreeBlock(block)
-		if KT.initialized and KT.activeTask == block.id then
+		if KT.activeTask == block.id then
 			KT.activeTask = nil
 		end
 		KT:RemoveFixedButton(block)
@@ -1068,7 +1070,7 @@ local function SetHooks()
 
     local bck_BONUS_OBJECTIVE_TRACKER_MODULE_OnFreeBlock = BONUS_OBJECTIVE_TRACKER_MODULE.OnFreeBlock
     function BONUS_OBJECTIVE_TRACKER_MODULE:OnFreeBlock(block)
-        if KT.initialized and KT.activeTask == block.id then
+        if KT.activeTask == block.id then
             KT.activeTask = nil
         end
         KT:RemoveFixedButton(block)
@@ -1303,9 +1305,12 @@ local function SetHooks()
 			_DBG(" - "..state)
 			KT.activeTask = block.id
 			KT:ToggleEmptyTracker(true)
-		elseif state == "PRESENT" then
+		elseif state == "PRESENT" and not KT.activeTask then
 			_DBG(" - "..state)
 			KT.activeTask = block.id
+			if not IsWorldQuestWatched(block.id) then
+				KT:ToggleEmptyTracker(KT.initialized)
+			end
 		elseif state == "LEAVING" and KT.activeTask then
 			_DBG(" - "..state)
 			KT:RemoveFixedButton(block)
@@ -1990,7 +1995,7 @@ function KT:CreateQuestTag(level, questTag, frequency, suggestedGroup)
 
 	if questTag == Enum.QuestTag.Group then
 		tag = "g"
-		if suggestedGroup then
+		if suggestedGroup > 0 then
 			tag = tag..suggestedGroup
 		end
 	elseif questTag == Enum.QuestTag.Pvp then

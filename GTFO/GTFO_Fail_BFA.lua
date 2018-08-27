@@ -602,13 +602,44 @@ GTFO.SpellID["255371"] = {
 -- * Siege of Boralus *
 -- ********************
 
--- TODO: Gore Crash (Chopper Redhook) -- Avoidable?  Different spell IDs for Knockback vs. non-knockback?
+GTFO.SpellID["256866"] = {
+  --desc = "Iron Ambush (Riptide Shredder)";
+  sound = 3;
+  applicationOnly = true;
+};
+
+GTFO.SpellID["272426"] = {
+  --desc = "Sighted Artillery";
+  sound = 3;
+};
+
+GTFO.SpellID["274942"] = {
+  --desc = "Banana Rampage";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["272713"] = {
+  --desc = "Crushing Slam (Bilge Rat Demolisher)";
+  sound = 3;
+};
+
+GTFO.SpellID["277535"] = {
+  --desc = "Viq'Goth's Wrath (Viq'Goth)";
+  sound = 3;
+};
+
 -- TODO: Cannon Barrage (Chopper Redhook) -- Avoidable?
 -- TODO: Heavy Slash (Irontide Cleaver) -- Non-Tank only? Avoidable?
 -- TODO: Clear the Deck (Dread Captain Lockwood) -- Non-Tank only? Avoidable?
 -- TODO: Crimson Swipe (Ashvane Deckhand) -- Non-Tank only? Avoidable?
 -- TODO: Broadside (Ashvane Cannoneer) -- Avoidable?
--- TODO: Crashing Tide (Hadal Darkfathom) -- Avoidable?
+
+GTFO.SpellID["261565"] = {
+  --desc = "Crashing Tide (Hadal Darkfathom)";
+  sound = 3;
+  tankSound = 0;
+};
 
 GTFO.SpellID["257883"] = {
   --desc = "Break Water (Hadal Darkfathom)";
@@ -616,9 +647,17 @@ GTFO.SpellID["257883"] = {
   test = true;
 };
 
--- TODO: Eradication (Viq'Goth) -- Avoidable?
--- TODO: Slam (Demolishing Terror) -- Avoidable?
+GTFO.SpellID["276042"] = {
+  --desc = "Tidal Surge";
+  sound = 3;
+};
 
+-- TODO: Eradication (Viq'Goth) -- Avoidable?
+
+GTFO.SpellID["269266"] = {
+  --desc = "Slam (Demolishing Terror)";
+  sound = 3;
+};
 
 -- *********
 -- * Uldir *
@@ -627,6 +666,7 @@ GTFO.SpellID["257883"] = {
 -- TODO: Retrieve Cudgel (Taloc) -- Charge attack, avoidable?
 -- TODO: Sanguine Static (Taloc) -- Line attack, avoidable?
 -- TODO: Hardened Arteries (Taloc) -- Explosion, avoidable?
+-- TODO: Purifying Flame (MOTHER)
 -- TODO: Spreading Epidemic (MOTHER) -- What does this do?
 -- TODO: Sanitizing Strike (MOTHER) -- For tanks only, stack tracking
 -- TODO: Rotting Regurgitation (Fetid Devourer) -- Avoidable?

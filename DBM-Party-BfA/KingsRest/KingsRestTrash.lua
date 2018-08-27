@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("KingsRestTrash", "DBM-Party-BfA", 3)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17732 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 17734 $"):sub(12, -3))
 --mod:SetModelID(47785)
 mod:SetZone()
 
@@ -79,7 +79,7 @@ function mod:SPELL_CAST_START(args)
 		specWarnPurificationStrike:Play("watchstep")
 	elseif spellId == 270284 then
 		specWarnPurificationBeam:Show()
-		specWarnPurificationBeam:Play("getbehind")
+		specWarnPurificationBeam:Play("behindmob")
 	elseif spellId == 270514 then
 		specWarnGroundCrush:Show()
 		specWarnGroundCrush:Play("watchstep")

@@ -357,13 +357,18 @@ GTFO.SpellID["267874"] = {
 -- * Siege of Boralus *
 -- ********************
 
-GTFO.SpellID["257886"] = {
-  --desc = "Brine Pools (Hadal Darkfathom)";
+GTFO.SpellID["256663"] = {
+  --desc = "Burning Tar";
   sound = 1;
 };
 
-GTFO.SpellID["280485"] = {
-  --desc = "Crushing Embrace (Viq'Goth)";
+GTFO.SpellID["272140"] = {
+  --desc = "Iron Volley";
+  sound = 1;
+};
+
+GTFO.SpellID["257886"] = {
+  --desc = "Brine Pools (Hadal Darkfathom)";
   sound = 1;
 };
 
@@ -377,7 +382,7 @@ GTFO.SpellID["270290"] = {
   test = true;
 };
 
--- TODO: Purifying Flame (MOTHER)
+-- TODO: Plasma Discharge (Taloc) -- Alert when standing next to someone that has it
 -- TODO: Ruptured Blood (Zul) -- Supposed to avoid this?
 
 GTFO.SpellID["274113"] = {

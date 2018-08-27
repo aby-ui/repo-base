@@ -103,6 +103,7 @@ local defaults = {
 		messageAchievement = true,
 		sink20OutputSink = "UIErrorsFrame",
 		sink20Sticky = false,
+		soundQuest = false,
 		soundQuestComplete = "KT - Default",
 
 		modulesOrder = {
@@ -1063,11 +1064,12 @@ local options = {
 					inline = true,
 					order = 8,
 					args = {
-						soundQuestLabel = {
-							name = " Quest",
-							type = "description",
-							width = "half",
-							fontSize = "medium",
+						soundQuest = {
+							name = "Quest sounds",
+							type = "toggle",
+							set = function()
+								db.soundQuest = not db.soundQuest
+							end,
 							order = 8.1,
 						},
 						soundQuestComplete = {
@@ -1075,6 +1077,9 @@ local options = {
 							desc = "Addon sounds are prefixed \"KT - \".",
 							type = "select",
 							width = 1.2,
+							disabled = function()
+								return not db.soundQuest
+							end,
 							dialogControl = "LSM30_Sound",
 							values = WidgetLists.sound,
 							set = function(_, value)

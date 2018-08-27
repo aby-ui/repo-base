@@ -354,6 +354,8 @@ local templates = {
     title = L["Default"],
     icon = "Interface\\ICONS\\Temp.blp",
     data = {
+      cooldown = true,
+      inverse = true,
     };
   },
   {
@@ -363,7 +365,8 @@ local templates = {
     data = {
       width = 20,
       height = 20,
-      cooldown = true
+      cooldown = true,
+      inverse = true,
     };
   },
   {
@@ -373,7 +376,8 @@ local templates = {
     data = {
       width = 32,
       height = 32,
-      cooldown = true
+      cooldown = true,
+      inverse = true,
     };
   },
   {
@@ -383,7 +387,8 @@ local templates = {
     data = {
       width = 40,
       height = 40,
-      cooldown = true
+      cooldown = true,
+      inverse = true,
     };
   },
   {
@@ -393,7 +398,8 @@ local templates = {
     data = {
       width = 48,
       height = 48,
-      cooldown = true
+      cooldown = true,
+      inverse = true,
     };
   },
   {
@@ -403,7 +409,8 @@ local templates = {
     data = {
       width = 64,
       height = 64,
-      cooldown = true
+      cooldown = true,
+      inverse = true,
     };
   }
 }

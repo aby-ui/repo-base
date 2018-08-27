@@ -123,6 +123,9 @@ local function CreateFrameSizer(frame, callback, position)
   return handle
 end
 
+local defaultWidth = 730
+local defaultHeight = 665
+
 function WeakAuras.CreateFrame()
   local WeakAuras_DropDownMenu = CreateFrame("frame", "WeakAuras_DropDownMenu", nil, "UIDropDownMenuTemplate");
   local frame;
@@ -152,8 +155,8 @@ function WeakAuras.CreateFrame()
     xOffset, yOffset = db.frame.xOffset, db.frame.yOffset;
   end
   if not(xOffset and yOffset) then
-    xOffset = (610 - GetScreenWidth()) / 2;
-    yOffset = (492 - GetScreenHeight()) / 2;
+    xOffset = (defaultWidth - GetScreenWidth()) / 2;
+    yOffset = (defaultHeight - GetScreenHeight()) / 2;
   end
   frame:SetPoint("TOPRIGHT", UIParent, "TOPRIGHT", xOffset, yOffset);
   frame:Hide();
@@ -191,7 +194,7 @@ function WeakAuras.CreateFrame()
     width, height = db.frame.width, db.frame.height;
   end
   if not(width and height) then
-    width, height = 630, 492;
+    width, height = defaultWidth, defaultHeight;
   end
   frame:SetWidth(width);
   frame:SetHeight(height);
@@ -420,7 +423,7 @@ function WeakAuras.CreateFrame()
   searchIcon:SetWidth(14);
   searchIcon:SetHeight(14);
   searchIcon:SetPoint("left", filterInput, "left", 2, -2);
-  filterInput:SetFont("Fonts\\FRIZQT__.TTF", 10);
+  filterInput:SetFont(STANDARD_TEXT_FONT, 10);
   frame.filterInput = filterInput;
   filterInput:Hide();
 
@@ -679,14 +682,32 @@ function WeakAuras.CreateFrame()
       container:AddChild(containerScroll);
 
       if(GetAddOnEnableState(UnitName("player"), "WeakAurasTemplates") ~= 0) then
+        local simpleLabel = AceGUI:Create("Label");
+        simpleLabel:SetFont(STANDARD_TEXT_FONT, 36, "OUTLINE");
+        simpleLabel:SetColor(NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b);
+        simpleLabel:SetText(L["Simple"]);
+        simpleLabel:SetFullWidth(true)
+        containerScroll:AddChild(simpleLabel);
+
         local button = AceGUI:Create("WeakAurasNewButton");
-        button:SetTitle(L["From Template"]);
+        button:SetTitle('|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0|t' .. L["From Template"]);
         button:SetDescription(L["Offer a guided way to create auras for your class"])
         button:SetIcon("Interface\\Icons\\INV_Misc_Book_06");
         button:SetClick(function()
           WeakAuras.OpenTriggerTemplate();
         end);
         containerScroll:AddChild(button);
+
+        local spacer1Label = AceGUI:Create("Label");
+        spacer1Label:SetText("")
+        containerScroll:AddChild(spacer1Label)
+
+        local advancedLabel = AceGUI:Create("Label");
+        advancedLabel:SetFont(STANDARD_TEXT_FONT, 36, "OUTLINE");
+        advancedLabel:SetColor(NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b);
+        advancedLabel:SetText(L["Advanced"]);
+        advancedLabel:SetFullWidth(true)
+        containerScroll:AddChild(advancedLabel);
       end
 
       for regionType, regionData in pairs(regionOptions) do
@@ -710,6 +731,22 @@ function WeakAuras.CreateFrame()
         end);
         containerScroll:AddChild(button);
       end
+
+      local spacer2Label = AceGUI:Create("Label");
+      spacer2Label:SetText("")
+      containerScroll:AddChild(spacer2Label)
+
+      local externalLabel = AceGUI:Create("Label");
+      externalLabel:SetFont(STANDARD_TEXT_FONT, 36, "OUTLINE");
+      externalLabel:SetColor(NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b);
+      externalLabel:SetText(L["External"]);
+      externalLabel:SetFullWidth(true)
+      containerScroll:AddChild(externalLabel);
+
+      local spacer3Label = AceGUI:Create("Label");
+      spacer3Label:SetText("")
+      containerScroll:AddChild(spacer3Label)
+
       local importButton = AceGUI:Create("WeakAurasNewButton");
       importButton:SetTitle(L["Import"]);
 

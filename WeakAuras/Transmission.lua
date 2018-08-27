@@ -381,12 +381,16 @@ local function importPendingData()
   local indexMap = pendingData.indexMap
 
   -- cleanup the mess
-  WeakAuras.CloseImportExport()
   HideUIPanel(ItemRefTooltip) -- this also wipes pendingData as a side effect
   buttonAnchor:Hide()
   thumbnailAnchor.currentThumbnail:Hide()
   thumbnailAnchor.currentThumbnail = nil
-  if not imports then return end
+  if imports and WeakAuras.LoadOptions() then
+    WeakAuras.ShowOptions()
+  else
+    return
+  end
+  WeakAuras.CloseImportExport()
   WeakAuras.SetImporting(true)
 
   -- import parent/single aura
@@ -551,9 +555,6 @@ local function importPendingData()
     WeakAuras.ReloadGroupRegionOptions(parentData)
     WeakAuras.SortDisplayButtons()
   end
-  if not WeakAuras.IsOptionsOpen() then
-    WeakAuras.ShowOptions()
-  end
   WeakAuras.SetImporting(false)
   WeakAuras.PickDisplay(installedData[0].id)
 end
@@ -561,6 +562,9 @@ end
 ItemRefTooltip:HookScript("OnHide", function(self)
   buttonAnchor:Hide()
   wipe(pendingData)
+  if (ItemRefTooltip.WeakAuras_Desc_Box) then
+    ItemRefTooltip.WeakAuras_Desc_Box:Hide();
+  end
 end)
 
 importButton:SetScript("OnClick", function()
@@ -1599,7 +1603,7 @@ function WeakAuras.ShowDisplayTooltip(data, children, icon, icons, import, compr
     end
     descbox:SetPoint("BOTTOMLEFT", descboxframe, "BOTTOMLEFT", 8, 8);
     descbox:SetPoint("TOPRIGHT", descboxframe, "TOPRIGHT", -8, -8);
-    descbox:SetFont("Fonts\\FRIZQT__.TTF", 12);
+    descbox:SetFont(STANDARD_TEXT_FONT, 12);
     descbox:EnableMouse(true);
     descbox:SetAutoFocus(false);
     descbox:SetCountInvisibleLetters(false);
@@ -1659,10 +1663,6 @@ function WeakAuras.ShowDisplayTooltip(data, children, icon, icons, import, compr
       descbox:SetScript("OnMouseUp", nil);
     end
 
-    descbox:SetFocus();
-    if (alterdesc == "url") then
-      descbox:HighlightText();
-    end
     descbox:Show();
   elseif ItemRefTooltip.WeakAuras_Desc_Box then
     ItemRefTooltip.WeakAuras_Desc_Box:Hide()
@@ -1691,6 +1691,13 @@ function WeakAuras.ShowDisplayTooltip(data, children, icon, icons, import, compr
   end
   WeakAuras.GetData = RegularGetData or WeakAuras.GetData
   ShowTooltip(tooltip, linesFromTop, match and match.activeCategories)
+
+  if alterdesc then
+    ItemRefTooltip.WeakAuras_Desc_Box.descbox:SetFocus();
+    if (alterdesc == "url") then
+      ItemRefTooltip.WeakAuras_Desc_Box.descbox:HighlightText();
+    end
+  end
 end
 
 function WeakAuras.ImportString(str)

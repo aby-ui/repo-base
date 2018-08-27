@@ -95,7 +95,7 @@ local function SetHooks()
 	-- WorldMap (for hacked Sushi Lib)
 	hooksecurefunc(PetTracker.MapFilter, "Init", function(self, frame)
 		if not filterButton then
-			for i, overlay in ipairs(frame.overlayFrames) do
+			for i, overlay in ipairs(frame.overlayFrames or {}) do
 				if overlay.OnClick == WorldMapTrackingOptionsButtonMixin.OnClick then
 					filterButton = overlay
 					break

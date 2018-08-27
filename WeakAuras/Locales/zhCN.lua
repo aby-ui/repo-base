@@ -5,12 +5,9 @@ end
 local L = WeakAuras.L
 
 -- WeakAuras
---[[Translation missing --]]
-L["   • %d auras added"] = "   • %d auras added"
---[[Translation missing --]]
-L["   • %d auras deleted"] = "   • %d auras deleted"
---[[Translation missing --]]
-L["   • %d auras modified"] = "   • %d auras modified"
+L["   • %d auras added"] = "• %d 个光环被添加"
+L["   • %d auras deleted"] = "• %d 个光环被删除"
+L["   • %d auras modified"] = "• %d 个光环被修改"
 L["!="] = "≠"
 L["%s - %i. Trigger"] = "%s - %i. 触发器"
 L["%s - 1. Trigger"] = "%s - 1. 触发器"
@@ -65,8 +62,7 @@ L["Active"] = "活跃"
 --[[Translation missing --]]
 L["Add Missing Auras"] = "Add Missing Auras"
 L["Additional Trigger Replacements"] = "额外触发器替代品"
---[[Translation missing --]]
-L["Adjust Timer"] = "Adjust Timer"
+L["Adjust Timer"] = "调整计时器"
 L["Affected"] = "受到影响"
 L["Aggro"] = "引起仇恨"
 L["Alert Type"] = "警报类型"
@@ -74,8 +70,7 @@ L["Alive"] = "存活"
 L["All Triggers"] = "全部符合"
 L["Alliance"] = "联盟"
 L["Allow partial matches"] = "允许部分匹配"
---[[Translation missing --]]
-L["Alpha"] = "Alpha"
+L["Alpha"] = "透明度"
 L["Alternate Power"] = "特殊能量(BOSS战中)"
 L["Always"] = "总是"
 L["Always active trigger"] = "总是启用触发器"
@@ -811,36 +806,24 @@ L["Unit is Unit"] = "Unit is Unit"
 L["Up"] = "上"
 --[[Translation missing --]]
 L["Update Auras"] = "Update Auras"
---[[Translation missing --]]
-L["Values/Remaining Time above this value are displayed as full progress."] = "Values/Remaining Time above this value are displayed as full progress."
---[[Translation missing --]]
-L["Values/Remaining Time below this value are displayed as no progress."] = "Values/Remaining Time below this value are displayed as no progress."
---[[Translation missing --]]
-L["Version: "] = "Version: "
+L["Values/Remaining Time above this value are displayed as full progress."] = "值/剩余时间高于此值的将会被完整显示。"
+L["Values/Remaining Time below this value are displayed as no progress."] = "值/剩余时间高于此值的将不会被显示。"
+L["Version: "] = "版本："
 L["Waist"] = "腰部"
---[[Translation missing --]]
-L["War Mode Active"] = "War Mode Active"
+L["War Mode Active"] = "开启了战争模式"
 L["Weapon"] = "武器"
 L["Weapon Enchant"] = "武器附魔"
---[[Translation missing --]]
-L["What do you want to do?"] = "What do you want to do?"
+L["What do you want to do?"] = "想做点什么？"
 L["Whisper"] = "密语"
 L["Width"] = "宽度"
 L["Wobble"] = "摇晃"
---[[Translation missing --]]
-L["Wrap"] = "Wrap"
+L["Wrap"] = "折叠"
 L["Wrist"] = "手腕"
---[[Translation missing --]]
-L["X-Offset"] = "X-Offset"
+L["X-Offset"] = "X 偏移"
 L["Yell"] = "大喊"
---[[Translation missing --]]
-L["Y-Offset"] = "Y-Offset"
---[[Translation missing --]]
-L["You already have this group/aura. Importing will create a duplicate."] = "You already have this group/aura. Importing will create a duplicate."
---[[Translation missing --]]
-L["Zone Group ID(s)"] = "Zone Group ID(s)"
---[[Translation missing --]]
-L["Zone ID(s)"] = "Zone ID(s)"
---[[Translation missing --]]
-L["Zone Name"] = "Zone Name"
+L["Y-Offset"] = "Y 偏移"
+L["You already have this group/aura. Importing will create a duplicate."] = "此组/光环已经存在，继续导入将会复制这些数据。"
+L["Zone Group ID(s)"] = "单个/多个区域组 ID"
+L["Zone ID(s)"] = "单个/多个区域 ID"
+L["Zone Name"] = "区域名称"
 

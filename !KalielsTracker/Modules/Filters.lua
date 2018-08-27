@@ -464,11 +464,11 @@ function DropDown_Initialize(self, level)
 		MSA_DropDownMenu_AddButton(info)
 
 		info.isTitle = false
-		info.disabled = (db.filterAuto[1] or numQuests == 0)
+		info.disabled = (db.filterAuto[1])
 		info.func = Filter_Quests
 
 		info.text = L"All".." ("..numQuests..")"
-		info.hasArrow = not (db.filterAuto[1] or numQuests == 0)
+		info.hasArrow = not (db.filterAuto[1])
 		info.value = 1
 		info.arg1 = "all"
 		MSA_DropDownMenu_AddButton(info)
