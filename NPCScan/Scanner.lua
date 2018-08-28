@@ -49,7 +49,7 @@ do
 		NPCScan:DispatchSensoryCues()
 		NPCScan:SendMessage(EventMessage.DetectedNPC, detectionData)
 
-		-- TODO: Make the Overlays object listen for the NPCScan_DetectedNPC message and run its own methods
+		-- TODO: Make the Overlays object listen for the DetectedNPC message and run its own methods
 		private.Overlays.Found(npcID)
 		private.Overlays.Remove(npcID)
 	end
@@ -305,7 +305,7 @@ do
 
 		local vignetteInfo = _G.C_VignetteInfo.GetVignetteInfo(vignetteGUID);
 
-		if not vignetteInfo then
+		if not vignetteInfo or vignetteInfo.atlasName == "VignetteLoot" then
 			return
 		end
 
@@ -328,25 +328,26 @@ do
 		end
 
 		local vignetteNPC = private.VignetteIDToNPCMapping[vignetteInfo.vignetteID]
+		local vignetteName = vignetteInfo.name
 
 		if vignetteNPC then
 			if Data.Scanner.NPCs[vignetteNPC.npcID] then
 				ProcessDetection({
 					npcID = vignetteNPC.npcID,
-					sourceText = sourceText
+					sourceText = sourceText,
+					vignetteName = vignetteName,
 				})
 			end
 		else
 			private.Debug("Unknown vignette: %s - vignetteID %d (NPC ID %d) in mapID %d", vignetteInfo.name, vignetteInfo.vignetteID, npcID or -1, _G.C_Map.GetBestMapForUnit("player"))
 		end
 
-		local vignetteName = vignetteInfo.name
 		local questID = private.QuestIDFromName[vignetteName]
 
 		if questID then
-			for ID in pairs(private.QuestNPCs[questID]) do
+			for questNPCID in pairs(private.QuestNPCs[questID]) do
 				ProcessDetection({
-					npcID = ID,
+					npcID = questNPCID,
 					sourceText = sourceText
 				})
 			end

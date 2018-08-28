@@ -128,12 +128,17 @@ GTFO.SpellID["269419"] = {
   sound = 1;
 };
 
+GTFO.SpellID["279249"] = {
+  --desc = "Tiki Blaze";
+  sound = 1;
+};
+
 -- ******************
 -- * Waycrest Manor *
 -- ******************
 
 GTFO.SpellID["264712"] = {
-  --desc = "Rotten Expulsion (nil)";
+  --desc = "Rotten Expulsion";
   applicationOnly = true;
   sound = 1;
 };
@@ -308,7 +313,7 @@ GTFO.SpellID["260279"] = {
 -- **************
 
 GTFO.SpellID["255842"] = {
-  --desc = "Blood-Tainted Cauldron of Gold (nil)";
+  --desc = "Blood-Tainted Cauldron of Gold";
   sound = 1;
 };
 

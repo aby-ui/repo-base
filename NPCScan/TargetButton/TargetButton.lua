@@ -238,7 +238,12 @@ function TargetButton:Activate(data)
 	self.npcName = data.npcName
 
 	self:SetSpecialText()
-	self.SourceText:SetText(data.sourceText)
+
+	if data.vignetteName then
+		self.SourceText:SetText(("%s %s"):format(data.sourceText, _G.PARENS_TEMPLATE:format(data.vignetteName)))
+	else
+		self.SourceText:SetText(data.sourceText)
+	end
 
 	if data.unitToken then
 		self.PortraitModel:SetUnit(data.unitToken)

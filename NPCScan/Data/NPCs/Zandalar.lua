@@ -35,7 +35,7 @@ NPCs[125214] = { -- Krubbs
 
 NPCs[125232] = { -- Captain Mu'kala
 	achievementQuestID = 48057, -- Cursed Chest
-	vignetteID = 2030, -- Cursed Chest
+	vignetteID = 2029, -- The Cursed Chest
 }
 
 NPCs[125250] = { -- Ancient Jawbreaker

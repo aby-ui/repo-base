@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2169, "DBM-Uldir", nil, 1031)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17651 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 17735 $"):sub(12, -3))
 mod:SetCreatureID(134445)--Zek'vhozj, 134503/qiraji-warrior
 mod:SetEncounterID(2136)
 --mod:DisableESCombatDetection()
@@ -106,8 +106,8 @@ function mod:OnCombatStart(delay)
 	countdownMightofVoid:Start(15-delay)
 	timerSurgingDarknessCD:Start(25-delay)
 	countdownSurgingDarkness:Start(25)
-	timerQirajiWarriorCD:Start(70-delay)--Despite what journal says, this is always 70 regardless
-	--timerEyeBeamCD:Start(96-delay)--Iffy
+	timerQirajiWarriorCD:Start(58-delay)--Despite what journal says, this is always 58 regardless
+	--timerEyeBeamCD:Start(54-delay)--Iffy
 	if self.Options.InfoFrame then
 		DBM.InfoFrame:SetHeader(DBM_CORE_INFOFRAME_POWER)
 		DBM.InfoFrame:Show(4, "enemypower", 2)
@@ -271,7 +271,7 @@ end
 
 function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 	if spellId == 266913 then--Spawn Qiraji Warrior
-		--timerQirajiWarriorCD:Start()
+		timerQirajiWarriorCD:Start()
 	elseif spellId == 267192 then--Spawn Anub'ar Caster
 		timerAnubarCasterCD:Start()
 	elseif spellId == 265437 then--Roiling Deceit

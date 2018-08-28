@@ -203,6 +203,17 @@ GTFO.SpellID["275243"] = {
   sound = 3;
 };
 
+GTFO.SpellID["271805"] = {
+  --desc = "Rez'okun's Rake (Captain Rez'okun)";
+  sound = 3;
+};
+
+GTFO.SpellID["259669"] = {
+  --desc = "Slowed by Snow";
+  applicationOnly = true;
+  sound = 3;
+};
+
 
 -- ***********************
 -- * Shrine of the Storm *

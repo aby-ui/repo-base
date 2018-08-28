@@ -346,6 +346,7 @@ function GridStatusRaidDebuff:CheckDetectZone()
 	if detectStatus then
 		self:CreateZoneMenu(realzone)
 		if not debuff_list[realzone] then debuff_list[realzone] = {} end
+    -- FIXME
 		self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED", "ScanNewDebuff")
 	else
 		self:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
@@ -443,42 +444,47 @@ function GridStatusRaidDebuff:UpdateAllUnits()
 	end
 end
 
-function GridStatusRaidDebuff:ScanNewDebuff(e)
-    local ts, event, hideCaster, srcguid, srcname, srcflg, srcraidflg, dstguid, dstname, dstflg, dstraidflg, spellId, name, _, buffType= CombatLogGetCurrentEventInfo()
-	if not name then return end
+function GridStatusRaidDebuff:ScanNewDebuff(unitid, guid)
+    local timestamp, event, hideCaster, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destFlags, destRaidFlags, spellId, spellName, spellSchool, amount, overkill, school, resisted, blocked, absorbed, critical, glancing, crushing = CombatLogGetCurrentEventInfo()
+	if not spellName then return end
 	local settings = self.db.profile["alert_RaidDebuff"]
 	if (settings.enable and debuff_list[realzone]) then
-		if event == "SPELL_AURA_APPLIED" and srcguid and not GridRoster:IsGUIDInRaid(srcguid) and GridRoster:IsGUIDInRaid(dstguid)
-			and not debuff_list[realzone][name] then
+		if sourceGUID and event == "SPELL_AURA_APPLIED" and not GridRoster:IsGUIDInGroup(sourceGUID) and GridRoster:IsGUIDInGroup(destGUID)
+			and not debuff_list[realzone][spellName] then
 			if ignore_ids[spellId] then return end --Ignore Dazed
 
 			-- Filter out non-debuff effects, only debuff effects are shown
 			-- No reason to detect buffs too
 			local unitid, debuff
-			unitid = GridRoster:GetUnitidByGUID(dstguid)
-			debuff = buffType == 'DEBUFF' --aby8
-			--if (UnitDebuff(unitid, name)) then
-			--	debuff = true
-			-- else
-			-- 	self:Debug("Debuff not found", name)
-			--end
+			unitid = GridRoster:GetUnitidByGUID(destGUID)
+			debuff = amount == 'DEBUFF' --aby8
+			--[[
+			debuff = false
+            for i=1,40 do
+			    if (UnitDebuff(unitid, i)) then
+			    	debuff = true
+			     else
+			     	self:Debug("Debuff not found", spellName)
+			    end
+            end
+			--]]
 			if not debuff then return end
 
-			self:Debug("New Debuff", srcname, dstname, name, unitid, tostring(debuff))
-			-- self:Debug("New Debuff", srcname, dstname, name)
+			self:Debug("New Debuff", sourceName, destName, spellName, unitid, tostring(debuff))
 
-			self:DebuffLocale(realzone, name, spellId, 5, 5, true, true)
+			self:DebuffLocale(realzone, spellName, spellId, 5, 5, true, true)
 			if not self.db.profile.detected_debuff[realzone] then self.db.profile.detected_debuff[realzone] = {} end
-			if not self.db.profile.detected_debuff[realzone][name] then self.db.profile.detected_debuff[realzone][name] = spellId end
+			if not self.db.profile.detected_debuff[realzone][spellName] then self.db.profile.detected_debuff[realzone][spellName] = spellId end
 
-			self:LoadZoneDebuff(realzone, name)
+            self:LoadZoneDebuff(realzone, spellName)
+			
 		end
 	end
 end
 
 function GridStatusRaidDebuff:ScanUnit(unitid, unitGuid)
 	local guid = unitGuid or UnitGUID(unitid)
-	--if not GridRoster:IsGUIDInRaid(guid) then	return end
+	--if not GridRoster:IsGUIDInGroup(guid) then	return end
 
 	local name, rank, icon, count, debuffType, duration, expirationTime, caster, isStealable, shouldConsolidate, spellId
 	local settings = self.db.profile["alert_RaidDebuff"]

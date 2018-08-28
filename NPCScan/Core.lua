@@ -196,7 +196,7 @@ function NPCScan:OnEnable()
 					if not mapHeaderPrinted then
 						mapHeaderPrinted = true
 						private.Debug("-- ----------------------------------------------------------------------------")
-						private.Debug("-- %s (%d)", HereBeDragons:GetLocalizedMap(mapID), mapID)
+						private.Debug("-- %s (%d)", HereBeDragons:GetLocalizedMap(mapID) or _G.UNKNOWN, mapID)
 						private.Debug("-- ----------------------------------------------------------------------------")
 					end
 

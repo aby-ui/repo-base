@@ -1,3 +1,4 @@
+if(GetLocale()~='zhTW')then return end
 AtlasLootReverseDBx = {
 ["whoTable"] = {
 [145376] = 1244,

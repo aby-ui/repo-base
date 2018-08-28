@@ -39,6 +39,7 @@ local function GetSavedInstances()
 
     for i = 1, GetNumSavedInstances() do
         local name, id, _, difficulty, locked, extended, _, isRaid, maxPlayers, difficultyName, numEncounters, encounterProgress = GetSavedInstanceInfo(i);
+        if name == "围攻伯拉勒斯" then numEncounters = 4 end
         local instances = isRaid and db.raids or db.dungeons;
 
         if instances[name] == nil then

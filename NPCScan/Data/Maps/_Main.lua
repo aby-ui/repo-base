@@ -141,6 +141,7 @@ local MapID = {
 	TownlongSteppes = 388,
 	TwilightHighlands = 241,
 	Uldum = 249,
+	UnchartedIsland = 1022,
 	UnGoroCrater = 78,
 	UpperBlackrockSpire = 616,
 	ValeOfEternalBlossoms = 390,
