@@ -100,7 +100,7 @@ do
 				tutorial = 0,
 				argus_min_itemlevel = 830, --deprecated
 				ignored_quests = {},
-				send_whispers = true,
+				send_whispers = false,
 				dont_open_in_group = true,
 			},
 

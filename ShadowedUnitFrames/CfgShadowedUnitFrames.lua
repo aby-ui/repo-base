@@ -63,7 +63,7 @@ U1RegisterAddon("ShadowedUnitFrames", {
         type = 'radio',
         var = 'prestyle',
         default = (GetScreenWidth() <= 1280) and "COMPACT" or "MINI",
-        options = {'简介文字型', 'TEXT', '头像贯通型', 'CENTER', "左右头像型", "SIDE"},
+        options = {'简洁文字型', 'TEXT', '头像贯通型', 'CENTER', "左右头像型", "SIDE"},
         secure = 1,
         confirm = "注意：当前SUF设置将重置，您是否确定？",
         tip = "说明`爱不易预设了几套方案，感谢群友叶心安提供的配置。注意，每次切换方案会把当前方案保存在'爱不易备份'方案中，可以恢复，但连续切换就无法恢复了。",

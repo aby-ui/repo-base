@@ -13,7 +13,7 @@ U1RegisterAddon("163UI_Chat", {
     ------- Options --------
     {
         var="worldchannel",
-        default = 1,
+        default = false,
         text="加入世界频道",
         callback = function(cfg, v, loading)
             if v then

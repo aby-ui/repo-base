@@ -648,6 +648,7 @@ DF.CrowdControlSpells = {
 	[19577] = "HUNTER", --Intimidation
 	[190927] = "HUNTER", --Harpoon
 	[162480] = "HUNTER", --Steel Trap
+	[24394] = "HUNTER", --Intimidation
 	
 	[119381] = "MONK", --Leg Sweep
 	[115078] = "MONK", --Paralysis

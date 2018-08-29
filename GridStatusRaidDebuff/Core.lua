@@ -732,8 +732,12 @@ function GridStatusRaidDebuff:LoadZoneDebuff(zone, name)
 	local args = self.options.args[zone].args
 
 	-- Code by Mikk
-	k = debuff_list[zone][name]
-	local order = k.order
+    if debuff_list[zone] and debuff_list[zone][name] then
+	    k = debuff_list[zone][name]
+    end
+    if k then
+	    local order = k.order
+    end
 	-- Make it sorted by name. Values become 9999.0 -- 9999.99999999
 	if order==9999 then
 		local a,b,c = string.byte(name, 1, 3)
@@ -741,7 +745,7 @@ function GridStatusRaidDebuff:LoadZoneDebuff(zone, name)
 	end
 	-- End of code by Mikk
 
-	if not args[name] then
+	if not args[name] and k then
 		description = L["Enable %s"]:format(name)
 
 		tip:SetHyperlink("spell:"..k.debuffId)

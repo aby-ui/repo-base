@@ -214,6 +214,27 @@ GTFO.SpellID["259669"] = {
   sound = 3;
 };
 
+GTFO.SpellID["278177"] = {
+  --desc = "Trample (Evergrove Keeper)";
+  sound = 3;
+};
+
+GTFO.SpellID["257880"] = {
+  --desc = "Aquabomb (Deepsea Tidecrusher)";
+  sound = 3;
+};
+
+GTFO.SpellID["270814"] = {
+  --desc = "Hydro Eruption (Deepsea Tidecrusher)";
+  sound = 3;
+};
+
+GTFO.SpellID["265721"] = {
+  --desc = "Web Spray (Ironweb Weaver)";
+  sound = 3;
+  applicationOnly = true;
+};
+
 
 -- ***********************
 -- * Shrine of the Storm *

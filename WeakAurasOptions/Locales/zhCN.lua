@@ -115,8 +115,7 @@ local L = WeakAuras.L
 	L["Collapse all non-loaded displays"] = "折叠所有未载入的图示"
 	L["Color"] = "颜色"
 	L["color"] = "颜色"
-	--[[Translation missing --]]
-	L["Combinations"] = "Combinations"
+	L["Combinations"] = "组合"
 	L["Common Options"] = "一般选项"
 	L["Compress"] = "压缩"
 	L["Condition %i"] = "条件 %i"
