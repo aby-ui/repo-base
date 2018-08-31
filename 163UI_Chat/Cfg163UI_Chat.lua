@@ -27,6 +27,10 @@ U1RegisterAddon("163UI_Chat", {
             else
                 LeaveChannelByName(U1_CHAT_WORLD_CHANNEL)
             end
+            if DuowanChat and DuowanChat.SetBFChannelMuted and dwChannel_RefreshMuteButton then
+                DuowanChat:SetBFChannelMuted(not v)
+                dwChannel_RefreshMuteButton()
+            end
         end,
     },
 
