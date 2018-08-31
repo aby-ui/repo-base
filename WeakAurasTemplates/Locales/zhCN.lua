@@ -9,85 +9,52 @@ local L = WeakAuras.L
 	L["Add Triggers"] = "添加触发器"
 	L["Always Active"] = "总是激活"
 	L["Always Show"] = "总是显示"
-	--[[Translation missing --]]
-	L["Always show the aura, highlight it if debuffed."] = "Always show the aura, highlight it if debuffed."
-	--[[Translation missing --]]
-	L["Always show the aura, turns grey if on cooldown."] = "Always show the aura, turns grey if on cooldown."
-	--[[Translation missing --]]
-	L["Always show the aura, turns grey if the debuff not active."] = "Always show the aura, turns grey if the debuff not active."
-	--[[Translation missing --]]
-	L["Always shows the aura, grey if buff not active."] = "Always shows the aura, grey if buff not active."
-	--[[Translation missing --]]
-	L["Always shows the aura, highlight it if buffed."] = "Always shows the aura, highlight it if buffed."
-	--[[Translation missing --]]
-	L["Always shows the aura, turns grey if on cooldown."] = "Always shows the aura, turns grey if on cooldown."
-	--[[Translation missing --]]
-	L["Always shows the aura, turns grey if the ability is not usable and red when out of range."] = "Always shows the aura, turns grey if the ability is not usable and red when out of range."
-	--[[Translation missing --]]
-	L["Always shows the aura, turns grey if the ability is not usable."] = "Always shows the aura, turns grey if the ability is not usable."
-	--[[Translation missing --]]
-	L["Always shows the aura, turns grey when on cooldown, blue when unusable."] = "Always shows the aura, turns grey when on cooldown, blue when unusable."
-	--[[Translation missing --]]
-	L["Always shows the aura, turns grey when on zero charges, blue when usable."] = "Always shows the aura, turns grey when on zero charges, blue when usable."
-	--[[Translation missing --]]
-	L["Always shows the aura, turns grey when on zero charges, highlight when active, blue on insufficient resources."] = "Always shows the aura, turns grey when on zero charges, highlight when active, blue on insufficient resources."
-	--[[Translation missing --]]
-	L["Always shows the aura, turns grey when on zero charges, red when out of range, blue on insufficient resources."] = "Always shows the aura, turns grey when on zero charges, red when out of range, blue on insufficient resources."
-	--[[Translation missing --]]
-	L["Always shows the aura, turns greys on zero charges, blue on insufficient resources."] = "Always shows the aura, turns greys on zero charges, blue on insufficient resources."
-	--[[Translation missing --]]
-	L["Always shows the aura, turns red when out of range, blue on insufficient resources."] = "Always shows the aura, turns red when out of range, blue on insufficient resources."
-	--[[Translation missing --]]
-	L["Always shows the aura, turns red when out of range."] = "Always shows the aura, turns red when out of range."
+	L["Always show the aura, highlight it if debuffed."] = "总是显示光环，如果有减益效果则高亮显示"
+	L["Always show the aura, turns grey if on cooldown."] = "总是显示光环，如果在冷却中则变灰显示"
+	L["Always show the aura, turns grey if the debuff not active."] = "总是显示光环，如果减益效果未被激活则变灰显示"
+	L["Always shows the aura, grey if buff not active."] = "总是显示光环，如果增益效果未被激活则变灰显示"
+	L["Always shows the aura, highlight it if buffed."] = "总是显示光环，如果有增益效果则高亮显示"
+	L["Always shows the aura, turns grey if on cooldown."] = "总是显示光环，如果在冷却中则变灰显示"
+	L["Always shows the aura, turns grey if the ability is not usable and red when out of range."] = "总是显示光环，如果技能不可用则变灰显示而超出距离时变红显示"
+	L["Always shows the aura, turns grey if the ability is not usable."] = "总是显示光环，如果技能不可用则变灰显示"
+	L["Always shows the aura, turns grey when on cooldown, blue when unusable."] = "总是显示光环，如果在冷却中则变灰显示，不可用时变蓝显示"
+	L["Always shows the aura, turns grey when on zero charges, blue when usable."] = "总是显示光环，如果技能没有可用次数则变灰显示，不可用时变蓝显示"
+	L["Always shows the aura, turns grey when on zero charges, highlight when active, blue on insufficient resources."] = "总是显示光环，如果技能没有可用次数则变灰显示，在激活时高亮显示，资源不足时变蓝显示"
+	L["Always shows the aura, turns grey when on zero charges, red when out of range, blue on insufficient resources."] = "总是显示光环，如果技能没有可用次数则变灰显示，超出距离时变红显示，资源不足时变蓝显示"
+	L["Always shows the aura, turns greys on zero charges, blue on insufficient resources."] = "总是显示光环，如果技能没有可用次数则变灰显示，资源不足时变蓝显示"
+	L["Always shows the aura, turns red when out of range, blue on insufficient resources."] = "总是显示光环，超出距离时变红显示，资源不足时变蓝显示"
+	L["Always shows the aura, turns red when out of range."] = "总是显示光环，超出距离时变红显示"
 	L["Back"] = "返回"
-	--[[Translation missing --]]
-	L["Basic Show On Cooldown"] = "Basic Show On Cooldown"
-	--[[Translation missing --]]
-	L["Bloodlust/Heroism"] = "Bloodlust/Heroism"
+	L["Basic Show On Cooldown"] = "冷却中显示基本信息"
+	L["Bloodlust/Heroism"] = "嗜血/英勇"
 	L["buff"] = "增益"
 	L["Buff"] = "增益"
 	L["Buffs"] = "增益（复数）"
 	L["Cancel"] = "取消"
 	L["Cast"] = "施放"
-	--[[Translation missing --]]
-	L["Charge and Buff Tracking"] = "Charge and Buff Tracking"
-	--[[Translation missing --]]
-	L["Charge and Debuff Tracking"] = "Charge and Debuff Tracking"
-	--[[Translation missing --]]
-	L["Charge Tracking"] = "Charge Tracking"
+	L["Charge and Buff Tracking"] = "可用次数充能和增益效果追踪"
+	L["Charge and Debuff Tracking"] = "可用次数充能和减益效果追踪"
+	L["Charge Tracking"] = "可用次数充能追踪"
 	L["cooldown"] = "冷却"
-	--[[Translation missing --]]
-	L["Cooldown Tracking"] = "Cooldown Tracking"
+	L["Cooldown Tracking"] = "冷却追踪"
 	L["Cooldowns"] = "冷却"
 	L["Debuffs"] = "减益"
 	L["Enchants"] = "附魔"
 	L["General"] = "总体"
-	--[[Translation missing --]]
-	L["General Azerite Traits"] = "General Azerite Traits"
+	L["General Azerite Traits"] = "通用艾泽里特特质"
 	L["Health"] = "生命值"
-	--[[Translation missing --]]
-	L["Highlight while buffed, red when out of range."] = "Highlight while buffed, red when out of range."
-	--[[Translation missing --]]
-	L["Highlight while buffed."] = "Highlight while buffed."
-	--[[Translation missing --]]
-	L["Highlight while debuffed, red when out of range."] = "Highlight while debuffed, red when out of range."
-	--[[Translation missing --]]
-	L["Highlight while debuffed."] = "Highlight while debuffed."
+	L["Highlight while buffed, red when out of range."] = "获得增益效果时高亮，超出范围变红显示"
+	L["Highlight while buffed."] = "获得增益效果时高亮"
+	L["Highlight while debuffed, red when out of range."] = "获得减益效果时高亮，超出范围变红显示"
+	L["Highlight while debuffed."] = "获得减益效果时高亮"
 	L["Keeps existing triggers intact"] = "保持现存触发器完整"
-	--[[Translation missing --]]
-	L["On Procc Trinkets (Buff)"] = "On Procc Trinkets (Buff)"
-	--[[Translation missing --]]
-	L["On Use Trinkets (Buff)"] = "On Use Trinkets (Buff)"
-	--[[Translation missing --]]
-	L["On Use Trinkets (CD)"] = "On Use Trinkets (CD)"
-	--[[Translation missing --]]
-	L["Only show the aura if the target has the debuff."] = "Only show the aura if the target has the debuff."
-	--[[Translation missing --]]
-	L["Only show the aura when the item is on cooldown."] = "Only show the aura when the item is on cooldown."
-	--[[Translation missing --]]
-	L["Only shows the aura if the target has the buff."] = "Only shows the aura if the target has the buff."
-	--[[Translation missing --]]
-	L["Only shows the aura when the ability is on cooldown."] = "Only shows the aura when the ability is on cooldown."
+	L["On Procc Trinkets (Buff)"] = "当饰品增益效果触发"
+	L["On Use Trinkets (Buff)"] = "当饰品增益效果被使用"
+	L["On Use Trinkets (CD)"] = "当饰品正在冷却中"
+	L["Only show the aura if the target has the debuff."] = "只有在目标拥有减益效果时才显示此光环"
+	L["Only show the aura when the item is on cooldown."] = "只有当物品在冷却中时才显示此光环"
+	L["Only shows the aura if the target has the buff."] = "只有当目标拥有增益效果是才显示此光环"
+	L["Only shows the aura when the ability is on cooldown."] = "只有当技能在冷却中时才显示此光环"
 	L["Pet alive"] = "宠物存活"
 	L["Pet Behavior"] = "宠物行为"
 	--[[Translation missing --]]

@@ -212,6 +212,8 @@ function addon:OnEnable() -- Construct addon option tables here
 		-- Infer select from table
 		elseif type(t.type) == "table" then
 			t.items, t.type = t.type, "select"
+			-- Other positional arguments may be present
+			table.insert(t, 1, "select")
 		end
 
 		-- Handle specific option types
@@ -492,12 +494,12 @@ function addon:OnEnable() -- Construct addon option tables here
 
  		addon:RegisterOptions({ name = "Frame", addon =  XLootFrame.addon }, {
 			{ "frame_options", "group", {
-				{ "frame_width_automatic", "toggle", width = "double" },
-				{ "old_close_button", "toggle" },
+				{ "frame_width_automatic", width = "double" },
+				{ "old_close_button" },
 				{ "frame_width", "range", 75, 300, 5, requires_inverse = "frame_width_automatic" },
 				{ "frame_scale", "scale" },
 				{ "frame_alpha", "alpha" },
-				{ "frame_snap", "toggle" },
+				{ "frame_snap" },
 				{ "frame_snap_offset_x", "range", -2000, 2000, 1, -250, 250, 10, requires = "frame_snap" },
 				{ "frame_snap_offset_y", "range", -2000, 2000, 1, -250, 250, 10, requires = "frame_snap" },
 				{ "frame_draggable" },
@@ -505,11 +507,11 @@ function addon:OnEnable() -- Construct addon option tables here
 				{ "show_slot_errors" },
 			}},
 			{ "slot_options", "group", {
-				{ "loot_texts_info", "toggle", width = "double" },
-				{ "loot_texts_bind", "toggle" },
-				{ "loot_highlight", "toggle", width = "double", },
-				{ "loot_collapse", "toggle" },
-				{ "loot_texts_lock", "toggle", width = "double" },
+				{ "loot_texts_info", width = "double" },
+				{ "loot_texts_bind" },
+				{ "loot_highlight", width = "double", },
+				{ "loot_collapse" },
+				{ "loot_texts_lock", width = "double" },
 				{ "loot_buttons_auto" },
 				{ "loot_alpha", "alpha" },
 				{ "loot_icon_size", "range", 16, 64, 1, name = L.icon_size },
@@ -521,25 +523,25 @@ function addon:OnEnable() -- Construct addon option tables here
 				{ "loot_padding_bottom", "range", 0, 25, 1, name = L.bottom },
 			}},
 			{ "link_button", "group", {
-				{ "linkall_show", "select", when_group },
-				{ "linkall_threshold", "select", item_qualities },
-				{ "linkall_channel", "select", {
+				{ "linkall_show", when_group },
+				{ "linkall_threshold", item_qualities },
+				{ "linkall_channel", {
 					{ "SAY", CHAT_MSG_SAY },
 					{ "PARTY", CHAT_MSG_PARTY },
 					{ "GUILD", CHAT_MSG_GUILD },
 					{ "OFFICER", CHAT_MSG_OFFICER },
 					{ "RAID", CHAT_MSG_RAID },
-					{ "RAID_WARNING", RAID_WARNING }
+					{ "RAID_WARNING", RAID_WARNING },
 				}}
 			}},
 			{ "autolooting", "group", {
 				{ "autolooting_text", "description" },
-				{ "autoloot_currency", "select", when_group, "autoloots", "currency" },
-				{ "autoloot_quest", "select", when_group, "autoloots", "quest" },
-				{ "autoloot_tradegoods", "select", when_group, "autoloots", "tradegoods" },
-				{ "autoloot_all", "select", when_group, "autoloots", "all" },
+				{ "autoloot_currency", when_group, "autoloots", "currency" },
+				{ "autoloot_quest", when_group, "autoloots", "quest" },
+				{ "autoloot_tradegoods", when_group, "autoloots", "tradegoods" },
+				{ "autoloot_all", when_group, "autoloots", "all" },
 				{ "autolooting_list", "description" },
-				{ "autoloot_list", "select", when_group, "autoloots", "list" },
+				{ "autoloot_list", when_group, "autoloots", "list" },
 				{ "autoloot_item_list", "input", width = "double" },
 				{ "autolooting_details", "description" },
 			}},
@@ -554,8 +556,8 @@ function addon:OnEnable() -- Construct addon option tables here
 				{ "font_size_button_auto", "range", 4, 26, 1, requires = "loot_buttons_auto", name = L.Frame.loot_buttons_auto },
 			}},
 			{ "colors", "group", {
-				{ "quality_color_frame", "toggle", width = "full" },
-				{ "quality_color_slot", "toggle", width = "full" },
+				{ "quality_color_frame", width = "full" },
+				{ "quality_color_slot", width = "full" },
 				{ "frame_color_border", "color", width = "double", requires_inverse = "quality_color_frame" },
 				{ "loot_color_border", "color", requires_inverse = "quality_color_slot" },
 				{ "frame_color_backdrop", "color", width = "double" },
@@ -575,7 +577,7 @@ function addon:OnEnable() -- Construct addon option tables here
 				{ "roll_anchor_visible", "toggle", "roll_anchor", "visible", set = set_anchor },
 			}},
 			{ "rolls", "group", {
-				{ "roll_direction", "select", directions, "roll_anchor", "direction" , name = L.growth_direction },
+				{ "roll_direction", directions, "roll_anchor", "direction" , name = L.growth_direction },
 				{ "roll_scale", "scale", "roll_anchor", "scale" },
 				{ "roll_width", "range", 150, 700, 1, 150, 400, 10, name = L.width },
 				{ "roll_spacing", "range", -25, 25, 1, name = L.spacing, subtable = "roll_anchor", subkey = "spacing" },
@@ -584,7 +586,7 @@ function addon:OnEnable() -- Construct addon option tables here
 
 			}},
 			{ "extra_info", "group", {
-				{ "equip_prefix", "toggle" },
+				{ "equip_prefix" },
 				{ "prefix_equippable", "input", requires = "equip_prefix" },
 				{ "prefix_upgrade", "input" },
 				{ "show_time_remaining", name = L.Group.text_time },
@@ -598,10 +600,10 @@ function addon:OnEnable() -- Construct addon option tables here
 				{ "font_flag", font_flag },
 			}},
 			{ "roll_tracking", "group", {
-				{ "track_all", "toggle", width = "double" },
-				{ "track_player_roll", "toggle", requires_inverse = "track_all" },
-				{ "track_by_threshold", "toggle", requires_inverse = "track_all", width = "double" },
-				{ "track_threshold", "select", item_qualities, requires = "track_by_threshold", name = L.minimum_quality },
+				{ "track_all", width = "double" },
+				{ "track_player_roll", requires_inverse = "track_all" },
+				{ "track_by_threshold", requires_inverse = "track_all", width = "double" },
+				{ "track_threshold", item_qualities, requires = "track_by_threshold", name = L.minimum_quality },
 				{ "expiration", "header" },
 				{ "expire_won", "range", 5, 30, 1 },
 				{ "expire_lost", "range", 5, 30, 1 },
@@ -618,21 +620,21 @@ function addon:OnEnable() -- Construct addon option tables here
 			{ "anchor", "group", {
 				{ "visible", set = set_anchor, width = "double" },
 				{ "scale", "scale" },
-				{ "direction", "select", directions, name = L.growth_direction },
-				{ "alignment", "select", leftright, name = L.alignment },
+				{ "direction", directions, name = L.growth_direction },
+				{ "alignment", leftright, name = L.alignment },
 			}, defaults = { subtable = "anchor" } },
 			{ "thresholds", "group", {
-				{ "threshold_own", "select", item_qualities, name = L.items_own },
-				{ "threshold_other", "select", item_qualities, name = L.items_others },
+				{ "threshold_own", item_qualities, name = L.items_own },
+				{ "threshold_other", item_qualities, name = L.items_others },
 			}},
 			{ "filters", "group", {
 				{ "show_coin", name = MONEY },
 				{ "show_currency", name = CURRENCY },
-				"show_crafted"
+				{ "show_crafted" },
 			}, name = FILTERS },
 			{ "fading", "group", {
 				{ "fade_own", "range", 1, 30, 1, name = L.items_own },
-				{ "fade_other", "range", 1, 30, 1, name = L.items_others }
+				{ "fade_other", "range", 1, 30, 1, name = L.items_others },
 			}},
 			{ "details", "group", {
 				{ "show_totals", width = "double" },
@@ -675,22 +677,22 @@ function addon:OnEnable() -- Construct addon option tables here
 				{ 'NONE', NONE },
 		}
 		addon:RegisterOptions({ name = "Master", addon =  XLootMaster }, {
-			{ "confirm_qualitythreshold", "select", item_qualities },
+			{ "confirm_qualitythreshold", item_qualities },
 			{ "specialrecipients", "group", {
-				{ "menu_self", "toggle" },
-				{ "menu_disenchant", "toggle" },
+				{ "menu_self" },
+				{ "menu_disenchant" },
 				{ "menu_disenchanters", "input", requires="menu_disenchant" },
-				{ "menu_bank", "toggle" },
+				{ "menu_bank" },
 				{ "menu_bankers", "input", requires="menu_bank" },
 			}},
 			{ "raidroll", "group", {
-				{ "menu_roll", "toggle" },
+				{ "menu_roll" },
 			}},
 			{ "awardannounce", "group", {
-				{ "award_qualitythreshold", "select", item_qualities },
-				{ "award_channel", "select", channels },
-				{ "award_guildannounce", "toggle" },
-				{ "award_special", "toggle" },
+				{ "award_qualitythreshold", item_qualities },
+				{ "award_channel", channels },
+				{ "award_guildannounce" },
+				{ "award_special" },
 			}},
 		})
 	end

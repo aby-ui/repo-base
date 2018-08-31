@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("FreeholdTrash", "DBM-Party-BfA", 2)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17736 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 17755 $"):sub(12, -3))
 --mod:SetModelID(47785)
 mod:SetZone()
 
@@ -33,8 +33,8 @@ local specWarnSeaSpout					= mod:NewSpecialWarningInterrupt(258779, "HasInterrup
 local specWarnFrostBlast				= mod:NewSpecialWarningInterrupt(257784, "HasInterrupt", nil, nil, 1, 2)--Might prune or disable by default if it conflicts with higher priority interrupts in area
 local specWarnShatteringBellowKick		= mod:NewSpecialWarningInterrupt(257732, "HasInterrupt", nil, nil, 1, 2)
 local specWarnShatteringBellow			= mod:NewSpecialWarningCast(257732, "SpellCaster", nil, nil, 1, 2)
-local specWarnBestialWrath				= mod:NewSpecialWarningDispel(257476, "RemoveEnrage", nil, nil, 1, 2)
-local specWarnBlindRage					= mod:NewSpecialWarningDispel(257739, "RemoveEnrage", nil, nil, 1, 2)
+local specWarnBestialWrath				= mod:NewSpecialWarningDispel(257476, "RemoveEnrage", nil, 2, 1, 2)
+local specWarnBlindRage					= mod:NewSpecialWarningDispel(257739, "RemoveEnrage", nil, 2, 1, 2)
 local specWarnInfectedWound				= mod:NewSpecialWarningDispel(258323, "RemoveDisease", nil, nil, 1, 2)
 local specWarnOiledBlade				= mod:NewSpecialWarningDispel(257908, "Healer", nil, nil, 1, 2)
 local specWarnGTFO						= mod:NewSpecialWarningGTFO(257274, nil, nil, nil, 1, 2)
@@ -79,7 +79,7 @@ function mod:SPELL_CAST_START(args)
 		warnDuelistDash:Show()
 	elseif spellId == 274383 and self:AntiSpam(3, 9) then
 		warnRatTrap:Show()
-	elseif spellId == 258199 and self:AntiSpam(3, 11) then
+	elseif spellId == 258199 and self:AntiSpam(3, 3) then
 		specWarnGroundShatter:Show()
 		specWarnGroundShatter:Play("justrun")
 	end

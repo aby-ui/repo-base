@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2094, "DBM-Party-BfA", 2, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17533 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 17748 $"):sub(12, -3))
 mod:SetCreatureID(126969)
 mod:SetEncounterID(2095)
 mod:SetZone()
@@ -33,7 +33,7 @@ local specWarnRearm					= mod:NewSpecialWarningDodge(256489, nil, nil, nil, 2, 2
 
 local timerRP						= mod:NewRPTimer(68)
 --local timerSharkTossCD			= mod:NewCDTimer(31.5, 194956, nil, nil, nil, 3)--Disabled until more data, seems highly variable, even pull to pull
-local timerSharknadoCD				= mod:NewCDTimer(39.1, 256405, nil, nil, nil, 3)
+local timerSharknadoCD				= mod:NewCDTimer(26.9, 256405, nil, nil, nil, 3)
 local timerRearmCD					= mod:NewCDTimer(40, 256489, nil, nil, nil, 3)
 
 mod:AddRangeFrameOption(8, 256358)

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2134, "DBM-Party-BfA", 5, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17733 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 17752 $"):sub(12, -3))
 mod:SetCreatureID(130836)
 mod:SetEncounterID(2099)
 mod:SetZone()
@@ -9,7 +9,8 @@ mod:SetZone()
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
-	"SPELL_CAST_START 257882 276068"
+	"SPELL_CAST_START 257882 276068",
+	"UNIT_SPELLCAST_SUCCEEDED boss1"
 )
 
 local specWarnCrashingTide			= mod:NewSpecialWarningDodge(261563, "Tank", nil, nil, 1, 2)

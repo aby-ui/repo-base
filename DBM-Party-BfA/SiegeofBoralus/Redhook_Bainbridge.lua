@@ -7,7 +7,7 @@ end
 local mod	= DBM:NewMod(dungeonID, "DBM-Party-BfA", 5, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17733 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 17752 $"):sub(12, -3))
 mod:SetCreatureID(creatureID)
 mod:SetEncounterID(encounterID)
 mod:SetZone()
@@ -42,7 +42,7 @@ local specWarnSteelTempest			= mod:NewSpecialWarningDodge(260924, nil, nil, nil,
 --local specWarnGTFO				= mod:NewSpecialWarningGTFO(238028, nil, nil, nil, 1, 2)
 --BOTH
 local specWarnCannonBarrage			= mod:NewSpecialWarningDodge(257540, nil, nil, nil, 2, 2)
-local specWarnAdds					= mod:NewSpecialWarningAdds(257649, "-Healer", nil, nil, 1, 2)
+--local specWarnAdds					= mod:NewSpecialWarningAdds(257649, "-Healer", nil, nil, 1, 2)
 
 --Chopper Redhook
 --local timerOntheHookCD				= mod:NewAITimer(13, 257459, nil, nil, nil, 3)
@@ -52,7 +52,6 @@ local specWarnAdds					= mod:NewSpecialWarningAdds(257649, "-Healer", nil, nil, 
 --local timerIronGazeCD				= mod:NewAITimer(13, 260954, nil, nil, nil, 3)
 --local timerSteelTempestCD			= mod:NewAITimer(13, 260924, nil, nil, nil, 3)
 --local timerHangmansNooseCD			= mod:NewAITimer(13, 261428, nil, nil, nil, 3, nil, DBM_CORE_DEADLY_ICON)
---local timerAddsCD					= mod:NewAddsTimer(25, 257649, nil, "-Healer")
 
 --mod:AddRangeFrameOption(5, 194966)
 
@@ -145,10 +144,9 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 		specWarnCannonBarrage:Show()
 		specWarnCannonBarrage:Play("watchstep")
 	--19.7, 18.2, 14.6
-	elseif spellId == 274002 then--Call Adds
-		specWarnAdds:Show()
-		specWarnAdds:Play("mobsoon")
-		--timerAddsCD:Start()
+	elseif spellId == 274002 then--Call Adds (works fine alliance side, horde side it spams non stop)
+		--specWarnAdds:Show()
+		--specWarnAdds:Play("mobsoon")
 	elseif spellId == 257287 then
 		--local guid = UnitGUID(uId)
 		if self:AntiSpam(3, 1) then

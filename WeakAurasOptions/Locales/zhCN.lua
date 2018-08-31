@@ -32,8 +32,7 @@ local L = WeakAuras.L
 	L["Add Trigger"] = "新增触发器"
 	L["Addon"] = "插件"
 	L["Addons"] = "插件"
-	--[[Translation missing --]]
-	L["Advanced"] = "Advanced"
+	L["Advanced"] = "高级"
 	L["Align"] = "对齐"
 	L["All of"] = "全部"
 	L["Allow Full Rotation"] = "允许完全旋转"
@@ -149,8 +148,7 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 |cFF4444FF例：|r
 UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	L["Custom Untrigger"] = "自定义失效触发器"
-	--[[Translation missing --]]
-	L["Custom Variables"] = "Custom Variables"
+	L["Custom Variables"] = "自定义变量"
 	L["Debuff Type"] = "减益类型"
 	L["Default"] = "默认"
 	L["Delete"] = "删除"
@@ -203,8 +201,7 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	L["Expansion is disabled because this group has no children"] = "由于此组没有子物件所以无法进行扩展"
 	L["Export to Lua table..."] = "导出为 Lua 表格..."
 	L["Export to string..."] = "导出为字符串"
-	--[[Translation missing --]]
-	L["External"] = "External"
+	L["External"] = "外部"
 	L["Fade"] = "淡化"
 	L["Fade In"] = "渐入"
 	L["Fade Out"] = "渐出"

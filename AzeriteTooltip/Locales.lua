@@ -8,4 +8,5 @@ if GetLocale() == "zhCN" or GetLocale() == "zhTW" then
     L["Compact Mode (only icons)"] = "简洁模式（仅显示图标）"
     L["Level %d"] = "%d级解锁 "
     L[" Level %d"] = "%d级解锁的特质"
+    L["Requesting description ..."] = "数据获取中..."
 end

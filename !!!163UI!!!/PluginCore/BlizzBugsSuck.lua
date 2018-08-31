@@ -93,4 +93,5 @@ do
 	end
 
 	hooksecurefunc("InterfaceOptionsFrame_OpenToCategory", InterfaceOptionsFrame_OpenToCategory_Fix)
+    CoreIOF_OTC = InterfaceOptionsFrame_OpenToCategory
 end

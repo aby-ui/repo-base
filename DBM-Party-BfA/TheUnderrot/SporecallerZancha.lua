@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2130, "DBM-Party-BfA", 8, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17712 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 17752 $"):sub(12, -3))
 mod:SetCreatureID(131383)
 mod:SetEncounterID(2112)
 mod:SetZone()
@@ -36,7 +36,7 @@ local timerUpheavalCD				= mod:NewCDTimer(20, 259718, nil, nil, nil, 3)
 function mod:OnCombatStart(delay)
 	--timerBoundlessRotCD:Start(1-delay)
 	timerShockwaveCD:Start(10-delay)
-	timerUpheavalCD:Start(22-delay)
+	timerUpheavalCD:Start(17-delay)
 	if not self:IsNormal() then
 		timerVolatilePodsCD:Start(20.4-delay)
 	end

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2173, "DBM-Party-BfA", 5, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17733 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 17752 $"):sub(12, -3))
 mod:SetCreatureID(129208)
 mod:SetEncounterID(2109)
 mod:SetZone()
@@ -96,7 +96,7 @@ function mod:UNIT_SPELLCAST_START(uId, _, spellId)
 	elseif spellId == 268260 then--Broadside 
 		specWarnBroadside:Show()
 		specWarnBroadside:Play("shockwave")
-		--timerBroadsideCD:Start()
+		timerBroadsideCD:Start(10.9)
 	end
 end
 
@@ -110,7 +110,7 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 		self.vb.bossGone = false
 		timerBroadsideCD:Stop()
 		timerCleartheDeckCD:Start(4.3)
-		--timerWithdrawCD:Start()--Unknown, pulls too short
+		timerWithdrawCD:Start(36)
 	elseif spellId == 268963 then--Unstable Ordnance
 		warnUnstableOrdnance:Show()
 		timerBroadsideCD:Stop()

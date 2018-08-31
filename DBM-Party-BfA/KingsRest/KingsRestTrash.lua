@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("KingsRestTrash", "DBM-Party-BfA", 3)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17735 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 17755 $"):sub(12, -3))
 --mod:SetModelID(47785)
 mod:SetZone()
 
@@ -35,7 +35,7 @@ local specWarnHex					= mod:NewSpecialWarningInterrupt(270492, "HasInterrupt", n
 local specWarnBladestorm			= mod:NewSpecialWarningRun(270927, nil, nil, nil, 4, 2)
 local specWarnChannelLighting		= mod:NewSpecialWarningRun(270889, nil, nil, nil, 4, 2)
 local specWarnSeduction				= mod:NewSpecialWarningDispel(270920, "Healer", nil, nil, 1, 2)
-local specWarnAncestralFury			= mod:NewSpecialWarningDispel(269976, "RemoveEnrage", nil, nil, 1, 2)
+local specWarnAncestralFury			= mod:NewSpecialWarningDispel(269976, "RemoveEnrage", nil, 2, 1, 2)
 local specWarnHiddenBladeDispel		= mod:NewSpecialWarningDispel(270865, "RemovePoison", nil, nil, 1, 2)
 local specWarnHuntingLeap			= mod:NewSpecialWarningYou(270500, nil, nil, nil, 1, 2)
 local yellHuntingLeap				= mod:NewYell(270500)
@@ -65,7 +65,7 @@ function mod:SPELL_CAST_START(args)
 	elseif spellId == 270492 and self:CheckInterruptFilter(args.sourceGUID, false, true) then
 		specWarnHex:Show(args.sourceName)
 		specWarnHex:Play("kickcast")
-	elseif spellId == 270889 then
+	elseif spellId == 270889  and self:AntiSpam(3, 6) then
 		specWarnChannelLighting:Show()
 		specWarnChannelLighting:Play("justrun")
 	elseif spellId == 270084 and self:AntiSpam(4, 2) then
@@ -74,13 +74,13 @@ function mod:SPELL_CAST_START(args)
 		warnAxeShadowWhirl:Show()
 	elseif spellId == 270482 and self:AntiSpam(4, 4) then
 		warnBloodedLeap:Show()
-	elseif spellId == 270293 then
+	elseif spellId == 270293 and self:AntiSpam(3, 5) then
 		specWarnPurificationStrike:Show()
 		specWarnPurificationStrike:Play("watchstep")
 	elseif spellId == 270284 then
 		specWarnPurificationBeam:Show()
 		specWarnPurificationBeam:Play("behindmob")
-	elseif spellId == 270514 then
+	elseif spellId == 270514 and self:AntiSpam(3, 5) then
 		specWarnGroundCrush:Show()
 		specWarnGroundCrush:Play("watchstep")
 	end
@@ -92,7 +92,7 @@ function mod:SPELL_AURA_APPLIED(args)
 	if spellId == 269976 then
 		specWarnAncestralFury:Show(args.destName)
 		specWarnAncestralFury:Show("trannow")
-	elseif spellId == 270927 then
+	elseif spellId == 270927 and self:AntiSpam(3, 6) then
 		specWarnBladestorm:Show()
 		specWarnBladestorm:Play("justrun")
 	elseif spellId == 270920 then
