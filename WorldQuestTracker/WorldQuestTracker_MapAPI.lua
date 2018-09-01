@@ -638,7 +638,7 @@ end
 		_G ["WQTItemTooltipScanTooltipTextLeft4"],
 	}
 	ItemTooltipScan.patern = ITEM_LEVEL:gsub ("%%d", "(%%d+)") --from LibItemUpgradeInfo-1.0
-
+	
 	--pega o premio item da quest
 	function WorldQuestTracker.GetQuestReward_Item (questID)
 		if (not HaveQuestData (questID)) then
@@ -658,6 +658,13 @@ end
 				local t2 = WorldMapTooltipTooltipTextLeft2 and WorldMapTooltipTooltipTextLeft2:GetText()
 				if (t2) then
 					amount = tonumber (t2:match (" %d+ "))
+				end
+				
+				if (WorldMapTooltip:IsShown()) then
+					local owner = WorldMapTooltip:GetOwner()
+					if (owner and owner.UpdateTooltip) then
+						owner:UpdateTooltip()
+					end
 				end
 				
 				return name, texture, 0, 1, 1, false, 0, true, amount or 0, false, 1

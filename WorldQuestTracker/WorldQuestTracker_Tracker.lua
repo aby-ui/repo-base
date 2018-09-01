@@ -75,9 +75,6 @@ end
 
 
 function WorldQuestTracker.AddQuestTomTom (questID, mapID, noRemove)
-
-	print (questID, mapID)
-
 	local x, y = C_TaskQuest.GetQuestLocation (questID, mapID)
 	local title, factionID, tagID, tagName, worldQuestType, rarity, isElite, tradeskillLineIndex = WorldQuestTracker.GetQuest_Info (questID)
 	

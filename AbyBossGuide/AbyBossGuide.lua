@@ -173,11 +173,11 @@ end
 local autoSent = {}
 function BG:CheckUnit(unit)
     local zone = GetZoneText();
-    if zone and self.data[zone] and UnitIsEnemy(unit, "player") and UnitHealth(unit) > 0 then
+    if zone and self.data[zone] and not UnitPlayerControlled(unit) and UnitHealth(unit) > 0 then
         local zoneSent = autoSent[zone] or {};
         autoSent[zone] = zoneSent;
         -- 当前选中目标的话，忽略鼠标指向
-        if unit == "mouseover" and UnitIsEnemy("player", "target") and UnitHealth("target") > 0 and type(zoneSent[UnitName("target")]) == 'table' then return end
+        if unit == "mouseover" and not UnitPlayerControlled("target") and UnitHealth("target") > 0 and type(zoneSent[UnitName("target")]) == 'table' then return end
         local name = UnitName(unit);
         local nameData = zoneSent[name]
         if nameData == true then
@@ -189,9 +189,12 @@ function BG:CheckUnit(unit)
         end
         zoneSent[name] = true
         for k, v in ipairs(self.data[zone]) do
-            if(v.name==name or v.name2==name or v.name3==name) then
+            if(v.name==name or v.name2==name or v.name3==name or v.name4==name) then
                 self:StartFlash();
-                zoneSent[name] = v
+                zoneSent[v.name] = v
+                if v.name2 then zoneSent[v.name2] = v end
+                if v.name3 then zoneSent[v.name3] = v end
+                if v.name4 then zoneSent[v.name4] = v end
                 self.frame.title:SetText(v.name);
                 BG:SetButton(self.frame.title, v);
                 return;

@@ -44,7 +44,22 @@ rematch:InitModule(function()
 end)
 
 -- called in ADDON_LOADED of Blizzard_Collctions (or during startup if already loaded)
+local hasJournalRunBefore = false -- becomes true after the journal is started
 function journal:Blizzard_Collections()
+
+	-- if this is the first time the journal is opening on a mac with DebugDelayMacs enabled, wait half
+	-- a second (or 0 seconds--one frame) and try later
+	if rematch.isOnMac and settings.DebugDelayMacs then
+		if not hasJournalRunBefore then
+			C_Timer.After(settings.DebugDelayMacsOneFrame and 0 or 0.5, journal.Blizzard_Collections)
+			hasJournalRunBefore = true
+			return
+		else
+			journal:ConfigureJournal()
+		end
+	end
+	hasJournalRunBefore = true
+
 	if not settings.UseDefaultJournal and not GetCVarBitfield("closedInfoFrames",LE_FRAME_TUTORIAL_PET_JOURNAL) then
 		SetCVarBitfield("closedInfoFrames",LE_FRAME_TUTORIAL_PET_JOURNAL,true)
 	end

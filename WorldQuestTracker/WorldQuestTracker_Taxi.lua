@@ -282,6 +282,25 @@ function WorldQuestTracker:TAXIMAP_OPENED()
 			end
 		end)
 		
+		local lazy_refresh_frame = CreateFrame ("frame")
+		WorldQuestTracker.QueuedPinsToRefresh = {}
+		
+		local refresh_quest_pin = function (timerObject)
+			lazy_refresh_frame:SetScript ("OnUpdate", function (self, deltaTime)
+				if (#WorldQuestTracker.QueuedPinsToRefresh > 0 and FlightMapFrame:IsShown()) then
+					local questTable = tremove (WorldQuestTracker.QueuedPinsToRefresh)
+					if (questTable) then
+						local questID, _WQT_Twin, worldQuestType, rarity, isElite, tradeskillLineIndex, inProgress, selected, isCriteria, isSpellTarget = unpack (questTable)
+						if (questID == _WQT_Twin.questID) then
+							WorldQuestTracker.SetupWorldQuestButton (_WQT_Twin, worldQuestType, rarity, isElite, tradeskillLineIndex, inProgress, selected, isCriteria, isSpellTarget)
+						end
+					end
+				else
+					lazy_refresh_frame:SetScript ("OnUpdate", nil)
+				end
+			end)
+		end
+		
 		hooksecurefunc (FlightMapFrame, "ApplyPinPosition", function (self, pin, normalizedX, normalizedY, insetIndex)
 			
 			if (pin.questID and QuestMapFrame_IsQuestWorldQuest (pin.questID)) then
@@ -331,14 +350,7 @@ function WorldQuestTracker:TAXIMAP_OPENED()
 				pin._WQT_Twin:SetFrameLevel (pin:GetFrameLevel()+100)
 				pin._WQT_Twin:SetScale (1.3)
 				pin._WQT_Twin:SetScript ("OnClick", onTaxyWidgetClick)
-				
-				--pin._WQT_Twin:SetPoint ("center", pin, "center")
 				pin._WQT_Twin.AnchorFrame:SetPoint ("center", pin, "center")
-				
-				--pin._WQT_Twin.AnchorFrame.questID = questID
-				--pin._WQT_Twin.AnchorFrame.numObjectives = pin._WQT_Twin.numObjectives
-				--WorldQuestTrackerAddon.DataProvider:GetMap():SetPinPosition (pin._WQT_Twin.AnchorFrame, pin._WQT_Twin.PosX, pin._WQT_Twin.PosY)
-				--pin._WQT_Twin.AnchorFrame:Show()
 				
 				--mixin
 				for member, func in pairs (pin) do
@@ -346,28 +358,16 @@ function WorldQuestTracker:TAXIMAP_OPENED()
 						pin._WQT_Twin.AnchorFrame [member] = func
 					end
 				end
-				--override scripts
-				--pin._WQT_Twin:SetScript ("OnEnter", pin:GetScript ("OnEnter"))
-				--[=
+
 				pin._WQT_Twin:SetScript ("OnEnter", function (self)
 					TaskPOI_OnEnter (pin._WQT_Twin)
 					pin._WQT_Twin.Texture:SetBlendMode ("ADD")
-					--> the tooltip should get the scale from the taxi map pin
-					--pin:GetScript ("OnEnter")(pin)
-					--print (pin:GetScript ("OnEnter") == )
-					--WorldQuestTracker.TaskPOI_OnEnterFunc (pin._WQT_Twin)
 				end)
 				
 				pin._WQT_Twin:SetScript ("OnLeave", function()
 					TaskPOI_OnLeave (pin._WQT_Twin)
 					pin._WQT_Twin.Texture:SetBlendMode ("BLEND")
-					--pin:GetScript ("OnLeave")(pin)
-					--WorldQuestTracker.TaskPOI_OnLeaveFunc (pin._WQT_Twin)
 				end)
-				--]=]
-				
-				pin._WQT_Twin.AnchorFrame.UpdateTooltip = function()end
-				pin._WQT_Twin.UpdateTooltip = function()end
 
 				tinsert (WorldQuestTracker.TaxyZoneWidgets, pin._WQT_Twin)
 			end
@@ -450,9 +450,7 @@ function WorldQuestTracker:TAXIMAP_OPENED()
 			--local minX, maxX, minY, maxY = FlightMapFrame.ScrollContainer:CalculateScrollExtentsAtScale (nextZoomInScale)
 			--print (minX, maxX, minY, maxY)
 			--/dump FlightMapFrame.ScrollContainer.Child:GetScale()
-			
-			
-			
+
 			--FlightMapFrame:ZoomOut()
 			if (scale < 0.3) then
 				--n�o tem zoom
@@ -483,11 +481,19 @@ function WorldQuestTracker:TAXIMAP_OPENED()
 					--pin._WQT_Twin:SetScale (2.2)
 					pin._WQT_Twin:SetScale (pinScale);-- print ("using scale", pinScale)
 					pin:SetAlpha (0)
-					pin.TimeLowFrame:SetAlpha (0)
-					pin.Underlay:SetAlpha (0)
+					--pin.TimeLowFrame:SetAlpha (0)
+					if (pin.Underlay) then
+						pin.Underlay:SetAlpha (0)
+					end
 					--print ("UPDATED")
 				end
 			end
+
+			if (not WorldQuestTracker.TaxiQueueTimer or WorldQuestTracker.TaxiQueueTimer._cancelled) then
+				WorldQuestTracker.TaxiQueueTimer = C_Timer.NewTimer (2, refresh_quest_pin)
+				wipe (WorldQuestTracker.QueuedPinsToRefresh)
+			end
+			tinsert (WorldQuestTracker.QueuedPinsToRefresh, {pin.questID, pin._WQT_Twin, worldQuestType, rarity, isElite, tradeskillLineIndex, inProgress, selected, isCriteria, isSpellTarget})
 			
 		end)
 		

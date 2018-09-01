@@ -106,6 +106,7 @@ NPCs[132319] = { -- Bilefang Mother
 
 NPCs[134213] = { -- Executioner Blackwell
 	achievementQuestID = 50546, -- Executioner Blackwell
+	vignetteID = 2657,
 }
 
 NPCs[134706] = { -- Deathcap
@@ -119,6 +120,7 @@ NPCs[134754] = { -- Hyo'gi
 
 NPCs[135796] = { -- Captain Leadfist
 	achievementQuestID = 50939, -- Captain Leadfist
+	vignetteID = 2831,
 }
 
 NPCs[137529] = { -- Arvon the Betrayed
@@ -149,6 +151,7 @@ NPCs[137825] = { -- Avalanche
 
 NPCs[138618] = { -- Haywire Golem
 	achievementQuestID = 51698, -- Haywire Golem
+	vignetteID = 2972,
 }
 
 NPCs[138667] = { -- Blighted Monstrosity
@@ -158,6 +161,7 @@ NPCs[138667] = { -- Blighted Monstrosity
 NPCs[138675] = { -- Gorged Boar
 	achievementQuestID = 51700, -- Gorged Boar
 	isTameable = true,
+	vignetteID = 2974,
 }
 
 NPCs[138863] = { -- Sister Martha

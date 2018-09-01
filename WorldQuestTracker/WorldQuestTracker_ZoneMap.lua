@@ -75,14 +75,21 @@ end
 
 
 -- ~zoneicon ~create
-function WorldQuestTracker.CreateZoneWidget (index, name, parent) --~zone
+function WorldQuestTracker.CreateZoneWidget (index, name, parent, pinTemplate) --~zone
 
-	--local button = CreateFrame ("button", name .. index, parent)
-	local anchorFrame = CreateFrame ("frame", name .. index .. "Anchor", parent, WorldQuestTracker.DataProvider:GetPinTemplate())
-	anchorFrame.dataProvider = WorldQuestTracker.DataProvider
-	anchorFrame.worldQuest = true
-	anchorFrame.owningMap = WorldQuestTracker.DataProvider:GetMap()
-	--anchorFrame:SetSize (1, 1)
+	local anchorFrame
+	
+	if (pinTemplate) then
+		anchorFrame = CreateFrame ("frame", name .. index .. "Anchor", parent, pinTemplate)
+		anchorFrame.dataProvider = WorldQuestTracker.DataProvider
+		anchorFrame.worldQuest = true
+		anchorFrame.owningMap = WorldQuestTracker.DataProvider:GetMap()
+	else
+		anchorFrame = CreateFrame ("frame", name .. index .. "Anchor", parent, WorldQuestTracker.DataProvider:GetPinTemplate())
+		anchorFrame.dataProvider = WorldQuestTracker.DataProvider
+		anchorFrame.worldQuest = true
+		anchorFrame.owningMap = WorldQuestTracker.DataProvider:GetMap()
+	end
 	
 	local button = CreateFrame ("button", name .. index, parent)
 	button:SetPoint ("center", anchorFrame, "center", 0, 0)

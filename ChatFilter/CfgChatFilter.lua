@@ -55,22 +55,6 @@
         tip = "说明`在城里的时候屏蔽超过指定字数的喊话（红字）与说话（白字）",
         var = "FilterYell",
         default = true,
-        callback = function(info, v, loading)
-            if loading then
-                local playerGUID = UnitGUID("player")
-                local function filter(self, event, msg, player, _, _, _, flag, _, _, channel, _, lineId, guid)
-                    if IsInInstance() or guid == playerGUID or not U1GetCfgValue("ChatFilter", "FilterYell") then
-                        return
-                    end
-                    if msg and string.utf8len(msg) > (U1GetCfgValue("ChatFilter/FilterYell/YellLen") or 80) then
-                        return true
-                    end
-                end
-                ChatFrame_AddMessageEventFilter("CHAT_MSG_SAY", filter)
-                ChatFrame_AddMessageEventFilter("CHAT_MSG_YELL", filter)
-                ChatFrame_AddMessageEventFilter("CHAT_MSG_EMOTE", filter)
-            end
-        end,
         {
             text = "允许的最大字数",
             tip = "说明`少于这些字数（汉字算一个）的喊话不会被屏蔽",
@@ -86,20 +70,6 @@
         tip = "说明`屏蔽所有频道包括综合、世界、交易、防务里过长的信息，与喊话不同，如果设置的过小可能会错过公会招募、吟游诗人等略微有价值的消息。",
         var = "FilterChannel",
         default = true,
-        callback = function(info, v, loading)
-            if loading then
-                local playerGUID = UnitGUID("player")
-                local function filter(self, event, msg, player, _, _, _, flag, _, _, channel, _, lineId, guid)
-                    if guid == playerGUID or not U1GetCfgValue("ChatFilter", "FilterChannel") then
-                        return
-                    end
-                    if msg and string.utf8len(msg) > (U1GetCfgValue("ChatFilter/FilterChannel/MaxLen") or 80) then
-                        return true
-                    end
-                end
-                ChatFrame_AddMessageEventFilter("CHAT_MSG_CHANNEL", filter)
-            end
-        end,
         {
             text = "允许的最大字数",
             tip = "说明`少于这些字数（汉字算一个）的发言不会被屏蔽",
@@ -111,3 +81,30 @@
     }
 });
 
+--[[------------------------------------------------------------
+提前注册，以免后续处理
+---------------------------------------------------------------]]
+local playerGUID = UnitGUID("player")
+local function filter(self, event, msg, player, _, _, _, flag, _, _, channel, _, lineId, guid)
+    if IsInInstance() or guid == playerGUID or not U1GetCfgValue("ChatFilter", "FilterYell") then
+        return
+    end
+    msg = msg and msg:gsub("\124c%x%x%x%x%x%x%x%x.-\124H.-\124h(.-)\124h.-\124r", "%1")
+    if msg and string.utf8len(msg) > (U1GetCfgValue("ChatFilter/FilterYell/YellLen") or 80) then
+        return true
+    end
+end
+ChatFrame_AddMessageEventFilter("CHAT_MSG_SAY", filter)
+ChatFrame_AddMessageEventFilter("CHAT_MSG_YELL", filter)
+ChatFrame_AddMessageEventFilter("CHAT_MSG_EMOTE", filter)
+
+local function filterChannel(self, event, msg, player, _, _, _, flag, _, _, channel, _, lineId, guid)
+    if guid == playerGUID or not U1GetCfgValue("ChatFilter", "FilterChannel") then
+        return
+    end
+    msg = msg and msg:gsub("\124c%x%x%x%x%x%x%x%x.-\124H.-\124h(.-)\124h.-\124r", "%1")
+    if msg and string.utf8len(msg) > (U1GetCfgValue("ChatFilter/FilterChannel/MaxLen") or 80) then
+        return true
+    end
+end
+ChatFrame_AddMessageEventFilter("CHAT_MSG_CHANNEL", filterChannel)

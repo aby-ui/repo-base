@@ -94,11 +94,11 @@ local select = select
 local GetSpellInfo = GetSpellInfo
 local pairs = pairs
 local ipairs = ipairs
-local UnitBuff = UnitBuff
-local UnitDebuff = UnitDebuff
+local UnitBuff = Pre80API.UnitBuff
+local UnitDebuff = Pre80API.UnitDebuff
 
 local LIBNAME = "LibBuffGroups-1.0"
-local VERSION = 1.21
+local VERSION = 1.31
 
 local lib = _G[LIBNAME]
 if lib and lib.version >= VERSION then return end
@@ -177,12 +177,12 @@ local function FindAura(list, unit, exclude)
 	local _, aura, name, icon, count, dispelType, duration, expires, caster
 	for aura in pairs(list) do
 		if aura ~= exclude then
-			name, icon, count, dispelType, duration, expires, caster = Aby_UnitBuff(unit, aura)
+			name, icon, count, dispelType, duration, expires, caster = UnitBuff(unit, aura)
 			if name then
 				return name, icon, count, dispelType, duration, expires, caster
 			end
 
-			name, icon, count, dispelType, duration, expires, caster = Aby_UnitDebuff(unit, aura)
+			name, icon, count, dispelType, duration, expires, caster = UnitBuff(unit, aura)
 			if name then
 				return name, icon, count, dispelType, duration, expires, caster, 1
 			end
@@ -199,12 +199,12 @@ function lib:UnitAura(unit, aura, group)
 		return FindAura(InternalGetGroupAuras(group), unit)
 	end
 
-	local name, _, icon, count, dispelType, duration, expires, caster = Aby_UnitBuff(unit, aura)
+	local name, icon, count, dispelType, duration, expires, caster = UnitBuff(unit, aura)
 	if name then
 		return name, icon, count, dispelType, duration, expires, caster
 	end
 
-	name, _, icon, count, dispelType, duration, expires, caster = Aby_UnitDebuff(unit, aura)
+	name, icon, count, dispelType, duration, expires, caster = UnitBuff(unit, aura)
 	if name then
 		return name, icon, count, dispelType, duration, expires, caster, 1
 	end

@@ -19,6 +19,8 @@ if (not L) then
 	return
 end
 
+local HereBeDragons = LibStub ("HereBeDragons-2.0")
+
 local ff = WorldQuestTrackerFinderFrame
 local rf = WorldQuestTrackerRareFrame
 
@@ -597,7 +599,7 @@ function WorldQuestTracker.UpdateWorldQuestsOnWorldMap (noCache, showFade, isQue
 		end
 		return
 	
---[=[	elseif (not IsQuestFlaggedCompleted (WORLD_QUESTS_AVAILABLE_QUEST_ID)) then
+--[=[	elseif (not IsQuestFlaggedCompleted (WORLD_QUESTS_AVAILABLE_QUEST_ID) and UnitLevel ("player") < 120) then
 		WorldQuestTracker.HideWorldQuestsOnWorldMap()
 		--print ("quest nao completada...")
 		if (not isQuestFlaggedRecheck) then
@@ -692,7 +694,7 @@ function WorldQuestTracker.UpdateWorldQuestsOnWorldMap (noCache, showFade, isQue
 							end
 
 							if (filters [filter] or rarity == LE_WORLD_QUEST_QUALITY_EPIC or (forceShowBrokenShore and WorldQuestTracker.IsArgusZone (mapId))) then --force show broken shore questsmapId == 1021
-								tinsert (questsAvailable [mapId], {questID, order, info.numObjectives})
+								tinsert (questsAvailable [mapId], {questID, order, info.numObjectives, info.x, info.y})
 								shownQuests = shownQuests + 1
 								
 							elseif (WorldQuestTracker.db.profile.filter_always_show_faction_objectives) then
@@ -700,7 +702,7 @@ function WorldQuestTracker.UpdateWorldQuestsOnWorldMap (noCache, showFade, isQue
 									local isCriteria = IsQuestCriteriaForBounty (questID, bountyQuestID)
 									
 									if (isCriteria) then
-										tinsert (questsAvailable [mapId], {questID, order, info.numObjectives})
+										tinsert (questsAvailable [mapId], {questID, order, info.numObjectives, info.x, info.y})
 										shownQuests = shownQuests + 1
 									end
 								--end
@@ -744,9 +746,7 @@ function WorldQuestTracker.UpdateWorldQuestsOnWorldMap (noCache, showFade, isQue
 			end
 		end
 	end
-	
---	
-	
+
 	local availableQuests = 0
 	local total_Gold = 0
 	local total_Resources = 0
@@ -790,6 +790,7 @@ function WorldQuestTracker.UpdateWorldQuestsOnWorldMap (noCache, showFade, isQue
 	end
 	
 	local worldMapID = WorldQuestTracker.GetCurrentMapAreaID()
+	local addToWorldMap, questCounter = {}, 1
 	
 	for mapId, configTable in pairs (WorldQuestTracker.mapTables) do
 		--local taskInfo = GetQuestsForPlayerByMapID (mapId, 1007)
@@ -877,8 +878,9 @@ function WorldQuestTracker.UpdateWorldQuestsOnWorldMap (noCache, showFade, isQue
 									widget.timeLeftBackground:Hide()
 									widget.timeLeftText:Hide()
 								end
-							
-								--print (widget.lastQuestID, questID, noCache)
+
+								tinsert (addToWorldMap, {questID, mapId, numObjectives, questCounter, title, quest [4], quest [5]})
+								questCounter = questCounter + 1
 							
 								if (widget.lastQuestID == questID and not noCache) then
 									--precisa apenas atualizar o tempo
@@ -1228,12 +1230,81 @@ function WorldQuestTracker.UpdateWorldQuestsOnWorldMap (noCache, showFade, isQue
 	WorldQuestTracker.HideZoneWidgets()
 	WorldQuestTracker.SavedQuestList_CleanUp()
 
+	--WorldQuestTracker.UpdateWorldMapSmallIcons (addToWorldMap)
+
 	WorldQuestTracker.DoAnimationsOnWorldMapWidgets = false
 	
 end
 
--- /dump WorldMapFrame.BorderFrame.MaximizeMinimizeFrame.MaximizeButton
--- /dump WorldMapFrame.BorderFrame.MaximizeMinimizeFrame.MinimizeButton
+
+local scheduledIconUpdate = function (questTable)
+	
+	local questID, mapID, numObjectives, questCounter, questName, x, y = unpack (questTable)
+	
+	local button = WorldQuestTracker.WorldMapSmallWidgets [questCounter]
+	if (not button) then
+		button = WorldQuestTracker.CreateZoneWidget (questCounter, "WorldQuestTrackerWorldMapSmallWidget", worldFramePOIs) --, "WorldQuestTrackerWorldMapPinTemplate"
+		WorldQuestTracker.WorldMapSmallWidgets [questCounter] = button
+	end
+	
+	local pin = WorldQuestTrackerDataProvider:GetMap():AcquirePin ("WorldQuestTrackerWorldMapPinTemplate", "questPin")
+	button:ClearAllPoints()
+	button:SetParent (pin)
+	button:SetPoint ("center")
+	button:SetScale (5)
+	
+--	if (button.questID ~= questID and HaveQuestData (questID)) then
+		--> can cache here, at this point the quest data should already be in the cache
+		local title, factionID, tagID, tagName, worldQuestType, rarity, isElite, tradeskillLineIndex, tagID, tagName, worldQuestType, rarity, isElite, tradeskillLineIndex, allowDisplayPastCritical, gold, goldFormated, rewardName, rewardTexture, numRewardItems, itemName, itemTexture, itemLevel, quantity, quality, isUsable, itemID, isArtifact, artifactPower, isStackable, stackAmount = WorldQuestTracker.GetOrLoadQuestData (questID)
+		
+		button.questID = questID
+		button.mapID = mapID
+		button.numObjectives = numObjectives
+		button.questName = questName
+		
+		WorldQuestTracker.SetupWorldQuestButton (button, worldQuestType, rarity, isElite, tradeskillLineIndex, nil, nil, nil, nil, mapID)
+--	end
+
+	local newX, newY = HereBeDragons:TranslateZoneCoordinates (x, y, mapID, WorldMapFrame.mapID, false)
+	pin:SetPosition (newX, newY)
+	pin:SetSize (22, 22)
+	pin.IsInUse = true
+	
+end
+
+local lazyUpdate = CreateFrame ("frame")
+lazyUpdate.WidgetsToUpdate = {}
+WorldQuestTracker.WorldMapSmallWidgets = {}
+
+local lazyUpdateFunc = function (self, deltaTime)
+	if (#lazyUpdate.WidgetsToUpdate > 0 and WorldQuestTracker.IsWorldQuestHub (WorldMapFrame.mapID)) then
+		local questTable = tremove (lazyUpdate.WidgetsToUpdate)
+		if (questTable) then
+			scheduledIconUpdate (questTable)
+		end
+	else
+		lazyUpdate:SetScript ("OnUpdate", nil)
+		
+		local map = WorldQuestTrackerDataProvider:GetMap()
+		for pin in map:EnumeratePinsByTemplate ("WorldQuestTrackerWorldMapPinTemplate") do
+			if (not pin.IsInUse) then
+				map:RemovePin (pin)
+			end
+		end
+	end
+end
+
+function WorldQuestTracker.UpdateWorldMapSmallIcons (addToWorldMap)
+	wipe (lazyUpdate.WidgetsToUpdate)
+	lazyUpdate.WidgetsToUpdate = addToWorldMap
+	
+	local map = WorldQuestTrackerDataProvider:GetMap()
+	for pin in map:EnumeratePinsByTemplate ("WorldQuestTrackerWorldMapPinTemplate") do
+		pin.IsInUse = false
+	end
+	
+	lazyUpdate:SetScript ("OnUpdate", lazyUpdateFunc)
+end
 
 --on maximize
 if (WorldMapFrame.BorderFrame.MaximizeMinimizeFrame.MaximizeButton) then

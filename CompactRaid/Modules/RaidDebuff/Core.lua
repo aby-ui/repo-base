@@ -72,7 +72,7 @@ function module:FindTopDebuff(unit)
 	end
 
 	local i, data, maxLevel, maxName, maxIcon, maxCount, maxDisType, maxExpires
-	for i = 1, 20 do
+	for i = 1, 40 do
 		local name, icon, count, dispelType, _, expires = UnitDebuff(unit, i)
 		if not name then
 			break

@@ -258,3 +258,20 @@ U1PLUG["FixBlizGuild"] = function()
     CoreDependCall("Blizzard_GuildUI", function() createLoadButton(GuildNewsFrame) end)
     CoreDependCall("Blizzard_Communities", function() createLoadButton(CommunitiesFrameGuildDetailsFrameNews) end)
 end
+
+--[[------------------------------------------------------------
+点击打开成就面板
+---------------------------------------------------------------]]
+local newSetItemRef = function(link, text, button, ...)
+    local _, _, id = link:find("achievement:([0-9]+):")
+    if id then
+        if ( not AchievementFrame ) then
+            AchievementFrame_LoadUI();
+        end
+        if ( not AchievementFrame:IsShown() ) then
+            AchievementFrame_ToggleAchievementFrame();
+        end
+        AchievementFrame_SelectAchievement(tonumber(id));
+    end
+end
+hooksecurefunc("SetItemRef", newSetItemRef);

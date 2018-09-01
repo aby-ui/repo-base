@@ -1,4 +1,4 @@
-local VERSION = 78
+local VERSION = 79
 
 --[[
 Special icons for rares, pvp or pet battle quests in list
@@ -229,6 +229,11 @@ Minor fixes
 Added requeue button for current quest (replace eye in quest tracker)
 Fix for "addon blocked" error
 Minor updates
+
+Added option "Disable popup after quest completion (leave party)"
+Added "/wql way X Y" command for manual arrow
+Right click on LFG popup will hide it
+Minor fixes
 ]]
 
 local GlobalAddonName, WQLdb = ...
@@ -328,6 +333,7 @@ local LOCALE =
 		bottomLine = "Нижняя строка",
 		unlimited = "Неограниченно",
 		maxLines = "Лимит строк",
+		lfgDisablePopupLeave = "Отключить всплывающее окно после завершения задания (покинуть группу)",
 	} or
 	locale == "deDE" and {    --by Sunflow72
 		gear = "Ausrüstung",
@@ -384,6 +390,7 @@ local LOCALE =
 		bottomLine = "Untere Zeile",
 		unlimited = "Unbegrenzt",
 		maxLines = "maximale Anzahl an Zeilen",
+		lfgDisablePopupLeave = "Disable popup after quest completion (leave party)",
 	} or
 	locale == "frFR" and {
 		gear = "Équipement",
@@ -440,6 +447,7 @@ local LOCALE =
 		bottomLine = "Bottom line",
 		unlimited = "Unlimited",
 		maxLines = "Max lines",
+		lfgDisablePopupLeave = "Disable popup after quest completion (leave party)",
 	} or
 	(locale == "esES" or locale == "esMX") and {
 		gear = "Equipo",
@@ -496,6 +504,7 @@ local LOCALE =
 		bottomLine = "Bottom line",
 		unlimited = "Unlimited",
 		maxLines = "Max lines",
+		lfgDisablePopupLeave = "Disable popup after quest completion (leave party)",
 	} or	
 	locale == "itIT" and {
 		gear = "Equipaggiamento",
@@ -552,6 +561,7 @@ local LOCALE =
 		bottomLine = "Bottom line",
 		unlimited = "Unlimited",
 		maxLines = "Max lines",
+		lfgDisablePopupLeave = "Disable popup after quest completion (leave party)",
 	} or
 	locale == "ptBR" and {
 		gear = "Equipamento",
@@ -608,6 +618,7 @@ local LOCALE =
 		bottomLine = "Bottom line",
 		unlimited = "Unlimited",
 		maxLines = "Max lines",
+		lfgDisablePopupLeave = "Disable popup after quest completion (leave party)",
 	} or
 	locale == "koKR" and {
 		gear = "장비",
@@ -664,6 +675,7 @@ local LOCALE =
 		bottomLine = "Bottom line",
 		unlimited = "Unlimited",
 		maxLines = "Max lines",
+		lfgDisablePopupLeave = "Disable popup after quest completion (leave party)",
 	} or
 	locale == "zhCN" and {	--by sprider00
 		gear = "装备",
@@ -720,6 +732,7 @@ local LOCALE =
 		bottomLine = "总数列",
 		unlimited = "无限制",
 		maxLines = "列数上限",
+		lfgDisablePopupLeave = "任务结束后不自动弹出离队提示",
 	} or
 	locale == "zhTW" and {	--by sprider00
 		gear = "裝備",
@@ -776,6 +789,7 @@ local LOCALE =
 		bottomLine = "總數列",
 		unlimited = "無限制",
 		maxLines = "列數上限",
+		lfgDisablePopupLeave = "任務結束后不自動彈出離隊提示",
 	} or 
 	{
 		gear = "Gear",
@@ -832,6 +846,7 @@ local LOCALE =
 		bottomLine = "Bottom line",
 		unlimited = "Unlimited",
 		maxLines = "Max lines",
+		lfgDisablePopupLeave = "Disable popup after quest completion (leave party)",
 	}
 
 local filters = {
@@ -1264,9 +1279,13 @@ WorldQuestList:SetScript("OnEvent",function(self,event,...)
                 DisableLFG_Popup = true,
 				AzeriteFormat = 20,
 				--DisableRewardIcons = true,
-			}
+                DisableLFG_PopupLeave = true,
+				HideLegion = true,
+            }
 		end
 		VWQL = _G.VWQL
+        if VWQL.DisableLFG_PopupLeave == nil then VWQL.DisableLFG_PopupLeave = true end
+        if VWQL.DisableLFG_Popup == nil then VWQL.DisableLFG_Popup = true end
 				
 		VWQL[charKey] = VWQL[charKey] or {}
 		
@@ -2996,7 +3015,13 @@ do
 			text = LOCALE.lfgDisablePopup,
 			func = function()
 				VWQL.DisableLFG_Popup = not VWQL.DisableLFG_Popup
-				WorldQuestList_Update()
+			end,
+			checkable = true,
+		},
+		{
+			text = LOCALE.lfgDisablePopupLeave,
+			func = function()
+				VWQL.DisableLFG_PopupLeave = not VWQL.DisableLFG_PopupLeave
 			end,
 			checkable = true,
 		},
@@ -3388,6 +3413,7 @@ do
 		end,
 		checkable = true,
 		shownFunc = function() return not WorldQuestList:IsLegionZone() or not WorldQuestList.optionsDropDown:IsVisible() end,
+		mark = "OppositeContinent",
 	}
 	list[#list+1] = {
 		text = LOCALE.addQuestsArgus,
@@ -3405,6 +3431,7 @@ do
 			WorldQuestList_Update()
 		end,
 		checkable = true,
+		mark = "HideLegion",
 	}
 	list[#list+1] = {
 		text = LOCALE.argusMap,
@@ -3471,9 +3498,9 @@ do
 				self.List[i].checkState = VWQL.DisableHighlightNewQuest
 			elseif self.List[i].text == LOCALE.disableBountyIcon then
 				self.List[i].checkState = VWQL.DisableBountyIcon
-			elseif self.List[i].text == LOCALE.addQuestsOpposite then
+			elseif self.List[i].mark == "OppositeContinent" then
 				self.List[i].checkState = VWQL.OppositeContinent
-			elseif self.List[i].text == LOCALE.hideLegion then
+			elseif self.List[i].mark == "HideLegion" then
 				self.List[i].checkState = VWQL.HideLegion
 			elseif self.List[i].text == LOCALE.shellGameHelper then
 				self.List[i].checkState = not VWQL.DisableShellGame
@@ -3511,9 +3538,10 @@ do
 			iconsGeneralSubmenu[i].checkState = not VWQL["DisableIconsGeneralMap"..iconsGeneralSubmenu[i].arg1]
 		end
 		lfgSubMenu[1].checkState = VWQL.DisableLFG_Popup
-		lfgSubMenu[2].checkState = VWQL.DisableLFG_RightClickIcon
-		lfgSubMenu[3].checkState = VWQL.DisableLFG_EyeRight
-		lfgSubMenu[4].checkState = VWQL.LFG_HideEyeInList
+		lfgSubMenu[2].checkState = VWQL.DisableLFG_PopupLeave
+		lfgSubMenu[3].checkState = VWQL.DisableLFG_RightClickIcon
+		lfgSubMenu[4].checkState = VWQL.DisableLFG_EyeRight
+		lfgSubMenu[5].checkState = VWQL.LFG_HideEyeInList
 		mapIconsScaleSubmenu[1].slider.val = (VWQL.MapIconsScale or 1) * 100
 		rewardsIconsSubMenu[1].checkState = VWQL.DisableRibbon
 		rewardsIconsSubMenu[2].checkState = VWQL.EnableRibbonGeneralMaps
@@ -4584,8 +4612,8 @@ WorldQuestList.GeneralMaps = GENERAL_MAPS
 
 local ArgusZonesList = {830,885,882}
 
-function WorldQuestList_Update(preMapID)
-	if not WorldQuestList:IsVisible() and not VWQL[charKey].HideMap then
+function WorldQuestList_Update(preMapID,forceUpdate)
+	if not WorldQuestList:IsVisible() and not VWQL[charKey].HideMap and not forceUpdate then
 	--if not WorldQuestList:IsVisible() then
 		return
 	end
@@ -5813,6 +5841,9 @@ WorldMapButton_HookShowHide:SetScript('OnUpdate',function(self)
 	local currZone = GetCurrentMapAreaID()
 	if currZone ~= prevZone then
 		WorldQuestList_Update()
+		if not VWQL.DisableIconsGeneral and WorldMapFrame:IsMaximized() and not WorldQuestList:IsVisible() then
+			WorldQuestList_Update(nil,true)
+		end
 	end
 	prevZone = currZone
 	UpdateTicker = true
@@ -5862,6 +5893,25 @@ SlashCmdList["WQLSlash"] = function(arg)
 	elseif argL:find("^iconscale %d+") then 
 		VWQL.MapIconsScale = tonumber( argL:match("%d+"),nil ) / 100
 		print("Icons scale set to "..(VWQL.MapIconsScale * 100).."%")
+		return		
+	elseif argL:find("^way ") then 
+		local x,y = argL:match("([%d%.,]+) ([%d%.,]+)")
+		if x and y then
+			x = tonumber( x:gsub(",$",""),nil )
+			y = tonumber( y:gsub(",$",""),nil )
+			if x and y then
+				local mapID = C_Map.GetBestMapForUnit("player")
+				if WorldMapFrame:IsVisible() then
+					mapID = GetCurrentMapAreaID()
+				end
+				if mapID then
+					local wX,wY = WorldQuestList:GetQuestWorldCoord2(-10,mapID,x / 100,y / 100,true)
+					if wX and wY then
+						WQLdb.Arrow:ShowRunTo(wX,wY,5,nil,true)
+					end
+				end
+			end
+		end
 		return		
 	elseif argL == "options" then 
 		WorldQuestList.optionsDropDown.Button:Click()
@@ -6302,14 +6352,19 @@ WorldQuestList.TreasureData = WQLdb.TreasureData or {}
 
 --- LFG features
 
-local QuestCreationBox = CreateFrame("Frame","WQL_QuestCreationBox",UIParent)
+local QuestCreationBox = CreateFrame("Button","WQL_QuestCreationBox",UIParent)
 QuestCreationBox:SetSize(350,120)
 QuestCreationBox:SetPoint("CENTER",0,250)
 QuestCreationBox:SetMovable(false)
 QuestCreationBox:EnableMouse(true)
 QuestCreationBox:SetClampedToScreen(true)
 QuestCreationBox:RegisterForDrag("LeftButton")
+QuestCreationBox:RegisterForClicks("RightButtonUp")
 QuestCreationBox:Hide()
+
+QuestCreationBox:SetScript("OnClick",function(self)
+	self:Hide()
+end)
 
 --tinsert(UISpecialFrames, "WQL_QuestCreationBox")
 
@@ -6961,16 +7016,16 @@ QuestCreationBox:SetScript("OnEvent",function (self,event,arg1,arg2)
 			end
 		end		
 	elseif event == "QUEST_TURNED_IN" then
-		if not VWQL or VWQL.DisableLFG or not arg1 then
+		if not VWQL or VWQL.DisableLFG or not arg1 or VWQL.DisableLFG_PopupLeave then
 			return
 		end
-		--local name = select(5,C_LFGList.GetActiveEntryInfo())
-		--if name and name == tostring(arg1) and (not QuestCreationBox:IsVisible() or (QuestCreationBox.type ~= 1)) then
-		if C_LFGList.GetActiveEntryInfo() and QuestUtils_IsQuestWorldQuest(arg1) and CheckQuestPassPopup(arg1) and (not QuestCreationBox:IsVisible() or (QuestCreationBox.type ~= 1 and QuestCreationBox.type ~= 4) or (QuestCreationBox.type == 1 and QuestCreationBox.questID == arg1) or (QuestCreationBox.type == 4 and QuestCreationBox.questID == arg1)) then
+		if (C_LFGList.GetActiveEntryInfo() or LFGListFrame.SearchPanel.SearchBox:GetText()==tostring(arg1)) and QuestUtils_IsQuestWorldQuest(arg1) and CheckQuestPassPopup(arg1) and (not QuestCreationBox:IsVisible() or (QuestCreationBox.type ~= 1 and QuestCreationBox.type ~= 4) or (QuestCreationBox.type == 1 and QuestCreationBox.questID == arg1) or (QuestCreationBox.type == 4 and QuestCreationBox.questID == arg1)) then
 			local _, activityID = C_LFGList.GetActiveEntryInfo()
-			local _, _, categoryID = C_LFGList.GetActivityInfo(activityID)
-			if categoryID ~= 1 then
-				return
+			if activityID then
+				local _, _, categoryID = C_LFGList.GetActivityInfo(activityID)
+				if categoryID ~= 1 then
+					return
+				end
 			end
 			
 			QuestCreationBox.Text1:SetText("WQL")

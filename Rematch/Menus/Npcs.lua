@@ -47,10 +47,10 @@ rematch.notableGroups = {
 	[18] = L["Azsuna"],
 	[19] = L["Broken Isle"],
 	[20] = L["Wailing Caverns"],
-   [21] = L["Deadmines"],
-   [22] = L["Mac'Aree"],
-   [23] = L["Krokuun"],
-   [24] = L["Antoran Wastes"],
+	[21] = L["Deadmines"],
+	[22] = L["Argus"],
+	[23] = L["Zandalar"],
+	[24] = L["Kul Tiras"],
 }
 
 rematch.notableNPCs = {
@@ -291,29 +291,62 @@ rematch.notableNPCs = {
    {119344, 21, 2025}, -- Klutz's Battle Bird
    {119407, 21, 2032}, -- Cookie's Leftovers
 
-   -- Mac'Aree (22)
-   {128013, 22, 2101}, -- Bucky
-   {128017, 22, 2105}, -- Corrupted Blood of Argus
-   {128015, 22, 2103}, -- Gloamwing
-   {128018, 22, 2106}, -- Mar'cuus
-   {128016, 22, 2104}, -- Shadeflicker
-   {128014, 22, 2102}, -- Snozz
+	-- Argus
+	{L["Antorian Wastes"], 22},
+	{128020, 22, 2108}, -- Bloat
+	{128021, 22, 2109}, -- Earseeker
+	{128023, 22, 2111}, -- Minixis
+	{128024, 22, 2110}, -- One-of-Many
+	{128022, 22, 2112}, -- Pilfer
+	{128019, 22, 2107}, -- Watcher
+	{L["Krokuun"], 22},
+	{128009, 22, 2092}, -- Baneglow
+	{128011, 22, 2099}, -- Deathscreech
+	{128008, 22, 2096}, -- Foulclaw
+	{128012, 22, 2100}, -- Gnasher
+	{128010, 22, 2098}, -- Retch
+	{128007, 22, 2095}, -- Ruinhoof
+	{L["Mac'Aree"], 22},
+    {128013, 22, 2101}, -- Bucky
+	{128017, 22, 2105}, -- Corrupted Blood of Argus
+	{128015, 22, 2103}, -- Gloamwing
+	{128018, 22, 2106}, -- Mar'cuus
+	{128016, 22, 2104}, -- Shadeflicker
+	{128014, 22, 2102}, -- Snozz
+	
+	-- Zandalar
+	{L["Nazmir"], 23},
+	{141588, 23, 2157}, -- Bloodtusk
+	{141799, 23, 2338, 2339, 2340}, -- Grady Prett
+	{141814, 23, 2341, 2343, 2344}, -- Korval Darkbeard
+	{141529, 23, 2334, 2335, 2336}, -- Lozu
+	{L["Vol'dun"], 23},
+	{141879, 23, 2345, 2346, 2347}, -- Keeyo
+	{142054, 23, 2359, 2357, 2358}, -- Kusa
+	{141945, 23, 2355, 2354, 2353}, -- Sizzik
+	{141969, 23, 2356}, -- Spineleaf
+	{L["Zuldazar"], 23},
+	{142151, 23, 2367}, -- Jammer
+	{142096, 23, 2360, 2361, 2363}, -- Karaga
+	{142114, 23, 2364, 2365, 2366}, -- Talia Sparkbrow
+	{142234, 23, 2368, 2370, 2371}, -- Zujai
 
-   -- Krokuun (23)
-   {128009, 23, 2092}, -- Baneglow
-   {128011, 23, 2099}, -- Deathscreech
-   {128008, 23, 2096}, -- Foulclaw
-   {128012, 23, 2100}, -- Gnasher
-   {128010, 23, 2098}, -- Retch
-   {128007, 23, 2095}, -- Ruinhoof
-
-   -- Antorian Wastes (24)
-   {128020, 24, 2108}, -- Bloat
-   {128021, 24, 2109}, -- Earseeker
-   {128023, 24, 2111}, -- Minixis
-   {128024, 24, 2110}, -- One-of-Many
-   {128022, 24, 2112}, -- Pilfer
-   {128019, 24, 2107}, -- Watcher
+	-- Kul Tiras
+	{L["Tiragarde Sound"], 24},
+	{141479, 24, 2330, 2332, 2333}, -- Burly
+	{141215, 24, 2230}, -- Chitara
+	{141292, 24, 2233, 2232, 2231}, -- Delia Hanako
+	{141077, 24, 2229, 2228, 2227}, -- Kwint
+	{L["Drustvar"], 24},
+	{139489, 24, 2193, 2194, 2195}, -- Captain Hermes
+	{140461, 24, 2209, 2208, 2206}, -- Dilbert McClint
+	{140813, 24, 2210, 2211, 2212}, -- Fizzie Sparkwhistle
+	{140880, 24, 2213, 2214, 2215}, -- Michael Skarn
+	{L["Stormsong Valley"], 24},
+	{139987, 24, 2200}, -- Brittlespine
+	{140315, 24, 2205, 2203, 2204}, -- Eddie Fixit
+	{141002, 24, 2220, 2221, 2222}, -- Ellie Vern
+	{141046, 24, 2223, 2225, 2226}, -- Leana Darkwind
 
 }
 
@@ -418,11 +451,14 @@ function rematch:CacheNpcIDs()
 		local failed
 		-- cache notable NPCs
 		for _,info in ipairs(rematch.notableNPCs) do
-			local name,success = rematch:GetNameFromNpcTooltip(info[1],true)
-			if success and not rematch.notableNames[info[1]] then
-				rematch.notableNames[info[1]] = name
-			elseif not success then
-				failed = true
+			local npcID = info[1]
+			if type(npcID)=="number" then
+				local name,success = rematch:GetNameFromNpcTooltip(npcID,true)
+				if success and not rematch.notableNames[npcID] then
+					rematch.notableNames[npcID] = name
+				elseif not success then
+					failed = true
+				end
 			end
 		end
 		-- cache saved NPCs
@@ -479,8 +515,12 @@ function rematch:CreateNpcMenus()
 	for index,info in pairs(rematch.notableNPCs) do
 		local groupName = format("NotableSubMenu%02d",info[2])
 		menu[groupName] = menu[groupName] or {}
-		local name = rematch:GetNameFromNpcID(info[1])
-		tinsert(menu[groupName],{text=name,npcID=info[1],icon=rematch.NpcHasTeamSaved,iconCoords={0,1,0,1},tooltipBody=rematch.NotableTooltipBody,func=rematch.PickNpcID})
+		if type(info[1])=="number" then
+			local name = rematch:GetNameFromNpcID(info[1])
+			tinsert(menu[groupName],{text=name,npcID=info[1],icon=rematch.NpcHasTeamSaved,iconCoords={0,1,0,1},tooltipBody=rematch.NotableTooltipBody,func=rematch.PickNpcID})
+		else
+			tinsert(menu[groupName],{text=info[1],highlight=true})
+		end
 	end
 	-- now register them all
 	for groupName in pairs(menu) do

@@ -315,31 +315,38 @@ do
 			return
 		end
 
+		local vignetteName = vignetteInfo.name
+		local vignetteNPCs = private.VignetteIDToNPCMapping[vignetteInfo.vignetteID]
+
+		if vignetteNPCs then
+			for index = 1, #vignetteNPCs do
+				local vignetteNPC = vignetteNPCs[index]
+
+				if Data.Scanner.NPCs[vignetteNPC.npcID] then
+					ProcessDetection({
+						npcID = vignetteNPC.npcID,
+						sourceText = sourceText,
+						vignetteName = vignetteName,
+					})
+				end
+			end
+
+			return
+		else
+			private.Debug("Unknown vignette: %s - vignetteID %d (NPC ID %d) in mapID %d", vignetteInfo.name, vignetteInfo.vignetteID, npcID or -1, _G.C_Map.GetBestMapForUnit("player"))
+		end
+
 		local npcID = private.GUIDToCreatureID(vignetteInfo.objectGUID)
 
 		-- The objectGUID can be but isn't always an NPC ID, since some NPCs must be summoned from the vignette object.
 		if npcID and Data.Scanner.NPCs[npcID] then
 			ProcessDetection({
 				npcID = npcID,
-				sourceText = sourceText
+				sourceText = sourceText,
+				vignetteName = vignetteName,
 			})
 
 			return
-		end
-
-		local vignetteNPC = private.VignetteIDToNPCMapping[vignetteInfo.vignetteID]
-		local vignetteName = vignetteInfo.name
-
-		if vignetteNPC then
-			if Data.Scanner.NPCs[vignetteNPC.npcID] then
-				ProcessDetection({
-					npcID = vignetteNPC.npcID,
-					sourceText = sourceText,
-					vignetteName = vignetteName,
-				})
-			end
-		else
-			private.Debug("Unknown vignette: %s - vignetteID %d (NPC ID %d) in mapID %d", vignetteInfo.name, vignetteInfo.vignetteID, npcID or -1, _G.C_Map.GetBestMapForUnit("player"))
 		end
 
 		local questID = private.QuestIDFromName[vignetteName]
@@ -348,7 +355,8 @@ do
 			for questNPCID in pairs(private.QuestNPCs[questID]) do
 				ProcessDetection({
 					npcID = questNPCID,
-					sourceText = sourceText
+					sourceText = sourceText,
+					vignetteName = vignetteName,
 				})
 			end
 
@@ -362,7 +370,8 @@ do
 		if npcID then
 			ProcessDetection({
 				npcID = npcID,
-				sourceText = sourceText
+				sourceText = sourceText,
+				vignetteName = vignetteName,
 			})
 
 			return

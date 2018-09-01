@@ -2,6 +2,7 @@ local L = select(2, ...).L
 local GridFrame = Grid:GetModule("GridFrame")
 local GridLayout = Grid:GetModule("GridLayout")
 local GridStatus = Grid:GetModule("GridStatus")
+local GridRoster = Grid:GetModule("GridRoster")
 local ACD3 = LibStub("AceConfigDialog-3.0")
 local ACR3 = LibStub("AceConfigRegistry-3.0")
 
@@ -293,6 +294,7 @@ Mixin(GridFrame.defaultDB, {
         iconright = {
             alert_tankcd = true,
             alert_vehicleui = true,
+            alert_phase = true,
         },
         icontop = {
             raid_icon = true,
@@ -728,4 +730,72 @@ do
     ef:RegisterEvent("ENCOUNTER_START")
     --ef:RegisterEvent("ENCOUNTER_END")
     ef:RegisterEvent("PLAYER_REGEN_ENABLED")
+end
+
+--[[------------------------------------------------------------
+相位图标
+---------------------------------------------------------------]]
+do
+    local GridStatusPhase = Grid:NewStatusModule("GridStatusPhase")
+    -- GridStatusPhase.menuName = "位面与战争模式"
+
+    GridStatusPhase.defaultDB = {
+        alert_phase = {
+            enable = true,
+            priority = 40,
+            color = { r = 1, g = 1, b = 0, a = 1 },
+        },
+    }
+
+    function GridStatusPhase:PostInitialize()
+    	self:RegisterStatus("alert_phase", "位面与战争模式", nil, true)
+    end
+
+    function GridStatusPhase:OnStatusEnable(status)
+        if status == "alert_phase" then
+            self:RegisterEvent("UNIT_PHASE", "UpdateUnit")
+            self:RegisterEvent("GROUP_ROSTER_UPDATE", "UpdateAllUnits")
+            self:UpdateAllUnits()
+        end
+    end
+
+    function GridStatusPhase:OnStatusDisable(status)
+        if status == "alert_phase" then
+            self:UnregisterEvent("UNIT_PHASE")
+            self:UnregisterEvent("GROUP_ROSTER_UPDATE")
+            self.core:SendStatusLostAllUnits("alert_phase")
+        end
+    end
+
+    function GridStatusPhase:UpdateAllUnits()
+        for guid, unit in GridRoster:IterateRoster() do
+            self:UpdateUnit("UpdateAllUnits", unit)
+        end
+    end
+
+    local UnitGUID, UnitInPhase, UnitIsWarModePhased, UnitIsConnected
+        = UnitGUID, UnitInPhase, UnitIsWarModePhased, UnitIsConnected
+
+    local TEX_COORD = { left = 0.15625, right = 0.84375, top = 0.15625, bottom = 0.84375 }
+    function GridStatusPhase:UpdateUnit(event, unit)
+        if not unit then return end
+        if (UnitIsWarModePhased(unit) or not UnitInPhase(unit)) and UnitIsConnected(unit) then
+            local settings = self.db.profile.alert_phase
+            self.core:SendStatusGained(UnitGUID(unit), "alert_phase",
+                settings.priority,
+                nil, -- range
+                settings.color,
+                "异相", -- text
+                nil, -- value
+                nil, -- maxValue
+                "Interface\\TargetingFrame\\UI-PhasingIcon", -- texture
+                nil, -- start
+                nil, -- duration
+                nil, -- count
+                TEX_COORD
+            )
+        else
+            self.core:SendStatusLost(guid, "alert_phase")
+        end
+    end
 end

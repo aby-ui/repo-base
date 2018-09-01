@@ -134,6 +134,13 @@ WorldQuestTracker.OnMapHasChanged = function (self)
 		C_Timer.After (0.5, check_for_quests_on_unknown_map)
 	end
 	
+	if (not WorldQuestTracker.IsWorldQuestHub (mapID)) then
+		local map = WorldQuestTrackerDataProvider:GetMap()
+		for pin in map:EnumeratePinsByTemplate ("WorldQuestTrackerWorldMapPinTemplate") do
+			map:RemovePin (pin)
+		end
+	end
+	
 	--is the map a zone map with world quests?
 	if (WorldQuestTracker.MapData.WorldQuestZones [mapID]) then
 		--hide the toggle world quests button
@@ -356,7 +363,7 @@ WorldMapFrame:HookScript ("OnHide", function()
 	C_Timer.After (0.2, WorldQuestTracker.RefreshTrackerWidgets)
 end)
 
-hooksecurefunc ("ToggleWorldMap", function (self)
+WorldQuestTracker.OnToggleWorldMap = function (self)
 
 	if (not WorldMapFrame:IsShown()) then
 		--closed
@@ -367,6 +374,8 @@ hooksecurefunc ("ToggleWorldMap", function (self)
 		WorldQuestTrackerAddon.CatchMapProvider (true)
 		WorldQuestTracker.InitializeWorldWidgets()
 	end
+	
+	WorldQuestTracker.IsLoaded = true
 	
 	WorldMapFrame.currentStandingZone = WorldQuestTracker.GetCurrentMapAreaID()
 	
@@ -2847,7 +2856,22 @@ hooksecurefunc ("ToggleWorldMap", function (self)
 	else
 		WorldQuestTracker.NoAutoSwitchToWorldMap = nil
 	end
-end)
+end
 
+hooksecurefunc ("ToggleWorldMap", WorldQuestTracker.OnToggleWorldMap)
+
+WorldQuestTracker.CheckIfLoaded = function (self)
+	if (not WorldQuestTracker.IsLoaded) then
+		if (WorldMapFrame:IsShown()) then
+			WorldQuestTracker.OnToggleWorldMap()
+		end
+	end
+end
+
+WorldMapFrame:HookScript ("OnShow", function()
+	if (not WorldQuestTracker.IsLoaded) then
+		C_Timer.After (0.5, WorldQuestTracker.CheckIfLoaded)
+	end
+end)
 
 

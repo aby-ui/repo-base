@@ -188,7 +188,8 @@ NPCs[124722] = { -- Commodore Calhoun
 
 NPCs[127776] = { -- Scaleclaw Broodmother
 	isTameable = true,
-	questID = 51107, -- Scaleclaw Broodmother
+	questID = 48960,
+	vignetteID = 2298,
 }
 
 NPCs[128497] = { -- Bajiani the Slick

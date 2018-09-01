@@ -211,7 +211,9 @@ function TargetButton:UpdateData(_, data)
 		end
 
 		if self.needsUnitData then
-			if data.sourceText then
+			local sourceText = self.SourceText:GetText()
+
+			if data.sourceText and (not sourceText or sourceText == "") then
 				self.SourceText:SetText(data.sourceText)
 			end
 
@@ -239,7 +241,7 @@ function TargetButton:Activate(data)
 
 	self:SetSpecialText()
 
-	if data.vignetteName then
+	if data.vignetteName and data.vignetteName ~= data.npcName then
 		self.SourceText:SetText(("%s %s"):format(data.sourceText, _G.PARENS_TEMPLATE:format(data.vignetteName)))
 	else
 		self.SourceText:SetText(data.sourceText)

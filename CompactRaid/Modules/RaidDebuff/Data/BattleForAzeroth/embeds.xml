@@ -1,0 +1,5 @@
+﻿<Ui xmlns="http://www.blizzard.com/wow/ui/">
+	<Script file="Azurethos.lua"/>
+	<Script file="Uldir.lua"/>
+	<Script file="PartyDungeons.lua"/>
+</Ui>

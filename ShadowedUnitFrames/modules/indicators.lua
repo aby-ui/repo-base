@@ -32,7 +32,7 @@ end
 function Indicators:UpdatePhase(frame)
     if( not frame.indicators.phase or not frame.indicators.phase.enabled ) then return end
 
-    if( UnitIsConnected(frame.unit) and not UnitInPhase(frame.unit) ) then
+    if( UnitIsConnected(frame.unit) and (not UnitInPhase(frame.unit) or UnitIsWarModePhased(frame.unit)) ) then
 	    frame.indicators.phase:SetTexture("Interface\\TargetingFrame\\UI-PhasingIcon")
 	    frame.indicators.phase:SetTexCoord(0.15625, 0.84375, 0.15625, 0.84375)
         frame.indicators.phase:Show()

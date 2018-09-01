@@ -137,13 +137,7 @@ function AceEvent:Embed(target)
                 end
             end
             if regfunc then
-                self[eventframe]:SetScript("OnEvent", function(_, event, ...)
-                    if event == "COMBAT_LOG_EVENT_UNFILTERED" then --TODO aby8
-                        return regfunc(event, CombatLogGetCurrentEventInfo())
-                    else
-                        return regfunc(event, ...)
-                    end
-                end)
+                self[eventframe]:SetScript("OnEvent", function(_, ...) return regfunc(...) end)
             end
         end
     end)

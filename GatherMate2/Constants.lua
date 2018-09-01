@@ -445,6 +445,7 @@ local rare_spawns = {
 	[263] = {[262]=true}, -- rich monelite deposit
 	[266] = {[265]=true}, -- rich platinum deposit
 	[268] = {[267]=true}, -- rich storm silver deposit
+	[486] = {[485]=true,[487]=true,[488]=true,[491]=true}, -- anchor weed
 }
 Collector.rareNodes = rare_spawns
 -- Format zone = { "Database", "new node id"}

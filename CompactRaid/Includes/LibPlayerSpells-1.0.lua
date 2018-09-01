@@ -130,7 +130,7 @@ local FLYOUT_FACTOR = 10000000
 local MAX_TALENT_TIERS = MAX_TALENT_TIERS
 local NUM_TALENT_COLUMNS = NUM_TALENT_COLUMNS
 
-local VERSION = 1.51
+local VERSION = 1.52
 
 local lib = _G.LibPlayerSpells
 if lib and lib.version >= VERSION then return end
@@ -475,13 +475,13 @@ local function UpdateSpec()
 		return
 	end
 
-	local _, name, description, icon, role, class = GetSpecializationInfoByID(id)
+	local _, name, description, icon, background, role, class = GetSpecializationInfoByID(id)
 	if not name then
 		return
 	end
 
 	prevSpecIndex, prevSpecId = index, id
-	CallHooks("OnSpecChanged", index, id, name, description, icon, nil, role, class)
+	CallHooks("OnSpecChanged", index, id, name, description, icon, background, role, class)
 end
 
 function lib:GetSpecialization()

@@ -4823,6 +4823,10 @@ DF.IconRowFunctions = {
 			newIconFrame.Text:SetPoint ("center")
 			newIconFrame.Text:Hide()
 			
+			newIconFrame.Desc = self:CreateFontString (nil, "overlay", "GameFontNormal")
+			newIconFrame.Desc:SetPoint ("bottom", self, "top", 0, 2)
+			newIconFrame.Desc:Hide()
+			
 			newIconFrame.Cooldown = cooldownFrame
 			
 			self.IconPool [self.NextIcon] = newIconFrame
@@ -4858,7 +4862,7 @@ DF.IconRowFunctions = {
 		return iconFrame
 	end,
 	
-	SetIcon = function (self, spellId, borderColor, startTime, duration, forceTexture)
+	SetIcon = function (self, spellId, borderColor, startTime, duration, forceTexture, descText)
 	
 		local spellName, _, spellIcon
 	
@@ -4890,6 +4894,15 @@ DF.IconRowFunctions = {
 				end
 			else
 				iconFrame.Text:Hide()
+			end
+			
+			if (descText) then
+				iconFrame.Desc:Show()
+				iconFrame.Desc:SetText (descText.text)
+				iconFrame.Desc:SetTextColor (DF:ParseColors (descText.text_color or self.options.desc_text_color))
+				DF:SetFontSize (iconFrame.Desc, descText.text_size or self.options.desc_text_size)
+			else
+				iconFrame.Desc:Hide()
 			end
 
 			iconFrame:SetSize (self.options.icon_width, self.options.icon_height)
@@ -4958,6 +4971,8 @@ local default_icon_row_options = {
 	texcoord = {.1, .9, .1, .9},
 	show_text = true,
 	text_color = {1, 1, 1, 1},
+	desc_text_color = {1, 1, 1, 1},
+	desc_text_size = 7,
 	left_padding = 1, --distance between right and left
 	top_padding = 1, --distance between top and bottom 
 	icon_padding = 1, --distance between each icon

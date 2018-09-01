@@ -18,8 +18,9 @@ local UnitPlayerControlled = UnitPlayerControlled
 local UnitCanAttack = UnitCanAttack
 local UnitReaction = UnitReaction
 local DebuffTypeColor = DebuffTypeColor
-local UnitBuff = UnitBuff
-local UnitDebuff = UnitDebuff
+local UnitBuff = Pre80API.UnitBuff
+local UnitDebuff = Pre80API.UnitDebuff
+local UnitAura = Pre80API.UnitAura
 local wipe = wipe
 local UnitGroupRolesAssigned = UnitGroupRolesAssigned
 local UnitIsDeadOrGhost = UnitIsDeadOrGhost
@@ -282,7 +283,7 @@ local function UnitFrame_UpdateDispels(self)
 	local i
 	for i = 1, 3 do
 		local frame = self.dispelFrames[i]
-		local name, _, _, dispelType = UnitDebuff(unit, i, "RAID") --aby8
+		local name, _, _, dispelType = UnitDebuff(unit, i, "RAID")
 		if name and --[[DISPELABLES[dispelType]--]] dispelType and not self.dispelable[dispelType] then
 			self.dispelable[dispelType] = i
 			frame.icon:SetTexture("Interface\\RaidFrame\\Raid-Icon-Debuff"..dispelType)
@@ -761,23 +762,23 @@ local function UnitFrame_UpdateFlags(self)
 		flag = "dead"
 		texture = DEATH_TEXTURE
 		text = DEAD
-	elseif Aby_UnitDebuff(unit, GHOST_AURA) then
+	elseif UnitDebuff(unit, GHOST_AURA) then
 		flag = "ghost"
 		texture = GHOST_TEXTURE
 		text = DEAD
-	elseif self.unitClass == "PRIEST" and Aby_UnitBuff(unit, SPIRIT_OF_REDEMPTION) then
+	elseif self.unitClass == "PRIEST" and UnitDebuff(unit, SPIRIT_OF_REDEMPTION) then
 		flag = "spirit"
 		texture = SPIRIT_TEXTURE
 		text = DEAD
-	elseif self.unitClass == "MAGE" and select(10, Aby_UnitDebuff(unit, CAUTERIZE_AURA)) == 87023 then
+	elseif self.unitClass == "MAGE" and select(10, UnitDebuff(unit, CAUTERIZE_AURA)) == 87023 then
 		flag = "dying"
 		texture = CAUTERIZE_TEXTURE
 		text = CAUTERIZE_AURA
-	elseif self.unitClass == "DEATHKNIGHT" and Aby_UnitDebuff(unit, PURGATORY_AURA) then
+	elseif self.unitClass == "DEATHKNIGHT" and UnitDebuff(unit, PURGATORY_AURA) then
 		flag = "dying"
 		texture = PURGATORY_TEXTURE
 		text = PURGATORY_AURA
-	elseif self.unitClass == "ROGUE" and Aby_UnitBuff(unit, CHEATING_DEATH_AURA) then
+	elseif self.unitClass == "ROGUE" and UnitDebuff(unit, CHEATING_DEATH_AURA) then
 		flag = "dying"
 		texture = CHEATING_DEATH_TEXTURE
 		text = CHEATING_DEATH_AURA
@@ -869,6 +870,7 @@ end
 
 local function UnitFrame_RegisterEvents(self)
 	self:RegisterEvent("PLAYER_ENTERING_WORLD")
+	--self:RegisterEvent("PARTY_MEMBERS_CHANGED")
 	self:RegisterEvent("GROUP_ROSTER_UPDATE")
 	self:RegisterEvent("UNIT_HEALTH")
 	self:RegisterEvent("UNIT_MAXHEALTH")
@@ -1005,7 +1007,7 @@ local function UnitFrame_OnAttributeChanged(self, name, value)
 end
 
 local function UnitFrame_OnEvent(self, event, unit)
-	if event == "PLAYER_ENTERING_WORLD" or event == "GROUP_ROSTER_UPDATE" then
+	if event == "PLAYER_ENTERING_WORLD" or event == "PARTY_MEMBERS_CHANGED" or event == "GROUP_ROSTER_UPDATE" then
 		self.needUpdate = 1
 	elseif event == "PLAYER_TARGET_CHANGED" then
 		UnitFrame_UpdateTarget(self)
@@ -1065,7 +1067,8 @@ local function UnitFrame_OnEvent(self, event, unit)
 end
 
 local function CreateAuraFrame(key, name, parent, list)
-	local frame = CreateFrame("Frame", name, parent, "CompactAuraTemplate")
+	local frame = CreateFrame("Button", name, parent, "CompactAuraTemplate")
+	frame:EnableMouse(false)
 	frame:Hide()
 	frame:SetSize(11, 11)
 	frame.key = key
