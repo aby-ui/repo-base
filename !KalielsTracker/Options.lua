@@ -95,12 +95,12 @@ local defaults = {
 		tooltipShow = true,
 		tooltipShowRewards = true,
 		tooltipShowID = true,
-        menuWowheadURL = true,
+        menuWowheadURL = false,
         menuWowheadURLModifier = "ALT",
         questDefaultActionMap = false,
 
-		messageQuest = true,
-		messageAchievement = true,
+		messageQuest = false,
+		messageAchievement = false,
 		sink20OutputSink = "UIErrorsFrame",
 		sink20Sticky = false,
 		soundQuest = false,
@@ -895,7 +895,7 @@ local options = {
 							order = 5.4,
 						},
 						addonMasqueLabel = {
-							name = " Skin options - for Quest item buttons or Active button",
+							name = L" Skin options - for Quest item buttons or Active button",
 							type = "description",
 							width = "double",
 							fontSize = "medium",
@@ -921,7 +921,7 @@ local options = {
 					order = 6,
 					args = {
 						trackerTitle = {
-							name = cTitle.."Tracker",
+							name = cTitle..L"Tracker",
 							type = "description",
 							fontSize = "medium",
 							order = 6.1,
@@ -945,7 +945,7 @@ local options = {
 							order = 6.12,
 						},
 						tooltipTitle = {
-							name = "\n"..cTitle.."Tooltips",
+							name = "\n"..cTitle..L"Tooltips",
 							type = "description",
 							fontSize = "medium",
 							order = 6.2,
@@ -960,7 +960,7 @@ local options = {
 							order = 6.21,
 						},
 						tooltipShowRewards = {
-							name = "Show Rewards",
+							name = L"Show Rewards",
 							desc = "Show Quest Rewards inside tooltips - Artifact Power, Order Resources, Money, Equipment etc.",
 							type = "toggle",
 							disabled = function()
@@ -984,7 +984,7 @@ local options = {
 							order = 6.23,
 						},
 						menuTitle = {
-							name = "\n"..cTitle.."Menu items",
+							name = "\n"..cTitle..L"Menu items",
 							type = "description",
 							fontSize = "medium",
 							order = 6.3,
@@ -1021,7 +1021,7 @@ local options = {
                             order = 6.4,
                         },
                         questDefaultActionMap = {
-                            name = "Quest default action - World Map",
+                            name = L"Quest default action - World Map",
                             desc = "Set the Quest default action as \"World Map\". Otherwise is the default action \"Quest Details\".",
                             type = "toggle",
                             width = "normal+half",
@@ -1033,13 +1033,13 @@ local options = {
 					},
 				},
 				sec7 = {
-					name = "Notification messages",
+					name = L"Notification messages",
 					type = "group",
 					inline = true,
 					order = 7,
 					args = {
 						messageQuest = {
-							name = "Quest messages",
+							name = L"Quest messages",
 							type = "toggle",
 							set = function()
 								db.messageQuest = not db.messageQuest
@@ -1047,7 +1047,7 @@ local options = {
 							order = 7.1,
 						},
 						messageAchievement = {
-							name = "Achievement messages",
+							name = L"Achievement messages",
 							width = 1.1,
 							type = "toggle",
 							set = function()
@@ -1059,13 +1059,13 @@ local options = {
 					},
 				},
 				sec8 = {
-					name = "Notification sounds",
+					name = L"Notification sounds",
 					type = "group",
 					inline = true,
 					order = 8,
 					args = {
 						soundQuest = {
-							name = "Quest sounds",
+							name = L"Quest sounds",
 							type = "toggle",
 							set = function()
 								db.soundQuest = not db.soundQuest
@@ -1073,7 +1073,7 @@ local options = {
 							order = 8.1,
 						},
 						soundQuestComplete = {
-							name = "Complete Sound",
+							name = L"Complete Sound",
 							desc = "Addon sounds are prefixed \"KT - \".",
 							type = "select",
 							width = 1.2,
@@ -1092,11 +1092,11 @@ local options = {
 			},
 		},
 		modules = {
-			name = "Modules",
+			name = L"Modules",
 			type = "group",
 			args = {
 				sec1 = {
-					name = "Order of Modules "..beta,
+					name = L"Order of Modules "..beta,
 					type = "group",
 					inline = true,
 					order = 1,
@@ -1312,14 +1312,14 @@ function GetModulesOptionsTable()
 	local text
 	local args = {
 		descCurOrder = {
-			name = cTitle.."Current Order",
+			name = cTitle..L"Current Order",
 			type = "description",
 			width = "double",
 			fontSize = "medium",
 			order = 0.1,
 		},
 		descDefOrder = {
-			name = "|T:1:42|t"..cTitle.."Default Order",
+			name = "|T:1:42|t"..cTitle..L"Default Order",
 			type = "description",
 			width = "normal",
 			fontSize = "medium",
@@ -1336,7 +1336,7 @@ function GetModulesOptionsTable()
 		if module == "SCENARIO_CONTENT_TRACKER_MODULE" then
 			text = text.." *"
 		elseif module == "AUTO_QUEST_POPUP_TRACKER_MODULE" then
-			text = "Popup "..text
+			text = L"Popup "..text
 		end
 		args["pos"..i] = {
 			name = " "..text,
@@ -1366,7 +1366,7 @@ function GetModulesOptionsTable()
 			order = i + 0.2,
 		}
 		args["pos"..i.."default"] = {
-			name = "|T:1:55|t|cff808080"..(OTF.MODULES_UI_ORDER[i] == AUTO_QUEST_POPUP_TRACKER_MODULE and "Popup " or "")..OTF.MODULES_UI_ORDER[i].Header.Text:GetText()..(OTF.MODULES_UI_ORDER[i] == SCENARIO_CONTENT_TRACKER_MODULE and " *" or ""),
+			name = "|T:1:55|t|cff808080"..(OTF.MODULES_UI_ORDER[i] == AUTO_QUEST_POPUP_TRACKER_MODULE and L"Popup " or "")..OTF.MODULES_UI_ORDER[i].Header.Text:GetText()..(OTF.MODULES_UI_ORDER[i] == SCENARIO_CONTENT_TRACKER_MODULE and " *" or ""),
 			type = "description",
 			width = "normal",
 			order = i + 0.3,

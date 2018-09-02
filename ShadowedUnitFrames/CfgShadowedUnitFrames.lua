@@ -803,7 +803,7 @@ preset_datas = {
           healAbsorb = { cap = 1.3, enabled = false, height = 0.5, },
           healthBar = { background = false, colorAggro = false, height = 10, invert = false, reverse = false, vertical = false, },
           height = 40,
-          highlight = { debuff = true, height = 0.5, mouseover = false, },
+          highlight = { debuff = true, height = 0.5, mouseover = false, rareMob = true, },
           incAbsorb = { cap = 1.3, enabled = false, height = 0.5, },
           incHeal = { cap = 1.2, enabled = false, height = 0.5, },
           indicators = {
@@ -1472,7 +1472,7 @@ preset_datas = {
           healAbsorb = { cap = 1.3, enabled = false, height = 0.5, },
           healthBar = { background = false, colorAggro = false, height = 2, invert = false, order = 0, reverse = false, vertical = false, },
           height = 40,
-          highlight = { debuff = true, height = 0.5, mouseover = false, },
+          highlight = { debuff = true, height = 0.5, mouseover = false, rareMob = true, },
           incAbsorb = { cap = 1.3, enabled = false, height = 0.5, },
           incHeal = { cap = 1.2, enabled = false, height = 0.5, },
           indicators = {
@@ -2135,7 +2135,7 @@ preset_datas = {
           healAbsorb = { cap = 1.3, enabled = false, height = 0.5, },
           healthBar = { background = false, colorAggro = false, height = 10, invert = false, reverse = false, vertical = false, },
           height = 50,
-          highlight = { debuff = true, height = 0.5, mouseover = false, },
+          highlight = { debuff = true, height = 0.5, mouseover = false, rareMob = true, },
           incAbsorb = { cap = 1.3, enabled = false, height = 0.5, },
           incHeal = { cap = 1.2, enabled = false, height = 0.5, },
           indicators = {
@@ -2157,7 +2157,7 @@ preset_datas = {
           scale = 1.2,
           text = {
             { anchorPoint = "C", text = "[curmaxhp]", width = 10, x = -35, },
-            { anchorPoint = "RC", text = "[dechp]", width = 10, x = -50, },
+            { anchorPoint = "RC", text = "[dechp][( )rare]", width = 10, x = -50, },
             { anchorPoint = "C", text = "[( )level] [( )name]", width = 10, x = -18, },
             { anchorPoint = "RC", size = -2, text = "[( )perpp]", width = 3, x = -40, },
             { anchorPoint = "LC", size = -2, text = "[level]", width = 10, x = 25, },
@@ -2194,8 +2194,8 @@ preset_datas = {
           range = { height = 0.5, },
           scale = 1.2,
           text = {
-            { anchorPoint = "C", text = "", width = 5, x = 0, y = -8, },
-            { anchorPoint = "C", size = 1, text = "[perhp]", width = 0, x = 0, y = -1, },
+            { anchorPoint = "C", size = -2, text = "[perhp]", width = 5, x = 2, y = -12, },
+            { anchorPoint = "C", size = 1, text = "[name]", width = 0, x = 0, y = 2, },
             { text = "", width = 0, x = 0, },
             { anchorPoint = "RC", text = "", width = 0, x = 0, },
           },

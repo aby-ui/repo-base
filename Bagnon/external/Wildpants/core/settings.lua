@@ -65,6 +65,7 @@ local ProfileDefaults = {
 		columns = 10,
 		width = 384,
 		height = 200,
+        showBags = true,
 	}, FrameDefaults),
 
 	bank = SetDefaults({
@@ -74,6 +75,10 @@ local ProfileDefaults = {
 		columns = 14,
 		width = 600,
 		height = 500,
+        showBags = true,
+        hiddenBags = {
+            [-3] = true,
+        },
 		x = 95
 	}, FrameDefaults),
 

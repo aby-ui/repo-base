@@ -1,4 +1,4 @@
-## Interface: 80100
+## Interface: 80000
 ## Title: CompactRaid
 ## Version: 5.04
 ## Author: Abin

@@ -116,18 +116,20 @@ end)
 --[[------------------------------------------------------------
 163ui copy for WorldFlightMap
 ---------------------------------------------------------------]]
+local bounceOffset = 5
+local bounceDuration = 0.3
 local function BounceAnimation(self) -- SetLooping('BOUNCE') is producing broken animations, so we're just simulating what it's supposed to do
 	local tx, bounce = self.tx, self.bounce
     local p1, rel, p2, x, y = tx:GetPoint()
     if p1 then tx:ClearAllPoints() end
 	if self.up then
-		if p1 then tx:SetPoint(p1, rel, p2, CONFIG.OFFSET_X, CONFIG.OFFSET_Y + 10) end
+		if p1 then tx:SetPoint(p1, rel, p2, CONFIG.OFFSET_X, CONFIG.OFFSET_Y + bounceOffset) end
 		bounce:SetSmoothing('OUT')
     else
         if p1 then tx:SetPoint(p1, rel, p2, CONFIG.OFFSET_X, CONFIG.OFFSET_Y) end
 		bounce:SetSmoothing('IN')
 	end
-	bounce:SetOffset(0, self.up and -10 or 10)
+	bounce:SetOffset(0, self.up and -bounceOffset or bounceOffset)
 	self.up = not self.up
 	self:Play()
 end
@@ -138,8 +140,8 @@ local group = texture:CreateAnimationGroup()
 group.tx = texture
 
 local bounce = group:CreateAnimation('Translation')
-bounce:SetOffset(0, 10)
-bounce:SetDuration(0.5)
+bounce:SetOffset(0, bounceOffset)
+bounce:SetDuration(bounceDuration)
 bounce:SetSmoothing('IN')
 group.bounce = bounce
 group.up = true

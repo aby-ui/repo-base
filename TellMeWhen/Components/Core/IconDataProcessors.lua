@@ -244,6 +244,7 @@ do
 			end)
 
 			IconPosition_Sortable:RegisterIconSortPreset(L["UIPANEL_GROUP_QUICKSORT_SHOWN"], {
+				{ Method = "fakehidden", Order = 1 },
 				{ Method = "shown", Order = -1 },
 				{ Method = "id", Order = 1 }
 			})

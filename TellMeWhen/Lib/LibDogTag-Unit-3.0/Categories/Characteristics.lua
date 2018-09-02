@@ -20,6 +20,7 @@ local L = DogTag_Unit.L
 -- Pre 3.2.0 compatability support
 local wow_320 = select(4, GetBuildInfo()) >= 30200
 local wow_700 = select(4, GetBuildInfo()) >= 70000
+local wow_800 = select(4, GetBuildInfo()) >= 80000
 local GetQuestDifficultyColor
 if not wow_320 then
 	GetQuestDifficultyColor = _G.GetDifficultyColor
@@ -184,7 +185,12 @@ local function Class(unit)
 	if UnitIsPlayer(unit) then
 		return UnitClass(unit) or UNKNOWN
 	else
-		return UnitClassBase(unit) or UNKNOWN
+		if wow_800 then
+			local classbase, classindex = UnitClassBase(unit)
+			return classbase and GetClassInfo(classindex) or UNKNOWN
+		else
+			return UnitClassBase(unit) or UNKNOWN
+		end
 	end
 end
 

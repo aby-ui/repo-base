@@ -18,7 +18,7 @@ along with Sushi. If not, see <http://www.gnu.org/licenses/>.
 --]]
 
 local CallHandler = SushiCallHandler
-local Header = MakeSushi(3, 'Frame', 'Header', nil, nil, CallHandler)
+local Header = MakeSushi(4, 'Frame', 'Header', nil, nil, CallHandler)
 if not Header then
 	return
 end
@@ -30,7 +30,7 @@ function Header:OnCreate ()
 	local Text = self:CreateFontString()
 	Text:SetPoint('TOPLEFT')
 	Text:SetJustifyH('LEFT')
-	
+
 	local Underline = self:CreateTexture()
 	Underline:SetPoint('BOTTOMRIGHT')
 	Underline:SetPoint('BOTTOMLEFT')
@@ -38,6 +38,9 @@ function Header:OnCreate ()
 	Underline:SetHeight(1.2)
 
 	self:SetScript('OnSizeChanged', self.OnSizeChanged)
+	self:SetScript('OnMouseDown', self.OnClick)
+	self:SetScript('OnEnter', self.OnEnter)
+	self:SetScript('OnLeave', self.OnLeave)
 	self.Underline = Underline
 	self.Text = Text
 end
@@ -46,6 +49,7 @@ function Header:OnAcquire ()
 	CallHandler.OnAcquire (self)
 	self:SetCall('OnParentResize', self.OnParentResize)
 	self:SetFont('GameFontNormal')
+	self:SetHighlightFactor(1)
 	self:SetUnderlined(nil)
 	self:OnParentResize()
 	self:SetText(nil)
@@ -63,16 +67,31 @@ function Header:OnParentResize ()
 	end
 end
 
+function Header:OnEnter ()
+	self.Text:SetText(self:GetText():gsub('|c(' .. strrep('%x', 8) .. ')', function(value)
+		return '|c' .. value:gsub('(%x%x)', function(v) return format('%x', min(255, tonumber(v, 16) * self:GetHighlightFactor())) end)
+	end))
+end
+
+function Header:OnLeave ()
+	self.Text:SetText(self:GetText())
+end
+
+function Header:OnClick ()
+	self:FireCall('OnClick')
+end
+
 
 --[[ API ]]--
 
 function Header:SetText (text)
+	self.content = text
 	self.Text:SetText(text)
 	self:OnSizeChanged()
 end
 
 function Header:GetText ()
-	return self.Text:GetText()
+	return self.content
 end
 
 function Header:SetFont (font)
@@ -95,6 +114,14 @@ end
 
 function Header:IsUnderlined ()
 	return self.Underline:IsShown()
+end
+
+function Header:SetHighlightFactor (factor)
+	self.highlightFactor = factor
+end
+
+function Header:GetHighlightFactor ()
+	return self.highlightFactor
 end
 
 

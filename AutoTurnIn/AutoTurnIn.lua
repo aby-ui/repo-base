@@ -15,7 +15,7 @@ local Q_ALL, Q_DAILY, Q_EXCEPTDAILY = 1, 2, 3
 
 AutoTurnIn = LibStub("AceAddon-3.0"):NewAddon("AutoTurnIn", "AceEvent-3.0", "AceConsole-3.0")
 AutoTurnIn.TOC = select(4, GetBuildInfo())
-AutoTurnIn.defaults = {enabled = true, all = 2, trivial = false, completeonly = false,
+AutoTurnIn.defaults = {enabled = false, all = 1, trivial = false, completeonly = false,
                        lootreward = 1, tournament = 2,
 					   darkmoonteleport=true, todarkmoon=true, togglekey=4, darkmoonautostart=true, showrewardtext=true,
 					   version=TOCVersion, autoequip = false, debug=false,

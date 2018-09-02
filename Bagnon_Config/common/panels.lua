@@ -7,6 +7,7 @@ local CONFIG, Config = ...
 local ADDON, Addon = Config.addon, _G[Config.addon]
 local L = LibStub('AceLocale-3.0'):GetLocale(CONFIG)
 
+local PATRONS = {{title='Jenkins', people={'Robert Schultz'}},{},{title='Ambassador', people={'Fernando Bandeira','Gnare','Julia Frizzell','Michael Irving','Peter Palma'}}} -- generated patron list
 local SLOT_COLOR_TYPES = {}
 for id, name in pairs(Addon.BAG_TYPES) do
 	tinsert(SLOT_COLOR_TYPES, name)
@@ -21,14 +22,6 @@ local SetProfile = function(profile)
 	Addon:UpdateFrames()
 	Addon.GeneralOptions:Update()
 end
-
-StaticPopupDialogs[CONFIG .. '_ConfirmGlobals'] = {
-	text = 'Are you sure you want to disable specific settings for this character? All specific settings will be lost.',
-	OnAccept = function() SetProfile(nil) end,
-	whileDead = 1, exclusive = 1, hideOnEscape = 1,
-	button1 = YES, button2 = NO,
-	timeout = 0,
-}
 
 
 --[[ Panels ]]--
@@ -45,14 +38,20 @@ Addon.GeneralOptions = Addon.Options:NewPanel(nil, ADDON, L.GeneralDesc, functio
 
 	self:CreateCheck('displayBlizzard', ReloadUI)
 
-	local global = self:Create('Check')
+	local global = self:CreateChild('Check')
 	global:SetLabel(L.CharacterSpecific)
 	global:SetValue(Addon.profile ~= Addon.sets.global)
 	global:SetCall('OnInput', function(_, v)
 		if Addon.profile == Addon.sets.global then
 			SetProfile(CopyTable(Addon.sets.global))
 		else
-			StaticPopup_Show(CONFIG .. '_ConfirmGlobals')
+			SushiPopup:Display {
+				id = ADDON .. 'ConfirmGlobals',
+				OnAccept = function() SetProfile(nil) end,
+				whileDead = 1, exclusive = 1, hideOnEscape = 1,
+				button1 = YES, button2 = NO,
+				text = L.ConfirmGlobals,
+			}
 		end
 	end)
 end)
@@ -132,14 +131,18 @@ end)
 
 Addon.DisplayOptions = Addon.Options:NewPanel(ADDON, L.DisplaySettings, L.DisplaySettingsDesc, function(self)
 	self:CreateHeader(L.DisplayInventory, 'GameFontHighlight', true)
-	for i, event in ipairs {'Bank', 'Auction', 'Guildbank', 'Mail', 'Player', 'Trade', 'Gems', 'Craft'} do
-		self:CreateCheck('display' .. event)
-	end
+	self:CreateRow(35*5, function(row)
+		for i, event in ipairs {'Bank', 'Auction', 'Guildbank', 'Mail', 'Player', 'Trade', 'Gems', 'Craft'} do
+			row:CreateCheck('display' .. event).right = 220
+		end
+	end)
 
 	self:CreateHeader(L.CloseInventory, 'GameFontHighlight', true)
-	for i, event in ipairs {'Bank', 'Combat', 'Vehicle', 'Vendor', 'Map'} do
-		self:CreateCheck('close' .. event)
-	end
+	self:CreateRow(35*3, function(row)
+		for i, event in ipairs {'Bank', 'Vendor', 'Map', 'Combat', 'Vehicle'} do
+			row:CreateCheck('close' .. event).right = 220
+		end
+	end)
 end)
 
 Addon.ColorOptions = Addon.Options:NewPanel(ADDON, L.ColorSettings, L.ColorSettingsDesc, function(self)
@@ -183,7 +186,7 @@ Addon.RulesOptions = Addon.Options:NewPanel(ADDON, L.RuleSettings, L.RuleSetting
 			local rule = entries[i]
 			local id, isSub = rule.id, rule.id:find('/')
 
-			local button = self:Create(isSub and 'Check' or 'ExpandCheck')
+			local button = self:CreateChild(isSub and 'Check' or 'ExpandCheck')
 			button:SetChecked(not self.sets.hiddenRules[id])
 			button:SetLabel(rule.icon and format('|T%s:%d|t %s', rule.icon, 26, rule.name) or rule.name)
 			button.left = button.left + (isSub and 24 or 0)
@@ -211,3 +214,9 @@ Addon.RulesOptions = Addon.Options:NewPanel(ADDON, L.RuleSettings, L.RuleSetting
 		end
 	end).top = 10
 end)
+
+Addon.PatronList = SushiCreditsGroup:CreateOptionsCategory(ADDON)
+Addon.PatronList:SetWebsite('http://www.patreon.com/jaliborc')
+Addon.PatronList:SetFooter('By João Cardoso and Jason Greer')
+Addon.PatronList:SetPeople(PATRONS)
+Addon.PatronList:SetAddon(ADDON)

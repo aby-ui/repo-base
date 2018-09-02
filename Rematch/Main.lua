@@ -242,11 +242,8 @@ function rematch:InitSavedVars()
 	end
 	settings.SelectedTab = settings.SelectedTab or 1
 
-	-- true if client is MacOS
-	rematch.isOnMac = IsMacClient()
-
 	-- on MacOS clients, turn on DebugDelayMacs setting to delay launch of journal
-	if rematch.isOnMac and settings.DebugDelayMacs==nil then
+	if IsMacClient() and settings.DebugDelayMacs==nil then
 		settings.DebugDelayMacs = true
 	end
 

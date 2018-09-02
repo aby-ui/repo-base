@@ -168,6 +168,7 @@ end
 
 function Mapster:WorldMapFrame_OnShow()
 	self:SetFadeAlpha()
+    WorldMapFrame:SetAlpha(1)
 end
 
 function Mapster:SetScale(force)

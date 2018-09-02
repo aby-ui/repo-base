@@ -258,6 +258,33 @@ IconDragger:RegisterIconDragHandler(3,	-- Swap
 		IconDragger.srcicon:SetInfo("texture", desttex)
 	end
 )
+IconDragger:RegisterIconDragHandler(4,	-- Insert
+	function(IconDragger, info)
+		if IconDragger.desticon then
+			info.text = L["ICONMENU_INSERTHERE"]
+			info.tooltipTitle = L["ICONMENU_INSERTHERE"]
+			info.tooltipText = L["ICONMENU_INSERTHERE_DESC"]:format(
+				IconDragger.srcicon:GetFullName(), 
+				IconDragger.desticon:GetFullName()
+			)
+			return true
+		end
+	end,
+	function(IconDragger)
+		-- move the actual settings
+		local srcgs = IconDragger.srcicon.group:GetSettings()
+		local srcics = IconDragger.srcicon:GetSettings()
+		
+		TMW:PrepareIconSettingsForCopying(srcics, srcgs)
+		
+		local targetId = IconDragger.desticon:GetID()
+		local ics = tremove(srcgs.Icons, IconDragger.srcicon:GetID())
+		tinsert(IconDragger.desticon.group:GetSettings().Icons, targetId, ics)
+		
+		-- preserve buff/debuff/other types textures
+		IconDragger.desticon:SetInfo("texture", IconDragger.srcicon.attributes.texture)
+	end
+)
 
 local function Split(IconDragger, domain)
 	if InCombatLockdown() then

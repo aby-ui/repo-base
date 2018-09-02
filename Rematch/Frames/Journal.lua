@@ -46,14 +46,19 @@ end)
 -- called in ADDON_LOADED of Blizzard_Collctions (or during startup if already loaded)
 local hasJournalRunBefore = false -- becomes true after the journal is started
 function journal:Blizzard_Collections()
+	PetJournal:HookScript("OnShow",journal.ConfigureJournal)
+end
 
+-- this is called during the first ConfigureJournal when the journal is shown, and returns
+-- true if the journal was completely setup
+function journal:SetupJournal()
 	-- if this is the first time the journal is opening on a mac with DebugDelayMacs enabled, wait half
 	-- a second (or 0 seconds--one frame) and try later
-	if rematch.isOnMac and settings.DebugDelayMacs then
+	if settings.DebugDelayMacs then
 		if not hasJournalRunBefore then
-			C_Timer.After(settings.DebugDelayMacsOneFrame and 0 or 0.5, journal.Blizzard_Collections)
+			C_Timer.After(settings.DebugDelayMacsOneFrame and 0 or 1, journal.ConfigureJournal)
 			hasJournalRunBefore = true
-			return
+			return false
 		else
 			journal:ConfigureJournal()
 		end
@@ -63,7 +68,6 @@ function journal:Blizzard_Collections()
 	if not settings.UseDefaultJournal and not GetCVarBitfield("closedInfoFrames",LE_FRAME_TUTORIAL_PET_JOURNAL) then
 		SetCVarBitfield("closedInfoFrames",LE_FRAME_TUTORIAL_PET_JOURNAL,true)
 	end
-	PetJournal:HookScript("OnShow",journal.ConfigureJournal)
 	PetJournal:HookScript("OnHide",journal.DefaultJournalOnHide)
 	journal.CloseButton:SetScript("OnClick",function() HideUIPanel(CollectionsJournal) end)
 	C_Timer.After(0.1,journal.OtherAddonJournalStuff)
@@ -79,6 +83,7 @@ function journal:Blizzard_Collections()
 	button.tooltipBody = L["Check this to use Rematch in the pet journal."]
 
 	hooksecurefunc("PetJournal_ShowPetCardBySpeciesID",function(speciesID) rematch:SearchForSpecies(speciesID) end)
+	return true
 end
 
 -- this runs 0.1 seconds after journal:Blizzard_Collections to allow other addons to settle/do their thing
@@ -168,6 +173,11 @@ end
 -- this is called in the PetJournal's OnShow and when journal tabs clicked; to set up the journal
 -- hide is true when the journal needs hidden (typically due to it being on screen and in combat)
 function journal:ConfigureJournal(hide)
+
+	-- if this is the first time loading, and setup didn't complete, then return
+	if not hasJournalRunBefore and not journal:SetupJournal() then
+		return
+	end
 
 	if rematch.Frame:IsVisible() then
 		journal.showStandaloneOnHide = true
