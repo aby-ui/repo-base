@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2094, "DBM-Party-BfA", 2, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17748 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 17761 $"):sub(12, -3))
 mod:SetCreatureID(126969)
 mod:SetEncounterID(2095)
 mod:SetZone()
@@ -91,7 +91,7 @@ function mod:SPELL_AURA_REMOVED_DOSE(args)
 		--"<78.80 02:52:31> [CLEU] SPELL_AURA_REMOVED#Creature-0-2084-1754-9152-130099-00007D20E9#Lightning#Creature-0-2084-1754-9152-130099-00007D20E9#Lightning#257829#Greasy#BUFF#nil", -- [62]
 		--"<104.47 02:52:56> [IsEncounterInProgress()] true", -- [69]
 		if amount == 0 then
-			timerRP:Start(25.5)
+			timerRP:Start(25)
 		end
 	end
 end
@@ -102,7 +102,7 @@ mod.SPELL_AURA_REMOVED = mod.SPELL_AURA_REMOVED_DOSE
 function mod:UNIT_DIED(args)
 	local cid = self:GetCIDFromGUID(args.destGUID)
 	if cid == 129699 then--Ludwig Von Tortollen
-		timerRP:Start(35.5)
+		timerRP:Start(35)
 	end
 end
 

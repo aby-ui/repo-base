@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("AtalDazarTrash", "DBM-Party-BfA", 1)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17753 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 17762 $"):sub(12, -3))
 --mod:SetModelID(47785)
 mod:SetZone()
 
@@ -68,7 +68,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		specWarnTransfusion:Play("takedamage")
 	elseif spellId == 255824 then
 		specWarnFanaticsRageDispel:Show(args.destName)
-		specWarnFanaticsRageDispel:Play("trannow")
+		specWarnFanaticsRageDispel:Play("helpdispel")
 	elseif spellId == 256849 then
 		specWarnDinoMightDispel:Show(args.destName)
 		specWarnDinoMightDispel:Play("helpdispel")
@@ -76,7 +76,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		specWarnUnstableHexSelf:Show()
 		specWarnUnstableHexSelf:Play("runout")
 		yellUnstableHex:Yell()
-	elseif spellId == 252687 then
+	elseif spellId == 252687 and args:IsDestTypePlayer() then
 		if args:IsPlayer() then
 			specWarnVenomfangStrike:Show()
 			specWarnVenomfangStrike:Play("defensive")

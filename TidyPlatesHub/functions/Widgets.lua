@@ -132,7 +132,7 @@ local function SmartFilterMode(aura)
 		elseif LocalVars.WidgetsMyDebuff and aura.effect == "HARMFUL" then
 			ShowThisAura = true
 		end
-    elseif LocalVars.WidgetsHostileBuff and aura.isNPC and aura.reaction == AURA_TARGET_HOSTILE and aura.effect == "HELPFUL" and (not LocalVars.WidgetsHostileBuffStealableOnly2 or aura.isStealable) then
+    elseif LocalVars.WidgetsHostileBuff and (aura.isNPC or LocalVars.WidgetsHostilePlayerBuff) and aura.reaction == AURA_TARGET_HOSTILE and aura.effect == "HELPFUL" and (not LocalVars.WidgetsHostileBuffStealableOnly2 or aura.isStealable) then
         --abyui hostile npc buff
         if aura.isStealable then
             return true, -10, 0, 1, 0

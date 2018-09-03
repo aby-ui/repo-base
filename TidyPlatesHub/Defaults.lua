@@ -212,6 +212,7 @@ TidyPlatesHubDefaults = {
 	WidgetsMyDebuff = true,
 	WidgetsMyBuff = false,
     WidgetsHostileBuff = true,
+    WidgetsHostilePlayerBuff = false,
     WidgetsHostileBuffStealableOnly2 = true,
 	WidgetsDebuffTrackList = "", --"My Rake\nMy Rip\nMy Moonfire\nAll 339\nMy Regrowth\nMy Rejuvenation\nNot Facepalm Bolt",
 	WidgetsDebuffLookup = {},

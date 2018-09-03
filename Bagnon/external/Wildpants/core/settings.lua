@@ -65,7 +65,6 @@ local ProfileDefaults = {
 		columns = 10,
 		width = 384,
 		height = 200,
-        showBags = true,
 	}, FrameDefaults),
 
 	bank = SetDefaults({

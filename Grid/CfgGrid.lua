@@ -96,6 +96,7 @@ U1RegisterAddon("GridStatusTankCooldown", {title = "状态：坦克救命技能"
 U1RegisterAddon("GridStatusRaidDebuff", {title = "状态：团队减益", protected = nil, hide = false, load="NORMAL",
     desc = "提供副本Boss的主要Debuff技能的提示。"
 });
+U1RegisterAddon("GridStatusRD_BfA", {title = "争霸艾泽拉斯", protected = nil, hide = nil, load="NORMAL",});
 U1RegisterAddon("GridStatusRD_Legion", {title = "军团再临", protected = nil, hide = nil, load="NORMAL",});
 U1RegisterAddon("GridStatusRD_WoD", {title = "德拉诺之王", protected = nil, hide = nil, load="NORMAL",});
 U1RegisterAddon("GridStatusRD_MoP", {title = "熊猫人之谜", defaultEnable = 0, protected = nil, hide = nil, load="NORMAL",});

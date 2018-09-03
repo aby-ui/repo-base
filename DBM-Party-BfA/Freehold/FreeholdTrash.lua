@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("FreeholdTrash", "DBM-Party-BfA", 2)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17757 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 17762 $"):sub(12, -3))
 --mod:SetModelID(47785)
 mod:SetZone()
 
@@ -93,17 +93,17 @@ function mod:SPELL_AURA_APPLIED(args)
 		specWarnGTFO:Play("runaway")
 	elseif spellId == 257476 and self:AntiSpam(3, 6) then
 		specWarnBestialWrath:Show(args.destName)
-		specWarnBestialWrath:Play("trannow")
+		specWarnBestialWrath:Play("helpdispel")
 	elseif spellId == 257739 and self:AntiSpam(3, 10) then
 		--If it can be dispelled by affected player, no reason to tell them to run away, dispel is priority
 		if self.Options.SpecWarn257739dispel then
 			specWarnBlindRage:Show(args.destName)
-			specWarnBlindRage:Play("trannow")
+			specWarnBlindRage:Play("helpdispel")
 		elseif args:IsPlayer() then
 			specWarnBlindRagePlayer:Show()
 			specWarnBlindRagePlayer:Play("justrun")
 		end
-	elseif spellId == 257908 and self:AntiSpam(3, 12) then
+	elseif spellId == 257908 and args:IsDestTypePlayer() and self:AntiSpam(3, 12) then
 		--If tank can dispel self, no reason to tell tank to defensive through it, dispel is priority
 		if self.Options.SpecWarn257908dispel then
 			specWarnOiledBlade:Show(args.destName)
@@ -112,7 +112,7 @@ function mod:SPELL_AURA_APPLIED(args)
 			specWarnOiledBladeSelf:Show()
 			specWarnOiledBladeSelf:Play("defensive")
 		end
-	elseif spellId == 258323 and self:AntiSpam(3, 7) then
+	elseif spellId == 258323 and args:IsDestTypePlayer() and self:AntiSpam(3, 7) then
 		specWarnInfectedWound:Show(args.destName)
 		specWarnInfectedWound:Play("helpdispel")
 	end

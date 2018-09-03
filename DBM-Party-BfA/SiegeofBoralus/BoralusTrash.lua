@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("BoralusTrash", "DBM-Party-BfA", 5)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17755 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 17762 $"):sub(12, -3))
 --mod:SetModelID(47785)
 mod:SetZone()
 
@@ -83,12 +83,12 @@ function mod:SPELL_AURA_APPLIED(args)
 		specWarnSightedArt:Show()
 		specWarnSightedArt:Play("targetyou")
 		yellSightedArt:Yell()
-	elseif spellId == 272571 and self:IsValidWarning(args.sourceGUID) then
+	elseif spellId == 272571 and args:IsDestTypePlayer() then
 		specWarnChokingWatersDispel:Show(args.destName)
 		specWarnChokingWatersDispel:Play("helpdispel")
 	elseif spellId == 272888 and self:IsValidWarning(args.sourceGUID) then
 		specWarnFerocity:Show(args.destName)
-		specWarnFerocity:Play("trannow")
+		specWarnFerocity:Play("helpdispel")
 		
 	end
 end

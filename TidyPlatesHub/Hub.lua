@@ -162,8 +162,9 @@ local function BuildHubPanel(panel)
 
 	panel.WidgetsMyDebuff = CreateQuickCheckbutton(objectName.."WidgetsMyDebuff", "包括我的Debuffs", AlignmentColumn, panel.WidgetsDebuff, 16)
 	-- panel.WidgetsMyBuff = CreateQuickCheckbutton(objectName.."WidgetsMyBuff", "包括我的Buffs", AlignmentColumn, panel.WidgetsMyDebuff, 16)
-    panel.WidgetsHostileBuff = CreateQuickCheckbutton(objectName.."WidgetsHostileBuff", "包括敌方的Buffs", AlignmentColumn, panel.WidgetsMyDebuff, 16)
-    panel.WidgetsHostileBuffStealableOnly2 = CreateQuickCheckbutton(objectName.."WidgetsHostileBuffStealableOnly2", "仅包括可进攻驱散或可偷取的", AlignmentColumn, panel.WidgetsHostileBuff, 32)
+    panel.WidgetsHostileBuff = CreateQuickCheckbutton(objectName.."WidgetsHostileBuff", "包括敌对NPC的Buffs", AlignmentColumn, panel.WidgetsMyDebuff, 16)
+    panel.WidgetsHostilePlayerBuff = CreateQuickCheckbutton(objectName.."WidgetsHostilePlayerBuff", "也显示敌对玩家的Buffs（会比较乱）", AlignmentColumn, panel.WidgetsHostileBuff, 32)
+    panel.WidgetsHostileBuffStealableOnly2 = CreateQuickCheckbutton(objectName.."WidgetsHostileBuffStealableOnly2", "仅包括可进攻驱散或可偷取的", AlignmentColumn, panel.WidgetsHostilePlayerBuff, 32)
 
 	panel.WidgetsDebuffListLabel = CreateQuickItemLabel(nil, "额外的光环:", AlignmentColumn, panel.WidgetsHostileBuffStealableOnly2, 16)
 	panel.WidgetsDebuffTrackList = CreateQuickEditbox(objectName.."WidgetsDebuffTrackList", AlignmentColumn, panel.WidgetsDebuffListLabel, 16)

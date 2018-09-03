@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2155, "DBM-Party-BfA", 4, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17746 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 17761 $"):sub(12, -3))
 mod:SetCreatureID(134060)
 mod:SetEncounterID(2132)
 mod:SetZone()
@@ -15,7 +15,7 @@ mod:RegisterEventsInCombat(
 )
 
 mod:RegisterEvents(
-	"CHAT_MSG_MONSTER_YELL"
+	"CHAT_MSG_MONSTER_SAY"
 )
 
 --local warnSwirlingScythe			= mod:NewTargetAnnounce(195254, 2)
@@ -98,7 +98,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 	end
 end
 
-function mod:CHAT_MSG_MONSTER_YELL(msg, npc, _, _, target)
+function mod:CHAT_MSG_MONSTER_SAY(msg, npc, _, _, target)
 	--"<5.12 02:26:06> [CHAT_MSG_MONSTER_SAY] It would seem you have guests, Lord Stormsong.#Queen Azshara###Omegal##0#0##0#979#nil#0#false#false#false#false", -- [11]
 	--"<34.74 02:26:36> [ENCOUNTER_START] ENCOUNTER_START#2132#Lord Stormsong#1#5", -- [20]
 	if (msg == L.openingRP or msg:find(L.openingRP)) and self:LatencyCheck() then
