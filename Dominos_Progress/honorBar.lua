@@ -1,4 +1,4 @@
-local Addon = select(2, ...)
+local _, Addon = ...
 local Dominos = _G.Dominos
 local HonorBar = Dominos:CreateClass('Frame', Addon.ProgressBar)
 

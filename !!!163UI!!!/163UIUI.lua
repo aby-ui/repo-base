@@ -1249,7 +1249,7 @@ function UUI.Right.CreatePageDesc(right)
     right.pageCfg = WW:Frame(nil, scroll):AddToScroll(scroll):Size(scroll:GetWidth(), 10):un();
     local pageDesc = WW:Frame(nil, scroll):Size(scroll:GetWidth(), 10):un(); right.pageDesc = pageDesc
     local font = (U1.CN and ChatFontNormal or GameFontNormal):GetFont()
-    WW:SimpleHTML(nil, pageDesc):Key("html"):TL(5, -5):Size(scroll:GetWidth()-10, 10)
+    WW:SimpleHTML(nil, right):Key("html"):TL(5, -5):Size(scroll:GetWidth()-10, 10)
     :SetFont("P" ,font,U1.CN and 13 or 12):SetTextColor("P",0.81, 0.65, 0.48):SetSpacing("P",5) --cfa67f
     :SetFont("H1",font,U1.CN and 14 or 13):SetTextColor("H1",.9,.9,.7):SetSpacing("H1",5)
     :SetFont("H2",font,U1.CN and 13 or 12):SetTextColor("H2",.9,.9,.7):SetSpacing("H2",4)
@@ -1354,7 +1354,7 @@ function UUI.Right.SetHTML(right, name)
         if right.tagName=="CLASS" then caption = L["TAG_CLASS"] end
         desc = (desc and desc ~= "") and format(L["<P>　%s<br/><br/></P>"], CoreEncodeHTML(desc)) or ""
         local text = "<HTML><BODY>"..format(UUI.Right.GetTitleFormat(), L["插件分类："]..CoreEncodeHTML(caption)) .. desc .. L["<P>　%s</P></BODY></HTML>"];
-        right.pageDesc.html:SetText(format(text, L["插件数："]..num));
+        right.html:SetText(format(text, L["插件数："]..num));
     else
 
         local info = U1GetAddonInfo(name);
@@ -1391,16 +1391,18 @@ function UUI.Right.SetHTML(right, name)
         local author, modifier, changes, tags = "", "", "", ""
         if #info.tags > 0 then
             for _, tag in ipairs(info.tags) do
-                tag = select(3, U1GetTagInfoByName(tag))
-                if tag then tags = tags .. ", " .. tag end
+                if tag ~= TAG_GOOD then
+                    tag = select(3, U1GetTagInfoByName(tag))
+                    if tag then tags = tags .. ", " .. tag end
+                end
             end
-            tags = format("<P>|cffe6e6b3"..L["插件分类："].."%s|r</P>", CoreEncodeHTML(tags:sub(3)));
+            tags = format("<P>|cffe6e6b3"..L["分类："].."%s|r</P>", CoreEncodeHTML(tags:sub(3)));
         end
         if info.author then
-            author = format(L["<P>|cffe6e6b3作者: %s|r</P>"], CoreEncodeHTML(info.author))
+            author = format(L["<P>|cffe6e6b3作者：%s|r</P>"], CoreEncodeHTML(info.author))
         end
         if info.modifier then
-            modifier = format(L["<P>|cffe6e6b3修改: %s|r</P>"], CoreEncodeHTML(info.modifier))
+            modifier = format(L["<P>|cffe6e6b3修改：%s|r</P>"], CoreEncodeHTML(info.modifier))
         end
 
         if U1_CHANGES then
@@ -1448,7 +1450,7 @@ function UUI.Right.SetHTML(right, name)
 
         --right.html:SetHeight(1)
         --print(format(text, author, modifier, desc, changes:gsub("<H3>%- </H3>","")))
-        page.html:SetText(format(text, author, modifier, tags, desc, changes:gsub("<H3>%- </H3>","")));
+        right.html:SetText(format(text, author, modifier, tags, desc, changes:gsub("<H3>%- </H3>","")));
     end
 end
 
@@ -1542,6 +1544,10 @@ function UUI.Right.TabChange(state, name, saveLast)
 
     for _, v in ipairs(right.tabs) do CoreUIEnableOrDisable(v, v:GetID()~=state) end --放在后面是为了state = 2时
 
+    right.html:SetParent(right.pageDesc)
+    right.html:ClearAllPoints()
+    right.html:SetPoint("TOPLEFT", 5, -5)
+
     if(state==1) then
         right.pageDesc:Hide();
         right.pageCfg:Hide() --先隐藏，防止闪动
@@ -1586,10 +1592,10 @@ function UUI.Right.TabChange(state, name, saveLast)
 
         if not info or info._hasPics == 0 then
             right.pageDesc.pics:Hide();
-            right.pageDesc.html:SetPoint("TOPLEFT", 6, -5);
+            right.html:SetPoint("TOPLEFT", 6, -5);
         else
             UUI.Right.SetPics(info.pics, info._picsInfos);
-            right.pageDesc.html:SetPoint("TOPLEFT", right.pageDesc.pics, "BOTTOMLEFT", -1-(right.scroll:GetWidth()-12-200)/2, -20);
+            right.html:SetPoint("TOPLEFT", right.pageDesc.pics, "BOTTOMLEFT", -1-(right.scroll:GetWidth()-12-200)/2, -20);
             right.pageDesc.pics:Show();
         end
     end

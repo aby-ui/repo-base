@@ -96,39 +96,42 @@ local function CanAddToScanList(npcID)
 
 	local npc = Data.NPCs[npcID]
 
-	if npc then
-		if npc.factionGroup == _G.UnitFactionGroup("player") then
+	-- This is a custom NPC addition; no further processing is possible.
+	if not npc then
+		return true
+	end
+
+	if npc.factionGroup == _G.UnitFactionGroup("player") then
+		return false
+	end
+
+	local isTameable = npc.isTameable
+	local detection = profile.detection
+
+	if isTameable and not detection.tameables then
+		return false
+	end
+
+	if not isTameable and not detection.rares then
+		return false
+	end
+
+	if private.NPCHasQuest(npc) then
+		if not private.IsNPCQuestComplete(npc) then
+			return true
+		elseif detection.ignoreCompletedQuestObjectives then
+			return false
+		end
+	end
+
+	local achievementID = npc.achievementID
+
+	if achievementID then
+		if detection.achievementIDs[achievementID] == Enum.DetectionGroupStatus.Disabled then
 			return false
 		end
 
-		local isTameable = npc.isTameable
-		local detection = profile.detection
-
-		if isTameable and not detection.tameables then
-			return false
-		end
-
-		if not isTameable and not detection.rares then
-			return false
-		end
-
-		local isquestCompleted = private.IsNPCQuestComplete(npc)
-
-		if not npc.questID or isquestCompleted then
-			local achievementID = npc.achievementID
-
-			if achievementID then
-				if detection.achievementIDs[achievementID] == Enum.DetectionGroupStatus.Disabled then
-					return false
-				end
-
-				if detection.ignoreCompletedAchievementCriteria and private.IsNPCAchievementCriteriaComplete(npc) then
-					return false
-				end
-			end
-		end
-
-		if isquestCompleted and detection.ignoreCompletedQuestObjectives then
+		if detection.ignoreCompletedAchievementCriteria and private.IsNPCAchievementCriteriaComplete(npc) then
 			return false
 		end
 	end

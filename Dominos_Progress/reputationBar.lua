@@ -1,7 +1,6 @@
-local AddonName, Addon = ...
+local _, Addon = ...
 local Dominos = _G.Dominos
 local ReputationBar = Dominos:CreateClass('Frame', Addon.ProgressBar)
-local L = LibStub('AceLocale-3.0'):GetLocale('Dominos-Progress')
 local FRIEND_FACTION_COLOR_INDEX = 5
 local PARAGON_FACTION_COLOR_INDEX = #FACTION_BAR_COLORS
 local MAX_REPUTATION_REACTION = _G.MAX_REPUTATION_REACTION
@@ -23,14 +22,14 @@ function ReputationBar:Update()
     local description, colorIndex, capped
 
     if C_Reputation.IsFactionParagon(factionID) then
-        local currentValue, threshold, rewardQuestID, hasRewardPending = C_Reputation.GetFactionParagonInfo(factionID)
+        local currentValue, threshold = C_Reputation.GetFactionParagonInfo(factionID)
         min, max, value = 0, threshold, currentValue % threshold
 
         colorIndex = PARAGON_FACTION_COLOR_INDEX
         description = L.Paragon
         capped = false
     else
-        local friendID, friendRep, friendMaxRep, friendName, friendText, friendTexture, friendTextLevel, friendThreshold, nextFriendThreshold = GetFriendshipReputation(factionID)
+        local friendID, friendRep, _, _, _, _, friendTextLevel, friendThreshold, nextFriendThreshold = GetFriendshipReputation(factionID)
         if friendID then
             if nextFriendThreshold then
                 min, max, value = friendThreshold, nextFriendThreshold, friendRep
@@ -55,7 +54,7 @@ function ReputationBar:Update()
     max = max - min
     value = value - min
 
-    local color = FACTION_BAR_COLORS[reaction]
+    local color = FACTION_BAR_COLORS[colorIndex]
     self:SetColor(color.r, color.g, color.b)
     self:SetValues(value, max)
     self:UpdateText(name, value, max, description, capped)

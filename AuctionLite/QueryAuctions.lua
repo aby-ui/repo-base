@@ -47,6 +47,23 @@ end
 -- Cancel an auction query.
 function AuctionLite:CancelQuery()
   if Query ~= nil then
+      if Query.state ~= QUERY_STATE_APPROVE and Query.data then
+          --abyui Copy from QueryNewData()
+          local oldQuery = Query;
+          -- We're done.  End the query and return the results.
+          self:QueryEnd();
+          -- Update our price info.
+          local results = self:AnalyzeData(oldQuery.data);
+          for link, result in pairs(results) do
+              self:UpdateHistoricalPrice(link, result);
+          end
+          -- Notify our caller.
+          if oldQuery.finish ~= nil then
+              oldQuery.finish(results, oldQuery.link);
+          end
+          return
+      end
+
     if Query.state == QUERY_STATE_APPROVE then
       assert(Query.found ~= nil);
       Query.found = nil;

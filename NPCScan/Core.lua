@@ -187,24 +187,59 @@ function NPCScan:OnEnable()
 
 	private.InitializeAchievements()
 
+	local hasChecked = {}
+
+	local questMapIDs = {
+		[Enum.MapID.Argus] = true,
+		[Enum.MapID.BrokenIsles] = true,
+		[Enum.MapID.KulTiras] = true,
+		[Enum.MapID.Zandalar] = true,
+	}
+
+	local vignetteMapIDs = {
+		[Enum.MapID.Argus] = true,
+		[Enum.MapID.BrokenIsles] = true,
+		[Enum.MapID.Draenor] = true,
+		[Enum.MapID.KulTiras] = true,
+		[Enum.MapID.Pandaria] = true,
+		[Enum.MapID.Zandalar] = true,
+	}
+
 	for mapID, map in pairs(Data.Maps) do
-		if mapID >= Enum.MapID.Zuldazar then
-			local mapHeaderPrinted
+		local continent = _G.MapUtil.GetMapParentInfo(mapID, _G.Enum.UIMapType.Continent, true)
 
-			for npcID in pairs(map.NPCs) do
-				local npc = map.NPCs[npcID]
+		local missingData = {}
+		local mapHeaderPrinted
 
-				if not npc.questID and not npc.achievementQuestID then
-					if not mapHeaderPrinted then
-						mapHeaderPrinted = true
-						private.Debug("-- ----------------------------------------------------------------------------")
-						private.Debug("-- %s (%d)", HereBeDragons:GetLocalizedMap(mapID) or _G.UNKNOWN, mapID)
-						private.Debug("-- ----------------------------------------------------------------------------")
+		for npcID in pairs(map.NPCs) do
+			local npc = map.NPCs[npcID]
+
+			if not hasChecked[npcID] then
+				hasChecked[npcID] = true
+
+				if not private.NPCHasQuest(npc) and (not continent or questMapIDs[continent.mapID]) then
+					missingData[npcID] = "questID"
+				end
+
+				if not npc.vignetteID and (not continent or vignetteMapIDs[continent.mapID]) then
+					if missingData[npcID] then
+						missingData[npcID] = ("%s, vignetteID"):format(missingData[npcID])
+					else
+						missingData[npcID] = "vignetteID"
 					end
-
-					private.Debug("NPC %d (%s) has no questID.", npcID, self:GetNPCNameFromID(npcID))
 				end
 			end
+		end
+
+		for npcID, missingText in pairs(missingData) do
+			if not mapHeaderPrinted then
+				mapHeaderPrinted = true
+				private.Debug("-- ----------------------------------------------------------------------------")
+				private.Debug("-- %s (%d)", HereBeDragons:GetLocalizedMap(mapID) or _G.UNKNOWN, mapID)
+				private.Debug("-- ----------------------------------------------------------------------------")
+			end
+
+			private.Debug("NPC %d (%s) is missing: %s.", npcID, self:GetNPCNameFromID(npcID), missingText)
 		end
 	end
 

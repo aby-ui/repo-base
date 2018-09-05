@@ -1,14 +1,15 @@
 local AddonName = ...
 local ButtonThemer = LibStub('AceAddon-3.0'):GetAddon(AddonName):NewModule('ButtonThemer')
 
-local _NormalButtonWidth = _G['ActionButton1']:GetWidth()
+local round = _G.Round
+local _NormalButtonWidth = round(_G['ActionButton1']:GetWidth())
 
 function ButtonThemer:OnInitialize()
     local Masque = LibStub('Masque', true)
 
     if Masque then
         Masque:Register(AddonName, function(...)
-            local addon, group, skinId, gloss, backdrop, colors, disabled = ...
+            local _, group, _, _, _, _, disabled = ...
 
             if disabled then
                 for button in pairs(Masque:Group(AddonName, group).Buttons) do
@@ -51,7 +52,7 @@ end
 function ButtonThemer:ApplyDefaultTheme(button)
     button.icon:SetTexCoord(0.06, 0.94, 0.06, 0.94)
 
-    local r = button:GetWidth() / _NormalButtonWidth
+    local r = round(button:GetWidth()) / _NormalButtonWidth
 
     local nt = button:GetNormalTexture()
     nt:ClearAllPoints()

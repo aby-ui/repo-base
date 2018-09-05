@@ -1,4 +1,4 @@
-## Interface: 80000
+# Interface: 80000
 ## Title: _NPCScan.Overlay
 ## Notes: Adds mob patrol paths to your map.
 ## Notes-deDE: Fügt deiner Karte die Laufpfade hinzu

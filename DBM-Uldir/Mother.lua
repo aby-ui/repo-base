@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2167, "DBM-Uldir", nil, 1031)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17651 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 17770 $"):sub(12, -3))
 mod:SetCreatureID(135452)--136429 Chamber 01, 137022 Chamber 02, 137023 Chamber 03
 mod:SetEncounterID(2141)
 mod:SetZone()
@@ -141,8 +141,13 @@ function mod:SPELL_CAST_SUCCESS(args)
 			countdownSurgicalBeam:Start(40)
 		elseif spellId == 277973 then--Sides
 			specWarnSurgicalBeam:Show(DBM_CORE_SIDE)
-			timerSurgicalBeamCD:Start(40, DBM_CORE_SIDE)--40-47
-			countdownSurgicalBeam:Start(40)
+			if self:IsEasy() then--No top down lasers in LFR/Normal, but side happen more often
+				timerSurgicalBeamCD:Start(30, DBM_CORE_SIDE)--40-47
+				countdownSurgicalBeam:Start(30)
+			else
+				timerSurgicalBeamCD:Start(40, DBM_CORE_SIDE)--40-47
+				countdownSurgicalBeam:Start(40)
+			end
 		else--Middle (chamber 3) (269827)
 			specWarnSurgicalBeam:Show(DBM_CORE_MIDDLE)
 			timerSurgicalBeamCD:Start(30, DBM_CORE_MIDDLE)--30-?

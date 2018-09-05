@@ -161,9 +161,6 @@ ns.should_show_point = function(coord, point, currentZone, isMinimap)
     elseif not isMinimap and not ns.db.show_on_world then
         return false
     end
-    if point.level and point.level ~= currentLevel then
-        return false
-    end
     if ns.hidden[currentZone] and ns.hidden[currentZone][coord] then
         return false
     end

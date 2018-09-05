@@ -144,10 +144,16 @@ end
 
 private.IsNPCAchievementCriteriaComplete = IsNPCAchievementCriteriaComplete
 
+local function NPCHasQuest(npc)
+	return (npc.questID or npc.achievementQuestID) and true or false
+end
+
+private.NPCHasQuest = NPCHasQuest
+
 local function IsNPCQuestComplete(npc)
 	local questID = npc.questID or npc.achievementQuestID
 
-	return questID and _G.IsQuestFlaggedCompleted(questID) or false
+	return (questID and questID >= 0) and _G.IsQuestFlaggedCompleted(questID) or false
 end
 
 private.IsNPCQuestComplete = IsNPCQuestComplete

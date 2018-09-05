@@ -2,140 +2,175 @@ if UnitFactionGroup("player") ~= "Horde" then return end
 local addonName, addonSpace = ...
 local addon = LibStub('AceAddon-3.0'):NewAddon(addonSpace, addonName, 'AceEvent-3.0')
 
---local L = LibStub('AceLocale-3.0'):GetLocale(addonName)
+local L = LibStub('AceLocale-3.0'):GetLocale(addonName)
 
 local VERSION = GetAddOnMetadata(addonName, 'Version')
 
 local HBD = LibStub('HereBeDragons-2.0')
 local Pins = LibStub('HereBeDragons-Pins-2.0')
 
-local tolerance = 0.00004
+local tolerance = 280.0 -- zone tolerance was 0.00004
 local lastTotemRidden = nil
 local totemID = "131154"
+local DAZARALOR_MAP_ID = 1165
+local ZANDALAR_MAP_ID = 1642
+
+
+local sv_defaults = {
+  global = {
+    minimapIconSize = 16,
+    mapIconSize = 16
+  }
+}
+
+local db
+
+local options_panel = {
+  name    = ('%s v%s'):format(L[addonName], VERSION),
+  handler = addon,
+  type    = 'group',
+  childGroups = 'tab',
+  args = {
+    options = {
+      name  = L["Options"],
+      type  = 'group',
+      order = 1,
+      get   = 'OptionsPanel_GetOpt',
+      set   = 'OptionsPanel_SetOpt',
+      args  = {
+        mapIconSize = {
+          name  = L["World Map Icon Size"],
+          desc  = "description",
+          type  = 'range',
+          order = 1,
+          min = 8,
+          max = 36,
+          step = 2
+        },
+        minimapIconSize = {
+          name  = L["Minimap Icon Size"],
+          desc  = "description",
+          type  = 'range',
+          order = 2,
+          min = 8,
+          max = 36,
+          step = 2
+        },
+      },
+    },
+  }
+}
 
 local totemFrames = {}
 
 local totems = {
   {
-    dst = {0.589707016944885,0.110139846801758},
-    src = {0.529342889785767,0.113030731678009},
-    name = "碎枝林地北部",
-    dstMapID = 1165,
-    srcMapID = 1165,
-  }, -- [1]
+    src = {720.53886816837, -474.66773464868},
+    dst = {550.63884473685, -469.24131223932},
+    name = L["The Sliver (North)"],
+  },
   {
-    dst = {0.528360247612,0.118593633174896},
-    src = {0.591121912002564,0.106748402118683},
-    name = "赞枢尔东部",
-    dstMapID = 1165,
-    srcMapID = 1165,
-  }, -- [2]
+    src = {546.65650100447, -462.87529898866},
+    dst = {723.30459901225, -485.10974622506},
+    name = L["East Zanchul"],
+  },
   {
-    dst = {0.446326375007629,0.0604671835899353},
-    src = {0.528954386711121,0.123093903064728},
-    name = "赞枢尔顶层",
-    dstMapID = 1165,
-    srcMapID = 1165,
-  }, -- [3]
+    src = {721.63234345894, -493.55711318145},
+    dst = {954.19598324318, -376.00174569699},
+    name = L["Top of Zanchul"],
+  },
   {
-    dst = {0.527879416942596,0.113702595233917},
-    src = {0.447229325771332,0.0580671429634094},
-    name = "赞枢尔东部",
-    dstMapID = 1165,
-    srcMapID = 1165,
-  }, -- [4]
+    src = {951.65455072140, -371.49667725025},
+    dst = {724.65793825267, -475.92887634470},
+    name = L["East Zanchul"],
+  },
   {
-    dst = {0.527620315551758,0.118496298789978},
-    src = {0.532340049743652,0.18929660320282},
-    name = "赞枢尔东部",
-    dstMapID = 1165,
-    srcMapID = 1165,
-  }, -- [5]
+    src = {712.10310389847, -617.82488272875},
+    dst = {725.38720138371, -484.92704179022},
+    name = L["East Zanchul"],
+  },
   {
-    dst = {0.592305719852448,0.22837620973587},
-    src = {0.653485417366028,0.339411973953247},
-    name = "碎枝林地南部",
-    dstMapID = 1165,
-    srcMapID = 862,
-  }, -- [6]
+    src = {178.93509410461, -535.68233801774},
+    dst = {543.32457207749, -691.18043361290},
+    name = L["The Sliver (South)"],
+  },
   {
-    dst = {0.465587317943573,0.197906374931335},
-    src = {0.45066511631012,0.052379310131073},
-    name = "选民之台",
-    dstMapID = 1165,
-    srcMapID = 1165,
-  }, -- [7]
+    src = {941.98422298673, -360.82015955297},
+    dst = {899.98440411268, -633.98611371755},
+    name = L["Terrace of the Chosen"],
+  },
   {
-    dst = {0.502696871757507,0.325962483882904},
-    src = {0.465993463993073,0.199528515338898},
-    name = "帕库神坛",
-    dstMapID = 1165,
-    srcMapID = 1165,
-  }, -- [8]
+    src = {898.84127115318, -637.03100116050},
+    dst = {795.53637580108, -874.35768471274},
+    name = L["Altar of Pa'ku"],
+  },
   {
-    dst = {0.499147057533264,0.39557409286499},
-    src = {0.495611786842346,0.328776597976685},
-    name = "巨擘封印平台",
-    dstMapID = 1165,
-    srcMapID = 1165,
-  }, -- [9]
+    src = {815.47795616929, -879.64000221575},
+    dst = {805.52763299737, -1005.0242491392},
+    name = L["The Great Seal Ledge"],
+  },
   {
-    dst = {0.499848961830139,0.434243261814117},
-    src = {0.513542056083679,0.409644901752472},
-    name = "黄金王座",
-    dstMapID = 1165,
-    srcMapID = 1165,
-  }, -- [10]
+    src = {765.01167250704, -1031.4362841850},
+    dst = {803.55206303392, -1077.6093758113},
+    name = L["The Golden Throne"],
+  },
   {
-    dst = {0.665206968784332,0.423748135566711},
-    src = {0.58306896686554,0.326411426067352},
-    name = "驭兽师旅店",
-    dstMapID = 862,
-    srcMapID = 1165,
-  }, -- [11]
+    src = {569.32220714260, -875.20038514340},
+    dst = {79.717060590863, -1011.4788772402},
+    name = L["Beastcaller Inn (Warbeast Kraal)"],
+  },
   {
-    dst = {0.468166947364807,0.856901288032532},
-    src = {0.55028235912323,0.417159020900726},
-    name = "百商集市",
-    dstMapID = 1165,
-    srcMapID = 862,
-  }, -- [12]
+    src = {1052.5058464766, -974.30528652138},
+    dst = {892.72381541971, -1870.9723366855},
+    name = L["Grand Bazaar"],
+  },
   {
-    dst = {0.551357746124268,0.417158424854279},
-    src = {0.469304084777832,0.855770230293274},
-    name = "工匠平台",
-    dstMapID = 862,
-    srcMapID = 1165,
-  }, -- [13]
+    src = {889.52324444801, -1868.8492507359},
+    dst = {1043.4031449910, -974.30192382582},
+    name = L["Terrace of Crafters"],
+  },
   {
-    dst = {0.408991038799286,0.107170045375824},
-    src = {0.427186667919159,0.229450643062592},
-    name = "赞枢尔西部",
-    dstMapID = 1165,
-    srcMapID = 1165,
-  }, -- [14]
+    src = {1008.0663336623, -693.19723100576},
+    dst = {1059.2794955070, -463.66675714671},
+    name = L["West Zanchul"],
+  },
   {
-    dst = {0.425679862499237,0.231258273124695},
-    src = {0.407363951206207,0.111508727073669},
-    name = "佐卡罗广场",
-    dstMapID = 1165,
-    srcMapID = 1165,
-  }, -- [15]
+    src = {1063.8590733656, -471.81081012706},
+    dst = {1012.3073670077, -696.59029738395},
+    name = L["The Zocalo"],
+  },
   {
-    dst = {0.49884170293808,0.3972989320755},
-    src = {0.550585150718669,0.42086488008499},
-    name = "巨擘封印平台",
-    dstMapID = 1165,
-    srcMapID = 862,
-  }, -- [16]
+    src = {1049.9428421787, -995.21250995894},
+    dst = {806.38707974693, -1008.2619104593},
+    name = L["The Great Seal Ledge"],
+  },
   {
-    dst = {0.46906685829163,0.85581636428833},
-    src = {0.40843677520752,0.84118854999542},
-    name = "百商集市",
-    dstMapID = 1165,
-    srcMapID = 1165,
-  }, -- [17]
+    src = {1060.8395180181, -1841.4782691433},
+    dst = {890.19093878007, -1868.9358479390},
+    name = L["Grand Bazaar"],
+  },
 }
+
+function addon:OptionsPanel_GetOpt(info)
+    return db.global[info[#info]]
+end
+function addon:OptionsPanel_SetOpt(info, value)
+  db.global[info[#info]] = value
+  for totemID,totem in ipairs(totems) do
+    local minimapIconSize = db.global.minimapIconSize
+    totem.totemSrcFrame:SetWidth(minimapIconSize)
+    totem.totemSrcFrame:SetHeight(minimapIconSize)
+    --if totem.totemDestFrame then
+      totem.totemDestFrame:SetWidth(minimapIconSize)
+      totem.totemDestFrame:SetHeight(minimapIconSize)
+    --end
+  end
+
+  for _,f in pairs(totemFrames) do
+    f:SetWidth(db.global.mapIconSize)
+    f:SetHeight(db.global.mapIconSize)
+  end
+end
 
 
 function addon:PLAYER_ENTERING_WORLD(event, ...)
@@ -161,9 +196,9 @@ function addon:PLAYER_ENTERING_WORLD(event, ...)
       tt:AddLine("前往 " .. totem.name, 1,1,1,1);
       tt:Show()
 
-      --local xy, mapid, frame = totem.dst, totem.dstMapID, totem.totemDestFrame
-      --Pins:AddMinimapIconMap(addonName.."dest", frame, mapid, xy[1],xy[2], true, true)
-      --addon:showTotemOnMap(totemID, "WarlockPortalHorde", true, "dest")
+      --local xy, frame = totem.dst, totem.totemDestFrame
+      --Pins:AddMinimapIconWorld(addonName.."dest", frame, ZANDALAR_MAP_ID, xy[1], xy[2], true, true)
+      --addon:showTotemOnMap(totemID, "TaxiNode_Neutral", true, "OVERLAY", "dest")
   end)
 
   --GameTooltip:HookScript("OnUpdate",         function() Pins:RemoveAllWorldMapIcons(addonName.."dest") end)
@@ -173,9 +208,9 @@ function addon:PLAYER_ENTERING_WORLD(event, ...)
   end)
 
   for totemID,totem in ipairs(totems) do
-    local x,y,instance = HBD:GetWorldCoordinatesFromZone(totem.src[1], totem.src[2], totem.srcMapID)
-    -- convert them back so they are on the dazar'alor map only - i actually should convert my data to this perhaps
-    local ix,iy = HBD:GetZoneCoordinatesFromWorld(x, y, 1165)
+    local x,y = totem.src[1], totem.src[2]
+    -- convert them back so they are on the dazar'alor map only
+    local ix,iy = HBD:GetZoneCoordinatesFromWorld(x, y, DAZARALOR_MAP_ID)
 
     addon:showTotemOnMap(totemID, "WarlockPortalAlliance")
     totemFrames[""..totemID]:SetScript("OnEnter", addon.mapIconOnEnter)
@@ -183,24 +218,25 @@ function addon:PLAYER_ENTERING_WORLD(event, ...)
     totemFrames[""..totemID].totemID = totemID
 
     local minimapIconFrame = CreateFrame("frame", nil,nil)
-    minimapIconFrame:SetWidth(16)
-    minimapIconFrame:SetHeight(16)
+    minimapIconFrame:SetWidth(db.global.minimapIconSize)
+    minimapIconFrame:SetHeight(db.global.minimapIconSize)
     minimapIconFrame.icon = minimapIconFrame:CreateTexture(nil,"BACKGROUND")
     minimapIconFrame.icon:SetAtlas("WarlockPortalAlliance")
     minimapIconFrame.icon:SetAllPoints()
     minimapIconFrame:SetScript("OnEnter", addon.mapIconOnEnter)
     minimapIconFrame:SetScript("OnLeave", addon.mapIconOnLeave)
     minimapIconFrame.totemID = totemID
+    totems[totemID].totemSrcFrame = minimapIconFrame
 
     local minimapDestIconFrame = CreateFrame("frame", nil,nil)
-    minimapDestIconFrame:SetWidth(16)
-    minimapDestIconFrame:SetHeight(16)
+    minimapDestIconFrame:SetWidth(db.global.minimapIconSize)
+    minimapDestIconFrame:SetHeight(db.global.minimapIconSize)
     minimapDestIconFrame.icon = minimapDestIconFrame:CreateTexture(nil,"OVERLAY")
     minimapDestIconFrame.icon:SetAtlas("WarlockPortalHorde")
     minimapDestIconFrame.icon:SetAllPoints()
     totems[totemID].totemDestFrame = minimapDestIconFrame
 
-    Pins:AddMinimapIconWorld(addonName, minimapIconFrame, instance, x,y, false)
+    Pins:AddMinimapIconWorld(addonName, minimapIconFrame, ZANDALAR_MAP_ID, x,y, false)
   end
 
   self:UnregisterEvent("PLAYER_ENTERING_WORLD")
@@ -211,34 +247,32 @@ function addon:showTotemOnMap(totemID, atlasIcon, dst, layer, ref)
   local layer = layer or "BACKGROUND"
   local ref = ref or ""
   local totem = totems[totemID]
-  local x,y,instance
+  local x,y,ix,iy
   if not dst then
-    x,y,instance = HBD:GetWorldCoordinatesFromZone(totem.src[1], totem.src[2], totem.srcMapID)
+    x,y = totem.src[1], totem.src[2]
   else
-    x,y,instance = HBD:GetWorldCoordinatesFromZone(totem.dst[1], totem.dst[2], totem.dstMapID)
+    x,y = totem.dst[1], totem.dst[2]
   end
-
-  local ix,iy = HBD:GetZoneCoordinatesFromWorld(x, y, 1165)
+  local ix, iy = HBD:GetZoneCoordinatesFromWorld(x, y, DAZARALOR_MAP_ID)
 
   if not totemFrames[ref..totemID] then
     local mapIconFrame = CreateFrame("frame", nil,nil)
-    mapIconFrame:SetWidth(16)
-    mapIconFrame:SetHeight(16)
+    mapIconFrame:SetWidth(db.global.mapIconSize)
+    mapIconFrame:SetHeight(db.global.mapIconSize)
     mapIconFrame.icon = mapIconFrame:CreateTexture(nil,layer)
     mapIconFrame.icon:SetAtlas(atlasIcon)
     mapIconFrame.icon:SetAllPoints()
     totemFrames[ref..totemID] = mapIconFrame
   end
 
-  Pins:AddWorldMapIconMap(addonName..ref, totemFrames[ref..totemID], 1165, ix,iy, nil)
+  Pins:AddWorldMapIconMap(addonName..ref, totemFrames[ref..totemID], DAZARALOR_MAP_ID, ix,iy, nil)
 end
 
 
 function addon:mapIconOnEnter()
   local totem = totems[self.totemID]
-  local xy, mapid, frame = totem.dst, totem.dstMapID, totem.totemDestFrame
-  -- print(totem.name, unpack(totem.dst))
-  Pins:AddMinimapIconMap(addonName.."dest", frame, mapid, xy[1],xy[2], true, true)
+  local xy, frame = totem.dst, totem.totemDestFrame
+  Pins:AddMinimapIconWorld(addonName.."dest", frame, ZANDALAR_MAP_ID, xy[1],xy[2], true, true)
   addon:showTotemOnMap(self.totemID, "WarlockPortalHorde", true, "OVERLAY", "dest")
 end
 
@@ -249,7 +283,12 @@ end
 
 
 function addon:OnInitialize()
+  db = LibStub("AceDB-3.0"):New("Paku_Totems_DB", sv_defaults, true)
+
   if IsLoggedIn() then self:PLAYER_ENTERING_WORLD() else self:RegisterEvent("PLAYER_ENTERING_WORLD") end
+  
+  LibStub('AceConfig-3.0'):RegisterOptionsTable(addonName, options_panel)
+  local optionsFrame = LibStub('AceConfigDialog-3.0'):AddToBlizOptions(addonName)
 end
 
 function addon:vehicletrigger(event,...)
@@ -265,18 +304,18 @@ function addon:vehicletrigger(event,...)
       return
     end
     local px,py = mappos:GetXY()
-
+    
     if event == "UNIT_ENTERING_VEHICLE" and unitTarget == "player" and vehicleGUID then
         local _, _, _, _, _, id, _ = strsplit("-", vehicleGUID)
         if id ~= totemID then
           return
         end
         local totemID, distance = addon.GetClosestTotem()
-
+        
         if not distance or distance > tolerance then
           local totem = {name="new",src={px,py},uiMapID=bestmap}
           totems[#totems+1] = totem
-          print(string.format("Found new totem at %f,%f in %s - please report this to the Pa'ku Totems developer.", totem.src[1], totem.src[2], totem.uiMapID))
+          print(string.format("Found new totem at {%f,%f} in %s - please report this to the Pa'ku Totems developer.", totem.src[1], totem.src[2], totem.uiMapID))
           lastTotemRidden = #totems
         else
           lastTotemRidden = totemID
@@ -285,7 +324,7 @@ function addon:vehicletrigger(event,...)
         local totemID = lastTotemRidden
         if totemID and not totems[totemID].dst then
             local totem = totems[totemID]
-            --print(string.format("Found new totem destination at {%f,%f} in MapID %s - please report this to the Pa'ku Totems developer.", px,py, C_Map.GetBestMapForUnit("player")))
+            --print(string.format("Found new totem destination at {%f,%f} in %s - please report this to the Pa'ku Totems developer.", px,py, C_Map.GetBestMapForUnit("player")))
             totems[totemID].dst = {px,py}
             totems[totemID].dstMapID = C_Map.GetBestMapForUnit("player")
         end
@@ -301,10 +340,8 @@ function addon.distsq(x1,y1, x2,y2)
 end
 
 function addon:GetClosestTotem()
-    local bestmap = C_Map.GetBestMapForUnit("player")
-    
-    local px, py = C_Map.GetPlayerMapPosition(bestmap, "player"):GetXY()
-    
+    local px, py = HBD:GetPlayerWorldPosition()
+
     local closest, min_ds
     for key,totem in ipairs(totems) do
         local ds = addon.distsq(totem.src[1],totem.src[2],px,py)

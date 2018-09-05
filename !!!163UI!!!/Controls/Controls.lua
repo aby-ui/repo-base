@@ -260,6 +260,19 @@ function CtlShowPage(addon, parent, anchor)
         if parent.spacer then parent.spacer:Hide(); end
     end
 
+    -- 如果下面有空白则显示介绍
+    local right = UUI().right
+    if parent == right.pageCfg then
+        if parent:GetTop() - last:GetTop() < 150 then
+            local html = right.html
+            UUI.Right.SetHTML(right, addon)
+            html:SetParent(right.pageCfg)
+            html:ClearAllPoints();
+            html:SetPoint("TOP", WW:un(last), "BOTTOM", 0, -CTL_LINESPACE*2);
+            html:SetPoint("LEFT", parent, CTL_SUBGROUP_PADDING, 0);
+        end
+    end
+
     --强制重新计算滚动条
     --[[ --因为外面有SetScrollChild，之后会计算
     if parent:GetParent():GetObjectType()=="ScrollFrame" then

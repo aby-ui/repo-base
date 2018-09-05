@@ -1,13 +1,13 @@
 local mod	= DBM:NewMod(2195, "DBM-Uldir", nil, 1031)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17744 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 17770 $"):sub(12, -3))
 mod:SetCreatureID(138967)
 mod:SetEncounterID(2145)
 mod:DisableESCombatDetection()--ES fires moment you throw out CC, so it can't be trusted for combatstart
 mod:SetZone()
 --mod:SetBossHPInfoToHighest()
-mod:SetUsedIcons(8)
+mod:SetUsedIcons(1, 2, 8)
 --mod:SetHotfixNoticeRev(16950)
 --mod:SetMinSyncRevision(16950)
 --mod.respawnTime = 35
@@ -51,9 +51,9 @@ local warnPhase2						= mod:NewPhaseAnnounce(2, 2, nil, nil, nil, nil, nil, 2)
 local warnRupturingBlood				= mod:NewStackAnnounce(273365, 2, nil, "Tank")
 
 --Stage One: The Forces of Blood
-local specWarnDarkRevolation			= mod:NewSpecialWarningMoveAway(273365, nil, nil, nil, 1, 2)
-local yellDarkRevolation				= mod:NewYell(273365)
-local yellDarkRevolationFades			= mod:NewShortFadesYell(273365)
+local specWarnDarkRevolation			= mod:NewSpecialWarningYouPos(273365, nil, nil, nil, 1, 2)
+local yellDarkRevolation				= mod:NewPosYell(273365)
+local yellDarkRevolationFades			= mod:NewIconFadesYell(273365)
 local specWarnPitofDespair				= mod:NewSpecialWarningDispel(273434, "RemoveCurse", nil, nil, 1, 2)
 local specWarnPoolofDarkness			= mod:NewSpecialWarningCount(273361, false, nil, nil, 1, 2)--Special warning for assigned soakers to optionally enable
 local specWarnCallofCrawg				= mod:NewSpecialWarningSwitchCount("ej18541", "-Healer", nil, nil, 1, 2)
@@ -65,7 +65,7 @@ local specWarnCongealBlood				= mod:NewSpecialWarningSwitch(273451, "Dps", nil, 
 local specWarnBloodshard				= mod:NewSpecialWarningInterrupt(273350, false, nil, 4, 1, 2)--Spam cast, so opt in, not opt out
 --local specWarnGTFO					= mod:NewSpecialWarningGTFO(238028, nil, nil, nil, 1, 2)
 --Stage Two: Zul, Awakened
-local specWarnRupturingBlood			= mod:NewSpecialWarningStack(274358, nil, 4, nil, nil, 1, 6)
+local specWarnRupturingBlood			= mod:NewSpecialWarningStack(274358, nil, 3, nil, nil, 1, 6)
 local specWarnRupturingBloodTaunt		= mod:NewSpecialWarningTaunt(274358, nil, nil, nil, 1, 2)
 local specWarnRupturingBloodEdge		= mod:NewSpecialWarningMoveTo(274358, nil, nil, nil, 1, 7)
 local yellRupturingBloodFades			= mod:NewShortFadesYell(274358)
@@ -103,12 +103,14 @@ mod:AddNamePlateOption("NPAuraOnBoundbyShadow", 273432)
 mod:AddNamePlateOption("NPAuraOnEngorgedBurst", 276299)
 mod:AddNamePlateOption("NPAuraOnDecayingFlesh", 276434)
 mod:AddSetIconOption("SetIconOnDecay", 276434, true, true)
+mod:AddSetIconOption("SetIconDarkRev", 273365, true)
 
 mod.vb.phase = 1
 mod.vb.poolCount = 0
 mod.vb.CrawgSpawnCount = 0
 mod.vb.HexerSpawnCount = 0
 mod.vb.CrusherSpawnCount = 0
+mod.vb.DarkRevIcon = 1
 mod.vb.activeDecay = nil
 local unitTracked = {}
 --P1 Add Timers (heroic)
@@ -160,11 +162,12 @@ function mod:OnCombatStart(delay)
 	self.vb.CrawgSpawnCount = 0
 	self.vb.HexerSpawnCount = 0
 	self.vb.CrusherSpawnCount = 0
+	self.vb.DarkRevIcon = 1
 	self.vb.activeDecay = nil
 	timerPoolofDarknessCD:Start(20.5-delay, 1)
 	timerDarkRevolationCD:Start(30-delay)
-	timerCallofCrawgCD:Start(35, 1)--35-38
-	timerCallofHexerCD:Start(51.3, 1)--51-54
+	timerCallofCrawgCD:Start(34.9, 1)--35-45
+	timerCallofHexerCD:Start(50.7, 1)--50.7-54
 	timerCallofCrusherCD:Start(70, 1)--70-73
 	if self.Options.InfoFrame then
 		--DBM.InfoFrame:SetHeader(DBM_CORE_INFOFRAME_POWER)
@@ -299,22 +302,11 @@ function mod:SPELL_AURA_APPLIED(args)
 		local uId = DBM:GetRaidUnitId(args.destName)
 		if self:IsTanking(uId) then
 			local amount = args.amount or 1
-			if amount >= 4 then
+			if amount >= 3 then
 				if args:IsPlayer() then
 					specWarnRupturingBlood:Show(amount)
 					specWarnRupturingBlood:Play("stackhigh")
-					yellRupturingBloodFades:Cancel()
-					yellRupturingBloodFades:Countdown(20)
-					specWarnRupturingBloodEdge:Cancel()
-					specWarnRupturingBloodEdge:Schedule(15, DBM_CORE_ROOM_EDGE)
-					specWarnRupturingBloodEdge:CancelVoice()
-					specWarnRupturingBloodEdge:ScheduleVoice(15, "runtoedge")
 				else
-					--local _, _, _, _, _, expireTime = DBM:UnitDebuff("player", args.spellName)
-					--local remaining
-					--if expireTime then
-					--	remaining = expireTime-GetTime()
-					--end
 					if not UnitIsDeadOrGhost("player") and not DBM:UnitDebuff("player", spellId) then--Can't taunt less you've dropped yours off, period.
 					--if not UnitIsDeadOrGhost("player") and (not remaining or remaining and remaining < 12) then
 						specWarnRupturingBloodTaunt:Show(args.destName)
@@ -332,20 +324,30 @@ function mod:SPELL_AURA_APPLIED(args)
 			if args:IsPlayer() then
 				specWarnRupturingBlood:Show(1)
 				specWarnRupturingBlood:Play("stackhigh")
-				yellRupturingBloodFades:Cancel()
-				yellRupturingBloodFades:Countdown(20)
-				specWarnRupturingBloodEdge:Cancel()
-				specWarnRupturingBloodEdge:Schedule(15, DBM_CORE_ROOM_EDGE)
-				specWarnRupturingBloodEdge:CancelVoice()
-				specWarnRupturingBloodEdge:ScheduleVoice(15, "runtoedge")
 			end
 		end
-	elseif spellId == 273365 or spellId == 271640 then--Two versions of debuff, one that spawns an add and one that does not (so probably LFR/normal version vs heroic/mythic version)
 		if args:IsPlayer() then
-			specWarnDarkRevolation:Show()
-			specWarnDarkRevolation:Play("targetyou")
-			yellDarkRevolation:Yell()
-			yellDarkRevolationFades:Countdown(10)
+			yellRupturingBloodFades:Cancel()
+			yellRupturingBloodFades:Countdown(20)
+			specWarnRupturingBloodEdge:Cancel()
+			specWarnRupturingBloodEdge:Schedule(15, DBM_CORE_ROOM_EDGE)
+			specWarnRupturingBloodEdge:CancelVoice()
+			specWarnRupturingBloodEdge:ScheduleVoice(15, "runtoedge")
+		end
+	elseif spellId == 273365 or spellId == 271640 then--Two versions of debuff, one that spawns an add and one that does not (so probably LFR/normal version vs heroic/mythic version)
+		local icon = self.vb.DarkRevIcon
+		if args:IsPlayer() then
+			specWarnDarkRevolation:Show(self:IconNumToTexture(icon))
+			specWarnDarkRevolation:Play("mm"..icon)
+			yellDarkRevolation:Yell(icon, icon, icon)
+			yellDarkRevolationFades:Countdown(10, nil, icon)
+		end
+		if self.Options.SetIconDarkRev then
+			self:SetIcon(args.destName, icon)
+		end
+		self.vb.DarkRevIcon = self.vb.DarkRevIcon + 1
+		if self.vb.DarkRevIcon == 3 then
+			self.vb.DarkRevIcon = 1
 		end
 	elseif spellId == 273434 then
 		specWarnPitofDespair:CombinedShow(0.3, args.destName)

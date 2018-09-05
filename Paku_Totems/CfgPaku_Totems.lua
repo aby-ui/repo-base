@@ -9,4 +9,11 @@ U1RegisterAddon("Paku_Totems", {
     tags = { TAG_MAPQUEST, TAG_GOOD },
     icon = "Interface\\ICONS\\Spell_Shaman_TotemRecall",
     nopic = 1,
+    {
+        text = "设置图标大小",
+        callback = function()
+            OpenWorldMap(1165)
+            LibStub("AceConfigDialog-3.0"):Open("Paku_Totems");
+        end
+    }
 })

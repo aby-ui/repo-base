@@ -43,6 +43,278 @@ NPCs[51067] = { -- Glint
 	isTameable = true,
 }
 
+NPCs[137374] = { -- The Lion's Roar
+	factionGroup = "Alliance",
+	toys = {
+		{ itemID = 163829, }, -- Toy War Machine
+	},
+}
+
+NPCs[138122] = { -- Doom's Howl
+	factionGroup = "Horde",
+	toys = {
+		{ itemID = 163828, }, -- Toy Siege Tower
+	},
+}
+
+NPCs[141615] = { -- Burning Goliath
+	questID = 53506,
+	vignetteID = 3194,
+}
+
+NPCs[141616] = { -- Thundering Goliath
+	questID = 53527,
+	vignetteID = 3200,
+}
+
+NPCs[141618] = { -- Cresting Goliath
+	questID = 53531,
+	vignetteID = 3195,
+}
+
+NPCs[141620] = { -- Rumbling Goliath
+	questID = 53523,
+	vignetteID = 3198,
+}
+
+NPCs[142423] = { -- Overseer Krix
+	mounts = {
+		{
+			itemID = 163646, -- Lil' Donkey
+			spellID = 279608 -- Lil' Donkey
+		},
+	},
+	questID = 53518,
+	vignetteID = 3191,
+}
+
+NPCs[142433] = { -- Fozruk
+	pets = {
+		{
+			itemID = 163711, -- Shard of Fozruk
+			npcID = 143627, -- Fozling
+		},
+	},
+	questID = 53510,
+	vignetteID = 3196,
+}
+
+NPCs[142435] = { -- Plaguefeather
+	isTameable = true,
+	pets = {
+		{
+			itemID = 163690, -- Plagued Egg
+			npcID = 143564, -- Foulfeather
+		},
+	},
+	questID = 53519,
+	vignetteID = 3197,
+}
+
+NPCs[142436] = { -- Ragebeak
+	pets = {
+		{
+			itemID = 163689, -- Angry Egg
+			npcID = 143563, -- Ragepeep
+		},
+	},
+	questID = 53522,
+	vignetteID = 3193,
+}
+
+NPCs[142437] = { -- Skullripper
+	mounts = {
+		{
+			itemID = 163645, -- Skullripper
+			spellID = 279611, -- Skullripper
+		},
+	},
+	questID = 53526,
+	vignetteID = 3199,
+}
+
+NPCs[142438] = { -- Venomarus
+	pets = {
+		{
+			itemID = 163648, -- Fuzzy Creepling
+			npcID = 143499, -- Fuzzy Creepling
+		},
+	},
+	questID = 53528,
+	vignetteID = 3201,
+}
+
+NPCs[142440] = { -- Yogursa
+	pets = {
+		{
+			itemID = 163684, -- Scabby,
+			npcID = 143533, -- Scabby
+		},
+	},
+	questID = 53529,
+	vignetteID = 3192,
+}
+
+NPCs[142508] = { -- Branchlord Aldrus
+	pets = {
+		{
+			itemID = 163650, -- Aldrusian Sproutling
+			npcID = 143503, -- Aldrusian Sproutling
+		},
+	},
+	questID = 53505,
+	vignetteID = 3190,
+}
+
+NPCs[142662] = { -- Geomancer Flintdagger
+	questID = 53511,
+	toys = {
+		{ itemID = 163713, }, -- Brazier Cap
+	},
+	vignetteID = 3205,
+}
+
+NPCs[141668] = { -- Echo of Myzrael
+	pets = {
+		{
+			itemID = 163677, -- Teeny Titan Orb
+			npcID = 143515, -- Teeny Titan Orb
+		},
+	},
+	questID = 53508,
+	vignetteID = 3204,
+}
+
+NPCs[141942] = { -- Molok the Crusher
+	questID = 53516,
+	toys = {
+		{ itemID = 163775, }, -- Molok Morion
+	},
+	vignetteID = 3202,
+}
+
+NPCs[142112] = { -- Kor'gresh Coldrage
+	questID = 53513,
+	toys = {
+		{ itemID = 163744, }, -- Coldrage's Cooler
+	},
+	vignetteID = 3203,
+}
+
+NPCs[142682] = { -- Zalas Witherbark
+	questID = 53530,
+	toys = {
+		{ itemID = 163745, }, -- Witherbark Gong
+	},
+	vignetteID = 3218,
+}
+
+NPCs[142683] = { -- Ruul Onestone
+	toys = {
+		{ itemID = 163741, }, -- Magic Fun Rock
+	},
+	questID = 53524,
+	vignetteID = 3216,
+}
+
+NPCs[142684] = { -- Kovork
+	questID = 53514,
+	toys = {
+		{ itemID = 163750 }, -- Kovork Kostume
+	},
+	vignetteID = 3213,
+}
+
+NPCs[142686] = { -- Foulbelly
+	questID = 53509,
+	toys = {
+		{ itemID = 163735, }, -- Foul Belly
+	},
+	vignetteID = 3210,
+}
+
+NPCs[142688] = { -- Darbel Montrose
+	pets = {
+		{
+			itemID = 163652, -- Tiny Grimoire
+			npcID = 143507, -- Voidwiggler
+		},
+	},
+	questID = 53507,
+	vignetteID = 3208,
+}
+
+NPCs[142690] = { -- Singer
+	questID = 53525,
+	toys = {
+		{ itemID = 163738, } -- Syndicate Mask
+	},
+	vignetteID = 3217,
+}
+
+NPCs[142692] = { -- Nimar the Slayer
+	mounts = {
+		{
+			itemID = 163706, -- Witherbark Direwing
+			spellID = 279868, -- Witherbark Direwing
+		},
+	},
+	questID = 53517,
+	vignetteID = 3215,
+}
+
+NPCs[142709] = { -- Beastrider Kama
+	mounts = {
+		{
+			itemID = 163644, -- Swift Albino Raptor
+			spellID = 279569, -- Swift Albino Raptor
+		},
+	},
+	questID = 53504,
+	vignetteID = 3207,
+}
+
+NPCs[142716] = { -- Man-Hunter Rog
+	pets = {
+		{
+			itemID = 163712, -- Mana-Warped Egg
+			npcID = 143628, -- Squawkling
+		},
+	},
+	questID = 53515,
+	vignetteID = 3214,
+}
+
+NPCs[142725] = { -- Horrific Apparition
+	questID = 53512,
+	toys = {
+		{ itemID = 163736, } -- Spectral Visage
+	},
+	vignetteID = 3211,
+}
+
+NPCs[142739] = { -- Knight-Captain Aldrin
+	factionGroup = "Alliance",
+	mounts = {
+		{
+			itemID = 163578, -- Broken Highland Mustang
+			spellID = 279457, -- Broken Highland Mustang
+		},
+	},
+	vignetteID = 3212,
+}
+
+NPCs[142741] = { -- Doomrider Helgrim
+	factionGroup = "Horde",
+	mounts = {
+		{
+			itemID = 163579, -- Highland Mustang
+			spellID = 279456, -- Highland Mustang
+		},
+	},
+	vignetteID = 3209,
+}
+
 -- ----------------------------------------------------------------------------
 -- Badlands
 -- ----------------------------------------------------------------------------
@@ -541,6 +813,13 @@ NPCs[51662] = { -- Mahamba
 
 NPCs[51663] = { -- Pogeyan
 	isTameable = true,
+}
+
+-- ----------------------------------------------------------------------------
+-- Scholomance
+-- ----------------------------------------------------------------------------
+NPCs[59369] = { -- Doctor Theolen Krastinov
+	vignetteID = 161,
 }
 
 -- ----------------------------------------------------------------------------

@@ -27,7 +27,37 @@ Maps[MapID.ArathiHighlands].NPCs = {
     [50940] = true, -- Swee
     [51040] = true, -- Snuffles
     [51063] = true, -- Phalanax
-    [51067] = true -- Glint
+	[51067] = true, -- Glint
+	[137374] = true, -- The Lion's Roar
+	[138122] = true, -- Doom's Howl
+	[141615] = true, -- Burning Goliath
+	[141616] = true, -- Thundering Goliath
+	[141618] = true, -- Cresting Goliath
+	[141620] = true, -- Rumbling Goliath
+	[142423] = true, -- Overseer Krix
+	[142433] = true, -- Fozruk
+	[142435] = true, -- Plaguefeather
+	[142436] = true, -- Ragebeak
+	[142437] = true, -- Skullripper
+	[142438] = true, -- Venomarus
+	[142440] = true, -- Yogursa
+	[142508] = true, -- Branchlord Aldrus
+	[142662] = true, -- Geomancer Flintdagger
+	[141668] = true, -- Echo of Myzrael
+	[141942] = true, -- Molok the Crusher
+	[142112] = true, -- Kor'gresh Coldrage
+	[142682] = true, -- Zalas Witherbark
+    [142683] = true, -- Ruul Onestone
+	[142684] = true, -- Kovork
+	[142686] = true, -- Foulbelly
+	[142688] = true, -- Darbel Montrose
+	[142690] = true, -- Singer
+	[142692] = true, -- Nimar the Slayer
+	[142709] = true, -- Beastrider Kama
+	[142716] = true, -- Man-Hunter Rog
+	[142725] = true, -- Horrific Apparition
+	[142739] = true, -- Knight-Captain Aldrin
+	[142741] = true, -- Doomrider Helgrim
 }
 
 -- ----------------------------------------------------------------------------
@@ -138,7 +168,7 @@ Maps[MapID.WesternPlaguelands].NPCs = {
     [51029] = true, -- Parasitus
     [51031] = true, -- Tracker
     [51058] = true, -- Aphis
-    [111122] = true -- Large Vile Slime
+	[111122] = true, -- Large Vile Slime
 }
 
 -- ----------------------------------------------------------------------------
@@ -593,7 +623,6 @@ Maps[MapID.NewTinkertown].NPCs = {
 -- Scholomance
 -- ----------------------------------------------------------------------------
 Maps[MapID.Scholomance].NPCs = {
-    [1850] = true, -- Putridius
     [59369] = true -- Doctor Theolen Krastinov
 }
 

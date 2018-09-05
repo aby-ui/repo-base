@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2147, "DBM-Uldir", nil, 1031)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17682 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 17769 $"):sub(12, -3))
 mod:SetCreatureID(132998)
 mod:SetEncounterID(2122)
 mod:SetZone()
@@ -16,7 +16,7 @@ mod:RegisterCombat("combat")
 mod:RegisterEventsInCombat(
 	"SPELL_CAST_START 272505 267509 267427 267412 273406 273405 267409 267462 267579 263482 263503 263307 275160",
 	"SPELL_CAST_SUCCESS 263235 263482 263503 263373 270373 270428 276839 274582",
-	"SPELL_AURA_APPLIED 268074 267813 277079 272506 274262 263372 270447 263235 270443",
+	"SPELL_AURA_APPLIED 268074 267813 277079 272506 274262 263372 270447 263235 270443 273405 267409",
 	"SPELL_AURA_APPLIED_DOSE 270447",
 	"SPELL_AURA_REMOVED 268074 267813 277079 272506 274262 263235 263372",
 	"SPELL_PERIODIC_DAMAGE 270287",
@@ -59,13 +59,14 @@ local specWarnBloodHost					= mod:NewSpecialWarningClose(267813, nil, nil, nil, 
 local yellBloodHost						= mod:NewYell(267813)--Mythic
 local specWarnDarkPurpose				= mod:NewSpecialWarningRun(268074, nil, nil, nil, 4, 2)--Mythic
 local yellDarkPurpose					= mod:NewYell(268074)--Mythic
-local specWarnExplosiveCorruption		= mod:NewSpecialWarningMoveAway(272506, nil, nil, nil, 4, 2)
+local specWarnExplosiveCorruption		= mod:NewSpecialWarningMoveAway(272506, nil, nil, 2, 1, 2)
 local yellExplosiveCorruption			= mod:NewYell(272506)
 local yellExplosiveCorruptionFades		= mod:NewShortFadesYell(272506)
 local specWarnThousandMaws				= mod:NewSpecialWarningSwitch(267509, nil, nil, nil, 1, 2)
 local specWarnTorment					= mod:NewSpecialWarningInterrupt(267427, "HasInterrupt", nil, nil, 1, 2)
 local specWarnMassiveSmash				= mod:NewSpecialWarningSpell(267412, nil, nil, nil, 1, 2)
 local specWarnDarkBargain				= mod:NewSpecialWarningDodge(267409, nil, nil, nil, 1, 2)
+local specWarnDarkBargainOther			= mod:NewSpecialWarningTaunt(267409, false, nil, 2, 1, 2)
 local specWarnGTFO						= mod:NewSpecialWarningGTFO(270287, nil, nil, nil, 1, 2)
 local specWarnDecayingEruption			= mod:NewSpecialWarningInterrupt(267462, "HasInterrupt", nil, nil, 1, 2)--Mythic
 ----Arena Floor P2+
@@ -399,6 +400,12 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerWaveofCorruptionCD:Start(15, 1)--10
 		if self.Options.RangeFrame then
 			DBM.RangeCheck:Show(5)
+		end
+	elseif (spellId == 273405 or spellId == 267409) then
+		local uId = DBM:GetRaidUnitId(args.destName)
+		if uId and self:IsTanking(uId) and not args:IsPlayer() then--DBM:UnitDebuff("player", spellId)
+			specWarnDarkBargainOther:Show(args.destName)
+			specWarnDarkBargainOther:Play("changemt")
 		end
 	end
 end

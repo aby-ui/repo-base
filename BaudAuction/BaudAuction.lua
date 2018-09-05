@@ -35,6 +35,51 @@ local Config;
 local SearchResults = {};
 _G.SR = SearchResults
 
+--abyui 拍卖排序，最后一个是最优先
+local AuctionSortExtra = {}
+AuctionSortExtra["list_minbidbuyout"] = {
+    { column = "duration",	reverse = false	},
+   	{ column = "quantity",	reverse = true	},
+   	{ column = "name",		reverse = false	},
+   	{ column = "level",		reverse = true	},
+   	{ column = "quality",	reverse = true	},
+    { column = "unitprice",	reverse = false	},
+    { column = "minbidbuyout",	reverse = false	},
+};
+AuctionSortExtra["list_unitprice_aby"] = {
+	{ column = "duration",	reverse = false	},
+	{ column = "quantity",	reverse = true	},
+	{ column = "name",		reverse = false	},
+	{ column = "level",		reverse = true	},
+    { column = "minbidbuyout",	reverse = false	},
+	{ column = "quality",	reverse = true	},
+	{ column = "unitprice",	reverse = false	},
+};
+AuctionSortExtra["list_quantity"] = {
+    { column = "duration",	reverse = false	},
+   	{ column = "quantity",	reverse = true	},
+   	{ column = "name",		reverse = false	},
+   	{ column = "level",		reverse = true	},
+    { column = "minbidbuyout",	reverse = true	},
+   	{ column = "unitprice",	reverse = true	},
+    { column = "quality",	reverse = false	},
+};
+
+local function SortAuctionList(sortKey, oppositeOrder)
+    local sortTable = "list";
+	-- clear the existing sort.
+	SortAuctionClearSort(sortTable);
+
+	-- set the columns
+	for index, row in pairs(AuctionSort[sortKey] or AuctionSortExtra[sortKey]) do
+		if (oppositeOrder) then
+			SortAuctionSetSort(sortTable, row.column, not row.reverse);
+		else
+			SortAuctionSetSort(sortTable, row.column, row.reverse);
+		end
+	end
+end
+
 local SearchItem;
 local Text;
 local Columns = {
@@ -49,6 +94,7 @@ local Columns = {
             end
             return Text;
         end,
+        SortKey = "list_quality",
         Sort = 1
     },
     {
@@ -58,6 +104,7 @@ local Columns = {
         Display = function()
             return SearchItem[6];
         end,
+        SortKey = "list_level",
         Sort = 6
     },
     {
@@ -76,6 +123,7 @@ local Columns = {
         Display = function()
             return AuctionTime[SearchItem[13]];
         end,
+        SortKey = "list_duration",
         Sort = 13
     },
     {
@@ -85,6 +133,7 @@ local Columns = {
         Display = function()
             return SearchItem[12];
         end,
+        SortKey = "list_seller",
         Sort = 12
     },
     {
@@ -100,6 +149,7 @@ local Columns = {
             end
             return Text;
         end,
+        SortKey = "list_minbidbuyout",
         Sort = 16
     },
     {
@@ -109,6 +159,7 @@ local Columns = {
         Display = function()
             return (SearchItem[9] == 0) and None or BaudAuctionToMoney(SearchItem[17]);
         end,
+        SortKey = "list_unitprice",
         Sort = 17
     },
     {
@@ -118,6 +169,7 @@ local Columns = {
         Display = function()
             return (SearchItem[9] == 0) and None or BaudAuctionToMoney(SearchItem[9]);
         end,
+        SortKey = "list_quantity",
         Sort = 9
     },
 };
@@ -218,6 +270,7 @@ function BaudAuction_OnLoad(self)
         text:ClearAllPoints();
         text:SetPoint("CENTER",2,0);
         Button:SetID(Key);
+        Button.SortKey = Value.SortKey;
         Button:SetNormalTexture(nil);
         Value.Header = Button;
         Button:SetWidth(Value.Width);
@@ -482,6 +535,7 @@ function BaudAuctionColumn_OnClick(self)
         SortColumn = self:GetID();
         SortReverse = nil;
     end
+    if self.SortKey then SortAuctionList(self.SortKey, SortReverse) end
     BaudAuctionSortBrowseList();
 end
 
