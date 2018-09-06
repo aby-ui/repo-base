@@ -1,6 +1,8 @@
 local addonName, privateTable = ...
 
 privateTable.IGNORED_NPC = {
+    ["141584"] = "8.0 lucky coin hord",
+    ["142063"] = "8.0 lucky coin alliance",
 	["87391"] = "fate-twister-seress",
 	["88570"] = "Fate-Twister Tiklal",
 	["111243"] = "Archmage Lan'dalock", --大法师兰达洛克 7.0大厅资源换印记
