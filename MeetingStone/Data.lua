@@ -285,6 +285,7 @@ CATEGORY = {
     },
     [7] = {
         groups = {
+            [135] = true,
             [136] = true,
             [137] = true,
             [138] = true,
@@ -296,9 +297,10 @@ CATEGORY = {
             [144] = true,
             [145] = true,
             [146] = true,
-            [147] = true,
         },
-        activities = {}
+        activities = {
+            [657] = true,
+        },
     }
 }
 

@@ -15,6 +15,11 @@ SRTI_MSG_HELP_TEXT = SRTI_TITLE .. SRTI_MSG_HELP_TEXT;
 BINDING_HEADER_SRTI_TITLE = SRTI_OPTIONS_BLZ_INTERFACE_PANEL_NAME;
 
 
+igMainMenuOptionCheckBoxOn = 856
+igMainMenuOptionCheckBoxOff = 857
+igMiniMapZoomOut = 824
+igMiniMapZoomIn = 823
+
 local iconStrings = {
 	none = 0,
 	clear = 0,
@@ -174,7 +179,7 @@ function srti.frame:Show()
                                         	self:Hide();
 						return;
 					end
-					PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON);
+					PlaySound(igMainMenuOptionCheckBoxOn, "SPX");
 					SetPortraitTexture( srti.frame.p, "target" );
 --]]		                end
 
@@ -193,7 +198,7 @@ function srti.frame:Show()
 						self.lingering = nil;
 						self.hiding = curtime;
 						self.showinghowing = nil;
-						PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_OFF);
+						PlaySound(igMainMenuOptionCheckBoxOff, "SPX");
 					elseif ( not self.lingering ) then
 						self.lingering = curtime;
 					end
@@ -321,7 +326,7 @@ function srti.frame:Show()
 					self.lingering = nil
 					self.showing = nil
 					self.index = nil;
-					PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_OFF);
+					PlaySound(igMainMenuOptionCheckBoxOff, "SPX");
 				end
 			end
 		end);
@@ -334,13 +339,13 @@ function srti.frame:Show()
 				end
 				if ( ( arg1 == "RightButton" and index and index > 0 ) or ( self.index and self.index > 0 and self.index == index ) ) then
 					self.index = index;
-					PlaySound163("igMiniMapZoomOut");
+					PlaySound(igMiniMapZoomOut, "SPX");
 					srti.SetRaidTarget(0);
 				elseif ( self.index ) then
-					PlaySound163("igMiniMapZoomIn");
+					PlaySound(igMiniMapZoomIn, "SPX");
 					srti.SetRaidTarget(self.index);
 				else
-					PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_OFF);
+					PlaySound(igMainMenuOptionCheckBoxOff, "SPX");
 				end
 				self.showing = nil;
 				self.hiding = GetTime();
@@ -395,7 +400,7 @@ srti.frame:SetScript("OnEvent", function(self,event,...)
 			self.index = nil;
 			self.showing = nil;
 			self.hiding = GetTime();
-			PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_OFF);
+			PlaySound(igMainMenuOptionCheckBoxOff, "SPX");
 			self.exists = nil;
 		elseif ( self.exists ) then
 			self.exists = nil;

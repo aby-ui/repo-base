@@ -392,8 +392,7 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	L["Shows a spell icon with an optional cooldown overlay"] = "显示可选的法术图示有冷却时间重叠"
 	L["Shows a texture that changes based on duration"] = "显示一个随持续时间而变的材质"
 	L["Shows one or more lines of text, which can include dynamic information such as progress or stacks"] = "显示一行或多行文字, 它们包换动态信息, 如进度和叠加层数"
-	--[[Translation missing --]]
-	L["Simple"] = "Simple"
+	L["Simple"] = "简单"
 	L["Size"] = "大小"
 	L["Slant Amount"] = "斜线数量"
 	L["Slant Mode"] = "倾斜模式"

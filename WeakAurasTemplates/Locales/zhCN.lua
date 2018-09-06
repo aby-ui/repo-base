@@ -5,6 +5,7 @@ end
 local L = WeakAuras.L
 
 -- WeakAuras/Templates
+	L["Abilities"] = "能力"
 	L["Ability Charges"] = "充能"
 	L["Add Triggers"] = "添加触发器"
 	L["Always Active"] = "总是激活"
@@ -14,11 +15,14 @@ local L = WeakAuras.L
 	L["Always show the aura, turns grey if the debuff not active."] = "总是显示光环，如果减益效果未被激活则变灰显示"
 	L["Always shows the aura, grey if buff not active."] = "总是显示光环，如果增益效果未被激活则变灰显示"
 	L["Always shows the aura, highlight it if buffed."] = "总是显示光环，如果有增益效果则高亮显示"
+	L["Always shows the aura, highlight while proc is active, blue on insufficient resources."] = "总显示显示此光环，当激活时高亮显示，当资源不足时变蓝显示"
+	L["Always shows the aura, highlight while proc is active, blue when not usable."] = "总显示显示此光环，当激活时高亮显示，当不可用时变蓝显示"
+	L["Always shows the aura, highlight while proc is active, turns red when out of range, blue on insufficient resources."] = "总显示显示此光环，当激活时高亮显示，当超出距离是变红显示，当资源不足时变蓝显示"
 	L["Always shows the aura, turns grey if on cooldown."] = "总是显示光环，如果在冷却中则变灰显示"
 	L["Always shows the aura, turns grey if the ability is not usable and red when out of range."] = "总是显示光环，如果技能不可用则变灰显示而超出距离时变红显示"
 	L["Always shows the aura, turns grey if the ability is not usable."] = "总是显示光环，如果技能不可用则变灰显示"
 	L["Always shows the aura, turns grey when on cooldown, blue when unusable."] = "总是显示光环，如果在冷却中则变灰显示，不可用时变蓝显示"
-	L["Always shows the aura, turns grey when on zero charges, blue when usable."] = "总是显示光环，如果技能没有可用次数则变灰显示，不可用时变蓝显示"
+	L["Always shows the aura, turns grey when on zero charges, blue when not usable."] = "总显示显示此光环，当没有可用次数时变灰显示，当不可用时变蓝显示"
 	L["Always shows the aura, turns grey when on zero charges, highlight when active, blue on insufficient resources."] = "总是显示光环，如果技能没有可用次数则变灰显示，在激活时高亮显示，资源不足时变蓝显示"
 	L["Always shows the aura, turns grey when on zero charges, red when out of range, blue on insufficient resources."] = "总是显示光环，如果技能没有可用次数则变灰显示，超出距离时变红显示，资源不足时变蓝显示"
 	L["Always shows the aura, turns greys on zero charges, blue on insufficient resources."] = "总是显示光环，如果技能没有可用次数则变灰显示，资源不足时变蓝显示"
@@ -37,7 +41,6 @@ local L = WeakAuras.L
 	L["Charge Tracking"] = "可用次数充能追踪"
 	L["cooldown"] = "冷却"
 	L["Cooldown Tracking"] = "冷却追踪"
-	L["Cooldowns"] = "冷却"
 	L["Debuffs"] = "减益"
 	L["Enchants"] = "附魔"
 	L["General"] = "总体"
@@ -57,59 +60,43 @@ local L = WeakAuras.L
 	L["Only shows the aura when the ability is on cooldown."] = "只有当技能在冷却中时才显示此光环"
 	L["Pet alive"] = "宠物存活"
 	L["Pet Behavior"] = "宠物行为"
-	--[[Translation missing --]]
-	L["PvP Azerite Traits"] = "PvP Azerite Traits"
+	L["PvP Azerite Traits"] = "PvP 艾泽里特特质"
 	L["PvP Talents"] = "PVP天赋"
-	--[[Translation missing --]]
-	L["PVP Trinkets (Buff)"] = "PVP Trinkets (Buff)"
-	--[[Translation missing --]]
-	L["PVP Trinkets (CD)"] = "PVP Trinkets (CD)"
+	L["PVP Trinkets (Buff)"] = "PvP 饰品增益效果"
+	L["PVP Trinkets (CD)"] = "PvP 饰品 CD"
 	L["Replace all existing triggers"] = "替换所有现存的触发器"
 	L["Replace Triggers"] = "替换触发器"
 	L["Resources"] = "资源"
 	L["Resources and Shapeshift Form"] = "资源和变形形态"
 	L["Runes"] = "符文"
 	L["Shapeshift Form"] = "变形形态"
-	--[[Translation missing --]]
-	L["Show Charges and Check Usable"] = "Show Charges and Check Usable"
-	--[[Translation missing --]]
-	L["Show Charges with Range Tracking"] = "Show Charges with Range Tracking"
-	--[[Translation missing --]]
-	L["Show Charges with Usable Check"] = "Show Charges with Usable Check"
-	--[[Translation missing --]]
-	L["Show Cooldown and Buff"] = "Show Cooldown and Buff"
-	--[[Translation missing --]]
-	L["Show Cooldown and Buff and Check for Target"] = "Show Cooldown and Buff and Check for Target"
-	--[[Translation missing --]]
-	L["Show Cooldown and Buff and Check Usable"] = "Show Cooldown and Buff and Check Usable"
-	--[[Translation missing --]]
-	L["Show Cooldown and Check for Target"] = "Show Cooldown and Check for Target"
-	--[[Translation missing --]]
-	L["Show Cooldown and Check Usable"] = "Show Cooldown and Check Usable"
-	--[[Translation missing --]]
-	L["Show Cooldown and Check Usable & Target"] = "Show Cooldown and Check Usable & Target"
-	--[[Translation missing --]]
-	L["Show Cooldown and Debuff"] = "Show Cooldown and Debuff"
-	--[[Translation missing --]]
-	L["Show Cooldown and Debuff and Check for Target"] = "Show Cooldown and Debuff and Check for Target"
-	--[[Translation missing --]]
-	L["Show Cooldown and Totem Information"] = "Show Cooldown and Totem Information"
-	--[[Translation missing --]]
-	L["Show Only if Buffed"] = "Show Only if Buffed"
-	--[[Translation missing --]]
-	L["Show Only if Debuffed"] = "Show Only if Debuffed"
-	--[[Translation missing --]]
-	L["Show Only if on Cooldown"] = "Show Only if on Cooldown"
-	--[[Translation missing --]]
-	L["Show Totem and Charge Information"] = "Show Totem and Charge Information"
-	--[[Translation missing --]]
-	L["Specific Azerite Traits"] = "Specific Azerite Traits"
+	L["Show Charges and Check Usable"] = "显示可用次数充能并检查可用性"
+	L["Show Charges with Proc Tracking"] = "显示可用次数充能和触发追踪"
+	L["Show Charges with Range Tracking"] = "显示可用次数充能和距离追踪"
+	L["Show Charges with Usable Check"] = "显示可用次数充能和可用性检测结果"
+	L["Show Cooldown and Buff"] = "显示 CD 和增益效果"
+	L["Show Cooldown and Buff and Check for Target"] = "显示 CD 和增益效果并检查是否有选中的目标"
+	L["Show Cooldown and Buff and Check Usable"] = "显示 CD 和增益效果并检查可用性"
+	L["Show Cooldown and Check for Target"] = "显示 CD 并检查是否有选中的目标"
+	L["Show Cooldown and Check for Target & Proc Tracking"] = "显示 CD，是否有目标和触发追踪"
+	L["Show Cooldown and Check Usable"] = "显示 CD 并检查可用性"
+	L["Show Cooldown and Check Usable & Target"] = "显示 CD 并检查可用性和是否有选中的目标"
+	L["Show Cooldown and Check Usable, Proc Tracking"] = "显示 CD，可用性检测和触发追踪"
+	L["Show Cooldown and Check Usable, Target & Proc Tracking"] = "显示 CD，可用性检测，是否有目标和触发追踪"
+	L["Show Cooldown and Debuff"] = "显示 CD 和减益效果"
+	L["Show Cooldown and Debuff and Check for Target"] = "显示 CD 和减益效果并检查是否有选中的目标"
+	L["Show Cooldown and Proc Tracking"] = "显示 CD 和触发追踪"
+	L["Show Cooldown and Totem Information"] = "显示 CD 和图腾信息"
+	L["Show Only if Buffed"] = "获得增益效果时显示"
+	L["Show Only if Debuffed"] = "获得减益效果时显示"
+	L["Show Only if on Cooldown"] = "冷却中显示"
+	L["Show Totem and Charge Information"] = "显示图腾和可用次数充能信息"
+	L["Specific Azerite Traits"] = "特性艾泽里特特质"
 	L["Stagger"] = "眩晕"
 	L["Totems"] = "图腾（复数）"
-	--[[Translation missing --]]
-	L["Tracks the charge and the buff, highlight while the buff is active, blue on insufficient resources."] = "Tracks the charge and the buff, highlight while the buff is active, blue on insufficient resources."
-	--[[Translation missing --]]
-	L["Tracks the charge and the debuff, highlight while the debuff is active, blue on insufficient resources."] = "Tracks the charge and the debuff, highlight while the debuff is active, blue on insufficient resources."
+	L["Track the charge and proc, highlight while proc is active, turns red when out of range, blue on insufficient resources."] = "追踪可用次数充能和触发，当触发时高亮显示，超出距离时变红显示，资源不足时变蓝显示"
+	L["Tracks the charge and the buff, highlight while the buff is active, blue on insufficient resources."] = "追踪可用次数和增益效果，当增益效果激活时高亮，当没有足够资源是变蓝显示"
+	L["Tracks the charge and the debuff, highlight while the debuff is active, blue on insufficient resources."] = "追踪可用次数和减益效果，当减益效果激活时高亮，当没有足够资源是变蓝显示"
 	L["Unknown Item"] = "未知物品"
 	L["Unknown Spell"] = "未知法术"
 

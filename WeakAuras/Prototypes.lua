@@ -1520,7 +1520,9 @@ WeakAuras.event_prototypes = {
         store = true,
         test = "WeakAuras.CheckCombatLogFlags(sourceFlags, '%s')",
         conditionType = "select",
-        conditionTest = "state and state.show and WeakAuras.CheckCombatLogFlags(sourceFlags, '%s')",
+        conditionTest = function(state, needle)
+          return state and state.show and WeakAuras.CheckCombatLogFlags(state.sourceFlags, needle);
+        end
       },
       {
         name = "sourceRaidFlags",
@@ -1531,7 +1533,9 @@ WeakAuras.event_prototypes = {
         store = true,
         test = "WeakAuras.CheckRaidFlags(sourceRaidFlags,'%s')",
         conditionType = "select",
-        conditionTest = "state and state.show and WeakAuras.CheckRaidFlags(sourceRaidFlags,'%s')",
+        conditionTest = function(state, needle)
+          return state and state.show and WeakAuras.CheckRaidFlags(state.sourceRaidFlags, needle);
+        end
       },
       {
         name = "destGUID",
@@ -1577,7 +1581,9 @@ WeakAuras.event_prototypes = {
         store = true,
         test = "WeakAuras.CheckCombatLogFlags(destFlags, '%s')",
         conditionType = "select",
-        conditionTest = "state and state.show and WeakAuras.CheckCombatLogFlags(destFlags, '%s')",
+        conditionTest = function(state, needle)
+          return state and state.show and WeakAuras.CheckCombatLogFlags(state.destFlags, needle);
+        end,
         enable = function(trigger)
           return not (trigger.subeventPrefix == "SPELL" and trigger.subeventSuffix == "_CAST_START");
         end,
@@ -1596,7 +1602,9 @@ WeakAuras.event_prototypes = {
         store = true,
         test = "WeakAuras.CheckRaidFlags(destRaidFlags,'%s')",
         conditionType = "select",
-        conditionTest = "state and state.show and WeakAuras.CheckRaidFlags(destRaidFlags,'%s')",
+        conditionTest = function(state, needle)
+          return state and state.show and WeakAuras.CheckRaidFlags(state.destRaidFlags, needle);
+        end,
         enable = function(trigger)
           return not (trigger.subeventPrefix == "SPELL" and trigger.subeventSuffix == "_CAST_START");
         end,
@@ -2027,7 +2035,7 @@ WeakAuras.event_prototypes = {
         local ret2 = [[
           local remaining = expirationTime > 0 and (expirationTime - GetTime()) or 0;
           local remainingCheck = %s;
-          if(remaining >= remainingCheck) then
+          if(remaining >= remainingCheck and remaining > 0) then
             WeakAuras.ScheduleCooldownScan(expirationTime - remainingCheck);
           end
         ]];
@@ -2118,7 +2126,9 @@ WeakAuras.event_prototypes = {
         test = "true",
         display = L["On Cooldown"],
         conditionType = "bool",
-        conditionTest = "state and state.show and (not state.gcdCooldown and state.expirationTime and state.expirationTime > GetTime()) == (%s == 1)",
+        conditionTest = function(state, needle)
+          return state and state.show and (not state.gcdCooldown and state.expirationTime and state.expirationTime > GetTime()) == (needle == 1)
+        end,
       },
       {
         hidden = true,
@@ -2132,7 +2142,9 @@ WeakAuras.event_prototypes = {
         hidden = true,
         test = "true",
         conditionType = "bool",
-        conditionTest = "state and state.show and (IsUsableSpell(state.spellname) == (%s == 1))",
+        conditionTest = function(state, needle)
+          return state and state.show and (IsUsableSpell(state.spellname) == (needle == 1))
+        end,
         conditionEvents = {
           "SPELL_UPDATE_USABLE",
           "PLAYER_TARGET_CHANGED",
@@ -2145,7 +2157,9 @@ WeakAuras.event_prototypes = {
         hidden = true,
         test = "true",
         conditionType = "bool",
-        conditionTest = "state and state.show and (select(2, IsUsableSpell(state.spellname)) == (%s == 1))",
+        conditionTest = function(state, needle)
+          return state and state.show and (select(2, IsUsableSpell(state.spellname)) == (needle == 1));
+        end,
         conditionEvents = {
           "SPELL_UPDATE_USABLE",
           "PLAYER_TARGET_CHANGED",
@@ -2158,7 +2172,10 @@ WeakAuras.event_prototypes = {
         hidden = true,
         test = "true",
         conditionType = "bool",
-        conditionTest = "state and state.show and (UnitExists('target') and WeakAuras.IsSpellInRange(state.spellname, 'target') == %s)",
+        conditionTest = function(state, needle)
+
+          return state and state.show and (UnitExists('target') and WeakAuras.IsSpellInRange(state.spellname, 'target') == needle)
+        end,
         conditionEvents = {
           "PLAYER_TARGET_CHANGED",
           "WA_SPELL_RANGECHECK",
@@ -2303,7 +2320,9 @@ WeakAuras.event_prototypes = {
         store = true,
         conditionType = "select",
         conditionValues = "charges_change_condition_type";
-        conditionTest = "state and state.show and WeakAuras.CheckChargesDirection(state.direction, '%s')",
+        conditionTest = function(state, needle)
+          return state and state.show and WeakAuras.CheckChargesDirection(state.direction, needle)
+        end,
       },
       {
         name = "charges",
@@ -2367,7 +2386,7 @@ WeakAuras.event_prototypes = {
           local expirationTime = startTime + duration
           local remaining = expirationTime > 0 and (expirationTime - GetTime()) or 0;
           local remainingCheck = %s;
-          if(remaining >= remainingCheck) then
+          if(remaining >= remainingCheck and remaining > 0) then
             WeakAuras.ScheduleCooldownScan(expirationTime - remainingCheck);
           end
         ]];
@@ -2412,7 +2431,9 @@ WeakAuras.event_prototypes = {
         test = "true",
         display = L["On Cooldown"],
         conditionType = "bool",
-        conditionTest = "state and state.show and (state.expirationTime and state.expirationTime > GetTime() or state.enabled == 0) == (%s == 1)",
+        conditionTest = function(state, needle)
+          return state and state.show and (state.expirationTime and state.expirationTime > GetTime() or state.enabled == 0) == (needle == 1)
+        end,
       },
       {
         name = "itemInRange",
@@ -2420,7 +2441,9 @@ WeakAuras.event_prototypes = {
         hidden = true,
         test = "true",
         conditionType = "bool",
-        conditionTest = "state and state.show and (UnitExists('target') and IsItemInRange(state.itemname, 'target')) == (%s == 1)",
+        conditionTest = function(state, needle)
+          return state and state.show and (UnitExists('target') and IsItemInRange(state.itemname, 'target')) == (needle == 1)
+        end,
         conditionEvents = {
           "PLAYER_TARGET_CHANGED",
           "WA_SPELL_RANGECHECK",
@@ -2481,7 +2504,7 @@ WeakAuras.event_prototypes = {
           local expirationTime = startTime + duration
           local remaining = expirationTime > 0 and (expirationTime - GetTime()) or 0;
           local remainingCheck = %s;
-          if(remaining >= remainingCheck) then
+          if(remaining >= remainingCheck and remaining > 0) then
             WeakAuras.ScheduleCooldownScan(expirationTime - remainingCheck);
           end
         ]];
@@ -2526,7 +2549,9 @@ WeakAuras.event_prototypes = {
         test = "true",
         display = L["On Cooldown"],
         conditionType = "bool",
-        conditionTest = "state and state.show and (state.expirationTime and state.expirationTime > GetTime()) == (%s == 1)",
+        conditionTest = function(state, needle)
+          return state and state.show and (state.expirationTime and state.expirationTime > GetTime()) == (needle == 1);
+        end,
       },
       {
         hidden = true,
@@ -3875,7 +3900,7 @@ WeakAuras.event_prototypes = {
         local expirationTime = startTime + duration
         local remaining = expirationTime - GetTime();
         local remainingCheck = %s;
-        if(remaining >= remainingCheck) then
+        if(remaining >= remainingCheck and remaining > 0) then
           WeakAuras.ScheduleCooldownScan(expirationTime - remainingCheck);
         end
       ]];
@@ -3922,7 +3947,9 @@ WeakAuras.event_prototypes = {
         test = "true",
         display = L["On Cooldown"],
         conditionType = "bool",
-        conditionTest = "state and state.show and (state.expirationTime and state.expirationTime > GetTime()) == (%s == 1)",
+        conditionTest = function(state, needle)
+          return state and state.show and (state.expirationTime and state.expirationTime > GetTime()) == (needle == 1)
+        end,
         enable = function(trigger) return trigger.use_rune end
       },
     },
@@ -4258,7 +4285,7 @@ WeakAuras.event_prototypes = {
           local expirationTime = endTime and endTime > 0 and (endTime / 1000) or 0;
           local remaining = expirationTime - GetTime();
           local remainingCheck = %s;
-          if(remaining >= remainingCheck) then
+          if(remaining >= remainingCheck and remaining > 0) then
             WeakAuras.ScheduleCastCheck(expirationTime - remainingCheck);
           end
         ]];
@@ -4692,7 +4719,9 @@ WeakAuras.event_prototypes = {
         operator_types_without_equal = true,
         test = "triggerResult",
         conditionType = "number",
-        conditionTest = "state and state.show and WeakAuras.CheckRange(state.unit, %s, '%s')",
+        conditionTest = function(state, needle, needle2)
+          return state and state.show and WeakAuras.CheckRange(state.unit, needle, needle2);
+        end,
       },
       {
         hidden = true,

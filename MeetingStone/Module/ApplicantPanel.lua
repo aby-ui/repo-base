@@ -185,14 +185,14 @@ function ApplicantPanel:OnInitialize()
         end)
     end
 
-    local AutoInvite = GUI:GetClass('CheckBox'):New(self) do
-        AutoInvite:SetPoint('BOTTOMRIGHT', self, 'TOPLEFT', -80, 7)
-        AutoInvite:SetText(L['自动邀请'])
-        AutoInvite:SetScript('OnClick', function(AutoInvite)
-            local checked = AutoInvite:GetChecked()
-            self:SetAutoInvite(checked)
-        end)
-    end
+    -- local AutoInvite = GUI:GetClass('CheckBox'):New(self) do
+    --     AutoInvite:SetPoint('BOTTOMRIGHT', self, 'TOPLEFT', -80, 7)
+    --     AutoInvite:SetText(L['自动邀请'])
+    --     AutoInvite:SetScript('OnClick', function(AutoInvite)
+    --         local checked = AutoInvite:GetChecked()
+    --         self:SetAutoInvite(checked)
+    --     end)
+    -- end
 
     self.ApplicantList = ApplicantList
     self.AutoInvite = AutoInvite
@@ -200,13 +200,13 @@ function ApplicantPanel:OnInitialize()
     self:RegisterEvent('LFG_LIST_APPLICANT_UPDATED', 'UpdateApplicantsList')
     self:RegisterEvent('LFG_LIST_APPLICANT_LIST_UPDATED')
     self:RegisterEvent('LFG_LIST_ACTIVE_ENTRY_UPDATE', function()
-        AutoInvite:SetChecked(select(9, C_LFGList.GetActiveEntryInfo()))
+        -- AutoInvite:SetChecked(select(9, C_LFGList.GetActiveEntryInfo()))
         self:UpdateApplicantsList()
     end)
 
-    self:RegisterMessage('MEETINGSTONE_PERMISSION_UPDATE', function(_, canCreate, isManager)
-        self.AutoInvite:SetEnabled(C_LFGList.GetActiveEntryInfo() and canCreate)
-    end)
+    -- self:RegisterMessage('MEETINGSTONE_PERMISSION_UPDATE', function(_, canCreate, isManager)
+    --     self.AutoInvite:SetEnabled(C_LFGList.GetActiveEntryInfo() and canCreate)
+    -- end)
 
     self:SetScript('OnShow', self.ClearNewPending)
 end

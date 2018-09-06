@@ -6,8 +6,8 @@ local INVSLOT_AVALIABLE = 16
 local S_ITEM_LEVEL = ITEM_LEVEL:gsub("%%d", "(%%d+)")
 --local GSS_Mode = 0;	--0=simply, 1=profession
 
-local MAX_LEVEL = 110
-local RATINGS_BONUS = { 400, 375, 475, 400, } --CRIT HASTE VERSATILITY MASTERY
+local MAX_LEVEL = 120
+local RATINGS_BONUS = { 72, 68, 85, 72, } --CRIT HASTE VERSATILITY MASTERY
 
 local tip
 if not tip then

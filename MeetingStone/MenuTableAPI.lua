@@ -133,13 +133,13 @@ local function MakeVersionMenuTable(categoryId, versionId, baseFilter, menuType)
 
     for _, groupId in ipairs(C_LFGList.GetAvailableActivityGroups(categoryId)) do
         -- print(versionId, groupId)
-        if CATEGORY[versionId] and CATEGORY[versionId].groups[groupId] then
+        if CATEGORY[versionId].groups[groupId] then
             tinsert(menuTable, MakeGroupMenuTable(categoryId, groupId, baseFilter, menuType))
         end
     end
 
     for _, activityId in ipairs(C_LFGList.GetAvailableActivities(categoryId)) do
-        if CATEGORY[versionId] and CATEGORY[versionId].activities[activityId] and select(4, C_LFGList.GetActivityInfo(activityId)) == 0 then
+        if CATEGORY[versionId].activities[activityId] and select(4, C_LFGList.GetActivityInfo(activityId)) == 0 then
             tinsert(menuTable, MakeCustomActivityMenuTable(activityId, baseFilter))
         end
     end
@@ -181,15 +181,18 @@ local function MakeCategoryMenuTable(categoryId, baseFilter, menuType)
         return MakeCustomActivityMenuTable(C_LFGList.GetAvailableActivities(categoryId)[1], baseFilter)
     else
         local list = C_LFGList.GetAvailableActivityGroups(categoryId)
-        local s, e, step = 1, #list, 1
-        if categoryId == 1 then
-            s, e, step = e, s, -1
-        end
-        for i = s, e, step do
-            tinsert(menuTable, MakeGroupMenuTable(categoryId, list[i], baseFilter, menuType))
+        local count = #list
+        if count > 1 then
+            local s, e, step = 1, count, 1
+            if categoryId == 1 then
+                s, e, step = e, s, -1
+            end
+            for i = s, e, step do
+                tinsert(menuTable, MakeGroupMenuTable(categoryId, list[i], baseFilter, menuType))
+            end
         end
         for _, activityId in ipairs(C_LFGList.GetAvailableActivities(categoryId)) do
-            if select(4, C_LFGList.GetActivityInfo(activityId)) == 0 then
+            if select(4, C_LFGList.GetActivityInfo(activityId)) == 0 or count == 1 then
                 tinsert(menuTable, MakeCustomActivityMenuTable(activityId, baseFilter))
             end
         end
@@ -243,9 +246,7 @@ local function MakeMenuTable(list, baseFilter, menuType)
     list = list or {}
 
     for _, categoryId in ipairs(C_LFGList.GetAvailableCategories(baseFilter)) do
-        if makedCategorys[categoryId] then
-
-        else
+        if not makedCategorys[categoryId] then
             local packed = FindPacked(categoryId)
             if packed then
                 tinsert(list, MakePackedCategoryMenuTable(packed, baseFilter, menuType))
