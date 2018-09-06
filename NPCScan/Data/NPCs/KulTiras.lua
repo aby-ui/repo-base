@@ -5,6 +5,32 @@ local AddOnFolderName, private = ...
 local NPCs = private.Data.NPCs
 
 -- ----------------------------------------------------------------------------
+-- Boralus
+-- ----------------------------------------------------------------------------
+NPCs[137983] = { -- Rear Admiral Hainsworth
+	factionGroup = "Alliance",
+	questID = 51580,
+}
+
+NPCs[138039] = { -- Dark Ranger Clea
+	factionGroup = "Horde",
+	questID = 51579,
+}
+
+NPCs[139287] = { -- Sawtooth
+	questID = 51877,
+	vignetteID = 2993,-- Sawtooth
+}
+
+NPCs[143559] = { -- Grand Marshal Tremblade
+	factionGroup = "Alliance",
+}
+
+NPCs[143560] = { -- Marshal Gabriel
+	factionGroup = "Alliance",
+}
+
+-- ----------------------------------------------------------------------------
 -- Drustvar
 -- ----------------------------------------------------------------------------
 NPCs[124548] = { -- Betsy
@@ -292,7 +318,7 @@ NPCs[135947] = { -- Strange Mushroom Ring
 }
 
 NPCs[136183] = { -- Crushtacean
-	achievementQuestID = 50731, -- Crushtacean
+	achievementQuestID = 52466, -- Crushtacean
 	isTameable = true,
 	vignetteID = 3010,
 }
@@ -562,6 +588,11 @@ NPCs[132280] = { -- Squacks
 	vignetteID = 2549, -- Squacks
 }
 
+NPCs[133356] = { -- Tempestria
+	questID = 50301,
+	vignetteID = 2591, -- Suspicious Pile of Meat
+}
+
 NPCs[134106] = { -- Lumbergrasp Sentinel
 	questID = 50525,
 	vignetteID = 2653, -- Lumbergrasp Sentinel
@@ -576,16 +607,12 @@ NPCs[137183] = { -- Honey-Coated Slitherer
 	vignetteID = 2942, -- Imperiled Merchants
 }
 
-NPCs[137983] = { -- Rear Admiral Hainsworth
-	factionGroup = "Alliance",
-}
-
-NPCs[138039] = { -- Dark Ranger Clea
-	factionGroup = "Horde",
-}
-
 NPCs[138279] = { -- Adhara White
 	questID = 51610, -- Adhara White
+}
+
+NPCs[138299] = { -- Bloodmaw
+	questID = 51613,
 }
 
 NPCs[139135] = { -- Squirgle of the Depths
@@ -636,11 +663,6 @@ NPCs[139285] = { -- Shiverscale the Toxic
 	isTameable = true,
 	questID = 51876,
 	vignetteID = 2992, -- Shiverscale the Toxic
-}
-
-NPCs[139287] = { -- Sawtooth
-	questID = 51877,
-	vignetteID = 2993,-- Sawtooth
 }
 
 NPCs[139289] = { -- Tentulos the Drifter

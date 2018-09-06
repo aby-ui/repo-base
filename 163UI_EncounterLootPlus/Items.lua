@@ -7,8 +7,9 @@ local ELP_RELIC_SLOT = 30
 local curr_items = {}
 local curr_encts = {}
 local curr_insts = {}
+local curr_links = {}
 local curr_retrieving = {}
-ELP.currs = { curr_items, curr_encts, curr_insts, curr_retrieving }
+ELP.currs = { curr_items, curr_encts, curr_insts, curr_retrieving, curr_links }
 
 function ELP_IsRetrieving()
     return next(curr_retrieving) ~= nil
@@ -70,9 +71,7 @@ function ELP_UpdateItemList()
     local EncounterJournal = EncounterJournal or CreateFrame("Frame")
     EncounterJournal:UnregisterEvent("EJ_LOOT_DATA_RECIEVED")
     EncounterJournal:UnregisterEvent("EJ_DIFFICULTY_UPDATE")
-    wipe(curr_encts)
-    wipe(curr_insts)
-    wipe(curr_items)
+    for _, v in ipairs(ELP.currs) do wipe(v) end
     EJ_SelectTier(ELP_CURRENT_TIER)
     -- force slot filter to avoid too many items listed.
     local forceSlot = db.range > 0 and EJ_GetSlotFilter() == 0
@@ -97,6 +96,7 @@ function ELP_UpdateItemList()
                     if not db.ITEMS[itemID] then curr_retrieving[itemID] = 1 end
                     curr_encts[itemID] = encounterID
                     curr_insts[itemID] = insID
+                    curr_links[itemID] = link
                 end
             end
         end
@@ -128,7 +128,7 @@ function ELP_ScanStats(itemID, itemLink)
     itemID = itemID or GetItemIDFromLink(itemLink)
     local name, link, _, iLevel = GetItemInfo(itemID)
     if not link or not iLevel then return end
-    local fakeLink = format("item:%d::::::::110::::2:%d:3517::", itemID, 1472+(920-iLevel))
+    local fakeLink = format("item:%d::::::::120::::2:%d:3517::", itemID, 1472+(920-iLevel))
     local stats = U1GetItemStats(fakeLink, nil, nil, false, select(3, UnitClass("player")), GetSpecializationInfo(GetSpecialization() or 0))
     if type(stats) == "table" then stats[3],stats[4] = stats[4], stats[3] end
     return stats

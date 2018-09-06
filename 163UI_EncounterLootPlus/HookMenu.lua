@@ -40,6 +40,7 @@ local function EncounterJournal_InitLootFilter_Mine(self, level)
         info.value = "attr2"
         UIDropDownMenu_AddButton(info, level)
 
+        --[[
         info.disabled = db.range == 0
         info.text = "设置物品等级"
         info.func = nil
@@ -47,6 +48,7 @@ local function EncounterJournal_InitLootFilter_Mine(self, level)
         info.hasArrow = not info.disabled
         info.value = "forcelevel"
         UIDropDownMenu_AddButton(info, level)
+        --]]
         info.disabled = nil
     end
 

@@ -16,6 +16,8 @@ PingPing.lua
 ProfessionTabs.lua
 QuestFont.lua
 SlashCommands.lua
+Simc.xml
+Simc.lua
 
 yClassColors\core.lua
 yClassColors\battlefield.lua

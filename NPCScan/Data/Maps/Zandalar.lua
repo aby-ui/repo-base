@@ -10,6 +10,8 @@ local MapID = private.Enum.MapID
 -- ----------------------------------------------------------------------------
 Maps[MapID.Dazaralor].NPCs = {
 	[120899] = true, -- Kul'krazahn
+	[122639] = true, -- Old R'gal
+	[125816] = true, -- Sky Queen
 }
 
 -- ----------------------------------------------------------------------------
@@ -35,7 +37,9 @@ Maps[MapID.Nazmir].NPCs = {
 	[127820] = true, -- Scout Skrasniss
 	[127873] = true, -- Scrounger Patriarch
 	[128426] = true, -- Gutrip
+	[128584] = true, -- Vugthuth
 	[128578] = true, -- Zujothgul
+	[128610] = true, -- Maw of Shul-Nagruth
 	[128930] = true, -- Rohnkor
 	[128935] = true, -- Mala'kili
 	[128965] = true, -- Uroku the Bound
@@ -57,6 +61,7 @@ Maps[MapID.Nazmir].NPCs = {
 	[134298] = true, -- Azerite-Infused Elemental
 	[143311] = true, -- Toadcruel
 	[143316] = true, -- Skullcap
+	[143898] = true, -- Makatau
 }
 
 -- ----------------------------------------------------------------------------
@@ -112,17 +117,18 @@ Maps[MapID.UnchartedIsland].NPCs = {
 -- Zuldazar
 -- ----------------------------------------------------------------------------
 Maps[MapID.Zuldazar].NPCs = {
-	[120899] = true, -- Kul'krazahn
 	[122004] = true, -- Umbra'jin
-	[122639] = true, -- Old R'gal
+	[123502] = true, -- King K'tal
 	[124185] = true, -- Golrakahn
 	[126637] = true, -- Kandak
 	[127939] = true, -- Torraske the Eternal
 	[128699] = true, -- Bloodbulge
+	[129323] = true, -- Sabertusk Empress
 	[129343] = true, -- Avatar of Xolotal
 	[129954] = true, -- Gahz'ralka
 	[129961] = true, -- Atal'zul Gotaka
 	[130643] = true, -- Twisted Child of Rezan
+	[130741] = true, -- Nol'ixwan
 	[131233] = true, -- Lei-zhi
 	[131476] = true, -- Zayoos
 	[131687] = true, -- Tambano
@@ -140,8 +146,12 @@ Maps[MapID.Zuldazar].NPCs = {
 	[134738] = true, -- Hakbi the Risen
 	[134760] = true, -- Darkspeaker Jo'la
 	[134782] = true, -- Murderbeak
+	[135510] = true, -- Azuresail the Ancient
+	[139365] = true, -- Queenfeather
+	[135512] = true, -- Thunderfoot
 	[136413] = true, -- Syrawon the Dominus
 	[136428] = true, -- Dark Chronicler
 	[143314] = true, -- Bane of the Woods
 	[143536] = true, -- High Warlord Volrath
+	[143910] = true, -- Sludgecrusher
 }

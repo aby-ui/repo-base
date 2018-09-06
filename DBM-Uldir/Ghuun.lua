@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2147, "DBM-Uldir", nil, 1031)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17769 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 17772 $"):sub(12, -3))
 mod:SetCreatureID(132998)
 mod:SetEncounterID(2122)
 mod:SetZone()
@@ -73,8 +73,8 @@ local specWarnDecayingEruption			= mod:NewSpecialWarningInterrupt(267462, "HasIn
 local specWarnGrowingCorruption			= mod:NewSpecialWarningCount(270447, nil, DBM_CORE_AUTO_SPEC_WARN_OPTIONS.stack:format(5, 270447), nil, 1, 2)
 local specWarnGrowingCorruptionOther	= mod:NewSpecialWarningTaunt(270447, nil, nil, nil, 1, 2)
 local specWarnBloodFeast				= mod:NewSpecialWarningYou(263235, nil, nil, nil, 1, 2)
-local yellBloodFeast					= mod:NewYell(263235)
-local yellBloodFeastFades				= mod:NewFadesYell(263235)
+local yellBloodFeast					= mod:NewYell(263235, nil, nil, nil, "YELL")
+local yellBloodFeastFades				= mod:NewFadesYell(263235, nil, nil, nil, "YELL")
 local specWarnBloodFeastMoveTo			= mod:NewSpecialWarningMoveTo(263235, nil, nil, nil, 1, 2)
 local specWarnMindNumbingChatter		= mod:NewSpecialWarningCast(263307, "SpellCaster", nil, nil, 1, 2)
 ----Arena Floor P3

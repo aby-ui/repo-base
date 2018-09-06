@@ -26,6 +26,7 @@ local MapID = {
 	BladesEdgeMountains = 105,
 	BlastedLands = 17,
 	BloodmystIsle = 106,
+	Boralus = 1161,
 	BoreanTundra = 114,
 	BrokenIsles = 619,
 	BrokenShore = 646,

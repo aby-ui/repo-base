@@ -41,7 +41,7 @@
 --  Globals/Default Options  --
 -------------------------------
 DBM = {
-	Revision = tonumber(("$Revision: 17771 $"):sub(12, -3)),
+	Revision = tonumber(("$Revision: 17775 $"):sub(12, -3)),
 	DisplayVersion = "8.0.7 alpha", -- the string that is shown as version
 	ReleaseRevision = 17762 -- the revision of the latest stable version that is available
 }
@@ -9003,8 +9003,8 @@ do
 		return newAnnounce(self, "you", spellId, color or 1, ...)
 	end
 
-	function bossModPrototype:NewTargetNoFilterAnnounce(spellId, color, icon, optionDefault, optionName, castTime, preWarnTime, noSound, noFilter)
-		return newAnnounce(self, "target", spellId, color or 3, icon, optionDefault, optionName, castTime, preWarnTime, noSound, true)
+	function bossModPrototype:NewTargetNoFilterAnnounce(spellId, color, icon, optionDefault, optionName, castTime, preWarnTime, soundOption, noFilter)
+		return newAnnounce(self, "target", spellId, color or 3, icon, optionDefault, optionName, castTime, preWarnTime, soundOption, true)
 	end
 	
 	function bossModPrototype:NewTargetAnnounce(spellId, color, ...)
@@ -9043,46 +9043,42 @@ do
 		return newAnnounce(self, "stack", spellId, color or 2, ...)
 	end
 
-	function bossModPrototype:NewCastAnnounce(spellId, color, castTime, icon, optionDefault, optionName, noArg, noSound)
+	function bossModPrototype:NewCastAnnounce(spellId, color, castTime, icon, optionDefault, optionName, noArg, soundOption)
 		local optionVersion
 		if type(optionName) == "number" then
 			optionVersion = optionName
 			optionName = nil
 		end
-		if type(spellId) == "string" and spellId:match("OptionVersion") then--LEGACY hack, remove when new DBM core and other mods released
-			print("NewCastAnnounce is using OptionVersion and this is depricated for "..color)
-			return
-		end
-		return newAnnounce(self, "cast", spellId, color or 3, icon, optionDefault, optionName, castTime, nil, noSound)
+		return newAnnounce(self, "cast", spellId, color or 3, icon, optionDefault, optionName, castTime, nil, soundOption)
 	end
 
 	function bossModPrototype:NewSoonAnnounce(spellId, color, ...)
-		return newAnnounce(self, "soon", spellId, color or 1, ...)
+		return newAnnounce(self, "soon", spellId, color or 2, ...)
+	end
+	
+	function bossModPrototype:NewSoonCountAnnounce(spellId, color, ...)
+		return newAnnounce(self, "sooncount", spellId, color or 2, ...)
 	end
 
-	function bossModPrototype:NewPreWarnAnnounce(spellId, time, color, icon, optionDefault, optionName, noArg, noSound)
+	function bossModPrototype:NewPreWarnAnnounce(spellId, time, color, icon, optionDefault, optionName, noArg, soundOption)
 		local optionVersion
 		if type(optionName) == "number" then
 			optionVersion = optionName
 			optionName = nil
 		end
-		if type(spellId) == "string" and spellId:match("OptionVersion") then--LEGACY hack, remove when new DBM core and other mods released
-			print("NewCastAnnounce is using OptionVersion and this is depricated for "..color)
-			return
-		end
-		return newAnnounce(self, "prewarn", spellId, color or 1, icon, optionDefault, optionName, nil, time, noSound)
+		return newAnnounce(self, "prewarn", spellId, color or 2, icon, optionDefault, optionName, nil, time, soundOption)
 	end
 
 	function bossModPrototype:NewPhaseAnnounce(stage, color, icon, ...)
-		return newAnnounce(self, "stage", stage, color or 1, icon or "Interface\\Icons\\Spell_Nature_WispSplode", ...)
+		return newAnnounce(self, "stage", stage, color or 2, icon or "Interface\\Icons\\Spell_Nature_WispSplode", ...)
 	end
 
 	function bossModPrototype:NewPhaseChangeAnnounce(color, icon, ...)
-		return newAnnounce(self, "stagechange", 0, color or 1, icon or "Interface\\Icons\\Spell_Nature_WispSplode", ...)
+		return newAnnounce(self, "stagechange", 0, color or 2, icon or "Interface\\Icons\\Spell_Nature_WispSplode", ...)
 	end
 
 	function bossModPrototype:NewPrePhaseAnnounce(stage, color, icon, ...)
-		return newAnnounce(self, "prestage", stage, color or 1, icon or "Interface\\Icons\\Spell_Nature_WispSplode", ...)
+		return newAnnounce(self, "prestage", stage, color or 2, icon or "Interface\\Icons\\Spell_Nature_WispSplode", ...)
 	end
 end
 
@@ -10050,11 +10046,12 @@ do
 	function bossModPrototype:NewSpecialWarningCount(text, optionDefault, ...)
 		return newSpecialWarning(self, "count", text, nil, optionDefault, ...)
 	end
+	
+	function bossModPrototype:NewSpecialWarningSoonCount(text, optionDefault, ...)
+		return newSpecialWarning(self, "sooncount", text, nil, optionDefault, ...)
+	end
 
 	function bossModPrototype:NewSpecialWarningStack(text, optionDefault, stacks, ...)
-		if type(text) == "string" and text:match("OptionVersion") then
-			print("NewSpecialWarning: you must provide remove optionversion hack for "..optionDefault)
-		end
 		return newSpecialWarning(self, "stack", text, stacks, optionDefault, ...)
 	end
 
@@ -10075,9 +10072,6 @@ do
 	end
 
 	function bossModPrototype:NewSpecialWarningPreWarn(text, optionDefault, time, ...)
-		if type(text) == "string" and text:match("OptionVersion") then
-			print("NewSpecialWarning: you must provide remove optionversion hack for "..optionDefault)
-		end
 		return newSpecialWarning(self, "prewarn", text, time, optionDefault, ...)
 	end
 

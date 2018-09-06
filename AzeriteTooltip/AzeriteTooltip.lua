@@ -1,6 +1,30 @@
 local addon, AzeriteTooltip = ...
 local L = AzeriteTooltip.L
 
+local function GetHiddenTooltip()
+    if not HiddenTooltipAzeriteTooltip then
+        local tooltip = CreateFrame( "GameTooltip", "HiddenTooltipAzeriteTooltip")
+        tooltip:AddFontStrings(
+            tooltip:CreateFontString( "$parentTextLeft1", nil, "GameTooltipText" ),
+            tooltip:CreateFontString( "$parentTextRight1", nil, "GameTooltipText" )
+        )
+        tooltip:SetOwner(WorldFrame, "ANCHOR_NONE");
+    end
+    return HiddenTooltipAzeriteTooltip
+end
+
+local GetAzeritePowerDescriptionCache = {}
+local function GetAzeritePowerDescription(itemLink, azeritePowerID)
+    local cached = GetAzeritePowerDescriptionCache[itemLink .. azeritePowerID]
+    if cached then return cached end
+    local _, _, _, iLevel = GetItemInfo(itemLink)
+    local _, _, itemID = itemLink:find("\124Hitem:(%d+)")
+    GetHiddenTooltip():SetAzeritePower(tonumber(itemID), iLevel, azeritePowerID, itemLink);
+    local desc = HiddenTooltipAzeriteTooltipTextLeft3:GetText()
+    GetAzeritePowerDescriptionCache[itemLink .. azeritePowerID] = desc
+    return desc
+end
+
 -------------
 -- OPTIONS --
 -------------
@@ -184,7 +208,7 @@ function AzeriteTooltip_BuildTooltip(itemLink, tooltip, name)
 				local azeriteTooltipText = "  "..azeriteIcon
                 if IsControlKeyDown() or IsShiftKeyDown() then
                     if C_Spell.IsSpellDataCached(azeriteSpellID) then
-                        azeriteTooltipText = azeriteTooltipText .. " " .. GetSpellDescription(azeriteSpellID)
+                        azeriteTooltipText = azeriteTooltipText .. " " .. GetAzeritePowerDescription(itemLink, azeritePowerID) --GetSpellDescription(azeriteSpellID)
                     else
                         azeriteTooltipText = azeriteTooltipText .. " " .. L"Requesting description ..."
                         if not spellRequested[azeriteSpellID] then

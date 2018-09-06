@@ -321,14 +321,18 @@ do
 		local vignetteName = vignetteInfo.name
 		local vignetteNPCs = private.VignetteIDToNPCMapping[vignetteInfo.vignetteID]
 
+		local npcID = private.GUIDToCreatureID(vignetteInfo.objectGUID)
+
 		if vignetteNPCs then
 			for index = 1, #vignetteNPCs do
 				local vignetteNPC = vignetteNPCs[index]
+				local npc = Data.Scanner.NPCs[vignetteNPC.npcID]
 
-				if Data.Scanner.NPCs[vignetteNPC.npcID] then
+				if npc then
 					ProcessDetection({
 						npcID = vignetteNPC.npcID,
 						sourceText = sourceText,
+						unitClassification = npc.classification,
 						vignetteName = vignetteName,
 					})
 				end
@@ -339,13 +343,14 @@ do
 			private.Debug("Unknown vignette: %s - vignetteID %d (NPC ID %d) in mapID %d", vignetteInfo.name, vignetteInfo.vignetteID, npcID or -1, _G.C_Map.GetBestMapForUnit("player"))
 		end
 
-		local npcID = private.GUIDToCreatureID(vignetteInfo.objectGUID)
+		local npc = npcID and Data.Scanner.NPCs[npcID] or nil
 
 		-- The objectGUID can be but isn't always an NPC ID, since some NPCs must be summoned from the vignette object.
-		if npcID and Data.Scanner.NPCs[npcID] then
+		if npc then
 			ProcessDetection({
 				npcID = npcID,
 				sourceText = sourceText,
+				unitClassification = npc.classification,
 				vignetteName = vignetteName,
 			})
 
@@ -355,10 +360,11 @@ do
 		local questID = private.QuestIDFromName[vignetteName]
 
 		if questID then
-			for questNPCID in pairs(private.QuestNPCs[questID]) do
+			for questNPCID, questNPC in pairs(private.QuestNPCs[questID]) do
 				ProcessDetection({
 					npcID = questNPCID,
 					sourceText = sourceText,
+					unitClassification = questNPC.classification,
 					vignetteName = vignetteName,
 				})
 			end
@@ -369,11 +375,13 @@ do
 		end
 
 		npcID = private.NPCIDFromName[vignetteName]
+		npc = npcID and Data.Scanner.NPCs[npcID] or nil
 
-		if npcID then
+		if npc then
 			ProcessDetection({
 				npcID = npcID,
 				sourceText = sourceText,
+				unitClassification = npc.classification,
 				vignetteName = vignetteName,
 			})
 

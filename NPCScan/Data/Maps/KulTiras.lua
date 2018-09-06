@@ -6,6 +6,17 @@ local Maps = private.Data.Maps
 local MapID = private.Enum.MapID
 
 -- ----------------------------------------------------------------------------
+-- Boralus
+-- ----------------------------------------------------------------------------
+Maps[MapID.Boralus].NPCs = {
+	[137983] = true, -- Rear Admiral Hainsworth
+	[138039] = true, -- Dark Ranger Clea
+	[139287] = true, -- Sawtooth
+	[143559] = true, -- Grand Marshal Tremblade
+    [143560] = true, -- Marshal Gabriel
+}
+
+-- ----------------------------------------------------------------------------
 -- Drustvar
 -- ----------------------------------------------------------------------------
 Maps[MapID.Drustvar].NPCs = {
@@ -132,8 +143,6 @@ Maps[MapID.TiragardeSound].NPCs = {
 	[134106] = true, -- Lumbergrasp Sentinel
 	[136385] = true, -- Azurethos
 	[137183] = true, -- Honey-Coated Slitherer
-	[137983] = true, -- Rear Admiral Hainsworth
-	[138039] = true, -- Dark Ranger Clea
 	[138279] = true, -- Adhara White
 	[138288] = true, -- Ghost of the Deep
 	[138299] = true, -- Bloodmaw
@@ -146,7 +155,6 @@ Maps[MapID.TiragardeSound].NPCs = {
 	[139278] = true, -- Ranja
 	[139280] = true, -- Sythian the Swift
 	[139285] = true, -- Shiverscale the Toxic
-	[139287] = true, -- Sawtooth
 	[139289] = true, -- Tentulos the Drifter
 	[139290] = true, -- Maison the Portable
 }

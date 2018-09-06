@@ -50,17 +50,21 @@ L= DBM:GetModLocalization(2194)
 L= DBM:GetModLocalization(2195)
 
 L:SetTimerLocalization({
-	timerCallofCrawgCD		= "Next Crawg (%s)",
-	timerCallofHexerCD 		= "Next Hexer (%s)",
-	timerCallofCrusherCD	= "Next Crusher (%s)",
+	timerCallofCrawgCD		= "Next Crawg Pool (%s)",
+	timerCallofHexerCD 		= "Next Hexer Pool (%s)",
+	timerCallofCrusherCD	= "Next Crusher Pool (%s)",
 	timerAddIncoming		= DBM_INCOMING
 })
 
 L:SetOptionLocalization({
-	timerCallofCrawgCD		= DBM_CORE_AUTO_TIMER_OPTIONS["cdcount"]:format("ej18541"),
-	timerCallofHexerCD 		= DBM_CORE_AUTO_TIMER_OPTIONS["cdcount"]:format("ej18540"),
-	timerCallofCrusherCD	= DBM_CORE_AUTO_TIMER_OPTIONS["cdcount"]:format("ej18539"),
-	timerAddIncoming		= "Show timer for when incoming add is attackable"
+	timerCallofCrawgCD		= "Show timer for when Crawg pools begin to form",
+	timerCallofHexerCD 		= "Show timer for when Hexer pools begin to form",
+	timerCallofCrusherCD	= "Show timer for when Crusher pools begin to form",
+	timerAddIncoming		= "Show timer for when incoming add is attackable",
+	TauntBehavior			= "Set taunt behavior for tank swaps",
+	TwoHardThreeEasy		= "Swap at 2 stacks on heroic/mythic, 3 stacks on other difficulties",--Default
+	TwoAlways				= "Always swap at 2 stacks regardless of difficulty",
+	ThreeAlways				= "Always swap at 3 stacks regardless of difficulty"
 })
 
 L:SetMiscLocalization({

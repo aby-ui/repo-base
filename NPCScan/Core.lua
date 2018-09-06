@@ -163,13 +163,13 @@ function NPCScan:OnEnable()
 			table.sort(npc.mapIDs, private.SortByMapNameThenByID)
 
 			if npc.questID then
-				local npcIDs = QuestNPCs[npc.questID]
-				if not npcIDs then
-					npcIDs = {}
-					QuestNPCs[npc.questID] = npcIDs
+				local npcs = QuestNPCs[npc.questID]
+				if not npcs then
+					npcs = {}
+					QuestNPCs[npc.questID] = npcs
 				end
 
-				npcIDs[npcID] = true
+				npcs[npcID] = npc
 
 				local questName = NPCScan:GetQuestNameFromID(npc.questID)
 				if questName and questName ~= _G.UNKNOWN then
