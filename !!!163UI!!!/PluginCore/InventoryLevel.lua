@@ -145,7 +145,7 @@ function U1GetInventoryLevelColor(avgLevel, quality)
     elseif avgLevel <= STEP4 then
         --return (avgLevel-STEP3)/(STEP4-STEP3), 0.5, 1
         --return 1, 0.5-(avgLevel-STEP3)/(STEP4-STEP3)/2, 1 --(avgLevel-STEP3)/(STEP4-STEP3)/2 --1,0.5,1 -> 1,0,0.5 粉紫到紫红（最后用紫）
-        return (avgLevel-STEP3)/(STEP4-STEP3), 0, 1  --蓝到紫
+        return (avgLevel-STEP3)/(STEP4-STEP3), 0.5, 1  --蓝到紫
     elseif avgLevel < STEP5 or (quality and quality ~= 5) then
         --return 1, 0.5, 1-(avgLevel-STEP4)/(STEP5-STEP4) --紫到紫红, 神器
         return 1, 0, 1-(avgLevel-STEP4)/(STEP5-STEP4) --紫到红
