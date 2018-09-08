@@ -1,7 +1,7 @@
 ## Interface: 80000
 ## Title: Pa'ku Totems
 ## Author: jaxdahl
-## Version: 1.40
+## Version: 1.60
 ## Notes: Show Pa'ku totem positions on the map and destinations in the tooltip on mouseover.
 ## OptionalDeps: Ace3
 
@@ -10,6 +10,7 @@
 
 Locales\enUS.lua
 Locales\zhCN.lua
+Locales\zhTW.lua
 
 Paku_Totems.lua
 

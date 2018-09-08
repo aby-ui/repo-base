@@ -26,15 +26,15 @@ local auraGroups = _G["LibBuffGroups-1.0"]
 
 local function FindAura(unit, aura, selfcast, lacks, similar)
 	local filter = selfcast and "PLAYER" or ""
-	local name, _, icon, count, dispelType, duration, expires, caster, harmful
+	local name, icon, count, dispelType, duration, expires, caster, harmful
 
 	if similar then
 		name, icon, count, dispelType, duration, expires, caster, harmful = auraGroups:UnitAura(unit, aura)
 	else
-		name, icon, count, _, duration, expires = UnitBuff(unit, aura, nil, filter)
+		name, icon, count, dispelType, duration, expires = UnitBuff(unit, aura, filter)
 		if not name then
 			harmful = 1
-			name, icon, count, _, duration, expires = UnitDebuff(unit, aura, nil, filter)
+			name, icon, count, dispelType, duration, expires = UnitDebuff(unit, aura, filter)
 		end
 	end
 

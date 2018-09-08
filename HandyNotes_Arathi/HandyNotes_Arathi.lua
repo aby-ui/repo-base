@@ -126,42 +126,47 @@ local nodeRef = {
 -- { itemId = 163689, itemType = itemTypePet, speciesId = 2437 }
 
 nodes["Arathi"] = {
-	{ coord = 37093921, npcId = 138122, questId = 53002, icon = "skull_grey", group = "rare_arathi", label = _L["Doom's Howl"], loot = { { itemId = 163828, itemType = itemTypeToy } }, note = _L["Alliance only"] },
-	{ coord = 21752217, npcId = 142508, questId = 53013, icon = "skull_grey", group = "rare_arathi", label = _L["Branchlord Aldrus"], loot = { { itemId = 163650, itemType = itemTypePet, speciesId = 2433 } }, note = nil },
-	{ coord = 32923847, npcId = 142423, questId = 53014, icon = "skull_grey", group = "rare_arathi", label = _L["Overseer Krix"], loot = { { itemId = 163646, itemType = itemTypeMount, mountId = 1182 } }, note = nil },
-	{ coord = 13273534, npcId = 142440, questId = 53015, icon = "skull_grey", group = "rare_arathi", label = _L["Yogursa"], loot = { { itemId = 163684, itemType = itemTypePet, speciesId = 2436 } }, note = nil },
-	{ coord = 18412794, npcId = 142436, questId = 53016, icon = "skull_grey", group = "rare_arathi", label = _L["Ragebeak"], loot = { { itemId = 163689, itemType = itemTypePet, speciesId = 2437 } }, note = nil },
-	{ coord = 11905220, npcId = 142436, questId = 53016, icon = "skull_grey", group = "rare_arathi", label = _L["Ragebeak"], loot = { { itemId = 163689, itemType = itemTypePet, speciesId = 2437 } }, note = nil },
-	{ coord = 30604475, npcId = 141615, questId = 53017, icon = "skull_grey", group = "rare_arathi", label = _L["Burning Goliath"], loot = { { itemId = 163691, itemType = itemTypeMisc } }, note = nil },
-	{ coord = 62513084, npcId = 141618, questId = 53018, icon = "skull_grey", group = "rare_arathi", label = _L["Cresting Goliath"], loot = { { itemId = 163700, itemType = itemTypeMisc } }, note = nil },
-	{ coord = 51045319, npcId = 142433, questId = 53019, icon = "skull_grey", group = "rare_arathi", label = _L["Fozruk"], loot = { { itemId = 163711, itemType = itemTypePet, speciesId = 2440 } }, note = nil },
-	{ coord = 35606435, npcId = 142435, questId = 53020, icon = "skull_grey", group = "rare_arathi", label = _L["Plaguefeather"], loot = { { itemId = 163690, itemType = itemTypePet, speciesId = 2438 } }, note = nil },
-	{ coord = 29405834, npcId = 141615, questId = 53021, icon = "skull_grey", group = "rare_arathi", label = _L["Rumbling Goliath"], loot = { { itemId = 163701, itemType = itemTypeMisc } }, note = nil },
-	{ coord = 57154575, npcId = 142437, questId = 53022, icon = "skull_grey", group = "rare_arathi", label = _L["Skullripper"], loot = { { itemId = 163645, itemType = itemTypeMount, mountId = 1183 } }, note = nil },
-	{ coord = 46245222, npcId = 141616, questId = 53023, icon = "skull_grey", group = "rare_arathi", label = _L["Thundering Goliath"], loot = {  }, note = nil },
-	{ coord = 56945330, npcId = 142438, questId = 53024, icon = "skull_grey", group = "rare_arathi", label = _L["Venomarus"], loot = { { itemId = 163648, itemType = itemTypePet, speciesId = 2432 } }, note = nil },
-	{ coord = 46897872, npcId = 141942, questId = 53057, icon = "skull_grey", group = "rare_arathi", label = _L["Molok the Crusher"], loot = { { itemId = 163775, itemType = itemTypeToy } }, note = nil },
-	{ coord = 49318426, npcId = 142112, questId = 53058, icon = "skull_grey", group = "rare_arathi", label = _L["Kor'gresh Coldrage"], loot = { { itemId = 163744, itemType = itemTypeToy } }, note = nil },
-	{ coord = 57073506, npcId = 141668, questId = 53059, icon = "skull_grey", group = "rare_arathi", label = _L["Echo of Myzrael"], loot = { { itemId = 163677, itemType = itemTypePet, speciesId = 2435 } }, note = nil },
-	{ coord = 79532945, npcId = 142662, questId = 53060, icon = "skull_grey", group = "rare_arathi", label = _L["Geomancer Flintdagger"], loot = { { itemId = 163713, itemType = itemTypeToy } }, note = nil },
-	{ coord = 65347116, npcId = 142709, questId = 53083, icon = "skull_grey", group = "rare_arathi", label = _L["Beastrider Kama"], loot = { { itemId = 163644, itemType = itemTypeMount, mountId = 1180 } }, note = nil },
-	{ coord = 50673675, npcId = 142688, questId = 53084, icon = "skull_grey", group = "rare_arathi", label = _L["Darbel Montrose"], loot = { { itemId = 163652, itemType = itemTypePet, speciesId = 2434 } }, note = nil },
-	{ coord = 50756121, npcId = 142688, questId = 53084, icon = "skull_grey", group = "rare_arathi", label = _L["Darbel Montrose"], loot = { { itemId = 163652, itemType = itemTypePet, speciesId = 2434 } }, note = nil },
-	{ coord = 53565764, npcId = 142741, questId = 53085, icon = "skull_grey", group = "rare_arathi", label = _L["Doomrider Helgrim"], loot = { { itemId = 163579, itemType = itemTypeMount, mountId = 1174 } }, note = _L["Alliance only"] },
-	{ coord = 28834547, npcId = nil, questId = 53086, icon = "cave", group = "cave_arathi", label = _L["Foulbelly_cave"], loot = {}, note = nil },
-	{ coord = 22305106, npcId = 142686, questId = 53086, icon = "skull_grey", group = "rare_arathi", label = _L["Foulbelly"], loot = { { itemId = 163735, itemType = itemTypeToy } }, note = _L["In cave"] },
-	{ coord = 26723278, npcId = 142725, questId = 53087, icon = "skull_grey", group = "rare_arathi", label = _L["Horrific Apparition"], loot = { { itemId = 163736, itemType = itemTypeToy } }, note = nil },
-	{ coord = 19406120, npcId = 142725, questId = 53087, icon = "skull_grey", group = "rare_arathi", label = _L["Horrific Apparition"], loot = { { itemId = 163736, itemType = itemTypeToy } }, note = nil },
-	{ coord = 28834548, npcId = nil, questId = 53089, icon = "cave", group = "cave_arathi", label = _L["Kovork_cave"], loot = {}, note = nil },
-	{ coord = 25294856, npcId = 142684, questId = 53089, icon = "skull_grey", group = "rare_arathi", label = _L["Kovork"], loot = { { itemId = 163750, itemType = itemTypeToy } }, note = _L["In cave"] },
-	{ coord = 51827562, npcId = 142716, questId = 53090, icon = "skull_grey", group = "rare_arathi", label = _L["Man-Hunter Rog"], loot = { { itemId = 163689, itemType = itemTypePet, speciesId = 2441 } }, note = nil },
-	{ coord = 67486058, npcId = 142692, questId = 53091, icon = "skull_grey", group = "rare_arathi", label = _L["Nimar the Slayer"], loot = { { itemId = 163706, itemType = itemTypeMount, mountId = 1185 } }, note = nil },
-	{ coord = 51213999, npcId = 142690, questId = 53093, icon = "skull_grey", group = "rare_arathi", label = _L["Singer"], loot = { { itemId = 163738, itemType = itemTypeToy } }, note = nil },
-	{ coord = 50705748, npcId = 142690, questId = 53093, icon = "skull_grey", group = "rare_arathi", label = _L["Singer"], loot = { { itemId = 163738, itemType = itemTypeToy } }, note = nil },
-	{ coord = 62858120, npcId = 142682, questId = 53094, icon = "skull_grey", group = "rare_arathi", label = _L["Zalas Witherbark"], loot = { { itemId = 163745, itemType = itemTypeToy } }, note = nil },
-	{ coord = 42905660, npcId = 142683, questId = 53092, icon = "skull_grey", group = "rare_arathi", label = _L["Ruul Onestone"], loot = { { itemId = 163741, itemType = itemTypeToy } }, note = nil },
-	{ coord = 49274005, npcId = 142739, questId = 0, icon = "skull_grey", group = "rare_arathi", label = _L["Knight-Captain Aldrin"], loot = { { itemId = 163578, itemType = itemTypeMount, mountId = 1173 } }, note = _L["Horde only"] },
-	{ coord = 30155960, npcId = 137374, questId = 0, icon = "skull_grey", group = "rare_arathi", label = _L["The Lion's Roar"], loot = { { itemId = 163829, itemType = itemTypeToy } }, note = _L["Horde only"] },
+	{ coord = 37093921, npcId = 138122, questId = { 53002 }, icon = "skull_grey", group = "rare_arathi", label = _L["Doom's Howl"], loot = { { itemId = 163828, itemType = itemTypeToy } }, note = _L["Alliance only"], faction = "Alliance", controllingFaction = "Alliance" },
+	{ coord = 21752217, npcId = 142508, questId = { 53013, 53505 }, icon = "skull_grey", group = "rare_arathi", label = _L["Branchlord Aldrus"], loot = { { itemId = 163650, itemType = itemTypePet, speciesId = 2433 } }, note = nil },
+	{ coord = 33693676, npcId = nil,	questId = { 53014, 53518 }, icon = "cave", group = "cave_arathi", label = _L["Overseer Krix_cave"], loot = {}, note = nil },
+	{ coord = 32923847, npcId = 142423, questId = { 53014, 53518 }, icon = "skull_grey", group = "rare_arathi", label = _L["Overseer Krix"], loot = { { itemId = 163646, itemType = itemTypeMount, mountId = 1182 } }, note = nil },
+	{ coord = 13273534, npcId = 142440, questId = { 53015, 53529 }, icon = "skull_grey", group = "rare_arathi", label = _L["Yogursa"], loot = { { itemId = 163684, itemType = itemTypePet, speciesId = 2436 } }, note = nil },
+	{ coord = 18412794, npcId = 142436, questId = { 53016, 53522 }, icon = "skull_grey", group = "rare_arathi", label = _L["Ragebeak"], loot = { { itemId = 163689, itemType = itemTypePet, speciesId = 2437 } }, note = nil, controllingFaction = "Alliance" },
+	{ coord = 11905220, npcId = 142436, questId = { 53016, 53522 }, icon = "skull_grey", group = "rare_arathi", label = _L["Ragebeak"], loot = { { itemId = 163689, itemType = itemTypePet, speciesId = 2437 } }, note = nil, controllingFaction = "Horde" },
+	{ coord = 30604475, npcId = 141615, questId = { 53017, 53506 }, icon = "skull_grey", group = "rare_arathi", label = _L["Burning Goliath"], loot = { { itemId = 163691, itemType = itemTypeMisc } }, note = nil },
+	{ coord = 62513084, npcId = 141618, questId = { 53018, 53531 }, icon = "skull_grey", group = "rare_arathi", label = _L["Cresting Goliath"], loot = { { itemId = 163700, itemType = itemTypeMisc } }, note = nil },
+	--{ coord = 51045319, npcId = 142433, questId = { 53019 }, icon = "skull_grey", group = "rare_arathi", label = _L["Fozruk"], loot = { { itemId = 163711, itemType = itemTypePet, speciesId = 2440 } }, note = nil },
+	{ coord = 59422773, npcId = 142433, questId = { 53019, 53510 }, icon = "skull_grey", group = "rare_arathi", label = _L["Fozruk"], loot = { { itemId = 163711, itemType = itemTypePet, speciesId = 2440 } }, note = nil },
+	{ coord = 35606435, npcId = 142435, questId = { 53020, 53519 }, icon = "skull_grey", group = "rare_arathi", label = _L["Plaguefeather"], loot = { { itemId = 163690, itemType = itemTypePet, speciesId = 2438 } }, note = nil },
+	{ coord = 29405834, npcId = 141620, questId = { 53021, 53523 }, icon = "skull_grey", group = "rare_arathi", label = _L["Rumbling Goliath"], loot = { { itemId = 163701, itemType = itemTypeMisc } }, note = nil },
+	{ coord = 57154575, npcId = 142437, questId = { 53022, 53526 }, icon = "skull_grey", group = "rare_arathi", label = _L["Skullripper"], loot = { { itemId = 163645, itemType = itemTypeMount, mountId = 1183 } }, note = nil },
+	{ coord = 46245222, npcId = 141616, questId = { 53023, 53527 }, icon = "skull_grey", group = "rare_arathi", label = _L["Thundering Goliath"], loot = { { itemId = 163698, itemType = itemTypeMisc } }, note = nil },
+	{ coord = 56945330, npcId = 142438, questId = { 53024, 53528 }, icon = "skull_grey", group = "rare_arathi", label = _L["Venomarus"], loot = { { itemId = 163648, itemType = itemTypePet, speciesId = 2432 } }, note = nil },
+	{ coord = 47657800, npcId = 141942, questId = { 53057, 53516 }, icon = "skull_grey", group = "rare_arathi", label = _L["Molok the Crusher"], loot = { { itemId = 163775, itemType = itemTypeToy } }, note = nil },
+	{ coord = 48117953, npcId = nil,	questId = { 53058 }, icon = "cave", group = "cave_arathi", label = _L["Kor'gresh Coldrage_cave"], loot = {}, note = nil },
+	{ coord = 49318426, npcId = 142112, questId = { 53058, 53513 }, icon = "skull_grey", group = "rare_arathi", label = _L["Kor'gresh Coldrage"], loot = { { itemId = 163744, itemType = itemTypeToy } }, note = nil },
+	{ coord = 57073506, npcId = 141668, questId = { 53059, 53508 }, icon = "skull_grey", group = "rare_arathi", label = _L["Echo of Myzrael"], loot = { { itemId = 163677, itemType = itemTypePet, speciesId = 2435 } }, note = nil },
+	{ coord = 78153687, npcId = nil,	questId = { 53060, 53511 }, icon = "cave", group = "cave_arathi", label = _L["Geomancer Flintdagger_cave"], loot = {}, note = nil },
+	{ coord = 79532945, npcId = 142662, questId = { 53060, 53511 }, icon = "skull_grey", group = "rare_arathi", label = _L["Geomancer Flintdagger"], loot = { { itemId = 163713, itemType = itemTypeToy } }, note = nil },
+	{ coord = 65347116, npcId = 142709, questId = { 53083, 53504 }, icon = "skull_grey", group = "rare_arathi", label = _L["Beastrider Kama"], loot = { { itemId = 163644, itemType = itemTypeMount, mountId = 1180 } }, note = nil },
+	{ coord = 50673675, npcId = 142688, questId = { 53084, 53507 }, icon = "skull_grey", group = "rare_arathi", label = _L["Darbel Montrose"], loot = { { itemId = 163652, itemType = itemTypePet, speciesId = 2434 } }, note = nil, controllingFaction = "Alliance" },
+	{ coord = 50756121, npcId = 142688, questId = { 53084, 53507 }, icon = "skull_grey", group = "rare_arathi", label = _L["Darbel Montrose"], loot = { { itemId = 163652, itemType = itemTypePet, speciesId = 2434 } }, note = nil, controllingFaction = "Horde" },
+	{ coord = 53565764, npcId = 142741, questId = { 53085 }, icon = "skull_grey", group = "rare_arathi", label = _L["Doomrider Helgrim"], loot = { { itemId = 163579, itemType = itemTypeMount, mountId = 1174 } }, note = _L["Alliance only"], faction = "Alliance", controllingFaction = "Alliance" },
+	{ coord = 28594559, npcId = nil,	questId = { 53086, 53509 }, icon = "cave", group = "cave_arathi", label = _L["Foulbelly_cave"], loot = {}, note = nil },
+	{ coord = 22305106, npcId = 142686, questId = { 53086, 53509 }, icon = "skull_grey", group = "rare_arathi", label = _L["Foulbelly"], loot = { { itemId = 163735, itemType = itemTypeToy } }, note = _L["In cave"] },
+	{ coord = 26723278, npcId = 142725, questId = { 53087, 53512 }, icon = "skull_grey", group = "rare_arathi", label = _L["Horrific Apparition"], loot = { { itemId = 163736, itemType = itemTypeToy } }, note = nil, controllingFaction = "Alliance" },
+	{ coord = 19406120, npcId = 142725, questId = { 53087, 53512 }, icon = "skull_grey", group = "rare_arathi", label = _L["Horrific Apparition"], loot = { { itemId = 163736, itemType = itemTypeToy } }, note = nil, controllingFaction = "Horde" },
+	{ coord = 28594560, npcId = nil,	questId = { 53089, 53514 }, icon = "cave", group = "cave_arathi", label = _L["Kovork_cave"], loot = {}, note = nil },
+	{ coord = 25294856, npcId = 142684, questId = { 53089, 53514 }, icon = "skull_grey", group = "rare_arathi", label = _L["Kovork"], loot = { { itemId = 163750, itemType = itemTypeToy } }, note = _L["In cave"] },
+	{ coord = 51827562, npcId = 142716, questId = { 53090, 53515 }, icon = "skull_grey", group = "rare_arathi", label = _L["Man-Hunter Rog"], loot = { { itemId = 163689, itemType = itemTypePet, speciesId = 2441 } }, note = nil },
+	{ coord = 67486058, npcId = 142692, questId = { 53091, 53517 }, icon = "skull_grey", group = "rare_arathi", label = _L["Nimar the Slayer"], loot = { { itemId = 163706, itemType = itemTypeMount, mountId = 1185 } }, note = nil },
+	{ coord = 51213999, npcId = 142690, questId = { 53093, 53525 }, icon = "skull_grey", group = "rare_arathi", label = _L["Singer"], loot = { { itemId = 163738, itemType = itemTypeToy } }, note = nil, controllingFaction = "Alliance" },
+	{ coord = 50705748, npcId = 142690, questId = { 53093, 53525 }, icon = "skull_grey", group = "rare_arathi", label = _L["Singer"], loot = { { itemId = 163738, itemType = itemTypeToy } }, note = nil, controllingFaction = "Horde" },
+	{ coord = 63257752, npcId = nil,	questId = { 53089, 53530 }, icon = "cave", group = "cave_arathi", label = _L["Zalas Witherbark_cave"], loot = {}, note = nil },
+	{ coord = 62858120, npcId = 142682, questId = { 53094, 53530 }, icon = "skull_grey", group = "rare_arathi", label = _L["Zalas Witherbark"], loot = { { itemId = 163745, itemType = itemTypeToy } }, note = nil },
+	{ coord = 42905660, npcId = 142683, questId = { 53092, 53524 }, icon = "skull_grey", group = "rare_arathi", label = _L["Ruul Onestone"], loot = { { itemId = 163741, itemType = itemTypeToy } }, note = nil },
+	{ coord = 49274005, npcId = 142739, questId = { 0 }, icon = "skull_grey", group = "rare_arathi", label = _L["Knight-Captain Aldrin"], loot = { { itemId = 163578, itemType = itemTypeMount, mountId = 1173 } }, note = _L["Horde only"], faction = "Horde", controllingFaction = "Horde" },
+	{ coord = 30155960, npcId = 137374, questId = { 0 }, icon = "skull_grey", group = "rare_arathi", label = _L["The Lion's Roar"], loot = { { itemId = 163829, itemType = itemTypeToy } }, note = _L["Horde only"], faction = "Horde", controllingFaction = "Horde" },
 }
 
 --
@@ -180,14 +185,8 @@ local LFG_CAT_CUSTOM = 6;
 local LFG_CAT_QUESTS = 1;
 local lastRareResetSlot = -1;
 local MYSELF = nil;
-local ADDON_MSG_PREFIX = "HNA";
-local ADDON_MSG_CMD = {
-	getVer = "GV",
-	sendVer = "SV",
-	getRares = "GR",
-	sendRares = "SR"
-};
-local PLAYERS = {};
+local MYFACTION = nil;
+local arathiControllingFaction = nil;
 
 --
 --
@@ -418,8 +417,8 @@ end
 
 local function hideNode(button, mapFile, coord)
 	local node = GetNodeByCoord( mapFile, coord );
-    if ( node and node["questId"] ~= nil) then
-        Arathi.db.char[mapFile .. "_" .. coord .. "_" .. node["questId"]] = true;
+    if ( node and node["questId"][1] ~= nil) then
+        Arathi.db.char[mapFile .. "_" .. coord .. "_" .. node["questId"][1]] = true;
     end
 
     Arathi:Refresh()
@@ -631,6 +630,28 @@ local options = {
 					arg = "icon_alpha_pets",
 					order = 22,
 				},
+				groupIconCaves = {
+					type = "header",
+					name = _L["options_icons_caves"],
+					desc = _L["options_icons_caves_desc"],
+					order = 30,
+				},
+				icon_scale_caves = {
+					type = "range",
+					name = _L["options_scale"],
+					desc = _L["options_scale_desc"],
+					min = 0.25, max = 10, step = 0.01,
+					arg = "icon_scale_caves",
+					order = 31,
+				},
+				icon_alpha_caves = {
+					type = "range",
+					name = _L["options_opacity"],
+					desc = _L["options_opacity_desc"],
+					min = 0, max = 1, step = 0.01,
+					arg = "icon_alpha_caves",
+					order = 32,
+				},
 			},
 		},
 		VisibilityGroup = {
@@ -673,7 +694,7 @@ local options = {
 					order = 5,
 					width = "normal",
 				},
-				portalArathi = {
+				caveArathi = {
 					type = "toggle",
 					arg = "cave_arathi",
 					name = _L["options_toggle_caves"],
@@ -793,9 +814,11 @@ function Arathi:OnInitialize()
         profile = {
             icon_scale_treasures = 2.0,
             icon_scale_rares = 1.25,
+			icon_scale_caves = 1.5,
             icon_scale_pets = 1.5,
             icon_alpha_treasures = 0.5,
 			icon_alpha_rares = 0.75,
+			icon_alpha_caves = 0.75,
 			icon_alpha_pets = 1.0,
             alwaysshowrares = false,
             alwaysshowtreasures = false,
@@ -815,6 +838,7 @@ function Arathi:OnInitialize()
 	local name = UnitName("player");
 	local realm = GetRealmName();
 	MYSELF = name .. "-" .. realm;
+	MYFACTION = UnitFactionGroup("player")
 	--updateInvasionPOI:RegisterEvent("WORLD_MAP_UPDATE");
 	--WorldMapTooltip:HookScript("OnShow", function()
 		-- print( "wmtt" );
@@ -853,6 +877,22 @@ function Arathi:RegisterWithHandyNotes()
 				node = t[1]["lookup"][prestate]["nextNode"];
 			else
 				node = t[1]
+				local hordeZones = { 5,6,7 };
+				for i,contributionId in ipairs(hordeZones) do
+					local state = C_ContributionCollector.GetState(contributionId);
+					if state == 2 then
+						-- zone is currently action == faction is not controlling arathi
+						arathiControllingFaction = "Alliance";
+					end
+				end
+				local allianceZones = { 8 };
+				for i,contributionId in ipairs(allianceZones) do
+					local state = C_ContributionCollector.GetState(contributionId);
+					if state == 2 then
+						-- zone is currently action == faction is not controlling arathi
+						arathiControllingFaction = "Horde";
+					end
+				end
 			end
 
 			while node do
@@ -860,7 +900,7 @@ function Arathi:RegisterWithHandyNotes()
 					local iconScale = 1;
 					local iconAlpha = 1;
 					local iconPath = iconDefaults[node["icon"]];
-					if ( (string.find(node["group"], "rare") ~= nil) or (string.find(node["group"], "invasion") ~= nil) ) then
+					if ( (string.find(node["group"], "rare") ~= nil) ) then
 						iconScale = self.db.profile.icon_scale_rares;
 						iconAlpha = self.db.profile.icon_alpha_rares;
 						local icon = "skullWhite";
@@ -874,9 +914,9 @@ function Arathi:RegisterWithHandyNotes()
 					elseif ( (string.find(node["group"], "pet") ~= nil)) then
 						iconScale = self.db.profile.icon_scale_pets;
 						iconAlpha = self.db.profile.icon_alpha_pets;
-					elseif ( (string.find(node["group"], "sfll") ~= nil)) then
-						iconScale = self.db.profile.icon_scale_sfll;
-						iconAlpha = self.db.profile.icon_alpha_sfll;
+					elseif ( (string.find(node["group"], "cave") ~= nil)) then
+						iconScale = self.db.profile.icon_scale_caves;
+						iconAlpha = self.db.profile.icon_alpha_caves;
 					end
                     return node["coord"], nil, iconPath, iconScale, iconAlpha
                 end
@@ -904,9 +944,14 @@ function Arathi:ShowNode( mapFile, node )
 	if ( not self.db.profile[node["group"]] ) then return false end
     if ( self.db.profile.alwaysshowtreasures and (string.find(node["group"], "treasure") ~= nil) ) then return true end
     if ( self.db.profile.alwaysshowrares and ( (string.find(node["group"], "rare") ~= nil ) or (string.find(node["group"], "cave") ~= nil ) ) ) then return true end
-    if ( self.db.char[mapFile .. "_" .. node["coord"] .. "_" .. node["questId"]] and self.db.profile.save ) then return false end
+    if ( self.db.char[mapFile .. "_" .. node["coord"] .. "_" .. node["questId"][1]] and self.db.profile.save ) then return false end
 	if ( self.db.profile.hideKnowLoot and node["allLootKnown"] == true and node["loot"] ~= nil and string.find(node["group"], "rare") ~= nil ) then return false end
-    if ( IsQuestFlaggedCompleted( node["questId"] ) ) then return false end
+	if ( arathiControllingFaction ~= nil and node["controllingFaction"] ~= nil and node["controllingFaction"] ~= arathiControllingFaction ) then return false end
+	if ( MYFACTION ~= nil and node["faction"] ~= nil and node["faction"] ~= MYFACTION ) then return false end
+	for i,q in pairs(node["questId"]) do
+		-- print( node["questId"][i] );
+		if ( IsQuestFlaggedCompleted( node["questId"][i] ) ) then return false end
+	end
     return true
 end
 

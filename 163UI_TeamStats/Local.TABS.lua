@@ -14,7 +14,7 @@ local _, TS = ...
     },
 ]]
 
-TS.DATA_VERSION = 20170727
+TS.DATA_VERSION = 20180908
 
 TS.VERSION_BOSSES = { -12523, "戈霍恩", } --12110, "阿" -11874, "基" -- -11195, "古", --引领潮流 -11194, "萨", -11581, "海", 引领潮流：Ahead of the Curve: 千钧一发 Cutting Edge:
 

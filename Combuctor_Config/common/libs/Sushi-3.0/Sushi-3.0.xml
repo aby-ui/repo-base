@@ -7,34 +7,36 @@
 
 	<!-- Buttons -->
 	<Script file="Classes\ButtonBase.lua"/>
-	
+
 	<Script file="Classes\DropdownButton.lua"/>
 	<Script file="Classes\TextButton.lua"/>
 	<Script file="Classes\GrayButton.lua"/>
 	<Script file="Classes\HelpButton.lua"/>
 	<Script file="Classes\TabButtons.lua"/>
 	<Script file="Classes\TextureButton.lua"/>
-	
+
 	<!-- CheckButtons -->
 	<Script file="Classes\CheckButton.lua"/>
 	<Script file="Classes\ColorPicker.lua"/>
 	<Script file="Classes\ExpandCheck.lua"/>
 	<Script file="Classes\IconCheck.lua"/>
-	
+
 	<!-- Groups -->
 	<Script file="Classes\Group.lua"/>
 	<Script file="Classes\FauxScrollGroup.lua"/>
-	<Script file="Classes\MagicGroup.lua"/>
 	<Script file="Classes\TabGroup.lua"/>
-	
+	<Script file="Classes\MagicGroup.lua"/>
+	<Script file="Classes\CreditsGroup.lua"/>
+
 	<!-- Dropdowns -->
 	<Script file="Classes\DropdownFrame.lua"/>
 	<Script file="Classes\Dropdown.lua"/>
 	<Script file="Classes\TextureDropdown.lua"/>
-	
+
 	<!-- Misc -->
 	<Script file="Classes\GlowBox.lua"/>
 	<Script file="Classes\Header.lua"/>
 	<Script file="Classes\Editbox.lua"/>
 	<Script file="Classes\Slider.lua"/>
+	<Script file="Classes\Popup.lua"/>
 </Ui>

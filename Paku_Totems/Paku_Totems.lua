@@ -40,7 +40,6 @@ local options_panel = {
       args  = {
         mapIconSize = {
           name  = L["World Map Icon Size"],
-          desc  = "description",
           type  = 'range',
           order = 1,
           min = 8,
@@ -49,7 +48,6 @@ local options_panel = {
         },
         minimapIconSize = {
           name  = L["Minimap Icon Size"],
-          desc  = "description",
           type  = 'range',
           order = 2,
           min = 8,
@@ -180,12 +178,12 @@ function addon:PLAYER_ENTERING_WORLD(event, ...)
   GameTooltip:HookScript("OnTooltipSetUnit", function(tt,...)
       local guid = UnitGUID("mouseover")
       if not guid then return end
-
+      
       local _, _, _, _, _, id, _ = strsplit("-", guid)
       if not id or id ~= totemID then
           return
       end
-
+      
       local totemID = addon.GetClosestTotem()
       if not totemID or not totems[totemID] then
           return
@@ -212,10 +210,12 @@ function addon:PLAYER_ENTERING_WORLD(event, ...)
     -- convert them back so they are on the dazar'alor map only
     local ix,iy = HBD:GetZoneCoordinatesFromWorld(x, y, DAZARALOR_MAP_ID)
 
-    addon:showTotemOnMap(totemID, "WarlockPortalAlliance")
-    totemFrames[""..totemID]:SetScript("OnEnter", addon.mapIconOnEnter)
-    totemFrames[""..totemID]:SetScript("OnLeave", addon.mapIconOnLeave)
-    totemFrames[""..totemID].totemID = totemID
+    addon:showTotemOnMap(totemID, "WarlockPortalAlliance", false, "OVERLAY", "src")
+
+    local srcFrame = totemFrames["src"..totemID]
+    srcFrame:SetScript("OnEnter", addon.mapIconOnEnter)
+    srcFrame:SetScript("OnLeave", addon.mapIconOnLeave)
+    srcFrame.totemID = totemID
 
     local minimapIconFrame = CreateFrame("frame", nil,nil)
     minimapIconFrame:SetWidth(db.global.minimapIconSize)
@@ -268,23 +268,42 @@ function addon:showTotemOnMap(totemID, atlasIcon, dst, layer, ref)
   Pins:AddWorldMapIconMap(addonName..ref, totemFrames[ref..totemID], DAZARALOR_MAP_ID, ix,iy, nil)
 end
 
-
 function addon:mapIconOnEnter()
   local totem = totems[self.totemID]
   local xy, frame = totem.dst, totem.totemDestFrame
   Pins:AddMinimapIconWorld(addonName.."dest", frame, ZANDALAR_MAP_ID, xy[1],xy[2], true, true)
   addon:showTotemOnMap(self.totemID, "WarlockPortalHorde", true, "OVERLAY", "dest")
+
+  if not self.highlightLine then
+    self.highlightLine = CreateFrame("FRAME", nil, WorldMapFrame:GetCanvas());
+    self.highlightLine.Fill = self.highlightLine:CreateLine(WorldMapFrame, "OVERLAY")
+    self.highlightLine.Fill:SetAtlas('_UI-Taxi-Line-horizontal')
+  end
+
+  local startPin = totemFrames["src"..self.totemID]
+  local destinationPin = totemFrames["dest"..self.totemID]
+
+  local lineContainer = self.highlightLine
+  lineContainer.Fill:SetThickness(Lerp(1, 2, Saturate(1 - WorldMapFrame:GetCanvasZoomPercent())) * 90)
+
+  lineContainer.Fill:SetStartPoint("CENTER", startPin)
+  lineContainer.Fill:SetEndPoint("CENTER", destinationPin)
+
+  lineContainer:Show()
 end
 
 function addon:mapIconOnLeave()
   Pins:RemoveAllMinimapIcons(addonName.."dest")
   Pins:RemoveAllWorldMapIcons(addonName.."dest")
+
+  if self.highlightLine then
+    self.highlightLine:Hide()
+  end
 end
 
 
 function addon:OnInitialize()
   db = LibStub("AceDB-3.0"):New("Paku_Totems_DB", sv_defaults, true)
-
   if IsLoggedIn() then self:PLAYER_ENTERING_WORLD() else self:RegisterEvent("PLAYER_ENTERING_WORLD") end
   
   LibStub('AceConfig-3.0'):RegisterOptionsTable(addonName, options_panel)
@@ -315,7 +334,7 @@ function addon:vehicletrigger(event,...)
         if not distance or distance > tolerance then
           local totem = {name="new",src={px,py},uiMapID=bestmap}
           totems[#totems+1] = totem
-          print(string.format("Found new totem at {%f,%f} in %s - please report this to the Pa'ku Totems developer.", totem.src[1], totem.src[2], totem.uiMapID))
+          --print(string.format("Found new totem at {%f,%f} in %s - please report this to the Pa'ku Totems developer.", totem.src[1], totem.src[2], totem.uiMapID))
           lastTotemRidden = #totems
         else
           lastTotemRidden = totemID

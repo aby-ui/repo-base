@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2195, "DBM-Uldir", nil, 1031)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17776 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 17793 $"):sub(12, -3))
 mod:SetCreatureID(138967)
 mod:SetEncounterID(2145)
 mod:DisableESCombatDetection()--ES fires moment you throw out CC, so it can't be trusted for combatstart
@@ -53,9 +53,9 @@ local yellDarkRevolation				= mod:NewPosYell(273365)
 local yellDarkRevolationFades			= mod:NewIconFadesYell(273365)
 local specWarnPitofDespair				= mod:NewSpecialWarningDispel(273434, "RemoveCurse", nil, nil, 1, 2)
 local specWarnPoolofDarkness			= mod:NewSpecialWarningCount(273361, false, nil, nil, 1, 2)--Special warning for assigned soakers to optionally enable
-local specWarnCallofCrawgSoon			= mod:NewSoonCountAnnounce("ej18541", 2, nil, "-Healer", nil, nil, nil, 2)
-local specWarnCallofHexerSoon			= mod:NewSoonCountAnnounce("ej18540", 2, nil, "-Healer", nil, nil, nil, 2)
-local specWarnCallofCrusherSoon			= mod:NewSoonCountAnnounce("ej18539", 2, nil, "-Healer", nil, nil, nil, 2)
+local specWarnCallofCrawgSoon			= mod:NewSoonCountAnnounce("ej18541", 2, 273889, "-Healer", nil, nil, nil, 2)
+local specWarnCallofHexerSoon			= mod:NewSoonCountAnnounce("ej18540", 2, 273889, "-Healer", nil, nil, nil, 2)
+local specWarnCallofCrusherSoon			= mod:NewSoonCountAnnounce("ej18539", 2, 273889, "-Healer", nil, nil, nil, 2)
 local specWarnCallofCrawg				= mod:NewSpecialWarningSwitch("ej18541", "-Healer", nil, nil, 1, 2)
 local specWarnCallofHexer				= mod:NewSpecialWarningSwitch("ej18540", "-Healer", nil, nil, 1, 2)
 local specWarnCallofCrusher				= mod:NewSpecialWarningSwitch("ej18539", "-Healer", nil, nil, 1, 2)
@@ -166,7 +166,7 @@ function mod:OnCombatStart(delay)
 	self.vb.DarkRevIcon = 1
 	self.vb.activeDecay = nil
 	timerPoolofDarknessCD:Start(20.5-delay, 1)
-	timerDarkRevolationCD:Start(30-delay)
+	timerDarkRevolationCD:Start(30-delay, 1)
 	timerCallofCrawgCD:Start(34.9, 1)--35-45
 	timerCallofHexerCD:Start(50.7, 1)--50.7-54
 	timerCallofCrusherCD:Start(70, 1)--70-73
@@ -267,7 +267,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 		timerDeathwishCD:Start(23)
 	elseif spellId == 273365 or spellId == 271640 then--Two versions of debuff, one that spawns an add and one that does not (so probably LFR/normal version vs heroic/mythic version)
 		self.vb.darkRevCount = self.vb.darkRevCount + 1
-		warnDarkRevCount:Show(self.vb.darkRevCount+1)
+		warnDarkRevCount:Show(self.vb.darkRevCount)
 		timerDarkRevolationCD:Start(nil, self.vb.darkRevCount+1)
 	elseif spellId == 273889 then--Bloodthirsty Crawg
 		self.vb.CrawgSpawnCount = self.vb.CrawgSpawnCount + 1

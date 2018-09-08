@@ -6,8 +6,8 @@ local L = LibStub("AceLocale-3.0"):NewLocale(addonName, "enUS", true, debug)
 if not L then return end
 
 -- Options
- L["World Map Icon Size"] = true
- L["Minimap Icon Size"] = true
+L["World Map Icon Size"] = true
+L["Minimap Icon Size"] = true
 
 -- Locations
 L["The Sliver (North)"] = true

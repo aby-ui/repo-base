@@ -1,9 +1,0 @@
-## Interface: 80000
-## Title: Sushi-3.0
-## Notes: A collection of widgets, all wrapped in rice and seaweed for extra flavor.
-## Author: João Cardoso (Jaliborc)
-## OptionalDeps: LibStub, Poncho
-## X-License: GNU General Public License Version 3
-## X-Category: Library
-
-Sushi-3.0.xml
