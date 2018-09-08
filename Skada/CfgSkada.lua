@@ -29,6 +29,8 @@
                         if U1GetCfgValue("Skada", "chinese_number") then
                             if number <= 9999 then
                                 return n2s(number, nil, true);
+                            elseif number <= 99999 then
+                                return f2s(number/1e4, 2).."万"
                             elseif number <= 999999 then
                                 return f2s(number/1e4, 1).."万"
                             elseif number <= 99999999 then

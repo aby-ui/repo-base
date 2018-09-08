@@ -788,7 +788,7 @@ local function CreateTestForCondition(input, allConditionsTemplate, usedStates)
       if (value) then
         tinsert(WeakAuras.customConditionTestFunctions, test);
         local testFunctionNumber = #(WeakAuras.customConditionTestFunctions);
-        local valueString = type(value) == "string" and "[" .. value .. "]" or value;
+        local valueString = type(value) == "string" and "[[" .. value .. "]]" or value;
         local opString = type(op) == "string" and  "[[" .. op .. "]]" or op;
         check = "state and WeakAuras.customConditionTestFunctions[" .. testFunctionNumber .. "](state[" .. trigger .. "], " .. valueString .. ", " .. (opString or "nil") .. ")";
       end
@@ -4400,24 +4400,27 @@ function WeakAuras.UpdatedTriggerState(id)
   if (show and not oldShow) then -- Hide => Show
     ApplyStatesToRegions(id, newActiveTrigger, activeTriggerState);
   elseif (not show and oldShow) then -- Show => Hide
+    for cloneId, state in pairs(activeTriggerState) do
+      if (checkConditions[id]) then
+        local region = WeakAuras.GetRegion(id, cloneId);
+        checkConditions[id](region, true);
+      end
+    end
     WeakAuras.CollapseAllClones(id);
     WeakAuras.regions[id].region:Collapse();
   elseif (show and oldShow) then -- Already shown, update regions
     -- Hide old clones
     for cloneId, clone in pairs(clones[id]) do
       if (not activeTriggerState[cloneId] or not activeTriggerState[cloneId].show) then
+        if (checkConditions[id]) then
+          local region = WeakAuras.GetRegion(id, cloneId);
+          checkConditions[id](region, true);
+        end
         clone:Collapse();
       end
     end
     -- Show new states
     ApplyStatesToRegions(id, newActiveTrigger, activeTriggerState);
-  end
-
-  for cloneId, state in pairs(activeTriggerState) do
-    local region = WeakAuras.GetRegion(id, cloneId);
-    if (checkConditions[id]) then
-      checkConditions[id](region, not show or not state.show);
-    end
   end
 
   for triggernum = 1, triggerState[id].numTriggers do

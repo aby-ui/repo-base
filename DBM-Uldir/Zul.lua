@@ -1,14 +1,14 @@
 local mod	= DBM:NewMod(2195, "DBM-Uldir", nil, 1031)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17775 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 17776 $"):sub(12, -3))
 mod:SetCreatureID(138967)
 mod:SetEncounterID(2145)
 mod:DisableESCombatDetection()--ES fires moment you throw out CC, so it can't be trusted for combatstart
 mod:SetZone()
 --mod:SetBossHPInfoToHighest()
 mod:SetUsedIcons(1, 2, 8)
---mod:SetHotfixNoticeRev(16950)
+mod:SetHotfixNoticeRev(17775)
 --mod:SetMinSyncRevision(16950)
 --mod.respawnTime = 35
 

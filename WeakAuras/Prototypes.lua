@@ -31,6 +31,12 @@ end
 
 function WeakAuras.CheckRange(unit, range, operator)
   local min, max = LibRangeCheck:GetRange(unit);
+  if (type(range) ~= "number") then
+    range = tonumber(range);
+  end
+  if (not range) then
+    return
+  end
   if (operator == "<=") then
     return (max or 0) <= range;
   else
@@ -43,7 +49,7 @@ WeakAuras.encounter_table = {
   [2167] = 2141, -- MOTHER
   [2146] = 2128, -- Fetid Devourer
   [2169] = 2136, -- Zek'voz, Herald of N'zoth
-  [2195] = 2145, -- TODO Needs checking-- Zul, Reborn
+  [2195] = 2145, -- Zul, Reborn
   [2194] = 2135, -- Mythrax the Unraveler
   [2166] = 2134, -- Vectis
   [2147] = 2122, -- G'huun

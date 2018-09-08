@@ -10,7 +10,7 @@ U1RegisterAddon("GTFO", {
             CoreOnEvent("COMBAT_LOG_EVENT_UNFILTERED", function(event, ...)
                 if not enabled then return end
                 if not U1GetCfgValue("GTFO", "mythic_blood", true) then return end
-                if lastPlayTime and GetTime() - lastPlayTime < 1.5 then return end
+                if lastPlayTime and GetTime() - lastPlayTime < 1.7 then return end
                 if not InCombatLockdown() then return end
                 if UnitExists("boss1") then return end
                 local timestamp, subEvent, hideCaster, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destFlags, destRaidFlags, spellID = CombatLogGetCurrentEventInfo()
