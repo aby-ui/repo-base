@@ -278,6 +278,7 @@ gdbprivate.gdbdefaults.gdbdefaults.dejacharacterstatsShowDuraChecked = {
 local DCS_ShowDuraCheck = CreateFrame("CheckButton", "DCS_ShowDuraCheck", DejaCharacterStatsPanel, "InterfaceOptionsCheckButtonTemplate")
 	DCS_ShowDuraCheck:RegisterEvent("PLAYER_LOGIN")
     DCS_ShowDuraCheck:RegisterEvent("UPDATE_INVENTORY_DURABILITY")
+	DCS_ShowDuraCheck:RegisterEvent("PLAYER_EQUIPMENT_CHANGED") --seems like UPDATE_INVENTORY_DURABILITY doesn't get triggered by equipping an item with the same name
 	DCS_ShowDuraCheck:ClearAllPoints()
 	--DCS_ShowDuraCheck:SetPoint("TOPLEFT", 30, -315)
 	DCS_ShowDuraCheck:SetPoint("TOPLEFT", "dcsItemsPanelCategoryFS", 7, -75)
@@ -293,11 +294,13 @@ DCS_ShowDuraCheck:SetScript("OnEvent", function(self, ...)
 		self:SetChecked(showdura)
 		DCS_Set_Dura_Item_Positions()
 	end
-	if showdura then
-		DCS_Item_DurabilityTop()
-	else
-		for _, v in ipairs(DCSITEM_SLOT_FRAMES) do
-			v.durability:SetFormattedText("")
+	if PaperDollFrame:IsVisible() then
+		if showdura then
+			DCS_Item_DurabilityTop()
+		else
+			for _, v in ipairs(DCSITEM_SLOT_FRAMES) do
+				v.durability:SetFormattedText("")
+			end
 		end
 	end
 	--[[
@@ -458,6 +461,7 @@ gdbprivate.gdbdefaults.gdbdefaults.dejacharacterstatsShowDuraTextureChecked = {
 local DCS_ShowDuraTextureCheck = CreateFrame("CheckButton", "DCS_ShowDuraTextureCheck", DejaCharacterStatsPanel, "InterfaceOptionsCheckButtonTemplate")
 	DCS_ShowDuraTextureCheck:RegisterEvent("PLAYER_LOGIN")
     DCS_ShowDuraTextureCheck:RegisterEvent("UPDATE_INVENTORY_DURABILITY")
+	DCS_ShowDuraTextureCheck:RegisterEvent("PLAYER_EQUIPMENT_CHANGED") --seems like UPDATE_INVENTORY_DURABILITY doesn't get triggered by equipping an item with the same name
 	DCS_ShowDuraTextureCheck:ClearAllPoints()
 	--DCS_ShowDuraTextureCheck:SetPoint("TOPLEFT", 30, -275)
 	DCS_ShowDuraTextureCheck:SetPoint("TOPLEFT", "dcsItemsPanelCategoryFS", 7, -35)
@@ -471,16 +475,21 @@ DCS_ShowDuraTextureCheck:SetScript("OnEvent", function(self, ...)
 		showtextures = gdbprivate.gdb.gdbdefaults.dejacharacterstatsShowDuraTextureChecked.ShowDuraTextureSetChecked
 		self:SetChecked(showtextures)
 	end
-	if showtextures then
-		DCS_Durability_Bar_Textures()
-		--DCS_Mean_Durability() --average durability for bar near shirt should be in DCS_Durability_Bar_Textures()
-		--DCS_Item_DurabilityTop() --all single item durability stuff should be in DCS_Durability_Bar_Textures()
-		duraMeanTexture:Show()
-	else
-		for _, v in ipairs(DCSITEM_SLOT_FRAMES) do
-			v.duratexture:Hide()
+	--print("DCS_ShowDuraTextureCheck:SetScript(OnEvent)")
+	if PaperDollFrame:IsVisible() then
+		--print("PaperDollFrame:IsVisible()")
+		if showtextures then
+			--print("showtextures")
+			DCS_Durability_Bar_Textures()
+			--DCS_Mean_Durability() --average durability for bar near shirt should be in DCS_Durability_Bar_Textures()
+			--DCS_Item_DurabilityTop() --all single item durability stuff should be in DCS_Durability_Bar_Textures()
+			duraMeanTexture:Show()
+		else
+			for _, v in ipairs(DCSITEM_SLOT_FRAMES) do
+				v.duratexture:Hide()
+			end
+			duraMeanTexture:Hide()
 		end
-		duraMeanTexture:Hide()
 	end
 	--[[
 	local checked = gdbprivate.gdb.gdbdefaults.dejacharacterstatsShowDuraTextureChecked.ShowDuraTextureSetChecked
@@ -541,6 +550,7 @@ gdbprivate.gdbdefaults.gdbdefaults.dejacharacterstatsShowAverageRepairChecked = 
 local DCS_ShowAverageDuraCheck = CreateFrame("CheckButton", "DCS_ShowAverageDuraCheck", DejaCharacterStatsPanel, "InterfaceOptionsCheckButtonTemplate")
 	DCS_ShowAverageDuraCheck:RegisterEvent("PLAYER_LOGIN")
     DCS_ShowAverageDuraCheck:RegisterEvent("UPDATE_INVENTORY_DURABILITY")
+	DCS_ShowAverageDuraCheck:RegisterEvent("PLAYER_EQUIPMENT_CHANGED") --seems like UPDATE_INVENTORY_DURABILITY doesn't get triggered by equipping an item with the same name
 	DCS_ShowAverageDuraCheck:ClearAllPoints()
 	--DCS_ShowAverageDuraCheck:SetPoint("TOPLEFT", 30, -295)
 	DCS_ShowAverageDuraCheck:SetPoint("TOPLEFT", "dcsItemsPanelCategoryFS", 7, -55)
@@ -554,16 +564,18 @@ local DCS_ShowAverageDuraCheck = CreateFrame("CheckButton", "DCS_ShowAverageDura
 			showavgdur = gdbprivate.gdb.gdbdefaults.dejacharacterstatsShowAverageRepairChecked.ShowAverageRepairSetChecked
 			self:SetChecked(showavgdur)
 		end
-		if showavgdur then
-			DCS_Mean_Durability()
-			if addon.duraMean == 100 then --check after calculation
-				duraMeanFS:SetFormattedText("")
+		if PaperDollFrame:IsVisible() then
+			if showavgdur then
+				DCS_Mean_Durability()
+				if addon.duraMean == 100 then --check after calculation
+					duraMeanFS:SetFormattedText("")
+				else
+					duraMeanFS:SetFormattedText("%.0f%%", addon.duraMean)
+				end
 			else
-				duraMeanFS:SetFormattedText("%.0f%%", addon.duraMean)
+				duraMeanFS:SetFormattedText("")
+				duraDurabilityFrameFS:Hide()
 			end
-		else
-			duraMeanFS:SetFormattedText("")
-			duraDurabilityFrameFS:Hide()
 		end
 		--[[
 		local checked = gdbprivate.gdb.gdbdefaults.dejacharacterstatsShowAverageRepairChecked
@@ -711,8 +723,9 @@ gdbprivate.gdbdefaults.gdbdefaults.dejacharacterstatsShowItemRepairChecked = {
 local DCS_ShowItemRepairCheck = CreateFrame("CheckButton", "DCS_ShowItemRepairCheck", DejaCharacterStatsPanel, "InterfaceOptionsCheckButtonTemplate")
 	DCS_ShowItemRepairCheck:RegisterEvent("PLAYER_LOGIN")
 	DCS_ShowItemRepairCheck:RegisterEvent("UPDATE_INVENTORY_DURABILITY")
+	DCS_ShowItemRepairCheck:RegisterEvent("PLAYER_EQUIPMENT_CHANGED") --seems like UPDATE_INVENTORY_DURABILITY doesn't get triggered by equipping an item with the same name
 	DCS_ShowItemRepairCheck:RegisterEvent("MERCHANT_SHOW")
-	DCS_ShowItemRepairCheck:RegisterEvent("MERCHANT_CLOSED")
+	DCS_ShowItemRepairCheck:RegisterEvent("MERCHANT_CLOSED") --without this event repair cost should remain unchanged from the last vendor
 	DCS_ShowItemRepairCheck:ClearAllPoints()
 	--DCS_ShowItemRepairCheck:SetPoint("TOPLEFT", 30, -335)
 	DCS_ShowItemRepairCheck:SetPoint("TOPLEFT", "dcsItemsPanelCategoryFS", 7, -95)
@@ -727,11 +740,15 @@ DCS_ShowItemRepairCheck:SetScript("OnEvent", function(self, ...)
 		self:SetChecked(showrepair)
 		DCS_Set_Dura_Item_Positions()
 	end
-	if showrepair then
-		DCS_Item_RepairCostBottom()
-	else
-		for _, v in ipairs(DCSITEM_SLOT_FRAMES) do
-			v.itemrepair:SetFormattedText("")
+	--print("want to recalculate repairs")
+	if PaperDollFrame:IsVisible() then
+		--print("recalculating repairs")
+		if showrepair then
+			DCS_Item_RepairCostBottom()
+		else
+			for _, v in ipairs(DCSITEM_SLOT_FRAMES) do
+				v.itemrepair:SetFormattedText("")
+			end
 		end
 	end
 	--[[
@@ -776,7 +793,7 @@ end)
 ------------------------------
 -- Item Level Display Check --
 ------------------------------
-
+--[[ previous version of DCS_Item_Level_Center() for prosperity
 local function DCS_Item_Level_Center()
 	do return end
 	local summar_ilvl = 0
@@ -825,6 +842,46 @@ local function DCS_Item_Level_Center()
 		end
 	end
 end
+]]--
+
+local getItemQualityColor = GetItemQualityColor
+
+local function DCS_Item_Level_Center()
+    do return end
+	--local summar_ilvl = 0 --assuming artefact weapons are handled correctly
+	--local _, equipped = GetAverageItemLevel()
+	--equipped = round(equipped * 16)
+	--equipped = equipped * 16 --in tested cases worked without rounding
+	for _, v in ipairs(DCSITEM_SLOT_FRAMES) do
+		local item = Item:CreateFromEquipmentSlot(v:GetID())
+		local value = item:GetCurrentItemLevel()
+		if value then
+			v.ilevel:SetTextColor(getItemQualityColor(item:GetItemQuality())) --upvalue call
+			--local color = item:GetItemQualityColor()
+			--v.ilevel:SetTextColor(color.r,color.g,color.b) --v.ilevel:SetTextColor(item:GetItemQualityColor()) doesn't work because it's a table; seems to use less function calls than itemlink
+			--v.ilevel:SetTextColor(item:GetItemQualityColor())
+			--[[
+			if (item:GetItemQuality() == 6) and (v ~= CharacterNeckSlot) then 	--supposedly only artifacts after crucible return wrong ilvl							
+				value = (equipped - summar_ilvl)/2
+				v.ilevel:SetText(value)
+			else
+				v.ilevel:SetText(value)
+				if (v == CharacterMainHandSlot) then --somehow don't understand why these 7 lines(before summar_ilvl = summar_ilvl + value) are needed. So summar_ilvl would be equal to equipped in the end of the loop? Seems unnecessary
+					for _, twohands in ipairs(DCSITEM_TWO_HANDED_WEAPONS) do
+						if IsEquippedItemType(twohands) then
+							value = (value*2)
+						end
+					end
+				end
+				summar_ilvl = summar_ilvl + value
+			end
+			--]]
+			v.ilevel:SetText(value)
+		else
+			v.ilevel:SetText("")
+		end
+	end
+end
 
 gdbprivate.gdbdefaults.gdbdefaults.dejacharacterstatsShowItemLevelChecked = {
 	ShowItemLevelSetChecked = true,
@@ -843,7 +900,7 @@ DCS_ShowItemLevelCheck:SetScript("OnEvent", function(self, ...)
 	showitemlevel = gdbprivate.gdb.gdbdefaults.dejacharacterstatsShowItemLevelChecked.ShowItemLevelSetChecked
 	self:SetChecked(showitemlevel)
 	DCS_Set_Dura_Item_Positions()
-	DCS_Item_Level_Center()
+	--DCS_Item_Level_Center() --why it is called
 end)
 
 DCS_ShowItemLevelCheck:SetScript("OnClick", function(self)
@@ -884,5 +941,39 @@ PaperDollFrame:HookScript("OnShow", function(self)
 		for _, v in ipairs(DCSITEM_SLOT_FRAMES) do
 			v.ilevel:SetFormattedText("")
 		end
+	end
+	if showrepair then
+		DCS_Item_RepairCostBottom()
+	else
+		for _, v in ipairs(DCSITEM_SLOT_FRAMES) do
+			v.itemrepair:SetFormattedText("")
+		end
+	end
+	if showavgdur then
+		DCS_Mean_Durability()
+		if addon.duraMean == 100 then --check after calculation
+			duraMeanFS:SetFormattedText("")
+		else
+			duraMeanFS:SetFormattedText("%.0f%%", addon.duraMean)
+		end
+	else
+		duraMeanFS:SetFormattedText("")
+		duraDurabilityFrameFS:Hide()
+	end
+	if showdura then
+		DCS_Item_DurabilityTop()
+	else
+		for _, v in ipairs(DCSITEM_SLOT_FRAMES) do
+			v.durability:SetFormattedText("")
+		end
+	end
+	if showtextures then
+		DCS_Durability_Bar_Textures()
+		duraMeanTexture:Show()
+	else
+		for _, v in ipairs(DCSITEM_SLOT_FRAMES) do
+			v.duratexture:Hide()
+		end
+		duraMeanTexture:Hide()
 	end
 end)

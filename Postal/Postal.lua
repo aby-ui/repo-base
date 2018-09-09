@@ -33,7 +33,7 @@ local defaults = {
 		Express = {
 			EnableAltClick = false,
 			AutoSend = false,
-			BulkSend = false,
+			BulkSend = true,
 			MouseWheel = true,
 			MultiItemTooltip = true,
 		},

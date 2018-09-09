@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2147, "DBM-Uldir", nil, 1031)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17794 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 17806 $"):sub(12, -3))
 mod:SetCreatureID(132998)
 mod:SetEncounterID(2122)
 mod:SetZone()
@@ -14,8 +14,8 @@ mod:SetMinSyncRevision(17776)
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
-	"SPELL_CAST_START 267509 267427 267412 273406 273405 267409 267462 267579 263482 263503 263307 275160",
-	"SPELL_CAST_SUCCESS 263235 263482 263503 263373 270373 270428 276839 274582 272505 275756",
+	"SPELL_CAST_START 267509 267427 267412 273406 273405 267409 267462 267579 263482 263503 263307 275160 263373",
+	"SPELL_CAST_SUCCESS 263235 263482 263503 263373 270373 270428 276839 274582 272505 275756 263416",
 	"SPELL_AURA_APPLIED 268074 267813 277079 272506 274262 263372 270447 263235 270443 273405 267409",
 	"SPELL_AURA_APPLIED_DOSE 270447",
 	"SPELL_AURA_REMOVED 268074 267813 277079 272506 274262 263235 263372",
@@ -37,9 +37,8 @@ mod:RegisterEventsInCombat(
 --TODO, Bursting Boil CAST detection
 --TODO, find right balance for automating specWarnBloodFeastMoveTo. Right now don't want to assume EVERYONE goes to target, maybe only players above x stacks?
 --TODO, timers for Mind Numbing Chatter?
---TODO, detecting cores that FAIL to deposit and get destroyed instead (to determin when next core timer is)
 --[[
-(ability.id = 267509 or ability.id = 273406 or ability.id = 273405 or ability.id = 267579 or ability.id = 263482 or ability.id = 263503 or ability.id = 275160) and type = "begincast"
+(ability.id = 267509 or ability.id = 273406 or ability.id = 273405 or ability.id = 267579 or ability.id = 263482 or ability.id = 263503 or ability.id = 275160 or ability.id = 269455) and type = "begincast"
  or (ability.id = 272505 or ability.id = 275756 or ability.id = 263235 or ability.id = 263482 or ability.id = 263503 or ability.id = 263373 or ability.id = 270373 or ability.id = 270428 or ability.id = 276839 or ability.id = 274582) and type = "cast"
  or ability.id = 270443
  or (ability.id = 267462 or ability.id = 267412 or ability.id = 267409) and type = "begincast"
@@ -47,6 +46,7 @@ mod:RegisterEventsInCombat(
 --]]
 --Arena Floor
 local warnMatrixSpawn					= mod:NewCountAnnounce(263420, 1)
+local warnMatrixFail					= mod:NewAnnounce("warnMatrixFail", 4, 263420)
 local warnPowerMatrix					= mod:NewTargetNoFilterAnnounce(263420, 2, nil, false)--No Filter announce, but off by default since infoframe is more productive way of showing it
 local warnBloodHost						= mod:NewTargetAnnounce(267813, 3)--Mythic
 local warnDarkPurpose					= mod:NewTargetAnnounce(268074, 4, nil, false)--Mythic
@@ -64,8 +64,8 @@ local yellExplosiveCorruption			= mod:NewYell(272506)
 local yellExplosiveCorruptionFades		= mod:NewShortFadesYell(272506)
 local specWarnThousandMaws				= mod:NewSpecialWarningSwitch(267509, nil, nil, nil, 1, 2)
 local specWarnTorment					= mod:NewSpecialWarningInterrupt(267427, "HasInterrupt", nil, nil, 1, 2)
-local specWarnMassiveSmash				= mod:NewSpecialWarningSpell(267412, nil, nil, nil, 1, 2)
-local specWarnDarkBargain				= mod:NewSpecialWarningDodge(267409, nil, nil, nil, 1, 2)
+local specWarnMassiveSmash				= mod:NewSpecialWarningSpell(267412, "Tank", nil, 2, 1, 2)
+local specWarnDarkBargain				= mod:NewSpecialWarningDodge(267409, nil, nil, 2, 3, 2)
 local specWarnDarkBargainOther			= mod:NewSpecialWarningTaunt(267409, false, nil, 2, 1, 2)
 local specWarnGTFO						= mod:NewSpecialWarningGTFO(270287, nil, nil, nil, 1, 2)
 local specWarnDecayingEruption			= mod:NewSpecialWarningInterrupt(267462, "HasInterrupt", nil, nil, 1, 2)--Mythic
@@ -119,10 +119,20 @@ mod:AddSetIconOption("SetIconOnBloodHost", 267813, true)
 mod.vb.phase = 1
 mod.vb.mawCastCount = 0
 mod.vb.matrixCount = 0
+mod.vb.matrixSide = DBM_CORE_LEFT
 mod.vb.explosiveCount = 0
 mod.vb.waveCast = 0
+mod.vb.matrixActive = false
 local matrixTargets, bloodFeastTarget = {}, {}
 local thousandMawsTimers = {25.4, 26.3, 25.5, 24.2, 23.9, 23.1, 21.5, 21.9, 19.4}
+
+local function checkThrowFail(self)
+	--If this function runs it means matrix was not caught after a throw and is lost
+	self:Unschedule(checkThrowFail)
+	timerMatrixCD:Stop()
+	timerMatrixCD:Start(8, self.vb.matrixCount+1)--Confirm
+	self.vb.matrixActive = false
+end
 
 local updateInfoFrame
 do
@@ -146,10 +156,10 @@ do
 		end
 		--Matrix Stuff
 		if mod.vb.phase < 3 then
-			local currentPower, maxPower = UnitPower("boss2"), UnitPowerMax("boss2")
-			if maxPower and maxPower ~= 0 then
-				if currentPower / maxPower * 100 >= 1 then
-					local matrixCount = (currentPower == 35) and 1 or (currentPower == 70) and 2 or 3
+			local currentPower2, maxPower2 = UnitPower("boss2"), UnitPowerMax("boss2")
+			if maxPower2 and maxPower2 ~= 0 then
+				if currentPower2 / maxPower2 * 100 >= 0 then
+					local matrixCount = (currentPower2 == 35) and 1 or (currentPower2 == 70) and 2 or (currentPower2 == 100) and 3 or 0
 					addLine(UnitName("boss2"), matrixCount.."/3")
 				end
 			end
@@ -160,7 +170,20 @@ do
 				if not uId then break end
 				addLine(matrixSpellName, UnitName(uId))
 			end
-			addLine(L.CurrentMatrix, mod.vb.matrixCount)
+			if mod.vb.matrixActive then
+				if mod:IsMythic() then--No side, short text
+					addLine(L.CurrentMatrix, mod.vb.matrixCount)
+				else--Side, long text
+					addLine(L.CurrentMatrixLong:format(mod.vb.matrixSide), mod.vb.matrixCount)
+				end
+			else
+				if mod:IsMythic() then
+					addLine(L.NextMatrix, mod.vb.matrixCount+1)
+				else
+					local sideText = (mod.vb.matrixSide == DBM_CORE_LEFT) and DBM_CORE_RIGHT or DBM_CORE_LEFT
+					addLine(L.NextMatrixLong:format(sideText), mod.vb.matrixCount+1)
+				end
+			end
 		end
 		for i=1, #bloodFeastTarget do
 			local name = bloodFeastTarget[i]
@@ -200,14 +223,21 @@ function mod:OnCombatStart(delay)
 	self.vb.matrixCount = 0
 	self.vb.explosiveCount = 0
 	self.vb.waveCast = 0
+	self.vb.matrixActive = false
 	timerMatrixCD:Start(5.3, 1)
 	timerExplosiveCorruptionCD:Start(8-delay, 1)--SUCCESS
 	timerThousandMawsCD:Start(25.4-delay, 1)
 	if self.Options.InfoFrame then
+		DBM.InfoFrame:SetHeader(OVERVIEW)
 		DBM.InfoFrame:Show(8, "function", updateInfoFrame, false, false)
 	end
 	if self.Options.NPAuraOnFixate or self.Options.NPAuraOnUnstoppable then
 		DBM:FireEvent("BossMod_EnableHostileNameplates")
+	end
+	if not self:IsMythic() then
+		self.vb.matrixSide = DBM_CORE_LEFT
+	--else
+		--Do shit on mythic
 	end
 end
 
@@ -256,10 +286,12 @@ function mod:SPELL_CAST_START(args)
 	elseif spellId == 267579 then
 		warnBurrow:Show()
 	elseif (spellId == 263482 or spellId == 263503) then
+		self.vb.matrixActive = false
+		self.vb.matrixSide = DBM_CORE_RIGHT--Actually left, but this makes it so the way it's coded works
 		specWarnReorginationBlast:Show()
 		specWarnReorginationBlast:Play("aesoon")--Or phase change
 		timerMatrixCD:Stop()
-		timerMatrixCD:Start(30, self.vb.matrixCount+1)
+		timerMatrixCD:Start(29, self.vb.matrixCount+1)
 	elseif spellId == 263307 then
 		specWarnMindNumbingChatter:Show()
 		specWarnMindNumbingChatter:Play("stopcast")
@@ -267,6 +299,9 @@ function mod:SPELL_CAST_START(args)
 		specWarnGazeofGhuun:Show()
 		specWarnGazeofGhuun:Play("turnaway")
 		timerGazeofGhuunCD:Start()
+	elseif spellId == 263373 then
+		self:Unschedule(checkThrowFail)
+		self.vb.matrixActive = false
 	end
 end
 
@@ -295,7 +330,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 		end
 	elseif spellId == 263373 then
 		timerMatrixCD:Stop()
-		timerMatrixCD:Start(11.5, self.vb.matrixCount+1)
+		timerMatrixCD:Start(10, self.vb.matrixCount+1)
 	elseif spellId == 270373 or spellId == 270428 then--Wave of Corruption
 		self.vb.waveCast = self.vb.waveCast + 1
 		if self.vb.phase == 2 then
@@ -342,6 +377,9 @@ function mod:SPELL_CAST_SUCCESS(args)
 				specWarnExplosiveCorruptionOther:Play("tauntboss")
 			end
 		end
+	elseif spellId == 263416 then--Throw Power Matrix
+		self:Unschedule(checkThrowFail)
+		self:Schedule(4, checkThrowFail, self)
 	end
 end
 
@@ -385,6 +423,7 @@ function mod:SPELL_AURA_APPLIED(args)
 			yellExplosiveCorruptionFades:Countdown(spellId == 277079 and 6 or 4)
 		end
 	elseif spellId == 263372 then
+		self:Unschedule(checkThrowFail)
 		if args:IsPlayer() then
 			specWarnPowerMatrix:Show()
 			specWarnPowerMatrix:Play("newmatrix")
@@ -493,24 +532,32 @@ mod.SPELL_MISSED = mod.SPELL_DAMAGE
 
 function mod:UNIT_DIED(args)
 	local cid = self:GetCIDFromGUID(args.destGUID)
-	if cid == 136461 then--spawn of ghuun
-	
-	elseif cid == 138531 or cid == 134634 then--Cyclopean Terror (P1, P2)
-	
-	elseif cid == 138529 or cid == 134635 then--Dark Young (P1, P2)
+	if cid == 138529 or cid == 134635 then--Dark Young (P1, P2)
 		timerMassiveSmashCD:Stop(args.destGUID)
 		timerDarkBargainCD:Stop(args.destGUID)
-	elseif cid == 134590 then--Blightspreader Tendril
-
-	elseif cid == 141265 then--Amorphus Cyst (cat)
+--	elseif cid == 138531 or cid == 134634 then--Cyclopean Terror (P1, P2)
 	
-	elseif cid == 134010 then--Gibbering Horror
+--	elseif cid == 134590 then--Blightspreader Tendril
+
+--	elseif cid == 136461 then--spawn of ghuun
+
+--	elseif cid == 141265 then--Amorphus Cyst (cat)
+	
+--	elseif cid == 134010 then--Gibbering Horror
 	
 	end
 end
 
 function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg, npc, _, _, target)
-	if msg:find("spell:263420") and self:AntiSpam(15, 7) then
+	if msg:find("spell:263420") and self:AntiSpam(10, 7) then
+		self.vb.matrixActive = true
+		if not self:IsMythic() then
+			if self.vb.matrixSide == DBM_CORE_LEFT then
+				self.vb.matrixSide = DBM_CORE_RIGHT
+			else
+				self.vb.matrixSide = DBM_CORE_LEFT
+			end
+		end
 		self.vb.matrixCount = self.vb.matrixCount + 1
 		warnMatrixSpawn:Show(self.vb.matrixCount)
 	end

@@ -78,8 +78,19 @@ L:SetMiscLocalization({
 ------------------
 L= DBM:GetModLocalization(2147)
 
+L:SetWarningLocalization({
+	warnMatrixFail		= "Power Matrix dropped"
+})
+
+L:SetOptionLocalization({
+	warnMatrixFail		= "Show warning when Power Matrix is dropped."
+})
+
 L:SetMiscLocalization({
-	CurrentMatrix	=	"Current Matrix:"
+	CurrentMatrix		=	"Current Matrix:",--Mythic
+	NextMatrix			=	"Next Matrix:",--Mythic
+	CurrentMatrixLong	=	"Current Matrix (%s):",--Non Mythic
+	NextMatrixLong		=	"Next Matrix (%s):"--Non Mythic
 })
 
 -------------

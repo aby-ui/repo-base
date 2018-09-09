@@ -133,29 +133,55 @@ function TBTFrame_OnLoad(self)
             end
         end
     end
+
     CoreDependCall("Bagnon", function()
         for i=1, 1000 do
-            local f = _G["BagnonItem"..i]
+            local f = _G["BagnonItemSlot"..i]
             if not f then break end
             SetOrHookScript(f, "PreClick", TBT_ContainerItemPreClick);
         end
         local constructID
         hooksecurefunc(Bagnon.ItemSlot, "Create", function()
-            local f = constructID and _G["BagnonItem"..constructID]
+            local f = constructID and _G["BagnonItemSlot"..constructID]
             if(f) then
                 return f:HookScript('PreClick', TBT_ContainerItemPreClick)
             end
         end)
         if Bagnon.ItemSlot.Construct then
             hooksecurefunc(Bagnon.ItemSlot, "Construct", function(self, id)
-                constructID = id
+                constructID = self.nextID or id
             end)
         elseif Bagnon.ItemSlot.ConstructNewItemSlot then
             hooksecurefunc(Bagnon.ItemSlot, "ConstructNewItemSlot", function(self, id)
-                constructID = id
+                constructID = self.nextID or id
             end)
         end
     end)
+
+    CoreDependCall("Combuctor", function()
+        for i=1, 1000 do
+            local f = _G["CombuctorItemSlot"..i]
+            if not f then break end
+            SetOrHookScript(f, "PreClick", TBT_ContainerItemPreClick);
+        end
+        local constructID
+        hooksecurefunc(Combuctor.ItemSlot, "Create", function()
+            local f = constructID and _G["CombuctorItemSlot"..constructID]
+            if(f) then
+                return f:HookScript('PreClick', TBT_ContainerItemPreClick)
+            end
+        end)
+        if Combuctor.ItemSlot.Construct then
+            hooksecurefunc(Combuctor.ItemSlot, "Construct", function(self, id)
+                constructID = self.nextID or id
+            end)
+        elseif Combuctor.ItemSlot.ConstructNewItemSlot then
+            hooksecurefunc(Combuctor.ItemSlot, "ConstructNewItemSlot", function(self, id)
+                constructID = self.nextID or id
+            end)
+        end
+    end)
+
     hooksecurefunc("HandleModifiedItemClick",function(link)
         if IsShiftKeyDown() then
             if IsAddOnLoaded("Blizzard_AuctionUI") then

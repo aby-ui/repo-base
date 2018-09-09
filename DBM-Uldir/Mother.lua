@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2167, "DBM-Uldir", nil, 1031)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17779 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 17806 $"):sub(12, -3))
 mod:SetCreatureID(135452)--136429 Chamber 01, 137022 Chamber 02, 137023 Chamber 03
 mod:SetEncounterID(2141)
 mod:SetZone()
@@ -91,23 +91,25 @@ local function updateAllTimers(self, ICD)
 		timerWindTunnelCD:Stop()
 		timerWindTunnelCD:Update(elapsed, total+extend)
 	end
-	if (self.vb.nextLaser == 1) and timerSurgicalBeamCD:GetRemaining(DBM_CORE_SIDE) < ICD then
-		local elapsed, total = timerSurgicalBeamCD:GetTime(DBM_CORE_SIDE)
-		local extend = ICD - (total-elapsed)
-		DBM:Debug("timerSurgicalBeamCD SIDE extended by: "..extend, 2)
-		timerSurgicalBeamCD:Stop()
-		timerSurgicalBeamCD:Update(elapsed, total+extend, DBM_CORE_SIDE)
-		countdownSurgicalBeam:Cancel()
-		countdownSurgicalBeam:Start(ICD)
-	end
-	if (self.vb.nextLaser == 2) and timerSurgicalBeamCD:GetRemaining(DBM_CORE_TOP) < ICD then
-		local elapsed, total = timerSurgicalBeamCD:GetTime(DBM_CORE_TOP)
-		local extend = ICD - (total-elapsed)
-		DBM:Debug("timerSurgicalBeamCD TOP extended by: "..extend, 2)
-		timerSurgicalBeamCD:Stop()
-		timerSurgicalBeamCD:Update(elapsed, total+extend, DBM_CORE_TOP)
-		countdownSurgicalBeam:Cancel()
-		countdownSurgicalBeam:Start(ICD)
+	if self.vb.phase >= 2 then
+		if (self.vb.nextLaser == 1) and timerSurgicalBeamCD:GetRemaining(DBM_CORE_SIDE) < ICD then
+			local elapsed, total = timerSurgicalBeamCD:GetTime(DBM_CORE_SIDE)
+			local extend = ICD - (total-elapsed)
+			DBM:Debug("timerSurgicalBeamCD SIDE extended by: "..extend, 2)
+			timerSurgicalBeamCD:Stop()
+			timerSurgicalBeamCD:Update(elapsed, total+extend, DBM_CORE_SIDE)
+			countdownSurgicalBeam:Cancel()
+			countdownSurgicalBeam:Start(ICD)
+		end
+		if (self.vb.nextLaser == 2) and timerSurgicalBeamCD:GetRemaining(DBM_CORE_TOP) < ICD then
+			local elapsed, total = timerSurgicalBeamCD:GetTime(DBM_CORE_TOP)
+			local extend = ICD - (total-elapsed)
+			DBM:Debug("timerSurgicalBeamCD TOP extended by: "..extend, 2)
+			timerSurgicalBeamCD:Stop()
+			timerSurgicalBeamCD:Update(elapsed, total+extend, DBM_CORE_TOP)
+			countdownSurgicalBeam:Cancel()
+			countdownSurgicalBeam:Start(ICD)
+		end
 	end
 end
 
@@ -203,12 +205,13 @@ function mod:SPELL_CAST_SUCCESS(args)
 	elseif spellId == 267945 then--Global Id for winds
 		warnWindTunnel:Show()
 		timerWindTunnelCD:Show()--40-47
+		updateAllTimers(self, 6)
 	elseif spellId == 269827 or spellId == 277973 or spellId == 277961 or spellId == 277742 then
 		if spellId == 277961 or spellId == 277742 or spellId == 269827 then--Top (277961 mythic chamber 2, 277742 heroic Chamber 2, 269827 heroic chamber 3)
 			specWarnSurgicalBeam:Show(DBM_CORE_TOP)
 			--Next Beam side
-			timerSurgicalBeamCD:Start(16, DBM_CORE_SIDE)
-			countdownSurgicalBeam:Start(16)
+			timerSurgicalBeamCD:Start(11, DBM_CORE_SIDE)--Usually delayed, but yes it's 11
+			countdownSurgicalBeam:Start(11)
 			self.vb.nextLaser = 1
 		else--Sides (277973 all)
 			specWarnSurgicalBeam:Show(DBM_CORE_SIDE)
@@ -221,9 +224,9 @@ function mod:SPELL_CAST_SUCCESS(args)
 				if self.vb.phase == 3 then
 					timerSurgicalBeamCD:Start(24, DBM_CORE_TOP)
 					countdownSurgicalBeam:Start(24)
-				else--TODO, confirm it's 30 here and not just always delayed by 6/5 second ICD
-					timerSurgicalBeamCD:Start(30, DBM_CORE_TOP)
-					countdownSurgicalBeam:Start(30)
+				else--TODO, confirm it's 29 here and not just always delayed by 6/5 second ICD (I'm even more confident it's 24 here too based on watching stream, think it's usually 30 cause of ICD)
+					timerSurgicalBeamCD:Start(29, DBM_CORE_TOP)
+					countdownSurgicalBeam:Start(29)
 				end
 			end
 		end

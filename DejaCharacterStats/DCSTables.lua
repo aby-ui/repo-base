@@ -346,6 +346,8 @@ hooksecurefunc("MovementSpeed_OnUpdate", function(statFrame)
 	statFrame.Label:SetText(move_speed)
 end)
 
+
+local SPELL_POWER_MANA = Enum.PowerType.Mana
 DCS_TableData.StatData.DCS_POWER = {
 	updateFunc = function(statFrame, unit)
 		local powerType = SPELL_POWER_MANA --changing here as well for similarity
@@ -491,13 +493,14 @@ DCS_TableData.StatData.GCD = {
 				gcd = casterGCD()
 			end
 		else
-			if (primaryStat == LE_UNIT_STAT_INTELLECT) or (classfilename == "HUNTER") or (primaryStat == LE_UNIT_STAT_STRENGTH) or (classfilename == "DEMONHUNTER")then 
+			if (primaryStat == LE_UNIT_STAT_INTELLECT) or (classfilename == "HUNTER") or (classfilename == "SHAMAN") or (primaryStat == LE_UNIT_STAT_STRENGTH) or (classfilename == "DEMONHUNTER")then 
 				-- adding wariors, paladins
 				-- tested with Crusader Strike, Judgment on retribution paladin
 				-- tested with Consecration, Avenger's Shield, Judgment on protection paladin
 				-- tested with Slam on level 1 warior
 				-- tested with Cobra shot and Multi-shot for hunter. Have troll hunter but don't have pet with Ancient Hysteria //Kakjens
 				-- adding DK-s as reported by Mpstark
+				-- tested enhancement shaman with several spells including Lighnting Shield. Wind Shear appears not to induce GCD
 				gcd = casterGCD()
 			else
 				gcd = 1 -- tested with mutilate for assasination rogues.
@@ -723,6 +726,13 @@ DCS_TableData.StatData.MASTERY_RATING = {
 		local stat = CR_MASTERY
 		local rating = GetCombatRating(stat)
 		if (UnitLevel("player") < SHOW_MASTERY_LEVEL) then
+			if not namespace.configMode then
+				if namespace.hidemastery then
+					statFrame:Hide();
+					--print("hiding")
+					return;
+				end
+			end
 			color_rating1 = "|cff7f7f7f" .. color_rating1 .. "|r"
 			color_rating2 = "|cff7f7f7f" .. color_rating2 .. "|r"
 			color_format = "|cff7f7f7f" .. color_format .. "|r"
