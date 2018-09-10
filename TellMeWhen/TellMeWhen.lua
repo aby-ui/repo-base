@@ -15,10 +15,10 @@
 -- ADDON GLOBALS AND LOCALS
 -- ---------------------------------
 
-TELLMEWHEN_VERSION = "8.5.4"
+TELLMEWHEN_VERSION = "8.5.5"
 
 TELLMEWHEN_VERSION_MINOR = ""
-local projectVersion = "8.5.3-1-g8049e99c" -- comes out like "6.2.2-21-g4e91cee"
+local projectVersion = "8.5.4-1-ge91a75f4" -- comes out like "6.2.2-21-g4e91cee"
 if projectVersion:find("project%-version") then
 	TELLMEWHEN_VERSION_MINOR = "dev"
 elseif strmatch(projectVersion, "%-%d+%-") then
@@ -26,7 +26,7 @@ elseif strmatch(projectVersion, "%-%d+%-") then
 end
 
 TELLMEWHEN_VERSION_FULL = TELLMEWHEN_VERSION .. " " .. TELLMEWHEN_VERSION_MINOR
-TELLMEWHEN_VERSIONNUMBER = 85401 -- NEVER DECREASE THIS NUMBER (duh?).  IT IS ALSO ONLY INTERNAL (for versioning of)
+TELLMEWHEN_VERSIONNUMBER = 85501 -- NEVER DECREASE THIS NUMBER (duh?).  IT IS ALSO ONLY INTERNAL (for versioning of)
 
 TELLMEWHEN_FORCECHANGELOG = 82105 -- if the user hasn't seen the changelog until at least this version, show it to them.
 
@@ -2538,8 +2538,8 @@ do	-- TMW:OnUpdate()
 				-- if only one icon or icon type is malfunctioning.
 				if not shouldSafeUpdate then
 					TMW:Debug("Update error detected. Switching to safe update mode!")
+					shouldSafeUpdate = true
 				end
-				shouldSafeUpdate = true
 			end
 			updateInProgress = true
 			

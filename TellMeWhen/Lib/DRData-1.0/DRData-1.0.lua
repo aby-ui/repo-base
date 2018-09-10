@@ -1,11 +1,9 @@
 local major = "DRData-1.0"
-local minor = 1047
+local minor = 1049
 assert(LibStub, string.format("%s requires LibStub.", major))
 
 local Data = LibStub:NewLibrary(major, minor)
 if( not Data ) then return end
-
-local wow_700 = select(4, GetBuildInfo()) >= 70000
 
 local L = {
 	-- WoD
@@ -11130,6 +11128,7 @@ local spellsAndProvidersByCategory = {
 		[  3355] = 187650, -- Freezing Trap
 		[ 19386] = true, -- Wyvern Sting
 		[209790] = true, -- Freezing Arrow
+		[213691] = true, -- Scatter Shot
 		-- Mage
 		[   118] = true, -- Polymorph
 		[ 28272] = true, -- Polymorph (pig)
@@ -11150,8 +11149,7 @@ local spellsAndProvidersByCategory = {
 		-- Priest
 		[   605] = true, -- Dominate Mind
 		[  9484] = true, -- Shackle Undead
-		[ 64044] = true, -- Psychic Horror (Horror effect)
-		[ 200196] = true, -- Holy Word: Chastise
+		[200196] = true, -- Holy Word: Chastise
 		-- Rogue
 		[  1776] = true, -- Gouge
 		[  6770] = true, -- Sap
@@ -11166,6 +11164,9 @@ local spellsAndProvidersByCategory = {
 		[  6789] = true, -- Mortal Coil
 		-- Pandaren
 		[107079] = true, -- Quaking Palm
+		-- Demon Hunter
+		[217832] = true, -- Imprison
+		[221527] = true, -- Improve Imprison
 	},
 
 	--[[ SILENCES ]]--
@@ -11204,9 +11205,10 @@ local spellsAndProvidersByCategory = {
 		[207685] = true, -- Sigil of Misery
 		-- Druid
 		[ 33786] = true, -- Cyclone
+		[209753] = true, -- Cyclone (Balance)
 		-- Hunter
-		[213691] = true, -- Scatter Shot
 		[186387] = true, -- Bursting Shot
+		[224729] = true, -- Bursting Shot
 		-- Mage
 		[ 31661] = true, -- Dragon's Breath
 		-- Monk
@@ -11216,6 +11218,7 @@ local spellsAndProvidersByCategory = {
 		[105421] = true, -- Blinding Light -- FIXME: is this the right category? Its missing from blizzard's list
 		-- Priest
 		[  8122] = true, -- Psychic Scream
+		[226943] = true, -- Mind Bomb
 		-- Rogue
 		[  2094] = true, -- Blind
 		-- Warlock
@@ -11247,6 +11250,9 @@ local spellsAndProvidersByCategory = {
 		[211881] = true, -- Fel Eruption
 		-- Druid
 		[203123] = true, -- Maim
+		[236025] = true, -- Maim (Honor talent)
+		[236026] = true, -- Maim (Honor talent)
+		[22570] = true, -- Maim (Honor talent)
 		[  5211] = true, -- Mighty Bash
 		[163505] = 1822, -- Rake (Stun from Prowl)
 		-- Hunter
@@ -11262,7 +11268,7 @@ local spellsAndProvidersByCategory = {
 		[   853] = true, -- Hammer of Justice
 		-- Priest
 		[200200] = true, -- Holy word: Chastise
-		[226943] = true, -- Mind Bomb
+		[ 64044] = true, -- Psychic Horror
 		-- Rogue
 		-- Shadowstrike note: 196958 is the stun, but it never applies to players,
 		-- so I haven't included it.
@@ -11272,7 +11278,7 @@ local spellsAndProvidersByCategory = {
 		-- Shaman
 		[118345] = true, -- Pulverize (Primal Earth Elemental)
 		[118905] = true, -- Static Charge (Capacitor Totem)
-		[204399] = true, -- Earthfury (pvp talent)
+		--[204399] = true, -- Earthfury (pvp talent)
 		-- Warlock
 		[ 89766] = true, -- Axe Toss (Felguard)
 		[ 30283] = true, -- Shadowfury
@@ -11280,6 +11286,7 @@ local spellsAndProvidersByCategory = {
 		-- Warrior
 		[132168] = true, -- Shockwave
 		[132169] = true, -- Storm Bolt
+		[237744] = true, -- Warbringer
 		-- Tauren
 		[ 20549] = true, -- War Stomp
 	},

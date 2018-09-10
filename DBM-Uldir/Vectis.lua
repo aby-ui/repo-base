@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2166, "DBM-Uldir", nil, 1031)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17787 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 17812 $"):sub(12, -3))
 mod:SetCreatureID(134442)--135016 Plague Amalgam
 mod:SetEncounterID(2134)
 mod:SetZone()
@@ -13,20 +13,20 @@ mod.respawnTime = 29
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
-	"SPELL_CAST_START 267242 265217",
+	"SPELL_CAST_START 267242 265217 265206",
 	"SPELL_CAST_SUCCESS 265178 265212 266459 265209",
-	"SPELL_AURA_APPLIED 265178 265129 265212",
+	"SPELL_AURA_APPLIED 265178 265129 265212 274990",
 	"SPELL_AURA_APPLIED_DOSE 265178 265127",
 	"SPELL_AURA_REMOVED 265178 265129 265212 265217",
 	"SPELL_SUMMON 275055",
-	"RAID_BOSS_WHISPER"
+	"RAID_BOSS_WHISPER",
+	"INSTANCE_ENCOUNTER_ENGAGE_UNIT",
 --	"SPELL_PERIODIC_DAMAGE",
 --	"SPELL_PERIODIC_MISSED",
---	"UNIT_DIED",
+	"UNIT_DIED"
 )
 
 --TODO, determine highest tolerable tank stacks. Need a better idea of raid numbers/tuning. Was wildly variable between 4 and 11 in testing, so leaving at 6 for now
---TODO, Immunosuppression Timer for big adds??
 --[[
 (ability.id = 267242 or ability.id = 265217) and type = "begincast"
  or (ability.id = 265178 or ability.id = 266459 or ability.id = 265212 or ability.id = 265209) and type = "cast"
@@ -37,6 +37,7 @@ local warnEvolvingAffliction				= mod:NewStackAnnounce(265178, 2, nil, "Tank")
 local warnGestate							= mod:NewTargetAnnounce(265212, 3)
 local warnHypergenesis						= mod:NewSpellAnnounce(266926, 3)
 local warnContagion							= mod:NewCountAnnounce(267242, 3)
+local warnImmunoSupp						= mod:NewCountAnnounce(265206, 3)
 
 local specWarnEvolvingAffliction			= mod:NewSpecialWarningStack(265178, nil, 2, nil, nil, 1, 6)
 local specWarnEvolvingAfflictionOther		= mod:NewSpecialWarningTaunt(265178, nil, nil, nil, 1, 2)
@@ -50,7 +51,13 @@ local specWarnGestateNear					= mod:NewSpecialWarningClose(265212, false, nil, 2
 local specWarnAmalgam						= mod:NewSpecialWarningSwitch("ej18007", "-Healer", nil, 2, 1, 2)
 local specWarnSpawnParasite					= mod:NewSpecialWarningSwitch(275055, "Dps", nil, nil, 1, 2)--Mythic
 --local specWarnContagion					= mod:NewSpecialWarningCount(267242, nil, nil, nil, 2, 2)
-local specWarnLiquefy						= mod:NewSpecialWarningSpell(265217, nil, nil, nil, 2, 2)
+local specWarnBurstingLesions				= mod:NewSpecialWarningMoveAway(274990, nil, nil, nil, 1, 2)
+local yellBurstingLesions					= mod:NewYell(274990, nil, false)--Mythic
+local yellEngorgedParasite					= mod:NewYell(274983)--Mythic
+local yellTerminalEruption					= mod:NewYell(274989, nil, nil, nil, "YELL")--Mythic
+local specWarnLingeringInfection			= mod:NewSpecialWarningStack(265127, nil, 6, nil, nil, 1, 6)
+local specWarnLiquefy						= mod:NewSpecialWarningSpell(265217, nil, nil, nil, 3, 2)
+local specWarnTerminalEruption				= mod:NewSpecialWarningSpell(274989, nil, nil, nil, 2, 2)
 --local specWarnGTFO						= mod:NewSpecialWarningGTFO(238028, nil, nil, nil, 1, 2)
 
 --mod:AddTimerLine(Nexus)
@@ -59,6 +66,7 @@ local timerGestateCD						= mod:NewCDTimer(25.5, 265212, nil, nil, nil, 3)
 local timerContagionCD						= mod:NewCDCountTimer(23, 267242, nil, nil, nil, 2, nil, DBM_CORE_DEADLY_ICON)
 local timerLiquefyCD						= mod:NewCDTimer(90.9, 265217, nil, nil, nil, 6)
 local timerHypergenesisCD					= mod:NewCDCountTimer(11.4, 266459, nil, nil, nil, 5)--11.4 or 12.2, not sure which one blizz decided on, find out later
+local timerImmunoSuppCD						= mod:NewCDCountTimer(25.5, 265206, nil, nil, nil, 5, nil, DBM_CORE_HEALER_ICON)
 
 --local berserkTimer						= mod:NewBerserkTimer(600)
 
@@ -73,10 +81,16 @@ mod:AddBoolOption("ShowHighestFirst", true)--The priority for mythic, non mythic
 
 mod.vb.ContagionCount = 0
 mod.vb.hyperGenesisCount = 0
+mod.vb.ImmunosuppCount = 0
 local availableRaidIcons = {[1] = true, [2] = true, [3] = true, [4] = true, [5] = true, [6] = true, [7] = true, [8] = true}
-local playerHasTen = false
+local playerHasSix, playerHasTwelve, playerHasTwentyFive = false, false, false
+local seenAdds = {}
+local castsPerGUID = {}
 
 function mod:OnCombatStart(delay)
+	table.wipe(seenAdds)
+	table.wipe(castsPerGUID)
+	playerHasSix, playerHasTwelve, playerHasTwentyFive = false, false, false
 	self.vb.ContagionCount = 0
 	availableRaidIcons = {[1] = true, [2] = true, [3] = true, [4] = true, [5] = true, [6] = true, [7] = true, [8] = true}
 	timerEvolvingAfflictionCD:Start(4.7-delay)--Instantly on engage
@@ -92,11 +106,33 @@ function mod:OnCombatStart(delay)
 end
 
 function mod:OnCombatEnd()
+	table.wipe(seenAdds)
+	table.wipe(castsPerGUID)
 	if self.Options.RangeFrame then
 		DBM.RangeCheck:Hide()
 	end
 	if self.Options.InfoFrame then
 		DBM.InfoFrame:Hide()
+	end
+end
+
+function mod:OnTimerRecovery()
+	if self:IsMythic() then
+		local _, _, count = DBM:UnitDebuff("player", 265127)--Lingering Infection Recovery
+		if count then
+			if count >= 6 then
+				playerHasSix = true
+				if self.Options.RangeFrame then
+					DBM.RangeCheck:Show(5)
+				end
+			end
+			if count >= 12 then--Spawning Parasite (274983) will begin
+				playerHasTwelve = true
+			end
+			if count >= 25 then
+				playerHasTwentyFive = true
+			end
+		end
 	end
 end
 
@@ -107,6 +143,28 @@ function mod:SPELL_CAST_START(args)
 		warnContagion:Show(self.vb.ContagionCount)
 		--specWarnContagion:Play("aesoon")
 		timerContagionCD:Start(nil, self.vb.ContagionCount+1)
+		if self:IsMythic() then
+			if playerHasSix then
+				specWarnBurstingLesions:Show()
+				specWarnBurstingLesions:Play("range5")
+				--Yell Priorities
+				if playerHasTwentyFive then
+					yellTerminalEruption:Yell()
+				elseif playerHasTwelve then
+					yellEngorgedParasite:Yell()
+				else
+					yellBurstingLesions:Yell()
+				end
+			end
+			for uId in DBM:GetGroupMembers() do
+				local _, _, count = DBM:UnitDebuff("player", 265127)
+				if count and count >= 25 then
+					specWarnTerminalEruption:Show()
+					specWarnTerminalEruption:Play("aesoon")
+					break
+				end
+			end
+		end
 	elseif spellId == 265217 then
 		specWarnLiquefy:Show()
 		specWarnLiquefy:Play("phasechange")
@@ -117,6 +175,10 @@ function mod:SPELL_CAST_START(args)
 		timerEvolvingAfflictionCD:Stop()
 		timerContagionCD:Stop()
 		timerHypergenesisCD:Start(9.8, 1)
+	elseif spellId == 265206 then
+		castsPerGUID[args.sourceGUID] = castsPerGUID[args.sourceGUID] + 1
+		warnImmunoSupp:Show(castsPerGUID[args.sourceGUID])
+		timerImmunoSuppCD:Start(9.7, castsPerGUID[args.sourceGUID]+1, args.sourceGUID)
 	end
 end
 
@@ -214,11 +276,23 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif spellId == 265127 then
 		if args:IsPlayer() and self:IsMythic() then
 			local amount = args.amount or 1
-			if amount >= 10 and not playerHasTen then
-				playerHasTen = true
+			if not playerHasSix and amount >= 6 then
+				playerHasSix = true
+				specWarnLingeringInfection:Show(amount)
+				specWarnLingeringInfection:Play("stackhigh")
 				if self.Options.RangeFrame then
 					DBM.RangeCheck:Show(5)
 				end
+			elseif not playerHasTwelve and amount >= 12 then--Spawning Parasite (274983) will begin
+				playerHasTwelve = true
+				specWarnLingeringInfection:Show(amount)
+				specWarnLingeringInfection:Play("stackhigh")
+				--yellEngorgedParasite:Yell()
+			elseif not playerHasTwentyFive and amount >= 25 then
+				playerHasTwentyFive = true
+				specWarnLingeringInfection:Show(amount)
+				specWarnLingeringInfection:Play("stackhigh")
+				--yellTerminalEruption:Yell()
 			end
 		end
 	end
@@ -248,7 +322,7 @@ function mod:SPELL_AURA_REMOVED(args)
 		--specWarnAmalgam:Play("killmob")
 		if args:IsPlayer() then
 			if self.Options.RangeFrame then
-				if playerHasTen then
+				if playerHasSix then
 					DBM.RangeCheck:Show(5)
 				else
 					DBM.RangeCheck:Hide()
@@ -294,6 +368,29 @@ function mod:OnTranscriptorSync(msg, targetName)
 	end
 end
 
+function mod:INSTANCE_ENCOUNTER_ENGAGE_UNIT()
+	for i = 1, 5 do
+		local unitID = "boss"..i
+		local GUID = UnitGUID(unitID)
+		if GUID and not seenAdds[GUID] then
+			seenAdds[GUID] = true
+			local cid = self:GetCIDFromGUID(GUID)
+			if cid == 135016 then--Big Adds
+				castsPerGUID[GUID] = 0
+				timerImmunoSuppCD:Start(5.4, 1, GUID)
+			end
+		end
+	end
+end
+
+function mod:UNIT_DIED(args)
+	local cid = self:GetCIDFromGUID(args.destGUID)
+	if cid == 135016 then
+		timerImmunoSuppCD:Stop(castsPerGUID[args.destGUID]+1, args.destGUID)
+		castsPerGUID[args.destGUID] = nil
+	end
+end
+
 --[[
 function mod:SPELL_PERIODIC_DAMAGE(_, _, _, _, destGUID, _, _, _, spellId)
 	if spellId == 228007 and destGUID == UnitGUID("player") and self:AntiSpam(2, 4) then
@@ -302,13 +399,6 @@ function mod:SPELL_PERIODIC_DAMAGE(_, _, _, _, destGUID, _, _, _, spellId)
 	end
 end
 mod.SPELL_PERIODIC_MISSED = mod.SPELL_PERIODIC_DAMAGE
-
-function mod:UNIT_DIED(args)
-	local cid = self:GetCIDFromGUID(args.destGUID)
-	if cid == 124396 then
-
-	end
-end
 
 function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 	if spellId == 265291 then--Liquefy Cancel Cosmetic

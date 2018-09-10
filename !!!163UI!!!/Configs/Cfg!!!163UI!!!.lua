@@ -219,6 +219,7 @@ U1RegisterAddon("!!!163UI!!!", {
                     end
                     SetCVar("Sound_EnableSFX", "0")
                     SetCVar("Sound_EnableAmbience", "0")
+                    Sound_GameSystem_RestartSoundSystem()
                 end
             end
         end

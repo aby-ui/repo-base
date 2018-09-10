@@ -132,7 +132,7 @@ end)
 Addon.DisplayOptions = Addon.Options:NewPanel(ADDON, L.DisplaySettings, L.DisplaySettingsDesc, function(self)
 	self:CreateHeader(L.DisplayInventory, 'GameFontHighlight', true)
 	self:CreateRow(35*5, function(row)
-		for i, event in ipairs {'Bank', 'Auction', 'Guildbank', 'Mail', 'Player', 'Trade', 'Gems', 'Craft'} do
+		for i, event in ipairs {'Bank', 'Guildbank', 'Auction', 'Mail', 'Player', 'Trade', 'Gems', 'Scrapping', 'Craft'} do
 			row:CreateCheck('display' .. event).right = 220
 		end
 	end)

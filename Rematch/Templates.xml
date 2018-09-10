@@ -1207,4 +1207,7 @@
 		</Scripts>
 	</Button>		
 
+	<!-- For created frames that need useParentLevel -->
+	<Frame name="RematchUseParentLevel" useParentLevel="true" virtual="true"/>
+
 </Ui>

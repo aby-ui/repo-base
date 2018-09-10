@@ -1,4 +1,4 @@
-local VERSION = 80
+local VERSION = 81
 
 --[[
 Special icons for rares, pvp or pet battle quests in list
@@ -239,6 +239,8 @@ Update for Arathi rares
 Added "/way X Y" if no other addon found for it
 Some fixes for sorting
 Fix autoinvite for non-quest lfg groups
+
+Major fixes
 ]]
 
 local GlobalAddonName, WQLdb = ...
@@ -5444,6 +5446,7 @@ function WorldQuestList_Update(preMapID,forceUpdate)
 					},
 					reward = description and description:gsub("^.-: ","") or "",
 					faction = "",
+					factionSort = "",
 					zone = (mapAreaID == 947 and WorldQuestList:GetMapIcon(zoneID) or "")..WorldQuestList:GetMapName(zoneID),
 					zoneID = zoneID or 0,
 					timeleft = WorldQuestList:FormatTime(timeLeftMinutes),

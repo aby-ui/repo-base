@@ -4,7 +4,7 @@
 ## Notes: Single window display for your void storage
 ## RequiredDeps: Bagnon
 ## LoadOnDemand: 1
-## Version: 8.0.4
+## Version: 8.0.6
 
 localization\localization.xml
 main.lua

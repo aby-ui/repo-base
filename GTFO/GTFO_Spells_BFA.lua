@@ -104,6 +104,13 @@ GTFO.SpellID["257065"] = {
   sound = 1;
 };
 
+GTFO.SpellID["277579"] = {
+  --desc = "Murderous Volley (Man-Hunter Rog)";
+  sound = 1;
+};
+
+
+
 -- ***********************
 -- * Shrine of the Storm *
 -- ***********************
@@ -161,6 +168,13 @@ GTFO.SpellID["264040"] = {
 GTFO.SpellID["268308"] = {
   --desc = "Discordant Cadenza (Lady Waycrest)";
   sound = 1;
+};
+
+GTFO.SpellID["268086"] = {
+  --desc = "Aura of Dread (Sisters)";
+  applicationOnly = true;
+  sound = 1;
+  minimumStacks = 3;
 };
 
 -- ************
@@ -262,14 +276,13 @@ GTFO.SpellID["278789"] = {
 -- * Temple of Sethraliss *
 -- ************************
 
-GTFO.SpellID["272657"] = {
-  --desc = "Noxious Breath (Scaled Krolusk Rider)";
-  sound = 1;
-  tankSound = 0;
-};
-
 GTFO.SpellID["272696"] = {
   --desc = "Oil of Immolation (Crazed Incubator)";
+  sound = 1;
+};
+
+GTFO.SpellID["263927"] = {
+  --desc = "Toxic Pool (Merektha)";
   sound = 1;
 };
 
@@ -341,6 +354,17 @@ GTFO.SpellID["265625"] = {
   test = true;
 };
 
+GTFO.SpellID["258723"] = {
+  --desc = "Grotesque Pool";
+  sound = 1;
+};
+
+GTFO.SpellID["253666"] = {
+  --desc = "Fiery Bolt (Dazar'ai Juggernaut)";
+  sound = 1;
+};
+
+
 -- ***************
 -- * King's Rest *
 -- ***************
@@ -381,10 +405,15 @@ GTFO.SpellID["257886"] = {
 -- * Uldir *
 -- *********
 
+GTFO.SpellID["275057"] = {
+  --desc = "Coagulated Corruption (Tendril of Gore)";
+  sound = 1;
+  test = true;
+};
+
 GTFO.SpellID["270290"] = {
   --desc = "Blood Storm (Taloc)";
   sound = 1;
-  test = true;
 };
 
 -- TODO: Plasma Discharge (Taloc) -- Alert when standing next to someone that has it
@@ -413,6 +442,11 @@ GTFO.SpellID["263326"] = {
 -- TODO: Putrid Blood (G'huun)
 -- TODO: Malignant Growth (G'huun)
 
+GTFO.SpellID["284631"] = {
+  --desc = "Uldir Defensive Beam";
+  sound = 1;
+};
+
 GTFO.SpellID["275432"] = {
   --desc = "Uldir Defensive Beam";
   sound = 1;
@@ -430,3 +464,20 @@ GTFO.SpellID["268253"] = {
   sound = 1;
   test = true;
 };
+
+GTFO.SpellID["268277"] = {
+  --desc = "Purifying Flame (MOTHER)";
+  sound = 1;
+};
+
+GTFO.SpellID["274804"] = {
+  --desc = "Bloodstorm (Nazmani Reaver)";
+  sound = 1;
+  damageMinimum = 1;
+};
+
+GTFO.SpellID["277804"] = {
+  --desc = "Hunting Leap (Malformed Raptor)";
+  sound = 1;
+};
+

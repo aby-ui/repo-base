@@ -150,8 +150,9 @@ panel.opts = {
 	{ "check", "DebugJournalFrameLevel", L["Debug: Journal FrameLevel"], L["Check this to less aggressively try to take over the default pet journal. Specifically, it will give up sooner if it can't raise frame level above all other addons' frames in the journal."] },
 	{ "check", "DebugNoCache", L["Debug: No Cache"], L["Check this to disable the automatic caching of NPC names when the addon launches.\n\n\124cffffffffNote:\124r If a target's name appears as something like 'NPC 1234' while this option is enabled, it's probably because of this option. It should correct itself on its own over time."] },
 	{ "check", "DebugNoSanctuary", L["Debug: No Sanctuary"], L["Check this to disable the 'Sanctuary' system that acts as a safety net for server petID reassignments.\n\n\124cffffffffNote:\124r While this option is enabled, any pets in teams will become greyed out if their petID changes. When the team loads, an arbitrary one of the same species will be loaded in its place.\n\n\124cffff4040WARNING!\124r While this option is enabled, make frequent backups of your teams with the 'Backup All Teams' options in the Teams button at the top of the Teams Tab."] },
-	{ "check", "DebugDelayMacs", L["Debug: Delay Journal On Macs"]..newIcon, L["On MacOS clients, delay Rematch taking over the journal on the first launch by a full second."] },
-	{ "check", "DebugDelayMacsOneFrame", L["Delay Just One Frame"]..newIcon, L["Change the delay from half a second to one frame, or nearly instant."], "DebugDelayMacs" },
+	{ "check", "DebugDelayMacs", L["Debug: Delay Journal"], L["Delay Rematch taking over the journal on the first launch by a full second."] },
+	{ "check", "DebugDelayMacsOneFrame", L["Delay Just One Frame"], L["Change the delay from half a second to one frame, or nearly instant."], "DebugDelayMacs" },
+	{ "check", "DebugNoModels", L["Debug: No Models"]..newIcon, L["Prevent the creation or rendering of any models within Rematch. This includes the target panel, loadout slots and pet card.\n\n\124cffff4040This option requires a Reload."], nil, true },
 	{ "text", format(L["Rematch version %s"],GetAddOnMetadata("Rematch","Version")) },
 	{ "text", format(L["The%s icon indicates new options."],newIcon) },
 }
@@ -502,10 +503,17 @@ panel.funcs.UseDefaultJournal = function()
 		end
 	end
 end
-panel.funcs.SlimListButtons = function()
-	local dialog = rematch:ShowDialog("SlimListButtons",300,180,L["Compact List Format"],L["Reload the UI now?"],YES,ReloadUI,NO)
-	dialog:ShowText(L["You've chosen to change the setting for Compact List Format.\n\nThis change doesn't take effect until a reload or logout."],260,80,"TOP",0,-36)
+
+-- this will pop up a dialog asking to reload due to the given name (ie "Compact List Format")
+local function showReloadPopup(name)
+	name = name or "<undefined>"
+	local dialog = rematch:ShowDialog(name,300,180,name,L["Reload the UI now?"],YES,ReloadUI,NO)
+	dialog:ShowText(format(L["You've chosen to change the setting for %s.\n\nThis change doesn't take effect until a reload or logout."],name),260,80,"TOP",0,-36)
 	rematch.timeUIChanged = GetTime() -- prevent tooltip from scale shift
+end
+
+panel.funcs.SlimListButtons = function()
+	showReloadPopup("Compact List Format")
 end
 panel.funcs.SlimListSmallText = function()
 	local winRecord = rematch.LoadedTeamPanel.Footnotes.WinRecord
@@ -535,6 +543,9 @@ panel.funcs.AllowHiddenPets = function()
    rematch:UpdateRoster()
 end
 panel.funcs.StrongVsLevel = rematch.UpdateRoster
+panel.funcs.DebugNoModels = function()
+	showReloadPopup("Debug: No Models")
+end
 
 -- collapses or expands an option header
 function panel:HeaderOnClick()

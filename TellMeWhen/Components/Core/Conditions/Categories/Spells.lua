@@ -221,10 +221,14 @@ ConditionCategory:RegisterCondition(2.8, "LASTCAST", {
 			local pGUID = UnitGUID("player")
 			assert(pGUID, "pGUID was null when func string was generated!")
 
+			local blacklist = {
+				[204255] = true -- Soul Fragment (happens after casting Sheer for DH tanks)
+			}
+
 			module:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED",
 			function()
 				local _, e, _, sourceGuid, _, _, _, _, _, _, _, spellID, spellName = CombatLogGetCurrentEventInfo()
-				if e == "SPELL_CAST_SUCCESS" and sourceGuid == pGUID then
+				if e == "SPELL_CAST_SUCCESS" and sourceGuid == pGUID and not blacklist[spellID] then
 					Env.LastPlayerCastName = strlower(spellName)
 					Env.LastPlayerCastID = spellID
 					TMW:Fire("TMW_CNDT_LASTCAST_UPDATED")
@@ -233,13 +237,14 @@ ConditionCategory:RegisterCondition(2.8, "LASTCAST", {
 
 			-- Spells that don't work with CLEU and must be tracked with USS.
 			local ussSpells = {
+				[189110] = true, -- Infernal Strike (DH)
 				[189111] = true, -- Infernal Strike (DH)
 				[195072] = true, -- Fel Rush (DH)
 			}
 			module:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED",
-			function(_, unit, spellName, _, _, spellID)
-				if unit == "player" and ussSpells[spellID] then
-					Env.LastPlayerCastName = strlower(spellName)
+			function(_, unit, _, spellID)
+				if unit == "player" and ussSpells[spellID] and not blacklist[spellID] then
+					Env.LastPlayerCastName = strlower(GetSpellInfo(spellID))
 					Env.LastPlayerCastID = spellID
 					TMW:Fire("TMW_CNDT_LASTCAST_UPDATED")
 				end

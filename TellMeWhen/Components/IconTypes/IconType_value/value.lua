@@ -33,6 +33,7 @@ Type.unitType = "unitid"
 Type.hasNoGCD = true
 Type.canControlGroup = true
 Type.menuSpaceBefore = true
+Type.barIsTimer = false
 
 local STATE_UNITFOUND = TMW.CONST.STATE.DEFAULT_SHOW
 local STATE_NOUNIT = TMW.CONST.STATE.DEFAULT_HIDE
@@ -78,26 +79,27 @@ Type:RegisterConfigPanel_ConstructorFunc(100, "TellMeWhen_ValueSettings", functi
 	self:SetTitle(L["ICONMENU_VALUE_POWERTYPE"])
 
 	local types = {
-		[-2] = L["CONDITIONPANEL_POWER"],
-		[-1] = HEALTH,
 
-	    [Enum.PowerType.Mana] = MANA,
-		[Enum.PowerType.Rage] = RAGE,
-		[Enum.PowerType.Energy] = ENERGY,
-		[Enum.PowerType.ComboPoints] = COMBO_POINTS,
-		[Enum.PowerType.Focus] = FOCUS,
-		-- [SPELL_POWER_RUNES] = RUNES,
-		[Enum.PowerType.RunicPower] = RUNIC_POWER,
-		[Enum.PowerType.SoulShards] = SOUL_SHARDS_POWER,
-		[Enum.PowerType.HolyPower] = HOLY_POWER,
-		[Enum.PowerType.Chi] = CHI_POWER;
-		[Enum.PowerType.Maelstrom] = MAELSTROM_POWER,
-		[Enum.PowerType.ArcaneCharges] = ARCANE_CHARGES_POWER,
-		[Enum.PowerType.LunarPower] = LUNAR_POWER,
-		[Enum.PowerType.Insanity] = INSANITY_POWER,
-		[Enum.PowerType.Fury] = FURY,
-		[Enum.PowerType.Pain] = PAIN,
-	    [Enum.PowerType.Alternate] = L["CONDITIONPANEL_ALTPOWER"],
+		{ order = -2, id = -2, name = L["CONDITIONPANEL_POWER"], },
+		{ order = -1, id = -1, name = HEALTH, },
+	    { order = 1,  id = Enum.PowerType.Mana, name = MANA, },
+		{ order = 2,  id = Enum.PowerType.Rage, name = RAGE, },
+		{ order = 3,  id = Enum.PowerType.Energy, name = ENERGY, },
+		{ order = 4,  id = Enum.PowerType.ComboPoints, name = COMBO_POINTS, },
+		{ order = 5,  id = Enum.PowerType.Focus, name = FOCUS, },
+		{ order = 6,  id = Enum.PowerType.RunicPower, name = RUNIC_POWER, },
+		{ order = 7,  id = Enum.PowerType.SoulShards, name = SOUL_SHARDS_POWER, },
+		{ order = 8,  id = Enum.PowerType.HolyPower, name = HOLY_POWER, },
+		{ order = 9,  id = Enum.PowerType.Chi, name = CHI_POWER; },
+		{ order = 10,  id = Enum.PowerType.Maelstrom, name = MAELSTROM_POWER, },
+		{ order = 11,  id = Enum.PowerType.ArcaneCharges, name = ARCANE_CHARGES_POWER, },
+		{ order = 12,  id = Enum.PowerType.LunarPower, name = LUNAR_POWER, },
+		{ order = 13,  id = Enum.PowerType.Insanity, name = INSANITY_POWER, },
+		{ order = 14,  id = Enum.PowerType.Fury, name = FURY, },
+		{ order = 15,  id = Enum.PowerType.Pain, name = PAIN, },
+	    { order = 16,  id = Enum.PowerType.Alternate, name = L["CONDITIONPANEL_ALTPOWER"], },
+
+	    { order = 17,  id = -3, name = STAGGER, },
 	}
 
 
@@ -111,11 +113,11 @@ Type:RegisterConfigPanel_ConstructorFunc(100, "TellMeWhen_ValueSettings", functi
 		TMW.IE:LoadIcon(1)
 	end
 	self.PowerType:SetFunction(function(self)
-		for id, name in TMW:OrderedPairs(types) do
+		for _, data in TMW:OrderedPairs(types) do
 			local info = TMW.DD:CreateInfo()
-			info.text = name
+			info.text = data.name
 			info.func = DropdownOnClick
-			info.arg1 = id
+			info.arg1 = data.id
 			info.checked = info.arg1 == TMW.CI.ics.PowerType
 			TMW.DD:AddButton(info)
 		end
@@ -127,7 +129,11 @@ Type:RegisterConfigPanel_ConstructorFunc(100, "TellMeWhen_ValueSettings", functi
 	self.PowerType:SetPoint("RIGHT", -5, 0)
 
 	self:CScriptAdd("ReloadRequested", function()
-		self.PowerType:SetText(types[TMW.CI.ics.PowerType])
+		for k, v in pairs(types) do
+			if v.id == TMW.CI.ics.PowerType then
+				self.PowerType:SetText(v.name)
+			end
+		end
 	end)
 end)
 
@@ -162,6 +168,7 @@ for k, v in pairs(PowerBarColor) do
 	v.a = 1
 end
 PowerBarColor[-1] = {{r=1, g=0, b=0, a=1}, {r=1, g=1, b=0, a=1}, {r=0, g=1, b=0, a=1}}
+PowerBarColor[-3] = {{r=0, g=1, b=0, a=1}, {r=1, g=1, b=0, a=1}, {r=1, g=0, b=0, a=1}}
 
 local function Value_OnUpdate(icon, time)
 	local PowerType = icon.PowerType
@@ -177,6 +184,8 @@ local function Value_OnUpdate(icon, time)
 			local value, maxValue, valueColor
 			if PowerType == -1 then
 				value, maxValue, valueColor = UnitHealth(unit), UnitHealthMax(unit), PowerBarColor[PowerType]
+			elseif PowerType == -3 then
+				value, maxValue, valueColor = UnitStagger(unit), UnitHealthMax(unit), PowerBarColor[PowerType]
 			else
 				if PowerType == -2 then
 					PowerType = UnitPowerType(unit)

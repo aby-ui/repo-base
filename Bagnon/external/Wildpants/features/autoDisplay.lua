@@ -21,7 +21,7 @@ function AutoDisplay:RegisterGameEvents()
 	self:UnregisterAllEvents()
 	self:UnregisterAllMessages()
 
-	self:RegisterMessage('BAGNON_UPDATE_ALL', 'RegisterGameEvents')
+	self:RegisterMessage(ADDON .. 'UPDATE_ALL', 'RegisterGameEvents')
 	self:RegisterMessage('CACHE_BANK_CLOSED')
 	self:RegisterMessage('CACHE_BANK_OPENED')
 
@@ -30,6 +30,7 @@ function AutoDisplay:RegisterGameEvents()
 	self:RegisterDisplayEvents('displayTrade', 'TRADE_SHOW', 'TRADE_CLOSED')
 	self:RegisterDisplayEvents('displayGems', 'SOCKET_INFO_UPDATE')
 	self:RegisterDisplayEvents('displayCraft', 'TRADE_SKILL_SHOW', 'TRADE_SKILL_CLOSE')
+	self:RegisterDisplayEvents('displayScrapping', 'SCRAPPING_MACHINE_SHOW', 'SCRAPPING_MACHINE_CLOSE')
 
 	self:RegisterDisplayEvents('closeCombat', nil, 'PLAYER_REGEN_DISABLED')
 	self:RegisterDisplayEvents('closeVehicle', nil, 'UNIT_ENTERED_VEHICLE')

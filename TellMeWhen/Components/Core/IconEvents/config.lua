@@ -745,9 +745,9 @@ function ColumnConfig:LoadSettingsForEventID(id)
 		tinsert(subHandlersToDisplay, subHandlerDataParent)
 	end
 	
-	for i, GenericComponent in ipairs(TMW.CI.icon.Components) do
-		if GenericComponent.EventHandlerData then
-			for i, subHandlerDataParent in ipairs(GenericComponent.EventHandlerData) do
+	for i, Component in ipairs(TMW.CI.icon.Components) do
+		if  Component.EventHandlerData and Component.IsEnabled then
+			for i, subHandlerDataParent in ipairs(Component.EventHandlerData) do
 				if subHandlerDataParent.identifier == self.subHandlerDataIdentifier then
 					tinsert(subHandlersToDisplay, subHandlerDataParent)
 				end

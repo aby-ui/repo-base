@@ -34,7 +34,42 @@ rematch:InitModule(function()
    })
    
    -- UnwrapPet will only attempt to unwrap wrapped pets
-   card.Front.Middle.ModelScene:HookScript("OnMouseUp",card.UnwrapPet)
+   if not settings.DebugNoModels then
+
+		card.Front.Middle.ModelScene = CreateFrame("ModelScene",nil,card.Front.Middle,"ModelSceneMixinTemplate")
+		local model = card.Front.Middle.ModelScene
+		model.normalIntensity = 0.75
+		model.highlightIntensity = 1.2
+		model:SetSize(168,172)
+		model:SetPoint("TOPRIGHT",-3,-3)
+
+		model.UnwrapAnim = model:CreateAnimationGroup()
+		model.UnwrapAnim.WrappedAnim =  model.UnwrapAnim:CreateAnimation("Alpha")
+		local wrappedAnim = model.UnwrapAnim.WrappedAnim
+		wrappedAnim:SetFromAlpha(1)
+		wrappedAnim:SetToAlpha(0)
+		wrappedAnim:SetDuration(0.3)
+		wrappedAnim.parent = model
+		model.UnwrapAnim.UnwrappedAnim = model.UnwrapAnim:CreateAnimation("Alpha")
+		local unwrappedAnim = model.UnwrapAnim.UnwrappedAnim
+		unwrappedAnim:SetFromAlpha(0)
+		unwrappedAnim:SetToAlpha(1)
+		unwrappedAnim:SetDuration(0.3)
+		unwrappedAnim.parent = model
+
+	   card.Front.Middle.ModelScene:HookScript("OnMouseUp",card.UnwrapPet)
+
+	   card.Front.Middle.LevelingModel = CreateFrame("PlayerModel")
+	   local levelingModel = card.Front.Middle.LevelingModel
+	   levelingModel:SetSize(168,172)
+	   levelingModel:SetPoint("TOPRIGHT",-3,-3)
+	   levelingModel:SetScript("OnShow",function(self)
+		self:SetCamDistance(0.45)
+		self:SetPosition(0,0,0.25)
+		self:SetModel("Interface\\Buttons\\talktomequestion_ltblue.m2")
+	   end)
+
+   end
 end)
 
 -- TODO: rewrite this; break it apart into components (it's too long)
@@ -196,29 +231,31 @@ function rematch:ShowPetCard(parent,petID,force)
 	local middle = card.Front.Middle
 
 	-- update model in middle front of card
-	middle.LevelingModel:Hide()
-	if isSpecial then -- if this is a card for a leveling pet (or ignored or random)
-		middle.ModelScene:Hide()
-      local m2 = isSpecial=="ignored" and "Interface\\Buttons\\talktomered.m2" or isSpecial=="random" and "Interface\\Buttons\\talktomequestionmark.m2" or "Interface\\Buttons\\talktomequestion_ltblue.m2"
-      C_Timer.After(0,function() -- not sure why this delay is necessary to set model
-   		middle.LevelingModel:Show()
-         middle.LevelingModel:SetModel(m2)
-      end)
-	elseif petInfo.displayID~=card.displayID or card.forceSceneChange then
-		middle.ModelScene:Show()
+	if middle.ModelScene then
 		middle.LevelingModel:Hide()
-		card.displayID = petInfo.displayID
-		local cardSceneID,loadoutSceneID = C_PetJournal.GetPetModelSceneInfoBySpeciesID(petInfo.speciesID)
-		middle.ModelScene:TransitionToModelSceneID(cardSceneID, CAMERA_TRANSITION_TYPE_IMMEDIATE, CAMERA_MODIFICATION_TYPE_DISCARD, card.forceSceneChange)
-		local actor = middle.ModelScene:GetActorByTag("unwrapped")
-		if actor then
-			actor:SetModelByCreatureDisplayID(petInfo.displayID)
-			actor:SetAnimationBlendOperation(LE_MODEL_BLEND_OPERATION_NONE)
-		end
-		card.forceSceneChange = nil
-		-- only PrepareForFanfare if fanfare ever observed to avoid loading Blizzard_Collections
-		if rematch:WasFanfareObserved(petInfo.needsFanfare) then
-			middle.ModelScene:PrepareForFanfare(petInfo.needsFanfare)
+		if isSpecial then -- if this is a card for a leveling pet (or ignored or random)
+			middle.ModelScene:Hide()
+		local m2 = isSpecial=="ignored" and "Interface\\Buttons\\talktomered.m2" or isSpecial=="random" and "Interface\\Buttons\\talktomequestionmark.m2" or "Interface\\Buttons\\talktomequestion_ltblue.m2"
+		C_Timer.After(0,function() -- not sure why this delay is necessary to set model
+			middle.LevelingModel:Show()
+			middle.LevelingModel:SetModel(m2)
+		end)
+		elseif petInfo.displayID~=card.displayID or card.forceSceneChange then
+			middle.ModelScene:Show()
+			middle.LevelingModel:Hide()
+			card.displayID = petInfo.displayID
+			local cardSceneID,loadoutSceneID = C_PetJournal.GetPetModelSceneInfoBySpeciesID(petInfo.speciesID)
+			middle.ModelScene:TransitionToModelSceneID(cardSceneID, CAMERA_TRANSITION_TYPE_IMMEDIATE, CAMERA_MODIFICATION_TYPE_DISCARD, card.forceSceneChange)
+			local actor = middle.ModelScene:GetActorByTag("unwrapped")
+			if actor then
+				actor:SetModelByCreatureDisplayID(petInfo.displayID)
+				actor:SetAnimationBlendOperation(LE_MODEL_BLEND_OPERATION_NONE)
+			end
+			card.forceSceneChange = nil
+			-- only PrepareForFanfare if fanfare ever observed to avoid loading Blizzard_Collections
+			if rematch:WasFanfareObserved(petInfo.needsFanfare) then
+				middle.ModelScene:PrepareForFanfare(petInfo.needsFanfare)
+			end
 		end
 	end
 
@@ -441,7 +478,11 @@ function rematch:ShowPetCard(parent,petID,force)
 		card.PinButton:Hide()
 	end
 	-- adjust card height to fit max of front height, back height or 416(standard size)
-	card:SetHeight(max(190+max(abs(card.ypos),middle.ModelScene:GetHeight()+2)+ybottom,backHeight,416))
+	if middle.ModelScene then
+		card:SetHeight(max(190+max(abs(card.ypos),middle.ModelScene:GetHeight()+2)+ybottom,backHeight,416))
+	else
+		card:SetHeight(max(190+abs(card.ypos)+ybottom,backHeight,416))
+	end
 
 	-- save parent and petID to recreate card if needed
 	card.parent = parent
@@ -559,7 +600,9 @@ function card:UpdateLockState()
 	card.CloseButton:EnableMouse(card.locked)
 	card.PinButton:EnableMouse(card.locked)
 	card.Front.Middle.PossibleBreedsCapture:EnableMouse(card.locked)
-	card.Front.Middle.ModelScene:EnableMouse(card.locked)
+	if card.Front.Middle.ModelScene then
+		card.Front.Middle.ModelScene:EnableMouse(card.locked)
+	end
 	for _,button in pairs(card.statButtons) do
 		button:EnableMouse(locked)
 	end
@@ -806,7 +849,9 @@ local fanfareObserved = nil
 function rematch:WasFanfareObserved(needsFanfare)
 	if needsFanfare and not fanfareObserved then
 		LoadAddOn("Blizzard_Collections")
-		Mixin(card.Front.Middle.ModelScene,CollectionsWrappedModelSceneMixin)
+		if card.Front.Middle.ModelScene then
+			Mixin(card.Front.Middle.ModelScene,CollectionsWrappedModelSceneMixin)
+		end
 		fanfareObserved = true
 	end
 	return fanfareObserved
@@ -818,14 +863,19 @@ function card:UnwrapPet()
 	local petInfo = rematch.altInfo:Fetch(petID)
 	if petInfo.needsFanfare then
 		local modelScene = card.Front.Middle.ModelScene
-		if rematch:WasFanfareObserved(true) then -- just in case; load Blizzard_Collections and mixins
-			if not modelScene:IsUnwrapAnimating() then -- only run if animation not happening
-				local function OnFinishedCallback()
-					C_PetJournal.ClearFanfare(petID)
-					rematch:UpdateUI()
+		if modelScene then
+			if rematch:WasFanfareObserved(true) then -- just in case; load Blizzard_Collections and mixins
+				if not modelScene:IsUnwrapAnimating() then -- only run if animation not happening
+					local function OnFinishedCallback()
+						C_PetJournal.ClearFanfare(petID)
+						rematch:UpdateUI()
+					end
+					modelScene:StartUnwrapAnimation(OnFinishedCallback)
 				end
-				modelScene:StartUnwrapAnimation(OnFinishedCallback)
 			end
+		else
+			C_PetJournal.ClearFanfare(petID)
+			rematch:UpdateUI()
 		end
 	end
 end

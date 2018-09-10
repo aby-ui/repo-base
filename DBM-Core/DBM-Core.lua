@@ -41,7 +41,7 @@
 --  Globals/Default Options  --
 -------------------------------
 DBM = {
-	Revision = tonumber(("$Revision: 17806 $"):sub(12, -3)),
+	Revision = tonumber(("$Revision: 17812 $"):sub(12, -3)),
 	DisplayVersion = "8.0.7 alpha", -- the string that is shown as version
 	ReleaseRevision = 17762 -- the revision of the latest stable version that is available
 }
@@ -9661,6 +9661,7 @@ do
 			local argTable = {...}
 			-- add a default parameter for move away warnings
 			if self.announceType == "gtfo" then
+				if DBM:UnitDebuff("player", 27827) then return end--Don't tell a priest in spirit of redemption form to GTFO, they can't, and they don't take damage from it anyhow
 				if #argTable == 0 then
 					argTable[1] = DBM_CORE_BAD
 				end

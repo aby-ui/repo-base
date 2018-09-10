@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2169, "DBM-Uldir", nil, 1031)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17791 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 17812 $"):sub(12, -3))
 mod:SetCreatureID(134445)--Zek'vhozj, 134503/qiraji-warrior
 mod:SetEncounterID(2136)
 --mod:DisableESCombatDetection()
@@ -136,6 +136,11 @@ function mod:OnCombatStart(delay)
 	if self.Options.InfoFrame then
 		DBM.InfoFrame:SetHeader(DBM_CORE_INFOFRAME_POWER)
 		DBM.InfoFrame:Show(4, "enemypower", 2)
+	end
+	if self:IsMythic() then
+		--Yogg timers will start on pull
+		--timerAnubarCasterCD:Start(20.5)
+		--timerRoilingDeceitCD:Start(22)--CAST_START
 	end
 end
 
@@ -325,9 +330,11 @@ function mod:UNIT_POWER_FREQUENT(uId)
 			if not self:IsMythic() then
 				timerQirajiWarriorCD:Stop()
 				timerEyeBeamCD:Stop()
+				timerAnubarCasterCD:Start(20.5)
+				timerRoilingDeceitCD:Start(22)--CAST_START
+			else
+				timerOrbofCorruptionCD:Start(12, 1)--Assumed
 			end
-			timerAnubarCasterCD:Start(20.5)
-			timerRoilingDeceitCD:Start(22)--CAST_START
 		elseif self.vb.phase == 3 then
 			warnPhase:Show(DBM_CORE_AUTO_ANNOUNCE_TEXTS.stage:format(3))
 			if not self:IsMythic() then
