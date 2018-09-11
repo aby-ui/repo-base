@@ -59,12 +59,12 @@ rematch:InitModule(function()
 
 	   card.Front.Middle.ModelScene:HookScript("OnMouseUp",card.UnwrapPet)
 
-	   card.Front.Middle.LevelingModel = CreateFrame("PlayerModel")
+	   card.Front.Middle.LevelingModel = CreateFrame("PlayerModel",nil,card.Front.Middle)
 	   local levelingModel = card.Front.Middle.LevelingModel
 	   levelingModel:SetSize(168,172)
 	   levelingModel:SetPoint("TOPRIGHT",-3,-3)
 	   levelingModel:SetScript("OnShow",function(self)
-		self:SetCamDistance(0.45)
+		self:SetCamDistanceScale(0.45)
 		self:SetPosition(0,0,0.25)
 		self:SetModel("Interface\\Buttons\\talktomequestion_ltblue.m2")
 	   end)

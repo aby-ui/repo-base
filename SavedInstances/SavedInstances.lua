@@ -216,6 +216,10 @@ addon.LFRInstances = {
   [1611] = { total=3, base=4, parent=1642, altid=nil, remap={ 1, 2, 3 } }, -- Antorus: Forbidden Descent
   [1612] = { total=3, base=7, parent=1642, altid=nil, remap={ 1, 2, 3 } }, -- Antorus: Hope's End
   [1613] = { total=2, base=10, parent=1642, altid=nil, remap={ 1, 2 } }, -- Antorus: Seat of the Pantheon
+  
+  [1731] = { total=4, base=1, parent=1887, altid=nil, remap={ 1, 2, 3 } }, -- Uldir: Halls of Containment
+  [1732] = { total=2, base=5, parent=1887, altid=nil, remap={ 1, 2, 3 } }, -- Uldir: Crimson Descent
+  [1733] = { total=2, base=7, parent=1887, altid=nil, remap={ 1, 2 } },  -- Uldir: Heart of Corruption
 }
 
 local tmp = {}
@@ -274,6 +278,16 @@ addon.WorldBosses = {
   [2013] = { quest=49170, name=EJ_GetEncounterInfo(2013), expansion=6, level=110}, -- Occularus
   [2014] = { quest=49171, name=EJ_GetEncounterInfo(2014), expansion=6, level=110}, -- Sotanathor
   [2015] = { quest=49168, name=EJ_GetEncounterInfo(2015), expansion=6, level=110}, -- Pit Lord Vilemus
+
+  -- BFA World Bosses
+  [2139] = { quest=52181, expansion=7, level=120 }, -- T'Zane
+  [2141] = { quest=52169, expansion=7, level=120 }, -- Ji'arak
+  [2197] = { quest=52157, expansion=7, level=120 }, -- Hailstone Construct
+  [2199] = { quest=52163, expansion=7, level=120 }, -- Azurethos
+  [2198] = { quest=52166, expansion=7, level=120 }, -- Warbringer Yenajz
+  [2210] = { quest=52196, expansion=7, level=120 }, -- Dunegorger Kraulok
+  [2212] = { quest=52848, expansion=7, level=120 }, -- The Lion's Roar
+  [2213] = { quest=52847, expansion=7, level=120 }, -- Doom's Howl
 
   -- bosses with no EJ entry (eid is a placeholder)
   [9001] = { quest=38276, name=GARRISON_LOCATION_TOOLTIP.." "..BOSS, expansion=5, level=100 },
@@ -446,6 +460,19 @@ local LegionSealQuests = {
 }
 
 for k,v in pairs(LegionSealQuests) do
+  QuestExceptions[k] = v
+end
+
+local BfASealQuests = {
+  [52834] = "Weekly", -- Gold
+  [52838] = "Weekly", -- Piles of Gold
+  [52835] = "Weekly", -- Marks of Honor
+  [52839] = "Weekly", -- Additional Marks of Honor
+  [52837] = "Weekly", -- War Resources
+  [52840] = "Weekly", -- Stashed War Resources
+}
+
+for k,v in pairs(BfASealQuests) do
   QuestExceptions[k] = v
 end
 
@@ -1630,7 +1657,7 @@ function addon:UpdateInstance(id)
   if subtypeID == LFG_SUBTYPEID_SCENARIO and typeID ~= TYPEID_RANDOM_DUNGEON then -- ignore non-random scenarios
     return nil, nil, true
   end
-  if typeID == 2 and subtypeID == 0 and difficulty == 14 and maxPlayers == 0 then
+  if typeID == 2 and subtypeID == 0 and difficulty == 17 and maxPlayers == 0 then
     --print("ignoring "..id, GetLFGDungeonInfo(id))
     return nil, nil, true -- ignore bogus LFR entries
   end
@@ -1645,6 +1672,9 @@ function addon:UpdateInstance(id)
     end
     vars.db.Instances[L["Flex"]..": "..name] = nil -- clean old flex entries
     name = L["LFR"]..": "..name
+  end
+  if id == 1661 then -- ignore AI Test - Arathi Basin
+    return nil, nil, true
   end
   if id == 852 and expansionLevel == 5 then -- XXX: Molten Core hack
     return nil, nil, true -- ignore Molten Core holiday version, which has no save
@@ -1949,6 +1979,15 @@ function addon:UpdateCurrency()
         ci.weeklyMax = 3 -- the max via quests
         ci.earnedThisWeek = 0
         for id in pairs(LegionSealQuests) do
+          if IsQuestFlaggedCompleted(id) then
+            ci.earnedThisWeek = ci.earnedThisWeek + 1
+          end
+        end
+      end
+      if idx == 1580 then -- Seal of Wartorn Fate returns zero for weekly quantities
+        ci.weeklyMax = 2 -- the max via quests
+        ci.earnedThisWeek = 0
+        for id in pairs(BfASealQuests) do
           if IsQuestFlaggedCompleted(id) then
             ci.earnedThisWeek = ci.earnedThisWeek + 1
           end
@@ -2670,7 +2709,7 @@ end
 function core:OnInitialize()
   local versionString = GetAddOnMetadata(addonName, "version")
   --[===[@debug@
-  if versionString == "8.0.5-1-g0b084a0" then
+  if versionString == "8.0.5-4-g4012f92" then
     versionString = "Dev"
   end
   --@end-debug@]===]

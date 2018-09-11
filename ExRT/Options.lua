@@ -24,6 +24,7 @@ Options:SetScript("OnDragStart", function(self) self:StartMoving() end)
 Options:SetScript("OnDragStop", function(self) self:StopMovingOrSizing() end)
 Options:SetDontSavePosition(true)
 Options.border = ExRT.lib.CreateShadow(Options,20)
+Options.Width = 863
 
 ELib:ShadowInside(Options)
 

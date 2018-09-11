@@ -1,4 +1,4 @@
---	08.08.2018
+--	22.08.2018
 
 --[[
 3930
@@ -10,11 +10,14 @@
 * Invite tools: removed loot method options
 * Minor fixes
 
+3950
+* Raid Inspect: ilvl fix
+* Minor fixes
 
 ]]
 local GlobalAddonName, ExRT = ...
 
-ExRT.V = 3940
+ExRT.V = 3950
 ExRT.T = "R"
 
 ExRT.OnUpdate = {}		--> таймеры, OnUpdate функции

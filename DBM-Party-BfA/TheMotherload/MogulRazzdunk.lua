@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2116, "DBM-Party-BfA", 7, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17737 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 17816 $"):sub(12, -3))
 mod:SetCreatureID(129232)
 mod:SetEncounterID(2108)
 mod:SetZone()
@@ -81,7 +81,7 @@ function mod:SPELL_AURA_APPLIED(args)
 			specWarnHeartseeker:Play("targetyou")
 			yellHeartseeker:Yell()
 		else
-			specWarnHeartseekerOther:Show()
+			specWarnHeartseekerOther:Show(args.destName)
 			specWarnHeartseekerOther:Play("gathershare")
 		end
 	end

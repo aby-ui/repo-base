@@ -118,7 +118,7 @@ module.db.findspecspells = {
 	
 	[214326] = 268, [205523] = 268, [121253] = 268, 
 	[205320] = 269, [113656] = 269, --[100780] = 269,
-	[205406] = 270, [115151] = 270, [116670] = 270,
+	[205406] = 270, [115151] = 270, --[116670] = 270,
 	
 	[201467] = 577, [162243] = 577, [198013] = 577,
 	[207407] = 581, [203782] = 581, [228477] = 581,
@@ -8555,6 +8555,7 @@ do
 		
 		local isArtifactEqipped = 0
 		local ArtifactIlvlSlot1,ArtifactIlvlSlot2 = 0,0
+		local mainHandSlot, offHandSlot = 0,0
 		for i=1,#moduleInspect.db.itemsSlotTable do
 			local itemSlotID = moduleInspect.db.itemsSlotTable[i]
 			--local itemLink = GetInventoryItemLink(inspectedName, itemSlotID)
@@ -8641,12 +8642,12 @@ do
 							
 							inspectData['items_ilvl'][itemSlotID] = ilvl
 							
-							if isArtifactEqipped > 0 then
-								if itemSlotID == 16 then
-									ArtifactIlvlSlot1 = ilvl
-								else
-									ArtifactIlvlSlot2 = ilvl
-								end
+							if itemSlotID == 16 then
+								mainHandSlot = ilvl
+								ArtifactIlvlSlot1 = ilvl
+							elseif itemSlotID == 17 then
+								offHandSlot = ilvl
+								ArtifactIlvlSlot2 = ilvl
 							end
 						end
 						
@@ -8736,8 +8737,12 @@ do
 		end
 		if isArtifactEqipped > 0 then
 			inspectData['ilvl'] = inspectData['ilvl'] - ArtifactIlvlSlot1 - ArtifactIlvlSlot2 + max(ArtifactIlvlSlot1,ArtifactIlvlSlot2) * 2
+			
+		elseif mainHandSlot > 0 and offHandSlot == 0 then
+			inspectData['ilvl'] = inspectData['ilvl'] + mainHandSlot
 		end
-		inspectData['ilvl'] = inspectData['ilvl'] / ((inspectData['items'][17] or isArtifactEqipped > 0) and 16 or 15)
+		inspectData['ilvl'] = inspectData['ilvl'] / 16
+		
 
 		--------> ExCD2
 		for tierUID,count in pairs(inspectData['tiersets']) do

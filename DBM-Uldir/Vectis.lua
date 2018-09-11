@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2166, "DBM-Uldir", nil, 1031)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17812 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 17818 $"):sub(12, -3))
 mod:SetCreatureID(134442)--135016 Plague Amalgam
 mod:SetEncounterID(2134)
 mod:SetZone()
@@ -241,7 +241,11 @@ function mod:SPELL_AURA_APPLIED(args)
 			specWarnOmegaVector:Show()
 			specWarnOmegaVector:Play("targetyou")
 			yellOmegaVector:Yell()
-			yellOmegaVectorFades:Countdown(12, 3)
+			local _, _, _, _, _, expireTime = DBM:UnitDebuff("player", spellId)--Flex debuff, have to live pull duration
+			if expireTime then--Done this way so hotfix automatically goes through
+				local remaining = expireTime-GetTime()
+				yellOmegaVectorFades:Countdown(remaining, 3)
+			end
 		end
 		if self.Options.SetIconVector then
 			local uId = DBM:GetRaidUnitId(args.destName)

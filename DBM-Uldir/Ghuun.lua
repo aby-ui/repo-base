@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2147, "DBM-Uldir", nil, 1031)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17806 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 17818 $"):sub(12, -3))
 mod:SetCreatureID(132998)
 mod:SetEncounterID(2122)
 mod:SetZone()
@@ -14,9 +14,9 @@ mod:SetMinSyncRevision(17776)
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
-	"SPELL_CAST_START 267509 267427 267412 273406 273405 267409 267462 267579 263482 263503 263307 275160 263373",
+	"SPELL_CAST_START 267509 267427 267412 273406 273405 267409 267462 267579 263482 263503 263307 275160",
 	"SPELL_CAST_SUCCESS 263235 263482 263503 263373 270373 270428 276839 274582 272505 275756 263416",
-	"SPELL_AURA_APPLIED 268074 267813 277079 272506 274262 263372 270447 263235 270443 273405 267409",
+	"SPELL_AURA_APPLIED 268074 267813 277079 272506 274262 263372 270447 263235 270443 273405 267409 263284",
 	"SPELL_AURA_APPLIED_DOSE 270447",
 	"SPELL_AURA_REMOVED 268074 267813 277079 272506 274262 263235 263372",
 	"SPELL_PERIODIC_DAMAGE 270287",
@@ -24,19 +24,16 @@ mod:RegisterEventsInCombat(
 --	"SPELL_DAMAGE 263326",
 --	"SPELL_MISSED 263326",
 	"UNIT_DIED",
-	"CHAT_MSG_RAID_BOSS_EMOTE",
-	"UNIT_SPELLCAST_SUCCEEDED boss1"
+	"CHAT_MSG_RAID_BOSS_EMOTE"
+--	"UNIT_SPELLCAST_SUCCEEDED boss1"
 )
 
 --TODO, adjust icons when other boss mods add them
---TODO, add "torment" timer?
 --TODO, add "burrow" cd timer?
 --TODO, add timers for host, when ORIGIN cast can be detected (not spread/fuckup casts)
 --TODO, cast event for Matrix Surge and possible aoe warning (with throttle)
 --TODO, how does http://bfa.wowhead.com/spell=268174/tendrils-of-corruption work? warning/yell? is it like yogg squeeze?
 --TODO, Bursting Boil CAST detection
---TODO, find right balance for automating specWarnBloodFeastMoveTo. Right now don't want to assume EVERYONE goes to target, maybe only players above x stacks?
---TODO, timers for Mind Numbing Chatter?
 --[[
 (ability.id = 267509 or ability.id = 273406 or ability.id = 273405 or ability.id = 267579 or ability.id = 263482 or ability.id = 263503 or ability.id = 275160 or ability.id = 269455) and type = "begincast"
  or (ability.id = 272505 or ability.id = 275756 or ability.id = 263235 or ability.id = 263482 or ability.id = 263503 or ability.id = 263373 or ability.id = 270373 or ability.id = 270428 or ability.id = 276839 or ability.id = 274582) and type = "cast"
@@ -60,6 +57,7 @@ local yellBloodHost						= mod:NewYell(267813)--Mythic
 local specWarnDarkPurpose				= mod:NewSpecialWarningRun(268074, nil, nil, nil, 4, 2)--Mythic
 local yellDarkPurpose					= mod:NewYell(268074)--Mythic
 local specWarnExplosiveCorruption		= mod:NewSpecialWarningMoveAway(272506, nil, nil, 2, 1, 2)
+local specWarnVirulentCorruption		= mod:NewSpecialWarningDodge(277081, nil, nil, nil, 2, 2)--Orbs spawned by ExplosiveCorruption
 local yellExplosiveCorruption			= mod:NewYell(272506)
 local yellExplosiveCorruptionFades		= mod:NewShortFadesYell(272506)
 local specWarnThousandMaws				= mod:NewSpecialWarningSwitch(267509, nil, nil, nil, 1, 2)
@@ -76,7 +74,7 @@ local specWarnExplosiveCorruptionOther	= mod:NewSpecialWarningTaunt(272506, nil,
 local specWarnBloodFeast				= mod:NewSpecialWarningYou(263235, nil, nil, nil, 1, 2)
 local yellBloodFeast					= mod:NewYell(263235, nil, nil, nil, "YELL")
 local yellBloodFeastFades				= mod:NewFadesYell(263235, nil, nil, nil, "YELL")
-local specWarnBloodFeastMoveTo			= mod:NewSpecialWarningMoveTo(263235, nil, nil, nil, 1, 2)
+local specWarnBloodFeastTarget			= mod:NewSpecialWarningTargetCount(263235, nil, nil, nil, 1, 8)
 local specWarnMindNumbingChatter		= mod:NewSpecialWarningCast(263307, "SpellCaster", nil, nil, 1, 2)
 ----Arena Floor P3
 local specWarnCollapse					= mod:NewSpecialWarningDodge(276839, nil, nil, nil, 2, 2)
@@ -95,19 +93,22 @@ local timerMassiveSmashCD				= mod:NewCDTimer(9.7, 267412, nil, "Tank", nil, 5, 
 local timerDarkBargainCD				= mod:NewCDTimer(23.1, 267409, nil, nil, nil, 3, nil, DBM_CORE_DAMAGE_ICON)
 mod:AddTimerLine(SCENARIO_STAGE:format(2))
 local timerWaveofCorruptionCD			= mod:NewCDCountTimer(15, 270373, nil, nil, nil, 3)
-local timerBloodFeastCD					= mod:NewCDTimer(15, 263235, nil, nil, nil, 2)
+local timerBloodFeastCD					= mod:NewCDCountTimer(15, 263235, nil, nil, nil, 2)
+----Horror
+local timerMindNumbingChatterCD			= mod:NewCDTimer(13.4, 263307, nil, "SpellCaster", nil, 2)
 mod:AddTimerLine(SCENARIO_STAGE:format(3))
-local timerMalignantGrowthCD			= mod:NewCDTimer(20.5, 274582, nil, nil, nil, 3)
-local timerGazeofGhuunCD				= mod:NewCDTimer(30, 275160, nil, nil, nil, 2)
+local timerMalignantGrowthCD			= mod:NewCDTimer(25.6, 274582, nil, nil, nil, 3)--
+local timerGazeofGhuunCD				= mod:NewCDTimer(26.8, 275160, nil, nil, nil, 2)--26.8-29.1
 mod:AddTimerLine("Upper Platforms")--Dungeon journal later
 local timerMatrixCD						= mod:NewNextCountTimer(12.1, 263420, nil, nil, nil, 5)
 local timerReOrgBlast					= mod:NewBuffActiveTimer(25, 263482, nil, nil, nil, 6)
 
 --local berserkTimer					= mod:NewBerserkTimer(600)
 
---local countdownCollapsingWorld			= mod:NewCountdown(50, 243983, true, 3, 3)
---local countdownRealityTear				= mod:NewCountdown("Alt12", 244016, false, 2, 3)
---local countdownFelstormBarrage			= mod:NewCountdown("AltTwo32", 244000, nil, nil, 3)
+local countdownExplosiveCorruption		= mod:NewCountdown(13, 272506, true, nil, 3)
+local countdownBloodFeast				= mod:NewCountdown("Alt12", 263235, true, nil, 4)--P2 Only
+local countdownMalignantGrowth			= mod:NewCountdown("Alt12", 274582, true, nil, 4)--P3 Only
+local countdownGazeofGhuun				= mod:NewCountdown("AltTwo32", 275160, nil, nil, 3)
 
 mod:AddRangeFrameOption(5, 270428)
 --mod:AddBoolOption("ShowAllPlatforms", false)
@@ -119,9 +120,10 @@ mod:AddSetIconOption("SetIconOnBloodHost", 267813, true)
 mod.vb.phase = 1
 mod.vb.mawCastCount = 0
 mod.vb.matrixCount = 0
-mod.vb.matrixSide = DBM_CORE_LEFT
+mod.vb.matrixSide = DBM_CORE_RIGHT
 mod.vb.explosiveCount = 0
 mod.vb.waveCast = 0
+mod.vb.bloodFeastCount = 0
 mod.vb.matrixActive = false
 local matrixTargets, bloodFeastTarget = {}, {}
 local thousandMawsTimers = {25.4, 26.3, 25.5, 24.2, 23.9, 23.1, 21.5, 21.9, 19.4}
@@ -130,7 +132,7 @@ local function checkThrowFail(self)
 	--If this function runs it means matrix was not caught after a throw and is lost
 	self:Unschedule(checkThrowFail)
 	timerMatrixCD:Stop()
-	timerMatrixCD:Start(8, self.vb.matrixCount+1)--Confirm
+	timerMatrixCD:Start(6, self.vb.matrixCount+1)--TODO: Confirm
 	self.vb.matrixActive = false
 end
 
@@ -223,21 +225,23 @@ function mod:OnCombatStart(delay)
 	self.vb.matrixCount = 0
 	self.vb.explosiveCount = 0
 	self.vb.waveCast = 0
+	self.vb.bloodFeastCount = 0
 	self.vb.matrixActive = false
 	timerMatrixCD:Start(5.3, 1)
 	timerExplosiveCorruptionCD:Start(8-delay, 1)--SUCCESS
+	countdownExplosiveCorruption:Start(8-delay)
 	timerThousandMawsCD:Start(25.4-delay, 1)
+	if not self:IsMythic() then
+		self.vb.matrixSide = DBM_CORE_RIGHT
+	--else
+		--Do shit on mythic
+	end
 	if self.Options.InfoFrame then
 		DBM.InfoFrame:SetHeader(OVERVIEW)
 		DBM.InfoFrame:Show(8, "function", updateInfoFrame, false, false)
 	end
 	if self.Options.NPAuraOnFixate or self.Options.NPAuraOnUnstoppable then
 		DBM:FireEvent("BossMod_EnableHostileNameplates")
-	end
-	if not self:IsMythic() then
-		self.vb.matrixSide = DBM_CORE_LEFT
-	--else
-		--Do shit on mythic
 	end
 end
 
@@ -295,13 +299,12 @@ function mod:SPELL_CAST_START(args)
 	elseif spellId == 263307 then
 		specWarnMindNumbingChatter:Show()
 		specWarnMindNumbingChatter:Play("stopcast")
+		timerMindNumbingChatterCD:Start(nil, args.sourceGUID)
 	elseif spellId == 275160 then
 		specWarnGazeofGhuun:Show()
 		specWarnGazeofGhuun:Play("turnaway")
-		timerGazeofGhuunCD:Start()
-	elseif spellId == 263373 then
-		self:Unschedule(checkThrowFail)
-		self.vb.matrixActive = false
+		timerGazeofGhuunCD:Start()--26.8
+		countdownGazeofGhuun:Start(26.8)
 	end
 end
 
@@ -312,32 +315,46 @@ function mod:SPELL_CAST_SUCCESS(args)
 		timerWaveofCorruptionCD:Start(15.75, 1)--Wave of corruption is next, not blood Feast
 	elseif (spellId == 263482 or spellId == 263503) then
 		timerReOrgBlast:Start()
-		if self.vb.phase < 2 then--Phase 2
+		if self.vb.phase < 2 then--Phase 1 to Phase 2 Transition
 			self.vb.phase = 2
 			self.vb.explosiveCount = 0
 			timerThousandMawsCD:Stop()
 			timerExplosiveCorruptionCD:Stop()
+			countdownExplosiveCorruption:Cancel()
 			timerMassiveSmashCD:Stop()--Technically should AddTime(25) each add, but honestly, if the adds don't die in this 25 second window you done fucked up
 			timerDarkBargainCD:Stop()--Technically should AddTime(25) each add, but honestly, if the adds don't die in this 25 second window you done fucked up
 			timerExplosiveCorruptionCD:Start(27, 1)--SUCCESS. Casts it instantly on stun end
-		else
+			countdownExplosiveCorruption:Start(27)
+		else--Drive cast in Phase 2
 			if self.vb.waveCast == 2 then--Current timer is blood feast
-				timerBloodFeastCD:AddTime(24)
+				--timerBloodFeastCD:AddTime(24, self.vb.bloodFeastCount+1)
+				local elapsed, total = timerBloodFeastCD:GetTime(self.vb.bloodFeastCount+1)
+				local extend = (total+24) - elapsed
+				timerBloodFeastCD:Update(elapsed, total+24, self.vb.bloodFeastCount+1)
+				countdownBloodFeast:Cancel()
+				countdownBloodFeast:Start(extend)
 			else--Current timer is wave of corruption
 				timerWaveofCorruptionCD:AddTime(24, self.vb.waveCast+1)
 			end
-			timerExplosiveCorruptionCD:AddTime(24, self.vb.explosiveCount+1)
+			local elapsed2, total2 = timerExplosiveCorruptionCD:GetTime(self.vb.explosiveCount+1)
+			local extend2 = (total2+24) - elapsed2
+			timerExplosiveCorruptionCD:Update(elapsed2, total2+24, self.vb.explosiveCount+1)
+			countdownExplosiveCorruption:Cancel()
+			countdownExplosiveCorruption:Start(extend2)
 		end
-	elseif spellId == 263373 then
+	elseif spellId == 263373 then--Deposit Matrix
 		timerMatrixCD:Stop()
 		timerMatrixCD:Start(10, self.vb.matrixCount+1)
+		self:Unschedule(checkThrowFail)
+		self.vb.matrixActive = false
 	elseif spellId == 270373 or spellId == 270428 then--Wave of Corruption
 		self.vb.waveCast = self.vb.waveCast + 1
 		if self.vb.phase == 2 then
 			if self.vb.waveCast == 1 then
 				timerWaveofCorruptionCD:Start(15.75, 2)
 			else
-				timerBloodFeastCD:Start(15.75)
+				timerBloodFeastCD:Start(15.75, self.vb.bloodFeastCount+1)
+				countdownBloodFeast:Start(15.75)
 			end
 		else--P3, No more blood feast, only waves
 			timerWaveofCorruptionCD:Start(20.5, self.vb.waveCast+1)
@@ -349,18 +366,25 @@ function mod:SPELL_CAST_SUCCESS(args)
 		specWarnCollapse:Show()
 		specWarnCollapse:Play("watchstep")
 		timerBloodFeastCD:Stop()
+		countdownBloodFeast:Cancel()
 		timerWaveofCorruptionCD:Stop()
 		timerExplosiveCorruptionCD:Stop()
-		timerExplosiveCorruptionCD:Start(29.6, 1)
-		timerMalignantGrowthCD:Start(33.7)
-		timerWaveofCorruptionCD:Start(37, 1)--30
-		timerGazeofGhuunCD:Start(43.3)--52.3
+		timerExplosiveCorruptionCD:Start(30, 1)--SUCCESS
+		countdownExplosiveCorruption:Cancel()
+		countdownExplosiveCorruption:Start(30)
+		timerMalignantGrowthCD:Start(33.7)--33.7-34.1
+		countdownMalignantGrowth:Start(33.7)
+		timerGazeofGhuunCD:Start(47.4)
+		countdownGazeofGhuun:Start(47.4)
+		timerWaveofCorruptionCD:Start(49.9, 1)
 	elseif spellId == 272505 or spellId == 275756 then
 		self.vb.explosiveCount = self.vb.explosiveCount + 1
 		if self.vb.phase == 1 then
 			timerExplosiveCorruptionCD:Start(26, self.vb.explosiveCount+1)
+			countdownExplosiveCorruption:Start(26)
 		else
-			timerExplosiveCorruptionCD:Start(15.8, self.vb.explosiveCount+1)
+			timerExplosiveCorruptionCD:Start(13.4, self.vb.explosiveCount+1)
+			countdownExplosiveCorruption:Start(13.4)
 		end
 		if args:IsPlayer() then--Success event can be up to 2.5 seconds faster than applied event, but only tanks will get success event
 			if self:AntiSpam(3, 8) then
@@ -377,9 +401,14 @@ function mod:SPELL_CAST_SUCCESS(args)
 				specWarnExplosiveCorruptionOther:Play("tauntboss")
 			end
 		end
-	elseif spellId == 263416 then--Throw Power Matrix
-		self:Unschedule(checkThrowFail)
-		self:Schedule(4, checkThrowFail, self)
+	elseif spellId == 274582 then--Malignant Growth
+		specWarnMalignantGrowth:Show()
+		specWarnMalignantGrowth:Play("watchstep")
+		timerMalignantGrowthCD:Start()--25.6
+		countdownMalignantGrowth:Start(25.6)
+	--elseif spellId == 263416 then--Throw Power Matrix
+		--self:Unschedule(checkThrowFail)
+		--self:Schedule(4, checkThrowFail, self)
 	end
 end
 
@@ -450,17 +479,21 @@ function mod:SPELL_AURA_APPLIED(args)
 			end
 		end
 	elseif spellId == 263235 then
+		self.vb.bloodFeastCount = self.vb.bloodFeastCount + 1
 		if args:IsPlayer() then
 			specWarnBloodFeast:Show()
 			specWarnBloodFeast:Play("targetyou")
 			yellBloodFeast:Yell()
-			local _, _, _, _, _, expireTime = DBM:UnitDebuff("player", 263235)
+			local _, _, _, _, _, expireTime = DBM:UnitDebuff("player", spellId)--Remove debuff scan once mythic time confirmed, then can hard code for efficiency sake
 			if expireTime then--Done this way so hotfix automatically goes through
 				local remaining = expireTime-GetTime()
 				yellBloodFeastFades:Countdown(remaining)
 			end
 		else
-			--specWarnBloodFeastMoveTo:Show(args.destName)
+			specWarnBloodFeastTarget:Show(self.vb.bloodFeastCount, args.destName)
+			specWarnBloodFeastTarget:Play("bloodfeast")
+			local count = self.vb.bloodFeastCount
+			specWarnBloodFeastTarget:ScheduleVoice(1, nil, "Interface\\AddOns\\DBM-VP"..DBM.Options.ChosenVoicePack.."\\count\\"..count..".ogg")
 		end
 		if not tContains(bloodFeastTarget, args.destName) then
 			table.insert(bloodFeastTarget, args.destName)
@@ -478,6 +511,8 @@ function mod:SPELL_AURA_APPLIED(args)
 			specWarnDarkBargainOther:Show(args.destName)
 			specWarnDarkBargainOther:Play("changemt")
 		end
+	elseif spellId == 263284 then--Horror Spawn
+		timerMindNumbingChatterCD:Start(10, args.destGUID)
 	end
 end
 mod.SPELL_AURA_APPLIED_DOSE = mod.SPELL_AURA_APPLIED
@@ -504,6 +539,10 @@ function mod:SPELL_AURA_REMOVED(args)
 		if args:IsPlayer() then
 			yellExplosiveCorruptionFades:Cancel()
 		end
+		if self:AntiSpam(7.5, 8) then--Adjust throttle as needed for shit shows
+			specWarnVirulentCorruption:Show()
+			specWarnVirulentCorruption:Play("watchorb")
+		end
 	elseif spellId == 263235 then
 		if args:IsPlayer() then
 			yellBloodFeastFades:Cancel()
@@ -511,6 +550,8 @@ function mod:SPELL_AURA_REMOVED(args)
 		tDeleteItem(bloodFeastTarget, args.destName)
 	elseif spellId == 263372 then
 		tDeleteItem(matrixTargets, args.destName)
+		self:Unschedule(checkThrowFail)
+		self:Schedule(3.5, checkThrowFail, self)
 	end
 end
 
@@ -543,8 +584,8 @@ function mod:UNIT_DIED(args)
 
 --	elseif cid == 141265 then--Amorphus Cyst (cat)
 	
---	elseif cid == 134010 then--Gibbering Horror
-	
+	elseif cid == 134010 then--Gibbering Horror
+		timerMindNumbingChatterCD:Stop(args.destGUID)
 	end
 end
 
@@ -563,27 +604,17 @@ function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg, npc, _, _, target)
 	end
 end
 
+--[[
 function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
-	if spellId == 274582 then--Malignant Growth
-		specWarnMalignantGrowth:Show()
-		specWarnMalignantGrowth:Play("watchstep")
-		timerMalignantGrowthCD:Start()
-	--elseif spellId == 268251 then--Phase 2
+	if spellId == 268251 then--Phase 2
 
 	--elseif spellId == 269803 then--Phase 3
 		
 	--elseif spellId == 274318 then--Spell Picker (Wave of Corruption & Blood Feast alternating)
 	
-	--[[elseif spellId == 270373 or spellId == 270428 then--Wave of Corruption
-		self.vb.waveCast = self.vb.waveCast + 1
-		if self.vb.phase == 2 then
-			if self.vb.waveCast == 1 then
-				timerWaveofCorruptionCD:Start(15, 2)
-			else
-				timerBloodFeastCD:Start(15)
-			end
-		else--No more blood feast, only waves
-			timerWaveofCorruptionCD:Start(20.5, self.vb.waveCast+1)
-		end--]]
+	--elseif spellId == 270373 or spellId == 270428 then--Wave of Corruption
+
 	end
 end
+
+--]]

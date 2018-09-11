@@ -517,6 +517,9 @@ local function GetRaidBuffs(checkType)
 	end
 	
 	if true then
+		if checkType == 3 then
+			checkType = nil
+		end
 		local result = format("|cff00ff00%s|r ",GARRISON_MISSION_PARTY_BUFFS)
 	
 		local isAnyBuff = true

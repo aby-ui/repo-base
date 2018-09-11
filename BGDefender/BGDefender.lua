@@ -1,4 +1,4 @@
-BGD_Prefs = nil
+﻿BGD_Prefs = nil
 
 -- Binding Variables
 BINDING_HEADER_BGDEFENDER             = "Battleground Defender";
@@ -57,7 +57,8 @@ function BGD_OnEvent(frame, event, ...)
     end
     if ((event == "ZONE_CHANGED_NEW_AREA") or (event == "ADDON_LOADED")) then
         if(BGD_isInBG()) then            
-            -- SetMapToCurrentZone()
+			DEFAULT_CHAT_FRAME:AddMessage("BGD: Auto loaded", 1.0, 0.5, 0.5)
+			-- SetMapToCurrentZone()
             BGD_Prefs.ShowUI = BGD_Toggle(true)
        else
             BGD_Prefs.ShowUI = BGD_Toggle(false)
@@ -154,12 +155,20 @@ end
 ---------
 local function BGD_GetPlayerPosition()
 ---------
-    local px, py = GetPlayerMapPosition("player")
-    if px~=nil and py~=nil then
-        px=px*100
-        py=py*100
-        return {px, py}
-    end
+	local mapID = C_Map.GetBestMapForUnit("player")
+	if mapID~=nil and C_Map.GetPlayerMapPosition~=nil then
+		local pos = C_Map.GetPlayerMapPosition(mapID, "player")
+
+		-- Make sure pos and GetXY are defined
+		if pos~=nil and pos.GetXY~=nil then
+			local px, py = pos:GetXY()
+			if px~=nil and py~=nil then
+				px=px*100
+				py=py*100
+				return {px, py}
+			end
+		end
+	end
     return nil
 end
 

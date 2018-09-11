@@ -41,7 +41,7 @@
 --  Globals/Default Options  --
 -------------------------------
 DBM = {
-	Revision = tonumber(("$Revision: 17812 $"):sub(12, -3)),
+	Revision = tonumber(("$Revision: 17819 $"):sub(12, -3)),
 	DisplayVersion = "8.0.7 alpha", -- the string that is shown as version
 	ReleaseRevision = 17762 -- the revision of the latest stable version that is available
 }
@@ -409,7 +409,7 @@ local AddMsg
 local delayedFunction
 local dataBroker
 
-local fakeBWVersion, fakeBWHash = 104, "1585351"
+local fakeBWVersion, fakeBWHash = 111, "61869dc"
 local versionQueryString, versionResponseString = "Q^%d^%s", "V^%d^%s"
 
 local enableIcons = true -- set to false when a raid leader or a promoted player has a newer version of DBM
@@ -9214,12 +9214,12 @@ do
 	end
 
 	function countdownProtoType:Start(timer, count)
+		if DBM.Options.DontPlayCountdowns then return end
 		if not self.option or self.mod.Options[self.option] then
 			timer = timer or self.timer or 10
 			timer = timer < 2 and self.timer or timer
 			count = count or self.count or 5
 			if timer <= count then count = floor(timer) end
-			if DBM.Options.DontPlayCountdowns then return end
 			if not path1 or not path2 or not path3 then
 				DBM:Debug("Voice cache not built at time of countdownProtoType:Start. On fly caching.", 3)
 				DBM:BuildVoiceCountdownCache()
@@ -9260,6 +9260,7 @@ do
 	countdownProtoType.Show = countdownProtoType.Start
 
 	function countdownProtoType:Schedule(t)
+		if DBM.Options.DontPlayCountdowns then return end
 		return schedule(t, self.Start, self.mod, self)
 	end
 
