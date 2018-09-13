@@ -326,7 +326,7 @@ function BrowsePanel:OnInitialize()
     else
         function RefreshFilter()
             self.ActivityList:SetFilterText(
-                self.SearchInput:GetText():lower(),
+                nil, --self.SearchInput:GetText():lower(),
                 self.bossFilter,
                 Profile:GetSetting('spamWord'),
                 Profile:GetSetting('spamLengthEnabled') and Profile:GetSetting('spamLength') or nil,

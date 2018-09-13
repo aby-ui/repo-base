@@ -25,7 +25,7 @@ end
 
 local function GetParentZone(uiMapID)
 	if uiMapID then
-		local zone = MapUtil.GetMapParentInfo(uiMapID, Enum.UIMapType.Zone)
+		local zone = MapUtil.GetMapParentInfo(uiMapID, Enum.UIMapType.Zone, true)
 		if zone then
 			return zone.mapID
 		end
@@ -169,7 +169,8 @@ function WorldFlightMapProvider:OnEvent(event, ...)
 				--	self:GetMap():SetMapID(playerMapInfo.parentMapID)
 				-- Zoom to parent zone if we're in a lower map
 				-- We used to zoom out until we could fit multiple flight points on the same map, but this is simpler
-				if playerMapInfo.mapType > Enum.UIMapType.Zone and playerMapInfo.parentMapID then
+				-- if playerMapInfo.mapType > Enum.UIMapType.Zone and playerMapInfo.parentMapID then
+				if playerMapInfo.parentMapID then
 					local parentZone = GetParentZone(playerMapID)
 					if parentZone then
 						self:GetMap():SetMapID(parentZone)
@@ -287,17 +288,19 @@ function WorldFlightMapProvider:HighlightRouteToPin(pin)
 		local startPin = self.slotIndexToPin[sourceIndex]
 		local destPin = self.slotIndexToPin[destIndex]
 
-		local Line = self.linePool:Acquire()
-		Line:SetNonBlocking(true)
-		Line:SetAtlas('_UI-Taxi-Line-horizontal')
-		Line:SetThickness(32)
-		Line:SetStartPoint('CENTER', startPin)
-		Line:SetEndPoint('CENTER', destPin)
-		Line:Show()
+		if startPin and destPin then
+			local Line = self.linePool:Acquire()
+			Line:SetNonBlocking(true)
+			Line:SetAtlas('_UI-Taxi-Line-horizontal')
+			Line:SetThickness(32)
+			Line:SetStartPoint('CENTER', startPin)
+			Line:SetEndPoint('CENTER', destPin)
+			Line:Show()
 
-		-- force show all the pins in the route
-		startPin:Show()
-		destPin:Show()
+			-- force show all the pins in the route
+			startPin:Show()
+			destPin:Show()
+		end
 	end
 end
 

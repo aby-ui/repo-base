@@ -24,6 +24,14 @@ L= DBM:GetModLocalization(2146)
 ---------------------------
 L= DBM:GetModLocalization(2169)
 
+L:SetTimerLocalization({
+	timerOrbLands	= "Orb (%s) Lands"
+})
+
+L:SetOptionLocalization({
+	timerOrbLands	 =	"Show timer for when Orb of Corruption Lands"
+})
+
 L:SetMiscLocalization({
 	CThunDisc	 =	"Disc accessed. C'thun data loading.",
 	YoggDisc	 =	"Disc accessed. Yogg-Saron data loading.",
@@ -36,7 +44,7 @@ L:SetMiscLocalization({
 L= DBM:GetModLocalization(2166)
 
 L:SetOptionLocalization({
-	ShowHighestFirst	 =	"Sort Lingering Infection Infoframe by highest debuff stack (instead of lowest)"
+	ShowHighestFirst2	 =	"Sort Lingering Infection Infoframe by highest debuff stack (instead of lowest)"
 })
 
 ---------------

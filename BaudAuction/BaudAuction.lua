@@ -327,6 +327,8 @@ function BaudAuction_OnLoad(self)
         Entry:SetScript("OnClick", BaudAuctionBrowseEntry_OnClick);
     end
 
+    SortAuctionList("list_unitprice", false)
+
     --  DEFAULT_CHAT_FRAME:AddMessage("Baud Auction: AddOn loaded.");
 end
 

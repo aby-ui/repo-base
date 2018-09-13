@@ -825,6 +825,7 @@ do
             ["show1508"] = false,  --暗淡水晶
             ["show1533"] = true,  --觉醒精华
             ["show1560"] = true,  --8.0物资
+            ["show1580"] = true,  --8.0印记
 			["summary1155"] = true,
 			["summary1273"] = true,
 			["summary1220"] = true,
@@ -844,6 +845,10 @@ do
             Broker_CurrencyCharDB.show1273 = false
             Broker_CurrencyCharDB.show1508 = false
             Broker_CurrencyCharDB.show1560 = true
+        end
+        if not Broker_CurrencyCharDB.update802 then
+            Broker_CurrencyCharDB.update802 = true
+            Broker_CurrencyCharDB.show1580 = true
         end
 
 		-- ----------------------------------------------------------------------------

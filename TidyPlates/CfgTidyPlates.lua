@@ -16,6 +16,17 @@
                 Export163_OnNewNameplate(frame)
             end
         end
+        if justload then
+            --/run for k,v in pairs(TidyPlatesHubSettings) do v.force0913 = nil end
+            for k,v in pairs(TidyPlatesHubSettings or {}) do
+                if not v.force0913 and v.WidgetsDebuffTrackList then
+                    v.force0913 = true
+                    if not v.WidgetsDebuffTrackList:find("戈霍恩共生体") then v.WidgetsDebuffTrackList = v.WidgetsDebuffTrackList .. "\n" .. "All 戈霍恩共生体" end
+                    if not v.WidgetsDebuffTrackList:find("闪电之盾") then v.WidgetsDebuffTrackList = v.WidgetsDebuffTrackList .. "\n" .. "All 闪电之盾" end
+                    TidyPlatesHubHelpers.ConvertDebuffListTable(v.WidgetsDebuffTrackList, v.WidgetsDebuffLookup, v.WidgetsDebuffPriority)
+                end
+            end
+        end
         return true
     end,
 
