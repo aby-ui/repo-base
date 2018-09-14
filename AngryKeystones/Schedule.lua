@@ -1,4 +1,3 @@
-if GetBuildInfo() ~= "7.2.0" then return end
 local ADDON, Addon = ...
 local Mod = Addon:NewModule('Schedule')
 
@@ -9,18 +8,18 @@ local requestKeystoneCheck
 -- 1: Overflowing, 2: Skittish, 3: Volcanic, 4: Necrotic, 5: Teeming, 6: Raging, 7: Bolstering, 8: Sanguine, 9: Tyrannical, 10: Fortified, 11: Bursting, 12: Grievous, 13: Explosive, 14: Quaking
 -- 1溢出 2无常 3火山 4死疽 5繁盛 6暴怒 7激励 8血池 9残暴 10坚韧 11崩裂 12重伤 13易爆 14震荡 15冷酷
 local affixSchedule = {
-	{ 6, 3, 9 },
-	{ 5, 13, 10 },
-	{ 7, 12, 9 },
-	{ 8, 4, 10 },
-	{ 11, 2, 9 },
-	{ 5, 14, 10 },
-	{ 6, 4, 9 },
-	{ 7, 2, 10 },
-	{ 5, 3, 9 },
-	{ 8, 12, 10 },
-	{ 7, 13, 9 },
-	{ 11, 14, 10 },
+	{ 10, 8, 4 },
+	{ 9, 11, 2 },
+	{ 10, 5, 14 },
+	{ 9, 6, 4 },
+	{ 10, 7, 2 },
+	{ 9, 5, 3 },
+	{ 10, 8, 12 },
+	{ 9, 7, 13 },
+	{ 10, 11, 14 },
+	{ 9, 6, 3 },
+	{ 10, 5, 13 },
+	{ 9, 7, 12 },
 }
 local startWeek = time({year=2017,month=6,day=22,hour=7,min=0,sec=0})
 
@@ -80,13 +79,12 @@ local function makeAffix(parent)
 end
 
 function Mod:Blizzard_ChallengesUI()
-	ChallengesFrame.GuildBest:ClearAllPoints()
-	ChallengesFrame.GuildBest:SetPoint("TOPLEFT", ChallengesFrame.WeeklyBest.Child.Star, "BOTTOMRIGHT", 9, 30)
+	--ChallengesFrame.WeeklyInfo.Child.WeeklyChest:ClearAllPoints()
+	--ChallengesFrame.WeeklyInfo.Child.WeeklyChest:SetPoint("LEFT", 60, -45)
 
 	local frame = CreateFrame("Frame", nil, ChallengesFrame)
-	frame:SetSize(206, 110)
-	frame:SetPoint("TOP", ChallengesFrame.WeeklyBest.Child.Star, "BOTTOM", 0, 30)
-	frame:SetPoint("LEFT", ChallengesFrame, "LEFT", 40, 0)
+	frame:SetSize(160, 110)
+	frame:SetPoint("TOPLEFT", ChallengesFrame.WeeklyInfo.Child.WeeklyChest, "TOPRIGHT", 15, -15)
 	Mod.Frame = frame
 
 	local bg = frame:CreateTexture(nil, "BACKGROUND")
@@ -99,17 +97,17 @@ function Mod:Blizzard_ChallengesUI()
 	title:SetPoint("TOPLEFT", 15, -7)
 
 	local line = frame:CreateTexture(nil, "ARTWORK")
-	line:SetSize(192, 9)
+	line:SetSize(146, 9)
 	line:SetAtlas("ChallengeMode-RankLineDivider", false)
 	line:SetPoint("TOP", 0, -20)
 
 	local entries = {}
 	for i = 1, rowCount do
 		local entry = CreateFrame("Frame", nil, frame)
-		entry:SetSize(176, 18)
+		entry:SetSize(130, 18)
 
 		local text = entry:CreateFontString(nil, "ARTWORK", "GameFontNormal")
-		text:SetWidth(120)
+		text:SetWidth(74)
 		text:SetJustifyH("LEFT")
 		text:SetWordWrap(false)
 		text:SetText( Addon.Locale["scheduleWeek"..i] )
@@ -155,19 +153,29 @@ end
 
 function Mod:CheckInventoryKeystone()
 	currentWeek = nil
-	for container=BACKPACK_CONTAINER, NUM_BAG_SLOTS do
-		local slots = GetContainerNumSlots(container)
-		for slot=1, slots do
-			local _, _, _, _, _, _, slotLink = GetContainerItemInfo(container, slot)
-			local itemString = slotLink and slotLink:match("|Hkeystone:([0-9:]+)|h(%b[])|h")
-			if itemString then
-				local info = { strsplit(":", itemString) }
-				local mapLevel = tonumber(info[2])
-				if mapLevel >= 7 then
-					local affix1, affix2 = tonumber(info[3]), tonumber(info[4])
-					for index, affixes in ipairs(affixSchedule) do
-						if affix1 == affixes[1] and affix2 == affixes[2] then
-							currentWeek = index
+	local currentAffixes = C_MythicPlus.GetCurrentAffixes()
+
+	if currentAffixes then
+		for index, affixes in ipairs(affixSchedule) do
+			if currentAffixes[3] == affixes[1] and currentAffixes[1] == affixes[2] and currentAffixes[2] == affixes[3] then
+				currentWeek = index
+			end
+		end
+	else
+		for container=BACKPACK_CONTAINER, NUM_BAG_SLOTS do
+			local slots = GetContainerNumSlots(container)
+			for slot=1, slots do
+				local _, _, _, _, _, _, slotLink = GetContainerItemInfo(container, slot)
+				local itemString = slotLink and slotLink:match("|Hkeystone:([0-9:]+)|h(%b[])|h")
+				if itemString then
+					local info = { strsplit(":", itemString) }
+					local mapLevel = tonumber(info[3])
+					if mapLevel >= 7 then
+						local affix1, affix2, affix3, affix4 = tonumber(info[4]), tonumber(info[5]), tonumber(info[6]), tonumber(info[7])
+						for index, affixes in ipairs(affixSchedule) do
+							if affix1 == affixes[1] and affix2 == affixes[2] and affix3 == affixes[3] then
+								currentWeek = index
+							end
 						end
 					end
 				end

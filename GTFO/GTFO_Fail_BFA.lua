@@ -823,4 +823,30 @@ GTFO.SpellID["277545"] = {
   sound = 3;
 };
 
+GTFO.SpellID["277810"] = {
+  --desc = "Congealed Plague (Nazmani Defiler)";
+  sound = 3;
+};
 
+GTFO.SpellID["277813"] = {
+  --desc = "Blood Ritual (Speaker Obara)";
+  sound = 3;
+};
+
+GTFO.SpellID["278933"] = {
+  --desc = "Bursting Surge";
+  sound = 3;
+};
+
+GTFO.SpellID["278890"] = {
+  --desc = "Violent Hemorrhage (Nazmani Veinsplitter)";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["274358"] = {
+  --desc = "Rupturing Blood (Zul)";
+  applicationOnly = true;
+  sound = 3;
+  tankSound = 0;
+};

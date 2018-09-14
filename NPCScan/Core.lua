@@ -56,14 +56,8 @@ end
 local NPCIDFromName = {}
 private.NPCIDFromName = NPCIDFromName
 
-local QuestNPCs = {}
-private.QuestNPCs = QuestNPCs
-
 local QuestIDFromName = {}
 private.QuestIDFromName = QuestIDFromName
-
-local VignetteIDToNPCMapping = {}
-private.VignetteIDToNPCMapping = VignetteIDToNPCMapping
 
 -- ----------------------------------------------------------------------------
 -- AddOn Methods.
@@ -144,44 +138,14 @@ function NPCScan:OnEnable()
 	-- ----------------------------------------------------------------------------
 	for mapID, map in pairs(Data.Maps) do
 		for npcID in pairs(map.NPCs) do
-			local npc = Data.NPCs[npcID]
-
-			if not npc then
-				npc = {}
-				Data.NPCs[npcID] = npc
-			end
+			local npc = private.InitializeNPC(npcID)
 
 			map.NPCs[npcID] = npc
 
 			npc.mapIDs = npc.mapIDs or {}
 			npc.mapIDs[#npc.mapIDs + 1] = mapID
-			npc.npcID = npcID
-
-			-- This sets values for NPCIDFromName, which is used for vignette detection.
-			self:GetNPCNameFromID(npcID)
 
 			table.sort(npc.mapIDs, private.SortByMapNameThenByID)
-
-			if npc.questID then
-				local npcs = QuestNPCs[npc.questID]
-				if not npcs then
-					npcs = {}
-					QuestNPCs[npc.questID] = npcs
-				end
-
-				npcs[npcID] = npc
-
-				local questName = NPCScan:GetQuestNameFromID(npc.questID)
-				if questName and questName ~= _G.UNKNOWN then
-					QuestIDFromName[questName] = npc.questID
-				end
-			end
-
-			if npc.vignetteID then
-				VignetteIDToNPCMapping[npc.vignetteID] = VignetteIDToNPCMapping[npc.vignetteID] or {}
-
-				table.insert(VignetteIDToNPCMapping[npc.vignetteID], npc)
-			end
 		end
 	end
 
@@ -215,9 +179,9 @@ function NPCScan:OnEnable()
 			local npc = map.NPCs[npcID]
 
 			if not hasChecked[npcID] then
-				hasChecked[npcID] = true
+				local questID = npc.questID or npc.achievementQuestID
 
-				if not private.NPCHasQuest(npc) and (not continent or questMapIDs[continent.mapID]) then
+				if not questID and (not continent or questMapIDs[continent.mapID]) then
 					missingData[npcID] = "questID"
 				end
 
@@ -228,6 +192,8 @@ function NPCScan:OnEnable()
 						missingData[npcID] = "vignetteID"
 					end
 				end
+
+				hasChecked[npcID] = true
 			end
 		end
 

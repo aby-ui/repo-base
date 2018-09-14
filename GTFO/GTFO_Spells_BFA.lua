@@ -405,6 +405,13 @@ GTFO.SpellID["257886"] = {
 -- * Uldir *
 -- *********
 
+-- TODO: Plasma Discharge (Taloc) -- Alert when standing next to someone that has it
+-- TODO: Ruptured Blood (Zul) -- Supposed to avoid this?
+-- TODO: Matrix Surge (G'huun)
+-- TODO: Unclean Contagion (G'huun)
+-- TODO: Putrid Blood (G'huun)
+-- TODO: Malignant Growth (G'huun)
+
 GTFO.SpellID["275057"] = {
   --desc = "Coagulated Corruption (Tendril of Gore)";
   sound = 1;
@@ -415,9 +422,6 @@ GTFO.SpellID["270290"] = {
   --desc = "Blood Storm (Taloc)";
   sound = 1;
 };
-
--- TODO: Plasma Discharge (Taloc) -- Alert when standing next to someone that has it
--- TODO: Ruptured Blood (Zul) -- Supposed to avoid this?
 
 GTFO.SpellID["274113"] = {
   --desc = "Obliteration Beam (Mythrax the Unraveler)";
@@ -436,11 +440,6 @@ GTFO.SpellID["263326"] = {
   sound = 1;
   test = true;
 };
-
--- TODO: Matrix Surge (G'huun)
--- TODO: Unclean Contagion (G'huun)
--- TODO: Putrid Blood (G'huun)
--- TODO: Malignant Growth (G'huun)
 
 GTFO.SpellID["284631"] = {
   --desc = "Uldir Defensive Beam";
@@ -479,5 +478,39 @@ GTFO.SpellID["274804"] = {
 GTFO.SpellID["277804"] = {
   --desc = "Hunting Leap (Malformed Raptor)";
   sound = 1;
+};
+
+GTFO.SpellID["277148"] = {
+  --desc = "Seeping Rot";
+  sound = 1;
+};
+
+GTFO.SpellID["265127"] = {
+  --desc = "Lingering Infection (Vectis)";
+  applicationOnly = true;
+  sound = 1;
+  ignoreEvent = "OmegaVector";
+  test = true;
+};
+
+GTFO.SpellID["265143"] = {
+  --desc = "Omega Vector (Vectis)";
+  soundFunction = function() 
+      GTFO_AddEvent("OmegaVector", 4);
+      return 0;
+  end;
+  test = true;
+};
+
+GTFO.SpellID["279012"] = {
+  --desc = "Blood Ritual";
+  sound = 1;
+};
+
+GTFO.SpellID["274195"] = {
+  --desc = "Corrupted Blood (Zul)";
+  applicationOnly = true;
+  sound = 1;
+  test = true;
 };
 

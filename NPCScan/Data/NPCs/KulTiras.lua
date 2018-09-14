@@ -78,11 +78,13 @@ NPCs[127877] = { -- Longfang
 
 NPCs[127901] = { -- Henry Breakwater
 	achievementQuestID = 48981, -- Longfang
+	questID = 48979,
 	vignetteID = 2311, -- Longfang & Breakwater
 }
 
 NPCs[128181] = { -- Vengeful Dead
 	achievementQuestID = 49137, -- Ancient Sarcophagus
+	classification = "normal",
 	vignetteID = 2321, -- Ancient Sarcophagus
 }
 
@@ -313,6 +315,7 @@ NPCs[135939] = { -- Vinespeaker Ratha
 }
 
 NPCs[135947] = { -- Strange Mushroom Ring
+	classification = "normal",
 	achievementQuestID = 50024, -- Strange Mushroom Ring
 	vignetteID = 2838,
 }
@@ -422,6 +425,7 @@ NPCs[140398] = { -- Zeritarj
 }
 
 NPCs[140925] = { -- Doc Marrtens
+	factionGroup = "Alliance",
 	questID = 52323,
 	vignetteID = 3055,
 }
@@ -449,6 +453,7 @@ NPCs[141039] = { -- Ice Sickle
 }
 
 NPCs[141043] = { -- Jakala the Cruel
+	factionGroup = "Horde",
 	questID = 52324,
 	vignetteID = 3056,
 }

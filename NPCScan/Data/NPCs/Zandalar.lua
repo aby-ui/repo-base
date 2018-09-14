@@ -139,11 +139,13 @@ NPCs[128584] = { -- Vugthuth
 }
 
 NPCs[128578] = { -- Zujothgul
+	classification = "rareelite",
 	questID = 50460, -- Zujothgul
 	vignetteID = 2640,
 }
 
 NPCs[128610] = { -- Maw of Shul-Nagruth
+	classification = "rareelite",
 	questID = 50467,
 	vignetteID = 2642,
 }
@@ -186,6 +188,7 @@ NPCs[133373] = { -- Jax'teb the Reanimated
 }
 
 NPCs[133505] = { -- Aiji the Accursed
+	classification = "elite",
 	questID = 50339,
 	vignetteID = 2796,
 }
@@ -217,6 +220,7 @@ NPCs[133812] = { -- Zanxib
 }
 
 NPCs[134002] = { -- Underlord Xerxiz
+	classification = "rareelite",
 	questID = 50480, -- Underlord Xerxiz
 	vignetteID = 2648,
 }
@@ -416,6 +420,12 @@ NPCs[136393] = { -- Bloodwing Bonepicker
 	vignetteID = 2894,
 }
 
+NPCs[137553] = { -- General Krathax
+	classification = "rareelite",
+	questID = -1,
+	vignetteID = -1,
+}
+
 NPCs[137681] = { -- King Clickyclack
 	isTameable = true,
 	questID = 51424,
@@ -423,6 +433,7 @@ NPCs[137681] = { -- King Clickyclack
 }
 
 NPCs[138794] = { -- Dunegorger Kraulok
+	classification = "elite",
 	questID = 52196, -- Sandswept Bones
 }
 
@@ -555,6 +566,7 @@ NPCs[134637] = { -- Headhunter Lee'za
 }
 
 NPCs[134717] = { -- Umbra'rix
+	classification = "rareelite",
 	questID = 50673, -- Umbra'rix
 	vignetteID = 2680,
 }

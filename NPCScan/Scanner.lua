@@ -116,8 +116,8 @@ local function CanAddToScanList(npcID)
 		return false
 	end
 
-	if private.NPCHasQuest(npc) then
-		if not private.IsNPCQuestComplete(npc) then
+	if npc:HasQuest() then
+		if not npc:IsQuestComplete() then
 			return true
 		elseif detection.ignoreCompletedQuestObjectives then
 			return false
@@ -131,7 +131,7 @@ local function CanAddToScanList(npcID)
 			return false
 		end
 
-		if detection.ignoreCompletedAchievementCriteria and private.IsNPCAchievementCriteriaComplete(npc) then
+		if detection.ignoreCompletedAchievementCriteria and npc:IsAchievementCriteriaComplete() then
 			return false
 		end
 	end
@@ -142,7 +142,7 @@ end
 local function MergeUserDefinedWithScanList(npcList)
 	if npcList and private.db.profile.detection.userDefined then
 		for npcID in pairs(npcList) do
-			Data.Scanner.NPCs[npcID] = {}
+			Data.Scanner.NPCs[npcID] = _G.setmetatable({}, private.NPCMetatable)
 		end
 	end
 end
@@ -207,7 +207,7 @@ local function UpdateScanListAchievementCriteria()
 	local needsUpdate = false
 
 	for _, npc in pairs(Data.Scanner.NPCs) do
-		if npc.achievementID and npc.achievementCriteriaID and not private.IsNPCAchievementCriteriaComplete(npc) then
+		if npc.achievementID and npc.achievementCriteriaID and not npc:IsAchievementCriteriaComplete() then
 			local _, _, isCompleted = _G.GetAchievementCriteriaInfoByID(npc.achievementID, npc.achievementCriteriaID)
 
 			if isCompleted then
@@ -236,7 +236,7 @@ local function UpdateScanListQuestObjectives()
 		local NPCs = Data.Scanner.NPCs
 
 		for npcID in pairs(NPCs) do
-			if private.IsNPCQuestComplete(NPCs[npcID]) then
+			if NPCs[npcID]:IsQuestComplete() then
 				needsUpdate = true
 			end
 		end
@@ -292,13 +292,18 @@ function NPCScan:UPDATE_MOUSEOVER_UNIT()
 end
 
 do
-	local VIGNETTE_SOURCE_TO_PREFERENCE = {
+	local VignetteSourceToPreference = {
 		[_G.MINIMAP_LABEL] = "ignoreMiniMap",
 		[_G.WORLD_MAP] = "ignoreWorldMap",
 	}
 
+	local IgnoredVignetteAtlasName = {
+		VignetteLoot = true,
+		VignetteLootElite = true,
+	}
+
 	local function IsIgnoringSource(sourceText)
-		return private.db.profile.detection[VIGNETTE_SOURCE_TO_PREFERENCE[sourceText]]
+		return private.db.profile.detection[VignetteSourceToPreference[sourceText]]
 	end
 
 	local function ProcessVignetteGUID(vignetteGUID)
@@ -308,7 +313,7 @@ do
 
 		local vignetteInfo = _G.C_VignetteInfo.GetVignetteInfo(vignetteGUID);
 
-		if not vignetteInfo or vignetteInfo.atlasName == "VignetteLoot" then
+		if not vignetteInfo or IgnoredVignetteAtlasName[vignetteInfo.atlasName] then
 			return
 		end
 

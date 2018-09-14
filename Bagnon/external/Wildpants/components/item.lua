@@ -265,7 +265,7 @@ function ItemSlot:UpdateBorder()
 			r, g, b = RED_FONT_COLOR.r, RED_FONT_COLOR.g, RED_FONT_COLOR.b
 		elseif Addon.sets.glowSets and ItemSearch:InSet(self.info.link) then
 	  	r, g, b = .1, 1, 1
-		elseif Addon.sets.glowQuality and quality and quality > 1 then
+		elseif Addon.sets.glowQuality and type(quality) == "number" and quality > 1 then
 			r, g, b = GetItemQualityColor(quality)
 		end
 	end

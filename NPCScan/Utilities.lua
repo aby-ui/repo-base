@@ -134,30 +134,6 @@ do
 	private.UnitTokenToCreatureID = UnitTokenToCreatureID
 end -- do-block
 
-local function IsNPCAchievementCriteriaComplete(npc)
-	if not npc.achievementID then
-		return true
-	end
-
-	return Data.Achievements[npc.achievementID].isCompleted or npc.isCriteriaCompleted
-end
-
-private.IsNPCAchievementCriteriaComplete = IsNPCAchievementCriteriaComplete
-
-local function NPCHasQuest(npc)
-	return (npc.questID or npc.achievementQuestID) and true or false
-end
-
-private.NPCHasQuest = NPCHasQuest
-
-local function IsNPCQuestComplete(npc)
-	local questID = npc.questID or npc.achievementQuestID
-
-	return (questID and questID >= 0) and _G.IsQuestFlaggedCompleted(questID) or false
-end
-
-private.IsNPCQuestComplete = IsNPCQuestComplete
-
 local function NumericSortString(a, b)
 	local x, y = tonumber(a), tonumber(b)
 
