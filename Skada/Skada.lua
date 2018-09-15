@@ -833,6 +833,7 @@ local function sendchat(msg, chan, chantype)
 		BNSendWhisper(chan,msg)
 	end
 end
+Skada._sendchat = sendchat
 
 function Skada:Report(channel, chantype, report_mode_name, report_set_name, max, window)
 
@@ -877,6 +878,8 @@ function Skada:Report(channel, chantype, report_mode_name, report_set_name, max,
 	end
 
 	-- Title
+    Skada.abyui_sendchat_start()
+    local sendchat = (channel == 'guild' or chantype == 'channel') and Skada.abyui_sendchat_add or sendchat
 	sendchat(string.format(L["Skada: %s for %s:"], report_mode.title or report_mode:GetName(), Skada:GetSetLabel(report_set)), channel, chantype)
 
 	-- For each item in dataset, print label and valuetext.
@@ -896,6 +899,7 @@ function Skada:Report(channel, chantype, report_mode_name, report_set_name, max,
 		end
 	end
 
+    Skada.abyui_sendchat_finish()
 end
 
 function Skada:RefreshMMButton()
