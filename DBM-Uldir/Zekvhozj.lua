@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2169, "DBM-Uldir", nil, 1031)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17836 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 17838 $"):sub(12, -3))
 mod:SetCreatureID(134445)--Zek'vhozj, 134503/qiraji-warrior
 mod:SetEncounterID(2136)
 --mod:DisableESCombatDetection()
@@ -190,9 +190,9 @@ function mod:SPELL_CAST_START(args)
 		specWarnOrbOfCorruption:Show(self.vb.orbCount)
 		specWarnOrbOfCorruption:Play("161612")--catch balls
 		timerOrbLands:Start(5, 1)
-		if not self:IsMythic() then--Didn't see cast on mythic?
-			timerOrbofCorruptionCD:Start(50, self.vb.orbCount+1)
-		end
+		--if not self:IsMythic() then--Didn't see cast on mythic?
+			--timerOrbofCorruptionCD:Start(50, self.vb.orbCount+1)
+		--end
 	elseif spellId == 270620 and self:CheckInterruptFilter(args.sourceGUID, false, true) then
 		specWarnEntropicBlast:Show(args.sourceName)
 		specWarnEntropicBlast:Play("kickcast")

@@ -426,7 +426,7 @@ GTFO.SpellID["270290"] = {
 GTFO.SpellID["274113"] = {
   --desc = "Obliteration Beam (Mythrax the Unraveler)";
   sound = 1;
-  test = true;
+  negatingDebuffSpellID = 272407;  -- Oblivion Sphere
 };
 
 GTFO.SpellID["270287"] = {

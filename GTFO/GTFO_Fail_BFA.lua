@@ -800,7 +800,6 @@ GTFO.SpellID["277794"] = {
 };
 
 -- TODO: Spreading Epidemic (MOTHER) -- What does this do?
--- TODO: Sanitizing Strike (MOTHER) -- For tanks only, stack tracking
 -- TODO: Rotting Regurgitation (Fetid Devourer) -- Avoidable?
 -- TODO: Surging Darkness (Zek'voz) -- Avoidable for big pools? Different spell IDs for pool damage vs. incidental
 -- TODO: Void Lash (Zek'voz) -- For tanks only, stack tracking, fail at 100% reduction
@@ -808,9 +807,6 @@ GTFO.SpellID["277794"] = {
 -- TODO: Void Wall (Zek'voz) -- Mythic only - Avoidable?
 -- TODO: Blood Geyser (Vectis) -- What is this?
 -- TODO: Pit of Despair (Zul) -- Avoidable? 
--- TODO: Bloody Cleave (Nazmani Crusher) -- For tanks only, cleave
--- TODO: Essence Shear (Mythrax the Unraveler) -- For tanks only?
--- TODO: Obliteration Blast (Mythrax the Unraveler) 
 -- TODO: Virulent Corruption (G'huun)
 -- TODO: Dark Bargain (G'huun)
 -- TODO: Tendrils of Corruption (G'huun) -- Mythic only
@@ -847,6 +843,24 @@ GTFO.SpellID["278890"] = {
 GTFO.SpellID["274358"] = {
   --desc = "Rupturing Blood (Zul)";
   applicationOnly = true;
+  sound = 3;
+  tankSound = 0;
+};
+
+GTFO.SpellID["273316"] = {
+  --desc = "Bloody Cleave (Nazmani Crusher)";
+  sound = 3;
+  tankSound = 0;
+};
+
+GTFO.SpellID["273554"] = {
+  --desc = "Obliteration Blast (Mythrax the Unraveler)";
+  sound = 3;
+  negatingDebuffSpellID = 272407;  -- Oblivion Sphere
+};
+
+GTFO.SpellID["273282"] = {
+  --desc = "Essence Shear (Mythrax the Unraveler)";
   sound = 3;
   tankSound = 0;
 };
