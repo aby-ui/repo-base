@@ -3,13 +3,17 @@
 		handles OmniCC saved variables
 --]]
 
+local AddonName = ...
+local Addon = _G[AddonName]
+local DB_NAME = "OmniCC4Config"
+
 local function SetDefaults(target, defaults)
 	for k, v in pairs(defaults) do
 		if type(v) == 'table' then
 			target[k] = SetDefaults(target[k] or {}, v)
 		end
 	end
-	
+
 	defaults.__index = defaults
 	return setmetatable(target, defaults)
 end
@@ -17,24 +21,25 @@ end
 
 --[[ Startup ]]--
 
-function OmniCC:StartupSettings()
-	OmniCC4Config = SetDefaults(OmniCC4Config or {}, {
+function Addon:StartupSettings()
+	_G[DB_NAME] = SetDefaults(_G[DB_NAME] or {}, {
 		engine = 'AniUpdater',
 		version = self:GetVersion(),
+		obeyHideCountdownNumbers = false,
 		groupSettings = {base = {}},
 		groups = {}
 	})
 
-	self.sets = OmniCC4Config
+	self.sets = _G[DB_NAME]
 	self:UpgradeSettings()
 	self.sets.version = self:GetVersion()
 
-	for id, group in pairs(self.sets.groupSettings) do
+	for _, group in pairs(self.sets.groupSettings) do
 		self:StartupGroup(group)
 	end
 end
 
-function OmniCC:UpgradeSettings()
+function Addon:UpgradeSettings()
 	local expansion, patch, release = strsplit('.', self.sets.version)
 	local version = tonumber(expansion) * 10000 + tonumber(patch or 0) * 100 + tonumber(release or 0)
 
@@ -46,7 +51,7 @@ function OmniCC:UpgradeSettings()
 	end
 end
 
-function OmniCC:StartupGroup(group)
+function Addon:StartupGroup(group)
 	return SetDefaults(group or {}, {
 		enabled = true,
 		scaleText = true,
@@ -95,6 +100,6 @@ end
 
 --[[ Version ]]--
 
-function OmniCC:GetVersion()
-	return GetAddOnMetadata('OmniCC', 'Version')
+function Addon:GetVersion()
+	return GetAddOnMetadata(AddonName, 'Version')
 end

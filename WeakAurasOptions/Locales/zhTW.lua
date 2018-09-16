@@ -7,6 +7,7 @@ local L = WeakAuras.L
 -- WeakAuras/Options
 	L["-- Do not remove this comment, it is part of this trigger: "] = "-- Do not remove this comment, it is part of this trigger: "
 	L["% of Progress"] = "進度%"
+	L["%i auras selected"] = "已選擇 %i 個提醒效果"
 	L["%i Matches"] = "%i 個符合"
 	L["%s Color"] = "%s 顏色"
 	L["%s total auras"] = "總共 %s 個提醒效果"
@@ -105,6 +106,7 @@ If the animation's duration is set to |cFF00CC0010%|r, and the display's trigger
 	L["Choose"] = "選擇"
 	L["Choose Trigger"] = "選擇觸發"
 	L["Choose whether the displayed icon is automatic or defined manually"] = "選擇要顯示的圖示是自動的或手動選擇圖示"
+	L["Clip Overlays"] = "裁剪疊加圖層"
 	L["Clone option enabled dialog"] = [=[你啟用了一個選項會用到 |cFFFF0000自動複製|r 的功能。
 
 |cFFFF0000自動複製|r 會讓提醒效果自動複製出多份以顯示多個資訊來源。

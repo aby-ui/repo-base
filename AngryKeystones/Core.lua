@@ -1,4 +1,4 @@
--- Core v1.3
+-- Core v1.4
 local ADDON, Addon = ...
 
 local Listener = CreateFrame('Frame', ADDON .. 'Listener')
@@ -91,12 +91,96 @@ function Addon:UnregisterAddOnLoaded(name, callback)
 	end
 end
 
+function Addon:UnregisterEvent(event, callback)
+	local listeners = EventListeners[event]
+	if listeners then
+		local count = 0
+		for index,_ in pairs(listeners) do
+			if index == callback then
+				listeners[index] = nil
+			else
+				count = count + 1
+			end
+		end
+		if count == 0 then
+			EventListeners[event] = nil
+			Listener:UnregisterEvent(event)
+		end
+	end
+end
+
+local CommStarted = false
+local CommListeners = {}
+function Addon:RegisterAddOnComm(prefix, callback, func)
+	if func == nil then func = 0 end
+
+	if not CommStarted then
+		C_ChatInfo.RegisterAddonMessagePrefix(Addon.ShortName)
+		self:RegisterEvent('CHAT_MSG_ADDON', self)
+		CommStarted = true
+	end
+	if CommListeners[prefix] == nil then
+		CommListeners[prefix] = { [callback]=func }
+	else
+		CommListeners[prefix][callback] = func
+	end
+end
+
+function Addon:UnregisterAddOnComm(prefix, callback)
+	local listeners = CommListeners[prefix]
+	if listeners then
+		local count = 0
+		for index,_ in pairs(listeners) do
+			if index == callback then
+				listeners[index] = nil
+			else
+				count = count + 1
+			end
+		end
+		if count == 0 then
+			CommListeners[prefix] = nil
+		end
+	end
+end
+
+function Addon:SendAddOnComm(prefix, message, type, target)
+	data = prefix.."|"..message
+	C_ChatInfo.SendAddonMessage(Addon.ShortName, data, type, target)
+end
+
+function Addon:CHAT_MSG_ADDON(prefix, message, type, sender)
+	if prefix == Addon.ShortName then
+		for prefix,listeners in pairs(CommListeners) do
+			local matcher = prefix.."|"
+			if string.sub(message, 1, #matcher) == matcher then
+				local data = string.sub(message, #matcher + 1)
+				for callback,func in pairs(listeners) do
+					if func == 0 then
+						callback.ReceiveAddOnComm(callback, data, type, sender)
+					else
+						callback[func](callback, data, type, sender)
+					end
+				end
+			end
+		end
+	end
+end
+
 local ModulePrototype = {}
 function ModulePrototype:RegisterEvent(event, func)
 	Addon:RegisterEvent(event, self, func)
 end
 function ModulePrototype:UnregisterEvent(event)
 	Addon:UnregisterEvent(event, self)
+end
+function ModulePrototype:RegisterAddOnComm(func)
+	Addon:RegisterAddOnComm(self.Name, self, func)
+end
+function ModulePrototype:UnregisterAddOnComm()
+	Addon:UnregisterAddOnComm(self.Name, self)
+end
+function ModulePrototype:SendAddOnComm(message, type, target)
+	Addon:SendAddOnComm(self.Name, message, type, target)
 end
 function ModulePrototype:RegisterAddOnLoaded(name, func)
 	Addon:RegisterAddOnLoaded(name, self, func)
@@ -112,6 +196,7 @@ function Addon:NewModule(name)
 	self.Modules[name] = object
 	table.insert(self.Modules, object)
 	setmetatable(object, {__index=ModulePrototype})
+	object.Name = name
 	return object
 end
 setmetatable(Addon, {__index = Addon.Modules})
@@ -134,5 +219,6 @@ function Addon:PLAYER_ENTERING_WORLD()
 end
 
 Addon.Name = GetAddOnMetadata(ADDON, "Title")
+Addon.ShortName = GetAddOnMetadata(ADDON, "X-Short-Name") or string.sub(ADDON, 1, 16)
 Addon.Version = GetAddOnMetadata(ADDON, "X-Packaged-Version")
 _G[ADDON] = Addon

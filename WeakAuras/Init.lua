@@ -3,12 +3,12 @@ WeakAuras.L = {}
 
 local versionString = GetAddOnMetadata("WeakAuras", "Version");
 --[===[@debug@
-if versionString == "2.7.7" then
+if versionString == "2.7.10" then
   versionString = "Dev"
 end
 --@end-debug@]===]
 WeakAuras.versionString = versionString
-WeakAuras.printPrefix = "|cff9900FF".."WeakAuras: "..FONT_COLOR_CODE_CLOSE
+WeakAuras.printPrefix = "|cff9900ffWeakAuras:|r "
 
 WeakAuras.prettyPrint = function(msg)
   print(WeakAuras.printPrefix .. msg)

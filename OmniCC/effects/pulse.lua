@@ -1,111 +1,96 @@
---[[
-	pulse.lua
-		a pulsing finish effect
---]]
-
-local L = OMNICC_LOCALS
+-- a pulse finish effect
+local Addon = _G[...]
+local L = _G.OMNICC_LOCALS
 local PULSE_SCALE = 2.5
 local PULSE_DURATION = 0.6
 
-local Pulse = LibStub('Classy-1.0'):New('Frame')
-Pulse.name = L.Pulse
-Pulse.desc = L.PulseTip
-Pulse.id = 'pulse'
-Pulse.active = {}
-
-
---[[ Run ]]--
+local Pulse = Addon.FX:Create("pulse", L.Pulse, L.PulseTip)
 
 function Pulse:Run(cooldown)
-	if self.active[cooldown] then
-		local button = cooldown:GetParent()
-		local icon = OmniCC:GetButtonIcon(button)
-		
-		if icon then
-			self.active[cooldown]:Start(icon)
-		end
-	end
-end
-
-function Pulse:Start(texture)
-	if self.animation:IsPlaying() then
-		self.animation:Stop()
-	end
-
-	local icon = self.icon
-	local r, g, b = icon:GetVertexColor()
-	icon:SetVertexColor(r, g, b, 0.7)
-	icon:SetTexture(texture:GetTexture())
-
-	self:Show()
-	self.animation:Play()
-end
-
-
---[[ Setup ]]--
-
-function Pulse:Setup(cooldown)
-	if self.active[cooldown] then
-		return
-	end
-	
 	local parent = cooldown:GetParent()
-	if parent then
-		local pulse = self:Bind(CreateFrame('Frame', nil, parent))
-		pulse:Hide()
-		pulse:SetAllPoints(parent)
-		pulse:SetToplevel(true)
-		pulse:SetScript('OnHide', pulse.OnHide)
+	local icon = Addon:GetButtonIcon(parent)
 
-		local icon = pulse:CreateTexture(nil, 'OVERLAY')
-		icon:SetBlendMode('ADD')
-		icon:SetAllPoints()
-	
-		pulse.animation = pulse:CreatePulseAnimation()
-		pulse.icon = icon
-	
-		self.active[cooldown] = pulse
+	if parent and icon then
+		self:Start(self:Get(parent) or self:Create(parent), icon)
 	end
+end
+
+function Pulse:Start(pulse, icon)
+	if pulse.animation:IsPlaying() then
+		pulse.animation:Stop()
+	end
+
+	local r, g, b = icon:GetVertexColor()
+	pulse.icon:SetVertexColor(r, g, b, 0.7)
+	pulse.icon:SetTexture(icon:GetTexture())
+
+	pulse:Show()
+	pulse.animation:Play()
+end
+
+function Pulse:Get(owner)
+	return self.effects and self.effects[owner]
 end
 
 do
 	local function animation_OnFinished(self)
 		local parent = self:GetParent()
+
 		if parent:IsShown() then
 			parent:Hide()
 		end
 	end
-	
-	local function scale_OnFinished(self)
-		if self.reverse then
-			self.reverse = nil
-			self:GetParent():Finish()
-		else
-			self.reverse = true
+
+	local function pulseFrame_OnHide(self)
+		if self.animation:IsPlaying() then
+			self.animation:Stop()
 		end
+
+		self:Hide()
 	end
 
-	function Pulse:CreatePulseAnimation()
-		local g = self:CreateAnimationGroup()
-		g:SetLooping('BOUNCE')
-		g:SetScript('OnFinished', animation_OnFinished)
+	local function pulseFrame_CreateIcon(self)
+		local icon = self:CreateTexture(nil, "OVERLAY")
+		icon:SetBlendMode("ADD")
+		icon:SetAllPoints(self)
 
-		local grow = g:CreateAnimation('Scale')
-		grow:SetScript('OnFinished', scale_OnFinished)
+		return icon
+	end
+
+	local function pulseFrame_CreateAnimation(self)
+		local group = self:CreateAnimationGroup()
+		group:SetScript("OnFinished", animation_OnFinished)
+
+		local grow = group:CreateAnimation("Scale")
 		grow:SetScale(PULSE_SCALE, PULSE_SCALE)
 		grow:SetDuration(PULSE_DURATION/2)
-		grow:SetOrigin('CENTER', 0, 0)
-		grow:SetOrder(0)
+		grow:SetOrder(1)
 
-		return g
+		local shrink = group:CreateAnimation("Scale")
+		shrink:SetScale(-PULSE_SCALE, -PULSE_SCALE)
+		shrink:SetDuration(PULSE_DURATION/2)
+		shrink:SetOrder(2)
+
+		return group
+	end
+
+	function Pulse:Create(owner)
+		local pulse = Addon:CreateHiddenFrame("Frame", nil, owner)
+		pulse:SetAllPoints(owner)
+		pulse:SetToplevel(true)
+		pulse:SetScript("OnHide", pulseFrame_OnHide)
+
+		pulse.icon = pulseFrame_CreateIcon(pulse)
+
+		pulse.animation = pulseFrame_CreateAnimation(pulse)
+
+		local effects = self.effects
+		if effects then
+			effects[owner] = pulse
+		else
+			self.effects = { [owner] = pulse }
+		end
+
+		return pulse
 	end
 end
-
-function Pulse:OnHide()
-	if self.animation:IsPlaying() then
-		self.animation:Stop()
-	end
-	self:Hide()
-end
-
-OmniCC:RegisterEffect(Pulse)

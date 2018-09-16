@@ -1,9 +1,9 @@
 local ADDON, Addon = ...
 local Mod = Addon:NewModule('Schedule')
 
-local rowCount = 4
+local rowCount = 3
 
-local requestKeystoneCheck
+local requestPartyKeystones
 
 -- 1: Overflowing, 2: Skittish, 3: Volcanic, 4: Necrotic, 5: Teeming, 6: Raging, 7: Bolstering, 8: Sanguine, 9: Tyrannical, 10: Fortified, 11: Bursting, 12: Grievous, 13: Explosive, 14: Quaking
 -- 1溢出 2无常 3火山 4死疽 5繁盛 6暴怒 7激励 8血池 9残暴 10坚韧 11崩裂 12重伤 13易爆 14震荡 15冷酷
@@ -21,24 +21,100 @@ local affixSchedule = {
 	{ 10, 5, 13 },
 	{ 9, 7, 12 },
 }
-local startWeek = time({year=2017,month=6,day=22,hour=7,min=0,sec=0})
 
 local currentWeek
+local currentKeystoneMapID
+local currentKeystoneLevel
+local unitKeystones = {}
 
-local function UpdateAffixes()
-	if requestKeystoneCheck then
-		Mod:CheckInventoryKeystone()
+local function GetNameForKeystone(keystoneMapID, keystoneLevel)
+	local keystoneMapName = keystoneMapID and C_ChallengeMode.GetMapUIInfo(keystoneMapID)
+	if keystoneMapID and keystoneMapName then
+		return string.format("%s (%d)", keystoneMapName, keystoneLevel)
 	end
-    --163ui
-    if not currentWeek and GetLocale():find("^zh") then
-        local diff = time() - startWeek
-        while diff < 0 do diff = diff + 24*60*60*7*#affixSchedule end
-        currentWeek = math.floor(diff/(24*60*60*7)) % 12 + 1
-        requestKeystoneCheck = false
-    end
+end
+
+local function UpdatePartyKeystones()
+	if not IsAddOnLoaded("Blizzard_ChallengesUI") then return end
+
+	Mod:CheckCurrentKeystone()
+	if requestPartyKeystones then
+		Mod:SendPartyKeystonesRequest()
+	end
+
+	local playerRealm = select(2, UnitFullName("player"))
+
+	local e = 1
+	for i = 1, 4 do
+		local entry = Mod.PartyFrame.Entries[e]
+		local name, realm = UnitName("party"..i)
+
+		if name then
+			local fullName
+			if not realm or realm == "" then
+				fullName = name.."-"..playerRealm
+			else
+				fullName = name.."-"..realm
+			end
+
+			if unitKeystones[fullName] then
+				local keystoneName = GetNameForKeystone(unitKeystones[fullName][1], unitKeystones[fullName][2])
+				if keystoneName then
+					entry:Show()
+					local _, class = UnitClass("party"..i)
+					local color = RAID_CLASS_COLORS[class]
+					entry.Text:SetText(name)
+					entry.Text:SetTextColor(color:GetRGBA())
+
+					entry.Text2:SetText(keystoneName)
+
+					e = e + 1
+				end
+			end
+		end
+	end
+	if e == 1 then
+		Mod.AffixFrame:ClearAllPoints()
+		Mod.AffixFrame:SetPoint("LEFT", ChallengesFrame.WeeklyInfo.Child.WeeklyChest, "RIGHT", 30, 0)
+		Mod.PartyFrame:Hide()
+	else
+		Mod.AffixFrame:ClearAllPoints()
+		Mod.AffixFrame:SetPoint("TOPLEFT", ChallengesFrame.WeeklyInfo.Child.WeeklyChest, "TOPRIGHT", 30, 30)
+		Mod.PartyFrame:Show()
+	end
+	while e <= 4 do
+		Mod.PartyFrame.Entries[e]:Hide()
+		e = e + 1
+	end
+end
+
+local function UpdateFrame()
+	Mod:CheckAffixes()
+	Mod.AffixFrame:Show()
+	Mod.PartyFrame:Show()
+	Mod.KeystoneText:Show()
+
+	ChallengesFrame.WeeklyInfo.Child.WeeklyChest:ClearAllPoints()
+	ChallengesFrame.WeeklyInfo.Child.WeeklyChest:SetPoint("LEFT", 50, -30)
+	if ChallengesFrame.WeeklyInfo.Child.WeeklyChest:IsShown() then
+		ChallengesFrame.WeeklyInfo.Child.RunStatus:SetWidth(240)
+	else
+		ChallengesFrame.WeeklyInfo.Child.RunStatus:SetWidth(240)
+		ChallengesFrame.WeeklyInfo.Child.RunStatus:ClearAllPoints()
+		ChallengesFrame.WeeklyInfo.Child.RunStatus:SetPoint("TOP", ChallengesFrame.WeeklyInfo.Child.WeeklyChest, "TOP", -10, 35)
+	end
+
+	local currentKeystoneName = GetNameForKeystone(C_MythicPlus.GetOwnedKeystoneChallengeMapID(), C_MythicPlus.GetOwnedKeystoneLevel())
+	if currentKeystoneName then
+		Mod.KeystoneText:Show()
+		Mod.KeystoneText:SetText( string.format(Addon.Locale.currentKeystoneText, currentKeystoneName) )
+	else
+		Mod.KeystoneText:Hide()
+	end
+
 	if currentWeek then
 		for i = 1, rowCount do
-			local entry = Mod.Frame.Entries[i]
+			local entry = Mod.AffixFrame.Entries[i]
 			entry:Show()
 
 			local scheduleWeek = (currentWeek - 2 + i) % (#affixSchedule) + 1
@@ -48,13 +124,14 @@ local function UpdateAffixes()
 				affix:SetUp(affixes[j])
 			end
 		end
-		Mod.Frame.Label:Hide()
+		Mod.AffixFrame.Label:Hide()
 	else
 		for i = 1, rowCount do
-			Mod.Frame.Entries[i]:Hide()
+			Mod.AffixFrame.Entries[i]:Hide()
 		end
-		Mod.Frame.Label:Show()
+		Mod.AffixFrame.Label:Show()
 	end
+	UpdatePartyKeystones()
 end
 
 local function makeAffix(parent)
@@ -79,13 +156,10 @@ local function makeAffix(parent)
 end
 
 function Mod:Blizzard_ChallengesUI()
-	--ChallengesFrame.WeeklyInfo.Child.WeeklyChest:ClearAllPoints()
-	--ChallengesFrame.WeeklyInfo.Child.WeeklyChest:SetPoint("LEFT", 60, -45)
-
 	local frame = CreateFrame("Frame", nil, ChallengesFrame)
-	frame:SetSize(160, 110)
-	frame:SetPoint("TOPLEFT", ChallengesFrame.WeeklyInfo.Child.WeeklyChest, "TOPRIGHT", 15, -15)
-	Mod.Frame = frame
+	frame:SetSize(246, 92)
+	frame:SetPoint("TOPLEFT", ChallengesFrame.WeeklyInfo.Child.WeeklyChest, "TOPRIGHT", 30, 30)
+	Mod.AffixFrame = frame
 
 	local bg = frame:CreateTexture(nil, "BACKGROUND")
 	bg:SetAllPoints()
@@ -97,17 +171,17 @@ function Mod:Blizzard_ChallengesUI()
 	title:SetPoint("TOPLEFT", 15, -7)
 
 	local line = frame:CreateTexture(nil, "ARTWORK")
-	line:SetSize(146, 9)
+	line:SetSize(232, 9)
 	line:SetAtlas("ChallengeMode-RankLineDivider", false)
 	line:SetPoint("TOP", 0, -20)
 
 	local entries = {}
 	for i = 1, rowCount do
 		local entry = CreateFrame("Frame", nil, frame)
-		entry:SetSize(130, 18)
+		entry:SetSize(216, 18)
 
 		local text = entry:CreateFontString(nil, "ARTWORK", "GameFontNormal")
-		text:SetWidth(74)
+		text:SetWidth(120)
 		text:SetJustifyH("LEFT")
 		text:SetWordWrap(false)
 		text:SetText( Addon.Locale["scheduleWeek"..i] )
@@ -148,49 +222,203 @@ function Mod:Blizzard_ChallengesUI()
 	label:SetText(Addon.Locale.scheduleMissingKeystone)
 	frame.Label = label
 
-	hooksecurefunc("ChallengesFrame_Update", UpdateAffixes)
+	local frame2 = CreateFrame("Frame", nil, ChallengesFrame)
+	frame2:SetSize(246, 110)
+	frame2:SetPoint("TOP", frame, "BOTTOM", 0, -10)
+	Mod.PartyFrame = frame2
+
+	local bg2 = frame2:CreateTexture(nil, "BACKGROUND")
+	bg2:SetAllPoints()
+	bg2:SetAtlas("ChallengeMode-guild-background")
+	bg2:SetAlpha(0.4)
+
+	local title2 = frame2:CreateFontString(nil, "ARTWORK", "GameFontNormalMed2")
+	title2:SetText(Addon.Locale.partyKeysTitle)
+	title2:SetPoint("TOPLEFT", 15, -7)
+
+	local line2 = frame2:CreateTexture(nil, "ARTWORK")
+	line2:SetSize(232, 9)
+	line2:SetAtlas("ChallengeMode-RankLineDivider", false)
+	line2:SetPoint("TOP", 0, -20)
+
+	local entries2 = {}
+	for i = 1, 4 do
+		local entry = CreateFrame("Frame", nil, frame2)
+		entry:SetSize(216, 18)
+
+		local text = entry:CreateFontString(nil, "ARTWORK", "GameFontNormal")
+		text:SetWidth(120)
+		text:SetJustifyH("LEFT")
+		text:SetWordWrap(false)
+		text:SetText()
+		text:SetPoint("LEFT")
+		entry.Text = text
+
+		local text2 = entry:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
+		text2:SetWidth(180)
+		text2:SetJustifyH("RIGHT")
+		text2:SetWordWrap(false)
+		text2:SetText()
+		text2:SetPoint("RIGHT")
+		entry.Text2 = text2
+
+		if i == 1 then
+			entry:SetPoint("TOP", line2, "BOTTOM")
+		else
+			entry:SetPoint("TOP", entries2[i-1], "BOTTOM")
+		end
+
+		entries2[i] = entry
+	end
+	frame2.Entries = entries2
+
+	local keystoneText = ChallengesFrame.WeeklyInfo.Child:CreateFontString(nil, "ARTWORK", "GameFontNormalMed2")
+	keystoneText:SetPoint("BOTTOM", ChallengesFrame.WeeklyInfo.Child.WeeklyChest, "BOTTOM", 0, -25)
+	keystoneText:SetWidth(220)
+	Mod.KeystoneText = keystoneText
+
+	hooksecurefunc("ChallengesFrame_Update", UpdateFrame)
 end
 
-function Mod:CheckInventoryKeystone()
+function Mod:GetInventoryKeystone()
+	for container=BACKPACK_CONTAINER, NUM_BAG_SLOTS do
+		local slots = GetContainerNumSlots(container)
+		for slot=1, slots do
+			local _, _, _, _, _, _, slotLink = GetContainerItemInfo(container, slot)
+			local itemString = slotLink and slotLink:match("|Hkeystone:([0-9:]+)|h(%b[])|h")
+			if itemString then
+				return slotLink, itemString
+			end
+		end
+	end
+end
+
+function Mod:CheckAffixes()
 	currentWeek = nil
 	local currentAffixes = C_MythicPlus.GetCurrentAffixes()
 
 	if currentAffixes then
 		for index, affixes in ipairs(affixSchedule) do
-			if currentAffixes[3] == affixes[1] and currentAffixes[1] == affixes[2] and currentAffixes[2] == affixes[3] then
+			local matches = 0
+			for _, affix in ipairs(currentAffixes) do
+				if affix == affixes[1] or affix == affixes[2] or affix == affixes[3] then
+					matches = matches + 1
+				end
+			end
+			if matches >= 3 then
 				currentWeek = index
 			end
 		end
-	else
-		for container=BACKPACK_CONTAINER, NUM_BAG_SLOTS do
-			local slots = GetContainerNumSlots(container)
-			for slot=1, slots do
-				local _, _, _, _, _, _, slotLink = GetContainerItemInfo(container, slot)
-				local itemString = slotLink and slotLink:match("|Hkeystone:([0-9:]+)|h(%b[])|h")
-				if itemString then
-					local info = { strsplit(":", itemString) }
-					local mapLevel = tonumber(info[3])
-					if mapLevel >= 7 then
-						local affix1, affix2, affix3, affix4 = tonumber(info[4]), tonumber(info[5]), tonumber(info[6]), tonumber(info[7])
-						for index, affixes in ipairs(affixSchedule) do
-							if affix1 == affixes[1] and affix2 == affixes[2] and affix3 == affixes[3] then
-								currentWeek = index
-							end
-						end
-					end
-				end
-			end
-		end
 	end
-	requestKeystoneCheck = false
 end
 
+local bagUpdateTimerStarted = false
 function Mod:BAG_UPDATE()
-	requestKeystoneCheck = true
+	if not bagUpdateTimerStarted then
+		bagUpdateTimerStarted = true
+		C_Timer.After(1, function()
+			Mod:CheckCurrentKeystone(true)
+			bagUpdateTimerStarted = false
+		end)
+	end
+end
+
+function Mod:CHAT_MSG_LOOT(...)
+	local lootString, _, _, _, unit = ...
+	if string.match(lootString, "|Hitem:158923:") then
+		if UnitName("player") == unit then
+			self:CheckCurrentKeystone()
+		else
+			self:SetPartyKeystoneRequest()
+		end
+	end
+end
+
+function Mod:SetPartyKeystoneRequest()
+	requestPartyKeystones = true
+	if IsAddOnLoaded("Blizzard_ChallengesUI") and ChallengesFrame:IsShown() then
+		self:SendPartyKeystonesRequest()
+		UpdatePartyKeystones()
+	end
+end
+
+function Mod:SendPartyKeystonesRequest()
+	requestPartyKeystones = false
+	self:SendAddOnComm("request", "PARTY")
+end
+
+function Mod:CheckCurrentKeystone(announce)
+	local keystoneMapID = C_MythicPlus.GetOwnedKeystoneChallengeMapID()
+	local keystoneLevel = C_MythicPlus.GetOwnedKeystoneLevel()
+
+	if keystoneMapID ~= currentKeystoneMapID or keystoneLevel ~= currentKeystoneLevel then
+		currentKeystoneMapID = keystoneMapID
+		currentKeystoneLevel = keystoneLevel
+
+		local itemLink = self:GetInventoryKeystone()
+		if Addon.Config.announceKeystones and announce and itemLink and IsInGroup(LE_PARTY_CATEGORY_HOME) then
+			SendChatMessage(string.format(Addon.Locale.newKeystoneAnnounce, itemLink), "PARTY")
+		end
+
+		self:SendCurrentKeystone()
+	end
+end
+
+function Mod:SendCurrentKeystone()
+	local keystoneMapID = C_MythicPlus.GetOwnedKeystoneChallengeMapID()
+	local keystoneLevel = C_MythicPlus.GetOwnedKeystoneLevel()
+	
+	local message = "0"
+	if keystoneLevel and keystoneMapID then
+		message = string.format("%d:%d", keystoneMapID, keystoneLevel)
+	end
+
+	if IsInGroup() then
+		self:SendAddOnComm(message, "PARTY")
+	end
+end
+
+function Mod:ReceiveAddOnComm(message, type, sender)
+	if message == "request" then
+		requestPartyKeystones = false
+		self:SendCurrentKeystone()
+	elseif message == "0" then
+		if unitKeystones[sender] ~= nil then
+			unitKeystones[sender] = nil
+			UpdatePartyKeystones()
+		end
+	else
+		local arg1, arg2 = message:match("^(%d+):(%d+)$")
+		local keystoneMapID = arg1 and tonumber(arg1)
+		local keystoneLevel = arg2 and tonumber(arg2)
+		if keystoneMapID and keystoneLevel and not (unitKeystones[sender] and unitKeystones[sender][1] == keystoneMapID and unitKeystones[sender][2] == keystoneLevel) then
+			unitKeystones[sender] = { keystoneMapID, keystoneLevel }
+			UpdatePartyKeystones()
+		end
+	end
+end
+
+function Mod:CHALLENGE_MODE_START()
+	C_Timer.After(2, function() self:CheckCurrentKeystone(false) end)
+	self:SetPartyKeystoneRequest()
+end
+
+function Mod:CHALLENGE_MODE_COMPLETED()
+	C_Timer.After(2, function() self:CheckCurrentKeystone(true) end)
+	self:SetPartyKeystoneRequest()
 end
 
 function Mod:Startup()
 	self:RegisterAddOnLoaded("Blizzard_ChallengesUI")
+	self:RegisterEvent("GROUP_ROSTER_UPDATE", "SetPartyKeystoneRequest")
 	self:RegisterEvent("BAG_UPDATE")
-	requestKeystoneCheck = true
+	self:RegisterEvent("CHAT_MSG_LOOT")
+	self:RegisterEvent("CHALLENGE_MODE_COMPLETED")
+	self:RegisterEvent("CHALLENGE_MODE_START")
+	self:RegisterAddOnComm()
+	self:CheckCurrentKeystone()
+
+	C_Timer.NewTicker(60, function() self:CheckCurrentKeystone(false) end)
+	
+	requestPartyKeystones = true
 end

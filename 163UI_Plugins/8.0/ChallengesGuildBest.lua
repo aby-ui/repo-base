@@ -56,8 +56,8 @@ CoreDependCall("Blizzard_ChallengesUI", function()
     local function update()
         local best = AbyChallengesFrameGuildBest
         best:SetParent(ChallengesFrame)
-        best:SetPoint("TOPRIGHT", ChallengesFrame.WeeklyInfo.Child.WeeklyChest, "TOPLEFT", -15, -15)
-        --best:SetPoint("TOPRIGHT", -5, -22)
+        --best:SetPoint("TOPRIGHT", ChallengesFrame.WeeklyInfo.Child.WeeklyChest, "TOPLEFT", -15, -15)
+        best:SetPoint("TOPRIGHT", -5, -20)
         local leaders = C_ChallengeMode.GetGuildLeaders()
         if leaders and #leaders > 0 then
             best:Show()

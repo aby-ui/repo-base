@@ -3,114 +3,107 @@
 		a shine finish effect
 --]]
 
-local L = OMNICC_LOCALS
-local Shine = LibStub('Classy-1.0'):New('Frame')
-Shine.id = 'shine'
-Shine.name = L.Shine
-Shine.instances = {}
+local Addon = _G[...]
+local L = _G.OMNICC_LOCALS
 
-Shine.texture = [[Interface\Cooldown\star4]]
-Shine.duration = .75
-Shine.scale = 5
+local Shine = Addon.FX:Create("shine", L.Shine)
 
+local SHINE_TEXTURE = [[Interface\Cooldown\star4]]
+local SHINE_DURATION = 0.75
+local SHINE_SCALE = 5
 
---[[ Run ]]--
+local ShinePool
+do
+	local function shineAnimation_OnFinished(self)
+		local parent = self:GetParent()
 
-function Shine:Run(cooldown)
-	local shine = self.instances[cooldown]
-	if shine then
-		shine:Start()
+		if parent:IsShown() then
+			parent:Hide()
+		end
 	end
-end
 
-function Shine:Start()
-	if self.animation:IsPlaying() then
-		self.animation:Finish()
+	local function shineAnimation_Create(parent)
+		local group = parent:CreateAnimationGroup()
+		group:SetScript('OnFinished', shineAnimation_OnFinished)
+		group:SetLooping('NONE')
+
+		local initiate = group:CreateAnimation('Alpha')
+		initiate:SetFromAlpha(1)
+		initiate:SetDuration(0)
+		initiate:SetToAlpha(0)
+		initiate:SetOrder(0)
+
+		local grow = group:CreateAnimation('Scale')
+		grow:SetOrigin('CENTER', 0, 0)
+		grow:SetScale(SHINE_SCALE, SHINE_SCALE)
+		grow:SetDuration(SHINE_DURATION / 2)
+		grow:SetOrder(1)
+
+		local brighten = group:CreateAnimation('Alpha')
+		brighten:SetDuration(SHINE_DURATION / 2)
+		brighten:SetFromAlpha(0)
+		brighten:SetToAlpha(1)
+		brighten:SetOrder(1)
+
+		local shrink = group:CreateAnimation('Scale')
+		shrink:SetOrigin('CENTER', 0, 0)
+		shrink:SetScale(1/SHINE_SCALE, 1/SHINE_SCALE)
+		shrink:SetDuration(SHINE_DURATION / 2)
+		shrink:SetOrder(2)
+
+		local fade = group:CreateAnimation('Alpha')
+		fade:SetDuration(SHINE_DURATION / 2)
+		fade:SetFromAlpha(1)
+		fade:SetToAlpha(0)
+		fade:SetOrder(2)
+
+		return group
 	end
-	
-	self:Show()
-	self.animation:Play()
-end
 
-function Shine:OnAnimationFinished()
-	local parent = self:GetParent()
-	if parent:IsShown() then
-		parent:Hide()
+	local function shine_OnHide(self)
+		ShinePool:Release(self)
 	end
-end
 
-function Shine:OnHide()
-	if self.animation:IsPlaying() then
-		self.animation:Finish()
-	end
-	
-	self:Hide()
-end
-
-
---[[ Setup ]]--
-
-function Shine:Setup(cooldown)
-	if self.instances[cooldown] then
-		return
-	end
-	
-	local parent = cooldown:GetParent()
-	if parent then
-		local shine = self:Bind(CreateFrame('Frame', nil, parent))
+	local function pool_OnCreate(self)
+		local shine = CreateFrame('Frame')
 		shine:Hide()
-		shine:SetScript('OnHide', shine.OnHide)
-		shine:SetAllPoints(parent)
+		shine:SetScript('OnHide', shine_OnHide)
 		shine:SetToplevel(true)
-		shine.animation = shine:CreateShineAnimation()
 
 		local icon = shine:CreateTexture(nil, 'OVERLAY')
 		icon:SetPoint('CENTER')
 		icon:SetBlendMode('ADD')
-		icon:SetAllPoints(shine)
-		icon:SetTexture(self.texture)
+		icon:SetAllPoints(icon:GetParent())
+		icon:SetTexture(SHINE_TEXTURE)
 
-		self.instances[cooldown] = shine
+		shine.animation = shineAnimation_Create(shine)
+
 		return shine
 	end
+
+	local function pool_OnRelease(self, shine)
+		if shine.animation:IsPlaying() then
+			shine.animation:Finish()
+		end
+
+		shine:Hide()
+		shine:SetParent(nil)
+	end
+
+	ShinePool = CreateObjectPool(pool_OnCreate, pool_OnRelease)
 end
 
-function Shine:CreateShineAnimation()
-	local group = self:CreateAnimationGroup()
-	group:SetScript('OnFinished', self.OnAnimationFinished)
-	group:SetLooping('NONE')
+function Shine:Run(cooldown)
+	local parent = cooldown:GetParent()
 
-	local initiate = group:CreateAnimation('Alpha')
-	initiate:SetFromAlpha(1)
-	initiate:SetDuration(0)
-	initiate:SetToAlpha(0)
-	initiate:SetOrder(0)
+	if parent and parent:IsShown() then
+		local shine = ShinePool:Acquire()
 
-	local grow = group:CreateAnimation('Scale')
-	grow:SetOrigin('CENTER', 0, 0)
-	grow:SetScale(self.scale, self.scale)
-	grow:SetDuration(self.duration / 2)
-	grow:SetOrder(1)
+		shine:SetParent(parent)
+		shine:SetAllPoints(parent)
+		shine:Show()
 
-	local brighten = group:CreateAnimation('Alpha')
-	brighten:SetDuration(self.duration / 2)
-	brighten:SetFromAlpha(0)
-	brighten:SetToAlpha(1)
-	brighten:SetOrder(1)
-
-	local shrink = group:CreateAnimation('Scale')
-	shrink:SetOrigin('CENTER', 0, 0)
-	shrink:SetScale(-self.scale, -self.scale)
-	shrink:SetDuration(self.duration / 2)
-	shrink:SetOrder(2)
-
-	local fade = group:CreateAnimation('Alpha')
-	fade:SetDuration(self.duration / 2)
-	fade:SetFromAlpha(1)
-	fade:SetToAlpha(0)
-	fade:SetOrder(2)
-
-	return group
+		shine.animation:Stop()
+		shine.animation:Play()
+	end
 end
-
-OmniCC:RegisterEffect(Shine)

@@ -41,7 +41,7 @@
 --  Globals/Default Options  --
 -------------------------------
 DBM = {
-	Revision = tonumber(("$Revision: 17840 $"):sub(12, -3)),
+	Revision = tonumber(("$Revision: 17855 $"):sub(12, -3)),
 	DisplayVersion = "8.0.9 alpha", -- the string that is shown as version
 	ReleaseRevision = 17821 -- the revision of the latest stable version that is available
 }
@@ -251,6 +251,7 @@ DBM.DefaultOptions = {
 	HelpMessageVersion = 3,
 	MoviesSeen = {},
 	MovieFilter = "AfterFirst",
+	BonusFilter = "Never",
 	LastRevision = 0,
 	DebugMode = false,
 	DebugLevel = 1,
@@ -1359,7 +1360,7 @@ do
 				"UPDATE_BATTLEFIELD_STATUS",
 				"PLAY_MOVIE",
 				"CINEMATIC_START",
-				--"PLAYER_LEVEL_UP",--PLAYER_LEVEL_CHANGED
+				"PLAYER_LEVEL_CHANGED",
 				"PLAYER_SPECIALIZATION_CHANGED",
 				"PARTY_INVITE_REQUEST",
 				"LOADING_SCREEN_DISABLED",
@@ -3300,7 +3301,7 @@ function DBM:SpecChanged(force)
 	end
 end
 
-function DBM:PLAYER_LEVEL_UP()
+function DBM:PLAYER_LEVEL_CHANGED()
 	playerLevel = UnitLevel("player")
 	if playerLevel < 15 and playerLevel > 9 then
 		self:PLAYER_SPECIALIZATION_CHANGED()
@@ -7170,6 +7171,59 @@ do
 			self.Options.MoviesSeen[currentMapID] = true
 		end
 	end
+end
+
+-------------------
+--  Bonus Filter --
+-------------------
+do
+	local bonusTimeStamp = 0
+	local bonusRollForce = false
+	local warFrontMaps = {
+		[14] = true, -- Arathi Highlands
+	}
+	local function hideBonusRoll(self)
+		bonusTimeStamp = GetTime()
+		BonusRollFrame:Hide()
+		self:AddMsg(DBM_CORE_BONUS_SKIPPED)
+	end
+	local function showBonusRoll(self)
+		if (GetTime() - bonusTimeStamp) < 180 then--3 min timer still active
+			BonusRollFrame:Show()
+			BonusRollFrame:Show()
+			bonusTimeStamp = 0--Reset to 0, because you can't call frame back more than once, once you pass it's over
+		else--Out of Time
+			self:AddMsg(DBM_CORE_BONUS_EXPIRED)
+		end
+	end
+	SLASH_DBMBONUS1 = "/dbmbonusroll"
+	SlashCmdList["DBMBONUS"] = function(msg)
+		bonusRollForce = true
+		showBonusRoll(DBM)
+	end
+	--TODO, see where timewalking ilvl fits into filters
+	--Couldn't get any of events to work so have to hook the show script directly
+	BonusRollFrame:HookScript("OnShow", function(self, event, ...)
+		if bonusRollForce then
+			bonusRollForce = false
+			return
+		end
+		DBM:Debug("BonusRollFrame OnShow fired", 2)
+		if DBM.Options.BonusFilter == "Never" then return end
+		local _, _, difficultyId, _, _, _, _, mapID = GetInstanceInfo()
+		local localMapID = C_Map.GetBestMapForUnit("player") or 0
+		local keystoneLevel = C_ChallengeMode.GetActiveKeystoneInfo() or 0
+		DBM:Unschedule(hideBonusRoll)
+		if DBM.Options.BonusFilter == "TrivialContent" and (difficultyId == 1 or difficultyId == 2) then--Basically anything below 340 ilvl (normal/heroic dungeons)
+			hideBonusRoll(DBM)
+		elseif DBM.Options.BonusFilter == "NormalRaider" and (difficultyId == 14 or difficultyId == 17 or difficultyId == 23 or (difficultyId == 8 and keystoneLevel < 5)) then--Basically, anything below 355 (normal/heroic/mythic dungeons lower than 5, LFR
+			hideBonusRoll(DBM)
+		elseif DBM.Options.BonusFilter == "HeroicRaider" and (difficultyId == 14 or difficultyId == 15 or difficultyId == 17 or difficultyId == 23 or (difficultyId == 8 and keystoneLevel < 10) or (difficultyId == 0 and not warFrontMaps[localMapID])) then--Basically, anything below 370 (normal/heroic/mythic dungeons lower than 10, LFR/Normal Raids
+			hideBonusRoll(DBM)
+		elseif DBM.Options.BonusFilter == "MythicRaider" and (difficultyId == 14 or difficultyId == 15 or difficultyId == 16 or difficultyId == 17 or difficultyId == 23 or difficultyId == 8 or difficultyId == 0) then--Basically, anything below 385 (ANY dungeon, LFR/Normal/Heroic Raids
+			hideBonusRoll(DBM)
+		end
+	end)
 end
 
 ----------------------------

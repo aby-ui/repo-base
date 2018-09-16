@@ -160,7 +160,7 @@ function GridStatusResurrect:UpdateUnit(unit, guid)
 	local db = self.db.profile.alert_resurrect
 	local hasRes, endTime, casterUnit, casterGUID = LibResInfo:UnitHasIncomingRes(guid)
 
-	if not hasRes or (hasRes == "PENDING" and not db.showUntilUsed) then
+	if not hasRes or (hasRes == "PENDING" and not db.showUntilUsed) or not casterUnit then
 		return self.core:SendStatusLost(guid, "alert_resurrect")
 	end
 

@@ -66,6 +66,7 @@ function WeakAuras.MultipleDisplayTooltipDesc()
   desc[2][1] = L["Children:"]
   tinsert(desc, " ");
   tinsert(desc, {" ", "|cFF00FFFF"..L["Right-click for more options"]});
+  tinsert(desc, {" ", "|cFF00FFFF"..L["Drag to move"]});
   return desc;
 end
 
@@ -1310,7 +1311,25 @@ function WeakAuras.ShowOptions(msg)
   end
 
   frame:Show();
-  frame:PickOption("New");
+  if (frame.pickedDisplay) then
+    if (WeakAuras.IsPickedMultiple()) then
+      local children = {}
+      for k,v in pairs(tempGroup.controlledChildren) do
+        children[k] = v
+      end
+      for index,childId in pairs(children) do
+        if (index == 1) then
+          WeakAuras.PickDisplay(childId);
+        else
+          WeakAuras.PickDisplayMultiple(childId);
+        end
+      end
+    else
+      WeakAuras.PickDisplay(frame.pickedDisplay);
+    end
+  else
+    frame:PickOption("New");
+  end
   if not(firstLoad) then
     WeakAuras.PauseAllDynamicGroups();
     for id, button in pairs(displayButtons) do
@@ -1372,14 +1391,24 @@ function WeakAuras.DoConfigUpdate()
     end
   end
 
+  -- Auras that are hidden because of e.g. conditions or straight up alpha
+  -- settings, do look very strange in the options So boost their alpha to 0.5
+  local function ApplyFakeAlpha(region)
+    if (region.GetRegionAlpha and region:GetRegionAlpha() < 0.5) then
+      region:SetAlpha(0.5);
+    end
+  end
+
   for id, region in pairs(WeakAuras.regions) do
     local data = db.displays[id];
     if(data) then
       GiveDynamicInfo(id, region.region, data);
+      ApplyFakeAlpha(region.region);
 
       if(WeakAuras.clones[id]) then
         for cloneNum, cloneRegion in pairs(WeakAuras.clones[id]) do
           GiveDynamicInfo(id, cloneRegion, data, cloneNum);
+          ApplyFakeAlpha(cloneRegion);
         end
       end
     end
@@ -1403,6 +1432,24 @@ function WeakAuras.UnlockUpdateInfo()
   if frame then
     frame:SetScript("OnUpdate", nil);
   end
+  local function RestoreAlpha(region)
+    if (region.GetRegionAlpha) then
+      region:SetAlpha(region:GetRegionAlpha());
+    end
+  end
+
+  for id, region in pairs(WeakAuras.regions) do
+    local data = db.displays[id];
+    if(data) then
+      RestoreAlpha(region.region);
+      if(WeakAuras.clones[id]) then
+        for cloneNum, cloneRegion in pairs(WeakAuras.clones[id]) do
+          RestoreAlpha(cloneRegion);
+        end
+      end
+    end
+  end
+
 end
 
 function WeakAuras.SetIconNames(data)
@@ -2621,15 +2668,15 @@ function WeakAuras.ReloadTriggerOptions(data)
         local childData = WeakAuras.GetData(childId);
         if(childData) then
           tremove(childData.triggers, optionTriggerChoices[childId])
-          optionTriggerChoices[childId] = max(1, optionTriggerChoices[childId] - 1)
           WeakAuras.DeleteConditionsForTrigger(childData, optionTriggerChoices[childId]);
+          optionTriggerChoices[childId] = max(1, optionTriggerChoices[childId] - 1)
           WeakAuras.ReloadTriggerOptions(childData);
         end
       end
     else
       tremove(data.triggers, optionTriggerChoices[id])
-      optionTriggerChoices[id] = max(1, optionTriggerChoices[id] - 1)
       WeakAuras.DeleteConditionsForTrigger(data, optionTriggerChoices[id]);
+      optionTriggerChoices[id] = max(1, optionTriggerChoices[id] - 1)
     end
     WeakAuras.Add(data);
     WeakAuras.ReloadTriggerOptions(data);
@@ -4067,8 +4114,26 @@ end
 
 function WeakAuras.SetDragging(data, drop)
   WeakAuras_DropDownMenu:Hide()
-  for id, button in pairs(displayButtons) do
-    button:SetDragging(data, drop)
+  if (frame.pickedDisplay == tempGroup and #tempGroup.controlledChildren > 0) then
+    local children = {}
+    local size = #tempGroup.controlledChildren
+    -- set dragging for selected buttons in reverse for ordering
+    for index=size,1,-1 do
+      local childId = tempGroup.controlledChildren[index]
+      local button = WeakAuras.GetDisplayButton(childId)
+      button:SetDragging(data, drop, size);
+      children[childId] = true
+    end
+    -- set dragging for non selected buttons
+    for id, button in pairs(displayButtons) do
+      if not children[button.data.id] then
+        button:SetDragging(data, drop);
+      end
+    end
+  else
+    for id, button in pairs(displayButtons) do
+      button:SetDragging(data, drop);
+    end
   end
 end
 
@@ -4166,7 +4231,7 @@ function WeakAuras.CloseCodeReview(data)
   frame.codereview:Close();
 end
 
-function WeakAuras.OpenTriggerTemplate(data)
+function WeakAuras.OpenTriggerTemplate(data, targetId)
   if not(IsAddOnLoaded("WeakAurasTemplates")) then
     local loaded, reason = LoadAddOn("WeakAurasTemplates");
     if not(loaded) then
@@ -4176,6 +4241,7 @@ function WeakAuras.OpenTriggerTemplate(data)
     end
     frame.newView = WeakAuras.CreateTemplateView(frame);
   end
+  frame.newView.targetId = targetId;
   frame.newView:Open(data);
 end
 
@@ -4236,5 +4302,65 @@ function WeakAuras.ShowCloneDialog(data)
     };
 
     StaticPopup_Show("WEAKAURAS_CLONE_OPTION_ENABLED");
+  end
+end
+
+function WeakAuras.NewAura(sourceData, regionType, targetId)
+  local function ensure(t, k, v)
+    return t and k and v and t[k] == v
+  end
+  local new_id = WeakAuras.FindUnusedId("New")
+  local data = {id = new_id, regionType = regionType}
+  WeakAuras.DeepCopy(WeakAuras.data_stub, data);
+  if (sourceData) then
+    WeakAuras.DeepCopy(sourceData, data);
+  end
+  data.internalVersion = WeakAuras.InternalVersion();
+  WeakAuras.validate(data, WeakAuras.regionTypes[regionType].default);
+  if (data.regionType ~= "group" and data.regionType ~= "dynamicgroup" and targetId) then
+    local target = WeakAuras.GetDisplayButton(targetId);
+    local group
+    if (target) then
+      if (target:IsGroup()) then
+        group = target;
+      else
+        group = WeakAuras.GetDisplayButton(target.data.parent);
+      end
+      if (group) then
+        local children = group.data.controlledChildren;
+        local index = target:GetGroupOrder();
+        if (ensure(children, index, target.data.id)) then
+          -- account for insert position
+          index = index + 1;
+          tinsert(children, index, data.id);
+        else
+          -- move source into group as the first child
+          tinsert(children, 1, data.id);
+        end
+        data.parent = group.data.id;
+        WeakAuras.Add(data);
+        WeakAuras.Add(group.data);
+        WeakAuras.NewDisplayButton(data);
+        WeakAuras.UpdateGroupOrders(group.data);
+        WeakAuras.ReloadGroupRegionOptions(group.data);
+        WeakAuras.UpdateDisplayButton(group.data);
+        group.callbacks.UpdateExpandButton();
+        group:Expand();
+        group:ReloadTooltip();
+        WeakAuras.PickAndEditDisplay(data.id);
+      else
+        -- move source into the top-level list
+        WeakAuras.Add(data);
+        WeakAuras.NewDisplayButton(data);
+        WeakAuras.PickAndEditDisplay(data.id);
+      end
+    else
+      error("Calling 'WeakAuras.NewAura' with invalid groupId. Reload your UI to fix the display list.")
+    end
+  else
+    -- move source into the top-level list
+    WeakAuras.Add(data);
+    WeakAuras.NewDisplayButton(data);
+    WeakAuras.PickAndEditDisplay(data.id);
   end
 end

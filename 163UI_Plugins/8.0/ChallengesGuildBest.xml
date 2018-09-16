@@ -33,7 +33,7 @@
         </Anchors>-->
         <Layers>
             <Layer level="BACKGROUND">
-                <Texture atlas="ChallengeMode-guild-background" setAllPoints="true" alpha="0.4"/>
+                <Texture atlas="ChallengeMode-guild-background" setAllPoints="true" alpha="0.1"/>
             </Layer>
             <Layer level="ARTWORK">
                 <FontString parentKey="Title" inherits="GameFontNormalMed2" text="CHALLENGE_MODE_GUILD_BEST">

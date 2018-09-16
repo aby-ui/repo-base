@@ -291,7 +291,7 @@ local function GetItemSplit(itemLink)
 end
 
 -- char size for utf8 strings
-local function chsize(char)
+local function ChrSize(char)
   if not char then
       return 0
   elseif char > 240 then
@@ -306,7 +306,7 @@ local function chsize(char)
 end
 
 -- SimC tokenize function
-local function tokenize(str)
+local function Tokenize(str)
   str = str or ""
   -- convert to lowercase and remove spaces
   str = string.lower(str)
@@ -326,8 +326,8 @@ local function tokenize(str)
     elseif b == 37 or b == 43 or b == 46 or b == 95 then
       s = s .. str:sub(i,i)
       -- save all multibyte chars
-    elseif chsize(b) > 1 then
-      local offset = chsize(b) - 1
+    elseif ChrSize(b) > 1 then
+      local offset = ChrSize(b) - 1
       s = s .. str:sub(i, i + offset)
       i = i + offset
     end
@@ -337,6 +337,16 @@ local function tokenize(str)
     s = string.sub(s, 0, s:len()-1)
   end
   return s
+end
+
+-- method to add spaces to UnitRace names for proper tokenization
+local function FormatRace(str)
+  str = str or ""
+  local matches = {}
+  for match, _ in string.gmatch(str, '([%u][%l]*)') do
+    matches[#matches+1] = match
+  end
+  return string.join(' ', unpack(matches))
 end
 
 -- method for constructing the talent string
@@ -366,7 +376,7 @@ local function CreateSimcTalentString()
 end
 
 -- function that translates between the game's role values and ours
-local function translateRole(spec_id, str)
+local function TranslateRole(spec_id, str)
   local spec_role = Simulationcraft.RoleTable[spec_id]
   if spec_role ~= nil then
     return spec_role
@@ -583,6 +593,20 @@ function Simulationcraft:GetBagItemStrings()
   return bagItems
 end
 
+function Simulationcraft:GetReoriginationArrayStacks()
+  local questStart = 53571
+  local questEnd = 53580
+  local stacks = 0
+
+  for questId = questStart, questEnd do
+    if IsQuestFlaggedCompleted(questId) then
+      stacks = stacks + 1
+    end
+  end
+
+  return stacks
+end
+
 -- This is the workhorse function that constructs the profile
 function Simulationcraft:PrintSimcProfile(debugOutput, noBags)
   -- addon metadata
@@ -607,16 +631,10 @@ function Simulationcraft:PrintSimcProfile(debugOutput, noBags)
   -- Race info
   local _, playerRace = UnitRace('player')
   -- fix some races to match SimC format
-  if playerRace == 'BloodElf' then
-    playerRace = 'Blood Elf'
-  elseif playerRace == 'NightElf' then
-    playerRace = 'Night Elf'
-  elseif playerRace == 'MagharOrc' then
-    playerRace = 'Maghar Orc'
-  elseif playerRace == 'DarkIronDwarf' then
-    playerRace = 'Dark Iron Dwarf'
-  elseif playerRace == 'Scourge' then --lulz
+  if playerRace == 'Scourge' then --lulz
     playerRace = 'Undead'
+  else
+    playerRace = FormatRace(playerRace)
   end
 
   -- Spec info
@@ -644,23 +662,23 @@ function Simulationcraft:PrintSimcProfile(debugOutput, noBags)
   if pid1 or pid2 then
     playerProfessions = 'professions='
     if pid1 then
-      playerProfessions = playerProfessions..tokenize(firstProf)..'='..tostring(firstProfRank)..'/'
+      playerProfessions = playerProfessions..Tokenize(firstProf)..'='..tostring(firstProfRank)..'/'
     end
     if pid2 then
-      playerProfessions = playerProfessions..tokenize(secondProf)..'='..tostring(secondProfRank)
+      playerProfessions = playerProfessions..Tokenize(secondProf)..'='..tostring(secondProfRank)
     end
   else
     playerProfessions = ''
   end
 
   -- Construct SimC-compatible strings from the basic information
-  local player = tokenize(playerClass) .. '="' .. playerName .. '"'
+  local player = Tokenize(playerClass) .. '="' .. playerName .. '"'
   playerLevel = 'level=' .. playerLevel
-  playerRace = 'race=' .. tokenize(playerRace)
-  playerRole = 'role=' .. translateRole(globalSpecID, role)
-  playerSpec = 'spec=' .. tokenize(playerSpec)
-  playerRealm = 'server=' .. tokenize(playerRealm)
-  playerRegion = 'region=' .. tokenize(playerRegion)
+  playerRace = 'race=' .. Tokenize(playerRace)
+  playerRole = 'role=' .. TranslateRole(globalSpecID, role)
+  playerSpec = 'spec=' .. Tokenize(playerSpec)
+  playerRealm = 'server=' .. Tokenize(playerRealm)
+  playerRegion = 'region=' .. Tokenize(playerRegion)
 
   -- Talents are more involved - method to handle them
   local playerTalents = CreateSimcTalentString()
@@ -697,12 +715,19 @@ function Simulationcraft:PrintSimcProfile(debugOutput, noBags)
     local bagItems = Simulationcraft:GetBagItemStrings()
 
     simulationcraftProfile = simulationcraftProfile .. '### Gear from Bags\n'
-    simulationcraftProfile = simulationcraftProfile .. '#\n'
     for i=1, #bagItems do
+      simulationcraftProfile = simulationcraftProfile .. '#\n'
       simulationcraftProfile = simulationcraftProfile .. '# ' .. bagItems[i].name .. '\n'
       simulationcraftProfile = simulationcraftProfile .. '# ' .. bagItems[i].string .. '\n'
-      simulationcraftProfile = simulationcraftProfile .. '#\n'
     end
+  end
+
+  -- collect additional info and output in comments
+  local reoriginationArrayStacks = Simulationcraft:GetReoriginationArrayStacks()
+  if reoriginationArrayStacks > 0 then
+    simulationcraftProfile = simulationcraftProfile .. '\n'
+    simulationcraftProfile = simulationcraftProfile .. '# Stacks of reorigination array based on hidden quest completion\n'
+    simulationcraftProfile = simulationcraftProfile .. '# bfa.reorigination_array_stacks=' .. reoriginationArrayStacks .. '\n'
   end
 
   -- sanity checks - if there's anything that makes the output completely invalid, punt!

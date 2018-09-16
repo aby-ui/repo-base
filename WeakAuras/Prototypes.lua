@@ -583,6 +583,28 @@ function WeakAuras.IsSpellKnown(spell, pet)
   return IsPlayerSpell(spell) or IsSpellKnown(spell);
 end
 
+function WeakAuras.IsSpellKnownIncludingPet(spell)
+  if (not tonumber(spell)) then
+    spell = select(7, GetSpellInfo(spell));
+  end
+  if (not spell) then
+    return false;
+  end
+  if (WeakAuras.IsSpellKnown(spell) or WeakAuras.IsSpellKnown(spell, true)) then
+    return true;
+  end
+  -- WORKAROUND brain damage around void eruption
+  -- In shadow form void eruption is overriden by void bolt, yet IsSpellKnown for void bolt
+  -- returns false, whereas it returns true for void eruption
+  local baseSpell = FindBaseSpellByID(spell);
+  if (not baseSpell) then
+    return false;
+  end
+  if (baseSpell ~= spell) then
+    return WeakAuras.IsSpellKnown(baseSpell) or WeakAuras.IsSpellKnown(baseSpell, true);
+  end
+end
+
 function WeakAuras.UnitPowerDisplayMod(powerType)
   if (powerType == 7) then
     return 10;
@@ -1968,9 +1990,27 @@ WeakAuras.event_prototypes = {
           charges = (duration == 0) and 1 or 0;
         end
         local genericShowOn = %s
-        local expirationTime = startTime + duration
+        local expirationTime = startTime and duration and startTime + duration
         state.spellname = spellname;
       ]=];
+
+      local showOnCheck = "false";
+      if (trigger.genericShowOn == "showOnReady") then
+        showOnCheck = "startTime and startTime == 0 or gcdCooldown";
+      elseif (trigger.genericShowOn == "showOnCooldown") then
+        showOnCheck = "startTime and startTime > 0 and not gcdCooldown";
+      elseif (trigger.genericShowOn == "showAlways") then
+        showOnCheck = "startTime ~= nil";
+      end
+
+      if (type(spellName) == "string") then
+        spellName = "[[" .. spellName .. "]]";
+      end
+      ret = ret:format(spellName,
+        (trigger.use_matchedRune and "true" or "false"),
+        (trigger.use_showgcd and "true" or "false"),
+        showOnCheck);
+
       if (not trigger.use_trackcharge or not trigger.trackcharge) then
         ret = ret .. [=[
           if (state.expirationTime ~= expirationTime) then
@@ -2039,21 +2079,19 @@ WeakAuras.event_prototypes = {
       end
       if(trigger.use_remaining and trigger.genericShowOn ~= "showOnReady") then
         local ret2 = [[
-          local remaining = expirationTime > 0 and (expirationTime - GetTime()) or 0;
-          local remainingCheck = %s;
-          if(remaining >= remainingCheck and remaining > 0) then
-            WeakAuras.ScheduleCooldownScan(expirationTime - remainingCheck);
+          local remaining = 0;
+          if (expirationTime and expirationTime > 0) then
+            remaining = expirationTime - GetTime();
+            local remainingCheck = %s;
+            if(remaining >= remainingCheck and remaining > 0) then
+              WeakAuras.ScheduleCooldownScan(expirationTime - remainingCheck);
+            end
           end
         ]];
         ret = ret..ret2:format(tonumber(trigger.remaining or 0) or 0);
       end
-      if (type(spellName) == "string") then
-        spellName = "[[" .. spellName .. "]]";
-      end
-      return ret:format(spellName,
-        (trigger.use_matchedRune and "true" or "false"),
-        (trigger.use_showgcd and "true" or "false"),
-        "[[" .. (trigger.genericShowOn or "") .. "]]");
+
+      return ret;
     end,
     statesParameter = "one",
     canHaveDuration = "timed",
@@ -2189,9 +2227,7 @@ WeakAuras.event_prototypes = {
       },
       {
         hidden = true,
-        test = "(genericShowOn == \"showOnReady\" and (startTime == 0 or gcdCooldown)) " ..
-        "or (genericShowOn == \"showOnCooldown\" and startTime > 0 and not gcdCooldown) " ..
-        "or (genericShowOn == \"showAlways\")"
+        test = "genericShowOn"
       }
     },
     nameFunc = function(trigger)
@@ -2747,10 +2783,10 @@ WeakAuras.event_prototypes = {
 
       if (trigger.use_message) then
         local ret2 = [=[
-          local triggerMessage = [[%s]]
+          local triggerMessage = %s
           local triggerOperator = [[%s]]
         ]=]
-        ret = ret .. ret2:format(trigger.message or "", trigger.message_operator  or "")
+        ret = ret .. ret2:format('[=[' .. (trigger.message or "") .. ']=]', trigger.message_operator  or "")
       else
         ret = ret .. [[
           local triggerMessage = nil;
@@ -2999,9 +3035,9 @@ WeakAuras.event_prototypes = {
         local triggerTextOperator = [[%s]];
       ]=]
 
-      ret = ret:format(trigger.use_addon and ('[[' .. (trigger.addon or '') .. ']]') or "nil",
+      ret = ret:format(trigger.use_addon and ('[=[' .. (trigger.addon or '') .. ']=]') or "nil",
         trigger.use_spellId and tostring(trigger.spellId) or "",
-        trigger.use_text and ('[[' .. (trigger.text or '') .. ']]') or "nil",
+        trigger.use_text and ('[=[' .. (trigger.text or '') .. ']=]') or "nil",
         trigger.use_text and trigger.text_operator or ""
       );
 
@@ -3303,7 +3339,7 @@ WeakAuras.event_prototypes = {
         ret = ret.."active = active and WeakAuras.IsSpellInRange(spellname or '', 'target')\n";
       end
       if(trigger.use_inverse) then
-        ret = ret.."active = not active\n";
+        ret = ret.."active = not active and startTime\n";
       end
 
       if (type(spellName) == "string") then

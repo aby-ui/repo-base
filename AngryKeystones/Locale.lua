@@ -42,6 +42,10 @@ langs.enUS = {
 	config_exclusiveTracker = "Hide quest and achievement trackers during Mythic Keystones (requires Reload UI to take effect)",
 	config_hideTalkingHead = "Hide Talking Head dialog during a Mythic Keystone dungeon",
 	config_resetPopup = "Show popup to reset instances upon leaving a completed Mythic Keystone dungeon",
+	partyKeysTitle = "Party Keystones",
+	newKeystoneAnnounce = "New Keystone: %s",
+	currentKeystoneText = "Current: |cFFFFFFFF%s|r",
+	config_announceKeystones = "Announce newly acquired Mythic Keystones to your party",
 }
 langs.enGB = langs.enUS
 
@@ -156,6 +160,10 @@ langs.zhCN = {
 	config_exclusiveTracker = "在副本中隐藏任务和成就追踪（重载插件后生效）",
 	config_hideTalkingHead = "在史诗钥石副本中隐藏NPC情景对话窗口",
 	config_resetPopup = "离开已完成的副本后提示是否重置",
+	partyKeysTitle = "队伍钥石信息",
+	newKeystoneAnnounce = "新钥石：%s",
+	currentKeystoneText = "当前钥石：|cFFFFFFFF%s|r",
+	config_announceKeystones = "在队伍里通报获得的新钥石",
 }
 langs.zhTW = {
 	config_characterConfig = "為角色進行獨立的配置",
@@ -188,6 +196,10 @@ langs.zhTW = {
 	config_exclusiveTracker = "在副本中隱藏成就和任務追蹤（重裝插件後生效）",
 	config_hideTalkingHead = "在傳奇鑰石副本中隱藏NPC情景對話窗口",
 	config_resetPopup = "離開已完成的副本後提示是否重置",
+	partyKeysTitle = "隊伍鑰石信息",
+	newKeystoneAnnounce = "新鑰石：%s",
+	currentKeystoneText = "當前鑰石：|cFFFFFFFF%s|r",
+	config_announceKeystones = "在隊伍里通報獲得的新鑰石",
 }
 
 function Locale:Get(key)

@@ -7,6 +7,8 @@ local L = WeakAuras.L
 -- WeakAuras/Options
 	L["-- Do not remove this comment, it is part of this trigger: "] = "-- 不要移除这条信息，这是该触发器的一部分。"
 	L["% of Progress"] = "% 进度"
+	--[[Translation missing --]]
+	L["%i auras selected"] = "%i auras selected"
 	L["%i Matches"] = "%i 符合"
 	L["%s Color"] = "%s 颜色"
 	L["%s total auras"] = "%s 所有的光环"
@@ -103,6 +105,8 @@ local L = WeakAuras.L
 	L["Choose"] = "选择"
 	L["Choose Trigger"] = "选择触发器"
 	L["Choose whether the displayed icon is automatic or defined manually"] = "选择显示的图示是自动显示还是手动定义"
+	--[[Translation missing --]]
+	L["Clip Overlays"] = "Clip Overlays"
 	L["Clone option enabled dialog"] = [=[
 你已经启用|cFFFF0000自动复制|r。
 |cFFFF0000自动复制|r 会让一个图示自动重复来显示多目标的讯息。
@@ -238,7 +242,7 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 |cFF00CC00大于等于 0|r 总是触发.]=]
 	L["Group Member Count"] = "队伍或团队成员数"
 	L["Group Role"] = "团队职责"
-	L["Group Scale"] = "团队人数"
+	L["Group Scale"] = "组缩放"
 	L["Grow"] = "生长"
 	L["Hawk"] = "鹰"
 	L["Height"] = "高度"

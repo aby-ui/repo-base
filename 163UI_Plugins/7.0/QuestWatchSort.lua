@@ -128,7 +128,8 @@ frame:SetScript("OnEvent", function(self, event)
         EnableOrDisable()
     else
         if (event == "NEW_WMO_CHUNK" and not WorldMapFrame:IsVisible()) then
-            SetMapToCurrentZone() --Entering Dalaran Guardian Hall, map is not updated.
+            local mapId = C_Map.GetBestMapForUnit("player")
+            if mapId then WorldMapFrame:SetMapID(mapId) end
         end
         UpdateQuestsDistance()
     end
