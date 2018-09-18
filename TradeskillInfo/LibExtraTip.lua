@@ -1260,7 +1260,13 @@ function lib:GenerateTooltipMethodTable() -- Sets up hooks to give the quantity 
 			local minMade, maxMade = C_TradeSkillUI.GetRecipeNumItemsProduced(recipeID)
 			reg.additional.minMade = minMade
 			reg.additional.maxMade = maxMade
-			reg.quantity = (minMade + maxMade) / 2 -- ### todo: may not be an integer, if this causes problems may need to math.floor it
+			if minMade and maxMade then -- protect against nil values
+				reg.quantity = (minMade + maxMade) / 2 -- ### todo: may not be an integer, if this causes problems may need to math.floor it
+			elseif maxMade then
+				reg.quantity = maxMade
+			else
+				reg.quantity = minMade -- note: may still be nil
+			end
 			reg.additional.link = C_TradeSkillUI.GetRecipeItemLink(recipeID) -- Workaround [LTT-56], Remove when fixed by Blizzard
 		end,
 

@@ -358,7 +358,8 @@ local DCS_MasteryCheck = CreateFrame("CheckButton", "DCS_MasteryCheck", DejaChar
 	--DCS_DecimalCheck:SetPoint("TOPLEFT", 30, -205)
 	DCS_MasteryCheck:SetPoint("TOPLEFT", "dcsStatsPanelcategoryFS", 7, -75) 
 	DCS_MasteryCheck:SetScale(1)
-	DCS_MasteryCheck.tooltipText = L["Hides mastery stat till the character starts to have benefit from it. Unselected mastery stat in PaperDollFrame takes priority over this setting."] --Creates a tooltip on mouseover.
+	--DCS_MasteryCheck.tooltipText = L["Hides mastery stat till the character starts to have benefit from it. Unselected mastery stat in PaperDollFrame takes priority over this setting."] --Creates a tooltip on mouseover.
+	DCS_MasteryCheck.tooltipText = L["Hides Mastery stat until the character starts to have benefit from it. Hiding Mastery with Select-A-Stat™ in the character panel has priority over this setting."] --Creates a tooltip on mouseover. 
 	_G[DCS_MasteryCheck:GetName() .. "Text"]:SetText(L["Hide low level mastery"])
 	
 	DCS_MasteryCheck:SetScript("OnEvent", function(self, event, arg1)

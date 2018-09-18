@@ -8,8 +8,7 @@ L["Alchemy"] = "炼金术"
 L["Alliance"] = "联盟"
 L["Alliance Quest"] = "联盟任务"
 L["Alliance Vendor"] = "联盟商人"
---[[Translation missing --]]
---[[ L["Alt"] = ""--]] 
+L["Alt"] = true
 L["Alt can learn"] = "玩家其它人物现在可学"
 L["Alt known"] = "玩家其它人物已经学会"
 L["Alt will be able to learn"] = "玩家其它人物将来可学"
@@ -19,48 +18,38 @@ L["An alt will be able to learn"] = "其它人物将来可学"
 L["Auction"] = "拍卖"
 L["Auction House"] = "拍卖场"
 L["Auction House Options"] = "拍卖行设置"
---[[Translation missing --]]
---[[ L["Auction House related options"] = ""--]] 
+L["Auction House related options"] = "拍卖行相关设置"
 L["Auction Profit"] = "拍卖收益"
 L["Availability"] = "过滤方式"
 L["Banked"] = "银行"
 L["Blacksmithing"] = "锻造"
 L["Change scale of user interface"] = "改变插件缩放"
 L["Click to try to update local cache."] = "左键点击尝试更新该物品."
-L["Color Auction Recipes"] = "配方着色"
---[[Translation missing --]]
---[[ L["Color Bag Recipes"] = ""--]] 
---[[Translation missing --]]
---[[ L["Color Merchant Recipes"] = ""--]] 
---[[Translation missing --]]
---[[ L["Color recipes in bags and banks"] = ""--]] 
---[[Translation missing --]]
---[[ L["Color recipes in Merchant windows"] = ""--]] 
+L["Color Auction Recipes"] = "为拍卖的配方着色"
+L["Color Bag Recipes"] = "为背包中的配方着色"
+L["Color Merchant Recipes"] = "为商人的配方着色"
+L["Color recipes in bags and banks"] = "为背包和银行中的配方着色"
+L["Color recipes in Merchant windows"] = "为商人窗体中的配方着色"
 L["Color recipes in the Auction House"] = "为拍卖行的配方着色"
---[[Translation missing --]]
---[[ L["Color the alt names in tooltip according to maximum combine difficulty"] = ""--]] 
---[[Translation missing --]]
---[[ L["Color usable by"] = ""--]] 
+L["Color the alt names in tooltip according to maximum combine difficulty"] = "在鼠标提示中根据最大制造难度为玩家其他角色名字着色"
+L["Color usable by"] = "为可用性着色"
 L["Colors"] = "颜色"
 L["Combine cost"] = "显示制造成本"
---[[Translation missing --]]
---[[ L["Control"] = ""--]] 
+L["Control"] = true
 L["Cooking"] = "烹饪"
 L["Could not load the UI. Reason: "] = "无法载入UI。理由: "
 L["Crafted"] = "制造"
---[[Translation missing --]]
---[[ L["Difficulty"] = ""--]] 
+L["Difficulty"] = "难度"
 L["Disenchant"] = "附魔分解"
 L["Dropped"] = "掉落"
-L["Dropped for Alliance"] = true
-L["Dropped for Horde"] = true
+L["Dropped for Alliance"] = "联盟专属掉落"
+L["Dropped for Horde"] = "部落专属掉落"
 L["Enable Quick Search"] = "启用快速查找"
 L["Enchanting"] = "附魔"
 L["Engineering"] = "工程学"
 L["First Aid"] = "急救"
 L["Fishing"] = "钓鱼"
---[[Translation missing --]]
---[[ L["Flags"] = ""--]] 
+L["Flags"] = "标志位"
 L["Found unknown skill"] = "发现未知技能"
 L["Found unknown source"] = "发现未知来源"
 L["Frame Strata"] = "窗口优先度"
@@ -85,108 +74,81 @@ L["Leatherworking"] = "制皮"
 L["Left Button"] = "左键"
 L["Left Click"] = true
 L["LOW"] = "低"
---[[Translation missing --]]
---[[ L["Market Value"] = ""--]] 
+L["Market Value"] = "市场价格"
 L["MEDIUM"] = "中"
 L["Milling"] = "研磨"
 L["Mining"] = "采矿"
---[[Translation missing --]]
---[[ L["Modifier key to be held down for quick search"] = ""--]] 
+L["Modifier key to be held down for quick search"] = "执行快捷搜索时按下的按键"
 L["Mouse button that does a quick search"] = "快速查找使用的鼠标按键"
 L["Name"] = "名称"
 L["Neutral"] = "中立"
 L["Not Currently Obtainable"] = "目前无法获得"
---[[Translation missing --]]
---[[ L["Only add extra data to recipes"] = ""--]] 
---[[Translation missing --]]
---[[ L["Only show extra profession data in recipe tooltips instead of every crafted item ever"] = ""--]] 
+L["Only add extra data to recipes"] = "只为配方添加额外数据"
+L["Only show extra profession data in recipe tooltips instead of every crafted item ever"] = "只为配方而非所有制造物的鼠标提示添加额外商业技能数据"
 L["Opposing"] = "对方阵营"
 L["Pick Pocket"] = "搜索"
 L["Player can learn"] = "玩家现在可学"
 L["Player known"] = "玩家已经学会"
 L["Player will be able to learn"] = "玩家将来可学"
---[[Translation missing --]]
---[[ L["Profile"] = ""--]] 
+L["Profile"] = "属性"
 L["Prospecting"] = "选矿"
 L["Quest"] = "任务"
 L["Quick Search"] = "快速查询"
 L["Reagent"] = "材料"
 L["Reagents"] = "材料"
---[[Translation missing --]]
---[[ L["Reagents Color"] = ""--]] 
+L["Reagents Color"] = "材料颜色"
 L["Recipe"] = "配方"
 L["Recipe Price"] = "配方售价"
 L["Recipe Source"] = "配方来源"
---[[Translation missing --]]
---[[ L["Recipes"] = ""--]] 
+L["Recipes"] = "配方"
 L["Remember TradeskillInfoUI frame position"] = "记住专业技能资料库的界面位置"
 L["Right Button"] = "右键"
-L["Right Click"] = true
+L["Right Click"] = "单击右键"
 L["Roving"] = true
 L["Save Frame Position"] = "储存窗口位置"
 L["Search for name"] = "以名称来查询"
 L["Search for reagents"] = "以材料来查询"
---[[Translation missing --]]
---[[ L["Search Modifier Key"] = ""--]] 
+L["Search Modifier Key"] = "搜索控制键"
 L["Search Mouse Button"] = "鼠标按键"
 L["Seasonal"] = "季节性"
 L["Set TradeskillInfoUI frame strata"] = "设定窗口的优先级"
---[[Translation missing --]]
---[[ L["Shift"] = ""--]] 
+L["Shift"] = true
 L["Show combine cost"] = "显示制造成本"
 L["Show skill required"] = "显示制造需要的技能等级"
---[[Translation missing --]]
---[[ L["Show the item's ID"] = ""--]] 
---[[Translation missing --]]
---[[ L["Show the item's stack size"] = ""--]] 
---[[Translation missing --]]
---[[ L["Show the price of recipes sold by vendors"] = ""--]] 
---[[Translation missing --]]
---[[ L["Show the profit calculation from Auctioneer Market Value"] = ""--]] 
---[[Translation missing --]]
---[[ L["Show the source of recipes"] = ""--]] 
+L["Show the item's ID"] = "显示物品 ID"
+L["Show the item's stack size"] = "显示物品的堆叠上限"
+L["Show the price of recipes sold by vendors"] = "显示配方的商人售价"
+L["Show the profit calculation from Auctioneer Market Value"] = "显示从 Auctioneer Market Value 计算的利润"
+L["Show the source of recipes"] = "显示配方的来源"
 L["Show the source of the item"] = "显示物品的来源"
---[[Translation missing --]]
---[[ L["Show what tradeskill an item is used"] = ""--]] 
---[[Translation missing --]]
---[[ L["Show who can learn a recipe"] = ""--]] 
+L["Show what tradeskill an item is used"] = "显示这个物品对应的商业技能"
+L["Show who can learn a recipe"] = "显示谁现在可学这个配方"
 L["Show who can use an item"] = "在鼠标提示中显示哪些人可使用指定的物品"
---[[Translation missing --]]
---[[ L["Show who knows a recipe"] = ""--]] 
---[[Translation missing --]]
---[[ L["Show who will be able to learn a recipe"] = ""--]] 
-L["Skill Level"] = true
+L["Show who knows a recipe"] = "显示谁学习过这个配方"
+L["Show who will be able to learn a recipe"] = "显示谁可以将来可学这个配方"
+L["Skill Level"] = "技能等级"
 L["Skill required"] = "制造等级"
 L["Skinning"] = "剥皮"
 L["Smelting"] = "熔炼"
---[[Translation missing --]]
---[[ L["Sort by"] = ""--]] 
+L["Sort by"] = "排序依据"
 L["Source"] = "来源"
 L["Specialist Trainer"] = "专业训练师"
-L["Spell ID"] = "SpellID"
+L["Spell ID"] = "法术 ID"
 L["Stack Size"] = "叠堆数量"
 L["Tailoring"] = "裁缝"
-L["Tooltip"] = "提示"
---[[Translation missing --]]
---[[ L["Tooltip Options"] = ""--]] 
---[[Translation missing --]]
---[[ L["Trade Skill"] = ""--]] 
---[[Translation missing --]]
---[[ L["Trade Skill Window options"] = ""--]] 
+L["Tooltip"] = "鼠标提示"
+L["Tooltip Options"] = "鼠标提示选项"
+L["Trade Skill"] = "商业技能"
+L["Trade Skill Window options"] = "商业技能窗体选项"
 L["Tradeskill"] = "商业技能"
 L["TradeskillInfo"] = "商业技能百科"
 L["Tradeskills"] = "技能"
 L["Trainer"] = "训练师"
---[[Translation missing --]]
---[[ L["Trainer Window"] = ""--]] 
---[[Translation missing --]]
---[[ L["Trainer Window options"] = ""--]] 
---[[Translation missing --]]
---[[ L["Turn on debug info output"] = ""--]] 
---[[Translation missing --]]
---[[ L["UI"] = ""--]] 
---[[Translation missing --]]
---[[ L["UI Options"] = ""--]] 
+L["Trainer Window"] = "训练师窗体"
+L["Trainer Window options"] = "训练师窗体选项"
+L["Turn on debug info output"] = "开启 Debug 信息输出"
+L["UI"] = "界面"
+L["UI Options"] = "界面选项"
 L["UI Scale"] = "UI缩放"
 L["Unavailable"] = "不可学"
 L["Unavailable or already known"] = "已经学会或不可学"
@@ -195,8 +157,7 @@ L["Unknown NPC. Please report it. Source="] = "未知NPC。请回报它。来源
 L["Usable by"] = "可用"
 L["Used in"] = "用途"
 L["Vendor"] = "商人"
---[[Translation missing --]]
---[[ L["Vendor Profit"] = ""--]] 
+L["Vendor Profit"] = "商人利润"
 L["Vendor sell price"] = "商人售价"
 L["Warning! You can be disconnected."] = "注意! 这可能导致你与服务器断开连接."
 L["Way of the Brew"] = "酿造之道"
@@ -208,8 +169,7 @@ L["Way of the Wok"] = "烹炒之道"
 L["Will be able to learn"] = "将来可学"
 L["Will be learnable by"] = "将来可学"
 L["You can learn"] = "现在可学"
---[[Translation missing --]]
---[[ L["You know"] = ""--]] 
+L["You know"] = "已经学会"
 L["You will be able to learn"] = "将来可学"
 
 

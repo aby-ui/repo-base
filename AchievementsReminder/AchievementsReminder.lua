@@ -15,7 +15,7 @@ end
 
 ralldatabase()
 
-  achievementsreminderver=8.002
+  achievementsreminderver=8.003
 
 
 	if ralloptions==nil then ralloptions={1,1,0,0,0,0,1,0,0,0,0,0} end
@@ -233,7 +233,7 @@ end
 
 function icllonevent(self,event,...)
 
-local arg1, arg2, arg3,arg4,arg5,arg6 = CombatLogGetCurrentEventInfo()
+local arg1, arg2, arg3,arg4,arg5,arg6 = ...
 
 
 

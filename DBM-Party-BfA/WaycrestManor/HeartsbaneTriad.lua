@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2125, "DBM-Party-BfA", 10, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17752 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 17863 $"):sub(12, -3))
 mod:SetCreatureID(135358, 135359, 135360, 131823, 131824, 131825)--All versions so we can pull boss
 mod:SetEncounterID(2113)
 mod:DisableESCombatDetection()--ES fires For entryway trash pull sometimes, for some reason.
@@ -27,7 +27,7 @@ local warnAuraofDreadOver			= mod:NewEndAnnounce(268088, 1)
 local specWarnRitual				= mod:NewSpecialWarningSpell(260773, nil, nil, nil, 2, 2)
 local specWarnUnstableMark			= mod:NewSpecialWarningMoveAway(260703, nil, nil, nil, 1, 2)
 local yellUnstableMark				= mod:NewYell(260703)
-local specWarnAuraofDread			= mod:NewSpecialWarningMove(268088, nil, nil, nil, 1, 2)
+local specWarnAuraofDread			= mod:NewSpecialWarningKeepMove(268088, nil, nil, nil, 1, 2)
 local specWarnJaggedNettles			= mod:NewSpecialWarningTarget(260703, "Healer", nil, nil, 1, 2)
 local specWarnSoulManipulation		= mod:NewSpecialWarningSwitch(260907, nil, nil, nil, 1, 2)
 --local specWarnGTFO				= mod:NewSpecialWarningGTFO(238028, nil, nil, nil, 1, 2)

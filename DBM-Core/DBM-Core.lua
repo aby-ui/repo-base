@@ -41,9 +41,9 @@
 --  Globals/Default Options  --
 -------------------------------
 DBM = {
-	Revision = tonumber(("$Revision: 17855 $"):sub(12, -3)),
-	DisplayVersion = "8.0.9 alpha", -- the string that is shown as version
-	ReleaseRevision = 17821 -- the revision of the latest stable version that is available
+	Revision = tonumber(("$Revision: 17869 $"):sub(12, -3)),
+	DisplayVersion = "8.0.10 alpha", -- the string that is shown as version
+	ReleaseRevision = 17855 -- the revision of the latest stable version that is available
 }
 DBM.HighestRelease = DBM.ReleaseRevision --Updated if newer version is detected, used by update nags to reflect critical fixes user is missing on boss pulls
 
@@ -10055,6 +10055,14 @@ do
 		return newSpecialWarning(self, "move", text, nil, optionDefault, ...)
 	end
 	
+	function bossModPrototype:NewSpecialWarningKeepMove(text, optionDefault, ...)
+		return newSpecialWarning(self, "keepmove", text, nil, optionDefault, ...)
+	end
+
+	function bossModPrototype:NewSpecialWarningStopMove(text, optionDefault, ...)
+		return newSpecialWarning(self, "stopmove", text, nil, optionDefault, ...)
+	end
+	
 	function bossModPrototype:NewSpecialWarningGTFO(text, optionDefault, ...)
 		return newSpecialWarning(self, "gtfo", text, nil, optionDefault, ...)
 	end
@@ -10069,6 +10077,10 @@ do
 	
 	function bossModPrototype:NewSpecialWarningMoveAway(text, optionDefault, ...)
 		return newSpecialWarning(self, "moveaway", text, nil, optionDefault, ...)
+	end
+	
+	function bossModPrototype:NewSpecialWarningMoveAwayCount(text, optionDefault, ...)
+		return newSpecialWarning(self, "moveawaycount", text, nil, optionDefault, ...)
 	end
 	
 	function bossModPrototype:NewSpecialWarningMoveTo(text, optionDefault, ...)

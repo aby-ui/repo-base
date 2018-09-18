@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2210, "DBM-Azeroth-BfA", nil, 1028)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17853 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 17860 $"):sub(12, -3))
 mod:SetCreatureID(138794)
 --mod:SetEncounterID(1880)
 mod:SetReCombatTime(20)
@@ -57,7 +57,7 @@ function mod:SPELL_CAST_START(args)
 	if spellId == 275175 then
 		specWarnSonicBellow:Show()
 		specWarnSonicBellow:Play("shockwave")
-		timerSonicBellowCD:Start()
+		--timerSonicBellowCD:Start()
 	elseif spellId == 275200 then
 		warnPrimalRage:Show()
 		timerPrimalRageCD:Start()

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2169, "DBM-Uldir", nil, 1031)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17838 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 17869 $"):sub(12, -3))
 mod:SetCreatureID(134445)--Zek'vhozj, 134503/qiraji-warrior
 mod:SetEncounterID(2136)
 --mod:DisableESCombatDetection()
@@ -29,7 +29,6 @@ mod:RegisterEventsInCombat(
 
 --TODO, icons for Roiling Deceit?
 --TODO, mark mind controlled players?
---TODO, maybe a "next bounce" timer
 --[[
 (ability.id = 267239 or ability.id = 265231 or ability.id = 265530 or ability.id = 264382 or ability.id = 265358) and type = "begincast"
  or ability.id = 271099 and type = "cast"
@@ -40,10 +39,10 @@ local warnPhase							= mod:NewPhaseChangeAnnounce()
 --local warnXorothPortal					= mod:NewSpellAnnounce(244318, 2, nil, nil, nil, nil, nil, 7)
 local warnVoidLash						= mod:NewStackAnnounce(265264, 2, nil, "Tank")
 --Stage One: Chaos
-local warnEyeBeam						= mod:NewTargetCountAnnounce(264382, 2)
+local warnEyeBeam						= mod:NewTargetCountAnnounce(264382, 2, nil, nil, nil, nil, nil, nil, true)
 --local warnFixate						= mod:NewTargetAnnounce(264219, 2)
 --Stage Two: Deception
-local warnRoilingDeceit					= mod:NewTargetCountAnnounce(265360, 4)
+local warnRoilingDeceit					= mod:NewTargetCountAnnounce(265360, 4, nil, nil, nil, nil, nil, nil, true)
 local warnCasterAddsRemaining			= mod:NewAddsLeftAnnounce("ej18397", 2, 31700)
 --Stage Three: Corruption
 local warnCorruptorsPact				= mod:NewTargetCountAnnounce(265662, 2, nil, nil, nil, nil, nil, nil, true)--Non Filtered Alert
@@ -56,7 +55,8 @@ local specWarnShatter					= mod:NewSpecialWarningTaunt(265237, nil, nil, nil, 1,
 local specWarnAdds						= mod:NewSpecialWarningAdds(31700, nil, nil, nil, 1, 2)--Generic Warning only used on Mythic
 --local specWarnGTFO					= mod:NewSpecialWarningGTFO(238028, nil, nil, nil, 1, 2)
 --Stage One: Chaos
-local specWarnEyeBeam					= mod:NewSpecialWarningMoveAway(264382, nil, nil, 2, 3, 2)
+local specWarnEyeBeamSoon				= mod:NewSpecialWarningSoon(264382, nil, nil, nil, 1, 2)
+local specWarnEyeBeam					= mod:NewSpecialWarningMoveAwayCount(264382, nil, nil, 2, 3, 2)
 local yellEyeBeam						= mod:NewCountYell(264382)
 --local specWarnFixate					= mod:NewSpecialWarningRun(264219, nil, nil, nil, 4, 2)
 --Stage Two: Deception
@@ -93,7 +93,7 @@ local countdownSurgingDarkness			= mod:NewCountdown(82.8, 265451, true, nil, 3)
 local countdownMightofVoid				= mod:NewCountdown("Alt37", 267312, "Tank", nil, 3)
 --local countdownFelstormBarrage		= mod:NewCountdown("AltTwo32", 244000, nil, nil, 3)
 
---mod:AddRangeFrameOption("8/10")
+mod:AddRangeFrameOption(6, 264382)
 --mod:AddBoolOption("ShowAllPlatforms", false)
 mod:AddSetIconOption("SetIconOnAdds", 267192, true, true)
 --mod:AddInfoFrameOption(265451, true)
@@ -109,9 +109,8 @@ mod.vb.casterAddsRemaining = 0
 
 function mod:EyeBeamTarget(targetname, uId)
 	if not targetname then return end
-	self.vb.eyeCount = self.vb.eyeCount + 1
 	if targetname == UnitName("player") and self:AntiSpam(5, 5) then
-		specWarnEyeBeam:Show()
+		specWarnEyeBeam:Show(self.vb.eyeCount)
 		specWarnEyeBeam:Play("runout")
 		yellEyeBeam:Yell(self.vb.eyeCount)
 	else
@@ -165,9 +164,9 @@ function mod:OnCombatStart(delay)
 end
 
 function mod:OnCombatEnd()
---	if self.Options.RangeFrame then
---		DBM.RangeCheck:Hide()
---	end
+	if self.Options.RangeFrame then
+		DBM.RangeCheck:Hide()
+	end
 --	if self.Options.InfoFrame then
 --		DBM.InfoFrame:Hide()
 --	end
@@ -176,8 +175,10 @@ end
 function mod:SPELL_CAST_START(args)
 	local spellId = args.spellId
 	if spellId == 264382 then
+		self.vb.eyeCount = self.vb.eyeCount + 1
 		self:ScheduleMethod(0.2, "BossTargetScanner", args.sourceGUID, "EyeBeamTarget", 0.1, 8, true, nil, nil, nil, true)
 	elseif spellId == 265358 then
+		self.vb.roilingCount = self.vb.roilingCount + 1
 		self:ScheduleMethod(0.2, "BossTargetScanner", args.sourceGUID, "RollingTarget", 0.1, 8, true, nil, nil, nil, true)
 	elseif spellId == 267180 then
 		--timerVoidBoltCD:Start(args.sourceGUID)
@@ -186,8 +187,7 @@ function mod:SPELL_CAST_START(args)
 			specWarnVoidbolt:Play("kickcast")
 		end
 	elseif spellId == 267239 and self:AntiSpam(15, 4) then--Backup, in case emote doesn't fire for more than first one
-		self.vb.orbCount = self.vb.orbCount + 1
-		specWarnOrbOfCorruption:Show(self.vb.orbCount)
+		specWarnOrbOfCorruption:Show(1)
 		specWarnOrbOfCorruption:Play("161612")--catch balls
 		timerOrbLands:Start(5, 1)
 		--if not self:IsMythic() then--Didn't see cast on mythic?
@@ -220,11 +220,14 @@ function mod:SPELL_CAST_SUCCESS(args)
 	local spellId = args.spellId
 	if spellId == 264382 then--Backup, in case target scan breaks
 		if args:IsPlayer() and self:AntiSpam(5, 5) then
-			specWarnEyeBeam:Show()
+			specWarnEyeBeam:Show(self.vb.eyeCount)
 			specWarnEyeBeam:Play("runout")
-			yellEyeBeam:Yell()
+			yellEyeBeam:Yell(self.vb.eyeCount)
 --		else
 --			warnEyeBeam:Show(args.destName)
+		end
+		if self.vb.eyeCount == 3 and self.Options.RangeFrame then
+			DBM.RangeCheck:Hide()
 		end
 	elseif spellId == 271099 then--Mythic Summon Adds
 		self.vb.casterAddsRemaining = self.vb.casterAddsRemaining + 3
@@ -257,6 +260,8 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif spellId == 265662 then
 		if self:AntiSpam(5, 7) then
 			self.vb.corruptorsPactCount = self.vb.corruptorsPactCount + 1
+			specWarnOrbOfCorruption:Show(self.vb.corruptorsPactCount+1)--+1 cause this is pre warning for next orb
+			specWarnOrbOfCorruption:Play("161612")
 			timerOrbLands:Start(15, self.vb.corruptorsPactCount+1)
 		end
 		warnCorruptorsPact:CombinedShow(0.5, self.vb.corruptorsPactCount, args.destName)--Combined in case more than one soaks same ball (will happen in lfr/normal for sure or farm content for dps increases)
@@ -325,6 +330,8 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 		timerRoilingDeceitCD:Schedule(6, 60)--Same in all
 	elseif spellId == 264746 then--Eye beam
 		self.vb.eyeCount = 0
+		specWarnEyeBeamSoon:Show()
+		specWarnEyeBeamSoon:Play("Scattersoon")
 		--here because this spell ID fires at beginning of each set ONCE
 		if self:IsMythic() then
 			timerEyeBeamCD:Schedule(6, 60)
@@ -332,6 +339,9 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 			timerEyeBeamCD:Schedule(6, 50)
 		else
 			timerEyeBeamCD:Schedule(6, 40)
+		end
+		if self.Options.RangeFrame then
+			DBM.RangeCheck:Show(6)
 		end
 	elseif spellId == 267019 then--Titan Spark
 		if self:IsMythic() and self.vb.phase < 2 or self.vb.phase < 3 then

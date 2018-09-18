@@ -228,7 +228,7 @@ BigDebuffs.Spells = {
 	[19577] = { type = "cc" }, -- Intimidation
 		[24394] = { type = "cc", parent = 19577 }, -- Intimidation
 	[53480] = { type = "buffs_defensive" }, -- Roar of Sacrifice (Hunter Pet Skill)
-	[117526] = { type = "roots" }, -- Binding Shot 
+	[117526] = { type = "roots" }, -- Binding Shot
 	[131894] = { type = "buffs_offensive" }, -- A Murder of Crows (Beast Mastery, Marksmanship)
 		[206505] = { type = "buffs_offensive", parent = 131894 }, -- A Murder of Crows (Survival)
 	[186265] = { type = "buffs_defensive" }, -- Aspect of the Turtle
@@ -506,13 +506,13 @@ BigDebuffs.Spells = {
 local specDispel = {
 	[62] = { -- Arcane Mage
 		Curse = true,
-	},		
+	},
 	[63] = { -- Fire Mage
 		Curse = true,
-	},		
+	},
 	[64] = { -- Frost Mage
 		Curse = true,
-	},		
+	},
 	[65] = { -- Holy Paladin
 		Magic = true,
 		Poison = true,
@@ -916,15 +916,15 @@ function BigDebuffs:OnEnable()
 	self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 	self:PLAYER_TALENT_UPDATE()
 
-	-- (finish animations deprecated in latest OmniCC beta)
+	-- (finish animations deprecated in latest OmniCC)
 	-- Prevent OmniCC finish animations
-	-- if OmniCC then
-	-- 	self:RawHook(OmniCC, "TriggerEffect", function(object, cooldown)
-	-- 		local name = cooldown:GetName()
-	-- 		if name and name:find("BigDebuffs") then return end
-	-- 		self.hooks[OmniCC].TriggerEffect(object, cooldown)
-	-- 	end, true)
-	-- end
+	if OmniCC and OmniCC.TriggerEffect then
+		self:RawHook(OmniCC, "TriggerEffect", function(object, cooldown)
+			local name = cooldown:GetName()
+			if name and name:find("BigDebuffs") then return end
+			self.hooks[OmniCC].TriggerEffect(object, cooldown)
+		end, true)
+	end
 
 	InsertTestDebuff(8122, "Magic") -- Psychic Scream
 	InsertTestDebuff(408, nil) -- Kidney Shot
@@ -1170,21 +1170,8 @@ function BigDebuffs:GetAuraPriority(id)
 	return self.db.profile.priority[self.Spells[id].type] or 0
 end
 
-function CompactUnitFrame_UtilSetDispelDebuff(dispellDebuffFrame, debuffType, index)
-	dispellDebuffFrame:Show();
-	dispellDebuffFrame.icon:SetTexture("Interface\\RaidFrame\\Raid-Icon-Debuff"..debuffType);
-	dispellDebuffFrame:SetID(index);
-end
-
-function CompactUnitFrame_HideAllDispelDebuffs(frame)
-	if frame.dispelDebuffFrames then
-		for i=1, #frame.dispelDebuffFrames do
-			frame.dispelDebuffFrames[i]:Hide();
-		end
-	end
-end
-
-function CompactUnitFrame_UtilSetDebuff(debuffFrame, unit, index, filter, isBossAura, isBossBuff, test)
+-- Copy this function to check for testing mode
+local function CompactUnitFrame_UtilSetDebuff(debuffFrame, unit, index, filter, isBossAura, isBossBuff, test)
 	local UnitDebuff = test and UnitDebuffTest or UnitDebuff
 	-- make sure you are using the correct index here!
 	--isBossAura says make this look large.
