@@ -13,7 +13,6 @@ local FlarePool
 do
 	local function shineAnimation_OnFinished(self)
 		local parent = self:GetParent()
-
 		if parent:IsShown() then
 			parent:Hide()
 		end
@@ -91,13 +90,13 @@ do
 end
 
 function Flare:Run(cooldown)
-	local parent = cooldown:GetParent()
+	local owner = cooldown:GetParent() or cooldown
 
-	if parent and parent:IsShown() then
+	if owner and owner:IsShown() then
 		local shine = FlarePool:Acquire()
 
-		shine:SetParent(parent)
-		shine:SetAllPoints(parent)
+		shine:SetParent(owner)
+		shine:SetAllPoints(cooldown)
 		shine:Show()
 
 		shine.animation:Stop()

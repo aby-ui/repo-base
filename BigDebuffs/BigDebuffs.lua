@@ -262,6 +262,8 @@ BigDebuffs.Spells = {
 		[161354] = { type = "cc", parent = 118 }, -- Polymorph Monkey
 		[161355] = { type = "cc", parent = 118 }, -- Polymorph Penguin
 		[161372] = { type = "cc", parent = 118 }, -- Polymorph Peacock
+		[277787] = { type = "cc", parent = 118 }, -- Polymorph Direhorn
+		[277792] = { type = "cc", parent = 118 }, -- Polymorph Bumblebee
 	[122] = { type = "roots" }, -- Frost Nova
 		[33395] = { type = "roots", parent = 122 }, -- Freeze
 	[11426] = { type = "buffs_defensive" }, -- Ice Barrier

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2166, "DBM-Uldir", nil, 1031)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17868 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 17874 $"):sub(12, -3))
 mod:SetCreatureID(134442)--135016 Plague Amalgam
 mod:SetEncounterID(2134)
 mod:SetZone()
@@ -91,9 +91,10 @@ do
 	local floor, tsort = math.floor, table.sort
 	local lines = {}
 	local tempLines = {}
+	local tempLinesSorted = {}
 	local sortedLines = {}
-	local function sortFuncDesc(a, b) return lines[a] > lines[b] end
-	local function sortFuncAsc(a, b) return lines[a] < lines[b] end
+	local function sortFuncDesc(a, b) return tempLines[a] > tempLines[b] end
+	local function sortFuncAsc(a, b) return tempLines[a] < tempLines[b] end
 	local function addLine(key, value)
 		-- sort by insertion order
 		lines[key] = value
@@ -102,6 +103,7 @@ do
 	updateInfoFrame = function()
 		table.wipe(lines)
 		table.wipe(tempLines)
+		table.wipe(tempLinesSorted)
 		table.wipe(sortedLines)
 		--Vector Players First
 		for i=1, 4 do
@@ -119,18 +121,20 @@ do
 		for uId in DBM:GetGroupMembers() do
 			local spellName, _, count = DBM:UnitDebuff(uId, 265127)
 			if spellName and count then
-				tempLines[UnitName(uId)] = count
+				local unitName = UnitName(uId)
+				tempLines[unitName] = count
+				tempLinesSorted[#tempLinesSorted + 1] = unitName
 			end
 		end
 		--Sort lingering according to options
 		if mod.Options.ShowHighestFirst2 then
-			tsort(tempLines, sortFuncDesc)
+			tsort(tempLinesSorted, sortFuncDesc)
 		else
-			tsort(tempLines, sortFuncAsc)
+			tsort(tempLinesSorted, sortFuncAsc)
 		end
 		--Now move lingering back into regular infoframe tables
-		for i, v in ipairs(tempLines) do
-			addLine(tempLines[i], v)
+		for _, name in ipairs(tempLinesSorted) do
+			addLine(name, tempLines[name])
 		end
 		return lines, sortedLines
 	end
@@ -151,13 +155,8 @@ function mod:OnCombatStart(delay)
 	timerLiquefyCD:Start(90.8-delay)
 	countdownLiquefy:Start(90.8-delay)
 	if self.Options.InfoFrame then
-		if DBM.Options.DebugMode then--Until tested, only enable new frame in debug mode
-			DBM.InfoFrame:SetHeader(OVERVIEW)
-			DBM.InfoFrame:Show(8, "function", updateInfoFrame, false, true)--8 by default, will show all 4 vectors and 4 lowest (or 4 highest) lingering
-		else--Fall back to old frame
-			DBM.InfoFrame:SetHeader(DBM:GetSpellInfo(265127))
-			DBM.InfoFrame:Show(8, "playerdebuffstacks", 265127, self.Options.ShowHighestFirst2 and 1 or 2)
-		end
+		DBM.InfoFrame:SetHeader(OVERVIEW)
+		DBM.InfoFrame:Show(8, "function", updateInfoFrame, false, true)--8 by default, will show all 4 vectors and 4 lowest (or 4 highest) lingering
 	end
 end
 
@@ -213,7 +212,7 @@ function mod:SPELL_CAST_START(args)
 				end
 			end
 			for uId in DBM:GetGroupMembers() do
-				local _, _, count = DBM:UnitDebuff("player", 265127)
+				local _, _, count = DBM:UnitDebuff(uId, 265127)
 				if count and count >= 25 then
 					specWarnTerminalEruption:Show()
 					specWarnTerminalEruption:Play("aesoon")

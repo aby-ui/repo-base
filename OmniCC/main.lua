@@ -89,7 +89,7 @@ function Addon:SetupHooks()
 			-- handle a fun edge case of a cooldown with an already active
 			-- display that now belongs to a different parent object
 			local oldDisplay = active[cooldown]
-			local newDisplay = Display:GetOrCreate(cooldown:GetParent())
+			local newDisplay = Display:GetOrCreate(cooldown:GetParent() or cooldown)
 
 			if oldDisplay and oldDisplay ~= newDisplay then
 				oldDisplay:HideCooldownText(cooldown)
@@ -107,7 +107,7 @@ function Addon:SetupHooks()
 
 	local Cooldown_MT = getmetatable(_G.ActionButton1Cooldown).__index
 
-	hooksecurefunc(Cooldown_MT, "SetCooldown", function(cooldown, start, duration, modRate)
+	hooksecurefunc(Cooldown_MT, "SetCooldown", function(cooldown, start, duration)
         if cooldown.noCooldownCount or cooldown:IsForbidden() then
             return
 		end

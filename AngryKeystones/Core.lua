@@ -144,7 +144,7 @@ function Addon:UnregisterAddOnComm(prefix, callback)
 end
 
 function Addon:SendAddOnComm(prefix, message, type, target)
-	data = prefix.."|"..message
+	local data = prefix.."|"..message
 	C_ChatInfo.SendAddonMessage(Addon.ShortName, data, type, target)
 end
 

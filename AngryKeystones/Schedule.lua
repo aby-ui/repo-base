@@ -117,7 +117,7 @@ local function UpdateFrame()
 			local entry = Mod.AffixFrame.Entries[i]
 			entry:Show()
 
-			local scheduleWeek = (currentWeek - 2 + i) % (#affixSchedule) + 1
+			local scheduleWeek = (currentWeek - 1 + i) % (#affixSchedule) + 1
 			local affixes = affixSchedule[scheduleWeek]
 			for j = 1, #affixes do
 				local affix = entry.Affixes[j]
@@ -184,7 +184,7 @@ function Mod:Blizzard_ChallengesUI()
 		text:SetWidth(120)
 		text:SetJustifyH("LEFT")
 		text:SetWordWrap(false)
-		text:SetText( Addon.Locale["scheduleWeek"..i] )
+		text:SetText( Addon.Locale["scheduleWeek"..i+1] )
 		text:SetPoint("LEFT")
 		entry.Text = text
 
@@ -276,6 +276,9 @@ function Mod:Blizzard_ChallengesUI()
 	keystoneText:SetPoint("BOTTOM", ChallengesFrame.WeeklyInfo.Child.WeeklyChest, "BOTTOM", 0, -25)
 	keystoneText:SetWidth(220)
 	Mod.KeystoneText = keystoneText
+
+	ChallengesFrame.WeeklyInfo.Child.Affixes[1]:ClearAllPoints()
+	ChallengesFrame.WeeklyInfo.Child.Affixes[1]:SetPoint("CENTER", ChallengesFrame.WeeklyInfo.Child.Label, "CENTER", -64, -45)
 
 	hooksecurefunc("ChallengesFrame_Update", UpdateFrame)
 end

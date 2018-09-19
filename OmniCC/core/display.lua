@@ -1,9 +1,8 @@
 --[[ A cooldown text display ]] --
 
 local Addon = _G[...]
-
-local ICON_SIZE = math.ceil(_G.ActionButton1:GetWidth()) -- the expected size of an icon
-
+local ICON_SIZE = 36-- the expected size of an icon
+local UIParent = _G.UIParent
 local round = _G.Round
 local min = math.min
 local displays = {}
@@ -159,9 +158,13 @@ function Display:UpdatePrimaryCooldown()
 end
 
 function Display:UpdateTimer()
-    local oldTimer = self.timer
-    local newTimer = self.cooldown and Addon.Timer:GetOrCreate(self.cooldown)
+    local oldTimer = self.timer and self.timer
+    local oldTimerKey = oldTimer and oldTimer.key
 
+    local newTimer = self.cooldown and Addon.Timer:GetOrCreate(self.cooldown)
+    local newTimerKey = newTimer and newTimer.key
+
+    -- update subscription if we're watching a different timer
     if oldTimer ~= newTimer then
         self.timer = newTimer
 
@@ -171,12 +174,19 @@ function Display:UpdateTimer()
 
         if newTimer then
             newTimer:Subscribe(self)
-
-            self:UpdateCooldownText()
-            self:Show()
-        else
-            self:Hide()
         end
+    end
+
+    -- only show display if we have a timer to watch
+    if newTimer then
+        -- only update text if the timer we're watching has changed
+        if newTimerKey ~= oldTimerKey then
+            self:UpdateCooldownText()
+        end
+
+        self:Show()
+    else
+        self:Hide()
     end
 end
 
@@ -188,10 +198,6 @@ function Display:GetCooldownWithHighestPriority()
     end
 
     return cooldown
-end
-
-function Display:SetCooldownText(text)
-    self.text:SetText(text or "")
 end
 
 function Display:UpdateCooldownText()
@@ -206,10 +212,19 @@ function Display:UpdateCooldownTextShown()
     local sets = self:GetCooldownSettings()
     if not sets then return end
 
-    local scale = self.scale or 1
-    local frameScale = self:GetEffectiveScale() / _G.UIParent:GetScale()
+    -- do a zero comparison here so that we can avoid
+    -- doing the comparison math if we don't actually need to
+    local minSize = sets.minSize or 0
+    if minSize <= 0 then
+        self.text:Show()
+        return
+    end
 
-    if (scale * frameScale) >= (sets and sets.minSize or 0) then
+    local scale = self.scale or 1
+    local uiRatio = self:GetEffectiveScale() / UIParent:GetEffectiveScale()
+
+    -- compare as ints to avoid floating point math errors
+    if round(100 * minSize) <= round(100 * scale * uiRatio) then
         self.text:Show()
     else
         self.text:Hide()

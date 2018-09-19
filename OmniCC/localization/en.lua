@@ -3,7 +3,7 @@ _G.OMNICC_LOCALS = {} -- should be done in the US locale file, only
 local L = _G.OMNICC_LOCALS
 
 -- timer formats
-L.TenthsFormat = "%.1f"
+L.TenthsFormat = "%0.1f"
 L.SecondsFormat = "%d"
 L.MMSSFormat = "%d:%02d"
 L.MinuteFormat = "%dm"
