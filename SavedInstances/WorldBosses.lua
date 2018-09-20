@@ -2,30 +2,24 @@ local addonName, addon = ...
 local WorldBosses = LibStub("AceAddon-3.0"):GetAddon(addonName):NewModule("WorldBosses")
 local L = addon.L
 
-addon.WorldBosses = {
   -- encounter index is embedded in the Hjournal hyperlink
+addon.WorldBosses = {
+  -- Mist of Pandaria
   [691] = { quest=32099, expansion=4, level=90 }, -- Sha of Anger
   [725] = { quest=32098, expansion=4, level=90 }, -- Galleon
   [814] = { quest=32518, expansion=4, level=90 }, -- Nalak
   [826] = { quest=32519, expansion=4, level=90 }, -- Oondasta
   [857] = { quest=33117, expansion=4, level=90, name=L["The Four Celestials"]  }, -- Chi-Ji
-  --[858] = { quest=nil, expansion=4, level=90 }, -- Yu'lon
-  --[859] = { quest=nil, expansion=4, level=90 }, -- Niuzao
-  --[860] = { quest=nil, expansion=4, level=90 }, -- Xuen
   [861] = { quest=nil,   expansion=4, level=90 }, -- Ordos
 
-  --[[
-  [1291] = { quest=37460,  expansion=5, level=100 }, -- Drov the Ruiner
-  [1211] = { quest=37462,  expansion=5, level=100 }, -- Tarlna the Ageless
-  --]]
+  -- Warlords of Draenor
   [1211] = { quest=37462,  expansion=5, level=100, -- Drov/Tarlna share a loot and quest atm
     name=select(2,EJ_GetCreatureInfo(1,1291)):match("^[^ ]+").." / "..
     select(2,EJ_GetCreatureInfo(1,1211)):match("^[^ ]+")},
-  [1291] = { remove=true }, -- Drov cleanup
-
   [1262] = { quest=37464, expansion=5, level=100 }, -- Rukhmar
   [1452] = { quest=39380, expansion=5, level=100 }, -- Kazzak
 
+  -- Legion
   [1749] = { quest=42270, expansion=6, level=110 }, -- Nithogg
   [1756] = { quest=42269, expansion=6, level=110, name=EJ_GetEncounterInfo(1756) }, -- The Soultakers
   [1763] = { quest=42779, expansion=6, level=110 }, -- Shar'thos
@@ -50,7 +44,7 @@ addon.WorldBosses = {
   [2014] = { quest=49171, name=EJ_GetEncounterInfo(2014), expansion=6, level=110}, -- Sotanathor
   [2015] = { quest=49168, name=EJ_GetEncounterInfo(2015), expansion=6, level=110}, -- Pit Lord Vilemus
 
-  -- BFA World Bosses
+  -- Battle for Azeroth
   [2139] = { quest=52181, expansion=7, level=120 }, -- T'Zane
   [2141] = { quest=52169, expansion=7, level=120 }, -- Ji'arak
   [2197] = { quest=52157, expansion=7, level=120 }, -- Hailstone Construct

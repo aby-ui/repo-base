@@ -187,7 +187,7 @@ function DEATH_ANNOUNCE_CLEU(...)
         if not IsRaidMemberFlag(sourceFlags) then return end
         if sourceGUID == playerGUID and U1GetCfgValue and U1GetCfgValue("deathannounce/yell") then
             SendChatMessage(string.format("我已打断%s的%s", destName, GetSpellLink(param4)), "YELL")
-        else
+        elseif sourceName then
             if RaidAlerter_SET and RaidAlerter_SET.Break_Magic then return end
             --太刷屏了，加了个开关
             if sourceGUID == playerGUID or (U1GetCfgValue and U1GetCfgValue("deathannounce/othersir")) then

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2167, "DBM-Uldir", nil, 1031)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17830 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 17875 $"):sub(12, -3))
 mod:SetCreatureID(135452)--136429 Chamber 01, 137022 Chamber 02, 137023 Chamber 03
 mod:SetEncounterID(2141)
 mod:SetZone()
@@ -83,7 +83,7 @@ local function updateAllTimers(self, ICD)
 		countdownPurifyingFlame:Cancel()
 		countdownPurifyingFlame:Start(ICD)
 	end
-	if timerSanitizingStrikeCD:GetRemaining() < ICD then
+	--[[if timerSanitizingStrikeCD:GetRemaining() < ICD then
 		local elapsed, total = timerSanitizingStrikeCD:GetTime()
 		local extend = ICD - (total-elapsed)
 		DBM:Debug("timerSanitizingStrikeCD extended by: "..extend, 2)
@@ -91,7 +91,7 @@ local function updateAllTimers(self, ICD)
 		timerSanitizingStrikeCD:Update(elapsed, total+extend)
 		countdownSanitizingStrike:Cancel()
 		countdownSanitizingStrike:Start(ICD)
-	end
+	end--]]
 	if timerWindTunnelCD:GetRemaining() < ICD then
 		local elapsed, total = timerWindTunnelCD:GetTime()
 		local extend = ICD - (total-elapsed)

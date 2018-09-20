@@ -16,7 +16,7 @@ local tinsert = tinsert
 local unpack = unpack
 
 local LIBNAME = "Pre80API"
-local VERSION = 1.05
+local VERSION = 1.06
 
 local lib = _G[LIBNAME]
 if lib and lib.version >= VERSION then return end
@@ -67,6 +67,7 @@ function lib.GetCurrentMapAreaID()
 end
 
 ---------------------------------------------------
+-- 0: 临时场景地图
 -- 13: 东部王国
 -- 12: 卡利姆多
 -- 101: 外域
@@ -92,13 +93,15 @@ end
 function lib.GetCurrentMapContinent()
 	local mapID = C_Map.GetBestMapForUnit("player")
 	if type(mapID) ~= "number" or mapID < 1 then
-		return
+		return 0
 	end
 
 	local info = MapUtil.GetMapParentInfo(mapID, Enum.UIMapType.Continent, true)
 	if info then
 		return info.mapID, info.name
 	end
+
+	return 0
 end
 
 function lib.GetMapNameByID(id)

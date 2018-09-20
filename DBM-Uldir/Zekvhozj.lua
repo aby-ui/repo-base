@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2169, "DBM-Uldir", nil, 1031)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17869 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 17875 $"):sub(12, -3))
 mod:SetCreatureID(134445)--Zek'vhozj, 134503/qiraji-warrior
 mod:SetEncounterID(2136)
 --mod:DisableESCombatDetection()
@@ -189,7 +189,7 @@ function mod:SPELL_CAST_START(args)
 	elseif spellId == 267239 and self:AntiSpam(15, 4) then--Backup, in case emote doesn't fire for more than first one
 		specWarnOrbOfCorruption:Show(1)
 		specWarnOrbOfCorruption:Play("161612")--catch balls
-		timerOrbLands:Start(5, 1)
+		timerOrbLands:Start(8, 1)
 		--if not self:IsMythic() then--Didn't see cast on mythic?
 			--timerOrbofCorruptionCD:Start(50, self.vb.orbCount+1)
 		--end
@@ -252,7 +252,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		if args:IsPlayer() and self:AntiSpam(5, 6) then
 			specWarnRoilingDeceit:Show(DBM_CORE_ROOM_EDGE)
 			specWarnRoilingDeceit:Play("runtoedge")
-			yellRoilingDeceit:Yell()
+			yellRoilingDeceit:Yell(self.vb.roilingCount)
 			yellRoilingDeceitFades:Countdown(12)
 --		else
 --			warnRoilingDeceit:Show(args.destName)
