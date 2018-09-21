@@ -1,5 +1,5 @@
 
-local dversion = 101
+local dversion = 108
 local major, minor = "DetailsFramework-1.0", dversion
 local DF, oldminor = LibStub:NewLibrary (major, minor)
 
@@ -2411,7 +2411,19 @@ function DF:Dispatch (func, ...)
 end
 
 --/run local a, b =32,3; local f=function(c,d) return c+d, 2, 3;end; print (xpcall(f,geterrorhandler(),a,b))
-
+function DF_CALC_PERFORMANCE()
+	local F = CreateFrame ("frame")
+	local T = GetTime()
+	local J = false
+	F:SetScript ("OnUpdate", function (self, deltaTime)
+		if (not J) then
+			J = true
+			return 
+		end
+		print ("Elapsed Time:", deltaTime)
+		F:SetScript ("OnUpdate", nil)
+	end)
+end
 
 --doo elsee 
 --was doing double loops due to not enought height

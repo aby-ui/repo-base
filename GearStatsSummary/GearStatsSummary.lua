@@ -104,6 +104,7 @@ function GearStatsSummary_OnLoad(self)
 	self:RegisterEvent("VARIABLES_LOADED");
 	self:RegisterEvent("ADDON_LOADED");
 	self:RegisterEvent("UNIT_INVENTORY_CHANGED");
+    self:RegisterEvent("PLAYER_EQUIPMENT_CHANGED");
 	self:RegisterEvent("ITEM_UPGRADE_MASTER_UPDATE");
 	self:RegisterEvent("REPLACE_ENCHANT");
 
@@ -212,8 +213,8 @@ function GearStatsSummary_OnEvent(self, event, ...)
 		GearStatsSummary_SetupHook();
 	end
 
-	if event == "UNIT_INVENTORY_CHANGED" then
-		if ((arg1 == "player") and GearStatsSummarySelfFrame:IsVisible()) then
+	if event == "UNIT_INVENTORY_CHANGED" or event == "PLAYER_EQUIPMENT_CHANGED" then
+		if ((arg1 == "player" or event == "PLAYER_EQUIPMENT_CHANGED") and GearStatsSummarySelfFrame:IsVisible()) then
 			GearStatsSummary_HideFrame(GearStatsSummarySelfFrame);
 			if (GearStatsSummaryTargetFrame:IsVisible()) then
 				GearStatsSummary_ShowFrame(GearStatsSummarySelfFrame,GearStatsSummaryTargetFrame,UnitName("player"),0,0);

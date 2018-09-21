@@ -57,8 +57,13 @@ local function UpdatePartyKeystones()
 				fullName = name.."-"..realm
 			end
 
-			if unitKeystones[fullName] then
-				local keystoneName = GetNameForKeystone(unitKeystones[fullName][1], unitKeystones[fullName][2])
+			if unitKeystones[fullName] ~= nil then
+				local keystoneName
+				if unitKeystones[fullName] == 0 then
+					keystoneName = NONE
+				else
+					keystoneName = GetNameForKeystone(unitKeystones[fullName][1], unitKeystones[fullName][2])
+				end
 				if keystoneName then
 					entry:Show()
 					local _, class = UnitClass("party"..i)
@@ -358,9 +363,11 @@ function Mod:CheckCurrentKeystone(announce)
 		currentKeystoneMapID = keystoneMapID
 		currentKeystoneLevel = keystoneLevel
 
-		local itemLink = self:GetInventoryKeystone()
-		if Addon.Config.announceKeystones and announce and itemLink and IsInGroup(LE_PARTY_CATEGORY_HOME) then
-			SendChatMessage(string.format(Addon.Locale.newKeystoneAnnounce, itemLink), "PARTY")
+		if announce and Addon.Config.announceKeystones then
+			local itemLink = self:GetInventoryKeystone()
+			if itemLink and IsInGroup(LE_PARTY_CATEGORY_HOME) then
+				SendChatMessage(string.format(Addon.Locale.newKeystoneAnnounce, itemLink), "PARTY")
+			end
 		end
 
 		self:SendCurrentKeystone()
@@ -386,15 +393,16 @@ function Mod:ReceiveAddOnComm(message, type, sender)
 		requestPartyKeystones = false
 		self:SendCurrentKeystone()
 	elseif message == "0" then
-		if unitKeystones[sender] ~= nil then
-			unitKeystones[sender] = nil
+		if unitKeystones[sender] ~= 0 then
+			unitKeystones[sender] = 0
 			UpdatePartyKeystones()
 		end
 	else
 		local arg1, arg2 = message:match("^(%d+):(%d+)$")
 		local keystoneMapID = arg1 and tonumber(arg1)
 		local keystoneLevel = arg2 and tonumber(arg2)
-		if keystoneMapID and keystoneLevel and not (unitKeystones[sender] and unitKeystones[sender][1] == keystoneMapID and unitKeystones[sender][2] == keystoneLevel) then
+		if keystoneMapID and keystoneLevel and (unitKeystones[sender] == nil or unitKeystones[sender] == 0
+				or not (unitKeystones[sender][1] == keystoneMapID and unitKeystones[sender][2] == keystoneLevel)) then
 			unitKeystones[sender] = { keystoneMapID, keystoneLevel }
 			UpdatePartyKeystones()
 		end

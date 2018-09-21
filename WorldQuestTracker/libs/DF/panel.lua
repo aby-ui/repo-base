@@ -1165,6 +1165,8 @@ function DF:NewFillPanel (parent, rows, name, member, w, h, total_lines, fill_ro
 	panel.scrollframe = scrollframe
 	scrollframe.lines = {}
 	
+	DF:ReskinSlider (scrollframe)
+	
 	--create lines
 	function panel:UpdateRowAmount()
 		local size = options.rowheight
@@ -4815,16 +4817,17 @@ DF.IconRowFunctions = {
 			newIconFrame:SetBackdropBorderColor (0, 0, 0, 0)
 			newIconFrame:EnableMouse (false)
 			
-			local cooldownFrame = CreateFrame ("cooldown", "$parentIconCooldown" .. self.NextIcon, self, "CooldownFrameTemplate")
+			local cooldownFrame = CreateFrame ("cooldown", "$parentIconCooldown" .. self.NextIcon, newIconFrame, "CooldownFrameTemplate")
 			cooldownFrame:SetAllPoints()
 			cooldownFrame:EnableMouse (false)
+			cooldownFrame:SetFrameLevel (newIconFrame:GetFrameLevel()+1)
 			
-			newIconFrame.Text = cooldownFrame:CreateFontString (nil, "overlay", "GameFontNormal")
-			newIconFrame.Text:SetPoint ("center")
-			newIconFrame.Text:Hide()
+			newIconFrame.CountdownText = cooldownFrame:CreateFontString (nil, "overlay", "GameFontNormal")
+			newIconFrame.CountdownText:SetPoint ("center")
+			newIconFrame.CountdownText:Hide()
 			
-			newIconFrame.Desc = self:CreateFontString (nil, "overlay", "GameFontNormal")
-			newIconFrame.Desc:SetPoint ("bottom", self, "top", 0, 2)
+			newIconFrame.Desc = newIconFrame:CreateFontString (nil, "overlay", "GameFontNormal")
+			newIconFrame.Desc:SetPoint ("bottom", newIconFrame, "top", 0, 2)
 			newIconFrame.Desc:Hide()
 			
 			newIconFrame.Cooldown = cooldownFrame
@@ -4856,7 +4859,7 @@ DF.IconRowFunctions = {
 			
 		end
 		
-		DF:SetFontColor (iconFrame.Text, self.options.text_color)
+		DF:SetFontColor (iconFrame.CountdownText, self.options.text_color)
 		
 		self.NextIcon = self.NextIcon + 1
 		return iconFrame
@@ -4882,21 +4885,23 @@ DF.IconRowFunctions = {
 			else
 				iconFrame:SetBackdropBorderColor (0, 0, 0 ,0)
 			end	
-
+			
 			if (startTime) then
 				CooldownFrame_Set (iconFrame.Cooldown, startTime, duration, true, true)
 				
 				if (self.options.show_text) then
-					iconFrame.Text:Show()
-					iconFrame.Text:SetText (floor (startTime + duration - GetTime()))
+					iconFrame.CountdownText:Show()
+					iconFrame.CountdownText:SetText (floor (startTime + duration - GetTime()))
+					iconFrame.Cooldown:SetHideCountdownNumbers (true)
 				else
-					iconFrame.Text:Hide()
+					iconFrame.CountdownText:Hide()
+					iconFrame.Cooldown:SetHideCountdownNumbers (false)
 				end
 			else
-				iconFrame.Text:Hide()
+				iconFrame.CountdownText:Hide()
 			end
 			
-			if (descText) then
+			if (descText and self.options.desc_text) then
 				iconFrame.Desc:Show()
 				iconFrame.Desc:SetText (descText.text)
 				iconFrame.Desc:SetTextColor (DF:ParseColors (descText.text_color or self.options.desc_text_color))
@@ -4904,7 +4909,7 @@ DF.IconRowFunctions = {
 			else
 				iconFrame.Desc:Hide()
 			end
-
+			
 			iconFrame:SetSize (self.options.icon_width, self.options.icon_height)
 			iconFrame:Show()
 			
@@ -4971,12 +4976,13 @@ local default_icon_row_options = {
 	texcoord = {.1, .9, .1, .9},
 	show_text = true,
 	text_color = {1, 1, 1, 1},
+	desc_text = true,
 	desc_text_color = {1, 1, 1, 1},
 	desc_text_size = 7,
 	left_padding = 1, --distance between right and left
 	top_padding = 1, --distance between top and bottom 
 	icon_padding = 1, --distance between each icon
-	backdrop = {edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1, bgFile = [[Interface\Tooltips\UI-Tooltip-Background]], tileSize = 64, tile = true},
+	backdrop = {},
 	backdrop_color = {0, 0, 0, 0.5},
 	backdrop_border_color = {0, 0, 0, 1},
 	anchor = {side = 6, x = 2, y = 0},
@@ -4994,6 +5000,7 @@ function DF:CreateIconRow (parent, name, options)
 	f:BuildOptionsTable (default_icon_row_options, options)
 	
 	f:SetSize (f.options.icon_width, f.options.icon_height + (f.options.top_padding * 2))
+	
 	f:SetBackdrop (f.options.backdrop)
 	f:SetBackdropColor (unpack (f.options.backdrop_color))
 	f:SetBackdropBorderColor (unpack (f.options.backdrop_border_color))

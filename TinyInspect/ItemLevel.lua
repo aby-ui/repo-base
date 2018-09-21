@@ -457,6 +457,21 @@ ChatFrame_AddMessageEventFilter("CHAT_MSG_GUILD", filter)
 ChatFrame_AddMessageEventFilter("CHAT_MSG_BATTLEGROUND", filter)
 ChatFrame_AddMessageEventFilter("CHAT_MSG_LOOT", filter)
 
+-- 初次拾取钥石的信息 "\124cffa335ee\124Hitem:158923::::::::120:65:4063232:::248:9:9:11:2:::\124h[史诗钥石]\124h\124r",
+local function KeystoneLevel(Hyperlink)
+    local itemId, map, level = string.match(Hyperlink, "|Hitem:(%d+)::::::::%d*:%d*:%d*:%d*:%d*:(%d+):(%d+):.-|h(.-)|h")
+    if itemId == "158923" then
+        local name = C_ChallengeMode.GetMapUIInfo(map)
+        if name then Hyperlink = Hyperlink:gsub("|h%[(.-)%]|h", "|h["..format(CHALLENGE_MODE_KEYSTONE_HYPERLINK, name, level).."]|h") end
+    end
+    return Hyperlink
+end
+
+local filterLootKeyStone = function(self, event, msg, ...)
+    msg = msg:gsub("(\124Hitem:(%d+)::::::::%d*:%d*:%d*:%d*:%d*:%d+:%d+:.-|h.-|h)", KeystoneLevel)
+    return false, msg, ...
+end
+ChatFrame_AddMessageEventFilter("CHAT_MSG_LOOT", filterLootKeyStone)
 
 -- 位置設置
 LibEvent:attachTrigger("ITEMLEVEL_FRAME_SHOWN", function(self, frame, parent, category)

@@ -846,6 +846,23 @@ end
 
 local getItemQualityColor = GetItemQualityColor
 
+local function attempt_ilvl(v,attempts)
+	if attempts > 0 then
+		local item = Item:CreateFromEquipmentSlot(v:GetID())
+		local value = item:GetCurrentItemLevel()
+		if value then --ilvl of nil probably indicates that there's no tem in that slot
+			if value > 0 then --ilvl of 0 probably indicates that item is not fully loaded
+				v.ilevel:SetTextColor(getItemQualityColor(item:GetItemQuality())) --upvalue call
+				v.ilevel:SetText(value)
+			else
+				C_Timer.After(0.1, function() attempt_ilvl(v,attempts-1) end)
+			end
+		else
+			v.ilevel:SetText("")
+		end
+	end
+end
+
 local function DCS_Item_Level_Center()
     do return end
 	--local summar_ilvl = 0 --assuming artefact weapons are handled correctly
@@ -853,10 +870,11 @@ local function DCS_Item_Level_Center()
 	--equipped = round(equipped * 16)
 	--equipped = equipped * 16 --in tested cases worked without rounding
 	for _, v in ipairs(DCSITEM_SLOT_FRAMES) do
-		local item = Item:CreateFromEquipmentSlot(v:GetID())
-		local value = item:GetCurrentItemLevel()
-		if value then
-			v.ilevel:SetTextColor(getItemQualityColor(item:GetItemQuality())) --upvalue call
+		attempt_ilvl(v,4)
+		--local item = Item:CreateFromEquipmentSlot(v:GetID())
+		--local value = item:GetCurrentItemLevel()
+		--if value then
+			--v.ilevel:SetTextColor(getItemQualityColor(item:GetItemQuality())) --upvalue call
 			--local color = item:GetItemQualityColor()
 			--v.ilevel:SetTextColor(color.r,color.g,color.b) --v.ilevel:SetTextColor(item:GetItemQualityColor()) doesn't work because it's a table; seems to use less function calls than itemlink
 			--v.ilevel:SetTextColor(item:GetItemQualityColor())
@@ -876,10 +894,10 @@ local function DCS_Item_Level_Center()
 				summar_ilvl = summar_ilvl + value
 			end
 			--]]
-			v.ilevel:SetText(value)
-		else
-			v.ilevel:SetText("")
-		end
+			--v.ilevel:SetText(value)
+		--else
+			--v.ilevel:SetText("")
+		--end
 	end
 end
 

@@ -604,6 +604,7 @@ DF.CrowdControlSpells = {
 	[710] = "WARLOCK", --Banish
 
 	[118] = "MAGE", --Polymorph
+	[61305] = "MAGE", --Polymorph (black cat)
 	[82691] = "MAGE", --Ring of Frost (debuff spellid)
 	[122] = "MAGE", --Frost Nova
 	[157997] = "MAGE", --Ice Nova
@@ -623,7 +624,8 @@ DF.CrowdControlSpells = {
 	[408] = "ROGUE", --Kidney Shot
 	[6770] = "ROGUE", --Sap
 	[1776] = "ROGUE", --Gouge
-
+	[199804] = "ROGUE", --Between the Eyes
+	
 	[853] = "PALADIN", --Hammer of Justice
 	[20066] = "PALADIN", --Repentance (talent)
 	[105421] = "PALADIN", --Blinding Light (talent)
@@ -643,7 +645,7 @@ DF.CrowdControlSpells = {
 	[203123] = "DRUID", --Maim
 	[50259] = "DRUID", --Dazed (from Wild Charge)
 	[209753] = "DRUID", --Cyclone (from pvp talent)
-
+	
 	[3355] = "HUNTER", --Freezing Trap
 	[19577] = "HUNTER", --Intimidation
 	[190927] = "HUNTER", --Harpoon
@@ -654,6 +656,7 @@ DF.CrowdControlSpells = {
 	[115078] = "MONK", --Paralysis
 	[198909] = "MONK", --Song of Chi-Ji (talent)
 	[116706] = "MONK", --Disable
+	[107079] = "MONK", --Quaking Palm (racial)
 	
 	[118905] = "SHAMAN", --Static Charge (Capacitor Totem)
 	[51514] = "SHAMAN", --Hex
@@ -817,7 +820,46 @@ DF.RuneIDs = {
 --	/dump UnitAura ("player", 1)
 --	/dump UnitAura ("player", 2)
 
+function DF:GetSpellsForEncounterFromJournal (instanceEJID, encounterEJID)
 
+	EJ_SelectInstance (instanceEJID) 
+	local name, description, encounterID, rootSectionID, link = EJ_GetEncounterInfo (encounterEJID) --taloc (primeiro boss de Uldir)
+	
+	if (not name) then
+		print ("DetailsFramework: Encounter Info Not Found!", instanceEJID, encounterEJID)
+		return {}
+	end
+	
+	local spellIDs = {}
+	
+	--overview
+	local sectionInfo = C_EncounterJournal.GetSectionInfo (rootSectionID)
+	local nextID = {sectionInfo.siblingSectionID}
+	
+	while (nextID [1]) do
+		--> get the deepest section in the hierarchy
+		local ID = tremove (nextID)
+		local sectionInfo = C_EncounterJournal.GetSectionInfo (ID)
+		
+		if (sectionInfo) then
+			if (sectionInfo.spellID and type (sectionInfo.spellID) == "number" and sectionInfo.spellID ~= 0) then
+				tinsert (spellIDs, sectionInfo.spellID)
+			end
+			
+			local nextChild, nextSibling = sectionInfo.firstChildSectionID, sectionInfo.siblingSectionID
+			if (nextSibling) then
+				tinsert (nextID, nextSibling)
+			end
+			if (nextChild) then
+				tinsert (nextID, nextChild)
+			end
+		else
+			break
+		end
+	end
+	
+	return spellIDs
+end
 
 
 

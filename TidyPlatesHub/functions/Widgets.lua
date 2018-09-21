@@ -134,6 +134,12 @@ local function SmartFilterMode(aura)
 		end
     elseif LocalVars.WidgetsHostileBuff and (aura.isNPC or LocalVars.WidgetsHostilePlayerBuff) and aura.reaction == AURA_TARGET_HOSTILE and aura.effect == "HELPFUL" and (not LocalVars.WidgetsHostileBuffStealableOnly2 or aura.isStealable) then
         --abyui hostile npc buff
+        --support not DebuffName
+        local prefix, priority = GetPrefixPriority(aura)
+        if prefix then
+            local show = DebuffPrefixModes[prefix](aura)
+            if not show then return false end
+        end
         if aura.isStealable then
             return true, -10, 0, 1, 0
         else

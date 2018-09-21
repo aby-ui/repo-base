@@ -60,7 +60,7 @@ function Addon:StartupGroup(group)
 		fontSize = 22,
 		fontOutline = 'OUTLINE',
 		minDuration = 2,
-		minSize = 0.5,
+		minSize = 0.13,
 		effect = 'pulse',
 		minEffectDuration = 30,
 		tenthsDuration = 0,

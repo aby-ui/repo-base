@@ -123,6 +123,24 @@ WorldQuestTracker.MapData.QuestHubs = {
 --world map anchors
 WorldQuestTracker.mapTables = {
 	--BFA
+		--boralus
+		[1161] = {
+			widgets = {},
+			Anchor_X = 0.99,
+			Anchor_Y = 0.46,
+			GrowRight = false,
+			show_on_map = WorldQuestTracker.MapData.ZoneIDs.KULTIRAS,
+		},
+		
+		--dazar'alor
+--		[1165] = {
+--			widgets = {},
+--			Anchor_X = 0.58,
+--			Anchor_Y = 0.54,
+--			GrowRight = true,
+--			show_on_map = WorldQuestTracker.MapData.ZoneIDs.ZANDALAR,
+--		},
+	
 		--alliance
 		[WorldQuestTracker.MapData.ZoneIDs.TIRAGARDE] = {
 			widgets = {},

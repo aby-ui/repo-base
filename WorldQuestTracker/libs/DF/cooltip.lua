@@ -80,6 +80,7 @@ function DF:CreateCoolTip()
 			["FixedWidthSub"] = true,
 			["FixedHeightSub"] = true,
 			["AlignAsBlizzTooltip"] = true,
+			["AlignAsBlizzTooltipFrameHeightOffset"] = true,
 			["IgnoreSubMenu"] = true,
 			["IgnoreButtonAutoHeight"] = true,
 			["TextHeightMod"] = true,
@@ -1609,6 +1610,11 @@ function DF:CreateCoolTip()
 			menuButton:SetPoint ("left", frame1, "left", -4, 0)
 			menuButton:SetPoint ("right", frame1, "right", 4, 0)
 			
+			if (menuButton.divbar) then
+				menuButton.divbar:Hide()
+				menuButton.isDiv = false
+			end
+			
 			--> height
 			if (CoolTip.OptionsTable.AlignAsBlizzTooltip) then
 				local height = _math_max (8, menuButton.leftText:GetStringHeight(), menuButton.rightText:GetStringHeight(), menuButton.leftIcon:GetHeight(), menuButton.rightIcon:GetHeight())
@@ -1667,7 +1673,7 @@ function DF:CreateCoolTip()
 			frame1:SetHeight (CoolTip.OptionsTable.FixedHeight)
 		else
 			if (CoolTip.OptionsTable.AlignAsBlizzTooltip) then
-				frame1:SetHeight ( (temp-10) * -1)
+				frame1:SetHeight ( ((temp-10) * -1) + (CoolTip.OptionsTable.AlignAsBlizzTooltipFrameHeightOffset or 0))
 			elseif (CoolTip.OptionsTable.IgnoreButtonAutoHeight) then
 				frame1:SetHeight ( (temp+spacing) * -1)
 			else

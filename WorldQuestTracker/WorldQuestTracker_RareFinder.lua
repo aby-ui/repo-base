@@ -52,6 +52,10 @@ rf.CommGlobalCooldown = 0
 rf.RareSpottedSendCooldown = {}
 rf.MinimapScanCooldown = {}
 
+function ff.GetItemLevelRequirement()
+	return 0
+end
+
 rf.COMM_IDS = {
 	RARE_SPOTTED = "RS1",
 	RARE_REQUEST = "RR1",

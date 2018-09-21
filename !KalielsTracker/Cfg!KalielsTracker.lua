@@ -12,7 +12,7 @@ U1RegisterAddon("!KalielsTracker", {
 
     toggle = function(name, info, enable, justload)
         if justload then
-            if IsLoggedIn() then
+            if U1IsInitComplete() then
                 local OTF = ObjectiveTrackerFrame
                 OTF:GetScript("OnEvent")(OTF, "PLAYER_ENTERING_WORLD")
                 OTF:GetScript("OnEvent")(OTF, "QUEST_WATCH_LIST_CHANGED")

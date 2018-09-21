@@ -178,10 +178,8 @@ local function UpdateIconGrid(frame, unitid)
 
 		if not unitid then return end
 
-		local unitReaction
-		if UnitIsFriend("player", unitid) then unitReaction = AURA_TARGET_FRIENDLY
-		else unitReaction = AURA_TARGET_HOSTILE end
-		local unitIsNPC = not UnitPlayerControlled(unitid)
+		local unitReaction = UnitIsFriend("player", unitid) and not UnitIsEnemy("player", unitid) and AURA_TARGET_FRIENDLY or AURA_TARGET_HOSTILE --PVP UnitIsFriend=true
+		local unitIsNPC = not UnitIsPlayer("player") and not UnitPlayerControlled(unitid)
 
 		local AuraIconFrames = frame.AuraIconFrames
 		local storedAuras = {}

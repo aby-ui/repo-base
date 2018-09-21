@@ -162,7 +162,7 @@ function LBIntelliMountSummon(utility, delay)
     if not delay and IsSwimming() and utility=="normal" then
         if GetTime() - (delay_timer or 0) < 0.25 then
             CoreCancelBucket("IntelliMountDelay")
-            utility = "underwater"
+            utility = "surface"
         else
             utility = IsFlyableArea() and "normal" or "surface"
             delay_timer = GetTime()

@@ -44,7 +44,12 @@ L:SetMiscLocalization({
 L= DBM:GetModLocalization(2166)
 
 L:SetOptionLocalization({
-	ShowHighestFirst2	 =	"Sort Lingering Infection Infoframe by highest debuff stack (instead of lowest)"
+	ShowHighestFirst2	 =	"Sort Lingering Infection Infoframe by highest debuff stack (instead of lowest)",
+	ShowOnlyParty		 =	"Show Lingering Infection only for your party"
+})
+
+L:SetMiscLocalization({
+	BWIconMsg			 =	"DBM's has passed icon marking to a promoted BW user in raid to avoid icon conflicts, make sure they have marking enabled or demote them to enable DBM marking"
 })
 
 ---------------

@@ -6,7 +6,9 @@ do
 		return 
 	end
 
-	DF.alias_text_colors = {
+	DF.alias_text_colors = DF.alias_text_colors or {}
+	
+	local defaultColors = {
 		["HUNTER"] = {0.67, 0.83, 0.45},
 		["WARLOCK"] = {0.58, 0.51, 0.79},
 		["PRIEST"] = {1.0, 1.0, 1.0},
@@ -164,4 +166,9 @@ do
 		["yellow"] = {1, 1, 0, 1},
 		["yellowgreen"] = {0.603922, 0.803922, 0.196078, 1}
 	}
+	
+	for colorName, colorTable in pairs (defaultColors) do
+		DF.alias_text_colors [colorName] = colorTable
+	end
+	
 end
