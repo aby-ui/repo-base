@@ -92,7 +92,7 @@ end
 function Flare:Run(cooldown)
 	local owner = cooldown:GetParent() or cooldown
 
-	if owner and owner:IsShown() then
+	if owner and owner:IsVisible() then
 		local shine = FlarePool:Acquire()
 
 		shine:SetParent(owner)

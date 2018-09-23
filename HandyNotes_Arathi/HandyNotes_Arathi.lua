@@ -167,8 +167,8 @@ nodes["Arathi"] = {
 	{ coord = 63257752, npcId = nil,	questId = { 53089, 53530 }, icon = "cave", group = "cave_arathi", label = _L["Zalas Witherbark_cave"], loot = {}, note = nil },
 	{ coord = 62858120, npcId = 142682, questId = { 53094, 53530 }, icon = "skull_grey", group = "rare_arathi", label = _L["Zalas Witherbark"], loot = { { itemId = 163745, itemType = itemTypeToy } }, note = nil },
 	{ coord = 42905660, npcId = 142683, questId = { 53092, 53524 }, icon = "skull_grey", group = "rare_arathi", label = _L["Ruul Onestone"], loot = { { itemId = 163741, itemType = itemTypeToy } }, note = nil },
-	{ coord = 48913996, npcId = 142739, questId = { 0 }, icon = "skull_grey", group = "rare_arathi", label = _L["Knight-Captain Aldrin"], loot = { { itemId = 163578, itemType = itemTypeMount, mountId = 1173 } }, note = _L["Horde only"], faction = "Horde", controllingFaction = "Horde" },
-	{ coord = 39093921, npcId = 137374, questId = { 0 }, icon = "skull_grey", group = "rare_arathi", label = _L["The Lion's Roar"], loot = { { itemId = 163829, itemType = itemTypeToy } }, note = _L["Horde only"], faction = "Horde", controllingFaction = "Horde" },
+	{ coord = 48913996, npcId = 142739, questId = { 53088 }, icon = "skull_grey", group = "rare_arathi", label = _L["Knight-Captain Aldrin"], loot = { { itemId = 163578, itemType = itemTypeMount, mountId = 1173 } }, note = _L["Horde only"], faction = "Horde", controllingFaction = "Horde" },
+	{ coord = 39093921, npcId = 137374, questId = { 53001 }, icon = "skull_grey", group = "rare_arathi", label = _L["The Lion's Roar"], loot = { { itemId = 163829, itemType = itemTypeToy } }, note = _L["Horde only"], faction = "Horde", controllingFaction = "Horde" },
 }
 
 --
@@ -880,7 +880,7 @@ function Arathi:RegisterWithHandyNotes()
 				node = t[1]["lookup"][prestate]["nextNode"];
 			else
 				node = t[1]
-				local hordeZones = { 5,6,7 };
+				local hordeZones = {};
 				for i,contributionId in ipairs(hordeZones) do
 					local state = C_ContributionCollector.GetState(contributionId);
 					if state == 2 then
@@ -892,7 +892,7 @@ function Arathi:RegisterWithHandyNotes()
 						arathiControllingFaction = "Horde";
 					end
 				end
-				local allianceZones = { 8,9,10 };
+				local allianceZones = {};
 				for i,contributionId in ipairs(allianceZones) do
 					local state = C_ContributionCollector.GetState(contributionId);
 					if state == 2 then
@@ -905,13 +905,13 @@ function Arathi:RegisterWithHandyNotes()
 					end
 				end
 				local state = C_ContributionCollector.GetState(11); -- Battle for Stromgarde
-				if state == 2 then
+				if state == 1 or state == 2 then
 					-- zone is currently active == faction is not controlling arathi
-					--arathiControllingFaction = "Alliance";
+					arathiControllingFaction = "Alliance";
 				end
-				if state == 4 then
+				if state == 3 or state == 4 then
 					-- zone is currently destroyed == faction is controlling arathi
-					--arathiControllingFaction = "Horde";
+					arathiControllingFaction = "Horde";
 				end
 			end
 

@@ -109,7 +109,10 @@ GTFO.SpellID["277579"] = {
   sound = 1;
 };
 
-
+GTFO.SpellID["273665"] = {
+  --desc = "Seismic Disturbance";
+  sound = 1;
+};
 
 -- ***********************
 -- * Shrine of the Storm *
@@ -415,7 +418,6 @@ GTFO.SpellID["257886"] = {
 GTFO.SpellID["275057"] = {
   --desc = "Coagulated Corruption (Tendril of Gore)";
   sound = 1;
-  test = true;
 };
 
 GTFO.SpellID["270290"] = {
@@ -455,7 +457,6 @@ GTFO.SpellID["275432"] = {
 GTFO.SpellID["275445"] = {
   --desc = "Uldir Defensive Beam";
   sound = 1;
-  test = true;
 };
 
 GTFO.SpellID["268253"] = {

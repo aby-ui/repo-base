@@ -1,38 +1,6 @@
---[[
-	groups.lua
-		manages group behaviour
---]]
+--[[ groups.lua: manages group behaviour ]]--
 
 local Addon = _G[...]
-
-Addon.Cache = {}
-
-
---[[ Queries ]]--
-
-function Addon:GetGroupSettingsFor(cooldown)
-	local group = self:GetGroup(cooldown)
-
-	if group then
-		return self:GetGroupSettings(group)
-	end
-end
-
-function Addon:GetGroupSettings(group)
-	if self.sets then
-		return self.sets.groupSettings[group]
-	end
-end
-
-function Addon:GetGroup(cooldown)
-	local id = self.Cache[cooldown]
-	if not id then
-		id = self:FindGroup(cooldown)
-		self.Cache[cooldown] = id
-	end
-
-	return id
-end
 
 local function getFirstAncestorWithName(cooldown)
 	local frame = cooldown
@@ -45,7 +13,29 @@ local function getFirstAncestorWithName(cooldown)
 	until not frame
 end
 
-function Addon:FindGroup(cooldown)
+local cooldownSettings = setmetatable({}, {
+	__mode = "v",
+
+	__index = function(self, cooldown)
+		local id = Addon:GetCooldownGroupID(cooldown)
+		local settings
+
+		if id then
+			settings = Addon:GetGroupSettings(id)
+			self[cooldown] = settings
+		end
+
+		return settings
+	end
+})
+
+--[[ Queries ]]--
+
+function Addon:GetCooldownSettings(cooldown)
+	return cooldownSettings[cooldown]
+end
+
+function Addon:GetCooldownGroupID(cooldown)
 	if self.sets then
 		local name = getFirstAncestorWithName(cooldown)
 
@@ -66,6 +56,12 @@ function Addon:FindGroup(cooldown)
 		end
 
 		return 'base'
+	end
+end
+
+function Addon:GetGroupSettings(id)
+	if self.sets then
+		return self.sets.groupSettings[id]
 	end
 end
 
@@ -91,6 +87,7 @@ end
 
 function Addon:RemoveGroup(id)
 	local index = self:GetGroupIndex(id)
+
 	if index then
 		self.sets.groupSettings[id] = nil
 		tremove(self.sets.groups, index)
@@ -101,11 +98,9 @@ function Addon:RemoveGroup(id)
 end
 
 function Addon:UpdateGroups()
-	for cooldown, group in pairs(self.Cache) do
-		local newGroup = self:FindGroup(cooldown)
-		if group ~= newGroup then
-			self.Cache[cooldown] = newGroup
-			self.Display:ForActive("UpdateTimer")
-		end
+	for k in pairs(cooldownSettings) do
+		cooldownSettings[k] = nil
 	end
+
+	self.Display:ForActive("UpdateTimer")
 end

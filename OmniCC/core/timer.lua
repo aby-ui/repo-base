@@ -68,7 +68,7 @@ function Timer:GetOrCreate(cooldown)
     end
 
     local kind = cooldown_GetKind(cooldown)
-    local settings = Addon:GetGroupSettingsFor(cooldown)
+    local settings = Addon:GetCooldownSettings(cooldown)
     local key = strjoin("-", start, duration, kind, settings and settings.id or "base")
 
     local timer = active[key]

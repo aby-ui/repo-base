@@ -855,7 +855,7 @@ local function attempt_ilvl(v,attempts)
 				v.ilevel:SetTextColor(getItemQualityColor(item:GetItemQuality())) --upvalue call
 				v.ilevel:SetText(value)
 			else
-				C_Timer.After(0.1, function() attempt_ilvl(v,attempts-1) end)
+				C_Timer.After(0.2, function() attempt_ilvl(v,attempts-1) end)
 			end
 		else
 			v.ilevel:SetText("")
@@ -870,7 +870,7 @@ local function DCS_Item_Level_Center()
 	--equipped = round(equipped * 16)
 	--equipped = equipped * 16 --in tested cases worked without rounding
 	for _, v in ipairs(DCSITEM_SLOT_FRAMES) do
-		attempt_ilvl(v,4)
+		attempt_ilvl(v,20)
 		--local item = Item:CreateFromEquipmentSlot(v:GetID())
 		--local value = item:GetCurrentItemLevel()
 		--if value then

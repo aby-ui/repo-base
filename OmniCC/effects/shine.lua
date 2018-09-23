@@ -96,7 +96,7 @@ end
 function Shine:Run(cooldown)
 	local owner = cooldown:GetParent() or cooldown
 
-	if owner and owner:IsShown() then
+	if owner and owner:IsVisible() then
 		local shine = ShinePool:Acquire()
 
 		shine:SetParent(owner)

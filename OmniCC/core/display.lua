@@ -261,7 +261,7 @@ function Display:UpdateCooldownTextPosition()
 end
 
 function Display:GetCooldownSettings()
-    return self.cooldown and Addon:GetGroupSettingsFor(self.cooldown)
+    return self.cooldown and Addon:GetCooldownSettings(self.cooldown)
 end
 
 function Display:ForAll(method, ...)

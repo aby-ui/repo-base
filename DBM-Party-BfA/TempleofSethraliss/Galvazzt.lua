@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2144, "DBM-Party-BfA", 6, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17706 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 17900 $"):sub(12, -3))
 mod:SetCreatureID(133389)
 mod:SetEncounterID(2126)
 mod:SetZone()
@@ -31,7 +31,7 @@ mod:AddInfoFrameOption(265973, true)
 function mod:OnCombatStart(delay)
 	if self.Options.InfoFrame then
 		DBM.InfoFrame:SetHeader(DBM_CORE_INFOFRAME_POWER)
-		DBM.InfoFrame:Show(2, "enemypower", 2)
+		DBM.InfoFrame:Show(2, "enemypower", 2, 10)
 	end
 end
 
