@@ -405,8 +405,8 @@ local function ChatItemLevel(Hyperlink)
             level = format("%s%s", level, (ARMOR_TYPES[subclass] and subclass or "")..(typeTexts[equipSlot] or _G[equipSlot] or equipSlot))
         elseif (class == ARMOR) then
             level = format("%s%s", level, class)
-        elseif (subclass and string.find(subclass, RELICSLOT)) then
-            level = format("%s%s", level, RELICSLOT)
+        --elseif (subclass and string.find(subclass, RELICSLOT)) then
+        --    level = format("%s%s", level, RELICSLOT)
         else
             yes = false
         end

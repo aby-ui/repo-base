@@ -61,6 +61,8 @@ function U1ChatHistory_HookAddHistoryLine(self, line)
 
     --内部调用不处理, 不然就堆栈溢出了.
     if self.rawadd then return end
+    
+    if db.lines <= 0 then return end
 
     if addon:IsSecureCmd(line) then return end --如果是安全则不处理HistoryLine，这样可以让安全命令保存到下一次输入非安全命令。下次输入非安全命令就会删除全部安全命令同时恢复刷新之前的记录。
 

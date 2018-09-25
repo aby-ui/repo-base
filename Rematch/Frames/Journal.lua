@@ -16,6 +16,7 @@ rematch:InitModule(function()
 	rematch.Journal = journal
 	settings = RematchSettings
 	settings.JournalPanel = settings.JournalPanel or 1
+
 	rematch:SetupPanelTabs(journal.PanelTabs,settings.JournalPanel,L["Teams"],L["Queue"],L["Options"])
 	for i=1,3 do
 		journal.PanelTabs.Tabs[i]:SetScript("OnClick",journal.PanelTabOnClick)
@@ -47,6 +48,7 @@ end)
 local hasJournalRunBefore = false -- becomes true after the journal is started
 function journal:Blizzard_Collections()
 	PetJournal:HookScript("OnShow",journal.ConfigureJournal)
+	journal:SetupUseRematchButton()
 end
 
 -- this is called during the first ConfigureJournal when the journal is shown, and returns
@@ -71,6 +73,11 @@ function journal:SetupJournal()
 	PetJournal:HookScript("OnHide",journal.DefaultJournalOnHide)
 	journal.CloseButton:SetScript("OnClick",function() HideUIPanel(CollectionsJournal) end)
 	C_Timer.After(0.1,journal.OtherAddonJournalStuff)
+	hooksecurefunc("PetJournal_ShowPetCardBySpeciesID",function(speciesID) rematch:SearchForSpecies(speciesID) end)
+	return true
+end
+
+function journal:SetupUseRematchButton()
 	local button = CreateFrame("CheckButton","UseRematchButton",PetJournal,"UICheckButtonTemplate,RematchTooltipScripts")
 	button:SetSize(26,26)
 	button:SetHitRectInsets(-2,-56,-2,-2)
@@ -81,9 +88,6 @@ function journal:SetupJournal()
 	button:SetScript("OnEnter",function(self) if not rematch:UIJustChanged() then rematch.ShowTooltip(self) end end)
 	button.tooltipTitle = L["Enable Rematch"]
 	button.tooltipBody = L["Check this to use Rematch in the pet journal."]
-
-	hooksecurefunc("PetJournal_ShowPetCardBySpeciesID",function(speciesID) rematch:SearchForSpecies(speciesID) end)
-	return true
 end
 
 -- this runs 0.1 seconds after journal:Blizzard_Collections to allow other addons to settle/do their thing

@@ -546,8 +546,8 @@ function GearManagerEx_Toggle(noCreate)
             -- Ignore shirt and tabard by default
             PaperDollFrame_IgnoreSlot(4);
             PaperDollFrame_IgnoreSlot(19);
-            PaperDollFrame_IgnoreSlot(16); --7.0 ignore weapons
-            PaperDollFrame_IgnoreSlot(17);
+            --PaperDollFrame_IgnoreSlot(16); --7.0 ignore weapons
+            --PaperDollFrame_IgnoreSlot(17);
             StaticPopup_Hide("CONFIRM_SAVE_EQUIPMENT_SET");
             StaticPopup_Hide("CONFIRM_OVERWRITE_EQUIPMENT_SET");
             --GearSetButton_OnClick(_empty_table); --taint?

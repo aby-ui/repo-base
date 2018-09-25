@@ -112,7 +112,7 @@ function lib:GetItemInfo(link, stats)
         level = string.match(text, ItemLevelPattern)
         if (level) then break end
     end
-    self:GetStatsViaTooltip(tooltip, stats)
+    if stats then self:GetStatsViaTooltip(tooltip, stats) end
     return 0, tonumber(level) or 0, GetItemInfo(link)
 end
 
