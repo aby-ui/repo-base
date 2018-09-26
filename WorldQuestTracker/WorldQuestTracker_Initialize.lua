@@ -122,18 +122,30 @@ do
 				autosearch_cooldown = 600,
 				autosearch_share = false,
 			},
+
+			world_map_config = {
+				onmap_show = true,
+				onmap_scale_offset = 0,
+				summary_show = true,
+				summary_scale = 1,
+				summary_timeleft = true,
+			},
 			
 			disable_world_map_widgets = true,
+			
 			worldmap_widgets = {
 				textsize = 9,
 				scale = 1,
+				quest_icons_scale_offset = 0,
 			},
+			
 			zonemap_widgets = {
 				scale = 1,
 			},
+			
 			filter_always_show_faction_objectives = true,
 			filter_force_show_brokenshore = false, --deprecated at this point, but won't be removed since further expantion might need this back
-			sort_time_priority = false,
+			sort_time_priority = 8,
 			force_sort_by_timeleft = false,
 			alpha_time_priority = true,
 			show_timeleft = false,
@@ -237,6 +249,11 @@ do
 	WorldQuestTracker.AnchoringFrame = WorldMapFrame.BorderFrame
 	--frame level for things attached to the world map
 	WorldQuestTracker.DefaultFrameLevel = 5000
+	--the client has all the data for the quest
+	WorldQuestTracker.HasQuestData = {}
+	
+	--store the available resources from each quest and map
+	WorldQuestTracker.ResourceData = {}
 	
 	--comms
 	WorldQuestTracker.CommFunctions = {}

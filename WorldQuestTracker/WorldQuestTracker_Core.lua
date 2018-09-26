@@ -123,22 +123,33 @@ WorldQuestTracker.OnMapHasChanged = function (self)
 		WorldQuestTracker.ClearZoneSummaryButtons()
 	end
 	
+	--cancel an update scheduled for the world map if any
+	if (WorldQuestTracker.ScheduledWorldUpdate and not WorldQuestTracker.ScheduledWorldUpdate._cancelled) then
+		WorldQuestTracker.ScheduledWorldUpdate:Cancel()
+	end
+	
+	if (WorldQuestTracker.WorldMap_GoldIndicator) then
+		WorldQuestTracker.WorldMap_GoldIndicator.text = 0
+		WorldQuestTracker.WorldMap_ResourceIndicator.text = 0
+		WorldQuestTracker.WorldMap_APowerIndicator.text = 0
+	end
+
 	--> clear custom map pins
 	local map = WorldQuestTrackerDataProvider:GetMap()
+	
 	for pin in map:EnumeratePinsByTemplate ("WorldQuestTrackerRarePinTemplate") do
 		pin.RareWidget:Hide()
 		map:RemovePin (pin)
 	end
+	for pin in map:EnumeratePinsByTemplate ("WorldQuestTrackerWorldMapPinTemplate") do
+		map:RemovePin (pin)
+		if (pin.Child) then
+			pin.Child:Hide()
+		end
+	end
 	
 	if (not WorldQuestTracker.MapData.WorldQuestZones [mapID] and not WorldQuestTracker.IsWorldQuestHub (mapID)) then
 		C_Timer.After (0.5, check_for_quests_on_unknown_map)
-	end
-	
-	if (not WorldQuestTracker.IsWorldQuestHub (mapID)) then
-		local map = WorldQuestTrackerDataProvider:GetMap()
-		for pin in map:EnumeratePinsByTemplate ("WorldQuestTrackerWorldMapPinTemplate") do
-			map:RemovePin (pin)
-		end
 	end
 	
 	--is the map a zone map with world quests?
@@ -146,15 +157,14 @@ WorldQuestTracker.OnMapHasChanged = function (self)
 		--hide the toggle world quests button
 		if (WorldQuestTrackerToggleQuestsButton) then
 			WorldQuestTrackerToggleQuestsButton:Hide()
+			WorldQuestTrackerToggleQuestsSummaryButton:Hide()
 		end
 		
 		--update widgets
 		WorldQuestTracker.UpdateZoneWidgets (true)
 		
 		--hide world quest
-		if (WorldQuestTracker.WorldMapFrameReference:IsShown()) then
-			WorldQuestTracker.HideWorldQuestsOnWorldMap()
-		end
+		WorldQuestTracker.HideWorldQuestsOnWorldMap()
 	else
 		--is zone widgets shown?
 		if (WorldQuestTracker.ZoneWidgetPool[1] and WorldQuestTracker.ZoneWidgetPool[1]:IsShown()) then
@@ -167,26 +177,20 @@ WorldQuestTracker.OnMapHasChanged = function (self)
 			--show the toggle world quests button
 			if (WorldQuestTrackerToggleQuestsButton) then
 				WorldQuestTrackerToggleQuestsButton:Show()
+				WorldQuestTrackerToggleQuestsSummaryButton:Show()
 			end
 			
 			--is there at least one world widget created?
 			if (WorldQuestTracker.WorldMapFrameReference) then
 				if (not WorldQuestTracker.WorldMapFrameReference:IsShown() or WorldQuestTracker.LatestQuestHub ~= WorldQuestTracker.CurrentMapID) then
 					WorldQuestTracker.LatestQuestHub = WorldQuestTracker.CurrentMapID
-					WorldQuestTracker.UpdateWorldQuestsOnWorldMap (true)
+					WorldQuestTracker.DelayedShowWorldQuestPins()
+					--WorldQuestTracker.UpdateWorldQuestsOnWorldMap (true)
 				end
 				
 			end
 		else
-			--hide zone quest pins
-			if (WorldQuestTracker.ZoneWidgetPool[1] and WorldQuestTracker.ZoneWidgetPool[1]:IsShown()) then
-				WorldQuestTracker.HideWorldQuestsOnWorldMap()
-			end
-			
-			--hide world quest squares
-			if (WorldQuestTracker.WorldMapFrameReference:IsShown()) then
-				WorldQuestTracker.HideWorldQuestsOnWorldMap()
-			end
+			WorldQuestTracker.HideWorldQuestsOnWorldMap()
 		end
 	end
 
@@ -255,12 +259,17 @@ WorldMapFrame:HookScript ("OnUpdate", function (self, deltaTime)
 		end
 		--]=]
 		
+		--[=[
+		
+		--check the map type and show the world of zone widget if necessary
+		
 		--is there at least one world widget created?
 		if (WorldQuestTracker.WorldMapFrameReference) then
 			--current map is a quest hub
 			if (WorldQuestTrackerAddon.GetCurrentZoneType() == "world") then
 				if (not WorldQuestTracker.WorldMapFrameReference:IsShown()) then
-					WorldQuestTracker.UpdateWorldQuestsOnWorldMap (true)
+					--WorldQuestTracker.UpdateWorldQuestsOnWorldMap (true)
+					WorldQuestTracker.DelayedShowWorldQuestPins()
 				end
 			else
 				--current map is a zone, check if world widgets are shown
@@ -270,6 +279,8 @@ WorldMapFrame:HookScript ("OnUpdate", function (self, deltaTime)
 				end
 			end
 		end
+		--]=]
+		
 		
 		OnUpdateDelay = .5
 	else
@@ -569,8 +580,10 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 			WorldQuestButton:HookScript ("PreClick", deny_auto_switch)
 			WorldQuestButton:HookScript ("PostClick", allow_map_change)
 		--]=]
-			
-			
+
+
+
+			--show world quests location button
 			local ToggleQuestsButton = CreateFrame ("button", "WorldQuestTrackerToggleQuestsButton", anchorFrame)
 			ToggleQuestsButton:SetSize (128, 20)
 			ToggleQuestsButton:SetFrameLevel (1025)
@@ -590,8 +603,8 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 			ToggleQuestsButton.Highlight:SetAlpha (toggleButtonsAlpha)
 			ToggleQuestsButton.Highlight:SetSize (128*1.5, 20*1.5)
 			ToggleQuestsButton.Highlight:SetPoint ("center")
-
-			ToggleQuestsButton.TextLabel = DF:CreateLabel (ToggleQuestsButton, "切换世界任务总览", DF:GetTemplate ("font", "WQT_TOGGLEQUEST_TEXT"))
+			
+			ToggleQuestsButton.TextLabel = DF:CreateLabel (ToggleQuestsButton, "切换世界任务图标", DF:GetTemplate ("font", "WQT_TOGGLEQUEST_TEXT"))
 			ToggleQuestsButton.TextLabel:SetPoint ("center", ToggleQuestsButton, "center")
 			
 			ToggleQuestsButton:SetScript ("OnClick", function()
@@ -599,12 +612,6 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 				if (WorldQuestTrackerAddon.GetCurrentZoneType() == "world") then
 					WorldQuestTracker.DoAnimationsOnWorldMapWidgets = true
 					WorldQuestTracker.UpdateWorldQuestsOnWorldMap (true)
-				end
-				
-				WorldQuestTracker.db.profile.TutorialToggleButton = (WorldQuestTracker.db.profile.TutorialToggleButton or 0) + 1
-				if (WorldQuestTracker.db.profile.TutorialToggleButton > 3 and ToggleQuestsButton.PulseAnimation) then
-					ToggleQuestsButton.PulseAnimation:Stop()
-					ToggleQuestsButton.WhiteTexture:Hide()
 				end
 			end)
 			
@@ -618,10 +625,53 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 			
 			ToggleQuestsButton:Hide()
 			
+			--show world quests summary
+			local ToggleQuestsSummaryButton = CreateFrame ("button", "WorldQuestTrackerToggleQuestsSummaryButton", anchorFrame)
+			ToggleQuestsSummaryButton:SetSize (128, 20)
+			ToggleQuestsSummaryButton:SetFrameLevel (1025)
+			ToggleQuestsSummaryButton:SetPoint ("bottomleft", ToggleQuestsButton, "topleft", 0, 1)
+			ToggleQuestsSummaryButton.Background = ToggleQuestsSummaryButton:CreateTexture (nil, "background")
+			ToggleQuestsSummaryButton.Background:SetSize (98, 20)
+			ToggleQuestsSummaryButton.Background:SetAtlas ("MapCornerShadow-Right")
+			ToggleQuestsSummaryButton.Background:SetPoint ("bottomright", 2, -1)
+			ToggleQuestsSummaryButton:SetNormalTexture ([[Interface\AddOns\WorldQuestTracker\media\toggle_quest_button]])
+			ToggleQuestsSummaryButton:GetNormalTexture():SetTexCoord (0, 0.7890625, 0, .5)
+			ToggleQuestsSummaryButton:SetPushedTexture ([[Interface\AddOns\WorldQuestTracker\media\toggle_quest_button_pushed]])
+			ToggleQuestsSummaryButton:GetPushedTexture():SetTexCoord (0, 0.7890625, 0, .5)
+			
+			ToggleQuestsSummaryButton.Highlight = ToggleQuestsSummaryButton:CreateTexture (nil, "highlight")
+			ToggleQuestsSummaryButton.Highlight:SetTexture ([[Interface\Buttons\UI-Common-MouseHilight]])
+			ToggleQuestsSummaryButton.Highlight:SetBlendMode ("ADD")
+			ToggleQuestsSummaryButton.Highlight:SetAlpha (toggleButtonsAlpha)
+			ToggleQuestsSummaryButton.Highlight:SetSize (128*1.5, 20*1.5)
+			ToggleQuestsSummaryButton.Highlight:SetPoint ("center")
+			
+			ToggleQuestsSummaryButton.TextLabel = DF:CreateLabel (ToggleQuestsSummaryButton, "切换世界任务汇总", DF:GetTemplate ("font", "WQT_TOGGLEQUEST_TEXT"))
+			ToggleQuestsSummaryButton.TextLabel:SetPoint ("center", ToggleQuestsSummaryButton, "center")
+			
+			ToggleQuestsSummaryButton:SetScript ("OnClick", function()
+				WorldQuestTracker.db.profile.world_map_config.summary_show = not WorldQuestTracker.db.profile.world_map_config.summary_show
+				if (WorldQuestTrackerAddon.GetCurrentZoneType() == "world") then
+					WorldQuestTracker.DoAnimationsOnWorldMapWidgets = true
+					WorldQuestTracker.UpdateWorldQuestsOnWorldMap (true)
+				end
+			end)
+			
+			ToggleQuestsSummaryButton:SetScript ("OnMouseDown", function()
+				ToggleQuestsSummaryButton.TextLabel:SetPoint ("center", ToggleQuestsSummaryButton, "center", -1, -1)
+			end)
+			
+			ToggleQuestsSummaryButton:SetScript ("OnMouseUp", function()
+				ToggleQuestsSummaryButton.TextLabel:SetPoint ("center", ToggleQuestsSummaryButton, "center")
+			end)
+			
+			ToggleQuestsSummaryButton:Hide()
+			
+			--[=[
 			if (not WorldQuestTracker.db.profile.TutorialToggleButton or WorldQuestTracker.db.profile.TutorialToggleButton < 3) then
-				local white_texture = ToggleQuestsButton:CreateTexture (nil, "background")
-				white_texture:SetPoint ("topleft", ToggleQuestsButton, "topleft", 6, 0)
-				white_texture:SetPoint ("bottomright", ToggleQuestsButton, "bottomright", -6, 0)
+				local white_texture = ToggleQuestsSummaryButton:CreateTexture (nil, "background")
+				white_texture:SetPoint ("topleft", ToggleQuestsSummaryButton, "topleft", 6, 0)
+				white_texture:SetPoint ("bottomright", ToggleQuestsSummaryButton, "bottomright", -6, 0)
 				white_texture:SetColorTexture (1, 1, 1)
 				
 				local pulseAnimation = DF:CreateAnimationHub (white_texture)
@@ -629,28 +679,49 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 				DF:CreateAnimation (pulseAnimation, "ALPHA", 1, 2, 0, 1)
 				DF:CreateAnimation (pulseAnimation, "ALPHA", 2, 2, 1, 0)
 				
-				ToggleQuestsButton.PulseAnimation = pulseAnimation
-				ToggleQuestsButton.WhiteTexture = white_texture
+				ToggleQuestsSummaryButton.PulseAnimation = pulseAnimation
+				ToggleQuestsSummaryButton.WhiteTexture = white_texture
 				pulseAnimation:Play()
 			end
+			--]=]
+			
 			
 			-- �ptionsfunc ~optionsfunc
 			local options_on_click = function (_, _, option, value, value2, mouseButton)
 			
 				if (option == "world_map_config") then
-					WorldQuestTracker.db.profile.worldmap_widgets [value] = value2
+
+					if (value == "incsize") then
+						WorldQuestTracker.db.profile.world_map_config [value2] = WorldQuestTracker.db.profile.world_map_config [value2] + 0.05
+					elseif (value == "decsize") then
+						WorldQuestTracker.db.profile.world_map_config [value2] = WorldQuestTracker.db.profile.world_map_config [value2] - 0.05
+					else
+						WorldQuestTracker.db.profile.world_map_config [value] = value2
+					end
+					
+					WorldQuestTracker.UpdateWorldQuestsOnWorldMap()
+					
+					if (value == "onmap_show" or value == "summary_show") then
+						WorldQuestTracker.OnMapHasChanged()
+						GameCooltip:Close()
+					end
+					
+					--old (perhaps deprecated)
 					if (value == "textsize") then
 						WorldQuestTracker.SetTextSize ("WorldMap", value2)
-					elseif (value == "scale") then
+						
+					elseif (value == "scale" or value == "quest_icons_scale_offset") then
 						if (WorldQuestTrackerAddon.GetCurrentZoneType() == "world") then
 							WorldQuestTracker.UpdateWorldQuestsOnWorldMap()
 						end
+						
 					elseif (value == "disable_world_map_widgets") then
 						WorldQuestTracker.db.profile.disable_world_map_widgets = value2
 						if (WorldQuestTrackerAddon.GetCurrentZoneType() == "world") then
 							WorldQuestTracker.UpdateWorldQuestsOnWorldMap()
 							GameCooltip:Close()
 						end
+						
 					end
 					return
 					
@@ -831,11 +902,566 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 				end
 			end
 
+			
+			
+			-- world map summary
+			WorldQuestTracker.WorldSummary = CreateFrame ("frame", "WorldQuestTrackerWorldSummaryFrame", anchorFrame)
+			local worldSummary = WorldQuestTracker.WorldSummary
+			worldSummary:SetPoint ("topleft")
+			worldSummary:SetPoint ("bottomleft")
+			worldSummary:SetWidth (100)
+			worldSummary:SetBackdrop ({bgFile = "Interface\\Tooltips\\UI-Tooltip-Background", tile = true, tileSize = 16, edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1})
+			worldSummary:SetBackdropColor (0, 0, 0, 0)
+			worldSummary:SetBackdropBorderColor (0, 0, 0, 0)
+			
+			worldSummary.WidgetIndex = 1
+			worldSummary.TotalGold = 0
+			worldSummary.TotalResources = 0
+			worldSummary.TotalAPower = 0
+			worldSummary.FactionSelected = 1
+			worldSummary.FactionIDs = {}
+			worldSummary.FactionSelectedTemplate = DF:InstallTemplate ("button", "WQT_FACTION_SELECTED", {backdropbordercolor = {1, .8, 0, 1}}, "OPTIONS_BUTTON_TEMPLATE")
+			
+			worldSummary.Anchors = {}
+			worldSummary.AnchorsInUse = {}
+			worldSummary.Widgets = {}
+			worldSummary.ScheduleToUpdate = {}
+			worldSummary.FactionWidgets = {}
+			--store quests that are shown in the summary with the value poiting to its widget
+			worldSummary.ShownQuests = {}
+			
+			for i = 1, 120 do
+				WorldQuestTracker.WorldSummaryQuestsSquares[i]:SetParent (worldSummary)
+			end
+			
+			worldSummary.HideAnimation = DF:CreateAnimationHub (worldSummary, function()end, function() worldSummary:Hide() end)
+			DF:CreateAnimation (worldSummary.HideAnimation, "translation", 1, 0.9, -300, 0)
+			
+			function worldSummary.ShowSummary()
+				if (worldSummary.HideAnimation:IsPlaying()) then
+					worldSummary.HideAnimation:Stop()
+				end
+				
+				worldSummary:Show()
+			end
+			
+			function worldSummary.HideSummary()
+				worldSummary:Hide()
+				--worldSummary.HideAnimation:Play()
+			end
+			
+			worldSummary.QuestTypes = {
+				ANCHORTYPE_ARTIFACTPOWER = 1,
+				ANCHORTYPE_RESOURCES = 2,
+				ANCHORTYPE_EQUIPMENT = 3,
+				ANCHORTYPE_GOLD = 4,
+				ANCHORTYPE_REPUTATION = 5,
+				ANCHORTYPE_MISC = 6,
+			}
+			
+			function worldSummary.UpdateOrder()
+				local order = WorldQuestTracker.db.profile.sort_order
+				worldSummary.QuestTypes.ANCHORTYPE_ARTIFACTPOWER = abs (order [WQT_QUESTTYPE_APOWER] - WQT_QUESTTYPE_MAX)
+				worldSummary.QuestTypes.ANCHORTYPE_RESOURCES = abs (order [WQT_QUESTTYPE_RESOURCE] - WQT_QUESTTYPE_MAX)
+				worldSummary.QuestTypes.ANCHORTYPE_EQUIPMENT = abs (order [WQT_QUESTTYPE_EQUIPMENT] - WQT_QUESTTYPE_MAX)
+				worldSummary.QuestTypes.ANCHORTYPE_GOLD = abs (order [WQT_QUESTTYPE_GOLD] - WQT_QUESTTYPE_MAX)
+				worldSummary.QuestTypes.ANCHORTYPE_REPUTATION = abs (order [WQT_QUESTTYPE_REPUTATION] - WQT_QUESTTYPE_MAX)
+				worldSummary.QuestTypes.ANCHORTYPE_MISC = WQT_QUESTTYPE_MAX + 1
+			end
+			
+			function worldSummary.CreateFactionButtons()
+				local playerFaction = UnitFactionGroup ("player")
+				local factionButtonIndex = 1
+				
+				--anchor frame
+				local factionAnchor = CreateFrame ("frame", nil, worldSummary)
+				factionAnchor:SetSize (1, 1)
+				factionAnchor:SetPoint ("topleft", worldSummary, "topleft", 2, 0)
+				factionAnchor.Widgets = {}
+				worldSummary.FactionAnchor = factionAnchor
+				
+				--scripts
+				local buttonOnEnter = function (self)
+					self.MyObject.Icon:SetBlendMode ("ADD")
+					
+					local name, description, standingID, barMin, barMax, barValue, atWarWith, canToggleAtWar, isHeader, isCollapsed, hasRep, isWatched, isChild, factionID, hasBonusRepGain, canBeLFGBonus = GetFactionInfoByID (self.MyObject.FactionID)
+					barMax = barMax - barMin
+					barValue = barValue - barMin
+					barMin = 0
+					
+					GameCooltip:Preset (2)
+					GameCooltip:SetOwner (self)
+					GameCooltip:AddLine (name)
+					GameCooltip:AddIcon (WorldQuestTracker.MapData.FactionIcons [factionID], 1, 1, 20, 20, .1, .9, .1, .9)
+					GameCooltip:AddLine (_G ["FACTION_STANDING_LABEL" .. standingID], HIGHLIGHT_FONT_COLOR_CODE.." "..format(REPUTATION_PROGRESS_FORMAT, BreakUpLargeNumbers(barValue), BreakUpLargeNumbers(barMax))..FONT_COLOR_CODE_CLOSE)
+					GameCooltip:AddIcon ("", 1, 1, 1, 20)
+					GameCooltip:AddStatusBar (barValue / barMax * 100, 1, 0, 0.65, 0, 0.7, nil, {value = 100, color = {.21, .21, .21, 0.8}, texture = [[Interface\Tooltips\UI-Tooltip-Background]]}, [[Interface\Tooltips\UI-Tooltip-Background]])
+					GameCooltip:Show()
+				end
+				local buttonOnLeave = function (self)
+					self.MyObject.Icon:SetBlendMode ("BLEND")
+					GameCooltip:Hide()
+				end
+				
+				--create buttons
+				for factionID, factionInfo in pairs (WorldQuestTracker.MapData.ReputationByFaction [playerFaction]) do
+					if (type (factionID) == "number") then
+					
+						local name, description, standingID, barMin, barMax, barValue, atWarWith, canToggleAtWar, isHeader, isCollapsed, hasRep, isWatched, isChild, factionID, hasBonusRepGain, canBeLFGBonus = GetFactionInfoByID (factionID)
+						
+						local factionButton = DF:CreateButton (factionAnchor, worldSummary.OnSelectFaction, 24, 24, "", factionButtonIndex)
+						
+						factionButton:SetTemplate (DF:GetTemplate ("button", "OPTIONS_BUTTON_TEMPLATE"))
+						factionButton:HookScript ("OnEnter", buttonOnEnter)
+						factionButton:HookScript ("OnLeave", buttonOnLeave)
+						factionButton.FactionID = factionID
+						factionButton.Index = factionButtonIndex
+						
+						local selectedBorder = factionButton:CreateTexture (nil, "overlay")
+						selectedBorder:SetPoint ("center")
+						selectedBorder:SetTexture ([[Interface\Artifacts\Artifacts]])
+						selectedBorder:SetTexCoord (137/1024, 195/1024, 920/1024, 978/1024)
+						selectedBorder:SetBlendMode ("ADD")
+						selectedBorder:SetSize (26, 26)
+						selectedBorder:SetAlpha (.45)
+						selectedBorder:Hide()
+						factionButton.SelectedBorder = selectedBorder
+						
+						local factionIcon = factionButton:CreateTexture (nil, "artwork")
+						factionIcon:SetPoint ("topleft", factionButton.widget, "topleft", 1, -1)
+						factionIcon:SetPoint ("bottomright", factionButton.widget, "bottomright", -1, 1)
+						factionIcon:SetTexture (WorldQuestTracker.MapData.FactionIcons [factionID])
+						factionIcon:SetTexCoord (.1, .9, .1, .9)
+						factionButton.Icon = factionIcon
+						
+						if (factionButtonIndex == 1) then
+							factionButton:SetPoint ("topleft", factionAnchor, "topleft", 0, 0)
+						else
+							factionButton:SetPoint ("topleft", factionAnchor.Widgets [#factionAnchor.Widgets], "topright", 2, 0)
+						end
+
+						tinsert (worldSummary.FactionIDs, factionID)
+						tinsert (factionAnchor.Widgets, factionButton)
+						factionButtonIndex = factionButtonIndex + 1
+					end
+				end
+				
+				worldSummary.FactionSelected = worldSummary.FactionIDs [1]
+				worldSummary.RefreshFactionButtons()
+			end
+			
+			function worldSummary.RefreshFactionButtons()
+				for i, factionButton in ipairs (worldSummary.FactionAnchor.Widgets) do
+					if (factionButton.FactionID == worldSummary.FactionSelected) then
+						factionButton:SetTemplate (worldSummary.FactionSelectedTemplate)
+						factionButton.SelectedBorder:Show()
+					else
+						factionButton:SetTemplate (DF:GetTemplate ("button", "OPTIONS_BUTTON_TEMPLATE"))
+						factionButton.SelectedBorder:Hide()
+					end
+				end			
+			end
+			
+			function worldSummary.OnSelectFaction (_, _, buttonIndex)
+				worldSummary.FactionSelected = worldSummary.FactionIDs [buttonIndex]
+				worldSummary.RefreshFactionButtons()
+				worldSummary.UpdateFaction()
+			end			
+			
+			--hide all anchors, widgets and refresh the order of the anchors
+			function worldSummary.ClearSummary()
+				worldSummary.UpdateOrder()
+				
+				wipe (worldSummary.ScheduleToUpdate)
+				wipe (worldSummary.ShownQuests)
+				
+				worldSummary.WidgetIndex = 1
+				worldSummary.TotalGold = 0
+				worldSummary.TotalResources = 0
+				worldSummary.TotalAPower = 0
+				
+				for _, anchor in pairs (worldSummary.Anchors) do
+					anchor:Hide()
+					anchor.InUse = false
+					anchor.WidgetsAmount = 0
+					wipe (anchor.Widgets)
+				end
+				
+				for _, widget in ipairs (WorldQuestTracker.WorldSummaryQuestsSquares) do
+					widget:Hide()
+				end
+			end
+			
+			function worldSummary.ReAnchor()
+				local Y = -50
+				
+				local anchorsInUse = {}
+				for anchorID, anchor in pairs (worldSummary.Anchors) do
+					tinsert (anchorsInUse, {anchor, anchorID})
+				end
+				
+				table.sort (anchorsInUse, DF.SortOrder2R)
+				
+				local previousAnchor
+				for _, anchorTable in pairs (anchorsInUse) do
+					local anchor = anchorTable [1]
+					anchor:ClearAllPoints()
+					
+					if (previousAnchor) then
+						anchor:SetPoint ("topleft", previousAnchor, "bottomleft", 0, -20 * WorldQuestTracker.db.profile.world_map_config.summary_scale)
+					else
+						anchor:SetPoint ("topleft", worldSummary, "topleft", 2, Y)
+					end
+					
+					--Y = Y - (WorldQuestTracker.db.profile.show_timeleft and 60 or 30)
+					
+					anchor.Icon:SetTexture (anchor.AnchorIcon)
+					anchor.Title:SetText (anchor.AnchorTitle)
+					
+					previousAnchor = anchor
+				end
+			end
+			
+			local on_click_anchor_button = function (self, button, param1, param2)
+				local anchor = self.MyObject.Anchor
+				local questsToTrack = {}
+				
+				for i = 1, #anchor.Widgets do
+					local widget = anchor.Widgets [i]
+					if (widget:IsShown() and widget.questID) then
+						tinsert (questsToTrack, widget)
+					end
+				end
+				
+				C_Timer.NewTicker (.04, function (tickerObject)
+					local widget = tremove (questsToTrack)
+					if (widget) then
+						WorldQuestTracker.CheckAddToTracker (widget, widget, true)
+						local questID = widget.questID
+						
+						for _, widget in pairs (WorldQuestTracker.WorldMapSmallWidgets) do
+							if (widget.questID == questID and widget:IsShown()) then
+								--animations
+								if (widget.onEndTrackAnimation:IsPlaying()) then
+									widget.onEndTrackAnimation:Stop()
+								end
+								widget.onStartTrackAnimation:Play()
+								if (not widget.AddedToTrackerAnimation:IsPlaying()) then
+									widget.AddedToTrackerAnimation:Play()
+								end
+							end
+						end
+					else
+						tickerObject:Cancel()
+					end
+				end)
+			end
+			
+			function worldSummary.GetAnchor (filterType, worldQuestType, questName)
+			
+				local anchorID, anchorIcon, anchorTitle
+				
+				if (filterType == "artifact_power") then
+					anchorID = worldSummary.QuestTypes.ANCHORTYPE_ARTIFACTPOWER
+					anchorIcon, anchorTitle = "", "Artifact Power"
+					
+				elseif (filterType == "reputation_token") then
+					anchorID = worldSummary.QuestTypes.ANCHORTYPE_REPUTATION
+					anchorIcon, anchorTitle = "", "Reputation"	
+					
+				elseif (filterType == "garrison_resource") then
+					anchorID = worldSummary.QuestTypes.ANCHORTYPE_RESOURCES
+					anchorIcon, anchorTitle = "", "Resources"
+					
+				elseif (filterType == "equipment") then
+					anchorID = worldSummary.QuestTypes.ANCHORTYPE_EQUIPMENT
+					anchorIcon, anchorTitle = "", "Equipment"
+
+				elseif (filterType == "gold") then
+					anchorID = worldSummary.QuestTypes.ANCHORTYPE_GOLD
+					anchorIcon, anchorTitle = "", "Gold"
+
+				else
+					anchorID = worldSummary.QuestTypes.ANCHORTYPE_MISC
+					anchorIcon, anchorTitle = "", "Misc"
+				end
+				
+				local anchor = worldSummary.Anchors [anchorID]
+				if (not anchor) then
+					anchor = CreateFrame ("frame", nil, worldSummary)
+					anchor:SetSize (150, 20)
+					anchor:SetBackdrop ({bgFile = "Interface\\Tooltips\\UI-Tooltip-Background", tile = true, tileSize = 16, edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1})
+					anchor:SetBackdropColor (0, 0, 0, 0)
+					anchor:SetBackdropBorderColor (0, 0, 0, 0)
+					anchor.Icon = DF:CreateImage (anchor)
+					anchor.Title = DF:CreateLabel (anchor)
+					anchor.WidgetsAmount = 0
+					anchor.Widgets = {}
+					anchor.Icon:SetPoint ("left", anchor, "left", 2, 0)
+					anchor.Title:SetPoint ("left", anchor.Icon, "right", 2, 0)
+					
+					local anchorButton = DF:CreateButton (anchor, on_click_anchor_button, 20, 20, "", anchorID)
+					--anchorButton:SetBackdrop ({bgFile = "Interface\\Tooltips\\UI-Tooltip-Background", tile = true, tileSize = 16, edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1})
+					anchorButton:SetFrameLevel (anchor:GetFrameLevel()-1)
+					anchorButton.Texture = anchorButton:CreateTexture (nil, "overlay")
+					anchorButton.Texture:SetTexture ([[Interface\MINIMAP\SuperTrackerArrow]])
+					anchorButton.Texture:SetRotation (math.pi * 2 * .75)
+					anchorButton.Texture:SetAlpha (.5)
+					anchorButton.Texture:SetPoint ("left", anchorButton.widget, "left", -16, 0)
+					anchor.Button = anchorButton
+					anchorButton.Anchor = anchor
+					
+					anchorButton:SetHook ("OnEnter", function()
+						anchorButton.Texture:SetBlendMode ("ADD")
+						GameCooltip:Preset (2)
+						GameCooltip:AddLine (" track all quests of this type")
+						GameCooltip:AddIcon ([[Interface\AddOns\WorldQuestTracker\media\ArrowFrozen]], 1, 1, 20, 20, 0.1171, 0.6796, 0.1171, 0.7343)
+
+						GameCooltip:ShowCooltip (anchor.Button)
+					end)
+					anchorButton:SetHook ("OnLeave", function()
+						anchorButton.Texture:SetBlendMode ("BLEND")
+						GameCooltip:Hide()
+					end)
+					
+					anchor:SetScript ("OnHide", function()
+						anchorButton:Hide()
+					end)
+					
+					worldSummary.Anchors [anchorID] = anchor
+				end
+	
+				anchor:Show()
+				anchor.InUse = true
+				anchor.AnchorTitle = anchorTitle
+				anchor.AnchorIcon = anchorIcon
+				return anchor
+			end
+			
+			function worldSummary.UpdateFaction()
+				for _, widget in pairs (WorldQuestTracker.WorldSummaryQuestsSquares) do
+					WorldQuestTracker.UpdateBorder (widget)
+					
+					if (widget.FactionID == worldSummary.FactionSelected) then
+						--widget.factionBorder:Show()
+					else
+						widget.factionBorder:Hide()
+					end
+				end
+				
+				for anchorID, anchor in pairs (worldSummary.Anchors) do
+					worldSummary.ReorderAnchorWidgets (anchor)
+				end
+			end
+			
+			--reorder widgets that belong to the anchor, sorting by the questID, time left and selected faction
+			function worldSummary.ReorderAnchorWidgets (anchor)
+				
+				local isSortByTime = WorldQuestTracker.db.profile.force_sort_by_timeleft
+				
+				for i = 1, #anchor.Widgets do
+					local widget = anchor.Widgets [i]
+					
+					if (isSortByTime) then
+						widget.WidgetOrder = (widget.TimeLeft * 10) + (widget.questID / 100)
+					else
+						local orderPoints = widget.questID + abs (widget.TimeLeft - 1440) * 10
+
+						if (widget.FactionID == worldSummary.FactionSelected) then
+							orderPoints = orderPoints + 200000
+						end
+						
+						if (widget.IsCriteria) then
+							orderPoints = orderPoints + 100000
+						end
+						
+						widget.WidgetOrder = orderPoints
+					end
+				end
+				
+				if (isSortByTime) then
+					table.sort (anchor.Widgets, function (widget1, widget2)
+						return widget1.WidgetOrder > widget2.WidgetOrder
+					end)
+				else
+					table.sort (anchor.Widgets, function (widget1, widget2)
+						return widget1.WidgetOrder < widget2.WidgetOrder
+					end)
+				end
+
+				local growDirection = "right"
+				
+				for i = 1, #anchor.Widgets do
+					local widget = anchor.Widgets [i]
+					widget:ClearAllPoints()
+					if (growDirection == "right") then
+						widget:SetPoint ("topleft", anchor, "topleft", 1 + (i - 1) * 25, -1)
+					else
+						widget:SetPoint ("topright", anchor, "topright", 1 + (i - 1) * 25 * -1, -1)
+					end
+				end
+				
+				anchor.Button:ClearAllPoints()
+				if (growDirection == "right") then
+					anchor.Button:SetPoint ("left", anchor.Widgets [#anchor.Widgets], "right", 1, 0)
+				else
+					anchor.Button:SetPoint ("right", anchor.Widgets [#anchor.Widgets], "left", -1, 0)
+				end
+				
+				anchor.Button:Show()
+			end
+			
+			function worldSummary.AddQuest (questTable)
+				
+				--unpack quest information
+				local questID, mapID, numObjectives, questCounter, questName, x, y, filterType, worldQuestType, isCriteria, isNew, timeLeft = unpack (questTable)
+				local artifactPowerIcon = WorldQuestTracker.MapData.ItemIcons ["BFA_ARTIFACT"]
+				local isUsingTracker = WorldQuestTracker.db.profile.use_tracker
+				
+				--get the anchor for this quest
+				local anchor = worldSummary.GetAnchor (filterType, worldQuestType, questName)
+				
+				--check if need to refresh the anchor positions
+				if (anchor.WidgetsAmount == 0) then
+					worldSummary.ReAnchor()
+				end
+				anchor.WidgetsAmount = anchor.WidgetsAmount + 1
+				
+				--get the widget and setup it
+				local widget = WorldQuestTracker.WorldSummaryQuestsSquares [worldSummary.WidgetIndex]
+				worldSummary.WidgetIndex = worldSummary.WidgetIndex + 1
+				tinsert (anchor.Widgets, widget)
+				
+				widget:SetScale (WorldQuestTracker.db.profile.world_map_config.summary_scale)
+				widget:Show()
+				widget.Anchor = anchor
+				
+				local okay, gold, resource, apower = WorldQuestTracker.UpdateWorldWidget (widget, questID, numObjectives, mapID, isCriteria, isNew, isUsingTracker, timeLeft, artifactPowerIcon)
+				widget.texture:SetTexCoord (.05, .95, .05, .95)
+				
+				if (widget.FactionID == worldSummary.FactionSelected) then
+					--widget.factionBorder:Show()
+				else
+					widget.factionBorder:Hide()
+				end
+				
+				widget:SetAlpha (ALPHA_BLEND_AMOUNT - 0.10)
+				
+				if (okay) then
+					if (gold) then worldSummary.TotalGold = worldSummary.TotalGold + gold end
+					if (resource) then worldSummary.TotalResources = worldSummary.TotalResources + resource end
+					if (apower) then worldSummary.TotalAPower = worldSummary.TotalAPower + apower end
+					
+					if (WorldQuestTracker.WorldMap_GoldIndicator) then
+						WorldQuestTracker.WorldMap_GoldIndicator.text = floor (worldSummary.TotalGold / 10000)
+						
+						if (worldSummary.TotalResources > 999) then
+							WorldQuestTracker.WorldMap_ResourceIndicator.text = WorldQuestTracker.ToK (worldSummary.TotalResources)
+						else
+							WorldQuestTracker.WorldMap_ResourceIndicator.text = floor (worldSummary.TotalResources)
+						end
+						
+						if (worldSummary.TotalResources > 999) then
+							WorldQuestTracker.WorldMap_APowerIndicator.text = WorldQuestTracker.ToK (worldSummary.TotalAPower)
+						else
+							WorldQuestTracker.WorldMap_APowerIndicator.text = floor (worldSummary.TotalAPower)
+						end
+						
+						WorldQuestTracker.WorldMap_APowerIndicator.Amount = worldSummary.TotalAPower
+					end
+
+					if (WorldQuestTracker.db.profile.show_timeleft) then
+						local timePriority = WorldQuestTracker.db.profile.sort_time_priority and WorldQuestTracker.db.profile.sort_time_priority * 60 --4 8 12 16 24
+						if (timePriority) then
+							if (timeLeft <= timePriority) then
+								DF:SetFontColor (widget.timeLeftText, "yellow")
+								widget.timeLeftText:SetAlpha (1)
+							else
+								DF:SetFontColor (widget.timeLeftText, "white")
+								widget.timeLeftText:SetAlpha (0.8)
+								
+								if (WorldQuestTracker.db.profile.alpha_time_priority) then
+									widget:SetAlpha (ALPHA_BLEND_AMOUNT - 0.50)
+								end
+							end
+						else
+							DF:SetFontColor (widget.timeLeftText, "white")
+							widget.timeLeftText:SetAlpha (1)
+						end
+					
+						widget.timeLeftText:SetText (timeLeft > 1440 and floor (timeLeft/1440) .. "d" or timeLeft > 60 and floor (timeLeft/60) .. "h" or timeLeft .. "m")
+						
+						--widget.timeLeftText:SetJustifyH ("center")
+						widget.timeLeftText:SetJustifyH ("center")
+						widget.timeLeftText:Show()
+					else
+						widget.timeLeftText:Hide()
+					end
+				end
+				
+				worldSummary.ReorderAnchorWidgets (anchor)
+				
+				--save the quest in the quests shown in the world summary
+				worldSummary.ShownQuests [questID] = widget
+			end
+			
+			function worldSummary.LazyUpdate (self, deltaTime)
+				if (WorldMapFrame:IsShown() and #worldSummary.ScheduleToUpdate > 0 and WorldQuestTracker.IsWorldQuestHub (WorldMapFrame.mapID)) then
+					local questTable = tremove (worldSummary.ScheduleToUpdate)
+					if (questTable) then
+						--check if the quest is already shown (return the widget being use to show the quest)
+						local alreadyShown = worldSummary.ShownQuests [questTable [1]]
+						if (alreadyShown) then
+							--quick update the quest widget
+							WorldQuestTracker.UpdateWorldWidget (alreadyShown, true)
+							worldSummary.ReorderAnchorWidgets (alreadyShown.Anchor)
+						else
+							worldSummary.AddQuest (questTable)
+						end
+					end
+				else
+					--is still on the map?
+					if (WorldQuestTracker.IsWorldQuestHub (WorldMapFrame.mapID)) then
+						worldSummary.UpdateFaction()
+					end
+					--shutdown lazy updates
+					worldSummary:SetScript ("OnUpdate", nil)
+				end
+			end
+
+			--questsToUpdate is a hash table with questIDs to update
+			--it only exists when it's not a full update and it carry a small list of quests to update
+			--the list is equal to questList but is hash with true values
+			function worldSummary.Update (questList, questsToUpdate)
+			
+				if (not WorldQuestTracker.db.profile.world_map_config.summary_show) then
+					worldSummary.HideSummary()
+					return
+				end
+			
+				worldSummary.ShowSummary()
+			
+				--clear all if this is a full update
+				if (not questsToUpdate) then
+					worldSummary.ClearSummary()
+				end
+				
+				if (not worldSummary.BuiltFactionWidgets) then
+					worldSummary.CreateFactionButtons()
+					worldSummary.BuiltFactionWidgets = true
+				end
+				
+				--copy the quest list
+				worldSummary.ScheduleToUpdate = DF.table.copy ({}, questList)
+				
+				worldSummary:SetScript ("OnUpdate", worldSummary.LazyUpdate)
+			end
+			
 			-- ~bar ~statusbar
 			WorldQuestTracker.DoubleTapFrame = CreateFrame ("frame", "WorldQuestTrackerDoubleTapFrame", anchorFrame)
 			WorldQuestTracker.DoubleTapFrame:SetHeight (18)
 			WorldQuestTracker.DoubleTapFrame:SetFrameLevel (WorldMapFrame.SidePanelToggle.CloseButton:GetFrameLevel()-1)
-
+			
 			--background
 			local doubleTapBackground = WorldQuestTracker.DoubleTapFrame:CreateTexture (nil, "artwork")
 			doubleTapBackground:SetColorTexture (0, 0, 0, 0.5)
@@ -1979,6 +2605,18 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 				
 				local IconSize = 14
 				
+				local add_checkmark_icon = function (isOptionEnabled, isMainMenu)
+					if (isMainMenu) then
+						
+					else
+						if (isOptionEnabled) then
+							GameCooltip:AddIcon ([[Interface\BUTTONS\UI-CheckBox-Check]], 2, 1, 16, 16)
+						else
+							GameCooltip:AddIcon ([[Interface\BUTTONS\UI-AutoCastableOverlay]], 2, 1, 16, 16, .4, .6, .4, .6)
+						end
+					end
+				end
+				
 				--all tracker options ~tracker config
 				GameCooltip:AddLine (L["S_MAPBAR_OPTIONSMENU_TRACKERCONFIG"])
 				GameCooltip:AddIcon ([[Interface\AddOns\WorldQuestTracker\media\ArrowGridT]], 1, 1, IconSize, IconSize, 944/1024, 993/1024, 272/1024, 324/1024)
@@ -2062,6 +2700,8 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 					end)
 				end)
 				
+
+				
 				--				
 				GameCooltip:AddLine ("$div", nil, 2, nil, -5, -11)
 				--
@@ -2095,37 +2735,41 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 				--
 
 				--World Map Config
+			
 				GameCooltip:AddLine (L["S_MAPBAR_OPTIONSMENU_WORLDMAPCONFIG"])
 				GameCooltip:AddIcon ([[Interface\Worldmap\UI-World-Icon]], 1, 1, IconSize, IconSize)
+				
+				--show quest locations widgets in the world map
+					--is quest location enabled
+					GameCooltip:AddLine (L["S_WORLDMAP_QUESTLOCATIONS"], "", 2)
+					add_checkmark_icon (WorldQuestTracker.db.profile.world_map_config.onmap_show)
+					GameCooltip:AddMenu (2, options_on_click, "world_map_config", "onmap_show", not WorldQuestTracker.db.profile.world_map_config.onmap_show)
 
-				GameCooltip:AddLine ("Disable Icons on World Map", "", 2)
-				if (WorldQuestTracker.db.profile.disable_world_map_widgets) then
-					GameCooltip:AddIcon ([[Interface\BUTTONS\UI-CheckBox-Check]], 2, 1, 16, 16)
-				else
-					GameCooltip:AddIcon ([[Interface\BUTTONS\UI-AutoCastableOverlay]], 2, 1, 16, 16, .4, .6, .4, .6)
-				end
-				GameCooltip:AddMenu (2, options_on_click, "world_map_config", "disable_world_map_widgets", not WorldQuestTracker.db.profile.disable_world_map_widgets)
+					GameCooltip:AddLine ("Increase Size", "", 2)
+					GameCooltip:AddIcon ([[Interface\BUTTONS\UI-MicroStream-Yellow]], 2, 1, 16, 16, 0, 1, 1, 0)
+					GameCooltip:AddMenu (2, options_on_click, "world_map_config", "incsize", "onmap_scale_offset")
+					GameCooltip:AddLine ("Decrease Size", "", 2)
+					GameCooltip:AddIcon ([[Interface\BUTTONS\UI-MicroStream-Yellow]], 2, 1, 16, 16, 0, 1, 0, 1)
+					GameCooltip:AddMenu (2, options_on_click, "world_map_config", "decsize", "onmap_scale_offset")
+					
 				GameCooltip:AddLine ("$div", nil, 2, nil, -7, -14)
-				
-				
-				GameCooltip:AddLine ("Small Text Size", "", 2)
-				GameCooltip:AddMenu (2, options_on_click, "world_map_config", "textsize", 9)
-				GameCooltip:AddLine ("Medium Text Size", "", 2)
-				GameCooltip:AddMenu (2, options_on_click, "world_map_config", "textsize",  10)
-				GameCooltip:AddLine ("Large Text Size", "", 2)
-				GameCooltip:AddMenu (2, options_on_click, "world_map_config", "textsize",  11)
-				
-				GameCooltip:AddLine ("$div", nil, 2, nil, -7, -14)
-				
-				GameCooltip:AddLine ("Scale - Small", "", 2)
-				GameCooltip:AddMenu (2, options_on_click, "world_map_config", "scale", 1)
-				GameCooltip:AddLine ("Scale - Medium", "", 2)
-				GameCooltip:AddMenu (2, options_on_click, "world_map_config", "scale",  1.2)
-				GameCooltip:AddLine ("Scale - Big", "", 2)
-				GameCooltip:AddMenu (2, options_on_click, "world_map_config", "scale",  1.4)
-				GameCooltip:AddLine ("Scale - Very Big", "", 2)
-				GameCooltip:AddMenu (2, options_on_click, "world_map_config", "scale",  1.6)
-				
+					
+				--show the summary in the left side of the world map
+					--is summary enabled
+					GameCooltip:AddLine (L["S_WORLDMAP_QUESTSUMMARY"], "", 2)
+					add_checkmark_icon (WorldQuestTracker.db.profile.world_map_config.summary_show)
+					GameCooltip:AddMenu (2, options_on_click, "world_map_config", "summary_show", not WorldQuestTracker.db.profile.world_map_config.summary_show)
+
+					GameCooltip:AddLine (L["S_INCREASESIZE"], "", 2)
+					GameCooltip:AddIcon ([[Interface\BUTTONS\UI-MicroStream-Yellow]], 2, 1, 16, 16, 0, 1, 1, 0)
+					GameCooltip:AddMenu (2, options_on_click, "world_map_config", "incsize", "summary_scale")
+					GameCooltip:AddLine (L["S_DECREASESIZE"], "", 2)
+					GameCooltip:AddIcon ([[Interface\BUTTONS\UI-MicroStream-Yellow]], 2, 1, 16, 16, 0, 1, 0, 1)
+					GameCooltip:AddMenu (2, options_on_click, "world_map_config", "decsize", "summary_scale")
+					
+				-- = 1,
+				--summary_timeleft = true,					
+
 				--Zone Map Config
 				GameCooltip:AddLine (L["S_MAPBAR_OPTIONSMENU_ZONEMAPCONFIG"])
 				GameCooltip:AddIcon ([[Interface\Worldmap\WorldMap-Icon]], 1, 1, IconSize, IconSize)
@@ -2193,14 +2837,6 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 					
 					--
 					GameCooltip:AddLine ("$div", nil, 2, nil, -7, -14)
-					
-					GameCooltip:AddLine ("Send Invite Whispers", "", 2)
-					if (WorldQuestTracker.db.profile.groupfinder.send_whispers) then
-						GameCooltip:AddIcon ([[Interface\BUTTONS\UI-CheckBox-Check]], 2, 1, 16, 16)
-					else
-						GameCooltip:AddIcon ([[Interface\BUTTONS\UI-AutoCastableOverlay]], 2, 1, 16, 16, .4, .6, .4, .6)
-					end
-					GameCooltip:AddMenu (2, ff.SendWhispersFunc, not WorldQuestTracker.db.profile.groupfinder.send_whispers)
 					
 					GameCooltip:AddLine ("Don't Show if Already in Group", "", 2)
 					if (WorldQuestTracker.db.profile.groupfinder.dont_open_in_group) then
@@ -2600,24 +3236,33 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 				end
 			
 				local mapType = WorldQuestTrackerAddon.GetCurrentZoneType()
+
 				if (mapType == "zone") then
 					local qType = self.QuestType
 					if (qType == "gold") then
 						qType = QUESTTYPE_GOLD
+						
 					elseif (qType == "resource") then
 						qType = QUESTTYPE_RESOURCE
+						
 					elseif (qType == "apower") then
 						qType = QUESTTYPE_ARTIFACTPOWER
+						
 					end
 
 					local widgets = WorldQuestTracker.Cache_ShownWidgetsOnZoneMap
 					for _, widget in ipairs (widgets) do
 						if (widget.QuestType == qType) then
 							WorldQuestTracker.AddQuestToTracker (widget)
+							
+							--animations
 							if (widget.onEndTrackAnimation:IsPlaying()) then
 								widget.onEndTrackAnimation:Stop()
 							end
 							widget.onStartTrackAnimation:Play()
+							if (not widget.AddedToTrackerAnimation:IsPlaying()) then
+								widget.AddedToTrackerAnimation:Play()
+							end
 						end
 					end
 
@@ -2632,21 +3277,30 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 				end
 				
 				if (mapType == "world") then
-					local questType = self.QuestType
-					local questsAvailable = WorldQuestTracker.Cache_ShownQuestOnWorldMap [questType]
+					
+					if (not WorldQuestTracker.db.profile.world_map_config.summary_show) then
 
-					if (questsAvailable) then
-						for i = 1, #questsAvailable do
-							local questID = questsAvailable [i]
-							--> track this quest
-							local widget = WorldQuestTracker.GetWorldWidgetForQuest (questID)
-							
-							if (widget) then
+						local qType = self.QuestType
+						if (qType == "gold") then
+							qType = QUESTTYPE_GOLD
+						elseif (qType == "resource") then
+							qType = QUESTTYPE_RESOURCE
+						elseif (qType == "apower") then
+							qType = QUESTTYPE_ARTIFACTPOWER
+						end
+					
+						for _, widget in pairs (WorldQuestTracker.WorldMapSmallWidgets) do
+							if (widget.QuestType == qType) then
 								WorldQuestTracker.AddQuestToTracker (widget)
+								
+								--animations
 								if (widget.onEndTrackAnimation:IsPlaying()) then
 									widget.onEndTrackAnimation:Stop()
 								end
 								widget.onStartTrackAnimation:Play()
+								if (not widget.AddedToTrackerAnimation:IsPlaying()) then
+									widget.AddedToTrackerAnimation:Play()
+								end
 							end
 						end
 						
@@ -2657,7 +3311,64 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 								PlaySoundFile ("Interface\\AddOns\\WorldQuestTracker\\media\\quest_added_to_tracker_mass2.mp3")
 							end
 						end
-						WorldQuestTracker.UpdateWorldQuestsOnWorldMap (true, false)
+						
+						WorldQuestTracker.UpdateWorldQuestsOnWorldMap()
+						
+					else
+						local questType = self.QuestType
+						local questsAvailable = WorldQuestTracker.Cache_ShownQuestOnWorldMap [questType]
+
+						if (questsAvailable) then
+							for i = 1, #questsAvailable do
+								local questID = questsAvailable [i]
+								--> track this quest
+								local widget = WorldQuestTracker.GetWorldWidgetForQuest (questID)
+								
+								if (widget) then
+									WorldQuestTracker.AddQuestToTracker (widget)
+									
+									--animations
+									if (widget.onEndTrackAnimation:IsPlaying()) then
+										widget.onEndTrackAnimation:Stop()
+									end
+									widget.onStartTrackAnimation:Play()
+									if (not widget.AddedToTrackerAnimation:IsPlaying()) then
+										widget.AddedToTrackerAnimation:Play()
+									end
+								end
+							end
+							
+							--iterate here too so it can play some animations
+							local qType = self.QuestType
+							if (qType == "gold") then
+								qType = QUESTTYPE_GOLD
+							elseif (qType == "resource") then
+								qType = QUESTTYPE_RESOURCE
+							elseif (qType == "apower") then
+								qType = QUESTTYPE_ARTIFACTPOWER
+							end
+							for _, widget in pairs (WorldQuestTracker.WorldMapSmallWidgets) do
+								if (widget.QuestType == qType) then
+									--animations
+									if (widget.onEndTrackAnimation:IsPlaying()) then
+										widget.onEndTrackAnimation:Stop()
+									end
+									widget.onStartTrackAnimation:Play()
+									if (not widget.AddedToTrackerAnimation:IsPlaying()) then
+										widget.AddedToTrackerAnimation:Play()
+									end
+								end
+							end
+							
+							if (WorldQuestTracker.db.profile.sound_enabled) then
+								if (math.random (2) == 1) then
+									PlaySoundFile ("Interface\\AddOns\\WorldQuestTracker\\media\\quest_added_to_tracker_mass1.mp3")
+								else
+									PlaySoundFile ("Interface\\AddOns\\WorldQuestTracker\\media\\quest_added_to_tracker_mass2.mp3")
+								end
+							end
+							WorldQuestTracker.UpdateWorldQuestsOnWorldMap (true, false)
+						end
 					end
 				end
 			end

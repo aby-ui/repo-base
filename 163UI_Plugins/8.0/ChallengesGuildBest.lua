@@ -10,7 +10,7 @@ function ChallengesGuildBestMixin:SetUp(leaderInfo)
 
     local str = CHALLENGE_MODE_GUILD_BEST_LINE;
     if (leaderInfo.isYou) then
-        str = CHALLENGE_MODE_GUILD_BEST_LINE_YOU;
+        --too long str = CHALLENGE_MODE_GUILD_BEST_LINE_YOU;
     end
 
     local classColorStr = RAID_CLASS_COLORS[leaderInfo.classFileName].colorStr;

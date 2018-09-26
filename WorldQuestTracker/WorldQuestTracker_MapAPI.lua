@@ -304,8 +304,11 @@ function WorldQuestTracker.GetQuestFilterTypeAndOrder (worldQuestType, gold, rew
 		filter = FILTER_TYPE_GOLD
 		
 	end	
+	
+	--print (rewardName, rewardTexture)
 
 	if (rewardName) then
+		--print (rewardName, rewardTexture) --reputation token
 		--resources
 		if (WorldQuestTracker.MapData.ResourceIcons [rewardTexture]) then
 			order = WorldQuestTracker.db.profile.sort_order [WQT_QUESTTYPE_RESOURCE]
@@ -650,24 +653,30 @@ end
 		if (numQuestCurrencies == 1) then
 			--is artifact power?
 			local name, texture, numItems = GetQuestLogRewardCurrencyInfo (1, questID)
+			
 			if (texture == 1830317 or texture == 2065624) then
-				--the taxi map tooltip is adding the reward to the world map quest tooltip
-				GameTooltip_AddQuestRewardsToTooltip (WorldMapTooltip, questID)
-				
-				local amount
-				local t2 = WorldMapTooltipTooltipTextLeft2 and WorldMapTooltipTooltipTextLeft2:GetText()
-				if (t2) then
-					amount = tonumber (t2:match (" %d+ "))
-				end
-				
-				if (WorldMapTooltip:IsShown()) then
-					local owner = WorldMapTooltip:GetOwner()
-					if (owner and owner.UpdateTooltip) then
-						owner:UpdateTooltip()
+			
+				--[=[
+					--the taxi map tooltip is adding the reward to the world map quest tooltip
+					GameTooltip_AddQuestRewardsToTooltip (WorldMapTooltip, questID)
+					
+					local amount
+					local t2 = WorldMapTooltipTooltipTextLeft2 and WorldMapTooltipTooltipTextLeft2:GetText()
+					if (t2) then
+						amount = tonumber (t2:match (" %d+ "))
 					end
-				end
+					
+					if (WorldMapTooltip:IsShown()) then
+						local owner = WorldMapTooltip:GetOwner()
+						if (owner and owner.UpdateTooltip) then
+							owner:UpdateTooltip()
+						end
+					end
+					--]=]
+				--return name, texture, 0, 1, 1, false, 0, true, amount or 0, false, 1
 				
-				return name, texture, 0, 1, 1, false, 0, true, amount or 0, false, 1
+				--numItems are now given the amount of azerite (BFA 17-09-2018), no more tooltip scan required
+				return name, texture, 0, 1, 1, false, 0, true, numItems or 0, false, 1
 			end
 		end
 		

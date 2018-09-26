@@ -177,27 +177,42 @@ end
 
 --remove todas as quests do tracker
 function WorldQuestTracker.RemoveAllQuestsFromTracker()
+	local isShowingWorld = WorldQuestTrackerAddon.GetCurrentZoneType() == "world"
+	
 	for i = #WorldQuestTracker.QuestTrackList, 1, -1 do
+		--get the quest table with info about the quest
 		local quest = WorldQuestTracker.QuestTrackList [i]
-		local questID = quest.questID
-		local widget = WorldQuestTracker.GetWorldWidgetForQuest (questID)
-		if (widget) then
-			if (widget.onStartTrackAnimation:IsPlaying()) then
-				widget.onStartTrackAnimation:Stop()
-			end
-			widget.onEndTrackAnimation:Play()
-		end
-		--remove da tabela
+		
+		--remove the quest from the tracker
 		tremove (WorldQuestTracker.QuestTrackList, i)
+		
+		--remove tracking indicator on the quest icon
+		local questID = quest.questID
+		
+		if (isShowingWorld) then
+			--quest locations
+			for _, widget in pairs (WorldQuestTracker.WorldMapSmallWidgets) do
+				if (widget:IsShown() and widget.questID == questID) then
+					widget.onEndTrackAnimation:Play()
+				end
+			end
+			--quest summary
+			for _, widget in pairs (WorldQuestTracker.WorldSummaryQuestsSquares) do
+				if (widget:IsShown() and widget.questID == questID) then
+					widget.onEndTrackAnimation:Play()
+				end
+			end
+		else
+			--zone map widgets
+			for _, widget in pairs (WorldQuestTracker.ZoneWidgetPool) do
+				if (widget:IsShown() and widget.questID == questID) then
+					widget.onEndTrackAnimation:Play()
+				end
+			end
+		end
 	end
 	
 	WorldQuestTracker.RefreshTrackerWidgets()
-	
-	if (WorldQuestTrackerAddon.GetCurrentZoneType() == "world") then
-		WorldQuestTracker.UpdateWorldQuestsOnWorldMap()
-	elseif (WorldQuestTrackerAddon.GetCurrentZoneType() == "zone") then
-		WorldQuestTracker.UpdateZoneWidgets()
-	end
 end
 
 --o cliente n�o tem o tempo restante da quest na primeira execu��o

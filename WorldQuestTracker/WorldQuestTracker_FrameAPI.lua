@@ -210,22 +210,27 @@ end
 --return the border texture name by the quest type
 function WorldQuestTracker.GetBorderByQuestType (self, rarity, worldQuestType)
 	if (worldQuestType == LE_QUEST_TAG_TYPE_PVP) then
-		--return "border_zone_browT"
 		return "border_zone_redT"
+		
 	elseif (worldQuestType == LE_QUEST_TAG_TYPE_PET_BATTLE) then
 		return "border_zone_greenT"
+		
 	elseif (worldQuestType == LE_QUEST_TAG_TYPE_PROFESSION) then
 		return "border_zone_browT"
+		
 	elseif (rarity == LE_WORLD_QUEST_QUALITY_COMMON) then
 		if (worldQuestType == LE_QUEST_TAG_TYPE_INVASION) then
 			return "border_zone_legionT"
 		else
 			return "border_zone_whiteT"
 		end
+		
 	elseif (rarity == LE_WORLD_QUEST_QUALITY_RARE) then
 		return "border_zone_blueT"
+		
 	elseif (rarity == LE_WORLD_QUEST_QUALITY_EPIC) then
 		return "border_zone_pinkT"
+		
 	end
 end
 
@@ -298,13 +303,20 @@ function WorldQuestTracker.UpdateStatusBarAnchors()
 end
 
 --atualiza a borda nas squares do world map e no mapa da zona ~border
-function WorldQuestTracker.UpdateBorder (self, rarity, worldQuestType, mapID)
+function WorldQuestTracker.UpdateBorder (self, rarity, worldQuestType, mapID, isCriteria)
+
 	if (self.isWorldMapWidget) then
+	
+		rarity = rarity or self.Rarity
+		worldQuestType = worldQuestType or self.WorldQuestType
+		mapID = mapID or self.mapID
+		isCriteria = isCriteria or self.IsCriteria
+	
 		self.commonBorder:Hide()
 		self.rareBorder:Hide()
 		self.epicBorder:Hide()
 		self.invasionBorder:Hide()
-		
+
 		if (WorldQuestTracker.IsQuestBeingTracked (self.questID)) then
 			self.borderAnimation:Show()
 			self.trackingBorder:Show()
@@ -317,26 +329,40 @@ function WorldQuestTracker.UpdateBorder (self, rarity, worldQuestType, mapID)
 		AnimatedShine_Stop (self)
 		
 		if (rarity == LE_WORLD_QUEST_QUALITY_COMMON and worldQuestType ~= LE_QUEST_TAG_TYPE_INVASION) then
-			if (self.isArtifact) then
-				self.commonBorder:Show()
-			else
-				self.commonBorder:Show()
-			end
 			
 			if (worldQuestType == LE_QUEST_TAG_TYPE_PVP) then
 				self.commonBorder:SetVertexColor (1, .7, .2)
+				self.commonBorder:SetAlpha (0.45)
+				self:SetBackdropBorderColor (1, .7, .2, 1)
 				
 			elseif (worldQuestType == LE_QUEST_TAG_TYPE_PET_BATTLE) then
 				self.commonBorder:SetVertexColor (.4, 1, .4)
-				
-			elseif (worldQuestType == LE_QUEST_TAG_TYPE_PROFESSION) then
+				self:SetBackdropBorderColor (.4, 1, .4, 1)
 			
 			else
-				self.commonBorder:SetVertexColor (1, 1, 1)
+				self.commonBorder:SetVertexColor (.45, .45, .45)
+				self.commonBorder:SetAlpha (0.45)
+				self:SetBackdropBorderColor (.1, .1, .1, 1)
 			end
 			
+			if (WorldQuestTracker.WorldSummary.FactionSelected == self.FactionID) then
+				self.commonBorder:SetAlpha (0)
+				self.commonBorder:SetVertexColor (1, 1, 1)
+				self:SetBackdropBorderColor (1, 1, .1, 1)
+			end
+			
+			self.commonBorder:Show()
+			
 		elseif (rarity == LE_WORLD_QUEST_QUALITY_RARE) then
-			self.rareBorder:Show()
+			--self.rareBorder:Show()
+			--self:SetBackdropBorderColor (.3, .3, .98, 1)
+			self:SetBackdropBorderColor (.1, .1, .1, 1)
+			
+			if (WorldQuestTracker.WorldSummary.FactionSelected == self.FactionID) then
+				self.commonBorder:SetAlpha (0)
+				self.commonBorder:SetVertexColor (1, 1, 1)
+				self:SetBackdropBorderColor (1, 1, .1, 1)
+			end
 			
 		elseif (rarity == LE_WORLD_QUEST_QUALITY_EPIC) then
 			self.epicBorder:Show()
@@ -350,9 +376,14 @@ function WorldQuestTracker.UpdateBorder (self, rarity, worldQuestType, mapID)
 		end
 
 	else
-		local borderTextureFile = WorldQuestTracker.GetBorderByQuestType (self, rarity, worldQuestType)
-		self.circleBorder:Show()
-		self.circleBorder:SetTexture ("Interface\\AddOns\\WorldQuestTracker\\media\\" .. borderTextureFile)
+		if (not isCriteria) then
+			local borderTextureFile = WorldQuestTracker.GetBorderByQuestType (self, rarity, worldQuestType)
+			self.circleBorder:Show()
+			self.circleBorder:SetTexture ("Interface\\AddOns\\WorldQuestTracker\\media\\" .. borderTextureFile)
+		else
+			self.circleBorder:Hide()
+			self.BountyRing:Show()
+		end
 		
 		if (rarity == LE_WORLD_QUEST_QUALITY_COMMON) then
 			self.bgFlag:Hide()
@@ -458,7 +489,7 @@ function WorldQuestTracker.SetTimeBlipColor (self, timeLeft)
 		--blip:SetVertexColor (1, 1, 1)
 		--blip:SetAlpha (.8)
 	else
-		self.timeBlipGreen:Show()
+		--self.timeBlipGreen:Show()
 
 		--blip:SetTexture ([[Interface\COMMON\Indicator-Green]])
 		--blip:SetVertexColor (1, 1, 1)
@@ -504,7 +535,7 @@ function WorldQuestTracker.RefreshStatusBarVisibility()
 end
 
 --when a button is clicked check if it can add or remove the quest on the tracker
-function WorldQuestTracker.CheckAddToTracker (self, button)
+function WorldQuestTracker.CheckAddToTracker (self, button, onlyTrack)
 	--button � o frame que foi precionado
 	local questID = self.questID
 	local mapID = self.mapID
@@ -512,17 +543,33 @@ function WorldQuestTracker.CheckAddToTracker (self, button)
 	--verifica se a quest ja esta sendo monitorada
 	if (WorldQuestTracker.IsQuestBeingTracked (questID)) then
 		--remover a quest do track
-		WorldQuestTracker.RemoveQuestFromTracker (questID)
+		if (not onlyTrack) then
+			WorldQuestTracker.RemoveQuestFromTracker (questID)
+		end
 	else
 		--adicionar a quest ao track
 		WorldQuestTracker.AddQuestToTracker (self, questID, mapID)
+		if (not self.AddedToTrackerAnimation:IsPlaying()) then
+			self.AddedToTrackerAnimation:Play()
+		end
 	end
 	
 	if (self.IsZoneQuestButton) then
 		WorldQuestTracker.UpdateZoneWidgets()
-	elseif (self.IsWorldQuestButton) then
-		WorldQuestTracker.UpdateWorldQuestsOnWorldMap()
+		
+	elseif (self.IsWorldQuestButton or self.IsWorldZoneQuestButton) then
+		WorldQuestTracker.UpdateQuestOnWorldMap (questID)
+		--WorldQuestTracker.UpdateWorldQuestsOnWorldMap()
+		
 	end
+end
+
+function WorldQuestTracker.CreateStartTrackingAnimation (button, speed, offset)
+	speed = speed or .1
+	offset = offset or 10
+	button.AddedToTrackerAnimation = DF:CreateAnimationHub (button)
+	DF:CreateAnimation (button.AddedToTrackerAnimation, "translation", 1, speed, 0, offset)
+	DF:CreateAnimation (button.AddedToTrackerAnimation, "translation", 2, speed, 0, -offset)
 end
 
 --when the user clicks on a quest button -- �nclick ~onclick ~click
@@ -540,13 +587,16 @@ function WorldQuestTracker.OnQuestButtonClick (self, button)
 		return
 	end
 	
+	--[=[
 	local timeLeft = C_TaskQuest.GetQuestTimeLeftMinutes (self.questID)
 	if (not timeLeft or timeLeft <= 0) then
 		WorldQuestTracker:Msg (L["S_ERROR_NOTIMELEFT"])
 	end
+	--]=]
 	
---chat link
+	--chat link
 	if (WorldQuestTracker.CanLinkToChat (self, button)) then
+		--true if the quest got linked in chat
 		return
 	end
 
@@ -565,7 +615,7 @@ function WorldQuestTracker.OnQuestButtonClick (self, button)
 		return
 	end
 	
---isn't using the tracker
+	--isn't using the tracker
 	if (not WorldQuestTracker.db.profile.use_tracker or IsShiftKeyDown()) then
 		local defaultPin = WorldQuestTracker.GetDefaultPinForQuest (self.questID)
 		if (defaultPin) then
@@ -580,10 +630,10 @@ function WorldQuestTracker.OnQuestButtonClick (self, button)
 		return
 	end
 
---> add the quest to the tracker	
+	--> add the quest to the tracker	
 	WorldQuestTracker.CheckAddToTracker (self, button)
 	
---animations and sounds
+	--animations and sounds
 	if (WorldQuestTracker.IsQuestBeingTracked (self.questID)) then
 		--widget in the world map
 		if (self.trackingGlowBorder) then
@@ -658,9 +708,22 @@ function WorldQuestTracker.OnStartClickAnimation (self)
 end
 
 function WorldQuestTracker.OnEndClickAnimation (self)
-	self:GetParent():Hide()
-end
+	local parent = self:GetParent()
+	parent:Hide()
+	
+	local widget = parent:GetParent()
+	local questID = widget.questID
 
+	if (questID) then
+		if (not WorldQuestTracker.IsQuestBeingTracked (questID)) then
+			if (widget.trackingGlowBorder and widget.trackingBorder) then
+				widget.trackingGlowBorder:Hide()
+				widget.trackingGlowInside:Hide()
+				widget.trackingBorder:Hide()
+			end
+		end
+	end
+end
 
 --	/run WorldQuestTrackerAddon.SetTextSize ("WorldMap", 10)
 function WorldQuestTracker.SetTextSize (MapType, Size)
@@ -690,6 +753,27 @@ function WorldQuestTracker.SetTextSize (MapType, Size)
 		return
 	end
 	
+end
+
+function WorldQuestTracker.UpdateResourceIndicators (gold, resources, apower)
+	if (WorldQuestTracker.WorldMap_GoldIndicator) then
+	
+		WorldQuestTracker.WorldMap_GoldIndicator.text = floor (gold / 10000)
+		
+		if (resources >= 1000) then
+			WorldQuestTracker.WorldMap_ResourceIndicator.text = WorldQuestTracker.ToK (resources)
+		else
+			WorldQuestTracker.WorldMap_ResourceIndicator.text = resources
+		end
+		
+		if (apower >= 1000) then
+			WorldQuestTracker.WorldMap_APowerIndicator.text = WorldQuestTracker.ToK_FormatBigger (apower)
+		else
+			WorldQuestTracker.WorldMap_APowerIndicator.text = apower
+		end
+		
+		WorldQuestTracker.WorldMap_APowerIndicator.Amount = apower
+	end
 end
 
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

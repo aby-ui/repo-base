@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2147, "DBM-Uldir", nil, 1031)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17909 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 17919 $"):sub(12, -3))
 mod:SetCreatureID(132998)
 mod:SetEncounterID(2122)
 mod:SetZone()
@@ -24,16 +24,14 @@ mod:RegisterEventsInCombat(
 --	"SPELL_DAMAGE 263326",
 --	"SPELL_MISSED 263326",
 	"UNIT_DIED",
-	"CHAT_MSG_RAID_BOSS_EMOTE"
---	"UNIT_SPELLCAST_SUCCEEDED boss1"
+	"CHAT_MSG_RAID_BOSS_EMOTE",
+	"INSTANCE_ENCOUNTER_ENGAGE_UNIT",
+	"UNIT_SPELLCAST_SUCCEEDED boss1"
 )
 
---TODO, adjust icons when other boss mods add them
---TODO, add "burrow" cd timer?
 --TODO, add timers for host, when ORIGIN cast can be detected (not spread/fuckup casts)
 --TODO, cast event for Matrix Surge and possible aoe warning (with throttle)
 --TODO, how does http://bfa.wowhead.com/spell=268174/tendrils-of-corruption work? warning/yell? is it like yogg squeeze?
---TODO, Bursting Boil CAST detection
 --[[
 (ability.id = 267509 or ability.id = 273406 or ability.id = 273405 or ability.id = 267579 or ability.id = 263482 or ability.id = 263503 or ability.id = 275160 or ability.id = 269455) and type = "begincast"
  or (ability.id = 272505 or ability.id = 275756 or ability.id = 263235 or ability.id = 263482 or ability.id = 263503 or ability.id = 263373 or ability.id = 270373 or ability.id = 270428 or ability.id = 276839 or ability.id = 274582) and type = "cast"
@@ -51,6 +49,7 @@ local warnBloodHost						= mod:NewTargetAnnounce(267813, 3)--Mythic
 local warnDarkPurpose					= mod:NewTargetAnnounce(268074, 4, nil, false)--Mythic
 local warnDarkBargain					= mod:NewSpellAnnounce(267409, 1)
 local warnBurrow						= mod:NewSpellAnnounce(267579, 2)
+local warnBurstingBoil					= mod:NewCountAnnounce(277007, 4)--Mythic
 
 --Arena Floor
 local specWarnBloodHost					= mod:NewSpecialWarningClose(267813, nil, nil, nil, 1, 2)--Mythic
@@ -78,6 +77,7 @@ local yellBloodFeast					= mod:NewYell(263235, nil, nil, nil, "YELL")
 local yellBloodFeastFades				= mod:NewFadesYell(263235, nil, nil, nil, "YELL")
 local specWarnBloodFeastTarget			= mod:NewSpecialWarningTargetCount(263235, nil, nil, nil, 1, 8)
 local specWarnMindNumbingChatter		= mod:NewSpecialWarningCast(263307, "SpellCaster", nil, nil, 1, 2)
+local specWarnBurstingBoilCast			= mod:NewSpecialWarningDodge(277007, nil, nil, nil, 2, 2)
 local specWarnBurstingBoil				= mod:NewSpecialWarningYou(277007, nil, nil, nil, 1, 2)--Mythic
 ----Arena Floor P3
 local specWarnCollapse					= mod:NewSpecialWarningDodge(276839, nil, nil, nil, 2, 2)
@@ -94,9 +94,11 @@ local timerThousandMawsCD				= mod:NewCDCountTimer(23.9, 267509, nil, nil, nil, 
 ----Adds
 local timerMassiveSmashCD				= mod:NewCDTimer(9.7, 267412, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON)
 local timerDarkBargainCD				= mod:NewCDTimer(23.1, 267409, nil, nil, nil, 3, nil, DBM_CORE_DAMAGE_ICON)
+local timerBurrowCD						= mod:NewCDTimer(30, 267579, nil, nil, nil, 6)
 mod:AddTimerLine(SCENARIO_STAGE:format(2))
 local timerWaveofCorruptionCD			= mod:NewCDCountTimer(15, 270373, nil, nil, nil, 3)
 local timerBloodFeastCD					= mod:NewCDCountTimer(15, 263235, nil, nil, nil, 2)
+local timerBurstingBoil					= mod:NewCastCountTimer(8, 277007, nil, nil, nil, 3, nil, DBM_CORE_HEROIC_ICON)
 local timerBurstingBoilCD				= mod:NewCDCountTimer(20.5, 277007, nil, nil, nil, 3, nil, DBM_CORE_HEROIC_ICON)
 ----Horror
 local timerMindNumbingChatterCD			= mod:NewCDTimer(13.4, 263307, nil, "SpellCaster", nil, 2)
@@ -132,8 +134,10 @@ mod.vb.bloodFeastCount = 0
 mod.vb.burstingIcon = 0
 mod.vb.burstingCount = 0
 mod.vb.matrixActive = false
+local playerBursting = false
 local matrixTargets, bloodFeastTarget = {}, {}
 local thousandMawsTimers = {25.4, 26.3, 25.5, 24.2, 23.9, 23.1, 21.5, 21.9, 19.4}
+local seenAdds = {}
 
 local function checkThrowFail(self)
 	--If this function runs it means matrix was not caught after a throw and is lost
@@ -227,6 +231,7 @@ end
 function mod:OnCombatStart(delay)
 	table.wipe(matrixTargets)
 	table.wipe(bloodFeastTarget)
+	table.wipe(seenAdds)
 	self.vb.phase = 1
 	self.vb.mawCastCount = 0
 	self.vb.matrixCount = 0
@@ -236,6 +241,7 @@ function mod:OnCombatStart(delay)
 	self.vb.burstingIcon = 0
 	self.vb.burstingCount = 0
 	self.vb.matrixActive = false
+	playerBursting = false
 	timerMatrixCD:Start(5.3, 1)
 	timerThousandMawsCD:Start(24.3-delay, 1)
 	if not self:IsMythic() then
@@ -299,6 +305,7 @@ function mod:SPELL_CAST_START(args)
 		end
 	elseif spellId == 267579 then
 		warnBurrow:Show()
+		timerBurrowCD:Start(29.5, args.sourceGUID)
 	elseif (spellId == 263482 or spellId == 263503) then
 		self.vb.matrixActive = false
 		self.vb.matrixSide = DBM_CORE_RIGHT--Actually left, but this makes it so the way it's coded works
@@ -548,13 +555,9 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif spellId == 263284 then--Horror Spawn
 		timerMindNumbingChatterCD:Start(10, args.destGUID)
 	elseif spellId == 277007 then
-		if self:AntiSpam(15, 9) then
-			self.vb.burstingIcon = 0
-			self.vb.burstingCount = self.vb.burstingCount + 1
-			timerBurstingBoilCD:Start(20.5-8, self.vb.burstingCount+1)--Remove minus 8 when moved to correct event
-		end
 		self.vb.burstingIcon = self.vb.burstingIcon + 1
 		if args:IsPlayer() then
+			playerBursting = true
 			specWarnBurstingBoil:Show()
 			specWarnBurstingBoil:Play("targetyou")
 		end
@@ -602,7 +605,7 @@ function mod:SPELL_AURA_REMOVED(args)
 		self:Schedule(3.5, checkThrowFail, self)
 	elseif spellId == 277007 then
 		if args:IsPlayer() then
-
+			playerBursting = false
 		end
 		if self.Options.SetIconOnBurstingBoil then
 			self:SetIcon(args.destName, 0)
@@ -631,16 +634,12 @@ function mod:UNIT_DIED(args)
 	if cid == 138529 or cid == 134635 then--Dark Young (P1, P2)
 		timerMassiveSmashCD:Stop(args.destGUID)
 		timerDarkBargainCD:Stop(args.destGUID)
---	elseif cid == 138531 or cid == 134634 then--Cyclopean Terror (P1, P2)
-	
---	elseif cid == 134590 then--Blightspreader Tendril
-
---	elseif cid == 136461 then--spawn of ghuun
-
---	elseif cid == 141265 then--Amorphus Cyst (cat)
-	
+	elseif cid == 134590 then--Blightspreader Tendril
+		timerBurrowCD:Stop(args.destGUID)
 	elseif cid == 134010 then--Gibbering Horror
 		timerMindNumbingChatterCD:Stop(args.destGUID)
+--	elseif cid == 136461 then--spawn of ghuun
+--	elseif cid == 138531 or cid == 134634 then--Cyclopean Terror (P1, P2)
 	end
 end
 
@@ -659,9 +658,33 @@ function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg, npc, _, _, target)
 	end
 end
 
---[[
+function mod:INSTANCE_ENCOUNTER_ENGAGE_UNIT()
+	for i = 1, 5 do
+		local unitID = "boss"..i
+		local GUID = UnitGUID(unitID)
+		if GUID and not seenAdds[GUID] then
+			seenAdds[GUID] = true
+			local cid = self:GetCIDFromGUID(GUID)
+			if cid == 134590 then--Big Adds
+				timerBurrowCD:Start(30.5, GUID)
+			end
+		end
+	end
+end
+
 function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
-	if spellId == 268251 then--Phase 2
+	if spellId == 277057 then--Summon Bursting Boil
+		self.vb.burstingIcon = 0
+		self.vb.burstingCount = self.vb.burstingCount + 1
+		timerBurstingBoil:Start(8, self.vb.burstingCount)
+		timerBurstingBoilCD:Start(20.5, self.vb.burstingCount+1)
+		if playerBursting then--Need to avoid the new boils
+			specWarnBurstingBoilCast:Show()
+			specWarnBurstingBoilCast:Play("watchstep")
+		else--Need to help soak them
+			warnBurstingBoil:Show(self.vb.burstingCount)
+		end
+	--elseif spellId == 268251 then--Phase 2
 
 	--elseif spellId == 269803 then--Phase 3
 		
@@ -671,5 +694,3 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 
 	end
 end
-
---]]

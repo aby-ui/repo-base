@@ -123,23 +123,26 @@ WorldQuestTracker.MapData.QuestHubs = {
 --world map anchors
 WorldQuestTracker.mapTables = {
 	--BFA
-		--boralus
-		[1161] = {
+	
+		[1161] = { --boralus
 			widgets = {},
 			Anchor_X = 0.99,
-			Anchor_Y = 0.46,
+			Anchor_Y = 0.72,
 			GrowRight = false,
-			show_on_map = WorldQuestTracker.MapData.ZoneIDs.KULTIRAS,
+			show_on_map = {
+					[WorldQuestTracker.MapData.ZoneIDs.KULTIRAS] = true,
+				},
 		},
 		
-		--dazar'alor
---		[1165] = {
---			widgets = {},
---			Anchor_X = 0.58,
---			Anchor_Y = 0.54,
---			GrowRight = true,
---			show_on_map = WorldQuestTracker.MapData.ZoneIDs.ZANDALAR,
---		},
+		[1165] = { --dazar'alor
+			widgets = {},
+			Anchor_X = 0.99,
+			Anchor_Y = 0.72,
+			GrowRight = false,
+			show_on_map = {
+					[WorldQuestTracker.MapData.ZoneIDs.ZANDALAR] = true,
+				}
+		},
 	
 		--alliance
 		[WorldQuestTracker.MapData.ZoneIDs.TIRAGARDE] = {
@@ -147,28 +150,36 @@ WorldQuestTracker.mapTables = {
 			Anchor_X = 0.99,
 			Anchor_Y = 0.72,
 			GrowRight = false,
-			show_on_map = WorldQuestTracker.MapData.ZoneIDs.KULTIRAS,
+			show_on_map = {
+					[WorldQuestTracker.MapData.ZoneIDs.KULTIRAS] = true,
+				},
 		},
 		[WorldQuestTracker.MapData.ZoneIDs.STORMSONG] = {
 			widgets = {},
 			Anchor_X = 0.99,
 			Anchor_Y = 0.32,
 			GrowRight = false,
-			show_on_map = WorldQuestTracker.MapData.ZoneIDs.KULTIRAS,
+			show_on_map = {
+					[WorldQuestTracker.MapData.ZoneIDs.KULTIRAS] = true,
+				},
 		},
 		[WorldQuestTracker.MapData.ZoneIDs.DRUSTVAR] = {
 			widgets = {},
 			Anchor_X = 0.01,
 			Anchor_Y = 0.65,
 			GrowRight = true,
-			show_on_map = WorldQuestTracker.MapData.ZoneIDs.KULTIRAS,
+			show_on_map = {
+					[WorldQuestTracker.MapData.ZoneIDs.KULTIRAS] = true,
+				},
 		},
 		[WorldQuestTracker.MapData.ZoneIDs.TOLDAGOR] = {
 			widgets = {},
 			Anchor_X = 0.99,
 			Anchor_Y = 0.58,
 			GrowRight = false,
-			show_on_map = WorldQuestTracker.MapData.ZoneIDs.KULTIRAS,
+			show_on_map = {
+					[WorldQuestTracker.MapData.ZoneIDs.KULTIRAS] = true,
+				},
 		},
 
 		--horde
@@ -177,21 +188,27 @@ WorldQuestTracker.mapTables = {
 			Anchor_X = 0.99,
 			Anchor_Y = 0.72,
 			GrowRight = false,
-			show_on_map = WorldQuestTracker.MapData.ZoneIDs.ZANDALAR,
+			show_on_map = {
+					[WorldQuestTracker.MapData.ZoneIDs.ZANDALAR] = true,
+				}
 		},
 		[WorldQuestTracker.MapData.ZoneIDs.NAZMIR] = {
 			widgets = {},
 			Anchor_X = 0.99,
 			Anchor_Y = 0.23,
 			GrowRight = false,
-			show_on_map = WorldQuestTracker.MapData.ZoneIDs.ZANDALAR,
+			show_on_map = {
+					[WorldQuestTracker.MapData.ZoneIDs.ZANDALAR] = true,
+				}
 		},
 		[WorldQuestTracker.MapData.ZoneIDs.VOLDUN] = {
 			widgets = {},
 			Anchor_X = 0.01,
 			Anchor_Y = 0.36,
 			GrowRight = true,
-			show_on_map = WorldQuestTracker.MapData.ZoneIDs.ZANDALAR,
+			show_on_map = {
+					[WorldQuestTracker.MapData.ZoneIDs.ZANDALAR] = true,
+				}
 		},
 		
 	--Legion
@@ -200,74 +217,96 @@ WorldQuestTracker.mapTables = {
 			Anchor_X = 0.01,
 			Anchor_Y = 0.60,
 			GrowRight = true,
-			show_on_map = WorldQuestTracker.MapData.ZoneIDs.BROKENISLES,
+			show_on_map = {
+				[WorldQuestTracker.MapData.ZoneIDs.BROKENISLES] = true,
+			}
 		},
 		[WorldQuestTracker.MapData.ZoneIDs.VALSHARAH] = {
 			widgets = {},
 			Anchor_X = 0.01,
 			Anchor_Y = 0.24,
 			GrowRight = true,
-			show_on_map = WorldQuestTracker.MapData.ZoneIDs.BROKENISLES,
+			show_on_map = {
+				[WorldQuestTracker.MapData.ZoneIDs.BROKENISLES] = true,
+			}
 		},
 		[WorldQuestTracker.MapData.ZoneIDs.HIGHMONTAIN] = {
 			widgets = {},
 			Anchor_X = 0.01,
 			Anchor_Y = 0.10,
 			GrowRight = true,
-			show_on_map = WorldQuestTracker.MapData.ZoneIDs.BROKENISLES,
+			show_on_map = {
+				[WorldQuestTracker.MapData.ZoneIDs.BROKENISLES] = true,
+			}
 		},
 		[WorldQuestTracker.MapData.ZoneIDs.STORMHEIM] = {
 			widgets = {},
 			Anchor_X = 0.99,
 			Anchor_Y = 0.37,
-			show_on_map = WorldQuestTracker.MapData.ZoneIDs.BROKENISLES,
+			show_on_map = {
+				[WorldQuestTracker.MapData.ZoneIDs.BROKENISLES] = true,
+			}
 		},
 		[WorldQuestTracker.MapData.ZoneIDs.SURAMAR] = {
 			widgets = {},
 			Anchor_X = 0.99,
 			Anchor_Y = 0.52,
-			show_on_map = WorldQuestTracker.MapData.ZoneIDs.BROKENISLES,
+			show_on_map = {
+				[WorldQuestTracker.MapData.ZoneIDs.BROKENISLES] = true,
+			}
 		},
 		[WorldQuestTracker.MapData.ZoneIDs.BROKENSHORE] = { --broken shore
 			widgets = {},
 			Anchor_X = 0.99,
 			Anchor_Y = 0.67,
-			show_on_map = WorldQuestTracker.MapData.ZoneIDs.BROKENISLES,
+			show_on_map = {
+				[WorldQuestTracker.MapData.ZoneIDs.BROKENISLES] = true,
+			}
 		},	
 		[WorldQuestTracker.MapData.ZoneIDs.EYEAZSHARA] = {
 			widgets = {},
 			Anchor_X = 0.5,
 			Anchor_Y = 0.8,
 			GrowRight = true,
-			show_on_map = WorldQuestTracker.MapData.ZoneIDs.BROKENISLES,
+			show_on_map = {
+				[WorldQuestTracker.MapData.ZoneIDs.BROKENISLES] = true,
+			}
 		},
 		[WorldQuestTracker.MapData.ZoneIDs.DALARAN] = {
 			widgets = {},
 			Anchor_X = 0.47,
 			Anchor_Y = 0.62,
 			GrowRight = true,
-			show_on_map = WorldQuestTracker.MapData.ZoneIDs.BROKENISLES,
+			show_on_map = {
+				[WorldQuestTracker.MapData.ZoneIDs.BROKENISLES] = true,
+			}
 		},
 		
 		[WorldQuestTracker.MapData.ZoneIDs.MCCAREE] = {
 			widgets = {},
 			Anchor_X = 0.01,
 			Anchor_Y = 0.20,
-			show_on_map = WorldQuestTracker.MapData.ZoneIDs.ARGUS,
+			show_on_map = {
+					[WorldQuestTracker.MapData.ZoneIDs.ARGUS] = true,
+				},
 			GrowRight = true,
 		},	
 		[WorldQuestTracker.MapData.ZoneIDs.ANTORAN] = {
 			widgets = {},
 			Anchor_X = 0.01,
 			Anchor_Y = 0.37,
-			show_on_map = WorldQuestTracker.MapData.ZoneIDs.ARGUS,
+			show_on_map = {
+					[WorldQuestTracker.MapData.ZoneIDs.ARGUS] = true,
+				},
 			GrowRight = true,
 		},	
 		[WorldQuestTracker.MapData.ZoneIDs.KROKUUN] = {
 			widgets = {},
 			Anchor_X = 0.01,
 			Anchor_Y = 0.52,
-			show_on_map = WorldQuestTracker.MapData.ZoneIDs.ARGUS,
+			show_on_map = {
+					[WorldQuestTracker.MapData.ZoneIDs.ARGUS] = true,
+				},
 			GrowRight = true,
 		},
 }
@@ -309,13 +348,70 @@ WorldQuestTracker.MapData.ResourceIcons = {
 	[1397630] = true, --order resources LEGION
 }
 
+-- texture ID of the reward when the world quest reward is a faction rep token
 WorldQuestTracker.MapData.ReputationIcons = {
 	[2032597] = true, --Talanji's Expedition BFA
+	[2032601] = true, --Zandalari Empire BFA
+	[2032599] = true, --Voldunai BFA
+	[2032593] = true, --Honorbound BFA
+	
+	[2032598] = true, --Tortollan Seekers BFA
 	[2032592] = true, --Champions of Azreroth BFA
+
 	[2032596] = true, --Storm's Wake BFA
 	[2032594] = true, --Order of Embers BFA
-	[2032601] = true, --Zandalari Empire BFA
-	[2032598] = true, --Tortollan Seekers BFA
+	[2032595] = true, --Proudmoore BFA
+	[2032591] = true, --7th Legion
+}
+
+WorldQuestTracker.MapData.FactionIcons = {
+	--BFA
+	[2159] = "Interface\\ICONS\\inv__faction_alliancewareffort", --7th Legion
+	[2160] = "Interface\\ICONS\\inv__faction_proudmooreadmiralty", --Proudmoore Admiralty
+	[2161] = "Interface\\ICONS\\inv__faction_orderofembers", --Order of Embers
+	[2162] = "Interface\\ICONS\\inv__faction_stormswake", --Storm's Wake
+	[2103] = "Interface\\ICONS\\inv__faction_zandalariempire", --Zandalari Empire
+	[2156] = "Interface\\ICONS\\inv__faction_talanjisexpedition", --Talanji's Expedition
+	[2157] = "Interface\\ICONS\\inv__faction_hordewareffort", --The Honorbound
+	[2158] = "Interface\\ICONS\\inv__faction_voldunai", --Voldunai
+	[2163] = "Interface\\ICONS\\inv__faction_tortollanseekers", --Tortollan Seekers
+	[2164] = "Interface\\ICONS\\inv__faction_championsofazeroth", --Champions of Azeroth
+}
+
+--reputation IDs for each faction -- UnitFactionGroup ("player")
+--/run for i = 1, 5000 do local name = GetFactionInfoByID (i) if(name)then print (i,name) end end
+WorldQuestTracker.MapData.ReputationByFaction = {
+	["Alliance"] = {
+		--BFA
+		[2159] = GetFactionInfoByID (2159), --7th Legion
+		[2160] = GetFactionInfoByID (2160), --Proudmoore Admiralty
+		[2161] = GetFactionInfoByID (2161), --Order of Embers
+		[2162] = GetFactionInfoByID (2162), --Storm's Wake
+		[2163] = GetFactionInfoByID (2163), --Tortollan Seekers
+		[2164] = GetFactionInfoByID (2164), --Champions of Azeroth
+		[GetFactionInfoByID (2159) or "NotFound"] = 2159, --7th Legion
+		[GetFactionInfoByID (2160) or "NotFound"] = 2160, --Proudmoore Admiralty
+		[GetFactionInfoByID (2161) or "NotFound"] = 2161, --Order of Embers
+		[GetFactionInfoByID (2162) or "NotFound"] = 2162, --Storm's Wake
+		[GetFactionInfoByID (2163) or "NotFound"] = 2163, --Tortollan Seekers
+		[GetFactionInfoByID (2164) or "NotFound"] = 2164, --Champions of Azeroth
+	},
+	
+	["Horde"] = {
+		--BFA
+		[2103] = GetFactionInfoByID (2103), --Zandalari Empire
+		[2156] = GetFactionInfoByID (2156), --Talanji's Expedition
+		[2157] = GetFactionInfoByID (2157), --The Honorbound
+		[2158] = GetFactionInfoByID (2158), --Voldunai
+		[2163] = GetFactionInfoByID (2163), --Tortollan Seekers
+		[2164] = GetFactionInfoByID (2164), --Champions of Azeroth
+		[GetFactionInfoByID (2103) or "NotFound"] = 2103, --Zandalari Empire
+		[GetFactionInfoByID (2156) or "NotFound"] = 2156, --Talanji's Expedition
+		[GetFactionInfoByID (2157) or "NotFound"] = 2157, --The Honorbound
+		[GetFactionInfoByID (2158) or "NotFound"] = 2158, --Voldunai
+		[GetFactionInfoByID (2163) or "NotFound"] = 2163, --Tortollan Seekers
+		[GetFactionInfoByID (2164) or "NotFound"] = 2164, --Champions of Azeroth
+	},
 }
 
 WorldQuestTracker.MapData.TradeSkillIcons = {

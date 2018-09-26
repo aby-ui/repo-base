@@ -99,6 +99,12 @@ local function UpdateFrame()
 	Mod.PartyFrame:Show()
 	Mod.KeystoneText:Show()
 
+	local currentAffixes = C_MythicPlus.GetCurrentAffixes()
+	if currentAffixes and #currentAffixes then
+		ChallengesFrame.WeeklyInfo.Child.Affixes[1]:ClearAllPoints()
+		ChallengesFrame.WeeklyInfo.Child.Affixes[1]:SetPoint("CENTER", ChallengesFrame.WeeklyInfo.Child.Label, "CENTER", 31 + (-31 * #currentAffixes), -45)
+	end
+
 	ChallengesFrame.WeeklyInfo.Child.WeeklyChest:ClearAllPoints()
 	ChallengesFrame.WeeklyInfo.Child.WeeklyChest:SetPoint("LEFT", 50, -30)
 	if ChallengesFrame.WeeklyInfo.Child.WeeklyChest:IsShown() then
@@ -281,9 +287,6 @@ function Mod:Blizzard_ChallengesUI()
 	keystoneText:SetPoint("BOTTOM", ChallengesFrame.WeeklyInfo.Child.WeeklyChest, "BOTTOM", 0, -25)
 	keystoneText:SetWidth(220)
 	Mod.KeystoneText = keystoneText
-
-	ChallengesFrame.WeeklyInfo.Child.Affixes[1]:ClearAllPoints()
-	ChallengesFrame.WeeklyInfo.Child.Affixes[1]:SetPoint("CENTER", ChallengesFrame.WeeklyInfo.Child.Label, "CENTER", -64, -45)
 
 	hooksecurefunc("ChallengesFrame_Update", UpdateFrame)
 end

@@ -372,6 +372,14 @@ GTFO.SpellID["253666"] = {
 -- * King's Rest *
 -- ***************
 
+-- TODO: Hunting Leap (Reban)
+
+GTFO.SpellID["269932"] = {
+  --desc = "Gust Slash";
+  applicationOnly = true;
+  sound = 1;
+};
+
 GTFO.SpellID["265914"] = {
   --desc = "Molten Gold (The Golden Serpent)";
   sound = 1;
@@ -382,7 +390,47 @@ GTFO.SpellID["267874"] = {
   sound = 1;
 };
 
--- TODO: Hunting Leap (Reban) - Is this escapable?  Only alert the current target or can current target run away?
+GTFO.SpellID["270891"] = {
+  --desc = "Channel Lightning (King Rahu'ai)";
+  sound = 1;
+};
+
+GTFO.SpellID["270931"] = {
+  --desc = "Darkshot";
+  sound = 1;
+};
+
+GTFO.SpellID["270503"] = {
+  --desc = "Hunting Leap (Skeletal Hunting Raptor)";
+  sound = 1;
+};
+
+GTFO.SpellID["270868"] = {
+  --desc = "Lingering Poison";
+  sound = 1;
+};
+
+GTFO.SpellID["270928"] = {
+  --desc = "Bladestorm (King Timalji)";
+  sound = 1;
+};
+
+GTFO.SpellID["270292"] = {
+  --desc = "Purifying Flame";
+  sound = 1;
+};
+
+GTFO.SpellID["271564"] = {
+  --desc = "Embalming Fluid";
+  applicationOnly = true;
+  sound = 1;
+};
+
+GTFO.SpellID["266191"] = {
+  --desc = "Whirling Axe";
+  sound = 1;
+  applicationOnly = true;
+};
 
 
 -- ********************

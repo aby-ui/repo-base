@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2166, "DBM-Uldir", nil, 1031)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17889 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 17920 $"):sub(12, -3))
 mod:SetCreatureID(134442)--135016 Plague Amalgam
 mod:SetEncounterID(2134)
 mod:SetZone()
@@ -439,9 +439,8 @@ function mod:SPELL_AURA_REMOVED(args)
 			--yellEvolvingAffliction:Cancel()
 		end
 	elseif spellId == 265129 then
-		local expectedDebuffs = self:IsMythic() and 4 or 3
 		local oneRemoved = false
-		for i = 1, expectedDebuffs do
+		for i = 1, 4 do
 			if vectorTargets[i] and vectorTargets[i] == args.destName then--Found assignment matching this units name
 				if not oneRemoved then
 					vectorTargets[i] = false--remove first assignment we find
@@ -534,7 +533,7 @@ function mod:INSTANCE_ENCOUNTER_ENGAGE_UNIT()
 			local cid = self:GetCIDFromGUID(GUID)
 			if cid == 135016 then--Big Adds
 				castsPerGUID[GUID] = 0
-				timerImmunoSuppCD:Start(5.4, 1, GUID)
+				timerImmunoSuppCD:Start(4, 1, GUID)
 			end
 		end
 	end

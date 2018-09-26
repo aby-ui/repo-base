@@ -708,11 +708,39 @@ GTFO.SpellID["258986"] = {
 -- * King's Rest *
 -- ***************
 
--- TODO: Serpentine Gust (The Golden Serpent) -- Is this avoidable?
--- TODO: Whirling Axes (Kula the Butcher) -- Is this avoidable?
--- TODO: Torrent Totem (Zanazal the Wise) -- Is this avoidable?
--- TODO: Gale Slash (Dazar, The First King) -- Is this avoidable?
--- TODO: Impaling Spear (Dazar, The First King) -- Is this avoidable?
+-- TODO: Gale Slash (Dazar, The First King)
+-- TODO: Impaling Spear (Dazar, The First King)
+
+GTFO.SpellID["270003"] = {
+  --desc = "Suppression Slam (Animated Guardian)";
+  sound = 3;
+};
+
+GTFO.SpellID["265781"] = {
+  --desc = "Serpentine Gust (The Golden Serpent)";
+  sound = 3;
+};
+
+GTFO.SpellID["270872"] = {
+  --desc = "Shadow Whirl (Bloodsworn Agent)";
+  sound = 3;
+};
+
+GTFO.SpellID["275212"] = {
+  --desc = "Bisecting Strike (Weaponmaster Halu)";
+  sound = 3;
+};
+
+GTFO.SpellID["270289"] = {
+  --desc = "Purification Beam";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["267105"] = {
+  --desc = "Torrent (Torrent Totem)";
+  sound = 3;
+};
 
 -- ********************
 -- * Siege of Boralus *

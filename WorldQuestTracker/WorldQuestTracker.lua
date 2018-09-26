@@ -169,7 +169,6 @@ WorldQuestTracker.CurrentMapID = 0
 WorldQuestTracker.LastWorldMapClick = 0
 WorldQuestTracker.MapSeason = 0
 WorldQuestTracker.MapOpenedAt = 0
-WorldQuestTracker.QueuedRefresh = 1
 WorldQuestTracker.WorldQuestButton_Click = 0
 WorldQuestTracker.Temp_HideZoneWidgets = 0
 WorldQuestTracker.lastZoneWidgetsUpdate = 0
