@@ -1083,7 +1083,8 @@ function TrGCDEventHandler(self, event, ...)
                     TrGCDCastSpBanTime[i] = GetTime()
 
                 elseif (event == "UNIT_SPELLCAST_SUCCEEDED") then
-                    if not lastSpellSent[i] then return else lastSpellSent[i] = nil end
+                    if not lastSpellSent[i] then return end
+                    if lastSpellSent[i] == arg5 then lastSpellSent[i] = nil end --腐蚀术172会先来一个146739 SUCCESS，再来一个172 SUCCESS
                     if (TrGCDCastSp[i] == 0) then
                         --print("succeeded then " .. spellname)
                         if (IsChannel == nil) then TrGCDCastSp[i] = 1 end
@@ -1110,6 +1111,7 @@ function TrGCDEventHandler(self, event, ...)
                         --print("succeeded " .. spellname .. " - " ..TrGCDCastSp[i])
                     end
                 elseif ((event == "UNIT_SPELLCAST_STOP") and (TrGCDCastSp[i] == 0)) then
+                    lastSpellSent[i] = nil
                     --print("stop " .. spellname)
                     TrGCDCastSp[i] = 1
                     TrGCDIcon[i][TrGCDi[i]-1].texture2:Show()
@@ -1118,6 +1120,7 @@ function TrGCDEventHandler(self, event, ...)
                     TrGCDSpStopName[i] = spellname
                     TrGCDSpStopTime[i] = GetTime()
                 elseif (event == "UNIT_SPELLCAST_CHANNEL_STOP") then
+                    lastSpellSent[i] = nil
                     TrGCDCastSp[i] = 1
                     --print("channel stop " .. spellname .. " - " .. TrGCDCastSp[i])
                 end
