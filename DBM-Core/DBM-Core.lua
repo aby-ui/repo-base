@@ -41,7 +41,7 @@
 --  Globals/Default Options  --
 -------------------------------
 DBM = {
-	Revision = tonumber(("$Revision: 17927 $"):sub(12, -3)),
+	Revision = tonumber(("$Revision: 17930 $"):sub(12, -3)),
 	DisplayVersion = "8.0.11 alpha", -- the string that is shown as version
 	ReleaseRevision = 17892 -- the revision of the latest stable version that is available
 }
@@ -10075,6 +10075,10 @@ do
 	
 	function bossModPrototype:NewSpecialWarningDodge(text, optionDefault, ...)
 		return newSpecialWarning(self, "dodge", text, nil, optionDefault, ...)
+	end
+	
+	function bossModPrototype:NewSpecialWarningDodgeCount(text, optionDefault, ...)
+		return newSpecialWarning(self, "dodgecount", text, nil, optionDefault, ...)
 	end
 	
 	function bossModPrototype:NewSpecialWarningDodgeLoc(text, optionDefault, ...)

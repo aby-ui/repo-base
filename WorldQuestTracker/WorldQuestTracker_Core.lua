@@ -919,7 +919,11 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 			worldSummary.TotalResources = 0
 			worldSummary.TotalAPower = 0
 			worldSummary.FactionSelected = 1
+			worldSummary.AnchorAmount = 6
+			worldSummary.MaxWidgetsPerRow = 8
 			worldSummary.FactionIDs = {}
+			worldSummary.ZoneAnchors = {}
+			worldSummary.AnchorsByQuestType = {}
 			worldSummary.FactionSelectedTemplate = DF:InstallTemplate ("button", "WQT_FACTION_SELECTED", {backdropbordercolor = {1, .8, 0, 1}}, "OPTIONS_BUTTON_TEMPLATE")
 			
 			worldSummary.Anchors = {}
@@ -929,6 +933,24 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 			worldSummary.FactionWidgets = {}
 			--store quests that are shown in the summary with the value poiting to its widget
 			worldSummary.ShownQuests = {}
+			
+			worldSummary.QuestTypesByIndex = {
+				"ANCHORTYPE_ARTIFACTPOWER",
+				"ANCHORTYPE_RESOURCES",
+				"ANCHORTYPE_EQUIPMENT",
+				"ANCHORTYPE_GOLD",
+				"ANCHORTYPE_REPUTATION",
+				"ANCHORTYPE_MISC",
+			}
+			
+			worldSummary.QuestTypes = {
+				["ANCHORTYPE_ARTIFACTPOWER"] = 1,
+				["ANCHORTYPE_RESOURCES"] = 2,
+				["ANCHORTYPE_EQUIPMENT"] = 3,
+				["ANCHORTYPE_GOLD"] = 4,
+				["ANCHORTYPE_REPUTATION"] = 5,
+				["ANCHORTYPE_MISC"] = 6,
+			}			
 			
 			for i = 1, 120 do
 				WorldQuestTracker.WorldSummaryQuestsSquares[i]:SetParent (worldSummary)
@@ -949,26 +971,260 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 				worldSummary:Hide()
 				--worldSummary.HideAnimation:Play()
 			end
-			
-			worldSummary.QuestTypes = {
-				ANCHORTYPE_ARTIFACTPOWER = 1,
-				ANCHORTYPE_RESOURCES = 2,
-				ANCHORTYPE_EQUIPMENT = 3,
-				ANCHORTYPE_GOLD = 4,
-				ANCHORTYPE_REPUTATION = 5,
-				ANCHORTYPE_MISC = 6,
-			}
-			
-			function worldSummary.UpdateOrder()
-				local order = WorldQuestTracker.db.profile.sort_order
-				worldSummary.QuestTypes.ANCHORTYPE_ARTIFACTPOWER = abs (order [WQT_QUESTTYPE_APOWER] - WQT_QUESTTYPE_MAX)
-				worldSummary.QuestTypes.ANCHORTYPE_RESOURCES = abs (order [WQT_QUESTTYPE_RESOURCE] - WQT_QUESTTYPE_MAX)
-				worldSummary.QuestTypes.ANCHORTYPE_EQUIPMENT = abs (order [WQT_QUESTTYPE_EQUIPMENT] - WQT_QUESTTYPE_MAX)
-				worldSummary.QuestTypes.ANCHORTYPE_GOLD = abs (order [WQT_QUESTTYPE_GOLD] - WQT_QUESTTYPE_MAX)
-				worldSummary.QuestTypes.ANCHORTYPE_REPUTATION = abs (order [WQT_QUESTTYPE_REPUTATION] - WQT_QUESTTYPE_MAX)
-				worldSummary.QuestTypes.ANCHORTYPE_MISC = WQT_QUESTTYPE_MAX + 1
+
+			local on_click_anchor_button = function (self, button, param1, param2)
+				local anchor = self.MyObject.Anchor
+				local questsToTrack = {}
+				
+				for i = 1, #anchor.Widgets do
+					local widget = anchor.Widgets [i]
+					if (widget:IsShown() and widget.questID) then
+						tinsert (questsToTrack, widget)
+					end
+				end
+				
+				C_Timer.NewTicker (.04, function (tickerObject)
+					local widget = tremove (questsToTrack)
+					if (widget) then
+						WorldQuestTracker.CheckAddToTracker (widget, widget, true)
+						local questID = widget.questID
+						
+						for _, widget in pairs (WorldQuestTracker.WorldMapSmallWidgets) do
+							if (widget.questID == questID and widget:IsShown()) then
+								--animations
+								if (widget.onEndTrackAnimation:IsPlaying()) then
+									widget.onEndTrackAnimation:Stop()
+								end
+								widget.onStartTrackAnimation:Play()
+								if (not widget.AddedToTrackerAnimation:IsPlaying()) then
+									widget.AddedToTrackerAnimation:Play()
+								end
+							end
+						end
+					else
+						tickerObject:Cancel()
+					end
+				end)
 			end
 			
+			--create anchors
+			for i = 1, worldSummary.AnchorAmount do
+				local anchor = CreateFrame ("frame", nil, worldSummary)
+				anchor:SetSize (150, 20)
+				
+				anchor:SetBackdrop ({bgFile = "Interface\\Tooltips\\UI-Tooltip-Background", tile = true, tileSize = 16, edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1})
+				anchor:SetBackdropColor (0, 0, 0, 0)
+				anchor:SetBackdropBorderColor (0, 0, 0, 0)
+				
+				anchor.Icon = DF:CreateImage (anchor)
+				anchor.Title = DF:CreateLabel (anchor)
+				anchor.Icon:SetPoint ("left", anchor, "left", 2, 0)
+				anchor.Title:SetPoint ("left", anchor.Icon, "right", 2, 0)
+				
+				anchor.WidgetsAmount = 0
+				anchor.Widgets = {}
+
+				--button to track all quests in the anchor
+				local anchorButton = DF:CreateButton (anchor, on_click_anchor_button, 20, 20, "", anchorID)
+				anchorButton:SetFrameLevel (anchor:GetFrameLevel()-1)
+				anchorButton.Texture = anchorButton:CreateTexture (nil, "overlay")
+				anchorButton.Texture:SetTexture ([[Interface\MINIMAP\SuperTrackerArrow]])
+				anchorButton.Texture:SetRotation (math.pi * 2 * .75)
+				anchorButton.Texture:SetAlpha (.5)
+				anchorButton.Texture:SetPoint ("left", anchorButton.widget, "left", -16, 0)
+				anchor.Button = anchorButton
+				anchorButton.Anchor = anchor
+				
+				anchorButton:SetHook ("OnEnter", function()
+					anchorButton.Texture:SetBlendMode ("ADD")
+					GameCooltip:Preset (2)
+					GameCooltip:AddLine (" track all quests of this type")
+					GameCooltip:AddIcon ([[Interface\AddOns\WorldQuestTracker\media\ArrowFrozen]], 1, 1, 20, 20, 0.1171, 0.6796, 0.1171, 0.7343)
+
+					GameCooltip:ShowCooltip (anchor.Button)
+				end)
+				
+				anchorButton:SetHook ("OnLeave", function()
+					anchorButton.Texture:SetBlendMode ("BLEND")
+					GameCooltip:Hide()
+				end)
+				
+				anchor:SetScript ("OnHide", function()
+					anchorButton:Hide()
+				end)
+				
+				worldSummary.Anchors [i] = anchor
+				--store a point to this table by its quest type
+				worldSummary.AnchorsByQuestType [worldSummary.QuestTypesByIndex [i]] = anchor
+				
+				anchor.QuestType = worldSummary.QuestTypesByIndex [i]
+		
+			end
+			
+			--called when using the anchor for the first time after addin a quest square
+			--it'll iterate among all anchors in use and reorder them the sort order defined by the user
+			function worldSummary.ReAnchor()
+				local Y = -50
+				
+				table.sort (worldSummary.Anchors, function(anchor1, anchor2) return anchor1.AnchorOrder < anchor2.AnchorOrder end)
+				
+				local previousAnchor
+				for index, anchor in pairs (worldSummary.Anchors) do
+					anchor:ClearAllPoints()
+					
+					if (previousAnchor) then
+						local addSecondLine = previousAnchor.WidgetsAmount > worldSummary.MaxWidgetsPerRow and -40 or 0
+						anchor:SetPoint ("topleft", previousAnchor, "bottomleft", 0, (-20 + addSecondLine) * WorldQuestTracker.db.profile.world_map_config.summary_scale)
+					else
+						anchor:SetPoint ("topleft", worldSummary, "topleft", 2, Y)
+					end
+					
+					anchor.Icon:SetTexture (anchor.AnchorIcon)
+					anchor.Title:SetText (anchor.AnchorTitle)
+					
+					previousAnchor = anchor
+				end
+			end
+
+			function worldSummary.GetAnchor (filterType, worldQuestType, questName, mapID)
+			
+				local anchor, anchorIcon, anchorTitle
+				
+				if (not WorldQuestTracker.db.profile.world_map_config.summary_showbyzone) then
+					if (filterType == "artifact_power") then
+						anchor = worldSummary.AnchorsByQuestType [worldSummary.QuestTypesByIndex [worldSummary.QuestTypes.ANCHORTYPE_ARTIFACTPOWER]]
+						anchorIcon, anchorTitle = "", "Artifact Power"
+						
+					elseif (filterType == "reputation_token") then
+						anchor = worldSummary.AnchorsByQuestType [worldSummary.QuestTypesByIndex [worldSummary.QuestTypes.ANCHORTYPE_REPUTATION]]
+						anchorIcon, anchorTitle = "", "Reputation"	
+						
+					elseif (filterType == "garrison_resource") then
+						anchor = worldSummary.AnchorsByQuestType [worldSummary.QuestTypesByIndex [worldSummary.QuestTypes.ANCHORTYPE_RESOURCES]]
+						anchorIcon, anchorTitle = "", "Resources"
+						
+					elseif (filterType == "equipment") then
+						anchor = worldSummary.AnchorsByQuestType [worldSummary.QuestTypesByIndex [worldSummary.QuestTypes.ANCHORTYPE_EQUIPMENT]]
+						anchorIcon, anchorTitle = "", "Equipment"
+
+					elseif (filterType == "gold") then
+						anchor = worldSummary.AnchorsByQuestType [worldSummary.QuestTypesByIndex [worldSummary.QuestTypes.ANCHORTYPE_GOLD]]
+						anchorIcon, anchorTitle = "", "Gold"
+
+					else
+						anchor = worldSummary.AnchorsByQuestType [worldSummary.QuestTypesByIndex [worldSummary.QuestTypes.ANCHORTYPE_MISC]]
+						anchorIcon, anchorTitle = "", "Misc"
+					end
+				else
+					--showing the summary by zone
+					anchorIndex = worldSummary.ZoneAnchors [mapID]
+					
+					if (not anchorIndex) then
+						anchorIndex = worldSummary.ZoneAnchors.NextAnchor
+						worldSummary.ZoneAnchors [mapID] = anchorIndex
+						
+						if (worldSummary.ZoneAnchors.NextAnchor < worldSummary.AnchorAmount) then
+							worldSummary.ZoneAnchors.NextAnchor = worldSummary.ZoneAnchors.NextAnchor + 1
+						end
+					end
+				end
+				
+				anchor:Show()
+				anchor.InUse = true
+				anchor.AnchorTitle = anchorTitle
+				anchor.AnchorIcon = anchorIcon
+				return anchor
+			end
+			
+			--get the values set by the use in the sort order menu and arrange anchors by those values
+			function worldSummary.UpdateOrder()
+				local order = WorldQuestTracker.db.profile.sort_order
+				--artifact power
+				worldSummary.AnchorsByQuestType [worldSummary.QuestTypesByIndex [worldSummary.QuestTypes.ANCHORTYPE_ARTIFACTPOWER]].AnchorOrder = abs (order [WQT_QUESTTYPE_APOWER] - (WQT_QUESTTYPE_MAX + 1))
+				--resource
+				worldSummary.AnchorsByQuestType [worldSummary.QuestTypesByIndex [worldSummary.QuestTypes.ANCHORTYPE_RESOURCES]].AnchorOrder = abs (order [WQT_QUESTTYPE_RESOURCE] - (WQT_QUESTTYPE_MAX + 1))
+				--equipment
+				worldSummary.AnchorsByQuestType [worldSummary.QuestTypesByIndex [worldSummary.QuestTypes.ANCHORTYPE_EQUIPMENT]].AnchorOrder = abs (order [WQT_QUESTTYPE_EQUIPMENT] - (WQT_QUESTTYPE_MAX + 1))
+				--gold
+				worldSummary.AnchorsByQuestType [worldSummary.QuestTypesByIndex [worldSummary.QuestTypes.ANCHORTYPE_GOLD]].AnchorOrder = abs (order [WQT_QUESTTYPE_GOLD] - (WQT_QUESTTYPE_MAX + 1))
+				--reputation
+				worldSummary.AnchorsByQuestType [worldSummary.QuestTypesByIndex [worldSummary.QuestTypes.ANCHORTYPE_REPUTATION]].AnchorOrder = abs (order [WQT_QUESTTYPE_REPUTATION] - (WQT_QUESTTYPE_MAX + 1))
+				--misc
+				worldSummary.AnchorsByQuestType [worldSummary.QuestTypesByIndex [worldSummary.QuestTypes.ANCHORTYPE_MISC]].AnchorOrder = 100
+			end
+
+			--reorder widgets that belong to the anchor, sorting by the questID, time left and selected faction
+			function worldSummary.ReorderAnchorWidgets (anchor)
+				
+				local isSortByTime = WorldQuestTracker.db.profile.force_sort_by_timeleft
+				
+				for i = 1, #anchor.Widgets do
+					local widget = anchor.Widgets [i]
+					
+					if (isSortByTime) then
+						widget.WidgetOrder = (widget.TimeLeft * 10) + (widget.questID / 100)
+					else
+						local orderPoints = widget.questID + abs (widget.TimeLeft - 1440) * 10
+
+						if (widget.FactionID == worldSummary.FactionSelected) then
+							orderPoints = orderPoints + 200000
+						end
+						
+						if (widget.IsCriteria) then
+							orderPoints = orderPoints + 100000
+						end
+						
+						widget.WidgetOrder = orderPoints
+					end
+				end
+				
+				if (isSortByTime) then
+					table.sort (anchor.Widgets, function (widget1, widget2)
+						return widget1.WidgetOrder > widget2.WidgetOrder
+					end)
+				else
+					table.sort (anchor.Widgets, function (widget1, widget2)
+						return widget1.WidgetOrder < widget2.WidgetOrder
+					end)
+				end
+
+				local growDirection = "right"
+				
+				local X, Y = 1, -1
+				
+				for i = 1, #anchor.Widgets do
+					local widget = anchor.Widgets [i]
+					widget:ClearAllPoints()
+					
+					if (growDirection == "right") then
+						widget:SetPoint ("topleft", anchor, "topleft", X, Y)
+						X = X + 25
+						if (i == worldSummary.MaxWidgetsPerRow) then
+							Y = Y - 40
+							X = 1
+						end
+					else
+						widget:SetPoint ("topright", anchor, "topright", X, Y)
+						X = X - 25
+						if (i == worldSummary.MaxWidgetsPerRow) then
+							Y = Y - 40
+							X = 1
+						end
+					end
+				end
+				
+				anchor.Button:ClearAllPoints()
+				
+				if (growDirection == "right") then
+					anchor.Button:SetPoint ("left", anchor.Widgets [#anchor.Widgets], "right", 1, 0)
+				else
+					anchor.Button:SetPoint ("right", anchor.Widgets [#anchor.Widgets], "left", -1, 0)
+				end
+				
+				anchor.Button:Show()
+			end
+			
+			--create faction buttons
 			function worldSummary.CreateFactionButtons()
 				local playerFaction = UnitFactionGroup ("player")
 				local factionButtonIndex = 1
@@ -1059,185 +1315,15 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 						factionButton:SetTemplate (DF:GetTemplate ("button", "OPTIONS_BUTTON_TEMPLATE"))
 						factionButton.SelectedBorder:Hide()
 					end
-				end			
+				end
 			end
 			
 			function worldSummary.OnSelectFaction (_, _, buttonIndex)
 				worldSummary.FactionSelected = worldSummary.FactionIDs [buttonIndex]
 				worldSummary.RefreshFactionButtons()
 				worldSummary.UpdateFaction()
-			end			
-			
-			--hide all anchors, widgets and refresh the order of the anchors
-			function worldSummary.ClearSummary()
-				worldSummary.UpdateOrder()
-				
-				wipe (worldSummary.ScheduleToUpdate)
-				wipe (worldSummary.ShownQuests)
-				
-				worldSummary.WidgetIndex = 1
-				worldSummary.TotalGold = 0
-				worldSummary.TotalResources = 0
-				worldSummary.TotalAPower = 0
-				
-				for _, anchor in pairs (worldSummary.Anchors) do
-					anchor:Hide()
-					anchor.InUse = false
-					anchor.WidgetsAmount = 0
-					wipe (anchor.Widgets)
-				end
-				
-				for _, widget in ipairs (WorldQuestTracker.WorldSummaryQuestsSquares) do
-					widget:Hide()
-				end
 			end
-			
-			function worldSummary.ReAnchor()
-				local Y = -50
-				
-				local anchorsInUse = {}
-				for anchorID, anchor in pairs (worldSummary.Anchors) do
-					tinsert (anchorsInUse, {anchor, anchorID})
-				end
-				
-				table.sort (anchorsInUse, DF.SortOrder2R)
-				
-				local previousAnchor
-				for _, anchorTable in pairs (anchorsInUse) do
-					local anchor = anchorTable [1]
-					anchor:ClearAllPoints()
-					
-					if (previousAnchor) then
-						anchor:SetPoint ("topleft", previousAnchor, "bottomleft", 0, -20 * WorldQuestTracker.db.profile.world_map_config.summary_scale)
-					else
-						anchor:SetPoint ("topleft", worldSummary, "topleft", 2, Y)
-					end
-					
-					--Y = Y - (WorldQuestTracker.db.profile.show_timeleft and 60 or 30)
-					
-					anchor.Icon:SetTexture (anchor.AnchorIcon)
-					anchor.Title:SetText (anchor.AnchorTitle)
-					
-					previousAnchor = anchor
-				end
-			end
-			
-			local on_click_anchor_button = function (self, button, param1, param2)
-				local anchor = self.MyObject.Anchor
-				local questsToTrack = {}
-				
-				for i = 1, #anchor.Widgets do
-					local widget = anchor.Widgets [i]
-					if (widget:IsShown() and widget.questID) then
-						tinsert (questsToTrack, widget)
-					end
-				end
-				
-				C_Timer.NewTicker (.04, function (tickerObject)
-					local widget = tremove (questsToTrack)
-					if (widget) then
-						WorldQuestTracker.CheckAddToTracker (widget, widget, true)
-						local questID = widget.questID
-						
-						for _, widget in pairs (WorldQuestTracker.WorldMapSmallWidgets) do
-							if (widget.questID == questID and widget:IsShown()) then
-								--animations
-								if (widget.onEndTrackAnimation:IsPlaying()) then
-									widget.onEndTrackAnimation:Stop()
-								end
-								widget.onStartTrackAnimation:Play()
-								if (not widget.AddedToTrackerAnimation:IsPlaying()) then
-									widget.AddedToTrackerAnimation:Play()
-								end
-							end
-						end
-					else
-						tickerObject:Cancel()
-					end
-				end)
-			end
-			
-			function worldSummary.GetAnchor (filterType, worldQuestType, questName)
-			
-				local anchorID, anchorIcon, anchorTitle
-				
-				if (filterType == "artifact_power") then
-					anchorID = worldSummary.QuestTypes.ANCHORTYPE_ARTIFACTPOWER
-					anchorIcon, anchorTitle = "", "Artifact Power"
-					
-				elseif (filterType == "reputation_token") then
-					anchorID = worldSummary.QuestTypes.ANCHORTYPE_REPUTATION
-					anchorIcon, anchorTitle = "", "Reputation"	
-					
-				elseif (filterType == "garrison_resource") then
-					anchorID = worldSummary.QuestTypes.ANCHORTYPE_RESOURCES
-					anchorIcon, anchorTitle = "", "Resources"
-					
-				elseif (filterType == "equipment") then
-					anchorID = worldSummary.QuestTypes.ANCHORTYPE_EQUIPMENT
-					anchorIcon, anchorTitle = "", "Equipment"
 
-				elseif (filterType == "gold") then
-					anchorID = worldSummary.QuestTypes.ANCHORTYPE_GOLD
-					anchorIcon, anchorTitle = "", "Gold"
-
-				else
-					anchorID = worldSummary.QuestTypes.ANCHORTYPE_MISC
-					anchorIcon, anchorTitle = "", "Misc"
-				end
-				
-				local anchor = worldSummary.Anchors [anchorID]
-				if (not anchor) then
-					anchor = CreateFrame ("frame", nil, worldSummary)
-					anchor:SetSize (150, 20)
-					anchor:SetBackdrop ({bgFile = "Interface\\Tooltips\\UI-Tooltip-Background", tile = true, tileSize = 16, edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1})
-					anchor:SetBackdropColor (0, 0, 0, 0)
-					anchor:SetBackdropBorderColor (0, 0, 0, 0)
-					anchor.Icon = DF:CreateImage (anchor)
-					anchor.Title = DF:CreateLabel (anchor)
-					anchor.WidgetsAmount = 0
-					anchor.Widgets = {}
-					anchor.Icon:SetPoint ("left", anchor, "left", 2, 0)
-					anchor.Title:SetPoint ("left", anchor.Icon, "right", 2, 0)
-					
-					local anchorButton = DF:CreateButton (anchor, on_click_anchor_button, 20, 20, "", anchorID)
-					--anchorButton:SetBackdrop ({bgFile = "Interface\\Tooltips\\UI-Tooltip-Background", tile = true, tileSize = 16, edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1})
-					anchorButton:SetFrameLevel (anchor:GetFrameLevel()-1)
-					anchorButton.Texture = anchorButton:CreateTexture (nil, "overlay")
-					anchorButton.Texture:SetTexture ([[Interface\MINIMAP\SuperTrackerArrow]])
-					anchorButton.Texture:SetRotation (math.pi * 2 * .75)
-					anchorButton.Texture:SetAlpha (.5)
-					anchorButton.Texture:SetPoint ("left", anchorButton.widget, "left", -16, 0)
-					anchor.Button = anchorButton
-					anchorButton.Anchor = anchor
-					
-					anchorButton:SetHook ("OnEnter", function()
-						anchorButton.Texture:SetBlendMode ("ADD")
-						GameCooltip:Preset (2)
-						GameCooltip:AddLine (" track all quests of this type")
-						GameCooltip:AddIcon ([[Interface\AddOns\WorldQuestTracker\media\ArrowFrozen]], 1, 1, 20, 20, 0.1171, 0.6796, 0.1171, 0.7343)
-
-						GameCooltip:ShowCooltip (anchor.Button)
-					end)
-					anchorButton:SetHook ("OnLeave", function()
-						anchorButton.Texture:SetBlendMode ("BLEND")
-						GameCooltip:Hide()
-					end)
-					
-					anchor:SetScript ("OnHide", function()
-						anchorButton:Hide()
-					end)
-					
-					worldSummary.Anchors [anchorID] = anchor
-				end
-	
-				anchor:Show()
-				anchor.InUse = true
-				anchor.AnchorTitle = anchorTitle
-				anchor.AnchorIcon = anchorIcon
-				return anchor
-			end
-			
 			function worldSummary.UpdateFaction()
 				for _, widget in pairs (WorldQuestTracker.WorldSummaryQuestsSquares) do
 					WorldQuestTracker.UpdateBorder (widget)
@@ -1254,63 +1340,32 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 				end
 			end
 			
-			--reorder widgets that belong to the anchor, sorting by the questID, time left and selected faction
-			function worldSummary.ReorderAnchorWidgets (anchor)
+			--hide all anchors, widgets and refresh the order of the anchors
+			function worldSummary.ClearSummary()
+				worldSummary.UpdateOrder()
 				
-				local isSortByTime = WorldQuestTracker.db.profile.force_sort_by_timeleft
+				wipe (worldSummary.ScheduleToUpdate)
+				wipe (worldSummary.ShownQuests)
+				wipe (worldSummary.ZoneAnchors)
+				worldSummary.ZoneAnchors.NextAnchor = 1
 				
-				for i = 1, #anchor.Widgets do
-					local widget = anchor.Widgets [i]
-					
-					if (isSortByTime) then
-						widget.WidgetOrder = (widget.TimeLeft * 10) + (widget.questID / 100)
-					else
-						local orderPoints = widget.questID + abs (widget.TimeLeft - 1440) * 10
+				worldSummary.WidgetIndex = 1
+				worldSummary.TotalGold = 0
+				worldSummary.TotalResources = 0
+				worldSummary.TotalAPower = 0
 
-						if (widget.FactionID == worldSummary.FactionSelected) then
-							orderPoints = orderPoints + 200000
-						end
-						
-						if (widget.IsCriteria) then
-							orderPoints = orderPoints + 100000
-						end
-						
-						widget.WidgetOrder = orderPoints
-					end
+				for _, anchor in pairs (worldSummary.Anchors) do
+					anchor:Hide()
+					anchor.InUse = false
+					anchor.WidgetsAmount = 0
+					wipe (anchor.Widgets)
 				end
 				
-				if (isSortByTime) then
-					table.sort (anchor.Widgets, function (widget1, widget2)
-						return widget1.WidgetOrder > widget2.WidgetOrder
-					end)
-				else
-					table.sort (anchor.Widgets, function (widget1, widget2)
-						return widget1.WidgetOrder < widget2.WidgetOrder
-					end)
+				for _, widget in ipairs (WorldQuestTracker.WorldSummaryQuestsSquares) do
+					widget:Hide()
 				end
-
-				local growDirection = "right"
-				
-				for i = 1, #anchor.Widgets do
-					local widget = anchor.Widgets [i]
-					widget:ClearAllPoints()
-					if (growDirection == "right") then
-						widget:SetPoint ("topleft", anchor, "topleft", 1 + (i - 1) * 25, -1)
-					else
-						widget:SetPoint ("topright", anchor, "topright", 1 + (i - 1) * 25 * -1, -1)
-					end
-				end
-				
-				anchor.Button:ClearAllPoints()
-				if (growDirection == "right") then
-					anchor.Button:SetPoint ("left", anchor.Widgets [#anchor.Widgets], "right", 1, 0)
-				else
-					anchor.Button:SetPoint ("right", anchor.Widgets [#anchor.Widgets], "left", -1, 0)
-				end
-				
-				anchor.Button:Show()
 			end
-			
+
 			function worldSummary.AddQuest (questTable)
 				
 				--unpack quest information
@@ -1319,7 +1374,7 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 				local isUsingTracker = WorldQuestTracker.db.profile.use_tracker
 				
 				--get the anchor for this quest
-				local anchor = worldSummary.GetAnchor (filterType, worldQuestType, questName)
+				local anchor = worldSummary.GetAnchor (filterType, worldQuestType, questName, mapID)
 				
 				--check if need to refresh the anchor positions
 				if (anchor.WidgetsAmount == 0) then
@@ -1399,6 +1454,9 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 					end
 				end
 				
+				if (anchor.WidgetsAmount == worldSummary.MaxWidgetsPerRow + 1) then
+					worldSummary.ReAnchor()
+				end
 				worldSummary.ReorderAnchorWidgets (anchor)
 				
 				--save the quest in the quests shown in the world summary

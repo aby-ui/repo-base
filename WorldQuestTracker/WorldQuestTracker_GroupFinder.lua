@@ -317,7 +317,7 @@ function WorldQuestTracker.OpenGroupFinderForQuest()
 		--/dump LFGListFrame.EntryCreation.Name
 	end
 	
-	if (title) then
+	if (title or ff.NpcID) then
 		LFGListUtil_OpenBestWindow()
 		LFGListCategorySelection_SelectCategory (LFGListFrame.CategorySelection, 1, 0)
 		LFGListCategorySelection_StartFindGroup (LFGListFrame.CategorySelection)
@@ -564,12 +564,36 @@ ChatFrame_AddMessageEventFilter ("CHAT_MSG_WHISPER", function (_, _, msg)
 	end
 end)
 
-function ff:PlayerEnteredWorldQuestZone (questID)
+function ff:PlayerEnteredWorldQuestZone (questID, npcID, npcName)
 	--> update the frame
-	local title, factionID, capped = C_TaskQuest.GetQuestInfoByQuestID (questID)
+
+	local title, isNpc
+	if (npcID) then
+		--> check if the group finder can search for rares
+		if (WorldQuestTracker.db.profile.rarescan.search_group) then
+		
+			if (WorldQuestTracker.db.profile.groupfinder.ignored_quests [npcID]) then
+				return
+			end
+			
+			if (WorldQuestTracker.db.profile.groupfinder.dont_open_in_group and IsInGroup()) then
+				return
+			end
+		
+			title = npcName
+			questID = npcID
+			isNpc = true
+		end
+		
+	elseif (questID) then
+		title = C_TaskQuest.GetQuestInfoByQuestID (questID)
+		
+	end
+	
 	if (title) then
 		ff.IsInQuestZone = true
 		ff.CurrentWorldQuest = questID
+		ff.NpcID = isNpc and questID
 		
 		--> toggle buttons
 		ff.OpenGroupFinderButton:Enable()
@@ -718,7 +742,7 @@ ff:SetScript ("OnEvent", function (self, event, arg1, questID, arg3)
 		local active, activityID, ilvl, honorLevel, name, comment, voiceChat, duration, autoAccept, privateGroup, questID = C_LFGList.GetActiveEntryInfo()
 		
 		--> check if the player has a group listed in the LFG and if is the group leader
-		if (active and ff.CurrentWorldQuest and UnitIsGroupLeader ("player") and name:find ("k00000|")) then
+		if (active and ff.CurrentWorldQuest and UnitIsGroupLeader ("player") and (name:find ("k00000|") or name:find ("k000000|"))) then
 			local title, factionID, tagID, tagName, worldQuestType, rarity, isElite, tradeskillLineIndex = WorldQuestTracker.GetQuest_Info (ff.CurrentWorldQuest)
 			
 			local isInQuest = false

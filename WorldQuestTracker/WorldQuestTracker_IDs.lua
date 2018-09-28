@@ -505,6 +505,21 @@ WorldQuestTracker.MapData.RaresToScan = {
 		[124185] = true, -- Golrakahn
 		[122004] = true, -- Umbra'jin
 		
+		--arathi highlands
+		[141668] = true, --echo of myzrael
+		[141618] = true, --cresting goliath
+		[141615] = true, --burniong goliath
+		[142436] = true, --ragebeak
+		[142440] = true, --yogursa
+		[141620] = true, --rumbling goliath
+		[142435] = true, --plaguefeather
+		[141942] = true, --molok the crusher
+		[142438] = true, --venomarus
+		[141616] = true, --thundering goliath
+		[142508] = true, --branchlord akdrus
+		[142437] = true, --skullripper
+		[142423] = true, --overseer krix
+		
 	--Legion
 		[126338] = true, --wrathlord yarez
 		[126852] = true, --wrangler kravos

@@ -129,6 +129,7 @@ do
 				summary_show = true,
 				summary_scale = 1,
 				summary_timeleft = true,
+				summary_showbyzone = false,
 			},
 			
 			disable_world_map_widgets = true,

@@ -249,6 +249,7 @@ GTFO.SpellID["274904"] = {
 
 GTFO.SpellID["277632"] = {
   --desc = "Demolisher Cannon (Doom's Howl Turret)";
+  applicationOnly = true;
   sound = 3;
 };
 
@@ -845,11 +846,8 @@ GTFO.SpellID["277794"] = {
 -- TODO: Void Wall (Zek'voz) -- Mythic only - Avoidable?
 -- TODO: Blood Geyser (Vectis) -- What is this?
 -- TODO: Pit of Despair (Zul) -- Avoidable? 
--- TODO: Virulent Corruption (G'huun)
--- TODO: Dark Bargain (G'huun)
 -- TODO: Tendrils of Corruption (G'huun) -- Mythic only
 -- TODO: Wave of Corruption (G'huun)
--- TODO: Gaze of G'huun (G'huun)
 -- TODO: Explosive Corruption (G'huun) -- If standing too close to a player that's infected, not for the infected
 
 GTFO.SpellID["277545"] = {
@@ -910,6 +908,23 @@ GTFO.SpellID["262292"] = {
 
 GTFO.SpellID["278988"] = {
   --desc = "Wild Leap (Nazmani Dominator)";
+  sound = 3;
+};
+
+GTFO.SpellID["273486"] = {
+  --desc = "Virulent Corruption (G'huun)";
+  sound = 3;
+};
+
+GTFO.SpellID["273401"] = {
+  --desc = "Mind Thrall (G'huun)";
+  applicationOnly = true;
+  sound = 1;
+};
+
+GTFO.SpellID["267700"] = {
+  --desc = "Gaze of G'huun (G'huun)";
+  applicationOnly = true;
   sound = 3;
 };
 

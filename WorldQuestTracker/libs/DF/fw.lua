@@ -1,5 +1,5 @@
 
-local dversion = 108
+local dversion = 109
 local major, minor = "DetailsFramework-1.0", dversion
 local DF, oldminor = LibStub:NewLibrary (major, minor)
 
@@ -163,6 +163,14 @@ function DF:FadeFrame (frame, t)
 		frame.fading_in = false
 		frame:SetAlpha (0)
 		frame:Hide()
+	end
+end
+
+function DF.table.find (t, value)
+	for i = 1, #t do
+		if (t[i] == value) then
+			return i
+		end
 	end
 end
 
@@ -1791,6 +1799,29 @@ local frameshake_play = function (parent, shakeObject, scaleDirection, scaleAmpl
 	frameshake_do_update (parent, shakeObject)
 end
 
+local frameshake_set_config = function (parent, shakeObject, duration, amplitude, frequency, absoluteSineX, absoluteSineY, scaleX, scaleY, fadeInTime, fadeOutTime, anchorPoints)
+	shakeObject.Amplitude = amplitude or shakeObject.Amplitude
+	shakeObject.Frequency = frequency or shakeObject.Frequency
+	shakeObject.Duration = duration or shakeObject.Duration
+	shakeObject.FadeInTime = fadeInTime or shakeObject.FadeInTime
+	shakeObject.FadeOutTime = fadeOutTime or shakeObject.FadeOutTime
+	shakeObject.ScaleX  = scaleX or shakeObject.ScaleX
+	shakeObject.ScaleY = scaleY or shakeObject.ScaleY
+	
+	if (absoluteSineX ~= nil) then
+		shakeObject.AbsoluteSineX = absoluteSineX
+	end
+	if (absoluteSineY ~= nil) then
+		shakeObject.AbsoluteSineY = absoluteSineY
+	end
+	
+	shakeObject.OriginalScaleX = shakeObject.ScaleX
+	shakeObject.OriginalScaleY = shakeObject.ScaleY
+	shakeObject.OriginalFrequency = shakeObject.Frequency
+	shakeObject.OriginalAmplitude = shakeObject.Amplitude
+	shakeObject.OriginalDuration = shakeObject.Duration
+end
+
 function DF:CreateFrameShake (parent, duration, amplitude, frequency, absoluteSineX, absoluteSineY, scaleX, scaleY, fadeInTime, fadeOutTime, anchorPoints)
 
 	--> create the shake table
@@ -1830,6 +1861,7 @@ function DF:CreateFrameShake (parent, duration, amplitude, frequency, absoluteSi
 		parent.PlayFrameShake = frameshake_play
 		parent.StopFrameShake = frameshake_stop
 		parent.UpdateFrameShake = frameshake_do_update
+		parent.SetFrameShakeSettings = frameshake_set_config
 		
 		--> register the frame within the frame shake updater
 		FrameshakeUpdateFrame.RegisterFrame (parent)

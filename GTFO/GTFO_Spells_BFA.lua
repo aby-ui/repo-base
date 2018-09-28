@@ -482,13 +482,6 @@ GTFO.SpellID["274113"] = {
 GTFO.SpellID["270287"] = {
   --desc = "Blighted Ground (G'huun)";
   sound = 1;
-  test = true;
-};
-
-GTFO.SpellID["263326"] = {
-  --desc = "Undulating Mass (G'huun)";
-  sound = 1;
-  test = true;
 };
 
 GTFO.SpellID["284631"] = {
@@ -561,5 +554,10 @@ GTFO.SpellID["274195"] = {
   applicationOnly = true;
   sound = 1;
   test = true;
+};
+
+GTFO.SpellID["276834"] = {
+  --desc = "Arcing Discharge (G'huun)";
+  sound = 1;
 };
 

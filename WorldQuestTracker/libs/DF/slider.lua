@@ -810,7 +810,7 @@ local SwitchOnClick = function (self, button, forced_value, value)
 		--> safe call
 		local success, errorText = pcall (slider.OnSwitch, slider, slider.FixedValue, value)
 		if (not success) then
-			error ("Details! Framework: OnSwitch() " .. (button:GetName() or "-NONAME-") ..  " error: " .. (errorText or ""))
+			error ("Details! Framework: OnSwitch() " .. (button.GetName and button:GetName() or "-NONAME-") ..  " error: " .. (errorText or ""))
 		end
 		
 		--> trigger hooks
