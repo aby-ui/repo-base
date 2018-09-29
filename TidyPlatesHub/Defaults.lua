@@ -98,6 +98,7 @@ TidyPlatesHubDefaults = {
 	OpacityFilterPlayers = false,
 	OpacityFilterFriendlyNPC = false,
 	OpacityFilterInactive = false,
+    OpacityFilterInactiveOnlyInCombat = true,
 	OpacityFilterMini = false,
 	OpacityFilterUntitledFriendlyNPC = false,
 

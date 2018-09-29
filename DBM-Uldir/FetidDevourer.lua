@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2146, "DBM-Uldir", nil, 1031)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17927 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 17938 $"):sub(12, -3))
 mod:SetCreatureID(133298)
 mod:SetEncounterID(2128)
 mod:SetZone()
@@ -153,7 +153,7 @@ function mod:SPELL_CAST_START(args)
 	local spellId = args.spellId
 	if spellId == 262292 then
 		specWarnRottingRegurg:Show()
-		specWarnRottingRegurg:Play("shockwave")
+		specWarnRottingRegurg:Play("breathsoon")
 		if not self:IsEasy() then
 			if self:IsMythic() then
 				timerRottingRegurgCD:Start(37)--37

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2167, "DBM-Uldir", nil, 1031)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17902 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 17939 $"):sub(12, -3))
 mod:SetCreatureID(135452)--136429 Chamber 01, 137022 Chamber 02, 137023 Chamber 03
 mod:SetEncounterID(2141)
 mod:SetZone()
@@ -68,6 +68,7 @@ local function clearBossICD(self)
 	self.vb.bossInICD = false
 end
 
+--All timers are affected by other timers, EXCEPT tank ability, that is always cast regardless of ICD
 local function updateAllTimers(self, ICD)
 	self.vb.bossInICD = true
 	self:Unschedule(clearBossICD)
@@ -242,23 +243,25 @@ function mod:SPELL_CAST_SUCCESS(args)
 		DBM:Debug("what way is wind blowing for spellId :"..spellId)
 	elseif spellId == 267945 then--Global Id for winds
 		warnWindTunnel:Show()
-		timerWindTunnelCD:Show()--40-47
+		timerWindTunnelCD:Start()--40 unless delayed by ICD
 		updateAllTimers(self, 6)
 	elseif spellId == 269827 or spellId == 277973 or spellId == 277961 or spellId == 277742 then
 		if self:IsMythic() then--All the things
 			specWarnSurgicalBeam:Show(DBM_CORE_BOTH)
 			if self.vb.phase == 3 then
-				timerSurgicalBeamCD:Start(20.5, DBM_CORE_BOTH)--20, but often delayed by ICD
+				timerSurgicalBeamCD:Start(20.5, DBM_CORE_BOTH)--20, but almost always delayed by ICD
 				countdownSurgicalBeam:Start(20.5)
 			else
 				timerSurgicalBeamCD:Start(50, DBM_CORE_BOTH)--50, but often delayed by ICD
 				countdownSurgicalBeam:Start(50)
 			end
+			updateAllTimers(self, 8.5)
 		elseif self:IsEasy() then--Only side
 			specWarnSurgicalBeam:Show(DBM_CORE_SIDE)
 			timerSurgicalBeamCD:Start(30, DBM_CORE_SIDE)--30-31
 			countdownSurgicalBeam:Start(30)
 			self.vb.nextLaser = 1
+			updateAllTimers(self, 8.5)
 		else--Heroic (alternating)
 			if spellId == 277961 or spellId == 277742 or spellId == 269827 then--Top spellIds
 				specWarnSurgicalBeam:Show(DBM_CORE_TOP)
@@ -266,6 +269,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 				timerSurgicalBeamCD:Start(11, DBM_CORE_SIDE)--Usually delayed, but yes it's 11
 				countdownSurgicalBeam:Start(11)
 				self.vb.nextLaser = 1
+				updateAllTimers(self, 10.9)--Top down beams on non mythic granted even MORE extend
 			else--Sides (277973 all)
 				specWarnSurgicalBeam:Show(DBM_CORE_SIDE)
 				self.vb.nextLaser = 2
@@ -276,6 +280,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 					timerSurgicalBeamCD:Start(29, DBM_CORE_TOP)
 					countdownSurgicalBeam:Start(29)
 				end
+				updateAllTimers(self, 8.5)
 			end
 		end
 		specWarnSurgicalBeam:Play("watchstep")--laserrun wasn't quite right, cause it says "on you" Needed "laser, run" not "laser on you, run"

@@ -271,7 +271,7 @@ local function BuildHubPanel(panel)
 	panel.FilterLabel = CreateQuickHeadingLabel(nil, "单位过滤", AlignmentColumn, F, 0, 5)
 	panel.OpacityFiltered, F = CreateQuickSlider(objectName.."OpacityFiltered", "过滤单位透明度:", AlignmentColumn, panel.FilterLabel, 0, 2)
 	panel.ScaleFiltered, F = CreateQuickSlider(objectName.."ScaleFiltered", "过滤单位比例:", AlignmentColumn, F, 0, 2)
-	panel.FilterScaleLock, F = CreateQuickCheckbutton(objectName.."FilterScaleLock", "打勾启动过滤", AlignmentColumn, F, 16)
+	panel.FilterScaleLock = CreateQuickCheckbutton(objectName.."FilterScaleLock", "优先于焦点比例", AlignmentColumn, F, 280, -17)
 
 	panel.OpacityFilterNeutralUnits, F = CreateQuickCheckbutton(objectName.."OpacityFilterNeutralUnits", "过滤中立", AlignmentColumn, F, 8, 4)
 	panel.OpacityFilterNonElite, F = CreateQuickCheckbutton(objectName.."OpacityFilterNonElite", "过滤非精英", AlignmentColumn, F, 8)
@@ -281,7 +281,8 @@ local function BuildHubPanel(panel)
 
     panel.OpacityFilterPlayers = CreateQuickCheckbutton(objectName.."OpacityFilterPlayers", "过滤玩家", AlignmentColumn, panel.FilterScaleLock, OffsetColumnB, 4)
 	panel.OpacityFilterInactive = CreateQuickCheckbutton(objectName.."OpacityFilterInactive", "过滤未激活", AlignmentColumn, panel.OpacityFilterPlayers, OffsetColumnB)
-	panel.OpacityFilterMini = CreateQuickCheckbutton(objectName.."OpacityFilterMini", "过滤杂兵", AlignmentColumn, panel.OpacityFilterInactive, OffsetColumnB)
+    panel.OpacityFilterInactiveOnlyInCombat = CreateQuickCheckbutton(objectName.."OpacityFilterInactiveOnlyInCombat", "仅当玩家在战斗时才过滤", AlignmentColumn, panel.OpacityFilterInactive, OffsetColumnB + 20)
+	panel.OpacityFilterMini = CreateQuickCheckbutton(objectName.."OpacityFilterMini", "过滤杂兵", AlignmentColumn, panel.OpacityFilterInactiveOnlyInCombat, OffsetColumnB)
 
 	panel.OpacityCustomFilterLabel = CreateQuickItemLabel(nil, "过滤单位名字:", AlignmentColumn, F, 8, 4)
 	panel.OpacityFilterList, L = CreateQuickEditbox(objectName.."OpacityFilterList", AlignmentColumn, panel.OpacityCustomFilterLabel, 8)
