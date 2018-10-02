@@ -492,7 +492,7 @@ function WorldQuestTracker.UpdateAllWorldMapAnchors (worldMapID)
 end
 
 function WorldQuestTracker.UpdateWorldMapAnchors (x, y, frame)
-	WorldQuestTrackerAddon.DataProvider:GetMap():SetPinPosition (frame.AnchorFrame, x, y)
+	WorldQuestTrackerAddon.DataProvider:GetMap():SetPinPosition (frame.AnchorFrame or frame, x, y)
 end
 
 function WorldQuestTracker.GetWorldMapWidget (configTable, showTimeLeftText)

@@ -105,6 +105,8 @@ function WorldQuestTracker.GetMapName (uiMapId)
 	if (mapInfo) then
 		local mapName = mapInfo and mapInfo.name or "wrong map id"
 		return mapName
+	else
+		return "wrong map id"
 	end
 end
 

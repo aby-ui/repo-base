@@ -22,7 +22,7 @@ local function UnitFilter(unit)
 		if GetUnitQuestInfo(unit) then return false end
 
 		if unit.reaction ~= "FRIENDLY" then
-			if not (unit.isMarked or unit.isInCombat or unit.threatValue > 0 or (LocalVars.OpacityFilterInactiveOnlyInCombat and not InCombatLockdown()) or (not LocalVars.OpacityFilterInactiveOnlyInCombat and unit.health < unit.healthmax)) then
+			if not (unit.isMarked or unit.isInCombat or unit.threatValue > 0 or (LocalVars.OpacityFilterInactiveOnlyInCombat and (not InCombatLockdown() or UnitExists("boss1"))) or (not LocalVars.OpacityFilterInactiveOnlyInCombat and unit.health < unit.healthmax)) then
 				return true
 			end
 		end

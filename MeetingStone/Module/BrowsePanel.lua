@@ -372,7 +372,9 @@ function BrowsePanel:OnInitialize()
         LootDropdown:SetDefaultText(L['不屏蔽'])
         --LootDropdown:SetMenuTable(ACTIVITY_LOOT_MENUTABLE_WITHALL)
         local levelTable = { { value = 0, text = "不屏蔽" }, { value = 1, text = "屏蔽无要求队伍" }, { value = 300, text = "低于300" }, }
-        local start = floor(GetAverageItemLevel()/5) * 5
+        local avgLevel = GetAverageItemLevel()
+        avgLevel = avgLevel > 0 and avgLevel or 370
+        local start = floor(avgLevel/5) * 5
         for i=0, 8 do
             local level = start - i * 10
             if level <= 300 then break end

@@ -3,8 +3,7 @@ if not L then return end
 L["World Quest Tracker"] = "世界任务增强"
 L["S_APOWER_AVAILABLE"] = "可用的"
 L["S_APOWER_NEXTLEVEL"] = "下一等级"
---[[Translation missing --]]
---[[ L["S_DECREASESIZE"] = ""--]] 
+L["S_DECREASESIZE"] = "减少尺寸"
 L["S_ENABLED"] = "已启用"
 L["S_ERROR_NOTIMELEFT"] = "此任务已过期。"
 L["S_ERROR_NOTLOADEDYET"] = "这个任务还没有被加载，请稍候。"
@@ -50,8 +49,7 @@ L["S_GROUPFINDER_RIGHTCLICKCLOSE"] = "右击关闭"
 L["S_GROUPFINDER_SECONDS"] = "秒"
 L["S_GROUPFINDER_TITLE"] = "队伍寻找"
 L["S_GROUPFINDER_TUTORIAL1"] = "加入队伍完成相同任务能更快的完成世界任务！"
---[[Translation missing --]]
---[[ L["S_INCREASESIZE"] = ""--]] 
+L["S_INCREASESIZE"] = "增加尺寸"
 L["S_MAPBAR_AUTOWORLDMAP"] = "自动世界地图"
 L["S_MAPBAR_FILTER"] = "过滤"
 L["S_MAPBAR_FILTERMENU_FACTIONOBJECTIVES"] = "阵营目标"
@@ -136,10 +134,8 @@ L["S_TUTORIAL_PARTY"] = "队伍中时，蓝星显示此全部队友有此任务�
 L["S_TUTORIAL_TIMELEFT"] = "显示剩余时间（大于4小时，大于90分钟，大于30分钟，小于30分钟）"
 L["S_TUTORIAL_WORLDMAPBUTTON"] = "点击这个按钮将向你显示破碎群岛地图。"
 L["S_UNKNOWNQUEST"] = "未知任务"
---[[Translation missing --]]
---[[ L["S_WORLDMAP_QUESTLOCATIONS"] = ""--]] 
---[[Translation missing --]]
---[[ L["S_WORLDMAP_QUESTSUMMARY"] = ""--]] 
+L["S_WORLDMAP_QUESTLOCATIONS"] = "显示任务位置"
+L["S_WORLDMAP_QUESTSUMMARY"] = "显示任务摘要"
 L["S_WORLDMAP_TOOGLEQUESTS"] = "切换任务"
 L["S_WORLDQUESTS"] = "世界任务"
 L["Search for a Group in Group Finder"] = "用预创建寻找队伍"

@@ -4,45 +4,41 @@
 -- local bindings!
 local Addon = _G[...]
 local L = _G.OMNICC_LOCALS
+
 local After = _G.C_Timer.After
 local GetTime = _G.GetTime
+
 local max = math.max
 local min = math.min
 local next = next
 local strjoin = _G.strjoin
-local round = _G.Round
 
-local function roundTo(v, places)
-    local exp = 10 ^ places
-    return floor(v * exp + 0.5) / exp
-end
+-- time units in ms
+local DAY = 86400000
+local HOUR = 3600000
+local MINUTE = 60000
+local SECOND = 1000
+local TENTHS = 100
+local TICK = 16
 
--- sexy constants!
--- the minimum timer increment
-local TICK = 0.01
+-- rounding values in ms
+local HALF_DAY = 43200000
+local HALF_HOUR = 5400000
+local HALF_MINUTE = 30000
+local HALF_SECOND = 500
+local HALF_TENTHS = 50
 
--- time units in seconds
-local DAY = 86400
-local HOUR = 3600
-local MINUTE = 60
-
-local HALF_DAY = 43200
-local HALF_HOUR = 5400
-local HALF_MINUTE = 30
-local HALF_SECOND = 0.5
-
--- transition points
-local HOURS_THRESHOLD = 84600 --23.5 hours in seconds
-local MINUTES_THRESHOLD = 3570 --59.5 minutes in seconds
-local SECONDS_THRESHOLD = 59.5
-local SOON_THRESHOLD = 5.5
+-- transition points in ms
+local HOURS_THRESHOLD = 84600000 -- 23.5 hours
+local MINUTES_THRESHOLD = 3570000 -- 59.5 minutes
+local SECONDS_THRESHOLD = 59500 -- 59.5 seconds
+local SOON_THRESHOLD = 5500 -- 5.5 seconds
 
 -- internal state!
 -- all active timers
 local active = {}
 -- inactive timers
--- here we use a weak table so that inactive timers are cleaned up on garbage
--- collection
+-- we use a weak table so that inactive timers are cleaned up on gc
 local inactive = setmetatable({}, {__mode = "k" })
 
 local function cooldown_GetKind(cooldown)
@@ -63,7 +59,7 @@ local Timer_MT = { __index = Timer }
 
 function Timer:GetOrCreate(cooldown)
     local start, duration = cooldown:GetCooldownTimes()
-    if not (start and start > 0) then
+    if not (start and duration and start > 0 and duration > TICK) then
         return
     end
 
@@ -72,15 +68,14 @@ function Timer:GetOrCreate(cooldown)
     local key = strjoin("-", start, duration, kind, settings and settings.id or "base")
 
     local timer = active[key]
-
     if not timer then
         timer = self:Restore() or self:Create()
 
-        timer.duration = duration / 1000
+        timer.duration = duration
+        timer.endTime = start + duration
         timer.key = key
         timer.kind = kind
         timer.settings = settings
-        timer.start = start / 1000
         timer.subscribers = {}
 
         active[key] = timer
@@ -124,7 +119,7 @@ function Timer:Destroy()
     self.key = nil
     self.kind = nil
     self.settings = nil
-    self.start = nil
+    self.endTime = nil
     self.state = nil
     self.subscribers = nil
     self.text = nil
@@ -135,8 +130,33 @@ end
 function Timer:Update()
     if not self.key then return end
 
-    local remain = self.duration - (GetTime() - self.start)
-    if remain > 0 then
+    local remain = self.endTime - (GetTime() * SECOND)
+
+    -- handle cooldowns that will start in the future or are broken after a
+    -- computer restart. The precision here is over 10 so that we can account
+    -- for some floating point math fun
+    if remain > (self.duration + TICK) then
+        local text = ""
+        if self.text ~= text then
+            self.text = text
+            for subscriber in pairs(self.subscribers) do
+                subscriber:OnTimerTextUpdated(self, text)
+            end
+        end
+
+        local state = "hours"
+        if self.state ~= state then
+            self.state = state
+            for subscriber in pairs(self.subscribers) do
+                subscriber:OnTimerStateUpdated(self, state)
+            end
+        end
+
+        local sleep = remain - self.duration
+        if sleep < math.huge then
+            After((sleep + TICK) / SECOND, self.callback)
+        end
+    elseif remain > 0 then
         local text, textSleep = self:GetTimerText(remain)
         if self.text ~= text then
             self.text = text
@@ -153,9 +173,9 @@ function Timer:Update()
             end
         end
 
-        local sleep = max(min(textSleep, stateSleep), TICK)
+        local sleep = min(textSleep, stateSleep)
         if sleep < math.huge then
-            After(sleep, self.callback)
+            After((sleep + TICK) / SECOND, self.callback)
         end
     elseif not self.finished then
         self.finished = true
@@ -193,8 +213,8 @@ function Timer:GetTimerText(remain)
 
     local sets = self.settings
     if sets then
-        tenthsThreshold = sets.tenthsDuration or 0
-        mmSSThreshold = sets.mmSSDuration or 0
+        tenthsThreshold = (sets.tenthsDuration or 0) * SECOND
+        mmSSThreshold = (sets.mmSSDuration or 0) * SECOND
     else
         tenthsThreshold = 0
         mmSSThreshold = 0
@@ -202,90 +222,90 @@ function Timer:GetTimerText(remain)
 
     if remain < tenthsThreshold then
         -- tenths of seconds
-        local tenths = roundTo(remain, 1)
-        local sleep = TICK + (remain - (tenths - 0.05))
+        local tenths = (remain + HALF_TENTHS) - (remain + HALF_TENTHS) % TENTHS
+
+        local sleep = remain - (tenths - HALF_TENTHS)
 
         if tenths > 0 then
-            return L.TenthsFormat:format(tenths), sleep
+            return L.TenthsFormat:format(tenths / SECOND), sleep
         end
 
         return "", sleep
     elseif remain < SECONDS_THRESHOLD then
         -- seconds
-        local seconds = round(remain)
+        local seconds = (remain + HALF_SECOND) - (remain + HALF_SECOND) % SECOND
 
-        local sleep = TICK + (remain - max(
+        local sleep = remain - max(
             seconds - HALF_SECOND,
             tenthsThreshold
-        ))
+        )
 
         if seconds > 0 then
-            return seconds, sleep
+            return seconds / SECOND, sleep
         end
 
         return "", sleep
     elseif remain < mmSSThreshold then
         -- MM:SS
-        local seconds = round(remain)
+        local seconds = (remain + HALF_SECOND) - (remain + HALF_SECOND) % SECOND
 
-        local sleep = TICK + (remain - max(
+        local sleep = remain - max(
             seconds - HALF_SECOND,
             SECONDS_THRESHOLD
-        ))
+        )
 
-        return L.MMSSFormat:format(seconds / MINUTE, seconds % MINUTE), sleep
+        return L.MMSSFormat:format(seconds / MINUTE, (seconds % MINUTE) / SECOND), sleep
     elseif remain < MINUTES_THRESHOLD then
         -- minutes
-        local minutes = round(remain / MINUTE)
+        local minutes = (remain + HALF_MINUTE) - (remain + HALF_MINUTE) % MINUTE
 
-        local sleep = TICK + (remain - max(
+        local sleep = remain - max(
             -- transition point of showing one minute versus another (29.5s, 89.5s, 149.5s, ...)
-            minutes * MINUTE - HALF_MINUTE,
+            minutes - HALF_MINUTE,
             -- transition point of displaying minutes to displaying seconds (59.5s)
             SECONDS_THRESHOLD,
             -- transition point of displaying MM:SS (user set)
             mmSSThreshold
-        ))
+        )
 
-        return L.MinuteFormat:format(minutes), sleep
+        return L.MinuteFormat:format(minutes / MINUTE), sleep
+
     elseif remain < HOURS_THRESHOLD then
         -- hours
-        local hours = round(remain / HOUR)
+        local hours = (remain + HALF_HOUR) - (remain + HALF_HOUR) % HOUR
 
-        local sleep = TICK + (remain - max(
-            hours * HOUR - HALF_HOUR,
+        local sleep = remain - max(
+            hours - HALF_HOUR,
             MINUTES_THRESHOLD
-        ))
+        )
 
-        return L.HourFormat:format(hours), sleep
+        return L.HourFormat:format(hours / HOUR), sleep
     else
         -- days
-        local days = round(remain / DAY)
+        local days = (remain + HALF_DAY) - (remain + HALF_DAY) % DAY
 
-        local sleep = TICK + (remain - max(
-            days * DAY - HALF_DAY,
+        local sleep = remain - max(
+            days - HALF_DAY,
             HOURS_THRESHOLD
-        ))
+        )
 
-        return L.DayFormat:format(days), sleep
+        return L.DayFormat:format(days / DAY), sleep
     end
 end
 
 function Timer:GetTimerState(remain)
-    if remain <= 0 then
-        return "finished", math.huge
-    elseif self.kind == "loc" then
+    if self.kind == "loc" then
         return "controlled", math.huge
     elseif self.kind == "charge" then
         return "charging", math.huge
     elseif remain < SOON_THRESHOLD then
-        return "soon", remain
+        return "soon", math.huge
     elseif remain < SECONDS_THRESHOLD then
-        return "seconds", TICK + (remain - SOON_THRESHOLD)
+        return "seconds", remain - SOON_THRESHOLD
     elseif remain < MINUTES_THRESHOLD then
-        return "minutes", TICK + (remain - SECONDS_THRESHOLD)
+        return "minutes", remain - SECONDS_THRESHOLD
     else
-        return "hours", TICK + (remain - MINUTES_THRESHOLD)
+        return "hours", remain - MINUTES_THRESHOLD
     end
 end
 

@@ -94,10 +94,6 @@ L:SetTimerLocalization({
 ---------------------
 L= DBM:GetModLocalization(131)
 
-L:SetOptionLocalization{
-	PingBlitz	= "Ping the minimap when General Umbriss is about to blitz you"
-}
-
 --------------------------
 -- Forgemaster Throngus --
 --------------------------

@@ -36,6 +36,7 @@ do
 	--helps blend the icons within the map texture
 	WQT_ZONEWIDGET_ALPHA =		0.83
 	WQT_WORLDWIDGET_ALPHA =	0.845
+	WQT_WORLDWIDGET_BLENDED =	ALPHA_BLEND_AMOUNT - 0.10
 	
 	--where these came from
 	QUESTTYPE_GOLD = 0x1
@@ -129,7 +130,8 @@ do
 				summary_show = true,
 				summary_scale = 1,
 				summary_timeleft = true,
-				summary_showbyzone = false,
+				summary_showbyzone = true,
+				summary_anchor = "left",
 			},
 			
 			disable_world_map_widgets = true,

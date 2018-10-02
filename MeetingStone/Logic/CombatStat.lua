@@ -103,15 +103,14 @@ function CombatStat:UpdateUnits()
     end
 end
 
-function CombatStat:COMBAT_LOG_EVENT_UNFILTERED()
-    local timestamp, event, hideCaster, srcGuid, sourceName, srcFlags, sourceRaidFlags, destGuid, destName, destFlags, destRaidFlags, extraArg1, extraArg2, extraArg3, extraArg4, extraArg5, extraArg6, extraArg7, extraArg8, extraArg9, extraArg10
+function CombatStat:COMBAT_LOG_EVENT_UNFILTERED(_, timestamp, event, _, srcGuid, srcName, srcFlags, _, destGuid, _, destFlags, _, ...)
     if not self[event] then
         return
     end
     -- if not (self:IsUnitSelf(srcGuid) or self:IsUnitSelf(destGuid)) then
     --     return
     -- end
-    self[event](self, timestamp, srcGuid, srcFlags, destGuid, destFlags, extraArg1, extraArg2, extraArg3, extraArg4, extraArg5, extraArg6, extraArg7, extraArg8, extraArg9, extraArg10)
+    self[event](self, timestamp, srcGuid, srcFlags, destGuid, destFlags, ...)
 end
 
 function CombatStat:SWING_DAMAGE(timestamp, srcGuid, srcFlags, destGuid, destFlags, amount)

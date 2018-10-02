@@ -5,7 +5,6 @@
   <Script file="App.lua" />
   <Script file="AppSupport.lua" />
   <Script file="Recent.lua" />
-  <Script file="AutoApply.lua" />
   <Script file="CombatStat.lua" />
   <Script file="LfgService.lua" />
 </Ui>

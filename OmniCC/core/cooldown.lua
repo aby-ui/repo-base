@@ -1,5 +1,4 @@
---[[ hooks for watching cooldown events ]]--
-
+-- hooks for watching cooldown events
 local Addon = _G[...]
 local GetSpellCooldown = _G.GetSpellCooldown
 local GCD_SPELL_ID = 61304
@@ -41,7 +40,7 @@ function cooldown_OnSetCooldownDuration(cooldown)
     end
 
     local start, duration = cooldown:GetCooldownTimes()
-    if cooldown_ShouldShowText(cooldown, start and start/1000, duration and duration/1000) then
+    if cooldown_ShouldShowText(cooldown, start and start / 1000, duration and duration / 1000) then
         cooldown_ShowText(cooldown)
     else
         cooldown_HideText(cooldown)
@@ -53,6 +52,7 @@ function cooldown_OnSetDisplayAsPercentage(cooldown)
         return
     end
 
+    cooldown.noCooldownCount = true
     cooldown_HideText(cooldown)
 end
 
@@ -68,14 +68,12 @@ function cooldown_OnShow(cooldown)
     end
 
     local start, duration = cooldown:GetCooldownTimes()
-    if cooldown_ShouldShowText(cooldown, start and start/1000, duration and duration/1000) then
+    if cooldown_ShouldShowText(cooldown, start and start / 1000, duration and duration / 1000) then
         cooldown_ShowText(cooldown)
     end
 end
 
-
 function cooldown_ShouldShowText(cooldown, start, duration)
-    start = start or 0
     if (start or 0) <= 0 then
         return false
     end
@@ -138,7 +136,7 @@ function Addon:WatchCooldowns()
 
     local Cooldown_MT = getmetatable(_G.ActionButton1Cooldown).__index
 
-	hooksecurefunc(Cooldown_MT, "SetCooldown", cooldown_OnSetCooldown)
-	hooksecurefunc(Cooldown_MT, "SetCooldownDuration", cooldown_OnSetCooldownDuration)
-	hooksecurefunc("CooldownFrame_SetDisplayAsPercentage", cooldown_OnSetDisplayAsPercentage)
+    hooksecurefunc(Cooldown_MT, "SetCooldown", cooldown_OnSetCooldown)
+    hooksecurefunc(Cooldown_MT, "SetCooldownDuration", cooldown_OnSetCooldownDuration)
+    hooksecurefunc("CooldownFrame_SetDisplayAsPercentage", cooldown_OnSetDisplayAsPercentage)
 end

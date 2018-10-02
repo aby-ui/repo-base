@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(101, "DBM-Party-Cataclysm", 9, 65)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 174 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 194 $"):sub(12, -3))
 mod:SetCreatureID(40586)
 mod:SetEncounterID(1045)
 mod:SetZone()
@@ -21,7 +21,7 @@ local warnWaterspoutSoon	= mod:NewSoonAnnounce(75863, 2)
 local warnGeyser			= mod:NewSpellAnnounce(75722, 3)
 local warnFungalSpores		= mod:NewTargetAnnounce(80564, 3)
 
-local specWarnShockBlast	= mod:NewSpecialWarningInterrupt(76008)
+local specWarnShockBlast	= mod:NewSpecialWarningInterrupt(76008, nil, nil, nil, 1, 2)
 
 local timerWaterspout		= mod:NewBuffActiveTimer(60, 75863, nil, nil, nil, 6)
 local timerShockBlastCD		= mod:NewCDTimer(13, 76008, nil, "HasInterrupt", 2, 4, nil, DBM_CORE_INTERRUPT_ICON)
@@ -70,8 +70,9 @@ function mod:SPELL_CAST_START(args)
 		warnWaterspout:Show()
 		timerWaterspout:Start()
 		timerShockBlastCD:Cancel()
-	elseif args.spellId == 76008 then
+	elseif args.spellId == 76008 and self:CheckInterruptFilter(args.sourceGUID, false, true, true) then
 		specWarnShockBlast:Show(args.sourceName)
+		specWarnShockBlast:Play("kickcast")
 		timerShockBlastCD:Start()
 	end
 end

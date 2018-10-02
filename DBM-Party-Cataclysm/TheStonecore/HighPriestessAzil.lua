@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(113, "DBM-Party-Cataclysm", 7, 67)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 174 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 194 $"):sub(12, -3))
 mod:SetCreatureID(42333)
 mod:SetEncounterID(1057)
 mod:SetZone()
@@ -36,7 +36,7 @@ end
 function mod:SPELL_CAST_START(args)
 	if args.spellId == 82858 then
 		warnShield:Show()
-	elseif args.spellId == 79351 then
+	elseif args.spellId == 79351 and self:CheckInterruptFilter(args.sourceGUID, false, true) then
 		specWarnGrip:Show(args.sourceName)
 	end
 end

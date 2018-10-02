@@ -207,6 +207,25 @@ function rematch:Start()
 	end
 	-- watch for player forfeiting a match (playerForfeit is nil'ed during PET_BATTLE_OPENING_START)
 	hooksecurefunc(C_PetBattles,"ForfeitGame",function() rematch.playerForfeit=true end)
+
+	-- on login, notify mac users of the experimental version if the popup hasn't been shown before
+	if not settings.NotifiedExperimental then
+		settings.NotifiedExperimental = true -- whether on pc or mac, don't bother with this on future logins
+		if IsMacClient() then
+			settings.NotifiedExperimental = true
+			local dialog = rematch:ShowDialog("Experimental", 320, 260, "Rematch", nil, nil, nil, OKAY)
+			dialog:ClearAllPoints()
+			dialog:SetPoint("CENTER",0,64)
+			dialog:ShowText("\124cffffffffAttention MacOS users:\124r\n\nIf the game occasionally crashes when you open Rematch, and you'd like to help troubleshoot, an experimental version of the addon is available at the URL below for testing solutions.\n\nThank you for your patience!", 280, 140, "TOP", 0, -32)
+			dialog.MultiLine:SetSize(280,40)
+			dialog.MultiLine:SetPoint("BOTTOM",0,40)
+			dialog.MultiLine.EditBox:SetText("http://www.wowinterface.com/downloads/info24832-Rematch-Experimental.html")
+			dialog.MultiLine:Show()
+			dialog.MultiLine.EditBox:SetFocus()
+			dialog.MultiLine.EditBox:HighlightText()
+		end
+	end
+
 end
 
 function rematch:InitSavedVars()

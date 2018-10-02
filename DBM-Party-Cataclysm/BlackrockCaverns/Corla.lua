@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(106, "DBM-Party-Cataclysm", 1, 66)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 174 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 194 $"):sub(12, -3))
 mod:SetCreatureID(39679)
 mod:SetEncounterID(1038)
 mod:SetZone()
@@ -16,20 +16,18 @@ mod:RegisterEventsInCombat(
 	"SPELL_INTERRUPT"
 )
 
-local warnDarkCommandCast	= mod:NewCastAnnounce(75823, 3)
 local warnDarkCommand		= mod:NewTargetAnnounce(75823, 4)
-local warnShadowStrike		= mod:NewSpellAnnounce(82362, 3)
 local warnAdd				= mod:NewAnnounce("WarnAdd", 4)
+
+local specWarnShadowStrike	= mod:NewSpecialWarningInterrupt(82362)
+local specWarnDarkCommand	= mod:NewSpecialWarningInterrupt(75823)
+local specWarnEvolution		= mod:NewSpecialWarningStack(75697, true, 80)
 
 local timerDarkCommandCast	= mod:NewCastTimer(4, 75823)
 local timerDarkCommand		= mod:NewTargetTimer(4, 75823)
 local timerDarkCommandCD	= mod:NewCDTimer(25, 75823)
 local timerShadowStrike		= mod:NewCastTimer(2, 82362)
 local timerEvolution		= mod:NewBuffFadesTimer(15, 75697)
-
-local specWarnShadowStrike	= mod:NewSpecialWarningInterrupt(82362)
-local specWarnDarkCommand	= mod:NewSpecialWarningInterrupt(75823)
-local specWarnEvolution		= mod:NewSpecialWarningStack(75697, true, 80)
 
 function mod:OnCombatStart(delay)
 	timerDarkCommandCD:Start(22-delay)
@@ -56,14 +54,16 @@ end
 
 function mod:SPELL_CAST_START(args)
 	if args.spellId == 75823 then
-		warnDarkCommandCast:Show()
-		specWarnDarkCommand:Show(args.sourceName)
+		if self:CheckInterruptFilter(args.sourceGUID, false, true) then
+			specWarnDarkCommand:Show(args.sourceName)
+		end
 		timerDarkCommandCast:Start()
 		timerDarkCommandCD:Start()
 	elseif args.spellId == 82362 then
-		warnShadowStrike:Show()
-		specWarnShadowStrike:Show(args.sourceName)
-		if mod:IsDifficulty("heroic5") then
+		if self:CheckInterruptFilter(args.sourceGUID, false, true) then
+			specWarnShadowStrike:Show(args.sourceName)
+		end
+		if self:IsDifficulty("heroic5") then
 			timerShadowStrike:Start()
 		else
 			timerShadowStrike:Start(3)

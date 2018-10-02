@@ -99,10 +99,6 @@ L:SetTimerLocalization({
 ---------------------
 L= DBM:GetModLocalization(131)
 
-L:SetOptionLocalization{
-	PingBlitz	= "当乌比斯将军准备对你迅猛突袭时自动点击小地图"
-}
-
 --------------------------
 -- Forgemaster Throngus --
 --------------------------

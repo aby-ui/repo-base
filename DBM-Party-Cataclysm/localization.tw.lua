@@ -91,9 +91,6 @@ L:SetTimerLocalization({
 ---------------------
 L= DBM:GetModLocalization(131)
 
-L:SetOptionLocalization{
-	PingBlitz	= "當昂布里斯將軍即將閃擊你時點擊小地圖"
-}
 --------------------------
 -- Forgemaster Throngus --
 --------------------------
