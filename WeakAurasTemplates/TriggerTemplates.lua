@@ -89,7 +89,7 @@ local checks = {
     value = 1,
   },
   buffedFalse = {
-    variable = "show",
+    variable = "buffed",
     value = 0,
   },
   onCooldown = {
@@ -112,6 +112,10 @@ local checks = {
   overlayGlow = {
     variable = "show",
     value = 1,
+  },
+  uninterruptible = {
+    variable = "interruptible",
+    value = 0,
   };
 }
 
@@ -185,6 +189,10 @@ local function overlayGlow(conditions, trigger, regionType)
   end
 end
 
+local function uninterruptibleRed(conditions, trigger, regionType)
+  tinsert(conditions, buildCondition(trigger, checks.uninterruptible, {changes("red", regionType)}));
+end
+
 local function isSpellNotInRangeRed(conditions, trigger, regionType)
   tinsert(conditions, buildCondition(trigger, checks.spellInRange, {changes("red", regionType)}));
 end
@@ -230,13 +238,55 @@ local function createTotemTrigger(triggers, position, item)
       event = "Totem",
       use_totemName = item.totemNumber == nil,
       totemName = GetSpellInfo(item.spell),
-      unevent = "auto"
+      unevent = "auto",
     }
   };
   if (item.totemNumber) then
     triggers[position].trigger.use_totemType = true;
     triggers[position].trigger.totemType = item.totemNumber;
   end
+end
+
+local function createPowerTrigger(triggers, position, item)
+  triggers[position] = {
+    trigger = {
+      type = "status",
+      event = "Power",
+      unevent = "auto",
+      use_unit = true,
+      unit = "player",
+      use_powertype = true,
+      use_showCost = true,
+      powertype = item.powertype,
+    },
+  };
+end
+
+local function createHealthTrigger(triggers, position, item)
+  triggers[position] = {
+    trigger = {
+      type = "status",
+      event = "Health",
+      unit = "player",
+      use_unit = true,
+      unevent = "auto",
+      use_absorbMode = true,
+      use_showAbsorb = true,
+      use_showIncomingHeal = true,
+    },
+  };
+end
+
+local function createCastTrigger(triggers, position, item)
+  triggers[position] = {
+    trigger = {
+      type = "status",
+      event = "Cast",
+      unevent = "auto",
+      use_unit = true,
+      unit = item.unit or "player",
+    },
+  };
 end
 
 local function createAbilityTrigger(triggers, position, item, genericShowOn)
@@ -260,7 +310,7 @@ local function createItemTrigger(triggers, position, item, genericShowOn)
       unevent = "auto",
       use_genericShowOn = true,
       genericShowOn = genericShowOn,
-      itemName = item.spell
+      itemName = item.spell,
     }
   };
 end
@@ -270,7 +320,7 @@ local function createOverlayGlowTrigger(triggers, position, item)
     trigger = {
       type = "status",
       event = "Spell Activation Overlay",
-      spellName = item.spell
+      spellName = item.spell,
     }
   };
 end
@@ -695,7 +745,7 @@ local function subTypesFor(item, regionType)
       createTriggers = function(triggers, item)
         createBuffTrigger(triggers, 1, item, "showOnActive", true);
       end,
-      data = { inverse = false }
+      data = { inverse = false },
     });
     tinsert(types, {
       icon = icon.glow,
@@ -708,7 +758,7 @@ local function subTypesFor(item, regionType)
       createConditions = function(conditions, item, regionType)
         isBuffedGlow(conditions, 1, regionType);
       end,
-      data = { inverse = false }
+      data = { inverse = false },
     });
     tinsert(types, {
       icon = icon.cd2,
@@ -720,7 +770,7 @@ local function subTypesFor(item, regionType)
       createConditions = function(conditions, item, regionType)
         missingBuffGreyed(conditions, 1, regionType);
       end,
-      data = { inverse = false }
+      data = { inverse = false },
     });
   elseif(item.type == "debuff") then
     tinsert(types, {
@@ -730,7 +780,7 @@ local function subTypesFor(item, regionType)
       createTriggers = function(triggers, item)
         createBuffTrigger(triggers, 1, item, "showOnActive", false);
       end,
-      data = { inverse = false }
+      data = { inverse = false },
     });
     tinsert(types, {
       icon = icon.glow,
@@ -742,7 +792,7 @@ local function subTypesFor(item, regionType)
       createConditions = function(conditions, item, regionType)
         isBuffedGlow(conditions, 1, regionType);
       end,
-      data = { inverse = false }
+      data = { inverse = false },
     });
     tinsert(types, {
       icon = icon.cd2,
@@ -754,7 +804,7 @@ local function subTypesFor(item, regionType)
       createConditions = function(conditions, item, regionType)
         missingBuffGreyed(conditions, 1, regionType);
       end,
-      data = { inverse = false }
+      data = { inverse = false },
     });
   elseif(item.type == "item") then
     tinsert(types, {
@@ -763,7 +813,7 @@ local function subTypesFor(item, regionType)
       description = L["Only show the aura when the item is on cooldown."],
       createTriggers = function(triggers, item)
         createItemTrigger(triggers, 1, item, "showOnCooldown");
-      end
+      end,
     });
     tinsert(types, {
       icon = icon.cd2,
@@ -787,6 +837,36 @@ local function subTypesFor(item, regionType)
       createConditions = function(conditions, item, regionType)
         totemActiveGlow(conditions, 1, regionType);
       end,
+    });
+  elseif(item.type == "power") then
+    tinsert(types, {
+      icon = item.icon,
+      title = item.title,
+      createTriggers = function(triggers, item)
+        createPowerTrigger(triggers, 1, item);
+      end,
+      data = { inverse = false, icon = false, text = false },
+    });
+  elseif(item.type == "health") then
+    tinsert(types, {
+      icon = item.icon,
+      title = item.title,
+      createTriggers = function(triggers, item)
+        createHealthTrigger(triggers, 1, item);
+      end,
+      data = { inverse = false, icon = false, text = false },
+    });
+  elseif(item.type == "cast") then
+    tinsert(types, {
+      icon = item.icon,
+      title = item.title,
+      createTriggers = function(triggers, item)
+        createCastTrigger(triggers, 1, item);
+      end,
+      createConditions = function(conditions, item, regionType)
+        uninterruptibleRed(conditions, 1, regionType);
+      end,
+      data = { inverse = false },
     });
   end
 

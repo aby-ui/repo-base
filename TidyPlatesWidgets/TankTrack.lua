@@ -74,7 +74,7 @@ local function UpdatePlayerRole()
 
 	-- Check Auras
 	for i = 1, 40 do
-		name, _, _, _, _, _, _, _, _, spellID = UnitBuff("player", i)	-- 11th --aby8
+		name, _, _, _, _, _, _, _, _, spellID = UnitBuff("player", i)	-- 10th --aby8
 		if TankAuras[tostring(spellID)] then
 			playerTankAura = true
 		end
@@ -153,14 +153,33 @@ local function TankWatcherEvents(frame, event, ...)
 end
 
 if not TankWatcher then TankWatcher = CreateFrame("Frame") end
+
+--[[
+TankWatcher:RegisterEvent("GROUP_ROSTER_UPDATE")
+TankWatcher:RegisterEvent("PLAYER_ENTERING_WORLD")
+-- TankWatcher:RegisterEvent("PARTY_MEMBERS_CHANGED")			-- 8.0
+TankWatcher:RegisterEvent("UNIT_PET")
+TankWatcher:RegisterEvent("PET_BAR_UPDATE_USABLE")
+--TankWatcher:RegisterEvent("PARTY_CONVERTED_TO_RAID")
+TankWatcher:RegisterEvent("UNIT_AURA")
+TankWatcher:RegisterEvent("UPDATE_SHAPESHIFT_FORM")
+
+--]]
+
+
+--  8.0
 TankWatcher:RegisterEvent("GROUP_ROSTER_UPDATE")
 TankWatcher:RegisterEvent("PLAYER_ENTERING_WORLD")
 TankWatcher:RegisterEvent("UNIT_PET")
 TankWatcher:RegisterEvent("PET_BAR_UPDATE_USABLE")
---TankWatcher:RegisterEvent("PARTY_CONVERTED_TO_RAID") --TODO aby8
-TankWatcher:RegisterEvent("UNIT_AURA")
+TankWatcher:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
+TankWatcher:RegisterEvent("PLAYER_TALENT_UPDATE")
 TankWatcher:RegisterEvent("UPDATE_SHAPESHIFT_FORM")
+
+
 TankWatcher:SetScript("OnEvent", TankWatcherEvents)
+
+
 
 
 TidyPlatesWidgets.IsEnemyTanked = IsEnemyTanked

@@ -1,7 +1,7 @@
 ﻿local mod	= DBM:NewMod(186, "DBM-Party-Cataclysm", 10, 77)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 174 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 195 $"):sub(12, -3))
 mod:SetCreatureID(23574)
 mod:SetEncounterID(1189)
 mod:SetZone()
@@ -28,7 +28,6 @@ local berserkTimer		= mod:NewBerserkTimer(600)
 
 mod:AddBoolOption("RangeFrame", true)
 mod:AddBoolOption("StormIcon", true)
-mod:AddBoolOption("StormArrow", true)
 mod:AddSetIconOption("SetIconOnEagle", 97318, true, true)
 
 function mod:OnCombatStart(delay)
@@ -71,9 +70,6 @@ function mod:SPELL_CAST_SUCCESS(args)
 		end
 		if self.Options.StormIcon then
 			self:SetIcon(args.destName, 1, 8)
-		end
-		if self.Options.StormArrow then
-			DBM.Arrow:ShowRunTo(args.destName, 0, 8)
 		end
 	end
 end

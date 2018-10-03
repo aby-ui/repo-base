@@ -237,6 +237,8 @@ local zoneEJids = {
 	S_ZoneT20ToS = 875,
 	S_ZoneT21A = 946,
 	S_ZoneT22Uldir = 1031,
+	S_ZoneT23Siege = 1176,
+	S_ZoneT23Storms = 1177,
 }
 for prefix,eID in pairs(zoneEJids) do
 	L[prefix] = EJ_GetInstanceInfo(eID)
@@ -341,6 +343,16 @@ L.bossName = setmetatable({}, {__index=function (t, k)
 		encounterIDtoEJidChache[k] = EJ_GetEncounterInfo(encounterIDtoEJidData[k] or 0) or ""
 	end
 	return encounterIDtoEJidChache[k]
+end})
+
+
+local instanceIDtoEJidChache = {
+}
+L.EJInstanceName = setmetatable({}, {__index=function (t, k)
+	if not instanceIDtoEJidChache[k] then
+		instanceIDtoEJidChache[k] = EJ_GetInstanceInfo(k) or ""
+	end
+	return instanceIDtoEJidChache[k]
 end})
 
 

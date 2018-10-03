@@ -41,7 +41,7 @@
 --  Globals/Default Options  --
 -------------------------------
 DBM = {
-	Revision = tonumber(("$Revision: 17947 $"):sub(12, -3)),
+	Revision = tonumber(("$Revision: 17948 $"):sub(12, -3)),
 	DisplayVersion = "8.0.12 alpha", -- the string that is shown as version
 	ReleaseRevision = 17934 -- the revision of the latest stable version that is available
 }
@@ -606,6 +606,7 @@ end
 --  Events  --
 --------------
 do
+	local CombatLogGetCurrentEventInfo = CombatLogGetCurrentEventInfo
 	local registeredEvents = {}
 	local registeredSpellIds = {}
 	local unfilteredCLEUEvents = {}
@@ -8961,6 +8962,7 @@ do
 	
 	function announcePrototype:ScheduleVoice(t, ...)
 		if DBM.Options.ChosenVoicePack == "None" then return end
+		unschedule(self.Play, self.mod, self)--Allow ScheduleVoice to be used in same way as CombinedShow
 		return schedule(t, self.Play, self.mod, self, ...)
 	end
 

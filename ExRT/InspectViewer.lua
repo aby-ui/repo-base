@@ -6,7 +6,7 @@ local parentModule = ExRT.A.Inspect
 if not parentModule then
 	return
 end
-local module = ExRT.mod:New("InspectViewer",ExRT.L.InspectViewer,nil,true)
+local module = ExRT:New("InspectViewer",ExRT.L.InspectViewer,nil,true)
 local ELib,L = ExRT.lib,ExRT.L
 
 module.db.inspectDB = parentModule.db.inspectDB
@@ -758,6 +758,7 @@ function module.options:Load()
 						item.text:Color()
 						item.border:Hide()
 						item.azerite = nil
+						item.azeriteExtra = nil
 					end
 					line.perksData = nil
 					
@@ -980,6 +981,18 @@ function module.options:Load()
 								icon:Show()
 								
 								icon.azerite = power
+								icon.azeriteExtra = {}
+
+								for k=1,20 do
+									local p = data.azerite["i"..k]
+									if p then
+										for l=1,#p do
+											if p[l].itemLink == power.itemLink and p[l].tier == power.tier then
+												icon.azeriteExtra[#icon.azeriteExtra + 1] = p[l]
+											end
+										end
+									end
+								end
 								
 								it = it + 1
 							end
@@ -1148,6 +1161,76 @@ function module.options:Load()
 			GameTooltip:Show()
 		end
 	end
+
+	local extraIconsDropdown = {}
+	local function SetExtraIcon(i,db)
+		if not extraIconsDropdown[i] then
+			local item = ELib:Icon(self,nil,21,true)
+			extraIconsDropdown[i] = item
+			if i > 1 then
+				item:Point("TOP",extraIconsDropdown[i-1],"BOTTOM")
+			end
+			item.texture:SetTexCoord(.1,.9,.1,.9)
+			item:SetFrameStrata("TOOLTIP")
+			item:SetScript("OnEnter",function(self) 
+				GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+				GameTooltip:SetAzeritePower(tonumber(self.azerite.itemID), select(4,GetItemInfo(self.azerite.itemLink)), self.azerite.id, self.azerite.itemLink)
+				GameTooltip:Show()
+			end)
+			item:SetScript("OnLeave",function() ELib.Tooltip:Hide() ELib.Tooltip:HideAdd() end)
+			item:SetScript("OnUpdate",function(self)
+				for j=1,#extraIconsDropdown do
+					if extraIconsDropdown[j]:IsVisible() and MouseIsOver(extraIconsDropdown[j]) then
+						return
+					end
+				end
+				if extraIconsDropdown[1] and extraIconsDropdown[1].main and MouseIsOver(extraIconsDropdown[1].main) then
+					return
+				end
+				self:Hide()
+				extraIconsDropdown.bl:Hide()
+				extraIconsDropdown.br:Hide()
+				extraIconsDropdown.bb:Hide()
+			end)
+		end
+		if not extraIconsDropdown.bl then
+			local bl = CreateFrame("Frame",nil,self)
+			extraIconsDropdown.bl = bl
+			bl.t = bl:CreateTexture(nil,"BORDER")
+			bl.t:SetAllPoints()
+			bl.t:SetColorTexture(0,0,0,1)
+			bl:SetPoint("TOPLEFT",extraIconsDropdown[1],-2,0)
+
+			local br = CreateFrame("Frame",nil,self)
+			extraIconsDropdown.br = br
+			br.t = br:CreateTexture(nil,"BORDER")
+			br.t:SetAllPoints()
+			br.t:SetColorTexture(0,0,0,1)
+			br:SetPoint("TOPLEFT",extraIconsDropdown[1],"TOPRIGHT",0,0)
+
+			local bb = CreateFrame("Frame",nil,self)
+			extraIconsDropdown.bb = bb
+			bb.t = bb:CreateTexture(nil,"BORDER")
+			bb.t:SetAllPoints()
+			bb.t:SetColorTexture(0,0,0,1)
+			bb:SetPoint("TOPLEFT",bl,"BOTTOMRIGHT",0,2)
+			bb:SetPoint("BOTTOMRIGHT",br,"BOTTOMLEFT",0,0)
+
+			bl:SetFrameStrata("DIALOG")
+			br:SetFrameStrata("DIALOG")
+			bb:SetFrameStrata("DIALOG")
+		end
+		extraIconsDropdown[i].texture:SetTexture(db.icon)
+		extraIconsDropdown[i].azerite = db
+		extraIconsDropdown[i]:Show()
+
+		extraIconsDropdown.bl:SetPoint("BOTTOMRIGHT",extraIconsDropdown[i],"BOTTOMLEFT",0,-2)
+		extraIconsDropdown.br:SetPoint("BOTTOMRIGHT",extraIconsDropdown[i],"BOTTOMRIGHT",2,-2)
+
+		extraIconsDropdown.bl:Show()
+		extraIconsDropdown.br:Show()
+		extraIconsDropdown.bb:Show()
+	end	
 	
 	local function Lines_SpecIcon_OnEnter(self)
 		if self.id then
@@ -1160,6 +1243,17 @@ function module.options:Load()
 			GameTooltip:SetOwner(self, "ANCHOR_LEFT")
 			GameTooltip:SetAzeritePower(tonumber(self.azerite.itemID), select(4,GetItemInfo(self.azerite.itemLink)), self.azerite.id, self.azerite.itemLink)
 			GameTooltip:Show()
+			if self.azeriteExtra then
+				for i=1,#self.azeriteExtra do
+					SetExtraIcon(i,self.azeriteExtra[i])
+				end
+				if #self.azeriteExtra > 0 then
+					extraIconsDropdown[1]:ClearAllPoints()
+					extraIconsDropdown[1]:SetPoint("TOP",self,"BOTTOM")
+					extraIconsDropdown[1].main = self
+					extraIconsDropdown[1]:Show()
+				end
+			end
 		elseif self.link then
 			local classID = self:GetParent().linkClassID
 			local specID = self:GetParent().linkSpecID

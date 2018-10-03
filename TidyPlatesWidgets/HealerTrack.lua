@@ -305,9 +305,10 @@ function Events.UPDATE_BATTLEFIELD_SCORE()
 	return
 end
 
-function Events.COMBAT_LOG_EVENT_UNFILTERED(...)
+function Events.COMBAT_LOG_EVENT_UNFILTERED()
 	-- Combat Log Unfiltered
-	local timestamp, combatevent, hideCaster, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destFlags, destRaidFlag, spellid  = CombatLogGetCurrentEventInfo()		-- WoW 4.2
+	--local timestamp, combatevent, hideCaster, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destFlags, destRaidFlag, spellid  = ...		-- WoW 4.2
+	local timestamp, combatevent, hideCaster, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destFlags, destRaidFlag, spellid = CombatLogGetCurrentEventInfo()	-- wow 8.0		-- WoW 8.0
 
 	if IsEnemyPlayer(sourceFlags) and sourceGUID and sourceName then					-- Filter: Only Enemy Players
 		if SpellEvents[combatevent] then								-- Filter: Specific spell events

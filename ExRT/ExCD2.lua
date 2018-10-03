@@ -9,7 +9,7 @@ local GetEncounterTime, UnitCombatlogname, GetUnitInfoByUnitFlag, ScheduleTimer,
 
 local VExRT, VExRT_CDE = nil
 
-local module = ExRT.mod:New("ExCD2",ExRT.L.cd2)
+local module = ExRT:New("ExCD2",ExRT.L.cd2)
 local ELib,L = ExRT.lib,ExRT.L
 
 module._C = {}
@@ -90,7 +90,7 @@ module.db.findspecspells = {
 	[202767] = 102, [190984] = 102, --[78674] = 102, 
 	[210722] = 103, [52610] = 103, --[1822] = 103, 
 	[200851] = 104, [33917] = 104, --[22842] = 104,
-	[208253] = 105, [188550] = 105, [8936] = 105, 
+	[208253] = 105, [188550] = 105, --[8936] = 105, 
 
 	[205223] = 250, [206930] = 250, [50842] = 250,
 	[190778] = 251, [49143] = 251, [49184] = 251,
@@ -478,6 +478,8 @@ module.db.spell_afterCombatNotReset = {	--Запрещать сброс кд п�
 	
 	[199740]=true,
 	[160452]=true,
+
+	--[271466]=true,
 }
 module.db.spell_reduceCdByHaste = {	--Заклинания, кд которых уменьшается хастой
 	[12294]=true,
@@ -959,6 +961,11 @@ module.db.differentIcons = {	--Другие иконки заклинаниям
 	[90633] = "Interface\\Icons\\inv_guild_standard_horde_c",
 	[90632] = "Interface\\Icons\\inv_guild_standard_horde_b",
 	[90631] = "Interface\\Icons\\inv_guild_standard_horde_a",
+
+	--Prevent replacing icons for players with some talents
+	[31884] = "Interface\\Icons\\spell_holy_avenginewrath",	--Avenging Wrath
+	[1022] = "Interface\\Icons\\spell_holy_sealofprotection",	--Blessing of Protection
+	[62618] = "Interface\\Icons\\spell_holy_powerwordbarrier",	--Power Word: Barrier
 }
 
 module.db.playerName = nil
@@ -8601,6 +8608,7 @@ do
 											itemLink = itemLink,
 											itemID = itemID,
 											spellID = powerData.spellID,
+											tier = j,
 										}
 									end
 									
@@ -8610,6 +8618,10 @@ do
 							end
 						end
 					end
+				end
+
+				if AzeritePowers then
+					inspectData.azerite["i"..itemSlotID] = AzeritePowers
 				end
 				
 				for j=2, inspectScantip:NumLines() do

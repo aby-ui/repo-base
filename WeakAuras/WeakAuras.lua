@@ -878,6 +878,14 @@ local globalConditions =
       state.hastarget = UnitExists("target");
     end
   },
+  ["attackabletarget"] = {
+    display = L["Attackable Target"],
+    type = "bool",
+    events = {"PLAYER_TARGET_CHANGED", "UNIT_FACTION"},
+    globalStateUpdate = function(state)
+      state.attackabletarget = UnitCanAttack("player", "target");
+    end
+  },
 }
 
 function WeakAuras.GetGlobalConditions()
@@ -1405,8 +1413,9 @@ function WeakAuras.IsOptionsProcessingPaused()
   return pausedOptionsProcessing;
 end
 
-local recentlyLoaded = {}
-function WeakAuras.ScanForLoads(self, event, arg1)
+local toLoad = {}
+local toUnload = {};
+function WeakAuras.ScanForLoads(self, event, arg1, ...)
   if (WeakAuras.IsOptionsProcessingPaused()) then
     return;
   end
@@ -1489,7 +1498,8 @@ function WeakAuras.ScanForLoads(self, event, arg1)
 
   local changed = 0;
   local shouldBeLoaded, couldBeLoaded;
-  wipe(recentlyLoaded);
+  wipe(toLoad);
+  wipe(toUnload);
   for id, data in pairs(db.displays) do
     if (data and not data.controlledChildren) then
       local loadFunc = loadFuncs[id];
@@ -1498,18 +1508,13 @@ function WeakAuras.ScanForLoads(self, event, arg1)
       couldBeLoaded =  loadOpt and loadOpt("ScanForLoads_Auras",   incombat, inencounter, warmodeActive, inpetbattle, vehicle, vehicleUi, group, player, realm, class, spec, race, faction, playerLevel, zone, zoneId, zonegroupId, encounter_id, size, difficulty, role, affixes);
 
       if(shouldBeLoaded and not loaded[id]) then
-        WeakAuras.LoadDisplay(id);
         changed = changed + 1;
-        recentlyLoaded[id] = true;
+        toLoad[id] = true;
       end
 
       if(loaded[id] and not shouldBeLoaded) then
-        WeakAuras.UnloadDisplay(id);
-        local region = WeakAuras.regions[id].region;
-        if not(paused) then
-          region:Collapse();
-          WeakAuras.CollapseAllClones(id);
-        end
+        toUnload[id] = true;
+        changed = changed + 1;
       end
       if(shouldBeLoaded) then
         loaded[id] = true;
@@ -1520,6 +1525,13 @@ function WeakAuras.ScanForLoads(self, event, arg1)
       end
     end
   end
+
+  if(changed > 0 and not paused) then
+    WeakAuras.LoadDisplays(toLoad, event, arg1, ...);
+    WeakAuras.UnloadDisplays(toUnload, event, arg1, ...);
+    WeakAuras.FinishLoadUnload();
+  end
+
   for id, data in pairs(db.displays) do
     if(data.controlledChildren) then
       if(#data.controlledChildren > 0) then
@@ -1536,16 +1548,13 @@ function WeakAuras.ScanForLoads(self, event, arg1)
       end
     end
   end
-  if(changed > 0 and not paused) then
-    for _, triggerSystem in pairs(triggerSystems) do
-      triggerSystem.ScanAll(recentlyLoaded);
-    end
-  end
+
 
   if (WeakAuras.afterScanForLoads) then -- Hook for Options
     WeakAuras.afterScanForLoads();
   end
-  wipe(recentlyLoaded);
+  wipe(toLoad);
+  wipe(toUnload)
 end
 
 local loadFrame = CreateFrame("FRAME");
@@ -1642,19 +1651,26 @@ function WeakAuras.UnloadAll()
   wipe(loaded);
 end
 
-do
-  function WeakAuras.LoadDisplay(id)
+function WeakAuras.LoadDisplays(toLoad, ...)
+  for id in pairs(toLoad) do
     WeakAuras.RegisterForGlobalConditions(id);
     triggerState[id].triggers = {};
     triggerState[id].triggerCount = 0;
     triggerState[id].show = false;
     triggerState[id].activeTrigger = nil;
-    for _, triggerSystem in pairs(triggerSystems) do
-      triggerSystem.LoadDisplay(id);
-    end
+    triggerState[id].activatedConditions = {};
+  end
+  for _, triggerSystem in pairs(triggerSystems) do
+    triggerSystem.LoadDisplays(toLoad, ...);
+  end
+end
+
+function WeakAuras.UnloadDisplays(toUnload, ...)
+  for _, triggerSystem in pairs(triggerSystems) do
+    triggerSystem.UnloadDisplays(toUnload, ...);
   end
 
-  function WeakAuras.UnloadDisplay(id)
+  for id in pairs(toUnload) do
     for i = 1, triggerState[id].numTriggers do
       if (triggerState[id][i]) then
         wipe(triggerState[id][i]);
@@ -1683,9 +1699,15 @@ do
     conditionChecksTimers.recheckHandle[id] = nil;
     WeakAuras.UnregisterForGlobalConditions(id);
 
-    for _, triggerSystem in pairs(triggerSystems) do
-      triggerSystem.UnloadDisplay(id);
-    end
+    local region = WeakAuras.regions[id].region;
+    region:Collapse();
+    WeakAuras.CollapseAllClones(id);
+  end
+end
+
+function WeakAuras.FinishLoadUnload()
+  for _, triggerSystem in pairs(triggerSystems) do
+    triggerSystem.FinishLoadUnload();
   end
 end
 

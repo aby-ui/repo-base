@@ -113,11 +113,27 @@ end
 -- Watcher Frame
 local WatcherFrame = CreateFrame("Frame", nil, WorldFrame )
 local isEnabled = false
---WatcherFrame:RegisterEvent("UNIT_COMBO_POINTS")
+
+--[[
+WatcherFrame:RegisterEvent("UNIT_COMBO_POINTS")
+WatcherFrame:RegisterEvent("UNIT_POWER")
+WatcherFrame:RegisterEvent("UNIT_DISPLAYPOWER")
+WatcherFrame:RegisterEvent("UNIT_AURA")
+WatcherFrame:RegisterEvent("UNIT_FLAGS")
+--]]
+
+-- 8.0
+
+WatcherFrame:RegisterEvent("PLAYER_TARGET_CHANGED")
+WatcherFrame:RegisterEvent("RUNE_POWER_UPDATE")
+--WatcherFrame:RegisterEvent("UNIT_POWER_FREQUENT")
+WatcherFrame:RegisterEvent("UNIT_MAXPOWER")
 WatcherFrame:RegisterEvent("UNIT_POWER_UPDATE")
 WatcherFrame:RegisterEvent("UNIT_DISPLAYPOWER")
 WatcherFrame:RegisterEvent("UNIT_AURA")
 WatcherFrame:RegisterEvent("UNIT_FLAGS")
+
+
 
 local function WatcherFrameHandler(frame, event, unitid)
 		local guid = UnitGUID("target")

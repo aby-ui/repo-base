@@ -789,10 +789,12 @@ do
 
 		local castBar = extended.visual.castbar
 
-		local name, text, texture, startTime, endTime, isTradeSkill, castID, notInterruptible
+		local name, subText, text, texture, startTime, endTime, isTradeSkill, castID, notInterruptible
 
 		if channeled then
 			name, text, texture, startTime, endTime, isTradeSkill, notInterruptible = UnitChannelInfo(unitid)
+			--name, text, texture, startTimeMS, endTimeMS, isTradeSkill, notInterruptible = UnitChannelInfo("unit")
+
 			castBar:SetScript("OnUpdate", OnUpdateCastBarReverse)
 		else
 			name, text, texture, startTime, endTime, isTradeSkill, castID, notInterruptible = UnitCastingInfo(unitid)
@@ -807,7 +809,8 @@ do
 
 		visual.spelltext:SetText(text)
 		visual.spellicon:SetTexture(texture)
-		castBar:SetMinMaxValues( startTime, endTime )
+
+		castBar:SetMinMaxValues( startTime, endTime ) 
 
 		local r, g, b, a = 1, 1, 0, 1
 
@@ -961,14 +964,14 @@ do
 		local plate = PlatesByUnit[unitid]
 
 		if plate then OnHealthUpdate(plate) end
-    end
+	end
 
-    function CoreEvents:UNIT_HEALTH(...)
-   		local unitid = ...
-   		local plate = PlatesByUnit[unitid]
+	function CoreEvents:UNIT_HEALTH(...)
+		local unitid = ...
+		local plate = PlatesByUnit[unitid]
 
-   		if plate then OnHealthUpdate(plate) end
-   	end
+		if plate then OnHealthUpdate(plate) end
+	end
 
 	function CoreEvents:PLAYER_REGEN_ENABLED()
 		InCombat = false
@@ -1039,6 +1042,8 @@ do
 
 	CoreEvents.UNIT_LEVEL = UnitConditionChanged
 	CoreEvents.UNIT_THREAT_SITUATION_UPDATE = function(event, unitid)
+        --UNIT_THREAT_SITUATION_UPDATE, player
+        if unitid ~= "player" then return end
         for _, nameplate in pairs(C_NamePlate.GetNamePlates()) do
             if nameplate.UnitFrame.unitExists then
                 if UnitThreatSituation("player", nameplate.UnitFrame.displayedUnit) then

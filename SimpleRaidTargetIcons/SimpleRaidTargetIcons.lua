@@ -466,36 +466,40 @@ end
 end
 
 function srti.IsNameplateUnderMouse()
-    do return end --163ui fix 7.2
+	--do return end --163ui fix 7.2
 	local numch = WorldFrame:GetNumChildren();
 	if numch > 0 then
 		for i=1,numch do
 			local f=select(i,WorldFrame:GetChildren());
-			if f:IsShown() and f:IsMouseOver() then
-				-- 3rd party nameplate addons
-				if f.aloftData then -- Aloft
-					return 1;
-				end
-				if f.extended then -- TidyPlates
-					return 1;
-				end
-				if f.done then -- caelNameplates + clones (shNameplates, ...)
-					return 1;
-				end
-				if f.styled then -- rNameplates (zork)
-					return 1;
-				end
-				if f.healthOriginal then -- dNameplates + eNameplates
-					return 1;
-				end
-				if f.NPAHooked then -- NPA (NamePlatesAdvanced)
-					return 1;
-				end
-				-- default nameplates
-				-- 4.1
-				local fname = f:GetName();
-				if fname and string.find(fname, "NamePlate%d+") then
-					return 1;
+			x = f:IsForbidden()
+			if x then
+			else
+				if f:IsShown() and f:IsMouseOver() then
+					-- 3rd party nameplate addons
+					if f.aloftData then -- Aloft
+						return 1;
+					end
+					if f.extended then -- TidyPlates
+						return 1;
+					end 
+					if f.done then -- caelNameplates + clones (shNameplates, ...)
+						return 1;
+					end
+					if f.styled then -- rNameplates (zork)
+						return 1;
+					end
+					if f.healthOriginal then -- dNameplates + eNameplates
+						return 1;
+					end
+					if f.NPAHooked then -- NPA (NamePlatesAdvanced)
+						return 1;
+					end
+					-- default nameplates
+					-- 4.1
+					local fname = f:GetName();
+					if fname and string.find(fname, "NamePlate%d+") then
+						return 1;
+					end
 				end
 			end
 		end

@@ -99,7 +99,6 @@ local L = WeakAuras.L
 	L["Show Totem and Charge Information"] = "显示图腾和可用次数充能信息"
 	L["Specific Azerite Traits"] = "特性艾泽里特特质"
 	L["Stagger"] = "眩晕"
-	L["Totems"] = "图腾（复数）"
 	L["Track the charge and proc, highlight while proc is active, turns red when out of range, blue on insufficient resources."] = "追踪可用次数充能和触发，当触发时高亮显示，超出距离时变红显示，资源不足时变蓝显示"
 	L["Tracks the charge and the buff, highlight while the buff is active, blue on insufficient resources."] = "追踪可用次数和增益效果，当增益效果激活时高亮，当没有足够资源是变蓝显示"
 	L["Tracks the charge and the debuff, highlight while the debuff is active, blue on insufficient resources."] = "追踪可用次数和减益效果，当减益效果激活时高亮，当没有足够资源是变蓝显示"

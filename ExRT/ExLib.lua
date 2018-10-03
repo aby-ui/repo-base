@@ -151,7 +151,7 @@ CheckButton	ExRTRadioButtonModernTemplate
 local GlobalAddonName, ExRT = ...
 local isExRT = GlobalAddonName == "ExRT"
 
-local libVersion = 31
+local libVersion = 32
 
 if type(ELib)=='table' and type(ELib.V)=='number' and ELib.V > libVersion then return end
 
@@ -363,6 +363,7 @@ do
 		
 		return self
 	end
+	ELib.Templates_GUIcons = Templates.GUIcons
 	function Templates:Border(self,cR,cG,cB,cA,size,offsetX,offsetY)
 		offsetX = offsetX or 0
 		offsetY = offsetY or 0
@@ -387,6 +388,7 @@ do
 		self.BorderRight:SetPoint("BOTTOMRIGHT",size+offsetX,offsetY)
 		self.BorderRight:SetPoint("TOPLEFT",self,"TOPRIGHT",offsetX,-offsetY)
 	end
+	ELib.Templates_Border = Templates.Border
 end
 
 do
@@ -2666,6 +2668,14 @@ do
 		self.searchTexture:SetSize(size or 14,size or 14)	
 		return self
 	end
+	local function Widget_AddLeftText(self,text,size)
+		self.leftText = ELib:Text(self,text,size or 11):Point("RIGHT",self,"LEFT",-5,0)
+		return self
+	end
+	local function Widget_AddLeftTop(self,text,size)
+		self.leftText = ELib:Text(self,text,size or 11):Point("BOTTOM",self,"TOP",0,2)
+		return self
+	end
 	
 	function ELib:Edit(parent,maxLetters,onlyNum,template)
 		if template == 0 then
@@ -2697,7 +2707,9 @@ do
 			'Text',Widget_SetText,
 			'Tooltip',Widget_Tooltip,
 			'OnChange',Widget_OnChange,
-			'AddSearchIcon',Widget_AddSearchIcon
+			'AddSearchIcon',Widget_AddSearchIcon,
+			'LeftText',Widget_AddLeftText,
+			'TopText',Widget_AddLeftTop
 		)
 
 		return self
@@ -2943,9 +2955,9 @@ end
 do
 	local function Widget_Icon(self,texture,cG,cB,cA)
 		if cG then
-			self:SetColorTexture(texture,cG,cB,cA)
+			self.texture:SetColorTexture(texture,cG,cB,cA)
 		else
-			self:SetTexture(texture)
+			self.texture:SetTexture(texture)
 		end
 		return self
 	end
@@ -3715,12 +3727,19 @@ do
 		
 		return self
 	end
+	local function DropDown_OnClick(self,...)
+		local parent = self:GetParent()
+		if parent.PreUpdate then
+			parent.PreUpdate(parent)
+		end
+		ELib.ScrollDropDown.ClickButton(self,...)
+	end
 		
 	function ELib:DropDown(parent,width,lines,template)
 		template = template == 0 and "ExRTDropDownMenuTemplate" or template or "ExRTDropDownMenuModernTemplate"
 		local self = ELib:Template(template, parent) or CreateFrame("Frame", nil, parent, template)
 
-		self.Button:SetScript("OnClick",ELib.ScrollDropDown.ClickButton)
+		self.Button:SetScript("OnClick",DropDown_OnClick)
 		self:SetScript("OnHide",ScrollDropDownOnHide)
 		
 		self.List = {}

@@ -92,7 +92,6 @@ local L = WeakAuras.L
 	L["Show Totem and Charge Information"] = "Show Totem and Charge Information"
 	L["Specific Azerite Traits"] = "Specific Azerite Traits"
 	L["Stagger"] = "Stagger"
-	L["Totems"] = "Totems"
 	L["Track the charge and proc, highlight while proc is active, turns red when out of range, blue on insufficient resources."] = "Track the charge and proc, highlight while proc is active, turns red when out of range, blue on insufficient resources."
 	L["Tracks the charge and the buff, highlight while the buff is active, blue on insufficient resources."] = "Tracks the charge and the buff, highlight while the buff is active, blue on insufficient resources."
 	L["Tracks the charge and the debuff, highlight while the debuff is active, blue on insufficient resources."] = "Tracks the charge and the debuff, highlight while the debuff is active, blue on insufficient resources."

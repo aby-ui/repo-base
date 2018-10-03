@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(175, "DBM-Party-Cataclysm", 11, 76)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 194 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 195 $"):sub(12, -3))
 mod:SetCreatureID(52155)
 mod:SetEncounterID(1178)
 mod:SetZone()
@@ -37,7 +37,6 @@ local timerBreathHethiss	= mod:NewNextTimer(12, 96509)
 local timerToxicLinkCD		= mod:NewNextTimer(14, 96477)--13-15 second variations, 14 will be a good medium
 
 mod:AddBoolOption("SetIconOnToxicLink")
-mod:AddBoolOption("LinkArrow")
 
 local toxicLinkIcon = 8
 local toxicLinkTargets = {}
@@ -65,14 +64,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		toxicLinkTargets[#toxicLinkTargets + 1] = args.destName
 		if self:IsInCombat() then--only start cd timer on boss fight, not when trash does it.
 			timerToxicLinkCD:Start()
-		end
-		if self.Options.LinkArrow and #toxicLinkTargets == 2 then
-			if toxicLinkTargets[1] == UnitName("player") then
-				DBM.Arrow:ShowRunAway(toxicLinkTargets[2])
-			elseif toxicLinkTargets[2] == UnitName("player") then
-				DBM.Arrow:ShowRunAway(toxicLinkTargets[1])
-			end
-		end		
+		end	
 		if args:IsPlayer() then
 			specWarnToxicLink:Show()
 		end
@@ -100,7 +92,6 @@ function mod:SPELL_AURA_REMOVED(args)
 	if args.spellId == 96466 then
 		timerWhisperHethiss:Cancel(args.destName)
 	elseif args.spellId == 96477 then
-		DBM.Arrow:Hide()
 		if self.Options.SetIconOnToxicLink then
 			self:SetIcon(args.destName, 0)
 		end

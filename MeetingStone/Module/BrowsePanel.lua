@@ -371,21 +371,12 @@ function BrowsePanel:OnInitialize()
         LootDropdown:SetDefaultValue(0)
         LootDropdown:SetDefaultText(L['不屏蔽'])
         --LootDropdown:SetMenuTable(ACTIVITY_LOOT_MENUTABLE_WITHALL)
-        local levelTable = { { value = 0, text = "不屏蔽" }, { value = 1, text = "屏蔽无要求队伍" }, { value = 300, text = "低于300" }, }
-        local avgLevel = GetAverageItemLevel()
-        avgLevel = avgLevel > 0 and avgLevel or 370
-        local start = floor(avgLevel/5) * 5
-        for i=0, 8 do
-            local level = start - i * 10
-            if level <= 300 then break end
-            table.insert(levelTable, { value = level, text = "低于"..level })
-        end
-        LootDropdown:SetMenuTable(levelTable)
         LootDropdown:SetCallback('OnSelectChanged', function()
             --self:ClearSearchProfile()
             --self:DoSearch()
             RefreshFilter()
         end)
+        self.LevelFilterDropdown = LootDropdown
     end
 --
 
@@ -696,6 +687,16 @@ function BrowsePanel:OnInitialize()
 end
 
 function BrowsePanel:OnEnable()
+    local levelTable = { { value = 0, text = "不屏蔽" }, { value = 1, text = "屏蔽无要求队伍" }, { value = 300, text = "低于300" }, }
+    local avgLevel = GetAverageItemLevel()
+    avgLevel = avgLevel > 0 and avgLevel or 370
+    local start = floor(avgLevel/5) * 5
+    for i=0, 8 do
+        local level = start - i * 10
+        if level <= 300 then break end
+        table.insert(levelTable, { value = level, text = "低于"..level })
+    end
+    self.LevelFilterDropdown:SetMenuTable(levelTable)
     self:MEETINGSTONE_SEARCH_PROFILE_UPDATE()
 end
 

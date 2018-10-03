@@ -99,6 +99,8 @@ local generalAzeriteTraits = {
   { spell = 273842, type = "buff", unit = "player"}, --Secrets of the Deep
   { spell = 280286, type = "debuff", unit = "target"}, --Dagger in the Back
   { spell = 281843, type = "buff", unit = "player"}, --Tradewinds
+  { spell = 280709, type = "buff", unit = "player"}, --Archive of the Titans
+  { spell = 280573, type = "buff", unit = "player"}, --Reorigination Array
 }
 
 local pvpAzeriteTraits = {
@@ -519,6 +521,7 @@ templates.class.PALADIN = {
         { spell = 221883, type = "buff", unit = "player"}, -- Divine Steed
         { spell = 204335, type = "buff", unit = "player"}, -- Aegis of Light
         { spell = 642, type = "buff", unit = "player"}, -- Divine Shield
+        { spell = 280375, type = "buff", unit = "player"}, -- Redoubt
       },
       icon = 236265
     },
@@ -780,7 +783,6 @@ templates.class.HUNTER = {
         { spell = 263821, type = "buff", unit = "player"}, --Ride the Lightning
         { spell = 264195, type = "buff", unit = "player"}, --Rotting Jaws
         { spell = 274357, type = "buff", unit = "player"}, --Shellshock
-        { spell = 274598, type = "buff", unit = "player"}, --PH
       },
       icon = 135349
     },
@@ -3794,12 +3796,12 @@ templates.class.DEATHKNIGHT = {
 tinsert(templates.general.args, {
   title = L["Health"],
   icon = "Interface\\Icons\\inv_alchemy_70_red",
-  triggers = { [1] = { trigger = { type = "status", event = "Health", unit = "player", use_unit = true, unevent = "auto" }}}
+  type = "health"
 });
 tinsert(templates.general.args, {
   title = L["Cast"],
   icon = 136209,
-  triggers = {[1] = { trigger = { type = "status", event = "Cast", unevent = "auto", use_unit = true, unit = "player" }}}
+  type = "cast"
 });
 tinsert(templates.general.args, {
   title = L["Always Active"],
@@ -3969,19 +3971,8 @@ local function createSimplePowerTemplate(powertype)
   local power = {
     title = powerTypes[powertype].name,
     icon = powerTypes[powertype].icon,
-    triggers = {
-      [1] = {
-        ["trigger"] = {
-          type = "status",
-          event = "Power",
-          unevent = "auto",
-          use_unit = true,
-          unit = "player",
-          use_powertype = true,
-          powertype = powertype
-        },
-      }
-    }
+    type = "power",
+    powertype = powertype,
   }
   return power;
 end
@@ -4048,15 +4039,7 @@ tinsert(templates.class.PRIEST[3][8].args, createSimplePowerTemplate(13));
 -- Shaman
 for i = 1, 3 do
   tinsert(templates.class.SHAMAN[i][8].args, createSimplePowerTemplate(0));
-
-  templates.class.SHAMAN[i][7] = {
-    title = L["Totems"],
-    args = {
-    },
-    icon = 538575,
-  };
 end
-
 for i = 1, 2 do
   tinsert(templates.class.SHAMAN[i][8].args, createSimplePowerTemplate(11));
 end

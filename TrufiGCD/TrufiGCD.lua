@@ -71,7 +71,11 @@ local InnerBL = { --закрытый черный список, по ID
 	137585, -- Бросок сюрикена левой рукой
 	117993, -- Ци-полет (дамаг)
 	124040, -- Ци-полет (хил)
-	
+	198928, -- Cinderstorm shards (Fire Mage verified fix)
+	84721, -- Frozen Orb shards (Frost Mage verified fix)
+	222031, -- Chaos Strike 1 (DemonHunter unverified fix)
+	197125, -- Chaos Strike 2 (DemonHunter unverified fix)
+	199547, -- Chaos Strike 3 (DemonHunter unverified fix)
 }
 local cross = "Interface\\TargetingFrame\\UI-RaidTargetingIcon_7"
 local skull = "Interface\\TargetingFrame\\UI-RaidTargetingIcon_8"
@@ -514,9 +518,9 @@ function TrufiGCDAddonLoaded(self, event, ...)
 				TrGCDQueueFr[i].text:SetAllPoints(TrGCDQueueFr[i])
 				TrGCDQueueFr[i].text:SetAlpha(0)
                 TrGCDQueueFr[i].id = i
-				--TrGCDQueueFr[i]:RegisterForDrag("LeftButton")
-				--TrGCDQueueFr[i]:SetScript("OnDragStart", TrGCDQueueFr[i].StartMoving)
-				--TrGCDQueueFr[i]:SetScript("OnDragStop", TrGCDQueueFr[i].StopMovingOrSizing)
+				TrGCDQueueFr[i]:RegisterForDrag("LeftButton")
+				TrGCDQueueFr[i]:SetScript("OnDragStart", TrGCDQueueFr[i].StartMoving)
+				TrGCDQueueFr[i]:SetScript("OnDragStop", TrGCDQueueFr[i].StopMovingOrSizing)
                 self.funcStopMovingOrSizing = self.funcStopMovingOrSizing or function(self)
                     local p1, _, p2, x, y = self:GetPoint()
                     if p1 ~= p2 then error("can't save position, points are different.") end
@@ -1058,72 +1062,70 @@ local function icy_split(str, pat) -- ICY: split function
    return t
 end
 
-function TrGCDEventHandler(self, event, ...)
-	local arg1, _, arg5 = ...; -- arg1 - who,  arg5 - spellID -- ICY: event change
-    if arg5 ~= nil and arg5 ~= 0 then
-        local spellicon = select(3, GetSpellInfo(arg5))
-        local casttime = select(4, GetSpellInfo(arg5))/1000
-        local spellname = GetSpellInfo(arg5)
-        local i,t = TrGCDPlayerDetect(arg1) -- i - номер пользователя, t = true - если кто то из пати или на арене
-        if (TrGCDEnable and t and TrGCDQueueOpt[i].enable) then
-            --print(event, arg5 .. " - " .. spellname)
-            local blt = true -- для открытого черного списка
-            local sblt = true -- для закрытого черного списка (внутри по ID)
-            TrGCDInsSp["time"][i] = GetTime()	
-            for l=1, #TrGCDBL do if ((TrGCDBL[l] == spellname) or (GetSpellInfo(TrGCDBL[l]) == spellname)) then blt = false end end -- проверка на черный список
-            for l=1, #InnerBL do if (InnerBL[l] == arg5) then sblt = false end end -- проверка на закрытый черный список
-            if ((spellicon ~= nil) and t and blt and sblt and (GetSpellLink(arg5) ~= nil)) then
-                if (arg5 == 42292) then spellicon = trinket end --замена текстуры пвп тринкета
-                    local IsChannel = UnitChannelInfo(arg1)--ченнелинг ли спелл
-                if (event == "UNIT_SPELLCAST_START") then
-                    --if not lastSpellSent[i] then return else lastSpellSent[i] = nil end
-                    --print("cast " .. spellname)
-                    TrGCDAddGcdSpell(spellicon, i, arg5)
-                    TrGCDCastSp[i] = 0-- 0 - каст идет, 1 - каст прошел и не идет
-                    TrGCDCastSpBanTime[i] = GetTime()
+function TrGCDEventHandler(self, event, who, _, spellId)
+	if spellId == nil or spellId == 0 then return end
+    local spellicon = select(3, GetSpellInfo(spellId))
+    local casttime = select(4, GetSpellInfo(spellId))/1000
+    local spellname = GetSpellInfo(spellId)
+    local i,t = TrGCDPlayerDetect(who) -- i - номер пользователя, t = true - если кто то из пати или на арене
+    if (TrGCDEnable and t and TrGCDQueueOpt[i].enable) then
+        --print(spellId .. " - " .. spellname)
+        local blt = true -- для открытого черного списка
+        local sblt = true -- для закрытого черного списка (внутри по ID)
+        TrGCDInsSp["time"][i] = GetTime()
+        for l=1, #TrGCDBL do if ((TrGCDBL[l] == spellname) or (GetSpellInfo(TrGCDBL[l]) == spellname)) then blt = false end end -- проверка на черный список
+        for l=1, #InnerBL do if (InnerBL[l] == spellId) then sblt = false end end -- проверка на закрытый черный список
+        if ((spellicon ~= nil) and t and blt and sblt and (GetSpellLink(spellId) ~= nil)) then
+            if (spellId == 42292) then spellicon = trinket end --замена текстуры пвп тринкета
+            local IsChannel = UnitChannelInfo(who)--ченнелинг ли спелл
+            if (event == "UNIT_SPELLCAST_START") then
+                --if i==1 then not lastSpellSent[i] then return else lastSpellSent[i] = nil end end
+                --print("cast " .. spellname)
+                TrGCDAddGcdSpell(spellicon, i, spellId)
+                TrGCDCastSp[i] = 0-- 0 - каст идет, 1 - каст прошел и не идет
+                TrGCDCastSpBanTime[i] = GetTime()
 
-                elseif (event == "UNIT_SPELLCAST_SUCCEEDED") then
+            elseif (event == "UNIT_SPELLCAST_SUCCEEDED") then
+                if i==1 then
                     if not lastSpellSent[i] then return end
-                    if lastSpellSent[i] == arg5 then lastSpellSent[i] = nil end --腐蚀术172会先来一个146739 SUCCESS，再来一个172 SUCCESS
-                    if (TrGCDCastSp[i] == 0) then
-                        --print("succeeded then " .. spellname)
-                        if (IsChannel == nil) then TrGCDCastSp[i] = 1 end
-                    else
-                        -- print(arg5)
-                        -- if (arg5 == 81297 or arg5 == 198137) then return end -- ICY: blacklist consecration & divine hammer
-                        local b = false --висит ли багнутый бафф инстант каста
-                        if ((TrGCDInsSp["spell"][i] == 48108) and (arg5 == 11366)) then b = true
-                        elseif ((TrGCDInsSp["spell"][i] == 34936) and (arg5 == 29722)) then b = true
-                        elseif ((TrGCDInsSp["spell"][i] == 93400) and (arg5 == 78674)) then b = true
-                        elseif ((TrGCDInsSp["spell"][i] == 69369) and ((arg5 == 339) or (arg5 == 33786) or (arg5 == 5185) or (arg5 == 2637) or (arg5 == 20484)))then b = true 
-                        elseif ((TrGCDInsSp["spell"][i] == 81292) and (arg5 == 8092)) then b = true
-                        elseif ((TrGCDInsSp["spell"][i] == 87160) and (arg5 == 73510)) then b = true
-                        elseif ((TrGCDInsSp["spell"][i] == 114255) and (arg5 == 2061)) then b = true
-                        elseif ((TrGCDInsSp["spell"][i] == 124430) and (arg5 == 8092)) then b = true end
-                        
-                        TrGCDCastSpBanTime[i] = GetTime()
-                        if (IsChannel ~= nil) then TrGCDCastSp[i] = 0 end
-                        if (((GetTime()-TrGCDSpStopTime[i]) < 1) and (TrGCDSpStopName[i] == spellname) and (b == false)) then
-                            TrGCDIcon[i][TrGCDSpStop[i]].texture2:Hide()
-                            TrGCDIcon[i][TrGCDSpStop[i]].texture2.show = false
-                        end
-                        if ((casttime <= 0) or b) then TrGCDAddGcdSpell(spellicon, i, arg5) end
-                        --print("succeeded " .. spellname .. " - " ..TrGCDCastSp[i])
-                    end
-                elseif ((event == "UNIT_SPELLCAST_STOP") and (TrGCDCastSp[i] == 0)) then
-                    lastSpellSent[i] = nil
-                    --print("stop " .. spellname)
-                    TrGCDCastSp[i] = 1
-                    TrGCDIcon[i][TrGCDi[i]-1].texture2:Show()
-                    TrGCDIcon[i][TrGCDi[i]-1].texture2.show = true
-                    TrGCDSpStop[i] = TrGCDi[i]-1
-                    TrGCDSpStopName[i] = spellname
-                    TrGCDSpStopTime[i] = GetTime()
-                elseif (event == "UNIT_SPELLCAST_CHANNEL_STOP") then
-                    lastSpellSent[i] = nil
-                    TrGCDCastSp[i] = 1
-                    --print("channel stop " .. spellname .. " - " .. TrGCDCastSp[i])
+                    if lastSpellSent[i] == spellId then lastSpellSent[i] = nil end --腐蚀术172会先来一个146739 SUCCESS，再来一个172 SUCCESS
                 end
+                if (TrGCDCastSp[i] == 0) then
+                    --print("succeeded then " .. spellname)
+                    if (IsChannel == nil) then TrGCDCastSp[i] = 1 end
+                else
+                    local b = false --висит ли багнутый бафф инстант каста
+                    if ((TrGCDInsSp["spell"][i] == 48108) and (spellId == 11366)) then b = true
+                    elseif ((TrGCDInsSp["spell"][i] == 48108) and (spellId == 2120)) then b = true
+                    elseif ((TrGCDInsSp["spell"][i] == 34936) and (spellId == 29722)) then b = true
+                    elseif ((TrGCDInsSp["spell"][i] == 93400) and (spellId == 78674)) then b = true
+                    elseif ((TrGCDInsSp["spell"][i] == 69369) and ((spellId == 339) or (spellId == 33786) or (spellId == 5185) or (spellId == 2637) or (spellId == 20484)))then b = true
+                    elseif ((TrGCDInsSp["spell"][i] == 81292) and (spellId == 8092)) then b = true
+                    elseif ((TrGCDInsSp["spell"][i] == 87160) and (spellId == 73510)) then b = true
+                    elseif ((TrGCDInsSp["spell"][i] == 114255) and (spellId == 2061)) then b = true
+                    elseif ((TrGCDInsSp["spell"][i] == 124430) and (spellId == 8092)) then b = true end
+                    TrGCDCastSpBanTime[i] = GetTime()
+                    if (IsChannel ~= nil) then TrGCDCastSp[i] = 0 end
+                    if (((GetTime()-TrGCDSpStopTime[i]) < 1) and (TrGCDSpStopName[i] == spellname) and (b == false)) then
+                        TrGCDIcon[i][TrGCDSpStop[i]].texture2:Hide()
+                        TrGCDIcon[i][TrGCDSpStop[i]].texture2.show = false
+                    end
+                    if ((casttime <= 0) or b) then TrGCDAddGcdSpell(spellicon, i, spellId) end
+                    --print("succeeded " .. spellname .. " - " ..TrGCDCastSp[i])
+                end
+            elseif ((event == "UNIT_SPELLCAST_STOP") and (TrGCDCastSp[i] == 0)) then
+                lastSpellSent[i] = nil
+                --print("stop " .. spellname)
+                TrGCDCastSp[i] = 1
+                TrGCDIcon[i][TrGCDi[i]-1].texture2:Show()
+                TrGCDIcon[i][TrGCDi[i]-1].texture2.show = true
+                TrGCDSpStop[i] = TrGCDi[i]-1
+                TrGCDSpStopName[i] = spellname
+                TrGCDSpStopTime[i] = GetTime()
+            elseif (event == "UNIT_SPELLCAST_CHANNEL_STOP") then
+                lastSpellSent[i] = nil
+                TrGCDCastSp[i] = 1
+                --print("channel stop " .. spellname .. " - " .. TrGCDCastSp[i])
             end
         end
     end

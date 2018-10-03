@@ -5,7 +5,7 @@ local CombatLogGetCurrentEventInfo = CombatLogGetCurrentEventInfo
 
 local VExRT = nil
 
-local module = ExRT.mod:New("Encounter",ExRT.L.sencounter)
+local module = ExRT:New("Encounter",ExRT.L.sencounter)
 local ELib,L = ExRT.lib,ExRT.L
 
 module.db.firstBlood = nil
@@ -192,8 +192,8 @@ function module.options:Load()
 		{1039,2130,2131,2132,2133},	--1036:Aqu'sirr,Tidesage Council,Lord Stormsong,Vol'zith the Whisperer
 		{1004,2139,2142,2140,2143},	--1041:The Golden Serpent,Mchimba the Embalmer,The Council of Tribes,Dazar, The First King	
 
-	        {567,1721,1706,1720,1722,1719,1723,1705},--HM
-		{610,1696,1691,1693,1694,1689,1692,1690,1713,1695,1704},--BF
+	        {610,1721,1706,1720,1722,1719,1723,1705},--HM
+		--{596,1696,1691,1693,1694,1689,1692,1690,1713,1695,1704},--BF
 		{661,1778,1785,1787,1798,1786,1783,1788,1794,1777,1800,1784,1795,1799},--HFC
 		{777,1853,1841,1873,1854,1876,1877,1864},--EN
 		{806,1958,1962,2008},--tov

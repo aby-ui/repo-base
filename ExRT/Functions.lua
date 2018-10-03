@@ -1017,6 +1017,19 @@ do
 		alertWindow:Show()
 		alertWindow.EditBox:SetFocus()
 	end
+	function ExRT.F.ShowText(text)
+		if not alertWindow then
+			CreateWindow()
+		end
+		alertWindow.title:SetText("")
+		alertWindow:ClearAllPoints()
+		alertWindow:SetPoint("CENTER",UIParent,0,0)
+		alertWindow.EditBox:SetNumeric(false)
+		alertWindow.EditBox:SetText(text)
+		alertWindow:Show()
+		alertWindow.EditBox:SetFocus()
+		alertFunc = ExRT.NULLfunc
+	end
 end
 
 ---------------> Chat links hook <---------------

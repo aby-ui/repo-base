@@ -10,26 +10,18 @@ local ELib,L = ExRT.lib,ExRT.L
 module.db.isEncounter = nil
 module.db.tableFood = {
 --Haste		Mastery		Crit		Versa		Fire dmg	Other		Int		Str 		Agi		Stam
-[201330]=12,	[201332]=12,	[201223]=12,	[201334]=12,	[201336]=12,
-[225598]=16,	[225599]=16,	[225597]=16,	[225600]=16,	[225601]=16,	[177931]=16,	[201636]=16,	[201634]=16,	[201635]=16,	[201637]=16,
-[225603]=19,	[225604]=19,	[225602]=19,	[225605]=19,	[225606]=19,			[201640]=19,	[201638]=19,	[201639]=19,	[201641]=19,	
-						[185736]=12,
-						
-[257413]=41,	[257418]=41,	[257408]=41,	[257422]=41,					[259449]=75,	[259452]=75,	[259448]=75,	[259453]=75,
-[257415]=55,	[257420]=55,	[257410]=55,	[257424]=55,					[259455]=100,	[259456]=100,	[259454]=100,	[259457]=100,
+						[185736]=50,
+[257413]=50,	[257418]=50,	[257408]=50,	[257422]=50,					[259449]=75,	[259452]=75,	[259448]=75,	[259453]=75,
+[257415]=75,	[257420]=75,	[257410]=75,	[257424]=75,					[259455]=100,	[259456]=100,	[259454]=100,	[259457]=100,
 }
-if UnitLevel'player' > 110 then module.db.tableFood[185736]=41 end
 module.db.StaminaFood = {[201638]=true,[259457]=true,}
 
-module.db.tableFood_headers = UnitLevel'player' <= 110 and {0,12,16,19} or {0,41,55}
-module.db.tableFlask =  UnitLevel'player' <= 110 and {
-	--Stamina,	Int,		Agi,		Str 
-	[188035]=59,	[188031]=59,	[188033]=59,	[188034]=59,
-} or {
+module.db.tableFood_headers = {0,50,75}
+module.db.tableFlask =  {
 	--Stamina,	Int,		Agi,		Str 
 	[251838]=238,	[251837]=238,	[251836]=238,	[251839]=238,
 }
-module.db.tableFlask_headers = UnitLevel'player' <= 110 and {0,59} or {0,238}
+module.db.tableFlask_headers = {0,238}
 module.db.tablePotion = UnitLevel'player' <= 110 and {
 	[229206]=true,	--All Stats
 	[188017]=true,	--Mana 3k, 17k
@@ -85,12 +77,9 @@ module.db.RaidCheckReadyCheckHideSchedule = nil
 
 module.db.tableRunes = UnitLevel'player' <= 110 and {[224001]=true} or {[270058]=true}
 
-module.db.minFoodLevelToActual = UnitLevel'player' <= 110 and {
-	[100] = 16,
-	[125] = 19,
-} or {
-	[100] = 41,
-	[125] = 55,
+module.db.minFoodLevelToActual = {
+	[100] = 50,
+	[125] = 75,
 }
 
 
@@ -646,14 +635,14 @@ function module.options:Load()
 	end)
 
 	
-	self.minFoodLevel100 = ELib:Radio(self,"300",VExRT.RaidCheck.FoodMinLevel == 100):Point("LEFT",self.minFoodLevelAny,"RIGHT", 75, 0):OnClick(function(self) 
+	self.minFoodLevel100 = ELib:Radio(self,"50",VExRT.RaidCheck.FoodMinLevel == 100):Point("LEFT",self.minFoodLevelAny,"RIGHT", 75, 0):OnClick(function(self) 
 		self:SetChecked(true)
 		module.options.minFoodLevelAny:SetChecked(false)
 		module.options.minFoodLevel125:SetChecked(false)
 		VExRT.RaidCheck.FoodMinLevel = 100
 	end)
 	
-	self.minFoodLevel125 = ELib:Radio(self,"375",VExRT.RaidCheck.FoodMinLevel == 125):Point("LEFT",self.minFoodLevel100,"RIGHT", 75, 0):OnClick(function(self) 
+	self.minFoodLevel125 = ELib:Radio(self,"75",VExRT.RaidCheck.FoodMinLevel == 125):Point("LEFT",self.minFoodLevel100,"RIGHT", 75, 0):OnClick(function(self) 
 		self:SetChecked(true)
 		module.options.minFoodLevelAny:SetChecked(false)
 		module.options.minFoodLevel100:SetChecked(false)

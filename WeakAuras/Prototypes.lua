@@ -25,12 +25,12 @@ end
 
 local LibRangeCheck = LibStub("LibRangeCheck-2.0")
 
-function WeakAuras.GetRange(unit)
-  return LibRangeCheck:GetRange(unit);
+function WeakAuras.GetRange(unit, checkVisible)
+  return LibRangeCheck:GetRange(unit, checkVisible);
 end
 
 function WeakAuras.CheckRange(unit, range, operator)
-  local min, max = LibRangeCheck:GetRange(unit);
+  local min, max = LibRangeCheck:GetRange(unit, true);
   if (type(range) ~= "number") then
     range = tonumber(range);
   end
@@ -1392,7 +1392,7 @@ WeakAuras.event_prototypes = {
         name = "percentpower",
         display = L["Power (%)"],
         type = "number",
-        init = "(power or 0) / math.max(1, UnitPowerMax(concernedUnit, powerType, powerThirdArg)) * 100;",
+        init = "(power or 0) / math.max(1, UnitPowerMax(concernedUnit, powerType, powerThirdArg)) * 100 * WeakAuras.UnitPowerDisplayMod(powerTypeToCheck);",
         store = true,
         conditionType = "number"
       },
@@ -2339,7 +2339,14 @@ WeakAuras.event_prototypes = {
       WeakAuras.WatchSpellCooldown(spellName);
     end,
     init = function(trigger)
-      return "";
+      local spellName;
+      if (trigger.use_exact_spellName) then
+        spellName = trigger.spellName;
+      else
+        spellName = type(trigger.spellName) == "number" and GetSpellInfo(trigger.spellName) or trigger.spellName;
+        spellName = string.format("%q", spellName or "");
+      end
+      return string.format("local spell = %s;\n", spellName);
     end,
     statesParameter = "one",
     args = {
@@ -2349,7 +2356,8 @@ WeakAuras.event_prototypes = {
         display = L["Spell"],
         type = "spell",
         init = "arg",
-        showExactOption = true
+        showExactOption = true,
+        test = "spell == spellName"
       },
       {
         name = "direction",
@@ -3339,7 +3347,7 @@ WeakAuras.event_prototypes = {
         ret = ret.."active = active and WeakAuras.IsSpellInRange(spellname or '', 'target')\n";
       end
       if(trigger.use_inverse) then
-        ret = ret.."active = not active and startTime\n";
+        ret = ret.."active = not active\n";
       end
 
       if (type(spellName) == "string") then
@@ -3406,6 +3414,108 @@ WeakAuras.event_prototypes = {
     end,
     hasSpellID = true,
     automaticrequired = true
+  },
+  ["Talent Known"] = {
+    type = "status",
+    events = {
+      "PLAYER_TALENT_UPDATE",
+    },
+    force_events = "PLAYER_TALENT_UPDATE",
+    name = L["Talent Selected"],
+    init = function(trigger)
+      local inverse = trigger.use_inverse;
+      if (trigger.use_talent) then
+        -- Single selection
+        local index = trigger.talent and trigger.talent.single;
+        local tier = ceil(index / 3)
+        local column = (index - 1) % 3 + 1
+
+        local ret = [[
+          local tier = %s;
+          local column = %s;
+          local _, activeName, activeIcon, selected, _, _, _, _, _, _, known  = GetTalentInfo(tier, column, 1)
+          local active = selected or known;
+        ]]
+        if (inverse) then
+          ret = ret .. [[
+          active = not (active);
+          ]]
+        end
+        return ret:format(tier, column)
+      elseif (trigger.use_talent == false) then
+        if (trigger.talent.multi) then
+          local ret = [[
+            local tier
+            local column
+            local active = false;
+            local activeIcon;
+            local activeName;
+          ]]
+          for index in pairs(trigger.talent.multi) do
+            local tier = ceil(index / 3)
+            local column = (index - 1) % 3 + 1
+            local ret2 = [[
+              if (not active) then
+                local _, name, icon, selected, _, _, _, _, _, _n, known  = GetTalentInfo(%s, %s, 1)
+                if (selected or known) then
+                  active = true;
+                  activeName = name;
+                  activeIcon = icon;
+                end
+              end
+            ]]
+            ret = ret .. ret2:format(tier, column);
+          end
+          if (inverse) then
+            ret = ret .. [[
+            active = not (active);
+            ]]
+          end
+          return ret;
+        end
+      end
+      return "";
+    end,
+    args = {
+      {
+        name = "talent",
+        display = L["Talent selected"],
+        type = "multiselect",
+        values = function()
+          local class = select(2, UnitClass("player"));
+          local spec =  GetSpecialization();
+          if(WeakAuras.talent_types_specific[class] and  WeakAuras.talent_types_specific[class][spec]) then
+            return WeakAuras.talent_types_specific[class][spec];
+          else
+            return WeakAuras.talent_types;
+          end
+        end,
+        test = "active",
+      },
+      {
+        name = "inverse",
+        display = L["Inverse"],
+        type = "toggle",
+        test = "true"
+      },
+      {
+        hidden = true,
+        name = "icon",
+        init = "activeIcon",
+        store = "true",
+        test = "true"
+      },
+      {
+        hidden = true,
+        name = "name",
+        init = "activeName",
+        store = "true",
+        test = "true"
+      },
+    },
+    automaticrequired = true,
+    statesParameter = "one",
+    canHaveAuto = true
   },
   ["Totem"] = {
     type = "status",
@@ -4703,7 +4813,7 @@ WeakAuras.event_prototypes = {
       trigger.unit = trigger.unit or "target";
       local ret = [=[
           local unit = [[%s]];
-          local min, max = WeakAuras.GetRange(unit);
+          local min, max = WeakAuras.GetRange(unit, true);
           min = min or 0;
           max = max or 999;
           local triggerResult = true;

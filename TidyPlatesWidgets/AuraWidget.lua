@@ -178,7 +178,9 @@ local function UpdateIconGrid(frame, unitid)
 
 		if not unitid then return end
 
-		local unitReaction = UnitIsFriend("player", unitid) and not UnitIsEnemy("player", unitid) and AURA_TARGET_FRIENDLY or AURA_TARGET_HOSTILE --PVP UnitIsFriend=true
+		local unitReaction
+		if UnitIsFriend("player", unitid) and not UnitIsEnemy("player", unitid) then unitReaction = AURA_TARGET_FRIENDLY  --PVP UnitIsFriend=true
+		else unitReaction = AURA_TARGET_HOSTILE end
 		local unitIsNPC = not UnitIsPlayer(unitid) and not UnitPlayerControlled(unitid)
 
 		local AuraIconFrames = frame.AuraIconFrames
@@ -202,7 +204,15 @@ local function UpdateIconGrid(frame, unitid)
 			local aura = {}
 
 			do
-				local name, icon, stacks, auraType, duration, expiration, caster, isStealable, _, spellid = UnitAura(unitid, auraIndex, auraFilter)		-- UnitaAura
+				-- local name, _, icon, stacks, auraType, duration, expiration, caster, _, _, spellid = UnitAura(unitid, auraIndex, auraFilter)		-- UnitaAura pre-8.0
+
+--[[ 8.0
+name, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, nameplateShowPersonal, spellId, canApplyAura, isBossDebuff, isCastByPlayer, nameplateShowAll, timeMod, ...
+    = UnitAura("unit", index[, "filter"])
+
+--]]
+				local name, icon, stacks, auraType, duration, expiration, caster, purgable, personal, spellid = UnitAura(unitid, auraIndex, auraFilter)
+
 
 				aura.name = name
 				aura.texture = icon
@@ -212,7 +222,7 @@ local function UpdateIconGrid(frame, unitid)
 				aura.duration = duration
 				aura.reaction = unitReaction
                 aura.isNPC = unitIsNPC
-                aura.isStealable = isStealable
+                aura.isStealable = purgable
 				aura.expiration = expiration
 				aura.caster = caster
 				aura.spellid = spellid
