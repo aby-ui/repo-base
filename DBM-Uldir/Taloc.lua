@@ -1,14 +1,14 @@
 local mod	= DBM:NewMod(2168, "DBM-Uldir", nil, 1031)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17930 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 17959 $"):sub(12, -3))
 mod:SetCreatureID(137119)--Taloc
 mod:SetEncounterID(2144)
 mod:SetZone()
 --mod:SetUsedIcons(1, 2, 3)
 --mod:SetHotfixNoticeRev(16950)
 --mod:SetMinSyncRevision(16950)
---mod.respawnTime = 35
+mod.respawnTime = 29
 
 mod:RegisterCombat("combat")
 

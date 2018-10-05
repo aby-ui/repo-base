@@ -881,6 +881,10 @@ local switch_enable = function (self)
 	return _rawset (self, "lockdown", false)
 end
 
+local set_switch_func = function (self, newFunction)
+	self.OnSwitch = newFunction
+end
+
 local set_as_checkbok = function (self)
 	local checked = self:CreateTexture (self:GetName() .. "CheckTexture", "overlay")
 	checked:SetTexture ([[Interface\Buttons\UI-CheckBox-Check]])
@@ -938,7 +942,6 @@ function DF:NewSwitch (parent, container, name, member, w, h, ltext, rtext, defa
 	rtext = rtext or "ON"
 	
 --> build frames
-	
 	w = w or 60
 	h = h or 20
 	
@@ -954,6 +957,7 @@ function DF:NewSwitch (parent, container, name, member, w, h, ltext, rtext, defa
 	slider.Enable = switch_enable
 	slider.SetAsCheckBox = set_as_checkbok
 	slider.SetTemplate = DFSliderMetaFunctions.SetTemplate
+	slider.SetSwitchFunction = set_switch_func
 	
 	if (member) then
 		parent [member] = slider

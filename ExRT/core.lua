@@ -25,10 +25,13 @@
 * Removed outdated modules
 * Minor fixes
 
+3975
+* Fixes for note editing
+
 ]]
 local GlobalAddonName, ExRT = ...
 
-ExRT.V = 3970
+ExRT.V = 3975
 ExRT.T = "R"
 
 ExRT.OnUpdate = {}		--> таймеры, OnUpdate функции

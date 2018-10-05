@@ -224,6 +224,22 @@ local create_worldmap_square = function (mapName, index, parent)
 	trackingGlowBorder:SetDrawLayer ("BACKGROUND", -5)
 	trackingGlowBorder:Hide()
 	
+	local flashTexture = button:CreateTexture (nil, "overlay")
+	flashTexture:SetDrawLayer ("overlay", 7)
+	flashTexture:Hide()
+	flashTexture:SetColorTexture (1, 1, 1)
+	flashTexture:SetAllPoints()
+	button.FlashTexture = flashTexture
+	
+	button.QuickFlash = DF:CreateAnimationHub (flashTexture, function() flashTexture:Show() end, function() flashTexture:Hide() end)
+	WorldQuestTracker:CreateAnimation (button.QuickFlash, "Alpha", 1, .15, 0, 1)
+	WorldQuestTracker:CreateAnimation (button.QuickFlash, "Alpha", 2, .15, 1, 0)
+	
+	button.LoopFlash = DF:CreateAnimationHub (flashTexture, function() flashTexture:Show() end, function() flashTexture:Hide() end)
+	WorldQuestTracker:CreateAnimation (button.LoopFlash, "Alpha", 1, .35, 0, .5)
+	WorldQuestTracker:CreateAnimation (button.LoopFlash, "Alpha", 2, .35, .5, 0)
+	button.LoopFlash:SetLooping ("REPEAT")
+	
 	local smallFlashOnTrack = button:CreateTexture (nil, "overlay", 7)
 	smallFlashOnTrack:Hide()
 	smallFlashOnTrack:SetColorTexture (1, 1, 1)
@@ -262,9 +278,9 @@ local create_worldmap_square = function (mapName, index, parent)
 	--local criteriaIndicator = criteriaFrame:CreateTexture (nil, "OVERLAY", 2)
 	local criteriaIndicator = criteriaFrame:CreateTexture (nil, "OVERLAY", 2)
 	--criteriaIndicator:SetPoint ("bottomleft", button, "bottomleft", 1, 2)
-	criteriaIndicator:SetPoint ("topleft", button, "topleft", 0, -1)
-	criteriaIndicator:SetSize (26*.32, 34*.32) --original sizes: 23 37
-	criteriaIndicator:SetAlpha (.823)
+	criteriaIndicator:SetPoint ("topleft", button, "topleft", 1, -1)
+	criteriaIndicator:SetSize (28*.32, 34*.32) --original sizes: 23 37
+	criteriaIndicator:SetAlpha (.893)
 	criteriaIndicator:SetTexture (WorldQuestTracker.MapData.GeneralIcons.CRITERIA.icon)
 	criteriaIndicator:SetTexCoord (unpack (WorldQuestTracker.MapData.GeneralIcons.CRITERIA.coords))
 	criteriaIndicator:Hide()
@@ -313,14 +329,14 @@ local create_worldmap_square = function (mapName, index, parent)
 	button.timeBlipOrange:SetSize (WorldQuestTracker.Constants.TimeBlipSize, WorldQuestTracker.Constants.TimeBlipSize)
 	button.timeBlipOrange:SetTexture ([[Interface\COMMON\Indicator-Yellow]])
 	button.timeBlipOrange:SetVertexColor (1, .7, 0)
-	button.timeBlipOrange:SetAlpha (.9)
+	button.timeBlipOrange:SetAlpha (.95)
 	
 	button.timeBlipYellow = button:CreateTexture (nil, "OVERLAY")
 	button.timeBlipYellow:SetPoint ("bottomright", button, "bottomright", 4, -4)
 	button.timeBlipYellow:SetSize (WorldQuestTracker.Constants.TimeBlipSize, WorldQuestTracker.Constants.TimeBlipSize)
 	button.timeBlipYellow:SetTexture ([[Interface\COMMON\Indicator-Yellow]])
 	button.timeBlipYellow:SetVertexColor (1, 1, 1)
-	button.timeBlipYellow:SetAlpha (.8)
+	button.timeBlipYellow:SetAlpha (.9)
 	
 	button.timeBlipGreen = button:CreateTexture (nil, "OVERLAY")
 	button.timeBlipGreen:SetPoint ("bottomright", button, "bottomright", 4, -4)
@@ -330,7 +346,7 @@ local create_worldmap_square = function (mapName, index, parent)
 	button.timeBlipGreen:SetAlpha (.6)	
 	
 	button.questTypeBlip = button:CreateTexture (nil, "OVERLAY", 2)
-	button.questTypeBlip:SetPoint ("topright", button, "topright", 2, 1)
+	button.questTypeBlip:SetPoint ("topright", button, "topright", 2, 4)
 	button.questTypeBlip:SetSize (12, 12)
 	
 	local amountText = button:CreateFontString (nil, "overlay", "GameFontNormal", 1)
@@ -770,6 +786,12 @@ function WorldQuestTracker.UpdateWorldWidget (widget, questID, numObjectives, ma
 		widget.questTypeBlip:Show()
 		widget.questTypeBlip:SetTexture ([[Interface\Scenarios\ScenarioIcon-Boss]])
 		widget.questTypeBlip:SetTexCoord (0, 1, 0, 1)
+		widget.questTypeBlip:SetAlpha (.98)
+		
+	elseif (rarity == LE_WORLD_QUEST_QUALITY_RARE) then
+		widget.questTypeBlip:Show()
+		widget.questTypeBlip:SetTexture ([[Interface\AddOns\WorldQuestTracker\media\icon_star]])
+		widget.questTypeBlip:SetTexCoord (6/32, 26/32, 5/32, 27/32)
 		widget.questTypeBlip:SetAlpha (.89)
 		
 	else

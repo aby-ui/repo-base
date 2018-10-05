@@ -67,6 +67,147 @@ DF.OptionsFunctions = {
 	end
 }
 
+--> default options for the frame layout
+local default_framelayout_options = {
+	amount_per_line = 4,
+	start_x = 2,
+	start_y = -2,
+	is_vertical = false,
+	grow_right = true, --on vertical (if not grow next line left)
+	grow_down = true, --on horizontal (if not grow next line up)
+	anchor_to_child = false, --if true set the point to the previous frame instead of coordinate
+	anchor_point = "topleft",
+	anchor_relative = "topleft",
+	offset_x = 100,
+	offset_y = 20,
+	width = 0, --if bigger than 0, it will set the value
+	height = 0,
+	break_if_hidden = true, --stop if encounters a hidden frame
+}
+
+--> mixin for frame layout
+DF.LayoutFrame = {
+	AnchorTo = function (self, anchor, point, x, y)
+		if (point == "top") then
+			self:ClearAllPoints()
+			self:SetPoint ("bottom", anchor, "top", x or 0, y or 0)
+			
+		elseif (point == "bottom") then
+			self:ClearAllPoints()
+			self:SetPoint ("top", anchor, "bottom", x or 0, y or 0)
+			
+		elseif (point == "left") then
+			self:ClearAllPoints()
+			self:SetPoint ("right", anchor, "left", x or 0, y or 0)
+			
+		elseif (point == "right") then
+			self:ClearAllPoints()
+			self:SetPoint ("left", anchor, "right", x or 0, y or 0)
+		end
+	end,
+	
+	ArrangeFrames = function (self, frameList, options)
+		
+		if (not frameList) then
+			frameList = {self:GetChildren()}
+		end
+		
+		options = options or {}
+		DF.table.deploy (options, default_framelayout_options)
+		
+		local breakLine = options.amount_per_line + 1
+		local currentX, currentY = options.start_x, options.start_y
+		local offsetX, offsetY = options.offset_x, options.offset_y
+		local anchorPoint = options.anchor_point
+		local anchorAt = options.anchor_relative
+		local latestFrame = self
+		local firstRowFrame = frameList [1]
+		
+		if (options.is_vertical) then
+			for i = 1, #frameList do 
+				local thisFrame =  frameList [i]
+				if (options.break_if_hidden and not thisFrame:IsShown()) then
+					break
+				end
+				thisFrame:ClearAllPoints()
+				
+				if (options.anchor_to_child) then
+					if (i == breakLine) then
+						if (options.grow_right) then
+							thisFrame:SetPoint ("topleft", firstRowFrame, "topright", offsetX, 0)
+						else
+							thisFrame:SetPoint ("topright", firstRowFrame, "topleft", -offsetX, 0)
+						end
+						firstRowFrame = thisFrame
+						latestFrame = thisFrame
+						breakLine = breakLine + options.amount_per_line
+					else
+						thisFrame:SetPoint (anchorPoint, latestFrame, i == 1 and "topleft" or anchorAt, offsetX, i == 1 and 0 or offsetY)
+						latestFrame = thisFrame
+					end
+				else
+					if (i == breakLine) then
+						if (options.grow_right) then
+							currentX = currentX + offsetX
+						else
+							currentX = currentX - offsetX
+						end
+						currentY = options.start_y
+						
+						firstRowFrame = thisFrame
+						breakLine = breakLine + options.amount_per_line
+					end
+					
+					thisFrame:SetPoint (anchorPoint, self, anchorAt, currentX, currentY)
+					currentY = currentY - offsetY
+				end
+			end
+		
+		else
+			for i = 1, #frameList do 
+				local thisFrame =  frameList [i]
+				if (options.break_if_hidden and not thisFrame:IsShown()) then
+					break
+				end
+				thisFrame:ClearAllPoints()
+				
+				if (options.anchor_to_child) then
+					if (i == breakLine) then
+						if (options.grow_down) then
+							thisFrame:SetPoint ("topleft", firstRowFrame, "bottomleft", 0, -offsetY)
+						else
+							thisFrame:SetPoint ("bottomleft", firstRowFrame, "topleft", 0, offsetY)
+						end
+						firstRowFrame = thisFrame
+						latestFrame = thisFrame
+						breakLine = breakLine + options.amount_per_line
+					else
+						thisFrame:SetPoint (anchorPoint, latestFrame, i == 1 and "topleft" or anchorAt, i == 1 and 0 or offsetX, offsetY)
+						latestFrame = thisFrame
+					end
+				else
+					if (i == breakLine) then
+						if (options.grow_down) then
+							currentY = currentY - offsetY
+						else
+							currentY = currentY + offsetY
+						end
+						currentX = options.start_x
+						
+						firstRowFrame = thisFrame
+						breakLine = breakLine + options.amount_per_line
+					end
+					
+					thisFrame:SetPoint (anchorPoint, self, anchorAt, currentX, currentY)
+					currentX = currentX + offsetX
+				end
+			end
+		end
+	end
+	
+}
+
+
 ------------------------------------------------------------------------------------------------------------
 --> metatables
 
@@ -5221,3 +5362,844 @@ function DF:CreateHeader (parent, headerTable, options)
 	
 	return f
 end
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+--> radio group
+
+local default_radiogroup_options = {
+	width = 1,
+	height = 1,
+	backdrop = {edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1, bgFile = [[Interface\Tooltips\UI-Tooltip-Background]], tileSize = 64, tile = true},
+	backdrop_color = {0, 0, 0, 0.2},
+	backdrop_border_color = {0.1, 0.1, 0.1, .2},
+	is_radio = false,
+}
+
+DF.RadioGroupCoreFunctions = {
+	RadioOnClick = function (self, fixedParam, value)
+		--turn off all checkboxes
+		local frameList = {self:GetParent():GetChildren()}
+		for _, checkbox in ipairs (frameList) do
+			checkbox = checkbox.GetCapsule and checkbox:GetCapsule() or checkbox
+			checkbox:SetValue (false)
+		end
+		
+		--turn on the clicked checkbox
+		self:SetValue (true)
+		
+		--callback
+		DF:QuickDispatch (self._set, fixedParam)
+	end,
+	
+	Disable = function (self)
+		local frameList = {self:GetChildren()}
+		for _, checkbox in ipairs (frameList) do
+			checkbox = checkbox.GetCapsule and checkbox:GetCapsule() or checkbox
+			checkbox:Disable()
+		end
+	end,
+	
+	Enable = function (self)
+		local frameList = {self:GetChildren()}
+		for _, checkbox in ipairs (frameList) do
+			checkbox = checkbox.GetCapsule and checkbox:GetCapsule() or checkbox
+			checkbox:Enable()
+		end
+	end,
+	
+	DeselectAll = function (self)
+		local frameList = {self:GetChildren()}
+		for _, checkbox in ipairs (frameList) do
+			checkbox = checkbox.GetCapsule and checkbox:GetCapsule() or checkbox
+			checkbox:SetValue (false)
+		end
+	end,
+
+	FadeIn = function (self)
+		local frameList = {self:GetChildren()}
+		for _, checkbox in ipairs (frameList) do
+			checkbox:SetAlpha (1)
+		end
+	end,
+	
+	FadeOut = function (self)
+		local frameList = {self:GetChildren()}
+		for _, checkbox in ipairs (frameList) do
+			checkbox:SetAlpha (.7)
+		end
+	end,
+	
+	SetFadeState = function (self, state)
+		if (state) then
+			self:FadeIn()
+		else
+			self:FadeOut()
+		end
+	end,
+	
+	CreateCheckbox = function (self)
+		local checkbox = DF:CreateSwitch (self, function()end, false, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, DF:GetTemplate ("switch", "OPTIONS_CHECKBOX_BRIGHT_TEMPLATE"))
+		checkbox:SetAsCheckBox()
+		checkbox.Icon = DF:CreateImage (checkbox, "", 16, 16)
+		checkbox.Label = DF:CreateLabel (checkbox, "")
+		
+		return checkbox
+	end,
+	
+	RefreshCheckbox = function (self, checkbox, optionTable)
+		checkbox = checkbox.GetCapsule and checkbox:GetCapsule() or checkbox
+		
+		local setFunc = self.options.is_radio and self.RadioOnClick or optionTable.set
+		checkbox:SetSwitchFunction (setFunc)
+		checkbox._set = setFunc
+		checkbox:SetFixedParameter (optionTable.param)
+		
+		local isChecked = DF:Dispatch (optionTable.get)
+		checkbox:SetValue (isChecked)
+		
+		checkbox.Label:SetText (optionTable.name)
+		
+		if (optionTable.texture) then
+			checkbox.Icon:SetTexture (optionTable.texture)
+			checkbox.Icon:SetPoint ("left", checkbox, "right", 2, 0)
+			checkbox.Label:SetPoint ("left", checkbox.Icon, "right", 2, 0)
+			
+			if (optionTable.texcoord) then
+				checkbox.Icon:SetTexCoord (unpack (optionTable.texcoord))
+			else
+				checkbox.Icon:SetTexCoord (0, 1, 0, 1)
+			end
+		else
+			checkbox.Icon:SetTexture ("")
+			checkbox.Label:SetPoint ("left", checkbox, "right", 2, 0)
+		end
+	end,
+
+	Refresh = function (self)
+		local radioOptions = self.RadioOptionsTable
+		local radioCheckboxes = {self:GetChildren()}
+		
+		for _, checkbox in ipairs (radioCheckboxes) do
+			checkbox:Hide()
+		end
+		
+		for radioIndex, optionsTable in ipairs (radioOptions) do
+			local checkbox = radioCheckboxes [radioIndex]
+			if (not checkbox) then
+				checkbox = self:CreateCheckbox()
+			end
+			checkbox.OptionID = radioIndex
+			checkbox:Show()
+			self:RefreshCheckbox (checkbox, optionsTable)
+		end
+		
+		--sending false to automatically use the radio group children
+		self:ArrangeFrames (false, self.AnchorOptions)
+	end,
+	
+	SetOptions = function (self, radioOptions)
+		self.RadioOptionsTable = radioOptions
+		self:Refresh()
+	end,
+}
+
+--[=[
+	radionOptions: an index table with options for the radio group {name = "", set = func (self, param, value), param = value, get = func, texture = "", texcoord = {}}
+		set function receives as self the checkbox, use :GetParent() to get the radion group frame
+		if get function return nil or false the checkbox isn't checked
+	name: the name of the frame
+	options: override options for default_radiogroup_options table
+	anchorOptions: override options for default_framelayout_options table
+--]=]
+function DF:CreateRadionGroup (parent, radioOptions, name, options, anchorOptions)
+	local f = CreateFrame ("frame", name, parent)
+	
+	DF:Mixin (f, DF.OptionsFunctions)
+	DF:Mixin (f, DF.RadioGroupCoreFunctions)
+	DF:Mixin (f, DF.LayoutFrame)
+	
+	f:BuildOptionsTable (default_radiogroup_options, options)
+	
+	f:SetSize (f.options.width, f.options.height)
+	f:SetBackdrop (f.options.backdrop)
+	f:SetBackdropColor (unpack (f.options.backdrop_color))
+	f:SetBackdropBorderColor (unpack (f.options.backdrop_border_color))
+	
+	f.AnchorOptions = anchorOptions or {}
+	
+	if (f.options.title) then
+		local titleLabel = DF:CreateLabel (f, f.options.title, DF:GetTemplate ("font", "ORANGE_FONT_TEMPLATE"))
+		titleLabel:SetPoint ("bottomleft", f, "topleft", 0, 2)
+		f.Title = titleLabel
+	end
+	
+	f:SetOptions (radioOptions)
+
+	return f
+end
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+--> load conditions panel
+
+--this is the table prototype to hold load conditions settings
+local default_load_conditions = {
+	class = {},
+	spec = {},
+	race = {},
+	talent = {},
+	pvptalent = {},
+	group = {},
+	role = {},
+	affix = {},
+	encounter_ids = {},
+	map_ids = {},
+}
+
+local default_load_conditions_frame_options = {
+	title = "Details! Framework: Load Conditions",
+	name = "Object",
+}
+
+function DF:CreateLoadFilterParser (callback)
+	local f = CreateFrame ("frame")
+	f:RegisterEvent ("PLAYER_ENTERING_WORLD")
+	f:RegisterEvent ("PLAYER_SPECIALIZATION_CHANGED")
+	f:RegisterEvent ("PLAYER_TALENT_UPDATE")
+	f:RegisterEvent ("PLAYER_ROLES_ASSIGNED")
+	f:RegisterEvent ("ZONE_CHANGED_NEW_AREA")
+	f:RegisterEvent ("CHALLENGE_MODE_START")
+	f:RegisterEvent ("ENCOUNTER_START")
+	f:RegisterEvent ("PLAYER_REGEN_ENABLED")
+	
+	f:SetScript ("OnEvent", function (self, event, ...)
+		if (event == "ENCOUNTER_START") then
+			local encounterID = ...
+			f.EncounterIDCached = encounterID
+			
+		elseif (event == "PLAYER_REGEN_ENABLED") then
+			f.EncounterIDCached = nil
+			
+		elseif (event == "PLAYER_SPECIALIZATION_CHANGED") then
+			if (DetailsFrameworkLoadConditionsPanel and DetailsFrameworkLoadConditionsPanel:IsShown()) then
+				DetailsFrameworkLoadConditionsPanel:Refresh()
+			end
+		end
+		
+		DF:QuickDispatch (callback, f.EncounterIDCached)
+	end)
+end
+
+function DF:PassLoadFilters (loadTable, encounterID)
+	--class
+	if (loadTable.class.Enabled) then
+		local _, classFileName = UnitClass ("player")
+		if (not loadTable.class [classFileName]) then
+			return false
+		end
+	end
+	
+	--spec
+	if (loadTable.spec.Enabled) then
+		local specIndex = GetSpecialization()
+		if (specIndex) then
+			local specID = GetSpecializationInfo (specIndex)
+			if (not loadTable.spec [specID]) then
+				return false
+			end
+		else
+			return false
+		end
+	end
+	
+	--race
+	if (loadTable.race.Enabled) then
+		local raceName, raceFileName, raceID = UnitRace ("player")
+		if (not loadTable.race [raceFileName]) then
+			return false
+		end
+	end
+	
+	--talents
+	if (loadTable.talent.Enabled) then
+		local talentsInUse = DF:GetCharacterTalents (false, true)
+		local hasTalent
+		for talentID, _ in pairs (talentsInUse) do
+			if (loadTable.talent [talentID]) then
+				hasTalent =  true
+				break
+			end
+		end
+		if (not hasTalent) then
+			return false
+		end
+	end
+	
+	--pvptalent
+	if (loadTable.pvptalent.Enabled) then
+		local talentsInUse = DF:GetCharacterPvPTalents (false, true)
+		local hasTalent
+		for talentID, _ in pairs (talentsInUse) do
+			if (loadTable.pvptalent [talentID]) then
+				hasTalent =  true
+				break
+			end
+		end
+		if (not hasTalent) then
+			return false
+		end
+	end
+	
+	--group
+	if (loadTable.group.Enabled) then
+		local _, zoneType = GetInstanceInfo()
+		if (not loadTable.group [zoneType]) then
+			return
+		end
+	end
+	
+	--role
+	if (loadTable.role.Enabled) then
+		local assignedRole = UnitGroupRolesAssigned ("player")
+		if (not loadTable.role [assignedRole]) then
+			return false
+		end
+	end
+	
+	--affix
+	if (loadTable.affix.Enabled) then
+		local isInMythicDungeon = C_ChallengeMode.IsChallengeModeActive()
+		if (not isInMythicDungeon) then
+			return false
+		end
+		
+		local level, affixes, wasEnergized = C_ChallengeMode.GetActiveKeystoneInfo()
+		local hasAffix = false
+		for _, affixID in ipairs (affixes) do
+			if (loadTable.affix [affixID]) then
+				hasAffix = true
+				break
+			end
+		end
+		
+		if (not hasAffix) then
+			return false
+		end
+	end
+	
+	--encounter id
+	if (loadTable.encounter_ids.Enabled) then
+		if (not encounterID) then
+			return
+		end
+		local hasEncounter
+		for _, ID in ipairs (loadTable.encounter_ids) do
+			if (ID == encounterID) then
+				hasEncounter = true
+				break
+			end
+			if (not hasEncounter) then
+				return false
+			end
+		end
+	end
+	
+	--map id
+	if (loadTable.map_ids.Enabled) then
+		local _, _, _, _, _, _, _, zoneMapID = GetInstanceInfo()
+		local uiMapID = C_Map.GetBestMapForUnit ("player")
+		
+		local hasMapID
+		for _, ID in ipairs (loadTable.map_ids) do
+			if (ID == zoneMapID or ID == uiMapID) then
+				hasMapID = true
+				break
+			end
+			if (not hasMapID) then
+				return false
+			end
+		end
+	end
+	
+	return true
+end
+
+--this func will deploy the default values from the prototype into the config table
+function DF:UpdateLoadConditionsTable (configTable)
+	configTable = configTable or {}
+	DF.table.deploy (configTable, default_load_conditions)
+	return configTable
+end
+
+--/run Plater.OpenOptionsPanel();PlaterOptionsPanelContainer:SelectIndex (Plater, 14);
+
+function DF:OpenLoadConditionsPanel (optionsTable, callback, frameOptions)
+
+	frameOptions = frameOptions or {}
+	DF.table.deploy (frameOptions, default_load_conditions_frame_options)
+
+	DF:UpdateLoadConditionsTable (optionsTable)
+
+	if (not DetailsFrameworkLoadConditionsPanel) then
+	
+		local f = DF:CreateSimplePanel (UIParent, 970, 505, "Load Conditions", "DetailsFrameworkLoadConditionsPanel")
+		f:SetBackdropColor (0, 0, 0, 1)
+		f.AllRadioGroups = {}
+		f.AllTextEntries = {}
+		f.OptionsTable = optionsTable
+		
+		local xStartAt = 10
+		local x2StartAt = 500
+		local anchorPositions = {
+			class = {xStartAt, -70},
+			spec = {xStartAt, -170},
+			race = {xStartAt, -210},
+			role = {xStartAt, -310},
+			talent = {xStartAt, -350},
+			pvptalent = {x2StartAt, -70},
+			group = {x2StartAt, -210},
+			affix = {x2StartAt, -270},
+			encounter_ids = {x2StartAt, -360},
+			map_ids = {x2StartAt, -400},
+		}
+		
+		local editingLabel = DF:CreateLabel (f, "Load Conditions For:")
+		local editingWhatLabel = DF:CreateLabel (f, "")
+		editingLabel:SetPoint ("topleft", f, "topleft", 10, -35)
+		editingWhatLabel:SetPoint ("left", editingLabel, "right", 2, 0)
+		
+		--this label store the name of what is being edited
+		f.EditingLabel = editingWhatLabel
+		
+		--when the user click on an option, run the callback
+			f.RunCallback = function()
+				DF:Dispatch (f.CallbackFunc)
+			end
+
+		--when the user click on an option or when the panel is opened
+		--check if there's an option enabled and fadein all options, fadeout otherwise
+			f.OnRadioStateChanged = function (radioGroup, subConfigTable)
+				subConfigTable.Enabled = nil
+				subConfigTable.Enabled = next (subConfigTable) and true or nil
+				radioGroup:SetFadeState (subConfigTable.Enabled)
+			end
+
+		--create the radio group for character class
+			f.OnRadioCheckboxClick = function (self, key, value)
+				--hierarchy: DBKey ["class"] key ["HUNTER"] value TRUE
+				local DBKey = self:GetParent().DBKey
+				f.OptionsTable [DBKey] [key] = value and true or nil
+				f.OnRadioStateChanged (self:GetParent(), f.OptionsTable [DBKey])
+				f.RunCallback()
+			end
+			
+		--create the radio group for classes
+			local classes = {}
+			for _, classTable in pairs (DF:GetClassList()) do
+				tinsert (classes, {
+					name = classTable.Name, 
+					set = f.OnRadioCheckboxClick, 
+					param = classTable.FileString, 
+					get = function() return f.OptionsTable.class [classTable.FileString] end,
+					texture = classTable.Texture,
+					texcoord = classTable.TexCoord,
+				})
+			end
+			
+			local classGroup = DF:CreateRadionGroup (f, classes, name, {width = 200, height = 200, title = "Character Class"}, {offset_x = 130, amount_per_line = 3})
+			classGroup:SetPoint ("topleft", f, "topleft", anchorPositions.class [1], anchorPositions.class [2])
+			classGroup.DBKey = "class"
+			tinsert (f.AllRadioGroups, classGroup)
+		
+		--create the radio group for character spec
+			local specs = {}
+			for _, specID in ipairs (DF:GetClassSpecIDs (select (2, UnitClass ("player")))) do
+				local specID, specName, specDescription, specIcon, specBackground, specRole, specClass = GetSpecializationInfoByID (specID)
+				tinsert (specs, {
+					name = specName,
+					set = f.OnRadioCheckboxClick,
+					param = specID,
+					get = function() return f.OptionsTable.spec [specID] end,
+					texture = specIcon,
+				})
+			end
+			local specGroup = DF:CreateRadionGroup (f, specs, name, {width = 200, height = 200, title = "Character Spec"}, {offset_x = 130, amount_per_line = 4})
+			specGroup:SetPoint ("topleft", f, "topleft", anchorPositions.spec [1], anchorPositions.spec [2])
+			specGroup.DBKey = "spec"
+			tinsert (f.AllRadioGroups, specGroup)
+			
+		--create radio group for character races
+			local raceList = {}
+			for _, raceTable in ipairs (DF:GetCharacterRaceList()) do
+				tinsert (raceList, {
+					name = raceTable.Name, 
+					set = f.OnRadioCheckboxClick,
+					param = raceTable.FileString,
+					get = function() return f.OptionsTable.race [raceTable.FileString] end,
+				})
+			end
+			local raceGroup = DF:CreateRadionGroup (f, raceList, name, {width = 200, height = 200, title = "Character Race"})
+			raceGroup:SetPoint ("topleft", f, "topleft", anchorPositions.race [1], anchorPositions.race [2])
+			raceGroup.DBKey = "race"
+			tinsert (f.AllRadioGroups, raceGroup)
+			
+		--create radio group for talents
+			local talentList = {}
+			for _, talentTable in ipairs (DF:GetCharacterTalents()) do
+				tinsert (talentList, {
+					name = talentTable.Name, 
+					set = f.OnRadioCheckboxClick,
+					param = talentTable.ID,
+					get = function() return f.OptionsTable.talent [talentTable.ID] end,
+					texture = talentTable.Texture,
+				})
+			end
+			local talentGroup = DF:CreateRadionGroup (f, talentList, name, {width = 200, height = 200, title = "Characer Talents"}, {offset_x = 150, amount_per_line = 3})
+			talentGroup:SetPoint ("topleft", f, "topleft", anchorPositions.talent [1], anchorPositions.talent [2])
+			talentGroup.DBKey = "talent"
+			tinsert (f.AllRadioGroups, talentGroup)
+			f.TalentGroup = talentGroup
+			
+			do
+				--create a frame to show talents selected in other specs or characters
+				local otherTalents = CreateFrame ("frame", nil, f)
+				otherTalents:SetSize (26, 26)
+				otherTalents:SetPoint ("left", talentGroup.Title.widget, "right", 10, -2)
+				otherTalents.Texture = DF:CreateImage (otherTalents, [[Interface\BUTTONS\AdventureGuideMicrobuttonAlert]], 24, 24)
+				otherTalents.Texture:SetAllPoints()
+				
+				local removeTalent = function (_, _, talentID)
+					f.OptionsTable.talent [talentID] = nil
+					GameCooltip2:Hide()
+					f.OnRadioStateChanged (talentGroup, f.OptionsTable [talentGroup.DBKey])
+					f.CanShowTalentWarning()
+				end
+				
+				local buildTalentMenu = function()
+					local playerTalents = DF:GetCharacterTalents()
+					local indexedTalents = {}
+					for _, talentTable in ipairs (playerTalents) do
+						tinsert (indexedTalents, talentTable.ID)
+					end
+					
+					--talents selected to load
+					GameCooltip2:AddLine ("select a talent to remove it (added from a different spec or character)", "", 1, "orange", "orange", 9)
+					GameCooltip2:AddLine ("$div", nil, nil, -1, -1)
+					
+					for talentID, _ in pairs (f.OptionsTable.talent) do
+						if (type (talentID) == "number" and not DF.table.find (indexedTalents, talentID)) then
+							local talentID, name, texture, selected, available = GetTalentInfoByID (talentID)
+							if (name) then
+								GameCooltip2:AddLine (name)
+								GameCooltip2:AddIcon (texture, 1, 1, 16, 16, .1, .9, .1, .9)
+								GameCooltip2:AddMenu (1, removeTalent, talentID)
+							end
+						end
+					end
+				end
+				
+				otherTalents.CoolTip = {
+					Type = "menu",
+					BuildFunc = buildTalentMenu,
+					OnEnterFunc = function (self) end,
+					OnLeaveFunc = function (self) end,
+					FixedValue = "none",
+					ShowSpeed = 0.05,
+					Options = function()
+						GameCooltip2:SetOption ("TextFont", "Friz Quadrata TT")
+						GameCooltip2:SetOption ("TextColor", "orange")
+						GameCooltip2:SetOption ("TextSize", 12)
+						GameCooltip2:SetOption ("FixedWidth", 220)
+						GameCooltip2:SetOption ("ButtonsYMod", -4)
+						GameCooltip2:SetOption ("YSpacingMod", -4)
+						GameCooltip2:SetOption ("IgnoreButtonAutoHeight", true)
+						
+						GameCooltip2:SetColor (1, 0.5, 0.5, 0.5, 0)
+						
+						local preset2_backdrop = {bgFile = DF.folder .. "background", edgeFile = [[Interface\Buttons\WHITE8X8]], tile = true, edgeSize = 1, tileSize = 16, insets = {left = 0, right = 0, top = 0, bottom = 0}}
+						local gray_table = {0.37, 0.37, 0.37, 0.95}
+						local black_table = {0.2, 0.2, 0.2, 1}
+						GameCooltip2:SetBackdrop (1, preset2_backdrop, gray_table, black_table)
+						GameCooltip2:SetBackdrop (2, preset2_backdrop, gray_table, black_table)
+					end,
+				}
+				GameCooltip2:CoolTipInject (otherTalents)
+			
+				function f.CanShowTalentWarning()
+					local playerTalents = DF:GetCharacterTalents()
+					local indexedTalents = {}
+					for _, talentTable in ipairs (playerTalents) do
+						tinsert (indexedTalents, talentTable.ID)
+					end
+					for talentID, _ in pairs (f.OptionsTable.talent) do
+						if (type (talentID) == "number" and not DF.table.find (indexedTalents, talentID)) then
+							otherTalents:Show()
+							return
+						end
+					end
+					otherTalents:Hide()
+				end
+			end
+			
+		--create radio group for pvp talents
+			local pvpTalentList = {}
+			for _, talentTable in ipairs (DF:GetCharacterPvPTalents()) do
+				tinsert (pvpTalentList, {
+					name = talentTable.Name, 
+					set = f.OnRadioCheckboxClick,
+					param = talentTable.ID,
+					get = function() return f.OptionsTable.pvptalent [talentTable.ID] end,
+					texture = talentTable.Texture,
+				})
+			end
+			local pvpTalentGroup = DF:CreateRadionGroup (f, pvpTalentList, name, {width = 200, height = 200, title = "Characer PvP Talents"}, {offset_x = 150, amount_per_line = 3})
+			pvpTalentGroup:SetPoint ("topleft", f, "topleft", anchorPositions.pvptalent [1], anchorPositions.pvptalent [2])
+			pvpTalentGroup.DBKey = "pvptalent"
+			tinsert (f.AllRadioGroups, pvpTalentGroup)
+			f.PvPTalentGroup = pvpTalentGroup
+			
+			do
+				--create a frame to show talents selected in other specs or characters
+				local otherTalents = CreateFrame ("frame", nil, f)
+				otherTalents:SetSize (26, 26)
+				otherTalents:SetPoint ("left", pvpTalentGroup.Title.widget, "right", 10, -2)
+				otherTalents.Texture = DF:CreateImage (otherTalents, [[Interface\BUTTONS\AdventureGuideMicrobuttonAlert]], 24, 24)
+				otherTalents.Texture:SetAllPoints()
+				
+				local removeTalent = function (_, _, talentID)
+					f.OptionsTable.pvptalent [talentID] = nil
+					GameCooltip2:Hide()
+					f.OnRadioStateChanged (pvpTalentGroup, f.OptionsTable [pvpTalentGroup.DBKey])
+					f.CanShowPvPTalentWarning()
+				end
+				
+				local buildTalentMenu = function()
+					local playerTalents = DF:GetCharacterPvPTalents()
+					local indexedTalents = {}
+					for _, talentTable in ipairs (playerTalents) do
+						tinsert (indexedTalents, talentTable.ID)
+					end
+					
+					--talents selected to load
+					GameCooltip2:AddLine ("select a talent to remove it (added from a different spec or character)", "", 1, "orange", "orange", 9)
+					GameCooltip2:AddLine ("$div", nil, nil, -1, -1)
+					
+					for talentID, _ in pairs (f.OptionsTable.pvptalent) do
+						if (type (talentID) == "number" and not DF.table.find (indexedTalents, talentID)) then
+							local _, name, texture = GetPvpTalentInfoByID (talentID)
+							if (name) then
+								GameCooltip2:AddLine (name)
+								GameCooltip2:AddIcon (texture, 1, 1, 16, 16, .1, .9, .1, .9)
+								GameCooltip2:AddMenu (1, removeTalent, talentID)
+							end
+						end
+					end
+				end
+				
+				otherTalents.CoolTip = {
+					Type = "menu",
+					BuildFunc = buildTalentMenu,
+					OnEnterFunc = function (self) end,
+					OnLeaveFunc = function (self) end,
+					FixedValue = "none",
+					ShowSpeed = 0.05,
+					Options = function()
+						GameCooltip2:SetOption ("TextFont", "Friz Quadrata TT")
+						GameCooltip2:SetOption ("TextColor", "orange")
+						GameCooltip2:SetOption ("TextSize", 12)
+						GameCooltip2:SetOption ("FixedWidth", 220)
+						GameCooltip2:SetOption ("ButtonsYMod", -4)
+						GameCooltip2:SetOption ("YSpacingMod", -4)
+						GameCooltip2:SetOption ("IgnoreButtonAutoHeight", true)
+						
+						GameCooltip2:SetColor (1, 0.5, 0.5, 0.5, 0)
+						
+						local preset2_backdrop = {bgFile = DF.folder .. "background", edgeFile = [[Interface\Buttons\WHITE8X8]], tile = true, edgeSize = 1, tileSize = 16, insets = {left = 0, right = 0, top = 0, bottom = 0}}
+						local gray_table = {0.37, 0.37, 0.37, 0.95}
+						local black_table = {0.2, 0.2, 0.2, 1}
+						GameCooltip2:SetBackdrop (1, preset2_backdrop, gray_table, black_table)
+						GameCooltip2:SetBackdrop (2, preset2_backdrop, gray_table, black_table)
+					end,
+				}
+				GameCooltip2:CoolTipInject (otherTalents)
+			
+				function f.CanShowPvPTalentWarning()
+					local playerTalents = DF:GetCharacterPvPTalents()
+					local indexedTalents = {}
+					for _, talentTable in ipairs (playerTalents) do
+						tinsert (indexedTalents, talentTable.ID)
+					end
+					for talentID, _ in pairs (f.OptionsTable.pvptalent) do
+						if (type (talentID) == "number" and not DF.table.find (indexedTalents, talentID)) then
+							otherTalents:Show()
+							return
+						end
+					end
+					otherTalents:Hide()
+				end
+			end
+
+		--create radio for group types
+			local groupTypes = {}
+			for _, groupTable in ipairs (DF:GetGroupTypes()) do
+				tinsert (groupTypes, {
+					name = groupTable.Name, 
+					set = f.OnRadioCheckboxClick,
+					param = groupTable.ID,
+					get = function() return f.OptionsTable.group [groupTable.ID] end,
+				})
+			end
+			local groupTypesGroup = DF:CreateRadionGroup (f, groupTypes, name, {width = 200, height = 200, title = "Group Types"})
+			groupTypesGroup:SetPoint ("topleft", f, "topleft", anchorPositions.group [1], anchorPositions.group [2])
+			groupTypesGroup.DBKey = "group"
+			tinsert (f.AllRadioGroups, groupTypesGroup)
+		
+		--create radio for character roles
+			local roleTypes = {}
+			for _, roleTable in ipairs (DF:GetRoleTypes()) do
+				tinsert (roleTypes, {
+					name = roleTable.Texture .. " " .. roleTable.Name, 
+					set = f.OnRadioCheckboxClick,
+					param = roleTable.ID,
+					get = function() return f.OptionsTable.role [roleTable.ID] end,
+				})
+			end
+			local roleTypesGroup = DF:CreateRadionGroup (f, roleTypes, name, {width = 200, height = 200, title = "Role Types"})
+			roleTypesGroup:SetPoint ("topleft", f, "topleft", anchorPositions.role [1], anchorPositions.role [2])
+			roleTypesGroup.DBKey = "role"
+			tinsert (f.AllRadioGroups, roleTypesGroup)
+		
+		--create radio group for mythic+ affixes
+			local affixes = {}
+			for i = 2, 50 do
+				local affixName, desc, texture = C_ChallengeMode.GetAffixInfo (i)
+				if (affixName) then
+					tinsert (affixes, {
+						name = affixName, 
+						set = f.OnRadioCheckboxClick,
+						param = i, 
+						get = function() return f.OptionsTable.affix [i] end,
+						texture = texture,
+					})
+				end
+			end
+			local affixTypesGroup = DF:CreateRadionGroup (f, affixes, name, {width = 200, height = 200, title = "M+ Affixes"})
+			affixTypesGroup:SetPoint ("topleft", f, "topleft", anchorPositions.affix [1], anchorPositions.affix [2])
+			affixTypesGroup.DBKey = "affix"
+			tinsert (f.AllRadioGroups, affixTypesGroup)
+		
+		--text entries functions
+			local textEntryRefresh = function (self)
+				local idList = f.OptionsTable [self.DBKey]
+				self:SetText ("")
+				for i = 1, #idList do 
+					self:SetText (self:GetText() .. "; " .. idList [i])
+				end
+				self:SetText (self:GetText():gsub ("^; ", ""))
+			end
+			
+			local textEntryOnEnterPressed = function (_, self)
+				wipe (f.OptionsTable [self.DBKey])
+				local text = self:GetText()
+				
+				for _, ID in ipairs ({strsplit (";", text)}) do
+					ID = DF:trim (ID)
+					ID = tonumber (ID)
+					if (ID) then
+						tinsert (f.OptionsTable [self.DBKey], ID)
+						f.OptionsTable [self.DBKey].Enabled = true
+					end
+				end
+			end
+		
+		--create the text entry to type the encounter ID
+			local encounterIDLabel = DF:CreateLabel (f, "Encounter ID", DF:GetTemplate ("font", "ORANGE_FONT_TEMPLATE"))
+			local encounterIDEditbox = DF:CreateTextEntry (f, function()end, 200, 20, "EncounterEditbox", _, _, DF:GetTemplate ("dropdown", "OPTIONS_DROPDOWN_TEMPLATE"))
+			encounterIDLabel:SetPoint ("topleft", f, "topleft", anchorPositions.encounter_ids [1], anchorPositions.encounter_ids [2])
+			encounterIDEditbox:SetPoint ("topleft", encounterIDLabel, "bottomleft", 0, -2)
+			encounterIDEditbox.DBKey = "encounter_ids"
+			encounterIDEditbox.Refresh = textEntryRefresh
+			encounterIDEditbox.tooltip = "Enter multiple IDs separating with a semicolon (;)\nExample: 35; 45; 95\n\nUldir:\n"
+			for _, encounterTable in ipairs (DF:GetCLEncounterIDs()) do
+				encounterIDEditbox.tooltip = encounterIDEditbox.tooltip .. encounterTable.ID .. " - " .. encounterTable.Name .. "\n"
+			end
+			encounterIDEditbox:SetHook ("OnEnterPressed", textEntryOnEnterPressed)
+			tinsert (f.AllTextEntries, encounterIDEditbox)
+			
+		--create the text entry for map ID
+			local mapIDLabel = DF:CreateLabel (f, "Map ID", DF:GetTemplate ("font", "ORANGE_FONT_TEMPLATE"))
+			local mapIDEditbox = DF:CreateTextEntry (f, function()end, 200, 20, "MapEditbox", _, _, DF:GetTemplate ("dropdown", "OPTIONS_DROPDOWN_TEMPLATE"))
+			mapIDLabel:SetPoint ("topleft", f, "topleft", anchorPositions.map_ids [1], anchorPositions.map_ids [2])
+			mapIDEditbox:SetPoint ("topleft", mapIDLabel, "bottomleft", 0, -2)
+			mapIDEditbox.DBKey = "map_ids"
+			mapIDEditbox.Refresh = textEntryRefresh
+			mapIDEditbox.tooltip = "Enter multiple IDs separating with a semicolon (;)\nExample: 35; 45; 95"
+			mapIDEditbox:SetHook ("OnEnterPressed", textEntryOnEnterPressed)
+			tinsert (f.AllTextEntries, mapIDEditbox)
+
+		function f.Refresh (self)
+			do
+				--update the talents (might have changed if the player changed its specialization)
+				local talentList = {}
+				for _, talentTable in ipairs (DF:GetCharacterTalents()) do
+					tinsert (talentList, {
+						name = talentTable.Name, 
+						set = DetailsFrameworkLoadConditionsPanel.OnRadioCheckboxClick,
+						param = talentTable.ID,
+						get = function() return DetailsFrameworkLoadConditionsPanel.OptionsTable.talent [talentTable.ID] end,
+						texture = talentTable.Texture,
+					})
+				end
+				DetailsFrameworkLoadConditionsPanel.TalentGroup:SetOptions (talentList)
+			end
+			
+			do
+				local pvpTalentList = {}
+				for _, talentTable in ipairs (DF:GetCharacterPvPTalents()) do
+					tinsert (pvpTalentList, {
+						name = talentTable.Name, 
+						set = DetailsFrameworkLoadConditionsPanel.OnRadioCheckboxClick,
+						param = talentTable.ID,
+						get = function() return DetailsFrameworkLoadConditionsPanel.OptionsTable.pvptalent [talentTable.ID] end,
+						texture = talentTable.Texture,
+					})
+				end
+				DetailsFrameworkLoadConditionsPanel.PvPTalentGroup:SetOptions (pvpTalentList)
+			end
+			
+			--refresh the radio group
+			for _, radioGroup in ipairs (DetailsFrameworkLoadConditionsPanel.AllRadioGroups) do
+				radioGroup:Refresh()
+				DetailsFrameworkLoadConditionsPanel.OnRadioStateChanged (radioGroup, optionsTable [radioGroup.DBKey])
+			end
+			
+			--refresh text entries
+			for _, textEntry in ipairs (DetailsFrameworkLoadConditionsPanel.AllTextEntries) do
+				textEntry:Refresh()
+			end
+			
+			DetailsFrameworkLoadConditionsPanel.CanShowTalentWarning()
+			DetailsFrameworkLoadConditionsPanel.CanShowPvPTalentWarning()
+		end
+			
+	end
+
+	--set the options table
+	DetailsFrameworkLoadConditionsPanel.OptionsTable = optionsTable
+
+	--set the callback func
+	DetailsFrameworkLoadConditionsPanel.CallbackFunc = callback
+	DetailsFrameworkLoadConditionsPanel.OptionsTable = optionsTable
+
+	--set title
+	DetailsFrameworkLoadConditionsPanel.EditingLabel:SetText (frameOptions.name)
+	DetailsFrameworkLoadConditionsPanel.Title:SetText (frameOptions.title)
+
+	--show the panel to the user
+	DetailsFrameworkLoadConditionsPanel:Show()
+	
+	DetailsFrameworkLoadConditionsPanel:Refresh()
+end
+
+
+--functionn falsee truee breakk

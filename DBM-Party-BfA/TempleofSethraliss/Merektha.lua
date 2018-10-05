@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2143, "DBM-Party-BfA", 6, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17899 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 17953 $"):sub(12, -3))
 mod:SetCreatureID(133384)
 mod:SetEncounterID(2125)
 mod:SetZone()
@@ -102,7 +102,7 @@ function mod:SPELL_CAST_START(args)
 		specWarnNoxiousBreath:Play("watchstep")
 		--timerNoxiousBreathCD:Start()
 	elseif spellId == 263914 then
-		specWarnBlindingSand:Show()
+		specWarnBlindingSand:Show(args.sourceName)
 		specWarnBlindingSand:Play("turnaway")
 	elseif (spellId == 264239 or spellId == 264233) then--Hatch
 		if self:AntiSpam(3, 1) then

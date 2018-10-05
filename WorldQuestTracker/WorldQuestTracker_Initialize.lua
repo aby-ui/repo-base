@@ -129,8 +129,7 @@ do
 				onmap_scale_offset = 0,
 				summary_show = true,
 				summary_scale = 1,
-				summary_timeleft = true,
-				summary_showbyzone = true,
+				summary_showbyzone = false,
 				summary_anchor = "left",
 			},
 			

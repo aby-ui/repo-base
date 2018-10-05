@@ -438,7 +438,7 @@ function module.options:Load()
 	end)
 		
 	function self.NoteEditBox.EditBox:OnTextChanged(isUser)
-		if not isUser then
+		if not isUser and (not module.options.InsertFix or GetTime() - module.options.InsertFix > 0.1) then
 			return
 		end
 		local text = self:GetText()
@@ -529,6 +529,7 @@ function module.options:Load()
 			pos = mypos
 		end
 		txt = string.sub (txt, 1 , pos) .. addedText .. string.sub (txt, pos+1)
+		module.options.InsertFix = GetTime()
 		module.options.NoteEditBox.EditBox:SetText(txt)
 		module.options.NoteEditBox.EditBox:SetCursorPosition(pos+string.len(addedText))
 	end

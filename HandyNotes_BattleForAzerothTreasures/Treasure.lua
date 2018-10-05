@@ -53,19 +53,37 @@ ns.points = {
     --]]
     [862] = { -- Zuldazar
         [54093150] = {quest=48938, achievement=12851, criteria=40988, note="On second floor",}, -- Offerings of the Chosen
-        [64732170] = {quest=50259, achievement=12851, criteria=40989,}, -- Witch Doctor's Hoard
+        [64712167] = {quest=50259, achievement=12851, criteria=40989,}, -- Witch Doctor's Hoard
         [51718690] = {quest=49936, achievement=12851, criteria=40990, note="Bottom floor of ship",}, -- Spoils of Pandaria
-        [51432661] = {quest=50582, achievement=12851, criteria=40991,}, -- Gift of the Brokenhearted
-        [49486526] = {quest=49257, achievement=12851, criteria=40992, note="Top of ship",}, -- Warlord's Cache
-        [38793443] = {quest=50707, achievement=12851, criteria=40993, note="Road behind waterfall",}, -- Dazar's Forgotten Chest
+        [51442661] = {quest=50582, achievement=12851, criteria=40991, note="Top of hill"}, -- Gift of the Brokenhearted
+        [50112715] = path{quest=50582},
+        [49506526] = {quest=49257, achievement=12851, criteria=40992, note="Top of ship",}, -- Warlord's Cache
+        [38793444] = {quest=50707, achievement=12851, criteria=40993, note="Up on the rocks",}, -- Dazar's Forgotten Chest
+        [41003328] = path{quest=50707, note="Path behind the waterfall"},
+        [41973566] = path{quest=50707},
         [61065863] = {quest=50947, achievement=12851, criteria=40994, npc=133208, note="Event: kill Da White Shark first",}, -- Da White Shark's Bounty
-        [71841676] = {quest=50949, achievement=12851, criteria=40995,}, -- The Exile's Lament
-        [56123806] = {quest=51338, achievement=12851, criteria=40996, note="In cave behind waterfall",}, -- Cache of Secrets
+        [71821677] = {quest=50949, achievement=12851, criteria=40995, note="In cave",}, -- The Exile's Lament
         [71161767] = path{quest=50949},
-        [52974722] = {quest=51624, achievement=12851, criteria=40997}, -- Riches of Tor'nowa
+        [56123806] = {quest=51338, achievement=12851, criteria=40996, note="In cave behind waterfall",}, -- Cache of Secrets
+        [52974719] = {quest=51624, achievement=12851, criteria=40997}, -- Riches of Tor'nowa
         -- junk
-        [80135512] = {quest=51346, junk=true, label="Treasure Chest",},
-        [50823158] = {quest=50711, junk=true, label="Treasure Chest",},
+        [50823158] = {quest=50711, junk=true, label=CHEST,},
+        [65041636] = {quest=50715, junk=true, label=CHEST,},
+        [68503365] = {quest=50716, junk=true, label=CHEST,},
+        [66552896] = {quest=50720, junk=true, label=CHEST,},
+        [63062832] = {quest=50720, junk=true, label=CHEST,},
+        [75042303] = {quest=50721, junk=true, label=CHEST,},
+        [48984088] = {quest=50722, junk=true, label=CHEST,},
+        [45676019] = {quest=50723, junk=true, label=CHEST,},
+        [47526049] = {quest=50723, junk=true, label=CHEST,},
+        [80791415] = {quest=50724, junk=true, label=CHEST,},
+        [80151648] = {quest=50724, junk=true, label=CHEST,},
+        [43177297] = {quest=50726, junk=true, label=CHEST,},
+        [40953756] = {quest=50727, junk=true, label=CHEST,},
+        [81203857] = {quest=50728, junk=true, label=CHEST,},
+        [80135512] = {quest=51346, junk=true, label=CHEST,},
+        [82465431] = {quest=51346, junk=true, label=CHEST,},
+        -- [71684127] = {quest=50308, junk=true, label="Mysterious trashpile", achievement="12482", note="Jani"},
     },
     [863] = { -- Nazmir
         [77903634] = {quest=49867, achievement=12771, criteria=40857,}, -- Lucky Horace's Lucky Chest
@@ -76,7 +94,7 @@ ns.points = {
         [62103487] = {quest=49891, achievement=12771, criteria=40861, note="Underwater cave",}, -- Lost Nazmani Treasure
         [42772620] = {quest=49484, achievement=12771, criteria=40862, note="Climb the tree",}, -- Offering to Bwonsamdi
         [66791735] = {quest=49483, achievement=12771, criteria=40863, note="Climb the tree",}, -- Shipwrecked Chest
-        [46238292] = {quest=49889, achievement=12771, criteria=40864,}, -- Venomous Seal
+        [46228295] = {quest=49889, achievement=12771, criteria=40864,}, -- Venomous Seal
         [76826220] = {quest=50045, achievement=12771, criteria=40865, note="Underwater cave",}, -- Swallowed Naga Chest
         [35455498] = {quest=49313, achievement=12771, criteria=40866, note="In cave",}, -- Wunja's Trove
     },
@@ -243,5 +261,7 @@ ns.points = {
         [44472690] = {quest=51338, minimap=true, achievement=12851, criteria=40996, note="In cave behind waterfall",}, -- Cache of Secrets
         [38300716] = {quest=48938, minimap=true, achievement=12851, criteria=40988, note="On top of the Hall of the High Priests",}, -- Offerings of the Chosen
         [41141101] = path{quest=48938},
+        -- junk
+        [48981013] = {quest=49142, junk=true, label=CHEST,},
     },
 }

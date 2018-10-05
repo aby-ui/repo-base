@@ -1,5 +1,5 @@
 
-local dversion = 109
+local dversion = 111
 local major, minor = "DetailsFramework-1.0", dversion
 local DF, oldminor = LibStub:NewLibrary (major, minor)
 
@@ -2455,6 +2455,192 @@ function DF_CALC_PERFORMANCE()
 		print ("Elapsed Time:", deltaTime)
 		F:SetScript ("OnUpdate", nil)
 	end)
+end
+
+DF.ClassFileNameToIndex = {
+	["DEATHKNIGHT"] = 6,
+	["WARRIOR"] = 1,
+	["ROGUE"] = 4,
+	["MAGE"] = 8,
+	["PRIEST"] = 5,
+	["HUNTER"] = 3,
+	["WARLOCK"] = 9,
+	["DEMONHUNTER"] = 12,
+	["SHAMAN"] = 7,
+	["DRUID"] = 11,
+	["MONK"] = 10,
+	["PALADIN"] = 2,
+}
+DF.ClassCache = {}
+
+function DF:GetClassList()
+
+	if (next (DF.ClassCache)) then
+		return DF.ClassCache
+	end
+	
+	for className, classIndex in pairs (DF.ClassFileNameToIndex) do
+		local classTable = C_CreatureInfo.GetClassInfo (classIndex)
+		local t = {
+			ID = classIndex,
+			Name = classTable.className,
+			Texture = [[Interface\GLUES\CHARACTERCREATE\UI-CharacterCreate-Classes]],
+			TexCoord = CLASS_ICON_TCOORDS [className],
+			FileString = className,
+		}
+		tinsert (DF.ClassCache, t)
+	end
+	
+	return DF.ClassCache
+	
+end
+
+--hardcoded race list
+DF.RaceList = {
+	[1] = "Human",
+	[2] = "Orc",
+	[3] = "Dwarf",
+	[4] = "NightElf",
+	[5] = "Scourge",
+	[6] = "Tauren",
+	[7] = "Gnome",
+	[8] = "Troll",
+	[9] = "Goblin",
+	[10] = "BloodElf",
+	[11] = "Draenei",
+	[22] = "Worgen",
+	[24] = "Pandaren",
+}
+
+DF.AlliedRaceList = {
+	[27] = "Nightborne",
+	[29] = "HighmountainTauren",
+	[31] = "VoidElf",
+	[33] = "LightforgedDraenei",
+	[35] = "ZandalariTroll",
+	[36] = "KulTiran",
+	[38] = "DarkIronDwarf",
+	[40] = "Vulpera",
+	[41] = "MagharOrc",
+}
+
+--> store and return a list of character races, always return the non-localized value
+DF.RaceCache = {}
+function DF:GetCharacterRaceList (fullList)
+	if (next (DF.RaceCache)) then
+		return DF.RaceCache
+	end
+	
+	for i = 1, 100 do
+		local raceInfo = C_CreatureInfo.GetRaceInfo (i)
+		if (raceInfo and DF.RaceList [raceInfo.raceID]) then
+			tinsert (DF.RaceCache, {Name = raceInfo.raceName, FileString = raceInfo.clientFileString})
+		end
+		
+		local alliedRaceInfo = C_AlliedRaces.GetRaceInfoByID (i)
+		if (alliedRaceInfo and DF.AlliedRaceList [alliedRaceInfo.raceID]) then
+			tinsert (DF.RaceCache, {Name = alliedRaceInfo.name, FileString = alliedRaceInfo.raceFileString})
+		end
+	end
+	
+	return DF.RaceCache
+end
+
+--get a list of talents for the current spec the player is using
+--if onlySelected return an index table with only the talents the character has selected
+--if onlySelectedHash return a hash table with [spelID] = true 
+function DF:GetCharacterTalents (onlySelected, onlySelectedHash)
+	local talentList = {}
+	
+	for i = 1, 7 do
+		for o = 1, 3 do
+			local talentID, name, texture, selected, available = GetTalentInfo (i, o, 1)
+			if (onlySelectedHash) then
+				if (selected) then
+					talentList [talentID] = true
+					break
+				end
+			elseif (onlySelected) then
+				if (selected) then
+					tinsert (talentList, {Name = name, ID = talentID, Texture = texture, IsSelected = selected})
+					break
+				end
+			else
+				tinsert (talentList, {Name = name, ID = talentID, Texture = texture, IsSelected = selected})
+			end
+		end
+	end
+	
+	return talentList
+end
+
+function DF:GetCharacterPvPTalents (onlySelected, onlySelectedHash)
+	if (onlySelected or onlySelectedHash) then
+		local talentsSelected = C_SpecializationInfo.GetAllSelectedPvpTalentIDs()
+		local talentList = {}
+		for _, talentID in ipairs (talentsSelected) do
+			local _, talentName, texture = GetPvpTalentInfoByID (talentID)
+			if (onlySelectedHash) then
+				talentList [talentID] = true
+			else
+				tinsert (talentList, {Name = talentName, ID = talentID, Texture = texture, IsSelected = true})
+			end
+		end
+		return talentList
+		
+	else	
+		local alreadyAdded = {}
+		local talentList = {}
+		for i = 1, 4 do --4 slots - get talents available in each one
+			local slotInfo = C_SpecializationInfo.GetPvpTalentSlotInfo (i)
+			if (slotInfo) then
+				for _, talentID in ipairs (slotInfo.availableTalentIDs) do
+					if (not alreadyAdded [talentID]) then
+						local _, talentName, texture, selected = GetPvpTalentInfoByID (talentID)
+						tinsert (talentList, {Name = talentName, ID = talentID, Texture = texture, IsSelected = selected})
+						alreadyAdded [talentID] = true
+					end
+				end
+			end
+		end
+		return talentList
+	end
+end
+
+DF.GroupTypes = {
+	{Name = "Arena", ID = "arena"},
+	{Name = "Battleground", ID = "pvp"},
+	{Name = "Raid", ID = "raid"},
+	{Name = "Dungeon", ID = "party"},
+	{Name = "Scenario", ID = "scenario"},
+	{Name = "Open World", ID = "none"},
+}
+function DF:GetGroupTypes()
+	return DF.GroupTypes
+end
+
+DF.RoleTypes = {
+	{Name = _G.DAMAGER, ID = "DAMAGER", Texture = _G.INLINE_DAMAGER_ICON},
+	{Name = _G.HEALER, ID = "HEALER", Texture = _G.INLINE_HEALER_ICON},
+	{Name = _G.TANK, ID = "TANK", Texture = _G.INLINE_TANK_ICON},
+}
+function DF:GetRoleTypes()
+	return DF.RoleTypes
+end
+
+DF.CLEncounterID = {
+	{ID = 2144, Name = "Taloc"},
+	{ID = 2141, Name = "MOTHER"},
+	{ID = 2128, Name = "Fetid Devourer"},
+	{ID = 2136, Name = "Zek'voz"},
+	{ID = 2134, Name = "Vectis"},
+	{ID = 2145, Name = "Zul"},
+	{ID = 2135, Name =  "Mythrax the Unraveler"},
+	{ID = 2122, Name = "G'huun"},
+}
+
+function DF:GetCLEncounterIDs()
+	return DF.CLEncounterID
 end
 
 --doo elsee 
