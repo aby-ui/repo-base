@@ -471,7 +471,7 @@ function srti.IsNameplateUnderMouse()
 	if numch > 0 then
 		for i=1,numch do
 			local f=select(i,WorldFrame:GetChildren());
-			x = f:IsForbidden()
+			x = f:IsForbidden()  -- Check for forbidden frames
 			if x then
 			else
 				if f:IsShown() and f:IsMouseOver() then

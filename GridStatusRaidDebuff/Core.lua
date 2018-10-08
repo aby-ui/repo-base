@@ -475,7 +475,6 @@ function GridStatusRaidDebuff:ScanNewDebuff(unitid, guid)
                 local spellname = UnitDebuff(unitid, i)
                 if not spellname then break end
                 if spellname == name then
-                    print("debuff = true", spellname)
                     debuff = true
                 else
                     self:Debug("Debuff not found", name)

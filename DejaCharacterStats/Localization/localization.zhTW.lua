@@ -54,14 +54,12 @@ L["General global cooldown refresh time."] = "一般通用冷卻刷新時間。"
 L["Global Cooldown"] = "通用冷卻"
 L["Haste Rating"] = "加速點數"
 L["Hide Character Stats"] = "隱藏角色屬性"
---[[Translation missing --]]
---[[ L["Hide low level mastery"] = ""--]] 
+L["Hide low level mastery"] = "隱藏低等級精通"
 L["Hides 'Enhancements' stats if their displayed value would be zero. Checking 'Decimals' changes the displayed value."] = [=[隱藏'強化'屬性如果顯示的值為零。
 勾選'小數點'會改變顯示的數值。]=]
 L["Hides 'Enhancements' stats only if their numerical value is exactly zero. For example, if stat value is 0.001%, then it would be displayed as 0%."] = [=[隱藏'強化'屬性只有當數值完全為零時。
 舉例，如果屬性數值為0.001%，那麼它將顯示為0％。]=]
---[[Translation missing --]]
---[[ L["Hides Mastery stat until the character starts to have benefit from it. Hiding Mastery with Select-A-Stat™ in the character panel has priority over this setting."] = ""--]] 
+L["Hides Mastery stat until the character starts to have benefit from it. Hiding Mastery with Select-A-Stat™ in the character panel has priority over this setting."] = "隱藏精通屬性直到角色開始從中受益。使用角色視窗中Select-A-Stat™的精通隱藏會優先於此設置。"
 L["Item Durability"] = "物品耐久度"
 L["Item Level"] = "物品等級"
 L["Item Repair Cost"] = "物品修理費用"
