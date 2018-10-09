@@ -3,12 +3,15 @@ local GlobalAddonName, ExRT = ...
 local ELib,L = ExRT.lib,ExRT.L
 local module = ExRT:New("VisNote",L.VisualNote,nil,true)
 
+local LibDeflate = LibStub:GetLibrary("LibDeflate")
+
 module.db.await = {}
 
-local DATA_VERSION = 1
+local DATA_VERSION = 2
 
 function module.options:Load()
 	self:CreateTilte()
+	self.title:Point(2,5)
 
 	local special_counter = 0
 	local update_tmr = 0
@@ -50,6 +53,18 @@ function module.options:Load()
 	local object_SIZE,object_GROUP,object_COLOR,object_TYPE = {},{},{},{}
 	local object_DATA1,object_DATA2,object_SYNC = {},{},{}
 
+	local backgrounds = {}
+	local curr_group = 0
+	local curr_color = 4
+	local curr_map = 1
+	local curr_data = {}
+	local curr_icon = 1
+	local curr_text = ""
+	local curr_object = 1
+	local curr_trans = 100
+
+	local tool_selected = 1
+
 	module.db.opt_data = {
 		dots = dots,
 		dots_pos_X = dots_pos_X,
@@ -89,19 +104,9 @@ function module.options:Load()
 		object_DATA1 = object_DATA1,
 		object_DATA2 = object_DATA2,
 		object_SYNC = object_SYNC,
+
+		backgrounds = backgrounds,
 	}
-
-	local backgrounds = {}
-	local curr_group = 0
-	local curr_color = 4
-	local curr_map = 1
-	local curr_data = {}
-	local curr_icon = 1
-	local curr_text = ""
-	local curr_object = 1
-	local curr_trans = 100
-
-	local tool_selected = 1
 
 	local colors = {
 		{0,0,0},
@@ -144,6 +149,19 @@ function module.options:Load()
 		{"Interface\\LFGFrame\\UI-LFG-ICON-ROLES",0,0.26171875,0.26171875,0.5234375},
 		{"Interface\\LFGFrame\\UI-LFG-ICON-ROLES",0.26171875,0.5234375,0,0.26171875},
 		{"Interface\\LFGFrame\\UI-LFG-ICON-ROLES",0.26171875,0.5234375,0.26171875,0.5234375},
+		UnitFactionGroup("player") == "Alliance" and "Interface\\FriendsFrame\\PlusManz-Alliance" or "Interface\\FriendsFrame\\PlusManz-Horde",
+		{"Interface\\GLUES\\CHARACTERCREATE\\UI-CHARACTERCREATE-CLASSES",0,0.25,0,0.25},
+		{"Interface\\GLUES\\CHARACTERCREATE\\UI-CHARACTERCREATE-CLASSES",0,0.25,0.5,0.75},
+		{"Interface\\GLUES\\CHARACTERCREATE\\UI-CHARACTERCREATE-CLASSES",0,0.25,0.25,0.5},
+		{"Interface\\GLUES\\CHARACTERCREATE\\UI-CHARACTERCREATE-CLASSES",0.49609375,0.7421875,0,0.25},
+		{"Interface\\GLUES\\CHARACTERCREATE\\UI-CHARACTERCREATE-CLASSES",0.49609375,0.7421875,0.25,0.5},
+		{"Interface\\GLUES\\CHARACTERCREATE\\UI-CHARACTERCREATE-CLASSES",0.25,0.5,0.5,0.75},
+		{"Interface\\GLUES\\CHARACTERCREATE\\UI-CHARACTERCREATE-CLASSES",0.25,0.49609375,0.25,0.5},
+		{"Interface\\GLUES\\CHARACTERCREATE\\UI-CHARACTERCREATE-CLASSES",0.25,0.49609375,0,0.25},
+		{"Interface\\GLUES\\CHARACTERCREATE\\UI-CHARACTERCREATE-CLASSES",0.7421875,0.98828125,0.25,0.5},
+		{"Interface\\GLUES\\CHARACTERCREATE\\UI-CHARACTERCREATE-CLASSES",0.5,0.73828125,0.5,0.75},
+		{"Interface\\GLUES\\CHARACTERCREATE\\UI-CHARACTERCREATE-CLASSES",0.7421875,0.98828125,0,0.25},
+		{"Interface\\GLUES\\CHARACTERCREATE\\UI-CHARACTERCREATE-CLASSES",0.7421875,0.98828125,0.5,0.75},
 	}
 
 	function self:Clear()
@@ -203,14 +221,14 @@ function module.options:Load()
 	--- Select tools ------
 	-----------------------
 
-	self.tool_select_brush = ELib:Icon(self,"Interface\\AddOns\\ExRT\\media\\circle256",30,true):Point("TOPLEFT",0,-25):OnClick(function()
+	self.tool_select_brush = ELib:Icon(self,"Interface\\AddOns\\ExRT\\media\\circle256",25,true):Point("TOPLEFT",0,-15):OnClick(function()
 		tool_selected = 1
 		self.curr_color_texture:Show()
 		self.curr_color_texture:SetColorTexture(unpack(colors[curr_color]))
 		for i=1,#self.color_selector do self.color_selector[i]:Show() end
 		for i=1,#self.icon_selector do self.icon_selector[i]:Hide() end
 		self.size:Show()
-		self.size:Range(4,36):SetTo(dot_size)
+		self.size:SetTo(dot_size)
 		self.trans:Hide()
 		self.textAddData:Hide()
 
@@ -224,9 +242,9 @@ function module.options:Load()
 	ELib:Border(self.tool_select_brush,2,.24,.25,.30,1)
 	self.tool_select_brush.texture:ClearAllPoints()
 	self.tool_select_brush.texture:SetPoint("CENTER")
-	self.tool_select_brush.texture:SetSize(12,12)
+	self.tool_select_brush.texture:SetSize(8,8)
 
-	self.tool_select_icons = ELib:Icon(self,"Interface\\TargetingFrame\\UI-RaidTargetingIcon_7",30,true):Point("LEFT",self.tool_select_brush,"RIGHT",5,0):OnClick(function()
+	self.tool_select_icons = ELib:Icon(self,"Interface\\TargetingFrame\\UI-RaidTargetingIcon_7",25,true):Point("LEFT",self.tool_select_brush,"RIGHT",5,0):OnClick(function()
 		tool_selected = 2
 		self.curr_color_texture:Show()
 		self.curr_color_texture:SetTexture(icons_list[curr_icon])
@@ -246,9 +264,9 @@ function module.options:Load()
 	ELib:Border(self.tool_select_icons,2,.24,.25,.30,1)
 	self.tool_select_icons.texture:ClearAllPoints()
 	self.tool_select_icons.texture:SetPoint("CENTER")
-	self.tool_select_icons.texture:SetSize(24,24)
+	self.tool_select_icons.texture:SetSize(20,20)
 
-	self.tool_select_text = ELib:Icon(self,nil,30,true):Point("LEFT",self.tool_select_icons,"RIGHT",5,0):OnClick(function()
+	self.tool_select_text = ELib:Icon(self,nil,25,true):Point("LEFT",self.tool_select_icons,"RIGHT",5,0):OnClick(function()
 		tool_selected = 3
 		self.curr_color_texture:Show()
 		self.curr_color_texture:SetColorTexture(unpack(colors[curr_color]))
@@ -268,11 +286,12 @@ function module.options:Load()
 	ELib:Border(self.tool_select_text,2,.24,.25,.30,1)
 	self.tool_select_text.texture:Hide()
 	self.tool_select_text.text = self.tool_select_text:CreateFontString(nil,"ARTWORK","GameFontWhite")
+	self.tool_select_text.text:SetFont(self.tool_select_text.text:GetFont(),10)
 	self.tool_select_text.text:SetPoint("CENTER")
 	self.tool_select_text.text:SetText("TEXT")
 
 
-	self.tool_select_objects = ELib:Icon(self,"Interface\\TargetingFrame\\UI-RaidTargetingIcon_2",30,true):Point("LEFT",self.tool_select_text,"RIGHT",5,0):OnClick(function()
+	self.tool_select_objects = ELib:Icon(self,"Interface\\TargetingFrame\\UI-RaidTargetingIcon_2",25,true):Point("LEFT",self.tool_select_text,"RIGHT",5,0):OnClick(function()
 		tool_selected = 4
 		curr_object = 1
 		self.curr_color_texture:Show()
@@ -280,7 +299,7 @@ function module.options:Load()
 		for i=1,#self.color_selector do self.color_selector[i]:Show() end
 		for i=1,#self.icon_selector do self.icon_selector[i]:Hide() end
 		self.size:Show()
-		self.size:Range(4,36):SetTo(dot_size)
+		self.size:SetTo(dot_size)
 		self.trans:Hide()
 		self.textAddData:Hide()
 
@@ -294,7 +313,7 @@ function module.options:Load()
 	ELib:Border(self.tool_select_objects,2,.24,.25,.30,1)
 	self.tool_select_objects.texture:Hide()
 	do
-		local size = 10
+		local size = 8
 		local circleLen = 2*PI*size
 		local len = ceil(circleLen / (2 / 2))
 		for i=0,len do
@@ -310,7 +329,7 @@ function module.options:Load()
 	end
 
 
-	self.tool_select_objects_fullcircle = ELib:Icon(self,"Interface\\AddOns\\ExRT\\media\\circle256",30,true):Point("TOPLEFT",0,-25):OnClick(function()
+	self.tool_select_objects_fullcircle = ELib:Icon(self,"Interface\\AddOns\\ExRT\\media\\circle256",25,true):Point("TOPLEFT",self.tool_select_brush,"BOTTOMLEFT",0,-5):OnClick(function()
 		tool_selected = 4
 		curr_object = 2
 		self.curr_color_texture:Show()
@@ -319,7 +338,7 @@ function module.options:Load()
 		for i=1,#self.icon_selector do self.icon_selector[i]:Hide() end
 		self.size:Hide()
 		self.trans:Show()
-		self.trans:Range(1,50):SetTo(curr_trans/2)
+		self.trans:SetTo(curr_trans/2)
 		self.textAddData:Hide()
 
 		for k,v in pairs(self) do
@@ -332,13 +351,12 @@ function module.options:Load()
 	ELib:Border(self.tool_select_objects_fullcircle,2,.24,.25,.30,1)
 	self.tool_select_objects_fullcircle.texture:ClearAllPoints()
 	self.tool_select_objects_fullcircle.texture:SetPoint("CENTER")
-	self.tool_select_objects_fullcircle.texture:SetSize(24,24)
+	self.tool_select_objects_fullcircle.texture:SetSize(20,20)
 	self.tool_select_objects_fullcircle.texture:SetAlpha(.75)
-	self.tool_select_objects_fullcircle:Hide()
 
 
 
-	self.tool_select_objects_line = ELib:Icon(self,"Interface\\AddOns\\ExRT\\media\\circle256",30,true):Point("LEFT",self.tool_select_objects_fullcircle,"RIGHT",5,0):OnClick(function()
+	self.tool_select_objects_line = ELib:Icon(self,"Interface\\AddOns\\ExRT\\media\\circle256",25,true):Point("LEFT",self.tool_select_objects_fullcircle,"RIGHT",5,0):OnClick(function()
 		tool_selected = 4
 		curr_object = 3
 		self.curr_color_texture:Show()
@@ -346,7 +364,7 @@ function module.options:Load()
 		for i=1,#self.color_selector do self.color_selector[i]:Show() end
 		for i=1,#self.icon_selector do self.icon_selector[i]:Hide() end
 		self.size:Show()
-		self.size:Range(4,36):SetTo(dot_size)
+		self.size:SetTo(dot_size)
 		self.trans:Hide()
 		self.textAddData:Hide()
 
@@ -360,14 +378,14 @@ function module.options:Load()
 	ELib:Border(self.tool_select_objects_line,2,.24,.25,.30,1)
 	self.tool_select_objects_line.texture:Hide()
 	do
-		local dX = (5 - 25)
-		local dY = (25 - 5)
+		local dX = (5 - 20)
+		local dY = (20 - 5)
 		local dist = sqrt(dX * dX + dY * dY)
 
 		local len = ceil(dist / (2 / 2))
 		for i=0,len do
-			local x = 5 + (25 - 5) * (i/len)
-			local y = 25 + (5 - 25) * (i/len)
+			local x = 5 + (20 - 5) * (i/len)
+			local y = 20 + (5 - 20) * (i/len)
 	
 			local o = self.tool_select_objects_line:CreateTexture()
 			o:SetTexture("Interface\\AddOns\\ExRT\\media\\circle256")
@@ -376,44 +394,38 @@ function module.options:Load()
 			o:SetSize(2,2)
 		end
 	end
-	self.tool_select_objects_line:Hide()
 
+	self.tool_select_objects_rectangle = ELib:Icon(self,nil,25,true):Point("LEFT",self.tool_select_objects_line,"RIGHT",5,0):OnClick(function()
+		tool_selected = 4
+		curr_object = 4
+		self.curr_color_texture:Show()
+		self.curr_color_texture:SetColorTexture(unpack(colors[curr_color]))
+		for i=1,#self.color_selector do self.color_selector[i]:Show() end
+		for i=1,#self.icon_selector do self.icon_selector[i]:Hide() end
+		self.size:Hide()
+		self.trans:Show()
+		self.trans:SetTo(curr_trans/2)
+		self.textAddData:Hide()
 
-	self.tool_selectPage2 = ELib:Icon(self,"Interface\\AddOns\\ExRT\\media\\DiesalGUIcons16x256x128",10,true)
-		:Point("TOPLEFT",self.tool_select_brush,"BOTTOMLEFT",-1,-5)
-		:Point("TOPRIGHT",self.tool_select_objects,"BOTTOMRIGHT",1,-5)
-		:OnClick(function()
-			if self.tool_select_objects:IsVisible() then
-				self.tool_select_objects:Hide()
-				self.tool_select_brush:Hide()
-				self.tool_select_text:Hide()
-				self.tool_select_icons:Hide()
-				self.tool_selectPage2.texture:SetTexCoord(0.3125,0.375,0.5,0.625)
-
-				self.tool_select_objects_fullcircle:Show()
-				self.tool_select_objects_line:Show()
-			else
-				self.tool_select_objects:Show()
-				self.tool_select_brush:Show()
-				self.tool_select_text:Show()
-				self.tool_select_icons:Show()
-				self.tool_selectPage2.texture:SetTexCoord(0.25,0.3125,0.5,0.625)
-
-				self.tool_select_objects_fullcircle:Hide()
-				self.tool_select_objects_line:Hide()
+		for k,v in pairs(self) do
+			if type(k)=='string' and k:find("^tool_select_") then
+				ELib:Border(v,2,.24,.25,.30,1)
 			end
-	end)
-	ELib:Border(self.tool_selectPage2,1,.24,.25,.30,1)
-	self.tool_selectPage2.texture:ClearAllPoints()
-	self.tool_selectPage2.texture:SetTexCoord(0.25,0.3125,0.5,0.625)
-	self.tool_selectPage2.texture:SetPoint("CENTER")
-	self.tool_selectPage2.texture:SetSize(14,14)
-	
+		end
+		ELib:Border(self.tool_select_objects_rectangle,2,.24,.7,.30,1)
+	end):Icon(1,1,1,1)
+	ELib:Border(self.tool_select_objects_rectangle,2,.24,.25,.30,1)
+	self.tool_select_objects_rectangle.texture:ClearAllPoints()
+	self.tool_select_objects_rectangle.texture:SetPoint("CENTER")
+	self.tool_select_objects_rectangle.texture:SetSize(16,16)
+	self.tool_select_objects_rectangle.texture:SetAlpha(.75)
 
 
+
+	local COLOR_SIZE = 45
 	self.curr_color_texture = self:CreateTexture()
-	self.curr_color_texture:SetPoint("TOPLEFT",278,-25)
-	self.curr_color_texture:SetSize(50,50)
+	self.curr_color_texture:SetPoint("TOPLEFT",260,-26)
+	self.curr_color_texture:SetSize(COLOR_SIZE,COLOR_SIZE)
 	self.curr_color_texture:SetColorTexture(0,0,0)
 	self.curr_color_texture._SetTexture = self.curr_color_texture.SetTexture
 	function self.curr_color_texture:SetTexture(texture)
@@ -427,33 +439,51 @@ function module.options:Load()
 	end
 
 	self.color_selector = {}
-	for i=1,min(#colors,20) do
-		self.color_selector[i] = ELib:Icon(self,nil,24,true):Point("TOPLEFT",330+25*((i-1)%10),i<=10 and -25 or -50):Icon(unpack(colors[i])):OnClick(function()
+	for i=1,#colors do
+		self.color_selector[i] = ELib:Icon(self,nil,floor(COLOR_SIZE / 2),true):Icon(unpack(colors[i])):OnClick(function()
 			curr_color = i
 			self.curr_color_texture:SetColorTexture(unpack(colors[i]))
 		end)
+		if i == 1 then
+			self.color_selector[i]:NewPoint("TOPLEFT",self.curr_color_texture,"TOPRIGHT",1,0)
+		elseif i == 11 then
+			self.color_selector[i]:NewPoint("BOTTOMLEFT",self.curr_color_texture,"BOTTOMRIGHT",1,0)
+		elseif i == 21 then
+			self.color_selector[i]:NewPoint("LEFT",self.color_selector[10],"RIGHT",1,0)
+		elseif i == 23 then
+			self.color_selector[i]:NewPoint("LEFT",self.color_selector[20],"RIGHT",1,0)
+		else
+			self.color_selector[i]:NewPoint("LEFT",self.color_selector[i-1],"RIGHT",1,0)
+		end
 	end
 
 	self.icon_selector = {}
 	for i=1,#icons_list do
 		local t = icons_list[i]
-		self.icon_selector[i] = ELib:Icon(self,type(t)=='table' and t[1] or t,24,true):Point("TOPLEFT",330+25*((i-1)%10),i<=10 and -25 or -50):OnClick(function()
+		self.icon_selector[i] = ELib:Icon(self,type(t)=='table' and t[1] or t,floor(COLOR_SIZE / 2),true):OnClick(function()
 			curr_icon = i
 			self.curr_color_texture:SetTexture(icons_list[i])
 		end)
 		if type(t)=='table' then
 			self.icon_selector[i].texture:SetTexCoord(select(2,unpack(t)))
 		end
+		if i == 1 then
+			self.icon_selector[i]:NewPoint("TOPLEFT",self.curr_color_texture,"TOPRIGHT",1,0)
+		elseif i == 13 then
+			self.icon_selector[i]:NewPoint("BOTTOMLEFT",self.curr_color_texture,"BOTTOMRIGHT",1,0)
+		else
+			self.icon_selector[i]:NewPoint("LEFT",self.icon_selector[i-1],"RIGHT",1,0)
+		end
 	end	
 
-	self.size = ELib:Slider(self,L.VisualNoteSize):Size(100):Point("TOPLEFT",160,-45):Range(4,36):SetTo(8):OnChange(function(self,val)
+	self.size = ELib:Slider(self,L.VisualNoteSize):Size(100):Point("TOPLEFT",140,-45):Range(3,36):SetTo(8):OnChange(function(self,val)
 		dot_size = floor(val+0.5)
 		half_dot_size_sq = (dot_size / 3) ^ 2
 		self.tooltipText = dot_size
 		self:tooltipReload()
 	end)
 
-	self.trans = ELib:Slider(self,L.bossmodsalpha):Size(100):Point("TOPLEFT",160,-45):Range(1,50):SetTo(50):OnChange(function(self,val)
+	self.trans = ELib:Slider(self,L.bossmodsalpha):Size(100):Point("TOPLEFT",140,-45):Range(1,50):SetTo(50):OnChange(function(self,val)
 		curr_trans = floor(val+0.5) * 2
 		self.tooltipText = curr_trans
 		self:tooltipReload()
@@ -463,7 +493,7 @@ function module.options:Load()
 	self.trans.Low.SetText = function() end
 	self.trans.High.SetText = function() end
 
-	self.textAddData = ELib:Edit(self):Size(100,20):Point("TOPLEFT",150,-45):TopText(L.VisualNoteTextToAdd):OnChange(function(self)
+	self.textAddData = ELib:Edit(self):Size(100,20):Point("TOPLEFT",130,-45):TopText(L.VisualNoteTextToAdd):OnChange(function(self)
 		curr_text = self:GetText()
 	end)
 	self.textAddData:SetMaxBytes(100)
@@ -543,7 +573,7 @@ function module.options:Load()
 	local function GetBackground()
 		local dot
 		for d,_ in pairs(backgrounds) do
-			if not d:IsVisible() then
+			if not d:IsShown() then
 				dot = d
 				break
 			end
@@ -601,6 +631,7 @@ function module.options:Load()
 		ELib:DropDownClose()
 		SetBackground(unpack(arg1))
 		curr_map = arg2
+		curr_data[2] = arg2
 	end
 
 	local maps = {
@@ -641,7 +672,7 @@ function module.options:Load()
 					text = maps[ p[j] ][1],
 					func = SelectMapDropDown_SetValue,
 					arg1 = maps[ p[j] ][2],
-					arg2 = mapsSorted[i],
+					arg2 = mapsSorted[i][j],
 				}
 			end
 			self.SelectMapDropDown.List[#self.SelectMapDropDown.List + 1] = {
@@ -659,9 +690,11 @@ function module.options:Load()
 	end
 	function self:SetPredefinedMap(pos)
 		if not maps[pos] then
-			SelectMapDropDown_SetValue(nil,maps[1][2],1)
+			SetBackground(unpack(maps[1][2]))
+			curr_map = 1
 		else
-			SelectMapDropDown_SetValue(nil,maps[pos][2],pos)
+			SetBackground(unpack(maps[pos][2]))
+			curr_map = pos
 		end
 	end
 
@@ -673,7 +706,7 @@ function module.options:Load()
 	local function GetDot()
 		local dot
 		for d,_ in pairs(dots) do
-			if not d:IsVisible() then
+			if not d:IsShown() then
 				dot = d
 				break
 			end
@@ -772,7 +805,7 @@ function module.options:Load()
 	local function GetIcon()
 		local icon
 		for i,_ in pairs(icons) do
-			if not i:IsVisible() then
+			if not i:IsShown() then
 				icon = i
 				break
 			end
@@ -855,7 +888,7 @@ function module.options:Load()
 	local function GetText()
 		local text
 		for t,_ in pairs(texts) do
-			if not t:IsVisible() then
+			if not t:IsShown() then
 				text = t
 				break
 			end
@@ -889,7 +922,7 @@ function module.options:Load()
 			T = GetText()
 		end
 		T:SetPoint("CENTER",self.main.C,"TOPLEFT",fromX,-fromY)
-		local size = max(6,toX - fromX) * 2
+		local size = max(12,toX - fromX)
 		T:SetFont(T:GetFont(),size,"OUTLINE")
 
 		if not p then
@@ -935,7 +968,7 @@ function module.options:Load()
 	local function GetDotObj()
 		local dot
 		for d,_ in pairs(objects) do
-			if not d:IsVisible() then
+			if not d:IsShown() then
 				dot = d
 				break
 			end
@@ -943,9 +976,14 @@ function module.options:Load()
 		if not dot then
 			dot = self.main.C:CreateTexture()
 			dot:SetTexture("Interface\\AddOns\\ExRT\\media\\circle256")
+			dot.isC = true
 			objects[dot] = true
 		end
-		dot:ClearAllPoints()
+		if not dot.isC then
+			dot:SetTexture("Interface\\AddOns\\ExRT\\media\\circle256")
+			dot.isC = true
+		end
+		dot:SetPoint("CENTER",self.main.C,"TOPLEFT",-1000,1000)
 		dot:Show()
 		return dot
 	end
@@ -1005,6 +1043,28 @@ function module.options:Load()
 				o:SetAlpha(1)
 				o:SetVertexColor(unpack(colors[curr_color]))
 			end
+		elseif curr_object == 4 then
+			size = curr_trans
+
+			local o = GetDotObj()	
+			o:SetTexture()
+			o:SetColorTexture(unpack(colors[curr_color]))	
+			o.isC = nil
+
+			local width,height = max(5,toX-fromX),max(5,toY-fromY)
+			if IsShiftKeyDown() then
+				width = max(width,height)
+				height = width
+			end
+			toX = fromX + width
+			toY = fromY + height
+	
+			o:SetPoint("CENTER",self.main.C,"TOPLEFT",fromX+width/2,-fromY-height/2)
+			o.g = curr_group
+			o.t = curr_trans / 100
+
+			o:SetSize(width,height)
+			o:SetAlpha(curr_trans / 100)
 		end
 
 		local p
@@ -1034,6 +1094,9 @@ function module.options:Load()
 		elseif curr_object == 3 then
 			object_DATA1[p] = toX
 			object_DATA2[p] = toY
+		elseif curr_object == 4 then
+			object_DATA1[p] = toX
+			object_DATA2[p] = toY
 		end
 
 		return p
@@ -1044,10 +1107,12 @@ function module.options:Load()
 		curr_object = type
 		dot_size = type == 1 and data1 or size
 		curr_color = color
-		curr_trans = data1
+		curr_trans = type == 4 and size or data1
 
 		local p 
 		if type == 3 then
+			p = ProcessObject(x,y,data1,data2)
+		elseif type == 4 then
 			p = ProcessObject(x,y,data1,data2)
 		else
 			p = ProcessObject(x,y,x+size/2,y+size/2)
@@ -1170,6 +1235,10 @@ function module.options:Load()
 				if IsDotIn(x,y,x2,object_DATA1[i],object_DATA1[i],x2,y2-object_SIZE[i],object_DATA2[i]-object_SIZE[i],object_DATA2[i]+object_SIZE[i],y2+object_SIZE[i]) then
 					groups_alpha_pending[ object_GROUP[i] ] = true
 				elseif IsDotIn(x,y,x2-object_SIZE[i],x2+object_SIZE[i],object_DATA1[i]+object_SIZE[i],object_DATA1[i]-object_SIZE[i],y2,y2,object_DATA2[i],object_DATA2[i]) then
+					groups_alpha_pending[ object_GROUP[i] ] = true
+				end
+			elseif object_TYPE[i] == 4 then
+				if x >= x2 and x <= object_DATA1[i] and y >= y2 and y <= object_DATA2[i] then
 					groups_alpha_pending[ object_GROUP[i] ] = true
 				end
 			end
@@ -1329,6 +1398,11 @@ function module.options:Load()
 					groups_to_remove[ object_GROUP[i] ] = true
 					isSomethingRemoved = true
 				end
+			elseif object_TYPE[i] == 4 then
+				if x >= x2 and x <= object_DATA1[i] and y >= y2 and y <= object_DATA2[i] then
+					groups_to_remove[ object_GROUP[i] ] = true
+					isSomethingRemoved = true
+				end
 			end
 		end
 		for i=#object_pos_X,1,-1 do
@@ -1350,8 +1424,10 @@ function module.options:Load()
 			end
 		end		
 
-		if isSomethingRemoved then
+		if isSomethingRemoved and isLiveSession then
 			module.options:GenerateString()
+		elseif isSomethingRemoved then
+			module.options:SaveData()
 		end
 	end
 
@@ -1454,13 +1530,7 @@ function module.options:Load()
 		local str = live and "" or (string.char(254)..string.char(1)..string.char(DATA_VERSION)..string.char(#curr_data[1])..curr_data[1]..string.char(#(curr_data.name or "")+1)..(curr_data.name or "")..string.char(254)..string.char(2)..string.char(curr_map))
 		local prevGroup,prevX,prevY,prevDiffX,prevDiffY
 
-		local data = {}
-
 		local function UpdateHeader(i)
-			if #str > 245 then
-				data[#data+1] = str
-				str = ""
-			end
 			local p1 = dots_COLOR[i] * 1000 + dots_pos_X[i]
 			local p2 = dots_SIZE[i] * 1000 + dots_pos_Y[i]
 			str = str .. string.char(255) .. string.char(floor(p1 / 250) + 1) .. string.char(p1 % 250 + 1) .. string.char(floor(p2 / 250) + 1) .. string.char(p2 % 250 + 1)
@@ -1474,11 +1544,6 @@ function module.options:Load()
 		for i=1,#dots_pos_X do
 			if not live or not dots_SYNC[i] then
 				if dots_GROUP[i] ~= prevGroup then
-					UpdateHeader(i)
-				end
-				if #str > 250 then
-					data[#data+1] = str
-					str = ""
 					UpdateHeader(i)
 				end
 				local diffX = dots_pos_X[i] - prevX
@@ -1505,10 +1570,6 @@ function module.options:Load()
 
 		for i=1,#icon_pos_X do
 			if not live or not icon_SYNC[i] then
-				if #str > 243 then
-					data[#data+1] = str
-					str = ""
-				end
 				str = str .. string.char(255) .. string.char(251) .. string.char(1)
 
 				local p1 = icon_TYPE[i] * 1000 + icon_pos_X[i]
@@ -1526,10 +1587,6 @@ function module.options:Load()
 		for i=1,#text_pos_X do
 			if not live or not text_SYNC[i] then
 				local text_len = #text_DATA[i]
-				if #str > (252-text_len-10) then
-					data[#data+1] = str
-					str = ""
-				end
 				str = str .. string.char(255) .. string.char(251) .. string.char(2)
 
 				local p1 = text_COLOR[i] * 1000 + text_pos_X[i]
@@ -1548,10 +1605,6 @@ function module.options:Load()
 
 		for i=1,#object_pos_X do
 			if not live or not object_SYNC[i] then
-				if #str > 241 then
-					data[#data+1] = str
-					str = ""
-				end
 				if object_TYPE[i] == 1 then
 					str = str .. string.char(255) .. string.char(251) .. string.char(3)
 	
@@ -1583,37 +1636,38 @@ function module.options:Load()
 					local p3 = object_DATA1[i]
 					local p4 = object_DATA2[i]
 					str = str .. string.char(floor(p3 / 250) + 1) .. string.char(p3 % 250 + 1) .. string.char(floor(p4 / 250) + 1) .. string.char(p4 % 250 + 1)
+				elseif object_TYPE[i] == 4 then
+					str = str .. string.char(255) .. string.char(251) .. string.char(6)
+	
+					local p1 = object_COLOR[i] * 1000 + object_pos_X[i]
+					local p2 = floor(object_SIZE[i] / 2 + 0.5) * 1000 + object_pos_Y[i]
+	
+					str = str .. string.char(floor(p1 / 250) + 1) .. string.char(p1 % 250 + 1) .. string.char(floor(p2 / 250) + 1) .. string.char(p2 % 250 + 1)
+	
+					local p3 = object_DATA1[i]
+					local p4 = object_DATA2[i]
+					str = str .. string.char(floor(p3 / 250) + 1) .. string.char(p3 % 250 + 1) .. string.char(floor(p4 / 250) + 1) .. string.char(p4 % 250 + 1)
 				end
 
 				object_SYNC[i] = true
 			end
 		end
 
-		data[#data+1] = str
-
-		if #data == 1 and #data[1] == 0 then
+		if #str == 0 then
 			return
 		end
-		
-		--print('msg count',#data)
-		for t,_ in pairs(timers) do
-			t:Cancel()
-			timers[t] = nil
-		end
-		for i=1,ceil(#data/10) do
-			local f = (i - 1) * 10 + 1
-			local t 
-			t = C_Timer.NewTimer(live and 0 or i*0.75,function()
-				if t then
-					timers[t] = nil
-				end
-				for j=f,f+9 do
-					if data[j] then
-						ExRT.F.SendExMsg("VN",data[j]) 
-					end
-				end
-			end)
-			timers[t] = true
+
+		local compressed = LibDeflate:CompressDeflate(str,{level = 9})
+		local encoded = LibDeflate:EncodeForWoWAddonChannel(compressed)
+
+		encoded = encoded .. "##F##"
+
+		local parts = ceil(#encoded / 252)
+
+		--Hard to get to disconnect limit
+		for i=1,parts do
+			local msg = encoded:sub( (i-1)*252+1 , i*252 )
+			ExRT.F.SendExMsg("VN",msg)
 		end
 	end
 	function self:SaveData()
@@ -1777,6 +1831,36 @@ function module.options:Load()
 		end
 		new[1] = uid
 		return new
+	end
+	function self:LoadNewest()
+		local newest,nT = nil
+		for uid,data in pairs(VExRT.VisNote.sync_data) do
+			if not newest or nT < data.time then
+				newest = uid
+				nT = data.time
+			end
+		end
+		local toLoad = nil
+		if newest then
+			for i=1,#VExRT.VisNote.data do
+				if VExRT.VisNote.data[i][1] == newest then
+					toLoad = VExRT.VisNote.data[i]
+					break
+				end
+			end
+		end
+		if not toLoad then
+			if #VExRT.VisNote.data > 0 then
+				toLoad = VExRT.VisNote.data[#VExRT.VisNote.data]
+			else
+				VExRT.VisNote.data[1] = self:CreateNew()
+				toLoad = VExRT.VisNote.data[1]
+			end
+		end
+		self:LoadData(toLoad)
+	end
+	function self:GetCurrentData()
+		return curr_data
 	end
 
 	self.clearAll = ELib:Button(self,L.messagebutclear):Size(100,20):Point("TOPLEFT",585,-25):OnClick(function(self)
@@ -1955,9 +2039,8 @@ function module.options:Load()
 
 			self.main:ResetScale()
 		end
-		if module.db.await and #module.db.await > 0 then
-			self:LoadData(module.db.await)
-		end
+
+		self:LoadNewest()
 	end
 	local function ResizeOptionFrameHide() ExRT.Options.Frame:SetWidth( ExRT.Options.Frame.Width ) end
 	self.onShowFrame = CreateFrame('Frame',nil,self)
@@ -1966,17 +2049,6 @@ function module.options:Load()
 	self.onShowFrame:SetScript("OnShow",ResizeOptionFrameShow)
 	self.onShowFrame:SetScript("OnHide",ResizeOptionFrameHide)
 	ResizeOptionFrameShow()
-
-	if VExRT.VisNote.data[1] then
-		self:LoadData(VExRT.VisNote.data[1])
-	else
-		VExRT.VisNote.data[1] = self:CreateNew()
-		self:LoadData(VExRT.VisNote.data[1])
-	end
-
-	if module.db.await and #module.db.await > 0 then
-		self:LoadData(module.db.await)
-	end
 end
 
 function module.main:ADDON_LOADED()
@@ -2169,6 +2241,23 @@ function module:UnpackString(str,sender)
 				module.db.await[#module.db.await + 1] = p3
 				module.db.await[#module.db.await + 1] = p4
 				module.db.await[#module.db.await + 1] = 3
+			elseif c == 6 then
+				local p1 = (data[i]:sub(3,3):byte() - 1) * 250 + (data[i]:sub(4,4):byte() - 1)
+				local p2 = (data[i]:sub(5,5):byte() - 1) * 250 + (data[i]:sub(6,6):byte() - 1)
+				local p3 = (data[i]:sub(7,7):byte() - 1) * 250 + (data[i]:sub(8,8):byte() - 1)
+				local p4 = (data[i]:sub(9,9):byte() - 1) * 250 + (data[i]:sub(10,10):byte() - 1)
+			
+				local x,y = p1 % 1000,p2 % 1000
+				local color,size = floor(p1 / 1000),floor(p2 / 1000)
+
+				module.db.await[#module.db.await + 1] = "O"
+				module.db.await[#module.db.await + 1] = x
+				module.db.await[#module.db.await + 1] = y
+				module.db.await[#module.db.await + 1] = color
+				module.db.await[#module.db.await + 1] = size * 2
+				module.db.await[#module.db.await + 1] = p3
+				module.db.await[#module.db.await + 1] = p4
+				module.db.await[#module.db.await + 1] = 4
 			end
 		end
 	end
@@ -2178,6 +2267,7 @@ function module:UnpackString(str,sender)
 	end
 end
 
+module.db.syncStr = {}
 function module:addonMessage(sender, prefix, ...)
 	if prefix == "VN" then
 		local _, zoneType, difficulty, _, maxPlayers, _, _, mapID = GetInstanceInfo()
@@ -2191,7 +2281,17 @@ function module:addonMessage(sender, prefix, ...)
 			return
 		end
 		local str = table.concat({...}, "\t")
-		module:UnpackString(str,sender)
+		module.db.syncStr[sender] = module.db.syncStr[sender] or ""
+		module.db.syncStr[sender] = module.db.syncStr[sender] .. str
+		if module.db.syncStr[sender]:find("##F##$") then
+			local str = module.db.syncStr[sender]:sub(1,-6)
+			module.db.syncStr[sender] = nil
+
+			local decoded = LibDeflate:DecodeForWoWAddonChannel(str)
+			local decompressed = LibDeflate:DecompressDeflate(decoded)
+
+			module:UnpackString(decompressed,sender)
+		end
 	end
 end
 

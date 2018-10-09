@@ -110,6 +110,7 @@ TMW.BE = {
 			 107079, -- Quaking Palm
 			 198909, -- Song of Chi-ji (mistweaver monk talent)
 			 203126, -- Maim (with blood trauma feral pvp talent)
+			 226943, -- Mind Bomb
 		},
 		Disoriented = {
 			  -2094, -- Blind
@@ -144,6 +145,7 @@ TMW.BE = {
 			 102359, -- Mass Entanglement
 			 105771, -- Charge
 			 116706, -- Disable
+			 117526, -- Binding Shot
 			 157997, -- Ice Nova (frost mage talent)
 			 162480, -- Steel Trap (hunter talent)
 			 190927, -- harpoon (survival hunter)
@@ -232,7 +234,6 @@ TMW.BE = {
 			 -89766, -- Axe Toss
 			 -91800, -- Gnaw
 			 108194, -- Asphyxiate (death knight, talent for unholy)
-			 117526, -- Binding Shot
 			 118345, -- Pulverize
 			 118905, -- Static Charge
 			 119381, -- Leg Sweep
@@ -253,7 +254,6 @@ TMW.BE = {
 			 207171, -- Winter is Coming
 			 211881, -- Fel Eruption
 			 221562, -- Asphyxiate (death knight, baseline for blood)
-			 226943, -- Mind Bomb
 		},
 	},
 	buffs = {
@@ -407,7 +407,9 @@ TMW.BE = {
 			   2825, -- Bloodlust
 			  80353, -- Time Warp
 			 160452, -- Netherwinds
-			  32182, -- Heroism
+			  32182, -- Heroism,
+			  264667, -- Primal Rage
+			  256740, -- Drums of the Maelstrom
 		},
 	},
 	casts = {

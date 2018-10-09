@@ -1,4 +1,4 @@
---	02.10.2018
+--	08.10.2018
 
 --[[
 3930
@@ -28,10 +28,20 @@
 3975
 * Fixes for note editing
 
+3990
+* Note: copy-pasting with colors must be much easier
+* Note: added button "Duplicate"
+* Note: added 5ppl dungeons to bosses list
+* Note: added highlighting drafts for nearest bosses
+* Note: added {icon:PATH} format for any ingame icon (older format for spells still works ({spell:SPELL_ID}))
+* Visual note: fixes
+* Visual note: outdated versions no longer supports
+* Raid Inspect: added bfa achievements (BFA 5ppl, Uldir)
+* Raid Inspect: fixed weapon enchants for dk & hunters
 ]]
 local GlobalAddonName, ExRT = ...
 
-ExRT.V = 3975
+ExRT.V = 3990
 ExRT.T = "R"
 
 ExRT.OnUpdate = {}		--> таймеры, OnUpdate функции

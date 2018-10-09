@@ -743,11 +743,27 @@ end
 
 local GHOST_AURA, _, GHOST_TEXTURE = GetSpellInfo(8326)
 local DEATH_TEXTURE = "Interface\\TargetingFrame\\UI-TargetingFrame-Skull"
-local SPIRIT_OF_REDEMPTION = GetSpellInfo(27827)
-local SPIRIT_TEXTURE = "Interface\\Icons\\Spell_Holy_GuardianSpirit"
-local CAUTERIZE_AURA, _, CAUTERIZE_TEXTURE = GetSpellInfo(87023) -- mage
-local PURGATORY_AURA, _, PURGATORY_TEXTURE = GetSpellInfo(116888) -- death knight
-local CHEATING_DEATH_AURA, _, CHEATING_DEATH_TEXTURE = GetSpellInfo(45182) -- rogue
+
+local DYING_AURAS = {
+	PRIEST = { aura = GetSpellInfo(27827), icon = "Interface\\Icons\\Spell_Holy_GuardianSpirit", flag = "spirit", text = DEAD }, -- SPIRIT_OF_REDEMPTION
+	DEATHKNIGHT = { aura = GetSpellInfo(116888) }, -- PURGATORY
+	ROGUE =  { aura = GetSpellInfo(45182) }, -- CHEATING_DEATH
+	MAGE =  { aura = GetSpellInfo(87023) }, -- CAUTERIZE
+}
+
+local function FindDyingAura(unit, aura)
+	local i
+	for i = 1, 20 do
+		local name, icon, _, _, duration = UnitDebuff(unit, i)
+		if not name or not duration then
+			return
+		end
+
+		if name == aura and duration <= 15 then
+			return name, icon
+		end
+	end
+end
 
 local function UnitFrame_UpdateFlags(self)
 	local unit = self.unit
@@ -766,22 +782,16 @@ local function UnitFrame_UpdateFlags(self)
 		flag = "ghost"
 		texture = GHOST_TEXTURE
 		text = DEAD
-	elseif self.unitClass == "PRIEST" and UnitDebuff(unit, SPIRIT_OF_REDEMPTION) then
-		flag = "spirit"
-		texture = SPIRIT_TEXTURE
-		text = DEAD
-	elseif self.unitClass == "MAGE" and select(10, UnitDebuff(unit, CAUTERIZE_AURA)) == 87023 then
-		flag = "dying"
-		texture = CAUTERIZE_TEXTURE
-		text = CAUTERIZE_AURA
-	elseif self.unitClass == "DEATHKNIGHT" and UnitDebuff(unit, PURGATORY_AURA) then
-		flag = "dying"
-		texture = PURGATORY_TEXTURE
-		text = PURGATORY_AURA
-	elseif self.unitClass == "ROGUE" and UnitDebuff(unit, CHEATING_DEATH_AURA) then
-		flag = "dying"
-		texture = CHEATING_DEATH_TEXTURE
-		text = CHEATING_DEATH_AURA
+	else
+		local auraData = DYING_AURAS[self.unitClass]
+		if auraData and auraData.aura then
+			local name, icon = FindDyingAura(unit, aura)
+			if name then
+				flag = auraData.flag or "dying"
+				texture = auraData.icon or icon
+				text = auraData.text or name
+			end
+		end
 	end
 
 	self.flagIcon:SetTexture(texture)

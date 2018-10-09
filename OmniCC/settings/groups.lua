@@ -13,26 +13,11 @@ local function getFirstAncestorWithName(cooldown)
 	until not frame
 end
 
-local cooldownSettings = setmetatable({}, {
-	__mode = "v",
-
-	__index = function(self, cooldown)
-		local id = Addon:GetCooldownGroupID(cooldown)
-		local settings
-
-		if id then
-			settings = Addon:GetGroupSettings(id)
-			self[cooldown] = settings
-		end
-
-		return settings
-	end
-})
-
---[[ Queries ]]--
-
 function Addon:GetCooldownSettings(cooldown)
-	return cooldownSettings[cooldown]
+	local id = self:GetCooldownGroupID(cooldown)
+	if id then
+		return self:GetGroupSettings(id)
+	end
 end
 
 function Addon:GetCooldownGroupID(cooldown)
@@ -98,9 +83,6 @@ function Addon:RemoveGroup(id)
 end
 
 function Addon:UpdateGroups()
-	for k in pairs(cooldownSettings) do
-		cooldownSettings[k] = nil
-	end
-
-	self.Display:ForActive("UpdateTimer")
+	self:UpdateCooldownSettings()
+	self.Display:ForActive("UpdateCooldownText")
 end

@@ -89,6 +89,8 @@ PH.NoteHelp2 = "All text inside this code (\"...\" in current example) will be s
 PH.NoteHelp3 = "This example will be replaced with spell icon (SpellID \"17\", |T135940:0|t). You can use any ingame spell or you can select one from predefined list."
 PH.NoteHelp4 = "This example will be replaced with personal note. You can place it anywhere. By default personal note will be shown after general note."
 PH.NoteHelp5 = "All text inside this code (\"...\" in current example) will be shown only for players JaneD и JennyB (current example). You can use any numbers of players."
+PH.NoteHelp6 = "This example will be replaced with Sulfuras icon (|TInterface/Icons/inv_hammer_unique_sulfuras:0|t). You can use any ingame icon."
+L.NoteDuplicate = "Duplicate"
 
 L.setminimap1 = "Hide minimap icon"
 L.setauthor = "Author"

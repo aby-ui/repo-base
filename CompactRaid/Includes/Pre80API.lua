@@ -16,7 +16,7 @@ local tinsert = tinsert
 local unpack = unpack
 
 local LIBNAME = "Pre80API"
-local VERSION = 1.06
+local VERSION = 1.07
 
 local lib = _G[LIBNAME]
 if lib and lib.version >= VERSION then return end
@@ -30,14 +30,27 @@ _G["Pre80API"] = lib
 
 lib.version = VERSION
 
+local function Call(func, unit, id, filter, playerOnly)
+	local name, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15, a16, a17, a18, a19, a20 = func(unit, id, filter)
+	if not playerOnly or a6 == "player" then
+		return name, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15, a16, a17, a18, a19, a20
+	end
+end
+
+
 local function CallOfficalAPI(func, unit, aura, filter)
-	if type(aura) ~= "string" then
-		return func(unit, aura, filter)
+	local playerOnly
+	if filter and (type(filter) ~= "string" or strfind(filter, "PLAYER")) then
+		playerOnly = 1
+	end
+
+	if type(aura) == "number" then
+		return Call(func, unit, aura, filter, playerOnly)
 	end
 
 	local i
 	for i = 1, 40 do
-		local name, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15, a16, a17, a18, a19, a20 = func(unit, i, filter)
+		local name, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15, a16, a17, a18, a19, a20 = Call(func, unit, i, filter, playerOnly)
 		if not name then
 			return
 		end

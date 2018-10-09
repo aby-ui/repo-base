@@ -20,15 +20,10 @@ module.db.glyphsIDs = {8,9,10,11,12,13}
 module.db.statsList = {'intellect','agility','strength','haste','mastery','crit','spellpower','multistrike','versatility','armor','leech','avoidance','speed'}
 module.db.statsListName = {L.InspectViewerInt,L.InspectViewerAgi,L.InspectViewerStr,L.InspectViewerHaste,L.InspectViewerMastery,L.InspectViewerCrit,L.InspectViewerSpd, L.InspectViewerMS, L.InspectViewerVer, L.InspectViewerBonusArmor, L.InspectViewerLeech, L.InspectViewerAvoidance, L.InspectViewerSpeed}
 
-module.db.baseStats = UnitLevel'player' > 110 and {	--By class IDs
+module.db.baseStats = {	--By class IDs
 	strength =  {	1467,	1467,	0,	0,	0,	1467,	0,	0,	0,	0,	0,	0,	},
 	agility =   {	0,	0,	1467,	1467,	0,	0,	1467,	0,	0,	1467,	1467,	1467,	},
 	intellect = {	0,	1467,	0,	0,	1467,	0,	1467,	1467,	1467,	1467,	1467,	0,	},
-		--	WARRIOR,PALADIN,HUNTER,	ROGUE,	PRIEST,	DK,	SHAMAN,	MAGE,	WARLOCK,MONK,	DRUID,	DH,
-} or {	--By class IDs
-	strength =  {	363,	363,	0,	0,	0,	363,	0,	0,	0,	0,	0,	0,	},
-	agility =   {	0,	0,	363,	363,	0,	0,	363,	0,	0,	363,	363,	363,	},
-	intellect = {	0,	363,	0,	0,	363,	0,	363,	363,	363,	363,	363,	0,	},
 		--	WARRIOR,PALADIN,HUNTER,	ROGUE,	PRIEST,	DK,	SHAMAN,	MAGE,	WARLOCK,MONK,	DRUID,	DH,
 }
 module.db.raceList = {'Human','Dwarf','Night Elf','Orc','Tauren','Undead','Gnome','Troll','Blood Elf','Draenei','Goblin','Worgen','Pandaren'}
@@ -66,54 +61,11 @@ module.db.socketsBonusIDs = {
 	[4802]=true,
 }
 
-module.db.topEnchGems = UnitLevel'player' < 120 and {
-	[5427]="Ring:Crit:200",
-	[5428]="Ring:Haste:200",
-	[5429]="Ring:Mastery:200",
-	[5430]="Ring:Vers:200",
-	
-	[5434]="Cloak:Str:200",
-	[5435]="Cloak:Agi:200",
-	[5436]="Cloak:Int:200",
-
-	[5467]="Cloak:Str:200",
-	[5468]="Cloak:Agi:200",
-	[5469]="Cloak:Int:200",
-
-	[5437]="Neck:",
-	[5438]="Neck:",
-	[5439]="Neck:",
-	[5889]="Neck:",
-	[5890]="Neck:",
-	[5891]="Neck:",
-	
-	--[[
-	[5463]="Gem:Crit:150",
-	[5464]="Gem:Haste:150",
-	[5465]="Gem:Mastery:150",
-	[5466]="Gem:Vers:150",
-	
-	[130219]="Gem:Crit:150",
-	[130220]="Gem:Haste:150",
-	[130222]="Gem:Mastery:150",
-	[130221]="Gem:Vers:150",
-	]]
-	
-	[151580]="Gem:Crit:200",
-	[151583]="Gem:Haste:200",
-	[151584]="Gem:Mastery:200",
-	[151585]="Gem:Vers:200",	
-	
-	[130246]="Gem:Str:200",
-	[130247]="Gem:Agi:200",
-	[130248]="Gem:Int:200",
-} or {
-	--[[
-	[5938]="Ring:Crit:27",
-	[5939]="Ring:Haste:27",
-	[5940]="Ring:Mastery:27",
-	[5941]="Ring:Vers:27",
-	]]
+module.db.topEnchGems = {
+	--[5938]="Ring:Crit:27",
+	--[5939]="Ring:Haste:27",
+	--[5940]="Ring:Mastery:27",
+	--[5941]="Ring:Vers:27",
 
 	[5942]="Ring:Crit:37",
 	[5943]="Ring:Haste:37",
@@ -130,13 +82,24 @@ module.db.topEnchGems = UnitLevel'player' < 120 and {
 	[5949]="Weapon:elemental",
 	[5962]="Weapon:vers",
 
-	--[[
-	[153710]="Gem:crit:30",
-	[153711]="Gem:haste:30",
-	[153712]="Gem:vers:30",
-	[153713]="Gem:mastery:30",
-	]]
+	[5955]="HunterWeapon:crit",
+	[5956]="HunterWeapon:haste",
+	[5958]="HunterWeapon:frost",
+	[5957]="HunterWeapon:fire",
+	
+	[3368]="DKWeapon:knight",
+	[3370]="DKWeapon:frost",
+	[3847]="DKWeapon:2h",
+
+	--[153710]="Gem:crit:30",
+	--[153711]="Gem:haste:30",
+	--[153712]="Gem:vers:30",
+	--[153713]="Gem:mastery:30",
+
 	[153709]="Gem:int:40",
+	[153708]="Gem:agi:40",
+	[153707]="Gem:str:40",
+
 	[154128]="Gem:vers:40",
 	[154129]="Gem:mastery:40",
 	[154126]="Gem:crit:40",
@@ -145,7 +108,13 @@ module.db.topEnchGems = UnitLevel'player' < 120 and {
 
 
 module.db.achievementsList = {
-	{	--A
+	{	--Uldir
+		L.S_ZoneT22Uldir,
+		12521,12522,12523,12524,12526,12527,12529,12530,12531,12532,12533,12536,
+	},{	--BFA 5ppl
+		EXPANSION_NAME7..": "..DUNGEONS,
+		12807,12846,12826,12848,12502,12506,12847,12842,12833,12838,12488,13075,
+	},{	--A
 		L.S_ZoneT21A,
 		11988,11989,11990,11991,11992,11993,11994,11995,11996,11997,11998,11999,12000,12001,12002,12110,
 	},{	--ToS
@@ -193,7 +162,11 @@ module.db.achievementsList = {
 	},
 }
 module.db.achievementsList_statistic = {
-	{	--A
+	{	--Uldir
+		0,0,0,{12786,12787,12788,12789},{12790,12791,12792,12793},{12798,12799,12800,12801},{12802,12803,12804,12805},{12794,12795,12796,12797},{12808,12809,12810,12811},{12813,12814,12815,12816},{12817,12818,12819,12820},
+	},{	--BFA 5ppl
+		0,{12777,12778,12779},{12720,12748,12749},{12763},{12728,12729,12745},{12774,12775,12776},{12773},{12780,12781,12782},{12750,12751,12752},{12766,12767,12768},{12783,12784,12785},
+	},{	--A
 		
 	},{	--ToS
 		

@@ -10,25 +10,8 @@ local round = _G.Round
 local min = math.min
 local displays = {}
 
-local function cooldown_GetEndTime(cooldown)
-    local start, duration = cooldown:GetCooldownTimes()
-
-    return start + duration
-end
-
--- gets the priority associated with a cooldown relative to its parent
--- lower numbers == more important
-local function cooldown_GetPriority(cooldown)
-    local parent = cooldown:GetParent()
-    if parent and parent.chargeCooldown == cooldown then
-        return 2
-    end
-
-    return 1
-end
-
--- given two cooldowns returns the more important one
-local function cooldown_Compare(lhs, rhs)
+-- given two cdInfos returns the more important one
+local function cdInfo_Compare(lhs, rhs)
     if lhs == rhs then
         return lhs
     end
@@ -42,9 +25,9 @@ local function cooldown_Compare(lhs, rhs)
         return rhs
     end
 
-    -- prefer cooldowns ending first
-    local lEnd = cooldown_GetEndTime(lhs)
-    local rEnd = cooldown_GetEndTime(rhs)
+    -- prefer cdInfos ending first
+    local lEnd = lhs.start + lhs.duration
+    local rEnd = rhs.start + rhs.duration
 
     if lEnd < rEnd then
         return lhs
@@ -55,7 +38,7 @@ local function cooldown_Compare(lhs, rhs)
     end
 
     -- then check priority
-    if cooldown_GetPriority(lhs) < cooldown_GetPriority(rhs) then
+    if lhs.priority < rhs.priority then
         return lhs
     end
 
@@ -82,7 +65,7 @@ function Display:Create(parent)
     display.text = display:CreateFontString(nil, "OVERLAY")
     display.text:SetFont(STANDARD_TEXT_FONT, 8, "THIN")
 
-    display.cooldowns = {}
+    display.cdInfos = {}
     display.updateScaleCallback = function() display:OnScaleChanged() end
 
     displays[parent] = display
@@ -125,17 +108,17 @@ end
 
 function Display:OnTimerFinished(timer)
     if self.timer == timer then
-        local settings = self:GetCooldownSettings()
+        local settings = self.cdInfo.settings
 
-        if settings and ((settings.minEffectDuration or 0) * 1000) <= timer.duration  then
-            Addon.FX:Run(self.cooldown, settings.effect or "none")
+        if settings and (settings.minEffectDuration or 0) <= self.cdInfo.duration then
+            Addon.FX:Run(self.cdInfo.cooldown, settings.effect or "none")
         end
     end
 end
 
 function Display:OnTimerDestroyed(timer)
     if self.timer == timer then
-        self:HideCooldownText(self.cooldown)
+        self:HideCooldownText(self.cdInfo)
     end
 end
 
@@ -155,18 +138,18 @@ function Display:CalculateScaleRatio()
     return scaleRatio
 end
 
-function Display:ShowCooldownText(cooldown)
-    if not self.cooldowns[cooldown] then
-        self.cooldowns[cooldown] = true
+function Display:ShowCooldownText(info)
+    if not self.cdInfos[info] then
+        self.cdInfos[info] = true
     end
 
     self:UpdatePrimaryCooldown()
     self:UpdateTimer()
 end
 
-function Display:HideCooldownText(cooldown)
-    if self.cooldowns[cooldown] then
-        self.cooldowns[cooldown] = nil
+function Display:HideCooldownText(info)
+    if self.cdInfos[info] then
+        self.cdInfos[info] = nil
 
         self:UpdatePrimaryCooldown()
         self:UpdateTimer()
@@ -174,15 +157,15 @@ function Display:HideCooldownText(cooldown)
 end
 
 function Display:UpdatePrimaryCooldown()
-    local oldCooldown = self.cooldown
-    local newCooldown = self:GetCooldownWithHighestPriority()
+    local oldInfo = self.cdInfo
+    local newInfo = self:GetCooldownWithHighestPriority()
 
-    if oldCooldown ~= newCooldown then
-        self.cooldown = newCooldown
+    if oldInfo ~= newInfo then
+        self.cdInfo = newInfo
 
-        if newCooldown then
-            self:SetAllPoints(newCooldown)
-            self:SetFrameLevel(newCooldown:GetFrameLevel() + 7)
+        if newInfo then
+            self:SetAllPoints(newInfo.cooldown)
+            self:SetFrameLevel(newInfo.cooldown:GetFrameLevel() + 7)
         end
     end
 end
@@ -190,7 +173,8 @@ end
 function Display:UpdateTimer()
     local oldTimer = self.timer and self.timer
     local oldTimerKey = oldTimer and oldTimer.key
-    local newTimer = self.cooldown and Addon.Timer:GetOrCreate(self.cooldown)
+
+    local newTimer = self.cdInfo and Addon.Timer:GetOrCreate(self.cdInfo)
     local newTimerKey = newTimer and newTimer.key
 
     -- update subscription if we're watching a different timer
@@ -205,6 +189,7 @@ function Display:UpdateTimer()
     -- only show display if we have a timer to watch
     if newTimer then
         newTimer:Subscribe(self)
+        -- only update text if the timer we're watching has changed
         if newTimerKey ~= oldTimerKey then
             self:UpdateCooldownText()
             self.text:SetText(newTimer.text or "")
@@ -219,13 +204,13 @@ function Display:UpdateTimer()
 end
 
 function Display:GetCooldownWithHighestPriority()
-    local cooldown
+    local result
 
-    for cd in pairs(self.cooldowns) do
-        cooldown = cooldown_Compare(cd, cooldown)
+    for info in pairs(self.cdInfos) do
+        result = cdInfo_Compare(info, result)
     end
 
-    return cooldown
+    return result
 end
 
 function Display:UpdateCooldownText()
@@ -235,7 +220,7 @@ function Display:UpdateCooldownText()
 end
 
 function Display:UpdateCooldownTextShown()
-    local sets = self:GetCooldownSettings()
+    local sets = self:GetSettings()
     if not sets then return end
 
     -- compare as ints to avoid floating point math errors
@@ -250,7 +235,7 @@ function Display:UpdateCooldownTextShown()
 end
 
 function Display:UpdateCooldownTextStyle()
-    local sets = self:GetCooldownSettings()
+    local sets = self:GetSettings()
     if not sets then return end
 
     local text = self.text
@@ -273,7 +258,7 @@ function Display:UpdateCooldownTextStyle()
 end
 
 function Display:UpdateCooldownTextPosition()
-    local sets = self:GetCooldownSettings()
+    local sets = self:GetSettings()
     if not sets then return end
 
     local sizeRatio = self.sizeRatio or self:CalculateSizeRatio()
@@ -282,8 +267,8 @@ function Display:UpdateCooldownTextPosition()
     self.text:SetPoint(sets.anchor, sets.xOff * sizeRatio, sets.yOff * sizeRatio)
 end
 
-function Display:GetCooldownSettings()
-    return self.cooldown and Addon:GetCooldownSettings(self.cooldown)
+function Display:GetSettings()
+    return self.cdInfo and self.cdInfo.settings
 end
 
 function Display:ForAll(method, ...)

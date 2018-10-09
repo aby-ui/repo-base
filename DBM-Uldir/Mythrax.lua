@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2194, "DBM-Uldir", nil, 1031)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17961 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 17962 $"):sub(12, -3))
 mod:SetCreatureID(134546)--138324 Xalzaix
 mod:SetEncounterID(2135)
 --mod:DisableESCombatDetection()
@@ -252,7 +252,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		local icon = self.vb.ruinIcon
 		if args:IsPlayer() then
 			specWarnImminentRuin:Show(self:IconNumToTexture(icon))
-			specWarnImminentRuin:Play("mm"..icon)
+			specWarnImminentRuin:Play("runout")--"mm"..icon
 			yellImminentRuin:Yell(icon, icon, icon)
 			yellImminentRuinFades:Countdown(12, nil, icon)
 		elseif self:CheckNearby(12, args.destName) and not DBM:UnitDebuff("player", spellId) then

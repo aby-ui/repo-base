@@ -3,9 +3,10 @@
 ## Author: ykiigor
 ## Notes: Exorsus Raid Tools
 ## SavedVariables: VExRT
-## Version: 3975
+## Version: 3990
 core.lua
 Functions.lua
+embeds.xml
 ExLib.lua
 localization\localization.en.lua
 localization\localization.cn.lua

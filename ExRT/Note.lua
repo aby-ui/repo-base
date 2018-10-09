@@ -97,8 +97,6 @@ local function txtWithIcons(t)
 	end
 	t = string_gsub(t,"{self}",VExRT.Note.SelfText or "")
 
-	t = string_gsub(t,"||T","|T")
-	t = string_gsub(t,"||t","|t")
 	for i=1,8 do
 		t = string_gsub(t,module.db.iconsLocalizatedNames[i],module.db.iconsList[i])
 		t = string_gsub(t,"{rt"..i.."}",module.db.iconsList[i])
@@ -111,6 +109,7 @@ local function txtWithIcons(t)
 	for i=1,#module.db.otherIconsList do
 		t = string_gsub(t,module.db.otherIconsList[i][1],module.db.otherIconsList[i][2])
 	end
+	t = string_gsub(t,"{icon:([^}]+)}","|T%1:16|t")
 	
 	t = string_gsub(t,"{spell:(%d+)}",GSUB_Icon)
 
@@ -177,11 +176,41 @@ function module.options:Load()
 	]]
 	
 	module.db.encountersList = {
-		{1148,2144,2141,2136,2128,2134,2145,2135,2122},
+		{1148,2144,2141,2136,2134,2128,2145,2135,2122},
+		{EXPANSION_NAME7..": "..DUNGEONS,-1012,-968,-1041,-1022,-1030,-1023,-1002,-1001,-1036,-1021},
 		{909,2076,2074,2064,2070,2075,2082,2069,2088,2073,2063,2092},
 		{850,2032,2048,2036,2037,2050,2054,2052,2038,2051},
 		{764,1849,1865,1867,1871,1862,1886,1842,1863,1872,1866},
 	}
+
+	module.db.mapToEncounter = {
+		--Uldir
+		[1148] = 2144,
+		[1149] = 2141,
+		[1151] = 2136,
+		[1153] = 2128,
+		[1152] = 2134,
+		[1154] = {2145,2135},
+		[1155] = 2122,
+
+		--5ppl
+		[1010] = -1012,	
+		[934] = -968,	[935] = -968,
+		[1004] = -1041,	
+		[1041] = -1022,	[1042] = -1022,	
+		[1038] = -1030,	[1043] = -1030,	
+		
+		[1162] = -1023,	
+		[974] = -1002,	[975] = -1002,	[974] = -1002,	[975] = -1002,	[976] = -1002,	[977] = -1002,	[978] = -1002,	[979] = -1002,	[980] = -1002,
+		[936] = -1001,	
+		[1039] = -1036,	[1040] = -1036,	
+		[1015] = -1021,	[1016] = -1021,	[1017] = -1021,	[1018] = -1021,	[1029] = -1021,	
+	}
+
+
+	function self:GetBossName(bossID)
+		return bossID < 0 and L.EJInstanceName[ -bossID ] or L.bossName[ bossID ]
+	end
 
 	local BlackNoteNow = nil
 	local NoteIsSelfNow = nil
@@ -210,7 +239,7 @@ function module.options:Load()
 		self.NotesList.L[1] = "|cff55ee55"..L.messageTab1
 		self.NotesList.L[2] = L.NoteSelf
 		for i=1,#VExRT.Note.Black do
-			self.NotesList.L[i+2] = (VExRT.Note.AutoLoad[i] and "|cffffff00["..L.bossName[ VExRT.Note.AutoLoad[i] ].."]|r" or "")..(VExRT.Note.BlackNames[i] or i)
+			self.NotesList.L[i+2] = (VExRT.Note.AutoLoad[i] and "|cffffff00["..module.options:GetBossName(VExRT.Note.AutoLoad[i]).."]|r" or "")..(VExRT.Note.BlackNames[i] or i)
 		end
 		self.NotesList.L[#self.NotesList.L + 1] = L.NoteAdd
 		self.NotesList:Update()
@@ -229,11 +258,12 @@ function module.options:Load()
 	end
 	self.UpdatePageAfterGettingNote = UpdatePageAfterGettingNote
 	
+	module.options.LastIndex = 1
 	function self.NotesList:SetListValue(index)
 		module.options.LastIndex = index
 
 		ExRT.lib.ShowOrHide(module.options.buttonsend,index == 1)
-		ExRT.lib.ShowOrHide(module.options.textCancel,index == 1)
+		--ExRT.lib.ShowOrHide(module.options.textCancel,index == 1)
 		ExRT.lib.ShowOrHide(module.options.buttoncopy,index > 2)
 		
 		BlackNoteNow = nil
@@ -262,7 +292,7 @@ function module.options:Load()
 			
 			module.options.DraftName:SetText( VExRT.Note.DefName or "" )
 			
-			module.options.autoLoadDropdown:SetText(VExRT.Note.AutoLoad[0] and L.bossName[ VExRT.Note.AutoLoad[0] ] or "-")
+			module.options.autoLoadDropdown:SetText(VExRT.Note.AutoLoad[0] and module.options:GetBossName(VExRT.Note.AutoLoad[0]) or "-")
 		elseif index == 2 then
 			module.options.NoteEditBox.EditBox:SetText(VExRT.Note.SelfText or "")
 			module.options.DraftName:SetText( L.NoteSelf )
@@ -292,9 +322,33 @@ function module.options:Load()
 			BlackNoteNow = index
 			module.options.DraftName:SetText( VExRT.Note.BlackNames[index] or index )
 			
-			module.options.autoLoadDropdown:SetText(VExRT.Note.AutoLoad[index] and L.bossName[ VExRT.Note.AutoLoad[index] ] or "-")
+			module.options.autoLoadDropdown:SetText(VExRT.Note.AutoLoad[index] and module.options:GetBossName(VExRT.Note.AutoLoad[index]) or "-")
 		end
 	end
+
+	self.NotesList:SetScript("OnShow",function(self)
+		local bossesToGreen = {}
+		local mapID = C_Map.GetBestMapForUnit("player")
+		if mapID and module.db.mapToEncounter[mapID] then
+			local encounters = module.db.mapToEncounter[mapID]
+			if type(encounters) == 'table' then
+				for i=1,#encounters do
+					bossesToGreen[ encounters[i] ] = true
+				end
+			else
+				bossesToGreen[encounters] = true
+			end
+		end
+		for i=3,#self.L do
+			local index = i - 2
+			local t = self.L[i]:gsub("|cff00ff00","|cffffff00")
+			if VExRT.Note.AutoLoad[index] and bossesToGreen[ VExRT.Note.AutoLoad[index] ] then
+				t = t:gsub("|cffffff00","|cff00ff00")
+			end
+			self.L[i] = t
+		end
+		self:Update()
+	end)
 	
 	function self.NotesList:HoverListValue(isHover,index)
 		if not isHover then
@@ -305,13 +359,49 @@ function module.options:Load()
 			if index == 2 then
 				GameTooltip:AddLine(L.NoteSelfTooltip)
 			elseif index ~= #self.L and index > 2 then
-				GameTooltip:AddLine(L.NoteTabCopyTooltip)
+				local i = index - 2
+				if VExRT.Note.BlackLastUpdateName[i] then
+					GameTooltip:AddLine(L.NoteLastUpdate..": "..VExRT.Note.BlackLastUpdateName[i].." ("..date("%d.%m.%Y %H:%M",VExRT.Note.BlackLastUpdateTime[i] or 0)..")")
+				end
+				--GameTooltip:AddLine(L.NoteTabCopyTooltip)
 			end
 			GameTooltip:Show()
 		end
 	end
+
+	self.DuplicateDraft = ELib:Button(self.tab.tabs[1],L.NoteDuplicate):Size(120,20):Point("RIGHT",0,0):Point("TOP",self.NotesList,0,1):OnClick(function (self)
+		local pos = #VExRT.Note.Black + 1
+
+		local text = module.options.LastIndex == 1 and (VExRT.Note.Text1 or "") or
+				module.options.LastIndex == 2 and (VExRT.Note.SelfText or "") or
+				(VExRT.Note.Black[module.options.LastIndex - 2] or "")
+		local title = (module.options.LastIndex > 2 and VExRT.Note.BlackNames[module.options.LastIndex - 2]) or 
+				(module.options.LastIndex == 1 and VExRT.Note.DefName)
+		if not title then title = nil end
+
+		local boss = module.options.LastIndex == 1 and VExRT.Note.AutoLoad[0] or
+				module.options.LastIndex > 2 and VExRT.Note.AutoLoad[module.options.LastIndex - 2]
+		if not boss then boss = nil end
+
+		local lastUpdateName = module.options.LastIndex > 2 and VExRT.Note.BlackLastUpdateName[module.options.LastIndex - 2]
+		if not lastUpdateName then lastUpdateName = nil end
+
+		local lastUpdateTime = module.options.LastIndex > 2 and VExRT.Note.BlackLastUpdateTime[module.options.LastIndex - 2]
+		if not lastUpdateTime then lastUpdateTime = nil end
+
+		VExRT.Note.Black[pos] = text
+		VExRT.Note.BlackNames[pos] = title
+		VExRT.Note.AutoLoad[pos] = boss
+		VExRT.Note.BlackLastUpdateName[pos] = lastUpdateName
+		VExRT.Note.BlackLastUpdateTime[pos] = lastUpdateTime
+
+		NotesListUpdateNames()
+		module.options.NotesList:SetListValue(pos+2)
+		module.options.NotesList.selected = pos+2
+		module.options.NotesList:Update()
+	end)
 	
-	self.RemoveDraft = ELib:Button(self.tab.tabs[1],L.NoteRemove):Size(150,20):Point("RIGHT",0,0):Point("TOP",self.NotesList,0,1):Disable():OnClick(function (self)
+	self.RemoveDraft = ELib:Button(self.tab.tabs[1],L.NoteRemove):Size(120,20):Point("RIGHT",self.DuplicateDraft,"LEFT",-5,0):Point("TOP",self.NotesList,0,1):Disable():OnClick(function (self)
 		if not BlackNoteNow then
 			return
 		end
@@ -321,10 +411,14 @@ function module.options:Load()
 				VExRT.Note.Black[i] = VExRT.Note.Black[i + 1]
 				VExRT.Note.BlackNames[i] = VExRT.Note.BlackNames[i + 1]
 				VExRT.Note.AutoLoad[i] = VExRT.Note.AutoLoad[i + 1]
+				VExRT.Note.BlackLastUpdateName[i] = VExRT.Note.BlackLastUpdateName[i + 1]
+				VExRT.Note.BlackLastUpdateTime[i] = VExRT.Note.BlackLastUpdateTime[i + 1]
 			else
 				VExRT.Note.Black[i] = nil
 				VExRT.Note.BlackNames[i] = nil
 				VExRT.Note.AutoLoad[i] = nil
+				VExRT.Note.BlackLastUpdateName[i] = nil
+				VExRT.Note.BlackLastUpdateTime[i] = nil
 			end
 		end
 		NotesListUpdateNames()
@@ -351,12 +445,12 @@ function module.options:Load()
 		
 		VExRT.Note.AutoLoad[index] = encounterID
 		
-		module.options.autoLoadDropdown:SetText(encounterID and L.bossName[ encounterID ] or "-")
+		module.options.autoLoadDropdown:SetText(encounterID and module.options:GetBossName(encounterID) or "-")
 		NotesListUpdateNames()
 		ELib:DropDownClose()
 	end
 	
-	self.autoLoadDropdown = ELib:DropDown(self.tab.tabs[1],300,15):AddText(ENCOUNTER_JOURNAL_ENCOUNTER..":"):Point("TOPRIGHT",self.RemoveDraft,"BOTTOMRIGHT",-2,-5):Size(300):SetText(VExRT.Note.AutoLoad[0] and L.bossName[ VExRT.Note.AutoLoad[0] ] or "-")
+	self.autoLoadDropdown = ELib:DropDown(self.tab.tabs[1],300,25):AddText(ENCOUNTER_JOURNAL_ENCOUNTER..":"):Point("TOPRIGHT",self.DuplicateDraft,"BOTTOMRIGHT",-2,-5):Size(300):SetText(VExRT.Note.AutoLoad[0] and L.bossName[ VExRT.Note.AutoLoad[0] ] or "-")
 	do
 		local List = self.autoLoadDropdown.List
 		List[#List+1] = {
@@ -366,12 +460,12 @@ function module.options:Load()
 		for i=1,#module.db.encountersList do
 			local instance = module.db.encountersList[i]
 			List[#List+1] = {
-				text = (C_Map.GetMapInfo(instance[1] or 0) or {}).name or "???",
+				text = type(instance[1])=='string' and instance[1] or (C_Map.GetMapInfo(instance[1] or 0) or {}).name or "???",
 				isTitle = true,
 			}
 			for j=2,#instance do
 				List[#List+1] = {
-					text = L.bossName[ instance[j] ],
+					text = module.options:GetBossName(instance[j]),
 					arg1 = instance[j],
 					func = autoLoadDropdown_SetValue,
 				}
@@ -396,7 +490,7 @@ function module.options:Load()
 	self.NoteEditBox.EditBox._SetText = self.NoteEditBox.EditBox.SetText
 	function self.NoteEditBox.EditBox:SetText(text)
 		if IsFormattingOn then
-			text = text:gsub("||([Ttcr])","|%1")
+			text = text:gsub("||([cr])","|%1")
 		end
 		return self:_SetText(text)
 	end
@@ -419,6 +513,7 @@ function module.options:Load()
 		self.textClear:SetShadowColor(1,1,1,0)
 	end)
 	
+	--[[
 	self.textCancel = ELib:Text(self.NoteEditBox,"["..CANCEL.."]"):Point("RIGHT",self.textClear,"LEFT",-5,0):Color()
 	self.textCancel:SetShadowColor(1,1,1,0)
 	self.textCancel:SetShadowOffset(1,-1)
@@ -436,6 +531,7 @@ function module.options:Load()
 	self.buttonCuncel:SetScript("OnLeave",function()
 		self.textCancel:SetShadowColor(1,1,1,0)
 	end)
+	]]
 		
 	function self.NoteEditBox.EditBox:OnTextChanged(isUser)
 		if not isUser and (not module.options.InsertFix or GetTime() - module.options.InsertFix > 0.1) then
@@ -443,13 +539,16 @@ function module.options:Load()
 		end
 		local text = self:GetText()
 		if IsFormattingOn then
-			text = text:gsub("|([Ttcr])","||%1")
+			text = text:gsub("|([cr])","||%1")
 		end
 		if NoteIsSelfNow then
 			VExRT.Note.SelfText = text
 			module.frame:UpdateText()
 		elseif BlackNoteNow then
 			VExRT.Note.Black[ BlackNoteNow ] = text
+
+			VExRT.Note.BlackLastUpdateName[BlackNoteNow] = ExRT.SDB.charKey
+			VExRT.Note.BlackLastUpdateTime[BlackNoteNow] = time()
 		else
 			VExRT.Note.Text1 = text
 			if module.frame.text:GetText() ~= txtWithIcons(VExRT.Note.Text1) then
@@ -459,6 +558,49 @@ function module.options:Load()
 			end
 		end
 	end
+	local last_highlight_start,last_highlight_end,last_cursor_pos = 0,0,0
+	local IsFormattingOn_Saved
+	self.NoteEditBox.EditBox:SetScript("OnKeyDown",function(self,key)
+		if IsFormattingOn and key == "LCTRL" then
+			module.options.InsertFix = nil
+			IsFormattingOn_Saved = true
+			IsFormattingOn = nil
+			local h_start,h_end = module.options.NoteEditBox:GetTextHighlight()
+			local h_cursor = self:GetCursorPosition()
+			local text = module.options.NoteEditBox.EditBox:GetText()
+
+			last_highlight_start,last_highlight_end,last_cursor_pos = h_start,h_end,h_cursor
+			
+			local c_start,c_end,c_cursor = 0,0,0
+			text:sub(1,h_start):gsub("|([cr])",function() c_start = c_start + 1 end)
+			text:sub(1,h_end):gsub("|([cr])",function() c_end = c_end + 1 end)
+			text:sub(1,h_cursor):gsub("|([cr])",function() c_cursor = c_cursor + 1 end)
+
+			text = text:gsub("|([cr])","||%1")
+			module.options.NoteEditBox.EditBox:_SetText(text)
+
+			module.options.NoteEditBox.EditBox:HighlightText( h_start+c_start, h_end+c_end )
+			module.options.NoteEditBox.EditBox:SetCursorPosition( h_cursor+c_cursor )
+		end
+	end)
+	self.NoteEditBox.EditBox:SetScript("OnKeyUp",function(self,key)
+		if IsFormattingOn_Saved and key == "LCTRL" then
+			local text = module.options.NoteEditBox.EditBox:GetText()
+			local h_start,h_end = module.options.NoteEditBox:GetTextHighlight()
+			local h_cursor = self:GetCursorPosition()
+			local c_start,c_end,c_cursor = 0,0,0
+			text:sub(1,h_start):gsub("||([cr])",function() c_start = c_start + 1 end)
+			text:sub(1,h_end):gsub("||([cr])",function() c_end = c_end + 1 end)
+			text:sub(1,h_cursor):gsub("||([cr])",function() c_cursor = c_cursor + 1 end)
+
+			IsFormattingOn = true
+			IsFormattingOn_Saved = nil
+			module.options.InsertFix = nil
+			module.options.NotesList:SetListValue(module.options.LastIndex or 1)
+			module.options.NoteEditBox.EditBox:HighlightText( h_start-c_start,h_end-c_end )
+			module.options.NoteEditBox.EditBox:SetCursorPosition( h_cursor-c_cursor )
+		end
+	end)
 	
 	self.buttonsend = ELib:Button(self.tab.tabs[1],L.messagebutsend):Size(469+102,20):Point("TOPLEFT",self.NotesList,"TOPRIGHT",9,-50):Tooltip(L.messagebutsendtooltip):OnClick(function (self)
 		module.frame:Save() 
@@ -916,9 +1058,10 @@ function module.options:Load()
 		"|n|cffffff00{D}|r...|cffffff00{/D}|r - "..format(L.NoteHelp2,DAMAGER)..
 		"|n|cffffff00{H}|r...|cffffff00{/H}|r - "..format(L.NoteHelp2,HEALER)..
 		"|n|cffffff00{T}|r...|cffffff00{/T}|r - "..format(L.NoteHelp2,TANK)..
-		"|n|cffffff00{spell:17}|r - "..L.NoteHelp3..
+		"|n|cffffff00{spell:|r|cff00ff0017|r|cffffff00}|r - "..L.NoteHelp3..
 		"|n|cffffff00{self}|r - "..L.NoteHelp4..
-		"|n|cffffff00{p:|r|cff00ff00JaneD|r|cffffff00,|r|cff00ff00JennyB-HowlingFjord|r|cffffff00}|r...|cffffff00{/p}|r - "..L.NoteHelp5
+		"|n|cffffff00{p:|r|cff00ff00JaneD|r|cffffff00,|r|cff00ff00JennyB-HowlingFjord|r|cffffff00}|r...|cffffff00{/p}|r - "..L.NoteHelp5..
+		"|n|cffffff00{icon:|r|cff00ff00Interface/Icons/inv_hammer_unique_sulfuras|r|cffffff00}|r - "..L.NoteHelp6
 	):Point("TOPLEFT",5,-20):Point("TOPRIGHT",-5,-20):Color()
 
 	module:RegisterEvents("GROUP_ROSTER_UPDATE")
@@ -1056,10 +1199,21 @@ function module.frame:Save(blackNoteID)
 			j = j + 1
 		end
 	end
+	local encounterID = VExRT.Note.AutoLoad[blackNoteID or 0] or "-"
+	local noteName = (blackNoteID and VExRT.Note.BlackNames[blackNoteID]) or (not blackNoteID and VExRT.Note.DefName) or ""
+
+	if blackNoteID then
+		VExRT.Note.AutoLoad[0] = VExRT.Note.AutoLoad[blackNoteID]
+		VExRT.Note.DefName = VExRT.Note.BlackNames[blackNoteID]
+		if VExRT.Note.DefName then
+			VExRT.Note.DefName = VExRT.Note.DefName:gsub("%*$","")
+		end
+	end
+
 	for i=1,#arrtosand do
 		ExRT.F.SendExMsg("multiline",indextosnd.."\t"..arrtosand[i])
 	end
-	ExRT.F.SendExMsg("multiline_add",ExRT.F.CreateAddonMsg(indextosnd,VExRT.Note.AutoLoad[blackNoteID or 0] or "-",blackNoteID and VExRT.Note.BlackNames[blackNoteID] or VExRT.Note.DefName or ""))
+	ExRT.F.SendExMsg("multiline_add",ExRT.F.CreateAddonMsg(indextosnd,encounterID,noteName))
 end 
 
 function module.frame:Clear() 
@@ -1129,24 +1283,42 @@ function module:addonMessage(sender, prefix, ...)
 			return
 		end
 		encounterID = tonumber(encounterID)
+		if noteName == "" then noteName = nil end
 		VExRT.Note.AutoLoad[0] = encounterID
 		VExRT.Note.DefName = noteName
 		if VExRT.Note.SaveAllNew then
-			noteName = noteName:gsub("%**$","*")
 			local finded = false
-			for i=1,#VExRT.Note.Black do
-				if VExRT.Note.BlackNames[i] == noteName then
-					VExRT.Note.Black[i] = VExRT.Note.Text1
-					VExRT.Note.AutoLoad[i] = encounterID
-					finded = true
-					break
+			if noteName then			
+				noteName = noteName:gsub("%*+$","").."*"
+				for i=1,#VExRT.Note.Black do
+					if VExRT.Note.BlackNames[i] == noteName then
+						VExRT.Note.Black[i] = VExRT.Note.Text1
+						VExRT.Note.AutoLoad[i] = encounterID
+						VExRT.Note.BlackLastUpdateName[i] = sender
+						VExRT.Note.BlackLastUpdateTime[i] = time()
+						finded = true
+						break
+					end
 				end
+			elseif encounterID then
+				for i=1,#VExRT.Note.Black do
+					if VExRT.Note.AutoLoad[i] == encounterID and (not VExRT.Note.BlackNames[i] or VExRT.Note.BlackNames[i] == "") then
+						VExRT.Note.Black[i] = VExRT.Note.Text1
+						VExRT.Note.BlackLastUpdateName[i] = sender
+						VExRT.Note.BlackLastUpdateTime[i] = time()
+						finded = true
+						break
+					end
+				end				
+
 			end
 			if not finded then
 				local newIndex = #VExRT.Note.Black + 1
 				VExRT.Note.Black[newIndex] = VExRT.Note.Text1
 				VExRT.Note.AutoLoad[newIndex] = encounterID
 				VExRT.Note.BlackNames[newIndex] = noteName
+				VExRT.Note.BlackLastUpdateName[newIndex] = sender
+				VExRT.Note.BlackLastUpdateTime[newIndex] = time()
 				if module.options.NotesListUpdateNames then
 					module.options.NotesListUpdateNames()
 				end
@@ -1245,6 +1417,9 @@ function module.main:ADDON_LOADED()
 	for i=1,3 do
 		VExRT.Note.Black[i] = VExRT.Note.Black[i] or ""
 	end
+
+	VExRT.Note.BlackLastUpdateName = VExRT.Note.BlackLastUpdateName or {}
+	VExRT.Note.BlackLastUpdateTime = VExRT.Note.BlackLastUpdateTime or {}
 	
 	VExRT.Note.Strata = VExRT.Note.Strata or "HIGH"
 	

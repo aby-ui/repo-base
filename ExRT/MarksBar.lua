@@ -242,6 +242,10 @@ do
 			frame:SetAttribute("type", "macro")
 			frame:SetAttribute("macrotext1", format("/wm %d", i))
 			frame:SetAttribute("macrotext2", format("/cwm %d", i))
+			if ExRT.locale == "ptBR" then
+				frame:SetAttribute("macrotext1", format(SLASH_WORLD_MARKER1.." %d", i))
+				frame:SetAttribute("macrotext2", format(SLASH_CLEAR_WORLD_MARKER1.." %d", i))
+			end
 			frame:SetScript('OnEvent', MainFrameWMOnEvent)
 		else
 			frame:SetScript("OnClick", ClearRaidMarker)

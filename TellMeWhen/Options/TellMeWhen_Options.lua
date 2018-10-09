@@ -295,6 +295,7 @@ function IE:OnInitialize()
 
 	IE.history = {}
 	IE.historyState = 0
+	--IE.CurrentTabGroup = IE.TabGroups.ICON
 
 	
 

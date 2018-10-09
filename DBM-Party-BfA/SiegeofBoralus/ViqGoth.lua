@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2140, "DBM-Party-BfA", 5, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17905 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 17964 $"):sub(12, -3))
 mod:SetCreatureID(120553)
 mod:SetEncounterID(2100)
 mod:SetZone()
@@ -69,7 +69,7 @@ function mod:SPELL_CAST_START(args)
 		specWarnCalloftheDeep:Show()
 		specWarnCalloftheDeep:Play("watchstep")
 		--timerCalloftheDeepCD:Start()
-	elseif spellId == 269266 then
+	elseif spellId == 269266 and self:AntiSpam(2.5, 1) then
 		specWarnSlam:Show()
 		specWarnSlam:Play("shockwave")
 		timerSlamCD:Start(nil, args.sourceGUID)

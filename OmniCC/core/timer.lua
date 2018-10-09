@@ -19,7 +19,7 @@ local HOUR = 3600000
 local MINUTE = 60000
 local SECOND = 1000
 local TENTHS = 100
-local TICK = 16
+local TICK = 10
 
 -- rounding values in ms
 local HALF_DAY = 43200000
@@ -41,38 +41,22 @@ local active = {}
 -- we use a weak table so that inactive timers are cleaned up on gc
 local inactive = setmetatable({}, {__mode = "k" })
 
-local function cooldown_GetKind(cooldown)
-    if cooldown.currentCooldownType == COOLDOWN_TYPE_LOSS_OF_CONTROL then
-        return "loc"
-    end
-
-    local parent = cooldown:GetParent()
-    if parent and parent.chargeCooldown == cooldown then
-        return "charge"
-    end
-
-    return "default"
-end
-
 local Timer = {}
 local Timer_MT = { __index = Timer }
 
-function Timer:GetOrCreate(cooldown)
-    local start, duration = cooldown:GetCooldownTimes()
-    if not (start and duration and start > 0 and duration > TICK) then
-        return
-    end
+function Timer:GetOrCreate(info)
+    if not info then return end
 
-    local kind = cooldown_GetKind(cooldown)
-    local settings = Addon:GetCooldownSettings(cooldown)
-    local key = strjoin("-", start, duration, kind, settings and settings.id or "base")
+    local endTime = info.start * 1000 + info.duration * 1000
+    local kind = info.kind
+    local settings = info.settings
+    local key = strjoin("-", endTime, kind, settings and settings.id or "base")
 
     local timer = active[key]
     if not timer then
         timer = self:Restore() or self:Create()
 
-        timer.duration = duration
-        timer.endTime = start + duration
+        timer.endTime = endTime
         timer.key = key
         timer.kind = kind
         timer.settings = settings
@@ -132,31 +116,7 @@ function Timer:Update()
 
     local remain = self.endTime - (GetTime() * SECOND)
 
-    -- handle cooldowns that will start in the future or are broken after a
-    -- computer restart. The precision here is over 10 so that we can account
-    -- for some floating point math fun
-    if remain > (self.duration + TICK) then
-        local text = ""
-        if self.text ~= text then
-            self.text = text
-            for subscriber in pairs(self.subscribers) do
-                subscriber:OnTimerTextUpdated(self, text)
-            end
-        end
-
-        local state = "hours"
-        if self.state ~= state then
-            self.state = state
-            for subscriber in pairs(self.subscribers) do
-                subscriber:OnTimerStateUpdated(self, state)
-            end
-        end
-
-        local sleep = remain - self.duration
-        if sleep < math.huge then
-            After((sleep + TICK) / SECOND, self.callback)
-        end
-    elseif remain > 0 then
+    if remain > 0 then
         local text, textSleep = self:GetTimerText(remain)
         if self.text ~= text then
             self.text = text

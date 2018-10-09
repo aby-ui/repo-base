@@ -4,6 +4,13 @@ TMW.CHANGELOG_LASTVER="7.4.0"
 
 TMW.CHANGELOG = [==[
 
+===v8.5.5===
+* A few improvements to the spell equivalency lists.
+* Added Keystone Level condition for Mythic+.
+
+====Bug Fixes====
+* FIxed #1584 - Error when switching profiles via slash command.
+
 ===v8.5.4===
 * New icon drag operation - Insert.
 * Added Dark Icon and Mag'har to Unit Race condition.
