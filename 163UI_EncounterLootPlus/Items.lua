@@ -47,7 +47,7 @@ function ELP_RetrieveDone()
         if EJ_GetSlotFilter() == ELP_RELIC_SLOT then
             tinsert(curr_items, k)
         elseif (db.attr1 == 0 or (db.attr1 ~= 0 and type(db.ITEMS[k])=="table" and db.ITEMS[k][db.attr1]))
-            and (db.attr2 == 0 or (db.attr2 ~= 0 and type(db.ITEMS[k])=="table" and db.ITEMS[k][db.attr2])) then
+            and (db.attr1 == 0 or db.attr2 == 0 or (db.attr2 ~= 0 and type(db.ITEMS[k])=="table" and db.ITEMS[k][db.attr2])) then
             tinsert(curr_items, k)
         end
     end

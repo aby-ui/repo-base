@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2194, "DBM-Uldir", nil, 1031)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17972 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 17980 $"):sub(12, -3))
 mod:SetCreatureID(134546)--138324 Xalzaix
 mod:SetEncounterID(2135)
 --mod:DisableESCombatDetection()
@@ -60,15 +60,15 @@ local specWarnVisionsofMadness			= mod:NewSpecialWarningSwitchCount(273949, "-He
 local specWarnMindFlay					= mod:NewSpecialWarningInterrupt(274019, "HasInterrupt", nil, nil, 1, 2)
 
 mod:AddTimerLine(SCENARIO_STAGE:format(1))
-local timerEssenceShearCD				= mod:NewNextSourceTimer(19.5, 274693, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON)--All timers generlaly 20 but 19.9 can happen and DBM has to use lost known time
-local timerObliterationBlastCD			= mod:NewNextSourceTimer(14.9, 273538, nil, nil, nil, 3)
+local timerEssenceShearCD				= mod:NewNextSourceTimer(19.5, 274693, 41032, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON)--Short Text "Shear", All timers generlaly 20 but 19.9 can happen and DBM has to use lost known time
+local timerObliterationBlastCD			= mod:NewNextSourceTimer(14.9, 273538, 158259, nil, nil, 3)--Short Text "Blast"
 local timerOblivionSphereCD				= mod:NewNextCountTimer(14.9, 272407, nil, nil, nil, 3)
-local timerImminentRuinCD				= mod:NewNextCountTimer(14.9, 272536, nil, nil, nil, 3)
+local timerImminentRuinCD				= mod:NewNextCountTimer(14.9, 272536, 139074, nil, nil, 3)--Short Text "Ruin"
 local timerLivingWeaponCD				= mod:NewNextTimer(60.5, 276922, nil, nil, nil, 1, nil, DBM_CORE_HEROIC_ICON)--Mythic
 local timerVoidEchoesCD					= mod:NewNextCountTimer(60.5, 279157, nil, nil, nil, 2, nil, DBM_CORE_HEROIC_ICON)
 mod:AddTimerLine(SCENARIO_STAGE:format(2))
 local timerIntermission					= mod:NewPhaseTimer(60)
-local timerObliterationbeamCD			= mod:NewCDCountTimer(12.1, 272115, nil, nil, nil, 3, nil, DBM_CORE_DEADLY_ICON)
+local timerObliterationbeamCD			= mod:NewCDCountTimer(12.1, 272115, 194463, nil, nil, 3, nil, DBM_CORE_DEADLY_ICON)--Short Text "Beam"
 local timerVisionsoMadnessCD			= mod:NewNextCountTimer(20, 273949, nil, nil, nil, 1, nil, DBM_CORE_DAMAGE_ICON)
 
 --local berserkTimer					= mod:NewBerserkTimer(600)
@@ -134,9 +134,14 @@ end
 function mod:SPELL_CAST_START(args)
 	local spellId = args.spellId
 	if spellId == 273282 then
-		if not self:IsTanking("player", "boss1", nil, true) and DBM:UnitDebuff("player", 274693) then
-			specWarnEssenceShearDodge:Show()
-			specWarnEssenceShearDodge:Play("shockwave")
+		if self:IsTanking("player", "boss1", nil, true) then
+			specWarnEssenceShear:Show()
+			specWarnEssenceShear:Play("defensive")
+		else
+			if DBM:UnitDebuff("player", 274693) then
+				specWarnEssenceShearDodge:Show()
+				specWarnEssenceShearDodge:Play("shockwave")
+			end
 		end
 		local cid = self:GetCIDFromGUID(args.sourceGUID)
 		if cid == 134546 then--Main boss
@@ -232,10 +237,7 @@ function mod:SPELL_AURA_APPLIED(args)
 	if spellId == 274693 then
 		local uId = DBM:GetRaidUnitId(args.destName)
 		if self:IsTanking(uId) then
-			if args:IsPlayer() then
-				specWarnEssenceShear:Show()
-				specWarnEssenceShear:Play("defensive")
-			else
+			if not args:IsPlayer() then
 				local cid = self:GetCIDFromGUID(args.sourceGUID)
 				if cid == 134546 then--Main boss
 					specWarnEssenceShearOther:Show(args.destName)

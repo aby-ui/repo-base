@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2146, "DBM-Uldir", nil, 1031)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17971 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 17978 $"):sub(12, -3))
 mod:SetCreatureID(133298)
 mod:SetEncounterID(2128)
 mod:SetZone()
@@ -206,7 +206,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 		countdownRottingRegurg:Cancel()
 		timerRottingRegurgCD:Stop()--Trash old timer
 		if remaining >= 3 then--It's worth showing updated timer
-			timerRottingRegurgCD:Start(elapsed, total)--Construct new timer with adjustment
+			timerRottingRegurgCD:Update(elapsed, total)--Construct new timer with adjustment
 			countdownRottingRegurg:Start(remaining)
 		end
 	elseif spellId == 274470 and self:AntiSpam(5, 3) then
