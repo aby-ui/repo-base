@@ -139,19 +139,19 @@ local AuraTrackerMetaFunctions = _G [DF.GlobalWidgetControlNames ["aura_tracker"
 
 --create panels
 local on_profile_changed = function (self, newdb)
+
 	self.db = newdb
-	self.tracking_method:Select (newdb.aura_tracker.track_method)
-	
+
 	--automatic
-	self.buff_ignored:SetData (newdb.aura_tracker.buff_banned)
-	self.debuff_ignored:SetData (newdb.aura_tracker.debuff_banned)
-	self.buff_tracked:SetData (newdb.aura_tracker.buff_tracked)
-	self.debuff_tracked:SetData (newdb.aura_tracker.debuff_tracked)
+	self.buff_ignored:DoSetData (newdb.aura_tracker.buff_banned)
+	self.debuff_ignored:DoSetData (newdb.aura_tracker.debuff_banned)
+	self.buff_tracked:DoSetData (newdb.aura_tracker.buff_tracked)
+	self.debuff_tracked:DoSetData (newdb.aura_tracker.debuff_tracked)
 	
-	self.buff_ignored:Refresh()
-	self.debuff_ignored:Refresh()
-	self.buff_tracked:Refresh()
-	self.debuff_tracked:Refresh()
+	self.buff_ignored:DoRefresh()
+	self.debuff_ignored:DoRefresh()
+	self.buff_tracked:DoRefresh()
+	self.debuff_tracked:DoRefresh()
 	
 	--manual
 	self.buffs_added:SetData (newdb.aura_tracker.buff)
@@ -166,7 +166,7 @@ local on_profile_changed = function (self, newdb)
 		
 		self.AutomaticTrackingCheckbox:SetValue (true)
 		self.ManualTrackingCheckbox:SetValue (false)
-		self.desc_label.text = texts.AUTOMATIC_DESC
+		self.desc_label.text = self.LocTexts.AUTOMATIC_DESC
 		
 	elseif (newdb.aura_tracker.track_method == 0x2) then
 		self.f_auto:Hide()
@@ -174,7 +174,7 @@ local on_profile_changed = function (self, newdb)
 		
 		self.AutomaticTrackingCheckbox:SetValue (false)
 		self.ManualTrackingCheckbox:SetValue (true)
-		self.desc_label.text = texts.MANUAL_DESC
+		self.desc_label.text = self.LocTexts.MANUAL_DESC
 	end
 end
 
@@ -196,6 +196,7 @@ function DF:CreateAuraConfigPanel (parent, name, db, change_callback, options, t
 	local f = CreateFrame ("frame", name, parent)
 	f.db = db
 	f.OnProfileChanged = on_profile_changed
+	f.LocTexts = texts
 	options = options or {}
 	self.table.deploy (options, aura_panel_defaultoptions)
 	
@@ -276,11 +277,9 @@ function DF:CreateAuraConfigPanel (parent, name, db, change_callback, options, t
 -------- anchors points
 
 	local y = -110
-	local xLocation = 230
-	
-	
--------- automatic
 
+-------- automatic
+	
 	--manual add the buff and ebuff names
 	local AllSpellsMap = {}
 	local AllSpellNames = {}
@@ -321,32 +320,39 @@ function DF:CreateAuraConfigPanel (parent, name, db, change_callback, options, t
 			f_manual.NewDebuffTextBox.ShouldOptimizeAutoComplete = true
 		end
 	end
-
-	local background_add_blacklist = CreateFrame ("frame", nil, f_auto)
-	background_add_blacklist:SetSize (220, 135)
-	DF:ApplyStandardBackdrop (background_add_blacklist)
 	
-	local background_add_tracklist = CreateFrame ("frame", nil, f_auto)
-	background_add_tracklist:SetSize (220, 135)
-	DF:ApplyStandardBackdrop (background_add_tracklist)
+	--this set the width of the background box, text entry and button
+	local textEntryWidth = 120
+
+	--create the background
+		local background_add_blacklist = CreateFrame ("frame", nil, f_auto)
+		background_add_blacklist:SetSize (textEntryWidth + 10, 135)
+		DF:ApplyStandardBackdrop (background_add_blacklist)
+		background_add_blacklist.__background:SetVertexColor (0.47, 0.27, 0.27)
+		
+		local background_add_tracklist = CreateFrame ("frame", nil, f_auto)
+		background_add_tracklist:SetSize (textEntryWidth + 10, 135)
+		DF:ApplyStandardBackdrop (background_add_tracklist)
+		background_add_tracklist.__background:SetVertexColor (0.27, 0.27, 0.47)
 	
 	--black list
+		--create labels
 		local buff_blacklist_label = self:CreateLabel (background_add_blacklist, texts.MANUAL_ADD_BLACKLIST_BUFF, DF:GetTemplate ("font", "OPTIONS_FONT_TEMPLATE"))
 		local debuff_blacklist_label = self:CreateLabel (background_add_blacklist, texts.MANUAL_ADD_BLACKLIST_DEBUFF, DF:GetTemplate ("font", "OPTIONS_FONT_TEMPLATE"))
-
-		local buff_name_blacklist_entry = self:CreateTextEntry (background_add_blacklist, function()end, 200, 20, "AddBuffBlacklistTextBox", _, _, options_dropdown_template)
+		
+		local buff_name_blacklist_entry = self:CreateTextEntry (background_add_blacklist, function()end, textEntryWidth, 20, "AddBuffBlacklistTextBox", _, _, options_dropdown_template)
 		buff_name_blacklist_entry:SetHook ("OnEditFocusGained", load_all_spells)
 		buff_name_blacklist_entry:SetJustifyH ("left")
 		buff_name_blacklist_entry.tooltip = "Enter the buff name using lower case letters."
 		f_auto.AddBuffBlacklistTextBox = buff_name_blacklist_entry
 		
-		local debuff_name_blacklist_entry = self:CreateTextEntry (background_add_blacklist, function()end, 200, 20, "AddDebuffBlacklistTextBox", _, _, options_dropdown_template)
+		local debuff_name_blacklist_entry = self:CreateTextEntry (background_add_blacklist, function()end, textEntryWidth, 20, "AddDebuffBlacklistTextBox", _, _, options_dropdown_template)
 		debuff_name_blacklist_entry:SetHook ("OnEditFocusGained", load_all_spells)
 		debuff_name_blacklist_entry:SetJustifyH ("left")
 		debuff_name_blacklist_entry.tooltip = "Enter the debuff name using lower case letters."
 		f_auto.AddDebuffBlacklistTextBox = debuff_name_blacklist_entry
 		
-		local same_name_spells_add = function (spellID)
+		local same_name_spells_add = function (spellID, t)
 			local spellName = GetSpellInfo (spellID)
 			if (spellName) then
 				if (not next (AllSpellsMap)) then
@@ -356,10 +362,15 @@ function DF:CreateAuraConfigPanel (parent, name, db, change_callback, options, t
 				spellName = lower (spellName)
 				local spellWithSameName = AllSpellsSameName [spellName]
 				if (spellWithSameName) then
-					db.aura_cache_by_name [spellName] = DF.table.copy ({}, spellWithSameName)
+					if (t) then
+						t [spellName] = DF.table.copy ({}, spellWithSameName)
+					else
+						db.aura_cache_by_name [spellName] = DF.table.copy ({}, spellWithSameName)
+					end
 				end
 			end
 		end
+		DF.AddSpellWithSameName = same_name_spells_add
 		
 		local get_spellID_from_string = function (text)
 			--check if the user entered a spell ID
@@ -400,15 +411,15 @@ function DF:CreateAuraConfigPanel (parent, name, db, change_callback, options, t
 				f.db.aura_tracker.buff_banned [spellId] = true 
 				
 				--refresh the buff blacklist frame
-				_G [f_auto:GetName() .. "BuffIgnored"]:Refresh()
-				
+				f.buff_ignored:DoRefresh()
+
 				DF:QuickDispatch (change_callback)
 				
 				--add to spells with the same name cache
 				same_name_spells_add (spellId)
 			end
 			
-		end, 100, 20, "Add to Blacklist", nil, nil, nil, nil, nil, nil, DF:GetTemplate ("button", "OPTIONS_BUTTON_TEMPLATE"), DF:GetTemplate ("font", options.button_text_template))
+		end, textEntryWidth, 20, "Add to Blacklist", nil, nil, nil, nil, nil, nil, DF:GetTemplate ("button", "OPTIONS_BUTTON_TEMPLATE"), DF:GetTemplate ("font", options.button_text_template))
 		
 		local add_blacklist_debuff_button = self:CreateButton (background_add_blacklist, function()
 			local text = debuff_name_blacklist_entry.text
@@ -427,27 +438,27 @@ function DF:CreateAuraConfigPanel (parent, name, db, change_callback, options, t
 				f.db.aura_tracker.debuff_banned [spellId] = true
 				
 				--refresh the buff blacklist frame
-				_G [f_auto:GetName() .. "DebuffIgnored"]:Refresh()
+				f.debuff_ignored:DoRefresh()
 				
 				DF:QuickDispatch (change_callback)
 				
 				--add to spells with the same name cache
 				same_name_spells_add (spellId)
 			end
-		end, 100, 20, "Add to Blacklist", nil, nil, nil, nil, nil, nil, DF:GetTemplate ("button", "OPTIONS_BUTTON_TEMPLATE"), DF:GetTemplate ("font", options.button_text_template))	
+		end, textEntryWidth, 20, "Add to Blacklist", nil, nil, nil, nil, nil, nil, DF:GetTemplate ("button", "OPTIONS_BUTTON_TEMPLATE"), DF:GetTemplate ("font", options.button_text_template))	
 	
 	
 	--track list
 		local buff_tracklist_label = self:CreateLabel (background_add_tracklist, texts.MANUAL_ADD_TRACKLIST_BUFF, DF:GetTemplate ("font", "OPTIONS_FONT_TEMPLATE"))
 		local debuff_tracklist_label = self:CreateLabel (background_add_tracklist, texts.MANUAL_ADD_TRACKLIST_DEBUFF, DF:GetTemplate ("font", "OPTIONS_FONT_TEMPLATE"))
 		
-		local buff_name_tracklist_entry = self:CreateTextEntry (background_add_tracklist, function()end, 200, 20, "AddBuffTracklistTextBox", _, _, options_dropdown_template)
+		local buff_name_tracklist_entry = self:CreateTextEntry (background_add_tracklist, function()end, textEntryWidth, 20, "AddBuffTracklistTextBox", _, _, options_dropdown_template)
 		buff_name_tracklist_entry:SetHook ("OnEditFocusGained", load_all_spells)
 		buff_name_tracklist_entry:SetJustifyH ("left")
 		buff_name_tracklist_entry.tooltip = "Enter the buff name using lower case letters."
 		f_auto.AddBuffTracklistTextBox = buff_name_tracklist_entry
 		
-		local debuff_name_tracklist_entry = self:CreateTextEntry (background_add_tracklist, function()end, 200, 20, "AddDebuffTracklistTextBox", _, _, options_dropdown_template)
+		local debuff_name_tracklist_entry = self:CreateTextEntry (background_add_tracklist, function()end, textEntryWidth, 20, "AddDebuffTracklistTextBox", _, _, options_dropdown_template)
 		debuff_name_tracklist_entry:SetHook ("OnEditFocusGained", load_all_spells)
 		debuff_name_tracklist_entry:SetJustifyH ("left")
 		debuff_name_tracklist_entry.tooltip = "Enter the debuff name using lower case letters."
@@ -470,14 +481,14 @@ function DF:CreateAuraConfigPanel (parent, name, db, change_callback, options, t
 				f.db.aura_tracker.debuff_tracked [spellId] = true
 				
 				--refresh the buff blacklist frame
-				_G [f_auto:GetName() .. "DebuffTracked"]:Refresh()
+				f.debuff_tracked:DoRefresh()
 				
 				DF:QuickDispatch (change_callback)
 				
 				--add to spells with the same name cache
 				same_name_spells_add (spellId)
 			end
-		end, 100, 20, "Add to Tracklist", nil, nil, nil, nil, nil, nil, DF:GetTemplate ("button", "OPTIONS_BUTTON_TEMPLATE"), DF:GetTemplate ("font", options.button_text_template))
+		end, textEntryWidth, 20, "Add to Tracklist", nil, nil, nil, nil, nil, nil, DF:GetTemplate ("button", "OPTIONS_BUTTON_TEMPLATE"), DF:GetTemplate ("font", options.button_text_template))
 	
 		local add_tracklist_buff_button = self:CreateButton (background_add_tracklist, function()
 			local text = buff_name_tracklist_entry.text
@@ -495,24 +506,24 @@ function DF:CreateAuraConfigPanel (parent, name, db, change_callback, options, t
 				--add the spellId to the blacklist
 				f.db.aura_tracker.buff_tracked [spellId] = true 
 				
-				--refresh the buff blacklist frame
-				_G [f_auto:GetName() .. "BuffTracked"]:Refresh()
-				
+				--refresh the buff tracklist frame
+				f.buff_tracked:DoRefresh()
+
+				--callback the addon
 				DF:QuickDispatch (change_callback)
 				
 				--add to spells with the same name cache
 				same_name_spells_add (spellId)
-			
 			end
 			
-		end, 100, 20, "Add to Tracklist", nil, nil, nil, nil, nil, nil, DF:GetTemplate ("button", "OPTIONS_BUTTON_TEMPLATE"), DF:GetTemplate ("font", options.button_text_template))
+		end, textEntryWidth, 20, "Add to Tracklist", nil, nil, nil, nil, nil, nil, DF:GetTemplate ("button", "OPTIONS_BUTTON_TEMPLATE"), DF:GetTemplate ("font", options.button_text_template))
 	
 	--anchors:
 		background_add_blacklist:SetPoint ("topleft", f_auto, "topleft", 0, y)
 		background_add_tracklist:SetPoint ("topleft", background_add_blacklist, "bottomleft", 0, -10)
 	
 		--debuff blacklist
-		debuff_name_blacklist_entry:SetPoint ("topleft", background_add_blacklist, "topleft", 4, -20)
+		debuff_name_blacklist_entry:SetPoint ("topleft", background_add_blacklist, "topleft", 5, -20)
 		debuff_blacklist_label:SetPoint ("bottomleft", debuff_name_blacklist_entry, "topleft", 0, 2)
 		add_blacklist_debuff_button:SetPoint ("topleft", debuff_name_blacklist_entry, "bottomleft", 0, -2)
 	
@@ -523,7 +534,7 @@ function DF:CreateAuraConfigPanel (parent, name, db, change_callback, options, t
 
 		
 		--debuff tracklist
-		debuff_name_tracklist_entry:SetPoint ("topleft", background_add_tracklist, "topleft", 4, -20)
+		debuff_name_tracklist_entry:SetPoint ("topleft", background_add_tracklist, "topleft", 5, -20)
 		debuff_tracklist_label:SetPoint ("bottomleft", debuff_name_tracklist_entry, "topleft", 0, 2)
 		add_tracklist_debuff_button:SetPoint ("topleft", debuff_name_tracklist_entry, "bottomleft", 0, -2)
 		
@@ -539,11 +550,11 @@ function DF:CreateAuraConfigPanel (parent, name, db, change_callback, options, t
 	local width, height, row_height = options.width, options.height, options.row_height
 
 	local autoTrackList_LineOnEnter = function (self, capsule, value) 
+	
+		value = value or self.SpellID
+		
 		local spellName = GetSpellInfo (value)
 		if (spellName) then
-			--GameTooltip:SetOwner (self, "ANCHOR_TOPLEFT", -40, 0); 
-			--GameTooltip:SetSpellByID(value); 
-			--GameTooltip:Show() 
 
 			local spellsWithSameName = db.aura_cache_by_name [lower (spellName)]
 			if (not spellsWithSameName) then
@@ -554,16 +565,13 @@ function DF:CreateAuraConfigPanel (parent, name, db, change_callback, options, t
 			if (spellsWithSameName) then
 				GameCooltip2:Preset (2)
 				GameCooltip2:SetOwner (self, "left", "right", 2, 0)
-				
-				GameCooltip2:AddLine ("List of Spells:")
-				GameCooltip2:AddIcon ("", 1, 1, 1, 20)
-				GameCooltip2:AddStatusBar (100, 1, .2, .2, .2, .5, false, false, "Details Flat")
+				GameCooltip2:SetOption ("TextSize", 10)
 				
 				for i, spellID in ipairs (spellsWithSameName) do
 					local spellName, _, spellIcon = GetSpellInfo (spellID)
 					if (spellName) then
-						GameCooltip2:AddLine (spellName)
-						GameCooltip2:AddIcon (spellIcon)
+						GameCooltip2:AddLine (spellName .. " (" .. spellID .. ")")
+						GameCooltip2:AddIcon (spellIcon, 1, 1, 14, 14, .1, .9, .1, .9)
 					end
 				end
 				
@@ -577,95 +585,140 @@ function DF:CreateAuraConfigPanel (parent, name, db, change_callback, options, t
 		GameCooltip2:Hide()
 	end
 	
-	--Debuffs on the black list
-		local debuff_ignored = self:CreateSimpleListBox (f_auto, "$parentDebuffIgnored", texts.DEBUFFS_IGNORED, "the list is empty", f.db.aura_tracker.debuff_banned, function (spellid)
-			--f.db.aura_tracker.debuff_banned [spellid] = nil; DF:QuickDispatch (change_callback);
-		end, 
-		{
-			icon = function(spellid) return select (3, GetSpellInfo (spellid)) end, 
-			text = function(spellid) return select (1, GetSpellInfo (spellid)) end,
-			height = height, 
-			row_height = row_height,
-			width = width, 
-			backdrop_color = {.8, .8, .8, 0.2},
-			panel_border_color = {.01, 0, 0, 1},
-			iconcoords = {.1, .9, .1, .9},
-			onenter = autoTrackList_LineOnEnter, 
-			onleave = autoTrackList_LineOnLeave,
-			show_x_button = true,
-			x_button_func = 	function (spellId)
-				f.db.aura_tracker.debuff_banned [spellId] = nil; DF:QuickDispatch (change_callback);
-			end,
-		})	
-
-	--Buffs on the black list
-		local buff_ignored = self:CreateSimpleListBox (f_auto, "$parentBuffIgnored", texts.BUFFS_IGNORED, "the list is empty", f.db.aura_tracker.buff_banned, 
-		function (spellid)
-			--f.db.aura_tracker.buff_banned [spellid] = nil; DF:QuickDispatch (change_callback);
-		end, 
-		{
-			icon = function(spellid) return select (3, GetSpellInfo (spellid)) end,
-			text = function(spellid) return select (1, GetSpellInfo (spellid)) end,
-			height = height,
-			row_height = row_height,
-			width = width,
-			backdrop_color = {.8, .8, .8, 0.2},
-			panel_border_color = {.02, 0, 0, 1},
-			iconcoords = {.1, .9, .1, .9},
-			onenter = autoTrackList_LineOnEnter, 
-			onleave = autoTrackList_LineOnLeave,
-			show_x_button = true,
-			x_button_func = 	function (spellId)
-				f.db.aura_tracker.buff_banned [spellId] = nil; DF:QuickDispatch (change_callback);
-			end,
-		})
-
-	--Debuffs on the track list
-		local debuff_tracked = self:CreateSimpleListBox (f_auto, "$parentDebuffTracked", texts.DEBUFFS_TRACKED, "the list is empty", f.db.aura_tracker.debuff_tracked, function (spellid)
-			--f.db.aura_tracker.debuff_tracked [spellid] = nil; DF:QuickDispatch (change_callback);
-		end, 
-		{
-			icon = function(spellid) return select (3, GetSpellInfo (spellid)) end, 
-			text = function(spellid) return select (1, GetSpellInfo (spellid)) end,
-			height = height, 
-			row_height = row_height,
-			width = width, 
-			backdrop_color = {.8, .8, .8, 0.2},
-			panel_border_color = {0, .02, 0, 1},
-			iconcoords = {.1, .9, .1, .9},
-			onenter = autoTrackList_LineOnEnter, 
-			onleave = autoTrackList_LineOnLeave,
-			show_x_button = true,
-			x_button_func = 	function (spellId)
-				f.db.aura_tracker.debuff_tracked [spellId] = nil; DF:QuickDispatch (change_callback);
-			end,
-		})
+	local scrollWidth = 208
+	local scrollHeight = 343
+	local lineAmount = 18
+	local lineHeight = 18
+	local backdropColor = {.8, .8, .8, 0.2}
+	local backdropColor_OnEnter = {.8, .8, .8, 0.4}
+	
+	local createAuraScrollBox = function (parent, name, member, title, db, removeFunc)
 		
-	--Buffs on the track list
-		local buff_tracked = self:CreateSimpleListBox (f_auto, "$parentBuffTracked", texts.BUFFS_TRACKED, "the list is empty", f.db.aura_tracker.buff_tracked, function (spellid)
-			--f.db.aura_tracker.buff_tracked [spellid] = nil; DF:QuickDispatch (change_callback);
-		end, 
-		{
-			icon = function(spellid) return select (3, GetSpellInfo (spellid)) end, 
-			text = function(spellid) return select (1, GetSpellInfo (spellid)) end,
-			height = height, 
-			row_height = row_height,
-			width = width, 
-			backdrop_color = {.8, .8, .8, 0.2},
-			panel_border_color = {0, .01, 0, 1},
-			iconcoords = {.1, .9, .1, .9},
-			onenter = autoTrackList_LineOnEnter, 
-			onleave = autoTrackList_LineOnLeave,
-			show_x_button = true,
-			x_button_func = 	function (spellId)
-				f.db.aura_tracker.buff_tracked [spellId] = nil; DF:QuickDispatch (change_callback);
-			end,
-		})
+		local updateFunc = function (self, data, offset, totalLines)
+			for i = 1, totalLines do
+				local index = i + offset
+				local auraTable = data [index]
+				if (auraTable) then
+					local line = self:GetLine (i)
+					local spellID, spellName, spellIcon = unpack (auraTable)
+					
+					line.SpellID = spellID
+					line.SpellName = spellName
+					line.SpellIcon = spellIcon
+					
+					line.name:SetText (spellName)
+					line.icon:SetTexture (spellIcon)
+					line.icon:SetTexCoord (.1, .9, .1, .9)
+				end
+			end
+		end
+		
+		local lineOnEnter = function (self)
+			self:SetBackdropColor (unpack (backdropColor_OnEnter))
 
+			--GameTooltip:SetOwner (self, "ANCHOR_CURSOR")
+			--GameTooltip:SetSpellByID (self.SpellID)
+			--GameTooltip:AddLine (" ")
+			--GameTooltip:Show()
+		end
+		
+		local lineOnLeave = function (self)
+			self:SetBackdropColor (unpack (backdropColor))
+			--GameTooltip:Hide()
+		end
+		
+		local onRemoveClick = function (self)
+			local spellID = self:GetParent().SpellID
+			db [spellID] = nil
+			parent [member]:DoRefresh()
+		end
+		
+		local createLineFunc = function (self, index)
+			local line = CreateFrame ("button", "$parentLine" .. index, self)
+			line:SetPoint ("topleft", self, "topleft", 1, - ((index - 1) * (lineHeight + 1)) - 1)
+			line:SetSize (scrollWidth - 2, lineHeight)
+			line:SetScript ("OnEnter", autoTrackList_LineOnEnter)
+			line:HookScript ("OnEnter", lineOnEnter)
+			line:SetScript ("OnLeave", autoTrackList_LineOnLeave)
+			line:HookScript ("OnLeave", lineOnLeave)
+			
+			line:SetBackdrop ({bgFile = [[Interface\Tooltips\UI-Tooltip-Background]], tileSize = 64, tile = true})
+			line:SetBackdropColor (unpack (backdropColor))
+			
+			local icon = line:CreateTexture ("$parentIcon", "overlay")
+			icon:SetSize (lineHeight - 2, lineHeight - 2)
+			
+			local name = line:CreateFontString ("$parentName", "overlay", "GameFontNormal")
+			DF:SetFontSize (name, 10)
+
+			local remove_button = CreateFrame ("button", "$parentRemoveButton", line, "UIPanelCloseButton")
+			remove_button:SetSize (16, 16)
+			remove_button:SetScript ("OnClick", onRemoveClick)
+			remove_button:SetPoint ("topright", line, "topright")
+			remove_button:GetNormalTexture():SetDesaturated (true)
+			
+			icon:SetPoint ("left", line, "left", 2, 0)
+			name:SetPoint ("left", icon, "right", 3, 0)
+			
+			line.icon = icon
+			line.name = name
+			line.removebutton = remove_button
+			
+			return line
+		end
+
+		local scroll = DF:CreateScrollBox (parent, name, updateFunc, db, scrollWidth, scrollHeight, lineAmount, lineHeight)
+		DF:ReskinSlider (scroll)
+		parent [member] = scroll
+		scroll.OriginalData = db
+		
+		function scroll:DoRefresh()
+			local t = {}
+			for spellID, _ in pairs (scroll.OriginalData) do
+				local spellName, _, spellIcon = GetSpellInfo (spellID)
+				if (spellName) then
+					local lowerSpellName = spellName:lower()
+					tinsert (t, {spellID, spellName, spellIcon, lowerSpellName})
+				end
+			end
+			
+			table.sort (t, function (t1, t2) return t1[4] < t2[4] end)
+			
+			self:SetData (t)
+			self:Refresh()
+		end
+		
+		function scroll:DoSetData (newDB)
+			self:SetData (newDB)
+			scroll.OriginalData = newDB
+			self:DoRefresh()
+		end
+		
+		local title = DF:CreateLabel (parent, title)
+		title.textcolor = "silver"
+		title:SetPoint ("bottomleft", scroll, "topleft", 0, 2)
+
+		for i = 1, lineAmount do
+			scroll:CreateLine (createLineFunc)
+		end
+		
+		scroll:DoRefresh()
+		return scroll
+	end
+	
+	local buff_tracked = createAuraScrollBox (f_auto, "$parentBuffTracked", "BuffTrackerScroll", f.LocTexts.BUFFS_TRACKED, f.db.aura_tracker.buff_tracked, function()end)
+	local debuff_tracked = createAuraScrollBox (f_auto, "$parentDebuffTracked", "DebuffTrackerScroll", f.LocTexts.DEBUFFS_TRACKED, f.db.aura_tracker.debuff_tracked, function()end)
+	
+	local buff_ignored = createAuraScrollBox (f_auto, "$parentBuffIgnored", "BuffIgnoredScroll", f.LocTexts.BUFFS_IGNORED, f.db.aura_tracker.buff_banned, function()end)
+	local debuff_ignored = createAuraScrollBox (f_auto, "$parentDebuffIgnored", "DebuffIgnoredScroll", f.LocTexts.DEBUFFS_IGNORED, f.db.aura_tracker.debuff_banned, function()end)
+	
+	local xLocation = 140
+	scrollWidth = scrollWidth + 20
+	
 	debuff_ignored:SetPoint ("topleft", f_auto, "topleft", 0 + xLocation, y)
-	buff_ignored:SetPoint ("topleft", f_auto, "topleft", 8 + width + xLocation, y)
-	debuff_tracked:SetPoint ("topleft", f_auto, "topleft", 16 + (width*2) + xLocation, y)
-	buff_tracked:SetPoint ("topleft", f_auto, "topleft", 24 + (width*3) + xLocation, y)
+	buff_ignored:SetPoint ("topleft", f_auto, "topleft", 8 + scrollWidth + xLocation, y)
+	debuff_tracked:SetPoint ("topleft", f_auto, "topleft", 16 + (scrollWidth * 2) + xLocation, y)
+	buff_tracked:SetPoint ("topleft", f_auto, "topleft", 24 + (scrollWidth * 3) + xLocation, y)
 
 	f.buff_ignored = buff_ignored
 	f.debuff_ignored = debuff_ignored
@@ -684,10 +737,10 @@ function DF:CreateAuraConfigPanel (parent, name, db, change_callback, options, t
 			end
 		end
 		
-		buff_tracked:Refresh()
-		debuff_tracked:Refresh()
-		buff_ignored:Refresh()		
-		debuff_ignored:Refresh()
+		buff_tracked:DoRefresh()
+		debuff_tracked:DoRefresh()
+		buff_ignored:DoRefresh()		
+		debuff_ignored:DoRefresh()
 		
 	end)
 	f_auto:SetScript ("OnHide", function()

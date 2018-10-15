@@ -137,6 +137,9 @@ end
 
 local function UpdateIcon(frame, texture, duration, expiration, stacks, r, g, b)
 	if frame and texture and expiration then
+		-- Expiration
+		if duration == 0 then expiration = 0 end
+
 		-- Icon
 		frame.Icon:SetTexture(texture)
 
@@ -151,14 +154,13 @@ local function UpdateIcon(frame, texture, duration, expiration, stacks, r, g, b)
 			frame.Border:Hide()
 		else frame.BorderHighlight:Hide(); frame.Border:Show()	end
 
-		-- [[ Cooldown
+		-- [[ Cooldown Effect
 		if duration and duration > 0 and expiration and expiration > 0 then
 			SetCooldown(frame.Cooldown, expiration-duration, duration+.25)
-			--frame.Cooldown:SetCooldown(expiration-duration, duration+.25)
 		end
 		--]]
 
-		-- Expiration
+		--if expiration 
 		UpdateWidgetTime(frame, expiration)
 		frame:Show()
 		if expiration ~= 0 then PolledHideIn(frame, expiration) end
@@ -204,14 +206,13 @@ local function UpdateIconGrid(frame, unitid)
 			local aura = {}
 
 			do
-				-- local name, _, icon, stacks, auraType, duration, expiration, caster, _, _, spellid = UnitAura(unitid, auraIndex, auraFilter)		-- UnitaAura pre-8.0
+				--[[ 8.0
+				name, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, nameplateShowPersonal, spellId, canApplyAura, 
+					isBossDebuff, isCastByPlayer, nameplateShowAll, timeMod, ...
+				    			= UnitAura("unit", index[, "filter"])
+				--]]
 
---[[ 8.0
-name, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, nameplateShowPersonal, spellId, canApplyAura, isBossDebuff, isCastByPlayer, nameplateShowAll, timeMod, ...
-    = UnitAura("unit", index[, "filter"])
-
---]]
-				local name, icon, stacks, auraType, duration, expiration, caster, purgable, personal, spellid = UnitAura(unitid, auraIndex, auraFilter)
+				local name, icon, stacks, auraType, duration, expiration, caster, stealable, personal, spellid, canApply, bossdebuff = UnitAura(unitid, auraIndex, auraFilter)
 
 
 				aura.name = name
@@ -220,21 +221,27 @@ name, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrP
 				aura.type = auraType
 				aura.effect = auraFilter
 				aura.duration = duration
+				aura.stealable = stealable
+				aura.bossdebuff = bossdebuff
 				aura.reaction = unitReaction
                 aura.isNPC = unitIsNPC
-                aura.isStealable = purgable
 				aura.expiration = expiration
 				aura.caster = caster
 				aura.spellid = spellid
 				aura.unit = unitid 		-- unitid of the plate
+
+				if TidyPlatesDebug then
+					if name == "Corruption" then print(UnitAura(unitid, auraIndex, auraFilter) ) end
+				end
 			end
 
-			-- Gnaw , false, icon, 0 stacks, nil type, duration 1, expiration 8850.436, caster pet, false, false, 91800
+
 
 			-- Auras are evaluated by an external function
 			-- Pre-filtering before the icon grid is populated
 			if aura.name then
 				local show, priority, r, g, b = AuraFilterFunction(aura)
+					--print(aura.name, show, priority, r, g, b)
 				--print(aura.name, show, priority)
 				--show = true
 				-- Store Order/Priority

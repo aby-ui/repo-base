@@ -487,6 +487,8 @@ local BarMetaFunctions = _G [DF.GlobalWidgetControlNames ["normal_bar"]]
 			return
 		end
 		
+		frame.MyObject.background:Hide()
+		
 		if (frame.MyObject.have_tooltip) then 
 			GameCooltip2:ShowMe (false)
 		end

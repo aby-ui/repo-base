@@ -131,6 +131,7 @@ do
 				summary_scale = 1,
 				summary_showbyzone = false,
 				summary_anchor = "left",
+				summary_widgets_per_row = 7,
 			},
 			
 			disable_world_map_widgets = true,
@@ -147,7 +148,7 @@ do
 			
 			filter_always_show_faction_objectives = true,
 			filter_force_show_brokenshore = false, --deprecated at this point, but won't be removed since further expantion might need this back
-			sort_time_priority = 8,
+			sort_time_priority = 0,
 			force_sort_by_timeleft = false,
 			alpha_time_priority = true,
 			show_timeleft = false,

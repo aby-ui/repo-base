@@ -171,7 +171,9 @@ local function BuildHubPanel(panel)
 
 	panel.WidgetsDebuffStyle =  CreateQuickDropdown(objectName.."WidgetsDebuffStyle", "图标样式:", DebuffStyles, 1, AlignmentColumn, panel.WidgetsDebuffTrackList, 16)
 
-	panel.WidgetAuraTrackDispelFriendly = CreateQuickCheckbutton(objectName.."WidgetAuraTrackDispelFriendly", "包括在友好单位上的可驱散的Debuffs", AlignmentColumn, panel.WidgetsDebuffStyle, 16, 4)
+	panel.WidgetAuraTrackStealable = CreateQuickCheckbutton(objectName.."WidgetAuraTrackStealable", "（此项无效）包括敌对单位上的可驱散BUFF", AlignmentColumn, panel.WidgetsDebuffStyle, 16, 4)
+	
+	panel.WidgetAuraTrackDispelFriendly = CreateQuickCheckbutton(objectName.."WidgetAuraTrackDispelFriendly", "（此项无效）包括在友好单位上的可驱散的Debuffs", AlignmentColumn, panel.WidgetAuraTrackStealable, 16, 4)
 	panel.WidgetAuraTrackCurse = CreateQuickCheckbutton(objectName.."WidgetAuraTrackCurse", "诅咒", AlignmentColumn, panel.WidgetAuraTrackDispelFriendly, 16+16, -2)
 	panel.WidgetAuraTrackDisease = CreateQuickCheckbutton(objectName.."WidgetAuraTrackDisease", "疾病", AlignmentColumn, panel.WidgetAuraTrackCurse, 16+16, -2)
 	panel.WidgetAuraTrackMagic = CreateQuickCheckbutton(objectName.."WidgetAuraTrackMagic", "魔法", AlignmentColumn, panel.WidgetAuraTrackDisease, 16+16, -2)
@@ -522,7 +524,8 @@ end
 
 function ShowTidyPlatesHubPanel()
     if CreateOptionsPanels then CreateOptionsPanels() CreateOptionsPanels = nil end
-	local profile = TidyPlatesOptions.ActiveProfile
+	local profile = TidyPlates.GetProfile()
+
 	if profile == "Tank" then
 		ShowTidyPlatesHubTankPanel()
 	elseif profile == "Healer" then

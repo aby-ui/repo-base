@@ -35,9 +35,25 @@ local function SetValue(self, value)
 	if value >= self.MinVal and value <= self.MaxVal then self.Value = value end; 
 	UpdateBar(self) 
 end
+
+local function SetTail(self, value) 
+	--if value >= self.MinVal and value <= self.MaxVal then self.Value = value end; 
+	UpdateBar(self) 
+end
 	
-local function SetStatusBarTexture(self, texture) self.Bar:SetTexture(texture) end
-local function SetStatusBarColor(self, r, g, b, a) self.Bar:SetVertexColor(r,g,b,a) end
+local function SetStatusBarTexture(self, texture) 
+	self.Bar:SetTexture(texture) 
+	--self.Tail:SetTexture(texture) 
+end
+
+local function SetStatusBarColor(self, r, g, b, a) 
+	self.Bar:SetVertexColor(r,g,b,a) 
+end
+
+local function SetTailColor(self, r, g, b, a) 
+	self.Bar:SetVertexColor(r,g,b,a) 
+end
+
 local function SetStatusBarGradient(self, r1, g1, b1, a1, r2, g2, b2, a2) self.Bar:SetGradientAlpha(self.Orientation, r1, g1, b1, a1, r2, g2, b2, a2) end
 
 --[[
@@ -114,6 +130,7 @@ function CreateTidyPlatesStatusbar(parent)
 	frame.Value, frame.MinVal, frame.MaxVal, frame.Orientation = 1, 0, 1, "HORIZONTAL"
 	frame.Left, frame.Right, frame.Top, frame.Bottom = 0, 1, 0, 1
 	frame.Bar = frame:CreateTexture(nil, "BORDER")
+	--frame.Tail = frame:CreateTexture(nil, "BORDER")		-- Added for Absorbs
 	frame.Backdrop = frame:CreateTexture(nil, "BACKGROUND")
 	frame.Backdrop:SetAllPoints(frame)
         

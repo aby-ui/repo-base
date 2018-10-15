@@ -333,7 +333,7 @@ function WorldQuestTracker.UpdateBorder (self, rarity, worldQuestType, mapID, is
 			if (worldQuestType == LE_QUEST_TAG_TYPE_PVP) then
 				self.commonBorder:SetVertexColor (1, .7, .2)
 				self.commonBorder:SetAlpha (0.45)
-				self:SetBackdropBorderColor (1, .7, .2, 1)
+				self:SetBackdropBorderColor (1, .2, .2, 1)
 				
 			elseif (worldQuestType == LE_QUEST_TAG_TYPE_PET_BATTLE) then
 				self.commonBorder:SetVertexColor (.4, 1, .4)
@@ -372,6 +372,13 @@ function WorldQuestTracker.UpdateBorder (self, rarity, worldQuestType, mapID, is
 			
 		elseif (worldQuestType == LE_QUEST_TAG_TYPE_INVASION) then
 			self.invasionBorder:Show()
+			
+			if (UnitFactionGroup("player") == "Alliance") then
+				self.invasionBorder:SetTexture ([[Interface\AddOns\WorldQuestTracker\media\border_alliance]])
+				
+			elseif (UnitFactionGroup("player") == "Horde") then
+				self.invasionBorder:SetTexture ([[Interface\AddOns\WorldQuestTracker\media\border_horde]])
+			end
 			
 		end
 

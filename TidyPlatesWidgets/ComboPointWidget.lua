@@ -3,11 +3,9 @@
 -- Combo Point Widget
 ------------------------------
 
---[[
 
-	- Proc Widget
+-- CombatIcons.tga
 
---]]
 local comboWidgetPath = "Interface\\Addons\\TidyPlatesWidgets\\ComboWidget\\"
 local artpath = "Interface\\Addons\\TidyPlatesWidgets\\ComboWidget\\"
 local artfile = artpath.."RogueLegion.tga"
@@ -15,6 +13,7 @@ local grid = .0625
 
 local WidgetList = {}
 
+local CombatWidgetFrame
 
 
 -- Placeholder for function
@@ -29,6 +28,8 @@ local function GetComboPointTarget()
 	end
 end
 
+
+
 local function GetChiTarget()
 	if UnitCanAttack("player", "target") then
 
@@ -41,6 +42,17 @@ local function GetChiTarget()
 
 	end
 end
+
+
+
+local function ConfigDruid()
+	-- Set Power Type
+	-- Set Power function
+	-- Set Power Max / Marker config
+
+	-- update on energy max?
+end
+
 
 
 
@@ -59,103 +71,62 @@ end
 
 
 
+
 -- Update Graphics
+local function UpdateCombatWidget()
+
+	if CombatWidgetFrame.nameplateUnitID and UnitIsUnit("target", CombatWidgetFrame.nameplateUnitID ) then
+
+		local points, maxPoints = GetResourceOnTarget()
+
+
+		if points and points > 0 then
+
+			-- SetTexCoord:  First two values define the range of the Horizontal
+			if maxPoints == 6 then
+				CombatWidgetFrame.Icon:SetTexCoord(0, 1, grid*(points+9), grid *(points+10))
+			else
+				CombatWidgetFrame.Icon:SetTexCoord(0, 1, grid*(points-1), grid *(points))
+			end
+
+			CombatWidgetFrame:Show()
+
+			return
+		end
+
+	end
+
+	CombatWidgetFrame:Hide()
+end
+
+
+
 local function UpdateWidgetFrame(frame)
-	local points, maxPoints = GetResourceOnTarget()
-
-	if points and points > 0 then
-		-- At some point, custom art will be made for each class.  Hopefully!
-		--UpdateWidgetArt(frame)
-		--frame.Icon:SetTexture(comboWidgetPath..tostring(points))
-
-		-- SetTexCoord:  First two values define the range of the Horizontal
-		if maxPoints == 6 then
-			frame.Icon:SetTexCoord(0, 1, grid*(points+9), grid *(points+10))
-		else
-			frame.Icon:SetTexCoord(0, 1, grid*(points-1), grid *(points))
-		end
-
-		frame:Show()
-
-		return
-	end
-
-	frame:_Hide()
+	-- Not needed, I hope
 end
 
--- Context
-local function UpdateWidgetContext(frame, plate, unit)
-	local guid = unit.guid
-
-	-- Add to Widget List
-	if guid then
-		if frame.guid then WidgetList[frame.guid] = nil end
-		frame.guid = guid
-		WidgetList[guid] = frame
-	end
-
-	-- Update Widget
-	if UnitGUID("target") == guid then
-		UpdateWidgetFrame(frame)
-	else
-		frame:_Hide()
-	end
-end
-
-local function ClearWidgetContext(frame)
-	local guid = frame.guid
-	if guid then
-		WidgetList[guid] = nil
-		frame.guid = nil
-	end
-end
-
--- Watcher Frame
-local WatcherFrame = CreateFrame("Frame", nil, WorldFrame )
-local isEnabled = false
-
---[[
-WatcherFrame:RegisterEvent("UNIT_COMBO_POINTS")
-WatcherFrame:RegisterEvent("UNIT_POWER")
-WatcherFrame:RegisterEvent("UNIT_DISPLAYPOWER")
-WatcherFrame:RegisterEvent("UNIT_AURA")
-WatcherFrame:RegisterEvent("UNIT_FLAGS")
---]]
-
--- 8.0
-
-WatcherFrame:RegisterEvent("PLAYER_TARGET_CHANGED")
-WatcherFrame:RegisterEvent("RUNE_POWER_UPDATE")
---WatcherFrame:RegisterEvent("UNIT_POWER_FREQUENT")
-WatcherFrame:RegisterEvent("UNIT_MAXPOWER")
-WatcherFrame:RegisterEvent("UNIT_POWER_UPDATE")
-WatcherFrame:RegisterEvent("UNIT_DISPLAYPOWER")
-WatcherFrame:RegisterEvent("UNIT_AURA")
-WatcherFrame:RegisterEvent("UNIT_FLAGS")
 
 
+local function CreateCombatWidget(parent)
 
-local function WatcherFrameHandler(frame, event, unitid)
-		local guid = UnitGUID("target")
-		if UnitExists("target") then
-			local widget = WidgetList[guid]
-			if widget then UpdateWidgetFrame(widget) end				-- To update all, use: for guid, widget in pairs(WidgetList) do UpdateWidgetFrame(widget) end
-		end
-end
+	--[[
 
-local function EnableWatcherFrame(arg)
-	if arg then
-		WatcherFrame:SetScript("OnEvent", WatcherFrameHandler); isEnabled = true
-	else WatcherFrame:SetScript("OnEvent", nil); isEnabled = false end
-end
+	* Independent dots
+	* 1-6
+	* Each dot has 4 conditions:
+		- Empty
+		- Active
+		- Super-charged
+		- Expiring / Charging
 
--- Widget Creation
-local function CreateWidgetFrame(parent)
+	--]]
+
+
 	-- Required Widget Code
 	local frame = CreateFrame("Frame", nil, parent)
 	frame:Hide()
 
-	-- Custom Code
+	frame:SetPoint("CENTER", parent, "CENTER")
 	frame:SetHeight(32)
 	frame:SetWidth(64)
 
@@ -165,18 +136,94 @@ local function CreateWidgetFrame(parent)
 	frame.Icon:SetWidth(64)
 
 	frame.Icon:SetTexture(artfile)
-	--frame.Icon:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", -2, -2)
-	--frame.Icon:SetPoint("TOPRIGHT", frame, "TOPRIGHT", 2, 2)
 
-	-- End Custom Code
+	return frame
+end
+
+
+
+local function ClearWidgetContext(frame)
+	--print("Clearing Context")
+	CombatWidgetFrame:SetParent(WorldFrame)
+	CombatWidgetFrame.nameplateUnitID = nil
+	CombatWidgetFrame:Hide()
+end
+
+
+
+-- Context
+local function UpdateWidgetContext(frame, unit)
+
+	-- Reanchor & Update Widget
+	if UnitIsUnit("target", unit.unitid) then
+		--print("Anchoring to", unit.name, unit.unitid)
+
+		--CombatWidgetFrame:SetParent(frame)
+		CombatWidgetFrame:SetParent(WorldFrame)
+		CombatWidgetFrame:SetPoint("CENTER", frame, "CENTER")
+
+		CombatWidgetFrame.nameplateUnitID = unit.unitid
+		UpdateCombatWidget()
+	end
+end
+
+
+-- Watcher Frame
+local WatcherFrame = CreateFrame("Frame", nil, WorldFrame )
+local isEnabled = false
+
+
+
+local function EnableWatcherFrame(arg)
+	if arg then
+		CombatWidgetFrame = CreateCombatWidget(WorldFrame)
+		CombatWidgetFrame:RegisterEvent("PLAYER_TARGET_CHANGED")
+		CombatWidgetFrame:RegisterEvent("RUNE_POWER_UPDATE")
+		CombatWidgetFrame:RegisterEvent("UNIT_POWER_FREQUENT")
+		CombatWidgetFrame:RegisterEvent("UNIT_MAXPOWER")
+		CombatWidgetFrame:RegisterEvent("UNIT_POWER_UPDATE")
+		CombatWidgetFrame:RegisterEvent("UNIT_DISPLAYPOWER")
+		CombatWidgetFrame:RegisterEvent("UNIT_AURA")
+		CombatWidgetFrame:RegisterEvent("UNIT_FLAGS")
+
+
+		CombatWidgetFrame:SetScript("OnEvent", UpdateCombatWidget)
+		isEnabled = true
+	else 
+		CombatWidgetFrame:SetScript("OnEvent", nil)
+		isEnabled = false 
+	end
+end
+
+
+
+
+-----------------------
+-- Widget Creation
+-----------------------
+
+local function CreateWidgetCarrier(parent)
+	-- Required Widget Code
+	local frame = CreateFrame("Frame", nil, parent)
+	--frame:Hide()
+
+	frame:SetHeight(32)
+	frame:SetWidth(64)
+
 
 	-- Required Widget Code
 	frame.UpdateContext = UpdateWidgetContext
 	frame.Update = UpdateWidgetFrame
-	frame._Hide = frame.Hide
-	frame.Hide = function() ClearWidgetContext(frame); frame:_Hide() end
+	--frame._Hide = frame.Hide
+	--frame.Hide = function() ClearWidgetContext(frame); frame:_Hide() end
+
 	if not isEnabled then EnableWatcherFrame(true) end
+
 	return frame
 end
 
-TidyPlatesWidgets.CreateComboPointWidget = CreateWidgetFrame
+
+
+
+TidyPlatesWidgets.CreateComboPointWidget = CreateWidgetCarrier
+

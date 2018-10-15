@@ -223,6 +223,7 @@ TidyPlatesHubDefaults = {
 	WidgetAuraTrackDisease = true,
 	WidgetAuraTrackMagic = true,
 	WidgetAuraTrackPoison = true,
+	WidgetAuraTrackStealable = false,
 
 	-- Frame
 	---------------------------------------

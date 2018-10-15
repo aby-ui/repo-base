@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2166, "DBM-Uldir", nil, 1031)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17974 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 17983 $"):sub(12, -3))
 mod:SetCreatureID(134442)--135016 Plague Amalgam
 mod:SetEncounterID(2134)
 mod:SetZone()
@@ -152,6 +152,7 @@ do
 		for i=1, 4 do
 			if vectorTargets[i] then
 				local name = vectorTargets[i]
+				DBM:Debug("Vector "..i.." on "..name, 3)
 				local uId = DBM:GetRaidUnitId(name)
 				if uId then--Failsafe
 					local _, _, _, _, _, expireTime = DBM:UnitDebuff(uId, 265129)

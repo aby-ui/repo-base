@@ -3810,11 +3810,11 @@ function DF:CreateTabContainer (parent, title, frame_name, frame_list, options_t
 		local right_click_to_back
 		if (i == 1) then
 			right_click_to_back = DF:CreateLabel (f, "right click to close", 10, "gray")
-			right_click_to_back:SetPoint ("bottomright", f, "bottomright", -1, 0)
+			right_click_to_back:SetPoint ("bottomright", f, "bottomright", -1, options_table.right_click_y or 0)
 			f.IsFrontPage = true
 		else
 			right_click_to_back = DF:CreateLabel (f, "right click to go back to main menu", 10, "gray")
-			right_click_to_back:SetPoint ("bottomright", f, "bottomright", -1, 0)
+			right_click_to_back:SetPoint ("bottomright", f, "bottomright", -1, options_table.right_click_y or 0)
 		end
 		
 		if (options_table.hide_click_label) then
@@ -5584,7 +5584,29 @@ function DF:CreateLoadFilterParser (callback)
 			if (DetailsFrameworkLoadConditionsPanel and DetailsFrameworkLoadConditionsPanel:IsShown()) then
 				DetailsFrameworkLoadConditionsPanel:Refresh()
 			end
+			
+			local unit = ...
+			if (not unit or not UnitIsUnit ("player", unit)) then
+				return
+			end
+		
+		elseif (event == "PLAYER_ROLES_ASSIGNED") then
+			local assignedRole = UnitGroupRolesAssigned ("player")
+			if (assignedRole == "NONE") then
+				local spec = GetSpecialization()
+				if (spec) then
+					assignedRole = GetSpecializationRole (spec)
+				end
+			end
+			
+			if (DF.CurrentPlayerRole == assignedRole) then
+				return
+			end
+			
+			DF.CurrentPlayerRole = assignedRole
 		end
+		
+		--print ("Plater Script Update:", event, ...)
 		
 		DF:QuickDispatch (callback, f.EncounterIDCached)
 	end)
@@ -5661,6 +5683,12 @@ function DF:PassLoadFilters (loadTable, encounterID)
 	--role
 	if (loadTable.role.Enabled) then
 		local assignedRole = UnitGroupRolesAssigned ("player")
+		if (assignedRole == "NONE") then
+			local spec = GetSpecialization()
+			if (spec) then
+				assignedRole = GetSpecializationRole (spec)
+			end
+		end
 		if (not loadTable.role [assignedRole]) then
 			return false
 		end
@@ -5747,6 +5775,8 @@ function DF:OpenLoadConditionsPanel (optionsTable, callback, frameOptions)
 		f.AllRadioGroups = {}
 		f.AllTextEntries = {}
 		f.OptionsTable = optionsTable
+		
+		DF:ApplyStandardBackdrop (f, false, 1.1)
 		
 		local xStartAt = 10
 		local x2StartAt = 500
@@ -6170,7 +6200,7 @@ function DF:OpenLoadConditionsPanel (optionsTable, callback, frameOptions)
 			--refresh the radio group
 			for _, radioGroup in ipairs (DetailsFrameworkLoadConditionsPanel.AllRadioGroups) do
 				radioGroup:Refresh()
-				DetailsFrameworkLoadConditionsPanel.OnRadioStateChanged (radioGroup, optionsTable [radioGroup.DBKey])
+				DetailsFrameworkLoadConditionsPanel.OnRadioStateChanged (radioGroup, DetailsFrameworkLoadConditionsPanel.OptionsTable [radioGroup.DBKey])
 			end
 			
 			--refresh text entries

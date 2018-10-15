@@ -334,6 +334,7 @@ TidyPlatesHubFunctions.ApplyHubFunctions = ApplyHubFunctions
 ---------------------------------------------
 -- Old, will be removed
 ---------------------------------------------
+--[[
 local function UseDamageVariables()
 	local objectName = "HubPanelSettingsDamage"
 	LocalVars = TidyPlatesHubSettings[objectName] or CreateVariableSet(objectName)
@@ -354,8 +355,12 @@ local function UseTankVariables()
 	return LocalVars
 end
 
+
+
 TidyPlatesHubFunctions.UseDamageVariables = UseDamageVariables
 TidyPlatesHubFunctions.UseTankVariables = UseTankVariables
+
+--]]
 
 
 

@@ -5,7 +5,9 @@
 ---------------------------------------------------------------------------------------------------------------------
 local addonName, TidyPlatesInternal = ...
 local TidyPlatesCore = CreateFrame("Frame", nil, WorldFrame)
+
 TidyPlates = {}
+TidyPlatesDebug = false
 
 -- Local References
 local _
@@ -44,6 +46,11 @@ local RaidIconCoordinate = {
 ---------------------------------------------------------------------------------------------------------------------
 -- Core Function Declaration
 ---------------------------------------------------------------------------------------------------------------------
+
+
+-- Debug Mode
+local function TidyPlatesDebugMessage(...) if TidyPlatesDebug then print(...) end end
+
 -- Helpers
 local function ClearIndices(t) if t then for i,v in pairs(t) do t[i] = nil end return t end end
 local function IsPlateShown(plate) return plate and plate:IsShown() end
@@ -522,6 +529,11 @@ do
 			unit.class = ""
 			unit.type = "NPC"
 		end
+
+		-- If name is unavailable, queue for update.  
+		--if unit.name == UNKNOWNOBJECT then
+		--	plate.UpdateMe = true
+		--end
 	end
 
 
@@ -618,8 +630,13 @@ do
 
 	-- UpdateIndicator_Name:
 	function UpdateIndicator_Name()
-		visual.name:SetText(unit.name)
-		--unit.pvpname
+
+		-- Set Special-Case Regions
+		if activetheme.SetNameText then
+			local text, r, g, b, a = activetheme.SetNameText(unit)
+			visual.name:SetText( text or unit.name)
+			visual.name:SetTextColor(r or 1, g or 1, b or 1, a or 1)
+		else visual.name:SetText(unit.name) end
 
 		-- Name Color
 		if activetheme.SetNameColor then
@@ -936,12 +953,10 @@ do
 		local unitid = ...
 		local plate = GetNamePlateForUnit(unitid);
 
-		-- Personal Display
-		if UnitIsUnit("player", unitid) then
-			-- plate:GetChildren():_Show()
-		-- Normal Plates
-		else
-			plate:GetChildren():Hide()
+		-- We're not going to theme the personal unit bar
+		if plate and not UnitIsUnit("player", unitid) then
+			local childFrame = plate:GetChildren()
+			if childFrame then childFrame:Hide() end
 			OnShowNameplate(plate, unitid)
 		end
 

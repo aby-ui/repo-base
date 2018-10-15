@@ -381,7 +381,7 @@ local create_worldmap_square = function (mapName, index, parent)
 	highlight:SetTexture ([[Interface\Store\store-item-highlight]])
 
 	local new = button:CreateTexture (nil, "overlay")
-	new:SetPoint ("bottom", button, "top", 0, -5)
+	new:SetPoint ("bottom", button, "bottom", 0, -3)
 	new:SetSize (64*.45, 32*.45)
 	new:SetAlpha (.75)
 	new:SetTexture ([[Interface\AddOns\WorldQuestTracker\media\new]])
@@ -410,7 +410,7 @@ local create_worldmap_square = function (mapName, index, parent)
 	newFlash.Out:SetOrder (3)
 	newFlash.Out:SetFromAlpha (1)
 	newFlash.Out:SetToAlpha (0)
-	newFlash.Out:SetDuration (10)
+	newFlash.Out:SetDuration (2)
 	newFlash:SetScript ("OnPlay", function()
 		newFlashTexture:Show()
 	end)
@@ -794,6 +794,18 @@ function WorldQuestTracker.UpdateWorldWidget (widget, questID, numObjectives, ma
 		widget.questTypeBlip:SetTexCoord (6/32, 26/32, 5/32, 27/32)
 		widget.questTypeBlip:SetAlpha (.89)
 		
+	elseif (worldQuestType == LE_QUEST_TAG_TYPE_INVASION) then
+		if (UnitFactionGroup("player") == "Alliance") then
+			widget.questTypeBlip:SetTexture ([[Interface\COMMON\icon-alliance]])
+			widget.questTypeBlip:SetTexCoord (20/64, 46/64, 14/64, 48/64)
+		
+		elseif (UnitFactionGroup("player") == "Horde") then
+			widget.questTypeBlip:SetTexture ([[Interface\COMMON\icon-horde]])
+			widget.questTypeBlip:SetTexCoord (17/64, 49/64, 15/64, 47/64)
+		end
+
+		widget.questTypeBlip:Show()
+		widget.questTypeBlip:SetAlpha (1)
 	else
 		widget.questTypeBlip:Hide()
 	end
@@ -1022,6 +1034,7 @@ function WorldQuestTracker.UpdateWorldQuestsOnWorldMap (noCache, showFade, isQue
 							
 							if (sortByTimeLeft) then
 								order = abs (timeLeft - 10000)
+								
 							elseif (timePriority) then --timePriority j� multiplicado por 60
 								if (timeLeft < timePriority) then
 									order = abs (timeLeft - 1000)
@@ -1185,8 +1198,6 @@ function WorldQuestTracker.UpdateWorldQuestsOnWorldMap (noCache, showFade, isQue
 							
 								--need a clean up on this code
 
-
-							
 								if (showTimeLeftText) then
 									widget.timeLeftText:Show()
 									widget.timeLeftBackground:Show()
@@ -1196,7 +1207,7 @@ function WorldQuestTracker.UpdateWorldQuestsOnWorldMap (noCache, showFade, isQue
 									widget.timeLeftText:Hide()
 								end
 
-								tinsert (addToWorldMap, {questID, mapId, numObjectives, questCounter, title, quest [4], quest [5], quest [6], worldQuestType, isCriteria, isNew, timeLeft})
+								tinsert (addToWorldMap, {questID, mapId, numObjectives, questCounter, title, quest [4], quest [5], quest [6], worldQuestType, isCriteria, isNew, timeLeft, quest [2]})
 								questCounter = questCounter + 1
 								
 								--update the widget in the world map
