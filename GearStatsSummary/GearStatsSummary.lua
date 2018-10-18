@@ -497,7 +497,7 @@ function GearStatsSummary_ShowFrame(frame,target,tiptitle,anchorx,anchory,ready)
     tiptext = tiptext .. '\n\n' .. gem_enchant
 
     local showPercent = UnitLevel(unit) == MAX_PLAYER_LEVEL  --爆击有额外加成，急速和全能是对的，精通受GetMasteryEffect()比例影响
-    tiptext = tiptext.."\n\n"..(UnitIsUnit("player", unit) and RS_STATS_ONLY_FROM_GEARS or "(未计算熔炉+15神器装等)")
+    tiptext = tiptext.."\n\n"..(UnitIsUnit("player", unit) and RS_STATS_ONLY_FROM_GEARS or RS_STATS_ONLY_FROM_GEARS) --"(未计算熔炉+15神器装等)"
     for i=5, 8 do if stats_total[i] then tiptext = tiptext .. "\n|cffffd200"..U1ATTRSNAME[i]..":|r"..YELLOW_FONT_COLOR_CODE.." +"..format("%-6d",stats_total[i]).."|r" end end
     local greenTotal = 0
     for i=1, 4 do greenTotal = greenTotal + (stats_total[i] or 0) end

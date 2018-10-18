@@ -4,7 +4,7 @@
 ## Notes: Single window display for your guild bank
 ## RequiredDeps: Bagnon
 ## LoadOnDemand: 1
-## Version: 8.0.6
+## Version: 8.0.7
 
 main.lua
 components\components.xml

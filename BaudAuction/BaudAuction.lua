@@ -567,6 +567,9 @@ function BaudAuctionBrowseEntry_OnClick(self)
         BaudAuctionSelectItem();
         BaudAuctionUpdateBidButtons();
         BaudAuctionBrowseScrollBar_Update();
+        if IsAltKeyDown() and BrowseBuyoutButton:IsEnabled() then
+            BrowseBuyoutButton:Click()
+        end
     end
 end
 

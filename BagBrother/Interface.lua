@@ -101,8 +101,9 @@ function Interface:GetGuildTab(realm, guild, tab)
     name = tab.name,
     icon = tab.icon,
     viewable = tab.view,
-    canDeposit = tab.deposit,
-    numWithdrawals = tab.withdraw }
+    deposit = tab.deposit,
+    withdraw = tab.withdraw,
+    remaining = tab.remaining }
 end
 
 

@@ -113,13 +113,14 @@ function BagBrother:GUILDBANKBAGSLOTS_CHANGED()
 
 		for i = 1, GetNumGuildBankTabs() do
 			guild[i] = guild[i] or {}
-			guild[i].name, guild[i].icon, guild[i].view, guild[i].deposit, guild[i].withdraw = GetGuildBankTabInfo(i)
-			guild[i].info = nil
+			guild[i].name, guild[i].icon, guild[i].view = GetGuildBankTabInfo(i)
 		end
 
 		local tab = GetCurrentGuildBankTab()
 		local items = guild[tab]
 		if items then
+			items.deposit, items.withdraw, items.remaining = select(4, GetGuildBankTabInfo(tab))
+
 			for i = 1, 98 do
 				local link = GetGuildBankItemLink(tab, i)
 				local _, count = GetGuildBankItemInfo(tab, i)

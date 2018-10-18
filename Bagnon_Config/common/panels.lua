@@ -7,7 +7,7 @@ local CONFIG, Config = ...
 local ADDON, Addon = Config.addon, _G[Config.addon]
 local L = LibStub('AceLocale-3.0'):GetLocale(CONFIG)
 
-local PATRONS = {{title='Jenkins', people={'Robert Schultz'}},{},{title='Ambassador', people={'Fernando Bandeira','Gnare','Julia Frizzell','Michael Irving','Peter Palma'}}} -- generated patron list
+local PATRONS = {{title='Jenkins',people={'Robert Schultz','Gnare','Robert McCarthy'}},{},{title='Ambassador',people={'Fernando Bandeira','Michael Irving','Julia Frizzell','Peggy Webb','Lolari','Craig Falb'}}} -- generated patron list
 local SLOT_COLOR_TYPES = {}
 for id, name in pairs(Addon.BAG_TYPES) do
 	tinsert(SLOT_COLOR_TYPES, name)

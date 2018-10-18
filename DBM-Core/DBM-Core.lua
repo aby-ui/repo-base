@@ -41,9 +41,9 @@
 --  Globals/Default Options  --
 -------------------------------
 DBM = {
-	Revision = tonumber(("$Revision: 17985 $"):sub(12, -3)),
-	DisplayVersion = "8.0.13 alpha", -- the string that is shown as version
-	ReleaseRevision = 17957 -- the revision of the latest stable version that is available
+	Revision = tonumber(("$Revision: 18001 $"):sub(12, -3)),
+	DisplayVersion = "8.0.14 alpha", -- the string that is shown as version
+	ReleaseRevision = 17997 -- the revision of the latest stable version that is available
 }
 DBM.HighestRelease = DBM.ReleaseRevision --Updated if newer version is detected, used by update nags to reflect critical fixes user is missing on boss pulls
 
@@ -416,7 +416,7 @@ local delayedFunction
 local dataBroker
 local voiceSessionDisabled = false
 
-local fakeBWVersion, fakeBWHash = 111, "61869dc"
+local fakeBWVersion, fakeBWHash = 121, "36816da"
 local versionQueryString, versionResponseString = "Q^%d^%s", "V^%d^%s"
 
 local enableIcons = true -- set to false when a raid leader or a promoted player has a newer version of DBM
@@ -9985,7 +9985,7 @@ do
 			if announceType == "target" or announceType == "targetcount" or announceType == "close" or announceType == "reflect" then
 				catType = "announceother"
 			--Directly affects you
-			elseif announceType == "you" or announceType == "youcount" or announceType == "youpos" or announceType == "move" or announceType == "dodge" or announceType == "dodgecount" or announceType == "moveaway" or announceType == "moveawaycount" or announceType == "keepmove" or announceType == "stopmove" or announceType == "run" or announceType == "stack" or announceType == "moveto" or announceType == "soakpos" then
+			elseif announceType == "you" or announceType == "youcount" or announceType == "youpos" or announceType == "move" or announceType == "dodge" or announceType == "dodgecount" or announceType == "moveaway" or announceType == "moveawaycount" or announceType == "keepmove" or announceType == "stopmove" or announceType == "run" or announceType == "stack" or announceType == "moveto" or announceType == "soak" or announceType == "soakpos" then
 				catType = "announcepersonal"
 			--Things you have to do to fulfil your role
 			elseif announceType == "taunt" or announceType == "dispel" or announceType == "interrupt" or announceType == "interruptcount" or announceType == "switch" or announceType == "switchcount" then
@@ -10100,6 +10100,10 @@ do
 	
 	function bossModPrototype:NewSpecialWarningMoveTo(text, optionDefault, ...)
 		return newSpecialWarning(self, "moveto", text, nil, optionDefault, ...)
+	end
+	
+	function bossModPrototype:NewSpecialWarningSoak(text, optionDefault, ...)
+		return newSpecialWarning(self, "soak", text, nil, optionDefault, ...)
 	end
 	
 	function bossModPrototype:NewSpecialWarningJump(text, optionDefault, ...)
@@ -10345,7 +10349,7 @@ do
 			if self.type and not self.text then
 				msg = pformat(self.mod:GetLocalizedTimerText(self.type, self.spellId, self.name), ...)
 			else
-				if type(self.text) == "number" then
+				if type(self.text) == "number" then--spellId passed in timer text, it's a timer with short text
 					msg = pformat(self.mod:GetLocalizedTimerText(self.type, self.text, self.name), ...)
 				else
 					msg = pformat(self.text, ...)
@@ -10592,8 +10596,9 @@ do
 		spellName = spellName or tostring(spellId)
 		local timerTextValue
 		--If timertext is a number, accept it as a secondary auto translate spellid
-		if timerText and type(timerText) == "number" and DBM.Options.ShortTimerText then
+		if DBM.Options.ShortTimerText and timerText and type(timerText) == "number" then
 			timerTextValue = timerText
+			spellName = DBM:GetSpellInfo(timerText or 0)--Override Cached spell Name
 		else
 			timerTextValue = self.localization.timers[timerText]
 		end

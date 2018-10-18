@@ -5,7 +5,7 @@
 ## SavedVariables: Bagnon_Sets
 
 ## OptionalDeps: BagBrother, ItemRack, Wardrobe, WoWUnit
-## Version: 8.0.6
+## Version: 8.0.7
 
 main.lua
 

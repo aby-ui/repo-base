@@ -69,6 +69,10 @@ local utilityMounts = {
    	--{ id = 179244, passenger = 1 }, --代驾型机械路霸，只能自己坐
     { id = 214791, underwater = 1 },  --深海喂食者
     { id = 223018, underwater = 1 },  --深海水母
+    { id = 278979, underwater = 1 },  --拍浪水母
+    { id = 253711, underwater = 1 },  --池塘水母
+    { id = 228919, underwater = 1 },  --暗水鳐鱼
+    { id = 278803, underwater = 1 },  --无尽之海鳐鱼
     { id = 245725, passenger = 1 }, --奥格瑞玛拦截飞艇
     { id = 245723, passenger = 1 }, --暴风城逐天战机
 

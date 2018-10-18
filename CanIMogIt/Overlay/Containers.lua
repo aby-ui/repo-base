@@ -164,6 +164,25 @@ local function ContainersOverlayEvents(event, ...)
         not update on some characters. The After(0,...) call makes it update
         next frame instead.
     ]]
+
+    -- bags
+    for i=1,NUM_CONTAINER_FRAMES do
+        for j=1,MAX_CONTAINER_ITEMS do
+            local frame = _G["ContainerFrame"..i.."Item"..j]
+            if frame then
+                C_Timer.After(0, function() ContainerFrameItemButton_CIMIUpdateIcon(frame.CanIMogItOverlay) end)
+            end
+        end
+    end
+
+    -- main bank frame
+    for i=1,NUM_BANKGENERIC_SLOTS do
+        local frame = _G["BankFrameItem"..i]
+        if frame then
+            C_Timer.After(0, function() ContainerFrameItemButton_CIMIUpdateIcon(frame.CanIMogItOverlay) end)
+        end
+    end
+
     -- void storage frames
     if voidStorageLoaded then
         VoidStorageFrame_CIMIOnClick()

@@ -5,6 +5,7 @@
 
 local MODULE =  ...
 local ADDON, Addon = MODULE:match('[^_]+'), _G[MODULE:match('[^_]+')]
+local L = LibStub('AceLocale-3.0'):GetLocale(ADDON)
 local TabFrame = Addon:NewClass('GuildTabFrame', 'Frame', Addon.BagFrame)
 local Tab = Addon:NewClass('GuildTab', 'CheckButton', Addon.Bag)
 TabFrame.Button = Tab
@@ -30,9 +31,9 @@ function Tab:OnClick()
 		SetCurrentGuildBankTab(tab)
 		QueryGuildBankTab(tab)
 		self:SendSignal('GUILD_TAB_CHANGED')
+	else
+		self:SetChecked(nil)
 	end
-
-	self:SetChecked(viewable)
 end
 
 --[[ Update ]]--
@@ -65,12 +66,11 @@ function Tab:Update()
 end
 
 function Tab:UpdateStatus()
-	self:SetChecked(self:GetID() == GetCurrentGuildBankTab())
-
 	local info = self:GetInfo()
-	if self:GetChecked() and not info.cached then
-		self.Count:SetText(info.numWithdrawals >= 0 and info.numWithdrawals or '∞')
-	end
+	local remaining = info.remaining
+
+	self:SetChecked(self:GetID() == GetCurrentGuildBankTab())
+	self.Count:SetText(not info.viewable or not remaining and '' or remaining >= 0 and remaining or '∞')
 end
 
 function Tab:UpdateTooltip()
@@ -78,21 +78,21 @@ function Tab:UpdateTooltip()
 	if info.name then
 		GameTooltip:SetText(info.name)
 
-		local access
-		if not info.canDeposit and info.numWithdrawals == 0 then
-			access = RED_FONT_COLOR_CODE .. "(" .. GUILDBANK_TAB_LOCKED .. ")" .. FONT_COLOR_CODE_CLOSE;
-		elseif not info.canDeposit then
-			access = RED_FONT_COLOR_CODE .."(" .. GUILDBANK_TAB_WITHDRAW_ONLY .. ")" .. FONT_COLOR_CODE_CLOSE;
-		elseif info.numWithdrawals == 0 then
-			access = RED_FONT_COLOR_CODE .."(" .. GUILDBANK_TAB_DEPOSIT_ONLY .. ")" .. FONT_COLOR_CODE_CLOSE;
-		else
-			access = GREEN_FONT_COLOR_CODE .. "(" .. GUILDBANK_TAB_FULL_ACCESS .. ")" .. FONT_COLOR_CODE_CLOSE;
+		if not info.viewable or not info.deposit and info.withdraw == 0 then
+			GameTooltip:AddLine(GUILDBANK_TAB_LOCKED, RED_FONT_COLOR:GetRGB())
+		elseif not info.deposit and info.withdraw and info.withdraw > 0 then
+			GameTooltip:AddLine(GUILDBANK_TAB_WITHDRAW_ONLY, HIGHLIGHT_FONT_COLOR:GetRGB())
+		elseif info.withdraw == 0 then
+			GameTooltip:AddLine(GUILDBANK_TAB_DEPOSIT_ONLY, HIGHLIGHT_FONT_COLOR:GetRGB())
+		elseif info.withdraw then
+			GameTooltip:AddLine(GUILDBANK_TAB_FULL_ACCESS, GREEN_FONT_COLOR:GetRGB())
 		end
 
-		GameTooltip:AddLine(access)
-	else
-		GameTooltip:SetText('Unavailable')
-	end
+		local remaining = info.remaining
+		if info.viewable and remaining and remaining >= 0 then
+			GameTooltip:AddLine(L.WithdrawalsRemaining:format(remaining > 0 and remaining or remaining == 0 and NONE or UNLIMITED), 1,1,1)
+		end
 
-	GameTooltip:Show()
+		GameTooltip:Show()
+	end
 end

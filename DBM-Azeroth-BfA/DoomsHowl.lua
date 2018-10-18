@@ -7,7 +7,7 @@ end
 local mod	= DBM:NewMod(dungeonID, "DBM-Azeroth-BfA", nil, 1028)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17849 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 17986 $"):sub(12, -3))
 mod:SetCreatureID(creatureID)--Dooms Howl 138122, Lion's Roar 137374
 --mod:SetEncounterID(encounterID)
 mod:SetReCombatTime(20)
@@ -50,7 +50,6 @@ local timerSiegeUpCD				= mod:NewCDTimer(84.5, 271223, nil, nil, nil, 6)--84.5-8
 --Siege
 local timerSiegeUp					= mod:NewBuffActiveTimer(64, 271223, nil, nil, nil, 6)--64-66
 local timerDemoCannonCD				= mod:NewCDTimer(5.8, 271246, nil, false, nil, 5, nil, DBM_CORE_HEALER_ICON)
-
 
 mod:AddRangeFrameOption(8, 271192)
 mod:AddNamePlateOption("NPAuraOnSentry", 271783)
