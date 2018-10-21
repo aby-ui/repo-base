@@ -214,13 +214,9 @@ points[109] = { -- "Netherstorm"
 
 points[104] = { -- "ShadowmoonValley"
 	[37105820] = 12360, -- Wildhammer Stronghold
-	[61002820] = 12409, -- Altar of Sha'tar
-	[56305980] = 12409, -- Sanctum of the Stars
 }
 
-points[111] = { -- "ShattrathCity"
-	[28104900] = 12404, -- Aldor Rise
-	[56208180] = 12404, -- Scryer's Tier
+points[111] = { -- ShattrathCity"
 }
 
 points[108] = { -- "TerokkarForest"

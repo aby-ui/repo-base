@@ -448,7 +448,7 @@ local function updateFrame(v)
         filter = filter and "HARMFUL|RAID" or "HARMFUL"
     end
     while(n <= setting.iconnum and i<40) do
-        local name, icon, count, debuffType, duration, expires, caster, isStealable, _, spellID = UnitAura(v.unit, i, filter);
+        local name, icon, count, debuffType, duration, expires, caster, isStealable, _, spellID, canApplyAura, isBossDebuff = UnitAura(v.unit, i, filter);
         if (name) then
             if not showbuff or (duration and duration > 0 or setting.bufffilter) then  --ignore mount, world buff etc
                 if not GridBuffIcons.namefilter[name] and not GridBuffIcons.nameforce[name] then

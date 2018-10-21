@@ -101,22 +101,23 @@ local L = namespace.L 				--localization
 			"|cff0094c4Admins:|r Dejoblue, Kakjens" .. "|n" .. 
 			"|cff0094c4Contributers:|r Dejoblue, Kakjens, loudsoul" .. "|n" .. 
 			"|cff0094c4Localization Translators:|r" .. "|n" ..
-			"|cff0094c4    French:|r Medaleux, sv002, Darkcraft92," .. "|n" .. 							--(French)
-			"        Ymvej, Druidzor, napnapnapnapnap" .. "|n" ..														--(French) Continued French list
+			"|cff0094c4    French:|r Medaleux, sv002, Darkcraft92," .. "|n" .. 						--(French)
+			"        Ymvej, Druidzor, napnapnapnapnap" .. "|n" ..										--(French) Continued French list
 			"|cff0094c4    German:|r pas06, flow0284, Markurion," .. "|n" .. 						--(German)
-			"        Branduril, NekoNyaaaa" .. "|n" ..																		--(German) Continued German list
-			"|cff0094c4    Portuguese:|r Othra, Rhyrol" .. "|n" ..												--(Portuguese)
-			"|cff0094c4    Spanish:|r Tholagar, MrUrkaz, Krounted," .. "|n" ..									--(Spanish)
-			"        Valhallanem" .. "|n" ..																	--(Spanish) Continued Spanish list
-			"|cff0094c4    Korean:|r PositiveMind, yuk6196, netaras," .. "|n" ..									--(Korean)
-			"        next96" .. "|n" ..																		--(Traditional Chinese) Continued Traditional Chinese list
-			"|cff0094c4    Russian:|r Nappsel, Wishko, berufegoru," .. "|n" ..							--(Russian)
-			"        n1mrorox" .. "|n" ..																	--(Russian) Continued Russian list
-			"|cff0094c4    Simplified Chinese:|r C_Reus, alvisjiang," .. "|n" ..						--(Simplified Chinese)
-			"        y123ao6" .. "|n" ..																	--(Simplified Chinese) Continued Simplified Chinese list
-			"|cff0094c4    Traditional Chinese:|r BNSSNB, killsophia," .. "|n" ..						--(Traditional Chinese)
-			"        konraddo, y123ao6" .. "|n" ..																		--(Traditional Chinese) Continued Traditional Chinese list
-			"|n" ..																								--(Spacer)
+			"        Branduril, NekoNyaaaa" .. "|n" ..													--(German) Continued German list
+			"|cff0094c4    Portuguese:|r Othra, Rhyrol" .. "|n" ..									--(Portuguese)
+			"|cff0094c4    Spanish:|r Tholagar, Mikel391, MrUrkaz," .. "|n" ..						--(Spanish)
+			"         Krounted, Valhallanem" .. "|n" ..													--(Spanish) Continued Spanish list
+			"|cff0094c4    Italian:|r infinitybofh, INoobInside" .. "|n" ..							--(Portuguese)
+			"|cff0094c4    Korean:|r PositiveMind, yuk6196, netaras," .. "|n" ..					--(Korean)
+			"        meloppy, next96" .. "|n" ..														--(Korean) Continued Traditional Chinese list
+			"|cff0094c4    Russian:|r Nappsel, Wishko, berufegoru," .. "|n" ..						--(Russian)
+			"        Hubbotu, n1mrorox" .. "|n" ..																--(Russian) Continued Russian list
+			"|cff0094c4    Simplified Chinese:|r C_Reus, alvisjiang," .. "|n" ..					--(Simplified Chinese)
+			"        y123ao6" .. "|n" ..																--(Simplified Chinese) Continued Simplified Chinese list
+			"|cff0094c4    Traditional Chinese:|r BNSSNB, killsophia," .. "|n" ..					--(Traditional Chinese)
+			"        konraddo, y123ao6" .. "|n" ..														--(Traditional Chinese) Continued Traditional Chinese list
+			"|n" ..																					--(Spacer)
 			"|cff0094c4Special Thanks:|r" .. "|n" ..
 			"|cff0094c4    Communities:|r Blizzard, Curse, ElvUI," .. "|n" .. 
 			"        WoWInterface, and Reddit's /r/wow" .. "|n" ..
