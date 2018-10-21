@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2146, "DBM-Uldir", nil, 1031)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17991 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 18012 $"):sub(12, -3))
 mod:SetCreatureID(133298)
 mod:SetEncounterID(2128)
 mod:SetZone()
@@ -122,8 +122,8 @@ end
 
 function mod:OnCombatStart(delay)
 	self.vb.stompCount = 0
-	timerThrashCD:Start(6.7-delay)
-	countdownThrash:Start(6.7-delay)
+	timerThrashCD:Start(5.7-delay)
+	countdownThrash:Start(5.7-delay)
 	if not self:IsEasy() then
 		timerShockwaveStompCD:Start(26.1-delay, 1)
 		timerRottingRegurgCD:Start(40-delay)

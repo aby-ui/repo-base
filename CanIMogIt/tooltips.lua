@@ -40,7 +40,7 @@ local function printDebug(tooltip, itemLink, bag, slot)
     addDoubleLine(tooltip, "Item ID:", tostring(itemID))
     if not itemID then
         -- Keystones don't have an itemID...
-        addLine(tooltip, 'No ItemID found. Is this a Keystone?')
+        addLine(tooltip, 'No ItemID found. Is this a Keystone or Battle Pet?')
         return
     end
     local _, _, quality, _, _, itemClass, itemSubClass, _, equipSlot = GetItemInfo(itemID)
@@ -168,6 +168,14 @@ local function addToTooltip(tooltip, itemLink, bag, slot)
     if CanIMogItOptions["debug"] then
         printDebug(tooltip, itemLink, bag, slot)
         tooltip.CIMI_tooltipWritten = true
+    end
+
+    -- If it's a battlepet, then don't add any lines. Battle Pet uses a
+    -- different tooltip frame than normal.
+    local isBattlepet = string.match(itemLink, ".*(battlepet):.*") == "battlepet"
+    if isBattlepet then
+        tooltip.CIMI_tooltipWritten = true
+        return
     end
 
     local text;

@@ -64,9 +64,18 @@ local factionAmountForEachMap = {}
 
 worldFramePOIs.mouseoverHighlight = worldFramePOIs:CreateTexture (nil, "background")
 worldFramePOIs.mouseoverHighlight:SetTexture ([[Interface\Worldmap\QuestPoiGlow]])
-worldFramePOIs.mouseoverHighlight:SetSize (64, 64)
+worldFramePOIs.mouseoverHighlight:SetSize (54, 54)
 worldFramePOIs.mouseoverHighlight:SetAlpha (0.843215)
+worldFramePOIs.mouseoverHighlight:SetVertexColor (1, .7, .2)
+worldFramePOIs.mouseoverHighlight:SetVertexColor (unpack (WorldQuestTracker.ColorPalette.orange))
 worldFramePOIs.mouseoverHighlight:SetBlendMode ("ADD")
+
+worldFramePOIs.mouseoverHighlight.OnShowAnimation = DF:CreateAnimationHub (worldFramePOIs.mouseoverHighlight)
+DF:CreateAnimation (worldFramePOIs.mouseoverHighlight.OnShowAnimation, "scale", 1, 0.035, .7, .7, 1.1, 1.1)
+DF:CreateAnimation (worldFramePOIs.mouseoverHighlight.OnShowAnimation, "alpha", 1, 0.035, 0.75, .91)
+DF:CreateAnimation (worldFramePOIs.mouseoverHighlight.OnShowAnimation, "scale", 2, 0.035, 1.1, 1.1, 1, 1)
+DF:CreateAnimation (worldFramePOIs.mouseoverHighlight.OnShowAnimation, "alpha", 2, 0.035, 1, 1)
+
 
 --when a square is hover hovered in the world map, find the circular quest button in the world map and highlight it
 function WorldQuestTracker.HighlightOnWorldMap (questID)
@@ -76,6 +85,7 @@ function WorldQuestTracker.HighlightOnWorldMap (questID)
 			worldFramePOIs.mouseoverHighlight:SetParent (button)
 			worldFramePOIs.mouseoverHighlight:ClearAllPoints()
 			worldFramePOIs.mouseoverHighlight:SetPoint ("center", button, "center", 0, 0)
+			worldFramePOIs.mouseoverHighlight.OnShowAnimation:Play()
 		end
 	end
 end
@@ -178,6 +188,7 @@ local create_worldmap_square = function (mapName, index, parent)
 	trackingBorder:SetTexture ([[Interface\Artifacts\Artifacts]])
 	trackingBorder:SetTexCoord (491/1024, 569/1024, 76/1024, 153/1024)
 	trackingBorder:SetBlendMode ("ADD")
+	trackingBorder:SetVertexColor (unpack (WorldQuestTracker.ColorPalette.orange))
 	trackingBorder:SetSize (WorldQuestTracker.Constants.WorldMapSquareSize+10, WorldQuestTracker.Constants.WorldMapSquareSize+10)
 	
 	local factionBorder = button:CreateTexture (nil, "artwork", 1)
@@ -383,7 +394,7 @@ local create_worldmap_square = function (mapName, index, parent)
 	local new = button:CreateTexture (nil, "overlay")
 	new:SetPoint ("bottom", button, "bottom", 0, -3)
 	new:SetSize (64*.45, 32*.45)
-	new:SetAlpha (.75)
+	new:SetAlpha (.4)
 	new:SetTexture ([[Interface\AddOns\WorldQuestTracker\media\new]])
 	new:SetTexCoord (0, 1, 0, .5)
 	button.newIndicator = new
@@ -416,6 +427,7 @@ local create_worldmap_square = function (mapName, index, parent)
 	end)
 	newFlash:SetScript ("OnFinished", function()
 		newFlashTexture:Hide()
+		button.newIndicator:Hide()
 	end)
 	button.newFlash = newFlash
 	
@@ -540,7 +552,7 @@ function WorldQuestTracker.GetWorldMapWidget (configTable, showTimeLeftText)
 		end
 	end
 	
-	widget:SetAlpha (.75)
+	widget:SetAlpha (WorldQuestTrackerAddon.WorldWidgetAlpha)
 	
 	configTable.LastWidget = widget
 	configTable.WidgetNumber = configTable.WidgetNumber + 1
@@ -756,6 +768,7 @@ function WorldQuestTracker.UpdateWorldWidget (widget, questID, numObjectives, ma
 		else
 			widget.trackingGlowBorder:Hide()
 			widget.trackingGlowInside:Hide()
+			widget:SetAlpha (WorldQuestTrackerAddon.WorldWidgetAlpha)
 		end
 	end
 	
@@ -1140,7 +1153,7 @@ function WorldQuestTracker.UpdateWorldQuestsOnWorldMap (noCache, showFade, isQue
 		
 		if (taskInfo and #taskInfo > 0) then
 			availableQuests = availableQuests + #taskInfo
-		
+			
 			for i, quest in ipairs (questsAvailable [mapId]) do
 				
 				local questID = quest [1]
@@ -1186,12 +1199,12 @@ function WorldQuestTracker.UpdateWorldQuestsOnWorldMap (noCache, showFade, isQue
 
 							if (timePriority and UseTimePriorityAlpha) then
 								if (timeLeft < timePriority) then
-									widget:SetAlpha (WQT_WORLDWIDGET_ALPHA)
+									widget:SetAlpha (WorldQuestTrackerAddon.WorldWidgetAlpha)
 								else
 									widget:SetAlpha (.4)
 								end
 							else
-								widget:SetAlpha (WQT_WORLDWIDGET_ALPHA)
+								widget:SetAlpha (WorldQuestTrackerAddon.WorldWidgetAlpha)
 							end
 							
 							if (widget) then
@@ -1330,7 +1343,9 @@ function WorldQuestTracker.UpdateQuestOnWorldMap (questID)
 		for _, widget in pairs (WorldQuestTracker.WorldSummaryQuestsSquares) do
 			if (widget.questID == questID and widget:IsShown()) then
 				--quick refresh
-				WorldQuestTracker.UpdateWorldWidget (widget, true)
+				if (WorldQuestTracker.CheckQuestRewardDataForWidget (widget)) then
+					WorldQuestTracker.UpdateWorldWidget (widget, true)
+				end
 				break
 			end
 		end
@@ -1339,7 +1354,9 @@ function WorldQuestTracker.UpdateQuestOnWorldMap (questID)
 		for _, widget in pairs (WorldQuestTracker.WorldMapSmallWidgets) do
 			if (widget.questID == questID and widget:IsShown()) then
 				--quick refresh
-				WorldQuestTracker.SetupWorldQuestButton (widget, true)
+				if (WorldQuestTracker.CheckQuestRewardDataForWidget (widget)) then
+					WorldQuestTracker.SetupWorldQuestButton (widget, true)
+				end
 				break
 			end
 		end
@@ -1383,7 +1400,7 @@ local scheduledIconUpdate = function (questTable)
 	button:ClearAllPoints()
 	button:SetParent (pin)
 	button:SetPoint ("center")
-	
+
 	lazyUpdate.ShownQuests [questID] = button
 	
 	button:Show()
@@ -1412,7 +1429,13 @@ local scheduledIconUpdate = function (questTable)
 	pin:SetSize (22, 22)
 	pin.IsInUse = true
 	
-	button:SetAlpha (.74)
+	button:SetAlpha (WorldQuestTrackerAddon.WorldWidgetSmallAlpha)
+	
+	button.highlight:SetSize (30, 30)
+	button.highlight:SetParent (button)
+	button.highlight:ClearAllPoints()
+	button.highlight:SetPoint ("center", button, "center")
+	button.highlight:Show()
 end
 
 local lazyUpdateEnded = function()
@@ -1586,6 +1609,7 @@ elseif (MaximizeButton) then
 end
 
 --atualiza a quantidade de alpha nos widgets que mostram quantas quests ha para a fac��o
+--deprecated?
 function WorldQuestTracker.UpdateFactionAlpha()
 	for _, factionFrame in ipairs (faction_frames) do
 		if (factionFrame.enabled) then

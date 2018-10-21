@@ -4,4 +4,5 @@
     <Script file="arkinventory.lua"/>
     <Script file="elvui.lua"/>
     <Script file="litebag.lua"/>
+    <Script file="bagnon.lua"/>
 </Ui>

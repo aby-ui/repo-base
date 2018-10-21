@@ -153,13 +153,11 @@ function WorldQuestTracker.CreateZoneWidget (index, name, parent, pinTemplate) -
 	
 	button.IsTrackingGlow = supportFrame:CreateTexture(button:GetName() .. "IsTrackingGlow", "BACKGROUND", -6)
 	button.IsTrackingGlow:SetPoint ("center", button, "center")
-	button.IsTrackingGlow:SetBlendMode ("ADD")
-	button.IsTrackingGlow:SetAlpha (1)
-	button.IsTrackingGlow:Hide()
-	button.IsTrackingGlow:SetDesaturated (nil)
-	--testing another texture
 	button.IsTrackingGlow:SetTexture ([[Interface\Calendar\EventNotificationGlow]])
+	button.IsTrackingGlow:SetBlendMode ("ADD")
+	button.IsTrackingGlow:SetVertexColor (unpack (WorldQuestTracker.ColorPalette.orange))
 	button.IsTrackingGlow:SetSize (31, 31)
+	button.IsTrackingGlow:Hide()
 	
 	button.IsTrackingRareGlow = supportFrame:CreateTexture(button:GetName() .. "IsTrackingRareGlow", "BACKGROUND", -6)
 	button.IsTrackingRareGlow:SetSize (44*0.7, 44*0.7)
@@ -497,7 +495,7 @@ function WorldQuestTracker.UpdateZoneWidgets (forceUpdate)
 
 					local timeLeft = WorldQuestTracker.GetQuest_TimeLeft (questID)
 					
-					if (timeLeft == 0) then
+					if (not timeLeft or timeLeft == 0) then
 						timeLeft = 1
 					end
 					
@@ -513,7 +511,6 @@ function WorldQuestTracker.UpdateZoneWidgets (forceUpdate)
 						
 						local title, factionID, tagID, tagName, worldQuestType, rarity, isElite, tradeskillLineIndex, tagID, tagName, worldQuestType, rarity, isElite, tradeskillLineIndex, allowDisplayPastCritical, gold, goldFormated, rewardName, rewardTexture, numRewardItems, itemName, itemTexture, itemLevel, quantity, quality, isUsable, itemID, isArtifact, artifactPower, isStackable, stackAmount = WorldQuestTracker.GetOrLoadQuestData (questID, can_cache)
 						local filter, order = WorldQuestTracker.GetQuestFilterTypeAndOrder (worldQuestType, gold, rewardName, itemName, isArtifact, stackAmount, numRewardItems, rewardTexture)
-						
 						local passFilter = filters [filter]
 						
 						if (not passFilter) then
@@ -645,7 +642,6 @@ function WorldQuestTracker.UpdateZoneWidgets (forceUpdate)
 								--> if WTQ didn't identify the quest type, allow the default interface to show this quest
 								--> this is a safety measure with bugs or new quest types
 								WorldQuestTracker.ShowDefaultPinForQuest (questID)
-								
 							end
 						end --pass filters
 						
@@ -767,6 +763,7 @@ function WorldQuestTracker.ResetWorldQuestZoneButton (self)
 	self.Amount = nil
 end
 
+--this function does not check if the quest reward is in the client cache
 function WorldQuestTracker.SetupWorldQuestButton (self, worldQuestType, rarity, isElite, tradeskillLineIndex, inProgress, selected, isCriteria, isSpellTarget, mapID)
 
 	if (type (worldQuestType) == "boolean" and worldQuestType) then
@@ -1091,6 +1088,7 @@ local GetOrCreateZoneSummaryWidget = function (index)
 	buttonIcon:SetPoint ("left", button, "left", 2, 0)
 	buttonIcon:SetSize (ZoneSumaryFrame.IconSize, ZoneSumaryFrame.IconSize)
 	buttonIcon:SetFrameLevel (WorldQuestTracker.DefaultFrameLevel + 2)
+	buttonIcon.IsZoneSummaryButton = true
 	button.Icon = buttonIcon
 	
 	local art = button:CreateTexture (nil, "border")

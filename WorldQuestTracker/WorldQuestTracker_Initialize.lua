@@ -255,6 +255,15 @@ do
 	--the client has all the data for the quest
 	WorldQuestTracker.HasQuestData = {}
 	
+	--color pallete
+	WorldQuestTracker.ColorPalette = {
+		orange = {1, .8, .22},
+		yellow = {.8, .8, .22},
+		red = {.9, .22, .22},
+		green = {.22, .9, .22},
+		blue = {.22, .22, .9},
+	}
+	
 	--store the available resources from each quest and map
 	WorldQuestTracker.ResourceData = {}
 	
@@ -301,6 +310,9 @@ do
 		WorldMapSquareSize = 24,
 		TimeBlipSize = 14,
 	}
+	
+	WorldQuestTrackerAddon.WorldWidgetAlpha = .75
+	WorldQuestTrackerAddon.WorldWidgetSmallAlpha = .75
 	
 end
 

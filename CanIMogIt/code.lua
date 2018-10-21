@@ -827,13 +827,15 @@ end
 
 
 function CanIMogIt:IsReadyForCalculations(itemLink)
-    -- Returns true of the item's GetItemInfo is ready, or if it's a keystone.
+    -- Returns true of the item's GetItemInfo is ready, or if it's a keystone,
+    -- or if it's a battlepet.
     local itemInfo = GetItemInfo(itemLink)
-    local type = string.match(itemLink, ".*(keystone):.*")
-    if not itemInfo and type ~= "keystone" then
-        return false
+    local isKeystone = string.match(itemLink, ".*(keystone):.*") == "keystone"
+    local isBattlepet = string.match(itemLink, ".*(battlepet):.*") == "battlepet"
+    if itemInfo or isKeystone or isBattlepet then
+        return true
     end
-    return true
+    return false
 end
 
 
@@ -1213,10 +1215,14 @@ function CanIMogIt:CalculateTooltipText(itemLink, bag, slot)
         playerKnowsTransmog, characterCanLearnTransmog, isItemSoulbound, text, unmodifiedText;
 
     local isItemSoulbound = CanIMogIt:IsItemSoulbound(itemLink, bag, slot)
-    if isItemSoulbound == nil then return end
 
     if isTransmogable then
         --Calculating the logic for each rule
+
+        -- If the item is transmogable, bug didn't give a result for soulbound state, it's
+        -- probably not ready yet.
+        if isItemSoulbound == nil then return end
+
         playerKnowsTransmogFromItem = CanIMogIt:PlayerKnowsTransmogFromItem(itemLink)
         if playerKnowsTransmogFromItem == nil then return end
 

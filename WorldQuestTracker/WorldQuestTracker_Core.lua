@@ -27,7 +27,7 @@ local anchorFrame = WorldMapFrame.ScrollContainer
 local worldFramePOIs = WorldQuestTrackerWorldMapPOI
 
 --dev version string
-local DEV_VERSION_STR = DF:CreateLabel (worldFramePOIs, "World Quest Tracker Alpha $318")
+local DEV_VERSION_STR = DF:CreateLabel (worldFramePOIs, "World Quest Tracker Alpha $320")
 
 
 
@@ -632,7 +632,7 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 			ToggleQuestsButton:Hide()
 			
 			ToggleQuestsButton:SetScript ("OnShow", function()
-				DEV_VERSION_STR:SetPoint ("right", ToggleQuestsButton, "left", -2, 6)
+				DEV_VERSION_STR:SetPoint ("bottomright", WorldQuestTrackerToggleQuestsSummaryButton, "topright", -2, 1)
 				DEV_VERSION_STR:Show()
 			end)
 			ToggleQuestsButton:SetScript ("OnHide", function()
@@ -1282,7 +1282,7 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 				worldSummary.AnchorsByQuestType [worldSummary.QuestTypesByIndex [worldSummary.QuestTypes.ANCHORTYPE_MISC]].AnchorOrder = 100
 			end
 
-			--reorder widgets that belong to the anchor, sorting by the questID, time left and selected faction
+			--reorder widgets within the anchor, sorting by the questID, time left and selected faction
 			--called when a world quest is added and when it is refreshing the faction anchor
 			--at this point, widgets in the anchor are full refreshed and showing correct information
 			function worldSummary.ReorderAnchorWidgets (anchor)
@@ -1315,13 +1315,14 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 					end
 				else
 					--if showing by zone, sort by what the user has selected in the sort order menu or by the time left if the user has selected it
+					
 					for i = 1, #anchor.Widgets do
 						local widget = anchor.Widgets [i]
 
 						if (isSortByTime) then
 							widget.WidgetOrder = (widget.TimeLeft * 10) + (widget.questID / 100)
 						else
-							widget.WidgetOrder = widget.Order
+							widget.WidgetOrder = widget.Order + (widget.questID / 100000)
 						end
 					end
 				end
@@ -1553,12 +1554,21 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 						factionIcon:SetTexCoord (.1, .9, .1, .96)
 						factionButton.Icon = factionIcon
 						
-						local amountQuestsBackground = factionButton:CreateTexture (nil, "overlay")
-						amountQuestsBackground:SetPoint ("bottomright", factionIcon, "bottomright", 0, 0)
-						amountQuestsBackground:SetPoint ("bottomleft", factionIcon, "bottomleft", 0, 0)
-						amountQuestsBackground:SetSize (11, 9)
-						amountQuestsBackground:SetDrawLayer ("overlay", 5)
-						amountQuestsBackground:SetColorTexture (0, 0, 0, .55)
+						local amountQuestsBackground = factionButton:CreateTexture (nil, "artwork")
+						--testing different anchors points
+						--amountQuestsBackground:SetPoint ("bottomright", factionIcon, "bottomright", 0, 0)
+						--amountQuestsBackground:SetPoint ("bottomleft", factionIcon, "bottomleft", 0, 0)
+						--amountQuestsBackground:SetPoint ("topright", factionIcon, "bottomright", 0, 0)
+						--amountQuestsBackground:SetPoint ("topleft", factionIcon, "bottomleft", 0, 0)
+						--amountQuestsBackground:SetSize (11, 9)
+						--amountQuestsBackground:SetDrawLayer ("overlay", 5)
+						--amountQuestsBackground:SetColorTexture (0, 0, 0, .75)
+						
+						--amountQuestsBackground:SetPoint ("top", factionIcon, "bottom", 0, 0)
+						amountQuestsBackground:SetPoint ("bottom", factionIcon, "top", 0, 0)
+						amountQuestsBackground:SetTexture ([[Interface\AddOns\WorldQuestTracker\media\background_blackgradientT]])
+						amountQuestsBackground:SetSize (34, 12)
+						amountQuestsBackground:SetAlpha (.50)
 						
 						local amountQuests = factionButton:CreateFontString (nil, "overlay", "GameFontNormal")
 						amountQuests:SetPoint ("center", amountQuestsBackground, "center", 0, 0)
@@ -1680,6 +1690,7 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 				
 				for _, factionButton in ipairs (worldSummary.FactionAnchor.Widgets) do
 					factionButton.AmountQuests = 0
+					factionButton.Text:SetText (0)
 				end
 			end
 
@@ -1816,6 +1827,11 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 			--it only exists when it's not a full update and it carry a small list of quests to update
 			--the list is equal to questList but is hash with true values
 			function worldSummary.Update (questList, questsToUpdate)
+			
+				--debug set the map posoint to be in the center fo the screen
+				--removed voldun and nazmir quest for debug as well
+				--WorldMapFrame:ClearAllPoints()
+				--WorldMapFrame:SetPoint ("center", UIParent, "center")
 			
 				if (not WorldQuestTracker.db.profile.world_map_config.summary_show) then
 					worldSummary.HideSummary()

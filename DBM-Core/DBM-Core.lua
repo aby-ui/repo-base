@@ -41,7 +41,7 @@
 --  Globals/Default Options  --
 -------------------------------
 DBM = {
-	Revision = tonumber(("$Revision: 18001 $"):sub(12, -3)),
+	Revision = tonumber(("$Revision: 18016 $"):sub(12, -3)),
 	DisplayVersion = "8.0.14 alpha", -- the string that is shown as version
 	ReleaseRevision = 17997 -- the revision of the latest stable version that is available
 }
@@ -7523,8 +7523,8 @@ end
 
 --Skip param is used when CheckInterruptFilter is actually being used for a simpe target/focus check and nothing more.
 --checkCooldown should never be passed with skip or COUNT interrupt warnings. It should be passed with any other interrupt filter
-function bossModPrototype:CheckInterruptFilter(sourceGUID, skip, checkCooldown, ignoreTandF)
-	if DBM.Options.FilterInterrupt2 == "None" and not skip then return true end--use doesn't want to use interrupt filter, always return true
+function bossModPrototype:CheckInterruptFilter(sourceGUID, force, checkCooldown, ignoreTandF)
+	if DBM.Options.FilterInterrupt2 == "None" and not force then return true end--user doesn't want to use interrupt filter, always return true
 	--Pummel, Mind Freeze, Counterspell, Kick, Skull Bash, Rebuke, Silence, Wind Shear, Disrupt, Solar Beam
 	local InterruptAvailable = true
 	local requireCooldown = checkCooldown
@@ -10277,6 +10277,7 @@ do
 			--Starting ai timer with (1) indicates it's a first timer after pull
 			--Starting timer with (2) or (3) indicates it's a stage 2 or stage 3 first timer
 			--Starting AI timer with anything above 3 indicarets it's a regular timer and to use shortest time in between two regular casts
+			local id = self.id..pformat((("\t%s"):rep(select("#", ...))), ...)
 			if self.type == "ai" then--A learning timer
 				if not DBM.Options.AITimer then return end
 				if timer > 4 then--Normal behavior.
@@ -10307,6 +10308,15 @@ do
 					end
 				else--AI timer passed with 4 or less is indicating phase change, with timer as phase number
 					if self["phase"..timer.."CastTimer"] and type(self["phase"..timer.."CastTimer"]) == "number" then
+						--Check if timer is shorter than previous learned first timer by scanning remaining time on existing bar
+						local bar = DBM.Bars:GetBar(id)
+						if bar then
+							local remaining = ("%.1f"):format(bar.timer)
+							if bar.timer > 0.2 then
+								self["phase"..timer.."CastTimer"] = self["phase"..timer.."CastTimer"] - remaining
+								DBM:Debug("AI timer learned a lower first timer for current phase of "..self["phase"..timer.."CastTimer"], 2)
+							end
+						end
 						timer = self["phase"..timer.."CastTimer"]
 					else--No first pull timer generated yet, set it to GetTime, as a string
 						self["phase"..timer.."CastTimer"] = tostring(GetTime())
@@ -10314,7 +10324,6 @@ do
 					end
 				end
 			end
-			local id = self.id..pformat((("\t%s"):rep(select("#", ...))), ...)
 			if DBM.Options.AutoCorrectTimer or (DBM.Options.DebugMode and DBM.Options.DebugLevel > 1) then
 				if not self.type or (self.type ~= "target" and self.type ~= "active" and self.type ~= "fades" and self.type ~= "ai") then
 					local bar = DBM.Bars:GetBar(id)

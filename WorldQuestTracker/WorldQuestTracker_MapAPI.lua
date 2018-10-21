@@ -38,10 +38,67 @@ local MapRangeClamped = DF.MapRangeClamped
 local FindLookAtRotation = DF.FindLookAtRotation
 local GetDistance_Point = DF.GetDistance_Point
 
+local triggerScheduledWidgetUpdate = function (timerObject)
+	local widget = timerObject.widget
+	local questID = widget.questID
+	
+	if (not widget:IsShown()) then
+		return
+	end
+	
+	if (HaveQuestRewardData (questID)) then
+		--is a zone widget placed in the world hub
+		if (widget.IsWorldZoneQuestButton) then
+			WorldQuestTracker.SetupWorldQuestButton (widget, true)
+		
+		--is a square button in the world map
+		elseif (widget.IsWorldQuestButton) then
+			WorldQuestTracker.UpdateWorldWidget (widget, true)
+		
+		--is a zone widget placed in the zone
+		elseif (widget.IsZoneQuestButton) then
+			WorldQuestTracker.SetupWorldQuestButton (widget, true)
+		
+		--is a zone widget placed in the taxi map
+		elseif (widget.IsTaxiQuestButton) then
+			WorldQuestTracker.SetupWorldQuestButton (widget, true)
+		
+		--is a zone widget placed in the zone summary frame
+		elseif (widget.IsZoneSummaryButton) then
+			WorldQuestTracker.SetupWorldQuestButton (widget, true)
+		
+		end
+	else
+		WorldQuestTracker.CheckQuestRewardDataForWidget (widget, false, true)
+	end
+end
 
-
-
-
+function WorldQuestTracker.CheckQuestRewardDataForWidget (widget, noScheduleRefresh, noRequestData)
+	local questID = widget.questID
+	
+	if (not questID) then
+		return false
+	end
+	
+	if (not HaveQuestRewardData (questID)) then
+		
+		--if this is from a re-schedule it already requested the data
+		if (not noRequestData) then
+			--ask que server for the reward data
+			C_TaskQuest.RequestPreloadRewardData (questID)
+		end
+	
+		if (not noScheduleRefresh) then
+			local timer = C_Timer.NewTimer (1, triggerScheduledWidgetUpdate)
+			timer.widget = widget
+			return false, true
+		end
+		
+		return false
+	end
+	
+	return true
+end
 
 
 --return the list of quests on the tracker
@@ -318,7 +375,7 @@ function WorldQuestTracker.GetQuestFilterTypeAndOrder (worldQuestType, gold, rew
 		
 		--reputation
 		elseif (WorldQuestTracker.MapData.ReputationIcons [rewardTexture]) then
-			order = WorldQuestTracker.db.profile.sort_order [WQT_QUESTTYPE_RESOURCE]
+			order = WorldQuestTracker.db.profile.sort_order [WQT_QUESTTYPE_REPUTATION]
 			filter = FILTER_TYPE_REPUTATION_TOKEN
 		
 		--trade skill

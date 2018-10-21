@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2147, "DBM-Uldir", nil, 1031)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 18000 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 18008 $"):sub(12, -3))
 mod:SetCreatureID(132998)
 mod:SetEncounterID(2122)
 mod:SetZone()
@@ -181,7 +181,7 @@ do
 				local name = matrixTargets[i]
 				local uId = DBM:GetRaidUnitId(name)
 				if not uId then break end
-				addLine(matrixSpellName, UnitName(uId))
+				addLine(i.."-"..matrixSpellName, UnitName(uId))
 			end
 			if mod.vb.matrixActive then
 				if mod:IsMythic() then--No side, short text
@@ -488,9 +488,11 @@ function mod:SPELL_AURA_APPLIED(args)
 	if spellId == 268074 then
 		warnDarkPurpose:CombinedShow(0.5, args.destName)
 		if args:IsPlayer() then
-			specWarnDarkPurpose:Show()
-			specWarnDarkPurpose:Play("justrun")
-			yellDarkPurpose:Yell()
+			if self:AntiSpam(3, 9) then
+				specWarnDarkPurpose:Show()
+				specWarnDarkPurpose:Play("justrun")
+				yellDarkPurpose:Yell()
+			end
 			if self.Options.NPAuraOnFixate then
 				DBM.Nameplate:Show(true, args.sourceGUID, spellId)
 			end
@@ -545,7 +547,7 @@ function mod:SPELL_AURA_APPLIED(args)
 				specWarnGrowingCorruption:Show(amount)
 				specWarnGrowingCorruption:Play("changemt")
 			else
-				specWarnGrowingCorruptionOther:Show(L.name)
+				specWarnGrowingCorruptionOther:Show(args.destName)
 				specWarnGrowingCorruptionOther:Play("changemt")
 			end
 		end
@@ -727,13 +729,5 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 		else--Need to help soak them
 			warnBurstingBoil:Show(self.vb.burstingCount)
 		end
-	--elseif spellId == 268251 then--Phase 2
-
-	--elseif spellId == 269803 then--Phase 3
-		
-	--elseif spellId == 274318 then--Spell Picker (Wave of Corruption & Blood Feast alternating)
-	
-	--elseif spellId == 270373 or spellId == 270428 then--Wave of Corruption
-
 	end
 end

@@ -124,14 +124,7 @@ function WorldQuestTracker.AddQuestToTracker (self, questID, mapID)
 		local iconText = self.IconText
 		local questType = self.QuestType
 		local numObjectives = self.numObjectives
-		
---		if (type (iconText) == "string") then --no good
---			iconText = iconText:gsub ("|c%x?%x?%x?%x?%x?%x?%x?%x?", "")
---			iconText = iconText:gsub ("|r", "")
---			iconText = tonumber (iconText)
---		end
---removing this, the reward amount can now be a number or a string, we cannot check for amount without checking first if is a number (on tracker only)
-		
+
 		if (iconTexture) then
 			tinsert (WorldQuestTracker.QuestTrackList, {
 				questID = questID, 

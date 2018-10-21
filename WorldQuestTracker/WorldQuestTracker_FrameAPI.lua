@@ -566,8 +566,6 @@ function WorldQuestTracker.CheckAddToTracker (self, button, onlyTrack)
 		
 	elseif (self.IsWorldQuestButton or self.IsWorldZoneQuestButton) then
 		WorldQuestTracker.UpdateQuestOnWorldMap (questID)
-		--WorldQuestTracker.UpdateWorldQuestsOnWorldMap()
-		
 	end
 end
 
@@ -692,7 +690,9 @@ function WorldQuestTracker.OnQuestButtonClick (self, button)
 		if (self.AnchorFrame) then
 			self:SetAlpha (WQT_ZONEWIDGET_ALPHA)
 		else
-			self:SetAlpha (WQT_WORLDWIDGET_ALPHA)
+			if (self.IsWorldQuestButton) then
+				self:SetAlpha (WorldQuestTrackerAddon.WorldWidgetAlpha)
+			end
 		end
 	end
 	
@@ -728,6 +728,8 @@ function WorldQuestTracker.OnEndClickAnimation (self)
 				widget.trackingGlowInside:Hide()
 				widget.trackingBorder:Hide()
 			end
+			
+			widget:SetAlpha (WorldQuestTrackerAddon.WorldWidgetAlpha)
 		end
 	end
 end
