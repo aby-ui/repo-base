@@ -37,7 +37,7 @@ points[23] = { -- "EasternPlaguelands"
 	[75575230] = 12402, -- Light's Hope Chapel
 }
 
-points[38] = { -- "Elwynn"
+points[37] = { -- "Elwynn"
 	[43746590] = 12286, -- Goldshire
 	[24894013] = 12336, -- Trade District, Stormwind City
 }
@@ -247,8 +247,12 @@ points[127] = { -- "CrystalsongForest"
 
 points[125] = { -- "Dalaran"
 	[48144132] = 13463, -- The Ledgerdemain Lounge
-	[38235958] = 13472, -- The Underbelly
+	[42305680] = 13472, -- The Underbelly
 	[42346308] = 13473, -- The Silver Enclave
+}
+
+points[126] = { -- "DalaranUnderbelly"
+	[38225959] = 13472, -- The Underbelly
 }
 
 points[115] = { -- "Dragonblight"

@@ -237,8 +237,12 @@ points[127] = { -- "CrystalsongForest"
 
 points[125] = { -- "Dalaran"
 	[48144132] = 13463, -- The Ledgerdemain Lounge
-	[38235958] = 13472, -- The Underbelly
+	[42305680] = 13472, -- The Underbelly
 	[66842962] = 13474, -- Sunreaver's Sanctuary
+}
+
+points[126] = { -- "DalaranUnderbelly"
+	[38225959] = 13472, -- The Underbelly
 }
 
 points[115] = { -- "Dragonblight"

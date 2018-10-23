@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2093, "DBM-Party-BfA", 2, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17903 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 18019 $"):sub(12, -3))
 mod:SetCreatureID(126845, 126847, 126848)--Captain Jolly, Captain Raoul, Captain Eudora
 mod:SetEncounterID(2094)
 mod:SetZone()
@@ -172,7 +172,7 @@ end
 function mod:SPELL_DAMAGE(_, _, _, _, destGUID, _, _, _, spellId, spellName)
 	if spellId == 272397 and destGUID == UnitGUID("player") and self:AntiSpam(2, 1) and not self:IsTank() then
 		specWarnGTFO:Show(spellName)
-		specWarnGTFO:Play("runaway")
+		specWarnGTFO:Play("watchstep")
 	end
 end
 mod.SPELL_MISSED = mod.SPELL_DAMAGE

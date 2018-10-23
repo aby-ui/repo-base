@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2195, "DBM-Uldir", nil, 1031)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17967 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 18019 $"):sub(12, -3))
 mod:SetCreatureID(138967)
 mod:SetEncounterID(2145)
 mod:DisableESCombatDetection()--ES fires moment you throw out CC, so it can't be trusted for combatstart
@@ -17,9 +17,9 @@ mod:RegisterCombat("combat")
 mod:RegisterEventsInCombat(
 	"SPELL_CAST_START 273316 273451 273350",
 	"SPELL_CAST_SUCCESS 273365 271640 274358 274168 273889 274098 274119",
-	"SPELL_AURA_APPLIED 273365 271640 273434 276093 273288 274358 274271 273432 276434",
+	"SPELL_AURA_APPLIED 273365 271640 273434 276093 273288 274358 274271 273432 276434 274195",
 	"SPELL_AURA_APPLIED_DOSE 274358",
-	"SPELL_AURA_REMOVED 273365 271640 276093 273288 274358 274271 273432 276434",
+	"SPELL_AURA_REMOVED 273365 271640 276093 273288 274358 274271 273432 276434 274195",
 	"UNIT_DIED",
 	"UNIT_SPELLCAST_SUCCEEDED boss1"
 )
@@ -114,6 +114,7 @@ mod.vb.DarkRevIcon = 1
 mod.vb.deathwishCount = 0
 mod.vb.activeDecay = nil
 local unitTracked = {}
+local corruptedBloodTarget = {}
 
 local updateInfoFrame
 do
@@ -148,7 +149,9 @@ do
 		if mod:IsMythic() then
 			addLine(" ", " ")--Insert a blank entry to split the two debuffs
 			--Corrupted Blood Stacks (UGLY code)
-			for uId in DBM:GetGroupMembers() do
+			for i=1, #corruptedBloodTarget do
+				local name = corruptedBloodTarget[i]
+				local uId = DBM:GetRaidUnitId(name)
 				local spellName, _, count = DBM:UnitDebuff(uId, 274195)
 				if spellName and count then
 					local unitName = UnitName(uId)
@@ -168,6 +171,7 @@ end
 
 
 function mod:OnCombatStart(delay)
+	table.wipe(corruptedBloodTarget)
 	self.vb.phase = 1
 	self.vb.poolCount = 0
 	self.vb.darkRevCount = 0
@@ -442,6 +446,10 @@ function mod:SPELL_AURA_APPLIED(args)
 			specWarnDeathwishNear:CancelVoice()--Avoid spam
 			specWarnDeathwishNear:ScheduleVoice(0.3, "runaway")
 		end
+	elseif spellId == 274195 then
+		if not tContains(corruptedBloodTarget, args.destName) then
+			table.insert(corruptedBloodTarget, args.destName)
+		end
 	end
 end
 mod.SPELL_AURA_APPLIED_DOSE = mod.SPELL_AURA_APPLIED
@@ -478,6 +486,8 @@ function mod:SPELL_AURA_REMOVED(args)
 			specWarnRupturingBloodEdge:Cancel()
 			specWarnRupturingBloodEdge:CancelVoice()
 		end
+	elseif spellId == 274195 then
+		tDeleteItem(corruptedBloodTarget, args.destName)
 	end
 end
 
@@ -485,7 +495,7 @@ end
 function mod:SPELL_PERIODIC_DAMAGE(_, _, _, _, destGUID, _, _, _, spellId)
 	if spellId == 228007 and destGUID == UnitGUID("player") and self:AntiSpam(2, 4) then
 		specWarnGTFO:Show()
-		specWarnGTFO:Play("runaway")
+		specWarnGTFO:Play("watchstep")
 	end
 end
 mod.SPELL_PERIODIC_MISSED = mod.SPELL_PERIODIC_DAMAGE

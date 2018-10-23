@@ -18,7 +18,7 @@
 TELLMEWHEN_VERSION = "8.5.5"
 
 TELLMEWHEN_VERSION_MINOR = ""
-local projectVersion = "8.5.4-7-g6bc49450" -- comes out like "6.2.2-21-g4e91cee"
+local projectVersion = "8.5.4-8-g6731d197" -- comes out like "6.2.2-21-g4e91cee"
 if projectVersion:find("project%-version") then
 	TELLMEWHEN_VERSION_MINOR = "dev"
 elseif strmatch(projectVersion, "%-%d+%-") then
@@ -26,7 +26,7 @@ elseif strmatch(projectVersion, "%-%d+%-") then
 end
 
 TELLMEWHEN_VERSION_FULL = TELLMEWHEN_VERSION .. " " .. TELLMEWHEN_VERSION_MINOR
-TELLMEWHEN_VERSIONNUMBER = 85502 -- NEVER DECREASE THIS NUMBER (duh?).  IT IS ALSO ONLY INTERNAL (for versioning of)
+TELLMEWHEN_VERSIONNUMBER = 85503 -- NEVER DECREASE THIS NUMBER (duh?).  IT IS ALSO ONLY INTERNAL (for versioning of)
 
 TELLMEWHEN_FORCECHANGELOG = 82105 -- if the user hasn't seen the changelog until at least this version, show it to them.
 
@@ -2502,6 +2502,18 @@ end
 -- Update Functions
 ---------------------------------
 
+--- Update variables that are used globally thoughout TMW.
+-- This includes TMW.time and TMW.GCD.
+-- Call this manually when script execution starts in a context
+-- that needs these variables but isn't originating from TMW:OnUpdate().
+function TMW:UpdateGlobals()
+	time = GetTime()
+	TMW.time = time
+
+	_, GCD=GetSpellCooldown(GCDSpell)
+	TMW.GCD = GCD	
+end
+
 do	-- TMW:OnUpdate()
 
 	local updateInProgress, shouldSafeUpdate
@@ -2529,8 +2541,7 @@ do	-- TMW:OnUpdate()
 	-- This is the main update engine of TMW.
 	local function OnUpdate()
 		while true do
-			time = GetTime()
-			TMW.time = time
+			TMW:UpdateGlobals()
 
 			if updateInProgress then
 				-- If the previous update cycle didn't finish (updateInProgress is still true)
@@ -2547,8 +2558,6 @@ do	-- TMW:OnUpdate()
 			
 			if LastUpdate <= time - UPD_INTV then
 				LastUpdate = time
-				_, GCD=GetSpellCooldown(GCDSpell)
-				TMW.GCD = GCD
 
 				TMW:Fire("TMW_ONUPDATE_TIMECONSTRAINED_PRE", time, Locked)
 				

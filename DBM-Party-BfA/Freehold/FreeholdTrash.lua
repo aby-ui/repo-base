@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("FreeholdTrash", "DBM-Party-BfA", 2)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17762 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 18019 $"):sub(12, -3))
 --mod:SetModelID(47785)
 mod:SetZone()
 
@@ -90,7 +90,7 @@ function mod:SPELL_AURA_APPLIED(args)
 	local spellId = args.spellId
 	if spellId == 257274 and args:IsPlayer() and self:AntiSpam(2, 2) then
 		specWarnGTFO:Show(args.spellName)
-		specWarnGTFO:Play("runaway")
+		specWarnGTFO:Play("watchstep")
 	elseif spellId == 257476 and self:AntiSpam(3, 6) then
 		specWarnBestialWrath:Show(args.destName)
 		specWarnBestialWrath:Play("helpdispel")

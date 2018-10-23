@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2127, "DBM-Party-BfA", 10, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17777 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 18019 $"):sub(12, -3))
 mod:SetCreatureID(131863)
 mod:SetEncounterID(2115)
 mod:SetZone()
@@ -82,7 +82,7 @@ end
 function mod:SPELL_DAMAGE(_, _, _, _, destGUID, _, _, _, spellId)
 	if spellId == 264698 and destGUID == UnitGUID("player") and self:AntiSpam(2, 4) then
 		specWarnGTFO:Show()
-		specWarnGTFO:Play("runaway")
+		specWarnGTFO:Play("watchstep")
 	end
 end
 mod.SPELL_MISSED = mod.SPELL_DAMAGE

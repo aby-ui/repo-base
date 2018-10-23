@@ -10,7 +10,7 @@ end
 local mod	= DBM:NewMod(dungeonID, "DBM-Azeroth-BfA", nil, 1028)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17996 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 18019 $"):sub(12, -3))
 mod:SetCreatureID(creatureID)
 --mod:SetEncounterID(2263)
 --mod:DisableESCombatDetection()
@@ -100,7 +100,7 @@ function mod:SPELL_AURA_APPLIED(args)
 	local spellId = args.spellId
 	if (spellId == 282414 or spellId == 287538) and args:IsPlayer() then
 		specWarnGTFO:Show(args.spellName)
-		specWarnGTFO:Play("runaway")
+		specWarnGTFO:Play("watchstep")
 	end
 end
 

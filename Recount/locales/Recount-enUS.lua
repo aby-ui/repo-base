@@ -448,3 +448,4 @@ L["Window Scaling"] = true
 L["X Gridlines Represent"] = true
 L["Yes"] = true
 
+L["RealID"] = true

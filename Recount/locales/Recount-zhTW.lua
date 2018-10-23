@@ -276,6 +276,8 @@ L["Rage Sources"] = "怒氣來源"
 L["Raid"] = "團隊"
 L["Raid Instances"] = "團隊副本"
 L["Rank Number"] = "排名數字"
+--[[Translation missing --]]
+--[[ L["RealID"] = "RealID"--]] 
 L["Realtime"] = "即時曲線圖"
 L["Record Buffs/Debuffs"] = "紀錄增益效果/負面影響"
 L["Record Data"] = "紀錄資料"

@@ -173,24 +173,26 @@ ConditionCategory:RegisterCondition(1,	 "INSTANCE2", {
 })
 
 ConditionCategory:RegisterCondition(1.1,  "KEYSTONELEVEL", {
-    text = L["CONDITIONPANEL_KEYSTONELEVEL"],
-    tooltip = L["CONDITIONPANEL_KEYSTONELEVEL_DESC"],
-    min = 0,
-    max = 30,
-    unit= false,
-    icon = "Interface\\Icons\\inv_relics_hourglass",
-    tcoords = CNDT.COMMON.standardtcoords,
+	text = L["CONDITIONPANEL_KEYSTONELEVEL"],
+	tooltip = L["CONDITIONPANEL_KEYSTONELEVEL_DESC"],
+	min = 0,
+	max = 30,
+	unit = false,
+	icon = "Interface\\Icons\\inv_relics_hourglass",
+	tcoords = CNDT.COMMON.standardtcoords,
 
-    Env = {
-    	GetActiveKeystoneInfo = function()
-    		return C_ChallengeMode.GetActiveKeystoneInfo() or 0
-    	end
+	Env = {
+		GetActiveKeystoneInfo = function()
+			return C_ChallengeMode.GetActiveKeystoneInfo() or 0
+		end
 	},
 
-    funcstr = [[(GetActiveKeystoneInfo() c.Operator c.Level)]],
+	funcstr = [[(GetActiveKeystoneInfo() c.Operator c.Level)]],
 
-    events = function(ConditionObject, c)
-    	ConditionObject:GenerateNormalEventString("SCENARIO_CRITERIA_UPDATE")
+	events = function(ConditionObject, c)
+		return
+			ConditionObject:GenerateNormalEventString("SCENARIO_CRITERIA_UPDATE"),
+			ConditionObject:GenerateNormalEventString("CHALLENGE_MODE_START")
 	end
 })
 

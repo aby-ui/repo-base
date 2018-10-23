@@ -9,7 +9,8 @@ TMW.CHANGELOG = [==[
 * Added Keystone Level condition for Mythic+.
 
 ====Bug Fixes====
-* FIxed #1584 - Error when switching profiles via slash command.
+* Fixed #1584 - Error when switching profiles via slash command.
+* Fixed #1586 - Fixed a timing issue related to detecting the GCD that could cause "While condition set passing" triggered animations to flicker if their conditions were based on cooldowns.
 
 ===v8.5.4===
 * New icon drag operation - Insert.

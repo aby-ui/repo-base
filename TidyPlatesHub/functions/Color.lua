@@ -205,6 +205,9 @@ local function HealthColorDelegate(unit)
     if LocalVars.UnitSpotlightBarEnable and LocalVars.UnitSpotlightLookup[unit.name] then
    		color = LocalVars.UnitSpotlightColor
 
+    elseif unit.unitid and LocalVars.UnitSpotlightBarEnable and unit.reaction ~= "FRIENDLY" and select(10, UnitBuff(unit.unitid, 1)) == 277242 then
+        color = LocalVars.UnitSpotlightColor  -- 戈霍恩共生体 变色
+
     -- Group Member Aggro Coloring
 	elseif unit.reaction == "FRIENDLY"  then
 		if LocalVars.ColorShowPartyAggro and LocalVars.ColorPartyAggroBar then

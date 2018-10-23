@@ -10,12 +10,12 @@ U1RegisterAddon("GTFO", {
             CoreOnEvent("COMBAT_LOG_EVENT_UNFILTERED", function(event, ...)
                 if not enabled then return end
                 if not U1GetCfgValue("GTFO", "mythic_blood", true) then return end
-                if lastPlayTime and GetTime() - lastPlayTime < 1.7 then return end
+                if lastPlayTime and GetTime() - lastPlayTime < 3 then return end
                 if not InCombatLockdown() then return end
                 if UnitExists("boss1") then return end
                 local timestamp, subEvent, hideCaster, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destFlags, destRaidFlags, spellID = CombatLogGetCurrentEventInfo()
                 if spellID == 226510 and (subEvent == "SPELL_AURA_APPLIED" or subEvent == "SPELL_PERIODIC_HEAL") then
-                    if subEvent == "SPELL_PERIODIC_HEAL" or bit.band(destFlags, COMBATLOG_OBJECT_TYPE_NPC) > 0 then --and bit.band(destFlags, COMBATLOG_OBJECT_CONTROL_NPC) > 0 and (bit.band(destFlags, COMBATLOG_OBJECT_REACTION_HOSTILE) > 0 or bit.band(destFlags, COMBATLOG_OBJECT_REACTION_NEUTRAL) > 0) then
+                    if bit.band(destFlags, COMBATLOG_OBJECT_TYPE_NPC) > 0 and bit.band(destFlags, COMBATLOG_OBJECT_REACTION_HOSTILE) > 0 and not sourceGUID:find('-141851-') then -- 忽略中立小动物和中立敌人，141851是戈霍恩之子 --and bit.band(destFlags, COMBATLOG_OBJECT_CONTROL_NPC) > 0 and (bit.band(destFlags, COMBATLOG_OBJECT_REACTION_HOSTILE) > 0 or bit.band(destFlags, COMBATLOG_OBJECT_REACTION_NEUTRAL) > 0) then
                         PlaySoundFile("Interface\\AddOns\\GTFO\\Sounds\\mythic_blood.ogg")
                         lastPlayTime = GetTime()
                     end

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("d288", "DBM-WorldEvents", 1)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17278 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 18019 $"):sub(12, -3))
 mod:SetCreatureID(36272, 36296, 36565)
 mod:SetModelID(16176)
 mod:SetZone()
@@ -39,7 +39,7 @@ end
 function mod:SPELL_PERIODIC_DAMAGE(_, _, _, _, destGUID, _, _, _, spellId, spellName)
 	if (spellId == 68927 or spellId == 68934) and destGUID == UnitGUID("player") and self:AntiSpam() then
 		specWarnGTFO:Show(spellName)
-		specWarnGTFO:Play("runaway")
+		specWarnGTFO:Play("watchstep")
 	end
 end
 mod.SPELL_PERIODIC_MISSED = mod.SPELL_PERIODIC_DAMAGE

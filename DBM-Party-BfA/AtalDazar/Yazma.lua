@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2030, "DBM-Party-BfA", 1, 968)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17710 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 18019 $"):sub(12, -3))
 mod:SetCreatureID(122968)
 mod:SetEncounterID(2087)
 mod:SetZone()
@@ -43,7 +43,7 @@ function mod:SPELL_AURA_APPLIED(args)
 	local spellId = args.spellId
 	if spellId == 250036 and args:IsPlayer() and self:AntiSpam(2, 1) then
 		specWarnGTFO:Show(args.spellName)
-		specWarnGTFO:Play("runaway")
+		specWarnGTFO:Play("watchstep")
 	end
 end
 
@@ -89,7 +89,7 @@ end
 function mod:SPELL_PERIODIC_DAMAGE(_, _, _, _, destGUID, _, _, _, spellId, spellName)
 	if spellId == 250036 and destGUID == UnitGUID("player") and self:AntiSpam(2, 1) then
 		specWarnGTFO:Show(spellName)
-		specWarnGTFO:Play("runaway")
+		specWarnGTFO:Play("watchstep")
 	end
 end
 mod.SPELL_PERIODIC_MISSED = mod.SPELL_PERIODIC_DAMAGE

@@ -6,7 +6,7 @@ local AceLocale = LibStub("AceLocale-3.0")
 local L = AceLocale:GetLocale("Recount")
 local LD = LibStub("LibDropdown-1.0")
 
-local revision = tonumber(string.sub("$Revision: 1435 $", 12, -3))
+local revision = tonumber(string.sub("$Revision: 1464 $", 12, -3))
 if Recount.Version < revision then
 	Recount.Version = revision
 end
@@ -1653,7 +1653,6 @@ function Recount:ReportData(amount, loc, loc2)
 		Total = Recount.MainWindow:SpecialTotal()
 	end
 
-	-- H.Schuetz - Begin
 	if loc == "REALID" then
 		if type(dataMode[6]) == "function" then
 			BNSendWhisper(loc2,"Recount - "..dataMode[6]())
@@ -1675,18 +1674,6 @@ function Recount:ReportData(amount, loc, loc2)
 			end
 		end
 	end
-	-- H.Schuetz - End
-
-	-- H.Schuetz - Old Version
-	-- if type(dataMode[6])=="function" then
-	-- 	SendChatMessage("Recount - "..dataMode[6](),loc, nil, loc2)
-	-- else
-	-- 	if ConvertDataSet[Recount.db.profile.CurDataSet] then
-	-- 		SendChatMessage("Recount - "..dataMode[1]..L[" for "]..ConvertDataSet[Recount.db.profile.CurDataSet],loc, nil, loc2)
-	-- 	elseif Recount.FightName then -- Elsia: Cover nil error here.
-	-- 		SendChatMessage("Recount - "..dataMode[1]..L[" for "]..Recount.FightName, loc, nil, loc2)
-	-- 	end
-	-- end
 
 	if not MainWindow_Settings.HideTotalBar and Total > 0 then
 		if TotalPerSec > 0 then
@@ -1695,16 +1682,11 @@ function Recount:ReportData(amount, loc, loc2)
 			PerSec = ""
 		end
 
-		-- H.Schuetz - Begin
 		if loc == "REALID" then
 			BNSendWhisper(loc2,"0. Total  "..(math_floor(10 * Total) / 10).." ("..PerSec..(math_floor(1000) / 10).."%)")
 		else
 			SendChatMessage("0. Total  "..(math_floor(10 * Total) / 10).." ("..PerSec..(math_floor(1000) / 10).."%)", loc, nil, loc2)
 		end
-		-- H.Schuetz - End
-
-		-- H.Schuetz - Old Version
-		-- SendChatMessage("0. Total  "..(math_floor(10*Total)/10).." ("..PerSec..(math_floor(1000)/10).."%)",loc, nil, loc2)
 	end
 
 	for i = 1, amount do
@@ -1724,16 +1706,11 @@ function Recount:ReportData(amount, loc, loc2)
 				percentage = (math_floor(1000 * reportTable[i][2] / Total) / 10)
 			end
 
-			-- H.Schuetz - Begin
 			if loc == "REALID" then
 				BNSendWhisper(loc2, i..". "..reportTable[i][1].."  "..Recount.CommaNumber((math_floor(10 * reportTable[i][2]) / 10)).." ("..PerSec..percentage.."%)")
 			else
 				SendChatMessage(i..". "..reportTable[i][1].."  "..Recount.CommaNumber((math_floor(10 * reportTable[i][2]) / 10)).." ("..PerSec..percentage.."%)", loc, nil, loc2)
 			end
-			-- H.Schuetz - End
-
-			-- H.Schuetz - Old Version
-			-- SendChatMessage(i..". "..reportTable[i][1].."  "..(math_floor(10*reportTable[i][2])/10).." ("..PerSec..percentage.."%)",loc, nil, loc2)
 		end
 	end
 end

@@ -537,4 +537,15 @@ DogTag:AddTag("Base", "MaxArtifactPowerForCurrentLevel", {
 	category = L["Miscellaneous"]
 })
 
+DogTag:AddTag("Base", "KeystoneLevel", {
+	code = function()
+		return C_ChallengeMode.GetActiveKeystoneInfo() or 0
+	end,
+	ret = "number",
+	doc = L["Gets the level of the currently active Mythic+ Keystone."],
+	example = '[KeystoneLevel] => "10"',
+	events = "SCENARIO_CRITERIA_UPDATE;CHALLENGE_MODE_START",
+	category = L["Miscellaneous"]
+})
+
 end
