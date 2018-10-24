@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2156, "DBM-Party-BfA", 4, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 18019 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 18026 $"):sub(12, -3))
 mod:SetCreatureID(134069)
 mod:SetEncounterID(2133)
 mod:SetZone()
@@ -22,7 +22,7 @@ local specWarnYawningGate			= mod:NewSpecialWarningRun(269399, "Melee", nil, nil
 local specWarnCalltheAbyss			= mod:NewSpecialWarningMove(267299, "Tank", nil, nil, 1, 2)
 local specWarnGrasp					= mod:NewSpecialWarningSpell(267360, nil, nil, nil, 2, 2)
 --local yellSwirlingScythe			= mod:NewYell(195254)
---local specWarnGTFO				= mod:NewSpecialWarningGTFO(238028, nil, nil, nil, 1, 2)
+--local specWarnGTFO				= mod:NewSpecialWarningGTFO(238028, nil, nil, nil, 1, 8)
 
 local timerYawningGateCD			= mod:NewCDTimer(21, 269399, nil, nil, nil, 3)
 local timerCalltheAbyssCD			= mod:NewNextTimer(90, 267299, nil, nil, nil, 5, nil, DBM_CORE_TANK_ICON)
@@ -98,7 +98,7 @@ end
 function mod:SPELL_PERIODIC_DAMAGE(_, _, _, _, destGUID, _, _, _, spellId)
 	if spellId == 228007 and destGUID == UnitGUID("player") and self:AntiSpam(2, 4) then
 		specWarnGTFO:Show()
-		specWarnGTFO:Play("watchstep")
+		specWarnGTFO:Play("watchfeet")
 	end
 end
 mod.SPELL_PERIODIC_MISSED = mod.SPELL_PERIODIC_DAMAGE

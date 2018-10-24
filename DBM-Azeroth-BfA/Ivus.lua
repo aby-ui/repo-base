@@ -10,7 +10,7 @@ end
 local mod	= DBM:NewMod(dungeonID, "DBM-Azeroth-BfA", nil, 1028)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 18019 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 18026 $"):sub(12, -3))
 mod:SetCreatureID(creatureID)
 --mod:SetEncounterID(2263)
 --mod:DisableESCombatDetection()
@@ -36,7 +36,7 @@ local warnPetrifyEnded					= mod:NewEndAnnounce(282615, 2, nil, nil, nil, nil, n
 local specWarnBreath					= mod:NewSpecialWarningSpell(breathId, nil, nil, nil, 1, 2)
 local specWarnShockwave					= mod:NewSpecialWarningDodge(282463, nil, nil, nil, 2, 2)
 local specWarnGroundSpell				= mod:NewSpecialWarningSpell(strikeId, nil, nil, nil, 2, 2)
-local specWarnGTFO						= mod:NewSpecialWarningGTFO(gtfoId, nil, nil, nil, 1, 2)
+local specWarnGTFO						= mod:NewSpecialWarningGTFO(gtfoId, nil, nil, nil, 1, 8)
 
 local timerBreathCD						= mod:NewAITimer(20.1, breathId, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON)
 local timerShockwaveCD					= mod:NewAITimer(23.1, 282463, nil, nil, nil, 3)
@@ -100,7 +100,7 @@ function mod:SPELL_AURA_APPLIED(args)
 	local spellId = args.spellId
 	if (spellId == 282414 or spellId == 287538) and args:IsPlayer() then
 		specWarnGTFO:Show(args.spellName)
-		specWarnGTFO:Play("watchstep")
+		specWarnGTFO:Play("watchfeet")
 	end
 end
 

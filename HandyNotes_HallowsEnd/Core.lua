@@ -38,6 +38,7 @@ local notes = {
 	[28954] = "如果你找不到糖果罐，与时间守护者对话回到过去.", -- Refuge Pointe, Alliance
 	[28959] = "如果你找不到糖果罐，与时间守护者对话回到过去.", -- Dreadmaul Hold, Horde
 	[28960] = "如果你找不到糖果罐，与时间守护者对话回到过去.", -- Nethergarde Keep, Alliance
+	[32022] = "烈酒窖二楼.",
 	[39657] = "需要3层要塞.", -- Frostwall/Lunarfall Garrison
 }
 

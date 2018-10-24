@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2210, "DBM-Azeroth-BfA", nil, 1028)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 18019 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 18026 $"):sub(12, -3))
 mod:SetCreatureID(138794)
 --mod:SetEncounterID(1880)
 mod:SetReCombatTime(20)
@@ -25,7 +25,7 @@ local specWarnEarthSpike			= mod:NewSpecialWarningDodge(275194, nil, nil, nil, 2
 --local specWarnShakeLoose			= mod:NewSpecialWarningSwitch(276046, nil, nil, nil, 1, 2)
 --local specWarnClutch				= mod:NewSpecialWarningYou(261509, nil, nil, nil, 1, 2)
 --local yellClutch					= mod:NewYell(261509)
---local specWarnGTFO				= mod:NewSpecialWarningGTFO(238028, nil, nil, nil, 1, 2)
+--local specWarnGTFO				= mod:NewSpecialWarningGTFO(238028, nil, nil, nil, 1, 8)
 
 --local timerSonicBellowCD				= mod:NewAITimer(16, 275175, nil, nil, nil, 3)--6-34?
 --local timerEarthSpikeCD				= mod:NewAITimer(16, 275194, nil, nil, nil, 3)
@@ -85,7 +85,7 @@ end
 function mod:SPELL_PERIODIC_DAMAGE(_, _, _, _, destGUID, _, _, _, spellId)
 	if spellId == 228007 and destGUID == UnitGUID("player") and self:AntiSpam(2, 1) then
 		specWarnGTFO:Show()
-		specWarnGTFO:Play("watchstep")
+		specWarnGTFO:Play("watchfeet")
 	end
 end
 mod.SPELL_PERIODIC_MISSED = mod.SPELL_PERIODIC_DAMAGE

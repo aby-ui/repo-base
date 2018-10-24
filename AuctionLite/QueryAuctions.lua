@@ -211,15 +211,11 @@ function AuctionLite:ComputeStats(data)
   return avg, stddev;
 end
 
-local results = {};
-local itemData = {};
-
 -- Analyze an AH query result.
 function AuctionLite:AnalyzeData(rawData)
+  local results = {};
+  local itemData = {};
   local i;
-  for k,v in pairs(results) do if v.data then wipe(v) v.data = nil end end
-  wipe(results)
-  wipe(itemData)
 
   -- Split up our data into tables for each item.
   for _, entry in ipairs(rawData) do

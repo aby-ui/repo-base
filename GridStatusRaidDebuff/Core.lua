@@ -1,5 +1,15 @@
 local zoneOrder = {
     [C_Map.GetMapInfo(1148).name] = 1,
+    [C_Map.GetMapInfo(1162).name] = 1.1,
+    [C_Map.GetMapInfo(1041).name] = 1.2,
+    [C_Map.GetMapInfo(1038).name] = 1.3,
+    [C_Map.GetMapInfo(974).name] = 1.4,
+    [C_Map.GetMapInfo(1010).name] = 1.5,
+    [C_Map.GetMapInfo(1015).name] = 1.6,
+    [C_Map.GetMapInfo(936).name] = 1.7,
+    [C_Map.GetMapInfo(1004).name] = 1.8,
+    [C_Map.GetMapInfo(934).name] = 1.9,
+    [C_Map.GetMapInfo(1039).name] = 1.91,
     [C_Map.GetMapInfo(909).name] = 2,
     [C_Map.GetMapInfo(850).name] = 3,
     [C_Map.GetMapInfo(764).name] = 4,
@@ -313,6 +323,18 @@ function GridStatusRaidDebuff:OnInitialize()
 	self.super.OnInitialize(self)
 	self:RegisterStatuses()
 	db = self.db.profile.debuff_options
+    --重伤优先级下降
+    local graviousSpellId = 240559
+    local spellName = GetSpellInfo(graviousSpellId)
+    local detected = self.db.profile.detected_debuff
+    if detected then
+        for zone, t in pairs(db) do
+            -- 检测到了重伤但没有设置
+            if detected[zone] and detected[zone][spellName] == graviousSpellId and not t[spellName] then
+                t[spellName] = { c_prior = 3, i_prior = 3, }
+            end
+        end
+    end
 end
 
 function GridStatusRaidDebuff:OnEnable()

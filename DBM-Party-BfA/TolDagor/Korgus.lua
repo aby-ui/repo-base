@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2096, "DBM-Party-BfA", 9, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 18019 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 18026 $"):sub(12, -3))
 mod:SetCreatureID(127503)
 mod:SetEncounterID(2104)
 mod:SetZone()
@@ -27,7 +27,7 @@ local yellDeadeye					= mod:NewYell(256038)
 local specWarnExplosiveBurst		= mod:NewSpecialWarningMoveAway(256105, nil, nil, nil, 1, 2)
 local yellExplosiveBurst			= mod:NewYell(256105)
 local specWarnMassiveBlast			= mod:NewSpecialWarningDodge(263345, nil, nil, nil, 2, 2)
---local specWarnGTFO				= mod:NewSpecialWarningGTFO(238028, nil, nil, nil, 1, 2)
+--local specWarnGTFO				= mod:NewSpecialWarningGTFO(238028, nil, nil, nil, 1, 8)
 
 local timerARBlastCD				= mod:NewCDTimer(44.8, 256199, nil, nil, nil, 3)
 local timerARICD					= mod:NewCDTimer(44.8, 256198, nil, nil, nil, 3)
@@ -148,7 +148,7 @@ end
 function mod:SPELL_PERIODIC_DAMAGE(_, _, _, _, destGUID, _, _, _, spellId)
 	if spellId == 228007 and destGUID == UnitGUID("player") and self:AntiSpam(2, 4) then
 		specWarnGTFO:Show()
-		specWarnGTFO:Play("watchstep")
+		specWarnGTFO:Play("watchfeet")
 	end
 end
 mod.SPELL_PERIODIC_MISSED = mod.SPELL_PERIODIC_DAMAGE

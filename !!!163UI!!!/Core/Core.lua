@@ -750,10 +750,12 @@ U1STAFF={["邦桑廸-奥杜尔"]=1,["心耀-冰风岗"]=1,
     ["乄阿蛮乄-冰风岗"]="Banshee元素领主",
     ["北风丶烈-冰风岗"]="Banshee部落老兵楷模",
     ["橙光大师-冰风岗"]="Banshee熊猫人领导",
+    ["无尘大师-冰风岗"]="Banshee熊猫人领导",
     ["绯流琥-冰风岗"]="Banshee黑骑士",
     ["欧灬若拉-冰风岗"]="Banshee部落老兵典范",
     ["丶咕哒子-冰风岗"]="Banshee十八岁的咕哒子",
-    ["水之记忆-冰风岗"]="Banshee小仙女",
+    ["丶咕哒嘤-冰风岗"]="Banshee十八岁的咕哒子",
+    ["夜色之忆-冰风岗"]="Banshee小仙女",
     ["小倍倍猪-冰风岗"]="Banshee小仙女" }
 RunOnNextFrame(function()
     CoreRegisterEvent("INIT_COMPLETED", { INIT_COMPLETED = function()

@@ -327,7 +327,7 @@ points[422] = { -- "DreadWastes"
 	[55933227] = 32024, -- Klaxxi'vess
 }
 
-points[418] = {
+points[418] = { -- "Krasarang"
 	[51407729] = 32034, -- Marista
 	[75920687] = 32036, -- Zhu's Watch
 	[61032514] = 32047, -- Thunder Cleft
@@ -343,7 +343,11 @@ points[379] = { -- "KunLaiSummit"
 }
 
 points[391] = { -- "ShrineofTwoMoons"
-	[58917821] = 32022, -- Shrine of Two Moons, Vale of Eternal Blossoms
+	[60306630] = 32022, -- Shrine of Two Moons, Vale of Eternal Blossoms
+}
+
+points[392] = { -- "ShrineofTwoMoons"
+	[58847832] = 32022, -- Shrine of Two Moons, Vale of Eternal Blossoms
 }
 
 points[433] = { -- "TheHiddenPass"
@@ -364,12 +368,12 @@ points[388] = { -- "TownlongWastes"
 	[71115778] = 32043, -- Longying Outpost
 }
 
-points[390] = {
+points[390] = { -- "ValeofEternalBlossoms"
 	[35157775] = 32044, -- Mistfall Village
 	[61981626] = 32022, -- Shrine of Two Moons
 }
 
-points[376] = {
+points[376] = { -- "ValleyoftheFourWinds"
 	[83642015] = 32048, -- Pang's Stead
 	[19875579] = 32046, -- Stoneplow
 }
@@ -382,7 +386,7 @@ points[590] = { -- "garrisonffhorde_tier3"
 	[47083791] = 39657, -- Frostwall Garrison
 }
 
-points[525] = {
+points[525] = { -- "FrostfireRidge"
 	[48276471] = 39657, -- Frostwall Garrison
 }
 
