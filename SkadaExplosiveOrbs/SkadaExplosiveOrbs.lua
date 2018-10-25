@@ -72,7 +72,7 @@ state_frame:RegisterEvent("CHALLENGE_MODE_START")
 state_frame:RegisterEvent("PLAYER_ENTERING_WORLD")
 state_frame:SetScript("OnEvent", function()
     local level, affixes, wasEnergized = C_ChallengeMode.GetActiveKeystoneInfo();
-    if affixes and (affixes[1] == 13 or affixes[2] == 13) then
+    if affixes and (affixes[1] == 13 or affixes[2] == 13 or affixes[3] == 13) then
         RegisterOrUnregisterUnitTargetEvent(true)
         in_challenge_with_orb = true
     else
