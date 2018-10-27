@@ -160,6 +160,7 @@ points[199] = { -- "SouthernBarrens"
 }
 
 points[65] = { -- "StonetalonMountains"
+	[40531769] = 12347, -- Stonetalon Peak
 	[71027908] = 29010, -- Northwatch Expedition Base Camp
 	[59055633] = 29011, -- Windshear Hold
 	[39483281] = 29012, -- Thal'darah Overlook

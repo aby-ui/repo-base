@@ -156,7 +156,7 @@ points[199] = { -- "SouthernBarrens"
 	[40706930] = 29005, -- Desolation Hold
 }
 
-points[65] = { -- "Silithus"
+points[65] = { -- "StonetalonMountains"
 	[50406380] = 12378, -- Sun Rock Retreat
 	[66506420] = 29009, -- Krom'gar Fortress
 }
@@ -206,7 +206,7 @@ points[104] = { -- "ShadowmoonValley"
 	[30302780] = 12395, -- Shadowmoon Village
 }
 
-points[111] = { -- ShattrathCity"
+points[111] = { -- "ShattrathCity"
 }
 
 points[108] = { -- "TerokkarForest"

@@ -1,7 +1,6 @@
 local addonName, addon = ...
 local EmissaryModule = LibStub("AceAddon-3.0"):GetAddon(addonName):NewModule("Emissary", "AceEvent-3.0", "AceTimer-3.0", "AceBucket-3.0")
 local L = addon.L
-
 local thisToon = UnitName("player") .. " - " .. GetRealmName()
 
 function EmissaryModule:OnEnable()

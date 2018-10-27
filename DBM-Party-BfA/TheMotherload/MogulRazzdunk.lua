@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2116, "DBM-Party-BfA", 7, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 18028 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 18038 $"):sub(12, -3))
 mod:SetCreatureID(129232)
 mod:SetEncounterID(2108)
 mod:SetZone()
@@ -103,7 +103,8 @@ function mod:SPELL_AURA_REMOVED_DOSE(args)
 	local spellId = args.spellId
 	if spellId == 260189 then
 		local amount = args.amount or 0
-		warnDrill:Show(args.destName, amount)
+		warnDrill:Cancel()
+		warnDrill:Schedule(0.5, args.destName, amount)
 	end
 end
 mod.SPELL_AURA_REMOVED = mod.SPELL_AURA_REMOVED_DOSE

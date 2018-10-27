@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2154, "DBM-Party-BfA", 4, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 18026 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 18037 $"):sub(12, -3))
 mod:SetCreatureID(134063, 134058)
 mod:SetEncounterID(2131)
 mod:SetZone()
@@ -98,7 +98,7 @@ function mod:SPELL_CAST_START(args)
 			specWarnSwiftnessWard:Show(args.spellName)
 			specWarnSwiftnessWard:Play("findshield")
 		end
-	elseif spellId == 267818 and not self.vb.bossTempest then
+	elseif spellId == 267818 and not self.vb.bossTempest and self:CheckInterruptFilter(args.sourceGUID, false, true) then
 		specWarnSlicingBlast:Show(args.sourceName)
 		specWarnSlicingBlast:Play("kickcast")
 	elseif spellId == 267899 then

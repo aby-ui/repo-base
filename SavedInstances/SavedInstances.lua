@@ -13,13 +13,11 @@ local maxdiff = 23 -- max number of instance difficulties
 local maxcol = 4 -- max columns per player+instance
 local maxid = 2000 -- highest possible value for an instanceID, current max (Tomb of Sargeras) is 1676
 
--- local (optimal) references to provided functions
 local table, math, bit, string, pairs, ipairs, unpack, strsplit, time, type, wipe, tonumber, select, strsub =
   table, math, bit, string, pairs, ipairs, unpack, strsplit, time, type, wipe, tonumber, select, strsub
-local GetSavedInstanceInfo, GetNumSavedInstances, GetSavedInstanceChatLink, GetLFGDungeonNumEncounters, GetLFGDungeonEncounterInfo, GetNumRandomDungeons, GetLFGRandomDungeonInfo, GetLFGDungeonInfo, LFGGetDungeonInfoByID, GetLFGDungeonRewards, GetTime, UnitIsUnit, GetInstanceInfo, IsInInstance, SecondsToTime, GetQuestResetTime, GetGameTime, GetCurrencyInfo, GetNumGroupMembers =
-  GetSavedInstanceInfo, GetNumSavedInstances, GetSavedInstanceChatLink, GetLFGDungeonNumEncounters, GetLFGDungeonEncounterInfo, GetNumRandomDungeons, GetLFGRandomDungeonInfo, GetLFGDungeonInfo, LFGGetDungeonInfoByID, GetLFGDungeonRewards, GetTime, UnitIsUnit, GetInstanceInfo, IsInInstance, SecondsToTime, GetQuestResetTime, GetGameTime, GetCurrencyInfo, GetNumGroupMembers
+local GetSavedInstanceInfo, GetNumSavedInstances, GetSavedInstanceChatLink, GetLFGDungeonNumEncounters, GetLFGDungeonEncounterInfo, GetNumRandomDungeons, GetLFGRandomDungeonInfo, GetLFGDungeonInfo, LFGGetDungeonInfoByID, GetLFGDungeonRewards, GetTime, UnitIsUnit, GetInstanceInfo, IsInInstance, SecondsToTime, GetQuestResetTime, GetGameTime, GetCurrencyInfo, GetNumGroupMembers, UnitAura =
+  GetSavedInstanceInfo, GetNumSavedInstances, GetSavedInstanceChatLink, GetLFGDungeonNumEncounters, GetLFGDungeonEncounterInfo, GetNumRandomDungeons, GetLFGRandomDungeonInfo, GetLFGDungeonInfo, LFGGetDungeonInfoByID, GetLFGDungeonRewards, GetTime, UnitIsUnit, GetInstanceInfo, IsInInstance, SecondsToTime, GetQuestResetTime, GetGameTime, GetCurrencyInfo, GetNumGroupMembers, UnitAura
 
--- local (optimal) references to Blizzard's strings
 local RAID_CLASS_COLORS = RAID_CLASS_COLORS
 local RAID_FINDER = PLAYER_DIFFICULTY3
 local FONTEND = FONT_COLOR_CODE_CLOSE
@@ -36,8 +34,7 @@ local INSTANCE_SAVED, TRANSFER_ABORT_TOO_MANY_INSTANCES, NO_RAID_INSTANCES_SAVED
 
 local ALREADY_LOOTED = ERR_LOOT_GONE:gsub("%(.*%)","")
 
-local UnitAura = UnitAura
--- Unit Aura functions that return info about the first Aura matching the spellName or spellID given on the unit.
+-- Unit Aura functions that return info about the first aura matching the spellName or spellID given on the unit.
 local SI_GetUnitAura = function(unit, spell, filter)
     for i = 1, 40 do
         local name, _, _, _, _, _, _, _, _, spellId = UnitAura(unit, i, filter)
@@ -60,6 +57,10 @@ end
 local currency = addon.currency
 local trade_spells = addon.trade_spells
 local cdname = addon.cdname
+local QuestExceptions = addon.QuestExceptions
+local scantt = addon.scantt
+local KeystonetoAbbrev = addon.KeystonetoAbbrev
+local KeystoneAbbrev = addon.KeystoneAbbrev
 
 addon.Indicators = {
   ICON_STAR = ICON_LIST[1] .. "16:16:0:0|t",
@@ -72,9 +73,6 @@ addon.Indicators = {
   ICON_SKULL = ICON_LIST[8] .. "16:16:0:0|t",
   BLANK = "None",
 }
-
-local KeystonetoAbbrev = addon.KeystonetoAbbrev
-local KeystoneAbbrev = addon.KeystoneAbbrev
 
 addon.Categories = { }
 local maxExpansion
@@ -92,187 +90,6 @@ end
 local tooltip, indicatortip
 local thisToon = UnitName("player") .. " - " .. GetRealmName()
 local maxlvl = MAX_PLAYER_LEVEL_TABLE[#MAX_PLAYER_LEVEL_TABLE]
-local scantt = CreateFrame("GameTooltip", "SavedInstancesScanTooltip", UIParent, "GameTooltipTemplate")
-
-local _specialQuests = {
-  -- Isle of Thunder
-  [32610] = { zid=504, lid=94221 }, -- Shan'ze Ritual Stone looted
-  [32611] = { zid=504, lid1=95350 },-- Incantation of X looted
-  [32626] = { zid=504, lid=94222 }, -- Key to the Palace of Lei Shen looted
-  [32609] = { zid=504, aid=8104, aline="Left5"  }, -- Trove of the Thunder King (outdoor chest)
-  -- Timeless Isle
-  [32962] = { zid=554, aid=8743, daily=true },  -- Zarhym
-  [32961] = { zid=554, daily=true },  -- Scary Ghosts and Nice Sprites
-  [32956] = { zid=554, aid=8727, acid=2, aline="Right7" }, -- Blackguard's Jetsam
-  [32957] = { zid=554, aid=8727, acid=1, aline="Left7" },  -- Sunken Treasure
-  [32970] = { zid=554, aid=8727, acid=3, aline="Left8" },  -- Gleaming Treasure Satchel
-  [32968] = { zid=554, aid=8726, acid=2, aline="Right7" }, -- Rope-Bound Treasure Chest
-  [32969] = { zid=554, aid=8726, acid=1, aline="Left7" },  -- Gleaming Treasure Chest
-  [32971] = { zid=554, aid=8726, acid=3, aline="Left8" },  -- Mist-Covered Treasure Chest
-  -- Garrison
-  [37638] = { zone=GARRISON_LOCATION_TOOLTIP, aid=9162 }, -- Bronze Defender
-  [37639] = { zone=GARRISON_LOCATION_TOOLTIP, aid=9164 }, -- Silver Defender
-  [37640] = { zone=GARRISON_LOCATION_TOOLTIP, aid=9165 }, -- Golden Defender
-  [38482] = { zone=GARRISON_LOCATION_TOOLTIP, aid=9826 }, -- Platinum Defender
-  -- Tanaan Jungle
-  [39287] = { zid=534, daily=true }, -- Deathtalon
-  [39288] = { zid=534, daily=true }, -- Terrorfist
-  [39289] = { zid=534, daily=true }, -- Doomroller
-  [39290] = { zid=534, daily=true }, -- Vengeance
-  -- Order Hall
-  [42481] = { zid=717, daily=true }, -- Warlock: Ritual of Doom
-  [44707] = { zid=719, daily=true, sid=228651 }, -- Demon Hunter: Twisting Nether
-}
-
-function addon:specialQuests()
-  for qid, qinfo in pairs(_specialQuests) do
-    qinfo.quest = qid
-
-    if not qinfo.name and (qinfo.lid or qinfo.lid1) then
-      local itemname, itemlink = GetItemInfo(qinfo.lid or qinfo.lid1)
-      if itemlink and qinfo.lid then
-        qinfo.name = itemlink.." ("..LOOT..")"
-      elseif itemname and qinfo.lid1 then
-        local name = itemname:match("^[^%s]+")
-        if name and #name > 0 then
-          qinfo.name = name.." ("..LOOT..")"
-        end
-      end
-    elseif not qinfo.name and qinfo.aid and qinfo.acid then
-      local l = GetAchievementCriteriaInfo(qinfo.aid, qinfo.acid)
-      if l then
-        qinfo.name = l:gsub("%p$","")
-      end
-    elseif not qinfo.name and qinfo.aid then
-      scantt:SetOwner(UIParent,"ANCHOR_NONE")
-      scantt:SetAchievementByID(qinfo.aid)
-      local l = _G[scantt:GetName().."Text"..(qinfo.aline or "Left1")]
-      l = l and l:GetText()
-      if l then
-        qinfo.name = l:gsub("%p$","")
-      end
-    elseif not qinfo.name and qinfo.sid then
-      qinfo.name = GetSpellInfo(qinfo.sid)
-    end
-    if not qinfo.name or #qinfo.name == 0 then
-      local title, link = addon:QuestInfo(qid)
-      if title then
-        title = title:gsub("%p?%s*[Tt]racking%s*[Qq]uest","")
-        title = strtrim(title)
-        qinfo.name = title
-      end
-    end
-
-    if not qinfo.zone and qinfo.zid then
-      qinfo.zone = C_Map.GetMapInfo(qinfo.zid).name
-    end
-  end
-
-  return _specialQuests
-end
-
-local QuestExceptions = {
-  -- some quests are misidentified in scope
-  [7905]  = "Regular", -- Darkmoon Faire referral -- old addon versions misidentified this as monthly
-  [7926]  = "Regular", -- Darkmoon Faire referral
-  [37819] = "Regular", -- Darkmoon Faire races referral
-
-  -- order hall quests that old addon versions misidentified as weekly (fixed in r548/7.0.8)
-  [44226] = "Regular", -- Order Hall: DH
-  [44235] = "Regular", -- Order Hall: Druid
-  [44236] = "Regular", -- Order Hall: Druid?
-  [44212] = "Regular", -- Order Hall: Hunter
-  [44208] = "Regular", -- Order Hall: Mage
-  [44238] = "Regular", -- Order Hall: Monk
-  [44219] = "Regular", -- Order Hall: Paladin
-  [44230] = "Regular", -- Order Hall: Priest
-  [44204] = "Regular", -- Order Hall: Rogue
-  [44205] = "Regular", -- Order Hall: Shaman
-
-  [31752] = "AccountDaily", -- Blingtron
-  [34774] = "AccountDaily", -- Blingtron 5000
-  [40753] = "AccountDaily", -- Blingtron 6000
-  -- also pre-populate a few important quests
-  [32640] = "Weekly",  -- Champions of the Thunder King
-  [32641] = "Weekly",  -- Champions of the Thunder King
-  [32718] = "Regular",  -- Mogu Runes of Fate -- ticket 142: outdated quest flag still shows up
-  [32719] = "Regular",  -- Mogu Runes of Fate
-  [33133] = "Regular",  -- Warforged Seals outdated quests, no longer weekly
-  [33134] = "Regular",  -- Warforged Seals
-  [33338] = "Weekly",  -- Empowering the Hourglass
-  [33334] = "Weekly",  -- Strong Enough to Survive
-
-  -- From Archmage Timear -
-  [44164] = "Weekly", -- A Burning Path Through Time - Burning Crusade Timewalking
-  [44166] = "Weekly", -- A Frozen Path Through Time - Wrath of the Lich King Timewalking
-  [44167] = "Weekly", -- A Shattered Path Through Time - Cataclysm Timewalking
-  [44171] = "Weekly", -- Emisary of War - Complete Legion Mythics
-  [44172] = "Weekly", -- The Arena Calls - Win Legion Arena Skirmishes
-  [44173] = "Weekly", -- A Call to Battle - Win Battlegrounds
-  [44174] = "Weekly", -- The Very Best - Win PvP Pet Battles
-  [44175] = "Weekly", -- The World Awaits - Complete Broken Isles World Quests
-  [45799] = "Weekly", -- A Shrouded Path Through Time - Mists of Pandaria Timewalking
-
-  -- Pet Battle Dungeons
-  [46292] = "Weekly", -- Pet Battle Challenge Dungeon Deadmines
-  [45539] = "Weekly", -- Pet Battle Challenge Dungeon Wailing Caverns
-
-  -- Argus
-  [48910] = "Weekly", -- Supplying Krokuun
-  [48911] = "Weekly", -- Void Inoculation
-  [48912] = "Weekly", -- Supplying the Antoran Campaign
-}
-
-local WoDSealQuests = {
-  [36058] = "Weekly",  -- Seal of Dwarven Bunker
-  -- Seal of Ashran quests
-  [36054] = "Weekly",
-  [37454] = "Weekly",
-  [37455] = "Weekly",
-  [36056] = "Weekly",
-  [37456] = "Weekly",
-  [37457] = "Weekly",
-  [36057] = "Weekly",
-  [37458] = "Weekly",
-  [37459] = "Weekly",
-  [36055] = "Weekly",
-  [37452] = "Weekly",
-  [37453] = "Weekly",
-}
-
-for k,v in pairs(WoDSealQuests) do
-  QuestExceptions[k] = v
-end
-
-local LegionSealQuests = {
-  [43895] = "Weekly",
-  [43896] = "Weekly",
-  [43897] = "Weekly",
-  [43892] = "Weekly",
-  [43893] = "Weekly",
-  [43894] = "Weekly",
-  [43510] = "Weekly", -- order hall
-  [47851] = "Weekly", -- Mark of Honor x5
-  [47864] = "Weekly", -- Mark of Honor x10
-  [47865] = "Weekly", -- Mark of Honor x20
-}
-
-for k,v in pairs(LegionSealQuests) do
-  QuestExceptions[k] = v
-end
-
-local BfASealQuests = {
-  [52834] = "Weekly", -- Gold
-  [52838] = "Weekly", -- Piles of Gold
-  [52835] = "Weekly", -- Marks of Honor
-  [52839] = "Weekly", -- Additional Marks of Honor
-  [52837] = "Weekly", -- War Resources
-  [52840] = "Weekly", -- Stashed War Resources
-}
-
-for k,v in pairs(BfASealQuests) do
-  QuestExceptions[k] = v
-end
 
 function addon:QuestInfo(questid)
   if not questid or questid == 0 then return nil end
@@ -399,6 +216,7 @@ local function abbreviate(iname)
   iname = iname:gsub("Cataclysm", "Cata")
   iname = iname:gsub("Mists of Pandaria", "MoP")
   iname = iname:gsub("Warlords of Draenor", "WoD")
+  iname = iname:gsub("Battle for Azeroth", "BfA")
 
   return iname
 end
@@ -763,9 +581,6 @@ function addon:GetRegion()
       local gcr = GetCurrentRegion()
       reg = gcr and ({ "US", "KR", "EU", "TW", "CN" })[gcr]
     end
-    if not reg or #reg ~= 2 then
-      reg = (GetCVar("realmList") or ""):match("^(%a+)%.")
-    end
     if not reg or #reg ~= 2 then -- other test realms?
       reg = (GetRealmName() or ""):match("%((%a%a)%)")
     end
@@ -837,7 +652,7 @@ do
   function addon:GetNextDarkmoonResetTime()
     -- Darkmoon faire runs from first Sunday of each month to following Saturday
     -- this function returns an approximate time after the end of the current month's faire
-    local monthInfo = C_Calendar.GetMonthInfo();
+    local monthInfo = C_Calendar.GetMonthInfo()
     local firstweekday = monthInfo.firstWeekday
     local firstsunday = ((firstweekday == 1) and 1) or (9 - firstweekday)
     dmf_end.year = monthInfo.year
@@ -1527,7 +1342,7 @@ function addon:UpdateToonData()
   wipe(addon.activeHolidays)
   -- blizz internally conflates all the holiday flags, so we have to detect which is really active
   for i=1, GetNumRandomDungeons() do
-    local id, name = GetLFGRandomDungeonInfo(i);
+    local id, name = GetLFGRandomDungeonInfo(i)
     local d = addon.db.Instances[name]
     if d and d.Holiday then
       addon.activeHolidays[name] = true
@@ -1723,65 +1538,6 @@ function addon:UpdateToonData()
     end
 
     t.LastSeen = time()
-end
-
-function addon:UpdateCurrency()
-  if addon.logout then return end -- currency is unreliable during logout
-  local t = addon.db.Toons[thisToon]
-  t.Money = GetMoney()
-  t.currency = wipe(t.currency or {})
-  for _,idx in ipairs(currency) do
-    local _, amount, _, earnedThisWeek, weeklyMax, totalMax, discovered = GetCurrencyInfo(idx)
-    if idx == 390 and amount == 0 then
-      discovered = false -- discovery flag broken for conquest points
-    end
-    if not discovered then
-      t.currency[idx] = nil
-    else
-      local ci = t.currency[idx] or {}
-      ci.amount, ci.earnedThisWeek, ci.weeklyMax, ci.totalMax = amount, earnedThisWeek, weeklyMax, totalMax
-      if idx == 396 then -- VP has a weekly max scaled by 100
-        ci.weeklyMax = ci.weeklyMax and math.floor(ci.weeklyMax/100)
-      end
-      if idx == 390 or idx == 395 or idx == 396 then -- these have a total max scaled by 100
-        ci.totalMax = ci.totalMax and math.floor(ci.totalMax/100)
-      end
-      if idx == 390 then -- these have a weekly earned scaled by 100
-        ci.earnedThisWeek = ci.earnedThisWeek and math.floor(ci.earnedThisWeek/100)
-      end
-      if idx == 1129 then -- Seal of Tempered Fate returns zero for weekly quantities
-        ci.weeklyMax = 3 -- the max via quests
-        ci.earnedThisWeek = 0
-        for id in pairs(WoDSealQuests) do
-          if IsQuestFlaggedCompleted(id) then
-            ci.earnedThisWeek = ci.earnedThisWeek + 1
-          end
-        end
-      elseif idx == 1273 then -- Seal of Broken Fate returns zero for weekly quantities
-        ci.weeklyMax = 3 -- the max via quests
-        ci.earnedThisWeek = 0
-        for id in pairs(LegionSealQuests) do
-          if IsQuestFlaggedCompleted(id) then
-            ci.earnedThisWeek = ci.earnedThisWeek + 1
-          end
-        end
-      end
-      if idx == 1580 then -- Seal of Wartorn Fate returns zero for weekly quantities
-        ci.weeklyMax = 2 -- the max via quests
-        ci.earnedThisWeek = 0
-        for id in pairs(BfASealQuests) do
-          if IsQuestFlaggedCompleted(id) then
-            ci.earnedThisWeek = ci.earnedThisWeek + 1
-          end
-        end
-      end
-      ci.season = addon:GetSeasonCurrency(idx)
-      if ci.weeklyMax == 0 then ci.weeklyMax = nil end -- don't store useless info
-      if ci.totalMax == 0 then ci.totalMax = nil end -- don't store useless info
-      if ci.earnedThisWeek == 0 then ci.earnedThisWeek = nil end -- don't store useless info
-      t.currency[idx] = ci
-    end
-  end
 end
 
 function addon:QuestIsDarkmoonMonthly()
@@ -2183,7 +1939,7 @@ local function ShowLFRTooltip(cell, arg, ...)
         if remap then
           bossid = remap[i-base+1]
         end
-        local bossname = GetLFGDungeonEncounterInfo(thisinstance.LFDID, bossid);
+        local bossname = GetLFGDungeonEncounterInfo(thisinstance.LFDID, bossid)
         local n = indicatortip:AddLine()
         indicatortip:SetCell(n, 1, bossname, "LEFT", 2)
         if info and info[bossid] then
@@ -2280,7 +2036,7 @@ local function ShowIndicatorTooltip(cell, arg, ...)
       if worldboss then
         bossname = addon.WorldBosses[worldboss].name or "UNKNOWN"
       else
-        bossname = GetLFGDungeonEncounterInfo(thisinstance.LFDID, bossid);
+        bossname = GetLFGDungeonEncounterInfo(thisinstance.LFDID, bossid)
       end
       local n = indicatortip:AddLine()
       indicatortip:SetCell(n, 1, bossname, "LEFT", 2)
@@ -2362,15 +2118,24 @@ local function ShowCurrencyTooltip(cell, arg, ...)
     end
   end
   if ci.weeklyMax and ci.weeklyMax > 0 then
-    if not spacer then indicatortip:AddLine(" "); spacer = true end
+    if not spacer then
+      indicatortip:AddLine(" ")
+      spacer = true
+    end
     indicatortip:AddLine(weeklycap:format("", CurrencyColor(ci.earnedThisWeek or 0,ci.weeklyMax), addon:formatNumber(ci.weeklyMax)))
   end
   if ci.totalMax and ci.totalMax > 0 then
-    if not spacer then indicatortip:AddLine(" "); spacer = true end
+    if not spacer then
+      indicatortip:AddLine(" ")
+      spacer = true
+    end
     indicatortip:AddLine(totalcap:format("", CurrencyColor(ci.amount or 0,ci.totalMax), addon:formatNumber(ci.totalMax)))
   end
   if ci.season and #ci.season > 0 then
-    if not spacer then indicatortip:AddLine(" "); spacer = true end
+    if not spacer then
+      indicatortip:AddLine(" ")
+      spacer = true
+    end
     local str = ci.season
     local num = str:match("(%d+)")
     if num then
@@ -2446,7 +2211,7 @@ end
 function core:OnInitialize()
   local versionString = GetAddOnMetadata(addonName, "version")
   --[===[@debug@
-  if versionString == "8.0.6-1-g3950175" then
+  if versionString == "8.0.6-7-g4bebabe" then
     versionString = "Dev"
   end
   --@end-debug@]===]
@@ -2548,7 +2313,6 @@ function core:OnEnable()
   self:RegisterEvent("CHAT_MSG_SYSTEM", "CheckSystemMessage")
   self:RegisterEvent("CHAT_MSG_CURRENCY", "CheckSystemMessage")
   self:RegisterEvent("CHAT_MSG_LOOT", "CheckSystemMessage")
-  self:RegisterBucketEvent("CURRENCY_DISPLAY_UPDATE", 0.25, function() addon:UpdateCurrency() end)
   self:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")
   self:RegisterBucketEvent("TRADE_SKILL_LIST_UPDATE", 1)
   self:RegisterBucketEvent("PLAYER_ENTERING_WORLD", 1, RequestRaidInfo)
@@ -2558,8 +2322,6 @@ function core:OnEnable()
   self:RegisterEvent("LFG_COMPLETION_REWARD", "RefreshLockInfo") -- for random daily dungeon tracking
   self:RegisterEvent("BOSS_KILL")
   self:RegisterEvent("ENCOUNTER_END", "EncounterEnd")
-  self:RegisterEvent("BAG_UPDATE", "RefreshMythicKeyInfo")
-  self:RegisterEvent("CHALLENGE_MODE_MAPS_UPDATE", "RefreshMythicKeyInfo")
   self:RegisterEvent("CHAT_MSG_MONSTER_YELL")
   self:RegisterEvent("TIME_PLAYED_MSG", function(_,total,level)
     local t = thisToon and addon and addon.db and addon.db.Toons[thisToon]
@@ -2592,7 +2354,6 @@ function core:OnEnable()
   C_ChatInfo.RegisterAddonMessagePrefix(addonName)
   addon:HistoryEvent("PLAYER_ENTERING_WORLD") -- update after initial load
   addon:specialQuests()
-  core:RefreshMythicKeyInfo()
   core:updateRealmMap()
 end
 
@@ -2677,87 +2438,6 @@ function core:updateRealmMap()
       rmap[r] = mapid
     end
   end
-end
-
-function core:RefreshMythicKeyInfo(event)
-
-  if (event ~= "CHALLENGE_MODE_MAPS_UPDATE") then C_MythicPlus.RequestRewards() end -- This event is fired after the rewards data was requested, causing yet another refresh if not checked for
-
-  local t = addon.db.Toons[thisToon]
-  local _
-  t.MythicKey = {}
-  for bagID = 0, 4 do
-    for invID = 1, GetContainerNumSlots(bagID) do
-      local itemID = GetContainerItemID(bagID, invID)
-      if itemID and itemID == 158923 then
-        local keyLink = GetContainerItemLink(bagID, invID)
-        local KeyInfo = {strsplit(':', keyLink)}
-        local mapID = tonumber(KeyInfo[3])
-        local mapLevel = tonumber(KeyInfo[4])
-        local color
-        if KeyInfo[4] == "0" then
-          _,_,_,color = GetItemQualityColor(0)
-        elseif mapLevel >= 10 then
-          _,_,_,color = GetItemQualityColor(4)
-        elseif mapLevel >= 7 then
-          _,_,_,color = GetItemQualityColor(3)
-        elseif mapLevel >= 4 then
-          _,_,_,color = GetItemQualityColor(2)
-        else
-          _,_,_,color = GetItemQualityColor(1)
-        end
-        if addon.db.Tooltip.DebugMode then
-          DEFAULT_CHAT_FRAME:AddMessage(tostring(KeyInfo[1]))
-          DEFAULT_CHAT_FRAME:AddMessage(tostring(KeyInfo[2]))
-          DEFAULT_CHAT_FRAME:AddMessage(tostring(KeyInfo[3]))
-          DEFAULT_CHAT_FRAME:AddMessage(tostring(KeyInfo[4]))
-          DEFAULT_CHAT_FRAME:AddMessage(tostring(KeyInfo[5]))
-          DEFAULT_CHAT_FRAME:AddMessage(tostring(KeyInfo[6]))
-          DEFAULT_CHAT_FRAME:AddMessage(tostring(KeyInfo[7]))
-          DEFAULT_CHAT_FRAME:AddMessage(tostring(KeyInfo[8]))
-          DEFAULT_CHAT_FRAME:AddMessage(tostring(KeyInfo[9]))
-          DEFAULT_CHAT_FRAME:AddMessage(tostring(KeyInfo[10]))
-          DEFAULT_CHAT_FRAME:AddMessage(tostring(KeyInfo[11]))
-          DEFAULT_CHAT_FRAME:AddMessage(tostring(KeyInfo[12]))
-          DEFAULT_CHAT_FRAME:AddMessage(tostring(KeyInfo[13]))
-          DEFAULT_CHAT_FRAME:AddMessage(tostring(KeyInfo[14]))
-          DEFAULT_CHAT_FRAME:AddMessage(tostring(KeyInfo[15]))
-          DEFAULT_CHAT_FRAME:AddMessage(tostring(KeyInfo[16]))
-          DEFAULT_CHAT_FRAME:AddMessage(tostring(KeyInfo[17]))
-          DEFAULT_CHAT_FRAME:AddMessage(tostring(KeyInfo[18]))
-          DEFAULT_CHAT_FRAME:AddMessage(tostring(KeyInfo[19]))
-          DEFAULT_CHAT_FRAME:AddMessage(tostring(KeyInfo[20]))
-        end
-        t.MythicKey.abbrev = KeystoneAbbrev[mapID]
-        t.MythicKey.link = C_ChallengeMode.GetMapUIInfo(mapID)
-        t.MythicKey.color = color
-        t.MythicKey.level = mapLevel
-        t.MythicKey.ResetTime = addon:GetNextWeeklyResetTime()
-        t.MythicKey.link = keyLink
-      end
-    end
-  end
-  local MythicMaps = { }
-  C_MythicPlus.RequestMapInfo()
-  MythicMaps = C_ChallengeMode.GetMapTable()
-  local bestlevel = 0
-  for i = 1, #MythicMaps do
-    local _, level = C_MythicPlus.GetWeeklyBestForMap(MythicMaps[i]);
-    if level then
-      if level > bestlevel then
-        bestlevel = level
-      end
-    end
-  end
-  if t.MythicKeyBest and (t.MythicKeyBest.ResetTime or 0) < time() then -- dont know weekly reset function will run early or not
-    if t.MythicKeyBest.level and t.MythicKeyBest.level > 0 then
-      t.MythicKeyBest.LastWeekLevel = t.MythicKeyBest.level
-  end
-  end
-  t.MythicKeyBest = t.MythicKeyBest or { }
-  t.MythicKeyBest.ResetTime = addon:GetNextWeeklyResetTime()
-  t.MythicKeyBest.level = bestlevel
-  t.MythicKeyBest.WeeklyReward = C_MythicPlus.IsWeeklyRewardAvailable()
 end
 
 function core:getRealmGroup(realm)
@@ -2903,7 +2583,6 @@ function addon.HistoryEvent(f, evt, ...)
     core:ScheduleTimer("HistoryUpdate", waittime+1)
   end
 end
-
 
 addon.histReapTime = 60*60 -- 1 hour
 addon.histLimit = 10 -- instances per hour
@@ -3122,7 +2801,10 @@ end
 function core:Refresh(recoverdaily)
   -- update entire database from the current character's perspective
   addon:UpdateInstanceData()
-  if not addon.instancesUpdated then addon.RefreshPending = true; return end -- wait for UpdateInstanceData to succeed
+  if not addon.instancesUpdated then
+    addon.RefreshPending = true
+    return
+  end -- wait for UpdateInstanceData to succeed
   local nextreset = addon:GetNextDailyResetTime()
   if not nextreset or ((nextreset - time()) > (24*3600 - 5*60)) then  -- allow 5 minutes for quest DB to update after daily rollover
     debug("Skipping core:Refresh() near daily reset")
@@ -3170,7 +2852,7 @@ function core:Refresh(recoverdaily)
 
   local weeklyreset = addon:GetNextWeeklyResetTime()
   for id,_ in pairs(addon.LFRInstances) do
-    local numEncounters, numCompleted = GetLFGDungeonNumEncounters(id);
+    local numEncounters, numCompleted = GetLFGDungeonNumEncounters(id)
     if ( numCompleted and numCompleted > 0 and weeklyreset ) then
       local truename, instance = addon:LookupInstance(id, nil, true)
       instance[thisToon] = instance[thisToon] or temp[truename] or { }
@@ -3182,7 +2864,7 @@ function core:Refresh(recoverdaily)
       end
       info.ID = -1*numEncounters
       for i=1, numEncounters do
-        local bossName, texture, isKilled = GetLFGDungeonEncounterInfo(id, i);
+        local bossName, texture, isKilled = GetLFGDungeonEncounterInfo(id, i)
         info[i] = isKilled
       end
     end
@@ -3239,7 +2921,7 @@ local function UpdateTooltip(self,elap)
   if addon.firstupdate then
     -- ticket 155: fix QTip backdrop which somehow gets corrupted sometimes, no idea why
     tooltip:SetBackdrop(GameTooltip:GetBackdrop())
-    tooltip:SetBackdropColor(GameTooltip:GetBackdropColor());
+    tooltip:SetBackdropColor(GameTooltip:GetBackdropColor())
     tooltip:SetBackdropBorderColor(GameTooltip:GetBackdropBorderColor())
     addon:SkinFrame(tooltip, "SavedInstancesTooltip")
     addon.firstupdate = false
@@ -3392,11 +3074,17 @@ function addon:ShowDetached()
       f:SetPoint("CENTER")
     end
     f:SetScript("OnMouseDown", function() f:StartMoving() end)
-    f:SetScript("OnMouseUp", function() f:StopMovingOrSizing()
+    f:SetScript("OnMouseUp", function()
+      f:StopMovingOrSizing()
       addon.db.Tooltip.posx = f:GetLeft()
       addon.db.Tooltip.posy = UIParent:GetTop() - (f:GetTop()*f:GetScale())
     end)
-    f:SetScript("OnHide", function() if tooltip then QTip:Release(tooltip); tooltip = nil end  end )
+    f:SetScript("OnHide", function()
+      if tooltip then
+        QTip:Release(tooltip)
+        tooltip = nil
+      end
+    end)
     f:SetScript("OnUpdate", function(self)
       if not tooltip then f:Hide(); return end
       local w,h = tooltip:GetSize()
@@ -3405,7 +3093,7 @@ function addon:ShowDetached()
     f:SetScript("OnKeyDown", function(self,key)
       if key == "ESCAPE" then
         f:SetPropagateKeyboardInput(false)
-        f:Hide();
+        f:Hide()
       end
     end)
     f:EnableKeyboard(true)
@@ -4294,8 +3982,8 @@ function core:ShowTooltip(anchorframe)
       local scale = tooltip:GetScale()
       local w,h = tooltip:GetSize()
       local sw,sh = UIParent:GetSize()
-      w = w*scale;
-      h = h*scale;
+      w = w*scale
+      h = h*scale
       if w > sw or h > sh then
         scale = scale / math.max(w/sw, h/sh)
         scale = scale*0.95 -- 5% slop to speed convergeance
@@ -4490,8 +4178,8 @@ function core:TradeSkillRescan(spellid)
     ExpandTradeSkillSubClass(0)
     local rescan = core:TRADE_SKILL_LIST_UPDATE()
     debug("Rescan: "..(rescan==scan and "Failed" or "Success"))
-    TradeSkillOnlyShowMakeable(addon.filtertmp.hasMaterials);
-    TradeSkillOnlyShowSkillUps(addon.filtertmp.hasSkillUp);
+    TradeSkillOnlyShowMakeable(addon.filtertmp.hasMaterials)
+    TradeSkillOnlyShowSkillUps(addon.filtertmp.hasSkillUp)
     SetTradeSkillCategoryFilter(addon.filtertmp.subClassValue or -1)
     SetTradeSkillInvSlotFilter(addon.filtertmp.slotValue or -1, 1, 1)
   end

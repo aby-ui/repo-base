@@ -9,9 +9,11 @@ addon.LFRInstances = {
   -- /run for i, v in ipairs(GetLFRChoiceOrder()) do print(i, v, GetLFGDungeonInfo(v)) end
   -- altid is for alternate LFRID for higher level toons
 
+  -- Cataclysm
   [416] = { total=4, base=1,  parent=448, altid=843 }, -- DS1: The Siege of Wyrmrest Temple
   [417] = { total=4, base=5,  parent=448, altid=844 }, -- DS2: Fall of Deathwing
 
+  -- Mist of Pandaria
   [527] = { total=3, base=1,  parent=532, altid=830 }, -- MSV1: Guardians of Mogu'shan
   [528] = { total=3, base=4,  parent=532, altid=831 }, -- MSV2: The Vault of Mysteries
   [529] = { total=3, base=1,  parent=534, altid=832 }, -- HoF1: The Dread Approach
@@ -26,6 +28,7 @@ addon.LFRInstances = {
   [724] = { total=3, base=9,  parent=766, altid=841 }, -- SoO3: The Underhold
   [725] = { total=3, base=12, parent=766, altid=842 }, -- SoO4: Downfall
 
+  -- Warlords of Draenor
   [849] = { total=3, base=1,  parent=897, altid=1363 }, -- Highmaul1: Walled City
   [850] = { total=3, base=4,  parent=897, altid=1364 }, -- Highmaul2: Arcane Sanctum
   [851] = { total=1, base=7,  parent=897, altid=1365 }, -- Highmaul3: Imperator's Rise
@@ -40,6 +43,7 @@ addon.LFRInstances = {
   [985] = { total=3, base=10, parent=989, altid=1369, remap={ 9, 10, 12 } }, -- Hellfire4: Destructor's Rise
   [986] = { total=1, base=13, parent=989, altid=1370 }, -- Hellfire5: The Black Gate
 
+  -- Legion
   [1287] = { total=3, base=1,  parent=1350, altid=nil, remap={ 1, 2, 3 } }, -- EN1: Darkbough
   [1288] = { total=3, base=4,  parent=1350, altid=nil, remap={ 1, 2, 3 } }, -- EN2: Tormented Guardians
   [1289] = { total=1, base=7,  parent=1350, altid=nil, remap={ 1 } },       -- EN3: Rift of Aln
@@ -61,6 +65,7 @@ addon.LFRInstances = {
   [1612] = { total=3, base=7, parent=1642, altid=nil, remap={ 1, 2, 3 } }, -- Antorus: Hope's End
   [1613] = { total=2, base=10, parent=1642, altid=nil, remap={ 1, 2 } }, -- Antorus: Seat of the Pantheon
 
+  -- Battle for Azeroth
   [1731] = { total=3, base=1, parent=1889, altid=nil, remap={ 1, 2, 3 } }, -- Uldir: Halls of Containment
   [1732] = { total=3, base=4, parent=1889, altid=nil, remap={ 1, 2, 3 } }, -- Uldir: Crimson Descent
   [1733] = { total=2, base=7, parent=1889, altid=nil, remap={ 1, 2 } },  -- Uldir: Heart of Corruption

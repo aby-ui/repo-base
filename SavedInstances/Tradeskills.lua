@@ -15,6 +15,7 @@ local trade_spells = {
   [17563] = "xmute", 	-- Transmute: Undeath to Water
   [17562] = "xmute", 	-- Transmute: Water to Air
   [17564] = "xmute", 	-- Transmute: Water to Undeath
+
   -- BC
   [28566] = "xmute", 	-- Transmute: Primal Air to Fire
   [28585] = "xmute", 	-- Transmute: Primal Earth to Life
@@ -26,6 +27,7 @@ local trade_spells = {
   [28580] = "xmute", 	-- Transmute: Primal Shadow to Water
   [28569] = "xmute", 	-- Transmute: Primal Water to Air
   [28581] = "xmute", 	-- Transmute: Primal Water to Shadow
+
   -- WotLK
   [60893] = 3, 		-- Northrend Alchemy Research: 3 days
   [53777] = "xmute", 	-- Transmute: Eternal Air to Earth
@@ -47,16 +49,20 @@ local trade_spells = {
   [66662] = "xmute", 	-- Transmute: Dreadstone
   [66663] = "xmute", 	-- Transmute: Majestic Zircon
   [66664] = "xmute", 	-- Transmute: Eye of Zul
+
   -- Cata
   [78866] = "xmute", 	-- Transmute: Living Elements
   [80244] = "xmute", 	-- Transmute: Pyrium Bar
+
   -- MoP
   [114780] = "xmute", 	-- Transmute: Living Steel
+
   -- WoD
   [175880] = true,	-- Secrets of Draenor
   [156587] = true,	-- Alchemical Catalyst (4)
   [168042] = true,	-- Alchemical Catalyst (10), 3 charges w/ 24hr recharge
   [181643] = "xmute",	-- Transmute: Savage Blood
+
   -- Legion
   [188800] = "wildxmute", -- Transmute: Wild Transmutation (Rank 1)
   [188801] = "wildxmute", -- Transmute: Wild Transmutation (Rank 2)
@@ -72,6 +78,7 @@ local trade_spells = {
   [213256] = "legionxmute", -- Transmute: Meat to Pet
   [213257] = "legionxmute", -- Transmute: Blood of Sargeras
   [247701] = "legionxmute", -- Transmute: Primal Sargerite
+
   -- BfA
   [251832] = "legionxmute", -- Transmute: Expulsom
   [251314] = "legionxmute", -- Transmute: Cloth to Skins
@@ -109,6 +116,7 @@ local trade_spells = {
   [56005] = 7, 		-- Glacial Bag (5.2.0 verified)
   [176058] = true,	-- Secrets of Draenor
   [168835] = true,	-- Hexweave Cloth
+
   -- Dreamcloth
   [75141] = 7, 		-- Dream of Skywall
   [75145] = 7, 		-- Dream of Ragnaros
@@ -143,12 +151,10 @@ local trade_spells = {
   [139176] = true,	-- Stabilized Lightning Source
   [169080] = true, 	-- Gearspring Parts
   [177054] = true,	-- Secrets of Draenor
-
   [126459] = "item",	-- Blingtron 4000
   [161414] = "item",	-- Blingtron 5000
   [54710]  = "item",	-- MOLL-E
   [67826]  = "item",	-- Jeeves
-
   [67833] = "item",	-- Wormhole Generator: Northrend
   [126755] = "item",	-- Wormhole Generator: Pandaria
   [163830] = "item",	-- Wormhole Centrifuge
