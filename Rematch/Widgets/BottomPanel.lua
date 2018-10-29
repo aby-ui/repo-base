@@ -95,7 +95,7 @@ function panel:Resize(width,showToggle,showSummon)
 	end
 	panel.UseDefault:SetShown(showToggle)
 	panel.SummonButton:SetShown(showSummon)
-	panel.SaveButton.LeftSeparator:SetShown(showSummon)
+	--panel.SaveButton.LeftSeparator:SetShown(showSummon)
 	local buttonWidth -- the width of Find Battle, Save As and Save
 	if showSummon then
 		panel.SummonButton:SetWidth(panel:GetParent()==rematch.Frame and 120 or 160)

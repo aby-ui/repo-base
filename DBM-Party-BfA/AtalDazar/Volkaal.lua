@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2036, "DBM-Party-BfA", 1, 968)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 18026 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 18043 $"):sub(12, -3))
 mod:SetCreatureID(122965)
 mod:SetEncounterID(2085)
 mod:SetZone()
@@ -40,7 +40,7 @@ end
 
 function mod:SPELL_AURA_APPLIED(args)
 	local spellId = args.spellId
-	if spellId == 250585 and args:IsPlayer() and self:AntiSpam(2, 1) then
+	if spellId == 250585 and args:IsPlayer() and self:AntiSpam(3, 1) then
 		specWarnGTFO:Show(args.spellName)
 		specWarnGTFO:Play("watchfeet")
 	end

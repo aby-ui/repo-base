@@ -35,12 +35,12 @@ local function GetNameForKeystone(keystoneMapID, keystoneLevel)
 end
 
 local function UpdatePartyKeystones()
-	if not IsAddOnLoaded("Blizzard_ChallengesUI") then return end
-
 	Mod:CheckCurrentKeystone()
 	if requestPartyKeystones then
 		Mod:SendPartyKeystonesRequest()
 	end
+
+	if not IsAddOnLoaded("Blizzard_ChallengesUI") then return end
 
 	local playerRealm = select(2, UnitFullName("player"))
 
@@ -426,6 +426,10 @@ function Mod:CHALLENGE_MODE_COMPLETED()
 	self:SetPartyKeystoneRequest()
 end
 
+function Mod:CHALLENGE_MODE_UPDATED()
+	self:CheckCurrentKeystone()
+end
+
 function Mod:Startup()
 	self:RegisterAddOnLoaded("Blizzard_ChallengesUI")
 	self:RegisterEvent("GROUP_ROSTER_UPDATE", "SetPartyKeystoneRequest")
@@ -433,9 +437,9 @@ function Mod:Startup()
 	self:RegisterEvent("CHAT_MSG_LOOT")
 	self:RegisterEvent("CHALLENGE_MODE_COMPLETED")
 	self:RegisterEvent("CHALLENGE_MODE_START")
-	self:RegisterEvent("CHALLENGE_MODE_MAPS_UPDATE", "CheckCurrentKeystone")
-	self:RegisterEvent("CHALLENGE_MODE_LEADERS_UPDATE", "CheckCurrentKeystone")
-	self:RegisterEvent("CHALLENGE_MODE_MEMBER_INFO_UPDATED", "CheckCurrentKeystone")
+	self:RegisterEvent("CHALLENGE_MODE_MAPS_UPDATE", "CHALLENGE_MODE_UPDATED")
+	self:RegisterEvent("CHALLENGE_MODE_LEADERS_UPDATE", "CHALLENGE_MODE_UPDATED")
+	self:RegisterEvent("CHALLENGE_MODE_MEMBER_INFO_UPDATED", "CHALLENGE_MODE_UPDATED")
 	self:RegisterAddOnComm()
 	self:CheckCurrentKeystone()
 
