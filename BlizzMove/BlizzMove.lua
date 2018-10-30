@@ -314,6 +314,14 @@ function BM_SetMoveHandler(frameToMove, handler)
         --if w and h then handler:SetClampRectInsets(w-5, -w+5, 0, 0) end
     end --Carbonite同时显示，小地图美化也要挪动一些出屏幕等
 end
+function BM_CreateMover(frame, height, offsetLeft, offsetRight, offsetTop)
+    frame:SetMovable(true)
+    local mover = WW(frame):Frame():Key("_blizMover"):Size(0,height)
+    mover:TL(offsetLeft,offsetTop):TR(offsetRight,offsetTop)
+    mover:EnableMouse():AddFrameLevel(1, frame)
+    --mover:SetClampedToScreen(true) --没效果
+    return mover:un()
+end
 
 local function resetDB()
     for k, v in pairs(db) do
@@ -467,9 +475,12 @@ local function OnEvent(self, event, arg1, arg2)
         end)
 
         BM_SetMoveHandlerWith(nil, "Blizzard_Collections", function()
-            BM_SetMoveHandler(WardrobeFrame)
-            BM_SetMoveHandler(CollectionsJournal)
+            --BM_SetMoveHandler(WardrobeFrame)
+            --BM_SetMoveHandler(CollectionsJournal)
+            local mover = BM_CreateMover(CollectionsJournal, 26, 30, 30, 0)
+            BM_SetMoveHandler(CollectionsJournal, mover)
         end)
+        CoreDependCall("Rematch", function() RematchJournal:EnableMouse(false) end) --不能遮挡拖动
 
         BM_SetMoveHandlerWith(nil, "Blizzard_GuildUI", function()
             BM_SetMoveHandler(GuildFrame)
