@@ -1,14 +1,14 @@
 local mod	= DBM:NewMod(2147, "DBM-Uldir", nil, 1031)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 18034 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 18057 $"):sub(12, -3))
 mod:SetCreatureID(132998)
 mod:SetEncounterID(2122)
 mod:SetZone()
 --mod:SetBossHPInfoToHighest()
 mod:SetUsedIcons(8, 7, 6, 5, 4, 3, 2, 1)
 mod:SetHotfixNoticeRev(17906)
-mod:SetMinSyncRevision(17776)
+mod:SetMinSyncRevision(18056)
 mod.respawnTime = 29
 
 mod:RegisterCombat("combat")
@@ -38,7 +38,7 @@ mod:RegisterEventsInCombat(
  or ability.id = 270443
  or (ability.id = 267462 or ability.id = 267412 or ability.id = 267409) and type = "begincast"
  or ability.id = 270443 and type = "applybuff"
- or (ability.id = 277079 or ability.id = 272506 or ability.id = 274262) and (type = "applydebuff" or type = "removedebuff")
+ or (ability.id = 277079 or ability.id = 272506 or ability.id = 274262 or ability.id = 263504) and (type = "applydebuff" or type = "removedebuff")
 --]]
 --Arena Floor
 local warnMatrixSpawn					= mod:NewCountAnnounce(263420, 1)
@@ -46,6 +46,7 @@ local warnMatrixFail					= mod:NewAnnounce("warnMatrixFail", 4, 263420)
 local warnPowerMatrix					= mod:NewTargetNoFilterAnnounce(263420, 2, nil, false)--No Filter announce, but off by default since infoframe is more productive way of showing it
 local warnBloodHost						= mod:NewTargetAnnounce(267813, 3)--Mythic
 local warnDarkPurpose					= mod:NewTargetAnnounce(268074, 4, nil, false)--Mythic
+local warnThousandMaws					= mod:NewCountAnnounce(267509, 2)
 local warnDarkBargain					= mod:NewSpellAnnounce(267409, 1)
 local warnBurrow						= mod:NewSpellAnnounce(267579, 2)
 local warnBurstingBoil					= mod:NewCountAnnounce(277007, 4)--Mythic
@@ -60,7 +61,7 @@ local specWarnExplosiveCorruption		= mod:NewSpecialWarningMoveAway(272506, nil, 
 local specWarnVirulentCorruption		= mod:NewSpecialWarningDodge(277081, nil, nil, nil, 2, 2)--Orbs spawned by ExplosiveCorruption
 local yellExplosiveCorruption			= mod:NewYell(272506)
 local yellExplosiveCorruptionFades		= mod:NewShortFadesYell(272506)
-local specWarnThousandMaws				= mod:NewSpecialWarningSwitch(267509, nil, nil, nil, 1, 2)
+local specWarnThousandMaws				= mod:NewSpecialWarningSwitch(267509, false, nil, 2, 1, 2)
 local specWarnTorment					= mod:NewSpecialWarningInterrupt(267427, "HasInterrupt", nil, nil, 1, 2)
 local specWarnMassiveSmash				= mod:NewSpecialWarningSpell(267412, "Tank", nil, 2, 1, 2)
 local specWarnDarkBargain				= mod:NewSpecialWarningDodge(267409, nil, nil, 2, 3, 2)
@@ -135,8 +136,9 @@ mod.vb.burstingIcon = 0
 mod.vb.burstingCount = 0
 mod.vb.explosiveIcon = 0
 mod.vb.matrixActive = false
+mod.vb.bloodFeastTarget = nil
 local playerHasImperfect, playerHasBursting, playerHasBargain, playerHasMatrix = false, false, false, false
-local matrixTargets, bloodFeastTarget = {}, {}
+local matrixTargets = {}
 local thousandMawsTimers = {25.4, 26.3, 25.5, 24.2, 23.9, 23.1, 21.5, 21.9, 19.4}
 local thousandMawsTimersLFR = {27.78, 29.2, 27.9, 26.46, 26.13, 25.26, 23.51, 23.95, 21.21}--Timers 4+ extrapolated using 1.093x greater formula
 local seenAdds = {}
@@ -200,11 +202,8 @@ do
 				end
 			end
 		end
-		for i=1, #bloodFeastTarget do
-			local name = bloodFeastTarget[i]
-			local uId = DBM:GetRaidUnitId(name)
-			if not uId then break end
-			addLine(bloodFeastName, UnitName(uId))
+		if mod.vb.bloodFeastTarget then
+			addLine(bloodFeastName, mod.vb.bloodFeastTarget)
 		end
 		--Player personal checks
 		if playerHasImperfect then
@@ -257,8 +256,8 @@ end
 
 function mod:OnCombatStart(delay)
 	table.wipe(matrixTargets)
-	table.wipe(bloodFeastTarget)
 	table.wipe(seenAdds)
+	self.vb.bloodFeastTarget = nil
 	self.vb.phase = 1
 	self.vb.mawCastCount = 0
 	self.vb.matrixCount = 0
@@ -321,8 +320,12 @@ function mod:SPELL_CAST_START(args)
 	local spellId = args.spellId
 	if spellId == 267509 then
 		self.vb.mawCastCount = self.vb.mawCastCount + 1
-		specWarnThousandMaws:Show()
-		specWarnThousandMaws:Play("killmob")
+		if self.Options.SpecWarn267509switch2 then
+			specWarnThousandMaws:Show()
+			specWarnThousandMaws:Play("killmob")
+		else
+			warnThousandMaws:Show(self.vb.mawCastCount)
+		end
 		local timer = self:IsLFR() and thousandMawsTimersLFR[self.vb.mawCastCount+1] or thousandMawsTimers[self.vb.mawCastCount+1]
 		if timer then
 			timerThousandMawsCD:Start(timer, self.vb.mawCastCount+1)
@@ -591,9 +594,7 @@ function mod:SPELL_AURA_APPLIED(args)
 			local count = self.vb.bloodFeastCount
 			specWarnBloodFeastTarget:ScheduleVoice(1, nil, "Interface\\AddOns\\DBM-VP"..DBM.Options.ChosenVoicePack.."\\count\\"..count..".ogg")
 		end
-		if not tContains(bloodFeastTarget, args.destName) then
-			table.insert(bloodFeastTarget, args.destName)
-		end
+		self.vb.bloodFeastTarget = args.destName
 	elseif spellId == 270443 then--Bite
 		--Start wave timer when boss activates, vs when he's first stunned.
 		self.vb.waveCast = 0
@@ -672,7 +673,7 @@ function mod:SPELL_AURA_REMOVED(args)
 		if args:IsPlayer() then
 			yellBloodFeastFades:Cancel()
 		end
-		tDeleteItem(bloodFeastTarget, args.destName)
+		self.vb.bloodFeastTarget = nil
 	elseif spellId == 263372 then
 		tDeleteItem(matrixTargets, args.destName)
 		self:Unschedule(checkThrowFail)
