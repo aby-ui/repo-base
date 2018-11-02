@@ -108,7 +108,7 @@ local function hookMountBuffInfo(self, unit, index, filter)
         GameTooltip:Show()
     end
 
-    local frame = self:GetOwner()
+    local frame = self:GetOwner() if not frame then return end
     local name = frame:GetName()
     if not frame._hook163 and name and name:find("^TargetFrameBuff[0-9]+$") then
         frame._hook163 = 1

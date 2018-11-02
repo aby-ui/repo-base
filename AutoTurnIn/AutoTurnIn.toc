@@ -1,4 +1,4 @@
-﻿## Interface: 80000
+## Interface: 80000
 ## Title: AutoTurnIn
 ## Version: 7.0.9
 ## Author: Alexandr Shubert
@@ -32,5 +32,3 @@ ui\reward_options.lua
 ## Title: |cff880303[爱不易]|r AutoTurnIn 自动交接任务
 ## Notes-zhCN: 自动交接任务
 ## X-Vendor: AbyUI
-
-

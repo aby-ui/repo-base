@@ -8,5 +8,6 @@ privateTable.IGNORED_NPC = {
 	["111243"] = "Archmage Lan'dalock", --大法师兰达洛克 7.0大厅资源换印记
 	["15077"] = "Riggle Bassbait",
 	["119388"] = "Chieftain Hatuun",
-	["127037"] = "nabiru"
+	["127037"] = "Nabiru",
+	["142063"] = "Tezran"
 }

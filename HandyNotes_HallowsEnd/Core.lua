@@ -31,9 +31,14 @@ local continents = {
 }
 
 local notes = {
+	[12331] = "和黑海岸的希多尔米对话可以回到泰达希尔.",
+	[12334] = "和黑海岸的希多尔米对话可以回到泰达希尔.",
 	[12340] = "如果哨兵岭着火了，糖果罐在塔里，否则在旅馆里.",
 	[12349] = "如果你找不到糖果罐，与时间守护者对话回到过去.", -- Theramore Isle, Alliance
+	[12363] = "如果你找不到糖果罐，与时间守护者对话回到过去.", -- Brill, Horde
+	[12368] = "和提瑞斯法的希多尔米对话可以回到幽暗城.",
 	[12380] = "如果你找不到糖果罐，与时间守护者对话回到过去.", -- Hammerfall, Horde
+	[12401] = "如果你找不到糖果罐，与时间守护者对话回到过去.", -- Cenarion Hold, Silithus
 	[13472] = "在下面的酒馆里.",	
 	[28954] = "如果你找不到糖果罐，与时间守护者对话回到过去.", -- Refuge Pointe, Alliance
 	[28959] = "如果你找不到糖果罐，与时间守护者对话回到过去.", -- Dreadmaul Hold, Horde
@@ -49,7 +54,6 @@ local C_Timer_NewTicker = _G.C_Timer.NewTicker
 local C_Calendar = _G.C_Calendar
 local GameTooltip = _G.GameTooltip
 local GetFactionInfoByID = _G.GetFactionInfoByID
-local GetGameTime = _G.GetGameTime
 local GetQuestsCompleted = _G.GetQuestsCompleted
 local gsub = _G.string.gsub
 local IsControlKeyDown = _G.IsControlKeyDown
@@ -197,8 +201,8 @@ local options = {
 -- check
 local setEnabled = false
 local function CheckEventActive()
-	local date = C_Calendar.GetDate()
-	local month, day, year = date.month, date.monthDay, date.year
+	local calendar = C_Calendar.GetDate()
+	local month, day, year = calendar.month, calendar.monthDay, calendar.year
 
 	local monthInfo = C_Calendar.GetMonthInfo()
 	local curMonth, curYear = monthInfo.month, monthInfo.year
@@ -213,7 +217,7 @@ local function CheckEventActive()
 			if event.sequenceType == "ONGOING" then
 				setEnabled = true
 			else
-				local hour = GetGameTime()
+				local hour = tonumber(date("%H"))
 
 				if event.sequenceType == "END" and hour <= event.endTime.hour or event.sequenceType == "START" and hour >= event.startTime.hour then
 					setEnabled = true
@@ -290,8 +294,8 @@ function HallowsEnd:OnEnable()
 		end
 	end
 
-	local date = C_Calendar.GetDate()
-	C_Calendar.SetAbsMonth(date.month, date.year)
+	local calendar = C_Calendar.GetDate()
+	C_Calendar.SetAbsMonth(calendar.month, calendar.year)
 
 	C_Timer_NewTicker(15, CheckEventActive)
 	HandyNotes:RegisterPluginDB("HallowsEnd", self, options)
