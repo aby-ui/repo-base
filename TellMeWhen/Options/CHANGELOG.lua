@@ -7,6 +7,7 @@ TMW.CHANGELOG = [==[
 ===v8.5.5===
 * A few improvements to the spell equivalency lists.
 * Added Keystone Level condition for Mythic+.
+* The Unit Reaction condition now checks specifically if the subject is attackable by you. This prevents false positives on, for example, the opposite-faction guards in Dalaran.
 
 ====Bug Fixes====
 * Fixed #1584 - Error when switching profiles via slash command.

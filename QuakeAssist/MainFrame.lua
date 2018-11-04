@@ -219,7 +219,7 @@ addon:RegisterOptionCallback("position", function(position)
 	if type(position) == "table" and type(position.point) == "string" then
 		frame:SetPoint(position.point, position.relativeTo, position.relativePoint, position.xOffset, position.yOffset)
 	else
-		frame:SetPoint("CENTER")
+		frame:SetPoint("CENTER", 0, -100)
 	end
 end)
 

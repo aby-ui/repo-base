@@ -1,4 +1,4 @@
-
+local scale_adjust = { [619] = -2, [906] = -2, } --abyui fix broken isles icon size
 
 --world quest tracker object
 local WorldQuestTracker = WorldQuestTrackerAddon
@@ -1320,7 +1320,7 @@ hooksecurefunc (WorldMapFrame.ScrollContainer, "ZoomIn", function()
 	
 	if (WorldQuestTracker.IsWorldQuestHub (WorldMapFrame.mapID)) then
 		for _, widget in pairs (WorldQuestTracker.WorldMapSmallWidgets) do
-			widget:SetScale (pinScale + WorldQuestTracker.db.profile.world_map_config.onmap_scale_offset)
+			widget:SetScale (pinScale + WorldQuestTracker.db.profile.world_map_config.onmap_scale_offset + (scale_adjust[WorldMapFrame.mapID or 0] or 0))
 		end
 	end
 end)
@@ -1332,7 +1332,7 @@ hooksecurefunc (WorldMapFrame.ScrollContainer, "ZoomOut", function()
 	
 	if (WorldQuestTracker.IsWorldQuestHub (WorldMapFrame.mapID)) then
 		for _, widget in pairs (WorldQuestTracker.WorldMapSmallWidgets) do
-			widget:SetScale (pinScale + WorldQuestTracker.db.profile.world_map_config.onmap_scale_offset)
+			widget:SetScale (pinScale + WorldQuestTracker.db.profile.world_map_config.onmap_scale_offset + (scale_adjust[WorldMapFrame.mapID or 0] or 0))
 		end
 	end
 end)
@@ -1407,7 +1407,7 @@ local scheduledIconUpdate = function (questTable)
 	
 	local mapScale = WorldMapFrame.ScrollContainer:GetCanvasScale()
 	local pinScale = DF:MapRangeClamped (mapRangeValues[1], mapRangeValues[2], mapRangeValues[3], mapRangeValues[4], mapScale)
-	button:SetScale (pinScale + WorldQuestTracker.db.profile.world_map_config.onmap_scale_offset)
+	button:SetScale (pinScale + WorldQuestTracker.db.profile.world_map_config.onmap_scale_offset + (scale_adjust[WorldMapFrame.mapID or 0] or 0))
 	
 --	if (button.questID ~= questID and HaveQuestData (questID)) then
 		--> can cache here, at this point the quest data should already be in the cache

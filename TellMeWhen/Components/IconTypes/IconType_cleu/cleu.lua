@@ -18,8 +18,8 @@ local print = TMW.print
 local _G = _G
 local bit_band, bit_bor, tinsert, tremove, unpack, wipe =
 	  bit.band, bit.bor, tinsert, tremove, unpack, wipe
-local UnitGUID, GetItemIcon =
-	  UnitGUID, GetItemIcon
+local UnitGUID, GetItemIcon, CombatLogGetCurrentEventInfo =
+	  UnitGUID, GetItemIcon, CombatLogGetCurrentEventInfo
 local GetSpellTexture = TMW.GetSpellTexture
 
 local pGUID = nil -- This can't be defined at load.

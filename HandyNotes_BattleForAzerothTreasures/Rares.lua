@@ -218,8 +218,8 @@ merge(ns.points[942], { -- Stormsong Valley
     [53005200] = {quest=50692, npc=139385, item=160464, achievement=12940, criteria=41775,}, -- Deepfang
     [63003300] = {quest=52303, npc=140938, item=154460, achievement=12940, criteria=41776,}, -- Croaker
     [66905200] = {quest=52121, npc=139968, item=154183, achievement=12940, criteria=41777,}, -- Corrupted Tideskipper (also i:162028)
-    [51405540] = {quest=50731, npc=136183, item=154857, achievement=12940, criteria=nil,}, -- Crushtacean (shares q:50731 c:41778 with Dagrus)
-    [67804000] = {quest=50731, npc=134897, item=160476, achievement=12940, criteria=nil,}, -- Dagrus the Scorned (shares q:50731 c:41778 with Crushtacean)
+    [51405540] = {quest=52466, npc=136183, item=154857, achievement=12940, criteria=41778,}, -- Crushtacean
+    [67804000] = {quest=50731, npc=134897, item=160476, achievement=12940, criteria=43470,}, -- Dagrus the Scorned
     [49807000] = {quest=50037, npc=135939, item=158299, achievement=12940, criteria=41782,}, -- Vinespeaker Ratha
     [53106910] = {quest=50024, npc=135947, achievement=12940, criteria=41787,}, -- Strange Mushroom Ring
     [33607500] = {quest=52460, npc=141226, achievement=12940, criteria=41815,}, -- Haegol the Hammer

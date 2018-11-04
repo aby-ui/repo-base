@@ -152,8 +152,9 @@ ConditionCategory:RegisterCondition(6,    "REACT", {
 	Env = {
 		UnitIsEnemy = UnitIsEnemy,
 		UnitReaction = UnitReaction,
+		UnitCanAttack = UnitCanAttack,
 	},
-	funcstr = [[(((UnitIsEnemy("player", c.Unit) or ((UnitReaction("player", c.Unit) or 5) <= 4)) and 1) or 2) == c.Level]],
+	funcstr = [[(UnitCanAttack("player", c.Unit) and 1 or 2) == c.Level]],
 	events = function(ConditionObject, c)
 		return
 			ConditionObject:GetUnitChangedEventString(CNDT:GetUnit(c.Unit)),
