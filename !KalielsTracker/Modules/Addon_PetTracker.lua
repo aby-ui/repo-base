@@ -171,10 +171,6 @@ local function SetHooks_PetTracker_Journal()
 				ObjectiveTracker_MinimizeButton_OnClick()
 			end
 		end)
-
-		CollectionsJournal:HookScript("OnHide", function()
-			KT.SetMapToCurrentZone()
-		end)
 	end
 end
 
@@ -264,7 +260,7 @@ function M:OnInitialize()
 	_DBG("|cffffff00Init|r - "..self:GetName(), true)
 	db = KT.db.profile
 	dbChar = KT.db.char
-	self.isLoaded = (KT:CheckAddOn("PetTracker", "8.0.5") and db.addonPetTracker)
+	self.isLoaded = (KT:CheckAddOn("PetTracker", "8.0.6") and db.addonPetTracker)
 
 	if self.isLoaded then
 		tinsert(KT.db.defaults.profile.modulesOrder, "PETTRACKER_TRACKER_MODULE")

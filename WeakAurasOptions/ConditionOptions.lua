@@ -398,6 +398,7 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
         args["condition" .. i .. "value" .. j].softMax = properties.softMax;
         args["condition" .. i .. "value" .. j].step = properties.step;
         args["condition" .. i .. "value" .. j].bigStep = properties.bigStep;
+        args["condition" .. i .. "value" .. j].isPercent = properties.isPercent;
       else
         args["condition" .. i .. "value" .. j].type = "input";
         args["condition" .. i .. "value" .. j].validate = WeakAuras.ValidateNumeric;
@@ -622,7 +623,10 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
 
     local descMessage = descIfNoValue2(data, conditions[i].changes[j], "value", "message", propertyType);
     if (not descMessage and data ~= WeakAuras.tempGroup) then
-      descMessage = L["Dynamic text tooltip"] .. WeakAuras.GetAdditionalProperties(data);
+      local additionalProperties = WeakAuras.GetAdditionalProperties(data);
+      if (additionalProperties) then
+        descMessage = L["Dynamic text tooltip"] .. additionalProperties;
+      end
     end
 
     args["condition" .. i .. "value" .. j .. "message"] = {
@@ -1432,7 +1436,7 @@ local function createConditionTemplatesValueList(allConditionTemplates, numTrigg
         if (#sorted > 0) then
           if (triggernum == -2) then
             -- Do Nothing
-            conditionTemplates.display[index]  = '|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0|t' .. string.format(L["Combinations"]);
+            conditionTemplates.display[index]  = WeakAuras.newFeatureString .. string.format(L["Combinations"]);
           elseif (triggernum == -1) then
             conditionTemplates.display[index]  = string.format(L["Global Conditions"]);
           else

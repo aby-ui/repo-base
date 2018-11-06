@@ -85,7 +85,7 @@ local checks = {
     value = 1,
   },
   buffed = {
-    variable = "show",
+    variable = "buffed",
     value = 1,
   },
   buffedFalse = {
@@ -205,11 +205,12 @@ local function createBuffTrigger(triggers, position, item, buffShowOn, isBuff)
   triggers[position] = {
     trigger = {
       unit = item.unit or isBuff and "player" or "target",
-      type = "aura",
-      spellIds = {
-        item.spell
+      type = "aura2",
+      useName = true,
+      auranames = {
+        tostring(item.buffId or item.spell)
       },
-      buffShowOn = buffShowOn,
+      matchesShowOn = buffShowOn,
       debuffType = isBuff and "HELPFUL" or "HARMFUL",
       ownOnly = not item.forceOwnOnly and true or item.ownOnly,
       unitExists = false,
@@ -221,13 +222,13 @@ local function createBuffTrigger(triggers, position, item, buffShowOn, isBuff)
   if (item.fullscan) then
     triggers[position].trigger.use_spellId = true;
     triggers[position].trigger.fullscan = true;
-    triggers[position].trigger.spellId = tostring(item.spell);
+    triggers[position].trigger.spellId = tostring(item.buffId or item.spell);
   end
   if (item.unit == "group") then
     triggers[position].trigger.name_info = "players";
   end
   if (item.unit == "multi") then
-    triggers[position].trigger.spellId = item.spell;
+    triggers[position].trigger.spellId = item.buffId or item.spell;
   end
 end
 
@@ -1476,7 +1477,7 @@ function WeakAuras.CreateTemplateView(frame)
   local batchModeLabelString = batchModeLabel:CreateFontString(nil, "ARTWORK");
   batchModeLabelString:SetFont(STANDARD_TEXT_FONT, 10); -- "OUTLINE"
   batchModeLabelString:SetTextColor(1,1,1,1);
-  batchModeLabelString:SetText('|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0|t' .. L["Hold CTRL to create multiple auras at once"]);
+  batchModeLabelString:SetText(WeakAuras.newFeatureString .. L["Hold CTRL to create multiple auras at once"]);
   batchModeLabelString:SetJustifyH("LEFT")
   batchModeLabelString:SetAllPoints(batchModeLabel);
   batchModeLabel:SetPoint("BOTTOMLEFT", 10, -23);

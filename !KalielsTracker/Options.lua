@@ -41,9 +41,9 @@ local warning = cWarning..L"Warning:|r UI will be re-loaded!"
 local KTF = KT.frame
 local OTF = ObjectiveTrackerFrame
 
-local GetModulesOptionsTable, MoveModule, SetSharedColor, IsSpecialLocale, DecToHex, RgbToHex	-- functions
-
 local _, numQuests = GetNumQuestLogEntries()
+
+local GetModulesOptionsTable, MoveModule, SetSharedColor, IsSpecialLocale	-- functions
 
 local defaults = {
 	profile = {
@@ -493,19 +493,16 @@ local options = {
 						},
 						fontShadow = {
 							name = L"Font shadow",
+							desc = warning,
 							type = "toggle",
+							confirm = true,
+							confirmText = warning,
 							get = function()
 								return (db.fontShadow == 1)
 							end,
 							set = function(_, value)
 								db.fontShadow = value and 1 or 0
-								KT.forcedUpdate = true
-								KT:SetText()
-								ObjectiveTracker_Update()
-								if PetTracker then
-									PetTracker.Objectives:TrackingChanged()
-								end
-								KT.forcedUpdate = false
+								ReloadUI()	-- WTF
 							end,
 							order = 3.4,
 						},
@@ -1122,9 +1119,10 @@ local options = {
 					args = {
 						addonMasque = {
 							name = "Masque",
-							desc = "Version: %s\n\nSupport skinning for quest item buttons.",
+							desc = "Version: %s",
 							descStyle = "inline",
 							type = "toggle",
+							width = 1.05,
 							confirm = true,
 							confirmText = warning,
 							disabled = function()
@@ -1134,13 +1132,20 @@ local options = {
 								db.addonMasque = not db.addonMasque
 								ReloadUI()
 							end,
-							order = 1.2,
+							order = 1.11,
+						},
+						addonMasqueDesc = {
+							name = "Masque adds skinning support for Quest Item buttons.\nIt also affects the Active Button.",
+							type = "description",
+							width = "double",
+							order = 1.12,
 						},
 						addonPetTracker = {
 							name = "PetTracker",
-							desc = "Version: %s\n\n"..beta.." Full support for zone pet tracking.",
+							desc = "Version: %s",
 							descStyle = "inline",
 							type = "toggle",
+							width = 1.05,
 							confirm = true,
 							confirmText = warning,
 							disabled = function()
@@ -1151,21 +1156,36 @@ local options = {
 								PetTracker.Sets.HideTracker = not db.addonPetTracker
 								ReloadUI()
 							end,
-							order = 1.3,
+							order = 1.21,
+						},
+						addonPetTrackerDesc = {
+							name = beta.." PetTracker support adjusts display of zone pet tracking inside "..KT.title..". It also fix some visual bugs.",
+							type = "description",
+							width = "double",
+							order = 1.22,
 						},
 						addonTomTom = {
 							name = "TomTom",
-							desc = "Version: %s\n\n"..beta.." Support for add/remove quest waypoints.",
+							desc = "Version: %s",
 							descStyle = "inline",
 							type = "toggle",
+							width = 1.05,
 							confirm = true,
 							confirmText = warning,
-							disabled = true,
+							disabled = function()
+								return not IsAddOnLoaded("TomTom")
+							end,
 							set = function()
 								db.addonTomTom = not db.addonTomTom
 								ReloadUI()
 							end,
-							order = 1.4,
+							order = 1.31,
+						},
+						addonTomTomDesc = {
+							name = beta.." TomTom support combined Blizzard's POI and\nTomTom's Arrow.",
+							type = "description",
+							width = "double",
+							order = 1.32,
 						},
 					},
 				},
@@ -1261,9 +1281,7 @@ function KT:SetupOptions()
 	db = self.db.profile
 	dbChar = self.db.char
 
-	db.addonTomTom = false
-
-	general.sec2.args.classBorder.name = general.sec2.args.classBorder.name:format(RgbToHex(self.classColor))
+	general.sec2.args.classBorder.name = general.sec2.args.classBorder.name:format(self.RgbToHex(self.classColor))
 
 	general.sec7.args.messageOutput = self:GetSinkAce3OptionsDataTable()
 	general.sec7.args.messageOutput.inline = true
@@ -1395,7 +1413,7 @@ function MoveModule(idx, direction)
 end
 
 function SetSharedColor(color)
-	local name = L"Use border |cff"..RgbToHex(color)..L"color|r"
+	local name = L"Use border |cff"..KT.RgbToHex(color)..L"color|r"
 	local sec4 = general.sec4.args
 	sec4.hdrBgrColorShare.name = name
 	sec4.hdrTxtColorShare.name = name
@@ -1407,25 +1425,6 @@ function IsSpecialLocale()
 			KT.locale == "esES" or
 			KT.locale == "frFR" or
 			KT.locale == "ruRU")
-end
-
-function DecToHex(num)
-	local b, k, hex, d = 16, "0123456789abcdef", "", 0
-	while num > 0 do
-		d = fmod(num, b) + 1
-		hex = strsub(k, d, d)..hex
-		num = floor(num/b)
-	end
-	hex = (hex == "") and "0" or hex
-	return hex
-end
-
-function RgbToHex(color)
-	local r, g, b = DecToHex(color.r*255), DecToHex(color.g*255), DecToHex(color.b*255)
-	r = (strlen(r) < 2) and "0"..r or r
-	g = (strlen(g) < 2) and "0"..g or g
-	b = (strlen(b) < 2) and "0"..b or b
-	return r..g..b
 end
 
 -- Init

@@ -3,12 +3,13 @@ WeakAuras.L = {}
 
 local versionString = GetAddOnMetadata("WeakAuras", "Version");
 --[===[@debug@
-if versionString == "2.8.1" then
+if versionString == "2.9.0" then
   versionString = "Dev"
 end
 --@end-debug@]===]
 WeakAuras.versionString = versionString
 WeakAuras.printPrefix = "|cff9900ffWeakAuras:|r "
+WeakAuras.newFeatureString = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0|t"
 
 WeakAuras.prettyPrint = function(msg)
   print(WeakAuras.printPrefix .. msg)

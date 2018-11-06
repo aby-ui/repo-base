@@ -1,5 +1,5 @@
 
-local dversion = 115
+local dversion = 117
 local major, minor = "DetailsFramework-1.0", dversion
 local DF, oldminor = LibStub:NewLibrary (major, minor)
 
@@ -2459,6 +2459,33 @@ function DF:Dispatch (func, ...)
 	
 	return result1, result2, result3, result4
 end
+
+--[=[
+	DF:CoreDispatch (func, context, ...)
+	safe call a function making a error window with what caused, the context and traceback of the error
+	this func is only used inside the framework for sensitive calls where the func must run without errors
+	@func = the function which will be called
+	@context = what made the function be called
+	... parameters to pass in the function call
+--]=]
+function DF:CoreDispatch (context, func, ...)
+	if (type (func) ~= "function") then
+		local stack = debugstack(2)
+		local errortext = "D!Framework " .. context .. " error: invalid function to call\n====================\n" .. stack .. "\n====================\n"
+		error (errortext)
+	end
+	
+	local okay, result1, result2, result3, result4 = pcall (func, ...)
+	
+	if (not okay) then
+		local stack = debugstack (2)
+		local errortext = "D!Framework (" .. context .. ") error: " .. result1 .. "\n====================\n" .. stack .. "\n====================\n"
+		error (errortext)
+	end
+	
+	return result1, result2, result3, result4
+end
+
 
 --/run local a, b =32,3; local f=function(c,d) return c+d, 2, 3;end; print (xpcall(f,geterrorhandler(),a,b))
 function DF_CALC_PERFORMANCE()

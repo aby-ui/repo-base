@@ -41,8 +41,7 @@ local L = WeakAuras.L
 	L["Charge Tracking"] = "可用次数充能追踪"
 	L["cooldown"] = "冷却"
 	L["Cooldown Tracking"] = "冷却追踪"
-	--[[Translation missing --]]
-	L["Create Auras"] = "Create Auras"
+	L["Create Auras"] = "创建光环"
 	L["Debuffs"] = "减益"
 	L["Enchants"] = "附魔"
 	L["General"] = "总体"
@@ -52,11 +51,9 @@ local L = WeakAuras.L
 	L["Highlight while buffed."] = "获得增益效果时高亮"
 	L["Highlight while debuffed, red when out of range."] = "获得减益效果时高亮，超出范围变红显示"
 	L["Highlight while debuffed."] = "获得减益效果时高亮"
-	--[[Translation missing --]]
-	L["Hold CTRL to create multiple auras at once"] = "Hold CTRL to create multiple auras at once"
+	L["Hold CTRL to create multiple auras at once"] = "按住 CTRL 键来一次性创建多个光环"
 	L["Keeps existing triggers intact"] = "保持现存触发器完整"
-	--[[Translation missing --]]
-	L["Next"] = "Next"
+	L["Next"] = "下一个"
 	L["On Procc Trinkets (Buff)"] = "当饰品增益效果触发"
 	L["On Use Trinkets (Buff)"] = "当饰品增益效果被使用"
 	L["On Use Trinkets (CD)"] = "当饰品正在冷却中"

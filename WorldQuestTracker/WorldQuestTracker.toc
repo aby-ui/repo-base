@@ -28,7 +28,7 @@ WorldQuestTracker_RareFinder.lua
 WorldQuestTracker_ZoneMap.lua
 WorldQuestTracker_WorldMap.lua
 WorldQuestTracker_Tracker.lua
-#WorldQuestTracker_Taxi.lua
+WorldQuestTracker_Taxi.lua
 
 WorldQuestTrackerMixin.xml
 

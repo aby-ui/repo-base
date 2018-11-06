@@ -124,7 +124,14 @@ function WorldQuestTracker.AddQuestToTracker (self, questID, mapID)
 		local iconText = self.IconText
 		local questType = self.QuestType
 		local numObjectives = self.numObjectives
-
+		
+--		if (type (iconText) == "string") then --no good
+--			iconText = iconText:gsub ("|c%x?%x?%x?%x?%x?%x?%x?%x?", "")
+--			iconText = iconText:gsub ("|r", "")
+--			iconText = tonumber (iconText)
+--		end
+--removing this, the reward amount can now be a number or a string, we cannot check for amount without checking first if is a number (on tracker only)
+		
 		if (iconTexture) then
 			tinsert (WorldQuestTracker.QuestTrackList, {
 				questID = questID, 
@@ -170,42 +177,27 @@ end
 
 --remove todas as quests do tracker
 function WorldQuestTracker.RemoveAllQuestsFromTracker()
-	local isShowingWorld = WorldQuestTrackerAddon.GetCurrentZoneType() == "world"
-	
 	for i = #WorldQuestTracker.QuestTrackList, 1, -1 do
-		--get the quest table with info about the quest
 		local quest = WorldQuestTracker.QuestTrackList [i]
-		
-		--remove the quest from the tracker
-		tremove (WorldQuestTracker.QuestTrackList, i)
-		
-		--remove tracking indicator on the quest icon
 		local questID = quest.questID
-		
-		if (isShowingWorld) then
-			--quest locations
-			for _, widget in pairs (WorldQuestTracker.WorldMapSmallWidgets) do
-				if (widget:IsShown() and widget.questID == questID) then
-					widget.onEndTrackAnimation:Play()
-				end
+		local widget = WorldQuestTracker.GetWorldWidgetForQuest (questID)
+		if (widget) then
+			if (widget.onStartTrackAnimation:IsPlaying()) then
+				widget.onStartTrackAnimation:Stop()
 			end
-			--quest summary
-			for _, widget in pairs (WorldQuestTracker.WorldSummaryQuestsSquares) do
-				if (widget:IsShown() and widget.questID == questID) then
-					widget.onEndTrackAnimation:Play()
-				end
-			end
-		else
-			--zone map widgets
-			for _, widget in pairs (WorldQuestTracker.ZoneWidgetPool) do
-				if (widget:IsShown() and widget.questID == questID) then
-					widget.onEndTrackAnimation:Play()
-				end
-			end
+			widget.onEndTrackAnimation:Play()
 		end
+		--remove da tabela
+		tremove (WorldQuestTracker.QuestTrackList, i)
 	end
 	
 	WorldQuestTracker.RefreshTrackerWidgets()
+	
+	if (WorldQuestTrackerAddon.GetCurrentZoneType() == "world") then
+		WorldQuestTracker.UpdateWorldQuestsOnWorldMap()
+	elseif (WorldQuestTrackerAddon.GetCurrentZoneType() == "zone") then
+		WorldQuestTracker.UpdateZoneWidgets()
+	end
 end
 
 --o cliente n�o tem o tempo restante da quest na primeira execu��o

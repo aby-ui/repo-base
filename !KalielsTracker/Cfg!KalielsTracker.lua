@@ -17,6 +17,7 @@ U1RegisterAddon("!KalielsTracker", {
                 OTF:GetScript("OnEvent")(OTF, "PLAYER_ENTERING_WORLD")
                 OTF:GetScript("OnEvent")(OTF, "QUEST_WATCH_LIST_CHANGED")
                 OTF:GetScript("OnEvent")(OTF, "QUEST_LOG_UPDATE")
+                LibStub("AceAddon-3.0"):GetAddon('!KalielsTracker').Init()
             end
         end
         return true

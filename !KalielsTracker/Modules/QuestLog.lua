@@ -121,6 +121,7 @@ local function SetHooks()
 					MSA_CloseDropDownMenus();
 				end
 				dropDownFrame.questID = self.questID;
+				QuestMapFrame.questID = self.questID;	-- for Abandon
 				MSA_ToggleDropDownMenu(1, nil, dropDownFrame, "cursor", 6, -6, nil, nil, MSA_DROPDOWNMENU_SHOW_TIME);
 			else
 				if IsModifiedClick(db.menuWowheadURLModifier) then

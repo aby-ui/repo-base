@@ -707,7 +707,7 @@ function WeakAuras.CreateFrame()
         containerScroll:AddChild(simpleLabel);
 
         local button = AceGUI:Create("WeakAurasNewButton");
-        button:SetTitle('|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0|t' .. L["From Template"]);
+        button:SetTitle(WeakAuras.newFeatureString .. L["From Template"]);
         button:SetDescription(L["Offer a guided way to create auras for your class"])
         button:SetIcon("Interface\\Icons\\INV_Misc_Book_06");
         button:SetClick(function()
@@ -898,6 +898,26 @@ function WeakAuras.CreateFrame()
         self:FillOptions(displayOptions[tempGroup.id]);
       end
     end
+  end
+
+  frame.PickDisplayBatch = function(self, batchSelection)
+    for index, id in ipairs(batchSelection) do
+      local alreadySelected = false;
+      for _, v in pairs(tempGroup.controlledChildren) do
+        if(v == id) then
+          alreadySelected = true;
+          break;
+        end
+      end
+      if(not alreadySelected) then
+        WeakAuras.EnsureOptions(id);
+        displayButtons[id]:Pick();
+        tinsert(tempGroup.controlledChildren, id);
+      end
+    end
+    WeakAuras.ReloadTriggerOptions(tempGroup);
+    self:FillOptions(displayOptions[tempGroup.id]);
+    self.pickedDisplay = tempGroup;
   end
 
   frame.RefreshPick = function(self)

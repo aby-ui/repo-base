@@ -661,6 +661,7 @@ DF.CrowdControlSpells = {
 	[118905] = "SHAMAN", --Static Charge (Capacitor Totem)
 	[51514] = "SHAMAN", --Hex
 	[64695] = "SHAMAN", --Earthgrab (talent)
+	[197214] = "SHAMAN", --Sundering (talent)
 	
 	[179057] = "DEMONHUNTER", --Chaos Nova
 	[217832] = "DEMONHUNTER", --Imprison

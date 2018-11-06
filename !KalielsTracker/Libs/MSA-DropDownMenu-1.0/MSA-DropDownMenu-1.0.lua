@@ -4,9 +4,9 @@
 ---
 --- https://www.curseforge.com/wow/addons/msa-dropdownmenu-10
 
-local name, version = "MSA-DropDownMenu-1.0", 5
+local name, version = "MSA-DropDownMenu-1.0", 7
 
-local lib, oldVersion = LibStub:NewLibrary(name, version)
+local lib = LibStub:NewLibrary(name, version)
 if not lib then return end
 
 -- WoW API
@@ -201,12 +201,13 @@ local function CreateDropDownMenuButton(name, parent)
 end
 
 local function CreateDropDownList(name, parent)
-    local DropDownList = CreateFrame("Button", name, parent or nil)
+    local DropDownList = _G[name] or CreateFrame("Button", name)
+    DropDownList:SetParent(parent or nil)
     DropDownList:Hide()
     DropDownList:SetFrameStrata("DIALOG")
     DropDownList:EnableMouse(true)
 
-    local frame1 = CreateFrame("Frame", name.."Backdrop", DropDownList)
+    local frame1 = _G[name.."Backdrop"] or CreateFrame("Frame", name.."Backdrop", DropDownList)
     frame1:SetAllPoints()
     frame1:SetBackdrop({
         bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background-Dark",
@@ -222,7 +223,7 @@ local function CreateDropDownList(name, parent)
         },
     })
 
-    local frame2 = CreateFrame("Frame", name.."MenuBackdrop", DropDownList)
+    local frame2 = _G[name.."MenuBackdrop"] or CreateFrame("Frame", name.."MenuBackdrop", DropDownList)
     frame2:SetAllPoints()
     frame2:SetBackdrop({
         bgFile = "Interface\\Tooltips\\UI-Tooltip-Background",
@@ -386,7 +387,7 @@ local function CreateDropDownMenu(name, parent)
     return DropDownMenu
 end
 
-local DropDownList1 = CreateDropDownList("MSA_DropDownList1", UIParent)
+local DropDownList1 = CreateDropDownList("MSA_DropDownList1")
 DropDownList1:Hide()
 DropDownList1:SetToplevel(true)
 DropDownList1:SetFrameStrata("FULLSCREEN_DIALOG")
@@ -396,7 +397,7 @@ DropDownList1:SetHeight(10)
 local _, fontHeight, _ = _G["MSA_DropDownList1Button1NormalText"]:GetFont()
 MSA_DROPDOWNMENU_DEFAULT_TEXT_HEIGHT = fontHeight
 
-local DropDownList2 = CreateDropDownList("MSA_DropDownList2", UIParent)
+local DropDownList2 = CreateDropDownList("MSA_DropDownList2")
 DropDownList2:Hide()
 DropDownList2:SetToplevel(true)
 DropDownList2:SetFrameStrata("FULLSCREEN_DIALOG")
@@ -1228,10 +1229,7 @@ function MSA_ToggleDropDownMenu(level, value, dropDownFrame, anchorName, xOffset
         else
             uiScale = uiParentScale;
         end
-        -- MSA
-        if oldVersion and oldVersion <= 4 then
-            listFrame:SetScale(uiScale);
-        end
+        listFrame:SetScale(uiScale);
 
         -- Hide the listframe anyways since it is redrawn OnShow()
         listFrame:Hide();
@@ -1672,11 +1670,11 @@ local function LoadSkin_Aurora()
 end
 
 -- Init skins
-local initFrame = CreateFrame("Frame")
-initFrame:SetScript("OnEvent", function(self, event)
+lib.initFrame = lib.initFrame or CreateFrame("Frame")
+lib.initFrame:SetScript("OnEvent", function(self, event)
     LoadSkin_ElvUI()
     LoadSkin_Tukui()
     LoadSkin_Aurora()
     self:UnregisterEvent(event)
 end)
-initFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
+lib.initFrame:RegisterEvent("PLAYER_ENTERING_WORLD")

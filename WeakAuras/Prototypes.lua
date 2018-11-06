@@ -708,7 +708,7 @@ WeakAuras.load_prototype = {
     },
     {
       name = "warmode",
-      display = '|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0|t' .. L["War Mode Active"],
+      display = WeakAuras.newFeatureString .. L["War Mode Active"],
       type = "tristate",
       init = "arg",
       width = "double",
@@ -2126,10 +2126,9 @@ WeakAuras.event_prototypes = {
       },
       {
         name = "charges",
-        display = L["Show if Charges"],
+        display = L["Stacks"],
         type = "number",
         store = true,
-        display = L["Stacks"],
         conditionType = "number"
       },
       {
@@ -3427,8 +3426,8 @@ WeakAuras.event_prototypes = {
       if (trigger.use_talent) then
         -- Single selection
         local index = trigger.talent and trigger.talent.single;
-        local tier = ceil(index / 3)
-        local column = (index - 1) % 3 + 1
+        local tier = index and ceil(index / 3)
+        local column = index and ((index - 1) % 3 + 1)
 
         local ret = [[
           local tier = %s;
@@ -3441,7 +3440,7 @@ WeakAuras.event_prototypes = {
           active = not (active);
           ]]
         end
-        return ret:format(tier, column)
+        return ret:format(tier or 0, column or 0)
       elseif (trigger.use_talent == false) then
         if (trigger.talent.multi) then
           local ret = [[
@@ -4886,35 +4885,35 @@ WeakAuras.event_prototypes = {
 };
 
 WeakAuras.dynamic_texts = {
-  ["%p"] = {
+  ["p"] = {
     unescaped = "%p",
     name = L["Progress"],
     value = "progress",
     static = "8.0"
   },
-  ["%t"] = {
+  ["t"] = {
     unescaped = "%t",
     name = L["Total"],
     value = "duration",
     static = "12.0"
   },
-  ["%n"] = {
+  ["n"] = {
     unescaped = "%n",
     name = L["Name"],
     value = "name"
   },
-  ["%i"] = {
+  ["i"] = {
     unescaped = "%i",
     name = L["Icon"],
     value = "icon"
   },
-  ["%s"] = {
+  ["s"] = {
     unescaped = "%s",
     name = L["Stacks"],
     value = "stacks",
     static = 1
   },
-  ["%c%d*"] = {
+  ["c%d*"] = {
     unescaped = "%c",
     name = L["Custom"],
     value = "custom",
