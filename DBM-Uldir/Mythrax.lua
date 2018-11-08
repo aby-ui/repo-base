@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2194, "DBM-Uldir", nil, 1031)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 18052 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 18067 $"):sub(12, -3))
 mod:SetCreatureID(134546)--138324 Xalzaix
 mod:SetEncounterID(2135)
 --mod:DisableESCombatDetection()
@@ -173,7 +173,7 @@ function mod:SPELL_CAST_START(args)
 			timerObliterationBlastCD:Start(12, DBM_ADD)
 		end
 	elseif spellId == 273810 then--Timers start here, because we have to factor boss movement
-		timerOblivionSphereCD:Start(7)--Resets to 7
+		timerOblivionSphereCD:Start(7, self.vb.sphereCast+1)--Resets to 7
 		countdownOblivionSphere:Start(7)--Still seems same in all
 		if self:IsMythic() then
 			timerObliterationbeamCD:Start(18.5, 1)
@@ -331,10 +331,10 @@ function mod:SPELL_AURA_REMOVED(args)
 	elseif spellId == 272146 then
 		infoframeTable[args.destName] = nil
 		if self.Options.InfoFrame then
-			if #infoframeTable > 0 then
-				DBM.InfoFrame:UpdateTable(infoframeTable)
-			else
+			if #infoframeTable == 0 then
 				DBM.InfoFrame:Hide()
+			else
+				DBM.InfoFrame:UpdateTable(infoframeTable)
 			end
 		end
 	end

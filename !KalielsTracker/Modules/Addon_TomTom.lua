@@ -188,7 +188,7 @@ local function SetHooks()
 	
 	-- Blizzard	
 	hooksecurefunc("SetSuperTrackedQuestID", function(questID)
-		if KT.initialized and (questID ~= superTrackedQuestID or not questWaypoints[questID]) then
+		if questID ~= superTrackedQuestID or not questWaypoints[questID] then
 			RemoveWaypoint(superTrackedQuestID)
 			if IsQuestWatched(GetQuestLogIndexByID(questID)) or IsWorldQuestWatched(questID) or KT.activeTasks[questID] then
 				AddWaypoint(questID)

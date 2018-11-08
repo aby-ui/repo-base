@@ -445,7 +445,7 @@ function ff.StartAutoInvites()
 	end)
 end
 
-ff.InvitePlayersButton = WorldQuestTracker:CreateButton (ff, ff.StartAutoInvites, ff.ButtonWidth, ff.ButtonHeight, L["Invite Nearby Players"], -1, nil, nil, nil, nil, nil, WorldQuestTracker:GetTemplate ("button", "OPTIONS_BUTTON_TEMPLATE"))
+ff.InvitePlayersButton = WorldQuestTracker:CreateButton (ff, ff.StartAutoInvites, ff.ButtonWidth, ff.ButtonHeight, "Invite Nearby Players", -1, nil, nil, nil, nil, nil, WorldQuestTracker:GetTemplate ("button", "OPTIONS_BUTTON_TEMPLATE"))
 ff.InvitePlayersButton:SetPoint ("top", ff.OpenGroupFinderButton, "bottom", 0, -ff.ButtonVerticalPadding)
 ff.InvitePlayersButton:SetClickFunction (function() ff:HideFrame (true) end, false, false, "right")
 
@@ -1093,3 +1093,5 @@ end
 function ff.WorldQuestFinished (questID, fromCustomSeearch)
 	ff.GroupDone()
 end
+
+ff.InvitePlayersButton.button.text:SetText(L["Invite Nearby Players"]) --abyui

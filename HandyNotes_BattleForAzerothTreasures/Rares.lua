@@ -101,7 +101,7 @@ merge(ns.points[864], { -- Vol'dun
     [37428498] = {quest=49392, npc=129283, achievement=12943, criteria=41617,}, -- Jumbo Sandsnapper
     [60561801] = {quest=51074, npc=136341, achievement=12943, criteria=41618,}, -- Jungleweb Hunter
     [35085183] = {quest=50528, npc=128686, achievement=12943, criteria=41619,}, -- Kamid the Trapper
-    [38284138] = {quest=51424, npc=137681, achievement=12943, criteria=41620, note="In cave"}, -- King Clickyclack
+    [38284138] = {quest=51424, item=161108, npc=137681, achievement=12943, criteria=41620, note="In cave"}, -- King Clickyclack
     [37354050] = path{quest=51424},
     [43758624] = {quest=50898, npc=128951, achievement=12943, criteria=41621,}, -- Nez'ara
     [49017210] = {quest=51126, npc=136340, achievement=12943, criteria=41622,}, -- Relic Hunter Hazaak
@@ -163,14 +163,14 @@ merge(ns.points[1161], { -- Boralus
 merge(ns.points[896], { -- Drustvar
     [59933466] = {quest=47884, npc=124548, achievement=12941, criteria=41706,}, -- Betsy
     [58901790] = {quest=48842, npc=127333, achievement=12941, criteria=41708,}, -- Barbthorn Queen
-    [66585068] = {quest=48978, npc=126621, achievement=12941, criteria=41711,}, -- Bonesquall
+    [66585068] = {quest=48978, item=154376, npc=126621, achievement=12941, criteria=41711,}, -- Bonesquall
     [59245526] = {quest=48981, npc=127877, achievement=12941, criteria=41713, note="Pick one to fight; Dagger from Longfang, mail gloves from Henry",}, -- Longfang & Henry Breakwater
     [52074697] = {quest=49216, npc=129904, achievement=12941, criteria=41715,}, -- Cottontail Matron
     [65002266] = {quest=49311, npc=128973, achievement=12941, criteria=41718,}, -- Whargarble the Ill-Tempered
     [50842040] = {quest=49388, npc=127129, achievement=12941, criteria=41720,}, -- Grozgore
     [51352957] = {quest=49481, npc=129805, achievement=12941, criteria=41722,}, -- Beshol
     [63414020] = {quest=49530, npc=129995, achievement=12941, criteria=41724,}, -- Emily Mayville
-    [56572924] = {quest=49602, npc=130143, achievement=12941, criteria=41726,}, -- Balethorn
+    [56572924] = {quest=49602, item=160475, npc=130143, achievement=12941, criteria=41726,}, -- Balethorn
     [31011831] = {quest=50546, npc=134213, achievement=12941, criteria=41728,}, -- Executioner Blackwell
     [22934796] = {quest=50688, npc=134754, achievement=12941, criteria=41729,}, -- Hyo'gi
     [34966921] = {quest=51383, npc=137529, achievement=12941, criteria=41732,}, -- Arvon the Betrayed

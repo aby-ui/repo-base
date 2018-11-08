@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("KingsRestTrash", "DBM-Party-BfA", 3)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17859 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 18068 $"):sub(12, -3))
 --mod:SetModelID(47785)
 mod:SetZone()
 
@@ -26,7 +26,7 @@ local warnPoisonBarrage				= mod:NewTargetAnnounce(270507, 4)
 local warnPoolofDarkness			= mod:NewSpellAnnounce(272014, 3)
 
 local specWarnWailofMourning		= mod:NewSpecialWarningSpell(271561, "Healer", nil, nil, 2, 2)
-local specWarnSupressionSlam		= mod:NewSpecialWarningDodge(270003, "Tank", nil, nil, 1, 2)
+local specWarnSupressionSlam		= mod:NewSpecialWarningDodge(270003, nil, nil, 2, 2, 2)
 local specWarnPurificationStrike	= mod:NewSpecialWarningDodge(270293, "Melee", nil, nil, 1, 2)
 local specWarnPurificationBeam		= mod:NewSpecialWarningDodge(270284, nil, nil, nil, 2, 8)
 local specWarnGroundCrush			= mod:NewSpecialWarningDodge(270514, nil, nil, nil, 2, 2)

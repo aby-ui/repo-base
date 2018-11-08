@@ -518,8 +518,10 @@ local function SetHooks()
 		end
 	end
 
-	hooksecurefunc("ObjectiveTracker_Initialize", function(self)
-		Init()
+	OTF:HookScript("OnEvent", function(self, event)
+		if event == "PLAYER_ENTERING_WORLD" and not KT.initialized then
+			Init()
+		end
 	end)
     KT.Init = Init
 

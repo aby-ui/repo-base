@@ -210,10 +210,13 @@ ns.points = {
         [55605181] = {quest=53472, achievement=12995, criteria=41703, note="Click on Witch Torch",}, -- Bespelled Chest
         [25472416] = {quest=53474, achievement=12995, criteria=41705, note="Click on Witch Torch",}, -- Enchanted Chest
         [25751995] = {quest=53357, achievement=12995, criteria=41698, note="Get keys from Gorging Raven",}, -- Merchant's Chest
-        [44222770] = {quest=53386, achievement=12995, criteria=41700, note="Left Right Down Up",}, -- Runebound Chest
+        [44222770] = {quest=53386, item=163742, achievement=12995, criteria=41700, note="Left Right Down Up",}, -- Runebound Chest
         [18515133] = {quest=53471, achievement=12995, criteria=41702, note="Click on Witch Torch",}, -- Hexed Chest
         [67767367] = {quest=53473, achievement=12995, criteria=41704, note="Click on Witch Torch",}, -- Ensorcelled Chest
         [24304840] = {quest=53475, achievement=12995, criteria=41752,}, -- Stolen Thornspeaker Cache
+        -- junk
+        [58642825] = {quest=51875, junk=true, label=CHEST_SM,},
+        [50332252] = {quest=51878, junk=true, label=CHEST_SM,},
     },
     [942] = { -- Stormsong Valley
         [66901200] = {quest=51449, achievement=12853, criteria=41061,}, -- Weathered Treasure Chest
@@ -226,7 +229,7 @@ ns.points = {
         [44447353] = {quest=52429, item=162000, achievement=12853, criteria=41068, note="Jump down onto platform",}, -- Carved Wooden Chest
         [36692323] = {quest=52976, achievement=12853, criteria=41069, note="Climb ladder onto ship",}, -- Venture Co. Supply Chest
         [46003069] = {quest=52980, achievement=12853, criteria=41070, note="Behind pillar",}, -- Forgotten Chest
-        [41256950] = {achievement=13046, atlas="Food", note="Open an Unforgettable Luncheon here; buy them at the Inn, or loot one from the Discarded Lunchbox in Brennadam",}, -- These Hills Sing
+        [41256950] = {achievement=13046, atlas="Food", minimap=true, note="Open an Unforgettable Luncheon here; buy them at the Inn, or loot one from the Discarded Lunchbox in Brennadam",}, -- These Hills Sing
         -- Legends of the Tidesages
         [49518090] = {achievement=13051, criteria=41425, minimap=true, atlas="poi-workorders",}, -- Part 1 (Near the waterfall)
         [59025954] = {achievement=13051, criteria=41426, minimap=true, atlas="poi-workorders",}, -- Part 2 (On top of the hill)
@@ -237,6 +240,8 @@ ns.points = {
         [62083022] = {achievement=13051, criteria=41431, minimap=true, atlas="poi-workorders",}, -- Part 7
         [75073113] = {achievement=13051, criteria=41432, minimap=true, atlas="poi-workorders",}, -- Part 8 (Near the Shrine of the Storm entrance)
         -- junk
+        [32126620] = {quest=53635, junk=true, label="Curious Grain Sack",},
+        [32946967] = {quest=53652, junk=true, label="Curious Grain Sack",},
         [66567107] = {quest=50576, item=154476, label="Honey Vat", note="Strangely, not part of the achievement",},
         [62056563] = {quest=51184, junk=true, label=CHEST_SM,},
         [51796523] = {quest=51184, junk=true, label=CHEST_SM,},
@@ -246,7 +251,12 @@ ns.points = {
         [68067158] = {quest=51939, junk=true, label=CHEST_SM, note="In a bush",},
         [48406562] = {quest=51940, junk=true, label=CHEST_SM,},
         [44107300] = {quest=51942, junk=true, label=CHEST_SM,},
+        [29776948] = {quest=51943, junk=true, label=CHEST_SM,},
+        [29985150] = {quest=51944, junk=true, label=CHEST_SM,},
+        [36272737] = {quest=51945, junk=true, label=CHEST_SM,},
+        [57645092] = {quest=51946, junk=true, label=CHEST_SM,},
         [60865118] = {quest=51946, junk=true, label=CHEST_SM,},
+        [46915393] = {quest=51949, junk=true, label=CHEST_SM,},
     },
     [1183] = { -- Thornheart
         [60804121] = {quest=52429, item=162000, achievement=12853, criteria=41068, note="Jump down from here",}, -- Carved Wooden chest
