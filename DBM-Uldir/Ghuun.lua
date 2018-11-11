@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2147, "DBM-Uldir", nil, 1031)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 18057 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 18078 $"):sub(12, -3))
 mod:SetCreatureID(132998)
 mod:SetEncounterID(2122)
 mod:SetZone()
@@ -374,7 +374,11 @@ function mod:SPELL_CAST_START(args)
 		local timer = self:IsMythic() and 21.97 or self:IsHard() and 26.7 or self:IsEasy() and 31.6--TODO, LFR, easy is assumed
 		timerGazeofGhuunCD:Start(timer)
 		countdownGazeofGhuun:Start(timer)
-		updateAllTimers(self, 3.6)
+		if self:IsMythic() then
+			updateAllTimers(self, 3.6)
+		else
+			updateAllTimers(self, 2.4)--3.6 mythic only?
+		end
 	end
 end
 

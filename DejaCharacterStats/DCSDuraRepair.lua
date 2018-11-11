@@ -187,7 +187,9 @@ local function DCS_Mean_Durability()
 	elseif addon.duraMean < 100 then
 		duraMeanFS:SetTextColor(0.753, 0.753, 0.753)
 	end
-	DCS_Durability_Frame_Mean_Display()
+	if DurabilityFrame:IsVisible() then
+		DCS_Durability_Frame_Mean_Display()
+	end
 end
 
 --[[ previous version of DCS_Mean_Durability()
@@ -564,19 +566,20 @@ local DCS_ShowAverageDuraCheck = CreateFrame("CheckButton", "DCS_ShowAverageDura
 			showavgdur = gdbprivate.gdb.gdbdefaults.dejacharacterstatsShowAverageRepairChecked.ShowAverageRepairSetChecked
 			self:SetChecked(showavgdur)
 		end
-		if PaperDollFrame:IsVisible() then
-			if showavgdur then
-				DCS_Mean_Durability()
-				if addon.duraMean == 100 then --check after calculation
-					duraMeanFS:SetFormattedText("")
-				else
-					duraMeanFS:SetFormattedText("%.0f%%", addon.duraMean)
-				end
-			else
+		--print(..., DurabilityFrame:IsVisible(),DurabilityFrame:IsShown())
+		--if PaperDollFrame:IsVisible() then --introduces bug that DurabilityFrame fontstring(created by us) doesn't get updated unless PaperDollFrame is open
+		if showavgdur and (DurabilityFrame:IsVisible() or PaperDollFrame:IsVisible()) then
+			DCS_Mean_Durability()
+			if addon.duraMean == 100 then --check after calculation
 				duraMeanFS:SetFormattedText("")
-				duraDurabilityFrameFS:Hide()
+			else
+				duraMeanFS:SetFormattedText("%.0f%%", addon.duraMean)
 			end
+		else
+			duraMeanFS:SetFormattedText("")
+			duraDurabilityFrameFS:Hide()
 		end
+		--end
 		--[[
 		local checked = gdbprivate.gdb.gdbdefaults.dejacharacterstatsShowAverageRepairChecked
 		self:SetChecked(checked.ShowAverageRepairSetChecked)
