@@ -996,7 +996,11 @@ do
 	function CoreEvents:PLAYER_REGEN_DISABLED()
 		InCombat = true
 		SetUpdateAll()
-	end
+    end
+
+    function CoreEvents:DISPLAY_SIZE_CHANGED()
+        SetUpdateAll()
+    end
 
 	function CoreEvents:UPDATE_MOUSEOVER_UNIT(...)
 		if UnitExists("mouseover") then

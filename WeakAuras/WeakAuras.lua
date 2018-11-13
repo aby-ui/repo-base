@@ -72,20 +72,34 @@ function WeakAuras.OpenOptions(msg)
   end
 end
 
+function WeakAuras.PrintHelp()
+  print(L["Usage:"])
+  print(L["/wa help - Show this message"])
+  print(L["/wa minimap - Toggle the minimap icon"])
+  print(L["/wa pstart - Start profiling"])
+  print(L["/wa pstop - Finish profiling"])
+  print(L["/wa pprint - Show the results from the most recent profiling"])
+  print(L["If you require additional assistance, please open a ticket on GitHub or visit our Discord at https://discord.gg/wa2!"])
+end
+
 SLASH_WEAKAURAS1, SLASH_WEAKAURAS2 = "/weakauras", "/wa";
 function SlashCmdList.WEAKAURAS(msg)
-  if (msg) then
-    if (msg == "pstart") then
+  msg = string.lower(msg)
+  if msg then
+    if msg == "pstart" then
       WeakAuras.StartProfile();
       return;
-    elseif (msg == "pstop") then
+    elseif msg == "pstop" then
       WeakAuras.StopProfile();
       return;
-    elseif(msg == "pprint") then
+    elseif msg == "pprint" then
       WeakAuras.PrintProfile();
       return;
-    elseif(msg == "minimap") then
+    elseif msg == "minimap" then
       WeakAuras.ToggleMinimap();
+      return;
+    elseif msg == "help" then
+      WeakAuras.PrintHelp();
       return;
     end
   end
@@ -1178,23 +1192,17 @@ local function tooltip_draw()
   tooltip:ClearLines();
   tooltip:AddDoubleLine("WeakAuras", versionString);
   tooltip:AddLine(" ");
-  if(WeakAuras.IsOptionsOpen()) then
-    tooltip:AddLine(L["Click to close configuration"]);
-  else
-    tooltip:AddLine(L["Click to open configuration"]);
-    if(paused) then
-      tooltip:AddLine("|cFFFF0000"..L["Paused"].." - "..L["Shift-Click to resume"]);
+  tooltip:AddLine(L["|cffeda55fLeft-Click|r to toggle showing the main window."], 0.2, 1, 0.2);
+  if not WeakAuras.IsOptionsOpen() then
+    if paused then
+      tooltip:AddLine("|cFFFF0000"..L["Paused"].." - "..L["Shift-Click to resume addon execution."], 0.2, 1, 0.2);
     else
-      tooltip:AddLine(L["Shift-Click to pause"]);
-      tooltip:AddLine(L["Right-Click to toggle profiling"]);
-      tooltip:AddLine(L["Shift-Right-Click to show profiling results"]);
+      tooltip:AddLine(L["|cffeda55fShift-Click|r to pause addon execution."], 0.2, 1, 0.2);
     end
   end
-  if WeakAurasSaved.minimap.hide then
-    tooltip:AddLine(L["Middle-Click to show minimap icon"]);
-  else
-    tooltip:AddLine(L["Middle-Click to hide minimap icon"]);
-  end
+  tooltip:AddLine(L["|cffeda55fRight-Click|r to toggle performance profiling on or off."], 0.2, 1, 0.2);
+  tooltip:AddLine(L["|cffeda55fShift-Right-Click|r to show profiling results."], 0.2, 1, 0.2);
+  tooltip:AddLine(L["|cffeda55fMiddle-Click|r to toggle the minimap icon on or off."], 0.2, 1, 0.2);
   tooltip:Show();
 end
 
@@ -1271,8 +1279,8 @@ Broker_WeakAuras = LDB:NewDataObject("WeakAuras", {
     tooltip_update_frame:SetScript("OnUpdate", nil);
     GameTooltip:Hide();
   end,
-  iconR = 1,
-  iconG = 1,
+  iconR = 0.6,
+  iconG = 0,
   iconB = 1
 });
 
@@ -3080,6 +3088,13 @@ function WeakAuras.CollapseAllClones(id, triggernum)
   end
 end
 
+function WeakAuras.CollapseAndResetConditions(region, id)
+  if (checkConditions[id]) then
+    checkConditions[id](region, true);
+  end
+  region:Collapse();
+end
+
 function WeakAuras.SetAllStatesHidden(id, triggernum)
   local triggerState = WeakAuras.GetTriggerStateForTrigger(id, triggernum);
   for id, state in pairs(triggerState) do
@@ -4368,10 +4383,6 @@ local function ApplyStatesToRegions(id, triggernum, states)
       checkConditions[id](region, not state.show);
     end
   end
-
-  if (not states[""] or not states[""].show) then
-    WeakAuras.regions[id].region:Collapse();
-  end
 end
 
 local toRemove = {};
@@ -4449,24 +4460,19 @@ function WeakAuras.UpdatedTriggerState(id)
   if (show and not oldShow) then -- Hide => Show
     ApplyStatesToRegions(id, newActiveTrigger, activeTriggerState);
   elseif (not show and oldShow) then -- Show => Hide
-    if (checkConditions[id]) then
-      for cloneId, clone in pairs(clones[id]) do
-        local region = WeakAuras.GetRegion(id, cloneId);
-        checkConditions[id](region, true);
-      end
+    for cloneId, clone in pairs(clones[id]) do
+      WeakAuras.CollapseAndResetConditions(clone, id)
     end
-    WeakAuras.CollapseAllClones(id);
-    WeakAuras.regions[id].region:Collapse();
+    WeakAuras.CollapseAndResetConditions(WeakAuras.regions[id].region, id)
   elseif (show and oldShow) then -- Already shown, update regions
     -- Hide old clones
     for cloneId, clone in pairs(clones[id]) do
       if (not activeTriggerState[cloneId] or not activeTriggerState[cloneId].show) then
-        if (checkConditions[id]) then
-          local region = WeakAuras.GetRegion(id, cloneId);
-          checkConditions[id](region, true);
-        end
-        clone:Collapse();
+        WeakAuras.CollapseAndResetConditions(clone, id)
       end
+    end
+    if (not activeTriggerState[""] or not activeTriggerState[""].show) then
+      WeakAuras.CollapseAndResetConditions(WeakAuras.regions[id].region, id)
     end
     -- Show new states
     ApplyStatesToRegions(id, newActiveTrigger, activeTriggerState);
@@ -4709,6 +4715,8 @@ function WeakAuras.ReplacePlaceHolders(textStr, region, customFunc)
       value = value or "";
       result = result .. value
     end
+  elseif state == 1 then
+    result = result .. "%"
   end
 
   textStr = result:gsub("\\n", "\n");

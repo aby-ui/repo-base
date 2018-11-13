@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2172, "DBM-Party-BfA", 3, 1041)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 18063 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 18085 $"):sub(12, -3))
 mod:SetCreatureID(136160)
 mod:SetEncounterID(2143)
 mod:SetZone()
@@ -46,7 +46,7 @@ local seenMobs = {}
 --Handles the ICD that Boss triggers on other abilities
 local function updateAllTimers(self, ICD)
 	DBM:Debug("updateAllTimers running", 3)
-	if timerGaleSlashCD:GetRemaining(self.vb.waveCast+1) < ICD then
+	if timerGaleSlashCD:GetRemaining() < ICD then
 		local elapsed, total = timerGaleSlashCD:GetTime()
 		local extend = ICD - (total-elapsed)
 		DBM:Debug("timerGaleSlashCD extended by: "..extend, 2)

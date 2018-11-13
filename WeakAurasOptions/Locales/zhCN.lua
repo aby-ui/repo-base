@@ -135,8 +135,7 @@ local L = WeakAuras.L
 	L["Copy to all auras"] = "拷贝至所有的光环"
 	L["Copy URL"] = "复制 URL"
 	L["Count"] = "计数 "
-	--[[Translation missing --]]
-	L["Counts the number of matches over all units."] = "Counts the number of matches over all units."
+	L["Counts the number of matches over all units."] = "计算所有单位上匹配的数量"
 	L["Creating buttons: "] = "创建按钮:"
 	L["Creating options: "] = "创建配置:"
 	L["Crop X"] = "裁剪X"
@@ -491,8 +490,7 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	L["Type"] = "类型"
 	L["Ungroup"] = "不分组"
 	L["Unit"] = "单位"
-	--[[Translation missing --]]
-	L["Unit Count"] = "Unit Count"
+	L["Unit Count"] = "单位计数"
 	L["Unlike the start or finish animations, the main animation will loop over and over until the display is hidden."] = "不同于开始或结束动画，主动画将不停循环，直到图示被隐藏。"
 	L["Up"] = "上"
 	L["Update Custom Text On..."] = "更新自定义文字于"
