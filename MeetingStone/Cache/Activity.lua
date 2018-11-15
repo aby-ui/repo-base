@@ -23,6 +23,7 @@ Activity:InitAttr{
     'ApplicationExpiration',
     'DisplayType',
     'MaxMembers',
+    'KilledBossCount',
 }
 
 Activity._Objects = setmetatable({}, {__mode = 'v'})
@@ -44,6 +45,9 @@ function Activity:Update()
 
     if not activityId then
         return false
+    end
+    if iLvl and iLvl < 0 then
+        iLvl = 0
     end
 
     local name, shortName, category, group, iLevel, filters, minLevel, maxMembers, displayType = C_LFGList.GetActivityInfo(activityId)
@@ -95,6 +99,7 @@ function Activity:Update()
                 self.killedBosses[v] = true
             end
         end
+        self:SetKilledBossCount(completedEncounters and #completedEncounters or 0)
     end
 
     self:UpdateSortValue()
@@ -152,60 +157,81 @@ function Activity:IsSelf()
     return self:GetLeader() and UnitIsUnit(self:GetLeader(), 'player')
 end
 
-function Activity:Match(search, bossFilter, enableSpamWord, spamLength, enableSpamChar)
-    local summary, comment = self:GetSummary(), self:GetComment()
-    if summary then
-        summary = summary:lower()
-    end
-    if comment then
-        comment = comment:lower()
-    end
+-- function Activity:Match(search, bossFilter, enableSpamWord, spamLength, enableSpamChar)
+--     local summary, comment = self:GetSummary(), self:GetComment()
+--     if summary then
+--         summary = summary:lower()
+--     end
+--     if comment then
+--         comment = comment:lower()
+--     end
 
-    if enableSpamWord and (CheckSpamWord(summary) or CheckSpamWord(comment)) then
-        return false
+--     if enableSpamWord and (CheckSpamWord(summary) or CheckSpamWord(comment)) then
+--         return false
+--     end
+
+--     if enableSpamChar then
+--         return false
+--     end
+
+--     if search then
+--         if summary and summary:find(search, 1, true) then
+--             return true
+--         elseif comment and comment:find(search, 1, true) then
+--             return true
+--         elseif self:GetLeader() and self:GetLeader():lower():find(search, 1, true) then
+--             return true
+--         else
+--             return false
+--         end
+--     end
+
+--     if spamLength and ((summary and strlenutf8(summary) > spamLength) or (comment and strlenutf8(comment) > spamLength)) then
+
+--         return false
+--     end
+
+--     if bossFilter and next(bossFilter) then
+--         for boss, flag in pairs(bossFilter) do
+--             if flag then
+--                 if self:IsBossKilled(boss) then
+--                     return false
+--                 end
+--             else
+--                 if not self:IsBossKilled(boss) then
+--                     return false
+--                 end
+--             end
+--         end
+--     end
+--     return true
+-- end
+
+local FILTERS = {
+    ItemLevel = function(activity)
+        return activity:GetItemLevel()
+    end,
+    BossKilled = function(activity)
+        return activity:GetKilledBossCount()
+    end,
+    Age = function(activity)
+        return activity:GetAge() / 60
+    end,
+    Members = function(activity)
+        return activity:GetNumMembers()
     end
+}
 
-    if enableSpamChar then
-        return false
-    end
-
-    --163ui code from nga
-    local activityItem=MeetingStone_BrowsePanel:GetCurrentActivity()
-    if activityItem and activityItem.activityId and not ACTIVITY_CUSTOM_DATA.A[activityItem.activityId] then
-        if activityItem.activityId ~= self:GetActivityID() or activityItem.customId ~= self:GetCustomID() then
-           return false
-        end
-    end
-    local filterLevel = MeetingStone_BrowsePanel.LootDropdown:GetValue() or 0;
-    if(not self:IsUseHonorLevel() and filterLevel > 0 and self:GetItemLevel() < filterLevel) then return false end
-
-    if search then
-        if summary and summary:find(search, 1, true) then
-            return true
-        elseif comment and comment:find(search, 1, true) then
-            return true
-        elseif self:GetLeader() and self:GetLeader():lower():find(search, 1, true) then
-            return true
-        else
-            return false
-        end
-    end
-
-    if spamLength and ((summary and strlenutf8(summary) > spamLength) or (comment and strlenutf8(comment) > spamLength)) then
-
-        return false
-    end
-
-    if bossFilter and next(bossFilter) then
-        for boss, flag in pairs(bossFilter) do
-            if flag then
-                if self:IsBossKilled(boss) then
-                    return false
-                end
-            else
-                if not self:IsBossKilled(boss) then
-                    return false
-                end
+function Activity:Match(filters)
+    for key, func in pairs(FILTERS) do
+        local filter = filters[key]
+        if filter and filter.enable then
+            local value = func(self)
+            if filter.min and filter.min ~= 0 and value < filter.min then
+                return false
+            end
+            if filter.max and filter.max ~= 0 and value > filter.max then
+                return false
             end
         end
     end

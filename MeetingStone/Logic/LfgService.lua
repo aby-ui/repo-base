@@ -158,21 +158,16 @@ function LfgService:LFG_LIST_SEARCH_RESULT_UPDATED(_, id)
     if self.inSearch then
         return
     end
-    
     self:UpdateActivity(id)
     self:SendMessage('MEETINGSTONE_ACTIVITIES_RESULT_UPDATED')
 end
 
 function LfgService:Search(categoryId, baseFilter, activityId)
+    
     self.ourSearch = true
     self.activityId = activityId
 
-    if activityId then
-        C_LFGList.SetSearchToActivity(activityId)
-    end
-
     C_LFGList.Search(categoryId, 0, baseFilter)
-    C_LFGList.ClearSearchTextFields()
     self.ourSearch = false
     self.dirty = false
 end

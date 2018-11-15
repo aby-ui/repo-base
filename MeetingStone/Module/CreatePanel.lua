@@ -302,81 +302,81 @@ function CreatePanel:OnInitialize()
         MagicButton_OnLoad(CreateButton)
     end
 
-    local CreateHelpPlate do
-        CreateHelpPlate = {
-            FramePos = { x = -10,          y = 55 },
-            FrameSize = { width = 830, height = 415 },
-            {
-                ButtonPos = { x = 755, y = 10 },
-                HighLightBox = { x = 735, y = 5, width = 95, height = 35 },
-                ToolTipDir = 'DOWN',
-                ToolTipText = L.CreateHelpRefresh,
-            },
-            {
-                ButtonPos = { x = 400,  y = -170 },
-                HighLightBox = { x = 230, y = -35, width = 600, height = 350 },
-                ToolTipDir = 'RIGHT',
-                ToolTipText = L.CreateHelpList,
-            },
-            {
-                ButtonPos = { x = 90,  y = -80 },
-                HighLightBox = { x = 5, y = -35, width = 220, height = 150 },
-                ToolTipDir = 'UP',
-                ToolTipText = L.CreateHelpOptions,
-            },
-            {
-                ButtonPos = { x = 90,  y = -220 },
-                HighLightBox = { x = 5, y = -190, width = 220, height = 195 },
-                ToolTipDir = 'UP',
-                ToolTipText = L.CreateHelpSummary,
-            },
-            {
-                ButtonPos = { x = 370,  y = -380 },
-                HighLightBox = { x = 280, y = -390, width = 270, height = 28 },
-                ToolTipDir = 'UP',
-                ToolTipText = L.CreateHelpButtons,
-            },
-        }
-        MainPanel:AddHelpButton(CreateWidget, CreateHelpPlate)
-    end
+    -- local CreateHelpPlate do
+    --     CreateHelpPlate = {
+    --         FramePos = { x = -10,          y = 55 },
+    --         FrameSize = { width = 830, height = 415 },
+    --         {
+    --             ButtonPos = { x = 755, y = 10 },
+    --             HighLightBox = { x = 735, y = 5, width = 95, height = 35 },
+    --             ToolTipDir = 'DOWN',
+    --             ToolTipText = L.CreateHelpRefresh,
+    --         },
+    --         {
+    --             ButtonPos = { x = 400,  y = -170 },
+    --             HighLightBox = { x = 230, y = -35, width = 600, height = 350 },
+    --             ToolTipDir = 'RIGHT',
+    --             ToolTipText = L.CreateHelpList,
+    --         },
+    --         {
+    --             ButtonPos = { x = 90,  y = -80 },
+    --             HighLightBox = { x = 5, y = -35, width = 220, height = 150 },
+    --             ToolTipDir = 'UP',
+    --             ToolTipText = L.CreateHelpOptions,
+    --         },
+    --         {
+    --             ButtonPos = { x = 90,  y = -220 },
+    --             HighLightBox = { x = 5, y = -190, width = 220, height = 195 },
+    --             ToolTipDir = 'UP',
+    --             ToolTipText = L.CreateHelpSummary,
+    --         },
+    --         {
+    --             ButtonPos = { x = 370,  y = -380 },
+    --             HighLightBox = { x = 280, y = -390, width = 270, height = 28 },
+    --             ToolTipDir = 'UP',
+    --             ToolTipText = L.CreateHelpButtons,
+    --         },
+    --     }
+    --     MainPanel:AddHelpButton(CreateWidget, CreateHelpPlate)
+    -- end
 
-    local ViewHelpPlate do
-        ViewHelpPlate = {
-            FramePos = { x = -10,          y = 55 },
-            FrameSize = { width = 830, height = 415 },
-            {
-                ButtonPos = { x = 755, y = 10 },
-                HighLightBox = { x = 735, y = 5, width = 95, height = 35 },
-                ToolTipDir = 'DOWN',
-                ToolTipText = L.CreateHelpRefresh,
-            },
-            {
-                ButtonPos = { x = 400,  y = -170 },
-                HighLightBox = { x = 230, y = -35, width = 600, height = 350 },
-                ToolTipDir = 'RIGHT',
-                ToolTipText = L.CreateHelpList,
-            },
-            {
-                ButtonPos = { x = 90,  y = -80 },
-                HighLightBox = { x = 5, y = -35, width = 220, height = 120 },
-                ToolTipDir = 'UP',
-                ToolTipText = L.ViewboardHelpOptions,
-            },
-            {
-                ButtonPos = { x = 90,  y = -220 },
-                HighLightBox = { x = 5, y = -160, width = 220, height = 225 },
-                ToolTipDir = 'UP',
-                ToolTipText = L.ViewboardHelpSummary,
-            },
-            {
-                ButtonPos = { x = 370,  y = -380 },
-                HighLightBox = { x = 280, y = -390, width = 270, height = 28 },
-                ToolTipDir = 'UP',
-                ToolTipText = L.CreateHelpButtons,
-            },
-        }
-        MainPanel:AddHelpButton(ViewBoardWidget, ViewHelpPlate)
-    end
+    -- local ViewHelpPlate do
+    --     ViewHelpPlate = {
+    --         FramePos = { x = -10,          y = 55 },
+    --         FrameSize = { width = 830, height = 415 },
+    --         {
+    --             ButtonPos = { x = 755, y = 10 },
+    --             HighLightBox = { x = 735, y = 5, width = 95, height = 35 },
+    --             ToolTipDir = 'DOWN',
+    --             ToolTipText = L.CreateHelpRefresh,
+    --         },
+    --         {
+    --             ButtonPos = { x = 400,  y = -170 },
+    --             HighLightBox = { x = 230, y = -35, width = 600, height = 350 },
+    --             ToolTipDir = 'RIGHT',
+    --             ToolTipText = L.CreateHelpList,
+    --         },
+    --         {
+    --             ButtonPos = { x = 90,  y = -80 },
+    --             HighLightBox = { x = 5, y = -35, width = 220, height = 120 },
+    --             ToolTipDir = 'UP',
+    --             ToolTipText = L.ViewboardHelpOptions,
+    --         },
+    --         {
+    --             ButtonPos = { x = 90,  y = -220 },
+    --             HighLightBox = { x = 5, y = -160, width = 220, height = 225 },
+    --             ToolTipDir = 'UP',
+    --             ToolTipText = L.ViewboardHelpSummary,
+    --         },
+    --         {
+    --             ButtonPos = { x = 370,  y = -380 },
+    --             HighLightBox = { x = 280, y = -390, width = 270, height = 28 },
+    --             ToolTipDir = 'UP',
+    --             ToolTipText = L.CreateHelpButtons,
+    --         },
+    --     }
+    --     MainPanel:AddHelpButton(ViewBoardWidget, ViewHelpPlate)
+    -- end
 
     self.TitleBox = TitleBox
     self.SummaryBox = LFGListFrame.EntryCreation.Description.EditBox

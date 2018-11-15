@@ -454,3 +454,16 @@ function ListToMap(list)
     end
     return map
 end
+
+GetAutoCompleteItem = setmetatable({}, {__index = function(t, activityId)
+    local name, shortName, category, group, iLevel, filters, minLevel, maxMembers, displayType = C_LFGList.GetActivityInfo(activityId)
+    t[activityId] = {
+        name       = name,
+        order      = 0xffff - (ACTIVITY_ORDER.A[activityId] or ACTIVITY_ORDER.G[group] or 0),
+        activityId = activityId,
+        code       = GetActivityCode(activityId, nil, category, group),
+    }
+    return t[activityId]
+end, __call = function(t, activityId)
+    return t[activityId]
+end})
