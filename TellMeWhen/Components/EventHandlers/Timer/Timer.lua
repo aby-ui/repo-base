@@ -64,6 +64,7 @@ local TIMERS = setmetatable({}, {__index = function(self, k)
 	return t
 end})
 
+TMW.TIMERS = TIMERS
 
 function Timer:SanitizeTimerName(counter)
 	-- don't return in a single line because that will return all of gsub's return values, which we don't want.

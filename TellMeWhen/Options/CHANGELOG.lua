@@ -10,8 +10,10 @@ TMW.CHANGELOG = [==[
 * The Unit Reaction condition now checks specifically if the subject is attackable by you. This prevents false positives on, for example, the opposite-faction guards in Dalaran.
 
 ====Bug Fixes====
+* Hopefully fixed #1572 - "Script ran too long" when zoning into an arena.
 * Fixed #1584 - Error when switching profiles via slash command.
 * Fixed #1586 - Fixed a timing issue related to detecting the GCD that could cause "While condition set passing" triggered animations to flicker if their conditions were based on cooldowns.
+* Fixed #1611 - Conditions on the destination units for a Combat Event icon will now be used (previously destination units were using the source unit conditions by mistake).
 
 ===v8.5.4===
 * New icon drag operation - Insert.

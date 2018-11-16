@@ -499,7 +499,7 @@ function Type:Setup(icon)
 	icon.DestUnits = nil
 	if icon.DestUnit ~= "" then
 		local conditionSet
-		icon.DestUnits, conditionSet = TMW:GetUnits(icon, icon.DestUnit, icon.SourceConditions)
+		icon.DestUnits, conditionSet = TMW:GetUnits(icon, icon.DestUnit, icon.DestConditions)
 		if conditionSet.mightHaveWackyUnitRefs then
 			icon.DestUnits = TMW:GetUnits(icon, icon.DestUnit)
 		end
