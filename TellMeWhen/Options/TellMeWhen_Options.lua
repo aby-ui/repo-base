@@ -233,7 +233,7 @@ IE.CONST = {
 
 function IE:OnInitialize()
 	-- if the file IS required for gross functionality
-	if not IE.TabGroups.ICON or not IndentationLib then
+	if not IE.TabGroups.ICON or not TMW.indentLib then
 		-- GLOBALS: StaticPopupDialogs, StaticPopup_Show, EXIT_GAME, CANCEL, ForceQuit
 		StaticPopupDialogs["TMWOPT_RESTARTNEEDED"] = {
 			text = L["ERROR_MISSINGFILE_OPT"], 
@@ -2078,7 +2078,7 @@ TMW:NewClass("Config_EditBox_Lua", "Config_EditBox") {
 
 	ColorTable = (function()
 		local colorTable = {}
-		local tokens = IndentationLib.tokens
+		local tokens = TMW.indentLib.tokens
 		local function set(color, ...)
 			for i, v in TMW:Vararg(...) do
 				colorTable[v] = "|c00" .. color
@@ -2098,15 +2098,15 @@ TMW:NewClass("Config_EditBox_Lua", "Config_EditBox") {
 	end)(),
 
 	OnNewInstance_EditBox_Lua = function(self)
-		IndentationLib.enable(self, self.ColorTable, 4)
+		TMW.indentLib.enable(self, self.ColorTable, 4)
 
 		self:SetFont("Interface/Addons/TellMeWhen/Fonts/VeraMono.ttf", 11)
 
 		self:SetNewlineOnEnter(true)
 
-		local old = IndentationLib.padWithLinebreaks
-		IndentationLib.padWithLinebreaks = function(code)
-			if self:HasFocus() and not padNewlines then
+		local old = TMW.indentLib.padWithLinebreaks
+		TMW.indentLib.padWithLinebreaks = function(code)
+			if self:HasFocus() and not self.padNewlines then
 				return code, false
 			end
 			return old(code)

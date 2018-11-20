@@ -114,6 +114,22 @@ GTFO.SpellID["273665"] = {
   sound = 1;
 };
 
+GTFO.SpellID["273495"] = {
+  --desc = "Fire Bomb";
+  sound = 1;
+};
+
+GTFO.SpellID["261474"] = {
+  --desc = "Windwall (Emperor Korthek)";
+  sound = 1;
+  tankSound = 2;
+};
+
+GTFO.SpellID["281034"] = {
+  --desc = "Noxious Swamp Gas";
+  sound = 2;
+};
+
 -- ***********************
 -- * Shrine of the Storm *
 -- ***********************
@@ -561,3 +577,7 @@ GTFO.SpellID["276834"] = {
   sound = 1;
 };
 
+GTFO.SpellID["279575"] = {
+  --desc = "Choking Miasma (G'huun)";
+  sound = 1;
+};

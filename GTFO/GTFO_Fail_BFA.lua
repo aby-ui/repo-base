@@ -291,6 +291,10 @@ GTFO.SpellID["274840"] = {
   sound = 3;
 };
 
+GTFO.SpellID["265752"] = {
+  --desc = "Devastator Cannon (War Machine)";
+  sound = 3;
+};
 
 -- ***********************
 -- * Shrine of the Storm *
@@ -624,6 +628,7 @@ GTFO.SpellID["255741"] = {
   --desc = "Cleave (Scaled Krolusk Rider)";
   sound = 3;
   tankSound = 0;
+  test = true; -- Restrict to this NPC only
 };
 
 -- ********************

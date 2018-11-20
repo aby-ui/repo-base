@@ -14,6 +14,7 @@ TMW.CHANGELOG = [==[
 * Fixed #1584 - Error when switching profiles via slash command.
 * Fixed #1586 - Fixed a timing issue related to detecting the GCD that could cause "While condition set passing" triggered animations to flicker if their conditions were based on cooldowns.
 * Fixed #1611 - Conditions on the destination units for a Combat Event icon will now be used (previously destination units were using the source unit conditions by mistake).
+* Fixed #1600 - Lua inputs were causing unrecoverable freezes in WoW 8.1 because `EditBox:Insert()` now silently ignores non-printing characters.
 
 ===v8.5.4===
 * New icon drag operation - Insert.
