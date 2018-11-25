@@ -144,8 +144,12 @@ function Addon:UnregisterAddOnComm(prefix, callback)
 end
 
 function Addon:SendAddOnComm(prefix, message, type, target)
+	if type == "PARTY" and not IsInGroup(LE_PARTY_CATEGORY_HOME) then
+		return false
+	end
 	local data = prefix.."|"..message
 	C_ChatInfo.SendAddonMessage(Addon.ShortName, data, type, target)
+	return true
 end
 
 function Addon:CHAT_MSG_ADDON(prefix, message, type, sender)

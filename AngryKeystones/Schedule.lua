@@ -388,9 +388,7 @@ function Mod:SendCurrentKeystone()
 		message = string.format("%d:%d", keystoneMapID, keystoneLevel)
 	end
 
-	if IsInGroup() then
-		self:SendAddOnComm(message, "PARTY")
-	end
+	self:SendAddOnComm(message, "PARTY")
 end
 
 function Mod:ReceiveAddOnComm(message, type, sender)
