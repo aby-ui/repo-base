@@ -1,7 +1,7 @@
 ## Interface: 80000
 ## Title: WeakAuras Options
 ## Author: Mirrored and the WeakAuras Team
-## Version: 2.9.1
+## Version: 2.10.2
 ## Notes: Options for WeakAuras
 ## Notes-esES: Opciones para WeakAuras
 ## Notes-deDE: Optionen für WeakAuras
@@ -40,6 +40,7 @@ GenericTrigger.lua
 WeakAurasOptions.lua
 ExternalAddons.lua
 ConditionOptions.lua
+AuthorOptions.lua
 
 OptionsFrames\OptionsFrame.lua
 # -- Groups

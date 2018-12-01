@@ -380,6 +380,7 @@ local function UpdateStateWithMatch(time, bestMatch, triggerStates, cloneId, mat
       name = bestMatch.name,
       icon = bestMatch.icon,
       stacks = bestMatch.stacks,
+      debuffClass = bestMatch.debuffClass,
       progressType = "timed",
       duration = bestMatch.duration,
       expirationTime = bestMatch.expirationTime,
@@ -435,6 +436,11 @@ local function UpdateStateWithMatch(time, bestMatch, triggerStates, cloneId, mat
 
     if state.stacks ~= bestMatch.stacks then
       state.stacks = bestMatch.stacks
+      changed = true
+    end
+
+    if state.debuffClass ~= bestMatch.debuffClass then
+      state.debuffClass = bestMatch.debuffClass
       changed = true
     end
 
@@ -942,8 +948,17 @@ local function UpdateTriggerState(time, id, triggernum)
         affected, unaffected = FormatAffectedUnaffected(triggerInfo, matchedUnits)
       end
 
+      local usedCloneIds = {};
+
       for index, auraData in ipairs(auraDatas) do
-        local cloneId = tostring(index)
+        local cloneId = (auraData.GUID or auraData.unit or "unknown") .. " " .. auraData.spellId
+        if usedCloneIds[cloneId] then
+          usedCloneIds[cloneId] = usedCloneIds[cloneId] + 1
+          cloneId = cloneId .. usedCloneIds[cloneId]
+        else
+          usedCloneIds[cloneId] = 1
+        end
+
         updated = UpdateStateWithMatch(time, auraData, triggerStates, cloneId, matchCount, unitCount, maxUnitCount, affected, unaffected) or updated
       end
 
@@ -1433,9 +1448,6 @@ frame:SetScript("OnEvent", function (frame, event, arg1, arg2, ...)
     else
       ScanGroupUnit(time, matchDataChanged, nil, arg1)
     end
-    if arg1 == "vehicle" then
-      ScanGroupUnit(time, matchDataChanged, nil, "player")
-    end
   end
   WeakAuras.StopProfileSystem("bufftrigger2")
 end)
@@ -1638,7 +1650,7 @@ local function LoadAura(id, triggernum, triggerInfo)
       existingUnits[triggerInfo.unit] = UnitExists(triggerInfo.unit)
     end
   end
-  if triggerInfo.groupCountFunc then
+  if triggerInfo.groupCountFunc or triggerInfo.perUnitMode == "unaffected" or triggerInfo.perUnitMode == "all" then
     tinsert(groupCountScanFunc, triggerInfo)
   end
 
@@ -2679,6 +2691,11 @@ local function AugmentMatchDataMultiWith(matchData, unit, name, icon, stacks, de
 
   if matchData.stacks ~= stacks then
     matchData.stacks = stacks
+    changed = true
+  end
+
+  if matchData.debuffClass ~= debuffClass then
+    matchData.debuffClass = debuffClass
     changed = true
   end
 

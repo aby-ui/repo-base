@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2168, "DBM-Uldir", nil, 1031)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 18026 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 18106 $"):sub(12, -3))
 mod:SetCreatureID(137119)--Taloc
 mod:SetEncounterID(2144)
 mod:SetZone()
@@ -179,7 +179,9 @@ function mod:SPELL_AURA_APPLIED(args)
 			yellPlasmaDischarge:Yell()
 		end
 	elseif spellId == 271965 then
-		ignoreGTFO = false
+		if self:IsTank() then
+			ignoreGTFO = true
+		end
 		warnPoweringDown:Show()
 		warnPoweringDown:Play("phasechange")
 		timerPoweredDown:Start()
@@ -235,6 +237,7 @@ function mod:SPELL_AURA_REMOVED(args)
 	if spellId == 271225 then--Used later with icon feature
 
 	elseif spellId == 271965 then
+		ignoreGTFO = false
 		self.vb.plasmaCast = 0
 		self.vb.cudgelCount = 0
 		self.vb.enlargedCount = 0

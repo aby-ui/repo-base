@@ -155,6 +155,15 @@ WeakAuras.actual_unit_types_with_specific = {
   member = L["Specific Unit"]
 }
 
+WeakAuras.actual_unit_types_with_specific_and_multi = {
+  player = L["Player"],
+  target = L["Target"],
+  focus = L["Focus"],
+  pet = L["Pet"],
+  member = L["Specific Unit"],
+  multi = L["Multi-target"]
+}
+
 WeakAuras.actual_unit_types = {
   player = L["Player"],
   target = L["Target"],
@@ -188,7 +197,7 @@ do
 end
 
 local function LBR(key)
-  return LBR_Locale[key] or LBR_Base[key];
+  return LBR_Locale[key] or LBR_Base[key]
 end
 
 WeakAuras.race_types = {
@@ -1099,7 +1108,7 @@ WeakAuras.rune_specific_types = {
 WeakAuras.custom_trigger_types = {
   ["event"] = L["Event"],
   ["status"] = L["Status"],
-  ["stateupdate"] = L["Trigger State Updater"]
+  ["stateupdate"] = L["Trigger State Updater (Advanced)"]
 }
 
 WeakAuras.eventend_types = {
@@ -1611,42 +1620,62 @@ WeakAuras.update_categories = {
       "fontSize",
       "scale",
     },
+    default = false,
     label = L["Size & Position"],
+  },
+  {
+    name = "userconfig",
+    fields = {"config"},
+    default = false,
+    label = L["Custom Configuration"],
   },
   {
     name = "name",
     fields = {"id"},
+    default = true,
     label = L["Aura Names"],
   },
   {
     name = "display",
     fields = {},
+    default = true,
     label = L["Display"],
   },
   {
     name = "trigger",
     fields = {"triggers"},
+    default = true,
     label = L["Trigger"],
   },
   {
     name = "conditions",
     fields = {"conditions"},
+    default = true,
     label = L["Conditions"],
   },
   {
     name = "load",
     fields = {"load"},
+    default = true,
     label = L["Load Conditions"],
   },
   {
     name = "action",
     fields = {"actions"},
+    default = true,
     label = L["Actions"],
   },
   {
     name = "animation",
     fields = {"animation"},
+    default = true,
     label = L["Animations"],
+  },
+  {
+    name = "authoroptions",
+    fields = {"authorOptions"},
+    default = true,
+    label = L["Author Options"]
   },
   {
     name = "arrangement",
@@ -1662,16 +1691,19 @@ WeakAuras.update_categories = {
       "constantFactor",
       "hybridSortMode",
     },
+    default = true,
     label = L["Group Arrangement"],
   },
   {
     name = "oldchildren",
     fields = {},
+    default = true,
     label = L["Remove Obsolete Auras"],
   },
   {
     name = "newchildren",
     fields = {},
+    default = true,
     label = L["Add Missing Auras"],
   },
   {
@@ -1681,6 +1713,7 @@ WeakAuras.update_categories = {
       "desc",
       "version",
     },
+    default = true,
     label = L["Meta Data"],
   },
 }
@@ -1692,6 +1725,8 @@ WeakAuras.internal_fields = {
   internalVersion = true,
   sortHybridTable = true,
   expanded = true,
+  parent = true,
+  authorMode = true,
 }
 
 WeakAuras.data_stub = {
@@ -1743,6 +1778,70 @@ WeakAuras.data_stub = {
     },
   },
   conditions = {},
+  config = {},
+  authorOptions = {},
+}
+
+WeakAuras.author_option_types = {
+  toggle = L["Toggle"],
+  input = L["String"],
+  number = L["Number"],
+  range = L["Slider"],
+  description = L["Description"],
+  color = L["Color"],
+  select = L["Dropdown Menu"],
+  space = L["Space"],
+}
+
+WeakAuras.author_option_fields = {
+  common = {
+    type = true,
+    name = true,
+    useDesc = true,
+    desc = true,
+    key = true,
+    width = true,
+  },
+  number = {
+    min = 0,
+    max = 1,
+    step = .05,
+    default = 0,
+  },
+  range = {
+    min = 0,
+    max = 1,
+    step = .05,
+    default = 0,
+    step = .05,
+  },
+  input = {
+    default = "",
+    useLength = false,
+    length = 10,
+  },
+  toggle = {
+    default = false,
+  },
+  description = {
+    text = "",
+    fontSize = "medium",
+  },
+  color = {
+    default = {1, 1, 1, 1},
+  },
+  select = {
+    values = {"val1"},
+    default = 1,
+  },
+  space = {
+    variableWidth = true,
+  }
+}
+
+WeakAuras.space_types = {
+  multi = L["Multi-Line"],
+  single = L["Single-Line"]
 }
 
 WeakAuras.difficulty_info = {
@@ -1824,5 +1923,11 @@ WeakAuras.difficulty_info = {
 WeakAuras.glow_types = {
   ACShine = L["Autocast Shine"],
   Pixel = L["Pixel Glow"],
-  buttonOverlay = L["Action Button Glow"]
+  buttonOverlay = L["Action Button Glow"],
+}
+
+WeakAuras.font_sizes = {
+  small = L["Small"],
+  medium = L["Medium"],
+  large = L["Large"],
 }

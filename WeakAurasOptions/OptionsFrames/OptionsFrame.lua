@@ -123,8 +123,10 @@ local function CreateFrameSizer(frame, callback, position)
   return handle
 end
 
-local defaultWidth = 730
+local defaultWidth = 830
 local defaultHeight = 665
+local minWidth = 750
+local minHeight = 240
 
 function WeakAuras.CreateFrame()
   local WeakAuras_DropDownMenu = CreateFrame("frame", "WeakAuras_DropDownMenu", nil, "UIDropDownMenuTemplate");
@@ -146,7 +148,7 @@ function WeakAuras.CreateFrame()
   frame:EnableMouse(true);
   frame:SetMovable(true);
   frame:SetResizable(true);
-  frame:SetMinResize(610, 240);
+  frame:SetMinResize(minWidth, minHeight);
   frame:SetFrameStrata("DIALOG");
   frame.window = "default";
 
@@ -196,6 +198,8 @@ function WeakAuras.CreateFrame()
   if not(width and height) then
     width, height = defaultWidth, defaultHeight;
   end
+  width = max(width, minWidth)
+  height = max(height, minHeight)
   frame:SetWidth(width);
   frame:SetHeight(height);
 
@@ -377,7 +381,7 @@ function WeakAuras.CreateFrame()
   local container = AceGUI:Create("InlineGroup");
   container.frame:SetParent(frame);
   container.frame:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -17, 12);
-  container.frame:SetPoint("TOPLEFT", frame, "TOPRIGHT", -423, -14);
+  container.frame:SetPoint("TOPLEFT", frame, "TOPRIGHT", -83 - WeakAuras.normalWidth * 340, -14);
   container.frame:Show();
   container.frame:SetClipsChildren(true);
   container.titletext:Hide();

@@ -756,6 +756,7 @@ U1STAFF={["邦桑廸-奥杜尔"]=1,["心耀-冰风岗"]=1,
     ["丶咕哒子-冰风岗"]="Banshee十八岁的咕哒子",
     ["丶咕哒嘤-冰风岗"]="Banshee十八岁的咕哒子",
     ["夜色之忆-冰风岗"]="Banshee小仙女",
+    ["北极星姐姐-罗宁"]="来自星星的你",
     ["小倍倍猪-冰风岗"]="Banshee小仙女" }
 RunOnNextFrame(function()
     CoreRegisterEvent("INIT_COMPLETED", { INIT_COMPLETED = function()

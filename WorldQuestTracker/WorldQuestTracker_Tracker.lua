@@ -934,7 +934,12 @@ function WorldQuestTracker:PLAYER_STOPPED_MOVING()
 	playerIsMoving = false
 end
 
--- ~trackertick ~trackeronupdate ~tick ~onupdate ~ontick ï¿½ntick ï¿½nupdate
+--making a cooldown to update the player position to avoid creating a table on tick due to C_Map.GetPlayerMapPosition call
+local nextPlayerPositionUpdateCooldown = -1
+local currentPlayerX = 0
+local currentPlayerY = 0
+
+-- ~trackertick ~trackeronupdate ~tick ~onupdate ~ontick õntick õnupdate
 local TrackerOnTick = function (self, deltaTime)
 	if (self.NextPositionUpdate < 0) then
 		if (Sort_currentMapID ~= WorldQuestTracker.GetCurrentStandingMapAreaID()) then
@@ -951,21 +956,28 @@ local TrackerOnTick = function (self, deltaTime)
 		end
 	end
 	
-	local mapPosition = C_Map.GetPlayerMapPosition (WorldQuestTracker.GetCurrentStandingMapAreaID(), "player")
-	if (not mapPosition) then
-		return
+	if (nextPlayerPositionUpdateCooldown < 0) then
+		--reset cooldown
+		nextPlayerPositionUpdateCooldown = 1
+		
+		--update the player position
+		local mapPosition = C_Map.GetPlayerMapPosition (WorldQuestTracker.GetCurrentStandingMapAreaID(), "player")
+		if (not mapPosition) then
+			return
+		end
+		currentPlayerX, currentPlayerY = mapPosition.x, mapPosition.y
+	else
+		nextPlayerPositionUpdateCooldown = nextPlayerPositionUpdateCooldown - deltaTime
 	end
-	local x, y = mapPosition.x, mapPosition.y
-	
+
 	if (self.NextArrowUpdate < 0) then
-		local questYaw = (FindLookAtRotation (_, x, y, self.questX, self.questY) + p)%pipi
+		local questYaw = (FindLookAtRotation (_, currentPlayerX, currentPlayerY, self.questX, self.questY) + p)%pipi
 		local playerYaw = GetPlayerFacing()
 		local angle = (((questYaw + playerYaw)%pipi)+pi)%pipi
-		local imageIndex = 1+(floor (MapRangeClamped (_, 0, pipi, 1, 144, angle)) + 48)%144 --48ï¿½ quadro ï¿½ o que aponta para o norte
+		local imageIndex = 1+(floor (MapRangeClamped (_, 0, pipi, 1, 144, angle)) + 48)%144 --48º quadro é o que aponta para o norte
 		local line = ceil (imageIndex / 12)
 		local coord = (imageIndex - ((line-1) * 12)) / 12
 		self.Arrow:SetTexCoord (coord-0.0833, coord, 0.0833 * (line-1), 0.0833 * line)
-		--self.ArrowDistance:SetTexCoord (coord-0.0905, coord-0.0160, 0.0833 * (line-1), 0.0833 * line) -- 0.0763
 		self.ArrowDistance:SetTexCoord (coord-0.0833, coord, 0.0833 * (line-1), 0.0833 * line) -- 0.0763
 		
 		self.NextArrowUpdate = ARROW_UPDATE_FREQUENCE
@@ -976,7 +988,7 @@ local TrackerOnTick = function (self, deltaTime)
 	self.NextPositionUpdate = self.NextPositionUpdate - deltaTime
 	
 	if ((playerIsMoving or self.ForceUpdate) and self.NextPositionUpdate < 0) then
-		local distance = GetDistance_Point (_, x, y, self.questX, self.questY)
+		local distance = GetDistance_Point (_, currentPlayerX, currentPlayerY, self.questX, self.questY)
 		local x = zoneXLength * distance
 		local y = zoneYLength * distance
 		local yards = (x*x + y*y) ^ 0.5
@@ -1025,6 +1037,7 @@ local TrackerOnTick = function (self, deltaTime)
 	end
 
 end
+
 
 local TrackerOnTick_TimeLeft = function (self, deltaTime)
 	self.NextTimeUpdate = self.NextTimeUpdate - deltaTime

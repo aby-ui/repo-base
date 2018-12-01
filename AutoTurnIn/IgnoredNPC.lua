@@ -9,5 +9,7 @@ privateTable.IGNORED_NPC = {
 	["15077"] = "Riggle Bassbait",
 	["119388"] = "Chieftain Hatuun",
 	["127037"] = "Nabiru",
-	["142063"] = "Tezran"
+	["142063"] = "Tezran",
+	["141584"] = "Zurvan", --seals of fate 
+	["111243"] = "Archmage Lan'dalock" --seals of fate
 }

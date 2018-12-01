@@ -187,8 +187,8 @@ function spinnerFunctions.SetProgress(self, region, angle1, angle2)
   local mirror_h = region.mirror_h or false;
   local mirror_v = region.mirror_v or false;
 
-  local width = region.width * (region.scalex or 1) - self.offset;
-  local height = region.height * (region.scaley or 1) - self.offset;
+  local width = region.width * (region.scalex or 1) + 2 * self.offset;
+  local height = region.height * (region.scaley or 1) + 2 * self.offset;
 
   if (angle2 - angle1 >= 360) then
     -- SHOW everything
@@ -1230,7 +1230,7 @@ local function modify(parent, region, data)
 
   function region:TimerTick()
     local adjustMin = region.adjustedMin or 0;
-    self:SetTime( (region.adjustedMax or region.duration) - adjustMin, region.expirationTime - adjustMin, region.inverse);
+    self:SetTime( (region.duration ~= 0 and region.adjustedMax or region.duration) - adjustMin, region.expirationTime - adjustMin, region.inverse);
   end
 
   function region:SetTexture(texture)

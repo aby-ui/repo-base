@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2173, "DBM-Party-BfA", 5, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 18026 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 18109 $"):sub(12, -3))
 mod:SetCreatureID(129208)
 mod:SetEncounterID(2109)
 mod:SetZone()
@@ -11,7 +11,7 @@ mod:RegisterCombat("combat")
 mod:RegisterEventsInCombat(
 	"SPELL_CAST_START 269029 268230",
 	"UNIT_DIED",
-	"UNIT_SPELLCAST_START boss1 boss2 boss3 boss4 boss5",--Adds only
+	"UNIT_SPELLCAST_START boss1 boss2 boss3 boss4 boss5",--boss and Adds
 	"UNIT_SPELLCAST_SUCCEEDED boss1 boss2 boss3 boss4 boss5"--boss and Adds
 )
 
