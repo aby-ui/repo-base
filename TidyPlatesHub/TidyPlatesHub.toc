@@ -16,7 +16,7 @@ functions\Filter.lua
 functions\Style.lua
 functions\Alpha.lua
 functions\Scale.lua
-functions\Color.lua
+functions\ColorThreat.lua
 functions\Text.lua
 functions\Widgets.lua
 

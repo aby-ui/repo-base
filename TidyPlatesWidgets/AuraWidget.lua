@@ -230,9 +230,6 @@ local function UpdateIconGrid(frame, unitid)
 				aura.spellid = spellid
 				aura.unit = unitid 		-- unitid of the plate
 
-				if TidyPlatesDebug then
-					if name == "Corruption" then print(UnitAura(unitid, auraIndex, auraFilter) ) end
-				end
 			end
 
 
