@@ -23,6 +23,13 @@ U1RegisterAddon("163UI_MoreOptions", {
         callback = function(cfg, v, loading) SetCVar("overrideArchive", v and "0" or "1") end,
     }),
 
+    {
+        text = U1_NEW_ICON.."上线后立即释放尸体",
+        var = "death_release",
+        tip = "说明`8.0以后BOSS战掉线再上线时会连续掉线，开启此选项后可以改善。",
+        default = 1,
+    },
+
     --[[
     U1CfgMakeCVarOption(U1_NEW_ICON.."使用老版本TAB键选取方式", "targetnearestuseold", {
         tip = "说明`7.0之后TAB键可以选取到身后的怪物，容易ADD，启用此选项可以恢复之前的方式",
@@ -185,6 +192,12 @@ U1RegisterAddon("163UI_MoreOptions", {
                 C_NamePlate.SetNamePlateFriendlySize(110, 45)
                 C_NamePlate.SetNamePlateFriendlyClickThrough(false)
             end
+            if loading then
+                hooksecurefunc(NamePlateDriverFrame, "UpdateNamePlateOptions", function()
+                    -- call in InterfaceOptionsPanel_Cancel -> InterfaceOptionsLargerNamePlate_OnLoad setFunc
+                    U1CfgCallBack(cfg)
+                end)
+            end
         end,
         { text = "缩放比例", var = "scale", type = "spin", range = {0.4, 2.0, 0.1}, default = 1, callback = function(cfg, v, loading) SetCVar("nameplateGlobalScale", v or 1.0) end, },
         { text = "自带友方血条宽度", var = "fwidth", type = "spin", range = {24, 200, 1}, default = 60, callback = function(cfg, v, loading) C_NamePlate.SetNamePlateFriendlySize(v, 45) end, },
@@ -226,4 +239,12 @@ do
 --     } do
 --         CoreOnEvent(e, setProfanityFilter)
 --     end
+
+    CoreOnEvent("PLAYER_ENTERING_WORLD", function()
+        if U1GetCfgValue("163ui_moreoptions/death_release") and UnitIsDeadOrGhost("player") then
+            AcceptResurrect()
+            RepopMe()
+        end
+        return "remove"
+    end)
 end

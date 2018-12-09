@@ -259,7 +259,7 @@ function Fizzle:UpdateItems()
 			local str = _G[item.."FizzleS"]
 			local v1, v2 = GetInventoryItemDurability(id)
 			v1, v2 = tonumber(v1) or 0, tonumber(v2) or 0
-			local percent = v1 / v2 * 100
+			local percent = v2 > 0 and v1 / v2 * 100 or 0
 
 			if (((v2 ~= 0) and ((percent ~= 100) or db.DisplayWhenFull)) and not db.HideText) then
 				local text
