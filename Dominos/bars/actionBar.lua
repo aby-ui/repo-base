@@ -8,7 +8,11 @@
 local AddonName, Addon = ...
 local ActionButton = Addon.ActionButton
 local HiddenFrame = Addon:CreateHiddenFrame('Frame', nil, _G.UIParent)
+
 local MAX_BUTTONS = 120
+local ACTION_BUTTON_SHOW_GRID_REASON_ADDON = 1024
+local ACTION_BUTTON_SHOW_GRID_REASON_KEYBOUND = 2048
+
 
 --[[ Action Bar ]]--
 
@@ -247,35 +251,33 @@ end
 
 
 --Empty button display
-function ActionBar:ShowGrid()
-	for _, button in pairs(self.buttons) do
-		button:SetAttribute('showgrid', button:GetAttribute('showgrid') + 1)
-		button:UpdateGrid()
+function ActionBar:ShowGrid(reason)
+	for _,b in pairs(self.buttons) do
+		b:ShowGrid(reason)
 	end
 end
 
-function ActionBar:HideGrid()
-	for _, button in pairs(self.buttons) do
-		button:SetAttribute('showgrid', max(button:GetAttribute('showgrid') - 1, 0))
-		button:UpdateGrid()
+function ActionBar:HideGrid(reason)
+	for _,b in pairs(self.buttons) do
+		b:HideGrid(reason)
 	end
 end
 
 function ActionBar:UpdateGrid()
 	if Addon:ShowGrid() then
-		self:ShowGrid()
+		self:ShowGrid(ACTION_BUTTON_SHOW_GRID_REASON_ADDON)
 	else
-		self:HideGrid()
+		self:HideGrid(ACTION_BUTTON_SHOW_GRID_REASON_ADDON)
 	end
 end
 
 ---keybound support
 function ActionBar:KEYBOUND_ENABLED()
-	self:ShowGrid()
+	self:ShowGrid(ACTION_BUTTON_SHOW_GRID_REASON_KEYBOUND)
 end
 
 function ActionBar:KEYBOUND_DISABLED()
-	self:HideGrid()
+	self:HideGrid(ACTION_BUTTON_SHOW_GRID_REASON_KEYBOUND)
 end
 
 --right click targeting support
@@ -285,9 +287,10 @@ end
 
 --utility functions
 function ActionBar:ForAll(method, ...)
-	for _,f in pairs(active) do
-		if f.method then
-			f[method](f, ...)
+	for _, f in pairs(active) do
+		local func = f[method]
+		if type(func) == "function" then
+			func(f, ...)
 		end
 	end
 end
@@ -510,6 +513,7 @@ function ActionBarController:Load()
 	self:RegisterEvent('UPDATE_BONUS_ACTIONBAR', 'UpdateOverrideBar')
 	self:RegisterEvent('UPDATE_VEHICLE_ACTIONBAR', 'UpdateOverrideBar')
 	self:RegisterEvent('UPDATE_OVERRIDE_ACTIONBAR', 'UpdateOverrideBar')
+	self:RegisterEvent("PET_BAR_HIDEGRID")
 
 	for i = 1, Addon:NumBars() do
 		ActionBar:New(i)
@@ -534,4 +538,9 @@ function ActionBarController:UpdateOverrideBar()
 	for _, button in pairs(overrideBar.buttons) do
 		ActionButton_Update(button)
 	end
+end
+
+-- workaround for empty buttons not hiding when dropping a pet action
+function ActionBarController:PET_BAR_HIDEGRID()
+	ActionBar:ForAll("HideGrid", ACTION_BUTTON_SHOW_GRID_REASON_EVENT)
 end

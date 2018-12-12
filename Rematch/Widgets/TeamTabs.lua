@@ -153,7 +153,7 @@ function panel:SelectTeamTab(index)
 		rematch.TeamPanel:Update()
 	end
 	panel:ScrollToTab(settings.SelectedTab)
-	rematch:ListScrollToTop(rematch.TeamPanel.List.ScrollFrame)
+	rematch.TeamPanel.List:ScrollToIndex(1)
 	rematch.Dialog:UpdateTabPicker()
 end
 

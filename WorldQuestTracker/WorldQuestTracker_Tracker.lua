@@ -124,14 +124,7 @@ function WorldQuestTracker.AddQuestToTracker (self, questID, mapID)
 		local iconText = self.IconText
 		local questType = self.QuestType
 		local numObjectives = self.numObjectives
-		
---		if (type (iconText) == "string") then --no good
---			iconText = iconText:gsub ("|c%x?%x?%x?%x?%x?%x?%x?%x?", "")
---			iconText = iconText:gsub ("|r", "")
---			iconText = tonumber (iconText)
---		end
---removing this, the reward amount can now be a number or a string, we cannot check for amount without checking first if is a number (on tracker only)
-		
+
 		if (iconTexture) then
 			tinsert (WorldQuestTracker.QuestTrackList, {
 				questID = questID, 
@@ -177,27 +170,42 @@ end
 
 --remove todas as quests do tracker
 function WorldQuestTracker.RemoveAllQuestsFromTracker()
+	local isShowingWorld = WorldQuestTrackerAddon.GetCurrentZoneType() == "world"
+	
 	for i = #WorldQuestTracker.QuestTrackList, 1, -1 do
+		--get the quest table with info about the quest
 		local quest = WorldQuestTracker.QuestTrackList [i]
-		local questID = quest.questID
-		local widget = WorldQuestTracker.GetWorldWidgetForQuest (questID)
-		if (widget) then
-			if (widget.onStartTrackAnimation:IsPlaying()) then
-				widget.onStartTrackAnimation:Stop()
-			end
-			widget.onEndTrackAnimation:Play()
-		end
-		--remove da tabela
+		
+		--remove the quest from the tracker
 		tremove (WorldQuestTracker.QuestTrackList, i)
+		
+		--remove tracking indicator on the quest icon
+		local questID = quest.questID
+		
+		if (isShowingWorld) then
+			--quest locations
+			for _, widget in pairs (WorldQuestTracker.WorldMapSmallWidgets) do
+				if (widget:IsShown() and widget.questID == questID) then
+					widget.onEndTrackAnimation:Play()
+				end
+			end
+			--quest summary
+			for _, widget in pairs (WorldQuestTracker.WorldSummaryQuestsSquares) do
+				if (widget:IsShown() and widget.questID == questID) then
+					widget.onEndTrackAnimation:Play()
+				end
+			end
+		else
+			--zone map widgets
+			for _, widget in pairs (WorldQuestTracker.ZoneWidgetPool) do
+				if (widget:IsShown() and widget.questID == questID) then
+					widget.onEndTrackAnimation:Play()
+				end
+			end
+		end
 	end
 	
 	WorldQuestTracker.RefreshTrackerWidgets()
-	
-	if (WorldQuestTrackerAddon.GetCurrentZoneType() == "world") then
-		WorldQuestTracker.UpdateWorldQuestsOnWorldMap()
-	elseif (WorldQuestTrackerAddon.GetCurrentZoneType() == "zone") then
-		WorldQuestTracker.UpdateZoneWidgets()
-	end
 end
 
 --o cliente nï¿½o tem o tempo restante da quest na primeira execuï¿½ï¿½o
@@ -939,7 +947,7 @@ local nextPlayerPositionUpdateCooldown = -1
 local currentPlayerX = 0
 local currentPlayerY = 0
 
--- ~trackertick ~trackeronupdate ~tick ~onupdate ~ontick õntick õnupdate
+-- ~trackertick ~trackeronupdate ~tick ~onupdate ~ontick ï¿½ntick ï¿½nupdate
 local TrackerOnTick = function (self, deltaTime)
 	if (self.NextPositionUpdate < 0) then
 		if (Sort_currentMapID ~= WorldQuestTracker.GetCurrentStandingMapAreaID()) then
@@ -974,7 +982,7 @@ local TrackerOnTick = function (self, deltaTime)
 		local questYaw = (FindLookAtRotation (_, currentPlayerX, currentPlayerY, self.questX, self.questY) + p)%pipi
 		local playerYaw = GetPlayerFacing()
 		local angle = (((questYaw + playerYaw)%pipi)+pi)%pipi
-		local imageIndex = 1+(floor (MapRangeClamped (_, 0, pipi, 1, 144, angle)) + 48)%144 --48º quadro é o que aponta para o norte
+		local imageIndex = 1+(floor (MapRangeClamped (_, 0, pipi, 1, 144, angle)) + 48)%144 --48ï¿½ quadro ï¿½ o que aponta para o norte
 		local line = ceil (imageIndex / 12)
 		local coord = (imageIndex - ((line-1) * 12)) / 12
 		self.Arrow:SetTexCoord (coord-0.0833, coord, 0.0833 * (line-1), 0.0833 * line)
@@ -1037,7 +1045,6 @@ local TrackerOnTick = function (self, deltaTime)
 	end
 
 end
-
 
 local TrackerOnTick_TimeLeft = function (self, deltaTime)
 	self.NextTimeUpdate = self.NextTimeUpdate - deltaTime

@@ -104,11 +104,6 @@ ff.SetOTButtonsFunc = function (_, _, value)
 	GameCooltip:Hide()
 end
 
-ff.SendWhispersFunc = function (_, _, value)
-	WorldQuestTracker.db.profile.groupfinder.send_whispers = value
-	GameCooltip:Hide()
-end
-
 ff.AlreadyInGroupFunc = function (_, _, value)
 	WorldQuestTracker.db.profile.groupfinder.dont_open_in_group = value
 	GameCooltip:Hide()
@@ -168,15 +163,6 @@ ff.BuildMenuFunc = function()
 	--
 	GameCooltip:AddLine ("$div", nil, 1, nil, -5, -11)
 	--
-	
-	--
-	GameCooltip:AddLine ("Send Invite Whispers")
-	if (WorldQuestTracker.db.profile.groupfinder.send_whispers) then
-		GameCooltip:AddIcon ([[Interface\BUTTONS\UI-CheckBox-Check]], 1, 1, 16, 16)
-	else
-		GameCooltip:AddIcon ([[Interface\BUTTONS\UI-AutoCastableOverlay]], 1, 1, 16, 16, .4, .6, .4, .6)
-	end
-	GameCooltip:AddMenu (1, ff.SendWhispersFunc, not WorldQuestTracker.db.profile.groupfinder.send_whispers)
 	
 	GameCooltip:AddLine ("Don't Show if Already in Group")
 	if (WorldQuestTracker.db.profile.groupfinder.dont_open_in_group) then
@@ -331,7 +317,7 @@ function WorldQuestTracker.OpenGroupFinderForQuest()
 		--/dump LFGListFrame.EntryCreation.Name
 	end
 	
-	if (title) then
+	if (title or ff.NpcID) then
 		LFGListUtil_OpenBestWindow()
 		LFGListCategorySelection_SelectCategory (LFGListFrame.CategorySelection, 1, 0)
 		LFGListCategorySelection_StartFindGroup (LFGListFrame.CategorySelection)
@@ -373,98 +359,81 @@ ff:SetScript ("OnMouseDown", function (self, button)
 end)
 
 --> BUTTON onvite nearby players
-
-function ff.StartAutoInvites()
-
-	local nextInviteWave = 0.025414
-	if (not ff.InvitePlayersButton.inviteAnimation:IsPlaying()) then
-		ff.InvitePlayersButton.inviteAnimation:Play()
-	end
-	
-	ff.InvitePlayersButton:Disable()
-	
-	ff:SetScript ("OnUpdate", function (self, deltaTime)
-	
-		nextInviteWave = nextInviteWave - deltaTime
-		
-		if (nextInviteWave < 0) then
-		
-			--update the quest size
-			ff.UpdatePlayerNearbyCount()
-		
-			local numMembersInGroup = GetNumGroupMembers()
-			if (numMembersInGroup >= 5) then
-				self:SetScript ("OnUpdate", nil)
-				WorldQuestTracker:Msg ("Group is full.")
-				if (ff.InvitePlayersButton.inviteAnimation:IsPlaying()) then
-					ff.InvitePlayersButton.inviteAnimation:Stop()
-				end
-				ff.UpdatePlayerNearbyCount()
-				return
-			end
-		
-			local playerName = next (ff.PlayersNearby)
-			if (playerName) then
-			
-				if (not ff.PlayersInvited [playerName]) then
-					local inviteCooldown = ff.PlayersNearby [playerName]
-					if (inviteCooldown+20 > GetTime()) then
-						--> invite unit and add a cooldown
-						InviteUnit (playerName)
-						
-						WorldQuestTracker:Msg ("Inviting " .. playerName)
-						
-						ff.PlayersInvited [playerName] = true
-						ff.PlayersNearby [playerName] = nil
-						
-						--> send message to player
-						if (WorldQuestTracker.db.profile.groupfinder.send_whispers) then
-							SendChatMessage ("[World Quest Tracker]: Invite for World Quest '" .. (ff.QuestName2Text:GetText() or "-") .. "'", "WHISPER", nil, playerName)
-						end
-						
-					else
-						ff.PlayersNearby [playerName] = nil
-					end
-					
-					if (numMembersInGroup >= 3) then
-						nextInviteWave = 3.498547
-					else
-						nextInviteWave = 1.498547
-					end
-				else
-					ff.PlayersNearby [playerName] = nil
-				end
-			else
-				self:SetScript ("OnUpdate", nil)
-				if (ff.InvitePlayersButton.inviteAnimation:IsPlaying()) then
-					ff.InvitePlayersButton.inviteAnimation:Stop()
-				end
-				ff.UpdatePlayerNearbyCount()
-			end
-		end
+local InvitePlayersOnClick = function()
+	GameCooltip:Hide()
+	C_Timer.After (0.15, function()
+		GameCooltip:ExecFunc (ff.InvitePlayersButton.widget)
 	end)
 end
 
-ff.InvitePlayersButton = WorldQuestTracker:CreateButton (ff, ff.StartAutoInvites, ff.ButtonWidth, ff.ButtonHeight, "Invite Nearby Players", -1, nil, nil, nil, nil, nil, WorldQuestTracker:GetTemplate ("button", "OPTIONS_BUTTON_TEMPLATE"))
+ff.InvitePlayersButton = WorldQuestTracker:CreateButton (ff, InvitePlayersOnClick, ff.ButtonWidth, ff.ButtonHeight, "Invite Nearby Players", -1, nil, nil, nil, nil, nil, WorldQuestTracker:GetTemplate ("button", "OPTIONS_BUTTON_TEMPLATE"))
 ff.InvitePlayersButton:SetPoint ("top", ff.OpenGroupFinderButton, "bottom", 0, -ff.ButtonVerticalPadding)
 ff.InvitePlayersButton:SetClickFunction (function() ff:HideFrame (true) end, false, false, "right")
 
-ff.InvitePlayersButton.InvitingTexture =  WorldQuestTracker:CreateImage (ff.InvitePlayersButton, [[Interface\COMMON\StreamCircle]], 32, 32, "artwork")
-ff.InvitePlayersButton.InvitingTexture:SetPoint ("left", 4, 0)
-ff.InvitePlayersButton.InvitingTexture:SetAlpha (0.75)
-ff.InvitePlayersButton.InvitingTexture:SetVertexColor (.7, .7, .7)
-ff.InvitePlayersButton.InvitingTexture:SetBlendMode ("ADD")
+local playerSelectedToInvite = function (self, fixedValue, value)
+	GameCooltip2:Hide()
+	ff.PlayersNearby [value] = nil
+	ff.PlayersInvited [value] = true
+	InviteUnit (value)
+	
+	C_Timer.After (0.15, function()
+		GameCooltip:ExecFunc (ff.InvitePlayersButton.widget)
+	end)
+end
 
-ff.InvitePlayersButton.InvitingTextureOverlay =  WorldQuestTracker:CreateImage (ff.InvitePlayersButton, [[Interface\COMMON\StreamFrame]], 32, 32, "overlay")
-ff.InvitePlayersButton.InvitingTextureOverlay:SetPoint ("left", 4, 0)
-ff.InvitePlayersButton.InvitingTextureOverlay:SetAlpha (0.2)
+local BuildInviteMenu = function()
+	GameCooltip2:Preset (2)
+	local playerName = next (ff.PlayersNearby)
+	if (playerName) then
+		local added = false
+		
+		for playerName, playerInfo in pairs (ff.PlayersNearby) do
+			local spottedAt, guid = unpack (playerInfo)
+			if (spottedAt + 20 > GetTime()) then
+				local className, classId, raceName, raceId, gender, name, realm = GetPlayerInfoByGUID (guid)
+				
+				if (classId) then
+					GameCooltip:AddLine (playerName, "", 1, classId)
+				else
+					GameCooltip:AddLine (playerName)
+				end
+				
+				GameCooltip:AddMenu (1, playerSelectedToInvite, playerName)
+				added = true
+			end
+		end
+		
+		if (not added) then
+			GameCooltip2:AddLine ("No other players nearby.")
+		end
+	else
+		GameCooltip2:AddLine ("No other players nearby.")
+	end
+end
 
-ff.InvitePlayersButton.InvitingTexture:Hide()
-ff.InvitePlayersButton.InvitingTextureOverlay:Hide()
+ff.InvitePlayersButton.widget.CoolTip = {
+	Type = "menu",
+	BuildFunc = BuildInviteMenu,
+	OnEnterFunc = function (self) 
+		ff.InvitePlayersButton.widget.button_mouse_over = true
+	end,
+	OnLeaveFunc = function (self) 
+		ff.InvitePlayersButton.widget.button_mouse_over = false
+	end,
+	FixedValue = "none",
+	ShowSpeed = 0.02,
+	Options = function()
+		GameCooltip:SetOption ("MyAnchor", "left")
+		GameCooltip:SetOption ("RelativeAnchor", "right")
+		GameCooltip:SetOption ("WidthAnchorMod", -2)
+		GameCooltip:SetOption ("HeightAnchorMod", 0)
+		GameCooltip:SetOption ("LineHeightSizeOffset", 4)
+		GameCooltip:SetOption ("VerticalPadding", -4)
+		GameCooltip:SetOption ("FrameHeightSizeOffset", 4)
+	end
+}
 
-ff.InvitePlayersButton.inviteAnimation = WorldQuestTracker:CreateAnimationHub (ff.InvitePlayersButton.InvitingTexture, function() ff.InvitePlayersButton.InvitingTexture:Show(); ff.InvitePlayersButton.InvitingTextureOverlay:Show() end, function() ff.InvitePlayersButton.InvitingTexture:Hide(); ff.InvitePlayersButton.InvitingTextureOverlay:Hide() end)
-ff.InvitePlayersButton.inviteAnimation:SetLooping ("REPEAT")
-WorldQuestTracker:CreateAnimation (ff.InvitePlayersButton.inviteAnimation, "ROTATION", 1, 6, -360)
+GameCooltip2:CoolTipInject (ff.InvitePlayersButton.widget)
 
 local leave_func = function()
 	if (ff.QuestCompletedHidingTimer and not ff.QuestCompletedHidingTimer._cancelled) then
@@ -497,21 +466,6 @@ end
 ff.IgnoreQuestButton = WorldQuestTracker:CreateButton (ff, ignore_current_quest, ff.ButtonWidth, ff.ButtonHeight, L["Ignore Quest"], -1, nil, nil, nil, nil, nil, WorldQuestTracker:GetTemplate ("button", "OPTIONS_BUTTON_TEMPLATE"))
 ff.IgnoreQuestButton:SetPoint ("top", ff.LeaveButton, "bottom", 0, -ff.ButtonVerticalPadding)
 ff.IgnoreQuestButton:SetClickFunction (function() ff:HideFrame (true) end, false, false, "right")
-
---> Auto search for player nearby
-
-WorldQuestTracker.CommFunctions ["WQTF"] = function (data)
-	--data 1 = prefix
-	--data 2 = questID
-	--data 3 = player name
-	
-	
-	
-end
-
---WorldQuestTracker:SendCommMessage (WorldQuestTracker.COMM_PREFIX, data, "WHISPER", targetCharacter)
---_detalhes:SendCommMessage (CONST_DETAILS_PREFIX, _detalhes:Serialize (CONST_GUILD_SYNC, from, realm, _detalhes.realversion, "L", IDs), "WHISPER", chr_name)
---ff:Show()
 
 function WorldQuestTracker.RegisterGroupFinderFrameOnLibWindow()
 	LibWindow.RegisterConfig  (ff, WorldQuestTracker.db.profile.groupfinder.frame)
@@ -562,7 +516,6 @@ function WorldQuestTracker.RegisterGroupFinderFrameOnLibWindow()
 		ff.AnimationShow:Play()
 		ff.Options:Show()
 		
-		ff.InvitePlayersButton:Disable()
 		ff.LeaveButton:Disable()
 		
 		if (IsInGroup()) then
@@ -574,9 +527,6 @@ function WorldQuestTracker.RegisterGroupFinderFrameOnLibWindow()
 
 	function ff:HideFrame (noAnimation)
 		ff:SetScript ("OnUpdate", nil)
-		if (ff.InvitePlayersButton.inviteAnimation:IsPlaying()) then
-			ff.InvitePlayersButton.inviteAnimation:Stop()
-		end
 		ff.AnimationShow:Stop()
 		
 		if (noAnimation) then
@@ -614,12 +564,36 @@ ChatFrame_AddMessageEventFilter ("CHAT_MSG_WHISPER", function (_, _, msg)
 	end
 end)
 
-function ff:PlayerEnteredWorldQuestZone (questID)
+function ff:PlayerEnteredWorldQuestZone (questID, npcID, npcName)
 	--> update the frame
-	local title, factionID, capped = C_TaskQuest.GetQuestInfoByQuestID (questID)
+
+	local title, isNpc
+	if (npcID) then
+		--> check if the group finder can search for rares
+		if (WorldQuestTracker.db.profile.rarescan.search_group) then
+		
+			if (WorldQuestTracker.db.profile.groupfinder.ignored_quests [npcID]) then
+				return
+			end
+			
+			if (WorldQuestTracker.db.profile.groupfinder.dont_open_in_group and IsInGroup()) then
+				return
+			end
+		
+			title = npcName
+			questID = npcID
+			isNpc = true
+		end
+		
+	elseif (questID) then
+		title = C_TaskQuest.GetQuestInfoByQuestID (questID)
+		
+	end
+	
 	if (title) then
 		ff.IsInQuestZone = true
 		ff.CurrentWorldQuest = questID
+		ff.NpcID = isNpc and questID
 		
 		--> toggle buttons
 		ff.OpenGroupFinderButton:Enable()
@@ -675,7 +649,6 @@ function ff:PlayerLeftWorldQuestZone (questID, questCompleted)
 		if (IsInGroup() and not isInInstance) then
 		
 			--> disable buttons
-			ff.InvitePlayersButton:Disable()
 			ff.OpenGroupFinderButton:Disable()
 			ff.IgnoreQuestButton:Disable()
 			--> enable button
@@ -693,7 +666,6 @@ function ff:PlayerLeftWorldQuestZone (questID, questCompleted)
 			
 			if (active) then
 				--> disable buttons
-				ff.InvitePlayersButton:Disable()
 				ff.OpenGroupFinderButton:Disable()
 				ff.IgnoreQuestButton:Disable()
 				--> enable button
@@ -730,39 +702,16 @@ function ff:PlayerLeftWorldQuestZone (questID, questCompleted)
 	ff:UnregisterEvent ("COMBAT_LOG_EVENT_UNFILTERED")
 	
 	--> check to left the group
-	
-	
+
 end
 
 function ff.DelayedCheckForDisband()
 	--> when the player left the group
-	
-	
-	
-end
 
-function ff.UpdatePlayerNearbyCount()
-	if (ff:IsShown()) then
-		local amount = 0
-		for playerName, _ in pairs (ff.PlayersNearby) do
-			amount = amount + 1
-		end
-		
-		if (amount > 0) then
-			--> only run if it isn't inviting
-			if (not ff:GetScript ("OnUpdate")) then
-				ff.InvitePlayersButton:Enable()
-			end
-		else
-			ff.InvitePlayersButton:Disable()
-		end
-		
-		--ff.InvitePlayersButton:SetText ("Invite Nearby Players [" .. amount .. "]")
-	end
 end
 
 ff:SetScript ("OnEvent", function (self, event, arg1, questID, arg3)
-
+	
 	--is this feature enable?
 	if (not WorldQuestTracker.db.profile.groupfinder.enabled) then
 		return
@@ -772,30 +721,33 @@ ff:SetScript ("OnEvent", function (self, event, arg1, questID, arg3)
 	
 		local time, token, hidding, who_serial, who_name, who_flags, who_flags2, target_serial, target_name, target_flags, target_flags2, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12 = CombatLogGetCurrentEventInfo()
 		
-		if (who_name and not ff.PlayersNearby [who_name] and not ff.PlayersInvited [who_name]) then
+		if (who_name and who_serial and type (who_serial) == "string" and who_serial:find ("Player") and not ff.PlayersNearby [who_name] and not ff.PlayersInvited [who_name]) then
 			if (who_flags and (bit.band (who_flags, 0x00000410) == 0x00000410)) then
 				if (who_name ~= UnitName ("player")) then
-					ff.PlayersNearby [who_name] = GetTime() --when the player got spotted
-					ff.UpdatePlayerNearbyCount()
+					ff.PlayersNearby [who_name] = {GetTime(), who_serial} --when the player got spotted
 				end
 			end
 		end
 		
-		if (target_name and not ff.PlayersNearby [target_name] and not ff.PlayersInvited [target_name]) then
+		if (target_name and target_serial and type (target_serial) == "string" and target_serial:find ("Player") and not ff.PlayersNearby [target_name] and not ff.PlayersInvited [target_name]) then
 			if (target_flags and (bit.band (target_flags, 0x00000410) == 0x00000410)) then
 				if (target_name ~= UnitName ("player")) then
-					ff.PlayersNearby [target_name] = GetTime() --when the player got spotted
-					ff.UpdatePlayerNearbyCount (target_name)
+					ff.PlayersNearby [target_name] = {GetTime(), target_serial} --when the player got spotted
 				end
 			end
 		end
 	
 	elseif (event == "LFG_LIST_APPLICANT_LIST_UPDATED") then
 --		/dump select (5, C_LFGList.GetActiveEntryInfo()):find("k00000|")
-		local active, activityID, ilvl, honorLevel, name, comment, voiceChat, duration, autoAccept, privateGroup, questID = C_LFGList.GetActiveEntryInfo()
+		local a = C_LFGList.GetActiveEntryInfo()
+		for k,v in pairs (a) do
+		
+		end
+		local active, activityID, ilvl, honorLevel, name, comment, voiceChat, duration, autoAccept, privateGroup, questID = a.active, a.activityID, a.ilvl, a.honorLevel, a.name, a.comment, a.voiceChat, a.duration, a.autoAccept, a.privateGroup, a.questID
+		active = false --disabling to fix later
 		
 		--> check if the player has a group listed in the LFG and if is the group leader
-		if (active and ff.CurrentWorldQuest and UnitIsGroupLeader ("player") and name:find ("k00000|")) then
+		if (active and ff.CurrentWorldQuest and UnitIsGroupLeader ("player") and (name:find ("ks2|") or name:find ("k000000|"))) then
 			local title, factionID, tagID, tagName, worldQuestType, rarity, isElite, tradeskillLineIndex = WorldQuestTracker.GetQuest_Info (ff.CurrentWorldQuest)
 			
 			local isInQuest = false
@@ -814,9 +766,13 @@ ff:SetScript ("OnEvent", function (self, event, arg1, questID, arg3)
 					local applicantInfo = C_LFGList.GetApplicants()
 					if (applicantInfo and #applicantInfo > 0) then
 						for i = 1, #applicantInfo do
-							local id, status, pendingStatus, numMembers, isNew, comment = C_LFGList.GetApplicantInfo (applicantInfo [i])
+							local b = C_LFGList.GetApplicantInfo (applicantInfo [i])
+							local id, status, pendingStatus, numMembers, isNew, comment = b.id, b.status, b.pendingStatus, b.numMembers, b.isNew, b.comment
+							--print (id, status, pendingStatus, numMembers, isNew, comment)
 							if (status == "applied") then
-								local name, class, localizedClass, level, itemLevel, honorLevel, tank, healer, damage, assignedRole, relationship = C_LFGList.GetApplicantMemberInfo (applicantInfo [i], 1)
+								local a = C_LFGList.GetApplicantMemberInfo (applicantInfo [i], 1)
+								local name, class, localizedClass, level, itemLevel, honorLevel, tank, healer, damage, assignedRole, relationship = a.name, a.class, a.localizedClass, a.level, a.itemLevel, a.honorLevel, a.tank, a.healer, a.damage, a.assignedRole, a.relationship
+								--print (name, class, localizedClass, level, itemLevel, honorLevel, tank, healer, damage, assignedRole, relationship)
 								if (name) then
 									InviteUnit (name)
 									WorldQuestTracker:Msg ("Auto Inviting " .. name .. " from the LFG apply.")
@@ -933,41 +889,6 @@ ff:SetScript ("OnEvent", function (self, event, arg1, questID, arg3)
 		
 	end
 end)
-
---deprecated?
-function ff.NewWorldQuestEngaged (questName, questID, isSearchOnCustom, customTitle, customDesc, customGroupDescription)
-	--> reset the gump
-	ff.ShutdownOnTickScript (true)
-	ff.ResetInteractionButton()
-	ff.ResetMembers()
-	
-	--> update the interactive button to current quest
-	interactionButton.questName = questName or isSearchOnCustom
-	interactionButton.questID = questID or 0
-	interactionButton.HadInteraction = nil
-
-	ff.AFKCheckList = ff.AFKCheckList or {}
-	wipe (ff.AFKCheckList)
-	
-	if (not isSearchOnCustom) then
-		--> normal search for quests
-		ff.SetQuestTitle (questName .. " (" .. questID .. ")")
-		ff.SetAction (ff.actions.ACTIONTYPE_GROUP_SEARCH)
-		
-	else
-		--> custom searchs
-		ff.SearchCustomGroupDesc = customGroupDescription
-		ff.SetQuestTitle (customTitle or isSearchOnCustom)
-		ff.SetAction (ff.actions.ACTIONTYPE_GROUP_SEARCHCUSTOM, customDesc)
-	end
-	
-	ff.HasLeadership = false
-	
-	--> show the main frame
-	if (not ff.IsRegistered) then
-		WorldQuestTracker.RegisterGroupFinderFrameOnLibWindow()
-	end
-end	
 
 ff.BQuestTrackerFreeWidgets = {}
 ff.BQuestTrackerUsedWidgets = {}

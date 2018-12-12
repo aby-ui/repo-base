@@ -20,6 +20,22 @@ module.db.demotedPlayers = {}
 
 module.db.sessionInRaid = nil
 
+local GetNumFriends, GetFriendInfo
+if ExRT.clientVersion >= 80100 then
+	function GetNumFriends()
+		return C_FriendList.GetNumFriends(), C_FriendList.GetNumOnlineFriends()
+	end
+	function GetFriendInfo(friend)
+		local info = C_FriendList.GetFriendInfoByIndex(friend)
+		if info then
+			return info.name
+		end
+	end
+else
+	GetNumFriends = _G.GetNumFriends
+	GetFriendInfo = _G.GetFriendInfo
+end
+
 hooksecurefunc("DemoteAssistant", function (unit)
 	if not unit then
 		return

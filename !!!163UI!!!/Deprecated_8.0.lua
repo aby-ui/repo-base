@@ -73,7 +73,7 @@ function Aby_UnitDebuff(unit, indexOrName, filterOrNil, filter, ...) return Aby_
 
 CanComplainChat = CanComplainChat or function(lineID)
     local loc = PlayerLocation:CreateFromChatLineID(lineID);
-    return C_ChatInfo.CanReportPlayer(loc)
+    return C_ReportSystem.CanReportPlayer(loc)
 end
 
 RegisterAddonMessagePrefix = RegisterAddonMessagePrefix or C_ChatInfo.RegisterAddonMessagePrefix
@@ -236,4 +236,11 @@ do
 	-- Nothing should have been using these, but preserving since they actually existed
 	SPELL_POWER_OBSOLETE = Enum.PowerType.Obsolete;
 	SPELL_POWER_OBSOLETE2 = Enum.PowerType.Obsolete2;
+end
+
+--[[------------------------------------------------------------
+8.1
+---------------------------------------------------------------]]
+do
+    GetNumIgnores = GetNumIgnores or C_FriendList.GetNumIgnores
 end

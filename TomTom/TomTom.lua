@@ -1039,7 +1039,7 @@ function TomTom:DebugListAllWaypoints()
             local ctxt = RoundCoords(wp[2], wp[3], 2)
             local desc = wp.title and wp.title or L["Unknown waypoint"]
             local indent = "   "
-            self:Printf(L["%s%s - %s (map: %d)"], indent, desc, ctxt, wp[1])
+            self:Printf(L["%s%s - %s (map: %d) %s %s"], indent, desc, ctxt, wp[1], wp.minimap_icon, wp.worldmap_icon)
         end
     end
 end

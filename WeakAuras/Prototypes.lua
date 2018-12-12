@@ -1296,11 +1296,23 @@ WeakAuras.event_prototypes = {
       ret = ret:format(trigger.unit, trigger.unit, trigger.use_powertype and trigger.powertype or "nil");
       if (trigger.use_powertype and trigger.powertype == 99) then
         ret = ret .. [[
-        local UnitPower = UnitStagger;
-        local UnitPowerMax = UnitHealthMax;
-      ]]
+          local UnitPower = UnitStagger;
+          local UnitPowerMax = UnitHealthMax;
+        ]]
+        if (trigger.use_scaleStagger and trigger.scaleStagger) then
+          ret = ret .. string.format([[
+            local UnitPowerMax = function(unit)
+              return UnitHealthMax(unit) * %s
+            end
+          ]], trigger.scaleStagger)
+        else
+          ret = ret .. [[
+          local UnitPowerMax = UnitHealthMax;
+        ]]
+        end
       end
-      if (trigger.use_showCost) then
+      local canEnableShowCost = (not trigger.use_powertype or trigger.powertype ~= 99) and trigger.unit == "player";
+      if (canEnableShowCost and trigger.use_showCost) then
         ret = ret .. [[
           if (event == "UNIT_SPELLCAST_START" and unit == "player") then
             local spellID = select(9, UnitCastingInfo("player"));
@@ -1381,6 +1393,16 @@ WeakAuras.event_prototypes = {
         reloadOptions = true
       },
       {
+        name = "scaleStagger",
+        display = L["Stagger Scale"],
+        type = "string",
+        validate = WeakAuras.ValidateNumeric,
+        enable = function(trigger)
+          return trigger.use_powertype and trigger.powertype == 99
+        end,
+        test = "true"
+      },
+      {
         name = "power",
         display = L["Power"],
         type = "number",
@@ -1404,7 +1426,11 @@ WeakAuras.event_prototypes = {
     durationFunc = function(trigger)
       local powerType = trigger.use_powertype and trigger.powertype or nil;
       if (powerType == 99) then
-        return UnitStagger(trigger.unit), math.max(1, UnitHealthMax(trigger.unit)), "fastUpdate";
+        if trigger.use_scaleStagger and trigger.scaleStagger then
+          return UnitStagger(trigger.unit), math.max(1, UnitHealthMax(trigger.unit) * trigger.scaleStagger), "fastUpdate";
+        else
+          return UnitStagger(trigger.unit), math.max(1, UnitHealthMax(trigger.unit)), "fastUpdate";
+        end
       end
       local powerTypeToCheck = trigger.powertype or UnitPowerType(trigger.unit);
       local pdm = WeakAuras.UnitPowerDisplayMod(powerTypeToCheck);
@@ -2216,7 +2242,6 @@ WeakAuras.event_prototypes = {
         test = "true",
         conditionType = "bool",
         conditionTest = function(state, needle)
-
           return state and state.show and (UnitExists('target') and WeakAuras.IsSpellInRange(state.spellname, 'target') == needle)
         end,
         conditionEvents = {
@@ -3312,6 +3337,7 @@ WeakAuras.event_prototypes = {
     },
     force_events = "SPELL_UPDATE_USABLE",
     name = L["Action Usable"],
+    statesParameter = "one",
     loadFunc = function(trigger)
       trigger.spellName = trigger.spellName or 0;
       local spellName;
@@ -3333,17 +3359,17 @@ WeakAuras.event_prototypes = {
       end
       trigger.realSpellName = spellName; -- Cache
       local ret = [=[
-        local spellname = %s
-        local startTime, duration = WeakAuras.GetSpellCooldown(spellname);
-        local charges = WeakAuras.GetSpellCharges(spellname);
+        local spellName = %s
+        local startTime, duration = WeakAuras.GetSpellCooldown(spellName);
+        local charges = WeakAuras.GetSpellCharges(spellName);
         if (charges == nil) then
           charges = (duration == 0) and 1 or 0;
         end
         local ready = startTime == 0 or charges > 0
-        local active = IsUsableSpell(spellname) and ready
+        local active = IsUsableSpell(spellName) and ready
       ]=]
       if(trigger.use_targetRequired) then
-        ret = ret.."active = active and WeakAuras.IsSpellInRange(spellname or '', 'target')\n";
+        ret = ret.."active = active and WeakAuras.IsSpellInRange(spellName or '', 'target')\n";
       end
       if(trigger.use_inverse) then
         ret = ret.."active = not active\n";
@@ -3363,6 +3389,7 @@ WeakAuras.event_prototypes = {
         type = "spell",
         test = "true",
         showExactOption = true,
+        store = true
       },
       -- This parameter uses the IsSpellInRange API function, but it does not check spell range at all
       -- IsSpellInRange returns nil for invalid targets, 0 for out of range, 1 for in range (0 and 1 are both "positive" values)
@@ -3384,6 +3411,20 @@ WeakAuras.event_prototypes = {
         type = "toggle",
         test = "true",
         reloadOptions = true
+      },
+      {
+        name = "spellInRange",
+        display = L["Spell in Range"],
+        hidden = true,
+        test = "true",
+        conditionType = "bool",
+        conditionTest = function(state, needle)
+          return state and state.show and (UnitExists('target') and WeakAuras.IsSpellInRange(state.spellName, 'target') == needle)
+        end,
+        conditionEvents = {
+          "PLAYER_TARGET_CHANGED",
+          "WA_SPELL_RANGECHECK",
+        }
       },
       {
         hidden = true,

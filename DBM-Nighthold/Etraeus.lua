@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1732, "DBM-Nighthold", nil, 786)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 2 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 5 $"):sub(12, -3))
 mod:SetCreatureID(103758)
 mod:SetEncounterID(1863)
 mod:SetZone()
@@ -338,7 +338,7 @@ function mod:SPELL_CAST_START(args)
 			countdownFelNova:Start()
 		end
 	elseif spellId == 207720 then
-		specWarnWitnessVoid:Show()
+		specWarnWitnessVoid:Show(args.sourceName)
 		specWarnWitnessVoid:Play("turnaway")
 		timerWitnessVoid:Start(nil, args.sourceGUID)
 		if self:IsMythic() then

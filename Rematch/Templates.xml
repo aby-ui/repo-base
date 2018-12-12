@@ -1210,4 +1210,81 @@
 	<!-- For created frames that need useParentLevel -->
 	<Frame name="RematchUseParentLevel" useParentLevel="true" virtual="true"/>
 
+	<!-- For creating a size-agnostic thick yellow border around selected items -->
+	<Frame name="RematchSelectedOverlayTemplate" useParentLevel="true" alpha="0.5" virtual="true">
+		<Layers>
+			<Layer level="OVERLAY">
+				<!-- topleft -->
+				<Texture file="Interface\Buttons\CheckButtonHilight" alphaMode="ADD">
+					<Size x="8" y="8"/>
+					<Anchors>
+						<Anchor point="TOPLEFT"/>
+					</Anchors>
+					<TexCoords left="0" right="0.25" top="0" bottom="0.25"/>
+				</Texture>
+				<!-- topright -->
+				<Texture file="Interface\Buttons\CheckButtonHilight" alphaMode="ADD">
+					<Size x="8" y="8"/>
+					<Anchors>
+						<Anchor point="TOPRIGHT"/>
+					</Anchors>
+					<TexCoords left="0.75" right="1" top="0" bottom="0.25"/>
+				</Texture>
+				<!-- bottomright -->
+				<Texture file="Interface\Buttons\CheckButtonHilight" alphaMode="ADD">
+					<Size x="8" y="8"/>
+					<Anchors>
+						<Anchor point="BOTTOMRIGHT"/>
+					</Anchors>
+					<TexCoords left="0.75" right="1" top="0.75" bottom="1"/>
+				</Texture>
+				<!-- bottomleft -->
+				<Texture file="Interface\Buttons\CheckButtonHilight" alphaMode="ADD">
+					<Size x="8" y="8"/>
+					<Anchors>
+						<Anchor point="BOTTOMLEFT"/>
+					</Anchors>
+					<TexCoords left="0" right="0.25" top="0.75" bottom="1"/>
+				</Texture>
+				<!-- top -->
+				<Texture file="Interface\Buttons\CheckButtonHilight" alphaMode="ADD">
+					<Size x="0" y="8"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="8" y="0"/>
+						<Anchor point="TOPRIGHT" x="-8" y="0"/>
+					</Anchors>
+					<TexCoords left="0.25" right="0.75" top="0" bottom="0.25"/>
+				</Texture>
+				<!-- right -->
+				<Texture file="Interface\Buttons\CheckButtonHilight" alphaMode="ADD">
+					<Size x="8" y="0"/>
+					<Anchors>
+						<Anchor point="TOPRIGHT" x="0" y="-8"/>
+						<Anchor point="BOTTOMRIGHT" x="0" y="8"/>
+					</Anchors>
+					<TexCoords left="0.75" right="1" top="0.25" bottom="0.75"/>
+				</Texture>
+				<!-- bottom -->
+				<Texture file="Interface\Buttons\CheckButtonHilight" alphaMode="ADD">
+					<Size x="0" y="8"/>
+					<Anchors>
+						<Anchor point="BOTTOMLEFT" x="8" y="0"/>
+						<Anchor point="BOTTOMRIGHT" x="-8" y="0"/>
+					</Anchors>
+					<TexCoords left="0.25" right="0.75" top="0.75" bottom="1"/>
+				</Texture>
+				<!-- left -->
+				<Texture file="Interface\Buttons\CheckButtonHilight" alphaMode="ADD">
+					<Size x="8" y="0"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="0" y="-8"/>
+						<Anchor point="BOTTOMLEFT" x="0" y="8"/>
+					</Anchors>
+					<TexCoords left="0" right="0.25" top="0.25" bottom="0.75"/>
+				</Texture>
+
+			</Layer>
+		</Layers>
+	</Frame>
+
 </Ui>

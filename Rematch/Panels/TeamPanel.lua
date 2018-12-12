@@ -12,65 +12,51 @@ rematch:InitModule(function()
 	settings = RematchSettings
 	saved = RematchSaved
 
-   panel.Top.Team.Label:SetText(L["Loaded Team"])
+	local scrollFrame = panel.List
+	scrollFrame.template = settings.SlimListButtons and "RematchCompactTeamListButtonTemplate" or "RematchTeamListButtonTemplate"
+	scrollFrame.templateType = "RematchCompositeButton"
+	scrollFrame.list = workingList
+	scrollFrame.callback = panel.FillTeamListButton
+	scrollFrame.preUpdateFunc = panel.PreUpdate
 
-	local scrollFrame = panel.List.ScrollFrame
-	scrollFrame.update = panel.UpdateList
-	scrollFrame.ScrollBar.doNotHide = true
-	scrollFrame.stepSize = 264 -- 44*6 or 6 rows
-	local slim = settings.SlimListButtons
-	if slim then
-		HybridScrollFrame_CreateButtons(scrollFrame,"RematchSlimTeamListButtonTemplate",78,-1)
-	else
-		HybridScrollFrame_CreateButtons(scrollFrame,"RematchTeamListButtonTemplate",85,0)
-	end
-	for _,button in ipairs(scrollFrame.buttons) do
-		button:RegisterForClicks("AnyUp")
-		for i=1,3 do
-			button.Pets[i]:RegisterForClicks("AnyUp")
-			if not slim then
-				button.Pets[i]:SetSize(28,36)
-				button.Pets[i].Icon:SetTexCoord(0.16,0.84,0.05,0.95)
-			end
-		end
-	end
-	panel.Top.Team:RegisterForClicks("AnyUp")
-	for i=1,3 do
-		panel.Top.Team.Pets[i]:SetSize(28,36)
-		panel.Top.Team.Pets[i].Icon:SetTexCoord(0.16,0.84,0.05,0.95)
-	end
 	panel.Top.Teams:SetText(L["Teams"])
-	panel.Selected.Texture:SetHeight(settings.SlimListButtons and 20 or 40)
 	rematch:UpdateAutoLoadState()
 end)
+
+-- for the following TeamListButtonOnLoad, to avoid creating new functions for every button
+local function showPetCard(self) rematch:ShowPetCard(self,self.petID) end
+local function hidePetCard(self) rematch:HidePetCard(true) end
+
+-- when a composite button is created, hook up script handlers for its textures
+function panel:TeamListButtonOnLoad()
+	-- Notes button
+	self:SetTextureScript(self.Notes,"OnEnter",rematch.Notes.OnEnter)
+	self:SetTextureScript(self.Notes,"OnLeave",rematch.Notes.OnLeave)
+	self:SetTextureScript(self.Notes,"OnClick",rematch.Notes.OnClick)
+	-- preferences button
+	self:SetTextureScript(self.Preferences,"OnEnter",rematch.ShowPreferencesTooltip)
+	self:SetTextureScript(self.Preferences,"OnLeave",rematch.HideTooltip)
+	self:SetTextureScript(self.Preferences,"OnClick",rematch.ShowPreferencesDialog)
+	-- winrecord
+	self:SetTextureScript(self.WinRecordBack,"OnEnter",rematch.WinRecordOnEnter)
+	self:SetTextureScript(self.WinRecordBack,"OnLeave",rematch.WinRecordOnLeave)
+	self:SetTextureScript(self.WinRecordBack,"OnClick",rematch.WinRecordOnClick)
+	-- pets
+	for i=1,3 do
+		self:SetTextureScript(self.Pets[i],"OnEnter",showPetCard)
+		self:SetTextureScript(self.Pets[i],"OnLeave",hidePetCard)
+		self:SetTextureScript(self.Pets[i],"OnClick",panel.PetButtonOnClick)
+	end
+end
 
 function panel:Update()
 	if panel:IsVisible() then
 		panel:PopulateTeamList()
-		panel:UpdateLoadedTeam()
-		panel:UpdateList()
+		panel.List:Update()
 		local searching = panel.Top.SearchBox:GetText():len()>0
 		panel.Top.SearchBox.Clear:SetShown(searching)
 		panel.Top.SearchBox.Instructions:SetShown(not searching)
 	end
-end
-
-function panel:UpdateLoadedTeam()
-	panel.Top.Toggle:SetEnabled(settings.loadedTeam and true)
-	if settings.ShowLoadedTeam and settings.loadedTeam then
-		panel.Top:SetHeight(88)
-		panel.Top.Team:Show()
-		panel:FillTeamButton(panel.Top.Team,settings.loadedTeam)
-	else
-		panel.Top:SetHeight(29)
-		panel.Top.Team:Hide()
-	end
-	rematch:SetTopToggleButton(panel.Top.Toggle,settings.ShowLoadedTeam)
-end
-
-function panel:ToggleLoadedTeam()
-	settings.ShowLoadedTeam = not settings.ShowLoadedTeam
-	panel:Update()
 end
 
 --[[ Working List ]]
@@ -258,134 +244,121 @@ end
 
 --[[ List UI ]]
 
-function panel:FillTeamButton(button,key)
-	button.key = key
+function panel:PreUpdate()
+	panel.SelectedOverlay:Hide()
+end
 
-	local title = rematch:GetTeamTitle(key)
-	button.Name:SetText(title)
+-- this fills out both the normal and compact list buttons
+function panel:FillTeamListButton(key)
 
-	-- set up height of team name (and set subname to target if needed)
-	-- the actual setting of the team name is handled past the footnotes
-	if type(key)=="number" then -- if this is a targeted team (npcID for key)
-		button.Name:SetTextColor(1,1,1)
-		if not button.slim then
-			local npcName = rematch:GetNameFromNpcID(key)
-			if title~=npcName and not settings.HideTargetNames then
-				button.Name:SetHeight(21)
-				button.SubName:SetText(npcName)
-				button.SubName:Show()
-			else
-				button.Name:SetHeight(36)
-				button.SubName:Hide()
-			end
-		end
-	else -- named team
-		button.Name:SetTextColor(1,.82,0) -- colored gold
-		if not button.slim then
-			button.Name:SetHeight(36) -- never has a target
-			button.SubName:Hide()
-		end
+	local teamInfo = rematch.teamInfo:Fetch(key)
+
+	if not teamInfo.key then
+		return -- this isn't a valid team
 	end
 
-	local xstart = -3 -- starting offset from right edge
-	local xoffset = xstart -- offset from right edge for footnotes to be placed
-	local yoffset = 0 -- offset from center for footnotes to be placed
+	self.key = teamInfo.key
 
-	-- WinRecord stuff
-	local showWins = rematch:FillWinRecordButton(button.WinRecord,key)
-	if showWins then
-		if button.slim then -- slim button winrecord adjusts xoffset like a regular footnote
-			xoffset = xoffset - button.WinRecord:GetWidth()
-		else -- not moving xoffset for regular teamlistbuttons; moving y offset to push footnotes up
-			yoffset = 8
-		end
-	end
-	button.WinRecord:SetShown(showWins)
-	if saved[key].notes then
-		button.Notes:SetPoint("RIGHT",xoffset,yoffset)
-		button.Notes:Show()
-		xoffset = xoffset - button.Notes:GetWidth()
-	else
-		button.Notes:Hide()
-	end
-	if rematch:HasPreferences(saved[key]) then
-		button.Preferences:SetPoint("RIGHT",xoffset,yoffset)
-		button.Preferences:Show()
-		xoffset = xoffset - button.Notes:GetWidth()
-	else
-		button.Preferences:Hide()
+	-- place border around team if it's currently loaded
+	if teamInfo.key == settings.loadedTeam then
+		panel.SelectedOverlay:SetParent(self)
+		panel.SelectedOverlay:SetPoint("TOPLEFT",self.Back,"TOPLEFT")
+		panel.SelectedOverlay:SetPoint("BOTTOMRIGHT",self.Back,"BOTTOMRIGHT")
+		panel.SelectedOverlay:Show()
 	end
 
-	-- adjust winrecord button hitrect/position for regular team list buttons
-	if showWins and not button.slim then
-		-- move the vertical offset of the winrecord to center if no footnotes are used
-		if xoffset==xstart then -- no other footnotes used, center the winrecord
-			button.WinRecord:SetPoint("BOTTOMRIGHT",-3,14)
-			button.WinRecord:SetHitRectInsets(0,0,-14,-14)
-		else -- this team has other footnotes, anchor to bottom
-			button.WinRecord:SetPoint("BOTTOMRIGHT",-3,4)
-			button.WinRecord:SetHitRectInsets(0,0,0,-2)
-		end
-		button.WinRecord:SetPoint("BOTTOMRIGHT",-3, xoffset==xstart and 14 or 4)
-		-- make xoffset just off left edge of winrecord (which is same width as two footnotes)
-		xoffset = xstart - button.WinRecord:GetWidth() - 2
-	end
-
-	-- name of team
-	if button.slim then
-		button.Name:SetFontObject(settings.SlimListSmallText and GameFontNormalSmall or GameFontNormal)
-	end
-	if button.slim then
-		button.Name:SetPoint("RIGHT",xoffset-2,0)
-	else
-		button.Name:SetPoint("TOPRIGHT",xoffset-1,-6)
-	end
+	-- update pets to the left
 	for i=1,3 do
-		local petID = saved[key][i][1]
-      local petInfo = rematch.petInfo:Fetch(petID)
-      local icon = petInfo.icon
-		--local icon = rematch:GetPetIcon(petID)
-		if not icon then -- pet is not found, get its species instead
-			petID = saved[key][i][5]
-			icon = rematch:GetPetIcon(petID)
-		end
-		button.Pets[i].petID = petID
-		button.Pets[i].Icon:SetTexture(icon)
-		button.Pets[i].Icon:SetDesaturated(type(petID)=="number" and petID~=0)
+		local petID = teamInfo.petIDs[i]
+		local petInfo = rematch.petInfo:Fetch(petID)
+		self.Pets[i].petID = petID
+		self.Pets[i]:SetTexture(petInfo.icon)
+		self.Pets[i]:SetDesaturated(petInfo.idType=="species")
 	end
-	button.Favorite:SetShown(saved[key].favorite and true)
+
+	-- show favorites star if a favorite team
+	self.Favorite:SetShown(teamInfo.isFavorite)
+
+	-- rightOffset will decide where to anchor Name's RIGHT edge, depending on winrecord
+	-- and footnotes; it's adjusted differently for normal and compact modes
+	local rightOffset = self.compact and -2 or -8
+
+	-- winrecord first
+	if not settings.HideWinRecord and teamInfo.battles > 0 then
+		-- both alternate and normal display need percent calculated to choose background
+		local percent = floor(teamInfo.wins*100 / teamInfo.battles + 0.5)
+		self.WinRecordText:SetText(settings.AlternateWinRecord and teamInfo.wins or format("%d%%", percent))
+		local left,right,top,bottom
+		if percent>=60 then
+			left,right,top,bottom = 0,0.296875,0,0.28125
+		elseif percent<=40 then
+			left,right,top,bottom = 0,0.296875,0.375,0.65625
+		else
+			left,right,top,bottom = 0,0.296875,0.71875,1
+		end
+		self.WinRecordBack:SetTexCoord(left,right,top,bottom)	
+		self.WinRecordBack:Show()
+		self.WinRecordText:Show()
+		rightOffset = self.slim and -41 or -44
+	else
+		self.WinRecordBack:Hide()
+		self.WinRecordText:Hide()
+	end
+
+	-- notes button
+	if teamInfo.hasNotes then
+		if self.compact then
+			self.Notes:SetPoint("RIGHT", rightOffset, 0)
+			rightOffset = rightOffset - 21
+		else -- normal mode: notes button never changes position
+			rightOffset = min(rightOffset, -22)
+		end
+		self.Notes:Show()
+	else
+		self.Notes:Hide()
+	end
+
+	-- preferences button
+	if teamInfo.hasPreferences then
+		if self.compact then
+			self.Preferences:SetPoint("RIGHT", rightOffset, 0)
+			rightOffset = rightOffset - 20
+		else
+			self.Preferences:SetPoint("TOPRIGHT",teamInfo.hasNotes and -22 or -2, -3)
+			rightOffset = min(rightOffset, teamInfo.hasNotes and -44 or -22)
+		end
+		self.Preferences:Show()
+	else
+		self.Preferences:Hide()
+	end
+
+	-- finally, name of the team
+	self.Name:SetText(teamInfo.coloredName)
+	if self.compact then
+		self.Name:SetPoint("RIGHT", rightOffset-2, 0)
+		self.Name:SetFontObject(settings.SlimListSmallText and GameFontNormalSmall or GameFontNormal)
+	else -- normal list mode potentially has subnames (name of target)
+		self.Name:SetPoint("TOPRIGHT", rightOffset, -4)
+		if teamInfo.needsSubName then
+			self.Name:SetHeight(21)
+			self.SubName:SetText(teamInfo.targetName)
+			self.SubName:Show()
+		else
+			self.Name:SetHeight(36)
+			self.SubName:Hide()
+		end		
+	end
 
 end
 
-function panel:UpdateList()
-	local numData = #workingList
-	local scrollFrame = panel.List.ScrollFrame
-	local offset = HybridScrollFrame_GetOffset(scrollFrame)
-	local buttons = scrollFrame.buttons
-	rematch:HideTooltip()
-	panel.Selected:Hide()
-	for i=1,#buttons do
-		local index = i + offset
-		local button = buttons[i]
-		if ( index <= numData) then
-			local key = workingList[index]
-			panel:FillTeamButton(button,key)
-			if key==settings.loadedTeam then
---				button:SetBackdropBorderColor(0.35,0.65,1)
-				button:SetBackdropBorderColor(1,0.82,0)
-				panel.Selected:SetParent(button)
-				panel.Selected:SetAllPoints(true)
-				panel.Selected:Show()
-			else
-				button:SetBackdropBorderColor(0.33,0.33,0.33)
-			end
-			button:Show()
-		else
-			button:Hide()
+-- this flashes the button containing the given team
+function panel:BlingKey(key)
+	for _,button in ipairs(panel.List.ScrollFrame.Buttons) do
+		if key and button.key == key then
+			panel.List:BlingIndex(button.index)
+			return
 		end
 	end
-
-	HybridScrollFrame_Update(scrollFrame,scrollFrame.buttonHeight*numData,scrollFrame.buttonHeight)
 end
 
 -- single click of a team now loads teams
@@ -396,25 +369,10 @@ function panel:TeamOnClick(button)
 		rematch:ShowMenu("TeamMenu","cursor")
 	else
 		rematch:LoadTeam(key)
-		if self==panel.Top.Team then
-			rematch:ShowTeam(key)
-		end
 		if type(key)=="number" then
 			rematch.recentTarget = key
 		end
 		rematch:UpdateUI()
-	end
-end
-
--- desaturates the loaded team, hides pets and sets team name to given text ("Loading..." "No Team Loaded" etc)
-function panel:NotifyTeamLoading(text)
-	if panel==false then
-		panel.LoadedTeam.InsetBack:SetDesaturated(true)
-		panel.LoadedTeam.Team.Name:SetText(format("%s%s",rematch.hexGrey,text))
-		panel.LoadedTeam.Team.Notes:Hide()
-		for i=1,3 do
-			panel.LoadedTeam.Team.Pets[i]:Hide()
-		end
 	end
 end
 
@@ -459,10 +417,6 @@ function rematch:ShowTeam(key)
 			settings.Minimized = nil
 			settings.ActivePanel = 2
 			rematch.Frame:ConfigureFrame()
-		elseif rematch.Journal:IsVisible() then
-			settings.JournalPanel = 1
-			rematch:SelectPanelTab(rematch.Journal.PanelTabs,1)
-			rematch.Journal:ConfigureJournal()
 		else
 			return -- neither frame or journal on screen
 		end
@@ -476,9 +430,10 @@ function rematch:ShowTeam(key)
 			end
 		end
 		if index then
-			rematch:ListScrollToIndex(panel.List.ScrollFrame,index)
-			rematch:ListBling(panel.List.ScrollFrame,"key",key)
-			rematch.TeamTabs:ScrollToTeamTab(key)
+			if not panel.List:IsIndexVisible(index) then
+				panel.List:ScrollToIndex(index)
+			end
+			panel.List:BlingIndex(index)
 		elseif not panel.retryShowTeam then
 			-- if index not found then we didn't scroll to team yet, try again once things settle
 			panel.retryShowTeam = true
@@ -517,11 +472,8 @@ end
 function panel:Resize(width)
 	panel.width = width
 	panel:SetWidth(width)
-	for _,button in ipairs(panel.List.ScrollFrame.buttons) do
-		button:SetWidth(width-32-(button.slim and 77 or 84))
-	end
 	panel.Top:SetWidth(width)
-	panel.Top.Team:SetWidth(width-96)
+	panel:Update()
 end
 
 function panel:TeamOnEnter()

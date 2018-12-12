@@ -122,6 +122,7 @@ end
 local TaxyPOIIndex, TaxyPOIContainer = 1, {}
 function WorldQuestTracker:GetOrCreateTaxyPOI (parent)
 	local button = WorldQuestTracker.CreateZoneWidget (TaxyPOIIndex, "WorldQuestTrackerTaxyPOI", parent)
+	button.IsTaxiQuestButton = true
 	tinsert (TaxyPOIContainer, button)
 	TaxyPOIIndex = TaxyPOIIndex + 1
 	return button

@@ -6,8 +6,12 @@ local L = WeakAuras.L
 
 -- WeakAuras/Options
 	--[[Translation missing --]]
+	L[" by "] = " by "
+	--[[Translation missing --]]
 	L[" Configuration"] = " Configuration"
 	L["-- Do not remove this comment, it is part of this trigger: "] = "-- 不要移除这条信息，这是该触发器的一部分。"
+	--[[Translation missing --]]
+	L[" to version "] = " to version "
 	L["% of Progress"] = "% 进度"
 	L["%i auras selected"] = "%i 个光环被选中"
 	L["%i Matches"] = "%i 符合"
@@ -126,7 +130,6 @@ local L = WeakAuras.L
 	L["color"] = "颜色"
 	L["Combinations"] = "组合"
 	L["Combine Matches Per Unit"] = "组合每个单位满足条件的"
-	L["Common Options"] = "一般选项"
 	L["Compare against the number of units affected."] = "比较受影响的单位数量"
 	L["Compress"] = "压缩"
 	L["Condition %i"] = "条件 %i"
@@ -208,6 +211,8 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	L["Duration Info"] = "持续时间讯息"
 	L["Dynamic Duration"] = "动态时长"
 	L["Dynamic Group"] = "动态群组"
+	--[[Translation missing --]]
+	L["Dynamic Group Settings"] = "Dynamic Group Settings"
 	L["Dynamic Information"] = "动态信息"
 	L["Dynamic information from first active trigger"] = "第一个被激活的触发器的动态信息"
 	L["Dynamic information from Trigger %i"] = "来自触发器%i的动态信息"
@@ -260,6 +265,8 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	L["Frame"] = "框架"
 	L["Frame Strata"] = "框架层级"
 	L["From Template"] = "从模板"
+	--[[Translation missing --]]
+	L["From version "] = "From version "
 	L["General Text Settings"] = "通用字体设置"
 	L["Global Conditions"] = "全局条件"
 	L["Glow Action"] = "发光动作"
@@ -282,6 +289,8 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	L["Group Member Count"] = "队伍或团队成员数"
 	L["Group Role"] = "团队职责"
 	L["Group Scale"] = "组缩放"
+	--[[Translation missing --]]
+	L["Group Settings"] = "Group Settings"
 	L["Grow"] = "生长"
 	L["Hawk"] = "鹰"
 	L["Height"] = "高度"
@@ -299,14 +308,20 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	L["Icon Color"] = "图标颜色"
 	L["Icon Info"] = "图标信息"
 	L["Icon Inset"] = "项目插入"
+	--[[Translation missing --]]
+	L["Icon Settings"] = "Icon Settings"
 	L["If"] = "如果"
 	L["If this option is enabled, you are no longer able to import auras."] = "如果启用此选项，你将不再能够导入光环设置。"
 	L["If Trigger %s"] = "如果触发器 %s"
 	L["If unchecked, then a default color will be used (usually yellow)"] = "如果不勾选，则使用默认颜色（通常是黄色）"
 	--[[Translation missing --]]
 	L["If unchecked, then this space will fill the entire line it is on in User Mode."] = "If unchecked, then this space will fill the entire line it is on in User Mode."
-	L["Ignore self"] = "忽略自己的"
+	--[[Translation missing --]]
+	L["Ignore all Updates"] = "Ignore all Updates"
 	L["Ignore Self"] = "忽略自身"
+	L["Ignore self"] = "忽略自己的"
+	--[[Translation missing --]]
+	L["Ignore this Update"] = "Ignore this Update"
 	L["Ignored"] = "被忽略"
 	L["Import"] = "导入"
 	L["Import a display from an encoded string"] = "从字串导入一个图示"
@@ -346,6 +361,8 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	L["Min"] = "Min"
 	L["Mirror"] = "镜像"
 	L["Model"] = "模型"
+	--[[Translation missing --]]
+	L["Model Settings"] = "Model Settings"
 	L["Move Down"] = "向下移"
 	L["Move this display down in its group's order"] = "在组内将此显示内容下移"
 	L["Move this display up in its group's order"] = "在组内将此显示内容上移"
@@ -403,7 +420,7 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	L["Paste Action Settings"] = "粘贴动作设置"
 	L["Paste Animations Settings"] = "粘贴动画设置"
 	--[[Translation missing --]]
-	L["Paste Author Option Settings"] = "Paste Author Option Settings"
+	L["Paste Author Options Settings"] = "Paste Author Options Settings"
 	L["Paste Condition Settings"] = "粘贴条件设置"
 	--[[Translation missing --]]
 	L["Paste Custom Configuration"] = "Paste Custom Configuration"
@@ -421,7 +438,11 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	L["Prevents duration information from decreasing when an aura refreshes. May cause problems if used with multiple auras with different durations."] = "阻止刷新光环时持续时间讯息的变动。如果使用了多个光环并且具有不同持续时间那么可能会造成问题。"
 	L["Processed %i chars"] = "已处理%i个字符"
 	L["Progress Bar"] = "进度条"
+	--[[Translation missing --]]
+	L["Progress Bar Settings"] = "Progress Bar Settings"
 	L["Progress Texture"] = "进度条材质"
+	--[[Translation missing --]]
+	L["Progress Texture Settings"] = "Progress Texture Settings"
 	L["Purple Rune"] = "紫色符文"
 	L["Put this display in a group"] = "将此显示内容放到组中"
 	L["Radius"] = "范围"
@@ -525,14 +546,22 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	--[[Translation missing --]]
 	L["Step Size"] = "Step Size"
 	L["Sticky Duration"] = "持续时间置顶"
+	--[[Translation missing --]]
+	L["Stop ignoring this Update"] = "Stop ignoring this Update"
+	--[[Translation missing --]]
+	L["Stop ignoring Updates"] = "Stop ignoring Updates"
 	L["Stop Sound"] = "停止播放声音"
 	L["Symbol Settings"] = "标志设置"
 	L["Temporary Group"] = "模板群组"
 	L["Text"] = "文字"
 	L["Text Color"] = "文字颜色"
 	L["Text Position"] = "文字位置"
+	--[[Translation missing --]]
+	L["Text Settings"] = "Text Settings"
 	L["Texture"] = "材质"
 	L["Texture Info"] = "材质信息"
+	--[[Translation missing --]]
+	L["Texture Settings"] = "Texture Settings"
 	L["Texture Wrap"] = "材质折叠"
 	L["The duration of the animation in seconds."] = "动画持续秒数"
 	L["The duration of the animation in seconds. The finish animation does not start playing until after the display would normally be hidden."] = "动画时长秒时。直到显示内容被正常隐藏之后结束动画才会播放。"
@@ -574,7 +603,11 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	L["Unit Count"] = "单位计数"
 	L["Unlike the start or finish animations, the main animation will loop over and over until the display is hidden."] = "不同于开始或结束动画，主动画将不停循环，直到图示被隐藏。"
 	L["Up"] = "上"
+	--[[Translation missing --]]
+	L["Update "] = "Update "
 	L["Update Custom Text On..."] = "更新自定义文字于"
+	--[[Translation missing --]]
+	L["Update this Aura"] = "Update this Aura"
 	L["Use Full Scan (High CPU)"] = "使用完整扫描(高CPU)"
 	L["Use nth value from tooltip:"] = "使用来自鼠标提示的值的顺序："
 	L["Use SetTransform"] = "使用 SetTransform 方法"
@@ -595,6 +628,8 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	L["Vertical Align"] = "垂直对齐"
 	L["Vertical Bar"] = "垂直条"
 	L["View"] = "视图"
+	--[[Translation missing --]]
+	L["Wago Update"] = "Wago Update"
 	L["Width"] = "宽度"
 	L["X Offset"] = "X 偏移"
 	L["X Rotation"] = "X旋转"

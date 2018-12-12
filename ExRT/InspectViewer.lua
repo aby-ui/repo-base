@@ -1073,7 +1073,14 @@ function module.options:Load()
 		end
 		module.options.RaidIlvl()
 	end
-	self.ScrollBar:SetScript("OnValueChanged", module.options.ReloadPage)
+	local ScrollBar_PrevScroll = nil
+	self.ScrollBar:SetScript("OnValueChanged", function(self)
+		local scrollNow = ExRT.F.Round(self:GetValue())
+		if scrollNow ~= ScrollBar_PrevScroll then
+			ScrollBar_PrevScroll = scrollNow
+			module.options.ReloadPage()
+		end
+	end)
 	
 	local function NoIlvl()
 		self.raidItemLevel:SetText("")

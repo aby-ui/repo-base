@@ -188,6 +188,13 @@ end
 -- yfromtop is the y offset when frame is anchoring to top (hidden title area of pet card)
 -- yfrombottom is the y offset when frame is anchoring to the bottom (hidden controls of winrecord)
 local references = { ["RematchFrame"]=true, ["UIParent"]=true }
+
+local anchorFrame = CreateFrame("Frame",nil,UIParent)
+anchorFrame:SetSize(50,50)
+--anchorFrame:SetBackdrop({bgFile="Interface\\DialogFrame\\UI-DialogBox-Background"})
+anchorFrame:SetBackdrop({bgFile="INterface\\Icons\\INV_Misc_QuestionMark"})
+anchorFrame:SetFrameStrata("FULLSCREEN")
+
 function rematch:SmartAnchor(frame,relativeTo,center,yfromtop,yfrombottom)
 	if not relativeTo then
 		relativeTo = RematchFrame -- will check if journal visible and change to it
@@ -204,11 +211,41 @@ function rematch:SmartAnchor(frame,relativeTo,center,yfromtop,yfrombottom)
 	end
 	if not reference then return end -- failed catastrophically
 
-	-- the pet card and 
 	-- pet card has a (usually) invisible titlebar; yspecial will nudge yoffset up 22 if anchoring to top
---	local yfromtop = (frame==RematchPetCard or frame==RematchWinRecordCard) and 22 or 0
---	local yfrombottom = frame==RematchWinRecordCard and -22 or 0
+	--	local yfromtop = (frame==RematchPetCard or frame==RematchWinRecordCard) and 22 or 0
+	--	local yfrombottom = frame==RematchWinRecordCard and -22 or 0
 
+	frame:ClearAllPoints()
+	if center then -- simply center it to reference
+		frame:SetPoint("CENTER",reference,"CENTER")
+	else
+		local corner = rematch:GetCorner(reference,UIParent)
+		if corner=="BOTTOMLEFT" or reference==CollectionsJournal then
+			rematch:SmartSetPoint(frame, "BOTTOMLEFT", relativeTo, "TOPRIGHT", 0, yfrombottom or 0)
+		elseif corner=="TOPLEFT" then
+			rematch:SmartSetPoint(frame, "TOPLEFT", relativeTo, "BOTTOMRIGHT", 0, yfromtop or 0)
+		elseif corner=="TOPRIGHT" then
+			rematch:SmartSetPoint(frame, "TOPRIGHT", relativeTo.Pet or relativeTo, "BOTTOMLEFT", 0, yfromtop or 0)
+		else 
+			rematch:SmartSetPoint(frame, "BOTTOMRIGHT", relativeTo.Pet or relativeTo, "TOPLEFT", 0, yfrombottom or 0)
+		end
+	end
+end
+
+function rematch:oldSmartAnchor(frame,relativeTo,center,yfromtop,yfrombottom)
+	if not relativeTo then
+		relativeTo = RematchFrame -- will check if journal visible and change to it
+	end
+	local reference = relativeTo
+	while not references[reference:GetName() or ""] do
+		local parent = reference:GetParent()
+		if not parent or parent==UIParent then
+			break -- stop when we've run out of parents or reached UIParent
+		else
+			reference = parent
+		end
+	end
+	if not reference then return end -- failed catastrophically
 	frame:ClearAllPoints()
 	if center then -- simply center it to reference
 		frame:SetPoint("CENTER",reference,"CENTER")
@@ -223,6 +260,45 @@ function rematch:SmartAnchor(frame,relativeTo,center,yfromtop,yfrombottom)
 		else 
 			frame:SetPoint("BOTTOMRIGHT",relativeTo.Pet or relativeTo,"TOPLEFT",0,yfrombottom or 0)
 		end
+	end
+end
+
+-- if a frame is being anchored, instead of anchoring directly to relativeTo, anchor it to UIParent
+-- this is because some frames (winrecord card) won't anchor to a texture
+function rematch:SmartSetPoint(frame, anchorPoint, relativeTo, relativePoint, xoff, yoff)
+
+	-- for a frame being anchored to a Frame, use a SetPoint to anchor straight to Frame
+	--if relativeTo and relativeTo:GetObjectType()=="Frame" then
+	
+	if frame~=RematchWinRecordCard then -- grr for some reason this is needed just for winrecord
+		frame:SetPoint(anchorPoint, relativeTo, relativePoint, xoff, yoff)
+	else -- for a frame being anchored to a Texture or FontString, anchor to UIParent equivalent
+
+		local relativeScale = relativeTo:GetEffectiveScale()
+		local uiScale = UIParent:GetEffectiveScale()
+		xoff = xoff or 0
+		yoff = yoff or 0
+
+		local relativeX, relativeY
+
+		if relativePoint=="TOPLEFT" then
+			relativeX = relativeTo:GetLeft() + xoff
+			relativeY = relativeTo:GetTop() + yoff
+		elseif relativePoint=="TOPRIGHT" then
+			relativeX = relativeTo:GetRight() + xoff
+			relativeY = relativeTo:GetTop() + yoff
+		elseif relativePoint=="BOTTOMLEFT" then
+			relativeX = relativeTo:GetLeft() + xoff
+			relativeY = relativeTo:GetBottom() + yoff
+		else -- BOTTOMRIGHT
+			relativeX = relativeTo:GetRight() + xoff
+			relativeY = relativeTo:GetBottom() + yoff
+		end
+
+		-- adjust x/y to (x or y)*relativeToScale/UIParentScale
+		local scale = relativeTo:GetEffectiveScale() / UIParent:GetEffectiveScale()
+
+		frame:SetPoint(anchorPoint, UIParent, "BOTTOMLEFT", relativeX*scale, relativeY*scale)
 	end
 end
 
@@ -440,19 +516,18 @@ end
 -- the PreferredMode (1=minimized, 2=maximized, 3=journal)
 function rematch:AutoShow()
 	local frame = rematch.Frame
-	local journal = rematch.Journal
 	local settings = RematchSettings
 	local mode = settings.PreferredMode
-	if not frame:IsVisible() and not journal:IsVisible() then
+	if mode==3 then
+		mode = 2 -- if preferred mode was journal, switch to standalone
+	end
+	if not frame:IsVisible() then
 		if mode==1 then
 			settings.Minimized = true
 			rematch.Frame.Toggle()
 		elseif mode==2 then
 			settings.Minimized = nil
 			rematch.Frame.Toggle()
-		elseif mode==3 then
-			settings.UseDefaultJournal = nil
-			ToggleCollectionsJournal(2)
 		end
 	end
 end

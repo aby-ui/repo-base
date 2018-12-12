@@ -311,6 +311,7 @@ module.db.spell_isTalent = {
 
 module.db.spell_autoTalent = {		--Для маркировки базовых заклинаний спека, которые являются талантами у других спеков [spellID] = specID
 	[107574] = 73,
+	[288826] = 104,
 }
 
 module.db.spell_talentsList = {}
@@ -363,6 +364,7 @@ module.db.spell_charge_fix = {		--Спелы с зарядами
 	[61336]=1,
 	[22842]=1,
 	[18562]=200383,
+	[12051]=273330,
 }
 
 module.db.spell_durationByTalent_fix = {	--Изменение длительности талантом\глифом   вид: [спелл] = {spellid глифа\таланта, изменение времени (-10;10;*0.5;*1.5)}
@@ -416,6 +418,12 @@ module.db.spell_cdByTalent_fix = {		--Изменение кд талантом\�
 	[18562] = {200383,-3},
 	[740] = {197073,-60},
 	[102342] = {197061,-15},
+	[48792] = {288424,-15},
+	[106898] = {288826,-60},
+	[77764] = {288826,-60},
+	[77761] = {288826,-60},
+	[109304] = {287938,-15},
+	[116849] = {277667,-20},
 }
 
 module.db.tierSetsSpells = {}	--[specID.tierID.tierMark] = {2P Bonus Spell ID, 4P Bonus Spell ID}
@@ -593,9 +601,9 @@ module.db.spell_reduceCdCast = {	--Заклинания, применение к
 	[201430]={{109304,270581},-1},
 	[120360]={{109304,270581,253},-2,{109304,270581,254},-1.5},
 	[19434]={{109304,270581},-1.5},
-	[185358]={{109304,270581},-0.75,{193526,260404},-3},
+	[185358]={{109304,270581},-0.75,{288613,260404},-3},
 	[186387]={{109304,270581,254},-0.5},
-	[257620]={{109304,270581},-0.75,{193526,260404},-3},
+	[257620]={{109304,270581},-0.75,{288613,260404},-3},
 	[212431]={{109304,270581},-1},
 	[198670]={{109304,270581},-1.75},	
 	[187708]={{109304,270581},-1.75},
@@ -653,12 +661,13 @@ module.db.spell_startCDbyAuraFade = {	--Заклинания, кд которы�
 module.db.spell_startCDbyAuraApplied = {	--Заклинания, кд которых запускается только при наложении ауры (вида [aura_spellID] = CD_spellID)
 	[117679]=33891,
 	[59628]=57934,
+	[212800]=198589,	--blur fix
 }
 module.db.spell_startCDbyAuraApplied_fix = {}
 for _,spellID in pairs(module.db.spell_startCDbyAuraApplied) do module.db.spell_startCDbyAuraApplied_fix[spellID] = true end
 
 module.db.spell_reduceCdByAuraFade = {	--Заклинания, кд которых уменьшается при спадении ауры до окончания времени действия. !Важно обязательное время действия для таких заклинаний
-	[47788]={{47788,200209},-120},
+	[47788]={{47788,200209},-110},
 }
 module.db.spell_battleRes = {		--Заклинания-воскрешения [WOD]
 	[20484]=true,
@@ -3818,9 +3827,11 @@ do
 	
 	local spellHeal_trackedSpells = {
 		[207778] = true,
+		[48438] = true,
 	}
 	local spellHeal_trackedSpells_Register = {
 		[207778] = true,
+		[29166] = true,
 	}	
 	local spell207778_var = {0,0}
 	function module.main:SPELL_HEAL(sourceGUID,sourceName,sourceFlags,destGUID,destName,destFlags,spellID,critical,amount,overhealing)
@@ -3848,6 +3859,21 @@ do
 					end)
 				end							
 			end				
+		elseif spellID == 48438 and session_gGUIDs[sourceName][287251] then
+			local line = CDList[sourceName][29166]
+			if line then
+				if (amount - overhealing) == 0 then
+					line.cd = line.cd - 1
+					if line.cd < 0 then 
+						line.cd = 0 
+					end
+					if line.bar and line.bar.data == line then
+						line.bar:UpdateStatus()
+					end
+					UpdateAllData()
+					SortAllData()
+				end							
+			end
 		end
 	end
 	
@@ -7869,7 +7895,7 @@ module.db.allClassSpells = {
 	{187707,3,	nil,			nil,			nil,			{187707,15,	0},	},	--Muzzle
 	{257044,3,	nil,			nil,			{257044,20,	0},	nil,			},	--Rapid Fire
 	{187698,3,	{187698,30,	0},	nil,			nil,			nil,			},	--Tar Trap
-	{193526,3,	nil,			nil,			{193526,180,	15},	nil,			},	--Trueshot
+	{288613,3,	nil,			nil,			{288613,120,	15},	nil,			},	--Trueshot
 	
 	{131894,3,	{131894,60,	15},	nil,			nil,			nil,			},	--A Murder of Crows
 	{120360,3,	nil,			{120360,20,	3},	{120360,20,	3},	nil,			},	--Barrage
@@ -7952,7 +7978,7 @@ module.db.allClassSpells = {
 	
 	{121536,3,	nil,			{121536,20,	0},	{121536,20,	0},	nil,			},	--Angelic Feather
 	{110744,3,	nil,			{110744,15,	0},	{110744,15,	0},	nil,			},	--Divine Star
-	{246287,3,	nil,			{246287,75,	0},	nil,			nil,			},	--Evangelism
+	{246287,3,	nil,			{246287,90,	0},	nil,			nil,			},	--Evangelism
 	{120517,3,	nil,			{120517,40,	0},	{120517,40,	0},	nil,			},	--Halo
 	{271466,1,	nil,			{271466,180,	0},	nil,			nil,			},	--Luminous Barrier
 	{123040,3,	nil,			{123040,60,	12},	nil,			nil,			},	--Mindbender
@@ -8231,7 +8257,7 @@ module.db.allClassSpells = {
 	{18562,	3,	nil,			nil,			nil,			nil,			{18562,	25,	0},	},	--Swiftmend
 	{5217,	3,	nil,			nil,			{5217,	30,	10},	nil,			nil,			},	--Tiger's Fury
 	{740,	1,	nil,			nil,			nil,			nil,			{740,	180,	8},	},	--Tranquility
-	{102793,3,	nil,			nil,			nil,			nil,			{102793,60,	10},	},	--Ursol's Vortex
+	{102793,3,	nil,			nil,			nil,			{102793,60,	10},	{102793,60,	10},	},	--Ursol's Vortex
 	{48438,	3,	nil,			nil,			nil,			nil,			{48438,	10,	0},	},	--Wild Growth
 	
 	{205636,3,	nil,			{205636,60,	0},	nil,			nil,			nil,			},	--Force of Nature
@@ -8250,7 +8276,6 @@ module.db.allClassSpells = {
 	
 	{155835,3,	nil,			nil,			nil,			{155835,40,	0},	nil,			},	--Bristling Fur
 	{102558,3,	nil,			nil,			nil,			{102558,180,	30},	nil,			},	--Incarnation: Guardian of Ursoc
-	{236748,3,	nil,			nil,			nil,			{236748,30,	0},	nil,			},	--Intimidating Roar
 	{204066,3,	nil,			nil,			nil,			{204066,75,	0},	nil,			},	--Lunar Beam
 	
 	{102351,3,	nil,			nil,			nil,			nil,			{102351,30,	0},	},	--Cenarion Ward
@@ -8612,7 +8637,6 @@ do
 										}
 									end
 									
-									module.db.session_gGUIDs[name] = powerData.spellID
 									module.db.spell_isAzeriteTalent[powerData.spellID] = true
 								end
 							end
@@ -8665,8 +8689,10 @@ do
 						
 						if AzeritePowers then
 							for k=1,#AzeritePowers do
-								if text:find(AzeritePowers[k].name) == 3 then
+								if text:find(AzeritePowers[k].name.."$") == 3 then
 									inspectData.azerite[#inspectData.azerite + 1] = AzeritePowers[k]
+
+									module.db.session_gGUIDs[name] = AzeritePowers[k].spellID
 								end
 							end
 						end
@@ -8796,7 +8822,7 @@ do
 	local queueTimer = 0
 	function moduleInspect:timer(elapsed)
 		tmr = tmr + elapsed
-		if tmr > (inspectForce and 1.2 or 3.5) then
+		if tmr > (inspectForce and 1 or 2) then
 			queueTimer = queueTimer + tmr
 			tmr = 0
 			if queueTimer > 60 then
@@ -8933,7 +8959,7 @@ do
 				for i,slotID in ipairs(moduleInspect.db.itemsSlotTable) do
 					local link = GetInventoryItemLink(inspectedName, slotID)
 				end
-				ScheduleTimer(InspectItems, inspectForce and 0.8 or 1.5, name, inspectedName, moduleInspect.db.inspectID)
+				ScheduleTimer(InspectItems, inspectForce and 0.65 or 1.3, name, inspectedName, moduleInspect.db.inspectID)
 				if not inspectForce then
 					--ScheduleTimer(InspectItems, 2.3, name, inspectedName, moduleInspect.db.inspectID)
 				end

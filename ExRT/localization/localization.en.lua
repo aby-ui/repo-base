@@ -91,6 +91,7 @@ PH.NoteHelp4 = "This example will be replaced with personal note. You can place 
 PH.NoteHelp5 = "All text inside this code (\"...\" in current example) will be shown only for players JaneD и JennyB (current example). You can use any numbers of players."
 PH.NoteHelp6 = "This example will be replaced with Sulfuras icon (|TInterface/Icons/inv_hammer_unique_sulfuras:0|t). You can use any ingame icon."
 L.NoteDuplicate = "Duplicate"
+PH.NoteHelp7 = "This example will be replaced with dynamic timer for selected moment during bossfight."
 
 L.setminimap1 = "Hide minimap icon"
 L.setauthor = "Author"

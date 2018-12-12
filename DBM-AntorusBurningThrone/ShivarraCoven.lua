@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1986, "DBM-AntorusBurningThrone", nil, 946)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 2 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 6 $"):sub(12, -3))
 mod:SetCreatureID(122468, 122467, 122469)--122468 Noura, 122467 Asara, 122469 Diima, 125436 Thu'raya (mythic only)
 mod:SetEncounterID(2073)
 mod:SetZone()
@@ -486,15 +486,23 @@ end
 --"<198.19 00:02:36> [UNIT_SPELLCAST_SUCCEEDED] Noura, Mother of Flames(??) [[boss2:Spectral Army of Norgannon::3-2083-1712-12288-250334-000B1120DC:250334]]", -- [1456]
 function mod:UNIT_TARGETABLE_CHANGED(uId)
 	local cid = self:GetUnitCreatureId(uId)
+	local targetWeWarn = false
+	if UnitExists(uId) then
+		targetWeWarn = true
+		DBM:Debug("UNIT_TARGETABLE_CHANGED, Boss Engaging", 2)
+	else
+		DBM:Debug("UNIT_TARGETABLE_CHANGED, Boss Leaving", 2)
+	end
+	if targetWeWarn then
+		if self.Options.SpecWarn118212switchcount then
+			specWarnActivated:Show(UnitName(uId))
+			specWarnActivated:Play("changetarget")
+		else
+			warnActivated:Show(UnitName(uId))
+		end
+	end
 	if cid == 122468 then--Noura
-		if UnitExists(uId) then
-			if self.Options.SpecWarn118212switchcount then
-				specWarnActivated:Show(UnitName(uId))
-				specWarnActivated:Play("changetarget")
-			else
-				warnActivated:Show(UnitName(uId))
-			end
-			DBM:Debug("UNIT_TARGETABLE_CHANGED, Boss Engaging", 2)
+		if targetWeWarn then
 			timerWhirlingSaberCD:Start(9)
 			timerFieryStrikeCD:Start(11.8)
 			if not self:IsEasy() then
@@ -502,61 +510,36 @@ function mod:UNIT_TARGETABLE_CHANGED(uId)
 				countdownFulminatingPulse:Start(20.6)
 			end
 		else
-			DBM:Debug("UNIT_TARGETABLE_CHANGED, Boss Leaving", 2)
 			timerFieryStrikeCD:Stop()
 			timerWhirlingSaberCD:Stop()
 			timerFulminatingPulseCD:Stop()
 			countdownFulminatingPulse:Cancel()
 		end
 	elseif cid == 122467 then--Asara
-		if UnitExists(uId) then
-			if self.Options.SpecWarn118212switchcount then
-				specWarnActivated:Show(UnitName(uId))
-				specWarnActivated:Play("changetarget")
-			else
-				warnActivated:Show(UnitName(uId))
-			end
-			DBM:Debug("UNIT_TARGETABLE_CHANGED, Boss Engaging", 2)
+		if targetWeWarn then
 			--TODO, timers, never saw her leave so never saw her return
 		else
-			DBM:Debug("UNIT_TARGETABLE_CHANGED, Boss Leaving", 2)
 			timerShadowBladesCD:Stop()
 			timerStormofDarknessCD:Stop()
 			countdownStormofDarkness:Cancel()
 		end
 	elseif cid == 122469 then--Diima
-		if UnitExists(uId) then
-			if self.Options.SpecWarn118212switchcount then
-				specWarnActivated:Show(UnitName(uId))
-				specWarnActivated:Play("changetarget")
-			else
-				warnActivated:Show(UnitName(uId))
-			end
-			DBM:Debug("UNIT_TARGETABLE_CHANGED, Boss Engaging", 2)
+		if targetWeWarn then
 			timerChilledBloodCD:Start(6.5)
 			timerFlashFreezeCD:Start(10.1)
 			if not self:IsEasy() then
 				timerOrbofFrostCD:Start(30)
 			end
 		else
-			DBM:Debug("UNIT_TARGETABLE_CHANGED, Boss Leaving", 2)
 			timerFlashFreezeCD:Stop()
 			timerChilledBloodCD:Stop()
 			timerOrbofFrostCD:Stop()
 		end
 	elseif cid == 125436 then--Thu'raya (mythic only)
-		if UnitExists(uId) then
+		if targetWeWarn then
 			self.vb.touchCosmosCast = 0
-			if self.Options.SpecWarn118212switchcount then
-				specWarnActivated:Show(UnitName(uId))
-				specWarnActivated:Play("changetarget")
-			else
-				warnActivated:Show(UnitName(uId))
-			end
-			DBM:Debug("UNIT_TARGETABLE_CHANGED, Boss Engaging", 2)
 			timerCosmicGlareCD:Start(5)
 		else
-			DBM:Debug("UNIT_TARGETABLE_CHANGED, Boss Leaving", 2)
 			timerCosmicGlareCD:Stop()
 		end
 	end

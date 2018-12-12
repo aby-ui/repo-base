@@ -88,7 +88,7 @@ Simulationcraft.ProfNames = {
   [393] = 'Skinning',
   [755] = 'Jewelcrafting',
   [773] = 'Inscription',
-  [794] = 'Archaeology'
+  [794] = 'Archaeology'  
 }
 
 -- non-localized spec names from spec ids
@@ -100,44 +100,44 @@ Simulationcraft.SpecNames = {
 -- Demon Hunter
   [577] = 'Havoc',
   [581] = 'Vengeance',
--- Druid
+-- Druid 
   [102] = 'Balance',
   [103] = 'Feral',
   [104] = 'Guardian',
   [105] = 'Restoration',
--- Hunter
+-- Hunter 
   [253] = 'Beast Mastery',
   [254] = 'Marksmanship',
   [255] = 'Survival',
--- Mage
+-- Mage 
   [62] = 'Arcane',
   [63] = 'Fire',
   [64] = 'Frost',
--- Monk
+-- Monk 
   [268] = 'Brewmaster',
   [269] = 'Windwalker',
   [270] = 'Mistweaver',
--- Paladin
+-- Paladin 
   [65] = 'Holy',
   [66] = 'Protection',
   [70] = 'Retribution',
--- Priest
+-- Priest 
   [256] = 'Discipline',
   [257] = 'Holy',
   [258] = 'Shadow',
--- Rogue
+-- Rogue 
   [259] = 'Assassination',
   [260] = 'Outlaw',
   [261] = 'Subtlety',
--- Shaman
+-- Shaman 
   [262] = 'Elemental',
   [263] = 'Enhancement',
   [264] = 'Restoration',
--- Warlock
+-- Warlock 
   [265] = 'Affliction',
   [266] = 'Demonology',
   [267] = 'Destruction',
--- Warrior
+-- Warrior 
   [71] = 'Arms',
   [72] = 'Fury',
   [73] = 'Protection'
@@ -145,7 +145,7 @@ Simulationcraft.SpecNames = {
 
 -- slot name conversion stuff
 
-Simulationcraft.slotNames = {"HeadSlot", "NeckSlot", "ShoulderSlot", "BackSlot", "ChestSlot", "ShirtSlot", "TabardSlot", "WristSlot", "HandsSlot", "WaistSlot", "LegsSlot", "FeetSlot", "Finger0Slot", "Finger1Slot", "Trinket0Slot", "Trinket1Slot", "MainHandSlot", "SecondaryHandSlot", "AmmoSlot" };
+Simulationcraft.slotNames = {"HeadSlot", "NeckSlot", "ShoulderSlot", "BackSlot", "ChestSlot", "ShirtSlot", "TabardSlot", "WristSlot", "HandsSlot", "WaistSlot", "LegsSlot", "FeetSlot", "Finger0Slot", "Finger1Slot", "Trinket0Slot", "Trinket1Slot", "MainHandSlot", "SecondaryHandSlot", "AmmoSlot" };    
 Simulationcraft.simcSlotNames = {'head','neck','shoulder','back','chest','shirt','tabard','wrist','hands','waist','legs','feet','finger1','finger2','trinket1','trinket2','main_hand','off_hand','ammo'}
 
 -- table for conversion to upgrade level, stolen from AMR (<3)
@@ -208,11 +208,34 @@ Simulationcraft.upgradeTable = {
 
 
 ---- core.lua
-local _, Simulationcraft = ...
-
 Simulationcraft = LibStub("AceAddon-3.0"):NewAddon(Simulationcraft, "SimulationcraftAbyUI", "AceConsole-3.0", "AceEvent-3.0") --aby
 local ItemUpgradeInfo = LibStub("LibItemUpgradeInfo-1.0")
---aby LibRealmInfo = LibStub("LibRealmInfo")
+--[[
+LibRealmInfo = LibStub("LibRealmInfo")
+
+-- Set up DataBroker for minimap button
+SimcLDB = LibStub("LibDataBroker-1.1"):NewDataObject("SimulationCraft", {
+  type = "data source",
+  text = "SimulationCraft",
+  label = "SimulationCraft",
+  icon = "Interface\\AddOns\\SimulationCraft\\logo",
+  OnClick = function()
+    if SimcCopyFrame:IsShown() then
+      SimcCopyFrame:Hide()
+    else
+      Simulationcraft:PrintSimcProfile(false, false)
+    end
+  end,
+  OnTooltipShow = function(tt)
+    tt:AddLine("SimulationCraft")
+    tt:AddLine(" ")
+    tt:AddLine("Click to show SimC input")
+    tt:AddLine("To toggle minimap button, type '/simc minimap'")
+  end
+})
+
+LibDBIcon = LibStub("LibDBIcon-1.0")
+--]]
 
 local OFFSET_ITEM_ID = 1
 local OFFSET_ENCHANT_ID = 2
@@ -246,6 +269,19 @@ local regionString  = Simulationcraft.RegionString
 -- coding mistakes regarding objects and namespaces.
 
 function Simulationcraft:OnInitialize()
+  --[[
+  -- init databroker
+  self.db = LibStub("AceDB-3.0"):New("SimulationCraftDB", {
+    profile = {
+      minimap = {
+        hide = false,
+      },
+    },
+  });
+  LibDBIcon:Register("SimulationCraft", SimcLDB, self.db.profile.minimap)
+  Simulationcraft:UpdateMinimapButton()
+  --]]
+
   Simulationcraft:RegisterChatCommand('simc', 'HandleChatCommand')
 end
 
@@ -255,6 +291,14 @@ end
 
 function Simulationcraft:OnDisable()
 
+end
+
+function Simulationcraft:UpdateMinimapButton()
+  if (self.db.profile.minimap.hide) then
+    LibDBIcon:Hide("SimulationCraft")
+  else
+    LibDBIcon:Show("SimulationCraft")
+  end
 end
 
 function Simulationcraft:HandleChatCommand(input)
@@ -268,11 +312,17 @@ function Simulationcraft:HandleChatCommand(input)
       debugOutput = true
     elseif arg == 'nobag' or arg == 'nobags' or arg == 'nb' then
       noBags = true
+    elseif arg == 'minimap' then
+      self.db.profile.minimap.hide = not self.db.profile.minimap.hide
+      DEFAULT_CHAT_FRAME:AddMessage("SimulationCraft: Minimap button is now " .. (self.db.profile.minimap.hide and "hidden" or "shown"))
+      Simulationcraft:UpdateMinimapButton()
+      return
     end
   end
 
   self:PrintSimcProfile(debugOutput, noBags)
 end
+
 
 local function GetItemSplit(itemLink)
   local itemString = string.match(itemLink, "item:([%-?%d:]+)")
@@ -477,10 +527,8 @@ local function GetItemStringFromItemLink(slotNum, itemLink, itemLoc, debugOutput
   end
 
   -- Get item creation context. Can be used to determine unlock/availability of azerite tiers for 3rd parties
-  -- To reduce issues with SimC, use reforge= for now
-  -- context= will be supported by simc soon and we can switch over for 8.1
   if itemSplit[OFFSET_CONTEXT] ~= 0 then
-    simcItemOptions[#simcItemOptions + 1] = 'reforge=' .. itemSplit[OFFSET_CONTEXT]
+    simcItemOptions[#simcItemOptions + 1] = 'context=' .. itemSplit[OFFSET_CONTEXT]
   end
 
   -- Azerite powers - only run in BfA client
@@ -525,7 +573,7 @@ function Simulationcraft:GetItemStrings(debugOutput)
     if itemLink then
       local itemLoc
       if ItemLocation then
-        itemLoc = ItemLocation:CreateFromEquipmentSlot(slotId)
+        itemLoc = ItemLocation:CreateFromEquipmentSlot(slotId)        
       end
       items[slotNum] = GetItemStringFromItemLink(slotNum, itemLink, itemLoc, debugOutput)
 
@@ -611,7 +659,6 @@ end
 function Simulationcraft:PrintSimcProfile(debugOutput, noBags)
   -- addon metadata
   local versionComment = '# SimC Addon ' .. 'in AbyUI' --aby GetAddOnMetadata('Simulationcraft', 'Version')
-  local reforgeWarning = '# 8.0 Note: reforge= is being used as a hacky way to capture item context. This will be changed in 8.1'
 
   -- Basic player info
   local _, realmName, _, _, _, _, region, _, _, realmLatinName, _ = nil --aby LibRealmInfo:GetRealmInfoByUnit('player')
@@ -685,8 +732,6 @@ function Simulationcraft:PrintSimcProfile(debugOutput, noBags)
 
   -- Build the output string for the player (not including gear)
   local simulationcraftProfile = versionComment .. '\n'
-  simulationcraftProfile = simulationcraftProfile .. reforgeWarning .. '\n'
-  simulationcraftProfile = simulationcraftProfile .. '\n'
   simulationcraftProfile = simulationcraftProfile .. player .. '\n'
   simulationcraftProfile = simulationcraftProfile .. playerLevel .. '\n'
   simulationcraftProfile = simulationcraftProfile .. playerRace .. '\n'

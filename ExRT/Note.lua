@@ -5,6 +5,9 @@ local VExRT = nil
 local module = ExRT:New("Note",ExRT.L.message,nil,true)
 local ELib,L = ExRT.lib,ExRT.L
 
+local GetTime, CombatLogGetCurrentEventInfo = GetTime, CombatLogGetCurrentEventInfo
+local string_gsub, strsplit, tonumber, format = string.gsub, strsplit, tonumber, format
+
 module.db.iconsList = {
 	"|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_1:0|t",
 	"|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_2:0|t",
@@ -58,7 +61,8 @@ local frameStrataList = {"BACKGROUND","LOW","MEDIUM","HIGH","DIALOG","FULLSCREEN
 module.db.msgindex = -1
 module.db.lasttext = ""
 
-local string_gsub = string.gsub
+module.db.encounter_time_p = {}
+
 
 local function GSUB_Icon(spellID)
 	spellID = tonumber(spellID)
@@ -88,6 +92,61 @@ local function GSUB_Player(list,msg)
 	end
 end
 
+--[[
+formats:
+{time:75}
+{time:1:15}
+{time:2:30,p2}	--start on phase 2, works only with bigwigs
+{time:0:30,SCC:17:2}	--start on combat log event. format "event:spellID:counter", events: SCC (SPELL_CAST_SUCCESS), SCS (SPELL_CAST_START), SAA (SPELL_AURA_APPLIED), SAR (SPELL_AURA_REMOVED)
+]]
+local function GSUB_Time(t,msg)
+	local lineTime
+	if t:find(":") then
+		lineTime = tonumber(t:match("(%d+):") or "0",nil) * 60 + tonumber(t:match(":(%d+)") or "0",nil)
+	else
+		lineTime = tonumber(t:match("^(%d+)") or "0",nil)
+	end
+
+	local phase = t:match(",p(%d+)")
+
+	if not module.db.encounter_time then
+		return "|cffffed88"..(phase and "P"..phase.." " or "")..format("%d:%02d|r ",floor(lineTime/60),lineTime % 60)..msg.."\n"
+	end
+
+	local currTime = GetTime() - module.db.encounter_time
+
+	local CLEU = t:match(",S")
+	if CLEU then
+		local _,lineMark = strsplit(",",t)
+		t = module.db.encounter_counters_time[lineMark or ""]
+		if t then
+			currTime = GetTime() - t
+		else
+			return "|cffffed88"..format("%d:%02d|r ",floor(lineTime/60),lineTime % 60)..msg.."\n"
+		end
+	end
+
+	local phaseText = ""
+	if phase then
+		t = module.db.encounter_time_p[tonumber(phase)]
+		if not t then
+			return "|cffffed88"..format("P%s %d:%02d|r ",phase,floor(lineTime/60),lineTime % 60)..msg.."\n"
+		end
+		currTime = GetTime() - t
+
+		phaseText = "P"..phase.." "
+	end
+
+	if currTime > lineTime then
+		return "|cff555555"..msg:gsub("|c........",""):gsub("|r","").."|r\n"
+	elseif lineTime - currTime <= 10 then
+		t = lineTime - currTime
+		return "|cff00ff00"..phaseText..format("%d:%02d ",floor(t/60),t % 60)..msg:gsub("|c........",""):gsub("|r",""):gsub(ExRT.SDB.charName,"|r|cffff0000>%1<|r|cff00ff00").."|r\n"
+	else
+		t = lineTime - currTime
+		return "|cffffed88"..phaseText..format("%d:%02d|r ",floor(t/60),t % 60)..msg.."\n"
+	end
+end
 
 local function txtWithIcons(t)
 	t = t or ""
@@ -128,6 +187,9 @@ local function txtWithIcons(t)
 	if not isDD then t = string_gsub(t,"{[Dd]}.-{/[Dd]}","") end
 	t = string_gsub(t,"{0}.-{/0}","")
 
+	t = string_gsub(t.."\n","{time:([0-9:]+[^{}]*)}(.-)\n",GSUB_Time)
+	t = string_gsub(t, "\n$", "")
+
 	t = string_gsub(t,"%b{}","")
 	return t
 end
@@ -145,6 +207,16 @@ function module.options:Load()
 		29166,32375,114018,108199,49576,47536,0,
 		--"Interface\\Icons\\inv_60legendary_ring1c","Interface\\Icons\\inv_60legendary_ring1b","Interface\\Icons\\inv_60legendary_ring1a",0,
 		0,
+		283933,284468,284469,288298,287469,283579,283587,287439,283572,288292,283650,283637,284449,284488,283628,284578,283626,282113,283662,287419,283955,284459,284436,284474,0,
+		282181,289412,285654,282082,285671,281936,285658,282247,289292,283069,289556,285875,282380,281938,283078,282243,282215,282379,282179,285660,282010,290574,285994,0,
+		286436,284453,284089,286988,282036,288151,281959,286989,282037,284399,286396,288051,285634,287615,286487,287747,286379,286503,284146,284388,282040,284374,286086,284028,282041,285645,286425,0,
+		284556,286541,284573,287424,284558,284527,290654,286040,282939,284798,284814,283507,289776,284941,285014,289383,284611,284943,287037,284470,283604,287652,289155,285479,284802,284881,284645,285995,284614,284567,286026,284546,287072,284883,287070,290648,284424,284817,284081,284664,287074,284519,284493,286501,0,
+		282592,282135,286833,282098,282447,286811,282107,284663,286060,282411,285878,282736,282155,286007,282636,290617,282209,285889,290573,285945,282079,282444,285893,290570,0,
+		284933,286509,284446,288053,284730,290448,285172,286779,288449,284276,288576,289915,284781,287333,285349,284688,289162,284831,285178,285572,284676,289858,289890,288048,285003,285010,286671,286742,286672,289924,288117,285213,285190,287147,284377,288415,0,
+		288939,288792,289699,282205,282182,286051,282245,282408,284214,287167,282401,284145,287929,287877,287114,284042,284219,286735,287952,289696,283411,287297,287891,284168,289023,287293,289132,286480,289644,286646,0,
+		285382,284383,284360,284120,287887,290437,285420,288190,284106,286563,284316,288191,287889,287995,284760,287169,285118,285075,284997,288258,286558,284393,284864,285342,285350,285017,284405,284262,0,
+		287626,290036,290084,287565,289219,290621,288747,282841,289220,289488,290087,285725,285253,288671,287490,288325,288719,285459,287365,288169,285177,288218,288297,290030,288534,285212,289985,288394,288221,288345,289387,288647,285828,288475,288380,288412,289861,289940,289379,289866,288219,287925,288038,0,
+		0,
 		275189,271728,271222,275205,272584,270290,273179,275445,272582,271296,271965,0,
 		279663,267787,267821,279660,267878,274205,279669,268198,268245,267795,268095,0,
 		262255,262364,262313,262291,262370,262314,262378,262277,262288,0,
@@ -153,18 +225,6 @@ function module.options:Load()
 		276299,273889,273432,273316,273363,274363,274387,273434,276434,276659,273288,273451,274358,273359,274271,274168,274195,273254,276093,273350,273556,273361,274396,273365,0,
 		273951,279013,272480,273945,276922,272536,276900,272336,273282,273554,276863,272407,273810,274019,279157,274113,274230,0,
 		270443,267813,263482,263372,273405,270287,263436,273406,267579,267816,270447,275204,267660,276764,263235,267409,272513,263284,274262,267427,267412,273540,267509,267462,277007,272508,267700,273480,263416,274577,274536,263326,263217,263307,268174,275008,270428,263227,0,
-		0,
-		246220,254948,244761,244969,0,
-		244056,244825,244057,244054,244055,248819,248815,244768,244131,0,
-		254130,244892,254771,244722,253037,244625,245227,246505,257974,244172,0,
-		244016,243983,244689,244915,244598,244926,245050,245118,244849,244613,244001,0,
-		246305,254769,249017,249015,249014,249016,245764,248332,0,
-		247367,247687,254244,247949,247641,247932,247681,248070,248068,0,
-		254919,248214,246833,246504,246516,249535,254795,244328,0,
-		243960,248732,244042,243999,244093,243968,243977,243980,243961,0,
-		250097,250333,250334,249793,252861,253650,245627,246329,253520,245532,250757,245518,244899,0,
-		255058,245458,255061,243431,244693,244912,254452,254022,245632,0,
-		258838,257296,258030,248165,255826,248317,257869,257931,257215,255199,253903,253901,257966,258000,251570,250669,258837,248396,248167,0,
 	}
 
 	--[[
@@ -172,10 +232,12 @@ function module.options:Load()
 	
 	/run function F(eID)local f=select(4,EJ_GetEncounterInfoByIndex(eID))repeat local I=C_EncounterJournal.GetSectionInfo(f)local O=I and (I.headerType == 3)if O then f=I.siblingSectionID end until not O return f end
 	/run function C(f) local I=C_EncounterJournal.GetSectionInfo(f) if I.firstChildSectionID then C(I.firstChildSectionID)end if I.spellID and I.spellID~=0 then L[I.spellID]=true end if I.siblingSectionID then C(I.siblingSectionID) end end
-	/run for i=1,8 do L={} local f=F(i) C(f)local s="" for q,w in pairs(L)do s=s..q.."," end print(s..'0,') end
+	/run for i=1,9 do L={} local f=F(i) C(f)local s="" for q,w in pairs(L)do s=s..q.."," end print(s..'0,') end
 	]]
 	
 	module.db.encountersList = {
+		{L.S_ZoneT23Storms,2269,2273},
+		{1358,2265,2263,2284,2266,2285,2271,2268,2272,2276,2280,2281},
 		{1148,2144,2141,2136,2134,2128,2145,2135,2122},
 		{EXPANSION_NAME7..": "..DUNGEONS,-1012,-968,-1041,-1022,-1030,-1023,-1002,-1001,-1036,-1021},
 		{909,2076,2074,2064,2070,2075,2082,2069,2088,2073,2063,2092},
@@ -184,6 +246,14 @@ function module.options:Load()
 	}
 
 	module.db.mapToEncounter = {
+		--BfD
+		[1358] = {2265,2263,2266},
+		[1352] = {2276,2280},
+		[1353] = 2271,
+		[1354] = 2268,
+		[1357] = 2272,
+		[1364] = 2281,
+
 		--Uldir
 		[1148] = 2144,
 		[1149] = 2141,
@@ -232,14 +302,100 @@ function module.options:Load()
 
 	self.NotesList = ELib:ScrollList(self.tab.tabs[1]):Size(175+37,435):Point(5,-130)
 	self.NotesList.selected = 1
+
+	local function SwapBlackNotes(noteFrom,noteTo)
+		if noteTo < 1 or noteFrom < 1 or noteTo > #VExRT.Note.Black or noteFrom > #VExRT.Note.Black or not VExRT.Note.Black[noteTo] or not VExRT.Note.Black[noteFrom] then
+			return
+		end
+		local text = VExRT.Note.Black[noteTo]
+		local title = VExRT.Note.BlackNames[noteTo]
+		local boss = VExRT.Note.AutoLoad[noteTo]
+		local lastUpdateName = VExRT.Note.BlackLastUpdateName[noteTo]
+		local lastUpdateTime = VExRT.Note.BlackLastUpdateTime[noteTo]
+
+		VExRT.Note.Black[noteTo] = VExRT.Note.Black[noteFrom]
+		VExRT.Note.BlackNames[noteTo] = VExRT.Note.BlackNames[noteFrom]
+		VExRT.Note.AutoLoad[noteTo] = VExRT.Note.AutoLoad[noteFrom]
+		VExRT.Note.BlackLastUpdateName[noteTo] = VExRT.Note.BlackLastUpdateName[noteFrom]
+		VExRT.Note.BlackLastUpdateTime[noteTo] = VExRT.Note.BlackLastUpdateTime[noteFrom]
+
+		VExRT.Note.Black[noteFrom] = text
+		VExRT.Note.BlackNames[noteFrom] = title
+		VExRT.Note.AutoLoad[noteFrom] = boss
+		VExRT.Note.BlackLastUpdateName[noteFrom] = lastUpdateName
+		VExRT.Note.BlackLastUpdateTime[noteFrom] = lastUpdateTime
+
+		module.options:NotesListUpdateNames()
+		module.options.NotesList.selected = noteTo + 2
+		module.options.NotesList:Update()
+	end
+
+	self.NotesList.ButtonMoveUp = CreateFrame("Button",nil,self.NotesList)
+	self.NotesList.ButtonMoveUp:Hide()
+	self.NotesList.ButtonMoveUp:SetSize(8,8)
+	self.NotesList.ButtonMoveUp:SetScript("OnClick",function(self)
+		SwapBlackNotes(self.index,self.index - 1)
+	end)
+	self.NotesList.ButtonMoveUp.i = self.NotesList.ButtonMoveUp:CreateTexture()
+	self.NotesList.ButtonMoveUp.i:SetPoint("CENTER")
+	self.NotesList.ButtonMoveUp.i:SetSize(16,16)	
+	self.NotesList.ButtonMoveUp.i:SetTexture("Interface\\AddOns\\ExRT\\media\\DiesalGUIcons16x256x128")
+	self.NotesList.ButtonMoveUp.i:SetTexCoord(0.25,0.3125,0.625,0.5)
+
+	self.NotesList.ButtonMoveDown = CreateFrame("Button",nil,self.NotesList)
+	self.NotesList.ButtonMoveDown:Hide()
+	self.NotesList.ButtonMoveDown:SetSize(8,8)
+	self.NotesList.ButtonMoveDown:SetScript("OnClick",function(self)
+		SwapBlackNotes(self.index,self.index + 1)
+	end)
+	self.NotesList.ButtonMoveDown.i = self.NotesList.ButtonMoveDown:CreateTexture()
+	self.NotesList.ButtonMoveDown.i:SetPoint("CENTER")
+	self.NotesList.ButtonMoveDown.i:SetSize(16,16)	
+	self.NotesList.ButtonMoveDown.i:SetTexture("Interface\\AddOns\\ExRT\\media\\DiesalGUIcons16x256x128")
+	self.NotesList.ButtonMoveDown.i:SetTexCoord(0.25,0.3125,0.5,0.625)
+
+
+	self.NotesList.UpdateAdditional = function(self,val)
+		self.ButtonMoveUp:Hide()
+		self.ButtonMoveDown:Hide()
+		for i=1,#self.List-1 do
+			if self.selected == self.List[i].index then
+				self.ButtonMoveUp:SetPoint("BOTTOMRIGHT",self.List[i],"RIGHT",-2,0)
+				self.ButtonMoveDown:SetPoint("TOPRIGHT",self.List[i],"RIGHT",-2,0)
+				self.ButtonMoveUp:SetParent(self.List[i])
+				self.ButtonMoveDown:SetParent(self.List[i])
+				self.ButtonMoveUp.index = self.List[i].index - 2
+				self.ButtonMoveDown.index = self.List[i].index - 2
+				if i > 3 then
+					self.ButtonMoveUp:Show()
+				end
+				if i >= 3 and i <= #self.List-2 then
+					self.ButtonMoveDown:Show()
+				end
+				return
+			end
+		end	
+	end
 	
 	local function NotesListUpdateNames()
+		local bossesToGreen = {}
+		local mapID = C_Map.GetBestMapForUnit("player")
+		if mapID and module.db.mapToEncounter[mapID] then
+			local encounters = module.db.mapToEncounter[mapID]
+			if type(encounters) == 'table' then
+				for i=1,#encounters do
+					bossesToGreen[ encounters[i] ] = true
+				end
+			else
+				bossesToGreen[encounters] = true
+			end
+		end
 		self.NotesList.L = {}
 		
 		self.NotesList.L[1] = "|cff55ee55"..L.messageTab1
 		self.NotesList.L[2] = L.NoteSelf
 		for i=1,#VExRT.Note.Black do
-			self.NotesList.L[i+2] = (VExRT.Note.AutoLoad[i] and "|cffffff00["..module.options:GetBossName(VExRT.Note.AutoLoad[i]).."]|r" or "")..(VExRT.Note.BlackNames[i] or i)
+			self.NotesList.L[i+2] = (VExRT.Note.AutoLoad[i] and (bossesToGreen[ VExRT.Note.AutoLoad[i] ] and "|cff00ff00" or "|cffffff00").."["..module.options:GetBossName(VExRT.Note.AutoLoad[i]).."]|r" or "")..(VExRT.Note.BlackNames[i] or i)
 		end
 		self.NotesList.L[#self.NotesList.L + 1] = L.NoteAdd
 		self.NotesList:Update()
@@ -327,27 +483,7 @@ function module.options:Load()
 	end
 
 	self.NotesList:SetScript("OnShow",function(self)
-		local bossesToGreen = {}
-		local mapID = C_Map.GetBestMapForUnit("player")
-		if mapID and module.db.mapToEncounter[mapID] then
-			local encounters = module.db.mapToEncounter[mapID]
-			if type(encounters) == 'table' then
-				for i=1,#encounters do
-					bossesToGreen[ encounters[i] ] = true
-				end
-			else
-				bossesToGreen[encounters] = true
-			end
-		end
-		for i=3,#self.L do
-			local index = i - 2
-			local t = self.L[i]:gsub("|cff00ff00","|cffffff00")
-			if VExRT.Note.AutoLoad[index] and bossesToGreen[ VExRT.Note.AutoLoad[index] ] then
-				t = t:gsub("|cffffff00","|cff00ff00")
-			end
-			self.L[i] = t
-		end
-		self:Update()
+		NotesListUpdateNames()
 	end)
 	
 	function self.NotesList:HoverListValue(isHover,index)
@@ -667,13 +803,17 @@ function module.options:Load()
 		end
 		local txt = module.options.NoteEditBox.EditBox:GetText()
 		local pos = module.options.NoteEditBox.EditBox:GetCursorPosition()
-		if not self and mypos then
+		if not self and type(mypos)=='number' then
 			pos = mypos
 		end
 		txt = string.sub (txt, 1 , pos) .. addedText .. string.sub (txt, pos+1)
 		module.options.InsertFix = GetTime()
 		module.options.NoteEditBox.EditBox:SetText(txt)
-		module.options.NoteEditBox.EditBox:SetCursorPosition(pos+string.len(addedText))
+		local adjust = 0
+		if IsFormattingOn then
+			addedText:gsub("||",function() adjust = adjust + 1 end)
+		end
+		module.options.NoteEditBox.EditBox:SetCursorPosition(pos+addedText:len()-adjust)
 	end
 
 	self.buttonicons = {}
@@ -820,7 +960,7 @@ function module.options:Load()
 		self.html:SetShadowColor(0, 0, 0, 1)
 	end
 	self.raidnames = {}
-	for i=1,30 do
+	for i=1,35 do
 		self.raidnames[i] = CreateFrame("Button", nil,self.tab.tabs[1])
 		self.raidnames[i]:SetSize(105,14)
 		self.raidnames[i]:SetPoint("TOPLEFT", 5+math.floor((i-1)/5)*108,-55-14*((i-1)%5))
@@ -834,6 +974,7 @@ function module.options:Load()
 
 		self.raidnames[i]:SetScript("OnEnter", RaidNamesOnEnter)
 		self.raidnames[i]:SetScript("OnLeave", RaidNamesOnLeave)
+
 	end
 	
 	self.lastUpdate = ELib:Text(self.tab.tabs[1],"",11):Size(600,20):Point("TOPLEFT",self.NotesList,"BOTTOMLEFT",3,-6):Top():Color()
@@ -1061,7 +1202,8 @@ function module.options:Load()
 		"|n|cffffff00{spell:|r|cff00ff0017|r|cffffff00}|r - "..L.NoteHelp3..
 		"|n|cffffff00{self}|r - "..L.NoteHelp4..
 		"|n|cffffff00{p:|r|cff00ff00JaneD|r|cffffff00,|r|cff00ff00JennyB-HowlingFjord|r|cffffff00}|r...|cffffff00{/p}|r - "..L.NoteHelp5..
-		"|n|cffffff00{icon:|r|cff00ff00Interface/Icons/inv_hammer_unique_sulfuras|r|cffffff00}|r - "..L.NoteHelp6
+		"|n|cffffff00{icon:|r|cff00ff00Interface/Icons/inv_hammer_unique_sulfuras|r|cffffff00}|r - "..L.NoteHelp6..
+		"|n|cffffff00{time:|r|cff00ff002:45|r|cffffff00}|r - "..L.NoteHelp7
 	):Point("TOPLEFT",5,-20):Point("TOPRIGHT",-5,-20):Color()
 
 	module:RegisterEvents("GROUP_ROSTER_UPDATE")
@@ -1291,7 +1433,7 @@ function module:addonMessage(sender, prefix, ...)
 			if noteName then			
 				noteName = noteName:gsub("%*+$","").."*"
 				for i=1,#VExRT.Note.Black do
-					if VExRT.Note.BlackNames[i] == noteName then
+					if VExRT.Note.BlackNames[i] == noteName and VExRT.Note.AutoLoad[i] == encounterID then
 						VExRT.Note.Black[i] = VExRT.Note.Text1
 						VExRT.Note.AutoLoad[i] = encounterID
 						VExRT.Note.BlackLastUpdateName[i] = sender
@@ -1440,7 +1582,7 @@ function module:Enable()
 	if module.options.chkEnable then
 		module.options.chkEnable:SetChecked(true)
 	end
-	module:RegisterEvents("PLAYER_SPECIALIZATION_CHANGED","PLAYER_LOGIN")
+	module:RegisterEvents("PLAYER_SPECIALIZATION_CHANGED","PLAYER_LOGIN","ENCOUNTER_END","ENCOUNTER_START")
 	if VExRT.Note.HideOutsideRaid then
 		module:RegisterEvents("GROUP_ROSTER_UPDATE")
 	end
@@ -1458,7 +1600,7 @@ function module:Disable()
 	if module.options.chkEnable then
 		module.options.chkEnable:SetChecked(false)
 	end
-	module:UnregisterEvents('PLAYER_REGEN_DISABLED','PLAYER_REGEN_ENABLED','ZONE_CHANGED_NEW_AREA',"PLAYER_SPECIALIZATION_CHANGED","PLAYER_LOGIN")
+	module:UnregisterEvents('PLAYER_REGEN_DISABLED','PLAYER_REGEN_ENABLED','ZONE_CHANGED_NEW_AREA',"PLAYER_SPECIALIZATION_CHANGED","PLAYER_LOGIN","ENCOUNTER_END","ENCOUNTER_START")
 	module:Visibility()
 end
 
@@ -1508,7 +1650,7 @@ function module.main:GROUP_ROSTER_UPDATE()
 	for i=1,8 do gruevent[i] = 0 end
 	if IsInRaid() then
 		local n = GetNumGroupMembers() or 0
-		local gMax = ExRT.F.GetRaidDiffMaxGroup()
+		local gMax = 7
 		for i=1,n do
 			local name,_,subgroup,_,_,class = GetRaidRosterInfo(i)
 			if name and subgroup <= gMax and gruevent[subgroup] then
@@ -1550,7 +1692,7 @@ function module.main:GROUP_ROSTER_UPDATE()
 			end
 		end		
 	end
-	for i=1,6 do
+	for i=1,7 do
 		for j=(gruevent[i]+1),5 do
 			local frame = module.options.raidnames[(i-1)*5+j]
 			frame.iconText = ""
@@ -1578,38 +1720,133 @@ end
 
 
 do
-	local encountersUsed = {}
-	function module.main:ENCOUNTER_START(encounterID,encounterName)
-		local _, zoneType, difficulty, _, _, _, _, mapID = GetInstanceInfo()
-		if difficulty == 7 or difficulty == 17 then	--Disable if LFR
-			return false
-		end
-		if encountersUsed[encounterID] then
+	local BossPhasesBossmodAdded
+	local function BossPhasesBossmod()
+		if BossPhasesBossmodAdded then
 			return
 		end
-		encountersUsed[encounterID] = true
-		local limit = #VExRT.Note.Black
-		for i=1,limit do
-			local text = VExRT.Note.Black[i]
-			if text:find("^{[eEеЕ][pPрР]:"..encounterID.."}") or (encounterName and (text:lower()):find("^{[eе][pр]:"..(encounterName:lower()).."}")) then
-				VExRT.Note.SelfText = VExRT.Note.Black[i]
-				module.frame:UpdateText()
-				break
+		if BigWigsLoader and type(BigWigsLoader)=='table' and BigWigsLoader.RegisterMessage then
+			local r = {}
+			local patt
+			function r:BigWigs_Message (event, mod, key, text, ...)
+				if (key == "stages") then
+					if type(text)~='string' then
+						return
+					end
+
+					if not patt and BigWigsAPI then
+						local CL = BigWigsAPI:GetLocale("BigWigs: Common")
+						if CL and CL.soon then
+							patt = CL.soon:gsub("%%s","")
+							if CL.soon:find("^%%s") then
+								patt = patt .. "$"
+							else
+								patt = "^" .. patt
+							end
+						end
+					end
+					if patt and text:find( patt ) then
+						return
+					end
+
+					local phase = text:match ("%d+")
+					phase = tonumber (phase or "")
+					if phase then
+						wipe(module.db.encounter_time_p)
+						module.db.encounter_time_p[phase] = GetTime()
+					end
+				end
 			end
+
+			BigWigsLoader.RegisterMessage (r, "BigWigs_Message")
+			
+			BossPhasesBossmodAdded = true
 		end
-		for i=0,limit do
-			if VExRT.Note.AutoLoad[i] == encounterID then
-				ExRT.F.Timer(SendNoteByEncounter, 1.8, i)
-				break
-			end
-			if i == limit then
-				IsUpdateNoteByEncounterFromMe = nil
-				return
-			end
-		end
-		IsUpdateNoteByEncounterFromMe = true
-		ExRT.F.Timer(ExRT.F.SendExMsg, 0.3, "multiline_req","ENCOUNTER")
 	end
+
+
+	function module.main:ENCOUNTER_START()
+		if not (VExRT.Note.Text1 or ""):find("{time:([0-9:]+[^{}]*)}") then
+			return
+		end
+		module:RegisterTimer()
+		module.db.encounter_time = GetTime()
+		module.db.encounter_time_p[1] = module.db.encounter_time
+		module.frame:UpdateText()
+		BossPhasesBossmod()
+
+		if (VExRT.Note.Text1 or ""):find("{time:([0-9:]+,S[^{}]*)}") then
+			wipe(module.db.encounter_counters.SCC)
+			wipe(module.db.encounter_counters.SCS)
+			wipe(module.db.encounter_counters.SAA)
+			wipe(module.db.encounter_counters.SAR)
+			local anyEvent
+			string_gsub(VExRT.Note.Text1,"{time:[0-9:]+,(S[^{}]*)}",function(str)
+				local event,spellID,count = strsplit(":",str)
+				if tonumber(count or "") and tonumber(spellID or "") and event and module.db.encounter_counters[event] then
+					anyEvent = true
+					module.db.encounter_counters[event][tonumber(spellID)] = 0
+				end
+			end)
+			if anyEvent then
+				wipe(module.db.encounter_counters_time)
+				module:RegisterEvents("COMBAT_LOG_EVENT_UNFILTERED")
+			end
+		end
+	end
+	function module.main:ENCOUNTER_END()
+		if not (VExRT.Note.Text1 or ""):find("{time:([0-9:]+[^{}]*)}") then
+			return
+		end
+		module:UnregisterTimer()
+		module.db.encounter_time = nil
+		wipe(module.db.encounter_time_p)
+		module.frame:UpdateText()
+
+		module:UnregisterEvents("COMBAT_LOG_EVENT_UNFILTERED")
+	end
+	local tmr = 0
+	function module:timer(elapsed)
+		tmr = tmr + elapsed
+		if tmr > 1 then
+			tmr = 0
+			module.frame:UpdateText()
+		end
+	end
+
+	module.db.encounter_counters_time = {}
+	module.db.encounter_counters = {
+		SCC = {},
+		SCS = {},
+		SAA = {},
+		SAR = {},
+	}
+	local ECT = module.db.encounter_counters_time
+	local SCC = module.db.encounter_counters.SCC
+	local SCS = module.db.encounter_counters.SCS
+	local SAA = module.db.encounter_counters.SAA
+	local SAR = module.db.encounter_counters.SAR
+	function module.main:COMBAT_LOG_EVENT_UNFILTERED()
+		local _,event,_,_,_,_,_,_,_,_,_,spellID = CombatLogGetCurrentEventInfo()
+		if event == "SPELL_CAST_SUCCESS" and SCC[spellID] then
+			SCC[spellID] = SCC[spellID] + 1
+			ECT[ "SCC:"..spellID..":"..SCC[spellID] ] = GetTime()
+			ECT[ "SCC:"..spellID..":"..0 ] = GetTime()
+		elseif event == "SPELL_CAST_START" and SCS[spellID] then
+			SCS[spellID] = SCS[spellID] + 1
+			ECT[ "SCS:"..spellID..":"..SCS[spellID] ] = GetTime()
+			ECT[ "SCS:"..spellID..":"..0 ] = GetTime()
+		elseif event == "SPELL_AURA_APPLIED" and SAA[spellID] then
+			SAA[spellID] = SAA[spellID] + 1
+			ECT[ "SAA:"..spellID..":"..SAA[spellID] ] = GetTime()
+			ECT[ "SAA:"..spellID..":"..0 ] = GetTime()
+		elseif event == "SPELL_AURA_REMOVED" and SAR[spellID] then
+			SAR[spellID] = SAR[spellID] + 1
+			ECT[ "SAR:"..spellID..":"..SAR[spellID] ] = GetTime()
+			ECT[ "SAR:"..spellID..":"..0 ] = GetTime()
+		end
+	end
+
 end
 
 function module:slash(arg)
@@ -1621,5 +1858,11 @@ function module:slash(arg)
 		end
 	elseif arg == "editnote" or arg == "edit note" then
 		ExRT.Options:Open(module.options)
+	elseif arg == "note timer" then
+		if module.db.encounter_time then
+			module.main:ENCOUNTER_END()
+		else
+			module.main:ENCOUNTER_START()
+		end
 	end
 end

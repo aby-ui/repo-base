@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(825, "DBM-ThroneofThunder", nil, 362)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 122 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 124 $"):sub(12, -3))
 mod:SetCreatureID(67977)
 mod:SetEncounterID(1565)
 mod:SetZone()
@@ -175,8 +175,8 @@ function mod:SPELL_AURA_APPLIED(args)
 				startIcon = 8--Always start with skull
 				alternateSet = true--And reset alternate status so we use moon next time (unless all are dead again, then re always reset to skull)
 			end
+			self:ScanForMobs(args.destGUID, 0, startIcon, 3, 0.2, 10)
 		end
-		self:ScanForMobs(args.destGUID, 0, startIcon, 3, 0.2, 10)
 		addsActivated = addsActivated + 1
 	end
 end

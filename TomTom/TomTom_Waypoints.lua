@@ -85,17 +85,14 @@ function TomTom:SetWaypoint(waypoint, callbacks, show_minimap, show_world)
         -- Add to the "All points" table so we can reparent easily
         table.insert(all_points, minimap)
 
-        minimap.icon = minimap:CreateTexture("BACKGROUND")
-        if waypoint.minimap_icon then
-            minimap.icon:SetTexture(waypoint.minimap_icon)
-        else
-            minimap.icon:SetTexture("Interface\\AddOns\\TomTom\\Images\\GoldGreenDot")
-        end
+        minimap.icon = minimap:CreateTexture(nil,"OVERLAY")
+        minimap.icon:SetTexture(waypoint.minimap_icon or "Interface\\AddOns\\TomTom\\Images\\GoldGreenDot")
         minimap.icon:SetPoint("CENTER", 0, 0)
-        minimap.icon:SetHeight(16)
-        minimap.icon:SetWidth(16)
+        minimap.icon:SetHeight(waypoint.minimap_icon_size or 16)
+        minimap.icon:SetWidth(waypoint.minimap_icon_size or 16)
+        minimap.icon:SetBlendMode("ADD")  -- ADD/BLEND
 
-        minimap.arrow = minimap:CreateTexture("BACKGROUND")
+        minimap.arrow = minimap:CreateTexture(nil,"OVERLAY")
         minimap.arrow:SetTexture("Interface\\AddOns\\TomTom\\Images\\MinimapArrow-Green")
         minimap.arrow:SetPoint("CENTER", 0 ,0)
         minimap.arrow:SetHeight(40)
@@ -111,23 +108,20 @@ function TomTom:SetWaypoint(waypoint, callbacks, show_minimap, show_world)
         minimap:SetScript("OnEvent", Minimap_OnEvent)
 
         if not TomTomMapOverlay then
-            local overlay = CreateFrame("Frame", "TomTomMapOverlay", WorldMapFrame)
+            local overlay = CreateFrame("Frame", "TomTomMapOverlay", WorldMapFrame.BorderFrame)
             overlay:SetFrameStrata("HIGH")
-            overlay:SetFrameLevel(10)
+            overlay:SetFrameLevel(9000)
             overlay:SetAllPoints(true)
         end
 
         local worldmap = CreateFrame("Button", nil, TomTomMapOverlay)
-        worldmap:SetHeight(16)
-        worldmap:SetWidth(16)
+        worldmap:SetHeight(waypoint.worldmap_icon_size or 16)
+        worldmap:SetWidth(waypoint.worldmap_icon_size or 16)
         worldmap:RegisterForClicks("RightButtonUp")
-        worldmap.icon = worldmap:CreateTexture("ARTWORK")
+        worldmap.icon = worldmap:CreateTexture(nil, "OVERLAY")
         worldmap.icon:SetAllPoints()
-        if waypoint.worldmap_icon then
-            worldmap.icon:SetTexture(waypoint.worldmap_icon)
-        else
-            worldmap.icon:SetTexture("Interface\\AddOns\\TomTom\\Images\\GoldGreenDot")
-        end
+        worldmap.icon:SetBlendMode("BLEND")
+        worldmap.icon:SetTexture(waypoint.worldmap_icon or "Interface\\AddOns\\TomTom\\Images\\GoldGreenDot")
         worldmap:RegisterEvent("NEW_WMO_CHUNK")
         worldmap:SetScript("OnEnter", World_OnEnter)
         worldmap:SetScript("OnLeave", World_OnLeave)

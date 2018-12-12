@@ -277,8 +277,10 @@ function DF:CreateCoolTip()
 			tinsert (UISpecialFrames, "GameCooltipFrame1")
 			DF:CreateFlashAnimation (frame1)
 			
+			--removing the border makes the cooltip much more clear
 			if (DF.CreateBorder) then
 				DF:CreateBorder (frame1, .3, .1, .03)
+				frame1:SetBorderAlpha (0, 0, 0)
 			end
 		else
 			frame1 = GameCooltipFrame1
@@ -303,8 +305,10 @@ function DF:CreateCoolTip()
 			DF:CreateFlashAnimation (frame2)
 			frame2:SetClampedToScreen (true)
 			
+			--removing the border makes the cooltip much more clear
 			if (DF.CreateBorder) then
 				DF:CreateBorder (frame2, .3, .1, .03)
+				frame2:SetBorderAlpha (0, 0, 0)
 			end
 		else
 			frame2 = GameCooltipFrame2
@@ -2711,6 +2715,14 @@ function DF:CreateCoolTip()
 				f:SetBackdropBorderColor (r, g, b, a)
 			end
 			
+			--[=[
+			f:SetBackdrop (nil)
+			
+			f.framebackgroundCenter:SetTexture (nil)
+			f.framebackgroundLeft:SetTexture (nil)
+			f.framebackgroundRight:SetTexture (nil)
+			f.frameWallpaper:SetTexture (nil)
+			--]=]
 		end
 		
 		function CoolTip:SetBannerImage (index, texturepath, width, height, anchor, texcoord, overlay)
@@ -3365,6 +3377,31 @@ function DF:CreateCoolTip()
 			self:SetBackdrop (2, preset2_backdrop, gray_table, black_table)
 		end
 	end
+	
+	function CoolTip:QuickTooltip (host, ...)
+		
+		CoolTip:Preset (2)
+		CoolTip:SetHost (host)
+		
+		for i = 1, select ("#", ...) do
+			local line = select (i, ...)
+			CoolTip:AddLine (line)
+		end
+		
+		CoolTip:ShowCooltip()
+	end
+	
+	function CoolTip:InjectQuickTooltip (host, ...)
+		host.CooltipQuickTooltip = {...}
+		host:HookScript ("OnEnter", function()
+			CoolTip:QuickTooltip (host, unpack (host.CooltipQuickTooltip))
+		end)
+		host:HookScript ("OnLeave", function()
+			CoolTip:Hide()
+		end)
+	end
+	
+	
 	
 	return CoolTip
 	

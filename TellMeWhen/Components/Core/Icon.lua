@@ -1078,9 +1078,14 @@ TMW.IconStateArbitrator = {
 
 			if not state.Alpha then
 				-- Attempting to catch an elusive bug. Remove this if it doesn't seem to be happening anymore.
+
+				-- One case I've seen is doing an undo/redo while TMW is locked. 
+				-- The underlying data on the setting table that gets passed as a state gets nilled out,
+				-- so there may be no value.
+				-- This happens when undoing to a blank icon from a non-blank icon, for example.
 				print("NO ALPHA ON STATE:", handlerToUse.attribute, icon, icon:GetName(), state.Alpha, state)
 			end
-			icon:SetInfo_INTERNAL("realAlpha", state.Alpha)
+			icon:SetInfo_INTERNAL("realAlpha", state.Alpha or 0)
 			icon:SetInfo_INTERNAL("calculatedState", state)
 		end
 	end,

@@ -35,8 +35,6 @@ function rematch:LoadTeam(key)
 		return
 	end
 
-	rematch.TeamPanel:NotifyTeamLoading(L["Loading..."]) -- desaturate loaded team and say it's loading
-
 	loadingKey = key --  note what team we're about to load
 
 	for i=1,3 do wipe(loadin[i]) end -- start with clean loadin
@@ -235,11 +233,14 @@ function rematch:LoadingDone(unsuccessful)
 	if rematch.LoadedTeamPanel:IsVisible() then
 		rematch.LoadedTeamPanel.Bling:Show()
 	end
+	if rematch.TeamPanel:IsVisible() then
+		rematch.TeamPanel:BlingKey(loadingKey)
+	end
 	rematch:AssignSpecialSlots()
 	rematch:UpdateQueue() -- team change may mean leveling pet preferences changed; this also does an UpdateUI
 
 	-- ShowOnInjured to summon window if any loaded pets are injured
-	if settings.AutoLoad and settings.ShowOnInjured and not rematch.Frame:IsVisible() and not rematch.Journal:IsVisible() then
+	if settings.AutoLoad and settings.ShowOnInjured and not rematch.Frame:IsVisible() then
 		for i=1,3 do
 			local petID = C_PetJournal.GetPetLoadOutInfo(i)
 			if petID then
@@ -253,7 +254,7 @@ function rematch:LoadingDone(unsuccessful)
 	end
 
 	-- SafariHatShine to summon window if a team loads with a low level pet and the safari hat is not equipped
-	if settings.SafariHatShine and not rematch.Frame:IsVisible() and not rematch.Journal:IsVisible() then
+	if settings.SafariHatShine and not rematch.Frame:IsVisible() then
 		local safariBuff = GetItemSpell(92738)
 		if safariBuff and not rematch:UnitBuff(safariBuff) and rematch:IsLowLevelPetLoaded() then
 			rematch:AutoShow()
@@ -291,8 +292,6 @@ function rematch:LoadingDone(unsuccessful)
 			end
 		end
 	end
-
-	RematchWinRecordToast:Hide() -- if a winrecord toast is showing from a previous team, stop it
 
 end
 

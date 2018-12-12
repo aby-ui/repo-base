@@ -26,57 +26,14 @@ local bit_band = bit.band
 local tremove = tremove
 local strsplit = strsplit
 local CombatLogGetCurrentEventInfo = CombatLogGetCurrentEventInfo
+local type = type
 
 local VExRT = nil
 
 local module = ExRT:New("BossWatcher",ExRT.L.BossWatcher)
 local ELib,L = ExRT.lib,ExRT.L
 
-module.db.data = {
-	{
-		guids = {},
-		raidguids = {},
-		reaction = {},
-		pets = {},
-		encounterStartGlobal = time(),
-		encounterStart = GetTime(),
-		encounterEnd = GetTime()+1,
-		isEnded = true,
-		graphData = {},
-		positionsData = {},
-		segments = {
-			[1] = {
-				e=true,
-				t=GetTime(),
-				p=1,
-			},
-		},
-		damage = {},
-		damage_seen = {},
-		heal = {},
-		healFrom = {},
-		switch = {},
-		cast = {},
-		interrupts = {},
-		dispels = {},
-		auras = {},
-		power = {},
-		dies = {},
-		chat = {},
-		resurrests = {},
-		summons = {},
-		aurabroken = {},
-		deathLog = {},
-		maxHP = {},
-		reduction = {},
-		tracking = {},	
-		other = {
-			blessing = {},
-			roles = {},
-			rolesGUID = {},
-		},
-	},
-}
+module.db.data = {}
 
 module.db.nowNum = 1
 local fightData,guidData,graphData,reactionData,segmentsData = nil
@@ -121,7 +78,7 @@ module.db.buffsFilters = {
 },
 [9] = {
 	[-1]=L.BossWatcherFilterPotions,
-	[-2]={188028,188027,229206},
+	[-2]={279152,279153,279151,269853,250878,252753,251316,251231},
 },
 }
 module.db.buffsFilterStatus = {}
@@ -171,7 +128,9 @@ module.db.energyPerClass = {
 	["DRUID"] = 	{{0,1,3,10},	{0,3,4,8,10}},
 	["DEMONHUNTER"]={{0,17,18,10},	{0,17,18,10}},
 	["NO"] = 	{{0,1,2,3,6,10},{0,1,2,3,6,10,5,7,8,9,11,12,13,14,15,16,17,18}},
+	["ALL"] =	{{0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25},{0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25}},
 }
+local energyPerClass = module.db.energyPerClass
 
 module.db.schoolsDefault = {0x1,0x2,0x4,0x8,0x10,0x20,0x40}
 module.db.schoolsColors = {
@@ -235,6 +194,15 @@ local ReductionAurasFunctions = {
 	dampenHarmCheck = 4,
 }
 module.db.reductionAuras = {
+	--Paladin
+	[210320] = {0.8,nil,function(auraVar) return (100+auraVar)/100 end},	--Devotion Aura
+
+	--Priest
+	[45242] = 0.85,		--Focused Will
+	[33206] = 0.6,		--Pain Suppression
+	[81782] = 0.75,		--Power Word: Barrier
+	[47585] = 0.4,		--Dispersion
+
 	--[[
 	--Warrior
 	[871] = 0.6,		--Shield Wall
@@ -1075,6 +1043,7 @@ local BossPhasesData = {
 }
 local BossPhasesFrame = CreateFrame("Frame")
 local BossPhasesBossmodPhaseCounter, BossPhasesBossmodPhase, BossPhasesBossmodEnabled = 1
+local BossPhasesBossmodCL
 local BossPhasesBossmod
 function BossPhasesBossmod()
 	if BigWigsLoader and type(BigWigsLoader)=='table' and BigWigsLoader.RegisterMessage then
@@ -1085,6 +1054,22 @@ function BossPhasesBossmod()
 				if not text or not BossPhasesBossmodEnabled then
 					return
 				elseif BossPhasesBossmodPhase ~= text then
+					if BossPhasesBossmodCL or BigWigsAPI then
+						local CL = BossPhasesBossmodCL or BigWigsAPI:GetLocale("BigWigs: Common")
+						BossPhasesBossmodCL = CL
+						if CL and CL.soon and type(text)=='string' then
+							local patt = CL.soon:gsub("%%s","")
+							if CL.soon:find("^%%s") then
+								patt = patt .. "$"
+							else
+								patt = "^" .. patt
+							end
+							if text:find( patt ) then
+								return
+							end
+						end
+					end
+
 					local phaseNumInDB = nil
 					for index,phase in pairs(segmentsData.phaseNames) do
 						if text == phase then
@@ -1112,22 +1097,13 @@ function BossPhasesBossmod()
 	end
 end
 
-local freezeFix = nil
 
 function _BW_Start(encounterID,encounterName)
 	module.db.lastFightID = module.db.lastFightID + 1
 	
-	freezeFix = nil
-	
-	local maxFights = (VExRT.BossWatcher.fightsNum or 10)
-	for i=maxFights,2,-1 do
-		if not freezeFix then
-			freezeFix = module.db.data[i]
-		end
+	local maxFights = (VExRT.BossWatcher.fightsNum or 5)
+	for i=maxFights+1,2,-1 do
 		module.db.data[i] = module.db.data[i-1]
-	end
-	for i=(maxFights+1),25 do
-		module.db.data[i] = nil
 	end
 	
 	fightData_damage = {}
@@ -1142,7 +1118,7 @@ function _BW_Start(encounterID,encounterName)
 	fightData_maxHP = {}
 	fightData_reduction = {}
 	
-	module.db.data[1] = {
+	fightData = {
 		guids = {},
 		raidguids = {},
 		reaction = {},
@@ -1182,13 +1158,12 @@ function _BW_Start(encounterID,encounterName)
 		reduction = fightData_reduction,
 		tracking = {},
 		other = {
-			blessing = {},
 			roles = {},
 			rolesGUID = {},
 		},
 	}
 	
-	fightData = module.db.data[1]
+	module.db.data[1] = fightData
 	
 	wipe(deathLog)
 	wipe(damageTakenLog)
@@ -1228,19 +1203,23 @@ function _BW_Start(encounterID,encounterName)
 			BossPhasesBossmod()
 		end
 		segmentsData.phaseNames = {[1] = 1,}
+		if BossPhasesBossmodCL and BossPhasesBossmodCL.stage then	
+			segmentsData.phaseNames[1] = BossPhasesBossmodCL.stage:format(1)
+		end
 	end
 	
 	_graphSectionTimer = 0
 	_graphSectionTimerRounded = 0
 	_graphRaidSnapshot = {"boss1","boss2","boss3","boss4","boss5","target","focus"}
+	local energyPerClass_general = energyPerClass["NO"][1]
 	_graphRaidEnergy = {
-		module.db.energyPerClass["NO"][1],
-		module.db.energyPerClass["NO"][1],
-		module.db.energyPerClass["NO"][1],
-		module.db.energyPerClass["NO"][1],
-		module.db.energyPerClass["NO"][1],
-		module.db.energyPerClass["NO"][1],
-		module.db.energyPerClass["NO"][1],
+		energyPerClass_general,
+		energyPerClass_general,
+		energyPerClass_general,
+		energyPerClass_general,
+		energyPerClass_general,
+		energyPerClass_general,
+		energyPerClass_general,
 	}
 	
 	wipe(var_reductionCurrent)
@@ -1256,13 +1235,16 @@ function _BW_Start(encounterID,encounterName)
 			local name,_,subgroup,_,_,class = GetRaidRosterInfo(i)
 			if name and subgroup <= gMax then
 				_graphRaidSnapshot[#_graphRaidSnapshot + 1] = name
-				local energy = module.db.energyPerClass[class or "NO"]
+				if module.db.allEnergyMode then
+					class = "ALL"
+				end
+				local energy = energyPerClass[class or "NO"]
 				if name == ExRT.SDB.charName then
 					energy = energy and energy[2]
 				else
 					energy = energy and energy[1]
 				end
-				_graphRaidEnergy[#_graphRaidSnapshot] = energy or module.db.energyPerClass["NO"][1]
+				_graphRaidEnergy[#_graphRaidSnapshot] = energy or energyPerClass_general
 				
 				local guid = UnitGUID(name)
 				if guid then
@@ -1284,13 +1266,16 @@ function _BW_Start(encounterID,encounterName)
 				_graphRaidSnapshot[#_graphRaidSnapshot + 1] = name
 				
 				local _,class = UnitClass(unit)
-				local energy = module.db.energyPerClass[class or "NO"]
+				if module.db.allEnergyMode then
+					class = "ALL"
+				end
+				local energy = energyPerClass[class or "NO"]
 				if i == 5 then
 					energy = energy and energy[2]
 				else
 					energy = energy and energy[1]
 				end
-				_graphRaidEnergy[#_graphRaidSnapshot] = energy or module.db.energyPerClass["NO"][1]
+				_graphRaidEnergy[#_graphRaidSnapshot] = energy or energyPerClass_general
 				
 				local guid = UnitGUID(name)
 				if guid then
@@ -1361,9 +1346,26 @@ function _BW_End(encounterID)
 	wipe(var_reductionCurrent)
 	wipe(damageTakenLog)
 	
-	if freezeFix then
-		wipe(freezeFix)
-		freezeFix = nil
+	local maxFights = (VExRT.BossWatcher.fightsNum or 5)
+	for i=25,1,-1 do
+		if module.db.data[i] and module.db.data[i].encounterStart and module.db.data[i].encounterEnd and module.db.data[i].encounterID and (module.db.data[i].encounterEnd - module.db.data[i].encounterStart) < 20 then
+			local c = 0
+			for k,v in pairs(module.db.data[i].raidguids) do 
+				c = c + 1 
+				if c > 1 then
+					break
+				end
+			end
+			if c > 1 then
+				tremove(module.db.data,i)
+			end
+		end
+	end
+	for i=(maxFights+1),25 do
+		if module.db.data[i] then
+			wipe(module.db.data[i])
+		end
+		module.db.data[i] = nil
 	end
 	
 	fightData_damage = nil
@@ -2808,13 +2810,20 @@ function module:slash(arg)
 		VExRT.BossWatcher.saveVariables = true
 		VExRT.BossWatcher.SAVED_DATA = module.db.data
 		print('Saved')
+	elseif arg == "bw allenergy" or arg == "fl allenergy" then
+		module.db.allEnergyMode = not module.db.allEnergyMode
+		print('All Energy Mode',module.db.allEnergyMode)
+	elseif arg == "bw phase" or arg == "fl phase" then
+		if active_phase then
+			active_phase = active_phase + 1
+			print('Jump to phase',active_phase)
+		end
 	elseif arg:find("^bw ") or arg:find("^fl ") then
 		ExRT.F:FightLog_Open()
 	end
 end
---ExRT.F.BWNS = StartSegment
 
-function module:ClearData()
+function module:ClearData(isFirstLoad)
 	module.db.lastFightID = module.db.lastFightID + 1
 	module.db.nowNum = 1
 	module.db.data = {
@@ -2856,12 +2865,14 @@ function module:ClearData()
 			tracking = {},	
 			fightID = module.db.lastFightID,
 			other = {
-				blessing = {},
 				roles = {},
 				rolesGUID = {},
 			},	
 		},
 	}
+	if isFirstLoad then
+		return
+	end
 	ExRT.F.ScheduleTimer(collectgarbage, 1, "collect")
 	if BWInterfaceFrame and BWInterfaceFrame:IsShown() then
 		BWInterfaceFrame:Hide()
@@ -2875,6 +2886,10 @@ function BWInterfaceFrameLoad()
 		return
 	end
 	isBWInterfaceFrameLoaded = true
+
+	if not module.db.data[1] then
+		module:ClearData(true)
+	end
 	
 	-- Some upvaules
 	local ipairs,pairs,tonumber,tostring,format,date,min,sort,table = ipairs,pairs,tonumber,tostring,format,date,min,sort,table
@@ -7248,7 +7263,7 @@ function BWInterfaceFrameLoad()
 			s[#s+1]= SOURCES .. ":"
 			for i=1,min(#ss,10) do
 				local spellName,_,spellTexture = GetSpellInfo(ss[i][1])
-				s[#s+1]= { "|T" .. spellTexture .. ":0|t " .. spellName , format("%d (%.2f%%)",ss[i][2],ss[i][2] / max(1,cs) * 100) }
+				s[#s+1]= { "|T" .. (spellTexture or "") .. ":0|t " ..(spellName or ss[i][1]) , format("%d (%.2f%%)",ss[i][2],ss[i][2] / max(1,cs) * 100) }
 			end
 			if #ss > 10 then
 				local o = 0
@@ -7793,6 +7808,7 @@ function BWInterfaceFrameLoad()
 			return
 		end
 		self.lastFightID = BWInterfaceFrame.nowFightID
+		BWInterfaceFrame.tab.tabs[6].graphicsTab.tabs[3].lastFightID = nil
 
 		GraphTabLoad()
 		BWInterfaceFrame.tab.tabs[6].graphicsTab.healthDropDown:Show()
@@ -7825,6 +7841,7 @@ function BWInterfaceFrameLoad()
 			BWInterfaceFrame.tab.tabs[6].graphicsTab.powerDropDown:Show()
 			GraphTab_UpdatePage()
 			self.lastFightID = BWInterfaceFrame.nowFightID
+			BWInterfaceFrame.tab.tabs[6].graphicsTab.tabs[2].lastFightID = nil
 		end
 	end)
 	

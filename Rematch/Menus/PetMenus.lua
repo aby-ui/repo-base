@@ -569,10 +569,10 @@ end
 
 -- returns true if the queue menu should not show
 function rmf:IsNotQueuePet()
-	local parent = rematch:GetMenuParent():GetParent()
-	local queueParent = RematchQueueListScrollFrameScrollChild
-	local miniParent = RematchMiniQueueListScrollFrameScrollChild -- needs more scroll
-	return settings.QueueActiveSort or (parent~=queueParent and parent~=miniParent and parent:GetParent()~=miniParent)
+--	local parent = rematch:GetMenuParent():GetParent()
+--	local miniParent = RematchMiniQueueListScrollFrameScrollChild -- needs more scroll
+--	return settings.QueueActiveSort or (parent~=queueParent and parent~=miniParent and parent:GetParent()~=miniParent)
+	return settings.QueueActiveSort or not rematch:GetMenuParent().forQueue
 end
 
 -- returns true if the open menu is for a pet panel pet

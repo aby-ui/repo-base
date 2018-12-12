@@ -257,8 +257,16 @@ local UnitSet = TMW:NewClass("UnitSet"){
 				-- Override the parent used for the conditions (for Lua conditions mainly)
 				ConditionObjectConstructor.parent = parent or self
 				
-				-- Get a modifiable version
+				-- Modify the conditions:
+				-- Add a UnitExists condition to the beginning, so the rest of the conditions
+				-- will short circuit to false if the unit being checked doesn't exist.
 				local ModifiableConditions = ConditionObjectConstructor:GetPostUserModifiableConditions()
+				local exists = ConditionObjectConstructor:Modify_WrapExistingAndPrependNew()
+				exists.Type = "EXISTS"
+				exists.Unit = "unit" -- this will get replaced momentarily
+				ModifiableConditions[2].AndOr = "AND" -- AND together the exists condition and all subsequent conditions.
+
+				-- Substitute out "unit" with the actual unit being checked.
 				for _, condition in TMW:InNLengthTable(ModifiableConditions) do
 					condition.Unit = condition.Unit
 					:gsub("^unit", unit .. "-")

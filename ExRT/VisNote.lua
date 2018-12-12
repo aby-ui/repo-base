@@ -164,6 +164,8 @@ function module.options:Load()
 		{"Interface\\GLUES\\CHARACTERCREATE\\UI-CHARACTERCREATE-CLASSES",0.7421875,0.98828125,0.5,0.75},
 	}
 
+	local IsDotIn
+
 	function self:Clear()
 		for d,_ in pairs(dots) do
 			d:Hide()
@@ -421,6 +423,29 @@ function module.options:Load()
 	self.tool_select_objects_rectangle.texture:SetAlpha(.75)
 
 
+	self.tool_select_move = ELib:Icon(self,"interface\\cursor\\ui-cursor-move",25,true):Point("LEFT",self.tool_select_objects_rectangle,"RIGHT",5,0):OnClick(function()
+		tool_selected = 5
+		self.curr_color_texture:Hide()
+		for i=1,#self.color_selector do self.color_selector[i]:Hide() end
+		for i=1,#self.icon_selector do self.icon_selector[i]:Hide() end
+		self.size:Hide()
+		self.trans:Hide()
+		self.textAddData:Hide()
+
+		for k,v in pairs(self) do
+			if type(k)=='string' and k:find("^tool_select_") then
+				ELib:Border(v,2,.24,.25,.30,1)
+			end
+		end
+		ELib:Border(self.tool_select_move,2,.24,.7,.30,1)
+	end)
+	ELib:Border(self.tool_select_move,2,.24,.25,.30,1)
+	self.tool_select_move.texture:ClearAllPoints()
+	self.tool_select_move.texture:SetPoint("CENTER")
+	self.tool_select_move.texture:SetSize(18,18)
+	self.tool_select_move.texture:SetAlpha(.75)
+
+
 
 	local COLOR_SIZE = 45
 	self.curr_color_texture = self:CreateTexture()
@@ -531,6 +556,7 @@ function module.options:Load()
 			local n = GetNumGroupMembers() or 0
 			for i=1,n do
 				local name,_,subgroup,_,_,class = GetRaidRosterInfo(i)
+				name = ExRT.F.delUnitNameServer(name)
 				self.List[#self.List + 1] = {
 					text = name,
 					colorCode = "|cff"..format("%02x%02x%02x",colors[ classToColor[class] ][1]*255,colors[ classToColor[class] ][2]*255,colors[ classToColor[class] ][3]*255),
@@ -657,9 +683,25 @@ function module.options:Load()
 		{L.EJInstanceName[1022],{1041,nil,nil,0.9}},
 		{L.EJInstanceName[1036],{1039,nil,nil,0.9}},
 		{L.EJInstanceName[1030],{1038,nil,nil,0.8}},
+		{L.S_ZoneT23Siege..": "..L.bossName[2265].." [H]",{1358,0.29,0.37,6}},	--Frida H
+
+		--21-30
+		{L.S_ZoneT23Siege..": "..L.bossName[2265].." [A]",{1352,0.49,0.70,6}},	--Frida A
+		{L.S_ZoneT23Siege..": "..L.bossName[2263].." [H]",{1358,0.41,0.65,6}},	--Grong H
+		{L.S_ZoneT23Siege..": "..L.bossName[2284].." [A]",{1352,0.49,0.52,6}},	--Grong A
+		{L.S_ZoneT23Siege..": "..L.bossName[2266].." [H]",{1358,0.49,0.65,6}},	--Flamefist H
+		{L.S_ZoneT23Siege..": "..L.bossName[2285].." [A]",{1352,0.49,0.33,6}},	--Flamefist A
+		{L.S_ZoneT23Siege..": "..L.bossName[2271],{1353,0.42,0.67,1.5}},	--Treasure Guardian
+		{L.S_ZoneT23Siege..": "..L.bossName[2268],{1354,0.475,0.67,2.5}},	--Loa Council
+		{L.S_ZoneT23Siege..": "..L.bossName[2272],{1357,0.475,0.48,3}},		--King Rastakhan
+		{L.S_ZoneT23Siege..": "..L.bossName[2276],{1352,0.49,0.32,6}},		--Mekkatorque
+		{L.S_ZoneT23Siege..": "..L.bossName[2281],{1364,0.5,0.49}},		--Jaina
+
+		--31-40
 	}
 	local mapsSorted = {
 		1,10,
+		{L.S_ZoneT23Siege,30,29,28,27,26,25,24,23,22,21,20},
 		{L.S_ZoneT22Uldir,9,8,11,7,6,5,4,2,3},
 		{DUNGEONS,12,13,14,15,16,17,18,19},
 	}
@@ -780,7 +822,7 @@ function module.options:Load()
 		local dY = (fromY - toY)
 		local dist = sqrt(dX * dX + dY * dY)
 
-		local k = 2 / dist
+		local k = 2 / max(1,dist)
 		local x = fromX + (toX - fromX) * k
 		local y = fromY + (toY - fromY) * k
 		
@@ -844,7 +886,7 @@ function module.options:Load()
 			I = GetIcon()
 		end
 		I:SetPoint("CENTER",self.main.C,"TOPLEFT",fromX,-fromY)
-		local size = min(max(6,toX - fromX),max(6,toY - fromY)) * 2
+		local size = max(max(6,toX - fromX),max(6,toY - fromY)) * 2
 		I:SetSize(size,size)
 
 		if not p then
@@ -1030,7 +1072,7 @@ function module.options:Load()
 			local dist = sqrt(dX * dX + dY * dY)
 
 			local len = ceil(dist / (dot_size / 2.5))
-			for i=0,len do
+			for i=0,max(len,1) do
 				local x = fromX + (toX - fromX) * (i/len)
 				local y = fromY + (toY - fromY) * (i/len)
 
@@ -1125,6 +1167,217 @@ function module.options:Load()
 		curr_trans = d
 	end
 
+	---------------------
+	------ MOVE ---------
+	---------------------
+
+	local movePrevX,movePrevY
+	local moveObjects = {}
+	local function ProcessMove(fromX,fromY,toX,toY)
+		if movePrevX ~= fromX or movePrevY ~= fromY then
+			wipe(moveObjects)
+			movePrevX = fromX
+			movePrevY = fromY
+
+			for i=1,#dots_pos_X do
+				local x2,y2 = dots_pos_X[i],dots_pos_Y[i]
+	
+				local dX = (fromX - x2)
+				local dY = (fromY - y2)
+				if sqrt(dX * dX + dY * dY) <= (dots_SIZE[i]/2) and not moveObjects[ dots_GROUP[i] ] then
+					moveObjects[ dots_GROUP[i] ] = {
+						type = 1,
+					}
+					local all_obj = moveObjects[ dots_GROUP[i] ]
+					for j=1,#dots_pos_X do
+						if dots_GROUP[i] == dots_GROUP[j] then
+							all_obj[#all_obj+1] = {
+								obj = dots_OBJ[j],
+								index = j,
+								x_table = dots_pos_X,
+								y_table = dots_pos_Y,
+								x = dots_pos_X[j],
+								y = dots_pos_Y[j],
+							}
+						end
+					end
+				end
+			end
+			for i=1,#icon_pos_X do
+				local x2,y2 = icon_pos_X[i],icon_pos_Y[i]
+	
+				local dX = (fromX - x2)
+				local dY = (fromY - y2)
+				if sqrt(dX * dX + dY * dY) <= (icon_SIZE[i]/2) then
+					moveObjects[ icon_GROUP[i] ] = {
+						type = 2,
+						index = i,
+						x_table = icon_pos_X,
+						y_table = icon_pos_Y,
+						obj = icon_OBJ[i],
+						x = x2,
+						y = y2,
+					}
+				end
+			end
+			for i=1,#text_pos_X do
+				local obj = text_OBJ[i]
+				if MouseIsOver(obj) then
+					moveObjects[ text_GROUP[i] ] = {
+						type = 3,
+						index = i,
+						x_table = text_pos_X,
+						y_table = text_pos_Y,
+						obj = text_OBJ[i],
+						x = text_pos_X[i],
+						y = text_pos_Y[i],
+					}
+				end
+			end
+			for i=1,#object_pos_X do
+				local x2,y2 = object_pos_X[i],object_pos_Y[i]
+	
+				if object_TYPE[i] == 1 then
+					local dX = (fromX - x2)
+					local dY = (fromY - y2)
+					local d = sqrt(dX * dX + dY * dY)
+					if d <= (object_SIZE[i] + object_DATA1[i] / 2) and d >= (object_SIZE[i] - object_DATA1[i] / 2) then
+						moveObjects[ object_GROUP[i] ] = {
+							type = 4,
+							index = i,
+							x_table = object_pos_X,
+							y_table = object_pos_Y,
+							x = object_pos_X[i],
+							y = object_pos_Y[i],
+						}
+						local all_obj = moveObjects[ object_GROUP[i] ]
+						for d,_ in pairs(objects) do
+							if d.g == object_GROUP[i] then
+								all_obj[#all_obj+1] = {
+									obj = d,
+									x = select(4,d:GetPoint()),
+									y = -select(5,d:GetPoint()),
+								}
+							end
+						end
+					end
+				elseif object_TYPE[i] == 2 then
+					local dX = (fromX - x2)
+					local dY = (fromY - y2)
+					if sqrt(dX * dX + dY * dY) <= (object_SIZE[i] / 2) then
+						moveObjects[ object_GROUP[i] ] = {
+							type = 5,
+							index = i,
+							x_table = object_pos_X,
+							y_table = object_pos_Y,
+							x = object_pos_X[i],
+							y = object_pos_Y[i],
+						}
+						for o,_ in pairs(objects) do
+							if o.g == object_GROUP[i] then
+								moveObjects[ object_GROUP[i] ].obj = o
+								break
+							end
+						end
+					end				
+				elseif object_TYPE[i] == 3 then
+					if IsDotIn(fromX,fromY,x2,object_DATA1[i],object_DATA1[i],x2,y2-object_SIZE[i],object_DATA2[i]-object_SIZE[i],object_DATA2[i]+object_SIZE[i],y2+object_SIZE[i]) or
+					IsDotIn(fromX,fromY,x2-object_SIZE[i],x2+object_SIZE[i],object_DATA1[i]+object_SIZE[i],object_DATA1[i]-object_SIZE[i],y2,y2,object_DATA2[i],object_DATA2[i]) then
+						moveObjects[ object_GROUP[i] ] = {
+							type = 6,
+							index = i,
+							x_table = object_pos_X,
+							y_table = object_pos_Y,
+							x = object_pos_X[i],
+							y = object_pos_Y[i],
+							x2_table = object_DATA1,
+							y2_table = object_DATA2,
+							x2 = object_DATA1[i],
+							y2 = object_DATA2[i],
+						}
+						local all_obj = moveObjects[ object_GROUP[i] ]
+						for d,_ in pairs(objects) do
+							if d.g == object_GROUP[i] then
+								all_obj[#all_obj+1] = {
+									obj = d,
+									x = select(4,d:GetPoint()),
+									y = -select(5,d:GetPoint()),
+								}
+							end
+						end
+					end
+				elseif object_TYPE[i] == 4 then
+					if fromX >= x2 and fromX <= object_DATA1[i] and fromY >= y2 and fromY <= object_DATA2[i] then
+						moveObjects[ object_GROUP[i] ] = {
+							type = 7,
+							index = i,
+							x_table = object_pos_X,
+							y_table = object_pos_Y,
+							x = object_pos_X[i],
+							y = object_pos_Y[i],
+							x2_table = object_DATA1,
+							y2_table = object_DATA2,
+							x2 = object_DATA1[i],
+							y2 = object_DATA2[i],
+						}
+						for o,_ in pairs(objects) do
+							if o.g == object_GROUP[i] then
+								moveObjects[ object_GROUP[i] ].obj = o
+								break
+							end
+						end
+					end
+				end
+			end
+		end
+
+		local diffX,diffY = toX - fromX, toY - fromY
+		for group,data in pairs(moveObjects) do
+			if data.type == 1 then
+				local a_data = data
+				for i=1,#a_data do
+					local data = a_data[i]
+					data.x_table[ data.index ] = max(0,min(800,data.x + diffX))
+					data.y_table[ data.index ] = max(0,min(550,data.y + diffY))
+					data.obj:SetPoint("CENTER",self.main.C,"TOPLEFT",data.x_table[ data.index ],-data.y_table[ data.index ])
+				end
+			elseif data.type == 2 or data.type == 3 or data.type == 5 then
+				data.x_table[ data.index ] = max(0,min(800,data.x + diffX))
+				data.y_table[ data.index ] = max(0,min(550,data.y + diffY))
+				data.obj:SetPoint("CENTER",self.main.C,"TOPLEFT",data.x_table[ data.index ],-data.y_table[ data.index ])
+			elseif data.type == 4 then
+				data.x_table[ data.index ] = max(0,min(800,data.x + diffX))
+				data.y_table[ data.index ] = max(0,min(550,data.y + diffY))
+
+				local a_data = data
+				for i=1,#a_data do
+					local data = a_data[i]
+					data.obj:SetPoint("CENTER",self.main.C,"TOPLEFT",data.x + diffX,-(data.y + diffY))
+				end
+			elseif data.type == 6 then
+				data.x_table[ data.index ] = max(0,min(800,data.x + diffX))
+				data.y_table[ data.index ] = max(0,min(550,data.y + diffY))
+				data.x2_table[ data.index ] = max(0,min(800,data.x2 + diffX))
+				data.y2_table[ data.index ] = max(0,min(550,data.y2 + diffY))
+
+				local a_data = data
+				for i=1,#a_data do
+					local data = a_data[i]
+					data.obj:SetPoint("CENTER",self.main.C,"TOPLEFT",data.x + diffX,-(data.y + diffY))
+				end
+			elseif data.type == 7 then
+				data.x_table[ data.index ] = max(0,min(800,data.x + diffX))
+				data.y_table[ data.index ] = max(0,min(550,data.y + diffY))
+				data.x2_table[ data.index ] = max(0,min(800,data.x2 + diffX))
+				data.y2_table[ data.index ] = max(0,min(550,data.y2 + diffY))
+
+				local width,height = max(5,data.x2_table[ data.index ]-data.x_table[ data.index ]),max(5,data.y2_table[ data.index ]-data.y_table[ data.index ])
+				data.obj:SetPoint("CENTER",self.main.C,"TOPLEFT",data.x_table[ data.index ]+width/2,-data.y_table[ data.index ]-height/2)
+				data.obj:SetSize(width,height)
+			end
+		end
+	end
+
 	---------------------------------
 	--- OnUpdate, OnClick funcs -----
 	---------------------------------
@@ -1178,9 +1431,21 @@ function module.options:Load()
 		ProcessObject(prevX,prevY,x,y)
 	end
 
+	local function MoveUpdate(self,elapsed)
+		if not IsMouseButtonDown("LeftButton") then
+			self:SetScript("OnUpdate",CheckAlpha)
+			return
+		end
+		local x,y = ExRT.F.GetCursorPos(self)
+		if not prevX then
+			prevX,prevY = x,y
+		end
+		ProcessMove(prevX,prevY,x,y)
+	end
+
 	local groups_alpha_now,groups_alpha_pending = {},{}
 
-	local function IsDotIn(pX,pY,point1x,point2x,point3x,point4x,point1y,point2y,point3y,point4y)
+	function IsDotIn(pX,pY,point1x,point2x,point3x,point4x,point1y,point2y,point3y,point4y)
 		local D1 = (pX - point1x) * (point2y - point1y) - (pY - point1y) * (point2x - point1x)	--1,2
 		local D2 = (pX - point2x) * (point3y - point2y) - (pY - point2y) * (point3x - point2x)	--2,3
 		local D3 = (pX - point3x) * (point4y - point3y) - (pY - point3y) * (point4x - point3x)	--3,4
@@ -1446,6 +1711,8 @@ function module.options:Load()
 				self:SetScript("OnUpdate",TextsUpdate)
 			elseif tool_selected == 4 then
 				self:SetScript("OnUpdate",ObjectsUpdate)
+			elseif tool_selected == 5 then
+				self:SetScript("OnUpdate",MoveUpdate)
 			end
 		elseif button == "RightButton" then
 			ClearSomething(self)
@@ -1455,6 +1722,13 @@ function module.options:Load()
 		if self.popup then return end
 		if tool_selected ~= 1 and button == "LeftButton" then
 			special_counter = special_counter + 1
+		end
+		if tool_selected == 5 and button == "LeftButton" then
+			if isLiveSession then
+				module.options:GenerateString()
+			else
+				module.options:SaveData()
+			end
 		end
 		self:SetScript("OnUpdate",CheckAlpha)
 	end)

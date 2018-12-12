@@ -1,4 +1,4 @@
---	08.10.2018
+--	04.12.2018
 
 --[[
 3930
@@ -38,10 +38,17 @@
 * Visual note: outdated versions no longer supports
 * Raid Inspect: added bfa achievements (BFA 5ppl, Uldir)
 * Raid Inspect: fixed weapon enchants for dk & hunters
+
+4000
+* 8.1 Update
+* Note: added ability to move notes position in list
+* Note: added "{time:2:45}" template for dynamic timer
+* Visual note: added movement tool
+* Fight log: short boss pulls are not recorded
 ]]
 local GlobalAddonName, ExRT = ...
 
-ExRT.V = 3990
+ExRT.V = 4000
 ExRT.T = "R"
 
 ExRT.OnUpdate = {}		--> таймеры, OnUpdate функции

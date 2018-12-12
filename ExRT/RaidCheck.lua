@@ -9,32 +9,23 @@ local ELib,L = ExRT.lib,ExRT.L
 
 module.db.isEncounter = nil
 module.db.tableFood = {
---Haste		Mastery		Crit		Versa		Fire dmg	Other		Int		Str 		Agi		Stam
+--Haste		Mastery		Crit		Versa		Int		Str 		Agi		Stam		Stam		Special
 						[185736]=50,
-[257413]=50,	[257418]=50,	[257408]=50,	[257422]=50,					[259449]=75,	[259452]=75,	[259448]=75,	[259453]=75,
-[257415]=75,	[257420]=75,	[257410]=75,	[257424]=75,					[259455]=100,	[259456]=100,	[259454]=100,	[259457]=100,
+[257413]=50,	[257418]=50,	[257408]=50,	[257422]=50,	[259449]=75,	[259452]=75,	[259448]=75,	[259453]=75,	[288074]=50,
+[257415]=75,	[257420]=75,	[257410]=75,	[257424]=75,	[259455]=100,	[259456]=100,	[259454]=100,	[259457]=100,	[288075]=75,
+								[290468]=75,	[290469]=75,	[290467]=75,	--85 actually
+								[285719]=50,	[285720]=50,	[285721]=50,	[288074]=50,	[288075]=75,	[286171]=75,
+								
 }
-module.db.StaminaFood = {[201638]=true,[259457]=true,}
+module.db.StaminaFood = {[201638]=true,[259457]=true,[288075]=true,[288074]=true,}
 
-module.db.tableFood_headers = {0,50,75}
+module.db.tableFood_headers = {0,50,75,100}
 module.db.tableFlask =  {
 	--Stamina,	Int,		Agi,		Str 
 	[251838]=238,	[251837]=238,	[251836]=238,	[251839]=238,
 }
 module.db.tableFlask_headers = {0,238}
-module.db.tablePotion = UnitLevel'player' <= 110 and {
-	[229206]=true,	--All Stats
-	[188017]=true,	--Mana 3k, 17k
-	[188030]=true,	--Mana 4.5k, 25.5k
-	[188024]=true,	--Run haste
-	[188029]=true,	--Armor
-	[188018]=true,	--Health + Mana [alchim]	
-	
-	[188028]=true,	--Potion of the Old War
-	[188027]=true,	--Potion of Deadly Grace
-	[188020]=true,	--Sylvan Elixir
-	[188021]=true,	--Avalanche Elixir
-} or {
+module.db.tablePotion = {
 	[188024]=true,	--Run haste
 	[250871]=true,	--Mana
 	[252753]=true,	--Mana channel
@@ -75,7 +66,7 @@ module.db.RaidCheckReadyCheckTable = {}
 module.db.RaidCheckReadyPPLNum = 0
 module.db.RaidCheckReadyCheckHideSchedule = nil
 
-module.db.tableRunes = UnitLevel'player' <= 110 and {[224001]=true} or {[270058]=true}
+module.db.tableRunes = {[224001]=15,[270058]=60}
 
 module.db.minFoodLevelToActual = {
 	[100] = 50,
@@ -169,10 +160,8 @@ local function PublicResults(msg,chat_type)
 	end
 end
 
-local RUNE_POWER = UnitLevel'player' <= 110 and 15 or 60
-
 local function GetRunes(checkType)
-	local f = {[0]={},[RUNE_POWER]={}}
+	local f = {[0]={}}
 	local gMax = ExRT.F.GetRaidDiffMaxGroup()
 	for j=1,40 do
 		local name,_,subgroup = GetRaidRosterInfo(j)
@@ -185,7 +174,8 @@ local function GetRunes(checkType)
 				else
 					local isRune = module.db.tableRunes[spellId]
 					if isRune then
-						f[RUNE_POWER][ #f[RUNE_POWER]+1 ] = name
+						f[isRune] = f[isRune] or {}
+						f[isRune][ #f[isRune]+1 ] = name
 						isAnyBuff = true
 						break
 					end
@@ -198,7 +188,8 @@ local function GetRunes(checkType)
 	end
 	
 	if not checkType or checkType == 1 then
-		for _,stats in ipairs({0,RUNE_POWER}) do
+		for _,stats in ipairs({0,15,60}) do
+			f[stats] = f[stats] or {}
 			local result = format("|cff00ff00%d (%d):|r ",stats,#f[stats])
 			for i=1,#f[stats] do
 				result = result .. f[stats][i]
@@ -215,13 +206,23 @@ local function GetRunes(checkType)
 		if checkType == 3 then
 			checkType = nil
 		end
-		local result = format("|cff00ff00%s (%d):|r ",L.RaidCheckNoRunes,#f[0])
+		f[15] = f[15] or {}
+		local result = format("|cff00ff00%s (%d):|r ",L.RaidCheckNoRunes,#f[0]+#f[15])
 		for i=1,#f[0] do
 			result = result .. f[0][i]
 			if #result > 230 then
 				PublicResults(result,checkType)
 				result = ""
-			elseif i ~= #f[0] then
+			elseif i ~= #f[0] or #f[15] > 0 then
+				result = result .. ", "
+			end
+		end
+		for i=1,#f[15] do
+			result = result .. f[15][i] .. "(15)"
+			if #result > 230 then
+				PublicResults(result,checkType)
+				result = ""
+			elseif i ~= #f[15] then
 				result = result .. ", "
 			end
 		end

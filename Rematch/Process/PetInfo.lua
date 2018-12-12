@@ -133,11 +133,12 @@ local apiByStat = {
    canBattle="Info", isTradable="Info", isUnique="Info", isObtainable="Info", health="Stats",
    maxHealth="Stats", power="Stats", speed="Stats", rarity="Stats", isDead="Dead",
    isSummonable="Other", isRevoked="Other", abilityList="Abilities", levelList="Abilities",
-   valid="Valid", count="Count", fullLevel="FullLevel", needsFanfare="Fanfare",
+   valid="Valid", count="Count", maxCount="Count", fullLevel="FullLevel", needsFanfare="Fanfare",
    breedID="Breed", breedName="Breed", possibleBreedIDs="PossibleBreeds",
    possibleBreedNames="PossibleBreeds", numPossibleBreeds="PossibleBreeds", hasBreed="Breed",
    owned="Valid", battleOwner="Battle", battleIndex="Battle", isSlotted="Slotted",
    inTeams="Teams", numTeams="Teams", sourceID="Source", moveset="Moveset", speciesAt25="SpeciesAt25",
+   notes="Notes", hasNotes="Notes", isLeveling="IsLeveling", isSummoned="IsSummoned", 
 }
 
 -- indexed by petInfo table reference, this will contain reused tables like fetchedAPI
@@ -297,7 +298,7 @@ local queryAPIs = {
    -- petInfo.valid verifies the pet contains information (not a reassigned petID or bad speciesID)
    Valid = function(self)
       local idType = self.idType
-      if idType=="pet" and self.speciesID then
+      if idType=="pet" and self.speciesID then -- if speciesID read ok then "pet" petID is functional
          self.valid = true
          self.owned = true -- owned is only true if regular petID is valid
       elseif (idType=="species" and self.name) or (idType=="leveling" or idType=="ignored" or idType=="random") or (idType=="link" and self.name) or (idType=="battle" and self.name) then
@@ -443,6 +444,19 @@ local queryAPIs = {
    end,
    SpeciesAt25 = function(self)
       self.speciesAt25 = rematch.speciesAt25[self.speciesID] and true
+   end,
+   Notes = function(self)
+		local speciesID = self.speciesID
+		self.notes = RematchSettings.PetNotes[speciesID]
+		if self.notes then
+			self.hasNotes = true
+		end
+   end,
+   IsLeveling = function(self)
+		self.isLeveling = self.owned and rematch:IsPetLeveling(self.petID)
+   end,
+   IsSummoned = function(self)
+		self.isSummoned = C_PetJournal.GetSummonedPetGUID() == self.petID
    end,
 }
 

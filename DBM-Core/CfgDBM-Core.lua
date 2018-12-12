@@ -86,22 +86,16 @@ U1RegisterAddon("DBM-DefaultSkin", { title = "默认皮肤", load = "NORMAL" });
 U1RegisterAddon("DBM-Brawlers", { title = '搏击俱乐部', });
 U1RegisterAddon("DBM-DMF", { title = '暗月马戏团', });
 U1RegisterAddon("DBM-WorldEvents", { title = "世界事件模块", });
-U1RegisterAddon("DBM-Azeroth", { title = "艾泽拉斯世界BOSS", });
-
---军团再临
-U1RegisterAddon("DBM-BrokenIsles", { title = 'DBM:破碎群岛', protected = 1});
-U1RegisterAddon("DBM-EmeraldNightmare", { title = "DBM:翡翠梦魇", protected = 1 });
-U1RegisterAddon("DBM-Nighthold", { title = "DBM:暗夜要塞", protected = 1 });
-U1RegisterAddon("DBM-Party-Legion", { title = "DBM:军团5人本", protected = 1 });
-U1RegisterAddon("DBM-TrialofValor", { title = "DBM:勇气试炼", protected = 1 });
-U1RegisterAddon("DBM-TombofSargeras", { title = "DBM:萨格拉斯之墓", protected = 1 });
 
 U1RegisterAddon("DBM-VPYike", { title = "夏一可語音包", load = "NORMAL", protected = 1 });
+U1RegisterAddon("DBM-Azeroth-BfA", { title = "争霸艾泽拉斯世界BOSS", });
+U1RegisterAddon("DBM-Party-BfA", { title = "争霸艾泽拉斯5人副本", });
+U1RegisterAddon("DBM-Uldir", { title = "奥迪尔副本模块", });
 
 --第三方开发的
 U1RegisterAddon("DBM-SpellTimers", { title = "冷却监控", load = "NORMAL", defaultEnable = 0 });
 U1RegisterAddon("DBM-PvP", { title = "PVP模块", });
-U1RegisterAddon("DBM-Challenges", { title = "法师塔挑战", });
+
 --U1RegisterAddon("DBM-RaidLeadTools", { title = "团长工具箱", });
 
 CoreDependCall("DBM-GUI", function()

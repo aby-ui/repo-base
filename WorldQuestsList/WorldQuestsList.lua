@@ -1,4 +1,4 @@
-local VERSION = 81
+local VERSION = 82
 
 --[[
 Special icons for rares, pvp or pet battle quests in list
@@ -241,21 +241,25 @@ Some fixes for sorting
 Fix autoinvite for non-quest lfg groups
 
 Major fixes
+
+8.1.0 Update
+Added option to replace trinkets rewards with expulsom
+Update for quick navigation buttons
+Fixes
 ]]
 
 local GlobalAddonName, WQLdb = ...
 
---[[
+local is81 = nil
 do
 	local version, buildVersion, buildDate, uiVersion = GetBuildInfo()
 	
 	local expansion,majorPatch,minorPatch = (version or "1.0.0"):match("^(%d+)%.(%d+)%.(%d+)")
 	
-	if ((expansion or 0) * 10000 + (majorPatch or 0) * 100 + (minorPatch or 0)) < 80000 then
-		return
+	if ((expansion or 0) * 10000 + (majorPatch or 0) * 100 + (minorPatch or 0)) >= 80100 then
+		is81 = true
 	end
 end
-]]
 
 local VWQL = nil
 
@@ -271,6 +275,7 @@ local LE = {
 	LE_QUEST_TAG_TYPE_PET_BATTLE = LE_QUEST_TAG_TYPE_PET_BATTLE,
 	LE_QUEST_TAG_TYPE_PROFESSION = LE_QUEST_TAG_TYPE_PROFESSION,
 	LE_ITEM_QUALITY_COMMON = LE_ITEM_QUALITY_COMMON,
+	LE_QUEST_TAG_TYPE_FACTION_ASSAULT = LE_QUEST_TAG_TYPE_FACTION_ASSAULT,
 	
 	BAG_ITEM_QUALITY_COLORS = BAG_ITEM_QUALITY_COLORS,
 	ITEM_SPELL_TRIGGER_ONUSE = ITEM_SPELL_TRIGGER_ONUSE,
@@ -280,6 +285,19 @@ local LE = {
 	ORDER_RESOURCES_NAME_LEGION = GetCurrencyInfo(1220),
 	ORDER_RESOURCES_NAME_BFA = GetCurrencyInfo(1560),
 }
+
+if not C_PvP.GetWarModeRewardBonus then
+	C_PvP.GetWarModeRewardBonus = function() return 10 end		--Pre 8.1 fix
+end
+if not C_CurrencyInfo.DoesWarModeBonusApply then
+	C_CurrencyInfo.DoesWarModeBonusApply = function(currencyID) 
+		if currencyID == 1553 or currencyID == 1560 or currencyID == 1220 or currencyID == 1342 or currencyID == 1226 or currencyID == 1533 then
+			return true
+		else
+			return false
+		end 
+	end		--Pre 8.1 fix
+end
       
 local charKey = (UnitName'player' or "").."-"..(GetRealmName() or ""):gsub(" ","")
 
@@ -341,6 +359,8 @@ local LOCALE =
 		unlimited = "Неограниченно",
 		maxLines = "Лимит строк",
 		lfgDisablePopupLeave = "Отключить всплывающее окно после завершения задания (покинуть группу)",
+		expulsom = "Дистиллиум",
+		expulsomReplace = "Заменить награды аксессуаров на Дистиллиум",
 	} or
 	locale == "deDE" and {    --by Sunflow72
 		gear = "Ausrüstung",
@@ -398,6 +418,8 @@ local LOCALE =
 		unlimited = "Unbegrenzt",
 		maxLines = "maximale Anzahl an Zeilen",
 		lfgDisablePopupLeave = "Disable popup after quest completion (leave party)",
+		expulsom = "Expulsom",
+		expulsomReplace = "Replace trinkets rewards with Expulsom",
 	} or
 	locale == "frFR" and {
 		gear = "Équipement",
@@ -455,6 +477,8 @@ local LOCALE =
 		unlimited = "Unlimited",
 		maxLines = "Max lines",
 		lfgDisablePopupLeave = "Disable popup after quest completion (leave party)",
+		expulsom = "Expulsom",
+		expulsomReplace = "Replace trinkets rewards with Expulsom",
 	} or
 	(locale == "esES" or locale == "esMX") and {
 		gear = "Equipo",
@@ -512,6 +536,8 @@ local LOCALE =
 		unlimited = "Unlimited",
 		maxLines = "Max lines",
 		lfgDisablePopupLeave = "Disable popup after quest completion (leave party)",
+		expulsom = "Expulsom",
+		expulsomReplace = "Replace trinkets rewards with Expulsom",
 	} or	
 	locale == "itIT" and {
 		gear = "Equipaggiamento",
@@ -569,6 +595,8 @@ local LOCALE =
 		unlimited = "Unlimited",
 		maxLines = "Max lines",
 		lfgDisablePopupLeave = "Disable popup after quest completion (leave party)",
+		expulsom = "Expulsom",
+		expulsomReplace = "Replace trinkets rewards with Expulsom",
 	} or
 	locale == "ptBR" and {
 		gear = "Equipamento",
@@ -626,6 +654,8 @@ local LOCALE =
 		unlimited = "Unlimited",
 		maxLines = "Max lines",
 		lfgDisablePopupLeave = "Disable popup after quest completion (leave party)",
+		expulsom = "Expulsom",
+		expulsomReplace = "Replace trinkets rewards with Expulsom",
 	} or
 	locale == "koKR" and {
 		gear = "장비",
@@ -683,6 +713,8 @@ local LOCALE =
 		unlimited = "Unlimited",
 		maxLines = "Max lines",
 		lfgDisablePopupLeave = "Disable popup after quest completion (leave party)",
+		expulsom = "Expulsom",
+		expulsomReplace = "Replace trinkets rewards with Expulsom",
 	} or
 	locale == "zhCN" and {	--by sprider00
 		gear = "装备",
@@ -740,6 +772,8 @@ local LOCALE =
 		unlimited = "无限制",
 		maxLines = "列数上限",
 		lfgDisablePopupLeave = "任务结束后不自动弹出离队提示",
+		expulsom = "驱灵金",
+		expulsomReplace = "把饰品奖励替换成驱灵金",
 	} or
 	locale == "zhTW" and {	--by sprider00
 		gear = "裝備",
@@ -797,6 +831,8 @@ local LOCALE =
 		unlimited = "無限制",
 		maxLines = "列數上限",
 		lfgDisablePopupLeave = "任務結束后不自動彈出離隊提示",
+		expulsom = "Expulsom",
+		expulsomReplace = "Replace trinkets rewards with Expulsom",
 	} or 
 	{
 		gear = "Gear",
@@ -854,6 +890,8 @@ local LOCALE =
 		unlimited = "Unlimited",
 		maxLines = "Max lines",
 		lfgDisablePopupLeave = "Disable popup after quest completion (leave party)",
+		expulsom = "Expulsom",
+		expulsomReplace = "Replace trinkets rewards with Expulsom",
 	}
 
 local filters = {
@@ -1561,6 +1599,8 @@ do
 		[876] = "|TInterface\\FriendsFrame\\PlusManz-Alliance:16|t",	
 		[1161] = "|TInterface\\FriendsFrame\\PlusManz-Alliance:16|t",	
 		[1169] = "|TInterface\\FriendsFrame\\PlusManz-Alliance:16|t",	
+		[14] = "|T1339312:16:16:0:0:512:128:416:430:75:89|t",
+		[62] = "|T1339312:16:16:0:0:512:128:416:430:75:89|t",
 	}
 	function WorldQuestList:GetMapIcon(mapID)
 		return mapIcons[mapID] or ""
@@ -1661,6 +1701,10 @@ do
 		[830] = {3772.92,2654.17,58.334,177.084},	--krokun
 		[885] = {11279.2,-1789.58,7879.17,-4056.25},	--antorus
 	}
+	if is81 then
+		mapCoords[12] = {17063.4,12287.4,-19726.6,-12142.6}	--Kalimdor
+		mapCoords[13] = {18090.8,11148.4,-22489.2,-15941.6}	--East King
+	end
 	function WorldQuestList:GetQuestWorldCoord(questID)
 		if cache[questID] then
 			return unpack(cache[questID])
@@ -2795,6 +2839,7 @@ do
 			ActiveFilterType.azerite = nil
 			ActiveFilterType.bfa_orderres = nil
 			ActiveFilterType.rep = nil
+			ActiveFilterType.expulsom = nil
 			VWQL[charKey].arguniteFilter = nil
 			VWQL[charKey].wakeningessenceFilter = nil
 			VWQL[charKey].invasionPointsFilter = nil
@@ -2810,6 +2855,7 @@ do
 			ActiveFilterType.azerite = true
 			ActiveFilterType.bfa_orderres = true
 			ActiveFilterType.rep = true
+			ActiveFilterType.expulsom = true
 			VWQL[charKey].arguniteFilter = true
 			VWQL[charKey].wakeningessenceFilter = true
 			VWQL[charKey].invasionPointsFilter = true
@@ -2824,12 +2870,16 @@ do
 	list[#list+1] = {text = LE.ORDER_RESOURCES_NAME_LEGION,	func = SetFilter,	arg1 = 3,					checkable = true,	shownFunc = LEGION	}
 	list[#list+1] = {text = LE.ORDER_RESOURCES_NAME_BFA,	func = SetFilterType,	arg1 = "bfa_orderres",				checkable = true,	shownFunc = NOT_LEGION	}
 	list[#list+1] = {text = LOCALE.blood,			func = SetFilter,	arg1 = 4,					checkable = true,	shownFunc = LEGION	}
+	list[#list+1] = {text = LOCALE.expulsom,		func = SetFilterType,	arg1 = "expulsom",				checkable = true,	shownFunc = NOT_LEGION	}
 	list[#list+1] = {text = GetCurrencyInfo(1508),		func = SetIgnoreFilter,	arg1 = "arguniteFilter",	arg2 = true,	checkable = true,	shownFunc = LEGION	}
 	list[#list+1] = {text = GetCurrencyInfo(1533),		func = SetIgnoreFilter,	arg1 = "wakeningessenceFilter",	arg2 = true,	checkable = true,	shownFunc = LEGION	}
 	list[#list+1] = {text = LOCALE.gold,			func = SetFilter,	arg1 = 5,					checkable = true,				}
 	list[#list+1] = {text = LOCALE.invasionPoints,		func = SetIgnoreFilter,	arg1 = "invasionPointsFilter",	arg2 = true,	checkable = true,	shownFunc = LEGION	}
 	list[#list+1] = {text = REPUTATION,			func = SetFilterType,	arg1 = "rep",					checkable = true,				}
+	list[#list+1] = {text = GetCurrencyInfo(UnitFactionGroup("player") == "Alliance" and 1717 or 1716),		func = SetIgnoreFilter,	arg1 = "servicemedalFilter",	arg2 = true,	checkable = true,				}
 	list[#list+1] = {text = OTHER,				func = SetFilter,	arg1 = 6,					checkable = true,				}
+
+
 
 	list[#list+1] = {
 		text = TYPE,
@@ -3410,7 +3460,17 @@ do
 		padding = 16,
 		subMenu = highlightingSubmenu,
 		shownFunc = function() return not WorldQuestList:IsLegionZone() or not WorldQuestList.optionsDropDown:IsVisible() end,
-	}	
+	}
+
+	list[#list+1] = {
+		text = LOCALE.expulsomReplace,
+		func = function()
+			VWQL.ExpulsomReplace = not VWQL.ExpulsomReplace
+			WorldQuestList_Update()
+		end,
+		checkable = true,
+		shownFunc = function() return not WorldQuestList:IsLegionZone() end,
+	}
 	
 	list[#list+1] = {
 		text = (UnitFactionGroup("player") == "Alliance" and "|TInterface\\FriendsFrame\\PlusManz-Alliance:16|t " or "|TInterface\\FriendsFrame\\PlusManz-Horde:16|t ")..LOCALE.addQuestsOpposite,
@@ -3521,6 +3581,8 @@ do
 				self.List[i].checkState = not VWQL.DisableLFG
 			elseif self.List[i].text == LOCALE.disableRewardIcons then
 				self.List[i].checkState = not VWQL.DisableRewardIcons
+			elseif self.List[i].text == LOCALE.expulsomReplace then
+				self.List[i].checkState = VWQL.ExpulsomReplace
 			end
 		end		
 		anchorSubMenu[1].checkState = not VWQL.Anchor
@@ -3579,12 +3641,12 @@ WorldQuestList.modeSwitcherCheck.ShadowBottomRight:Hide()
 
 WorldQuestList.modeSwitcherCheck.s = CreateFrame("Slider", nil, WorldQuestList.modeSwitcherCheck)
 WorldQuestList.modeSwitcherCheck.s:SetPoint("CENTER")
-WorldQuestList.modeSwitcherCheck.s:SetSize(96,16)
+WorldQuestList.modeSwitcherCheck.s:SetSize(76,16)
 ELib.Templates:Border(WorldQuestList.modeSwitcherCheck.s,.22,.22,.3,1,1,2)
 
 WorldQuestList.modeSwitcherCheck.s.thumb = WorldQuestList.modeSwitcherCheck.s:CreateTexture(nil, "ARTWORK")
 WorldQuestList.modeSwitcherCheck.s.thumb:SetColorTexture(.32,.32,.4,1)
-WorldQuestList.modeSwitcherCheck.s.thumb:SetSize(28,12)
+WorldQuestList.modeSwitcherCheck.s.thumb:SetSize(22,12)
 
 WorldQuestList.modeSwitcherCheck.s:SetThumbTexture(WorldQuestList.modeSwitcherCheck.s.thumb)
 WorldQuestList.modeSwitcherCheck.s:SetOrientation("HORIZONTAL")
@@ -3649,7 +3711,7 @@ WorldQuestList.modeSwitcherCheck.Update = function(self,showMiddle)
 		self.s.middleOn = true
 		self.s:SetMinMaxValues(0,2)
 		self.s.tc:Show()
-		self.s.thumb:SetWidth(30)
+		self.s.thumb:SetWidth(28)
 		if VWQL[charKey].TreasureMode then
 			self.s:SetValue(1)
 		elseif VWQL[charKey].RegularQuestMode then
@@ -3661,7 +3723,7 @@ WorldQuestList.modeSwitcherCheck.Update = function(self,showMiddle)
 		self.s.middleOn = false
 		self.s:SetMinMaxValues(0,1)
 		self.s.tc:Hide()
-		self.s.thumb:SetWidth(44)
+		self.s.thumb:SetWidth(38)
 		if VWQL[charKey].RegularQuestMode then
 			self.s:SetValue(1)
 		else
@@ -3693,46 +3755,148 @@ end
 WorldQuestList.oppositeContinentButton = ELib:DropDown(WorldQuestList,"|TInterface\\FriendsFrame\\PlusManz-Alliance:16|t")
 WorldQuestList.oppositeContinentButton.t:ClearAllPoints()
 WorldQuestList.oppositeContinentButton.t:SetPoint("CENTER")
-WorldQuestList.oppositeContinentButton:SetWidth(24)
+WorldQuestList.oppositeContinentButton:SetWidth(74)
 WorldQuestList.oppositeContinentButton.l:Hide()
-WorldQuestList.oppositeContinentButton.Button.i:Hide()
-WorldQuestList.oppositeContinentButton.Button:SetAllPoints()
-WorldQuestList.oppositeContinentButton.Button:SetScript("OnClick",function(self)
-	WorldMapFrame:SetMapID(self.mapID or 875)
-	WorldQuestList.SoloMapID = self.mapID or 875
-	if WorldQuestList.IsSoloRun then
-		WorldQuestList_Update()	
-	end
-end)
-WorldQuestList.oppositeContinentButton.Update = function(self)
-	local faction
-	
-	local mapID = GetCurrentMapAreaID()
-	if WorldQuestList.IsSoloRun then
-		mapID = WorldQuestList.SoloMapID
-	end
-	
-	if WorldQuestList:IsMapParent(mapID,875) then
-		faction = 1
-	elseif WorldQuestList:IsMapParent(mapID,876) then
-		faction = 2
-	elseif UnitFactionGroup("player") == "Alliance" then
-		faction = 1
-	else
-		faction = 2
-	end
 
-	if faction == 1 then
-		self.t:SetText("|TInterface\\FriendsFrame\\PlusManz-Alliance:16|t")
-		self.Button.mapID = 876
+WorldQuestList.oppositeContinentButton.Button:Hide()
+WorldQuestList.oppositeContinentButton.t:Hide()
+for i=1,4 do
+	local button = CreateFrame("Button",nil,WorldQuestList.oppositeContinentButton)
+	WorldQuestList.oppositeContinentButton["Button"..i] = button
+	if i == 1 then
+		button:SetPoint("RIGHT",-1,0)
 	else
-		self.t:SetText("|TInterface\\FriendsFrame\\PlusManz-Horde:16|t")
-		self.Button.mapID = 875
+		button:SetPoint("RIGHT",WorldQuestList.oppositeContinentButton["Button"..(i-1)],"LEFT",-1,0)
+	end
+	button:SetScript("OnClick",function(self)
+		WorldMapFrame:SetMapID(self.mapID or 875)
+		WorldQuestList.SoloMapID = self.mapID or 875
+		if WorldQuestList.IsSoloRun then
+			WorldQuestList_Update()	
+		end
+	end)
+	button:SetSize(17,17)
+
+	button.hl = button:CreateTexture(nil, "BACKGROUND")
+	button.hl:SetPoint("TOPLEFT", 0, 0)
+	button.hl:SetPoint("BOTTOMRIGHT", 0, 0)
+	button.hl:SetTexture("Interface\\Buttons\\WHITE8X8")
+	button.hl:SetVertexColor(.7,.7,1,.25)
+	button.hl:Hide()
+
+	button.t = button:CreateTexture(nil,"ARTWORK")
+	button.t:SetPoint("CENTER")
+	button.t:SetSize(14,14)
+
+	button.t2 = button:CreateTexture(nil,"ARTWORK",nil,2)
+	button.t2:SetPoint("CENTER",-2,-2)
+	button.t2:SetSize(10,10)
+
+	button.t3 = button:CreateTexture(nil,"ARTWORK",nil,1)
+	button.t3:SetPoint("CENTER",2,2)
+	button.t3:SetSize(10,10)
+
+	button:SetScript("OnEnter",function(self) self.hl:Show() end)
+	button:SetScript("OnLeave",function(self) self.hl:Hide() end)
+
+	if i == 1 then
+		button.mapID = 62
+		button.t3:SetAtlas("worldquest-icon-pvp-ffa")
+		button.t2:SetTexture("Interface\\FriendsFrame\\PlusManz-Alliance")
+	elseif i == 2 then
+		button.mapID = 14
+		button.t3:SetAtlas("worldquest-icon-pvp-ffa")
+		button.t2:SetTexture("Interface\\FriendsFrame\\PlusManz-Horde")
+	elseif i == 3 then
+		button.mapID = 876
+		button.t:SetTexture("Interface\\FriendsFrame\\PlusManz-Alliance")
+	elseif i == 4 then
+		button.mapID = 875
+		button.t:SetTexture("Interface\\FriendsFrame\\PlusManz-Horde")
 	end
 end
-if UnitLevel'player' < 120 then
-	--WorldQuestList.oppositeContinentButton:Hide()
+WorldQuestList.oppositeContinentButton.State = 120
+
+WorldQuestList.oppositeContinentButton.Update = function(self) 
+	local level = UnitLevel'player'
+	if level > 110 and self.State ~= 120 then
+		self.Button1.mapID = 62
+		self.Button1.t:SetTexture("")
+		self.Button1.t2:SetTexture("Interface\\FriendsFrame\\PlusManz-Alliance")
+		self.Button1.t3:SetAtlas("worldquest-icon-pvp-ffa")
+
+		self.Button2.mapID = 14
+		self.Button2.t:SetTexture("")
+		self.Button2.t2:SetTexture("Interface\\FriendsFrame\\PlusManz-Horde")
+		self.Button2.t3:SetAtlas("worldquest-icon-pvp-ffa")
+
+		self.Button3.mapID = 876
+		self.Button4.mapID = 875
+
+		self.State = 120
+	elseif level >= 100 and level <= 110 and self.State ~= 110 then
+		self.Button1.mapID = 947
+		self.Button1.t:SetAtlas("Dungeon")
+		self.Button1.t2:SetTexture("")
+		self.Button1.t3:SetTexture("")
+
+		self.Button2.mapID = 619
+		self.Button2.t:SetAtlas("worldquest-icon-burninglegion")
+		self.Button2.t2:SetTexture("")
+		self.Button2.t3:SetTexture("")
+
+		self.Button3.mapID = 876
+		self.Button4.mapID = 875
+
+		self.State = 110
+	elseif level >= 90 and level < 100 and self.State ~= 90 then
+		self.Button1.mapID = 947
+		self.Button1.t:SetAtlas("Dungeon")
+		self.Button1.t2:SetTexture("")
+		self.Button1.t3:SetTexture("")
+
+		self.Button2.mapID = 572
+		self.Button2.t:SetAtlas("Raid")
+		self.Button2.t2:SetTexture("")
+		self.Button2.t3:SetTexture("")
+
+		self.Button3.mapID = 84
+		self.Button4.mapID = 85
+
+		self.State = 90
+	elseif level >= 80 and level < 90 and self.State ~= 80 then
+		self.Button1.mapID = 947
+		self.Button1.t:SetAtlas("Dungeon")
+		self.Button1.t2:SetTexture("")
+		self.Button1.t3:SetTexture("")
+
+		self.Button2.mapID = 424
+		self.Button2.t:SetAtlas("Raid")
+		self.Button2.t2:SetTexture("")
+		self.Button2.t3:SetTexture("")
+
+		self.Button3.mapID = 84
+		self.Button4.mapID = 85
+
+		self.State = 80
+	elseif level < 80 and self.State ~= 1 then
+		self.Button1.mapID = 947
+		self.Button1.t:SetAtlas("Dungeon")
+		self.Button1.t2:SetTexture("")
+		self.Button1.t3:SetTexture("")
+
+		self.Button2.mapID = 101
+		self.Button2.t:SetAtlas("Raid")
+		self.Button2.t2:SetTexture("")
+		self.Button2.t3:SetTexture("")
+
+		self.Button3.mapID = 13
+		self.Button4.mapID = 12
+
+		self.State = 1
+	end
 end
+
 
 WorldQuestList.moveHeader = ELib:DropDown(WorldQuestList,"")
 WorldQuestList.moveHeader:SetPoint("BOTTOMLEFT",WorldQuestList.oppositeContinentButton,"BOTTOMLEFT",0,0)
@@ -4788,7 +4952,7 @@ function WorldQuestList_Update(preMapID,forceUpdate)
 	
 	if mapAreaID == 947 and VWQL.HideLegion then
 		for i=#taskInfo,1,-1 do
-			if taskInfo[i].mapID and (WorldQuestList:IsLegionZone(taskInfo[i].mapID) or taskInfo[i].mapID == 62) then
+			if taskInfo[i].mapID and WorldQuestList:IsLegionZone(taskInfo[i].mapID) then
 				tremove(taskInfo,i)
 			end
 		end	
@@ -4796,9 +4960,9 @@ function WorldQuestList_Update(preMapID,forceUpdate)
 		
 	WorldQuestList.currentMapID = mapAreaID
 	
-	if time() > 1534550400 and time() < 1543968000 then	--beetween 18.08.18 (second week, same AK as first) and 05.12.18 (AK level 17, max for now,30.07.2018)
+	--if time() > 1534550400 and time() < 1543968000 then	--beetween 18.08.18 (second week, same AK as first) and 05.12.18 (AK level 17, max for now,30.07.2018)
 		O.nextResearch = WorldQuestList:GetNextResetTime(WorldQuestList:GetCurrentRegion())
-	end
+	--end
 	
 	O.isGearLessRelevant = (select(2,GetAverageItemLevel()) or 0) >= 345
 		
@@ -4857,6 +5021,7 @@ function WorldQuestList_Update(preMapID,forceUpdate)
 	end
 	
 	local isWarModeOn = C_PvP.IsWarModeDesired()
+	WAR_MODE_BONUS = C_PvP.GetWarModeRewardBonus() / 100 + 1
 	
 	local taskIconIndex = 1
 	local totalQuestsNumber = 0
@@ -4882,7 +5047,7 @@ function WorldQuestList_Update(preMapID,forceUpdate)
 				local timeToComplete
 				local isInvasion
 				local WarSupplies
-				local ShardsNothing
+				local ShardsNothing,ServiceMedal
 				local bountyTooltip
 				local isUnlimited
 				local questColor	--nil - white, 1 - blue, 2 - epic, 3 - invasion
@@ -4912,8 +5077,11 @@ function WorldQuestList_Update(preMapID,forceUpdate)
 					nameicon = -1
 				end
 
-				if worldQuestType == LE.LE_QUEST_TAG_TYPE_INVASION then
-					isInvasion = true
+				if worldQuestType == LE.LE_QUEST_TAG_TYPE_FACTION_ASSAULT  then
+					isInvasion = 2
+					questColor = 4
+				elseif worldQuestType == LE.LE_QUEST_TAG_TYPE_INVASION then
+					isInvasion = 1
 					questColor = 3
 				end
 				
@@ -4956,6 +5124,12 @@ function WorldQuestList_Update(preMapID,forceUpdate)
 				
 				if (WANTED_TEXT and name:lower():find("^"..WANTED_TEXT)) or (DANGER_TEXT and name:lower():find("^"..DANGER_TEXT)) or (DANGER_TEXT_2 and name:lower():find("^"..DANGER_TEXT_2)) or (DANGER_TEXT_3 and name:lower():find("^"..DANGER_TEXT_3)) then
 					IsWantedQuest = true
+				end
+				if not IsWantedQuest and info.numObjectives == 1 and (rarity == LE.LE_WORLD_QUEST_QUALITY_RARE or rarity == LE.LE_WORLD_QUEST_QUALITY_EPIC) then
+					local objectiveText, objectiveType, finished, numFulfilled, numRequired = GetQuestObjectiveInfo(questID, 1, false)
+					if objectiveType == "monster" and numRequired == 1 then
+						IsWantedQuest = true
+					end
 				end
 				
 				if ( factionID ) then
@@ -5029,7 +5203,7 @@ function WorldQuestList_Update(preMapID,forceUpdate)
 					local numQuestCurrencies = GetNumQuestLogRewardCurrencies(questID)
 					for i = 1, numQuestCurrencies do
 						local name, texture, numItems, currencyID = GetQuestLogRewardCurrencyInfo(i, questID)
-						if isWarModeOn and (currencyID == 1553 or currencyID == 1560 or currencyID == 1220 or currencyID == 1342 or currencyID == 1226 or currencyID == 1533) and C_QuestLog.QuestHasWarModeBonus(questID) then
+						if isWarModeOn and C_QuestLog.QuestHasWarModeBonus(questID) and C_CurrencyInfo.DoesWarModeBonusApply(currencyID) then
 							numItems = floor(numItems * WAR_MODE_BONUS + .5)
 						end
 						local text = BONUS_OBJECTIVE_REWARD_WITH_COUNT_FORMAT:format(texture, numItems, name)
@@ -5037,8 +5211,11 @@ function WorldQuestList_Update(preMapID,forceUpdate)
 							if i == 1 or not hasRewardFiltered then
 								if currencyID == 1342 then	--War Supplies
 									WarSupplies = numItems
-								elseif currencyID == 1226 and isInvasion then	--Shard of nothing
+								elseif currencyID == 1226 and isInvasion == 1 then	--Shard of nothing
 									ShardsNothing = numItems
+								elseif (currencyID == 1716 or currencyID == 1717) and isInvasion ~= 2 then	--Service Medal
+									ServiceMedal = numItems
+									O.ServiceMedal = currencyID
 								else
 									if i > 1 and reward ~= "" then
 										reward = reward .. ", " .. text:gsub("(|cffffffff[0-9]+|r) .*$", "%1") --163ui
@@ -5089,6 +5266,17 @@ function WorldQuestList_Update(preMapID,forceUpdate)
 									if isValidLine ~= 0 then
 										totalWE = totalWE + (numItems or 0)
 									end
+								elseif (currencyID == 1716 or currencyID == 1717) and isInvasion == 2 then	--Service Medal
+									hasRewardFiltered = true
+									rewardType = 30.1716
+									rewardSort = numItems or 0
+									if VWQL[charKey].servicemedalFilter then
+										isValidLine = 0 
+									end
+								elseif currencyID == 1718 then	--Titan Residuum
+									hasRewardFiltered = true
+									rewardType = 30.1718
+									rewardSort = numItems or 0
 								end
 								
 								if currencyID == 1220 then
@@ -5163,6 +5351,7 @@ function WorldQuestList_Update(preMapID,forceUpdate)
 							rewardItem = true
 							reward = "|T"..icon..":0|t "..(numItems and numItems > 1 and numItems.."x " or "")..name
 						end
+						local itemIlvl
 						
 
 						if quality and quality >= LE.LE_ITEM_QUALITY_COMMON and LE.BAG_ITEM_QUALITY_COLORS[quality] then
@@ -5207,6 +5396,7 @@ function WorldQuestList_Update(preMapID,forceUpdate)
 								if ilvl then
 									rewardType = O.isGearLessRelevant and 37 or 0
 									rewardSort = ilvl + (itemID / 1000000)
+									itemIlvl = ilvl
 									hasRewardFiltered = true
 								end
 							elseif text and text:find(LE.ITEM_BIND_ON_EQUIP) and j<=4 then
@@ -5237,6 +5427,25 @@ function WorldQuestList_Update(preMapID,forceUpdate)
 							end
 							rewardType = 33	+ (itemID == 152960 and 0.2170 or 0.2165)
 							rewardColor = WorldQuestList.ColorYellow
+						end
+
+						if (quality or 0) >= 3 and VWQL.ExpulsomReplace then
+							local _,_,_,itemType,expulsomIcon = GetItemInfoInstant(itemID)
+							if itemType == "INVTYPE_TRINKET" and (itemIlvl or 0) >= 280 then
+								itemID = 152668
+								numItems = 1
+								reward = "|T2065568:0|t "..(GetItemInfo(152668) or "Expulsom")
+								rewardColor = LE.BAG_ITEM_QUALITY_COLORS[3]
+							end
+						end
+
+						if itemID == 152668 then	--expulsom
+							rewardType = 35.2
+							rewardSort = numItems or 0
+							hasRewardFiltered = true
+							if ActiveFilterType.expulsom then
+								isValidLine = 0 
+							end
 						end
 						
 						if itemID and (rewardType == 0 or rewardType == 37) then
@@ -5305,8 +5514,19 @@ function WorldQuestList_Update(preMapID,forceUpdate)
 							rewardType = 31
 						end
 						reward = reward .. BONUS_OBJECTIVE_REWARD_WITH_COUNT_FORMAT:format(texturePath or "", ShardsNothing, name)
-
 					end
+					if ServiceMedal and ServiceMedal > 0 then
+						local name, amount, texturePath, earnedThisWeek, weeklyMax, totalMax, isDiscovered, quality = GetCurrencyInfo(O.ServiceMedal or 1716)
+
+						if reward ~= "" then
+							reward = reward .. ", "
+						else
+							rewardSort = ServiceMedal
+							rewardType = 30.1716
+						end
+						reward = reward .. BONUS_OBJECTIVE_REWARD_WITH_COUNT_FORMAT:format(texturePath or "", ServiceMedal, name)
+					end
+
 					
 					if not hasRewardFiltered then
 						rewardType = 60
@@ -5428,7 +5648,7 @@ function WorldQuestList_Update(preMapID,forceUpdate)
 		for i=1,#taskInfo.poi do
 			local name, description, x, y, poiID, atlasIcon, poiWQLType, zoneID, dX, dY = unpack(taskInfo.poi[i])
 			if poiWQLType == 1 and not VWQL[charKey].invasionPointsFilter then	--invasion points
-				local timeLeftMinutes = C_AreaPoiInfo.GetAreaPOITimeLeft(poiID) or 0
+				local timeLeftMinutes = C_AreaPoiInfo.GetAreaPOITimeLeft(poiID) or 0	-- Use C_AreaPoiInfo.GetAreaPOISecondsLeft in future
 				local isGreat = atlasIcon:match("%d+$") == "2"
 				if x == -1 then
 					x = nil
@@ -5542,6 +5762,8 @@ function WorldQuestList_Update(preMapID,forceUpdate)
 		line.name:SetText(data.name)
 		if data.questColor == 3 then
 			line.name:SetTextColor(0.78, 1, 0)
+		elseif data.questColor == 4 then
+			line.name:SetTextColor(1,.8,.2)
 		elseif data.questColor == 1 then
 			line.name:SetTextColor(.2,.5,1)
 		elseif data.questColor == 2 then
@@ -5580,7 +5802,12 @@ function WorldQuestList_Update(preMapID,forceUpdate)
 		end
 		
 		if data.isInvasion then
-			line.secondicon:SetAtlas("worldquest-icon-burninglegion")
+			if data.isInvasion == 2 then
+				local factionTag = UnitFactionGroup("player")
+				line.secondicon:SetAtlas(factionTag == "Alliance" and "worldquest-icon-horde" or "worldquest-icon-alliance")
+			else
+				line.secondicon:SetAtlas("worldquest-icon-burninglegion")
+			end
 			line.secondicon:SetWidth(16)
 			
 			questNameWidth = questNameWidth - 15
@@ -5991,17 +6218,9 @@ SLASH_WQLSlash1 = "/wql"
 SLASH_WQLSlash2 = "/worldquestslist"
 
 --Add /way
-C_Timer.After(3,function()
-	for name,_ in pairs(getmetatable(SlashCmdList).__index) do
-		local index = 1
-		local cmd = _G["SLASH_"..name..index]
-		while cmd do
-			if cmd == "/way" then
-				return
-			end
-			index = index+1
-			cmd = _G["SLASH_"..name..index]
-		end
+C_Timer.After(10,function()
+	if IsAddOnLoaded("TomTom") then
+		return
 	end
 	SlashCmdList["WQLSlashWay"] = function(arg)
 		getmetatable(SlashCmdList).__index.WQLSlash("way "..(arg or ""))
@@ -7447,6 +7666,8 @@ do
 					WorldMapFrame_TextTable.f:Show()
 				end
 			end
+			local warMode = C_PvP.IsWarModeDesired()
+			local warModeBonus = C_PvP.GetWarModeRewardBonus() / 100 + 1
 			for obj,_ in pairs(pins.activeObjects) do
 				local icon = obj.WQL_rewardIcon
 				if obj.questID then
@@ -7479,7 +7700,7 @@ do
 						
 						local iconTopRight = obj:CreateTexture(nil,"OVERLAY")
 						obj.WQL_iconTopRight = iconTopRight
-						iconTopRight:SetPoint("TOPRIGHT",obj,"TOPRIGHT",0,0)
+						iconTopRight:SetPoint("CENTER",obj,"TOPRIGHT",-10,-10)
 						iconTopRight:SetSize(20,20)
 						
 						obj:HookScript("OnEnter",HookOnEnter)
@@ -7496,33 +7717,38 @@ do
 					local money = GetQuestLogRewardMoney(obj.questID)
 					if money > 0 then
 						iconAtlas = "Auctioneer"
-						amount = floor(money / 10000 * (C_PvP.IsWarModeDesired() and C_QuestLog.QuestHasWarModeBonus(obj.questID) and 1.1 or 1))
+						amount = floor(money / 10000 * (warMode and C_QuestLog.QuestHasWarModeBonus(obj.questID) and warModeBonus or 1))
 					end
 					
 					-- currency
 					for i = 1, GetNumQuestLogRewardCurrencies(obj.questID) do
 						local name, texture, numItems, currencyID = GetQuestLogRewardCurrencyInfo(i, obj.questID)
-						if currencyID == 1508 or currencyID == 1533 then	--Veiled Argunite, Wakening Essence
+						if currencyID == 1508 or currencyID == 1533 or currencyID == 1717 or currencyID == 1716 then	--Veiled Argunite, Wakening Essence
 							iconTexture = texture
 							ajustMask = true
 							ajustSize = 8
-							amount = floor(numItems * (C_PvP.IsWarModeDesired() and C_QuestLog.QuestHasWarModeBonus(obj.questID) and 1.1 or 1))
-							break
+							amount = floor(numItems * (warMode and C_QuestLog.QuestHasWarModeBonus(obj.questID) and C_CurrencyInfo.DoesWarModeBonusApply(currencyID) and warModeBonus or 1))
+							if not (currencyID == 1717 or currencyID == 1716) then
+								break
+							end
 						elseif currencyID == 1553 then	--azerite
 							--iconAtlas = "Islands-AzeriteChest"
 							iconAtlas = "AzeriteReady"
-							amount = floor(numItems * (C_PvP.IsWarModeDesired() and C_QuestLog.QuestHasWarModeBonus(obj.questID) and 1.1 or 1))
+							amount = floor(numItems * (warMode and C_QuestLog.QuestHasWarModeBonus(obj.questID) and C_CurrencyInfo.DoesWarModeBonusApply(currencyID) and warModeBonus or 1))
 							ajustSize = 5
+							iconTexture, ajustMask = nil
 							break
 						elseif currencyID == 1220 or currencyID == 1560 then	--OR
 							iconAtlas = "legionmission-icon-currency"
 							ajustSize = 5
-							amount = floor(numItems * (C_PvP.IsWarModeDesired() and C_QuestLog.QuestHasWarModeBonus(obj.questID) and 1.1 or 1))
+							amount = floor(numItems * (warMode and C_QuestLog.QuestHasWarModeBonus(obj.questID) and C_CurrencyInfo.DoesWarModeBonusApply(currencyID) and warModeBonus or 1))
+							iconTexture, ajustMask = nil
 							break
 						elseif WorldQuestList:IsFactionCurrency(currencyID or 0) then
 							iconAtlas = "poi-workorders"
 							amount = numItems
 							amountIcon = texture
+							ajustSize, iconTexture, ajustMask = 0
 							break
 						end
 					end
@@ -7573,7 +7799,7 @@ do
 								end
 							elseif itemID == 152960 or itemID == 152957 then
 								iconAtlas = "poi-workorders"
-							elseif itemID == 163857 or itemID == 143559 or itemID == 141920 then
+							elseif itemID == 163857 or itemID == 143559 or itemID == 141920 or itemID == 152668 then
 								iconTexture = icon
 								ajustMask = true
 								ajustSize = 4
@@ -7598,26 +7824,39 @@ do
 					
 					if worldQuestType == LE.LE_QUEST_TAG_TYPE_PVP then
 						if obj.WQL_iconTopRight.curr ~= "worldquest-icon-pvp-ffa" then
+							obj.WQL_iconTopRight:SetSize(20,20)
 							obj.WQL_iconTopRight:SetAtlas("worldquest-icon-pvp-ffa")
 							obj.WQL_iconTopRight.curr = "worldquest-icon-pvp-ffa"
 						end
 					elseif worldQuestType == LE.LE_QUEST_TAG_TYPE_PET_BATTLE and (iconTexture or iconAtlas) then
 						if obj.WQL_iconTopRight.curr ~= "worldquest-icon-petbattle" then
+							obj.WQL_iconTopRight:SetSize(20,20)
 							obj.WQL_iconTopRight:SetAtlas("worldquest-icon-petbattle")
 							obj.WQL_iconTopRight.curr = "worldquest-icon-petbattle"
 						end
 					elseif worldQuestType == LE.LE_QUEST_TAG_TYPE_PROFESSION then
 						if obj.WQL_iconTopRight.curr ~= "worldquest-icon-engineering" then
+							obj.WQL_iconTopRight:SetSize(20,20)
 							obj.WQL_iconTopRight:SetAtlas("worldquest-icon-engineering")
 							obj.WQL_iconTopRight.curr = "worldquest-icon-engineering"
 						end
 					elseif worldQuestType == LE.LE_QUEST_TAG_TYPE_INVASION then
 						if obj.WQL_iconTopRight.curr ~= "worldquest-icon-burninglegion" then
+							obj.WQL_iconTopRight:SetSize(20,20)
 							obj.WQL_iconTopRight:SetAtlas("worldquest-icon-burninglegion")
 							obj.WQL_iconTopRight.curr = "worldquest-icon-burninglegion"
 						end
+					elseif worldQuestType == LE.LE_QUEST_TAG_TYPE_FACTION_ASSAULT  then
+						local factionTag = UnitFactionGroup("player")
+						local icon = factionTag == "Alliance" and "worldquest-icon-horde" or "worldquest-icon-alliance"
+						if obj.WQL_iconTopRight.curr ~= icon then
+							obj.WQL_iconTopRight:SetSize(32,32)
+							obj.WQL_iconTopRight:SetAtlas(icon)
+							obj.WQL_iconTopRight.curr = icon
+						end
 					else
 						if obj.WQL_iconTopRight.curr then
+							obj.WQL_iconTopRight:SetSize(20,20)
 							obj.WQL_iconTopRight:SetTexture()
 							obj.WQL_iconTopRight.curr = nil
 						end						

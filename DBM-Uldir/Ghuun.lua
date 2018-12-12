@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2147, "DBM-Uldir", nil, 1031)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 18078 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 18124 $"):sub(12, -3))
 mod:SetCreatureID(132998)
 mod:SetEncounterID(2122)
 mod:SetZone()
@@ -67,7 +67,7 @@ local specWarnMassiveSmash				= mod:NewSpecialWarningSpell(267412, "Tank", nil, 
 local specWarnDarkBargain				= mod:NewSpecialWarningDodge(267409, nil, nil, 2, 3, 2)
 local specWarnDarkBargainOther			= mod:NewSpecialWarningTaunt(267409, false, nil, 2, 1, 2)
 local specWarnGTFO						= mod:NewSpecialWarningGTFO(270287, nil, nil, nil, 1, 8)
-local specWarnDecayingEruption			= mod:NewSpecialWarningInterrupt(267462, "HasInterrupt", nil, nil, 1, 2)--Mythic
+local specWarnDecayingEruption			= mod:NewSpecialWarningInterruptCount(267462, "HasInterrupt", nil, nil, 1, 2)--Mythic
 ----Arena Floor P2+
 local specWarnGrowingCorruption			= mod:NewSpecialWarningCount(270447, nil, DBM_CORE_AUTO_SPEC_WARN_OPTIONS.stack:format(5, 270447), nil, 1, 2)
 local specWarnGrowingCorruptionOther	= mod:NewSpecialWarningTaunt(270447, nil, nil, nil, 1, 2)
@@ -142,6 +142,7 @@ local matrixTargets = {}
 local thousandMawsTimers = {25.4, 26.3, 25.5, 24.2, 23.9, 23.1, 21.5, 21.9, 19.4}
 local thousandMawsTimersLFR = {27.78, 29.2, 27.9, 26.46, 26.13, 25.26, 23.51, 23.95, 21.21}--Timers 4+ extrapolated using 1.093x greater formula
 local seenAdds = {}
+local castsPerGUID = {}
 
 local function checkThrowFail(self)
 	--If this function runs it means matrix was not caught after a throw and is lost
@@ -257,6 +258,7 @@ end
 function mod:OnCombatStart(delay)
 	table.wipe(matrixTargets)
 	table.wipe(seenAdds)
+	table.wipe(castsPerGUID)
 	self.vb.bloodFeastTarget = nil
 	self.vb.phase = 1
 	self.vb.mawCastCount = 0
@@ -333,9 +335,28 @@ function mod:SPELL_CAST_START(args)
 	elseif spellId == 267427 and self:CheckInterruptFilter(args.sourceGUID, false, true) then
 		specWarnTorment:Show(args.sourceName)
 		specWarnTorment:Play("kickcast")
-	elseif spellId == 267462 and self:CheckInterruptFilter(args.sourceGUID, false, true) then
-		specWarnDecayingEruption:Show(args.sourceName)
-		specWarnDecayingEruption:Play("kickcast")
+	elseif spellId == 267462 then
+		if not castsPerGUID[args.sourceGUID] then
+			castsPerGUID[args.sourceGUID] = 0
+		end
+		castsPerGUID[args.sourceGUID] = castsPerGUID[args.sourceGUID] + 1
+		local count = castsPerGUID[args.sourceGUID]
+		if self:CheckInterruptFilter(args.sourceGUID, false, false) then
+			specWarnDecayingEruption:Show(args.sourceName, count)
+			if count == 1 then
+				specWarnDecayingEruption:Play("kick1r")
+			elseif count == 2 then
+				specWarnDecayingEruption:Play("kick2r")
+			elseif count == 3 then
+				specWarnDecayingEruption:Play("kick3r")
+			elseif count == 4 then
+				specWarnDecayingEruption:Play("kick4r")
+			elseif count == 5 then
+				specWarnDecayingEruption:Play("kick5r")
+			else
+				specWarnDecayingEruption:Play("kickcast")
+			end
+		end
 	elseif spellId == 267412 and self:CheckInterruptFilter(args.sourceGUID, true) then
 		specWarnMassiveSmash:Show()
 		specWarnMassiveSmash:Play("carefly")
@@ -444,6 +465,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 		self.vb.waveCast = 0
 		specWarnCollapse:Show()
 		specWarnCollapse:Play("watchstep")
+		timerReOrgBlast:Stop()
 		timerBloodFeastCD:Stop()
 		countdownBloodFeast:Cancel()
 		timerWaveofCorruptionCD:Stop()
@@ -530,7 +552,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		if args:IsPlayer() then
 			yellBloodHost:Yell()
 		end
-		if self:CheckNearby(20, args.destName) and self:AntiSpam(3.5, 3) then
+		if self:CheckNearby(11, args.destName) and self:AntiSpam(3.5, 3) then
 			specWarnBloodHost:Show(args.destName)
 			specWarnBloodHost:Play("runaway")
 		else
@@ -572,7 +594,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		end
 	elseif spellId == 270447 then
 		local amount = args.amount or 1
-		if (amount == 5 or amount >= 8) and self:AntiSpam(3.5, 4) then--First warning at 4, then a decent amount of time until 8. then spam every 3 seconds
+		if (amount == 5 or amount >= 8) and self:AntiSpam(5, 4) then--First warning at 4, then a decent amount of time until 8. then spam every 3 seconds
 			if self:IsTanking("player", "boss1", nil, true) then
 				specWarnGrowingCorruption:Show(amount)
 				specWarnGrowingCorruption:Play("changemt")

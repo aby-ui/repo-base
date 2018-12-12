@@ -489,18 +489,18 @@ function Type:Setup(icon)
 	-- only define units if there are any units. we dont want to waste time iterating an empty table.
 	icon.SourceUnits = nil
 	if icon.SourceUnit ~= "" then
-		local conditionSet
-		icon.SourceUnits, conditionSet = TMW:GetUnits(icon, icon.SourceUnit, icon.SourceConditions)
-		if conditionSet.mightHaveWackyUnitRefs then
+		local unitSet
+		icon.SourceUnits, unitSet = TMW:GetUnits(icon, icon.SourceUnit, icon.SourceConditions)
+		if unitSet.mightHaveWackyUnitRefs then
 			icon.SourceUnits = TMW:GetUnits(icon, icon.SourceUnit)
 		end
 	end
 
 	icon.DestUnits = nil
 	if icon.DestUnit ~= "" then
-		local conditionSet
-		icon.DestUnits, conditionSet = TMW:GetUnits(icon, icon.DestUnit, icon.DestConditions)
-		if conditionSet.mightHaveWackyUnitRefs then
+		local unitSet
+		icon.DestUnits, unitSet = TMW:GetUnits(icon, icon.DestUnit, icon.DestConditions)
+		if unitSet.mightHaveWackyUnitRefs then
 			icon.DestUnits = TMW:GetUnits(icon, icon.DestUnit)
 		end
 	end

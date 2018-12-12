@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(849, "DBM-SiegeOfOrgrimmarV2", nil, 369)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 122 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 124 $"):sub(12, -3))
 mod:SetCreatureID(71479, 71475, 71480)--He-Softfoot, Rook Stonetoe, Sun Tenderheart
 mod:SetEncounterID(1598)
 mod:SetZone()
@@ -316,7 +316,7 @@ end
 
 function mod:RAID_BOSS_WHISPER(msg)
 	if msg:find("spell:143330") then--Emote giving ONLY to the person tanking boss. Better than scanning boss 1-5 for this one which fails from time to time
-		specWarnGouge:Show()--So show tank warning
+		specWarnGouge:Show(Softfoot)--So show tank warning
 		specWarnGouge:Play("turnaway")
 	end
 end

@@ -201,6 +201,8 @@ function module.options:Load()
 		{850,2032,2048,2036,2037,2050,2054,2052,2038,2051},--tos
 		{909,2076,2074,2064,2070,2075,2082,2069,2088,2073,2063,2092},--antorus
 		{1148,2144,2141,2136,2128,2134,2145,2135,2122},--uldir
+		{1358,2265,2263,2284,2266,2285,2271,2268,2272,2276,2280,2281},	--bfd
+		{L.S_ZoneT23Storms,2269,2273},	--storms
 	}
 
 	local LegacyDiffs = {
@@ -330,7 +332,7 @@ function module.options:Load()
 								encounterLine.pulls = encounterLine.pulls + 1
 							else
 								encounterLine.wipeTime = max( encounterLine.wipeTime or 0, pullTime )
-								if not pullTime or pullTime >= minPullTime or pullTime == 0 then
+								if not pullTime or pullTime >= minPullTime then--or pullTime == 0 then
 									encounterLine.pulls = encounterLine.pulls + 1
 								end
 							end
@@ -372,7 +374,7 @@ function module.options:Load()
 				local legitPulls = 0
 
 				for i=1,#encounterData.pullTable do
-					if not encounterData.pullTable[i].d or encounterData.pullTable[i].d >= minPullTime or encounterData.pullTable[i].d == 0 then
+					if not encounterData.pullTable[i].d or encounterData.pullTable[i].d >= minPullTime then--or encounterData.pullTable[i].d == 0 then
 						legitPulls = legitPulls + 1
 					end
 					if not isFK and encounterData.pullTable[i].k then
@@ -396,7 +398,7 @@ function module.options:Load()
 					prev = eLine.mapID
 				end
 				if prev ~= eLine.mapID or i==1 then
-					local name = C_Map.GetMapInfo(prev or -999)
+					local name = type(prev)=='string' and {name=prev} or C_Map.GetMapInfo(prev or -999)
 					if name then
 						tinsert(encounters,i==1 and 1 or i+1,{
 							isHeader = true,

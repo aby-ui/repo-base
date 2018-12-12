@@ -110,9 +110,10 @@ function frame:ConfigureFrame()
 	-- gross hack to fix issue of queue's height changing causing scrollbar to be disabled/enabled
 	-- when there was enough to fit before resize but not enough after resize; waiting a frame and
 	-- then updating queue again when hitrect calculated properly
-	if queueStartingHeight ~= rematch.QueuePanel.List:GetHeight() then
-		C_Timer.After(0,rematch.QueuePanel.UpdateList)
-	end
+		-- ** REMOVE
+	-- if queueStartingHeight ~= rematch.QueuePanel.List:GetHeight() then
+	-- 	C_Timer.After(0,rematch.QueuePanel.UpdateList)
+	-- end
 
 end
 
@@ -203,7 +204,7 @@ function frame:PlaceSinglePanel()
 				panel:SetPoint("TOPLEFT",rematch.MiniPanel,"BOTTOMLEFT",0,-2)
 			end
 			if settings.UseMiniQueue and i==1 then -- if on PetPanel and UseMiniQueue enabeld
-				panel:Resize(290 - (settings.SlimListButtons and 12 or 0)) -- resize PetPanel to fit MiniQueue
+				panel:Resize(290 - (settings.SlimListButtons and 10 or 8)) -- resize PetPanel to fit MiniQueue
 				rematch:Reparent(rematch.MiniQueue,panel,"TOPRIGHT",rematch.MiniPanel,"BOTTOMRIGHT",0,-2)
 				rematch.MiniQueue:SetPoint("BOTTOMLEFT",rematch.PetPanel,"BOTTOMRIGHT",2,0)
 			else -- for all other panels resize to panelWidth

@@ -1,6 +1,33 @@
 local GlobalAddonName, WQLdb = ...
 
 WQLdb.TreasureData = {		--x,y,name,type,reward,note,questID if done,special checks func
+	[62] = {
+{0.56527996063232,0.30748003721237,"Alash'anir",2,nil,nil,nil},
+{0.37740075588226,0.84719133377075,"Aman",2,nil,nil,nil},
+{0.41666728258133,0.76661956310272,"Athil Dewfire",1,nil,nil,54431},	--questid prediction
+{0.58489817380905,0.24409544467926,"Athrikus Narassin",2,nil,nil,nil},
+{0.49616008996964,0.24908626079559,"Blackpaw",1,nil,nil,54890},
+{0.37969249486923,0.76327884197235,"Commander Ral'esh",1,nil,nil,54427},
+{0.39248669147491,0.62232792377472,"Conflagros",2,nil,nil,nil},
+{0.43757051229477,0.53581535816193,"Cyclarus",2,nil,nil,nil},
+{0.43455624580383,0.19595342874527,"Glimmerspine",1,nil,nil,54885},
+{0.48351514339447,0.55572640895844,"Granokk",2,nil,nil,nil},
+{0.40909188985825,0.56425130367279,"Gren Tornfur",1,nil,nil,54429},
+{0.50733828544617,0.32470279932022,"Grimhorn",1,166525,nil,54891},
+{0.52402138710022,0.32150042057037,"Hydrath",2,nil,nil,nil},
+{0.41287386417389,0.36067444086075,"Ivus the Forest Lord",2,nil,nil,nil},
+{0.43969452381134,0.48376560211182,"Madfeather",1,nil,nil,54888},
+{0.35837829113007,0.81759828329086,"Mrggr'marr",1,nil,nil,54409},
+{0.45226317644119,0.74962311983109,"Onu",2,nil,nil,nil},
+{0.32956749200821,0.83929133415222,"Sapper Odette",1,nil,nil,54452},
+{0.47633451223373,0.44683212041855,"Scalefiend",1,nil,nil,54894},
+{0.39801687002182,0.32878673076630,"Shadowclaw",1,nil,nil,54892},
+{0.43531250953674,0.29385536909103,"Shattershard",2,nil,nil,nil},
+{0.40616178512573,0.85275912284851,"Soggoth the Slitherer",2,nil,nil,nil},
+{0.45545989274979,0.59064185619354,"Stonebinder Ssra'vess",1,nil,nil,54248},
+{0.62122869491577,0.16493034362793,"Thelar Moonstrike",1,166790,nil,54252},
+{0.40605354309082,0.82768523693085,"Twilight Prophet Graeme",1,nil,nil,54398},
+	},
 	[14] = {	--Arati
 --by varenne, wowhead
 {0.6706,0.6589,"Beastrider Kama",1,163644,nil,53504},
@@ -13,17 +40,17 @@ WQLdb.TreasureData = {		--x,y,name,type,reward,note,questID if done,special chec
 {0.2295,0.4961,"Foulbelly",1,163735,"Cave at 28.83 45.47",53509},
 {0.5104,0.5319,"Fozruk",2,163711,"Patrolling the road",nil},	--53019
 {0.7953,0.2945,"Geomancer Flintdagger",1,163713,"Cave visible on map",53511},
-{0.2593,0.3532,"Horrific Apparition",1,163736,nil,53512,function() return not (C_ContributionCollector.GetState(8) == 2) end},
-{0.1940,0.6120,"Horrific Apparition",1,163736,nil,53512,function() return (C_ContributionCollector.GetState(8) == 2) end},
+{0.2593,0.3532,"Horrific Apparition",1,163736,nil,53512,function() return not (C_ContributionCollector.GetState(8) == 0 or C_ContributionCollector.GetState(8) == 1) end},
+{0.1940,0.6120,"Horrific Apparition",1,163736,nil,53512,function() return (C_ContributionCollector.GetState(8) == 0 or C_ContributionCollector.GetState(8) == 1) end},
 {0.4931,0.8426,"Kor'gresh Coldrage",1,163744,"West Cave",53513},
 {0.2529,0.4856,"Kovork",1,163750,"Cave at 28.83 45.47",53514},
 {0.5182,0.7562,"Man-Hunter Rog",1,163689,nil,53515},
-{0.4689,0.7872,"Molok the Crusher",1,163775,nil,53516},
+{0.4689,0.7872,"Molok the Crusher",2,163775,nil,53516},
 {0.6748,0.6058,"Nimar the Slayer",1,163706,nil,53517},
 {0.3304,0.3749,"Overseer Krix",2,163646,"Inside a cave",53518},
 {0.3782,0.6135,"Plaguefeather",2,163690,nil,53519},
-{0.1841,0.2794,"Ragebeak",2,163689,nil,53016,function() return not (C_ContributionCollector.GetState(8) == 2) end},
-{0.1190,0.5220,"Ragebeak",2,163689,nil,53016,function() return (C_ContributionCollector.GetState(8) == 2) end},	--horde control
+{0.1841,0.2794,"Ragebeak",2,163689,nil,53016,function() return not (C_ContributionCollector.GetState(8) == 0 or C_ContributionCollector.GetState(8) == 1) end},
+{0.1190,0.5220,"Ragebeak",2,163689,nil,53016,function() return (C_ContributionCollector.GetState(8) == 0 or C_ContributionCollector.GetState(8) == 1) end},	--horde control
 {0.4292,0.5660,"Ruul Onestone",1,163741,nil,53524},
 {0.2940,0.5834,"Rumbling Goliath",2,163701,nil,53523},
 {0.5080,0.4085,"Singer",1,163738,nil,53525},
@@ -32,7 +59,7 @@ WQLdb.TreasureData = {		--x,y,name,type,reward,note,questID if done,special chec
 {0.5694,0.5330,"Venomarus",2,163648,nil,53528},
 {0.1327,0.3534,"Yogursa",2,163684,nil,nil},	--53015
 {0.6285,0.8120,"Zalas Witherbark",1,163745,"Cave visible on map",53530},
-{0.4927,0.4005,"Knight-Captain Aldrin",1,163578,"Alliance Friendly",nil,function() return UnitFactionGroup("player") ~= "Alliance" end},
+{0.4927,0.4005,"Knight-Captain Aldrin",1,163578,"Alliance Friendly",53088,function() return UnitFactionGroup("player") ~= "Alliance" end},
 {0.5397,0.5696,"Doomrider Helgrim",1,163579,"Horde Friendly",nil,function() return UnitFactionGroup("player") == "Alliance" end},
 {0.3709,0.3921,"Doom's Howl",2,163828,"World Boss Horde Friendly",nil,function() return UnitFactionGroup("player") == "Alliance" end},
 {0.3709,0.3921,"The Lion's Roar",2,163829,"World Boss Alliance Friendly",nil,function() return UnitFactionGroup("player") ~= "Alliance" end},

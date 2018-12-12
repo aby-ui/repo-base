@@ -248,13 +248,15 @@ local encounterIDtoEJidData = {
 	[2269] = 2328,	--The Restless Cabal
 	[2273] = 2332,	--Uu'nat, Harbinger of the Void
 
-	[2263] = 2325,	--Grong; For alliance 2340
 	[2265] = 2333,	--Frida Ironbellows, Paladin;  For alliance Ra'wani Kanae, 2344
-	[2266] = 2341,	--Flamefist and the Illuminated; For alliance Grimfang and Firecaller, Duel with a Duo 2323
+	[2263] = 2325,	--Grong [horde]
+	[2284] = 2340,	--Grong [alliance]
+	[2266] = 2341,	--Flamefist and the Illuminated [horde]
+	[2285] = 2323,	--Grimfang and Firecaller [alliance]
 	[2271] = 2342,	--Treasure Guardian
 	[2268] = 2330,	--Loa Council
-	[2272] = 2335,	--King Rastakhan (A)
-	[2276] = 2334,	--Mekkatorque (H)
+	[2272] = 2335,	--King Rastakhan
+	[2276] = 2334,	--Mekkatorque
 	[2280] = 2337,	--Sea Priest
 	[2281] = 2343,	--Jaina
 

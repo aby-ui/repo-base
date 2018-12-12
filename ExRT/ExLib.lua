@@ -1820,6 +1820,7 @@ do
 		end
 		self:SetOrientation(isVertical and "VERTICAL" or "HORIZONTAL")
 		self:SetValueStep(1)
+		--self:SetObeyStepOnDrag(true)
 		
 		self.isVertical = isVertical
 		

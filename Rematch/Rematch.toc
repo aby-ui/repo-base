@@ -2,7 +2,7 @@
 ## Title: Rematch
 ## Notes: A pet journal alternative for managing pets and teams.
 ## Author: Gello
-## Version: 4.8.10
+## Version: 4.9.0
 ## SavedVariables: RematchSaved, RematchSettings
 
 Localization\Rematch zhTW.lua
@@ -12,6 +12,9 @@ Main.lua
 Templates.xml
 Utils.lua
 
+Widgets\AutoScrollFrame.xml
+Widgets\CompositeButton.xml
+# Widgets\ListButton.xml
 Widgets\PetListButtons.xml
 Widgets\PetListButtons.lua
 Widgets\Toolbar.xml
@@ -19,9 +22,11 @@ Widgets\Toolbar.lua
 Widgets\MinimapButton.lua
 Widgets\PanelTabs.xml
 Widgets\PanelTabs.lua
+Widgets\TextureHighlight.lua
 
 Process\ODTables.lua
 Process\PetInfo.lua
+Process\TeamInfo.lua
 Process\PetTag.lua
 Process\PetLoading.lua
 Process\Roster.lua
@@ -41,6 +46,8 @@ Menus\Npcs.lua
 Dialogs\Dialog.xml
 Dialogs\Dialog.lua
 
+# Cards\CardManager.lua
+# Cards\CardManager.xml
 Cards\PetCard.xml
 Cards\PetCard.lua
 Cards\AbilityCard.xml
@@ -64,6 +71,7 @@ Panels\MiniPanel.xml
 Panels\MiniPanel.lua
 Panels\OptionPanel.xml
 Panels\OptionPanel.lua
+Panels\OptionList.lua
 
 Widgets\BottomPanel.xml
 Widgets\BottomPanel.lua

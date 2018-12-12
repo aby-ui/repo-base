@@ -127,18 +127,14 @@ local ImageMetaFunctions = _G [DF.GlobalWidgetControlNames ["image"]]
 	end	
 	--> color
 	local smember_color = function (_object, _value)
-		if (type (_value) == "table") then
-			local r, g, b, a = DF:ParseColors (_value)
-			_object.image:SetTexture (r,g,b, a or 1)
-		else
-			if (DF:IsHtmlColor (_value)) then
-				local r, g, b, a = DF:ParseColors (_value)
-				_object.image:SetTexture (r, g, b, a or 1)
-			else
-				_object.image:SetTexture (_value)
-			end
-		end
+		local r, g, b, a = DF:ParseColors (_value)
+		_object.image:SetColorTexture (r, g, b, a or 1)
 	end
+	--> vertex color
+	local smember_vertexcolor = function (_object, _value)
+		local r, g, b, a = DF:ParseColors (_value)
+		_object.image:SetVertexColor (r, g, b, a or 1)
+	end	
 	--> desaturated
 	local smember_desaturated = function (_object, _value)
 		if (_value) then
@@ -165,6 +161,7 @@ local ImageMetaFunctions = _G [DF.GlobalWidgetControlNames ["image"]]
 	ImageMetaFunctions.SetMembers ["texture"] = smember_texture
 	ImageMetaFunctions.SetMembers ["texcoord"] = smember_texcoord
 	ImageMetaFunctions.SetMembers ["color"] = smember_color
+	ImageMetaFunctions.SetMembers ["vertexcolor"] = smember_vertexcolor
 	ImageMetaFunctions.SetMembers ["blackwhite"] = smember_desaturated
 
 	ImageMetaFunctions.__newindex = function (_table, _key, _value)

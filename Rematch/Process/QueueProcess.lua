@@ -11,9 +11,21 @@ local levelingPets = {} -- indexed by petID, lookup table of leveling pets (crea
 rematch.topPicks = {} -- list of petIDs in the order they should be slotted
 rematch.skippedPicks = {} -- list of petIDs skipped due to preferences (for queue panel update)
 
+local alwaysSkip = {} -- lookup table of speciesIDs to always skip in the queue (horde/alliance pets)
+
 rematch:InitModule(function()
 	settings = RematchSettings
 	queue = settings.LevelingQueue
+
+	-- hard-coding pets that can't be slotted or fight in wrong faction
+	if UnitFactionGroup("player")=="Alliance" then
+		alwaysSkip[2444] = true -- Lil' War Machine can't battle while Alliance
+		alwaysSkip[298] = true -- Horde version of Moonkin Hatchling can't slot while Alliance
+	else
+		alwaysSkip[2443] = true -- Lil' Siege Tower can't battle while Horde
+		alwaysSkip[296] = true -- Alliance version of Moonkin Hatchling can't slot while Horde
+	end
+
 end)
 
 -- returns true (and the precise level) of a petID if it can level
@@ -153,6 +165,11 @@ end
 
 -- returns true if petID meets the conditions of the current preferences
 function rematch:IsPetPickable(petID)
+	-- if pet's species is in alwaysSkip then never pick it
+	local petInfo = rematch.petInfo:Fetch(petID)
+	if petInfo.speciesID and alwaysSkip[petInfo.speciesID] then
+		return false
+	end
 	local health,maxHealth = C_PetJournal.GetPetStats(petID)
 	if C_PetJournal.PetIsSummonable(petID) or (health and health<1) then
 		-- passed first test, pet is summonable (or dead)

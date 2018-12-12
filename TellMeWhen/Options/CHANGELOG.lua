@@ -4,6 +4,17 @@ TMW.CHANGELOG_LASTVER="7.4.0"
 
 TMW.CHANGELOG = [==[
 
+===v8.5.6===
+* You can now use "thisunit" in Lua conditions as a reference to the current unit in any Unit Conditions.
+* Made a number of performance optimizations around Unit Conditions.
+* Unit Condition Icons:
+** Now correctly pass the icon's unit to the icon's text displays for use as the default unit.
+** When acting as a Group Controller, will no longer create blank spots if the opacity is set to Hidden for the data that would otherwise be displayed in that spot. This is the same behavior of most other icon types.
+
+====Bug Fixes====
+* Fixed #1615 - Critical Strike condition throwing error "attempt to call global 'max' (a nil value)"
+* Fixed #1618 - Conditions on Combat Event source/destination units that used event-driven updates could be in an incorrect state before the first time an update is needed.
+
 ===v8.5.5===
 * A few improvements to the spell equivalency lists.
 * Added Keystone Level condition for Mythic+.

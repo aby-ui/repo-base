@@ -41,7 +41,6 @@ TMW.CNDT = CNDT
 
 
 CNDT.ConditionsByType = {}
-CNDT.SpecialUnitsUsed = {}
 
 
 
@@ -522,6 +521,7 @@ CNDT.Env = {
 	floor = floor,
 	select = select,
 	min = min,
+	max = max,
 	tonumber = tonumber,
 	isNumber = TMW.isNumber,
 	
@@ -555,12 +555,6 @@ CNDT.Env = {
 			return o
 		end,
 	}),
-
-	-- Stores references to BitFlags settings tables.
-	-- Don't make it weak because sometimes tables in use can get GCd
-	-- if their settings table has been removed but the condition
-	-- is still registered for updating.
-	TABLES = {}, --setmetatable({}, {__mode='kv'}),
 	
 	-- These are here as a primitive security measure to prevent some of the most basic forms of malicious Lua conditions.
 	-- This list isn't even exhaustive, and it is in no way cracker-proof, but its a start.
@@ -581,11 +575,16 @@ CNDT.Env = {
     CancelDuel = error,
     StartDuel = error,
     DeleteGMTicket = error,
+    AcceptTrade = error,
+    SendMail = error,
+    GuildDisband = error,
+    GuildPromote = error,
 
 } Env = CNDT.Env
 
 CNDT.EnvMeta = {
 	__index = _G,
+	-- don't do this. Manually add to _G if you need to add to _G.
 	--__newindex = _G,
 }
 
@@ -636,18 +635,6 @@ function CNDT:GetUnit(setting)
 	return TMW.UNITS:GetOriginalUnitTable(setting)[1] or ""
 end
 
--- [INTERNAL]
-function CNDT:GROUP_ROSTER_UPDATE()
-	TMW.UNITS:UpdateTankAndAssistMap()
-	
-	for oldUnit in pairs(Env) do
-		if CNDT.SpecialUnitsUsed[oldUnit] then
-			local newUnit = TMW.UNITS:SubstituteSpecialUnit(oldUnit)
-			Env[oldUnit] = newUnit or oldUnit
-		end
-	end
-end
-
 
 function CNDT:GetTableSubstitution(tbl)
 	TMW:ValidateType("CNDT:GetTableSubstitution(tbl)", "tbl", tbl, "table")
@@ -662,9 +649,9 @@ function CNDT:GetTableSubstitution(tbl)
 	end
 
 	local var = address:gsub(":", "_"):gsub(" ", "")
-	CNDT.Env.TABLES[var] = tbl
+	CNDT.Env[var] = tbl
 
-	return "TABLES." .. var
+	return var
 end
 
 function CNDT:GetBitFlag(conditionSettings, index)
@@ -921,25 +908,46 @@ local conditionNameSettingProcessedCache = setmetatable(
 })
 
 -- [INTERNAL]
+function CNDT:GetConditionUnitSubstitution(unit)
+
+	local translatedUnits, unitSet = TMW:GetUnits(nil, unit)
+	local substitution
+	if unitSet.hasSpecialUnitRefs then
+		-- The unit is probably a special unit.
+		-- We will use the unit set to perform the translation
+		-- from the special unit to a real unit.
+		-- We have to have the " or <originalUnits[1]>" part
+		-- so that in case the special unit doesn't map to anything,
+		-- we won't be passing nil to functions that don't accept nil.
+		substitution = 
+			CNDT:GetTableSubstitution(translatedUnits)
+			.. "[1] or "
+			.. strWrap(unitSet.originalUnits[1])
+	else
+		-- The unit is something that can be passed raw as a unitID.
+		-- Just sup it straight in as a string.
+		substitution = strWrap(unitSet.originalUnits[1])
+	end
+
+	return substitution
+end
+
+-- [INTERNAL]
 function CNDT:DoConditionSubstitutions(conditionData, conditionSettings, funcstr)
 	-- Substitutes all the c.XXXXX substitutions into a string.
 	
 	for _, append in TMW:Vararg("2", "") do -- Unit2 MUST be before Unit
 		if strfind(funcstr, "c.Unit" .. append) then
+			-- Use CNDT:GetUnit() first to grab only the first unit
+			-- in case the configured value is an expansion (like party1-4).
 			local unit
 			if append == "2" then
 				unit = CNDT:GetUnit(conditionSettings.Name)
 			elseif append == "" then
 				unit = CNDT:GetUnit(conditionSettings.Unit)
 			end
-			if (strfind(unit, "maintank") or strfind(unit, "mainassist") or strfind(unit, "group")) then
-				funcstr = gsub(funcstr, "c.Unit" .. append,		unit) -- sub it in as a variable
-				Env[unit] = unit
-				CNDT.SpecialUnitsUsed[unit] = true
-				CNDT:RegisterEvent("GROUP_ROSTER_UPDATE")
-				CNDT:GROUP_ROSTER_UPDATE()
-			else
-				funcstr = gsub(funcstr, "c.Unit" .. append,	strWrap(unit)) -- sub it in as a string
+			if unit then
+				funcstr = gsub(funcstr, "c.Unit" .. append,	CNDT:GetConditionUnitSubstitution(unit))
 			end
 		end
 	end
@@ -1024,13 +1032,6 @@ function CNDT:GetConditionCheckFunctionString(parent, Conditions)
 	end
 	
 	if funcstr ~= "" then
-		-- Well, what the fuck? Apparently this code here doesn't work in MoP. I have to do it on a single line for some strange reason.
-		-- Aannnnnnddd what the fuck now it works again. See r540 commit message for more info.
-		-- Aannnnnnddd im switching back to single line because multiline [[long strings]] aren't playing nice at all in debugging dumps/prints
-		
-		-- funcstr = [[local ConditionObject = ...
-		-- return ( ]] .. funcstr .. [[ )]]
-		
 		funcstr = "local ConditionObject = ... \r\n return (\r\n " .. funcstr .. " )"
 	end
 	

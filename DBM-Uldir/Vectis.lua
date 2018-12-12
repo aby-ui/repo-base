@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2166, "DBM-Uldir", nil, 1031)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 18118 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 18125 $"):sub(12, -3))
 mod:SetCreatureID(134442)--135016 Plague Amalgam
 mod:SetEncounterID(2134)
 mod:SetZone()
@@ -72,7 +72,7 @@ local timerImmunoSuppCD						= mod:NewCDCountTimer(25.5, 265206, nil, nil, nil, 
 --local berserkTimer						= mod:NewBerserkTimer(600)
 
 local countdownGestate						= mod:NewCountdown(25.5, 265212, true, nil, 3)
---local countdownEvolvingAffliction			= mod:NewCountdown("Alt12", 265178, "Tank", 2, 3)
+local countdownContagion					= mod:NewCountdown("Alt12", 267242, "Healer", 2, 3)
 local countdownLiquefy						= mod:NewCountdown("AltTwo90", 265217, nil, nil, 3)
 
 mod:AddSetIconOption("SetIconVector", 265129, true)
@@ -158,12 +158,10 @@ do
 					DBM:Debug("Vector "..i.." on "..name, 3)
 					local uId = DBM:GetRaidUnitId(name)
 					if uId then--Failsafe
+						local _, _, _, _, _, expireTime = DBM:UnitDebuff(uId, 265129)
 						if expireTime then
-							local _, _, _, _, _, expireTime = DBM:UnitDebuff(uId, 265129)
 							local remaining = floor(expireTime-GetTime())
 							addLine(i.."-"..name, remaining)--Insert numeric into name so a person who has more than two vectors will show both of them AND not conflict with lingering entries
-						else
-							vectorTargets[i] = nil
 						end
 					end
 				end
@@ -215,8 +213,6 @@ do
 						local remaining = floor(expireTime-GetTime())
 						--Inserts vector numbers unit has and remaining debuff along with lingering stacks even if it's 0 stacks
 						addLine(hasVector.."-"..name, tempLines[name].."-"..remaining)--Insert numeric into name so a person who has more than two vectors will show both of them AND not conflict with lingering entries
-					else
-						vectorTargets[i] = nil
 					end
 				else
 					--No vector on this target, just insert name and lingering count
@@ -245,6 +241,7 @@ function mod:OnCombatStart(delay)
 	timerGestateCD:Start(10-delay)--SUCCESS
 	countdownGestate:Start(10-delay)
 	timerContagionCD:Start(20.5-delay, 1)
+	countdownContagion:Start(20.5-delay)
 	timerLiquefyCD:Start(90.8-delay)
 	countdownLiquefy:Start(90.8-delay)
 	if self.Options.InfoFrame then
@@ -296,7 +293,8 @@ function mod:SPELL_CAST_START(args)
 		else
 			warnContagion:Show(self.vb.ContagionCount)
 		end
-		timerContagionCD:Start(nil, self.vb.ContagionCount+1)
+		timerContagionCD:Start(23, self.vb.ContagionCount+1)
+		countdownContagion:Start(23)
 		if self:IsMythic() then
 			if playerHasSix then--Done here so earlier warning, not on APPLIED
 				specWarnBurstingLesions:Show()
@@ -328,6 +326,7 @@ function mod:SPELL_CAST_START(args)
 		countdownGestate:Cancel()
 		timerEvolvingAfflictionCD:Stop()
 		timerContagionCD:Stop()
+		countdownContagion:Cancel()
 		timerplagueBombCD:Start(9.8, 1)
 	elseif spellId == 265206 then
 		if not castsPerGUID[args.sourceGUID] then--Shouldn't happen, but does?
@@ -530,6 +529,7 @@ function mod:SPELL_AURA_REMOVED(args)
 		timerGestateCD:Start(14.6)--SUCCESS
 		countdownGestate:Start(14.6)
 		timerContagionCD:Start(24.3, 1)
+		countdownContagion:Start(24.3)
 		timerLiquefyCD:Start(94.8)
 		countdownLiquefy:Start(94.8)
 	elseif spellId == 265127 then

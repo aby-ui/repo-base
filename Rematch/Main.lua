@@ -151,7 +151,7 @@ function rematch:Start()
 
 	-- check for the existence of an object that's in a new file and shut down rematch if it's not accessible.
 	-- this is caused by new files added and user updates the addon while logged in to the game
-	if rematch:AddonDidntCompletelyLoad(rematch.CreateODTable) then
+	if rematch:AddonDidntCompletelyLoad(rematch.ShowTextureHighlight) then
 		return
 	end
 
@@ -409,10 +409,8 @@ function rematch:CURSOR_UPDATE()
 		rematch.MiniPanel.Glow:Hide()
 		rematch:UnregisterEvent("CURSOR_UPDATE") -- cursor clear, stop watching cursor changes
 	end
-	if rematch.QueuePanel:IsVisible() then
-		rematch.QueuePanel:UpdateList()
-	elseif rematch.MiniQueue:IsVisible() then
-		rematch.MiniQueue:UpdateList()
+	if rematch.QueuePanel.List:IsVisible() then
+		rematch.QueuePanel.List:Update()
 	end
 end
 
@@ -615,7 +613,6 @@ function rematch:PET_BATTLE_FINAL_ROUND(winner)
 			elseif winner==3 then
 				team.draws = (team.draws or 0) + 1 -- draw! :|
 			end
-			rematch:ToastWinRecord(rematch.LoadedTeamPanel,key,winner or 3)
 		end
 	end
 end

@@ -3808,13 +3808,19 @@ function DF:CreateTabContainer (parent, title, frame_name, frame_list, options_t
 		DF.TabContainerFunctions.CreateUnderlineGlow (tabButton)
 		
 		local right_click_to_back
-		if (i == 1) then
+		if (i == 1 or options_table.rightbutton_always_close) then
 			right_click_to_back = DF:CreateLabel (f, "right click to close", 10, "gray")
 			right_click_to_back:SetPoint ("bottomright", f, "bottomright", -1, options_table.right_click_y or 0)
+			if (options_table.close_text_alpha) then
+				right_click_to_back:SetAlpha (options_table.close_text_alpha)
+			end
 			f.IsFrontPage = true
 		else
 			right_click_to_back = DF:CreateLabel (f, "right click to go back to main menu", 10, "gray")
 			right_click_to_back:SetPoint ("bottomright", f, "bottomright", -1, options_table.right_click_y or 0)
+			if (options_table.close_text_alpha) then
+				right_click_to_back:SetAlpha (options_table.close_text_alpha)
+			end
 		end
 		
 		if (options_table.hide_click_label) then
@@ -4948,9 +4954,13 @@ DF.IconRowFunctions = {
 			local newIconFrame = CreateFrame ("frame", "$parentIcon" .. self.NextIcon, self)
 			newIconFrame:SetSize (self.options.icon_width, self.options.icon_height)
 			
-			newIconFrame.Texture = newIconFrame:CreateTexture (nil, "background")
+			newIconFrame.Texture = newIconFrame:CreateTexture (nil, "artwork")
 			newIconFrame.Texture:SetAllPoints()
 			
+			newIconFrame.Border = newIconFrame:CreateTexture (nil, "background")
+			newIconFrame.Border:SetAllPoints()
+			newIconFrame.Border:SetColorTexture (0, 0, 0)
+
 			newIconFrame:SetBackdrop ({edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1})
 			newIconFrame:SetBackdropBorderColor (0, 0, 0, 0)
 			newIconFrame:EnableMouse (false)
@@ -5029,7 +5039,20 @@ DF.IconRowFunctions = {
 				
 				if (self.options.show_text) then
 					iconFrame.CountdownText:Show()
-					iconFrame.CountdownText:SetText (floor (startTime + duration - GetTime()))
+					
+					local formattedTime = floor (startTime + duration - GetTime())
+					
+					if (formattedTime >= 3600) then
+						formattedTime = floor (formattedTime / 3600) .. "h"
+						
+					elseif (formattedTime >= 60) then
+						formattedTime = floor (formattedTime / 60) .. "m"
+						
+					else
+						formattedTime = floor (formattedTime)
+					end
+					
+					iconFrame.CountdownText:SetText (formattedTime)
 					iconFrame.Cooldown:SetHideCountdownNumbers (true)
 				else
 					iconFrame.CountdownText:Hide()
@@ -5611,23 +5634,46 @@ end
 
 function DF:PassLoadFilters (loadTable, encounterID)
 	--class
+	local passLoadClass
 	if (loadTable.class.Enabled) then
 		local _, classFileName = UnitClass ("player")
 		if (not loadTable.class [classFileName]) then
 			return false
+		else
+			passLoadClass = true
 		end
 	end
 	
 	--spec
 	if (loadTable.spec.Enabled) then
-		local specIndex = GetSpecialization()
-		if (specIndex) then
-			local specID = GetSpecializationInfo (specIndex)
-			if (not loadTable.spec [specID]) then
+		local canCheckTalents = true
+		
+		if (passLoadClass) then
+			--if is allowed to load on this class, check if the talents isn't from another class
+			local _, classFileName = UnitClass ("player")
+			local specsForThisClass = DF:GetClassSpecIDs (classFileName)
+			
+			canCheckTalents = false
+			
+			for _, specID in ipairs (specsForThisClass) do
+				if (loadTable.spec [specID]) then
+					--theres a talent for this class
+					canCheckTalents = true
+					break
+				end
+			end
+		end
+		
+		if (canCheckTalents) then
+			local specIndex = GetSpecialization()
+			if (specIndex) then
+				local specID = GetSpecializationInfo (specIndex)
+				if (not loadTable.spec [specID]) then
+					return false
+				end
+			else
 				return false
 			end
-		else
-			return false
 		end
 	end
 	
@@ -6304,17 +6350,18 @@ DF.DataScrollFunctions = {
 		line.Date = date
 		line.Text = text
 		
+		line.backdrop_color = self.options.backdrop_color or {.1, .1, .1, .3}
+		line.backdrop_color_highlight = self.options.backdrop_color_highlight or {.3, .3, .3, .5}
+		
 		return line
 	end,
 	
 	LineOnEnter = function (self)
-		local parent = self:GetParent()
-		self:SetBackdropColor (unpack (parent.options.backdrop_color_highlight))
+		self:SetBackdropColor (unpack (self.backdrop_color_highlight))
 	end,
 	
 	LineOnLeave = function (self)
-		local parent = self:GetParent()
-		self:SetBackdropColor (unpack (parent.options.backdrop_color))
+		self:SetBackdropColor (unpack (self.backdrop_color))
 	end,
 	
 	OnClick = function (self)
@@ -6325,11 +6372,15 @@ DF.DataScrollFunctions = {
 		local parent = line:GetParent()
 		
 		if (parent.options.show_title) then
-			line.Title.text = data [1] or ""
-			line.Date.text = data [2] or ""
-			line.Text.text = data [3] or ""
+			line.Title.text = data [2] or ""
+			line.Date.text = data [3] or ""
+			line.Text.text = data [4] or ""
 		else
-			line.Text.text = data [1] or ""
+			line.Text.text = data [2] or ""
+		end
+		
+		if (line:GetParent().OnUpdateLineHook) then
+			DF:CoreDispatch ((line:GetName() or "ScrollBoxDataScrollUpdateLineHook") .. ":UpdateLineHook()", line:GetParent().OnUpdateLineHook, line, lineIndex, data)
 		end
 	end,
 }
@@ -6416,6 +6467,24 @@ DF.NewsFrameFunctions = {
 }
 
 --[=[
+	Get the amount of news that the player didn't see yet
+	@newsTable = an indexed table of tables
+	@lastNewsTime = last time the player opened the news window
+--]=]
+function DF:GetNumNews (newsTable, lastNewsTime)
+	local now = time()
+	local nonReadNews = 0
+	
+	for _, news in ipairs (newsTable) do
+		if (news[1] > lastNewsTime) then
+			nonReadNews = nonReadNews + 1
+		end
+	end
+	
+	return nonReadNews
+end
+
+--[=[
 	Creates a panel with a scroll to show texts organized in separated lines
 	@parent =  the parent of the frame
 	@name = the frame name to use in the CreateFrame call
@@ -6424,7 +6493,7 @@ DF.NewsFrameFunctions = {
 	@db = (optional) an empty table from the addon database to store the position of the frame between game sessions
 --]=]
 function DF:CreateNewsFrame (parent, name, options, newsTable, db)
-
+	
 	local f = DF:CreateSimplePanel (parent, 400, 700, options and options.title or default_newsframe_options.title, name, {UseScaleBar = db and true}, db)
 	f:SetFrameStrata ("MEDIUM")
 	DF:ApplyStandardBackdrop (f)
@@ -6433,12 +6502,12 @@ function DF:CreateNewsFrame (parent, name, options, newsTable, db)
 	DF:Mixin (f, DF.LayoutFrame)
 	
 	f:BuildOptionsTable (default_newsframe_options, options)
-
+	
 	f:SetSize (f.options.width, f.options.height)
 	f:SetBackdrop (f.options.backdrop)
 	f:SetBackdropColor (unpack (f.options.backdrop_color))
 	f:SetBackdropBorderColor (unpack (f.options.backdrop_border_color))
-
+	
 	local scrollOptions = {
 		data = newsTable,
 		width = f.options.width - 32, --frame distance from walls and scroll bar space
@@ -6455,12 +6524,42 @@ function DF:CreateNewsFrame (parent, name, options, newsTable, db)
 		newsScroll:SetPoint ("topleft", f, "topleft", 5, -30)
 	end
 	
+	f.NewsScroll = newsScroll
+	
 	return f
 end
 
 
 
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+--> statusbar info
 
+function DF:BuildStatusbarAuthorInfo (f)
+	
+	local authorName = DF:CreateLabel (f, "An addon by |cFFFFFFFFTercioo|r")
+	authorName.textcolor = "silver"
+	local discordLabel = DF:CreateLabel (f, "Discord: ")
+	discordLabel.textcolor = "silver"
+	
+	local options_dropdown_template = DF:GetTemplate ("dropdown", "OPTIONS_DROPDOWN_TEMPLATE")
+	local discordTextEntry = DF:CreateTextEntry (f, function()end, 200, 18, "DiscordTextBox", _, _, options_dropdown_template)
+	discordTextEntry:SetText ("https://discord.gg/AGSzAZX")
+	discordTextEntry:SetFrameLevel (5000)
+	
+	authorName:SetPoint ("left", f, "left", 2, 0)
+	discordLabel:SetPoint ("left", authorName, "right", 20, 0)
+	discordTextEntry:SetPoint ("left", discordLabel, "right", 2, 0)
+	
+	--format
+	authorName:SetAlpha (.4)
+	discordLabel:SetAlpha (.4)
+	discordTextEntry:SetAlpha (.4)
+	discordTextEntry:SetBackdropBorderColor (1, 1, 1, 0)
+	
+	discordTextEntry:SetHook ("OnEditFocusGained", function()
+		discordTextEntry:HighlightText()
+	end)
+end
 
 
 

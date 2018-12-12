@@ -47,39 +47,6 @@
 		</Scripts>
 	</Button>
 
-
-	<!-- makes a "+1 Stat" float over a WinRecord button -->
-	<Frame name="RematchWinRecordToast" hidden="true">
-		<Size x="80" y="24"/>
-		<Layers>
-			<Layer level="BACKGROUND">
-				<FontString parentKey="Text" inherits="GameFontNormal" setAllPoints="true"/>
-				<Texture file="Interface\Common\icon-shadow" alpha="0.75">
-					<Anchors>
-						<Anchor point="TOPLEFT" relativeKey="$parent.Text" relativePoint="TOPLEFT" x="-4" y="4"/>
-						<Anchor point="BOTTOMRIGHT" relativeKey="$parent.Text" relativePoint="BOTTOMRIGHT" x="4" y="-4"/>
-					</Anchors>
-				</Texture>
-			</Layer>
-		</Layers>
-		<Animations>
-			<AnimationGroup parentKey="anim">
-				<Translation offsetY="24" duration="0.75" order="1"/>
-				<Alpha change="-1" duration="0.5" order="1" startDelay="0.2"/>
-				<Scripts>
-					<OnFinished>
-						self:GetParent():Hide()
-					</OnFinished>
-				</Scripts>
-			</AnimationGroup>
-		</Animations>
-		<Scripts>
-			<OnShow>
-				self.anim:Play()
-			</OnShow>
-		</Scripts>
-	</Frame>
-
 	<!-- template for the Win/Loss/Draw editbox/add button/text in the card -->
 	<Frame name="RematchWinRecordCardStatTemplate" virtual="true">
 		<Size x="200" y="30"/>

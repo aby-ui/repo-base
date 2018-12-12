@@ -345,11 +345,20 @@ ConditionCategory:RegisterCondition(31,	 "LUA", {
 				if _G[parent:GetName()] == parent then
 					lua = lua:gsub("thisobj", parent:GetName())
 				else
-					error("Error with thisobj substitution: _G[thisobj:GetName()] ~= thisobj for " .. parent:GetName())
+					error("Error with `thisobj` substitution: _G[thisobj:GetName()] ~= thisobj for " .. parent:GetName())
 				end
 			else
-				error("Attempted use of thisobj in conditions that don't support it.")
+				error("Attempted use of `thisobj` in conditions that don't support it.")
 			end
+		end
+
+		if lua:find("thisunit") then
+			if c.Unit and c.Unit ~= "" then
+				lua = lua:gsub("thisunit", "(" .. CNDT:GetConditionUnitSubstitution(c.Unit) .. ")")
+			else
+				error("Attempted use of `thisunit` in conditions without units.")
+			end
+
 		end
 
 		local func, key, err = GetCompiledFunction(lua)

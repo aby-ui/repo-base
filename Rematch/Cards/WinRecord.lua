@@ -150,7 +150,12 @@ end
 
 -- tooltip for the little WinRecord button beside each team
 function rematch:WinRecordOnEnter()
-	rematch:ShowWinRecord(self,self:GetParent().key)
+	if self:GetObjectType()=="Texture" then
+		-- for now, anchoring to button itself; for some reason frame won't anchor to texture
+		rematch:ShowWinRecord(self,self:GetParent().key)
+	else
+		rematch:ShowWinRecord(self,self:GetParent().key)
+	end
 end
 
 function rematch:WinRecordOnLeave()
@@ -162,7 +167,7 @@ end
 
 -- click of the little WinRecord button beside each team
 function rematch:WinRecordOnClick(fromLoadedTeam)
-	local key = self:GetParent().key
+	local key = self.key or self:GetParent().key
 	if not key then
 		return
 	end
@@ -217,50 +222,6 @@ function rematch:FillWinRecordButton(button,key)
 	end
 end
 
--- floats the RematchWinRecardToast above a parent frame, where stat is 1="+1 Win" 2="+1 Loss" 3="+1 Draw"
--- returns true if it did a toast; from is the parent frame where the card came from
-function rematch:ToastWinRecord(from,key,stat)
-	if key and stat then
-		local parent -- find the team list button that contains this key (to know which to toast over)
-		if from==rematch.LoadedTeamPanel or from==rematch.LoadedTeamPanel.Footnotes.WinRecord then
-			parent = settings.HideWinRecord and rematch.LoadedTeamPanel or rematch.LoadedTeamPanel.Footnotes.WinRecord
-		elseif rematch.TeamPanel:IsVisible() then
-			for _,button in ipairs(rematch.TeamPanel.List.ScrollFrame.buttons) do
-				if button.key==key then
-					parent = settings.HideWinRecord and button or button.WinRecord
-					break
-				end
-			end
-		end
-		if parent then -- if parent to toast isn't found that's okay, we just won't toast
-			local toast = RematchWinRecordToast
-			if stat==1 then
-				toast.Text:SetText(L["+1 Win"])
-				toast.Text:SetTextColor(0,1,0)
-			elseif stat==2 then
-				toast.Text:SetText(L["+1 Loss"])
-				toast.Text:SetTextColor(1,0.2,0.2)
-			elseif stat==3 then
-				toast.Text:SetText(L["+1 Draw"])
-				toast.Text:SetTextColor(1,0.82,0)
-			else
-				return -- no idea what to display, get out of here
-			end
-			toast:SetParent(parent)
-			toast:SetFrameLevel(parent:GetFrameLevel()+5)
-			toast:SetPoint("CENTER",parent,"TOP",-8,0)
-			toast:Show()
-			if rematch.TeamPanel:IsVisible() then
-				rematch:ListBling(rematch.TeamPanel.List.ScrollFrame,"key",key)
-			end
-			if key==settings.loadedTeam then
-				rematch.LoadedTeamPanel.Bling:Show()
-			end
-			return true
-		end
-	end
-end
-
 --[[ Card controls while the card is locked ]]
 
 -- tab pressed in editbox moves to next editbox
@@ -278,7 +239,7 @@ function card:AddButtonOnClick()
 		team[stat] = (team[stat] or 0) + 1
 		card:Hide()
 		rematch:UpdateUI()
-		if not rematch:ToastWinRecord(parent,key,self:GetParent():GetID()) and rematch.TeamPanel:IsVisible() then
+		if rematch.TeamPanel:IsVisible() then
 			rematch:ShowTeam(key)
 		end
 	end

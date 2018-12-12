@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1122, "DBM-BlackrockFoundry", nil, 457)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 35 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 37 $"):sub(12, -3))
 mod:SetCreatureID(76865)--No need to add beasts to this. It's always main boss that's engaged first and dies last.
 mod:SetEncounterID(1694)
 mod:SetZone()
@@ -435,7 +435,7 @@ function mod:INSTANCE_ENCOUNTER_ENGAGE_UNIT()
 end
 
 function mod:UNIT_TARGETABLE_CHANGED(uId)
-	local cid = self:GetCIDFromGUID(UnitGUID(uId))
+	local cid = self:GetUnitCreatureId(uId)
 	if (cid == 76865) and UnitExists(uId) and self:IsMythic() then--Boss dismounting living beast on mythic
 		DBM:Debug("UNIT_TARGETABLE_CHANGED, Boss Dismounting", 2)
 		updateBeastTimers(self, true, nil, true)

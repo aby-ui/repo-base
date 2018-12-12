@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1480, "DBM-Party-Legion", 3, 716)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 2 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 4 $"):sub(12, -3))
 mod:SetCreatureID(91784)
 mod:SetEncounterID(1810)
 mod:SetZone()
@@ -19,7 +19,7 @@ local warnImpalingSpear				= mod:NewTargetAnnounce(192094, 4)
 
 local specWarnReinforcements		= mod:NewSpecialWarningSwitch(196563, "Tank", nil, nil, 1, 2)
 local specWarnCrashingwave			= mod:NewSpecialWarningDodge(191900, nil, nil, nil, 2, 2)
-local specWarnImpalingSpear			= mod:NewSpecialWarningMoveTo(192094, nil, nil, nil, 3, 6)
+local specWarnImpalingSpear			= mod:NewSpecialWarningMoveTo(192094, nil, nil, nil, 3, 8)
 local yellImpalingSpear				= mod:NewYell(192094)
 local specWarnRestoration			= mod:NewSpecialWarningInterrupt(197502, "HasInterrupt", nil, nil, 1, 2)
 
@@ -38,7 +38,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		if args:IsPlayer() then
 			specWarnImpalingSpear:Show(DBM_ADDS)
 			yellImpalingSpear:Yell()
-			specWarnImpalingSpear:Play("192094")
+			specWarnImpalingSpear:Play("behindmob")
 		else
 			warnImpalingSpear:Show(args.destName)
 		end

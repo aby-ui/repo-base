@@ -272,6 +272,15 @@ function rematch:ShowPetCard(parent,petID,force)
 		card.ypos = card.ypos - info.RealName:GetStringHeight() - 6
 	end
 	info.RealName:SetShown(petInfo.customName and true)
+
+	-- revoked or can't summon get top billing
+	if petInfo.isRevoked then
+		card:AddStat(L["\124cffff0000Revoked"],"Interface\\Buttons\\UI-GroupLoot-Pass-Down",0,1,0,1,L["Revoked"],L["This pet has been revoked, which means Blizzard withdrew your ability to use this pet.\n\nThis commonly happens when a pets no longer meet a condition for ownership, such as the Core Hound Pup requiring an authenticator attached to the account."])
+	end
+	if not petInfo.isSummonable then
+		card:AddStat(L["Can't Summon"],"Interface\\Buttons\\UI-GroupLoot-Pass-Down",0,1,0,1,L["Can't Summon"],L["This pet can't be summoned.\n\nA common reason is a faction restriction, such as the opposing faction's version of the Moonkin Hatchling."])
+	end
+
 	-- actual stats here
 	if petInfo.idType=="pet" then -- this is a pet player owns
 		if petInfo.isSlotted then
@@ -311,8 +320,10 @@ function rematch:ShowPetCard(parent,petID,force)
 	end
 
 	-- abilities
-	local teamSlot,teamKey = parent:GetID() -- if abilities from team list, get team's key
-	if teamSlot>0 and teamSlot<4 then
+	--local teamSlot,teamKey = parent:GetID() -- if abilities from team list, get team's key
+	local teamSlot, teamKey = parent.petSlot
+	teamSlot = tonumber(teamSlot)
+	if teamSlot and teamSlot>0 and teamSlot<4 then
 		teamKey = parent:GetParent().key
 	end
 
@@ -766,12 +777,8 @@ end
 -- pets that have the card locked: going through the PetPanel, QueuePanel, LoadoutPanel and
 -- MiniPanel and locking/unlocking highlights in one pass
 function card:UpdateHighlights()
-
 	rematch.MiniPanel:UpdateHighlights()
 	rematch.LoadoutPanel:UpdateHighlights()
-	rematch:UpdatePetListHighlights(rematch.PetPanel.List.ScrollFrame)
-	rematch:UpdatePetListHighlights(rematch.QueuePanel.List.ScrollFrame)
-
 end
 
 -- locks/unlocks highlights for petpanel and queuepanel list buttons

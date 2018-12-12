@@ -103,6 +103,12 @@ function DF:Clamp (minValue, maxValue, value)
 	return value < minValue and minValue or value < maxValue and value or maxValue
 end
 
+--from http://lua-users.org/wiki/SimpleRound cut fractions on a float
+function DF:Round (num, numDecimalPlaces)
+	local mult = 10^(numDecimalPlaces or 0)
+	return math.floor(num * mult + 0.5) / mult
+end
+
 function DF:ScaleBack ()
 
 end

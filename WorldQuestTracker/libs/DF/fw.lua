@@ -1,5 +1,5 @@
 
-local dversion = 117
+local dversion = 126
 local major, minor = "DetailsFramework-1.0", dversion
 local DF, oldminor = LibStub:NewLibrary (major, minor)
 
@@ -19,6 +19,11 @@ local string_match = string.match
 
 SMALL_NUMBER = 0.000001
 ALPHA_BLEND_AMOUNT = 0.8400251
+
+DF.AuthorInfo = {
+	Name = "Tercioo",
+	Discord = "https://discord.gg/AGSzAZX",
+}
 
 --> will always give a very random name for our widgets
 local init_counter = math.random (1, 1000000)
@@ -384,6 +389,24 @@ end
 function DF:SetFontColor (fontString, r, g, b, a)
 	r, g, b, a = DF:ParseColors (r, g, b, a)
 	fontString:SetTextColor (r, g, b, a)
+end
+
+function DF:AddClassColorToText (text, class)
+	if (type (class) ~= "string") then
+		return DF:RemoveRealName (text)
+		
+	elseif (class == "UNKNOW" or class == "PET") then
+		return DF:RemoveRealName (text)
+	end
+	
+	local color = RAID_CLASS_COLORS [class]
+	if (color) then
+		text = "|c" .. color.colorStr .. DF:RemoveRealName (text) .. "|r"
+	else
+		return DF:RemoveRealName (text)
+	end
+	
+	return text
 end
 
 function DF:GetFontSize (fontString)
@@ -2687,6 +2710,7 @@ DF.CLEncounterID = {
 function DF:GetCLEncounterIDs()
 	return DF.CLEncounterID
 end
+
 
 --doo elsee 
 --was doing double loops due to not enought height

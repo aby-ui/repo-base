@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1726, "DBM-EmeraldNightmare", nil, 768)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 2 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 5 $"):sub(12, -3))
 mod:SetCreatureID(103769)
 mod:SetEncounterID(1864)
 mod:SetZone()
@@ -394,6 +394,7 @@ function mod:SPELL_AURA_REMOVED(args)
 	if spellId == 208431 and args:IsPlayer() then
 		yellDescentIntoMadness:Cancel()
 	elseif spellId == 211802 then
+		bladesTarget[args.destName] = nil
 		if self.Options.SetIconOnBlades then
 			self:SetIcon(args.destName, 0)
 		end
