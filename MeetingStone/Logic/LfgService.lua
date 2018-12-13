@@ -81,7 +81,7 @@ function LfgService:CacheActivity(id)
 end
 
 function LfgService:_CacheActivity(id)
-    local _id, activityId, title, comment = C_LFGList.GetSearchResultInfo(id)
+    local _id, activityId, title, comment = C_LFGListGetSearchResultInfo(id) --abyui81
     if not _id then
         return
     elseif not activityId then

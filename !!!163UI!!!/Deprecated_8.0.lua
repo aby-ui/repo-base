@@ -244,3 +244,11 @@ end
 do
     GetNumIgnores = GetNumIgnores or C_FriendList.GetNumIgnores
 end
+
+function C_LFGListGetSearchResultInfo(resultID)
+    --local id, activityId, title, comment, voiceChat, iLvl, honorLevel, age, numBNetFriends, numCharFriends, numGuildMates, isDelisted, leader, numMembers
+    local info = C_LFGList.GetSearchResultInfo(resultID);
+    if not info then return end
+    return info.searchResultID, info.activityID, info.name, info.comment, info.voiceChat, info.requiredItemLevel, info.requiredHonorLevel,
+    info.age, info.numBNetFriends, info.numCharFriends, info.numGuildMates, info.isDelisted, info.leaderName, info.numMembers
+end

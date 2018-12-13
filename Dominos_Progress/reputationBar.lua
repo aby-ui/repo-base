@@ -4,6 +4,7 @@ local ReputationBar = Dominos:CreateClass('Frame', Addon.ProgressBar)
 local FRIEND_FACTION_COLOR_INDEX = 5
 local PARAGON_FACTION_COLOR_INDEX = #FACTION_BAR_COLORS
 local MAX_REPUTATION_REACTION = _G.MAX_REPUTATION_REACTION
+local L = LibStub('AceLocale-3.0'):GetLocale('Dominos-Progress')
 
 function ReputationBar:Init()
     self:Update()

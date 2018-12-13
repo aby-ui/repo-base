@@ -7040,7 +7040,7 @@ hooksecurefunc("LFGListSearchPanel_SelectResult", function(self, resultID)
 	if not VWQL or VWQL.DisableLFG then
 		return
 	end
-	local id, activityID, name = C_LFGList.GetSearchResultInfo(resultID)
+	local id, activityID, name = C_LFGListGetSearchResultInfo(resultID) --abyui81
 	if name and LFGListFrame.SearchPanel.categoryID == 1 and IsTeoreticalWQ(name) then
 		LFGListFrame.SearchPanel.SignUpButton:Click()
 		LFGListApplicationDialog.SignUpButton:Click()
@@ -7053,7 +7053,7 @@ hooksecurefunc("LFGListGroupDataDisplayPlayerCount_Update", function(self, displ
 	if disabled or not line or not line.resultID or numPlayers ~= 5 then
 		return
 	end	
-	local id, activityID, name = C_LFGList.GetSearchResultInfo(line.resultID)
+	local id, activityID, name = C_LFGListGetSearchResultInfo(line.resultID) --abyui81
 	if name and LFGListFrame.SearchPanel.categoryID == 1 then
 		self.Count:SetText("|cffff0000"..numPlayers)
 	end
@@ -7265,7 +7265,7 @@ QuestCreationBox:SetScript("OnEvent",function (self,event,arg1,arg2)
 		if name then
 			local app = C_LFGList.GetApplications()
 			for _,id in pairs(app) do
-				local _, _, _, _, _, _, _, _, _, _, _, _, groupLeader = C_LFGList.GetSearchResultInfo(id)
+				local _, _, _, _, _, _, _, _, _, _, _, _, groupLeader = C_LFGListGetSearchResultInfo(id) --abyui81
 				if name == groupLeader then
 					AcceptGroup()
 					StaticPopupSpecial_Hide(LFGInvitePopup)

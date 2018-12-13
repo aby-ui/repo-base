@@ -1409,8 +1409,8 @@ finderFrame:SetScript("OnEvent", function( self, event, ... )
 
 		for _, resultId in ipairs( resultIds ) do
 
-			local id, activityID, name, comment, voiceChat, iLvl, honorLevel, age, numBNetFriends, numCharFriends, numGuildMates, isDelisted, leaderName, numMembers, isAutoAccept = C_LFGList.GetSearchResultInfo( resultId );
-			if ( age < maxAge and lastSearchTerm == "" ) then
+			local id, activityID, name, comment, voiceChat, iLvl, honorLevel, age, numBNetFriends, numCharFriends, numGuildMates, isDelisted, leaderName, numMembers, isAutoAccept = C_LFGListGetSearchResultInfo( resultId ); --abyui81
+			if ( age and age < maxAge and lastSearchTerm == "" ) then
 				-- dont count groups older than 2.5 minutes
 				updateNPCGroupCount( name, leaderName );
 			end

@@ -41,7 +41,7 @@ end
 
 function Activity:Update()
     local id, activityId, title, comment, voiceChat, iLvl, honorLevel, age,
-        numBNetFriends, numCharFriends, numGuildMates, isDelisted, leader, numMembers = C_LFGList.GetSearchResultInfo(self:GetID())
+        numBNetFriends, numCharFriends, numGuildMates, isDelisted, leader, numMembers = C_LFGListGetSearchResultInfo(self:GetID()) --abyui81
 
     if not activityId then
         return false
