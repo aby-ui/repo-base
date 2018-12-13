@@ -516,7 +516,7 @@ end
 function CreatePanel:Create(activity, isSelf)
     local isCreated = self:IsActivityCreated()
     local handler = isCreated and C_LFGList.UpdateListing or C_LFGList.CreateListing
-    local autoAccept = select(9, C_LFGList.GetActiveEntryInfo())
+    local autoAccept = C_LFGList:HasActiveEntryInfo() and C_LFGList.GetActiveEntryInfo().autoAccept
 
     if handler(activity:GetCreateArguments(autoAccept)) then
         if isSelf then
@@ -534,7 +534,7 @@ function CreatePanel:Create(activity, isSelf)
 end
 
 function CreatePanel:IsActivityCreated()
-    return C_LFGList.GetActiveEntryInfo()
+    return C_LFGList.HasActiveEntryInfo()
 end
 
 function CreatePanel:ClearAllContent()
@@ -612,9 +612,8 @@ function CreatePanel:UpdateActivityView()
 end
 
 function CreatePanel:GetCurrentActivity()
-    local active, activityId, ilvl, honorLevel, title, comment, voiceChat, questId, autoAccept, privateGroup = C_LFGList.GetActiveEntryInfo()
-    if active then
-        self.Activity = CurrentActivity:FromSystem(activityId, ilvl, honorLevel, title, comment, voiceChat, privateGroup)
+    if C_LFGList.HasActiveEntryInfo() then
+        self.Activity = CurrentActivity:FromSystem(C_LFGList.GetActiveEntryInfo())
         return self.Activity
     else
         self.Activity = nil

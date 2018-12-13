@@ -112,7 +112,7 @@ function SummaryGrid:SetActivity(activity)
         self.PendingLabel:Show()
         self.ExpirationTime:Hide()
         self.CancelButton:Hide()
-    elseif appStatus == 'declined' then
+    elseif appStatus == 'declined' or appStatus == 'declined_full' or appStatus == 'declined_delisted' then
         self.PendingLabel:SetText(LFG_LIST_APP_DECLINED)
         self.PendingLabel:SetTextColor(RED_FONT_COLOR.r, RED_FONT_COLOR.g, RED_FONT_COLOR.b)
         self.PendingLabel:Show()

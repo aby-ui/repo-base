@@ -171,7 +171,7 @@ WorldQuestTracker.mapTables = {
 		[1161] = { --boralus
 			widgets = {},
 			Anchor_X = 0.99,
-			Anchor_Y = 0.45,
+			Anchor_Y = 0.48,
 			GrowRight = false,
 			show_on_map = {
 					[WorldQuestTracker.MapData.ZoneIDs.KULTIRAS] = true,
@@ -181,7 +181,7 @@ WorldQuestTracker.mapTables = {
 		[1165] = { --dazar'alor
 			widgets = {},
 			Anchor_X = 0.99,
-			Anchor_Y = 0.51,
+			Anchor_Y = 0.48,
 			GrowRight = false,
 			show_on_map = {
 					[WorldQuestTracker.MapData.ZoneIDs.ZANDALAR] = true,
@@ -192,7 +192,7 @@ WorldQuestTracker.mapTables = {
 		[WorldQuestTracker.MapData.ZoneIDs.TIRAGARDE] = {
 			widgets = {},
 			Anchor_X = 0.99,
-			Anchor_Y = 0.67,
+			Anchor_Y = 0.62,
 			GrowRight = false,
 			show_on_map = {
 					[WorldQuestTracker.MapData.ZoneIDs.KULTIRAS] = true,
@@ -201,7 +201,7 @@ WorldQuestTracker.mapTables = {
 		[WorldQuestTracker.MapData.ZoneIDs.STORMSONG] = {
 			widgets = {},
 			Anchor_X = 0.99,
-			Anchor_Y = 0.25,
+			Anchor_Y = 0.18,
 			GrowRight = false,
 			show_on_map = {
 					[WorldQuestTracker.MapData.ZoneIDs.KULTIRAS] = true,
@@ -210,7 +210,7 @@ WorldQuestTracker.mapTables = {
 		[WorldQuestTracker.MapData.ZoneIDs.DRUSTVAR] = {
 			widgets = {},
 			Anchor_X = 0.01,
-			Anchor_Y = 0.42,
+			Anchor_Y = 0.36,
 			GrowRight = true,
 			show_on_map = {
 					[WorldQuestTracker.MapData.ZoneIDs.KULTIRAS] = true,
@@ -239,7 +239,7 @@ WorldQuestTracker.mapTables = {
 		[WorldQuestTracker.MapData.ZoneIDs.NAZMIR] = {
 			widgets = {},
 			Anchor_X = 0.99,
-			Anchor_Y = 0.23,
+			Anchor_Y = 0.18,
 			GrowRight = false,
 			show_on_map = {
 					[WorldQuestTracker.MapData.ZoneIDs.ZANDALAR] = true,
@@ -486,7 +486,7 @@ WorldQuestTracker.MapData.QuestTypeIcons = {
 	[WQT_QUESTTYPE_DUNGEON] = {name = L["S_QUESTTYPE_DUNGEON"], icon = [[Interface\TARGETINGFRAME\Nameplates]], coords = {41/256, 0/256, 29/128, 63/128}},
 	[WQT_QUESTTYPE_PROFESSION] = {name = L["S_QUESTTYPE_PROFESSION"], icon = [[Interface\MINIMAP\TRACKING\Profession]], coords = {2/32, 30/32, 2/32, 30/32}},
 	[WQT_QUESTTYPE_PVP] = {name = L["S_QUESTTYPE_PVP"], icon = [[Interface\QUESTFRAME\QuestTypeIcons]], coords = {37/128, 53/128, 19/64, 36/64}},
-	[WQT_QUESTTYPE_PETBATTLE] = {name = L["S_QUESTTYPE_PETBATTLE"], icon = [[Interface\MINIMAP\ObjectIconsAtlas]], coords = {530/1024, 554/1024, 380/512, 403/512}},
+	[WQT_QUESTTYPE_PETBATTLE] = {name = L["S_QUESTTYPE_PETBATTLE"], icon = [[Interface\AddOns\WorldQuestTracker\media\icon_pet]], coords = {0.05, 0.95, 0.05, 0.95}},
 	[WQT_QUESTTYPE_TRADE] = {name = L["S_QUESTTYPE_TRADESKILL"], icon = [[Interface\ICONS\INV_Blood of Sargeras]], coords = {5/64, 59/64, 5/64, 59/64}},
 	[WQT_QUESTTYPE_REPUTATION] = {name = "Reputation", icon = [[Interface\ICONS\Achievement_Reputation_01]], coords = {5/64, 59/64, 5/64, 59/64}},
 }

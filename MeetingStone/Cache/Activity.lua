@@ -40,8 +40,24 @@ function Activity:Get(id)
 end
 
 function Activity:Update()
-    local id, activityId, title, comment, voiceChat, iLvl, honorLevel, age,
-        numBNetFriends, numCharFriends, numGuildMates, isDelisted, leader, numMembers = C_LFGListGetSearchResultInfo(self:GetID()) --abyui81
+    local info = C_LFGList.GetSearchResultInfo(self:GetID())
+    if not info then
+        return
+    end
+    local id = info.searchResultID
+    local activityId = info.activityID
+    local title = info.name
+    local comment = info.comment
+    local voiceChat = info.voiceChat
+    local iLvl = info.requiredItemLevel
+    local honorLevel = info.requiredHonorLevel
+    local age = info.age
+    local numBNetFriends = info.numBNetFriends
+    local numCharFriends = info.numCharFriends
+    local numGuildMates = info.numGuildMates
+    local isDelisted = info.isDelisted
+    local leader = info.leaderName
+    local numMembers = info.numMembers
 
     if not activityId then
         return false

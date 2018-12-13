@@ -29,15 +29,15 @@ end
 
 function KT.GetCurrentMapContinent()
     local mapID = C_Map.GetBestMapForUnit("player")
-    return MapUtil.GetMapParentInfo(mapID, Enum.UIMapType.Continent, true)
+    return MapUtil.GetMapParentInfo(mapID, Enum.UIMapType.Continent, true) or {}
 end
 
 function KT.GetMapContinent(mapID)
-    return MapUtil.GetMapParentInfo(mapID, Enum.UIMapType.Continent, true)
+    return MapUtil.GetMapParentInfo(mapID, Enum.UIMapType.Continent, true) or {}
 end
 
 function KT.GetMapNameByID(mapID)
-    local mapInfo = C_Map.GetMapInfo(mapID)
+    local mapInfo = C_Map.GetMapInfo(mapID) or {}
     return mapInfo.name
 end
 

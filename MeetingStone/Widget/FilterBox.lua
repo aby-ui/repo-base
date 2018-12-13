@@ -27,7 +27,7 @@ function FilterBox:Constructor()
     end
 
     local MinBox = GUI:GetClass('NumericBox'):New(self) do
-        MinBox:SetSize(80, 20)
+        MinBox:SetSize(60, 20)
         MinBox:SetPoint('TOPLEFT', Check, 'BOTTOMRIGHT', 0, -5)
     end
 
@@ -37,7 +37,7 @@ function FilterBox:Constructor()
     end
 
     local MaxBox = GUI:GetClass('NumericBox'):New(self) do
-        MaxBox:SetSize(80, 20)
+        MaxBox:SetSize(60, 20)
         MaxBox:SetPoint('LEFT', Text, 'RIGHT', 5, 0)
     end
 

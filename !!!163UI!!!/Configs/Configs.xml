@@ -121,6 +121,7 @@
     <Include file="..\..\AbyBossGuide\CfgAbyBossGuide.lua"/>
     <Include file="..\..\Paku_Totems\CfgPaku_Totems.lua"/>
     <Include file="..\..\ShadowedUnitFrames\CfgShadowedUnitFrames.lua"/>
+    <Include file="..\..\TomCats-DarkshoreRares\CfgTomCats-DarkshoreRares.lua"/>
 
     <!-- local
     <Include file="..\..\AtlasLoot\CfgAtlasLoot.lua"/>

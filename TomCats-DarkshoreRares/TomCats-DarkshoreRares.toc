@@ -1,0 +1,17 @@
+## Interface: 80000
+## Title: TomCat's Tours: Rares of Darkshore (Warfront on Darkshore)
+## Author: TomCat
+## X-Website: http://www.everythingwarcraft.com
+## Version: 1.1.5
+## DefaultState: enabled
+## SavedVariablesPerCharacter: TomCats_DarkshoreRares_Character
+## OptionalDeps: HandyNotes
+## X-Part-Of: TomCat's Tours:
+## X-Category: Achievements, Map, Miscellaneous
+## X-Localizations: enUS, deDE, esES, esMX, frFR, itIT, koKR, ptBR, ruRU, zhCN, zhTW
+
+Main.xml
+
+## Title: |cff880303[爱不易]|r TomCats-黑海岸稀有
+## Notes-zhCN: 在黑海岸战争前线显示稀有位置及掉落
+## X-Vendor: AbyUI

@@ -81,18 +81,8 @@ function LfgService:CacheActivity(id)
 end
 
 function LfgService:_CacheActivity(id)
-    local _id, activityId, title, comment = C_LFGListGetSearchResultInfo(id) --abyui81
-    if not _id then
-        return
-    elseif not activityId then
-        return
-    end
-
-    -- local activityItem = self.ActivityDropdown:GetItem()
     local activity = Activity:New(id)
-
     if not activity:Update() then
-        -- debug(id, title, comment)
         return
     end
 
@@ -100,16 +90,6 @@ function LfgService:_CacheActivity(id)
         return
     end
 
-    -- if activityItem then
-    --     if activityItem.activityId and not ACTIVITY_CUSTOM_DATA.A[activityItem.activityId] then
-    --         if activityItem.activityId ~= activity:GetActivityID() or activityItem.customId ~= activity:GetCustomID() then
-    --             return
-    --         end
-    --     end
-    --     if activity:IsSoloActivity() and activityItem.customId ~= activity:GetCustomID() then
-    --         return
-    --     end
-    -- end
     if activity:HasInvalidContent() then
         return
     end
@@ -129,8 +109,6 @@ function LfgService:LFG_LIST_SEARCH_RESULTS_RECEIVED(event)
     table.wipe(self.activityRemoved)
 
     self.inSearch = false
-
-    
 
     local applications = C_LFGList.GetApplications()
 

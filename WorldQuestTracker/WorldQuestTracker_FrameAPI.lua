@@ -375,7 +375,10 @@ function WorldQuestTracker.UpdateBorder (self, rarity, worldQuestType, mapID, is
 			--paint with a blue border
 			self.commonBorder:SetAlpha (0)
 			self.commonBorder:SetVertexColor (1, 1, 1)
-			self:SetBackdropBorderColor (.11, .39, 1, .5)
+			self:SetBackdropBorderColor (.11, .29, 1, .80)
+			
+			
+			
 			
 			if (not self.IsZoneSummaryQuestButton) then
 				if (WorldQuestTracker.WorldSummary.FactionSelected == self.FactionID) then
@@ -412,8 +415,11 @@ function WorldQuestTracker.UpdateBorder (self, rarity, worldQuestType, mapID, is
 			self.circleBorder:Show()
 			self.circleBorder:SetTexture ("Interface\\AddOns\\WorldQuestTracker\\media\\" .. borderTextureFile)
 		else
-			self.circleBorder:Hide()
-			self.BountyRing:Show()
+			local borderTextureFile = WorldQuestTracker.GetBorderByQuestType (self, rarity, worldQuestType)
+			self.circleBorder:Show()
+			self.circleBorder:SetTexture ("Interface\\AddOns\\WorldQuestTracker\\media\\" .. borderTextureFile)
+			
+			--self.BountyRing:Show()
 		end
 		
 		if (rarity == LE_WORLD_QUEST_QUALITY_COMMON) then
@@ -444,7 +450,6 @@ function WorldQuestTracker.UpdateBorder (self, rarity, worldQuestType, mapID, is
 
 				--self.bgFlag:Show()
 				self.flagText:SetPoint ("top", self.bgFlag, "top", 0, -3)
-				--self.glassTransparence:Show()
 			end
 			
 		elseif (rarity == LE_WORLD_QUEST_QUALITY_EPIC) then

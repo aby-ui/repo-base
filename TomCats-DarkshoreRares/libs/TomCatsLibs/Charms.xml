@@ -1,0 +1,206 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+    <Frame name="TomCats-DarkshoreRaresMiniMapButtonTemplate" virtual="true" frameStrata="MEDIUM" frameLevel="10" dontSavePosition="true">
+        <Size x="32" y="32"/>
+        <Anchors>
+            <Anchor point="CENTER" relativeTo="Minimap" relativePoint="CENTER" x="-78.674" y="-18.193" />
+        </Anchors>
+        <Layers>
+        <Layer level="BACKGROUND">
+            <Texture name="$parentBackground" file="Interface\Minimap\UI-Minimap-Background">
+                <Size x="25" y="25"/>
+                <Anchors>
+                    <Anchor point="TOPLEFT">
+                        <Offset x="3" y="-3"/>
+                    </Anchor>
+                </Anchors>
+                <Color r="1" g="1" b="1" a="0.6" />
+            </Texture>
+        </Layer>
+            <Layer>
+                <Texture name="$parentIcon" file="Interface\Minimap\Tracking\None">
+                    <Size x="20" y="20"/>
+                    <Anchors>
+                        <Anchor point="TOPLEFT">
+                            <Offset x="6" y="-6"/>
+                        </Anchor>
+                    </Anchors>
+                </Texture>
+            </Layer>
+            <Layer level="OVERLAY">
+                <Texture name="$parentIconOverlay" hidden="true">
+                    <Anchors>
+                        <Anchor point="TOPLEFT" relativeTo="$parentIcon"/>
+                        <Anchor point="BOTTOMRIGHT" relativeTo="$parentIcon"/>
+                    </Anchors>
+                    <Color r="0.0" g="0.0" b="0.0" a="0.5"/>
+                </Texture>
+            </Layer>
+        </Layers>
+        <Frames>
+            <Button name="$parentButton">
+                <Size x="32" y="32"/>
+                <Anchors>
+                    <Anchor point="TOPLEFT"/>
+                </Anchors>
+                <Layers>
+                    <Layer level="BORDER">
+                        <Texture name="$parentBorder" file="Interface\Minimap\MiniMap-TrackingBorder">
+                            <Size x="54" y="54"/>
+                            <Anchors>
+                                <Anchor point="TOPLEFT"/>
+                            </Anchors>
+                        </Texture>
+                    </Layer>
+                    <Layer level="OVERLAY">
+                        <Texture name="$parentShine" file="Interface\ComboFrame\ComboPoint" alphaMode="ADD" hidden="true">
+                            <Size x="27" y="27"/>
+                            <Anchors>
+                                <Anchor point="TOPLEFT">
+                                    <Offset x="2" y="-2"/>
+                                </Anchor>
+                            </Anchors>
+                            <TexCoords left="0.5625" right="1" top="0" bottom="1"/>
+                        </Texture>
+                    </Layer>
+                </Layers>
+                <Scripts>
+                    <OnLoad>
+                            self:RegisterForDrag("LeftButton")
+                            local parent = self:GetParent()
+                            local parentName = parent:GetName()
+                            local isDragging = false
+                            local tooltipIsShowing = false
+                            local Ax, Ay, scale, top, right
+                            local r = 80.75
+                            local preferences = {}
+                            local handlers = {}
+
+                            local function RefreshMeasurements()
+                                Ax, Ay = Minimap:GetCenter()
+                                scale = parent:GetEffectiveScale()
+                                right = UIParent:GetRight()
+                                top = UIParent:GetTop()
+                            end
+
+                            local function ButtonDown()
+                                _G[parentName.."Icon"]:SetPoint("TOPLEFT", parent, "TOPLEFT", 8, -8);
+                                _G[parentName.."IconOverlay"]:Show();
+                            end
+
+                            local function ButtonUp()
+                                _G[parentName.."Icon"]:SetPoint("TOPLEFT", parent, "TOPLEFT", 6, -6);
+                                _G[parentName.."IconOverlay"]:Hide();
+                            end
+
+                            local function OnMouseDown()
+                                ButtonDown()
+                            end
+
+                            local function OnMouseUp()
+                                ButtonUp()
+                                if (handlers.OnClick) then
+                                    handlers.OnClick()
+                                end
+                            end
+
+                            local function UpdatePosition()
+                                local rad = preferences.position
+                                local Cx = r * math.cos(rad)
+                                local Cy = r * math.sin(rad)
+                                parent:SetPoint("CENTER", Minimap, "CENTER", Cx, Cy)
+                                local buttonRight = parent:GetRight()
+                                if (buttonRight > right) then
+                                    local point = { parent:GetPoint() }
+                                    local adj = (buttonRight - right)  * scale
+                                    point[4] = point[4] - adj
+                                    parent:SetPoint(unpack(point))
+                                end
+                                local buttonTop = parent:GetTop()
+                                if (buttonTop > top) then
+                                    local point = { parent:GetPoint() }
+                                    local adj = (buttonTop - top)  * scale
+                                    point[5] = point[5] - adj
+                                    parent:SetPoint(unpack(point))
+                                end
+                            end
+
+                            local function UpdatePositionByCursor()
+                                local Bx, By = GetCursorPosition()
+                                preferences.position = math.atan2((By / scale) - Ay, (Bx / scale) - Ax)
+                                UpdatePosition()
+                            end
+
+                            local function OnUpdate()
+                                if (isDragging) then
+                                    UpdatePositionByCursor()
+                                end
+                            end
+
+                            local function OnDragStart()
+                                if (tooltipIsShowing) then
+                                    parent.tooltip:Hide()
+                                    tooltipIsShowing = false
+                                end
+                                RefreshMeasurements()
+                                parent:ClearAllPoints()
+                                isDragging = true
+                            end
+
+                            local function OnDragStop()
+                                ButtonUp()
+                                isDragging = false
+                            end
+
+                            local function OnEnter()
+                                if (parent.tooltip and (not isDragging)) then
+                                    parent.tooltip.Show(parent)
+                                    tooltipIsShowing = true
+                                end
+                            end
+
+                            local function OnLeave()
+                                if (parent.tooltip) then
+                                    parent.tooltip:Hide()
+                                    tooltipIsShowing = false
+                                end
+                            end
+
+                            function parent:GetPreferences()
+                                if (not preferences.position) then
+                                    local _, _, _, Bx, By = parent:GetPoint()
+                                    local Ax, Ay = Minimap:GetCenter()
+                                    preferences.position = math.atan2(By - Ay, Bx - Ax)
+                                end
+                                return preferences
+                            end
+
+                            function parent:SetPreferences(savedPreferences)
+                                if (savedPreferences) then
+                                    if (savedPreferences.position and type(savedPreferences.position) == "number") then
+                                        preferences = savedPreferences
+                                    end
+                                    RefreshMeasurements()
+                                    UpdatePosition()
+                                end
+                            end
+
+                            function parent:SetHandler(handlerType, handler)
+                                handlers[handlerType] = handler
+                            end
+
+                            self:SetScript("OnMouseDown", OnMouseDown)
+                            self:SetScript("OnMouseUp", OnMouseUp)
+                            self:SetScript("OnDragStart", OnDragStart)
+                            self:SetScript("OnDragStop", OnDragStop)
+                            self:SetScript("OnUpdate", OnUpdate)
+                            self:SetScript("OnEnter", OnEnter)
+                            self:SetScript("OnLeave", OnLeave)
+                    </OnLoad>
+                </Scripts>
+                <HighlightTexture alphaMode="ADD" file="Interface\Minimap\UI-Minimap-ZoomButton-Highlight"/>
+            </Button>
+        </Frames>
+    </Frame>
+    <Script file="Charms.lua" />
+</Ui>

@@ -8,6 +8,7 @@ local addonName, KT = ...
 local M = KT:NewModule(addonName.."_AddonPetTracker")
 KT.AddonPetTracker = M
 
+local LSM = LibStub("LibSharedMedia-3.0")
 local _DBG = function(...) if _DBG then _DBG("KT", ...) end end
 
 local db, dbChar
@@ -43,10 +44,30 @@ local function SetHooks()
 		self:RegisterEvent("ZONE_CHANGED_NEW_AREA")
 
 		self:SetParent(content)
-		self.Anchor:SetWidth(content:GetWidth())
-		self.Anchor:SetPoint("TOPLEFT", content, -10, 0)
 		self.Header = header
 		self.maxEntries = 100
+
+		-- Progress bar
+		self.Anchor:SetSize(content:GetWidth() - 4, 13)
+		self.Anchor:SetPoint("TOPLEFT", content, -8, -4)
+		self.Anchor.xOff = -2
+
+		self.Anchor.Overlay.BorderLeft:Hide()
+		self.Anchor.Overlay.BorderRight:Hide()
+		self.Anchor.Overlay.BorderCenter:Hide()
+
+		local border1 = self.Anchor:CreateTexture(nil, "BACKGROUND", nil, -2)
+		border1:SetPoint("TOPLEFT", -1, 1)
+		border1:SetPoint("BOTTOMRIGHT", 1, -1)
+		border1:SetColorTexture(0, 0, 0)
+
+		local border2 = self.Anchor:CreateTexture(nil, "BACKGROUND", nil, -3)
+		border2:SetPoint("TOPLEFT", -2, 2)
+		border2:SetPoint("BOTTOMRIGHT", 2, -2)
+		border2:SetColorTexture(0.4, 0.4, 0.4)
+
+		self.Anchor.Overlay.Text:SetPoint("CENTER", 0, 0.5)
+		self.Anchor.Overlay.Text:SetFont(LSM:Fetch("font", "Arial Narrow"), 13, "")
 	end
 
 	function PetTracker.Objectives:TrackingChanged()	-- R
@@ -79,15 +100,29 @@ local function SetHooks()
 			end)
 			line:GetScript('OnLeave')(line)
 			-- added code
-			line.Text:SetWidth(self.Anchor:GetWidth() - line.Icon:GetWidth() - 10)
+			line.Dash:SetText("")
+			line.SubIcon:ClearAllPoints()
+			line.SubIcon:SetPoint("TOPLEFT", 0, 0)
+			line.Icon:ClearAllPoints()
+			line.Icon:SetPoint("LEFT", line.SubIcon, "RIGHT", 5, 0)
+			line.Text:SetWidth(self.Anchor:GetWidth() - line.Icon:GetWidth() - line.SubIcon:GetWidth() - 10)
+			line.Text:ClearAllPoints()
+			line.Text:SetPoint("LEFT", line.Icon, "RIGHT", 5, 0)
 			line.Text:SetFont(KT.font, db.fontSize, db.fontFlag)
 			line.Text:SetShadowColor(0, 0, 0, db.fontShadow)
 			line.Text:SetWordWrap(false)
-			line.Text:ClearAllPoints()
-			line.Text:SetPoint("LEFT", line.Icon, "RIGHT", 10, 0)
 			line:SetParent(OTF.BlocksFrame)
 		end
 	end
+
+	hooksecurefunc(PetTracker.ProgressBar, "SetProgress", function(self, progress)
+		if not self.KTskinned or KT.forcedUpdate then
+			for _, bar in ipairs(self.Bars) do
+				bar:SetStatusBarTexture(LSM:Fetch("statusbar", db.progressBar))
+			end
+			self.KTskinned = true
+		end
+	end)
 
 	-- Disable DropDown (it was moved to filters menu)
 	PetTracker.Tracker.ShowOptions = function() end
@@ -244,7 +279,7 @@ function PETTRACKER_TRACKER_MODULE:Update()
 	self:BeginLayout()
 	if PetTracker.Objectives:IsShown() then
 		local block = self:GetBlock()
-		block.height = PetTracker.Objectives:GetHeight() - 45
+		block.height = PetTracker.Objectives:GetHeight() - 41
 		block:SetHeight(block.height)
 		if ObjectiveTracker_AddBlock(block) then
 			block:Show()

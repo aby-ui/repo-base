@@ -21,8 +21,10 @@ local dropDownFrame
 local function SetHooks()
 	local bck_QuestLogQuests_AddQuestButton = QuestLogQuests_AddQuestButton
 	QuestLogQuests_AddQuestButton = function(prevButton, questLogIndex, poiTable, title, level, suggestedGroup, isHeader, isCollapsed, isComplete, frequency, questID, startEvent, displayQuestID, isOnMap, hasLocalPOI, isTask, isBounty, isStory, isHidden, isScaling, layoutIndex)
-		local tagID, _ = GetQuestTagInfo(questID)
-		title = KT:CreateQuestTag(level, tagID, frequency, suggestedGroup)..title
+		if db.questShowTags then
+			local tagID, _ = GetQuestTagInfo(questID)
+			title = KT:CreateQuestTag(level, tagID, frequency, suggestedGroup)..title
+		end
 		local button = bck_QuestLogQuests_AddQuestButton(prevButton, questLogIndex, poiTable, title, level, suggestedGroup, isHeader, isCollapsed, isComplete, frequency, questID, startEvent, displayQuestID, isOnMap, hasLocalPOI, isTask, isBounty, isStory, isHidden, isScaling, layoutIndex)
 
 		local colorStyle

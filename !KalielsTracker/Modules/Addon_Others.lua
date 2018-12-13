@@ -59,7 +59,7 @@ end
 
 -- ElvUI
 local function ElvUI_SetSupport()
-    if KT:CheckAddOn("ElvUI", "10.75", true) then
+    if KT:CheckAddOn("ElvUI", "10.84", true) then
         local E = unpack(_G.ElvUI)
         E.Blizzard.SetObjectiveFrameHeight = function() end
         E.Blizzard.MoveObjectiveFrame = function() end
@@ -75,7 +75,7 @@ local function ElvUI_SetSupport()
                 options[addonName.."Warning"] = {
                     name = KTwarning,
                     type = "description",
-                    order = options.objectiveFrameHeader.order + 0.5
+                    order = options.objectiveFrameHeader.order + 0.5,
                 }
                 self.Options.args.skins.args.blizzard.args.objectiveTracker.disabled = true
             end
@@ -85,7 +85,7 @@ end
 
 -- Tukui
 local function Tukui_SetSupport()
-    if KT:CheckAddOn("Tukui", "18.01", true) then
+    if KT:CheckAddOn("Tukui", "18.19", true) then
         local T = unpack(_G.Tukui)
         T.Miscellaneous.ObjectiveTracker.Enable = function() end
     end
@@ -112,7 +112,7 @@ end
 
 -- SyncUI
 local function SyncUI_SetSupport()
-    if KT:CheckAddOn("SyncUI", "1.5.4", true) then
+    if KT:CheckAddOn("SyncUI", "8.0.3", true) then
         SyncUI_ObjTracker.Show = function() end
         SyncUI_ObjTracker:Hide()
         SyncUI_ObjTracker:SetScript("OnLoad", nil)
@@ -123,7 +123,7 @@ end
 
 -- SpartanUI
 local function SpartanUI_SetSupport()
-    if KT:CheckAddOn("SpartanUI", "4.6.0", true) then
+    if KT:CheckAddOn("SpartanUI", "5.0.11", true) then
         local ACD = LibStub("AceConfigDialog-3.0")
         SUI.DB.EnabledComponents.Objectives = false
         local bck_ACD_Open = ACD.Open
@@ -134,6 +134,7 @@ local function SpartanUI_SetSupport()
                 options[addonName.."Warning"] = {
                     name = KTwarning,
                     type = "description",
+                    order = 1000,
                 }
             end
             bck_ACD_Open(self, name, ...)
@@ -143,7 +144,7 @@ end
 
 -- SuperVillain UI
 local function SVUI_SetSupport()
-    if KT:CheckAddOn("SVUI_!Core", "1.5", true) then
+    if KT:CheckAddOn("SVUI_!Core", "1.5.1", true) then
         if IsAddOnLoaded("SVUI_QuestTracker") then
             DisableAddOn("SVUI_QuestTracker")
             StaticPopup_Show(addonName.."_ReloadUI")

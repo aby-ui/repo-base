@@ -252,4 +252,5 @@ U1.PINYIN={
     ['装备特质显示']={'zhuangbeitezhixianshi','zbtzxs'},
     ['帕库图腾标记']={'pakututengbiaoji','pkttbj'},
     ['SUF头像增强']={'suftouxiangzengqiang','suftxzq'},
+    ['黑海岸稀有']={'heihaianxiyou','hhaxy'},
 }

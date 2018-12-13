@@ -325,35 +325,20 @@ function BrowsePanel:OnInitialize()
         end)
     end
 
-    local AdvFilterPanel = CreateFrame('Frame', nil, self) do
+    local AdvFilterPanel = CreateFrame('Frame', nil, self, 'SimplePanelTemplate') do
         GUI:Embed(AdvFilterPanel, 'Refresh')
-        AdvFilterPanel:SetSize(250, 350)
-        AdvFilterPanel:SetPoint('TOPLEFT', MainPanel, 'TOPRIGHT', -5, -30)
+        AdvFilterPanel:SetSize(200, 320)
+        AdvFilterPanel:SetPoint('TOPLEFT', MainPanel, 'TOPRIGHT', -2, -30)
         AdvFilterPanel:SetFrameLevel(ActivityList:GetFrameLevel()+5)
         AdvFilterPanel:EnableMouse(true)
-        AdvFilterPanel:SetBackdrop{
-            edgeFile = [[Interface\DialogFrame\UI-DialogBox-Border]],
-            edgeSize = 16,
-        }
         AdvFilterPanel:Hide()
 
         local closeButton = CreateFrame('Button', nil, AdvFilterPanel, 'UIPanelCloseButton') do
-            closeButton:SetPoint('TOPRIGHT', -3, -5)
+            closeButton:SetPoint('TOPRIGHT', 0, -1)
         end
 
-        local bg = AdvFilterPanel:CreateTexture(nil, 'BACKGROUND') do
-            bg:SetPoint('TOPLEFT', 2, -2)
-            bg:SetPoint('BOTTOMRIGHT', -2, 2)
-            bg:SetTexture([[Interface\FrameGeneral\UI-Background-Rock]])
-        end
-    end
-
-    local AdvFilterInset = CreateFrame('Frame', nil, AdvFilterPanel, 'InsetFrameTemplate') do
-        AdvFilterInset:SetPoint('TOPLEFT', 10, -40)
-        AdvFilterInset:SetPoint('BOTTOMRIGHT', -10, 10)
-
-        local Label = AdvFilterInset:CreateFontString(nil, 'ARTWORK', 'GameFontNormal') do
-            Label:SetPoint('BOTTOMLEFT', AdvFilterInset, 'TOPLEFT', 0, 5)
+        local Label = AdvFilterPanel:CreateFontString(nil, 'ARTWORK', 'GameFontNormal') do
+            Label:SetPoint('TOPLEFT', 5, -10)
             Label:SetText(L['高级过滤'])
         end
     end
@@ -398,7 +383,7 @@ function BrowsePanel:OnInitialize()
     end
 
     for i, v in ipairs(filters) do
-        local Box = Addon:GetClass('FilterBox'):New(AdvFilterInset)
+        local Box = Addon:GetClass('FilterBox'):New(AdvFilterPanel.Inset)
         Box.Check:SetText(v.text)
         Box.MinBox:SetMinMaxValues(v.min, v.max)
         Box.MaxBox:SetMinMaxValues(v.min, v.max)
@@ -418,9 +403,9 @@ function BrowsePanel:OnInitialize()
         table.insert(self.filters, Box)
     end
 
-    local ResetFilterButton = CreateFrame('Button', nil, AdvFilterInset, 'UIPanelButtonTemplate') do
+    local ResetFilterButton = CreateFrame('Button', nil, AdvFilterPanel, 'UIPanelButtonTemplate') do
         ResetFilterButton:SetSize(80, 22)
-        ResetFilterButton:SetPoint('BOTTOMRIGHT', AdvFilterInset, 'BOTTOM', 0, 10)
+        ResetFilterButton:SetPoint('BOTTOMRIGHT', AdvFilterPanel, 'BOTTOM', 0, 3)
         ResetFilterButton:SetText(RESET)
         ResetFilterButton:SetScript('OnClick', function()
             for i, box in ipairs(self.filters) do
@@ -429,9 +414,9 @@ function BrowsePanel:OnInitialize()
         end)
     end
 
-    local RefreshFilterButton = CreateFrame('Button', nil, AdvFilterInset, 'UIPanelButtonTemplate') do
+    local RefreshFilterButton = CreateFrame('Button', nil, AdvFilterPanel, 'UIPanelButtonTemplate') do
         RefreshFilterButton:SetSize(80, 22)
-        RefreshFilterButton:SetPoint('BOTTOMLEFT', AdvFilterInset, 'BOTTOM', 0, 10)
+        RefreshFilterButton:SetPoint('BOTTOMLEFT', AdvFilterPanel, 'BOTTOM', 0, 3)
         RefreshFilterButton:SetText(REFRESH)
         RefreshFilterButton:SetScript('OnClick', function()
             self:DoSearch()

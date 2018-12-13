@@ -98,6 +98,7 @@ local defaults = {
         menuWowheadURL = false,
         menuWowheadURLModifier = "ALT",
         questDefaultActionMap = false,
+		questShowTags = true,
 
 		messageQuest = false,
 		messageAchievement = false,
@@ -421,6 +422,9 @@ local options = {
 								db.progressBar = value
 								KT.forcedUpdate = true
 								ObjectiveTracker_Update()
+								if PetTracker then
+									PetTracker.Objectives:TrackingChanged()
+								end
 								KT.forcedUpdate = false
 							end,
 							order = 2.9,
@@ -988,7 +992,7 @@ local options = {
 						},
                         menuWowheadURL = {
 							name = L"Wowhead URL",
-							desc = "Show Wowhead URL menu item inside the tracker and Quesl Log.",
+							desc = "Show Wowhead URL menu item inside the tracker and Quest Log.",
 							type = "toggle",
 							set = function()
 								db.menuWowheadURL = not db.menuWowheadURL
@@ -1027,6 +1031,17 @@ local options = {
                             end,
                             order = 6.41,
                         },
+						questShowTags = {
+							name = "Show Quest tags",
+							desc = "Show / Hide Quest tags (quest level, quest type) inside the tracker and Quest Log.",
+							type = "toggle",
+							set = function()
+								db.questShowTags = not db.questShowTags
+								ObjectiveTracker_Update()
+								QuestMapFrame_UpdateAll()
+							end,
+							order = 6.42,
+						},
 					},
 				},
 				sec7 = {

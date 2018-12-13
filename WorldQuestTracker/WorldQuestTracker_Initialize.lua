@@ -38,6 +38,8 @@ do
 	WQT_WORLDWIDGET_ALPHA =	0.845
 	WQT_WORLDWIDGET_BLENDED =	ALPHA_BLEND_AMOUNT - 0.16
 	
+	WQT_ANIMATION_SPEED = 0.05
+	
 	--where these came from
 	QUESTTYPE_GOLD = 0x1
 	QUESTTYPE_RESOURCE = 0x2
@@ -129,7 +131,7 @@ do
 				onmap_scale_offset = 0,
 				summary_show = true,
 				summary_scale = 1,
-				summary_showbyzone = false,
+				summary_showbyzone = true,
 				summary_anchor = "left",
 				summary_widgets_per_row = 7,
 			},
@@ -144,6 +146,9 @@ do
 			
 			last_news_time = 0,
 
+			hoverover_animations = true, --hover and shown slider animations
+			anchor_options = {}, --store the anchor options of each anchor
+			
 			filter_always_show_faction_objectives = true,
 			filter_force_show_brokenshore = false, --deprecated at this point, but won't be removed since further expantion might need this back
 			sort_time_priority = 0,
@@ -344,6 +349,7 @@ do
 	
 	local L = LibStub ("AceLocale-3.0"):GetLocale ("WorldQuestTrackerAddon", true)
 	WorldQuestTracker.ChangeLogTable = {
+		{1544645786, "Anchor Changes", "December 13, 2018", "Hover over the zone name in the quest summary for a zone to show options for that anchor."},
 		{1544477110, "World Map Changes", "December 13, 2018", "World map is now aligned in the center of the screen. " .. L["S_MAPBAR_OPTIONS"] .. " > '" .. L["S_OPTIONS_MAPFRAME_ALIGN"] .. "' to disable this."},
 		{1544477110, "World Map Changes", "December 13, 2018", "Quest list is now default to quest type, click '" .. L["S_WORLDBUTTONS_SHOW_ZONE"] .. "' to swap."},
 		{1544477110, "World Map Changes", "December 13, 2018", "Added quest locations to world map, click '" .. L["S_WORLDBUTTONS_TOGGLE_QUESTS"] .. "' to hide."},

@@ -128,28 +128,28 @@ local function SetHooks_AchievementUI()
 end
 
 local function GetActiveWorldEvents()
-	local events = ""
+	local eventsText = ""
 	local date = C_Calendar.GetDate()
 	C_Calendar.SetAbsMonth(date.month, date.year)
 	local numEvents = C_Calendar.GetNumDayEvents(0, date.monthDay)
 	for i=1, numEvents do
-		local title, hour, minute, calendarType, sequenceType = C_Calendar.GetDayEvent(0, date.monthDay, i)
-		if calendarType == "HOLIDAY" then
+		local event = C_Calendar.GetDayEvent(0, date.monthDay, i)
+		if event.calendarType == "HOLIDAY" then
 			local gameHour, gameMinute = GetGameTime()
-			if sequenceType == "START" then
-				if gameHour >= hour and gameMinute >= minute then
-					events = events..title.." "
+			if event.sequenceType == "START" then
+				if gameHour >= event.startTime.hour and gameMinute >= event.startTime.minute then
+					eventsText = eventsText..event.title.." "
 				end
-			elseif sequenceType == "END" then
-				if gameHour <= hour and gameMinute <= minute then
-					events = events..title.." "
+			elseif event.sequenceType == "END" then
+				if gameHour <= event.endTime.hour and gameMinute <= event.endTime.minute then
+					eventsText = eventsText..event.title.." "
 				end
 			else
-				events = events..title.." "
+				eventsText = eventsText..event.title.." "
 			end
 		end
 	end
-	return events
+	return eventsText
 end
 
 local function IsInstanceQuest(questID)

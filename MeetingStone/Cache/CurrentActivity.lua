@@ -14,9 +14,9 @@ function CurrentActivity:FromAddon(data)
     return obj
 end
 
-function CurrentActivity:FromSystem(...)
+function CurrentActivity:FromSystem(info)
     local obj = CurrentActivity:New()
-    obj:UpdateBySystem(...)
+    obj:UpdateBySystem(info)
     return obj
 end
 
@@ -29,13 +29,13 @@ function CurrentActivity:_FromAddon(data)
     end
 end
 
-function CurrentActivity:UpdateBySystem(activityId, ilvl, honorLevel, title, comment, voiceChat, privateGroup)
-    self:SetActivityID(activityId)
-    self:SetItemLevel(ilvl)
-    self:SetHonorLevel(honorLevel)
-    self:SetVoiceChat(voiceChat)
-    self:UpdateCustomData(comment, title)
-    self:SetPrivateGroup(privateGroup)
+function CurrentActivity:UpdateBySystem(info)
+    self:SetActivityID(info.activityID)
+    self:SetItemLevel(info.requiredItemLevel)
+    self:SetHonorLevel(info.requiredHonorLevel)
+    self:SetVoiceChat(info.voiceChat)
+    self:UpdateCustomData(info.comment, info.name)
+    self:SetPrivateGroup(info.privateGroup)
 end
 
 function CurrentActivity:GetTitle()

@@ -94,6 +94,8 @@ L["S_MAPBAR_SUMMARYMENU_TODAYREWARDS"] = "今天的獎勵"
 L["S_MAPFRAME_ALIGN_CENTER"] = "中間"
 L["S_MAPFRAME_ALIGN_DESC"] = "|cFF22FF22點一下|r切換地圖視窗對齊到畫面的中間或左側。"
 L["S_MAPFRAME_ALIGN_LEFT"] = "左側"
+--[[Translation missing --]]
+--[[ L["S_OPTIONS_ANIMATIONS"] = ""--]] 
 L["S_OPTIONS_MAPFRAME_ALIGN"] = "地圖視窗對齊中間"
 L["S_OPTIONS_MAPFRAME_ERROR_SCALING_DISABLED"] = "尚未變更任何數值，必須先 '啟用縮放視窗大小'。 "
 L["S_OPTIONS_MAPFRAME_SCALE"] = "地圖視窗縮放大小"

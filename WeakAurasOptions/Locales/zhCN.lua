@@ -5,13 +5,10 @@ end
 local L = WeakAuras.L
 
 -- WeakAuras/Options
-	--[[Translation missing --]]
-	L[" by "] = " by "
-	--[[Translation missing --]]
-	L[" Configuration"] = " Configuration"
+	L[" by "] = "来自"
+	L[" Configuration"] = "设置"
 	L["-- Do not remove this comment, it is part of this trigger: "] = "-- 不要移除这条信息，这是该触发器的一部分。"
-	--[[Translation missing --]]
-	L[" to version "] = " to version "
+	L[" to version "] = "到版本"
 	L["% of Progress"] = "% 进度"
 	L["%i auras selected"] = "%i 个光环被选中"
 	L["%i Matches"] = "%i 符合"
@@ -32,8 +29,7 @@ local L = WeakAuras.L
 	L["Actions"] = "动作"
 	L["Add a new display"] = "添加一个新的显示"
 	L["Add Condition"] = "添加条件"
-	--[[Translation missing --]]
-	L["Add Option"] = "Add Option"
+	L["Add Option"] = "添加选项"
 	L["Add Overlay"] = "添加覆盖层"
 	L["Add Property Change"] = "添加属性修改"
 	L["Add to group %s"] = "添加到组％s"
@@ -73,8 +69,7 @@ local L = WeakAuras.L
 	L["Aura Name Pattern"] = "光环名称匹配规则"
 	L["Aura Type"] = "光环类型"
 	L["Aura(s)"] = "光环"
-	--[[Translation missing --]]
-	L["Author Options"] = "Author Options"
+	L["Author Options"] = "作者选项"
 	L["Auto"] = "自动"
 	L["Auto-Clone (Show All Matches)"] = "自动克隆（显示所有符合条件的）"
 	L["Auto-cloning enabled"] = "启用自动克隆"
@@ -134,20 +129,16 @@ local L = WeakAuras.L
 	L["Compress"] = "压缩"
 	L["Condition %i"] = "条件 %i"
 	L["Conditions"] = "条件"
-	--[[Translation missing --]]
-	L["Configure what options appear on this pannel."] = "Configure what options appear on this pannel."
+	L["Configure what options appear on this pannel."] = "配置那些选项在此面板上显示。"
 	L["Constant Factor"] = "常数因子"
 	L["Control-click to select multiple displays"] = "按住 Control 并点击来选择多种显示"
 	L["Controls the positioning and configuration of multiple displays at the same time"] = "同时控制多个图示的位置和设定"
 	L["Convert to New Aura Trigger"] = "转换为新的光环触发器"
 	L["Convert to..."] = "转换为..."
 	L["Cooldown"] = "冷却"
-	--[[Translation missing --]]
-	L["Cooldown Edge"] = "Cooldown Edge"
-	--[[Translation missing --]]
-	L["Cooldown Settings"] = "Cooldown Settings"
-	--[[Translation missing --]]
-	L["Cooldown Swipe"] = "Cooldown Swipe"
+	L["Cooldown Edge"] = "冷却边缘"
+	L["Cooldown Settings"] = "冷却设置"
+	L["Cooldown Swipe"] = "冷却旋转动画"
 	L["Copy settings..."] = "拷贝设置"
 	L["Copy to all auras"] = "拷贝至所有的光环"
 	L["Copy URL"] = "复制 URL"
@@ -159,11 +150,9 @@ local L = WeakAuras.L
 	L["Crop Y"] = "裁剪Y"
 	L["Custom"] = "自定义"
 	L["Custom Code"] = "自定义代码"
-	--[[Translation missing --]]
-	L["Custom Configuration"] = "Custom Configuration"
+	L["Custom Configuration"] = "自定义设置"
 	L["Custom Function"] = "自定义功能"
-	--[[Translation missing --]]
-	L["Custom Options"] = "Custom Options"
+	L["Custom Options"] = "自定义选项"
 	L["Custom Trigger"] = "自定义生效触发器"
 	L["Custom trigger event tooltip"] = [=[选择用于检查自订触发的事件。
 如果有多个事件,可以用逗号或空白分隔。
@@ -185,18 +174,15 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	L["Delete children and group"] = "删除子节点和组"
 	L["Delete Trigger"] = "删除触发器"
 	L["Desaturate"] = "褪色"
-	--[[Translation missing --]]
-	L["Description"] = "Description"
-	--[[Translation missing --]]
-	L["Description Text"] = "Description Text"
+	L["Description"] = "描述"
+	L["Description Text"] = "描述文本"
 	L["Differences"] = "差异"
 	L["Disable Import"] = "禁用导入"
 	L["Disabled"] = "禁用"
 	L["Discrete Rotation"] = "离散旋转"
 	L["Display"] = "图示"
 	L["Display Icon"] = "图示图标"
-	--[[Translation missing --]]
-	L["Display Name"] = "Display Name"
+	L["Display Name"] = "显示的名字"
 	L["Display Text"] = "图示文字"
 	L["Displays a text, works best in combination with other displays"] = "显示一条文本，最好与其他显示效果结合运用"
 	L["Distribute Horizontally"] = "横向分布"
@@ -211,8 +197,7 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	L["Duration Info"] = "持续时间讯息"
 	L["Dynamic Duration"] = "动态时长"
 	L["Dynamic Group"] = "动态群组"
-	--[[Translation missing --]]
-	L["Dynamic Group Settings"] = "Dynamic Group Settings"
+	L["Dynamic Group Settings"] = "动态群组设置"
 	L["Dynamic Information"] = "动态信息"
 	L["Dynamic information from first active trigger"] = "第一个被激活的触发器的动态信息"
 	L["Dynamic information from Trigger %i"] = "来自触发器%i的动态信息"
@@ -229,12 +214,9 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	L["Enter a Spell ID"] = "输入一个法术 ID"
 	L["Enter an aura name, partial aura name, or spell id"] = "键入一个法术名，或者法术ID"
 	L["Enter an Aura Name, partial Aura Name, or Spell ID. A Spell ID will match any spells with the same name."] = "输入一个光环名称，部分光环名称或法术 ID。如果输入一个法术 ID 则会匹配所有相同名字的法术。"
-	--[[Translation missing --]]
-	L["Enter Author Mode"] = "Enter Author Mode"
-	--[[Translation missing --]]
-	L["Enter User Mode"] = "Enter User Mode"
-	--[[Translation missing --]]
-	L["Enter user mode."] = "Enter user mode."
+	L["Enter Author Mode"] = "进入作者模式"
+	L["Enter User Mode"] = "进入用户模式"
+	L["Enter user mode."] = "进入到使用者的模式。"
 	L["Event"] = "事件"
 	L["Event Type"] = "事件类型"
 	L["Event(s)"] = "事件（复数）"
@@ -265,8 +247,7 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	L["Frame"] = "框架"
 	L["Frame Strata"] = "框架层级"
 	L["From Template"] = "从模板"
-	--[[Translation missing --]]
-	L["From version "] = "From version "
+	L["From version "] = "自版本"
 	L["General Text Settings"] = "通用字体设置"
 	L["Global Conditions"] = "全局条件"
 	L["Glow Action"] = "发光动作"
@@ -289,8 +270,7 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	L["Group Member Count"] = "队伍或团队成员数"
 	L["Group Role"] = "团队职责"
 	L["Group Scale"] = "组缩放"
-	--[[Translation missing --]]
-	L["Group Settings"] = "Group Settings"
+	L["Group Settings"] = "群组设置"
 	L["Grow"] = "生长"
 	L["Hawk"] = "鹰"
 	L["Height"] = "高度"
@@ -308,20 +288,16 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	L["Icon Color"] = "图标颜色"
 	L["Icon Info"] = "图标信息"
 	L["Icon Inset"] = "项目插入"
-	--[[Translation missing --]]
-	L["Icon Settings"] = "Icon Settings"
+	L["Icon Settings"] = "图标设置"
 	L["If"] = "如果"
 	L["If this option is enabled, you are no longer able to import auras."] = "如果启用此选项，你将不再能够导入光环设置。"
 	L["If Trigger %s"] = "如果触发器 %s"
 	L["If unchecked, then a default color will be used (usually yellow)"] = "如果不勾选，则使用默认颜色（通常是黄色）"
-	--[[Translation missing --]]
-	L["If unchecked, then this space will fill the entire line it is on in User Mode."] = "If unchecked, then this space will fill the entire line it is on in User Mode."
-	--[[Translation missing --]]
-	L["Ignore all Updates"] = "Ignore all Updates"
+	L["If unchecked, then this space will fill the entire line it is on in User Mode."] = "如果不勾选，则在用户模式下此空白区域将填充一整行。"
+	L["Ignore all Updates"] = "忽略所有更新"
 	L["Ignore Self"] = "忽略自身"
 	L["Ignore self"] = "忽略自己的"
-	--[[Translation missing --]]
-	L["Ignore this Update"] = "Ignore this Update"
+	L["Ignore this Update"] = "忽略此更新"
 	L["Ignored"] = "被忽略"
 	L["Import"] = "导入"
 	L["Import a display from an encoded string"] = "从字串导入一个图示"
@@ -333,14 +309,12 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	L["Is Stealable"] = "可偷取"
 	L["Justify"] = "对齐"
 	L["Keep Aspect Ratio"] = "保持比例不变"
-	--[[Translation missing --]]
-	L["Key for aura_env.config at which the user value can be found."] = "Key for aura_env.config at which the user value can be found."
+	L["Key for aura_env.config at which the user value can be found."] = "aura_env.config 里用户值的 Key"
 	L["Leaf"] = "叶子"
 	L["Left 2 HUD position"] = "左侧第二 HUD 位置"
 	L["Left HUD position"] = "左侧 HUD 位置"
 	L["Left Text"] = "左边文字"
-	--[[Translation missing --]]
-	L["Length"] = "Length"
+	L["Length"] = "长度"
 	L["Load"] = "载入"
 	L["Loaded"] = "已载入"
 	L["Loop"] = "循环"
@@ -348,21 +322,17 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	L["Main"] = "主要的"
 	L["Manage displays defined by Addons"] = "由插件管理已定义的图示"
 	L["Match Count"] = "计数匹配"
-	--[[Translation missing --]]
-	L["Max"] = "Max"
-	--[[Translation missing --]]
-	L["Max Length"] = "Max Length"
+	L["Max"] = "最大"
+	L["Max Length"] = "最大长度"
 	L["Medium Icon"] = "中等图标"
 	L["Message"] = "讯息"
 	L["Message Prefix"] = "讯息前缀"
 	L["Message Suffix"] = "讯息后缀"
 	L["Message Type"] = "讯息类型"
-	--[[Translation missing --]]
-	L["Min"] = "Min"
+	L["Min"] = "最小"
 	L["Mirror"] = "镜像"
 	L["Model"] = "模型"
-	--[[Translation missing --]]
-	L["Model Settings"] = "Model Settings"
+	L["Model Settings"] = "模型设置"
 	L["Move Down"] = "向下移"
 	L["Move this display down in its group's order"] = "在组内将此显示内容下移"
 	L["Move this display up in its group's order"] = "在组内将此显示内容上移"
@@ -381,8 +351,7 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	L["Negator"] = "不"
 	L["Never"] = "从不"
 	L["New"] = "新增"
-	--[[Translation missing --]]
-	L["New Value"] = "New Value"
+	L["New Value"] = "新值"
 	L["No"] = "不"
 	L["No Children"] = "没有子物件"
 	L["No tooltip text"] = "没有提示文字"
@@ -397,16 +366,11 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	L["Only match auras cast by people other than the player"] = "只匹配其它玩家施放的光环"
 	L["Only match auras cast by the player"] = "只匹配玩家自己施放的光环"
 	L["Operator"] = "运算符"
-	--[[Translation missing --]]
-	L["Option #"] = "Option #"
-	--[[Translation missing --]]
-	L["Option #%i"] = "Option #%i"
-	--[[Translation missing --]]
-	L["Option %i"] = "Option %i"
-	--[[Translation missing --]]
-	L["Option key"] = "Option key"
-	--[[Translation missing --]]
-	L["Option Type"] = "Option Type"
+	L["Option #"] = "选项 #"
+	L["Option #%i"] = "选项 #%i"
+	L["Option %i"] = "选项 %i"
+	L["Option key"] = "选项键值"
+	L["Option Type"] = "选项类型"
 	L["Options will open after combat ends."] = "选项面板将在战斗结束后打开"
 	L["or"] = "或"
 	L["or Trigger %s"] = "或触发器 %s"
@@ -419,11 +383,9 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	L["Own Only"] = "只来源于自己"
 	L["Paste Action Settings"] = "粘贴动作设置"
 	L["Paste Animations Settings"] = "粘贴动画设置"
-	--[[Translation missing --]]
-	L["Paste Author Options Settings"] = "Paste Author Options Settings"
+	L["Paste Author Options Settings"] = "粘贴作者选项设置"
 	L["Paste Condition Settings"] = "粘贴条件设置"
-	--[[Translation missing --]]
-	L["Paste Custom Configuration"] = "Paste Custom Configuration"
+	L["Paste Custom Configuration"] = "粘贴自定义设置"
 	L["Paste Display Settings"] = "粘贴显示设置"
 	L["Paste Group Settings"] = "粘贴团队设置"
 	L["Paste Load Settings"] = "粘贴加载设置"
@@ -438,11 +400,9 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	L["Prevents duration information from decreasing when an aura refreshes. May cause problems if used with multiple auras with different durations."] = "阻止刷新光环时持续时间讯息的变动。如果使用了多个光环并且具有不同持续时间那么可能会造成问题。"
 	L["Processed %i chars"] = "已处理%i个字符"
 	L["Progress Bar"] = "进度条"
-	--[[Translation missing --]]
-	L["Progress Bar Settings"] = "Progress Bar Settings"
+	L["Progress Bar Settings"] = "进度条设置"
 	L["Progress Texture"] = "进度条材质"
-	--[[Translation missing --]]
-	L["Progress Texture Settings"] = "Progress Texture Settings"
+	L["Progress Texture Settings"] = "进度条材质设置"
 	L["Purple Rune"] = "紫色符文"
 	L["Put this display in a group"] = "将此显示内容放到组中"
 	L["Radius"] = "范围"
@@ -458,14 +418,10 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	L["Repeat After"] = "每当此条件发生后重复"
 	L["Repeat every"] = "每当此条件满足时重复"
 	L["Required for Activation"] = "激活需要的条件"
-	--[[Translation missing --]]
-	L["Reset all options in this group to their default values."] = "Reset all options in this group to their default values."
-	--[[Translation missing --]]
-	L["Reset all options to their default values."] = "Reset all options to their default values."
-	--[[Translation missing --]]
-	L["Reset ALL to Defaults"] = "Reset ALL to Defaults"
-	--[[Translation missing --]]
-	L["Reset to Defaults"] = "Reset to Defaults"
+	L["Reset all options in this group to their default values."] = "重置此群组的所有选项为默认值"
+	L["Reset all options to their default values."] = "重置所有选项为默认值"
+	L["Reset ALL to Defaults"] = "重置所有为默认"
+	L["Reset to Defaults"] = "重置为默认"
 	L["Right 2 HUD position"] = "右侧第二 HUD 位置"
 	L["Right HUD position"] = "右侧 HUD 位置"
 	L["Right Text"] = "右边文字"
@@ -488,10 +444,8 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	L["Shift-click to create chat link"] = "按住 Shift 点击来生成聊天链接"
 	L["Show all matches (Auto-clone)"] = "列出所有符合的(自动复制)"
 	L["Show Cooldown Text"] = "显示 CD 文本"
-	--[[Translation missing --]]
-	L["Show Glow Effect"] = "Show Glow Effect"
-	--[[Translation missing --]]
-	L["Show If Unit Does Not Exist"] = "Show If Unit Does Not Exist"
+	L["Show Glow Effect"] = "显示发光效果"
+	L["Show If Unit Does Not Exist"] = "如果单位不存在时显示"
 	L["Show If Unit Is Invalid"] = "当单位无效时显示"
 	L["Show Matches for"] = "为下列项显示匹配项"
 	L["Show Matches for Units"] = "为单位显示匹配项"
@@ -512,14 +466,11 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	L["Slide"] = "滑动"
 	L["Slide In"] = "滑动"
 	L["Slide Out"] = "滑出"
-	--[[Translation missing --]]
-	L["Slider Step Size"] = "Slider Step Size"
+	L["Slider Step Size"] = "滑动条步进尺寸"
 	L["Small Icon"] = "小图标"
 	L["Smooth Progress"] = "过程平滑"
-	--[[Translation missing --]]
-	L["Soft Max"] = "Soft Max"
-	--[[Translation missing --]]
-	L["Soft Min"] = "Soft Min"
+	L["Soft Max"] = "软上限"
+	L["Soft Min"] = "软下限"
 	L["Sort"] = "排序"
 	L["Sound"] = "声音"
 	L["Sound Channel"] = "声道"
@@ -543,25 +494,20 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	L["Start Angle"] = "起始角度"
 	L["Status"] = "状态"
 	L["Stealable"] = "可偷取"
-	--[[Translation missing --]]
-	L["Step Size"] = "Step Size"
+	L["Step Size"] = "步进尺寸"
 	L["Sticky Duration"] = "持续时间置顶"
-	--[[Translation missing --]]
-	L["Stop ignoring this Update"] = "Stop ignoring this Update"
-	--[[Translation missing --]]
-	L["Stop ignoring Updates"] = "Stop ignoring Updates"
+	L["Stop ignoring this Update"] = "不再忽略此更新"
+	L["Stop ignoring Updates"] = "不再忽略更新"
 	L["Stop Sound"] = "停止播放声音"
 	L["Symbol Settings"] = "标志设置"
 	L["Temporary Group"] = "模板群组"
 	L["Text"] = "文字"
 	L["Text Color"] = "文字颜色"
 	L["Text Position"] = "文字位置"
-	--[[Translation missing --]]
-	L["Text Settings"] = "Text Settings"
+	L["Text Settings"] = "文本设置"
 	L["Texture"] = "材质"
 	L["Texture Info"] = "材质信息"
-	--[[Translation missing --]]
-	L["Texture Settings"] = "Texture Settings"
+	L["Texture Settings"] = "材质设置"
 	L["Texture Wrap"] = "材质折叠"
 	L["The duration of the animation in seconds."] = "动画持续秒数"
 	L["The duration of the animation in seconds. The finish animation does not start playing until after the display would normally be hidden."] = "动画时长秒时。直到显示内容被正常隐藏之后结束动画才会播放。"
@@ -571,8 +517,7 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	L["This display is currently loaded"] = "此显示内容已加载"
 	L["This display is not currently loaded"] = "此显示内容未加载"
 	L["This region of type \"%s\" is not supported."] = "该类型区域“%s”不受支持。"
-	--[[Translation missing --]]
-	L["This setting controls what widget is generated in user mode."] = "This setting controls what widget is generated in user mode."
+	L["This setting controls what widget is generated in user mode."] = "这些设置用来控制在用户模式下生成的控件。"
 	L["Time in"] = "时间"
 	L["Tiny Icon"] = "微型图标"
 	L["To Frame's"] = "到框架的"
@@ -586,8 +531,7 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	L["Tooltip Content"] = "鼠标提示内容"
 	L["Tooltip on Mouseover"] = "鼠标提示"
 	L["Tooltip Pattern Match"] = "鼠标提示规则匹配"
-	--[[Translation missing --]]
-	L["Tooltip Text"] = "Tooltip Text"
+	L["Tooltip Text"] = "鼠标提示文本"
 	L["Tooltip Value"] = "鼠标提示值"
 	L["Tooltip Value #"] = "鼠标提示值 #"
 	L["Top HUD position"] = "顶部 HUD 位置"
@@ -603,33 +547,25 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	L["Unit Count"] = "单位计数"
 	L["Unlike the start or finish animations, the main animation will loop over and over until the display is hidden."] = "不同于开始或结束动画，主动画将不停循环，直到图示被隐藏。"
 	L["Up"] = "上"
-	--[[Translation missing --]]
-	L["Update "] = "Update "
+	L["Update "] = "更新"
 	L["Update Custom Text On..."] = "更新自定义文字于"
-	--[[Translation missing --]]
-	L["Update this Aura"] = "Update this Aura"
+	L["Update this Aura"] = "更新此光环"
 	L["Use Full Scan (High CPU)"] = "使用完整扫描(高CPU)"
 	L["Use nth value from tooltip:"] = "使用来自鼠标提示的值的顺序："
 	L["Use SetTransform"] = "使用 SetTransform 方法"
 	L["Use tooltip \"size\" instead of stacks"] = "使用\\\"大小\\\"提示,而不是\\\"层数\\\""
 	L["Use Tooltip Information"] = "使用鼠标提示信息"
-	--[[Translation missing --]]
-	L["Used in Auras:"] = "Used in Auras:"
+	L["Used in Auras:"] = "在下列光环中被使用："
 	L["Used in auras:"] = "在下列光环中被使用："
-	--[[Translation missing --]]
-	L["Value %i"] = "Value %i"
-	--[[Translation missing --]]
-	L["Values are in normalized rgba format."] = "Values are in normalized rgba format."
-	--[[Translation missing --]]
-	L["Values:"] = "Values:"
-	--[[Translation missing --]]
-	L["Variable Size"] = "Variable Size"
+	L["Value %i"] = "值 %i"
+	L["Values are in normalized rgba format."] = "数值为标准化的 RGBA 格式"
+	L["Values:"] = "值："
+	L["Variable Size"] = "变量尺寸"
 	L["Version: "] = "版本："
 	L["Vertical Align"] = "垂直对齐"
 	L["Vertical Bar"] = "垂直条"
 	L["View"] = "视图"
-	--[[Translation missing --]]
-	L["Wago Update"] = "Wago Update"
+	L["Wago Update"] = "Wago.io 更新"
 	L["Width"] = "宽度"
 	L["X Offset"] = "X 偏移"
 	L["X Rotation"] = "X旋转"
