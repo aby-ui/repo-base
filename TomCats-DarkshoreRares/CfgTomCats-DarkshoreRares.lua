@@ -5,7 +5,7 @@ U1RegisterAddon("TomCats-DarkshoreRares", {
 
     tags = { TAG_MAPQUEST, },
     icon = "Interface\\AddOns\\TomCats-DarkshoreRares\\images\\darnassus-icon",
-    desc = "说明`黑海岸战争前线显示稀有精英图标及掉落",
+    desc = "在黑海岸战争前线大地图上显示稀有精英图标及掉落",
     pics = 2,
 
     toggle = function(name, info, enable, justload)

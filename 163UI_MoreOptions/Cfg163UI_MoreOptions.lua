@@ -27,7 +27,7 @@ U1RegisterAddon("163UI_MoreOptions", {
         text = U1_NEW_ICON.."上线后立即释放尸体",
         var = "death_release",
         tip = "说明`8.0以后BOSS战掉线再上线时会连续掉线，开启此选项后可以改善。",
-        default = 1,
+        default = false,
     },
 
     --[[
@@ -240,6 +240,7 @@ do
 --         CoreOnEvent(e, setProfanityFilter)
 --     end
 
+    --[[
     CoreOnEvent("PLAYER_ENTERING_WORLD", function()
         if U1GetCfgValue("163ui_moreoptions/death_release") and UnitIsDeadOrGhost("player") then
             AcceptResurrect()
@@ -247,4 +248,5 @@ do
         end
         return "remove"
     end)
+    --]]
 end

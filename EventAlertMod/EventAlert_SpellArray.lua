@@ -786,6 +786,7 @@ function EventAlert_LoadSpellArray()
             [183436] = {enable=true,},	-- 报复
             [207635] = {enable=true,},	-- 纳斯雷兹姆的低语
             [231895] = {enable=true,},	-- 征伐
+            [286393] = {enable=true,},	-- 苍穹之力
 
 		},
 		-- Alternate Alert / 本職業額外提醒區

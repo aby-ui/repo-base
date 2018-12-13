@@ -290,6 +290,7 @@ Mixin(GridFrame.defaultDB, {
             alert_RaidDebuff = true,
             alert_res = true,
             alert_bigdebuffs = true,
+            alert_summon = true,
         },
         iconright = {
             alert_tankcd = true,
@@ -743,7 +744,7 @@ do
         alert_phase = {
             enable = true,
             priority = 40,
-            color = { r = 1, g = 1, b = 0, a = 1 },
+            color = { r = 1, g = 1, b = 0, a = 1, ignore = true },
         },
     }
 
@@ -764,6 +765,8 @@ do
     function GridStatusPhase:OnStatusDisable(status)
         if status == "alert_phase" then
             self:UnregisterEvent("UNIT_PHASE")
+            self:UnregisterEvent("UNIT_FLAGS")
+            self:UnregisterEvent("UNIT_CONNECTION")
             self:UnregisterEvent("GROUP_ROSTER_UPDATE")
             self.core:SendStatusLostAllUnits("alert_phase")
         end
@@ -800,6 +803,93 @@ do
             )
         else
             self.core:SendStatusLost(guid, "alert_phase")
+        end
+    end
+end
+
+--[[------------------------------------------------------------
+召唤图标
+---------------------------------------------------------------]]
+do
+    local GridStatusSummon = Grid:NewStatusModule("GridStatusSummon")
+    -- GridStatusSummon.menuName = "集合石召唤状态"
+
+    GridStatusSummon.defaultDB = {
+        alert_summon = {
+            enable = true,
+            priority = 98,
+            color = { r = .5, g = .5, b = .5, a = 1, ignore = true },
+        },
+    }
+
+    function GridStatusSummon:PostInitialize()
+    	self:RegisterStatus("alert_summon", "集合石召唤状态", nil, true)
+    end
+
+    function GridStatusSummon:OnStatusEnable(status)
+        if status == "alert_summon" then
+            self:RegisterEvent("UNIT_PHASE", "UpdateUnit")
+            self:RegisterEvent("UNIT_FLAGS", "UpdateUnit")
+            self:RegisterEvent("UNIT_CONNECTION", "UpdateUnit")
+            self:RegisterEvent("GROUP_ROSTER_UPDATE", "UpdateAllUnits")
+            self:RegisterEvent("INCOMING_SUMMON_CHANGED", "UpdateUnit")
+            self:UpdateAllUnits()
+        end
+    end
+
+    function GridStatusSummon:OnStatusDisable(status)
+        if status == "alert_summon" then
+            self:UnregisterEvent("UNIT_PHASE")
+            self:UnregisterEvent("UNIT_FLAGS")
+            self:UnregisterEvent("UNIT_CONNECTION")
+            self:UnregisterEvent("GROUP_ROSTER_UPDATE")
+            self:UnregisterEvent("INCOMING_SUMMON_CHANGED")
+            self.core:SendStatusLostAllUnits("alert_summon")
+        end
+    end
+
+    function GridStatusSummon:UpdateAllUnits()
+        for guid, unit in GridRoster:IterateRoster() do
+            self:UpdateUnit("UpdateAllUnits", unit)
+        end
+    end
+
+    local TEX_COORD = { left = .2, right = 0.8, top = 0.2, bottom = 0.8 }
+    function GridStatusSummon:UpdateUnit(event, unit)
+        if not unit then return end
+        local guid = UnitGUID(unit)
+        if not GridRoster:IsGUIDInGroup(guid) then return end
+
+        if C_IncomingSummon.HasIncomingSummon(unit) then
+            local status = C_IncomingSummon.IncomingSummonStatus(unit);
+            local icon, text
+            if(status == Enum.SummonStatus.Pending) then
+                icon = "Interface/RaidFrame/Raid-Icon-SummonPending"
+                text = INCOMING_SUMMON_TOOLTIP_SUMMON_PENDING;
+            elseif( status == Enum.SummonStatus.Accepted ) then
+                icon = "Interface/RaidFrame/Raid-Icon-SummonAccepted"
+                text = INCOMING_SUMMON_TOOLTIP_SUMMON_ACCEPTED;
+            elseif( status == Enum.SummonStatus.Declined ) then
+                icon = "Interface/RaidFrame/Raid-Icon-SummonDeclined"
+                text = INCOMING_SUMMON_TOOLTIP_SUMMON_DECLINED;
+            end
+
+            local settings = self.db.profile.alert_summon
+            self.core:SendStatusGained(guid, "alert_summon",
+                settings.priority,
+                nil, -- range
+                settings.color,
+                text, -- text
+                nil, -- value
+                nil, -- maxValue
+                icon, -- texture
+                nil, -- start
+                nil, -- duration
+                nil, -- count
+                TEX_COORD
+            )
+        else
+            self.core:SendStatusLost(guid, "alert_summon")
         end
     end
 end

@@ -249,7 +249,7 @@ ChatFrame_AddMessageEventFilter("CHAT_MSG_WHISPER", function(...)
 		filterTable[trimmedPlayer] = level
         addedOrder[#addedOrder + 1] = trimmedPlayer
         CoreScheduleBucket("BadBoy_Levels_RemoveFriend", 2, clearAddedOrder)
-		AddFriend(trimmedPlayer, true) --add player to friends, the 2nd arg "true" is a fake arg added by request of tekkub, author of FriendsWithBenefits
+        C_FriendList.AddFriend(trimmedPlayer) --add player to friends, the 2nd arg "true" is a fake arg added by request of tekkub, author of FriendsWithBenefits
 	end
 	return true --filter everything not good (maybe) and not GM
 end)

@@ -62,7 +62,7 @@ function Applicant:Constructor(id, index, activityId)
     local numMembers = info.numMembers
     local isNew = info.isNew
     local comment = info.comment
-    local orderID = info.orderID
+    local orderID = info.displayOrderID
     local name, class, localizedClass, level, itemLevel, honorLevel, tank, healer, damage, assignedRole, relationship = C_LFGList.GetApplicantMemberInfo(id, index)
     local msg, isMeetingStone, progression, pvpRating, source  = DecodeDescriptionData(comment)
 
