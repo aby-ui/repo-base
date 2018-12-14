@@ -1,4 +1,4 @@
-## Interface: 80000
+## Interface: 80100
 ## Notes: 自动获取全团成员的平均装备等级/韧性/副本击杀次数统计,以列表的方式集中呈现。
 
 ## SavedVariables: TeamStatsDB

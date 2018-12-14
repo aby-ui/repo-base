@@ -1,4 +1,4 @@
-## Interface: 80000
+## Interface: 80100
 ## Notes: Modifies Blizzard's auction house display so it can display and sort multiple pages of items at once.
 ## Author: Baudzilla
 ## Version: 1.111

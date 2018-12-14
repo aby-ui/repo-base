@@ -1,4 +1,4 @@
-## Interface: 80000
+## Interface: 80100
 ## Title: XLoot
 ## Notes: Core module for Loot and Looting-related UI improvements
 ## Version: 8.0-6

@@ -748,17 +748,21 @@ protection area
 U1STAFF={["邦桑廸-奥杜尔"]=1,["心耀-冰风岗"]=1,
     ["Majere-冰风岗"]="爱不易开发者的会长",
     ["乄阿蛮乄-冰风岗"]="Banshee元素领主",
+    ["咬住欧气冲天-冰风岗"]="爱不易御用菜猎人",
+    ["糖门欧洲人-冰风岗"]="爱不易龙虾供应商",
+    ["Yakee-冰风岗"]="爱不易God-Y",
     ["北风丶烈-冰风岗"]="Banshee部落老兵楷模",
-    ["橙光大师-冰风岗"]="Banshee熊猫人领导",
     ["无尘大师-冰风岗"]="Banshee熊猫人领导",
     ["绯流琥-冰风岗"]="Banshee黑骑士",
     ["欧灬若拉-冰风岗"]="Banshee部落老兵典范",
     ["丶咕哒子-冰风岗"]="Banshee十八岁的咕哒子",
-    ["丶咕哒嘤-冰风岗"]="Banshee十八岁的咕哒子",
+    ["Ishtara-冰风岗"]="Banshee十八岁的咕哒子",
+    ["丶晞-冰风岗"]="爱不易丶晞",
+    ["丶煙-冰风岗"]="爱不易丶煙",
     ["夜色之忆-冰风岗"]="Banshee小仙女",
     ["北极星姐姐-罗宁"]="来自星星的你",
     ["香菇跑跑-罗宁"]="啊呜~~~",
-    ["小倍倍猪-冰风岗"]="Banshee小仙女" }
+    ["小倍倍猪-冰风岗"]="爱不易老板娘" }
 RunOnNextFrame(function()
     CoreRegisterEvent("INIT_COMPLETED", { INIT_COMPLETED = function()
         CoreScheduleTimer(false, 1, function()

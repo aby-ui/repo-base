@@ -1,4 +1,4 @@
-## Interface: 80000
+## Interface: 80100
 ## Title: Dominos Config
 ## Title-zhCN: Dominos 设置
 ## Title-zhTW: Dominos 設置

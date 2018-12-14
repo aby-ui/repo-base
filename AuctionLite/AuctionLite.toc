@@ -1,4 +1,4 @@
-## Interface: 80000
+## Interface: 80100
 ## Title: AuctionLite
 ## Notes: A lightweight addon that tracks auction house data and improves the auction house interface.
 ## Author: merial.kilrogg@gmail.com

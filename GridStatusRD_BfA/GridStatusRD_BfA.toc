@@ -1,4 +1,4 @@
-## Interface: 80000
+## Interface: 80100
 ## Title: GridStatusRaidDebuff(BfA)
 ## Notes: Debuff List for Battle for Azeroth
 ## Author: tptbk(Doadin-Malorne-US)

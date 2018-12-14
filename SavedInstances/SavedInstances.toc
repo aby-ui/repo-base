@@ -1,4 +1,4 @@
-## Interface: 80000
+## Interface: 80100
 ## Title: SavedInstances
 ## Notes: Tracks Raid, Instance, World Boss lockouts for all your characters, daily/weekly quests, currencies, trade cooldowns, and more!
 ## Author: Benjamin Staneck

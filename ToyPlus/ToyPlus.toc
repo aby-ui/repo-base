@@ -1,4 +1,4 @@
-## Interface: 80000
+## Interface: 80100
 ## Title: ToyPlus
 ## Version: 1.7.1
 ## Author: distnz

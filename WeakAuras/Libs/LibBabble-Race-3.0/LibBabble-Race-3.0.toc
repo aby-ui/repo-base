@@ -1,4 +1,4 @@
-## Interface: 80000
+## Interface: 80100
 ## LoadOnDemand: 1
 ## Title: Lib: Babble-Race-3.0
 ## Notes: A library to help with localization of races.

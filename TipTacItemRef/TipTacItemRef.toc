@@ -1,4 +1,4 @@
-## Interface: 80000
+## Interface: 80100
 ## Version: 18.07.22
 ## Title: TipTacItemRef
 ## Author: Aezay (Earthen Ring EU)

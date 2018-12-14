@@ -1,4 +1,4 @@
-## Interface: 80000
+## Interface: 80100
 ## Title: Dominos Roll
 ## Title-zhCN: |cFF0099FF[Dominos]|r Roll窗口模块
 ## Notes: Makes the set of frames for rolling on items when in a group movable

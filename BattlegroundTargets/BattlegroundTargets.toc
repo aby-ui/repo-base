@@ -1,4 +1,4 @@
-## Interface: 80000
+## Interface: 80100
 ## Title: BattlegroundTargets
 ## Notes: A Friend-Enemy-Unit-Frame for battlegrounds.
 ## Notes-deDE: Eine Freund-Feind-Anzeige für Schlachtfelder.

@@ -1,4 +1,4 @@
-## Interface: 80000
+## Interface: 80100
 ## Title: Masque: |cffff8000Caith|r
 ## Version: 8.0.0
 ## Author: StormFX

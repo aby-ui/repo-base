@@ -1,4 +1,4 @@
-## Interface: 80000
+## Interface: 80100
 ## Title: Grail |r|cff69ccf0Achievements|r
 ## Author: Scott M Harrison
 ## Notes: Provides achievement information to Grail

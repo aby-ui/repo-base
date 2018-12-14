@@ -1,4 +1,4 @@
-## Interface: 80000
+## Interface: 80100
 ## Notes: Wowhead Data dump for GatherMate2
 ## Notes-zhTW: Wowhead 資料轉存至採集助手 GatherMate2
 ## Notes-zhCN: Wowhead 资料转存至采集助手 GatherMate2

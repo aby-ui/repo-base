@@ -1,4 +1,4 @@
-﻿## Interface: 80000
+﻿## Interface: 80100
 ## Title: Fizzle
 ## Notes: Show item durability and quality in the character frame.
 ## Author: phyber

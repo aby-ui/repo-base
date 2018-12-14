@@ -1,4 +1,4 @@
-## Interface: 80000
+## Interface: 80100
 ## Title: Grail |r|cff69ccf0Quests zhCN|r
 ## Author: Scott M Harrison
 ## Notes: Provides localized zhCN quest names to Grail

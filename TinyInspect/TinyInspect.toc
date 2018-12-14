@@ -1,4 +1,4 @@
-## Interface: 80000
+## Interface: 80100
 ## Title: TinyInspect
 ## Version: 8.0.1
 ## Notes: Show ItemLevel For Inspect & Party & Raid & Mouse & Bag & Bank ...

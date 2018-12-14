@@ -1,4 +1,4 @@
-## Interface: 80000
+## Interface: 80100
 ## Title: RangeDisplay
 ## Author: mitch0
 ## Version: v4.8.3

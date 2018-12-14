@@ -1,4 +1,4 @@
-## Interface: 80000
+## Interface: 80100
 ## Title: TomCat's Tours: Rares of Darkshore (Warfront on Darkshore)
 ## Author: TomCat
 ## X-Website: http://www.everythingwarcraft.com

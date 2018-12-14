@@ -1,4 +1,4 @@
-## Interface: 80000
+## Interface: 80100
 ## Title: HandyNotes_SummerFestival
 ## Notes: Displays the locations of Summer Festival bonfires.
 ## Author: Ethan Centaurai

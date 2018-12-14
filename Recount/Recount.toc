@@ -1,4 +1,4 @@
-## Interface: 80000
+## Interface: 80100
 ## Version: v8.0.1e
 ## Title: Recount
 ## Notes: Records Damage and Healing for Graph Based Display.

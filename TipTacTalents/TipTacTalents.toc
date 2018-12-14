@@ -1,4 +1,4 @@
-## Interface: 80000
+## Interface: 80100
 ## Version: 18.07.19
 ## Title: TipTacTalents
 ## Author: Aezay (Earthen Ring EU)
