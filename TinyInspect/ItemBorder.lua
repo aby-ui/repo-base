@@ -66,7 +66,7 @@ end)
 
 --直角邊框时需要调整艾泽拉斯项链等级框架
 local RankFrame = CharacterNeckSlot and CharacterNeckSlot.RankFrame
-if (RankFrame) then
+if (false and RankFrame) then
     RankFrame.Texture:Hide()
     RankFrame:SetPoint("CENTER", CharacterNeckSlot, "BOTTOM", 0, 8)
     local fontFile, fontSize, fontFlags = TextStatusBarText:GetFont()

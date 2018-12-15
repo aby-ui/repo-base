@@ -18,6 +18,7 @@ QuestFont.lua
 SlashCommands.lua
 Simc.xml
 Simc.lua
+FiveCombo.lua
 8.0\ChallengesGuildBest.xml
 
 yClassColors\core.lua

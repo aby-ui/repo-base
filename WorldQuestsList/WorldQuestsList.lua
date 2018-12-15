@@ -1,4 +1,4 @@
-local VERSION = 82
+local VERSION = 83
 
 --[[
 Special icons for rares, pvp or pet battle quests in list
@@ -246,6 +246,9 @@ Major fixes
 Added option to replace trinkets rewards with expulsom
 Update for quick navigation buttons
 Fixes
+
+Darkshore rares update
+LFG Fixes
 ]]
 
 local GlobalAddonName, WQLdb = ...
@@ -1325,12 +1328,14 @@ WorldQuestList:SetScript("OnEvent",function(self,event,...)
 				AzeriteFormat = 20,
 				--DisableRewardIcons = true,
                 DisableLFG_PopupLeave = true,
+                DisableShellGame = true,
 				HideLegion = true,
             }
 		end
 		VWQL = _G.VWQL
         if VWQL.DisableLFG_PopupLeave == nil then VWQL.DisableLFG_PopupLeave = true end
         if VWQL.DisableLFG_Popup == nil then VWQL.DisableLFG_Popup = true end
+        if VWQL.DisableShellGame == nil then VWQL.DisableShellGame = true end
 				
 		VWQL[charKey] = VWQL[charKey] or {}
 		
@@ -7040,8 +7045,8 @@ hooksecurefunc("LFGListSearchPanel_SelectResult", function(self, resultID)
 	if not VWQL or VWQL.DisableLFG then
 		return
 	end
-	local id, activityID, name = C_LFGListGetSearchResultInfo(resultID) --abyui81
-	if name and LFGListFrame.SearchPanel.categoryID == 1 and IsTeoreticalWQ(name) then
+	local data = C_LFGList.GetSearchResultInfo(resultID)
+	if data and data.name and LFGListFrame.SearchPanel.categoryID == 1 then
 		LFGListFrame.SearchPanel.SignUpButton:Click()
 		LFGListApplicationDialog.SignUpButton:Click()
 	end
@@ -7053,8 +7058,8 @@ hooksecurefunc("LFGListGroupDataDisplayPlayerCount_Update", function(self, displ
 	if disabled or not line or not line.resultID or numPlayers ~= 5 then
 		return
 	end	
-	local id, activityID, name = C_LFGListGetSearchResultInfo(line.resultID) --abyui81
-	if name and LFGListFrame.SearchPanel.categoryID == 1 then
+	local data = C_LFGList.GetSearchResultInfo(line.resultID)
+	if data and data.name and LFGListFrame.SearchPanel.categoryID == 1 then
 		self.Count:SetText("|cffff0000"..numPlayers)
 	end
 end)
@@ -7228,24 +7233,24 @@ QuestCreationBox:SetScript("OnEvent",function (self,event,arg1,arg2)
 		if not VWQL or VWQL.DisableLFG or not UnitIsGroupLeader("player", LE_PARTY_CATEGORY_HOME) then
 			return
 		end
-		local active, activityID, ilvl, honorLevel, name, comment, voiceChat, duration, autoAccept, privateGroup, lfg_questID = C_LFGList.GetActiveEntryInfo()
-		if IsTeoreticalWQ(name) then
-			if activityID then
-				local _, _, categoryID = C_LFGList.GetActivityInfo(activityID)
+		local data = C_LFGList.GetActiveEntryInfo()
+		if data then
+			if data.activityID then
+				local _, _, categoryID = C_LFGList.GetActivityInfo(data.activityID)
 				if categoryID ~= 1 then
 					return
 				end
 			end
 			StaticPopup_Hide("LFG_LIST_AUTO_ACCEPT_CONVERT_TO_RAID")
 			
-			if not autoAccept and
+			if not data.autoAccept and
 				(  GetNumGroupMembers(LE_PARTY_CATEGORY_HOME) + C_LFGList.GetNumInvitedApplicantMembers() + C_LFGList.GetNumPendingApplicantMembers() <= 5  )
 			then
 				local applicants = C_LFGList.GetApplicants()
 				for _,applicantID in pairs(applicants) do
-					local id, status, pendingStatus, numMembers, isNew = C_LFGList.GetApplicantInfo(applicantID)
-					if status == "applied" and numMembers == 1 then
-						for memberIdx=1,numMembers do
+					local applicantData = C_LFGList.GetApplicantInfo(applicantID)
+					if applicantData and applicantData.applicationStatus == "applied" and applicantData.numMembers == 1 then
+						for memberIdx=1,applicantData.numMembers do
 							local name, class, localizedClass, level, itemLevel, honorLevel, tank, healer, damage, assignedRole = C_LFGList.GetApplicantMemberInfo(applicantID, memberIdx)
 							if name then
 								InviteUnit(name)
@@ -7265,8 +7270,8 @@ QuestCreationBox:SetScript("OnEvent",function (self,event,arg1,arg2)
 		if name then
 			local app = C_LFGList.GetApplications()
 			for _,id in pairs(app) do
-				local _, _, _, _, _, _, _, _, _, _, _, _, groupLeader = C_LFGListGetSearchResultInfo(id) --abyui81
-				if name == groupLeader then
+				local searchResultInfo = C_LFGList.GetSearchResultInfo(id)
+				if searchResultInfo and name == searchResultInfo.leaderName then
 					AcceptGroup()
 					StaticPopupSpecial_Hide(LFGInvitePopup)
 					for i = 1, 4 do
@@ -7294,9 +7299,9 @@ QuestCreationBox:SetScript("OnEvent",function (self,event,arg1,arg2)
 			(not QuestCreationBox:IsVisible() or (QuestCreationBox.type ~= 1 and QuestCreationBox.type ~= 4) or (QuestCreationBox.type == 1 and QuestCreationBox.questID == arg1) or (QuestCreationBox.type == 4 and QuestCreationBox.questID == arg1)) and 
 			(GetNumGroupMembers() or 0) > 1 
 		then
-			local _, activityID = C_LFGList.GetActiveEntryInfo()
-			if activityID then
-				local _, _, categoryID = C_LFGList.GetActivityInfo(activityID)
+			local data = C_LFGList.GetActiveEntryInfo()
+			if data and data.activityID then
+				local _, _, categoryID = C_LFGList.GetActivityInfo(data.activityID)
 				if categoryID ~= 1 then
 					return
 				end

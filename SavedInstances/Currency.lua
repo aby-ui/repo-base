@@ -49,6 +49,9 @@ local currency = {
   1580, -- Seal of Wartorn Fate
   1560, -- War Resources
   1587, -- War Supplies
+  1716, -- Honorbound Service Medal
+  1717, -- 7th Legion Service Medal
+  1718, -- Titan Residuum
 }
 addon.currency = currency
 

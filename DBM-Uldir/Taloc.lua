@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2168, "DBM-Uldir", nil, 1031)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 18116 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 18131 $"):sub(12, -3))
 mod:SetCreatureID(137119)--Taloc
 mod:SetEncounterID(2144)
 mod:SetZone()
@@ -96,8 +96,8 @@ function mod:OnCombatStart(delay)
 	self.vb.phase = 1
 	timerPlasmaDischargeCD:Start(5.9-delay, 1)
 	timerSanguineStaticCD:Start(18-delay)
-	timerCudgelOfGoreCD:Start(35-delay, 1)
-	countdownCudgelofGore:Start(35)
+	timerCudgelOfGoreCD:Start(31.2-delay, 1)
+	countdownCudgelofGore:Start(31.2)
 	if self:IsMythic() then
 		timerEnlargedHeartCD:Start(24-delay, 1)
 		countdownEnlargedHeart:Start(24-delay)

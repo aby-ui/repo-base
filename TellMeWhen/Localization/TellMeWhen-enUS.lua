@@ -2769,9 +2769,9 @@ L["ReducedHealing"] = "Reduced Healing"
 L["DefensiveBuffs"] = "Defensive Buffs"
 L["DefensiveBuffsSingle"] = "Targeted Defensive Buffs"
 L["DefensiveBuffsAOE"] = "AOE Defensive Buffs"
-L["MiscHelpfulBuffs"] = "Misc. Helpful Buffs"
 L["SpeedBoosts"] = "Speed Boosts"
 L["DamageBuffs"] = "Damage Buffs"
+L["ImmuneToInterrupts"] = "Immunity to Interrupt Spells"
 
 -- Deprecated
 --L["IncreasedVersatility"] = "Increased Versatility"
@@ -2796,9 +2796,10 @@ L["DamageBuffs"] = "Damage Buffs"
 --L["IncreasedPhysHaste"] = "Increased Physical Haste"
 --L["IncreasedSpellHaste"] = "Increased Spell Haste"
 --L["PhysicalDmgTaken"] = "Physical Damage Taken"
+--L["MiscHelpfulBuffs"] = "Misc. Helpful Buffs"
+--L["PvPSpells"] = "PvP Crowd Control, etc."
 
 L["Heals"] = "Player Heals"
-L["PvPSpells"] = "PvP Crowd Control, etc."
 
 L["GCD"] = "Global Cooldown"
 

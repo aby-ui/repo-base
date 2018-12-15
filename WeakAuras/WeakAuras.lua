@@ -1653,10 +1653,7 @@ end
 
 local toLoad = {}
 local toUnload = {};
-function WeakAuras.ScanForLoads(self, event, arg1, ...)
-  if not WeakAuras.IsLoginFinished() then
-    return
-  end
+local function scanForLoadsImpl(self, event, arg1, ...)
   if (WeakAuras.IsOptionsProcessingPaused()) then
     return;
   end
@@ -1798,6 +1795,13 @@ function WeakAuras.ScanForLoads(self, event, arg1, ...)
   wipe(toUnload)
 end
 
+function WeakAuras.ScanForLoads(self, event, arg1, ...)
+  if not WeakAuras.IsLoginFinished() then
+    return
+  end
+  scanForLoadsImpl(self, event, arg1, ...)
+end
+
 local loadFrame = CreateFrame("FRAME");
 WeakAuras.loadFrame = loadFrame;
 WeakAuras.frames["Display Load Handling"] = loadFrame;
@@ -1853,7 +1857,7 @@ end
 
 function WeakAuras.ReloadAll()
   WeakAuras.UnloadAll();
-  WeakAuras.ScanForLoads();
+  scanForLoadsImpl();
 end
 
 function WeakAuras.UnloadAll()

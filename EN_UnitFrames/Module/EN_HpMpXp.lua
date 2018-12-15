@@ -1,5 +1,5 @@
 local n2s, f2s, floor = n2s, f2s, floor
-local textDisplay = GetCVarBool("statusText") and GetCVar("statusTextDisplay") == "BOTH"
+local textDisplay = not GetCVarBool("statusText") or GetCVar("statusTextDisplay") ~= "NUMERIC"
 
 local RED     = "|cffff0000";
 local GREEN   = "|cff00ff00";
@@ -36,10 +36,6 @@ function EUF_HpMpXp_OnLoad(self)
     self:RegisterEvent'UNIT_ENTERED_VEHICLE'
     self:RegisterEvent("PLAYER_FOCUS_CHANGED")
     self:RegisterEvent("CVAR_UPDATE")
-	TargetFrameTextureFrameManaBarText:SetAlpha(0);
-	TargetFrameTextureFrameHealthBarText:SetAlpha(0);
-	FocusFrameTextureFrameManaBarText:SetAlpha(0);
-	FocusFrameTextureFrameHealthBarText:SetAlpha(0);
     --[[
 	local parent =  CreateFrame("Frame","PlayerValueFrame",PlayerFrame);
 	parent:SetWidth(PlayerFrame:GetWidth()-100);
@@ -102,23 +98,25 @@ function EUF_HpMpXp_OnEvent(event, unit)
 	--	PlayerHp_Update();
 	--	PlayerPower_Update();
     elseif event == "CVAR_UPDATE" then
-        textDisplay = GetCVarBool("statusText") and GetCVar("statusTextDisplay") == "BOTH"
+        textDisplay = not GetCVarBool("statusText") or GetCVar("statusTextDisplay") ~= "NUMERIC"
         EUF_TargetFrameDisplay_Update()
 	end
 end
 
+local function getPercent(value, max)
+    if value == 0 then return "" end
+    if value == max then return "100%" end
+    return f2s(100 * value / max, 1) .. "%"
+end
+
 function PlayerHp_Update()
-	local currValue
-	local valueMax
-	local percent
 
 	local unit = PlayerFrame.unit or "player";
-	currValue = UnitHealth(unit)
-	valueMax = UnitHealthMax(unit)
-	percent = math.floor(100 * currValue / valueMax);
+	local value = UnitHealth(unit)
+	local valueMax = UnitHealthMax(unit)
 	--PlayerValueFrame.NewHealthValue:SetText( currValue.."/"..valueMax);
-	EUF_PlayerFrameHP:SetText(currValue.."/"..valueMax)
-	EUF_PlayerFrameHPPercent:SetText(percent .. "%")
+	EUF_PlayerFrameHP:SetText(value .."/"..valueMax)
+	EUF_PlayerFrameHPPercent:SetText(getPercent(value, valueMax))
 end
 
 function PlayerPower_Update()
@@ -140,10 +138,9 @@ end
 PlayerFrameHealthBar:HookScript("OnValueChanged", function(self, value)
 	local _, valueMax = self:GetMinMaxValues()
 	local value = self:GetValue()
-	local percent = floor(100 * value / valueMax)
 	--PlayerValueFrame.NewHealthValue:SetText( Value.."/"..valueMax);
 	EUF_PlayerFrameHP:SetText(n2s(value).."/"..n2s(valueMax))
-	EUF_PlayerFrameHPPercent:SetText(n2s(percent).." %")
+	EUF_PlayerFrameHPPercent:SetText(getPercent(value, valueMax))
 end)
 
 --加入即時更新魔力、能量、怒氣、符能值及上載具時更新為載具魔力
@@ -252,7 +249,6 @@ function EUF_HP_Update(unit)
 
 	local currValue = UnitHealth(unit);
 	local maxValue = UnitHealthMax(unit);
-	local percent = maxValue== 0 and 0 or floor(currValue * 100 / maxValue);
 	local digit;
     if unit=="player" or unit=="target" or unit=="focus" then
         digit = EUF_FormatNumericValue(currValue)  .. " / " .. EUF_FormatNumericValue(maxValue);
@@ -260,10 +256,7 @@ function EUF_HP_Update(unit)
 		digit = EUF_FormatNumericValue(currValue)  .. "/" .. EUF_FormatNumericValue(maxValue);
     end
 
-	if percent and maxValue ~= 0 then
-		percent = n2s(percent) .. "%";
-	else
-		percent = "";
+	if maxValue == 0 then
 		digit = "";
 	end
 
@@ -300,7 +293,7 @@ function EUF_HP_Update(unit)
 		unitObj:SetText(digit);
 	end
 	if unitPercentObj then
-		unitPercentObj:SetText(percent);
+		unitPercentObj:SetText(getPercent(currValue, maxValue));
 	end
 end
 
@@ -589,6 +582,20 @@ function EUF_TargetFrameDisplay_Update()
 		EUF_ObjectDisplay_Update(EUF_TargetFrameHPPercent, EUF_CurrentOptions["TARGETHPMPPERCENT"]);
 		EUF_ObjectDisplay_Update(EUF_TargetFrameMP, not textDisplay and EUF_CurrentOptions["TARGETHPMP"]);
 		EUF_ObjectDisplay_Update(EUF_TargetFrameMPPercent, EUF_CurrentOptions["TARGETHPMPPERCENT"]);
+
+        local hpshow = EUF_TargetFrameHP:IsShown()
+        TargetFrameTextureFrameHealthBarText:SetAlpha(hpshow and 0 or 1);
+        FocusFrameTextureFrameHealthBarText:SetAlpha(hpshow and 0 or 1);
+        local mpshow = EUF_TargetFrameMP:IsShown()
+        TargetFrameTextureFrameManaBarText:SetAlpha(mpshow and 0 or 1);
+        FocusFrameTextureFrameManaBarText:SetAlpha(mpshow and 0 or 1);
+
+        if EUF_FocusFrameHP then
+            EUF_ObjectDisplay_Update(EUF_FocusFrameHP, not textDisplay and EUF_CurrentOptions["TARGETHPMP"]);
+      	    EUF_ObjectDisplay_Update(EUF_FocusFrameHPPercent, EUF_CurrentOptions["TARGETHPMPPERCENT"]);
+      	    EUF_ObjectDisplay_Update(EUF_FocusFrameMP, not textDisplay and EUF_CurrentOptions["TARGETHPMP"]);
+      	    EUF_ObjectDisplay_Update(EUF_FocusFrameMPPercent, EUF_CurrentOptions["TARGETHPMPPERCENT"]);
+        end
 	end
 end
 

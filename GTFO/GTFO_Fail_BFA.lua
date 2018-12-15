@@ -296,6 +296,22 @@ GTFO.SpellID["265752"] = {
   sound = 3;
 };
 
+GTFO.SpellID["274206"] = {
+  --desc = "Blood Wave (Grand Ma'da Ateena)";
+  sound = 3;
+};
+
+GTFO.SpellID["258094"] = {
+  --desc = "Breath of Vol'jamba (Vol'jamba)";
+  sound = 3;
+};
+
+GTFO.SpellID["269823"] = {
+  --desc = "Ball Lightning";
+  applicationOnly = true;
+  sound = 3;
+};
+
 -- ***********************
 -- * Shrine of the Storm *
 -- ***********************

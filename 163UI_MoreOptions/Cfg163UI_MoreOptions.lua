@@ -23,12 +23,12 @@ U1RegisterAddon("163UI_MoreOptions", {
         callback = function(cfg, v, loading) SetCVar("overrideArchive", v and "0" or "1") end,
     }),
 
-    {
+    --[[{
         text = U1_NEW_ICON.."上线后立即释放尸体",
         var = "death_release",
         tip = "说明`8.0以后BOSS战掉线再上线时会连续掉线，开启此选项后可以改善。",
         default = false,
-    },
+    },--]]
 
     --[[
     U1CfgMakeCVarOption(U1_NEW_ICON.."使用老版本TAB键选取方式", "targetnearestuseold", {

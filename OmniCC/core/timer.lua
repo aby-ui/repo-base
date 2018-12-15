@@ -35,21 +35,20 @@ local SECONDS_THRESHOLD = 59500 -- 59.5 seconds
 local SOON_THRESHOLD = 5500 -- 5.5 seconds
 
 -- internal state!
--- all active timers
 local active = {}
--- inactive timers
 -- we use a weak table so that inactive timers are cleaned up on gc
 local inactive = setmetatable({}, {__mode = "k" })
 
 local Timer = {}
-local Timer_MT = { __index = Timer }
 
-function Timer:GetOrCreate(info)
-    if not info then return end
+Timer.__index = Timer
 
-    local endTime = info.start * 1000 + info.duration * 1000
-    local kind = info.kind
-    local settings = info.settings
+function Timer:GetOrCreate(cooldown)
+    if not cooldown then return end
+
+    local endTime = cooldown._occ_start * 1000 + cooldown._occ_duration * 1000
+    local kind = cooldown._occ_kind
+    local settings = cooldown._occ_settings
     local key = strjoin("-", endTime, kind, settings and settings.id or "base")
 
     local timer = active[key]
@@ -80,7 +79,7 @@ function Timer:Restore()
 end
 
 function Timer:Create()
-    local timer = setmetatable({}, Timer_MT)
+    local timer = setmetatable({}, Timer)
 
     timer.callback = function() timer:Update() end
 
@@ -278,4 +277,5 @@ function Timer:ForActive(method, ...)
     end
 end
 
+-- exports
 Addon.Timer = Timer

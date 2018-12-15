@@ -312,6 +312,7 @@ function Mod:CheckAffixes()
 		for index, affixes in ipairs(affixSchedule) do
 			local matches = 0
 			for _, affix in ipairs(currentAffixes) do
+                affix = affix.id or affix --abyui
 				if affix == affixes[1] or affix == affixes[2] or affix == affixes[3] then
 					matches = matches + 1
 				end

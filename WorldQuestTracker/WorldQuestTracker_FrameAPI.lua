@@ -314,7 +314,7 @@ function WorldQuestTracker.UpdateStatusBarAnchors()
 end
 
 --atualiza a borda nas squares do world map e no mapa da zona ~border
-function WorldQuestTracker.UpdateBorder (self, rarity, worldQuestType, mapID, isCriteria)
+function WorldQuestTracker.UpdateBorder (self, rarity, worldQuestType, mapID, isCriteria, isElite)
 
 	if (self.isWorldMapWidget) then
 	
@@ -368,18 +368,16 @@ function WorldQuestTracker.UpdateBorder (self, rarity, worldQuestType, mapID, is
 			self.commonBorder:Show()
 			
 		elseif (rarity == LE_WORLD_QUEST_QUALITY_RARE) then
-			--self.rareBorder:Show()
+			self.rareBorder:Show()
+			self.rareBorder:SetAlpha (0.30)
 			--self:SetBackdropBorderColor (.3, .3, .98, 1)
 			--self:SetBackdropBorderColor (.1, .1, .1, 1)
 			
 			--paint with a blue border
 			self.commonBorder:SetAlpha (0)
 			self.commonBorder:SetVertexColor (1, 1, 1)
-			self:SetBackdropBorderColor (.11, .29, 1, .80)
-			
-			
-			
-			
+			self:SetBackdropBorderColor (.11, .29, 1, .75)
+
 			if (not self.IsZoneSummaryQuestButton) then
 				if (WorldQuestTracker.WorldSummary.FactionSelected == self.FactionID) then
 					self.commonBorder:SetAlpha (0)
@@ -422,6 +420,24 @@ function WorldQuestTracker.UpdateBorder (self, rarity, worldQuestType, mapID, is
 			--self.BountyRing:Show()
 		end
 		
+		if (isElite) then
+			self.rareSerpent:Show()
+			self.rareSerpent:SetSize (48, 52)
+			self.rareSerpent:SetSize (48*0.75, 52*0.75)
+
+			self.rareGlow:Show()
+			self.rareGlow:SetVertexColor (0, 0.36863, 0.74902)
+			self.rareGlow:SetSize (48*0.75, 52*0.75)
+			
+			self.flagText:SetPoint ("top", self.bgFlag, "top", 0, -3)
+			
+			if (worldQuestType == LE_QUEST_TAG_TYPE_FACTION_ASSAULT) then
+				self.rareSerpent:SetTexture ([[Interface\AddOns\WorldQuestTracker\media\rare_dragon_curve_red]])
+			else
+				self.rareSerpent:SetTexture ([[Interface\AddOns\WorldQuestTracker\media\rare_dragon_curveT]])
+			end
+		end
+		
 		if (rarity == LE_WORLD_QUEST_QUALITY_COMMON) then
 			self.bgFlag:Hide()
 			self.blackGradient:SetWidth (40)
@@ -430,26 +446,15 @@ function WorldQuestTracker.UpdateBorder (self, rarity, worldQuestType, mapID, is
 		elseif (rarity == LE_WORLD_QUEST_QUALITY_RARE) then
 		
 			if (mapID ~= WorldQuestTracker.MapData.ZoneIDs.SURAMAR) then
-		
-				self.rareSerpent:Show()
-				self.rareSerpent:SetSize (48, 52)
-				self.rareSerpent:SetSize (48*0.7, 52*0.7)
-				self.rareSerpent:SetTexture ([[Interface\AddOns\WorldQuestTracker\media\rare_dragon_curveT]])
-				
-				self.rareGlow:Show()
-				self.rareGlow:SetVertexColor (0, 0.36863, 0.74902)
-				self.rareGlow:SetSize (48*0.7, 52*0.7)
-				self.rareGlow:SetTexture ([[Interface\AddOns\WorldQuestTracker\media\rare_dragonT]])
+
 				
 				--se estiver sendo trackeada, trocar o banner
-				if (WorldQuestTracker.IsQuestBeingTracked (self.questID)) then
-					self.bgFlag:SetTexture ([[Interface\AddOns\WorldQuestTracker\media\icon_flag_criteriamatchT]])
-				else
-					self.bgFlag:SetTexture ([[Interface\AddOns\WorldQuestTracker\media\icon_flagT]])
-				end
-
+				--if (WorldQuestTracker.IsQuestBeingTracked (self.questID)) then
+				--	self.bgFlag:SetTexture ([[Interface\AddOns\WorldQuestTracker\media\icon_flag_criteriamatchT]])
+				--else
+				--	self.bgFlag:SetTexture ([[Interface\AddOns\WorldQuestTracker\media\icon_flagT]])
+				--end
 				--self.bgFlag:Show()
-				self.flagText:SetPoint ("top", self.bgFlag, "top", 0, -3)
 			end
 			
 		elseif (rarity == LE_WORLD_QUEST_QUALITY_EPIC) then

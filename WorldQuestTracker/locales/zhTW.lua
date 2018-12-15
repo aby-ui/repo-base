@@ -94,8 +94,7 @@ L["S_MAPBAR_SUMMARYMENU_TODAYREWARDS"] = "今天的獎勵"
 L["S_MAPFRAME_ALIGN_CENTER"] = "中間"
 L["S_MAPFRAME_ALIGN_DESC"] = "|cFF22FF22點一下|r切換地圖視窗對齊到畫面的中間或左側。"
 L["S_MAPFRAME_ALIGN_LEFT"] = "左側"
---[[Translation missing --]]
---[[ L["S_OPTIONS_ANIMATIONS"] = ""--]] 
+L["S_OPTIONS_ANIMATIONS"] = "顯示動畫效果"
 L["S_OPTIONS_MAPFRAME_ALIGN"] = "地圖視窗對齊中間"
 L["S_OPTIONS_MAPFRAME_ERROR_SCALING_DISABLED"] = "尚未變更任何數值，必須先 '啟用縮放視窗大小'。 "
 L["S_OPTIONS_MAPFRAME_SCALE"] = "地圖視窗縮放大小"
@@ -147,7 +146,7 @@ L["S_SUMMARYPANEL_LIFETIMESTATISTICS_CHARACTER"] = "角色上線統計"
 L["S_SUMMARYPANEL_OTHERCHARACTERS"] = "其他角色"
 L["S_TUTORIAL_AMOUNT"] = "表示可獲得的數量"
 L["S_TUTORIAL_CLICKTOTRACK"] = "點一下追蹤任務。"
-L["S_TUTORIAL_MAPALIGN"] = "點一下這裡選擇世界地圖對齊方式。"
+L["S_TUTORIAL_MAPALIGN"] = "點一下這裡選擇世界地圖的對齊位置。"
 L["S_TUTORIAL_PARTY"] = "組隊時，藍色星星表示所有隊伍成員都有這些任務!"
 L["S_TUTORIAL_TIMELEFT"] = "表示剩餘時間 (+4小時, +90分鐘, +30分鐘, 少於30分鐘)"
 L["S_TUTORIAL_WORLDBUTTONS"] = [=[點一下這裡在三種列表類型中循環切換。
@@ -156,7 +155,7 @@ L["S_TUTORIAL_WORLDBUTTONS"] = [=[點一下這裡在三種列表類型中循環�
 - |cFFFFAA11依據區域|r
 - |cFFFFAA11不顯示|r
 
-點一下|cFFFFAA11切換顯示世界任務|r來隱藏任務位置。]=]
+點一下|cFFFFAA11切換顯示任務|r來隱藏任務位置。]=]
 L["S_TUTORIAL_WORLDMAPBUTTON"] = "按下這個按鈕會顯示整個破碎群島的地圖。"
 L["S_UNKNOWNQUEST"] = "未知的任務"
 L["S_WORLDBUTTONS_SHOW_NONE"] = "隱藏任務列表"
@@ -166,7 +165,7 @@ L["S_WORLDBUTTONS_TOGGLE_QUESTS"] = "切換顯示任務"
 L["S_WORLDMAP_QUESTLOCATIONS"] = "顯示任務位置"
 L["S_WORLDMAP_QUESTSUMMARY"] = "顯示任務列表"
 L["S_WORLDMAP_TOOGLEQUESTS"] = "切換顯示任務"
-L["S_WORLDMAP_TOOLTIP_TRACKALL"] = "追蹤這個清單中的所有任務"
+L["S_WORLDMAP_TOOLTIP_TRACKALL"] = "追蹤這個列表中的所有任務"
 L["S_WORLDQUESTS"] = "世界任務"
 L["Search for a Group in Group Finder"] = "用預創建尋找隊伍"
 L["Quest ID:"] = "任務ID:"

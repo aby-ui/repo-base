@@ -221,6 +221,12 @@ U1RegisterAddon("163UI_Plugins", {
         tip = "说明`某些场景下会出现一个单独的动作按钮，有时此按钮会因为某些原因导致看不到，为不影响玩家游戏，尤其是BOSS战斗，可以打开此选项，使用一个自定义的替代按钮。",
     },
 
+    {
+        var = "FiveCombo", text = U1_NEW_ICON.."满星时动作条技能高亮", default = true, callback = load,
+        visible = (U1PlayerClass == "ROGUE" or U1PlayerClass == "DRUID"),
+        tip = "说明`潜行者和德鲁伊有效，满星的时候动作条技能闪烁，此功能来自多玩盒子哥",
+    },
+
 --[=[
     {
         var = 'print_huangli_onload',
@@ -231,4 +237,4 @@ U1RegisterAddon("163UI_Plugins", {
 
 })
 
-U1RegisterAddon("GrievousHelper", { title = "重伤助手(自动摘武器)", defaultEnable = 1, parent = "163UI_Plugins", })
+--U1RegisterAddon("GrievousHelper", { title = "重伤助手(自动摘武器)", defaultEnable = 1, parent = "163UI_Plugins", })

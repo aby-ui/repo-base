@@ -117,13 +117,7 @@ U1RegisterAddon("Masque", {
         U1CfgCallBack(U1CfgFindChild("masque", "hidebg"), v)
 
         if U1IsInitComplete() then
-            --后加载的时候需要执行Enable，禁用的跳过，执行完Disable后要恢复设置
-            for _, v in pairs(Masque:Group().SubList) do
-                if not Masque:Group(v).db.Disabled then
-                    CoreUIEnableOrDisable(Masque:Group(v), enable)
-                    Masque:Group(v).db.Disabled = false
-                end
-            end
+            Masque:Group():ToggleWithoutSave(enable)
         end
     end,
 
@@ -316,7 +310,15 @@ local reskin = function()
     if (IsAddOnLoaded("Masque")) then
         if U1GetMasqueCore():ListAddons()["Dominos"] then
             if U1GetMasqueCore():ListGroups("Dominos")["Dominos_Bag Bar"] then
-                U1GetMasqueCore():Group("Dominos", "Bag Bar"):ReSkin()
+                local group = U1GetMasqueCore():Group("Dominos", "Bag Bar")
+                if not group.db.Disabled then
+                    group:ReSkin()
+                end
+                for Button in pairs(group.Buttons) do
+                    if Button.IconBorder then
+                        Button.IconBorder:Hide()
+                    end
+                end
             end
         end
     end

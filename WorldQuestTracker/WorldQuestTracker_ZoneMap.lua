@@ -93,7 +93,8 @@ function WorldQuestTracker.CreateZoneWidget (index, name, parent, pinTemplate) -
 		anchorFrame.worldQuest = true
 		anchorFrame.owningMap = WorldQuestTracker.DataProvider:GetMap()
 	end
-	
+    if anchorFrame.Glow then anchorFrame.Glow:Hide() end --abyui
+
 	local button = CreateFrame ("button", name .. index, parent)
 	button:SetPoint ("center", anchorFrame, "center", 0, 0)
 	button.AnchorFrame = anchorFrame
@@ -324,7 +325,7 @@ function WorldQuestTracker.CreateZoneWidget (index, name, parent, pinTemplate) -
 	button.rareSerpent = supportFrame:CreateTexture (button:GetName() .. "RareSerpent", "OVERLAY")
 	button.rareSerpent:SetWidth (34 * 1.1)
 	button.rareSerpent:SetHeight (34 * 1.1)
-	button.rareSerpent:SetPoint ("CENTER", 1, 0)
+	button.rareSerpent:SetPoint ("CENTER", 1, -1)
 	
 	-- � a sombra da serpente no fundo, pode ser na cor azul ou roxa
 	button.rareGlow = supportFrame:CreateTexture (nil, "background")
@@ -982,7 +983,7 @@ function WorldQuestTracker.SetupWorldQuestButton (self, worldQuestType, rarity, 
 		if (worldQuestType == LE_QUEST_TAG_TYPE_PVP or worldQuestType == LE_QUEST_TAG_TYPE_FACTION_ASSAULT) then
 			self.questTypeBlip:Show()
 			self.questTypeBlip:SetTexture ([[Interface\PVPFrame\Icon-Combat]])
-			self.questTypeBlip:SetTexCoord (0, 1, 0, 1)
+			self.questTypeBlip:SetTexCoord (.05, .95, .05, .95)
 			self.questTypeBlip:SetAlpha (1)
 			
 		elseif (worldQuestType == LE_QUEST_TAG_TYPE_PET_BATTLE) then
@@ -1028,7 +1029,7 @@ function WorldQuestTracker.SetupWorldQuestButton (self, worldQuestType, rarity, 
 				self.QuestType = QUESTTYPE_GOLD
 				self.Amount = goldReward
 				
-				WorldQuestTracker.UpdateBorder (self, rarity, worldQuestType, mapID, self.isCriteria)
+				WorldQuestTracker.UpdateBorder (self, rarity, worldQuestType, mapID, self.isCriteria, isElite)
 				okay = true
 			end
 			
@@ -1062,7 +1063,7 @@ function WorldQuestTracker.SetupWorldQuestButton (self, worldQuestType, rarity, 
 						self.flagText:SetText (numRewardItems)
 					end
 					
-					WorldQuestTracker.UpdateBorder (self, rarity, worldQuestType, mapID, self.isCriteria)
+					WorldQuestTracker.UpdateBorder (self, rarity, worldQuestType, mapID, self.isCriteria, isElite)
 					
 					if (self:GetHighlightTexture()) then
 						self:GetHighlightTexture():SetTexture ([[Interface\Store\store-item-highlight]])
@@ -1126,7 +1127,7 @@ function WorldQuestTracker.SetupWorldQuestButton (self, worldQuestType, rarity, 
 
 				--self.circleBorder:Show()
 				
-				WorldQuestTracker.UpdateBorder (self, rarity, worldQuestType, mapID, self.isCriteria)
+				WorldQuestTracker.UpdateBorder (self, rarity, worldQuestType, mapID, self.isCriteria, isElite)
 				okay = true
 			end
 			

@@ -2,11 +2,11 @@ local addon = select(2, ...)
 local D, L, P = addon.getLocalVars()
 local TCL = addon.TomCatsLibs
 local AceGUI = LibStub("AceGUI-3.0")
-TCL.BulletinBoard.checkForUpdates("1.1.5", 3, {"VjWrxWeFqML","A2qGxbImAE","kWemgqIWpR"}, function(updateAvailable, latestVersion)
+--[[TCL.BulletinBoard.checkForUpdates("1.1.7", 3, {"VjWrxWeFqML","A2qGxbImAE","kWemgqIWpR"}, function(updateAvailable, latestVersion)
     if (updateAvailable) then
         print("|cFFFFCC00There is newer version of 'TomCat's Tours: Rares of Darkshore Highlands' available on Twitch and Curseforge|r")
     end
-end);
+end);]]
 local gameVersion = GetBuildInfo()
 local _, checkIsBossAvailable, QUEST_STATUS, initializeWindow, setQuestLabelStyle, updateQuests, labels, buttons, quests, windowSettings
 local tourWindow, newTourWindow, warfrontFont, warningFont, updateTimer

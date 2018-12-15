@@ -89,6 +89,7 @@ local trade_spells = {
   [251310] = "legionxmute", -- Transmute: Ore to Cloth
   [251311] = "legionxmute", -- Transmute: Ore to Gems
   [251309] = "legionxmute", -- Transmute: Ore to Herbs
+  [286547] = "legionxmute", -- Transmute: Herbs to Anchors
 
   -- Enchanting
   [28027] = "sphere", 	-- Prismatic Sphere (2-day shared, 5.2.0 verified)

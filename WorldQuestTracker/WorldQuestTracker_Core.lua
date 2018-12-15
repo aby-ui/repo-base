@@ -1568,7 +1568,7 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 							--GameCooltip:Hide()
 						end,
 						FixedValue = "none",
-						ShowSpeed = 0.05,
+						ShowSpeed = 0.150,
 						Options = function()
 							GameCooltip:SetOption ("MyAnchor", "bottom")
 							GameCooltip:SetOption ("RelativeAnchor", "top")
@@ -2408,7 +2408,7 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 			
 				--if framerate is low, update more quests at the same time
 				local frameRate = GetFramerate()
-				local amountToUpdate = 1 + (not WorldQuestTracker.db.profile.hoverover_animations and 5 or 0)
+				local amountToUpdate = 2 + (not WorldQuestTracker.db.profile.hoverover_animations and 5 or 0)
 				
 				if (frameRate < 20) then
 					amountToUpdate = amountToUpdate + 3

@@ -146,9 +146,9 @@ end
 
 function UUI.ReloadFlashRefresh()
     local flash = UUI().reload.flash
-    ActionButton_HideOverlayGlow(flash);
+    CoreUIHideOverlayGlow(flash);
     if(next(U1GetReloadList()))then
-        ActionButton_ShowOverlayGlow(flash);
+        CoreUIShowOverlayGlow(flash);
     end
 end
 

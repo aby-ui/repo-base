@@ -1370,13 +1370,6 @@ end
 local addonsToEnable = {} --ADDON_LOADED时还不能启用class和LATER的插件，不然暴雪还是会加载，要到VARIABLES_LOADED里启用.
 
 function U1:PLAYER_LOGIN()
-    if U1DBG.first_run then
-        --在ADDON_LOADED里调用无效
-        SetCVar("floatingCombatTextCombatDamage", "1")
-        SetCVar("floatingCombatTextCombatHealing", "1")
-        U1DBG.first_run = nil
-    end
-
     U1.playerLogin = true
 
     if not U1.variableLoaded then
@@ -1507,7 +1500,9 @@ function U1:ADDON_LOADED(event, name)
         end
 
         U1.db = db;
-        U1DBG = U1DBG or { first_run = true }
+        U1DBG = U1DBG or { }
+        U1DBG.ap_spell = nil
+        U1DBG.AtlasLootReverseDBx = nil
         db.selectedTag = db.selectedTag or defaultDB.selectedTag;
 
         if U1.returnFromDisableAll then
@@ -1707,8 +1702,6 @@ function EnableOrLoadDependencies(name, info, loaded)
 end
 
 function U1:VARIABLES_LOADED(calledFromLogin)
-    SetCVar("scriptErrors", DEBUG_MODE and 1 or 0) --TODO aby8
-
     if calledFromLogin~=1 then
         if not U1.playerLogin then
             loadNormalCfgs(1, nil, nil);

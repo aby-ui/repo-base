@@ -2,7 +2,7 @@
 ## Title: GridStatusRaidDebuff(Legion)
 ## Notes: Debuff List for Legion
 ## Author: Stassart (Treliss-Sargeras-US),tptbk(Doadin-Malorne-US)
-## Version: 8.0.1.3
+## Version: 8.1.0.0
 ## Grid Author: Pastamancer & Maia
 ## Dependencies: GridStatusRaidDebuff
 

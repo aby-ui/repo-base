@@ -1229,7 +1229,6 @@ function EventAlert_Buff_Dropped(spellID)
 	local eaf = _G["EAFrame_"..spellID];
 	if eaf~= nil then
 		FrameGlowShowOrHide(eaf,false)
-		--EA_ActionButton_HideOverlayGlow(eaf);
 		--eaf.overgrow = false;
 		eaf:Hide();
 		eaf:SetScript("OnUpdate", nil);
@@ -1250,7 +1249,6 @@ function EventAlert_TarBuff_Dropped(spellID)
 	local eaf = _G["EATarFrame_"..spellID];
 	if eaf~= nil then
 		FrameGlowShowOrHide(eaf,false)
-		--EA_ActionButton_HideOverlayGlow(eaf);
 		--eaf.overgrow = false;
 		eaf:Hide();
 		eaf:SetScript("OnUpdate", nil);
@@ -3885,12 +3883,12 @@ end
 function FrameGlowShowOrHide(eaf,boolShow)
 	if boolShow then
 		if not(eaf.overgrow) then
-			EA_ActionButton_ShowOverlayGlow(eaf)
+			CoreUIShowOverlayGlow(eaf)
 			eaf.overgrow = true
 		end
 	else
 		if (eaf.overgrow) then
-			EA_ActionButton_HideOverlayGlow(eaf)
+			CoreUIHideOverlayGlow(eaf)
 			eaf.overgrow = false
 		end
 	end

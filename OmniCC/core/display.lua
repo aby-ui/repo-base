@@ -1,74 +1,41 @@
---[[ A cooldown text display ]] --
+-- A cooldown text display
+local Addon = _G[...]
 
 local ICON_SIZE = 36 -- the expected size of an icon
 
-local Addon = _G[...]
-local UIParent = _G.UIParent
-local After = C_Timer.After
+local After = _G.C_Timer.After
 local GetTickTime = _G.GetTickTime
-local round = _G.Round
 local min = math.min
+local round = _G.Round
+local UIParent = _G.UIParent
+
 local displays = {}
 
--- given two cdInfos returns the more important one
-local function cdInfo_Compare(lhs, rhs)
-    if lhs == rhs then
-        return lhs
-    end
-
-    -- prefer the one that isn't nil
-    if rhs == nil then
-        return lhs
-    end
-
-    if lhs == nil then
-        return rhs
-    end
-
-    -- prefer cdInfos ending first
-    local lEnd = lhs.start + lhs.duration
-    local rEnd = rhs.start + rhs.duration
-
-    if lEnd < rEnd then
-        return lhs
-    end
-
-    if lEnd > rEnd then
-        return rhs
-    end
-
-    -- then check priority
-    if lhs.priority < rhs.priority then
-        return lhs
-    end
-
-    return rhs
-end
-
 local Display = Addon:CreateHiddenFrame("Frame")
-local Display_MT = {__index = Display}
 
-function Display:Get(parent)
-    return displays[parent]
+Display.__index = Display
+
+function Display:Get(owner)
+    return displays[owner]
 end
 
-function Display:GetOrCreate(parent)
-    if not parent then return end
+function Display:GetOrCreate(owner)
+    if not owner then return end
 
-    return displays[parent] or self:Create(parent)
+    return displays[owner] or self:Create(owner)
 end
 
-function Display:Create(parent)
-    local display = setmetatable(Addon:CreateHiddenFrame("Frame", nil, parent), Display_MT)
+function Display:Create(owner)
+    local display = setmetatable(Addon:CreateHiddenFrame("Frame", nil, owner), Display)
 
     display:SetScript("OnSizeChanged", self.OnSizeChanged)
     display.text = display:CreateFontString(nil, "OVERLAY")
     display.text:SetFont(STANDARD_TEXT_FONT, 8, "THIN")
 
-    display.cdInfos = {}
+    display.cooldowns = {}
     display.updateScaleCallback = function() display:OnScaleChanged() end
 
-    displays[parent] = display
+    displays[owner] = display
     return display
 end
 
@@ -108,17 +75,18 @@ end
 
 function Display:OnTimerFinished(timer)
     if self.timer == timer then
-        local settings = self.cdInfo.settings
+        local cooldown = self.activeCooldown
 
-        if settings and (settings.minEffectDuration or 0) <= self.cdInfo.duration then
-            Addon.FX:Run(self.cdInfo.cooldown, settings.effect or "none")
+        local settings = cooldown._occ_settings
+        if settings and (settings.minEffectDuration or 0) <= cooldown._occ_duration then
+            Addon.FX:Run(self.activeCooldown, settings.effect or "none")
         end
     end
 end
 
 function Display:OnTimerDestroyed(timer)
     if self.timer == timer then
-        self:HideCooldownText(self.cdInfo)
+        self:RemoveCooldown(self.activeCooldown)
     end
 end
 
@@ -138,18 +106,20 @@ function Display:CalculateScaleRatio()
     return scaleRatio
 end
 
-function Display:ShowCooldownText(info)
-    if not self.cdInfos[info] then
-        self.cdInfos[info] = true
+function Display:AddCooldown(cooldown)
+    local cooldowns = self.cooldowns
+    if not cooldowns[cooldown] then
+        cooldowns[cooldown] = true
     end
 
     self:UpdatePrimaryCooldown()
     self:UpdateTimer()
 end
 
-function Display:HideCooldownText(info)
-    if self.cdInfos[info] then
-        self.cdInfos[info] = nil
+function Display:RemoveCooldown(cooldown)
+    local cooldowns = self.cooldowns
+    if cooldowns[cooldown] then
+        cooldowns[cooldown] = nil
 
         self:UpdatePrimaryCooldown()
         self:UpdateTimer()
@@ -157,15 +127,15 @@ function Display:HideCooldownText(info)
 end
 
 function Display:UpdatePrimaryCooldown()
-    local oldInfo = self.cdInfo
-    local newInfo = self:GetCooldownWithHighestPriority()
+    local oldCooldown = self.activeCooldown
+    local newCooldown = self:GetCooldownWithHighestPriority()
 
-    if oldInfo ~= newInfo then
-        self.cdInfo = newInfo
+    if oldCooldown ~= newCooldown then
+        self.activeCooldown = newCooldown
 
-        if newInfo then
-            self:SetAllPoints(newInfo.cooldown)
-            self:SetFrameLevel(newInfo.cooldown:GetFrameLevel() + 7)
+        if newCooldown then
+            self:SetAllPoints(newCooldown)
+            self:SetFrameLevel(newCooldown:GetFrameLevel() + 7)
         end
     end
 end
@@ -174,7 +144,7 @@ function Display:UpdateTimer()
     local oldTimer = self.timer and self.timer
     local oldTimerKey = oldTimer and oldTimer.key
 
-    local newTimer = self.cdInfo and Addon.Timer:GetOrCreate(self.cdInfo)
+    local newTimer = self.activeCooldown and Addon.Timer:GetOrCreate(self.activeCooldown)
     local newTimerKey = newTimer and newTimer.key
 
     -- update subscription if we're watching a different timer
@@ -189,6 +159,7 @@ function Display:UpdateTimer()
     -- only show display if we have a timer to watch
     if newTimer then
         newTimer:Subscribe(self)
+
         -- only update text if the timer we're watching has changed
         if newTimerKey ~= oldTimerKey then
             self:UpdateCooldownText()
@@ -203,14 +174,51 @@ function Display:UpdateTimer()
     end
 end
 
-function Display:GetCooldownWithHighestPriority()
-    local result
+do
+    -- given two cooldown cooldowns, returns the more important one
+    local function cooldown_Compare(lhs, rhs)
+        if lhs == rhs then
+            return lhs
+        end
 
-    for info in pairs(self.cdInfos) do
-        result = cdInfo_Compare(info, result)
+        -- prefer the one that isn't nil
+        if rhs == nil then
+            return lhs
+        end
+
+        if lhs == nil then
+            return rhs
+        end
+
+        -- prefer cooldownProxies ending first
+        local lEnd = lhs._occ_start + lhs._occ_duration
+        local rEnd = rhs._occ_start + rhs._occ_duration
+
+        if lEnd < rEnd then
+            return lhs
+        end
+
+        if lEnd > rEnd then
+            return rhs
+        end
+
+        -- then check priority
+        if lhs._occ_priority < rhs._occ_priority then
+            return lhs
+        end
+
+        return rhs
     end
 
-    return result
+    function Display:GetCooldownWithHighestPriority()
+        local result
+
+        for cooldown in pairs(self.cooldowns) do
+            result = cooldown_Compare(cooldown, result)
+        end
+
+        return result
+    end
 end
 
 function Display:UpdateCooldownText()
@@ -268,7 +276,7 @@ function Display:UpdateCooldownTextPosition()
 end
 
 function Display:GetSettings()
-    return self.cdInfo and self.cdInfo.settings
+    return self.activeCooldown and self.activeCooldown._occ_settings
 end
 
 function Display:ForAll(method, ...)
@@ -291,4 +299,5 @@ function Display:ForActive(method, ...)
     end
 end
 
+-- exports
 Addon.Display = Display

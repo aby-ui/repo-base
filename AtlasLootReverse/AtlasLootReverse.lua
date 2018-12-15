@@ -177,6 +177,7 @@ function AtlasLootReverse:RebuildDatabase()
     db = { sources = {}, whoTable = {} }
     db.alversion = atlas_version
     db.dbversion = alreverse_version
+    db.buildinfo = table.concat({GetBuildInfo()}, " ")
     U1DBG.AtlasLootReverseDBx = db
 
     do
@@ -201,7 +202,7 @@ function AtlasLootReverse:RebuildDatabase()
 
     print("正在初始化物品来源数据库...")
     -- Force AtlasLoot to load all modules
-    local modules = "Legion,WarlordsofDraenor,MistsofPandaria,Cataclysm,WrathoftheLichKing,BurningCrusade,Classic,Factions,PvP,WorldEvents,Crafting,Collections"
+    local modules = "BattleforAzeroth,Legion,WarlordsofDraenor,MistsofPandaria,Cataclysm,WrathoftheLichKing,BurningCrusade,Classic,Factions,PvP,WorldEvents,Crafting,Collections"
     for _, module in pairs({strsplit(",", modules)}) do
         LoadAddOn("AtlasLoot_"..module)
     end
