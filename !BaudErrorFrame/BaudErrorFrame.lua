@@ -160,7 +160,7 @@ function BaudErrorFrameMinimapButton_Create()
     })
     LibStub("LibDBIcon-1.0"):Register("BaudErrorFrame", ldb, BaudErrorFrameConfig);
 
-    local count = LibDBIcon10_BaudErrorFrame:CreateFontString("BaudErrorFrameMinimapCount", "OVERLAY", "GameFontRedSmall")
+    local count = LibDBIcon10_BaudErrorFrame:CreateFontString("BaudErrorFrameMinimapCount", "OVERLAY", "GameFontGreenSmall")
     count:SetPoint("CENTER", -1, 2)
 end
 

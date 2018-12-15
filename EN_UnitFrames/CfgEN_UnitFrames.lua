@@ -59,6 +59,19 @@ U1RegisterAddon("EN_UnitFrames", {
     {
         type="text",text="玩家头像增强",
         {
+            var = "showBlizPlayerHP",
+            default = 1,
+            text = "玩家血条显示暴雪默认数值",
+            callback = function(cfg, v, loading)
+                PlayerFrameHealthBarText:SetAlpha(v and 1 or 0)
+                PlayerFrameHealthBarTextLeft:SetAlpha(v and 1 or 0)
+                PlayerFrameHealthBarTextRight:SetAlpha(v and 1 or 0)
+                PlayerFrameManaBarText:SetAlpha(v and 1 or 0)
+                PlayerFrameManaBarTextLeft:SetAlpha(v and 1 or 0)
+                PlayerFrameManaBarTextRight:SetAlpha(v and 1 or 0)
+            end,
+        },
+        {
             var = "player",
             default = 1,
             text = "开启玩家头像扩展",

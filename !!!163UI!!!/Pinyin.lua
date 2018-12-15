@@ -253,4 +253,5 @@ U1.PINYIN={
     ['帕库图腾标记']={'pakututengbiaoji','pkttbj'},
     ['SUF头像增强']={'suftouxiangzengqiang','suftxzq'},
     ['黑海岸稀有']={'heihaianxiyou','hhaxy'},
+    ['震荡助手']={'zhendangzhushou','zdzs'},
 }

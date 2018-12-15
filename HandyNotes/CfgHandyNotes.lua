@@ -82,16 +82,14 @@ U1RegisterAddon("HandyNotes_LunarFestival", {
     load = "LATER",
 })
 
---[[
-U1RegisterAddon("HandyNotes_WarfrontTreasures", {
-    title = "战争前线宝箱位置",
+U1RegisterAddon("HandyNotes_Arathi", {
+    title = "阿拉希稀有位置",
     defaultEnable = 1,
     load = "LATER",
 })
-]]
 
-U1RegisterAddon("HandyNotes_Arathi", {
-    title = "阿拉希稀有位置",
+U1RegisterAddon("HandyNotes_WarfrontRares", {
+    title = "战争前线稀有位置",
     defaultEnable = 1,
     load = "LATER",
 })

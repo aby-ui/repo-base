@@ -1,7 +1,7 @@
 ## Interface: 80100
 ## Title: AzeriteTooltip
-## Version: 1.61
-## Author: Kygo
+## Version: 1.92
+## Author: jokair9
 ## Notes: Lightweight addon that shows azerite traits in the tooltip.
 ## SavedVariables: AzeriteTooltipDB
 

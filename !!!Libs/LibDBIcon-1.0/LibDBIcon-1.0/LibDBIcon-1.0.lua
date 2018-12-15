@@ -17,7 +17,7 @@ lib.objects = lib.objects or {}
 lib.callbackRegistered = lib.callbackRegistered or nil
 lib.callbacks = lib.callbacks or LibStub("CallbackHandler-1.0"):New(lib)
 lib.notCreated = lib.notCreated or {}
-lib.radius = lib.radius or 5
+lib.radius = lib.radius or 11
 lib.tooltip = lib.tooltip or CreateFrame("GameTooltip", "LibDBIconTooltip", UIParent, "GameTooltipTemplate")
 local next, Minimap = next, Minimap
 local isDraggingButton = false
@@ -467,3 +467,4 @@ for name, button in next, lib.objects do
 		button.fadeOut:SetToFinalAlpha(true)
 	end
 end
+lib:SetButtonRadius(lib.radius) -- Upgrade to 40

@@ -585,10 +585,18 @@ function EUF_TargetFrameDisplay_Update()
 
         local hpshow = EUF_TargetFrameHP:IsShown()
         TargetFrameTextureFrameHealthBarText:SetAlpha(hpshow and 0 or 1);
+        TargetFrameTextureFrameHealthBarTextLeft:SetAlpha(hpshow and 0 or 1);
+        TargetFrameTextureFrameHealthBarTextRight:SetAlpha(hpshow and 0 or 1);
         FocusFrameTextureFrameHealthBarText:SetAlpha(hpshow and 0 or 1);
+        FocusFrameTextureFrameHealthBarTextLeft:SetAlpha(hpshow and 0 or 1);
+        FocusFrameTextureFrameHealthBarTextRight:SetAlpha(hpshow and 0 or 1);
         local mpshow = EUF_TargetFrameMP:IsShown()
         TargetFrameTextureFrameManaBarText:SetAlpha(mpshow and 0 or 1);
+        TargetFrameTextureFrameManaBarTextLeft:SetAlpha(mpshow and 0 or 1);
+        TargetFrameTextureFrameManaBarTextRight:SetAlpha(mpshow and 0 or 1);
         FocusFrameTextureFrameManaBarText:SetAlpha(mpshow and 0 or 1);
+        FocusFrameTextureFrameManaBarTextLeft:SetAlpha(mpshow and 0 or 1);
+        FocusFrameTextureFrameManaBarTextRight:SetAlpha(mpshow and 0 or 1);
 
         if EUF_FocusFrameHP then
             EUF_ObjectDisplay_Update(EUF_FocusFrameHP, not textDisplay and EUF_CurrentOptions["TARGETHPMP"]);

@@ -2,7 +2,6 @@
     title = "地图增强",
     defaultEnable = 1,
     secure = 1,
-    optdeps = {"BlizzMove"},
     
     tags = { TAG_MAPQUEST },
     icon = [[Interface\Icons\INV_Misc_Map02]],

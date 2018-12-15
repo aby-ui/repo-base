@@ -5,7 +5,7 @@ if select(4, GetBuildInfo()) < 80000 then
     return
 end
 
-local MAJOR, MINOR = "HereBeDragons-2.0", 6
+local MAJOR, MINOR = "HereBeDragons-2.0", 7
 assert(LibStub, MAJOR .. " requires LibStub")
 
 local HereBeDragons, oldversion = LibStub:NewLibrary(MAJOR, MINOR)
@@ -72,7 +72,7 @@ local instanceIDOverrides = {
 }
 
 -- gather map info, but only if this isn't an upgrade (or the upgrade version forces a re-map)
-if not oldversion or oldversion < 3 then
+if not oldversion or oldversion < 7 then
     -- wipe old data, if required, otherwise the upgrade path isn't triggered
     if oldversion then
         wipe(mapData)
@@ -119,8 +119,14 @@ if not oldversion or oldversion < 3 then
 
     local vector00, vector05 = CreateVector2D(0, 0), CreateVector2D(0.5, 0.5)
     -- gather the data of one map (by uiMapID)
-    local function processMap(id, data)
-        if not id or mapData[id] then return end
+    local function processMap(id, data, parent)
+        if not id or not data or mapData[id] then return end
+
+        if data.parentMapID and data.parentMapID ~= 0 then
+            parent = data.parentMapID
+        elseif not parent then
+            parent = 0
+        end
 
         -- get two positions from the map, we use 0/0 and 0.5/0.5 to avoid issues on some maps where 1/1 is translated inaccurately
         local instance, topLeft = C_Map.GetWorldPosFromMapPos(id, vector00)
@@ -132,20 +138,36 @@ if not oldversion or oldversion < 3 then
             right = left + (right - left) * 2
 
             instance, left, right, top, bottom = applyMapTransforms(instance, left, right, top, bottom)
-            mapData[id] = {left - right, top - bottom, left, top, instance = instance, name = data.name, mapType = data.mapType, parent = data.parentMapID}
+            mapData[id] = {left - right, top - bottom, left, top, instance = instance, name = data.name, mapType = data.mapType, parent = parent }
         else
-            mapData[id] = {0, 0, 0, 0, instance = instance or -1, name = data.name, mapType = data.mapType, parent = data.parentMapID }
+            mapData[id] = {0, 0, 0, 0, instance = instance or -1, name = data.name, mapType = data.mapType, parent = parent }
         end
     end
 
-    local function processMapChildrenRecursive(id)
-        local children = C_Map.GetMapChildrenInfo(id)
+    local function processMapChildrenRecursive(parent)
+        local children = C_Map.GetMapChildrenInfo(parent)
         if children and #children > 0 then
             for i = 1, #children do
                 local id = children[i].mapID
                 if id and not mapData[id] then
-                    processMap(id, children[i])
+                    processMap(id, children[i], parent)
                     processMapChildrenRecursive(id)
+
+                    -- process sibling maps (in the same group)
+                    -- in some cases these are not discovered by GetMapChildrenInfo above
+                    local groupID = C_Map.GetMapGroupID(id)
+                    if groupID then
+                        local groupMembers = C_Map.GetMapGroupMembersInfo(groupID)
+                        if groupMembers then
+                            for k = 1, #groupMembers do
+                                local memberId = groupMembers[k].mapID
+                                if memberId and not mapData[memberId] then
+                                    processMap(memberId, C_Map.GetMapInfo(memberId), parent)
+                                    processMapChildrenRecursive(memberId)
+                                end
+                            end
+                        end
+                    end
                 end
             end
         end

@@ -320,7 +320,7 @@ function BrowsePanel:OnInitialize()
                 end
             end
             self:StartSet()
-            self.ActivityDropdown:SetValue(GetActivityCode(nil, nil, data.categoryId))
+            --self.ActivityDropdown:SetValue(GetActivityCode(nil, nil, data.categoryId))
             self:EndSet()
         end)
     end
@@ -607,7 +607,7 @@ function BrowsePanel:OnInitialize()
             button:SetText(item.name)
         end)
         AutoCompleteFrame:SetCallback('OnItemClick', function(AutoCompleteFrame, _, item)
-            
+
             self.ActivityDropdown:SetValue(item.code)
             self.SearchBox:ClearFocus()
         end)

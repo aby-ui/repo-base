@@ -30,7 +30,7 @@ local defaultDB = {
     GuildFrame = {save = true, },
     FriendsFrame = {save = true, },
     ObjectiveTrackerFrame = { save = true, },
-    WorldMapFrame = {save = true, },
+    --WorldMapFrame = {save = true, },
     ScrappingMachineFrame = { save = true, },
     AzeriteEmpoweredItemUI = { save = true, },
 }
@@ -355,7 +355,7 @@ local function OnEvent(self, event, arg1, arg2)
         --BM_SetMoveHandler(WatchFrame,WatchFrameCollapseExpandButton)
         --userPlaced[WatchFrame] = true --加了也不好，UIParent里写的有问题
         BM_SetMoveHandler(ObjectiveTrackerFrame,ObjectiveTrackerFrame.HeaderMenu.MinimizeButton)
-        WW(ObjectiveTrackerFrame.HeaderMenu):Button("OTFMover"):Size(40,22):RIGHT(ObjectiveTrackerFrame.HeaderMenu.MinimizeButton, "LEFT", 0,0):up():un()
+        WW(ObjectiveTrackerFrame.HeaderMenu):Button("OTFMover"):Size(22,22):RIGHT(ObjectiveTrackerFrame.HeaderMenu.MinimizeButton, "LEFT", 0,0):up():un()
         CoreUIEnableTooltip(OTFMover, "面板移动","Ctrl点击保存位置\nCtrl滚轮缩放\nC+S+A点击重置")
         BM_SetMoveHandler(ObjectiveTrackerFrame,OTFMover)
         BM_SetMoveHandler(GameMenuFrame)
@@ -377,9 +377,15 @@ local function OnEvent(self, event, arg1, arg2)
         BM_SetMoveHandler(MirrorTimer1)
         BM_SetMoveHandler(PVEFrame)
 
+        --和Mapster冲突切无法解决
         --SetCVar("lockedWorldMap", "0") --WorldMap
-        WW(WorldMapFrame):Button("WMAPMover"):Size(150,22):TOP(WorldMapFrame, 0,0):up():un()
-        BM_SetMoveHandler(WorldMapFrame, WMAPMover) --enable scale --abandoned because quest poi --TODO aby8
+        if not IsAddOnLoaded("Mapster") then
+            WW(WorldMapFrame):Button("WMAPMover"):Size(150,22):TOP(WorldMapFrame, 0,0):up():un()
+            BM_SetMoveHandler(WorldMapFrame, WMAPMover) --enable scale --abandoned because quest poi
+            CoreDependCall("Mapster", function()
+                U1Message("Mapster-地图增强与面板移动冲突，请重载界面")
+            end)
+        end
         WorldMapFrame:SetClampedToScreen(true)
 
         BM_SetMoveHandler(TradeFrame)

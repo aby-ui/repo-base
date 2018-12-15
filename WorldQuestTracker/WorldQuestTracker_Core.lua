@@ -2291,7 +2291,7 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 				
 				--is this anchor enabled
 				if (anchor.mapID) then
-					if (not WorldQuestTracker.db.profile.anchor_options [mapID].Enabled) then
+					if (not WorldQuestTracker.db.profile.anchor_options[mapID] or not WorldQuestTracker.db.profile.anchor_options [mapID].Enabled) then
 						anchor.Button:Hide()
 						return
 					end

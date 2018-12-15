@@ -53,7 +53,6 @@ function Mapster:OnEnable()
 
 	LibWindow.RegisterConfig(WorldMapFrame, db)
 
-    if not IsAddOnLoaded("BlizzMove") then
 	-- remove from UI panel system
 	UIPanelWindows["WorldMapFrame"] = nil
 	WorldMapFrame:SetAttribute("UIPanelLayout-area", nil)
@@ -64,7 +63,6 @@ function Mapster:OnEnable()
 	WorldMapFrame:RegisterForDrag("LeftButton")
 	WorldMapFrame:SetScript("OnDragStart", WorldMapFrameStartMoving)
 	WorldMapFrame:SetScript("OnDragStop", WorldMapFrameStopMoving)
-    end
 
 	-- map transition
 	self:SecureHook(WorldMapFrame, "SynchronizeDisplayState", "WorldMapFrame_SynchronizeDisplayState")

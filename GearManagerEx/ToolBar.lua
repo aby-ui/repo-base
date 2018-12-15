@@ -31,7 +31,8 @@ local frame = CreateFrame("Frame", "GearManagerExToolBarFrame", UIParent, "Secur
 addon.toolbar = frame
 frame:SetMovable(true)
 frame:SetUserPlaced(true)
-frame:SetFrameStrata("DIALOG")
+frame:SetFrameStrata("MEDIUM")
+frame:SetToplevel(true)
 frame:SetClampedToScreen(true)
 frame:SetSize(BUTTON_WIDTH, BUTTON_WIDTH)
 
