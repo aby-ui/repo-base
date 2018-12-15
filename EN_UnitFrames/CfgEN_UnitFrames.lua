@@ -121,6 +121,13 @@ U1RegisterAddon("EN_UnitFrames", {
             end,
         },
         {
+            text = "血量数值显示方式",
+            callback = function()
+                CoreIOF_OTC(InterfaceOptionsDisplayPanel);
+                CoreUIShowCallOut(InterfaceOptionsDisplayPanel, InterfaceOptionsDisplayPanelDisplayDropDownLabel, InterfaceOptionsDisplayPanelDisplayDropDownButton, -10, 10, 10, -10)
+            end,
+        },
+        {
             text = "目标的目标",
             tip = "说明`因为暴雪的限制，如果通过插件设置是否显示目标的目标，可能会导致界面失效。`请设置游戏菜单的'界面-战斗-目标的目标'，下拉框选择'总是'",
             callback = function()

@@ -1,5 +1,6 @@
 local n2s, f2s, floor = n2s, f2s, floor
-local textDisplay = not GetCVarBool("statusText") or GetCVar("statusTextDisplay") ~= "NUMERIC"
+local function isBlizTextDisplay() return GetCVarBool("statusText") and GetCVar("statusTextDisplay") ~= "NUMERIC" end
+local textDisplay = isBlizTextDisplay()
 
 local RED     = "|cffff0000";
 local GREEN   = "|cff00ff00";
@@ -98,7 +99,7 @@ function EUF_HpMpXp_OnEvent(event, unit)
 	--	PlayerHp_Update();
 	--	PlayerPower_Update();
     elseif event == "CVAR_UPDATE" then
-        textDisplay = not GetCVarBool("statusText") or GetCVar("statusTextDisplay") ~= "NUMERIC"
+        textDisplay = isBlizTextDisplay()
         EUF_TargetFrameDisplay_Update()
 	end
 end
