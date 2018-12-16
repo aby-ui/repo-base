@@ -89,18 +89,6 @@ function MythicPlusModule:RefreshMythicKeyInfo(event)
       end
     end
   end
-  local MythicMaps = { }
-  C_MythicPlus.RequestMapInfo()
-  MythicMaps = C_ChallengeMode.GetMapTable()
-  local bestlevel = 0
-  for i = 1, #MythicMaps do
-    local _, level = C_MythicPlus.GetWeeklyBestForMap(MythicMaps[i]);
-    if level then
-      if level > bestlevel then
-        bestlevel = level
-      end
-    end
-  end
   if t.MythicKeyBest and (t.MythicKeyBest.ResetTime or 0) < time() then -- dont know weekly reset function will run early or not
     if t.MythicKeyBest.level and t.MythicKeyBest.level > 0 then
       t.MythicKeyBest.LastWeekLevel = t.MythicKeyBest.level
@@ -108,7 +96,7 @@ function MythicPlusModule:RefreshMythicKeyInfo(event)
   end
   t.MythicKeyBest = t.MythicKeyBest or { }
   t.MythicKeyBest.ResetTime = addon:GetNextWeeklyResetTime()
-  t.MythicKeyBest.level = bestlevel
+  t.MythicKeyBest.level = C_MythicPlus.GetWeeklyChestRewardLevel()
   t.MythicKeyBest.WeeklyReward = C_MythicPlus.IsWeeklyRewardAvailable()
 end
 

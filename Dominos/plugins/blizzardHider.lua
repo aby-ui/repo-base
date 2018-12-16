@@ -69,6 +69,3 @@ hideFrames(
     'MicroButtonAndBagsBar'
     --,'MainMenuBarPerformanceBar'
 )
-
--- disable multiactionbar_update to prevent some taint issues
-MultiActionBar_Update = Multibar_EmptyFunc

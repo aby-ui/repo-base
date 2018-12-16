@@ -21,36 +21,18 @@ end
 local function GetOrCreateActionButton(id)
 	if id <= 12 then
 		local b = _G[('ActionButton%d'):format(id)]
-
 		b.buttonType = 'ACTIONBUTTON'
-
 		return b
 	elseif id <= 24 then
 		return CreateActionButton(id - 12)
 	elseif id <= 36 then
-		local b = _G[('MultiBarRightButton%d'):format(id - 24)]
-
-		b.noGrid = 1
-
-		return b
+		return _G[('MultiBarRightButton%d'):format(id - 24)]
 	elseif id <= 48 then
-		local b = _G[('MultiBarLeftButton%d'):format(id - 36)]
-
-		b.noGrid = 1
-
-		return b
+		return  _G[('MultiBarLeftButton%d'):format(id - 36)]
 	elseif id <= 60 then
-		local b = _G[('MultiBarBottomRightButton%d'):format(id - 48)]
-
-		b.noGrid = 1
-
-		return b
+		return _G[('MultiBarBottomRightButton%d'):format(id - 48)]
 	elseif id <= 72 then
-		local b = _G[('MultiBarBottomLeftButton%d'):format(id - 60)]
-
-		b.noGrid = 1
-
-		return b
+		return _G[('MultiBarBottomLeftButton%d'):format(id - 60)]
 	else
 		return CreateActionButton(id - 60)
 	end

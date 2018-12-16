@@ -80,16 +80,16 @@ local trade_spells = {
   [247701] = "legionxmute", -- Transmute: Primal Sargerite
 
   -- BfA
-  [251832] = "legionxmute", -- Transmute: Expulsom
-  [251314] = "legionxmute", -- Transmute: Cloth to Skins
-  [251822] = "legionxmute", -- Transmute: Fish to Gems
-  [251306] = "legionxmute", -- Transmute: Herbs to Cloth
-  [251305] = "legionxmute", -- Transmute: Herbs to Ore
-  [251808] = "legionxmute", -- Transmute: Meat to Pet
-  [251310] = "legionxmute", -- Transmute: Ore to Cloth
-  [251311] = "legionxmute", -- Transmute: Ore to Gems
-  [251309] = "legionxmute", -- Transmute: Ore to Herbs
-  [286547] = "legionxmute", -- Transmute: Herbs to Anchors
+  [251832] = "xmute", -- Transmute: Expulsom
+  [251314] = "xmute", -- Transmute: Cloth to Skins
+  [251822] = "xmute", -- Transmute: Fish to Gems
+  [251306] = "xmute", -- Transmute: Herbs to Cloth
+  [251305] = "xmute", -- Transmute: Herbs to Ore
+  [251808] = "xmute", -- Transmute: Meat to Pet
+  [251310] = "xmute", -- Transmute: Ore to Cloth
+  [251311] = "xmute", -- Transmute: Ore to Gems
+  [251309] = "xmute", -- Transmute: Ore to Herbs
+  [286547] = "xmute", -- Transmute: Herbs to Anchors
 
   -- Enchanting
   [28027] = "sphere", 	-- Prismatic Sphere (2-day shared, 5.2.0 verified)
