@@ -229,8 +229,8 @@ end
 -- config
 local options = {
 	type = "group",
-	name = "Midsummer Festival",
-	desc = "Midsummer Fesitval bonfire locations.",
+	name = "仲夏节", --""Midsummer Festival",
+	desc = "仲夏节篝火位置", --"Midsummer Fesitval bonfire locations.",
 	get = function(info) return db[info[#info]] end,
 	set = function(info, v)
 		db[info[#info]] = v

@@ -556,7 +556,7 @@ end
 
 local options = {
     type = "group",
-    name = _L["Arathi"],
+    name = "战争前线阿拉希", --_L["Arathi"],
     get = function(info) return Arathi.db.profile[info.arg] end,
     set = function(info, v) Arathi.db.profile[info.arg] = v; Arathi:Refresh() end,
     args = {

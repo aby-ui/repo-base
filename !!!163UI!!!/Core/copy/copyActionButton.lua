@@ -1,4 +1,4 @@
-local ActionButton_GetOverlayGlow, ActionButton_UpdateOverlayGlow, ActionButton_ShowOverlayGlow, ActionButton_HideOverlayGlow, ActionButton_OverlayGlowAnimOutFinished, ActionButton_OverlayGlowOnUpdate
+local ActionButton_GetOverlayGlow, ActionButton_ShowOverlayGlow, ActionButton_HideOverlayGlow, ActionButton_OverlayGlowAnimOutFinished, ActionButton_OverlayGlowOnUpdate
 --[[------------------------------------------------------------
 copy from ActionButton, abyuiActionButtonOverlay(N) self.overlay -> self.abyui_overlay
 Masque 没有效果
@@ -14,22 +14,6 @@ function ActionButton_GetOverlayGlow()
 		overlay = CreateFrame("Frame", "abyuiActionButtonOverlay"..numOverlays, UIParent, "abyuiActionBarButtonSpellActivationAlert");
 	end
 	return overlay;
-end
-
-function ActionButton_UpdateOverlayGlow(self)
-	local spellType, id, subType  = GetActionInfo(self.action);
-	if ( spellType == "spell" and IsSpellOverlayed(id) ) then
-		ActionButton_ShowOverlayGlow(self);
-	elseif ( spellType == "macro" ) then
-		local spellId = GetMacroSpell(id);
-		if ( spellId and IsSpellOverlayed(spellId) ) then
-			ActionButton_ShowOverlayGlow(self);
-		else
-			ActionButton_HideOverlayGlow(self);
-		end
-	else
-		ActionButton_HideOverlayGlow(self);
-	end
 end
 
 function ActionButton_ShowOverlayGlow(self)
@@ -87,7 +71,6 @@ end
 --[[------------------------------------------------------------
 export
 ---------------------------------------------------------------]]
-hooksecurefunc("ActionButton_Update", ActionButton_UpdateOverlayGlow)
 CoreUIShowOverlayGlow = ActionButton_ShowOverlayGlow
 CoreUIHideOverlayGlow = ActionButton_HideOverlayGlow
 CoreUIOverlayGlowAnimOutFinished = ActionButton_OverlayGlowAnimOutFinished

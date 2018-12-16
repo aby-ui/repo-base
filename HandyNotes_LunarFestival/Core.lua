@@ -206,8 +206,8 @@ end
 -- config
 local options = {
 	type = "group",
-	name = "Lunar Festival",
-	desc = "Lunar Festival elder NPC locations.",
+	name = "春节长者", --"Lunar Festival",
+	desc = "春节长者地图位置.", --"Lunar Festival elder NPC locations"
 	get = function(info) return db[info[#info]] end,
 	set = function(info, v)
 		db[info[#info]] = v

@@ -1,11 +1,13 @@
 local L = select(2,...).L
 U1_NEW_ICON = '|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|t'
 
-function U1CfgMakeCVarOption(title, cvar, options)
+-- default 仅在插件first run的时候运行，如果是nil则不会设置默认值
+function U1CfgMakeCVarOption(title, cvar, default, options)
     local info = copy(options) or {}
 
     info.text = title
     info.var = "cvar_"..cvar
+    info.dontCompareDefaultWhenSave = true -- 保存时不根据默认值清空，放弃控制玩家默认值的能力，在玩家用其他插件或被其他人上号，回来的时候可以恢复
     local origin_callback = info.callback
 
     if pcall(GetCVarDefault, cvar) then
@@ -13,11 +15,19 @@ function U1CfgMakeCVarOption(title, cvar, options)
             if info.type == "checkbox" or info.type == nil then
                 return GetCVarBool(cvar)
             else
-                return GetCVar(cvar)
+                return tostring(GetCVar(cvar))
             end
         end
         info.callback = function(cfg, v, loading)
-            if loading then return end --加载的时候不根据保存的值设置
+            if loading then
+                if U1DB.configs[cfg._path] == nil then
+                    -- 没用过爱不易不会设置, 跳过default
+                    return
+                end
+                -- 此时v就是U1DB.configs[cfg._path], getvalue加载时不调用
+            end
+            --if cfg._path == "163ui_moreoptions/cvar_floatingCombatTextCombatDamage" then print(v, U1DB.configs[cfg._path], cfg.getvalue()) pdebug() end
+            --加载的时候不根据保存的值设置，目的是这些变量在玩家初次游戏时不变化，只有在玩家去修改的时候才会影响到玩家
             if( false and InCombatLockdown()) then
                 U1Message("战斗中无法设置此选项,请结束战斗后重试.")
             else
@@ -28,9 +38,9 @@ function U1CfgMakeCVarOption(title, cvar, options)
                 end
             end
         end
-        info.default = info.default or function()
-            return info.getvalue()
-        end
+        if info.default ~= nil then U1Message("CVAR选项的default没效果，在参数上设置", info.cvar) end
+        if default ~= nil then info.defaultFirstRun = default end
+        --if info.default == nil then info.default = GetCVarDefault(cvar) end --这里不能用getvalue，否则会乱
     else
         info.disabled = 1
         info.tip = format("已失效``当前版本没有'%s'这个设置变量'", cvar)

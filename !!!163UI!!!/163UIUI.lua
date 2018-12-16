@@ -189,8 +189,8 @@ function UUI.ClickAddonCheckBox(self, name, enable, subgroup)
     if(not subgroup and U1GetSelectedAddon()~=name) then U1SelectAddon(name, true) end --不然点了以后会因为AddonLoaded滚动到顶上
     local deepToggleChildren = IsControlKeyDown()
     if enable and not IsAddOnLoaded(name) then
-        --当真正加载时，打开全部子插件, 除非同时按CTRL+ALT
-        deepToggleChildren = not (IsControlKeyDown() and IsAltKeyDown())
+        --当真正加载时，打开全部子插件, 除非按CTRL或ALT
+        deepToggleChildren = not (IsControlKeyDown() or IsAltKeyDown())
         if deepToggleChildren then
             --dummy的仅当一个子插件都没开的时候才全开
             local info = U1GetAddonInfo(name)

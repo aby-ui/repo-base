@@ -22,8 +22,8 @@
 #@no-lib-strip@
 Libs\LibLatency\LibLatency.xml
 Libs\LibDurability\LibDurability.xml
-Libs\LibDataBroker-1.1\LibDataBroker-1.1.lua
-Libs\LibDBIcon-1.0\lib.xml
+#Libs\LibDataBroker-1.1\LibDataBroker-1.1.lua
+#Libs\LibDBIcon-1.0\lib.xml
 #@end-no-lib-strip@
 
 localization.en.lua

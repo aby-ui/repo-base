@@ -559,7 +559,7 @@ if (HandyNotes) then
 
     local HandyNotesOptions = {
         type="group",
-        name="TomCat's Tours: Darkshore",
+        name= "战争前线黑海岸", --""TomCat's Tours: Darkshore",
         get = function(info) return addon.savedVariables.character.enableHandyNotesPlugin or false end,
         set = function(info, v)
             addon.savedVariables.character.enableHandyNotesPlugin = v

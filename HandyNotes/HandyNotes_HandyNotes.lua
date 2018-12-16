@@ -398,7 +398,7 @@ end
 -- Options table
 local options = {
 	type = "group",
-	name = L["HandyNotes"],
+	name = "* 整体风格 *", --L["HandyNotes"],
 	desc = L["HandyNotes"],
 	get = function(info) return db[info.arg] end,
 	set = function(info, v)

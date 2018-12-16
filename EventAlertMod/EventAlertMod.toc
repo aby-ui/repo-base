@@ -12,8 +12,8 @@
 ## LoadOnDemand: 0
 ## SavedVariables: EA_Config,EA_Position,EA_Items,EA_AltItems,EA_TarItems,EA_ScdItems,EA_GrpItems,EA_Pos,EA_Deleted
 
-libs\ActionButton\EventAlert_ActionBarButtonSpellActivationAlert.xml
-libs\ActionButton\EventAlert_ActionButtonOverlayGlow.lua
+#libs\ActionButton\EventAlert_ActionBarButtonSpellActivationAlert.xml
+#libs\ActionButton\EventAlert_ActionButtonOverlayGlow.lua
 
 locale\localization.comm.lua
 locale\localization.tw.lua

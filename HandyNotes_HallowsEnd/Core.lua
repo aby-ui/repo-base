@@ -157,7 +157,7 @@ end
 -- config
 local options = {
 	type = "group",
-	name = "Hallow's End",
+	name = "万圣节糖罐", --"Hallow's End",
 	desc = "Hallow's End candy bucket locations.",
 	get = function(info) return db[info[#info]] end,
 	set = function(info, v)

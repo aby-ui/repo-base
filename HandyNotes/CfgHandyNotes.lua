@@ -13,6 +13,7 @@
         text = "配置选项",
         callback = function()
             LibStub("AceConfigDialog-3.0"):Open("HandyNotes")
+            LibStub("AceConfigDialog-3.0"):SelectGroup("HandyNotes", "plugins")
         end
     },
     {
@@ -71,7 +72,7 @@ U1RegisterAddon("HandyNotes_SummerFestival", {
 
 U1RegisterAddon("HandyNotes_Argus", {
     title = "阿古斯地图宝箱",
-    defaultEnable = 1,
+    defaultEnable = 0,
     load = "LATER",
     modifier = "Vincero@NGA汉化",
 })
@@ -90,6 +91,12 @@ U1RegisterAddon("HandyNotes_Arathi", {
 
 U1RegisterAddon("HandyNotes_WarfrontRares", {
     title = "战争前线稀有位置",
+    defaultEnable = 1,
+    load = "LATER",
+})
+
+U1RegisterAddon("HandyNotes_DungeonLocations", {
+    title = "老地图副本入口",
     defaultEnable = 1,
     load = "LATER",
 })

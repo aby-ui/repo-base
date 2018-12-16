@@ -218,6 +218,11 @@ end
 function U1SaveDBValue(cfg, value)
     if U1.PROFILE_CHANGED then return end
     local old = U1EncodeNIL(U1LoadDBValue(cfg))
+    -- 配合 U1CfgMakeCVarOption 的，强制保存设置，不清理
+    if cfg.dontCompareDefaultWhenSave then
+        U1DB.configs[cfg._path] = U1EncodeNIL(value);
+        return old
+    end
     local has_default, default = U1LoadDBDefault(cfg)
     if type(value) == "table" then
         if has_default and type(default) == "table" and tcovers(value, default) and tcovers(default, value) then
@@ -1500,7 +1505,7 @@ function U1:ADDON_LOADED(event, name)
         end
 
         U1.db = db;
-        U1DBG = U1DBG or { }
+        U1DBG = U1DBG or { first_run = true }
         U1DBG.ap_spell = nil
         U1DBG.AtlasLootReverseDBx = nil
         db.selectedTag = db.selectedTag or defaultDB.selectedTag;
@@ -1702,6 +1707,8 @@ function EnableOrLoadDependencies(name, info, loaded)
 end
 
 function U1:VARIABLES_LOADED(calledFromLogin)
+    -- 先LOGIN的情况，第一次从LOGIN调用的不执行，真的事件来了RunOnNextFrame（忘了为啥了）
+    -- 先VAR的情况，第一次过来直接加载，第二次不会调用
     if calledFromLogin~=1 then
         if not U1.playerLogin then
             loadNormalCfgs(1, nil, nil);
@@ -1714,6 +1721,27 @@ function U1:VARIABLES_LOADED(calledFromLogin)
 
     U1.variableLoaded = true
     --print("VARIABLES_LOADED", db, U1DB, db==U1DB, db==defaultDB);
+
+    -- cvar变量多角色公用，所以仅在插件初次执行的时候设置
+    if U1DBG.first_run then
+        local deep
+        function deep(cfg)
+            if cfg.defaultFirstRun ~= nil then
+                if type(cfg.defaultFirstRun) == "function" then
+                    cfg.defaultFirstRun = cfg.defaultFirstRun()
+                end
+                U1CfgCallBack(cfg, cfg.defaultFirstRun, false) --如果loading=true则不会设置上
+                if false then U1Message("U1DBG.first_run " .. cfg.text .. " " .. cfg._path .. "," .. cfg.defaultFirstRun) end
+            end
+            for _, sub in ipairs(cfg) do deep(sub) end
+        end
+        for _, addon in U1IterateAllAddons() do
+            for _, cfg in ipairs(addon) do
+                deep(cfg)
+            end
+        end
+        U1DBG.first_run = nil
+    end
 
     --如果提前打开，则暴雪加载插件的时候，如果 OptionalDeps 存在而且已启用，则加载本插件的时候会自动先加载 OptionalDeps。
     --但是如果不提前打开，则必须严格加载每个插件，不能依赖暴雪自动加载LOD的

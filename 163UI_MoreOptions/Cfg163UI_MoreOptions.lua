@@ -16,7 +16,7 @@ U1RegisterAddon("163UI_MoreOptions", {
     author = "|cffcd1a1c[爱不易原创]|r",
     defaultEnable = 1,
 
-    U1CfgMakeCVarOption(U1_NEW_ICON.."简易原汁原味", "overrideArchive", {
+    U1CfgMakeCVarOption(U1_NEW_ICON.."简易原汁原味", "overrideArchive", nil, {
         tip = "说明`通过设置变量达到简易反和谐的目的，没有任何风险。可以和谐大部分模型，比如坟包会替换成白骨，技能图标似乎不会变化。``\n如果开启后卡蓝条或无法进入游戏，请删除WTF\\Config.wtf``|cffff0000设置后必须重启游戏才能生效。|r",
         confirm = "注意：如果开启后|cffff7777无法进入游戏|r，请删除WTF\\Config.wtf文件即可恢复（或只移除其中的overrideArchive条目）\n\n请确认，然后关闭游戏重新进入。",
         getvalue = function() return not GetCVarBool("overrideArchive") end,
@@ -36,7 +36,7 @@ U1RegisterAddon("163UI_MoreOptions", {
         reload = 1,
     }),--]]
 
-    U1CfgMakeCVarOption("姓名板的最大显示距离", "nameplateMaxDistance", {
+    U1CfgMakeCVarOption("姓名板的最大显示距离", "nameplateMaxDistance", nil, {
         tip = "说明`7.0之后默认显示距离是60码，会导致另一个楼层的怪物都会被显示出来，可以修改此选项进行设置。建议设置为40或30",
         type = "spin",
         range = {20, 80, 5},
@@ -66,21 +66,21 @@ U1RegisterAddon("163UI_MoreOptions", {
         end,
     },
 
-    U1CfgMakeCVarOption("显示目标施法条", "showTargetCastbar", {
+    U1CfgMakeCVarOption("显示目标施法条", "showTargetCastbar", 1, {
         tip = "说明`是否在目标头像下方显示施法条`7.0以后暴雪将此选项精简掉了",
         reload = 1,
     }),
 
-    U1CfgMakeCVarOption("显示目标仇恨值", "threatShowNumeric", {
+    U1CfgMakeCVarOption("显示目标仇恨值", "threatShowNumeric", 1, {
         tip = "说明`在目标头像上方显示当前仇恨百分比",
     }),
 
-    U1CfgMakeCVarOption("自动追踪任务", "autoQuestWatch", {
+    U1CfgMakeCVarOption("自动追踪任务", "autoQuestWatch", 1, {
         tip = "说明`接受任务后自动添加到追踪列表里`7.0以后暴雪将此选项精简掉了",
         reload = 1,
     }),
 
-    U1CfgMakeCVarOption("连击点界面位置", "comboPointLocation", {
+    U1CfgMakeCVarOption("连击点界面位置", "comboPointLocation", nil, {
         type = "radio",
         options = { "玩家头像下", "2", "经典:目标头像", "1", },
         reload = 1,
@@ -108,7 +108,7 @@ U1RegisterAddon("163UI_MoreOptions", {
         end
     },
 
-    U1CfgMakeCVarOption("按下按键时开始动作", "ActionButtonUseKeyDown"),
+    U1CfgMakeCVarOption("按下按键时开始动作", "ActionButtonUseKeyDown", nil),
     {
         var = "cameraDistanceMaxZoomFactor",
         text = L["设置最远镜头距离"],
@@ -126,24 +126,23 @@ U1RegisterAddon("163UI_MoreOptions", {
     ---------------------------------------------------------------]]
     {
         text = "姓名板设置", type = "text",
-        U1CfgMakeCVarOption(U1_NEW_ICON.."友方玩家姓名板职业颜色", "ShowClassColorInFriendlyNameplate", {
+        U1CfgMakeCVarOption(U1_NEW_ICON.."友方玩家姓名板职业颜色", "ShowClassColorInFriendlyNameplate", nil, {
             reload = 1,
-            default = false,
             tip = "说明`7.2.5新增变量，无法通过界面设置",
         }),
-        U1CfgMakeCVarOption("敌方玩家职业颜色", "ShowClassColorInNameplate", { reload = 1 }),
+        U1CfgMakeCVarOption("敌方玩家职业颜色", "ShowClassColorInNameplate", nil, { reload = 1 }),
 
-        U1CfgMakeCVarOption("显示友方NPC的姓名板", "nameplateShowFriendlyNPCs", {
+        U1CfgMakeCVarOption("显示友方NPC的姓名板", "nameplateShowFriendlyNPCs", nil, {
             tip = "说明`7.1之后，友方NPC的姓名板无法通过界面设置",
         }),
 
-        U1CfgMakeCVarOption(untex(DISPLAY_PERSONAL_RESOURCE) or "显示个人资源", "nameplateShowSelf", { tip = OPTION_TOOLTIP_DISPLAY_PERSONAL_RESOURCE, secure = 1 }),
+        U1CfgMakeCVarOption(untex(DISPLAY_PERSONAL_RESOURCE) or "显示个人资源", "nameplateShowSelf", 0, { tip = OPTION_TOOLTIP_DISPLAY_PERSONAL_RESOURCE, secure = 1 }),
 
         --U1CfgMakeCVarOption("总是显示姓名板", "nameplateShowAll", { tip = OPTION_TOOLTIP_UNIT_NAMEPLATES_AUTOMODE, secure = 1 }),
 
         --makeCVarOption("能量点位于目标姓名板", "nameplateResourceOnTarget", { tip = '连击点等框体显示在目标姓名板上而不是自己脚下', secure = 1 }),
 
-        U1CfgMakeCVarOption("允许姓名板移到屏幕之外", "nameplateOtherTopInset", {
+        U1CfgMakeCVarOption("允许姓名板移到屏幕之外", "nameplateOtherTopInset", nil, {
             tip = "说明`7.0之后，姓名板默认会收缩到屏幕之内挤在一起``此选项可以恢复到7.0之前的方式",
             secure = 1,
             getvalue = function() if GetCVar("nameplateOtherTopInset") == "-1" then return true else return false end end,
@@ -209,11 +208,11 @@ U1RegisterAddon("163UI_MoreOptions", {
     ---------------------------------------------------------------]]
     {
         text = "暴雪伤害数字设置", type = "text",
-        U1CfgMakeCVarOption("人物伤害", "floatingCombatTextCombatDamage"),
-        U1CfgMakeCVarOption("人物治疗", "floatingCombatTextCombatHealing"),
-        U1CfgMakeCVarOption("人物持续伤害", "floatingCombatTextCombatLogPeriodicSpells"),
-        U1CfgMakeCVarOption("宠物普攻", "floatingCombatTextPetMeleeDamage"),
-        U1CfgMakeCVarOption("宠物技能", "floatingCombatTextPetSpellDamage"),
+        U1CfgMakeCVarOption("人物伤害", "floatingCombatTextCombatDamage", 1),
+        U1CfgMakeCVarOption("人物治疗", "floatingCombatTextCombatHealing", 1),
+        U1CfgMakeCVarOption("人物持续伤害", "floatingCombatTextCombatLogPeriodicSpells", nil),
+        U1CfgMakeCVarOption("宠物普攻", "floatingCombatTextPetMeleeDamage", nil),
+        U1CfgMakeCVarOption("宠物技能", "floatingCombatTextPetSpellDamage", nil),
         --fctSpellMechanics floatingCombatTextAllSpellMechanics floatingCombatTextSpellMechanics floatingCombatTextSpellMechanicsOther
     }
 

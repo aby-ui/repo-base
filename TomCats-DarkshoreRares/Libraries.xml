@@ -1,5 +1,4 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/ ..\FrameXML\UI.xsd">
-    <Script file="libs\Ace3\LibStub\LibStub.lua" />
     <Include file="libs\TomCatsLibs.xml" />
     <Include file="libs\TomCatsLibs\Events.xml" />
     <Include file="libs\TomCatsLibs\Locales.xml" />
@@ -8,5 +7,4 @@
     <Include file="libs\TomCatsLibs\Data.xml" />
     <Include file="libs\TomCatsLibs\Charms.xml" />
     <Include file="libs\TomCatsLibs\BulletinBoard.xml" />
-    <Include file="libs\Ace3\AceGUI-3.0\AceGUI-3.0.xml"/>
 </Ui>

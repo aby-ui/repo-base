@@ -90,9 +90,6 @@ end
 --Loaded
 function AtlasLootReverse:OnEnable()
     self.enabled = true
-    if(DEBUG_MODE) then
-         return self:RebuildDatabase()
-    end
 end
 
 function AtlasLootReverse:OnTooltipSetItem(tooltip, item)
