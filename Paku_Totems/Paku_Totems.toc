@@ -1,7 +1,7 @@
 ## Interface: 80100
 ## Title: Pa'ku Totems
 ## Author: jaxdahl
-## Version: 1.60
+## Version: 1.61
 ## Notes: Show Pa'ku totem positions on the map and destinations in the tooltip on mouseover.
 ## OptionalDeps: Ace3
 

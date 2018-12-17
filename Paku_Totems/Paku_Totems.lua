@@ -275,7 +275,7 @@ function addon:mapIconOnEnter()
   addon:showTotemOnMap(self.totemID, "WarlockPortalHorde", true, "OVERLAY", "dest")
 
   if not self.highlightLine then
-    self.highlightLine = CreateFrame("FRAME", nil, WorldMapFrame:GetCanvas());
+    self.highlightLine = CreateFrame("FRAME", nil, WorldMapFrame:GetCanvas())
     self.highlightLine.Fill = self.highlightLine:CreateLine(WorldMapFrame, "OVERLAY")
     self.highlightLine.Fill:SetAtlas('_UI-Taxi-Line-horizontal')
   end

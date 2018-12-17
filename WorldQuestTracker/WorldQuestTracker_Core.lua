@@ -417,6 +417,7 @@ WorldMapFrame:HookScript ("OnHide", function()
 end)
 
 WorldQuestTracker.UpdateWorldMapFrameAnchor = function (resetLeft)
+    do return end
 	if (WorldQuestTracker.db.profile.map_frame_anchor == "center") then
 		if (not resetLeft) then
 			WorldMapFrame:ClearAllPoints()
