@@ -12,7 +12,7 @@ local function Button_OnUpdateTimer(self, spell1, spell2)
 	if spell2 then
 		self.icon2:SetActive(addon:IsFormActive(spell2))
 	end
-	return addon:IsFormActive(spell1)
+	return addon:IsFormActive(spell1) and "Y"
 end
 
 templates.RegisterTemplate("STANCE", function(button)

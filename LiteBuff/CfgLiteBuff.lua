@@ -48,7 +48,7 @@ U1RegisterAddon("LiteBuff", {
     {
         var = 'iconsize',
         text = '图标尺寸',
-        default = 32,
+        default = 36,
         type = "spin",
         range = {24, 48, 1},
         callback = function(cfg, v, loading)
@@ -59,7 +59,7 @@ U1RegisterAddon("LiteBuff", {
     {
         var = 'gap',
         text = '图标间隔',
-        default = 6,
+        default = 4,
         type = "spin",
         range = {-2, 20, 1},
         callback = function(cfg, v, loading)

@@ -38,7 +38,7 @@ function button:OnTooltipRightText(tooltip)
 end
 
 function button:OnUpdateTimer()
-	return self.itemCount > 0, self.itemCooldownExpires
+	return self.itemCount > 0 and "G", self.itemCooldownExpires
 end
 
 function button:MODIFIER_STATE_CHANGED()

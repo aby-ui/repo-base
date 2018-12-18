@@ -67,9 +67,11 @@ local function Button_OnUpdateTimer(self)
 
 	local status
 	if cache.has and cache.miss then
-		status = -1
+		status = "Y"
 	elseif cache.has then
-		status = 1
+		status = nil
+    else
+        status = "R"
 	end
 
 	return status, cache.expires
@@ -81,7 +83,7 @@ local function Button_AddGroupTooltip(self, tooltip)
 	end
 
 	local status = self.status
-	if status == -1 then
+	if status == "Y" then
 		local count = 0
 		local name, list
 		for name in pairs(self.missings) do
@@ -93,10 +95,10 @@ local function Button_AddGroupTooltip(self, tooltip)
 			end
 		end
 		tooltip:AddLine(format(L["misses"], count)..(list or ""), 1, 0, 0, 1)
-	elseif status then
-		tooltip:AddLine(L["all have"], 0, 1, 0, 1)
+	elseif status == "R" then
+        tooltip:AddLine(L["none has"], 1, 0, 0, 1)
 	else
-		tooltip:AddLine(L["none has"], 1, 0, 0, 1)
+        tooltip:AddLine(L["all have"], 0, 1, 0, 1)
 	end
 end
 

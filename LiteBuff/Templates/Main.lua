@@ -6,7 +6,7 @@
 ------------------------------------------------------------
  --163uiedit
 local ICON_SIZE = 36
-local BUTTON_GAP = 2
+local BUTTON_GAP = 4
 
 local Masque, MasqueGroup
 local UpdateMasque = function()
@@ -133,15 +133,21 @@ end
 
 -- Updates button status (backdrop colors)
 local function Button_UpdateStatus(self)
-	if self.status == -1 then
-		-- self:SetBackdropColor(1, 1, 0.5, 0.75) -- yellow, some misses
-        self.icon.border:SetVertexColor(1, 1, .5)
-	elseif self.status then
+    self.icon.border:Show()
+    self.icon.icon:SetVertexColor(1,1,1)
+    if self.status == "Y" then
+		--self:SetBackdropColor(1, 1, 0.5, 0.75) -- yellow, some misses
+        self.icon.border:SetVertexColor(1, 1, 0)
+	elseif self.status == "G" then
 		-- self:SetBackdropColor(0, 0.7, 0, 0.75) -- green, all have
-        self.icon.border:SetVertexColor(0, .7, 0)
-	else
+        self.icon.border:SetVertexColor(0, .9, 0)
+	elseif self.status == "R" then
 		-- self:SetBackdropColor(1, 0, 0, 0.75) -- red, none has
-        self.icon.border:SetVertexColor(1, 0, 0)
+        self.icon.icon:SetVertexColor(1, 0.3, 0.1)
+        self.icon.border:Hide()
+        --self.icon.border:SetVertexColor(1, 0, 0)
+    else
+        self.icon.border:Hide()
 	end
 end
 
@@ -174,7 +180,7 @@ end
 
 local function Button_OnUpdateTimer(self, spell)
 	local expires = addon:GetUnitBuffTimer("player", spell)
-	return expires, expires
+	return expires and "G" or "NONE", expires
 end
 
 local function Button_OnEvent(self, event, ...)
@@ -321,7 +327,7 @@ local function Button_UpdateButton_163(self)
     self:SetAttribute('x-gap', gap)
 
     self.icon:SetSize(iconsize, iconsize)
-    self.icon.border:SetSize(iconsize, iconsize)
+    self.icon.border:SetSize(iconsize * 62 / 36, iconsize * 62 / 36)
     self.icon.icon:SetSize(iconsize, iconsize);
     self:SetSize(iconsize, iconsize)
 

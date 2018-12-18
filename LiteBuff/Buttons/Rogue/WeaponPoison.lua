@@ -27,7 +27,7 @@ if spellAlt then
         if not expires and spell == spell2823 then
             expires = addon:GetUnitBuffTimer("player", spellAlt)
         end
-        return expires, expires
+        return expires and "NONE" or "R", expires
     end
 end
 

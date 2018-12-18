@@ -55,5 +55,5 @@ function button:OnUpdateTimer(spell)
 	end
 
 	self:SetConflictIcon(conflict)
-	return expires or conflict, expires
+	return (expires or conflict) and "NONE" or "R", expires
 end

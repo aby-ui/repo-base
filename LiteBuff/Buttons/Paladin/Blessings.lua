@@ -36,3 +36,9 @@ button:AllowSelf()
 button:RequireSpell(203539)
 button:AlertIfMissing(242981)
 button:SetFlyProtect()
+local Button_OnUpdateTimer = button.OnUpdateTimer
+button.OnUpdateTimer = function(self, ...)
+    local status, expires = Button_OnUpdateTimer(self, ...)
+    if status ~= "R" and self.affectedUnit == "player" then return "Y", expires end
+    return status, expires
+end

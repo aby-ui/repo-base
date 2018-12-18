@@ -128,16 +128,16 @@ end
 function button:OnUpdateTimer(spell, spell2)
 	local expires = addon:GetUnitBuffTimer("player", spell2)
 	if expires then
-		return -1, expires
+		return "Y", expires
 	end
 
 	local placed = placedTraps[spell]
 	if placed then
-		return 1, placed
+		return "G", placed
 	else
 		local actTime = activatedTraps[spell]
 		if actTime then
-			return 1, actTime
+			return "G", actTime
 		end
 	end
 end

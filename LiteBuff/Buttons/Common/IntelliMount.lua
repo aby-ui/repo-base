@@ -38,7 +38,7 @@ button:SetAttribute('_onmouseup', [[
     self:ChildUpdate('onmouseup', '_onmouseup')
 ]])
 button.OnMountStateChanged = function(self, mounted)
-    self.status = mounted and 1 or -1
+    self.status = mounted and "Y" or nil
     return self:UpdateStatus()
 end
 button:SetAttribute('_onstate-mountstate', [[
@@ -146,6 +146,8 @@ CoreDependCall("Blizzard_Collections", function()
 end)
 
 CoreOnEvent("PLAYER_ENTERING_WORLD", function()
+    button.status = IsMounted() and "Y" or nil
+    button:UpdateStatus()
     UpdateMountsData()
     return "REMOVE"
 end)
