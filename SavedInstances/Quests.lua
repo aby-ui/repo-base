@@ -34,6 +34,12 @@ local _specialQuests = {
   -- Order Hall
   [42481] = { zid=717, daily=true }, -- Warlock: Ritual of Doom
   [44707] = { zid=719, daily=true, sid=228651 }, -- Demon Hunter: Twisting Nether
+
+  -- Warfront
+  [53414] = { zid=1161 }, -- Stromgarde Alliance
+  [53416] = { zid=1165 }, -- Stromgarde Horde
+  [53992] = { zid=1161 }, -- Darkshore Alliance
+  [53955] = { zid=1165 }, -- Darkshore Horde
 }
 
 function addon:specialQuests()
@@ -76,7 +82,7 @@ function addon:specialQuests()
     end
 
     if not qinfo.zone and qinfo.zid then
-      qinfo.zone = C_Map.GetMapInfo(qinfo.zid).name
+      qinfo.zone = C_Map.GetMapInfo(qinfo.zid)
     end
   end
 
@@ -115,24 +121,32 @@ local QuestExceptions = {
   [33338] = "Weekly",  -- Empowering the Hourglass
   [33334] = "Weekly",  -- Strong Enough to Survive
 
-  -- From Archmage Timear -
-  [44164] = "Weekly", -- A Burning Path Through Time - Burning Crusade Timewalking
-  [44166] = "Weekly", -- A Frozen Path Through Time - Wrath of the Lich King Timewalking
-  [44167] = "Weekly", -- A Shattered Path Through Time - Cataclysm Timewalking
-  [44171] = "Weekly", -- Emisary of War - Complete Legion Mythics
-  [44172] = "Weekly", -- The Arena Calls - Win Legion Arena Skirmishes
-  [44173] = "Weekly", -- A Call to Battle - Win Battlegrounds
-  [44174] = "Weekly", -- The Very Best - Win PvP Pet Battles
-  [44175] = "Weekly", -- The World Awaits - Complete Broken Isles World Quests
-  [45799] = "Weekly", -- A Shrouded Path Through Time - Mists of Pandaria Timewalking
-
   -- Pet Battle Dungeons
-  [46292] = "Weekly", -- Pet Battle Challenge Dungeon Deadmines
-  [45539] = "Weekly", -- Pet Battle Challenge Dungeon Wailing Caverns
+  [46292] = "AccountWeekly", -- Pet Battle Challenge Dungeon Deadmines
+  [45539] = "AccountWeekly", -- Pet Battle Challenge Dungeon Wailing Caverns
+  [54186] = "AccountWeekly", -- Pet Battle Challenge Dungeon Gnomeregan
 
   -- Argus
   [48910] = "Weekly", -- Supplying Krokuun
   [48911] = "Weekly", -- Void Inoculation
   [48912] = "Weekly", -- Supplying the Antoran Campaign
+  [48634] = "Regular", -- Further Supplying Krokuun
+  [48635] = "Regular", -- More Void Inoculation
+  [48636] = "Regular", -- Fueling the Antoran Campaign
+
+  -- Island Expeditions
+  [53435] = "Weekly", -- Azerite for the Horde
+  [53436] = "Weekly", -- Azerite for the Alliance
+
+  -- Weekend Event
+  [53030] = "Weekly", -- The World Awaits - World Quests
+  [53032] = "Weekly", -- A Burning Path Through Time - TBC Timewalking
+  [53033] = "Weekly", -- A Frozen Path Through Time - WLK Timewalking
+  [53034] = "Weekly", -- A Shattered Path Through Time - CTM Timewalking
+  [53035] = "Weekly", -- A Shattered Path Through Time - MOP Timewalking
+  [53036] = "Weekly", -- A Call to Battle - Battlegrounds
+  [53037] = "Weekly", -- Emissary of War - Mythic Dungeons
+  [53038] = "AccountWeekly", -- The Very Best - PvP Pet Battles
+  [53039] = "Weekly", -- The Arena Calls - Arena Skirmishes
 }
 addon.QuestExceptions = QuestExceptions

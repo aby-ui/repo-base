@@ -2,7 +2,7 @@ local tinsert, tconcat, tremove, wipe = table.insert, table.concat, table.remove
 local select, pairs, next, type, unpack = select, pairs, next, type, unpack
 local tostring, error = tostring, error
 
-local Type, Version = "WeakAurasDisplayButton", 41
+local Type, Version = "WeakAurasDisplayButton", 42
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
@@ -496,6 +496,10 @@ local methods = {
       elseif(IsShiftKeyDown()) then
         local editbox = GetCurrentKeyBoardFocus();
         if(editbox) then
+          if editbox:GetAttribute("chatType") == "GUILD" then
+            print(WeakAuras.printPrefix .. "Auras can not be shared via guild chat.")
+            return
+          end
           if (not fullName) then
             local name, realm = UnitFullName("player")
             fullName = name.."-"..realm
@@ -745,9 +749,9 @@ local methods = {
     end
 
     function self.callbacks.OnUpdateClick()
-      local wago = WeakAurasCompanion[self.update.slug]
-      if wago then
-        WeakAuras.ImportString(wago.encoded)
+      local _,_,updateData = self:HasUpdate()
+      if updateData then
+        WeakAuras.ImportString(updateData.encoded)
       end
     end
 
@@ -807,7 +811,7 @@ local methods = {
       local wagoMenu = self.menu[8].menuList
       wagoMenu[1].func = self.callbacks.wagoIgnoreAll
       wagoMenu[1].text = L["Ignore all Updates"]
-      if self.update.slug then
+      if self:HasUpdate() then
         tinsert(wagoMenu, {
           text = L["Ignore this Update"],
           notCheckable = 1,
@@ -827,6 +831,13 @@ local methods = {
         self.update:Show()
         self.update:Enable()
         self.updateLogo:Show()
+        -- show update on group
+        if self.data.parent then
+          local button = WeakAuras.GetDisplayButton(self.data.parent)
+          if button then
+            button:ShowGroupUpdate()
+          end
+        end
       end
       -- childs
       if self.data.controlledChildren then
@@ -840,13 +851,11 @@ local methods = {
     end
 
     function self.callbacks.wagoIgnoreAll()
-      -- set ignore flag
-      self.data.ignoreWagoUpdate = true
       -- update menu entries
       local wagoMenu = self.menu[8].menuList
       wagoMenu[1].func = self.callbacks.wagoStopIgnoreAll
       wagoMenu[1].text = L["Stop ignoring Updates"]
-      if self.update.slug then
+      if self:HasUpdate() then
         tremove(wagoMenu, 2)
         tremove(wagoMenu, 2)
         tremove(wagoMenu, 2)
@@ -854,6 +863,15 @@ local methods = {
         self.update:Hide()
         self.update:Disable()
         self.updateLogo:Hide()
+        -- set ignore flag
+        self.data.ignoreWagoUpdate = true
+        -- update group icon if necessary
+        if self.data.parent then
+          local button = WeakAuras.GetDisplayButton(self.data.parent)
+          if button then
+            WeakAuras.RefreshGroupUpdateIcon(button)
+          end
+        end
       end
       -- childs
       if self.data.controlledChildren then
@@ -869,7 +887,7 @@ local methods = {
     function self.callbacks.wagoStopIgnoreNext()
       -- remove skip flag
       self.data.skipWagoUpdate = nil
-      if self.update.slug then
+      if self:HasUpdate() then
         -- update menu entries
         local wagoMenu = self.menu[8].menuList
         wagoMenu[2].func = self.callbacks.wagoIgnoreNext
@@ -888,6 +906,13 @@ local methods = {
         self.update:Show()
         self.update:Enable()
         self.updateLogo:Show()
+        -- show update on group
+        if self.data.parent then
+          local button = WeakAuras.GetDisplayButton(self.data.parent)
+          if button then
+            button:ShowGroupUpdate()
+          end
+        end
       end
       -- childs
       if self.data.controlledChildren then
@@ -901,9 +926,8 @@ local methods = {
     end
 
     function self.callbacks.wagoIgnoreNext()
-      if self.update.slug then
-        -- skip wago version
-        self.data.skipWagoUpdate = self.update.wagoVersion
+      local hasUpdate, skipVersion, updateData = self:HasUpdate()
+      if hasUpdate then
         -- update menu entries
         local wagoMenu = self.menu[8].menuList
         wagoMenu[2].func = self.callbacks.wagoStopIgnoreNext
@@ -915,6 +939,15 @@ local methods = {
         self.update:Hide()
         self.update:Disable()
         self.updateLogo:Hide()
+        -- skip wago version
+        self.data.skipWagoUpdate = updateData.wagoVersion
+        -- update group icon if necessary
+        if self.data.parent then
+          local button = WeakAuras.GetDisplayButton(self.data.parent)
+          if button then
+            WeakAuras.RefreshGroupUpdateIcon(button)
+          end
+        end
       end
       -- childs
       if self.data.controlledChildren then
@@ -1081,86 +1114,76 @@ local methods = {
     self.downgroup:SetScript("OnClick", self.callbacks.OnDownGroupClick);
 
     if WeakAurasCompanion then
-      if self.data.url and self.data.url ~= "" then
-        local slug, version = self.data.url:match("wago.io/([^/]+)/([0-9]+)")
-        if not slug and not version then
-          slug = self.data.url:match("wago.io/([^/]+)$")
-          version = 1
-        end
-        if slug and version then
-          local wago = WeakAurasCompanion[slug]
-          -- add sync entry in menu
-          tinsert(self.menu, 8, {
-            text = '|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0|t' .. L["Wago Update"],
+      -- add sync entry in menu
+      tinsert(self.menu, 8, {
+        text = '|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0|t' .. L["Wago Update"],
+        notCheckable = 1,
+        hasArrow = true,
+        menuList = {
+          {
+            text = self.data.ignoreWagoUpdate and L["Stop ignoring Updates"] or L["Ignore all Updates"],
             notCheckable = 1,
-            hasArrow = true,
-            menuList = {
-              {
-                text = self.data.ignoreWagoUpdate and L["Stop ignoring Updates"] or L["Ignore all Updates"],
-                notCheckable = 1,
-                func = self.data.ignoreWagoUpdate and self.callbacks.wagoStopIgnoreAll or self.callbacks.wagoIgnoreAll
-              }
-            }
+            func = self.data.ignoreWagoUpdate and self.callbacks.wagoStopIgnoreAll or self.callbacks.wagoIgnoreAll
+          }
+        }
+      });
+      local wagoMenu = self.menu[8].menuList
+      local hasUpdate, skipVersion, updateData = self:HasUpdate()
+      -- there is a string for this aura
+      if hasUpdate then
+        self.update.title = L["Update "] .. updateData.name .. L[" by "] .. updateData.author
+        self.update.desc = L["From version "] .. self.data.version .. L[" to version "] .. updateData.wagoVersion
+        if updateData.versionNote then
+          self.update.desc = ("%s\n\n%s"):print(self.update.desc, updateData.versionNote)
+        end
+        self.update:SetScript("OnClick", self.callbacks.OnUpdateClick);
+
+        -- add skip version entry in menu
+        if skipVersion then
+          tinsert(wagoMenu, {
+            text =  L["Stop ignoring this Update"],
+            notCheckable = 1,
+            func = self.callbacks.wagoStopIgnoreNext
           });
-          local wagoMenu = self.menu[8].menuList
-          -- there is a string for this aura
-          if wago and wago.wagoVersion then
-            self.update.wagoVersion = tonumber(wago.wagoVersion)
-            self.update.version = tonumber(version)
-            -- string is newer
-            if self.update.wagoVersion > self.update.version then
-              self.update.title = L["Update "] .. wago.name .. L[" by "] .. wago.author
-              self.update.desc = L["From version "] .. version .. L[" to version "] .. wago.wagoVersion
-              self.update.slug = slug
-              if wago.versionNote then
-                self.update.desc = ("%s\n\n%s"):print(self.update.desc, wago.versionNote)
-              end
-              self.update:SetScript("OnClick", self.callbacks.OnUpdateClick);
+        else
+          tinsert(wagoMenu, {
+            text = L["Ignore this Update"],
+            notCheckable = 1,
+            func = self.callbacks.wagoIgnoreNext
+          });
+        end
+      end
 
-              -- add skip version entry in menu
-              if not self.data.ignoreWagoUpdate then
-                if self.update.wagoVersion == self.data.skipWagoUpdate then
-                  tinsert(wagoMenu, {
-                    text =  L["Stop ignoring this Update"],
-                    notCheckable = 1,
-                    func = self.callbacks.wagoStopIgnoreNext
-                  });
-                else
-                  tinsert(wagoMenu, {
-                    text = L["Ignore this Update"],
-                    notCheckable = 1,
-                    func = self.callbacks.wagoIgnoreNext
-                  });
-                end
-              end
-
-              -- show or hide update icon
-              if self.update.wagoVersion == self.data.skipWagoUpdate or self.data.ignoreWagoUpdate then
-                self.update:Hide()
-                self.update:Disable()
-                self.updateLogo:Hide()
-              else
-                self.update:Show()
-                self.update:Enable()
-                self.updateLogo:Show()
-                tinsert(wagoMenu, {
-                  text = " ",
-                  notClickable = 1,
-                  notCheckable = 1,
-                });
-                tinsert(wagoMenu, {
-                  text = L["Update this Aura"],
-                  notCheckable = 1,
-                  func = self.callbacks.OnUpdateClick
-                });
-              end
-            end
+      -- show or hide update icon
+      if skipVersion or not hasUpdate then
+        self.update:Hide()
+        self.update:Disable()
+        self.updateLogo:Hide()
+      else
+        self.update:Show()
+        self.update:Enable()
+        self.updateLogo:Show()
+        tinsert(wagoMenu, {
+          text = " ",
+          notClickable = 1,
+          notCheckable = 1,
+        });
+        tinsert(wagoMenu, {
+          text = L["Update this Aura"],
+          notCheckable = 1,
+          func = self.callbacks.OnUpdateClick
+        });
+        -- show icon on group
+        if self.data.parent then
+          local button = WeakAuras.GetDisplayButton(self.data.parent)
+          if button then
+            button:ShowGroupUpdate()
           end
         end
       end
     end
 
-    if(data.parent) then
+    if data.parent then
       local parentData = WeakAuras.GetData(data.parent);
       local index;
       for childIndex, childId in pairs(parentData.controlledChildren) do
@@ -1581,6 +1604,43 @@ local methods = {
       self:Collapse();
     end
   end,
+  ["ShowGroupUpdate"] = function(self)
+    if self.groupUpdate and self.groupUpdate.disable then
+      self.groupUpdate:Show()
+      self.groupUpdate.disable = false
+    end
+  end,
+  ["HideGroupUpdate"] = function(self)
+    if self.groupUpdate and not self.groupUpdate.disable then
+      self.groupUpdate:Hide()
+      self.groupUpdate.disable = true
+    end
+  end,
+  ["HasUpdate"] = function(self)
+    -- return hasUpdate, skipVersion, updateData
+    if WeakAurasCompanion
+    and self.data.uid
+    and not self.data.ignoreWagoUpdate
+    then
+      local slug = WeakAurasCompanion.uids[self.data.uid]
+      if slug then
+        local updateData = WeakAurasCompanion.slugs[slug]
+        if updateData then
+          if not (self.data.skipWagoUpdate and self.data.skipWagoUpdate == updateData.wagoVersion) then
+            if tonumber(updateData.wagoVersion) > tonumber(self.data.version) then
+              -- got update
+              return true, false, updateData
+            end
+          else
+            -- version skip flag
+            return true, true, updateData
+          end
+        end
+      end
+    end
+    -- no addon, or no data, or ignore flag
+    return false, false, nil
+  end,
   ["SetGroupOrder"] = function(self, order, max)
     if(order == 1) then
       self:DisableUpGroup();
@@ -1922,6 +1982,7 @@ local function Constructor()
   expand:SetScript("OnLeave", Hide_Tooltip);
 
   local update, updateLogo
+  local groupUpdate
   if WeakAurasCompanion then
     update = CreateFrame("BUTTON", nil, button);
     button.update = update
@@ -1960,6 +2021,22 @@ local function Constructor()
     update:SetScript("OnLeave", Hide_Tooltip);
     update:Hide();
     updateLogo:Hide()
+
+    -- Update in group icon
+    groupUpdate = CreateFrame("Frame", nil, button);
+    button.groupUpdate = groupUpdate
+    local gtex = groupUpdate:CreateTexture(nil, "OVERLAY")
+    gtex:SetTexture([[Interface\AddOns\WeakAuras\Media\Textures\wagoupdate_logo.tga]])
+    gtex:SetAllPoints()
+    groupUpdate:SetSize(16, 16);
+    groupUpdate:SetPoint("BOTTOM", button, "BOTTOM");
+    groupUpdate:SetPoint("LEFT", icon, "RIGHT", 20, 0);
+    groupUpdate.disable = true
+    groupUpdate.title = L["Update in Group"];
+    groupUpdate.desc = L["Group contains updates from Wago"];
+    groupUpdate:SetScript("OnEnter", function() Show_Tooltip(button, groupUpdate.title, groupUpdate.desc) end);
+    groupUpdate:SetScript("OnLeave", Hide_Tooltip);
+    groupUpdate:Hide();
   end
 
   local widget = {
@@ -1980,6 +2057,7 @@ local function Constructor()
     background = background,
     expand = expand,
     update = update,
+    groupUpdate = groupUpdate,
     updateLogo = updateLogo,
     type = Type
   }

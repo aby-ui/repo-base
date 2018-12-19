@@ -951,13 +951,13 @@ function Arathi:RegisterWithHandyNotes()
         end
     end
 
-    HandyNotes:RegisterPluginDB("HandyNotesArathi", self, options)
+    HandyNotes:RegisterPluginDB("HandyNotesArathiAby", self, options)
     self:RegisterBucketEvent({ "LOOT_CLOSED", "PLAYER_MONEY", "SHOW_LOOT_TOAST", "SHOW_LOOT_TOAST_UPGRADE" }, 2, "Refresh")
     self:Refresh()
 end
  
 function Arathi:Refresh()
-    self:SendMessage("HandyNotes_NotifyUpdate", "HandyNotesArathi")
+    self:SendMessage("HandyNotes_NotifyUpdate", "HandyNotesArathiAby")
 end
 
 function Arathi:ShowNode( mapFile, node )

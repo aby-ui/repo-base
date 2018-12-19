@@ -6,5 +6,4 @@
     <Include file="libs\TomCatsLibs\UUID.xml" />
     <Include file="libs\TomCatsLibs\Data.xml" />
     <Include file="libs\TomCatsLibs\Charms.xml" />
-    <Include file="libs\TomCatsLibs\BulletinBoard.xml" />
 </Ui>

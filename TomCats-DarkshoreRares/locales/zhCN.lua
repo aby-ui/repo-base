@@ -6,6 +6,4 @@ select(2, ...).TomCatsLibs.Locales.AddLocaleLookup("zhCN", {
     ["Boulderfist Hall"] = "石拳大厅",
     ["Drywhisker Gorge"] = "枯须峡谷",
     ["TomCat's Tours"] = "TomCat的旅行",
-    ["Darkshore Rares"] = "黑海岸稀有精英",
-    ["Rares of Darkshore"] = "黑海岸稀有精英",
 })

@@ -94,7 +94,7 @@ function WeakAuras.DuplicateAura(data)
   WeakAuras.DeepCopy(data, newData);
   newData.id = new_id;
   newData.parent = nil;
-  newData.uid = nil
+  newData.uid = WeakAuras.GenerateUniqueID();
   WeakAuras.Add(newData);
   WeakAuras.NewDisplayButton(newData);
   if(data.parent) then
@@ -361,66 +361,6 @@ function WeakAuras.MultipleDisplayTooltipDesc()
   tinsert(desc, {" ", "|cFF00FFFF"..L["Right-click for more options"]});
   tinsert(desc, {" ", "|cFF00FFFF"..L["Drag to move"]});
   return desc;
-end
-
-function WeakAuras.DuplicateAura(data)
-  local base_id = data.id .. " ";
-  local num = 2;
-
-  -- if the old id ends with a number increment the number
-  local matchName, matchNumber = string.match(data.id, "^(.-)(%d*)$")
-  matchNumber = tonumber(matchNumber)
-  if (matchName ~= "" and matchNumber ~= nil) then
-    base_id = matchName;
-    num = matchNumber + 1
-  end
-
-  local new_id = base_id .. num;
-  while(WeakAuras.GetData(new_id)) do
-    new_id = base_id .. num;
-    num = num + 1;
-  end
-
-  local newData = {};
-  WeakAuras.DeepCopy(data, newData);
-  newData.id = new_id;
-  newData.parent = nil;
-  newData.uid = nil
-  WeakAuras.Add(newData);
-  WeakAuras.NewDisplayButton(newData);
-  if(data.parent) then
-    local parentData = WeakAuras.GetData(data.parent);
-    local index;
-    for i, childId in pairs(parentData.controlledChildren) do
-      if(childId == data.id) then
-        index = i;
-        break;
-      end
-    end
-    if(index) then
-      local newIndex = index + 1;
-      if(newIndex > #parentData.controlledChildren) then
-        tinsert(parentData.controlledChildren, newData.id);
-      else
-        tinsert(parentData.controlledChildren, index + 1, newData.id);
-      end
-      newData.parent = data.parent;
-      WeakAuras.Add(parentData);
-      WeakAuras.Add(newData);
-
-      for index, id in pairs(parentData.controlledChildren) do
-        local childButton = WeakAuras.GetDisplayButton(id);
-        childButton:SetGroup(parentData.id, parentData.regionType == "dynamicgroup");
-        childButton:SetGroupOrder(index, #parentData.controlledChildren);
-      end
-
-      local button = WeakAuras.GetDisplayButton(parentData.id);
-      button.callbacks.UpdateExpandButton();
-      WeakAuras.UpdateDisplayButton(parentData);
-      WeakAuras.ReloadGroupRegionOptions(parentData);
-    end
-  end
-  return newData.id;
 end
 
 function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, triggertype, unevent)
@@ -4460,7 +4400,24 @@ function WeakAuras.UpdateDisplayButton(data)
   local button = displayButtons[id];
   if (button) then
     button:SetIcon(WeakAuras.SetThumbnail(data));
+    if WeakAurasCompanion and button:IsGroup() then
+      WeakAuras.RefreshGroupUpdateIcon(button)
+    end
   end
+end
+
+function WeakAuras.RefreshGroupUpdateIcon(button)
+  for index, childId in pairs(button.data.controlledChildren) do
+    local childButton = WeakAuras.GetDisplayButton(childId);
+    if childButton then
+      local hasUpdate, skipVersion = childButton:HasUpdate()
+      if hasUpdate and not skipVersion then
+        button:ShowGroupUpdate()
+        return
+      end
+    end
+  end
+  button:HideGroupUpdate()
 end
 
 function WeakAuras.SetThumbnail(data)
@@ -4604,7 +4561,7 @@ function WeakAuras.NewAura(sourceData, regionType, targetId)
     return t and k and v and t[k] == v
   end
   local new_id = WeakAuras.FindUnusedId("New")
-  local data = {id = new_id, regionType = regionType}
+  local data = {id = new_id, regionType = regionType, uid = WeakAuras.GenerateUniqueID()}
   WeakAuras.DeepCopy(WeakAuras.data_stub, data);
   if (sourceData) then
     WeakAuras.DeepCopy(sourceData, data);

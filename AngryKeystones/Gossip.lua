@@ -2,7 +2,7 @@ local ADDON, Addon = ...
 local Mod = Addon:NewModule('Gossip')
 
 local npcBlacklist = {
-	[107435] = true, [112697] = true, [112699] = true, -- Suspicous Noble
+	[107435] = true, [112697] = true, [112699] = true, [107486] = true, -- Suspicous Noble
 	[101462] = true, -- Reaves
 }
 

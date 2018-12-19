@@ -2,11 +2,6 @@ local addon = select(2, ...)
 local D, L, P = addon.getLocalVars()
 local TCL = addon.TomCatsLibs
 local AceGUI = LibStub("AceGUI-3.0")
---[[TCL.BulletinBoard.checkForUpdates("1.1.7", 3, {"VjWrxWeFqML","A2qGxbImAE","kWemgqIWpR"}, function(updateAvailable, latestVersion)
-    if (updateAvailable) then
-        print("|cFFFFCC00There is newer version of 'TomCat's Tours: Rares of Darkshore Highlands' available on Twitch and Curseforge|r")
-    end
-end);]]
 local gameVersion = GetBuildInfo()
 local _, checkIsBossAvailable, QUEST_STATUS, initializeWindow, setQuestLabelStyle, updateQuests, labels, buttons, quests, windowSettings
 local tourWindow, newTourWindow, warfrontFont, warningFont, updateTimer
@@ -118,12 +113,6 @@ local function ADDON_LOADED(self)
     warningFont:SetFontObject(SystemFont_Small)
     warningFont:SetJustifyH("CENTER")
     warningFont:SetTextColor(1, 0, 0)
-    local starFunction
-    if (gameVersion == "8.0.1") then
-        starFunction = function() return 1121272, 492/1024, 524/1024, 443/512, 475/512 end
-    else
-        starFunction = function() return 1121272, 575/1024, 607/1024, 205/512, 237/512 end
-    end
     QUEST_STATUS = {
         COMPLETE = {
             getImage = function() return 973338, 123/256, 159/256, 94/128, 126/128 end,
@@ -132,7 +121,7 @@ local function ADDON_LOADED(self)
             color = { r = 0, g = 1, b = 0 }
         },
         INCOMPLETE = {
-            getImage = starFunction,
+            getImage = function() return 1121272, 575/1024, 607/1024, 205/512, 237/512 end,
             font = incompleteFont,
             texture = "incomplete",
             color = { r = 0.75, g = 0.75, b = 0.75 }
@@ -149,16 +138,16 @@ local function ADDON_LOADED(self)
     initializeQuests()
     TCL.Charms.Create({
         name = addon.name .. "MinimapButton",
-        iconTexture = "Interface\\AddOns\\" .. addon.name .. "\\images\\darnassus-icon",
-        backgroundColor = {68/255,34/255,68/255,0.80 },
+        iconTexture = "Interface\\AddOns\\" .. addon.name .. "\\images\\" .. addon.params["Minimap Icon"],
+        backgroundColor = addon.params["Icon BGColor"],
         handler_onclick = addon.toggleTourWindow
     }).tooltip = {
         Show = function(this)
             GameTooltip:ClearLines()
             GameTooltip:SetOwner(this, "ANCHOR_LEFT")
             GameTooltip:SetText("TomCat的旅行:", 1, 1, 1)
-            GameTooltip:AddLine("黑海岸稀有精英", nil, nil, nil, true)
-            GameTooltip:AddLine("(黑海岸战争前线)", nil, nil, nil, true)
+            GameTooltip:AddLine(addon.params["Title Line 1"], nil, nil, nil, true)
+            GameTooltip:AddLine("(" .. addon.params["Title Line 2"] .. ")", nil, nil, nil, true)
             GameTooltip:Show()
         end,
         Hide = function()
@@ -171,11 +160,17 @@ local function ADDON_LOADED(self)
         C_Timer.After(1, initializeWindow)
     end
     TCL.Events.RegisterEvent("QUEST_LOG_UPDATE", addon)
+    C_Timer.After(5,addon.checkForQuestUpdates)
     C_Timer.After(P["Timer Delay"], updateTimer)
     TCL.Events.UnregisterEvent("ADDON_LOADED", ADDON_LOADED)
 end
 
 TCL.Events.RegisterEvent("ADDON_LOADED", ADDON_LOADED)
+
+function addon.checkForQuestUpdates()
+    addon.QUEST_LOG_UPDATE()
+    C_Timer.After(5, addon.checkForQuestUpdates)
+end
 
 function initializeWindow()
     if (tourWindow and tourWindow:IsShown()) then
@@ -200,14 +195,14 @@ function addon:QUEST_LOG_UPDATE()
     end
     addon.refreshStatusForAllCreatures()
     if (HandyNotes) then
-        HandyNotes.WorldMapDataProvider:RefreshPlugin("TomCat's Tours: Rares of Darkshore")
-        HandyNotes:UpdateMinimapPlugin("TomCat's Tours: Rares of Darkshore")
+        HandyNotes.WorldMapDataProvider:RefreshPlugin("TomCat's Tours: " .. addon.params["Title Line 1"])
+        HandyNotes:UpdateMinimapPlugin("TomCat's Tours: " .. addon.params["Title Line 1"])
     end
 end
 
 updateQuests = function()
     local playerLevel = UnitLevel("player")
-    if (playerLevel < 120 or gameVersion == "8.0.1") then
+    if (playerLevel < 120) then
         return
     end
     if(tourWindow) then
@@ -220,28 +215,21 @@ updateQuests = function()
     local isBossAvailable = checkIsBossAvailable()
     local qc = GetQuestsCompleted()
     for k in pairs(quests) do
-        if (gameVersion == "8.0.1") then
-            if (quests[k].status ~= QUEST_STATUS.UNAVAILABLE) then
-                quests[k].status = QUEST_STATUS.UNAVAILABLE
+        if (qc[k]) then
+            if (quests[k].status ~= QUEST_STATUS.COMPLETE) then
+                quests[k].status = QUEST_STATUS.COMPLETE
                 setQuestLabelStyle(quests[k])
             end
         else
-            if (qc[k]) then
-                if (quests[k].status ~= QUEST_STATUS.COMPLETE) then
-                    quests[k].status = QUEST_STATUS.COMPLETE
+            if (not D["Creatures"][quests[k]["Creature ID"]]["Locations"][warfrontPhases[addon.getWarfrontPhase()]]) then
+                if (quests[k].status ~= QUEST_STATUS.UNAVAILABLE) then
+                    quests[k].status = QUEST_STATUS.UNAVAILABLE
                     setQuestLabelStyle(quests[k])
                 end
             else
-                if (not D["Creatures"][quests[k]["Creature ID"]]["Locations"][warfrontPhases[addon.getWarfrontPhase()]]) then
-                    if (quests[k].status ~= QUEST_STATUS.UNAVAILABLE) then
-                        quests[k].status = QUEST_STATUS.UNAVAILABLE
-                        setQuestLabelStyle(quests[k])
-                    end
-                else
-                    if (quests[k].status ~= QUEST_STATUS.INCOMPLETE) then
-                        quests[k].status = QUEST_STATUS.INCOMPLETE
-                        setQuestLabelStyle(quests[k])
-                    end
+                if (quests[k].status ~= QUEST_STATUS.INCOMPLETE) then
+                    quests[k].status = QUEST_STATUS.INCOMPLETE
+                    setQuestLabelStyle(quests[k])
                 end
             end
         end
@@ -252,9 +240,6 @@ function initializeQuests()
     quests = {}
     labels = {}
     buttons = {}
-    if (gameVersion == "8.0.1") then
-        return
-    end
     local isBossAvailable = checkIsBossAvailable()
     local playerLevel = UnitLevel("player")
     local namesLoaded = true
@@ -297,7 +282,7 @@ function initializeQuests()
             if minWidth > labelMinWidth then
                 buttonMinWidth = minWidth
             end
-            if (playerLevel < 120 or gameVersion == "8.0.1") then
+            if (playerLevel < 120) then
                 quest.status = QUEST_STATUS.UNAVAILABLE
             elseif (IsQuestFlaggedCompleted(questID)) then
                 quest.status = QUEST_STATUS.COMPLETE
@@ -340,12 +325,12 @@ function addon:toggleTourWindow()
         ----------------------------------
         newTourWindow = CreateFrame("Frame", "TomCats-DarkshoreRaresTourWindow", UIParent, "TomCats-DarkshoreRaresTourWindowTemplate")
         --newTourWindow:Show()
-        _G["TomCats-DarkshoreRaresTourWindowPortrait"]:SetTexture("Interface\\AddOns\\" .. addon.name .. "\\images\\darnassus-icon");
+        _G["TomCats-DarkshoreRaresTourWindowPortrait"]:SetTexture("Interface\\AddOns\\" .. addon.name .. "\\images\\" .. addon.params["Minimap Icon"]);
         _G["TomCats-DarkshoreRaresTourWindowPortrait"]:SetTexCoord(0, 1, 0, 1);
         _G["TomCats-DarkshoreRaresTourWindowPortraitBackground"]:SetTexture("Interface\\CHARACTERFRAME\\TempPortraitAlphaMaskSmall");
         _G["TomCats-DarkshoreRaresTourWindowPortraitBackground"]:SetVertexColor(118/255,18/255,20/255,1);
         _G["TomCats-DarkshoreRaresTourWindowTitleText"]:SetText("|cFFFFFFFF" .. L["TomCat's Tours"]);
-        _G["TomCats-DarkshoreRaresTourWindowTitle2Text"]:SetText(L["Rares of Darkshore Highlands"] .. "\n(" .. L["Warfront on Darkshore"] .. ")");
+        _G["TomCats-DarkshoreRaresTourWindowTitle2Text"]:SetText(L[addon.params["Title Line 1"]] .. "\n(" .. L[addon.params["Title Line 2"]] .. ")");
         newTourWindow.onCloseCallback = function() addon:toggleTourWindow() end
         ----------------------------------
 
@@ -353,7 +338,7 @@ function addon:toggleTourWindow()
         tourWindow.closebutton:SetScript("OnClick", function()
             addon:toggleTourWindow()
         end)
-        tourWindow:SetTitle(L["TomCat's Tours"] .. ": " .. L["Rares of Darkshore"])
+        tourWindow:SetTitle(L["TomCat's Tours"] .. ": " .. L[addon.params["Title Line 1"]])
         tourWindow:SetLayout("Fill")
         tourWindow:SetAutoAdjustHeight(true)
         if (windowSettings.height and windowSettings.width) then
@@ -367,17 +352,6 @@ function addon:toggleTourWindow()
         tourWindow.scroll = AceGUI:Create("ScrollFrame")
         tourWindow.scroll:SetLayout("Flow")
         tourWindow:AddChild(tourWindow.scroll)
-        if (gameVersion == "8.0.1") then
-            if (not tourWindow.warningLabel) then
-                tourWindow.warningLabel = AceGUI:Create("Label")
-                tourWindow.warningLabel:SetFontObject(warningFont)
-                tourWindow.warningLabel:SetColor(warningFont:GetTextColor())
-                tourWindow.warningLabel:SetJustifyH("CENTER")
-                tourWindow.warningLabel:SetRelativeWidth(1)
-                tourWindow.warningLabel:SetText("Unavailable until patch 8.1 \r\n")
-                tourWindow.scroll:AddChild(tourWindow.warningLabel)
-            end
-        end
         local playerLevel = UnitLevel("player")
         if (playerLevel < 120) then
             if (not tourWindow.warningLabel) then
@@ -388,9 +362,6 @@ function addon:toggleTourWindow()
                 tourWindow.warningLabel:SetRelativeWidth(1)
                 tourWindow.warningLabel:SetText(L["Unavailable_Below_120"] .. "\r\n")
                 tourWindow.scroll:AddChild(tourWindow.warningLabel)
-                tourWindow:Hide()
-                tourWindow:Show()
-                return
             end
         end
         if (not addon.creatureNamesLoaded) then
@@ -477,11 +448,10 @@ function addon.showItemTooltip(self, creature, showCreatureName, offX, offY)
         WorldMapTooltip:SetText(creature["Name"], color.r, color.g, color.b);
         GameTooltip_AddBlankLinesToTooltip(tooltip, 1);
     end
---STAT_AVERAGE_ITEM_LEVEL
     if (creature["Loot"]) then
         GameTooltip_AddColoredLine(tooltip, LOOT_NOUN, LOOT_NOUN_COLOR, true);
         EmbeddedItemTooltip_SetItemByID(tooltip.ItemTooltip, creature["Loot"])
-    elseif (creature["Loot Type"] == 5) then
+    elseif (creature["Level"] == nil) then
         GameTooltip_AddColoredLine(tooltip, STAT_AVERAGE_ITEM_LEVEL .. " " .. "385" .. " " .. LOOT_NOUN, LOOT_NOUN_COLOR, true);
         GameTooltip_AddColoredLine(tooltip, "(See adventure guide)", LOOT_NOUN_COLOR, true);
     else
@@ -559,7 +529,7 @@ if (HandyNotes) then
 
     local HandyNotesOptions = {
         type="group",
-        name= "战争前线黑海岸", --""TomCat's Tours: Darkshore",
+        name="TomCat's Tours: " .. addon.params["Map Name"],
         get = function(info) return addon.savedVariables.character.enableHandyNotesPlugin or false end,
         set = function(info, v)
             addon.savedVariables.character.enableHandyNotesPlugin = v
@@ -575,5 +545,5 @@ if (HandyNotes) then
         }
     }
 
-    HandyNotes:RegisterPluginDB("TomCat's Tours: Rares of Darkshore", HandyNotesPlugin, HandyNotesOptions)
+    HandyNotes:RegisterPluginDB("TomCat's Tours: " .. addon.params["Title Line 1"], HandyNotesPlugin, HandyNotesOptions)
 end

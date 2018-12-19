@@ -19,12 +19,7 @@ local warfrontPhases = {
     ["Horde"] = 2
 }
 
-local gameVersion = GetBuildInfo()
 local function refreshStatusForCreature(creature)
-    if (gameVersion == "8.0.1") then
-        creature["Status"] = STATUS.HIDDEN
-        return
-    end
     -- default to complete status
     local status = STATUS.COMPLETE
     if (creature[playerFaction .. " React"] == 1) then

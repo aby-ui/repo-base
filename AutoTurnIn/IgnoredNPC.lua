@@ -11,5 +11,8 @@ privateTable.IGNORED_NPC = {
 	["127037"] = "Nabiru",
 	["142063"] = "Tezran",
 	["141584"] = "Zurvan", --seals of fate 
-	["111243"] = "Archmage Lan'dalock" --seals of fate
+	["111243"] = "Archmage Lan'dalock", --seals of fate
+    ["107486"] = "Chatty Rumormonger in Courtofstars",
+    ["147297"] = "Zekhan",
+    ["146012"] = "Zekhan",
 }

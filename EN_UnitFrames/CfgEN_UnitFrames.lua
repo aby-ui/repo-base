@@ -121,11 +121,21 @@ U1RegisterAddon("EN_UnitFrames", {
             end,
         },
         {
-            text = "血量数值显示方式",
-            callback = function()
-                CoreIOF_OTC(InterfaceOptionsDisplayPanel);
-                CoreUIShowCallOut(InterfaceOptionsDisplayPanel, InterfaceOptionsDisplayPanelDisplayDropDownLabel, InterfaceOptionsDisplayPanelDisplayDropDownButton, -10, 10, 10, -10)
+            var = "target_bliz",
+            text = "目标血条显示暴雪默认数值",
+            tip = "说明`很多人习惯目标血量始终显示为详细数值，这样可以调节玩家数值显示为百分比，所以增加此选项，取消勾选时，始终显示详细数值.",
+            default = 0,
+            callback = function(cfg, v, loading)
+                EUF_Options_Update("TARGETHPMPBLIZ", v and 1 or 0);
+                if not loading then EUF_TargetFrameDisplay_Update() end
             end,
+            {
+                text = "暴雪数值显示方式",
+                callback = function()
+                    CoreIOF_OTC(InterfaceOptionsDisplayPanel);
+                    CoreUIShowCallOut(InterfaceOptionsDisplayPanel, InterfaceOptionsDisplayPanelDisplayDropDownLabel, InterfaceOptionsDisplayPanelDisplayDropDownButton, -10, 10, 10, -10)
+                end,
+            },
         },
         {
             text = "目标的目标",

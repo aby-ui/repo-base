@@ -579,9 +579,10 @@ end
 
 function EUF_TargetFrameDisplay_Update()
 	if(EUF_CurrentOptions) then
-		EUF_ObjectDisplay_Update(EUF_TargetFrameHP, not textDisplay and EUF_CurrentOptions["TARGETHPMP"]);
+        textDisplay = false
+		EUF_ObjectDisplay_Update(EUF_TargetFrameHP, not textDisplay and EUF_CurrentOptions["TARGETHPMPBLIZ"]==0 and EUF_CurrentOptions["TARGETHPMP"]);
 		EUF_ObjectDisplay_Update(EUF_TargetFrameHPPercent, EUF_CurrentOptions["TARGETHPMPPERCENT"]);
-		EUF_ObjectDisplay_Update(EUF_TargetFrameMP, not textDisplay and EUF_CurrentOptions["TARGETHPMP"]);
+		EUF_ObjectDisplay_Update(EUF_TargetFrameMP, not textDisplay and EUF_CurrentOptions["TARGETHPMPBLIZ"]==0 and EUF_CurrentOptions["TARGETHPMP"]);
 		EUF_ObjectDisplay_Update(EUF_TargetFrameMPPercent, EUF_CurrentOptions["TARGETHPMPPERCENT"]);
 
         local hpshow = EUF_TargetFrameHP:IsShown()
@@ -600,9 +601,9 @@ function EUF_TargetFrameDisplay_Update()
         FocusFrameTextureFrameManaBarTextRight:SetAlpha(mpshow and 0 or 1);
 
         if EUF_FocusFrameHP then
-            EUF_ObjectDisplay_Update(EUF_FocusFrameHP, not textDisplay and EUF_CurrentOptions["TARGETHPMP"]);
+            EUF_ObjectDisplay_Update(EUF_FocusFrameHP, not textDisplay and EUF_CurrentOptions["TARGETHPMPBLIZ"]==0 and EUF_CurrentOptions["TARGETHPMP"]);
       	    EUF_ObjectDisplay_Update(EUF_FocusFrameHPPercent, EUF_CurrentOptions["TARGETHPMPPERCENT"]);
-      	    EUF_ObjectDisplay_Update(EUF_FocusFrameMP, not textDisplay and EUF_CurrentOptions["TARGETHPMP"]);
+      	    EUF_ObjectDisplay_Update(EUF_FocusFrameMP, not textDisplay and EUF_CurrentOptions["TARGETHPMPBLIZ"]==0 and EUF_CurrentOptions["TARGETHPMP"]);
       	    EUF_ObjectDisplay_Update(EUF_FocusFrameMPPercent, EUF_CurrentOptions["TARGETHPMPPERCENT"]);
         end
 	end

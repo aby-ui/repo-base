@@ -382,22 +382,17 @@ function module:BuildOptions()
           },
           TrackSkills = {
             type = "toggle",
-            order = 33.75,
+            order = 33.7,
             name = L["Trade skills"],
-          },
-          TrackFarm = {
-            type = "toggle",
-            order = 33.80,
-            name = L["Farm crops"],
           },
           TrackBonus = {
             type = "toggle",
-            order = 33.85,
+            order = 33.8,
             name = L["Bonus rolls"],
           },
           AugmentBonus = {
             type = "toggle",
-            order = 33.95,
+            order = 33.9,
             name = L["Bonus loot frame"],
           },
           TrackLFG = {

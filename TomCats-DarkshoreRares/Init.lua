@@ -3,7 +3,12 @@ local D = addon.TomCatsLibs.Data
 local PlayerFaction = UnitFactionGroup("player")
 addon.params = {
     ["Vignette MapID"] = 62,
-    ["Timer Delay"] = 5
+    ["Map Name"] = "黑海岸",
+    ["Timer Delay"] = 5,
+    ["Minimap Icon"] = "darnassus-icon",
+    ["Icon BGColor"] = {68/255,34/255,68/255,0.80 },
+    ["Title Line 1"] = "黑海岸稀有精英",
+    ["Title Line 2"] = "战争前线-黑海岸"
 }
 
 -- If ACP is enabled, conditionally hook GetAddOnInfo to set the short name to be displayed in the ACP Group By Name control panel

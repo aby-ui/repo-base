@@ -267,6 +267,8 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 |cFF00CC00小于等于 0.8|r 会在小于80%%的人受影响时触发
 |cFF00CC00大于 1/2|r 会在超过一半以上的人受影响时触发
 |cFF00CC00大于等于 0|r 总是触发.]=]
+	--[[Translation missing --]]
+	L["Group contains updates from Wago"] = "Group contains updates from Wago"
 	L["Group Member Count"] = "队伍或团队成员数"
 	L["Group Role"] = "团队职责"
 	L["Group Scale"] = "组缩放"
@@ -364,7 +366,11 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	L["On Init"] = "于初始时"
 	L["On Show"] = "图示显示时触发"
 	L["Only match auras cast by people other than the player"] = "只匹配其它玩家施放的光环"
+	--[[Translation missing --]]
+	L["Only match auras cast by people other than the player or his pet"] = "Only match auras cast by people other than the player or his pet"
 	L["Only match auras cast by the player"] = "只匹配玩家自己施放的光环"
+	--[[Translation missing --]]
+	L["Only match auras cast by the player or his pet"] = "Only match auras cast by the player or his pet"
 	L["Operator"] = "运算符"
 	L["Option #"] = "选项 #"
 	L["Option #%i"] = "选项 #%i"
@@ -549,6 +555,8 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	L["Up"] = "上"
 	L["Update "] = "更新"
 	L["Update Custom Text On..."] = "更新自定义文字于"
+	--[[Translation missing --]]
+	L["Update in Group"] = "Update in Group"
 	L["Update this Aura"] = "更新此光环"
 	L["Use Full Scan (High CPU)"] = "使用完整扫描(高CPU)"
 	L["Use nth value from tooltip:"] = "使用来自鼠标提示的值的顺序："
