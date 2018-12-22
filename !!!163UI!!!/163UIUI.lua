@@ -204,17 +204,27 @@ function UUI.ClickAddonCheckBox(self, name, enable, subgroup)
         end
     end
 
-    --todo: 临时的冲突处理
+    -- 冲突插件先提示
     local info = U1GetAddonInfo(name)
-    if info then
-        local other_loaded = false
+    if info and self:GetChecked() then
+        local other_loaded = {}
         for _, other in ipairs(info.conflicts or _empty_table) do
             if IsAddOnLoaded(other) then
-                DisableAddOn(other)
-                other_loaded = true
+                --DisableAddOn(other)
+                tinsert(other_loaded, other)
             end
         end
-        if other_loaded then EnableAddOn(name) return ReloadUI() end
+        if #other_loaded > 0 then
+            local msg = ""
+            for i, n in ipairs(other_loaded) do
+                local ii = U1GetAddonInfo(n)
+                local icon = ii.icon and "|T"..ii.icon..":20:20|t" or ""
+                other_loaded[i] = icon .. " |cff33ff33" .. (ii.title or ii.name) .. "|r"
+            end
+            StaticPopup_Show("163UIUI_CONFLICT_CONFIRM", table.concat(other_loaded, "\n"), nil, {self, name})
+            return
+        end
+        --if #other_loaded > 0 then EnableAddOn(name) return ReloadUI() end
     end
 
     local needReload = U1ToggleAddon(name, enable, nil, deepToggleChildren);
@@ -785,6 +795,33 @@ function UUI.Center.Create(main)
         OnAccept = function(self, data)
             UUI.Center.BtnLoadAllOnClick()
         end,
+        hideOnEscape = 1,
+        timeout = 0,
+        exclusive = 1,
+        whileDead = 1,
+    }
+    StaticPopupDialogs["163UIUI_CONFLICT_CONFIRM"] = {preferredIndex = 3,
+        text = "此插件与以下插件冲突：\n\n%1$s\n\n确认关闭这些插件并重载界面？",
+        button1 = TEXT(YES),
+        button2 = TEXT(CANCEL),
+        OnAccept = function(self, data)
+            local info = U1GetAddonInfo(data[2])
+            if info then
+                local other_loaded = false
+                for _, other in ipairs(info.conflicts or _empty_table) do
+                    if IsAddOnLoaded(other) then
+                        DisableAddOn(other)
+                        other_loaded = true
+                    end
+                end
+                EnableAddOn(data[2])
+                if other_loaded then return ReloadUI() end
+            end
+        end,
+        OnCancel = function(self, data)
+            data[1]:SetChecked(false)
+        end,
+        --OnHide = ConfirmOnCancel, --OnCancel完了会执行OnHide
         hideOnEscape = 1,
         timeout = 0,
         exclusive = 1,

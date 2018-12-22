@@ -81,7 +81,7 @@ local acOptions = {
 					order = 3,
 					set = function(_, value)
 						bit.db.profile.timeText = value
-						bit.Bar:SetTimeVisibibity(value)
+						bit.Bar:SetTimeVisibility(value)
 					end,
 					disabled = disabled,
 				},

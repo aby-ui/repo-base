@@ -118,7 +118,9 @@ do
 			end
 		else
 			tip:AddLine(L.waiting, 1, 1, 1)
-		end
+        end
+        tip:AddLine(" ")
+        tip:AddLine("左键拖动，右键选项")
 	end
 	HideTip = function()
 		if frame.db.profile.mode == 3 then
@@ -174,6 +176,9 @@ end
 local StartBar
 local hiddenBars = false
 do
+    local dragStart, dragStop = frame:GetScript("OnDragStart"), frame:GetScript("OnDragStop")
+    frame:SetScript("OnDragStart", nil)
+    frame:SetScript("OnDragStop", nil)
 	StartBar = function(text, timeLeft, rewardQuestID, icon, paused)
 		if frame.Bar then frame.Bar:Stop() end
 		local bar = candy:New(media:Fetch("statusbar", frame.db.profile.barTexture), frame.db.profile.width, frame.db.profile.height)
@@ -182,7 +187,6 @@ do
 		bar:SetScript("OnEnter", OnEnter)
 		bar:SetScript("OnLeave", HideTip)
 
-        local dragStart, dragStop = frame:GetScript("OnDragStart"), frame:GetScript("OnDragStop")
         local openOpts = frame:GetScript("OnMouseUp")
         bar:SetScript("OnMouseDown", function(self, button)
             if button == "RightButton" then return end
@@ -192,8 +196,6 @@ do
             if button == "RightButton" then return openOpts(frame, button) end
             dragStop(frame)
         end)
-        frame:SetScript("OnDragStart", nil)
-        frame:SetScript("OnDragStop", nil)
 
 		bar:SetParent(frame)
 		bar:SetLabel(text)
@@ -459,6 +461,7 @@ frame:SetScript("OnEvent", function(f)
 
 	f:ClearAllPoints()
 	f:SetPoint(f.db.profile.position[1], UIParent, f.db.profile.position[2], f.db.profile.position[3], f.db.profile.position[4])
+    f:StopMovingOrSizing()
 
 	local bg = f:CreateTexture(nil, "PARENT")
 	bg:SetAllPoints(f)
@@ -476,6 +479,12 @@ frame:SetScript("OnEvent", function(f)
 		f.header:Hide()
     end
     f:SetMovable(true) f.SetMovable = noop or function() end
+    hooksecurefunc(f, "StopMovingOrSizing", function(f)
+        if f.db.profile.mode == 3 and select(2, f:GetPoint()) ~= WorldMapFrame then
+            f:ClearAllPoints()
+            f:SetPoint("TOPLEFT", WorldMapFrame, "TOPLEFT", f:GetLeft() - WorldMapFrame:GetLeft(), f:GetTop() - WorldMapFrame:GetTop())
+        end
+    end)
 
 	if f.db.profile.mode == 3 then
 		f:SetParent(WorldMapFrame)
