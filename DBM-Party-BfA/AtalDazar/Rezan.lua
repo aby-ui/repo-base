@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2083, "DBM-Party-BfA", 1, 968)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17710 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 18140 $"):sub(12, -3))
 mod:SetCreatureID(122963)
 mod:SetEncounterID(2086)
 mod:SetZone()
@@ -15,8 +15,6 @@ mod:RegisterEventsInCombat(
 	"CHAT_MSG_RAID_BOSS_EMOTE"
 )
 
---TODO, relog fight, when logging fight doesn't cause client to crash, then use real timers not AI timers
---TODO, try to warn pursuit faster is possible
 local warnPursuit				= mod:NewTargetAnnounce(257407, 2)
 
 local specWarnTeeth				= mod:NewSpecialWarningDefensive(255434, "Tank", nil, nil, 1, 2)

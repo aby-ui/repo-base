@@ -98,6 +98,7 @@ local function GetSpells()
 
 			if spell.class and spell.class == CLASS_SORT_ORDER[i] then
 				local text = GetSpellInfo(spellID) or ""
+                              local spellTexture = GetSpellTexture(spellID) or ""
 				if string.len(text) > 25 then
 					text = string.sub(text, 0, 22) .. "..."
 				end
@@ -117,7 +118,7 @@ local function GetSpells()
 						return spellDesc..extra
 					end,
 					name = function()
-						return format("|T%s:20|t %s", GetSpellTexture(spellID), text)
+						return format("|T%s:20|t %s", spellTexture, text)
 					end,
 				}
 

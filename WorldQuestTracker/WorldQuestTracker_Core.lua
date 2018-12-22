@@ -42,7 +42,6 @@ local GetQuestLogRewardMoney = GetQuestLogRewardMoney
 local GetQuestTagInfo = GetQuestTagInfo
 local GetNumQuestLogRewards = GetNumQuestLogRewards
 local GetQuestInfoByQuestID = C_TaskQuest.GetQuestInfoByQuestID
-local GetQuestTimeLeftMinutes = C_TaskQuest.GetQuestTimeLeftMinutes
 
 local MapRangeClamped = DF.MapRangeClamped
 local FindLookAtRotation = DF.FindLookAtRotation
@@ -1969,10 +1968,10 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 
 					if (repAmount > 41900) then
 						factionButton:SetAlpha (.75)
-						factionButton.Icon:SetDesaturated (true)
+						--factionButton.Icon:SetDesaturated (true)
 					else
 						factionButton:SetAlpha (1)
-						factionButton.Icon:SetDesaturated (false)
+						--factionButton.Icon:SetDesaturated (false)
 					end
 				end
 				

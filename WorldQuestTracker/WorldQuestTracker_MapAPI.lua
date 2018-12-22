@@ -32,7 +32,6 @@ local GetQuestLogRewardMoney = GetQuestLogRewardMoney
 local GetQuestTagInfo = GetQuestTagInfo
 local GetNumQuestLogRewards = GetNumQuestLogRewards
 local GetQuestInfoByQuestID = C_TaskQuest.GetQuestInfoByQuestID
-local GetQuestTimeLeftMinutes = C_TaskQuest.GetQuestTimeLeftMinutes
 
 local MapRangeClamped = DF.MapRangeClamped
 local FindLookAtRotation = DF.FindLookAtRotation
@@ -672,17 +671,18 @@ end
 	function WorldQuestTracker.GetQuestReward_Resource (questID)
 		local numQuestCurrencies = GetNumQuestLogRewardCurrencies (questID)
 		if (numQuestCurrencies == 2) then
-		
 			for i = 1, numQuestCurrencies do
 				local name, texture, numItems = GetQuestLogRewardCurrencyInfo (i, questID)
 				--legion invasion quest
 				if (texture and 
-					(
-						(type (texture) == "number" and texture == 132775) or
-						(type (texture) == "string" and (texture:find ("inv_datacrystal01") or texture:find ("inv_misc_summonable_boss_token")))
-					)   
-				) then -- [[Interface\Icons\inv_datacrystal01]]
-				else
+						(
+							(type (texture) == "number" and texture == 132775) or
+							(type (texture) == "string" and (texture:find ("inv_datacrystal01") or texture:find ("inv_misc_summonable_boss_token")))
+						)   
+					) then -- [[Interface\Icons\inv_datacrystal01]]
+					
+				--BFA invasion quest (this check will force it to get the second reward
+				elseif (not WorldQuestTracker.MapData.IgnoredRewardTexures [texture]) then
 					return name, texture, numItems
 				end
 			end

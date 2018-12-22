@@ -31,7 +31,6 @@ local GetQuestLogRewardMoney = GetQuestLogRewardMoney
 local GetQuestTagInfo = GetQuestTagInfo
 local GetNumQuestLogRewards = GetNumQuestLogRewards
 local GetQuestInfoByQuestID = C_TaskQuest.GetQuestInfoByQuestID
-local GetQuestTimeLeftMinutes = C_TaskQuest.GetQuestTimeLeftMinutes
 
 local MapRangeClamped = DF.MapRangeClamped
 local FindLookAtRotation = DF.FindLookAtRotation
@@ -336,9 +335,6 @@ function WorldQuestTracker.UpdateBorder (self, rarity, worldQuestType, mapID, is
 			self.trackingBorder:Hide()
 		end
 		
-		self.shineAnimation:Hide()
-		AnimatedShine_Stop (self)
-		
 		if (rarity == LE_WORLD_QUEST_QUALITY_COMMON and (worldQuestType ~= LE_QUEST_TAG_TYPE_INVASION and worldQuestType ~= LE_QUEST_TAG_TYPE_FACTION_ASSAULT)) then
 			
 			if (worldQuestType == LE_QUEST_TAG_TYPE_PVP) then
@@ -369,14 +365,14 @@ function WorldQuestTracker.UpdateBorder (self, rarity, worldQuestType, mapID, is
 			
 		elseif (rarity == LE_WORLD_QUEST_QUALITY_RARE) then
 			self.rareBorder:Show()
-			self.rareBorder:SetAlpha (0.30)
+			self.rareBorder:SetAlpha (1)
 			--self:SetBackdropBorderColor (.3, .3, .98, 1)
 			--self:SetBackdropBorderColor (.1, .1, .1, 1)
 			
 			--paint with a blue border
 			self.commonBorder:SetAlpha (0)
 			self.commonBorder:SetVertexColor (1, 1, 1)
-			self:SetBackdropBorderColor (.11, .29, 1, .75)
+			self:SetBackdropBorderColor (.38, .53, 1, .75)
 
 			if (not self.IsZoneSummaryQuestButton) then
 				if (WorldQuestTracker.WorldSummary.FactionSelected == self.FactionID) then
@@ -388,18 +384,19 @@ function WorldQuestTracker.UpdateBorder (self, rarity, worldQuestType, mapID, is
 			
 		elseif (rarity == LE_WORLD_QUEST_QUALITY_EPIC) then
 			self.epicBorder:Show()
-
-			self.shineAnimation:Show()
-			AnimatedShine_Start (self, 1, 1, 1);
+			self:SetBackdropBorderColor (129/255, 67/255, 255/255, 1)
 			
 		elseif (worldQuestType == LE_QUEST_TAG_TYPE_FACTION_ASSAULT) then
 			self.invasionBorder:Show()
+			--self.invasionBorder:SetAlpha (0.4)
+			
+			self:SetBackdropBorderColor (1, 0, 0, 1)
 			
 			if (UnitFactionGroup("player") == "Alliance") then
-				self.invasionBorder:SetTexture ([[Interface\AddOns\WorldQuestTracker\media\border_alliance]])
+			--	self.invasionBorder:SetTexture ([[Interface\AddOns\WorldQuestTracker\media\border_alliance]])
 				
 			elseif (UnitFactionGroup("player") == "Horde") then
-				self.invasionBorder:SetTexture ([[Interface\AddOns\WorldQuestTracker\media\border_horde]])
+			--	self.invasionBorder:SetTexture ([[Interface\AddOns\WorldQuestTracker\media\border_horde]])
 			end
 			
 		end

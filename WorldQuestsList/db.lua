@@ -1,14 +1,71 @@
 local GlobalAddonName, WQLdb = ...
 
+--- some functions
+
+local GetAratiState, GetDarkshoreState
+do
+	local aratiState = nil
+	function GetAratiState()
+		--1: horde; 2 alliance
+		if aratiState then
+			return aratiState
+		end
+		if C_Map.GetBestMapForUnit("player") == 14 then
+			for i=1,40 do
+				local spellID = select(10,UnitAura("player",i))
+				if spellID == 281115 or spellID == 281114 then
+					aratiState = 2
+					return aratiState
+				elseif spellID == 281116 or spellID == 281117 then
+					aratiState = 1
+					return aratiState
+				elseif not spellID then
+					break
+				end
+			end
+		end
+		return UnitFactionGroup("player") == "Alliance" and 2 or 1
+	end
+
+	local darkshoreState = nil
+	function GetDarkshoreState()
+		--1: horde; 2 alliance
+		if darkshoreState then
+			return darkshoreState
+		end
+		if C_Map.GetBestMapForUnit("player") == 62 then
+			for i=1,40 do
+				local spellID = select(10,UnitAura("player",i))
+				if spellID == 281115 or spellID == 281114 then
+					darkshoreState = 2
+					return darkshoreState
+				elseif spellID == 281116 or spellID == 281117 then
+					darkshoreState = 1
+					return darkshoreState
+				elseif not spellID then
+					break
+				end
+			end
+		end
+		return UnitFactionGroup("player") == "Alliance" and 2 or 1
+	end
+end
+
+--- data
+
 WQLdb.TreasureData = {		--x,y,name,type,reward,note,questID if done,special checks func
 	[62] = {
 {0.56527996063232,0.30748003721237,"Alash'anir",2,166432,nil,54696},
 {0.37740075588226,0.84719133377075,"Aman",2,nil,nil,54406},
-{0.41666728258133,0.76661956310272,"Athil Dewfire",1,166803,nil,54431},
+{0.57480000000000,0.15960000000000,"Amberclaw",1,nil,nil,54286},
+{0.41666728258133,0.76661956310272,"Athil Dewfire",1,{166803,166449},nil,54431,function() return (UnitFactionGroup("player") ~= "Alliance") and (GetDarkshoreState() == 1) end},
 {0.58489817380905,0.24409544467926,"Athrikus Narassin",2,166784,nil,54279},
 {0.49616008996964,0.24908626079559,"Blackpaw",1,166428,nil,54890},
-{0.37969249486923,0.76327884197235,"Commander Ral'esh",1,166787,nil,54427},
+{0.41500000000000,0.76700000000000,"Burninator Mark V",1,nil,nil,nil,function() return (UnitFactionGroup("player") == "Alliance") and (GetDarkshoreState() == 2) end},
+{0.37969249486923,0.76327884197235,"Commander Drald",1,166790,nil,nil,function() return (UnitFactionGroup("player") == "Alliance") and (GetDarkshoreState() == 2) end},
+{0.37969249486923,0.76327884197235,"Commander Ral'esh",1,166787,nil,54427,function() return (UnitFactionGroup("player") ~= "Alliance") and (GetDarkshoreState() == 1) end},
 {0.39248669147491,0.62232792377472,"Conflagros",2,166451,nil,54233},
+{0.50600000000000,0.32400000000000,"Croz Bloodrage",1,166435,nil,nil,function() return (UnitFactionGroup("player") == "Alliance") and (GetDarkshoreState() == 2) end},
 {0.43757051229477,0.53581535816193,"Cyclarus",2,166448,nil,54230},
 {0.43455624580383,0.19595342874527,"Glimmerspine",1,nil,nil,54885},
 {0.48351514339447,0.55572640895844,"Granokk",2,nil,nil,54235},
@@ -17,16 +74,19 @@ WQLdb.TreasureData = {		--x,y,name,type,reward,note,questID if done,special chec
 {0.52402138710022,0.32150042057037,"Hydrath",2,166452,nil,54228},
 {0.41287386417389,0.36067444086075,"Ivus the Forest Lord",2,nil,nil,54861},
 {0.43969452381134,0.48376560211182,"Madfeather",1,nil,nil,54888},
+{0.63500000000000,0.20000000000000,"Moxo the Beheader",1,166434,nil,nil,function() return (UnitFactionGroup("player") == "Alliance") and (GetDarkshoreState() == 2) end},
 {0.35837829113007,0.81759828329086,"Mrggr'marr",1,nil,nil,54409},
-{0.45226317644119,0.74962311983109,"Onu",2,166453,nil,54291},
-{0.32956749200821,0.83929133415222,"Sapper Odette",1,166788,nil,54452},
+{0.45226317644119,0.74962311983109,"Onu",2,166453,nil,54291,function() return (UnitFactionGroup("player") ~= "Alliance") and (GetDarkshoreState() == 1) end},
+{0.39900000000000,0.34100000000000,"Orwell Stevenson",1,166528,nil,nil,function() return (UnitFactionGroup("player") == "Alliance") and (GetDarkshoreState() == 2) end},
+{0.32956749200821,0.83929133415222,"Sapper Odette",1,166788,nil,54452,function() return (UnitFactionGroup("player") ~= "Alliance") and (GetDarkshoreState() == 1) end},
 {0.47633451223373,0.44683212041855,"Scalefiend",1,nil,nil,54894},
-{0.39801687002182,0.32878673076630,"Shadowclaw",1,166437,nil,54892},
+{0.39801687002182,0.32878673076630,"Shadowclaw",1,166435,nil,54892,function() return (UnitFactionGroup("player") ~= "Alliance") and (GetDarkshoreState() == 1) end},
 {0.43531250953674,0.29385536909103,"Shattershard",2,nil,nil,54290},
 {0.40616178512573,0.85275912284851,"Soggoth the Slitherer",2,166454,nil,54321},
 {0.45545989274979,0.59064185619354,"Stonebinder Ssra'vess",1,nil,nil,54248},
 {0.62122869491577,0.16493034362793,"Thelar Moonstrike",1,166790,nil,54252},
 {0.40605354309082,0.82768523693085,"Twilight Prophet Graeme",1,166455,nil,54398},
+{0.62300000000000,0.09800000000000,"Zim'kaga",2,166453,nil,nil,function() return (UnitFactionGroup("player") == "Alliance") and (GetDarkshoreState() == 2) end},
 	},
 	[14] = {	--Arati
 --by varenne, wowhead
@@ -35,25 +95,28 @@ WQLdb.TreasureData = {		--x,y,name,type,reward,note,questID if done,special chec
 {0.2175,0.2217,"Branchlord Aldrus",2,163650,nil,53505},
 {0.2989,0.4495,"Burning Goliath",2,163691,nil,53506},
 {0.6251,0.3084,"Cresting Goliath",2,163700,nil,53531},
-{0.5084,0.3652,"Darbel Montrose",1,163652,nil,53507},
+{0.5084,0.3652,"Darbel Montrose",1,163652,nil,53507,function() return GetAratiState() == 2 end},
+{0.5040,0.6120,"Darbel Montrose",1,163652,nil,53507,function() return GetAratiState() == 1 end},
 {0.5707,0.3506,"Echo of Myzrael",2,163677,nil,53508},
 {0.2295,0.4961,"Foulbelly",1,163735,"Cave at 28.83 45.47",53509},
-{0.5104,0.5319,"Fozruk",2,163711,"Patrolling the road",nil},	--53019
+{0.5104,0.5319,"Fozruk",2,163711,"Patrolling the road",nil},
 {0.7953,0.2945,"Geomancer Flintdagger",1,163713,"Cave visible on map",53511},
-{0.2593,0.3532,"Horrific Apparition",1,163736,nil,53512,function() return not (C_ContributionCollector.GetState(8) == 0 or C_ContributionCollector.GetState(8) == 1) end},
-{0.1940,0.6120,"Horrific Apparition",1,163736,nil,53512,function() return (C_ContributionCollector.GetState(8) == 0 or C_ContributionCollector.GetState(8) == 1) end},
+{0.2593,0.3532,"Horrific Apparition",1,163736,nil,53512,function() return GetAratiState() == 2 end},
+{0.1940,0.6120,"Horrific Apparition",1,163736,nil,53512,function() return GetAratiState() == 1 end},
 {0.4931,0.8426,"Kor'gresh Coldrage",1,163744,"West Cave",53513},
 {0.2529,0.4856,"Kovork",1,163750,"Cave at 28.83 45.47",53514},
 {0.5182,0.7562,"Man-Hunter Rog",1,163689,nil,53515},
 {0.4689,0.7872,"Molok the Crusher",2,163775,nil,53516},
 {0.6748,0.6058,"Nimar the Slayer",1,163706,nil,53517},
-{0.3304,0.3749,"Overseer Krix",2,163646,"Inside a cave",53518},
+{0.3304,0.3749,"Overseer Krix",2,163646,"Inside a cave",53518,function() return GetAratiState() == 2 end},
+{0.2740,0.5590,"Overseer Krix",2,163646,"Inside a cave",53518,function() return GetAratiState() == 1 end},
 {0.3782,0.6135,"Plaguefeather",2,163690,nil,53519},
-{0.1841,0.2794,"Ragebeak",2,163689,nil,53016,function() return not (C_ContributionCollector.GetState(8) == 0 or C_ContributionCollector.GetState(8) == 1) end},
-{0.1190,0.5220,"Ragebeak",2,163689,nil,53016,function() return (C_ContributionCollector.GetState(8) == 0 or C_ContributionCollector.GetState(8) == 1) end},	--horde control
+{0.1841,0.2794,"Ragebeak",2,163689,nil,53016,function() return GetAratiState() == 2 end},
+{0.1190,0.5220,"Ragebeak",2,163689,nil,53016,function() return GetAratiState() == 1 end},	--horde control
 {0.4292,0.5660,"Ruul Onestone",1,163741,nil,53524},
 {0.2940,0.5834,"Rumbling Goliath",2,163701,nil,53523},
-{0.5080,0.4085,"Singer",1,163738,nil,53525},
+{0.5080,0.4085,"Singer",1,163738,nil,53525,function() return GetAratiState() == 2 end},
+{0.5070,0.5750,"Singer",1,163738,nil,53525,function() return GetAratiState() == 1 end},
 {0.5715,0.4575,"Skullripper",2,163645,nil,53526},
 {0.4618,0.5209,"Thundering Goliath",2,163698,nil,nil},	--53023
 {0.5694,0.5330,"Venomarus",2,163648,nil,53528},

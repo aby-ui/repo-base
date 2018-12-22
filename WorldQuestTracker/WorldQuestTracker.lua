@@ -610,21 +610,26 @@ end
 	local D_DAYS = "%dD"
 	function WorldQuestTracker.GetQuest_TimeLeft (questID, formated)
 		local timeLeftMinutes = GetQuestTimeLeftMinutes (questID)
-		if (formated) then
-			local timeString
-			if ( timeLeftMinutes <= WORLD_QUESTS_TIME_CRITICAL_MINUTES ) then
-				timeString = SecondsToTime (timeLeftMinutes * 60)
-			elseif timeLeftMinutes <= 60 + WORLD_QUESTS_TIME_CRITICAL_MINUTES then
-				timeString = SecondsToTime ((timeLeftMinutes - WORLD_QUESTS_TIME_CRITICAL_MINUTES) * 60)
-			elseif timeLeftMinutes < 24 * 60 + WORLD_QUESTS_TIME_CRITICAL_MINUTES then
-				timeString = D_HOURS:format(math.floor(timeLeftMinutes - WORLD_QUESTS_TIME_CRITICAL_MINUTES) / 60)
+		if (timeLeftMinutes) then
+			if (formated) then
+				local timeString
+				if ( timeLeftMinutes <= WORLD_QUESTS_TIME_CRITICAL_MINUTES ) then
+					timeString = SecondsToTime (timeLeftMinutes * 60)
+				elseif timeLeftMinutes <= 60 + WORLD_QUESTS_TIME_CRITICAL_MINUTES then
+					timeString = SecondsToTime ((timeLeftMinutes - WORLD_QUESTS_TIME_CRITICAL_MINUTES) * 60)
+				elseif timeLeftMinutes < 24 * 60 + WORLD_QUESTS_TIME_CRITICAL_MINUTES then
+					timeString = D_HOURS:format(math.floor(timeLeftMinutes - WORLD_QUESTS_TIME_CRITICAL_MINUTES) / 60)
+				else
+					timeString = D_DAYS:format(math.floor(timeLeftMinutes - WORLD_QUESTS_TIME_CRITICAL_MINUTES) / 1440)
+				end
+				
+				return timeString
 			else
-				timeString = D_DAYS:format(math.floor(timeLeftMinutes - WORLD_QUESTS_TIME_CRITICAL_MINUTES) / 1440)
+				return timeLeftMinutes
 			end
-			
-			return timeString
 		else
-			return timeLeftMinutes
+			--since 20/12/2018 time left sometimes is returning nil
+			return 1
 		end
 	end
 
@@ -1117,7 +1122,7 @@ hooksecurefunc (WorldMapFrame.UIElementsFrame.BountyBoard, "AnchorBountyTab", fu
 end)
 --]=]
 
--- stop auto complete doq dow endf thena
+-- stop auto complete doq dow endf thena ends then�
 
 
 function WorldQuestTracker.ShowTutorialAlert() end

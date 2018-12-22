@@ -1,10 +1,9 @@
 local mod	= DBM:NewMod(2169, "DBM-Uldir", nil, 1031)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 18114 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 18139 $"):sub(12, -3))
 mod:SetCreatureID(134445)--Zek'vhozj, 134503/qiraji-warrior
 mod:SetEncounterID(2136)
---mod:DisableESCombatDetection()
 mod:SetZone()
 mod:SetUsedIcons(1, 2, 3, 6, 7, 8)
 mod:SetHotfixNoticeRev(17776)
@@ -15,29 +14,25 @@ mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
 	"SPELL_CAST_START 264382 265358 267180 267239 270620 265231 265530",
-	"SPELL_CAST_SUCCESS 264382 271099",
+	"SPELL_CAST_SUCCESS 264382 271099 181089",
 	"SPELL_AURA_APPLIED 265264 265360 265662 265646 265237",
 	"SPELL_AURA_APPLIED_DOSE 265264",
 	"SPELL_AURA_REMOVED 265360 265662",
 	"UNIT_DIED",
-	"UNIT_SPELLCAST_SUCCEEDED boss1 boss2 boss3 boss4 boss5",
-	"UNIT_POWER_FREQUENT boss1"
+	"UNIT_SPELLCAST_SUCCEEDED boss1 boss2 boss3 boss4 boss5"
 )
 
 --TODO, icons for Roiling Deceit?
---TODO, mark mind controlled players?
 --[[
 (ability.id = 267239 or ability.id = 265231 or ability.id = 265530 or ability.id = 264382 or ability.id = 265358) and type = "begincast"
- or ability.id = 271099 and type = "cast"
+ or (ability.id = 181089 or ability.id = 271099) and type = "cast"
  or ability.id = 265360 and type = "applydebuff"
  or (ability.id = 267180 or ability.id = 270620) and type = "begincast"
 --]]
 local warnPhase							= mod:NewPhaseChangeAnnounce(2, nil, nil, nil, nil, nil, 2)
---local warnXorothPortal					= mod:NewSpellAnnounce(244318, 2, nil, nil, nil, nil, nil, 7)
 local warnVoidLash						= mod:NewStackAnnounce(265264, 2, nil, "Tank")
 --Stage One: Chaos
 local warnEyeBeam						= mod:NewTargetCountAnnounce(264382, 2, nil, nil, nil, nil, nil, nil, true)
---local warnFixate						= mod:NewTargetAnnounce(264219, 2)
 --Stage Two: Deception
 local warnRoilingDeceit					= mod:NewTargetCountAnnounce(265360, 4, nil, nil, nil, nil, nil, nil, true)
 local warnCasterAddsRemaining			= mod:NewAddsLeftAnnounce("ej18397", 2, 31700)
@@ -50,12 +45,10 @@ local specWarnSurgingDarkness			= mod:NewSpecialWarningDodge(265451, nil, nil, n
 local specWarnMightofVoid				= mod:NewSpecialWarningDefensive(267312, nil, nil, nil, 1, 2)
 local specWarnShatter					= mod:NewSpecialWarningTaunt(265237, nil, nil, nil, 1, 2)
 local specWarnAdds						= mod:NewSpecialWarningAdds(31700, nil, nil, nil, 1, 2)--Generic Warning only used on Mythic
---local specWarnGTFO					= mod:NewSpecialWarningGTFO(238028, nil, nil, nil, 1, 8)
 --Stage One: Chaos
 local specWarnEyeBeamSoon				= mod:NewSpecialWarningSoon(264382, nil, nil, nil, 1, 2)
 local specWarnEyeBeam					= mod:NewSpecialWarningMoveAwayCount(264382, nil, nil, 2, 3, 2)
 local yellEyeBeam						= mod:NewCountYell(264382)
---local specWarnFixate					= mod:NewSpecialWarningRun(264219, nil, nil, nil, 4, 2)
 --Stage Two: Deception
 local specWarnRoilingDeceit				= mod:NewSpecialWarningMoveTo(265360, nil, nil, nil, 3, 7)
 local yellRoilingDeceit					= mod:NewCountYell(265360)
@@ -87,6 +80,7 @@ local timerOrbLands						= mod:NewTimer(45, "timerOrbLands", 267239, nil, nil, 5
 
 local countdownSurgingDarkness			= mod:NewCountdown(82.8, 265451, true, nil, 3)
 local countdownMightofVoid				= mod:NewCountdown("Alt37", 267312, "Tank", nil, 3)
+local countdownEyeBeam					= mod:NewCountdown("AltTwo37", 264382, "-Tank", nil, 5)
 
 mod:AddRangeFrameOption(6, 264382)
 mod:AddBoolOption("EarlyTankSwap", false)
@@ -96,7 +90,6 @@ mod:AddSetIconOption("SetIconOnEyeBeam", 264382, true)
 mod.vb.phase = 1
 mod.vb.orbCount = 0
 mod.vb.addIcon = 1
-mod.vb.lastPower = 0
 mod.vb.eyeCount = 0
 mod.vb.roilingCount = 0
 mod.vb.corruptorsPactCount = 0
@@ -128,48 +121,10 @@ function mod:RollingTarget(targetname, uId)
 	end
 end
 
---In the rare case boss is AT 0 energy when he phase changes, then the current energy based phase detection will fail
---This aims to correct timers/current phase if boss casts abilities that don't match current phase dbm thinks it is
-local function correctCurrentStage(self, expectedStage)
-	if self.vb.phase < expectedStage then
-		self.vb.phase = self.vb.phase + 1
-		timerMightofVoidCD:Stop()
-		countdownMightofVoid:Cancel()
-		timerSurgingDarknessCD:Stop()
-		countdownSurgingDarkness:Cancel()
-		timerMightofVoidCD:Start(14.1)
-		countdownMightofVoid:Start(14.1)
-		timerSurgingDarknessCD:Start(63.2)
-		countdownSurgingDarkness:Start(63.2)
-		if self.vb.phase == 2 then
-			warnPhase:Show(DBM_CORE_AUTO_ANNOUNCE_TEXTS.stage:format(2))
-			warnPhase:Play("ptwo")
-			if not self:IsMythic() then
-				timerQirajiWarriorCD:Stop()
-				timerEyeBeamCD:Stop()
-				if not self:IsLFR() then
-					timerAnubarCasterCD:Start(4.6)
-				end
-				timerRoilingDeceitCD:Start(6.1)--CAST_START
-			else--Mythic Stage 2 is final stage, start final stage timer
-				timerAddsCD:Stop()
-				timerOrbofCorruptionCD:Start(6, 1)
-			end
-		elseif self.vb.phase == 3 then--Should only happen on non mythic
-			warnPhase:Show(DBM_CORE_AUTO_ANNOUNCE_TEXTS.stage:format(3))
-			warnPhase:Play("pthree")
-			timerAnubarCasterCD:Stop()
-			timerRoilingDeceitCD:Cancel()
-			timerOrbofCorruptionCD:Start(6, 1)
-		end
-	end
-end
-
 function mod:OnCombatStart(delay)
 	self.vb.phase = 1
 	self.vb.orbCount = 0
 	self.vb.addIcon = 1
-	self.vb.lastPower = 0
 	self.vb.eyeCount = 0
 	self.vb.roilingCount = 0
 	self.vb.corruptorsPactCount = 0
@@ -179,6 +134,7 @@ function mod:OnCombatStart(delay)
 	timerMightofVoidCD:Start(15-delay)
 	countdownMightofVoid:Start(15-delay)
 	timerEyeBeamCD:Start(52-delay)--52-54
+	countdownEyeBeam:Start(52-delay)
 	if self:IsLFR() then
 		timerSurgingDarknessCD:Start(41-delay)--Custom for LFR
 		countdownSurgingDarkness:Start(41)--Custom for LFR
@@ -218,9 +174,6 @@ function mod:SPELL_CAST_START(args)
 		specWarnOrbOfCorruption:Show(1)
 		specWarnOrbOfCorruption:Play("161612")--catch balls
 		timerOrbLands:Start(8, 1)
-		--if not self:IsMythic() then--Didn't see cast on mythic?
-			--timerOrbofCorruptionCD:Start(50, self.vb.orbCount+1)
-		--end
 	elseif spellId == 270620 and self:CheckInterruptFilter(args.sourceGUID, false, true) then
 		specWarnEntropicBlast:Show(args.sourceName)
 		specWarnEntropicBlast:Play("kickcast")
@@ -251,8 +204,6 @@ function mod:SPELL_CAST_SUCCESS(args)
 			specWarnEyeBeam:Show(self.vb.eyeCount)
 			specWarnEyeBeam:Play("runout")
 			yellEyeBeam:Yell(self.vb.eyeCount)
---		else
---			warnEyeBeam:Show(args.destName)
 		end
 		if self.vb.eyeCount == 3 and self.Options.RangeFrame then
 			DBM.RangeCheck:Hide()
@@ -262,6 +213,38 @@ function mod:SPELL_CAST_SUCCESS(args)
 		specWarnAdds:Show()
 		specWarnAdds:Play("killmob")
 		timerAddsCD:Start()
+	elseif spellId == 181089 then
+		self.vb.phase = self.vb.phase + 1
+		timerMightofVoidCD:Stop()
+		timerMightofVoidCD:Start(30)
+		countdownMightofVoid:Cancel()
+		countdownMightofVoid:Start(30)
+		timerSurgingDarknessCD:Stop()
+		timerSurgingDarknessCD:Start(79.1)
+		countdownSurgingDarkness:Cancel()
+		countdownSurgingDarkness:Start(79.1)
+		if self.vb.phase == 2 then
+			warnPhase:Show(DBM_CORE_AUTO_ANNOUNCE_TEXTS.stage:format(2))
+			warnPhase:Play("ptwo")
+			if not self:IsMythic() then
+				timerQirajiWarriorCD:Stop()
+				timerEyeBeamCD:Stop()
+				countdownEyeBeam:Cancel()
+				if not self:IsLFR() then
+					timerAnubarCasterCD:Start(20.5)
+				end
+				timerRoilingDeceitCD:Start(22)--CAST_START
+			else--Mythic Stage 2 is final stage, start final stage timer
+				timerAddsCD:Stop()
+				timerOrbofCorruptionCD:Start(12, 1)--Assumed
+			end
+		elseif self.vb.phase == 3 then--Should only happen on non mythic
+			warnPhase:Show(DBM_CORE_AUTO_ANNOUNCE_TEXTS.stage:format(3))
+			warnPhase:Play("pthree")
+			timerAnubarCasterCD:Stop()
+			timerRoilingDeceitCD:Cancel()
+			timerOrbofCorruptionCD:Start(12, 1)
+		end
 	end
 end
 
@@ -287,8 +270,6 @@ function mod:SPELL_AURA_APPLIED(args)
 			specWarnRoilingDeceit:Play("runtoedge")
 			yellRoilingDeceit:Yell(self.vb.roilingCount)
 			yellRoilingDeceitFades:Countdown(12)
---		else
---			warnRoilingDeceit:Show(args.destName)
 		end
 	elseif spellId == 265662 then
 		if self:AntiSpam(5, 7) then
@@ -330,14 +311,9 @@ end
 
 function mod:UNIT_DIED(args)
 	local cid = self:GetCIDFromGUID(args.destGUID)
-	if cid == 134503 then--Qiraji Warrior
-
-	elseif cid == 135083 then--Guardian of Yogg-Saron
-	
-	elseif cid == 135824 then--Anub'ar Voidweaver
+	if cid == 135824 then--Anub'ar Voidweaver
 		self.vb.casterAddsRemaining = self.vb.casterAddsRemaining - 1
 		warnCasterAddsRemaining:Show(self.vb.casterAddsRemaining)
-		--timerVoidBoltCD:Stop(args.destGUID)
 	end
 end
 
@@ -351,9 +327,6 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 		self.vb.roilingCount = 0
 		--here because this spell ID fires at beginning of each set ONCE
 		timerRoilingDeceitCD:Schedule(6, 60)--Same in all
-		if not self:IsMythic() then
-			correctCurrentStage(self, 2)--First ability he'll cast in stage 2 that's clearly a stage 2 ability
-		end
 	elseif spellId == 264746 then--Eye beam
 		self.vb.eyeCount = 0
 		specWarnEyeBeamSoon:Show()
@@ -361,10 +334,13 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 		--here because this spell ID fires at beginning of each set ONCE
 		if self:IsMythic() then
 			timerEyeBeamCD:Schedule(6, 60)
+			countdownEyeBeam:Start(66)
 		elseif self:IsLFR() then
 			timerEyeBeamCD:Schedule(6, 50)
+			countdownEyeBeam:Start(56)
 		else
 			timerEyeBeamCD:Schedule(6, 40)
+			countdownEyeBeam:Start(46)
 		end
 		if self.Options.RangeFrame then
 			DBM.RangeCheck:Show(6)
@@ -385,46 +361,5 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 				self.vb.addIcon = 1
 			end
 		end
-	--"<380.54 21:44:30> [UNIT_POWER_UPDATE] boss1#Zek'voz#ENERGY#3#0#100#0#0", -- [12792]
-	--"<386.64 21:44:36> [UNIT_SPELLCAST_SUCCEEDED] Zek'voz(Towelliee) -Orb of Corruption- [[boss1:Cast-3-3882-1861-22058-267234-0002908684]]", -- [12966]
-	elseif spellId == 267234 then--Orb of Corruption First run script
-		correctCurrentStage(self, self:IsMythic() and 2 or 3)--First ability he'll cast in final stage that's clearly a final stage ability
 	end
-end
-
-function mod:UNIT_POWER_FREQUENT(uId)
-	local bossPower = UnitPower("boss1")
-	if bossPower < self.vb.lastPower and self.vb.lastPower ~= 100 then
-		self.vb.phase = self.vb.phase + 1
-		timerMightofVoidCD:Stop()
-		timerMightofVoidCD:Start(30)
-		countdownMightofVoid:Cancel()
-		countdownMightofVoid:Start(30)
-		timerSurgingDarknessCD:Stop()
-		timerSurgingDarknessCD:Start(79.1)
-		countdownSurgingDarkness:Cancel()
-		countdownSurgingDarkness:Start(79.1)
-		if self.vb.phase == 2 then
-			warnPhase:Show(DBM_CORE_AUTO_ANNOUNCE_TEXTS.stage:format(2))
-			warnPhase:Play("ptwo")
-			if not self:IsMythic() then
-				timerQirajiWarriorCD:Stop()
-				timerEyeBeamCD:Stop()
-				if not self:IsLFR() then
-					timerAnubarCasterCD:Start(20.5)
-				end
-				timerRoilingDeceitCD:Start(22)--CAST_START
-			else--Mythic Stage 2 is final stage, start final stage timer
-				timerAddsCD:Stop()
-				timerOrbofCorruptionCD:Start(12, 1)--Assumed
-			end
-		elseif self.vb.phase == 3 then--Should only happen on non mythic
-			warnPhase:Show(DBM_CORE_AUTO_ANNOUNCE_TEXTS.stage:format(3))
-			warnPhase:Play("pthree")
-			timerAnubarCasterCD:Stop()
-			timerRoilingDeceitCD:Cancel()
-			timerOrbofCorruptionCD:Start(12, 1)
-		end
-	end
-	self.vb.lastPower = bossPower
 end

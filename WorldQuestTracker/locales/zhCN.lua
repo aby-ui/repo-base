@@ -24,10 +24,8 @@ L["S_DECREASESIZE"] = "减少尺寸"
 L["S_ENABLED"] = "已启用"
 L["S_ERROR_NOTIMELEFT"] = "此任务已过期。"
 L["S_ERROR_NOTLOADEDYET"] = "这个任务还没有被加载，请稍候。"
---[[Translation missing --]]
---[[ L["S_FACTION_TOOLTIP_SELECT"] = ""--]] 
---[[Translation missing --]]
---[[ L["S_FACTION_TOOLTIP_TRACK"] = ""--]] 
+L["S_FACTION_TOOLTIP_SELECT"] = "点击：选择此阵营"
+L["S_FACTION_TOOLTIP_TRACK"] = "Shift+点击：追踪此阵营任务"
 L["S_FLYMAP_SHOWTRACKEDONLY"] = "仅被追踪"
 L["S_FLYMAP_SHOWTRACKEDONLY_DESC"] = "仅显示正在被追踪的任务"
 L["S_FLYMAP_SHOWWORLDQUESTS"] = "显示世界任务"
@@ -55,17 +53,17 @@ L["S_GROUPFINDER_LEAVEOPTIONS_AFTERX"] = "X 秒后离开"
 L["S_GROUPFINDER_LEAVEOPTIONS_ASKX"] = "不自动离开，只提示 X 秒"
 L["S_GROUPFINDER_LEAVEOPTIONS_DONTLEAVE"] = "不显示离开面板"
 L["S_GROUPFINDER_LEAVEOPTIONS_IMMEDIATELY"] = "任务完成时立即离开队伍"
-L["S_GROUPFINDER_NOPVP"] = "避开 PVP 服务器"
+L["S_GROUPFINDER_NOPVP"] = "避开 PvP 服务器"
 L["S_GROUPFINDER_OT_ENABLED"] = "任务追踪上显示按钮"
 L["S_GROUPFINDER_QUEUEBUSY"] = "你已经在队列中。"
 L["S_GROUPFINDER_QUEUEBUSY2"] = "不显示团队查找器窗口：已在队伍或查找时。"
 L["S_GROUPFINDER_RESULTS_APPLYING"] = "有 %d 个剩余的队伍，请再点击一次"
 L["S_GROUPFINDER_RESULTS_APPLYING1"] = "有1个剩余的队伍可加入，请再点击一次"
-L["S_GROUPFINDER_RESULTS_FOUND"] = [=[找到 %d 个队伍
+L["S_GROUPFINDER_RESULTS_FOUND"] = [=[找到%d个队伍
 点击开始加入]=]
 L["S_GROUPFINDER_RESULTS_FOUND1"] = [=[找到1个队伍
 点击开始加入]=]
-L["S_GROUPFINDER_RESULTS_UNAPPLY"] = "%d 个剩余申请…"
+L["S_GROUPFINDER_RESULTS_UNAPPLY"] = "%d个剩余申请…"
 L["S_GROUPFINDER_RIGHTCLICKCLOSE"] = "右击关闭"
 L["S_GROUPFINDER_SECONDS"] = "秒"
 L["S_GROUPFINDER_TITLE"] = "队伍寻找"
@@ -104,53 +102,33 @@ L["S_MAPBAR_SORTORDER_TIMELEFTPRIORITY_OPTION"] = "小于%d小时"
 L["S_MAPBAR_SORTORDER_TIMELEFTPRIORITY_SHOWTEXT"] = "剩余时间文本"
 L["S_MAPBAR_SORTORDER_TIMELEFTPRIORITY_SORTBYTIME"] = "以时间排序"
 L["S_MAPBAR_SORTORDER_TIMELEFTPRIORITY_TITLE"] = "剩余时间"
-L["S_MAPBAR_SUMMARY"] = "汇总"
+L["S_MAPBAR_SUMMARY"] = "概况"
 L["S_MAPBAR_SUMMARYMENU_ACCOUNTWIDE"] = "账号汇总"
 L["S_MAPBAR_SUMMARYMENU_MOREINFO"] = "点击显示更多信息"
-L["S_MAPBAR_SUMMARYMENU_NOATTENTION"] = [=[你其他角色正在追踪任务的
-剩余时限没有小于两小时的。]=]
-L["S_MAPBAR_SUMMARYMENU_REQUIREATTENTION"] = "请注意"
+L["S_MAPBAR_SUMMARYMENU_NOATTENTION"] = [=[其他角色正在的追踪任务
+剩余时间没有小于两小时！]=]
+L["S_MAPBAR_SUMMARYMENU_REQUIREATTENTION"] = "需要注意"
 L["S_MAPBAR_SUMMARYMENU_TODAYREWARDS"] = "今日奖励"
---[[Translation missing --]]
---[[ L["S_MAPFRAME_ALIGN_CENTER"] = ""--]] 
---[[Translation missing --]]
---[[ L["S_MAPFRAME_ALIGN_DESC"] = ""--]] 
---[[Translation missing --]]
---[[ L["S_MAPFRAME_ALIGN_LEFT"] = ""--]] 
---[[Translation missing --]]
---[[ L["S_OPTIONS_ANIMATIONS"] = ""--]] 
---[[Translation missing --]]
---[[ L["S_OPTIONS_MAPFRAME_ALIGN"] = ""--]] 
---[[Translation missing --]]
---[[ L["S_OPTIONS_MAPFRAME_ERROR_SCALING_DISABLED"] = ""--]] 
---[[Translation missing --]]
---[[ L["S_OPTIONS_MAPFRAME_SCALE"] = ""--]] 
---[[Translation missing --]]
---[[ L["S_OPTIONS_MAPFRAME_SCALE_ENABLED"] = ""--]] 
---[[Translation missing --]]
---[[ L["S_OPTIONS_QUESTBLACKLIST"] = ""--]] 
---[[Translation missing --]]
---[[ L["S_OPTIONS_RESET"] = ""--]] 
---[[Translation missing --]]
---[[ L["S_OPTIONS_SHOWFACTIONS"] = ""--]] 
---[[Translation missing --]]
---[[ L["S_OPTIONS_TIMELEFT_NOPRIORITY"] = ""--]] 
---[[Translation missing --]]
---[[ L["S_OPTIONS_TRACKER_RESETPOSITION"] = ""--]] 
---[[Translation missing --]]
---[[ L["S_OPTIONS_WORLD_ANCHOR_LEFT"] = ""--]] 
---[[Translation missing --]]
---[[ L["S_OPTIONS_WORLD_ANCHOR_RIGHT"] = ""--]] 
---[[Translation missing --]]
---[[ L["S_OPTIONS_WORLD_DECREASEICONSPERROW"] = ""--]] 
---[[Translation missing --]]
---[[ L["S_OPTIONS_WORLD_INCREASEICONSPERROW"] = ""--]] 
---[[Translation missing --]]
---[[ L["S_OPTIONS_WORLD_ORGANIZE_BYMAP"] = ""--]] 
---[[Translation missing --]]
---[[ L["S_OPTIONS_WORLD_ORGANIZE_BYTYPE"] = ""--]] 
---[[Translation missing --]]
---[[ L["S_OPTIONS_ZONE_SHOWONLYTRACKED"] = ""--]] 
+L["S_MAPFRAME_ALIGN_CENTER"] = "中"
+L["S_MAPFRAME_ALIGN_DESC"] = "|cFF22FF22点击|r切换地图窗口对齐从左到中，屏幕中到左。"
+L["S_MAPFRAME_ALIGN_LEFT"] = "左"
+L["S_OPTIONS_ANIMATIONS"] = "进行动画"
+L["S_OPTIONS_MAPFRAME_ALIGN"] = "地图窗口置于中部"
+L["S_OPTIONS_MAPFRAME_ERROR_SCALING_DISABLED"] = "需要首先启用“地图窗口缩放”，没有数值被更改。"
+L["S_OPTIONS_MAPFRAME_SCALE"] = "地图窗口缩放"
+L["S_OPTIONS_MAPFRAME_SCALE_ENABLED"] = "启用地图窗口缩放"
+L["S_OPTIONS_QUESTBLACKLIST"] = "任务黑名单"
+L["S_OPTIONS_RESET"] = "重置"
+L["S_OPTIONS_SHOWFACTIONS"] = "显示阵营"
+L["S_OPTIONS_TIMELEFT_NOPRIORITY"] = "时间剩余无优先级"
+L["S_OPTIONS_TRACKER_RESETPOSITION"] = "重置位置"
+L["S_OPTIONS_WORLD_ANCHOR_LEFT"] = "左侧锚点"
+L["S_OPTIONS_WORLD_ANCHOR_RIGHT"] = "右侧锚点"
+L["S_OPTIONS_WORLD_DECREASEICONSPERROW"] = "减少每行块数"
+L["S_OPTIONS_WORLD_INCREASEICONSPERROW"] = "增加每行块数"
+L["S_OPTIONS_WORLD_ORGANIZE_BYMAP"] = "按地图分类"
+L["S_OPTIONS_WORLD_ORGANIZE_BYTYPE"] = "按任务类型分类"
+L["S_OPTIONS_ZONE_SHOWONLYTRACKED"] = "只已追踪"
 L["S_OVERALL"] = "全部"
 L["S_PARTY"] = "队伍"
 L["S_PARTY_DESC1"] = "任务有蓝色星星的代表全部队友有此任务。"
@@ -186,27 +164,26 @@ L["S_SUMMARYPANEL_LIFETIMESTATISTICS_CHARACTER"] = "角色在线时间统计"
 L["S_SUMMARYPANEL_OTHERCHARACTERS"] = "其他角色"
 L["S_TUTORIAL_AMOUNT"] = "显示接收量"
 L["S_TUTORIAL_CLICKTOTRACK"] = "点击追踪任务。"
---[[Translation missing --]]
---[[ L["S_TUTORIAL_MAPALIGN"] = ""--]] 
+L["S_TUTORIAL_MAPALIGN"] = "点击这里选择世界地图对齐。"
 L["S_TUTORIAL_PARTY"] = "队伍中时，蓝星显示此全部队友有此任务！"
 L["S_TUTORIAL_TIMELEFT"] = "显示剩余时间（大于4小时，大于90分钟，大于30分钟，小于30分钟）"
---[[Translation missing --]]
---[[ L["S_TUTORIAL_WORLDBUTTONS"] = ""--]] 
+L["S_TUTORIAL_WORLDBUTTONS"] = [=[点击这里可在三种类型的摘要中循环：
+
+- |cFFFFAA11按任务类型|r
+- |cFFFFAA11按区域|r
+- |cFFFFAA11无|r
+
+点击|cFFFFAA11切换任务|r隐藏任务地点。]=]
 L["S_TUTORIAL_WORLDMAPBUTTON"] = "点击这个按钮将向你显示破碎群岛地图。"
 L["S_UNKNOWNQUEST"] = "未知任务"
---[[Translation missing --]]
---[[ L["S_WORLDBUTTONS_SHOW_NONE"] = ""--]] 
---[[Translation missing --]]
---[[ L["S_WORLDBUTTONS_SHOW_TYPE"] = ""--]] 
---[[Translation missing --]]
---[[ L["S_WORLDBUTTONS_SHOW_ZONE"] = ""--]] 
---[[Translation missing --]]
---[[ L["S_WORLDBUTTONS_TOGGLE_QUESTS"] = ""--]] 
+L["S_WORLDBUTTONS_SHOW_NONE"] = "隐藏概况"
+L["S_WORLDBUTTONS_SHOW_TYPE"] = "显示概况"
+L["S_WORLDBUTTONS_SHOW_ZONE"] = "按区域排列"
+L["S_WORLDBUTTONS_TOGGLE_QUESTS"] = "切换任务"
 L["S_WORLDMAP_QUESTLOCATIONS"] = "显示任务位置"
-L["S_WORLDMAP_QUESTSUMMARY"] = "显示任务摘要"
+L["S_WORLDMAP_QUESTSUMMARY"] = "显示任务概况"
 L["S_WORLDMAP_TOOGLEQUESTS"] = "切换任务"
---[[Translation missing --]]
---[[ L["S_WORLDMAP_TOOLTIP_TRACKALL"] = ""--]] 
+L["S_WORLDMAP_TOOLTIP_TRACKALL"] = "追踪此列表上全部任务"
 L["S_WORLDQUESTS"] = "世界任务"
 L["Search for a Group in Group Finder"] = "用预创建寻找队伍"
 L["Quest ID:"] = "任务ID:"

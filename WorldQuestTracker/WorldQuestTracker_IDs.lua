@@ -150,7 +150,7 @@ WorldQuestTracker.mapTables = {
 		[WorldQuestTracker.MapData.ZoneIDs.DARKSHORE] = {
 			widgets = {},
 			Anchor_X = 0.01,
-			Anchor_Y = 0.30,
+			Anchor_Y = 0.32,
 			GrowRight = true,
 			show_on_map = {
 				[WorldQuestTracker.MapData.ZoneIDs.AZEROTH] = true,
@@ -476,6 +476,13 @@ WorldQuestTracker.MapData.TradeSkillIcons = {
 
 WorldQuestTracker.MapData.ReplaceIcon = {
 	[2032600] = WorldQuestTracker.MapData.ItemIcons ["BFA_RESOURCE"], --war resource BFA
+}
+
+--when a quest rewards more than 1 reward, sometimes the first reward is a fixed currency
+WorldQuestTracker.MapData.IgnoredRewardTexures = {
+	[2565244] = true, --BFA honorbound service medal
+	[2565243] = true, --BFA 7th legion service medal
+	
 }
 
 WorldQuestTracker.MapData.QuestTypeIcons = {

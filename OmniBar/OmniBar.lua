@@ -555,7 +555,7 @@ OmniBar.cooldowns = {
 		[703] = { duration = 6, class = "ROGUE", specID = { 259 } }, -- Garrote
 		[5277] = { duration = 120, class = "ROGUE", specID = { 259, 261 } }, -- Evasion
 		[36554] = { duration = 30, class = "ROGUE", specID = { 259, 261 } }, -- Shadowstep
-		[79140] = { duration = 90, class = "ROGUE", specID = { 259 } }, -- Vendetta
+		[79140] = { duration = 120, class = "ROGUE", specID = { 259 } }, -- Vendetta
 		[192759] = { duration = 45, class = "ROGUE", specID = { 259 } }, -- Kingsbane
 		[200806] = { duration = 45, class = "ROGUE", specID = { 259 } }, -- Exsanguinate
 		[206328] = { duration = 25, class = "ROGUE", specID = { 259 } }, -- Shiv

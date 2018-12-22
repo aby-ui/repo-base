@@ -1,0 +1,16 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+
+<Script file="Libs\LibStub\LibStub.lua"/>
+<Script file="Libs\CallbackHandler-1.0\CallbackHandler-1.0.lua"/>
+<Script file="Libs\LibDataBroker-1.1\LibDataBroker-1.1.lua"/>
+
+<!--@non-debug@-->
+<Include file="Libs\LibSharedMedia-3.0\lib.xml"/>
+<Include file="Libs\LibCandyBar-3.0\lib.xml"/>
+<Include file="Libs\AceDB-3.0\AceDB-3.0.xml"/>
+<!--@end-non-debug@-->
+
+
+</Ui>
+

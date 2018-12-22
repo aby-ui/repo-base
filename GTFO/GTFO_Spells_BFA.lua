@@ -130,6 +130,63 @@ GTFO.SpellID["281034"] = {
   sound = 2;
 };
 
+GTFO.SpellID["286732"] = {
+  --desc = "Blight Barrel (Blightguard Captain Thedric)";
+  sound = 1;
+};
+
+GTFO.SpellID["286805"] = {
+  --desc = "Blighted Edge (Blightguard Captain Thedric)";
+  sound = 1;
+};
+
+GTFO.SpellID["283869"] = {
+  --desc = "Shrapnel Blasta (Base Cap'n Crankshot)";
+  sound = 1;
+  tankSound = 2;
+};
+
+GTFO.SpellID["284102"] = {
+  --desc = "AzerMEK Lazer Area (AzerMEK Beam Target)";
+  sound = 1;
+};
+
+GTFO.SpellID["282755"] = {
+  --desc = "Defense Barrage (Warfronts)";
+  sound = 1;
+};
+
+GTFO.SpellID["282414"] = {
+  --desc = "Frost Patch (Ivus the Forest Lord)";
+  sound = 1;
+};
+
+GTFO.SpellID["282487"] = {
+  --desc = "Lunar Strike (Ivus the Forest Lord)";
+  sound = 1;
+};
+
+GTFO.SpellID["282404"] = {
+  --desc = "Frost Breath (Ivus the Forest Lord)";
+  sound = 1;
+  tankSound = 0;
+};
+
+GTFO.SpellID["287537"] = {
+  --desc = "Plague Breath (Ivus the Decayed)";
+  sound = 1;
+};
+
+GTFO.SpellID["287543"] = {
+  --desc = "Fungal Bloom (Ivus the Decayed)";
+  sound = 1;
+};
+
+GTFO.SpellID["287538"] = {
+  --desc = "Plagued Bog (Ivus the Decayed)";
+  sound = 1;
+};
+
 -- ***********************
 -- * Shrine of the Storm *
 -- ***********************

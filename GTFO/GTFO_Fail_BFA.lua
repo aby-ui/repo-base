@@ -312,6 +312,28 @@ GTFO.SpellID["269823"] = {
   sound = 3;
 };
 
+GTFO.SpellID["283876"] = {
+  --desc = "High-Explosive Bomb (Base Cap'n Crankshot)";
+  sound = 3;
+};
+
+GTFO.SpellID["257971"] = {
+  --desc = "Leaping Thrash (Bajiatha)";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["287537"] = {
+  --desc = "Plague Breath (Ivus the Decayed)";
+  sound = 3;
+  tankSound = 0;
+};
+
+GTFO.SpellID["287537"] = {
+  --desc = "Plague Breath (Ivus the Decayed)";
+  sound = 3;
+};
+
 -- ***********************
 -- * Shrine of the Storm *
 -- ***********************

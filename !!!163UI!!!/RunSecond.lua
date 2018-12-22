@@ -287,6 +287,7 @@ function U1FakeAchi(id,d,m,y)
     if not d then d,m,y = 4,1,17 end
 	local link = format("\124cffffff00\124Hachievement:%d:%s:1:%d:%d:%d:4294967295:4294967295:4294967295:4294967295\124h[%s]\124h\124r", id, UnitGUID("player"), d, m, y, select(2, GetAchievementInfo(id)))
 	print((link))
+    return link
 end
 
 --[[7.2 ChallengesUI

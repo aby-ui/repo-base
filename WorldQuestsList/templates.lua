@@ -10,8 +10,10 @@ function WQL_AreaPOIPinMixin:TryShowTooltip()
 		GameTooltip_AddNormalLine(WorldMapTooltip, description);
 	end
 
-	if self.itemID then
+	if type(self.itemID)=='number' then
 		EmbeddedItemTooltip_SetItemByID(WorldMapTooltip.ItemTooltip, self.itemID)
+	elseif type(self.itemID)=='table' then
+		EmbeddedItemTooltip_SetItemByID(WorldMapTooltip.ItemTooltip, self.itemID[1])
 	end
 
 	WorldMapTooltip:Show();

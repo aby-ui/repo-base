@@ -254,4 +254,5 @@ U1.PINYIN={
     ['SUF头像增强']={'suftouxiangzengqiang','suftxzq'},
     ['黑海岸稀有']={'heihaianxiyou','hhaxy'},
     ['震荡助手']={'zhendangzhushou','zdzs'},
+    ['入侵时刻表']={'ruqinshikebiao','rqskb'},
 }
