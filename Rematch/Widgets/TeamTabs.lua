@@ -150,10 +150,12 @@ function panel:SelectTeamTab(index)
 	if not rematch.TeamPanel:IsVisible() and not rematch:IsDialogOpen("SaveAs") and not rematch:IsDialogOpen("ImportDialog") and not rematch:IsDialogOpen("ReceiveDialog") then
 		rematch:ShowTeam() -- if teams not shown then switch to panel
 	else
-		rematch.TeamPanel:Update()
+		rematch.TeamPanel:Update() -- if not visible but shouldn't be, this Update will be ignored in the function
 	end
 	panel:ScrollToTab(settings.SelectedTab)
-	rematch.TeamPanel.List:ScrollToIndex(1)
+	if rematch.TeamPanel:IsVisible() then
+		rematch.TeamPanel.List:ScrollToIndex(1)
+	end
 	rematch.Dialog:UpdateTabPicker()
 end
 

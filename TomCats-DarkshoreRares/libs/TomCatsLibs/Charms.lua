@@ -5,16 +5,21 @@ local cursorStartX, cursorStartY
 local seqNum = 1;
 
 function lib.Create(buttonInfo)
+    TOMCATS_LIBS_ICON_LASTFRAMELEVEL = (TOMCATS_LIBS_ICON_LASTFRAMELEVEL or 9) + 1
+    if (MinimapZoneTextButton and MinimapZoneTextButton:GetParent() == MinimapCluster) then
+        MinimapZoneTextButton:SetParent(Minimap)
+    end
     local name = buttonInfo.name
     if (not name) then
         name = addon.name .. "MinimapButton" .. seqNum
         seqNum = seqNum + 1
     end
     --noinspection UnusedDef
-    local frame = CreateFrame("Frame", name, Minimap, "TomCats-DarkshoreRaresMinimapButtonTemplate");
-
+    local frame = CreateFrame("Button", name, Minimap, "TomCats-DarkshoreRaresMinimapButtonTemplate");
+    frame:SetFrameLevel(TOMCATS_LIBS_ICON_LASTFRAMELEVEL)
     if (buttonInfo.backgroundColor) then
         local background = _G[name .. "Background"];
+        background:SetDrawLayer("BACKGROUND", 1)
         background:SetTexture("Interface\\CHARACTERFRAME\\TempPortraitAlphaMaskSmall")
         background:SetWidth(25)
         background:SetHeight(25)

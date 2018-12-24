@@ -157,7 +157,7 @@ function rematch:Start()
 
 	rematch:InitSavedVars()
 
-	rematch:FindBreedSource()
+	--rematch:FindBreedSource() -- (handled by petInfo now)
 	local locale = GetLocale()
 	if locale=="deDE" or locale=="frFR" then
 		rematch.localeSquish = true -- flag to make some room when locale has longer text

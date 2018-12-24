@@ -195,9 +195,8 @@ function rematch:ShowPetCard(parent,petID,force)
 	end
 	-- possible breeds
 	info.PossibleBreeds:Hide()
-	if rematch.breedSource and petInfo.canBattle then
-		local breeds = petInfo.possibleBreedNames
-		local possibleBreeds = #breeds>0 and table.concat(breeds,rematch.breedSource=="PetTracker_Breeds" and " " or ", ") or UNKNOWN
+	if petInfo.possibleBreedNames then
+		local possibleBreeds = table.concat(petInfo.possibleBreedNames,rematch:GetBreedSource()=="PetTracker_Breeds" and " " or ", ")
 		info.PossibleBreeds:SetText(format("%s: \124cffffffff%s",L["Possible Breeds"],possibleBreeds))
 		info.PossibleBreeds:ClearAllPoints()
 		info.PossibleBreeds:SetPoint("BOTTOMLEFT",8,ybottom)
@@ -214,14 +213,14 @@ function rematch:ShowPetCard(parent,petID,force)
 			local altInfo = rematch.altInfo:Fetch(otherPetID,true)
 			if altInfo.speciesID==petInfo.speciesID then
 				local _,_,_,otherHex = GetItemQualityColor(altInfo.rarity-1)
-				if rematch.breedSource then
+				if altInfo.breedName then
 					tinsert(collectedPets,format("\124c%s%d %s\124r",otherHex,altInfo.level,altInfo.breedName))
 				else
 					tinsert(collectedPets,format("\124c%s%s %d\124r",otherHex,LEVEL,altInfo.level))
 				end
 			end
 		end
-		info.Collected:SetText(format("%s: %s",collected,table.concat(collectedPets,rematch.breedSource=="PetTracker_Breeds" and " " or ", ")))
+		info.Collected:SetText(format("%s: %s",collected,table.concat(collectedPets,rematch:GetBreedSource()=="PetTracker_Breeds" and " " or ", ")))
 		info.Collected:ClearAllPoints()
 		info.Collected:SetPoint("BOTTOMLEFT",info,"BOTTOMLEFT",8,ybottom)
 		ybottom = ybottom + info.Collected:GetStringHeight()+4
@@ -303,8 +302,8 @@ function rematch:ShowPetCard(parent,petID,force)
 		info.LevelBG:SetVertexColor(r,g,b)
 	end
 
-	if rematch.breedSource and petInfo.breedName then
-		card:AddStat(petInfo.breedName,"Interface\\AchievementFrame\\UI-Achievement-Progressive-Shield",0.09375,0.578125,0.140625,0.625,L["Breed"],format(L["Determines how stats are distributed.  All breed data is pulled from your installed %s%s\124r addon."],rematch.hexWhite,GetAddOnMetadata(rematch.breedSource,"Title") or rematch.breedSource))
+	if petInfo.breedName then
+		card:AddStat(petInfo.breedName,"Interface\\AchievementFrame\\UI-Achievement-Progressive-Shield",0.09375,0.578125,0.140625,0.625,L["Breed"],format(L["Determines how stats are distributed.  All breed data is pulled from your installed %s%s\124r addon."],rematch.hexWhite,GetAddOnMetadata(rematch:GetBreedSource(),"Title") or rematch:GetBreedSource()))
 	end
 
 	if settings.ShowSpeciesID and petInfo.speciesID then
@@ -681,8 +680,8 @@ function card:PossibleBreedsOnEnter()
 	local btable = middle.BreedTable
 	middle.PossibleBreedsHighlight:Show()
 	btable:SetFrameLevel(self:GetFrameLevel()+5)
-	btable.Footnote:SetText(format(L["All breed data pulled from %s%s\124r."],rematch.hexWhite,GetAddOnMetadata(rematch.breedSource,"Title") or rematch.breedSource))
-	btable.Title:SetText(rematch.breedSource=="PetTracker_Breeds" and L["Possible Breeds"] or L["Stats At Level 25 \124cff0070ddRare"])
+	btable.Footnote:SetText(format(L["All breed data pulled from %s%s\124r."],rematch.hexWhite,GetAddOnMetadata(rematch:GetBreedSource(),"Title") or rematch:GetBreedSource()))
+	btable.Title:SetText(rematch:GetBreedSource()=="PetTracker_Breeds" and L["Possible Breeds"] or L["Stats At Level 25 \124cff0070ddRare"])
 
 	btable.Rows = btable.Rows or {}
 	btable.Highlight:Hide()
@@ -736,31 +735,28 @@ end
 -- takes a table (breeds) and fills it with all known breeds and their stats as a 25 rare: { breedName, health, power, speed }
 function card:FillBreedTable(speciesID,breeds)
 	wipe(breeds)
-	if rematch.breedSource=="BattlePetBreedID" then
-		if not BPBID_Arrays.BreedsPerSpecies then
-			BPBID_Arrays.InitializeArrays()
+	local breedSource = rematch:GetBreedSource()
+	if breedSource=="BattlePetBreedID" then
+		local petInfo = rematch.petInfo:Fetch(card.petID)
+		local data = BPBID_Arrays
+		for _,breed in ipairs(petInfo.possibleBreedIDs) do
+			local breedText = rematch:GetBreedNameByID(breed)
+			local health = ceil((data.BasePetStats[speciesID][1] + data.BreedStats[breed][1]) * 25 * ((data.RealRarityValues[4] - 0.5) * 2 + 1) * 5 + 100 - 0.5)
+			local power = ceil((data.BasePetStats[speciesID][2] + data.BreedStats[breed][2]) * 25 * ((data.RealRarityValues[4] - 0.5) * 2 + 1) - 0.5)
+			local speed = ceil((data.BasePetStats[speciesID][3] + data.BreedStats[breed][3]) * 25 * ((data.RealRarityValues[4] - 0.5) * 2 + 1) - 0.5)
+			tinsert(breeds,{breedText,health,power,speed})
 		end
-		rematch:GatherBreedNames()
-		local data,numBreeds = BPBID_Arrays
-		if data.BreedsPerSpecies[speciesID] then
-			for i=1,#data.BreedsPerSpecies[speciesID] do
-				local breed = data.BreedsPerSpecies[speciesID][i]
-				local breedText = rematch.breedNames[breed-2] -- rematch:GetBPBIDBreedName(breed)
-				local health = ceil((data.BasePetStats[speciesID][1] + data.BreedStats[breed][1]) * 25 * ((data.RealRarityValues[4] - 0.5) * 2 + 1) * 5 + 100 - 0.5)
-				local power = ceil((data.BasePetStats[speciesID][2] + data.BreedStats[breed][2]) * 25 * ((data.RealRarityValues[4] - 0.5) * 2 + 1) - 0.5)
-				local speed = ceil((data.BasePetStats[speciesID][3] + data.BreedStats[breed][3]) * 25 * ((data.RealRarityValues[4] - 0.5) * 2 + 1) - 0.5)
-				tinsert(breeds,{breedText,health,power,speed})
-			end
-		end
-	elseif rematch.breedSource=="LibPetBreedInfo-1.0" then
-		local lib = rematch.breedLib
-		local data = lib:GetAvailableBreeds(speciesID)
+	elseif breedSource=="LibPetBreedInfo-1.0" then
+		local petInfo = rematch.petInfo:Fetch(card.petID)
+		local lib = LibStub("LibPetBreedInfo-1.0")
+		--local data = lib:GetAvailableBreeds(speciesID)
+		local data = petInfo.possibleBreedIDs
 		if data then
 			for _,breed in pairs(data) do
-				tinsert(breeds,{lib:GetBreedName(breed),lib:GetPetPredictedStats(speciesID,breed,4,25)})
+				tinsert(breeds,{rematch:GetBreedNameByID(breed),lib:GetPetPredictedStats(speciesID,breed,4,25)})
 			end
 		end
-	elseif rematch.breedSource=="PetTracker_Breeds" then
+	elseif breedSource=="PetTracker_Breeds" then
 		if PetTracker.Breeds[speciesID] then
 			for _,breed in pairs(PetTracker.Breeds[speciesID]) do
 				local health, power, speed = unpack(PetTracker.BreedStats[breed])

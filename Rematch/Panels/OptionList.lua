@@ -65,7 +65,7 @@ panel.opts = {
 	{ "header", L["Standalone Window Options"], 2 },
 	{ "widget", "Growth" },
 	{ "spacer" }, -- Growth widget takes up two rows
-	{ "check", "CustomScale", L["Use Custom Scale"], L["Change the relative size of the standalone window to anywhere between 50% and 200% of its standard size."], nil, true },
+	{ "check", "CustomScale", L["Use Custom Scale"], L["Change the relative size of the standalone window to anywhere between 50% and 200% of its standard size.\n\n\124cffffffffNote:\124r This setting (like the other Standalone Window Options) \124cffffffffdoes not\124r affect the pet journal window."], nil, true },
 	{ "check", "SinglePanel", L["Single Panel Mode"], L["Collapse the maximized standalone window to one panel instead of two side by side.\n\nUsers of earlier versions of Rematch may find this mode more familiar."], nil, true },
 	{ "check", "UseMiniQueue", L["Combine Pets And Queue"], L["In single panel mode, combine the Pets and Queue tabs together. A narrow queue will display to the right of the pet list instead of in a separate tab."], "SinglePanel", true },
 	{ "check", "LockWindow", L["Keep Window On Screen"], L["Don't hide the standalone window when the ESCape key is pressed or most other times it would hide, such as going to the game menu."], nil, true },
@@ -137,7 +137,7 @@ panel.opts = {
 	{ "check", "DontConfirmHidePets", L["Don't Ask When Hiding Pets"], L["Don't ask for confirmation when hiding a pet.\n\nYou can view hidden pets in the 'Other' pet filter."] },
 	{ "check", "NoBackupReminder", L["Don't Remind About Backups"], L["Don't show a popup offering to backup teams every once in a while. Generally, the popup appears sometime after the number of teams increases by 50."] },
 	{ "header", L["Miscellaneous Options"]..newIcon, 6 },
-	{ "check", "SlowMousewheelScroll", L["Slow Mousewheel Scroll"]..newIcon, L["In the Teams and Pets tabs (soon for Queue and Options), mousewheel over the list will scroll one line at a time instead of a whole page at a time.\n\nYou can still scroll by pages by clicking above or below the scroll thumb."] },
+	{ "check", "SlowMousewheelScroll", L["Slow Mousewheel Scroll"]..newIcon, L["In the Pets, Teams, Queue and Options lists, mousewheel over the list will scroll one line at a time instead of a whole page at a time.\n\nYou can still scroll by pages by clicking above or below the scroll thumb."] },
 	{ "check", "ShowAfterBattle", L["Show After Pet Battle"], L["Show the Rematch window after leaving a pet battle."] },
 	{ "check", "DisableShare", L["Disable Sharing"], L["Disable the Send button and also block any incoming pets sent by others. Import and Export still work."] },
 	{ "check", "UseMinimapButton", L["Use Minimap Button"], L["Place a button on the minimap to toggle Rematch and load favorite teams."], nil, true, true },

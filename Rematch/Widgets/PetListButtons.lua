@@ -45,11 +45,10 @@ end
 -- THIS IS THE OLD VERSION, NOW ONLY USED BY LOADOUTPANELS
 -- PetPanel and QueuePanel use FillNewPetListButton defined elsewhere in this file
 function rematch:FillPetListButton(button,petID,forLoadout)
+
+	local petInfo = rematch.petInfo:Fetch(petID)
+
 	button.petID = petID
-	if button.slim then
-		-- slim vs normal buttons are too radically different; slim function will handle everything if needed
-		return rematch:FillSlimPetListButton(button)
-	end
 	rematch:FillPetSlot(button.Pet,petID) -- handles the icon, level, rarity
 	local idType = rematch:GetIDType(petID)
 	local showBreed = false
@@ -59,58 +58,40 @@ function rematch:FillPetListButton(button,petID,forLoadout)
 	local xoff = -4
 	local yoff = -12
 
-	local _, speciesID, customName, level, xp, maxXP, isFavorite, name, icon, petType, canBattle
-	if idType=="pet" then -- this is an owned pet
-		speciesID, customName, level, xp, maxXP, _, isFavorite, name, icon, petType, _, _, _, _, canBattle = C_PetJournal.GetPetInfoByPetID(petID)
-		if rematch.breedSource and canBattle then
-			local breed = rematch:GetBreedByPetID(petID)
-			button.Breed:SetText(breed)
-			showBreed = true
-			yoff = rematch.breedSource=="PetTracker_Breeds" and -4 or -6
-		end
-		if RematchSettings.PetNotes[speciesID] then
-			showNotes = true
-			button.Notes:SetPoint("TOPRIGHT",button,"TOPRIGHT",xoff,yoff)
-			xoff = xoff-22
-		end
-		if rematch:IsPetLeveling(petID) and not button.forQueuePanel then
-			showLeveling = true
-			button.Leveling:SetPoint("TOPRIGHT",button,"TOPRIGHT",xoff,yoff)
-		end
-		desaturate = false
-		if C_PetJournal.PetNeedsFanfare(petID) then
-			customName = format("%s%s",rematch.hexBlue,L["A New Pet!"])
-		end
-	elseif idType=="species" then -- speciesID for unowned pets
-		name,_,petType = C_PetJournal.GetPetInfoBySpeciesID(petID)
-		if RematchSettings.PetNotes[petID] then
-			showNotes = true
-			button.Notes:SetPoint("TOPRIGHT",button,"TOPRIGHT",xoff,yoff)
-		end
+	if petInfo.breedName then
+		button.Breed:SetText(petInfo.breedName)
+		showBreed = true
+		yoff = rematch:GetBreedSource()=="PetTracker_Breeds" and -4 or -6
 	end
+	if petInfo.hasNotes then
+		showNotes = true
+		button.Notes:SetPoint("TOPRIGHT",button,"TOPRIGHT",xoff,yoff)
+		xoff = xoff-22
+	end
+	if petInfo.isLeveling then
+		showLeveling = true
+		button.Leveling:SetPoint("TOPRIGHT",button,"TOPRIGHT",xoff,yoff)
+	end
+	if petInfo.needsFanFare then
+		customName = format("%s%s",rematch.hexBlue,L["A New Pet!"])
+	end	
 
 	-- set type icon
-	rematch:FillPetTypeIcon(button.TypeIcon,petType,forLoadout and "Interface\\PetBattles\\PetIcon-")
-	button.TypeIcon:SetDesaturated(desaturate)
+	rematch:FillPetTypeIcon(button.TypeIcon,petInfo.petType,"Interface\\PetBattles\\PetIcon-")
 
-	if customName then -- pet has a custom name, so show both customName and name
-		button.Name:SetText(customName)
+	if petInfo.customName then -- pet has a custom name, so show both customName and name
+		button.Name:SetText(petInfo.customName)
 		button.Name:SetHeight(21)
-		button.SubName:SetText(name)
+		button.SubName:SetText(petInfo.speciesName)
 		button.SubName:Show()
 	else -- no customName, show just one line, the name or that it's empty
-		button.Name:SetText(name or L["Empty Battle Pet Slot"])
+		button.Name:SetText(petInfo.name or L["Empty Battle Pet Slot"])
 		button.Name:SetHeight(36)
 		button.SubName:Hide()
 	end
 
-	if desaturate then
-		button.Name:SetTextColor(0.5,0.5,0.5)
-	elseif RematchSettings.ColorPetNames and idType=="pet" then
-		local rarity = select(5,C_PetJournal.GetPetStats(petID))
-		if rarity then
-			button.Name:SetTextColor(ITEM_QUALITY_COLORS[rarity-1].r, ITEM_QUALITY_COLORS[rarity-1].g, ITEM_QUALITY_COLORS[rarity-1].b)
-		end
+	if RematchSettings.ColorPetNames and petInfo.rarity then
+		button.Name:SetTextColor(ITEM_QUALITY_COLORS[petInfo.rarity-1].r, ITEM_QUALITY_COLORS[petInfo.rarity-1].g, ITEM_QUALITY_COLORS[petInfo.rarity-1].b)
 	else
 		button.Name:SetTextColor(1,0.82,0)
 	end
@@ -128,10 +109,6 @@ function rematch:FillPetListButton(button,petID,forLoadout)
 	button.Breed:SetShown(showBreed)
 	button.Leveling:SetShown(showLeveling)
 	button.Notes:SetShown(showNotes)
-
-	if GetMouseFocus()==button then
-		rematch:ShowPetCard(button,petID)
-	end
 end
 
 
@@ -218,7 +195,7 @@ end
 
 function rematch:PetListButtonOnDoubleClick()
 	if rematch:GetIDType(self.petID)=="pet" then
-		if RematchSettings.QueueDoubleClick and self.forQueuePanel and self.petID and RematchSettings.LevelingQueue[1]~=self.petID then
+		if RematchSettings.QueueDoubleClick and self.forQueue and self.petID and RematchSettings.LevelingQueue[1]~=self.petID then
 			rematch:MovePetInQueue(self.petID,-2) -- -2 is "Move To Top" direction
 		elseif RematchSettings.NoSummonOnDblClick then
 			return -- do nothing if "No Summon On Double Click" is checked

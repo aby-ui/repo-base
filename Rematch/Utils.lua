@@ -519,7 +519,11 @@ function rematch:AutoShow()
 	local settings = RematchSettings
 	local mode = settings.PreferredMode
 	if mode==3 then
-		mode = 2 -- if preferred mode was journal, switch to standalone
+		if settings.UseDefaultJournal then
+			mode = 2 -- if they have journal integration disabled but journal preferred window, show standalone
+		elseif not rematch.Journal:IsVisible() then
+			ToggleCollectionsJournal(2)
+		end
 	end
 	if not frame:IsVisible() then
 		if mode==1 then

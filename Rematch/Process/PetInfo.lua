@@ -84,7 +84,11 @@
       numTeams: number of teams the pet belongs to (pet and species only) (integer)
       sourceID: the source index (1=Drop, 2=Quest, 3=Vendor, etc) of the pet (integer)
       moveset: the exact moveset of the pet ("123,456,etc") (string)
-      speciesAt25: whether the pet has a version at level 25 (bool)
+	  speciesAt25: whether the pet has a version at level 25 (bool)
+	  hasNotes: whether the pet has notes
+	  notes: the text of the pet's notes
+	  isLeveling: whether the pet is in the queue
+	  isSummoned: whether the pet is currently summoned (companion pet)
       
    How it works:
 
@@ -368,7 +372,7 @@ local queryAPIs = {
             breedID = 0
             breedName = self.numPossibleBreeds==0 and "NEW" or "???"
          end
-         self.breedID = breedID
+		 self.breedID = breedID
          self.breedName = breedName or breedNames[breedID]
          self.hasBreed = true
       else
@@ -490,6 +494,15 @@ function rematch:GetBreedSource()
       breedSource = false -- none found, only attempt to find a source once
    end
    return breedSource
+end
+
+-- returns the name of a breed by its ID (used by PetMenus' breed menu; not petInfo)
+function rematch:GetBreedNameByID(breedID)
+	if rematch:GetBreedSource()=="PetTracker_Breeds" then
+		return PetTracker:GetBreedIcon(breedID,.85)
+	else
+		return breedNames[breedID]
+	end
 end
 
 local reset -- function used in fetch and petInfo, definining it after fetch

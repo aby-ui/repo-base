@@ -34,12 +34,6 @@ local _specialQuests = {
   -- Order Hall
   [42481] = { zid=717, daily=true }, -- Warlock: Ritual of Doom
   [44707] = { zid=719, daily=true, sid=228651 }, -- Demon Hunter: Twisting Nether
-
-  -- Warfront
-  [53414] = { zid=1161 }, -- Stromgarde Alliance
-  [53416] = { zid=1165 }, -- Stromgarde Horde
-  [53992] = { zid=1161 }, -- Darkshore Alliance
-  [53955] = { zid=1165 }, -- Darkshore Horde
 }
 
 function addon:specialQuests()
@@ -137,6 +131,12 @@ local QuestExceptions = {
   -- Island Expeditions
   [53435] = "Weekly", -- Azerite for the Horde
   [53436] = "Weekly", -- Azerite for the Alliance
+
+  -- Warfront
+  [53414] = "Weekly", -- Stromgarde Alliance
+  [53416] = "Weekly", -- Stromgarde Horde
+  [53992] = "Weekly", -- Darkshore Alliance
+  [53955] = "Weekly", -- Darkshore Horde
 
   -- Weekend Event
   [53030] = "Weekly", -- The World Awaits - World Quests

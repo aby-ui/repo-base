@@ -380,6 +380,12 @@ function module:BuildOptions()
             order = 33.6,
             name = L["Emissary quests"],
           },
+          DailyWorldQuestAllNames = {
+            type = "toggle",
+            order = 33.65,
+            name = L["Show all emissary names"],
+            desc = L["Show both factions' emissay name"],
+          },
           TrackSkills = {
             type = "toggle",
             order = 33.7,

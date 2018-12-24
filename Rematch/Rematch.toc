@@ -2,7 +2,7 @@
 ## Title: Rematch
 ## Notes: A pet journal alternative for managing pets and teams.
 ## Author: Gello
-## Version: 4.9.0
+## Version: 4.9.3
 ## SavedVariables: RematchSaved, RematchSettings
 
 Localization\Rematch zhTW.lua
@@ -101,7 +101,6 @@ Frames\Journal.xml
 Frames\Journal.lua
 
 Process\Battle.lua
-Process\Breeds.lua
 
 
 ## Title-zhCN: |cff880303[爱不易]|r Rematch 宠物战队

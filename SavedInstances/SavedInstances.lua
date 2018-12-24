@@ -33,6 +33,7 @@ local INSTANCE_SAVED, TRANSFER_ABORT_TOO_MANY_INSTANCES, NO_RAID_INSTANCES_SAVED
   INSTANCE_SAVED, TRANSFER_ABORT_TOO_MANY_INSTANCES, NO_RAID_INSTANCES_SAVED
 
 local ALREADY_LOOTED = ERR_LOOT_GONE:gsub("%(.*%)","")
+ALREADY_LOOTED = ALREADY_LOOTED:gsub("（.*）","") -- fix on zhCN and zhTW
 
 -- Unit Aura functions that return info about the first aura matching the spellName or spellID given on the unit.
 local SI_GetUnitAura = function(unit, spell, filter)
@@ -409,29 +410,19 @@ addon.defaultDB = {
     TrackPlayed = true,
     AugmentBonus = true,
     CurrencyValueColor = true,
-    Currency776 = false, -- Warforged Seals
-    Currency738 = false, -- Lesser Charm of Good Fortune
-    Currency823 = false,  -- Apexis Crystal
-    Currency824 = false,  -- Garrison Resources
-    Currency1101= false,  -- Oil
-    Currency994 = false, -- Seal of Tempered Fate
-    Currency1129= false, -- Seal of Inevitable Fate
-    Currency1155= false,  -- Ancient Mana
-    Currency1166= false,  -- Timewarped Badge
-    Currency1191= false,  -- Valor Points
-    Currency1220= false,  -- Order Resources
-    Currency1226= false, -- Nethershards
-    Currency1273= false,  -- Seal of Broken Fate
-    Currency1149= false,  -- Sightless Eye
-    Currency1710= true, -- Seafarer's Dubloon
-    Currency1580= true, -- Seal of Wartorn Fate
-    Currency1560= true, -- War Resources
-    Currency1587= true, -- War Supplies
+    Currency1710 = true, -- Seafarer's Dubloon
+    Currency1580 = true, -- Seal of Wartorn Fate
+    Currency1560 = true, -- War Resources
+    Currency1587 = true, -- War Supplies
+    Currency1716 = true, -- Honorbound Service Medal
+    Currency1717 = true, -- 7th Legion Service Medal
+    Currency1718 = true, -- Titan Residuum
     CurrencyMax = false,
     CurrencyEarned = true,
     MythicKey = true,
     MythicKeyBest = true,
     DailyWorldQuest = true,
+    DailyWorldQuestAllNames = true,
     AbbreviateKeystone = true,
   },
   Instances = { }, 	-- table key: "Instance name"; value:
@@ -1787,6 +1778,41 @@ local function ShowSkillTooltip(cell, arg, ...)
   finishIndicator()
 end
 
+local function ShowEmissarySummary(cell, arg, ...)
+  local day = arg
+  local buffer, flag = {}, false
+  openIndicator(2, "LEFT", "RIGHT")
+  indicatortip:AddHeader(L["Emissary quests"], "")
+  local toon, t
+  for toon, t in pairs(addon.db.Toons) do
+    local info = t.DailyWorldQuest["days" .. day]
+    if info and not info.iscompleted then
+      if not buffer[info.name] then buffer[info.name] = {} end
+      table.insert(buffer[info.name], toon)
+      flag = true
+    end
+  end
+  if not flag then
+    indicatortip:AddLine(L["Emissary Missing"], "")
+  else
+    local name, tbl
+    for name, tbl in pairs(buffer) do
+      indicatortip:AddLine(name, "")
+      for _, toon in pairs(tbl) do
+        t = addon.db.Toons[toon]
+        local info, str = t.DailyWorldQuest["days" .. day]
+        if info.isfinish then
+          str = "\124T"..READY_CHECK_WAITING_TEXTURE..":0|t"
+        else
+          str = info.questdone .. "/" .. info.questneed
+        end
+        indicatortip:AddLine(ClassColorise(t.Class, toon), str)
+      end
+    end
+  end
+  finishIndicator()
+end
+
 local function ShowBonusTooltip(cell, arg, ...)
   local toon = arg
   local parent
@@ -2212,7 +2238,7 @@ end
 function core:OnInitialize()
   local versionString = GetAddOnMetadata(addonName, "version")
   --[===[@debug@
-  if versionString == "8.0.8-1-gdc69068" then
+  if versionString == "8.0.8-12-g5aba58d" then
     versionString = "Dev"
   end
   --@end-debug@]===]
@@ -3726,6 +3752,7 @@ function core:ShowTooltip(anchorframe)
             if(not show[DailyInfo.dayleft] or show[DailyInfo.dayleft] == L["Emissary Missing"]) then
               show[DailyInfo.dayleft] = DailyInfo.name
             elseif (
+              addon.db.Tooltip.DailyWorldQuestAllNames and
               (not show[DailyInfo.dayleft]:find("/")) and
               (show[DailyInfo.dayleft] ~= DailyInfo.name) and
               (DailyInfo.name ~= L["Emissary Missing"])
@@ -3749,6 +3776,8 @@ function core:ShowTooltip(anchorframe)
       if show[dayleft] then
         local showday = show[dayleft]
 			  show[dayleft] = tooltip:AddLine(GOLDFONT .. showday .. " (+" .. dayleft .. " " .. L["Day"] .. ")" .. FONTEND)
+        tooltip:SetCellScript(show[dayleft], 1, "OnEnter", ShowEmissarySummary, dayleft)
+        tooltip:SetCellScript(show[dayleft], 1, "OnLeave", CloseTooltips)
       end
     end
     for toon, t in cpairs(addon.db.Toons, true) do

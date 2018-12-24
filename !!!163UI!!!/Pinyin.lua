@@ -255,4 +255,5 @@ U1.PINYIN={
     ['黑海岸稀有']={'heihaianxiyou','hhaxy'},
     ['震荡助手']={'zhendangzhushou','zdzs'},
     ['入侵时刻表']={'ruqinshikebiao','rqskb'},
+    ['目标姓名板标记']={'mubiaoxingmingbanbiaoji','mbxmbbj'},
 }

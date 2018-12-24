@@ -55,55 +55,49 @@ local currency = {
 }
 addon.currency = currency
 
-local WoDSealQuests = {
-  [36058] = "Weekly",  -- Seal of Dwarven Bunker
-  -- Seal of Ashran quests
-  [36054] = "Weekly",
-  [37454] = "Weekly",
-  [37455] = "Weekly",
-  [36056] = "Weekly",
-  [37456] = "Weekly",
-  [37457] = "Weekly",
-  [36057] = "Weekly",
-  [37458] = "Weekly",
-  [37459] = "Weekly",
-  [36055] = "Weekly",
-  [37452] = "Weekly",
-  [37453] = "Weekly",
+local earnByQuest = {
+  [1129] = { -- WoD - Seal of Tempered Fate
+    [36058] = true,  -- Seal of Dwarven Bunker
+    -- Seal of Ashran quests
+    [36054] = true,
+    [37454] = true,
+    [37455] = true,
+    [36056] = true,
+    [37456] = true,
+    [37457] = true,
+    [36057] = true,
+    [37458] = true,
+    [37459] = true,
+    [36055] = true,
+    [37452] = true,
+    [37453] = true,
+  },
+  [1273] = { -- LEG - Seal of Broken Fate
+    [43895] = true,
+    [43896] = true,
+    [43897] = true,
+    [43892] = true,
+    [43893] = true,
+    [43894] = true,
+    [43510] = true, -- Order Hall
+    [47851] = true, -- Mark of Honor x5
+    [47864] = true, -- Mark of Honor x10
+    [47865] = true, -- Mark of Honor x20
+  },
+  [1580] = { -- BfA - Seal of Wartorn Fate
+    [52834] = true, -- Gold
+    [52838] = true, -- Piles of Gold
+    [52835] = true, -- Marks of Honor
+    [52839] = true, -- Additional Marks of Honor
+    [52837] = true, -- War Resources
+    [52840] = true, -- Stashed War Resources
+  },
 }
 
-for k,v in pairs(WoDSealQuests) do
-  QuestExceptions[k] = v
-end
-
-local LegionSealQuests = {
-  [43895] = "Weekly",
-  [43896] = "Weekly",
-  [43897] = "Weekly",
-  [43892] = "Weekly",
-  [43893] = "Weekly",
-  [43894] = "Weekly",
-  [43510] = "Weekly", -- Order Hall
-  [47851] = "Weekly", -- Mark of Honor x5
-  [47864] = "Weekly", -- Mark of Honor x10
-  [47865] = "Weekly", -- Mark of Honor x20
-}
-
-for k,v in pairs(LegionSealQuests) do
-  QuestExceptions[k] = v
-end
-
-local BfASealQuests = {
-  [52834] = "Weekly", -- Gold
-  [52838] = "Weekly", -- Piles of Gold
-  [52835] = "Weekly", -- Marks of Honor
-  [52839] = "Weekly", -- Additional Marks of Honor
-  [52837] = "Weekly", -- War Resources
-  [52840] = "Weekly", -- Stashed War Resources
-}
-
-for k,v in pairs(BfASealQuests) do
-  QuestExceptions[k] = v
+for _, v in pairs(earnByQuest) do
+  for questID, _ in pairs(v) do
+    QuestExceptions[questID] = "Regular" -- not show in Weekly Quest
+  end
 end
 
 function addon:UpdateCurrency()
@@ -113,45 +107,33 @@ function addon:UpdateCurrency()
   t.currency = wipe(t.currency or {})
   for _,idx in ipairs(currency) do
     local _, amount, _, earnedThisWeek, weeklyMax, totalMax, discovered = GetCurrencyInfo(idx)
-    if idx == 390 and amount == 0 then
-      discovered = false -- discovery flag broken for conquest points
-    end
     if not discovered then
       t.currency[idx] = nil
     else
       local ci = t.currency[idx] or {}
       ci.amount, ci.earnedThisWeek, ci.weeklyMax, ci.totalMax = amount, earnedThisWeek, weeklyMax, totalMax
-      if idx == 396 then -- VP has a weekly max scaled by 100
-        ci.weeklyMax = ci.weeklyMax and math.floor(ci.weeklyMax/100)
-      end
-      if idx == 390 or idx == 395 or idx == 396 then -- these have a total max scaled by 100
-        ci.totalMax = ci.totalMax and math.floor(ci.totalMax/100)
-      end
-      if idx == 390 then -- these have a weekly earned scaled by 100
-        ci.earnedThisWeek = ci.earnedThisWeek and math.floor(ci.earnedThisWeek/100)
-      end
-      if idx == 1129 then -- Seal of Tempered Fate returns zero for weekly quantities
-        ci.weeklyMax = 3 -- the max via quests
+      -- handle special currency 
+      if idx == 1129 then -- WoD - Seal of Tempered Fate
+        ci.weeklyMax = 3
         ci.earnedThisWeek = 0
-        for id in pairs(WoDSealQuests) do
-          if IsQuestFlaggedCompleted(id) then
+        for questID in pairs(earnByQuest[1129]) do
+          if IsQuestFlaggedCompleted(questID) then
             ci.earnedThisWeek = ci.earnedThisWeek + 1
           end
         end
-      elseif idx == 1273 then -- Seal of Broken Fate returns zero for weekly quantities
-        ci.weeklyMax = 3 -- the max via quests
+      elseif idx == 1273 then -- LEG - Seal of Broken Fate
+        ci.weeklyMax = 3
         ci.earnedThisWeek = 0
-        for id in pairs(LegionSealQuests) do
-          if IsQuestFlaggedCompleted(id) then
+        for questID in pairs(earnByQuest[1273]) do
+          if IsQuestFlaggedCompleted(questID) then
             ci.earnedThisWeek = ci.earnedThisWeek + 1
           end
         end
-      end
-      if idx == 1580 then -- Seal of Wartorn Fate returns zero for weekly quantities
-        ci.weeklyMax = 2 -- the max via quests
+      elseif idx == 1580 then -- BfA - Seal of Wartorn Fate
+        ci.weeklyMax = 2
         ci.earnedThisWeek = 0
-        for id in pairs(BfASealQuests) do
-          if IsQuestFlaggedCompleted(id) then
+        for questID in pairs(earnByQuest[1580]) do
+          if IsQuestFlaggedCompleted(questID) then
             ci.earnedThisWeek = ci.earnedThisWeek + 1
           end
         end

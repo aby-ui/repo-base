@@ -2,10 +2,10 @@
 ## Title: TomCat's Tours: Rares of Darkshore (Warfront on Darkshore)
 ## Author: TomCat
 ## X-Website: http://www.everythingwarcraft.com
-## Version: 1.1.8
+## Version: 1.2.1
 ## DefaultState: enabled
 ## SavedVariablesPerCharacter: TomCats_DarkshoreRares_Character
-## OptionalDeps: HandyNotes
+## OptionalDeps: TomCats, HandyNotes
 ## X-Part-Of: TomCat's Tours:
 ## X-Category: Achievements, Map, Miscellaneous
 ## X-Localizations: enUS, deDE, esES, esMX, frFR, itIT, koKR, ptBR, ruRU, zhCN, zhTW

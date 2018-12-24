@@ -9,6 +9,7 @@
     <Script file="data\Creatures.Status.lua" />
     <Script file="data\Creatures.VignetteInfo.lua" />
     <Include file="TourWindow.xml" />
+    <Include file="Config.xml" />
     <Script file="Main.lua" />
     <Script file="Widget-TomCatsLabel.lua" />
     <Script file="Widget-TomCatsInteractiveLabel.lua" />

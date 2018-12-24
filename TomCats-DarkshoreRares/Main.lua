@@ -547,3 +547,19 @@ if (HandyNotes) then
 
     HandyNotes:RegisterPluginDB("TomCat's Tours: " .. addon.params["Title Line 1"], HandyNotesPlugin, HandyNotesOptions)
 end
+
+if (TomCats and TomCats.Register) then
+    TomCats:Register(
+        {
+            slashCommands = {
+                {
+                    command = "DARKSHORE TOGGLE",
+                    desc = "Toggle Rares of Darkshore Window",
+                    func = addon.toggleTourWindow
+                }
+            },
+            name = "Rares of Darkshore",
+            version = "1.2.1"
+        }
+    )
+end
