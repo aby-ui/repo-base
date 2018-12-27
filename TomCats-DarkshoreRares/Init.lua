@@ -45,15 +45,6 @@ function addon.getWarfrontPhase()
     else
         return addon.playerFaction
     end
-
-
---    local contributionCollectors = C_ContributionCollector.GetContributionCollectorsForMap(addon.embassyContinentMapID)
---    for i = 1, #contributionCollectors, 1 do
---        if (contributionCollectors[i].name == "Warfront") then
---            return addon.enemyFaction
---        end
---    end
---    return addon.playerFaction
 end
 
 addon.TomCatsLibs.Data["Map Canvases"] = {}

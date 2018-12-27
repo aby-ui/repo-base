@@ -140,7 +140,8 @@ local function ADDON_LOADED(self)
         name = addon.name .. "MinimapButton",
         iconTexture = "Interface\\AddOns\\" .. addon.name .. "\\images\\" .. addon.params["Minimap Icon"],
         backgroundColor = addon.params["Icon BGColor"],
-        handler_onclick = addon.toggleTourWindow
+        handler_onclick = addon.toggleTourWindow,
+        title = "TomCat's Tours: " .. addon.params["Title Line 1"]
     }).tooltip = {
         Show = function(this)
             GameTooltip:ClearLines()
@@ -559,7 +560,7 @@ if (TomCats and TomCats.Register) then
                 }
             },
             name = "Rares of Darkshore",
-            version = "1.2.1"
+            version = "1.2.3"
         }
     )
 end

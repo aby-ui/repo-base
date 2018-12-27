@@ -1450,12 +1450,14 @@ local function SetHooks()
 		bck_UIErrorsFrame_OnEvent(self, event, ...)
 	end)
 
+    --[[
 	function QuestMapFrame_OpenToQuestDetails(questID)	-- R
 		local mapID = GetQuestUiMapID(questID);
 		if ( mapID == 0 ) then mapID = nil; end
 		OpenQuestLog(mapID);	-- fix Blizz bug
 		QuestMapFrame_ShowQuestDetails(questID);
 	end
+	--]]
 
 	-- Item handler functions
 	--[=[

@@ -150,3 +150,19 @@ local QuestExceptions = {
   [53039] = "Weekly", -- The Arena Calls - Arena Skirmishes
 }
 addon.QuestExceptions = QuestExceptions
+
+-- Timewalking Dungeon final boss drops
+-- to find eventID, select the event in calendar and use the command below
+-- /run local i = C_Calendar.GetEventIndex() local e = C_Calendar.GetDayEvent(i.offsetMonths, i.monthDay, i.eventIndex) print(e.eventID)
+-- [questID] = eventID
+local TimewalkingItemQuest = {
+  [40168] = 623, -- The Swirling Vial - TBC Timewalking
+  [40173] = 617, -- The Unstable Prism - WLK Timewalking
+  [40786] = 629, -- The Smoldering Ember - CTM Timewalking - Horde
+  [40787] = 629, -- The Smoldering Ember - CTM Timewalking - Alliance
+  [45563] = 654, -- The Shrouded Coin - MOP Timewalking
+}
+for questID, tbl in pairs(TimewalkingItemQuest) do
+  QuestExceptions[questID] = "Weekly"
+end
+addon.TimewalkingItemQuest = TimewalkingItemQuest

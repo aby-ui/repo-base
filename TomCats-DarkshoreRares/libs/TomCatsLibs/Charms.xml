@@ -7,7 +7,7 @@
             <Anchor point="CENTER" relativeTo="Minimap" relativePoint="CENTER" x="-78.674" y="-18.193" />
         </Anchors>
         <Layers>
-            <Layer level="BACKGROUND" textureSubLevel="0">
+            <Layer level="BACKGROUND">
                 <Texture name="$parentBackground" file="Interface\Minimap\UI-Minimap-Background">
                     <Size x="25" y="25"/>
                     <Anchors>
@@ -54,9 +54,10 @@
                     local isDragging = false
                     local tooltipIsShowing = false
                     local Ax, Ay, scale, top, right
-                    local r = 80.75
+                    local r = 80
                     local preferences = {}
                     local handlers = {}
+                    local shape = GetMinimapShape and GetMinimapShape() or "ROUND"
 
                     local function RefreshMeasurements()
                         Ax, Ay = Minimap:GetCenter()
@@ -91,9 +92,17 @@
 
                     local function UpdatePosition()
                         local rad = preferences.position
-                        local Cx = r * math.cos(rad)
-                        local Cy = r * math.sin(rad)
-                        parent:SetPoint("CENTER", Minimap, "CENTER", Cx, Cy)
+                        if (GetMinimapShape and GetMinimapShape() == "SQUARE") then
+                            local x, y = math.cos(rad), math.sin(rad)
+                            local h = 113.14
+                            x = math.max(-80, math.min(x*h, 80))
+                            y = math.max(-80, math.min(y*h, 80))
+                            parent:SetPoint("CENTER", Minimap, "CENTER", x, y)
+                        else
+                            local Cx = r * math.cos(rad)
+                            local Cy = r * math.sin(rad)
+                            parent:SetPoint("CENTER", Minimap, "CENTER", Cx, Cy)
+                        end
                         local buttonRight = parent:GetRight()
                         if (buttonRight > right) then
                             local point = { parent:GetPoint() }
@@ -119,6 +128,12 @@
                     local function OnUpdate()
                         if (isDragging) then
                             UpdatePositionByCursor()
+                        else
+                            local newShape = GetMinimapShape and GetMinimapShape() or "ROUND"
+                            if (shape ~= newShape) then
+                                shape = newShape
+                                UpdatePosition()
+                            end
                         end
                     end
 
@@ -146,7 +161,7 @@
 
                     local function OnLeave()
                         if (parent.tooltip) then
-                            parent.tooltip:Hide()
+                            parent.tooltip.Hide()
                             tooltipIsShowing = false
                         end
                     end

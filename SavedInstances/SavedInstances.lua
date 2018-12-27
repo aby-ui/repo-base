@@ -59,6 +59,7 @@ local currency = addon.currency
 local trade_spells = addon.trade_spells
 local cdname = addon.cdname
 local QuestExceptions = addon.QuestExceptions
+local TimewalkingItemQuest = addon.TimewalkingItemQuest
 local scantt = addon.scantt
 local KeystonetoAbbrev = addon.KeystonetoAbbrev
 local KeystoneAbbrev = addon.KeystoneAbbrev
@@ -88,6 +89,8 @@ for i = 0,10 do
   end
 end
 
+-- eventInfo format: [eventID] = true
+local eventInfo = {}
 local tooltip, indicatortip
 local thisToon = UnitName("player") .. " - " .. GetRealmName()
 local maxlvl = MAX_PLAYER_LEVEL_TABLE[#MAX_PLAYER_LEVEL_TABLE]
@@ -668,17 +671,47 @@ function addon:QuestCount(toonname)
   if not t then return 0,0 end
   local dailycount, weeklycount = 0,0
   -- ticket 96: GetDailyQuestsCompleted() is unreliable, the response is laggy and it fails to count some quests
-  for _,info in pairs(t.Quests) do
-    if info.isDaily then
-      dailycount = dailycount + 1
-    else
-      weeklycount = weeklycount + 1
+  local id, info
+  for id, info in pairs(t.Quests) do
+    -- Timewalking Item Quests only show during Timewalking Weeks
+    if (not TimewalkingItemQuest[id]) or eventInfo[TimewalkingItemQuest[id]] then
+      if info.isDaily then
+        dailycount = dailycount + 1
+      else
+        weeklycount = weeklycount + 1
+      end
     end
   end
   return dailycount, weeklycount
 end
 
 -- local addon functions below
+
+local function UpdateEventInfo()
+  local current, monthInfo = C_DateAndTime.GetCurrentCalendarTime(), C_Calendar.GetMonthInfo()
+  local month, day, year = current.month, current.monthDay, current.year
+  local showMonth, showYear = monthInfo.month, monthInfo.year
+  local monthOffset = -12 * (showYear - year) + month - showMonth
+  local numEvents = C_Calendar.GetNumDayEvents(monthOffset, day)
+  debug("numEvents: " .. numEvents)
+  for i = 1, numEvents do
+    local event = C_Calendar.GetDayEvent(monthOffset, day, i)
+    debug("eventID: " .. event.eventID)
+    if event.sequenceType == "START" then
+      local hour, minute = event.startTime.hour, event.startTime.minute
+      if hour > current.hour or (hour == current.hour and minute > current.minute) then
+        eventInfo[event.eventID] = true
+      end
+    elseif event.sequenceType == "END" then
+      local hour, minute = event.startTime.hour, event.startTime.minute
+      if hour < current.hour or (hour == current.hour and minute < current.minute) then
+        eventInfo[event.eventID] = true
+      end
+    else -- "ONGOING"
+      eventInfo[event.eventID] = true
+    end
+  end
+end
 
 local function GetLastLockedInstance()
   local numsaved = GetNumSavedInstances()
@@ -1715,8 +1748,11 @@ local function ShowQuestTooltip(cell, arg, ...)
   local zonename, id
   for id,qi in pairs(t.Quests) do
     if (not isDaily) == (not qi.isDaily) then
-      zonename = qi.Zone and qi.Zone.name or ""
-      table.insert(ql,zonename.." # "..id)
+      -- Timewalking Item Quests only show during Timewalking Weeks
+      if (not TimewalkingItemQuest[id]) or eventInfo[TimewalkingItemQuest[id]] then
+        zonename = qi.Zone and qi.Zone.name or ""
+        table.insert(ql,zonename.." # "..id)
+      end
     end
   end
   table.sort(ql)
@@ -2238,7 +2274,7 @@ end
 function core:OnInitialize()
   local versionString = GetAddOnMetadata(addonName, "version")
   --[===[@debug@
-  if versionString == "8.0.8-12-g5aba58d" then
+  if versionString == "8.0.8-13-g1f37e4b" then
     versionString = "Dev"
   end
   --@end-debug@]===]
@@ -2303,6 +2339,7 @@ function core:OnInitialize()
   end
   RequestRaidInfo() -- get lockout data
   RequestLFDPlayerLockInfo()
+  C_Calendar.OpenCalendar() -- Request for event info, not actually open the calendar
   addon.dataobject = addon.LDB and addon.LDB:NewDataObject("SavedInstances", {
     text = addonAbbrev,
     type = "launcher",
@@ -3587,6 +3624,7 @@ function core:ShowTooltip(anchorframe)
   end
 
   do
+    UpdateEventInfo() -- fetch current event info before rendering
     local showd, showw
     for toon, t in cpairs(addon.db.Toons, true) do
       local dc, wc = addon:QuestCount(toon)
