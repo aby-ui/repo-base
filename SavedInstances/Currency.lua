@@ -112,7 +112,7 @@ function addon:UpdateCurrency()
     else
       local ci = t.currency[idx] or {}
       ci.amount, ci.earnedThisWeek, ci.weeklyMax, ci.totalMax = amount, earnedThisWeek, weeklyMax, totalMax
-      -- handle special currency 
+      -- handle special currency
       if idx == 1129 then -- WoD - Seal of Tempered Fate
         ci.weeklyMax = 3
         ci.earnedThisWeek = 0

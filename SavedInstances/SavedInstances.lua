@@ -63,6 +63,7 @@ local TimewalkingItemQuest = addon.TimewalkingItemQuest
 local scantt = addon.scantt
 local KeystonetoAbbrev = addon.KeystonetoAbbrev
 local KeystoneAbbrev = addon.KeystoneAbbrev
+local Emissaries = addon.Emissaries
 
 addon.Indicators = {
   ICON_STAR = ICON_LIST[1] .. "16:16:0:0|t",
@@ -315,17 +316,33 @@ addon.defaultDB = {
   -- level: string
   -- color: string
   -- link: string
+
   -- MythicKeyBest
   -- lastweeklevel: int
   -- ResetTime: expiry
   -- level: string
   -- weeklyReward: boolean
+
+  -- REMOVED
   -- DailyWorldQuest
   -- days[0,1,2]
   -- name
   -- dayleft
   -- questneed
   -- questdone
+
+  -- Emissary
+  -- [expansionLevel] = {
+  --   unlocked = (boolean),
+  --   days = {
+  --     [Day] = {
+  --       isComplete = isComplete
+  --       isFinish = isFinish,
+  --       questDone = questDone,
+  --       expiredTime = expiredTime,
+  --     },
+  --   },
+  -- }
 
   Indicators = {
     D1Indicator = "BLANK", -- indicator: ICON_*, BLANK
@@ -424,8 +441,10 @@ addon.defaultDB = {
     CurrencyEarned = true,
     MythicKey = true,
     MythicKeyBest = true,
-    DailyWorldQuest = true,
-    DailyWorldQuestAllNames = true,
+    Emissary6 = false, -- LEG Emissary
+    Emissary7 = true, -- BfA Emissary
+    EmissaryFullName = true,
+    EmissaryShowCompleted = true,
     AbbreviateKeystone = true,
   },
   Instances = { }, 	-- table key: "Instance name"; value:
@@ -456,6 +475,23 @@ addon.defaultDB = {
     AccountDaily = {},
     AccountWeekly = {},
   },
+  Emissary = {
+    Cache = {},
+    Expansion = {},
+  },
+  -- Track emissaries
+  -- Cache: [questID] = questName
+  -- Expansion:
+  -- [expansionLevel] = {
+  --   [1, 2, 3] = {
+  --     questID = {
+  --       ["Alliance"] = questID,
+  --       ["Horde"] = questID,
+  --     },
+  --     questNeed = questNeed
+  --     expiredTime = expiredTime
+  --   }
+  -- }
   RealmMap = {},
 }
 
@@ -1442,126 +1478,136 @@ function addon:UpdateToonData()
   for _,id in ipairs(addon.pvpdesertids) do
     t.pvpdesert = GetTimeToTime(select(6, SI_GetUnitDebuff("player",GetSpellInfo(id)))) or t.pvpdesert
     if t.pvpdesert then addon:updateSpellTip(id) end
-    end
+  end
+  for toon, ti in pairs(addon.db.Toons) do
+    if ti.LFG1 and (ti.LFG1 < now) then ti.LFG1 = nil end
+    if ti.LFG2 and (ti.LFG2 < now) then ti.LFG2 = nil end
+    if ti.pvpdesert and (ti.pvpdesert < now) then ti.pvpdesert = nil end
+    ti.Quests = ti.Quests or {}
+  end
+  local IL,ILe = GetAverageItemLevel()
+  if IL and tonumber(IL) and tonumber(IL) > 0 then -- can fail during logout
+    t.IL, t.ILe = tonumber(IL), tonumber(ILe)
+  end
+  local rating = (GetPersonalRatedInfo and GetPersonalRatedInfo(4))
+  t.RBGrating = tonumber(rating) or t.RBGrating
+  core:scan_item_cds()
+  -- Daily Reset
+  if nextreset and nextreset > time() then
     for toon, ti in pairs(addon.db.Toons) do
-      if ti.LFG1 and (ti.LFG1 < now) then ti.LFG1 = nil end
-      if ti.LFG2 and (ti.LFG2 < now) then ti.LFG2 = nil end
-      if ti.pvpdesert and (ti.pvpdesert < now) then ti.pvpdesert = nil end
-      ti.Quests = ti.Quests or {}
-    end
-    local IL,ILe = GetAverageItemLevel()
-    if IL and tonumber(IL) and tonumber(IL) > 0 then -- can fail during logout
-      t.IL, t.ILe = tonumber(IL), tonumber(ILe)
-    end
-    local rating = (GetPersonalRatedInfo and GetPersonalRatedInfo(4))
-    t.RBGrating = tonumber(rating) or t.RBGrating
-    core:scan_item_cds()
-    -- Daily Reset
-    if nextreset and nextreset > time() then
-      for toon, ti in pairs(addon.db.Toons) do
-        if not ti.DailyResetTime or (ti.DailyResetTime < time()) then
-          for id,qi in pairs(ti.Quests) do
-            if qi.isDaily then
-              ti.Quests[id] = nil
-            end
-          end
-          if ti.DailyWorldQuest then
-            if ti.DailyWorldQuest.days1 then
-              ti.DailyWorldQuest.days0 = ti.DailyWorldQuest.days1
-              ti.DailyWorldQuest.days0.dayleft = 0
-              ti.DailyWorldQuest.days1 = nil
-            end
-            if ti.DailyWorldQuest.days2 then
-              ti.DailyWorldQuest.days1 = ti.DailyWorldQuest.days2
-              ti.DailyWorldQuest.days1.dayleft = 1
-              ti.DailyWorldQuest.days2 = nil
-            end
-          end
-          ti.DailyResetTime = (ti.DailyResetTime and ti.DailyResetTime + 24*3600) or nextreset
-        end
-      end
-      t.DailyResetTime = nextreset
-      if not db.DailyResetTime or (db.DailyResetTime < time()) then -- AccountDaily reset
-        for id,qi in pairs(db.Quests) do
+      if not ti.DailyResetTime or (ti.DailyResetTime < time()) then
+        for id,qi in pairs(ti.Quests) do
           if qi.isDaily then
-            db.Quests[id] = nil
-          end
-      end
-      db.DailyResetTime = nextreset
-      end
-    end
-    -- Skill Reset
-    for toon, ti in pairs(addon.db.Toons) do
-      if ti.Skills then
-        for spellid, sinfo in pairs(ti.Skills) do
-          if sinfo.Expires and sinfo.Expires < time() then
-            ti.Skills[spellid] = nil
+            ti.Quests[id] = nil
           end
         end
-      end
-    end
-    -- Weekly Reset
-    nextreset = addon:GetNextWeeklyResetTime()
-    if nextreset and nextreset > time() then
-      for toon, ti in pairs(addon.db.Toons) do
-        if not ti.WeeklyResetTime or (ti.WeeklyResetTime < time()) then
-          ti.currency = ti.currency or {}
-          for _,idx in ipairs(currency) do
-            local ci = ti.currency[idx]
-            if ci and ci.earnedThisWeek then
-              ci.earnedThisWeek = 0
+        if ti.Emissary then
+          local expansionLevel, tbl
+          for expansionLevel, tbl in pairs(ti.Emissary) do
+            if tbl.unlocked then
+              tbl.days[1] = tbl.days[2]
+              tbl.days[2] = tbl.days[3]
+              tbl.days[3] = {
+                isComplete = false,
+                isFinish = false,
+                questDone = 0,
+              }
             end
           end
-          ti.WeeklyResetTime = (ti.WeeklyResetTime and ti.WeeklyResetTime + 7*24*3600) or nextreset
+        end
+        ti.DailyResetTime = (ti.DailyResetTime and ti.DailyResetTime + 24*3600) or nextreset
+      end
+    end
+    t.DailyResetTime = nextreset
+    if not db.DailyResetTime or (db.DailyResetTime < time()) then -- AccountDaily reset
+      for id,qi in pairs(db.Quests) do
+        if qi.isDaily then
+          db.Quests[id] = nil
+        end
+    end
+    if addon.db.Emissary and addon.db.Emissary.Expansion then
+      local expansionLevel, tbl
+      for expansionLevel, tbl in pairs(addon.db.Emissary.Expansion) do
+        tbl[1] = tbl[2]
+        tbl[2] = tbl[3]
+        tbl[3] = nil
+      end
+    end
+    db.DailyResetTime = nextreset
+    end
+  end
+  -- Skill Reset
+  for toon, ti in pairs(addon.db.Toons) do
+    if ti.Skills then
+      for spellid, sinfo in pairs(ti.Skills) do
+        if sinfo.Expires and sinfo.Expires < time() then
+          ti.Skills[spellid] = nil
         end
       end
-      t.WeeklyResetTime = nextreset
     end
+  end
+  -- Weekly Reset
+  nextreset = addon:GetNextWeeklyResetTime()
+  if nextreset and nextreset > time() then
     for toon, ti in pairs(addon.db.Toons) do
-      for id,qi in pairs(ti.Quests) do
-        if not qi.isDaily and (qi.Expires or 0) < time() then
-          ti.Quests[id] = nil
+      if not ti.WeeklyResetTime or (ti.WeeklyResetTime < time()) then
+        ti.currency = ti.currency or {}
+        for _,idx in ipairs(currency) do
+          local ci = ti.currency[idx]
+          if ci and ci.earnedThisWeek then
+            ci.earnedThisWeek = 0
+          end
         end
-        if QuestExceptions[id] == "Regular" then -- adjust exceptions
-          ti.Quests[id] = nil
-        end
+        ti.WeeklyResetTime = (ti.WeeklyResetTime and ti.WeeklyResetTime + 7*24*3600) or nextreset
       end
     end
-    for toon, ti in pairs(addon.db.Toons) do
-      if ti.MythicKey and (ti.MythicKey.ResetTime or 0) < time() then
-        ti.MythicKey = {}
-      end
-    end
-    for toon, ti in pairs(addon.db.Toons) do
-      if ti.MythicKeyBest and (ti.MythicKeyBest.ResetTime or 0) < time() then
-        if ti.MythicKeyBest.level and ti.MythicKeyBest.level > 0 then
-          ti.MythicKeyBest.LastWeekLevel = ti.MythicKeyBest.level
-          ti.MythicKeyBest.WeeklyReward = true
-        end
-        ti.MythicKeyBest.level = 0
-        ti.MythicKeyBest.ResetTime = addon:GetNextWeeklyResetTime()
-      end
-    end
-    for id,qi in pairs(db.Quests) do -- AccountWeekly reset
+    t.WeeklyResetTime = nextreset
+  end
+  for toon, ti in pairs(addon.db.Toons) do
+    for id,qi in pairs(ti.Quests) do
       if not qi.isDaily and (qi.Expires or 0) < time() then
-        db.Quests[id] = nil
+        ti.Quests[id] = nil
+      end
+      if QuestExceptions[id] == "Regular" then -- adjust exceptions
+        ti.Quests[id] = nil
+      end
     end
+  end
+  for toon, ti in pairs(addon.db.Toons) do
+    if ti.MythicKey and (ti.MythicKey.ResetTime or 0) < time() then
+      ti.MythicKey = {}
     end
-    addon:UpdateCurrency()
-    local zone = GetRealZoneText()
-    if zone and #zone > 0 then
-      t.Zone = zone
+  end
+  for toon, ti in pairs(addon.db.Toons) do
+    if ti.MythicKeyBest and (ti.MythicKeyBest.ResetTime or 0) < time() then
+      if ti.MythicKeyBest.level and ti.MythicKeyBest.level > 0 then
+        ti.MythicKeyBest.LastWeekLevel = ti.MythicKeyBest.level
+        ti.MythicKeyBest.WeeklyReward = true
+      end
+      ti.MythicKeyBest.level = 0
+      ti.MythicKeyBest.ResetTime = addon:GetNextWeeklyResetTime()
     end
-    local lrace, race = UnitRace("player")
-    local faction, lfaction = UnitFactionGroup("player")
-    t.Faction = faction
-    if race == "Pandaren" then
-      t.Race = lrace.." ("..lfaction..")"
-    else
-      t.Race = lrace
+  end
+  for id,qi in pairs(db.Quests) do -- AccountWeekly reset
+    if not qi.isDaily and (qi.Expires or 0) < time() then
+      db.Quests[id] = nil
     end
+  end
+  addon:UpdateCurrency()
+  local zone = GetRealZoneText()
+  if zone and #zone > 0 then
+    t.Zone = zone
+  end
+  local lrace, race = UnitRace("player")
+  local faction, lfaction = UnitFactionGroup("player")
+  t.Faction = faction
+  if race == "Pandaren" then
+    t.Race = lrace.." ("..lfaction..")"
+  else
+    t.Race = lrace
+  end
 
-    t.LastSeen = time()
+  t.LastSeen = time()
 end
 
 function addon:QuestIsDarkmoonMonthly()
@@ -1815,34 +1861,58 @@ local function ShowSkillTooltip(cell, arg, ...)
 end
 
 local function ShowEmissarySummary(cell, arg, ...)
-  local day = arg
-  local buffer, flag = {}, false
+  local expansionLevel, day = unpack(arg)
+  local tbl = {}
+  local cache, buffer, flag = {}, {}, false
   openIndicator(2, "LEFT", "RIGHT")
-  indicatortip:AddHeader(L["Emissary quests"], "")
+  indicatortip:AddHeader(L["Emissary quests"], "+" .. (day - 1) .. " " .. L["Day"])
   local toon, t
   for toon, t in pairs(addon.db.Toons) do
-    local info = t.DailyWorldQuest["days" .. day]
-    if info and not info.iscompleted then
-      if not buffer[info.name] then buffer[info.name] = {} end
-      table.insert(buffer[info.name], toon)
-      flag = true
+    local info = (
+      t.Emissary and t.Emissary[expansionLevel] and
+      t.Emissary[expansionLevel].days and t.Emissary[expansionLevel].days[day]
+    )
+    if info then
+      tbl[t.Faction] = true
     end
   end
-  if not flag then
+  if (not tbl.Alliance and not tbl.Horde) or (not addon.db.Emissary.Expansion[expansionLevel][day]) then
     indicatortip:AddLine(L["Emissary Missing"], "")
   else
-    local name, tbl
-    for name, tbl in pairs(buffer) do
-      indicatortip:AddLine(name, "")
-      for _, toon in pairs(tbl) do
-        t = addon.db.Toons[toon]
-        local info, str = t.DailyWorldQuest["days" .. day]
-        if info.isfinish then
-          str = "\124T"..READY_CHECK_WAITING_TEXTURE..":0|t"
-        else
-          str = info.questdone .. "/" .. info.questneed
+    local globalInfo = addon.db.Emissary.Expansion[expansionLevel][day]
+    local merge = (globalInfo.questID.Alliance == globalInfo.questID.Horde) and true or false
+    local header, fac, toon, t = false
+    for fac, _ in pairs(tbl) do
+      if merge == false then header = false end
+      for toon, t in pairs(addon.db.Toons) do
+        if t.Faction == fac then
+          local info = (
+            t.Emissary and t.Emissary[expansionLevel] and
+            t.Emissary[expansionLevel].days and t.Emissary[expansionLevel].days[day]
+          )
+          if info then
+            if header == false then
+              local name = addon.db.Emissary.Cache[globalInfo.questID[fac]]
+              if not name then
+                name = L["Emissary Missing"]
+              end
+              indicatortip:AddLine(name)
+              header = true
+            end
+            local text
+            if info.isComplete == true then
+              text = "\124T"..READY_CHECK_READY_TEXTURE..":0|t"
+            elseif info.isFinish == true then
+              text = "\124T"..READY_CHECK_WAITING_TEXTURE..":0|t"
+            else
+              text = info.questDone
+              if globalInfo.questNeed then
+                text = text .. "/" .. globalInfo.questNeed
+              end
+            end
+            indicatortip:AddLine(ClassColorise(t.Class, toon), text)
+          end
         end
-        indicatortip:AddLine(ClassColorise(t.Class, toon), str)
       end
     end
   end
@@ -2265,6 +2335,7 @@ function core:toonInit()
   ti.Order = ti.Order or 50
   ti.Quests = ti.Quests or {}
   ti.Skills = ti.Skills or {}
+  ti.DailyWorldQuest = nil -- REMOVED
   -- try to get a reset time, but don't overwrite existing, which could break quest list
   -- real update comes later in UpdateToonData
   ti.DailyResetTime = ti.DailyResetTime or addon:GetNextDailyResetTime()
@@ -2274,7 +2345,7 @@ end
 function core:OnInitialize()
   local versionString = GetAddOnMetadata(addonName, "version")
   --[===[@debug@
-  if versionString == "8.0.8-13-g1f37e4b" then
+  if versionString == "8.0.8-34-g47202ee" then
     versionString = "Dev"
   end
   --@end-debug@]===]
@@ -2296,6 +2367,7 @@ function core:OnInitialize()
   core:toonInit()
   db.Lockouts = nil -- deprecated
   db.History = db.History or {}
+  db.Emissary = db.Emissary or addon.defaultDB.Emissary
   db.Quests = db.Quests or addon.defaultDB.Quests
   db.QuestDB = db.QuestDB or addon.defaultDB.QuestDB
   for name,default in pairs(addon.defaultDB.Tooltip) do
@@ -3781,54 +3853,80 @@ function core:ShowTooltip(anchorframe)
     end
   end
 
-  if addon.db.Tooltip.DailyWorldQuest or showall then
-    local show = {}
-    for toon, t in cpairs(addon.db.Toons, true) do
-      if t.DailyWorldQuest then
-        for day,DailyInfo in pairs(t.DailyWorldQuest) do
-          if DailyInfo.name then
-            if(not show[DailyInfo.dayleft] or show[DailyInfo.dayleft] == L["Emissary Missing"]) then
-              show[DailyInfo.dayleft] = DailyInfo.name
-            elseif (
-              addon.db.Tooltip.DailyWorldQuestAllNames and
-              (not show[DailyInfo.dayleft]:find("/")) and
-              (show[DailyInfo.dayleft] ~= DailyInfo.name) and
-              (DailyInfo.name ~= L["Emissary Missing"])
-            ) then
-              -- shows both factions emissary name
-              show[DailyInfo.dayleft] = show[DailyInfo.dayleft] .. " / " .. DailyInfo.name
+  local firstEmissary, expansionLevel = true
+  for expansionLevel, _ in pairs(addon.Emissaries) do
+    if addon.db.Tooltip["Emissary" .. expansionLevel] or showall then
+      local show, tooltips = {
+        [1] = {},
+        [2] = {},
+        [3] = {},
+      }, {}
+      for toon, t in cpairs(addon.db.Toons, true) do
+        if t.Emissary and t.Emissary[expansionLevel] and t.Emissary[expansionLevel].unlocked then
+          local day, info
+          for day, info in pairs(t.Emissary[expansionLevel].days) do
+            if showall or addon.db.Tooltip.EmissaryShowCompleted == true or info.isComplete == false then
+              if not show[day].first then
+                show[day].first = t.Faction
+              elseif show[day].first ~= t.Faction then
+                show[day].second = t.Faction
+              end
             end
-            addColumns(columns, toon, tooltip)
           end
+          addColumns(columns, toon, tooltip)
         end
       end
-    end
 
-    if not firstcategory and addon.db.Tooltip.CategorySpaces then
-            addsep()
-    end
-    if addon.db.Tooltip.ShowCategories then
-      tooltip:AddLine(YELLOWFONT .. L["Emissary Quests"] .. FONTEND)
-    end
-    for dayleft = 0 , 2 do
-      if show[dayleft] then
-        local showday = show[dayleft]
-			  show[dayleft] = tooltip:AddLine(GOLDFONT .. showday .. " (+" .. dayleft .. " " .. L["Day"] .. ")" .. FONTEND)
-        tooltip:SetCellScript(show[dayleft], 1, "OnEnter", ShowEmissarySummary, dayleft)
-        tooltip:SetCellScript(show[dayleft], 1, "OnLeave", CloseTooltips)
+      if not firstcategory and addon.db.Tooltip.CategorySpaces and firstEmissary == true then
+        addsep()
       end
-    end
-    for toon, t in cpairs(addon.db.Toons, true) do
-      if t.DailyWorldQuest then
-        for day,DailyInfo in pairs(t.DailyWorldQuest) do
-          if show[DailyInfo.dayleft] then
-            local col = columns[toon..1]
-            if DailyInfo.iscompleted == true then
-              tooltip:SetCell(show[DailyInfo.dayleft], col, "\124T"..READY_CHECK_READY_TEXTURE..":0|t", "CENTER", maxcol)
-            elseif DailyInfo.isfinish == true then
-              tooltip:SetCell(show[DailyInfo.dayleft], col, "\124T"..READY_CHECK_WAITING_TEXTURE..":0|t", "CENTER", maxcol)
-            else
-              tooltip:SetCell(show[DailyInfo.dayleft], col, DailyInfo.questdone .. "/" .. DailyInfo.questneed , "CENTER",maxcol)
+      if addon.db.Tooltip.ShowCategories and firstEmissary == true then
+        tooltip:AddLine(YELLOWFONT .. L["Emissary Quests"] .. FONTEND)
+      end
+      firstEmissary = false
+
+      local day, tbl
+      for day, tbl in pairs(show) do
+        if show[day].first then
+          local name
+          if not addon.db.Emissary.Expansion[expansionLevel][day] then
+            name = L["Emissary Missing"]
+          else
+            local questID = addon.db.Emissary.Expansion[expansionLevel][day].questID[show[day].first]
+            name = addon.db.Emissary.Cache[questID]
+            if addon.db.Tooltip.EmissaryFullName and show[day].second then
+              local secondQuestID = addon.db.Emissary.Expansion[expansionLevel][day].questID[show[day].second]
+              if secondQuestID ~= questID and addon.db.Emissary.Cache[secondQuestID] then
+                name = name .. " / " .. addon.db.Emissary.Cache[secondQuestID]
+              end
+            end
+          end
+          tooltips[day] = tooltip:AddLine(GOLDFONT .. name .. " (+" .. (day - 1) .. " " .. L["Day"] .. ")" .. FONTEND)
+          tooltip:SetCellScript(tooltips[day], 1, "OnEnter", ShowEmissarySummary, {expansionLevel, day})
+          tooltip:SetCellScript(tooltips[day], 1, "OnLeave", CloseTooltips)
+        end
+      end
+
+      for toon, t in cpairs(addon.db.Toons, true) do
+        if t.Emissary and t.Emissary[expansionLevel] and t.Emissary[expansionLevel].unlocked then
+          local day, info
+          for day, info in pairs(t.Emissary[expansionLevel].days) do
+            if tooltips[day] then
+              local col, text = columns[toon..1]
+              if info.isComplete == true then
+                text = "\124T"..READY_CHECK_READY_TEXTURE..":0|t"
+              elseif info.isFinish == true then
+                text = "\124T"..READY_CHECK_WAITING_TEXTURE..":0|t"
+              else
+                text = info.questDone
+                if (
+                  addon.db.Emissary.Expansion[expansionLevel][day] and
+                  addon.db.Emissary.Expansion[expansionLevel][day].questNeed
+                ) then
+                  text = text .. "/" .. addon.db.Emissary.Expansion[expansionLevel][day].questNeed
+                end
+              end
+              tooltip:SetCell(tooltips[day], col, text, "CENTER", maxcol)
             end
           end
         end

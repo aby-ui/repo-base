@@ -276,7 +276,7 @@ function rematch:ShowPetCard(parent,petID,force)
 	if petInfo.isRevoked then
 		card:AddStat(L["\124cffff0000Revoked"],"Interface\\Buttons\\UI-GroupLoot-Pass-Down",0,1,0,1,L["Revoked"],L["This pet has been revoked, which means Blizzard withdrew your ability to use this pet.\n\nThis commonly happens when a pets no longer meet a condition for ownership, such as the Core Hound Pup requiring an authenticator attached to the account."])
 	end
-	if not petInfo.isSummonable then
+	if not petInfo.isSummonable and petInfo.owned then
 		card:AddStat(L["Can't Summon"],"Interface\\Buttons\\UI-GroupLoot-Pass-Down",0,1,0,1,L["Can't Summon"],L["This pet can't be summoned.\n\nA common reason is a faction restriction, such as the opposing faction's version of the Moonkin Hatchling."])
 	end
 

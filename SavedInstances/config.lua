@@ -360,73 +360,79 @@ function module:BuildOptions()
             desc = L["Combine LFR"],
             order = 23.95,
           },
-          MiscHeader = {
+          EmissaryHeader = {
             order = 30,
+            type = "header",
+            name = L["Emissary quests"],
+          },
+          EmissaryFullName = {
+            type = "toggle",
+            order = 39.1,
+            name = L["Show all emissary names"],
+            desc = L["Show both factions' emissay name"],
+          },
+          EmissaryShowCompleted = {
+            type = "toggle",
+            order = 39.2,
+            name = L["Show when completed"],
+            desc = L["Show emissary line when all quests completed"],
+          },
+          MiscHeader = {
+            order = 40,
             type = "header",
             name = L["Miscellaneous Tracking"],
           },
           TrackDailyQuests = {
             type = "toggle",
-            order = 33,
+            order = 43,
             name = L["Daily Quests"],
           },
           TrackWeeklyQuests = {
             type = "toggle",
-            order = 33.5,
+            order = 43.5,
             name = L["Weekly Quests"],
-          },
-          DailyWorldQuest = {
-            type = "toggle",
-            order = 33.6,
-            name = L["Emissary quests"],
-          },
-          DailyWorldQuestAllNames = {
-            type = "toggle",
-            order = 33.65,
-            name = L["Show all emissary names"],
-            desc = L["Show both factions' emissay name"],
           },
           TrackSkills = {
             type = "toggle",
-            order = 33.7,
+            order = 43.7,
             name = L["Trade skills"],
           },
           TrackBonus = {
             type = "toggle",
-            order = 33.8,
+            order = 43.8,
             name = L["Bonus rolls"],
           },
           AugmentBonus = {
             type = "toggle",
-            order = 33.9,
+            order = 43.9,
             name = L["Bonus loot frame"],
           },
           TrackLFG = {
             type = "toggle",
-            order = 34,
+            order = 44,
             name = L["LFG cooldown"],
             desc = L["Show cooldown for characters to use LFG dungeon system"],
           },
           TrackDeserter = {
             type = "toggle",
-            order = 35,
+            order = 45,
             name = L["Battleground Deserter"],
             desc = L["Show cooldown for characters to use battleground system"],
           },
           TrackPlayed = {
             type = "toggle",
-            order = 36,
+            order = 46,
             name = L["Time /played"],
           },
           MythicKey = {
             type = "toggle",
-            order = 37,
+            order = 47,
             name = L["Mythic Keystone"],
             desc = L["Track Mythic keystone acquisition"],
           },
           MythicKeyBest = {
             type = "toggle",
-            order = 37.5,
+            order = 47.5,
             name = L["Mythic Best"],
             desc = L["Track Mythic keystone best run"],
           },
@@ -812,6 +818,14 @@ function module:BuildOptions()
   core.Options = core.Options or {} -- allow option table rebuild
   for k,v in pairs(opts) do
     core.Options[k] = v
+  end
+  local expansion
+  for expansion, _ in pairs(SavedInstances.Emissaries) do
+    core.Options.args.General.args["Emissary" .. expansion] = {
+      type = "toggle",
+      order = 31 + expansion * 0.1,
+      name = _G["EXPANSION_NAME" .. expansion],
+    }
   end
   for i, curr in ipairs(SavedInstances.currency) do
     local name,_,tex = GetCurrencyInfo(curr)

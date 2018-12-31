@@ -320,7 +320,7 @@ function rematch:PLAYER_TARGET_CHANGED()
 			end
 			-- if PromptToLoad enabled, and this team isn't loaded, and target panel not on screen, and we can swap pets, prompt to load
 			if settings.PromptToLoad or settings.AutoLoad then
-				if saved[npcID] and settings.loadedTeam~=npcID and (npcID~=rematch.lastInteractNpcID or settings.PromptAlways) and not (InCombatLockdown() or C_PetBattles.IsInBattle() or C_PetBattles.GetPVPMatchmakingInfo()) then
+				if saved[npcID] and not (InCombatLockdown() or C_PetBattles.IsInBattle() or C_PetBattles.GetPVPMatchmakingInfo()) then
 					if settings.PromptToLoad and (not rematch.LoadoutPanel:IsVisible() and not rematch.MiniPanel:IsVisible()) then
 						if settings.PromptWithMinimized then
 							rematch:AutoShow()
@@ -335,7 +335,7 @@ function rematch:PLAYER_TARGET_CHANGED()
 						if settings.AutoLoadShow and (not rematch.LoadoutPanel:IsVisible() and not rematch.MiniPanel:IsVisible()) then
 							rematch:AutoShow()
 						end
-						rematch:LoadTeam(npcID)
+						rematch:loadSimilarTeam(npcID)
 						rematch:SetLastInteractNpcID(npcID)
 					end
 				end
@@ -368,7 +368,7 @@ function rematch:UPDATE_MOUSEOVER_UNIT()
 				if settings.AutoLoadShow and (not rematch.LoadoutPanel:IsVisible() and not rematch.MiniPanel:IsVisible()) then
 					rematch:AutoShow()
 				end
-				rematch:LoadTeam(npcID) -- then load it
+				rematch:loadSimilarTeam(npcID) -- then load it
 				rematch:SetLastInteractNpcID(npcID)
 			end
 		end
@@ -505,6 +505,10 @@ function rematch:PET_BATTLE_CLOSE()
 		end
 		C_Timer.After(0,rematch.UpdateQueue) -- waiting a frame (client thinks we can't swap pets right now)
 		rematch:UpdateAutoLoadState()
+		
+		C_Timer.After(0.05,function() 
+			rematch:loadSimilarTeam(rematch.recentTarget) 
+			end)	
 	end
 end
 

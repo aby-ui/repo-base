@@ -292,10 +292,10 @@ local questButton_OnLeave = function (self)
 		if (WorldMapFrame.mapID == WorldQuestTracker.MapData.ZoneIDs.AZEROTH) then
 			local map = WorldQuestTrackerDataProvider:GetMap()
 			for pin in map:EnumeratePinsByTemplate ("WorldQuestTrackerWorldMapPinTemplate") do
-				map:RemovePin (pin)
 				if (pin.Child) then
 					pin.Child:Hide()
 				end
+				map:RemovePin (pin)
 			end
 		end
 		wipe (WorldQuestTracker.WorldMapWidgetsLazyUpdateFrame.ShownQuests)
@@ -1438,10 +1438,10 @@ function WorldQuestTracker.UpdateWorldQuestsOnWorldMap (noCache, showFade, isQue
 	else
 		local map = WorldQuestTrackerDataProvider:GetMap()
 		for pin in map:EnumeratePinsByTemplate ("WorldQuestTrackerWorldMapPinTemplate") do
-			map:RemovePin (pin)
-			if (pin.Child) then
+		if (pin.Child) then
 				pin.Child:Hide()
 			end
+			map:RemovePin (pin)
 		end
 	end
 	
@@ -1571,6 +1571,17 @@ local scheduledIconUpdate = function (questTable)
 	local pinScale = DF:MapRangeClamped (rangeValues[1], rangeValues[2], rangeValues[3], rangeValues[4], mapScale)
 	button:SetScale (pinScale + WorldQuestTracker.db.profile.world_map_config.onmap_scale_offset)
 	--/dump WorldQuestTrackerAddon.db.profile.world_map_config.onmap_scale_offset
+	
+	--debug add a small red square to notify this is a world widget
+	--[=[
+	if (not button.DebugTexture) then
+		local debugTexture = button:CreateTexture (nil, "overlay")
+		debugTexture:SetColorTexture (1, 0, 0)
+		debugTexture:SetSize (20, 20)
+		debugTexture:SetPoint ("topright", button, "topleft", -5, 0)
+		button.DebugTexture = debugTexture
+	end
+	--]=]
 	
 --	if (button.questID ~= questID and HaveQuestData (questID)) then
 		--> can cache here, at this point the quest data should already be in the cache

@@ -576,7 +576,7 @@ end
 -- returns true if the open menu is for a pet panel pet
 function rmf:ForPetPanel()
 	local parent = rematch:GetMenuParent():GetParent()
-	return parent==RematchPetListScrollFrameScrollChild or parent:GetParent()==RematchPetListScrollFrameScrollChild
+	return parent and parent:GetParent() and parent:GetParent()==Rematch.PetPanel.List.ScrollFrame
 end
 
 -- returns true if the petID (can be a speciesID) is hidden

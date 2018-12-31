@@ -25,13 +25,14 @@ end)
 rematch.notableNames = {[1]=L["Imported Team"]} -- name of NPCs, indexed by NPC IDs
 
 -- groups are listed in reverse order on the menu (most recent content at top)
+-- if a group is removed, make it false and make sure no targets have its index
 rematch.notableGroups = {
 	[0] = OTHER, -- Little Tommy Newcomer, Jeremy Feasel, Christoph VonFeasel
 	[1] = L["Eastern Kingdom"],
 	[2] = L["Kalimdor"],
 	[3] = L["Outland"],
 	[4] = L["Northrend"],
-	[5] = L["Cataclysm"],
+	[5] = false, -- was Cataclysm
 	[6] = L["Pandaria"],
 	[7] = L["Beasts of Fable"],
 	[8] = L["Celestial Tournament"],
@@ -51,14 +52,19 @@ rematch.notableGroups = {
 	[22] = L["Argus"],
 	[23] = L["Zandalar"],
 	[24] = L["Kul Tiras"],
+	[25] = L["Gnomeregan"], 
 }
 
 rematch.notableNPCs = {
 
 	-- Other
+	{ L["Darkmoon Faire"], 0 },
 	{ 85519, 0, 1475,1476,1477 }, -- Christoph VonFeasel
 	{ 67370, 0, 1067,1065,1066 }, -- Jeremy Feasel
+	{ L["Timeless Isle"], 0 },
 	{ 73626, 0, 1339 }, -- Little Tommy Newcomer
+	{ L["Maelstrom"], 0 },
+	{ 66815, 0, 984,983,985 }, -- Bordin Steadyfist
 
 	-- Eastern Kingdom
    { 124617, 1, 2068,2067,2066 }, -- Environeer Bert
@@ -74,6 +80,7 @@ rematch.notableNPCs = {
 	{ 65651, 1, 878,877,879 }, -- Lindsay
 	{ 65648, 1, 875,876,874 }, -- Old MacDonald
 	{ 63194, 1, 885,884,883 }, -- Steven Lisbane
+	{ 66822, 1, 987,986,988 }, -- Goz Banefury
 
 	-- Kalimdor
 	{ 115286, 2, 1983,1981,1982 }, -- Crysa
@@ -89,6 +96,8 @@ rematch.notableNPCs = {
 	{ 66442, 2, 922,923,921 }, -- Zoltan
 	{ 66137, 2, 897,899,898 }, -- Zonya the Sadist
 	{ 66126, 2, 889,890 }, -- Zunta
+	{ 66819, 2, 982,980,981 }, -- Brok
+	{ 66824, 2, 989,991,990 }, -- Obalis
 
 	-- Outland
 	{ 66557, 3, 964,963,962 }, -- Bloodknight Antari
@@ -106,10 +115,6 @@ rematch.notableNPCs = {
 	{ 66638, 4, 973,971,972 }, -- Okrut Dragonwaste
 
 	-- Cataclysm
-	{ 66815, 5, 984,983,985 }, -- Bordin Steadyfist
-	{ 66819, 5, 982,980,981 }, -- Brok
-	{ 66822, 5, 987,986,988 }, -- Goz Banefury
-	{ 66824, 5, 989,991,990 }, -- Obalis
 
 	-- Pandaria
 	{ 66741, 6, 1012,1011,1010 }, -- Aki the Chosen
@@ -348,6 +353,20 @@ rematch.notableNPCs = {
 	{141002, 24, 2220, 2221, 2222}, -- Ellie Vern
 	{141046, 24, 2223, 2225, 2226}, -- Leana Darkwind
 
+	-- Gnomeregan
+	{ 146001, 25, 2501 }, -- Prototype Annoy-O-Tron
+	{ 146182, 25, 2503 }, -- Living Sludge
+	{ 146183, 25, 2502 }, -- Living Napalm
+	{ 146181, 25, 2504 }, -- Living Permafrost
+	{ 146932, 25, 2497, 2498, 2499 }, -- Door Control Console
+	{ 145971, 25, 2486 }, -- Cockroach
+	{ 145968, 25, 2485 }, -- Leper Rat
+	{ 146005, 25, 2495 }, -- Bloated Leper Rat
+	{ 146004, 25, 2494 }, -- Gnomeregan Guard Mechanostrider
+	{ 146003, 25, 2493 }, -- Gnomeregan Guard Tiger
+	{ 146002, 25, 2492 }, -- Gnomeregan Guard Wolf
+	{ 145988, 25, 2488 }, -- Pulverizer Bot Mk 60001
+
 }
 
 -- table of npcID's and the npcID they should actually refer to
@@ -505,7 +524,9 @@ function rematch:CreateNpcMenus()
 	local menu = {}
 	-- create "NotableNPCs" to display each group
 	for i=#rematch.notableGroups,0,-1 do
-		tinsert(menu,{text=rematch.notableGroups[i],subMenu=format("NotableSubMenu%02d",i)})
+		if rematch.notableGroups[i] then
+			tinsert(menu,{text=rematch.notableGroups[i],subMenu=format("NotableSubMenu%02d",i)})
+		end
 	end
 	tinsert(menu,{text=L["Help"], hidden=function() return RematchSettings.HideMenuHelp or rematch:GetMenuParent()~=RematchLoadoutPanel.Target.TargetButton end, stay=true, icon="Interface\\Common\\help-i", iconCoords={0.15,0.85,0.15,0.85}, tooltipTitle=L["Noteworthy Targets"], tooltipBody=L["These are noteworthy targets such as tamers and legendary pets.\n\nChoose one to view the pets you would battle.\n\nTargets with a \124TInterface\\RaidFrame\\ReadyCheck-Ready:14\124t already have a team saved."]})
 

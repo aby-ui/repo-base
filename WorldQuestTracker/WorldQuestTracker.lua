@@ -1057,6 +1057,130 @@ end
 
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------
+--> slash commands
+
+SLASH_WQTRACKER1 = "/wqt"
+SLASH_WQTRACKER2 = "/worldquesttracker"
+
+function SlashCmdList.WQTRACKER (msg, editbox)
+
+	
+
+	if (msg == "info") then
+		local widget = GetMouseFocus()
+		
+		if (widget) then
+			local info = {}
+			
+			--quest info
+			tinsert (info, "Name: " .. (widget.GetName and widget:GetName() or "-No Name-"))
+			
+			if (widget.questID) then
+				local title, factionID, tagID, tagName, worldQuestType, rarity, isElite, tradeskillLineIndex, tagID, tagName, worldQuestType, rarity, isElite, tradeskillLineIndex, allowDisplayPastCritical, gold, goldFormated, rewardName, rewardTexture, numRewardItems, itemName, itemTexture, itemLevel, quantity, quality, isUsable, itemID, isArtifact, artifactPower, isStackable, stackAmount = WorldQuestTracker.GetOrLoadQuestData (widget.questID)
+				tinsert (info, "QuestID: " .. widget.questID .. " Quest Name: " .. (title or "-No Name-"))
+			else
+				tinsert (info, "QuestID: no questID found")
+			end
+			
+			--flags
+			tinsert (info, "Is Rounded 'Zone' World: " .. (widget.IsWorldZoneQuestButton and "true" or "false"))
+			tinsert (info, "Is Zone Summary: " .. (widget.IsZoneSummaryQuestButton and "true" or "false"))
+			tinsert (info, "")
+			
+
+			--is on tracker
+			tinsert (info, "Is on Tracker: " .. (WorldQuestTracker.IsQuestBeingTracked (widget.questID) and "true" or "false"))
+			
+			--zone caches
+			tinsert (info, "Is in Zone QuestID Cache: " .. (WorldQuestTracker.CurrentZoneQuests [widget.questID or 0] and "true" or "false"))
+			
+			local inZoneWidgetsCache = false
+			for _, cachedElement in ipairs (WorldQuestTracker.Cache_ShownWidgetsOnZoneMap) do
+				if (cachedElement == widget) then
+					inZoneWidgetsCache = true
+				end
+			end
+			
+			tinsert (info, "Is in Zone Widget Cache: " .. (inZoneWidgetsCache and "true" or "false"))
+			
+			--world caches
+			local inWorldWidgetsCache = false
+			for _, cachedElement in pairs (WorldQuestTracker.WorldMapSmallWidgets) do
+				if (cachedElement == widget) then
+					inWorldWidgetsCache = true
+				end
+			end
+			tinsert (info, "Is in World Widget Cache: " .. (inWorldWidgetsCache and "true" or "false"))
+			
+			--pin data provider
+			tinsert (info, "")
+			
+			local map = WorldQuestTrackerDataProvider:GetMap()
+			
+			tinsert (info, "Pin Data Provider In Use: " .. (dataProviderPinInUse and "true" or "false"))
+			
+			local dataProviderPinInUse = false
+			for pin in map:EnumeratePinsByTemplate ("WorldQuestTrackerWorldMapPinTemplate") do
+				if (pin.Child == widget) then
+					dataProviderPinInUse = true
+				end
+			end
+			tinsert (info, "Pin Data Provider Widget is Child: " .. (dataProviderPinInUse and "true" or "false"))
+			
+			local dataProviderValidParenting1 = false
+			local dataProviderValidParenting2 = false
+			for _, cachedElement in pairs (WorldQuestTracker.WorldMapSmallWidgets) do
+				local pin = cachedElement:GetParent()
+				if (pin) then
+					if (pin.Child == cachedElement) then
+						dataProviderValidParenting1 = true
+					end
+					if (pin:IsShown()) then
+						dataProviderValidParenting2 = true
+					end
+				end
+			end
+			
+			tinsert (info, "Pin Data Provider Valid Parent: " .. (dataProviderValidParenting1 and "true" or "false"))
+			tinsert (info, "Pin Data Provide Is Shown: " .. (dataProviderValidParenting2 and "true" or "false"))
+			
+			--parent data
+			tinsert (info, "")
+			
+			local parent = widget:GetParent()
+			if (parent) then
+				tinsert (info, "Parent: " .. (parent.GetName and parent:GetName() or "-No Name-"))
+				tinsert (info, "Parent Is Shown: " .. (parent:IsShown() and "true" or "false"))
+				
+			else
+				tinsert (info, "Parent: -no parent-")
+			end
+			
+			--anchor
+			tinsert (info, "")
+			for i = 1, widget:GetNumPoints() do
+				local a, b, c, e, d = widget:GetPoint (i)
+				tinsert (info, "Point: " .. (type (a) == "table" and (a:GetName() or "-no name-") or a))
+				tinsert (info, "Point: " .. (type (b) == "table" and (b:GetName() or "-no name-") or b))
+				tinsert (info, "Point: " .. (type (c) == "table" and (c:GetName() or "-no name-") or c))
+				tinsert (info, "Point: " .. (type (d) == "table" and (d:GetName() or "-no name-") or d))
+				tinsert (info, "Point: " .. (type (e) == "table" and (e:GetName() or "-no name-") or e))
+			end
+			
+			
+			Details:DumpTable (info)
+			
+		end
+		
+		
+		
+	end
+end
+
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
 --> faction bounty
 
 --function WorldMapMixin:AddOverlayFrame(templateName, templateType, anchorPoint, relativeTo, relativePoint, offsetX, offsetY)

@@ -375,12 +375,12 @@ function WorldQuestTracker:TAXIMAP_OPENED()
 			local mapID, zoneID = C_TaskQuest.GetQuestZoneID (pin.questID)
 			
 			pin._WQT_Twin.questID = pin.questID
-			pin._WQT_Twin.numObjectives = pin.numObjectives
+			pin._WQT_Twin.numObjectives = pin.numObjectives or 1
 			pin._WQT_Twin.mapID = mapID
 			
 			pin._WQT_Twin.AnchorFrame.mapID = mapID
 			pin._WQT_Twin.questID = pin.questID
-			pin._WQT_Twin.AnchorFrame.numObjectives = pin.numObjectives
+			pin._WQT_Twin.AnchorFrame.numObjectives = pin.numObjectives or 1
 			
 			local isShowingQuests = WorldQuestTracker.db.profile.taxy_showquests
 			local isShowingOnlyTracked = WorldQuestTracker.db.profile.taxy_trackedonly
@@ -430,12 +430,12 @@ function WorldQuestTracker:TAXIMAP_OPENED()
 				questIDChanged = true
 			end
 			pin._WQT_Twin.questID = pin.questID
-			pin._WQT_Twin.numObjectives = pin.numObjectives
+			pin._WQT_Twin.numObjectives = pin.numObjectives or 1
 			local mapID, zoneID = C_TaskQuest.GetQuestZoneID (pin.questID)
 			pin._WQT_Twin.mapID = mapID
 			
 			pin._WQT_Twin.AnchorFrame.questID = pin.questID
-			pin._WQT_Twin.AnchorFrame.numObjectives = pin.numObjectives
+			pin._WQT_Twin.AnchorFrame.numObjectives = pin.numObjectives or 1
 			
 			local nextZoomOutScale, nextZoomInScale = FlightMapFrame.ScrollContainer:GetCurrentZoomRange()
 			
