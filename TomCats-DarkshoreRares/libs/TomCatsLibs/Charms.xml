@@ -49,8 +49,7 @@
         <Scripts>
             <OnLoad>
                     self:RegisterForDrag("LeftButton")
-                    local parent = self
-                    local parentName = parent:GetName()
+                    local name = self:GetName()
                     local isDragging = false
                     local tooltipIsShowing = false
                     local Ax, Ay, scale, top, right
@@ -61,19 +60,19 @@
 
                     local function RefreshMeasurements()
                         Ax, Ay = Minimap:GetCenter()
-                        scale = parent:GetEffectiveScale()
+                        scale = self:GetEffectiveScale()
                         right = UIParent:GetRight()
                         top = UIParent:GetTop()
                     end
 
                     local function ButtonDown()
-                        _G[parentName.."Icon"]:SetPoint("TOPLEFT", parent, "TOPLEFT", 8, -8);
-                        _G[parentName.."IconOverlay"]:Show();
+                        _G[name .. "Icon"]:SetPoint("TOPLEFT", self, "TOPLEFT", 8, -8);
+                        _G[name .. "IconOverlay"]:Show();
                     end
 
                     local function ButtonUp()
-                        _G[parentName.."Icon"]:SetPoint("TOPLEFT", parent, "TOPLEFT", 6, -6);
-                        _G[parentName.."IconOverlay"]:Hide();
+                        _G[name .. "Icon"]:SetPoint("TOPLEFT", self, "TOPLEFT", 6, -6);
+                        _G[name .. "IconOverlay"]:Hide();
                     end
 
                     local function OnMouseDown()
@@ -95,27 +94,27 @@
                         if (GetMinimapShape and GetMinimapShape() == "SQUARE") then
                             local x, y = math.cos(rad), math.sin(rad)
                             local h = 113.14
-                            x = math.max(-80, math.min(x*h, 80))
-                            y = math.max(-80, math.min(y*h, 80))
-                            parent:SetPoint("CENTER", Minimap, "CENTER", x, y)
+                            x = math.max(-80, math.min(x * h, 80))
+                            y = math.max(-80, math.min(y * h, 80))
+                            self:SetPoint("CENTER", Minimap, "CENTER", x, y)
                         else
                             local Cx = r * math.cos(rad)
                             local Cy = r * math.sin(rad)
-                            parent:SetPoint("CENTER", Minimap, "CENTER", Cx, Cy)
+                            self:SetPoint("CENTER", Minimap, "CENTER", Cx, Cy)
                         end
-                        local buttonRight = parent:GetRight()
+                        local buttonRight = self:GetRight()
                         if (buttonRight > right) then
-                            local point = { parent:GetPoint() }
-                            local adj = (buttonRight - right)  * scale
+                            local point = { self:GetPoint() }
+                            local adj = (buttonRight - right) * scale
                             point[4] = point[4] - adj
-                            parent:SetPoint(unpack(point))
+                            self:SetPoint(unpack(point))
                         end
-                        local buttonTop = parent:GetTop()
+                        local buttonTop = self:GetTop()
                         if (buttonTop > top) then
-                            local point = { parent:GetPoint() }
-                            local adj = (buttonTop - top)  * scale
+                            local point = { self:GetPoint() }
+                            local adj = (buttonTop - top) * scale
                             point[5] = point[5] - adj
-                            parent:SetPoint(unpack(point))
+                            self:SetPoint(unpack(point))
                         end
                     end
 
@@ -139,11 +138,11 @@
 
                     local function OnDragStart()
                         if (tooltipIsShowing) then
-                            parent.tooltip:Hide()
+                            self.tooltip:Hide()
                             tooltipIsShowing = false
                         end
                         RefreshMeasurements()
-                        parent:ClearAllPoints()
+                        self:ClearAllPoints()
                         isDragging = true
                     end
 
@@ -153,29 +152,29 @@
                     end
 
                     local function OnEnter()
-                        if (parent.tooltip and (not isDragging)) then
-                            parent.tooltip.Show(parent)
+                        if (self.tooltip and (not isDragging)) then
+                            self.tooltip.Show(self)
                             tooltipIsShowing = true
                         end
                     end
 
                     local function OnLeave()
-                        if (parent.tooltip) then
-                            parent.tooltip.Hide()
+                        if (self.tooltip) then
+                            self.tooltip.Hide()
                             tooltipIsShowing = false
                         end
                     end
 
-                    function parent:GetPreferences()
+                    function self:GetPreferences()
                         if (not preferences.position) then
-                            local _, _, _, Bx, By = parent:GetPoint()
+                            local _, _, _, Bx, By = self:GetPoint()
                             local Ax, Ay = Minimap:GetCenter()
                             preferences.position = math.atan2(By - Ay, Bx - Ax)
                         end
                         return preferences
                     end
 
-                    function parent:SetPreferences(savedPreferences)
+                    function self:SetPreferences(savedPreferences)
                         if (savedPreferences) then
                             if (savedPreferences.position and type(savedPreferences.position) == "number") then
                                 preferences = savedPreferences
@@ -188,7 +187,7 @@
                         end
                     end
 
-                    function parent:SetEnabled(enabled)
+                    function self:SetEnabled(enabled)
                         if (enabled) then
                             self:Show()
                             preferences.hidden = false
@@ -198,7 +197,7 @@
                         end
                     end
 
-                    function parent:SetHandler(handlerType, handler)
+                    function self:SetHandler(handlerType, handler)
                         handlers[handlerType] = handler
                     end
 

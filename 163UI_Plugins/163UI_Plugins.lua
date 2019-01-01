@@ -285,6 +285,8 @@ CoreDependCall("Blizzard_ChallengesUI", function()
     local crits, numCrits = {}, GetAchievementNumCriteria(13079)
     hooksecurefunc("ChallengesFrame_Update", function(self)
         table.wipe(crits)
+        local ar10 = select(4, GetAchievementInfo(13079))
+        local ar15 = select(4, GetAchievementInfo(13080))
         for i=1, numCrits do
             local name, _, _, complete = GetAchievementCriteriaInfo(13080, i==10 and 11 or i)
             if complete == 1 then
@@ -308,9 +310,9 @@ CoreDependCall("Blizzard_ChallengesUI", function()
                 end)
             end
             icon.tex:Show()
-            if crits[name] == 15 then
+            if ar15 or crits[name] == 15 then
                 icon.tex:SetAtlas("VignetteKillElite")
-            elseif crits[name] == 10 then
+            elseif ar10 or crits[name] == 10 then
                 icon.tex:SetAtlas("VignetteKill")
             else
                 icon.tex:Hide()

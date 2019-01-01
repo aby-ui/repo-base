@@ -560,7 +560,7 @@ if (TomCats and TomCats.Register) then
                 }
             },
             name = "Rares of Darkshore",
-            version = "1.2.3"
+            version = "1.2.4"
         }
     )
 end

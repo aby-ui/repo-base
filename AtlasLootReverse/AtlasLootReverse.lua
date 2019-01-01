@@ -209,7 +209,7 @@ function AtlasLootReverse:RebuildDatabase()
     for module_name,module in pairs(AtlasLoot.ItemDB.Storage) do
         for k, v in pairs(module) do
             if not k:find("^__") and type(v) == "table" then
-                if module_name == "AtlasLoot_PvP" then print(k) end
+                if module_name == "AtlasLoot_PvP" then print("PVP", k) end
                 local instance_name, instance_type = v:GetName(), module:GetContentTypes()[v.ContentType][1]
                 for i, boss in ipairs(v.items) do
                     local boss_name = v:GetNameForItemTable(i)
@@ -223,6 +223,10 @@ function AtlasLootReverse:RebuildDatabase()
                                 --if not item_id then print(source, module_name, k, i, boss.EncounterJournalID) end
                                 if item_id and type(item_id) == "number" then
                                     local source = instance_name .. " " .. boss_name
+                                    if instance_name == boss_name then
+                                        source = boss_name
+                                        if not sourceMap[source] then print("same name", source) end
+                                    end
                                     local source_id = sourceMap[source]
                                     if not source_id then
                                         source_id = #db.sources + 1

@@ -35,7 +35,7 @@ RegisterTrap(187650, 30, "frost", "single") -- Frozen
 RegisterTrap(187698, 30, "frost", "aoe") -- 焦油
 --RegisterTrap(194277, 15, "frost", "aoe") -- 铁蒺藜
 --RegisterTrap(13795, 15, "fire", "single") -- Immo
-RegisterTrap(191433, 20, "fire", "damage") -- Explosion
+--RegisterTrap(191433, 20, "fire", "damage") -- Explosion
 --RegisterTrap(34600, 15, "natural", "guardian") -- Snake
 
 local button = addon:CreateActionButton("HunterTraps", L["traps"], nil, 60, "DUAL")

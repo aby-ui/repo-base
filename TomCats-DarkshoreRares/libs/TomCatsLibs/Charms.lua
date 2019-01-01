@@ -65,6 +65,8 @@ function handleSexyMap(button, event)
             function ldbiMock:GetName() return "LibDBIcon10_" .. btn.title end
             function ldbiMock:SetScript() end
             function ldbiMock:SetPoint() end
+            function ldbiMock:SetAllPoints() end
+            function ldbiMock:ClearAllPoints() end
             _G[ldbiMock:GetName()] = ldbiMock
             table.insert(LibStub["libs"]["LibDBIcon-1.0"].objects, ldbiMock)
             LibStub["libs"]["LibDBIcon-1.0"].callbacks:Fire("LibDBIcon_IconCreated", ldbiMock, btn.title)
