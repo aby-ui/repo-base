@@ -53,6 +53,8 @@ GearHudSettings = {
 function GearHud_OnLoad(self)
 	self:RegisterEvent("PLAYER_ENTERING_WORLD");
 	self:RegisterEvent("UNIT_HEALTH");
+    --self:RegisterEvent("UNIT_HEALTH_FREQUENT");
+    self:RegisterEvent("PLAYER_UNGHOST");
 	self:RegisterEvent("UNIT_MAXHEALTH");
 	self:RegisterEvent("UNIT_COMBAT");
 	self:RegisterEvent("VARIABLES_LOADED");
@@ -102,6 +104,10 @@ function GearHud_OnEvent(event, arg1, arg2)
 
 	elseif(event=="PLAYER_ENTERING_WORLD") then
 		GearHud_Lock();
+
+    elseif(event=="PLAYER_UNGHOST") then
+        GearHud_Update(100)
+        C_Timer.After(0.1, function() GearHud_Update() end)
 
 	elseif((event=="UNIT_HEALTH" or event=="UNIT_MAXHEALTH") and arg1=="player") then
 		GearHud_Update();

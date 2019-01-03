@@ -7,7 +7,7 @@ end
 local mod	= DBM:NewMod(dungeonID, "DBM-Azeroth-BfA", nil, 1028)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 18026 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 18147 $"):sub(12, -3))
 mod:SetCreatureID(creatureID)--Dooms Howl 138122, Lion's Roar 137374
 --mod:SetEncounterID(encounterID)
 mod:SetReCombatTime(20)
@@ -43,7 +43,7 @@ local specWarnSentry				= mod:NewSpecialWarningMove(271783, false, nil, 2, 1, 2)
 --local specWarnGTFO				= mod:NewSpecialWarningGTFO(238028, nil, nil, nil, 1, 8)
 
 --Mobile
-local timerShatteringPulseCD		= mod:NewCDTimer(20.9, 271163, nil, "Tank", nil, 5)
+local timerShatteringPulseCD		= mod:NewCDTimer(20, 271163, nil, "Tank", nil, 5)
 local timerMortarShotCD				= mod:NewCDTimer(10, 271164, nil, nil, nil, 3)
 local timerFlameExhaustsCD			= mod:NewCDTimer(12.1, 277598, nil, nil, nil, 3)
 local timerSiegeUpCD				= mod:NewCDTimer(84.5, 271223, nil, nil, nil, 6)--84.5-86.2

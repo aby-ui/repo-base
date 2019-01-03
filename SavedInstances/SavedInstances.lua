@@ -2345,7 +2345,7 @@ end
 function core:OnInitialize()
   local versionString = GetAddOnMetadata(addonName, "version")
   --[===[@debug@
-  if versionString == "8.0.8-34-g47202ee" then
+  if versionString == "8.0.8-35-g42d2e85" then
     versionString = "Dev"
   end
   --@end-debug@]===]
@@ -3866,10 +3866,10 @@ function core:ShowTooltip(anchorframe)
           local day, info
           for day, info in pairs(t.Emissary[expansionLevel].days) do
             if showall or addon.db.Tooltip.EmissaryShowCompleted == true or info.isComplete == false then
-              if not show[day].first then
-                show[day].first = t.Faction
-              elseif show[day].first ~= t.Faction then
-                show[day].second = t.Faction
+              if not show[day][1] then
+                show[day][1] = t.Faction
+              elseif show[day][1] ~= t.Faction then
+                show[day][2] = t.Faction
               end
             end
           end
@@ -3887,18 +3887,27 @@ function core:ShowTooltip(anchorframe)
 
       local day, tbl
       for day, tbl in pairs(show) do
-        if show[day].first then
+        if show[day][1] then
           local name
           if not addon.db.Emissary.Expansion[expansionLevel][day] then
             name = L["Emissary Missing"]
           else
-            local questID = addon.db.Emissary.Expansion[expansionLevel][day].questID[show[day].first]
-            name = addon.db.Emissary.Cache[questID]
-            if addon.db.Tooltip.EmissaryFullName and show[day].second then
-              local secondQuestID = addon.db.Emissary.Expansion[expansionLevel][day].questID[show[day].second]
-              if secondQuestID ~= questID and addon.db.Emissary.Cache[secondQuestID] then
-                name = name .. " / " .. addon.db.Emissary.Cache[secondQuestID]
+            local length, tbl = 0, addon.db.Emissary.Expansion[expansionLevel][day].questID
+            if addon.db.Emissary.Cache[tbl[show[day][1]]] then
+              name = addon.db.Emissary.Cache[tbl[show[day][1]]]
+              length = length + 1
+            end
+            if (length == 0 or addon.db.Tooltip.EmissaryFullName) and show[day][2] then
+              if tbl[show[day][1]] ~= tbl[show[day][2]] and addon.db.Emissary.Cache[tbl[show[day][2]]] then
+                if length > 0 then
+                  name = name .. " / "
+                end
+                name = name .. addon.db.Emissary.Cache[tbl[show[day][2]]]
+                length = length + 1
               end
+            end
+            if length == 0 then
+              name = L["Emissary Missing"]
             end
           end
           tooltips[day] = tooltip:AddLine(GOLDFONT .. name .. " (+" .. (day - 1) .. " " .. L["Day"] .. ")" .. FONTEND)

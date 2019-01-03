@@ -430,7 +430,6 @@ updateTimer = function()
     updateLabelTexts()
     if (tourWindow and tourWindow.initialized and tourWindow:IsShown()) then
         updateQuests()
-        collectgarbage()
     end
     C_Timer.After(P["Timer Delay"], updateTimer)
 end
@@ -560,7 +559,7 @@ if (TomCats and TomCats.Register) then
                 }
             },
             name = "Rares of Darkshore",
-            version = "1.2.4"
+            version = "1.2.5"
         }
     )
 end

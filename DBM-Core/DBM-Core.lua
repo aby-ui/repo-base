@@ -41,7 +41,7 @@
 --  Globals/Default Options  --
 -------------------------------
 DBM = {
-	Revision = tonumber(("$Revision: 18146 $"):sub(12, -3)),
+	Revision = tonumber(("$Revision: 18149 $"):sub(12, -3)),
 	DisplayVersion = "8.1.2 alpha", -- the string that is shown as version
 	ReleaseRevision = 18134 -- the revision of the latest stable version that is available
 }
@@ -7164,7 +7164,7 @@ end
 --/run DBM:FindEncounterIDs(1177)--Crucible of Storms
 --/run DBM:FindEncounterIDs(1176)--Zuldazar Raid
 --/run DBM:FindEncounterIDs(1001, 23)--Dungeon Template (mythic difficulty)
---/run DBM:FindEncounterIDs(230, 1)--Classic Dungeons need diff 1 specified
+--/run DBM:FindEncounterIDs(228, 1)--Classic Dungeons need diff 1 specified
 --/run DBM:FindDungeonMapIDs(1, 500)--Find Classic Dungeon Map IDs
 --/run DBM:FindInstanceIDs(1, 300)--Find Classic Dungeon Journal IDs
 function DBM:FindEncounterIDs(instanceID, diff)
