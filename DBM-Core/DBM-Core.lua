@@ -41,7 +41,7 @@
 --  Globals/Default Options  --
 -------------------------------
 DBM = {
-	Revision = tonumber(("$Revision: 18149 $"):sub(12, -3)),
+	Revision = tonumber(("$Revision: 18154 $"):sub(12, -3)),
 	DisplayVersion = "8.1.2 alpha", -- the string that is shown as version
 	ReleaseRevision = 18134 -- the revision of the latest stable version that is available
 }
@@ -7608,8 +7608,8 @@ function bossModPrototype:IsCriteriaCompleted(criteriaIDToCheck)
 	return false
 end
 
-function bossModPrototype:LatencyCheck()
-	return select(4, GetNetStats()) < DBM.Options.LatencyThreshold
+function bossModPrototype:LatencyCheck(custom)
+	return select(4, GetNetStats()) < (custom or DBM.Options.LatencyThreshold)
 end
 
 function bossModPrototype:CheckBigWigs(name)
