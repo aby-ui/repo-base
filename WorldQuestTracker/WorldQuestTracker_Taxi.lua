@@ -358,7 +358,7 @@ function WorldQuestTracker:TAXIMAP_OPENED()
 						pin._WQT_Twin.AnchorFrame [member] = func
 					end
 				end
-
+				
 				pin._WQT_Twin:SetScript ("OnEnter", function (self)
 					TaskPOI_OnEnter (pin._WQT_Twin)
 					pin._WQT_Twin.Texture:SetBlendMode ("ADD")
@@ -368,7 +368,7 @@ function WorldQuestTracker:TAXIMAP_OPENED()
 					TaskPOI_OnLeave (pin._WQT_Twin)
 					pin._WQT_Twin.Texture:SetBlendMode ("BLEND")
 				end)
-
+				
 				tinsert (WorldQuestTracker.TaxyZoneWidgets, pin._WQT_Twin)
 			end
 			

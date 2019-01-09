@@ -1,5 +1,5 @@
 ## Interface: 80100
-## X-Max-Interface: 80000
+## X-Max-Interface: 80100
 ## X-Min-Interface: 70000
 
 ## Title: H.H.T.D.
@@ -16,7 +16,7 @@
 
 
 ## Author: John Wellesz
-## Version: 2.4.9
+## Version: 2.4.9.1
 
 ## LoadManagers: AddonLoader
 
@@ -31,7 +31,7 @@
 ## OptionalDeps: Ace3, LibNameplateRegistry-1.0
 ## X-Embeds: Ace3, LibNameplateRegistry-1.0
 
-## X-ReleaseDate: "2018-08-12T11:09:16Z"
+## X-ReleaseDate: "2019-01-07T17:28:58Z"
 ## X-Category: PvP
 ## X-eMail: hhtd@2072productions.com
 ## X-Website: http://www.2072productions.com/to/healers-have-to-die.php

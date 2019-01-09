@@ -283,6 +283,7 @@ addon.defaultDB = {
   -- PlayedTotal: integer
   -- Money: integer
   -- Zone: string
+  -- Warmode: boolean
 
   -- currency: key: currencyID  value:
   -- amount: integer
@@ -585,9 +586,10 @@ end
 -- convert local time -> server time: add this value
 -- convert server time -> local time: subtract this value
 function addon:GetServerOffset()
-  local serverDate = C_Calendar.GetDate()
+  local serverDate = C_Calendar.GetDate() -- 1-based starts on Sun
   local serverDay, serverWeekday, serverMonth, serverMinute, serverHour, serverYear = serverDate.monthDay, serverDate.weekday, serverDate.month, serverDate.minute, serverDate.hour, serverDate.year
-  local localDay = tonumber(date("%w")) -- 0-based starts on Sun
+  -- #211: date("%w") is 0-based starts on Sun
+  local localDay = tonumber(date("%w")) + 1
   local localHour, localMinute = tonumber(date("%H")), tonumber(date("%M"))
   if serverDay == (localDay + 1)%7 then -- server is a day ahead
     serverHour = serverHour + 24
@@ -1606,6 +1608,7 @@ function addon:UpdateToonData()
   else
     t.Race = lrace
   end
+  t.Warmode = C_PvP.IsWarModeDesired()
 
   t.LastSeen = time()
 end
@@ -1747,6 +1750,9 @@ local function ShowToonTooltip(cell, arg, ...)
   end
   if t.Money then
     indicatortip:AddLine(MONEY,addon:formatNumber(t.Money,true))
+  end
+  if t.Warmode and t.Warmode == true then
+    indicatortip:AddLine(PVP_LABEL_WAR_MODE, PVP_WAR_MODE_ENABLED)
   end
   if t.Zone then
     indicatortip:AddLine(ZONE,t.Zone)
@@ -2345,7 +2351,7 @@ end
 function core:OnInitialize()
   local versionString = GetAddOnMetadata(addonName, "version")
   --[===[@debug@
-  if versionString == "8.0.8-35-g42d2e85" then
+  if versionString == "8.0.8-38-gcd2e763" then
     versionString = "Dev"
   end
   --@end-debug@]===]

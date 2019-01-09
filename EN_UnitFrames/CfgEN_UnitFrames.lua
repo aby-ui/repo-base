@@ -47,10 +47,16 @@ U1RegisterAddon("EN_UnitFrames", {
         type = 'radio',
         var = 'numberformat',
         default = 1,
-        options = {'万进位', 1, '千进位', 2},
+        cols = 3,
+        options = {'万进位', 1, '千进位', 0, '暴雪式', 2},
         text = '血量格式',
         callback = function(_, v)
             if(EUF_CurrentOptions) then
+                if v == 2 then
+                    EUF_CurrentOptions['BLIZZ_NUMBERFORMAT'] = 1
+                else
+                    EUF_CurrentOptions['BLIZZ_NUMBERFORMAT'] = 0
+                end
                 EUF_CurrentOptions['NUMBERFORMAT'] = v
 				EUF_Options_Update("NUMBERFORMAT", v);
             end

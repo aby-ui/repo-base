@@ -1673,7 +1673,7 @@ local lazyUpdateFunc = function (self, deltaTime)
 		
 		for questCounter, button in pairs (WorldQuestTracker.WorldMapSmallWidgets) do
 			local pin = button:GetParent()
-			if (pin and (pin.Child ~= button or not pin:IsShown())) then
+			if (not pin or pin.Child ~= button or not pin:IsShown()) then
 				button:Hide()
 			end
 		end

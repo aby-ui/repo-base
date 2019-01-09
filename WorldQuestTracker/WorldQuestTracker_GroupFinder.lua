@@ -790,6 +790,96 @@ function WorldQuestTracker.TrackEliteQuest (questID)
 	return false
 end
 
+function WorldQuestTracker.InviteFromGroupApply()
+	if (not ff.CurrentWorldQuest) then
+		return
+	end
+	
+--[=[
+--		/dump select (5, C_LFGList.GetActiveEntryInfo()):find("k00000|")
+	
+	print ("=============")
+	for k, v in pairs (a) do
+		print (k,v)
+	end
+	print ("=============")
+	--]=]
+	
+	local a = C_LFGList.GetActiveEntryInfo()
+	local active, activityID, ilvl, honorLevel, name, comment, voiceChat, duration, autoAccept, privateGroup, questID = a.active, a.activityID, a.ilvl, a.honorLevel, a.name, a.comment, a.voiceChat, a.duration, a.autoAccept, a.privateGroup, a.questID
+	--active = true --disabling to fix later
+	
+	--print ("player applyind:", active, ff.CurrentWorldQuest, UnitIsGroupLeader ("player"), name:find ("ks2|"), name:find ("k000000|"), name == ff.CurrentWorldQuest)
+	--print (name, type (name))
+	
+	local title, factionID, tagID, tagName, worldQuestType, rarity, isElite, tradeskillLineIndex = WorldQuestTracker.GetQuest_Info (ff.CurrentWorldQuest)
+	local mapName, shortName, activityCategoryID, groupID, iLevel, filters, minLevel, maxPlayers, displayType = C_LFGList.GetActivityInfo (activityID)
+	local standingMapID = WorldQuestTracker.GetCurrentStandingMapAreaID()
+	local playerStandingMapName = WorldQuestTracker.GetMapName (standingMapID)
+	local activityID, categoryID, filters, questName = LFGListUtil_GetQuestCategoryData (ff.CurrentWorldQuest)
+	
+	--Details:Dump ({C_LFGList.GetActivityInfo (activityID)})
+	
+	--print ("name = questid", tostring (ff.CurrentWorldQuest) == name)
+	--[=[
+	for i = 1, #name do
+	    local letter = name:sub(i,i)
+	    --print (letter)
+	end
+	--strings inside the lfg system seems to be upvalued and bridget by a escape sequence which increments every new group shown
+	--]=]
+
+	if (not LFGListUtil_GetQuestCategoryData) then
+		WorldQuestTracker:Msg ("LFGListUtil_GetQuestCategoryData isn't accessible anymore.")
+		return
+	end
+
+	--/dump GetMouseFocus():Click()
+	
+	--print ("title:",title == questName, "category:", categoryID == activityCategoryID, "map name", playerStandingMapName == mapName, " | ", categoryID, activityCategoryID, playerStandingMapName)
+	--> check if the quest title, category, and zone from the wqt popup matches with the quest title, category and zone from the lfg frame
+	if (title == questName and categoryID == activityCategoryID and playerStandingMapName == mapName) then
+
+	--> check if the player has a group listed in the LFG and if is the group leader
+	--if (active and ff.CurrentWorldQuest and UnitIsGroupLeader ("player") and (activityCategoryID == 0)) then --name:find ("ks2|") or name:find ("k000000|") or name == ff.CurrentWorldQuest
+		
+		local isInQuest = WorldQuestTracker.PlayerIsInQuest (title)
+		
+		if (isInQuest) then
+
+			if (GetNumGroupMembers() <= 3 and UnitIsGroupLeader ("player")) then
+
+				local applicantInfo = C_LFGList.GetApplicants()
+				if (applicantInfo and #applicantInfo > 0) then
+
+					for i = 1, #applicantInfo do
+						local b = C_LFGList.GetApplicantInfo (applicantInfo [i])
+						local id, status, pendingStatus, numMembers, isNew, comment = b.id, b.applicationStatus, b.pendingStatus, b.numMembers, b.isNew, b.comment
+						--print (id, status, pendingStatus, numMembers, isNew, comment)
+						if (status == "applied") then
+							--local a = C_LFGList.GetApplicantMemberInfo (applicantInfo [i], 1)
+							--local name, class, localizedClass, level, itemLevel, honorLevel, tank, healer, damage, assignedRole, relationship = a.name, a.class, a.localizedClass, a.level, a.itemLevel, a.honorLevel, a.tank, a.healer, a.damage, a.assignedRole, a.relationship
+							local name, class, localizedClass, level, itemLevel, honorLevel, tank, healer, damage, assignedRole, relationship = C_LFGList.GetApplicantMemberInfo (applicantInfo [i], 1)
+							
+							--print (name, class, localizedClass, level, itemLevel, honorLevel, tank, healer, damage, assignedRole, relationship)
+							if (name) then
+								InviteUnit (name)
+								WorldQuestTracker:Msg ("Auto Inviting " .. name .. " from the LFG apply.")
+							end
+						end
+					end
+				end
+			end
+		else
+			--> player doesn't have the quest from the popup window, the group should be deslisted or this is a group for another activity
+			--if (not ff:IsShown()) then
+				--> show the frame again so the player can click on the leave group
+			--	ff:ShowFrame()
+			--end
+		end
+	end
+end
+
 ff:SetScript ("OnEvent", function (self, event, arg1, questID, arg3)
 	
 	--is this feature enable?
@@ -816,95 +906,10 @@ ff:SetScript ("OnEvent", function (self, event, arg1, questID, arg3)
 				end
 			end
 		end
-	
+
 	elseif (event == "LFG_LIST_APPLICANT_LIST_UPDATED") then
-
-		if (not ff.CurrentWorldQuest) then
-			return
-		end
-	
-	--[=[
---		/dump select (5, C_LFGList.GetActiveEntryInfo()):find("k00000|")
-		
-		print ("=============")
-		for k, v in pairs (a) do
-			print (k,v)
-		end
-		print ("=============")
-		--]=]
-		
-		local a = C_LFGList.GetActiveEntryInfo()
-		local active, activityID, ilvl, honorLevel, name, comment, voiceChat, duration, autoAccept, privateGroup, questID = a.active, a.activityID, a.ilvl, a.honorLevel, a.name, a.comment, a.voiceChat, a.duration, a.autoAccept, a.privateGroup, a.questID
-		--active = true --disabling to fix later
-		
-		--print ("player applyind:", active, ff.CurrentWorldQuest, UnitIsGroupLeader ("player"), name:find ("ks2|"), name:find ("k000000|"), name == ff.CurrentWorldQuest)
-		--print (name, type (name))
-		
-		local title, factionID, tagID, tagName, worldQuestType, rarity, isElite, tradeskillLineIndex = WorldQuestTracker.GetQuest_Info (ff.CurrentWorldQuest)
-		local mapName, shortName, activityCategoryID, groupID, iLevel, filters, minLevel, maxPlayers, displayType = C_LFGList.GetActivityInfo (activityID)
-		local standingMapID = WorldQuestTracker.GetCurrentStandingMapAreaID()
-		local playerStandingMapName = WorldQuestTracker.GetMapName (standingMapID)
-		local activityID, categoryID, filters, questName = LFGListUtil_GetQuestCategoryData (ff.CurrentWorldQuest)
-		
-		--Details:Dump ({C_LFGList.GetActivityInfo (activityID)})
-		
-		--print ("name = questid", tostring (ff.CurrentWorldQuest) == name)
-		--[=[
-		for i = 1, #name do
-		    local letter = name:sub(i,i)
-		    --print (letter)
-		end
-		--strings inside the lfg system seems to be upvalued and bridget by a escape sequence which increments every new group shown
-		--]=]
-
-		if (not LFGListUtil_GetQuestCategoryData) then
-			WorldQuestTracker:Msg ("LFGListUtil_GetQuestCategoryData isn't accessible anymore.")
-			return
-		end
-
-		--/dump GetMouseFocus():Click()
-		
-		--print ("title:",title == questName, "category:", categoryID == activityCategoryID, "map name", playerStandingMapName == mapName, " | ", categoryID, activityCategoryID, playerStandingMapName)
-		--> check if the quest title, category, and zone from the wqt popup matches with the quest title, category and zone from the lfg frame
-		if (title == questName and categoryID == activityCategoryID and playerStandingMapName == mapName) then
-
-		--> check if the player has a group listed in the LFG and if is the group leader
-		--if (active and ff.CurrentWorldQuest and UnitIsGroupLeader ("player") and (activityCategoryID == 0)) then --name:find ("ks2|") or name:find ("k000000|") or name == ff.CurrentWorldQuest
-			
-			local isInQuest = WorldQuestTracker.PlayerIsInQuest (title)
-			
-			if (isInQuest) then
-
-				if (GetNumGroupMembers() <= 4) then
-
-					local applicantInfo = C_LFGList.GetApplicants()
-					if (applicantInfo and #applicantInfo > 0) then
-
-						for i = 1, #applicantInfo do
-							local b = C_LFGList.GetApplicantInfo (applicantInfo [i])
-							local id, status, pendingStatus, numMembers, isNew, comment = b.id, b.applicationStatus, b.pendingStatus, b.numMembers, b.isNew, b.comment
-							--print (id, status, pendingStatus, numMembers, isNew, comment)
-							if (status == "applied") then
-								--local a = C_LFGList.GetApplicantMemberInfo (applicantInfo [i], 1)
-								--local name, class, localizedClass, level, itemLevel, honorLevel, tank, healer, damage, assignedRole, relationship = a.name, a.class, a.localizedClass, a.level, a.itemLevel, a.honorLevel, a.tank, a.healer, a.damage, a.assignedRole, a.relationship
-								local name, class, localizedClass, level, itemLevel, honorLevel, tank, healer, damage, assignedRole, relationship = C_LFGList.GetApplicantMemberInfo (applicantInfo [i], 1)
-								
-								--print (name, class, localizedClass, level, itemLevel, honorLevel, tank, healer, damage, assignedRole, relationship)
-								if (name) then
-									InviteUnit (name)
-									WorldQuestTracker:Msg ("Auto Inviting " .. name .. " from the LFG apply.")
-								end
-							end
-						end
-					end
-				end
-			else
-				--> player doesn't have the quest from the popup window, the group should be deslisted or this is a group for another activity
-				--if (not ff:IsShown()) then
-					--> show the frame again so the player can click on the leave group
-				--	ff:ShowFrame()
-				--end
-			end
+		if (GetNumGroupMembers() <= 4 and IsInGroup() and UnitIsGroupLeader ("player")) then
+			C_Timer.After (3, WorldQuestTracker.InviteFromGroupApply)
 		end
 	
 	elseif (event == "QUEST_ACCEPTED") then

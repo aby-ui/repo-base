@@ -21,7 +21,7 @@ function CastByHook(auraFunc, ...)
 	-- 	f = "HARMFUL " .. (f or "")
 	-- end
 
-	local _, _, _, _, _, _, _, c = auraFunc(uid, id, f)
+	local _, _, _, _, _, _, c = auraFunc(uid, id, f)
 
 	local cl, str
 	if(c) then

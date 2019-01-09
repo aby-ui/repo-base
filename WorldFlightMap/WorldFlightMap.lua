@@ -225,8 +225,8 @@ function WorldFlightMapProvider:AddFlightNode(taxiNodeData)
 				end
 			--else
 			if not drawPin then
-				taxiNodeData.position.x = mapTaxiX
-				taxiNodeData.position.y = mapTaxiY
+				-- taxiNodeData.position.x = mapTaxiX
+				-- taxiNodeData.position.y = mapTaxiY
 				drawPin = true
 			end
 
@@ -251,6 +251,7 @@ function WorldFlightMapProvider:AddFlightNode(taxiNodeData)
 				
 				self.slotIndexToPin[taxiNodeData.slotIndex] = pin;
 
+                --[[
                 if self.worldMap.mapID == 895 and taxiNodeData.textureKitPrefix == "FlightMaster_Ferry" then
                     --print(taxiNodeData.textureKitPrefix, taxiNodeData.nodeID, self.worldMap.mapInfo.mapType, self.worldMap.mapID)
                     local A = 7414.582/13106.25 --WorldFlightMapProvider.worldMap.width
@@ -258,6 +259,7 @@ function WorldFlightMapProvider:AddFlightNode(taxiNodeData)
                     taxiNodeData.position.x = taxiNodeData.position.x * (A or 1) + (X or 0)
                     taxiNodeData.position.y = taxiNodeData.position.y * (A or 1) + (Y or 0)
                 end
+                --]]
 
 				pin:SetPosition(taxiNodeData.position:GetXY());
 				pin.taxiNodeData = taxiNodeData;

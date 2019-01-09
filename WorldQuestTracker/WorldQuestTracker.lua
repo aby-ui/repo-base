@@ -1117,15 +1117,13 @@ function SlashCmdList.WQTRACKER (msg, editbox)
 			
 			local map = WorldQuestTrackerDataProvider:GetMap()
 			
-			tinsert (info, "Pin Data Provider In Use: " .. (dataProviderPinInUse and "true" or "false"))
-			
 			local dataProviderPinInUse = false
 			for pin in map:EnumeratePinsByTemplate ("WorldQuestTrackerWorldMapPinTemplate") do
 				if (pin.Child == widget) then
 					dataProviderPinInUse = true
 				end
 			end
-			tinsert (info, "Pin Data Provider Widget is Child: " .. (dataProviderPinInUse and "true" or "false"))
+			tinsert (info, "Pin Data Provider Widget has a Pin: " .. (dataProviderPinInUse and "true" or "false"))
 			
 			local dataProviderValidParenting1 = false
 			local dataProviderValidParenting2 = false
@@ -1142,7 +1140,7 @@ function SlashCmdList.WQTRACKER (msg, editbox)
 			end
 			
 			tinsert (info, "Pin Data Provider Valid Parent: " .. (dataProviderValidParenting1 and "true" or "false"))
-			tinsert (info, "Pin Data Provide Is Shown: " .. (dataProviderValidParenting2 and "true" or "false"))
+			tinsert (info, "Pin Data Provider Is Shown: " .. (dataProviderValidParenting2 and "true" or "false"))
 			
 			--parent data
 			tinsert (info, "")
