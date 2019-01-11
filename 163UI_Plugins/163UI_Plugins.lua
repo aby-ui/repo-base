@@ -288,7 +288,7 @@ CoreDependCall("Blizzard_ChallengesUI", function()
         local ar10 = select(4, GetAchievementInfo(13079))
         local ar15 = select(4, GetAchievementInfo(13080))
         for i=1, numCrits do
-            local name, _, _, complete = GetAchievementCriteriaInfo(13080, i==10 and 11 or i)
+            local name, _, _, complete = GetAchievementCriteriaInfo(13080, i)
             if complete == 1 then
                 crits[name] = 15
             else
