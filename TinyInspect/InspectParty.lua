@@ -65,7 +65,7 @@ local function SendInspect()
     end
 end
 
-local SendAddonMessage = SendAddonMessage or function() end
+local SendAddonMessage = C_ChatInfo and C_ChatInfo.SendAddonMessage or function() end
 
 --发送自己的信息
 local function SendPlayerInfo()
@@ -83,6 +83,7 @@ LibEvent:attachEvent("CHAT_MSG_ADDON", function(self, prefix, text, channel, sen
         for guid, v in pairs(members) do
             if (v.name == name and v.realm == realm) then
                 v.slevel = ilvl
+                v.done = true
             end
         end
     end

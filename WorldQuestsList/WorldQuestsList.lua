@@ -1,4 +1,4 @@
-local VERSION = 84
+local VERSION = 85
 
 --[[
 Special icons for rares, pvp or pet battle quests in list
@@ -253,11 +253,16 @@ LFG Fixes
 toc update
 Added next invasion timer (hover quick nav buttons)
 Rares update
+
+Added lfg eye for main assault quests
+Added colors for questmarks on map for emissary quests (Options > Enable reward on map icons > Enable emissary quests colors)
+Added zones names for next invasion timer
 ]]
 
 local GlobalAddonName, WQLdb = ...
 
-local is81 = nil
+--[[
+local is81 = false
 do
 	local version, buildVersion, buildDate, uiVersion = GetBuildInfo()
 	
@@ -267,6 +272,7 @@ do
 		is81 = true
 	end
 end
+]]
 
 local VWQL = nil
 
@@ -292,19 +298,6 @@ local LE = {
 	ORDER_RESOURCES_NAME_LEGION = GetCurrencyInfo(1220),
 	ORDER_RESOURCES_NAME_BFA = GetCurrencyInfo(1560),
 }
-
-if not C_PvP.GetWarModeRewardBonus then
-	C_PvP.GetWarModeRewardBonus = function() return 10 end		--Pre 8.1 fix
-end
-if not C_CurrencyInfo.DoesWarModeBonusApply then
-	C_CurrencyInfo.DoesWarModeBonusApply = function(currencyID) 
-		if currencyID == 1553 or currencyID == 1560 or currencyID == 1220 or currencyID == 1342 or currencyID == 1226 or currencyID == 1533 then
-			return true
-		else
-			return false
-		end 
-	end		--Pre 8.1 fix
-end
       
 local charKey = (UnitName'player' or "").."-"..(GetRealmName() or ""):gsub(" ","")
 
@@ -368,6 +361,7 @@ local LOCALE =
 		lfgDisablePopupLeave = "Отключить всплывающее окно после завершения задания (покинуть группу)",
 		expulsom = "Дистиллиум",
 		expulsomReplace = "Заменить награды аксессуаров на Дистиллиум",
+		enableBountyColors = "Включить цвета заданий посланников",
 	} or
 	locale == "deDE" and {    --by Sunflow72
 		gear = "Ausrüstung",
@@ -427,6 +421,7 @@ local LOCALE =
 		lfgDisablePopupLeave = "Deaktiviert Popup nach Abschluss der Quest (Gruppe verlassen)",
 		expulsom = "Expulsom",
 		expulsomReplace = "Ersetzt Schmuckstücke durch Expulsom",
+		enableBountyColors = "Enable bounty quests colors",
 	} or
 	locale == "frFR" and {
 		gear = "Équipement",
@@ -486,6 +481,7 @@ local LOCALE =
 		lfgDisablePopupLeave = "Disable popup after quest completion (leave party)",
 		expulsom = "Expulsom",
 		expulsomReplace = "Replace trinkets rewards with Expulsom",
+		enableBountyColors = "Enable bounty quests colors",
 	} or
 	(locale == "esES" or locale == "esMX") and {
 		gear = "Equipo",
@@ -545,6 +541,7 @@ local LOCALE =
 		lfgDisablePopupLeave = "Disable popup after quest completion (leave party)",
 		expulsom = "Expulsom",
 		expulsomReplace = "Replace trinkets rewards with Expulsom",
+		enableBountyColors = "Enable bounty quests colors",
 	} or	
 	locale == "itIT" and {
 		gear = "Equipaggiamento",
@@ -604,6 +601,7 @@ local LOCALE =
 		lfgDisablePopupLeave = "Disable popup after quest completion (leave party)",
 		expulsom = "Expulsom",
 		expulsomReplace = "Replace trinkets rewards with Expulsom",
+		enableBountyColors = "Enable bounty quests colors",
 	} or
 	locale == "ptBR" and {
 		gear = "Equipamento",
@@ -663,6 +661,7 @@ local LOCALE =
 		lfgDisablePopupLeave = "Disable popup after quest completion (leave party)",
 		expulsom = "Expulsom",
 		expulsomReplace = "Replace trinkets rewards with Expulsom",
+		enableBountyColors = "Enable bounty quests colors",
 	} or
 	locale == "koKR" and {
 		gear = "장비",
@@ -722,6 +721,7 @@ local LOCALE =
 		lfgDisablePopupLeave = "Disable popup after quest completion (leave party)",
 		expulsom = "Expulsom",
 		expulsomReplace = "Replace trinkets rewards with Expulsom",
+		enableBountyColors = "Enable bounty quests colors",
 	} or
 	locale == "zhCN" and {	--by sprider00
 		gear = "装备",
@@ -781,6 +781,7 @@ local LOCALE =
 		lfgDisablePopupLeave = "任务结束后不自动弹出离队提示",
 		expulsom = "驱灵金",
 		expulsomReplace = "把饰品奖励替换成驱灵金",
+		enableBountyColors = "启用悬赏任务颜色",
 	} or
 	locale == "zhTW" and {	--by sprider00
 		gear = "裝備",
@@ -840,6 +841,7 @@ local LOCALE =
 		lfgDisablePopupLeave = "任務結束后不自動彈出離隊提示",
 		expulsom = "Expulsom",
 		expulsomReplace = "Replace trinkets rewards with Expulsom",
+		enableBountyColors = "Enable bounty quests colors",
 	} or 
 	{
 		gear = "Gear",
@@ -899,6 +901,7 @@ local LOCALE =
 		lfgDisablePopupLeave = "Disable popup after quest completion (leave party)",
 		expulsom = "Expulsom",
 		expulsomReplace = "Replace trinkets rewards with Expulsom",
+		enableBountyColors = "Enable emissary quests colors",
 	}
 
 local filters = {
@@ -975,6 +978,9 @@ local WorldMapButton = WorldMapFrame.ScrollContainer.Child
 WorldQuestList = CreateFrame("Frame","WorldQuestsListFrame",WorldMapFrame)
 WorldQuestList:SetPoint("TOPLEFT",WorldMapFrame,"TOPRIGHT",10,-4)
 WorldQuestList:SetSize(550,300)
+
+--WorldQuestList:SetClampedToScreen(true)
+--WorldQuestList:SetClampRectInsets(0, 0, 30, 0)
 
 _G.WorldQuestList = WorldQuestList
 
@@ -1701,8 +1707,8 @@ do
 		[875] = {8715.9,4520.2,-4914.1,-4569.8},
 		[876] = {7546.1,5475.74,-5613.9,-3264.26},
 		[619] = {13100.1,7262.13,-5738.08,-5296.69},	--BrokenIsles
-		[12] = {17066.6,12799.9,-19733.2,-11733.3},	--Kalimdor
-		[13] = {18171.97,11176.34,-22569.21,-15973.34},	--East King
+		[12] = {17063.4,12287.4,-19726.6,-12142.6},	--Kalimdor
+		[13] = {18090.8,11148.4,-22489.2,-15941.6},	--East King
 		[113] = {9217.152,10593.38,-8534.246,-1240.89},	--Northrend
 		[424] = {8752.86,6679.16,-6762.44,-3664.38},	--Pandaria
 		
@@ -1710,10 +1716,6 @@ do
 		[830] = {3772.92,2654.17,58.334,177.084},	--krokun
 		[885] = {11279.2,-1789.58,7879.17,-4056.25},	--antorus
 	}
-	if is81 then
-		mapCoords[12] = {17063.4,12287.4,-19726.6,-12142.6}	--Kalimdor
-		mapCoords[13] = {18090.8,11148.4,-22489.2,-15941.6}	--East King
-	end
 	function WorldQuestList:GetQuestWorldCoord(questID)
 		if cache[questID] then
 			return unpack(cache[questID])
@@ -3347,6 +3349,8 @@ do
 		{text = WorldQuestList:GetMapName(876),	func = SetIconGeneral,	checkable = true,	arg1=876	},	
 		{text = WorldQuestList:GetMapName(619),	func = SetIconGeneral,	checkable = true,	arg1=619	},	
 		{text = WorldQuestList:GetMapName(905),	func = SetIconGeneral,	checkable = true,	arg1=905	},	
+		{text = WorldQuestList:GetMapName(12),	func = SetIconGeneral,	checkable = true,	arg1=12 	},	
+		{text = WorldQuestList:GetMapName(13),	func = SetIconGeneral,	checkable = true,	arg1=13 	},	
 	}
 	list[#list+1] = {
 		text = LOCALE.iconsOnMinimap,
@@ -3372,6 +3376,14 @@ do
 			text = LOCALE.enableRibbonGeneralMap,
 			func = function()
 				VWQL.EnableRibbonGeneralMaps = not VWQL.EnableRibbonGeneralMaps
+				WorldMapFrame:TriggerEvent("WorldQuestsUpdate", WorldMapFrame:GetNumActivePinsByTemplate("WorldMap_WorldQuestPinTemplate"))
+			end,
+			checkable = true,
+		},
+		{
+			text = LOCALE.enableBountyColors,
+			func = function()
+				VWQL.RewardIcons_DisableBountyColors = not VWQL.RewardIcons_DisableBountyColors
 				WorldMapFrame:TriggerEvent("WorldQuestsUpdate", WorldMapFrame:GetNumActivePinsByTemplate("WorldMap_WorldQuestPinTemplate"))
 			end,
 			checkable = true,
@@ -3641,6 +3653,7 @@ do
 		mapIconsScaleSubmenu[1].slider.val = (VWQL.MapIconsScale or 1) * 100
 		rewardsIconsSubMenu[1].checkState = VWQL.DisableRibbon
 		rewardsIconsSubMenu[2].checkState = VWQL.EnableRibbonGeneralMaps
+		rewardsIconsSubMenu[3].checkState = not VWQL.RewardIcons_DisableBountyColors
 		listSizeSubmenu[1].checkState = not VWQL.DisableHeader
 		listSizeSubmenu[2].checkState = not VWQL.DisableTotalAP
 		listSizeSubmenu[4].slider.val = (VWQL.MaxLinesShow or 9)
@@ -3785,46 +3798,53 @@ WorldQuestList.oppositeContinentButton.t:SetPoint("CENTER")
 WorldQuestList.oppositeContinentButton:SetWidth(74)
 WorldQuestList.oppositeContinentButton.l:Hide()
 
-WorldQuestList.oppositeContinentButton.OnEnterFunc = function(self)
-	self.hl:Show() 
-	if self.mapID == 876 or self.mapID == 875 then
-		local region = WorldQuestList:GetCurrentRegion()
-		if region == 1 or region == 2 then
-			local currTime = GetServerTime()
-			local invTime = (region == 2 and 1545195600 or 1545228000)
-			local zone = 1
-			while (currTime - 25200) > invTime do
-				invTime = invTime + 68400
-				zone = zone * (-1)
-			end
-			GameTooltip:SetOwner(self, "ANCHOR_BOTTOMLEFT")
-			GameTooltip:AddLine(SPLASH_BATTLEFORAZEROTH_8_1_FEATURE2_TITLE)
-			for i=0,5 do
-				local nowInvTime = invTime + (68400 * i)
-				local nowZone = zone * ((-1) ^ i)
-				local startTime = nowInvTime
-				local endTime = nowInvTime + 25200
-				if date("%x",startTime) ~= date("%x",endTime) then
-					startTime = date("%X %x",startTime):gsub(":00 "," ")
-					endTime = date("%X %x",endTime):gsub(":00 "," ")
-				else
-					startTime = date("%X",startTime):gsub(":00$","")
-					endTime = date("%X %x",endTime):gsub(":00 "," ")
+do
+	local weekdays = {WEEKDAY_SUNDAY, WEEKDAY_MONDAY, WEEKDAY_TUESDAY, WEEKDAY_WEDNESDAY, WEEKDAY_THURSDAY, WEEKDAY_FRIDAY, WEEKDAY_SATURDAY}
+	local zones = {862, 895,863, 942,864, 896}
+	WorldQuestList.oppositeContinentButton.OnEnterFunc = function(self)
+		self.hl:Show() 
+		if self.mapID == 876 or self.mapID == 875 then
+			local region = WorldQuestList:GetCurrentRegion()
+			if region == 1 or region == 2 then
+				local currTime = GetServerTime()
+				local invTime = (region == 2 and 1545195600 or 1545228000)
+				local zone = 1
+				while (currTime - 25200) > invTime do
+					invTime = invTime + 68400
+					zone = zone + 1
+					if zone > 6 then zone = 1 end
 				end
-				GameTooltip:AddLine(
-					(nowInvTime < currTime and "|cff00ff00"..CONTRIBUTION_ACTIVE or WorldQuestList:FormatTime((nowInvTime - currTime)/60):gsub("|c........",""))..
-					(nowZone > 0 and "|TInterface\\FriendsFrame\\PlusManz-Horde:0|t" or "|TInterface\\FriendsFrame\\PlusManz-Alliance:0|t")..
-					" ("..startTime.." - "..endTime..")"
-				)
+				GameTooltip:SetOwner(self, "ANCHOR_BOTTOMLEFT")
+				GameTooltip:AddLine(SPLASH_BATTLEFORAZEROTH_8_1_FEATURE2_TITLE)
+				for i=0,5 do
+					local nowInvTime = invTime + (68400 * i)
+					local nowZone = zone + i
+					if nowZone > 6 then nowZone = nowZone - 6 end
+					local startTime = nowInvTime
+					local endTime = nowInvTime + 25200
+					if date("%x",startTime) ~= date("%x",endTime) then
+						startTime = date("%X ",startTime):gsub(":00 "," ") .. FormatShortDate(date("*t",startTime).day,date("*t",startTime).month) .. ", " ..weekdays[ date("*t",startTime).wday ]
+						endTime = date("%X ",endTime):gsub(":00 "," ") .. FormatShortDate(date("*t",endTime).day,date("*t",endTime).month) .. ", " ..weekdays[ date("*t",endTime).wday ]
+					else
+						startTime = date("%X",startTime):gsub(":00$","")
+						endTime = date("%X ",endTime):gsub(":00 "," ") .. FormatShortDate(date("*t",endTime).day,date("*t",endTime).month) .. ", " ..weekdays[ date("*t",endTime).wday ]
+					end
+					GameTooltip:AddDoubleLine(
+						(nowInvTime < currTime and "|cff00ff00"..CONTRIBUTION_ACTIVE or WorldQuestList:FormatTime((nowInvTime - currTime)/60):gsub("|c........",""))..
+						(nowZone % 2 == 1 and "|TInterface\\FriendsFrame\\PlusManz-Horde:0|t" or "|TInterface\\FriendsFrame\\PlusManz-Alliance:0|t")..
+						" ("..startTime.." - "..endTime..")",
+						WorldQuestList:GetMapName(zones[nowZone])
+					)
+				end
+				GameTooltip:Show()
 			end
-			GameTooltip:Show()
 		end
 	end
-end
-WorldQuestList.oppositeContinentButton.OnLeaveFunc = function(self)
-	self.hl:Hide() 
-	GameTooltip_Hide()
-
+	WorldQuestList.oppositeContinentButton.OnLeaveFunc = function(self)
+		self.hl:Hide() 
+		GameTooltip_Hide()
+	
+	end
 end
 
 WorldQuestList.oppositeContinentButton.Button:Hide()
@@ -5054,8 +5074,9 @@ function WorldQuestList_Update(preMapID,forceUpdate)
 	WorldQuestList.currentMapID = mapAreaID
 	
 	--if time() > 1534550400 and time() < 1543968000 then	--beetween 18.08.18 (second week, same AK as first) and 05.12.18 (AK level 17, max for now,30.07.2018)
+	if time() > 1547942400 and time() < 1553817600 then	--beetween 23.01.19 and 27.03.19 (max for now,26.12.2018)
 		O.nextResearch = WorldQuestList:GetNextResetTime(WorldQuestList:GetCurrentRegion())
-	--end
+	end
 	
 	O.isGearLessRelevant = (select(2,GetAverageItemLevel()) or 0) >= 345
 		
@@ -5754,7 +5775,7 @@ function WorldQuestList_Update(preMapID,forceUpdate)
 		for i=1,#taskInfo.poi do
 			local name, description, x, y, poiID, atlasIcon, poiWQLType, zoneID, dX, dY = unpack(taskInfo.poi[i])
 			if poiWQLType == 1 and not VWQL[charKey].invasionPointsFilter then	--invasion points
-				local timeLeftMinutes = (C_AreaPoiInfo.GetAreaPOISecondsLeft(poiID) or 0) * 60
+				local timeLeftMinutes = (C_AreaPoiInfo.GetAreaPOISecondsLeft(poiID) or 0) / 60
 				local isGreat = atlasIcon:match("%d+$") == "2"
 				if x == -1 then
 					x = nil
@@ -7541,6 +7562,10 @@ local function objectiveTrackerButtons_OnUpdate(self)
 	end
 end
 
+local function IsQuestValidForEye(questID)
+	return QuestUtils_IsQuestWorldQuest(questID) or (WQLdb.WorldQuestBfAAssaultQuests[questID or 0] and not IsQuestComplete(questID or 0))
+end
+
 local function ObjectiveTracker_Update_hook(reason, questID)
 	for _,b in pairs(objectiveTrackerButtons) do
 		if b:IsShown() and ((b.questID ~= b.parent.id or not VWQL or VWQL.DisableLFG or VWQL.DisableLFG_EyeRight) or (b.parent.hasGroupFinderButton)) then
@@ -7559,7 +7584,7 @@ local function ObjectiveTracker_Update_hook(reason, questID)
 			if module.usedBlocks then
 				for _,block in pairs(module.usedBlocks) do
 					local questID = block.id
-					if questID and QuestUtils_IsQuestWorldQuest(questID) and not block.hasGroupFinderButton and not WorldQuestList:IsQuestDisabledForLFG(questID) then
+					if questID and IsQuestValidForEye(questID) and not block.hasGroupFinderButton and not WorldQuestList:IsQuestDisabledForLFG(questID) then
 						local b = objectiveTrackerButtons[block]
 						if not b then
 							b = CreateFrame("Button",nil,objectiveTrackerMainFrame)
@@ -7767,6 +7792,21 @@ do
 			local isWorldMapFrame = frame == WorldMapFrame
 			local isRibbonDisabled = isWorldMapFrame and GENERAL_MAPS[GetCurrentMapAreaID()] and not VWQL.EnableRibbonGeneralMaps
 			local tCount = 0
+			local bountyMapID = frame:GetMapID() or 0
+			if bountyMapID == 1014 then bountyMapID = 876 
+			elseif bountyMapID == 1011 then bountyMapID = 875 end
+			local bounties = GetQuestBountyInfoForMapID(bountyMapID) or {}
+			for _,bountyData in pairs(bounties) do
+				local t = C_TaskQuest.GetQuestTimeLeftMinutes(bountyData.questID) or 0
+				if t < 1440 then
+					bountyData.lowTime = true
+				elseif t < 2880 then
+					bountyData.middleTime = true
+				end
+				if IsQuestComplete(bountyData.questID) then
+					bountyData.completed = true
+				end
+			end
 			if isWorldMapFrame then
 				if not WorldMapFrame_TextTable.f:IsShown() then
 					WorldMapFrame_TextTable.f:Show()
@@ -7811,6 +7851,8 @@ do
 						
 						obj:HookScript("OnEnter",HookOnEnter)
 						obj:HookScript("OnLeave",HookOnLeave)
+
+						obj.WQL_BountyRing_defSize = obj.BountyRing:GetSize()
 					end
 					
 					local tagID, tagName, worldQuestType, rarity, isElite, tradeskillLineIndex, displayTimeLeft = GetQuestTagInfo(obj.questID)
@@ -8062,6 +8104,29 @@ do
 						end
 					end
 					obj.WQL_questID = obj.questID
+
+					obj.BountyRing:SetVertexColor(1,1,1)
+					obj.BountyRing:SetSize(obj.WQL_BountyRing_defSize,obj.WQL_BountyRing_defSize)
+					obj.BountyRing.WQL_color = 4
+					if not VWQL.RewardIcons_DisableBountyColors then
+						obj.BountyRing:Hide()
+						for _,bountyData in pairs(bounties) do
+							if IsQuestCriteriaForBounty(obj.questID, bountyData.questID) and not bountyData.completed then
+								obj.BountyRing:SetSize(64,64)
+								obj.BountyRing:Show()
+								if bountyData.lowTime and obj.BountyRing.WQL_color > 1 then
+									obj.BountyRing:SetVertexColor(1,0,0)
+									obj.BountyRing.WQL_color = 1
+								elseif bountyData.middleTime and obj.BountyRing.WQL_color > 2 then
+									obj.BountyRing:SetVertexColor(1,.5,0)
+									obj.BountyRing.WQL_color = 2
+								elseif not bountyData.lowTime and not bountyData.middleTime and obj.BountyRing.WQL_color > 3 then
+									obj.BountyRing:SetVertexColor(.3,1,.3)
+									obj.BountyRing.WQL_color = 3
+								end
+							end
+						end
+					end
 				end
 			end
 			if isWorldMapFrame then
@@ -8089,6 +8154,8 @@ do
 						obj.WQL_rewardRibbonText:SetText("")
 					end
 					obj.TimeLowFrame:SetPoint("CENTER",-17,-17)
+					obj.BountyRing:SetSize(obj.WQL_BountyRing_defSize,obj.WQL_BountyRing_defSize)
+					obj.BountyRing:SetVertexColor(1,1,1)
 				end
 				obj.WQL_questID = nil
 			end
@@ -8120,6 +8187,8 @@ do
 									obj.WQL_rewardRibbonText:SetText("")
 								end
 								obj.TimeLowFrame:SetPoint("CENTER",-17,-17)
+								obj.BountyRing:SetSize(obj.WQL_BountyRing_defSize,obj.WQL_BountyRing_defSize)
+								obj.BountyRing:SetVertexColor(1,1,1)
 							end
 						end
 					end

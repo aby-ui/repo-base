@@ -35,7 +35,6 @@ local function GetMembers(num)
     for guid, unit in pairs(temp) do
         if (members[guid]) then
             members[guid].unit = unit
-            members[guid].name = UnitName(unit)
             members[guid].class = select(2, UnitClass(unit))
             members[guid].role  = UnitGroupRolesAssigned(unit)
             members[guid].done  = GetInspectInfo(unit, 0, true)
@@ -44,11 +43,14 @@ local function GetMembers(num)
                 done   = false,
                 guid   = guid,
                 unit   = unit,
-                name   = UnitName(unit),
                 class  = select(2, UnitClass(unit)),
                 role   = UnitGroupRolesAssigned(unit),
                 ilevel = -1,
             }
+        end
+        members[guid].name, members[guid].realm = UnitName(unit)
+        if (not members[guid].realm) then
+            members[guid].realm = GetRealmName()
         end
     end
     LibEvent:trigger("RAID_MEMBER_CHANGED", members)
@@ -73,6 +75,30 @@ local function SendInspect(unit)
     end
 end
 
+local SendAddonMessage = C_ChatInfo and C_ChatInfo.SendAddonMessage or function() end
+
+--发送自己的信息
+local function SendPlayerInfo()
+    local ilvl = select(2, GetAverageItemLevel())
+    local spec = select(2, GetSpecializationInfo(GetSpecialization()))
+    SendAddonMessage("TinyInspect", format("%s|%s|%s", "LV", ilvl, spec), "RAID")
+end
+
+--解析发送的信息
+LibEvent:attachEvent("CHAT_MSG_ADDON", function(self, prefix, text, channel, sender)
+    if (prefix == "TinyInspect" and channel == "RAID") then
+        local flag, ilvl, spec = strsplit("|", text)
+        if (flag ~= "LV") then return end
+        local name, realm = strsplit("-", sender)
+        for guid, v in pairs(members) do
+            if (v.name == name and v.realm == realm) then
+                v.ilevel = ilvl
+                v.done = true
+            end
+        end
+    end
+end)
+
 --@see InspectCore.lua @trigger RAID_INSPECT_READY
 LibEvent:attachTrigger("UNIT_INSPECT_READY", function(self, data)
     local member = members[data.guid]
@@ -89,10 +115,11 @@ end)
 --人員增加時觸發 @trigger RAID_INSPECT_TIMEOUT @trigger RAID_INSPECT_DONE
 LibEvent:attachEvent("GROUP_ROSTER_UPDATE", function(self)
     if (TinyInspectDB and not TinyInspectDB.EnableRaidItemLevel) then return end
-    if (not IsInRaid()) then return end
+    if (not IsInRaid()) then return TinyInspectRaidFrame:Hide() end
     local numCurrent = GetNumGroupMembers()
     if (numCurrent ~= numMembers) then GetMembers(numCurrent) end
     if (numCurrent > numMembers) then
+        SendPlayerInfo()
         LibSchedule:AddTask({
             identity  = "InspectRaid",
             elasped   = 3,
@@ -107,6 +134,7 @@ LibEvent:attachEvent("GROUP_ROSTER_UPDATE", function(self)
                 SendInspect()
             end,
         })
+        TinyInspectRaidFrame:Show()
     end
     numMembers = numCurrent
 end)

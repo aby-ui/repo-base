@@ -12,6 +12,7 @@ local locale = GetLocale()
 
 --物品等級匹配規則
 local ItemLevelPattern = gsub(ITEM_LEVEL, "%%d", "(%%d+)")
+local ItemLevelPlusPat = gsub(ITEM_LEVEL_PLUS, "%%d%+", "(%%d+%%+)")
 
 --Toolip
 local tooltip = CreateFrame("GameTooltip", "LibItemLevelTooltip1", UIParent, "GameTooltipTemplate")
@@ -111,9 +112,15 @@ function lib:GetItemInfo(link, stats)
         text = _G[tooltip:GetName().."TextLeft" .. i]:GetText() or ""
         level = string.match(text, ItemLevelPattern)
         if (level) then break end
+        level = string.match(text, ItemLevelPlusPat)
+        if (level) then break end
     end
     if stats then self:GetStatsViaTooltip(tooltip, stats) end
-    return 0, tonumber(level) or 0, GetItemInfo(link)
+    if (level and string.find(level, "+")) then
+        return 0, level, GetItemInfo(link)
+    else
+        return 0, tonumber(level) or 0, GetItemInfo(link)
+    end
 end
 
 --獲取容器裏物品裝備等級(傳家寶/神器)

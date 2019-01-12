@@ -33,6 +33,7 @@ local DefaultDB = {
         EnableItemLevelGuildNews = true,
         EnableItemLevelChat = true,
         EnableItemLevelLoot = true,
+        EnableItemLevelOther = true,
     ShowInspectAngularBorder = false,     --觀察面板直角邊框
     ShowInspectColoredLabel = true,       --觀察面板高亮橙裝武器標簽
     ShowOwnFrameWhenInspecting = false,   --觀察同時顯示自己裝備列表
@@ -70,6 +71,7 @@ local options = {
         { key = "PaperDoll" },
         { key = "Chat" },
         { key = "Loot" },
+        { key = "Other" },
       },
       anchorkey = "ItemLevelAnchorPoint",
     },
