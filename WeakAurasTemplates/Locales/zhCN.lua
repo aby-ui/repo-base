@@ -15,15 +15,12 @@ local L = WeakAuras.L
 	L["Always show the aura, turns grey if the debuff not active."] = "总是显示光环，如果减益效果未被激活则变灰显示"
 	L["Always shows the aura, grey if buff not active."] = "总是显示光环，如果增益效果未被激活则变灰显示"
 	L["Always shows the aura, highlight it if buffed."] = "总是显示光环，如果有增益效果则高亮显示"
-	--[[Translation missing --]]
-	L["Always shows the aura, highlight when active, turns blue on insufficient resources."] = "Always shows the aura, highlight when active, turns blue on insufficient resources."
+	L["Always shows the aura, highlight when active, turns blue on insufficient resources."] = "总是显示光环，当激活时高亮显示，当没有足够资源时变蓝显示"
 	L["Always shows the aura, highlight while proc is active, blue on insufficient resources."] = "总显示显示此光环，当激活时高亮显示，当资源不足时变蓝显示"
 	L["Always shows the aura, highlight while proc is active, blue when not usable."] = "总显示显示此光环，当激活时高亮显示，当不可用时变蓝显示"
 	L["Always shows the aura, highlight while proc is active, turns red when out of range, blue on insufficient resources."] = "总显示显示此光环，当激活时高亮显示，当超出距离是变红显示，当资源不足时变蓝显示"
-	--[[Translation missing --]]
-	L["Always shows the aura, turns blue on insufficient resources."] = "Always shows the aura, turns blue on insufficient resources."
-	--[[Translation missing --]]
-	L["Always shows the aura, turns blue when not usable."] = "Always shows the aura, turns blue when not usable."
+	L["Always shows the aura, turns blue on insufficient resources."] = "总之显示光环，当没有足够资源时变蓝显示"
+	L["Always shows the aura, turns blue when not usable."] = "总之显示光环，当不可用时变蓝显示"
 	L["Always shows the aura, turns grey if on cooldown."] = "总是显示光环，如果在冷却中则变灰显示"
 	L["Always shows the aura, turns grey if the ability is not usable and red when out of range."] = "总是显示光环，如果技能不可用则变灰显示而超出距离时变红显示"
 	L["Always shows the aura, turns grey if the ability is not usable."] = "总是显示光环，如果技能不可用则变灰显示"

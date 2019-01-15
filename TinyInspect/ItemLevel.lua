@@ -27,7 +27,7 @@ local function GetItemLevelFrame(self, category)
             w, h = min(w, ww), min(h, hh)
         end
         self.ItemLevelFrame = CreateFrame("Frame", nil, self)
-        self.ItemLevelFrame:SetScale(h<32 and h/32 or 1)
+        self.ItemLevelFrame:SetScale(max(0.75, h<32 and h/32 or 1))
         self.ItemLevelFrame:SetFrameLevel(8)
         self.ItemLevelFrame:SetSize(w, h)
         self.ItemLevelFrame:SetPoint("CENTER", anchor, "CENTER", 0, 0)
@@ -168,7 +168,8 @@ hooksecurefunc("SetItemButtonQuality", function(self, quality, itemIDOrLink)
             SetItemLevel(self, link)
         --EncounterJournal
         elseif (self.encounterID and self.link) then
-            SetItemLevel(self, self.link)
+            link = select(7, EJ_GetLootInfoByIndex(self.index))
+            SetItemLevel(self, link or self.link)
         --EmbeddedItemTooltip
         elseif (self.Tooltip) then
             link = select(2, self.Tooltip:GetItem())
@@ -339,6 +340,23 @@ LibEvent:attachEvent("PLAYER_LOGIN", function()
         end)
     end
 end)
+
+--For Addon: BaudBag
+if (BaudBag and BaudBag.CreateItemButton) then
+    local BaudBagCreateItemButton = BaudBag.CreateItemButton
+    BaudBag.CreateItemButton = function(self, subContainer, slotIndex, buttonTemplate)
+        local ItemButton = BaudBagCreateItemButton(self, subContainer, slotIndex, buttonTemplate)
+        local Prototype = getmetatable(ItemButton).__index
+        local UpdateContent = Prototype.UpdateContent
+        Prototype.UpdateContent = function(self, useCache, slotCache)
+            local link, cacheEntry = UpdateContent(self, useCache, slotCache)
+            SetItemLevel(self.Frame, link)
+            return link, cacheEntry
+        end
+        setmetatable(ItemButton, {__index=Prototype})
+        return ItemButton
+    end
+end
 
 -- GuildNews
 LibEvent:attachEvent("ADDON_LOADED", function(self, addonName)

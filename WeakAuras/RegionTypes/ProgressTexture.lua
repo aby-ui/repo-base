@@ -106,6 +106,11 @@ local properties = {
     display = L["Inverse"],
     setter = "SetInverse",
     type = "bool"
+  },
+  mirror = {
+    display = L["Mirror"],
+    setter = "SetMirror",
+    type = "bool"
   }
 }
 
@@ -185,6 +190,9 @@ function spinnerFunctions.SetProgress(self, region, angle1, angle2)
   local crop_y = region.crop_y or 1;
   local rotation = region.rotation or 0;
   local mirror_h = region.mirror_h or false;
+  if region.mirror then
+    mirror_h = not mirror_h
+  end
   local mirror_v = region.mirror_v or false;
 
   local width = region.width * (region.scalex or 1) + 2 * self.offset;
@@ -466,6 +474,8 @@ local function createSpinner(parent, layer, drawlayer)
 
   for i = 1, 3 do
     local texture = parent:CreateTexture(nil, layer);
+    texture:SetSnapToPixelGrid(false)
+    texture:SetTexelSnappingBias(0)
     texture:SetDrawLayer(layer, drawlayer);
     texture:SetAllPoints(parent);
     spinner.textures[i] = texture;
@@ -653,6 +663,9 @@ local textureFunctions = {
     local crop_y = region.crop_y or 1;
     local rotation = region.rotation or 0;
     local mirror_h = region.mirror_h or false;
+    if region.mirror then
+      mirror_h = not mirror_h
+    end
     local mirror_v = region.mirror_v or false;
     local user_x = region.user_x;
     local user_y = region.user_y;
@@ -669,6 +682,8 @@ local textureFunctions = {
 
 local function createTexture(region, layer, drawlayer)
   local texture = region:CreateTexture(nil, layer);
+  texture:SetSnapToPixelGrid(false)
+  texture:SetTexelSnappingBias(0)
   texture:SetDrawLayer(layer, drawlayer);
 
   for k, v in pairs(textureFunctions) do
@@ -1047,7 +1062,7 @@ local function modify(parent, region, data)
     extraSpinner:SetBlendMode(data.blendMode);
   end
 
-  region.mirror_h = data.mirror;
+  region.mirror = data.mirror
   region.crop_x = 1 + (data.crop_x or 0.41);
   region.crop_y = 1 + (data.crop_y or 0.41);
   region.rotation = data.rotation or 0;
@@ -1081,14 +1096,13 @@ local function modify(parent, region, data)
   region.slantMode = data.slantMode;
   region:SetOrientation(data.orientation);
 
-  function region:Scale(scalex, scaley)
-    if(scalex < 0) then
-      region.mirror_h = not data.mirror;
-      scalex = scalex * -1;
-    else
-      region.mirror_h = data.mirror;
+  local function DoPosition(region)
+    local mirror = region.mirror_h
+    if region.mirror then
+      mirror = not mirror
     end
-    if(region.mirror_h) then
+
+    if(mirror) then
       if(data.orientation == "HORIZONTAL_INVERSE") then
         foreground:SetPoint("RIGHT", region, "RIGHT");
       elseif(data.orientation == "HORIZONTAL") then
@@ -1101,16 +1115,14 @@ local function modify(parent, region, data)
         foreground:SetPoint("RIGHT", region, "RIGHT");
       end
     end
-    if(scaley < 0) then
-      region.mirror_v = true;
-      scaley = scaley * -1;
+
+    if(region.mirror_v) then
       if(data.orientation == "VERTICAL_INVERSE") then
         foreground:SetPoint("TOP", region, "TOP");
       elseif(data.orientation == "VERTICAL") then
         foreground:SetPoint("BOTTOM", region, "BOTTOM");
       end
     else
-      region.mirror_v = nil;
       if(data.orientation == "VERTICAL") then
         foreground:SetPoint("BOTTOM", region, "BOTTOM");
       elseif(data.orientation == "VERTICAL_INVERSE") then
@@ -1118,11 +1130,8 @@ local function modify(parent, region, data)
       end
     end
 
-    region.scalex = scalex;
-    region.scaley = scaley;
-
-    region:SetWidth(region.width * scalex);
-    region:SetHeight(region.height * scaley);
+    region:SetWidth(region.width * region.scalex);
+    region:SetHeight(region.height * region.scaley);
 
     if (data.orientation == "CLOCKWISE" or data.orientation == "ANTICLOCKWISE") then
       region.foregroundSpinner:UpdateSize();
@@ -1137,6 +1146,28 @@ local function modify(parent, region, data)
         extraTexture:Update();
       end
     end
+  end
+
+  function region:Scale(scalex, scaley)
+    if(scalex < 0) then
+      region.mirror_h = true;
+      scalex = scalex * -1;
+    end
+
+    if(scaley < 0) then
+      region.mirror_v = true;
+      scaley = scaley * -1;
+    end
+
+    region.scalex = scalex;
+    region.scaley = scaley;
+
+    DoPosition(region)
+  end
+
+  function region:SetMirror(mirror)
+    region.mirror = mirror
+    DoPosition(region)
   end
 
   function region:Rotate(angle)

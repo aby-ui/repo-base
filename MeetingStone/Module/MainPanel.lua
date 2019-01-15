@@ -302,6 +302,39 @@ function MainPanel:OpenActivityTooltip(activity, tooltip)
             tooltip:AddLine(string.format(LFG_LIST_TOOLTIP_CLASS_ROLE, classLocalized, _G[role]), classColor.r, classColor.g, classColor.b)
         end
     else
+        --[[ Added
+        tooltip:AddSepatator()
+        tooltip:AddLine(string.format(LFG_LIST_TOOLTIP_MEMBERS_SIMPLE, activity:GetNumMembers()))
+        for i = 1, activity:GetNumMembers() do
+            local role, class, classLocalized = C_LFGList.GetSearchResultMemberInfo(activity:GetID(), i)
+            local classColor = RAID_CLASS_COLORS[class] or NORMAL_FONT_COLOR
+            tooltip:AddLine(string.format(LFG_LIST_TOOLTIP_CLASS_ROLE, classLocalized, _G[role]), classColor.r, classColor.g, classColor.b)
+        end
+        --Added end--]]
+        --Added Style2
+        local roles = {}
+        local classInfo = {}
+        for i = 1, activity:GetNumMembers() do
+            local role, class, classLocalized = C_LFGList.GetSearchResultMemberInfo(activity:GetID(), i)
+            classInfo[class] = {
+                name = classLocalized,
+                color = RAID_CLASS_COLORS[class] or NORMAL_FONT_COLOR
+            }
+            if not roles[role] then roles[role] = {} end
+            if not roles[role][class] then roles[role][class] = 0 end
+            roles[role][class] = roles[role][class] + 1
+        end
+
+        for role, classes in pairs(roles) do
+            tooltip:AddLine(_G[role]..": ")
+            for class, count in pairs(classes) do
+                local text = "   "
+                if count > 1 then text = text .. count .. " " else text = text .. "   " end
+                text = text .. "|c" .. classInfo[class].color.colorStr ..  classInfo[class].name .. "|r "
+                tooltip:AddLine(text)
+            end
+        end
+        --Added Style2 End
         local memberCounts = C_LFGList.GetSearchResultMemberCounts(activity:GetID())
         if memberCounts then
             tooltip:AddSepatator()

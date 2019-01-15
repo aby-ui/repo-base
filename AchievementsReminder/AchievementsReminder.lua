@@ -15,7 +15,7 @@ end
 
 ralldatabase()
 
-  achievementsreminderver=8.003
+  achievementsreminderver=8.101
 
 
 	if ralloptions==nil then ralloptions={1,1,0,0,0,0,1,0,0,0,0,0} end
@@ -140,7 +140,7 @@ if ralldelaycheckzone and icracurtime>ralldelaycheckzone then
   local _, instanceType, pppl, _, maxPlayers, dif = GetInstanceInfo()
 if select(3,GetInstanceInfo())==17 then
 --no LFR
-elseif C_Map.GetMapInfo(C_Map.GetBestMapForUnit("player")).name and ralllocationnames and ralllocations and C_Map.GetBestMapForUnit("player") then
+elseif C_Map.GetBestMapForUnit("player") and C_Map.GetMapInfo(C_Map.GetBestMapForUnit("player")) and C_Map.GetMapInfo(C_Map.GetBestMapForUnit("player")).name and ralllocationnames and ralllocations then
 local curZoneID=C_Map.GetBestMapForUnit("player")
   for i=1,#ralllocations do
     if checkzoneIdA(ralllocations[i],curZoneID) then

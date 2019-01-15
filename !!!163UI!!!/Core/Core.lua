@@ -1113,6 +1113,7 @@ if(deal_taint_dropdown)then
     --因为LFDParentFrame:Show()会触发 LFG_LOCK_INFO_RECEIVED 和 LFG_UPDATE_RANDOM_INFO 所以会清掉
     --2012.9.14 实际生效的是 ScenarioQueueFrameTypeDropDown 的 OnShow
     local function cleanDropMenuLevel()
+        do return end --Auctionator启用时有冲突
         local proxyFrame = ScenarioQueueFrameTypeDropDown
         if proxyFrame and not dropDownList1:IsVisible() and not isv("UIDROPDOWNMENU_MENU_LEVEL") then --这里一旦去掉 isv("UIDROPDOWNMENU_MENU_LEVEL") 这个条件, 立刻污染groupMode
             --print("cleanDropMenuLevel from "..tracingInfo)
@@ -1123,7 +1124,7 @@ if(deal_taint_dropdown)then
             --proxyFrame:Hide() proxyFrame:Show()
             proxyFrame:SetParent(oldpar)
             if core.t then core.t:SetAttribute("initmenu", lastInitMenu); end
-             --如果安全则不设置,否则要把这次LFD增加的按钮去掉
+            --如果安全则不设置,否则要把这次LFD增加的按钮去掉
             --print(dropDownList1.numButtons, "isv = ", isv(dropDownList1, "numButtons")) --有时是不污染的
             if dropDownList1.numButtons then --and not isv(dropDownList1, "numButtons") then
                 --去掉判断，是因为UIDropDownMenu_InitializeHelper在安全代码里设置numButtons为常量肯定是安全的

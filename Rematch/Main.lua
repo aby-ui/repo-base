@@ -231,9 +231,12 @@ end
 function rematch:InitSavedVars()
 	RematchSaved = RematchSaved or {}
 	RematchSettings = RematchSettings or {}
-    if RematchSettings.AutoLoad == nil then RematchSettings.AutoLoad = true end
-    if RematchSettings.AutoLoadShow == nil then RematchSettings.AutoLoadShow = true end
-    if RematchSettings.ShowOnTarget == nil then RematchSettings.ShowOnTarget = true end
+	if not RematchSettings.ResetAutoLoad then
+        RematchSettings.ResetAutoLoad = true
+        RematchSettings.AutoLoad = nil
+        RematchSettings.AutoLoadShow = nil
+        RematchSettings.ShowOnTarget = nil
+    end
 	settings = RematchSettings
 	saved = RematchSaved
 	-- create settings sub-tables and default values if they don't exist
@@ -507,7 +510,9 @@ function rematch:PET_BATTLE_CLOSE()
 		rematch:UpdateAutoLoadState()
 		
 		C_Timer.After(0.05,function() 
+			if settings.AutoLoad then 
 			rematch:loadSimilarTeam(rematch.recentTarget) 
+			end
 			end)	
 	end
 end

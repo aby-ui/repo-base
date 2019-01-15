@@ -189,6 +189,7 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	L["Distribute Vertically"] = "纵向分布"
 	L["Do not group this display"] = "不要将此显示内容编组"
 	L["Done"] = "完成"
+	L["Don't skip this Version"] = "不要跳过这个版本"
 	L["Down"] = "下"
 	L["Drag to move"] = "拖拽来移动"
 	L["Duplicate"] = "复制"
@@ -209,6 +210,7 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 |cFFFF0000%i|r - 图标 - 图示关连的显标
 |cFFFF0000%s|r - 堆叠 - 光环堆叠数量(通常)
 |cFFFF0000%c|r - 自定义 - 允许你自定义一个Lua函数并返回一个用于显示的字符串]=]
+	L["Enable"] = "启用"
 	L["Enabled"] = "启用"
 	L["End Angle"] = "结束角度"
 	L["Enter a Spell ID"] = "输入一个法术 ID"
@@ -267,8 +269,7 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 |cFF00CC00小于等于 0.8|r 会在小于80%%的人受影响时触发
 |cFF00CC00大于 1/2|r 会在超过一半以上的人受影响时触发
 |cFF00CC00大于等于 0|r 总是触发.]=]
-	--[[Translation missing --]]
-	L["Group contains updates from Wago"] = "Group contains updates from Wago"
+	L["Group contains updates from Wago"] = "包含 Wago 更新的群组"
 	L["Group Member Count"] = "队伍或团队成员数"
 	L["Group Role"] = "团队职责"
 	L["Group Scale"] = "组缩放"
@@ -292,6 +293,8 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	L["Icon Inset"] = "项目插入"
 	L["Icon Settings"] = "图标设置"
 	L["If"] = "如果"
+	--[[Translation missing --]]
+	L["If checked, then this space will span across multiple lines."] = "If checked, then this space will span across multiple lines."
 	L["If this option is enabled, you are no longer able to import auras."] = "如果启用此选项，你将不再能够导入光环设置。"
 	L["If Trigger %s"] = "如果触发器 %s"
 	L["If unchecked, then a default color will be used (usually yellow)"] = "如果不勾选，则使用默认颜色（通常是黄色）"
@@ -299,7 +302,6 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	L["Ignore all Updates"] = "忽略所有更新"
 	L["Ignore Self"] = "忽略自身"
 	L["Ignore self"] = "忽略自己的"
-	L["Ignore this Update"] = "忽略此更新"
 	L["Ignored"] = "被忽略"
 	L["Import"] = "导入"
 	L["Import a display from an encoded string"] = "从字串导入一个图示"
@@ -366,13 +368,10 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	L["On Init"] = "于初始时"
 	L["On Show"] = "图示显示时触发"
 	L["Only match auras cast by people other than the player"] = "只匹配其它玩家施放的光环"
-	--[[Translation missing --]]
-	L["Only match auras cast by people other than the player or his pet"] = "Only match auras cast by people other than the player or his pet"
+	L["Only match auras cast by people other than the player or his pet"] = "只匹配由不是玩家和玩家宠物施放的光环"
 	L["Only match auras cast by the player"] = "只匹配玩家自己施放的光环"
-	--[[Translation missing --]]
-	L["Only match auras cast by the player or his pet"] = "Only match auras cast by the player or his pet"
+	L["Only match auras cast by the player or his pet"] = "只匹配由玩家和玩家宠物施放的光环"
 	L["Operator"] = "运算符"
-	L["Option #"] = "选项 #"
 	L["Option #%i"] = "选项 #%i"
 	L["Option %i"] = "选项 %i"
 	L["Option key"] = "选项键值"
@@ -466,6 +465,7 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	L["Shows one or more lines of text, which can include dynamic information such as progress or stacks"] = "显示一行或多行文字, 它们包换动态信息, 如进度和叠加层数"
 	L["Simple"] = "简单"
 	L["Size"] = "大小"
+	L["Skip this Version"] = "跳过这个版本"
 	L["Slant Amount"] = "斜线数量"
 	L["Slant Mode"] = "倾斜模式"
 	L["Slanted"] = "倾斜的"
@@ -502,7 +502,6 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	L["Stealable"] = "可偷取"
 	L["Step Size"] = "步进尺寸"
 	L["Sticky Duration"] = "持续时间置顶"
-	L["Stop ignoring this Update"] = "不再忽略此更新"
 	L["Stop ignoring Updates"] = "不再忽略更新"
 	L["Stop Sound"] = "停止播放声音"
 	L["Symbol Settings"] = "标志设置"
@@ -555,8 +554,7 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	L["Up"] = "上"
 	L["Update "] = "更新"
 	L["Update Custom Text On..."] = "更新自定义文字于"
-	--[[Translation missing --]]
-	L["Update in Group"] = "Update in Group"
+	L["Update in Group"] = "更新群组内所有项"
 	L["Update this Aura"] = "更新此光环"
 	L["Use Full Scan (High CPU)"] = "使用完整扫描(高CPU)"
 	L["Use nth value from tooltip:"] = "使用来自鼠标提示的值的顺序："
@@ -568,7 +566,6 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	L["Value %i"] = "值 %i"
 	L["Values are in normalized rgba format."] = "数值为标准化的 RGBA 格式"
 	L["Values:"] = "值："
-	L["Variable Size"] = "变量尺寸"
 	L["Version: "] = "版本："
 	L["Vertical Align"] = "垂直对齐"
 	L["Vertical Bar"] = "垂直条"

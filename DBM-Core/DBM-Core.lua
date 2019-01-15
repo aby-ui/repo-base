@@ -41,9 +41,9 @@
 --  Globals/Default Options  --
 -------------------------------
 DBM = {
-	Revision = tonumber(("$Revision: 18157 $"):sub(12, -3)),
-	DisplayVersion = "8.1.2 alpha", -- the string that is shown as version
-	ReleaseRevision = 18134 -- the revision of the latest stable version that is available
+	Revision = tonumber(("$Revision: 18164 $"):sub(12, -3)),
+	DisplayVersion = "8.1.3 alpha", -- the string that is shown as version
+	ReleaseRevision = 18157 -- the revision of the latest stable version that is available
 }
 DBM.HighestRelease = DBM.ReleaseRevision --Updated if newer version is detected, used by update nags to reflect critical fixes user is missing on boss pulls
 
@@ -2217,6 +2217,12 @@ do
 			DBM:TransitionToDungeonBGM(true)
 		elseif cmd:sub(1, 9) == "musicstop" then
 			DBM:TransitionToDungeonBGM(false, true)
+		elseif cmd:sub(1, 9) == "infoframe" then
+			if DBM.InfoFrame:IsShown() then
+				DBM.InfoFrame:Hide()
+			else
+				DBM.InfoFrame:Show(5, "test")
+			end
 		else
 			DBM:LoadGUI()
 		end
@@ -7233,6 +7239,7 @@ do
 	local bonusRollForce = false
 	local warFrontMaps = {
 		[14] = true, -- Arathi Highlands
+		[62] = true, -- Darkshore
 	}
 	local function hideBonusRoll(self)
 		bonusTimeStamp = GetTime()
@@ -7272,7 +7279,7 @@ do
 			hideBonusRoll(DBM)
 		elseif DBM.Options.BonusFilter == "HeroicRaider" and (difficultyId == 14 or difficultyId == 17 or difficultyId == 23 or (difficultyId == 8 and keystoneLevel < 10) or (difficultyId == 0 and not warFrontMaps[localMapID])) then--Basically, anything below 370 (normal/heroic/mythic dungeons lower than 10, LFR/Normal Raids
 			hideBonusRoll(DBM)
-		elseif DBM.Options.BonusFilter == "MythicRaider" and (difficultyId == 14 or difficultyId == 15 or difficultyId == 17 or difficultyId == 23 or difficultyId == 8 or difficultyId == 0) then--Basically, anything below 385 (ANY dungeon, LFR/Normal/Heroic Raids
+		elseif DBM.Options.BonusFilter == "MythicRaider" and (difficultyId == 14 or difficultyId == 15 or difficultyId == 17 or difficultyId == 23 or difficultyId == 8 or difficultyId == 0) then--Basically, anything below Mythic Raid (ANY dungeon, LFR/Normal/Heroic Raids
 			hideBonusRoll(DBM)
 		end
 	end)
@@ -10152,8 +10159,8 @@ do
 		return newSpecialWarning(self, "jump", text, nil, optionDefault, ...)
 	end
 
-	function bossModPrototype:NewSpecialWarningRun(text, optionDefault, ...)
-		return newSpecialWarning(self, "run", text, nil, optionDefault, ...)
+	function bossModPrototype:NewSpecialWarningRun(text, optionDefault, optionName, optionVersion, runSound, ...)
+		return newSpecialWarning(self, "run", text, nil, optionDefault, optionName, optionVersion, runSound or 4, ...)
 	end
 
 	function bossModPrototype:NewSpecialWarningCast(text, optionDefault, ...)

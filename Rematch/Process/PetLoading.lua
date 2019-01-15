@@ -111,7 +111,7 @@ function rematch:checkTeamHealth(team)
 					local petHP, petMaxHP, val1, val2, val3 = C_PetJournal.GetPetStats(petID) 
 					-- rematch:print(i,format("%s", petID), petHP, petMaxHP, val1, val2, val3) 
 					if petHP and petMaxHP then 
-						if petHP < petMaxHP*0.8 then  -- 修改这个0.8即可改变最低合格血量标准。最高为1，如果改成1意味着不满血就不合格。
+						if petHP < petMaxHP*1 then  -- 修改这个0.8即可改变最低合格血量标准。最高为1，如果改成1意味着不满血就不合格。
 							-- rematch:print(i,format("%s", petID),format("\124cff00ffffWounded\124r"))
 							validTeam = false 
 							break

@@ -63,6 +63,7 @@ function EmissaryModule:RefreshDailyWorldQuestInfo()
         addon.db.Emissary.Cache[BountyInfo.questID] = title -- cache quest name
         if timeleft then
           local day = math.floor(timeleft / 1440) + 1 -- [1, 2, 3]
+          addon.debug("title: %s, timeleft: %s, days: +%s", title, timeleft, day)
           if not currExpansion[day] then currExpansion[day] = {} end
           if switching[BountyInfo.questID] then
             currExpansion[day].questID = switching[BountyInfo.questID]

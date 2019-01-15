@@ -152,13 +152,6 @@ function module:BuildOptions()
       SavedInstances.oc_cache = nil
     end,
     args = {
-      debug = {
-        name = "debug",
-        cmdHidden = true,
-        guiHidden = true,
-        type = "execute",
-        func = function() db.dbg = not db.dbg; SavedInstances.debug("Debug set to: "..(db.dbg and "true" or "false")) end,
-      },
       config = {
         name = L["Open config"],
         guiHidden = true,

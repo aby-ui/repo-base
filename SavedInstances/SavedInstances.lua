@@ -112,8 +112,7 @@ end
 addon.chatMsg = chatMsg
 
 local function debug(...)
-  --addon.db.dbg = true
-  if addon.db.dbg then
+  if addon.db.Tooltip.DebugMode then
     chatMsg(...)
   end
 end
@@ -137,17 +136,18 @@ local function GetTimeToTime(val)
 end
 
 function addon:timedebug()
-  chatMsg("Version: %s (%s)", addon.version, addon.revision)
+  chatMsg("Version: %s", addon.version)
   chatMsg("Realm: %s (%s)", GetRealmName(), addon:GetRegion())
   chatMsg("Zone: %s (%s)", GetRealZoneText(), addon:GetCurrentMapAreaID())
   chatMsg("time()=%s GetTime()=%s", time(), GetTime())
   chatMsg("Local time: %s local", date("%A %c"))
   chatMsg("GetGameTime: %s:%s server",GetGameTime())
-  chatMsg("C_Calendar.GetDate: %s %s/%s/%s server",C_Calendar.GetDate())
+  local t = C_DateAndTime.GetCurrentCalendarTime()
+  chatMsg("C_DateAndTime.GetCurrentCalendarTime: %s %s/%s/%s server",t.weekday,t.month,t.monthDay,t.year)
   chatMsg("GetQuestResetTime: %s",SecondsToTime(GetQuestResetTime()))
   chatMsg(date("Daily reset: %a %c local (based on GetQuestResetTime)",time()+GetQuestResetTime()))
   chatMsg("Local to server offset: %d hours",SavedInstances:GetServerOffset())
-  local t = SavedInstances:GetNextDailyResetTime()
+  t = SavedInstances:GetNextDailyResetTime()
   chatMsg("Next daily reset: %s local, %s server",date("%a %c",t), date("%a %c",t+3600*SavedInstances:GetServerOffset()))
   t = SavedInstances:GetNextWeeklyResetTime()
   chatMsg("Next weekly reset: %s local, %s server",date("%a %c",t), date("%a %c",t+3600*SavedInstances:GetServerOffset()))
@@ -737,12 +737,12 @@ local function UpdateEventInfo()
     debug("eventID: " .. event.eventID)
     if event.sequenceType == "START" then
       local hour, minute = event.startTime.hour, event.startTime.minute
-      if hour > current.hour or (hour == current.hour and minute > current.minute) then
+      if hour < current.hour or (hour == current.hour and minute < current.minute) then
         eventInfo[event.eventID] = true
       end
     elseif event.sequenceType == "END" then
       local hour, minute = event.startTime.hour, event.startTime.minute
-      if hour < current.hour or (hour == current.hour and minute < current.minute) then
+      if hour > current.hour or (hour == current.hour and minute > current.minute) then
         eventInfo[event.eventID] = true
       end
     else -- "ONGOING"
@@ -2351,7 +2351,7 @@ end
 function core:OnInitialize()
   local versionString = GetAddOnMetadata(addonName, "version")
   --[===[@debug@
-  if versionString == "8.0.9" then
+  if versionString == "8.0.9-4-g6aef1ca" then
     versionString = "Dev"
   end
   --@end-debug@]===]

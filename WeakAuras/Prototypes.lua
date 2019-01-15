@@ -38,13 +38,15 @@ function WeakAuras.CheckRange(unit, range, operator)
     return
   end
   if (operator == "<=") then
-    return (max or 0) <= range;
+    return (max or 999) <= range;
   else
-    return (min or 1000) >= range;
+    return (min or 0) >= range;
   end
 end
 
+-- encounterJournalID => encounterID
 WeakAuras.encounter_table = {
+  -- Uldir
   [2168] = 2144, -- Taloc the Corrupted
   [2167] = 2141, -- MOTHER
   [2146] = 2128, -- Fetid Devourer
@@ -53,6 +55,20 @@ WeakAuras.encounter_table = {
   [2194] = 2135, -- Mythrax the Unraveler
   [2166] = 2134, -- Vectis
   [2147] = 2122, -- G'huun
+  [2344] = 2265, -- Champion of the Light
+  -- Battle for Dazar'alor
+  --[2344] = 2265, -- Champion of the Light (A)
+  [2333] = 2265, -- Champion of the Light (H)
+  [2340] = 2284, -- Grong, the Revenant (A)
+  [2325] = 2263, -- Grong, the Jungle Lord (H)
+  [2323] = 2285, -- Jadefire Masters (A)
+  [2341] = 2266, -- Jadefire Masters (H)
+  [2342] = 2271, -- Opulence
+  [2330] = 2268, -- Conclave of the Chosen
+  [2334] = 2276, -- High Tinker Mekkatorque
+  [2335] = 2272, -- King Rastakhan
+  [2337] = 2280, -- Stormwall Blockade
+  [2343] = 2281, -- Lady Jaina Proudmoore
 }
 
 local function get_encounters_list()
@@ -708,7 +724,7 @@ WeakAuras.load_prototype = {
     },
     {
       name = "warmode",
-      display = WeakAuras.newFeatureString .. L["War Mode Active"],
+      display = L["War Mode Active"],
       type = "tristate",
       init = "arg",
       width = WeakAuras.doubleWidth,
@@ -2009,8 +2025,9 @@ WeakAuras.event_prototypes = {
         local spellname = %s
         local ignoreRuneCD = %s
         local showgcd = %s;
-        local startTime, duration, gcdCooldown = WeakAuras.GetSpellCooldown(spellname, ignoreRuneCD, showgcd);
-        local charges, maxCharges = WeakAuras.GetSpellCharges(spellname);
+        local ignoreSpellKnown = %s;
+        local startTime, duration, gcdCooldown = WeakAuras.GetSpellCooldown(spellname, ignoreRuneCD, showgcd, ignoreSpellKnown);
+        local charges, maxCharges = WeakAuras.GetSpellCharges(spellname, ignoreSpellKnown);
         local stacks = maxCharges ~= 1 and charges or nil;
         if (charges == nil) then
           charges = (duration == 0) and 1 or 0;
@@ -2035,7 +2052,9 @@ WeakAuras.event_prototypes = {
       ret = ret:format(spellName,
         (trigger.use_matchedRune and "true" or "false"),
         (trigger.use_showgcd and "true" or "false"),
-        showOnCheck);
+        (trigger.use_ignoreSpellKnown and "true" or "false"),
+        showOnCheck
+      );
 
       if (not trigger.use_trackcharge or not trigger.trackcharge) then
         ret = ret .. [=[
@@ -2143,6 +2162,12 @@ WeakAuras.event_prototypes = {
         type = "spell",
         test = "true",
         showExactOption = true,
+      },
+      {
+        name = "ignoreSpellKnown",
+        display = L["Ignore Spell Known"],
+        type = "toggle",
+        test = "true"
       },
       {
         name = "remaining",
@@ -4502,19 +4527,20 @@ WeakAuras.event_prototypes = {
               interruptible = not interruptible
               expirationTime = endTime and endTime > 0 and (endTime / 1000) or 0
               remaining = expirationTime - GetTime()
-
               if not spell
               or trigger_spellId ~= "" and GetSpellInfo(trigger_spellId) ~= spell
               or trigger_spellName ~= "" and trigger_spellName ~= spell
               or trigger_castType  ~= "" and trigger_castType ~= castType
               or trigger_interruptible ~= nil and trigger_interruptible ~= interruptible
               or trigger_target ~= "" and not UnitIsUnit(trigger_target, destUnit)
+              or remainingCheck and not (remaining %s remainingCheck)
               then
                 show = false
-              elseif remainingCheck and remaining >= remainingCheck and remaining > 0 then
-                WeakAuras.ScheduleCastCheck(expirationTime - remainingCheck, sourceUnit)
               else
                 show = true
+              end
+              if remainingCheck and remaining >= remainingCheck and remaining > 0 then
+                WeakAuras.ScheduleCastCheck(expirationTime - remainingCheck, sourceUnit)
               end
             end
             if (show and not trigger_inverse) or (not show and trigger_inverse) then
@@ -4563,7 +4589,8 @@ WeakAuras.event_prototypes = {
         trigger.use_remaining and tonumber(trigger.remaining or 0) or "nil",
         trigger.use_destUnit and trigger.destUnit or "",
         trigger.unit == "multi" and trigger.use_clone and "true" or "false",
-        L["Spell Name"]
+        L["Spell Name"],
+        trigger.remaining_operator or "<"
       )
       return ret
     end,
