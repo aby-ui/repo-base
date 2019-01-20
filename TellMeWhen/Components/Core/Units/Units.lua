@@ -421,14 +421,14 @@ end
 TMW:MakeFunctionCached(UNITS, "GetUnitSet")
 
 function UNITS:GetOriginalUnitTable(unitSettings)
-	unitSettings = TMW:CleanString(unitSettings):
-	lower(): -- all units should be lowercase
-	-- Stripping color codes doesn't matter now since they aren't inserted now ("#" isnt inserted either)
-	-- but keep this here for compatibility with old setups.
-	gsub("|cffff0000", ""): -- strip color codes (NOTE LOWERCASE)
-	gsub("|r", ""):
-	gsub("#", "") -- strip the # from the dropdown 
-	.. " "
+	unitSettings = TMW:CleanString(unitSettings)
+		:lower() -- all units should be lowercase
+		-- Stripping color codes doesn't matter now since they aren't inserted now ("#" isnt inserted either)
+		-- but keep this here for compatibility with old setups.
+		:gsub("|cffff0000", "") -- strip color codes (NOTE LOWERCASE)
+		:gsub("|r", "")
+		:gsub("#", "") -- strip the # from the dropdown 
+		.. " "
 
 
 	--SUBSTITUTE "party" with "party1-4", etc
@@ -481,7 +481,7 @@ function UNITS:GetOriginalUnitTable(unitSettings)
 		end
 	end
 
-	local Units = TMW:SplitNames(unitSettings) -- get a table of everything
+	local Units = TMW:SplitNames(unitSettings, true) -- get a table of everything
 
 	-- REMOVE DUPLICATES
 	TMW.tRemoveDuplicates(Units)

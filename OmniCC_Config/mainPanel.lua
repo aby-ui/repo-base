@@ -14,7 +14,7 @@ StaticPopupDialogs['OmniCC_CONFIG_CREATE_GROUP'] = {
 	maxLetters = 24,
 
 	OnAccept = function(self)
-		local groupId = _G[self:GetName() .. 'EditBox']:GetText()
+		local groupId = _G[self:GetName()..'EditBox']:GetText()
 		if groupId ~= '' then
 			OmniCCOptions:AddGroup(groupId)
 		end
@@ -25,7 +25,6 @@ StaticPopupDialogs['OmniCC_CONFIG_CREATE_GROUP'] = {
 		if groupId ~= '' then
 			OmniCCOptions:AddGroup(groupId)
 		end
-
 		self:GetParent():Hide()
 	end,
 
@@ -40,112 +39,86 @@ StaticPopupDialogs['OmniCC_CONFIG_CREATE_GROUP'] = {
 	timeout = 0, exclusive = 1, hideOnEscape = 1, preferredIndex = STATICPOPUP_NUMDIALOGS
 }
 
---[[ utility functions of champions ]]--
-
-local function sort(...)
-	table.sort(...)
-	return ...
-end
-
-local function map(t, f)
-	local newtbl = {}
-	for i, v in pairs(t) do
-		newtbl[i] = f(v)
-	end
-	return newtbl
-end
-
 --[[
 	group settings selector
 --]]
 
-local function selectGroup(self)
-	self.owner:SetSavedValue(self.value)
-end
-
-local function deleteGroup(self, groupId)
-	self.owner:SetSavedValue('base')
-
-	OmniCC:RemoveGroup(groupId)
-
-	--hide the previous dropdown menus (hack)
-	for i = 1, UIDROPDOWNMENU_MENU_LEVEL-1 do
-		_G["DropDownList"..i]:Hide()
-	end
-end
-
-local function addGroup(self)
-	StaticPopup_Show('OmniCC_CONFIG_CREATE_GROUP')
-end
-
 local function groupSelector_Create(parent)
-	local dd =  CreateFrame('Frame', '$parentGroupSelector', parent, 'UIDropDownMenuTemplate')
+	local f = CreateFrame('Frame', nil, parent)
 
-	dd.SetSavedValue = function(self, value)
-		OmniCCOptions:SetGroupId(value)
-	end
+	local title = f:CreateFontString(nil, 'ARTWORK', 'GameFontHighlightSmall')
+	title:SetPoint('LEFT')
+	title:SetText(_G.GROUP)
+	f.title = title
 
-	dd.GetSavedValue = function(self)
-		return parent.selectedGroup or 'base'
-	end
+	local picker = _G.OmniCCOptions.Dropdown:New{
+		parent = parent,
 
-	--delete button for custom groups
-	local function init_levelTwo(self, level)
-		local info = UIDropDownMenu_CreateInfo()
-		info.text = DELETE
-		info.arg1 = UIDROPDOWNMENU_MENU_VALUE
-		info.func = deleteGroup
-		info.owner = self
-		info.notCheckable = true
-		UIDropDownMenu_AddButton(info, level)
-	end
+		get = function()
+			return OmniCCOptions:GetGroupId()
+		end,
 
-	local function init_levelOne(self, level)
-		local groups = sort(map(OmniCC.sets.groups, function(g) return g.id end))
+		set = function(self, value)
+			OmniCCOptions:SetGroupId(value)
+		end,
 
-		--base group
-		local info = UIDropDownMenu_CreateInfo()
-		info.text = L['Group_base']
-		info.value = 'base'
-		info.func = selectGroup
-		info.owner = self
-		info.hasArrow = false
-		UIDropDownMenu_AddButton(info, level)
+		items = function()
+			local t = {
+				{ value = "base", text = L['Group_base'] }
+			}
 
-		--custom groups (add delete button)
-		for _, g in ipairs(groups) do
-			info = UIDropDownMenu_CreateInfo()
-			info.text = L['Group_' .. g] or g
-			info.value = g
-			info.func = selectGroup
-			info.owner = self
-			info.hasArrow = true
-			UIDropDownMenu_AddButton(info, level)
+			for _, v in ipairs(_G.OmniCC.sets.groups) do
+				tinsert(t, { value = v.id, text = v.id })
+			end
+
+			return t
 		end
+	}
+	f.picker = picker
 
-		--new group button
-		info = UIDropDownMenu_CreateInfo()
-		info.text = L.AddGroup
-		info.func = addGroup
-		info.owner = self
-		info.notCheckable = true
-		UIDropDownMenu_AddButton(info, level)
-	end
+	local add = CreateFrame('Button', nil, f, 'UIPanelButtonTemplate')
+	add:SetText(_G.ADD)
+	add:SetWidth(add:GetTextWidth() + 16)
+	add:SetScript('OnClick', function() StaticPopup_Show('OmniCC_CONFIG_CREATE_GROUP') end)
+	f.add = add
 
-	UIDropDownMenu_Initialize(dd, function(self, level)
-		level = level or 1
-		if level == 1 then
-			init_levelOne(self, level)
-		else
-			init_levelTwo(self, level)
-		end
+	local remove = CreateFrame('Button', nil, f, 'UIPanelButtonTemplate')
+	remove:SetText(_G.REMOVE)
+	remove:SetWidth(remove:GetTextWidth() + 16)
+	remove:SetScript('OnClick', function()
+		OmniCCOptions:RemoveGroup(OmniCCOptions:GetGroupId())
 	end)
+	f.remove = remove
 
-	UIDropDownMenu_SetWidth(dd, 120)
-	UIDropDownMenu_SetSelectedValue(dd, dd:GetSavedValue())
+	f.Refresh = function(self)
+		picker:UpdateText()
 
-	dd:SetPoint('TOPRIGHT', 4, -8)
-	return dd
+		if OmniCCOptions:GetGroupId() == "base" then
+			remove:Disable()
+		else
+			remove:Enable()
+		end
+	end
+
+	local width, height = 0, 0
+	local prev
+	for i, frame in ipairs{ title, add, remove, picker } do
+		if i == 1 then
+			frame:SetPoint("LEFT", f, 0, 0)
+			width = width + frame:GetWidth()
+			height = max(height, frame:GetHeight())
+		else
+			frame:SetPoint("LEFT", prev, "RIGHT", 2, 0)
+			width = width + frame:GetWidth() + 2
+			height = max(height, frame:GetHeight())
+		end
+		prev = frame
+	end
+
+	f:SetSize(width, height)
+	f:SetScript('OnShow', f.Refresh)
+
+	return f
 end
 
 
@@ -302,10 +275,6 @@ local function optionsPanel_SetGroup(self, groupId)
 	if panel.UpdateValues then
 		panel:UpdateValues()
 	end
-
-	-- update the dropdown
-	UIDropDownMenu_SetSelectedValue(self.selector, self.selectedGroup)
-	UIDropDownMenu_SetText(self.selector, L['Group_' .. self.selectedGroup] or self.selectedGroup)
 end
 
 local function optionsPanel_Create(name)
@@ -363,6 +332,7 @@ do
 
 	OmniCCOptions.SetGroupId = function(self, groupId)
 		optionsPanel_SetGroup(f, groupId)
+		f.selector:Refresh()
 	end
 
 	OmniCC.ShowOptionsMenu = function()

@@ -23,7 +23,7 @@ local TICK = 10
 
 -- rounding values in ms
 local HALF_DAY = 43200000
-local HALF_HOUR = 5400000
+local HALF_HOUR = 1800000
 local HALF_MINUTE = 30000
 local HALF_SECOND = 500
 local HALF_TENTHS = 50

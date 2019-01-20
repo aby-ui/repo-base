@@ -125,10 +125,22 @@ end
 
 --獲取容器裏物品裝備等級(傳家寶/神器)
 function lib:GetContainerItemLevel(pid, id)
+--[[
+    if (pid == -1) then
+        local link = GetContainerItemLink(pid, id)
+        return self:GetItemInfo(link)
+    end
+--]]
     local text, level
     if (pid and id) then
         tooltip:SetOwner(UIParent, "ANCHOR_NONE")
-        tooltip:SetBagItem(pid, id)
+        if pid == BANK_CONTAINER then
+            tooltip:SetInventoryItem('player', BankButtonIDToInvSlotID(id))
+        elseif pid == REAGENTBANK_CONTAINER then
+            return 0, 0 --材料银行不用管 ReagentBankButtonIDToInvSlotID
+        else
+            tooltip:SetBagItem(pid, id)
+        end
         for i = 2, 5 do
             text = _G[tooltip:GetName().."TextLeft" .. i]:GetText() or ""
             level = string.match(text, ItemLevelPattern)

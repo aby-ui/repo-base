@@ -438,7 +438,7 @@ function TMW:CleanPath(path)
 	return path:trim():gsub("\\\\", "/"):gsub("\\", "/"), nil
 end
 
-function TMW:SplitNames(input)
+function TMW:SplitNames(input, stringsOnly)
 	input = TMW:CleanString(input)
 	local tbl = { strsplit(";", input) }
 	if #tbl == 1 and tbl[1] == "" then
@@ -447,7 +447,10 @@ function TMW:SplitNames(input)
 
 	for a, b in ipairs(tbl) do
 		local new = strtrim(b) --remove spaces from the beginning and end of each name
-		tbl[a] = tonumber(new) or new -- turn it into a number if it is one
+		if not stringsOnly then
+			new = tonumber(new) or new -- turn it into a number if it is one
+		end
+		tbl[a] = new
 	end
 	return tbl
 end

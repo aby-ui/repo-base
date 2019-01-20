@@ -10,6 +10,7 @@ local LibItemInfo = LibStub:GetLibrary("LibItemInfo.7000")
 
 local ARMOR = ARMOR or "Armor"
 local WEAPON = WEAPON or "Weapon"
+local MOUNTS = MOUNTS or "Mount"
 local RELICSLOT = RELICSLOT or "Relic"
 local ARTIFACT_POWER = ARTIFACT_POWER or "Artifact"
 if (GetLocale():sub(1,2) == "zh") then ARTIFACT_POWER = "能量" end
@@ -81,7 +82,8 @@ local function SetItemSlotString(self, class, equipSlot, link)
             slotText = RELICSLOT
         end
     end
-    if (link and IsArtifactPowerItem(link)) then slotText = ARTIFACT_POWER end
+	--if (link and IsArtifactPowerItem(link)) then slotText = ARTIFACT_POWER end
+    
     self:SetText(slotText)
 end
 
@@ -90,7 +92,7 @@ local function SetItemLevelScheduled(button, ItemLevelFrame, link)
     if (not string.match(link, "item:(%d+):")) then return end
     LibSchedule:AddTask({
         identity  = link,
-        elasped   = 0.5,
+        elasped   = 1,
         expired   = GetTime() + 3,
         frame     = ItemLevelFrame,
         button    = button,
@@ -118,13 +120,22 @@ local function SetItemLevel(self, link, category, BagID, SlotID)
         SetItemSlotString(frame.slotString, self.OrigItemClass, self.OrigItemEquipSlot, self.OrigItemLink)
     else
         local level = ""
-        local _, count, quality, class, equipSlot
+        local _, count, quality, class, subclass, equipSlot
         if (link and string.match(link, "item:(%d+):")) then
-            _, _, quality, _, _, class, _, _, equipSlot = GetItemInfo(link)
             if (BagID and SlotID and (category == "Bag" or category == "AltEquipment")) then
                 count, level = LibItemInfo:GetContainerItemLevel(BagID, SlotID)
+                _, _, quality, _, _, class, subclass, _, equipSlot = GetItemInfo(link)
             else
-                count, level = LibItemInfo:GetItemInfo(link)
+                count, level, _, _, quality, _, _, class, subclass, _, equipSlot = LibItemInfo:GetItemInfo(link)
+            end
+            --除了装备和圣物外,其它不显示装等
+            if ((equipSlot and string.find(equipSlot, "INVTYPE_"))
+                or (subclass and string.find(subclass, RELICSLOT))) then else
+                level = ""
+            end
+            --坐骑还是要显示的
+            if (subclass and subclass == MOUNTS) then
+                class = subclass
             end
             if (count > 0) then
                 SetItemLevelString(frame.levelString, "...", nil, 1)
@@ -155,8 +166,11 @@ hooksecurefunc("SetItemButtonQuality", function(self, quality, itemIDOrLink)
     end
     if (itemIDOrLink) then
         local link
+        --Artifact
+        if (IsArtifactRelicItem(itemIDOrLink) or IsArtifactPowerItem(itemIDOrLink)) then
+            SetItemLevel(self)
         --QuestInfo
-        if (self.type and self.objectType == "item") then
+        elseif (self.type and self.objectType == "item") then
             if (QuestInfoFrame and QuestInfoFrame.questLog) then
                 link = GetQuestLogItemLink(self.type, self:GetID())
             else
@@ -290,15 +304,15 @@ if (EquipmentFlyout_DisplayButton) then
         if (not location) then return end
         local player, bank, bags, voidStorage, slot, bag, tab, voidSlot = EquipmentManager_UnpackLocation(location)
         if (not player and not bank and not bags and not voidStorage) then return end
-        if (voidStorage) then return end
-        local link
-        if (bags) then
-            link = GetContainerItemLink(bag, slot)
+        if (voidStorage) then
+            SetItemLevel(button, nil, "AltEquipment")
+        elseif (bags) then
+            local link = GetContainerItemLink(bag, slot)
             --SetItemLevel(button, link, "AltEquipment", bag, slot)
             local ilvl = U1GetRealItemLevel(link)
             SetItemLevelString(GetItemLevelFrame(button, "AltEquipment").levelString, ilvl, nil, ilvl)
         else
-            link = GetInventoryItemLink("player", slot)
+            local link = GetInventoryItemLink("player", slot)
             --SetItemLevel(button, link, "AltEquipment")
             local ilvl = U1GetRealItemLevel(link, "player", slot)
             SetItemLevelString(GetItemLevelFrame(button, "AltEquipment").levelString, ilvl, nil, ilvl)
@@ -341,7 +355,7 @@ LibEvent:attachEvent("PLAYER_LOGIN", function()
     end
 end)
 
---For Addon: BaudBag
+-- For Addon: BaudBag
 if (BaudBag and BaudBag.CreateItemButton) then
     local BaudBagCreateItemButton = BaudBag.CreateItemButton
     BaudBag.CreateItemButton = function(self, subContainer, slotIndex, buttonTemplate)
@@ -468,7 +482,7 @@ end)
 --  Chat ItemLevel  --
 ----------------------
 
-local itemStatTable = {}
+local stats = {}
 local ARMOR_TYPES = {} --{["板甲"]=true, ...}
 for i=1, 4 do ARMOR_TYPES[GetItemSubClassInfo(4,i)] = true end
 local typeTexts = { INVTYPE_HEAD = "头", INVTYPE_SHOULDER = "肩", INVTYPE_CHEST = "胸", INVTYPE_WAIST = "腰", INVTYPE_LEGS = "腿", INVTYPE_HAND = "手", INVTYPE_FEET = "鞋", INVTYPE_WRIST = "腕", }
@@ -479,47 +493,41 @@ local function ChatItemLevel(Hyperlink)
     if (Caches[Hyperlink]) then
         return Caches[Hyperlink]
     end
+    local Origin = Hyperlink; local yes = true --level added to link
     local link = string.match(Hyperlink, "|H(.-)|h")
---    local name, _, quality, _, _, class, subclass, _, equipSlot, texture = GetItemInfo(link)
---    if (not texture) then return end
-    local Origin = Hyperlink
---    local level = select(2, LibItemInfo:GetItemInfo(link))
-    local name, _, quality, _, _, class, subclass, _, equipSlot = GetItemInfo(link)
-    local level = GetDetailedItemLevelInfo(link)
-    local yes = true
-    if (level) then
-        if (equipSlot and string.find(equipSlot, "INVTYPE_")) then
+    local count, level, name, _, quality, _, _, class, subclass, _, equipSlot = LibItemInfo:GetItemInfo(link)
+    --local name, _, quality, _, _, class, subclass, _, equipSlot = GetItemInfo(link)
+    --local level = GetDetailedItemLevelInfo(link)
+    if (level and level > 0) then
+        if false and (equipSlot == "INVTYPE_CLOAK" or equipSlot == "INVTYPE_TRINKET" or equipSlot == "INVTYPE_FINGER" or equipSlot == "INVTYPE_NECK") then
+            level = format("%s(%s)", level, _G[equipSlot] or equipSlot)
+        elseif (equipSlot and string.find(equipSlot, "INVTYPE_")) then
             level = format("%s%s", level, (ARMOR_TYPES[subclass] and subclass or "")..(typeTexts[equipSlot] or _G[equipSlot] or equipSlot))
         elseif (class == ARMOR) then
             level = format("%s%s", level, class) --level = format("%s(%s-%s)", level, subclass or "", class)
         --elseif (subclass and string.find(subclass, RELICSLOT)) then
         --    level = format("%s(%s)", level, RELICSLOT)
         else
+			level = nil
             yes = false
         end
-        if (yes) then
-            local gem = ""
-            if quality ~= 6 then
-                -- 神器不显示宝石孔
-                wipe(itemStatTable)
-                GetItemStats(link, itemStatTable)
-                for key, num in pairs(itemStatTable) do
-                    if (string.find(key, "EMPTY_SOCKET_")) then
-                        gem = gem .. "|TInterface\\ItemSocketingFrame\\UI-EmptySocket-Prismatic:0|t"
-                        break
-                    end
-                end
-            end
-			--[[
-            for i = 1, num do
-                gem = gem .. "|TInterface\\ItemSocketingFrame\\UI-EmptySocket-Prismatic:0|t"
-            end
-            if (gem ~= "") then gem = gem.." " end
-			--]]
-            --if (quality == 6 and class == WEAPON) then gem = "" end  --神器(武器)不用显示孔
+        if (level and yes) then
+			local n = 0 wipe(stats) GetItemStats(link, stats)
+	        for key, num in pairs(stats) do
+	            if (string.find(key, "EMPTY_SOCKET_")) then
+	                n = n + num
+	            end
+	        end
+	        local gem = string.rep("|TInterface\\ItemSocketingFrame\\UI-EmptySocket-Prismatic:0|t", n)
+	        if (quality == 6 and class == WEAPON) then gem = "" end		
             Hyperlink = Hyperlink:gsub("|h%[(.-)%]|h", "|h["..level..":"..name.."]|h"..gem)
         end
         Caches[Origin] = Hyperlink
+    elseif (subclass and subclass == MOUNTS) then
+        --Hyperlink = Hyperlink:gsub("|h%[(.-)%]|h", "|h[("..subclass..")%1]|h")
+        --Caches[Hyperlink] = Hyperlink
+    elseif (count == 0) then
+        --Caches[Hyperlink] = Hyperlink
     end
     return Hyperlink
 end

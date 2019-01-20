@@ -238,7 +238,7 @@ ConditionCategory:RegisterCondition(1,	 "BIGWIGS_TIMER", {
 		if not BigWigsLoader then
 			return "Interface\\Icons\\INV_Misc_QuestionMark"
 		end
-		return "Interface\\AddOns\\BigWigs\\Textures\\icons\\core-disabled"
+		return "Interface\\AddOns\\BigWigs\\Media\\Textures\\icons\\core-disabled"
 	end,
 
 	tcoords = CNDT.COMMON.standardtcoords,
@@ -344,7 +344,7 @@ ConditionCategory:RegisterCondition(2,	 "BIGWIGS_ENGAGED", {
 		if not BigWigsLoader then
 			return "Interface\\Icons\\INV_Misc_QuestionMark"
 		end
-		return "Interface\\AddOns\\BigWigs\\Textures\\icons\\core-enabled"
+		return "Interface\\AddOns\\BigWigs\\Media\\Textures\\icons\\core-enabled"
 	end,
 
 	tcoords = CNDT.COMMON.standardtcoords,

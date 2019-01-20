@@ -3,7 +3,7 @@ local Recount = _G.Recount
 LibStub:GetLibrary("AceComm-3.0"):Embed(Recount)
 LibStub:GetLibrary("AceSerializer-3.0"):Embed(Recount)
 
-local revision = tonumber(string.sub("$Revision: 1318 $", 12, -3))
+local revision = tonumber(string.sub("$Revision: 1472 $", 12, -3))
 if Recount.Version < revision then
 	Recount.Version = revision
 end
@@ -111,7 +111,7 @@ function Recount:CheckVisible()
 			end
 		end
 	elseif GetNumPartyMembers() > 0 then
-		for i = 1, GetNumPartyMembers(), 1 do 
+		for i = 1, GetNumPartyMembers(), 1 do
 			local unitid = "party"..i
 			if not UnitIsVisible(unitid) and UnitExists(unitid) then
 				local name = UnitName(unitid)
@@ -314,7 +314,7 @@ function Recount:BroadcastLazySync()
 
 						-- Sync pets
 						for i = 1, #serialpetdata do
-							Recount:SendCommMessage("RECOUNT", serialpetdata[i], "WHISPER", name) 
+							Recount:SendCommMessage("RECOUNT", serialpetdata[i], "WHISPER", name)
 						end
 
 						-- Sync bosses

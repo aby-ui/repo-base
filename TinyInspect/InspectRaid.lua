@@ -92,8 +92,9 @@ LibEvent:attachEvent("CHAT_MSG_ADDON", function(self, prefix, text, channel, sen
         local name, realm = strsplit("-", sender)
         for guid, v in pairs(members) do
             if (v.name == name and v.realm == realm) then
-                v.ilevel = ilvl
+                v.ilevel = tonumber(ilvl) or -1
                 v.done = true
+                LibEvent:trigger("RAID_INSPECT_READY", v)
             end
         end
     end
@@ -137,6 +138,10 @@ LibEvent:attachEvent("GROUP_ROSTER_UPDATE", function(self)
         TinyInspectRaidFrame:Show()
     end
     numMembers = numCurrent
+end)
+
+LibEvent:attachEvent("VARIABLES_LOADED", function()
+    LibEvent:event("GROUP_ROSTER_UPDATE")
 end)
 
 

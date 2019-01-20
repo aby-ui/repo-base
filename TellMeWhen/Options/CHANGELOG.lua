@@ -3,6 +3,18 @@ if not TMW then return end
 TMW.CHANGELOG_LASTVER="7.4.0"
 
 TMW.CHANGELOG = [==[
+===v8.5.9===
+====Bug Fixes====
+* Fixed GitHub #12 - A major bug introduced by a last-minute change in v8.5.8 that broke all icons that check multiple units.
+
+===v8.5.8===
+* Groups now use `:SetFlattensRenderLayers(true)`, which should prevent other frames from appearing in between the different parts of the group and its icons.
+
+====Bug Fixes====
+* Fixed #1631 - The Frame Level setting should no longer be prevented from having an effect until the next UI reload due to a change Blizzard has made recently to the way that `:SetToplevel(true)` works. A side effect of this fix is that clicking a group to configure it or its icons will no longer bring that group above others on your screen if you have overlapping groups.
+* Item cooldown icons no longer incorrectly show timers for items whose cooldowns are pending start, like potions used in combat.
+* Fixed #1644 - ConditionObject.lua line 435: attempt to index local 'unit' (a number value)
+
 ===v8.5.7===
 * Bump the TOC version to 8.1 now that Blizzard finally remembered to increment it on their end.
 * Significant updates to buff/debuff eqauivalencies (thanks to user Jalopyy!)

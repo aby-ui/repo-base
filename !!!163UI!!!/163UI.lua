@@ -1067,7 +1067,7 @@ local function simEventsAndLoadCfgs(beforeLogin)
         U1SimulateEvent("SPELLS_CHANGED");
         U1SimulateEvent("WORLD_MAP_UPDATE");
         U1SimulateEvent("QUEST_LOG_UPDATE");
-        if(UnitIsDeadOrGhost("player")) then U1SimulateEvent("PLAYER_DEAD") else U1SimulateEvent("PLAYER_ALIVE") end
+        if(UnitIsDeadOrGhost("player")) then U1SimulateEvent("PLAYER_DEAD") end --else U1SimulateEvent("PLAYER_ALIVE") end
         if(not InCombatLockdown())then U1SimulateEvent("PLAYER_REGEN_ENABLED") end
         if(GetNumGroupMembers()>0) then U1SimulateEvent("GROUP_ROSTER_UPDATE") end
     end

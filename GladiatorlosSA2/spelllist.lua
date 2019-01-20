@@ -380,7 +380,7 @@
 			[605] = "MindControl",
 			[32375] = "massDispell",
 			--[207946] = "lightsWrath",
-			[265202] = "olyWordSalvation", -- Holy Word Salvation
+			[265202] = "holyWordSalvation", -- Holy Word Salvation
 
 			-- Rogue (Spell Casting)
 				--None! :D

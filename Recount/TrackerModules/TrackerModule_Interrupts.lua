@@ -3,7 +3,7 @@ local Recount = _G.Recount
 local AceLocale = LibStub("AceLocale-3.0")
 local L = AceLocale:GetLocale( "Recount" )
 
-local revision = tonumber(string.sub("$Revision: 1311 $", 12, -3))
+local revision = tonumber(string.sub("$Revision: 1472 $", 12, -3))
 if Recount.Version < revision then
 	Recount.Version = revision
 end
@@ -47,7 +47,7 @@ function Recount:AddInterruptData(source, victim, ability, srcGUID, srcFlags, ds
 		end
 	end
 
-	-- Need to add events for potential deaths	
+	-- Need to add events for potential deaths
 	Recount.cleventtext = source.." interrupts "..victim.." "..ability
 
 	-- Name and ID of pet owners

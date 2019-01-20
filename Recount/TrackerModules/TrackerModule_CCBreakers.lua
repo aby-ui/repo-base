@@ -3,7 +3,7 @@ local Recount = _G.Recount
 local AceLocale = LibStub("AceLocale-3.0")
 local L = AceLocale:GetLocale( "Recount" )
 
-local revision = tonumber(string.sub("$Revision: 1313 $", 12, -3))
+local revision = tonumber(string.sub("$Revision: 1472 $", 12, -3))
 if Recount.Version < revision then
 	Recount.Version = revision
 end
@@ -11,8 +11,8 @@ end
 local GameTooltip = GameTooltip
 
 local dbCombatants
-local srcRetention 
-local dstRetention 
+local srcRetention
+local dstRetention
 
 local DetailTitles = { }
 DetailTitles.CC = {
@@ -55,7 +55,7 @@ function Recount:SpellAuraBroken(timestamp, eventtype, srcGUID, srcName, srcFlag
 	end
 
 	local ability
-	if extraSpellName then 
+	if extraSpellName then
 		ability = spellName .. " (" .. extraSpellName .. ")"
 	else
 		ability = spellName .." (Melee)"

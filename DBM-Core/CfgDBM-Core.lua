@@ -91,6 +91,8 @@ U1RegisterAddon("DBM-VPYike", { title = "夏一可語音包", load = "NORMAL", p
 U1RegisterAddon("DBM-Azeroth-BfA", { title = "争霸艾泽拉斯世界BOSS", });
 U1RegisterAddon("DBM-Party-BfA", { title = "争霸艾泽拉斯5人副本", });
 U1RegisterAddon("DBM-Uldir", { title = "奥迪尔副本模块", });
+U1RegisterAddon("DBM-ZuldazarRaid", { title = "达萨罗之战模块", });
+U1RegisterAddon("DBM-CrucibleofStorms", { title = "风暴熔炉模块", });
 
 --第三方开发的
 U1RegisterAddon("DBM-SpellTimers", { title = "冷却监控", load = "NORMAL", defaultEnable = 0 });

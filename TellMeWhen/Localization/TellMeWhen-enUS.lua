@@ -105,7 +105,6 @@ You may wish to customize the group's layout direction and/or sorting options if
 L["ICONMENU_CTRLGROUP_UNAVAILABLE_DESC"] = [[The current icon type does not have the ability to control an entire group.]]
 L["ICONMENU_CTRLGROUP_UNAVAILABLEID_DESC"] = [[Only the first icon in a group (icon ID 1) can be a group controller.]]
 
-
 L["ERROR_MISSINGFILE_REQFILE"] = "A required file"
 L["ERROR_MISSINGFILE"] = [[A complete restart of WoW is required to use TellMeWhen %s.
 
@@ -2772,6 +2771,7 @@ L["DefensiveBuffsAOE"] = "AOE Defensive Buffs"
 L["SpeedBoosts"] = "Speed Boosts"
 L["DamageBuffs"] = "Damage Buffs"
 L["ImmuneToInterrupts"] = "Immunity to Interrupt Spells"
+L["ImmuneToSlows"] = "Immunity to Slows"
 
 -- Deprecated
 --L["IncreasedVersatility"] = "Increased Versatility"

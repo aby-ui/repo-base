@@ -4,7 +4,7 @@ local Graph = LibStub:GetLibrary("LibGraph-2.0")
 local AceLocale = LibStub("AceLocale-3.0")
 local L = AceLocale:GetLocale("Recount")
 
-local revision = tonumber(string.sub("$Revision: 1373 $", 12, -3))
+local revision = tonumber(string.sub("$Revision: 1472 $", 12, -3))
 if Recount.Version < revision then
 	Recount.Version = revision
 end
@@ -567,7 +567,7 @@ function me:RefreshGraph()
 				--break
 			end
 		end
-		--Can't free current because its already in there 
+		--Can't free current because its already in there
 		Recount:FreeTableRecurse(Current)
 		for k, v in pairs(Stacked) do
 			Recount:FreeTableRecurse(v[2])
@@ -1008,7 +1008,7 @@ function Recount:CreateGraphWindow()
 			end
 		end
 	end)
-	theFrame.GraphBackground:SetScript("OnMouseDown", function(this) 
+	theFrame.GraphBackground:SetScript("OnMouseDown", function(this)
 		local sX = this:GetCenter()
 		local Scale = this:GetEffectiveScale()
 		local mX = GetCursorPosition()

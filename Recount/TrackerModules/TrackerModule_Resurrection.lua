@@ -3,7 +3,7 @@ local Recount = _G.Recount
 local AceLocale = LibStub("AceLocale-3.0")
 local L = AceLocale:GetLocale("Recount")
 
-local revision = tonumber(string.sub("$Revision: 1311 $", 12, -3))
+local revision = tonumber(string.sub("$Revision: 1472 $", 12, -3))
 if Recount.Version < revision then
 	Recount.Version = revision
 end
@@ -47,7 +47,7 @@ function Recount:AddRes(source, victim, ability, srcGUID, srcFlags, dstGUID, dst
 			Recount:AddCombatant(source, nil, srcGUID, srcFlags)
 		end
 
-	
+
 		local sourceData = dbCombatants[source]
 		if sourceData then
 

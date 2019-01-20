@@ -911,6 +911,7 @@ local conditionNameSettingProcessedCache = setmetatable(
 function CNDT:GetConditionUnitSubstitution(unit)
 
 	local translatedUnits, unitSet = TMW:GetUnits(nil, unit)
+	local firstOriginal = unitSet.originalUnits[1]
 	local substitution
 	if unitSet.hasSpecialUnitRefs then
 		-- The unit is probably a special unit.
@@ -922,11 +923,11 @@ function CNDT:GetConditionUnitSubstitution(unit)
 		substitution = 
 			CNDT:GetTableSubstitution(translatedUnits)
 			.. "[1] or "
-			.. strWrap(unitSet.originalUnits[1])
+			.. strWrap(firstOriginal)
 	else
 		-- The unit is something that can be passed raw as a unitID.
-		-- Just sup it straight in as a string.
-		substitution = strWrap(unitSet.originalUnits[1])
+		-- Just sub it straight in as a string.
+		substitution = strWrap(firstOriginal or "")
 	end
 
 	return substitution

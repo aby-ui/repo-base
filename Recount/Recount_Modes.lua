@@ -4,7 +4,7 @@ local AceLocale = LibStub("AceLocale-3.0")
 local L = AceLocale:GetLocale("Recount")
 local Epsilon = 0.000000000000000001
 
-local revision = tonumber(string.sub("$Revision: 1425 $", 12, -3))
+local revision = tonumber(string.sub("$Revision: 1472 $", 12, -3))
 if Recount.Version < revision then
 	Recount.Version = revision
 end
@@ -20,7 +20,7 @@ local GameTooltip = GameTooltip
 
 local dbCombatants
 
---.MainTitle = What you see on the window title 
+--.MainTitle = What you see on the window title
 --.TopNames = Names of the entries for the top data
 --.TopAmount = What we call the amount for the top
 --.BotNames = Names of the entries for the bottom
