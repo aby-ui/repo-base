@@ -36,6 +36,8 @@ local L = WeakAuras.L
 	L["Cast"] = "施放"
 	L["Charge and Buff Tracking"] = "可用次数充能和增益效果追踪"
 	L["Charge and Debuff Tracking"] = "可用次数充能和减益效果追踪"
+	--[[Translation missing --]]
+	L["Charge and Duration Tracking"] = "Charge and Duration Tracking"
 	L["Charge Tracking"] = "可用次数充能追踪"
 	L["cooldown"] = "冷却"
 	L["Cooldown Tracking"] = "冷却追踪"
@@ -45,15 +47,23 @@ local L = WeakAuras.L
 	L["General"] = "总体"
 	L["General Azerite Traits"] = "通用艾泽里特特质"
 	L["Health"] = "生命值"
+	--[[Translation missing --]]
+	L["Highlight while active, red when out of range."] = "Highlight while active, red when out of range."
+	--[[Translation missing --]]
+	L["Highlight while active."] = "Highlight while active."
 	L["Highlight while buffed, red when out of range."] = "获得增益效果时高亮，超出范围变红显示"
 	L["Highlight while buffed."] = "获得增益效果时高亮"
 	L["Highlight while debuffed, red when out of range."] = "获得减益效果时高亮，超出范围变红显示"
 	L["Highlight while debuffed."] = "获得减益效果时高亮"
+	--[[Translation missing --]]
+	L["Highlight while spell is active."] = "Highlight while spell is active."
 	L["Hold CTRL to create multiple auras at once"] = "按住 CTRL 键来一次性创建多个光环"
 	L["Keeps existing triggers intact"] = "保持现存触发器完整"
 	L["Next"] = "下一个"
-	L["On Procc Trinkets (Buff)"] = "当饰品增益效果触发"
-	L["On Use Trinkets (Buff)"] = "当饰品增益效果被使用"
+	--[[Translation missing --]]
+	L["On Procc Trinkets (Aura)"] = "On Procc Trinkets (Aura)"
+	--[[Translation missing --]]
+	L["On Use Trinkets (Aura)"] = "On Use Trinkets (Aura)"
 	L["On Use Trinkets (CD)"] = "当饰品正在冷却中"
 	L["Only show the aura if the target has the debuff."] = "只有在目标拥有减益效果时才显示此光环"
 	L["Only show the aura when the item is on cooldown."] = "只有当物品在冷却中时才显示此光环"
@@ -63,7 +73,8 @@ local L = WeakAuras.L
 	L["Pet Behavior"] = "宠物行为"
 	L["PvP Azerite Traits"] = "PvP 艾泽里特特质"
 	L["PvP Talents"] = "PVP天赋"
-	L["PVP Trinkets (Buff)"] = "PvP 饰品增益效果"
+	--[[Translation missing --]]
+	L["PVP Trinkets (Aura)"] = "PVP Trinkets (Aura)"
 	L["PVP Trinkets (CD)"] = "PvP 饰品 CD"
 	L["Replace all existing triggers"] = "替换所有现存的触发器"
 	L["Replace Triggers"] = "替换触发器"
@@ -86,6 +97,12 @@ local L = WeakAuras.L
 	L["Show Cooldown and Check Usable, Target & Proc Tracking"] = "显示 CD，可用性检测，是否有目标和触发追踪"
 	L["Show Cooldown and Debuff"] = "显示 CD 和减益效果"
 	L["Show Cooldown and Debuff and Check for Target"] = "显示 CD 和减益效果并检查是否有选中的目标"
+	--[[Translation missing --]]
+	L["Show Cooldown and Duration"] = "Show Cooldown and Duration"
+	--[[Translation missing --]]
+	L["Show Cooldown and Duration and Check for Target"] = "Show Cooldown and Duration and Check for Target"
+	--[[Translation missing --]]
+	L["Show Cooldown and Duration and Check Usable"] = "Show Cooldown and Duration and Check Usable"
 	L["Show Cooldown and Proc Tracking"] = "显示 CD 和触发追踪"
 	L["Show Cooldown and Totem Information"] = "显示 CD 和图腾信息"
 	L["Show Only if Buffed"] = "获得增益效果时显示"
@@ -97,6 +114,8 @@ local L = WeakAuras.L
 	L["Track the charge and proc, highlight while proc is active, turns red when out of range, blue on insufficient resources."] = "追踪可用次数充能和触发，当触发时高亮显示，超出距离时变红显示，资源不足时变蓝显示"
 	L["Tracks the charge and the buff, highlight while the buff is active, blue on insufficient resources."] = "追踪可用次数和增益效果，当增益效果激活时高亮，当没有足够资源是变蓝显示"
 	L["Tracks the charge and the debuff, highlight while the debuff is active, blue on insufficient resources."] = "追踪可用次数和减益效果，当减益效果激活时高亮，当没有足够资源是变蓝显示"
+	--[[Translation missing --]]
+	L["Tracks the charge and the duration of spell, highlight while the spell is active, blue on insufficient resources."] = "Tracks the charge and the duration of spell, highlight while the spell is active, blue on insufficient resources."
 	L["Unknown Item"] = "未知物品"
 	L["Unknown Spell"] = "未知法术"
 

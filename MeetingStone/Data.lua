@@ -299,12 +299,19 @@ CATEGORY = {
             [144] = true,
             [145] = true,
             [146] = true,
+            [251] = true,
+            [252] = true,
         },
         activities = {
             [657] = true,
         },
     }
 }
+
+--/run a=LFGListFrame.EntryCreation dump(C_LFGList.GetAvailableActivityGroups(a.selectedCategory, bit.bor(a.baseFilters, a.selectedFilters)))
+--/dump C_LFGList.GetActivityGroupInfo(251)
+--/run a=LFGListFrame.EntryCreation dump(C_LFGList.GetAvailableActivities(a.selectedCategory, 0, bit.bor(a.baseFilters, a.selectedFilters)))
+--/dump C_LFGList.GetActivityInfo(657)
 
 RAID_CLASS_COLORS = {}
 CLASS_ICON_TCOORDS = {}

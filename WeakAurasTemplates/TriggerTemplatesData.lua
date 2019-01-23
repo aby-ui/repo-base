@@ -1696,9 +1696,9 @@ templates.class.SHAMAN = {
         { spell = 192058, type = "ability", totem = true}, -- Capacitor Totem
         { spell = 192077, type = "ability", totem = true, talent = 15}, -- Wind Rush Totem
         { spell = 192222, type = "ability", totem = true, talent = 12}, -- Liquid Magma Totem
-        { spell = 192249, type = "ability", talent = 11}, -- Storm Elemental
-        { spell = 198067, type = "ability"}, -- Fire Elemental
-        { spell = 198103, type = "ability"}, -- Earth Elemental
+        { spell = 192249, type = "ability", duration = 30,talent = 11}, -- Storm Elemental
+        { spell = 198067, type = "ability", duration = 30}, -- Fire Elemental
+        { spell = 198103, type = "ability", duration = 60}, -- Earth Elemental
         { spell = 210714, type = "ability", debuff = true, requiresTarget = true, talent = 17}, -- Icefury
       },
       icon = 135790
@@ -1792,7 +1792,7 @@ templates.class.SHAMAN = {
         { spell = 32182, type = "ability", buff = true}, -- Heroism
         { spell = 2825, type = "ability", buff = true}, -- Bloodlust
         { spell = 51514, type = "ability", requiresTarget = true}, -- Hex
-        { spell = 51533, type = "ability", buff = true}, -- Feral Spirit
+        { spell = 51533, type = "ability", duration = 15}, -- Feral Spirit
         { spell = 51886, type = "ability"}, -- Cleanse Spirit
         { spell = 57994, type = "ability", requiresTarget = true}, -- Wind Shear
         { spell = 58875, type = "ability", buff = true}, -- Spirit Walk
@@ -1808,7 +1808,7 @@ templates.class.SHAMAN = {
         { spell = 193796, type = "ability", buff = true, requiresTarget = true}, -- Flametongue
         { spell = 196884, type = "ability", requiresTarget = true, talent = 14 }, -- Feral Lunge
         { spell = 197214, type = "ability", talent = 18 }, -- Sundering
-        { spell = 198103, type = "ability"}, -- Earth Elemental
+        { spell = 198103, type = "ability", duration = 60 }, -- Earth Elemental
       },
       icon = 1370984
     },
@@ -1898,7 +1898,7 @@ templates.class.SHAMAN = {
         { spell = 61295, type = "ability", talent = {5,6}}, -- Riptide
         { spell = 61295, type = "ability", charges = true, talent = 4, titleSuffix = " (2 Charges)"}, -- Riptide
         { spell = 73685, type = "ability", buff = true, talent = 3 }, -- Unleash Life
-        { spell = 73920, type = "ability"}, -- Healing Rain
+        { spell = 73920, type = "ability", duration = 10}, -- Healing Rain
         { spell = 79206, type = "ability", buff = true}, -- Spiritwalker's Grace
         { spell = 98008, type = "ability", totem = true}, -- Spirit Link Totem
         { spell = 108271, type = "ability", buff = true}, -- Astral Shift
@@ -1909,7 +1909,7 @@ templates.class.SHAMAN = {
         { spell = 192058, type = "ability", totem = true}, -- Capacitor Totem
         { spell = 192077, type = "ability", totem = true, talent = 15 }, -- Wind Rush Totem
         { spell = 197995, type = "ability", talent = 20 }, -- Wellspring
-        { spell = 198103, type = "ability"}, -- Earth Elemental
+        { spell = 198103, type = "ability", duration = 60 }, -- Earth Elemental
         { spell = 198838, type = "ability", totem = true, talent = 11 }, -- Earthen Wall Totem
         { spell = 207399, type = "ability", totem = true, talent = 12 }, -- Ancestral Protection Totem
         { spell = 207778, type = "ability", talent = 17 }, -- Downpour
@@ -2504,7 +2504,7 @@ templates.class.WARLOCK = {
       title = L["Abilities"],
       args = {
         { spell = 698, type = "ability"}, -- Ritual of Summoning
-        { spell = 1122, type = "ability", totem = true}, -- Summon Infernal
+        { spell = 1122, type = "ability", duration = 30}, -- Summon Infernal
         { spell = 3110, type = "ability", requiresTarget = true}, -- Firebolt
         { spell = 3716, type = "ability", requiresTarget = true}, -- Consuming Shadows
         { spell = 6353, type = "ability", talent = 3 }, -- Soul Fire
@@ -2955,14 +2955,14 @@ templates.class.DRUID = {
         { spell = 108238, type = "ability", talent = 9 }, -- Renewal
         { spell = 132469, type = "ability", talent = 12 }, -- Typhoon
         { spell = 190984, type = "ability", requiresTarget = true, overlayGlow = true}, -- Solar Wrath
-        { spell = 191034, type = "ability", buff = true}, -- Starfall
+        { spell = 191034, type = "ability", duration = 8}, -- Starfall
         { spell = 192081, type = "ability", buff = true, talent = 8 }, -- Ironfur
         { spell = 194153, type = "ability", requiresTarget = true, overlayGlow = true}, -- Lunar Strike
         { spell = 194223, type = "ability"}, -- Celestial Alignment
         { spell = 202347, type = "ability", requiresTarget = true, debuff = true}, -- Stellar Flare
         { spell = 202425, type = "ability", buff = true, talent = 2 }, -- Warrior of Elune
         { spell = 202770, type = "ability", buff = true, talent = 20 }, -- Fury of Elune
-        { spell = 205636, type = "ability", talent = 3 }, -- Force of Nature
+        { spell = 205636, type = "ability", duration = 10, talent = 3 }, -- Force of Nature
         { spell = 252216, type = "ability", buff = true, talent = 4 }, -- Tiger Dash
         { spell = 274281, type = "ability", requiresTarget = true, charges = true, target = true, talent = 21 }, -- New Moon
       },
@@ -3876,7 +3876,7 @@ templates.items[1] = {
 }
 
 templates.items[2] = {
-  title = L["On Use Trinkets (Buff)"],
+  title = L["On Use Trinkets (Aura)"],
   args = {
     { spell = 278383, type = "buff", unit = "player", titleItemPrefix = 161377},
     { spell = 278385, type = "buff", unit = "player", titleItemPrefix = 161379},
@@ -3901,6 +3901,10 @@ templates.items[2] = {
     { spell = 273942, type = "buff", unit = "player", titleItemPrefix = 158164},
     { spell = 268550, type = "buff", unit = "player", titleItemPrefix = 158215},
     { spell = 274472, type = "buff", unit = "player", titleItemPrefix = 161117},
+    { spell = 288267, type = "buff", unit = "player", titleItemPrefix = 165574},
+    { spell = 291170, type = "debuff", unit = "player", titleItemPrefix = 165578}, --heal
+    { spell = 288156, type = "buff", unit = "player", titleItemPrefix = 165580},
+    { spell = 287568, type = "buff", unit = "player", titleItemPrefix = 165569}, --tank
   }
 }
 
@@ -3934,11 +3938,18 @@ templates.items[3] = {
     { spell = 158216, type = "item"},
     { spell = 158224, type = "item"},
     { spell = 161117, type = "item"},
+    { spell = 165574, type = "item"},
+    { spell = 165568, type = "item"},
+    { spell = 165578, type = "item"}, --heal
+    { spell = 165580, type = "item"},
+    { spell = 165576, type = "item"},
+    { spell = 165572, type = "item"},
+    { spell = 165569, type = "item"}, --tank
   }
 }
 
 templates.items[4] = {
-  title = L["On Procc Trinkets (Buff)"],
+  title = L["On Procc Trinkets (Aura)"],
   args = {
     { spell = 278143, type = "buff", unit = "player", titleItemPrefix = 160648},
     { spell = 278070, type = "buff", unit = "player", titleItemPrefix = 160652},
@@ -3974,11 +3985,19 @@ templates.items[4] = {
     { spell = 273974, type = "buff", unit = "player", titleItemPrefix = 158153},
     { spell = 274430, type = "buff", unit = "player",  spellIds = {274430, 274431}, titleItemPrefix = 161113},
     { spell = 274459, type = "buff", unit = "player", titleItemPrefix = 161115},
+    { spell = 288194, type = "debuff", unit = "player", titleItemPrefix = 165577}, --tank
+    { spell = 288305, type = "buff", unit = "player", titleItemPrefix = 165581},
+    { spell = 288024, type = "buff", unit = "player", titleItemPrefix = 165573}, --tank
+    { spell = 289526, type = "debuff", unit = "target", titleItemPrefix = 165570},
+    { spell = 289524, type = "buff", unit = "player", titleItemPrefix = 165571},
+    { spell = 289523, type = "buff", unit = "player", titleItemPrefix = 165571},
+    { spell = 288330, type = "debuff", unit = "target", titleItemPrefix = 165579},
+    { spell = 290042, type = "buff", unit = "player", titleItemPrefix = 165572},
   }
 }
 
 templates.items[5] = {
-  title = L["PVP Trinkets (Buff)"],
+  title = L["PVP Trinkets (Aura)"],
   args = {
     { spell = 278812, type = "buff", unit = "player", titleItemPrefix = 161472},
     { spell = 278806, type = "buff", unit = "player", titleItemPrefix = 161473},

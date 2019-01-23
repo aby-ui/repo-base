@@ -6,7 +6,6 @@ local L = WeakAuras.L
 
 -- WeakAuras/Options
 	L[" by "] = "来自"
-	L[" Configuration"] = "设置"
 	L["-- Do not remove this comment, it is part of this trigger: "] = "-- 不要移除这条信息，这是该触发器的一部分。"
 	L[" to version "] = "到版本"
 	L["% of Progress"] = "% 进度"
@@ -14,6 +13,8 @@ local L = WeakAuras.L
 	L["%i Matches"] = "%i 符合"
 	L["%s Color"] = "%s 颜色"
 	L["%s total auras"] = "%s 所有的光环"
+	--[[Translation missing --]]
+	L["|cFFFF0000Duplicate Keys Found!|nPlease change the keys of the following options!|r"] = "|cFFFF0000Duplicate Keys Found!|nPlease change the keys of the following options!|r"
 	L["1 Match"] = "1符合"
 	L["1. Text"] = "文本"
 	L["1. Text Settings"] = "字体设置"
@@ -294,7 +295,8 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	L["Icon Settings"] = "图标设置"
 	L["If"] = "如果"
 	--[[Translation missing --]]
-	L["If checked, then this space will span across multiple lines."] = "If checked, then this space will span across multiple lines."
+	L["If checked, then this separator will include text. Otherwise, it will be just a horizontal line."] = "If checked, then this separator will include text. Otherwise, it will be just a horizontal line."
+	L["If checked, then this space will span across multiple lines."] = "如果勾选，此空白区域将横跨多行。"
 	L["If this option is enabled, you are no longer able to import auras."] = "如果启用此选项，你将不再能够导入光环设置。"
 	L["If Trigger %s"] = "如果触发器 %s"
 	L["If unchecked, then a default color will be used (usually yellow)"] = "如果不勾选，则使用默认颜色（通常是黄色）"
@@ -442,6 +444,12 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	L["Search"] = "搜索"
 	L["Select the auras you always want to be listed first"] = "选择优先列出的光环"
 	L["Send To"] = "发送给"
+	--[[Translation missing --]]
+	L["Separator"] = "Separator"
+	--[[Translation missing --]]
+	L["Separator Text"] = "Separator Text"
+	--[[Translation missing --]]
+	L["Separator text"] = "Separator text"
 	L["Set Parent to Anchor"] = "将父框架置于锚点"
 	L["Set tooltip description"] = "设置鼠标提示内容"
 	L["Sets the anchored frame as the aura's parent, causing the aura to inherit attributes such as visiblility and scale."] = "将锚点框架设置为光环的父框架，使得光环继承锚点框架的一些属性（例如：可见性和缩放）"

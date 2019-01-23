@@ -444,6 +444,24 @@ GTFO.SpellID["265352"] = {
   sound = 3;
 };
 
+GTFO.SpellID["288922"] = {
+  --desc = "Call Meteor (Aman)";
+  sound = 3;
+};
+
+GTFO.SpellID["288951"] = {
+  --desc = "Burning (Burninator Mark V)";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["288716"] = {
+  --desc = "Fire Fall (Conflagros)";
+  sound = 3;
+};
+
+
+
 -- ************
 -- * Freehold *
 -- ************
@@ -519,6 +537,11 @@ GTFO.SpellID["258199"] = {
 
 GTFO.SpellID["257902"] = {
   --desc = "Shell Bounce (Ludwig Von Tortollan)";
+  sound = 3;
+};
+
+GTFO.SpellID["258352"] = {
+  --desc = "Grapeshot (Captain Eudora)";
   sound = 3;
 };
 
@@ -748,6 +771,12 @@ GTFO.SpellID["258986"] = {
   sound = 3;
 };
 
+GTFO.SpellID["277072"] = {
+  --desc = "Corrupted Gold (Corrupted Gold)";
+  applicationOnly = true;
+  sound = 3;
+};
+
 -- ***************
 -- * King's Rest *
 -- ***************
@@ -968,6 +997,60 @@ GTFO.SpellID["273401"] = {
 GTFO.SpellID["267700"] = {
   --desc = "Gaze of G'huun (G'huun)";
   applicationOnly = true;
+  sound = 3;
+};
+
+--- *************************
+--- * Battle for Dazar'alor *
+--- *************************
+
+GTFO.SpellID["290045"] = {
+  --desc = "Spear Swipe (Rastari Enforcer)";
+  sound = 3;
+  tankSound = 0;
+};
+
+GTFO.SpellID["283617"] = {
+  --desc = "Wave of Light (Ra'wani Kanae)";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["283651"] = {
+  --desc = "Blinding Faith (Zandalari Crusader)";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["284388"] = {
+  --desc = "Phoenix Strike (Anathos Firecaller)";
+  sound = 3;
+};
+
+GTFO.SpellID["284028"] = {
+  --desc = "Multi-Sided Strike";
+  sound = 3;
+};
+
+GTFO.SpellID["282545"] = {
+  --desc = "Deathly Echo (Grong the Revenant)";
+  sound = 3;
+};
+
+GTFO.SpellID["287556"] = {
+  --desc = "Soul Barrage (Vengeful Shrieker)";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["283609"] = {
+  --desc = "Crush (Yalat's Bulwark)";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["286040"] = {
+  --desc = "Gold Burst (Spirit of Gold)";
   sound = 3;
 };
 

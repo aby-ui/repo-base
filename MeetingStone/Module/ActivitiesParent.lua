@@ -44,6 +44,7 @@ function ActivitiesParent:OnInitialize()
         Blocker:SetParent(self)
         Blocker:Show()
         Blocker:Hide()
+        Blocker.SetText = nop
 
         Blocker:SetCallback('OnCheck', function()
             if not Activities:IsConnected() then

@@ -155,10 +155,10 @@ function Activity:UpdateSortValue()
                             self:IsSelf() and 3 or
                             self:IsInActivity() and 4 or 7
 
-    self._baseSortValue = format('%d%s%04x%02x%02x%08x',
+    self._baseSortValue = format('%d%04x%s%02x%02x%08x',
         self._statusSortValue,
-        self:GetTypeSortValue(),
         0xFFFF - self:GetItemLevel(),
+        self:GetTypeSortValue(),
         self:GetLoot(),
         self:GetMode(),
         self:GetID()

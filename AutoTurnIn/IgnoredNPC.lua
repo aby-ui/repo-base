@@ -1,5 +1,6 @@
 local addonName, privateTable = ...
 
+-- /dump AutoTurnIn:GetNPCGUID()
 privateTable.IGNORED_NPC = {
     ["141584"] = "8.0 lucky coin hord",
     ["142063"] = "8.0 lucky coin alliance",

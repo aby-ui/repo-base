@@ -435,6 +435,8 @@ function Display:getMapPin()
 	texture:SetAllPoints(pin)
 	texture:SetTexture(trackingCircle)
 	texture:SetTexCoord(0, 1, 0, 1)
+	texture:SetTexelSnappingBias(0)
+	texture:SetSnapToPixelGrid(false)
 	pin:RegisterForClicks("LeftButtonUp", "RightButtonUp");
 	pin:SetScript("OnEnter", showPin)
 	pin:SetScript("OnLeave", hidePin)

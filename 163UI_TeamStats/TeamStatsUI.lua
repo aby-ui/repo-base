@@ -789,7 +789,6 @@ function TS.SetupColumns(f)
         },
         --]=]
 
-        --[[
         {
             header = "引领潮流",
             headerSpan = 1,
@@ -815,7 +814,6 @@ function TS.SetupColumns(f)
                 end
             end
         },
-        --]]
     }
 
     TS.NUM_FIX_COLUMNS = #TS.cols

@@ -1662,7 +1662,7 @@ local function scanForLoadsImpl(self, event, arg1, ...)
   -- following IF statement limits the impact of the PET_BATTLE_CLOSE event to the second one.
   if (event == "PET_BATTLE_CLOSE" and C_PetBattles.IsInBattle()) then return end
 
-  if(event == "PLAYER_LEVEL_UP") then
+  if (event == "PLAYER_LEVEL_UP") then
     playerLevel = arg1;
   end
 
@@ -4378,9 +4378,9 @@ do
 
         -- Resume or remove
         if coroutine.status(func) ~= "dead" then
-          local err,ret1,ret2 = assert(coroutine.resume(func))
-          if err then
-            debug(debugstack(func))
+          local ok, msg = coroutine.resume(func)
+          if not ok then
+            geterrorhandler()(msg .. '\n' .. debugstack(func))
           end
         else
           dynFrame:RemoveAction(name);

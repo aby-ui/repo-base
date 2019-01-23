@@ -4501,7 +4501,7 @@ WeakAuras.event_prototypes = {
             cloneId = UnitGUID(sourceUnit)
           end
 
-          if event == "PLAYER_TARGET_CHANGED" then
+          if event == "PLAYER_TARGET_CHANGED" or event == "PLAYER_FOCUS_CHANGED" then
             sourceUnit = trigger_unit
           end
           local destUnit = sourceUnit and sourceUnit .. "-target"
@@ -4701,6 +4701,233 @@ WeakAuras.event_prototypes = {
       }
     },
     automaticrequired = true,
+  },
+  ["Character Stats"] = {
+    type = "status",
+    name = L["Character Stats"],
+    events = {
+        "UNIT_STATS",
+        "COMBAT_RATING_UPDATE",
+        "PLAYER_TARGET_CHANGED"
+    },
+    internal_events = {
+      "WA_DELAYED_PLAYER_ENTERING_WORLD",
+      "PLAYER_MOVING_UPDATE"
+    },
+    loadFunc = function()
+      WeakAuras.WatchForPlayerMoving();
+    end,
+    init = function()
+      local ret = [[
+        local _, _, _, _, _, main_stat = GetSpecializationInfo(GetSpecialization() or 0)
+      ]]
+      return ret;
+    end,
+    force_events = "CONDITIONS_CHECK",
+    statesParameter = "one",
+    args = {
+      {
+        name = "mainstat",
+        display = L["Main Stat"],
+        type = "number",
+        init = "UnitStat('player', main_stat)",
+        store = true,
+        conditionType = "number"
+      },
+      {
+        name = "stamina",
+        display = L["Stamina"],
+        type = "number",
+        init = "select(2, UnitStat('player', LE_UNIT_STAT_STAMINA)) * GetUnitMaxHealthModifier('player')",
+        store = true,
+        conditionType = "number"
+      },
+      {
+        name = "criticalrating",
+        display = L["Critical Rating"],
+        type = "number",
+        init = "GetCombatRating(CR_CRIT_SPELL)",
+        store = true,
+        conditionType = "number"
+      },
+      {
+        name = "criticalpercent",
+        display = L["Critical (%)"],
+        type = "number",
+        init = "GetCritChance()",
+        store = true,
+        conditionType = "number"
+      },
+      {
+        name = "hasterating",
+        display = L["Haste Rating"],
+        type = "number",
+        init = "GetCombatRating(CR_HASTE_SPELL)",
+        store = true,
+        conditionType = "number"
+      },
+      {
+        name = "hastepercent",
+        display = L["Haste (%)"],
+        type = "number",
+        init = "GetHaste()",
+        store = true,
+        conditionType = "number"
+      },
+      {
+        name = "masteryrating",
+        display = L["Mastery Rating"],
+        type = "number",
+        init = "GetCombatRating(CR_MASTERY)",
+        store = true,
+        conditionType = "number"
+      },
+      {
+        name = "masterypercent",
+        display = L["Mastery (%)"],
+        type = "number",
+        init = "GetMasteryEffect()",
+        store = true,
+        conditionType = "number"
+      },
+      {
+        name = "versatilityrating",
+        display = L["Versatility Rating"],
+        type = "number",
+        init = "GetCombatRating(CR_VERSATILITY_DAMAGE_DONE)",
+        store = true,
+        conditionType = "number"
+      },
+      {
+        name = "versatilitypercent",
+        display = L["Versatility (%)"],
+        type = "number",
+        init = "GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_DONE) + GetVersatilityBonus(CR_VERSATILITY_DAMAGE_DONE)",
+        store = true,
+        conditionType = "number"
+      },
+      {
+        name = "leechrating",
+        display = L["Leech Rating"],
+        type = "number",
+        init = "GetCombatRating(CR_LIFESTEAL)",
+        store = true,
+        conditionType = "number"
+      },
+      {
+        name = "leechpercent",
+        display = L["Leech (%)"],
+        type = "number",
+        init = "GetLifesteal()",
+        store = true,
+        conditionType = "number"
+      },
+      {
+        name = "movespeedrating",
+        display = L["Movement Speed Rating"],
+        type = "number",
+        init = "GetCombatRating(CR_SPEED)",
+        store = true,
+        conditionType = "number"
+      },
+      {
+        name = "movespeedpercent",
+        display = L["Movement Speed (%)"],
+        type = "number",
+        init = "GetUnitSpeed('player') / 7 * 100",
+        store = true,
+        conditionType = "number"
+      },
+      {
+        name = "avoidancerating",
+        display = L["Avoidance Rating"],
+        type = "number",
+        init = "GetCombatRating(CR_AVOIDANCE)",
+        store = true,
+        conditionType = "number"
+      },
+      {
+        name = "avoidancepercent",
+        display = L["Avoidance (%)"],
+        type = "number",
+        init = "GetAvoidance()",
+        store = true,
+        conditionType = "number"
+      },
+      {
+        name = "dodgerating",
+        display = L["Dodge Rating"],
+        type = "number",
+        init = "GetCombatRating(CR_DODGE)",
+        store = true,
+        conditionType = "number"
+      },
+      {
+        name = "dodgepercent",
+        display = L["Dodge (%)"],
+        type = "number",
+        init = "GetDodgeChance()",
+        store = true,
+        conditionType = "number"
+      },
+      {
+        name = "parryrating",
+        display = L["Parry Rating"],
+        type = "number",
+        init = "GetCombatRating(CR_PARRY)",
+        store = true,
+        conditionType = "number"
+      },
+      {
+        name = "parrypercent",
+        display = L["Parry (%)"],
+        type = "number",
+        init = "GetParryChance()",
+        store = true,
+        conditionType = "number"
+      },
+      {
+        name = "blockpercent",
+        display = L["Block (%)"],
+        type = "number",
+        init = "GetBlockChance()",
+        store = true,
+        conditionType = "number"
+      },
+      {
+        name = "blocktargetpercent",
+        display = L["Block against Target (%)"],
+        type = "number",
+        init = "PaperDollFrame_GetArmorReductionAgainstTarget(GetShieldBlock())",
+        store = true,
+        conditionType = "number"
+      },
+      {
+        name = "armorrating",
+        display = L["Armor Rating"],
+        type = "number",
+        init = "select(2, UnitArmor('player'))",
+        store = true,
+        conditionType = "number"
+      },
+      {
+        name = "armorpercent",
+        display = L["Armor (%)"],
+        type = "number",
+        init = "PaperDollFrame_GetArmorReduction(select(2, UnitArmor('player')), UnitEffectiveLevel('player'))",
+        store = true,
+        conditionType = "number"
+      },
+      {
+        name = "armortargetpercent",
+        display = L["Armor against Target (%)"],
+        type = "number",
+        init = "PaperDollFrame_GetArmorReductionAgainstTarget(select(2, UnitArmor('player')))",
+        store = true,
+        conditionType = "number"
+      },
+    },
+    automaticrequired = true
   },
   ["Conditions"] = {
     type = "status",

@@ -2351,7 +2351,7 @@ end
 function core:OnInitialize()
   local versionString = GetAddOnMetadata(addonName, "version")
   --[===[@debug@
-  if versionString == "8.0.9-4-g6aef1ca" then
+  if versionString == "8.0.9-5-g3880be3" then
     versionString = "Dev"
   end
   --@end-debug@]===]
@@ -3862,16 +3862,13 @@ function core:ShowTooltip(anchorframe)
   local firstEmissary, expansionLevel = true
   for expansionLevel, _ in pairs(addon.Emissaries) do
     if addon.db.Tooltip["Emissary" .. expansionLevel] or showall then
-      local show, tooltips = {
-        [1] = {},
-        [2] = {},
-        [3] = {},
-      }, {}
+      local tooltips, show = {}, {}
       for toon, t in cpairs(addon.db.Toons, true) do
         if t.Emissary and t.Emissary[expansionLevel] and t.Emissary[expansionLevel].unlocked then
           local day, info
           for day, info in pairs(t.Emissary[expansionLevel].days) do
             if showall or addon.db.Tooltip.EmissaryShowCompleted == true or info.isComplete == false then
+              if not show[day] then show[day] = {} end
               if not show[day][1] then
                 show[day][1] = t.Faction
               elseif show[day][1] ~= t.Faction then

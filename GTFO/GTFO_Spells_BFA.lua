@@ -187,6 +187,17 @@ GTFO.SpellID["287538"] = {
   sound = 1;
 };
 
+GTFO.SpellID["288924"] = {
+  --desc = "Smoldering Flames (Aman)";
+  sound = 1;
+};
+
+GTFO.SpellID["288897"] = {
+  --desc = "Shadow Crash (Soggoth the Slitherer)";
+  sound = 1;
+};
+
+
 -- ***********************
 -- * Shrine of the Storm *
 -- ***********************
@@ -638,3 +649,56 @@ GTFO.SpellID["279575"] = {
   --desc = "Choking Miasma (G'huun)";
   sound = 1;
 };
+
+--- *************************
+--- * Battle for Dazar'alor *
+--- *************************
+
+GTFO.SpellID["283582"] = {
+  --desc = "Consecration (Ra'wani Kanae)";
+  sound = 1;
+};
+
+GTFO.SpellID["286373"] = {
+  --desc = "Chill of Death (Grong)";
+  sound = 1;
+};
+
+GTFO.SpellID["286501"] = {
+  --desc = "Creeping Blaze (Yalat's Bulwark)";
+  sound = 1;
+};
+
+GTFO.SpellID["283063"] = {
+  --desc = "Flames of Punishment (Yalat's Bulwark)";
+  applicationOnly = true;
+  sound = 1;
+};
+
+GTFO.SpellID["287513"] = {
+  --desc = "Flames of Punishment (Yalat's Bulwark)";
+  applicationOnly = true;
+  sound = 1;
+};
+
+GTFO.SpellID["284424"] = {
+  --desc = "Scorching Ground (Yalat's Bulwark)";
+  sound = 1;
+};
+
+GTFO.SpellID["285479"] = {
+  --desc = "Flame Jet (Yalat's Bulwark)";
+  sound = 1;
+};
+
+GTFO.SpellID["284472"] = {
+  --desc = "Deadly Hex (Yalat's Bulwark)";
+  test = true;
+  sound = 2; 
+};
+
+GTFO.SpellID["287074"] = {
+  --desc = "Molten Gold (Opulence)";
+  sound = 1;
+};
+

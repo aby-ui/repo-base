@@ -2,7 +2,7 @@
 ## Title: Meeting Stone
 ## Title-zhCN: |cffff565e[网易]|r 集合石
 ## Notes-zhCN: 帮助您更好的组建队伍
-## Version: 80100.01
+## Version: 80100.02
 ## SavedVariables: MEETINGSTONE_UI_DB
 ## SavedVariablesPerCharacter: MEETINGSTONE_CHARACTER_DB
 ## LoadManagers: AddonLoader

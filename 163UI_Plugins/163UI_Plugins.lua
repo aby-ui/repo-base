@@ -282,17 +282,18 @@ hooksecurefunc("SetItemRef", newSetItemRef);
 大米赛季光辉事迹
 ---------------------------------------------------------------]]
 CoreDependCall("Blizzard_ChallengesUI", function()
-    local crits, numCrits = {}, GetAchievementNumCriteria(13079)
+    local aID10, aID15 = 13448, 13449 --13079, 13080
+    local crits, numCrits = {}, GetAchievementNumCriteria(aID10)
     hooksecurefunc("ChallengesFrame_Update", function(self)
         table.wipe(crits)
-        local ar10 = select(4, GetAchievementInfo(13079))
-        local ar15 = select(4, GetAchievementInfo(13080))
+        local ar10 = select(4, GetAchievementInfo(aID10))
+        local ar15 = select(4, GetAchievementInfo(aID15))
         for i=1, numCrits do
-            local name, _, _, complete = GetAchievementCriteriaInfo(13080, i)
+            local name, _, _, complete = GetAchievementCriteriaInfo(aID15, i)
             if complete == 1 then
                 crits[name] = 15
             else
-                name, _, _, complete = GetAchievementCriteriaInfo(13079, i)
+                name, _, _, complete = GetAchievementCriteriaInfo(aID10, i)
                 if complete == 1 then crits[name] = 10 end
             end
         end
