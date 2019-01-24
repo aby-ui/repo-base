@@ -1,6 +1,6 @@
 --[[
 BattlePetBreedID: Pet Data Module
-Last Update: Patch 8.1.0 Live; 2018-12-17T12:06:26Z
+Last Update: Patch 8.1.0 Live; 2019-01-24T0:43:38Z
 
 If you would like a copy of this data in a different format for your own purposes or to be informed of future updates:
 Contact MMOSimca / Simca@Malfurion - either through MMO-Champion, through CurseForge, or in-game
@@ -4811,7 +4811,7 @@ function BPBID_Arrays.InitializeArrays()
     BPBID_Arrays.BreedsPerSpecies[2198] = {11}
     BPBID_Arrays.BreedsPerSpecies[2199] = {4}
     BPBID_Arrays.BreedsPerSpecies[2200] = {6}
-    BPBID_Arrays.BreedsPerSpecies[2201] = false
+    BPBID_Arrays.BreedsPerSpecies[2201] = {3}
     BPBID_Arrays.BreedsPerSpecies[2202] = {7}
     BPBID_Arrays.BreedsPerSpecies[2203] = {7}
     BPBID_Arrays.BreedsPerSpecies[2204] = {7}
@@ -5067,7 +5067,7 @@ function BPBID_Arrays.InitializeArrays()
     BPBID_Arrays.BreedsPerSpecies[2454] = {4}
     BPBID_Arrays.BreedsPerSpecies[2455] = {10}
     BPBID_Arrays.BreedsPerSpecies[2456] = {11}
-    BPBID_Arrays.BreedsPerSpecies[2457] = false
+    BPBID_Arrays.BreedsPerSpecies[2457] = {8}
     BPBID_Arrays.BreedsPerSpecies[2458] = {6}
     BPBID_Arrays.BreedsPerSpecies[2459] = {6}
     BPBID_Arrays.BreedsPerSpecies[2460] = {5}
@@ -5137,13 +5137,13 @@ function BPBID_Arrays.InitializeArrays()
     BPBID_Arrays.BreedsPerSpecies[2524] = false
     BPBID_Arrays.BreedsPerSpecies[2525] = {5}
     BPBID_Arrays.BreedsPerSpecies[2526] = false
-    BPBID_Arrays.BreedsPerSpecies[2527] = false
+    BPBID_Arrays.BreedsPerSpecies[2527] = {8}
     BPBID_Arrays.BreedsPerSpecies[2528] = false
-    BPBID_Arrays.BreedsPerSpecies[2529] = false
+    BPBID_Arrays.BreedsPerSpecies[2529] = {3}
     BPBID_Arrays.BreedsPerSpecies[2530] = {8}
     BPBID_Arrays.BreedsPerSpecies[2531] = {9}
-    BPBID_Arrays.BreedsPerSpecies[2532] = false
-    BPBID_Arrays.BreedsPerSpecies[2533] = false
+    BPBID_Arrays.BreedsPerSpecies[2532] = {4}
+    BPBID_Arrays.BreedsPerSpecies[2533] = {6}
     BPBID_Arrays.BreedsPerSpecies[2534] = {4}
     BPBID_Arrays.BreedsPerSpecies[2535] = {7}
     BPBID_Arrays.BreedsPerSpecies[2536] = false

@@ -2,11 +2,6 @@
 HandyNotes
 ]]
 
--- This is the WoW 8.0 version
-if select(4, GetBuildInfo()) < 80000 then
-	return
-end
-
 ---------------------------------------------------------
 -- Addon declaration
 HandyNotes = LibStub("AceAddon-3.0"):NewAddon("HandyNotes", "AceConsole-3.0", "AceEvent-3.0")
@@ -97,6 +92,8 @@ local function getNewPin()
 	local texture = pin:CreateTexture(nil, "OVERLAY")
 	pin.texture = texture
 	texture:SetAllPoints(pin)
+	texture:SetTexelSnappingBias(0)
+	texture:SetSnapToPixelGrid(false)
 	pin:RegisterForClicks("AnyUp", "AnyDown")
 	pin:SetMovable(true)
 	pin:Hide()
@@ -284,7 +281,7 @@ local function IterateNodes(pluginName, uiMapID, minimap)
 			return next, emptyTbl
 		end
 		local iter, data, state = handler:GetNodes(mapFile, minimap, level)
-		local t = { mapFile = mapFile, level, iter = iter, data = data }
+		local t = { mapFile = mapFile, level = level, iter = iter, data = data }
 		return LegacyNodeIterator, t, state
 	else
 		error(("Plugin %s does not have GetNodes or GetNodes2"):format(pluginName))
@@ -647,7 +644,9 @@ function HandyNotes:OnDisable()
 		HBDPins:RemoveAllMinimapIcons("HandyNotes" .. pluginName)
 		clearAllPins(minimapPins[pluginName])
 	end
-	WorldMapFrame:RemoveDataProvider(HandyNotes.WorldMapDataProvider)
+	if WorldMapFrame.dataProviders[HandyNotes.WorldMapDataProvider] then
+		WorldMapFrame:RemoveDataProvider(HandyNotes.WorldMapDataProvider)
+	end
 	HBD.UnregisterCallback(self, "PlayerZoneChanged")
 end
 

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2334, "DBM-ZuldazarRaid", 3, 1176)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 18177 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 18186 $"):sub(12, -3))
 mod:SetCreatureID(144796)
 mod:SetEncounterID(2276)
 --mod:DisableESCombatDetection()
@@ -32,7 +32,6 @@ mod:RegisterEventsInCombat(
 --TODO, icon marking for poly morph dispel assignments?
 --TODO, nameplate aura for tampering protocol, if it has actual debuff diration (wowhead does not)
 --TODO, if number of bots can be counted, add additional "switch to bots" warnings when shrunk is applied if any are still up
---TODO, scrap existing timers and redo them for 3 phase fight instead of 5
 --TODO, wormhole generator target scan? hidden aura scan?
 --TODO, adjust electroshock stacks?
 local warnPhase							= mod:NewPhaseChangeAnnounce(2, nil, nil, nil, nil, nil, 2)
@@ -105,7 +104,7 @@ mod.vb.gigaIcon = 1
 mod.vb.shrinkCount = 0
 mod.vb.sheepCount = 0
 mod.vb.difficultyName = "None"
---Normal and heroic are ALMOST identical but have at least 1 difference (which is why they are separate, for fine tuning)
+--Normal and heroic are ALMOST identical but have at least 2 differences (which is why they are separate, for fine tuning)
 local sparkBotTimers = {
 	["lfr"] = {
 		[1] = {},

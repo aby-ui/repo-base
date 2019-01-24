@@ -1,11 +1,6 @@
 -- HereBeDragons-Pins is a library to show pins/icons on the world map and minimap
 
--- HereBeDragons-Pins-2.0 is not supported on WoW 7.x
-if select(4, GetBuildInfo()) < 80000 then
-	return
-end
-
-local MAJOR, MINOR = "HereBeDragons-Pins-2.0", 5
+local MAJOR, MINOR = "HereBeDragons-Pins-2.0", 6
 assert(LibStub, MAJOR .. " requires LibStub")
 
 local pins, oldversion = LibStub:NewLibrary(MAJOR, MINOR)
@@ -427,7 +422,7 @@ function worldmapProvider:HandlePin(icon, data)
         x, y = HBD:GetZoneCoordinatesFromWorld(data.x, data.y, uiMapID)
     end
     if x and y then
-        self:GetMap():AcquirePin("HereBeDragonsPinsTemplate", icon, x, y)
+        self:GetMap():AcquirePin("HereBeDragonsPinsTemplate", icon, x, y, data.frameLevelType)
     end
 end
 
@@ -437,7 +432,8 @@ function worldmapProviderPin:OnLoad()
     self:SetScalingLimits(1, 1.0, 1.2)
 end
 
-function worldmapProviderPin:OnAcquired(icon, x, y)
+function worldmapProviderPin:OnAcquired(icon, x, y, frameLevelType)
+    self:UseFrameLevelType(frameLevelType or "PIN_FRAME_LEVEL_AREA_POI")
     self:SetPosition(x, y)
 
     self.icon = icon
@@ -643,7 +639,8 @@ HBD_PINS_WORLDMAP_SHOW_WORLD     = 3
 -- @param x X position in world coordinates
 -- @param y Y position in world coordinates
 -- @param showFlag Flag to control on which maps this pin will be shown
-function pins:AddWorldMapIconWorld(ref, icon, instanceID, x, y, showFlag)
+-- @param frameLevel Optional Frame Level type registered with the WorldMapFrame, defaults to PIN_FRAME_LEVEL_AREA_POI
+function pins:AddWorldMapIconWorld(ref, icon, instanceID, x, y, showFlag, frameLevel)
     if not ref then
         error(MAJOR..": AddWorldMapIconWorld: 'ref' must not be nil")
     end
@@ -666,6 +663,7 @@ function pins:AddWorldMapIconWorld(ref, icon, instanceID, x, y, showFlag)
     t.y = y
     t.uiMapID = nil
     t.worldMapShowFlag = showFlag or 0
+    t.frameLevelType = frameLevel
 
     worldmapPins[icon] = t
 
@@ -679,7 +677,8 @@ end
 -- @param x X position in local/point coordinates (0-1), relative to the zone
 -- @param y Y position in local/point coordinates (0-1), relative to the zone
 -- @param showFlag Flag to control on which maps this pin will be shown
-function pins:AddWorldMapIconMap(ref, icon, uiMapID, x, y, showFlag)
+-- @param frameLevel Optional Frame Level type registered with the WorldMapFrame, defaults to PIN_FRAME_LEVEL_AREA_POI
+function pins:AddWorldMapIconMap(ref, icon, uiMapID, x, y, showFlag, frameLevel)
     if not ref then
         error(MAJOR..": AddWorldMapIconMap: 'ref' must not be nil")
     end
@@ -706,6 +705,7 @@ function pins:AddWorldMapIconMap(ref, icon, uiMapID, x, y, showFlag)
     t.y = yCoord
     t.uiMapID = uiMapID
     t.worldMapShowFlag = showFlag or 0
+    t.frameLevelType = frameLevel
 
     worldmapPins[icon] = t
 

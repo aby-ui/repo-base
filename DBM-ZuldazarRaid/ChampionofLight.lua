@@ -7,7 +7,7 @@ end
 local mod	= DBM:NewMod(dungeonID, "DBM-ZuldazarRaid", 1, 1176)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 18176 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 18186 $"):sub(12, -3))
 mod:SetCreatureID(creatureID)
 mod:SetEncounterID(2265)
 --mod:DisableESCombatDetection()
@@ -31,7 +31,7 @@ mod:RegisterEventsInCombat(
 )
 
 --[[
-(ability.id = 284469 or ability.id = 284436) and type = "begincast"
+(ability.id = 284469 or ability.id = 284436 or ability.id = 287469 or ability.id = 283598) and type = "begincast"
 --]]
 --TODO, swap count for Sacred Blade? Should it be a force swap in LFR?
 --TODO, maybe a custom huge interrupt icon for the nameplate cast icon for angelic?

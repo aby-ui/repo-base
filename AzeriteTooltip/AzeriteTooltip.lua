@@ -552,6 +552,10 @@ function AzeriteTooltip_SetContainerAzerite(self)
 				end
 
 				for j, k in pairs(rings) do
+                    if button.azerite[j==3 and 2 or j] then
+                        button.azerite[j==3 and 2 or j]:Hide()
+                        button.azerite[j==3 and 2 or j].overlay:Hide()
+                    end
 					if not allTierInfo[j] then break end
                     if ringsNumber < 5 and j > 1 then break end
 
@@ -566,11 +570,6 @@ function AzeriteTooltip_SetContainerAzerite(self)
 					local azeritePowerID = allTierInfo[j]["azeritePowerIDs"][1]
 
 					if not allTierInfo[1]["azeritePowerIDs"][1] then return end
-
-					if button.azerite[j] then
-						button.azerite[j]:Hide()
-						button.azerite[j].overlay:Hide()
-					end	
 
 					for i, _ in pairs(allTierInfo[j]["azeritePowerIDs"]) do
 						local azeritePowerID = allTierInfo[j]["azeritePowerIDs"][i]
@@ -675,6 +674,10 @@ function AzeriteTooltip_SetFlyoutAzerite(self)
 		end
 
 		for j, k in pairs(rings) do
+            if button.azerite[j==3 and 2 or j] then
+                button.azerite[j==3 and 2 or j]:Hide()
+                button.azerite[j==3 and 2 or j].overlay:Hide()
+            end
 			if not allTierInfo[j] then break end
             if ringsNumber < 5 and j > 1 then break end
 
@@ -689,11 +692,6 @@ function AzeriteTooltip_SetFlyoutAzerite(self)
 			local azeritePowerID = allTierInfo[j]["azeritePowerIDs"][1]
 
 			if not allTierInfo[1]["azeritePowerIDs"][1] then return end
-
-			if button.azerite[j] then
-				button.azerite[j]:Hide()
-				button.azerite[j].overlay:Hide()
-			end
 
 			for i, _ in pairs(allTierInfo[j]["azeritePowerIDs"]) do
 				local azeritePowerID = allTierInfo[j]["azeritePowerIDs"][i]
@@ -776,6 +774,10 @@ function AzeriteTooltip_SetPaperDollAzerite(self)
 			end
 
 			for j, k in pairs(rings) do
+                if button.azerite[j==3 and 2 or j] then
+                    button.azerite[j==3 and 2 or j]:Hide()
+                    button.azerite[j==3 and 2 or j].overlay:Hide()
+                end
 				if not allTierInfo[j] then break end
                 if ringsNumber < 5 and j > 1 then break end
 
@@ -790,11 +792,6 @@ function AzeriteTooltip_SetPaperDollAzerite(self)
 				local azeritePowerID = allTierInfo[j]["azeritePowerIDs"][1]
 
 				if not allTierInfo[1]["azeritePowerIDs"][1] then return end
-
-				if button.azerite[j] then
-					button.azerite[j]:Hide()
-					button.azerite[j].overlay:Hide()
-				end
 
 				for i, _ in pairs(allTierInfo[j]["azeritePowerIDs"]) do
 					local azeritePowerID = allTierInfo[j]["azeritePowerIDs"][i]
