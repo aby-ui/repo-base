@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2335, "DBM-ZuldazarRaid", 2, 1176)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 18196 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 18200 $"):sub(12, -3))
 mod:SetCreatureID(145616)--145644 Bwonsamdi
 mod:SetEncounterID(2272)
 --mod:DisableESCombatDetection()
@@ -256,7 +256,7 @@ function mod:SPELL_CAST_START(args)
 		--	self:SendSync("DreadReaping")
 		--end
 	elseif spellId == 287333 then
-		if not playerDeathPhase then
+		if not playerDeathPhase and self.vb.phase ~= 4 then
 			if self.Options.AnnounceAlternatePhase then
 				warnInevitableEnd:Show()
 			end

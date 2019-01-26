@@ -117,3 +117,4 @@ end
 
 function ItemSlot:IsQuestItem() end
 function ItemSlot:IsNew() end
+function ItemSlot:IsPaid() end

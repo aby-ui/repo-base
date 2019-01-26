@@ -93,6 +93,7 @@ end
 
 function ItemSlot:IsQuestItem() end
 function ItemSlot:IsNew() end
+function ItemSlot:IsPaid() end
 function ItemSlot:IsUpgrade() end
 function ItemSlot:UpdateSlotColor() end
 function ItemSlot:UpdateCooldown() end

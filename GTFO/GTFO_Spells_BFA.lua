@@ -695,10 +695,17 @@ GTFO.SpellID["284472"] = {
   --desc = "Deadly Hex (Yalat's Bulwark)";
   test = true;
   sound = 2; 
+  damageMinimum = 1;
 };
 
 GTFO.SpellID["287074"] = {
   --desc = "Molten Gold (Opulence)";
   sound = 1;
+};
+
+GTFO.SpellID["285894"] = {
+  --desc = "Wild Maul (Gonk's Aspect)";
+  sound = 1;
+  tankSound = 0;
 };
 

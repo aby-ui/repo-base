@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2343, "DBM-ZuldazarRaid", 3, 1176)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 18195 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 18199 $"):sub(12, -3))
 --mod:SetCreatureID(138967)--146409 or 146416 probably
 mod:SetEncounterID(2281)
 --mod:DisableESCombatDetection()
@@ -363,8 +363,8 @@ function mod:SPELL_AURA_APPLIED(args)
 			DBM.Nameplate:Show(true, args.sourceGUID, spellId, nil, 40)
 		end
 	elseif spellId == 287626 then
-		specWarGraspofFrost:CombinedShow(0.5, args.destName)
-		specWarGraspofFrost:ScheduleVoice(0.5, "helpdispel")
+		specWarGraspofFrost:CombinedShow(1, args.destName)
+		specWarGraspofFrost:ScheduleVoice(1, "helpdispel")
 		if self.Options.SetIconGraspofFrost2 then
 			self:SetIcon(args.destName, self.vb.GraspofFrostIcon)
 		end
