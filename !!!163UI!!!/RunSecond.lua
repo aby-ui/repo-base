@@ -438,6 +438,12 @@ CoreDependCall("Blizzard_ArtifactUI", function()
     end
 end)
 
+hooksecurefunc("ChatFrame_OpenChat", function(text, ...)
+    if text == "/INSTANCE_CHAT" then
+        ChatFrame_OpenChat("/INSTANCE", ...)
+    end
+end)
+
 --[[
 CoreOnEvent("COMBAT_LOG_EVENT_UNFILTERED", function(event, ...)
     do return end
