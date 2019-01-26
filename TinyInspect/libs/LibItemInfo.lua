@@ -13,7 +13,7 @@ local locale = GetLocale()
 --物品等級匹配規則
 local ItemLevelPattern = gsub(ITEM_LEVEL, "%%d", "(%%d+)")
 local ItemLevelPlusPat = gsub(ITEM_LEVEL_PLUS, "%%d%+", "(%%d+%%+)")
-local ItemLevelAltPat = gsub(ITEM_LEVEL_ALT, "%%d", "(%%d+)")
+local ItemLevelAltPat = gsub(gsub(gsub(ITEM_LEVEL_ALT, "%(", "%%%("), "%)", "%%%)"), "%%d", "(%%d+)")
 
 --Toolip
 local tooltip = CreateFrame("GameTooltip", "LibItemLevelTooltip1", UIParent, "GameTooltipTemplate")
@@ -146,6 +146,8 @@ function lib:GetContainerItemLevel(pid, id)
         end
         for i = 2, 5 do
             text = _G[tooltip:GetName().."TextLeft" .. i]:GetText() or ""
+            level = select(2, string.match(text, ItemLevelAltPat))
+            if (level) then break end
             level = string.match(text, ItemLevelPattern)
             if (level) then break end
         end
