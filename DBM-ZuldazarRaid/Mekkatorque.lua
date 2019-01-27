@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2334, "DBM-ZuldazarRaid", 3, 1176)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 18203 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 18213 $"):sub(12, -3))
 mod:SetCreatureID(144796)
 mod:SetEncounterID(2276)
 --mod:DisableESCombatDetection()
@@ -44,7 +44,7 @@ local warnHyperDrive					= mod:NewTargetNoFilterAnnounce(286051, 3)
 local specWarnBusterCannon				= mod:NewSpecialWarningDodgeCount(282153, nil, nil, nil, 2, 2)
 local specWarnBlastOff					= mod:NewSpecialWarningDodgeCount(282205, nil, nil, nil, 4, 2)
 --local specWarnCrashDown					= mod:NewSpecialWarningDodge(287797, nil, nil, nil, 2, 2)
-local specWarnElectroshockAmp			= mod:NewSpecialWarningCount(289699, nil, DBM_CORE_AUTO_SPEC_WARN_OPTIONS.stack:format(8, 270447), nil, 1, 2)
+local specWarnElectroshockAmp			= mod:NewSpecialWarningCount(289699, nil, DBM_CORE_AUTO_SPEC_WARN_OPTIONS.stack:format(8, 289699), nil, 1, 2)
 local specWarnElectroshockAmpOther		= mod:NewSpecialWarningTaunt(289699, nil, nil, nil, 1, 2)
 local specWarnGigaVoltCharge			= mod:NewSpecialWarningYouPos(286646, nil, nil, nil, 1, 2)
 local yellGigaVoltCharge				= mod:NewPosYell(286646)
@@ -467,7 +467,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		end
 	elseif spellId == 286051 then
 		warnHyperDrive:Show(args.destName)
-	elseif spellId == 270447 then
+	elseif spellId == 289699 then
 		local amount = args.amount or 1
 		if amount >= 8 and self:AntiSpam(5, 4) then
 			if self:IsTanking("player", "boss1", nil, true) then
@@ -486,7 +486,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		if self.vb.botIcon == 9 then self.vb.botIcon = 4 end--Icons 4-8
 	end
 end
---mod.SPELL_AURA_APPLIED_DOSE = mod.SPELL_AURA_APPLIED
+mod.SPELL_AURA_APPLIED_DOSE = mod.SPELL_AURA_APPLIED
 
 function mod:SPELL_AURA_REMOVED(args)
 	local spellId = args.spellId

@@ -41,7 +41,7 @@
 --  Globals/Default Options  --
 -------------------------------
 DBM = {
-	Revision = tonumber(("$Revision: 18204 $"):sub(12, -3)),
+	Revision = tonumber(("$Revision: 18214 $"):sub(12, -3)),
 	DisplayVersion = "8.1.6 alpha", -- the string that is shown as version
 	ReleaseRevision = 18196 -- the revision of the latest stable version that is available
 }
@@ -11016,17 +11016,18 @@ function bossModPrototype:AddNamePlateOption(name, spellId, default)
 	self.localization.options[name] = DBM_CORE_AUTO_NAMEPLATE_OPTION_TEXT:format(spellId)
 end
 
-function bossModPrototype:AddInfoFrameOption(spellId, default)
-	self.DefaultOptions["InfoFrame"] = (default == nil) or default
+function bossModPrototype:AddInfoFrameOption(spellId, default, optionVersion)
+	local oVersion = tostring(optionVersion) or ""
+	self.DefaultOptions["InfoFrame"..oVersion] = (default == nil) or default
 	if default and type(default) == "string" then
 		default = self:GetRoleFlagValue(default)
 	end
-	self.Options["InfoFrame"] = (default == nil) or default
-	self:SetOptionCategory("InfoFrame", "misc")
+	self.Options["InfoFrame"..oVersion] = (default == nil) or default
+	self:SetOptionCategory("InfoFrame"..oVersion, "misc")
 	if spellId then
-		self.localization.options["InfoFrame"] = DBM_CORE_AUTO_INFO_FRAME_OPTION_TEXT:format(spellId)
+		self.localization.options["InfoFrame"..oVersion] = DBM_CORE_AUTO_INFO_FRAME_OPTION_TEXT:format(spellId)
 	else
-		self.localization.options["InfoFrame"] = DBM_CORE_AUTO_INFO_FRAME_OPTION_TEXT2
+		self.localization.options["InfoFrame"..oVersion] = DBM_CORE_AUTO_INFO_FRAME_OPTION_TEXT2
 	end
 end
 

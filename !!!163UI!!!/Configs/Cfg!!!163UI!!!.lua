@@ -213,15 +213,21 @@ U1RegisterAddon("!!!163UI!!!", {
             if loading then
                 local config = cfg._path
                 local playS, playSF = PlaySound, PlaySoundFile
-                local function shouldRedirect(channel)
+                local wipe, playing, looping, updater = table.wipe, {}, {}, CreateFrame("Frame", "U1_SOUND_REDIRECT")
+                updater:SetScript("OnUpdate", function(self) wipe(playing) end)
+                if CreateLoopingSoundEffectEmitter then hooksecurefunc("CreateLoopingSoundEffectEmitter", function(startingSound, loopingSound) looping[loopingSound] = true end) end
+                local function shouldRedirect(channel, sound)
+                    if looping[sound] then return end
                     if(not U1GetCfgValue(config)) then return end
                     channel = channel and channel:upper() or "SFX"
                     if(channel == "MASTER") then return end
+                    if playing[sound] then return end
                     if(GetCVarBool("Sound_EnableSFX") and channel~="MUSIC" and channel~="MASTER" and channel~="AMBIENCE") then return end
+                    playing[sound] = true
                     return true
                 end
-                hooksecurefunc("PlaySound", function(sound, channel) if shouldRedirect(channel) then playS(sound, "Master") end end)
-                hooksecurefunc("PlaySoundFile", function(sound, channel) if shouldRedirect(channel) then playSF(sound, "Master") end end)
+                hooksecurefunc("PlaySound", function(sound, channel) if shouldRedirect(channel, sound) then playS(sound, "Master") end end)
+                hooksecurefunc("PlaySoundFile", function(sound, channel) if shouldRedirect(channel, sound) then playSF(sound, "Master") end end)
             else
                 if v then
                     if GetCVarBool("Sound_EnableSFX") then
@@ -232,6 +238,7 @@ U1RegisterAddon("!!!163UI!!!", {
                     Sound_GameSystem_RestartSoundSystem()
                 end
             end
+            CoreUIShowOrHide(U1_SOUND_REDIRECT, v)
         end
     },
     {

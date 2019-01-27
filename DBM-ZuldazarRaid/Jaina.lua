@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2343, "DBM-ZuldazarRaid", 3, 1176)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 18199 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 18214 $"):sub(12, -3))
 --mod:SetCreatureID(138967)--146409 or 146416 probably
 mod:SetEncounterID(2281)
 --mod:DisableESCombatDetection()
@@ -135,7 +135,7 @@ local timerPrismaticImageCD				= mod:NewAITimer(55, 288747, nil, nil, nil, 1, ni
 
 --mod:AddSetIconOption("SetIconGift", 255594, true)
 mod:AddRangeFrameOption(10, 289379)
-mod:AddInfoFrameOption(287993, true)--Will be changed to true later, right now it'll probably though too many thousands of errors to be on by default
+mod:AddInfoFrameOption(287993, true, 2)
 mod:AddNamePlateOption("NPAuraOnMarkedTarget", 288038)
 mod:AddNamePlateOption("NPAuraOnTimeWarp", 287925)
 mod:AddNamePlateOption("NPAuraOnRefractiveIce", 288219)
@@ -204,8 +204,8 @@ function mod:OnCombatStart(delay)
 	table.wipe(ChillingTouchStacks)
 	timerCorsairCD:Start(5.1-delay)
 	timerAvalancheCD:Start(8.5-delay)
+	timerFreezingBlastCD:Start(17.9-delay)
 	timerGraspofFrostCD:Start(26.6-delay)
-	--timerFreezingBlastCD:Start(1-delay)
 	timerRingofIceCD:Start(60.7-delay)
 	if self.Options.RangeFrame and self:IsMythic() then
 		DBM.RangeCheck:Show(10)
@@ -369,7 +369,7 @@ function mod:SPELL_AURA_APPLIED(args)
 			self:SetIcon(args.destName, self.vb.GraspofFrostIcon)
 		end
 		self.vb.GraspofFrostIcon = self.vb.GraspofFrostIcon + 1
-	elseif (spellId == 288199 or spellId == 290053) and self.vb.phase == 1 then--Howling Winds
+	elseif (spellId == 288199 or spellId == 290053) and self.vb.phase == 1 then--Howling Winds (secondary 1.5 trigger)
 		self.vb.phase = 1.5
 		warnPhase:Show(DBM_CORE_AUTO_ANNOUNCE_TEXTS.stage:format(1.5))
 		warnPhase:Play("phasechange")
@@ -377,7 +377,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerCorsairCD:Stop()
 		timerAvalancheCD:Stop()
 		timerGraspofFrostCD:Stop()
-		--timerFreezingBlastCD:Stop()
+		timerFreezingBlastCD:Stop()
 		timerRingofIceCD:Stop()
 	elseif spellId == 288219 then
 		if self.Options.NPAuraOnRefractiveIce then
@@ -556,16 +556,16 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 	if spellId == 288013 then--Corsair Picker
 		warnCorsair:Show()
 		timerCorsairCD:Start()
-	elseif spellId == 288713 then--Blink to Intermission Spot Center
+	elseif spellId == 290681 then--Transition Visual 1
 		self.vb.phase = 1.5
 		warnPhase:Show(DBM_CORE_AUTO_ANNOUNCE_TEXTS.stage:format(1.5))
 		warnPhase:Play("phasechange")
 		timerCorsairCD:Stop()
 		timerAvalancheCD:Stop()
 		timerGraspofFrostCD:Stop()
-		--timerFreezingBlastCD:Stop()
+		timerFreezingBlastCD:Stop()
 		timerRingofIceCD:Stop()
-		timerPhaseTransition:Start(18)
+		timerPhaseTransition:Start(12.5)
 	elseif spellId == 288405 or spellId == 288401 then--Ability Callout Corsair on the Port Side
 		DBM:Debug("Corsair on the Port Side")
 	elseif spellId == 288407 or spellId == 288406 then--Ability Callout Corsair on the Starboard Side

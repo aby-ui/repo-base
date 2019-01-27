@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2335, "DBM-ZuldazarRaid", 2, 1176)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 18200 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 18211 $"):sub(12, -3))
 mod:SetCreatureID(145616)--145644 Bwonsamdi
 mod:SetEncounterID(2272)
 --mod:DisableESCombatDetection()
@@ -22,8 +22,8 @@ mod:RegisterEventsInCombat(
 	"SPELL_AURA_APPLIED_DOSE 285195",
 	"SPELL_AURA_REMOVED 284831 285195 288449 289162 286779 284276 284455",
 	"SPELL_AURA_REMOVED_DOSE 285195",
-	"UNIT_DIED"
---	"UNIT_SPELLCAST_SUCCEEDED boss1"
+	"UNIT_DIED",
+	"UNIT_SPELLCAST_SUCCEEDED boss1"
 )
 
 --[[
@@ -62,7 +62,6 @@ local warnInevitableEnd					= mod:NewSpellAnnounce(287333, 3)
 local warnZombieTotem					= mod:NewSpellAnnounce(285003, 2)
 ----Spirits
 local warnSealofBwonsamdi				= mod:NewSpellAnnounce(286695, 3)
-local warnShadowSmash					= mod:NewCastAnnounce(286742, 3)
 
 --Stage One: Zandalari Honor Guard
 local specWarnScorchingDetonation		= mod:NewSpecialWarningMoveAway(284831, nil, nil, nil, 3, 2)
@@ -83,7 +82,7 @@ local yellMeteorLeapFades				= mod:NewShortFadesYell(284686)
 local specWarnGrievousAxe				= mod:NewSpecialWarningDefensive(284781, false, nil, nil, 1, 2)
 --Stage Two: Bwonsamdi's Pact
 local specWarnPlagueofFire				= mod:NewSpecialWarningMoveAway(285349, nil, nil, nil, 1, 2)
-local yellPlagueofFire					= mod:NewYell(285349)
+local yellPlagueofFire					= mod:NewYell(285349, 255782)
 local specWarnZombieDustTotem			= mod:NewSpecialWarningSwitch(285003, "Dps", nil, nil, 1, 2)
 ----Bwonsamdi
 local specWarnCaressofDeath				= mod:NewSpecialWarningDefensive(288415, nil, nil, nil, 1, 2)
@@ -95,8 +94,9 @@ local yellDeathsDoorFades				= mod:NewFadesYell(288449)
 --Stage Three: Enter the Death Realm
 local specWarnInevitableEnd				= mod:NewSpecialWarningRun(287333, nil, nil, nil, 4, 2)
 ----Spirits
-local specWarnShadowSmash				= mod:NewSpecialWarningDefensive(286742, nil, nil, nil, 1, 2)
-local specWarnShadowSmashOther			= mod:NewSpecialWarningTaunt(286742, nil, nil, nil, 1, 2)
+local specWarnNecroticSmash				= mod:NewSpecialWarningDodge(286742, "Melee", nil, nil, 4, 2)
+local specWarnNecroticSmashFuckedUp		= mod:NewSpecialWarningDefensive(286742, nil, nil, nil, 1, 2)--If tank gets hit by it, warn this
+local specWarnNecroticSmashOther		= mod:NewSpecialWarningTaunt(286742, nil, nil, nil, 1, 2)--And warn other tank to taunt.
 --local specWarnGTFO						= mod:NewSpecialWarningGTFO(286772, nil, nil, nil, 1, 8)
 local specWarnFocusedDimise				= mod:NewSpecialWarningInterrupt(286779, nil, nil, nil, 1, 2)
 
@@ -114,7 +114,7 @@ local timerGrievousAxeCD				= mod:NewCDTimer(17.1, 284781, nil, nil, nil, 3, nil
 --Stage Two: Bwonsamdi's Pact
 local timerPlagueofFireCD				= mod:NewCDTimer(23, 285347, nil, nil, nil, 3)
 local timerZombieDustTotemCD			= mod:NewCDTimer(44.9, 285003, nil, nil, nil, 1)
---local timerVoodooDollCD					= mod:NewAITimer(14.1, 285402, nil, nil, nil, 1)
+--local timerVoodooDollCD				= mod:NewAITimer(14.1, 285402, nil, nil, nil, 1)
 ----Bwonsamdi
 --local timerSufferingSpiritsCD			= mod:NewAITimer(14.1, 283504, nil, nil, nil, 2)
 local timerDeathsDoorCD					= mod:NewCDTimer(27.9, 288449, nil, nil, nil, 3)
@@ -125,6 +125,7 @@ local timerInevitableEndCD				= mod:NewCDTimer(62.5, 287333, nil, nil, nil, 2, n
 local timerAddsCD						= mod:NewAddsTimer(120, 284446, nil, nil, nil, 1, nil, DBM_CORE_DAMAGE_ICON)--Generic Timer only used on Mythic
 ----Spirits
 local timerSealofBwonCD					= mod:NewCDTimer(25.5, 286695, nil, nil, nil, 5)
+local timerNecroticSmashCD				= mod:NewCDTimer(34.6, 286742, nil, nil, nil, 2)
 
 --local berserkTimer					= mod:NewBerserkTimer(600)
 
@@ -272,7 +273,9 @@ function mod:SPELL_CAST_START(args)
 		warnSealofBwonsamdi:Show()
 		timerSealofBwonCD:Start()
 	elseif spellId == 286742 then
-		warnShadowSmash:Show()
+		specWarnNecroticSmash:Show()
+		specWarnNecroticSmash:Play("justrun")
+		timerNecroticSmashCD:Start(34.6)
 	end
 end
 
@@ -416,7 +419,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		--if self.vb.phase >= 3 then
 		--	self:SendSync("DeathsDoorTarget", args.destName)
 		--end
-	elseif spellId == 284446 and self.vb.phase < 3 then--Bwonsamdi's Boon
+	elseif spellId == 284446 and self.vb.phase < 3 then--Bwonsamdi's Boon (shouldn't be needed but good to have)
 		self.vb.phase = 3
 		self.vb.scorchingDetCount = 0
 		warnPhase:Show(DBM_CORE_AUTO_ANNOUNCE_TEXTS.stage:format(3))
@@ -431,6 +434,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		--Rasta
 		timerSpiritVortex:Start(5)
 		timerAddsCD:Start(6)
+		timerNecroticSmashCD:Start(23)
 		--timerZombieDustTotemCD:Start(3)--Not actually used in Stage 3?
 		timerDeathsDoorCD:Start(27.5)--SUCCESS
 		timerScorchingDetonationCD:Start(32.8, 1)
@@ -449,13 +453,13 @@ function mod:SPELL_AURA_APPLIED(args)
 		end
 	elseif spellId == 286742 then
 		if args:IsPlayer() then
-			specWarnShadowSmash:Show()
-			specWarnShadowSmash:Play("defensive")
+			specWarnNecroticSmashFuckedUp:Show()
+			specWarnNecroticSmashFuckedUp:Play("defensive")
 		else
 			local uId = DBM:GetRaidUnitId(args.destName)
 			if self:IsTanking(uId) and not DBM:UnitDebuff("player", spellId) then
-				specWarnShadowSmashOther:Show(args.destName)
-				specWarnShadowSmashOther:Play("changemt")
+				specWarnNecroticSmashOther:Show(args.destName)
+				specWarnNecroticSmashOther:Play("changemt")
 			end
 		end
 	elseif spellId == 286779 then
@@ -561,18 +565,48 @@ function mod:UNIT_DIED(args)
 	
 	--elseif cid == 146491 then--phantom-of-retribution
 	
-	--elseif cid == 146492 then--phantom-of-rage
-
+	elseif cid == 146492 then--phantom-of-rage
+		timerNecroticSmashCD:Stop()
 	end
 end
 
 function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
+	--"<195.03 22:35:44> [UNIT_SPELLCAST_SUCCEEDED] King Rastakhan(Towelliee) -King Rastakhan P2 -> P3 Conversation [DO NOT TRANSLATE]- [[boss1:Cast-3-3019-2070-28900-290801-000C493290:290801]]", -- [3752]
+	--"<201.14 22:35:50> [CLEU] SPELL_CAST_SUCCESS#Vehicle-0-3019-2070-28900-145644-0000493216#Bwonsamdi#Vehicle-0-3019-2070-28900-145616-0000493177#King Rastakhan#284446#Bwonsamdi's Boon#nil#nil", -- [3850]
+	if spellId == 290801 then--King Rastakhan P2 -> P3 Conversation [DO NOT TRANSLATE] (Only one faster than CLEU)
+		self.vb.phase = 3
+		self.vb.scorchingDetCount = 0
+		warnPhase:Show(DBM_CORE_AUTO_ANNOUNCE_TEXTS.stage:format(3))
+		warnPhase:Play("pthree")
+		timerScorchingDetonationCD:Stop()
+		timerPlagueofFireCD:Stop()
+		timerZombieDustTotemCD:Stop()
+		--timerVoodooDollCD:Stop()
+		--timerSufferingSpiritsCD:Stop()
+		timerDeathsDoorCD:Stop()
+		
+		--Rasta
+		timerSpiritVortex:Start(11)
+		timerAddsCD:Start(12)
+		timerNecroticSmashCD:Start(29)
+		--timerZombieDustTotemCD:Start(3)--Not actually used in Stage 3?
+		timerDeathsDoorCD:Start(33.5)--SUCCESS
+		timerScorchingDetonationCD:Start(38.8, 1)
+		timerPlagueofFireCD:Start(46)
+		--Bwon
+		timerDreadReapingCD:Start(13.6)
+		timerInevitableEndCD:Start(41.8)
+		timerSealofBwonCD:Start(45.2)
+--		self:RegisterShortTermEvents(
+--			"SPELL_PERIODIC_DAMAGE 286772",
+--			"SPELL_PERIODIC_MISSED 286772"
+--		)
 	--"<292.22 16:58:46> [UNIT_SPELLCAST_SUCCEEDED] King Rastakhan(??) -Summon Phantom of Retribution- boss1:Cast-3-2083-2070-6821-284540-002A522E86:284540
 	--"<292.24 16:58:46> [UNIT_SPELLCAST_SUCCEEDED] King Rastakhan(??) -Summon Phantom of Rage- boss1:Cast-3-2083-2070-6821-284542-002C522E86:284542
 	--"<292.24 16:58:46> [UNIT_SPELLCAST_SUCCEEDED] King Rastakhan(??) -Summon Phantom of Slaughter- boss1:Cast-3-2083-2070-6821-284543-002E522E86:284543
 	--"<292.24 16:58:46> [UNIT_SPELLCAST_SUCCEEDED] King Rastakhan(??) -Summon Phantom of Ruin- boss1:Cast-3-2083-2070-6821-284544-002FD22E86:284544
-	if spellId == 284540 then--Summon Phantom of Retribution
-
+--	elseif spellId == 284540 then--Summon Phantom of Retribution
+	
 	end
 end
 
