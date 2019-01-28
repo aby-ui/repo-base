@@ -7,7 +7,7 @@ end
 local mod	= DBM:NewMod(dungeonID, "DBM-ZuldazarRaid", 1, 1176)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 18207 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 18215 $"):sub(12, -3))
 mod:SetCreatureID(creatureID, creatureID2)
 mod:SetEncounterID(2266, 2285)--2266 horde, 2285 Alliance
 --mod:DisableESCombatDetection()
@@ -326,7 +326,7 @@ function mod:UNIT_DIED(args)
 end
 
 function mod:CHAT_MSG_MONSTER_EMOTE(msg)
-	if msg:find("spell:spell:") then -- Bombard seems to be not related with wave status.
+	if msg:find("spell:284374") then -- Not in combat log or unit events
 		self.vb.magmaTrapCount = self.vb.magmaTrapCount + 1
 		warnMagmaTrap:Show(self.vb.magmaTrapCount)
 		--timerMagmaTrapCD:Start()

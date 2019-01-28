@@ -691,11 +691,11 @@ GTFO.SpellID["285479"] = {
   sound = 1;
 };
 
-GTFO.SpellID["284472"] = {
-  --desc = "Deadly Hex (Yalat's Bulwark)";
+GTFO.SpellID["284470"] = {
+  --desc = "Hex of Lethargy (Opulence)";
+  sound = 2;
+  minimumDamage = 1;
   test = true;
-  sound = 2; 
-  damageMinimum = 1;
 };
 
 GTFO.SpellID["287074"] = {

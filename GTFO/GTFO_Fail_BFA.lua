@@ -334,6 +334,19 @@ GTFO.SpellID["287537"] = {
   sound = 3;
 };
 
+GTFO.SpellID["284949"] = {
+  --desc = "Warden's Prison (Sira Moonwarden)";
+  applicationOnly = true;
+  sound = 1;
+};
+
+GTFO.SpellID["288949"] = {
+  --desc = "Crash Override (Shredmaster Blix)";
+  sound = 3;
+};
+
+
+
 -- ***********************
 -- * Shrine of the Storm *
 -- ***********************
@@ -1072,6 +1085,11 @@ GTFO.SpellID["283574"] = {
   sound = 3;
 };
 
+GTFO.SpellID["287640"] = {
+  --desc = "Volatile Charge (The Hand of In'zashi)";
+  sound = 3;
+};
+
 GTFO.SpellID["283557"] = {
   --desc = "Volatile Charge (The Hand of In'zashi)";
   sound = 4;
@@ -1107,3 +1125,9 @@ GTFO.SpellID["286838"] = {
   applicationOnly = true;
 };
 
+GTFO.SpellID["282135"] = {
+  --desc = "Crawling Hex (Gonk's Aspect)";
+  applicationOnly = true;
+  sound = 3;
+  specificMobs = { 0 };
+};
