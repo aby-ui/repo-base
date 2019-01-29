@@ -1003,6 +1003,14 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 					return
 				end
 				
+				if (option == "bar_visible") then 
+					WorldQuestTracker.db.profile.bar_visible = value
+					WorldQuestTracker.RefreshStatusBarVisibility()
+					GameCooltip:Hide()
+					WorldQuestTracker:Msg (L["S_MAPBAR_OPTIONSMENU_STATUSBAR_ONDISABLE"])
+					return
+				end
+				
 				if (option == "show_summary_minimize_button") then
 					WorldQuestTracker.db.profile.show_summary_minimize_button = value
 					if (WorldQuestTrackerAddon.GetCurrentZoneType() == "zone") then
@@ -1353,7 +1361,7 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 			worldSummary.TotalAPower = 0
 			worldSummary.FactionSelected = 1 
 			worldSummary.FactionSelected_OnInit = 6 --the index 6 is the tortollan faction which has less quests and add less noise
-			worldSummary.AnchorAmount = 6
+			worldSummary.AnchorAmount = 7
 			worldSummary.MaxWidgetsPerRow = 7
 			worldSummary.FactionIDs = {}
 			worldSummary.ZoneAnchors = {}
@@ -1375,6 +1383,7 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 				"ANCHORTYPE_GOLD",
 				"ANCHORTYPE_REPUTATION",
 				"ANCHORTYPE_MISC",
+				"",
 			}
 			
 			worldSummary.QuestTypes = {
@@ -1753,8 +1762,11 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 							worldSummary.ZoneAnchors.NextAnchor = worldSummary.ZoneAnchors.NextAnchor + 1
 						end
 					end
-					
+
 					anchor = worldSummary.Anchors [anchorIndex]
+					
+					--print (anchor, )
+					
 					anchor.mapID = mapID
 					anchorTitle = WorldQuestTracker.GetMapName (mapID)
 				end
@@ -2316,7 +2328,7 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 				widget.Order = order
 				widget.X = x
 				widget.Y = y
-				
+
 				local okay, gold, resource, apower = WorldQuestTracker.UpdateWorldWidget (widget, questID, numObjectives, mapID, isCriteria, isNew, isUsingTracker, timeLeft, artifactPowerIcon)
 				widget.texture:SetTexCoord (.1, .9, .1, .9)
 				
@@ -4193,6 +4205,11 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 					GameCooltip:AddIcon ([[Interface\BUTTONS\UI-AutoCastableOverlay]], 1, 1, 16, 16, .4, .6, .4, .6)
 				end
 				GameCooltip:AddMenu (1, options_on_click, "bar_anchor", WorldQuestTracker.db.profile.bar_anchor == "bottom" and "top" or "bottom")
+				
+				--show the statusbar
+				GameCooltip:AddLine (L["S_MAPBAR_OPTIONSMENU_STATUSBAR_VISIBILITY"]) --show statusbar
+				add_checkmark_icon (WorldQuestTracker.db.profile.bar_visible, true)
+				GameCooltip:AddMenu (1, options_on_click, "bar_visible", not WorldQuestTracker.db.profile.bar_visible)
 				
 				-- frame scale and frame align options
 				GameCooltip:AddLine ("$div")

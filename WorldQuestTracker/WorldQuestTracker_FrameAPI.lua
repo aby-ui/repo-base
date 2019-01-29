@@ -556,7 +556,7 @@ function WorldQuestTracker.RefreshStatusBarVisibility()
 	end
 
 	if (WorldQuestTracker.DoubleTapFrame and not InCombatLockdown()) then
-		if (WorldQuestTracker.IsWorldQuestHub (WorldQuestTracker.GetCurrentMapAreaID()) or WorldQuestTracker.ZoneHaveWorldQuest (WorldQuestTracker.GetCurrentMapAreaID())) then
+		if (WorldQuestTracker.db.profile.bar_visible and (WorldQuestTracker.IsWorldQuestHub (WorldQuestTracker.GetCurrentMapAreaID()) or WorldQuestTracker.ZoneHaveWorldQuest (WorldQuestTracker.GetCurrentMapAreaID()))) then
 			WorldQuestTracker.DoubleTapFrame:Show()
 			WorldQuestTracker.DoubleTapFrame.Background:Show()
 			WorldQuestTracker.DoubleTapFrame.BackgroundTexture:Show()

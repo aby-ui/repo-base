@@ -1,31 +1,20 @@
-local Lib = LibStub:NewLibrary('LibItemCache-2.0', 10)
+local Lib = LibStub:NewLibrary('LibItemCache-2.0', 11)
 if not Lib then
 	return
 end
 
-local REALM = GetRealmName()
-local PLAYER = UnitName('player')
 local FACTION = UnitFactionGroup('player')
-
 local COMPLETE_LINK = '|c.+|H.+|h.+|h|r'
 local PET_LINK = '|c%s|Hbattlepet:%sx0|h[%s]|h|r'
 local PET_STRING = '^' .. strrep('%d+:', 6) .. '%d+$'
 local EMPTY_FUNC = function() end
-local BROKEN_REALMS = {
-	['Aggra(Português)'] = 'Aggra (Português)',
-	['AzjolNerub'] = 'Azjol-Nerub',
-	['Arakarahm'] = 'Arak-arahm',
-	['Корольлич'] = 'Король-лич',
-}
+local PLAYER, REALM, REALMS
 
-local Realms = GetAutoCompleteRealms()
-if not Realms or #Realms == 0 then
-	Realms = {REALM}
-end
-
-for i,realm in ipairs(Realms) do
-		realm = BROKEN_REALMS[realm] or realm
-		Realms[i] = realm:gsub('(%l)(%u)', '%1 %2') -- names like Blade'sEdge to Blade's Edge
+local FindRealms = function()
+	PLAYER, REALM = UnitFullName('player')
+	REALM = REALM or GetRealmName()
+    local auto = GetAutoCompleteRealms()
+	REALMS = auto and #auto > 0 and auto or {REALM }
 end
 
 local Caches = {}
@@ -42,6 +31,9 @@ end
 
 setmetatable(Caches, { __index = AccessInterfaces })
 LibStub('AceEvent-3.0'):Embed(Lib)
+
+FindRealms()
+Lib:RegisterEvent('PLAYER_LOGIN', FindRealms)
 
 Lib:RegisterEvent('BANKFRAME_OPENED', function() Lib.AtBank = true; Lib:SendMessage('CACHE_BANK_OPENED') end)
 Lib:RegisterEvent('BANKFRAME_CLOSED', function() Lib.AtBank = false; Lib:SendMessage('CACHE_BANK_CLOSED') end)
@@ -99,7 +91,7 @@ function Lib:IterateOwners()
 	local i, players, guilds, suffix = 0
 
 	return function()
-		while i <= #Realms do
+		while i <= #REALMS do
 			local owner = players and players()
 			if owner then
 				return owner .. suffix
@@ -113,10 +105,10 @@ function Lib:IterateOwners()
 			end
 
 			i = i + 1
-			if i <= #Realms then
-				players = Caches:GetPlayers(Realms[i])
-				guilds = Caches:GetGuilds(Realms[i])
-				suffix = Realms[i] ~= REALM and ' - ' .. Realms[i] or ''
+			if i <= #REALMS then
+				players = Caches:GetPlayers(REALMS[i])
+				guilds = Caches:GetGuilds(REALMS[i])
+				suffix = REALMS[i] ~= REALM and ' - ' .. REALMS[i] or ''
 			end
 		end
 	end

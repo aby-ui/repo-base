@@ -112,10 +112,12 @@ end
 
 local function createAllWaypoints()
 	for mapID, coords in next, points do
+		if not continents[mapFile] then
 		for coord, questID in next, coords do
 			if coord and (db.completed or not completedQuests[questID]) then
 				createWaypoint(mapID, coord)
 			end
+		end
 		end
 	end
 	TomTom:SetClosestWaypoint()
@@ -219,7 +221,7 @@ local function CheckEventActive()
 			else
 				local hour = tonumber(date("%H"))
 
-				if event.sequenceType == "END" and hour <= event.endTime.hour or event.sequenceType == "START" and hour >= event.startTime.hour then
+				if (event.sequenceType == "END" and hour <= event.endTime.hour) or (event.sequenceType == "START" and hour >= event.startTime.hour) then
 					setEnabled = true
 				else
 					setEnabled = false

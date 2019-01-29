@@ -577,6 +577,8 @@ function WorldQuestTracker.UpdateZoneWidgets (forceUpdate)
 	local testCounter = 0
 	local workerQuestIndex = 1
 	local bannedQuests = WorldQuestTracker.db.profile.banned_quests
+	
+	WorldQuestTracker.CurrentZoneQuestsMapID = mapID
 
 	if (taskInfo and #taskInfo > 0) then
 	

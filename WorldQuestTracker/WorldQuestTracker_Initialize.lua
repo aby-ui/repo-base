@@ -202,6 +202,7 @@ do
 			zone_only_tracked = false,
 			low_level_tutorial = false, --
 			bar_anchor = "bottom",
+			bar_visible = true,
 			use_old_icons = false,
 			history = {
 				reward = {

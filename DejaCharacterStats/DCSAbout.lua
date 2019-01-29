@@ -101,7 +101,7 @@ local L = namespace.L 				--localization
 			"|cff0094c4Admins:|r Dejoblue, Kakjens" .. "|n" .. 
 			"|cff0094c4Contributers:|r Dejoblue, Kakjens, loudsoul" .. "|n" .. 
 			"|cff0094c4Localization Translators:|r" .. "|n" ..
-			"|cff0094c4    French:|r Medaleux, sv002, Darkcraft92," .. "|n" .. 						--(French)
+			"|cff0094c4    French:|r Lightuky, Medaleux, sv002, Darkcraft92," .. "|n" .. 						--(French)
 			"        Ymvej, Druidzor, napnapnapnapnap" .. "|n" ..										--(French) Continued French list
 			"|cff0094c4    German:|r pas06, flow0284, Markurion," .. "|n" .. 						--(German)
 			"        Branduril, NekoNyaaaa" .. "|n" ..													--(German) Continued German list
@@ -114,7 +114,7 @@ local L = namespace.L 				--localization
 			"|cff0094c4    Russian:|r Nappsel, Wishko, berufegoru," .. "|n" ..						--(Russian)
 			"        Hubbotu, n1mrorox" .. "|n" ..																--(Russian) Continued Russian list
 			"|cff0094c4    Simplified Chinese:|r C_Reus, alvisjiang," .. "|n" ..					--(Simplified Chinese)
-			"        y123ao6" .. "|n" ..																--(Simplified Chinese) Continued Simplified Chinese list
+			"        aenerv7, xlfd2008, y123ao6" .. "|n" ..																--(Simplified Chinese) Continued Simplified Chinese list
 			"|cff0094c4    Traditional Chinese:|r BNSSNB, killsophia," .. "|n" ..					--(Traditional Chinese)
 			"        konraddo, y123ao6" .. "|n" ..														--(Traditional Chinese) Continued Traditional Chinese list
 			"|n" ..																					--(Spacer)

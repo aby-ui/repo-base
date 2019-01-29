@@ -18,48 +18,32 @@ This file is part of BagBrother.
 
 local Brother = CreateFrame('Frame', 'BagBrother')
 Brother:SetScript('OnEvent', function(self, event, ...) self[event](self, ...) end)
-Brother:RegisterEvent('ADDON_LOADED')
 Brother:RegisterEvent('PLAYER_LOGIN')
-
-
---[[ Cache Loaded ]]--
-
-function Brother:ADDON_LOADED()
-	self:RemoveEvent('ADDON_LOADED')
-	self:StartupCache()
-	self:SetupCharacter()
-end
-
-function Brother:StartupCache()
-	local Player = UnitName('player')
-	local Realm = GetRealmName()
-	
-	BrotherBags = BrotherBags or {}
-	BrotherBags[Realm] = BrotherBags[Realm] or {}
-	
-	self.Realm = BrotherBags[Realm]
-	self.Realm[Player] = self.Realm[Player] or {equip = {}}
-	self.Player = self.Realm[Player]
-end
-
-function Brother:SetupCharacter()
-	local player = self.Player
-	player.faction = UnitFactionGroup('player') == 'Alliance'
-	player.class = select(2, UnitClass('player'))
-	player.race = select(2, UnitRace('player'))
-	player.sex = UnitSex('player')
-end
 
 
 --[[ Server Ready ]]--
 
 function Brother:PLAYER_LOGIN()
-    if self['ADDON_LOADED'] then
-        self['ADDON_LOADED'](self)
-    end
 	self:RemoveEvent('PLAYER_LOGIN')
+	self:StartupCache()
 	self:SetupEvents()
 	self:UpdateData()
+end
+
+function Brother:StartupCache()
+	local player, realm = UnitFullName('player')
+	BrotherBags = BrotherBags or {}
+	BrotherBags[realm] = BrotherBags[realm] or {}
+
+	self.Realm = BrotherBags[realm]
+	self.Realm[player] = self.Realm[player] or {equip = {}}
+	self.Player = self.Realm[player]
+
+	local player = self.Player
+	player.faction = UnitFactionGroup('player') == 'Alliance'
+	player.class = select(2, UnitClass('player'))
+	player.race = select(2, UnitRace('player'))
+	player.sex = UnitSex('player')
 end
 
 function Brother:SetupEvents()
@@ -88,6 +72,9 @@ function Brother:UpdateData()
 	self:GUILD_ROSTER_UPDATE()
 	self:PLAYER_MONEY()
 end
+
+
+--[[ API ]]--
 
 function Brother:RemoveEvent(event)
 	self:UnregisterEvent(event)

@@ -889,6 +889,7 @@ function WorldQuestTracker.GetWorldWidgetForQuest (questID)
 	end
 end
 
+-- ~update
 function WorldQuestTracker.UpdateWorldWidget (widget, questID, numObjectives, mapID, isCriteria, isNew, isUsingTracker, timeLeft, artifactPowerIcon)
 
 	--if the second argument is a boolean, this is a quick refresh
@@ -1210,7 +1211,7 @@ function WorldQuestTracker.BuildMapChildrenTable (parentMap, t)
 	return t
 end
 
--- ~world
+-- ~world -- ~update
 function WorldQuestTracker.UpdateWorldQuestsOnWorldMap (noCache, showFade, isQuestFlaggedRecheck, forceCriteriaAnimation, questList)
 	if (UnitLevel ("player") < 110) then
 		WorldQuestTracker.HideWorldQuestsOnWorldMap()

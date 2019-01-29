@@ -1064,9 +1064,12 @@ SLASH_WQTRACKER2 = "/worldquesttracker"
 
 function SlashCmdList.WQTRACKER (msg, editbox)
 
-	
+	if (msg == "statusbar") then
+		WorldQuestTracker.db.profile.bar_visible = true
+		WorldQuestTracker.RefreshStatusBarVisibility()
+		return
 
-	if (msg == "info") then
+	elseif (msg == "info") then
 		local widget = GetMouseFocus()
 		
 		if (widget) then

@@ -42,6 +42,7 @@ U1.PINYIN={
 	['一键神器能量']={'yijianshenqinengliang','yjsqnl'},
 	['一键驱散']={'yijianqusan','yjqs'},
 	['万圣节糖罐位置']={'wanshengjietangguanweizhi','wsjtgwz'},
+    ['春节长者位置']={'chunjiezhangzheweizhi','cjzzwz'},
 	['下拉菜单增强']={'xialacaidanzengqiang','xlcdzq'},
 	['专业技能助手']={'zhuanyejinengzhushou','zyjnzs'},
 	['世界事件数据']={'shijieshijianshuju','sjsjsj'},

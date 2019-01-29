@@ -806,6 +806,9 @@ function WorldQuestTracker.InviteFromGroupApply()
 	--]=]
 	
 	local a = C_LFGList.GetActiveEntryInfo()
+	if (not a) then
+		return
+	end
 	local active, activityID, ilvl, honorLevel, name, comment, voiceChat, duration, autoAccept, privateGroup, questID = a.active, a.activityID, a.ilvl, a.honorLevel, a.name, a.comment, a.voiceChat, a.duration, a.autoAccept, a.privateGroup, a.questID
 	--active = true --disabling to fix later
 	

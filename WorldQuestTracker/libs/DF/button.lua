@@ -876,6 +876,9 @@ local ButtonMetaFunctions = _G [DF.GlobalWidgetControlNames ["button"]]
 		local x, y = GetCursorPosition()
 		x = _math_floor (x)
 		y = _math_floor (y)
+		
+		button.mouse_down = button.mouse_down or 0 --avoid issues when the button was pressed while disabled and release when enabled
+		
 		if (
 			(x == button.x and y == button.y) or
 			(button.mouse_down+0.5 > GetTime() and button:IsMouseOver())
@@ -891,6 +894,15 @@ local ButtonMetaFunctions = _G [DF.GlobalWidgetControlNames ["button"]]
 ------------------------------------------------------------------------------------------------------------
 
 function ButtonMetaFunctions:SetTemplate (template)
+	
+	if (type (template) == "string") then
+		template = DF:GetTemplate ("button", template)
+	end
+	
+	if (not template) then
+		DF:Error ("template not found")
+		return
+	end
 	
 	if (template.width) then
 		self:SetWidth (template.width)

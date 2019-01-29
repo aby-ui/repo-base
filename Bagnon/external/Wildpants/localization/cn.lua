@@ -6,6 +6,8 @@ local ADDON = ...
 local L = LibStub('AceLocale-3.0'):NewLocale(ADDON, 'zhCN')
 if not L then return end
 
+L.TipResetPlayer = '<右键点击> 返回当前角色背包.'
+
 --keybinding text
 L.ToggleBags = '开关 背包'
 L.ToggleBank = '开关 银行'

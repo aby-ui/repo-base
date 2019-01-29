@@ -729,6 +729,8 @@ local DFSliderMetaFunctions = _G [DF.GlobalWidgetControlNames ["slider"]]
 		table_remove (slider.MyObject.previous_value, 4)
 		
 		local capsule = slider.MyObject
+
+		--some plugins registered OnValueChanged and others with OnValueChange
 		local kill = capsule:RunHooksForWidget ("OnValueChanged", slider, capsule.FixedValue, amt, capsule)
 		if (kill) then
 			return
@@ -736,7 +738,7 @@ local DFSliderMetaFunctions = _G [DF.GlobalWidgetControlNames ["slider"]]
 		local kill = capsule:RunHooksForWidget ("OnValueChange", slider, capsule.FixedValue, amt, capsule)
 		if (kill) then
 			return
-		end
+		end	
 		
 		if (slider.MyObject.OnValueChanged) then
 			slider.MyObject.OnValueChanged (slider, slider.MyObject.FixedValue, amt)
@@ -752,6 +754,7 @@ local DFSliderMetaFunctions = _G [DF.GlobalWidgetControlNames ["slider"]]
 			slider.amt:SetText (math.floor (amt))
 		end
 		slider.MyObject.ivalue = amt
+
 	end
 
 ------------------------------------------------------------------------------------------------------------

@@ -195,7 +195,8 @@ end
 
 function WorldQuestTracker:TAXIMAP_OPENED()
 	
-	if (not WorldQuestTracker.FlyMapHook and FlightMapFrame) then
+	--testing FlightMapFrame ~= WorldMapFrame for some addons modifying the flymap
+	if (not WorldQuestTracker.FlyMapHook and FlightMapFrame and FlightMapFrame ~= WorldMapFrame) then
 
 		for dataProvider, isInstalled in pairs (FlightMapFrame.dataProviders) do
 			if (dataProvider.DoesWorldQuestInfoPassFilters) then

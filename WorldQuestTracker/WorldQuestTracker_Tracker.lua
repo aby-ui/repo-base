@@ -38,6 +38,7 @@ local GetQuestTagInfo = GetQuestTagInfo
 local GetNumQuestLogRewards = GetNumQuestLogRewards
 local GetQuestInfoByQuestID = C_TaskQuest.GetQuestInfoByQuestID
 local GetQuestTimeLeftMinutes = C_TaskQuest.GetQuestTimeLeftMinutes
+local GetQuestsForPlayerByMapID = C_TaskQuest.GetQuestsForPlayerByMapID
 
 local MapRangeClamped = DF.MapRangeClamped
 local FindLookAtRotation = DF.FindLookAtRotation
@@ -1076,29 +1077,39 @@ function WorldQuestTracker.SortTrackerByQuestDistance()
 	WorldQuestTracker.RefreshTrackerWidgets()
 end
 
---atualiza os widgets e reajusta a ancora
+
+--update quests on the quest tracker
 function WorldQuestTracker.RefreshTrackerWidgets()
-	--under development
-	--if (true) then return end
 
 	if (WorldQuestTracker.LastTrackerRefresh and WorldQuestTracker.LastTrackerRefresh+0.2 > GetTime()) then
 		return
 	end
 	WorldQuestTracker.LastTrackerRefresh = GetTime()
 
-	--reordena as quests
+	--reorder quests in the tracker
 	WorldQuestTracker.ReorderQuestsOnTracker()
-	--atualiza as quest no tracker
+	
+	--do the update
 	local y = -30
 	local nextWidget = 1
 	local needSortByDistance = 0
 	local onlyCurrentMap = WorldQuestTracker.db.profile.tracker_only_currentmap
 	
+	local currentMap = WorldQuestTracker.GetCurrentStandingMapAreaID()
+	local taskInfo = GetQuestsForPlayerByMapID (currentMap, currentMap)
+	
 	for index, quest in ipairs (WorldQuestTracker.QuestTrackList) do
 		--verifica se a quest esta ativa, ela pode ser desativada se o jogador estiver dentro da area da quest
 		if (HaveQuestData (quest.questID)) then
 			local title, factionID, tagID, tagName, worldQuestType, rarity, isElite, tradeskillLineIndex = WorldQuestTracker.GetQuest_Info (quest.questID)
-			--print (quest.questID)
+			
+			--check if the quest has a continent map id and try to cast the continent id to zone id
+			if (quest.mapID == WorldQuestTracker.MapData.ZoneIDs.ZANDALAR or quest.mapID == WorldQuestTracker.MapData.ZoneIDs.KULTIRAS) then
+				if (WorldQuestTracker.CurrentZoneQuests [quest.questID] and WorldQuestTracker.CurrentZoneQuestsMapID == currentMap) then
+					quest.mapID = currentMap
+				end
+			end
+			
 			if (not quest.isDisabled and title and (not onlyCurrentMap or (onlyCurrentMap and Sort_currentMapID == quest.mapID))) then
 				local widget = WorldQuestTracker.GetOrCreateTrackerWidget (nextWidget)
 				widget:ClearAllPoints()
