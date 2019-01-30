@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2343, "DBM-ZuldazarRaid", 3, 1176)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 18228 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 18243 $"):sub(12, -3))
 --mod:SetCreatureID(138967)--146409 or 146416 probably
 mod:SetEncounterID(2281)
 --mod:DisableESCombatDetection()
@@ -68,6 +68,7 @@ local warnCrystalDust					= mod:NewCountAnnounce(289940, 3)
 local specWarnFreezingBlood				= mod:NewSpecialWarningYou(289387, nil, nil, nil, 1, 2)
 local specWarnChillingStack				= mod:NewSpecialWarningStack(287993, nil, 2, nil, nil, 1, 6)
 --Stage One: Burning Seas
+local specWarnIceShard					= mod:NewSpecialWarningTaunt(285253, false, nil, nil, 1, 2)
 local specWarnMarkedTarget				= mod:NewSpecialWarningRun(288038, nil, nil, nil, 4, 2)
 local yellMarkedTarget					= mod:NewYell(288038, nil, false)
 --local specWarnBombard					= mod:NewSpecialWarningDodge(285828, nil, nil, nil, 2, 2)
@@ -78,6 +79,7 @@ local specWarGraspofFrost				= mod:NewSpecialWarningDispel(287626, false, nil, 2
 local specWarnFreezingBlast				= mod:NewSpecialWarningDodge(285177, "Tank", nil, nil, 2, 2)
 local specWarnRingofIce					= mod:NewSpecialWarningRun(285459, nil, nil, nil, 4, 2)
 --Stage Two: Frozen Wrath
+local specWarnIceBlockTaunt				= mod:NewSpecialWarningTaunt(287490, nil, nil, nil, 3, 2)
 local specWarnGTFO						= mod:NewSpecialWarningGTFO(288297, nil, nil, nil, 1, 8)
 local specWarnBroadside					= mod:NewSpecialWarningMoveAway(288212, nil, nil, nil, 1, 2)--NewSpecialWarningYouPos
 local yellBroadside						= mod:NewPosYell(288212)
@@ -93,7 +95,7 @@ local specWarnIcefall					= mod:NewSpecialWarningDodgeCount(288475, nil, nil, ni
 --Intermission 2
 local specWarnHeartofFrost				= mod:NewSpecialWarningMoveAway(289220, nil, nil, nil, 1, 2)
 local yellHeartofFrost					= mod:NewYell(289220)
-local specWarnWaterBoltVolley			= mod:NewSpecialWarningInterrupt(290084, "HasInterrupt", nil, nil, 1, 2)
+local specWarnWaterBoltVolley			= mod:NewSpecialWarningInterruptCount(290084, "HasInterrupt", nil, nil, 1, 2)
 --Stage Three:
 local specWarnOrbofFrost				= mod:NewSpecialWarningDodgeCount(288619, nil, nil, nil, 2, 2)
 local specWarnPrismaticImage			= mod:NewSpecialWarningSwitchCount(288747, "Dps", nil, nil, 1, 2)
@@ -117,13 +119,13 @@ local timerIcefallCD					= mod:NewCDCountTimer(42.8, 288475, nil, nil, nil, 3, n
 --local timerIcefall						= mod:NewCastTimer(55, 288475, nil, nil, nil, 3)
 --Intermission 2
 local timerHeartofFrostCD				= mod:NewCDTimer(8.5, 289220, nil, nil, nil, 3)
-local timerWaterBoltVolleyCD			= mod:NewCDTimer(7.2, 290084, nil, nil, nil, 4, nil, DBM_CORE_INTERRUPT_ICON)
+local timerWaterBoltVolleyCD			= mod:NewCDCountTimer(7.2, 290084, nil, nil, nil, 4, nil, DBM_CORE_INTERRUPT_ICON)
 --Stage 3
 local timerOrbofFrostCD					= mod:NewCDCountTimer(60, 288619, nil, nil, nil, 3, nil, DBM_CORE_HEROIC_ICON)
 local timerPrismaticImageCD				= mod:NewCDCountTimer(41.3, 288747, nil, nil, nil, 1, nil, DBM_CORE_DAMAGE_ICON)
-local timerCrystallineDustCD			= mod:NewCDCountTimer(14.1, 289940, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON)
+local timerCrystallineDustCD			= mod:NewCDCountTimer(14.1, 289940, nil, nil, 2, 5, nil, DBM_CORE_TANK_ICON)
 
---local berserkTimer					= mod:NewBerserkTimer(600)
+local berserkTimer						= mod:NewBerserkTimer(900)
 
 --Stage One: Burning Seas
 local countdownRingofIce				= mod:NewCountdown(60, 285459, true)
@@ -149,6 +151,7 @@ mod.vb.broadsideCount = 0
 mod.vb.siegeCount = 0
 mod.vb.glacialRayCount = 0
 mod.vb.broadsideIcon = 0
+mod.vb.waterboltVolleyCount = 0
 local ChillingTouchStacks = {}
 
 --[[
@@ -230,10 +233,15 @@ function mod:OnCombatStart(delay)
 		--DBM.InfoFrame:SetHeader(DBM_CORE_INFOFRAME_POWER)
 		--DBM.InfoFrame:Show(8, "function", updateInfoFrame, false, false)
 		DBM.InfoFrame:SetHeader(DBM:GetSpellInfo(287993))
-		DBM.InfoFrame:Show(5, "table", ChillingTouchStacks, 1)
+		DBM.InfoFrame:Show(10, "table", ChillingTouchStacks, 1)
 	end
 	if self.Options.NPAuraOnMarkedTarget or self.Options.NPAuraOnTimeWarp or self.Options.NPAuraOnRefractiveIce then
 		DBM:FireEvent("BossMod_EnableHostileNameplates")
+	end
+	if self:IsMythic() then
+		berserkTimer:Start(720)
+	else
+		berserkTimer:Start(900)
 	end
 end
 
@@ -286,6 +294,7 @@ function mod:SPELL_CAST_START(args)
 		--timerIcefall:Start()
 	elseif spellId == 288719 then--Flash Freeze
 		self.vb.phase = 2.5
+		self.vb.waterboltVolleyCount = 0
 		warnPhase:Show(DBM_CORE_AUTO_ANNOUNCE_TEXTS.stage:format(2.5))
 		warnPhase:Play("phasechange")
 		timerBroadsideCD:Stop()
@@ -301,10 +310,24 @@ function mod:SPELL_CAST_START(args)
 		warnCrystalDust:Show(self.vb.dustCount)
 		timerCrystallineDustCD:Start(nil, self.vb.dustCount)
 	elseif spellId == 290084 then
-		timerWaterBoltVolleyCD:Start()
+		self.vb.waterboltVolleyCount = self.vb.waterboltVolleyCount + 1
+		local count = self.vb.waterboltVolleyCount
+		timerWaterBoltVolleyCD:Start(nil, count+1)
 		if self:CheckInterruptFilter(args.sourceGUID, false, true) then
-			specWarnWaterBoltVolley:Show(args.sourceName)
-			specWarnWaterBoltVolley:Play("kickcast")
+			specWarnWaterBoltVolley:Show(args.sourceName, count)
+			if count == 1 then
+				specWarnWaterBoltVolley:Play("kick1r")
+			elseif count == 2 then
+				specWarnWaterBoltVolley:Play("kick2r")
+			elseif count == 3 then
+				specWarnWaterBoltVolley:Play("kick3r")
+			elseif count == 4 then
+				specWarnWaterBoltVolley:Play("kick4r")
+			elseif count == 5 then
+				specWarnWaterBoltVolley:Play("kick5r")
+			else
+				specWarnWaterBoltVolley:Play("kickcast")
+			end
 		end
 	elseif spellId == 288619 then
 		self.vb.orbCount = self.vb.orbCount + 1
@@ -346,7 +369,11 @@ function mod:SPELL_AURA_APPLIED(args)
 		if self:IsTanking(uId) then
 			local amount = args.amount or 1
 			if amount % 3 == 0 then
-				warnIceShard:Show(args.destName, amount)
+				if amount >= 8 and not args:IsPlayer() and self.Options.SpecWarn285253taunt and not DBM:UnitDebuff("player", 285254) then
+					specWarnIceShard:Show(args.destName)
+				else
+					warnIceShard:Show(args.destName, amount)
+				end
 			end
 		end
 	elseif spellId == 287993 then
@@ -361,6 +388,11 @@ function mod:SPELL_AURA_APPLIED(args)
 		end
 	elseif spellId == 287490 then
 		warnFrozenSolid:CombinedShow(0.5, args.destName)
+		local uId = DBM:GetRaidUnitId(args.destName)
+		if self:IsTanking(uId) and not args:IsPlayer() then
+			specWarnIceBlockTaunt:Show(args.destName)
+			specWarnIceBlockTaunt:Play("tauntboss")
+		end
 	elseif spellId == 289387 then
 		if args:IsPlayer() and self:AntiSpam(6, 1) then
 			specWarnFreezingBlood:Show()
@@ -598,6 +630,7 @@ end
 function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 	if spellId == 288013 then--Corsair Picker
 		warnCorsair:Show()
+		warnCorsair:Play("mobsoon")
 		timerCorsairCD:Start()
 	elseif spellId == 290681 then--Transition Visual 1
 		self.vb.phase = 1.5

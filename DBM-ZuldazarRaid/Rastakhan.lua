@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2335, "DBM-ZuldazarRaid", 2, 1176)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 18211 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 18232 $"):sub(12, -3))
 mod:SetCreatureID(145616)--145644 Bwonsamdi
 mod:SetEncounterID(2272)
 --mod:DisableESCombatDetection()
@@ -257,15 +257,19 @@ function mod:SPELL_CAST_START(args)
 		--	self:SendSync("DreadReaping")
 		--end
 	elseif spellId == 287333 then
-		if not playerDeathPhase and self.vb.phase ~= 4 then
+		if playerDeathPhase or self.vb.phase == 4 then
+			specWarnInevitableEnd:Show()
+			specWarnInevitableEnd:Play("justrun")
+		else
 			if self.Options.AnnounceAlternatePhase then
 				warnInevitableEnd:Show()
 			end
-		else
-			specWarnInevitableEnd:Show()
-			specWarnInevitableEnd:Play("justrun")
 		end
-		timerInevitableEndCD:Start()
+		if self.vb.phase == 4 then
+			timerInevitableEndCD:Start(62.3)
+		else
+			timerInevitableEndCD:Start(52.1)
+		end
 		--if self:LatencyCheck() then
 		--	self:SendSync("InevitableEnd")
 		--end
@@ -312,6 +316,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 		end
 		timerSerpentTotemCD:Start()
 	elseif spellId == 284521 then--Spirit Expulsion
+		playerDeathPhase = false
 		self.vb.phase = 4
 		self.vb.scorchingDetCount = 0
 		warnPhase:Show(DBM_CORE_AUTO_ANNOUNCE_TEXTS.stage:format(4))

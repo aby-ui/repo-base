@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2330, "DBM-ZuldazarRaid", 2, 1176)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 18211 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 18248 $"):sub(12, -3))
 mod:SetCreatureID(144747, 144767, 144963, 144941)--Mythic need other 2 IDs?
 mod:SetEncounterID(2268)
 --mod:DisableESCombatDetection()
@@ -156,11 +156,11 @@ function mod:OnCombatStart(delay)
 		DBM.InfoFrame:SetHeader(DBM_CORE_INFOFRAME_POWER)
 		DBM.InfoFrame:Show(4, "enemypower", 2)
 	end
-	if self:IsMythic() then
-		timerBwonsamdisWrathCD:Start(51-delay, 1)
-	end
 	if self:IsHard() then
-		timerKragwasWrathCD:Start(29.7-delay)
+		timerKragwasWrathCD:Start(29.3-delay)
+		if self:IsMythic() then
+			timerBwonsamdisWrathCD:Start(51-delay, 1)
+		end
 	end
 end
 
@@ -190,7 +190,7 @@ function mod:SPELL_CAST_START(args)
 		--countdownPakusWrath:Start()
 	elseif spellId == 285889 then
 		timerRaptorFormCD:Start()
-		for i = 1, 2 do
+		for i = 1, 4 do
 			local bossUnitID = "boss"..i
 			if UnitExists(bossUnitID) and UnitGUID(bossUnitID) == args.sourceGUID and UnitDetailedThreatSituation("player", bossUnitID) then--We are highest threat target
 				specWarnRaptorForm:Show()
@@ -459,7 +459,7 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 			timerPakusWrathCD:Start(73.5, self.vb.pakuWrathCount+1)--When actual aoe starts, first event we can detect
 			countdownPakusWrath:Start(73.5)
 		elseif cid == 144767 then--Gonk's Aspect
-			timerCrawlingHexCD:Start(14)--Assuming starting at 70 energy is always true
+			timerCrawlingHexCD:Start(13.4)--Assuming starting at 70 energy is always true
 			timerRaptorFormCD:Start(15.7)
 			timerGonksWrathCD:Start(31)
 		elseif cid == 144963 then--Kimbul's Aspect

@@ -143,6 +143,10 @@ points[66] = { -- "Desolace"
 	[29106255] = { 8635, 910, 3, true }, -- Elder Splitrock in Maraudon
 }
 
+points[68] = { -- "Desolace"
+	[44637652] = { 8635, 910, 3, true }, -- Elder Splitrock in Maraudon
+}
+
 points[1] = { -- "Durotar"
 	[46390050] = { 8677, 914, 1 }, -- Elder Darkhorn
 	[53224361] = { 8670, 911, 1 }, -- Elder Runetotem

@@ -30,7 +30,7 @@ local continents = {
 
 local notes = {
 	[8619]  = "Inside the dungeon.", -- Elder Morndeep, Blackrock Depths
-	[8635]  = "Inside the dungeon.", -- Elder Splitrock, Maraudon
+	[8635]  = "Inside Earthsong Falls.", -- Elder Splitrock, Maraudon
 	[8644]  = "Inside Lower Blackrock Spire.", -- Elder Stonefort, Lower Blackrock Spire
 	[8647]  = "Speak to Zidormi at the north of the zone to gain access to this Elder.",
 	[8648]  = "Speak to Zidormi in Tirisfal to gain access to The Undercity.",
@@ -225,16 +225,12 @@ local function CheckEventActive()
 		local event = C_Calendar.GetDayEvent(monthOffset, day, i)
 
 		if event.iconTexture == 235469 or event.iconTexture == 235470 or event.iconTexture == 235471 then
-			if event.sequenceType == "ONGOING" then
+			local hour = tonumber(date("%H"))
+
+			if event.sequenceType == "ONGOING" or (event.sequenceType == "END" and hour <= event.endTime.hour) or (event.sequenceType == "START" and hour >= event.startTime.hour) then
 				setEnabled = true
 			else
-				local hour = tonumber(date("%H"))
-
-				if (event.sequenceType == "END" and hour <= event.endTime.hour) or (event.sequenceType == "START" and hour >= event.startTime.hour) then
-					setEnabled = true
-				else
-					setEnabled = false
-				end
+				setEnabled = false
 			end
 		end
 	end

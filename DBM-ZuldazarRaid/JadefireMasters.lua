@@ -7,7 +7,7 @@ end
 local mod	= DBM:NewMod(dungeonID, "DBM-ZuldazarRaid", 1, 1176)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 18215 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 18248 $"):sub(12, -3))
 mod:SetCreatureID(creatureID, creatureID2)
 mod:SetEncounterID(2266, 2285)--2266 horde, 2285 Alliance
 --mod:DisableESCombatDetection()
@@ -21,7 +21,7 @@ mod:SetUsedIcons(1, 2, 3)
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
-	"SPELL_CAST_START 284399 285428 282040",
+	"SPELL_CAST_START 284399 285428 282040 282030 285818",
 	"SPELL_CAST_SUCCESS 282030",
 	"SPELL_AURA_APPLIED 282037 285632 286425 286988 284656",
 	"SPELL_AURA_APPLIED_DOSE 282037",
@@ -40,7 +40,7 @@ mod:RegisterEventsInCombat(
 --TODO, bomb spawn count and bombs remaining warning
 --TODO, remaining transformations, kind of hard to drycode those as the triggers for those phases aren't same as abilities they spam during those phases.
 --[[
-(ability.id = 285428 or ability.id = 282040) and type = "begincast"
+(ability.id = 285428 or ability.id = 282040 or ability.id = 285818) and type = "begincast"
 or ability.id = 282030 and type = "cast"
 or ability.id = 286425 and type = "applybuff"
 or ability.id = 284656
@@ -56,6 +56,7 @@ local warnMagmaTrap						= mod:NewCountAnnounce(284374, 4)
 --Team Attacks
 local warnTransforms					= mod:NewSpellAnnounce(282040, 2)
 
+local specWarnMultiSidedStrikeAll		= mod:NewSpecialWarningSpell(285818, nil, nil, nil, 3, 2)
 local specWarnMultiSidedStrike			= mod:NewSpecialWarningYou(282030, nil, nil, nil, 3, 2)
 local specWarnStalking					= mod:NewSpecialWarningYou(285632, nil, nil, nil, 1, 2)
 local yellStalking						= mod:NewYell(285632)
@@ -67,7 +68,7 @@ local yellRisingFlamesFades				= mod:NewShortFadesYell(282037)
 local specWarnShield					= mod:NewSpecialWarningTargetChange(286425, false, nil, nil, 1, 2)
 local specWarnPyroblast					= mod:NewSpecialWarningInterrupt(286379, "HasInterrupt", nil, nil, 1, 2)
 local specWarnSearingEmbers				= mod:NewSpecialWarningYou(286988, false, nil, 2, 1, 2)
---local yellSearingEmbers					= mod:NewYell(286988)
+local yellSearingEmbers					= mod:NewYell(286988, nil, false)
 --local yellSearingEmbersFades			= mod:NewShortFadesYell(286988)
 --local specWarnBloodshard				= mod:NewSpecialWarningInterrupt(273350, false, nil, 4, 1, 2)
 --local specWarnGTFO					= mod:NewSpecialWarningGTFO(238028, nil, nil, nil, 1, 8)
@@ -105,35 +106,38 @@ mod:AddNamePlateOption("NPAuraOnExplosion", 284399)
 
 mod.vb.shieldsActive = false
 mod.vb.embersIcon = 0
---mod.vb.magmaTrapCount = 0
+mod.vb.magmaTrapCount = 0
 
 function mod:OnCombatStart(delay)
 	self.vb.shieldsActive = false
 	self.vb.embersIcon = 0
-	--self.vb.magmaTrapCount = 0
-	timerSearingEmbersCD:Start(12-delay)
+	self.vb.magmaTrapCount = 0
+	timerSearingEmbersCD:Start(11.9-delay)--13.1 in LFR?
 	if self:IsMythic() then
 		timerRollCD:Start(8.6)
 		timerShieldCD:Start(15.8-delay)
-		timerSpiritsofXuenCD:Start(15.8-delay)
+		timerSpiritsofXuenCD:Start(45-delay)
 		timerMultiSidedStrikeCD:Start(30-delay)
-		timerFirefromMistCD:Start(51-delay)
-		timerFlashofPhoenixesCD:Start(133-delay)
-		timerBlazingPhoenixCD:Start(262-delay)
+		--Blizzards energy code is still utter shite
+		timerFirefromMistCD:Start(56.9-delay)--Variable as fuck
+		timerFlashofPhoenixesCD:Start(151-delay)--Variable as fuck
+		timerBlazingPhoenixCD:Start(262-delay)--Only thing consistent
 	elseif self:IsHeroic() then
 		--timerRollCD:Start(20-delay)
 		timerShieldCD:Start(20-delay)
 		timerMultiSidedStrikeCD:Start(30-delay)
 		timerSpiritsofXuenCD:Start(45-delay)
+		--Blizzards energy code is still utter shite
 		timerFirefromMistCD:Start(51-delay)
 		timerFlashofPhoenixesCD:Start(133-delay)
 		timerBlazingPhoenixCD:Start(262-delay)
 	else
 		timerRollCD:Start(20-delay)
 		timerShieldCD:Start(20-delay)
-		timerMultiSidedStrikeCD:Start(36-delay)
+		timerMultiSidedStrikeCD:Start(35-delay)
+		--Blizzards energy code is still utter shite
 		timerFirefromMistCD:Start(51-delay)
-		timerFlashofPhoenixesCD:Start(133-delay)
+		timerFlashofPhoenixesCD:Start(130-delay)
 		timerBlazingPhoenixCD:Start(271-delay)
 	end
 	if self.Options.NPAuraOnFixate or self.Options.NPAuraOnExplosion then
@@ -173,12 +177,22 @@ function mod:SPELL_CAST_START(args)
 		--timerRollCD:Start()
 		--timerSearingEmbersCD:Start(12)
 		--timerShieldCD:Start(20)
-		--timerMultiSidedStrikeCD:Start(39)--New evidience suggests it doesn't reset here
+		--timerMultiSidedStrikeCD:Start(39)--New evidience suggests it doesn't reset here (48.6 mythic)
 --	elseif spellId == 273350 and self:CheckInterruptFilter(args.sourceGUID, false, true) then
 --		specWarnBloodshard:Show(args.sourceName)
 --		specWarnBloodshard:Play("kickcast")
-	elseif spellId == 282040 then
+	elseif spellId == 282040 then--Blazing Phoenix
 		warnTransforms:Show()
+	elseif spellId == 285818 or spellId == 282030 then
+		if spellId == 285818 then
+			specWarnMultiSidedStrikeAll:Show()--Warn everyone, it's mythic
+			specWarnMultiSidedStrikeAll:Play("specialsoon")
+		end
+		if self:IsMythic() then
+			timerMultiSidedStrikeCD:Start(76.5)
+		else
+			timerMultiSidedStrikeCD:Start(55)
+		end
 	end
 end
 
@@ -189,7 +203,6 @@ function mod:SPELL_CAST_SUCCESS(args)
 			specWarnMultiSidedStrike:Show()--So show tank warning
 			specWarnMultiSidedStrike:Play("targetyou")
 		end
-		timerMultiSidedStrikeCD:Start()
 	end
 end
 
@@ -250,13 +263,14 @@ function mod:SPELL_AURA_APPLIED(args)
 		if args:IsPlayer() then
 			specWarnSearingEmbers:Show()
 			specWarnSearingEmbers:Play("targetyou")
-			--yellSearingEmbers:Yell()
+			yellSearingEmbers:Yell()
 			--yellSearingEmbersFades:Countdown(10)
 		end
 		if self.Options.SetIconEmbers then
 			self:SetIcon(args.destName, self.vb.embersIcon)
 		end
-	elseif spellId == 284656 then--Long intermission with traps
+	elseif spellId == 284656 then--Ring of Hostility (Long intermission with traps)
+		--May be wrong to stop timers instead of let them run, then add failsafe time if phase lasts longer than these timers
 		timerSearingEmbersCD:Stop()
 		timerMultiSidedStrikeCD:Stop()
 		timerShieldCD:Stop()
@@ -266,7 +280,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		specWarnFlashofPhoenixes:Play("phasechange")
 	end
 end
---mod.SPELL_AURA_APPLIED_DOSE = mod.SPELL_AURA_APPLIED
+mod.SPELL_AURA_APPLIED_DOSE = mod.SPELL_AURA_APPLIED
 
 function mod:SPELL_AURA_REMOVED(args)
 	local spellId = args.spellId
@@ -293,9 +307,9 @@ function mod:SPELL_AURA_REMOVED(args)
 		if self.Options.SetIconEmbers then
 			self:SetIcon(args.destName, 0)
 		end
-	elseif spellId == 284656 then--Ring ending
+	elseif spellId == 284656 then--Ring of Hostility ending
 		--timerSearingEmbersCD:Start(7)--7-15 (wishy washy)
-		timerMultiSidedStrikeCD:Start(8.5)
+		timerMultiSidedStrikeCD:Start(8.4)--May not actually work this way
 		timerShieldCD:Start(8.5)
 		--timerRollCD:Start()
 		if self:IsHard() then
@@ -346,7 +360,7 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 		end
 	elseif spellId == 286427 then--Roll
 		if self:IsMythic() then
-			timerRollCD:start(31)
+			timerRollCD:Start(31)
 		else
 			timerRollCD:Start(20.3)
 		end

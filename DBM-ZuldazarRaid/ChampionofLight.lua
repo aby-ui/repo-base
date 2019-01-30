@@ -7,7 +7,7 @@ end
 local mod	= DBM:NewMod(dungeonID, "DBM-ZuldazarRaid", 1, 1176)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 18186 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 18245 $"):sub(12, -3))
 mod:SetCreatureID(creatureID)
 mod:SetEncounterID(2265)
 --mod:DisableESCombatDetection()
@@ -15,7 +15,7 @@ mod:SetZone()
 --mod:SetUsedIcons(1, 2, 8)
 --mod:SetHotfixNoticeRev(17775)
 --mod:SetMinSyncRevision(16950)
---mod.respawnTime = 35
+mod.respawnTime = 17--Ish, from stream watching.
 
 mod:RegisterCombat("combat")
 
@@ -31,11 +31,11 @@ mod:RegisterEventsInCombat(
 )
 
 --[[
-(ability.id = 284469 or ability.id = 284436 or ability.id = 287469 or ability.id = 283598) and type = "begincast"
+(ability.id = 284469 or ability.id = 284436 or ability.id = 287469 or ability.id = 283598 or ability.id = 283662) and type = "begincast"
+ or (ability.id = 284469 or ability.id = 284436) and (type = "applybuff" or type = "removebuff")
 --]]
 --TODO, swap count for Sacred Blade? Should it be a force swap in LFR?
 --TODO, maybe a custom huge interrupt icon for the nameplate cast icon for angelic?
---local warnXorothPortal				= mod:NewSpellAnnounce(244318, 2, nil, nil, nil, nil, nil, 7)
 local warnWaveofLight					= mod:NewTargetNoFilterAnnounce(283598, 1)
 local warnSacredBlade					= mod:NewStackAnnounce(283573, 2, nil, "Tank")
 local warnSealofRet						= mod:NewSpellAnnounce(283573, 2)
@@ -65,8 +65,8 @@ mod:AddTimerLine(DBM_BOSS)
 local timerWaveofLightCD				= mod:NewCDTimer(10.5, 283598, nil, nil, nil, 3, nil, DBM_CORE_MAGIC_ICON)
 local timerJudgmentRetCD				= mod:NewNextTimer(50.3, 283933, nil, nil, nil, 3)
 local timerJudgmentReckoningCD			= mod:NewNextTimer(50.3, 284474, nil, nil, nil, 2)
-local timerCallToArmsCD					= mod:NewCDTimer(104.6, 283662, nil, nil, nil, 1)
-local timerPrayerfortheFallenCD			= mod:NewNextTimer(13.4, 287469, nil, nil, nil, 2, nil, DBM_CORE_IMPORTANT_ICON)
+--local timerCallToArmsCD					= mod:NewCDTimer(104.6, 283662, nil, nil, nil, 1)--Adds come with phase change, redundant
+local timerPrayerfortheFallenCD			= mod:NewCDTimer(50.2, 287469, nil, nil, nil, 2, nil, DBM_CORE_IMPORTANT_ICON)
 mod:AddTimerLine(DBM_ADDS)
 local timerBlindingFaithCD				= mod:NewCDTimer(13.4, 284474, nil, nil, nil, 2)
 
@@ -115,12 +115,12 @@ end
 
 function mod:OnCombatStart(delay)
 	warnSealofRet:Show()
-	timerWaveofLightCD:Start(13.4-delay)
+	timerWaveofLightCD:Start(13.1-delay)
 	timerJudgmentRetCD:Start(50.7-delay)
 	countdownReleaseSeal:Start(50.7-delay)
 	specWarnJudgmentReckoning:Schedule(45.7-delay)
 	specWarnJudgmentReckoning:ScheduleVoice(45.7, "aesoon")
-	timerCallToArmsCD:Start(110.4-delay)
+	--timerCallToArmsCD:Start(110.4-delay)--94
 	if self:IsMythic() then
 		timerPrayerfortheFallenCD:Start(25.5-delay)
 	end
@@ -155,7 +155,7 @@ function mod:SPELL_CAST_START(args)
 	elseif spellId == 283662 then
 		specWarnCalltoArms:Show()
 		specWarnCalltoArms:Play("mobsoon")
-		timerCallToArmsCD:Start(104.6)
+		--timerCallToArmsCD:Start(104.6)
 	elseif spellId == 284578 and self:CheckInterruptFilter(args.sourceGUID, false, true) then
 		specWarnPenance:Show(args.sourceName)
 		specWarnPenance:Play("kickcast")
@@ -177,6 +177,7 @@ function mod:SPELL_CAST_START(args)
 	elseif spellId == 287469 then
 		specWarnPrayerfortheFallen:Show()
 		specWarnPrayerfortheFallen:Play("specialsoon")
+		timerPrayerfortheFallenCD:Start(50.2)
 	elseif spellId == 287419 then
 		if self.Options.NPAuraOnAngelicRenewal then
 			DBM.Nameplate:Show(true, args.sourceGUID, spellId, nil, 8)
@@ -235,22 +236,16 @@ function mod:SPELL_AURA_APPLIED(args)
 		end
 	elseif spellId == 284469 then--Seal of Retribution
 		warnSealofRet:Show()
-		timerJudgmentRetCD:Start(52.3)
-		countdownReleaseSeal:Start(52.3)
+		timerJudgmentRetCD:Start(52.3)--50.6?
+		countdownReleaseSeal:Start(52.3)--50.6?
 		specWarnJudgmentReckoning:Schedule(47.3)
 		specWarnJudgmentReckoning:ScheduleVoice(47.3, "aesoon")
-		if self:IsMythic() then
-			timerPrayerfortheFallenCD:Start(25.9)
-		end
 	elseif spellId == 284436 then--Seal of Reckoning
 		--Blizz changed it that if all adds die, seal of reck is recast right away instead of maintaining seal of ret
 		timerJudgmentRetCD:Stop()
 		countdownReleaseSeal:Cancel()
 		warnSealofReckoning:Show()
 		timerJudgmentReckoningCD:Start(52.3)
-		if self:IsMythic() then
-			timerPrayerfortheFallenCD:Start(25.9)
-		end
 	elseif spellId == 283933 then
 		warnJudgmentRighteousness:Show(args.destName)
 		if self.Options.NPAuraOnJudgment then

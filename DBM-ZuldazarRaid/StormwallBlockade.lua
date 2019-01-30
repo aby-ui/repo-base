@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2337, "DBM-ZuldazarRaid", 3, 1176)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 18220 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 18242 $"):sub(12, -3))
 mod:SetCreatureID(146251, 146253, 146256)--Sister Katherine 146251, Brother Joseph 146253, Laminaria 146256
 mod:SetEncounterID(2280)
 --mod:DisableESCombatDetection()
@@ -327,7 +327,7 @@ function mod:SPELL_AURA_APPLIED(args)
 			specWarnStormsWail:Schedule(7, DBM_CORE_BACK)
 			specWarnStormsWail:Play("targetyou")
 			yellStormsWail:Yell()
-			yellStormsWailFades:Countdown(10)
+			yellStormsWailFades:Countdown(self:IsEasy() and 13 or 10)
 		else
 			warnStormsWail:Show(args.destName)
 		end

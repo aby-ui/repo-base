@@ -17,7 +17,7 @@
 ## DefaultState: enabled
 ## Author: Tandanu and Nitram
 ## X-Website: http://www.deadlybossmods.com
-## Version: 8.1.5-31-gc62386a56
+## Version: 8.1.7-3-gbdc07ba18
 
 #@no-lib-strip@
 Libs\LibLatency\LibLatency.xml
