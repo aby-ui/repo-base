@@ -13,8 +13,7 @@ local L = WeakAuras.L
 	L["%i Matches"] = "%i 符合"
 	L["%s Color"] = "%s 颜色"
 	L["%s total auras"] = "%s 所有的光环"
-	--[[Translation missing --]]
-	L["|cFFFF0000Duplicate Keys Found!|nPlease change the keys of the following options!|r"] = "|cFFFF0000Duplicate Keys Found!|nPlease change the keys of the following options!|r"
+	L["|cFFFF0000Duplicate Keys Found!|nPlease change the keys of the following options!|r"] = "|cFFFF0000发现重复的键值！|n请修改下列选项的键值！|r"
 	L["1 Match"] = "1符合"
 	L["1. Text"] = "文本"
 	L["1. Text Settings"] = "字体设置"
@@ -294,8 +293,7 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	L["Icon Inset"] = "项目插入"
 	L["Icon Settings"] = "图标设置"
 	L["If"] = "如果"
-	--[[Translation missing --]]
-	L["If checked, then this separator will include text. Otherwise, it will be just a horizontal line."] = "If checked, then this separator will include text. Otherwise, it will be just a horizontal line."
+	L["If checked, then this separator will include text. Otherwise, it will be just a horizontal line."] = "如果选中，则此分隔符将会包含文本，否则就只是一条横线。"
 	L["If checked, then this space will span across multiple lines."] = "如果勾选，此空白区域将横跨多行。"
 	L["If this option is enabled, you are no longer able to import auras."] = "如果启用此选项，你将不再能够导入光环设置。"
 	L["If Trigger %s"] = "如果触发器 %s"
@@ -444,12 +442,9 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	L["Search"] = "搜索"
 	L["Select the auras you always want to be listed first"] = "选择优先列出的光环"
 	L["Send To"] = "发送给"
-	--[[Translation missing --]]
-	L["Separator"] = "Separator"
-	--[[Translation missing --]]
-	L["Separator Text"] = "Separator Text"
-	--[[Translation missing --]]
-	L["Separator text"] = "Separator text"
+	L["Separator"] = "分隔符"
+	L["Separator Text"] = "分隔符文本"
+	L["Separator text"] = "分隔符文本"
 	L["Set Parent to Anchor"] = "将父框架置于锚点"
 	L["Set tooltip description"] = "设置鼠标提示内容"
 	L["Sets the anchored frame as the aura's parent, causing the aura to inherit attributes such as visiblility and scale."] = "将锚点框架设置为光环的父框架，使得光环继承锚点框架的一些属性（例如：可见性和缩放）"

@@ -1111,7 +1111,6 @@ GTFO.SpellID["282444"] = {
 GTFO.SpellID["282411"] = {
   --desc = "Thundering Storm (Akunda's Aspect)";
   sound = 3;
-  applicationOnly = true;
 };
 
 GTFO.SpellID["282636"] = {
@@ -1131,3 +1130,53 @@ GTFO.SpellID["282135"] = {
   sound = 3;
   specificMobs = { 0 };
 };
+
+GTFO.SpellID["288842"] = {
+  --desc = "Throw Goods (Furious Merchant)";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["287147"] = {
+  --desc = "Dread Reaping (King Rhst)";
+  sound = 3;
+};
+
+
+GTFO.SpellID["286742"] = {
+  --desc = "Necrotic Smash (Phantom of Rage)";
+  sound = 3;
+};
+
+GTFO.SpellID["285044"] = {
+  --desc = "Toad Toxin (Plague Toad)";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["288207"] = {
+  --desc = "Cannon Fire (Seafarers' Cannon)";
+  sound = 3;
+};
+
+GTFO.SpellID["287891"] = {
+  --desc = "Sheep Shrapnel (High Tinker Mekkatorque)";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["282205"] = {
+  --desc = "Blast Off (High Tinker Mekkatorque)";
+  sound = 3;
+};
+
+GTFO.SpellID["285125"] = {
+  --desc = "Sea Swell (Laminaria)";
+  sound = 3;
+};
+
+GTFO.SpellID["284374"] = {
+  --desc = "Magma Trap (Anathos Firecaller)";
+  sound = 3;
+};
+

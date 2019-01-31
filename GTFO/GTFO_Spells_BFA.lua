@@ -709,3 +709,23 @@ GTFO.SpellID["285894"] = {
   tankSound = 0;
 };
 
+GTFO.SpellID["290448"] = {
+  --desc = "Seal of Purification (King Rhast)";
+  sound = 1;
+};
+
+GTFO.SpellID["286680"] = {
+  --desc = "Roiling Tides";
+  sound = 1;
+};
+
+GTFO.SpellID["284369"] = {
+  --desc = "Sea Storm";
+  sound = 1;
+};
+
+GTFO.SpellID["288051"] = {
+  --desc = "Dragon's Breath (Ma'ra Grimfang)";
+  sound = 1;
+};
+
