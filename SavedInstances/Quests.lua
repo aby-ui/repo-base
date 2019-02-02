@@ -148,6 +148,20 @@ local QuestExceptions = {
   [53037] = "Weekly", -- Emissary of War - Mythic Dungeons
   [53038] = "AccountWeekly", -- The Very Best - PvP Pet Battles
   [53039] = "Weekly", -- The Arena Calls - Arena Skirmishes
+
+  -- Call to Arms: Weekly World PvP Quest
+  [52944] = "Weekly", -- Call to Arms: Drustvar (Alliance)
+  [52958] = "Weekly", -- Call to Arms: Drustvar (Horde)
+  [52949] = "Weekly", -- Call to Arms: Nazmir (Alliance)
+  [52954] = "Weekly", -- Call to Arms: Nazmir (Horde)
+  [52782] = "Weekly", -- Call to Arms: Stormsong Valley (Alliance)
+  [52957] = "Weekly", -- Call to Arms: Stormsong Valley (Horde)
+  [52948] = "Weekly", -- Call to Arms: Tiragarde Sound (Alliance)
+  [52956] = "Weekly", -- Call to Arms: Tiragarde Sound (Horde)
+  [52950] = "Weekly", -- Call to Arms: Vol'dun (Alliance)
+  [52953] = "Weekly", -- Call to Arms: Vol'dun (Horde)
+  [52951] = "Weekly", -- Call to Arms: Zuldazar (Alliance)
+  [52952] = "Weekly", -- Call to Arms: Zuldazar (Horde)
 }
 addon.QuestExceptions = QuestExceptions
 

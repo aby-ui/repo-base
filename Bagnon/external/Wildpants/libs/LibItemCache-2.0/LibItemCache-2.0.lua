@@ -1,4 +1,4 @@
-local Lib = LibStub:NewLibrary('LibItemCache-2.0', 11)
+local Lib = LibStub:NewLibrary('LibItemCache-2.0', 12)
 if not Lib then
 	return
 end
@@ -13,8 +13,11 @@ local PLAYER, REALM, REALMS
 local FindRealms = function()
 	PLAYER, REALM = UnitFullName('player')
 	REALM = REALM or GetRealmName()
-    local auto = GetAutoCompleteRealms()
-	REALMS = auto and #auto > 0 and auto or {REALM }
+	REALMS = GetAutoCompleteRealms()
+
+	if not REALMS or #REALMS == 0 then
+		REALMS = {REALM}
+	end
 end
 
 local Caches = {}

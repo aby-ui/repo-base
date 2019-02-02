@@ -81,7 +81,7 @@ local SendAddonMessage = C_ChatInfo and C_ChatInfo.SendAddonMessage or function(
 local function SendPlayerInfo()
     local ilvl = select(2, GetAverageItemLevel())
     local spec = select(2, GetSpecializationInfo(GetSpecialization()))
-    SendAddonMessage("TinyInspect", format("%s|%s|%s", "LV", ilvl, spec), "RAID")
+    SendAddonMessage("TinyInspect", format("%s|%s|%s", "LV", ilvl, spec or ""), "RAID")
 end
 
 --解析发送的信息

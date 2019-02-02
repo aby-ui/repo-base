@@ -43,14 +43,39 @@ do
 	frame:RegisterEvent("PLAYER_LOGIN")
 end
 
+local zoneNames = {
+	C_Map.GetMapInfo(864).name, -- Vol'dun
+	C_Map.GetMapInfo(896).name, -- Drustvar
+	C_Map.GetMapInfo(862).name, -- Zuldazar
+	C_Map.GetMapInfo(895).name, -- Tiragarde Sound
+	C_Map.GetMapInfo(863).name, -- Nazmir
+	C_Map.GetMapInfo(942).name, -- Stormsong Valley
+}
+
 local OnEnter, ShowTip, HideTip
 do
 	local id = faction == "Horde" and 13284 or 13283 -- Frontline Warrior
 	local idWarMode = faction == "Horde" and 13388 or 13387 -- Frontline Veteran
+	local achievementPlacement = faction == "Horde" and {
+		4, -- Tiragarde Sound
+		5, -- Nazmir
+		1, -- Vol'dun
+		3, -- Zuldazar
+		2, -- Drustvar
+		6, -- Stormsong Valley
+	} or {
+		4, -- Tiragarde Sound
+		6, -- Stormsong Valley
+		2, -- Drustvar
+		1, -- Vol'dun
+		5, -- Nazmir
+		3, -- Zuldazar
+	}
 	--13317 pvp achiev
 	local GameTooltip, WorldMapTooltip = GameTooltip, WorldMapTooltip
 	local FormatShortDate = FormatShortDate
 	ShowTip = function(tip)
+		local coloredZones = {}
 		local _, name, _, _, month, day, year, description, _, _, _, _, wasEarnedByMe = GetAchievementInfo(id)
 		if not wasEarnedByMe or not frame.db.profile.tooltipHideAchiev then
 			if wasEarnedByMe then
@@ -63,13 +88,29 @@ do
 				local criteriaString, _, completed = GetAchievementCriteriaInfo(id, i)
 				if completed == false then
 					criteriaString = "|CFF808080 - " .. criteriaString .. "|r"
+					coloredZones[achievementPlacement[i]] = "|CFF808080" .. zoneNames[achievementPlacement[i]] .. "|r "
 				else
 					criteriaString = "|CFF00FF00 - " .. criteriaString .. "|r"
+					coloredZones[achievementPlacement[i]] = "|CFF00FF00" .. zoneNames[achievementPlacement[i]] .. "|r "
 				end
 				tip:AddLine(criteriaString)
 			end
 			tip:AddLine(" ")
+		else
+			for i = 1, GetAchievementNumCriteria(id) do
+				local _, _, completed = GetAchievementCriteriaInfo(id, i)
+				if completed == false then
+					coloredZones[achievementPlacement[i]] = "|CFF808080" .. zoneNames[achievementPlacement[i]] .. "|r "
+				else
+					coloredZones[achievementPlacement[i]] = "|CFF00FF00" .. zoneNames[achievementPlacement[i]] .. "|r "
+				end
+			end
 		end
+		-- XXX remove BFAInvasionData[2] check
+		if BFAInvasionData[2] == 0 then
+			coloredZones = {"", "", "", "", "", ""}
+		end
+		-- XXX end
 
 		local splitLine = false
 		if not frame.db.profile.tooltipHideMedals then
@@ -84,12 +125,16 @@ do
 		end
 
 		tip:AddLine(L.nextInvasions)
-		if BFAInvasionTime then -- Have we seen our first invasion?
+		if BFAInvasionData[1] ~= 0 then -- Have we seen our first invasion?
 			-- 19hrs * 60min = 1,140min = *60sec = 68,400sec
-			local elapsed = time() - BFAInvasionTime
+			local elapsed = time() - BFAInvasionData[1]
+			local lastKnownInvasionZone = BFAInvasionData[2]
 			while elapsed > 68400 do
 				elapsed = elapsed - 68400
+				lastKnownInvasionZone = lastKnownInvasionZone + 1
+				if lastKnownInvasionZone == 7 then lastKnownInvasionZone = 1 end
 			end
+			local nextAvailableZone = lastKnownInvasionZone == 6 and 1 or lastKnownInvasionZone+1
 			local t = 68400-elapsed
 			t = t+time()
 			local upper, date = string.upper, date
@@ -100,20 +145,36 @@ do
 			if frame.db.profile.tooltip12hr then
 				for i = 1, 4 do
 					tip:AddDoubleLine(
-						_G["WEEKDAY_"..upper(date("%A", t))].." "..date("%I:%M", t) .. " " .. _G["TIMEMANAGER_"..upper(date("%p", t))],
-						_G["WEEKDAY_"..upper(date("%A", t+68400))].." "..date("%I:%M", t+68400) .. " " .. _G["TIMEMANAGER_"..upper(date("%p", t+68400))],
+						coloredZones[nextAvailableZone] .. _G["WEEKDAY_"..upper(date("%A", t))].." "..date("%I:%M", t) .. " " .. _G["TIMEMANAGER_"..upper(date("%p", t))],
+						coloredZones[nextAvailableZone == 6 and 1 or nextAvailableZone+1] .. _G["WEEKDAY_"..upper(date("%A", t+68400))].." "..date("%I:%M", t+68400) .. " " .. _G["TIMEMANAGER_"..upper(date("%p", t+68400))],
 						1, 1, 1, 1, 1, 1
 					)
 					t = t + 68400 + 68400
+					nextAvailableZone = nextAvailableZone + 2
+					if nextAvailableZone > 6 then
+						if nextAvailableZone == 8 then
+							nextAvailableZone = 2
+						else
+							nextAvailableZone = 1
+						end
+					end
 				end
 			else
 				for i = 1, 4 do
 					tip:AddDoubleLine(
-						_G["WEEKDAY_"..upper(date("%A", t))].." "..date("%H:%M", t),
-						_G["WEEKDAY_"..upper(date("%A", t+68400))].." "..date("%H:%M", t+68400),
+						coloredZones[nextAvailableZone] .._G["WEEKDAY_"..upper(date("%A", t))].." "..date("%H:%M", t),
+						coloredZones[nextAvailableZone == 6 and 1 or nextAvailableZone+1] .. _G["WEEKDAY_"..upper(date("%A", t+68400))].." "..date("%H:%M", t+68400),
 						1, 1, 1, 1, 1, 1
 					)
 					t = t + 68400 + 68400
+					nextAvailableZone = nextAvailableZone + 2
+					if nextAvailableZone > 6 then
+						if nextAvailableZone == 8 then
+							nextAvailableZone = 2
+						else
+							nextAvailableZone = 1
+						end
+					end
 				end
 			end
 		else
@@ -284,42 +345,35 @@ local justLoggedIn = true
 do
 	local GetAreaPOISecondsLeft = C_AreaPoiInfo.GetAreaPOISecondsLeft
 	local isWaiting = false
+	-- Vol'dun > Drustvar > Zuldazar > Tiragarde Sound > Nazmir > Stormsong Valley
 	local zonePOIIds = {
+		5970, -- Vol'dun
 		5964, -- Drustvar
 		5973, -- Zuldazar
 		5896, -- Tiragarde Sound
-		5970, -- Vol'dun
 		5969, -- Nazmir
 		5966, -- Stormsong Valley
 	}
 	local icons = {
-		236594, -- Interface/Icons/Achievement_PVP_A_H
 		236645, -- Interface/Icons/Achievement_PVP_O_A
 		236594, -- Interface/Icons/Achievement_PVP_A_H
 		236645, -- Interface/Icons/Achievement_PVP_O_A
+		236594, -- Interface/Icons/Achievement_PVP_A_H
 		236645, -- Interface/Icons/Achievement_PVP_O_A
 		236594, -- Interface/Icons/Achievement_PVP_A_H
-	}
-	local zoneNames = {
-		C_Map.GetMapInfo(896).name, -- Drustvar
-		C_Map.GetMapInfo(862).name, -- Zuldazar
-		C_Map.GetMapInfo(895).name, -- Tiragarde Sound
-		C_Map.GetMapInfo(864).name, -- Vol'dun
-		C_Map.GetMapInfo(863).name, -- Nazmir
-		C_Map.GetMapInfo(942).name, -- Stormsong Valley
 	}
 	local questIds = faction == "Horde" and {
+		53885, -- Vol'dun
 		54137, -- Drustvar
 		53883, -- Zuldazar
 		53939, -- Tiragarde Sound
-		53885, -- Vol'dun
 		54135, -- Nazmir
 		54132, -- Stormsong Valley
 	} or {
+		54134, -- Vol'dun
 		53701, -- Drustvar
 		54138, -- Zuldazar
 		53711, -- Tiragarde Sound
-		54134, -- Vol'dun
 		54136, -- Nazmir
 		51982, -- Stormsong Valley
 	}
@@ -352,19 +406,24 @@ do
 				local curTime = time()
 				local elapsed = 25200-timeLeftSeconds
 				local latestInvasionTime = curTime - elapsed
-				BFAInvasionTime = latestInvasionTime
+				BFAInvasionData[1] = latestInvasionTime
+				BFAInvasionData[2] = i
 				break
 			end
 		end
 
 		if not found then
-			if BFAInvasionTime then
+			if BFAInvasionData[1] ~= 0 then
+				local elapsed = time() - BFAInvasionData[1]
+				local lastKnownInvasionZone = BFAInvasionData[2]
 				-- 19hrs * 60min = 1,140min = *60sec = 68,400sec
-				local elapsed = time() - BFAInvasionTime
 				while elapsed > 68400 do
 					elapsed = elapsed - 68400
+					lastKnownInvasionZone = lastKnownInvasionZone + 1
+					if lastKnownInvasionZone == 7 then lastKnownInvasionZone = 1 end
 				end
 				local t = 68400-elapsed
+				local nextAvailableZone = lastKnownInvasionZone == 6 and 1 or lastKnownInvasionZone+1
 
 				if t > 43200 then -- 12hrs * 60min = 720min = *60sec = 43,200sec
 					-- If it's longer than 43k then an invasion is currently active.
@@ -383,9 +442,10 @@ do
 				end
 
 				if mode == 2 then
-					StartBroker(L.next, t, 1044517) -- 1044517 = Interface/Icons/Achievement_Garrison_Invasion
+					-- XXX remove BFAInvasionData[2] check
+					StartBroker(BFAInvasionData[2] == 0 and L.next or zoneNames[nextAvailableZone], t, 1044517) -- 1044517 = Interface/Icons/Achievement_Garrison_Invasion
 				else
-					StartBar(L.next, t, 0, 1044517) -- 1044517 = Interface/Icons/Achievement_Garrison_Invasion
+					StartBar(BFAInvasionData[2] == 0 and L.next or zoneNames[nextAvailableZone], t, 0, 1044517) -- 1044517 = Interface/Icons/Achievement_Garrison_Invasion
 					frame:UnregisterEvent("QUEST_TURNED_IN")
 				end
 
@@ -424,6 +484,14 @@ end
 
 frame:SetScript("OnEvent", function(f)
 	f:UnregisterEvent("PLAYER_LOGIN")
+
+	if type(BFAInvasionData) ~= "table" then
+		if type(BFAInvasionTime) == "number" then
+			BFAInvasionData = {BFAInvasionTime, 0}
+		else
+			BFAInvasionData = {0, 0}
+		end
+	end
 
 	-- saved variables database setup
 	local defaults = {
@@ -496,7 +564,7 @@ frame:SetScript("OnEvent", function(f)
 
 	Timer(15, function()
 		justLoggedIn = false
-		if not BFAInvasionTime then
+		if BFAInvasionData[1] == 0 then
 			print("|cFF33FF99BFA入侵计时|r:", L.firstRunWarning)
 		end
 	end)

@@ -70,15 +70,15 @@ addon.LFRInstances = {
   [1732] = { total=3, base=4, parent=1889, altid=nil, remap={ 1, 2, 3 } }, -- Uldir: Crimson Descent
   [1733] = { total=2, base=7, parent=1889, altid=nil, remap={ 1, 2 } },  -- Uldir: Heart of Corruption
 
-  [1945] = { total=3, base=1, parent=1942, altid=nil, remap={ 1, 2, 3 } }, -- Battle of Dazar'alor: Alliance Wing 1
-  [1946] = { total=3, base=4, parent=1942, altid=nil, remap={ 1, 2, 3 } }, -- Battle of Dazar'alor: Alliance Wing 2
-  [1947] = { total=3, base=7, parent=1942, altid=nil, remap={ 1, 2, 3 } }, -- Battle of Dazar'alor: Alliance Wing 3
+  [1945] = { total=3, base=1, parent=1944, altid=nil, remap={ 1, 2, 3 } }, -- BoD: Siege of Dazar'alor (Alliance)
+  [1946] = { total=3, base=4, parent=1944, altid=nil, remap={ 1, 2, 3 } }, -- BoD: Empire's Fall (Alliance)
+  [1947] = { total=3, base=7, parent=1944, altid=nil, remap={ 1, 2, 3 } }, -- BoD: Might of the Alliance (Alliance)
 
-  [1948] = { total=3, base=1, parent=1942, altid=nil, remap={ 1, 2, 3 } }, -- Battle of Dazar'alor: Horde Wing 1
-  [1949] = { total=3, base=4, parent=1942, altid=nil, remap={ 1, 2, 3 } }, -- Battle of Dazar'alor: Horde Wing 2
-  [1950] = { total=3, base=7, parent=1942, altid=nil, remap={ 1, 2, 3 } }, -- Battle of Dazar'alor: Horde Wing 3
+  [1948] = { total=3, base=1, parent=1944, altid=nil, remap={ 1, 2, 3 } }, -- BoD: Defense of Dazar'alor (Horde)
+  [1949] = { total=3, base=4, parent=1944, altid=nil, remap={ 1, 2, 3 } }, -- BoD: Death's Bargain (Horde)
+  [1950] = { total=3, base=7, parent=1944, altid=nil, remap={ 1, 2, 3 } }, -- BoD: Victory or Death (Horde)
 
-  [1951] = { total=2, base=1, parent=1952, altid=nil, remap={ 1, 2 } }, -- Crucible of Storms
+  [1951] = { total=2, base=1, parent=1954, altid=nil, remap={ 1, 2 } }, -- Crucible of Storms
 }
 
 local tmp = {}

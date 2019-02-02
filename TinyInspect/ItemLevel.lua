@@ -82,8 +82,6 @@ local function SetItemSlotString(self, class, equipSlot, link)
             slotText = RELICSLOT
         end
     end
-	--if (link and IsArtifactPowerItem(link)) then slotText = ARTIFACT_POWER end
-    
     self:SetText(slotText)
 end
 

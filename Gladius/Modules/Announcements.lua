@@ -20,7 +20,6 @@ local IsAddOnLoaded = IsAddOnLoaded
 local IsArenaSkirmish = IsArenaSkirmish
 local IsInInstance = IsInInstance
 local SendChatMessage = SendChatMessage
-local UnitAura = UnitAura
 local UnitClass = UnitClass
 local UnitHealth = UnitHealth
 local UnitHealthMax = UnitHealthMax

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2342, "DBM-ZuldazarRaid", 2, 1176)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 18251 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 18262 $"):sub(12, -3))
 --mod:SetCreatureID(138967)--145261 or 147564
 mod:SetEncounterID(2271)
 --mod:DisableESCombatDetection()
@@ -63,7 +63,7 @@ local yellVolatileChargeFade			= mod:NewFadesYell(283507)
 ----Yalat's Bulwark
 local specWarnFlamesofPunishment		= mod:NewSpecialWarningDodge(282939, nil, nil, nil, 2, 8)
 ----Traps
-local specWarnHexofLethargy				= mod:NewSpecialWarningMoveAway(284470, nil, nil, nil, 1, 2)
+local specWarnHexofLethargy				= mod:NewSpecialWarningYou(284470, nil, nil, nil, 1, 2)
 local yellHexofLethargy					= mod:NewYell(284470)
 local yellHexofLethargyFade				= mod:NewFadesYell(284470)
 --Stage Two: Toppling the Guardian
@@ -136,16 +136,21 @@ do
 		table.wipe(lines)
 		table.wipe(sortedLines)
 		--The Zandalari Crown Jewels Helper
-		--Incandescent Stacks/Diamond Absorb Checks
+		--Diamond Absorb Checks
+		for uId in DBM:GetGroupMembers() do
+			local unitName = DBM:GetUnitFullName(uId)
+			local absorb = diamondTargets[unitName]
+			if absorb then
+				local absorbAmount = select(16, DBM:UnitDebuff(uId, 284527)) or 0
+				addLine(unitName, DBM_CORE_SHIELD.."-"..math.floor(absorbAmount))
+			end
+		end
+		--Incandescent Stacks
 		for uId in DBM:GetGroupMembers() do
 			local unitName = DBM:GetUnitFullName(uId)
 			local count = incandescentStacks[unitName]
-			local absorb = diamondTargets[unitName]
 			if count then
 				addLine(unitName, Incan.."-"..count)
-			elseif absorb then
-				local absorbAmount = select(16, DBM:UnitDebuff(uId, 284527)) or 0
-				addLine(unitName, DBM_CORE_SHIELD.."-"..math.floor(absorbAmount))
 			end
 		end
 		--Incandescent Full
@@ -169,7 +174,7 @@ do
 		if trackedGemBuff then
 			local spellName3, _, currentStack3 = DBM:UnitDebuff("player", 284817, 284883)
 			if spellName3 and currentStack3 then--Personal Earthen Roots/Unleashed Rage count
-				addLine(spellName3.." ("..currentStack2..")", "")
+				addLine(spellName3.." ("..currentStack3..")", "")
 			end
 		end
 		--Other Considerations
@@ -345,7 +350,7 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif spellId == 284470 then
 		if args:IsPlayer() then
 			specWarnHexofLethargy:Show()
-			specWarnHexofLethargy:Play("runout")
+			specWarnHexofLethargy:Play("stopmove")
 			yellHexofLethargy:Yell()
 			yellHexofLethargyFade:Cancel()
 			yellHexofLethargyFade:Countdown(30)

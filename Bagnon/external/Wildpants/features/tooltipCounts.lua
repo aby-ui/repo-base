@@ -167,7 +167,7 @@ end
 --[[ Startup ]]--
 
 function TooltipCounts:OnEnable()
-	if Addon:MultipleOwnersFound() and Addon.sets.tipCount then
+	if Addon.sets.tipCount then
 		if not Hooked then
 			for owner in Cache:IterateOwners() do
 				ItemCount[owner] = {}

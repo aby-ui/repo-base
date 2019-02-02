@@ -126,10 +126,10 @@ function lib:GetItemInfo(link, stats)
     end
 end
 
---獲取容器裏物品裝備等級(傳家寶/神器)
+--獲取容器裏物品裝備等級
 function lib:GetContainerItemLevel(pid, id)
 --[[
-    if (pid == -1) then
+    if (pid < 0) then
         local link = GetContainerItemLink(pid, id)
         return self:GetItemInfo(link)
     end

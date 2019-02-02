@@ -334,8 +334,7 @@ La["World Bosses"] = "Boss extérieurs"
 La["You can combine icons and text in a single indicator if you wish. Simply choose an icon, and insert the word ICON into the text field. Anywhere the word ICON is found, the icon you chose will be substituted in."] = "Si vous le souhaitez, vous pouvez combiner les icônes et le texte en un seul indicateur. Il vous suffit de choisir une icône et d'insérer le mot ICON dans la zone de texte. Partout où le mot ICON sera trouvé, l'icône que vous avez choisi sera mise à la place."
 
 elseif locale == "deDE" then
---[[Translation missing --]]
-La[" Chest Available"] = " Chest Available"
+La[" Chest Available"] = "Truhe verfügbar"
 La["|cffffff00Left-click|r to detach tooltip"] = "|cffffff00Linksklick|r, um den Tooltip zu lösen"
 La["|cffffff00Middle-click|r to show Blizzard's Raid Information"] = "|cffffff00Mittelklick|r , um die Blizzard-Schlachtszugsinfo anzuzeigen"
 La["|cffffff00Right-click|r to configure SavedInstances"] = "|cffffff00Rechtsklick|r, um SavedInstances zu konfigurieren"
@@ -383,8 +382,7 @@ La["Facets of Research"] = "Forschungsfacetten"
 La["Fit to screen"] = "An Bildschirm anpassen"
 La["Flex"] = "Flex"
 La["Format large numbers"] = "Große Zahlen formatieren"
---[[Translation missing --]]
-La["Free"] = "Free"
+La["Free"] = "Frei"
 La["General settings"] = "Allgemeine Einstellungen"
 La["Group"] = "Gruppieren"
 La["Hold Alt to show all data"] = "Halte Alt gedrückt, um alle Daten anzuzeigen"
@@ -407,8 +405,7 @@ La["List raid categories before dungeon categories"] = "Schlachtzugskategorien v
 La["Manage"] = "Verwalten"
 La["Miscellaneous Tracking"] = "Verschiedenes"
 La["Most recent first"] = "Aktuellste zuerst"
---[[Translation missing --]]
-La["MOTHER"] = "MOTHER"
+La["MOTHER"] = "MUTTER"
 --[[Translation missing --]]
 La["Mythic Best"] = "Mythic Best"
 La["Mythic Key Best"] = "Bester mythischer Schlüsselstein"
@@ -428,10 +425,8 @@ La["Reverse ordering"] = "Umgekehrte Anordung"
 La["Roll Bonus"] = "Bonuswürfe"
 La["Row Highlight"] = "Zeilenhervorhebung"
 La["Set All"] = "Alle festlegen"
---[[Translation missing --]]
-La["Show all emissary names"] = "Show all emissary names"
---[[Translation missing --]]
-La["Show both factions' emissay name"] = "Show both factions' emissay name"
+La["Show all emissary names"] = "Zeige alle Abgesandtennamen"
+La["Show both factions' emissay name"] = "Zeige Abgesandtennamen beider Fraktionen"
 La["Show category names"] = "Kategorienamen anzeigen"
 La["Show category names in the tooltip"] = "Kategorienamen im Tooltip anzeigen"
 La["Show cooldown for characters to use battleground system"] = "Zeigt Abklingzeiten für Charaktere, um das Schlachtfeldsystem zu benutzen, an."
@@ -455,8 +450,7 @@ La["Show server name"] = "Realmname anzeigen"
 La["Show the SavedInstances minimap button"] = "Den SavedInstances-Minikartenbutton anzeigen"
 La["Show tooltip hints"] = "Tooltip-Hinweise anzeigen"
 La["Show When"] = "Zeigen, wenn"
---[[Translation missing --]]
-La["Show when completed"] = "Show when completed"
+La["Show when completed"] = "Zeige wenn abgeschlossen"
 La["Show when saved"] = "Anzeigen, wenn gespeichert"
 La["Show/Hide the SavedInstances tooltip"] = "Zeige/Verstecke den SavedInstances-Tooltip"
 La["Similarly, the words KILLED and TOTAL will be substituted with the number of bosses killed and total in the lockout."] = "Ebenso werden die Wörter GETÖTET und GESAMT durch die Anzahl der getöteten und gesamten Bosse der ID ersetzt."
