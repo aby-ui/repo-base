@@ -68,9 +68,9 @@ end
 function BrokerDisplay:AttributeChanged(_, object, attr)
 	if self:GetObjectName() == object then
 		if attr == 'icon' then
-			self:UpdateIcon()
+			self:UpdateIcon(object)
 		elseif attr == 'text' then
-			self:UpdateText()
+			self:UpdateText(object)
 		end
 	end
 end
@@ -145,12 +145,12 @@ function BrokerDisplay:RegisterEvents()
 end
 
 function BrokerDisplay:UpdateDisplay()
-	self:UpdateText()
-	self:UpdateIcon()
+	local obj = self:GetObject()
+	self:UpdateText(obj)
+	self:UpdateIcon(obj)
 end
 
-function BrokerDisplay:UpdateText()
-	local obj = self:GetObject()
+function BrokerDisplay:UpdateText(obj)
 	local text
 
 	if obj then
@@ -163,8 +163,7 @@ function BrokerDisplay:UpdateText()
 	self:Layout()
 end
 
-function BrokerDisplay:UpdateIcon()
-	local obj = self:GetObject()
+function BrokerDisplay:UpdateIcon(obj)
 	local icon = obj and obj.icon
 
 	self.icon:SetTexture(icon)

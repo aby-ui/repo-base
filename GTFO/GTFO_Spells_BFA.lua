@@ -729,3 +729,14 @@ GTFO.SpellID["288051"] = {
   sound = 1;
 };
 
+GTFO.SpellID["288297"] = {
+  --desc = "Arctic Ground (Lady Jaina Proudmoore)";
+  sound = 1;
+};
+
+GTFO.SpellID["287993"] = {
+  --desc = "Chilling Touch (Lady Jaina Proudmoore)";
+  applicationOnly = true;
+  affirmingDebuffSpellID = 288297; -- Arctic Ground
+  sound = 1;
+};

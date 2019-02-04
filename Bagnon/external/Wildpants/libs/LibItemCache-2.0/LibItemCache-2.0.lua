@@ -1,4 +1,4 @@
-local Lib = LibStub:NewLibrary('LibItemCache-2.0', 12)
+local Lib = LibStub:NewLibrary('LibItemCache-2.0', 13)
 if not Lib then
 	return
 end
@@ -11,12 +11,13 @@ local EMPTY_FUNC = function() end
 local PLAYER, REALM, REALMS
 
 local FindRealms = function()
-	PLAYER, REALM = UnitFullName('player')
-	REALM = REALM or GetRealmName()
-	REALMS = GetAutoCompleteRealms()
+	if not REALM then
+		PLAYER, REALM = UnitFullName('player')
+		REALMS = GetAutoCompleteRealms()
 
-	if not REALMS or #REALMS == 0 then
-		REALMS = {REALM}
+		if not REALMS or #REALMS == 0 then
+			REALMS = {REALM}
+		end
 	end
 end
 
@@ -34,9 +35,6 @@ end
 
 setmetatable(Caches, { __index = AccessInterfaces })
 LibStub('AceEvent-3.0'):Embed(Lib)
-
-FindRealms()
-Lib:RegisterEvent('PLAYER_LOGIN', FindRealms)
 
 Lib:RegisterEvent('BANKFRAME_OPENED', function() Lib.AtBank = true; Lib:SendMessage('CACHE_BANK_OPENED') end)
 Lib:RegisterEvent('BANKFRAME_CLOSED', function() Lib.AtBank = false; Lib:SendMessage('CACHE_BANK_CLOSED') end)
@@ -91,8 +89,9 @@ function Lib:DeleteOwnerInfo(owner)
 end
 
 function Lib:IterateOwners()
-	local i, players, guilds, suffix = 0
+	FindRealms()
 
+	local i, players, guilds, suffix = 0
 	return function()
 		while i <= #REALMS do
 			local owner = players and players()
@@ -213,7 +212,14 @@ end
 
 --[[ Advanced ]]--
 
+function Lib:GetOwnerID(owner)
+	local realm, name, isguild = self:GetOwnerAddress(owner)
+	return (isguild and '® ' or '') .. name .. ' - ' .. realm
+end
+
 function Lib:GetOwnerAddress(owner)
+	FindRealms()
+
 	if not owner then
 		return REALM, PLAYER
 	end
@@ -221,11 +227,6 @@ function Lib:GetOwnerAddress(owner)
 	local first, realm = strmatch(owner, '^(.-) *%- *(.+)$')
 	local isguild, name = strmatch(first or owner, '^(®) *(.+)')
 	return realm or REALM, name or first or owner, isguild and true
-end
-
-function Lib:GetOwnerID(owner)
-	local realm, name, isguild = self:GetOwnerAddress(owner)
-	return (isguild and '® ' or '') .. name .. ' - ' .. realm
 end
 
 function Lib:IsOwnerCached(realm, name, isguild)

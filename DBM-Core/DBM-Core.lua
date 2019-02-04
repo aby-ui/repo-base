@@ -41,9 +41,9 @@
 --  Globals/Default Options  --
 -------------------------------
 DBM = {
-	Revision = tonumber(("$Revision: 18266 $"):sub(12, -3)),
-	DisplayVersion = "8.1.8 alpha", -- the string that is shown as version
-	ReleaseRevision = 18245 -- the revision of the latest stable version that is available
+	Revision = tonumber(("$Revision: 18282 $"):sub(12, -3)),
+	DisplayVersion = "8.1.9 alpha", -- the string that is shown as version
+	ReleaseRevision = 18279 -- the revision of the latest stable version that is available
 }
 DBM.HighestRelease = DBM.ReleaseRevision --Updated if newer version is detected, used by update nags to reflect critical fixes user is missing on boss pulls
 
@@ -9130,6 +9130,10 @@ do
 	
 	function bossModPrototype:NewTargetAnnounce(spellId, color, ...)
 		return newAnnounce(self, "target", spellId, color or 3, ...)
+	end
+	
+	function bossModPrototype:NewTargetSourceAnnounce(spellId, color, ...)
+		return newAnnounce(self, "targetsource", spellId, color or 3, ...)
 	end
 
 	function bossModPrototype:NewTargetCountAnnounce(spellId, color, ...)

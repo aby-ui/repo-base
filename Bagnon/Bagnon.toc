@@ -4,8 +4,8 @@
 ## Notes: Single window displays for your inventory and bank
 ## SavedVariables: Bagnon_Sets
 
-## OptionalDeps: BagBrother, ItemRack, Wardrobe, WoWUnit
-## Version: 8.1.2
+## OptionalDeps: BagBrother, WoWUnit
+## Version: 8.1.5
 
 main.lua
 

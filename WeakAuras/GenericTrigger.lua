@@ -396,9 +396,9 @@ function WeakAuras.ActivateEvent(id, triggernum, data, state)
     state.inverse = nil;
     state.autoHide = autoHide;
   elseif (data.durationFunc) then
-    local arg1, arg2, arg3, inverse = data.durationFunc(data.trigger);
-    arg1 = type(arg1) == "number" and arg1 or 0;
-    arg2 = type(arg2) == "number" and arg2 or 0;
+    local ok, arg1, arg2, arg3, inverse = xpcall(data.durationFunc, geterrorhandler(), data.trigger);
+    arg1 = ok and type(arg1) == "number" and arg1 or 0;
+    arg2 = ok and type(arg2) == "number" and arg2 or 0;
 
     if(type(arg3) == "string") then
       if (state.durationFunc ~= data.durationFunc) then
@@ -2653,7 +2653,8 @@ function GenericTrigger.CanHaveDuration(data, triggernum)
       elseif WeakAuras.event_prototypes[trigger.event].canHaveDuration then
         return WeakAuras.event_prototypes[trigger.event].canHaveDuration
       end
-    elseif trigger.unevent == "timed"and trigger.duration then
+    end
+    if trigger.unevent == "timed" and trigger.duration then
       return "timed"
     end
   elseif (trigger.type == "custom") then

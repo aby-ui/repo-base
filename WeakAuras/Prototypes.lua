@@ -4505,6 +4505,7 @@ WeakAuras.event_prototypes = {
             sourceUnit = trigger_unit
           end
           local destUnit = sourceUnit and sourceUnit .. "-target"
+          local sourceGUID = sourceUnit and UnitGUID(sourceUnit)
 
           if sourceUnit and UnitExists(sourceUnit) and (trigger_unit == "multi" or UnitIsUnit(sourceUnit, trigger_unit)) then
             local show, expirationTime, castType, spell, icon, startTime, endTime, interruptible, spellId, remaining
@@ -4554,6 +4555,7 @@ WeakAuras.event_prototypes = {
                 interruptible = interruptible,
                 sourceUnit = sourceUnit,
                 sourceName = sourceUnit and UnitName(sourceUnit) or "",
+                sourceGUID = sourceGUID,
                 destUnit = UnitExists(destUnit) and destUnit,
                 destName = UnitExists(destUnit) and UnitName(destUnit) or "",
                 show = true,
@@ -4562,17 +4564,19 @@ WeakAuras.event_prototypes = {
                 resort = true
               }
             else
-              if states[cloneId] and states[cloneId].show then
-                states[cloneId].show = false
-                states[cloneId].changed = true
-                states[cloneId].resort = true
+              local state = states[cloneId]
+              if state and state.show and state.sourceGUID == sourceGUID then
+                state.show = false
+                state.changed = true
+                state.resort = true
               end
             end
           else
             if sourceUnit == trigger_unit and not UnitExists(trigger_unit) then
-              if states[cloneId] and states[cloneId].show then
-                states[cloneId].show = false
-                states[cloneId].changed = true
+              local state = states[cloneId]
+              if state and state.show then
+                state.show = false
+                state.changed = true
               end
             end
           end

@@ -1180,3 +1180,39 @@ GTFO.SpellID["284374"] = {
   sound = 3;
 };
 
+GTFO.SpellID["288325"] = {
+  --desc = "Glacial Shards (Lady Jaina Proudmoore)";
+  sound = 3;
+};
+
+GTFO.SpellID["288534"] = {
+  --desc = "Blistering Tornado (Lady Jaina Proudmoore)";
+  sound = 3;
+};
+
+GTFO.SpellID["287490"] = {
+  --desc = "Frozen Solid (Lady Jaina Proudmoore)";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["290030"] = {
+  --desc = "Bombard (Lady Jaina Proudmoore)";
+  sound = 3;
+};
+
+GTFO.SpellID["285177"] = {
+  --desc = "Freezing Blast (Lady Jaina Proudmoore)";
+  sound = 3;
+};
+
+GTFO.SpellID["287585"] = {
+  --desc = "Avalanche (Lady Jaina Proudmoore)";
+  sound = 3;
+};
+
+GTFO.SpellID["288218"] = {
+  --desc = "Broadside (Lady Jaina Proudmoore)";
+  sound = 3;
+};
+

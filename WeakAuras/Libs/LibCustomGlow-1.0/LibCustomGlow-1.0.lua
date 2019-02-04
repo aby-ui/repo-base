@@ -1,5 +1,5 @@
 local MAJOR_VERSION = "LibCustomGlow-1.0"
-local MINOR_VERSION = 8
+local MINOR_VERSION = 14
 if not LibStub then error(MAJOR_VERSION .. " requires LibStub.") end
 local lib, oldversion = LibStub:NewLibrary(MAJOR_VERSION, MINOR_VERSION)
 if not lib then return end
@@ -603,13 +603,16 @@ function lib.ButtonGlow_Start(r,color,frequency)
     if r._ButtonGlow then
         local f = r._ButtonGlow
         local width,height = r:GetSize()
-        f:SetSize(width * 1.4, height * 1.4)
+        f:SetSize(width*1.4 , height*1.4)
         f:SetPoint("TOPLEFT", r, "TOPLEFT", -width * 0.2, height * 0.2)
         f:SetPoint("BOTTOMRIGHT", r, "BOTTOMRIGHT", width * 0.2, -height * 0.2)
-        if f.animOut:IsPlaying() then
+        f.ants:SetSize(width*1.4*0.85, height*1.4*0.85)		
+		AnimIn_OnFinished(f.animIn)
+		if f.animOut:IsPlaying() then
             f.animOut:Stop()
             f.animIn:Play()
         end
+		
         if not(color) then
             for texture in pairs(ButtonGlowTextures) do
                 f[texture]:SetDesaturated(nil)
