@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2335, "DBM-ZuldazarRaid", 2, 1176)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 18252 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 18284 $"):sub(12, -3))
 mod:SetCreatureID(145616)--145644 Bwonsamdi
 mod:SetEncounterID(2272)
 --mod:DisableESCombatDetection()
@@ -126,11 +126,11 @@ local timerNecroticSmashCD				= mod:NewCDTimer(34.6, 286742, nil, nil, nil, 2)
 local countdownScorchingDet				= mod:NewCountdown("Alt12", 284831, "Tank", nil, 4)
 local countdownInevitableEnd			= mod:NewCountdown(50, 287333, nil, nil, 5)
 
+mod:AddNamePlateOption("NPAuraOnRelentlessness", 289162)
+mod:AddNamePlateOption("NPAuraOnFocusedDemise", 286779)
 --mod:AddSetIconOption("SetIconGift", 255594, true)
 mod:AddRangeFrameOption(8, 285349)
 mod:AddInfoFrameOption(285195, true)
-mod:AddNamePlateOption("NPAuraOnRelentlessness", 289162)
-mod:AddNamePlateOption("NPAuraOnFocusedDemise", 286779)
 mod:AddBoolOption("AnnounceAlternatePhase", false, "announce")
 
 mod.vb.phase = 1

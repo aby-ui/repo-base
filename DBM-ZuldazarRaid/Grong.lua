@@ -10,7 +10,7 @@ end
 local mod	= DBM:NewMod(dungeonID, "DBM-ZuldazarRaid", 1, 1176)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 18253 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 18284 $"):sub(12, -3))
 mod:SetCreatureID(creatureID)
 mod:SetEncounterID(2263, 2284)--2263 Alliance, 2284 Horde
 --mod:DisableESCombatDetection()
@@ -77,11 +77,10 @@ local countdownAdd						= mod:NewCountdown(120, addSpawnId, true, nil, 5)
 local countdownTankCombo				= mod:NewCountdown("Alt12", tankComboId, "Tank", nil, 4)
 local countdownFerociousRoar			= mod:NewCountdown("AltTwo32", 285994, nil, nil, 3)
 
+--mod:AddNamePlateOption("NPAuraOnPresence", 276093)
 --mod:AddSetIconOption("SetIconGift", 255594, true)
 --mod:AddRangeFrameOption("8/10")
 mod:AddInfoFrameOption(energyAOESpellId, true)
---mod:AddNamePlateOption("NPAuraOnPresence", 276093)
---mod:AddSetIconOption("SetIconDarkRev", 273365, true)
 
 --mod.vb.phase = 1
 mod.vb.EnergyAOECount = 0

@@ -1,7 +1,7 @@
 ## Interface: 80100
 
 ## Title: Garrison Mission Manager
-## Version: v58
+## Version: v59
 ## Notes: Assists you with selecting best team for Battle for Azeroth mission table, Legion's Class Hall and WoD's Garrison/Shipyard missions and other followers management tasks
 ## Author: Oleg "Rowaa[SR13]" Volkov
 

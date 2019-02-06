@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2330, "DBM-ZuldazarRaid", 2, 1176)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 18279 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 18290 $"):sub(12, -3))
 mod:SetCreatureID(144747, 144767, 144963, 144941)--Mythic need other 2 IDs?
 mod:SetEncounterID(2268)
 --mod:DisableESCombatDetection()
@@ -116,13 +116,12 @@ local countdownPakusWrath				= mod:NewCountdown(70, 282107, true, nil, 5)
 --local countdownLaceratingClaws		= mod:NewCountdown("Alt12", 244016, false, 2, 3)
 local countdownKragwasWrath				= mod:NewCountdown("AltTwo32", 282636, "Ranged", nil, 3)
 
---mod:AddSetIconOption("SetIconGift", 255594, true)
---mod:AddRangeFrameOption("8/10")
-mod:AddInfoFrameOption(282079, true)--Not real spellID, just filler for now
 mod:AddNamePlateOption("NPAuraOnPact", 282079)
 mod:AddNamePlateOption("NPAuraOnPackHunter", 286007)
 mod:AddNamePlateOption("NPAuraOnFixate", 282209)
 mod:AddSetIconOption("SetIconHex", 282135, false)
+--mod:AddRangeFrameOption("8/10")
+mod:AddInfoFrameOption(282079, true)--Not real spellID, just filler for now
 
 --mod.vb.phase = 1
 mod.vb.hexIcon = 1
@@ -226,9 +225,11 @@ function mod:SPELL_CAST_SUCCESS(args)
 		--timerBwonsamdisWrathCD:Start()
 	elseif spellId == 282636 then
 		self.vb.kragwaCast = self.vb.kragwaCast + 1
-		if self.vb.kragwaCast == 1 or (self.vb.kragwaCast-1) % 3 == 0 then--1, 4, 7, 10, etc
-			timerKragwasWrathCD:Start()
-			countdownKragwasWrath:Start(49.8)
+		if self.vb.kragwaCast % 4 == 0 then
+			timerKragwasWrathCD:Start(40)
+			countdownKragwasWrath:Start(40)
+		else
+			timerKragwasWrathCD:Start(3)
 		end
 	end
 end

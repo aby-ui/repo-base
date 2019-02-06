@@ -123,12 +123,18 @@ DBM_CORE_OPTION_TIMER_COMBAT		= "Show timer for combat start"
 DBM_CORE_BAD						= "Bad"
 
 DBM_CORE_OPTION_CATEGORY_TIMERS			= "Bars"
+--Sub cats for "announce" object
 DBM_CORE_OPTION_CATEGORY_WARNINGS		= "General Announces"
 DBM_CORE_OPTION_CATEGORY_WARNINGS_YOU	= "Personal Announces"
 DBM_CORE_OPTION_CATEGORY_WARNINGS_OTHER	= "Target Announces"
 DBM_CORE_OPTION_CATEGORY_WARNINGS_ROLE	= "Role Announces"
+
 DBM_CORE_OPTION_CATEGORY_SOUNDS			= "Sounds"
-DBM_CORE_OPTION_CATEGORY_DROPDOWNS		= "Dropdowns"
+--Misc object broken down into sub cats
+DBM_CORE_OPTION_CATEGORY_DROPDOWNS		= "Dropdowns"--Still put in MISC sub grooup, just used for line separators since multiple of these on a fight (or even having on of these at all) is rare.
+DBM_CORE_OPTION_CATEGORY_YELLS			= "Yells"
+DBM_CORE_OPTION_CATEGORY_NAMEPLATES		= "Nameplates"
+DBM_CORE_OPTION_CATEGORY_ICONS			= "Icons"
 
 DBM_CORE_AUTO_RESPONDED						= "Auto-responded."
 DBM_CORE_STATUS_WHISPER						= "%s: %s, %d/%d people alive"

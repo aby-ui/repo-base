@@ -7,7 +7,7 @@ end
 local mod	= DBM:NewMod(dungeonID, "DBM-ZuldazarRaid", 1, 1176)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 18253 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 18284 $"):sub(12, -3))
 mod:SetCreatureID(creatureID)
 mod:SetEncounterID(2265)
 --mod:DisableESCombatDetection()
@@ -76,15 +76,14 @@ local countdownReleaseSeal				= mod:NewCountdown(50.3, 283955, true, nil, 5)
 local countdownPrayerforFallen			= mod:NewCountdown("Alt12", 287469, true, nil, 4)
 --local countdownFelstormBarrage		= mod:NewCountdown("AltTwo32", 244000, nil, nil, 3)
 
---mod:AddSetIconOption("SetIconGift", 255594, true)
---mod:AddRangeFrameOption("8/10")
---mod:AddInfoFrameOption(258040, true)
 mod:AddNamePlateOption("NPAuraOnRet2", 284468, false)--off by default since it's basically on the mobs half the fight
 mod:AddNamePlateOption("NPAuraOnWave", 283619)
 mod:AddNamePlateOption("NPAuraOnJudgment", 283933)
 mod:AddNamePlateOption("NPAuraOnBlindingFaith", 283650)
 mod:AddNamePlateOption("NPAuraOnAngelicRenewal", 287419)
 --mod:AddSetIconOption("SetIconDarkRev", 273365, true)
+--mod:AddRangeFrameOption("8/10")
+--mod:AddInfoFrameOption(258040, true)
 
 function mod:WaveofLightTarget(targetname, uId)
 	if uId then

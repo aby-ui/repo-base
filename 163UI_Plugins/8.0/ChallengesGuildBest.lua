@@ -71,4 +71,25 @@ CoreDependCall("Blizzard_ChallengesUI", function()
     ChallengesFrame:HookScript("OnShow", update)
     CoreOnEvent("CHALLENGE_MODE_LEADERS_UPDATE", update)
     -- hooksecurefunc("ChallengesFrame_Update", update)
+
+    local levels = { nil, 380, 385, 390, 390, 395, 400, 400, 405, 410, 410, 410, 410, 410, 410, 410, 410, 410, 410, 410, 410, 410, 410, 410, 410 }
+    local titans = { nil, nil, nil, nil, nil, nil, nil, nil, nil, 625, 667, 709, 751, 793, 835, 866, 897, 928, 959, 990, 1010,1030,1050,1070,1090}
+    ChallengesFrame.WeeklyInfo.Child.WeeklyChest:HookScript("OnEnter", function(self)
+        if GameTooltip:IsVisible() then
+            GameTooltip:AddLine(" ")
+            GameTooltip:AddLine("钥石层数  奖励装等  奖励精华")
+            local start = self.level and self.level > 0 and self.level or 2
+            for i = start, start + 8 do
+                if levels[i] or titans[i] then
+                    local line = "    %2d层 |T130758:10:35:0:0:32:32:10:22:10:22|t %s |T130758:10:25:0:0:32:32:10:22:10:22|t %s"
+                    local level = levels[i] and format("%d", levels[i]) or " ? "
+                    local titan = titans[i] and format("%4d", titans[i]) or "  ? "
+                    GameTooltip:AddLine(format(line, i, level, titan))
+                else
+                    break
+                end
+            end
+            GameTooltip:Show()
+        end
+    end)
 end)
