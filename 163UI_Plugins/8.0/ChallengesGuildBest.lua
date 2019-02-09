@@ -78,8 +78,13 @@ CoreDependCall("Blizzard_ChallengesUI", function()
         if GameTooltip:IsVisible() then
             GameTooltip:AddLine(" ")
             GameTooltip:AddLine("钥石层数  奖励装等  奖励精华")
-            local start = self.level and self.level > 0 and self.level or 2
-            for i = start, start + 8 do
+            local start = 2
+            if self.level and self.level > 0 then
+                start = self.level - 3
+            elseif self.ownedKeystoneLevel and self.ownedKeystoneLevel > 0 then
+                start = self.ownedKeystoneLevel - 5
+            end
+            for i = start, start + 9 do
                 if levels[i] or titans[i] then
                     local line = "    %2d层 |T130758:10:35:0:0:32:32:10:22:10:22|t %s |T130758:10:25:0:0:32:32:10:22:10:22|t %s"
                     local level = levels[i] and format("%d", levels[i]) or " ? "
@@ -89,6 +94,13 @@ CoreDependCall("Blizzard_ChallengesUI", function()
                     break
                 end
             end
+
+            GameTooltip:AddLine(" ")
+            GameTooltip:AddLine("385随机 需要165 分解返35")
+            GameTooltip:AddLine("400随机 需要675 分解返115")
+            GameTooltip:AddLine("415随机 需要1725 分解返365")
+            GameTooltip:AddLine("415指定 需要7150")
+            GameTooltip:AddLine("其他：340返1 355返3 370返12")
             GameTooltip:Show()
         end
     end)

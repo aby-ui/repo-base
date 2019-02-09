@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2334, "DBM-ZuldazarRaid", 3, 1176)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 18288 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 18301 $"):sub(12, -3))
 mod:SetCreatureID(144796)
 mod:SetEncounterID(2276)
 --mod:DisableESCombatDetection()
@@ -17,7 +17,7 @@ mod:RegisterCombat("combat")
 mod:RegisterEventsInCombat(
 	"SPELL_CAST_START 282205 287952 287929 282153 288410 287751 287797 287757 286693 288041 288049 289537 287691 286597",
 	"SPELL_CAST_SUCCESS 287757 286597",
-	"SPELL_AURA_APPLIED 287757 287167 284168 289023 286051 289699 286646 282406 286105",
+	"SPELL_AURA_APPLIED 287757 287167 284168 289023 286051 289699 286646 282406 286105 287114",
 	"SPELL_AURA_APPLIED_DOSE 289699",
 	"SPELL_AURA_REMOVED 287757 284168 286646 286105"
 --	"UNIT_DIED"
@@ -37,6 +37,7 @@ mod:RegisterEventsInCombat(
 local warnPhase							= mod:NewPhaseChangeAnnounce(2, nil, nil, nil, nil, nil, 2)
 --Ground Phase
 local warnShrunk						= mod:NewTargetNoFilterAnnounce(284168, 1)
+local warnMisTele						= mod:NewTargetNoFilterAnnounce(287114, 3)
 --Intermission: Evasive Maneuvers!
 
 --Final Push
@@ -62,6 +63,8 @@ local yellShrunkRepeater				= mod:NewYell(284168, UnitName("player"))
 local specWarnShrunkTaunt				= mod:NewSpecialWarningTaunt(284168, nil, nil, nil, 1, 2)
 local specWarnEnormous					= mod:NewSpecialWarningYou(289023, nil, nil, nil, 1, 2)--Mythic
 local yellEnormous						= mod:NewYell(289023, nil, nil, nil, "YELL")--Enormous will shout with red letters
+local specWarnMisCalcTele				= mod:NewSpecialWarningYou(287114, nil, nil, nil, 1, 2)--Mythic
+local yellMisCalcTele					= mod:NewYell(287114)
 --Intermission: Evasive Maneuvers!
 local specWarnExplodingSheep			= mod:NewSpecialWarningDodge(287929, nil, nil, nil, 2, 2)
 --local specWarnGTFO					= mod:NewSpecialWarningGTFO(238028, nil, nil, nil, 1, 8)
@@ -103,6 +106,7 @@ mod.vb.botIcon = 4
 mod.vb.shrinkCount = 0
 mod.vb.sheepCount = 0
 mod.vb.difficultyName = "None"
+local debugMessageShown = false
 local playersInRobots = {}
 --Normal and heroic seem identical, at least so far, but blizz has been making tweeks to fight multiple times. Even this week they made additional timer alterations from last week on heroic
 --As such, need to have duplicate tables across board so it's easy to update mod on wim if they adjust specific difficulties only.
@@ -260,17 +264,29 @@ do
 		table.wipe(lines)
 		table.wipe(sortedLines)
 		if #playersInRobots > 0 then--Players in robots
+			DBM:Debug("We have robots", 3)
 			for uId in DBM:GetGroupMembers() do
 				local unitName = DBM:GetUnitFullName(uId)
 				if playersInRobots[unitName] then--Matched a unitID and playername to one of them
+					DBM:Debug(unitName.." is in a robot", 3)
 					local count = playersInRobots[unitName]--Check successful code entries
 					local spellName, _, _, _, _, expireTime = DBM:UnitDebuff(uId, 286105)--Check remaining time on tampering
 					if spellName and expireTime then
 						local remaining = expireTime-GetTime()
 						addLine(unitName, count.."/3 - "..floor(remaining))--Display playername, disarm code of 3, and remaining Tampering
+						if not debugMessageShown then
+							DBM:AddMsg("Debuff check on uId worked, tell MysticalOS/DBM Author")
+						end
+					else
+						addLine(unitName, count.."/3 - ".."WIP")
+						if not debugMessageShown then
+							DBM:AddMsg("Debuff check failed but rest worked, tell MysticalOS/DBM Author")
+						end
 					end
 				end
 			end
+		else
+			DBM:Debug("We have no robots", 3)
 		end
 		return lines, sortedLines
 	end
@@ -286,6 +302,7 @@ function mod:OnCombatStart(delay)
 	self.vb.gigaIcon = 1
 	self.vb.botIcon = 4
 	self.vb.shrinkCount = 0
+	debugMessageShown = false
 	table.wipe(playersInRobots)
 	--Same across board (at least for now, LFR not out yet)
 	timerDeploySparkBotCD:Start(5-delay, 1)
@@ -469,6 +486,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 	elseif spellId == 286152 or spellId == 286219 or spellId == 286215 or spellId == 286226 or spellId == 286192 then--Disarm Codes
 		if playersInRobots[args.sourceName] then
 			playersInRobots[args.sourceName] = playersInRobots[args.sourceName] + 1
+			DBM:Debug(args.sourceName.." cast a code spell")
 		end
 	end
 end
@@ -541,10 +559,21 @@ function mod:SPELL_AURA_APPLIED(args)
 		self.vb.botIcon = self.vb.botIcon + 1
 		if self.vb.botIcon == 9 then self.vb.botIcon = 4 end--Icons 4-8
 	elseif spellId == 286105 then--Tampering
-		playersInRobots[args.destName] = 0
+		local type = strsplit("-", args.destGUID or "")
+		if type and type ~= "Vehicle" then
+			playersInRobots[args.destName] = 0
+			if args:IsPlayer() then
+				self:Unschedule(shrunkYellRepeater)
+				self:Schedule(2, shrunkYellRepeater, self)
+			end
+			DBM:Debug(args.destName.." got in a robot")
+		end
+	elseif spellId == 287114 then
+		warnMisTele:CombinedShow(0.3, args.destName)
 		if args:IsPlayer() then
-			self:Unschedule(shrunkYellRepeater)
-			self:Schedule(2, shrunkYellRepeater, self)
+			specWarnMisCalcTele:Show()
+			specWarnMisCalcTele:Play("carefly")
+			yellMisCalcTele:Yell()
 		end
 	end
 end
@@ -566,9 +595,13 @@ function mod:SPELL_AURA_REMOVED(args)
 			self:Unschedule(shrunkYellRepeater)
 		end
 	elseif spellId == 286105 then--Tampering
-		playersInRobots[args.destName] = nil
-		if args:IsPlayer() then
-			self:Unschedule(shrunkYellRepeater)
+		local type = strsplit("-", args.destGUID or "")
+		if type and type ~= "Vehicle" then
+			playersInRobots[args.destName] = nil
+			if args:IsPlayer() then
+				self:Unschedule(shrunkYellRepeater)
+			end
+			DBM:Debug(args.destName.." got out of a robot")
 		end
 	end
 end

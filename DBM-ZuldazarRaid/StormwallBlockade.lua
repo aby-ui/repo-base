@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2337, "DBM-ZuldazarRaid", 3, 1176)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 18284 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 18302 $"):sub(12, -3))
 mod:SetCreatureID(146251, 146253, 146256)--Sister Katherine 146251, Brother Joseph 146253, Laminaria 146256
 mod:SetEncounterID(2280)
 --mod:DisableESCombatDetection()
@@ -15,7 +15,7 @@ mod:SetHotfixNoticeRev(18175)
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
-	"SPELL_CAST_START 284262 284106 284393 284383 285017 284362 288696",
+	"SPELL_CAST_START 284262 284106 284393 284383 285017 284362 288696 288941",
 	"SPELL_CAST_SUCCESS 285350 285426 285118 290694 289795",
 	"SPELL_AURA_APPLIED 286558 284405 285000 285382 285350 285426 287995",
 	"SPELL_AURA_REFRESH 285000 285382",
@@ -33,7 +33,7 @@ mod:RegisterEventsInCombat(
 --TODO, icons and stuff for storm's wail
 --TODO, add "watch wave" warning for Energized wake on mythic
 --[[
-(ability.id = 284262 or ability.id = 284106 or ability.id = 284393 or ability.id = 284383 or ability.id = 285017 or ability.id = 284362 or ability.id = 288696) and type = "begincast"
+(ability.id = 284262 or ability.id = 284106 or ability.id = 284393 or ability.id = 284383 or ability.id = 285017 or ability.id = 284362 or ability.id = 288696 or ability.id = 288941) and type = "begincast"
  or (ability.id = 285350 or ability.id = 285426 or ability.id = 285118 or ability.id = 290694 or ability.id = 289795) and type = "cast"
  or type = "interrupt"
  or ability.id = 284405 and type = "applydebuff"
@@ -214,6 +214,10 @@ function mod:SPELL_CAST_START(args)
 			specWarnVoltaicFlash:Play("watchorb")
 		end
 		timerVoltaicFlashCD:Start()
+	elseif spellId == 288941 and self:AntiSpam(20, 2) then--AntiSpam must be at least 15 here, 20 for good measure
+		specWarnVoltaicFlash:Show()
+		specWarnVoltaicFlash:Play("watchorb")
+		timerVoltaicFlashCD:Start(42.5)
 	elseif spellId == 284106 then
 		if self:CheckTankDistance(args.sourceGUID, 43) then
 			warnCracklingLightning:Show()
@@ -293,14 +297,14 @@ function mod:SPELL_CAST_SUCCESS(args)
 		specWarnSeaSwell:Play("watchstep")
 		timerSeaSwellCD:Start(20)
 		countdownSeaSwell:Start(20)
-	elseif spellId == 289795 then--Zuldazar Reuse Spell 06 (P2 sirens spawning)
+	elseif spellId == 289795 and self.vb.phase == 2 then--Zuldazar Reuse Spell 06 (P2 sirens spawning)
 		self.vb.sirenCount = self.vb.sirenCount + 1
 		if self:AntiSpam(8, 8) then
 			specWarnSeasTemptation:Show()
 			specWarnSeasTemptation:Play("killmob")
 		end
 		if self.vb.sirenCount % 2 == 0 then
-			timerSeasTemptationCD:Start(38.7, self.vb.sirenCount+1)
+			timerSeasTemptationCD:Start(36.3, self.vb.sirenCount+1)
 		else
 			timerSeasTemptationCD:Start(5, self.vb.sirenCount+1)
 		end
@@ -356,10 +360,11 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif spellId == 285350 or spellId == 285426 then
 		if args:IsPlayer() then
 			specWarnStormsWail:Show(freezingTidePod)
-			specWarnStormsWail:Schedule(7, DBM_CORE_BACK)
+			timer = self:IsEasy() and 13 or 10
+			specWarnStormsWail:Schedule(timer-4.5, DBM_CORE_BACK)
 			specWarnStormsWail:Play("targetyou")
 			yellStormsWail:Yell()
-			yellStormsWailFades:Countdown(self:IsEasy() and 13 or 10)
+			yellStormsWailFades:Countdown(timer)
 		else
 			warnStormsWail:Show(args.destName)
 		end
