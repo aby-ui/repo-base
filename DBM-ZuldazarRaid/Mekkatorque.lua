@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2334, "DBM-ZuldazarRaid", 3, 1176)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 18301 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 18321 $"):sub(12, -3))
 mod:SetCreatureID(144796)
 mod:SetEncounterID(2276)
 --mod:DisableESCombatDetection()
@@ -16,7 +16,7 @@ mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
 	"SPELL_CAST_START 282205 287952 287929 282153 288410 287751 287797 287757 286693 288041 288049 289537 287691 286597",
-	"SPELL_CAST_SUCCESS 287757 286597",
+	"SPELL_CAST_SUCCESS 287757 286597 286152 286219 286215 286226 286192",
 	"SPELL_AURA_APPLIED 287757 287167 284168 289023 286051 289699 286646 282406 286105 287114",
 	"SPELL_AURA_APPLIED_DOSE 289699",
 	"SPELL_AURA_REMOVED 287757 284168 286646 286105"
@@ -79,7 +79,7 @@ local timerWormholeGeneratorCD			= mod:NewNextCountTimer(55, 287952, 67833, nil,
 local timerDeploySparkBotCD				= mod:NewNextCountTimer(55, 288410, nil, nil, nil, 1)
 local timerWorldEnlargerCD				= mod:NewNextCountTimer(90, 288049, nil, nil, nil, 3)
 --Intermission: Evasive Maneuvers!
-local timerIntermission					= mod:NewPhaseTimer(49.9)
+local timerIntermission					= mod:NewPhaseTimer(64.8)
 local timerExplodingSheepCD				= mod:NewNextCountTimer(55, 287929, 222529, nil, nil, 3)--Shorttext "Exploding Sheep"
 
 --local berserkTimer					= mod:NewBerserkTimer(600)
@@ -106,8 +106,8 @@ mod.vb.botIcon = 4
 mod.vb.shrinkCount = 0
 mod.vb.sheepCount = 0
 mod.vb.difficultyName = "None"
-local debugMessageShown = false
 local playersInRobots = {}
+local robotCount = 0
 --Normal and heroic seem identical, at least so far, but blizz has been making tweeks to fight multiple times. Even this week they made additional timer alterations from last week on heroic
 --As such, need to have duplicate tables across board so it's easy to update mod on wim if they adjust specific difficulties only.
 --Mythic seems to have a TON of differencecs from heroic/normal
@@ -263,30 +263,20 @@ do
 	updateInfoFrame = function()
 		table.wipe(lines)
 		table.wipe(sortedLines)
-		if #playersInRobots > 0 then--Players in robots
-			DBM:Debug("We have robots", 3)
+		if robotCount > 0 then
 			for uId in DBM:GetGroupMembers() do
 				local unitName = DBM:GetUnitFullName(uId)
 				if playersInRobots[unitName] then--Matched a unitID and playername to one of them
-					DBM:Debug(unitName.." is in a robot", 3)
 					local count = playersInRobots[unitName]--Check successful code entries
 					local spellName, _, _, _, _, expireTime = DBM:UnitDebuff(uId, 286105)--Check remaining time on tampering
 					if spellName and expireTime then
 						local remaining = expireTime-GetTime()
 						addLine(unitName, count.."/3 - "..floor(remaining))--Display playername, disarm code of 3, and remaining Tampering
-						if not debugMessageShown then
-							DBM:AddMsg("Debuff check on uId worked, tell MysticalOS/DBM Author")
-						end
 					else
-						addLine(unitName, count.."/3 - ".."WIP")
-						if not debugMessageShown then
-							DBM:AddMsg("Debuff check failed but rest worked, tell MysticalOS/DBM Author")
-						end
+						addLine(unitName, count.."/3")
 					end
 				end
 			end
-		else
-			DBM:Debug("We have no robots", 3)
 		end
 		return lines, sortedLines
 	end
@@ -302,8 +292,8 @@ function mod:OnCombatStart(delay)
 	self.vb.gigaIcon = 1
 	self.vb.botIcon = 4
 	self.vb.shrinkCount = 0
-	debugMessageShown = false
 	table.wipe(playersInRobots)
+	robotCount = 0
 	--Same across board (at least for now, LFR not out yet)
 	timerDeploySparkBotCD:Start(5-delay, 1)
 	timerBusterCannonCD:Start(13-delay, 1)
@@ -486,7 +476,6 @@ function mod:SPELL_CAST_SUCCESS(args)
 	elseif spellId == 286152 or spellId == 286219 or spellId == 286215 or spellId == 286226 or spellId == 286192 then--Disarm Codes
 		if playersInRobots[args.sourceName] then
 			playersInRobots[args.sourceName] = playersInRobots[args.sourceName] + 1
-			DBM:Debug(args.sourceName.." cast a code spell")
 		end
 	end
 end
@@ -562,11 +551,11 @@ function mod:SPELL_AURA_APPLIED(args)
 		local type = strsplit("-", args.destGUID or "")
 		if type and type ~= "Vehicle" then
 			playersInRobots[args.destName] = 0
+			robotCount = robotCount + 1
 			if args:IsPlayer() then
 				self:Unschedule(shrunkYellRepeater)
 				self:Schedule(2, shrunkYellRepeater, self)
 			end
-			DBM:Debug(args.destName.." got in a robot")
 		end
 	elseif spellId == 287114 then
 		warnMisTele:CombinedShow(0.3, args.destName)
@@ -598,10 +587,10 @@ function mod:SPELL_AURA_REMOVED(args)
 		local type = strsplit("-", args.destGUID or "")
 		if type and type ~= "Vehicle" then
 			playersInRobots[args.destName] = nil
+			robotCount = robotCount - 1
 			if args:IsPlayer() then
 				self:Unschedule(shrunkYellRepeater)
 			end
-			DBM:Debug(args.destName.." got out of a robot")
 		end
 	end
 end

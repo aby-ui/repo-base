@@ -139,6 +139,7 @@ local locales = {
 			visible = "Anchor visible",
 			show_crafted = "Crafted",
 			show_totals = "Show total items in inventory",
+			use_altoholic = "Include bank (Altoholic)",
 			show_ilvl = "Show item level",
 			name_width = "Player name width",
 		},
@@ -292,6 +293,7 @@ locales.esMX["Options"] = {
 
 locales.ruRU["Options"] = {
 	["alpha"] = "Прозрачность",
+	["bottom"] = "Внизу",
 	["confirm_reset_profile"] = "Это сбросит все параметры этого профиля. Вы уверены?",
 	["desc_channel_auto"] = "Наивысший из доступных",
 	["down"] = "Вниз",
@@ -304,8 +306,10 @@ locales.ruRU["Options"] = {
 	["items_others"] = "Остальные вещи",
 	["items_own"] = "Ваши вещи",
 	["minimum_quality"] = "Минимальное качество",
+	["padding"] = "Заполнение",
 	["profile"] = "Профиль",
 	["scale"] = "Масштаб",
+	["top"] = "Вверх",
 	["up"] = "Вверх",
 	["visible"] = "Видимый",
 	["when_always"] = "Всегда",

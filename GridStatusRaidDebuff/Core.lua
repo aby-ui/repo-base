@@ -1,5 +1,5 @@
 local zoneOrder = {
-    [C_Map.GetMapInfo(1148).name] = 1,
+    [C_Map.GetMapInfo(1358).name] = 1,
     [C_Map.GetMapInfo(1162).name] = 1.1,
     [C_Map.GetMapInfo(1041).name] = 1.2,
     [C_Map.GetMapInfo(1038).name] = 1.3,
@@ -10,7 +10,8 @@ local zoneOrder = {
     [C_Map.GetMapInfo(1004).name] = 1.8,
     [C_Map.GetMapInfo(934).name] = 1.9,
     [C_Map.GetMapInfo(1039).name] = 1.91,
-    [C_Map.GetMapInfo(909).name] = 2,
+    [C_Map.GetMapInfo(1148).name] = 2.4, --奥迪尔
+    [C_Map.GetMapInfo(909).name] = 2.5, --王座
     [C_Map.GetMapInfo(850).name] = 3,
     [C_Map.GetMapInfo(764).name] = 4,
     [C_Map.GetMapInfo(807).name] = 5,
@@ -706,7 +707,7 @@ function GridStatusRaidDebuff:BossNameLocale(zone, order, en_boss)
 
 	args[zone].args[boss] = {
 			type = "group",
-			name = fmt("%s%s%s","   [ ", boss," ]"),
+			name = fmt("|cff00ff00%s%s%s|r","[ ", boss," ]"),
                         desc = L["Option for %s"]:format(boss),
 			order = ord,
 			guiHidden = true,
@@ -790,7 +791,7 @@ function GridStatusRaidDebuff:LoadZoneDebuff(zone, name)
 
 		tip:SetHyperlink("spell:"..k.debuffId)
 		if tip:NumLines() > 1 then
-			description = tip[tip:NumLines()]:GetText()
+			description = tip[tip:NumLines()]:GetText().. "\nID: " .. k.debuffId
 		end
 
 		menuName = fmt("|T%s:0|t%s", k.icon, name)

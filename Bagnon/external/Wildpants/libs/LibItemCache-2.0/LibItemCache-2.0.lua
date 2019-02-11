@@ -1,4 +1,4 @@
-local Lib = LibStub:NewLibrary('LibItemCache-2.0', 13)
+local Lib = LibStub:NewLibrary('LibItemCache-2.0', 14)
 if not Lib then
 	return
 end
@@ -265,6 +265,7 @@ function Lib:RestoreLinkData(partial)
 	if type(partial) == 'string' and not partial:find(COMPLETE_LINK) then
 		if partial:sub(1,9) == 'battlepet' or partial:find(PET_STRING) then
 			local id, quality = partial:match('(%d+):%d+:(%d+)')
+			local id, quality = tonumber(id), tonumber(quality)
 			local name, icon = C_PetJournal.GetPetInfoBySpeciesID(id)
 			local color = select(4, GetItemQualityColor(quality))
 

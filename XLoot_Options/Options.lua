@@ -638,6 +638,7 @@ function addon:OnEnable() -- Construct addon option tables here
 			}},
 			{ "details", "group", {
 				{ "show_totals", width = "double" },
+				{ "use_altoholic", requires = "show_totals" },
 				{ "name_width", "range", 25, 200, 5 },
 				{ "show_ilvl" },
 			}},

@@ -1,7 +1,7 @@
 ## Interface: 80100
 ## Title: XLoot
 ## Notes: Core module for Loot and Looting-related UI improvements
-## Version: 8.0-6
+## Version: 8.1-1
 ## Author: Xuerian
 ## X-Category: Inventory
 ## X-Name: XLoot

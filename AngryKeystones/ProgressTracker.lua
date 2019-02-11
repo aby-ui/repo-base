@@ -10,6 +10,8 @@ local lastAmount
 local lastAmountTime
 local lastQuantity
 
+local REAPING_AFFIX_ID = 117
+
 local progressPresets = {}
 
 local function ProcessLasts()
@@ -204,6 +206,54 @@ local function ProgressBar_SetValue(self, percent)
 			elseif Addon.Config.progressFormat == 6 then
 				self.Bar.Label:SetFormattedText("%.2f%% (%.2f%%) - %d/%d (%d)", currentQuantity/totalQuantity*100, (totalQuantity-currentQuantity)/totalQuantity*100, currentQuantity, totalQuantity, totalQuantity - currentQuantity)
 			end
+		end
+
+		local isReapingActive = false
+		local _, affixes, _ = C_ChallengeMode.GetActiveKeystoneInfo()
+		if affixes then
+			for i = 1, #affixes do
+				if affixes[i] == REAPING_AFFIX_ID then
+					isReapingActive = true
+				end
+			end
+		end
+
+		if isReapingActive and currentQuantity < totalQuantity then
+			if not self.ReapingFrame then
+				local reapingFrame = CreateFrame("Frame", nil, self)
+				reapingFrame:SetSize(56, 16)
+				reapingFrame:SetPoint("BOTTOMRIGHT", self, "TOPRIGHT", 0, 0)
+		
+				reapingFrame.Icon = CreateFrame("Frame", nil, block, "ScenarioChallengeModeAffixTemplate")
+				reapingFrame.Icon:SetPoint("LEFT", reapingFrame, "LEFT", 0, 0)
+				reapingFrame.Icon:SetSize(14, 14)
+				reapingFrame.Icon.Portrait:SetSize(12, 12)
+				reapingFrame.Icon:SetUp(REAPING_AFFIX_ID)
+
+				reapingFrame.Text = reapingFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+				reapingFrame.Text:SetPoint("LEFT", reapingFrame.Icon, "RIGHT", 4, 0)
+
+				self.ReapingFrame = reapingFrame
+
+				self:HookScript("OnShow", function(self) self.ReapingFrame:Show(); self.ReapingFrame.Icon:Show() end )
+				self:HookScript("OnHide", function(self) self.ReapingFrame:Hide(); self.ReapingFrame.Icon:Hide() end )
+			end
+			local threshold = totalQuantity / 5
+			local current = currentQuantity
+			local value = threshold - current % threshold
+			local total = totalQuantity
+			if Addon.Config.progressFormat == 1 or Addon.Config.progressFormat == 4 then
+				self.ReapingFrame.Text:SetFormattedText("%.2f%%", value/total*100)
+			elseif Addon.Config.progressFormat == 2 or Addon.Config.progressFormat == 5 then
+				self.ReapingFrame.Text:SetFormattedText("%d", ceil(value))
+			elseif Addon.Config.progressFormat == 3 or Addon.Config.progressFormat == 6 then
+				self.ReapingFrame.Text:SetFormattedText("%.2f%% - %d", value/total*100, ceil(value))
+			else
+				self.ReapingFrame.Text:SetFormattedText("%d%%", value/total*100)
+			end
+			self.ReapingFrame:Show()
+		elseif self.ReapingFrame then
+			self.ReapingFrame:Hide()
 		end
 	end
 end

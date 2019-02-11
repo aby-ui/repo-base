@@ -2,13 +2,14 @@
 ## Title: GridStatusRaidDebuff(BfA)
 ## Notes: Debuff List for Battle for Azeroth
 ## Author: tptbk(Doadin-Malorne-US)
-## Version: 8.0.1.1
+## Version: 8.1.0.0
 ## Grid Author: Pastamancer & Maia
 ## Dependencies: GridStatusRaidDebuff
 
 CheckCompat.lua
 Uldir.lua
 Azeroth.lua
+BattleofDazaralor.lua
 
 ## Title: |cff880303[爱不易]|r Grid 团队减益BfA
 ## X-Vendor: AbyUI

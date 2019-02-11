@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("ZuldazarRaidTrash", "DBM-ZuldazarRaid", 1)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 18268 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 18318 $"):sub(12, -3))
 --mod:SetModelID(47785)
 mod:SetZone()
 mod.isTrashMod = true
@@ -53,11 +53,6 @@ function mod:SPELL_CAST_START(args)
 	end
 end
 --]]
-
---/run DBM:GetModByName("ZuldazarRaidTrash"):TestSourceWarning("Omegal", "YOU")
-function mod:TestSourceWarning(sourceName, destName)
-	warnBwonsamdiKnife:Show(sourceName, destName)
-end
 
 function mod:SPELL_CAST_SUCCESS(args)
 	local spellId = args.spellId
