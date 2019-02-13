@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2330, "DBM-ZuldazarRaid", 2, 1176)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 18318 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 18346 $"):sub(12, -3))
 mod:SetCreatureID(144747, 144767, 144963, 144941)--Mythic need other 2 IDs?
 mod:SetEncounterID(2268)
 --mod:DisableESCombatDetection()
@@ -305,9 +305,11 @@ function mod:SPELL_AURA_APPLIED(args)
 		self.vb.hexIcon = self.vb.hexIcon + 1
 	elseif spellId == 282209 then
 		if args:IsPlayer() then
-			specWarnMarkofPrey:Show()
-			specWarnMarkofPrey:Play("justrun")
-			yellMarkofPrey:Yell()
+			if self:AntiSpam(3, 5) then
+				specWarnMarkofPrey:Show()
+				specWarnMarkofPrey:Play("justrun")
+				yellMarkofPrey:Yell()
+			end
 			if self.Options.NPAuraOnFixate then
 				DBM.Nameplate:Show(true, args.sourceGUID, spellId)
 			end

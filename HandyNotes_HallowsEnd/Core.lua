@@ -54,6 +54,7 @@ local C_Timer_NewTicker = _G.C_Timer.NewTicker
 local C_Calendar = _G.C_Calendar
 local GameTooltip = _G.GameTooltip
 local GetFactionInfoByID = _G.GetFactionInfoByID
+local GetGameTime = _G.GetGameTime
 local GetQuestsCompleted = _G.GetQuestsCompleted
 local gsub = _G.string.gsub
 local IsControlKeyDown = _G.IsControlKeyDown
@@ -216,16 +217,14 @@ local function CheckEventActive()
 		local event = C_Calendar.GetDayEvent(monthOffset, day, i)
 
 		if event.iconTexture == 235460 or event.iconTexture == 235461 or event.iconTexture == 235462 then
-			if event.sequenceType == "ONGOING" then
-				setEnabled = true
-			else
-				local hour = tonumber(date("%H"))
+			local hour, minute = GetGameTime()
 
-				if (event.sequenceType == "END" and hour <= event.endTime.hour) or (event.sequenceType == "START" and hour >= event.startTime.hour) then
-					setEnabled = true
-				else
-					setEnabled = false
-				end
+			setEnabled = event.sequenceType == "ONGOING" -- or event.sequenceType == "INFO"
+
+			if event.sequenceType == "START" then
+				setEnabled = hour >= event.startTime.hour and (hour > event.startTime.hour or minute >= event.startTime.minute)
+			elseif event.sequenceType == "END" then
+				setEnabled = hour <= event.endTime.hour and (hour < event.endTime.hour or minute <= event.endTime.minute)
 			end
 		end
 	end

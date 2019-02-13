@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2337, "DBM-ZuldazarRaid", 3, 1176)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 18318 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 18345 $"):sub(12, -3))
 mod:SetCreatureID(146251, 146253, 146256)--Sister Katherine 146251, Brother Joseph 146253, Laminaria 146256
 mod:SetEncounterID(2280)
 --mod:DisableESCombatDetection()
@@ -214,6 +214,9 @@ function mod:SPELL_CAST_START(args)
 		if self:CheckTankDistance(args.sourceGUID, 43) then
 			specWarnVoltaicFlash:Show()
 			specWarnVoltaicFlash:Play("watchorb")
+			timerVoltaicFlashCD:SetFade(false)
+		else
+			timerVoltaicFlashCD:SetFade(true)
 		end
 		timerVoltaicFlashCD:Start()
 	elseif spellId == 288941 and self:AntiSpam(20, 2) then--AntiSpam must be at least 15 here, 20 for good measure
@@ -221,10 +224,13 @@ function mod:SPELL_CAST_START(args)
 		specWarnVoltaicFlash:Play("watchorb")
 		timerVoltaicFlashCD:Start(42.5)
 	elseif spellId == 284106 then
+		self.vb.cracklingCast = self.vb.cracklingCast + 1
 		if self:CheckTankDistance(args.sourceGUID, 43) then
 			warnCracklingLightning:Show()
+			timerCracklingLightningCD:SetFade(false)
+		else
+			timerCracklingLightningCD:SetFade(true)
 		end
-		self.vb.cracklingCast = self.vb.cracklingCast + 1
 		if self.vb.cracklingCast % 2 == 0 then
 			timerCracklingLightningCD:Start(21.9)--21.9 (usually 23.1 but I have one log showing 21.9)
 		else
@@ -238,7 +244,10 @@ function mod:SPELL_CAST_START(args)
 			timerVoltaicFlashCD:Stop()
 			timerCracklingLightningCD:Stop()
 			timerElecShroudCD:Stop()
-			
+			--Set all to false on teleport til we can refresh tank distance
+			timerCracklingLightningCD:SetFade(false)
+			timerVoltaicFlashCD:SetFade(false)
+			timerElecShroudCD:SetFade(false)
 			--This may be more complicated than this, like maybe a pause/resume more so than this
 			timerCracklingLightningCD:Start(12)
 			timerVoltaicFlashCD:Start(17)
@@ -247,18 +256,25 @@ function mod:SPELL_CAST_START(args)
 			timerSeaStormCD:Stop()
 			timerSeasTemptationCD:Stop()
 			timerTidalShroudCD:Stop()
-			
+
+			--Set all to false on teleport til we can refresh tank distance
+			timerSeaStormCD:SetFade(false)
+			timerSeasTemptationCD:SetFade(false)
+			timerTidalShroudCD:SetFade(false)
 			--This may be more complicated than this, like maybe a pause/resume more so than this
 			timerSeaStormCD:Start(12.1)
 			timerSeasTemptationCD:Start(26.7, self.vb.sirenCount+1)--Even less sure about this one
 			timerTidalShroudCD:Start(37.7)
 		end
 	elseif spellId == 284383 then
+		self.vb.sirenCount = self.vb.sirenCount + 1
 		if self:CheckTankDistance(args.sourceGUID, 43) then
 			specWarnSeasTemptation:Show()
 			specWarnSeasTemptation:Play("killmob")
+			timerSeasTemptationCD:SetFade(false)
+		else
+			timerSeasTemptationCD:SetFade(true)
 		end
-		self.vb.sirenCount = self.vb.sirenCount + 1
 		timerSeasTemptationCD:Start(nil, self.vb.sirenCount+1)
 	elseif spellId == 285017 then
 		specWarnIreoftheDeep:Show()
@@ -268,6 +284,9 @@ function mod:SPELL_CAST_START(args)
 		if self:CheckTankDistance(args.sourceGUID, 43) then
 			specWarnSeaStorm:Show()
 			specWarnSeaStorm:Play("watchstep")
+			timerSeaStormCD:SetFade(false)
+		else
+			timerSeaStormCD:SetFade(true)
 		end
 		if self:IsMythic() then
 			timerSeaStormCD:Start(9.7)
@@ -340,11 +359,17 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif spellId == 286558 then
 		if self:CheckTankDistance(args.destGUID, 43) then
 			warnTidalShroud:Show(args.destName)
+			timerTidalShroudCD:SetFade(false)
+		else
+			timerTidalShroudCD:SetFade(true)
 		end
 		timerTidalShroudCD:Start()
 	elseif spellId == 287995 then
 		if self:CheckTankDistance(args.destGUID, 43) then
 			warnElecShroud:Show(args.destName)
+			timerElecShroudCD:SetFade(false)
+		else
+			timerElecShroudCD:SetFade(true)
 		end
 		timerElecShroudCD:Start()
 	elseif spellId == 284405 then
@@ -430,7 +455,10 @@ function mod:SPELL_INTERRUPT(args)
 		timerSeaSwellCD:Start(7.2)--21.9
 		countdownSeaSwell:Start(7.2)
 		if self:IsMythic() then
-			timerSeasTemptationCD:Start(38.7)
+			timerVoltaicFlashCD:SetFade(false)
+			timerSeasTemptationCD:SetFade(false)
+			timerVoltaicFlashCD:Start(18.7)
+			timerSeasTemptationCD:Start(38.7, 1)
 		end
 	end
 end

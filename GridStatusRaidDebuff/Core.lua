@@ -683,6 +683,7 @@ end
 
 function GridStatusRaidDebuff:DebuffId(zoneid, first, second, icon_priority, color_priority, timer, stackable, color, default_disable, noicon)
 	local zone = C_Map.GetMapInfo(zoneid).name
+    if stackable == nil then stackable = true end
 
 	if (zone) then
 		self:DebuffLocale(zone, first, second, icon_priority, color_priority, timer, stackable, color, default_disable, noicon)

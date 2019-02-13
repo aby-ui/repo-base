@@ -224,6 +224,7 @@ function DEATH_ANNOUNCE_CLEU(...)
 
     if ( subevent == "UNIT_DIED" ) then
         if not UnitIsFeignDeath(destName) then
+            if DEBUG_MODE then print(DEATH_ANNOUNCE_OVK[destName], ...) end
             local h,n = DEATH_ANNOUNCE_GetBossHealth()
             DEATH_ANNOUNCE_OVK[destName] = (DEATH_ANNOUNCE_OVK[destName] or " "):sub(2)..(h and "@"..h or "")
             DEATH_ANNOUNCE_Print(destName ..DEATH_ANNOUNCE_LOCALE_DIE .. DEATH_ANNOUNCE_OVK[destName], "DEFAULT", true, destName);

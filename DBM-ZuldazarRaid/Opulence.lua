@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2342, "DBM-ZuldazarRaid", 2, 1176)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 18318 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 18345 $"):sub(12, -3))
 --mod:SetCreatureID(138967)--145261 or 147564
 mod:SetEncounterID(2271)
 --mod:DisableESCombatDetection()
@@ -90,7 +90,6 @@ local timerVolatileChargeCD				= mod:NewCDTimer(12.1, 283507, nil, nil, nil, 3)
 ----Yalat's Bulwark
 local timerFlamesofPunishmentCD			= mod:NewCDTimer(23, 282939, nil, nil, nil, 3)
 ----Traps
---local timerFlameJet						= mod:NewBuffActiveTimer(12, 285479, nil, nil, nil, 3)
 local timerRubyBeam						= mod:NewBuffActiveTimer(8, 284081, nil, nil, nil, 3)
 local timerHexofLethargyCD					= mod:NewCDTimer(21.8, 284470, nil, nil, nil, 3, nil, DBM_CORE_MAGIC_ICON)
 --Stage Two: Toppling the Guardian
@@ -229,6 +228,9 @@ function mod:SPELL_CAST_START(args)
 			specWarnFlamesofPunishment:Show()
 			specWarnFlamesofPunishment:Play("behindboss")
 			specWarnFlamesofPunishment:ScheduleVoice(1.5, "keepmove")
+			timerFlamesofPunishmentCD:SetFade(false)
+		else
+			timerFlamesofPunishmentCD:SetFade(true)
 		end
 		timerFlamesofPunishmentCD:Start()
 	elseif spellId == 287070 then
@@ -261,16 +263,21 @@ function mod:SPELL_CAST_START(args)
 		--timerWailofGreedCD:Start()
 	elseif spellId == 283947 and self:AntiSpam(5, 1) then--Flame Jet
 		warnFlameJet:Show()
-		--timerFlameJet:Start(12)
-	elseif spellId == 283606 or spellId == 289906 then
+	elseif spellId == 283606 then
+		timerCrushCD:Start(15.8, L.Hand)--7.1, 30.5, 26.7, 15.8, 26.7, 15.8, 25.6, 15.8, 15.8, 18.2, 15.8, 15.8
 		if self:CheckTankDistance(args.sourceGUID, 43) then
 			specWarnCrush:Show()
 			specWarnCrush:Play("watchstep")
+		else
+			timerCrushCD:SetSTFade(L.Hand)
 		end
-		if spellId == 289906 then--Yalat's Bulwark
-			timerCrushCD:Start(20.6, L.Bulwark)--7.7, 21.9, 31.6, 21.8, 20.6, 20.7, 18.2, 21.8
-		else--The Hand of In'zashi
-			timerCrushCD:Start(15.8, L.Hand)--7.1, 30.5, 26.7, 15.8, 26.7, 15.8, 25.6, 15.8, 15.8, 18.2, 15.8, 15.8
+	elseif spellId == 289906 then
+		timerCrushCD:Start(20.6, L.Bulwark)--7.7, 21.9, 31.6, 21.8, 20.6, 20.7, 18.2, 21.8
+		if self:CheckTankDistance(args.sourceGUID, 43) then
+			specWarnCrush:Show()
+			specWarnCrush:Play("watchstep")
+		else
+			timerCrushCD:SetSTFade(L.Bulwark)
 		end
 	elseif spellId == 289155 then
 		specWarnSurgingGold:Show()

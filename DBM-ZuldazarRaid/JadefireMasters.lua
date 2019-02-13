@@ -7,7 +7,7 @@ end
 local mod	= DBM:NewMod(dungeonID, "DBM-ZuldazarRaid", 1, 1176)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 18248 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 18337 $"):sub(12, -3))
 mod:SetCreatureID(creatureID, creatureID2)
 mod:SetEncounterID(2266, 2285)--2266 horde, 2285 Alliance
 --mod:DisableESCombatDetection()
@@ -63,13 +63,10 @@ local yellStalking						= mod:NewYell(285632)
 --Mage
 local specWarnRisingFlames				= mod:NewSpecialWarningStack(282037, nil, 6, nil, nil, 1, 6)
 local specWarnRisingFlamesOther			= mod:NewSpecialWarningTaunt(282037, nil, nil, nil, 1, 2)
---local yellDarkRevolation				= mod:NewPosYell(273365)
 local yellRisingFlamesFades				= mod:NewShortFadesYell(282037)
 local specWarnShield					= mod:NewSpecialWarningTargetChange(286425, false, nil, nil, 1, 2)
 local specWarnPyroblast					= mod:NewSpecialWarningInterrupt(286379, "HasInterrupt", nil, nil, 1, 2)
 local specWarnSearingEmbers				= mod:NewSpecialWarningYou(286988, false, nil, 2, 1, 2)
-local yellSearingEmbers					= mod:NewYell(286988, nil, false)
---local yellSearingEmbersFades			= mod:NewShortFadesYell(286988)
 --local specWarnBloodshard				= mod:NewSpecialWarningInterrupt(273350, false, nil, 4, 1, 2)
 --local specWarnGTFO					= mod:NewSpecialWarningGTFO(238028, nil, nil, nil, 1, 8)
 --Team Attacks
@@ -263,8 +260,6 @@ function mod:SPELL_AURA_APPLIED(args)
 		if args:IsPlayer() then
 			specWarnSearingEmbers:Show()
 			specWarnSearingEmbers:Play("targetyou")
-			yellSearingEmbers:Yell()
-			--yellSearingEmbersFades:Countdown(10)
 		end
 		if self.Options.SetIconEmbers then
 			self:SetIcon(args.destName, self.vb.embersIcon)
@@ -301,9 +296,6 @@ function mod:SPELL_AURA_REMOVED(args)
 			DBM.InfoFrame:Show(4, "enemypower", 2)
 		end
 	elseif spellId == 286988 then
-		--if args:IsPlayer() then
-			--yellSearingEmbersFades:Cancel()
-		--end
 		if self.Options.SetIconEmbers then
 			self:SetIcon(args.destName, 0)
 		end
