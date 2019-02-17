@@ -123,6 +123,7 @@
     <Include file="..\..\ShadowedUnitFrames\CfgShadowedUnitFrames.lua"/>
     <Include file="..\..\TomCats-DarkshoreRares\CfgTomCats-DarkshoreRares.lua"/>
     <Include file="..\..\BFAInvasionTimer\CfgBFAInvasionTimer.lua"/>
+    <Include file="..\..\MethodDungeonTools\CfgMethodDungeonTools.lua"/>
 
     <!-- local
     <Include file="..\..\AtlasLoot\CfgAtlasLoot.lua"/>

@@ -41,7 +41,7 @@
 --  Globals/Default Options  --
 -------------------------------
 DBM = {
-	Revision = tonumber(("$Revision: 18349 $"):sub(12, -3)),
+	Revision = tonumber(("$Revision: 18357 $"):sub(12, -3)),
 	DisplayVersion = "8.1.10 alpha", -- the string that is shown as version
 	ReleaseRevision = 18342 -- the revision of the latest stable version that is available
 }
@@ -3134,7 +3134,7 @@ function DBM:IsCreatureGUID(guid)
 	return false
 end
 
-function DBM:GetBossUnitId(name, bossOnly)
+function DBM:GetBossUnitId(name, bossOnly)--Deprecated, only old mods use this
 	local returnUnitID
 	for i = 1, 5 do
 		if UnitName("boss" .. i) == name then
@@ -3151,20 +3151,30 @@ function DBM:GetBossUnitId(name, bossOnly)
 	return returnUnitID
 end
 
-function DBM:GetUnitIdFromGUID(guid, bossOnly)
+function DBM:GetUnitIdFromGUID(cidOrGuid, bossOnly)
 	local returnUnitID
 	for i = 1, 5 do
 		local unitId = "boss"..i
 		local bossGUID = UnitGUID(unitId)
-		if bossGUID == guid then
-			returnUnitID = bossGUID
+		if type(cidOrGuid) == "number" then--CID passed
+			local cid = self:GetCIDFromGUID(bossGUID)
+			if cid == cidOrGuid then
+				returnUnitID = unitId
+			end
+		else--GUID passed
+			if bossGUID == cidOrGuid then
+				returnUnitID = unitId
+			end
 		end
 	end
 	--Didn't find valid unitID from boss units, scan raid targets
 	if not returnUnitID and not bossOnly then
 		for uId in self:GetGroupMembers() do
-			if UnitGUID(uId .. "target") == guid then
-				returnUnitID = uId.."target"
+			local unitId = uId .. "target"
+			local bossGUID = UnitGUID(unitId)
+			local cid = self:GetCIDFromGUID(cidOrGuid)
+			if bossGUID == cidOrGuid or cid == cidOrGuid then
+				returnUnitID = unitId
 			end
 		end
 	end
@@ -6524,6 +6534,7 @@ function DBM:GetSpellInfo(spellId)
 end
 
 function DBM:UnitDebuff(uId, spellInput, spellInput2, spellInput3, spellInput4)
+	if not uId then return end
 	for i = 1, 60 do
 		local spellName, icon, count, debuffType, duration, expirationTime, unitCaster, isStealable, nameplateShowPersonal, spellId, canApplyAura, isBossDebuff, nameplateShowAll, timeMod, value1, value2, value3 = UnitDebuff(uId, i)
 		if not spellName then return end
@@ -6534,6 +6545,7 @@ function DBM:UnitDebuff(uId, spellInput, spellInput2, spellInput3, spellInput4)
 end
 
 function DBM:UnitBuff(uId, spellInput, spellInput2, spellInput3, spellInput4)
+	if not uId then return end
 	for i = 1, 60 do
 		local spellName, icon, count, debuffType, duration, expirationTime, unitCaster, isStealable, nameplateShowPersonal, spellId, canApplyAura, isBossDebuff, nameplateShowAll, timeMod, value1, value2, value3 = UnitBuff(uId, i)
 		if not spellName then return end
@@ -7900,8 +7912,26 @@ end
 do
 	local rangeCache = {}
 	local rangeUpdated = {}
+	
+	function bossModPrototype:CheckBossDistance(cidOrGuid, onlyBoss, itemId, defaultReturn)
+		if not DBM.Options.DontShowFarWarnings then return true end--Global disable.
+		local cidOrGuid = cidOrGuid or self.creatureId
+		local uId = DBM:GetUnitIdFromGUID(cidOrGuid, onlyBoss)
+		if uId then
+			local itemId = itemId or 32698
+			local inRange = IsItemInRange(itemId, uId)
+			if inRange then--IsItemInRange was a success
+				return inRange
+			else--IsItemInRange doesn't work on all bosses/npcs, but tank checks do
+				DBM:Debug("CheckBossDistance failed on IsItemInRange for: "..cidOrGuid, 2)
+				return self:CheckTankDistance(cidOrGuid, nil, onlyBoss, defaultReturn)--Return tank distance check fallback
+			end
+		end
+		DBM:Debug("CheckBossDistance failed on uId for: "..cidOrGuid, 2)
+		return (defaultReturn == nil) or defaultReturn--When we simply can't figure anything out, return true and allow warnings using this filter to fire
+	end
 
-	function bossModPrototype:CheckTankDistance(cidOrGuid, distance, defaultReturn)
+	function bossModPrototype:CheckTankDistance(cidOrGuid, distance, onlyBoss, defaultReturn)
 		if not DBM.Options.DontShowFarWarnings then return true end--Global disable.
 		if rangeCache[cidOrGuid] and (GetTime() - (rangeUpdated[cidOrGuid] or 0)) < 2 then -- return same range within 2 sec call
 			if rangeCache[cidOrGuid] > distance then
@@ -7913,7 +7943,7 @@ do
 			local cidOrGuid = cidOrGuid or self.creatureId--GetBossTarget supports GUID or CID and it will automatically return correct values with EITHER ONE
 			local distance = distance or 43
 			local uId
-			local _, fallbackuId, mobuId = self:GetBossTarget(cidOrGuid)
+			local _, fallbackuId, mobuId = self:GetBossTarget(cidOrGuid, onlyBoss)
 			if mobuId then--Have a valid mob unit ID
 				--First, use trust threat more than fallbackuId and see what we pull from it first.
 				--This is because for CheckTankDistance we want to know who is tanking it, not who it's targeting.
@@ -7950,6 +7980,7 @@ do
 				--Tank in range, return true.
 				return true
 			end
+			DBM:Debug("CheckTankDistance failed on uId for: "..cidOrGuid, 2)
 			return (defaultReturn == nil) or defaultReturn--When we simply can't figure anything out, return true and allow warnings using this filter to fire. But some spells will prefer not to fire(i.e : Galakras tower spell), we can define it on this function calling.
 		end
 	end

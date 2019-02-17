@@ -1,0 +1,131 @@
+--[[------------------------------------------------------------
+zhCN locale by 163UI
+---------------------------------------------------------------]]
+
+local name, addon = ...
+local L = CoreBuildLocale()
+addon.L = L
+
+if not (GetLocale() == "zhCN" or GetLocale() == "zhTW") then
+    return
+end
+
+--------------- MethodDungeonTools.lua -----------------
+L["Method Dungeon Tools"] = "大秘路线"
+L["Click to toggle AddOn Window"] = "左键打开窗口"
+L["Right-click to lock Minimap Button"] = "右键锁定小地图按钮"
+--L["Default"] = "默认"
+--L["<New Preset>"] = "<新建预案>"
+
+L["Black Rook Hold"] = "黑鸦堡"
+L["Cathedral of Eternal Night"] = "永夜大教堂"
+L["Court of Stars"] = "群星庭院"
+L["Darkheart Thicket"] = "黑心林地"
+L["Eye of Azshara"] = "艾萨拉之眼"
+L["Halls of Valor"] = "英灵殿"
+L["Maw of Souls"] = "噬魂之喉"
+L["Neltharion's Lair"] = "奈萨里奥的巢穴"
+L["Return to Karazhan Lower"] = "重返卡拉赞下层"
+L["Return to Karazhan Upper"] = "重返卡拉赞上层"
+L["Seat of the Triumvirate"] = "执政团之座"
+L["The Arcway"] = "魔法回廊"
+L["Vault of the Wardens"] = "守望者地窟"
+L[" >Battle for Azeroth"] = " >8.0争霸艾泽拉斯"
+L["Atal'Dazar"] = "阿塔达萨"
+L["Freehold"] = "自由镇"
+L["Kings' Rest"] = "诸王之眠"
+L["Shrine of the Storm"] = "风暴神殿"
+L["Siege of Boralus"] = "围攻伯拉勒斯"
+L["Temple of Sethraliss"] = "塞塔里斯神庙"
+L["The MOTHERLODE!!"] = "暴富矿区！！"
+L["The Underrot"] = "地渊孢林"
+L["Tol Dagor"] = "托尔达戈"
+L["Waycrest Manor"] = "维克雷斯庄园"
+L[" >Legion"] = " >7.0军团再临"
+
+L["Select a dungeon"] = "选择一个副本"
+L["Select enemies for your pulls\nCTRL+Click to single select enemies"] = "点击选择每波要杀的怪\n按住CTRL点击可选择单个小怪"
+L["Manage presets"] = "管理预案"
+L["Customize dungeon Options"] = "选择词缀和副本层数，用于分享分类"
+L["Create and manage your pulls\nRight click for more options"] = "增加和修改每波小怪列表\n右键有清空插入等选项"
+
+L["New"] = "新建"
+L["Rename"] = "改名"
+L["Import"] = "导入"
+L["Export"] = "导出"
+L["Delete"] = "删除"
+L["Delete "] = "删除 "
+L["Share"] = "分享"
+L["Sending"] = "发送中..."
+L["The selected affixes are not the ones of the current week"] = "所选词缀不是本周词缀"
+L[" Level: "] = "层数"
+L["Empty"] = "空（不复制）"
+L["Preset "] = "预案 "
+L["Clear "] = "清空 "
+L["Cannot create preset '"] = "无法创建预案'"
+L["' already exists."] = "'已经存在"
+L["Invalid import string"] = "无效的导入字符串"
+L["Create"] = "创建"
+L["Cannot rename preset to '"] = "无法重命名预案为'"
+L["Cancel"] = "取消"
+L["Clear"] = "清空"
+L["Affixes"] = "词缀"
+L["Import Preset:"] = "导入预案："
+L["Preset name:"] = "预案名称："
+L["Use as a starting point:"] = "复制以下预案已有的内容："
+L["Insert new Preset Name:"] = "输入新的预案名称"
+L["Preset Export:"] = "预案导出："
+
+L["Import Preset"] = "导入预案"
+L["New Preset"] = "新建预案"
+L["Rename Preset"] = "改名预案"
+L["Preset Export"] = "预案导出"
+L["Delete Preset"] = "删除预案"
+L["Clear Preset"] = "清空预案"
+
+--- AceGUIWidget-MethodDungeonToolsPullButton.lua ---
+L["+ Add pull"] = "+ 新增一波"
+L["Move up"] = "向上移动"
+L["Move down"] = "向下移动"
+L["Insert before"] = "在前面插入"
+L["Insert after"] = "在后面插入"
+L["Merge up"] = "向上合并"
+L["Merge down"] = "向下合并"
+L["Close"] = "关闭"
+L["Merge"] = "合并"
+
+--- EnemyInfo.lua ---
+L["Enemy Info"] = "怪物信息"
+
+L["Stealth"] = "潜行"
+L["Stealth Detect"] = "侦测潜行"
+L["NPC Id"] = "NPC Id"
+L["Health"] = "生命值"
+L["Creature Type"] = "生物类型"
+L["Level"] = "等级"
+L["Enemy Forces"] = "进度值"
+L["Affected by:"] = "有效技能（仅供参考）："
+
+L["Stun"] = "昏迷"
+L["Sap"] = "闷棍"
+L["Incapacitate"] = "分筋错骨(武僧)"
+L["Repentance"] = "忏悔(圣骑士)"
+L["Disorient"] = "迷惑"
+L["Banish"] = "残废术(术士)"
+L["Fear"] = "恐惧"
+L["Root"] = "定身"
+L["Polymorph"] = "变形"
+L["Shackle Undead"] = "束缚亡灵(牧师)"
+L["Mind Control"] = "精神控制(牧师)"
+L["Grip"] = "死亡之握(DK)"
+L["Knock"] = "击退"
+L["Silence"] = "沉默"
+L["Taunt"] = "嘲讽"
+L["Control Undead"] = "控制亡灵(DK)"
+L["Enslave Demon"] = "奴役恶魔(术士)"
+L["Slow"] = "减速"
+L["Imprison"] = "禁锢(DH)"
+
+--- DungeonEnemies.lua ---
+L["Forces: "] = "进度 "
+L["\n\n[Right click for more info]"] = "\n\n[右键点击显示详情]"

@@ -257,4 +257,5 @@ U1.PINYIN={
     ['震荡助手']={'zhendangzhushou','zdzs'},
     ['入侵时刻表']={'ruqinshikebiao','rqskb'},
     ['目标姓名板标记']={'mubiaoxingmingbanbiaoji','mbxmbbj'},
+    ['大秘路线']={'damiluxian','dmlx'},
 }
