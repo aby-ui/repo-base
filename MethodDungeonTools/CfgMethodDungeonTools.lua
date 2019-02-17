@@ -1,6 +1,6 @@
 U1RegisterAddon("MethodDungeonTools", {
     title = "大秘路线",
-    defaultEnable = 1,
+    defaultEnable = 0,
     load = "NORMAL",
     minimap = "LibDBIcon10_MethodDungeonTools",
 
