@@ -7,7 +7,7 @@ end
 local mod	= DBM:NewMod(dungeonID, "DBM-ZuldazarRaid", 1, 1176)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 18337 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 18361 $"):sub(12, -3))
 mod:SetCreatureID(creatureID, creatureID2)
 mod:SetEncounterID(2266, 2285)--2266 horde, 2285 Alliance
 --mod:DisableESCombatDetection()
@@ -85,7 +85,7 @@ local timerSearingEmbersCD				= mod:NewCDTimer(51.0, 286988, nil, nil, nil, 3, n
 local timerFirefromMistCD				= mod:NewCDTimer(51, 285428, nil, nil, nil, 6)
 local timerFlashofPhoenixesCD			= mod:NewCDTimer(133, 284388, nil, nil, nil, 6)
 local timerBlazingPhoenixCD				= mod:NewCDTimer(270, 282040, nil, nil, nil, 6)
---local timerMagmaTrapCD				= mod:NewAITimer(55, 284374, nil, nil, nil, 5)--Timer all over the place
+local timerMagmaTrapCD					= mod:NewCDCountTimer(55, 284374, nil, nil, nil, 5)--Timer all over the place
 --Team Attacks
 
 --local berserkTimer					= mod:NewBerserkTimer(600)
@@ -104,15 +104,19 @@ mod:AddNamePlateOption("NPAuraOnExplosion", 284399)
 mod.vb.shieldsActive = false
 mod.vb.embersIcon = 0
 mod.vb.magmaTrapCount = 0
+mod.vb.trapTimer = 50
+local pyroBlast = DBM:GetSpellInfo(286379)
 
 function mod:OnCombatStart(delay)
 	self.vb.shieldsActive = false
 	self.vb.embersIcon = 0
 	self.vb.magmaTrapCount = 0
+	self.vb.trapTimer = 50
 	timerSearingEmbersCD:Start(11.9-delay)--13.1 in LFR?
 	if self:IsMythic() then
 		timerRollCD:Start(8.6)
 		timerShieldCD:Start(15.8-delay)
+		timerMagmaTrapCD:Start(26.2, 1)
 		timerSpiritsofXuenCD:Start(45-delay)
 		timerMultiSidedStrikeCD:Start(30-delay)
 		--Blizzards energy code is still utter shite
@@ -122,6 +126,7 @@ function mod:OnCombatStart(delay)
 	elseif self:IsHeroic() then
 		--timerRollCD:Start(20-delay)
 		timerShieldCD:Start(20-delay)
+		timerMagmaTrapCD:Start(26.2, 1)
 		timerMultiSidedStrikeCD:Start(30-delay)
 		timerSpiritsofXuenCD:Start(45-delay)
 		--Blizzards energy code is still utter shite
@@ -165,6 +170,7 @@ function mod:SPELL_CAST_START(args)
 			DBM.Nameplate:Show(true, args.sourceGUID, spellId, nil, 10)
 		end
 	elseif spellId == 285428 then
+		self.vb.trapTimer = 35
 		specWarnFirefromMist:Show()
 		specWarnFirefromMist:Play("attbomb")
 		--timerShieldCD:Stop()
@@ -180,6 +186,7 @@ function mod:SPELL_CAST_START(args)
 --		specWarnBloodshard:Play("kickcast")
 	elseif spellId == 282040 then--Blazing Phoenix
 		warnTransforms:Show()
+		self.vb.trapTimer = 8
 	elseif spellId == 285818 or spellId == 282030 then
 		if spellId == 285818 then
 			specWarnMultiSidedStrikeAll:Show()--Warn everyone, it's mythic
@@ -271,6 +278,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerShieldCD:Stop()
 		timerSpiritsofXuenCD:Stop()
 		timerRollCD:Stop()
+		timerMagmaTrapCD:Stop()
 		specWarnFlashofPhoenixes:Show()
 		specWarnFlashofPhoenixes:Play("phasechange")
 	end
@@ -289,8 +297,12 @@ function mod:SPELL_AURA_REMOVED(args)
 		end
 	elseif spellId == 286425 then
 		self.vb.shieldsActive = false
-		specWarnPyroblast:Show(args.destName)
-		specWarnPyroblast:Play("kickcast")
+		local bossUnitID = self:GetUnitIdFromGUID(args.destGUID)
+		local spellName = bossUnitID and UnitCastingInfo(bossUnitID) or nil
+		if spellName and spellName == pyroBlast then
+			specWarnPyroblast:Show(args.destName)
+			specWarnPyroblast:Play("kickcast")
+		end
 		if self.Options.InfoFrame then
 			DBM.InfoFrame:SetHeader(DBM_CORE_INFOFRAME_POWER)
 			DBM.InfoFrame:Show(4, "enemypower", 2)
@@ -305,6 +317,7 @@ function mod:SPELL_AURA_REMOVED(args)
 		timerShieldCD:Start(8.5)
 		--timerRollCD:Start()
 		if self:IsHard() then
+			timerMagmaTrapCD:Start(9, self.vb.magmaTrapCount+1)
 			timerSpiritsofXuenCD:Start(25)
 		end
 	end
@@ -335,7 +348,7 @@ function mod:CHAT_MSG_MONSTER_EMOTE(msg)
 	if msg:find("spell:284374") then -- Not in combat log or unit events
 		self.vb.magmaTrapCount = self.vb.magmaTrapCount + 1
 		warnMagmaTrap:Show(self.vb.magmaTrapCount)
-		--timerMagmaTrapCD:Start()
+		timerMagmaTrapCD:Start(self.vb.trapTimer, self.vb.magmaTrapCount+1)
 	end
 end
 

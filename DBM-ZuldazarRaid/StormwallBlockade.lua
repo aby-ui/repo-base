@@ -1,14 +1,14 @@
 local mod	= DBM:NewMod(2337, "DBM-ZuldazarRaid", 3, 1176)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 18355 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 18371 $"):sub(12, -3))
 mod:SetCreatureID(146251, 146253, 146256)--Sister Katherine 146251, Brother Joseph 146253, Laminaria 146256
 mod:SetEncounterID(2280)
 --mod:DisableESCombatDetection()
 mod:SetZone()
 mod:SetBossHPInfoToHighest()
 --mod:SetUsedIcons(1, 2, 8)
-mod:SetHotfixNoticeRev(18175)
+mod:SetHotfixNoticeRev(18367)
 --mod:SetMinSyncRevision(16950)
 --mod.respawnTime = 35
 
@@ -68,7 +68,7 @@ local yellTemptingSong					= mod:NewYell(284405)
 --Stage Two: Laminaria
 local specWarnEnergizedStorm			= mod:NewSpecialWarningSwitch("ej19312", "RangedDps", nil, nil, 1, 2)
 local yellKepWrapped					= mod:NewFadesYell(285000)
-local specWarnSeaSwell					= mod:NewSpecialWarningDodge(285118, nil, nil, nil, 2, 2)
+local specWarnSeaSwell					= mod:NewSpecialWarningDodge(285118, nil, nil, 2, 3, 2)
 local specWarnIreoftheDeep				= mod:NewSpecialWarningSoak(285017, "-Tank", nil, nil, 1, 2)
 local specWarnStormsWail				= mod:NewSpecialWarningMoveTo(285350, nil, nil, 2, 3, 2)
 local yellStormsWail					= mod:NewYell(285350)
@@ -90,7 +90,7 @@ local timerTidalShroudCD				= mod:NewCDTimer(36.5, 286558, nil, nil, nil, 4, nil
 --Stage Two: Laminaria
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(19258))
 local timerCataTides					= mod:NewCastTimer(15, 288696, nil, nil, nil, 4, nil, DBM_CORE_INTERRUPT_ICON)
-local timerSeaSwellCD					= mod:NewCDTimer(20.6, 285118, nil, nil, nil, 3)
+local timerSeaSwellCD					= mod:NewCDTimer(20.6, 285118, nil, nil, nil, 3, nil, DBM_CORE_DEADLY_ICON)
 local timerIreoftheDeepCD				= mod:NewCDTimer(32.8, 285017, nil, nil, nil, 5)
 local timerStormsWailCD					= mod:NewCDTimer(120.5, 285350, nil, nil, nil, 3)
 local timerStormsWail					= mod:NewTargetTimer(12, 285350, nil, nil, nil, 5)
@@ -150,7 +150,7 @@ do
 end
 
 --Needs to be run on pull and teleports (either player changing sides or boss)
-local function delayedSisterUpdate(self)
+local function delayedSisterUpdate(self, first)
 	self:Unschedule(delayedSisterUpdate)
 	if self:CheckBossDistance(146251, true) then--Sister Katherine
 		timerCracklingLightningCD:SetFade(false)
@@ -161,9 +161,13 @@ local function delayedSisterUpdate(self)
 		timerVoltaicFlashCD:SetFade(true)
 		timerElecShroudCD:SetFade(true)
 	end
+	--Secondary scan (only runs on translocate)
+	if first then
+		self:Schedule(2, delayedSisterUpdate, self)
+	end
 end
 
-local function delayedBrotherUpdate(self)
+local function delayedBrotherUpdate(self, first)
 	self:Unschedule(delayedBrotherUpdate)
 	if self:CheckBossDistance(146253, true) then--Brother Joseph
 		timerSeaStormCD:SetFade(false)
@@ -173,6 +177,10 @@ local function delayedBrotherUpdate(self)
 		timerSeaStormCD:SetFade(true)
 		timerSeasTemptationCD:SetFade(true, self.vb.sirenCount+1)
 		timerTidalShroudCD:SetFade(true)
+	end
+	--Secondary scan (only runs on translocate)
+	if first then
+		self:Schedule(2, delayedBrotherUpdate, self)
 	end
 end
 
@@ -201,8 +209,8 @@ function mod:OnCombatStart(delay)
 		DBM.InfoFrame:SetHeader(OVERVIEW)
 		DBM.InfoFrame:Show(8, "function", updateInfoFrame, false, false)
 	end
-	self:Schedule(2, delayedSisterUpdate, self)--Update timers couple seconds into pull
-	self:Schedule(2, delayedBrotherUpdate, self)--Update timers couple seconds into pull
+	self:Schedule(0.5, delayedSisterUpdate, self, true)--Update timers couple seconds into pull
+	self:Schedule(0.5, delayedBrotherUpdate, self, true)--Update timers couple seconds into pull
 end
 
 function mod:OnCombatEnd()
@@ -215,6 +223,13 @@ function mod:OnCombatEnd()
 	if self.Options.NPAuraOnKepWrapping then
 		DBM.Nameplate:Hide(true, nil, nil, nil, true, true)
 	end
+	--Reset fades on wipes
+	timerCracklingLightningCD:SetFade(false)
+	timerVoltaicFlashCD:SetFade(false)
+	timerElecShroudCD:SetFade(false)
+	timerSeaStormCD:SetFade(false)
+	timerSeasTemptationCD:SetFade(false)
+	timerTidalShroudCD:SetFade(false)
 end
 
 function mod:OnTimerRecovery()
@@ -264,8 +279,8 @@ function mod:SPELL_CAST_START(args)
 			timerCracklingLightningCD:Start(12)
 			timerVoltaicFlashCD:Start(17)
 			timerElecShroudCD:Start(36.4)
-			self:Schedule(2, delayedSisterUpdate, self)--Update timers couple seconds into pull
-		elseif cid == 146251 then--Brother
+			self:Schedule(3, delayedSisterUpdate, self, true)
+		else--Brother
 			timerSeaStormCD:Stop()
 			timerSeasTemptationCD:Stop()
 			timerTidalShroudCD:Stop()
@@ -274,7 +289,7 @@ function mod:SPELL_CAST_START(args)
 			timerSeaStormCD:Start(12.1)
 			timerSeasTemptationCD:Start(26.7, self.vb.sirenCount+1)--Even less sure about this one
 			timerTidalShroudCD:Start(37.7)
-			self:Schedule(2, delayedBrotherUpdate, self)--Update timers couple seconds into pull
+			self:Schedule(3, delayedBrotherUpdate, self, true)
 		end
 	elseif spellId == 284383 then
 		self.vb.sirenCount = self.vb.sirenCount + 1
@@ -306,6 +321,8 @@ function mod:SPELL_CAST_START(args)
 	elseif spellId == 288696 then
 		warnCataTides:Show()
 		timerCataTides:Start()
+		timerSeaSwellCD:Stop()
+		countdownSeaSwell:Cancel()
 	end
 end
 
@@ -458,6 +475,7 @@ function mod:SPELL_INTERRUPT(args)
 		self.vb.phase = 2
 		self.vb.sirenCount = 0
 		timerSeaSwellCD:Stop()
+		timerCataTides:Stop()
 		countdownSeaSwell:Cancel()
 		--Same on all difficulties but some variation because they can actually come in different orders. in reality probably all start with same timer then randomized order by spell queue
 		timerIreoftheDeepCD:Start(3.2)--17.4

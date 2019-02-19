@@ -98,7 +98,7 @@ local function MakeEnemeyInfoFrame()
     local tabGroup = f.tabGroup
     tabGroup:SetTabs(
             {
-                {text="Enemy Info", value="tab1"},
+                {text=L"Enemy Info", value="tab1"},
                 --{text="Damage Calc", value="tab2"},
             }
     )

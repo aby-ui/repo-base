@@ -1747,6 +1747,7 @@ function MethodDungeonTools:MakePresetImportFrame(frame)
 	frame.presetImportLabel = AceGUI:Create("Label")
 	frame.presetImportLabel:SetText(nil)
 	frame.presetImportLabel:SetWidth(390)
+    frame.presetImportLabel:SetHeight(20)
 	frame.presetImportLabel:SetColor(1,0,0)
 
 	local importString	= ""
@@ -1770,6 +1771,55 @@ function MethodDungeonTools:MakePresetImportFrame(frame)
 	end)
 	frame.presetImportFrame:AddChild(importButton)
 	frame.presetImportFrame:AddChild(frame.presetImportLabel)
+
+    frame.wagoLabel = AceGUI:Create("InteractiveLabel")
+    frame.wagoLabel:SetText(" >> 点击复制wago.io网址 << ")
+    frame.wagoLabel:SetFont(ChatFontNormal:GetFont(), 13, "")
+    frame.wagoLabel:SetWidth(390)
+    frame.wagoLabel:SetHeight(20)
+    frame.wagoLabel:SetColor(1,1,0)
+    frame.wagoLabel.frame.tooltipLines = "说明`wago.io是分享WA,MDT等字符串的国外网站，点击这里可以得到对应副本的预案列表地址，请复制到浏览器中打开。" ..
+    "`然后打开某个分享的预案后，点击右上角的'COPY MDT IMPORT STRING'就可以导入进来了` `注意：`  繁盛词缀是标有'Teeming'的`  自由镇的预案分三种任务`  围攻的预案分联盟和部落"
+    frame.wagoLabel:SetCallback("OnEnter", function(self)
+        CoreUIShowTooltip(self.frame)
+    end)
+    frame.wagoLabel:SetCallback("OnLeave", function()
+        GameTooltip:Hide()
+    end)
+    frame.wagoLabel:SetCallback("OnClick", function()
+        local prefix = "https://wago.io/mdt/pve/dungeons/"
+        local mapping = {
+            ["Atal'Dazar"] = "atal-dazar",
+            ["Freehold"] = "freehold",
+            ["Kings' Rest"] = "kings-rest",
+            ["Shrine of the Storm"] = "shrine-of-the-storm",
+            ["Siege of Boralus"] = "siege-of-boralus",
+            ["Temple of Sethraliss"] = "temple-of-sethraliss",
+            ["The MOTHERLODE!!"] = "the-motherlode",
+            ["The Underrot"] = "the-underrot",
+            ["Tol Dagor"] = "tol-dagor",
+            ["Waycrest Manor"] = "waycrest-manor",
+        }
+        local lmap = {}
+        for k,v in pairs(mapping) do
+            lmap[L[k]] = v
+        end
+        local idx = MethodDungeonTools.main_frame.DungeonSelectionGroup.DungeonDropdown:GetValue()
+        if not lmap[dungeonList[idx]] then
+            return U1Message("暂时没有副本-" .. dungeonList[idx] .. "-对应的网址")
+        end
+        local url = prefix .. lmap[dungeonList[idx]]
+        local chatFrame = GetCVar("chatStyle")=="im" and SELECTED_CHAT_FRAME or DEFAULT_CHAT_FRAME
+        local eb = chatFrame and chatFrame.editBox
+        if(eb) then
+            eb:Insert(url)
+            eb:Show();
+            eb:HighlightText()
+            eb:SetFocus()
+        end
+    end)
+    frame.presetImportFrame:AddChild(frame.wagoLabel)
+
 	frame.presetImportFrame:Hide()
 
 end

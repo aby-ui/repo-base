@@ -284,8 +284,10 @@ function addon:mapIconOnEnter()
   local destinationPin = totemFrames["dest"..self.totemID]
 
   local lineContainer = self.highlightLine
-  lineContainer.Fill:SetThickness(Lerp(1, 2, Saturate(1 - WorldMapFrame:GetCanvasZoomPercent())) * 90)
-
+  if WorldMapFrame.ScrollContainer.zoomLevels then
+    lineContainer.Fill:SetThickness(Lerp(1, 2, Saturate(1 - WorldMapFrame:GetCanvasZoomPercent())) * 90)
+  end
+  
   lineContainer.Fill:SetStartPoint("CENTER", startPin)
   lineContainer.Fill:SetEndPoint("CENTER", destinationPin)
 

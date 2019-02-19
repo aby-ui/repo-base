@@ -6147,7 +6147,7 @@ function DF:OpenLoadConditionsPanel (optionsTable, callback, frameOptions)
 		
 		--create radio group for mythic+ affixes
 			local affixes = {}
-			for i = 2, 50 do
+			for i = 2, 1000 do
 				local affixName, desc, texture = C_ChallengeMode.GetAffixInfo (i)
 				if (affixName) then
 					tinsert (affixes, {
@@ -7322,7 +7322,7 @@ DF.CastFrameFunctions = {
 		--colour the castbar statusbar by the type of the cast
 		Colors = {
 			Casting = DF:CreateColorTable (1, 0.73, .1, 1),
-			Channeling = DF:CreateColorTable (0, 1, 0, 1),
+			Channeling = DF:CreateColorTable (1, 0.73, .1, 1),
 			Finished = DF:CreateColorTable (0, 1, 0, 1),
 			NonInterruptible = DF:CreateColorTable (.7, .7, .7, 1),
 			Failed = DF:CreateColorTable (.4, .4, .4, 1),
@@ -7619,12 +7619,8 @@ DF.CastFrameFunctions = {
 		end
 	end,
 	
+	--it's triggering several events since it's not registered for the unit with RegisterUnitEvent
 	OnEvent = function (self, event, ...)
-		CalcPerformance ("event", event)
-		CalcPerformance ("call", "CastBar-OnEvent")	
-	
-		DF_CalcCpuUsage ("CastBar-OnEvent")
-		
 		local arg1 = ...
 		local unit = self.unit
 
@@ -7632,12 +7628,10 @@ DF.CastFrameFunctions = {
 			local newEvent = self.PLAYER_ENTERING_WORLD (self, unit, ...)
 			if (newEvent) then
 				self.OnEvent (self, newEvent, unit)
-				DF_CalcCpuUsage ("CastBar-OnEvent")
 				return
 			end
 			
 		elseif (arg1 ~= unit) then
-			DF_CalcCpuUsage ("CastBar-OnEvent")
 			return
 		end
 
@@ -7645,7 +7639,6 @@ DF.CastFrameFunctions = {
 		if (eventFunc) then
 			eventFunc (self, unit, ...)
 		end
-		DF_CalcCpuUsage ("CastBar-OnEvent")
 	end,
 	
 	OnTick_LazyTick = function (self)
@@ -7833,6 +7826,7 @@ DF.CastFrameFunctions = {
 	end,
 	
 	UNIT_SPELLCAST_START = function (self, unit)
+
 		local name, text, texture, startTime, endTime, isTradeSkill, castID, notInterruptible, spellID = UnitCastingInfo (unit)
 		
 		--> is valid?
@@ -7889,12 +7883,12 @@ DF.CastFrameFunctions = {
 	
 	UNIT_SPELLCAST_CHANNEL_START = function (self, unit, ...)
 		local name, text, texture, startTime, endTime, isTradeSkill, notInterruptible, spellID = UnitChannelInfo (unit)
-		
+
 		--> is valid?
 		if (not self:IsValid (unit, name, isTradeSkill, true)) then
 			return
 		end
-		
+
 		--> setup cast
 			self.casting = nil
 			self.channeling = true
@@ -8096,6 +8090,7 @@ DF.CastFrameFunctions = {
 }
 
 -- ~castbar
+
 function DF:CreateCastBar (parent, name, settingsOverride)
 	
 	assert (name or parent:GetName(), "DetailsFramework:CreateCastBar parameter 'name' omitted and parent has no name.")
@@ -8470,6 +8465,10 @@ end
 					else
 						self.border:Hide()
 					end
+					
+					if (not self.Settings.ShowUnitName) then
+						self.unitName:Hide()
+					end
 				else
 					self:UnregisterEvents()
 					self.healthBar:SetUnit (nil)
@@ -8610,7 +8609,6 @@ end
 		--> misc
 		UpdateName = function (self)
 			if (not self.Settings.ShowUnitName) then
-				self.unitName:Hide()
 				return
 			end
 			
@@ -8784,8 +8782,595 @@ function DF:CreateUnitFrame (parent, name, unitFrameSettingsOverride, healthBarS
 	return f
 end
 	
+	
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+--> horizontal scroll frame
+
+local timeline_options = {
+	width = 400,
+	height = 700,
+	line_height = 20,
+	line_padding = 1,
+	
+	show_elapsed_timeline = true,
+	elapsed_timeline_height = 20,
+	
+	--space to put the player/spell name and icons
+	header_width = 150,
+	
+	--how many pixels will be use to represent 1 second
+	pixels_per_second = 20,
+
+	backdrop = {edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1, bgFile = [[Interface\Tooltips\UI-Tooltip-Background]], tileSize = 64, tile = true},
+	backdrop_color = {0, 0, 0, 0.2},
+	backdrop_color_highlight = {.2, .2, .2, 0.4},
+	backdrop_border_color = {0.1, 0.1, 0.1, .2},
+	
+	title_template = "ORANGE_FONT_TEMPLATE",
+	text_tempate = "OPTIONS_FONT_TEMPLATE",
+	
+	on_enter = DF.DataScrollFunctions.LineOnEnter,
+	on_leave = DF.DataScrollFunctions.LineOnLeave,
+}
+
+local elapsedtime_frame_options = {
+	backdrop = {bgFile = [[Interface\Tooltips\UI-Tooltip-Background]], tileSize = 64, tile = true},
+	backdrop_color = {.3, .3, .3, .7},
+
+	text_color = {1, 1, 1, 1},
+	text_size = 12,
+	text_font = "Arial Narrow",
+	text_outline = "NONE",
+	
+	height = 20,
+	
+	distance = 200, --distance in pixels between each label informing the time
+	distance_min = 50, --minimum distance in pixels
+	draw_line = true, --if true it'll draw a vertical line to represent a segment
+	draw_line_color = {1, 1, 1, 0.3},
+	draw_line_thickness = 1,
+}
+
+DF.TimeLineElapsedTimeFunctions = {
+	--get a label and update its appearance
+	GetLabel = function (self, index)
+		local label = self.labels [index]
+		
+		if (not label) then
+			label = self:CreateFontString (nil, "artwork", "GameFontNormal")
+			label.line = self:CreateTexture (nil, "artwork")
+			label.line:SetColorTexture (1, 1, 1)
+			label.line:SetPoint ("topleft", label, "bottomleft", 0, -2)
+			self.labels [index] = label
+		end
+		
+		DF:SetFontColor (label, self.options.text_color)
+		DF:SetFontSize (label, self.options.text_size)
+		DF:SetFontFace (label, self.options.text_font)
+		DF:SetFontOutline (label, self.options.text_outline)
+		
+		if (self.options.draw_line) then
+			label.line:SetVertexColor (unpack (self.options.draw_line_color))
+			label.line:SetWidth (self.options.draw_line_thickness)
+			label.line:Show()
+		else
+			label.line:Hide()
+		end
+		
+		return label
+	end,
+	
+	Reset = function (self)
+		for i = 1, #self.labels do
+			self.labels [i]:Hide()
+		end
+	end,
+	
+	Refresh = function (self, elapsedTime, scale)
+		local parent = self:GetParent()
+
+		self:SetHeight (self.options.height)
+		local effectiveArea = self:GetWidth() --already scaled down width
+		local pixelPerSecond = elapsedTime / effectiveArea --how much 1 pixels correlate to time
+		
+		local distance = self.options.distance --pixels between each segment
+		local minDistance = self.options.distance_min --min pixels between each segment
+		
+		--scale the distance between each label showing the time with the parent's scale
+		distance = distance * scale
+		distance = max (distance, minDistance)
+
+		local amountSegments = ceil (effectiveArea / distance)
+		
+		for i = 1, amountSegments do
+			local label = self:GetLabel (i)
+			local xOffset = distance * (i - 1)
+			label:SetPoint ("left", self, "left", xOffset, 0)
+			
+			local secondsOfTime = pixelPerSecond * xOffset
+			
+			label:SetText (DF:IntegerToTimer (floor (secondsOfTime)))
+			
+			if (label.line:IsShown()) then
+				label.line:SetHeight (parent:GetParent():GetHeight())
+			end
+			
+			label:Show()
+		end
+	end,
+}
+
+--creates a frame to show the elapsed time in a row
+function DF:CreateElapsedTimeFrame (parent, name, options)
+	local elapsedTimeFrame = CreateFrame ("frame", name, parent)
+	
+	DF:Mixin (elapsedTimeFrame, DF.OptionsFunctions)
+	DF:Mixin (elapsedTimeFrame, DF.LayoutFrame)
+	
+	elapsedTimeFrame:BuildOptionsTable (elapsedtime_frame_options, options)
+	
+	DF:Mixin (elapsedTimeFrame, DF.TimeLineElapsedTimeFunctions)
+	
+	elapsedTimeFrame:SetBackdrop (elapsedTimeFrame.options.backdrop)
+	elapsedTimeFrame:SetBackdropColor (unpack (elapsedTimeFrame.options.backdrop_color))
+	
+	elapsedTimeFrame.labels = {}
+	
+	return elapsedTimeFrame
+end
 
 
+DF.TimeLineBlockFunctions = {
+	--self is the line
+	SetBlock = function (self, index, blockInfo)
+		--get the block information
+		--see what is the current scale
+		--adjust the block position
+		
+		local block = self:GetBlock (index)
+		
+		--need: 
+			--the total time of the timeline
+			--the current scale of the timeline
+			--the elapsed time of this block
+			--icon of the block
+			--text
+			--background color
+		
+	end,
+	
+	SetBlocksFromData = function (self)
+		local parent = self:GetParent():GetParent()
+		local data = parent.data
+		local defaultColor = parent.defaultColor --guarantee to have a value
+		
+		self:Show()
+		
+		--none of these values are scaled, need to calculate
+		local pixelPerSecond = parent.pixelPerSecond
+		local totalLength = parent.totalLength
+		local scale = parent.currentScale
+		
+		pixelPerSecond = pixelPerSecond * scale
+		
+		local headerWidth = parent.headerWidth
+		
+		--dataIndex stores which line index from the data this line will use
+		--lineData store members: .text .icon .timeline
+		local lineData = data.lines [self.dataIndex]
+		
+		--if there's an icon, anchor the text at the right side of the icon
+		--this is the title and icon of the title
+		if (lineData.icon) then
+			self.icon:SetTexture (lineData.icon)
+			self.text:SetText (lineData.text or "")
+			self.text:SetPoint ("left", self.icon.widget, "right", 2, 0)
+		else
+			self.icon:SetTexture (nil)
+			self.text:SetText (lineData.text or "")
+			text:SetPoint ("left", self, "left", 2, 0)
+		end
+		
+		local timelineData = lineData.timeline
+		
+		for i = 1, #timelineData do
+			local blockInfo = timelineData [i]
+			
+			local time = blockInfo [1]
+			local length = blockInfo [2]
+			local color = blockInfo [3] or defaultColor
+			local text = blockInfo [4]
+			local icon = blockInfo [5]
+			local tooltip = blockInfo [6]
+			
+			local xOffset = pixelPerSecond * time
+			local width = pixelPerSecond * length
+			
+			local block = self:GetBlock (i)
+			block:Show()
+			PixelUtil.SetPoint (block, "left", self, "left", xOffset + headerWidth, 0)
+			PixelUtil.SetSize (block, width, self:GetHeight())
+			block.background:SetVertexColor (unpack (color))
+			
+			--guess where it is anchored
+			--guess it's size
+			--both taking in consideration the scroll scale
+			
+		end
+	end,
+	
+	GetBlock = function (self, index)
+		local block = self.blocks [index]
+		if (not block) then
+			block = CreateFrame ("frame", nil, self)
+			self.blocks [index] = block
+			
+			local background = block:CreateTexture (nil, "background")
+			background:SetColorTexture (1, 1, 1, 1)
+			local icon = block:CreateTexture (nil, "artwork")
+			local text = block:CreateFontString (nil, "artwork")
+			
+			background:SetAllPoints()
+			icon:SetPoint ("left")
+			text:SetPoint ("left", icon, "left", 2, 0)
+			
+			block.icon = icon
+			block.text = text
+			block.background = background
+		end
+		
+		return block
+	end,
+	
+	Reset = function (self)
+		--attention, it doesn't reset icon texture, text and background color
+		for i = 1, #self.blocks do
+			self.blocks [i]:Hide()
+		end
+		self:Hide()
+	end,
+}
 
+DF.TimeLineFunctions = {
+	
+	GetLine = function (self, index)
+		local line = self.lines [index]
+		if (not line) then
+			--create a new line
+			line = CreateFrame ("frame", "$parentLine" .. index, self.body)
+			DF:Mixin (line, DF.TimeLineBlockFunctions)
+			self.lines [index] = line
+			
+			--store the individual textures that shows the timeline information
+			line.blocks = {}
+			line.SetBlock = DF.TimeLineBlockFunctions.SetBlock
+			line.GetBlock = DF.TimeLineBlockFunctions.GetBlock
+			
+			--set its parameters
+
+			if (self.options.show_elapsed_timeline) then
+				line:SetPoint ("topleft", self.body, "topleft", 1, -((index-1) * (self.options.line_height + 1)) - 2 - self.options.elapsed_timeline_height)
+			else
+				line:SetPoint ("topleft", self.body, "topleft", 1, -((index-1) * (self.options.line_height + 1)) - 1)
+			end
+			line:SetSize (1, self.options.line_height) --width is set when updating the frame
+			
+			line:SetScript ("OnEnter",	self.options.on_enter)
+			line:SetScript ("OnLeave",	self.options.on_leave)
+			
+			line:SetBackdrop (self.options.backdrop)
+			line:SetBackdropColor (unpack (self.options.backdrop_color))
+			line:SetBackdropBorderColor (unpack (self.options.backdrop_border_color))
+
+			local icon = DF:CreateImage (line, "", self.options.line_height, self.options.line_height)
+			icon:SetPoint ("left", line, "left", 2, 0)
+			line.icon = icon
+			
+			local text = DF:CreateLabel (line, "", DF:GetTemplate ("font", self.options.title_template))
+			text:SetPoint ("left", icon.widget, "right", 2, 0)
+			line.text = text
+			
+			line.backdrop_color = self.options.backdrop_color or {.1, .1, .1, .3}
+			line.backdrop_color_highlight = self.options.backdrop_color_highlight or {.3, .3, .3, .5}
+		end
+		
+		return line
+	end,
+	
+	ResetAllLines = function (self)
+		for i = 1, #self.lines do
+			self.lines [i]:Reset()
+		end
+	end,
+
+	AdjustScale = function (self, index)
+		
+	end,
+	
+	--~todo ~doing
+	--+ just finished the blocks alignment and scale, looks to be working okay
+	--+ at the moment the with and height doesn't look correct, the height is way to much and the width looks too short
+	--+ make the blocks start AFTER the title, currently it is in from of them
+	--+ need to create the time line with font string to show the time elapsed
+	--+ make them to scale with a scale bar
+	
+	--make the on enter and leave tooltips
+	--set icons and texts
+	--skin the sliders
+	
+	RefreshTimeLine = function (self)
+	
+		--debug
+		--self.currentScale = 1
+	
+		--calculate the total width
+		local pixelPerSecond = self.options.pixels_per_second
+		local totalLength = self.data.length
+		local currentScale = self.currentScale
+		
+		--how many pixels represent 1 second
+		local bodyWidth = totalLength * pixelPerSecond * currentScale
+		self.body:SetWidth (bodyWidth + self.options.header_width)
+		self.body.effectiveWidth = bodyWidth
+
+		--reduce the default canvas size from the body with and don't allow the max value be negative
+		local newMaxValue = max (bodyWidth - (self:GetWidth() - self.options.header_width), 0)
+		
+		--adjust the scale slider range
+		local oldMin, oldMax = self.horizontalSlider:GetMinMaxValues()
+		self.horizontalSlider:SetMinMaxValues (0, newMaxValue)
+		self.horizontalSlider:SetValue (DF:MapRangeClamped (oldMin, oldMax, 0, newMaxValue, self.horizontalSlider:GetValue()))
+		
+		local defaultColor = self.data.defaultColor or {1, 1, 1, 1}
+		
+		--cache values
+		self.pixelPerSecond = pixelPerSecond
+		self.totalLength = totalLength
+		self.defaultColor = defaultColor
+		self.headerWidth = self.options.header_width
+		
+		--calculate the total height
+		local lineHeight = self.options.line_height
+		local linePadding = self.options.line_padding
+		
+		local bodyHeight = (lineHeight + linePadding) * #self.data.lines
+		self.body:SetHeight (bodyHeight)
+		self.verticalSlider:SetMinMaxValues (0, max (bodyHeight - self:GetHeight(), 0))
+		self.verticalSlider:SetValue (0)
+		
+		--refresh lines
+		self:ResetAllLines()
+		for i = 1, #self.data.lines do
+			local line = self:GetLine (i)
+			line.dataIndex = i --this index is used inside the line update function to know which data to get
+			line:SetBlocksFromData() --the function to update runs within the line object
+		end
+		
+		--refresh elapsed time frame
+		--the elapsed frame must have a width before the refresh function is called
+		self.elapsedTimeFrame:ClearAllPoints()
+		self.elapsedTimeFrame:SetPoint ("topleft", self.body, "topleft", self.options.header_width, 0)
+		self.elapsedTimeFrame:SetPoint ("topright", self.body, "topright", 0, 0)
+		self.elapsedTimeFrame:Reset()
+		
+		self.elapsedTimeFrame:Refresh (self.data.length, self.currentScale)
+	end,
+	
+	SetData = function (self, data)
+		self.data = data
+		self:RefreshTimeLine()
+	end,
+	
+
+	--[=[
+		receives a table with
+		--should be tables of indexes? to save memory on not using hash names
+		
+		header = {icon = "", name = ""}, --player name and player icon / need support for more things like boss casts / can be spell name and the icon of the spell / must be as generic as possible
+		data = {time = when it happened, duration = size of the bar, spellID for tooltip, tooltip = {what to add to Cooltip} } --numeric table with data of spells used
+		
+		will it scroll vertically too in case there's more data to show?
+		i think it can without any problem since the scroll bar does scroll on both directions
+		
+		parts it'll need
+			- a time line
+			- a scructure of lines (rows)
+			- two sliders for vertical and horizontal
+		
+		how the zoom scaling will work?
+		a slider in the bottom side of the main slider
+		it starts in 0.5?
+		
+		how it will zoom?
+			- change the scale? problem is the height will also be modified, so NO
+			
+			- change the width of each bar
+			- change the timeline time
+			- change the max value of the main slider
+			
+		
+	--]=]
+	
+
+}
+
+--creates a regular scroll in horizontal position
+function DF:CreateTimeLineFrame (parent, name, options)
+
+	local width = options and options.width or timeline_options.width
+	local height = options and options.height or timeline_options.height
+	local scrollWidth = 800 --placeholder until the timeline receives data
+	local scrollHeight = 800 --placeholder until the timeline receives data
+
+	local frameCanvas = CreateFrame ("scrollframe", name, parent)
+	DF:Mixin (frameCanvas, DF.TimeLineFunctions)
+	
+	frameCanvas.data = {}
+	frameCanvas.lines = {}
+	frameCanvas.currentScale = 1
+	frameCanvas:SetSize (width, height)
+	frameCanvas:SetBackdrop({
+			bgFile = "Interface\\Tooltips\\UI-Tooltip-Background", 
+			tile = true, tileSize = 16,
+			insets = {left = 1, right = 1, top = 0, bottom = 1},})
+	frameCanvas:SetBackdropColor (.1, .1, .1, .3)
+
+	local frameBody = CreateFrame ("frame", nil, frameCanvas)
+	frameBody:SetSize (scrollWidth, scrollHeight)
+	
+	frameCanvas:SetScrollChild (frameBody)
+	frameCanvas.body = frameBody
+	
+	DF:Mixin (frameCanvas, DF.OptionsFunctions)
+	DF:Mixin (frameCanvas, DF.LayoutFrame)
+	
+	frameCanvas:BuildOptionsTable (timeline_options, options)	
+	
+	--create elapsed time frame
+	frameCanvas.elapsedTimeFrame = DF:CreateElapsedTimeFrame (frameBody)
+	
+	--create horizontal slider
+		local horizontalSlider = CreateFrame ("slider", nil, parent)
+		horizontalSlider.bg = horizontalSlider:CreateTexture (nil, "background")
+		horizontalSlider.bg:SetAllPoints (true)
+		horizontalSlider.bg:SetTexture (0, 0, 0, 0.5)
+		
+		horizontalSlider.thumb = horizontalSlider:CreateTexture (nil, "OVERLAY")
+		horizontalSlider.thumb:SetTexture ("Interface\\Buttons\\UI-ScrollBar-Knob")
+		horizontalSlider.thumb:SetSize (25, 25)
+		
+		horizontalSlider:SetThumbTexture (horizontalSlider.thumb)
+		horizontalSlider:SetOrientation ("horizontal")
+		horizontalSlider:SetSize (width, 20)
+		horizontalSlider:SetPoint ("topleft", frameCanvas, "bottomleft")
+		horizontalSlider:SetMinMaxValues (0, scrollWidth)
+		horizontalSlider:SetValue (0)
+		horizontalSlider:SetScript ("OnValueChanged", function (self)
+		      frameCanvas:SetHorizontalScroll (self:GetValue())
+		end)
+		
+		--[=[
+		frameCanvas:EnableMouseWheel (true)
+		frameCanvas:SetScript ("OnMouseWheel", function (self, delta)
+			delta = delta * -1
+			
+			local current = horizontalSlider:GetValue()
+			
+			if (IsShiftKeyDown() and (delta > 0)) then
+				horizontalSlider:SetValue(0)
+				
+			elseif (IsShiftKeyDown() and (delta < 0)) then
+				horizontalSlider:SetValue (scrollWidth)
+				
+			elseif ((delta < 0) and (current < scrollWidth)) then
+				horizontalSlider:SetValue (current + 20)
+				
+			elseif ((delta > 0) and (current > 1)) then
+				horizontalSlider:SetValue (current - 20)
+				
+			end
+		end)
+		--]=]
+		
+		frameCanvas.horizontalSlider = horizontalSlider
+	
+	--create scale slider
+		local scaleSlider = CreateFrame ("slider", nil, parent)
+		scaleSlider.bg = scaleSlider:CreateTexture (nil, "background")
+		scaleSlider.bg:SetAllPoints (true)
+		scaleSlider.bg:SetTexture (0, 0, 0, 0.5)
+		
+		scaleSlider.thumb = scaleSlider:CreateTexture (nil, "OVERLAY")
+		scaleSlider.thumb:SetTexture ("Interface\\Buttons\\UI-ScrollBar-Knob")
+		scaleSlider.thumb:SetSize (25, 25)
+		
+		scaleSlider:SetThumbTexture (scaleSlider.thumb)
+		scaleSlider:SetOrientation ("horizontal")
+		scaleSlider:SetSize (width, 20)
+		scaleSlider:SetPoint ("topleft", horizontalSlider, "bottomleft", 0, -2)
+		scaleSlider:SetMinMaxValues (0.1, 1)
+		scaleSlider:SetValue (1)
+		scaleSlider:SetScript ("OnValueChanged", function (self)
+			local current = scaleSlider:GetValue()
+			frameCanvas.currentScale = current
+			frameCanvas:RefreshTimeLine()
+		end)
+	
+	--create vertical slider
+		local verticalSlider = CreateFrame ("slider", nil, parent)
+		verticalSlider.bg = verticalSlider:CreateTexture (nil, "background")
+		verticalSlider.bg:SetAllPoints (true)
+		verticalSlider.bg:SetTexture (0, 0, 0, 0.5)
+		
+		verticalSlider.thumb = verticalSlider:CreateTexture (nil, "OVERLAY")
+		verticalSlider.thumb:SetTexture ("Interface\\Buttons\\UI-ScrollBar-Knob")
+		verticalSlider.thumb:SetSize (25, 25)
+		
+		verticalSlider:SetThumbTexture (verticalSlider.thumb)
+		verticalSlider:SetOrientation ("vertical")
+		verticalSlider:SetSize (20, height)
+		verticalSlider:SetPoint ("topleft", frameCanvas, "topright", 2, 0)
+		verticalSlider:SetMinMaxValues (0, scrollHeight)
+		verticalSlider:SetValue (0)
+		verticalSlider:SetScript ("OnValueChanged", function (self)
+		      frameCanvas:SetVerticalScroll (self:GetValue())
+		end)
+		
+		frameCanvas:EnableMouseWheel (true)
+		frameCanvas:SetScript ("OnMouseWheel", function (self, delta)
+			delta = delta
+			
+			local current = verticalSlider:GetValue()
+			
+			if (IsShiftKeyDown() and (delta > 0)) then
+				verticalSlider:SetValue(0)
+				
+			elseif (IsShiftKeyDown() and (delta < 0)) then
+				verticalSlider:SetValue (scrollWidth)
+				
+			elseif ((delta < 0) and (current < scrollWidth)) then
+				verticalSlider:SetValue (current + 20)
+				
+			elseif ((delta > 0) and (current > 1)) then
+				verticalSlider:SetValue (current - 20)
+				
+			end
+		end)
+		
+		frameCanvas.verticalSlider = verticalSlider
+	
+	return frameCanvas
+end
+
+
+--[=[
+local f = CreateFrame ("frame", "TestFrame", UIParent)
+f:SetPoint ("center")
+f:SetSize (900, 420)
+f:SetBackdrop({bgFile = "Interface\\Tooltips\\UI-Tooltip-Background", tile = true, tileSize = 16,	insets = {left = 1, right = 1, top = 0, bottom = 1}})
+
+local scroll = DF:CreateTimeLineFrame (f, "$parentTimeLine", {width = 880, height = 400})
+scroll:SetPoint ("topleft", f, "topleft", 0, 0)
+
+--need fake data to test fills
+scroll:SetData ({
+	length = 360,
+	defaultColor = {1, 1, 1, 1},
+	lines = {
+			{text = "player 1", icon = "", timeline = {
+				--each table here is a block shown in the line
+				--is an indexed table with: [1] time [2] length [3] color (if false, use the default) [4] text [5] icon [6] tooltip: if number = spellID tooltip, if table is text lines
+				{1, 10}, {13, 11}, {25, 7}, {36, 5}, {55, 18}, {76, 30}, {105, 20}, {130, 11}, {155, 11}, {169, 7}, {199, 16}, {220, 18}, {260, 10}, {290, 23}, {310, 30}, {350, 10}
+			}
+		}, --end of line 1
+	},
+})
+
+
+f:Hide()
+
+--scroll.body:SetScale (0.5)
+
+--]=]
 
 --functionn falsee truee breakk elsea endz 

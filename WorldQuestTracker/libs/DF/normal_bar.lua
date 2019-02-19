@@ -97,7 +97,8 @@ local BarMetaFunctions = _G [DF.GlobalWidgetControlNames ["normal_bar"]]
 	end
 	--> left color
 	local gmember_color = function (_object)
-		return _object._texture.original_colors
+		local r, g, b, a = _object._texture:GetVertexColor()
+		return r, g, b, a
 	end
 	--> icon
 	local gmember_icon = function (_object)
@@ -208,7 +209,7 @@ local BarMetaFunctions = _G [DF.GlobalWidgetControlNames ["normal_bar"]]
 	--> color
 	local smember_color = function (_object, _value)
 		local _value1, _value2, _value3, _value4 = DF:ParseColors (_value)
-		
+
 		_object.statusbar:SetStatusBarColor (_value1, _value2, _value3, _value4)
 		_object._texture.original_colors = {_value1, _value2, _value3, _value4}
 		_object.timer_texture:SetVertexColor (_value1, _value2, _value3, _value4)
@@ -348,8 +349,15 @@ local BarMetaFunctions = _G [DF.GlobalWidgetControlNames ["normal_bar"]]
 	function BarMetaFunctions:Hide()
 		self.statusbar:Hide()
 	end
+	
+	
+--> return color
+	function BarMetaFunctions:GetVertexColor()
+		return self._texture:GetVertexColor()
+	end
 
 --> set value (status bar)
+
 	function BarMetaFunctions:SetValue (value)
 		if (not value) then
 			value = 0
@@ -768,6 +776,8 @@ function DF:NewBar (parent, container, name, member, w, h, value, texture_name)
 	
 	--> create widgets
 		BarObject.statusbar = CreateFrame ("statusbar", name, parent)
+		DF:Mixin (BarObject.statusbar, DF.WidgetFunctions)
+		
 		build_statusbar (BarObject.statusbar)
 		
 		BarObject.widget = BarObject.statusbar

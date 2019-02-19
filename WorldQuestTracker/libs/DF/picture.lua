@@ -246,6 +246,7 @@ function DF:NewImage (parent, texture, w, h, layer, coords, member, name)
 	
 	ImageObject.image = parent:CreateTexture (name, layer or "OVERLAY")
 	ImageObject.widget = ImageObject.image
+	DF:Mixin (ImageObject.image, DF.WidgetFunctions)
 	
 	if (not APIImageFunctions) then
 		APIImageFunctions = true
