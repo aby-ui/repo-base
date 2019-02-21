@@ -285,6 +285,7 @@ CoreDependCall("Blizzard_ChallengesUI", function()
     local aID10, aID15 = 13448, 13449 --13079, 13080
     local crits, numCrits = {}, GetAchievementNumCriteria(aID10)
     hooksecurefunc("ChallengesFrame_Update", function(self)
+        --[[
         table.wipe(crits)
         local ar10 = select(4, GetAchievementInfo(aID10))
         local ar15 = select(4, GetAchievementInfo(aID15))
@@ -297,9 +298,10 @@ CoreDependCall("Blizzard_ChallengesUI", function()
                 if complete == 1 then crits[name] = 10 end
             end
         end
+        --]]
 
         for i, icon in pairs(ChallengesFrame.DungeonIcons) do
-            local name = C_ChallengeMode.GetMapUIInfo(icon.mapID)
+            --local name = C_ChallengeMode.GetMapUIInfo(icon.mapID)
             if not icon.tex then
                 WW(icon):CreateTexture():SetSize(24,24):BOTTOM(0, 3):Key("tex"):up():un()
                 SetOrHookScript(icon, "OnEnter", function()
@@ -311,10 +313,15 @@ CoreDependCall("Blizzard_ChallengesUI", function()
                 end)
             end
             icon.tex:Show()
-            if ar15 or crits[name] == 15 then
-                icon.tex:SetAtlas("VignetteKillElite")
-            elseif ar10 or crits[name] == 10 then
-                icon.tex:SetAtlas("VignetteKill")
+            local inTimeInfo, overtimeInfo = C_MythicPlus.GetSeasonBestForMap(icon.mapID);
+            if inTimeInfo then
+                if inTimeInfo.level >= 15 then
+                    icon.tex:SetAtlas("VignetteKillElite")
+                elseif inTimeInfo.level >= 10 then
+                    icon.tex:SetAtlas("VignetteKill")
+                else
+                    icon.tex:Hide()
+                end
             else
                 icon.tex:Hide()
             end

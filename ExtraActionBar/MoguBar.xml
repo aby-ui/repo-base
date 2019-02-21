@@ -73,6 +73,7 @@ C:\Projects\WoW\Bin\Interface\FrameXML\UI.xsd">
                 MOGUBarTab_OnClick(self, button)
             </OnClick>
             <OnMouseWheel>
+                if not IsControlKeyDown() then return end
                 if (delta>0) then
                     U1BAR_IncreaseButton(nil, self:GetParent());
                 else

@@ -180,8 +180,8 @@ hooksecurefunc("SetItemButtonQuality", function(self, quality, itemIDOrLink)
             SetItemLevel(self, link)
         --EncounterJournal
         elseif (self.encounterID and self.link) then
-            link = select(7, EJ_GetLootInfoByIndex(self.index))
-            SetItemLevel(self, link or self.link)
+            --link = select(7, EJ_GetLootInfoByIndex(self.index))
+            --SetItemLevel(self, link or self.link)
         --EmbeddedItemTooltip
         elseif (self.Tooltip) then
             link = select(2, self.Tooltip:GetItem())

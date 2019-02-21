@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2343, "DBM-ZuldazarRaid", 3, 1176)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 18368 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 18389 $"):sub(12, -3))
 --mod:SetCreatureID(138967)--146409 or 146416 probably
 mod:SetEncounterID(2281)
 --mod:DisableESCombatDetection()
@@ -16,13 +16,14 @@ mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
 	"SPELL_CAST_START 287565 285177 285459 290036 288221 288345 288441 288719 289219 289940 290084 288619 288747 289488 289220 287626",
-	"SPELL_CAST_SUCCESS 285725 287925 287626 289220 288374 288211",
-	"SPELL_AURA_APPLIED 287993 287490 289387 287925 285253 287626 288199 288219 288212 288374 288412 288434 289220 285254 288038 287322 288169",
+	"SPELL_CAST_SUCCESS 285725 287925 287626 289220 288374 288211 290084",
+	"SPELL_AURA_APPLIED 287993 287490 289387 287925 285253 288199 288219 288212 288374 288412 288434 289220 285254 288038 287322 288169",
 	"SPELL_AURA_APPLIED_DOSE 287993 285253",
-	"SPELL_AURA_REMOVED 287993 287925 288199 288219 288212 288374 288038 290001",
+	"SPELL_AURA_REMOVED 287993 287925 288199 288219 288212 288374 288038 290001 289387",
 	"SPELL_AURA_REMOVED_DOSE 287993",
 	"SPELL_PERIODIC_DAMAGE 288297",
 	"SPELL_PERIODIC_MISSED 288297",
+	"SPELL_INTERRUPT",
 	"UNIT_DIED",
 	"CHAT_MSG_RAID_BOSS_EMOTE",
 	"UNIT_SPELLCAST_SUCCEEDED boss1"
@@ -68,6 +69,7 @@ local warnCrystalDust					= mod:NewCountAnnounce(289940, 3)
 
 --General
 local specWarnFreezingBlood				= mod:NewSpecialWarningMoveTo(289387, false, nil, 3, 1, 2)
+local yellFreezingBlood					= mod:NewFadesYell(289387, nil, false, nil, "YELL")
 local specWarnChillingStack				= mod:NewSpecialWarningStack(287993, nil, 2, nil, nil, 1, 6)
 --Stage One: Burning Seas
 local specWarnIceShard					= mod:NewSpecialWarningTaunt(285253, false, nil, nil, 1, 2)
@@ -142,10 +144,13 @@ local countdownRingofIce				= mod:NewCountdown(60, 285459, true)
 mod:AddNamePlateOption("NPAuraOnMarkedTarget", 288038)
 mod:AddNamePlateOption("NPAuraOnTimeWarp", 287925)
 mod:AddNamePlateOption("NPAuraOnRefractiveIce", 288219)
+mod:AddNamePlateOption("NPAuraOnWaterBolt", 290084)
 mod:AddSetIconOption("SetIconBroadside", 288212, true)
 mod:AddRangeFrameOption(10, 289379)
 mod:AddInfoFrameOption(287993, true, 2)
-mod:AddBoolOption("ShowOnlySummary", false, "misc")
+mod:AddBoolOption("ShowOnlySummary2", true, "misc")
+mod:AddMiscLine(DBM_CORE_OPTION_CATEGORY_DROPDOWNS)
+mod:AddDropdownOption("InterruptBehavior", {"Three", "Four", "Five"}, "Three", "misc")
 
 mod.vb.phase = 1
 mod.vb.corsairCount = 0
@@ -161,12 +166,15 @@ mod.vb.broadsideIcon = 0
 mod.vb.waterboltVolleyCount = 0
 mod.vb.howlingWindsCast = 0
 mod.vb.frozenSiegeCount = 0
+mod.vb.interruptBehavior = "Three"
 local ChillingTouchStacks = {}
 local chillingCollector = {}
 local graspActive = false
 local castsPerGUID = {}
 local rangeThreshold = 1
 local fixStupid = {}
+--1 2178508, 2 2178501, 3 2178502, 4 2178503, 2178500 (none)--Not best icons, better ones needed
+local interruptTextures = {[1] = 2178508, [2] = 2178501, [3] = 2178502, [4] = 2178503, [5] = 2178504,}
 
 --[[
 local updateInfoFrame
@@ -284,6 +292,7 @@ function mod:OnCombatStart(delay)
 	self.vb.broadsideIcon = 0
 	self.vb.howlingWindsCast = 0
 	self.vb.frozenSiegeCount = 0
+	self.vb.interruptBehavior = self.Options.InterruptBehavior--Default it to whatever user has it set to, until group leader overrides it
 	table.wipe(castsPerGUID)
 	table.wipe(ChillingTouchStacks)
 	table.wipe(chillingCollector)
@@ -301,7 +310,7 @@ function mod:OnCombatStart(delay)
 		timerHowlingWindsCD:Start(66.9, 1)
 		berserkTimer:Start(720)
 		if self.Options.RangeFrame then
-			DBM.RangeCheck:Show(10, nil, nil, 1, true, nil, self.Options.ShowOnlySummary)--Reverse checker, threshold 1 at start
+			DBM.RangeCheck:Show(10, nil, nil, 1, true, nil, self.Options.ShowOnlySummary2)--Reverse checker, threshold 1 at start
 		end
 		self:RegisterShortTermEvents(
 			"UNIT_POWER_FREQUENT player"
@@ -321,8 +330,18 @@ function mod:OnCombatStart(delay)
 		DBM.InfoFrame:SetHeader(DBM:GetSpellInfo(287993))
 		DBM.InfoFrame:Show(10, "table", ChillingTouchStacks, 1)
 	end
-	if self.Options.NPAuraOnMarkedTarget or self.Options.NPAuraOnTimeWarp or self.Options.NPAuraOnRefractiveIce then
+	if self.Options.NPAuraOnMarkedTarget or self.Options.NPAuraOnTimeWarp or self.Options.NPAuraOnRefractiveIce or self.Options.NPAuraOnWaterBolt then
 		DBM:FireEvent("BossMod_EnableHostileNameplates")
+	end
+	--Group leader decides interrupt behavior
+	if UnitIsGroupLeader("player") and not self:IsLFR() then
+		if self.Options.InterruptBehavior == "Three" then
+			self:SendSync("Three")
+		elseif self.Options.InterruptBehavior == "Four" then
+			self:SendSync("Four")
+		elseif self.Options.InterruptBehavior == "Five" then
+			self:SendSync("Five")
+		end
 	end
 end
 
@@ -334,7 +353,7 @@ function mod:OnCombatEnd()
 	if self.Options.InfoFrame then
 		DBM.InfoFrame:Hide()
 	end
-	if self.Options.NPAuraOnMarkedTarget or self.Options.NPAuraOnTimeWarp or self.Options.NPAuraOnRefractiveIce then
+	if self.Options.NPAuraOnMarkedTarget or self.Options.NPAuraOnTimeWarp or self.Options.NPAuraOnRefractiveIce or self.Options.NPAuraOnWaterBolt then
 		DBM.Nameplate:Hide(true, nil, nil, nil, true, true)
 	end
 end
@@ -407,6 +426,9 @@ function mod:SPELL_CAST_START(args)
 		if not castsPerGUID[args.sourceGUID] then
 			castsPerGUID[args.sourceGUID] = 0
 		end
+		if (self.vb.interruptBehavior == "Three" and castsPerGUID[args.sourceGUID] == 4) or (self.vb.interruptBehavior == "Four" and castsPerGUID[args.sourceGUID] == 5) or (self.vb.interruptBehavior == "Five" and castsPerGUID[args.sourceGUID] == 6) then
+			castsPerGUID[args.sourceGUID] = 0
+		end
 		castsPerGUID[args.sourceGUID] = castsPerGUID[args.sourceGUID] + 1
 		local count = castsPerGUID[args.sourceGUID]
 		if args:GetSrcCreatureID() == 149144 then
@@ -424,9 +446,12 @@ function mod:SPELL_CAST_START(args)
 				specWarnWaterBoltVolley:Play("kick4r")
 			elseif count == 5 then
 				specWarnWaterBoltVolley:Play("kick5r")
-			else
+			else--Shouldn't happen, but fallback rules never hurt
 				specWarnWaterBoltVolley:Play("kickcast")
 			end
+		end
+		if self.Options.NPAuraOnWaterBolt then
+			DBM.Nameplate:Show(true, args.sourceGUID, spellId, interruptTextures[count])
 		end
 	elseif spellId == 288619 then
 		self.vb.orbCount = self.vb.orbCount + 1
@@ -471,6 +496,10 @@ function mod:SPELL_CAST_SUCCESS(args)
 		self.vb.broadsideIcon = 0
 		self.vb.broadsideCount = self.vb.broadsideCount + 1
 		timerBroadsideCD:Start(nil, self.vb.broadsideCount+1)
+	elseif spellId == 290084 then
+		if self.Options.NPAuraOnWaterBolt then
+			DBM.Nameplate:Hide(true, args.sourceGUID)
+		end
 	end
 end
 
@@ -514,9 +543,10 @@ function mod:SPELL_AURA_APPLIED(args)
 		if args:IsPlayer() then
 			specWarnFreezingBlood:Show(DBM_ALLY)
 			specWarnFreezingBlood:Play("gathershare")
+			yellFreezingBlood:Countdown(6)
 		end
 	elseif spellId == 288038 then
-		warnMarkedTarget:CombinedShow(0.5, args.destName)
+		warnMarkedTarget:CombinedShow(1, args.destName)
 		if args:IsPlayer() then
 			if self:AntiSpam(3, 2) then
 				specWarnMarkedTarget:Show()
@@ -531,7 +561,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		if self.Options.NPAuraOnTimeWarp then
 			DBM.Nameplate:Show(true, args.sourceGUID, spellId, nil, 40)
 		end
-	elseif spellId == 287626 then
+	--elseif spellId == 287626 then
 		--specWarGraspofFrost:CombinedShow(1, args.destName)
 		--specWarGraspofFrost:ScheduleVoice(1, "helpdispel")
 	elseif spellId == 288199 then--Howling Winds (secondary 1.5 trigger)
@@ -700,6 +730,10 @@ function mod:SPELL_AURA_REMOVED(args)
 			DBM.InfoFrame:SetHeader(DBM:GetSpellInfo(287993))
 			DBM.InfoFrame:Show(5, "table", ChillingTouchStacks, 1)
 		end
+	elseif spellId == 289387 then
+		if args:IsPlayer() then
+			yellFreezingBlood:Cancel()
+		end
 	end
 end
 
@@ -721,12 +755,23 @@ function mod:SPELL_PERIODIC_DAMAGE(_, _, _, _, destGUID, _, _, _, spellId, spell
 end
 mod.SPELL_PERIODIC_MISSED = mod.SPELL_PERIODIC_DAMAGE
 
+function mod:SPELL_INTERRUPT(args)
+	if type(args.extraSpellId) == "number" and args.extraSpellId == 290084 then
+		if self.Options.NPAuraOnWaterBolt then
+			DBM.Nameplate:Hide(true, args.destGUID)
+		end
+	end
+end
+
 function mod:UNIT_DIED(args)
 	local cid = self:GetCIDFromGUID(args.destGUID)
-	if cid == 149144 then--Jaina's Tide Elemental
+	if cid == 149144 or cid == 149558 then--Jaina's Tide Elemental
 		castsPerGUID[args.destGUID] = nil
 		timerHeartofFrostCD:Stop()
 		timerWaterBoltVolleyCD:Stop()
+		if self.Options.NPAuraOnWaterBolt then
+			DBM.Nameplate:Hide(true, args.destGUID)
+		end
 	--elseif cid == 149535 then--Icebound Image
 	
 	--elseif cid == 148965 then--Kul Tiran Marine
@@ -779,13 +824,24 @@ function mod:UNIT_POWER_FREQUENT(uId, type)
 		local altPower = UnitPower(uId, 10)
 		if rangeThreshold < 3 and altPower >= 75 then
 			if self.Options.RangeFrame then
-				DBM.RangeCheck:Show(10, nil, nil, 5, true, nil, self.Options.ShowOnlySummary)--Reverse checker, threshold 5
+				DBM.RangeCheck:Show(10, nil, nil, 5, true, nil, self.Options.ShowOnlySummary2)--Reverse checker, threshold 5
 			end
 			self:UnregisterShortTermEvents()
 		elseif rangeThreshold < 2 and altPower >=50 then
 			if self.Options.RangeFrame then
-				DBM.RangeCheck:Show(10, nil, nil, 3, true, nil, self.Options.ShowOnlySummary)--Reverse checker, threshold 3
+				DBM.RangeCheck:Show(10, nil, nil, 3, true, nil, self.Options.ShowOnlySummary2)--Reverse checker, threshold 3
 			end
 		end
 	end
+end
+
+function mod:OnSync(msg)
+	if self:IsLFR() then return end
+	if msg == "Three" then
+		self.vb.interruptBehavior = "Three"
+	elseif msg == "Four" then
+		self.vb.interruptBehavior = "Four"
+	elseif msg == "Five" then
+		self.vb.interruptBehavior = "Five"
+	end	
 end

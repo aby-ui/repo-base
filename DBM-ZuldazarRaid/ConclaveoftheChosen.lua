@@ -1,8 +1,8 @@
 local mod	= DBM:NewMod(2330, "DBM-ZuldazarRaid", 2, 1176)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 18368 $"):sub(12, -3))
-mod:SetCreatureID(144747, 144767, 144963, 144941)--Mythic need other 2 IDs?
+mod:SetRevision(("$Revision: 18392 $"):sub(12, -3))
+mod:SetCreatureID(144747, 144767, 144963, 144941)
 mod:SetEncounterID(2268)
 --mod:DisableESCombatDetection()
 mod:SetZone()
@@ -29,14 +29,18 @@ mod:RegisterEventsInCombat(
 
 --TODO, fine tune Lacerating Claws swap stacks
 --TODO, fine tune attack speed swaps?
+--TODO, find out what causes pakus timer to be 65 or 70 pretty consistently, but not always. ruled out, aspect deaths
+--Below are two pulls, same guild, same strat, everything. timers are 70, 60, 65 in one and 70, 70, 60 in other
+--https://www.warcraftlogs.com/reports/tvFNR43pf6TcGjYL#fight=7&type=summary&pins=2%24Off%24%23244F4B%24expression%24(ability.id%20%3D%20282098%20or%20ability.id%20%3D%20282107%20or%20ability.id%20%3D%20285889%20or%20ability.id%20%3D%20282155%20or%20ability.id%20%3D%20282411)%20and%20type%20%3D%20%22begincast%22%0A%20or%20(ability.id%20%3D%20282444%20or%20ability.id%20%3D%20285878%20or%20ability.id%20%3D%20282636%20or%20ability.id%20%3D%20282736)%20and%20type%20%3D%20%22cast%22%0A%20or%20(ability.id%20%3D%20282209%20or%20ability.id%20%3D%20282834%20or%20ability.id%20%3D%20286811)%20and%20type%20%3D%20%22applydebuff%22%0A%20or%20ability.id%20%3D%20282109%20and%20target.name%20%3D%20%22Roirrawami%22&view=events
+--https://www.warcraftlogs.com/reports/tvFNR43pf6TcGjYL#fight=8&type=summary&pins=2%24Off%24%23244F4B%24expression%24(ability.id%20%3D%20282098%20or%20ability.id%20%3D%20282107%20or%20ability.id%20%3D%20285889%20or%20ability.id%20%3D%20282155%20or%20ability.id%20%3D%20282411)%20and%20type%20%3D%20%22begincast%22%0A%20or%20(ability.id%20%3D%20282444%20or%20ability.id%20%3D%20285878%20or%20ability.id%20%3D%20282636%20or%20ability.id%20%3D%20282736)%20and%20type%20%3D%20%22cast%22%0A%20or%20(ability.id%20%3D%20282209%20or%20ability.id%20%3D%20282834%20or%20ability.id%20%3D%20286811)%20and%20type%20%3D%20%22applydebuff%22%0A%20or%20ability.id%20%3D%20282109%20and%20target.name%20%3D%20%22Roirrawami%22&view=events
 --Line 2 of expression is wraths (that's right blizz put 0 of them in combat log)
 --Line 3 of expression is hex, separated in case want to filter it out since it is a log spammer
 --[[
 (ability.id = 282098 or ability.id = 282107 or ability.id = 285889 or ability.id = 282155 or ability.id = 282411) and type = "begincast"
- or (ability.id = 282444 or ability.id = 285878 or ability.id = 282636) and type = "cast"
- or (ability.id = 282209 or ability.id = 282834 or ability.id = 286811 or ability.id = 284663) and type = "applydebuff"
- or (ability.id = 282135) and type = "applydebuff"
+ or (ability.id = 282444 or ability.id = 285878 or ability.id = 282636 or ability.id = 282736) and type = "cast"
+ or (ability.id = 282209 or ability.id = 282834 or ability.id = 286811) and type = "applydebuff"
  or ability.id = 282109 and target.name = "Omegall"
+ or (ability.id = 282135 or ability.id = 284663) and type = "applydebuff"
 --]]
 --General
 local warnActivated						= mod:NewTargetAnnounce(118212, 3, 78740, nil, nil, nil, nil, nil, true)
@@ -93,7 +97,7 @@ local specWarnBwonsamdisWrathDispel		= mod:NewSpecialWarningDispel(284663, "Remo
 --Pa'ku's Aspect
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(19013))
 local timerGiftofWindCD					= mod:NewCDTimer(31.6, 282098, nil, nil, nil, 2)
-local timerPakusWrathCD					= mod:NewCDCountTimer(70, 282107, nil, nil, nil, 2, nil, DBM_CORE_DEADLY_ICON)
+local timerPakusWrathCD					= mod:NewCDCountTimer(60, 282107, nil, nil, nil, 2, nil, DBM_CORE_DEADLY_ICON)
 --Gonk's Aspect
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(19016))
 local timerCrawlingHexCD				= mod:NewCDTimer(25.4, 282135, nil, nil, nil, 3, nil, DBM_CORE_CURSE_ICON)
@@ -130,10 +134,9 @@ mod:AddInfoFrameOption(282079, true)--Not real spellID, just filler for now
 
 --mod.vb.phase = 1
 mod.vb.hexIcon = 1
-mod.vb.hexIgnore = false
 mod.vb.ignoredActivate = true
 mod.vb.pakuWrathCount = 0
-mod.vb.pakuDead = false
+--mod.vb.pakuDead = false
 mod.vb.wrathCount = 0
 mod.vb.kragwaCast = 0
 local raptorsSeen = {}
@@ -142,17 +145,12 @@ local function clearActivateIgnore(self)
 	self.vb.ignoredActivate = false
 end
 
-local function setHexIgnore(self)
-	self.vb.hexIgnore = false
-end
-
 function mod:OnCombatStart(delay)
 	table.wipe(raptorsSeen)
 	self.vb.hexIcon = 1
-	self.vb.hexIgnore = false
 	self.vb.ignoredActivate = true
 	self.vb.pakuWrathCount = 0
-	self.vb.pakuDead = false
+	--self.vb.pakuDead = false
 	self.vb.wrathCount = 0
 	self.vb.kragwaCast = 0
 	self:Schedule(3, clearActivateIgnore, self)
@@ -285,7 +283,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		if args:IsPlayer() then
 			specWarnCrawlingHex:Show()
 			specWarnCrawlingHex:Play("targetyou")
-			if self.vb.hexIgnore then
+			if icon > 8 then
 				yellCrawlingHexAlt:Yell()
 				yellCrawlingHexFadesAlt:Countdown(5)
 			else
@@ -299,7 +297,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		else
 			warnCrawlingHex:CombinedShow(0.3, args.destName)
 		end
-		if self.Options.SetIconHex and not self.vb.hexIgnore then
+		if self.Options.SetIconHex and icon < 9 then
 			self:SetIcon(args.destName, icon)
 		end
 		self.vb.hexIcon = self.vb.hexIcon + 1
@@ -414,15 +412,15 @@ function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg, npc, _, _, target)
 		self.vb.pakuWrathCount = self.vb.pakuWrathCount + 1
 		specWarnPakusWrath:Show(L.Bird)
 		specWarnPakusWrath:Play("gathershare")
-		if self.vb.pakuDead then
+--		if self.vb.pakuDead then
 			warnPakuWrath:Schedule(50)
 			timerPakusWrathCD:Start(60, self.vb.pakuWrathCount+1)
 			countdownPakusWrath:Start(60)
-		else
-			warnPakuWrath:Schedule(60)
-			timerPakusWrathCD:Start(70, self.vb.pakuWrathCount+1)
-			countdownPakusWrath:Start(70)
-		end
+--		else
+--			warnPakuWrath:Schedule(60)
+--			timerPakusWrathCD:Start(70, self.vb.pakuWrathCount+1)
+--			countdownPakusWrath:Start(70)
+--		end
 	end
 end
 
@@ -441,25 +439,16 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 	if spellId == 130966 then--Permanent Feign Death (dying/leaving) (slightly faster than UNIT_DIED)
 		local cid = self:GetUnitCreatureId(uId)
 		if cid == 144747 then--Pa'ku's Aspect
-			self.vb.pakuDead = true
+			--self.vb.pakuDead = true
 			timerGiftofWindCD:Stop()
-			--local pakusWrathRemaining = timerPakusWrathCD:GetRemaining(self.vb.pakuWrathCount+1) or 0
-			--if pakusWrathRemaining >= 14 then
-				--if it's less than 13, it's going to happen regardless of death, because bird spawns 13 seconds before cast
-				--timerPakusWrathCD:Stop()
-				--countdownPakusWrath:Cancel()
-			--end
 		elseif cid == 144767 then--Gonk's Aspect
 			timerCrawlingHexCD:Stop()
 			timerRaptorFormCD:Stop()
-			--timerGonksWrathCD:Stop()
 		elseif cid == 144963 then--Kimbul's Aspect
 			timerLaceratingClawsCD:Stop()
-			--timerKinbulsWrathCD:Stop()
 		elseif cid == 144941 then--Akunda's Aspect
 			timerThunderingStormCD:Stop()
 			timerMindWipeCD:Stop()
-			--timerAkundasWrathCD:Stop()
 		end
 	elseif spellId == 282080 then--Loa's Pact (entering)
 		if not self.vb.ignoredActivate then
@@ -490,14 +479,12 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 		end
 	elseif spellId == 283193 then--Since blizzard hates combat log so much (clawing hex)
 		self.vb.hexIcon = 1
-		self.vb.hexIgnore = false
-		self:Schedule(0.5, setHexIgnore, self)
 		timerCrawlingHexCD:Start()
 	end
 end
 
 function mod:OnSync(msg)
-	if msg == "BwonsamdiWrath" then
+	if msg == "BwonsamdiWrath" and self:IsInCombat() then
 		self.vb.wrathCount = self.vb.wrathCount + 1
 		timerBwonsamdisWrathCD:Start(50, self.vb.wrathCount+1)
 	end

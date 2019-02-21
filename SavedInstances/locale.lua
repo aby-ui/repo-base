@@ -405,7 +405,7 @@ La["List raid categories before dungeon categories"] = "Schlachtzugskategorien v
 La["Manage"] = "Verwalten"
 La["Miscellaneous Tracking"] = "Verschiedenes"
 La["Most recent first"] = "Aktuellste zuerst"
-La["MOTHER"] = "MUTTER"
+La["MOTHER"] = "FLÖZ"
 --[[Translation missing --]]
 La["Mythic Best"] = "Mythic Best"
 La["Mythic Key Best"] = "Bester mythischer Schlüsselstein"

@@ -97,6 +97,7 @@ end
 ChatFrame_AddMessageEventFilter("CHAT_MSG_SAY", filter)
 ChatFrame_AddMessageEventFilter("CHAT_MSG_YELL", filter)
 ChatFrame_AddMessageEventFilter("CHAT_MSG_EMOTE", filter)
+ChatFrame_AddMessageEventFilter("CHAT_MSG_TEXT_EMOTE", filter)
 
 local function filterChannel(self, event, msg, player, _, _, _, flag, _, _, channel, _, lineId, guid)
     if guid == playerGUID or not U1GetCfgValue("ChatFilter", "FilterChannel") then

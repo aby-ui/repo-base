@@ -31,6 +31,7 @@ local GRAY_COLOR = { 0.5, 0.5, 0.5, 1 }
 local LFD_RANDOM_REWARD_EXPLANATION2 = LFD_RANDOM_REWARD_EXPLANATION2
 local INSTANCE_SAVED, TRANSFER_ABORT_TOO_MANY_INSTANCES, NO_RAID_INSTANCES_SAVED =
   INSTANCE_SAVED, TRANSFER_ABORT_TOO_MANY_INSTANCES, NO_RAID_INSTANCES_SAVED
+local DIFFICULTY_DUNGEON_CHALLENGE = DIFFICULTY_DUNGEON_CHALLENGE
 
 local ALREADY_LOOTED = ERR_LOOT_GONE:gsub("%(.*%)","")
 ALREADY_LOOTED = ALREADY_LOOTED:gsub("（.*）","") -- fix on zhCN and zhTW
@@ -307,7 +308,8 @@ addon.defaultDB = {
   -- BonusRoll: key: int value:
   -- name: string
   -- time: int
-  -- currencyID: int
+  -- costCurrencyID: int
+  -- currencyID: int or nil
   -- money: integer or nil
   -- item: linkstring or nil
 
@@ -1020,6 +1022,15 @@ function addon:instanceBosses(instance,toon,diff)
     local bits = save.Link:match(":(%d+)\124h")
     bits = bits and tonumber(bits)
     if bits then
+      if inst.LFDID == 1944 then
+        -- Battle of Dazar'alor
+        -- https://github.com/SavedInstances/SavedInstances/issues/233
+        if db.Toons[toon].Faction == "Alliance" then
+          bits = bit.band(bits, 0x3134D)
+        else
+          bits = bit.band(bits, 0x3135A)
+        end
+      end
       while bits > 0 do
         if bit.band(bits,1) > 0 then
           killed = killed + 1
@@ -1943,7 +1954,7 @@ local function ShowBonusTooltip(cell, arg, ...)
   for i,roll in ipairs(t.BonusRoll) do
     if i > 10 then break end
     local line = indicatortip:AddLine()
-    local icon = roll.currencyID and select(3,GetCurrencyInfo(roll.currencyID))
+    local icon = roll.costCurrencyID and select(3,GetCurrencyInfo(roll.costCurrencyID))
     if icon then
       indicatortip:SetCell(line,1, " \124T"..icon..":0\124t ")
     end
@@ -1952,6 +1963,15 @@ local function ShowBonusTooltip(cell, arg, ...)
     end
     if roll.item then
       indicatortip:SetCell(line,3,roll.item)
+    elseif roll.currencyID then
+      local currencyIcon = select(3, GetCurrencyInfo(roll.currencyID))
+      local str = "\124T" .. currencyIcon .. ":0\124t"
+      if roll.money then
+        str = str .. roll.money
+      else
+        str = str .. GetCurrencyInfo(roll.currencyID)
+      end
+      indicatortip:SetCell(line,3,str)
     elseif roll.money then
       indicatortip:SetCell(line,3,GetMoneyString(roll.money))
     end
@@ -2128,8 +2148,36 @@ local function ShowIndicatorTooltip(cell, arg, ...)
     indicatortip:SetCell(n, 2, info.ID, "RIGHT", 2)
   end
   if info.Link then
+    local link = info.Link
+    if thisinstance.LFDID == 1944 then
+      -- Battle of Dazar'alor
+      -- https://github.com/SavedInstances/SavedInstances/issues/233
+      local locFaction = UnitFactionGroup("player")
+      if db.Toons[toon].Faction ~= locFaction then
+        local bits = tonumber(link:match(":(%d+)\124h"))
+        if db.Toons[toon].Faction == "Alliance" then
+          bits = bit.band(bits, 0x3134D)
+          if bit.band(bits, 0x1) > 0 then -- Grong the Revenant (Alliance)
+            bits = bit.bor(bits, 0x2)
+          end
+          if bit.band(bits, 0x4) > 0 then -- Jadefire Masters (Alliance)
+            bits = bit.bor(bits, 0x10)
+          end
+        else
+          bits = bit.band(bits, 0x3135A)
+          if bit.band(bits, 0x2) > 0 then -- Grong, the Jungle Lord (Horde)
+            bits = bit.bor(bits, 0x1)
+          end
+          if bit.band(bits, 0x10) > 0 then -- Jadefire Masters (Horde)
+            bits = bit.bor(bits, 0x4)
+          end
+        end
+        link = "\124cffff8000\124Hinstancelock:Player-0000-00000000:2070:"
+          .. diff .. ":" .. bits .. "\124h[Battle of Dazar'alor]\124h\124r"
+      end
+    end
     scantt:SetOwner(UIParent,"ANCHOR_NONE")
-    scantt:SetHyperlink(info.Link)
+    scantt:SetHyperlink(link)
     local name = scantt:GetName()
     local gotbossinfo
     for i=2,scantt:NumLines() do
@@ -2145,7 +2193,7 @@ local function ShowIndicatorTooltip(cell, arg, ...)
     end
     if not gotbossinfo then
       local exc = addon:instanceException(thisinstance.LFDID)
-      local bits = tonumber(info.Link:match(":(%d+)\124h"))
+      local bits = tonumber(link:match(":(%d+)\124h"))
       if exc and bits then
         for i=1,exc.total do
           local n = indicatortip:AddLine()
@@ -2351,7 +2399,7 @@ end
 function core:OnInitialize()
   local versionString = GetAddOnMetadata(addonName, "version")
   --[===[@debug@
-  if versionString == "8.0.10" then
+  if versionString == "8.0.10-6-gccd7ae8" then
     versionString = "Dev"
   end
   --@end-debug@]===]
@@ -3891,7 +3939,7 @@ function core:ShowTooltip(anchorframe)
       local day, tbl
       for day, tbl in pairs(show) do
         if show[day][1] then
-          local name
+          local name = ""
           if not addon.db.Emissary.Expansion[expansionLevel][day] then
             name = L["Emissary Missing"]
           else
@@ -3953,10 +4001,15 @@ function core:ShowTooltip(anchorframe)
       if t.BonusRoll and t.BonusRoll[1] then
         local gold = 0
         for _,roll in ipairs(t.BonusRoll) do
-          if roll.money then
+          if not roll.item then
             gold = gold + 1
           else
-            break
+            local itemID = GetItemInfoInstant(roll.item)
+            if itemID == 163827 then -- Quartermaster's Coin, obtained when failing a bonus roll in pvp
+              gold = gold + 1
+            else
+              break
+            end
           end
         end
         toonbonus[toon] = gold
@@ -4404,7 +4457,7 @@ function core:UNIT_SPELLCAST_SUCCEEDED(evt, unit, spellName, rank, lineID, spell
   end
 end
 
-function core:BonusRollResult(event, rewardType, rewardLink, rewardQuantity, rewardSpecID)
+function core:BonusRollResult(event, rewardType, rewardLink, rewardQuantity, rewardSpecID, _, _, currencyID)
   local t = addon.db.Toons[thisToon]
   debug("BonusRollResult:%s:%s:%s:%s (boss=%s|%s)",
     tostring(rewardType), tostring(rewardLink), tostring(rewardQuantity), tostring(rewardSpecID),
@@ -4414,22 +4467,50 @@ function core:BonusRollResult(event, rewardType, rewardLink, rewardQuantity, rew
   t.BonusRoll = t.BonusRoll or {}
   --local rewardstr = _G["BONUS_ROLL_REWARD_"..string.upper(rewardType)]
   local now = time()
-  local bossname = t.lastboss
-  if now > (t.lastbosstime or 0) + 3*60 then -- user rolled before lastboss was updated, ignore the stale one. Roll timeout is 3 min.
-    bossname = nil
-  end
-  if not bossname and t.lastbossyell and now < (t.lastbossyelltime or 0) + 10*60 then
-    bossname = t.lastbossyell -- yell fallback
+  local bossname
+  -- Mythic+ Dungeon Roll
+  if GetBonusRollEncounterJournalLinkDifficulty() == DIFFICULTY_DUNGEON_CHALLENGE then
+    local name, _, difficultyID, difficultyName = GetInstanceInfo()
+    if difficultyID == DIFFICULTY_DUNGEON_CHALLENGE then
+      bossname = name .. difficultyName
+    else
+      local tmp, key, value = {}
+      for key, value in pairs(db.History) do
+        local _, name, _, diff = strsplit(":", key)
+        if tonumber(diff) == DIFFICULTY_DUNGEON_CHALLENGE then
+          local tbl = {
+            name = name,
+            last = value.last,
+          }
+          table.insert(tmp, tbl)
+        end
+      end
+      table.sort(tmp, function(l, r) return l.last > r.last end)
+      bossname = tmp[1] and tmp[1].name
+    end
   end
   if not bossname then
-    bossname = GetSubZoneText() or GetRealZoneText() -- zone fallback
+    bossname = t.lastboss
+    if now > (t.lastbosstime or 0) + 3*60 then -- user rolled before lastboss was updated, ignore the stale one. Roll timeout is 3 min.
+      bossname = nil
+    end
+    if not bossname and t.lastbossyell and now < (t.lastbossyelltime or 0) + 10*60 then
+      bossname = t.lastbossyell -- yell fallback
+    end
+    if not bossname then
+      bossname = GetSubZoneText() or GetRealZoneText() -- zone fallback
+    end
   end
-  local roll = { name = bossname, time = now, currencyID = BonusRollFrame.currencyID }
+  local roll = {
+    name = bossname,
+    time = now,
+    costCurrencyID = BonusRollFrame.CurrentCountFrame.currencyID,
+  }
   if rewardType == "money" then
     roll.money = rewardQuantity
-  elseif rewardType == "artifact_power" then
-    roll.money = 25 -- Hacky and cludgy but it'll do for now
-    --roll.item = rewardlink -- Possible alternative to at least show Artifact Power rewarded
+  elseif rewardType == "currency" then
+    roll.currencyID = currencyID
+    roll.money = rewardQuantity
   elseif rewardType == "item" then
     roll.item = rewardLink
   end
@@ -4463,10 +4544,15 @@ function addon.BonusRollShow()
   end
   local bonus = 0
   for _,rinfo in ipairs(binfo) do
-    if rinfo.money then
+    if not rinfo.item then
       bonus = bonus + 1
     else
-      break
+      local itemID = GetItemInfoInstant(rinfo.item)
+      if itemID == 163827 then -- Quartermaster's Coin, obtained when failing a bonus roll in pvp
+        bonus = bonus + 1
+      else
+        break
+      end
     end
   end
   frame.text:SetText((bonus > 0 and "+" or "")..bonus)
