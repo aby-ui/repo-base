@@ -266,7 +266,7 @@ end
 ---------------------------------------------------------------]]
 local newSetItemRef = function(link, text, button, ...)
     local _, _, id = link:find("achievement:([0-9]+):")
-    if id then
+    if id and button == "RightButton" then
         if ( not AchievementFrame ) then
             AchievementFrame_LoadUI();
         end

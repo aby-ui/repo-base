@@ -1203,7 +1203,7 @@ local wrongseparator = "(%d)" .. (tonumber("1.1") and "," or ".") .. "(%d)"
 local rightseparator =   "%1" .. (tonumber("1.1") and "." or ",") .. "%2"
 
 -- Make comparison only lowercase letters and numbers
-local function lowergsub(s) return s:lower():gsub("[^%a%d]", "") end
+local function lowergsub(s) return s:lower():gsub("^[%a%d]", "") end
 
 SlashCmdList["TOMTOM_WAY"] = function(msg)
     msg = msg:gsub("(%d)[%.,] (%d)", "%1 %2"):gsub(wrongseparator, rightseparator)

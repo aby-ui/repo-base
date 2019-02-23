@@ -149,7 +149,7 @@ Skada:AddLoadableModule("Enemies", nil, function(Skada, L)
 		local nr = 1
 		local max = 0
 
-		for name, mob in pairs(set.mobs) do
+		for name, mob in pairs(set.mobs or _empty_table) do
 			if (mob[stat] or 0) > 0 then
 				local d = win.dataset[nr] or {}
 				win.dataset[nr] = d
