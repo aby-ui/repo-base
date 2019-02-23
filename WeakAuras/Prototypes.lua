@@ -101,98 +101,6 @@ local function get_encounters_list()
   return encounter_list:sub(1, -3) .. "\n\n" .. L["Supports multiple entries, separated by commas\n"]
 end
 
-local function get_zoneId_list()
-  local zoneId_list = ""
-  EJ_SelectTier(EJ_GetNumTiers())
-  for _,inRaid in ipairs({false, true}) do
-    local instance_index = 1
-    local instance_id
-    local title = inRaid and L["Raids"] or L["Dungeons"]
-    zoneId_list = ("%s|cffffd200%s|r\n"):format(zoneId_list, title)
-    repeat
-      instance_id = EJ_GetInstanceByIndex(instance_index, inRaid)
-      instance_index = instance_index + 1
-      if instance_id then
-        EJ_SelectInstance(instance_id)
-        local iname,_,_, _,_,_,dungeonAreaMapID = EJ_GetInstanceInfo();
-        if dungeonAreaMapID and dungeonAreaMapID ~= 0 then
-          local mapGroupId = C_Map.GetMapGroupID(dungeonAreaMapID)
-          if mapGroupId then
-            local maps = ""
-            for k, map in ipairs(C_Map.GetMapGroupMembersInfo(mapGroupId)) do
-              if map.mapID then
-                maps = maps .. map.mapID .. ", "
-              end
-            end
-            maps = maps:match "^(.*), \n?$" or "" -- trim last ", "
-            zoneId_list = ("%s%s: %s\n"):format(zoneId_list, iname, maps)
-          else
-            zoneId_list = ("%s%s: %d\n"):format(zoneId_list, iname, dungeonAreaMapID)
-          end
-        end
-      end
-    until not instance_id
-    zoneId_list = zoneId_list .. "\n"
-  end
-  local currentmap_id = C_Map.GetBestMapForUnit("player")
-  local currentmap_info = C_Map.GetMapInfo(currentmap_id)
-  local currentmap_name = currentmap_info and currentmap_info.name or ""
-  local mapGroupId = C_Map.GetMapGroupID(currentmap_id)
-  if mapGroupId then
-    -- if map is in a group, its real name is (or should be?) found in GetMapGroupMembersInfo
-    for k, map in ipairs(C_Map.GetMapGroupMembersInfo(mapGroupId)) do
-      if map.mapID and map.mapID == currentmap_id and map.name then
-        currentmap_name = map.name
-        break
-      end
-    end
-  end
-  return ("%s|cffffd200%s|r%s: %d\n\n%s"):format(
-    zoneId_list,
-    L["Current Zone\n"],
-    currentmap_name,
-    currentmap_id,
-    L["Supports multiple entries, separated by commas"]
-  )
-end
-
-local function get_zoneGroupId_list()
-  local zoneGroupId_list = ""
-  EJ_SelectTier(EJ_GetNumTiers())
-  for _,inRaid in ipairs({false, true}) do
-    local instance_index = 1
-    local instance_id
-    local title = inRaid and L["Raids"] or L["Dungeons"]
-    zoneGroupId_list = ("%s|cffffd200%s|r\n"):format(zoneGroupId_list, title)
-    repeat
-      instance_id = EJ_GetInstanceByIndex(instance_index, inRaid)
-      instance_index = instance_index + 1
-      if instance_id then
-        EJ_SelectInstance(instance_id)
-        local iname,_,_, _,_,_,dungeonAreaMapID = EJ_GetInstanceInfo();
-        if dungeonAreaMapID and dungeonAreaMapID ~= 0 then
-          local mapGroupId = C_Map.GetMapGroupID(dungeonAreaMapID)
-          if mapGroupId then
-            zoneGroupId_list = ("%s%s: %d\n"):format(zoneGroupId_list, iname, mapGroupId)
-          end
-        end
-      end
-    until not instance_id
-    zoneGroupId_list = zoneGroupId_list .. "\n"
-  end
-  local currentmap_id = C_Map.GetBestMapForUnit("player")
-  local currentmap_info = C_Map.GetMapInfo(currentmap_id)
-  local currentmap_name = currentmap_info and currentmap_info.name
-  local currentmapgroup_id = C_Map.GetMapGroupID(currentmap_id)
-  return ("%s|cffffd200%s|r\n%s%s\n\n%s"):format(
-    zoneGroupId_list,
-    L["Current Zone Group"],
-    currentmapgroup_id and currentmap_name and currentmap_name..": " or "",
-    currentmapgroup_id or L["None"],
-    L["Supports multiple entries, separated by commas"]
-  )
-end
-
 WeakAuras.function_strings = {
   count = [[
     return function(count)
@@ -1053,7 +961,9 @@ WeakAuras.load_prototype = {
       display = L["Zone ID(s)"],
       type = "string",
       init = "arg",
-      desc = get_zoneId_list,
+      desc = function()
+        return L["Supports multiple entries, separated by commas\n"] .. L["Current Zone ID: "] .. C_Map.GetBestMapForUnit("player")
+      end,
       test = "WeakAuras.CheckNumericIds([[%s]], zoneId)",
     },
     {
@@ -1061,7 +971,10 @@ WeakAuras.load_prototype = {
       display = L["Zone Group ID(s)"],
       type = "string",
       init = "arg",
-      desc = get_zoneGroupId_list,
+      desc = function()
+        local zoneId = C_Map.GetBestMapForUnit("player");
+        return L["Supports multiple entries, separated by commas\n"] .. L["Current Zone Group ID: "] .. (zoneId and C_Map.GetMapGroupID(zoneId) or L["none"])
+      end,
       test = "WeakAuras.CheckNumericIds([[%s]], zonegroupId)",
     },
     {
@@ -2113,8 +2026,7 @@ WeakAuras.event_prototypes = {
         local ignoreRuneCD = %s
         local showgcd = %s;
         local ignoreSpellKnown = %s;
-        local track = %q
-        local startTime, duration, gcdCooldown = WeakAuras.GetSpellCooldown(spellname, ignoreRuneCD, showgcd, ignoreSpellKnown, track);
+        local startTime, duration, gcdCooldown = WeakAuras.GetSpellCooldown(spellname, ignoreRuneCD, showgcd, ignoreSpellKnown);
         local charges, maxCharges = WeakAuras.GetSpellCharges(spellname, ignoreSpellKnown);
         local stacks = maxCharges ~= 1 and charges or nil;
         if (charges == nil) then
@@ -2141,7 +2053,6 @@ WeakAuras.event_prototypes = {
         (trigger.use_matchedRune and "true" or "false"),
         (trigger.use_showgcd and "true" or "false"),
         (trigger.use_ignoreSpellKnown and "true" or "false"),
-        (trigger.track or "auto"),
         showOnCheck
       );
 
@@ -2233,6 +2144,18 @@ WeakAuras.event_prototypes = {
       {
       }, -- Ignore first argument (id)
       {
+        name = "matchedRune",
+        display = L["Ignore Rune CD"],
+        type = "toggle",
+        test = "true",
+      },
+      {
+        name = "showgcd",
+        display = L["Show Global Cooldown"],
+        type = "toggle",
+        test = "true"
+      },
+      {
         name = "spellName",
         required = true,
         display = L["Spell"],
@@ -2241,85 +2164,10 @@ WeakAuras.event_prototypes = {
         showExactOption = true,
       },
       {
-        name = "extra Cooldown Progress (Spell)",
-        display = function(trigger)
-          return function()
-            local text = "";
-            if trigger.track == "charges" then
-              text = L["Tracking Charge CDs"]
-            elseif trigger.track == "cooldown" then
-              text = L["Tracking Only Cooldown"]
-            end
-            if trigger.use_showgcd then
-              if text ~= "" then text = text .. "; " end
-              text = text .. L["Show GCD"]
-            end
-
-            if trigger.use_matchedRune then
-              if text ~= "" then text = text .. "; " end
-              text = text ..L["Ignore Rune CDs"]
-            end
-
-            if trigger.use_ignoreSpellKnown then
-              if text ~= "" then text = text .. "; " end
-              text = text .. L["Ignore Unknown Spell"]
-            end
-
-            if trigger.genericShowOn ~= "showOnReady" and trigger.track ~= "cooldown" then
-              if trigger.use_trackcharge and trigger.trackcharge then
-                if text ~= "" then text = text .. "; " end
-                text = text .. L["Tracking Charge %i"]:format(trigger.trackcharge)
-              end
-            end
-            if text == "" then
-              return L["Extra Options: none"]
-            end
-            return L["Extra Options: %s"]:format(text)
-          end
-        end,
-        type = "collapse",
-      },
-      {
-        name = "track",
-        display = L["Track Cooldowns"],
-        type = "select",
-        values = "cooldown_types",
-        collapse = "extra Cooldown Progress (Spell)",
-        test = "true",
-        required = true,
-        default = "auto"
-      },
-      {
-        name = "showgcd",
-        display = L["Show Global Cooldown"],
-        type = "toggle",
-        test = "true",
-        collapse = "extra Cooldown Progress (Spell)"
-      },
-      {
-        name = "matchedRune",
-        display = L["Ignore Rune CD"],
-        type = "toggle",
-        test = "true",
-        collapse = "extra Cooldown Progress (Spell)"
-      },
-      {
         name = "ignoreSpellKnown",
         display = L["Ignore Spell Known"],
         type = "toggle",
-        test = "true",
-        collapse = "extra Cooldown Progress (Spell)"
-      },
-      {
-        name = "trackcharge",
-        display = L["Show CD of Charge"],
-        type = "number",
-        enable = function(trigger)
-          return (trigger.genericShowOn ~= "showOnReady") and trigger.track ~= "cooldown"
-        end,
-        test = "true",
-        noOperator = true,
-        collapse = "extra Cooldown Progress (Spell)"
+        test = "true"
       },
       {
         name = "remaining",
@@ -2348,6 +2196,14 @@ WeakAuras.event_prototypes = {
         display = L["Max Charges"],
         conditionType = "number",
         test = "true",
+      },
+      {
+        name = "trackcharge",
+        display = L["Show CD of Charge"],
+        type = "number",
+        enable = function(trigger) return (trigger.genericShowOn ~= "showOnReady") end,
+        test = "true",
+        noOperator = true,
       },
       {
         name = "genericShowOn",
@@ -2729,8 +2585,7 @@ WeakAuras.event_prototypes = {
       "ITEM_SLOT_COOLDOWN_CHANGED",
       "COOLDOWN_REMAINING_CHECK",
       "ITEM_SLOT_COOLDOWN_ITEM_CHANGED",
-      "ITEM_SLOT_COOLDOWN_READY",
-      "WA_DELAYED_PLAYER_ENTERING_WORLD"
+      "ITEM_SLOT_COOLDOWN_READY"
     },
     force_events = "ITEM_COOLDOWN_FORCE",
     name = L["Cooldown Progress (Equipment Slot)"],
@@ -4615,7 +4470,7 @@ WeakAuras.event_prototypes = {
         "UNIT_SPELLCAST_INTERRUPTED"
       };
       AddUnitChangeEvents(trigger.unit, result)
-      if trigger.target and trigger.target ~= "" then
+      if trigger.target ~= "" then
         tinsert(result, "UNIT_TARGET")
       end
       return result
@@ -4703,9 +4558,6 @@ WeakAuras.event_prototypes = {
                 sourceGUID = sourceGUID,
                 destUnit = UnitExists(destUnit) and destUnit,
                 destName = UnitExists(destUnit) and UnitName(destUnit) or "",
-                spellId = spellId or 0,
-                spell = name,
-                castType = castType,
                 show = true,
                 changed = true,
                 inverse = castType == "cast",
@@ -4713,12 +4565,7 @@ WeakAuras.event_prototypes = {
               }
             else
               local state = states[cloneId]
-              if state and state.show
-              and (
-                trigger_unit ~= "multi"
-                or (trigger_unit == "multi" and state.sourceGUID == sourceGUID)
-              )
-              then
+              if state and state.show and state.sourceGUID == sourceGUID then
                 state.show = false
                 state.changed = true
                 state.resort = true

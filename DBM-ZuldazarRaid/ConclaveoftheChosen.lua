@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2330, "DBM-ZuldazarRaid", 2, 1176)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 18392 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 18394 $"):sub(12, -3))
 mod:SetCreatureID(144747, 144767, 144963, 144941)
 mod:SetEncounterID(2268)
 --mod:DisableESCombatDetection()
@@ -449,6 +449,14 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 		elseif cid == 144941 then--Akunda's Aspect
 			timerThunderingStormCD:Stop()
 			timerMindWipeCD:Stop()
+		end
+		if timerPakusWrathCD:GetRemaining(self.vb.pakuWrathCount+1) > 40 then
+			local elapsed, total = timerPakusWrathCD:GetTime(self.vb.pakuWrathCount+1)
+			local remaining = total - elapsed
+			DBM:Debug("timerPakusWrathCD extended by: 10 seconds do to boss death with > 40 remaining", 2)
+			timerPakusWrathCD:AddTime(10, self.vb.pakuWrathCount+1)
+			countdownPakusWrath:Cancel()
+			countdownPakusWrath:Start(remaining+10)
 		end
 	elseif spellId == 282080 then--Loa's Pact (entering)
 		if not self.vb.ignoredActivate then

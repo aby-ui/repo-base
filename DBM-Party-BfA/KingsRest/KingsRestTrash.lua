@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("KingsRestTrash", "DBM-Party-BfA", 3)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 18068 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 18400 $"):sub(12, -3))
 --mod:SetModelID(47785)
 mod:SetZone()
 
@@ -53,7 +53,7 @@ local yellPoisonBarrageFades		= mod:NewShortFadesYell(270507)
 local specWarnFixate				= mod:NewSpecialWarningRun(269936, nil, nil, nil, 4, 2)
 local yellFixate					= mod:NewYell(269936, nil, false)
 local specWarnHiddenBlade			= mod:NewSpecialWarningMoveAway(270865, nil, nil, nil, 1, 2)
-local specWarnHealingTideTotem		= mod:NewSpecialWarningSwitch(270497, "-Healer", nil, nil, 1, 2)
+local specWarnHealingTideTotem		= mod:NewSpecialWarningSwitch(143474, "-Healer", nil, nil, 1, 2)
 
 function mod:BarrageTarget(targetname, uId)
 	if not targetname then return end
