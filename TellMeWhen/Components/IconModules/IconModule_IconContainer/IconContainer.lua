@@ -144,12 +144,14 @@ IconContainer:RegisterEventHandlerData("Animations", 60, "ACTVTNGLOW", {
 	ConfigFrames = {
 		"Duration",
 		"Infinite",
+		"Scale"
 	},
 
 	Play = function(icon, eventSettings)
 		icon:Animations_Start{
 			eventSettings = eventSettings,
 			Start = TMW.time,
+			Scale = eventSettings.Scale,
 			Duration = eventSettings.Infinite and math.huge or eventSettings.Duration,
 		}
 	end,
@@ -166,6 +168,7 @@ IconContainer:RegisterEventHandlerData("Animations", 60, "ACTVTNGLOW", {
 		IconModule_IconContainer:ShowOverlayGlow()
 		
 		-- overlay is a field created by IconModule_IconContainer:ShowOverlayGlow()
+		container.overlay:SetScale(table.Scale)
 		container.overlay:SetFrameLevel(icon:GetFrameLevel() + 3)
 	end,
 	OnStop = function(icon, table)

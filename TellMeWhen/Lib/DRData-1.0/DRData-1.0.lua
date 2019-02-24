@@ -19,9 +19,24 @@ local L = {
 local locale = GetLocale()
 if locale == "deDE" then
 L["!!Main Addon Description"] = "Bietet visuelle, akustische und schriftliche Benachrichtigungen über Cooldowns, Buffs and so ziemlich alles andere."
+L["ABSORBAMT"] = "Menge der Abschirmung des Schildes"
+L["ABSORBAMT_DESC"] = "Überprüft die totale Menge des abschirmenden Schutzes des Schildes auf der Einheit."
+L["ACTIVE"] = [=[If the %d stands for Integer than it means: 
+
+Nummer aktiv. 
+
+for counting porposes: "Zählen aktiv"
+]=]
+L["ADDONSETTINGS_DESC"] = "Generele Konfiguration des Addons"
 L["AIR"] = "Luft"
+L["ALLOWCOMM"] = "Erlaube das teilen im Spiel "
+L["ALLOWCOMM_DESC"] = [=[Erlaube anderen TMW Benutzern dir Daten zu schicken: 
+
+Ein UI Reload oder neuerliches starten des Clients sind nötig bevor Daten empfangen werden können. 
+]=]
 L["ALLOWVERSIONWARN"] = "Melde neue Version"
 L["ALPHA"] = "Alpha"
+L["ANCHOR_CURSOR_DUMMY"] = "TMW Positionsanzeige Anker Attrappe. "
 L["ANIM_ACTVTNGLOW"] = "Icon: Aktivierungs Rahmen"
 L["ANIM_ACTVTNGLOW_DESC"] = "Zeigt den Zauberaktivierungs-Rahmen von Blizzard auf dem Icon an."
 L["ANIM_COLOR_DESC"] = "Stelle Farbe und Deckkraft ein."

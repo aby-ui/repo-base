@@ -47,6 +47,7 @@ Animations:RegisterEventDefaults{
 	SizeX	  		= 30,
 	SizeY	  		= 30,
 	Thickness	  	= 2,
+	Scale           = 1,
 	Fade	  		= true,
 	Infinite  		= false,
 	AnimColor	  	= "7fff0000",

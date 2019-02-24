@@ -83,6 +83,9 @@ Type:RegisterIconDefaults{
 	CLEUEvents 				= {
 		["*"] 				= false
 	},
+
+	-- If true, prevent handling of an event if the icon's conditions are failing.
+	OnlyIfConditions		= false
 }
 
 Type.RelevantSettings = {
@@ -169,6 +172,9 @@ local function CLEU_OnEvent(icon, _, t, event, h, sourceGUID, sourceName, source
 		end
 	end
 
+	if icon.OnlyIfConditions and (not icon.ConditionObject or icon.ConditionObject.Failed) then
+		return
+	end
 
 	if icon.CLEUNoRefresh then
 		-- Don't handle the event if CLEUNoRefresh is set and the icon's timer is still running.

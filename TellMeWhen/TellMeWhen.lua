@@ -15,10 +15,10 @@
 -- ADDON GLOBALS AND LOCALS
 -- ---------------------------------
 
-TELLMEWHEN_VERSION = "8.5.9"
+TELLMEWHEN_VERSION = "8.6.0"
 
 TELLMEWHEN_VERSION_MINOR = ""
-local projectVersion = "8.5.9" -- comes out like "6.2.2-21-g4e91cee"
+local projectVersion = "8.6.0" -- comes out like "6.2.2-21-g4e91cee"
 if projectVersion:find("project%-version") then
 	TELLMEWHEN_VERSION_MINOR = "dev"
 elseif strmatch(projectVersion, "%-%d+%-") then
@@ -26,11 +26,11 @@ elseif strmatch(projectVersion, "%-%d+%-") then
 end
 
 TELLMEWHEN_VERSION_FULL = TELLMEWHEN_VERSION .. " " .. TELLMEWHEN_VERSION_MINOR
-TELLMEWHEN_VERSIONNUMBER = 85901 -- NEVER DECREASE THIS NUMBER (duh?).  IT IS ALSO ONLY INTERNAL (for versioning of)
+TELLMEWHEN_VERSIONNUMBER = 86006 -- NEVER DECREASE THIS NUMBER (duh?).  IT IS ALSO ONLY INTERNAL (for versioning of)
 
-TELLMEWHEN_FORCECHANGELOG = 82105 -- if the user hasn't seen the changelog until at least this version, show it to them.
+TELLMEWHEN_FORCECHANGELOG = 86005 -- if the user hasn't seen the changelog until at least this version, show it to them.
 
-if TELLMEWHEN_VERSIONNUMBER > 86000 or TELLMEWHEN_VERSIONNUMBER < 85000 then
+if TELLMEWHEN_VERSIONNUMBER > 87000 or TELLMEWHEN_VERSIONNUMBER < 86000 then
 	-- safety check because i accidentally made the version number 414069 once
 	return error("TELLMEWHEN: THE VERSION NUMBER IS SCREWED UP OR MAYBE THE SAFETY LIMITS ARE WRONG")
 end
@@ -2534,6 +2534,55 @@ end
 -- Update Functions
 ---------------------------------
 
+local cpuProfileTimeStack = {}
+function TMW:CpuProfilePush()
+	cpuProfileTimeStack[#cpuProfileTimeStack + 1] = debugprofilestop()
+end
+
+function TMW:CpuProfilePop()
+	local count = #cpuProfileTimeStack
+	if count == 0 then 
+		TMW:Debug("Popped CPU profile when it was empty");
+		return 0
+	end
+	local elapsed = debugprofilestop() - cpuProfileTimeStack[count]
+	cpuProfileTimeStack[count] = nil
+	if count > 1 then
+		-- If the stack had other items,
+		-- add the time that we just measured
+		-- to all the other start times so that
+		-- this time doesn't get counted more than once in any aggregates
+		for i = 1, count - 1 do
+			cpuProfileTimeStack[i] = cpuProfileTimeStack[i] + elapsed
+		end
+	end
+	return elapsed
+end
+
+function TMW:CpuProfileReset()
+	wipe(cpuProfileTimeStack)
+
+	for group in TMW:InGroups() do
+		for icon in group:InIcons() do
+			if TMW.profilingEnabled then
+				icon.cpu_startTime = TMW.time
+				icon.cpu_updateCount = 0
+				icon.cpu_updatePeak = 0
+				icon.cpu_updateTotal = 0
+				icon.cpu_eventCount = 0
+				icon.cpu_eventPeak = 0
+				icon.cpu_eventTotal = 0
+				icon.cpu_cndtCount = 0
+				icon.cpu_cndtTotal = 0
+			else
+				-- icon.cpu_startTime will serve as the flag by which we actually
+				-- determine whether to perform measurements or not.
+				icon.cpu_startTime = nil
+			end
+		end
+	end
+end
+
 --- Update variables that are used globally thoughout TMW.
 -- This includes TMW.time and TMW.GCD.
 -- Call this manually when script execution starts in a context
@@ -2590,6 +2639,7 @@ do	-- TMW:OnUpdate()
 			
 			if LastUpdate <= time - UPD_INTV then
 				LastUpdate = time
+				wipe(cpuProfileTimeStack)
 
 				TMW:Fire("TMW_ONUPDATE_TIMECONSTRAINED_PRE", time, Locked)
 				
@@ -2964,6 +3014,7 @@ function TMW:LockToggle()
 
 	PlaySound(SOUNDKIT.IG_CHARACTER_INFO_TAB)
 	TMW:Update()
+	TMW:CpuProfileReset()
 end
 
 function TMW:SlashCommand(str)
@@ -3046,7 +3097,26 @@ function TMW:SlashCommand(str)
 		else
 			TMW:Print("Bad syntax. Usage: /tmw [enable||disable||toggle] [profile||global] groupID iconID")
 		end
+	elseif cmd == "cpu" then
+		if arg2 == "reset" then
+			TMW:CpuProfileReset()
 
+		else
+			if TMW:CheckCanDoLockedAction() then
+				TMW:LoadOptions()
+
+				if TMW:AssertOptionsInitialized() then
+					return
+				end
+
+				if not TMW.profilingEnabled then
+					TMW.profilingEnabled = true
+					TMW:Update()
+					TMW:CpuProfileReset()
+				end
+				TellMeWhen_CpuProfileDialog:Show()
+			end
+		end
 	else
 		TMW:LockToggle()
 	end

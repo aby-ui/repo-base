@@ -3888,6 +3888,10 @@ function TMW:CleanDefaults(settings, defaults, blocker)
 						-- if it was specified, only strip ** content, but block values which were set in the key table
 						elseif k == "**" then
 							TMW:CleanDefaults(value, v, defaults[key])
+                            -- if the table is empty afterwards, remove it
+                            if next(value) == nil then
+                                settings[key] = nil
+                            end
 						end
 					end
 				end
@@ -4200,5 +4204,289 @@ TMW:NewClass("HistorySet") {
 
 
 
+
+
+
+
+
+-- ----------------------
+-- CPU PROFILING
+-- ----------------------
+
+local function leftPad(text, len)
+	text = tostring(text)
+	if #text >= len then return text end
+	return strrep(" ", len - #text) .. text
+end
+
+local function makeColorFunc(greenBelow, redAbove)
+	--local completeColor = TMW:StringToCachedRGBATable("ff00ff00")
+	--local halfColor = TMW:StringToCachedRGBATable("ffff8000")
+	--local startColor = TMW:StringToCachedRGBATable("ffff0000")
+	local completeColor = TMW:StringToCachedRGBATable("ff00ff47")
+	local halfColor = TMW:StringToCachedRGBATable("ff00f9ff")
+	local startColor = TMW:StringToCachedRGBATable("ff0078ff")
+
+	return function(value)
+		local completeColor, startColor, halfColor = completeColor, startColor, halfColor
+
+		if value ~= 0 then
+			value = value - greenBelow
+			local percent = value / (redAbove - greenBelow)
+			percent = min(max(percent, 0), 1)
+
+			if Invert then
+				completeColor, startColor = startColor, completeColor
+			end
+			
+			-- This is multiplied by 2 because we subtract 100% if it ends up being past
+			-- the point where halfColor will be used.
+			-- If we don't multiply by 2, we would check if (percent > 0.5), but then
+			-- we would have to multiply that percentage by 2 later anyway in order to use the
+			-- full range of colors available (we would only get half the range of colors otherwise, which looks like shit)
+			local doublePercent = percent * 2
+
+			if doublePercent > 1 then
+				completeColor = halfColor
+				doublePercent = doublePercent - 1
+			else
+				startColor = halfColor
+			end
+
+			local inv = 1-doublePercent
+
+			return TMW:RGBAToString(
+				(startColor.r * doublePercent) + (completeColor.r * inv),
+				(startColor.g * doublePercent) + (completeColor.g * inv),
+				(startColor.b * doublePercent) + (completeColor.b * inv),
+				(startColor.a * doublePercent) + (completeColor.a * inv)
+			)
+		end
+		return "ff00ff00"
+	end
+end
+
+TMW.IE.CpuReportParameters = {
+	Columns = {
+		{
+			selected = true,
+			title = "Update Method",
+			label = "Update Via",
+			desc = "Whether icon updates are triggered by events, or checked continually on an interval.",
+			value = function(icon) return icon.Update_Method == "auto" and "Interval" or "Event" end,
+			format = "%s"
+		},
+
+
+		{
+			title = "Updates: Total CPU",
+			label = "Update Total",
+			desc = "Total CPU time spent on icon updates.",
+			value = function(icon) return icon.cpu_updateTotal end,
+			format = "%.2f ms"
+		},
+		{
+			selected = true,
+			title = "Updates: Count",
+			label = "# Updates",
+			desc = "Total number of icon updates.",
+			value = function(icon) return icon.cpu_updateCount end,
+			format = "%8d"
+		},
+		{
+			title = "Updates: CPU Per Update",
+			label = "Per Update",
+			width = 11,
+			desc = "Average CPU time per icon update.",
+			value = function(icon) return icon.cpu_updateCount == 0 
+				and 0
+				or icon.cpu_updateTotal / icon.cpu_updateCount end,
+			format = "%.2f ms"
+		},
+		{
+			selected = true,
+			title = "Updates: Average",
+			label = "Updates Avg",
+			desc = "Milliseconds of CPU time spent on icon updates, per second of wall clock time.",
+			value = function(icon) return icon.cpu_updateTotal / (TMW.time - icon.cpu_startTime) end,
+			format = "%.2f ms/s",
+			color = makeColorFunc(0.05, 2)
+		},
+		{
+			title = "Updates: Peak",
+			label = "Peak Update",
+			desc = "Highest CPU time spent on any single update.",
+			value = function(icon) return icon.cpu_updatePeak end,
+			format = "%.2f ms"
+		},
+
+
+		{
+			title = "Events: Total CPU",
+			label = "Events Total",
+			desc = "Total CPU time spent on event handling.",
+			value = function(icon) return icon.cpu_eventTotal end,
+			format = "%.2f ms"
+		},
+		{
+			selected = true,
+			title = "Events: Count",
+			label = "# Events",
+			desc = "Total number of events handled.",
+			value = function(icon) return icon.cpu_eventCount end,
+			format = "%8d"
+		},
+		{
+			title = "Events: CPU Per Event",
+			label = "Per Event",
+			desc = "Average CPU time per event handled.",
+			width = 11,
+			value = function(icon) return icon.cpu_eventCount == 0 
+					and 0
+					or icon.cpu_eventTotal / icon.cpu_eventCount end,
+			format = "%.2f ms"
+		},
+		{
+			selected = true,
+			title = "Events: Average",
+			label = "Events avg",
+			desc = "Average CPU time spent on event handling per second of wall clock time.",
+			value = function(icon) return icon.cpu_eventTotal / (TMW.time - icon.cpu_startTime) end,
+			format = "%.2f ms/s",
+			color = makeColorFunc(0.03, 1)
+		},
+		{
+			title = "Events: Peak",
+			label = "Peak Event",
+			desc = "Highest CPU time spent on any single event.",
+			value = function(icon) return icon.cpu_eventPeak end,
+			format = "%.2f ms"
+		},
+
+
+		{
+			selected = true,
+			title = "Conditions: Update Method",
+			label = "Cndtn Method",
+			desc = "Whether condition updates are triggered by events, or checked continually on an interval.",
+			value = function(icon) 
+				if not icon.ConditionObject then return "" end
+				local method = icon.ConditionObject.UpdateMethod
+				return method == "OnUpdate" and "Interval" or "Event" end,
+			format = "%s"
+		},
+		{
+			title = "Conditions: Total CPU",
+			label = "Cndtn Total",
+			desc = "Total CPU time spent on condition checking.",
+			value = function(icon) return icon.cpu_cndtTotal end,
+			format = "%.2f ms"
+		},
+		{
+			title = "Conditions: Count",
+			label = "# Cndtn",
+			desc = "Number of times that conditions were checked for this icon.",
+			value = function(icon) return icon.cpu_cndtCount end,
+			format = "%8d"
+		},
+		{
+			title = "Conditions: CPU Per Check",
+			label = "Per Cndtn",
+			desc = "Average CPU time per condition check.",
+			width = 11,
+			value = function(icon) return icon.cpu_cndtCount == 0 
+					and 0
+					or icon.cpu_cndtTotal / icon.cpu_cndtCount end,
+			format = "%.2f ms"
+		},
+		{
+			selected = true,
+			title = "Conditions: Average",
+			label = "Cndtn avg",
+			desc = "Average CPU time spent on condition checking per second of wall clock time.",
+			value = function(icon) return icon.cpu_cndtTotal / (TMW.time - icon.cpu_startTime) end,
+			format = "%.2f ms/s",
+			color = makeColorFunc(0.02, 0.6)
+		},
+	}
+}
+function TMW.IE:GetCpuProfileReport()
+
+	local update_avg = 0
+	local event_avg = 0
+
+	local r = {}
+	for group in TMW:InGroups() do
+		local printedGroup = false
+		for icon in group:InIcons() do 
+			if icon.cpu_updateTotal > 0 or icon.cpu_eventTotal > 0 or icon.cpu_cndtTotal > 0 then
+
+				local time = TMW.time - icon.cpu_startTime
+				local update = icon.cpu_updateTotal / time
+				local event = icon.cpu_eventTotal == 0 and 0 or (icon.cpu_eventTotal / time)
+				update_avg = update_avg + update
+				event_avg = event_avg + event
+
+				if not printedGroup then
+					printedGroup = true
+					-- local groupName = group:GetFullName()
+
+					r[#r+1] = "\n"
+
+					r[#r+1] = ("\n%-30s || "):format((group.Name or ""):sub(1, 30))
+					for i, column in pairs(TMW.IE.CpuReportParameters.Columns) do
+						if column.selected then
+							local text = column.label
+							text = leftPad(text, column.width or #text)
+
+							r[#r+1] = text .. "  "
+						end
+					end
+				end
+				
+				local name = L["GROUPICON"]:format(
+					leftPad(group.ID, 2),
+					leftPad(icon.ID, 2)
+				)
+				if group.Domain == "global" then
+					name = L["DOMAIN_GLOBAL_NC"] .. " " .. name
+				end
+
+				r[#r+1] = ("\n%30s || "):format(name)
+				for i, column in pairs(TMW.IE.CpuReportParameters.Columns) do
+					if column.selected then
+						local value = column.value(icon)
+						local text = 
+							value == 0 and "" or 
+							column.format and format(column.format, value) or
+							column.text(value)
+						text = leftPad(text, column.width or #column.label)
+						if column.color then
+							text = "|c" .. column.color(value) .. text .. "|r"
+						end
+
+						r[#r+1] = text .. "  "
+					end
+				end
+
+				-- r = r .. "\n" .. ("%20s || %sms %8d %s ms/s || %sms %8d %s ms/s"):format(
+				-- 		icon.ID, 
+				-- 		floatPad(icon.cpu_updateTotal, 9), 
+				-- 		floatPad(icon.cpu_updateCount), 
+				-- 		--floatPad(icon.cpu_updatePeak, 6), 
+				-- 		floatPad(update, 8),
+				-- 		floatPad(icon.cpu_eventTotal, 9),
+				-- 		floatPad(icon.cpu_eventCount), 
+				-- 		--floatPad(icon.cpu_eventPeak, 6)
+				-- 		floatPad(event, 8)
+				-- )
+			end
+		end
+	end
+
+	return table.concat(r)
+	
+	-- wlp(update_avg, event_avg, "\n\n\n")
+end
 
 

@@ -105,6 +105,10 @@ Module:SetScriptHandler("OnMouseUp", function(Module, icon, button)
 				DD:Toggle(1, nil, icon, 0, 0)
 			end
 			
+		elseif IsControlKeyDown() and button == "LeftButton" then
+			icon:GetSettings().Enabled = not icon:GetSettings().Enabled
+			icon:Setup()
+
 		elseif IsShiftKeyDown() and button == "LeftButton" then
 
 			-- Don't insert into the chat editbox.

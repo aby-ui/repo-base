@@ -41,10 +41,11 @@ L["IE_NOLOADED_GROUP"] = [[Select a group to load:]]
 L["ICON_TOOLTIP2NEW"] = [[|cff7fffffRight-click|r for icon options.
 |cff7fffffLeft-click and drag|r to move this group.
 |cff7fffffRight-click and drag|r to another icon to move/copy.
+|cff7fffffCtrl-click|r to toggle enabled/disabled.
 |cff7fffffDrag|r spells or items onto the icon for quick setup.]]
 L["ICON_TOOLTIP2NEWSHORT"] = [[|cff7fffffRight-click|r for icon options.]]
-L["LDB_TOOLTIP1"] = "|cff7fffffLeft-click|r to toggle the group locks"
-L["LDB_TOOLTIP2"] = "|cff7fffffRight-click|r to show the Icon Editor"
+L["LDB_TOOLTIP1"] = "|cff7fffffLeft-click|r to toggle config mode"
+L["LDB_TOOLTIP2"] = "|cff7fffffRight-click|r to show the options window"
 L["LOADERROR"] = "TellMeWhen_Options could not be loaded: "
 L["LOADINGOPT"] = "Loading TellMeWhen_Options."
 L["ENABLINGOPT"] = "TellMeWhen_Options is disabled. Enabling..."
@@ -675,6 +676,8 @@ L["ICONMENU_DONTREFRESH"] = "Don't Refresh"
 L["ICONMENU_DONTREFRESH_DESC"] = "Check to force the cooldown to not reset if the trigger occurs while it is still counting down."
 L["ICONMENU_CLEU_NOREFRESH"] = "Don't Refresh"
 L["ICONMENU_CLEU_NOREFRESH_DESC"] = "Check to cause the icon to ignore events that happen while the icon's timer is active."
+L["ICONMENU_ONLYIFCONDITIONS"] = "Only If Conditions Passing"
+L["ICONMENU_ONLYIFCONDITIONS_DESC"] = "Only process the event if the icon's conditions are passing."
 
 L["SORTBY"] = "Prioritize"
 L["SORTBYNONE"] = "Normally"
@@ -720,6 +723,7 @@ L["ICONMENU_SPLIT_NOCOMBAT_DESC"] = "Can't create new groups while in combat. Le
 L["ICONMENU_COPYEVENTHANDLERS"] = "Copy %d |4Notification:Notifications;"
 L["ICONMENU_COPYEVENTHANDLERS_DESC"] = "Copy %s's %d |4Notification:Notifications; to %s."
 L["ICONMENU_COPYCONDITIONS"] = "Copy %d |4Condition:Conditions;"
+L["ICONMENU_COPYCONDITIONS_UNIT"] = "Copy %d Unit |4Condition:Conditions;"
 L["ICONMENU_COPYCONDITIONS_GROUP"] = "Copy %d Group |4Condition:Conditions;"
 L["ICONMENU_COPYCONDITIONS_DESC"] = "Copy %s's %d |4Condition:Conditions; to %s."
 L["ICONMENU_COPYCONDITIONS_DESC_OVERWRITE"] = "This will overwrite %d existing |4condition:conditions;"
@@ -889,6 +893,10 @@ This option is account-wide: all of your profiles will share this setting.
 L["UIPANEL_BARTEXTURE"] = "Bar Texture"
 L["UIPANEL_USE_PROFILE"] = "Use Profile Setting"
 L["UIPANEL_PERFORMANCE"] = "Performance"
+L["UIPANEL_OPENCPUPROFILE"] = "View CPU usage"
+L["UIPANEL_OPENCPUPROFILE_DESC"] = [[View detailed CPU usage metrics about each of your icons.
+
+Also accessible via '/tmw cpu']]
 L["UIPANEL_UPDATEINTERVAL"] = "Update Interval"
 L["UIPANEL_TOOLTIP_UPDATEINTERVAL"] = [[Sets how often (in seconds) icons are checked for show/hide, alpha, conditions, etc.
 
@@ -1878,6 +1886,14 @@ L["MAIN"] = "General"
 L["MAIN_DESC"] = "Contains the main options for this icon."
 L["UNNAMED"] = "(Unnamed)"
 L["NOTYPE"] = "<No Icon Type>"
+
+L["HELP"] = "Help"
+L["HELP_ISSUES"] = "Bugs & Feature Requests"
+L["HELP_ISSUES_DESC"] = [[Report bugs and request features on the official TellMeWhen issue tracker on GitHub.]]
+L["HELP_COMMUNITY"] = "Community Discord"
+L["HELP_COMMUNITY_DESC"] = [[Join the official TellMeWhen discord! 
+
+Ask questions, share configuration, or just hang out with other TellMeWhen users.]]
 
 
 L["MISCELLANEOUS"] = "Miscellaneous"

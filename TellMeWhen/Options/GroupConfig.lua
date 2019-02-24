@@ -42,6 +42,7 @@ TabGroup:SetChildrenEnabled(false)
 local MainTab = IE:RegisterTab("GROUP", "GROUPMAIN", "GroupMain", 1)
 MainTab:SetTexts(L["GROUP"], L["GROUPSETTINGS_DESC"])
 
+IE:RegisterTab("GROUP", "HELP", "Help", 101):SetTexts(L["HELP"])
 
 local HistorySet = TMW.C.HistorySet:New("GROUP")
 HistorySet:AddBlocker({Icons = true})

@@ -973,6 +973,10 @@
 	<Frame name="TellMeWhen_SimpleDialog" hidden="true" movable="true" toplevel="true" clampedToScreen="true" enableMouse="true" frameStrata="DIALOG" parent="UIParent" virtual="true">
 		<Size x="330"/>
 
+		<KeyValues>
+			<KeyValue key="tmwClass" type="string" value="Config_Frame"/>
+		</KeyValues>
+
 		<Layers>
 			<Layer level="BACKGROUND">
 				<Texture parentKey="background">
@@ -2379,6 +2383,188 @@
 			</OnDragStop>
 		</Scripts>
 	</Frame>
+
+
+	<Frame name="TellMeWhen_CpuProfileDialog" inherits="TellMeWhen_SimpleDialog" >
+		<Size x="900" y="600"/>
+		<Anchors>
+			<Anchor point="CENTER" relativeTo="UIParent" y="50"/>
+		</Anchors>
+
+		<Frames>
+			<CheckButton parentKey="Enable" inherits="TellMeWhen_CheckTemplate">
+				<Anchors>
+					<Anchor point="TOP" y="-7" relativeKey="$parent.HeaderBackground" relativePoint="BOTTOM"/>
+					<Anchor point="LEFT" x="10" />
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						TMW:CInit(self)
+						self:SetTexts(
+							"Enable Icon CPU Metrics",
+							"If enabled, TMW will precisely measure the CPU usage of each icon individually.\n\n"
+							.. "This will incur a very slight performance hit that is much less impactful than a full WoW-wide CPU profiling session.\n\n"
+							.. "Metrics will not stay enabled if you log out or reload your UI."
+						)
+
+						self:SetSetting("profilingEnabled")
+						self:CScriptAdd("SettingTableRequested", function(requester)
+							return TMW
+						end)
+						self:CScriptAdd("SettingSaved", function(requester)
+							TMW:Update()
+							TMW:CpuProfileReset()
+						end)
+					</OnLoad>
+				</Scripts>
+			</CheckButton>
+
+			<CheckButton parentKey="Freeze" inherits="TellMeWhen_CheckTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeKey="$parent.Enable" relativePoint="TOPRIGHT" x="150" />
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						TMW:CInit(self)
+						self:SetTexts("Freeze", "Stop updating the text so you can examine it or copy it to your clipboard.")
+
+						self:SetSetting("Frozen")
+						self:CScriptAdd("SettingTableRequested", function(requester)
+							return self:GetParent()
+						end)
+						self:CScriptAdd("ReloadRequested", function()
+							self:SetEnabled(TMW.profilingEnabled)
+						end)
+					</OnLoad>
+				</Scripts>
+			</CheckButton>
+
+			<Frame parentKey="Columns" inherits="TMW_DropDownMenuTemplate">
+				<Anchors>
+					<Anchor point="LEFT" relativeKey="$parent.Freeze" relativePoint="RIGHT" x="60" />
+				</Anchors>
+				<Scripts>
+					<OnLoad >
+						TMW:CInit(self)
+						self:SetWidth(200)
+
+						self:SetTexts("Select Columns")
+
+						self:SetEasyFunctions(
+							function()
+								return pairs(TMW.IE.CpuReportParameters.Columns)
+							end,
+							function(info, i, column)
+								info.text = column.title
+								info.tooltipTitle = column.title
+								info.tooltipText = column.desc
+								info.value = column
+								info.checked = column.selected
+								info.keepShownOnClick = true
+								info.isNotRadio = true
+							end,
+							function(button, dropdown)
+								local column = button.value
+								column.selected = not column.selected
+								self:OnSettingSaved()
+							end
+						)
+
+						self:SetScrollable(true)
+					</OnLoad>
+				</Scripts>
+			</Frame>
+
+			<Button parentKey="Reset" inherits="TellMeWhen_ButtonTemplate">
+				<Anchors>
+					<Anchor point="LEFT" relativeKey="$parent.Columns" relativePoint="RIGHT" x="10" />
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						self:SetText("Reset Metrics")
+						self:SetWidth(self:GetTextWidth()+15)
+					</OnLoad>
+					<OnClick>
+						TMW:CpuProfileReset()
+					</OnClick>
+				</Scripts>
+			</Button>
+
+			<EditBox parentKey="Text" inherits="TellMeWhen_InputBoxTemplate" multiline="true">
+				<Size y="15"/>
+				<Anchors>
+					<Anchor point="TOP" y="-7" relativeKey="$parent.Enable" relativePoint="BOTTOM"/>
+					<Anchor point="BOTTOM" y="10" />
+					<Anchor point="LEFT" x="10" />
+					<Anchor point="RIGHT" x="-10" />
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						TMW:CInit(self)
+						
+						self:SetFont("Interface/Addons/TellMeWhen/Fonts/VeraMono.ttf", 11)
+
+						self:MakeScrollable(true, 2, 7)
+
+						self:CScriptAdd("ReloadRequested", function()
+							if not TMW.profilingEnabled then
+								self:SetText("Metrics are disabled")
+							end
+						end)
+					</OnLoad>
+				</Scripts>
+			</EditBox>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				TMW:CInit(self)
+
+				self:RegisterForDrag("LeftButton")
+				self:CScriptAdd("DescendantSettingSaved", self.RequestReload)
+
+				self.title:SetText("TellMeWhen CPU Metrics")
+
+				self.Frozen = false
+
+				function self:UpdateText() 
+					if not TMW.profilingEnabled then
+						self.Text:SetText("Metrics are disabled")
+						return
+					end
+					if not TMW.Locked then
+						self.Text:SetText("TMW is in config mode. Leave config mode to view metrics.")
+						return
+					end
+					if self.Frozen then
+						return 
+					end
+					self.Text:SetText(TMW.IE:GetCpuProfileReport())
+				end
+
+				C_Timer.NewTicker(0.5, function()
+					if not self:IsVisible() then return end
+					self:UpdateText()
+				end)
+
+				self:CScriptAdd("ReloadRequested", function()
+					self:UpdateText()
+				end)
+								
+				TMW:RegisterCallback("TMW_OPTIONS_LOADED", function()
+					-- Create resizer
+					self.resizer = TMW.Classes.Resizer_Generic:New(self)
+					self.resizer:Show()
+					self.resizer.x_min = 600
+					self.resizer.y_min = 100
+					self.resizer:SetModes(self.resizer.MODE_SIZE, self.resizer.MODE_SIZE)
+				end)
+			</OnLoad>
+			<OnShow>
+				self:RequestReload()
+			</OnShow>
+		</Scripts>
+	</Frame>
+
 
 </Ui>
 

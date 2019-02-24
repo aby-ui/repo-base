@@ -170,6 +170,17 @@ end
 PowerBarColor[-1] = {{r=1, g=0, b=0, a=1}, {r=1, g=1, b=0, a=1}, {r=0, g=1, b=0, a=1}}
 PowerBarColor[-3] = {{r=0, g=1, b=0, a=1}, {r=1, g=1, b=0, a=1}, {r=1, g=0, b=0, a=1}}
 
+local function Value_OnEvent(icon, event, arg1)
+	
+	if event == "TMW_UNITSET_UPDATED" and arg1 == icon.UnitSet then
+		-- A unit was just added or removed from icon.Units, so schedule an update.
+		icon.NextUpdateTime = 0
+	elseif --[[event == "UNIT_AURA" and]] icon.UnitSet.UnitsLookup[arg1] then
+		
+		icon.NextUpdateTime = 0
+	end
+end
+
 local function Value_OnUpdate(icon, time)
 	local PowerType = icon.PowerType
 	local ValueFragments = icon.ValueFragments
@@ -235,6 +246,33 @@ function Type:Setup(icon)
 	icon:SetInfo("texture", "Interface/Icons/inv_potion_49")
 	
 	icon:SetUpdateMethod("auto")
+
+	-- Event-based updates for this icon type are 
+	-- at best a net equal to interval updates.
+	-- Event-based updates have the added downside of
+	-- not being quite as responsive to rapidly-changing values.
+
+	--if icon.UnitSet.allUnitsChangeOnEvent then
+	--	icon:SetUpdateMethod("manual")
+		
+	--	if icon.PowerType == -3 then
+	--		icon:RegisterEvent("UNIT_ABSORB_AMOUNT_CHANGED")
+	--		icon:RegisterEvent("UNIT_MAXHEALTH")
+	--	elseif icon.PowerType == -1 then
+	--		icon:RegisterEvent("UNIT_HEALTH_FREQUENT")
+	--		icon:RegisterEvent("UNIT_MAXHEALTH")
+	--	elseif icon.PowerType == -2 then
+	--		icon:RegisterEvent("UNIT_POWER_FREQUENT")
+	--		icon:RegisterEvent("UNIT_MAXPOWER")
+	--		icon:RegisterEvent("UNIT_DISPLAYPOWER")
+	--	else
+	--		icon:RegisterEvent("UNIT_POWER_FREQUENT")
+	--		icon:RegisterEvent("UNIT_MAXPOWER")
+	--	end
+	
+	--	icon:SetScript("OnEvent", Value_OnEvent)
+	--	TMW:RegisterCallback("TMW_UNITSET_UPDATED", Value_OnEvent, icon)
+	--end
 	
 	icon:SetUpdateFunction(Value_OnUpdate)
 	

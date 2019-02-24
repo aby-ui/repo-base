@@ -56,7 +56,7 @@ function FilterBox:Constructor()
 end
 
 function FilterBox:UpdateCheck()
-    self.Check:SetChecked(self.MinBox:GetNumber() ~= 0 or self.MaxBox:GetNumber() ~= 0)
+    --self.Check:SetChecked(self.MinBox:GetNumber() ~= 0 or self.MaxBox:GetNumber() ~= 0)
     self:Fire('OnChanged')
 end
 

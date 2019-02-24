@@ -68,13 +68,17 @@ ConditionCategory:RegisterCondition(2,    "ALIVE", {
 	icon = "Interface\\Icons\\Ability_Vanish",
 	tcoords = CNDT.COMMON.standardtcoords,
 	Env = {
+		UnitExists = UnitExists,
 		UnitIsDeadOrGhost = UnitIsDeadOrGhost,
 	},
-	funcstr = [[not BOOLCHECK( UnitIsDeadOrGhost(c.Unit) )]], 
+	-- Must check that UnitExists so that a non-existing unit isn't treated as alive (#1622)
+	funcstr = [[ BOOLCHECK( UnitExists(c.Unit) and not UnitIsDeadOrGhost(c.Unit) )]], 
 	events = function(ConditionObject, c)
 		return
 			ConditionObject:GetUnitChangedEventString(CNDT:GetUnit(c.Unit)),
-			ConditionObject:GenerateNormalEventString("UNIT_HEALTH", CNDT:GetUnit(c.Unit))
+			-- UNIT_FLAGS is probably good enough, but fires much less than _HEALTH
+			ConditionObject:GenerateNormalEventString("UNIT_FLAGS", CNDT:GetUnit(c.Unit))
+			-- ConditionObject:GenerateNormalEventString("UNIT_HEALTH", CNDT:GetUnit(c.Unit))
 	end,
 })
 
