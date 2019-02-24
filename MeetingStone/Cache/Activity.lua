@@ -243,10 +243,10 @@ function Activity:Match(filters)
         local filter = filters[key]
         if filter and filter.enable then
             local value = func(self)
-            if filter.min and filter.min >= 0 and value < filter.min then
+            if filter.min and filter.min ~= 0 and value < filter.min then
                 return false
             end
-            if filter.max and filter.max >= 0 and value > filter.max then
+            if filter.max and (filter.max ~= 0 or (key == 'BossKilled' and filter.min == 0)) and value > filter.max then
                 return false
             end
         end
