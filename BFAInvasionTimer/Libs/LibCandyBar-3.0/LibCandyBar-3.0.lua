@@ -20,7 +20,7 @@ local CreateFrame, error, setmetatable, UIParent = CreateFrame, error, setmetata
 if not LibStub then error("LibCandyBar-3.0 requires LibStub.") end
 local cbh = LibStub:GetLibrary("CallbackHandler-1.0")
 if not cbh then error("LibCandyBar-3.0 requires CallbackHandler-1.0") end
-local lib = LibStub:NewLibrary("LibCandyBar-3.0", 95) -- Bump minor on changes
+local lib = LibStub:NewLibrary("LibCandyBar-3.0", 96) -- Bump minor on changes
 if not lib then return end
 lib.callbacks = lib.callbacks or cbh:New(lib)
 local cb = lib.callbacks
@@ -165,7 +165,7 @@ local function restyleBar(self)
 		self.candyBarBar:SetPoint("BOTTOMRIGHT", self)
 		self.candyBarIconFrame:Hide()
 	end
-	if self.candyBarLabel then
+	if self.showLabel and self.candyBarLabel.text then
 		self.candyBarLabel:Show()
 	else
 		self.candyBarLabel:Hide()
@@ -304,6 +304,17 @@ function barPrototype:SetTimeVisibility(bool)
 		self.candyBarDuration:Hide()
 	end
 end
+--- Sets wether or not the label on the left of the bar should be shown.
+-- label is shown by default.
+-- @param bool true to show the label, false/nil to hide the label.
+function barPrototype:SetLabelVisibility(bool)
+	self.showLabel = bool
+	if bool then
+		self.candyBarLabel:Show()
+	else
+		self.candyBarLabel:Hide()
+	end
+end
 --- Sets the duration of the bar.
 -- This can also be used while the bar is running to adjust the time remaining, within the bounds of the original duration.
 -- @param duration Duration of the bar in seconds.
@@ -379,7 +390,7 @@ end
 -- @usage
 -- -- The example below shows the use of the LibCandyBar_Stop callback by printing the contents of the label in the chatframe
 -- local function barstopped( callback, bar )
---   print( bar.candybarLabel:GetText(), "stopped")
+--   print( bar:GetLabel(), "stopped")
 -- end
 -- LibStub("LibCandyBar-3.0"):RegisterCallback(myaddonobject, "LibCandyBar_Stop", barstopped)
 -- @param ... Optional args to pass across in the LibCandyBar_Stop callback.
@@ -458,6 +469,7 @@ function lib:New(texture, width, height)
 	-- RESET ALL THE THINGS!
 	bar.fill = nil
 	bar.showTime = true
+	bar.showLabel = true
 	bar.iconPosition = nil
 	for i = 1, numScripts do -- Update if scripts table is changed, faster than doing #scripts
 		bar:SetScript(scripts[i], nil)

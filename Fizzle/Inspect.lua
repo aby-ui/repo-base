@@ -163,6 +163,7 @@ function mod:InspectFrame_OnShow()
 	self:UpdateBorders()
 	-- Watch for inventory changes
 	self:RegisterEvent("UNIT_INVENTORY_CHANGED", "UpdateBorders")
+    self:RegisterEvent("PLAYER_EQUIPMENT_CHANGED", "UpdateBorders")
 	-- Watch for target changes.
 	if not self:IsHooked("InspectFrame_UnitChanged") then
 		self:SecureHook("InspectFrame_UnitChanged", "UpdateBorders")
@@ -172,4 +173,5 @@ end
 function mod:InspectFrame_OnHide()
 	self:Unhook("InspectFrame_UnitChanged")
 	self:UnregisterEvent("UNIT_INVENTORY_CHANGED")
+    self:UnregisterEvent("PLAYER_EQUIPMENT_CHANGED")
 end

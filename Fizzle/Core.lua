@@ -300,12 +300,14 @@ end
 
 function Fizzle:CharacterFrame_OnShow()
 	self:RegisterEvent("UNIT_INVENTORY_CHANGED", "UpdateItems")
+    self:RegisterEvent("PLAYER_EQUIPMENT_CHANGED", "UpdateItems")
 	self:RegisterBucketEvent("UPDATE_INVENTORY_DURABILITY", 0.5, "UpdateItems")
 	self:UpdateItems()
 end
 
 function Fizzle:CharacterFrame_OnHide()
 	self:UnregisterEvent("UNIT_INVENTORY_CHANGED")
+    self:UnregisterEvent("PLAYER_EQUIPMENT_CHANGED")
 	self:UnregisterBucket("UPDATE_INVENTORY_DURABILITY")
 end
 

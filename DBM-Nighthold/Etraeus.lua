@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1732, "DBM-Nighthold", nil, 786)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 5 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 8 $"):sub(12, -3))
 mod:SetCreatureID(103758)
 mod:SetEncounterID(1863)
 mod:SetZone()
@@ -257,11 +257,11 @@ local function showConjunction(self)
 	end
 end
 
-local function updateConjunctionYell(self, spellName, icon)
+local function updateConjunctionYell(self, icon)
 	if not self.Options.ConjunctionYellFilter then return end
-	if DBM:UnitDebuff("player", spellName) then
+	if playerAffected then
 		yellConjunctionSign:Yell(icon, "", icon)
-		self:Schedule(2, updateConjunctionYell, self, spellName, icon)
+		self:Schedule(2, updateConjunctionYell, self, icon)
 	end
 end
 
@@ -427,7 +427,7 @@ function mod:SPELL_AURA_APPLIED(args)
 			if args:IsPlayer() then
 				specWarnConjunctionSign:Show(args.spellName)
 				yellConjunctionSign:Yell(2, "", 2)--Orange Circle
-				self:Schedule(2, updateConjunctionYell, self, args.spellName, 2)
+				self:Schedule(2, updateConjunctionYell, self, 2)
 				specWarnConjunctionSign:Play("205408c")
 				countdownConjunctionFades:Start()
 				timerConjunction:Start()
@@ -438,7 +438,7 @@ function mod:SPELL_AURA_APPLIED(args)
 			if args:IsPlayer() then
 				specWarnConjunctionSign:Show(args.spellName)
 				yellConjunctionSign:Yell(6, "", 6)--Blue Square
-				self:Schedule(2, updateConjunctionYell, self, args.spellName, 6)
+				self:Schedule(2, updateConjunctionYell, self, 6)
 				specWarnConjunctionSign:Play("205408d")
 				countdownConjunctionFades:Start()
 				timerConjunction:Start()
@@ -449,7 +449,7 @@ function mod:SPELL_AURA_APPLIED(args)
 			if args:IsPlayer() then
 				specWarnConjunctionSign:Show(args.spellName)
 				yellConjunctionSign:Yell(4, "", 4)--Green Triangle
-				self:Schedule(2, updateConjunctionYell, self, args.spellName, 4)
+				self:Schedule(2, updateConjunctionYell, self, 4)
 				specWarnConjunctionSign:Play("205408h")
 				countdownConjunctionFades:Start()
 				timerConjunction:Start()
@@ -460,7 +460,7 @@ function mod:SPELL_AURA_APPLIED(args)
 			if args:IsPlayer() then
 				specWarnConjunctionSign:Show(args.spellName)
 				yellConjunctionSign:Yell(7, "", 7)--Red Cross
-				self:Schedule(2, updateConjunctionYell, self, args.spellName, 7)
+				self:Schedule(2, updateConjunctionYell, 7)
 				specWarnConjunctionSign:Play("205408w")
 				countdownConjunctionFades:Start()
 				timerConjunction:Start()

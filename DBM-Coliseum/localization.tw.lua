@@ -10,6 +10,25 @@ L:SetGeneralLocalization{
 	name = "北裂境巨獸"
 }
 
+L:SetWarningLocalization{
+	WarningSnobold		= "極地狗頭人奴僕出現在>%s<"
+}
+
+L:SetTimerLocalization{
+	TimerNextBoss		= "下一隻王到來",
+	TimerEmerge			= "持續鑽地",
+	TimerSubmerge		= "下一次鑽地"
+}
+
+L:SetOptionLocalization{
+	WarningSnobold		= "為極地狗頭人奴僕出現顯示警告",
+	ClearIconsOnIceHowl	= "衝鋒前消除所有標記",
+	TimerNextBoss		= "為下一隻王到來顯示計時器",
+	TimerEmerge			= "為持續鑽地顯示計時器",
+	TimerSubmerge		= "為下一次鑽地顯示計時器",
+	IcehowlArrow		= "當冰嚎即將衝鋒在你附近時顯示DBM箭頭"
+}
+
 L:SetMiscLocalization{
 	Charge		= "%%s怒視著(%S+)，並發出震耳的咆哮!",
 	CombatStart	= "來自風暴群山最深邃，最黑暗的洞穴。歡迎『穿刺者』戈莫克!戰鬥吧，英雄們!",
@@ -19,25 +38,6 @@ L:SetMiscLocalization{
 	Acidmaw		= "酸喉",
 	Dreadscale	= "懼鱗",
 	Icehowl		= "冰嚎"
-}
-
-L:SetOptionLocalization{
-	WarningSnobold				= "為極地狗頭人奴僕出現顯示警告",
-	ClearIconsOnIceHowl			= "衝鋒前消除所有標記",
-	TimerNextBoss				= "為下一隻王到來顯示計時器",
-	TimerEmerge					= "為持續鑽地顯示計時器",
-	TimerSubmerge				= "為下一次 鑽地顯示計時器",
-	IcehowlArrow				= "當冰嚎即將衝鋒在你附近時顯示DBM箭頭"
-}
-
-L:SetTimerLocalization{
-	TimerNextBoss		= "下一隻王到來",
-	TimerEmerge			= "持續鑽地",
-	TimerSubmerge		= "下一次鑽地"
-}
-
-L:SetWarningLocalization{
-	WarningSnobold				= "極地狗頭人奴僕出現了"
 }
 
 ---------------------
@@ -69,8 +69,7 @@ L:SetGeneralLocalization{
 
 L:SetMiscLocalization{
 	AllianceVictory		= "榮耀歸於聯盟!",
-	HordeVictory		= "那只是讓你們知道將來必須面對的命運。為了部落!",
-	YellKill			= "膚淺而悲痛的勝利。今天痛失的生命反而令我們更加的頹弱。除了巫妖王之外，誰還能從中獲利?偉大的戰士失去了寶貴生命。為了什麼?真正的威脅就在前方 - 巫妖王在死亡的領域中等著我們。"
+	HordeVictory		= "那只是讓你們知道將來必須面對的命運。為了部落!"
 }
 
 ---------------------
@@ -92,8 +91,7 @@ L:SetWarningLocalization{
 	SpecWarnSwitchTarget	= "快換目標打雙子契印",
 	SpecWarnKickNow			= "現在斷法",
 	WarningTouchDebuff		= "光明或黑暗之觸:>%s<",
-	WarningPoweroftheTwins2	= "雙子威能 - 對>%s<加大治療",
-	SpecWarnPoweroftheTwins	= "雙子威能"
+	WarningPoweroftheTwins2	= "雙子威能 - 對>%s<加大治療"
 }
 
 L:SetMiscLocalization{
@@ -110,8 +108,7 @@ L:SetOptionLocalization{
 	SpecialWarnOnDebuff		= "當你中了光明或黑暗之觸時顯示特別警告 (需切換顏色)",
 	SetIconOnDebuffTarget	= "為光明或黑暗之觸的目標設置標記 (英雄模式)",
 	WarningTouchDebuff		= "提示光明或黑暗之觸的目標",
-	WarningPoweroftheTwins2	= "提示雙子威能的目標",
-	SpecWarnPoweroftheTwins	= "當你坦住的首領擁有雙子威能時顯示特別警告"
+	WarningPoweroftheTwins2	= "提示雙子威能的目標"
 }
 
 -----------------
@@ -158,3 +155,4 @@ L:SetOptionLocalization{
 	AnnouncePColdIcons		= "公佈$spell:68510目標設置的標記到團隊頻道<br/>(需要團隊隊長或助理權限)",
 	AnnouncePColdIconsRemoved	= "當移除$spell:68510的標記時也提示<br/>(需要上述選項)"
 }
+

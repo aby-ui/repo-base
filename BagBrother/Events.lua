@@ -45,6 +45,10 @@ function BagBrother:UNIT_INVENTORY_CHANGED(unit)
 	end
 end
 
+function BagBrother:PLAYER_EQUIPMENT_CHANGED()
+    BagBrother:UNIT_INVENTORY_CHANGED('player')
+end
+
 function BagBrother:PLAYER_MONEY()
 	self.Player.money = GetMoney()
 end

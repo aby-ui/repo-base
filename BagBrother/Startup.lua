@@ -48,6 +48,7 @@ end
 
 function Brother:SetupEvents()
 	self:RegisterEvent('UNIT_INVENTORY_CHANGED')
+    self:RegisterEvent('PLAYER_EQUIPMENT_CHANGED')
 	self:RegisterEvent('PLAYER_MONEY')
 	self:RegisterEvent('BAG_UPDATE')
 

@@ -9,6 +9,7 @@ local L = mod.L
 L.lock = "Lock"
 L.barIcon = "Bar Icon"
 L.showTime = "Show Time"
+L.showText = "Show Text"
 L.fillBar = "Fill Bar"
 L.font = "Font"
 L.fontSize = "Font Size"

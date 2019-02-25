@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1155, "DBM-BlackrockFoundry", nil, 457)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 36 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 39 $"):sub(12, -3))
 mod:SetCreatureID(76974, 76973)
 mod:SetEncounterID(1693)
 mod:SetZone()
@@ -90,12 +90,14 @@ function mod:SPELL_CAST_START(args)
 	if args:IsSpellID(160838, 160845, 160847, 160848) then
 		specWarnDisruptingRoar:Show()
 		timerDisruptingRoarCD:Start()
-		DBM:GetBossUnitId(args.sourceName)
 		specWarnDisruptingRoar:Play("stopcast")
-		local _, _, _, startTime, endTime = UnitCastingInfo(DBM:GetBossUnitId(args.sourceName))
-		local time = ((endTime or 0) - (startTime or 0)) / 1000
-		if time then
-			timerDisruptingRoar:Start(time)
+		local uId = DBM:GetUnitIdFromGUID(args.sourceGUID)
+		if uId then
+			local _, _, _, startTime, endTime = UnitCastingInfo(uId)
+			local time = ((endTime or 0) - (startTime or 0)) / 1000
+			if time then
+				timerDisruptingRoar:Start(time)
+			end
 		end
 	elseif spellId == 153470 then
 		warnSkullcracker:Show()

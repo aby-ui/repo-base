@@ -282,6 +282,7 @@ do
 			bar:SetIconPosition(frame.db.profile.alignIcon)
 		end
 		bar:SetTimeVisibility(frame.db.profile.timeText)
+		bar:SetLabelVisibility(frame.db.profile.labelText)
 		bar:SetFill(frame.db.profile.fill)
 		local flags = nil
 		if frame.db.profile.monochrome and frame.db.profile.outline ~= "NONE" then
@@ -443,9 +444,9 @@ do
 
 				if mode == 2 then
 					-- XXX remove BFAInvasionData[2] check
-					StartBroker(BFAInvasionData[2] == 0 and L.next or zoneNames[nextAvailableZone], t, 1044517) -- 1044517 = Interface/Icons/Achievement_Garrison_Invasion
+					StartBroker(BFAInvasionData[2] == 0 and L.next or L.next:format(zoneNames[nextAvailableZone]), t, 1044517) -- 1044517 = Interface/Icons/Achievement_Garrison_Invasion
 				else
-					StartBar(BFAInvasionData[2] == 0 and L.next or zoneNames[nextAvailableZone], t, 0, 1044517) -- 1044517 = Interface/Icons/Achievement_Garrison_Invasion
+					StartBar(BFAInvasionData[2] == 0 and L.next or L.next:format(zoneNames[nextAvailableZone]), t, 0, 1044517) -- 1044517 = Interface/Icons/Achievement_Garrison_Invasion
 					frame:UnregisterEvent("QUEST_TURNED_IN")
 				end
 
@@ -507,6 +508,7 @@ frame:SetScript("OnEvent", function(f)
 			height = 20,
 			icon = true,
 			timeText = true,
+			labelText = true,
 			fill = false,
 			growUp = false,
 			alignText = "LEFT",
@@ -566,6 +568,10 @@ frame:SetScript("OnEvent", function(f)
 		justLoggedIn = false
 		if BFAInvasionData[1] == 0 then
 			print("|cFF33FF99BFA入侵计时|r:", L.firstRunWarning)
+		end
+		local x = GetLocale()
+		if x == "frFR" or x == "ptBR" or x == "itIT" then -- XXX temp
+			print("|cFF33FF99BFAInvasionTimer|r is missing locale for", x, "and needs your help! Please visit the project page on GitHub for more info.")
 		end
 	end)
 
