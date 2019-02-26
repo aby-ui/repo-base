@@ -145,8 +145,10 @@ local function SetFrames()
         --163ui move button
         CoreDependCall("Dominos", function()
             RunOnNextFrame(function()
-                button:SetParent(DominosFrameextra)
-                button:SetPoint("CENTER", 0, 0.5)
+                if not InCombatLockdown() then
+                    button:SetParent(DominosFrameextra)
+                    button:SetPoint("CENTER", 0, 0.5)
+                end
             end)
             --[[
             button:SetScript("OnMouseDown", function(self)

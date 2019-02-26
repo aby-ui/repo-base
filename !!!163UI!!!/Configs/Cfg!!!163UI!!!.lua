@@ -185,7 +185,7 @@ U1RegisterAddon("!!!163UI!!!", {
         var = "disableLaterLoading",
         text = L["延迟加载插件"],
         tip = L["说明`爱不易独家支持，可以先读完蓝条然后再逐一加载插件。会大大加快读条速度，但是加载大型插件时会有卡顿。如果不喜欢这种方式，请取消勾选即可，下次进游戏时就会采用新设置。` `对比测试：`未开启时，在第7.5秒后读完蓝条同时加载完全部插件`开启后，在第3.8秒读完蓝条，第8.0秒加载完全部插件"],
-        default = 1,
+        default = 0,
         getvalue = function() return not U1DB.disableLaterLoading end,
         callback = function(cfg, v, loading)
             U1DB.disableLaterLoading = not v;
