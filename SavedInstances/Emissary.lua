@@ -36,60 +36,70 @@ for k, v in pairs(_switching) do
 end
 
 function EmissaryModule:OnEnable()
-	self:RegisterEvent("PLAYER_ENTERING_WORLD", "RefreshDailyWorldQuestInfo")
-  self:RegisterEvent("ADDON_LOADED", "RefreshDailyWorldQuestInfo")
   self:RegisterEvent("QUEST_LOG_UPDATE", "RefreshDailyWorldQuestInfo")
-  self:RegisterEvent("QUEST_WATCH_LIST_CHANGED", "RefreshDailyWorldQuestInfo")
 end
 
 function EmissaryModule:RefreshDailyWorldQuestInfo()
   local t = addon.db.Toons[thisToon]
-  t.Emissary = {}
+  if not t.Emissary then t.Emissary = {} end
   local expansionLevel, tbl
   for expansionLevel, tbl in pairs(Emissaries) do
     if not addon.db.Emissary.Expansion[expansionLevel] then addon.db.Emissary.Expansion[expansionLevel] = {} end
     local currExpansion = addon.db.Emissary.Expansion[expansionLevel]
-    t.Emissary[expansionLevel] = {}
+    if not t.Emissary[expansionLevel] then t.Emissary[expansionLevel] = {} end
     if IsQuestFlaggedCompleted(tbl.questID) then
-      t.Emissary[expansionLevel] = {
-        unlocked = true,
-        days = {},
-      }
-      local BountyQuest, BountyIndex, BountyInfo = GetQuestBountyInfoForMapID(tbl.UiMapID)
-      for BountyIndex, BountyInfo in ipairs(BountyQuest) do
-        local title = GetQuestLogTitle(GetQuestLogIndexByID(BountyInfo.questID))
-        local timeleft = C_TaskQuest.GetQuestTimeLeftMinutes(BountyInfo.questID)
-        local _, _, isFinish, questDone, questNeed = GetQuestObjectiveInfo(BountyInfo.questID, 1, false)
-        addon.db.Emissary.Cache[BountyInfo.questID] = title -- cache quest name
-        if timeleft then
+      t.Emissary[expansionLevel].unlocked = true
+      if not t.Emissary[expansionLevel].days then t.Emissary[expansionLevel].days = {} end
+      local BountyQuest = GetQuestBountyInfoForMapID(tbl.UiMapID)
+      local i, info
+      for i = 1, 3 do
+        if not t.Emissary[expansionLevel].days[i] then t.Emissary[expansionLevel].days[i] = {} end
+        t.Emissary[expansionLevel].days[i].isComplete = true
+      end
+      for i, info in ipairs(BountyQuest) do
+        local title = GetQuestLogTitle(GetQuestLogIndexByID(info.questID))
+        local timeleft = C_TaskQuest.GetQuestTimeLeftMinutes(info.questID)
+        local _, _, isFinish, questDone, questNeed = GetQuestObjectiveInfo(info.questID, 1, false)
+        local money = GetQuestLogRewardMoney(info.questID)
+        local numQuestRewards = GetNumQuestLogRewards(info.questID)
+        local numCurrencyRewards = GetNumQuestLogRewardCurrencies(info.questID)
+        addon.db.Emissary.Cache[info.questID] = title -- cache quest name
+        if money > 0 or numQuestRewards > 0 or numCurrencyRewards > 0 then
           local day = tonumber(math.floor(timeleft / 1440) + 1) -- [1, 2, 3]
-          addon.debug("title: %s, timeleft: %s, days: +%s", title, timeleft, day)
           if not currExpansion[day] then currExpansion[day] = {} end
-          if switching[BountyInfo.questID] then
-            currExpansion[day].questID = switching[BountyInfo.questID]
+          if switching[info.questID] then
+            currExpansion[day].questID = switching[info.questID]
           else
             currExpansion[day].questID = {
-              Alliance = BountyInfo.questID,
-              Horde = BountyInfo.questID,
+              Alliance = info.questID,
+              Horde = info.questID,
             }
           end
           currExpansion[day].questNeed = questNeed
           currExpansion[day].expiredTime = timeleft * 60 + time()
-          t.Emissary[expansionLevel].days[day] = {
-            isComplete = false,
-            isFinish = isFinish,
-            questDone = questDone,
-          }
+          local tbl = t.Emissary[expansionLevel].days[day]
+          tbl.expiredTime = timeleft * 60 + time()
+          tbl.isComplete = false
+          tbl.isFinish = isFinish
+          tbl.questDone = questDone
+          tbl.questReward = {}
+          if money > 0 then
+            tbl.questReward.money = money
+          elseif numQuestRewards > 0 then
+            local itemIndex = QuestUtils_GetBestQualityItemRewardIndex(info.questID)
+            local itemName, _, _, quality, _, _, itemLvl = GetQuestLogRewardInfo(itemIndex, info.questID)
+            tbl.questReward.itemName = itemName
+            tbl.questReward.quality = quality
+            tbl.questReward.itemLvl = itemLvl
+          else
+            local _, _, quantity, currencyID = GetQuestLogRewardCurrencyInfo(1, info.questID)
+            tbl.questReward.currencyID = currencyID
+            tbl.questReward.quantity = quantity
+          end
         end
       end
-      local i
-      for i = 1, 3 do
-        if not t.Emissary[expansionLevel].days[i] then
-          t.Emissary[expansionLevel].days[i] = {
-            isComplete = true,
-          }
-        end
-      end
+    else
+      t.Emissary[expansionLevel] = nil
     end
   end
 end

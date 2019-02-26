@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2143, "DBM-Party-BfA", 6, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 18026 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 18412 $"):sub(12, -3))
 mod:SetCreatureID(133384)
 mod:SetEncounterID(2125)
 mod:SetZone()
@@ -64,7 +64,7 @@ end
 
 function mod:SPELL_AURA_APPLIED(args)
 	local spellId = args.spellId
-	if spellId == 263957 then
+	if spellId == 263957 and self:CheckDispelFilter() then
 		specWarnHadotoxinOther:Show(args.destName)
 		specWarnHadotoxinOther:Play("helpdispel")
 	elseif spellId == 267050 then--Obscured

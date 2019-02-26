@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2195, "DBM-Uldir", nil, 1031)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 18139 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 18412 $"):sub(12, -3))
 mod:SetCreatureID(138967)
 mod:SetEncounterID(2145)
 mod:DisableESCombatDetection()--ES fires moment you throw out CC, so it can't be trusted for combatstart
@@ -409,7 +409,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		if self.vb.DarkRevIcon == 3 then
 			self.vb.DarkRevIcon = 1
 		end
-	elseif spellId == 273434 then
+	elseif spellId == 273434 and self:CheckDispelFilter() then
 		specWarnPitofDespair:CombinedShow(0.3, args.destName)
 		specWarnPitofDespair:CancelVoice()--Avoid spam
 		specWarnPitofDespair:ScheduleVoice(0.3, "helpdispel")

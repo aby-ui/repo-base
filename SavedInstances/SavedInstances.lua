@@ -339,10 +339,18 @@ addon.defaultDB = {
   --   unlocked = (boolean),
   --   days = {
   --     [Day] = {
-  --       isComplete = isComplete
+  --       isComplete = isComplete,
   --       isFinish = isFinish,
   --       questDone = questDone,
   --       expiredTime = expiredTime,
+  --       questReward = {
+  --         money = money,
+  --         itemName = itemName,
+  --         itemLvl = itemLvl,
+  --         quality = quality,
+  --         currencyID = currencyID,
+  --         quantity = quantity,
+  --       },
   --     },
   --   },
   -- }
@@ -491,8 +499,8 @@ addon.defaultDB = {
   --       ["Alliance"] = questID,
   --       ["Horde"] = questID,
   --     },
-  --     questNeed = questNeed
-  --     expiredTime = expiredTime
+  --     questNeed = questNeed,
+  --     expiredTime = expiredTime,
   --   }
   -- }
   RealmMap = {},
@@ -588,7 +596,7 @@ end
 -- convert local time -> server time: add this value
 -- convert server time -> local time: subtract this value
 function addon:GetServerOffset()
-  local serverDate = C_Calendar.GetDate() -- 1-based starts on Sun
+  local serverDate = C_DateAndTime.GetCurrentCalendarTime() -- 1-based starts on Sun
   local serverDay, serverWeekday, serverMonth, serverMinute, serverHour, serverYear = serverDate.monthDay, serverDate.weekday, serverDate.month, serverDate.minute, serverDate.hour, serverDate.year
   -- #211: date("%w") is 0-based starts on Sun
   local localDay = tonumber(date("%w")) + 1
@@ -713,8 +721,14 @@ function addon:QuestCount(toonname)
   -- ticket 96: GetDailyQuestsCompleted() is unreliable, the response is laggy and it fails to count some quests
   local id, info
   for id, info in pairs(t.Quests) do
-    -- Timewalking Item Quests only show during Timewalking Weeks
-    if (not TimewalkingItemQuest[id]) or eventInfo[TimewalkingItemQuest[id]] then
+    if (TimewalkingItemQuest[id] and (not eventInfo[TimewalkingItemQuest[id]])) then
+      -- Timewalking Item Quests only show during Timewalking Weeks
+    elseif (
+      (t.Faction == "Alliance" and id == 53435) or
+      (t.Faction == "Horde" and id == 53436)
+    ) then
+      -- Island Expeditions Weekly Quest (Issue #208)
+    else
       if info.isDaily then
         dailycount = dailycount + 1
       else
@@ -1741,7 +1755,10 @@ local function finishIndicator(parent)
   indicatortip:Show()
 end
 
-local function ShowToonTooltip(cell, arg, ...)
+-- Hover Tooltips
+local hoverTooltip = {}
+
+hoverTooltip.ShowToonTooltip = function (cell, arg, ...)
   local toon = arg
   if not toon then return end
   local t = addon.db.Toons[toon]
@@ -1786,7 +1803,7 @@ local function ShowToonTooltip(cell, arg, ...)
   finishIndicator()
 end
 
-local function ShowQuestTooltip(cell, arg, ...)
+hoverTooltip.ShowQuestTooltip = function (cell, arg, ...)
   local toon,cnt,isDaily = unpack(arg)
   local qstr = cnt.." "..(isDaily and L["Daily Quests"] or L["Weekly Quests"])
   local t = db
@@ -1811,8 +1828,14 @@ local function ShowQuestTooltip(cell, arg, ...)
   local zonename, id
   for id,qi in pairs(t.Quests) do
     if (not isDaily) == (not qi.isDaily) then
-      -- Timewalking Item Quests only show during Timewalking Weeks
-      if (not TimewalkingItemQuest[id]) or eventInfo[TimewalkingItemQuest[id]] then
+      if (TimewalkingItemQuest[id] and (not eventInfo[TimewalkingItemQuest[id]])) then
+        -- Timewalking Item Quests only show during Timewalking Weeks
+      elseif (
+        (t.Faction == "Alliance" and id == 53435) or
+        (t.Faction == "Horde" and id == 53436)
+      ) then
+        -- Island Expeditions Weekly Quest (Issue #208)
+      else
         zonename = qi.Zone and qi.Zone.name or ""
         table.insert(ql,zonename.." # "..id)
       end
@@ -1842,15 +1865,7 @@ local function ShowQuestTooltip(cell, arg, ...)
   finishIndicator()
 end
 
-local function skillsort(s1, s2)
-  if s1.Expires ~= s2.Expires then
-    return (s1.Expires or 0) < (s2.Expires or 0)
-  else
-    return (s1.Title or "") < (s2.Title or "")
-  end
-end
-
-local function ShowSkillTooltip(cell, arg, ...)
+hoverTooltip.ShowSkillTooltip = function (cell, arg, ...)
   local toon, cnt = unpack(arg)
   local cstr = cnt.." "..L["Trade Skill Cooldowns"]
   local t = addon.db.Toons[toon]
@@ -1865,7 +1880,13 @@ local function ShowSkillTooltip(cell, arg, ...)
   for _,sinfo in pairs(t.Skills) do
     table.insert(tmp,sinfo)
   end
-  table.sort(tmp, skillsort)
+  table.sort(tmp, function (s1, s2)
+    if s1.Expires ~= s2.Expires then
+      return (s1.Expires or 0) < (s2.Expires or 0)
+    else
+      return (s1.Title or "") < (s2.Title or "")
+    end
+  end)
 
   for _,sinfo in ipairs(tmp) do
     local line = indicatortip:AddLine()
@@ -1877,7 +1898,7 @@ local function ShowSkillTooltip(cell, arg, ...)
   finishIndicator()
 end
 
-local function ShowEmissarySummary(cell, arg, ...)
+hoverTooltip.ShowEmissarySummary = function (cell, arg, ...)
   local expansionLevel, day = unpack(arg)
   local tbl = {}
   local cache, buffer, flag = {}, {}, false
@@ -1936,7 +1957,41 @@ local function ShowEmissarySummary(cell, arg, ...)
   finishIndicator()
 end
 
-local function ShowBonusTooltip(cell, arg, ...)
+hoverTooltip.ShowEmissaryTooltip = function (cell, arg, ...)
+  local expansionLevel, day, toon = unpack(arg)
+  local info = db.Toons[toon].Emissary[expansionLevel].days[day]
+  if not info then return end
+  openIndicator(2, "LEFT", "RIGHT")
+  local globalInfo = addon.db.Emissary.Expansion[expansionLevel][day] or {}
+  local text
+  if info.isComplete == true then
+    text = "\124T"..READY_CHECK_READY_TEXTURE..":0|t"
+  elseif info.isFinish == true then
+    text = "\124T"..READY_CHECK_WAITING_TEXTURE..":0|t"
+  else
+    text = info.questDone
+    if globalInfo.questNeed then
+      text = text .. "/" .. globalInfo.questNeed
+    end
+  end
+  indicatortip:AddLine(ClassColorise(db.Toons[toon].Class, toon), text)
+  if info.questReward then
+    text = ""
+    if info.questReward.itemName then
+      text = "|c" .. select(4, GetItemQualityColor(info.questReward.quality)) ..
+            "[" .. info.questReward.itemName .. "(" .. info.questReward.itemLvl .. ")]" .. FONTEND
+    elseif info.questReward.money then
+      text = GetMoneyString(info.questReward.money)
+    elseif info.questReward.currencyID then
+      text = "\124T" .. select(3, GetCurrencyInfo(info.questReward.currencyID)) .. ":0\124t " .. info.questReward.quantity
+    end
+    indicatortip:AddLine()
+    indicatortip:SetCell(2, 1, text, "RIGHT", 2)
+  end
+  finishIndicator()
+end
+
+hoverTooltip.ShowBonusTooltip = function (cell, arg, ...)
   local toon = arg
   local parent
   if type(toon) == "table" then
@@ -1965,7 +2020,7 @@ local function ShowBonusTooltip(cell, arg, ...)
       indicatortip:SetCell(line,3,roll.item)
     elseif roll.currencyID then
       local currencyIcon = select(3, GetCurrencyInfo(roll.currencyID))
-      local str = "\124T" .. currencyIcon .. ":0\124t"
+      local str = "\124T" .. currencyIcon .. ":0\124t "
       if roll.money then
         str = str .. roll.money
       else
@@ -1982,7 +2037,7 @@ local function ShowBonusTooltip(cell, arg, ...)
   finishIndicator(parent)
 end
 
-local function ShowAccountSummary(cell, arg, ...)
+hoverTooltip.ShowAccountSummary = function (cell, arg, ...)
   openIndicator(2, "LEFT","RIGHT")
   indicatortip:SetCell(indicatortip:AddHeader(),1,GOLDFONT..L["Account Summary"]..FONTEND,"LEFT",2)
 
@@ -2043,7 +2098,7 @@ local function ShowAccountSummary(cell, arg, ...)
   finishIndicator()
 end
 
-local function ShowWorldBossTooltip(cell, arg, ...)
+hoverTooltip.ShowWorldBossTooltip = function (cell, arg, ...)
   local worldbosses = arg[1]
   local toon = arg[2]
   local saved = arg[3]
@@ -2072,7 +2127,7 @@ local function ShowWorldBossTooltip(cell, arg, ...)
   finishIndicator()
 end
 
-local function ShowLFRTooltip(cell, arg, ...)
+hoverTooltip.ShowLFRTooltip = function (cell, arg, ...)
   local boxname = arg[1]
   local toon = arg[2]
   local lfrmap = arg[3]
@@ -2112,7 +2167,7 @@ local function ShowLFRTooltip(cell, arg, ...)
   finishIndicator()
 end
 
-local function ShowIndicatorTooltip(cell, arg, ...)
+hoverTooltip.ShowIndicatorTooltip = function (cell, arg, ...)
   local instance = arg[1]
   local toon = arg[2]
   local diff = arg[3]
@@ -2237,29 +2292,7 @@ local function ShowIndicatorTooltip(cell, arg, ...)
   finishIndicator()
 end
 
-local colorpat = "\124c%c%c%c%c%c%c%c%c"
-local weeklycap = CURRENCY_WEEKLY_CAP:gsub("%%%d*?([ds])","%%%1")
-local weeklycap_scan = weeklycap:gsub("%%d","(%%d+)"):gsub("%%s","(\124c%%x%%x%%x%%x%%x%%x%%x%%x)")
-weeklycap = weeklycap:gsub("%%d","%%s")
-local totalcap = CURRENCY_TOTAL_CAP:gsub("%%%d*?([ds])","%%%1")
-local totalcap_scan = totalcap:gsub("%%d","(%%d+)"):gsub("%%s","(\124c%%x%%x%%x%%x%%x%%x%%x%%x)")
-totalcap = totalcap:gsub("%%d","%%s")
-local season_scan = CURRENCY_SEASON_TOTAL:gsub("%%%d*?([ds])","(%%%1*)")
-
-function addon:GetSeasonCurrency(idx)
-  scantt:SetOwner(UIParent,"ANCHOR_NONE")
-  scantt:SetCurrencyByID(idx)
-  local name = scantt:GetName()
-  for i=1,scantt:NumLines() do
-    local left = _G[name.."TextLeft"..i]
-    if left:GetText():find(season_scan) then
-      return left:GetText()
-    end
-  end
-  return nil
-end
-
-local function ShowSpellIDTooltip(cell, arg, ...)
+hoverTooltip.ShowSpellIDTooltip = function (cell, arg, ...)
   local toon, spellid, timestr = unpack(arg)
   if not toon or not spellid or not timestr then return end
   openIndicator(2, "LEFT","RIGHT")
@@ -2279,7 +2312,15 @@ local function ShowSpellIDTooltip(cell, arg, ...)
   finishIndicator()
 end
 
-local function ShowCurrencyTooltip(cell, arg, ...)
+local weeklycap = CURRENCY_WEEKLY_CAP:gsub("%%%d*?([ds])","%%%1")
+local weeklycap_scan = weeklycap:gsub("%%d","(%%d+)"):gsub("%%s","(\124c%%x%%x%%x%%x%%x%%x%%x%%x)")
+weeklycap = weeklycap:gsub("%%d","%%s")
+local totalcap = CURRENCY_TOTAL_CAP:gsub("%%%d*?([ds])","%%%1")
+local totalcap_scan = totalcap:gsub("%%d","(%%d+)"):gsub("%%s","(\124c%%x%%x%%x%%x%%x%%x%%x%%x)")
+totalcap = totalcap:gsub("%%d","%%s")
+local season_scan = CURRENCY_SEASON_TOTAL:gsub("%%%d*?([ds])","(%%%1*)")
+
+hoverTooltip.ShowCurrencyTooltip = function (cell, arg, ...)
   local toon, idx, ci = unpack(arg)
   if not toon or not idx or not ci then return end
   local name,_,tex = GetCurrencyInfo(idx)
@@ -2333,7 +2374,7 @@ local function ShowCurrencyTooltip(cell, arg, ...)
   finishIndicator()
 end
 
-local function ShowCurrencySummary(cell, arg, ...)
+hoverTooltip.ShowCurrencySummary = function (cell, arg, ...)
   local idx = arg
   if not idx then return end
   local name,_,tex = GetCurrencyInfo(idx)
@@ -2399,7 +2440,7 @@ end
 function core:OnInitialize()
   local versionString = GetAddOnMetadata(addonName, "version")
   --[===[@debug@
-  if versionString == "8.0.10-6-gccd7ae8" then
+  if versionString == "8.0.10-18-gcaa836f" then
     versionString = "Dev"
   end
   --@end-debug@]===]
@@ -2781,7 +2822,7 @@ function addon:histZoneKey()
   if insttype == nil or insttype == "none" or insttype == "arena" or insttype == "pvp" then -- pvp doesnt count
     return nil
   end
-  if IsInLFGDungeon() or IsInScenarioGroup() then -- LFG instances don't count
+  if (IsInLFGDungeon() or IsInScenarioGroup()) and diff ~= 19 then -- LFG instances don't count, but Holiday Event counts
     return nil
   end
   if C_Garrison.IsOnGarrisonMap() then -- Garrisons don't count
@@ -3411,7 +3452,7 @@ function core:ShowTooltip(anchorframe)
     headText = string.format("%s%s%s",GOLDFONT,addonName,FONTEND)
   end
   local headLine = tooltip:AddHeader(headText)
-  tooltip:SetCellScript(headLine, 1, "OnEnter", ShowAccountSummary )
+  tooltip:SetCellScript(headLine, 1, "OnEnter", hoverTooltip.ShowAccountSummary )
   tooltip:SetCellScript(headLine, 1, "OnLeave", CloseTooltips)
   addon:UpdateToonData()
   local columns = localarr("columns")
@@ -3567,7 +3608,7 @@ function core:ShowTooltip(anchorframe)
             local col = columns[toon..base]
             tooltip:SetCell(row, col,
               DifficultyString(instance, diff, toon, inst[toon][diff].Expires == 0), span)
-            tooltip:SetCellScript(row, col, "OnEnter", ShowIndicatorTooltip, {instance, toon, diff})
+            tooltip:SetCellScript(row, col, "OnEnter", hoverTooltip.ShowIndicatorTooltip, {instance, toon, diff})
             tooltip:SetCellScript(row, col, "OnLeave", CloseTooltips)
             if addon.LFRInstances[inst.LFDID] then
               tooltip:SetCellScript(row, col, "OnMouseDown", OpenLFR, inst.LFDID)
@@ -3621,7 +3662,7 @@ function core:ShowTooltip(anchorframe)
           addColumns(columns, toon, tooltip)
           local col = columns[toon..1]
           tooltip:SetCell(line, col, DifficultyString(pinstance, diff, toon, false, saved, total),4)
-          tooltip:SetCellScript(line, col, "OnEnter", ShowLFRTooltip, {boxname, toon, lfrmap})
+          tooltip:SetCellScript(line, col, "OnEnter", hoverTooltip.ShowLFRTooltip, {boxname, toon, lfrmap})
           tooltip:SetCellScript(line, col, "OnLeave", CloseTooltips)
         end
       end
@@ -3647,7 +3688,7 @@ function core:ShowTooltip(anchorframe)
         addColumns(columns, toon, tooltip)
         local col = columns[toon..1]
         tooltip:SetCell(line, col, DifficultyString(worldbosses[1], diff, toon, false, saved, #worldbosses),4)
-        tooltip:SetCellScript(line, col, "OnEnter", ShowWorldBossTooltip, {worldbosses, toon, saved})
+        tooltip:SetCellScript(line, col, "OnEnter", hoverTooltip.ShowWorldBossTooltip, {worldbosses, toon, saved})
         tooltip:SetCellScript(line, col, "OnLeave", CloseTooltips)
       end
     end
@@ -3711,14 +3752,14 @@ function core:ShowTooltip(anchorframe)
         local col = columns[toon..1]
         local tstr = SecondsToTime(d1, false, false, 1)
         tooltip:SetCell(cd1, col, ClassColorise(t.Class,tstr), "CENTER",maxcol)
-        tooltip:SetCellScript(cd1, col, "OnEnter", ShowSpellIDTooltip, {toon,-1,tstr})
+        tooltip:SetCellScript(cd1, col, "OnEnter", hoverTooltip.ShowSpellIDTooltip, {toon,-1,tstr})
         tooltip:SetCellScript(cd1, col, "OnLeave", CloseTooltips)
       end
       if d2 > 0 then
         local col = columns[toon..1]
         local tstr = SecondsToTime(d2, false, false, 1)
         tooltip:SetCell(cd2, col, ClassColorise(t.Class,tstr), "CENTER",maxcol)
-        tooltip:SetCellScript(cd2, col, "OnEnter", ShowSpellIDTooltip, {toon,71041,tstr})
+        tooltip:SetCellScript(cd2, col, "OnEnter", hoverTooltip.ShowSpellIDTooltip, {toon,71041,tstr})
         tooltip:SetCellScript(cd2, col, "OnLeave", CloseTooltips)
       end
     end
@@ -3743,7 +3784,7 @@ function core:ShowTooltip(anchorframe)
         local col = columns[toon..1]
         local tstr = SecondsToTime(t.pvpdesert - time(), false, false, 1)
         tooltip:SetCell(show, col, ClassColorise(t.Class,tstr), "CENTER",maxcol)
-        tooltip:SetCellScript(show, col, "OnEnter", ShowSpellIDTooltip, {toon,26013,tstr})
+        tooltip:SetCellScript(show, col, "OnEnter", hoverTooltip.ShowSpellIDTooltip, {toon,26013,tstr})
         tooltip:SetCellScript(show, col, "OnLeave", CloseTooltips)
       end
     end
@@ -3772,14 +3813,14 @@ function core:ShowTooltip(anchorframe)
     if showd then
       showd = tooltip:AddLine(YELLOWFONT .. L["Daily Quests"] .. (adc > 0 and " ("..adc..")" or "") .. FONTEND)
       if adc > 0 then
-        tooltip:SetCellScript(showd, 1, "OnEnter", ShowQuestTooltip, {nil,adc,true})
+        tooltip:SetCellScript(showd, 1, "OnEnter", hoverTooltip.ShowQuestTooltip, {nil,adc,true})
         tooltip:SetCellScript(showd, 1, "OnLeave", CloseTooltips)
       end
     end
     if showw then
       showw = tooltip:AddLine(YELLOWFONT .. L["Weekly Quests"] .. (awc > 0 and " ("..awc..")" or "") .. FONTEND)
       if awc > 0 then
-        tooltip:SetCellScript(showw, 1, "OnEnter", ShowQuestTooltip, {nil,awc,false})
+        tooltip:SetCellScript(showw, 1, "OnEnter", hoverTooltip.ShowQuestTooltip, {nil,awc,false})
         tooltip:SetCellScript(showw, 1, "OnLeave", CloseTooltips)
       end
     end
@@ -3788,12 +3829,12 @@ function core:ShowTooltip(anchorframe)
       local col = columns[toon..1]
       if showd and col and dc > 0 then
         tooltip:SetCell(showd, col, ClassColorise(t.Class,dc), "CENTER",maxcol)
-        tooltip:SetCellScript(showd, col, "OnEnter", ShowQuestTooltip, {toon,dc,true})
+        tooltip:SetCellScript(showd, col, "OnEnter", hoverTooltip.ShowQuestTooltip, {toon,dc,true})
         tooltip:SetCellScript(showd, col, "OnLeave", CloseTooltips)
       end
       if showw and col and wc > 0 then
         tooltip:SetCell(showw, col, ClassColorise(t.Class,wc), "CENTER",maxcol)
-        tooltip:SetCellScript(showw, col, "OnEnter", ShowQuestTooltip, {toon,wc,false})
+        tooltip:SetCellScript(showw, col, "OnEnter", hoverTooltip.ShowQuestTooltip, {toon,wc,false})
         tooltip:SetCellScript(showw, col, "OnLeave", CloseTooltips)
       end
     end
@@ -3821,7 +3862,7 @@ function core:ShowTooltip(anchorframe)
       if cnt > 0 then
         local col = columns[toon..1]
         tooltip:SetCell(show, col, ClassColorise(t.Class,cnt), "CENTER",maxcol)
-        tooltip:SetCellScript(show, col, "OnEnter", ShowSkillTooltip, {toon, cnt})
+        tooltip:SetCellScript(show, col, "OnEnter", hoverTooltip.ShowSkillTooltip, {toon, cnt})
         tooltip:SetCellScript(show, col, "OnLeave", CloseTooltips)
       end
     end
@@ -3848,14 +3889,15 @@ function core:ShowTooltip(anchorframe)
         if t.MythicKey.link then
           local col = columns[toon..1]
           if addon.db.Tooltip.AbbreviateKeystone then
+            if not t.MythicKey.name then t.MythicKey.name = t.MythicKey.link end
             if t.MythicKey.abbrev then
               tooltip:SetCell(show, col, "|c"..t.MythicKey.color..t.MythicKey.abbrev.." ("..t.MythicKey.level..")"..FONTEND, "CENTER",maxcol)
             else
-              local kabbrev = KeystonetoAbbrev[t.MythicKey.link] or t.MythicKey.link
+              local kabbrev = KeystonetoAbbrev[t.MythicKey.name] or t.MythicKey.name
               tooltip:SetCell(show, col, "|c"..t.MythicKey.color..kabbrev.." ("..t.MythicKey.level..")"..FONTEND, "CENTER",maxcol)
             end
           else
-          tooltip:SetCell(show, col, "|c"..t.MythicKey.color..t.MythicKey.link.." ("..t.MythicKey.level..")"..FONTEND, "CENTER",maxcol)
+            tooltip:SetCell(show, col, "|c"..t.MythicKey.color..t.MythicKey.name.." ("..t.MythicKey.level..")"..FONTEND, "CENTER",maxcol)
           end
           tooltip:SetCellScript(show, col, "OnMouseDown", ChatLink, t.MythicKey.link)
         end
@@ -3962,7 +4004,7 @@ function core:ShowTooltip(anchorframe)
             end
           end
           tooltips[day] = tooltip:AddLine(GOLDFONT .. name .. " (+" .. (day - 1) .. " " .. L["Day"] .. ")" .. FONTEND)
-          tooltip:SetCellScript(tooltips[day], 1, "OnEnter", ShowEmissarySummary, {expansionLevel, day})
+          tooltip:SetCellScript(tooltips[day], 1, "OnEnter", hoverTooltip.ShowEmissarySummary, {expansionLevel, day})
           tooltip:SetCellScript(tooltips[day], 1, "OnLeave", CloseTooltips)
         end
       end
@@ -3987,6 +4029,8 @@ function core:ShowTooltip(anchorframe)
                 end
               end
               tooltip:SetCell(tooltips[day], col, text, "CENTER", maxcol)
+              tooltip:SetCellScript(tooltips[day], col, "OnEnter", hoverTooltip.ShowEmissaryTooltip, {expansionLevel, day, toon})
+              tooltip:SetCellScript(tooltips[day], col, "OnLeave", CloseTooltips)
             end
           end
         end
@@ -4029,7 +4073,7 @@ function core:ShowTooltip(anchorframe)
         local str = toonbonus[toon]
         if str > 0 then str = "+"..str end
         tooltip:SetCell(show, col, ClassColorise(t.Class,str), "CENTER",maxcol)
-        tooltip:SetCellScript(show, col, "OnEnter", ShowBonusTooltip, toon)
+        tooltip:SetCellScript(show, col, "OnEnter", hoverTooltip.ShowBonusTooltip, toon)
         tooltip:SetCellScript(show, col, "OnLeave", CloseTooltips)
       end
     end
@@ -4065,7 +4109,7 @@ function core:ShowTooltip(anchorframe)
         end
         currLine = tooltip:AddLine(YELLOWFONT .. show .. FONTEND)
         tooltip:SetLineScript(currLine, "OnMouseDown", OpenCurrency)
-        tooltip:SetCellScript(currLine, 1, "OnEnter", ShowCurrencySummary, idx)
+        tooltip:SetCellScript(currLine, 1, "OnEnter", hoverTooltip.ShowCurrencySummary, idx)
         tooltip:SetCellScript(currLine, 1, "OnLeave", CloseTooltips)
         tooltip:SetCellScript(currLine, 1, "OnMouseDown", OpenCurrency)
 
@@ -4098,7 +4142,7 @@ function core:ShowTooltip(anchorframe)
                 str = ClassColorise(t.Class,str)
               end
               tooltip:SetCell(currLine, col, str, "CENTER",maxcol)
-              tooltip:SetCellScript(currLine, col, "OnEnter", ShowCurrencyTooltip, {toon, idx, ci})
+              tooltip:SetCellScript(currLine, col, "OnEnter", hoverTooltip.ShowCurrencyTooltip, {toon, idx, ci})
               tooltip:SetCellScript(currLine, col, "OnLeave", CloseTooltips)
               tooltip:SetCellScript(currLine, col, "OnMouseDown", OpenCurrency)
             end
@@ -4120,7 +4164,7 @@ function core:ShowTooltip(anchorframe)
       end
       tooltip:SetCell(headLine, col, ClassColorise(addon.db.Toons[toon].Class, toonstr),
         tooltip:GetHeaderFont(), "CENTER", maxcol)
-      tooltip:SetCellScript(headLine, col, "OnEnter", ShowToonTooltip, toon)
+      tooltip:SetCellScript(headLine, col, "OnEnter", hoverTooltip.ShowToonTooltip, toon)
       tooltip:SetCellScript(headLine, col, "OnLeave", CloseTooltips)
     end
   end
@@ -4472,14 +4516,14 @@ function core:BonusRollResult(event, rewardType, rewardLink, rewardQuantity, rew
   if GetBonusRollEncounterJournalLinkDifficulty() == DIFFICULTY_DUNGEON_CHALLENGE then
     local name, _, difficultyID, difficultyName = GetInstanceInfo()
     if difficultyID == DIFFICULTY_DUNGEON_CHALLENGE then
-      bossname = name .. difficultyName
+      bossname = name .. ": " .. difficultyName
     else
       local tmp, key, value = {}
       for key, value in pairs(db.History) do
         local _, name, _, diff = strsplit(":", key)
         if tonumber(diff) == DIFFICULTY_DUNGEON_CHALLENGE then
           local tbl = {
-            name = name,
+            name = name .. ": " .. GetDifficultyInfo(diff),
             last = value.last,
           }
           table.insert(tmp, tbl)
@@ -4537,7 +4581,7 @@ function addon.BonusRollShow()
     frame:SetPoint("LEFT", BonusRollFrame, "RIGHT",0,8)
     frame.text = addon.BonusFrame:CreateFontString(nil, "OVERLAY","GameFontNormal")
     frame.text:SetPoint("CENTER")
-    frame:SetScript("OnEnter", function() ShowBonusTooltip(nil, { thisToon, frame }) end )
+    frame:SetScript("OnEnter", function() hoverTooltip.ShowBonusTooltip(nil, { thisToon, frame }) end )
     frame:SetScript("OnLeave", CloseTooltips)
     frame:SetScript("OnClick", nil)
     frame.text:Show()

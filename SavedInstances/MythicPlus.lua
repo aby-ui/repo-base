@@ -61,7 +61,7 @@ function MythicPlusModule:RefreshMythicKeyInfo(event)
         -- Disabled Debug Message
         -- addon.debug("Mythic Keystone: %s", gsub(keyLink, "\124", "\124\124"))
         t.MythicKey.abbrev = KeystoneAbbrev[mapID]
-        t.MythicKey.link = C_ChallengeMode.GetMapUIInfo(mapID)
+        t.MythicKey.name = C_ChallengeMode.GetMapUIInfo(mapID)
         t.MythicKey.color = color
         t.MythicKey.level = mapLevel
         t.MythicKey.ResetTime = addon:GetNextWeeklyResetTime()

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2337, "DBM-ZuldazarRaid", 3, 1176)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 18403 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 18415 $"):sub(12, -3))
 mod:SetCreatureID(146251, 146253, 146256)--Sister Katherine 146251, Brother Joseph 146253, Laminaria 146256
 mod:SetEncounterID(2280)
 --mod:DisableESCombatDetection()
@@ -29,12 +29,11 @@ mod:RegisterEventsInCombat(
 )
 
 --TODO, switch to custom hybrid frame to show both shields and boss energy and storm's Wail
---TODO, add Tidal/Jolting Volleys? Just seems like general consistent aoe damage so not worth warning yet
 --TODO, icons and stuff for storm's wail
 --TODO, add "watch wave" warning for Energized wake on mythic
 --[[
 (ability.id = 284262 or ability.id = 284106 or ability.id = 284393 or ability.id = 284383 or ability.id = 285017 or ability.id = 284362 or ability.id = 288696 or ability.id = 288941) and type = "begincast"
- or (ability.id = 285350 or ability.id = 285426 or ability.id = 285118 or ability.id = 290694 or ability.id = 289795) and type = "cast"
+ or (ability.id = 285350 or ability.id = 285426 or ability.id = 285118 or ability.id = 290694 or ability.id = 289795 or ability.id = 287169) and type = "cast"
  or type = "interrupt"
  or ability.id = 284405 and type = "applydebuff"
 --]]
@@ -360,7 +359,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 		else
 			timerSeasTemptationCD:Start(5, self.vb.sirenCount+1)
 		end
-	elseif spellId == 287169 and self.vb.phase == 2 and self:AntiSpam(10, 4) then--Only want to see timer for it in mythic, it's mostly spammed in P1 and doesn't need a timer there
+	elseif spellId == 287169 and self.vb.phase == 2 and self:AntiSpam(12, 4) then--Only want to see timer for it in mythic, it's mostly spammed in P1 and doesn't need a timer there
 		self.vb.joltingCast = self.vb.joltingCast + 1
 		warnJoltingVolley:Show(self.vb.joltingCast)
 		timerJoltingVolleyCD:Start(43.6, self.vb.joltingCast+1)
@@ -478,8 +477,8 @@ function mod:SPELL_INTERRUPT(args)
 		if self:IsMythic() then
 			timerVoltaicFlashCD:SetFade(false)
 			timerSeasTemptationCD:SetFade(false)
+			timerJoltingVolleyCD:Start(10.2, 1)
 			timerVoltaicFlashCD:Start(18.7)
-			timerJoltingVolleyCD:Start(21.6, 1)
 			timerSeasTemptationCD:Start(38.7, 1)
 		end
 	end

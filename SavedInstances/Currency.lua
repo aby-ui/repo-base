@@ -100,6 +100,20 @@ for _, v in pairs(earnByQuest) do
   end
 end
 
+local function GetSeasonCurrency(idx)
+  local season_scan = CURRENCY_SEASON_TOTAL:gsub("%%%d*?([ds])","(%%%1*)")
+  addon.scantt:SetOwner(UIParent,"ANCHOR_NONE")
+  addon.scantt:SetCurrencyByID(idx)
+  local name = addon.scantt:GetName()
+  for i=1,addon.scantt:NumLines() do
+    local left = _G[name.."TextLeft"..i]
+    if left:GetText():find(season_scan) then
+      return left:GetText()
+    end
+  end
+  return nil
+end
+
 function addon:UpdateCurrency()
   if addon.logout then return end -- currency is unreliable during logout
   local t = addon.db.Toons[thisToon]
@@ -138,7 +152,7 @@ function addon:UpdateCurrency()
           end
         end
       end
-      ci.season = addon:GetSeasonCurrency(idx)
+      ci.season = GetSeasonCurrency(idx)
       if ci.weeklyMax == 0 then ci.weeklyMax = nil end -- don't store useless info
       if ci.totalMax == 0 then ci.totalMax = nil end -- don't store useless info
       if ci.earnedThisWeek == 0 then ci.earnedThisWeek = nil end -- don't store useless info

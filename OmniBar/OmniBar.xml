@@ -171,6 +171,7 @@
 						break
 					end
 				end
+				OmniBar_Position(bar)
 			</OnHide>
 			<OnMouseDown>
 				local bar = self:GetParent():GetParent()

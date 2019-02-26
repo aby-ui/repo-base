@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("KingsRestTrash", "DBM-Party-BfA", 3)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 18400 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 18412 $"):sub(12, -3))
 --mod:SetModelID(47785)
 mod:SetZone()
 
@@ -123,14 +123,14 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif spellId == 270927 and self:AntiSpam(3, 6) then
 		specWarnBladestorm:Show()
 		specWarnBladestorm:Play("justrun")
-	elseif spellId == 270920 then
+	elseif spellId == 270920 and self:CheckDispelFilter() then
 		specWarnSeduction:Show(args.destName)
 		specWarnSeduction:Show("helpdispel")
 	elseif spellId == 270865 and args:IsDestTypePlayer() then
 		if args:IsPlayer() then
 			specWarnHiddenBlade:Show()
 			specWarnHiddenBlade:Show("runout")
-		else
+		elseif self:CheckDispelFilter() then
 			specWarnHiddenBladeDispel:Show(args.destName)
 			specWarnHiddenBladeDispel:Play("helpdispel")
 		end

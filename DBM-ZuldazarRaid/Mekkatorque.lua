@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2334, "DBM-ZuldazarRaid", 3, 1176)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 18368 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 18412 $"):sub(12, -3))
 mod:SetCreatureID(144796)
 mod:SetEncounterID(2276)
 --mod:DisableESCombatDetection()
@@ -244,13 +244,14 @@ local explodingSheepTimers = {
 	},
 }
 
-local function shrunkYellRepeater(self, tampering)
-	if tampering then
-		yellTamperingRepeater:Yell()
-	else
-		yellShrunkRepeater:Yell()
-	end
-	self:Schedule(2, shrunkYellRepeater, self, tampering)
+local function shrunkYellRepeater(self)
+	yellShrunkRepeater:Yell()
+	self:Schedule(2, shrunkYellRepeater, self)
+end
+
+local function TamperingYellRepeater(self)
+	yellTamperingRepeater:Yell()
+	self:Schedule(2, TamperingYellRepeater, self)
 end
 
 local updateInfoFrame
@@ -549,7 +550,7 @@ function mod:SPELL_AURA_APPLIED(args)
 			self:SetIcon(args.destName, icon)
 		end
 		self.vb.gigaIcon = self.vb.gigaIcon + 1
-	elseif spellId == 287167 then
+	elseif spellId == 287167 and self:CheckDispelFilter() then
 		specWarnDiscombobulation:CombinedShow(0.3, args.destName)
 		specWarnDiscombobulation:ScheduleVoice(0.3, "helpdispel")
 	elseif spellId == 284168 then
@@ -603,8 +604,8 @@ function mod:SPELL_AURA_APPLIED(args)
 			playersInRobots[args.destName] = 0
 			robotCount = robotCount + 1
 			if args:IsPlayer() then
-				self:Unschedule(shrunkYellRepeater)
-				self:Schedule(2, shrunkYellRepeater, self, true)
+				self:Unschedule(TamperingYellRepeater)
+				self:Schedule(2, TamperingYellRepeater, self)
 			end
 		end
 	elseif spellId == 287114 then
@@ -640,7 +641,7 @@ function mod:SPELL_AURA_REMOVED(args)
 			playersInRobots[args.destName] = nil
 			robotCount = robotCount - 1
 			if args:IsPlayer() then
-				self:Unschedule(shrunkYellRepeater)
+				self:Unschedule(TamperingYellRepeater)
 			end
 		end
 	end

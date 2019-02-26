@@ -440,6 +440,7 @@ OmniBar.cooldowns = {
 	[136] = { duration = 10, class = "HUNTER" }, -- Mend Pet
 	[1543] = { duration = 20, class = "HUNTER" }, -- Flare
 	[5384] = { duration = 30, class = "HUNTER" }, -- Feign Death
+	[53480] = { duration = 60, class = "HUNTER" }, -- Roar of Sacrifice
 	[109304] = { duration = 120, class = "HUNTER" }, -- Exhilaration (Beast Mastery, Survival)
 	[131894] = { duration = 60, class = "HUNTER" }, -- A Murder of Crows (Beast Mastery, Marksmanship)
 		[206505] = { parent = 131894 }, -- A Murder of Crows (Survival)

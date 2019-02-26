@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("AtalDazarTrash", "DBM-Party-BfA", 1)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17762 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 18412 $"):sub(12, -3))
 --mod:SetModelID(47785)
 mod:SetZone()
 
@@ -80,7 +80,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		if args:IsPlayer() then
 			specWarnVenomfangStrike:Show()
 			specWarnVenomfangStrike:Play("defensive")
-		else
+		elseif self:CheckDispelFilter() then
 			specWarnVenomfangStrikeDispel:Show(args.destName)
 			specWarnVenomfangStrikeDispel:Play("helpdispel")
 		end
