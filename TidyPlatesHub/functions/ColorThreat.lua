@@ -156,6 +156,14 @@ local function ColorFunctionByThreat(unit)
 		return classColor
 	elseif (InCombatLockdown() or unit.isInCombat) and unit.reaction ~= "FRIENDLY" and unit.type == "NPC" then
 
+        if unit.isTargetingYou ~= nil then
+            if IsTankingAuraActive() then
+                return unit.isTargetingYou and LocalVars.ColorThreatSafe or LocalVars.ColorThreatWarning
+            else
+                return unit.isTargetingYou and LocalVars.ColorThreatWarning or LocalVars.ColorThreatSafe
+            end
+        end
+
 		if not unit.isInCombat or (unit.reaction == "NEUTRAL" and unit.threatValue < 2) then return ReactionColors[unit.reaction][unit.type] end
 
 		if (LocalVars.ThreatWarningMode == "Tank") or (LocalVars.ThreatWarningMode == "Auto" and IsTankingAuraActive()) then

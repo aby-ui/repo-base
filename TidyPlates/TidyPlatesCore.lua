@@ -79,7 +79,7 @@ local OnUpdateCasting, OnStartCasting, OnStopCasting, OnUpdateCastMidway
 -- Event Functions
 local OnShowNameplate, OnHideNameplate, OnUpdateNameplate, OnResetNameplate
 local OnHealthUpdate, UpdateUnitCondition
-local UpdateUnitContext, OnRequestWidgetUpdate, OnRequestDelegateUpdate
+local UpdateUnitContext, OnRequestWidgetUpdate, OnRequestDelegateUpdate, UpdateUnitTarget
 local UpdateUnitIdentity
 local OnNewNameplate
 
@@ -417,7 +417,7 @@ do
 		-- plate:GetChildren():Hide()
 
 		-- Gather Information
-		unitid = PlatesVisible[plate]
+		local unitid = PlatesVisible[plate]
 		UpdateReferences(plate)
 
 		UpdateUnitIdentity(unitid)
@@ -428,7 +428,7 @@ do
 
 	-- OnHealthUpdate
 	function OnHealthUpdate(plate)
-		unitid = PlatesVisible[plate]
+		local unitid = PlatesVisible[plate]
 
 		UpdateUnitCondition(plate, unitid)
 		ProcessUnitChanges()
@@ -441,7 +441,7 @@ do
 		plate.UpdateMe = true
 		extended.unitcache = ClearIndices(extended.unitcache)
 		extended.stylename = ""
-		unitid = PlatesVisible[plate]
+		local unitid = PlatesVisible[plate]
 
 		OnShowNameplate(plate, unitid)
 	end
@@ -555,11 +555,23 @@ do
 
 		if activetheme.OnContextUpdate then activetheme.OnContextUpdate(extended, unit) end
 		if activetheme.OnUpdate then activetheme.OnUpdate(extended, unit) end
-	end
+    end
+
+    local nameplateNtarget = setmetatable({}, { __index = function(t, k) t[k] = k .. "target" return t[k] end})
+    function UpdateUnitTarget(plate, unitid)
+        unit.isTargetingYou = nil
+        if not unit.guid then return end
+        local npcId = select(6,strsplit("-", unit.guid))
+        -- Reaping monsters
+        if npcId == "148716" or npcId == "148893" or npcId == "148894" then
+            unit.isTargetingYou = UnitIsUnit(nameplateNtarget[unitid], "player")
+        end
+    end
 
 	-- UpdateUnitCondition: High volatility data
 	function UpdateUnitCondition(plate, unitid)
 		UpdateReferences(plate)
+        UpdateUnitTarget(plate, unitid)
 
 		unit.level = UnitEffectiveLevel(unitid)
 
@@ -1095,6 +1107,17 @@ do
 	CoreEvents.PLAYER_FOCUS_CHANGED = WorldConditionChanged
 	CoreEvents.PLAYER_CONTROL_LOST = WorldConditionChanged
 	CoreEvents.PLAYER_CONTROL_GAINED = WorldConditionChanged
+
+--[[
+    CoreEvents.UNIT_TARGET = function(event, unitid)
+        if not unitid then return end
+        local plate = GetNamePlateForUnit(unitid)
+        if plate then
+            UpdateReferences(plate)
+            UpdateUnitTarget(plate, unitid)
+        end
+    end
+]]
 
 	-- Registration of Blizzard Events
 	TidyPlatesCore:SetFrameStrata("TOOLTIP") 	-- When parented to WorldFrame, causes OnUpdate handler to run close to last

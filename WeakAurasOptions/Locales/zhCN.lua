@@ -318,6 +318,8 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	L["Left 2 HUD position"] = "左侧第二 HUD 位置"
 	L["Left HUD position"] = "左侧 HUD 位置"
 	L["Left Text"] = "左边文字"
+	--[[Translation missing --]]
+	L["Legacy Aura Trigger"] = "Legacy Aura Trigger"
 	L["Length"] = "长度"
 	L["Load"] = "载入"
 	L["Loaded"] = "已载入"
@@ -522,6 +524,8 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	L["The type of trigger"] = "触发器类型"
 	L["Then "] = "然后"
 	L["This adds %tooltip, %tooltip1, %tooltip2, %tooltip3 as text replacements."] = "这将替换 %tooltip, %tooltip1, %tooltip2, %tooltip3 的文本。"
+	--[[Translation missing --]]
+	L["This aura has legacy aura trigger(s). Convert them to the new system to benefit from enhanced performance and features"] = "This aura has legacy aura trigger(s). Convert them to the new system to benefit from enhanced performance and features"
 	L["This display is currently loaded"] = "此显示内容已加载"
 	L["This display is not currently loaded"] = "此显示内容未加载"
 	L["This region of type \"%s\" is not supported."] = "该类型区域“%s”不受支持。"

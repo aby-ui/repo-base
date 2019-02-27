@@ -381,14 +381,54 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
   unevent = unevent or trigger.unevent;
   local options = {};
   local order = startorder or 10;
+
+  local isCollapsedFunctions;
   for index, arg in pairs(prototype.args) do
     local hidden = nil;
-    if(type(arg.enable) == "function") then
+    if(arg.collapse and isCollapsedFunctions[arg.collapse] and type(arg.enable) == "function") then
+      local isCollapsed = isCollapsedFunctions[arg.collapse]
+      hidden = function()
+        return isCollapsed() or not arg.enable(trigger)
+      end
+    elseif(type(arg.enable) == "function") then
       hidden = function() return not arg.enable(trigger) end;
+    elseif(arg.collapse and isCollapsedFunctions[arg.collapse]) then
+      hidden = isCollapsedFunctions[arg.collapse]
     end
     local name = arg.name;
     local reloadOptions = arg.reloadOptions;
-    if(name and not arg.hidden) then
+    if (name and arg.type == "collapse") then
+      options["summary_" .. arg.name] = {
+        type = "description",
+        width = WeakAuras.doubleWidth - 0.15,
+        name = type(arg.display) == "function" and arg.display(trigger) or arg.display,
+        order = order,
+      }
+      order = order + 1;
+      options["button_" .. arg.name] = {
+        type = "execute",
+        width = 0.15,
+        name = "",
+        order = order,
+        image = function()
+          local collapsed = WeakAuras.IsCollapsed("trigger", name, "", true)
+          return collapsed and "Interface\\AddOns\\WeakAuras\\Media\\Textures\\edit" or "Interface\\AddOns\\WeakAuras\\Media\\Textures\\editdown"
+        end,
+        imageWidth = 24,
+        imageHeight = 24,
+        func = function()
+          local collapsed = WeakAuras.IsCollapsed("trigger", name, "", true)
+          WeakAuras.SetCollapsed("trigger", name, "", not collapsed)
+          WeakAuras.ReloadTriggerOptions(data);
+        end
+      }
+      order = order + 1;
+
+      isCollapsedFunctions = isCollapsedFunctions or {};
+      isCollapsedFunctions[name] = function()
+        return WeakAuras.IsCollapsed("trigger", name, "", true);
+      end
+    elseif(name and not arg.hidden) then
       local realname = name;
       if(triggertype == "untrigger") then
         name = "untrigger_"..name;
@@ -2549,9 +2589,7 @@ function WeakAuras.AddCodeOption(args, data, name, prefix, order, hiddenFunc, pa
   };
 end
 
-local function addCollapsibleHeader(options, data, key, title, order, isGroupTab)
-  local id = data.id
-
+local function addCollapsibleHeader(options, key, title, order, isGroupTab)
   options[key .. "collapseSpacer"] = {
     type = "description",
     name = "",
@@ -2564,26 +2602,12 @@ local function addCollapsibleHeader(options, data, key, title, order, isGroupTab
     order = order + 0.1,
     width = 0.15,
     func = function(info)
-      if not isGroupTab and data.controlledChildren then
-        for index, childId in ipairs(data.controlledChildren) do
-          local childData = WeakAuras.GetData(childId);
-          if(childData) then
-            WeakAuras.EnsureOptions(childId);
-            local childOption = getChildOption(displayOptions[childId], info);
-            if (childOption) then
-              local isCollapsed = WeakAuras.IsCollapsed(childId, "region", key, false)
-              WeakAuras.SetCollapsed(childId, "region", key, not isCollapsed)
-            end
-          end
-        end
-      else
-        local isCollapsed = WeakAuras.IsCollapsed(id, "region", key, false)
-        WeakAuras.SetCollapsed(id, "region", key, not isCollapsed)
-      end
+      local isCollapsed = WeakAuras.IsCollapsed("collapse", "region", key, false)
+      WeakAuras.SetCollapsed("collapse", "region", key, not isCollapsed)
       WeakAuras.RefillOptions()
     end,
     image = function()
-      local isCollapsed = WeakAuras.IsCollapsed(id, "region", key, false)
+      local isCollapsed = WeakAuras.IsCollapsed("collapse", "region", key, false)
       return isCollapsed and "Interface\\AddOns\\WeakAuras\\Media\\Textures\\expand" or "Interface\\AddOns\\WeakAuras\\Media\\Textures\\collapse", 18, 18
     end
   }
@@ -2596,7 +2620,7 @@ local function addCollapsibleHeader(options, data, key, title, order, isGroupTab
     fontSize = "large"
   }
   return function()
-    return WeakAuras.IsCollapsed(id, "region", key, false)
+    return WeakAuras.IsCollapsed("collapse", "region", key, false)
   end
 end
 
@@ -2627,14 +2651,14 @@ local function copyOptionTable(input, orderAdjustment, collapsedFunc)
   return resultOption;
 end
 
-local function flattenRegionOptions(allOptions, data, isGroupTab)
+local function flattenRegionOptions(allOptions, isGroupTab)
   local result = {};
   local base = 1000;
 
   for optionGroup, options in pairs(allOptions) do
     local groupBase = base * options.__order
 
-    local collapsedFunc = addCollapsibleHeader(result, data, optionGroup, options.__title, groupBase, isGroupTab)
+    local collapsedFunc = addCollapsibleHeader(result, optionGroup, options.__title, groupBase, isGroupTab)
 
     for optionName, option in pairs(options) do
       if not optionName:find("^__") then
@@ -2711,7 +2735,7 @@ function WeakAuras.AddOption(id, data)
           end
           WeakAuras.ResetMoverSizer();
         end,
-        args = flattenRegionOptions(regionOption, data, true);
+        args = flattenRegionOptions(regionOption, true);
       },
       trigger = {
         type = "group",
@@ -2865,6 +2889,11 @@ function WeakAuras.ReloadTriggerOptions(data)
   else
     optionTriggerChoices[id] = min(optionTriggerChoices[id] or 1, #data.triggers);
     local triggerChoice = optionTriggerChoices[id]
+    -- TODO: remove this once legacy aura trigger is removed
+    local button = displayButtons[id]
+    if (button) then
+      button:RefreshBT2UpgradeIcon()
+    end
   end
 
   local function deleteTrigger()
@@ -3371,7 +3400,7 @@ function WeakAuras.ReloadTriggerOptions(data)
       end,
       hidden = function() return false end,
       disabled = function() return false end,
-      args = flattenRegionOptions(regionOption, data, true);
+      args = flattenRegionOptions(regionOption, true);
     };
 
     data.load.use_class = getAll(data, {"load", "use_class"});
@@ -3518,7 +3547,7 @@ function WeakAuras.ReloadGroupRegionOptions(data)
   end
 
   fixMetaOrders(allOptions);
-  local regionOption = flattenRegionOptions(allOptions, data, false);
+  local regionOption = flattenRegionOptions(allOptions, false);
   replaceNameDescFuncs(regionOption, data);
   replaceImageFuncs(regionOption, data);
   replaceValuesFuncs(regionOption, data);
@@ -4073,8 +4102,8 @@ function WeakAuras.IsDisplayPicked(id)
   end
 end
 
-function WeakAuras.PickDisplay(id)
-  frame:PickDisplay(id);
+function WeakAuras.PickDisplay(id, tab) -- TODO: remove tab parametter once legacy aura trigger is removed
+  frame:PickDisplay(id, tab);
   WeakAuras.UpdateButtonsScroll()
 end
 
@@ -4290,6 +4319,8 @@ function WeakAuras.UpdateDisplayButton(data)
     if WeakAurasCompanion and button:IsGroup() then
       button:RefreshUpdate()
     end
+    -- TODO: remove this once legacy aura trigger is removed
+    button:RefreshBT2UpgradeIcon()
   end
 end
 

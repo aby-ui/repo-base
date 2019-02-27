@@ -630,9 +630,13 @@ function WeakAuras.CreateFrame()
   unloadedButton:SetViewDescription(L["Toggle the visibility of all non-loaded displays"]);
   frame.unloadedButton = unloadedButton;
 
-  frame.FillOptions = function(self, optionTable)
+  frame.FillOptions = function(self, optionTable, selected)
     AceConfig:RegisterOptionsTable("WeakAuras", optionTable);
     AceConfigDialog:Open("WeakAuras", container);
+    -- TODO: remove this once legacy aura trigger is removed
+    if selected then
+      container.content.obj.children[1]:SelectTab(selected)
+    end
     container:SetTitle("");
   end
 
@@ -810,7 +814,7 @@ function WeakAuras.CreateFrame()
     end
   end
 
-  frame.PickDisplay = function(self, id)
+  frame.PickDisplay = function(self, id, tab) -- TODO: remove tab parametter once legacy aura trigger is removed
     self:ClearPicks();
     local data = WeakAuras.GetData(id);
 
@@ -819,7 +823,7 @@ function WeakAuras.CreateFrame()
       self.pickedDisplay = id;
       local data = db.displays[id];
       WeakAuras.ReloadTriggerOptions(data);
-      self:FillOptions(displayOptions[id]);
+      self:FillOptions(displayOptions[id], tab); -- TODO: remove tab parametter once legacy aura trigger is removed
       WeakAuras.regions[id].region:Collapse();
       WeakAuras.regions[id].region:Expand();
       self.moversizer:SetToRegion(WeakAuras.regions[id].region, db.displays[id]);

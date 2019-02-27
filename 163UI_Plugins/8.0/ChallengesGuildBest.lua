@@ -73,22 +73,23 @@ CoreDependCall("Blizzard_ChallengesUI", function()
     -- hooksecurefunc("ChallengesFrame_Update", update)
 
     local levels = { nil, 380, 385, 390, 390, 395, 400, 400, 405, 410, 410, 410, 410, 410, 410, 410, 410, 410, 410, 410, 410, 410, 410, 410, 410 }
-    local titans = { nil, nil, nil, nil, nil, nil, nil, nil, nil, 625, 667, 709, 751, 793, 835, 866, 897, 928, 959, 990, 1010,1030,1050,1070,1090}
+    local titans = { nil, 15, 20, 60, 70, 80, 195, 205, 215, 625, 667, 709, 751, 793, 835, 866, 897, 928, 959, 990, 1010,1030,1050,1070,1090}
     ChallengesFrame.WeeklyInfo.Child.WeeklyChest:HookScript("OnEnter", function(self)
         if GameTooltip:IsVisible() then
             GameTooltip:AddLine(" ")
             GameTooltip:AddLine("钥石层数  奖励装等  奖励精华")
             local start = 2
             if self.level and self.level > 0 then
-                start = self.level - 3
+                start = self.level - 4
             elseif self.ownedKeystoneLevel and self.ownedKeystoneLevel > 0 then
-                start = self.ownedKeystoneLevel - 5
+                --start = self.ownedKeystoneLevel - 5
             end
-            for i = start, start + 9 do
+            for i = start, start + 10 do
                 if levels[i] or titans[i] then
                     local line = "    %2d层 |T130758:10:35:0:0:32:32:10:22:10:22|t %s |T130758:10:25:0:0:32:32:10:22:10:22|t %s"
                     local level = levels[i] and format("%d", levels[i]) or " ? "
                     local titan = titans[i] and format("%4d", titans[i]) or "  ? "
+                    if i == self.level then line = "|cff00ff00"..line.."|r" end
                     GameTooltip:AddLine(format(line, i, level, titan))
                 else
                     break
@@ -96,11 +97,12 @@ CoreDependCall("Blizzard_ChallengesUI", function()
             end
 
             GameTooltip:AddLine(" ")
-            GameTooltip:AddLine("385随机 需要165 分解返35")
-            GameTooltip:AddLine("400随机 需要675 分解返115")
+            GameTooltip:AddLine("385随机 需要165  分解返35")
+            GameTooltip:AddLine("400随机 需要675  分解返115")
             GameTooltip:AddLine("415随机 需要1725 分解返365")
             GameTooltip:AddLine("415指定 需要7150")
-            GameTooltip:AddLine("其他：340返1 355返3 370返12")
+            GameTooltip:AddLine("其他    340返1 355返3 370返12")
+            GameTooltip:AddLine("仅|cffff00008.1|r之后获得的|cffff0000同甲|r特质装才返")
             GameTooltip:Show()
         end
     end)

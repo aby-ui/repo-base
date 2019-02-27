@@ -10,7 +10,7 @@ end
 local mod	= DBM:NewMod(dungeonID, "DBM-ZuldazarRaid", 1, 1176)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 18337 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 18421 $"):sub(12, -3))
 mod:SetCreatureID(creatureID)
 mod:SetEncounterID(2263, 2284)--2263 Alliance, 2284 Horde
 --mod:DisableESCombatDetection()
@@ -138,7 +138,7 @@ function mod:OnCombatStart(delay)
 	end
 --	timerEnergyAOECD:Start(100-delay, 1)
 	if self.Options.RangeFrame then
-		DBM.RangeCheck:Show(8, nil, nil, 2, true)
+		DBM.RangeCheck:Show(8, nil, nil, 1, true)
 	end
 	if self.Options.InfoFrame then
 		DBM.InfoFrame:SetHeader(OVERVIEW)

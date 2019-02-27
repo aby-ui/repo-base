@@ -2,4 +2,5 @@
 	<Script file="Azurethos.lua"/>
 	<Script file="Uldir.lua"/>
 	<Script file="PartyDungeons.lua"/>
+	<Script file="BattleofDazaralor.lua"/>
 </Ui>
