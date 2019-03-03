@@ -1,4 +1,4 @@
-﻿local abs = abs
+local abs = abs
 local math = math
 local max = max
 local pairs = pairs
@@ -889,5 +889,5 @@ function Gladius:IsValidUnit(unit)
 	end
 
 	local unitID = strmatch(unit, "arena(%d+)")
-    return unitID and tonumber(unitID) <= 5
+	return unitID and tonumber(unitID) <= 5
 end

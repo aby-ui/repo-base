@@ -155,6 +155,7 @@ function BuyEmAll:MerchantItemButton_OnModifiedClick(frame, button)
     if (MerchantFrame.selectedTab == 1)
             and (IsShiftKeyDown())
             and not (IsControlKeyDown())
+            and not ((C_AzeriteEmpoweredItem.IsAzeriteEmpoweredItemByID(GetMerchantItemLink(self.itemIndex))) and (button == "RightButton"))
             and not (ChatFrame1EditBox:HasFocus()) then
 
         -- Set up various data before showing the BuyEmAll frame.

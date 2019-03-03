@@ -190,6 +190,8 @@ local spellsAndProvidersByCategory = {
 		[161354] = true, -- Polymorph (monkey)
 		[161355] = true, -- Polymorph (penguin)
 		[161372] = true, -- Polymorph (peacock)
+		[277787] = true, -- Polymorph (Direhorn)
+		[277792] = true, -- Polymorph (Bumblebee)
 		[ 82691] = true, -- Ring of Frost
 		-- Monk
 		[115078] = true, -- Paralysis
@@ -254,6 +256,7 @@ local spellsAndProvidersByCategory = {
 		-- Demon Hunter
 		[207685] = true, -- Sigil of Misery
 		-- Druid
+		[ 2637] = true, -- Hibernate
 		[ 33786] = true, -- Cyclone
 		[209753] = true, -- Cyclone (Balance)
 		-- Hunter

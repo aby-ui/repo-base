@@ -167,6 +167,10 @@ do
 		["yellowgreen"] = {0.603922, 0.803922, 0.196078, 1}
 	}
 	
+	function DF:GetDefaultColorList()
+		return defaultColors
+	end
+	
 	for colorName, colorTable in pairs (defaultColors) do
 		DF.alias_text_colors [colorName] = colorTable
 	end

@@ -144,6 +144,11 @@ do
 				quest_icons_scale_offset = 0,
 			},
 			
+			accessibility = {
+				extra_tracking_indicator = false,
+				
+			},
+			
 			last_news_time = 0,
 
 			hoverover_animations = true, --hover and shown slider animations

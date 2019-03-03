@@ -9,15 +9,25 @@ U1RegisterAddon("GTFO", {
         if justload then
             CoreOnEvent("COMBAT_LOG_EVENT_UNFILTERED", function(event, ...)
                 if not enabled then return end
-                if not U1GetCfgValue("GTFO", "mythic_blood", true) then return end
-                if lastPlayTime and GetTime() - lastPlayTime < 3 then return end
-                if not InCombatLockdown() then return end
-                if UnitExists("boss1") then return end
-                local timestamp, subEvent, hideCaster, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destFlags, destRaidFlags, spellID = CombatLogGetCurrentEventInfo()
-                if spellID == 226510 and (subEvent == "SPELL_AURA_APPLIED" or subEvent == "SPELL_PERIODIC_HEAL") then
-                    if bit.band(destFlags, COMBATLOG_OBJECT_TYPE_NPC) > 0 and bit.band(destFlags, COMBATLOG_OBJECT_REACTION_HOSTILE) > 0 and not sourceGUID:find('-141851-') then -- 忽略中立小动物和中立敌人，141851是戈霍恩之子 --and bit.band(destFlags, COMBATLOG_OBJECT_CONTROL_NPC) > 0 and (bit.band(destFlags, COMBATLOG_OBJECT_REACTION_HOSTILE) > 0 or bit.band(destFlags, COMBATLOG_OBJECT_REACTION_NEUTRAL) > 0) then
-                        PlaySoundFile("Interface\\AddOns\\GTFO\\Sounds\\mythic_blood.ogg")
-                        lastPlayTime = GetTime()
+                -- 血池拉走
+                if U1GetCfgValue("GTFO", "mythic_blood", true) then
+                    if lastPlayTime and GetTime() - lastPlayTime < 3 then return end
+                    if not InCombatLockdown() then return end
+                    if UnitExists("boss1") then return end
+                    local timestamp, subEvent, hideCaster, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destFlags, destRaidFlags, spellID = CombatLogGetCurrentEventInfo()
+                    if spellID == 226510 and (subEvent == "SPELL_AURA_APPLIED" or subEvent == "SPELL_PERIODIC_HEAL") then
+                        if bit.band(destFlags, COMBATLOG_OBJECT_TYPE_NPC) > 0 and bit.band(destFlags, COMBATLOG_OBJECT_REACTION_HOSTILE) > 0 and not sourceGUID:find('-141851-') then -- 忽略中立小动物和中立敌人，141851是戈霍恩之子 --and bit.band(destFlags, COMBATLOG_OBJECT_CONTROL_NPC) > 0 and (bit.band(destFlags, COMBATLOG_OBJECT_REACTION_HOSTILE) > 0 or bit.band(destFlags, COMBATLOG_OBJECT_REACTION_NEUTRAL) > 0) then
+                            PlaySoundFile("Interface\\AddOns\\GTFO\\Sounds\\mythic_blood.ogg")
+                            lastPlayTime = GetTime()
+                        end
+                    end
+                end
+
+                -- 紫圈快躲 3/3 01:31:26.500  SPELL_CAST_START,Creature-0-3911-1864-10934-148894-00007ABE3C,"失落的灵魂",0xa48,0x0,0000000000000000,nil,0x80000000,0x80000000,288694,"暗影碎击",0x20
+                if U1GetCfgValue("GTFO", "purple_circle", true) then
+                    local timestamp, subEvent, _, _, _, _, _, _, _, _, _, spellID = CombatLogGetCurrentEventInfo()
+                    if spellID == 288694 and subEvent == "SPELL_CAST_START" then
+                        PlaySoundFile("Interface\\AddOns\\GTFO\\Sounds\\purple_circle.mp3")
                     end
                 end
             end)
@@ -37,6 +47,18 @@ U1RegisterAddon("GTFO", {
         callback = function(cfg, v, loading)
             if not loading and v then
                 PlaySoundFile("Interface\\AddOns\\GTFO\\Sounds\\mythic_blood.ogg")
+            end
+        end,
+    },
+
+    {
+        var = "purple_circle",
+        text = "提醒史诗秘钥收割时地板紫圈",
+        tip = "说明`史诗秘境第2赛季，收割怪地上出紫圈时发出语音提醒",
+        default = true,
+        callback = function(cfg, v, loading)
+            if not loading and v then
+                PlaySoundFile("Interface\\AddOns\\GTFO\\Sounds\\purple_circle.mp3")
             end
         end,
     }

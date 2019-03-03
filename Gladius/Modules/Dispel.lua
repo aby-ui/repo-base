@@ -1,4 +1,4 @@
-﻿--Dispel Module for Gladius
+--Dispel Module for Gladius
 --Mavvo
 local Gladius = _G.Gladius
 if not Gladius then
@@ -124,13 +124,16 @@ end
 	end
 end]]
 
-function Dispel:COMBAT_LOG_EVENT_UNFILTERED(event, ...)
-	local _, eventType, _, sourceGUID, _, _, _, _, _, _, _, spellId = CombatLogGetCurrentEventInfo()
+function Dispel:COMBAT_LOG_EVENT_UNFILTERED(event)
+	self:CombatLogEvent(event, CombatLogGetCurrentEventInfo())
+end
+
+function Dispel:CombatLogEvent(event, timestamp, eventType, hideCaster, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destFlags, destRaidFlags, spellID, spellName, spellSchool, auraType)
 	if eventType == "SPELL_DISPEL" then
 		if not (UnitGUID("arena1") == sourceGUID or UnitGUID("arena2") == sourceGUID or UnitGUID("arena3") == sourceGUID or UnitGUID("arena4") == sourceGUID or UnitGUID("arena5") == sourceGUID) then
 			return
 		end
-		if spellId == 527 or spellId == 4987 or spellId == 77130 or spellId == 88423 or spellId == 115450 or spellId == 2782 or spellId == 51886 or spellId == 475 then
+		if spellID == 527 or spellID == 4987 or spellID == 77130 or spellID == 88423 or spellID == 115450 or spellID == 2782 or spellID == 51886 or spellID == 475 then
 			if UnitGUID("arena1") == sourceGUID then
 				self:UpdateDispel("arena1", 8)
 			elseif UnitGUID("arena2") == sourceGUID then
@@ -144,7 +147,7 @@ function Dispel:COMBAT_LOG_EVENT_UNFILTERED(event, ...)
 			end
 		end
 		--wotf
-		--[[if spellId == GetSpellInfo(7744) then
+		--[[if spellID == GetSpellInfo(7744) then
 			self:UpdateDispel(unit, 45)
 		end]]
 	end

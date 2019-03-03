@@ -15,5 +15,5 @@ U1_QuickMenus = {
     "163ui_bossguide/",
     U1Name.."/displayLinkageStatusAsBuff",
     U1Name.."/displayScrshotEmoticonBtn",
-
+    "163UI_MoreOptions/cvar_nameplateMotion"
 }

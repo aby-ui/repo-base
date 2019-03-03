@@ -431,6 +431,16 @@ function WorldQuestTracker.CreateZoneWidget (index, name, parent, pinTemplate) -
 	criteriaAnimation.LastPlay = 0
 	button.CriteriaAnimation = criteriaAnimation
 	
+	local colorBlindTrackerIcon = supportFrame:CreateTexture (nil, "overlay")
+	colorBlindTrackerIcon:SetTexture ([[Interface\WORLDSTATEFRAME\ColumnIcon-FlagCapture2]])
+	colorBlindTrackerIcon:SetSize (22, 22)
+	colorBlindTrackerIcon:SetPoint ("bottom", button, "top", 0, -5)
+	--colorBlindTrackerIcon:SetBlendMode ("ADD")
+	colorBlindTrackerIcon:SetVertexColor (1, .2, .2)
+	colorBlindTrackerIcon:Hide()
+	--colorBlindTrackerIcon:SetRotation (math.pi / 2)
+	button.colorBlindTrackerIcon = colorBlindTrackerIcon
+	
 	button.Shadow:SetDrawLayer ("BACKGROUND", -8)
 	button.blackBackground:SetDrawLayer ("BACKGROUND", -7)
 	button.IsTrackingGlow:SetDrawLayer ("BACKGROUND", -6)
@@ -881,6 +891,8 @@ function WorldQuestTracker.ResetWorldQuestZoneButton (self)
 	self.RareOverlay:Hide()
 	self.bgFlag:Hide()
 	
+	self.colorBlindTrackerIcon:Hide()
+	
 	self.IsRare = nil
 	self.RareName = nil
 	self.RareSerial = nil	
@@ -962,6 +974,10 @@ function WorldQuestTracker.SetupWorldQuestButton (self, worldQuestType, rarity, 
 					self.IsTrackingRareGlow:Show()
 				end
 				self.IsTrackingGlow:Show()
+				
+				if (WorldQuestTracker.db.profile.accessibility.extra_tracking_indicator) then
+					self.colorBlindTrackerIcon:Show()
+				end
 			end
 		else
 			if (WorldQuestTracker.IsQuestBeingTracked (questID)) then
@@ -972,6 +988,10 @@ function WorldQuestTracker.SetupWorldQuestButton (self, worldQuestType, rarity, 
 				end
 				self.IsTrackingGlow:Show()
 				self:SetAlpha (1)
+				
+				if (WorldQuestTracker.db.profile.accessibility.extra_tracking_indicator) then
+					self.colorBlindTrackerIcon:Show()
+				end
 			end
 		end		
 

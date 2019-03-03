@@ -997,6 +997,21 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 			-- �ptionsfunc ~optionsfunc
 			local options_on_click = function (_, _, option, value, value2, mouseButton)
 			
+				if (option == "accessibility") then
+					if (value == "extra_tracking_indicator") then
+						WorldQuestTracker.db.profile.accessibility.extra_tracking_indicator = value2
+					end
+					if (WorldQuestTrackerAddon.GetCurrentZoneType() == "zone") then
+						WorldQuestTracker.UpdateZoneWidgets (true)
+					end
+					if (WorldQuestTrackerAddon.GetCurrentZoneType() == "world") then
+						WorldQuestTracker.UpdateWorldQuestsOnWorldMap (true, true, false, true)
+					end
+					
+					GameCooltip:Hide()
+					return
+				end
+			
 				if (option == "ignore_quest") then
 					WorldQuestTracker.OpenQuestBanPanel()
 					GameCooltip:Hide()
@@ -4170,6 +4185,14 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 					else
 						GameCooltip:AddIcon ([[Interface\BUTTONS\UI-AutoCastableOverlay]], 2, 1, 16, 16, .4, .6, .4, .6)
 					end					
+				
+				-- ~accessibility
+				GameCooltip:AddLine ("Accessibility")
+				GameCooltip:AddIcon ([[Interface\PVPFrame\PVP-Banner-Emblem-1]], 1, 1, IconSize, IconSize)
+					
+				GameCooltip:AddLine ("Extra Tracker Mark", "", 2)
+				add_checkmark_icon (WorldQuestTracker.db.profile.accessibility.extra_tracking_indicator)
+				GameCooltip:AddMenu (2, options_on_click, "accessibility", "extra_tracking_indicator", not WorldQuestTracker.db.profile.accessibility.extra_tracking_indicator)
 				
 				-- other options
 				GameCooltip:AddLine ("$div")

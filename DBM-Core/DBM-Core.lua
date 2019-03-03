@@ -41,7 +41,7 @@
 --  Globals/Default Options  --
 -------------------------------
 DBM = {
-	Revision = tonumber(("$Revision: 18421 $"):sub(12, -3)),
+	Revision = tonumber(("$Revision: 18432 $"):sub(12, -3)),
 	DisplayVersion = "8.1.12 alpha", -- the string that is shown as version
 	ReleaseRevision = 18418 -- the revision of the latest stable version that is available
 }
@@ -7984,7 +7984,7 @@ do
 				if UnitIsUnit(uId, "player") then return true end--If "player" is target, avoid doing any complicated stuff
 				local inRange = 0
 				if not UnitIsPlayer(uId) then
-					local inRange2, checkedRange = UnitInRange(uId)
+					local inRange2, checkedRange = UnitInRange(uId)--43
 					if checkedRange then--checkedRange only returns true if api worked, so if we get false, true then we are not near npc
 						return inRange2 and true or false
 					else--Its probably a totem or just something we can't assess. Fall back to no filtering

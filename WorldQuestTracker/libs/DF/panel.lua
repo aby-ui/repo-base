@@ -5599,9 +5599,13 @@ function DF:CreateLoadFilterParser (callback)
 		if (event == "ENCOUNTER_START") then
 			local encounterID = ...
 			f.EncounterIDCached = encounterID
-			
-		elseif (event == "PLAYER_REGEN_ENABLED") then
+		
+		elseif (event == "ENCOUNTER_END") then
 			f.EncounterIDCached = nil
+		
+		elseif (event == "PLAYER_REGEN_ENABLED") then
+			--f.EncounterIDCached = nil
+			--when the player dies during an encounter, the game is triggering regen enabled
 			
 		elseif (event == "PLAYER_SPECIALIZATION_CHANGED") then
 			if (DetailsFrameworkLoadConditionsPanel and DetailsFrameworkLoadConditionsPanel:IsShown()) then

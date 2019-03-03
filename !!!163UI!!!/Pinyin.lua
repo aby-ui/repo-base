@@ -14,6 +14,7 @@ U1.ABBR={
     ["targetnameplateindicator"] = "tni",
     ["theburningtrade"] = "tbt",
     ["tidyplates"] = "tp",
+    ["methoddungeontools"] = "mdt",
 }
 U1.PINYIN={
 	['DBM:军团5人本']={'dbmjuntuanrenben','dbm:jt5rb'},

@@ -1,13 +1,13 @@
 local mod	= DBM:NewMod(2343, "DBM-ZuldazarRaid", 3, 1176)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 18417 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 18431 $"):sub(12, -3))
 --mod:SetCreatureID(138967)--146409 or 146416 probably
 mod:SetEncounterID(2281)
 --mod:DisableESCombatDetection()
 mod:SetZone()
 --mod:SetBossHPInfoToHighest()
-mod:SetUsedIcons(1, 2, 3)
+mod:SetUsedIcons(1, 2, 3, 4)
 mod:SetHotfixNoticeRev(18363)
 --mod:SetMinSyncRevision(16950)
 --mod.respawnTime = 35
@@ -19,7 +19,7 @@ mod:RegisterEventsInCombat(
 	"SPELL_CAST_SUCCESS 285725 287925 287626 289220 288374 288211 290084",
 	"SPELL_AURA_APPLIED 287993 287490 289387 287925 285253 288199 288219 288212 288374 288412 288434 289220 285254 288038 287322 288169",
 	"SPELL_AURA_APPLIED_DOSE 287993 285253",
-	"SPELL_AURA_REMOVED 287993 287925 288199 288219 288212 288374 288038 290001 289387 287322",
+	"SPELL_AURA_REMOVED 287993 287925 288199 288219 288212 288374 288038 290001 289387 287322 285254",
 	"SPELL_AURA_REMOVED_DOSE 287993",
 	"SPELL_PERIODIC_DAMAGE 288297",
 	"SPELL_PERIODIC_MISSED 288297",
@@ -61,7 +61,7 @@ local warnFrozenSiege					= mod:NewSpellAnnounce(289488, 2)
 local warnBurningExplosion				= mod:NewCastAnnounce(288221, 3)
 local warnBroadside						= mod:NewTargetNoFilterAnnounce(288212, 2)
 local warnSiegebreaker					= mod:NewTargetNoFilterAnnounce(288374, 3)
-local warnGlacialRay					= mod:NewBaitAnnounce(285177, 3, nil, nil, nil, nil, 8)
+local warnGlacialRay					= mod:NewBaitAnnounce(288345, 3, nil, nil, nil, nil, 8)
 --Intermission 2
 local warnHeartofFrost					= mod:NewTargetAnnounce(289220, 2)
 local warnFrostNova						= mod:NewCastAnnounce(289219, 3)
@@ -71,15 +71,15 @@ local warnCrystalDust					= mod:NewCountAnnounce(289940, 3)
 
 --General
 local specWarnFreezingBlood				= mod:NewSpecialWarningMoveTo(289387, false, nil, 3, 1, 2)
-local yellFreezingBlood					= mod:NewFadesYell(289387, L.Freezing, false, nil, "YELL")
+local yellFreezingBlood					= mod:NewFadesYell(289387, L.Freezing, true, 2, "YELL")
 local specWarnChillingStack				= mod:NewSpecialWarningStack(287993, nil, 2, nil, nil, 1, 6)
 --Stage One: Burning Seas
 local specWarnIceShard					= mod:NewSpecialWarningTaunt(285253, false, nil, nil, 1, 2)
 local specWarnMarkedTarget				= mod:NewSpecialWarningRun(288038, nil, nil, nil, 4, 2)
 local yellMarkedTarget					= mod:NewYell(288038, nil, false)
 --local specWarnBombard					= mod:NewSpecialWarningDodge(285828, nil, nil, nil, 2, 2)
-local specWarnAvalanche					= mod:NewSpecialWarningYou(285254, nil, nil, nil, 1, 2)
-local yellAvalanche						= mod:NewYell(285254)
+local specWarnAvalanche					= mod:NewSpecialWarningYouPos(285254, nil, nil, nil, 1, 2)
+local yellAvalanche						= mod:NewPosYell(285254)
 local specWarnAvalancheTaunt			= mod:NewSpecialWarningTaunt(287565, nil, nil, nil, 1, 2)
 local specWarGraspofFrost				= mod:NewSpecialWarningDispel(287626, "Healer", nil, 3, 1, 2)
 local specWarnFreezingBlast				= mod:NewSpecialWarningDodge(285177, "Tank", nil, nil, 2, 2)
@@ -147,10 +147,12 @@ mod:AddNamePlateOption("NPAuraOnMarkedTarget", 288038)
 mod:AddNamePlateOption("NPAuraOnTimeWarp", 287925)
 mod:AddNamePlateOption("NPAuraOnRefractiveIce", 288219)
 mod:AddNamePlateOption("NPAuraOnWaterBolt", 290084)
+mod:AddSetIconOption("SetIconAvalanche", 287565, true)
 mod:AddSetIconOption("SetIconBroadside", 288212, true)
 mod:AddRangeFrameOption(10, 289379)
 mod:AddInfoFrameOption(287993, true, 2)
 mod:AddBoolOption("ShowOnlySummary2", true, "misc")
+mod:AddBoolOption("SetWeather", true)
 mod:AddMiscLine(DBM_CORE_OPTION_CATEGORY_DROPDOWNS)
 mod:AddDropdownOption("InterruptBehavior", {"Three", "Four", "Five"}, "Three", "misc")
 
@@ -165,6 +167,7 @@ mod.vb.broadsideCount = 0
 mod.vb.siegeCount = 0
 mod.vb.glacialRayCount = 0
 mod.vb.broadsideIcon = 0
+mod.vb.avalancheIcon = 0
 mod.vb.waterboltVolleyCount = 0
 mod.vb.howlingWindsCast = 0
 mod.vb.frozenSiegeCount = 0
@@ -176,7 +179,8 @@ local castsPerGUID = {}
 local rangeThreshold = 1
 local fixStupid = {}
 --1 2178508, 2 2178501, 3 2178502, 4 2178503, 2178500 (none)--Not best icons, better ones needed
-local interruptTextures = {[1] = 2178508, [2] = 2178501, [3] = 2178502, [4] = 2178503, [5] = 2178504,}
+local interruptTextures = {[1] = 2178508, [2] = 2178501, [3] = 2178502, [4] = 2178503, [5] = 2178504, [6] = 2178505, [7] = 2178506, [8] = 2178507,}--Fathoms Deck
+local CVAR1, CVAR2 = nil, nil
 
 --[[
 local updateInfoFrame
@@ -294,6 +298,7 @@ function mod:OnCombatStart(delay)
 	self.vb.siegeCount = 0
 	self.vb.glacialRayCount = 0
 	self.vb.broadsideIcon = 0
+	self.vb.avalancheIcon = 0
 	self.vb.howlingWindsCast = 0
 	self.vb.frozenSiegeCount = 0
 	self.vb.interruptBehavior = self.Options.InterruptBehavior--Default it to whatever user has it set to, until group leader overrides it
@@ -345,6 +350,11 @@ function mod:OnCombatStart(delay)
 			self:SendSync("Five")
 		end
 	end
+	if self.Options.SetWeather then
+		CVAR1, CVAR2 = GetCVar("weatherDensity") or 2, GetCVar("RAIDweatherDensity") or 2--Non raid cvar is nil if 3 (default) and raid one is nil if 2 (default)
+		SetCVar("weatherDensity", 0)
+		SetCVar("RAIDweatherDensity", 0)
+	end
 end
 
 function mod:OnCombatEnd()
@@ -358,14 +368,21 @@ function mod:OnCombatEnd()
 	if self.Options.NPAuraOnMarkedTarget or self.Options.NPAuraOnTimeWarp or self.Options.NPAuraOnRefractiveIce or self.Options.NPAuraOnWaterBolt then
 		DBM.Nameplate:Hide(true, nil, nil, nil, true, true)
 	end
+	if CVAR1 or CVAR2 then
+		SetCVar("weatherDensity", CVAR1)
+		SetCVar("RAIDweatherDensity", CVAR2)
+		CVAR1, CVAR2 = nil, nil
+	end
 end
 
 function mod:SPELL_CAST_START(args)
 	local spellId = args.spellId
 	if spellId == 287565 then
 		if self.vb.phase == 1 then
+			self.vb.avalancheIcon = 0
 			timerAvalancheCD:Start(self:IsMythic() and 45 or 60)
 		else
+			self.vb.avalancheIcon = 3
 			timerAvalancheCD:Start(self:IsMythic() and 81.5 or 75)--75-90
 		end
 	elseif spellId == 285177 then
@@ -641,16 +658,21 @@ function mod:SPELL_AURA_APPLIED(args)
 			warnHeartofFrost:Show(args.destName)
 		end
 	elseif spellId == 285254 then
+		self.vb.avalancheIcon = self.vb.avalancheIcon + 1
+		local icon = self.vb.avalancheIcon
 		if args:IsPlayer() then
-			specWarnAvalanche:Show()
+			specWarnAvalanche:Show(self:IconNumToTexture(icon))
 			specWarnAvalanche:Play("runout")
-			yellAvalanche:Yell()
+			yellAvalanche:Yell(icon, icon, icon)
 		else
 			local uId = DBM:GetRaidUnitId(args.destName)
 			if self:IsTanking(uId) then
 				specWarnAvalancheTaunt:Show(args.destName)
 				specWarnAvalancheTaunt:Play("tauntboss")
 			end
+		end
+		if self.Options.SetIconAvalanche then
+			self:SetIcon(args.destName, self.vb.avalancheIcon)
 		end
 	elseif spellId == 287322 then
 		warnJainaIceBlocked:Show(args.destName)
@@ -748,6 +770,10 @@ function mod:SPELL_AURA_REMOVED(args)
 		end
 	elseif spellId == 287322 then
 		timerIceBlockCD:Stop(args.destName)
+	elseif spellId == 285254 then
+		if self.Options.SetIconAvalanche then
+			self:SetIcon(args.destName, 0)
+		end
 	end
 end
 
@@ -837,13 +863,20 @@ function mod:UNIT_POWER_FREQUENT(uId, type)
 	if type == "ALTERNATE" then--Assumed, but has to be, since her main power is her special attacks (ie ring of ice)
 		local altPower = UnitPower(uId, 10)
 		if rangeThreshold < 3 and altPower >= 75 then
+			rangeThreshold = 3
 			if self.Options.RangeFrame then
 				DBM.RangeCheck:Show(10, nil, nil, 5, true, nil, self.Options.ShowOnlySummary2)--Reverse checker, threshold 5
 			end
 			self:UnregisterShortTermEvents()
 		elseif rangeThreshold < 2 and altPower >=50 then
+			rangeThreshold = 2
 			if self.Options.RangeFrame then
 				DBM.RangeCheck:Show(10, nil, nil, 3, true, nil, self.Options.ShowOnlySummary2)--Reverse checker, threshold 3
+			end
+		elseif rangeThreshold > 1 and altPower < 50 then
+			rangeThreshold = 1
+			if self.Options.RangeFrame then
+				DBM.RangeCheck:Show(10, nil, nil, 1, true, nil, self.Options.ShowOnlySummary2)--Reverse checker, threshold 1
 			end
 		end
 	end

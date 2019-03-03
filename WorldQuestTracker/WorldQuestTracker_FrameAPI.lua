@@ -584,12 +584,22 @@ function WorldQuestTracker.CheckAddToTracker (self, button, onlyTrack)
 		if (not onlyTrack) then
 			WorldQuestTracker.RemoveQuestFromTracker (questID)
 		end
+
+		if (WorldQuestTracker.db.profile.accessibility.extra_tracking_indicator) then
+			if (self.colorBlindTrackerIcon) then
+				self.colorBlindTrackerIcon:Hide()
+			end
+		end
 	else
 		--adicionar a quest ao track
 		WorldQuestTracker.AddQuestToTracker (self, questID, mapID)
 		if (not self.AddedToTrackerAnimation:IsPlaying()) then
 			self.AddedToTrackerAnimation:Play()
 		end
+		if (self.colorBlindTrackerIcon) then
+			self.colorBlindTrackerIcon:Show()
+		end
+		
 	end
 	
 	if (self.IsZoneQuestButton) then

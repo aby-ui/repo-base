@@ -142,6 +142,18 @@ U1RegisterAddon("163UI_MoreOptions", {
 
         --makeCVarOption("能量点位于目标姓名板", "nameplateResourceOnTarget", { tip = '连击点等框体显示在目标姓名板上而不是自己脚下', secure = 1 }),
 
+        U1CfgMakeCVarOption("姓名板分散不重叠", "nameplateMotion", nil, { tip = UNIT_NAMEPLATES_TYPE_TOOLTIP_2, secure = 1, callback = function(cfg, v, loading)
+            if not loading then
+                SetCVar(cfg.var:gsub("^cvar_", ""), v)
+                local d = InterfaceOptionsNamesPanelUnitNameplatesMotionDropDown
+                if d then
+                    local v --= v and 1 or 0 will taint
+                    d.value = v
+                    d.selectedValue = v
+                end
+            end
+        end}),
+
         U1CfgMakeCVarOption("允许姓名板移到屏幕之外", "nameplateOtherTopInset", nil, {
             tip = "说明`7.0之后，姓名板默认会收缩到屏幕之内挤在一起``此选项可以恢复到7.0之前的方式",
             secure = 1,
@@ -160,7 +172,9 @@ U1RegisterAddon("163UI_MoreOptions", {
             end
         }),
 
-        { text = "切换友方姓名板显示", secure = 1, callback = function() SetCVar("nameplateShowFriends", not GetCVarBool("nameplateShowFriends")); end },
+        U1CfgMakeCVarOption("切换友方姓名板显示", "nameplateShowFriends", nil, { secure = 1, callback = function(cfg, v, loading)
+            if not loading then SetCVar(cfg.var:gsub("^cvar_", ""), v) end
+        end}),
 
     },
 
@@ -171,25 +185,27 @@ U1RegisterAddon("163UI_MoreOptions", {
         default = false,
         secure = 1,
         callback = function(cfg, v, loading)
-            if v then
-                SetCVar("NamePlateVerticalScale", 1.0)
-                SetCVar("NamePlateHorizontalScale", 1.0)
-                SetCVar("nameplateMinScale", 1.0)
-                SetCVar("nameplateMinAlpha", 0.75)
-                SetCVar("ShowClassColorInFriendlyNameplate", 1)
-                --SetCVar("nameplateShowOnlyNames", 1)
-                --SetCVar("nameplateSelectedScale", 1.0)
-                if not loading then
-                    U1CfgCallSub(cfg, "scale", true)
-                    U1CfgCallSub(cfg, "fwidth", true)
-                    U1CfgCallSub(cfg, "fthrough", true)
+            if not InCombatLockdown() then
+                if v then
+                    SetCVar("NamePlateVerticalScale", 1.0)
+                    SetCVar("NamePlateHorizontalScale", 1.0)
+                    SetCVar("nameplateMinScale", 1.0)
+                    SetCVar("nameplateMinAlpha", 0.75)
+                    SetCVar("ShowClassColorInFriendlyNameplate", 1)
+                    --SetCVar("nameplateShowOnlyNames", 1)
+                    --SetCVar("nameplateSelectedScale", 1.0)
+                    if not loading then
+                        U1CfgCallSub(cfg, "scale", true)
+                        U1CfgCallSub(cfg, "fwidth", true)
+                        U1CfgCallSub(cfg, "fthrough", true)
+                    end
+                elseif not loading then
+                    SetCVar("nameplateGlobalScale", GetCVarDefault("nameplateGlobalScale"))
+                    SetCVar("nameplateMinScale", GetCVarDefault("nameplateMinScale"))
+                    SetCVar("nameplateMinAlpha", GetCVarDefault("nameplateMinAlpha"))
+                    C_NamePlate.SetNamePlateFriendlySize(110, 45)
+                    C_NamePlate.SetNamePlateFriendlyClickThrough(false)
                 end
-            elseif not loading then
-                SetCVar("nameplateGlobalScale", GetCVarDefault("nameplateGlobalScale"))
-                SetCVar("nameplateMinScale", GetCVarDefault("nameplateMinScale"))
-                SetCVar("nameplateMinAlpha", GetCVarDefault("nameplateMinAlpha"))
-                C_NamePlate.SetNamePlateFriendlySize(110, 45)
-                C_NamePlate.SetNamePlateFriendlyClickThrough(false)
             end
             if loading then
                 hooksecurefunc(NamePlateDriverFrame, "UpdateNamePlateOptions", function()

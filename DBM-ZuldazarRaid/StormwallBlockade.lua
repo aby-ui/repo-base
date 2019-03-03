@@ -1,13 +1,13 @@
 local mod	= DBM:NewMod(2337, "DBM-ZuldazarRaid", 3, 1176)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 18417 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 18423 $"):sub(12, -3))
 mod:SetCreatureID(146251, 146253, 146256)--Sister Katherine 146251, Brother Joseph 146253, Laminaria 146256
 mod:SetEncounterID(2280)
 --mod:DisableESCombatDetection()
 mod:SetZone()
 mod:SetBossHPInfoToHighest()
---mod:SetUsedIcons(1, 2, 8)
+mod:SetUsedIcons(1, 2, 3)
 mod:SetHotfixNoticeRev(18367)
 --mod:SetMinSyncRevision(16950)
 --mod.respawnTime = 35
@@ -103,7 +103,7 @@ local countdownSeaSwell					= mod:NewCountdown(20.6, 285118, true, 3, 3)
 --local countdownFelstormBarrage			= mod:NewCountdown("AltTwo32", 244000, nil, nil, 3)
 
 mod:AddNamePlateOption("NPAuraOnKepWrapping", 285382)
---mod:AddSetIconOption("SetIconDarkRev", 273365, true)
+mod:AddSetIconOption("SetIconWail", 285350, true)
 mod:AddRangeFrameOption(5, 285118)
 mod:AddInfoFrameOption(284760, true)
 
@@ -112,6 +112,8 @@ mod.vb.bossesDied = 0
 mod.vb.cracklingCast = 0
 mod.vb.sirenCount = 0
 mod.vb.joltingCast = 0
+mod.vb.stormsActive = 0
+mod.vb.stormsWailIcon = 1
 local freezingTidePod = DBM:GetSpellInfo(285075)
 local stormTargets = {}
 
@@ -193,6 +195,8 @@ function mod:OnCombatStart(delay)
 	self.vb.cracklingCast = 0
 	self.vb.sirenCount = 0
 	self.vb.joltingCast = 0
+	self.vb.stormsActive = 0
+	self.vb.stormsWailIcon = 1
 	if not self:IsLFR() then
 		--Sister
 		timerCracklingLightningCD:Start(3.9-delay)--3.9-8.8
@@ -351,6 +355,7 @@ end
 function mod:SPELL_CAST_SUCCESS(args)
 	local spellId = args.spellId
 	if (spellId == 285350 or spellId == 285426) and args:GetSrcCreatureID() == 146256 then
+		self.vb.stormsActive = self.vb.stormsActive + 1
 		timerStormsWailCD:Start()
 	elseif spellId == 285118 then--All P2 Sea Swell
 		specWarnSeaSwell:Show()
@@ -440,6 +445,16 @@ function mod:SPELL_AURA_APPLIED(args)
 		if not tContains(stormTargets, args.destName) then
 			table.insert(stormTargets, args.destName)
 		end
+		if self.Options.SetIconWail then
+			self:SetIcon(args.destName, self.vb.stormsWailIcon)
+		end
+		--Smart rotation code that'll automatically rotate betwen needed number of icons based on number of debuffs out
+		--Automatically reset icon to 1 if icon higher than our max count.
+		--ie 2 debuffs out, it'll alternate icons 1 and 2. 3 out, it'll cycle through icons 1-3, a single debuff, it'll basically keep resetting to 1
+		self.vb.stormsWailIcon = self.vb.stormsWailIcon + 1
+		if self.vb.stormsWailIcon > self.vb.stormsActive then
+			self.vb.stormsWailIcon = 1
+		end
 	end
 end
 mod.SPELL_AURA_REFRESH = mod.SPELL_AURA_APPLIED
@@ -471,6 +486,9 @@ function mod:SPELL_AURA_REMOVED(args)
 		end
 		timerStormsWail:Stop(12, args.destName)
 		tDeleteItem(stormTargets, args.destName)
+		if self.Options.SetIconWail then
+			self:SetIcon(args.destName, 0)
+		end
 	end
 end
 

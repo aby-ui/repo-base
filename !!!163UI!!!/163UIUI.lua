@@ -85,6 +85,10 @@ function UUI.TransCfgToDropDown(path, info)
         info.notCheckable = nil;
         local value, cfg = U1GetCfgValue(addon, path, 1)
         if not cfg then return end
+        if cfg.getvalue then
+            local success, getvalue = pcall(cfg.getvalue)
+            if success then value = getvalue end
+        end
         if cfg.type == "checkbox" then
             info.isNotRadio = true;
             info.checked = value;
