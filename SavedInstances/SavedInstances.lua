@@ -9,9 +9,9 @@ addon.icon = addon.LDB and LibStub("LibDBIcon-1.0", true)
 
 local QTip = LibStub("LibQTip-1.0")
 local dataobject, db, config
-local maxdiff = 23 -- max number of instance difficulties
+local maxdiff = 33 -- max number of instance difficulties
 local maxcol = 4 -- max columns per player+instance
-local maxid = 2000 -- highest possible value for an instanceID, current max (Tomb of Sargeras) is 1676
+local maxid = 3000 -- highest possible value for an instanceID, current max (Battle of Dazar'alor) is 2070
 
 local table, math, bit, string, pairs, ipairs, unpack, strsplit, time, type, wipe, tonumber, select, strsub =
   table, math, bit, string, pairs, ipairs, unpack, strsplit, time, type, wipe, tonumber, select, strsub
@@ -285,6 +285,7 @@ addon.defaultDB = {
   -- Money: integer
   -- Zone: string
   -- Warmode: boolean
+  -- Artifact: string
 
   -- currency: key: currencyID  value:
   -- amount: integer
@@ -342,7 +343,6 @@ addon.defaultDB = {
   --       isComplete = isComplete,
   --       isFinish = isFinish,
   --       questDone = questDone,
-  --       expiredTime = expiredTime,
   --       questReward = {
   --         money = money,
   --         itemName = itemName,
@@ -801,6 +801,7 @@ addon.transInstance = {
   [552] = 1011, -- Arcatraz: ticket 216 frFR
   [1516] = 1190, -- Arcway: ticket 227/233 ptBR
   [1651] = 1347, -- Return to Karazhan: ticket 237 (fake LFDID)
+  [545] = 185, -- The Steamvault: issue #143 esES
 }
 
 -- some instances (like sethekk halls) are named differently by GetSavedInstanceInfo() and LFGGetDungeonInfoByID()
@@ -989,6 +990,7 @@ local _instance_exceptions = {
     25315, -- Kil'jaeden
   },
   [1347] = { total=8 }, -- Return to Karazhan
+  [1701] = { total=4 }, -- Siege of Boralus
 }
 
 function addon:instanceException(LFDID)
@@ -1015,7 +1017,7 @@ end
 
 function addon:instanceBosses(instance,toon,diff)
   local killed,total,base = 0,0,1
-  local remap = nil
+  local remap, origin
   local inst = addon.db.Instances[instance]
   local save = inst and inst[toon] and inst[toon][diff]
   if inst.WorldBoss then
@@ -1029,9 +1031,10 @@ function addon:instanceBosses(instance,toon,diff)
     total = LFR.total or total
     base = LFR.base or base
     remap = LFR.remap
+    origin = LFR.origin
   end
   if not save then
-    return killed, total, base, remap
+    return killed, total, base, remap, origin
   elseif save.Link then
     local bits = save.Link:match(":(%d+)\124h")
     bits = bits and tonumber(bits)
@@ -1057,7 +1060,7 @@ function addon:instanceBosses(instance,toon,diff)
       killed = killed + (save[i] and 1 or 0)
     end
   end
-  return killed, total, base, remap
+  return killed, total, base, remap, origin
 end
 
 local lfrkey = "^"..L["LFR"]..": "
@@ -1528,20 +1531,6 @@ function addon:UpdateToonData()
             ti.Quests[id] = nil
           end
         end
-        if ti.Emissary then
-          local expansionLevel, tbl
-          for expansionLevel, tbl in pairs(ti.Emissary) do
-            if tbl.unlocked then
-              tbl.days[1] = tbl.days[2]
-              tbl.days[2] = tbl.days[3]
-              tbl.days[3] = {
-                isComplete = false,
-                isFinish = false,
-                questDone = 0,
-              }
-            end
-          end
-        end
         ti.DailyResetTime = (ti.DailyResetTime and ti.DailyResetTime + 24*3600) or nextreset
       end
     end
@@ -1552,12 +1541,29 @@ function addon:UpdateToonData()
           db.Quests[id] = nil
         end
     end
+    -- Emissary Quest Reset
     if addon.db.Emissary and addon.db.Emissary.Expansion then
       local expansionLevel, tbl
       for expansionLevel, tbl in pairs(addon.db.Emissary.Expansion) do
-        tbl[1] = tbl[2]
-        tbl[2] = tbl[3]
-        tbl[3] = nil
+        while tbl[1] and tbl[1].expiredTime < time() do
+          tbl[1] = tbl[2]
+          tbl[2] = tbl[3]
+          tbl[3] = nil
+          for toon, ti in pairs(addon.db.Toons) do
+            if ti.Emissary then
+              local t = ti.Emissary[expansionLevel]
+              if t and t.unlocked then
+                t.days[1] = t.days[2]
+                t.days[2] = t.days[3]
+                t.days[3] = {
+                  isComplete = false,
+                  isFinish = false,
+                  questDone = 0,
+                }
+              end
+            end
+          end
+        end
       end
     end
     db.DailyResetTime = nextreset
@@ -1634,6 +1640,12 @@ function addon:UpdateToonData()
     t.Race = lrace
   end
   t.Warmode = C_PvP.IsWarModeDesired()
+  local azeriteItemLocation = C_AzeriteItem.FindActiveAzeriteItem()
+  if azeriteItemLocation then
+    local xp, totalLevelXP = C_AzeriteItem.GetAzeriteItemXPInfo(azeriteItemLocation)
+    local currentLevel = C_AzeriteItem.GetPowerLevel(azeriteItemLocation)
+    t.Artifact = format("%d (%d%%)", currentLevel, xp / totalLevelXP  * 100)
+  end
 
   t.LastSeen = time()
 end
@@ -1773,6 +1785,9 @@ hoverTooltip.ShowToonTooltip = function (cell, arg, ...)
   indicatortip:SetCell(indicatortip:AddHeader(),1,ftex..ClassColorise(t.Class, toon))
   indicatortip:SetCell(1,2,ClassColorise(t.Class, LEVEL.." "..t.Level.." "..(t.LClass or "")))
   indicatortip:AddLine(STAT_AVERAGE_ITEM_LEVEL,("%d "):format(t.IL or 0)..STAT_AVERAGE_ITEM_LEVEL_EQUIPPED:format(t.ILe or 0))
+  if t.Artifact then
+    indicatortip:AddLine(ARTIFACT_POWER, t.Artifact)
+  end
   if t.RBGrating and t.RBGrating > 0 then
     indicatortip:AddLine(BATTLEGROUND_RATING, t.RBGrating)
   end
@@ -2128,11 +2143,9 @@ hoverTooltip.ShowWorldBossTooltip = function (cell, arg, ...)
 end
 
 hoverTooltip.ShowLFRTooltip = function (cell, arg, ...)
-  local boxname = arg[1]
-  local toon = arg[2]
-  local lfrmap = arg[3]
+  local boxname, toon, tbl = unpack(arg)
   local t = addon.db.Toons[toon]
-  if not boxname or not t or not lfrmap then return end
+  if not boxname or not t or not tbl then return end
   openIndicator(3, "LEFT", "LEFT","RIGHT")
   local line = indicatortip:AddHeader()
   local toonstr = (db.Tooltip.ShowServer and toon) or strsplit(' ', toon)
@@ -2141,13 +2154,13 @@ hoverTooltip.ShowLFRTooltip = function (cell, arg, ...)
   indicatortip:SetCell(line, 2, GOLDFONT .. boxname .. FONTEND, indicatortip:GetHeaderFont(), "RIGHT", 2)
   indicatortip:AddLine(YELLOWFONT .. L["Time Left"] .. ":" .. FONTEND, nil, SecondsToTime(reset - time()))
   for i=1,20 do
-    local instance = lfrmap[boxname..":"..i]
+    local instance = tbl[i]
     local diff = 2
     if instance then
       indicatortip:SetCell(indicatortip:AddLine(), 1, YELLOWFONT .. instance .. FONTEND, "CENTER",3)
       local thisinstance = addon.db.Instances[instance]
       local info = thisinstance[toon] and thisinstance[toon][diff]
-      local killed, total, base, remap = addon:instanceBosses(instance,toon,diff)
+      local killed, total, base, remap, origin = addon:instanceBosses(instance,toon,diff)
       for i=base,base+total-1 do
         local bossid = i
         if remap then
@@ -2156,7 +2169,9 @@ hoverTooltip.ShowLFRTooltip = function (cell, arg, ...)
         local bossname = GetLFGDungeonEncounterInfo(thisinstance.LFDID, bossid)
         local n = indicatortip:AddLine()
         indicatortip:SetCell(n, 1, bossname, "LEFT", 2)
-        if info and info[bossid] then
+        -- for LFRs that are different between two factions
+        -- https://github.com/SavedInstances/SavedInstances/pull/238
+        if info and info[origin and origin[i-base+1] or bossid] then
           indicatortip:SetCell(n, 3, REDFONT..ALREADY_LOOTED..FONTEND, "RIGHT", 1)
         else
           indicatortip:SetCell(n, 3, GREENFONT..AVAILABLE..FONTEND, "RIGHT", 1)
@@ -2440,7 +2455,7 @@ end
 function core:OnInitialize()
   local versionString = GetAddOnMetadata(addonName, "version")
   --[===[@debug@
-  if versionString == "8.0.10-18-gcaa836f" then
+  if versionString == "8.0.10-28-g699e522" then
     versionString = "Dev"
   end
   --@end-debug@]===]
@@ -3641,11 +3656,21 @@ function core:ShowTooltip(anchorframe)
       local boxid = pinst.LFDID
       local firstid
       local total = 0
+      local flag = false -- flag for LFRs that are different between two factions
+      local tbl, other = {}, {}
       for lfdid, lfrinfo in pairs(addon.LFRInstances) do
         if lfrinfo.parent == pinst.LFDID and lfrmap[lfdid] then
-          firstid = math.min(lfdid, firstid or lfdid)
-          total = total + lfrinfo.total
-          lfrmap[boxname..":"..lfrinfo.base] = lfrmap[lfdid]
+          if (not lfrinfo.faction) or (lfrinfo.faction == UnitFactionGroup("player")) then
+            firstid = math.min(lfdid, firstid or lfdid)
+          end
+          if lfrinfo.faction and lfrinfo.faction == "Horde" then
+            flag = true
+            other[lfrinfo.base] = lfrmap[lfdid]
+          else
+            -- count total bosses for only one faction
+            total = total + lfrinfo.total
+            tbl[lfrinfo.base] = lfrmap[lfdid]
+          end
         end
       end
       tooltip:SetCell(line, 1, (instancesaved[boxid] and GOLDFONT or GRAYFONT) .. boxname .. FONTEND)
@@ -3653,16 +3678,15 @@ function core:ShowTooltip(anchorframe)
       for toon, t in cpairs(addon.db.Toons, true) do
         local saved = 0
         local diff = 2
-        for key, instance in pairs(lfrmap) do
-          if string.match(key,boxname..":%d+$") then
-            saved = saved + addon:instanceBosses(instance, toon, diff)
-          end
+        local curr = (flag and t.Faction == "Horde") and other or tbl
+        for key, instance in pairs(curr) do
+          saved = saved + addon:instanceBosses(instance, toon, diff)
         end
         if saved > 0 then
           addColumns(columns, toon, tooltip)
           local col = columns[toon..1]
           tooltip:SetCell(line, col, DifficultyString(pinstance, diff, toon, false, saved, total),4)
-          tooltip:SetCellScript(line, col, "OnEnter", hoverTooltip.ShowLFRTooltip, {boxname, toon, lfrmap})
+          tooltip:SetCellScript(line, col, "OnEnter", hoverTooltip.ShowLFRTooltip, {boxname, toon, curr})
           tooltip:SetCellScript(line, col, "OnLeave", CloseTooltips)
         end
       end

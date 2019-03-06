@@ -7,6 +7,17 @@
 			[195901] = "trinket1",
 			[214027] = "trinket1",
 			[34709] = "shadowSight",
+			-- Drinking
+			[104270] = "drinking",
+			[167152] = "drinking",
+			[5006] = "drinking",
+			[274194] = "drinking",
+			[262568] = "drinking",
+			[274913] = "drinking",
+			[257427] = "drinking",
+			[257428] = "drinking",
+			[272819] = "drinking",
+			[279739] = "drinking",
 			
 			-- Backlash (Aura Applied)
 			[87204] = "backlashFear", -- Vampiric Touch Dispel (Priest)
@@ -765,6 +776,12 @@
 			[171138] = "spellLock",
 			[212619] = "spellLock",
 			[115781] = "spellLock",
+			--132409,119910,251523,251922,288047
+			[132409] = "spellLock",
+			[119910] = "spellLock",
+			[251523] = "spellLock",
+			[251922] = "spellLock",
+			[288047] = "spellLock",
 			[48020] = "demonicCircleTeleport",
 			[111859] = "grimoireOfService",
 			[111895] = "grimoireOfService",

@@ -558,12 +558,19 @@ do
     end
 
     local nameplateNtarget = setmetatable({}, { __index = function(t, k) t[k] = k .. "target" return t[k] end})
+    local SpecialNPCS = {
+        ["148716"] = true,  --收割
+        ["148893"] = true,
+        ["148894"] = true,
+        ["148962"] = true,  --贪婪的追猎者
+        ["144807"] = true,  --贪婪的追猎者
+    }
     function UpdateUnitTarget(plate, unitid)
         unit.isTargetingYou = nil
         if not unit.guid then return end
         local npcId = select(6,strsplit("-", unit.guid))
         -- Reaping monsters
-        if npcId == "148716" or npcId == "148893" or npcId == "148894" then
+        if SpecialNPCS[npcId] then
             unit.isTargetingYou = UnitIsUnit(nameplateNtarget[unitid], "player")
         end
     end
@@ -1140,11 +1147,12 @@ do
 	local function SetObjectBartexture(obj, tex, ori, crop) obj:SetStatusBarTexture(tex); obj:SetOrientation(ori); end
 
 	local function SetObjectFont(object,  font, size, flags)
-		if (not OverrideFonts) and font then
+		--if (not OverrideFonts) and font then
 			object:SetFont(font, size or 10, flags)
+        --
 		--else
 		--	object:SetFontObject("SpellFont_Small")
-		end
+		--end
 	end --FRIZQT__ or ARIALN.ttf  -- object:SetFont("FONTS\\FRIZQT__.TTF", size or 12, flags)
 
 

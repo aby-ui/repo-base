@@ -366,7 +366,9 @@ function TrinketMenu.OnEvent(self, event, ...)
 		local unitID = ...
 		if unitID == "player" then
 			TrinketMenu.UpdateWornTrinkets()
-		end
+        end
+    elseif event == "PLAYER_EQUIPMENT_CHANGED" then
+        TrinketMenu.UpdateWornTrinkets()
 	elseif event == "ACTIONBAR_UPDATE_COOLDOWN" then
 		TrinketMenu.UpdateWornCooldowns(1)
 	elseif event == "PET_BATTLE_OPENING_START" then

@@ -438,12 +438,12 @@ function GSA:OnOptionCreate()
 								desc = L["Alert works only when your current target or focus gains the buff effect or use the ability"],
 								order = 10,
 							},
-							drinking = { -- AuraApplied 
-								type = 'toggle',
-								name = L["Alert Drinking"],
-								desc = L["In arena, alert when enemy is drinking"],
-								order = 20,
-							},
+--							drinking = { -- AuraApplied 
+--								type = 'toggle',
+--								name = L["Alert Drinking"],
+--								desc = L["In arena, alert when enemy is drinking"],
+--								order = 20,
+--							},
 							tankTauntsON = { -- AuraApplied
 								type = 'toggle',
 								name = L["TankTauntsON"],
@@ -454,8 +454,8 @@ function GSA:OnOptionCreate()
 								type = 'group',
 								inline = true,
 								name = L["General Abilities"],
-								order = 30,
-								args = listOption({195901,214027,34709},"auraApplied"),
+								order = 30,					      		--v Drinking begins here
+								args = listOption({195901,214027,34709,104270,167152,5006,274194,262568,274913,257427,257428,272819,279739},"auraApplied"),
 							},
 							dispelkickback = { -- AuraApplied
 								type = 'group',
@@ -831,7 +831,7 @@ function GSA:OnOptionCreate()
 								inline = true,
 								name = L["EnemyInterrupts"],
 								order = 35,
-								args = listOption({47528,183752,78675,106839,147362,187707,2139,116705,96231,1766,57994,19647,171140,171138,115781,212619,119910,6552},"castSuccess"),
+								args = listOption({47528,183752,78675,106839,147362,187707,2139,116705,96231,1766,57994,19647,132409,119910,251523,251922,288047,171140,171138,115781,212619,119910,6552},"castSuccess"),
 							},
 							dk	= { -- CastSuccess
 								type = 'group',

@@ -41,7 +41,7 @@
 --  Globals/Default Options  --
 -------------------------------
 DBM = {
-	Revision = tonumber(("$Revision: 18432 $"):sub(12, -3)),
+	Revision = tonumber(("$Revision: 18437 $"):sub(12, -3)),
 	DisplayVersion = "8.1.12 alpha", -- the string that is shown as version
 	ReleaseRevision = 18418 -- the revision of the latest stable version that is available
 }
@@ -7575,7 +7575,7 @@ end
 
 function bossModPrototype:IsMythic()
 	local diff = savedDifficulty or DBM:GetCurrentInstanceDifficulty()
-	if diff == "mythic" then
+	if diff == "mythic" or diff == "challenge5" then
 		return true
 	end
 	return false

@@ -40,6 +40,7 @@ function EmissaryModule:OnEnable()
 end
 
 function EmissaryModule:RefreshDailyWorldQuestInfo()
+  if addon.db.DailyResetTime < time() then return end -- daliy reset not run yet
   local t = addon.db.Toons[thisToon]
   if not t.Emissary then t.Emissary = {} end
   local expansionLevel, tbl
@@ -77,8 +78,7 @@ function EmissaryModule:RefreshDailyWorldQuestInfo()
           end
           currExpansion[day].questNeed = questNeed
           currExpansion[day].expiredTime = timeleft * 60 + time()
-          local tbl = t.Emissary[expansionLevel].days[day]
-          tbl.expiredTime = timeleft * 60 + time()
+          local tbl = t.Emissary[expansionLevel].days[day] or {}
           tbl.isComplete = false
           tbl.isFinish = isFinish
           tbl.questDone = questDone

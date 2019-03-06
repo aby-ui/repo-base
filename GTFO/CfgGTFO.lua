@@ -1,4 +1,4 @@
-﻿local lastPlayTime, enabled
+﻿local lastPlayTime, enabled, _, play_handler
 
 U1RegisterAddon("GTFO", {
     title = "站位提醒",
@@ -17,7 +17,7 @@ U1RegisterAddon("GTFO", {
                     local timestamp, subEvent, hideCaster, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destFlags, destRaidFlags, spellID = CombatLogGetCurrentEventInfo()
                     if spellID == 226510 and (subEvent == "SPELL_AURA_APPLIED" or subEvent == "SPELL_PERIODIC_HEAL") then
                         if bit.band(destFlags, COMBATLOG_OBJECT_TYPE_NPC) > 0 and bit.band(destFlags, COMBATLOG_OBJECT_REACTION_HOSTILE) > 0 and not sourceGUID:find('-141851-') then -- 忽略中立小动物和中立敌人，141851是戈霍恩之子 --and bit.band(destFlags, COMBATLOG_OBJECT_CONTROL_NPC) > 0 and (bit.band(destFlags, COMBATLOG_OBJECT_REACTION_HOSTILE) > 0 or bit.band(destFlags, COMBATLOG_OBJECT_REACTION_NEUTRAL) > 0) then
-                            PlaySoundFile("Interface\\AddOns\\GTFO\\Sounds\\mythic_blood.ogg")
+                            PlaySoundFile("Interface\\AddOns\\GTFO\\Sounds\\mythic_blood.ogg", "MASTER")
                             lastPlayTime = GetTime()
                         end
                     end
@@ -27,7 +27,11 @@ U1RegisterAddon("GTFO", {
                 if U1GetCfgValue("GTFO", "purple_circle", true) then
                     local timestamp, subEvent, _, _, _, _, _, _, _, _, _, spellID = CombatLogGetCurrentEventInfo()
                     if spellID == 288694 and subEvent == "SPELL_CAST_START" then
-                        PlaySoundFile("Interface\\AddOns\\GTFO\\Sounds\\purple_circle.mp3")
+                        if play_handler then
+                            StopSound(play_handler)
+                            play_handler = nil
+                        end
+                        _, play_handler = PlaySoundFile("Interface\\AddOns\\GTFO\\Sounds\\purple_circle.mp3", "MASTER")
                     end
                 end
             end)

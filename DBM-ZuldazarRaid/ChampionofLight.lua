@@ -7,14 +7,11 @@ end
 local mod	= DBM:NewMod(dungeonID, "DBM-ZuldazarRaid", 1, 1176)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 18337 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 18433 $"):sub(12, -3))
 mod:SetCreatureID(creatureID)
 mod:SetEncounterID(2265)
---mod:DisableESCombatDetection()
 mod:SetZone()
---mod:SetUsedIcons(1, 2, 8)
 --mod:SetHotfixNoticeRev(17775)
---mod:SetMinSyncRevision(16950)
 mod.respawnTime = 17--Ish, from stream watching.
 
 mod:RegisterCombat("combat")

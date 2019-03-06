@@ -245,14 +245,14 @@ StyleDefault.customart = {
 }
 
 StyleDefault.customtext = {
-	typeface = font,
-	size = 11,
+	typeface = ChatFontNormal:GetFont(),
+	size = 8,
 	width = 150,
 	height = 11,
 	x = 0,
 	y = VerticalAdjustment + 1,
-	align = "CENTER",
-	anchor = "CENTER",
+	align = "RIGHT",
+	anchor = "RIGHT",
 	vertical = "CENTER",
 	shadow = false,
 	flags = "OUTLINE",
