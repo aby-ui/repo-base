@@ -1627,7 +1627,7 @@ function U1:ADDON_LOADED(event, name)
                 local name, server = UnitName(unit)
                 local fullName = U1UnitFullName(unit)
                 if fullName and U1STAFF[fullName] then
-                    InspectFrameTitleText:SetText("|cffff00ff爱不易开发者|r " .. GetUnitName(unit, true));
+                    InspectFrameTitleText:SetText("|cffff00ff" .. U1STAFF[fullName] .. "|r " .. GetUnitName(unit, true));
                 else
                     local pvpname = UnitPVPName(unit)
                     if not pvpname then return end

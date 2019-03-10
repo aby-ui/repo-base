@@ -1147,12 +1147,11 @@ do
 	local function SetObjectBartexture(obj, tex, ori, crop) obj:SetStatusBarTexture(tex); obj:SetOrientation(ori); end
 
 	local function SetObjectFont(object,  font, size, flags)
-		--if (not OverrideFonts) and font then
+		if (not OverrideFonts) and font then
 			object:SetFont(font, size or 10, flags)
-        --
 		--else
 		--	object:SetFontObject("SpellFont_Small")
-		--end
+		end
 	end --FRIZQT__ or ARIALN.ttf  -- object:SetFont("FONTS\\FRIZQT__.TTF", size or 12, flags)
 
 

@@ -204,6 +204,7 @@ BigDebuffs.Spells = {
 	[81261] = { type = "cc" }, -- Solar Beam
 	[102342] = { type = "buffs_defensive" }, -- Ironbark
 	[102359] = { type = "roots" }, -- Mass Entanglement
+	[279642] = { type = "buffs_offensive" }, -- Lively Spirit
 	[102543] = { type = "buffs_offensive" }, -- Incarnation: King of the Jungle
 	[102558] = { type = "buffs_offensive" }, -- Incarnation: Guardian of Ursoc
 	[102560] = { type = "buffs_offensive" }, -- Incarnation: Chosen of Elune
@@ -436,7 +437,10 @@ BigDebuffs.Spells = {
 	[204366] = { type = "buffs_offensive" }, -- Thundercharge
 	[204945] = { type = "buffs_offensive" }, -- Doom Winds
 	[260878] = { type = "buffs_defensive" }, -- Spirit Wolf
-
+	[8178] = { type = "immunities_spells" }, -- Grounding
+		[255016] = { type = "immunities_spells", parent = 8178 }, -- Grounding
+		[204336] = { type = "immunities_spells", parent = 8178 }, -- Grounding
+		[34079] = { type = "immunities_spells", parent = 8178 }, -- Grounding
 
 	-- Warlock
 
@@ -975,7 +979,7 @@ end
 local function UnitBuffByName(unit, name)
 	for i = 1, 40 do
 		local n = UnitBuff(unit, i)
-		if n == name then return end
+		if n == name then return true end
 	end
 end
 
@@ -1099,6 +1103,7 @@ end
 local pending = {}
 
 hooksecurefunc("CompactUnitFrame_UpdateAll", function(frame)
+	if not BigDebuffs.db.profile.raidFrames.enabled then return end
 	if frame:IsForbidden() then return end
 	local name = frame:GetName()
 	if not name or not name:match("^Compact") then return end

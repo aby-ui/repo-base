@@ -1,4 +1,3 @@
-
 ---------------------------------------------
 -- Style Definition
 ---------------------------------------------
@@ -245,14 +244,14 @@ StyleDefault.customart = {
 }
 
 StyleDefault.customtext = {
-	typeface = ChatFontNormal:GetFont(),
-	size = 8,
+	typeface = font,
+	size = 11,
 	width = 150,
 	height = 11,
 	x = 0,
 	y = VerticalAdjustment + 1,
-	align = "RIGHT",
-	anchor = "RIGHT",
+	align = "CENTER",
+	anchor = "CENTER",
 	vertical = "CENTER",
 	shadow = false,
 	flags = "OUTLINE",
@@ -293,6 +292,8 @@ StyleTextOnly.eliteicon.texture = EmptyTexture
 StyleTextOnly.customtext.size = fontsize - 2
 StyleTextOnly.customtext.flags = "NONE"
 StyleTextOnly.customtext.y = VerticalAdjustment-8
+StyleTextOnly.customtext.align = "CENTER"
+StyleTextOnly.customtext.anchor = "CENTER"
 StyleTextOnly.name.size = fontsize
 StyleTextOnly.name.y = VerticalAdjustment + 1
 StyleTextOnly.level.show = false

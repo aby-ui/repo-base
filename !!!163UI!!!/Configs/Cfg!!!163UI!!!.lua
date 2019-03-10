@@ -214,6 +214,7 @@ U1RegisterAddon("!!!163UI!!!", {
                 local config = cfg._path
                 local playS, playSF = PlaySound, PlaySoundFile
                 local wipe, playing, looping, updater = table.wipe, {}, {}, CreateFrame("Frame", "U1_SOUND_REDIRECT")
+                looping[SOUNDKIT.UI_BONUS_LOOT_ROLL_LOOP or ""] = true --LootFrame
                 updater:SetScript("OnUpdate", function(self) wipe(playing) end)
                 if CreateLoopingSoundEffectEmitter then hooksecurefunc("CreateLoopingSoundEffectEmitter", function(startingSound, loopingSound) looping[loopingSound] = true end) end
                 local function shouldRedirect(channel, sound)

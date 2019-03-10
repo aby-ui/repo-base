@@ -45,6 +45,8 @@ This is a Blizzard bug affecting certain old raids.]=]
 Ld["Categories"] = "Categories"
 Ld["Characters"] = "Characters"
 Ld["Color currency by cap"] = "Color currency by cap"
+Ld["Combine Emissaries"] = "Combine Emissaries"
+Ld["Combine emissaries of same expansion"] = "Combine emissaries of same expansion"
 Ld["Combine LFR"] = "Combine LFR"
 Ld["Combine World Bosses"] = "Combine World Bosses"
 Ld["Connected Realms"] = "Connected Realms"
@@ -196,6 +198,10 @@ This is a Blizzard bug affecting certain old raids.]=] ] = "Les informations de 
 La["Categories"] = "Catégories"
 La["Characters"] = "Personnages"
 La["Color currency by cap"] = "Colorer les monnaies par cap"
+--[[Translation missing --]]
+La["Combine Emissaries"] = "Combine Emissaries"
+--[[Translation missing --]]
+La["Combine emissaries of same expansion"] = "Combine emissaries of same expansion"
 La["Combine LFR"] = "Fusionner les RdR"
 La["Combine World Bosses"] = "Fusionner les boss extérieurs"
 La["Connected Realms"] = "Royaumes connectés"
@@ -359,6 +365,10 @@ Dies ist ein Fehler von Blizzard, der einige ältere Schlachtzüge betrifft.]=]
 La["Categories"] = "Kategorien"
 La["Characters"] = "Charaktere"
 La["Color currency by cap"] = "Währung nach Limit einfärben"
+--[[Translation missing --]]
+La["Combine Emissaries"] = "Combine Emissaries"
+--[[Translation missing --]]
+La["Combine emissaries of same expansion"] = "Combine emissaries of same expansion"
 La["Combine LFR"] = "LFR/Flex zusammenfassen"
 La["Combine World Bosses"] = "Weltbosse zusammenfassen"
 La["Connected Realms"] = "Verknüpfte Realms"
@@ -520,6 +530,10 @@ This is a Blizzard bug affecting certain old raids.]=] ] = "보스 처지 정보
 La["Categories"] = "카테고리"
 La["Characters"] = "캐릭터"
 La["Color currency by cap"] = "화폐 한도에 채색"
+--[[Translation missing --]]
+La["Combine Emissaries"] = "Combine Emissaries"
+--[[Translation missing --]]
+La["Combine emissaries of same expansion"] = "Combine emissaries of same expansion"
 La["Combine LFR"] = "공찾/탄공 합침"
 La["Combine World Bosses"] = "야외 보스 합침"
 La["Connected Realms"] = "연동 서버"
@@ -679,6 +693,10 @@ This is a Blizzard bug affecting certain old raids.]=]
 La["Categories"] = "Categorías"
 La["Characters"] = "Personajes"
 La["Color currency by cap"] = "Colorea moneda por límite"
+--[[Translation missing --]]
+La["Combine Emissaries"] = "Combine Emissaries"
+--[[Translation missing --]]
+La["Combine emissaries of same expansion"] = "Combine emissaries of same expansion"
 La["Combine LFR"] = "Combinar BDB"
 La["Combine World Bosses"] = "Combinar Jefes del Mundo"
 La["Connected Realms"] = "Reinos Conectados"
@@ -860,6 +878,10 @@ This is a Blizzard bug affecting certain old raids.]=] ] = [=[Отсутству
 La["Categories"] = "Категории"
 La["Characters"] = "Персонажи"
 La["Color currency by cap"] = "Расцвечивать валюту в зависимости от достижения максимума"
+--[[Translation missing --]]
+La["Combine Emissaries"] = "Combine Emissaries"
+--[[Translation missing --]]
+La["Combine emissaries of same expansion"] = "Combine emissaries of same expansion"
 La["Combine LFR"] = "Объединять СПР (LFR)"
 La["Combine World Bosses"] = "Объединять мировых босcов"
 La["Connected Realms"] = "Соединенные сервера"
@@ -1022,6 +1044,10 @@ This is a Blizzard bug affecting certain old raids.]=] ] = [=[首领击杀信息
 La["Categories"] = "分类"
 La["Characters"] = "角色"
 La["Color currency by cap"] = "货币根据上限显示颜色"
+--[[Translation missing --]]
+La["Combine Emissaries"] = "Combine Emissaries"
+--[[Translation missing --]]
+La["Combine emissaries of same expansion"] = "Combine emissaries of same expansion"
 La["Combine LFR"] = "合并随机/弹性"
 La["Combine World Bosses"] = "合并世界首领"
 La["Connected Realms"] = "已合并服务器"
@@ -1177,6 +1203,10 @@ This is a Blizzard bug affecting certain old raids.]=]
 La["Categories"] = "Categorías"
 La["Characters"] = "Personajes"
 La["Color currency by cap"] = "---- \"Show currency max\" is \"Mostrar máximos de monedas\""
+--[[Translation missing --]]
+La["Combine Emissaries"] = "Combine Emissaries"
+--[[Translation missing --]]
+La["Combine emissaries of same expansion"] = "Combine emissaries of same expansion"
 La["Combine LFR"] = "Combinar BdG"
 La["Combine World Bosses"] = "Combinar jefes del mundo"
 La["Connected Realms"] = "Reinos conectados"
@@ -1356,6 +1386,10 @@ This is a Blizzard bug affecting certain old raids.]=] ] = [=[缺少這個進度
 La["Categories"] = "分類"
 La["Characters"] = "角色"
 La["Color currency by cap"] = "依據數量上限顯示兌換通貨顏色"
+--[[Translation missing --]]
+La["Combine Emissaries"] = "Combine Emissaries"
+--[[Translation missing --]]
+La["Combine emissaries of same expansion"] = "Combine emissaries of same expansion"
 La["Combine LFR"] = "合併隨機團隊"
 La["Combine World Bosses"] = "合併世界首領"
 La["Connected Realms"] = "連結伺服器"
@@ -1511,6 +1545,10 @@ This is a Blizzard bug affecting certain old raids.]=]
 La["Categories"] = "Categorias"
 La["Characters"] = "Personagens"
 La["Color currency by cap"] = "Colorir moedas por limite"
+--[[Translation missing --]]
+La["Combine Emissaries"] = "Combine Emissaries"
+--[[Translation missing --]]
+La["Combine emissaries of same expansion"] = "Combine emissaries of same expansion"
 La["Combine LFR"] = "Combinar LdR"
 La["Combine World Bosses"] = "Agrupar chefes mundiais"
 La["Connected Realms"] = "Reinos conectados"
@@ -1696,6 +1734,10 @@ This is a Blizzard bug affecting certain old raids.]=]
 La["Categories"] = "Categorie"
 La["Characters"] = "Personaggi"
 La["Color currency by cap"] = "Colora valute in base al limite"
+--[[Translation missing --]]
+La["Combine Emissaries"] = "Combine Emissaries"
+--[[Translation missing --]]
+La["Combine emissaries of same expansion"] = "Combine emissaries of same expansion"
 La["Combine LFR"] = "Unisci le riceche spedizioni"
 La["Combine World Bosses"] = "Unisci i boss mondiali"
 La["Connected Realms"] = "Reami connessi"

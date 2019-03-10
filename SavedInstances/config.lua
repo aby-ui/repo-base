@@ -370,6 +370,12 @@ function module:BuildOptions()
             name = L["Show when completed"],
             desc = L["Show emissary line when all quests completed"],
           },
+          CombineEmissary = {
+            type = "toggle",
+            order = 39.3,
+            name = L["Combine Emissaries"],
+            desc = L["Combine emissaries of same expansion"],
+          },
           MiscHeader = {
             order = 40,
             type = "header",

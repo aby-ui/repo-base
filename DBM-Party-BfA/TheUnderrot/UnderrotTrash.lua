@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("UnderrotTrash", "DBM-Party-BfA", 8)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17786 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 18439 $"):sub(12, -3))
 --mod:SetModelID(47785)
 mod:SetZone()
 
@@ -29,7 +29,7 @@ local specWarnWitheringCurse		= mod:NewSpecialWarningInterrupt(265433, "HasInter
 local specWarnRaiseDead				= mod:NewSpecialWarningInterrupt(272183, "HasInterrupt", nil, nil, 1, 2)
 local specWarnDecayingMind			= mod:NewSpecialWarningInterrupt(278961, "HasInterrupt", nil, nil, 1, 2)
 local specWarnSpiritDrainTotem		= mod:NewSpecialWarningInterrupt(265523, "HasInterrupt", nil, nil, 1, 2)
-local specWarnSpiritDrainTotemKill	= mod:NewSpecialWarningSwitch(265523, "-Healer", nil, nil, 1, 2)
+local specWarnSpiritDrainTotemKill	= mod:NewSpecialWarningDodge(265523, nil, nil, nil, 2, 2)
 
 function mod:SPELL_CAST_START(args)
 	if not self.Options.Enabled then return end
@@ -84,6 +84,6 @@ function mod:SPELL_CAST_SUCCESS(args)
 	local spellId = args.spellId
 	if spellId == 265523 then
 		specWarnSpiritDrainTotemKill:Show()
-		specWarnSpiritDrainTotemKill:Play("attacktotem")
+		specWarnSpiritDrainTotemKill:Play("watchstep")
 	end
 end

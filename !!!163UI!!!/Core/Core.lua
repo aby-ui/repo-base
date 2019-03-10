@@ -745,7 +745,7 @@ end
 protection area
 ---------------------------------------------------------------]]
 
-U1STAFF={["邦桑廸-奥杜尔"]=1,["心耀-冰风岗"]=1,
+U1STAFF={["邦桑廸-奥杜尔"]="爱不易开发者",["心耀-冰风岗"]="爱不易开发者",
     ["Majere-冰风岗"]="爱不易开发者的会长",
     ["小倍倍猪-冰风岗"]="爱不易老板娘",
     ["乄阿蛮乄-冰风岗"]="Banshee元素领主",
@@ -777,7 +777,7 @@ RunOnNextFrame(function()
                 if fullName then
                     local staff = U1STAFF[fullName]
                     if staff then
-                        self:AddLine(staff == 1 and "爱不易开发者" or staff, 1, 0, 1)
+                        self:AddLine(staff, 1, 0, 1)
                         if not self.fadeOut then self:Show() end
                     else
                         local donate = U1Donators and U1Donators.players[fullName]
