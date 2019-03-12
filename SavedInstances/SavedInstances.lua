@@ -12,6 +12,7 @@ local dataobject, db, config
 local maxdiff = 33 -- max number of instance difficulties
 local maxcol = 4 -- max columns per player+instance
 local maxid = 3000 -- highest possible value for an instanceID, current max (Battle of Dazar'alor) is 2070
+local BONUS_ROLL_REQUIRED_CURRENCY = 1580 -- bonus roll currency of current expansion
 
 local table, math, bit, string, pairs, ipairs, unpack, strsplit, time, type, wipe, tonumber, select, strsub =
   table, math, bit, string, pairs, ipairs, unpack, strsplit, time, type, wipe, tonumber, select, strsub
@@ -58,6 +59,7 @@ end
 
 local currency = addon.currency
 local trade_spells = addon.trade_spells
+local itemcds = addon.itemcds
 local cdname = addon.cdname
 local QuestExceptions = addon.QuestExceptions
 local TimewalkingItemQuest = addon.TimewalkingItemQuest
@@ -803,6 +805,7 @@ addon.transInstance = {
   [1516] = 1190, -- Arcway: ticket 227/233 ptBR
   [1651] = 1347, -- Return to Karazhan: ticket 237 (fake LFDID)
   [545] = 185, -- The Steamvault: issue #143 esES
+  [1530] = 1353, -- The Nighthold: issue #186 frFR
 }
 
 -- some instances (like sethekk halls) are named differently by GetSavedInstanceInfo() and LFGGetDungeonInfoByID()
@@ -1371,6 +1374,9 @@ function addon:UpdateInstance(id)
     name = L["LFR"]..": "..name
   end
   if id == 1661 then -- ignore AI Test - Arathi Basin
+    return nil, nil, true
+  end
+  if id == 1508 then -- ignore AI Test - Warsong Gulch
     return nil, nil, true
   end
   if id == 852 and expansionLevel == 5 then -- XXX: Molten Core hack
@@ -2468,7 +2474,7 @@ end
 function core:OnInitialize()
   local versionString = GetAddOnMetadata(addonName, "version")
   --[===[@debug@
-  if versionString == "8.0.10-30-gac75902" then
+  if versionString == "8.1.0" then
     versionString = "Dev"
   end
   --@end-debug@]===]
@@ -4115,14 +4121,17 @@ function core:ShowTooltip(anchorframe)
       if t.BonusRoll and t.BonusRoll[1] then
         local gold = 0
         for _,roll in ipairs(t.BonusRoll) do
-          if not roll.item then
-            gold = gold + 1
-          else
-            local itemID = GetItemInfoInstant(roll.item)
-            if itemID == 163827 then -- Quartermaster's Coin, obtained when failing a bonus roll in pvp
+          if not roll.costCurrencyID then break end
+          if roll.costCurrencyID == BONUS_ROLL_REQUIRED_CURRENCY then
+            if not roll.item then
               gold = gold + 1
             else
-              break
+              local itemID = GetItemInfoInstant(roll.item)
+              if itemID == 163827 then -- Quartermaster's Coin, obtained when failing a bonus roll in pvp
+                gold = gold + 1
+              else
+                break
+              end
             end
           end
         end
@@ -4416,20 +4425,6 @@ StaticPopupDialogs["SAVEDINSTANCES_DELETE_CHARACTER"] = {
   showAlert = true,
 }
 
-local itemcds = { -- [itemid] = spellid
-  [87214] = 126459, 	-- Blingtron 4000
-  [111821] = 161414, 	-- Blingtron 5000
-  [132530] = 200146,	-- Reaves: Bling (Blingtron 6000)
-  [40768] = 54710, 	-- MOLL-E
-  [49040] = 67826,	-- Jeeves
-  [132525] = 200087,	-- Reaves: Repair
-  [112059] = 163830,	-- Wormhole Centrifuge
-  [48933] = 67833,	-- Wormhole Generator: Northrend
-  [87215] = 126755,	-- Wormhole Generator: Pandaria
-  [18986] = 23453, 	-- Ultrasafe Transporter: Gadgetzhan
-  [30544] = 36941,	-- Ultrasafe Transporter: Toshley's Station
-}
-
 function core:scan_item_cds()
   for itemid, spellid in pairs(itemcds) do
     local start, duration = GetItemCooldown(itemid)
@@ -4658,14 +4653,17 @@ function addon.BonusRollShow()
   end
   local bonus = 0
   for _,rinfo in ipairs(binfo) do
-    if not rinfo.item then
-      bonus = bonus + 1
-    else
-      local itemID = GetItemInfoInstant(rinfo.item)
-      if itemID == 163827 then -- Quartermaster's Coin, obtained when failing a bonus roll in pvp
+    if not rinfo.costCurrencyID then break end
+    if rinfo.costCurrencyID == BonusRollFrame.CurrentCountFrame.currencyID then
+      if not rinfo.item then
         bonus = bonus + 1
       else
-        break
+        local itemID = GetItemInfoInstant(rinfo.item)
+        if itemID == 163827 then -- Quartermaster's Coin, obtained when failing a bonus roll in pvp
+          bonus = bonus + 1
+        else
+          break
+        end
       end
     end
   end

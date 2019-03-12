@@ -1520,6 +1520,12 @@ function Skada:StartCombat()
 	-- Create a new current set unless we are already have one (combat detection kicked in).
 	if not self.current then
 		self.current = createSet(L["Current"])
+        --abyui for Debuff mod
+        for i, mode in ipairs(modes) do
+            if mode.SetInit ~= nil then
+                mode:SetInit(self.current)
+            end
+        end
 	end
 
 	if self.encounterName and

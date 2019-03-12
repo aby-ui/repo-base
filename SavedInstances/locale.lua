@@ -1044,10 +1044,8 @@ This is a Blizzard bug affecting certain old raids.]=] ] = [=[首领击杀信息
 La["Categories"] = "分类"
 La["Characters"] = "角色"
 La["Color currency by cap"] = "货币根据上限显示颜色"
---[[Translation missing --]]
-La["Combine Emissaries"] = "Combine Emissaries"
---[[Translation missing --]]
-La["Combine emissaries of same expansion"] = "Combine emissaries of same expansion"
+La["Combine Emissaries"] = "合并大使任务"
+La["Combine emissaries of same expansion"] = "合并同一个资料片的大使任务"
 La["Combine LFR"] = "合并随机/弹性"
 La["Combine World Bosses"] = "合并世界首领"
 La["Connected Realms"] = "已合并服务器"
