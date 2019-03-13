@@ -13,7 +13,7 @@ Skada:AddLoadableModule("Debuffs", nil, function(Skada, L)
 	local buffspells = Skada:NewModule(L["Buff spell list"])
         
     local pairs, ipairs = pairs, ipairs
-    local time = time
+    local time, strsplit = time, strsplit
     --abyui
     local debug = function() end
     local function AuraActiveTime(set, player)
@@ -26,7 +26,7 @@ Skada:AddLoadableModule("Debuffs", nil, function(Skada, L)
 		if set then
 
 			-- Get the player.
-			local player = Skada:get_player(set, aura.playerid, aura.playername)
+			local player = Skada:get_player(set, aura.playerid, strsplit("-", aura.playername))
 			if player then
 				--Skada:Print("applied "..aura.spellname.. " to "..player.name.. " - "..aura.auratype)
 				-- Add aura to player if it does not exist.
@@ -53,7 +53,7 @@ Skada:AddLoadableModule("Debuffs", nil, function(Skada, L)
 		if set then
 
 			-- Get the player.
-			local player = Skada:get_player(set, aura.playerid, aura.playername)
+			local player = Skada:get_player(set, aura.playerid, strsplit("-", aura.playername))
 			if player then
 				--Skada:Print("removed "..aura.spellname.. " to "..player.name.. " - "..aura.auraType)
 				-- If aura does not exist, we know nothing about it and ignore it.
@@ -411,7 +411,7 @@ Skada:AddLoadableModule("Debuffs", nil, function(Skada, L)
 	end
 
     --abyui
-    local UnitAura, UnitGUID, U1UnitFullName = UnitAura, UnitGUID, U1UnitFullName
+    local UnitAura, UnitGUID = UnitAura, UnitGUID
     local raidunits = {} for i=1, 40 do raidunits[i] = "raid" ..i end
     local partyunits = {"player", "party1", "party2", "party3", "party4" }
 
@@ -421,7 +421,8 @@ Skada:AddLoadableModule("Debuffs", nil, function(Skada, L)
         for i, unit in ipairs(units) do
             local guid = UnitGUID(unit)
             if not guid then break end
-            local fullname = U1UnitFullName(unit)
+            local fullname, realm = UnitName(unit)
+            if realm and realm ~= "" then fullname = fullname .. "-" .. realm end
             for j = 1, 2 do
             local set = (j == 1 and set or Skada.total)
             set.aura_time_start = time()
