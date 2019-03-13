@@ -23,7 +23,7 @@ Skada:AddLoadableModule("Debuffs", nil, function(Skada, L)
     end
 
 	local function log_auraapply(set, aura)
-		if set then
+		if set and aura.playername then
 
 			-- Get the player.
 			local player = Skada:get_player(set, aura.playerid, strsplit("-", aura.playername))
@@ -50,7 +50,7 @@ Skada:AddLoadableModule("Debuffs", nil, function(Skada, L)
 	end
 
 	local function log_auraremove(set, aura)
-		if set then
+		if set and aura.playername then
 
 			-- Get the player.
 			local player = Skada:get_player(set, aura.playerid, strsplit("-", aura.playername))
