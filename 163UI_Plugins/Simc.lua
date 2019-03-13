@@ -60,7 +60,7 @@ Simulationcraft.RoleTable = {
   -- Warrior
   [71] = 'attack',
   [72] = 'attack',
-  [73] = 'attack'
+  [73] = 'tank'
 }
 
 -- regionID lookup
@@ -275,7 +275,14 @@ Simulationcraft.upgradeTable = {
   [531] = 2 -- 2/2 -> 10
 }
 
-
+Simulationcraft.zandalariLoaBuffs = {
+  [292359] = 'akunda',
+  [292360] = 'bwonsamdi',
+  [292362] = 'gonk',
+  [292363] = 'kimbul',
+  [292364] = 'kragwa',
+  [292361] = 'paku',
+}
 
 
 
@@ -737,6 +744,22 @@ function Simulationcraft:GetReoriginationArrayStacks()
   return stacks
 end
 
+-- Scan buffs to determine which loa racial this player has, if any
+function Simulationcraft:GetZandalariLoa()
+  local zandalariLoa = nil
+  for index = 1, 32 do
+    local _, _, _, _, _, _, _, _, _, spellId = UnitBuff("player", index)
+    if spellId == nil then
+      break
+    end
+    if zandalariLoaBuffs[spellId] then
+      zandalariLoa = zandalariLoaBuffs[spellId]
+      break
+    end
+  end
+  return zandalariLoa
+end
+
 -- This is the workhorse function that constructs the profile
 function Simulationcraft:PrintSimcProfile(debugOutput, noBags, links)
   -- addon metadata
@@ -764,6 +787,11 @@ function Simulationcraft:PrintSimcProfile(debugOutput, noBags, links)
     playerRace = 'Undead'
   else
     playerRace = FormatRace(playerRace)
+  end
+
+  local isZandalariTroll = false
+  if Tokenize(playerRace) == 'zandalari_troll' then
+    isZandalariTroll = true
   end
 
   -- Spec info
@@ -818,6 +846,12 @@ function Simulationcraft:PrintSimcProfile(debugOutput, noBags, links)
   simulationcraftProfile = simulationcraftProfile .. player .. '\n'
   simulationcraftProfile = simulationcraftProfile .. playerLevel .. '\n'
   simulationcraftProfile = simulationcraftProfile .. playerRace .. '\n'
+  if isZandalariTroll then
+    local zandalari_loa = Simulationcraft:GetZandalariLoa()
+    if zandalari_loa then
+      simulationcraftProfile = simulationcraftProfile .. "zandalari_loa=" .. zandalari_loa .. '\n'
+    end
+  end
   simulationcraftProfile = simulationcraftProfile .. playerRegion .. '\n'
   simulationcraftProfile = simulationcraftProfile .. playerRealm .. '\n'
   simulationcraftProfile = simulationcraftProfile .. playerRole .. '\n'

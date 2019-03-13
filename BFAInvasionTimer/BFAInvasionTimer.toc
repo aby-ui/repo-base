@@ -1,5 +1,5 @@
 ## Interface: 80100
-## Version: v8.1.5
+## Version: v8.1.6
 ## Title: BFAInvasionTimer
 ## Author: Funkydude
 ## Notes: Shows the Battle for Azeroth assault/invasion timer.
