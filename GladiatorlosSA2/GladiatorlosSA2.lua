@@ -6,7 +6,7 @@
  local LSM = LibStub("LibSharedMedia-3.0")
  local self, GSA, PlaySoundFile = GladiatorlosSA, GladiatorlosSA, PlaySoundFile
  local GSA_TEXT = "|cff69CCF0GladiatorlosSA2|r (|cffFFF569/gsa|r)"
- local GSA_VERSION = "|cffFF7D0A B5 |r(|cFF00FF968.1 Battle for Azeroth|r)"
+ local GSA_VERSION = "|cffFF7D0A B6 |r(|cFF00FF968.1.5 Battle for Azeroth|r)"
  local GSA_AUTHOR = " "
  local gsadb
  local soundz,sourcetype,sourceuid,desttype,destuid = {},{},{},{},{}
@@ -425,6 +425,19 @@
  function GladiatorlosSA:UNIT_AURA(event,uid)
  	--local _,currentZoneType = IsInInstance()
 
+	--if gsadb.drinking then--if uid:find("arena") and gsadb.drinking then
+		if gsadb.drinking then
+			if (AuraUtil.FindAuraByName("Drinking",uid) or AuraUtil.FindAuraByName("Food",uid) or AuraUtil.FindAuraByName("Refreshment",uid) or AuraUtil.FindAuraByName("Drink",uid)) and currentZoneType == "arena" then
+				if self:Throttle(tostring(104270) .. uid, 4) then return end
+			self:PlaySound("drinking",extend,genderZ)
+			end
+		end
+	--end
+ end
+ 
+  --function GladiatorlosSA:UNIT_AURA(event,uid)
+ 	--local _,currentZoneType = IsInInstance()
+
 --	if gsadb.drinking then--if uid:find("arena") and gsadb.drinking then
 --		if gsadb.drinking then
 --			if (UnitAura(uid,104270) or UnitAura(uid,167152) or UnitAura(uid,5006) or UnitAura(uid,274194)) and currentZoneType == "arena" then
@@ -433,7 +446,7 @@
 --			end
 --		end
 --	end
- end
+ --end
 
  function GladiatorlosSA:Throttle(key,throttle)
 	if (not self.throttled) then

@@ -16,9 +16,18 @@ Skada:AddLoadableModule("Debuffs", nil, function(Skada, L)
     local time, strsplit = time, strsplit
     --abyui
     local debug = function() end
-    local function AuraActiveTime(set, player)
-        local maxtime = set.time
-        if set.aura_time_start then maxtime = maxtime + time() - set.aura_time_start end
+    local function PlayerActiveTime(set, player)
+        local maxtime = 0
+
+        -- Add recorded time (for total set)
+        if player.time > 0 then
+            maxtime = player.time
+        end
+
+        -- Add in-progress time if set is not ended.
+        if (not set.endtime or set.stopped) and player.first then
+            maxtime = maxtime + time() - player.first --we use time() not player.last
+        end
         return maxtime
     end
 
@@ -26,7 +35,7 @@ Skada:AddLoadableModule("Debuffs", nil, function(Skada, L)
 		if set and aura.playername then
 
 			-- Get the player.
-			local player = Skada:get_player(set, aura.playerid, strsplit("-", aura.playername))
+			local player = Skada:get_player(set, aura.playerid, (strsplit("-", aura.playername)))
 			if player then
 				--Skada:Print("applied "..aura.spellname.. " to "..player.name.. " - "..aura.auratype)
 				-- Add aura to player if it does not exist.
@@ -43,7 +52,8 @@ Skada:AddLoadableModule("Debuffs", nil, function(Skada, L)
                     au.started = au.started or time()
                     au.last_apply_time = time()
                     if au.spellschool == nil then au.school = aura.spellschool end
-				end
+                end
+                if au.started < player.first then au.started = player.first end
 			end
 
 		end
@@ -53,7 +63,7 @@ Skada:AddLoadableModule("Debuffs", nil, function(Skada, L)
 		if set and aura.playername then
 
 			-- Get the player.
-			local player = Skada:get_player(set, aura.playerid, strsplit("-", aura.playername))
+			local player = Skada:get_player(set, aura.playerid, (strsplit("-", aura.playername)))
 			if player then
 				--Skada:Print("removed "..aura.spellname.. " to "..player.name.. " - "..aura.auraType)
 				-- If aura does not exist, we know nothing about it and ignore it.
@@ -65,12 +75,16 @@ Skada:AddLoadableModule("Debuffs", nil, function(Skada, L)
                         
                         if a.active == 0 and a.started then
                             -- Calculate aura uptime
-                            a.uptime = a.uptime + math.floor((time() - a.started) + 0.5)
+                            if player.first then
+                                a.started = a.started < player.first and player.first or a.started
+                                a.uptime = a.uptime + math.floor((time() - a.started) + 0.5) --player.last is equal to time()
+                            end
 
                             -- Clear aura start value
                             a.started = nil
                         end
-					end
+                    end
+                    a.started = nil
 				end
 			end
 
@@ -202,7 +216,7 @@ Skada:AddLoadableModule("Debuffs", nil, function(Skada, L)
                     end
                         
                     -- Calculate player max possible uptime.
-                    local maxtime = AuraActiveTime(set, player) --Skada:PlayerActiveTime(set, player)
+                    local maxtime = PlayerActiveTime(set, player) --Skada:PlayerActiveTime(set, player)
 
                     local d = win.dataset[nr] or {}
                     win.dataset[nr] = d
@@ -252,7 +266,7 @@ Skada:AddLoadableModule("Debuffs", nil, function(Skada, L)
 			if auracount > 0 then
 --[[
 				-- Calculate player max possible uptime.
-                local maxtime = AuraActiveTime(set, player) --Skada:PlayerActiveTime(set, player)
+                local maxtime = PlayerActiveTime(set, player) --Skada:PlayerActiveTime(set, player)
 
 				-- Now divide by the number of spells to get the average uptime.
 				local uptime = min(maxtime, aurauptime / auracount)
@@ -291,7 +305,7 @@ Skada:AddLoadableModule("Debuffs", nil, function(Skada, L)
 
 		if player then
 			-- Calculate player max possible uptime.
-            local maxtime = AuraActiveTime(set, player) --Skada:PlayerActiveTime(set, player)
+            local maxtime = PlayerActiveTime(set, player) --Skada:PlayerActiveTime(set, player)
 
             if maxtime and maxtime > 0 then
                 win.metadata.maxvalue = maxtime
@@ -426,7 +440,7 @@ Skada:AddLoadableModule("Debuffs", nil, function(Skada, L)
             for j = 1, 2 do
             local set = (j == 1 and set or Skada.total)
             set.aura_time_start = time()
-            local player = Skada:get_player(set, guid, fullname)
+            local player = Skada:get_player(set, guid, fullname, true)
             if player then
                 for i=1, 40 do
                     local name, icon, _, _, duration, expires, _, isStealable, nameplateShowPersonal, spellID, canApplyAura, isBossDebuff, _, nameplateShowAll, timeMod, value1, value2, value3 = UnitAura(unit, i)
@@ -464,8 +478,9 @@ Skada:AddLoadableModule("Debuffs", nil, function(Skada, L)
         set.aura_time_start = nil
 		for i, player in ipairs(set.players) do
 			for spellname, spell in pairs(player.auras) do
-				if spell.started then
-                    spell.uptime = spell.uptime + math.floor((time() - spell.started) + 0.5)
+				if spell.started and player.first and player.last then
+                    if spell.started < player.first then spell.started = player.first end
+                    spell.uptime = spell.uptime + math.floor((player.last - spell.started) + 0.5)
                 end
                 spell.active = 0
                 spell.started = nil

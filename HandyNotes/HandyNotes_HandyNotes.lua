@@ -26,7 +26,6 @@ local defaults = {
 local next = next
 local wipe = wipe
 local GameTooltip = GameTooltip
-local WorldMapTooltip = WorldMapTooltip
 
 
 ---------------------------------------------------------
@@ -74,27 +73,22 @@ HN.icons = {
 local HNHandler = {}
 
 function HNHandler:OnEnter(mapID, coord)
-	local tooltip = self:GetParent() == WorldMapFrame:GetCanvas() and WorldMapTooltip or GameTooltip
 	if ( self:GetCenter() > UIParent:GetCenter() ) then -- compare X coordinate
-		tooltip:SetOwner(self, "ANCHOR_LEFT")
+		GameTooltip:SetOwner(self, "ANCHOR_LEFT")
 	else
-		tooltip:SetOwner(self, "ANCHOR_RIGHT")
+		GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
 	end
 	local title = dbdata[mapID][coord].title
 	local desc = dbdata[mapID][coord].desc
 	if title == "" and desc == "" then title = L["(No Title)"] end
 	if title == "" and desc ~= "" then title = desc  desc = nil end
-	tooltip:SetText(title)
-	tooltip:AddLine(desc, nil, nil, nil, true)
-	tooltip:Show()
+	GameTooltip:SetText(title)
+	GameTooltip:AddLine(desc, nil, nil, nil, true)
+	GameTooltip:Show()
 end
 
 function HNHandler:OnLeave(mapID, coord)
-	if self:GetParent() == WorldMapFrame:GetCanvas() then
-		WorldMapTooltip:Hide()
-	else
-		GameTooltip:Hide()
-	end
+	GameTooltip:Hide()
 end
 
 local function deletePin(button, mapID, coord)

@@ -3,7 +3,7 @@
 ## Notes: Handy notes for your maps
 ## Notes-frFR: Notes pratiques pour vos cartes.
 ## Author: Xinhuan
-## Version: v1.5.4
+## Version: v1.5.5
 ## DefaultState: enabled
 ## X-Category: Map
 ## X-eMail: xinhuan @ gmail DOT com

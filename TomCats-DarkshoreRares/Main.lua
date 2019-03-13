@@ -115,13 +115,13 @@ local function ADDON_LOADED(self)
     warningFont:SetTextColor(1, 0, 0)
     QUEST_STATUS = {
         COMPLETE = {
-            getImage = function() return 973338, 123/256, 159/256, 94/128, 126/128 end,
+            getImage = function() return 973338, 124/256, 160/256, 94/128, 126/128 end,
             font = completeFont,
             texture = "complete",
             color = { r = 0, g = 1, b = 0 }
         },
         INCOMPLETE = {
-            getImage = function() return 1121272, 575/1024, 607/1024, 205/512, 237/512 end,
+            getImage = function() return 1121272, 576/1024, 608/1024, 302/512, 334/512 end,
             font = incompleteFont,
             texture = "incomplete",
             color = { r = 0.75, g = 0.75, b = 0.75 }
@@ -441,11 +441,12 @@ end
 local LOOT_NOUN_COLOR = CreateColor(1.0, 0.82, 0.0, 1.0)
 
 function addon.showItemTooltip(self, creature, showCreatureName, offX, offY)
-    local tooltip = WorldMapTooltip
-    WorldMapTooltip:SetOwner(self, "ANCHOR_BOTTOMRIGHT", offX or -50, offY or 20);
+    local tooltip = EmbeddedItemTooltip
+    tooltip:SetOwner(self, "ANCHOR_BOTTOMRIGHT", offX or -50, offY or 20);
     if (showCreatureName) then
         local color = WORLD_QUEST_QUALITY_COLORS[1];
-        WorldMapTooltip:SetText(creature["Name"], color.r, color.g, color.b);
+    --todo: Check for any reason that creature["Name"] could return nil
+        EmbeddedItemTooltip:SetText(creature["Name"], color.r, color.g, color.b);
         GameTooltip_AddBlankLinesToTooltip(tooltip, 1);
     end
     if (creature["Loot"]) then
@@ -461,12 +462,12 @@ function addon.showItemTooltip(self, creature, showCreatureName, offX, offY)
         local color = ITEM_QUALITY_COLORS[quality];
         tooltip:AddLine(text, color.r, color.g, color.b);
     end
-    WorldMapTooltip:Show()
-    WorldMapTooltip.recalculatePadding = true;
+    --EmbeddedItemTooltip.recalculatePadding = true;
+    EmbeddedItemTooltip:Show()
 end
 
 function addon.hideItemTooltip()
-    WorldMapTooltip:Hide()
+    EmbeddedItemTooltip:Hide()
 end
 
 local VignettePinMixin_OnMouseEnter_Orig = VignettePinMixin.OnMouseEnter
@@ -477,6 +478,17 @@ function VignettePinMixin:OnMouseEnter()
         addon.showItemTooltip(self, creature, true, 10, 5)
     else
         return VignettePinMixin_OnMouseEnter_Orig(self)
+    end
+end
+
+local VignettePinMixin_OnMouseLeave_Orig = VignettePinMixin.OnMouseLeave
+
+function VignettePinMixin:OnMouseLeave()
+    local creature = D["Creatures by Vignette ID"][self.vignetteID]
+    if (creature) then
+        addon.hideItemTooltip()
+    else
+        return VignettePinMixin_OnMouseLeave_Orig(self)
     end
 end
 
@@ -559,7 +571,7 @@ if (TomCats and TomCats.Register) then
                 }
             },
             name = "Rares of Darkshore",
-            version = "1.2.5"
+            version = "1.2.7"
         }
     )
 end

@@ -165,7 +165,7 @@ merge(ns.points[896], { -- Drustvar
     [58901790] = {quest=48842, npc=127333, achievement=12941, criteria=41708,}, -- Barbthorn Queen
     [66585068] = {quest=48978, item=154376, npc=126621, achievement=12941, criteria=41711,}, -- Bonesquall
     [59245526] = {quest=48981, npc=127877, achievement=12941, criteria=41713, note="Pick one to fight; Dagger from Longfang, mail gloves from Henry",}, -- Longfang & Henry Breakwater
-    [52074697] = {quest=49216, npc=129904, achievement=12941, criteria=41715,}, -- Cottontail Matron
+    [52074697] = {quest=49216, item=163036, npc=129904, achievement=12941, criteria=41715,}, -- Cottontail Matron
     [65002266] = {quest=49311, npc=128973, achievement=12941, criteria=41718,}, -- Whargarble the Ill-Tempered
     [50842040] = {quest=49388, npc=127129, achievement=12941, criteria=41720,}, -- Grozgore
     [51352957] = {quest=49481, npc=129805, achievement=12941, criteria=41722,}, -- Beshol
@@ -179,7 +179,7 @@ merge(ns.points[896], { -- Drustvar
     [24242193] = {quest=51749, npc=138866, item=154217, achievement=12941, criteria=41748,}, -- Fungi Trio (quest 51887 also?)
     [30476344] = {quest=51923, npc=139322, item=154315, achievement=12941, criteria=41751,}, -- Whitney "Steelclaw" Ramsay
     [66574259] = {quest=48178, npc=125453, item=158583, achievement=12941, criteria=41707,}, -- Quillrat Matriarch
-    [72786036] = {quest=48928, npc=127651, achievement=12941, criteria=41709,}, -- Vicemaul
+    [72786036] = {quest=48928, item=160474, npc=127651, achievement=12941, criteria=41709,}, -- Vicemaul
     [62956938] = {quest=48979, npc=127844, achievement=12941, criteria=41712,}, -- Gluttonous Yeti
     [43463611] = {quest=49137, achievement=12941, criteria=41714,}, -- Ancient Sarcophagus
     [59557181] = {quest=49269, npc=128707, achievement=12941, criteria=41717,}, -- Rimestone

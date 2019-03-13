@@ -7,7 +7,7 @@ local handleSlideBar, handleSexyMap
 
 function TCL.Charms.Create(buttonInfo)
     --noinspection GlobalCreationOutsideO
-    TOMCATS_LIBS_ICON_LASTFRAMELEVEL = (TOMCATS_LIBS_ICON_LASTFRAMELEVEL or 9) + 1
+    TOMCATS_LIBS_ICON_LASTFRAMELEVEL = (TOMCATS_LIBS_ICON_LASTFRAMELEVEL or 7) + 3
     if (MinimapZoneTextButton and MinimapZoneTextButton:GetParent() == MinimapCluster) then
         MinimapZoneTextButton:SetParent(Minimap)
     end
@@ -33,10 +33,11 @@ function TCL.Charms.Create(buttonInfo)
         _G[name .. "Icon"]:SetTexture(buttonInfo.iconTexture)
     end
     if (buttonInfo.name) then
-        if (addon.savedVariables.character.preferences[name]) then
-            frame:SetPreferences(addon.savedVariables.character.preferences[name])
+        local scope = addon.savedVariables[TCL.Charms.scope or "character"].preferences
+        if (scope[name]) then
+            frame:SetPreferences(scope[name])
         else
-            addon.savedVariables.character.preferences[name] = frame:GetPreferences()
+            scope[name] = frame:GetPreferences()
         end
     end
     if (buttonInfo.handler_onclick) then

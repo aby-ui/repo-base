@@ -101,7 +101,7 @@ CoreDependCall("Blizzard_ChallengesUI", function()
             GameTooltip:AddLine("400随机 需要675  分解返115")
             GameTooltip:AddLine("415随机 需要1725 分解返365")
             GameTooltip:AddLine("415指定 需要7150")
-            GameTooltip:AddLine("其他    340返1 355返3 370返12")
+            GameTooltip:AddLine("370分解 返12")
             GameTooltip:AddLine("仅|cffff00008.1|r之后获得的|cffff0000同甲|r特质装才返")
             GameTooltip:Show()
         end

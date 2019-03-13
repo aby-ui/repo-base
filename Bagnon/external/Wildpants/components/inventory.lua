@@ -19,9 +19,9 @@ function Frame:OnHide()
 end
 
 function Frame:CheckBagButtons(checked)
-	MainMenuBarBackpackButton:SetChecked(checked)
-	CharacterBag0Slot:SetChecked(checked)
-	CharacterBag1Slot:SetChecked(checked)
-	CharacterBag2Slot:SetChecked(checked)
-	CharacterBag3Slot:SetChecked(checked)
+    CoreUIShowOrHide(MainMenuBarBackpackButton.SlotHighlightTexture, checked)
+    CoreUIShowOrHide(CharacterBag0Slot.SlotHighlightTexture, checked)
+    CoreUIShowOrHide(CharacterBag1Slot.SlotHighlightTexture, checked)
+    CoreUIShowOrHide(CharacterBag2Slot.SlotHighlightTexture, checked)
+    CoreUIShowOrHide(CharacterBag3Slot.SlotHighlightTexture, checked)
 end

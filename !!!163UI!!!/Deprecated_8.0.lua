@@ -252,3 +252,8 @@ function C_LFGListGetSearchResultInfo(resultID)
     return info.searchResultID, info.activityID, info.name, info.comment, info.voiceChat, info.requiredItemLevel, info.requiredHonorLevel,
     info.age, info.numBNetFriends, info.numCharFriends, info.numGuildMates, info.isDelisted, info.leaderName, info.numMembers
 end
+
+--[[------------------------------------------------------------
+8.1.5
+---------------------------------------------------------------]]
+WorldMapTooltip = WorldMapTooltip or GameTooltip

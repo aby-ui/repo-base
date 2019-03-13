@@ -1673,7 +1673,7 @@ function Skada:find_player(set, playerid)
 end
 
 -- Returns or creates a player in the current.
-function Skada:get_player(set, playerid, playername)
+function Skada:get_player(set, playerid, playername, nochange)
 	-- Add player to set if it does not exist.
 	local player = Skada:find_player(set, playerid)
 
@@ -1711,6 +1711,7 @@ function Skada:get_player(set, playerid, playername)
 		player.role = playerRole
 	end
 
+    if nochange then return player end
 
 	-- The total set clears out first and last timestamps.
 	if not player.first then

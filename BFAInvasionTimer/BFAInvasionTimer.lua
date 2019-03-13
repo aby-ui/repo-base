@@ -72,7 +72,7 @@ do
 		3, -- Zuldazar
 	}
 	--13317 pvp achiev
-	local GameTooltip, WorldMapTooltip = GameTooltip, WorldMapTooltip
+	local GameTooltip = GameTooltip
 	local FormatShortDate = FormatShortDate
 	ShowTip = function(tip)
 		local coloredZones = {}
@@ -184,18 +184,13 @@ do
         tip:AddLine("左键拖动，右键选项")
 	end
 	HideTip = function()
-		if frame.db.profile.mode == 3 then
-			WorldMapTooltip:Hide()
-		else
-			GameTooltip:Hide()
-		end
+		GameTooltip:Hide()
 	end
 	OnEnter = function(f)
-		local tip = frame.db.profile.mode == 3 and WorldMapTooltip or GameTooltip
-		tip:SetOwner(f, "ANCHOR_NONE")
-		tip:SetPoint("BOTTOM", f, "TOP")
-		ShowTip(tip)
-		tip:Show()
+		GameTooltip:SetOwner(f, "ANCHOR_NONE")
+		GameTooltip:SetPoint("BOTTOM", f, "TOP")
+		ShowTip(GameTooltip)
+		GameTooltip:Show()
 	end
 end
 

@@ -184,6 +184,6 @@ function AutoDisplay:HookInterfaceEvents()
 		end
 	end
 
-	hooksecurefunc('BagSlotButton_UpdateChecked', checkIfInventoryShown)
-	hooksecurefunc('BackpackButton_UpdateChecked', checkIfInventoryShown)
+	--hooksecurefunc('BagSlotButton_UpdateChecked', checkIfInventoryShown)
+	--hooksecurefunc('BackpackButton_UpdateChecked', checkIfInventoryShown)
 end

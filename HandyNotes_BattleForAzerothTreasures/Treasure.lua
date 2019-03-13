@@ -69,6 +69,7 @@ ns.points = {
         -- junk
         [50823158] = {quest=50711, junk=true, label=CHEST,},
         [65041636] = {quest=50715, junk=true, label=CHEST,},
+        [68902222] = {quest=50715, junk=true, label=CHEST,},
         [68503365] = {quest=50716, junk=true, label=CHEST,},
         [66552896] = {quest=50720, junk=true, label=CHEST,},
         [63062832] = {quest=50720, junk=true, label=CHEST,},
@@ -78,6 +79,7 @@ ns.points = {
         [47526049] = {quest=50723, junk=true, label=CHEST,},
         [80791415] = {quest=50724, junk=true, label=CHEST,},
         [80151648] = {quest=50724, junk=true, label=CHEST,},
+        [41127489] = {quest=50726, junk=true, label=CHEST,},
         [43177297] = {quest=50726, junk=true, label=CHEST,},
         [40953756] = {quest=50727, junk=true, label=CHEST,},
         [81203857] = {quest=50728, junk=true, label=CHEST,},
@@ -114,7 +116,7 @@ ns.points = {
         [57746464] = {quest=51136, achievement=12849, criteria=40971,}, -- Excavator's Greed
         [56696469] = path{quest=51136},
         [57061121] = {quest=52992, achievement=12849, criteria=41002, note="Enter at top of temple",}, -- Lost Offerings of Kimbul
-        [26484534] = {quest=53004, achievement=12849, criteria=41004, note="Use Abandoned Bobber",}, -- Sandsunken Treasure
+        [26484534] = {quest=53004, item=163036, achievement=12849, criteria=41004, note="Use Abandoned Bobber",}, -- Sandsunken Treasure
         -- Scavenger of the Sands
         [56297011] = {quest=53132, minimap=true, atlas="VignetteLootElite", scale=1.2, achievement=13016, criteria=41342, note="Under the bridge",}, -- Jason's Rusty Blade
         [36217838] = {quest=53133, minimap=true, atlas="VignetteLootElite", scale=1.2, achievement=13016, criteria=41343, note="Inside the turned over box",}, -- Ian's Empty Bottle
@@ -205,18 +207,21 @@ ns.points = {
     },
     [896] = { -- Drustvar
         [33713008] = {quest=53356, achievement=12995, criteria=41697,}, -- Web-Covered Chest
-        [63306585] = {quest=53385, achievement=12995, criteria=41699, note="Left Down Up Right",}, -- Runebound Cache
-        [33687173] = {quest=53387, achievement=12995, criteria=41701, note="Right Up Left Down",}, -- Runebound Coffer
-        [55605181] = {quest=53472, achievement=12995, criteria=41703, note="Click on Witch Torch",}, -- Bespelled Chest
-        [25472416] = {quest=53474, achievement=12995, criteria=41705, note="Click on Witch Torch",}, -- Enchanted Chest
+        [63306585] = {quest=53385, item=163743, achievement=12995, criteria=41699, note="Left Down Up Right",}, -- Runebound Cache
+        [33687173] = {quest=53387, item=163740, achievement=12995, criteria=41701, note="Right Up Left Down",}, -- Runebound Coffer
+        [55605181] = {quest=53472, item=163790, minimap=true, achievement=12995, criteria=41703, note="Click on Witch Torch",}, -- Bespelled Chest
+        [25472416] = {quest=53474, item=163796, minimap=true, achievement=12995, criteria=41705, note="Click on Witch Torch",}, -- Enchanted Chest
         [25751995] = {quest=53357, achievement=12995, criteria=41698, note="Get keys from Gorging Raven",}, -- Merchant's Chest
         [44222770] = {quest=53386, item=163742, achievement=12995, criteria=41700, note="Left Right Down Up",}, -- Runebound Chest
-        [18515133] = {quest=53471, achievement=12995, criteria=41702, note="Click on Witch Torch",}, -- Hexed Chest
-        [67767367] = {quest=53473, achievement=12995, criteria=41704, note="Click on Witch Torch",}, -- Ensorcelled Chest
+        [18515133] = {quest=53471, minimap=true, achievement=12995, criteria=41702, note="Click on Witch Torch",}, -- Hexed Chest
+        [67767367] = {quest=53473, item=163791, minimap=true, achievement=12995, criteria=41704, note="Click on Witch Torch",}, -- Ensorcelled Chest
         [24304840] = {quest=53475, achievement=12995, criteria=41752,}, -- Stolen Thornspeaker Cache
         -- junk
+        [65312905] = {quest=51871, junk=true, label=CHEST_SM,},
+        [57862187] = {quest=51875, junk=true, label=CHEST_SM,},
         [58642825] = {quest=51875, junk=true, label=CHEST_SM,},
         [50332252] = {quest=51878, junk=true, label=CHEST_SM,},
+        [60306860] = {quest=51896, junk=true, label=CHEST_SM,},
     },
     [942] = { -- Stormsong Valley
         [66901200] = {quest=51449, achievement=12853, criteria=41061,}, -- Weathered Treasure Chest

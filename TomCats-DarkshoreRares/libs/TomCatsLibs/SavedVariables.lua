@@ -4,9 +4,8 @@ local TCL = addon.TomCatsLibs
 local function ADDON_LOADED(_, event, ...)
     local var1 = select(1, ...)
     if (var1 == addon.name) then
-        local varPrefix = string.gsub(addon.name, "-", "_")
-        local characterSavedVarsName = varPrefix .. "_Character"
-        local accountSavedVarsName = varPrefix .. "_Account"
+        local characterSavedVarsName = "TomCats_DarkshoreRares_Character"
+        local accountSavedVarsName = "TomCats_DarkshoreRares_Account"
         _G[characterSavedVarsName] = _G[characterSavedVarsName] or {}
         _G[accountSavedVarsName] = _G[accountSavedVarsName] or {}
         addon.savedVariables = {
@@ -14,6 +13,7 @@ local function ADDON_LOADED(_, event, ...)
             account = _G[accountSavedVarsName]
         }
         addon.savedVariables.character.preferences = addon.savedVariables.character.preferences or {}
+        addon.savedVariables.account.preferences = addon.savedVariables.account.preferences or {}
         TCL.Events.UnregisterEvent("ADDON_LOADED", ADDON_LOADED)
     end
 end
