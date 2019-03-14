@@ -5,7 +5,7 @@
 
 local ADDON, Addon = ...
 local Cache = LibStub('LibItemCache-2.0')
-local ItemSlot = Addon:NewClass('ItemSlot', 'Button')
+local ItemSlot = Addon:NewClass('ItemSlot', 'ItemButton')
 ItemSlot.unused = {}
 ItemSlot.nextID = 0
 
@@ -78,7 +78,7 @@ end
 
 function ItemSlot:Construct()
 	self.nextID = self.nextID + 1
-	return CreateFrame('Button', ADDON .. self.Name .. self.nextID, nil, 'ContainerFrameItemButtonTemplate')
+	return CreateFrame('ItemButton', ADDON .. self.Name .. self.nextID, nil, 'ContainerFrameItemButtonTemplate')
 end
 
 function ItemSlot:Restore()

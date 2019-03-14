@@ -13,6 +13,10 @@ f01:SetScript("OnEvent", function(self)
             U1DB.configs["163ui_moreoptions/cvar_nameplateMaxDistance"] = "60"
         end
     end
+    local dist = GetCVar("nameplateMaxDistance")
+    if not dist or dist == "0" or dist == "nil" or dist == 0 then
+        SetCVar("nameplateMaxDistance", 60)
+    end
     SetCVar("scriptErrors", DEBUG_MODE and 1 or 0)
     SetCVar("showQuestTrackingTooltips", 1)
     self:UnregisterAllEvents()
