@@ -437,7 +437,7 @@ Skada:AddLoadableModule("Debuffs", nil, function(Skada, L)
             if not guid then break end
             local fullname, realm = UnitName(unit)
             if realm and realm ~= "" then fullname = fullname .. "-" .. realm end
-            for j = 1, 2 do
+            for j = 1, Skada.total and 2 or 1 do
             local set = (j == 1 and set or Skada.total)
             set.aura_time_start = time()
             local player = Skada:get_player(set, guid, fullname, true)
@@ -472,7 +472,7 @@ Skada:AddLoadableModule("Debuffs", nil, function(Skada, L)
 
     function mod:SetComplete(set)
         -- Finalize any remaining auras
-        for j = 1, 2 do
+        for j = 1, Skada.total and 2 or 1 do
         local set = (j==1 and set or Skada.total)
         debug("Complete", set.name)
         set.aura_time_start = nil
