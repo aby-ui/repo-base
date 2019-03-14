@@ -1,5 +1,3 @@
-
-
 --world quest tracker object
 local WorldQuestTracker = WorldQuestTrackerAddon
 if (not WorldQuestTracker) then
@@ -207,7 +205,7 @@ end
 local questButton_OnEnter = function (self)
 	if (self.questID) then
 		WorldQuestTracker.CurrentHoverQuest = self.questID
-		--self.UpdateTooltip = TaskPOI_OnEnter -- function()end
+		self.UpdateTooltip = TaskPOI_OnEnter -- function()end
 		TaskPOI_OnEnter (self)
 		
 		--[=[ --this code pushes the tooltip to the left so it cannot be over the map zone in the world quest hub

@@ -2754,7 +2754,7 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 			local line_onenter = function (self)
 				if (self.questID) then
 					self.numObjectives = 10
-					--self.UpdateTooltip = TaskPOI_OnEnter
+					self.UpdateTooltip = TaskPOI_OnEnter
 					TaskPOI_OnEnter (self)
 					self:SetBackdropColor (.5, .50, .50, 0.75)
 				end

@@ -1,5 +1,3 @@
-
-
 --world quest tracker object
 local WorldQuestTracker = WorldQuestTrackerAddon
 if (not WorldQuestTracker) then
@@ -119,9 +117,9 @@ function WorldQuestTracker.CreateZoneWidget (index, name, parent, pinTemplate) -
 	supportFrame:SetSize (20, 20)
 	button.SupportFrame = supportFrame
 	
-	--button.UpdateTooltip = TaskPOI_OnEnter
+	button.UpdateTooltip = TaskPOI_OnEnter
 	--> looks like something is triggering the tooltip to update on tick
-	--button.UpdateTooltip = TaskPOI_OnEnter
+	button.UpdateTooltip = TaskPOI_OnEnter
 	button.worldQuest = true
 	button.ClearWidget = clear_widget
 	
