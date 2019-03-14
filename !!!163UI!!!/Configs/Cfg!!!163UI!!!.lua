@@ -15,7 +15,8 @@ function U1CfgMakeCVarOption(title, cvar, default, options)
             if info.type == "checkbox" or info.type == nil then
                 return GetCVarBool(cvar)
             else
-                return tostring(GetCVar(cvar))
+                local v = tostring(GetCVar(cvar))
+                if v == "nil" then return tostring(GetCVarDefault(cvar)) else return v end
             end
         end
         info.callback = function(cfg, v, loading)

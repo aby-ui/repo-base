@@ -36,7 +36,7 @@ U1RegisterAddon("163UI_MoreOptions", {
         reload = 1,
     }),--]]
 
-    U1CfgMakeCVarOption("姓名板的最大显示距离", "nameplateMaxDistance", nil, {
+    U1CfgMakeCVarOption("姓名板的最大显示距离", "nameplateMaxDistance", 60, {
         tip = "说明`7.0之后默认显示距离是60码，会导致另一个楼层的怪物都会被显示出来，可以修改此选项进行设置。建议设置为40或30",
         type = "spin",
         range = {20, 80, 5},

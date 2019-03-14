@@ -7,6 +7,9 @@ U1PlayerClass = select(2, UnitClass("player"))
 local f01 = CreateFrame("Frame")
 f01:RegisterEvent("VARIABLES_LOADED")
 f01:SetScript("OnEvent", function(self)
+    if U1DB and U1DB.configs and U1DB.configs["163ui_moreoptions/cvar_nameplateMaxDistance"] == "0" then
+        U1DB.configs["163ui_moreoptions/cvar_nameplateMaxDistance"] = "60"
+    end
     SetCVar("scriptErrors", DEBUG_MODE and 1 or 0)
     SetCVar("showQuestTrackingTooltips", 1)
     self:UnregisterAllEvents()
