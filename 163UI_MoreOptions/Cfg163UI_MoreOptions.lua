@@ -154,6 +154,30 @@ U1RegisterAddon("163UI_MoreOptions", {
             end
         end}),
 
+--[[
+        {
+            text = "堆叠姓名板(不重叠)",
+            tip = UNIT_NAMEPLATES_TYPE_TOOLTIP_2,
+            secure = 1,
+            var = "cvar_nameplateMotion",
+            default = 1,
+            getvalue = function() return GetCVar("nameplateMotion") == "1" and true end,
+            callback = function(cfg, v, loading)
+                if not InCombatLockdown() then
+                    SetCVar(cfg.var:gsub("^cvar_", ""), v)
+                    local d = InterfaceOptionsNamesPanelUnitNameplatesMotionDropDown
+                    if d and not loading then
+                        local v --= v and 1 or 0 will taint
+                        d.value = v
+                        d.selectedValue = v
+                    end
+                else
+                    U1Message("无法在战斗中修改")
+                end
+            end,
+        },
+]]
+
         U1CfgMakeCVarOption("允许姓名板移到屏幕之外", "nameplateOtherTopInset", nil, {
             tip = "说明`7.0之后，姓名板默认会收缩到屏幕之内挤在一起``此选项可以恢复到7.0之前的方式",
             secure = 1,
