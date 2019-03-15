@@ -231,7 +231,7 @@ ItemRefShoppingTooltip1:HookScript("OnTooltipCleared", TooltipCleared)
 ItemRefShoppingTooltip2:HookScript("OnTooltipCleared", TooltipCleared)
 ShoppingTooltip1:HookScript("OnTooltipCleared", TooltipCleared)
 ShoppingTooltip2:HookScript("OnTooltipCleared", TooltipCleared)
-WorldMapTooltip.ItemTooltip.Tooltip:HookScript("OnTooltipCleared", TooltipCleared)
+GameTooltip.ItemTooltip.Tooltip:HookScript("OnTooltipCleared", TooltipCleared)
 
 
 local function CanIMogIt_AttachItemTooltip(tooltip)
@@ -250,7 +250,7 @@ ItemRefShoppingTooltip1:HookScript("OnTooltipSetItem", CanIMogIt_AttachItemToolt
 ItemRefShoppingTooltip2:HookScript("OnTooltipSetItem", CanIMogIt_AttachItemTooltip)
 ShoppingTooltip1:HookScript("OnTooltipSetItem", CanIMogIt_AttachItemTooltip)
 ShoppingTooltip2:HookScript("OnTooltipSetItem", CanIMogIt_AttachItemTooltip)
-WorldMapTooltip.ItemTooltip.Tooltip:HookScript("OnTooltipSetItem", CanIMogIt_AttachItemTooltip)
+GameTooltip.ItemTooltip.Tooltip:HookScript("OnTooltipSetItem", CanIMogIt_AttachItemTooltip)
 
 
 hooksecurefunc(GameTooltip, "SetMerchantItem",

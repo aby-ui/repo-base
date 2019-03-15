@@ -1,13 +1,13 @@
 local mod	= DBM:NewMod("BrawlRank4", "DBM-Brawlers")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 18441 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 18447 $"):sub(12, -3))
 --mod:SetModelID(28115)
 mod:SetZone()
 mod:SetUsedIcons(8)
 
 mod:RegisterEvents(
-	"SPELL_CAST_START 33975 136334"
+	"SPELL_CAST_START 33975 136334 132666"
 --	"SPELL_AURA_APPLIED 236155",
 --	"SPELL_AURA_APPLIED_DOSE 236155",
 --	"SPELL_AURA_REMOVED 228981"
@@ -20,7 +20,7 @@ local warnFireWall				= mod:NewSpellAnnounce(132666, 4)--Sanoriak
 
 local specWarnFireWall			= mod:NewSpecialWarningSpell(132666, nil, nil, nil, 2, 2)--Sanoriak
 
-local timerFirewallCD			= mod:NewCDTimer(17, 132666, nil, nil, nil, 3)--Sanoriak
+--local timerFirewallCD			= mod:NewCDTimer(17, 132666, nil, nil, nil, 3)--Sanoriak
 
 local brawlersMod = DBM:GetModByName("Brawlers")
 --local DominikaGUID = 0
@@ -30,7 +30,7 @@ function mod:SPELL_CAST_START(args)
 	if args:IsSpellID(33975, 136334) then--Spellid is used by 5 diff mobs in game, but SetZone sould filter the other 4 mobs.
 		warnPyroblast:Show()
 	elseif args.spellId == 132666 then
-		timerFirewallCD:Start()--First one is 5 seconds after combat start
+		--timerFirewallCD:Start()--First one is 5 seconds after combat start
 		if brawlersMod:PlayerFighting() then
 			specWarnFireWall:Show()
 			specWarnFireWall:Play("watchstep")

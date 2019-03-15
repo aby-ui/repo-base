@@ -419,6 +419,43 @@ function BigDebuffs:SetupOptions()
 						type = "group",
 						inline = true,
 						args = WarningDebuffs,
+					},
+					inRaid = {
+						name = L["Extras"],
+						order = 40,
+						type = "group",
+						inline = true,
+						get = function(info)
+							local name = info[#info]
+							return self.db.profile.raidFrames.inRaid[name]
+						end,
+						set = function(info, value)
+							local name = info[#info]
+							self.db.profile.raidFrames.inRaid[name] = value
+							self:Refresh()
+						end,
+						args = {
+							hide = {
+								name = L["Hide in Raids"],
+								desc = L["Hide BigDebuffs in Raids"],
+								type = "toggle",
+								order = 1
+							},
+							size = {
+								type = "range",
+								disabled = function(info)
+									local name = info[2]
+									return not self.db.profile.raidFrames[name].hide
+								end,
+								name = L["Group Size"],
+								desc = L["Hides BigDebuffs for groups larger than group size"],
+								width = "double",
+								min = 5,
+								max = 40,
+								step = 5,
+								order = 2
+							}
+						}
 					}
 
 				}

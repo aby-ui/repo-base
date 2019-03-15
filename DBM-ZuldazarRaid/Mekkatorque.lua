@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2334, "DBM-ZuldazarRaid", 3, 1176)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 18416 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 18450 $"):sub(12, -3))
 mod:SetCreatureID(144796)
 mod:SetEncounterID(2276)
 --mod:DisableESCombatDetection()
@@ -605,7 +605,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		end
 	elseif spellId == 282406 then--Spark Pulse#BUFF#nil
 		if self.Options.SetIconBot then
-			self:ScanForMobs(args.destGUID, 0, self.vb.botIcon, 1, 0.2, 10)
+			self:ScanForMobs(args.destGUID, 2, self.vb.botIcon, 1, 0.2, 10)
 		end
 		self.vb.botIcon = self.vb.botIcon + 1
 		if self.vb.botIcon == 9 then self.vb.botIcon = 4 end--Icons 4-8

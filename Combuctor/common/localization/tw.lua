@@ -47,11 +47,22 @@ L.TipDoubleClickSearch = '<Alt-拖動>移動。\n<右鍵點擊>設定。\n<兩�
 L.Total = '總共'
 
 --itemcount tooltips
-L.TipCount1 = '已裝備: %d'
-L.TipCount2 = '背包: %d'
-L.TipCount3 = '銀行: %d'
+L.TipCountEquip = '已裝備: %d'
+L.TipCountBags = '背包: %d'
+L.TipCountBank = '銀行: %d'
+L.TipCountVault = '虛空倉庫:%d'
+L.TipCountGuild = '公會銀行:%d'
 L.TipCount4 = '價值: %d'
 L.TipDelimiter = '|'
+
+L.ConfirmTransfer = '存放這些物品會移除所有變形並且變得無法交易和退還。|n|n你想要繼續？'
+L.PurchaseDialog = '你想要解鎖虛空倉庫服務？|n|n|cffffd200花費:|r %s'
+L.CannotPurchaseDialog = '你沒有足夠的錢來解鎖虛空倉庫服務|n|n|cffff2020花費: %s|r'
+L.AskMafia = '詢問黑手黨'
+
+L.Title = [[%s的虛空倉庫]]
+L.NumDeposit = '%d存放'
+L.NumWithdraw = '%d視窗'
 
 --databroker plugin tooltips
 L.TipShowInventory = '<左鍵點擊>切換背包。'

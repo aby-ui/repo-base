@@ -34,7 +34,8 @@ function ItemSlot:New(parent, bag, slot)
 end
 
 function ItemSlot:Create()
-	local item = self:Bind(self:Construct())
+	local id = self:GetNextID()
+	local item = self:Bind(self:GetBlizzard(id) or self:Construct(id))
 	local name = item:GetName()
 
 	item.UpdateTooltip = nil
@@ -66,7 +67,8 @@ function ItemSlot:Create()
 
 	item:SetScript('OnShow', item.OnShow)
 	item:SetScript('OnHide', item.OnHide)
-    if item:GetScript('PreClick') then item:HookScript('PreClick', item.OnPreClick) else item:SetScript('PreClick', item.OnPreClick) end --abyui
+	--abyui fix put regent to regent bank, conflict with TheBurningTrade
+	if item:GetScript('PreClick') then item:HookScript('PreClick', item.OnPreClick) else item:SetScript('PreClick', item.OnPreClick) end
 	item:HookScript('OnDragStart', item.OnDragStart)
 	item:HookScript('OnClick', item.OnClick)
 	item:SetScript('OnEnter', item.OnEnter)
@@ -76,9 +78,29 @@ function ItemSlot:Create()
 	return item
 end
 
-function ItemSlot:Construct()
-	self.nextID = self.nextID + 1
-	return CreateFrame('ItemButton', ADDON .. self.Name .. self.nextID, nil, 'ContainerFrameItemButtonTemplate')
+function ItemSlot:GetNextID()
+    self.nextID = self.nextID + 1
+    return self.nextID
+end
+
+function ItemSlot:Construct(id)
+    return CreateFrame('ItemButton', ADDON..self.Name..id, nil, 'ContainerFrameItemButtonTemplate')
+end
+
+function ItemSlot:GetBlizzard(id)
+    if Addon.sets.displayBlizzard or not Addon:AreBasicFramesEnabled() then
+        return
+    end
+
+    local bag = ceil(id / MAX_CONTAINER_ITEMS)
+    local slot = (id-1) % MAX_CONTAINER_ITEMS + 1
+    local item = _G[format('ContainerFrame%dItem%d', bag, slot)]
+
+    if item then
+        item:SetID(0)
+        item:ClearAllPoints()
+        return item
+    end
 end
 
 function ItemSlot:Restore()
@@ -88,7 +110,8 @@ end
 function ItemSlot:Free()
 	self:Hide()
 	self:SetParent(nil)
-	self.frame, self.depositSlot = nil
+	self.frame = nil
+	self.depositSlot = nil
 	tinsert(self.unused, self)
 end
 
@@ -100,7 +123,7 @@ function ItemSlot:OnShow()
 	self:RegisterSignal('SEARCH_CHANGED', 'UpdateSearch')
 	self:RegisterSignal('SEARCH_TOGGLED', 'UpdateSearch')
 	self:RegisterSignal('FLASH_ITEM', 'OnItemFlashed')
-	self:Update()
+	if(self:GetID()) then self:Update() end --abyui
 end
 
 function ItemSlot:OnHide()
@@ -243,7 +266,7 @@ function ItemSlot:UpdateBorder()
 			r, g, b = RED_FONT_COLOR.r, RED_FONT_COLOR.g, RED_FONT_COLOR.b
 		elseif Addon.sets.glowSets and ItemSearch:InSet(self.info.link) then
 	  	r, g, b = .1, 1, 1
-		elseif Addon.sets.glowQuality and quality and quality > 1 then
+		elseif Addon.sets.glowQuality and type(quality) == "number" and quality > 1 then
 			r, g, b = GetItemQualityColor(quality)
 		end
 	end

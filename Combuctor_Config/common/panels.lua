@@ -8,7 +8,7 @@ local ADDON, Addon = Config.addon, _G[Config.addon]
 local L = LibStub('AceLocale-3.0'):GetLocale(CONFIG)
 local LADDON = (LibStub('AceLocale-3.0'):GetLocale(Config.addon))[Config.addon]
 
-local PATRONS = {{title='Jenkins', people={'Robert Schultz'}},{},{title='Ambassador', people={'Fernando Bandeira','Gnare','Julia Frizzell','Michael Irving','Peter Palma'}}} -- generated patron list
+local PATRONS = {{title='Jenkins',people={'Robert Schultz','Gnare','Robert McCarthy','Sandra Stevens'}},{},{title='Ambassador',people={'Fernando Bandeira','Michael Irving','Julia Frizzell','Peggy Webb','Lolari','Craig Falb','Chris Jones'}}} -- generated patron list
 local SLOT_COLOR_TYPES = {}
 for id, name in pairs(Addon.BAG_TYPES) do
 	tinsert(SLOT_COLOR_TYPES, name)
@@ -133,7 +133,7 @@ end)
 Addon.DisplayOptions = Addon.Options:NewPanel(LADDON, L.DisplaySettings, L.DisplaySettingsDesc, function(self)
 	self:CreateHeader(L.DisplayInventory, 'GameFontHighlight', true)
 	self:CreateRow(35*5, function(row)
-		for i, event in ipairs {'Bank', 'Auction', 'Guildbank', 'Mail', 'Player', 'Trade', 'Gems', 'Craft'} do
+		for i, event in ipairs {'Bank', 'Guildbank', 'Auction', 'Mail', 'Player', 'Trade', 'Gems', 'Scrapping', 'Craft'} do
 			row:CreateCheck('display' .. event).right = 220
 		end
 	end)

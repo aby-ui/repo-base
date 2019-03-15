@@ -596,10 +596,12 @@ function WorldQuestTracker.CheckAddToTracker (self, button, onlyTrack)
 		if (not self.AddedToTrackerAnimation:IsPlaying()) then
 			self.AddedToTrackerAnimation:Play()
 		end
-		if (self.colorBlindTrackerIcon) then
-			self.colorBlindTrackerIcon:Show()
-		end
 		
+		if (WorldQuestTracker.db.profile.accessibility.extra_tracking_indicator) then
+			if (self.colorBlindTrackerIcon) then
+				self.colorBlindTrackerIcon:Show()
+			end
+		end
 	end
 	
 	if (self.IsZoneQuestButton) then

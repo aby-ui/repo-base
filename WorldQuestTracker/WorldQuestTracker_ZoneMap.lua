@@ -1,3 +1,5 @@
+
+
 --world quest tracker object
 local WorldQuestTracker = WorldQuestTrackerAddon
 if (not WorldQuestTracker) then
@@ -117,9 +119,9 @@ function WorldQuestTracker.CreateZoneWidget (index, name, parent, pinTemplate) -
 	supportFrame:SetSize (20, 20)
 	button.SupportFrame = supportFrame
 	
-	button.UpdateTooltip = TaskPOI_OnEnter
+	--button.UpdateTooltip = TaskPOI_OnEnter
 	--> looks like something is triggering the tooltip to update on tick
-	button.UpdateTooltip = TaskPOI_OnEnter
+	--button.UpdateTooltip = TaskPOI_OnEnter
 	button.worldQuest = true
 	button.ClearWidget = clear_widget
 	
@@ -431,12 +433,10 @@ function WorldQuestTracker.CreateZoneWidget (index, name, parent, pinTemplate) -
 	
 	local colorBlindTrackerIcon = supportFrame:CreateTexture (nil, "overlay")
 	colorBlindTrackerIcon:SetTexture ([[Interface\WORLDSTATEFRAME\ColumnIcon-FlagCapture2]])
-	colorBlindTrackerIcon:SetSize (22, 22)
+	colorBlindTrackerIcon:SetSize (24, 24)
 	colorBlindTrackerIcon:SetPoint ("bottom", button, "top", 0, -5)
-	--colorBlindTrackerIcon:SetBlendMode ("ADD")
 	colorBlindTrackerIcon:SetVertexColor (1, .2, .2)
 	colorBlindTrackerIcon:Hide()
-	--colorBlindTrackerIcon:SetRotation (math.pi / 2)
 	button.colorBlindTrackerIcon = colorBlindTrackerIcon
 	
 	button.Shadow:SetDrawLayer ("BACKGROUND", -8)

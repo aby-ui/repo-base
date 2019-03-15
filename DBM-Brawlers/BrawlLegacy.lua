@@ -1,16 +1,16 @@
 local mod	= DBM:NewMod("BrawlLegacy", "DBM-Brawlers")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 18441 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 18444 $"):sub(12, -3))
 mod:SetModelID(48465)--Blind Hero
 mod:SetZone()
 
 mod:RegisterEvents(
-	"SPELL_AURA_APPLIED 129888 133286 141396 141401 39945 134789 229884 133212 232252",
+	"SPELL_CAST_START 134740 133607 134777 135621 133346 134743 133286 141104 124860 124935 134795 125212 133465 133017 246120 246121 246127 39945 133212 232252",
+	"SPELL_CAST_SUCCESS 133208 140894 140912 232504",
+	"SPELL_AURA_APPLIED 129888 133286 141396 141401 134789 229884",
 	"SPELL_AURA_APPLIED_DOSE 141396 141401 126209 134789 133015 133018 228981",
 	"SPELL_AURA_REMOVED 126209 229884 228981",
-	"SPELL_CAST_START 134740 133607 134777 135621 133346 134743 133286 141104 124860 124935 134795 125212 133465 133017 138845 142621 142583 246120 246121 246127",
-	"SPELL_CAST_SUCCESS 133208 140894 140912 232504",
 	"SPELL_SUMMON 236458",
 	"UNIT_SPELLCAST_INTERRUPTED target focus",
 	"UNIT_SPELLCAST_SUCCEEDED target focus"
@@ -36,7 +36,7 @@ local warnSwiftStrike				= mod:NewCountAnnounce(246121, 3)--Blind Hero
 local warnBlindCleave				= mod:NewSpellAnnounce(246127, 4)--Blind Hero
 local warnBoomingBoogaloo			= mod:NewSpellAnnounce(140894, 3)--Master Boom Boom
 local warnDeployBoom				= mod:NewSpellAnnounce(140912, 4)--Master Boom Boom
-local warnEvilGlare					= mod:NewSpellAnnounce(133208, 4)--Zen'shar
+local warnEvilGlare					= mod:NewSpellAnnounce(133208, 4, nil, false, 2)--Zen'shar
 local warnStaticCharge				= mod:NewCastAnnounce(135621, 4)--Disruptron Mk. 3R-Alpha
 local warnDarkZone					= mod:NewSpellAnnounce(133346, 4)--Fjoll
 local warnCharging					= mod:NewSpellAnnounce(133253, 3)--Crush
@@ -111,7 +111,6 @@ mod:AddBoolOption("SpeakOutStrikes", true)--Blind Hero
 local brawlersMod = DBM:GetModByName("Brawlers")
 local remainingMines = 8
 local swiftStrike = 0
-
 function mod:SPELL_CAST_START(args)
 	if not brawlersMod.Options.SpectatorMode and not brawlersMod:PlayerFighting() then return end--Spectator mode is disabled, do nothing.
 	if args.spellId == 134740 then

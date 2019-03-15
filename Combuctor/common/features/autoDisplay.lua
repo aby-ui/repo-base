@@ -176,14 +176,4 @@ function AutoDisplay:HookInterfaceEvents()
 			end
 		end
 	end
-
-	-- checked state
-	local function checkIfInventoryShown(button)
-		if Addon:IsFrameEnabled('inventory') then
-			button:SetChecked(Addon:IsFrameShown('inventory'))
-		end
-	end
-
-	--hooksecurefunc('BagSlotButton_UpdateChecked', checkIfInventoryShown)
-	--hooksecurefunc('BackpackButton_UpdateChecked', checkIfInventoryShown)
 end

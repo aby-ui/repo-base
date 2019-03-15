@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("BrawlRank3", "DBM-Brawlers")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 18441 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 18451 $"):sub(12, -3))
 --mod:SetModelID(28649)
 mod:SetZone()
 mod:SetUsedIcons(8)
@@ -26,7 +26,7 @@ local specWarnCharge				= mod:NewSpecialWarningSpell(138845)--Ahoo'ru
 local specWarnCompleteHeal			= mod:NewSpecialWarningInterrupt(142621, nil, nil, nil, 3)--Ahoo'ru
 local specWarnDivineCircle			= mod:NewSpecialWarningDodge(142585)--Ahoo'ru
 
-local timerShotgunRoarCD			= mod:NewCDTimer(11, 234489, nil, nil, nil, 3)--Oso
+local timerShotgunRoarCD			= mod:NewCDTimer(9.9, 234489, nil, nil, nil, 3)--Oso
 local timerDivineCircleCD			= mod:NewCDTimer(35, 142585)--Insufficent data to say if accurate with certainty --Ahoo'ru
 
 local brawlersMod = DBM:GetModByName("Brawlers")

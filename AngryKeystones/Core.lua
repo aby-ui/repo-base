@@ -144,7 +144,8 @@ function Addon:UnregisterAddOnComm(prefix, callback)
 end
 
 function Addon:SendAddOnComm(prefix, message, type, target)
-	if type == "PARTY" and not IsInGroup(LE_PARTY_CATEGORY_HOME) then
+	if (type == "PARTY" and not IsInGroup(LE_PARTY_CATEGORY_HOME))
+			or (type == "INSTANCE" and not IsInGroup(LE_PARTY_CATEGORY_INSTANCE)) then
 		return false
 	end
 	local data = prefix.."|"..message

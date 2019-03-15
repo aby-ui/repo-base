@@ -183,7 +183,7 @@ local function GetTaskTimeLeftData(questID)
 	local timeString = ""
 	local timeColor = OBJECTIVE_TRACKER_COLOR["TimeLeft2"]
 	local timeLeftMinutes = C_TaskQuest.GetQuestTimeLeftMinutes(questID)
-	if timeLeftMinutes > 0 then
+	if timeLeftMinutes and timeLeftMinutes > 0 then
 		timeString = SecondsToTime(timeLeftMinutes * 60)
 		if timeLeftMinutes <= WORLD_QUESTS_TIME_CRITICAL_MINUTES then
 			timeColor = OBJECTIVE_TRACKER_COLOR["TimeLeft"]

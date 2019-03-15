@@ -1,12 +1,12 @@
 local mod	= DBM:NewMod("BrawlRank6", "DBM-Brawlers")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 18441 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 18448 $"):sub(12, -3))
 --mod:SetModelID(39166)
 mod:SetZone()
 
 mod:RegisterEvents(
-	"SPELL_CAST_START 142788",
+	"SPELL_CAST_START 142788 142795 142769",
 	"SPELL_CAST_SUCCESS 141013",
 	"SPELL_AURA_APPLIED 236155",
 	"SPELL_AURA_APPLIED_DOSE 236155"
@@ -24,7 +24,7 @@ local specWarnAuraofRot				= mod:NewSpecialWarningStack(236155, nil, 8, nil, nil
 local specWarnEightChomps			= mod:NewSpecialWarningDodge(142788)--Mecha-Bruce
 
 local timerSpitAcidCD				= mod:NewNextTimer(20, 141013)--Nibbleh
-local timerEightChompsCD			= mod:NewCDTimer(9.5, 142788, nil, nil, nil, 3)--Mecha-Bruce
+local timerEightChompsCD			= mod:NewCDTimer(8.5, 142788, nil, nil, nil, 3)--Mecha-Bruce
 local timerBetterStrongerFasterCD	= mod:NewCDTimer(20, 142795)--Mecha-Bruce
 local timerStasisBeamCD				= mod:NewCDTimer(20, 142769, nil, nil, nil, 3)--Mecha-Bruce
 

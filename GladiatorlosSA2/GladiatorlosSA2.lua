@@ -6,7 +6,7 @@
  local LSM = LibStub("LibSharedMedia-3.0")
  local self, GSA, PlaySoundFile = GladiatorlosSA, GladiatorlosSA, PlaySoundFile
  local GSA_TEXT = "|cff69CCF0GladiatorlosSA2|r (|cffFFF569/gsa|r)"
- local GSA_VERSION = "|cffFF7D0A B6 |r(|cFF00FF968.1.5 Battle for Azeroth|r)"
+ local GSA_VERSION = "|cffFF7D0A B7 |r(|cFF00FF968.1.5 Battle for Azeroth|r)"
  local GSA_AUTHOR = " "
  local gsadb
  local soundz,sourcetype,sourceuid,desttype,destuid = {},{},{},{},{}
@@ -100,6 +100,57 @@
 		drinking = false,
 		class = false,
 		interruptedfriendly = true,
+		
+		-- Unrecorded abilities
+		_PHDragonCharge = false,
+		_PHheroicLeap = false,
+		aimedShot = false,
+		beastWithin = false,
+		BeastWithinDown = false,
+		boomTrap = false,
+		BullRush = false,
+		CurseOfFragility = false,
+		CurseOfTongues = false,
+		CurseOfWeakness = false,
+		dancingRuneWeapon = false,
+		DeathChain = false,
+		DeathPact = false,
+		DeathsAdvance = false,
+		DemonicTyrant = false,
+		divineProtection = false,
+		doubleBarrel = false,
+		DragonBreath = false,
+		ExecutionSentence = false,
+		Feint = false,
+		FeintDown = false,
+		Fireblood = false,
+		Flourish = false,
+		Healthstone = false,
+		hibernate = false,
+		Icefury = false,
+		Interlope = false,
+		intimidation = false,
+		lastStand = false,
+		MightyOxKick = false,
+		Neurotoxin = false,
+		NimbleBrew = false,
+		Overrun = false,
+		Premonition = false,
+		RaiseDead = false,
+		safeguard = false,
+		secondWind = false,
+		ShieldOfVirtue = false,
+		soothe = false,
+		SpatialRift = false,
+		SpatialRift2 = false,
+		Spellwarding = false,
+		SpellwardingDown = false,
+		survivalTactics = false,
+		sweepingStrikes = false,
+		SweepingStrikesDown = false,
+		TremorTotem = false,
+		UrsolsVortex = false,
+		warpath = false,
 		
 		--purge = false,
 		--spellSteal = false,
@@ -421,11 +472,10 @@
  end
 
 -- play drinking in arena
- --local DRINK_SPELL, REFRESHMENT_SPELL, FOOD_SPELL = GetSpellInfo(104270), GetSpellInfo(167152), GetSpellInfo(5006), GetSpellInfo(274194)
  function GladiatorlosSA:UNIT_AURA(event,uid)
- 	--local _,currentZoneType = IsInInstance()
+ 	local _,currentZoneType = IsInInstance()
 
-	--if gsadb.drinking then--if uid:find("arena") and gsadb.drinking then
+	--if gsadb.drinking then--if uid:find("arena") and gsadb.drinking then 
 		if gsadb.drinking then
 			if (AuraUtil.FindAuraByName("Drinking",uid) or AuraUtil.FindAuraByName("Food",uid) or AuraUtil.FindAuraByName("Refreshment",uid) or AuraUtil.FindAuraByName("Drink",uid)) and currentZoneType == "arena" then
 				if self:Throttle(tostring(104270) .. uid, 4) then return end
@@ -434,19 +484,7 @@
 		end
 	--end
  end
- 
-  --function GladiatorlosSA:UNIT_AURA(event,uid)
- 	--local _,currentZoneType = IsInInstance()
 
---	if gsadb.drinking then--if uid:find("arena") and gsadb.drinking then
---		if gsadb.drinking then
---			if (UnitAura(uid,104270) or UnitAura(uid,167152) or UnitAura(uid,5006) or UnitAura(uid,274194)) and currentZoneType == "arena" then
---				if self:Throttle(tostring(104270) .. uid, 4) then return end
---			self:PlaySound("drinking",extend,genderZ)
---			end
---		end
---	end
- --end
 
  function GladiatorlosSA:Throttle(key,throttle)
 	if (not self.throttled) then

@@ -67,7 +67,7 @@ function ItemSlot:Create()
 
 	item:SetScript('OnShow', item.OnShow)
 	item:SetScript('OnHide', item.OnHide)
-	--163ui fix put regent to regent bank, conflict with TheBurningTrade
+	--abyui fix put regent to regent bank, conflict with TheBurningTrade
 	if item:GetScript('PreClick') then item:HookScript('PreClick', item.OnPreClick) else item:SetScript('PreClick', item.OnPreClick) end
 	item:HookScript('OnDragStart', item.OnDragStart)
 	item:HookScript('OnClick', item.OnClick)
@@ -110,7 +110,8 @@ end
 function ItemSlot:Free()
 	self:Hide()
 	self:SetParent(nil)
-	self.frame, self.depositSlot = nil
+	self.frame = nil
+	self.depositSlot = nil
 	tinsert(self.unused, self)
 end
 
@@ -122,7 +123,7 @@ function ItemSlot:OnShow()
 	self:RegisterSignal('SEARCH_CHANGED', 'UpdateSearch')
 	self:RegisterSignal('SEARCH_TOGGLED', 'UpdateSearch')
 	self:RegisterSignal('FLASH_ITEM', 'OnItemFlashed')
-	if(self:GetID()) then self:Update() end --163ui
+	if(self:GetID()) then self:Update() end --abyui
 end
 
 function ItemSlot:OnHide()

@@ -4,7 +4,7 @@
 ## Notes: An options menu for Combuctor
 ## Dependencies: Combuctor
 ## LoadOnDemand: 1
-## Version: 8.0.2
+## Version: 8.1.0
 
 main.lua
 common\Wildpants_Config.xml
