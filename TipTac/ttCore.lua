@@ -1367,7 +1367,7 @@ local function OnHyperlinkEnter(self,refString)
         gtt:SetUnit("player")
 		gtt:SetHyperlink(refString);
         if not fixInCombat() then
-            tt:AnchorFrameToMouse(self);
+            tt:AnchorFrameToMouse(gtt);
         end
 	end
 end
