@@ -1366,9 +1366,7 @@ local function OnHyperlinkEnter(self,refString)
         gtt:SetOwner(UIParent, "ANCHOR_CURSOR")
         gtt:SetUnit("player")
 		gtt:SetHyperlink(refString);
-        if not fixInCombat() then
-            tt:AnchorFrameToMouse(gtt);
-        end
+        tt:AnchorFrameToMouse(gtt);
 	end
 end
 

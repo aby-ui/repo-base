@@ -210,7 +210,7 @@ Skada:AddLoadableModule("Deaths", nil, function(Skada, L)
 		local nr = 1
 
 		win.metadata.maxvalue = 0
-		for i, player in ipairs(set.players or _empty_table) do
+		for i, player in ipairs(set and set.players or _empty_table) do
 			if player.deaths and #player.deaths > 0 then
 				local d = win.dataset[nr] or {}
 				win.dataset[nr] = d

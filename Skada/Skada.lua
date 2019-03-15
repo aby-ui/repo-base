@@ -1685,7 +1685,8 @@ function Skada:get_player(set, playerid, playername, nochange)
 
 		local _, playerClass = UnitClass(playername)
 		local playerRole = UnitGroupRolesAssigned(playername)
-		player = {id = playerid, class = playerClass, role = playerRole, name = playername, first = time(), ["time"] = 0}
+		player = {id = playerid, class = playerClass, role = playerRole, name = playername, first = time(), ["time"] = 0 }
+		if nochange then player.first = nil end
 
 		-- Tell each mode to apply its needed attributes.
 		for i, mode in ipairs(modes) do
