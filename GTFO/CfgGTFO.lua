@@ -26,7 +26,7 @@ U1RegisterAddon("GTFO", {
                 -- 紫圈快躲 3/3 01:31:26.500  SPELL_CAST_START,Creature-0-3911-1864-10934-148894-00007ABE3C,"失落的灵魂",0xa48,0x0,0000000000000000,nil,0x80000000,0x80000000,288694,"暗影碎击",0x20
                 if U1GetCfgValue("GTFO", "purple_circle", true) then
                     local timestamp, subEvent, _, _, _, _, _, _, _, _, _, spellID = CombatLogGetCurrentEventInfo()
-                    if spellID == 288694 and subEvent == "SPELL_CAST_START" then
+                    if (spellID == 288694 or spellID == 296142) and subEvent == "SPELL_CAST_START" then
                         if play_handler then
                             StopSound(play_handler)
                             play_handler = nil

@@ -76,7 +76,7 @@
 						   <Anchor point="BOTTOMRIGHT" x="0.25" y="-15.5"/>
 						</Anchors>
 					 </Button>
-					 <!-- non-tradition buttons above and below scroll buttons to jump to top/bottom of list -->
+					 <!-- non-traditional buttons above and below scroll buttons to jump to top/bottom of list -->
 					 <Button parentKey="TopButton">
 						<Size x="18" y="10"/>
 						<HitRectInsets>

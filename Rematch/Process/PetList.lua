@@ -383,7 +383,7 @@ end
 function filterFuncs.Script()
 	local abilityList, levelList = rematch:GetAbilities(petInfo.speciesID)
 	-- TODO: use petInfo for scripts instead of ridiculous number of args?
-	if not rematch:RunScriptFilter(petInfo.owned, petInfo.petID, petInfo.speciesID, petInfo.customName, petInfo.level, petInfo.xp, petInfo.maxXp, petInfo.displayID, petInfo.isFavorite, petInfo.name, petInfo.icon, petInfo.petType, petInfo.creatureID, petInfo.sourceText, petInfo.description, petInfo.isWild, petInfo.canBattle, petInfo.tradable, petInfo.unique, petInfo.obtainable, abilityList, levelList) then
+	if not rematch:RunScriptFilter(petInfo.owned, petInfo.petID, petInfo.speciesID, petInfo.customName, petInfo.level, petInfo.xp, petInfo.maxXp, petInfo.displayID, petInfo.isFavorite, petInfo.name, petInfo.icon, petInfo.petType, petInfo.creatureID, petInfo.sourceText, petInfo.description, petInfo.isWild, petInfo.canBattle, petInfo.isTradable, petInfo.isUnique, petInfo.isObtainable, abilityList, levelList) then
 		return false
 	end
 end

@@ -28,7 +28,7 @@ function SortButton:OnClick(button)
 
 	if button == 'RightButton' then
 		if isBank then
-			SortReagentBankBags()
+			self:RegisterEvent('BAG_UPDATE_DELAYED')
 			SortBankBags()
 		end
 	elseif isBank then
@@ -63,4 +63,12 @@ function SortButton:OnLeave()
 	if GameTooltip:IsOwned(self) then
 		GameTooltip:Hide()
 	end
+end
+
+
+--[[ Events ]]--
+
+function SortButton:BAG_UPDATE_DELAYED()
+	self:UnregisterEvent('BAG_UPDATE_DELAYED')
+	SortReagentBankBags()
 end

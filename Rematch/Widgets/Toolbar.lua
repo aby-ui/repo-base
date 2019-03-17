@@ -356,6 +356,16 @@ function toolbar:DimButton(button,dim,desaturate)
 	end
 end
 
+-- fix for GetItemCooldown possibly returning nil and throwing an error in SetCooldown
+local function getItemCooldown(itemID)
+	local start, duration, enable = GetItemCooldown(itemID)
+	if start then
+		return start, duration, enable
+	else
+		return 0, 0, 1
+	end
+end
+
 -- updates most cooldowns (treat cooldowns handled in the Update due to special handling for old treat buffs)
 function toolbar:UpdateCooldowns()
 	-- update summon button's GCD (using FindGCDPetID in the SPELL_UPDATE_COOLDOWN)
@@ -365,8 +375,8 @@ function toolbar:UpdateCooldowns()
 	end
 	-- update heal, bandage and safari hat cooldowns
 	toolbar.Heal.Cooldown:SetCooldown(GetSpellCooldown(125439))
-	toolbar.Bandage.Cooldown:SetCooldown(GetItemCooldown(86143))
-	toolbar.SafariHat.Cooldown:SetCooldown(GetItemCooldown(92738))
+	toolbar.Bandage.Cooldown:SetCooldown(getItemCooldown(86143))
+	toolbar.SafariHat.Cooldown:SetCooldown(getItemCooldown(92738))
 end
 
 function toolbar:PetCountOnEnter()

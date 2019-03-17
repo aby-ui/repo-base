@@ -329,3 +329,28 @@ CoreDependCall("Blizzard_ChallengesUI", function()
     end)
     --ChallengesFrame_Update(ChallengesFrame)
 end)
+
+--[[------------------------------------------------------------
+丰灵头
+---------------------------------------------------------------]]
+do
+    local items = {166796, 166798, 166797, 166799, 166800, 166801 } for i, v in ipairs(items) do items[v] = true end
+    local pattern = "^" .. string.format(LOOT_ITEM_SELF, "(.+)", "(.+)") .. "$" --"你获得了物品：%s。"
+    CoreOnEvent("CHAT_MSG_LOOT", function(event, msg)
+        local _, _, link = msg:find(pattern)
+        local itemId = link and select(3, link:find("\124Hitem:(%d+):"))
+        itemId = itemId and tonumber(itemId)
+        if itemId and items[itemId] then
+            for i=1, 120 do
+                local type, id = GetActionInfo(i)
+                if type == "item" and items[id] then
+                    PickupItem(itemId)
+                    PlaceAction(i)
+                    ClearCursor()
+                    U1Message("已自动将动作条上的"..(select(2, GetItemInfo(id))).."替换为"..link)
+                    break
+                end
+            end
+        end
+    end)
+end

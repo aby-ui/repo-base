@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("BrawlRank6", "DBM-Brawlers")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 18448 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 18458 $"):sub(12, -3))
 --mod:SetModelID(39166)
 mod:SetZone()
 
@@ -26,7 +26,7 @@ local specWarnEightChomps			= mod:NewSpecialWarningDodge(142788)--Mecha-Bruce
 local timerSpitAcidCD				= mod:NewNextTimer(20, 141013)--Nibbleh
 local timerEightChompsCD			= mod:NewCDTimer(8.5, 142788, nil, nil, nil, 3)--Mecha-Bruce
 local timerBetterStrongerFasterCD	= mod:NewCDTimer(20, 142795)--Mecha-Bruce
-local timerStasisBeamCD				= mod:NewCDTimer(20, 142769, nil, nil, nil, 3)--Mecha-Bruce
+local timerStasisBeamCD				= mod:NewCDTimer(19.4, 142769, nil, nil, nil, 3)--Mecha-Bruce
 
 local brawlersMod = DBM:GetModByName("Brawlers")
 
