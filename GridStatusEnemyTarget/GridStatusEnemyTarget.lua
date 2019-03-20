@@ -175,7 +175,7 @@ function GridStatusEnemyTarget:OnStatusDisable(status)
     end
 end
 
-local newcount = {}
+local newcount, checked = {}, {}
 
 --cache for string concat, learn from LibBanzai
 local targets = setmetatable({}, {__index = function(self, key) self[key] = key .. "target" return self[key] end})
@@ -193,11 +193,17 @@ function GridStatusEnemyTarget:OnUpdate()
     end
 
     table.wipe(newcount)
+    table.wipe(checked)
 
     self:UpdateUnit("focus")
-    self:UpdateUnit("mouseover")
+    --self:UpdateUnit("mouseover")
     self:UpdateUnit("boss1") self:UpdateUnit("boss2") self:UpdateUnit("boss3") self:UpdateUnit("boss4")
     self:UpdateUnit("arena1") self:UpdateUnit("arena2") self:UpdateUnit("arena3") self:UpdateUnit("arena4") self:UpdateUnit("arena5")
+    for _, nameplate in pairs(C_NamePlate.GetNamePlates()) do
+        if nameplate.UnitFrame.unitExists then
+            self:UpdateUnit(nameplate.UnitFrame.displayedUnit)
+        end
+    end
     for guid, unitid in GridRoster:IterateRoster() do
         self:UpdateUnit(targets[unitid])
     end
@@ -255,8 +261,10 @@ local ICON_TEX_COORDS = { left = 0.06, right = 0.94, top = 0.06, bottom = 0.94 }
 
 --find all possible unit and their casting info
 function GridStatusEnemyTarget:UpdateUnit(npcunit)
-    local spell, _, _, icon, startTime, endTime
     local npcguid = UnitGUID(npcunit)
+    if not npcguid or checked[npcguid] then return end
+    checked[npcguid]=true
+    local spell, _, _, icon, startTime, endTime
     if( npcguid and self:IsHostileNpcUnit(npcguid) ) then
         local guid = UnitGUID(targets[npcunit])
         if guid and GridRoster:IsGUIDInRaid(guid) then

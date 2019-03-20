@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("BrawlRank1", "DBM-Brawlers")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 18458 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 18464 $"):sub(12, -3))
 --mod:SetModelID(46327)--Last Boss of Rank 1
 mod:SetZone()
 
@@ -11,7 +11,7 @@ mod:RegisterEvents(
 --	"SPELL_AURA_REMOVED"
 )
 
-local warnChomp					= mod:NewSpellAnnounce(135342, 4)--Bruce
+local warnChomp					= mod:NewSpellAnnounce(135342, 4, nil, false, 2)--Bruce
 local warnDaFifHammer			= mod:NewSpellAnnounce(290486, 3)--Thog Hammerspace
 local warnCantataofFlooting		= mod:NewSpellAnnounce(140983, 3)
 

@@ -359,7 +359,7 @@ function TomTom:ShowHideCoordBlock()
             TomTomBlock:SetFrameStrata("LOW")
             TomTomBlock:SetMovable(true)
             TomTomBlock:EnableMouse(true)
-            TomTomBlock:SetClampedToScreen()
+            TomTomBlock:SetClampedToScreen(true)
             TomTomBlock:RegisterForDrag("LeftButton")
             TomTomBlock:RegisterForClicks("RightButtonUp")
             TomTomBlock:SetPoint("TOP", Minimap, "BOTTOM", -20, -10)
@@ -1168,13 +1168,41 @@ SLASH_TOMTOM_WAY3 = "/tomtomway"
 
 TomTom.NameToMapId = {}
 local NameToMapId = TomTom.NameToMapId
+
+local overrides = {
+    [125] = {mapType = Enum.UIMapType.Zone}, -- Dalaran
+    [126] = {mapType = Enum.UIMapType.Micro},
+    [195] = {suffix = "1"}, -- Kaja'mine
+    [196] = {suffix = "2"}, -- Kaja'mine
+    [197] = {suffix = "3"}, -- Kaja'mine
+    [501] = {mapType = Enum.UIMapType.Zone}, -- Dalaran
+    [502] = {mapType = Enum.UIMapType.Micro},
+    [579] = {suffix = "1"}, -- Lunarfall Excavation
+    [580] = {suffix = "2"}, -- Lunarfall Excavation
+    [581] = {suffix = "3"}, -- Lunarfall Excavation
+    [585] = {suffix = "1"}, -- Frostwall Mine
+    [586] = {suffix = "2"}, -- Frostwall Mine
+    [587] = {suffix = "3"}, -- Frostwall Mine
+    [625] = {mapType = Enum.UIMapType.Orphan}, -- Dalaran
+    [626] = {mapType = Enum.UIMapType.Micro}, -- Dalaran
+    [627] = {mapType = Enum.UIMapType.Zone},
+    [628] = {mapType = Enum.UIMapType.Micro},
+    [629] = {mapType = Enum.UIMapType.Micro},
+    [943] = {suffix = FACTION_HORDE}, -- Arathi Highlands
+    [1044] = {suffix = FACTION_ALLIANCE},
+}
+
 do
     -- Fetch the names of the zones
     for id in pairs(hbd.mapData) do
---        if (hbd.mapData[id].mapType == Enum.UIMapType.Zone) or (hbd.mapData[id].mapType == Enum.UIMapType.Micro) then
-        if hbd.mapData[id][1] > 0 then
+        local mapType = (overrides[id] and overrides[id].mapType) or hbd.mapData[id].mapType
+        if (mapType == Enum.UIMapType.Zone) or
+           (mapType == Enum.UIMapType.Micro) then
             -- Record only Zone or Micro maps
             local name = hbd.mapData[id].name
+            if (overrides[id] and overrides[id].suffix) then
+                name = name .. " " .. overrides[id].suffix
+            end
             if name and NameToMapId[name] then
                 if type(NameToMapId[name]) ~= "table" then
                     -- convert to table
@@ -1184,6 +1212,7 @@ do
             else
                 NameToMapId[name] = id
             end
+            NameToMapId["#" .. id] = id
         end
     end
     -- Handle any duplicates
@@ -1193,9 +1222,14 @@ do
             NameToMapId[name] = nil
             for idx, mapId in pairs(mapID) do
                 local parent = hbd.mapData[mapId].parent
-                local parentName = hbd.mapData[parent].name
+                local parentName = (parent and (parent > 0) and hbd.mapData[parent].name)
                 if parentName then
-                    newEntries[name .. ":" .. parentName] = mapId
+                    -- We rely on the implicit acending order of mapID's so the lowest one wins
+                    if not newEntries[name .. ":" .. parentName] then
+                        newEntries[name .. ":" .. parentName] = mapId
+                    else
+                        newEntries[name .. ":" .. tostring(mapId)] = mapId
+                    end
                 end
             end
         end
@@ -1225,6 +1259,9 @@ SlashCmdList["TOMTOM_WAY"] = function(msg)
         return
     elseif ltoken == "list" then
         TomTom:DebugListAllWaypoints()
+        return
+    elseif ltoken == "arrow" then
+        TomTom:DebugCrazyArrow()
         return
     elseif ltoken == "reset" then
         local ltoken2 = tokens[2] and tokens[2]:lower()

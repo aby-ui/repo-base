@@ -1,3 +1,4 @@
+local addonName = ...
 --[[------------------------------------------------------------
 默认银行界面打开全部银行背包
 ---------------------------------------------------------------]]
@@ -335,7 +336,7 @@ end)
 ---------------------------------------------------------------]]
 do
     local items = {166796, 166798, 166797, 166799, 166800, 166801 } for i, v in ipairs(items) do items[v] = true end
-    local pattern = "^" .. string.format(LOOT_ITEM_SELF, "(.+)", "(.+)") .. "$" --"你获得了物品：%s。"
+    local pattern = "^" .. string.format(LOOT_ITEM_SELF, "(.+)") .. "$" --"你获得了物品：%s。"
     CoreOnEvent("CHAT_MSG_LOOT", function(event, msg)
         local _, _, link = msg:find(pattern)
         local itemId = link and select(3, link:find("\124Hitem:(%d+):"))
@@ -349,6 +350,61 @@ do
                     ClearCursor()
                     U1Message("已自动将动作条上的"..(select(2, GetItemInfo(id))).."替换为"..link)
                     break
+                end
+            end
+        end
+    end)
+
+    --GetSpellSubtext(7744)
+    local racial = {
+        7744, --亡灵意志
+        69179, --奥术洪流
+        26297, --巨魔
+        33697, --兽人
+        20549, --牛头人
+        69070, --火箭跳 --69041, --火箭腰带
+        274738, --先祖召唤 玛格汉兽人
+        255654, --至高岭 蛮牛冲撞
+        260364, --夜之子
+
+        20594, --矮人石像
+        58984, --暗夜精灵
+        28880, --德莱尼
+        265221, --黑铁矮人
+        59752, --自利
+        20589, --侏儒逃脱
+        256948, --虚空精灵
+        255647, --光铸
+        68992, --狼人
+    }
+    for _, id in ipairs(racial) do racial[GetSpellInfo(id)] = true end --racial["炽天使"] = true
+    local pattern = "^" .. string.format(ERR_LEARN_SPELL_S, "(.+)") .. "$" --"你学会新的法术：%s"
+    CoreOnEvent("CHAT_MSG_SYSTEM", function(event, msg)
+        if not U1GetCfgValue(addonName, 'AutoSwapRacial') then return end
+        local _, _, link = msg:find(pattern)
+        if link then
+            local _, _, id, name = link:find("\124Hspell:(%d+).-\124h%[(.-)%]\124h")
+            if id and name and racial[name] then
+                for i=1, 120 do
+                    local type, oldid = GetActionInfo(i)
+                    if type == "spell" then
+                        local oldname = GetSpellInfo(oldid)
+                        if racial[oldname] and name ~= oldname then
+                            local replace
+                            replace = function()
+                                id = tonumber(id)
+                                PickupSpell(id)
+                                PlaceAction(i)
+                                if select(4, GetCursorInfo()) == id then
+                                    return C_Timer.After(0.3, replace)
+                                end
+                                ClearCursor()
+                                U1Message("已自动将动作条上的"..(GetSpellLink(oldid)).."替换为"..link)
+                            end
+                            C_Timer.After(0.3, replace)
+                            break
+                        end
+                    end
                 end
             end
         end

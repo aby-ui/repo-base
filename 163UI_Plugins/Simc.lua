@@ -336,12 +336,13 @@ local AzeriteEmpoweredItem  = _G.C_AzeriteEmpoweredItem
 local AzeriteItem           = _G.C_AzeriteItem
 
 -- load stuff from extras.lua
-local upgradeTable  = Simulationcraft.upgradeTable
-local slotNames     = Simulationcraft.slotNames
-local simcSlotNames = Simulationcraft.simcSlotNames
-local specNames     = Simulationcraft.SpecNames
-local profNames     = Simulationcraft.ProfNames
-local regionString  = Simulationcraft.RegionString
+local upgradeTable        = Simulationcraft.upgradeTable
+local slotNames           = Simulationcraft.slotNames
+local simcSlotNames       = Simulationcraft.simcSlotNames
+local specNames           = Simulationcraft.SpecNames
+local profNames           = Simulationcraft.ProfNames
+local regionString        = Simulationcraft.RegionString
+local zandalariLoaBuffs   = Simulationcraft.zandalariLoaBuffs
 
 -- Most of the guts of this addon were based on a variety of other ones, including
 -- Statslog, AskMrRobot, and BonusScanner. And a bunch of hacking around with AceGUI.
@@ -764,6 +765,7 @@ end
 function Simulationcraft:PrintSimcProfile(debugOutput, noBags, links)
   -- addon metadata
   local versionComment = '# SimC Addon ' .. 'in AbyUI' --aby GetAddOnMetadata('Simulationcraft', 'Version')
+  local simcVersionWarning = '# Requires SimulationCraft 815-01 or newer'
 
   -- Basic player info
   local _, realmName, _, _, _, _, region, _, _, realmLatinName, _ = nil --aby LibRealmInfo:GetRealmInfoByUnit('player')
@@ -782,6 +784,7 @@ function Simulationcraft:PrintSimcProfile(debugOutput, noBags, links)
 
   -- Race info
   local _, playerRace = UnitRace('player')
+
   -- fix some races to match SimC format
   if playerRace == 'Scourge' then --lulz
     playerRace = 'Undead'
@@ -843,6 +846,10 @@ function Simulationcraft:PrintSimcProfile(debugOutput, noBags, links)
   -- Build the output string for the player (not including gear)
   local simulationcraftProfile = versionComment .. '\n'
   local simcPrintError = nil
+
+  simulationcraftProfile = simulationcraftProfile .. simcVersionWarning .. '\n'
+  simulationcraftProfile = simulationcraftProfile .. '\n'
+
   simulationcraftProfile = simulationcraftProfile .. player .. '\n'
   simulationcraftProfile = simulationcraftProfile .. playerLevel .. '\n'
   simulationcraftProfile = simulationcraftProfile .. playerRace .. '\n'

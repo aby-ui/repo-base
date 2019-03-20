@@ -21,6 +21,10 @@ U1RegisterAddon("163UI_Plugins", {
     nopic = 1,
 
     {
+        var = "AutoSwapRacial", text = U1_NEW_ICON.."自动替换种族天赋", default = false,
+        tip = "说明`（测试功能）在达萨罗之战剧情更换种族时，自动替换动作栏上的主动种族天赋。",
+    },
+    {
         var = "CastSound",
         text = U1_NEW_ICON.."战斗节奏音",
         default = "none",

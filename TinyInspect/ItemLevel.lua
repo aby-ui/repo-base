@@ -409,7 +409,7 @@ local function SetPaperDollItemLevel(self, unit)
     if (not self) then return end
     local id = self:GetID()
     local frame = GetItemLevelFrame(self, "PaperDoll")
-    if (unit and self.hasItem) then
+    if (unit and GetInventoryItemTexture(unit, id)) then
         if U1GetInventoryLevel then
             local itemLink = GetInventoryItemLink(unit, id)
             if not itemLink then SetItemLevelString(frame.levelString, "") return end
