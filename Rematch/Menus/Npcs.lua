@@ -15,6 +15,8 @@ local rematch = Rematch
 
 ]]
 
+local npcCacheTimeout = 5 -- number of times cache will be attempted before giving up
+
 rematch:InitModule(function()
 	if not RematchSettings.DebugNoCache then
 		rematch:CacheNpcIDs()
@@ -491,14 +493,14 @@ function rematch:CacheNpcIDs()
 				end
 			end
 		end
-		if failed then
-			C_Timer.After(0.5,rematch.CacheNpcIDs) -- some weren't cached, try again later
+		if failed and npcCacheTimeout>0 then
+			npcCacheTimeout = npcCacheTimeout - 1
+			C_Timer.After(1.0,rematch.CacheNpcIDs) -- some weren't cached, try again later
 		else
 			rematch.notablesCached = true
 		end
 	end
 end
-
 
 -- this returns the passed speciesIDs (or links) as a string of type icons 
 function rematch:NotablePetsAsText(...)

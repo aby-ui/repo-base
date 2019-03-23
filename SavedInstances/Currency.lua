@@ -1,7 +1,17 @@
-local addonName, addon = ...
-local CurrencyModule = LibStub("AceAddon-3.0"):GetAddon(addonName):NewModule("Currency", "AceEvent-3.0", "AceTimer-3.0", "AceBucket-3.0")
+local _, addon = ...
+local CurrencyModule = addon.core:NewModule("Currency", "AceEvent-3.0", "AceTimer-3.0", "AceBucket-3.0")
 local thisToon = UnitName("player") .. " - " .. GetRealmName()
-local QuestExceptions = addon.QuestExceptions
+
+local SEASON_SCAN = CURRENCY_SEASON_TOTAL:gsub("%%%d*?([ds])","(%%%1*)")
+
+-- Lua functions
+local wipe, ipairs, pairs = wipe, ipairs, pairs
+local _G = _G
+
+-- WoW API / Variables
+local GetCurrencyInfo = GetCurrencyInfo
+local GetMoney = GetMoney
+local IsQuestFlaggedCompleted = IsQuestFlaggedCompleted
 
 function CurrencyModule:OnEnable()
   self:RegisterBucketEvent("CURRENCY_DISPLAY_UPDATE", 0.25, function() addon:UpdateCurrency() end)
@@ -55,63 +65,72 @@ local currency = {
 }
 addon.currency = currency
 
-local earnByQuest = {
+local specialCurrency = {
   [1129] = { -- WoD - Seal of Tempered Fate
-    [36058] = true,  -- Seal of Dwarven Bunker
-    -- Seal of Ashran quests
-    [36054] = true,
-    [37454] = true,
-    [37455] = true,
-    [36056] = true,
-    [37456] = true,
-    [37457] = true,
-    [36057] = true,
-    [37458] = true,
-    [37459] = true,
-    [36055] = true,
-    [37452] = true,
-    [37453] = true,
+    weeklyMax = 3,
+    earnByQuest = {
+      [36058] = true,  -- Seal of Dwarven Bunker
+      -- Seal of Ashran quests
+      [36054] = true,
+      [37454] = true,
+      [37455] = true,
+      [36056] = true,
+      [37456] = true,
+      [37457] = true,
+      [36057] = true,
+      [37458] = true,
+      [37459] = true,
+      [36055] = true,
+      [37452] = true,
+      [37453] = true,
+    },
   },
   [1273] = { -- LEG - Seal of Broken Fate
-    [43895] = true,
-    [43896] = true,
-    [43897] = true,
-    [43892] = true,
-    [43893] = true,
-    [43894] = true,
-    [43510] = true, -- Order Hall
-    [47851] = true, -- Mark of Honor x5
-    [47864] = true, -- Mark of Honor x10
-    [47865] = true, -- Mark of Honor x20
+    weeklyMax = 3,
+    earnByQuest = {
+      [43895] = true,
+      [43896] = true,
+      [43897] = true,
+      [43892] = true,
+      [43893] = true,
+      [43894] = true,
+      [43510] = true, -- Order Hall
+      [47851] = true, -- Mark of Honor x5
+      [47864] = true, -- Mark of Honor x10
+      [47865] = true, -- Mark of Honor x20
+    },
   },
   [1580] = { -- BfA - Seal of Wartorn Fate
-    [52834] = true, -- Gold
-    [52838] = true, -- Piles of Gold
-    [52835] = true, -- Marks of Honor
-    [52839] = true, -- Additional Marks of Honor
-    [52837] = true, -- War Resources
-    [52840] = true, -- Stashed War Resources
+    weeklyMax = 2,
+    earnByQuest = {
+      [52834] = true, -- Gold
+      [52838] = true, -- Piles of Gold
+      [52835] = true, -- Marks of Honor
+      [52839] = true, -- Additional Marks of Honor
+      [52837] = true, -- War Resources
+      [52840] = true, -- Stashed War Resources
+    },
   },
 }
 
-for _, v in pairs(earnByQuest) do
-  for questID, _ in pairs(v) do
-    QuestExceptions[questID] = "Regular" -- not show in Weekly Quest
+for _, tbl in pairs(specialCurrency) do
+  if tbl.earnByQuest then
+    for questID in pairs(tbl.earnByQuest) do
+      addon.QuestExceptions[questID] = "Regular" -- not show in Weekly Quest
+    end
   end
 end
 
 local function GetSeasonCurrency(idx)
-  local season_scan = CURRENCY_SEASON_TOTAL:gsub("%%%d*?([ds])","(%%%1*)")
-  addon.scantt:SetOwner(UIParent,"ANCHOR_NONE")
+  addon.scantt:SetOwner(_G.UIParent, "ANCHOR_NONE")
   addon.scantt:SetCurrencyByID(idx)
   local name = addon.scantt:GetName()
-  for i=1,addon.scantt:NumLines() do
+  for i = 1, addon.scantt:NumLines() do
     local left = _G[name.."TextLeft"..i]
-    if left:GetText():find(season_scan) then
+    if left:GetText():find(SEASON_SCAN) then
       return left:GetText()
     end
   end
-  return nil
 end
 
 function addon:UpdateCurrency()
@@ -127,28 +146,15 @@ function addon:UpdateCurrency()
       local ci = t.currency[idx] or {}
       ci.amount, ci.earnedThisWeek, ci.weeklyMax, ci.totalMax = amount, earnedThisWeek, weeklyMax, totalMax
       -- handle special currency
-      if idx == 1129 then -- WoD - Seal of Tempered Fate
-        ci.weeklyMax = 3
-        ci.earnedThisWeek = 0
-        for questID in pairs(earnByQuest[1129]) do
-          if IsQuestFlaggedCompleted(questID) then
-            ci.earnedThisWeek = ci.earnedThisWeek + 1
-          end
-        end
-      elseif idx == 1273 then -- LEG - Seal of Broken Fate
-        ci.weeklyMax = 3
-        ci.earnedThisWeek = 0
-        for questID in pairs(earnByQuest[1273]) do
-          if IsQuestFlaggedCompleted(questID) then
-            ci.earnedThisWeek = ci.earnedThisWeek + 1
-          end
-        end
-      elseif idx == 1580 then -- BfA - Seal of Wartorn Fate
-        ci.weeklyMax = 2
-        ci.earnedThisWeek = 0
-        for questID in pairs(earnByQuest[1580]) do
-          if IsQuestFlaggedCompleted(questID) then
-            ci.earnedThisWeek = ci.earnedThisWeek + 1
+      if specialCurrency[idx] then
+        local tbl = specialCurrency[idx]
+        if tbl.weeklyMax then ci.weeklyMax = tbl.weeklyMax end
+        if tbl.earnByQuest then
+          ci.earnedThisWeek = 0
+          for questID in pairs(tbl.earnByQuest) do
+            if IsQuestFlaggedCompleted(questID) then
+              ci.earnedThisWeek = ci.earnedThisWeek + 1
+            end
           end
         end
       end

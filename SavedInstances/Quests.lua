@@ -1,6 +1,16 @@
-local addonName, addon = ...
-local QuestsModule = LibStub("AceAddon-3.0"):GetAddon(addonName):NewModule("Quests")
-local scantt = addon.scantt
+local _, addon = ...
+local QuestsModule = addon.core:NewModule("Quests")
+
+-- Lua functions
+local pairs, strtrim = pairs, strtrim
+local _G = _G
+
+-- WoW API / Variables
+local C_Map_GetMapInfo = C_Map.GetMapInfo
+local GetAchievementCriteriaInfo = GetAchievementCriteriaInfo
+local GetItemInfo = GetItemInfo
+local GetSpellInfo = GetSpellInfo
+local LOOT = LOOT
 
 local _specialQuests = {
   -- Isle of Thunder
@@ -56,9 +66,9 @@ function addon:specialQuests()
         qinfo.name = l:gsub("%p$","")
       end
     elseif not qinfo.name and qinfo.aid then
-      scantt:SetOwner(UIParent,"ANCHOR_NONE")
-      scantt:SetAchievementByID(qinfo.aid)
-      local l = _G[scantt:GetName().."Text"..(qinfo.aline or "Left1")]
+      addon.scantt:SetOwner(_G.UIParent,"ANCHOR_NONE")
+      addon.scantt:SetAchievementByID(qinfo.aid)
+      local l = _G[addon.scantt:GetName().."Text"..(qinfo.aline or "Left1")]
       l = l and l:GetText()
       if l then
         qinfo.name = l:gsub("%p$","")
@@ -76,7 +86,7 @@ function addon:specialQuests()
     end
 
     if not qinfo.zone and qinfo.zid then
-      qinfo.zone = C_Map.GetMapInfo(qinfo.zid)
+      qinfo.zone = C_Map_GetMapInfo(qinfo.zid)
     end
   end
 

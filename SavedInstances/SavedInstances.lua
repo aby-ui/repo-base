@@ -1,18 +1,13 @@
 local addonName, addon = ...
 local addonAbbrev = "SI"
-addon.core = LibStub("AceAddon-3.0"):GetAddon(addonName):NewModule("Core", "AceEvent-3.0", "AceTimer-3.0", "AceBucket-3.0")
-
 local core = addon.core
 local L = addon.L
-addon.LDB = LibStub("LibDataBroker-1.1", true)
-addon.icon = addon.LDB and LibStub("LibDBIcon-1.0", true)
 
 local QTip = LibStub("LibQTip-1.0")
-local dataobject, db, config
+local db
 local maxdiff = 33 -- max number of instance difficulties
 local maxcol = 4 -- max columns per player+instance
 local maxid = 3000 -- highest possible value for an instanceID, current max (Battle of Dazar'alor) is 2070
-local BONUS_ROLL_REQUIRED_CURRENCY = 1580 -- bonus roll currency of current expansion
 
 local table, math, bit, string, pairs, ipairs, unpack, strsplit, time, type, wipe, tonumber, select, strsub =
   table, math, bit, string, pairs, ipairs, unpack, strsplit, time, type, wipe, tonumber, select, strsub
@@ -32,7 +27,6 @@ local GRAY_COLOR = { 0.5, 0.5, 0.5, 1 }
 local LFD_RANDOM_REWARD_EXPLANATION2 = LFD_RANDOM_REWARD_EXPLANATION2
 local INSTANCE_SAVED, TRANSFER_ABORT_TOO_MANY_INSTANCES, NO_RAID_INSTANCES_SAVED =
   INSTANCE_SAVED, TRANSFER_ABORT_TOO_MANY_INSTANCES, NO_RAID_INSTANCES_SAVED
-local DIFFICULTY_DUNGEON_CHALLENGE = DIFFICULTY_DUNGEON_CHALLENGE
 
 local ALREADY_LOOTED = ERR_LOOT_GONE:gsub("%(.*%)","")
 ALREADY_LOOTED = ALREADY_LOOTED:gsub("（.*）","") -- fix on zhCN and zhTW
@@ -58,9 +52,6 @@ local SI_GetUnitDebuff = function(unit, spell, filter)
 end
 
 local currency = addon.currency
-local trade_spells = addon.trade_spells
-local itemcds = addon.itemcds
-local cdname = addon.cdname
 local QuestExceptions = addon.QuestExceptions
 local TimewalkingItemQuest = addon.TimewalkingItemQuest
 local scantt = addon.scantt
@@ -95,7 +86,9 @@ end
 
 -- eventInfo format: [eventID] = true
 local eventInfo = {}
-local tooltip, indicatortip
+local tooltip, indicatortip = nil, nil
+addon.tooltip = tooltip
+addon.indicatortip = indicatortip
 local thisToon = UnitName("player") .. " - " .. GetRealmName()
 local maxlvl = MAX_PLAYER_LEVEL_TABLE[#MAX_PLAYER_LEVEL_TABLE]
 
@@ -131,12 +124,14 @@ local function bugReport(msg)
   chatMsg("Please report this bug at: https://github.com/SavedInstances/SavedInstances/issues")
   addon.bugreport["url"] = now
 end
+addon.bugReport = bugReport
 
 local GTToffset = time() - GetTime()
 local function GetTimeToTime(val)
   if not val then return nil end
   return val + GTToffset
 end
+addon.GetTimeToTime = GetTimeToTime
 
 function addon:timedebug()
   chatMsg("Version: %s", addon.version)
@@ -319,7 +314,8 @@ addon.defaultDB = {
   -- MythicKey
   -- name: string
   -- ResetTime: expiry
-  -- level: string
+  -- mapID: int
+  -- level: int
   -- color: string
   -- link: string
 
@@ -1528,7 +1524,7 @@ function addon:UpdateToonData()
   end
   local rating = (GetPersonalRatedInfo and GetPersonalRatedInfo(4))
   t.RBGrating = tonumber(rating) or t.RBGrating
-  core:scan_item_cds()
+  core:GetModule("Tradeskills"):ScanItemCDs()
   -- Daily Reset
   if nextreset and nextreset > time() then
     for toon, ti in pairs(addon.db.Toons) do
@@ -1776,6 +1772,7 @@ end
 
 -- Hover Tooltips
 local hoverTooltip = {}
+addon.hoverTooltip = hoverTooltip
 
 hoverTooltip.ShowToonTooltip = function (cell, arg, ...)
   local toon = arg
@@ -2474,11 +2471,11 @@ end
 function core:OnInitialize()
   local versionString = GetAddOnMetadata(addonName, "version")
   --[===[@debug@
-  if versionString == "8.1.0" then
+  if versionString == "8.1.0-5-g761b859" then
     versionString = "Dev"
   end
   --@end-debug@]===]
-  SavedInstances.version = versionString
+  addon.version = versionString
 
   SavedInstancesDB = SavedInstancesDB or addon.defaultDB
   -- begin backwards compatibility
@@ -2492,7 +2489,6 @@ function core:OnInitialize()
   -- end backwards compatibilty
   db = db or SavedInstancesDB
   addon.db = db
-  config = addon.config
   core:toonInit()
   db.Lockouts = nil -- deprecated
   db.History = db.History or {}
@@ -2559,7 +2555,7 @@ function core:OnInitialize()
       elseif button == "LeftButton" then
         addon:ToggleDetached()
       else
-        config:ShowConfig()
+        addon.config:ShowConfig()
       end
     end
   })
@@ -2567,7 +2563,6 @@ function core:OnInitialize()
     addon.icon:Register(addonName, addon.dataobject, db.MinimapIcon)
     addon.icon:Refresh(addonName)
   end
-  addon.BonusRollShow() -- catch roll-on-load
 end
 
 function core:OnEnable()
@@ -2578,16 +2573,12 @@ function core:OnEnable()
   self:RegisterEvent("CHAT_MSG_SYSTEM", "CheckSystemMessage")
   self:RegisterEvent("CHAT_MSG_CURRENCY", "CheckSystemMessage")
   self:RegisterEvent("CHAT_MSG_LOOT", "CheckSystemMessage")
-  self:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")
-  self:RegisterBucketEvent("TRADE_SKILL_LIST_UPDATE", 1)
   self:RegisterBucketEvent("PLAYER_ENTERING_WORLD", 1, RequestRaidInfo)
   self:RegisterBucketEvent("LFG_LOCK_INFO_RECEIVED", 1, RequestRaidInfo)
-  self:RegisterEvent("BONUS_ROLL_RESULT", "BonusRollResult")
   self:RegisterEvent("PLAYER_LOGOUT", function() addon.logout = true ; addon:UpdateToonData() end) -- update currency spent
   self:RegisterEvent("LFG_COMPLETION_REWARD", "RefreshLockInfo") -- for random daily dungeon tracking
   self:RegisterEvent("BOSS_KILL")
-  self:RegisterEvent("ENCOUNTER_END", "EncounterEnd")
-  self:RegisterEvent("CHAT_MSG_MONSTER_YELL")
+  self:RegisterEvent("ENCOUNTER_END")
   self:RegisterEvent("TIME_PLAYED_MSG", function(_,total,level)
     local t = thisToon and addon and addon.db and addon.db.Toons[thisToon]
     if total > 0 and t then
@@ -2713,53 +2704,17 @@ function core:getRealmGroup(realm)
   return gid, gid and rmap[gid]
 end
 
-function core:CHAT_MSG_MONSTER_YELL(event, msg, bossname)
-  -- cheapest possible outdoor boss detection for players lacking a proper boss mod
-  -- should work for sha and nalak, oon and gal report a related mob
-  local t = addon.db.Toons[thisToon]
-  local now = time()
-  if bossname and t then
-    bossname = tostring(bossname) -- for safety
-    local diff = select(4,GetInstanceInfo())
-    if diff and #diff > 0 then bossname = bossname .. ": ".. diff end
-    t.lastbossyell = bossname
-    t.lastbossyelltime = now
-    --debug("CHAT_MSG_MONSTER_YELL: "..tostring(bossname));
-  end
-end
-
 function core:BossModEncounterEnd(modname, bossname)
-  local t = addon.db.Toons[thisToon]
-  local now = time()
-  if bossname and t and now > (t.lastbosstime or 0) + 2*60 then
-    -- boss mods can often detect completion before ENCOUNTER_END
-    -- also some world bosses never send ENCOUNTER_END
-    -- enough timeout to prevent overwriting, but short enough to prevent cross-boss contamination
-    bossname = tostring(bossname) -- for safety
-    local diff = select(4,GetInstanceInfo())
-    if diff and #diff > 0 then bossname = bossname .. ": ".. diff end
-    t.lastboss = bossname
-    t.lastbosstime = now
-  end
-  debug("%s refresh: %s",(modname or "BossMod"),tostring(bossname));
-  core:RefreshLockInfo()
+  debug("%s refresh: %s", (modname or "BossMod"), tostring(bossname))
+  addon:BossRecord(thisToon, bossname, select(3, GetInstanceInfo()), true)
+  self:RefreshLockInfo()
 end
 
-function core:EncounterEnd(event, encounterID, encounterName, difficultyID, raidSize, endStatus)
-  debug("EncounterEnd:%s:%s:%s:%s:%s",tostring(encounterID),tostring(encounterName),tostring(difficultyID),tostring(raidSize),tostring(endStatus))
+function core:ENCOUNTER_END(event, encounterID, encounterName, difficultyID, raidSize, endStatus)
+  debug("ENCOUNTER_END:%s:%s:%s:%s:%s", tostring(encounterID), tostring(encounterName), tostring(difficultyID), tostring(raidSize), tostring(endStatus))
   if endStatus ~= 1 then return end -- wipe
-  core:RefreshLockInfo()
-  local t = addon.db.Toons[thisToon]
-  if not t then return end
-  local name = encounterName
-  if difficultyID and difficultyID > 0 then
-    local diff = GetDifficultyInfo(difficultyID)
-    if diff and #diff > 0 then
-      name = name ..": "..diff
-    end
-  end
-  t.lastboss = name
-  t.lastbosstime = time()
+  self:RefreshLockInfo()
+  addon:BossRecord(thisToon, encounterName, difficultyID)
 end
 
 function core:BOSS_KILL(event, encounterID, encounterName, ...)
@@ -2768,7 +2723,7 @@ function core:BOSS_KILL(event, encounterID, encounterName, ...)
   if name and type(name) == "string" then
     name = name:gsub(",.*$","") -- remove extraneous trailing boss titles
     name = strtrim(name)
-    core:BossModEncounterEnd("BOSS_KILL", name)
+    self:BossModEncounterEnd("BOSS_KILL", name)
   end
 end
 
@@ -3931,17 +3886,19 @@ function core:ShowTooltip(anchorframe)
       if t.MythicKey then
         if t.MythicKey.link then
           local col = columns[toon..1]
+          local name
           if addon.db.Tooltip.AbbreviateKeystone then
-            if not t.MythicKey.name then t.MythicKey.name = t.MythicKey.link end
-            if t.MythicKey.abbrev then
-              tooltip:SetCell(show, col, "|c"..t.MythicKey.color..t.MythicKey.abbrev.." ("..t.MythicKey.level..")"..FONTEND, "CENTER",maxcol)
+            if t.MythicKey.mapID then
+              name = addon.KeystoneAbbrev[t.MythicKey.mapID] or t.MythicKey.name
             else
-              local kabbrev = KeystonetoAbbrev[t.MythicKey.name] or t.MythicKey.name
-              tooltip:SetCell(show, col, "|c"..t.MythicKey.color..kabbrev.." ("..t.MythicKey.level..")"..FONTEND, "CENTER",maxcol)
+              -- TODO: this is fallback to previous version, remove this in future
+              name = t.MythicKey.abbrev or t.MythicKey.name or t.MythicKey.link
             end
           else
-            tooltip:SetCell(show, col, "|c"..t.MythicKey.color..t.MythicKey.name.." ("..t.MythicKey.level..")"..FONTEND, "CENTER",maxcol)
+            -- TODO: this is fallback to previous version, remove this in future
+            name = t.MythicKey.name or t.MythicKey.link
           end
+          tooltip:SetCell(show, col, "|c" .. t.MythicKey.color .. name .. " (" .. t.MythicKey.level .. ")" .. FONTEND, "CENTER", maxcol)
           tooltip:SetCellScript(show, col, "OnMouseDown", ChatLink, t.MythicKey.link)
         end
       end
@@ -4118,24 +4075,9 @@ function core:ShowTooltip(anchorframe)
     local show
     local toonbonus = localarr("toonbonus")
     for toon, t in cpairs(addon.db.Toons, true) do
-      if t.BonusRoll and t.BonusRoll[1] then
-        local gold = 0
-        for _,roll in ipairs(t.BonusRoll) do
-          if not roll.costCurrencyID then break end
-          if roll.costCurrencyID == BONUS_ROLL_REQUIRED_CURRENCY then
-            if not roll.item then
-              gold = gold + 1
-            else
-              local itemID = GetItemInfoInstant(roll.item)
-              if itemID == 163827 then -- Quartermaster's Coin, obtained when failing a bonus roll in pvp
-                gold = gold + 1
-              else
-                break
-              end
-            end
-          end
-        end
-        toonbonus[toon] = gold
+      local count = addon:BonusRollCount(toon)
+      if count then
+        toonbonus[toon] = count
         show = true
         addColumns(columns, toon, tooltip)
       end
@@ -4424,251 +4366,3 @@ StaticPopupDialogs["SAVEDINSTANCES_DELETE_CHARACTER"] = {
   enterClicksFirstButton = false,
   showAlert = true,
 }
-
-function core:scan_item_cds()
-  for itemid, spellid in pairs(itemcds) do
-    local start, duration = GetItemCooldown(itemid)
-    if start and duration and start > 0 then
-      core:record_skill(spellid, GetTimeToTime(start+duration))
-    end
-  end
-end
-
-function core:record_skill(spellID, expires)
-  if not spellID then return end
-  local cdinfo = trade_spells[spellID]
-  if not cdinfo then
-    addon.skillwarned = addon.skillwarned or {}
-    if expires and expires > 0 and not addon.skillwarned[spellID] then
-      addon.skillwarned[spellID] = true
-      bugReport("Unrecognized trade skill cd "..(GetSpellInfo(spellID) or "??").." ("..spellID..")")
-    end
-    return
-  end
-  local t = addon and addon.db.Toons[thisToon]
-  if not t then return end
-  local spellName = GetSpellInfo(spellID)
-  t.Skills = t.Skills or {}
-  local idx = spellID
-  local title = spellName
-  local link = nil
-  if cdinfo == "item" then
-    if not expires then
-      core:ScheduleTimer("scan_item_cds", 2) -- theres a delay for the item to go on cd
-      return
-    end
-    for itemid, spellid in pairs(itemcds) do
-      if spellid == spellID then
-        title,link = GetItemInfo(itemid) -- use item name as some item spellnames are ambiguous or wrong
-        title = title or spellName
-      end
-    end
-  elseif type(cdinfo) == "string" then
-    idx = cdinfo
-    title = cdname[cdinfo] or title
-  elseif expires ~= 0 then
-    local slink = GetSpellLink(spellID)
-    if slink and #slink > 0 then  -- tt scan for the full name with profession
-      link = "\124cffffd000\124Henchant:"..spellID.."\124h[X]\124h\124r"
-      scantt:SetOwner(UIParent,"ANCHOR_NONE")
-      scantt:SetHyperlink(link)
-      local l = _G[scantt:GetName().."TextLeft1"]
-      l = l and l:GetText()
-      if l and #l > 0 then
-        title = l
-        link = link:gsub("X",l)
-      else
-        link = nil
-      end
-    end
-  end
-  if expires == 0 then
-    if t.Skills[idx] then -- a cd ended early
-      debug("Clearing Trade skill cd: %s (%s)",spellName,spellID)
-    end
-    t.Skills[idx] = nil
-    return
-  elseif not expires then
-    expires = addon:GetNextDailySkillResetTime()
-    if not expires then return end -- ticket 127
-    if type(cdinfo) == "number" then -- over a day, make a rough guess
-      expires = expires + (cdinfo-1)*24*60*60
-    end
-  end
-  expires = math.floor(expires)
-  local sinfo = t.Skills[idx] or {}
-  t.Skills[idx] = sinfo
-  local change = expires - (sinfo.Expires or 0)
-  if math.abs(change) > 180 and addon.db.dbg then -- updating expiration guess (more than 3 min update lag)
-    debug("Trade skill cd: "..(link or title).." ("..spellID..") "..
-      (sinfo.Expires and string.format("%d",change).." sec" or "(new)")..
-      " Local time: "..date("%c",expires))
-  end
-  sinfo.Title = title
-  sinfo.Link = link
-  sinfo.Expires = expires
-
-  return true
-end
-
-function core:TradeSkillRescan(spellid)
-  local scan = core:TRADE_SKILL_LIST_UPDATE()
-  if TradeSkillFrame and TradeSkillFrame.filterTbl and
-    (scan == 0 or not addon.seencds or not addon.seencds[spellid]) then
-    -- scan failed, probably because the skill is hidden - try again
-    addon.filtertmp = wipe(addon.filtertmp or {})
-    for k,v in pairs(TradeSkillFrame.filterTbl) do addon.filtertmp[k] = v end
-    TradeSkillOnlyShowMakeable(false)
-    TradeSkillOnlyShowSkillUps(false)
-    SetTradeSkillCategoryFilter(-1)
-    SetTradeSkillInvSlotFilter(-1, 1, 1)
-    ExpandTradeSkillSubClass(0)
-    local rescan = core:TRADE_SKILL_LIST_UPDATE()
-    debug("Rescan: "..(rescan==scan and "Failed" or "Success"))
-    TradeSkillOnlyShowMakeable(addon.filtertmp.hasMaterials)
-    TradeSkillOnlyShowSkillUps(addon.filtertmp.hasSkillUp)
-    SetTradeSkillCategoryFilter(addon.filtertmp.subClassValue or -1)
-    SetTradeSkillInvSlotFilter(addon.filtertmp.slotValue or -1, 1, 1)
-  end
-end
-
-function core:TRADE_SKILL_LIST_UPDATE()
-  local cnt = 0
-  if C_TradeSkillUI.IsTradeSkillLinked() or C_TradeSkillUI.IsTradeSkillGuild() then return end
-  local recipeids = C_TradeSkillUI.GetFilteredRecipeIDs()
-  for _, spellid in ipairs(recipeids) do
-    local cd, daily = C_TradeSkillUI.GetRecipeCooldown(spellid)
-    if cd and daily -- GetTradeSkillCooldown often returns WRONG answers for daily cds
-      and not tonumber(trade_spells[spellid]) then -- daily flag incorrectly set for some multi-day cds (Northrend Alchemy Research)
-      cd = addon:GetNextDailySkillResetTime()
-    elseif cd then
-      cd = time() + cd  -- on cd
-    else
-      cd = 0 -- off cd or no cd
-    end
-    core:record_skill(spellid, cd)
-    if cd then
-      addon.seencds = addon.seencds or {}
-      addon.seencds[spellid] = true
-      cnt = cnt + 1
-    end
-  end
-
-  return cnt
-end
-
-function core:UNIT_SPELLCAST_SUCCEEDED(evt, unit, spellName, rank, lineID, spellID)
-  if unit ~= "player" then return end
-  if trade_spells[spellID] then
-    debug("UNIT_SPELLCAST_SUCCEEDED: %s (%s)",GetSpellLink(spellID),spellID)
-    if not core:record_skill(spellID) then return end
-    core:ScheduleTimer("TradeSkillRescan", 0.5, spellID)
-  end
-end
-
-function core:BonusRollResult(event, rewardType, rewardLink, rewardQuantity, rewardSpecID, _, _, currencyID)
-  local t = addon.db.Toons[thisToon]
-  debug("BonusRollResult:%s:%s:%s:%s (boss=%s|%s)",
-    tostring(rewardType), tostring(rewardLink), tostring(rewardQuantity), tostring(rewardSpecID),
-    tostring(t and t.lastboss), tostring(t and t.lastbossyell))
-  if not t then return end
-  if not rewardType then return end -- sometimes get a bogus message, ignore it
-  t.BonusRoll = t.BonusRoll or {}
-  --local rewardstr = _G["BONUS_ROLL_REWARD_"..string.upper(rewardType)]
-  local now = time()
-  local bossname
-  -- Mythic+ Dungeon Roll
-  if GetBonusRollEncounterJournalLinkDifficulty() == DIFFICULTY_DUNGEON_CHALLENGE then
-    local name, _, difficultyID, difficultyName = GetInstanceInfo()
-    if difficultyID == DIFFICULTY_DUNGEON_CHALLENGE then
-      bossname = name .. ": " .. difficultyName
-    else
-      local tmp, key, value = {}
-      for key, value in pairs(db.History) do
-        local _, name, _, diff = strsplit(":", key)
-        if tonumber(diff) == DIFFICULTY_DUNGEON_CHALLENGE then
-          local tbl = {
-            name = name .. ": " .. GetDifficultyInfo(diff),
-            last = value.last,
-          }
-          table.insert(tmp, tbl)
-        end
-      end
-      table.sort(tmp, function(l, r) return l.last > r.last end)
-      bossname = tmp[1] and tmp[1].name
-    end
-  end
-  if not bossname then
-    bossname = t.lastboss
-    if now > (t.lastbosstime or 0) + 3*60 then -- user rolled before lastboss was updated, ignore the stale one. Roll timeout is 3 min.
-      bossname = nil
-    end
-    if not bossname and t.lastbossyell and now < (t.lastbossyelltime or 0) + 10*60 then
-      bossname = t.lastbossyell -- yell fallback
-    end
-    if not bossname then
-      bossname = GetSubZoneText() or GetRealZoneText() -- zone fallback
-    end
-  end
-  local roll = {
-    name = bossname,
-    time = now,
-    costCurrencyID = BonusRollFrame.CurrentCountFrame.currencyID,
-  }
-  if rewardType == "money" then
-    roll.money = rewardQuantity
-  elseif rewardType == "currency" then
-    roll.currencyID = currencyID
-    roll.money = rewardQuantity
-  elseif rewardType == "item" then
-    roll.item = rewardLink
-  end
-  table.insert(t.BonusRoll, 1, roll)
-  local limit = 25
-  for i=limit+1, table.maxn(t.BonusRoll) do
-    t.BonusRoll[i] = nil
-  end
-end
-
-function addon.BonusRollShow()
-  local t = addon.db.Toons[thisToon]
-  if not t or not BonusRollFrame then return end
-  local binfo = t.BonusRoll
-  local frame = addon.BonusFrame
-  if not binfo or #binfo == 0 or not addon.db.Tooltip.AugmentBonus then
-    if frame then frame:Hide() end
-    return
-  end
-  if not frame then
-    frame = CreateFrame("Button", "SavedInstancesBonusRollFrame", BonusRollFrame, "SpellBookSkillLineTabTemplate")
-    addon.BonusFrame = frame
-    --frame:SetSize(BonusRollFrame:GetHeight(), BonusRollFrame:GetHeight())
-    frame:SetPoint("LEFT", BonusRollFrame, "RIGHT",0,8)
-    frame.text = addon.BonusFrame:CreateFontString(nil, "OVERLAY","GameFontNormal")
-    frame.text:SetPoint("CENTER")
-    frame:SetScript("OnEnter", function() hoverTooltip.ShowBonusTooltip(nil, { thisToon, frame }) end )
-    frame:SetScript("OnLeave", CloseTooltips)
-    frame:SetScript("OnClick", nil)
-    frame.text:Show()
-  end
-  local bonus = 0
-  for _,rinfo in ipairs(binfo) do
-    if not rinfo.costCurrencyID then break end
-    if rinfo.costCurrencyID == BonusRollFrame.CurrentCountFrame.currencyID then
-      if not rinfo.item then
-        bonus = bonus + 1
-      else
-        local itemID = GetItemInfoInstant(rinfo.item)
-        if itemID == 163827 then -- Quartermaster's Coin, obtained when failing a bonus roll in pvp
-          bonus = bonus + 1
-        else
-          break
-        end
-      end
-    end
-  end
-  frame.text:SetText((bonus > 0 and "+" or "")..bonus)
-  frame:Show()
-end
-
-hooksecurefunc("BonusRollFrame_StartBonusRoll", addon.BonusRollShow)

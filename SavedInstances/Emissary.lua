@@ -1,7 +1,23 @@
-local addonName, addon = ...
-local EmissaryModule = LibStub("AceAddon-3.0"):GetAddon(addonName):NewModule("Emissary", "AceEvent-3.0", "AceTimer-3.0", "AceBucket-3.0")
-local L = addon.L
+local _, addon = ...
+local EmissaryModule = addon.core:NewModule("Emissary", "AceEvent-3.0")
 local thisToon = UnitName("player") .. " - " .. GetRealmName()
+
+-- Lua functions
+local time, pairs, ipairs, tonumber, floor = time, pairs, ipairs, tonumber, floor
+
+-- WoW API / Variables
+local C_TaskQuest_GetQuestTimeLeftMinutes = C_TaskQuest.GetQuestTimeLeftMinutes
+local GetNumQuestLogRewardCurrencies = GetNumQuestLogRewardCurrencies
+local GetNumQuestLogRewards = GetNumQuestLogRewards
+local GetQuestBountyInfoForMapID = GetQuestBountyInfoForMapID
+local GetQuestLogIndexByID = GetQuestLogIndexByID
+local GetQuestLogRewardCurrencyInfo = GetQuestLogRewardCurrencyInfo
+local GetQuestLogRewardInfo = GetQuestLogRewardInfo
+local GetQuestLogRewardMoney = GetQuestLogRewardMoney
+local GetQuestLogTitle = GetQuestLogTitle
+local GetQuestObjectiveInfo = GetQuestObjectiveInfo
+local IsQuestFlaggedCompleted = IsQuestFlaggedCompleted
+local QuestUtils_GetBestQualityItemRewardIndex = QuestUtils_GetBestQualityItemRewardIndex
 
 local Emissaries = {
   [6] = {
@@ -25,7 +41,7 @@ local _switching = {
 
 -- Switching Table
 -- [questID] = { ["Alliance"] = questID, ["Horde"] = questID }
-local switching, k, v = {}
+local switching = {}
 for k, v in pairs(_switching) do
   local tbl = {
     Alliance = k,
@@ -36,10 +52,10 @@ for k, v in pairs(_switching) do
 end
 
 function EmissaryModule:OnEnable()
-  self:RegisterEvent("QUEST_LOG_UPDATE", "RefreshDailyWorldQuestInfo")
+  self:RegisterEvent("QUEST_LOG_UPDATE")
 end
 
-function EmissaryModule:RefreshDailyWorldQuestInfo()
+function EmissaryModule:QUEST_LOG_UPDATE()
   if addon.db.DailyResetTime < time() then return end -- daliy reset not run yet
   local t = addon.db.Toons[thisToon]
   if not t.Emissary then t.Emissary = {} end
@@ -59,14 +75,14 @@ function EmissaryModule:RefreshDailyWorldQuestInfo()
       end
       for i, info in ipairs(BountyQuest) do
         local title = GetQuestLogTitle(GetQuestLogIndexByID(info.questID))
-        local timeleft = C_TaskQuest.GetQuestTimeLeftMinutes(info.questID)
+        local timeleft = C_TaskQuest_GetQuestTimeLeftMinutes(info.questID)
         local _, _, isFinish, questDone, questNeed = GetQuestObjectiveInfo(info.questID, 1, false)
         local money = GetQuestLogRewardMoney(info.questID)
         local numQuestRewards = GetNumQuestLogRewards(info.questID)
         local numCurrencyRewards = GetNumQuestLogRewardCurrencies(info.questID)
         addon.db.Emissary.Cache[info.questID] = title -- cache quest name
         if money > 0 or numQuestRewards > 0 or numCurrencyRewards > 0 then
-          local day = tonumber(math.floor(timeleft / 1440) + 1) -- [1, 2, 3]
+          local day = tonumber(floor(timeleft / 1440) + 1) -- [1, 2, 3]
           if not currExpansion[day] then currExpansion[day] = {} end
           if switching[info.questID] then
             currExpansion[day].questID = switching[info.questID]

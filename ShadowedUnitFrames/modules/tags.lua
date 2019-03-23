@@ -217,6 +217,11 @@ local function createTagFunction(tags, resetCache)
 	
 	frequencyCache[tags] = lowestFrequency < 9999 and lowestFrequency or nil
 	tagPool[tags] = function(fontString, frame, event, unit, powerType)
+		-- we can only run on frames with units set
+		if not fontString.parent.unit then
+			return
+		end
+
 		if( event and powerType and fontString.powerFilters and powerEvents[event] ) then
 			if( not fontString.powerFilters[powerType] and ( not fontString.powerFilters.CURRENT or fontString.powerType ~= powerType ) ) then
 				return

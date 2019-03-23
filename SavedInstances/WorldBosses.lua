@@ -1,5 +1,5 @@
-local addonName, addon = ...
-local WorldBosses = LibStub("AceAddon-3.0"):GetAddon(addonName):NewModule("WorldBosses")
+local _, addon = ...
+local WorldBosses = addon.core:NewModule("WorldBosses")
 local L = addon.L
 
   -- encounter index is embedded in the Hjournal hyperlink

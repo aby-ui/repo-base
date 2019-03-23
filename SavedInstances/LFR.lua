@@ -1,5 +1,5 @@
-local addonName, addon = ...
-local LFRModule = LibStub("AceAddon-3.0"):GetAddon(addonName):NewModule("LFR")
+local _, addon = ...
+local LFRModule = addon.core:NewModule("LFR")
 
 local locLevel = UnitLevel("player")
 local locFaction = UnitFactionGroup("player")

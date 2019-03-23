@@ -1,6 +1,27 @@
-local addonName, addon = ...
-local TradeskillsModule = LibStub("AceAddon-3.0"):GetAddon(addonName):NewModule("Tradeskills")
+local _, addon = ...
+local TradeskillsModule = addon.core:NewModule("Tradeskills", "AceEvent-3.0", "AceTimer-3.0", "AceBucket-3.0")
 local L = addon.L
+local thisToon = UnitName("player") .. " - " .. GetRealmName()
+
+-- Lua functions
+local pairs, type, floor, abs, format = pairs, type, floor, abs, format
+local date, wipe, ipairs, tonumber, time = date, wipe, ipairs, tonumber, time
+local _G = _G
+
+-- WoW API / Variables
+local C_TradeSkillUI_GetFilteredRecipeIDs = C_TradeSkillUI.GetFilteredRecipeIDs
+local C_TradeSkillUI_GetRecipeCooldown = C_TradeSkillUI.GetRecipeCooldown
+local C_TradeSkillUI_IsTradeSkillGuild = C_TradeSkillUI.IsTradeSkillGuild
+local C_TradeSkillUI_IsTradeSkillLinked = C_TradeSkillUI.IsTradeSkillLinked
+local ExpandTradeSkillSubClass = ExpandTradeSkillSubClass
+local GetItemCooldown = GetItemCooldown
+local GetItemInfo = GetItemInfo
+local GetSpellInfo = GetSpellInfo
+local GetSpellLink = GetSpellLink
+local SetTradeSkillCategoryFilter = SetTradeSkillCategoryFilter
+local SetTradeSkillInvSlotFilter = SetTradeSkillInvSlotFilter
+local TradeSkillOnlyShowMakeable = TradeSkillOnlyShowMakeable
+local TradeSkillOnlyShowSkillUps = TradeSkillOnlyShowSkillUps
 
 local trade_spells = {
   -- Alchemy
@@ -170,7 +191,6 @@ local trade_spells = {
   [23453]  = "item", -- Ultrasafe Transporter: Gadgetzhan
   [36941]  = "item", -- Ultrasafe Transporter: Toshley's Station
 }
-addon.trade_spells = trade_spells
 
 local itemcds = { -- [itemid] = spellid
   [40768]  = 54710,  -- MOLL-E
@@ -188,7 +208,6 @@ local itemcds = { -- [itemid] = spellid
   [18986]  = 23453,  -- Ultrasafe Transporter: Gadgetzhan
   [30544]  = 36941,  -- Ultrasafe Transporter: Toshley's Station
 }
-addon.itemcds = itemcds
 
 local cdname = {
   ["xmute"] = GetSpellInfo(2259).. ": "..L["Transmute"],
@@ -198,4 +217,149 @@ local cdname = {
   ["sphere"] = GetSpellInfo(7411).. ": "..GetSpellInfo(28027),
   ["magni"] = GetSpellInfo(2108).. ": "..GetSpellInfo(140040)
 }
-addon.cdname = cdname
+
+function TradeskillsModule:OnEnable()
+  self:RegisterBucketEvent("TRADE_SKILL_LIST_UPDATE", 1)
+  self:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")
+end
+
+function TradeskillsModule:ScanItemCDs()
+  for itemid, spellid in pairs(itemcds) do
+    local start, duration = GetItemCooldown(itemid)
+    if start and duration and start > 0 then
+      self:RecordSkill(spellid, addon.GetTimeToTime(start + duration))
+    end
+  end
+end
+
+function TradeskillsModule:RecordSkill(spellID, expires)
+  if not spellID then return end
+  local cdinfo = trade_spells[spellID]
+  if not cdinfo then
+    addon.skillwarned = addon.skillwarned or {}
+    if expires and expires > 0 and not addon.skillwarned[spellID] then
+      addon.skillwarned[spellID] = true
+      addon.bugReport("Unrecognized trade skill cd "..(GetSpellInfo(spellID) or "??").." ("..spellID..")")
+    end
+    return
+  end
+  local t = addon and addon.db.Toons[thisToon]
+  if not t then return end
+  local spellName = GetSpellInfo(spellID)
+  t.Skills = t.Skills or {}
+  local idx = spellID
+  local title = spellName
+  local link = nil
+  if cdinfo == "item" then
+    if not expires then
+      self:ScheduleTimer("ScanItemCDs", 2) -- theres a delay for the item to go on cd
+      return
+    end
+    for itemid, spellid in pairs(itemcds) do
+      if spellid == spellID then
+        title, link = GetItemInfo(itemid) -- use item name as some item spellnames are ambiguous or wrong
+        title = title or spellName
+      end
+    end
+  elseif type(cdinfo) == "string" then
+    idx = cdinfo
+    title = cdname[cdinfo] or title
+  elseif expires ~= 0 then
+    local slink = GetSpellLink(spellID)
+    if slink and #slink > 0 then  -- tt scan for the full name with profession
+      link = "\124cffffd000\124Henchant:"..spellID.."\124h[X]\124h\124r"
+      addon.scantt:SetOwner(_G.UIParent,"ANCHOR_NONE")
+      addon.scantt:SetHyperlink(link)
+      local l = _G[addon.scantt:GetName().."TextLeft1"]
+      l = l and l:GetText()
+      if l and #l > 0 then
+        title = l
+        link = link:gsub("X",l)
+      else
+        link = nil
+      end
+    end
+  end
+  if expires == 0 then
+    if t.Skills[idx] then -- a cd ended early
+      addon.debug("Clearing Trade skill cd: %s (%s)",spellName,spellID)
+    end
+    t.Skills[idx] = nil
+    return
+  elseif not expires then
+    expires = addon:GetNextDailySkillResetTime()
+    if not expires then return end -- ticket 127
+    if type(cdinfo) == "number" then -- over a day, make a rough guess
+      expires = expires + (cdinfo-1)*24*60*60
+    end
+  end
+  expires = floor(expires)
+  local sinfo = t.Skills[idx] or {}
+  t.Skills[idx] = sinfo
+  local change = expires - (sinfo.Expires or 0)
+  if abs(change) > 180 then -- updating expiration guess (more than 3 min update lag)
+    addon.debug("Trade skill cd: "..(link or title).." ("..spellID..") "..
+      (sinfo.Expires and format("%d",change).." sec" or "(new)")..
+      " Local time: "..date("%c",expires))
+  end
+  sinfo.Title = title
+  sinfo.Link = link
+  sinfo.Expires = expires
+
+  return true
+end
+
+function TradeskillsModule:TradeSkillRescan(spellid)
+  local scan = self:TRADE_SKILL_LIST_UPDATE()
+  if _G.TradeSkillFrame and _G.TradeSkillFrame.filterTbl and
+    (scan == 0 or not self.seencds or not self.seencds[spellid]) then
+    -- scan failed, probably because the skill is hidden - try again
+    self.filtertmp = wipe(self.filtertmp or {})
+    for k,v in pairs(_G.TradeSkillFrame.filterTbl) do self.filtertmp[k] = v end
+    TradeSkillOnlyShowMakeable(false)
+    TradeSkillOnlyShowSkillUps(false)
+    SetTradeSkillCategoryFilter(-1)
+    SetTradeSkillInvSlotFilter(-1, 1, 1)
+    ExpandTradeSkillSubClass(0)
+    local rescan = self:TRADE_SKILL_LIST_UPDATE()
+    addon.debug("Rescan: "..(rescan==scan and "Failed" or "Success"))
+    TradeSkillOnlyShowMakeable(self.filtertmp.hasMaterials)
+    TradeSkillOnlyShowSkillUps(self.filtertmp.hasSkillUp)
+    SetTradeSkillCategoryFilter(self.filtertmp.subClassValue or -1)
+    SetTradeSkillInvSlotFilter(self.filtertmp.slotValue or -1, 1, 1)
+  end
+end
+
+function TradeskillsModule:TRADE_SKILL_LIST_UPDATE()
+  local cnt = 0
+  if C_TradeSkillUI_IsTradeSkillLinked() or C_TradeSkillUI_IsTradeSkillGuild() then return end
+  local recipeids = C_TradeSkillUI_GetFilteredRecipeIDs()
+  for _, spellid in ipairs(recipeids) do
+    local cd, daily = C_TradeSkillUI_GetRecipeCooldown(spellid)
+    if cd and daily -- GetTradeSkillCooldown often returns WRONG answers for daily cds
+      and not tonumber(trade_spells[spellid]) then -- daily flag incorrectly set for some multi-day cds (Northrend Alchemy Research)
+      cd = addon:GetNextDailySkillResetTime()
+    elseif cd then
+      cd = time() + cd  -- on cd
+    else
+      cd = 0 -- off cd or no cd
+    end
+    self:RecordSkill(spellid, cd)
+    if cd then
+      self.seencds = self.seencds or {}
+      self.seencds[spellid] = true
+      cnt = cnt + 1
+    end
+  end
+
+  return cnt
+end
+
+function TradeskillsModule:UNIT_SPELLCAST_SUCCEEDED(evt, unit, spellName, rank, lineID, spellID)
+  if unit ~= "player" then return end
+  if trade_spells[spellID] then
+    addon.debug("UNIT_SPELLCAST_SUCCEEDED: %s (%s)",GetSpellLink(spellID),spellID)
+    if not self:RecordSkill(spellID) then return end
+    self:ScheduleTimer("TradeSkillRescan", 0.5, spellID)
+  end
+end

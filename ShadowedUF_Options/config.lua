@@ -5755,6 +5755,8 @@ local function loadTagOptions()
 		
 		if( ShadowUF.Tags.defaultHelp[tagData.name] ) then
 			tagData.error = L["You cannot edit this tag because it is one of the default ones included in this mod. This function is here to provide an example for your own custom tags."]
+		else
+			tagData.error = nil
 		end
 		
 		selectDialogGroup("tags", "edit")

@@ -608,6 +608,7 @@ end
 function WeakAuras.ScanEvents(event, arg1, arg2, ...)
   local orgEvent = event;
   WeakAuras.StartProfileSystem("generictrigger " .. orgEvent )
+  if event == "COMBAT_LOG_EVENT_UNFILTERED_FAKE" then event = "COMBAT_LOG_EVENT_UNFILTERED_CUSTOM" end
   local event_list = loaded_events[event];
   if (not event_list) then
     WeakAuras.StopProfileSystem("generictrigger " .. orgEvent )
@@ -625,10 +626,14 @@ function WeakAuras.ScanEvents(event, arg1, arg2, ...)
 
   elseif (event == "COMBAT_LOG_EVENT_UNFILTERED_CUSTOM") then
     -- This reverts the COMBAT_LOG_EVENT_UNFILTERED_CUSTOM workaround so that custom triggers that check the event argument will work as expected
-    if(event == "COMBAT_LOG_EVENT_UNFILTERED_CUSTOM") then
+    --if(event == "COMBAT_LOG_EVENT_UNFILTERED_CUSTOM") then
       event = "COMBAT_LOG_EVENT_UNFILTERED";
-    end
+    --end
+      if(orgEvent == "COMBAT_LOG_EVENT_UNFILTERED_FAKE") then
+          WeakAuras.ScanEventsInternal(event_list, event, arg1, arg2, ...);
+      else
     WeakAuras.ScanEventsInternal(event_list, event, CombatLogGetCurrentEventInfo());
+      end
   else
     WeakAuras.ScanEventsInternal(event_list, event, arg1, arg2, ...);
   end

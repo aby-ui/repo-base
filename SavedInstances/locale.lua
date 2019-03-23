@@ -3,16 +3,16 @@
 -- To help with missing translations please go here:
 local url = "http://www.wowace.com/addons/saved_instances/localization/"
 
-local addonName, vars = ...
+local addonName, addon = ...
 local Ld, La = {}, {}
 local locale = GAME_LOCALE or GetLocale()
 if locale == "enGB" then locale = "enUS" end
 
-vars.L = setmetatable({},{
+addon.L = setmetatable({},{
   __index = function(t, s)
     if locale ~= "enUS" and Ld[s] and
-      not La[s] and url and not vars.locale_warning then
-      vars.locale_warning = true
+      not La[s] and url and not addon.locale_warning then
+      addon.locale_warning = true
       --print(string.format("*** %s needs help translating to your language! (%s)", addonName, locale))
       --print("*** If you speak English, you can contribute by visiting:")
       --print("*** "..url)
@@ -852,8 +852,7 @@ La["World Bosses"] = "Jefes de Mundo"
 La["You can combine icons and text in a single indicator if you wish. Simply choose an icon, and insert the word ICON into the text field. Anywhere the word ICON is found, the icon you chose will be substituted in."] = "Puedes unirse a los iconos y texto en un solo indicador. Seleccione un icono y escribe \"ICON\" en el cuadro de texto para indicar dónde deseas que aparezca el icono."
 
 elseif locale == "ruRU" then
---[[Translation missing --]]
-La[" Chest Available"] = " Chest Available"
+La[" Chest Available"] = "Доступный сундук"
 La["|cffffff00Left-click|r to detach tooltip"] = "|cffffff00Left-click|r Информация в отдельном окне"
 La["|cffffff00Middle-click|r to show Blizzard's Raid Information"] = "Средняя кнопка мыши, чтобы показать информацию о рейдах от Blizzard"
 La["|cffffff00Right-click|r to configure SavedInstances"] = "|cffffff00Right-click|r Настройки SavedInstances"
@@ -861,8 +860,7 @@ La["Abbreviate keystones"] = "Сокращения названия ключей
 La["Abbreviate Mythic keystone dungeon names"] = "Сократить названия эпохальных подземелий"
 La["Account"] = "Аккаунт"
 La["Account Summary"] = "Общая сводка по аккаунту"
---[[Translation missing --]]
-La["AD"] = "AD"
+La["AD"] = "АД"
 La["Always show"] = "Всегда отображать"
 La["Are you sure you want to remove %s from the SavedInstances character database?"] = "Вы уверены, что хотите удалить %s из базы данных персонажей SavedInstances?"
 La["Are you sure you want to reset the SavedInstances character database? Characters will be re-populated as you log into them."] = "Вы уверены, что хотите сбросить базу данных персонажей SavedInstances? Персонажи будут вновь запомнены, как только вы зайдёте ими в игру."
@@ -878,10 +876,8 @@ This is a Blizzard bug affecting certain old raids.]=] ] = [=[Отсутству
 La["Categories"] = "Категории"
 La["Characters"] = "Персонажи"
 La["Color currency by cap"] = "Расцвечивать валюту в зависимости от достижения максимума"
---[[Translation missing --]]
-La["Combine Emissaries"] = "Combine Emissaries"
---[[Translation missing --]]
-La["Combine emissaries of same expansion"] = "Combine emissaries of same expansion"
+La["Combine Emissaries"] = "Объединить эмиссаров"
+La["Combine emissaries of same expansion"] = "Объединить эмиссаров одного и того же дополнения"
 La["Combine LFR"] = "Объединять СПР (LFR)"
 La["Combine World Bosses"] = "Объединять мировых босcов"
 La["Connected Realms"] = "Соединенные сервера"
@@ -905,8 +901,7 @@ La["Facets of Research"] = "Грань исследования (ювелирн�
 La["Fit to screen"] = "Подогнать под размер экрана"
 La["Flex"] = "Гибкий"
 La["Format large numbers"] = "Формат больших чисел"
---[[Translation missing --]]
-La["Free"] = "Free"
+La["Free"] = "ВГ"
 La["General settings"] = "Общие настройки"
 La["Group"] = "Группировать"
 La["Hold Alt to show all data"] = "Нажмите Alt для просмотра всей информации"
@@ -916,8 +911,7 @@ La["Indicators"] = "Индикатор"
 La["Instance limit in Broker"] = "Предел подземелий на Расколотых Островах"
 La["Instances"] = "Подземелья"
 La["Interleave"] = "Смешивать в пределах соединенного сервера"
---[[Translation missing --]]
-La["KR"] = "KR"
+La["KR"] = "ГК"
 La["Last updated"] = "Последнее обновление"
 La["Legion Transmute"] = "Трансмутация Легиона"
 La["Level %d Characters"] = "Персонажи уровня %d"
@@ -928,8 +922,7 @@ La["List raid categories before dungeon categories"] = "Список катег�
 La["Manage"] = "Управление"
 La["Miscellaneous Tracking"] = "Разнообразное отслеживание"
 La["Most recent first"] = "Сначала новые"
---[[Translation missing --]]
-La["MOTHER"] = "MOTHER"
+La["MOTHER"] = "МАТРИАРХ"
 La["Mythic Best"] = "Лучший Эпохальный"
 La["Mythic Key Best"] = "Лучший эпохальный ключ"
 La["Mythic Keystone"] = "Эпохальный ключ"
@@ -947,18 +940,15 @@ La["Reverse ordering"] = "Обратный порядок"
 La["Roll Bonus"] = "Бонусный бросок"
 La["Row Highlight"] = "Подсветка строки"
 La["Set All"] = "Установить значение для всех"
---[[Translation missing --]]
-La["Show all emissary names"] = "Show all emissary names"
---[[Translation missing --]]
-La["Show both factions' emissay name"] = "Show both factions' emissay name"
+La["Show all emissary names"] = "Показать все имена эмиссаров"
+La["Show both factions' emissay name"] = "Показать название эмиссаров обеих фракций"
 La["Show category names"] = "Показывать названия категорий"
 La["Show category names in the tooltip"] = "Отображать названия категорий в подсказках"
 La["Show cooldown for characters to use battleground system"] = "Показывать время задержки системы Полей битв"
 La["Show cooldown for characters to use LFG dungeon system"] = "Показывать время задержки системы Поиска группы для подземелий"
 La["Show currency earned"] = "Показывать полученную валюту"
 La["Show currency max"] = "Показать максимальную валюту"
---[[Translation missing --]]
-La["Show emissary line when all quests completed"] = "Show emissary line when all quests completed"
+La["Show emissary line when all quests completed"] = "Показать линию эмиссара, когда все задания завершены"
 La["Show Expired"] = "Показывать истекшие"
 La["Show expired instance lockouts"] = "Показывать истекшие сохранённые подземелья"
 La["Show Holiday"] = "Показывать События"
@@ -974,23 +964,19 @@ La["Show server name"] = "Показать название сервера"
 La["Show the SavedInstances minimap button"] = "Отображать кнопку SavedInstances у миникарты"
 La["Show tooltip hints"] = "Показывать подсказки"
 La["Show When"] = "Показывать если"
---[[Translation missing --]]
-La["Show when completed"] = "Show when completed"
+La["Show when completed"] = "Показать, когда завершено"
 La["Show when saved"] = "Отображать при сохранении"
 La["Show/Hide the SavedInstances tooltip"] = "Показать/Спрятать подсказку SavedInstances"
 La["Similarly, the words KILLED and TOTAL will be substituted with the number of bosses killed and total in the lockout."] = "Аналогично, слова KILLED и TOTAL будут заменены числом убитых и всего боссов в сохранении."
 La["Single category name"] = "Одиночное название категории"
---[[Translation missing --]]
-La["SoB"] = "SoB"
+La["SoB"] = "ОБ"
 La["Sort by server"] = "Сорт. по серверам"
 La["Sort categories by"] = "Сорт. категории по"
 La["Sort Order"] = "Порядок сортировки"
 La["Sorting"] = "Сортировка"
---[[Translation missing --]]
-La["SotS"] = "SotS"
+La["SotS"] = "СШ"
 La["Space between categories"] = "Промежуток между категориями"
---[[Translation missing --]]
-La["TD"] = "TD"
+La["TD"] = "ТД"
 La["Text"] = "Текст"
 La["The Four Celestials"] = "Четыре небожителя"
 La["These are the instances that count towards the %i instances per hour account limit, and the time until they expire."] = "Это те подземелья, на которые существуют ограничения в %i подземелий в час."
@@ -998,23 +984,20 @@ La["This should only be used for characters who have been renamed or deleted, as
 La["Time /played"] = "Общее время игры"
 La["Time Left"] = "Обновится через"
 La["Tooltip Scale"] = "Масштаб подсказки"
---[[Translation missing --]]
-La["ToS"] = "ToS"
+La["ToS"] = "ХС"
 La["Track Mythic keystone acquisition"] = "Отслеживать полученные эпохальные ключи"
 La["Track Mythic keystone best run"] = "Отслеживать лучший заход на эпохальный ключ"
 La["Trade Skill Cooldowns"] = "Восстановление способностей профессий."
 La["Trade skills"] = "Отслеживать восстановление способностей профессий"
 La["Transmute"] = "Трансмутация (алхимия)"
 La["Type"] = "Тип"
---[[Translation missing --]]
-La["Under"] = "Under"
+La["Under"] = "Подгнилье"
 La["Use class color"] = "Цвет класса"
 La["Warn about instance limit"] = "Предупреждать о пределе подземелий"
 La["Warning: You've entered about %i instances recently and are approaching the %i instance per hour limit for your account. More instances should be available in %s."] = "Внимание! За последнее время вы вошли в %i подземелий и приближаетесь к ограничению в \"%i подземелий в час\" для вашего аккаунта. Новые подземелья будут доступны через %s."
 La["Weekly Quests"] = "Еженедельные задания"
 La["Wild Transmute"] = "Дикая трансмутация"
---[[Translation missing --]]
-La["WM"] = "WM"
+La["WM"] = "УУ"
 La["World Boss"] = "Мировой босс"
 La["World Bosses"] = "Мировые боcсы"
 La["You can combine icons and text in a single indicator if you wish. Simply choose an icon, and insert the word ICON into the text field. Anywhere the word ICON is found, the icon you chose will be substituted in."] = "Если хотите, то вы можете комбинировать иконки и текст в одном индикаторе. Просто выберите иконку и вставьте слово ICON в текстовое поле. Везде где слово ICON будет найдено, вместо него будет ваш выбранный значок."
