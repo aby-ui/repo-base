@@ -27,7 +27,7 @@ local GREEN_FONT_COLOR_CODE = GREEN_FONT_COLOR_CODE
 local LEVEL = LEVEL
 local RED_FONT_COLOR_CODE = RED_FONT_COLOR_CODE
 
--- GLOBALS: BINDING_NAME_SAVEDINSTANCES, BINDING_HEADER_SAVEDINSTANCES
+-- GLOBALS: LibStub, BINDING_NAME_SAVEDINSTANCES, BINDING_HEADER_SAVEDINSTANCES
 
 addon.diff_strings = {
   D1 = DUNGEON_DIFFICULTY1, -- 5 man
@@ -453,6 +453,11 @@ function Config:BuildOptions()
             order = 47.5,
             name = L["Mythic Best"],
             desc = L["Track Mythic keystone best run"],
+          },
+          TrackParagon = {
+            type = "toggle",
+            order = 48,
+            name = L["Paragon Chest"],
           },
           BindHeader = {
             order = -0.6,

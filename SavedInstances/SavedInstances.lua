@@ -283,6 +283,7 @@ addon.defaultDB = {
   -- Zone: string
   -- Warmode: boolean
   -- Artifact: string
+  -- Paragon: table
 
   -- currency: key: currencyID  value:
   -- amount: integer
@@ -456,6 +457,7 @@ addon.defaultDB = {
     EmissaryShowCompleted = true,
     CombineEmissary = false,
     AbbreviateKeystone = true,
+    TrackParagon = true,
   },
   Instances = { }, 	-- table key: "Instance name"; value:
   -- Show: boolean
@@ -2471,7 +2473,7 @@ end
 function core:OnInitialize()
   local versionString = GetAddOnMetadata(addonName, "version")
   --[===[@debug@
-  if versionString == "8.1.0-5-g761b859" then
+  if versionString == "8.1.0-10-g49397d3" then
     versionString = "Dev"
   end
   --@end-debug@]===]
@@ -3140,9 +3142,13 @@ local function UpdateTooltip(self,elap)
   if not tooltip or not tooltip:IsShown() then return end
   if addon.firstupdate then
     -- ticket 155: fix QTip backdrop which somehow gets corrupted sometimes, no idea why
-    tooltip:SetBackdrop(GameTooltip:GetBackdrop())
-    tooltip:SetBackdropColor(GameTooltip:GetBackdropColor())
-    tooltip:SetBackdropBorderColor(GameTooltip:GetBackdropBorderColor())
+    -- issue #248 ElvUI >= 11.05 will drop the backdrop of GameTooltip on World Map
+    local backdrop = GameTooltip:GetBackdrop()
+    if backdrop then
+      tooltip:SetBackdrop(backdrop)
+      tooltip:SetBackdropColor(GameTooltip:GetBackdropColor())
+      tooltip:SetBackdropBorderColor(GameTooltip:GetBackdropBorderColor())
+    end
     addon:SkinFrame(tooltip, "SavedInstancesTooltip")
     addon.firstupdate = false
   end
@@ -4067,6 +4073,28 @@ function core:ShowTooltip(anchorframe)
             end
           end
         end
+      end
+    end
+  end
+
+  if addon.db.Tooltip.TrackParagon or showall then
+    local show
+    for toon, t in cpairs(addon.db.Toons, true) do
+      if t.Paragon and #t.Paragon > 0 then
+        show = true
+        addColumns(columns, toon, tooltip)
+      end
+    end
+    if show then
+      if not firstcategory and addon.db.Tooltip.CategorySpaces then
+        addsep()
+      end
+      show = tooltip:AddLine(YELLOWFONT .. L["Paragon Chests"] .. FONTEND)
+      for toon, t in cpairs(addon.db.Toons, true) do
+        local col = columns[toon..1]
+        tooltip:SetCell(show, col, t.Paragon and #t.Paragon or 0, "CENTER", maxcol)
+        tooltip:SetCellScript(show, col, "OnEnter", hoverTooltip.ShowParagonTooltip, toon)
+        tooltip:SetCellScript(show, col, "OnLeave", CloseTooltips)
       end
     end
   end

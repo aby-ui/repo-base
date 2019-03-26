@@ -146,7 +146,7 @@ do
 			
 			accessibility = {
 				extra_tracking_indicator = false,
-				
+				use_bounty_ring = false,
 			},
 			
 			last_news_time = 0,

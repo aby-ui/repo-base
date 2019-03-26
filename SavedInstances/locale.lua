@@ -8,14 +8,17 @@ local Ld, La = {}, {}
 local locale = GAME_LOCALE or GetLocale()
 if locale == "enGB" then locale = "enUS" end
 
+-- Lua functions
+local print, format, rawget = function() end, format, rawget
+
 addon.L = setmetatable({},{
   __index = function(t, s)
     if locale ~= "enUS" and Ld[s] and
       not La[s] and url and not addon.locale_warning then
       addon.locale_warning = true
-      --print(string.format("*** %s needs help translating to your language! (%s)", addonName, locale))
-      --print("*** If you speak English, you can contribute by visiting:")
-      --print("*** "..url)
+      print(format("*** %s needs help translating to your language! (%s)", addonName, locale))
+      print("*** If you speak English, you can contribute by visiting:")
+      print("*** "..url)
     end
     return La[s] or Ld[s] or rawget(t,s) or s
   end
@@ -99,6 +102,8 @@ Ld["Never show"] = "Never show"
 Ld["Opacity of the tooltip row highlighting"] = "Opacity of the tooltip row highlighting"
 Ld["Open config"] = "Open config"
 Ld["Order must be a number in [0 - 999]"] = "Order must be a number in [0 - 999]"
+Ld["Paragon Chest"] = "Paragon Chest"
+Ld["Paragon Chests"] = "Paragon Chests"
 Ld["Raids before dungeons"] = "Raids before dungeons"
 Ld["Recent Bonus Rolls"] = "Recent Bonus Rolls"
 Ld["Recent Instances"] = "Recent Instances"
@@ -257,6 +262,10 @@ La["Never show"] = "Ne jamais afficher"
 La["Opacity of the tooltip row highlighting"] = "Opacité de la mise en évidence des rangées de l'infobulle."
 La["Open config"] = "Ouvrir la configuration"
 La["Order must be a number in [0 - 999]"] = "l'ordre doit être un nombre compris entre [0 - 999]"
+--[[Translation missing --]]
+La["Paragon Chest"] = "Paragon Chest"
+--[[Translation missing --]]
+La["Paragon Chests"] = "Paragon Chests"
 La["Raids before dungeons"] = "Raids avant les donjons"
 La["Recent Bonus Rolls"] = "Jets de dé bonus récents"
 La["Recent Instances"] = "instance(s) récente(s) "
@@ -425,6 +434,10 @@ La["Opacity of the tooltip row highlighting"] = "Transparenz der Zeilenhervorheb
 La["Open config"] = "Konfiguration öffnen"
 --[[Translation missing --]]
 La["Order must be a number in [0 - 999]"] = "Order must be a number in [0 - 999]"
+--[[Translation missing --]]
+La["Paragon Chest"] = "Paragon Chest"
+--[[Translation missing --]]
+La["Paragon Chests"] = "Paragon Chests"
 La["Raids before dungeons"] = "Schlachtzüge vor Dungeons"
 La["Recent Bonus Rolls"] = "Letzte Bonuswürfe"
 La["Recent Instances"] = "Kürzliche Instanzen"
@@ -586,6 +599,10 @@ La["Never show"] = "표시하지 않음"
 La["Opacity of the tooltip row highlighting"] = "툴팁 열 강조에 대한 불투명도"
 La["Open config"] = "설정 열기"
 La["Order must be a number in [0 - 999]"] = "순서는 숫자 0에서 999사이의 값을 입력하셔야 합니다."
+--[[Translation missing --]]
+La["Paragon Chest"] = "Paragon Chest"
+--[[Translation missing --]]
+La["Paragon Chests"] = "Paragon Chests"
 La["Raids before dungeons"] = "던전 앞에 공격대"
 La["Recent Bonus Rolls"] = "최근 추가 보상"
 La["Recent Instances"] = "최근 인던"
@@ -762,6 +779,10 @@ La["Opacity of the tooltip row highlighting"] = "Opacidad de la resalta de filas
 La["Open config"] = "Abrir los opciones"
 --[[Translation missing --]]
 La["Order must be a number in [0 - 999]"] = "Order must be a number in [0 - 999]"
+--[[Translation missing --]]
+La["Paragon Chest"] = "Paragon Chest"
+--[[Translation missing --]]
+La["Paragon Chests"] = "Paragon Chests"
 La["Raids before dungeons"] = "Bandas antes que mazmorras"
 La["Recent Bonus Rolls"] = "Tiradas Extra Recientes"
 La["Recent Instances"] = "Instancias recientes"
@@ -930,6 +951,10 @@ La["Never show"] = "Никогда не отображать"
 La["Opacity of the tooltip row highlighting"] = "Прозрачность подсказки подсвеченной строки"
 La["Open config"] = "Открыть настройки"
 La["Order must be a number in [0 - 999]"] = "Заказ должен быть числом в диапазоне [0 - 999]"
+--[[Translation missing --]]
+La["Paragon Chest"] = "Paragon Chest"
+--[[Translation missing --]]
+La["Paragon Chests"] = "Paragon Chests"
 La["Raids before dungeons"] = "Рейды перед подземельями "
 La["Recent Bonus Rolls"] = "Недавние бонусные броски"
 La["Recent Instances"] = "Недавние подземелья "
@@ -1081,6 +1106,10 @@ La["Never show"] = "从不显示"
 La["Opacity of the tooltip row highlighting"] = "高亮提示行的透明度"
 La["Open config"] = "开启设置"
 La["Order must be a number in [0 - 999]"] = "必须为0-999的数字"
+--[[Translation missing --]]
+La["Paragon Chest"] = "Paragon Chest"
+--[[Translation missing --]]
+La["Paragon Chests"] = "Paragon Chests"
 La["Raids before dungeons"] = "团队副本位于地下城之前"
 La["Recent Bonus Rolls"] = "近期额外拾取代币使用情况"
 La["Recent Instances"] = "近期副本情况"
@@ -1253,6 +1282,10 @@ La["Opacity of the tooltip row highlighting"] = "Opacidad de los resaltados en l
 La["Open config"] = "Abrir la configuración"
 --[[Translation missing --]]
 La["Order must be a number in [0 - 999]"] = "Order must be a number in [0 - 999]"
+--[[Translation missing --]]
+La["Paragon Chest"] = "Paragon Chest"
+--[[Translation missing --]]
+La["Paragon Chests"] = "Paragon Chests"
 La["Raids before dungeons"] = "Bandas antes que mazmorras"
 La["Recent Bonus Rolls"] = "Tiradas extra recientes"
 La["Recent Instances"] = "Instancias recientes"
@@ -1423,6 +1456,10 @@ La["Never show"] = "永不顯示"
 La["Opacity of the tooltip row highlighting"] = "顯著標示滑鼠提示列的透明度"
 La["Open config"] = "開啟設定選項"
 La["Order must be a number in [0 - 999]"] = "順序必須是 [0-999] 的數字"
+--[[Translation missing --]]
+La["Paragon Chest"] = "Paragon Chest"
+--[[Translation missing --]]
+La["Paragon Chests"] = "Paragon Chests"
 La["Raids before dungeons"] = "團隊在地城之前"
 La["Recent Bonus Rolls"] = "最近的額外骰子"
 La["Recent Instances"] = "最近的副本"
@@ -1594,6 +1631,10 @@ La["Opacity of the tooltip row highlighting"] = "Opacidade do destaque da linha 
 La["Open config"] = "Abrir configuração"
 --[[Translation missing --]]
 La["Order must be a number in [0 - 999]"] = "Order must be a number in [0 - 999]"
+--[[Translation missing --]]
+La["Paragon Chest"] = "Paragon Chest"
+--[[Translation missing --]]
+La["Paragon Chests"] = "Paragon Chests"
 La["Raids before dungeons"] = "Reide antes de masmorras"
 La["Recent Bonus Rolls"] = "Saque de bônus recentes"
 La["Recent Instances"] = "Instâncias recentes"
@@ -1785,6 +1826,10 @@ La["Opacity of the tooltip row highlighting"] = "Opacita' dell'evidenziazione de
 La["Open config"] = "Apri opzioni"
 --[[Translation missing --]]
 La["Order must be a number in [0 - 999]"] = "Order must be a number in [0 - 999]"
+--[[Translation missing --]]
+La["Paragon Chest"] = "Paragon Chest"
+--[[Translation missing --]]
+La["Paragon Chests"] = "Paragon Chests"
 La["Raids before dungeons"] = "Incursioni prima delle spedizioni"
 La["Recent Bonus Rolls"] = "Tiri bonus recenti"
 La["Recent Instances"] = "Istanze recenti"

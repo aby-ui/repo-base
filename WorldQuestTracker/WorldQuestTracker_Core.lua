@@ -1000,7 +1000,10 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 				if (option == "accessibility") then
 					if (value == "extra_tracking_indicator") then
 						WorldQuestTracker.db.profile.accessibility.extra_tracking_indicator = value2
+					elseif (value == "use_bounty_ring") then
+						WorldQuestTracker.db.profile.accessibility.use_bounty_ring = value2
 					end
+					
 					if (WorldQuestTrackerAddon.GetCurrentZoneType() == "zone") then
 						WorldQuestTracker.UpdateZoneWidgets (true)
 					end
@@ -4186,13 +4189,17 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 						GameCooltip:AddIcon ([[Interface\BUTTONS\UI-AutoCastableOverlay]], 2, 1, 16, 16, .4, .6, .4, .6)
 					end					
 				
-				-- ~accessibility
+				-- ~accessibility --todo: add this to be language localized
 				GameCooltip:AddLine ("Accessibility")
 				GameCooltip:AddIcon ([[Interface\PVPFrame\PVP-Banner-Emblem-1]], 1, 1, IconSize, IconSize)
 					
 				GameCooltip:AddLine ("Extra Tracker Mark", "", 2)
 				add_checkmark_icon (WorldQuestTracker.db.profile.accessibility.extra_tracking_indicator)
 				GameCooltip:AddMenu (2, options_on_click, "accessibility", "extra_tracking_indicator", not WorldQuestTracker.db.profile.accessibility.extra_tracking_indicator)
+				
+				GameCooltip:AddLine ("Show Bounty Ring", "", 2)
+				add_checkmark_icon (WorldQuestTracker.db.profile.accessibility.use_bounty_ring)
+				GameCooltip:AddMenu (2, options_on_click, "accessibility", "use_bounty_ring", not WorldQuestTracker.db.profile.accessibility.use_bounty_ring)
 				
 				-- other options
 				GameCooltip:AddLine ("$div")

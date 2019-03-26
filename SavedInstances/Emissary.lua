@@ -80,8 +80,8 @@ function EmissaryModule:QUEST_LOG_UPDATE()
         local money = GetQuestLogRewardMoney(info.questID)
         local numQuestRewards = GetNumQuestLogRewards(info.questID)
         local numCurrencyRewards = GetNumQuestLogRewardCurrencies(info.questID)
-        addon.db.Emissary.Cache[info.questID] = title -- cache quest name
-        if money > 0 or numQuestRewards > 0 or numCurrencyRewards > 0 then
+        if title then
+          addon.db.Emissary.Cache[info.questID] = title -- cache quest name
           local day = tonumber(floor(timeleft / 1440) + 1) -- [1, 2, 3]
           if not currExpansion[day] then currExpansion[day] = {} end
           if switching[info.questID] then
@@ -98,19 +98,22 @@ function EmissaryModule:QUEST_LOG_UPDATE()
           tbl.isComplete = false
           tbl.isFinish = isFinish
           tbl.questDone = questDone
-          tbl.questReward = {}
-          if money > 0 then
-            tbl.questReward.money = money
-          elseif numQuestRewards > 0 then
-            local itemIndex = QuestUtils_GetBestQualityItemRewardIndex(info.questID)
-            local itemName, _, _, quality, _, _, itemLvl = GetQuestLogRewardInfo(itemIndex, info.questID)
-            tbl.questReward.itemName = itemName
-            tbl.questReward.quality = quality
-            tbl.questReward.itemLvl = itemLvl
-          else
-            local _, _, quantity, currencyID = GetQuestLogRewardCurrencyInfo(1, info.questID)
-            tbl.questReward.currencyID = currencyID
-            tbl.questReward.quantity = quantity
+          -- Update Emissary Reward
+          if money > 0 or numQuestRewards > 0 or numCurrencyRewards > 0 then
+            tbl.questReward = {}
+            if money > 0 then
+              tbl.questReward.money = money
+            elseif numQuestRewards > 0 then
+              local itemIndex = QuestUtils_GetBestQualityItemRewardIndex(info.questID)
+              local itemName, _, _, quality, _, _, itemLvl = GetQuestLogRewardInfo(itemIndex, info.questID)
+              tbl.questReward.itemName = itemName
+              tbl.questReward.quality = quality
+              tbl.questReward.itemLvl = itemLvl
+            else
+              local _, _, quantity, currencyID = GetQuestLogRewardCurrencyInfo(1, info.questID)
+              tbl.questReward.currencyID = currencyID
+              tbl.questReward.quantity = quantity
+            end
           end
         end
       end

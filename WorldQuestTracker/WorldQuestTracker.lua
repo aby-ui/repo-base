@@ -1,5 +1,7 @@
 
 
+--new 8.1.5 C_TaskQuest.GetQuestTimeLeftSeconds
+
 hooksecurefunc (WorldQuestDataProviderMixin, "RefreshAllData", function (self, fromOnShow)
 	--is triggering each 0.5 seconds
 	--print ("WorldQuestDataProviderMixin.RefreshAllData", "fromOnShow", fromOnShow)
