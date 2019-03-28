@@ -38,6 +38,7 @@ Ld["Are you sure you want to remove %s from the SavedInstances character databas
 Ld["Are you sure you want to reset the SavedInstances character database? Characters will be re-populated as you log into them."] = "Are you sure you want to reset the SavedInstances character database? Characters will be re-populated as you log into them."
 Ld["Attempt to recover completed daily quests for this character. Note this may recover some additional, linked daily quests that were not actually completed today."] = "Attempt to recover completed daily quests for this character. Note this may recover some additional, linked daily quests that were not actually completed today."
 Ld["Automatically shrink the tooltip to fit on the screen"] = "Automatically shrink the tooltip to fit on the screen"
+Ld["Azuregos"] = "Azuregos"
 Ld["Battleground Deserter"] = "Battleground Deserter"
 Ld["Bind a key to toggle the SavedInstances tooltip"] = "Bind a key to toggle the SavedInstances tooltip"
 Ld["Bonus loot frame"] = "Bonus loot frame"
@@ -61,6 +62,7 @@ Ld["Disable mouseover"] = "Disable mouseover"
 Ld["Disable tooltip display on icon mouseover"] = "Disable tooltip display on icon mouseover"
 Ld["Display instances in order of recommended level from lowest to highest"] = "Display instances in order of recommended level from lowest to highest"
 Ld["Display instances with space inserted between categories"] = "Display instances with space inserted between categories"
+Ld["Dragon of Nightmare"] = "Dragon of Nightmare"
 Ld["Dump quest debugging information"] = "Dump quest debugging information"
 Ld["Dump time debugging information"] = "Dump time debugging information"
 Ld["Emissary Missing"] = "Emissary Missing"
@@ -91,6 +93,7 @@ Ld["LFG cooldown"] = "LFG cooldown"
 Ld["LFR"] = "LFR"
 Ld["List categories from the current expansion pack first"] = "List categories from the current expansion pack first"
 Ld["List raid categories before dungeon categories"] = "List raid categories before dungeon categories"
+Ld["Lord Kazzak"] = "Lord Kazzak"
 Ld["Manage"] = "Manage"
 Ld["Miscellaneous Tracking"] = "Miscellaneous Tracking"
 Ld["Most recent first"] = "Most recent first"
@@ -102,7 +105,6 @@ Ld["Never show"] = "Never show"
 Ld["Opacity of the tooltip row highlighting"] = "Opacity of the tooltip row highlighting"
 Ld["Open config"] = "Open config"
 Ld["Order must be a number in [0 - 999]"] = "Order must be a number in [0 - 999]"
-Ld["Paragon Chest"] = "Paragon Chest"
 Ld["Paragon Chests"] = "Paragon Chests"
 Ld["Raids before dungeons"] = "Raids before dungeons"
 Ld["Recent Bonus Rolls"] = "Recent Bonus Rolls"
@@ -194,6 +196,8 @@ La["Are you sure you want to remove %s from the SavedInstances character databas
 La["Are you sure you want to reset the SavedInstances character database? Characters will be re-populated as you log into them."] = "Êtes-vous sûr de vouloir remettre à zéro votre base de données de personnages pour SavedInstances ? Les données des personnages seront re-récupérées au moment où vous les connecterez."
 La["Attempt to recover completed daily quests for this character. Note this may recover some additional, linked daily quests that were not actually completed today."] = "Tente de récupérer les quêtes journalières accomplies par ce personnage. Notez que cela peut récupérer certaines quêtes supplémentaires liées qui n'ont pas été accomplies aujourd'hui."
 La["Automatically shrink the tooltip to fit on the screen"] = "Réduit automatiquement la taille de l'infobulle pour la faire tenir sur l'écran."
+--[[Translation missing --]]
+La["Azuregos"] = "Azuregos"
 La["Battleground Deserter"] = "Déserteur"
 La["Bind a key to toggle the SavedInstances tooltip"] = "Associez une touche à l'affichage de l'infobulle de SavedInstance."
 La["Bonus loot frame"] = "Cadre de jet de butin bonus"
@@ -218,6 +222,8 @@ La["Disable mouseover"] = "Désactiver le survol avec la souris"
 La["Disable tooltip display on icon mouseover"] = "Désactive l'affichage de l'infobulle lors du survol de la souris."
 La["Display instances in order of recommended level from lowest to highest"] = "Affiche les instances dans l'ordre du niveau recommandé le plus bas au plus élevé."
 La["Display instances with space inserted between categories"] = "Affiche les instances avec un espace entre les catégories."
+--[[Translation missing --]]
+La["Dragon of Nightmare"] = "Dragon of Nightmare"
 La["Dump quest debugging information"] = "lister les informations de débogage des quêtes"
 La["Dump time debugging information"] = "lister les informations de débogage du temps"
 La["Emissary Missing"] = "Émissaire manquant"
@@ -250,6 +256,8 @@ La["LFG cooldown"] = "Recherche de groupe"
 La["LFR"] = "RdR"
 La["List categories from the current expansion pack first"] = "Liste les catégories de l'extension actuelle en premier."
 La["List raid categories before dungeon categories"] = "Liste les catégories de raids avant celles des donjons."
+--[[Translation missing --]]
+La["Lord Kazzak"] = "Lord Kazzak"
 La["Manage"] = "Gérer "
 La["Miscellaneous Tracking"] = "Suivis divers "
 La["Most recent first"] = "Les plus récents en premier"
@@ -262,8 +270,6 @@ La["Never show"] = "Ne jamais afficher"
 La["Opacity of the tooltip row highlighting"] = "Opacité de la mise en évidence des rangées de l'infobulle."
 La["Open config"] = "Ouvrir la configuration"
 La["Order must be a number in [0 - 999]"] = "l'ordre doit être un nombre compris entre [0 - 999]"
---[[Translation missing --]]
-La["Paragon Chest"] = "Paragon Chest"
 --[[Translation missing --]]
 La["Paragon Chests"] = "Paragon Chests"
 La["Raids before dungeons"] = "Raids avant les donjons"
@@ -364,6 +370,8 @@ La["Are you sure you want to remove %s from the SavedInstances character databas
 La["Are you sure you want to reset the SavedInstances character database? Characters will be re-populated as you log into them."] = "Bist du sicher, dass du die SavedInstances-Charakterdatenbank zurücksetzen willst? Die Charaktere werden neu angelegt, wenn du sie einloggst."
 La["Attempt to recover completed daily quests for this character. Note this may recover some additional, linked daily quests that were not actually completed today."] = "Versucht die täglichen Quests für diesen Charakter wiederherzustellen. Dies könnte einige weitere, verbundene tägliche Quests wiederherstellen, die nicht wirklich abgeschlossen wurden."
 La["Automatically shrink the tooltip to fit on the screen"] = "Den Tooltip automatisch verkleinern, damit dieser auf den Bildschirm passt"
+--[[Translation missing --]]
+La["Azuregos"] = "Azuregos"
 La["Battleground Deserter"] = "Schlachtfelddeserteur-Abklingzeit"
 La["Bind a key to toggle the SavedInstances tooltip"] = "Wähle Tastenkombination zum Umschalten des SavedInstances-Tooltip"
 La["Bonus loot frame"] = "Bonusbeutefenster"
@@ -389,6 +397,8 @@ La["Disable mouseover"] = "Mouseover deaktivieren"
 La["Disable tooltip display on icon mouseover"] = "Deaktiviert die Anzeige des Tooltips bei Zeigen auf Icons mit der Maus"
 La["Display instances in order of recommended level from lowest to highest"] = "Instanzen nach vorgeschlagenem Level anzeigen, beginnend mit der niedrigsten zur höchsten Instanz"
 La["Display instances with space inserted between categories"] = "Instanzen mit einem Freiraum zwischen den verschiedenen Kategorien anzeigen"
+--[[Translation missing --]]
+La["Dragon of Nightmare"] = "Dragon of Nightmare"
 La["Dump quest debugging information"] = "Quest Debugging Information"
 La["Dump time debugging information"] = "Zeit Debugging Informationen"
 La["Emissary Missing"] = "Abgesandtenkiste fehlt"
@@ -421,6 +431,8 @@ La["LFG cooldown"] = "Dungeonbrowser-Abklingzeit"
 La["LFR"] = "LFR"
 La["List categories from the current expansion pack first"] = "Kategorien der aktuellen Erweiterung zuerst auflisten"
 La["List raid categories before dungeon categories"] = "Schlachtzugskategorien vor Dungeonkategorien auflisten"
+--[[Translation missing --]]
+La["Lord Kazzak"] = "Lord Kazzak"
 La["Manage"] = "Verwalten"
 La["Miscellaneous Tracking"] = "Verschiedenes"
 La["Most recent first"] = "Aktuellste zuerst"
@@ -434,8 +446,6 @@ La["Opacity of the tooltip row highlighting"] = "Transparenz der Zeilenhervorheb
 La["Open config"] = "Konfiguration öffnen"
 --[[Translation missing --]]
 La["Order must be a number in [0 - 999]"] = "Order must be a number in [0 - 999]"
---[[Translation missing --]]
-La["Paragon Chest"] = "Paragon Chest"
 --[[Translation missing --]]
 La["Paragon Chests"] = "Paragon Chests"
 La["Raids before dungeons"] = "Schlachtzüge vor Dungeons"
@@ -534,6 +544,8 @@ La["Are you sure you want to remove %s from the SavedInstances character databas
 La["Are you sure you want to reset the SavedInstances character database? Characters will be re-populated as you log into them."] = "당신의 SavedInstances의 캐릭터 데이터베이스를 초기화 하시겠습니까? 재로그인시 캐릭터의 정보가 다시 채워집니다."
 La["Attempt to recover completed daily quests for this character. Note this may recover some additional, linked daily quests that were not actually completed today."] = "이 캐릭터의 '완료된 일일퀘스트'의 복구를 시도합니다. 실제로 오늘 완료되지 않은 일부 추가/연속 일일 퀘스트를 복구 할 수 있습니다."
 La["Automatically shrink the tooltip to fit on the screen"] = "화면에 맞게 자동으로  툴팁을 축소합니다"
+--[[Translation missing --]]
+La["Azuregos"] = "Azuregos"
 La["Battleground Deserter"] = "전장 탈영 대기시간 추적"
 La["Bind a key to toggle the SavedInstances tooltip"] = "SavedInstances 툴팁을 보거나 숨기는 키 설정"
 La["Bonus loot frame"] = "추가 전리품 창"
@@ -558,6 +570,8 @@ La["Disable mouseover"] = "마우스오버 사용안함"
 La["Disable tooltip display on icon mouseover"] = "아이콘 마우스 오버시 툴팁 표시 안함"
 La["Display instances in order of recommended level from lowest to highest"] = "권장 레벨이 낮은 것부터 높은 순으로 인던을 표시합니다."
 La["Display instances with space inserted between categories"] = "카테고리 사이에 공백을 삽입하여 인스턴스를 표시합니다."
+--[[Translation missing --]]
+La["Dragon of Nightmare"] = "Dragon of Nightmare"
 La["Dump quest debugging information"] = "퀘스트 디버그 정보 덤프하기"
 La["Dump time debugging information"] = "시간 디버깅 정보 덤프하기"
 La["Emissary Missing"] = "사절 없음"
@@ -588,6 +602,8 @@ La["LFG cooldown"] = "무작위 던전 대기시간 추적"
 La["LFR"] = "공찾"
 La["List categories from the current expansion pack first"] = "현재 확장팩을 첫번째로 목록에 나열"
 La["List raid categories before dungeon categories"] = "던전 카테고리 앞에 공격대 카테고리 나열"
+--[[Translation missing --]]
+La["Lord Kazzak"] = "Lord Kazzak"
 La["Manage"] = "관리"
 La["Miscellaneous Tracking"] = "기타"
 La["Most recent first"] = "최근 것을 첫번째로"
@@ -599,8 +615,6 @@ La["Never show"] = "표시하지 않음"
 La["Opacity of the tooltip row highlighting"] = "툴팁 열 강조에 대한 불투명도"
 La["Open config"] = "설정 열기"
 La["Order must be a number in [0 - 999]"] = "순서는 숫자 0에서 999사이의 값을 입력하셔야 합니다."
---[[Translation missing --]]
-La["Paragon Chest"] = "Paragon Chest"
 --[[Translation missing --]]
 La["Paragon Chests"] = "Paragon Chests"
 La["Raids before dungeons"] = "던전 앞에 공격대"
@@ -698,6 +712,8 @@ La["Are you sure you want to remove %s from the SavedInstances character databas
 La["Are you sure you want to reset the SavedInstances character database? Characters will be re-populated as you log into them."] = "¿Seguro que quieres reiniciar la base de datos de personajes de SavedInstances? Los personajes se registraran de nuevo cuando los conectes en el juego."
 La["Attempt to recover completed daily quests for this character. Note this may recover some additional, linked daily quests that were not actually completed today."] = "Tratar a recuperar las misiones diarias ya completados hoy por este personaje. Cuenta que esto podría recuperar algunas otras misiones relacionadas que no fueron realmente completaron hoy."
 La["Automatically shrink the tooltip to fit on the screen"] = "Comprimir automáticamente la ventana para que quepa en la pantalla."
+--[[Translation missing --]]
+La["Azuregos"] = "Azuregos"
 La["Battleground Deserter"] = "Sigue la duración del perjuicio Desertor"
 La["Bind a key to toggle the SavedInstances tooltip"] = "Asignar una tecla para mostrar/ocultar la descripción SavedInstances"
 --[[Translation missing --]]
@@ -727,6 +743,8 @@ La["Disable mouseover"] = "Deshabilitar tooltip"
 La["Disable tooltip display on icon mouseover"] = "Deshabilita el marco al pasar el ratón sobre el ícono"
 La["Display instances in order of recommended level from lowest to highest"] = "Mostrar instancias en orden de nivel recomendado de menor a mayor"
 La["Display instances with space inserted between categories"] = "Mostrar instancias con espacio entre categorías"
+--[[Translation missing --]]
+La["Dragon of Nightmare"] = "Dragon of Nightmare"
 La["Dump quest debugging information"] = "Deshacerse de la información de depuración de misiones"
 La["Dump time debugging information"] = "Deshacerse de la información de depuración de tiempo"
 --[[Translation missing --]]
@@ -763,6 +781,8 @@ La["LFG cooldown"] = "Seguir el cooldown de LFG"
 La["LFR"] = "BdB"
 La["List categories from the current expansion pack first"] = "Mostrar primero las categorías de la expansión actual"
 La["List raid categories before dungeon categories"] = "Mostrar categorías de bandas antes que categorías de mazmorras"
+--[[Translation missing --]]
+La["Lord Kazzak"] = "Lord Kazzak"
 La["Manage"] = "gestionar"
 La["Miscellaneous Tracking"] = "Seguimiento Misceláneo"
 La["Most recent first"] = "Más reciente primero"
@@ -779,8 +799,6 @@ La["Opacity of the tooltip row highlighting"] = "Opacidad de la resalta de filas
 La["Open config"] = "Abrir los opciones"
 --[[Translation missing --]]
 La["Order must be a number in [0 - 999]"] = "Order must be a number in [0 - 999]"
---[[Translation missing --]]
-La["Paragon Chest"] = "Paragon Chest"
 --[[Translation missing --]]
 La["Paragon Chests"] = "Paragon Chests"
 La["Raids before dungeons"] = "Bandas antes que mazmorras"
@@ -887,6 +905,8 @@ La["Are you sure you want to remove %s from the SavedInstances character databas
 La["Are you sure you want to reset the SavedInstances character database? Characters will be re-populated as you log into them."] = "Вы уверены, что хотите сбросить базу данных персонажей SavedInstances? Персонажи будут вновь запомнены, как только вы зайдёте ими в игру."
 La["Attempt to recover completed daily quests for this character. Note this may recover some additional, linked daily quests that were not actually completed today."] = "Попытка восстановить завершённые ежедневные задания для этого персонажа. Обратите внимание, что это может восстановить некоторые дополнительные, связанные ежедневные задания, которые не были фактически сегодня завершены."
 La["Automatically shrink the tooltip to fit on the screen"] = "Автоматически уменьшать размер подсказки, чтобы вместить на экран"
+--[[Translation missing --]]
+La["Azuregos"] = "Azuregos"
 La["Battleground Deserter"] = "Дезертир с Поля Боя"
 La["Bind a key to toggle the SavedInstances tooltip"] = "Клавиша для вкл./выкл. подсказок SavedInstances"
 La["Bonus loot frame"] = "Окно дополнительной добычи"
@@ -910,6 +930,8 @@ La["Disable mouseover"] = "Откл. отобр. по наведению"
 La["Disable tooltip display on icon mouseover"] = "Отключить отображение подсказки по наведению на иконку"
 La["Display instances in order of recommended level from lowest to highest"] = "Отображать подземелья в порядке рекомендуемого уровня от самого низкого до самого высокого"
 La["Display instances with space inserted between categories"] = "Показывать подземелья с промежутком между категориями"
+--[[Translation missing --]]
+La["Dragon of Nightmare"] = "Dragon of Nightmare"
 La["Dump quest debugging information"] = "Сохранить отладочную информацию квеста в файле"
 La["Dump time debugging information"] = "Вывести информацию о времени для отладки"
 La["Emissary Missing"] = "Посланники отсутствуют"
@@ -940,6 +962,8 @@ La["LFG cooldown"] = "Отслеживать время задержки Пои�
 La["LFR"] = "СПР (LFR)"
 La["List categories from the current expansion pack first"] = "Сортировать список категорий по сохраненным подземельям"
 La["List raid categories before dungeon categories"] = "Список категорий рейда до категорий подземелий"
+--[[Translation missing --]]
+La["Lord Kazzak"] = "Lord Kazzak"
 La["Manage"] = "Управление"
 La["Miscellaneous Tracking"] = "Разнообразное отслеживание"
 La["Most recent first"] = "Сначала новые"
@@ -951,8 +975,6 @@ La["Never show"] = "Никогда не отображать"
 La["Opacity of the tooltip row highlighting"] = "Прозрачность подсказки подсвеченной строки"
 La["Open config"] = "Открыть настройки"
 La["Order must be a number in [0 - 999]"] = "Заказ должен быть числом в диапазоне [0 - 999]"
---[[Translation missing --]]
-La["Paragon Chest"] = "Paragon Chest"
 --[[Translation missing --]]
 La["Paragon Chests"] = "Paragon Chests"
 La["Raids before dungeons"] = "Рейды перед подземельями "
@@ -1042,6 +1064,8 @@ La["Are you sure you want to remove %s from the SavedInstances character databas
 La["Are you sure you want to reset the SavedInstances character database? Characters will be re-populated as you log into them."] = "你确定要重置SavedInstances的角色数据库吗？再次登入被删除的角色以重新添加。"
 La["Attempt to recover completed daily quests for this character. Note this may recover some additional, linked daily quests that were not actually completed today."] = "尝试提取当前角色已完成的日常任务。注意，这可能会提取到实际上并没有完成的日常任务。"
 La["Automatically shrink the tooltip to fit on the screen"] = "根据屏幕大小自动缩放界面"
+--[[Translation missing --]]
+La["Azuregos"] = "Azuregos"
 La["Battleground Deserter"] = "追踪战场逃亡者冷却"
 La["Bind a key to toggle the SavedInstances tooltip"] = "绑定一个按键来显示/隐藏SavedInstances界面"
 La["Bonus loot frame"] = "额外拾取界面"
@@ -1065,6 +1089,8 @@ La["Disable mouseover"] = "禁用鼠标提示"
 La["Disable tooltip display on icon mouseover"] = "禁止当鼠标移动到插件图标上时显示提示信息"
 La["Display instances in order of recommended level from lowest to highest"] = "依照建议的等级从低到高显示副本"
 La["Display instances with space inserted between categories"] = "在分类之间显示间距"
+--[[Translation missing --]]
+La["Dragon of Nightmare"] = "Dragon of Nightmare"
 La["Dump quest debugging information"] = "转存任务调试信息"
 La["Dump time debugging information"] = "转存时间调试信息"
 La["Emissary Missing"] = "大使任务缺失"
@@ -1095,6 +1121,8 @@ La["LFG cooldown"] = "追踪随机地下城冷却"
 La["LFR"] = "团队搜寻器"
 La["List categories from the current expansion pack first"] = "从目前的资料片开始列出分类"
 La["List raid categories before dungeon categories"] = "将团队副本置于地下城之前"
+--[[Translation missing --]]
+La["Lord Kazzak"] = "Lord Kazzak"
 La["Manage"] = "管理"
 La["Miscellaneous Tracking"] = "杂项"
 La["Most recent first"] = "目前的资料片优先"
@@ -1106,10 +1134,7 @@ La["Never show"] = "从不显示"
 La["Opacity of the tooltip row highlighting"] = "高亮提示行的透明度"
 La["Open config"] = "开启设置"
 La["Order must be a number in [0 - 999]"] = "必须为0-999的数字"
---[[Translation missing --]]
-La["Paragon Chest"] = "Paragon Chest"
---[[Translation missing --]]
-La["Paragon Chests"] = "Paragon Chests"
+La["Paragon Chests"] = "典范声望宝箱"
 La["Raids before dungeons"] = "团队副本位于地下城之前"
 La["Recent Bonus Rolls"] = "近期额外拾取代币使用情况"
 La["Recent Instances"] = "近期副本情况"
@@ -1201,6 +1226,8 @@ La["Are you sure you want to remove %s from the SavedInstances character databas
 La["Are you sure you want to reset the SavedInstances character database? Characters will be re-populated as you log into them."] = "¿Seguro que quieres reiniciar la base de datos de personajes de SavedInstances? Los personajes se añadirán de nuevo cuando entres con ellos."
 La["Attempt to recover completed daily quests for this character. Note this may recover some additional, linked daily quests that were not actually completed today."] = "Tratar de recuperar las misiones diarias ya completadas hoy por este personaje. Esto podría recuperar algunas otras misiones relacionadas que no fueron completadas hoy."
 La["Automatically shrink the tooltip to fit on the screen"] = "Encoger automáticamente la descripción para ajustarla a la pantalla"
+--[[Translation missing --]]
+La["Azuregos"] = "Azuregos"
 La["Battleground Deserter"] = "Desertor del Campo de Batalla"
 La["Bind a key to toggle the SavedInstances tooltip"] = "Asignar una tecla para mostrar/ocultar la ventana de información de SavedInstances"
 --[[Translation missing --]]
@@ -1230,6 +1257,8 @@ La["Disable mouseover"] = "Deshabilitar tooltip"
 La["Disable tooltip display on icon mouseover"] = "Deshabilita el tooltip al pasar el ratón por encima del icono"
 La["Display instances in order of recommended level from lowest to highest"] = "Mostrar instancias en orden de nivel recomendado de menor a mayor"
 La["Display instances with space inserted between categories"] = "Mostrar instancias con espacio entre categorías"
+--[[Translation missing --]]
+La["Dragon of Nightmare"] = "Dragon of Nightmare"
 La["Dump quest debugging information"] = "Volcar información de depuración de misión"
 La["Dump time debugging information"] = "Volcar información de depuración de tiempo"
 --[[Translation missing --]]
@@ -1266,6 +1295,8 @@ La["LFG cooldown"] = "Tiempo de reutilización del Buscador de Grupo."
 La["LFR"] = "BdB"
 La["List categories from the current expansion pack first"] = "Mostrar primero las categorías de la expansión actual"
 La["List raid categories before dungeon categories"] = "Mostrar categorías de bandas antes que de mazmorras"
+--[[Translation missing --]]
+La["Lord Kazzak"] = "Lord Kazzak"
 La["Manage"] = "Gestionar"
 La["Miscellaneous Tracking"] = "Seguimiento misceláneo"
 La["Most recent first"] = "Más reciente primero"
@@ -1282,8 +1313,6 @@ La["Opacity of the tooltip row highlighting"] = "Opacidad de los resaltados en l
 La["Open config"] = "Abrir la configuración"
 --[[Translation missing --]]
 La["Order must be a number in [0 - 999]"] = "Order must be a number in [0 - 999]"
---[[Translation missing --]]
-La["Paragon Chest"] = "Paragon Chest"
 --[[Translation missing --]]
 La["Paragon Chests"] = "Paragon Chests"
 La["Raids before dungeons"] = "Bandas antes que mazmorras"
@@ -1390,6 +1419,8 @@ La["Are you sure you want to remove %s from the SavedInstances character databas
 La["Are you sure you want to reset the SavedInstances character database? Characters will be re-populated as you log into them."] = "是否確定要重置 SavedInstances 的角色資料庫? 登入角色時將會重新擷取資料。"
 La["Attempt to recover completed daily quests for this character. Note this may recover some additional, linked daily quests that were not actually completed today."] = "嘗試恢復這個角色已完成的每日任務。請注意，可能會恢復到一些其他的、今日實際上並沒有完成的相關每日任務。"
 La["Automatically shrink the tooltip to fit on the screen"] = "自動縮小滑鼠提示以符合畫面"
+--[[Translation missing --]]
+La["Azuregos"] = "Azuregos"
 La["Battleground Deserter"] = "戰場逃亡者冷卻"
 La["Bind a key to toggle the SavedInstances tooltip"] = "綁定按鍵來切換顯示 SavedInstances 滑鼠提示"
 La["Bonus loot frame"] = "額外戰利品框架"
@@ -1415,6 +1446,8 @@ La["Disable mouseover"] = "停用滑鼠提示"
 La["Disable tooltip display on icon mouseover"] = "滑鼠指向圖示時不要顯示滑鼠提示"
 La["Display instances in order of recommended level from lowest to highest"] = "依照建議的等級從低到高顯示副本"
 La["Display instances with space inserted between categories"] = "顯示副本並在分類之間加上間距"
+--[[Translation missing --]]
+La["Dragon of Nightmare"] = "Dragon of Nightmare"
 La["Dump quest debugging information"] = "傾印任務偵錯資訊"
 La["Dump time debugging information"] = "傾印時間偵錯資訊"
 La["Emissary Missing"] = "沒有特使"
@@ -1445,6 +1478,8 @@ La["LFG cooldown"] = "隨機隊伍冷卻"
 La["LFR"] = "隨機團隊"
 La["List categories from the current expansion pack first"] = "優先列出目前資料片中的分類"
 La["List raid categories before dungeon categories"] = "在地城分類之前列出團隊分類"
+--[[Translation missing --]]
+La["Lord Kazzak"] = "Lord Kazzak"
 La["Manage"] = "管理"
 La["Miscellaneous Tracking"] = "其他追蹤"
 La["Most recent first"] = "最近的優先"
@@ -1456,8 +1491,6 @@ La["Never show"] = "永不顯示"
 La["Opacity of the tooltip row highlighting"] = "顯著標示滑鼠提示列的透明度"
 La["Open config"] = "開啟設定選項"
 La["Order must be a number in [0 - 999]"] = "順序必須是 [0-999] 的數字"
---[[Translation missing --]]
-La["Paragon Chest"] = "Paragon Chest"
 --[[Translation missing --]]
 La["Paragon Chests"] = "Paragon Chests"
 La["Raids before dungeons"] = "團隊在地城之前"
@@ -1551,6 +1584,8 @@ La["Are you sure you want to remove %s from the SavedInstances character databas
 La["Are you sure you want to reset the SavedInstances character database? Characters will be re-populated as you log into them."] = "Você tem certeza de que desejar reiniciar a base de dados de personagens do SavedInstances? Personagens serão contabilizados quando você se conectar com eles."
 La["Attempt to recover completed daily quests for this character. Note this may recover some additional, linked daily quests that were not actually completed today."] = "Tentar buscar missões diárias completadas por este personagem. Isto pode buscar algumas missões adicionais relacionadas que na verdade não foram completadas hoje."
 La["Automatically shrink the tooltip to fit on the screen"] = "Encolher ajuda automaticamente para caber na tela"
+--[[Translation missing --]]
+La["Azuregos"] = "Azuregos"
 La["Battleground Deserter"] = "Acompanhar tempo de espera de Desertor para campo de batalha"
 La["Bind a key to toggle the SavedInstances tooltip"] = "Vincule uma tecla para as dicas do SavedInstances"
 --[[Translation missing --]]
@@ -1578,6 +1613,8 @@ La["Disable mouseover"] = "Desativar mouseover"
 La["Disable tooltip display on icon mouseover"] = "Desabilitar exibição de ajuda ao passar o mouse no ícone"
 La["Display instances in order of recommended level from lowest to highest"] = "Exibir instâncias em ordem de nível recomendado menor para o maior"
 La["Display instances with space inserted between categories"] = "Exibir instâncias com espaço inserido entre as categorias"
+--[[Translation missing --]]
+La["Dragon of Nightmare"] = "Dragon of Nightmare"
 --[[Translation missing --]]
 La["Dump quest debugging information"] = "Dump quest debugging information"
 La["Dump time debugging information"] = "Gerar informações de tempo de depuração"
@@ -1615,6 +1652,8 @@ La["LFG cooldown"] = "Recarga do Localizador de Masmorras"
 La["LFR"] = "LdR"
 La["List categories from the current expansion pack first"] = "Listar primeiro o pacote de expansão atual"
 La["List raid categories before dungeon categories"] = "Categorias de raide antes de categorias de masmorras"
+--[[Translation missing --]]
+La["Lord Kazzak"] = "Lord Kazzak"
 La["Manage"] = "Gerenciar"
 La["Miscellaneous Tracking"] = "Diversos"
 La["Most recent first"] = "Mais recente primeiro"
@@ -1631,8 +1670,6 @@ La["Opacity of the tooltip row highlighting"] = "Opacidade do destaque da linha 
 La["Open config"] = "Abrir configuração"
 --[[Translation missing --]]
 La["Order must be a number in [0 - 999]"] = "Order must be a number in [0 - 999]"
---[[Translation missing --]]
-La["Paragon Chest"] = "Paragon Chest"
 --[[Translation missing --]]
 La["Paragon Chests"] = "Paragon Chests"
 La["Raids before dungeons"] = "Reide antes de masmorras"
@@ -1744,6 +1781,8 @@ La["Are you sure you want to remove %s from the SavedInstances character databas
 La["Are you sure you want to reset the SavedInstances character database? Characters will be re-populated as you log into them."] = "Sei sicuro di voler azzerae il database personaggi di SavedInstances? I personaggi saranno ricalcolati non appena ci entri"
 La["Attempt to recover completed daily quests for this character. Note this may recover some additional, linked daily quests that were not actually completed today."] = "Cerca di ripristinare le missioni giornaliere completate per questo personaggio. Nota che questo puo' recuperare alcune missioni aggiuntive, collegate alle giornaliere, che non sono ancora state completate oggi"
 La["Automatically shrink the tooltip to fit on the screen"] = "Adatta automaticamente la finestra per adeguarsi allo schermo"
+--[[Translation missing --]]
+La["Azuregos"] = "Azuregos"
 La["Battleground Deserter"] = "Disertore di campi di battaglia"
 La["Bind a key to toggle the SavedInstances tooltip"] = "Abbina un tasto per mostrare la finestra di SavedInstances "
 --[[Translation missing --]]
@@ -1773,6 +1812,8 @@ La["Disable mouseover"] = "Disabilita movimento del mouse"
 La["Disable tooltip display on icon mouseover"] = "Disattiva i tooltip quando vai sull'icona"
 La["Display instances in order of recommended level from lowest to highest"] = "Mostra istanze in ordine del livello raccomandato dal piu' basso al piu' alto"
 La["Display instances with space inserted between categories"] = "Mostra le istanze con uno spazio tra le varie categorie"
+--[[Translation missing --]]
+La["Dragon of Nightmare"] = "Dragon of Nightmare"
 --[[Translation missing --]]
 La["Dump quest debugging information"] = "Dump quest debugging information"
 La["Dump time debugging information"] = "Inserisci l'orario nelle informazioni di debug"
@@ -1810,6 +1851,8 @@ La["LFG cooldown"] = "Tempo rimanente ricerca delle spedizioni"
 La["LFR"] = "Ricerca spedizioni"
 La["List categories from the current expansion pack first"] = "Elenca categorie partendo dall'espansione attuale"
 La["List raid categories before dungeon categories"] = "Elenca le incursioni prima delle spedizioni"
+--[[Translation missing --]]
+La["Lord Kazzak"] = "Lord Kazzak"
 La["Manage"] = "Gestisci"
 La["Miscellaneous Tracking"] = "Tracciature varie"
 La["Most recent first"] = "Prima i piu' recenti"
@@ -1826,8 +1869,6 @@ La["Opacity of the tooltip row highlighting"] = "Opacita' dell'evidenziazione de
 La["Open config"] = "Apri opzioni"
 --[[Translation missing --]]
 La["Order must be a number in [0 - 999]"] = "Order must be a number in [0 - 999]"
---[[Translation missing --]]
-La["Paragon Chest"] = "Paragon Chest"
 --[[Translation missing --]]
 La["Paragon Chests"] = "Paragon Chests"
 La["Raids before dungeons"] = "Incursioni prima delle spedizioni"

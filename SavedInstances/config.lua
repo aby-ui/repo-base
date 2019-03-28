@@ -457,7 +457,7 @@ function Config:BuildOptions()
           TrackParagon = {
             type = "toggle",
             order = 48,
-            name = L["Paragon Chest"],
+            name = L["Paragon Chests"],
           },
           BindHeader = {
             order = -0.6,

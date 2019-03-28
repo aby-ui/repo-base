@@ -49,3 +49,5 @@ function P:UPDATE_FACTION()
     end
   end
 end
+
+hooksecurefunc("GetQuestReward", function() P:UPDATE_FACTION() end)

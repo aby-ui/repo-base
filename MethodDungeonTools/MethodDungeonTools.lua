@@ -83,6 +83,7 @@ local defaultSavedVars = {
 		currentDifficulty = 10,
 		xoffset = 0,
 		yoffset = -150,
+        defaultColor = "228b22",
 		anchorFrom = "TOP",
 		anchorTo = "TOP",
         tooltipInCorner = false,
@@ -1570,7 +1571,7 @@ function MethodDungeonTools:EnsureDBTables()
                 end
             end
         end
-        pull["color"] = pull["color"] or "228b22"
+        pull["color"] = pull["color"] or db.defaultColor
     end
 
     MethodDungeonTools:GetCurrentPreset().week = MethodDungeonTools:GetCurrentPreset().week or MethodDungeonTools:GetCurrentAffixWeek()

@@ -60,7 +60,8 @@ addon.WorldBosses = {
 
   -- bosses with no EJ entry (eid is a placeholder)
   [9001] = { quest=38276, name=GARRISON_LOCATION_TOOLTIP.." "..BOSS, expansion=5, level=100 },
-  [9002] = { quest=47461, name="Lord Kazzak", expansion=6, level=110},          -- Lord Kazzak (13th Anniversary)
-  [9003] = { quest=47462, name="Azuregos", expansion=6, level=110},             -- Azuregos (13th Anniversary)
-  [9004] = { quest=47463, name="Dragon of Nightmare", expansion=6, level=110},  -- Dragon of Nightmare (13th Anniversary)
+  -- Old Vanilla Bosses during Anniversary Event
+  [9002] = { quest=47461, name=L["Lord Kazzak"], expansion=7, level=120},          -- Lord Kazzak
+  [9003] = { quest=47462, name=L["Azuregos"], expansion=7, level=120},             -- Azuregos
+  [9004] = { quest=47463, name=L["Dragon of Nightmare"], expansion=7, level=120},  -- Dragon of Nightmare
 }
