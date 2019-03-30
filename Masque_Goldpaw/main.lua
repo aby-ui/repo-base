@@ -1,12 +1,14 @@
-local addon,ns = ...
+local ADDON = ...
 
-local MSQ = LibStub("Masque", true)
-if not MSQ then return end
+local MSQ = LibStub and LibStub("Masque", true)
+if (not MSQ) then 
+	return 
+end
 
-local VERSION = "1.0.2"
+local VERSION = "1.0.4"
 local MASQUE_VERSION = 70200
 
-local path = "Interface\\AddOns\\" .. addon .. "\\textures\\"
+local path = [[Interface\AddOns\]] .. ADDON .. [[\media\]]
 local BLANK = [[Interface\ChatFrame\ChatFrameBackground]]
 
 -- Masque scaling 101:

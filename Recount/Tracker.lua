@@ -4,7 +4,7 @@ local AceLocale = LibStub("AceLocale-3.0")
 local L = AceLocale:GetLocale("Recount")
 local BossIDs = LibStub("LibBossIDs-1.0")
 
-local revision = tonumber(string.sub("$Revision: 1457 $", 12, -3))
+local revision = tonumber(string.sub("$Revision: 1476 $", 12, -3))
 if Recount.Version < revision then
 	Recount.Version = revision
 end
@@ -1099,7 +1099,7 @@ Recount.dstRetention = false
 local srcRetention = Recount.srcRetention
 local dstRetention = Recount.dstRetention
 
-function Recount:COMBAT_LOG_EVENT_UNFILTERED(timestamp, eventtype, hideCaster, srcGUID, srcName, srcFlags, srcRaidFlags, dstGUID, dstName, dstFlags, dstRaidFlags, ...)
+function Recount:COMBAT_LOG_EVENT_UNFILTERED()
 	Recount:CombatLogEvent(CombatLogGetCurrentEventInfo())
 end
 
