@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2170, "DBM-Party-BfA", 3, 1041)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 18026 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 18473 $"):sub(12, -3))
 mod:SetCreatureID(135475, 135470, 135472)
 mod:SetEncounterID(2140)
 mod:SetZone()
@@ -96,7 +96,7 @@ end
 
 function mod:SPELL_AURA_APPLIED(args)
 	local spellId = args.spellId
-	if spellId == 267256 and not self.vb.earthTotemActive then
+	if spellId == 267256 and not self.vb.earthTotemActive and not args:IsDestTypePlayer() then
 		specWarnEarthwall:Show(args.destName)
 		specWarnEarthwall:Play("dispelboss")
 		self.vb.bossName = args.destName

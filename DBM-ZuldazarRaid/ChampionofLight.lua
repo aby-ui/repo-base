@@ -7,7 +7,7 @@ end
 local mod	= DBM:NewMod(dungeonID, "DBM-ZuldazarRaid", 1, 1176)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 18433 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 18474 $"):sub(12, -3))
 mod:SetCreatureID(creatureID)
 mod:SetEncounterID(2265)
 mod:SetZone()
@@ -51,7 +51,7 @@ local specWarnCalltoArms				= mod:NewSpecialWarningSwitch(283662, "Tank", nil, 2
 --local yellDarkRevolationFades			= mod:NewIconFadesYell(273365)
 local specWarnPenance					= mod:NewSpecialWarningInterrupt(284578, "HasInterrupt", nil, nil, 1, 2)
 local specWarnHeal						= mod:NewSpecialWarningInterrupt(283628, "HasInterrupt", nil, nil, 1, 2)
-local specWarnDivineBurst				= mod:NewSpecialWarningInterrupt(283626, "HasInterrupt", nil, nil, 1, 2)
+local specWarnDivineBurst				= mod:NewSpecialWarningInterrupt(283626, false, nil, 2, 1, 2)
 local specWarnBlindingFaith				= mod:NewSpecialWarningLookAway(283650, nil, nil, nil, 3, 2)
 local specWarnGTFO						= mod:NewSpecialWarningGTFO(283582, nil, nil, nil, 1, 8)
 local specWarnPrayerfortheFallen		= mod:NewSpecialWarningSpell(287469, nil, nil, nil, 3, 2)--Mythic

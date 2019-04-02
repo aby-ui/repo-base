@@ -3,7 +3,7 @@ local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 
 local L = select(2, ...).L
 local width,height = 248,32
-local maxPortraitCount = 5
+local maxPortraitCount = 8
 local tinsert,SetPortraitToTexture,SetPortraitTextureFromCreatureDisplayID,GetItemQualityColor,MouseIsOver = table.insert,SetPortraitToTexture,SetPortraitTextureFromCreatureDisplayID,GetItemQualityColor,MouseIsOver
 local next = next
 
@@ -1000,10 +1000,6 @@ local methods = {
         MethodDungeonTools:Hide_DropIndicator()
         MethodDungeonTools.pullTooltip:Show()
     end,
-    ["SetTitle"] = function(self, title)
-        self.titletext = title;
-        self.title:SetText(title);
-    end,
     ["Disable"] = function(self)
         self.background:Hide();
         self.frame:Disable();
@@ -1057,29 +1053,42 @@ local methods = {
             end
             self.enemyPortraits[idx]:Show()
             self.enemyPortraits[idx].overlay:Show()
-            local quality = 0
-            if data.count>0 then quality = 1 end
-            if data.count>2 then quality = 2 end
-            if data.count>3 then quality = 3 end
-            if data.count>6 then quality = 4 end
-            if data.count>9 then quality = 5 end
-            local r, g, b, hex = GetItemQualityColor(quality)
-            if quality == 0 then r,g,b = 0,0,0 end
-            self.enemyPortraits[idx].overlay:SetVertexColor(r,g,b)
             self.enemyPortraits[idx].fontString:SetText("x"..data.quantity)
             self.enemyPortraits[idx].fontString:Show()
         end
     end,
-    ["ShowReapingIcon"] = function(self,show,currentPercent)
-        if show then
+    ["ShowReapingIcon"] = function(self,show,currentPercent,oldPercent)
+        --set percentage here
+        self.percentageFontString:Show()
+        local perc = string.format("%.1f%%",currentPercent*100)
+        if show  then
             self.reapingIcon:Show()
-            self.reapingIcon.fontString:SetText(math.floor(currentPercent/0.2))
-            self.reapingIcon.fontString:Show()
+            self.reapingIcon.overlay:Show()
+            perc = "|cFF00FF00"..perc
+
+            local currentReaps = math.floor(currentPercent/0.2)
+            local oldReaps = math.floor(oldPercent/0.2)
+            local reapings = math.min(5,currentReaps-oldReaps)
+
+            if reapings>1 then
+                self.multiReapingFontString:SetText(reapings.."x")
+                self.multiReapingFontString:Show()
+            else
+                self.multiReapingFontString:Hide()
+            end
         else
             self.reapingIcon:Hide()
-            self.reapingIcon.fontString:Hide()
+            self.reapingIcon.overlay:Hide()
+            self.multiReapingFontString:Hide()
+            perc = "|cFFFFFFFF"..perc
         end
-
+        local pullForces = MethodDungeonTools:CountForces(self.index,true)
+        if pullForces>0 then
+            self.percentageFontString:SetText(perc)
+            self.percentageFontString:Show()
+        else
+            self.percentageFontString:Hide()
+        end
     end,
     ["UpdateColor"] = function(self)
         local colorHex = MethodDungeonTools:RGBToHex(self.color.r,self.color.g,self.color.b)
@@ -1126,27 +1135,10 @@ local function Constructor()
     background:SetPoint("LEFT", button, "LEFT");
     background:SetPoint("RIGHT", button, "RIGHT");
 
-    local icon = button:CreateTexture(nil, "OVERLAY");
-    button.icon = icon;
-    icon:SetWidth(height);
-    icon:SetHeight(height);
-    icon:SetPoint("LEFT", button, "LEFT");
-
-
     local pullNumber = button:CreateFontString(nil,"OVERLAY", "GameFontNormal")
     pullNumber:SetHeight(14)
     pullNumber:SetJustifyH("CENTER");
     pullNumber:SetPoint("LEFT", button, "LEFT",5,0);
-
-    local title = button:CreateFontString(nil, "OVERLAY", "GameFontNormal");
-    button.title = title;
-    title:SetHeight(14);
-    title:SetJustifyH("LEFT");
-    title:SetPoint("TOP", button, "TOP", 0, -2);
-    title:SetPoint("LEFT", icon, "RIGHT", 2, 0);
-    title:SetPoint("RIGHT", button, "RIGHT");
-
-    button.description = {};
 
     button:SetScript("OnEnter", function()
 
@@ -1157,19 +1149,21 @@ local function Constructor()
 
     --enemy portraits
     local enemyPortraits = {}
+    local portraitSize = height-9
     for i=1,maxPortraitCount do
         enemyPortraits[i] = button:CreateTexture(nil, "BACKGROUND", nil, 2)
-        enemyPortraits[i]:SetSize(height-2,height-2)
+        enemyPortraits[i]:SetSize(portraitSize,portraitSize)
         if i == 1 then
-            enemyPortraits[i]:SetPoint("LEFT",icon,"RIGHT",-5,0)
+            enemyPortraits[i]:SetPoint("LEFT", button, "LEFT",portraitSize,0)
         else
             enemyPortraits[i]:SetPoint("LEFT",enemyPortraits[i-1],"RIGHT",-2,0)
         end
         enemyPortraits[i]:Hide()
         enemyPortraits[i].overlay = button:CreateTexture(nil, "BACKGROUND", nil, 1)
         enemyPortraits[i].overlay:SetTexture("Interface\\Addons\\MethodDungeonTools\\Textures\\Circle_White")
+        enemyPortraits[i].overlay:SetVertexColor(0.7,0.7,0.7)
         enemyPortraits[i].overlay:SetPoint("CENTER",enemyPortraits[i],"CENTER")
-        enemyPortraits[i].overlay:SetSize(height+2,height+2)
+        enemyPortraits[i].overlay:SetSize(portraitSize+3,portraitSize+3)
         enemyPortraits[i].overlay:Hide()
 
         enemyPortraits[i].fontString = button:CreateFontString(nil,"BACKGROUND",nil)
@@ -1185,30 +1179,46 @@ local function Constructor()
     --reaping icon
     local reapingIcon = button:CreateTexture(nil, "BACKGROUND", nil, 2)
     reapingIcon:SetSize(height-2,height-2)
-    reapingIcon:SetPoint("LEFT",enemyPortraits[maxPortraitCount],"RIGHT",height-2,0)
+    reapingIcon:SetPoint("RIGHT", button, "RIGHT",-10,0)
+    reapingIcon:SetAlpha(1)
     SetPortraitToTexture(reapingIcon,"Interface\\Icons\\ability_racial_embraceoftheloa_bwonsomdi")
     reapingIcon:Hide()
+    reapingIcon.overlay = button:CreateTexture(nil, "BACKGROUND", nil, 1)
+    reapingIcon.overlay:SetTexture("Interface\\Addons\\MethodDungeonTools\\Textures\\Circle_White")
+    reapingIcon.overlay:SetVertexColor(0.7,0.7,0.7)
+    reapingIcon.overlay:SetPoint("CENTER",reapingIcon,"CENTER")
+    reapingIcon.overlay:SetSize(height+1,height+1)
+    reapingIcon.overlay:Hide()
 
-    reapingIcon.fontString = button:CreateFontString(nil,"BACKGROUND",nil)
-    reapingIcon.fontString:SetFontObject("GameFontNormal")
-    reapingIcon.fontString:SetFont(reapingIcon.fontString:GetFont(),20,"OUTLINE")
-    reapingIcon.fontString:SetTextColor(1, 1, 1, 1);
-    reapingIcon.fontString:SetWidth(25)
-    reapingIcon.fontString:SetHeight(10)
-    reapingIcon.fontString:SetPoint("CENTER", reapingIcon, "CENTER", 0, 0)
-    reapingIcon.fontString:Hide()
+    --pull percentage
+    local percentageFontString = button:CreateFontString(nil,"BACKGROUND",nil)
+    percentageFontString:SetFont("Fonts\\FRIZQT__.TTF", 12,"OUTLINE")
+    percentageFontString:SetTextColor(1, 1, 1, 1);
+    percentageFontString:SetWidth(50)
+    percentageFontString:SetHeight(10)
+    percentageFontString:SetPoint("RIGHT", button, "RIGHT",2,0)
+    percentageFontString:Hide()
+
+    --multiple reaping wave indicator
+    local multiReapingFontString = button:CreateFontString(nil,"BACKGROUND",nil)
+    multiReapingFontString:SetFont("Fonts\\FRIZQT__.TTF", 10,"OUTLINE")
+    multiReapingFontString:SetTextColor(1, 1, 1, 1);
+    multiReapingFontString:SetWidth(50)
+    multiReapingFontString:SetHeight(10)
+    multiReapingFontString:SetPoint("RIGHT", button, "RIGHT",1,-12)
+    multiReapingFontString:Hide()
 
     --custom colors
     local color = {}
 
     local widget = {
         frame = button,
-        title = title,
-        icon = icon,
         pullNumber = pullNumber,
         background = background,
         enemyPortraits = enemyPortraits,
         reapingIcon = reapingIcon,
+        percentageFontString = percentageFontString,
+        multiReapingFontString = multiReapingFontString,
         color = color,
         type = Type
     }

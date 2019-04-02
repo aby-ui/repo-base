@@ -2757,7 +2757,7 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 			local line_onenter = function (self)
 				if (self.questID) then
 					self.numObjectives = 10
-					--self.UpdateTooltip = TaskPOI_OnEnter
+					self.UpdateTooltip = TaskPOI_OnEnter
 					TaskPOI_OnEnter (self)
 					self:SetBackdropColor (.5, .50, .50, 0.75)
 				end
@@ -3509,7 +3509,7 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 			mapFrameAnchorButton:SetPoint ("left", timeLeftButton, "right", 2, 0)
 			setup_button (mapFrameAnchorButton, "center")
 			mapFrameAnchorButton.Text:SetTextColor (.8, .8, .8, .65)
-
+			
 			function mapFrameAnchorButton:UpdateButton()
 				if (WorldQuestTracker.db.profile.map_frame_anchor == "center") then
 					mapFrameAnchorButton.Text:SetText (L["S_MAPFRAME_ALIGN_LEFT"])

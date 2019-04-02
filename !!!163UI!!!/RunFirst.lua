@@ -3,14 +3,6 @@ local _, U1 = ...
 U1PlayerName = UnitName("player")
 U1PlayerClass = select(2, UnitClass("player"))
 
-hooksecurefunc("TaskPOI_OnEnter", function(self) self.UpdateTooltip = nil end)
-if WorldMap_AddQuestTimeToTooltip then
-    hooksecurefunc("WorldMap_AddQuestTimeToTooltip", function()
-        local o = GameTooltip:GetOwner()
-        if o and o.OnTabEnter and not o._abyui then o._abyui = 1 hooksecurefunc(o, "OnTabEnter", function(self) self.UpdateTooltip = nil end) end
-    end)
-end
-
 -- 一些常用的变量会被莫名其妙重置的, 必须在VARIABLES_LOADED里设置
 local f01 = CreateFrame("Frame")
 f01:RegisterEvent("VARIABLES_LOADED")

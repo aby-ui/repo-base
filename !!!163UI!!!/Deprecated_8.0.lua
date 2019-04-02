@@ -257,3 +257,12 @@ end
 8.1.5
 ---------------------------------------------------------------]]
 WorldMapTooltip = WorldMapTooltip or GameTooltip
+--[[
+hooksecurefunc("TaskPOI_OnEnter", function(self) self.UpdateTooltip = nil end)
+if WorldMap_AddQuestTimeToTooltip then
+    hooksecurefunc("WorldMap_AddQuestTimeToTooltip", function()
+        local o = GameTooltip:GetOwner()
+        if o and o.OnTabEnter and not o._abyui then o._abyui = 1 hooksecurefunc(o, "OnTabEnter", function(self) self.UpdateTooltip = nil end) end
+    end)
+end
+--]]

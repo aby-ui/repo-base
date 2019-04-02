@@ -149,14 +149,6 @@ function MDTDungeonEnemyMixin:OnClick(button, down)
             MethodDungeonTools:DungeonEnemies_UpdateSelected(MethodDungeonTools:GetCurrentPull())
             MethodDungeonTools:UpdateProgressbar()
             if false then
-
-                local pull = MethodDungeonTools:GetCurrentPreset().value.pulls[MethodDungeonTools:GetCurrentPull()]
-                local enemyCount = MethodDungeonTools.U.count_if(pull, function(entry)
-                    return #entry > 0
-                end)
-
-                --print("Enemy Count", enemyCount)
-
                 if not self.selected then
                     -- Add new Pull, if the current one isn't empty
                     local pull = MethodDungeonTools:GetCurrentPreset().value.pulls[MethodDungeonTools:GetCurrentPull()]
@@ -166,7 +158,6 @@ function MDTDungeonEnemyMixin:OnClick(button, down)
 
                     if enemyCount > 0 then
                         MethodDungeonTools:PresetsAddPull(MethodDungeonTools:GetCurrentPull() + 1)
-                        MethodDungeonTools:ReloadPullButtons()
                         MethodDungeonTools:SetSelectionToPull(MethodDungeonTools:GetCurrentPull() + 1)
                         MethodDungeonTools:ScrollToPull(MethodDungeonTools:GetCurrentPull())
                     end
@@ -187,20 +178,16 @@ function MDTDungeonEnemyMixin:OnClick(button, down)
 
                         if enemyCount == 0 then
                             MethodDungeonTools:DeletePull(pullIdx)
-                            MethodDungeonTools:ReloadPullButtons()
-
                             if pullIdx > #MethodDungeonTools:GetCurrentPreset().value.pulls then
                                 MethodDungeonTools:SetSelectionToPull(#MethodDungeonTools:GetCurrentPreset().value.pulls)
                             end
                         end
-
                         MethodDungeonTools:UpdateProgressbar()
                     end
                 end
             end
-
         end
-
+        MethodDungeonTools:ReloadPullButtons()
 
     elseif button == "RightButton" then
         if db.devMode then
@@ -769,4 +756,27 @@ function MethodDungeonTools:GetEnemyForces(npcId)
             end
         end
     end
+end
+
+---returns how many of each reaping type are in the specified pull
+local reapingTypeCount = {}
+function MethodDungeonTools:GetReapingTypesForPull(pullIdx)
+    preset = MethodDungeonTools:GetCurrentPreset()
+    db = db or MethodDungeonTools:GetDB()
+    table.wipe(reapingTypeCount)
+
+    for enemyIdx,clones in pairs(preset.value.pulls[pullIdx]) do
+        if tonumber(enemyIdx) then
+            local reapingType = MethodDungeonTools.dungeonEnemies[db.currentDungeonIdx][enemyIdx].reaping
+            if reapingType then
+                for _,cloneIdx in pairs(clones) do
+                    if MethodDungeonTools:IsCloneIncluded(enemyIdx,cloneIdx) then
+                        reapingTypeCount[reapingType] = reapingTypeCount[reapingType] and reapingTypeCount[reapingType]+1 or 1
+                    end
+                end
+            end
+        end
+    end
+
+    return reapingTypeCount[148716] or 0,reapingTypeCount[148893] or 0,reapingTypeCount[148894] or 0
 end
