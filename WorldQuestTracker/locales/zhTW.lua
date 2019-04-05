@@ -93,9 +93,12 @@ L["S_MAPBAR_SUMMARYMENU_MOREINFO"] = "左鍵：更多資訊"
 L["S_MAPBAR_SUMMARYMENU_NOATTENTION"] = "其他角色沒有追蹤2小時以內的任務!"
 L["S_MAPBAR_SUMMARYMENU_REQUIREATTENTION"] = "請注意"
 L["S_MAPBAR_SUMMARYMENU_TODAYREWARDS"] = "今天的獎勵"
-L["S_MAPFRAME_ALIGN_CENTER"] = "中間"
-L["S_MAPFRAME_ALIGN_DESC"] = "|cFF22FF22點一下|r切換地圖視窗對齊到畫面的中間或左側。"
-L["S_MAPFRAME_ALIGN_LEFT"] = "左側"
+--[[Translation missing --]]
+--[[ L["S_OPTIONS_ACCESSIBILITY"] = ""--]] 
+--[[Translation missing --]]
+--[[ L["S_OPTIONS_ACCESSIBILITY_EXTRATRACKERMARK"] = ""--]] 
+--[[Translation missing --]]
+--[[ L["S_OPTIONS_ACCESSIBILITY_SHOWBOUNTYRING"] = ""--]] 
 L["S_OPTIONS_ANIMATIONS"] = "顯示動畫效果"
 L["S_OPTIONS_MAPFRAME_ALIGN"] = "地圖視窗對齊中間"
 L["S_OPTIONS_MAPFRAME_ERROR_SCALING_DISABLED"] = "尚未變更任何數值，必須先 '啟用縮放地圖視窗大小'。"
@@ -148,7 +151,6 @@ L["S_SUMMARYPANEL_LIFETIMESTATISTICS_CHARACTER"] = "角色上線統計"
 L["S_SUMMARYPANEL_OTHERCHARACTERS"] = "其他角色"
 L["S_TUTORIAL_AMOUNT"] = "表示可獲得的數量"
 L["S_TUTORIAL_CLICKTOTRACK"] = "點一下追蹤任務。"
-L["S_TUTORIAL_MAPALIGN"] = "點一下這裡選擇世界地圖的對齊位置。"
 L["S_TUTORIAL_PARTY"] = "組隊時，藍色星星表示所有隊伍成員都有這些任務!"
 L["S_TUTORIAL_TIMELEFT"] = "表示剩餘時間 (+4小時, +90分鐘, +30分鐘, 少於30分鐘)"
 L["S_TUTORIAL_WORLDBUTTONS"] = [=[點一下這裡在三種列表類型中循環切換。

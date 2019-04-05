@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2330, "DBM-ZuldazarRaid", 2, 1176)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 18433 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 18477 $"):sub(12, -3))
 mod:SetCreatureID(144747, 144767, 144963, 144941)
 mod:SetEncounterID(2268)
 --mod:DisableESCombatDetection()
@@ -305,7 +305,7 @@ function mod:SPELL_AURA_APPLIED(args)
 				yellMarkofPrey:Yell()
 			end
 			if self.Options.NPAuraOnFixate then
-				DBM.Nameplate:Show(true, args.sourceGUID, spellId)
+				DBM.Nameplate:Show(true, args.sourceGUID, spellId, nil, nil, nil, true, {0.75, 0, 0, 0.75})
 			end
 		end
 		if not raptorsSeen[args.sourceGUID] then
@@ -383,7 +383,7 @@ function mod:SPELL_AURA_REMOVED(args)
 		end
 	elseif spellId == 282209 then
 		if self.Options.NPAuraOnFixate then
-			DBM.Nameplate:Hide(true, args.sourceGUID, spellId)
+			DBM.Nameplate:Hide(true, args.destGUID, spellId)
 		end
 	elseif spellId == 282834 then
 		if args:IsPlayer() then

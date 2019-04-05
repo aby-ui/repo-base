@@ -1732,10 +1732,6 @@ if (WorldMapFrame.BorderFrame.MaximizeMinimizeFrame.MaximizeButton) then
 	WorldMapFrame.BorderFrame.MaximizeMinimizeFrame.MaximizeButton:HookScript ("OnClick", function()
 		WorldQuestTracker.UpdateZoneSummaryFrame()
 		WorldQuestTracker.UpdateStatusBarAnchors()
-		
-		if (WorldQuestTracker.MapAnchorButton) then
-			WorldQuestTracker.MapAnchorButton:UpdateButton()
-		end
 	end)
 end
 

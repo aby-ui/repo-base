@@ -1,4 +1,4 @@
-local VERSION = 85
+local VERSION = 86
 
 --[[
 Special icons for rares, pvp or pet battle quests in list
@@ -257,6 +257,11 @@ Rares update
 Added lfg eye for main assault quests
 Added colors for questmarks on map for emissary quests (Options > Enable reward on map icons > Enable emissary quests colors)
 Added zones names for next invasion timer
+
+Added Calligraphy game helper (horde only)
+Fixed invasion timer list for some connected realms
+Fixed lua errors when you put azerite neck into the bank
+Fixed naga quest reward
 ]]
 
 local GlobalAddonName, WQLdb = ...
@@ -362,6 +367,7 @@ local LOCALE =
 		expulsom = "Дистиллиум",
 		expulsomReplace = "Заменить награды аксессуаров на Дистиллиум",
 		enableBountyColors = "Включить цвета заданий посланников",
+		calligraphyGameHelper = "Включить Calligraphy Helper",
 	} or
 	locale == "deDE" and {    --by Sunflow72
 		gear = "Ausrüstung",
@@ -422,6 +428,7 @@ local LOCALE =
 		expulsom = "Expulsom",
 		expulsomReplace = "Ersetzt Schmuckstücke durch Expulsom",
 		enableBountyColors = "Enable bounty quests colors",
+		calligraphyGameHelper = "Enable Calligraphy Helper",
 	} or
 	locale == "frFR" and {
 		gear = "Équipement",
@@ -482,6 +489,7 @@ local LOCALE =
 		expulsom = "Expulsom",
 		expulsomReplace = "Replace trinkets rewards with Expulsom",
 		enableBountyColors = "Enable bounty quests colors",
+		calligraphyGameHelper = "Enable Calligraphy Helper",
 	} or
 	(locale == "esES" or locale == "esMX") and {
 		gear = "Equipo",
@@ -542,6 +550,7 @@ local LOCALE =
 		expulsom = "Expulsom",
 		expulsomReplace = "Replace trinkets rewards with Expulsom",
 		enableBountyColors = "Enable bounty quests colors",
+		calligraphyGameHelper = "Enable Calligraphy Helper",
 	} or	
 	locale == "itIT" and {
 		gear = "Equipaggiamento",
@@ -602,6 +611,7 @@ local LOCALE =
 		expulsom = "Expulsom",
 		expulsomReplace = "Replace trinkets rewards with Expulsom",
 		enableBountyColors = "Enable bounty quests colors",
+		calligraphyGameHelper = "Enable Calligraphy Helper",
 	} or
 	locale == "ptBR" and {
 		gear = "Equipamento",
@@ -662,6 +672,7 @@ local LOCALE =
 		expulsom = "Expulsom",
 		expulsomReplace = "Replace trinkets rewards with Expulsom",
 		enableBountyColors = "Enable bounty quests colors",
+		calligraphyGameHelper = "Enable Calligraphy Helper",
 	} or
 	locale == "koKR" and {
 		gear = "장비",
@@ -722,6 +733,7 @@ local LOCALE =
 		expulsom = "Expulsom",
 		expulsomReplace = "Replace trinkets rewards with Expulsom",
 		enableBountyColors = "Enable bounty quests colors",
+		calligraphyGameHelper = "Enable Calligraphy Helper",
 	} or
 	locale == "zhCN" and {	--by sprider00
 		gear = "装备",
@@ -782,6 +794,7 @@ local LOCALE =
 		expulsom = "驱灵金",
 		expulsomReplace = "把饰品奖励替换成驱灵金",
 		enableBountyColors = "启用悬赏任务颜色",
+		calligraphyGameHelper = "启用书法游戏助手",
 	} or
 	locale == "zhTW" and {	--by sprider00
 		gear = "裝備",
@@ -842,6 +855,7 @@ local LOCALE =
 		expulsom = "Expulsom",
 		expulsomReplace = "Replace trinkets rewards with Expulsom",
 		enableBountyColors = "Enable bounty quests colors",
+		calligraphyGameHelper = "Enable Calligraphy Helper",
 	} or 
 	{
 		gear = "Gear",
@@ -902,6 +916,7 @@ local LOCALE =
 		expulsom = "Expulsom",
 		expulsomReplace = "Replace trinkets rewards with Expulsom",
 		enableBountyColors = "Enable emissary quests colors",
+		calligraphyGameHelper = "Enable Calligraphy Helper",
 	}
 
 local filters = {
@@ -3578,6 +3593,14 @@ do
 		checkable = true,
 		shownFunc = function() return not WorldQuestList:IsLegionZone() or not WorldQuestList.optionsDropDown:IsVisible() end,
 	}
+	list[#list+1] = {
+		text = LOCALE.calligraphyGameHelper,
+		func = function()
+			VWQL.DisableCalligraphy = not VWQL.DisableCalligraphy
+		end,
+		checkable = true,
+		shownFunc = function() return not WorldQuestList:IsLegionZone() or not WorldQuestList.optionsDropDown:IsVisible() end,
+	}
 	
 	list[#list+1] = {
 		text = LOCALE.ignoreList,
@@ -3622,6 +3645,8 @@ do
 				self.List[i].checkState = not VWQL.DisableRewardIcons
 			elseif self.List[i].text == LOCALE.expulsomReplace then
 				self.List[i].checkState = VWQL.ExpulsomReplace
+			elseif self.List[i].text == LOCALE.calligraphyGameHelper then
+				self.List[i].checkState = not VWQL.DisableCalligraphy
 			end
 		end		
 		anchorSubMenu[1].checkState = not VWQL.Anchor
@@ -3694,6 +3719,35 @@ WorldQuestList.modeSwitcherCheck.s:SetMinMaxValues(0,2)
 WorldQuestList.modeSwitcherCheck.s:SetValue(0)
 WorldQuestList.modeSwitcherCheck.s:SetValueStep(1)
 WorldQuestList.modeSwitcherCheck.s:SetObeyStepOnDrag(true)
+
+WorldQuestList.modeSwitcherCheck.s.dd = CreateFrame("Frame",nil,WorldQuestList.modeSwitcherCheck.s)
+WorldQuestList.modeSwitcherCheck.s.dd:SetPoint("CENTER")
+WorldQuestList.modeSwitcherCheck.s.dd:SetSize(1,1)
+WorldQuestList.modeSwitcherCheck.s.dd.Width = 120
+WorldQuestList.modeSwitcherCheck.s.dd.isButton = true
+WorldQuestList.modeSwitcherCheck.s.dd.SetValueFunc = function(self,arg1)
+	VWQL[charKey].TreasureModeType = arg1
+	ELib.ScrollDropDown.Close()
+	WQL_AreaPOIDataProviderMixin:RefreshAllData()
+	WorldQuestList_Update()	
+end
+WorldQuestList.modeSwitcherCheck.s.dd.List = {
+	{text = "Treasures/Rares",	func = WorldQuestList.modeSwitcherCheck.s.dd.SetValueFunc,	arg1 = nil,	radio = true	},
+	{text = "Treasures",		func = WorldQuestList.modeSwitcherCheck.s.dd.SetValueFunc,	arg1 = 2,	radio = true	},
+	{text = "Rares",		func = WorldQuestList.modeSwitcherCheck.s.dd.SetValueFunc,	arg1 = 3,	radio = true	},
+	{text = "Professions",		func = WorldQuestList.modeSwitcherCheck.s.dd.SetValueFunc,	arg1 = 4,	radio = true	},
+	{text = CLOSE,			func = function() ELib.ScrollDropDown.Close() end,		padding = 16,	},
+}
+
+WorldQuestList.modeSwitcherCheck.s:SetScript("OnMouseDown",function(self, button)
+	if button == "RightButton" and VWQL[charKey].TreasureMode then
+		for i=1,#self.dd.List-1 do
+			self.dd.List[i].checkState = VWQL[charKey].TreasureModeType == self.dd.List[i].arg1
+		end
+		ELib.ScrollDropDown.ClickButton(self.dd)
+	end
+end)
+
 
 WorldQuestList.modeSwitcherCheck.s:SetScript("OnValueChanged",function(self)
 	if self.isSetup then
@@ -4152,6 +4206,8 @@ function WQL_AreaPOIDataProviderMixin:RefreshAllData()
 	end
 	
 	local mapID = self:GetMap():GetMapID()
+
+	local treasureModeType = VWQL[charKey].TreasureModeType
 	
 	local treasureData = WorldQuestList.TreasureData[mapID]
 	if treasureData then
@@ -4159,7 +4215,13 @@ function WQL_AreaPOIDataProviderMixin:RefreshAllData()
 			local x,y,name,tType,reward,note,questID,specialFunc = 
 				treasureData[i][1],treasureData[i][2],treasureData[i][3],treasureData[i][4],treasureData[i][5],treasureData[i][6],treasureData[i][7],treasureData[i][8]
 			
-			if (not specialFunc or specialFunc()) then
+			if (not specialFunc or specialFunc()) and (
+				(not treasureModeType and (tType == 1 or tType == 2 or tType == 3))
+				or (treasureModeType == 2 and (tType == 3))
+				or (treasureModeType == 3 and (tType == 1 or tType == 2))
+				or (treasureModeType == 4 and (tType == 4))
+			)
+			then
 				local pin = self:GetMap():AcquirePin(self:GetPinTemplate(), {
 					areaPoiID = 0,
 					name = name,
@@ -4195,6 +4257,9 @@ function WQL_AreaPOIDataProviderMixin:RefreshAllData()
 				if tType == 2 or tType == 1 then
 					pin.Overlay:SetAtlas("worldquest-questmarker-questbang")
 					pin.Overlay:SetSize(3,8)
+				elseif tType == 4 then
+					pin.Overlay:SetTexture("133778")
+					pin.Overlay:SetSize(12,12)
 				else
 					pin.Overlay:SetTexture()
 				end
@@ -4202,6 +4267,9 @@ function WQL_AreaPOIDataProviderMixin:RefreshAllData()
 				if tType == 3 then
 					pin:SetSize(17,17)
 					pin.Texture:SetSize(20,20)
+				elseif tType == 4 then
+					pin:SetSize(24,24)
+					pin.Texture:SetSize(21,21)
 				else
 					pin:SetSize(15,15)
 					pin.Texture:SetSize(13,13)
@@ -4511,8 +4579,9 @@ local function WorldQuestList_Treasure_Update()
 	local currMapID = GetCurrentMapAreaID()
 	
 	local result = {}
-	
+
 	local treasureData = WorldQuestList.TreasureData[currMapID]
+	local treasureModeType = VWQL[charKey].TreasureModeType
 	if treasureData then
 		for i=1,#treasureData do
 			local rewardText, rewardColor, rewardLink
@@ -4520,7 +4589,12 @@ local function WorldQuestList_Treasure_Update()
 			local x,y,name,tType,reward,note,questID,specialFunc = 
 				treasureData[i][1],treasureData[i][2],treasureData[i][3],treasureData[i][4],treasureData[i][5],treasureData[i][6],treasureData[i][7],treasureData[i][8]
 			
-			if (not questID or not IsQuestFlaggedCompleted(questID)) and (not specialFunc or specialFunc()) then
+			if (not questID or not IsQuestFlaggedCompleted(questID)) and (not specialFunc or specialFunc()) and (
+				(not treasureModeType and (tType == 1 or tType == 2 or tType == 3))
+				or (treasureModeType == 2 and (tType == 3))
+				or (treasureModeType == 3 and (tType == 1 or tType == 2))
+				or (treasureModeType == 4 and (tType == 4))
+			) then
 				local rewardsTable
 				if type(reward) == 'table' then 
 					rewardsTable = reward
@@ -4755,16 +4829,19 @@ do
 					lastCheck = currTime
 				end
 				
-				if azeriteItemLocation and C_AzeriteItem.IsAzeriteItem(azeriteItemLocation) then		
-					local xp, totalLevelXP = C_AzeriteItem.GetAzeriteItemXPInfo(azeriteItemLocation)
-					--local currentLevel = C_AzeriteItem.GetPowerLevel(azeriteItemLocation)
-					--local xpToNextLevel = totalLevelXP - xp
-					
-					if totalLevelXP and totalLevelXP ~= 0 then
-						if VWQL.AzeriteFormat == 20 then
-							return format("%d (%.1f%%)", azerite,azerite / totalLevelXP * 100)
-						else
-							return format("%.1f%%", azerite / totalLevelXP * 100)
+				if azeriteItemLocation then		
+					local isEx, isAzeriteItem = pcall(C_AzeriteItem.IsAzeriteItem,azeriteItemLocation)	--C_AzeriteItem.IsAzeriteItem spams errors if you put neck into the bank
+					if isEx and isAzeriteItem then		
+						local xp, totalLevelXP = C_AzeriteItem.GetAzeriteItemXPInfo(azeriteItemLocation)
+						--local currentLevel = C_AzeriteItem.GetPowerLevel(azeriteItemLocation)
+						--local xpToNextLevel = totalLevelXP - xp
+						
+						if totalLevelXP and totalLevelXP ~= 0 then
+							if VWQL.AzeriteFormat == 20 then
+								return format("%d (%.1f%%)", azerite,azerite / totalLevelXP * 100)
+							else
+								return format("%.1f%%", azerite / totalLevelXP * 100)
+							end
 						end
 					end
 				end
@@ -5074,7 +5151,7 @@ function WorldQuestList_Update(preMapID,forceUpdate)
 	WorldQuestList.currentMapID = mapAreaID
 	
 	--if time() > 1534550400 and time() < 1543968000 then	--beetween 18.08.18 (second week, same AK as first) and 05.12.18 (AK level 17, max for now,30.07.2018)
-	if time() > 1547942400 and time() < 1553817600 then	--beetween 23.01.19 and 27.03.19 (max for now,26.12.2018)
+	if time() > 1547942400 and time() < 1556280000 then	--beetween 23.01.19 and 24.03.19 (max for now,04.04.2019)
 		O.nextResearch = WorldQuestList:GetNextResetTime(WorldQuestList:GetCurrentRegion())
 	end
 	
@@ -5463,41 +5540,42 @@ function WorldQuestList_Update(preMapID,forceUpdate)
 					if numQuestRewards > 0 then
 						local name,icon,numItems,quality,_,itemID = GetQuestLogRewardInfo(1,questID)
 						if name then
-							rewardType = 50
+							reward = (rewardType ~= 0 and reward..", " or "").."|T"..icon..":0|t "..(numItems and numItems > 1 and numItems.."x " or "")..name
 							rewardItem = true
-							reward = "|T"..icon..":0|t "..(numItems and numItems > 1 and numItems.."x " or "")..name
+							rewardType = rewardType == 0 and 50 or rewardType
 						end
 						local itemIlvl
 						
-
-						if quality and quality >= LE.LE_ITEM_QUALITY_COMMON and LE.BAG_ITEM_QUALITY_COLORS[quality] then
-							rewardColor = LE.BAG_ITEM_QUALITY_COLORS[quality]
-							
-							if quality == 1 or nameicon == -4 then
-								rewardColor = nil
+						if rewardType == 50 then
+							if quality and quality >= LE.LE_ITEM_QUALITY_COMMON and LE.BAG_ITEM_QUALITY_COLORS[quality] then
+								rewardColor = LE.BAG_ITEM_QUALITY_COLORS[quality]
 								
+								if quality == 1 or nameicon == -4 then
+									rewardColor = nil
+									
+									if bit.band(filters[6][2],ActiveFilter) == 0 then 
+										isValidLine = 0 
+									end
+								end							
+								hasRewardFiltered = true
+							elseif quality and quality == 0 then
+								rewardColor = LE.BAG_ITEM_QUALITY_COLORS[1]
+								rewardType = 61
+								hasRewardFiltered = true
 								if bit.band(filters[6][2],ActiveFilter) == 0 then 
 									isValidLine = 0 
 								end
-							end							
-							hasRewardFiltered = true
-						elseif quality and quality == 0 then
-							rewardColor = LE.BAG_ITEM_QUALITY_COLORS[1]
-							rewardType = 61
-							hasRewardFiltered = true
-							if bit.band(filters[6][2],ActiveFilter) == 0 then 
-								isValidLine = 0 
 							end
-						end
-						
-						if icon == 1387622 then		--Rank 3 recipe
-							rewardColor = WorldQuestList.ColorBlueLight
-						elseif icon == 1387621 then		--Rank 2 recipe
-							rewardColor = WorldQuestList.ColorBlueLight
-						elseif icon == 1392955 then		--no-rank recipe
-							rewardColor = WorldQuestList.ColorBlueLight
-						end
-						
+							
+							if icon == 1387622 then		--Rank 3 recipe
+								rewardColor = WorldQuestList.ColorBlueLight
+							elseif icon == 1387621 then		--Rank 2 recipe
+								rewardColor = WorldQuestList.ColorBlueLight
+							elseif icon == 1392955 then		--no-rank recipe
+								rewardColor = WorldQuestList.ColorBlueLight
+							end
+						end						
+
 						local isBoeItem = nil
 						
 						inspectScantip:SetQuestLogItem("reward", 1, questID)
@@ -5507,6 +5585,8 @@ function WorldQuestList_Update(preMapID,forceUpdate)
 							local text = tooltipLine:GetText()
 							if text and text:find(ITEM_LEVEL) then
 								local ilvl = text:match(ITEM_LEVEL)
+								--reward = "|T"..icon..":0|t "..ilvl.." "..name
+								reward = reward:gsub(name,ilvl.." "..name)
 								reward = "|T"..icon..":0|t "..ilvl --163ui .." "..name
 								ilvl = tonumber( ilvl:gsub("%+",""),nil )
 								if ilvl then
@@ -5520,6 +5600,7 @@ function WorldQuestList_Update(preMapID,forceUpdate)
 							end 
 						end
 						inspectScantip:ClearLines()
+
 						
 						if itemID == 124124 then
 							rewardType = 35
@@ -6190,7 +6271,9 @@ WorldMapButton_HookShowHide:SetScript('OnShow',function()
 		UpdateDB_Sch:Cancel()
 	end
 	if VWQL[charKey].HideMap then
-		WorldQuestList:Hide()
+		--if not InCombatLockdown() then
+			WorldQuestList:Hide()
+		--end
 		return
 	end
 	if WorldMapFrame:IsMaximized() and (VWQL.Anchor == 1 or not VWQL.Anchor) and (WorldMapFrame:GetWidth() / GetScreenWidth()) > 0.75 then

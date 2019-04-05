@@ -1,5 +1,5 @@
 local _, addon = ...
-local P = addon.core:NewModule("Paragon", "AceEvent-3.0")
+local P = addon.core:NewModule("Paragon", "AceEvent-3.0", "AceTimer-3.0")
 local thisToon = UnitName("player") .. " - " .. GetRealmName()
 
 -- Lua functions
@@ -48,6 +48,9 @@ function P:UPDATE_FACTION()
       tinsert(t.Paragon, faction)
     end
   end
+  addon.debug("Paragon faction update: %d", #t.Paragon)
 end
 
-hooksecurefunc("GetQuestReward", function() P:UPDATE_FACTION() end)
+hooksecurefunc("GetQuestReward", function()
+  P:ScheduleTimer("UPDATE_FACTION", 1)
+end)

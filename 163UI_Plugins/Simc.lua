@@ -36,7 +36,7 @@ Simulationcraft.RoleTable = {
   -- Monk
   [268] = 'tank',
   [269] = 'attack',
-  [270] = 'hybrid',
+  [270] = 'attack',
   -- Paladin
   [65] = 'attack',
   [66] = 'tank',

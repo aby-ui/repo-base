@@ -598,13 +598,13 @@ end
 -- convert server time -> local time: subtract this value
 function addon:GetServerOffset()
   local serverDate = C_DateAndTime.GetCurrentCalendarTime() -- 1-based starts on Sun
-  local serverDay, serverWeekday, serverMonth, serverMinute, serverHour, serverYear = serverDate.monthDay, serverDate.weekday, serverDate.month, serverDate.minute, serverDate.hour, serverDate.year
+  local serverWeekday, serverMinute, serverHour = serverDate.weekday, serverDate.minute, serverDate.hour
   -- #211: date("%w") is 0-based starts on Sun
-  local localDay = tonumber(date("%w")) + 1
+  local localWeekday = tonumber(date("%w")) + 1
   local localHour, localMinute = tonumber(date("%H")), tonumber(date("%M"))
-  if serverDay == (localDay + 1)%7 then -- server is a day ahead
+  if serverWeekday == (localWeekday + 1)%7 then -- server is a day ahead
     serverHour = serverHour + 24
-  elseif localDay == (serverDay + 1)%7 then -- local is a day ahead
+  elseif localWeekday == (serverWeekday + 1)%7 then -- local is a day ahead
     localHour = localHour + 24
   end
   local server = serverHour + serverMinute / 60
@@ -2487,7 +2487,7 @@ end
 function core:OnInitialize()
   local versionString = GetAddOnMetadata(addonName, "version")
   --[===[@debug@
-  if versionString == "8.1.0-15-gb305a19" then
+  if versionString == "8.1.1" then
     versionString = "Dev"
   end
   --@end-debug@]===]
@@ -3155,14 +3155,6 @@ end
 local function UpdateTooltip(self,elap)
   if not tooltip or not tooltip:IsShown() then return end
   if addon.firstupdate then
-    -- ticket 155: fix QTip backdrop which somehow gets corrupted sometimes, no idea why
-    -- issue #248 ElvUI >= 11.05 will drop the backdrop of GameTooltip on World Map
-    local backdrop = GameTooltip:GetBackdrop()
-    if backdrop then
-      tooltip:SetBackdrop(backdrop)
-      tooltip:SetBackdropColor(GameTooltip:GetBackdropColor())
-      tooltip:SetBackdropBorderColor(GameTooltip:GetBackdropBorderColor())
-    end
     addon:SkinFrame(tooltip, "SavedInstancesTooltip")
     addon.firstupdate = false
   end

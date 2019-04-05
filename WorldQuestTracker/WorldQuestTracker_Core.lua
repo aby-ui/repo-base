@@ -1141,10 +1141,6 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 					
 					if (not WorldMapFrame.isMaximized) then
 						WorldQuestTracker.UpdateWorldMapFrameAnchor (true)
-						WorldQuestTracker.MapAnchorButton:UpdateButton()
-						WorldQuestTracker.MapAnchorButton:Show()
-					else
-						WorldQuestTracker.MapAnchorButton:Hide()
 					end
 					
 					ReloadUI()
@@ -2624,7 +2620,7 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 			otherCharacters_Texture:SetPoint ("topleft", SummaryFrameUp, "topright", -220, -10)
 			otherCharacters_Texture:SetAlpha (.7)			
 
-			local accountLifeTime = DF:CreateLabel (SummaryFrameUp, L["S_SUMMARYPANEL_LIFETIMESTATISTICS_ACCOUNT"] .. ":", TitleTemplate)
+			local accountLifeTime = DF:CreateLabel (SummaryFrameUp, L["S_SUMMARYPANEL_LIFETIMESTATISTICS_ACCOUNT"] .. " (BfA):", TitleTemplate)
 			accountLifeTime:SetPoint ("left", accountLifeTime_Texture, "right", 2, 1)
 			SummaryFrameUp.AccountLifeTime_Gold = DF:CreateLabel (SummaryFrameUp, L["S_QUESTTYPE_GOLD"] .. ": %s")
 			SummaryFrameUp.AccountLifeTime_Resources = DF:CreateLabel (SummaryFrameUp, L["S_QUESTTYPE_RESOURCE"] .. ": %s")
@@ -2635,7 +2631,7 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 			SummaryFrameUp.AccountLifeTime_APower:SetPoint (x, -60)
 			SummaryFrameUp.AccountLifeTime_QCompleted:SetPoint (x, -75)
 			
-			local characterLifeTime = DF:CreateLabel (SummaryFrameUp, L["S_SUMMARYPANEL_LIFETIMESTATISTICS_CHARACTER"] .. ":", TitleTemplate)
+			local characterLifeTime = DF:CreateLabel (SummaryFrameUp, L["S_SUMMARYPANEL_LIFETIMESTATISTICS_CHARACTER"] .. " (BfA):", TitleTemplate)
 			characterLifeTime:SetPoint ("left", characterLifeTime_Texture, "right", 2, 1)
 			SummaryFrameUp.CharacterLifeTime_Gold = DF:CreateLabel (SummaryFrameUp, L["S_QUESTTYPE_GOLD"] .. ": %s")
 			SummaryFrameUp.CharacterLifeTime_Resources = DF:CreateLabel (SummaryFrameUp, L["S_QUESTTYPE_RESOURCE"] .. ": %s")
@@ -3503,65 +3499,23 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 			GameCooltip:CoolTipInject (timeLeftButton)			
 
 			---------------------------------------------------------
-			-- ~map ~anchor ~�nchor
-			
-			local mapFrameAnchorButton = CreateFrame ("button", "WorldQuestTrackerTimeLeftButton", WorldQuestTracker.DoubleTapFrame)
-			mapFrameAnchorButton:SetPoint ("left", timeLeftButton, "right", 2, 0)
-			setup_button (mapFrameAnchorButton, "center")
-			mapFrameAnchorButton.Text:SetTextColor (.8, .8, .8, .65)
-			
-			function mapFrameAnchorButton:UpdateButton()
-				if (WorldQuestTracker.db.profile.map_frame_anchor == "center") then
-					mapFrameAnchorButton.Text:SetText (L["S_MAPFRAME_ALIGN_LEFT"])
-					
-				elseif (WorldQuestTracker.db.profile.map_frame_anchor == "left") then
-					mapFrameAnchorButton.Text:SetText (L["S_MAPFRAME_ALIGN_CENTER"])
-				end
-				
-				if (not WorldMapFrame.isMaximized) then
-					WorldQuestTracker.MapAnchorButton:Show()
-				else
-					WorldQuestTracker.MapAnchorButton:Hide()
-				end
-			end
-			
-			mapFrameAnchorButton:SetScript ("OnClick", function()
-				if (WorldQuestTracker.db.profile.map_frame_anchor == "center") then
-					WorldQuestTracker.db.profile.map_frame_anchor = "left"
-					
-				elseif (WorldQuestTracker.db.profile.map_frame_anchor == "left") then
-					WorldQuestTracker.db.profile.map_frame_anchor = "center"
-				end
-				
-				mapFrameAnchorButton:UpdateButton()
-				WorldQuestTracker.UpdateWorldMapFrameAnchor (true)
-				
-				ReloadUI()
-			end)
-
+			--statistics button
+			local statisticsButton = CreateFrame ("button", "WorldQuestTrackerStatisticsButton", WorldQuestTracker.DoubleTapFrame)
+			statisticsButton:SetPoint ("left", timeLeftButton, "right", 2, 0)
+			setup_button (statisticsButton, "Statistics")
+			--statisticsButton.Text:SetTextColor (.8, .8, .8, .65)
 			if (GameCooltip.InjectQuickTooltip) then
 				--testing a way to add tooltips faster to regular frames
-				GameCooltip:InjectQuickTooltip (mapFrameAnchorButton, L["S_MAPFRAME_ALIGN_DESC"])
-			else
-				mapFrameAnchorButton:SetScript ("OnEnter", function()
-					GameCooltip:Preset(2)
-					GameCooltip:SetHost (mapFrameAnchorButton)
-					GameCooltip:AddLine (L["S_MAPFRAME_ALIGN_DESC"])
-					GameCooltip:Show()
-				end)
-				mapFrameAnchorButton:SetScript ("OnLeave", function()
-					GameCooltip:Hide()
-				end)
+				GameCooltip:InjectQuickTooltip (statisticsButton, "Click to show reward statistics from world quests, timeline and quests available on your other characters.")
 			end
 			
-			--window icon
-			mapFrameAnchorButton.Icon = DF:CreateImage (mapFrameAnchorButton, [[Interface\BUTTONS\UI-SquareButton-Disabled]])
-			mapFrameAnchorButton.Icon:SetPoint ("right", mapFrameAnchorButton.Text, "left", -2, 0)
-			mapFrameAnchorButton.Icon:SetScale (.6)
-			mapFrameAnchorButton.Icon:SetAlpha (.7)
-			mapFrameAnchorButton.Text:SetPoint ("center", 12, 0)
+			statisticsButton:HookScript ("OnEnter", button_onenter)
+			statisticsButton:HookScript ("OnLeave", button_onleave)
+			statisticsButton:SetScript ("OnClick", function() SummaryFrame.ShowAnimation:Play() end)
 			
-			WorldQuestTracker.MapAnchorButton = mapFrameAnchorButton
+			---------------------------------------------------------
+			-- ~map ~anchor ~�nchor
+			-- WorldQuestTracker.MapAnchorButton - need to remove all references of this button
 			
 			---------------------------------------------------------
 			
@@ -4189,15 +4143,15 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 						GameCooltip:AddIcon ([[Interface\BUTTONS\UI-AutoCastableOverlay]], 2, 1, 16, 16, .4, .6, .4, .6)
 					end					
 				
-				-- ~accessibility --todo: add this to be language localized
-				GameCooltip:AddLine ("Accessibility")
+				-- ~accessibility
+				GameCooltip:AddLine (L["S_OPTIONS_ACCESSIBILITY"])
 				GameCooltip:AddIcon ([[Interface\PVPFrame\PVP-Banner-Emblem-1]], 1, 1, IconSize, IconSize)
 					
-				GameCooltip:AddLine ("Extra Tracker Mark", "", 2)
+				GameCooltip:AddLine (L["S_OPTIONS_ACCESSIBILITY_EXTRATRACKERMARK"], "", 2)
 				add_checkmark_icon (WorldQuestTracker.db.profile.accessibility.extra_tracking_indicator)
 				GameCooltip:AddMenu (2, options_on_click, "accessibility", "extra_tracking_indicator", not WorldQuestTracker.db.profile.accessibility.extra_tracking_indicator)
 				
-				GameCooltip:AddLine ("Show Bounty Ring", "", 2)
+				GameCooltip:AddLine (L["S_OPTIONS_ACCESSIBILITY_SHOWBOUNTYRING"], "", 2)
 				add_checkmark_icon (WorldQuestTracker.db.profile.accessibility.use_bounty_ring)
 				GameCooltip:AddMenu (2, options_on_click, "accessibility", "use_bounty_ring", not WorldQuestTracker.db.profile.accessibility.use_bounty_ring)
 				
@@ -4838,8 +4792,8 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 
             do
                 if DEV_VERSION_STR then DEV_VERSION_STR:SetAlpha(0) end
-                WorldQuestTracker.MapAnchorButton:Hide()
-                WorldQuestTracker.MapAnchorButton.Show = noop
+                --WorldQuestTracker.MapAnchorButton:Hide()
+                --WorldQuestTracker.MapAnchorButton.Show = noop
             end
 		end
 	
@@ -4935,15 +4889,10 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 	end
 	
 	-- ~frame anchor
-	if (WorldQuestTracker.MapAnchorButton) then
-		if (not WorldMapFrame.isMaximized) then
-			WorldQuestTracker.UpdateWorldMapFrameAnchor()
-			WorldQuestTracker.MapAnchorButton:UpdateButton()
-			WorldQuestTracker.MapAnchorButton:Show()
-		else
-			WorldQuestTracker.MapAnchorButton:Hide()
-		end
+	if (not WorldMapFrame.isMaximized) then
+		WorldQuestTracker.UpdateWorldMapFrameAnchor()
 	end
+
 	
 	-- ~frame scale
 	if (WorldQuestTracker.db.profile.map_frame_scale_enabled) then

@@ -85,6 +85,8 @@ local ShowWatchLevel = newCheckbox("WatchLevel", L["watchlevel"], "watchlevel")
 local RelicToggle = newCheckbox("RelicToggle",  L["relictoggle"], "relictoggle")
 -- 'Stop Auto Select Reward if ArtifcatPower' CheckBox
 local ArtifactPowerToggle = newCheckbox("ArtifactPowerToggle",  L["artifactpowertoggle"], "artifactpowertoggle")
+-- RevivePets
+local ReviveBattlePet = newCheckbox("ReviveBattlePet", L["ReviveBattlePetLabel"], "reviveBattlePet")
 
 -- Auto toggle key
 local ToggleKeyConst = {NONE_KEY, ALT_KEY, CTRL_KEY, SHIFT_KEY}
@@ -116,6 +118,7 @@ ShowRewardText:SetPoint("TOPLEFT", EquipReward, "BOTTOMLEFT", 0, -10)
 ToDarkMoon:SetPoint("TOPLEFT", ShowRewardText, "BOTTOMLEFT", 0, -10)
 DarkMoonCannon:SetPoint("TOPLEFT", ToDarkMoon, "BOTTOMLEFT", 0, -10)
 DarkMoonAutoStart:SetPoint("TOPLEFT", DarkMoonCannon, "BOTTOMLEFT", 0, -10)
+ReviveBattlePet:SetPoint("TOPLEFT", CompleteOnly, "BOTTOMLEFT", 0, -30)
 Debug:SetPoint("TOPLEFT", ResetButton, "BOTTOMLEFT", 0, -10)
 ToggleKeyDropDown:SetPoint("TOPLEFT", DarkMoonAutoStart, "BOTTOMLEFT", -15, -22)
 ShowQuestLevel:SetPoint("TOPLEFT", ToggleKeyDropDown, "BOTTOMLEFT", 16, -10)

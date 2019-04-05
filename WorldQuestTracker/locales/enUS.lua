@@ -94,9 +94,9 @@ L["S_MAPBAR_SUMMARYMENU_NOATTENTION"] = [=[No quest being tracked on your other
 characters has less than 2 hours left!]=]
 L["S_MAPBAR_SUMMARYMENU_REQUIREATTENTION"] = "Require Attention"
 L["S_MAPBAR_SUMMARYMENU_TODAYREWARDS"] = "Today's Rewards"
-L["S_MAPFRAME_ALIGN_CENTER"] = "center"
-L["S_MAPFRAME_ALIGN_DESC"] = "|cFF22FF22Click|r to toggle the map window alignment from left to center, center to left of your screen."
-L["S_MAPFRAME_ALIGN_LEFT"] = "left"
+L["S_OPTIONS_ACCESSIBILITY"] = "Accessibility"
+L["S_OPTIONS_ACCESSIBILITY_EXTRATRACKERMARK"] = "Extra Tracker Mark"
+L["S_OPTIONS_ACCESSIBILITY_SHOWBOUNTYRING"] = "Show Bounty Ring"
 L["S_OPTIONS_ANIMATIONS"] = "Do Animations"
 L["S_OPTIONS_MAPFRAME_ALIGN"] = "Map Window Centralized"
 L["S_OPTIONS_MAPFRAME_ERROR_SCALING_DISABLED"] = "You need to enable 'Map Window Scale' first, no value has changed."
@@ -149,7 +149,6 @@ L["S_SUMMARYPANEL_LIFETIMESTATISTICS_CHARACTER"] = "Character Life Time Statisti
 L["S_SUMMARYPANEL_OTHERCHARACTERS"] = "Other Characters"
 L["S_TUTORIAL_AMOUNT"] = "indicates the amount to receive"
 L["S_TUTORIAL_CLICKTOTRACK"] = "Click to track a quest."
-L["S_TUTORIAL_MAPALIGN"] = "Click here to select the world map alignment."
 L["S_TUTORIAL_PARTY"] = "When in party, a blue star is shown on quests that all party members have!"
 L["S_TUTORIAL_TIMELEFT"] = "indicates the time left (+4 hours, +90 minutes, +30 minutes, less than 30 minutes)"
 L["S_TUTORIAL_WORLDBUTTONS"] = [=[Click here to cycle among three types of summaries:

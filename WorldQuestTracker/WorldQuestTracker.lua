@@ -871,20 +871,9 @@ local tutorial_three = function()
 end
 
 local tutorial_four = function()
-
-	local alert = CreateFrame ("frame", "WorldQuestTrackerTutorialAlert4", worldFramePOIs, "MicroButtonAlertTemplate")
-	alert:SetFrameLevel (302)
-	alert.label = L["S_TUTORIAL_MAPALIGN"]
-	alert.Text:SetSpacing (4)
-	MicroButtonAlert_SetText (alert, alert.label)
-	alert:SetPoint ("bottom", WorldQuestTracker.MapAnchorButton, "top", 0, 32)
-	alert.Arrow:ClearAllPoints()
-	alert.Arrow:SetPoint ("topleft", alert, "bottomleft", 65, 0)
-	alert.CloseButton:HookScript ("OnClick", hook_AlertCloseButton)
-	alert:Show()
-	
+	--tutorial four was the tutorial for the centralized button, which has been removed
+	--it just increases the tutorial ID here
 	WorldQuestTracker.db.profile.TutorialPopupID = WorldQuestTracker.db.profile.TutorialPopupID + 1
-
 end
 
 function WorldQuestTracker.ShowTutorialAlert()

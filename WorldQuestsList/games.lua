@@ -627,3 +627,423 @@ do
 		end
 	end)
 end
+
+
+-----------------------------------------
+-- Calligraphy helper
+-----------------------------------------
+local Calligraphy = {}
+
+function Calligraphy:Load()
+	local frame = Calligraphy.mainframe
+	if frame then
+		frame:Show()
+		frame.isEnabled = true
+		return
+	end
+
+	local FRAME_SIZE = 200
+	local VECTOR_DEPTH = 0.75
+	local VIEW_DISTANCE = 15
+	local VIEW_DISTANCE2 = VIEW_DISTANCE * 2
+	local LINES_COLORS = {
+		[1] = {r = 0.6, g = 1, b = 0.6, a = 1},
+		[2] = {r = 1, g= .5, b = 0, a = 1},
+		[3] = {r = 1, g = 0.6, b = 0.6, a = 1},
+		[4] = {r = 0.2, g = 0.6, b = 0.85, a = 1},
+	}
+
+	frame = CreateFrame("Frame",nil,UIParent)
+	Calligraphy.mainframe = frame
+	frame:SetSize(FRAME_SIZE,FRAME_SIZE)
+	frame:EnableMouse(true)
+	frame:SetMovable(true)
+	frame:SetClampedToScreen(true)
+	frame:RegisterForDrag("LeftButton")
+	frame:SetScript("OnDragStart", function(self)
+		if self:IsMovable() then
+			self:StartMoving()
+		end
+	end)
+	frame:SetScript("OnDragStop", function(self)
+		self:StopMovingOrSizing()
+		VWQL.CalligraphyLeft = self:GetLeft()
+		VWQL.CalligraphyTop = self:GetTop()
+	end)
+	if VWQL and VWQL.CalligraphyLeft and VWQL.CalligraphyTop then
+		frame:SetPoint("TOPLEFT",UIParent,"BOTTOMLEFT",VWQL.CalligraphyLeft,VWQL.CalligraphyTop)
+	else
+		frame:SetPoint("CENTER",-200,0)
+	end
+
+	function Calligraphy:Close()
+		frame:Hide()
+		frame.isEnabled = false
+	end
+		
+	frame.isEnabled = true
+
+	frame.close = CreateFrame("Button",nil,frame)
+	frame.close:SetPoint("TOPRIGHT",0,-2)
+	frame.close:SetSize(14,14)
+	frame.close.text = frame.close:CreateFontString(nil,"ARTWORK","GameFontWhite")
+	frame.close.text:SetPoint("CENTER")
+	frame.close.text:SetText("X")
+	frame.close:SetScript("OnClick",function(self)
+		self:GetParent():Hide()
+	end)
+	frame.close:SetScript("OnEnter",function(self)
+		self.text:SetTextColor(1,.4,.7,1)
+	end)
+	frame.close:SetScript("OnLeave",function(self)
+		self.text:SetTextColor(1,1,1,1)
+	end)
+	
+	frame.back = frame:CreateTexture(nil, "BACKGROUND")
+	frame.back:SetColorTexture(.7,.7,.7,.4)
+	frame.back:SetAllPoints()
+	
+	frame.player = frame:CreateTexture(nil, "OVERLAY")
+	frame.player:SetSize(32,32)
+	frame.player:SetPoint("CENTER",0,-FRAME_SIZE/6)
+	frame.player:SetTexture("Interface\\MINIMAP\\MinimapArrow")
+	frame.player:SetAlpha(.8)
+
+	frame.playerfaceline = frame:CreateLine(nil, "OVERLAY", nil, -1)
+	frame.playerfaceline:SetColorTexture(1, 1, 1, .3)
+	frame.playerfaceline:SetThickness(2)
+	frame.playerfaceline:SetStartPoint("CENTER",0,-FRAME_SIZE/6)
+	frame.playerfaceline:SetEndPoint("TOP",0,0)
+
+	ELib:Shadow(frame,15,20)
+	
+	frame.lines = {}
+	local SetLine,RotateCoordPair
+	do
+		local cos, sin = math.cos, math.sin
+		function RotateCoordPair(x,y,ox,oy,a,asp)
+			y=y/asp
+			oy=oy/asp
+			return ox + (x-ox)*cos(a) - (y-oy)*sin(a),(oy + (y-oy)*cos(a) + (x-ox)*sin(a))*asp
+		end
+		function SetLine(i,fX,fY,tX,tY,c)
+			local line = frame.lines[i]
+			if not line then
+				line = frame:CreateLine(nil, "BORDER", nil, 5)
+				frame.lines[i] = line
+				line:SetColorTexture(0.6, 1, 0.6, 1)
+				line:SetThickness(5)
+			end
+			line:SetStartPoint("BOTTOMLEFT",frame,fX,fY)
+			line:SetEndPoint("BOTTOMLEFT",frame,tX,tY)
+			line:SetAlpha(1)
+
+			c = c or 1
+			local color_list = LINES_COLORS[c]
+			line:SetColorTexture(color_list.r, color_list.g, color_list.b, color_list.a)
+			
+			if c == 2 then
+				line:SetDrawLayer("BORDER", 6)
+			elseif c == 3 then
+				line:SetDrawLayer("BORDER", 5)
+			else
+				line:SetDrawLayer("BORDER", 4)
+			end
+		end
+	end
+			
+	local function GetContactPosition(x1,x2,x3,x4,y1,y2,y3,y4)
+		local d = (x1-x2)*(y4-y3) - (y1-y2)*(x4-x3)
+		local da= (x1-x3)*(y4-y3) - (y1-y3)*(x4-x3)
+		local db= (x1-x2)*(y1-y3) - (y1-y2)*(x1-x3)
+		
+		local ta,tb=da/d,db/d
+		
+		if ta >= 0 and ta <= 1 and tb >=0 and tb <= 1 then
+			local x=x1 + ta *(x2 - x1)
+			local y=y1 + ta *(y2 - y1)
+			
+			return x,y
+		end
+	end
+	
+	local function IsDotIn(pX,pY,point1x,point2x,point3x,point4x,point1y,point2y,point3y,point4y)
+		local D1 = (pX - point1x) * (point2y - point1y) - (pY - point1y) * (point2x - point1x)	--1,2
+		local D2 = (pX - point2x) * (point3y - point2y) - (pY - point2y) * (point3x - point2x)	--2,3
+		local D3 = (pX - point3x) * (point4y - point3y) - (pY - point3y) * (point4x - point3x)	--3,4
+		local D4 = (pX - point4x) * (point1y - point4y) - (pY - point4y) * (point1x - point4x)	--4,1
+
+		return (D1 < 0 and D2 < 0 and D3 < 0 and D4 < 0) or (D1 > 0 and D2 > 0 and D3 > 0 and D4 > 0)
+	end
+	
+	local function dist(x1,y1,x2,y2)
+		local dX = (x1 - x2)
+		local dY = (y1 - y2)
+		return sqrt(dX * dX + dY * dY)
+	end
+	local c_dist = dist
+	local function dist_dot(x0,y0,x1,y1,x2,y2)
+		local r1 = dist(x0,y0,x1,y1)
+		local r2 = dist(x0,y0,x2,y2)
+		local r12 = dist(x1,y1,x2,y2)
+		
+  		local a = y2 - y1
+  		local b = x1 - x2
+  		local c = - x1 * (y2 - y1) + y1 * (x2 - x1)
+  		
+  		local t = dist(a,b,0,0)
+  		if c > 0 then
+  			a = -a
+  			b = -b
+  			c = -c
+  		end
+  		return (a*x0+b*y0+c)/t
+	end
+
+	local LinesSetup = {}
+	function Calligraphy:UpdateLinesSetup(zone)
+		if zone == 1 then	--Zuldazar
+			LinesSetup = {
+				{y1=-1936.8,x1=1222.4,y2=-1924.5,x2=1238.2},
+				{y1=-1944.1,x1=1240.5,y2=-1924.5,x2=1238.2},
+				{y1=-1936.8,x1=1222.4,y2=-1944.1,x2=1240.5},
+			}
+		elseif zone == 2 then	--Nazmir
+			--/dump sqrt((1360.6-1378.3)^2 + (2008.3-1998.8)^2)
+			--1360.6;2008.3
+			--1378.3;1998.8
+			LinesSetup = {
+				{x1=1379.45,y1=2003.55,x2=1378.1102540378,y2=2008.55},
+				{x1=1378.1102540378,y1=2008.55,x2=1374.45,y2=2012.2102540378},
+				{x1=1374.45,y1=2012.2102540378,x2=1369.45,y2=2013.55},
+				{x1=1369.45,y1=2013.55,x2=1364.45,y2=2012.2102540378},
+				{x1=1364.45,y1=2012.2102540378,x2=1360.7897459622,y2=2008.55},
+				{x1=1360.7897459622,y1=2008.55,x2=1359.45,y2=2003.55},
+				{x1=1359.45,y1=2003.55,x2=1360.7897459622,y2=1998.55},
+				{x1=1360.7897459622,y1=1998.55,x2=1364.45,y2=1994.8897459622},
+				{x1=1364.45,y1=1994.8897459622,x2=1369.45,y2=1993.55},
+				{x1=1369.45,y1=1993.55,x2=1374.45,y2=1994.8897459622},
+				{x1=1374.45,y1=1994.8897459622,x2=1378.1102540378,y2=1998.55},
+				{x1=1378.1102540378,y1=1998.55,x2=1379.45,y2=2003.55},
+			}
+		elseif zone == 3 then	--Voldun
+			LinesSetup = {
+				{y1=2037.8,x1=4793.3,y2=2036.3,x2=4808.0},
+				{y1=2036.3,x1=4808.0,y2=2021.4,x2=4806.6},
+				{y1=2021.4,x1=4806.6,y2=2023.2,x2=4791.7},
+				{y1=2037.8,x1=4793.3,y2=2023.2,x2=4791.7},
+			}
+		elseif zone == 10 then	--Test circle
+			--[[
+				local X,Y,R,N=-1390,836,5,10 for i=0,N-1 do local x,y=X+R*cos(360/N*i),Y+R*sin(360/N*i)print(i+1,x,y)JJBox("{x="..x..",y="..y.."},") end
+
+				local X,Y,R,N=1369.45,2003.55,10,12 for i=0,N-1 do local x1,y1,x2,y2=X+R*cos(360/N*i),Y+R*sin(360/N*i),X+R*cos(360/N*(i+1)),Y+R*sin(360/N*(i+1))print(i+1,x1,y1,x2,y2)JJBox("{x1="..x1..",y1="..y1..",x2="..x2..",y2="..y2.."},") end
+			]]
+			LinesSetup = {
+				{x1=-1380,y1=-836,x2=-1381.3397459622,y2=-831},
+				{x1=-1381.3397459622,y1=-831,x2=-1385,y2=-827.33974596216},
+				{x1=-1385,y1=-827.33974596216,x2=-1390,y2=-826},
+				{x1=-1390,y1=-826,x2=-1395,y2=-827.33974596216},
+				{x1=-1395,y1=-827.33974596216,x2=-1398.6602540378,y2=-831},
+				{x1=-1398.6602540378,y1=-831,x2=-1400,y2=-836},
+				{x1=-1400,y1=-836,x2=-1398.6602540378,y2=-841},
+				{x1=-1398.6602540378,y1=-841,x2=-1395,y2=-844.66025403784},
+				{x1=-1395,y1=-844.66025403784,x2=-1390,y2=-846},
+				{x1=-1390,y1=-846,x2=-1385,y2=-844.66025403784},
+				{x1=-1385,y1=-844.66025403784,x2=-1381.3397459622,y2=-841},
+				{x1=-1381.3397459622,y1=-841,x2=-1380,y2=-836},
+			}
+		end
+	end
+	
+	local trottle = 0
+	frame:SetScript("OnUpdate",function(self,elapsed)
+		trottle = trottle + elapsed
+		if trottle > 0.02 then
+			trottle = 0
+			local playerY,playerX = UnitPosition('player')
+			if not playerY then
+				return
+			end
+			
+			local tLx,tLy,tRx,tRy,bRx,bRy,bLx,bLy = playerX + VIEW_DISTANCE,playerY + VIEW_DISTANCE * 1.33,playerX - VIEW_DISTANCE,playerY + VIEW_DISTANCE * 1.33,playerX - VIEW_DISTANCE, playerY - VIEW_DISTANCE * 0.67,playerX + VIEW_DISTANCE,playerY - VIEW_DISTANCE * 0.67
+			
+			local angle = -GetPlayerFacing()
+			tLx,tLy = RotateCoordPair(tLx,tLy,playerX,playerY,angle,1)
+			tRx,tRy = RotateCoordPair(tRx,tRy,playerX,playerY,angle,1)
+			bRx,bRy = RotateCoordPair(bRx,bRy,playerX,playerY,angle,1)
+			bLx,bLy = RotateCoordPair(bLx,bLy,playerX,playerY,angle,1)
+			
+			
+			for i=1,#self.lines do
+				frame.lines[i]:SetAlpha(0)
+			end
+			
+			local count = 0
+			local countText = 0
+			local onPath = false
+			
+
+			for _,linePositions in pairs(LinesSetup) do
+				local sourceY,sourceX = linePositions.y1,linePositions.x1
+				local targetY,targetX = linePositions.y2,linePositions.x2
+				if not (sourceX == targetX and sourceY == targetY) and sourceX and targetX then
+					local dX = (sourceX - targetX)
+					local dY = (sourceY - targetY)
+					local dist = sqrt(dX * dX + dY * dY)
+					
+					local t_cos = (targetX-sourceX) / dist
+					local t_sin = (targetY-sourceY) / dist
+					
+					local radiusX,radiusY = VECTOR_DEPTH * t_sin, VECTOR_DEPTH * t_cos
+					
+					local point1x = sourceX + radiusX
+					local point1y = sourceY - radiusY
+					
+					local point2x = sourceX - radiusX
+					local point2y = sourceY + radiusY
+					
+					local point3x = targetX + radiusX
+					local point3y = targetY - radiusY
+					
+					local point4x = targetX - radiusX
+					local point4y = targetY + radiusY
+	
+				
+					local xS,yS,xE,yE = sourceX,sourceY,targetX,targetY
+					
+					local x1,y1,x2,y2 = nil
+	
+					local cx1,cy1 = GetContactPosition(xS,xE,tLx,tRx,yS,yE,tLy,tRy)
+					local cx2,cy2 = GetContactPosition(xS,xE,tRx,bRx,yS,yE,tRy,bRy)
+					local cx3,cy3 = GetContactPosition(xS,xE,bLx,bRx,yS,yE,bLy,bRy)
+					local cx4,cy4 = GetContactPosition(xS,xE,tLx,bLx,yS,yE,tLy,bLy)
+					
+					if cx1 then
+						x1,y1 = cx1,cy1
+					end
+					if cx2 then
+						if x1 then
+							x2,y2 = cx2,cy2
+						else
+							x1,y1 = cx2,cy2
+						end
+					end
+					if cx3 then
+						if x1 then
+							x2,y2 = cx3,cy3
+						else
+							x1,y1 = cx3,cy3
+						end
+					end
+					if cx4 then
+						if x1 then
+							x2,y2 = cx4,cy4
+						else
+							x1,y1 = cx4,cy4
+						end
+					end			
+								
+					if IsDotIn(xS,yS,tLx,tRx,bRx,bLx,tLy,tRy,bRy,bLy) then
+						if not x1 then
+							x1,y1 = xS,yS
+						else
+							x2,y2 = xS,yS
+						end
+					end
+					
+					if IsDotIn(xE,yE,tLx,tRx,bRx,bLx,tLy,tRy,bRy,bLy) then
+						if not x1 then
+							x1,y1 = xE,yE
+						else
+							x2,y2 = xE,yE
+						end
+					end
+					
+					local isOnLine = IsDotIn(playerX,playerY,point1x,point2x,point4x,point3x,point1y,point2y,point4y,point3y)
+						or (c_dist(playerX,playerY,sourceX,sourceY) < VECTOR_DEPTH)
+						or (c_dist(playerX,playerY,targetX,targetY) < VECTOR_DEPTH)
+					if isOnLine then
+						onPath = true
+					end
+
+					if x1 and x2 then
+						count = count + 1
+	
+						local aX = abs(dist_dot( x1,y1,tLx,tLy,bLx,bLy ) / VIEW_DISTANCE2 * FRAME_SIZE)
+						local aY = abs(dist_dot( x1,y1,bLx,bLy,bRx,bRy ) / VIEW_DISTANCE2 * FRAME_SIZE)
+						local bX = abs(dist_dot( x2,y2,tLx,tLy,bLx,bLy ) / VIEW_DISTANCE2 * FRAME_SIZE)
+						local bY = abs(dist_dot( x2,y2,bLx,bLy,bRx,bRy ) / VIEW_DISTANCE2 * FRAME_SIZE)
+					
+						if aX > bX then aX,bX=bX,aX aY,bY=bY,aY end
+	
+						SetLine(count,aX,aY,bX,bY,isOnLine and 3 or 1)
+					end
+				end
+				if not onPath then
+					self.back:SetColorTexture(1,.7,.7,.4)
+				else
+					self.back:SetColorTexture(.7,.7,.7,.4)
+				end
+			end
+
+		end
+	end)
+end
+
+local CalligraphyHelperNpcIDToZone = {
+	["151526"] = 1,	--Zuldazar
+	["151524"] = 2,	--Nazmir
+	["151525"] = 3,	--Voldun
+}
+local CalligraphyHelperQuestIDs = {
+	[55344] = true,	--Zuldazar
+	[55342] = true,	--Nazmir
+	[55343] = true,	--Voldun
+	--[55264] = true,	--Dru
+	--[55340] = true,	--Tir
+	--[55341] = true,	--Storm
+}
+local CalligraphyHelper = CreateFrame("Frame")
+CalligraphyHelper:SetScript("OnEvent",function(self,event,arg1,arg2)
+	if event == 'QUEST_ACCEPTED' then
+		if arg2 and CalligraphyHelperQuestIDs[arg2] then
+			if VWQL and VWQL.DisableCalligraphy then
+				return
+			end
+			print("World Quests List: Calligraphy helper loaded")
+			self:RegisterEvent("GOSSIP_CLOSED")
+		end
+	elseif event == 'QUEST_REMOVED' then
+		if arg1 and CalligraphyHelperQuestIDs[arg1] then
+			self:UnregisterEvent("GOSSIP_CLOSED")
+			Calligraphy:Close()
+		end
+	elseif event == "PLAYER_ENTERING_WORLD" then
+		self:UnregisterEvent("PLAYER_ENTERING_WORLD")
+		if VWQL and VWQL.DisableCalligraphy then
+			return
+		end
+		for i=1,GetNumQuestLogEntries() do
+			local title, _, _, _, _, _, _, questID = GetQuestLogTitle(i)
+			if questID and CalligraphyHelperQuestIDs[questID] then
+				self:RegisterEvent("GOSSIP_CLOSED")
+				break
+			end
+		end
+	elseif event == 'GOSSIP_CLOSED' then
+		local guid = UnitGUID'target'
+		if guid then
+			local type,_,serverID,instanceID,zoneUID,id,spawnID = strsplit("-", guid)
+			if id and CalligraphyHelperNpcIDToZone[id] then
+				Calligraphy:Load()
+				Calligraphy:UpdateLinesSetup(CalligraphyHelperNpcIDToZone[id])
+			end
+		end
+		
+	end
+
+end)
+CalligraphyHelper:RegisterEvent('QUEST_ACCEPTED')
+CalligraphyHelper:RegisterEvent('QUEST_REMOVED')
+CalligraphyHelper:RegisterEvent('PLAYER_ENTERING_WORLD')

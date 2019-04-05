@@ -111,9 +111,12 @@ L["S_MAPBAR_SUMMARYMENU_NOATTENTION"] = [=[其他角色正在的追踪任务
 剩余时间没有小于两小时！]=]
 L["S_MAPBAR_SUMMARYMENU_REQUIREATTENTION"] = "需要注意"
 L["S_MAPBAR_SUMMARYMENU_TODAYREWARDS"] = "今日奖励"
-L["S_MAPFRAME_ALIGN_CENTER"] = "中"
-L["S_MAPFRAME_ALIGN_DESC"] = "|cFF22FF22点击|r切换地图窗口对齐从左到中，屏幕中到左。"
-L["S_MAPFRAME_ALIGN_LEFT"] = "左"
+--[[Translation missing --]]
+--[[ L["S_OPTIONS_ACCESSIBILITY"] = ""--]] 
+--[[Translation missing --]]
+--[[ L["S_OPTIONS_ACCESSIBILITY_EXTRATRACKERMARK"] = ""--]] 
+--[[Translation missing --]]
+--[[ L["S_OPTIONS_ACCESSIBILITY_SHOWBOUNTYRING"] = ""--]] 
 L["S_OPTIONS_ANIMATIONS"] = "进行动画"
 L["S_OPTIONS_MAPFRAME_ALIGN"] = "地图窗口置于中部"
 L["S_OPTIONS_MAPFRAME_ERROR_SCALING_DISABLED"] = "需要首先启用“地图窗口缩放”，没有数值被更改。"
@@ -166,7 +169,6 @@ L["S_SUMMARYPANEL_LIFETIMESTATISTICS_CHARACTER"] = "角色在线时间统计"
 L["S_SUMMARYPANEL_OTHERCHARACTERS"] = "其他角色"
 L["S_TUTORIAL_AMOUNT"] = "显示接收量"
 L["S_TUTORIAL_CLICKTOTRACK"] = "点击追踪任务。"
-L["S_TUTORIAL_MAPALIGN"] = "点击这里选择世界地图对齐。"
 L["S_TUTORIAL_PARTY"] = "队伍中时，蓝星显示此全部队友有此任务！"
 L["S_TUTORIAL_TIMELEFT"] = "显示剩余时间（大于4小时，大于90分钟，大于30分钟，小于30分钟）"
 L["S_TUTORIAL_WORLDBUTTONS"] = [=[点击这里可在三种类型的摘要中循环：
