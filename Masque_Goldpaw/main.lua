@@ -5,8 +5,8 @@ if (not MSQ) then
 	return 
 end
 
-local VERSION = "1.0.4"
-local MASQUE_VERSION = 70200
+local VERSION = GetAddOnMetadata(ADDON, "Version")
+local MASQUE_VERSION = 80100
 
 local path = [[Interface\AddOns\]] .. ADDON .. [[\media\]]
 local BLANK = [[Interface\ChatFrame\ChatFrameBackground]]
