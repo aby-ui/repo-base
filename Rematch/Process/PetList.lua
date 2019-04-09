@@ -46,6 +46,8 @@ function roster:UpdatePetList()
 	end
 	roster.petListNeedsUpdated = nil
 
+	local oldPetListSize = #roster.petList
+
 	-- start with a clean slate
 	wipe(roster.petList)
 
@@ -119,11 +121,17 @@ function roster:UpdatePetList()
 		end
 	end
 
+	-- if the number of pets listed has changed, then do an extra PetPanel update
+	if #roster.petList ~= oldPetListSize then
+		rematch.PetPanel:Update() -- this fixes the potential scroll offset bug when pet list changes length
+	end
+
 	-- whew! all done. now the cleanup
 	rematch:WipeTempTables()
 	if roster:GetFilter("Script","code") then
 		rematch:CleanupScriptEnvironment()
 	end
+
 end
 
 -- run the petID through each active filter and return false at first failure

@@ -1017,7 +1017,9 @@ CalligraphyHelper:SetScript("OnEvent",function(self,event,arg1,arg2)
 	elseif event == 'QUEST_REMOVED' then
 		if arg1 and CalligraphyHelperQuestIDs[arg1] then
 			self:UnregisterEvent("GOSSIP_CLOSED")
-			Calligraphy:Close()
+			if Calligraphy.Close then
+				Calligraphy:Close()
+			end
 		end
 	elseif event == "PLAYER_ENTERING_WORLD" then
 		self:UnregisterEvent("PLAYER_ENTERING_WORLD")

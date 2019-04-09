@@ -1,4 +1,4 @@
-local VERSION = 86
+local VERSION = 87
 
 --[[
 Special icons for rares, pvp or pet battle quests in list
@@ -262,6 +262,9 @@ Added Calligraphy game helper (horde only)
 Fixed invasion timer list for some connected realms
 Fixed lua errors when you put azerite neck into the bank
 Fixed naga quest reward
+
+Fixes
+Removed Service Medal filter
 ]]
 
 local GlobalAddonName, WQLdb = ...
@@ -2907,7 +2910,7 @@ do
 	list[#list+1] = {text = LOCALE.gold,			func = SetFilter,	arg1 = 5,					checkable = true,				}
 	list[#list+1] = {text = LOCALE.invasionPoints,		func = SetIgnoreFilter,	arg1 = "invasionPointsFilter",	arg2 = true,	checkable = true,	shownFunc = LEGION	}
 	list[#list+1] = {text = REPUTATION,			func = SetFilterType,	arg1 = "rep",					checkable = true,				}
-	list[#list+1] = {text = GetCurrencyInfo(UnitFactionGroup("player") == "Alliance" and 1717 or 1716),		func = SetIgnoreFilter,	arg1 = "servicemedalFilter",	arg2 = true,	checkable = true,				}
+	--list[#list+1] = {text = GetCurrencyInfo(UnitFactionGroup("player") == "Alliance" and 1717 or 1716),		func = SetIgnoreFilter,	arg1 = "servicemedalFilter",	arg2 = true,	checkable = true,				}
 	list[#list+1] = {text = OTHER,				func = SetFilter,	arg1 = 6,					checkable = true,				}
 
 
@@ -5463,9 +5466,9 @@ function WorldQuestList_Update(preMapID,forceUpdate)
 									hasRewardFiltered = true
 									rewardType = 30.1716
 									rewardSort = numItems or 0
-									if VWQL[charKey].servicemedalFilter then
-										isValidLine = 0 
-									end
+									--if VWQL[charKey].servicemedalFilter then
+									--	isValidLine = 0 
+									--end
 								elseif currencyID == 1718 then	--Titan Residuum
 									hasRewardFiltered = true
 									rewardType = 30.1718
