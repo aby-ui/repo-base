@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2096, "DBM-Party-BfA", 9, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 18026 $"):sub(12, -3))
+mod:SetRevision(string.sub("2019041433621", 1, -5))
 mod:SetCreatureID(127503)
 mod:SetEncounterID(2104)
 mod:SetZone()
@@ -155,7 +155,7 @@ mod.SPELL_PERIODIC_MISSED = mod.SPELL_PERIODIC_DAMAGE
 
 function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 	if spellId == 263356 then--Signal the Cannons (precast for Massive Blast)
-		
+
 	end
 end
 --]]

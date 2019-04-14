@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2171, "DBM-Party-BfA", 3, 1041)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 18063 $"):sub(12, -3))
+mod:SetRevision(string.sub("2019041433621", 1, -5))
 mod:SetCreatureID(134993)
 mod:SetEncounterID(2142)
 mod:SetZone()
@@ -121,7 +121,7 @@ end
 function mod:UNIT_DIED(args)
 	local cid = self:GetCIDFromGUID(args.destGUID)
 	if cid == 124396 then
-		
+
 	end
 end
 

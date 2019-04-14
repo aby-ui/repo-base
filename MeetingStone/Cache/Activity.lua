@@ -255,7 +255,7 @@ function Activity:Match(filters)
             end
         end
     end
-    return not self.nn
+    return NO_NN or not self.nn
 end
 
 function Activity:IsLevelValid()

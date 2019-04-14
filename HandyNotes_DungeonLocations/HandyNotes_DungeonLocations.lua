@@ -251,6 +251,7 @@ do
 	end
 
 	function pluginHandler:GetNodes2(uiMapId, isMinimapUpdate)
+		--print(uiMapId)
 		local C = deepCopy(HandyNotes:GetContinentZoneList(uiMapId)) -- Is this a continent?
 		-- I copy the table so I can add in the continent map id
 		if C then
@@ -372,8 +373,15 @@ local function updateStuff()
 end
 
 function Addon:PLAYER_ENTERING_WORLD()
- self.faction = UnitFactionGroup("player")
- --print(self.faction)
+ if (not self.faction) then
+  self.faction = UnitFactionGroup("player")
+  --print("Faction", self.faction)
+  self:PopulateTable()
+  self:PopulateMinimap()
+  self:ProcessTable()
+ end
+ 
+ updateLockouts()
  self:CheckForPOIs()
  updateStuff()
 end
@@ -577,12 +585,6 @@ function Addon:PLAYER_LOGIN()
  self.db = LibStub("AceDB-3.0"):New("HandyNotes_DungeonLocationsDB", defaults, true)
  db = self.db.profile
  
- self:PopulateTable()
- self:PopulateMinimap()
- self:ProcessTable()
- 
- updateLockouts()
- self:CheckForPOIs()
  Addon:RegisterEvent("PLAYER_ENTERING_WORLD") -- Check for any lockout changes when we zone
 end
 
@@ -1842,21 +1844,27 @@ nodes[896] = { } -- Drustvar
 nodes[942] = { } -- Stormsong Valley
 nodes[1165] = { } -- Dazar'alor
 nodes[1169] = { } -- Tol Dagor
+nodes[875] = { } -- Zandalar
+nodes[876] = { } --Kul'Tiras
 
 nodes[862][43323947] = {
  id = 968,
  type = "Dungeon",
 }
 
+if (self.faction == "Alliance") then
 nodes[862][39227137] = {
  id = 1012,
  type = "Dungeon",
 } -- The MOTHERLODE ALLIANCE
+end
 
+if (self.faction == "Horde") then
 nodes[862][55995989] = {
  id = 1012,
  type = "Dungeon",
 } -- The MOTHERLODE HORDE
+end
 
 nodes[862][37463948] = {
  id = 1041,
@@ -1904,23 +1912,42 @@ nodes[942][78932647] = {
  type = "Dungeon",
 } -- Shrine of Storm
 
-nodes[895][88305105] = {
- id = 1023,
- type = "Dungeon",
-} -- Siege of Boralus
-
-	--if (self.faction == "Alliance") then
+nodes[876][68262354] = {
+ id = 1177,
+ type = "Raid",
+} -- Crucible of Storms
+minimap[942] = { }
+minimap[942][83934677] = {
+ id = 1177,
+ type = "Raid",
+} -- Crucible of Storms
+	if (self.faction == "Alliance") then
 		nodes[895][74752350] = {
 		 id = 1023, -- LFG 1700, 1701
 		 type = "Dungeon",
 		} -- Siege of Boralus
-		--[[
-		nodes[1161] = { } -- Boralus
-		nodes[1161][71961540] = {
+		nodes[876][62005250] = {
+		 id = 1176,
+		 type = "Raid",
+		} -- Battle of Dazar'alor
+	end
+	if (self.faction == "Horde") then
+		nodes[895][88305105] = {
+		 id = 1023,
+		 type = "Dungeon",
+		} -- Siege of Boralus
+		nodes[875][56005350] = {
+		 id = 1176,
+		 type = "Raid",
+		} -- Battle of Dazar'alor
+	end
+
+--[[nodes[1161] = { } -- Boralus
+nodes[1161][71961540] = {
 		 id = 1023, -- LFG 1700, 1701
 		 type = "Dungeon",
-		} -- Siege of Boralus ]]--
---	end
+		} -- Siege of Boralus
+--	end ]]--
 end
 end
 

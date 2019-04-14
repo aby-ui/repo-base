@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("BoralusTrash", "DBM-Party-BfA", 5)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 18412 $"):sub(12, -3))
+mod:SetRevision(string.sub("2019041433621", 1, -5))
 --mod:SetModelID(47785)
 mod:SetZone()
 
@@ -89,7 +89,7 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif spellId == 272888 and self:IsValidWarning(args.sourceGUID) then
 		specWarnFerocity:Show(args.destName)
 		specWarnFerocity:Play("helpdispel")
-		
+
 	end
 end
 

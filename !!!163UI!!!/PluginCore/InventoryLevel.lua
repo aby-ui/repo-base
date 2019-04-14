@@ -130,7 +130,7 @@ end
 
 -- /run for a=325, 400, 5 do ChatFrame1:AddMessage(a, U1GetInventoryLevelColor(a)) end
 function U1GetInventoryLevelColor(avgLevel, quality)
-    local STEP1, STEP2, STEP3, STEP4, STEP5 = 190, 296, 355, 400, 426
+    local STEP1, STEP2, STEP3, STEP4, STEP5, STEP6 = 190, 296, 355, 400, 426, 432
     --local STEP1, STEP2, STEP3, STEP4, STEP5 = 780, 865, 950, 985, 1000 --845=166,865=174,885=182,915=195,930=210,945=225,960=240
     if not avgLevel or avgLevel<=0 then return .5, .5, .5 end
     if avgLevel < STEP1 then
@@ -146,9 +146,11 @@ function U1GetInventoryLevelColor(avgLevel, quality)
         --return (avgLevel-STEP3)/(STEP4-STEP3), 0.5, 1
         --return 1, 0.5-(avgLevel-STEP3)/(STEP4-STEP3)/2, 1 --(avgLevel-STEP3)/(STEP4-STEP3)/2 --1,0.5,1 -> 1,0,0.5 粉紫到紫红（最后用紫）
         return (avgLevel-STEP3)/(STEP4-STEP3), 0.5, 1  --蓝到紫
-    elseif avgLevel < STEP5 or (quality and quality ~= 5) then
+    elseif avgLevel < STEP5 then --or (quality and quality ~= 5) then
         --return 1, 0.5, 1-(avgLevel-STEP4)/(STEP5-STEP4) --紫到紫红, 神器
-        return 1, 0, 1-(avgLevel-STEP4)/(STEP5-STEP4) --紫到红
+        return 1, 0, max(0, 1-(avgLevel-STEP4)/(STEP5-STEP4)) --紫到红
+    elseif avgLevel < STEP6 then
+        return 1, (avgLevel-STEP5)/(STEP6-STEP5)/2, 0 -- 红到橙色
     else
         return 1, 0.5, 0
     end
