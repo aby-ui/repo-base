@@ -1118,6 +1118,11 @@ GTFO.SpellID["282636"] = {
   sound = 3;
 };
 
+GTFO.SpellID["289672"] = {
+  --desc = "Croak Slam (Echo of Krag'wa)";
+  sound = 3;
+};
+
 GTFO.SpellID["286838"] = {
   --desc = "Static Orb (Akunda's Aspect)";
   sound = 3;
@@ -1215,4 +1220,26 @@ GTFO.SpellID["288218"] = {
   --desc = "Broadside (Lady Jaina Proudmoore)";
   sound = 3;
 };
+
+GTFO.SpellID["289937"] = {
+  --desc = "Thundering Slam (Rastari Punisher)";
+  applicationOnly = true;
+  sound = 3;
+  tankSound = 0;
+};
+
+--- **********************
+--- * Crucible of Storms *
+--- **********************
+
+-- TODO: Oceanic Essence (Restless Cabal)
+-- TODO: Cerebral Assault (Zaxasj the Speaker)
+-- TODO: Void Crash (Fa'thuul the Feared)
+-- TODO: Unstable Resonance (Uu'nat)
+-- TODO: Touch of the End (Uu'nat) [Tanks only, others avoid]
+-- TODO: Oblivion Tears (Uu'nat) [Complicated mechanic, needs testing, able to soak at specific times]
+-- TODO: Void Crash (Uu'nat)
+-- TODO: Maddening Eyes of N'Zoth (Uu'nat)
+-- TODO: Piercing Gaze of N'Zoth (Uu'nat) [Stackable debuff, affliction only]
+-- TODO: Unknowable Terror (Uu'nat) ???
 

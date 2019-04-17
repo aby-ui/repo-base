@@ -52,11 +52,11 @@ addon.WorldBosses = {
   [2198] = { quest=52166, expansion=7, level=120 }, -- Warbringer Yenajz
   [2210] = { quest=52196, expansion=7, level=120 }, -- Dunegorger Kraulok
   -- Arathi Highlands
-  [2212] = { quest=52848, expansion=7, level=120 }, -- The Lion's Roar
-  [2213] = { quest=52847, expansion=7, level=120 }, -- Doom's Howl
+  [2212] = { quest=52848, expansion=7, level=120, remove=true }, -- The Lion's Roar
+  [2213] = { quest=52847, expansion=7, level=120, remove=true }, -- Doom's Howl
   -- Darkshore
-  [2329] = { quest=54896, expansion=7, level=120 }, -- Ivus the Forest Lord
-  [2345] = { quest=54895, expansion=7, level=120 }, -- Ivus the Decayed
+  [2329] = { quest=54896, expansion=7, level=120, remove=true }, -- Ivus the Forest Lord
+  [2345] = { quest=54895, expansion=7, level=120, remove=true }, -- Ivus the Decayed
 
   -- bosses with no EJ entry (eid is a placeholder)
   [9001] = { quest=38276, name=GARRISON_LOCATION_TOOLTIP.." "..BOSS, expansion=5, level=100 },

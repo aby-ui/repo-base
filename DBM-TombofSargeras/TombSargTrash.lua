@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("TombSargTrash", "DBM-TombofSargeras")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 2 $"):sub(12, -3))
+mod:SetRevision("2019041705925")
 --mod:SetModelID(47785)
 mod:SetZone()
 mod.isTrashMod = true

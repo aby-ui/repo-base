@@ -1,7 +1,7 @@
-﻿local mod	= DBM:NewMod("ArtifactTwins", "DBM-Challenges", 2)
+local mod	= DBM:NewMod("ArtifactTwins", "DBM-Challenges", 2)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 105 $"):sub(12, -3))
+mod:SetRevision("2019041705828")
 mod:SetCreatureID(116409, 116410)--Raest Magespear, Karam Magespear
 mod:SetZone()--Healer (1710), Tank (1698), DPS (1703-The God-Queen's Fury), DPS (Fel Totem Fall)
 mod:SetBossHPInfoToHighest()

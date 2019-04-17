@@ -3,7 +3,7 @@ local L		= mod:GetLocalizedStrings()
 local Riplimb	= DBM:EJ_GetSectionInfo(2581)
 local Rageface	= DBM:EJ_GetSectionInfo(2583)
 
-mod:SetRevision(("$Revision: 185 $"):sub(12, -3))
+mod:SetRevision("2019041705904")
 mod:SetCreatureID(53691)
 mod:SetEncounterID(1205)
 mod:SetZone()

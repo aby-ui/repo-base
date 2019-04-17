@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(332, "DBM-DragonSoul", nil, 187)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 190 $"):sub(12, -3))
+mod:SetRevision("2019041705904")
 mod:SetCreatureID(56598)--56427 is Boss, but engage trigger needs the ship which is 56598
 --mod:SetEncounterID(1298)--Fires when ship get actual engage. need to adjust timer.
 mod:SetMainBossID(56427)

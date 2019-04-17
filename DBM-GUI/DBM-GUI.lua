@@ -43,7 +43,7 @@
 --
 
 
-local revision =(string.sub("2019041433621", 1, -5))
+local revision =(string.sub("20190416172622", 1, -5))
 local FrameTitle = "DBM_GUI_Option_"	-- all GUI frames get automatically a name FrameTitle..ID
 
 local PanelPrototype = {}
@@ -969,7 +969,7 @@ DBM_GUI_Bosses = CreateNewFauxScrollFrameList()
 DBM_GUI_Options = CreateNewFauxScrollFrameList()
 
 
-local UpdateAnimationFrame, CreateAnimationFrame
+local UpdateAnimationFrame
 function UpdateAnimationFrame(mod)
 	DBM_BossPreview.currentMod = mod
 	local displayId = nil
@@ -3248,9 +3248,8 @@ local function CreateOptionsMenu()
 
 		local bossLoggingArea		= extraFeaturesPanel:CreateArea(L.Area_AutoLogging, nil, 100, true)
 		local AutologBosses			= bossLoggingArea:CreateCheckButton(L.AutologBosses, true, nil, "AutologBosses")
-		local AdvancedAutologBosses
 		if Transcriptor then
-			AdvancedAutologBosses	= bossLoggingArea:CreateCheckButton(L.AdvancedAutologBosses, true, nil, "AdvancedAutologBosses")
+			local AdvancedAutologBosses	= bossLoggingArea:CreateCheckButton(L.AdvancedAutologBosses, true, nil, "AdvancedAutologBosses")
 		end
 		local LogOnlyRaidBosses		= bossLoggingArea:CreateCheckButton(L.LogOnlyRaidBosses, true, nil, "LogOnlyRaidBosses")
 
@@ -3372,9 +3371,9 @@ local function CreateOptionsMenu()
 
 	-- Set Revision // please don't translate this!
 	if DBM.NewerVersion then
-		DBM_GUI_OptionsFrameRevision:SetText("Deadly Boss Mods "..DBM.DisplayVersion.." (r"..DBM.Revision.."). |cffff0000Version "..DBM.NewerVersion.." is available.|r")
+		DBM_GUI_OptionsFrameRevision:SetText("Deadly Boss Mods "..DBM.DisplayVersion.." ("..DBM.Revision.."). |cffff0000Version "..DBM.NewerVersion.." is available.|r")
 	else
-		DBM_GUI_OptionsFrameRevision:SetText("Deadly Boss Mods "..DBM.DisplayVersion.." (r"..DBM.Revision..")")
+		DBM_GUI_OptionsFrameRevision:SetText("Deadly Boss Mods "..DBM.DisplayVersion.." ("..DBM.Revision..")")
 	end
 	if L.TranslationBy then
 		DBM_GUI_OptionsFrameTranslation:SetText(L.TranslationByPrefix .. L.TranslationBy)

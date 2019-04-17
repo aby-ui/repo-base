@@ -40,10 +40,29 @@
 -------------------------------
 --  Globals/Default Options  --
 -------------------------------
+
+local function releaseDate(year, month, day, hour, minute, second)
+	hour = hour or 0
+	minute = minute or 0
+	second = second or 0
+	return second + minute * 10^2 + hour * 10^4 + day * 10^6 + month * 10^8 + year * 10^10
+end
+
+local function parseCurseDate(date)
+	if #date == 13 then
+		-- support for broken curse timestamps: leading 0 in hours is missing...
+		date = date:sub(1, 8) .. "0" .. date:sub(9, #date)
+	end
+	local year, month, day, hour, minute, second = tonumber(date:sub(1, 4)), tonumber(date:sub(5, 6)), tonumber(date:sub(7, 8)), tonumber(date:sub(9, 10)), tonumber(date:sub(11, 12)), tonumber(date:sub(13, 14))
+	if year and month and day and hour and minute and second then
+		return releaseDate(year, month, day, hour, minute, second)
+	end
+end
+
 DBM = {
-	Revision = tonumber(string.sub("2019041433621", 1, -5)),
-	DisplayVersion = "8.1.15 alpha", -- the string that is shown as version
-	ReleaseRevision = 18480 -- the revision of the latest stable version that is available
+	Revision = parseCurseDate("2019041750524"),
+	DisplayVersion = "8.1.19 alpha", -- the string that is shown as version
+	ReleaseRevision = releaseDate(2019, 4, 17) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 }
 DBM.HighestRelease = DBM.ReleaseRevision --Updated if newer version is detected, used by update nags to reflect critical fixes user is missing on boss pulls
 
@@ -355,7 +374,7 @@ local modSyncSpam = {}
 local autoRespondSpam = {}
 local chatPrefix = "<Deadly Boss Mods> "
 local chatPrefixShort = "<DBM> "
-local ver = ("%s (r%d)"):format(DBM.DisplayVersion, DBM.Revision)
+local ver = ("%s (%s)"):format(DBM.DisplayVersion, tostring(DBM.Revision))
 local mainFrame = CreateFrame("Frame", "DBMMainFrame")
 local newerVersionPerson = {}
 local newerRevisionPerson = {}
@@ -382,7 +401,6 @@ local LastInstanceMapID = -1
 local LastGroupSize = 0
 local LastInstanceType = nil
 local queuedBattlefield = {}
-local noDelay = true
 local watchFrameRestore = false
 local bossHealth = {}
 local bossHealthuIdCache = {}
@@ -1072,7 +1090,6 @@ do
 	local disabledMods = {}
 
 	local function runDelayedFunctions(self)
-		noDelay = false
 		--Check if voice pack missing
 		local activeVP = self.Options.ChosenVoicePack
 		if activeVP ~= "None" then
@@ -2730,37 +2747,37 @@ do
 	--New LDB Object
 	if LibStub("LibDataBroker-1.1", true) then
 		dataBroker = LibStub("LibDataBroker-1.1"):NewDataObject("DBM",
-        	{type = "launcher", label = "DBM", icon = "Interface\\AddOns\\DBM-Core\\textures\\Minimap-Button-Up"}
-    	)
+			{type = "launcher", label = "DBM", icon = "Interface\\AddOns\\DBM-Core\\textures\\Minimap-Button-Up"}
+		)
 
 		function dataBroker.OnClick(self, button)
 			if IsShiftKeyDown() then return end
 			if button == "RightButton" then
 				UIDropDownMenu_Initialize(dropdownFrame, initialize)
 				ToggleDropDownMenu(1, nil, dropdownFrame, "cursor", 5, -10)
-    		else
-       			DBM:LoadGUI()
-       		end
-    	end
+			else
+				DBM:LoadGUI()
+			end
+		end
 
-    	function dataBroker.OnTooltipShow(GameTooltip)
-        	GameTooltip:SetText(DBM_CORE_MINIMAP_TOOLTIP_HEADER, 1, 1, 1)
-        	GameTooltip:AddLine(ver, NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, 1)
-        	GameTooltip:AddLine(" ")
-        	GameTooltip:AddLine(DBM_CORE_MINIMAP_TOOLTIP_FOOTER, RAID_CLASS_COLORS.MAGE.r, RAID_CLASS_COLORS.MAGE.g, RAID_CLASS_COLORS.MAGE.b, 1)
+		function dataBroker.OnTooltipShow(GameTooltip)
+			GameTooltip:SetText(DBM_CORE_MINIMAP_TOOLTIP_HEADER, 1, 1, 1)
+			GameTooltip:AddLine(ver, NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, 1)
+			GameTooltip:AddLine(" ")
+			GameTooltip:AddLine(DBM_CORE_MINIMAP_TOOLTIP_FOOTER, RAID_CLASS_COLORS.MAGE.r, RAID_CLASS_COLORS.MAGE.g, RAID_CLASS_COLORS.MAGE.b, 1)
 			GameTooltip:AddLine(DBM_LDB_TOOLTIP_HELP1, RAID_CLASS_COLORS.MAGE.r, RAID_CLASS_COLORS.MAGE.g, RAID_CLASS_COLORS.MAGE.b)
 			GameTooltip:AddLine(DBM_LDB_TOOLTIP_HELP2, RAID_CLASS_COLORS.MAGE.r, RAID_CLASS_COLORS.MAGE.g, RAID_CLASS_COLORS.MAGE.b)
-    	end
-    end
+		end
+	end
 
-    function DBM:ToggleMinimapButton()
-        DBM_MinimapIcon.hide = not DBM_MinimapIcon.hide
-        if DBM_MinimapIcon.hide then
-            LibStub("LibDBIcon-1.0"):Hide("DBM")
-        else
-            LibStub("LibDBIcon-1.0"):Show("DBM")
-        end
-    end
+	function DBM:ToggleMinimapButton()
+		DBM_MinimapIcon.hide = not DBM_MinimapIcon.hide
+		if DBM_MinimapIcon.hide then
+			LibStub("LibDBIcon-1.0"):Hide("DBM")
+		else
+			LibStub("LibDBIcon-1.0"):Show("DBM")
+		end
+	end
 end
 
 -------------------------------------------------
@@ -2970,7 +2987,7 @@ do
 	end
 
 	function DBM:GetRaidRank(name)
-		local name = name or playerName
+		name = name or playerName
 		if name == playerName then--If name is player, try to get actual rank. Because raid[name].rank sometimes seems returning 0 even player is promoted.
 			return UnitIsGroupLeader("player") and 2 or UnitIsGroupAssistant("player") and 1 or 0
 		else
@@ -3628,9 +3645,6 @@ do
 		-- load special warning options
 		self:UpdateWarningOptions()
 		self:UpdateSpecialWarningOptions()
-		if self.Options.CoreSavedRevision < 16970 then
-			if self.Options.SpecialWarningSound3 == "Sound\\Creature\\KilJaeden\\KILJAEDEN02.ogg" then self.Options.SpecialWarningSound3 = self.DefaultOptions.SpecialWarningSound3 end
-		end
 		self.Options.CoreSavedRevision = self.Revision
 	end
 end
@@ -3721,8 +3735,8 @@ do
 					end
 				end
 			end
-            -- Check regular non-BNet friends
-            local nf = GetNumFriends()
+			-- Check regular non-BNet friends
+			local nf = GetNumFriends()
 			for i = 1, nf do
 				local toonName = GetFriendInfo(i)
 				if toonName == sender then
@@ -4242,7 +4256,7 @@ do
 	end
 
 	syncHandlers["IS"] = function(sender, guid, ver, optionName)
-		ver = tonumber(ver)
+		ver = tonumber(ver) or 0
 		if ver > (iconSetRevision[optionName] or 0) then--Save first synced version and person, ignore same version. refresh occurs only above version (fastest person)
 			iconSetRevision[optionName] = ver
 			iconSetPerson[optionName] = guid
@@ -4452,7 +4466,7 @@ do
 
 	local function SendVersion(guild)
 		if guild then
-			local message = ("%d\t%s\t%s"):format(DBM.Revision, tostring(DBM.ReleaseRevision), DBM.DisplayVersion)
+			local message = ("%s\t%s\t%s"):format(tostring(DBM.Revision), tostring(DBM.ReleaseRevision), DBM.DisplayVersion)
 			SendAddonMessage("D4", "GV\t" .. message, "GUILD")
 			return
 		end
@@ -4467,9 +4481,9 @@ do
 			VPVersion = "/ VP"..VoicePack..": v"..DBM.VoiceVersions[VoicePack]
 		end
 		if VPVersion then
-			sendSync("V", ("%d\t%s\t%s\t%s\t%s\t%s"):format(DBM.Revision, tostring(DBM.ReleaseRevision), DBM.DisplayVersion, GetLocale(), tostring(not DBM.Options.DontSetIcons), VPVersion))
+			sendSync("V", ("%s\t%s\t%s\t%s\t%s\t%s"):format(tostring(DBM.Revision), tostring(DBM.ReleaseRevision), DBM.DisplayVersion, GetLocale(), tostring(not DBM.Options.DontSetIcons), VPVersion))
 		else
-			sendSync("V", ("%d\t%s\t%s\t%s\t%s"):format(DBM.Revision, tostring(DBM.ReleaseRevision), DBM.DisplayVersion, GetLocale(), tostring(not DBM.Options.DontSetIcons)))
+			sendSync("V", ("%s\t%s\t%s\t%s\t%s"):format(tostring(DBM.Revision), tostring(DBM.ReleaseRevision), DBM.DisplayVersion, GetLocale(), tostring(not DBM.Options.DontSetIcons)))
 		end
 	end
 
@@ -4509,7 +4523,7 @@ do
 					--Disable if revision grossly out of date even if not major patch.
 					if raid[newerVersionPerson[1]] and raid[newerVersionPerson[2]] and raid[newerVersionPerson[3]] then
 						local revDifference = mmin(((raid[newerVersionPerson[1]].revision or 0) - DBM.Revision), ((raid[newerVersionPerson[2]].revision or 0) - DBM.Revision), ((raid[newerVersionPerson[3]].revision or 0) - DBM.Revision))
-						if revDifference > 200000000 then--Approx 2 months old 20190413233128
+						if revDifference > 100000000 then--Approx 1 month old 20190416172622
 							if updateNotificationDisplayed < 3 then
 								updateNotificationDisplayed = 3
 								AddMsg(DBM, DBM_CORE_UPDATEREMINDER_NODISABLE)
@@ -4524,14 +4538,14 @@ do
 				end
 			end
 		end
-		if false and DBM.DisplayVersion:find("alpha") and #newerRevisionPerson < 3 and updateNotificationDisplayed < 2 and (revision - DBM.Revision) > 20 then
+		if false and DBM.DisplayVersion:find("alpha") and #newerRevisionPerson < 3 and updateNotificationDisplayed < 2 and (revision - DBM.Revision) > 7000000 then--Approx 7 days old 20190416172622
 			if not checkEntry(newerRevisionPerson, sender) then
 				newerRevisionPerson[#newerRevisionPerson + 1] = sender
 				DBM:Debug("Newer revision detected from "..sender.." : Rev - "..revision..", Ver - "..version..", Rev Diff - "..(revision - DBM.Revision))
 			end
 			if #newerRevisionPerson == 2 and raid[newerRevisionPerson[1]] and raid[newerRevisionPerson[2]] then
 				local revDifference = mmin(((raid[newerRevisionPerson[1]].revision or 0) - DBM.Revision), ((raid[newerRevisionPerson[2]].revision or 0) - DBM.Revision))
-				if testBuild and revDifference > 5000000 then--Approx 5 days old (20190413233128)
+				if testBuild and revDifference > 3000000 then--Approx 3 days old 20190416172622
 					updateNotificationDisplayed = 3
 					AddMsg(DBM, DBM_CORE_UPDATEREMINDER_DISABLE)
 					DBM:Disable(true)
@@ -5916,7 +5930,7 @@ do
 						for i = 1, #mod.findFastestComputer do
 							local option = mod.findFastestComputer[i]
 							if mod.Options[option] then
-								sendSync("IS", UnitGUID("player").."\t"..DBM.Revision.."\t"..option)
+								sendSync("IS", UnitGUID("player").."\t"..tostring(DBM.Revision).."\t"..option)
 							end
 						end
 					elseif not IsInGroup() then
@@ -5934,7 +5948,7 @@ do
 				end
 				--send "C" sync
 				if not synced then
-					sendSync("C", (delay or 0).."\t"..modId.."\t"..(mod.revision or 0).."\t"..startHp.."\t"..DBM.Revision.."\t"..(mod.hotfixNoticeRev or 0))
+					sendSync("C", (delay or 0).."\t"..modId.."\t"..(mod.revision or 0).."\t"..startHp.."\t"..tostring(DBM.Revision).."\t"..(mod.hotfixNoticeRev or 0))
 				end
 				if self.Options.DisableStatusWhisper and UnitIsGroupLeader("player") and (difficultyIndex == 8 or difficultyIndex == 14 or difficultyIndex == 15 or difficultyIndex == 16) then
 					sendSync("DSW")
@@ -7819,13 +7833,13 @@ do
 
 	function bossModPrototype:BossTargetScanner(cidOrGuid, returnFunc, scanInterval, scanTimes, scanOnlyBoss, isEnemyScan, isFinalScan, targetFilter, tankFilter)
 		--Increase scan count
-		local cidOrGuid = cidOrGuid or self.creatureId
+		cidOrGuid = cidOrGuid or self.creatureId
 		if not cidOrGuid then return end
 		if not targetScanCount[cidOrGuid] then targetScanCount[cidOrGuid] = 0 end
 		targetScanCount[cidOrGuid] = targetScanCount[cidOrGuid] + 1
 		--Set default values
-		local scanInterval = scanInterval or 0.05
-		local scanTimes = scanTimes or 16
+		scanInterval = scanInterval or 0.05
+		scanTimes = scanTimes or 16
 		local targetname, targetuid, bossuid = self:GetBossTarget(cidOrGuid, scanOnlyBoss)
 		DBM:Debug("Boss target scan "..targetScanCount[cidOrGuid].." of "..scanTimes..", found target "..(targetname or "nil").." using "..(bossuid or "nil"), 3)--Doesn't hurt to keep this, as level 3
 		--Do scan
@@ -7937,7 +7951,7 @@ do
 
 	function bossModPrototype:CheckBossDistance(cidOrGuid, onlyBoss, itemId, defaultReturn)
 		if not DBM.Options.DontShowFarWarnings then return true end--Global disable.
-		local cidOrGuid = cidOrGuid or self.creatureId
+		cidOrGuid = cidOrGuid or self.creatureId
 		local uId = DBM:GetUnitIdFromGUID(cidOrGuid, onlyBoss)
 		if uId then
 			local itemId = itemId or 32698
@@ -7955,7 +7969,7 @@ do
 
 	function bossModPrototype:CheckTankDistance(cidOrGuid, distance, onlyBoss, defaultReturn)
 		if not DBM.Options.DontShowFarWarnings then return true end--Global disable.
-		local distance = distance or 43
+		distance = distance or 43
 		if rangeCache[cidOrGuid] and (GetTime() - (rangeUpdated[cidOrGuid] or 0)) < 2 then -- return same range within 2 sec call
 			if rangeCache[cidOrGuid] > distance then
 				return false
@@ -8692,7 +8706,7 @@ do
 	font2u:Hide()
 	font3u:Hide()
 
-	local font1elapsed, font2elapsed, font3elapsed, moving
+	local font1elapsed, font2elapsed, font3elapsed
 
 	local function fontHide1()
 		local duration = DBM.Options.WarningDuration2
@@ -8849,7 +8863,6 @@ do
 	do
 		local anchorFrame
 		local function moveEnd(self)
-			moving = false
 			anchorFrame:Hide()
 			if anchorFrame.ticker then
 				anchorFrame.ticker:Cancel()
@@ -8896,7 +8909,6 @@ do
 			if anchorFrame:IsShown() then
 				moveEnd(self)
 			else
-				moving = true
 				anchorFrame:Show()
 				anchorFrame.ticker = anchorFrame.ticker or C_TimerNewTicker(5, function() self:AddWarning(DBM_CORE_MOVE_WARNING_MESSAGE) end)
 				self:AddWarning(DBM_CORE_MOVE_WARNING_MESSAGE)
@@ -9224,11 +9236,6 @@ do
 	end
 
 	function bossModPrototype:NewCastAnnounce(spellId, color, castTime, icon, optionDefault, optionName, noArg, soundOption)
-		local optionVersion
-		if type(optionName) == "number" then
-			optionVersion = optionName
-			optionName = nil
-		end
 		return newAnnounce(self, "cast", spellId, color or 3, icon, optionDefault, optionName, castTime, nil, soundOption)
 	end
 
@@ -9241,11 +9248,6 @@ do
 	end
 
 	function bossModPrototype:NewPreWarnAnnounce(spellId, time, color, icon, optionDefault, optionName, noArg, soundOption)
-		local optionVersion
-		if type(optionName) == "number" then
-			optionVersion = optionName
-			optionName = nil
-		end
 		return newAnnounce(self, "prewarn", spellId, color or 2, icon, optionDefault, optionName, nil, time, soundOption)
 	end
 
@@ -9305,7 +9307,7 @@ do
 	--Voice Object
 	--Individual options still generated in case a person likes to enable voice, but not for ALL warnings (they can pick and choose what is enabled/disabled"
 	local soundPrototype2 = {}
-	local mt = { __index = soundPrototype2 }
+	local mt2 = { __index = soundPrototype2 }
 	function bossModPrototype:NewVoice(spellId, optionDefault, optionName, optionVersion)
 		if not spellId and not optionName then
 			print("NewVoice: you must provide either spellId or optionName", 2)
@@ -9320,7 +9322,7 @@ do
 			{
 				mod = self,
 			},
-			mt
+			mt2
 		)
 		if #DBM.Voices < 2 then optionName = false end--Hide options if no voice packs are installed
 		if optionName then
@@ -9408,17 +9410,14 @@ do
 				DBM:Debug("Voice cache not built at time of countdownProtoType:Start. On fly caching.", 3)
 				DBM:BuildVoiceCountdownCache()
 			end
-			local voice, maxCount, path
+			local maxCount, path
 			if self.alternateVoice == 2 then
-				voice = voice2 or DBM.DefaultOptions.CountdownVoice2
 				maxCount = voice2max or 10
 				path = path2 or "Interface\\AddOns\\DBM-Core\\Sounds\\Kolt\\"
 			elseif self.alternateVoice == 3 then
-				voice = voice3 or DBM.DefaultOptions.CountdownVoice3v2
 				maxCount = voice3max or 5
 				path = path3 or "Interface\\AddOns\\DBM-Core\\Sounds\\Heroes\\Necromancer\\"
 			else
-				voice = voice1 or DBM.DefaultOptions.CountdownVoice
 				maxCount = voice1max or 10
 				path = path1 or "Interface\\AddOns\\DBM-Core\\Sounds\\Corsica\\"
 			end
@@ -10703,7 +10702,7 @@ do
 			DBM:Debug("|cffff0000spellID texture path or colorType is in inlineIcon field and needs to be fixed for |r"..name..inlineIcon)
 			inlineIcon = nil--Fix it for users
 		end
-		local icon = (type(icon) == "string" and icon:match("ej%d+") and select(4, DBM:EJ_GetSectionInfo(string.sub(icon, 3))) ~= "" and select(4, DBM:EJ_GetSectionInfo(string.sub(icon, 3)))) or (type(icon) == "number" and GetSpellTexture(icon)) or icon or "Interface\\Icons\\Spell_Nature_WispSplode"
+		icon = (type(icon) == "string" and icon:match("ej%d+") and select(4, DBM:EJ_GetSectionInfo(string.sub(icon, 3))) ~= "" and select(4, DBM:EJ_GetSectionInfo(string.sub(icon, 3)))) or (type(icon) == "number" and GetSpellTexture(icon)) or icon or "Interface\\Icons\\Spell_Nature_WispSplode"
 		local obj = setmetatable(
 			{
 				text = self.localization.timers[name],
@@ -11489,7 +11488,7 @@ function bossModPrototype:ReceiveSync(event, sender, revision, ...)
 end
 
 function bossModPrototype:SetRevision(revision)
-	revision = tonumber(revision or "")
+	revision = parseCurseDate(revision or "")
 	if not revision then
 		-- bad revision: either forgot the svn keyword or using git svn
 		revision = DBM.Revision
@@ -11497,12 +11496,13 @@ function bossModPrototype:SetRevision(revision)
 	self.revision = revision
 end
 
+--Either treat it as a valid number, or a curse string that needs to be made into a valid number
 function bossModPrototype:SetMinSyncRevision(revision)
-	self.minSyncRevision = revision
+	self.minSyncRevision = (type(revision or "") == "number") and revision or parseCurseDate(revision)
 end
 
 function bossModPrototype:SetHotfixNoticeRev(revision)
-	self.hotfixNoticeRev = revision
+	self.hotfixNoticeRev = (type(revision or "") == "number") and revision or parseCurseDate(revision)
 end
 
 -----------------
@@ -11721,6 +11721,7 @@ do
 		if not optionName then optionName = self.findFastestComputer[1] end
 		if canSetIcons[optionName] then
 			--Declare variables.
+			DBM:Debug("canSetIcons true", 2)
 			local timeNow = GetTime()
 			local creatureID = creatureID--This function must not be used to boss, so remove self.creatureId. Accepts cid, guid and cid table
 			local iconSetMethod = iconSetMethod or 0--Set IconSetMethod -- 0: Descending / 1:Ascending / 2: Force Set / 9:Force Stop

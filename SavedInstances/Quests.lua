@@ -138,15 +138,15 @@ local QuestExceptions = {
   [48635] = "Regular", -- More Void Inoculation
   [48636] = "Regular", -- Fueling the Antoran Campaign
 
-  -- Island Expeditions
-  [53435] = "Weekly", -- Azerite for the Horde
-  [53436] = "Weekly", -- Azerite for the Alliance
+  -- Island Expeditions (Moved to Progress.lua)
+  [53435] = "Regular", -- Azerite for the Horde
+  [53436] = "Regular", -- Azerite for the Alliance
 
-  -- Warfront
-  [53414] = "Weekly", -- Stromgarde Alliance
-  [53416] = "Weekly", -- Stromgarde Horde
-  [53992] = "Weekly", -- Darkshore Alliance
-  [53955] = "Weekly", -- Darkshore Horde
+  -- Warfront (Moved to Warfront.lua)
+  [53414] = "Regular", -- Stromgarde Alliance
+  [53416] = "Regular", -- Stromgarde Horde
+  [53992] = "Regular", -- Darkshore Alliance
+  [53955] = "Regular", -- Darkshore Horde
 
   -- Weekend Event
   [53030] = "Weekly", -- The World Awaits - World Quests

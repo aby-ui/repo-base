@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2147, "DBM-Uldir", nil, 1031)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(string.sub("2019041433621", 1, -5))
+mod:SetRevision("20190416205700")
 mod:SetCreatureID(132998)
 mod:SetEncounterID(2122)
 mod:SetZone()
@@ -177,7 +177,7 @@ do
 			--Scan raid for notable debuffs and add them
 			for i=1, #matrixTargets do
 				local name = matrixTargets[i]
-				addLine(i.."-"..matrixSpellName, name)
+				addLine(i.."--"..matrixSpellName, name)
 			end
 			if mod.vb.matrixActive then
 				if mod:IsMythic() then--No side, short text

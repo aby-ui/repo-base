@@ -252,8 +252,10 @@ local function ProgressBar_SetValue(self, percent)
 				self.ReapingFrame.Text:SetFormattedText("%d%%", value/total*100)
 			end
 			self.ReapingFrame:Show()
+			self.ReapingFrame.Icon:Show()
 		elseif self.ReapingFrame then
 			self.ReapingFrame:Hide()
+			self.ReapingFrame.Icon:Hide()
 		end
 	end
 end

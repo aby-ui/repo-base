@@ -10,6 +10,8 @@ CheckCompat.lua
 Uldir.lua
 Azeroth.lua
 BattleofDazaralor.lua
+CrucibleofStorms.lua
+
 
 ## Title: |cff880303[爱不易]|r Grid 团队减益BfA
 ## X-Vendor: AbyUI

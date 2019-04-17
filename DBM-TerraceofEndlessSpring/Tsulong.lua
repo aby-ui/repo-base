@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(742, "DBM-TerraceofEndlessSpring", nil, 320)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 122 $"):sub(12, -3))
+mod:SetRevision("2019041710000")
 mod:SetCreatureID(62442)--62919 Unstable Sha, 62969 Embodied Terror
 mod:SetEncounterID(1505)
 mod:SetReCombatTime(60)--fix lfr combat re-starts after killed.

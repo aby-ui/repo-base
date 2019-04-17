@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(192, "DBM-Firelands", nil, 78)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 174 $"):sub(12, -3))
+mod:SetRevision("2019041705904")
 mod:SetCreatureID(52498)
 mod:SetEncounterID(1197)
 mod:SetZone()
@@ -18,15 +18,14 @@ mod:RegisterEventsInCombat(
 )
 
 local warnSmolderingDevastation		= mod:NewCountAnnounce(99052, 4)--Use count announce, cast time is pretty obvious from the bar, but it's useful to keep track how many of these have been cast.
-local warnWidowKiss					= mod:NewTargetAnnounce(99476, 3, nil, "Tank|Healer")
 local warnPhase2Soon				= mod:NewPrePhaseAnnounce(2, 3)
 local warnFixate					= mod:NewTargetAnnounce(99526, 4)--Heroic ability
 
-local specWarnFixate				= mod:NewSpecialWarningYou(99526)
-local specWarnTouchWidowKiss		= mod:NewSpecialWarningYou(99476)
-local specWarnSmolderingDevastation	= mod:NewSpecialWarningSpell(99052)
-local specWarnVolatilePoison		= mod:NewSpecialWarningMove(99278)--Heroic ability
-local specWarnTouchWidowKissOther	= mod:NewSpecialWarningTarget(99476, "Tank")
+local specWarnFixate				= mod:NewSpecialWarningYou(99526, nil, nil, nil, 1, 2)
+local specWarnTouchWidowKiss		= mod:NewSpecialWarningYou(99476, nil, nil, nil, 1, 2)
+local specWarnSmolderingDevastation	= mod:NewSpecialWarningCount(99052, nil, nil, nil, 3, 2)
+local specWarnVolatilePoison		= mod:NewSpecialWarningMove(99278, nil, nil, nil, 1, 2)--Heroic ability
+local specWarnTouchWidowKissOther	= mod:NewSpecialWarningTarget(99476, "Tank", nil, nil, 1, 2)
 
 local timerSpinners 				= mod:NewNextTimer(15, "ej2770", nil, nil, nil, 1, 97370) -- 15secs after Smoldering cast start
 local timerSpiderlings				= mod:NewNextTimer(30, "ej2778", nil, nil, nil, 1, 72106)
@@ -34,7 +33,7 @@ local timerDrone					= mod:NewNextTimer(60, "ej2773", nil, nil, nil, 1, 28866)
 local timerSmolderingDevastationCD	= mod:NewNextCountTimer(90, 99052, nil, nil, nil, 2, nil, DBM_CORE_DEADLY_ICON)
 local timerEmberFlareCD				= mod:NewNextTimer(6, 98934, nil, nil, nil, 2)
 local timerSmolderingDevastation	= mod:NewCastTimer(8, 99052, nil, nil, nil, 2, nil, DBM_CORE_DEADLY_ICON)
-local timerFixate					= mod:NewTargetTimer(10, 99526)
+local timerFixate					= mod:NewTargetTimer(10, 99526, nil, false)
 local timerWidowsKissCD				= mod:NewCDTimer(32, 99476, nil, "Tank|Healer", nil, 5, nil, DBM_CORE_TANK_ICON)
 local timerWidowKiss				= mod:NewTargetTimer(23, 99476, nil, "Tank|Healer", nil, 5, nil, DBM_CORE_TANK_ICON)
 
@@ -73,10 +72,12 @@ function mod:SPELL_AURA_APPLIED(args)
 	if spellId == 99506 then--Applied debuff after cast. Used to announce special warnings and start target timer, only after application confirmed and not missed.
 		timerWidowKiss:Start(args.destName)
 	elseif spellId == 99526 then--99526 is on player, 99559 is on drone
-		warnFixate:Show(args.destName)
 		timerFixate:Start(args.destName)
 		if args:IsPlayer() then
 			specWarnFixate:Show()
+			specWarnFixate:Play("justrun")
+		else
+			warnFixate:Show(args.destName)
 		end
 	end
 end
@@ -97,9 +98,11 @@ function mod:SPELL_CAST_START(args)
 	local spellId = args.spellId
 	if spellId == 99052 then
 		smolderingCount = smolderingCount + 1
-		warnSmolderingDevastation:Show(smolderingCount)
 		if self:GetUnitCreatureId("target") == 52498 or self:GetBossTarget(52498) == DBM:GetUnitFullName("target") then--If spider is you're target or it's tank is, you're up top.
-			specWarnSmolderingDevastation:Show()
+			specWarnSmolderingDevastation:Show(smolderingCount)
+			specWarnSmolderingDevastation:Play("aesoon")
+		else
+			warnSmolderingDevastation:Show(smolderingCount)
 		end
 		timerSmolderingDevastation:Start()
 		timerEmberFlareCD:Cancel()--Cast immediately after Devastation, so don't need to really need to update timer, just cancel last one since it won't be cast during dev
@@ -120,15 +123,16 @@ end
 function mod:SPELL_CAST_SUCCESS(args)
 	local spellId = args.spellId
 	if spellId == 99476 then--Cast debuff only, don't add other spellid. (99476 spellid uses on SPELL_CAST_START, NOT SPELL_AURA_APPLIED), 
-		warnWidowKiss:Show(args.destName)
 		timerWidowsKissCD:Start()
 		if self.Options.RangeFrame and self:IsTank() then
 			DBM.RangeCheck:Show(10)
 		end
 		if args:IsPlayer() then
 			specWarnTouchWidowKiss:Show()
+			specWarnTouchWidowKiss:Play("defensive")
 		else
 			specWarnTouchWidowKissOther:Show(args.destName)
+			specWarnTouchWidowKissOther:Play("watchstep")
 		end
 	--Phase 1 ember flares. Only show for people who are actually up top.
 	elseif spellId == 98934 and (self:GetUnitCreatureId("target") == 52498 or self:GetBossTarget(52498) == DBM:GetUnitFullName("target")) then
@@ -142,6 +146,7 @@ end
 function mod:SPELL_DAMAGE(_, _, _, _, destGUID, _, _, _, spellId)
 	if spellId == 99278 and destGUID == UnitGUID("player") and self:AntiSpam(3) then
 		specWarnVolatilePoison:Show()
+		specWarnVolatilePoison:Play("watchfeet")
 	end
 end
 mod.SPELL_MISSED = mod.SPELL_DAMAGE

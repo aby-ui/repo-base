@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("Faerlina", "DBM-Naxx", 1)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 265 $"):sub(12, -3))
+mod:SetRevision("2019041705949")
 mod:SetCreatureID(15953)
 mod:SetEncounterID(1110)
 mod:SetModelID(15940)

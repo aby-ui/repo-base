@@ -29,7 +29,7 @@ local function BonusRollShow()
   local BonusRollFrame = _G.BonusRollFrame
   if not t or not BonusRollFrame then return end
   local bonus = addon:BonusRollCount(thisToon, BonusRollFrame.CurrentCountFrame.currencyID)
-  if not bonus then
+  if not bonus or not addon.db.Tooltip.AugmentBonus then
     if BonusFrame then BonusFrame:Hide() end
     return
   end

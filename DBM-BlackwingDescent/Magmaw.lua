@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(170, "DBM-BlackwingDescent", nil, 73)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 185 $"):sub(12, -3))
+mod:SetRevision("2019041705904")
 mod:SetCreatureID(41570)
 mod:SetEncounterID(1024) --no ES fires this boss.
 mod:SetZone()

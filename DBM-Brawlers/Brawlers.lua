@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("Brawlers", "DBM-Brawlers")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(string.sub("2019041433621", 1, -5))
+mod:SetRevision("20190416205700")
 --mod:SetCreatureID(60491)
 --mod:SetModelID(41448)
 mod:SetZone(DBM_DISABLE_ZONE_DETECTION)
@@ -171,17 +171,17 @@ function mod:ZONE_CHANGED_NEW_AREA()
 			mod2:Stop()--Stop all timers and warnings
 		end
 	end
-	local mod2 = DBM:GetModByName("BrawlChallenges")
-	if mod2 then
-		mod2:Stop()--Stop all timers and warnings
+	local mod3 = DBM:GetModByName("BrawlChallenges")
+	if mod3 then
+		mod3:Stop()--Stop all timers and warnings
 	end
-	local mod2 = DBM:GetModByName("BrawlLegacy")
-	if mod2 then
-		mod2:Stop()--Stop all timers and warnings
+	local mod4 = DBM:GetModByName("BrawlLegacy")
+	if mod4 then
+		mod4:Stop()--Stop all timers and warnings
 	end
-	local mod2 = DBM:GetModByName("BrawlRumble")
-	if mod2 then
-		mod2:Stop()--Stop all timers and warnings
+	local mod5 = DBM:GetModByName("BrawlRumble")
+	if mod5 then
+		mod5:Stop()--Stop all timers and warnings
 	end
 	setDialog(self)
 	modsStopped = true
@@ -233,11 +233,11 @@ function mod:OnSync(msg)
 		if mod2 then
 			mod2:Stop()--Stop all timers and warnings
 		end
-		local mod2 = DBM:GetModByName("BrawlLegacy")
+		mod2 = DBM:GetModByName("BrawlLegacy")
 		if mod2 then
 			mod2:Stop()--Stop all timers and warnings
 		end
-		local mod2 = DBM:GetModByName("BrawlRumble")
+		mod2 = DBM:GetModByName("BrawlRumble")
 		if mod2 then
 			mod2:Stop()--Stop all timers and warnings
 		end

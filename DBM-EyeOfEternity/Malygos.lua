@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("Malygos", "DBM-EyeOfEternity")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 280 $"):sub(12, -3))
+mod:SetRevision("2019041705949")
 mod:SetCreatureID(28859)
 mod:SetEncounterID(1094)
 mod:SetModelID(26752)

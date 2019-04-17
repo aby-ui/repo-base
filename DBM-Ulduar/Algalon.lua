@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("Algalon", "DBM-Ulduar")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 280 $"):sub(12, -3))
+mod:SetRevision("2019041705949")
 mod:SetCreatureID(32871)
 mod:SetEncounterID(1130)
 mod:DisableEEKillDetection()--EE always fires wipe

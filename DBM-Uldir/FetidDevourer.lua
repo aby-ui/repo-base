@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2146, "DBM-Uldir", nil, 1031)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(string.sub("2019041433621", 1, -5))
+mod:SetRevision("20190416205700")
 mod:SetCreatureID(133298)
 mod:SetEncounterID(2128)
 mod:SetZone()
@@ -80,9 +80,9 @@ do
 				local _, _, _, _, endTime = UnitCastingInfo(UnitID)
 				local time = ((endTime or 0) / 1000) - GetTime()
 				if time and time > 0 then
-					addLine(i.."-"..floor(unitHealth).."%", floor(time))
+					addLine(i.."--"..floor(unitHealth).."%", floor(time))
 				else
-					addLine(i.."-"..floor(unitHealth).."%", 0)
+					addLine(i.."--"..floor(unitHealth).."%", 0)
 				end
 			end
 		end

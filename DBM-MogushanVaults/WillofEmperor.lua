@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(677, "DBM-MogushanVaults", nil, 317)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 122 $"):sub(12, -3))
+mod:SetRevision("2019041710000")
 mod:SetCreatureID(60399, 60400)--60396 (Rage), 60397 (Strength), 60398 (Courage), 60480 (Titan Spark), 60399 (Qin-xi), 60400 (Jan-xi)
 mod:SetEncounterID(1407)
 mod:SetZone()
@@ -41,9 +41,9 @@ local warnTitanGas				= mod:NewCountAnnounce(116779, 4)
 --Rage
 local specWarnFocusedAssault	= mod:NewSpecialWarningYou(116525, false)
 --Strength
-local specWarnStrengthActivated	= mod:NewSpecialWarningSpell("ej5677", "Tank")--These still need to be tanked. so give tanks special warning when these spawn, and dps can enable it too depending on dps strat.
+local specWarnStrengthActivated	= mod:NewSpecialWarningCount("ej5677", "Tank")--These still need to be tanked. so give tanks special warning when these spawn, and dps can enable it too depending on dps strat.
 --Courage
-local specWarnCourageActivated	= mod:NewSpecialWarningSwitch("ej5676", "Dps")--These really need to die asap. If they reach the tank, you will have a dead tank on hands very soon after.
+local specWarnCourageActivated	= mod:NewSpecialWarningSwitchCount("ej5676", "Dps")--These really need to die asap. If they reach the tank, you will have a dead tank on hands very soon after.
 local specWarnFocusedDefense	= mod:NewSpecialWarningYou(116778)
 --Sparks (Heroic Only)
 local specWarnFocusedEnergy		= mod:NewSpecialWarningYou(116829)
@@ -99,37 +99,43 @@ local rageTimers = {
 --timers variate slightly so never will be perfect but trying to get as close as possible. seem same in all modes.
 }
 
-local function addsDelay(add)
+local function addsDelay(self, add)
 	if add == "Courage" then
-		mod.vb.courageCount = mod.vb.courageCount + 1
-		warnCourageActivated:Show(mod.vb.courageCount)
-		specWarnCourageActivated:Show()
-		--Titan gases delay spawns by 50 seconds, even on heroic (even though there is no actual gas phase, the timing stays same on heroic)
-		if mod.vb.courageCount >= 2 then
-			timerCourageActivates:Start(150, mod.vb.courageCount+1)
+		self.vb.courageCount = self.vb.courageCount + 1
+		if self.Options.SpecWarnej5676count then
+			specWarnCourageActivated:Show(self.vb.courageCount)
 		else
-			timerCourageActivates:Start(100, mod.vb.courageCount+1)
+			warnCourageActivated:Show(self.vb.courageCount)
+		end
+		--Titan gases delay spawns by 50 seconds, even on heroic (even though there is no actual gas phase, the timing stays same on heroic)
+		if self.vb.courageCount >= 2 then
+			timerCourageActivates:Start(150, self.vb.courageCount+1)
+		else
+			timerCourageActivates:Start(100, self.vb.courageCount+1)
 		end
 	elseif add == "Strength" then
-		mod.vb.strengthCount = mod.vb.strengthCount + 1
-		warnStrengthActivated:Show(mod.vb.strengthCount)
-		specWarnStrengthActivated:Show()
-		--Titan gases delay spawns by 50 seconds, even on heroic (even though there is no actual gas phase, the timing stays same on heroic)
-		if mod.vb.strengthCount == 4 or mod.vb.strengthCount == 6 or mod.vb.strengthCount == 8 then--Unverified
-			timerStrengthActivates:Start(100, mod.vb.strengthCount+1)
+		self.vb.strengthCount = self.vb.strengthCount + 1
+		if self.Options.SpecWarnej5677count then
+			specWarnStrengthActivated:Show(self.vb.strengthCount)
 		else
-			timerStrengthActivates:Start(50, mod.vb.strengthCount+1)
+			warnStrengthActivated:Show(self.vb.strengthCount)
+		end
+		--Titan gases delay spawns by 50 seconds, even on heroic (even though there is no actual gas phase, the timing stays same on heroic)
+		if self.vb.strengthCount == 4 or self.vb.strengthCount == 6 or self.vb.strengthCount == 8 then--Unverified
+			timerStrengthActivates:Start(100, self.vb.strengthCount+1)
+		else
+			timerStrengthActivates:Start(50, self.vb.strengthCount+1)
 		end
 	elseif add == "Rage" then
-		mod.vb.rageCount = mod.vb.rageCount + 1
-		warnRageActivated:Show(mod.vb.rageCount)
+		self.vb.rageCount = self.vb.rageCount + 1
+		warnRageActivated:Show(self.vb.rageCount)
 		--Titan gas delay has funny interaction with these and causes 30 or 60 second delays. Pretty much have to use a table.
-		timerRageActivates:Start(rageTimers[mod.vb.rageCount] or 33, mod.vb.rageCount+1)
-		mod:Schedule(rageTimers[mod.vb.rageCount] or 33, addsDelay, "Rage")--Because he doesn't always yell, schedule next one here as a failsafe
+		timerRageActivates:Start(rageTimers[self.vb.rageCount] or 33, self.vb.rageCount+1)
+		self:Schedule(rageTimers[self.vb.rageCount] or 33, addsDelay, self, "Rage")--Because he doesn't always yell, schedule next one here as a failsafe
 	elseif add == "Boss" then
 		warnBossesActivated:Show()
 		specWarnBossesActivated:Show(10)
-		if not mod:IsHeroic() then
+		if not self:IsHeroic() then
 			timerTitanGasCD:Start(113, 1)
 		end
 	end
@@ -190,22 +196,22 @@ end
 
 function mod:CHAT_MSG_MONSTER_YELL(msg)
 	if msg == L.Rage or msg:find(L.Rage) then--Apparently boss only yells sometimes, so this isn't completely reliable
-		self:Unschedule(addsDelay, "Rage")--Unschedule any failsafes that triggered and resync to yell
-		self:Schedule(14, addsDelay, "Rage")
+		self:Unschedule(addsDelay, self, "Rage")--Unschedule any failsafes that triggered and resync to yell
+		self:Schedule(14, addsDelay, self, "Rage")
 		timerRageActivates:Start(14, self.vb.rageCount+1)
 	end
 end
 
 function mod:RAID_BOSS_EMOTE(msg)
 	if msg == L.Strength or msg:find(L.Strength) then
-		self:Unschedule(addsDelay, "Strength")
-		self:Schedule(9, addsDelay, "Strength")
+		self:Unschedule(addsDelay, self, "Strength")
+		self:Schedule(9, addsDelay, self, "Strength")
 	elseif msg == L.Courage or msg:find(L.Courage) then
-		self:Unschedule(addsDelay, "Courage")
-		self:Schedule(10, addsDelay, "Courage")
+		self:Unschedule(addsDelay, self, "Courage")
+		self:Schedule(10, addsDelay, self, "Courage")
 	elseif msg == L.Boss or msg:find(L.Boss) then
 		warnBossesActivatedSoon:Show()
-		self:Schedule(10, addsDelay, "Boss")
+		self:Schedule(10, addsDelay, self, "Boss")
 	elseif msg:find("spell:116779") then
 		if self:IsHeroic() then--On heroic the boss activates this perminantly on pull and it's always present
 			if not self:IsInCombat() then

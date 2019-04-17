@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1202, "DBM-BlackrockFoundry", nil, 457)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 35 $"):sub(12, -3))
+mod:SetRevision("2019041705938")
 mod:SetCreatureID(77182)
 mod:SetEncounterID(1696)
 mod:SetZone()

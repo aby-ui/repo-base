@@ -87,7 +87,6 @@ end
 -- eventInfo format: [eventID] = true
 local eventInfo = {}
 local tooltip, indicatortip = nil, nil
-addon.tooltip = tooltip
 addon.indicatortip = indicatortip
 local thisToon = UnitName("player") .. " - " .. GetRealmName()
 local maxlvl = MAX_PLAYER_LEVEL_TABLE[#MAX_PLAYER_LEVEL_TABLE]
@@ -134,9 +133,9 @@ end
 addon.GetTimeToTime = GetTimeToTime
 
 function addon:timedebug()
-  chatMsg("Version: %s", addon.version)
-  chatMsg("Realm: %s (%s)", GetRealmName(), addon:GetRegion())
-  chatMsg("Zone: %s (%s)", GetRealZoneText(), addon:GetCurrentMapAreaID())
+  chatMsg("Version: %s", self.version)
+  chatMsg("Realm: %s (%s)", GetRealmName(), self:GetRegion())
+  chatMsg("Zone: %s (%s)", GetRealZoneText(), self:GetCurrentMapAreaID())
   chatMsg("time()=%s GetTime()=%s", time(), GetTime())
   chatMsg("Local time: %s local", date("%A %c"))
   chatMsg("GetGameTime: %s:%s server",GetGameTime())
@@ -144,15 +143,15 @@ function addon:timedebug()
   chatMsg("C_DateAndTime.GetCurrentCalendarTime: %s %s/%s/%s server",t.weekday,t.month,t.monthDay,t.year)
   chatMsg("GetQuestResetTime: %s",SecondsToTime(GetQuestResetTime()))
   chatMsg(date("Daily reset: %a %c local (based on GetQuestResetTime)",time()+GetQuestResetTime()))
-  chatMsg("Local to server offset: %d hours",SavedInstances:GetServerOffset())
-  t = SavedInstances:GetNextDailyResetTime()
-  chatMsg("Next daily reset: %s local, %s server",date("%a %c",t), date("%a %c",t+3600*SavedInstances:GetServerOffset()))
-  t = SavedInstances:GetNextWeeklyResetTime()
-  chatMsg("Next weekly reset: %s local, %s server",date("%a %c",t), date("%a %c",t+3600*SavedInstances:GetServerOffset()))
-  t = SavedInstances:GetNextDailySkillResetTime()
-  chatMsg("Next skill reset: %s local, %s server",date("%a %c",t), date("%a %c",t+3600*SavedInstances:GetServerOffset()))
-  t = SavedInstances:GetNextDarkmoonResetTime()
-  chatMsg("Next Darkmoon reset: %s local, %s server",date("%a %c",t), date("%a %c",t+3600*SavedInstances:GetServerOffset()))
+  chatMsg("Local to server offset: %d hours",self:GetServerOffset())
+  t = self:GetNextDailyResetTime()
+  chatMsg("Next daily reset: %s local, %s server",date("%a %c",t), date("%a %c",t+3600*self:GetServerOffset()))
+  t = self:GetNextWeeklyResetTime()
+  chatMsg("Next weekly reset: %s local, %s server",date("%a %c",t), date("%a %c",t+3600*self:GetServerOffset()))
+  t = self:GetNextDailySkillResetTime()
+  chatMsg("Next skill reset: %s local, %s server",date("%a %c",t), date("%a %c",t+3600*self:GetServerOffset()))
+  t = self:GetNextDarkmoonResetTime()
+  chatMsg("Next Darkmoon reset: %s local, %s server",date("%a %c",t), date("%a %c",t+3600*self:GetServerOffset()))
 end
 
 local function questTableToString(t)
@@ -354,6 +353,21 @@ addon.defaultDB = {
   --   },
   -- }
 
+  -- Progress
+  -- [index] = {
+  --   isComplete = isComplete,
+  --   isFinish = isFinish,
+  --   numFulfilled = numFulfilled,
+  --   numRequired = numRequired,
+  --   -- others
+  -- }
+
+  -- Warfront
+  -- [index] = {
+  --   scenario = (boolean),
+  --   boss = (boolean),
+  -- }
+
   Indicators = {
     D1Indicator = "BLANK", -- indicator: ICON_*, BLANK
     D1Text = "KILLED/TOTAL",
@@ -458,6 +472,10 @@ addon.defaultDB = {
     CombineEmissary = false,
     AbbreviateKeystone = true,
     TrackParagon = true,
+    Progress1 = true, -- PvP Conquest
+    Progress2 = true, -- Island Weekly
+    Warfront1 = true, -- Arathi Highlands
+    Warfront2 = true, -- Darkshores
   },
   Instances = { }, 	-- table key: "Instance name"; value:
   -- Show: boolean
@@ -487,6 +505,13 @@ addon.defaultDB = {
     AccountDaily = {},
     AccountWeekly = {},
   },
+  Warfront = {},
+  -- Track Warfronts
+  -- [index] = {
+  --   captureSide = ("Alliance" or "Horde"), -- Capture Side of Warfront
+  --   contributing = (boolean), -- if it is contributing
+  --   restTime = restTime, -- timeOfNextStateChange
+  -- }
   Emissary = {
     Cache = {},
     Expansion = {},
@@ -724,11 +749,6 @@ function addon:QuestCount(toonname)
   for id, info in pairs(t.Quests) do
     if (TimewalkingItemQuest[id] and (not eventInfo[TimewalkingItemQuest[id]])) then
       -- Timewalking Item Quests only show during Timewalking Weeks
-    elseif (
-      (t.Faction == "Alliance" and id == 53435) or
-      (t.Faction == "Horde" and id == 53436)
-    ) then
-      -- Island Expeditions Weekly Quest (Issue #208)
     else
       if info.isDaily then
         dailycount = dailycount + 1
@@ -1527,6 +1547,7 @@ function addon:UpdateToonData()
   local rating = (GetPersonalRatedInfo and GetPersonalRatedInfo(4))
   t.RBGrating = tonumber(rating) or t.RBGrating
   core:GetModule("Tradeskills"):ScanItemCDs()
+  local Progress = core:GetModule("Progress")
   -- Daily Reset
   if nextreset and nextreset > time() then
     for toon, ti in pairs(addon.db.Toons) do
@@ -1536,6 +1557,7 @@ function addon:UpdateToonData()
             ti.Quests[id] = nil
           end
         end
+        Progress:OnDailyReset(toon)
         ti.DailyResetTime = (ti.DailyResetTime and ti.DailyResetTime + 24*3600) or nextreset
       end
     end
@@ -1596,6 +1618,7 @@ function addon:UpdateToonData()
             ci.earnedThisWeek = 0
           end
         end
+        Progress:OnWeeklyReset(toon)
         ti.WeeklyResetTime = (ti.WeeklyResetTime and ti.WeeklyResetTime + 7*24*3600) or nextreset
       end
     end
@@ -1851,11 +1874,6 @@ hoverTooltip.ShowQuestTooltip = function (cell, arg, ...)
     if (not isDaily) == (not qi.isDaily) then
       if (TimewalkingItemQuest[id] and (not eventInfo[TimewalkingItemQuest[id]])) then
         -- Timewalking Item Quests only show during Timewalking Weeks
-      elseif (
-        (t.Faction == "Alliance" and id == 53435) or
-        (t.Faction == "Horde" and id == 53436)
-      ) then
-        -- Island Expeditions Weekly Quest (Issue #208)
       else
         zonename = qi.Zone and qi.Zone.name or ""
         table.insert(ql,zonename.." # "..id)
@@ -2487,7 +2505,7 @@ end
 function core:OnInitialize()
   local versionString = GetAddOnMetadata(addonName, "version")
   --[===[@debug@
-  if versionString == "8.1.1" then
+  if versionString == "8.1.1-9-g8a76071" then
     versionString = "Dev"
   end
   --@end-debug@]===]
@@ -2511,6 +2529,7 @@ function core:OnInitialize()
   db.Emissary = db.Emissary or addon.defaultDB.Emissary
   db.Quests = db.Quests or addon.defaultDB.Quests
   db.QuestDB = db.QuestDB or addon.defaultDB.QuestDB
+  db.Warfront = db.Warfront or addon.defaultDB.Warfront
   for name,default in pairs(addon.defaultDB.Tooltip) do
     db.Tooltip[name] = (db.Tooltip[name]==nil and default) or db.Tooltip[name]
   end
@@ -3275,6 +3294,7 @@ do
     return cnext, t, nil
   end
 end
+addon.cpairs = cpairs
 
 function addon:IsDetached()
   return addon.detachframe and addon.detachframe:IsShown()
@@ -3849,6 +3869,24 @@ function core:ShowTooltip(anchorframe)
       end
     end
   end
+
+  core:GetModule("Progress"):ShowTooltip(tooltip, columns, showall, function()
+    if not firstcategory and addon.db.Tooltip.CategorySpaces then
+      addsep()
+    end
+    if addon.db.Tooltip.ShowCategories then
+      tooltip:AddLine(YELLOWFONT .. L["Quest progresses"] .. FONTEND)
+    end
+  end)
+
+  core:GetModule("Warfront"):ShowTooltip(tooltip, columns, showall, function()
+    if not firstcategory and addon.db.Tooltip.CategorySpaces then
+      addsep()
+    end
+    if addon.db.Tooltip.ShowCategories then
+      tooltip:AddLine(YELLOWFONT .. L["Warfronts"] .. FONTEND)
+    end
+  end)
 
   if addon.db.Tooltip.TrackSkills or showall then
     local show = false

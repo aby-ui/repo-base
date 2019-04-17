@@ -1,4 +1,4 @@
-﻿local mod	= DBM:NewMod("d640", "DBM-Challenges", 1, nil, function(t)
+local mod	= DBM:NewMod("d640", "DBM-Challenges", 1, nil, function(t)
 	if( GetLocale() == "deDE") then
 		return select(2, string.match(t, "(%S+): (%S+.%S+.%S+.%S+)")) -- "Feuerprobe: Tempel des Weißen Tigers QUEST nil"
 	else
@@ -7,7 +7,7 @@
 end)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 105 $"):sub(12, -3))
+mod:SetRevision("2019041705828")
 mod:SetZone()
 mod.noStatistics = true
 

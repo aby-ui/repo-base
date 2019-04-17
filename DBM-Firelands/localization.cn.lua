@@ -1,4 +1,4 @@
-﻿-- Simplified Chinese by Diablohu(diablohudream@gmail.com)
+-- Simplified Chinese by Diablohu(diablohudream@gmail.com)
 -- Last update: 1/1/2012
 
 if GetLocale() ~= "zhCN" then return end
@@ -121,7 +121,6 @@ L:SetOptionLocalization({
 	TimerBladeNext		= "计时条：下一次贝尔洛克之剑",
 	SetIconOnCountdown	= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(99516),
 	SetIconOnTorment	= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(100232),
-	ArrowOnCountdown	= "DBM箭头：当你受到$spell:99516影响时",
 	InfoFrame		= "信息框：活力火花堆叠层数",
 	RangeFrame			= "距离监视器（5码）：应对$spell:99404"
 })
@@ -142,7 +141,6 @@ L:SetOptionLocalization({
 	timerNextSpecial			= "计时条：下一次特殊技能",
 	RangeFrameSeeds				= "距离监视器（12码）：应对$spell:98450",
 	RangeFrameCat				= "距离监视器（10码）：应对$spell:98374",
-	LeapArrow					= "DBM箭头：当$spell:98476在你附近时",
 	IconOnLeapingFlames			= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(100208)
 })
 

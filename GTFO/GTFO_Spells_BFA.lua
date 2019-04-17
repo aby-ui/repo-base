@@ -740,3 +740,28 @@ GTFO.SpellID["287993"] = {
   affirmingDebuffSpellID = 288297; -- Arctic Ground
   sound = 1;
 };
+
+GTFO.SpellID["288808"] = {
+  --desc = "Consecration";
+  applicationOnly = true;
+  heroicSound = 1;
+  mythicSound = 1;
+  sound = 0;
+  test = true;
+};
+
+--- **********************
+--- * Crucible of Storms *
+--- **********************
+
+-- TODO: Promises of Power (Restless Cabal) -- sound = 4 [Requires investigation]
+
+GTFO.SpellID["287876"] = {
+  --desc = "Enveloping Darkness (Restless Cabal)";
+  sound = 1;
+};
+
+GTFO.SpellID["287876"] = {
+  --desc = "Gift of N'Zoth: Obscurity (Uu'nat)";
+  sound = 1;
+};

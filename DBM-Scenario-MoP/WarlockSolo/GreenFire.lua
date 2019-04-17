@@ -2,7 +2,7 @@ if select(2, UnitClass("player")) ~= "WARLOCK" then return end
 local mod	= DBM:NewMod("d594", "DBM-Scenario-MoP")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 114 $"):sub(12, -3))
+mod:SetRevision("2019041710000")
 mod:SetZone()
 
 mod:RegisterCombat("scenario", 1112)

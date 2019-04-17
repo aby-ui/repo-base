@@ -372,8 +372,18 @@ function Config:BuildOptions()
             desc = L["Combine LFR"],
             order = 23.95,
           },
+          ProgressHeader = {
+            order = 31,
+            type = "header",
+            name = L["Quest progresses"],
+          },
+          WarfrontHeader = {
+            order = 33,
+            type = "header",
+            name = L["Warfronts"],
+          },
           EmissaryHeader = {
-            order = 30,
+            order = 36,
             type = "header",
             name = L["Emissary quests"],
           },
@@ -842,11 +852,18 @@ function Config:BuildOptions()
   for k,v in pairs(opts) do
     core.Options[k] = v
   end
-  local expansion
+  local progress = core:GetModule("Progress"):BuildOptions(32)
+  for k, v in pairs(progress) do
+    core.Options.args.General.args[k] = v
+  end
+  local warfront = core:GetModule("Warfront"):BuildOptions(34)
+  for k, v in pairs(warfront) do
+    core.Options.args.General.args[k] = v
+  end
   for expansion, _ in pairs(addon.Emissaries) do
     core.Options.args.General.args["Emissary" .. expansion] = {
       type = "toggle",
-      order = 31 + expansion * 0.1,
+      order = 37 + expansion * 0.1,
       name = _G["EXPANSION_NAME" .. expansion],
     }
   end

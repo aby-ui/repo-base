@@ -1011,7 +1011,7 @@ CalligraphyHelper:SetScript("OnEvent",function(self,event,arg1,arg2)
 			if VWQL and VWQL.DisableCalligraphy then
 				return
 			end
-			print("World Quests List: Calligraphy helper loaded")
+			U1Message("世界任务列表: 书法艺术助手已加载")
 			self:RegisterEvent("GOSSIP_CLOSED")
 		end
 	elseif event == 'QUEST_REMOVED' then

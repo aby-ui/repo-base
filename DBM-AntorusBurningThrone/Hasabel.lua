@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1985, "DBM-AntorusBurningThrone", nil, 946)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 3 $"):sub(12, -3))
+mod:SetRevision("2019041705925")
 mod:SetCreatureID(122104)
 mod:SetEncounterID(2064)
 mod:DisableESCombatDetection()--Remove if blizz fixes clicking portals causing this event to fire (even though boss isn't engaged)

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(325, "DBM-DragonSoul", nil, 187)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 192 $"):sub(12, -3))
+mod:SetRevision("2019041705904")
 mod:SetCreatureID(55312)
 mod:SetEncounterID(1295)
 --mod:DisableRegenDetection()--Uncomment in next dbm release

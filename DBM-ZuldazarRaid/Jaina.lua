@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2343, "DBM-ZuldazarRaid", 3, 1176)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(string.sub("2019041433621", 1, -5))
+mod:SetRevision("20190416205700")
 mod:SetCreatureID(146409)
 mod:SetEncounterID(2281)
 mod:SetZone()
@@ -766,15 +766,15 @@ function mod:UNIT_DIED(args)
 		end
 	elseif cid == 148965 then--Kul Tiran Marine
 		if self.Options.NPAuraOnMarkedTarget2 then
-			DBM.Nameplate:Hide(true, args.destGUID, spellId)
+			DBM.Nameplate:Hide(true, args.destGUID)
 		end
 	elseif cid == 149535 then--Icebound Image
 		if self.Options.NPAuraOnHowlingWinds2 then
-			DBM.Nameplate:Hide(true, args.destGUID, spellId)
+			DBM.Nameplate:Hide(true, args.destGUID)
 		end
 	elseif cid == 148631 then--Unexploded Ordinance
 		if self.Options.NPAuraOnRefractiveIce then
-			DBM.Nameplate:Hide(true, args.destGUID, spellId)
+			DBM.Nameplate:Hide(true, args.destGUID)
 		end
 	end
 end

@@ -1,7 +1,7 @@
-﻿local mod	= DBM:NewMod("Kruul", "DBM-Challenges", 2)
+local mod	= DBM:NewMod("Kruul", "DBM-Challenges", 2)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 105 $"):sub(12, -3))
+mod:SetRevision("2019041705828")
 mod:SetCreatureID(117933, 117198)--Variss, Kruul
 mod:SetZone()
 mod:SetBossHPInfoToHighest()
