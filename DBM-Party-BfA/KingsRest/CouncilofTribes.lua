@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2170, "DBM-Party-BfA", 3, 1041)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190416205700")
+mod:SetRevision("20190420174733")
 mod:SetCreatureID(135475, 135470, 135472)
 mod:SetEncounterID(2140)
 mod:SetZone()
@@ -51,7 +51,7 @@ local timerPoisonNovaCD				= mod:NewCDTimer(133, 267273, nil, nil, nil, 4, nil, 
 local timerTotemsCD					= mod:NewCDTimer(13, 267060, nil, nil, nil, 1, nil, DBM_CORE_DAMAGE_ICON)--Actual timer needs doing
 
 --mod:AddRangeFrameOption(5, 194966)
-mod:AddSetIconOption("SetIconOnBarrel", 266951, true)
+mod:AddSetIconOption("SetIconOnBarrel", 266951, true, false, {1})
 
 mod.vb.phase = 1
 mod.vb.bossOne = 0

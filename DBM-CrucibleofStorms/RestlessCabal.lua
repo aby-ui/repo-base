@@ -1,13 +1,13 @@
 local mod	= DBM:NewMod(2328, "DBM-CrucibleofStorms", nil, 1177)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041750524")
+mod:SetRevision("20190420174733")
 mod:SetCreatureID(146497, 146495)--146497 Zaxasj, 146495 Fa'thuul
 mod:SetEncounterID(2269)
 --mod:DisableESCombatDetection()
 mod:SetZone()
 mod:SetBossHPInfoToHighest()
-mod:SetUsedIcons(1, 2, 3, 4, 6, 7, 8)--Refine when max number of doubt targets is known
+mod:SetUsedIcons(1, 2, 3, 4, 5, 6)--Refine when max number of doubt targets is known
 --mod:SetHotfixNoticeRev(17775)
 --mod:SetMinSyncRevision(16950)
 --mod.respawnTime = 35
@@ -62,7 +62,7 @@ local specWarnAphoticBlast				= mod:NewSpecialWarningYou(282386, false, nil, 2, 
 local yellAphoticBlast					= mod:NewFadesYell(282386)
 local specWarnAgentofDemise				= mod:NewSpecialWarningTargetChange(282540, "-Healer", nil, nil, 1, 2)
 local yellAgentofDemise					= mod:NewYell(282540, nil, nil, nil, "YELL")
-local specWarnCerebralAssault			= mod:NewSpecialWarningDodge(282589, nil, nil, nil, 3, 2)
+local specWarnCerebralAssault			= mod:NewSpecialWarningDodgeCount(282589, nil, nil, nil, 3, 2)
 local specWarnDarkherald				= mod:NewSpecialWarningYou(282561, nil, nil, nil, 1, 2)
 local yellDarkherald					= mod:NewYell(282561)
 local specWarnVisagefromBeyond			= mod:NewSpecialWarningSwitch(282515, "-Healer", nil, nil, 1, 2)
@@ -80,30 +80,30 @@ local specWarnGTFO						= mod:NewSpecialWarningGTFO(287876, nil, nil, nil, 1, 8)
 
 --mod:AddTimerLine(DBM:EJ_GetSectionInfo(18527))
 local timerAbyssalCollapse				= mod:NewCastTimer(20, 282886, nil, nil, nil, 2, nil, DBM_CORE_DEADLY_ICON)
-local timerStormofAnnihilation			= mod:NewCastTimer(15, 286755, nil, nil, nil, 2, nil, DBM_CORE_HEALER_ICON)
+local timerStormofAnnihilation			= mod:NewCastTimer(15, 286755, 196871, nil, nil, 2, nil, DBM_CORE_HEALER_ICON)--Short text "Storm"
 local timerPact							= mod:NewCastSourceTimer(12, 282675, nil, nil, nil, 2, nil, DBM_CORE_IMPORTANT_ICON)
 --Zaxasj the Speaker
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(18974))
-local timerCerebralAssaultCD			= mod:NewCDTimer(31.5, 282589, nil, nil, nil, 3)
-local timerDarkherald					= mod:NewTargetTimer(20, 282589, nil, nil, nil, 5)
-local timerDarkheraldCD					= mod:NewCDTimer(32.7, 282589, nil, nil, nil, 3)
+local timerCerebralAssaultCD			= mod:NewCDCountTimer(31.5, 282589, nil, nil, nil, 3)
+local timerDarkherald					= mod:NewTargetTimer(20, 282561, nil, nil, nil, 5)
+local timerDarkheraldCD					= mod:NewCDCountTimer(32.7, 282561, nil, nil, nil, 3)
 local timerTerrifyingEcho				= mod:NewCastTimer(15, 282517, nil, nil, nil, 4, nil, DBM_CORE_INTERRUPT_ICON)
 --Fa'thuul the Feared
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(18983))
 local timerShearMindCD					= mod:NewCDTimer(8.4, 282384, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON)
 --local timerDevourThoughtsCD				= mod:NewCDTimer(9.8, 282818, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON)
 local timerVoidCrashCD					= mod:NewCDTimer(13.3, 285416, nil, nil, nil, 3)
-local timerCrushingDoubtCD				= mod:NewCDTimer(40.1, 282432, nil, nil, nil, 3)
+local timerCrushingDoubtCD				= mod:NewCDCountTimer(40.1, 282432, nil, nil, nil, 3)
 
---local berserkTimer					= mod:NewBerserkTimer(600)
+local berserkTimer						= mod:NewBerserkTimer(780)
 
 --local countdownCollapsingWorld			= mod:NewCountdown(50, 243983, true, 3, 3)
 --local countdownShearMind				= mod:NewCountdown("Alt12", 244016, false, 2, 3)
 --local countdownFelstormBarrage			= mod:NewCountdown("AltTwo32", 244000, nil, nil, 3)
 
-mod:AddSetIconOption("SetIconCrushingDoubt", 282432, true)
-mod:AddSetIconOption("SetIconDarkherald", 282561, true)
-mod:AddSetIconOption("SetIconOnAdds", 282621, true, true)
+mod:AddSetIconOption("SetIconCrushingDoubt", 282432, true, false, {1, 2})
+mod:AddSetIconOption("SetIconDarkherald", 282561, true, false, {6})
+mod:AddSetIconOption("SetIconOnAdds", 282617, true, true, {3, 4, 5})
 mod:AddRangeFrameOption(6, 283524)
 mod:AddInfoFrameOption(282741, true)
 mod:AddNamePlateOption("NPAuraOnEcho", 282517)
@@ -111,25 +111,32 @@ mod:AddNamePlateOption("NPAuraOnWitness", 282621)
 
 --mod.vb.phase = 1
 mod.vb.shieldCount = 0
+mod.vb.assaultCount = 0
+mod.vb.heraldCount = 0
+mod.vb.crushingDoubtCount = 0
 mod.vb.CrushingDoubtIcon = 1
 --mod.vb.tankAddsActive = 0
-mod.vb.addIcon = 8
+mod.vb.addIcon = 3
 local castsPerGUID = {}
 local interruptTextures = {[1] = 2178508, [2] = 2178501, [3] = 2178502, [4] = 2178503, [5] = 2178504, [6] = 2178505, [7] = 2178506, [8] = 2178507,}--Fathoms Deck
 
 function mod:OnCombatStart(delay)
 	table.wipe(castsPerGUID)
 	self.vb.shieldCount = 0
+	self.vb.assaultCount = 0
+	self.vb.heraldCount = 0
+	self.vb.crushingDoubtCount = 0
 	self.vb.CrushingDoubtIcon = 1
 	--self.vb.tankAddsActive = 0
-	self.vb.addIcon = 8
+	self.vb.addIcon = 3
 	--Zaxasj the Speaker
-	timerDarkheraldCD:Start(10.2-delay)--SUCCESS
-	timerCerebralAssaultCD:Start(15.5-delay)
+	timerDarkheraldCD:Start(10.2-delay, 1)--SUCCESS
+	timerCerebralAssaultCD:Start(15.5-delay, 1)
 	--Fa'thuul the Feared
 	timerShearMindCD:Start(8.5-delay)--SUCCESS
 	timerVoidCrashCD:Start(13-delay)--SUCCESS
-	timerCrushingDoubtCD:Start(18.1-delay)
+	timerCrushingDoubtCD:Start(18.1-delay, 1)
+	berserkTimer:Start(780-delay)--780 verified on normal https://www.warcraftlogs.com/reports/FDpxbA2ht68rqXaZ#fight=3&view=events&pins=2%24Off%24%23244F4B%24expression%24ability.name%20%3D%20%22Berserk%22
 	if self.Options.NPAuraOnPresence or self.Options.NPAuraOnWitness then
 		DBM:FireEvent("BossMod_EnableHostileNameplates")
 	end
@@ -159,9 +166,10 @@ function mod:SPELL_CAST_START(args)
 			timerPact:Start(12, L.Fathuul)
 		end
 	elseif spellId == 282589 then
-		specWarnCerebralAssault:Show()
+		self.vb.assaultCount = self.vb.assaultCount + 1
+		specWarnCerebralAssault:Show(self.vb.assaultCount)
 		specWarnCerebralAssault:Play("shockwave")
-		timerCerebralAssaultCD:Start()
+		timerCerebralAssaultCD:Start(nil, self.vb.assaultCount+1)
 	elseif spellId == 282515 then
 		specWarnVisagefromBeyond:Show()
 		specWarnVisagefromBeyond:Play("bigmob")
@@ -179,9 +187,9 @@ function mod:SPELL_CAST_START(args)
 			if self.Options.SetIconOnAdds then
 				self:ScanForMobs(args.sourceGUID, 2, self.vb.addIcon, 1, 0.2, 12)
 			end
-			self.vb.addIcon = self.vb.addIcon - 1
-			if self.vb.addIcon == 5 then--6-8
-				self.vb.addIcon = 8
+			self.vb.addIcon = self.vb.addIcon + 1
+			if self.vb.addIcon == 6 then--3-5 (to match markers bw uses)
+				self.vb.addIcon = 3
 			end
 		end
 		castsPerGUID[args.sourceGUID] = castsPerGUID[args.sourceGUID] + 1
@@ -221,7 +229,8 @@ end
 function mod:SPELL_CAST_SUCCESS(args)
 	local spellId = args.spellId
 	if spellId == 282561 then
-		timerDarkheraldCD:Start()--Kept here because boss can stutter cast so START is bad place to start timer
+		self.vb.heraldCount = self.vb.heraldCount + 1
+		timerDarkheraldCD:Start(nil, self.vb.heraldCount+1)--Kept here because boss can stutter cast so START is bad place to start timer
 	elseif spellId == 282384 then
 		timerShearMindCD:Start()
 	elseif spellId == 282407 or spellId == 285416 then
@@ -297,7 +306,7 @@ function mod:SPELL_AURA_APPLIED(args)
 			warnDarkHerald:Show(args.destName)
 		end
 		if self.Options.SetIconDarkherald then
-			self:SetIcon(args.destName, 4)
+			self:SetIcon(args.destName, 6)
 		end
 	elseif spellId == 282384 then
 		local uId = DBM:GetRaidUnitId(args.destName)
@@ -433,6 +442,7 @@ end
 function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 	if spellId == 287762 then--Crushing Doubt
 		self.vb.CrushingDoubtIcon = 1
-		timerCrushingDoubtCD:Start()
+		self.vb.crushingDoubtCount = self.vb.crushingDoubtCount + 1
+		timerCrushingDoubtCD:Start(nil, self.vb.crushingDoubtCount+1)
 	end
 end

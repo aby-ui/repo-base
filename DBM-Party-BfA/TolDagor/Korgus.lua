@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2096, "DBM-Party-BfA", 9, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190416205700")
+mod:SetRevision("20190420174733")
 mod:SetCreatureID(127503)
 mod:SetEncounterID(2104)
 mod:SetZone()
@@ -36,7 +36,7 @@ local timerDeadeyeCD				= mod:NewCDTimer(23, 256038, nil, nil, nil, 3)
 local timerExplosiveBurstCD			= mod:NewCDTimer(44.8, 256105, nil, nil, nil, 3)
 local timerMassiveBlastCD			= mod:NewCDTimer(22, 263345, nil, nil, nil, 3)
 
-mod:AddSetIconOption("SetIconOnDeadeye", 256038, true)
+mod:AddSetIconOption("SetIconOnDeadeye", 256038, true, false, {1})
 mod:AddInfoFrameOption(256044)
 mod:AddRangeFrameOption(5, 256105)
 

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("SoOTrash", "DBM-SiegeOfOrgrimmarV2")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 114 $"):sub(12, -3))
+mod:SetRevision("2019041710000")
 --mod:SetModelID(47785)
 mod:SetZone()
 

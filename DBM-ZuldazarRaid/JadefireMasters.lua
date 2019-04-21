@@ -7,7 +7,7 @@ end
 local mod	= DBM:NewMod(dungeonID, "DBM-ZuldazarRaid", 1, 1176)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190416205700")
+mod:SetRevision("20190420174733")
 mod:SetCreatureID(creatureID, creatureID2)
 mod:SetEncounterID(2266, 2285)--2266 horde, 2285 Alliance
 --mod:DisableESCombatDetection()
@@ -99,7 +99,6 @@ mod:AddSetIconOption("SetIconEmbers", 286988, true)
 mod:AddInfoFrameOption(281959, true)
 mod:AddNamePlateOption("NPAuraOnFixate", 268074)
 mod:AddNamePlateOption("NPAuraOnExplosion", 284399)
---mod:AddSetIconOption("SetIconDarkRev", 273365, true)
 
 mod.vb.shieldsActive = false
 mod.vb.embersIcon = 0

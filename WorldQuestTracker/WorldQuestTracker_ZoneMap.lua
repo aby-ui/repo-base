@@ -630,6 +630,10 @@ function WorldQuestTracker.UpdateZoneWidgets (forceUpdate)
 						if (not passFilter) then
 							if (rarity == LE_WORLD_QUEST_QUALITY_EPIC) then
 								passFilter = true
+								
+							elseif (worldQuestType == LE_QUEST_TAG_TYPE_FACTION_ASSAULT) then 
+								passFilter = true
+								
 							elseif (WorldQuestTracker.db.profile.filter_always_show_faction_objectives) then
 								local isCriteria = IsQuestCriteriaForBounty (questID, bountyQuestId)
 

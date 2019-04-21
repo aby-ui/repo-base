@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2337, "DBM-ZuldazarRaid", 3, 1176)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190416205700")
+mod:SetRevision("20190420174733")
 mod:SetCreatureID(146251, 146253, 146256)--Sister Katherine 146251, Brother Joseph 146253, Laminaria 146256
 mod:SetEncounterID(2280)
 --mod:DisableESCombatDetection()
@@ -107,7 +107,7 @@ local countdownSeaSwell					= mod:NewCountdown(20.6, 285118, true, 3, 3)
 --local countdownFelstormBarrage			= mod:NewCountdown("AltTwo32", 244000, nil, nil, 3)
 
 mod:AddNamePlateOption("NPAuraOnKepWrapping", 285382)
-mod:AddSetIconOption("SetIconWail", 285350, true)
+mod:AddSetIconOption("SetIconWail", 285350, true, false, {1, 2, 3})
 mod:AddRangeFrameOption(5, 285118)
 mod:AddInfoFrameOption(284760, true)
 
@@ -229,8 +229,8 @@ function mod:OnCombatStart(delay)
 		DBM.InfoFrame:SetHeader(OVERVIEW)
 		DBM.InfoFrame:Show(8, "function", updateInfoFrame, false, false)
 	end
-	self:Schedule(0.5, delayedSisterUpdate, self, true)--Update timers couple seconds into pull
-	self:Schedule(0.5, delayedBrotherUpdate, self, true)--Update timers couple seconds into pull
+	self:Schedule(0.5, delayedSisterUpdate, self, 1)--Update timers couple seconds into pull
+	self:Schedule(0.5, delayedBrotherUpdate, self, 1)--Update timers couple seconds into pull
 end
 
 function mod:OnCombatEnd()
@@ -434,11 +434,14 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif spellId == 285350 or spellId == 285426 then
 		if args:IsPlayer() then
 			specWarnStormsWail:Show(freezingTidePod)
-			local timer = self:IsEasy() and 13 or 10
-			specWarnStormsWail:Schedule(timer-4.5, DBM_CORE_BACK)
 			specWarnStormsWail:Play("targetyou")
 			yellStormsWail:Yell()
-			yellStormsWailFades:Countdown(timer)
+			local spellName, _, _, _, _, expireTime = DBM:UnitDebuff("player", spellId)
+			if expireTime then
+				local remaining = expireTime-GetTime()
+				specWarnStormsWail:Schedule(remaining-4.5, DBM_CORE_BACK)
+				yellStormsWailFades:Countdown(remaining)
+			end
 		else
 			warnStormsWail:Show(args.destName)
 		end

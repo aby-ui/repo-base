@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1738, "DBM-EmeraldNightmare", nil, 768)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041705925")
+mod:SetRevision("2019042041352")
 mod:SetCreatureID(105393)
 mod:SetEncounterID(1873)
 mod:SetZone()
@@ -186,7 +186,7 @@ do
 		local lowestUnitID = nil
 		local lowestHealth = 100
 		local found = false
-		for i = 1, 25 do
+		for i = 1, 40 do
 			local UnitID = "nameplate"..i
 			local GUID = UnitGUID(UnitID)
 			if GUID and not autoMarkFilter[GUID] then
@@ -201,21 +201,8 @@ do
 			end
 		end
 		if lowestUnitID then
-			--Can't set Icon on "nameplate..i" so try to find a target unit ID that supports set icon
-			if UnitIsUnit(lowestUnitID, "mouseover") then
-				self:SetIcon("mouseover", 8)
-				found = true
-			end
-			if not found then
-				for uId in DBM:GetGroupMembers() do
-					local unitid = uId.."target"
-					if UnitIsUnit(lowestUnitID, unitid) then
-						self:SetIcon(unitid, 8)
-						found = true
-						break
-					end
-				end
-			end
+			SetRaidTarget(lowestUnitID, 8)
+			found = true
 		end
 		if found and self.Options.SetIconOnlyOnce2 then
 			--Abort until invoked again

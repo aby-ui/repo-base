@@ -431,6 +431,7 @@ WorldQuestTracker.MapData.FactionIcons = {
 	[2158] = "Interface\\ICONS\\inv__faction_voldunai", --Voldunai
 	[2163] = "Interface\\ICONS\\inv__faction_tortollanseekers", --Tortollan Seekers
 	[2164] = "Interface\\ICONS\\inv__faction_championsofazeroth", --Champions of Azeroth
+	
 }
 
 --reputation IDs for each faction -- UnitFactionGroup ("player")

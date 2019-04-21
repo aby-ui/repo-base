@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2334, "DBM-ZuldazarRaid", 3, 1176)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190416205700")
+mod:SetRevision("20190420174733")
 mod:SetCreatureID(144796)
 mod:SetEncounterID(2276)
 --mod:DisableESCombatDetection()
@@ -87,8 +87,8 @@ local countdownWorldEnlarger			= mod:NewCountdown(50, 288049, true, nil, 4)
 local countdownGigavoltCharge			= mod:NewCountdown("Alt12", 286646, true, nil, 4)
 local countdownWormhole					= mod:NewCountdown("AltTwo32", 287952, nil, nil, 4)
 
-mod:AddSetIconOption("SetIconGigaVolt", 286646, true)
-mod:AddSetIconOption("SetIconBot", 288410, true, true)
+mod:AddSetIconOption("SetIconGigaVolt", 286646, true, false, {1, 2, 3})
+mod:AddSetIconOption("SetIconBot", 288410, true, true, {4, 5, 6, 7, 8})
 mod:AddInfoFrameOption(286105, true)
 
 mod.vb.phase = 1

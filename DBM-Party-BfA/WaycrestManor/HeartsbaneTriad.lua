@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2125, "DBM-Party-BfA", 10, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190416205700")
+mod:SetRevision("20190420174733")
 mod:SetCreatureID(135358, 135359, 135360, 131823, 131824, 131825)--All versions so we can pull boss
 mod:SetEncounterID(2113)
 mod:DisableESCombatDetection()--ES fires For entryway trash pull sometimes, for some reason.
@@ -38,7 +38,7 @@ local timerUnstableRunicMarkCD		= mod:NewNextTimer(13.3, 260703, nil, nil, nil, 
 
 mod:AddRangeFrameOption(6, 260703)
 mod:AddInfoFrameOption(260773, true)
-mod:AddSetIconOption("SetIconOnTriad", 260805, true, true)
+mod:AddSetIconOption("SetIconOnTriad", 260805, true, true, {8})
 
 mod.vb.activeTriad = nil
 local IrisBuff = DBM:GetSpellInfo(260805)

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2169, "DBM-Uldir", nil, 1031)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190416205700")
+mod:SetRevision("20190420174733")
 mod:SetCreatureID(134445)--Zek'vhozj, 134503/qiraji-warrior
 mod:SetEncounterID(2136)
 mod:SetZone()
@@ -84,8 +84,8 @@ local countdownEyeBeam					= mod:NewCountdown("AltTwo37", 264382, "-Tank", nil, 
 
 mod:AddRangeFrameOption(6, 264382)
 mod:AddBoolOption("EarlyTankSwap", false)
-mod:AddSetIconOption("SetIconOnAdds", 267192, true, true)
-mod:AddSetIconOption("SetIconOnEyeBeam", 264382, true)
+mod:AddSetIconOption("SetIconOnAdds", 267192, true, true, {1, 2, 3})
+mod:AddSetIconOption("SetIconOnEyeBeam", 264382, true, false, {6, 7, 8})
 
 mod.vb.phase = 1
 mod.vb.orbCount = 0

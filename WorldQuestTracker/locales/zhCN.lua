@@ -111,12 +111,9 @@ L["S_MAPBAR_SUMMARYMENU_NOATTENTION"] = [=[其他角色正在的追踪任务
 剩余时间没有小于两小时！]=]
 L["S_MAPBAR_SUMMARYMENU_REQUIREATTENTION"] = "需要注意"
 L["S_MAPBAR_SUMMARYMENU_TODAYREWARDS"] = "今日奖励"
---[[Translation missing --]]
---[[ L["S_OPTIONS_ACCESSIBILITY"] = ""--]] 
---[[Translation missing --]]
---[[ L["S_OPTIONS_ACCESSIBILITY_EXTRATRACKERMARK"] = ""--]] 
---[[Translation missing --]]
---[[ L["S_OPTIONS_ACCESSIBILITY_SHOWBOUNTYRING"] = ""--]] 
+L["S_OPTIONS_ACCESSIBILITY"] = "辅助"
+L["S_OPTIONS_ACCESSIBILITY_EXTRATRACKERMARK"] = "额外追踪标记"
+L["S_OPTIONS_ACCESSIBILITY_SHOWBOUNTYRING"] = "显示额外奖励圆环"
 L["S_OPTIONS_ANIMATIONS"] = "进行动画"
 L["S_OPTIONS_MAPFRAME_ALIGN"] = "地图窗口置于中部"
 L["S_OPTIONS_MAPFRAME_ERROR_SCALING_DISABLED"] = "需要首先启用“地图窗口缩放”，没有数值被更改。"
