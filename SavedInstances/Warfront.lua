@@ -51,7 +51,6 @@ function W:OnEnable()
   self:CONTRIBUTION_CHANGED()
   self:UpdateQuest()
   self:RegisterEvent("CONTRIBUTION_CHANGED")
-  self:RegisterEvent("ENCOUNTER_END", "UpdateQuest")
 end
 
 function W:CONTRIBUTION_CHANGED()
@@ -164,7 +163,3 @@ function W:ShowTooltip(tooltip, columns, showall, preshow)
     end
   end
 end
-
-hooksecurefunc("GetQuestReward", function()
-  W:ScheduleTimer("UpdateQuest", 1)
-end)

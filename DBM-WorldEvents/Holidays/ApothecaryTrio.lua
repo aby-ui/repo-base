@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("d288", "DBM-WorldEvents", 1)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190416205700")
+mod:SetRevision("20190423232607")
 mod:SetCreatureID(36272, 36296, 36565)
 mod:SetModelID(16176)
 mod:SetZone()
@@ -23,9 +23,9 @@ local warnChainReaction			= mod:NewCastAnnounce(68821, 3, nil, nil, "Melee", 2)
 
 local specWarnGTFO				= mod:NewSpecialWarningGTFO(68927, nil, nil, nil, 1, 8)
 
-local timerHummel				= mod:NewTimer(10.5, "HummelActive", "Interface\\Icons\\ability_warrior_offensivestance", nil, false, "TrioActiveTimer")
-local timerBaxter				= mod:NewTimer(16.5, "BaxterActive", "Interface\\Icons\\ability_warrior_offensivestance", nil, false, "TrioActiveTimer")
-local timerFrye					= mod:NewTimer(25.5, "FryeActive", "Interface\\Icons\\ability_warrior_offensivestance", nil, false, "TrioActiveTimer")
+local timerHummel				= mod:NewTimer(10.5, "HummelActive", "132349", nil, false, "TrioActiveTimer")
+local timerBaxter				= mod:NewTimer(16.5, "BaxterActive", "132349", nil, false, "TrioActiveTimer")
+local timerFrye					= mod:NewTimer(25.5, "FryeActive", "132349", nil, false, "TrioActiveTimer")
 mod:AddBoolOption("TrioActiveTimer", true, "timer", nil, 1)
 
 function mod:SPELL_CAST_START(args)

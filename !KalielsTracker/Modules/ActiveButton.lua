@@ -1,5 +1,5 @@
 --- Kaliel's Tracker
---- Copyright (c) 2012-2018, Marouan Sabbagh <mar.sabbagh@gmail.com>
+--- Copyright (c) 2012-2019, Marouan Sabbagh <mar.sabbagh@gmail.com>
 --- All Rights Reserved.
 ---
 --- This file is part of addon Kaliel's Tracker.
@@ -27,7 +27,7 @@ local function UpdateHotkey()
 	local key = GetBindingKey("EXTRAACTIONBUTTON1")
 	local button = KTF.ActiveButton
 	local hotkey = button.HotKey
-	local text = GetBindingText(key, 1)
+	local text = db.qiActiveButtonBindingShow and GetBindingText(key, 1) or ""
 	ClearOverrideBindings(button)
 	if key then
 		SetOverrideBindingClick(button, false, key, button:GetName())
@@ -68,8 +68,9 @@ local function SetFrames()
             end
 
 			if event == "QUEST_WATCH_LIST_CHANGED" or
-			   event == "ZONE_CHANGED" or
-			   event == "QUEST_POI_UPDATE" then
+					event == "ZONE_CHANGED" or
+					event == "QUEST_POI_UPDATE" or
+					event == "UPDATE_EXTRA_ACTIONBAR" then
 				M:Update()
 			elseif event == "UPDATE_BINDINGS" then
 				UpdateHotkey()
@@ -79,6 +80,7 @@ local function SetFrames()
 	eventFrame:RegisterEvent("QUEST_WATCH_LIST_CHANGED")
 	eventFrame:RegisterEvent("ZONE_CHANGED")
 	eventFrame:RegisterEvent("QUEST_POI_UPDATE")
+	eventFrame:RegisterEvent("UPDATE_EXTRA_ACTIONBAR")
 	eventFrame:RegisterEvent("UPDATE_BINDINGS")
     eventFrame:RegisterEvent("UPDATE_EXTRA_ACTIONBAR")
     	
@@ -163,16 +165,6 @@ local function SetFrames()
 	end
 end
 
------------
--- Hooks --
------------
-
-hooksecurefunc("ExtraActionBar_Update", function()
-	if db.qiActiveButton and KTF.ActiveButton.questID and not HasExtraActionBar() then
-		M:Update()
-	end
-end)
-
 --------------
 -- External --
 --------------
@@ -190,7 +182,7 @@ end
 function M:OnEnable()
 	_DBG("|cff00ff00Enable|r - "..self:GetName(), true)
 	SetFrames()
-	self:Update()	
+	self:Update()
 end
 
 function M:OnDisable()
@@ -252,6 +244,8 @@ function M:Update(id)
 				autoShowTooltip = true
 			end
 
+			bar.outro:Stop()
+			bar:SetAlpha(1)
 			bar:Show()
 			bar.button:SetAlpha(0)
 			bar.button:Hide()
@@ -269,8 +263,6 @@ function M:Update(id)
 			UpdateHotkey()
 
 			UIParent_ManageFramePositions()
-			bar.outro:Stop()
-			bar:SetAlpha(1)
 
 			if autoShowTooltip then
 				QuestObjectiveItem_OnEnter(abutton)
@@ -279,12 +271,11 @@ function M:Update(id)
 		abutton.text:SetText(button.num)
 	elseif bar:IsShown() then
 		bar.intro:Stop()
-		bar:SetAlpha(1)
 		if HasExtraActionBar() then
+			bar:SetAlpha(1)
 			bar.button:SetAlpha(1)
 			bar.button:Show()
 		else
-			bar.intro:Stop()
 			bar:SetAlpha(0)
 			bar:Hide()
 		end

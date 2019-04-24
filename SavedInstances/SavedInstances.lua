@@ -84,7 +84,7 @@ for i = 0,10 do
   end
 end
 
--- eventInfo format: [eventID] = true
+-- eventInfo format: [iconTexture] = true
 local eventInfo = {}
 local tooltip, indicatortip = nil, nil
 addon.indicatortip = indicatortip
@@ -355,6 +355,7 @@ addon.defaultDB = {
 
   -- Progress
   -- [index] = {
+  --   unlocked = (boolean), -- if player can complete this quest
   --   isComplete = isComplete,
   --   isFinish = isFinish,
   --   numFulfilled = numFulfilled,
@@ -771,19 +772,21 @@ local function UpdateEventInfo()
   debug("numEvents: " .. numEvents)
   for i = 1, numEvents do
     local event = C_Calendar.GetDayEvent(monthOffset, day, i)
-    debug("eventID: " .. event.eventID)
-    if event.sequenceType == "START" then
-      local hour, minute = event.startTime.hour, event.startTime.minute
-      if hour < current.hour or (hour == current.hour and minute < current.minute) then
-        eventInfo[event.eventID] = true
+    if event.iconTexture then
+      debug("iconTexture: " .. event.iconTexture)
+      if event.sequenceType == "START" then
+        local hour, minute = event.startTime.hour, event.startTime.minute
+        if hour < current.hour or (hour == current.hour and minute < current.minute) then
+          eventInfo[event.iconTexture] = true
+        end
+      elseif event.sequenceType == "END" then
+        local hour, minute = event.startTime.hour, event.startTime.minute
+        if hour > current.hour or (hour == current.hour and minute > current.minute) then
+          eventInfo[event.iconTexture] = true
+        end
+      else -- "ONGOING"
+        eventInfo[event.iconTexture] = true
       end
-    elseif event.sequenceType == "END" then
-      local hour, minute = event.startTime.hour, event.startTime.minute
-      if hour > current.hour or (hour == current.hour and minute > current.minute) then
-        eventInfo[event.eventID] = true
-      end
-    else -- "ONGOING"
-      eventInfo[event.eventID] = true
     end
   end
 end
@@ -2505,7 +2508,7 @@ end
 function core:OnInitialize()
   local versionString = GetAddOnMetadata(addonName, "version")
   --[===[@debug@
-  if versionString == "8.1.1-9-g8a76071" then
+  if versionString == "8.1.3" then
     versionString = "Dev"
   end
   --@end-debug@]===]
@@ -3152,6 +3155,7 @@ function core:Refresh(recoverdaily)
   end
 
   core:QuestRefresh(recoverdaily, questcomplete, nextreset, weeklyreset)
+  core:GetModule('Warfront'):UpdateQuest()
 
   local icnt, dcnt = 0,0
   for name, _ in pairs(temp) do

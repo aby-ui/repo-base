@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2332, "DBM-CrucibleofStorms", nil, 1177)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019042125852")
+mod:SetRevision("20190423223747")
 mod:SetCreatureID(145371)
 mod:SetEncounterID(2273)
 mod:SetZone()
@@ -96,11 +96,11 @@ local timerVoidCrashCD					= mod:NewCDCountTimer(31, 285416, nil, nil, nil, 3)
 --local timerEyesofNzothCD				= mod:NewCDCountTimer(32.7, 285376, nil, nil, nil, 3)--32.7-36.4 (probably spell queuing)
 local timerPiercingGazeCD				= mod:NewCDCountTimer(32.7, 285367, nil, nil, nil, 3)
 local timerMaddeningEyesCD				= mod:NewCDCountTimer(32.7, 285345, nil, nil, nil, 3)
-local timerCallUndyingGuardianCD		= mod:NewCDCountTimer(47, 285820, 234890, nil, nil, 1)--Short text "Guardian"
+local timerCallUndyingGuardianCD		= mod:NewCDCountTimer(46.1, 285820, 234890, nil, nil, 1)--Short text "Guardian"
 local timerGiftofNzothObscurityCD		= mod:NewCDCountTimer(42.1, 285453, 285477, nil, nil, 2)--Short text "Obscurity"
 --Stage Two: His Dutiful Servants
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(19105))
-local timerUnknowableTerrorCD			= mod:NewCDTimer(40.5, 285562, nil, nil, nil, 3)
+local timerUnknowableTerrorCD			= mod:NewCDTimer(40.1, 285562, nil, nil, nil, 3)
 local timerMindBenderCD					= mod:NewCDCountTimer(61.1, "ej19118", 284485, nil, nil, 1, 285427, DBM_CORE_DAMAGE_ICON)--Shorttext "Mindbender"
 local timerGiftofNzothHysteriaCD		= mod:NewCDCountTimer(42.5, 285638, 55975, nil, nil, 2)--Short text "Hysteria"
 --Stage Three: His Unwavering Gaze
@@ -264,11 +264,11 @@ function mod:OnCombatStart(delay)
 		timerVoidCrashCD:Start(6.1-delay, 1)
 	end
 	timerOblivionTearCD:Start(12.1-delay, 1)
-	timerTouchoftheEndCD:Start(26.7-delay, 1)
 	timerGiftofNzothObscurityCD:Start(20.6-delay, 1)
+	timerTouchoftheEndCD:Start(26.7-delay, 1)
 	timerCallUndyingGuardianCD:Start(30.3-delay, 1)
-	--timerEyesofNzothCD:Start(42-delay, 1)
-	timerPiercingGazeCD:Start(42-delay, 1)
+	--timerEyesofNzothCD:Start(40-delay, 1)
+	timerPiercingGazeCD:Start(40-delay, 1)
 	if self:IsMythic() then
 		timerUnstableResonanceCD:Start(1-delay)
 	end
@@ -306,7 +306,7 @@ function mod:SPELL_CAST_START(args)
 	elseif spellId == 285185 then
 		self.vb.tearCount = self.vb.tearCount + 1
 		warnOblivionTear:Show(self.vb.tearCount)
-		timerOblivionTearCD:Start(self.vb.phase == 3 and 12.1 or 16.6, self.vb.tearCount+1)
+		timerOblivionTearCD:Start(self.vb.phase == 3 and 12.1 or 16.1, self.vb.tearCount+1)
 	elseif spellId == 285416 then
 		self.vb.voidCrashCount = self.vb.voidCrashCount + 1
 		warnVoidCrash:Show(self.vb.voidCrashCount)
@@ -326,7 +326,7 @@ function mod:SPELL_CAST_START(args)
 				timerMaddeningEyesCD:Start(32.7, self.vb.nzothEyesCount+1)
 			end
 		else--Phase 3 and all we get is piercing
-			specWarnPiercingGaze:Show()
+			specWarnPiercingGaze:Show(self.vb.nzothEyesCount)
 			specWarnPiercingGaze:Play("specialsoon")--don't have anything better really
 			--52 and 47 alternating
 			timerPiercingGazeCD:Start((self.vb.nzothEyesCount % 2 == 0) and 47.5 or 52.2, self.vb.nzothEyesCount+1)
@@ -346,7 +346,7 @@ function mod:SPELL_CAST_START(args)
 			specWarnCallUndyingGuardian:Show(self.vb.undyingCount)
 			specWarnCallUndyingGuardian:Play("bigmob")
 		end
-		timerCallUndyingGuardianCD:Start(self.vb.phase == 3 and 31.5 or 47, self.vb.undyingCount+1)
+		timerCallUndyingGuardianCD:Start(self.vb.phase == 3 and 31.5 or 46.1, self.vb.undyingCount+1)
 	elseif spellId == 285638 then
 		self.vb.giftofNzothCount = self.vb.giftofNzothCount + 1
 		specWarnGiftofNzothHysteria:Show(self.vb.giftofNzothCount)
@@ -398,6 +398,7 @@ function mod:SPELL_CAST_START(args)
 			end
 		end
 		if self.Options.NPAuraOnConsume then
+			DBM.Nameplate:Hide(true, args.sourceGUID)--In case spell interrupt check still isn't working
 			DBM.Nameplate:Show(true, args.sourceGUID, spellId, interruptTextures[count])
 		end
 	end
@@ -413,7 +414,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 		timerInsatiableTormentCD:Start()
 	elseif spellId == 285427 then
 		if self.Options.NPAuraOnConsume then
-			DBM.Nameplate:Hide(true, args.destGUID)
+			DBM.Nameplate:Hide(true, args.sourceGUID)
 		end
 	end
 end
@@ -512,9 +513,9 @@ function mod:SPELL_AURA_APPLIED(args)
 		elseif spellId == 293661 then--Storm
 			if args:IsPlayer() then
 				specWarnUnstableResonanceStorm:Show(self:IconNumToTexture(1))
-				specWarnUnstableResonanceStorm:Play("mm"..1)
-				yellUnstableResonanceSign:Yell(1, "", 1)--Yellow Star
-				self:Schedule(2, updateResonanceYell, self, 1)
+				specWarnUnstableResonanceStorm:Play("mm"..5)
+				yellUnstableResonanceSign:Yell(5, "", 5)--White Moon
+				self:Schedule(2, updateResonanceYell, self, 5)
 				countdownResonanceFades:Start()
 				timerUnstableResonance:Start()
 				playerAffected = true
@@ -646,10 +647,10 @@ function mod:SPELL_AURA_REMOVED(args)
 			timerVoidCrashCD:Stop()
 			timerOblivionTearCD:Start(13.3, 1)
 			timerUnknowableTerrorCD:Start(18.2)
-			timerTouchoftheEndCD:Start(22.2, 1)
-			timerCallUndyingGuardianCD:Start(32, 1)
-			timerMindBenderCD:Start(34.4, 1)
-			timerGiftofNzothHysteriaCD:Start(40.5, 1)
+			timerTouchoftheEndCD:Start(21.8, 1)
+			timerCallUndyingGuardianCD:Start(31.5, 1)
+			timerMindBenderCD:Start(34, 1)
+			timerGiftofNzothHysteriaCD:Start(40.1, 1)
 			if self:IsMythic() then
 				timerUnstableResonanceCD:Start(2)
 			end

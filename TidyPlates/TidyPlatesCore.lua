@@ -578,6 +578,7 @@ do
 	-- UpdateUnitCondition: High volatility data
 	function UpdateUnitCondition(plate, unitid)
 		UpdateReferences(plate)
+        if not unitid then return end
         UpdateUnitTarget(plate, unitid)
 
 		unit.level = UnitEffectiveLevel(unitid)

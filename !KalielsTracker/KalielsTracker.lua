@@ -1,5 +1,5 @@
 --- Kaliel's Tracker
---- Copyright (c) 2012-2018, Marouan Sabbagh <mar.sabbagh@gmail.com>
+--- Copyright (c) 2012-2019, Marouan Sabbagh <mar.sabbagh@gmail.com>
 --- All Rights Reserved.
 ---
 --- This file is part of addon Kaliel's Tracker.
@@ -701,7 +701,19 @@ local function SetHooks()
 		return stringHeight
 	end
 
-	function QuestUtils_AddQuestCurrencyRewardsToTooltip(questID, tooltip, currencyContainerTooltip)	-- R
+	local function ShouldShowWarModeBonus(questID, currencyID)	-- R
+		if not C_PvP.IsWarModeDesired() then
+			return false;
+		end
+
+		if not C_CurrencyInfo.DoesWarModeBonusApply(currencyID) then
+			return false;
+		end
+
+		return QuestUtils_IsQuestWorldQuest(questID) and C_QuestLog.QuestHasWarModeBonus(questID) and not C_CurrencyInfo.GetFactionGrantedByCurrency(currencyID);
+	end
+
+	function QuestUtils_AddQuestCurrencyRewardsToTooltip(questID, tooltip, currencyContainerTooltip)	-- RO
 		local numQuestCurrencies = GetNumQuestLogRewardCurrencies(questID);
 		local currencies = { };
 		for i = 1, numQuestCurrencies do
@@ -719,43 +731,43 @@ local function SetHooks()
 				return currency1.currencyID > currency2.currencyID;
 			end
 		);
+
 		local addedQuestCurrencies = 0;
 		local alreadyUsedCurrencyContainerId = 0; --In the case of multiple currency containers needing to displayed, we only display the first.
+		local warModeBonus = C_PvP.GetWarModeRewardBonus();
+
 		for i, currencyInfo in ipairs(currencies) do
 			local isCurrencyContainer = C_CurrencyInfo.IsCurrencyContainer(currencyInfo.currencyID, currencyInfo.numItems);
 			if ( currencyContainerTooltip and isCurrencyContainer and (alreadyUsedCurrencyContainerId == 0) ) then
 				if ( EmbeddedItemTooltip_SetCurrencyByID(currencyContainerTooltip, currencyInfo.currencyID, currencyInfo.numItems) ) then
-					if (C_PvP.IsWarModeDesired() and QuestUtils_IsQuestWorldQuest(questID) and C_QuestLog.QuestHasWarModeBonus(questID) and not C_CurrencyInfo.GetFactionGrantedByCurrency(currencyInfo.currencyID)) then
-						currencyContainerTooltip.Tooltip:AddLine(WAR_MODE_BONUS_PERCENTAGE);
+					if ShouldShowWarModeBonus(questID, currencyInfo.currencyID) then
+						currencyContainerTooltip.Tooltip:AddLine(WAR_MODE_BONUS_PERCENTAGE_FORMAT:format(warModeBonus));
 						currencyContainerTooltip.Tooltip:Show();
 					end
+
 					if ( not tooltip ) then
 						break;
 					end
+
 					addedQuestCurrencies = addedQuestCurrencies + 1;
 					alreadyUsedCurrencyContainerId = currencyInfo.currencyID;
 				end
 			elseif ( tooltip ) then
 				if( alreadyUsedCurrencyContainerId ~= currencyInfo.currencyID ) then --if there's already a currency container of this same type skip it entirely
-					if isCurrencyContainer then
-						local text, color
-						if currencyInfo.currencyID == 1553 then	-- Azerite
-							text = format(BONUS_OBJECTIVE_ARTIFACT_XP_FORMAT, FormatLargeNumber(currencyInfo.numItems))
-							color = { r = 1, g = 1, b = 1 }
-						else
-							local name, texture, quantity, quality = CurrencyContainerUtil.GetCurrencyContainerInfo(currencyInfo.currencyID, currencyInfo.numItems);
-							text = BONUS_OBJECTIVE_REWARD_FORMAT:format(texture, name);
-							color = ITEM_QUALITY_COLORS[quality];
-						end
-						tooltip:AddLine(text, color.r, color.g, color.b);
+					local text, color
+					if currencyInfo.currencyID == 1553 then	-- Azerite
+						text = format(BONUS_OBJECTIVE_ARTIFACT_XP_FORMAT, FormatLargeNumber(currencyInfo.numItems))
+						color = { r = 1, g = 1, b = 1 }
 					else
-						local text = BONUS_OBJECTIVE_REWARD_WITH_COUNT_FORMAT:format(currencyInfo.texture, currencyInfo.numItems, currencyInfo.name);
-						local currencyColor = GetColorForCurrencyReward(currencyInfo.currencyID, currencyInfo.numItems);
-						tooltip:AddLine(text, currencyColor:GetRGB());
+						text = BONUS_OBJECTIVE_REWARD_WITH_COUNT_FORMAT:format(currencyInfo.texture, currencyInfo.numItems, currencyInfo.name)
+						color = GetColorForCurrencyReward(currencyInfo.currencyID, currencyInfo.numItems)
 					end
-					if (C_PvP.IsWarModeDesired() and QuestUtils_IsQuestWorldQuest(questID) and C_QuestLog.QuestHasWarModeBonus(questID) and not C_CurrencyInfo.GetFactionGrantedByCurrency(currencyInfo.currencyID)) then
-						tooltip:AddLine(WAR_MODE_BONUS_PERCENTAGE);
+					tooltip:AddLine(text, color.r, color.g, color.b)
+
+					if ShouldShowWarModeBonus(questID, currencyInfo.currencyID) then
+						tooltip:AddLine(WAR_MODE_BONUS_PERCENTAGE_FORMAT:format(warModeBonus));
 					end
+
 					addedQuestCurrencies = addedQuestCurrencies + 1;
 				end
 			end
@@ -788,78 +800,7 @@ local function SetHooks()
 			if self == QUEST_TRACKER_MODULE then
 				GameTooltip:SetHyperlink(GetQuestLink(block.id))
 				if db.tooltipShowRewards then
-					local questLogIndex = GetQuestLogIndexByID(block.id)
-					SelectQuestLogEntry(questLogIndex)	-- for num Choices
-					if GetQuestLogRewardXP(block.id) > 0 or
-							GetQuestLogRewardMoney(block.id) > 0 or
-							GetQuestLogRewardArtifactXP(block.id) > 0 or
-							GetNumQuestLogRewardCurrencies(block.id) > 0 or
-							GetQuestLogRewardHonor(block.id) > 0 or
-							GetNumQuestLogRewards(block.id) > 0 or
-							GetNumQuestLogChoices() > 0 then
-						GameTooltip:AddLine("\n"..QUEST_REWARDS..":")
-						-- choices
-						local numQuestChoices = GetNumQuestLogChoices()
-						for i = 1, numQuestChoices do
-							local name, texture, numItems, quality, isUsable = GetQuestLogChoiceInfo(i)
-							local text
-							if numItems > 1 then
-								text = format(BONUS_OBJECTIVE_REWARD_WITH_COUNT_FORMAT, texture, numItems, name)
-							elseif texture and name then
-								text = format(BONUS_OBJECTIVE_REWARD_FORMAT, texture, name)
-							end
-							if text then
-								local color = ITEM_QUALITY_COLORS[quality]
-								GameTooltip:AddLine(text, color.r, color.g, color.b)
-							end
-						end
-						-- items
-						local numQuestRewards = GetNumQuestLogRewards(block.id)
-						for i = 1, numQuestRewards do
-							local name, texture, numItems, quality, isUsable = GetQuestLogRewardInfo(i, block.id)
-							local text
-							if numItems > 1 then
-								text = format(BONUS_OBJECTIVE_REWARD_WITH_COUNT_FORMAT, texture, numItems, name)
-							elseif texture and name then
-								text = format(BONUS_OBJECTIVE_REWARD_FORMAT, texture, name)
-							end
-							if text then
-								local color = ITEM_QUALITY_COLORS[quality]
-								GameTooltip:AddLine(text, color.r, color.g, color.b)
-							end
-						end
-						-- xp
-						local xp = GetQuestLogRewardXP(block.id)
-						if xp > 0 then
-							GameTooltip:AddLine(format(BONUS_OBJECTIVE_EXPERIENCE_FORMAT, FormatLargeNumber(xp).."|c0000ff00"), 1, 1, 1)
-						end
-						-- money
-						local money = GetQuestLogRewardMoney(block.id)
-						if money > 0 then
-							GameTooltip:AddLine(GetCoinTextureString(money, 12), 1, 1, 1)
-						end
-						-- artifact power
-						local artifactXP = GetQuestLogRewardArtifactXP(block.id)
-						if artifactXP > 0 then
-							GameTooltip:AddLine(format(BONUS_OBJECTIVE_ARTIFACT_XP_FORMAT, FormatLargeNumber(artifactXP)), 1, 1, 1)
-						end
-						-- currencies
-						local numQuestCurrencies = GetNumQuestLogRewardCurrencies(block.id)
-						for i = 1, numQuestCurrencies do
-							local name, texture, numItems, currencyID = GetQuestLogRewardCurrencyInfo(i, block.id)
-							if currencyID == 1553 then	-- Azerite
-								GameTooltip:AddLine(format(BONUS_OBJECTIVE_ARTIFACT_XP_FORMAT, FormatLargeNumber(numItems)), 1, 1, 1)
-							else
-								local currencyColor = GetColorForCurrencyReward(currencyID, numItems)
-								GameTooltip:AddLine(format(BONUS_OBJECTIVE_REWARD_WITH_COUNT_FORMAT, texture, numItems, name), currencyColor:GetRGB())
-							end
-						end
-						-- honor
-						local honorAmount = GetQuestLogRewardHonor(block.id)
-						if honorAmount > 0 then
-							GameTooltip:AddLine(format(BONUS_OBJECTIVE_REWARD_WITH_COUNT_FORMAT, "Interface\\ICONS\\Achievement_LegionPVPTier4", honorAmount, HONOR), 1, 1, 1)
-						end
-					end
+					KT.GameTooltip_AddQuestRewardsToTooltip(GameTooltip, block.id)
 				end
 			else
 				GameTooltip:SetHyperlink(GetAchievementLink(block.id))
@@ -1262,10 +1203,25 @@ local function SetHooks()
 		end
 	end)
 
-	local bck_BonusObjectiveTracker_ShowRewardsTooltip = BonusObjectiveTracker_ShowRewardsTooltip
-	BonusObjectiveTracker_ShowRewardsTooltip = function(block)
+	function BonusObjectiveTracker_ShowRewardsTooltip(block)	-- R
 		if db.tooltipShow then
-			bck_BonusObjectiveTracker_ShowRewardsTooltip(block)
+			local questID
+			if block.id < 0 then
+				-- this is a scenario bonus objective
+				questID = C_Scenario.GetBonusStepRewardQuestID(-block.id)
+				if questID == 0 then
+					-- huh, no reward
+					return
+				end
+			else
+				questID = block.id
+			end
+			local questLink = GetQuestLink(questID)
+			if not questLink then
+				return
+			end
+
+			GameTooltip:SetOwner(block, "ANCHOR_NONE")
 			GameTooltip:ClearAllPoints()
 			if KTF.anchorLeft then
 				GameTooltip:SetPoint("TOPLEFT", block, "TOPRIGHT", 12, -1)
@@ -1273,23 +1229,20 @@ local function SetHooks()
 				GameTooltip:SetPoint("TOPRIGHT", block, "TOPLEFT", -12, -1)
 			end
 
-			if block.module.ShowWorldQuests and HaveQuestData(block.id) and
-					GetQuestLogRewardXP(block.id) == 0 and
-					GetNumQuestLogRewardCurrencies(block.id) == 0 and
-					GetNumQuestLogRewards(block.id) == 0 and
-					GetQuestLogRewardMoney(block.id) == 0 and
-					GetQuestLogRewardArtifactXP(block.id) == 0 and
-					GetQuestLogRewardHonor(block.id) == 0 then
-				GameTooltip:SetOwner(block, "ANCHOR_PRESERVE")
-				GameTooltip:AddLine(RETRIEVING_DATA, RED_FONT_COLOR.r, RED_FONT_COLOR.g, RED_FONT_COLOR.b)
-				GameTooltip:Show()
-			elseif HaveQuestData(block.id) then
+			if not HaveQuestData(questID) then
+				GameTooltip:AddLine(RETRIEVING_DATA, RED_FONT_COLOR.r, RED_FONT_COLOR.g, RED_FONT_COLOR.b);
+			else
+				GameTooltip:SetHyperlink(questLink)
+				if db.tooltipShowRewards then
+					KT.GameTooltip_AddQuestRewardsToTooltip(GameTooltip, questID, true)
+				end
 				if db.tooltipShowID then
 					GameTooltip:AddLine(" ")
-					GameTooltip:AddDoubleLine(" ", "ID: |cffffffff"..block.id)
-					GameTooltip:Show()
+					GameTooltip:AddDoubleLine(" ", "ID: |cffffffff"..questID)
 				end
 			end
+			GameTooltip:Show()
+			block.module.tooltipBlock = block
 		end
 	end
 
@@ -1812,6 +1765,9 @@ function KT:SetSize()
 	else
 		OTF.height = height - 10
 		OTF:SetHeight(OTF.height)
+        if OTF.BlocksFrame.contentsHeight == 0 then
+            KTF.Scroll.value = 0
+        end
 		KTF.Scroll:SetVerticalScroll(0)
 		if db.frameScrollbar then
 			KTF.Bar:Hide()
@@ -1912,9 +1868,17 @@ function KT:SetText()
 end
 
 function KT:SaveHeader(module)
+	module.Header.Text:SetWidth(165)
+	module.Header.LineGlow:Hide()
+	module.Header.SoftGlow:Hide()
+	module.Header.StarBurst:Hide()
+	module.Header.LineSheen:Hide()
+	if module == BONUS_OBJECTIVE_TRACKER_MODULE or module == WORLD_QUEST_TRACKER_MODULE then
+		module.Header.TopShadow:Hide()
+		module.Header.BottomShadow:Hide()
+	end
 	tinsert(KT.headers, module.Header)
 	module.title = module.Header.Text:GetText()
-	module.Header.Text:SetWidth(165)
 end
 
 function KT:SetHeaderText(module, append)

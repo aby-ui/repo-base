@@ -125,6 +125,13 @@ local QuestExceptions = {
   [33338] = "Weekly",  -- Empowering the Hourglass
   [33334] = "Weekly",  -- Strong Enough to Survive
 
+  -- Draenor Pet Battle
+  [37644] = "AccountDaily", -- Mastering the Menagerie (Alliance)
+  [37645] = "AccountDaily", -- Mastering the Menagerie (Horde)
+  [38299] = "AccountDaily", -- Critters of Draenor (Alliance)
+  [38300] = "AccountDaily", -- Critters of Draenor (Horde)
+  [40329] = "AccountWeekly", -- Battle Pet Tamers: Warlords
+
   -- Pet Battle Dungeons
   [46292] = "AccountWeekly", -- Pet Battle Challenge Dungeon Deadmines
   [45539] = "AccountWeekly", -- Pet Battle Challenge Dungeon Wailing Caverns
@@ -154,6 +161,7 @@ local QuestExceptions = {
   [53033] = "Weekly", -- A Frozen Path Through Time - WLK Timewalking
   [53034] = "Weekly", -- A Shattered Path Through Time - CTM Timewalking
   [53035] = "Weekly", -- A Shattered Path Through Time - MOP Timewalking
+  [54995] = "Weekly", -- A Savage Path Through Time - WOD Timewalking
   [53036] = "Weekly", -- A Call to Battle - Battlegrounds
   [53037] = "Weekly", -- Emissary of War - Mythic Dungeons
   [53038] = "AccountWeekly", -- The Very Best - PvP Pet Battles
@@ -176,15 +184,17 @@ local QuestExceptions = {
 addon.QuestExceptions = QuestExceptions
 
 -- Timewalking Dungeon final boss drops
--- to find eventID, select the event in calendar and use the command below
--- /run local i = C_Calendar.GetEventIndex() local e = C_Calendar.GetDayEvent(i.offsetMonths, i.monthDay, i.eventIndex) print(e.eventID)
--- [questID] = eventID
+-- to find iconTexture, select the event in calendar and use the command below
+-- /run local i = C_Calendar.GetEventIndex() local e = C_Calendar.GetDayEvent(i.offsetMonths, i.monthDay, i.eventIndex) print(e.iconTexture)
+-- [questID] = iconTexture
 local TimewalkingItemQuest = {
-  [40168] = 623, -- The Swirling Vial - TBC Timewalking
-  [40173] = 617, -- The Unstable Prism - WLK Timewalking
-  [40786] = 629, -- The Smoldering Ember - CTM Timewalking - Horde
-  [40787] = 629, -- The Smoldering Ember - CTM Timewalking - Alliance
-  [45563] = 654, -- The Shrouded Coin - MOP Timewalking
+  [40168] = 1129674, -- The Swirling Vial - TBC Timewalking
+  [40173] = 1129686, -- The Unstable Prism - WLK Timewalking
+  [40786] = 1304688, -- The Smoldering Ember - CTM Timewalking - Horde
+  [40787] = 1304688, -- The Smoldering Ember - CTM Timewalking - Alliance
+  [45563] = 1530590, -- The Shrouded Coin - MOP Timewalking
+  [55498] = 1129683, -- The Shimmering Crystal - WOD Timewalking - Alliance
+  [55499] = 1129683, -- The Shimmering Crystal - WOD Timewalking - Horde
 }
 for questID, tbl in pairs(TimewalkingItemQuest) do
   QuestExceptions[questID] = "Weekly"

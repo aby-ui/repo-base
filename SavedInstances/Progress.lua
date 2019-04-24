@@ -7,9 +7,11 @@ local pairs, type = pairs, type
 
 -- WoW API / Variables
 local C_PvP_GetWeeklyChestInfo = C_PvP.GetWeeklyChestInfo
+local C_QuestLog_IsOnQuest = C_QuestLog.IsOnQuest
 local GetQuestObjectiveInfo = GetQuestObjectiveInfo
 local IsQuestFlaggedCompleted = IsQuestFlaggedCompleted
 local QuestUtils_GetCurrentQuestLineQuest = QuestUtils_GetCurrentQuestLineQuest
+local UnitLevel = UnitLevel
 
 local FONT_COLOR_CODE_CLOSE = FONT_COLOR_CODE_CLOSE
 local NORMAL_FONT_COLOR_CODE = NORMAL_FONT_COLOR_CODE
@@ -17,30 +19,44 @@ local READY_CHECK_READY_TEXTURE = READY_CHECK_READY_TEXTURE
 local READY_CHECK_WAITING_TEXTURE = READY_CHECK_WAITING_TEXTURE
 
 local CONQUEST_QUESTLINE_ID = 782
+local maxLvl = MAX_PLAYER_LEVEL_TABLE[#MAX_PLAYER_LEVEL_TABLE]
 
 local function ConquestUpdate(index)
   local tbl = addon.db.Toons[thisToon].Progress
-  local currentQuestID = QuestUtils_GetCurrentQuestLineQuest(CONQUEST_QUESTLINE_ID)
-  local rewardAchieved = C_PvP_GetWeeklyChestInfo()
-  if currentQuestID == 0 then
-    tbl[index] = {
-      isComplete = true,
-      isFinish = true,
-      numFulfilled = 500,
-      numRequired = 500,
-      rewardAchieved = rewardAchieved,
-    }
-  else
-    local text, _, finished, numFulfilled, numRequired = GetQuestObjectiveInfo(currentQuestID, 1, false)
-    if text then
+  if UnitLevel("player") >= maxLvl then
+    local currentQuestID = QuestUtils_GetCurrentQuestLineQuest(CONQUEST_QUESTLINE_ID)
+    local rewardAchieved = C_PvP_GetWeeklyChestInfo()
+    if currentQuestID == 0 then
       tbl[index] = {
-        isComplete = false,
-        isFinish = finished,
-        numFulfilled = numFulfilled,
-        numRequired = numRequired,
+        unlocked = true,
+        isComplete = true,
+        isFinish = true,
+        numFulfilled = 500,
+        numRequired = 500,
         rewardAchieved = rewardAchieved,
       }
+    else
+      local text, _, finished, numFulfilled, numRequired = GetQuestObjectiveInfo(currentQuestID, 1, false)
+      if text then
+        tbl[index] = {
+          unlocked = true,
+          isComplete = false,
+          isFinish = finished,
+          numFulfilled = numFulfilled,
+          numRequired = numRequired,
+          rewardAchieved = rewardAchieved,
+        }
+      end
     end
+  else
+    tbl[index] = {
+      unlocked = false,
+      isComplete = false,
+      isFinish = false,
+      numFulfilled = 500,
+      numRequired = 500,
+      rewardAchieved = false,
+    }
   end
 end
 
@@ -49,7 +65,9 @@ local function ConquestShow(toon, index)
   if not t or not t.Progress or not t.Progress[index] then return end
   local tbl = t.Progress[index]
   local text
-  if tbl.isComplete then
+  if not tbl.unlocked then
+    text = ""
+  elseif tbl.isComplete then
     text = "\124T" .. READY_CHECK_READY_TEXTURE .. ":0|t"
   elseif tbl.isFinish then
     text = "\124T" .. READY_CHECK_WAITING_TEXTURE .. ":0|t"
@@ -67,6 +85,7 @@ local function KeepProgress(toon, index)
   if not t or not t.Progress or not t.Progress[index] then return end
   local tbl = t.Progress[index]
   tbl = {
+    unlocked = tbl.unlocked,
     isComplete = false,
     isFinish = false,
     numFulfilled = tbl.isComplete and 0 or tbl.numFulfilled,
@@ -113,9 +132,12 @@ function P:QUEST_LOG_UPDATE()
       end
       local result = {}
       if IsQuestFlaggedCompleted(questID) then
+        result.unlocked = true
         result.isComplete = true
       else
+        local isOnQuest = C_QuestLog_IsOnQuest(questID)
         local _, _, finished, numFulfilled, numRequired = GetQuestObjectiveInfo(questID, 1, false)
+        result.unlocked = isOnQuest
         result.isComplete = false
         result.isFinish = finished
         result.numFulfilled = numFulfilled
@@ -135,6 +157,7 @@ function P:OnDailyReset(toon)
         tbl.resetFunc(toon, i)
       else
         tbl = {
+          unlocked = tbl.unlocked,
           isComplete = false,
           isFinish = false,
           numFulfilled = 0,
@@ -154,6 +177,7 @@ function P:OnWeeklyReset(toon)
         tbl.resetFunc(toon, i)
       else
         tbl = {
+          unlocked = tbl.unlocked,
           isComplete = false,
           isFinish = false,
           numFulfilled = 0,
@@ -199,6 +223,8 @@ function P:ShowTooltip(tooltip, columns, showall, preshow)
             local text
             if tbl.showFunc then
               text = tbl.showFunc(toon, index)
+            elseif not value.unlocked then
+              text = ""
             elseif value.isComplete then
               text = "\124T" .. READY_CHECK_READY_TEXTURE .. ":0|t"
             elseif value.isFinish then

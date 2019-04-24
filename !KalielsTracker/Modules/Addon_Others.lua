@@ -1,5 +1,5 @@
 --- Kaliel's Tracker
---- Copyright (c) 2012-2018, Marouan Sabbagh <mar.sabbagh@gmail.com>
+--- Copyright (c) 2012-2019, Marouan Sabbagh <mar.sabbagh@gmail.com>
 --- All Rights Reserved.
 ---
 --- This file is part of addon Kaliel's Tracker.
@@ -59,16 +59,17 @@ end
 
 -- ElvUI
 local function ElvUI_SetSupport()
-    if KT:CheckAddOn("ElvUI", "10.84", true) then
+    if KT:CheckAddOn("ElvUI", "11.10", true) then
         local E = unpack(_G.ElvUI)
-        E.Blizzard.SetObjectiveFrameHeight = function() end
-        E.Blizzard.MoveObjectiveFrame = function() end
+        local B = E:GetModule("Blizzard")
+        B.SetObjectiveFrameAutoHide = function() end  -- preventive
+        B.SetObjectiveFrameHeight = function() end
+        B.MoveObjectiveFrame = function() end
         hooksecurefunc(E, "CheckIncompatible", function(self)
             self.private.skins.blizzard.objectiveTracker = false
         end)
         hooksecurefunc(E, "ToggleConfig", function(self)
-            local ACD = LibStub("AceConfigDialog-3.0-ElvUI")
-            if ACD.OpenFrames[self.name] then
+            if E.Libs.AceConfigDialog.OpenFrames[self.name] then
                 local options = self.Options.args.general.args.objectiveFrameGroup.args
                 options.objectiveFrameHeight.disabled = true
                 options.bonusObjectivePosition.disabled = true
@@ -85,7 +86,7 @@ end
 
 -- Tukui
 local function Tukui_SetSupport()
-    if KT:CheckAddOn("Tukui", "18.19", true) then
+    if KT:CheckAddOn("Tukui", "18.22", true) then
         local T = unpack(_G.Tukui)
         T.Miscellaneous.ObjectiveTracker.Enable = function() end
     end
@@ -185,6 +186,26 @@ local function DQE_SetCompatibility()
     end
 end
 
+-- Dominos
+local function Dominos_SetCompatibility()
+    if IsAddOnLoaded("Dominos") then
+        local function ReanchorActiveButton()
+            local button = KT.frame.ActiveButton
+            if button and DominosFrameextra then
+                button:SetParent(DominosFrameextra)
+                button:ClearAllPoints()
+                button:SetPoint("CENTER", 0, 0.5)
+            end
+        end
+        hooksecurefunc(Dominos, "OnEnable", function(self)
+            ReanchorActiveButton()
+        end)
+        hooksecurefunc(KT.ActiveButton, "OnEnable", function(self)
+            ReanchorActiveButton()
+        end)
+    end
+end
+
 --------------
 -- External --
 --------------
@@ -206,6 +227,7 @@ function M:OnEnable()
     SVUI_SetSupport()
     Chinchilla_SetCompatibility()
     DQE_SetCompatibility()
+    Dominos_SetCompatibility()
 end
 
 -- Masque
