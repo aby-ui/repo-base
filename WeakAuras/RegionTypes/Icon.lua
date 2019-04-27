@@ -44,7 +44,7 @@ local default = {
   useglowColor = false,
   glowColor = {1, 1, 1, 1},
   glowType = "buttonOverlay",
-  cooldownTextEnabled = true,
+  cooldownTextDisabled = false,
   cooldownSwipe = true,
   cooldownEdge = false,
 };
@@ -78,33 +78,33 @@ local properties = {
     default = 32
   },
   glow = {
-    display = WeakAuras.newFeatureString .. L["Set Glow Visibility"],
+    display = { WeakAuras.newFeatureString .. L["Glow"], L["Visibility"] },
     setter = "SetGlow",
     type = "bool"
   },
   glowType = {
-    display = WeakAuras.newFeatureString .. L["Glow Type"],
+    display = { WeakAuras.newFeatureString .. L["Glow"], L["Type"] },
     setter = "SetGlowType",
     type = "list",
     values = WeakAuras.glow_types,
   },
   useGlowColor = {
-    display = WeakAuras.newFeatureString .. L["Use Custom Glow Color"],
+    display = { WeakAuras.newFeatureString .. L["Glow"], L["Use Custom Color"] },
     setter = "SetUseGlowColor",
     type = "bool"
   },
   glowColor = {
-    display = WeakAuras.newFeatureString .. L["Glow Color"],
+    display = { WeakAuras.newFeatureString .. L["Glow"], L["Color"]},
     setter = "SetGlowColor",
     type = "color"
   },
   text1Color = {
-    display = L["1. Text Color"],
+    display = { L["1. Text"] , L["Color"] },
     setter = "SetText1Color",
     type = "color"
   },
   text1FontSize = {
-    display = L["1. Text Size"],
+    display = { L["1. Text"], L["Size"] },
     setter = "SetText1Height",
     type = "number",
     min = 6,
@@ -113,12 +113,12 @@ local properties = {
     default = 12
   },
   text2Color = {
-    display = L["2. Text Color"],
+    display = { L["2. Text"], L["Color"]},
     setter = "SetText2Color",
     type = "color"
   },
   text2FontSize = {
-    display = L["2. Text Size"],
+    display = { L["2. Text"], L["Size"]},
     setter = "SetText2Height",
     type = "number",
     min = 6,
@@ -137,12 +137,12 @@ local properties = {
     type = "bool"
   },
   cooldownSwipe = {
-    display = WeakAuras.newFeatureString .. L["Cooldown Swipe"],
+    display = {WeakAuras.newFeatureString .. L["Cooldown"], L["Swipe"]},
     setter = "SetCooldownSwipe",
     type = "bool",
   },
   cooldownEdge = {
-    display = WeakAuras.newFeatureString .. L["Cooldown Edge"],
+    display = {WeakAuras.newFeatureString .. L["Cooldown"], L["Edge"]},
     setter = "SetCooldownEdge",
     type = "bool",
   },
@@ -364,17 +364,22 @@ local function modify(parent, region, data)
 
   local tooltipType = WeakAuras.CanHaveTooltip(data);
   if(tooltipType and data.useTooltip) then
-    region:EnableMouse(true);
-    region:SetScript("OnEnter", function()
-      WeakAuras.ShowMouseoverTooltip(region, region);
-    end);
-    region:SetScript("OnLeave", WeakAuras.HideTooltip);
-  else
-    region:EnableMouse(false);
+    if not region.tooltipFrame then
+      region.tooltipFrame = CreateFrame("frame", nil, region);
+      region.tooltipFrame:SetAllPoints(region);
+      region.tooltipFrame:SetScript("OnEnter", function()
+        WeakAuras.ShowMouseoverTooltip(region, region);
+      end);
+      region.tooltipFrame:SetScript("OnLeave", WeakAuras.HideTooltip);
+    end
+    region.tooltipFrame:EnableMouse(true);
+  elseif region.tooltipFrame then
+    region.tooltipFrame:EnableMouse(false);
   end
 
   cooldown:SetReverse(not data.inverse);
-  cooldown:SetHideCountdownNumbers(not data.cooldownTextEnabled or IsAddOnLoaded("OmniCC") or false);
+  cooldown:SetHideCountdownNumbers(data.cooldownTextDisabled);
+  cooldown.noCooldownCount = data.cooldownTextDisabled;
 
   function region:Color(r, g, b, a)
     region.color_r = r;

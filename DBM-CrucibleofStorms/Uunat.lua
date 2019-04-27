@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2332, "DBM-CrucibleofStorms", nil, 1177)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190423223747")
+mod:SetRevision("2019042643346")
 mod:SetCreatureID(145371)
 mod:SetEncounterID(2273)
 mod:SetZone()
@@ -36,6 +36,13 @@ mod:RegisterEventsInCombat(
  or ability.id = 286310
  or (ability.id = 284768 or ability.id = 284569 or ability.id = 284684)
 --]]
+--Undying 2 first, Eye 2 second
+--Heroic https://www.warcraftlogs.com/reports/VNWqBp9v6JXzTYRd#fight=17&view=events&pins=2%24Off%24%23244F4B%24expression%24(ability.id%20%3D%20293653%20or%20ability.id%20%3D%20285185%20or%20ability.id%20%3D%20285416%20or%20ability.id%20%3D%20285376%20or%20ability.id%20%3D%20285345%20or%20ability.id%20%3D%20285453%20or%20ability.id%20%3D%20285820%20or%20ability.id%20%3D%20285638%20or%20ability.id%20%3D%20285427%20or%20ability.id%20%3D%20285562%20or%20ability.id%20%3D%20285685)%20and%20type%20%3D%20%22begincast%22%20%20or%20(ability.id%20%3D%20284851%20or%20ability.id%20%3D%20285652)%20and%20type%20%3D%20%22cast%22%20%20or%20ability.id%20%3D%20286310%20%20or%20(ability.id%20%3D%20284768%20or%20ability.id%20%3D%20284569%20or%20ability.id%20%3D%20284684)
+--Mythic https://www.warcraftlogs.com/reports/Dq1vBHCx6k3KnZJY#fight=50&view=events&pins=2%24Off%24%23244F4B%24expression%24(ability.id%20%3D%20293653%20or%20ability.id%20%3D%20285185%20or%20ability.id%20%3D%20285416%20or%20ability.id%20%3D%20285376%20or%20ability.id%20%3D%20285345%20or%20ability.id%20%3D%20285453%20or%20ability.id%20%3D%20285820%20or%20ability.id%20%3D%20285638%20or%20ability.id%20%3D%20285427%20or%20ability.id%20%3D%20285562%20or%20ability.id%20%3D%20285685)%20and%20type%20%3D%20%22begincast%22%20%20or%20(ability.id%20%3D%20284851%20or%20ability.id%20%3D%20285652)%20and%20type%20%3D%20%22cast%22%20%20or%20ability.id%20%3D%20286310%20%20or%20(ability.id%20%3D%20284768%20or%20ability.id%20%3D%20284569%20or%20ability.id%20%3D%20284684)
+
+--Eyes 2 first, Undying 2 second
+--Heroic https://www.warcraftlogs.com/reports/VNWqBp9v6JXzTYRd#fight=19&view=events&pins=2%24Off%24%23244F4B%24expression%24(ability.id%20%3D%20293653%20or%20ability.id%20%3D%20285185%20or%20ability.id%20%3D%20285416%20or%20ability.id%20%3D%20285376%20or%20ability.id%20%3D%20285345%20or%20ability.id%20%3D%20285453%20or%20ability.id%20%3D%20285820%20or%20ability.id%20%3D%20285638%20or%20ability.id%20%3D%20285427%20or%20ability.id%20%3D%20285562%20or%20ability.id%20%3D%20285685)%20and%20type%20%3D%20%22begincast%22%20%20or%20(ability.id%20%3D%20284851%20or%20ability.id%20%3D%20285652)%20and%20type%20%3D%20%22cast%22%20%20or%20ability.id%20%3D%20286310%20%20or%20(ability.id%20%3D%20284768%20or%20ability.id%20%3D%20284569%20or%20ability.id%20%3D%20284684)
+--Mythic https://www.warcraftlogs.com/reports/Dq1vBHCx6k3KnZJY#fight=47&view=events&pins=2%24Off%24%23244F4B%24expression%24(ability.id%20%3D%20293653%20or%20ability.id%20%3D%20285185%20or%20ability.id%20%3D%20285416%20or%20ability.id%20%3D%20285376%20or%20ability.id%20%3D%20285345%20or%20ability.id%20%3D%20285453%20or%20ability.id%20%3D%20285820%20or%20ability.id%20%3D%20285638%20or%20ability.id%20%3D%20285427%20or%20ability.id%20%3D%20285562%20or%20ability.id%20%3D%20285685)%20and%20type%20%3D%20%22begincast%22%20%20or%20(ability.id%20%3D%20284851%20or%20ability.id%20%3D%20285652)%20and%20type%20%3D%20%22cast%22%20%20or%20ability.id%20%3D%20286310%20%20or%20(ability.id%20%3D%20284768%20or%20ability.id%20%3D%20284569%20or%20ability.id%20%3D%20284684)
 local warnPhase							= mod:NewPhaseChangeAnnounce(2, nil, nil, nil, nil, nil, 2)
 local warnVoidShield					= mod:NewTargetNoFilterAnnounce(286310, 2, nil, nil, nil, nil, nil, 7)
 --Relics of Power
@@ -86,7 +93,7 @@ local specWarnGiftofNzothLunacy			= mod:NewSpecialWarningCount(285685, nil, nil,
 --Relics of Power
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(19055))
 local timerStormofAnnihilation			= mod:NewTargetTimer(15, 284583, 196871, nil, nil, 2, nil, DBM_CORE_HEALER_ICON)--Short text "Storm"
-local timerUnstableResonanceCD			= mod:NewAITimer(55, 293653, nil, nil, nil, 3, nil, DBM_CORE_DEADLY_ICON)
+local timerUnstableResonanceCD			= mod:NewCDCountTimer(41.2, 293653, nil, nil, nil, 3, nil, DBM_CORE_DEADLY_ICON)--41-45
 local timerUnstableResonance			= mod:NewBuffFadesTimer(15, 293653, nil, nil, nil, 5, nil, DBM_CORE_DEADLY_ICON)
 --Stage One: His All-Seeing Eyes
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(19104))
@@ -128,6 +135,7 @@ mod:AddNamePlateOption("NPAuraOnRegen", 285333)
 mod:AddNamePlateOption("NPAuraOnConsume", 285427)
 mod:AddSetIconOption("SetIconTorment2", 285652, false, false, {4, 5, 6, 7, 8})
 mod:AddSetIconOption("SetIconOnAdds", "ej19118", true, true, {1, 2, 3})
+mod:AddDropdownOption("UnstableBehavior", {"SetOne", "SetTwo", "SetThree", "SetFour"}, "SetOne", "misc")
 
 mod.vb.phase = 1
 mod.vb.touchCount = 0
@@ -138,12 +146,14 @@ mod.vb.nzothEyesCount = 0
 mod.vb.activeUndying = 0
 mod.vb.undyingCount = 0
 mod.vb.tormentCount = 0
+mod.vb.resonCastCount = 0
 mod.vb.tormentIcon = 8--8 backwards, to avoid add icons
 mod.vb.addIcon = 1--1 fowards
 mod.vb.mindBenderCount = 0
 mod.vb.tridentOcean, mod.vb.tempestCaller, mod.vb.voidstone = "None", "None", "None"
 mod.vb.tridentDrop, mod.vb.tempestDrop, mod.vb.voidDrop = nil, nil, nil
 mod.vb.umbrelTarget = nil
+mod.vb.tridentOceanicon, mod.vb.tempestStormIcon, mod.vb.voidIcon = 6, 5, 3
 local trackedFeedback1, trackedFeedback2, trackedFeedback3 = false, false, false
 local playerAffected = false
 local playerName = UnitName("player")
@@ -250,6 +260,7 @@ function mod:OnCombatStart(delay)
 	self.vb.giftofNzothCount = 0
 	self.vb.undyingCount = 0
 	self.vb.tormentCount = 0
+	self.vb.resonCastCount = 0
 	self.vb.tormentIcon = 8
 	self.vb.addIcon = 1
 	self.vb.mindBenderCount = 0
@@ -265,12 +276,25 @@ function mod:OnCombatStart(delay)
 	end
 	timerOblivionTearCD:Start(12.1-delay, 1)
 	timerGiftofNzothObscurityCD:Start(20.6-delay, 1)
-	timerTouchoftheEndCD:Start(26.7-delay, 1)
+	timerTouchoftheEndCD:Start(26.5-delay, 1)
 	timerCallUndyingGuardianCD:Start(30.3-delay, 1)
 	--timerEyesofNzothCD:Start(40-delay, 1)
 	timerPiercingGazeCD:Start(40-delay, 1)
 	if self:IsMythic() then
-		timerUnstableResonanceCD:Start(1-delay)
+		timerUnstableResonanceCD:Start(13.1-delay, 1)
+		if self.Options.UnstableBehavior == "SetOne" then
+			self.vb.tridentOceanicon, self.vb.tempestStormIcon, self.vb.voidIcon = 6, 5, 3--Square, Moon, Diamond
+			if UnitIsGroupLeader("player") then self:SendSync("SetOne") end
+		elseif self.Options.UnstableBehavior == "SetTwo" then
+			self.vb.tridentOceanicon, self.vb.tempestStormIcon, self.vb.voidIcon = 5, 6, 3--Moon, Square, Diamond
+			if UnitIsGroupLeader("player") then self:SendSync("SetTwo") end
+		elseif self.Options.UnstableBehavior == "SetThree" then
+			self.vb.tridentOceanicon, self.vb.tempestStormIcon, self.vb.voidIcon = 5, 1, 3--Moon, Star, Diamond
+			if UnitIsGroupLeader("player") then self:SendSync("SetThree") end
+		elseif self.Options.UnstableBehavior == "SetFour" then
+			self.vb.tridentOceanicon, self.vb.tempestStormIcon, self.vb.voidIcon = 6, 1, 3--Square, Star, Diamond
+			if UnitIsGroupLeader("player") then self:SendSync("SetFour") end
+		end
 	end
 	berserkTimer:Start(780-delay)--780 verified on normal at least https://www.warcraftlogs.com/reports/rPQXVgaD6AnF4h2R#fight=8&view=events&pins=2%24Off%24%23244F4B%24expression%24ability.name%20%3D%20%22Berserk%22
 	if self.Options.InfoFrame then
@@ -297,9 +321,10 @@ end
 function mod:SPELL_CAST_START(args)
 	local spellId = args.spellId
 	if spellId == 293653 then
-		specWarnUnstableResonance:Show()
+		self.vb.resonCastCount = self.vb.resonCastCount + 1
+		specWarnUnstableResonance:Show(self.vb.resonCastCount)
 		specWarnUnstableResonance:Play("scatter")
-		timerUnstableResonanceCD:Start()
+		timerUnstableResonanceCD:Start(nil, self.vb.resonCastCount+1)
 		if self.Options.RangeFrame then
 			DBM.RangeCheck:Show(10)
 		end
@@ -320,6 +345,11 @@ function mod:SPELL_CAST_START(args)
 				specWarnMaddeningEyesCast:Show(self.vb.nzothEyesCount)
 				specWarnMaddeningEyesCast:Play("farfromline")
 				timerPiercingGazeCD:Start(32.7, self.vb.nzothEyesCount+1)
+				--Trigger the 10 second Undying 2 delay since Eyes 2 was first
+				if (self.vb.undyingCount < 2) and (self.vb.nzothEyesCount == 2) then
+					timerCallUndyingGuardianCD:Stop()
+					timerCallUndyingGuardianCD:Start(10, 2)
+				end
 			else
 				specWarnPiercingGaze:Show(self.vb.nzothEyesCount)
 				specWarnPiercingGaze:Play("specialsoon")--don't have anything better really
@@ -347,6 +377,11 @@ function mod:SPELL_CAST_START(args)
 			specWarnCallUndyingGuardian:Play("bigmob")
 		end
 		timerCallUndyingGuardianCD:Start(self.vb.phase == 3 and 31.5 or 46.1, self.vb.undyingCount+1)
+		--Trigger the 10 second eyes 2 delay since Undying 2 was first
+		if (self.vb.phase == 1) and (self.vb.undyingCount == 2) and (self.vb.nzothEyesCount < 2) then
+			timerMaddeningEyesCD:Stop()
+			timerMaddeningEyesCD:Start(10, 2)
+		end
 	elseif spellId == 285638 then
 		self.vb.giftofNzothCount = self.vb.giftofNzothCount + 1
 		specWarnGiftofNzothHysteria:Show(self.vb.giftofNzothCount)
@@ -485,37 +520,37 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerStormofAnnihilation:Start(args.destName)
 	elseif spellId == 293663 or spellId == 293662 or spellId == 293661 then--Unstable Resonance (all)
 		self.vb.resonCount = self.vb.resonCount + 1
-		if mod.vb.resonCount > 0 and (self.vb.tridentOcean == playerName or self.vb.tempestCaller == playerName or self.vb.voidstone == playerName) then
-			local icon = self.vb.tridentOcean == playerName and 6 or self.vb.tempestCaller == playerName and 1 or self.vb.voidstone == playerName and 3
+		if self.vb.resonCount > 0 and (self.vb.tridentOcean == playerName or self.vb.tempestCaller == playerName or self.vb.voidstone == playerName) then
+			local icon = self.vb.tridentOcean == playerName and self.vb.tridentOceanicon or self.vb.tempestCaller == playerName and self.vb.tempestStormIcon or self.vb.voidstone == playerName and self.vb.voidIcon
 			yellUnstableResonanceSign:Yell(icon, playerName, icon)
 			self:Schedule(2, updateResonanceYell, self, icon)
 		end
 		if spellId == 293663 then--Void
 			if args:IsPlayer() then
-				specWarnUnstableResonanceVoid:Show(self:IconNumToTexture(3))
-				specWarnUnstableResonanceVoid:Play("mm"..3)
-				yellUnstableResonanceSign:Yell(3, "", 3)--Purple Diamond
-				self:Schedule(2, updateResonanceYell, self, 3)
+				specWarnUnstableResonanceVoid:Show(self:IconNumToTexture(self.vb.voidIcon))
+				specWarnUnstableResonanceVoid:Play("mm"..self.vb.voidIcon)
+				yellUnstableResonanceSign:Yell(self.vb.voidIcon, "", self.vb.voidIcon)
+				self:Schedule(2, updateResonanceYell, self, self.vb.voidIcon)
 				countdownResonanceFades:Start()
 				timerUnstableResonance:Start()
 				playerAffected = true
 			end
 		elseif spellId == 293662 then--Ocean
 			if args:IsPlayer() then
-				specWarnUnstableResonanceOcean:Show(self:IconNumToTexture(6))
-				specWarnUnstableResonanceOcean:Play("mm"..6)
-				yellUnstableResonanceSign:Yell(6, "", 6)--Blue Square
-				self:Schedule(2, updateResonanceYell, self, 6)
+				specWarnUnstableResonanceOcean:Show(self:IconNumToTexture(self.vb.tridentOceanicon))
+				specWarnUnstableResonanceOcean:Play("mm"..self.vb.tridentOceanicon)
+				yellUnstableResonanceSign:Yell(self.vb.tridentOceanicon, "", self.vb.tridentOceanicon)
+				self:Schedule(2, updateResonanceYell, self, self.vb.tridentOceanicon)
 				countdownResonanceFades:Start()
 				timerUnstableResonance:Start()
 				playerAffected = true
 			end
 		elseif spellId == 293661 then--Storm
 			if args:IsPlayer() then
-				specWarnUnstableResonanceStorm:Show(self:IconNumToTexture(1))
-				specWarnUnstableResonanceStorm:Play("mm"..5)
-				yellUnstableResonanceSign:Yell(5, "", 5)--White Moon
-				self:Schedule(2, updateResonanceYell, self, 5)
+				specWarnUnstableResonanceStorm:Show(self:IconNumToTexture(self.vb.tempestStormIcon))
+				specWarnUnstableResonanceStorm:Play("mm"..self.vb.tempestStormIcon)
+				yellUnstableResonanceSign:Yell(self.vb.tempestStormIcon, "", self.vb.tempestStormIcon)
+				self:Schedule(2, updateResonanceYell, self, self.vb.tempestStormIcon)
 				countdownResonanceFades:Start()
 				timerUnstableResonance:Start()
 				playerAffected = true
@@ -652,7 +687,7 @@ function mod:SPELL_AURA_REMOVED(args)
 			timerMindBenderCD:Start(34, 1)
 			timerGiftofNzothHysteriaCD:Start(40.1, 1)
 			if self:IsMythic() then
-				timerUnstableResonanceCD:Start(2)
+				timerUnstableResonanceCD:Start(33.5, self.vb.resonCastCount+1)
 			end
 		elseif self.vb.phase == 3 then
 			self.vb.nzothEyesCount = 0--Only reset on 3 because doesn't exist in 2
@@ -662,7 +697,7 @@ function mod:SPELL_AURA_REMOVED(args)
 			timerCallUndyingGuardianCD:Start(26.7, 1)
 			timerGiftofNzothLunacyCD:Start(40.1, 1)
 			if self:IsMythic() then
-				timerUnstableResonanceCD:Start(3)
+				timerUnstableResonanceCD:Start(33.5, self.vb.resonCastCount+1)
 			end
 		end
 	elseif spellId == 284768 then--Trident
@@ -724,3 +759,26 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 	end
 end
 --]]
+
+do
+	--Delayed function just to make absolute sure RL sync overrides user settings after OnCombatStart functions run
+	local function UpdateYellIcons(self, msg)
+		if msg == "SetOne" then
+			self.vb.tridentOceanicon, self.vb.tempestStormIcon, self.vb.voidIcon = 6, 5, 3--Square, Moon, Diamond
+			DBM:AddMsg(L.DBMConfigMsg:format(msg))
+		elseif msg == "SetTwo" then
+			self.vb.tridentOceanicon, self.vb.tempestStormIcon, self.vb.voidIcon = 5, 6, 3--Moon, Square, Diamond
+			DBM:AddMsg(L.DBMConfigMsg:format(msg))
+		elseif msg == "SetThree" then
+			self.vb.tridentOceanicon, self.vb.tempestStormIcon, self.vb.voidIcon = 5, 1, 3--Moon, Star, Diamond
+			DBM:AddMsg(L.DBMConfigMsg:format(msg))
+		elseif msg == "SetFour" then
+			self.vb.tridentOceanicon, self.vb.tempestStormIcon, self.vb.voidIcon = 6, 1, 3--Square, Star, Diamond
+			DBM:AddMsg(L.DBMConfigMsg:format(msg))
+		end
+	end
+	function mod:OnSync(msg)
+		if not self:IsMythic() then return end--Just in case some shit lord sends syncs in LFR or something, we don't want to trigger DBMConfigMsg
+		self:Schedule(3, UpdateYellIcons, self, msg)
+	end
+end

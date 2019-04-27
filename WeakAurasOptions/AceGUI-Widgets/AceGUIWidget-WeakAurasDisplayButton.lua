@@ -2,7 +2,7 @@ local tinsert, tconcat, tremove, wipe = table.insert, table.concat, table.remove
 local select, pairs, next, type, unpack = select, pairs, next, type, unpack
 local tostring, error = tostring, error
 
-local Type, Version = "WeakAurasDisplayButton", 47
+local Type, Version = "WeakAurasDisplayButton", 50
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
@@ -528,7 +528,7 @@ local methods = {
           end
         else
           if (WeakAuras.IsDisplayPicked(data.id)) then
-            WeakAuras.ClearPicks(data.id);
+            WeakAuras.ClearPicks();
           else
             WeakAuras.PickDisplay(data.id);
           end
@@ -601,10 +601,21 @@ local methods = {
 
     function self.callbacks.OnDuplicateClick()
       if (WeakAuras.IsImporting()) then return end;
-      local new_id = WeakAuras.DuplicateAura(data);
-      WeakAuras.SortDisplayButtons();
-      WeakAuras.DoConfigUpdate();
-      WeakAuras.PickAndEditDisplay(new_id);
+      if data.controlledChildren then
+        local new_idGroup = WeakAuras.DuplicateAura(data)
+        for index, childId in pairs(data.controlledChildren) do
+          local childData = WeakAuras.GetData(childId)
+          WeakAuras.DuplicateAura(childData, new_idGroup)
+        end
+        WeakAuras.SortDisplayButtons()
+        WeakAuras.DoConfigUpdate()
+        WeakAuras.PickAndEditDisplay(new_idGroup)
+      else
+        local new_id = WeakAuras.DuplicateAura(data)
+        WeakAuras.SortDisplayButtons()
+        WeakAuras.DoConfigUpdate()
+        WeakAuras.PickAndEditDisplay(new_id)
+      end
     end
 
     function self.callbacks.OnDeleteAllClick()
@@ -613,8 +624,8 @@ local methods = {
       if(data.controlledChildren) then
 
         local region = WeakAuras.regions[data.id];
-        if (region.ControlChildren) then
-          region:Pause();
+        if (region.Suspend) then
+          region:Suspend();
         end
 
         for _, id in pairs(data.controlledChildren) do
@@ -905,12 +916,13 @@ local methods = {
         hasArrow = true,
         menuList = convertMenu
       });
-      tinsert(self.menu, {
-        text = L["Duplicate"],
-        notCheckable = true,
-        func = self.callbacks.OnDuplicateClick
-      });
     end
+
+    tinsert(self.menu, {
+      text = L["Duplicate"],
+      notCheckable = true,
+      func = self.callbacks.OnDuplicateClick
+    });
 
     tinsert(self.menu, {
       text = L["Set tooltip description"],
@@ -1392,7 +1404,7 @@ local methods = {
   end,
   ["Expand"] = function(self, reloadTooltip)
     self.expand:Enable();
-    self.data.expanded = true;
+    WeakAuras.SetCollapsed(self.data.id, "displayButton", "", false)
     self.expand:SetNormalTexture("Interface\\BUTTONS\\UI-MinusButton-Up.blp");
     self.expand:SetPushedTexture("Interface\\BUTTONS\\UI-MinusButton-Down.blp");
     self.expand.title = L["Collapse"];
@@ -1406,7 +1418,7 @@ local methods = {
   end,
   ["Collapse"] = function(self, reloadTooltip)
     self.expand:Enable();
-    self.data.expanded = false;
+    WeakAuras.SetCollapsed(self.data.id, "displayButton", "", true)
     self.expand:SetNormalTexture("Interface\\BUTTONS\\UI-PlusButton-Up.blp");
     self.expand:SetPushedTexture("Interface\\BUTTONS\\UI-PlusButton-Down.blp");
     self.expand.title = L["Expand"];
@@ -1422,7 +1434,7 @@ local methods = {
     self.expand.func = func;
   end,
   ["GetExpanded"] = function(self)
-    return self.data.expanded;
+    return not WeakAuras.IsCollapsed(self.data.id, "displayButton", "", true)
   end,
   ["DisableExpand"] = function(self)
     self.expand:Disable();
@@ -1636,9 +1648,11 @@ local methods = {
     self.frame:LockHighlight();
     self.view:PriorityShow(1);
   end,
-  ["ClearPick"] = function(self)
+  ["ClearPick"] = function(self, noHide)
     self.frame:UnlockHighlight();
-    self.view:PriorityHide(1);
+    if not noHide then
+      self.view:PriorityHide(1);
+    end
   end,
   ["PriorityShow"] = function(self, priority)
     self.view:PriorityShow(priority);
@@ -1778,6 +1792,9 @@ local function Constructor()
           WeakAuras.mouseFrame:expand(self.region.id);
         end
       end
+    end
+    if self.region and self.region.ClickToPick then
+      self.region:ClickToPick();
     end
   end
   view.PriorityHide = function(self, priority)

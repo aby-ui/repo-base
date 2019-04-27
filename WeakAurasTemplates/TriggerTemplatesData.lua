@@ -46,12 +46,12 @@ local powerTypes =
     [8] = { name = POWER_TYPE_LUNAR_POWER, icon = "Interface\\Icons\\ability_druid_eclipseorange"},
     [9] = { name = HOLY_POWER, icon = "Interface\\Icons\\achievement_bg_winsoa"},
     [11] = {name = POWER_TYPE_MAELSTROM, icon = 135990},
-    [12] = {name = CHI, icon = "Interface\\Icons\\ability_monk_healthsphere"},
+    [12] = {name = CHI_POWER, icon = "Interface\\Icons\\ability_monk_healthsphere"},
     [13] = {name = POWER_TYPE_INSANITY, icon = "Interface\\Icons\\spell_priest_shadoworbs"},
     [16] = {name = POWER_TYPE_ARCANE_CHARGES, icon = "Interface\\Icons\\spell_arcane_arcane01"},
     [17] = {name = POWER_TYPE_FURY_DEMONHUNTER, icon = 1344651},
     [18] = {name = POWER_TYPE_PAIN, icon = 1247265},
-    [99] = {name = L["Stagger"], icon = "Interface\\Icons\\monk_stance_drunkenox"}
+    [99] = {name = STAGGER, icon = "Interface\\Icons\\monk_stance_drunkenox"}
   }
 
 local generalAzeriteTraits = {
@@ -369,7 +369,7 @@ templates.class.WARRIOR = {
         { spell = 20243, type = "ability", requiresTarget = true, talent = {16, 17}}, -- Devastate
         { spell = 23920, type = "ability", buff = true}, -- Spell Reflection
         { spell = 23922, type = "ability", requiresTarget = true}, -- Shield Slam
-        { spell = 34428, type = "ability", active = true, requiresTarget = true}, -- Victory Rush
+        { spell = 34428, type = "ability", usable = true, requiresTarget = true}, -- Victory Rush
         { spell = 46968, type = "ability"}, -- Shockwave
         { spell = 57755, type = "ability", requiresTarget = true}, -- Heroic Throw
         { spell = 97462, type = "ability"}, -- Rallying Cry
@@ -1638,7 +1638,7 @@ templates.class.SHAMAN = {
         { spell = 108281, type = "buff", unit = "player", talent = 14}, -- Ancestral Guidance
         { spell = 546, type = "buff", unit = "player"}, -- Water Walking
         { spell = 114050, type = "buff", unit = "player", talent = 21}, -- Ascendance
-        { spell = 210714, type = "buff", unit = "player", talent = 17}, -- Icefury
+        { spell = 210714, type = "buff", unit = "player", talent = 18}, -- Icefury
         { spell = 260881, type = "buff", unit = "player", talent = 7}, -- Spirit Wolf
         { spell = 260734, type = "buff", unit = "player", talent = 10}, -- Master of the Elements
         { spell = 191634, type = "buff", unit = "player", talent = 20}, -- Stormkeeper
@@ -1698,7 +1698,7 @@ templates.class.SHAMAN = {
         { spell = 192249, type = "ability", duration = 30,talent = 11}, -- Storm Elemental
         { spell = 198067, type = "ability", duration = 30}, -- Fire Elemental
         { spell = 198103, type = "ability", duration = 60}, -- Earth Elemental
-        { spell = 210714, type = "ability", debuff = true, requiresTarget = true, talent = 17}, -- Icefury
+        { spell = 210714, type = "ability", debuff = true, requiresTarget = true, talent = 18}, -- Icefury
       },
       icon = 135790
     },
@@ -1993,7 +1993,7 @@ templates.class.MAGE = {
         { spell = 1953, type = "ability"}, -- Blink
         { spell = 2139, type = "ability", requiresTarget = true}, -- Counterspell
         { spell = 5143, type = "ability", requiresTarget = true, overlayGlow = true}, -- Arcane Missiles
-        { spell = 12042, type = "ability"}, -- Arcane Power
+        { spell = 12042, type = "ability", buff = true}, -- Arcane Power
         { spell = 12051, type = "ability", buff = true}, -- Evocation
         { spell = 44425, type = "ability", requiresTarget = true}, -- Arcane Barrage
         { spell = 45438, type = "ability", buff = true}, -- Ice Block

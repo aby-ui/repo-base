@@ -56,8 +56,6 @@ GetTriggerConditions(data, triggernum)
 Returns potential conditions that this trigger provides.
 ]]--
 
--- luacheck: globals GTFO DBM BigWigsLoader CombatLogGetCurrentEventInfo
-
 -- Lua APIs
 local tinsert, tconcat, wipe = table.insert, table.concat, wipe
 local tostring, pairs, type = tostring, pairs, type
@@ -887,8 +885,6 @@ function GenericTrigger.Add(data, region)
               end
             end
 
-
-
             triggerFuncStr = ConstructFunction(event_prototypes[trigger.event], trigger);
 
             statesParameter = event_prototypes[trigger.event].statesParameter;
@@ -916,6 +912,18 @@ function GenericTrigger.Add(data, region)
 
             if (event_prototypes[trigger.event].automaticrequired) then
               trigger.unevent = "auto";
+            elseif event_prototypes[trigger.event].timedrequired then
+              if type(event_prototypes[trigger.event].timedrequired) == "function" then
+                if event_prototypes[trigger.event].timedrequired(trigger) then
+                  trigger.unevent = "timed"
+                else
+                  if not(WeakAuras.eventend_types[trigger.unevent]) then
+                    trigger.unevent = "timed"
+                  end
+                end
+              else
+                trigger.unevent = "timed"
+              end
             elseif event_prototypes[trigger.event].automatic then
               if not(WeakAuras.autoeventend_types[trigger.unevent]) then
                 trigger.unevent = "auto"
@@ -1758,19 +1766,8 @@ do
       startTimeCooldown, durationCooldown = 0, 0
     end
 
-    local spellcount = GetSpellCount(id);
-    -- GetSpellCount returns 0 for all spells that have no spell counts, so we only use that information if
-    -- either the spell count is greater than 0
-    -- or we have a ability without a base cooldown
-    -- Checking the base cooldown is not enough though, since some abilities have no base cooldown, but can still be on cooldown
-    -- e.g. Raging Blow that gains a cooldown with a talent
-    if (charges == nil and spellcount > 0) then
-      charges = spellcount;
-    end
-
-    local basecd = GetSpellBaseCooldown(id);
     local onNonGCDCD = durationCooldown and startTimeCooldown and durationCooldown > 0 and (durationCooldown ~= gcdDuration or startTimeCooldown ~= gcdStart);
-    if ((basecd and basecd > 0) or onNonGCDCD) then
+    if (onNonGCDCD) then
       cooldownBecauseRune = runeDuration and durationCooldown and abs(durationCooldown - runeDuration) < 0.001;
       unifiedCooldownBecauseRune = cooldownBecauseRune
     end
@@ -1794,6 +1791,17 @@ do
         startTime, duration = startTimeCharges, durationCharges
         unifiedCooldownBecauseRune = false
       end
+    end
+
+    local spellcount = GetSpellCount(id);
+    local basecd = GetSpellBaseCooldown(id);
+    -- GetSpellCount returns 0 for all spells that have no spell counts, so we only use that information if
+    -- either the spell count is greater than 0
+    -- or we have a ability without a base cooldown
+    -- Checking the base cooldown is not enough though, since some abilities have no base cooldown, but can still be on cooldown
+    -- e.g. Raging Blow that gains a cooldown with a talent
+    if (charges == nil and not onNonGCDCD and (spellcount > 0 or not basecd or basecd == 0)) then
+      charges = spellcount;
     end
 
     return charges, maxCharges, startTime, duration, unifiedCooldownBecauseRune,
@@ -2135,6 +2143,37 @@ do
   end
 end
 
+local watchUnitChange
+local unitChangeGUIDS
+
+function WeakAuras.WatchUnitChange(unit)
+  if not watchUnitChange then
+    watchUnitChange = CreateFrame("FRAME");
+    WeakAuras.frames["Unit Change Frame"] = watchUnitChange;
+    watchUnitChange:RegisterEvent("PLAYER_TARGET_CHANGED")
+    watchUnitChange:RegisterEvent("PLAYER_FOCUS_CHANGED");
+    watchUnitChange:RegisterEvent("UNIT_TARGET");
+    watchUnitChange:RegisterEvent("INSTANCE_ENCOUNTER_ENGAGE_UNIT");
+    watchUnitChange:RegisterEvent("GROUP_ROSTER_UPDATE");
+
+    unit = string.upper(unit)
+
+    watchUnitChange:SetScript("OnEvent", function(self, event)
+      WeakAuras.StartProfileSystem("generictrigger");
+      for unit, guid in pairs(unitChangeGUIDS) do
+        local newGuid = UnitGUID(unit) or ""
+        if guid ~= newGuid then
+          WeakAuras.ScanEvents("UNIT_CHANGED_" .. unit)
+          unitChangeGUIDS[unit] = newGuid
+        end
+      end
+      WeakAuras.StopProfileSystem("generictrigger");
+    end)
+  end
+  unitChangeGUIDS = unitChangeGUIDS or {}
+  unitChangeGUIDS[unit] = UnitGUID(unit) or ""
+end
+
 function WeakAuras.GetEquipmentSetInfo(itemSetName, partial)
   local bestMatchNumItems = 0;
   local bestMatchNumEquipped = 0;
@@ -2443,13 +2482,13 @@ do
 
     local v = bars[id];
     local bestMatch;
-    if (addon and addon ~= v.addon) then
+    if (addon ~= "" and addon ~= v.addon) then
       return false;
     end
     if (spellId ~= "" and spellId ~= v.spellId) then
       return false;
     end
-    if (text) then
+    if (text ~= "") then
       if(textOperator == "==") then
         if (v.text ~= text) then
           return false;

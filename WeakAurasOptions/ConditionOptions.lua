@@ -222,6 +222,7 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
     desc = descIfSubset(data, conditions[i].changes[j]),
     order = order,
     values = valuesForProperty,
+    control = "WeakAurasTwoColumnDropdown",
     get = function()
       local property = conditions[i].changes[j].property;
       return property and allProperties.propertyToIndex[property];
@@ -657,7 +658,7 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
     local function customHidden()
       local message = type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.message;
       if (not message) then return true; end
-      return not WeakAuras.ContainsPlaceHolders(message, "c");
+      return not WeakAuras.ContainsCustomPlaceHolder(message);
     end
 
     args["condition" .. i .. "value" .. j .. "custom"] = {
@@ -1620,7 +1621,12 @@ local function buildAllPotentialProperies(data, category)
     tinsert(allProperties.indexToProperty, k);
   end
   table.sort(allProperties.indexToProperty, function(a, b)
-    return allProperties.propertyMap[a].display <  allProperties.propertyMap[b].display
+    local av = allProperties.propertyMap[a].display
+    av = type(av) == "table" and av[1] or av
+
+    local bv = allProperties.propertyMap[b].display
+    bv = type(bv) == "table" and bv[1] or bv
+    return av < bv
   end);
 
   allProperties.propertyToIndex = {};

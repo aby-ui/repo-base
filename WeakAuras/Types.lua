@@ -2,11 +2,6 @@ local WeakAuras = WeakAuras;
 local L = WeakAuras.L;
 
 local LSM = LibStub("LibSharedMedia-3.0");
-local LibBabbleRace = LibStub("LibBabble-Race-3.0");
-local LBR_Locale = LibBabbleRace:GetUnstrictLookupTable()
-local LBR_Base = LibBabbleRace:GetBaseLookupTable();
-
--- luacheck: globals POWER_TYPE_MANA POWER_TYPE_RED_POWER POWER_TYPE_FOCUS POWER_TYPE_ENERGY POWER_TYPE_COMBO_POINTS POWER_TYPE_RUNIC_POWER SOUL_SHARDS_POWER POWER_TYPE_LUNAR_POWER POWER_TYPE_HOLY_POWER POWER_TYPE_MAELSTROM POWER_TYPE_CHI POWER_TYPE_INSANITY POWER_TYPE_ARCANE_CHARGES POWER_TYPE_FURY_DEMONHUNTER POWER_TYPE_PAIN STAT_STAGGER
 
 local wipe, tinsert = wipe, tinsert
 local GetNumShapeshiftForms, GetShapeshiftFormInfo = GetNumShapeshiftForms, GetShapeshiftFormInfo
@@ -48,7 +43,8 @@ WeakAuras.group_sort_types = {
   ascending = L["Ascending"],
   descending = L["Descending"],
   hybrid = L["Hybrid"],
-  none = L["None"]
+  none = L["None"],
+  custom = WeakAuras.newFeatureString .. L["Custom"]
 }
 
 WeakAuras.group_hybrid_position_types = {
@@ -72,10 +68,10 @@ WeakAuras.precision_types = {
 
 WeakAuras.sound_channel_types = {
   Master = L["Master"],
-  SFX = L["Sound Effects"],
-  Ambience = L["Ambience"],
-  Music = L["Music"],
-  Dialog = L["Dialog"]
+  SFX = ENABLE_SOUNDFX,
+  Ambience = ENABLE_AMBIENCE,
+  Music = ENABLE_MUSIC,
+  Dialog = ENABLE_DIALOG
 }
 
 WeakAuras.sound_condition_types = {
@@ -187,41 +183,35 @@ WeakAuras.unit_threat_situation_types = {
 }
 
 WeakAuras.class_types = {}
-WeakAuras.class_color_types = {}
-local C_S_O, R_C_C, L_C_N_M, F_C_C_C = _G.CLASS_SORT_ORDER, _G.RAID_CLASS_COLORS, _G.LOCALIZED_CLASS_NAMES_MALE, _G.FONT_COLOR_CODE_CLOSE
-do
-  for i,eClass in ipairs(C_S_O) do
-    WeakAuras.class_color_types[eClass] = "|c"..R_C_C[eClass].colorStr
-    WeakAuras.class_types[eClass] = WeakAuras.class_color_types[eClass]..L_C_N_M[eClass]..F_C_C_C
+WeakAuras.class_color_types = {} -- TODO: it should be removed together with Bufftrigger (unused)
+for classID = 1, GetNumClasses() do
+  local classInfo = C_CreatureInfo.GetClassInfo(classID)
+  WeakAuras.class_types[classInfo.classFile] = C_ClassColor.GetClassColor(classInfo.classFile):WrapTextInColorCode(classInfo.className)
+  WeakAuras.class_color_types[classInfo.classFile] = C_ClassColor.GetClassColor(classInfo.classFile):GenerateHexColorMarkup()
+end
+
+WeakAuras.race_types = {}
+local unplayableRace = {
+  [12] = true,
+  [13] = true,
+  [14] = true,
+  [15] = true,
+  [16] = true,
+  [17] = true,
+  [18] = true,
+  [19] = true,
+  [20] = true,
+  [21] = true,
+  [23] = true,
+  [33] = true,
+  [35] = true
+}
+for raceID = 1, 36 do
+  if (unplayableRace[raceID] == nil) then
+    local raceInfo = C_CreatureInfo.GetRaceInfo(raceID)
+    WeakAuras.race_types[raceInfo.clientFileString]= raceInfo.raceName
   end
 end
-
-local function LBR(key)
-  return LBR_Locale[key] or LBR_Base[key]
-end
-
-WeakAuras.race_types = {
-  Pandaren = LBR("Pandaren"),
-  Worgen = LBR("Worgen"),
-  Draenei = LBR("Draenei"),
-  Dwarf = LBR("Dwarf"),
-  Gnome = LBR("Gnome"),
-  Human = LBR("Human"),
-  NightElf = LBR("Night Elf"),
-  Goblin = LBR("Goblin"),
-  BloodElf = LBR("Blood Elf"),
-  Orc = LBR("Orc"),
-  Tauren = LBR("Tauren"),
-  Troll = LBR("Troll"),
-  Scourge = LBR("Undead"),
-  LightforgedDraenei = LBR("Lightforged Draenei"),
-  VoidElf = LBR("Void Elf"),
-  HighmountainTauren = LBR("Highmountain Tauren"),
-  Nightborne = LBR("Nightborne"),
-  DarkIronDwarf = LBR("Dark Iron Dwarf"),
-  ZandalariTroll = LBR("Zandalari Troll"),
-  MagharOrc = LBR("Mag'har Orc"),
-}
 
 WeakAuras.faction_group = {
   Alliance = L["Alliance"],
@@ -420,7 +410,7 @@ WeakAuras.power_types = {
   [8] = POWER_TYPE_LUNAR_POWER,
   [9] = HOLY_POWER,
   [11] = POWER_TYPE_MAELSTROM,
-  [12] = CHI,
+  [12] = CHI_POWER,
   [13] = POWER_TYPE_INSANITY,
   [16] = POWER_TYPE_ARCANE_CHARGES,
   [17] = POWER_TYPE_FURY_DEMONHUNTER,
@@ -438,12 +428,12 @@ WeakAuras.power_types_with_stagger = {
   [8] = POWER_TYPE_LUNAR_POWER,
   [9] = HOLY_POWER,
   [11] = POWER_TYPE_MAELSTROM,
-  [12] = CHI,
+  [12] = CHI_POWER,
   [13] = POWER_TYPE_INSANITY,
   [16] = POWER_TYPE_ARCANE_CHARGES,
   [17] = POWER_TYPE_FURY_DEMONHUNTER,
   [18] = POWER_TYPE_PAIN,
-  [99] = STAT_STAGGER
+  [99] = STAGGER
 }
 
 WeakAuras.miss_types = {
@@ -460,12 +450,12 @@ WeakAuras.miss_types = {
 }
 
 WeakAuras.environmental_types = {
-  Drowning = L["Drowning"],
-  Falling = L["Falling"],
-  Fatigue = L["Fatigue"],
-  Fire = L["Fire"],
-  Lava = L["Lava"],
-  Slime = L["Slime"]
+  Drowning = STRING_ENVIRONMENTAL_DAMAGE_DROWNING,
+  Falling = STRING_ENVIRONMENTAL_DAMAGE_FALLING,
+  Fatigue = STRING_ENVIRONMENTAL_DAMAGE_FATIGUE,
+  Fire = STRING_ENVIRONMENTAL_DAMAGE_FIRE,
+  Lava = STRING_ENVIRONMENTAL_DAMAGE_LAVA,
+  Slime = STRING_ENVIRONMENTAL_DAMAGE_SLIME
 }
 
 WeakAuras.combatlog_flags_check_type = {
@@ -474,15 +464,15 @@ WeakAuras.combatlog_flags_check_type = {
 }
 
 WeakAuras.combatlog_raid_mark_check_type = {
-  [0] = L["None"],
-  "|TInterface\\TARGETINGFRAME\\UI-RaidTargetingIcon_1:0|t " .. L["Star"],
-  "|TInterface\\TARGETINGFRAME\\UI-RaidTargetingIcon_2:0|t " .. L["Circle"],
-  "|TInterface\\TARGETINGFRAME\\UI-RaidTargetingIcon_3:0|t " .. L["Diamond"],
-  "|TInterface\\TARGETINGFRAME\\UI-RaidTargetingIcon_4:0|t " .. L["Triangle"],
-  "|TInterface\\TARGETINGFRAME\\UI-RaidTargetingIcon_5:0|t " .. L["Moon"],
-  "|TInterface\\TARGETINGFRAME\\UI-RaidTargetingIcon_6:0|t " .. L["Square"],
-  "|TInterface\\TARGETINGFRAME\\UI-RaidTargetingIcon_7:0|t " .. L["Cross"],
-  "|TInterface\\TARGETINGFRAME\\UI-RaidTargetingIcon_8:0|t " .. L["Skull"],
+  [0] = RAID_TARGET_NONE,
+  "|TInterface\\TARGETINGFRAME\\UI-RaidTargetingIcon_1:14|t " .. RAID_TARGET_1, -- Star
+  "|TInterface\\TARGETINGFRAME\\UI-RaidTargetingIcon_2:14|t " .. RAID_TARGET_2, -- Circle
+  "|TInterface\\TARGETINGFRAME\\UI-RaidTargetingIcon_3:14|t " .. RAID_TARGET_3, -- Diamond
+  "|TInterface\\TARGETINGFRAME\\UI-RaidTargetingIcon_4:14|t " .. RAID_TARGET_4, -- Triangle
+  "|TInterface\\TARGETINGFRAME\\UI-RaidTargetingIcon_5:14|t " .. RAID_TARGET_5, -- Moon
+  "|TInterface\\TARGETINGFRAME\\UI-RaidTargetingIcon_6:14|t " .. RAID_TARGET_6, -- Square
+  "|TInterface\\TARGETINGFRAME\\UI-RaidTargetingIcon_7:14|t " .. RAID_TARGET_7, -- Cross
+  "|TInterface\\TARGETINGFRAME\\UI-RaidTargetingIcon_8:14|t " .. RAID_TARGET_8, -- Skull
   L["Any"]
 }
 
@@ -503,21 +493,21 @@ WeakAuras.orientation_with_circle_types = {
 }
 
 WeakAuras.spec_types = {
-  [1] = _G.SPECIALIZATION.." 1",
-  [2] = _G.SPECIALIZATION.." 2",
-  [3] = _G.SPECIALIZATION.." 3",
-  [4] = _G.SPECIALIZATION.." 4"
+  [1] = SPECIALIZATION.." 1",
+  [2] = SPECIALIZATION.." 2",
+  [3] = SPECIALIZATION.." 3",
+  [4] = SPECIALIZATION.." 4"
 }
 
 WeakAuras.spec_types_3 = {
-  [1] = _G.SPECIALIZATION.." 1",
-  [2] = _G.SPECIALIZATION.." 2",
-  [3] = _G.SPECIALIZATION.." 3"
+  [1] = SPECIALIZATION.." 1",
+  [2] = SPECIALIZATION.." 2",
+  [3] = SPECIALIZATION.." 3"
 }
 
 WeakAuras.spec_types_2 = {
-  [1] = _G.SPECIALIZATION.." 1",
-  [2] = _G.SPECIALIZATION.." 2"
+  [1] = SPECIALIZATION.." 1",
+  [2] = SPECIALIZATION.." 2"
 }
 
 WeakAuras.spec_types_specific = {}
@@ -1062,22 +1052,22 @@ if(WeakAuras.PowerAurasPath ~= "") then
 end
 
 WeakAuras.operator_types = {
-  ["=="] = L["="],
-  ["~="] = L["!="],
-  [">"] = L[">"],
-  ["<"] = L["<"],
-  [">="] = L[">="],
-  ["<="] = L["<="]
+  ["=="] = "=",
+  ["~="] = "!=",
+  [">"] = ">",
+  ["<"] = "<",
+  [">="] = ">=",
+  ["<="] = "<="
 }
 
 WeakAuras.equality_operator_types = {
-  ["=="] = L["="],
-  ["~="] = L["!="]
+  ["=="] = "=",
+  ["~="] = "!="
 }
 
 WeakAuras.operator_types_without_equal = {
-  [">="] = L[">="],
-  ["<="] = L["<="]
+  [">="] = ">=",
+  ["<="] = "<="
 }
 
 WeakAuras.string_operator_types = {
@@ -1087,13 +1077,13 @@ WeakAuras.string_operator_types = {
 }
 
 WeakAuras.weapon_types = {
-  ["main"] = L["Main Hand"],
-  ["off"] = L["Off Hand"]
+  ["main"] = MAINHANDSLOT,
+  ["off"] = SECONDARYHANDSLOT
 }
 
 WeakAuras.swing_types = {
-  ["main"] = L["Main Hand"],
-  ["off"] = L["Off Hand"]
+  ["main"] = MAINHANDSLOT,
+  ["off"] = SECONDARYHANDSLOT
 }
 
 WeakAuras.rune_specific_types = {
@@ -1121,6 +1111,10 @@ WeakAuras.autoeventend_types = {
   ["custom"] = L["Custom"]
 }
 
+WeakAuras.timedeventend_types = {
+  ["timed"] = L["Timed"],
+}
+
 WeakAuras.justify_types = {
   ["LEFT"] = L["Left"],
   ["CENTER"] = L["Center"],
@@ -1135,7 +1129,22 @@ WeakAuras.grow_types = {
   ["HORIZONTAL"] = L["Centered Horizontal"],
   ["VERTICAL"] = L["Centered Vertical"],
   ["CIRCLE"] = L["Counter Clockwise"],
-  ["COUNTERCIRCLE"] =L["Clockwise"]
+  ["COUNTERCIRCLE"] = L["Clockwise"],
+  ["GRID"] = WeakAuras.newFeatureString .. L["Grid"],
+  ["CUSTOM"] = WeakAuras.newFeatureString .. L["Custom"],
+}
+
+-- horizontal types: R (right), L (left)
+-- vertical types: U (up), D (down)
+WeakAuras.grid_types = {
+  RU = L["Right, then Up"],
+  UR = L["Up, then Right"],
+  LU = L["Left, then Up"],
+  UL = L["Up, then Left"],
+  RD = L["Right, then Down"],
+  DR = L["Down, then Right"],
+  LD = L["Left, then Down"],
+  DL = L["Down, then Left"],
 }
 
 WeakAuras.text_rotate_types = {
@@ -1234,18 +1243,18 @@ WeakAuras.group_types = {
 
 WeakAuras.difficulty_types = {
   none = L["None"],
-  normal = L["Normal"],
-  heroic = L["Heroic"],
-  mythic = L["Mythic"],
-  timewalking = L["Timewalking"],
-  lfr = L["Looking for Raid"],
-  challenge = L["Challenge"]
+  normal = PLAYER_DIFFICULTY1,
+  heroic = PLAYER_DIFFICULTY2,
+  mythic = PLAYER_DIFFICULTY6,
+  timewalking = PLAYER_DIFFICULTY_TIMEWALKER,
+  lfr = PLAYER_DIFFICULTY3,
+  challenge = PLAYER_DIFFICULTY5
 }
 
 WeakAuras.role_types = {
-  TANK = L["Tank"],
-  DAMAGER = L["Damager"],
-  HEALER = L["Healer"]
+  TANK = INLINE_TANK_ICON.." "..TANK,
+  DAMAGER = INLINE_DAMAGER_ICON.." "..DAMAGER,
+  HEALER = INLINE_HEALER_ICON.." "..HEALER
 }
 
 WeakAuras.anim_start_preset_types = {
@@ -1463,7 +1472,7 @@ LSM.RegisterCallback(WeakAuras, "LibSharedMedia_Registered", function(_, mediaty
 end)
 
 -- register options font
-LSM:Register("font", "Fira Mono Medium", "Interface\\Addons\\WeakAuras\\Media\\Fonts\\FiraMono-Medium.ttf")
+LSM:Register("font", "Fira Mono Medium", "Interface\\Addons\\WeakAuras\\Media\\Fonts\\FiraMono-Medium.ttf", LSM.LOCALE_BIT_western + LSM.LOCALE_BIT_ruRU)
 
 WeakAuras.duration_types = {
   seconds = L["Seconds"],
@@ -1482,15 +1491,15 @@ WeakAuras.gtfo_types = {
 }
 
 WeakAuras.pet_behavior_types = {
-  passive = L["Passive"],
-  defensive = L["Defensive"],
-  assist = L["Assist"]
+  passive = PET_MODE_PASSIVE,
+  defensive = PET_MODE_DEFENSIVE,
+  assist = PET_MODE_ASSIST
 }
 
 WeakAuras.pet_spec_types = {
-  [1] = L["Ferocity"],
-  [2] = L["Tenacity"],
-  [3] = L["Cunning"]
+  [1] = select(2, GetSpecializationInfoByID(74)), -- Ferocity
+  [2] = select(2, GetSpecializationInfoByID(81)), -- Tenacity
+  [3] = select(2, GetSpecializationInfoByID(79)) -- Cunning
 }
 
 WeakAuras.cooldown_progress_behavior_types = {
@@ -1546,21 +1555,21 @@ WeakAuras.bufftrigger_2_combine_group_types = {
 }
 
 WeakAuras.item_slot_types = {
-  [1]  = L["Head"],
-  [2]  = L["Neck"],
-  [3]  = L["Shoulder"],
-  [5]  = L["Chest"],
-  [6]  = L["Waist"],
-  [7]  = L["Legs"],
-  [8]  = L["Feet"],
-  [9]  = L["Wrist"],
-  [10] = L["Hands"],
-  [11] = L["Finger 1"],
-  [12] = L["Finger 2"],
-  [13] = L["Trinket 1"],
-  [14] = L["Trinket 2"],
-  [15] = L["Back"],
-  [19] = L["Tabard"]
+  [1]  = HEADSLOT,
+  [2]  = NECKSLOT,
+  [3]  = SHOULDERSLOT,
+  [5]  = CHESTSLOT,
+  [6]  = WAISTSLOT,
+  [7]  = LEGSSLOT,
+  [8]  = FEETSLOT,
+  [9]  = WRISTSLOT,
+  [10] = HANDSSLOT,
+  [11] = FINGER0SLOT_UNIQUE,
+  [12] = FINGER1SLOT_UNIQUE,
+  [13] = TRINKET0SLOT_UNIQUE,
+  [14] = TRINKET1SLOT_UNIQUE,
+  [15] = BACKSLOT,
+  [19] = TABARDSLOT
 }
 
 WeakAuras.charges_change_type = {
@@ -1731,8 +1740,6 @@ WeakAuras.internal_fields = {
   parent = true,
   internalVersion = true,
   sortHybridTable = true,
-  expanded = true,
-  parent = true,
   authorMode = true,
   skipWagoUpdate = true,
   ignoreWagoUpdate = true
@@ -1824,7 +1831,6 @@ WeakAuras.author_option_fields = {
     max = 1,
     step = .05,
     default = 0,
-    step = .05,
   },
   input = {
     default = "",

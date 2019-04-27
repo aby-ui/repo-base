@@ -1,10 +1,11 @@
 local mod	= DBM:NewMod(2360, "DBM-Party-BfA", 11, 1178)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019042432228")
+mod:SetRevision("2019042641737")
 mod:SetCreatureID(153755, 150712)
 mod:SetEncounterID(2312)
 mod:SetZone()
+mod:SetBossHPInfoToHighest()
 
 mod:RegisterCombat("combat")
 
@@ -17,7 +18,7 @@ mod:RegisterEventsInCombat(
 )
 
 --Trixie "The Tech" Tazer
-local warnMegaTaze					= mod:NewTargetNoFIlterAnnounce(298718, 3)
+local warnMegaTaze					= mod:NewTargetNoFilterAnnounce(298718, 3)
 local warnJumpStart					= mod:NewSpellAnnounce(298897, 3)
 --Naeno Megacrash
 --local warnRollOut					= mod:NewSpellAnnounce(298946, 3)
