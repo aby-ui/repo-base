@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2328, "DBM-CrucibleofStorms", nil, 1177)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190428164707")
+mod:SetRevision("20190501155514")
 mod:SetCreatureID(146497, 146495)--146497 Zaxasj, 146495 Fa'thuul
 mod:SetEncounterID(2269)
 mod:SetZone()
@@ -53,7 +53,6 @@ local warnCrushingDoubt					= mod:NewTargetAnnounce(282432, 2)
 
 --Relics of Power
 local specWarnUmbralShell				= mod:NewSpecialWarningTargetChange(282741, "Dps", nil, nil, 1, 2)
---local specWarnCustodyoftheDeep			= mod:NewSpecialWarningMoveTo(284772, false, nil, 2, 1, 2)--optional?
 local specWarnStormofAnnihilation		= mod:NewSpecialWarningSpell(286755, nil, nil, nil, 2, 2)
 local specWarnPowerOverwhelming			= mod:NewSpecialWarningTarget(282914, nil, nil, nil, 3)--A wipe basically
 --Zaxasj the Speaker
@@ -196,7 +195,7 @@ function mod:OnCombatStart(delay)
 	timerVoidCrashCD:Start(13-delay)--SUCCESS
 	timerCrushingDoubtCD:Start(18.1-delay, 1)
 	countdownCrushingDoubt:Start(18.1-delay)
-	berserkTimer:Start(self:IsMythic() and 510 or 780-delay)--Mythic and normal berserks verified. LFR still unknown if bererks at 13 min.
+	berserkTimer:Start(self:IsMythic() and 570 or 780-delay)--Mythic and normal berserks verified. LFR still unknown if bererks at 13 min.
 	if self.Options.NPAuraOnPresence or self.Options.NPAuraOnWitness then
 		DBM:FireEvent("BossMod_EnableHostileNameplates")
 	end
@@ -313,8 +312,6 @@ function mod:SPELL_CAST_SUCCESS(args)
 		warnVoidCrash:Show()
 		timerVoidCrashCD:Start()
 	elseif spellId == 283066 then
-		--specWarnCustodyoftheDeep:Show(DBM_CORE_SHIELD)
-		--specWarnCustodyoftheDeep:Play("moveboss")
 		self.vb.shieldCount = self.vb.shieldCount + 1
 		warnCustodyoftheDeep:Show(self.vb.shieldCount)
 		timerAbyssalCollapse:Start()

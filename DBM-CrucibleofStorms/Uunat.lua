@@ -1,12 +1,12 @@
 local mod	= DBM:NewMod(2332, "DBM-CrucibleofStorms", nil, 1177)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019042643346")
+mod:SetRevision("20190502201120")
 mod:SetCreatureID(145371)
 mod:SetEncounterID(2273)
 mod:SetZone()
 mod:SetUsedIcons(1, 2, 3, 4, 5, 6, 7, 8)--Torment reserves as many as needed, but no more than 5, adds use first 3
-mod:SetHotfixNoticeRev(20190420212326)
+mod:SetHotfixNoticeRev(2019043033124)
 mod:SetMinSyncRevision(20190420212326)
 --mod.respawnTime = 35
 
@@ -93,7 +93,7 @@ local specWarnGiftofNzothLunacy			= mod:NewSpecialWarningCount(285685, nil, nil,
 --Relics of Power
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(19055))
 local timerStormofAnnihilation			= mod:NewTargetTimer(15, 284583, 196871, nil, nil, 2, nil, DBM_CORE_HEALER_ICON)--Short text "Storm"
-local timerUnstableResonanceCD			= mod:NewCDCountTimer(41.2, 293653, nil, nil, nil, 3, nil, DBM_CORE_DEADLY_ICON)--41-45
+local timerUnstableResonanceCD			= mod:NewCDCountTimer(40.8, 293653, nil, nil, nil, 3, nil, DBM_CORE_DEADLY_ICON)--40.8-45
 local timerUnstableResonance			= mod:NewBuffFadesTimer(15, 293653, nil, nil, nil, 5, nil, DBM_CORE_DEADLY_ICON)
 --Stage One: His All-Seeing Eyes
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(19104))
@@ -112,7 +112,7 @@ local timerMindBenderCD					= mod:NewCDCountTimer(61.1, "ej19118", 284485, nil, 
 local timerGiftofNzothHysteriaCD		= mod:NewCDCountTimer(42.5, 285638, 55975, nil, nil, 2)--Short text "Hysteria"
 --Stage Three: His Unwavering Gaze
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(19106))
-local timerInsatiableTormentCD			= mod:NewCDTimer(23.1, 285652, 142942, nil, nil, 3)--Short text "Torment"
+local timerInsatiableTormentCD			= mod:NewCDCountTimer(23.1, 285652, 142942, nil, nil, 3)--Short text "Torment"
 local timerGiftofNzothLunacyCD			= mod:NewCDCountTimer(42.6, 285685, L.Lunacy, nil, nil, 2)--Manually translated because no spell to short text it
 
 local berserkTimer						= mod:NewBerserkTimer(780)
@@ -157,6 +157,7 @@ mod.vb.tridentOceanicon, mod.vb.tempestStormIcon, mod.vb.voidIcon = 6, 5, 3
 local trackedFeedback1, trackedFeedback2, trackedFeedback3 = false, false, false
 local playerAffected = false
 local playerName = UnitName("player")
+local playerHasRelic = false
 local unitTracked = {}
 local castsPerGUID = {}
 local interruptTextures = {[1] = 2178508, [2] = 2178501, [3] = 2178502, [4] = 2178503, [5] = 2178504, [6] = 2178505, [7] = 2178506, [8] = 2178507,}--Fathoms Deck
@@ -239,8 +240,8 @@ end
 local function updateResonanceYell(self, icon)
 	if not self.Options.ResonanceYellFilter then return end
 	--If player with relic, icons AND playername in red text
-	if self.vb.resonCount > 0 and (self.vb.tridentOcean == playerName or self.vb.tempestCaller == playerName or self.vb.voidstone == playerName) then
-		yellUnstableResonanceSign:Yell(icon, playerName, icon)
+	if self.vb.resonCount > 0 and playerHasRelic then
+		yellUnstableResonanceSign:Yell(icon, playerHasRelic, icon)
 		self:Schedule(2, updateResonanceYell, self, icon)
 	--Not one of relics, just one of resonance targets, just double icons
 	elseif playerAffected then
@@ -269,6 +270,7 @@ function mod:OnCombatStart(delay)
 	self.vb.umbrelTarget = nil
 	trackedFeedback1, trackedFeedback2, trackedFeedback3 = false, false, false
 	playerAffected = false
+	playerHasRelic = false
 	table.wipe(unitTracked)
 	table.wipe(castsPerGUID)
 	if self:IsHard() then
@@ -296,13 +298,28 @@ function mod:OnCombatStart(delay)
 			if UnitIsGroupLeader("player") then self:SendSync("SetFour") end
 		end
 	end
-	berserkTimer:Start(780-delay)--780 verified on normal at least https://www.warcraftlogs.com/reports/rPQXVgaD6AnF4h2R#fight=8&view=events&pins=2%24Off%24%23244F4B%24expression%24ability.name%20%3D%20%22Berserk%22
+	berserkTimer:Start(self:IsMythic() and 540 or 780-delay)--780 verified on normal at least https://www.warcraftlogs.com/reports/rPQXVgaD6AnF4h2R#fight=8&view=events&pins=2%24Off%24%23244F4B%24expression%24ability.name%20%3D%20%22Berserk%22
 	if self.Options.InfoFrame then
 		DBM.InfoFrame:SetHeader(OVERVIEW)
 		DBM.InfoFrame:Show(10, "function", updateInfoFrame, false, false)
 	end
 	if self.Options.NPAuraOnBond or self.Options.NPAuraOnFeed or self.Options.NPAuraOnRegen or self.Options.NPAuraOnConsume then
 		DBM:FireEvent("BossMod_EnableHostileNameplates")
+	end
+end
+
+function mod:OnTimerRecovery()
+	if self.vb.tridentOcean == playerName then
+		playerHasRelic = L.Ocean
+	elseif self.vb.tempestCaller == playerName then
+		playerHasRelic = L.Storm
+	elseif self.vb.voidstone == playerName then
+		playerHasRelic = L.Void
+	end
+	if playerHasRelic and self.vb.resonCount > 0 then
+		local icon = self.vb.tridentOcean == playerName and self.vb.tridentOceanicon or self.vb.tempestCaller == playerName and self.vb.tempestStormIcon or self.vb.voidstone == playerName and self.vb.voidIcon
+		yellUnstableResonanceSign:Yell(icon, playerHasRelic, icon)
+		self:Schedule(2, updateResonanceYell, self, icon)
 	end
 end
 
@@ -328,6 +345,25 @@ function mod:SPELL_CAST_START(args)
 		if self.Options.RangeFrame then
 			DBM.RangeCheck:Show(10)
 		end
+		--Update some Timers
+		local tearElapsed, tearTotal = timerOblivionTearCD:GetTime(self.vb.tearCount+1)
+		local tearExtend = 21.2 - (tearTotal-tearElapsed)
+		DBM:Debug("timerOblivionTearCD extended by: "..tearExtend, 2)
+		timerOblivionTearCD:Update(tearElapsed, tearTotal+tearExtend, self.vb.tearCount+1)
+		if self.vb.phase == 1 then
+			--Query correct timer
+			if self.vb.nzothEyesCount % 2 == 0 then--Last eyes cast was maddening, next is piercing
+				local eyesElapsed, eyesTotal = timerPiercingGazeCD:GetTime(self.vb.nzothEyesCount+1)
+				local eyesExtend = 19.4 - (eyesTotal-eyesElapsed)
+				DBM:Debug("timerPiercingGazeCD extended by: "..eyesExtend, 2)
+				timerPiercingGazeCD:Update(eyesElapsed, eyesTotal+eyesExtend, self.vb.nzothEyesCount+1)
+			else--Last eyes cast was piercing, next is maddening
+				local eyesElapsed, eyesTotal = timerMaddeningEyesCD:GetTime(self.vb.nzothEyesCount+1)
+				local eyesExtend = 19.4 - (eyesTotal-eyesElapsed)
+				DBM:Debug("timerMaddeningEyesCD extended by: "..eyesExtend, 2)
+				timerMaddeningEyesCD:Update(eyesElapsed, eyesTotal+eyesExtend, self.vb.nzothEyesCount+1)
+			end
+		end
 	elseif spellId == 285185 then
 		self.vb.tearCount = self.vb.tearCount + 1
 		warnOblivionTear:Show(self.vb.tearCount)
@@ -345,10 +381,10 @@ function mod:SPELL_CAST_START(args)
 				specWarnMaddeningEyesCast:Show(self.vb.nzothEyesCount)
 				specWarnMaddeningEyesCast:Play("farfromline")
 				timerPiercingGazeCD:Start(32.7, self.vb.nzothEyesCount+1)
-				--Trigger the 10 second Undying 2 delay since Eyes 2 was first
-				if (self.vb.undyingCount < 2) and (self.vb.nzothEyesCount == 2) then
+				--Trigger the 10 second Undying 2 delay since Eyes 2 was first (no longer happens on mythic)
+				if not self:IsMythic() and ((self.vb.undyingCount < 2) and (self.vb.nzothEyesCount == 2)) then
 					timerCallUndyingGuardianCD:Stop()
-					timerCallUndyingGuardianCD:Start(10, 2)
+					timerCallUndyingGuardianCD:Start(9.6, 2)
 				end
 			else
 				specWarnPiercingGaze:Show(self.vb.nzothEyesCount)
@@ -358,8 +394,7 @@ function mod:SPELL_CAST_START(args)
 		else--Phase 3 and all we get is piercing
 			specWarnPiercingGaze:Show(self.vb.nzothEyesCount)
 			specWarnPiercingGaze:Play("specialsoon")--don't have anything better really
-			--52 and 47 alternating
-			timerPiercingGazeCD:Start((self.vb.nzothEyesCount % 2 == 0) and 47.5 or 52.2, self.vb.nzothEyesCount+1)
+			timerPiercingGazeCD:Start(self:IsMythic() and 40 or 47.5, self.vb.nzothEyesCount+1)
 		end
 	--elseif spellId == 285345 and self:AntiSpam(3, 1) then
 		--specWarnMaddeningEyesCast:Show()
@@ -377,10 +412,10 @@ function mod:SPELL_CAST_START(args)
 			specWarnCallUndyingGuardian:Play("bigmob")
 		end
 		timerCallUndyingGuardianCD:Start(self.vb.phase == 3 and 31.5 or 46.1, self.vb.undyingCount+1)
-		--Trigger the 10 second eyes 2 delay since Undying 2 was first
-		if (self.vb.phase == 1) and (self.vb.undyingCount == 2) and (self.vb.nzothEyesCount < 2) then
+		--Trigger the 10 second eyes 2 delay since Undying 2 was first (no longer happens on mythic)
+		if not self:IsMythic() and ((self.vb.phase == 1) and (self.vb.undyingCount == 2) and (self.vb.nzothEyesCount < 2)) then
 			timerMaddeningEyesCD:Stop()
-			timerMaddeningEyesCD:Start(10, 2)
+			timerMaddeningEyesCD:Start(9.6, 2)
 		end
 	elseif spellId == 285638 then
 		self.vb.giftofNzothCount = self.vb.giftofNzothCount + 1
@@ -446,7 +481,9 @@ function mod:SPELL_CAST_SUCCESS(args)
 		timerTouchoftheEndCD:Start(nil, self.vb.touchCount+1)
 	elseif spellId == 285652 then
 		self.vb.tormentCount = self.vb.tormentCount + 1
-		timerInsatiableTormentCD:Start()
+		local players = DBM:GetGroupSize() or 30--If for SOME reason GetGroupSize fails, we'll use lowest possible CD
+		local timer = self:IsMythic() and 45 or 600/players
+		timerInsatiableTormentCD:Start(timer, self.vb.tormentCount+1)
 	elseif spellId == 285427 then
 		if self.Options.NPAuraOnConsume then
 			DBM.Nameplate:Hide(true, args.sourceGUID)
@@ -520,9 +557,9 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerStormofAnnihilation:Start(args.destName)
 	elseif spellId == 293663 or spellId == 293662 or spellId == 293661 then--Unstable Resonance (all)
 		self.vb.resonCount = self.vb.resonCount + 1
-		if self.vb.resonCount > 0 and (self.vb.tridentOcean == playerName or self.vb.tempestCaller == playerName or self.vb.voidstone == playerName) then
+		if self:AntiSpam(5, 6) and playerHasRelic then
 			local icon = self.vb.tridentOcean == playerName and self.vb.tridentOceanicon or self.vb.tempestCaller == playerName and self.vb.tempestStormIcon or self.vb.voidstone == playerName and self.vb.voidIcon
-			yellUnstableResonanceSign:Yell(icon, playerName, icon)
+			yellUnstableResonanceSign:Yell(icon, playerHasRelic, icon)
 			self:Schedule(2, updateResonanceYell, self, icon)
 		end
 		if spellId == 293663 then--Void
@@ -617,12 +654,21 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif spellId == 284768 then--Trident
 		self.vb.tridentOcean = args.destName
 		warnOceanRelic:Show(args.destName)
+		if args:IsPlayer() then
+			playerHasRelic = L.Ocean
+		end
 	elseif spellId == 284569 then--Tempest
 		self.vb.tempestCaller = args.destName
 		warnStormRelic:Show(args.destName)
+		if args:IsPlayer() then
+			playerHasRelic = L.Storm
+		end
 	elseif spellId == 284684 then--Void
 		self.vb.voidstone = args.destName
 		warnVoidRelic:Show(args.destName)
+		if args:IsPlayer() then
+			playerHasRelic = L.Void
+		end
 	elseif spellId == 284722 then--Umbrel
 		self.vb.umbrelTarget = args.destName
 		warnUmbrelShield:Show(args.destName)
@@ -691,24 +737,36 @@ function mod:SPELL_AURA_REMOVED(args)
 			end
 		elseif self.vb.phase == 3 then
 			self.vb.nzothEyesCount = 0--Only reset on 3 because doesn't exist in 2
-			timerInsatiableTormentCD:Start(12.1)
+			timerInsatiableTormentCD:Start(12.1, 1)
 			timerOblivionTearCD:Start(13.3, 1)
 			timerTouchoftheEndCD:Start(21.9, 1)
 			timerCallUndyingGuardianCD:Start(26.7, 1)
 			timerGiftofNzothLunacyCD:Start(40.1, 1)
 			if self:IsMythic() then
 				timerUnstableResonanceCD:Start(33.5, self.vb.resonCastCount+1)
+				timerPiercingGazeCD:Start(62.5, 1)
+			else
+				timerPiercingGazeCD:Start(42.6, 1)
 			end
 		end
 	elseif spellId == 284768 then--Trident
 		self.vb.tridentOcean = "None"
 		self.vb.tridentDrop = GetTime()
+		if args:IsPlayer() then
+			playerHasRelic = false
+		end
 	elseif spellId == 284569 then--Tempest
 		self.vb.tempestCaller = "None"
 		self.vb.tempestDrop = GetTime()
+		if args:IsPlayer() then
+			playerHasRelic = false
+		end
 	elseif spellId == 284684 then--Void
 		self.vb.voidstone = "None"
 		self.vb.voidDrop = GetTime()
+		if args:IsPlayer() then
+			playerHasRelic = false
+		end
 	elseif spellId == 284722 then--Umbrel
 		self.vb.umbrelTarget = nil
 		warnUmbralShellOver:Show()

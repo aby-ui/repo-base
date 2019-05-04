@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(860, "DBM-Pandaria", nil, 322, 1)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041710000")
+mod:SetRevision("2019050334758")
 mod:SetCreatureID(71953)
 mod:SetReCombatTime(20)
 mod:SetZone()
@@ -35,7 +35,7 @@ local timerCracklingLightningCD		= mod:NewCDTimer(47, 144635)
 local timerChiBarrageCD				= mod:NewCDTimer(20, 144642)
 
 mod:AddBoolOption("RangeFrame", true)--This is for chi barrage spreading.
-mod:AddReadyCheckOption(33117, false)
+mod:AddReadyCheckOption(33117, false, 90)
 
 function mod:OnCombatStart(delay, yellTriggered)
 	if yellTriggered then

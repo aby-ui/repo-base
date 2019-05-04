@@ -264,7 +264,7 @@ function WorldQuestTracker.UpdateStatusBarAnchors()
 	statusBar:ClearAllPoints()
 	backgroundTexture:ClearAllPoints()
 	backgroundBorder:ClearAllPoints()
-	WorldQuestTrackerRewardHistoryButton:ClearAllPoints()
+	WorldQuestTrackerOptionsButton:ClearAllPoints()
 	WorldQuestTracker.IndicatorsAnchor:ClearAllPoints()
 	
 	if (anchor == "bottom") then
@@ -280,11 +280,11 @@ function WorldQuestTracker.UpdateStatusBarAnchors()
 		backgroundBorder:SetTexCoord (0, 1, 0, 1)
 	
 		if (WorldMapFrame.isMaximized) then
-			WorldQuestTrackerRewardHistoryButton:SetPoint ("bottomleft", statusBar, "bottomleft", 0, 3)
+			WorldQuestTrackerOptionsButton:SetPoint ("bottomleft", statusBar, "bottomleft", 0, 3)
 			--WorldQuestTracker.IndicatorsAnchor:SetPoint ("bottomright", WorldQuestTrackerGoToAllianceButton, "bottomleft", -10, 3) --now is anchored to horde (horde and alliance button got swapped)
 			WorldQuestTracker.IndicatorsAnchor:SetPoint ("bottomright", WorldQuestTrackerGoToHordeButton, "bottomleft", -10, 3)
 		else
-			WorldQuestTrackerRewardHistoryButton:SetPoint ("bottomleft", statusBar, "bottomleft", 0, 2)
+			WorldQuestTrackerOptionsButton:SetPoint ("bottomleft", statusBar, "bottomleft", 0, 2)
 			--WorldQuestTracker.IndicatorsAnchor:SetPoint ("bottomright", WorldQuestTrackerGoToAllianceButton, "bottomleft", -10, 2)
 			WorldQuestTracker.IndicatorsAnchor:SetPoint ("bottomright", WorldQuestTrackerGoToHordeButton, "bottomleft", -10, 2)
 		end
@@ -302,10 +302,10 @@ function WorldQuestTracker.UpdateStatusBarAnchors()
 		backgroundBorder:SetTexCoord (0, 1, 1, 0)
 	
 		if (WorldMapFrame.isMaximized) then
-			WorldQuestTrackerRewardHistoryButton:SetPoint ("topleft", statusBar, "topleft", 2, -0)
+			WorldQuestTrackerOptionsButton:SetPoint ("topleft", statusBar, "topleft", 2, -0)
 			WorldQuestTracker.IndicatorsAnchor:SetPoint ("topright", statusBar, "topright", -40, -3)
 		else
-			WorldQuestTrackerRewardHistoryButton:SetPoint ("bottomleft", statusBar, "bottomleft", 0, 2)
+			WorldQuestTrackerOptionsButton:SetPoint ("bottomleft", statusBar, "bottomleft", 0, 2)
 			WorldQuestTracker.IndicatorsAnchor:SetPoint ("topright", statusBar, "topright", -40, -3)
 		end
 	

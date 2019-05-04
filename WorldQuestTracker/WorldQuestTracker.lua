@@ -858,10 +858,10 @@ end
 local tutorial_three = function()
 	local alert = CreateFrame ("frame", "WorldQuestTrackerTutorialAlert3", worldFramePOIs, "MicroButtonAlertTemplate")
 	alert:SetFrameLevel (302)
-	alert.label = "点击'汇总'，可显示统计数据，以及其他角色的任务列表."
+	alert.label = "点击这里可显示统计数据，以及其他角色的任务列表."
 	alert.Text:SetSpacing (4)
 	MicroButtonAlert_SetText (alert, alert.label)
-	alert:SetPoint ("bottomleft", WorldQuestTrackerRewardHistoryButton, "topleft", 0, 32)
+	alert:SetPoint ("bottomleft", WorldQuestTrackerStatisticsButton, "topleft", 0, 32)
 	alert.Arrow:ClearAllPoints()
 	alert.Arrow:SetPoint ("topleft", alert, "bottomleft", 10, 0)
 	alert.CloseButton:HookScript ("OnClick", hook_AlertCloseButton)

@@ -3113,16 +3113,10 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 				WorldQuestTracker:SetFontColor (self.Text, "orange")
 			end
 			
-			--reward history / summary
-			local rewardButton = CreateFrame ("button", "WorldQuestTrackerRewardHistoryButton", WorldQuestTracker.DoubleTapFrame)
-			rewardButton:SetPoint ("bottomleft", WorldQuestTracker.DoubleTapFrame, "bottomleft", 0, 2)
-			setup_button (rewardButton, L["S_MAPBAR_SUMMARY"])
-			rewardButton:SetScript ("OnClick", function() SummaryFrame.ShowAnimation:Play() end)
-
 			---------------------------------------------------------
 			--options button
 			local optionsButton = CreateFrame ("button", "WorldQuestTrackerOptionsButton", WorldQuestTracker.DoubleTapFrame)
-			optionsButton:SetPoint ("left", rewardButton, "right", 2, 0)
+			optionsButton:SetPoint ("bottomleft", WorldQuestTracker.DoubleTapFrame, "bottomleft", 0, 2)
 			setup_button (optionsButton, L["S_MAPBAR_OPTIONS"]) --~options
 			
 			---------------------------------------------------------
@@ -3518,148 +3512,6 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 			-- WorldQuestTracker.MapAnchorButton - need to remove all references of this button
 			
 			---------------------------------------------------------
-			
-			function WorldQuestTracker.ShowHistoryTooltip (self)
-				local _
-				GameCooltip:Preset (2)
-				GameCooltip:SetOption ("TextSize", 10)
-				GameCooltip:SetOption ("ButtonsYMod", -2)
-				GameCooltip:SetOption ("YSpacingMod", 3)
-				GameCooltip:SetOption ("FixedHeight", 185)
-				GameCooltip:AddLine (" ")
-				GameCooltip:AddLine (L["S_MAPBAR_SUMMARYMENU_TODAYREWARDS"] .. ":", _, _, _, _, 12)
-				
-					if (WorldQuestTracker.db.profile.bar_anchor == "top") then
-						GameCooltip:SetOption ("MyAnchor", "top")
-						GameCooltip:SetOption ("RelativeAnchor", "bottom")
-						GameCooltip:SetOption ("WidthAnchorMod", 0)
-						GameCooltip:SetOption ("HeightAnchorMod", -29)
-					else
-						GameCooltip:SetOption ("MyAnchor", "bottom")
-						GameCooltip:SetOption ("RelativeAnchor", "top")
-						GameCooltip:SetOption ("WidthAnchorMod", 0)
-						GameCooltip:SetOption ("HeightAnchorMod", 0)
-					end				
-				
-				--~sumary
-				button_onenter (self)
-				
-				local today = WorldQuestTracker.QueryHistory (WQT_QUERYTYPE_PERIOD, WQT_QUERYDB_LOCAL, WQT_DATE_TODAY)
-				today = today or {}
-				
-				GameCooltip:AddLine (L["S_QUESTTYPE_GOLD"] .. ":", today.gold and today.gold > 0 and GetCoinTextureString (today.gold) or 0, 1, "white", "orange")
-				local texture, coords = WorldQuestTracker.GetGoldIcon()
-				GameCooltip:AddIcon (texture, 1, 1, 16, 16)
-				
-				GameCooltip:AddLine (L["S_QUESTTYPE_RESOURCE"] .. ":", DF:CommaValue (today.resource or 0), 1, "white", "orange")
-				GameCooltip:AddIcon ([[Interface\AddOns\WorldQuestTracker\media\resource_iconT]], 1, 1, 14, 14)
-				
-				local artifactIcon = WorldQuestTracker.GetArtifactPowerIcon (100000, true)
-				GameCooltip:AddLine (L["S_QUESTTYPE_ARTIFACTPOWER"] ..":", DF:CommaValue (today.artifact or 0), 1, "white", "orange")
-				GameCooltip:AddIcon (artifactIcon, 1, 1, 16, 16)
-				
-				local quests_completed = WorldQuestTracker.QueryHistory (WQT_QUERYTYPE_PERIOD, WQT_QUERYDB_LOCAL, WQT_DATE_TODAY, WQT_QUESTS_PERIOD)
-				GameCooltip:AddLine (L["S_QUESTSCOMPLETED"] .. ":", quests_completed or 0, 1, "white", "orange")
-				GameCooltip:AddIcon ([[Interface\GossipFrame\AvailableQuestIcon]], 1, 1, 16, 16)
-				--
-				GameCooltip:AddLine (" ")
-				GameCooltip:AddLine (L["S_MAPBAR_SUMMARYMENU_ACCOUNTWIDE"] .. ":", _, _, _, _, 12)
-				--GameCooltip:AddLine (" ")
-				
-				local today_account = WorldQuestTracker.QueryHistory (WQT_QUERYTYPE_PERIOD, WQT_QUERYDB_ACCOUNT, WQT_DATE_TODAY)-- or {}
-				today_account = today_account or {}
-				
-				GameCooltip:AddLine (L["S_QUESTTYPE_GOLD"] .. ":", today_account.gold and today_account.gold > 0 and GetCoinTextureString (today_account.gold) or 0, 1, "white", "orange")
-				local texture, coords = WorldQuestTracker.GetGoldIcon()
-				GameCooltip:AddIcon (texture, 1, 1, 16, 16)
-				
-				GameCooltip:AddLine (L["S_QUESTTYPE_RESOURCE"] .. ":", DF:CommaValue (today_account.resource or 0), 1, "white", "orange")
-				GameCooltip:AddIcon ([[Interface\AddOns\WorldQuestTracker\media\resource_iconT]], 1, 1, 14, 14)
-				
-				local artifactIcon = WorldQuestTracker.GetArtifactPowerIcon (100000, true)
-				GameCooltip:AddLine (L["S_QUESTTYPE_ARTIFACTPOWER"] ..":", DF:CommaValue (today_account.artifact or 0), 1, "white", "orange")
-				GameCooltip:AddIcon (artifactIcon, 1, 1, 16, 16)
-				
-				local quests_completed = WorldQuestTracker.QueryHistory (WQT_QUERYTYPE_PERIOD, WQT_QUERYDB_ACCOUNT, WQT_DATE_TODAY, WQT_QUESTS_PERIOD)
-				GameCooltip:AddLine (L["S_QUESTSCOMPLETED"] .. ":", quests_completed or 0, 1, "white", "orange")
-				GameCooltip:AddIcon ([[Interface\GossipFrame\AvailableQuestIcon]], 1, 1, 16, 16)
-
-				GameCooltip:AddLine (" ", "", 1, "green", _, 10)
-				GameCooltip:AddLine (L["S_MAPBAR_SUMMARYMENU_MOREINFO"], "", 1, "green", _, 10)
-				
-				--WorldQuestTracker.GetCharInfo (guid)
-				--lista de outros personagems:
-				
-				GameCooltip:AddLine (L["S_MAPBAR_SUMMARYMENU_REQUIREATTENTION"] .. ":", "", 2, _, _, 12)
-				GameCooltip:AddLine (" ", "", 2, _, _, 12)
-				
-				local chrGuid = UnitGUID ("player")
-				local timeCutOff = time() + (60*60*2.2)
-				local subLines = 1
-				--[
-				for guid, trackTable in pairs (WorldQuestTracker.db.profile.quests_tracked) do
-					if (chrGuid ~= guid) then
-						local requireAttention = false
-						for i, questInfo in ipairs (trackTable) do
-							if (timeCutOff > questInfo.expireAt) then
-							
-								local timeLeft = ((questInfo.expireAt - time()) / 60) --segundos / 60
-								
-								if (timeLeft > 0) then
-									if (not requireAttention) then
-										local name, realm, class = WorldQuestTracker.GetCharInfo (guid)
-										local color = RAID_CLASS_COLORS [class]
-										local name = name .. " - " .. realm
-										if (color) then
-											name = "|c" .. color.colorStr .. name .. "|r"
-										end
-										GameCooltip:AddLine (name, "", 2, _, _, 12)
-										subLines = subLines + 1
-										requireAttention = true
-									end
-									
-									local title, factionID, tagID, tagName, worldQuestType, rarity, isElite, tradeskillLineIndex = WorldQuestTracker.GetQuest_Info (questInfo.questID)
-
-									local rewardAmount = questInfo.rewardAmount
-									if (questInfo.questType == QUESTTYPE_GOLD) then
-										rewardAmount = floor (questInfo.rewardAmount / 10000)
-									end
-									local colorByRarity = ""
-
-									if (rarity  == LE_WORLD_QUEST_QUALITY_EPIC) then
-										colorByRarity = "FFC845F9"
-									elseif (rarity  == LE_WORLD_QUEST_QUALITY_RARE) then
-										colorByRarity = "FF0091F2"
-									else
-										colorByRarity = "FFFFFFFF"
-									end
-									GameCooltip:AddLine ("|cFFFFDD00[" .. rewardAmount .. "]|r |c" .. colorByRarity.. title .. "|r", SecondsToTime (timeLeft * 60), 2, "white", "orange", 10)-- .. "M" --(timeLeft > 60 and 60 or 1)
-									GameCooltip:AddIcon (questInfo.rewardTexture, 2, 1)
-
-									subLines = subLines + 1
-								end
-							end
-						end
-					end
-				end
-				--]]
-				if (subLines == 1) then
-					GameCooltip:AddLine (L["S_MAPBAR_SUMMARYMENU_NOATTENTION"], " ", 2, "gray", _, 10)
-					GameCooltip:AddLine (" ", " ", 2)
-				else
-					GameCooltip:SetOption ("HeighModSub", max (185 - (subLines * 20), 0))
-				end
-
-				GameCooltip:SetOption ("SubMenuIsTooltip", true)
-				GameCooltip:SetOption ("NoLastSelectedBar", true)
-				
-				GameCooltip:SetLastSelected ("main", 1)
-				
-				GameCooltip:SetOwner (rewardButton)
-				GameCooltip:Show()
-				
-				GameCooltip:ShowSub (GameCooltip.Indexes)
-			end
 			
 			local button_onLeave = function (self)
 				GameCooltip:Hide()
@@ -4344,10 +4196,6 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 			}
 			
 			GameCooltip:CoolTipInject (WorldQuestTracker.OptionsInterfaceMenu.options_button)			
-			
-			
-			rewardButton:SetScript ("OnEnter", WorldQuestTracker.ShowHistoryTooltip)
-			rewardButton:SetScript ("OnLeave", button_onLeave)
 			
 			local ResourceFontTemplate = DF:GetTemplate ("font", "WQT_RESOURCES_AVAILABLE")	
 
