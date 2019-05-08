@@ -736,6 +736,20 @@ do
   end
 end
 
+function addon:QuestIgnored(questID)
+  if (TimewalkingItemQuest[questID]) then
+    -- Timewalking Item Quests
+    for _, iconTexture in ipairs(TimewalkingItemQuest[questID]) do
+      if eventInfo[iconTexture] then
+        -- Timewalking Weedend Event ONGOING
+        return
+      end
+    end
+    return true
+  end
+  return
+end
+
 function addon:QuestCount(toonname)
   local t
   if toonname then
@@ -748,9 +762,7 @@ function addon:QuestCount(toonname)
   -- ticket 96: GetDailyQuestsCompleted() is unreliable, the response is laggy and it fails to count some quests
   local id, info
   for id, info in pairs(t.Quests) do
-    if (TimewalkingItemQuest[id] and (not eventInfo[TimewalkingItemQuest[id]])) then
-      -- Timewalking Item Quests only show during Timewalking Weeks
-    else
+    if not self:QuestIgnored(id) then
       if info.isDaily then
         dailycount = dailycount + 1
       else
@@ -1875,9 +1887,7 @@ hoverTooltip.ShowQuestTooltip = function (cell, arg, ...)
   local zonename, id
   for id,qi in pairs(t.Quests) do
     if (not isDaily) == (not qi.isDaily) then
-      if (TimewalkingItemQuest[id] and (not eventInfo[TimewalkingItemQuest[id]])) then
-        -- Timewalking Item Quests only show during Timewalking Weeks
-      else
+      if not addon:QuestIgnored(id) then
         zonename = qi.Zone and qi.Zone.name or ""
         table.insert(ql,zonename.." # "..id)
       end
@@ -2508,7 +2518,7 @@ end
 function core:OnInitialize()
   local versionString = GetAddOnMetadata(addonName, "version")
   --[===[@debug@
-  if versionString == "8.1.3" then
+  if versionString == "8.1.3-3-g3e38d55" then
     versionString = "Dev"
   end
   --@end-debug@]===]

@@ -68,9 +68,9 @@ local function showRealDate(curseDate)
 end
 
 DBM = {
-	Revision = parseCurseDate("20190504063032"),
-	DisplayVersion = "8.1.24 alpha", -- the string that is shown as version
-	ReleaseRevision = releaseDate(2019, 4, 30, 21) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+	Revision = parseCurseDate("20190508005449"),
+	DisplayVersion = "8.1.25 alpha", -- the string that is shown as version
+	ReleaseRevision = releaseDate(2019, 5, 7) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 }
 DBM.HighestRelease = DBM.ReleaseRevision --Updated if newer version is detected, used by update nags to reflect critical fixes user is missing on boss pulls
 
@@ -447,7 +447,7 @@ local delayedFunction
 local dataBroker
 local voiceSessionDisabled = false
 
-local fakeBWVersion, fakeBWHash = 146, "f24a924"
+local fakeBWVersion, fakeBWHash = 147, "b9e4c1e"
 local versionQueryString, versionResponseString = "Q^%d^%s", "V^%d^%s"
 
 local enableIcons = true -- set to false when a raid leader or a promoted player has a newer version of DBM
@@ -5936,10 +5936,10 @@ do
 					SetCVar("Sound_EnableSFX", 0)
 				end
 				--boss health info scheduler
-				if not mod.CustomHealthUpdate then
-					self:Schedule(1, checkBossHealth, self)
-				else
+				if mod.CustomHealthUpdate then
 					self:Schedule(1, checkCustomBossHealth, self, mod)
+				else
+					self:Schedule(1, checkBossHealth, self)
 				end
 			end
 			--process global options
@@ -9216,7 +9216,7 @@ do
 			print("newAnnounce for "..color.." is using OptionVersion hack. this is depricated")
 			return
 		end
-		local text, spellName = setText(announceType, spellId, icon, castTime, preWarnTime)
+		local text, spellName = setText(announceType, spellId, castTime, preWarnTime)
 		icon = icon or spellId
 		local obj = setmetatable( -- todo: fix duplicate code
 			{

@@ -18,15 +18,15 @@ local GetItemQualityColor = GetItemQualityColor
 
 local KeystoneAbbrev = {
   [244] = L["AD"],
-  [245] = L["Free"],
+  [245] = L["FH"],
   [246] = L["TD"],
-  [247] = L["MOTHER"],
+  [247] = L["ML"],
   [248] = L["WM"],
   [249] = L["KR"],
-  [250] = L["ToS"],
-  [251] = L["Under"],
-  [252] = L["SotS"],
-  [353] = L["SoB"],
+  [250] = L["TOS"],
+  [251] = L["UNDR"],
+  [252] = L["SOTS"],
+  [353] = L["SIEGE"],
 }
 addon.KeystoneAbbrev = KeystoneAbbrev
 

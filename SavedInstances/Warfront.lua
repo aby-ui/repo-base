@@ -163,3 +163,7 @@ function W:ShowTooltip(tooltip, columns, showall, preshow)
     end
   end
 end
+
+hooksecurefunc("GetQuestReward", function()
+  W:ScheduleTimer("UpdateQuest", 1)
+end)

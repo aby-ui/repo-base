@@ -184,17 +184,18 @@ local QuestExceptions = {
 addon.QuestExceptions = QuestExceptions
 
 -- Timewalking Dungeon final boss drops
--- to find iconTexture, select the event in calendar and use the command below
--- /run local i = C_Calendar.GetEventIndex() local e = C_Calendar.GetDayEvent(i.offsetMonths, i.monthDay, i.eventIndex) print(e.iconTexture)
--- [questID] = iconTexture
+-- to find iconTexture, select the day in calendar and use the command below
+-- please note: event might have THREE different iconTexutre when START, ONGOING, END
+-- /run local F,O,I,m,d,e=CalendarFrame,C_Calendar I=O.GetMonthInfo()m=-12*(I.year-F.selectedYear)+F.selectedMonth-I.month d=F.selectedDay for i=1,O.GetNumDayEvents(m,d)do e=O.GetDayEvent(m,d,i)print(e.title,e.iconTexture)end
+-- [questID] = {iconTextures}
 local TimewalkingItemQuest = {
-  [40168] = 1129674, -- The Swirling Vial - TBC Timewalking
-  [40173] = 1129686, -- The Unstable Prism - WLK Timewalking
-  [40786] = 1304688, -- The Smoldering Ember - CTM Timewalking - Horde
-  [40787] = 1304688, -- The Smoldering Ember - CTM Timewalking - Alliance
-  [45563] = 1530590, -- The Shrouded Coin - MOP Timewalking
-  [55498] = 1129683, -- The Shimmering Crystal - WOD Timewalking - Alliance
-  [55499] = 1129683, -- The Shimmering Crystal - WOD Timewalking - Horde
+  [40168] = {1129672, 1129673, 1129674}, -- The Swirling Vial - TBC Timewalking
+  [40173] = {1129684, 1129685, 1129686}, -- The Unstable Prism - WLK Timewalking
+  [40786] = {1304686, 1304687, 1304688}, -- The Smoldering Ember - CTM Timewalking - Horde
+  [40787] = {1304686, 1304687, 1304688}, -- The Smoldering Ember - CTM Timewalking - Alliance
+  [45563] = {1530588, 1530589, 1530590}, -- The Shrouded Coin - MOP Timewalking
+  [55498] = {1129681, 1129682, 1129683}, -- The Shimmering Crystal - WOD Timewalking - Alliance
+  [55499] = {1129681, 1129682, 1129683}, -- The Shimmering Crystal - WOD Timewalking - Horde
 }
 for questID, tbl in pairs(TimewalkingItemQuest) do
   QuestExceptions[questID] = "Weekly"

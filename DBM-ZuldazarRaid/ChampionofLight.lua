@@ -7,7 +7,7 @@ end
 local mod	= DBM:NewMod(dungeonID, "DBM-ZuldazarRaid", 1, 1176)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190416205700")
+mod:SetRevision("2019050805449")
 mod:SetCreatureID(creatureID)
 mod:SetEncounterID(2265)
 mod:SetZone()
@@ -45,7 +45,7 @@ local specWarnWaveofLight				= mod:NewSpecialWarningTarget(283598, false, nil, 2
 local specWarnWaveofLightYou			= mod:NewSpecialWarningYou(283598, nil, nil, nil, 1, 2)
 local yellWaveofLight					= mod:NewYell(283598)
 --local specWarnWaveofLightGeneral		= mod:NewSpecialWarningDodge(283598, nil, nil, nil, 2, 2)
-local specWarnWaveofLightDispel			= mod:NewSpecialWarningDispel(283598, "MagicDispeller", nil, nil, 1, 2)
+local specWarnWaveofLightDispel			= mod:NewSpecialWarningDispel(283598, false, nil, 2, 1, 2)
 local specWarnJudgmentReckoning			= mod:NewSpecialWarningSoon(284474, nil, nil, nil, 2, 2)
 local specWarnCalltoArms				= mod:NewSpecialWarningSwitch(283662, "Tank", nil, 2, 1, 2)
 --local yellDarkRevolationFades			= mod:NewIconFadesYell(273365)
