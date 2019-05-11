@@ -18,6 +18,10 @@
 			[257428] = "drinking",
 			[272819] = "drinking",
 			[279739] = "drinking",
+			--Was I drunk when I did this??
+			
+			-- Gladiator's Maledict :^)
+			[302144] = "thisGameSucks";
 			
 			-- Backlash (Aura Applied)
 			[87204] = "backlashFear", -- Vampiric Touch Dispel (Priest)

@@ -267,6 +267,8 @@ addon.defaultDB = {
   Toons = { }, 	-- table key: "Toon - Realm"; value:
   -- Class: string
   -- Level: integer
+  -- Race: string
+  -- LastSeen: integer
   -- AlwaysShow: boolean REMOVED
   -- Show: string "always", "never", "saved"
   -- Daily1: expiry (normal) REMOVED
@@ -283,6 +285,11 @@ addon.defaultDB = {
   -- Warmode: boolean
   -- Artifact: string
   -- Paragon: table
+  -- oRace: string
+  -- isResting: boolean
+  -- MaxXP: integer
+  -- XP: integer
+  -- RestXP: integer
 
   -- currency: key: currencyID  value:
   -- amount: integer
@@ -1674,13 +1681,26 @@ function addon:UpdateToonData()
   if zone and #zone > 0 then
     t.Zone = zone
   end
+  t.Level = UnitLevel("player")
   local lrace, race = UnitRace("player")
   local faction, lfaction = UnitFactionGroup("player")
   t.Faction = faction
+  t.oRace = race
   if race == "Pandaren" then
     t.Race = lrace.." ("..lfaction..")"
   else
     t.Race = lrace
+  end
+  if not addon.logout then
+    t.isResting = IsResting()
+    t.MaxXP = UnitXPMax("player")
+    if t.Level < maxlvl then
+      t.XP = UnitXP("player")
+      t.RestXP = GetXPExhaustion()
+    else
+      t.XP = nil
+      t.RestXP = nil
+    end
   end
   t.Warmode = C_PvP.IsWarModeDesired()
   local azeriteItemLocation = C_AzeriteItem.FindActiveAzeriteItem()
@@ -1828,6 +1848,11 @@ hoverTooltip.ShowToonTooltip = function (cell, arg, ...)
   end
   indicatortip:SetCell(indicatortip:AddHeader(),1,ftex..ClassColorise(t.Class, toon))
   indicatortip:SetCell(1,2,ClassColorise(t.Class, LEVEL.." "..t.Level.." "..(t.LClass or "")))
+  if t.Level < maxlvl and t.XP then
+    local restXP = (t.RestXP or 0) + t.MaxXP / 20 * ((time() - t.LastSeen) / (60 * (t.isResting and 8 or 32)))
+    local percent = min(floor(restXP / t.MaxXP * 100), t.oRace == "Pandaren" and 300 or 150)
+    indicatortip:AddLine(COMBAT_XP_GAIN, format("%.0f%% + %.0f%%", t.XP / t.MaxXP * 100, percent))
+  end
   indicatortip:AddLine(STAT_AVERAGE_ITEM_LEVEL,("%d "):format(t.IL or 0)..STAT_AVERAGE_ITEM_LEVEL_EQUIPPED:format(t.ILe or 0))
   if t.Artifact then
     indicatortip:AddLine(ARTIFACT_POWER, t.Artifact)
@@ -2518,7 +2543,7 @@ end
 function core:OnInitialize()
   local versionString = GetAddOnMetadata(addonName, "version")
   --[===[@debug@
-  if versionString == "8.1.3-3-g3e38d55" then
+  if versionString == "8.1.3-5-gddfc7c6" then
     versionString = "Dev"
   end
   --@end-debug@]===]
@@ -2621,7 +2646,10 @@ function core:OnEnable()
   self:RegisterEvent("CHAT_MSG_SYSTEM", "CheckSystemMessage")
   self:RegisterEvent("CHAT_MSG_CURRENCY", "CheckSystemMessage")
   self:RegisterEvent("CHAT_MSG_LOOT", "CheckSystemMessage")
-  self:RegisterBucketEvent("PLAYER_ENTERING_WORLD", 1, RequestRaidInfo)
+  self:RegisterEvent("CHAT_MSG_COMBAT_XP_GAIN", function() addon:UpdateToonData() end)
+  self:RegisterEvent("PLAYER_UPDATE_RESTING", function() addon:UpdateToonData() end)
+  self:RegisterEvent("PLAYER_ENTERING_WORLD", function() addon:UpdateToonData(); C_Timer.After(1, RequestRaidInfo) end)
+  -- self:RegisterBucketEvent("PLAYER_ENTERING_WORLD", 1, RequestRaidInfo)
   self:RegisterBucketEvent("LFG_LOCK_INFO_RECEIVED", 1, RequestRaidInfo)
   self:RegisterEvent("PLAYER_LOGOUT", function() addon.logout = true ; addon:UpdateToonData() end) -- update currency spent
   self:RegisterEvent("LFG_COMPLETION_REWARD", "RefreshLockInfo") -- for random daily dungeon tracking

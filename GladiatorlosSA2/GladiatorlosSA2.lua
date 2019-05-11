@@ -6,7 +6,7 @@
  local LSM = LibStub("LibSharedMedia-3.0")
  local self, GSA, PlaySoundFile = GladiatorlosSA, GladiatorlosSA, PlaySoundFile
  local GSA_TEXT = "|cff69CCF0GladiatorlosSA2|r (|cffFFF569/gsa|r)"
- local GSA_VERSION = "|cffFF7D0A B7 |r(|cFF00FF968.1.5 Battle for Azeroth|r)"
+ local GSA_VERSION = "|cffFF7D0A B9 |r(|cFF00FF968.1.5 Battle for Azeroth|r)"
  local GSA_AUTHOR = " "
  local gsadb
  local soundz,sourcetype,sourceuid,desttype,destuid = {},{},{},{},{}
@@ -377,13 +377,13 @@
 
 	if (event == "SPELL_AURA_APPLIED" and desttype[COMBATLOG_FILTER_HOSTILE_PLAYERS] and (not gsadb.aonlyTF or destuid.target or destuid.focus) and not gsadb.aruaApplied) then
 	--The following section is to disable alerts for aura applications (such as dispel protection) from your team onto theirs. IDs should be identical to the ones below.
-	-- 87204 = Vampiric Embrace || 196364 = Unstable Affliction || 1330 = Garrote - Silence || 1833 = Cheap Shot || 6770 = Sap || 3355 = Freezing Trap || 212332 = Smash (DK Abomination) || 212337 = Powerful Smash (DK Abomination) || 91800 = Gnaw (DK Ghoul) || 91797 = Monstrous Blow (DK Ghoul) || 163505 = Druid Rake Stun || 199086 = Warpath stun || 202335 = Double Barrel stun || 215652 = Shield of Virtue silence || 19577 = Intimidation (hunter pet stun)
-		if spellID == 87204 or spellID == 196364 or spellID == 1330 or spellID == 1833 or spellID == 6770 or spellID == 3355 or spellID == 212332 or spellID == 212337 or spellID == 91800 or spellID == 91797 or spellID == 163505 or spellID == 199086 or spellID == 202335 or spellID == 215652 or spellID == 19577 then return end
+	-- 87204 = Vampiric Embrace || 196364 = Unstable Affliction || 1330 = Garrote - Silence || 1833 = Cheap Shot || 6770 = Sap || 3355 = Freezing Trap || 212332 = Smash (DK Abomination) || 212337 = Powerful Smash (DK Abomination) || 91800 = Gnaw (DK Ghoul) || 91797 = Monstrous Blow (DK Ghoul) || 163505 = Druid Rake Stun || 199086 = Warpath stun || 202335 = Double Barrel stun || 215652 = Shield of Virtue silence || 19577 = Intimidation (hunter pet stun) || Gladiator's Maledict
+		if spellID == 87204 or spellID == 196364 or spellID == 1330 or spellID == 1833 or spellID == 6770 or spellID == 3355 or spellID == 212332 or spellID == 212337 or spellID == 91800 or spellID == 91797 or spellID == 163505 or spellID == 199086 or spellID == 202335 or spellID == 215652 or spellID == 19577 or spellID == 302144 then return end
 			--if (MapID == 40 or InstanceMapID == 4710) and gsadb.epicbattleground then return end
 				self:PlaySpell("auraApplied", spellID, sourceGUID, destGUID)
 	elseif (event == "SPELL_AURA_APPLIED" and (desttype[COMBATLOG_FILTER_FRIENDLY_UNITS] or desttype[COMBATLOG_FILTER_ME]) and (not gsadb.aonlyTF or destuid.target or destuid.focus) and not gsadb.auraApplied) then
 	--The following section is to enable alerts for aura applications (such as dispel protection) onto your team from theirs. IDs should be identical to the ones below.
-		if spellID == 87204 or spellID == 196364 or spellID == 1330 or spellID == 1833 or spellID == 6770 or spellID == 3355 or spellID == 212332 or spellID == 212337 or spellID == 91800 or spellID == 91797 or spellID == 163505 or spellID == 199086 or spellID == 202335 or spellID == 215652 or spellID == 19577 then
+		if spellID == 87204 or spellID == 196364 or spellID == 1330 or spellID == 1833 or spellID == 6770 or spellID == 3355 or spellID == 212332 or spellID == 212337 or spellID == 91800 or spellID == 91797 or spellID == 163505 or spellID == 199086 or spellID == 202335 or spellID == 215652 or spellID == 19577 or spellID == 302144 then
 			--if (MapID == 40 or InstanceMapID == 4710) and gsadb.epicbattleground then return end
 				self:PlaySpell("auraApplied", spellID, sourceGUID, destGUID)
 		end

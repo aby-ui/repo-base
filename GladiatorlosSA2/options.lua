@@ -455,7 +455,7 @@ function GSA:OnOptionCreate()
 								inline = true,
 								name = L["General Abilities"],
 								order = 30,					      		
-								args = listOption({195901,214027,34709},"auraApplied"),
+								args = listOption({195901,214027,34709,302144},"auraApplied"),
 							},
 							dispelkickback = { -- AuraApplied
 								type = 'group',
@@ -811,13 +811,13 @@ function GSA:OnOptionCreate()
 								type = 'toggle',
 								name = L["HealerDispel"],
 								desc = L["HealerDispel_Desc"],
-								order = 25,
+								order = 24,
 							},
 							purge = { -- CastSuccess
 								type = 'toggle',
 								name = L["Purge"],
 								desc = L["PurgeDesc"],
-								order = 28,
+								order = 26,
 							},
 							general = { -- CastSuccess
 								type = 'group',

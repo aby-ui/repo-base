@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2339, "DBM-Party-BfA", 11, 1178)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019042641737")
+mod:SetRevision("2019051033955")
 mod:SetCreatureID(144246)
 mod:SetEncounterID(2258)
 mod:SetZone()
@@ -48,12 +48,11 @@ end
 function mod:SPELL_AURA_APPLIED(args)
 	local spellId = args.spellId
 	if spellId == 291972 then
+		warnExplosiveLeap:CombinedShow(0.3, args.destName)
 		if args:IsPlayer() then
 			specWarnExplosiveLeap:Show()
 			specWarnExplosiveLeap:Play("runout")
 			yellExplosiveLeap:Yell()
-		else
-			warnExplosiveLeap:Show(args.destName)
 		end
 	elseif spellId == 294929 then
 		local amount = args.amount or 1

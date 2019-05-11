@@ -130,20 +130,23 @@ function P:QUEST_LOG_UPDATE()
       if type(questID) ~= "number" then
         questID = questID[t.Faction]
       end
-      local result = {}
-      if IsQuestFlaggedCompleted(questID) then
-        result.unlocked = true
-        result.isComplete = true
-      else
-        local isOnQuest = C_QuestLog_IsOnQuest(questID)
-        local _, _, finished, numFulfilled, numRequired = GetQuestObjectiveInfo(questID, 1, false)
-        result.unlocked = isOnQuest
-        result.isComplete = false
-        result.isFinish = finished
-        result.numFulfilled = numFulfilled
-        result.numRequired = numRequired
+      if questID then
+        -- no questID on Neutral Pandaren or first login
+        local result = {}
+        if IsQuestFlaggedCompleted(questID) then
+          result.unlocked = true
+          result.isComplete = true
+        else
+          local isOnQuest = C_QuestLog_IsOnQuest(questID)
+          local _, _, finished, numFulfilled, numRequired = GetQuestObjectiveInfo(questID, 1, false)
+          result.unlocked = isOnQuest
+          result.isComplete = false
+          result.isFinish = finished
+          result.numFulfilled = numFulfilled
+          result.numRequired = numRequired
+        end
+        t.Progress[i] = result
       end
-      t.Progress[i] = result
     end
   end
 end
