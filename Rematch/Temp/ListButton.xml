@@ -39,7 +39,7 @@
 				</Texture>
 			</Layer>
 			<Layer level="ARTWORK">
-				<Texture parentKey="Pet" file="Interface\Icons\INV_Misc_Questionmark">
+				<Texture parentKey="Pet">
 					<Size x="39" y="39"/>
 					<Anchors>
 						<Anchor point="LEFT" x="4" y="0"/>
@@ -156,21 +156,21 @@
 			</Layer>
 			<!-- Everything in ARTWORK will get promoted to a clickable pseudo-button -->
 			<Layer level="ARTWORK">
-				<Texture parentArray="Pets" file="Interface\Icons\INV_Misc_QuestionMark">
+				<Texture parentArray="Pets">
 					<Size x="27" y="39"/>
 					<Anchors>
 						<Anchor point="LEFT" x="2" y="-1"/>
 					</Anchors>
 					<TexCoords left="0.16" right="0.84" top="0.05" bottom="0.95"/>
 				</Texture>
-				<Texture parentArray="Pets" file="Interface\Icons\INV_Misc_QuestionMark">
+				<Texture parentArray="Pets">
 					<Size x="27" y="39"/>
 					<Anchors>
 						<Anchor point="LEFT" x="30" y="-1"/>
 					</Anchors>
 					<TexCoords left="0.16" right="0.84" top="0.05" bottom="0.95"/>
 				</Texture>
-				<Texture parentArray="Pets" file="Interface\Icons\INV_Misc_QuestionMark">
+				<Texture parentArray="Pets">
 					<Size x="27" y="39"/>
 					<Anchors>
 						<Anchor point="LEFT" x="58" y="-1"/>

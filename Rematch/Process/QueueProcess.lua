@@ -75,16 +75,39 @@ end
 -- that can't level (due to hitting 25 or no longer existing), it slots the most
 -- preferred pet to any active leveling slots, and toasts when the leveling pet changes
 -- NOTE: all places that used to call ProcessQueue directly should now call UpdateQueue!!
+local firstProcessQueueTimeout = 5 -- when this has a value, then the queue is still waiting for first run
 function rematch:ProcessQueue()
 
 	-- if pets not loaded, come back in half a second to try again
 	local numPets,owned = C_PetJournal.GetNumPets()
 	local petLoaded = C_PetJournal.GetPetLoadOutInfo(1)
-	if owned==0 or not petLoaded then
-		return -- if pets aren't loaded, then don't do anything yet
+
+	if (owned==0 or not petLoaded) and firstProcessQueueTimeout then
+		-- special case: if pets in journal loaded but no pets slotted, maybe all slots are empty. hard to say.
+		-- check back every couple seconds until timeout reached; this use case is only going to happen for new
+		-- players who haven't slotted a pet and edge cases like server transfers where slots are emptied
+		if owned > 0 and not petLoaded then
+			C_Timer.After(2,function()
+				if firstProcessQueueTimeout and firstProcessQueueTimeout > 0 then
+					firstProcessQueueTimeout = firstProcessQueueTimeout - 1
+					rematch:ProcessQueue()
+				end
+			end)
+		end
+
+		if firstProcessQueueTimeout > 0 then
+			return -- if pets aren't loaded and timeout hasn't run out, then don't do anything yet
+		end
 	end
 
+	-- first time getting this far, confirm pets in the queue are valid (and replace with sanctuary where possible if not)
+	if firstProcessQueueTimeout then
+		rematch:ValidateQueue()
+	end
+
+
 	rematch.queueNeedsProcessed = nil
+	firstProcessQueueTimeout = nil
 
 	local oldTopPetID = rematch.topPicks[1] -- note top-most pet in queue
 

@@ -16,7 +16,7 @@
 				</Texture>
 			</Layer>
 			<Layer level="ARTWORK">
-				<Texture parentKey="Pet" file="Interface\Icons\INV_Misc_QuestionMark">
+				<Texture parentKey="Pet">
 					<Size x="25" y="25"/>
 					<Anchors>
 						<Anchor point="LEFT" x="1" y="0"/>
@@ -70,6 +70,21 @@
 					</Anchors>
 					<TexCoords left="0.125" right="0.25" top="0" bottom="0.25"/>
 				</Texture>				
+				<Texture parentKey="InTeams" file="Interface\AddOns\Rematch\Textures\Footnotes" hidden="false">
+					<Size x="20" y="20"/>
+					<Anchors>
+						<Anchor point="RIGHT" x="-64" y="0"/>
+					</Anchors>
+					<TexCoords left="0.5" right="0.625" top="0.5" bottom="0.75"/>
+				</Texture>				
+				<!-- either the dead or injured texture (maybe others in the future) -->
+				<Texture parentKey="Status" file="Interface\AddOns\Rematch\Textures\petstatus.tga" hidden="true">
+					<Size x="24" y="24"/>
+					<Anchors>
+						<Anchor point="LEFT" x="2" y="-1"/>
+					</Anchors>
+				</Texture>
+
 				<Texture parentKey="Favorite" atlas="PetJournal-FavoritesIcon" hidden="true">
 					<Size x="20" y="20"/>
 					<Anchors>
@@ -131,7 +146,7 @@
 				</Texture>
 			</Layer>
 			<Layer level="ARTWORK">
-				<Texture parentKey="Pet" file="Interface\Icons\INV_Misc_Questionmark">
+				<Texture parentKey="Pet">
 					<Size x="40" y="40"/>
 					<Anchors>
 						<Anchor point="LEFT" x="3" y="0"/>
@@ -170,7 +185,7 @@
 			</Layer>
 			<Layer level="BORDER">
 				<!-- big type symbol in background right edge of list button -->
-				<Texture parentKey="TypeDecal" file="Interface\AddOns\Rematch\Textures\PetTypeDecals" alpha="0.4">
+				<Texture parentKey="TypeDecal" file="Interface\AddOns\Rematch\Textures\PetTypeDecals" alpha="0.4" hidden="true">
 					<Size x="58" y="41"/> <!-- was 55x38 -->
 					<Anchors>
 						<Anchor point="RIGHT" x="-1" y="0"/>
@@ -179,13 +194,20 @@
 			</Layer>
 			<Layer level="OVERLAY">
 				<!-- blue up arrow on right side; in this layer so it's not clickable -->
-				<Texture parentKey="Leveling" file="Interface\AddOns\Rematch\Textures\Footnotes" hidden="false">
+				<Texture parentKey="Leveling" file="Interface\AddOns\Rematch\Textures\Footnotes" hidden="true">
 					<Size x="20" y="20"/>
 					<Anchors>
 						<Anchor point="TOPRIGHT" x="-22" y="-3"/>
 					</Anchors>
 					<TexCoords left="0.125" right="0.25" top="0" bottom="0.25"/>
-				</Texture>				
+				</Texture>
+				<Texture parentKey="InTeams" file="Interface\AddOns\Rematch\Textures\Footnotes" hidden="false">
+					<Size x="20" y="20"/>
+					<Anchors>
+						<Anchor point="TOPRIGHT" x="-43" y="-3"/>
+					</Anchors>
+					<TexCoords left="0.5" right="0.625" top="0.5" bottom="0.75"/>
+				</Texture>
 				<!-- border around the pet icon to the left -->
 				<Texture parentKey="Rarity" file="Interface\AddOns\Rematch\Textures\slotborder.tga">
 					<Size x="44" y="44"/>
@@ -196,9 +218,16 @@
 					<!-- <Color r="0.5" g="0.5" b="0.5"/> -->
 					<TexCoords left="0" right="0.34375" top="0" bottom="0.34375"/>
 				</Texture>
+				<!-- either the dead or injured texture (maybe others in the future) -->
+				<Texture parentKey="Status" file="Interface\AddOns\Rematch\Textures\petstatus.tga" hidden="true">
+					<Size x="39" y="39"/>
+					<Anchors>
+						<Anchor point="LEFT" x="4" y="0"/>
+					</Anchors>
+				</Texture>
 			</Layer>
 			<Layer level="OVERLAY" textureSubLevel="2">
-				<Texture parentKey="Favorite" atlas="PetJournal-FavoritesIcon" useAtlasSize="true" hidden="false">
+				<Texture parentKey="Favorite" atlas="PetJournal-FavoritesIcon" useAtlasSize="true" hidden="true">
 					<Anchors>
 						<Anchor point="TOPLEFT" x="-6" y="5"/>
 					</Anchors>

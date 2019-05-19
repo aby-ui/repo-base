@@ -397,14 +397,14 @@ function rematch:FindHealthiestLoadIn()
 		-- if pet is not missing/substituted and it's not a leveling pet
 		if petID and not missing[i] and not rematch:IsPetLeveling(petID) then
 			local health,maxHealth,power,speed = rematch:GetPetStats(petID)
-			if health and health<maxHealth then
+			if health then -- and health<maxHealth then
 				local speciesID,_,level = C_PetJournal.GetPetInfoByPetID(petID)
 				if C_PetJournal.GetNumCollectedInfo(speciesID)>1 then -- if player has more than one
 					local healthiestPetID = petID
 					for cPetID in rematch.Roster:AllOwnedPets() do
 						local cSpeciesID,_,cLevel = C_PetJournal.GetPetInfoByPetID(cPetID)
 						if cSpeciesID==speciesID and (settings.LoadHealthiestAny or cLevel==level) then
-                     local cHealth,cMaxHealth,cPower,cSpeed = rematch:GetPetStats(cPetID)
+                     	local cHealth,cMaxHealth,cPower,cSpeed = rematch:GetPetStats(cPetID)
 							if cHealth>health and (settings.LoadHealthiestAny or (cMaxHealth==maxHealth and cPower==power and cSpeed==speed)) then
 								local isTeammate -- prevent substituting a version that's going to another slot
 								for j=1,3 do
@@ -413,6 +413,7 @@ function rematch:FindHealthiestLoadIn()
 									end
 								end
 								if not isTeammate then
+									health = cHealth
 									healthiestPetID = cPetID
 								end
 							end
@@ -568,4 +569,21 @@ end
 function rematch:UnloadTeam()
 	settings.loadedTeam = nil
 	rematch:AssignSpecialSlots() -- will clear leveling slots
+end
+
+
+-- this will not load a team but look for any pets that have healthier counterparts and load them individually
+function rematch:LoadHealthiestOfLoadedPets()
+	-- fill loadin with currently loaded pets and abilities
+	for i=1,3 do
+		loadin[i][1],loadin[i][2],loadin[i][3],loadin[i][4] = C_PetJournal.GetPetLoadOutInfo(i)
+	end
+
+	-- update loadin with healthiest pets
+	rematch:FindHealthiestLoadIn()
+
+	-- only doing one attempt at a LoadLoadIn, no retries and definitely no LoadingDone; there's no team associated with this operation
+	rematch:LoadLoadIn()
+
+
 end

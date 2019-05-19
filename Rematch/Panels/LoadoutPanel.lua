@@ -151,6 +151,7 @@ function panel:UpdateLoadouts()
 		end
 
 		button.LockOverlay:SetShown((C_PetBattles.GetPVPMatchmakingInfo() or not C_PetJournal.IsJournalUnlocked()) and true)
+		button.LockOverlay.petID = petID
 	end
 end
 

@@ -288,9 +288,6 @@ function rematch:ShowPetCard(parent,petID,force)
 		if petInfo.isFavorite then
 			card:AddStat(L["Favorite"],"Interface\\Common\\FavoritesIcon",0.125,0.71875,0.09375,0.6875,L["Favorite"],L["This pet is marked as a Favorite from its right-click menu."])
 		end
-		if rematch:IsPetLeveling(petID) then
-			card:AddStat(L["Leveling"],"Interface\\AddOns\\Rematch\\Textures\\footnotes",0.125,0.25,0,0.25,L["Leveling"],L["This pet is in Rematch's leveling queue."])
-		end
 	end
 	if petInfo.canBattle and petInfo.power and petInfo.power>0 then
 		local healthText = petInfo.health==0 and format("%s0/%d (%s)",rematch.hexRed,petInfo.maxHealth,DEAD) or petInfo.health<petInfo.maxHealth and format("%s%d/%d (%d%%)",rematch.hexRed,petInfo.health,petInfo.maxHealth,petInfo.health/petInfo.maxHealth*100) or petInfo.maxHealth
@@ -310,8 +307,12 @@ function rematch:ShowPetCard(parent,petID,force)
 		card:AddStat(petInfo.speciesID,"Interface\\WorldMap\\Gear_64Grey",0.1,0.9,0.1,0.9,L["Species ID"],L["All versions of this pet share this unique \"species\" number."])
 	end
 
-   if petInfo.inTeams then
-   	card:AddStat(format(L["%d Teams"],petInfo.numTeams),"Interface\\FriendsFrame\\UI-Toast-ChatInviteIcon",0.125,0.875,0.09375,0.84375,L["Teams"],format(L["%s Click to search for all teams that include this pet."],rematch.LMB),card.TeamsStatOnClick)
+	if petInfo.isLeveling then
+		card:AddStat(L["Leveling"],"Interface\\AddOns\\Rematch\\Textures\\footnotes",0.125,0.25,0,0.25,L["Leveling"],L["This pet is in Rematch's leveling queue."])
+	end
+
+	if petInfo.inTeams then
+	   	card:AddStat(format(L["%d Teams"],petInfo.numTeams),"Interface\\AddOns\\Rematch\\Textures\\footnotes",0.5,0.625,0.5,0.75,L["Teams"],format(L["%s Click to search for all teams that include this pet."],rematch.LMB),card.TeamsStatOnClick)
 	end
 
 	if petInfo.isObtainable then

@@ -1,24 +1,25 @@
 local mod	= DBM:NewMod("Loatheb", "DBM-Naxx", 3)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041705949")
+mod:SetRevision("20190516165414")
 mod:SetCreatureID(16011)
 mod:SetEncounterID(1115)
 mod:SetModelID(16110)
 mod:RegisterCombat("combat")--Maybe change to a yell later so pull detection works if you chain pull him from tash gauntlet
 
 mod:RegisterEventsInCombat(
-	"SPELL_CAST_SUCCESS",
+	"SPELL_CAST_SUCCESS 29234 29204 55052 55593",
 	"UNIT_DIED"
 )
 
-local warnSporeNow	= mod:NewSpellAnnounce(42524, 2)
-local warnSporeSoon	= mod:NewSoonAnnounce(42524, 1)
+--TODO, the 5xxxx spellIds are not from classic
+local warnSporeNow	= mod:NewSpellAnnounce(29234, 2, "134530")
+local warnSporeSoon	= mod:NewSoonAnnounce(29234, 1, "134530")
 local warnDoomNow	= mod:NewSpellAnnounce(29204, 3)
-local warnHealSoon	= mod:NewAnnounce("WarningHealSoon", 4, 48071)
-local warnHealNow	= mod:NewAnnounce("WarningHealNow", 1, 48071, false)
+local warnHealSoon	= mod:NewAnnounce("WarningHealSoon", 4, 55593)
+local warnHealNow	= mod:NewAnnounce("WarningHealNow", 1, 55593, false)
 
-local timerSpore	= mod:NewNextTimer(36, 42524, nil, nil, nil, 5, nil, DBM_CORE_DAMAGE_ICON)
+local timerSpore	= mod:NewNextTimer(36, 29234, nil, nil, nil, 5, "134530", DBM_CORE_DAMAGE_ICON)
 local timerDoom		= mod:NewNextTimer(180, 29204, nil, nil, nil, 2)
 local timerAura		= mod:NewBuffActiveTimer(17, 55593, nil, nil, nil, 5, nil, DBM_CORE_HEALER_ICON)
 

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("Gothik", "DBM-Naxx", 4)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041705949")
+mod:SetRevision("20190516165414")
 mod:SetCreatureID(16060)
 mod:SetEncounterID(1109)
 mod:SetModelID(16279)
@@ -17,8 +17,8 @@ local warnRiderDown		= mod:NewAnnounce("WarningRiderDown", 4)
 local warnKnightDown	= mod:NewAnnounce("WarningKnightDown", 2)
 local warnPhase2		= mod:NewPhaseAnnounce(2, 3)
 
-local timerPhase2		= mod:NewTimer(270, "TimerPhase2", "Interface\\Icons\\Spell_Nature_WispSplode", nil, nil, 6) 
-local timerWave			= mod:NewTimer(20, "TimerWave", 69516, nil, nil, 1)
+local timerPhase2		= mod:NewTimer(270, "TimerPhase2", "136116", nil, nil, 6)
+local timerWave			= mod:NewTimer(20, "TimerWave", "135974", nil, nil, 1)
 
 mod.vb.wave = 0
 local wavesNormal = {

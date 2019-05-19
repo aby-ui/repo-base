@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2328, "DBM-CrucibleofStorms", nil, 1177)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019050720603")
+mod:SetRevision("20190511211221")
 mod:SetCreatureID(144755, 144754)--144755 Zaxasj, 144754 Fa'thuul
 mod:SetEncounterID(2269)
 mod:SetZone()
@@ -512,7 +512,7 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 	if spellId == 287762 then--Crushing Doubt
 		self.vb.CrushingDoubtIcon = 1
 		self.vb.crushingDoubtCount = self.vb.crushingDoubtCount + 1
-		local timer = self:IsMythic() and 46.1 or 60.1
+		local timer = self:IsMythic() and 45 or 60.1
 		timerCrushingDoubtCD:Start(timer, self.vb.crushingDoubtCount+1)
 		countdownCrushingDoubt:Start(timer)
 	end

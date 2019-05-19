@@ -39,7 +39,7 @@
 			</Layer>
 			<Layer level="BORDER">
 				<!-- icon of ability in topleft -->
-				<Texture parentKey="Icon" file="Interface\Icons\INV_Misc_QuestionMark" mask="Textures\MinimapMask">
+				<Texture parentKey="Icon" mask="Textures\MinimapMask">
 					<Size x="40" y="40"/>
 					<Anchors>
 						<Anchor point="TOPLEFT" x="7" y="-7"/>

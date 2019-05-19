@@ -20,7 +20,7 @@
 			</Layer>
 			<!-- Everything in ARTWORK will get promoted to a clickable pseudo-button -->
 			<Layer level="ARTWORK">
-				<Texture parentArray="Pets" file="Interface\Icons\INV_Misc_QuestionMark">
+				<Texture parentArray="Pets">
 					<Size x="28" y="40"/>
 					<Anchors>
 						<Anchor point="TOPLEFT" x="2" y="-2"/>
@@ -31,7 +31,7 @@
 						<KeyValue key="petSlot" value="1"/>
 					</KeyValues>
 				</Texture>
-				<Texture parentArray="Pets" file="Interface\Icons\INV_Misc_QuestionMark">
+				<Texture parentArray="Pets">
 					<Size x="28" y="40"/>
 					<Anchors>
 						<Anchor point="TOPLEFT" x="31" y="-2"/>
@@ -41,7 +41,7 @@
 						<KeyValue key="petSlot" value="2"/>
 					</KeyValues>
 				</Texture>
-				<Texture parentArray="Pets" file="Interface\Icons\INV_Misc_QuestionMark">
+				<Texture parentArray="Pets">
 					<Size x="28" y="40"/>
 					<Anchors>
 						<Anchor point="TOPLEFT" x="60" y="-2"/>
@@ -157,7 +157,7 @@
 				</Texture>
 			</Layer>
 			<Layer level="ARTWORK">
-				<Texture parentArray="Pets" file="Interface\Icons\INV_Misc_QuestionMark">
+				<Texture parentArray="Pets">
 					<Size x="25" y="25"/>
 					<Anchors>
 						<Anchor point="LEFT" x="0" y="0"/>
@@ -168,7 +168,7 @@
 						<KeyValue key="petSlot" value="1"/>
 					</KeyValues>
 				</Texture>
-				<Texture parentArray="Pets" file="Interface\Icons\INV_Misc_QuestionMark">
+				<Texture parentArray="Pets">
 					<Size x="25" y="25"/>
 					<Anchors>
 						<Anchor point="LEFT" x="26" y="0"/>
@@ -178,7 +178,7 @@
 						<KeyValue key="petSlot" value="2"/>
 					</KeyValues>
 				</Texture>
-				<Texture parentArray="Pets" file="Interface\Icons\INV_Misc_QuestionMark">
+				<Texture parentArray="Pets">
 					<Size x="25" y="25"/>
 					<Anchors>
 						<Anchor point="LEFT" x="52" y="0"/>

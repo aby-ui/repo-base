@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2330, "DBM-ZuldazarRaid", 2, 1176)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190420174733")
+mod:SetRevision("2019051765919")
 mod:SetCreatureID(144747, 144767, 144963, 144941)
 mod:SetEncounterID(2268)
 --mod:DisableESCombatDetection()
@@ -194,7 +194,7 @@ function mod:SPELL_CAST_START(args)
 		timerRaptorFormCD:Start()
 		for i = 1, 4 do
 			local bossUnitID = "boss"..i
-			if UnitExists(bossUnitID) and UnitGUID(bossUnitID) == args.sourceGUID and UnitDetailedThreatSituation("player", bossUnitID) then--We are highest threat target
+			if UnitExists(bossUnitID) and UnitGUID(bossUnitID) == args.sourceGUID and self:IsTanking("player", "boss1", nil, true) then--We are highest threat target
 				specWarnRaptorForm:Show()
 				specWarnRaptorForm:Play("defensive")
 				break

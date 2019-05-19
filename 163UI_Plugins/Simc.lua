@@ -350,6 +350,8 @@ local specNames           = Simulationcraft.SpecNames
 local profNames           = Simulationcraft.ProfNames
 local regionString        = Simulationcraft.RegionString
 local zandalariLoaBuffs   = Simulationcraft.zandalariLoaBuffs
+local essenceMinorSlots   = Simulationcraft.azeriteEssenceSlotsMinor
+local essenceMajorSlots   = Simulationcraft.azeriteEssenceSlotsMajor
 
 -- Most of the guts of this addon were based on a variety of other ones, including
 -- Statslog, AskMrRobot, and BonusScanner. And a bunch of hacking around with AceGUI.
@@ -776,79 +778,46 @@ function Simulationcraft:AzeriteEssencesAvailable()
   end
 end
 
-function Simulationcraft:GetUnlockedEssenceSlots()
-  -- defensive check for live/PTR
-  if not Simulationcraft:AzeriteEssencesAvailable() then
-    return nil
-  end
-
-  local slotsAvailable = 0
-  local numEssenceSlots = 3
-  for essenceSlotNum = 0, 2 do
-    local slotLocked, slotUnlockLevel, unlockDescription = AzeriteEssence.GetSlotInfo(essenceSlotNum)
-    if not slotLocked then
-      slotsAvailable = slotsAvailable + 1
-    end
-  end
-  return slotsAvailable
-end
-
-function Simulationcraft:GetEssenceSlotInfo(essenceSlot)
-  -- defensive check for live/PTR
-  if not Simulationcraft:AzeriteEssencesAvailable() then
-    return nil
-  end
-
-  -- find milestone for this slot
-  local milestones = AzeriteEssence.GetMilestones()
-  if milestones then
-    for _, milestone in pairs(milestones) do
-      if milestone.slot == essenceSlot then
-        local essenceId = AzeriteEssence.GetMilestoneEssence(milestone.ID)
-        if essenceId then
-          return AzeriteEssence.GetEssenceInfo(essenceId)
-        end
-      end
-    end
-  end
-
-  --local essenceId = AzeriteEssence.GetActiveEssence(essenceSlot)
-  --if essenceId then
-  --  return AzeriteEssence.GetEssenceInfo(essenceId)
-  --end
-
-  return nil
-end
-
-function Simulationcraft:GetAzeriteEssencesString(slotType)
+function Simulationcraft:GetAzeriteEssencesString()
   -- defensive check for live/PTR
   if not Simulationcraft:AzeriteEssencesAvailable() then
     return nil
   end
 
   local essenceStrings = {}
-  local slotList = (slotType == 'major' and essenceMajorSlots or essenceMinorSlots)
-  for _, slotNum in pairs(slotList) do
-    local essence = Simulationcraft:GetEssenceSlotInfo(slotNum)
-    if essence then
-      essenceStrings[#essenceStrings + 1] = essence.ID .. ':' .. essence.rank
+  -- track if we've found something to export
+  -- characters that haven't unlocked the essences still report slot 0 as unlocked
+  local found = false
+
+  local milestones = AzeriteEssence.GetMilestones()
+  if milestones then
+    for _, milestone in pairs(milestones) do
+      if milestone.unlocked then
+        local essenceID = AzeriteEssence.GetMilestoneEssence(milestone.ID)
+        local spellID = AzeriteEssence.GetMilestoneSpell(milestone.ID)
+        if milestone.slot ~= nil then
+          if essenceID then
+            found = true
+            local essence = AzeriteEssence.GetEssenceInfo(essenceID)
+            essenceStrings[#essenceStrings + 1] = essence.ID .. ':' .. essence.rank
+          else
+            essenceStrings[#essenceStrings + 1] = 0 .. ':' .. 0
+          end
+        elseif spellID then
+          found = true
+          essenceStrings[#essenceStrings + 1] = spellID
+        else
+          -- shouldn't happen?
+        end
+      end
     end
   end
 
-  if #essenceStrings > 0 then
-    local optionName = "azerite_essences_" .. slotType
-    return optionName .. "=" .. table.concat(essenceStrings, '/')
+  if #essenceStrings > 0 and found then
+    return "azerite_essences=" .. table.concat(essenceStrings, '/')
   else
     return nil
   end
-end
-
-function Simulationcraft:GetMajorAzeriteEssencesString()
-  return Simulationcraft:GetAzeriteEssencesString('major')
-end
-
-function Simulationcraft:GetMinorAzeriteEssencesString()
-  return Simulationcraft:GetAzeriteEssencesString('minor')
 end
 
 function Simulationcraft:GetUnlockedAzeriteEssencesString()
@@ -983,22 +952,18 @@ function Simulationcraft:PrintSimcProfile(debugOutput, noBags, links)
 
   -- gate all azerite essence stuff behind this check so addon will work in live and 8.2 PTR
   if Simulationcraft:AzeriteEssencesAvailable() then
-    local majorEssences = Simulationcraft:GetMajorAzeriteEssencesString()
-    local minorEssences = Simulationcraft:GetMinorAzeriteEssencesString()
+    local essences = Simulationcraft:GetAzeriteEssencesString()
     local unlockedEssences = Simulationcraft:GetUnlockedAzeriteEssencesString()
 
-    if majorEssences then
-      simulationcraftProfile = simulationcraftProfile .. '# ' .. majorEssences .. '\n'
-    end
-    if minorEssences then
-      simulationcraftProfile = simulationcraftProfile .. '# ' .. minorEssences .. '\n'
+    if essences then
+      simulationcraftProfile = simulationcraftProfile .. '# ' .. essences .. '\n'
     end
     if unlockedEssences then
       -- output as a comment, SimC doesn't care about unlocked powers but users might
       simulationcraftProfile = simulationcraftProfile .. '# ' .. unlockedEssences .. '\n'
     end
 
-    if majorEssences or minorEssences or unlockedEssences then
+    if essences or unlockedEssences then
       simulationcraftProfile = simulationcraftProfile .. '\n'
     end
   end

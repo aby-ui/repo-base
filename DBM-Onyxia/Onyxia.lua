@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("Onyxia", "DBM-Onyxia")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041705949")
+mod:SetRevision("20190516161606")
 mod:SetCreatureID(10184)
 mod:SetEncounterID(1084)
 mod:SetZone()
@@ -14,8 +14,8 @@ mod:RegisterEvents(
 )
 
 mod:RegisterEventsInCombat(
-	"SPELL_CAST_START",
-	"SPELL_DAMAGE",
+	"SPELL_CAST_START 68958 17086 18351 18564 18576 18584 18596 18609 18617 18435 68959",
+	"SPELL_DAMAGE 68867",
 	"UNIT_DIED",
 	"UNIT_HEALTH boss1"
 )

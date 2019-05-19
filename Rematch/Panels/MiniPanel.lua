@@ -99,7 +99,8 @@ function panel:Update()
 				button.SpecialBorder:Hide()
             button.Footnote:Hide()
 			end
-		else
+		else -- pet doesn't exist in the slot
+			button.Icon:SetTexture("Interface\\PaperDoll\\UI-Backpack-EmptySlot.blp")
 			button.XP:Hide()
 			button.HP:Hide()
 			button.SpecialBorder:Hide()

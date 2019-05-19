@@ -45,6 +45,7 @@ local newIcon = " \124TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:1
 		10 = Team Options
 		11 = Confirmation Options
 		12 = Debugging Options
+		13 = Team Win Record Options
 ]]
 
 panel.opts = {
@@ -101,20 +102,23 @@ panel.opts = {
 	{ "check", "ShowNotesOnce", L["Only Once Per Team"], L["Only display notes automatically the first time entering battle, until another team is loaded."], "ShowNotesInBattle" },
 	{ "check", "BoringLoreFont", L["Alternate Lore Font"], L["Use a more normal-looking font for lore text on the back of the pet card."], nil, true, true },
 	{ "check", "ShowSpeciesID", L["Show Species ID & Ability ID"], L["Display the numerical species ID of a pet as a stat on their pet card and the numerical ability ID on ability tooltips."] },
-	{ "header", L["Team Options"], 10 },
+	{ "header", L["Team Options"]..newIcon, 10 },
 	{ "check", "LoadHealthiest", L["Load Healthiest Pets"], L["When a team loads, if any pet is injured or dead and there's another version with more health \124cffffffffand identical stats\124r, load the healthier version.\n\nPets in the leveling queue are exempt from this option.\n\n\124cffffffffNote:\124r This is only when a team loads. It will not automatically swap in healthier pets when you leave battle."] },
 	{ "check", "LoadHealthiestAny", L["Allow Any Version"], L["Instead of choosing only the healthiest pet with identical stats, choose the healthiest version of the pet regardless of stats."], "LoadHealthiest" },
+	{ "check", "LoadHealthiestAfterBattle", L["After Pet Battles Too"]..newIcon, L["Also load healthiest pets after leaving a pet battle or using a Revive or Bandage within Rematch.\n\n\124cffffffffNote:\124r Use of Revive or Bandages outside Rematch will not be noticed.\n\nThis is an experimental option. If you experience problems and want to report them, \124cffffffffPLEASE\124cffffffff mention that this option is enabled!\124r"], "LoadHealthiest"},
+	{ "check", "ShowInTeamsFootnotes", L["Show Icon For Pets In Teams"]..newIcon, L["When a pet belongs to a team, show an icon beside their name in the pet list and queue."], nil, true},
 	{ "check", "HideTargetNames", L["Hide Targets Below Teams"], L["Hide the target name that appears beneath a team that is not named the same as its target."] },
 	{ "check", "AlwaysTeamTabs", L["Always Show Team Tabs"], L["Show team tabs along the right side of the window even if you're not on the team panel."], nil, true },
 	{ "check", "TeamTabsToLeft", L["Move Team Tabs To Left"], L["Move the team tabs along the right side of the standalone window to the left side."], "AlwaysTeamTabs", true },
-	{ "check", "AutoWinRecord", L["Auto Track Win Record"], L["At the end of each battle, automatically record whether the loaded team won or lost.\n\nForfeits always count as a loss.\n\nYou can still manually update a team's win record at any time."] },
-	{ "check", "AutoWinRecordPVPOnly", L["For PVP Battles Only"], L["Automatically track whether the loaded team won or lost only in a PVP battle and never for a PVE battle."], "AutoWinRecord" },
-	{ "check", "AlternateWinRecord", L["Display Total Wins Instead"], L["Instead of displaying the win percentage of a team on the win record button, display the total number of wins.\n\nTeam tabs that are sorted by win record will sort by total wins also."], nil, true },
-	{ "check", "HideWinRecord", L["Hide Win Record Buttons"], L["Hide the win record button displayed to the right of each team.\n\nYou can still manually edit a team's win record from its right-click menu and automatic tracking will continue if enabled."], nil, true },
 	{ "check", "UseLegacyExport", L["Share In Legacy Format"], L["When exporting teams or sending to another Rematch user, use the old format.\n\nUse this option when sharing teams with someone on an older Rematch that's unable to import or receive newer teams."] },
 	{ "check", "PrioritizeBreedOnImport", L["Prioritize Breed On Import"], L["When importing or receiving teams, fill the team with the best matched breed as the first priority instead of the highest level."] },
 	{ "check", "RandomAbilitiesToo", L["Randomize Abilities Too"], L["For random pets, randomize the pets' abilities also."]},
 	{ "check", "AllowRandomPetsFromTeams", L["Allow Random Pets From Teams"], L["The default behavior for a random pet slot is to not choose a random pet saved in another team, unless all three pet slots are random.\n\nEnable this option to always allow pets from other teams to be included in the random pool."] },
+	{ "header", L["Team Win Record Options"], 13 },
+	{ "check", "AutoWinRecord", L["Auto Track Win Record"], L["At the end of each battle, automatically record whether the loaded team won or lost.\n\nForfeits always count as a loss.\n\nYou can still manually update a team's win record at any time."] },
+	{ "check", "AutoWinRecordPVPOnly", L["For PVP Battles Only"], L["Automatically track whether the loaded team won or lost only in a PVP battle and never for a PVE battle."], "AutoWinRecord" },
+	{ "check", "AlternateWinRecord", L["Display Total Wins Instead"], L["Instead of displaying the win percentage of a team on the win record button, display the total number of wins.\n\nTeam tabs that are sorted by win record will sort by total wins also."], nil, true },
+	{ "check", "HideWinRecord", L["Hide Win Record Buttons"], L["Hide the win record button displayed to the right of each team.\n\nYou can still manually edit a team's win record from its right-click menu and automatic tracking will continue if enabled."], nil, true },
 	{ "header", L["Leveling Queue Options"], 5 },
 	{ "check", "QueueSkipDead", L["Prefer Living Pets"], L["When loading pets from the queue, skip dead pets and load living ones first."], nil, true },
 	{ "check", "QueuePreferFullHP", L["And At Full Health"], L["Also prefer uninjured pets when loading pets from the queue."], "QueueSkipDead", true },
@@ -136,8 +140,8 @@ panel.opts = {
 	{ "check", "DontWarnMissing", L["Don't Warn About Missing Pets"], L["Don't display a popup when a team loads and a pet within the team can't be found."] },
 	{ "check", "DontConfirmHidePets", L["Don't Ask When Hiding Pets"], L["Don't ask for confirmation when hiding a pet.\n\nYou can view hidden pets in the 'Other' pet filter."] },
 	{ "check", "NoBackupReminder", L["Don't Remind About Backups"], L["Don't show a popup offering to backup teams every once in a while. Generally, the popup appears sometime after the number of teams increases by 50."] },
-	{ "header", L["Miscellaneous Options"]..newIcon, 6 },
-	{ "check", "SlowMousewheelScroll", L["Slow Mousewheel Scroll"]..newIcon, L["In the Pets, Teams, Queue and Options lists, mousewheel over the list will scroll one line at a time instead of a whole page at a time.\n\nYou can still scroll by pages by clicking above or below the scroll thumb."] },
+	{ "header", L["Miscellaneous Options"], 6 },
+	{ "check", "SlowMousewheelScroll", L["Slow Mousewheel Scroll"], L["In the Pets, Teams, Queue and Options lists, mousewheel over the list will scroll one line at a time instead of a whole page at a time.\n\nYou can still scroll by pages by clicking above or below the scroll thumb."] },
 	{ "check", "ShowAfterBattle", L["Show After Pet Battle"], L["Show the Rematch window after leaving a pet battle."] },
 	{ "check", "DisableShare", L["Disable Sharing"], L["Disable the Send button and also block any incoming pets sent by others. Import and Export still work."] },
 	{ "check", "UseMinimapButton", L["Use Minimap Button"], L["Place a button on the minimap to toggle Rematch and load favorite teams."], nil, true, true },

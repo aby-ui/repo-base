@@ -43,7 +43,7 @@
 --
 
 
-local revision =(string.sub("20190430162829", 1, -5))
+local revision =(string.sub("2019051765919", 1, -5))
 local FrameTitle = "DBM_GUI_Option_"	-- all GUI frames get automatically a name FrameTitle..ID
 
 local PanelPrototype = {}
@@ -3080,6 +3080,7 @@ local function CreateOptionsMenu()
 					end
 				end
 				PlayMusic(value)
+				DBM.Options.musicPlaying = true
 			end
 		end)
 		DungeonMusicDropDown:SetPoint("TOPLEFT", VictorySoundDropdown, "TOPLEFT", 0, -45)
@@ -3096,6 +3097,7 @@ local function CreateOptionsMenu()
 					end
 				end
 				PlayMusic(value)
+				DBM.Options.musicPlaying = true
 			end
 		end)
 		MusicDropDown:SetPoint("TOPLEFT", VictorySoundDropdown2, "TOPLEFT", 0, -45)

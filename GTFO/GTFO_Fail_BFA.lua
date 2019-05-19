@@ -1175,6 +1175,23 @@ GTFO.SpellID["282205"] = {
   sound = 3;
 };
 
+GTFO.SpellID["282182"] = {
+  --desc = "Buster Cannon (High Tinker Mekkatorque)";
+  sound = 3;
+  applicationOnly = true;
+};
+
+GTFO.SpellID["282408"] = {
+  --desc = "Spark Pulse (High Tinker Mekkatorque)";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["289621"] = {
+  --desc = "Churning Depths (Breakwater Elemental)";
+  sound = 3;
+};
+
 GTFO.SpellID["285125"] = {
   --desc = "Sea Swell (Laminaria)";
   sound = 3;
@@ -1213,6 +1230,11 @@ GTFO.SpellID["285177"] = {
 
 GTFO.SpellID["287585"] = {
   --desc = "Avalanche (Lady Jaina Proudmoore)";
+  sound = 3;
+};
+
+GTFO.SpellID["289985"] = {
+  --desc = "Arcane Barrage (Lady Jaina Proudmoore)";
   sound = 3;
 };
 

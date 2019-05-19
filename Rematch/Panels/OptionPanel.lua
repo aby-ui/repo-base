@@ -439,6 +439,8 @@ panel.funcs.DebugNoModels = function()
 	showReloadPopup("Debug: No Models")
 end
 
+panel.funcs.ShowInTeamsFootnotes = rematch.UpdateUI
+
 -- collapses or expands an option header
 function panel:HeaderOnClick()
 	local headerIndex = self.headerIndex
@@ -515,3 +517,4 @@ function panel:RescaleFrame(value)
 	frame:SetPoint(corner,UIParent,"BOTTOMLEFT",settings.XPos,settings.YPos)
 end
 panel.funcs.CustomScale = panel.RescaleFrame
+

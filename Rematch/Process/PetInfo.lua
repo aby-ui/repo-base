@@ -62,6 +62,7 @@
       speed: speed stat of the pet (integer)
       rarity: rarity 1-4 of pet (integer)
       isDead: whether the pet is dead (bool)
+      isInjured: whether the pet has less than max health (bool)
       isSummonable: whether the pet can be summoned (bool)
       isRevoked: whether the pet is revoked (bool)
       abilityList: table of pet's abilities (table)
@@ -88,7 +89,7 @@
 	  hasNotes: whether the pet has notes
 	  notes: the text of the pet's notes
 	  isLeveling: whether the pet is in the queue
-	  isSummoned: whether the pet is currently summoned (companion pet)
+     isSummoned: whether the pet is currently summoned (companion pet)
       
    How it works:
 
@@ -135,7 +136,7 @@ local apiByStat = {
    displayID="Info", isFavorite="Info", speciesName="Info", name="Info", icon="Info",
    petType="Info", creatureID="Info", sourceText="Info", loreText="Info", isWild="Info",
    canBattle="Info", isTradable="Info", isUnique="Info", isObtainable="Info", health="Stats",
-   maxHealth="Stats", power="Stats", speed="Stats", rarity="Stats", isDead="Dead",
+   maxHealth="Stats", power="Stats", speed="Stats", rarity="Stats", isDead="Dead", isInjured="Dead",
    isSummonable="Other", isRevoked="Other", abilityList="Abilities", levelList="Abilities",
    valid="Valid", count="Count", maxCount="Count", fullLevel="FullLevel", needsFanfare="Fanfare",
    breedID="Breed", breedName="Breed", possibleBreedIDs="PossibleBreeds",
@@ -333,7 +334,10 @@ local queryAPIs = {
    end,
    -- whether a pet isDead
    Dead = function(self)
-      self.isDead = self.health==0 and self.maxHealth>0
+      if self.maxHealth and self.maxHealth > 0 then
+         self.isDead = self.health==0
+         self.isInjured = self.health<self.maxHealth
+      end
    end,
    -- this fills petInfo.breedID and petInfo.breedName depending on which breed addon is enabled, if any
    Breed = function(self)

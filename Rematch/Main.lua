@@ -208,24 +208,6 @@ function rematch:Start()
 	-- watch for player forfeiting a match (playerForfeit is nil'ed during PET_BATTLE_OPENING_START)
 	hooksecurefunc(C_PetBattles,"ForfeitGame",function() rematch.playerForfeit=true end)
 
-	-- on login, notify mac users of the experimental version if the popup hasn't been shown before
-	if not settings.NotifiedExperimental then
-		settings.NotifiedExperimental = true -- whether on pc or mac, don't bother with this on future logins
-		if IsMacClient() then
-			settings.NotifiedExperimental = true
-			local dialog = rematch:ShowDialog("Experimental", 320, 260, "Rematch", nil, nil, nil, OKAY)
-			dialog:ClearAllPoints()
-			dialog:SetPoint("CENTER",0,64)
-			dialog:ShowText("\124cffffffffAttention MacOS users:\124r\n\nIf the game occasionally crashes when you open Rematch, and you'd like to help troubleshoot, an experimental version of the addon is available at the URL below for testing solutions.\n\nThank you for your patience!", 280, 140, "TOP", 0, -32)
-			dialog.MultiLine:SetSize(280,40)
-			dialog.MultiLine:SetPoint("BOTTOM",0,40)
-			dialog.MultiLine.EditBox:SetText("http://www.wowinterface.com/downloads/info24832-Rematch-Experimental.html")
-			dialog.MultiLine:Show()
-			dialog.MultiLine.EditBox:SetFocus()
-			dialog.MultiLine.EditBox:HighlightText()
-		end
-	end
-
 end
 
 function rematch:InitSavedVars()
@@ -240,7 +222,7 @@ function rematch:InitSavedVars()
 	settings = RematchSettings
 	saved = RematchSaved
 	-- create settings sub-tables and default values if they don't exist
-	for k,v in pairs({"TeamGroups","Filters","FavoriteFilters","Sort","Sanctuary","LevelingQueue","PetNotes","ScriptFilters","SpecialSlots"}) do
+	for k,v in pairs({"TeamGroups","Filters","FavoriteFilters","Sort","Sanctuary","LevelingQueue","PetNotes","ScriptFilters","SpecialSlots","QueueSanctuary"}) do
 		if type(settings[v])~="table" then
 			if v=="TeamGroups" then -- TeamGroups starts with a default entry
 				settings[v] = {{GENERAL,"Interface\\Icons\\PetJournalPortrait"}}
@@ -307,6 +289,49 @@ function rematch:ValidateTeams()
 		rematch:print("- If there's a Rematch.lua.bak, make a backup of it and rename it Rematch.lua")
 		rematch:print("- If there is not a Rematch.lua.bak, you will need to restore teams from a prior backup.")
 		rematch:print("- If you have no prior backup, you can try continuing with the current data but it may cause severe problems.")
+	end
+end
+
+-- intended to run during PLAYER_LOGOUT, this will recreate the queue sanctuary from the contents of the queue
+function rematch:UpdateQueueSanctuary()
+	local queue = settings.LevelingQueue
+	local sanctuary = settings.QueueSanctuary
+	wipe(sanctuary)
+	for _,petID in ipairs(queue) do
+		sanctuary[petID] = rematch:CreatePetTag(petID,"forQueue")
+	end
+end
+
+-- this goes trough each pet and the queue and confirms it's a valid petID; if not, it will see if there's
+-- a petTag in QueueSanctuary for the invalid petID and find a new petID from it; otherwise the invalid pet
+-- is removed from the queue
+function rematch:ValidateQueue()
+	local queue = settings.LevelingQueue
+	local found = {} -- lookup table of found pets, indexed by speciesID and then an array of petIDs of that speciesID found
+	for i=#queue,1,-1 do
+		local petID = queue[i]
+		local petInfo = rematch.petInfo:Fetch(petID)
+		if not petInfo.valid then -- pet is not valid
+			if settings.QueueSanctuary[petID] then -- but the pet is in the sancutary
+				local speciesID = rematch:GetSpeciesFromTag(settings.QueueSanctuary[petID]) -- get speciesID from the tag
+				local newPetID
+				if found[speciesID] then -- if previous pets of this speciesID were found, exclude them when finding a new pet from the tag
+					newPetID = rematch:FindPetFromPetTag(settings.QueueSanctuary[petID],unpack(found[speciesID]))
+				else -- otherwise use any pet from the tag
+					newPetID = rematch:FindPetFromPetTag(settings.QueueSanctuary[petID])
+				end
+				if type(newPetID)=="string" and not tContains(queue,newPetID) then -- if a replacement found, change petID in queue
+					queue[i] = newPetID
+					local speciesID = rematch.petInfo:Fetch(newPetID).speciesID
+					found[speciesID] = found[speciesID] or {}
+					tinsert(found[speciesID],newPetID)
+				else -- no replacement found, remove pet from queue
+					tremove(queue,i)
+				end
+			else -- pet wasn't in sanctuary, remove pet from queue
+					tremove(queue,i)
+			end
+		end
 	end
 end
 
@@ -508,18 +533,25 @@ function rematch:PET_BATTLE_CLOSE()
 		end
 		C_Timer.After(0,rematch.UpdateQueue) -- waiting a frame (client thinks we can't swap pets right now)
 		rematch:UpdateAutoLoadState()
+		-- if option Load Healthiest Pets -> After Pet Battles Too is enabled (and a team is loaded)
+		if settings.LoadHealthiest and settings.LoadHealthiestAfterBattle then
+			-- then wait a bit and load healthiest pets
+			C_Timer.After(0.75,rematch.LoadHealthiestOfLoadedPets)
+		end
 		
 		C_Timer.After(0.05,function() 
 			if settings.AutoLoad then 
 			rematch:loadSimilarTeam(rematch.recentTarget) 
 			end
 			end)	
+
 	end
 end
 
 -- logging out
 function rematch:PLAYER_LOGOUT()
 	settings.ShowOnLogin = (settings.LockWindow and settings.StayOnLogout) and rematch.Frame:IsVisible() and true
+	rematch:UpdateQueueSanctuary()
 end
 
 -- when learning a new pet, or when attempting to send a team to someone offline
@@ -707,7 +739,8 @@ function rematch.SlashHandler(msg)
 		-- going to desensitize the passed name so "aki the chosen" works for "Aki the Chosen"
 		local name = format("^%s$",rematch:DesensitizeText(msg))
 		for k,v in pairs(saved) do -- and this necessitates going through the table instead of a lookup
-			if rematch:GetTeamTitle(k):match(name) then
+			if rematch:match(rematch:GetTeamTitle(k),name) then
+			--if rematch:GetTeamTitle(k):match(name) then
 				rematch:LoadTeam(k) -- team found, load it
 				return -- and leave
 			end

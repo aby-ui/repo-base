@@ -1,16 +1,16 @@
 local mod	= DBM:NewMod("Heigan", "DBM-Naxx", 3)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041705949")
+mod:SetRevision("20190516165414")
 mod:SetCreatureID(15936)
 mod:SetEncounterID(1112)
 mod:SetModelID(16309)
 mod:RegisterCombat("combat_yell", L.Pull)
 
-local warnTeleportSoon	= mod:NewAnnounce("WarningTeleportSoon", 2, 46573)
-local warnTeleportNow	= mod:NewAnnounce("WarningTeleportNow", 3, 46573)
+local warnTeleportSoon	= mod:NewAnnounce("WarningTeleportSoon", 2, "135736")
+local warnTeleportNow	= mod:NewAnnounce("WarningTeleportNow", 3, "135736")
 
-local timerTeleport		= mod:NewTimer(90, "TimerTeleport", 46573, nil, nil, 6)
+local timerTeleport		= mod:NewTimer(90, "TimerTeleport", "135736", nil, nil, 6)
 
 function mod:DancePhase()
 	timerTeleport:Show(47)

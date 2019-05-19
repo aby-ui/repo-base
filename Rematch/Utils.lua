@@ -515,6 +515,12 @@ end
 -- wants to show the window. if neither standalone or journal are up, it shows
 -- the PreferredMode (1=minimized, 2=maximized, 3=journal)
 function rematch:AutoShow()
+
+	-- if rematch is already on screen, then don't do anything
+	if rematch.Frame:IsVisible() or rematch.Journal:IsVisible() then
+		return
+	end
+
 	local frame = rematch.Frame
 	local settings = RematchSettings
 	local mode = settings.PreferredMode

@@ -222,7 +222,7 @@
 					</OnReceiveDrag>
 				</Scripts>
 			</Button>
-			<Button parentKey="LockOverlay" setAllPoints="true" hidden="true">
+			<Button parentKey="LockOverlay" setAllPoints="true" inherits="RematchPetClicks" hidden="true">
 				<Layers>
 					<Layer level="ARTWORK">
 						<Texture>
@@ -241,13 +241,18 @@
 				<Scripts>
 					<OnShow>
 						self:SetFrameLevel(self:GetParent():GetFrameLevel()+6)
+						if not self.mouseHooked then
+							self.mouseHooked = true
+							self:HookScript("OnEnter",Rematch.LoadoutPanel.LockedButtonOnEnter)
+							self:HookScript("OnLeave",Rematch.HideTooltip)
+						end
 					</OnShow>
-					<OnEnter>
+					<!-- <OnEnter>
 						Rematch.LoadoutPanel.LockedButtonOnEnter(self)
 					</OnEnter>
 					<OnLeave>
 						Rematch:HideTooltip()
-					</OnLeave>
+					</OnLeave> -->
 				</Scripts>
 			</Button>
 			<Frame parentKey="Bling" inherits="RematchPanelBlingTemplate"/>

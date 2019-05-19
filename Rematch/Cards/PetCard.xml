@@ -115,7 +115,7 @@
 		</HitRectInsets>
 		<Layers>
 			<Layer level="ARTWORK">
-				<Texture parentKey="Icon" file="Interface\Icons\INV_Misc_QuestionMark">
+				<Texture parentKey="Icon">
 					<Size x="27" y="27"/>
 					<Anchors>
 						<Anchor point="LEFT"/>
