@@ -45,10 +45,14 @@
 * Note: added "{time:2:45}" template for dynamic timer
 * Visual note: added movement tool
 * Fight log: short boss pulls are not recorded
+
+4010
+* toc update
+* Removed combat restrictions for loading for some modules
 ]]
 local GlobalAddonName, ExRT = ...
 
-ExRT.V = 4000
+ExRT.V = 4010
 ExRT.T = "R"
 
 ExRT.OnUpdate = {}		--> таймеры, OnUpdate функции
@@ -146,9 +150,9 @@ do
 			
 			self.options.CreateTilte = mod_Options_CreateTitle
 			
-			if enableLoadInCombat then
+			--if enableLoadInCombat then
 				self.options.enableLoadInCombat = true
-			end
+			--end
 			
 			ExRT.ModulesOptions[#ExRT.ModulesOptions + 1] = self.options
 			

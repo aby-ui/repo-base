@@ -202,6 +202,7 @@ module.db.reductionAuras = {
 	[33206] = 0.6,		--Pain Suppression
 	[81782] = 0.75,		--Power Word: Barrier
 	[47585] = 0.4,		--Dispersion
+	[194384] = 1,	--Atonement talent
 
 	--[[
 	--Warrior
@@ -595,6 +596,8 @@ local function SLTReductionReg(sourceGUID)
 	SLTReductionFrame:RegisterEvent("UNIT_AURA")
 end
 
+local reductionAtonement = {}
+
 local function addReductionOnPull(unit,destGUID)
 	--------------> Add passive reductions
 	--- Note: this is first reduction check ever and I must don't care about any existens data
@@ -612,6 +615,14 @@ local function addReductionOnPull(unit,destGUID)
 			}
 		}
 		spellsSchool[ reductionSpec[1] ] = reductionSpec[4] or 0x1
+	end
+
+	if unitInspectData and unitInspectData.class == "PRIEST" and specID == 256 and unitInspectData.GUID then
+		if (unitInspectData[7] == 1) then
+			reductionAtonement[ unitInspectData.GUID ] = 0.97
+		else
+			reductionAtonement[ unitInspectData.GUID ] = nil
+		end
 	end
 	
 	if unitInspectData and unitInspectData.class == "DRUID" and specID ~= 104 then
@@ -1210,9 +1221,10 @@ function _BW_Start(encounterID,encounterName)
 	
 	_graphSectionTimer = 0
 	_graphSectionTimerRounded = 0
-	_graphRaidSnapshot = {"boss1","boss2","boss3","boss4","boss5","target","focus"}
+	_graphRaidSnapshot = {"boss1","boss2","boss3","boss4","boss5","boss6","target","focus"}
 	local energyPerClass_general = energyPerClass["NO"][1]
 	_graphRaidEnergy = {
+		energyPerClass_general,
 		energyPerClass_general,
 		energyPerClass_general,
 		energyPerClass_general,
@@ -2083,6 +2095,21 @@ local function CLEUParser(self,_,timestamp,event,hideCaster,sourceGUID,sourceNam
 		if reduction then
 			if spellID == 81782 then
 				sourceGUID = module.db.reductionPowerWordBarrierCaster or sourceGUID
+			elseif spellID == 194384 then
+				reduction = reductionAtonement[sourceGUID] or 1
+				--[[
+				if ExRT.A.Inspect then
+					local db = ExRT.A.Inspect.db.inspectDB
+					for k,v in pairs(db) do
+						if v.GUID == sourceGUID then
+							if v[7] == 1 then
+								reduction = 0.97
+							end
+							break
+						end
+					end
+				end
+				]]
 			end
 		
 			local destData = var_reductionCurrent[ destGUID ]
@@ -2212,7 +2239,9 @@ local function CLEUParser(self,_,timestamp,event,hideCaster,sourceGUID,sourceNam
 		--fightData_auras[ #fightData_auras + 1 ] = {timestamp,sourceGUID,destGUID,UnitIsFriendlyByUnitFlag(sourceFlags),UnitIsFriendlyByUnitFlag(destFlags),spellID,auraType,2,1,s = active_segment}
 		fightData_auras[ #fightData_auras + 1 ] = {timestamp,sourceGUID,destGUID,bit_band(sourceFlags or 0,240) == 16,bit_band(destFlags or 0,240) == 16,spellID,auraType,2,1,s = active_segment}
 		
-		if amount and amount > 0 then
+		if amount and amount > 0 and 
+			spellID ~= 284663 --BfD: Conclave: Bwonsamdi
+		then
 			CLEUParser(self,nil,timestamp,"SPELL_HEAL",hideCaster,sourceGUID,sourceName,sourceFlags,sourceFlags2,destGUID,destName,destFlags,destFlags2,spellID,nil,school,amount,amount,0)
 		end
 	
@@ -2881,10 +2910,10 @@ function module:ClearData(isFirstLoad)
 end
 
 function BWInterfaceFrameLoad()
-	if InCombatLockdown() then
-		print(L.SetErrorInCombat)
-		return
-	end
+	--if InCombatLockdown() then
+	--	print(L.SetErrorInCombat)
+	--	return
+	--end
 	isBWInterfaceFrameLoaded = true
 
 	if not module.db.data[1] then
@@ -3150,8 +3179,21 @@ function BWInterfaceFrameLoad()
 		end
 	end
 	local function UpdateSegments_SelectPhase(phase)
+		local minX,maxX = #CurrentFight.segments,1
 		for i=1,#CurrentFight.segments do
 			CurrentFight.segments[i].e = CurrentFight.segments[i].p == phase
+			if CurrentFight.segments[i].p == phase then
+				if i < minX then
+					minX = i
+				end
+				if i > maxX then
+					maxX = i
+				end
+			end
+		end
+		if minX ~= #CurrentFight.segments or maxX ~= 1 then
+			BWInterfaceFrame.GraphFrame.G.ZoomMinX = minX - 1
+			BWInterfaceFrame.GraphFrame.G.ZoomMaxX = maxX + 1
 		end
 		BWInterfaceFrame:Hide()
 		BWInterfaceFrame:Show()
@@ -3977,6 +4019,8 @@ function BWInterfaceFrameLoad()
 		TLframe.ImprovedSelectSegment.ResetZoom.Text = ELib:Text(TLframe.ImprovedSelectSegment.ResetZoom,"["..L.BossWatcherGraphZoomReset.."]",11):Size(200,13):Point("RIGHT",0,0):Right():Top():Color():Outline()
 		TLframe.ImprovedSelectSegment.ResetZoom:SetWidth( TLframe.ImprovedSelectSegment.ResetZoom.Text:GetStringWidth() )
 		TLframe.ImprovedSelectSegment.ResetZoom:SetScript("OnClick",function (self)
+			BWInterfaceFrame.GraphFrame.G.ZoomMinX = nil
+			BWInterfaceFrame.GraphFrame.G.ZoomMaxX = nil
 			UpdateSegments()
 		end)
 		TLframe.ImprovedSelectSegment.ResetZoom:Hide()
@@ -7275,7 +7319,7 @@ function BWInterfaceFrameLoad()
 			tab5.summaryTooltip.tooltip = s
 			tab5.summaryTooltip:Enable()
 		else
-			local spells = {}
+			local spells,spellToTime = {},{}
 			for GUID,dataGUID in pairs(CurrentFight.cast) do
 				if not selfGUID or selfGUID == GUID then
 					for i,PlayerCastData in ipairs(CurrentFight.cast[GUID]) do
@@ -7287,6 +7331,9 @@ function BWInterfaceFrameLoad()
 								spells[inTable] = {spellID,0}
 							end
 							spells[inTable][2] = spells[inTable][2] + 1
+
+							spellToTime[spellID] = spellToTime[spellID] or {}
+							spellToTime[spellID][#spellToTime[spellID] + 1] = timestampToFightTime(PlayerCastData[1]) / fight_dur * (PlayerCastData[3] == 2 and -1 or 1)
 						end
 					end
 				end
@@ -7296,7 +7343,7 @@ function BWInterfaceFrameLoad()
 				local spellName,_,spellTexture = GetSpellInfo(data[1])
 				
 				playersCastsList.L[#playersCastsList.L + 1] = data[2].." "..format("%s%s",spellTexture and "|T"..spellTexture..":0|t " or "",spellName or "???")
-				playersCastsList.IndexToGUID[#playersCastsList.IndexToGUID + 1] = {"spell:"..data[1],nil,data[1]}
+				playersCastsList.IndexToGUID[#playersCastsList.IndexToGUID + 1] = {"spell:"..data[1],0,data[1],nil,spellToTime[ data[1] ]}
 			end
 		end
 		
@@ -7679,8 +7726,9 @@ function BWInterfaceFrameLoad()
 		["boss3"] = "*4",
 		["boss4"] = "*5",
 		["boss5"] = "*6",
-		["target"] = "*7",
-		["focus"] = "*8",
+		["boss6"] = "*7",
+		["target"] = "*8",
+		["focus"] = "*9",
 	}
 	local function GraphTab_UnitDropDown_Check(self,checked)
 		local graphData = BWInterfaceFrame.tab.tabs[6].graph.data
@@ -10852,21 +10900,40 @@ function BWInterfaceFrameLoad()
 			["boss3"]=true,
 			["boss4"]=true,
 			["boss5"]=true,
+			["boss6"]=true,
 			["target"]=true,
 			["focus"]=true,
 		},
+		HPList = {},
 	}
+	BWInterfaceFrame.PositionsTab_Variables = PositionsTab_Variables
 	
 	PositionsTab_Variables.BossToMap = {}
 	
 	local function PositionsTab_UpdatePositions(segment)
 		local time = ceil(segment / 2)
+		local tab = BWInterfaceFrame.tab.tabs[10]
 		for i=1,40 do
 			tab.raidFrames[i]:Update(segment)
 		end
-		for i=1,5 do
+		for i=1,6 do
 			tab.unitFrames[i]:Update(time)
 		end
+
+		local text = ""
+		for destGUID,destData in pairs(PositionsTab_Variables.HPList) do
+			local curHP = 0
+			for seg,hp in pairs(destData.res) do
+				if (CurrentFight.segments[seg].t - CurrentFight.encounterStart) > time then
+					break
+				end
+				curHP = hp
+			end
+			if curHP ~= 0 and curHP ~= destData.maxhp and (not destData.maxhp or curHP < destData.maxhp) then
+				text = text .. GetGUID(destGUID) .. GUIDtoText(" (%s)",destGUID) .. " "..(destData.maxhp and (destData.maxhp-curHP).."/"..destData.maxhp..format(" <%.1f%%>",(1-curHP/destData.maxhp)*100) or "-"..curHP) .. "|n"
+			end
+		end
+		tab.scroll.mobsText:SetText(text)
 	end
 	
 	tab.timeSlider = ELib:Slider(tab,L.BossWatcherPositionsSlider):Size(780):Point("TOP",-10,-20):Range(1,1):OnChange(function (self,value)
@@ -11254,7 +11321,7 @@ function BWInterfaceFrameLoad()
 	end
 	
 	tab.unitFrames = {}
-	for i=1,5 do
+	for i=1,6 do
 		local frame = CreateFrame("Button",nil,tab.scroll)
 		tab.unitFrames[i] = frame
 		frame:SetSize(95,20)
@@ -11301,6 +11368,8 @@ function BWInterfaceFrameLoad()
 		
 		frame:Hide()
 	end
+
+	tab.scroll.mobsText = ELib:Text(tab.scroll,"",10):Size(400,0):Point("TOPRIGHT",-5,-3):Left():Color()
 	
 	local function PositionsTab_DotOnUpdate(self,elapsed)
 		self.anim = self.anim + elapsed
@@ -11455,7 +11524,7 @@ function BWInterfaceFrameLoad()
 				tab.raidFrames[i].Unit = nil
 				tab.raidFrames[i]:Update()
 			end
-			for i=1,5 do
+			for i=1,6 do
 				tab.unitFrames[i].Unit = "boss"..i
 				tab.unitFrames[i]:Update(1)
 			end
@@ -11464,7 +11533,7 @@ function BWInterfaceFrameLoad()
 				tab.raidFrames[i].Unit = nil
 				tab.raidFrames[i]:Update()
 			end
-			for i=1,5 do
+			for i=1,6 do
 				tab.unitFrames[i].Unit = nil
 				tab.unitFrames[i]:Update()
 			end
@@ -11480,6 +11549,85 @@ function BWInterfaceFrameLoad()
 		for i=1,#tab.player do
 			tab.player[i].SubDot:SetScale(1)
 		end
+
+		wipe(PositionsTab_Variables.HPList)
+
+		for destGUID,destData in pairs(CurrentFight.damage) do
+			for destReaction,destReactData in pairs(destData) do
+				local isEnemy = false
+				if GetUnitInfoByUnitFlagFix(destReaction,2) == 512 then
+					isEnemy = true
+				end
+				if isEnemy then
+					for sourceGUID,sourceData in pairs(destReactData) do
+						local source = sourceGUID
+						local dest = destGUID
+						
+						local mobData = PositionsTab_Variables.HPList[dest]
+						if not mobData then
+							mobData = {
+								maxhp = CurrentFight.maxHP[dest],
+								damage = {},
+								heal = {},
+								res = {},
+							}
+							PositionsTab_Variables.HPList[dest] = mobData
+						end
+												
+						for spellID,spellSegments in pairs(sourceData) do
+							for segment,spellAmount in pairs(spellSegments) do
+								mobData.damage[segment] = (mobData.damage[segment] or 0) + spellAmount.amount - spellAmount.overkill
+							end
+						end
+					end
+				end
+			end
+		end
+		for sourceGUID,sourceData in pairs(CurrentFight.heal) do
+			for destGUID,destData in pairs(sourceData) do
+				for destReact,destReactData in pairs(destData) do
+					local isEnemy = not ExRT.F.UnitIsFriendlyByUnitFlag2(destReact)
+					if isEnemy then
+						local source = sourceGUID
+						local dest = destGUID
+						
+						local mobData = PositionsTab_Variables.HPList[dest]
+						if not mobData then
+							mobData = {
+								maxhp = CurrentFight.maxHP[dest],
+								damage = {},
+								heal = {},
+								res = {},
+							}
+							PositionsTab_Variables.HPList[dest] = mobData
+						end
+						
+						for spellID,spellSegments in pairs(destReactData) do
+							for segment,spellAmount in pairs(spellSegments) do
+								mobData.damage[segment] = (mobData.damage[segment] or 0) - (spellAmount.amount - spellAmount.over + spellAmount.absorbed)
+							end
+						end
+					end
+				end
+			end
+		end
+
+		for destGUID,destData in pairs(PositionsTab_Variables.HPList) do
+			local dmgList = {}
+			for seg,dmg in pairs(destData.damage) do
+				dmgList[#dmgList+1] = {seg,dmg}
+			end
+			sort(dmgList,function(a,b)return a[1]<b[1] end)
+			local now = 0
+			for i,d in pairs(dmgList) do
+				if not destData.seen then
+					destData.seen = d[1]
+				end
+				now = now + d[2]
+				destData.res[ d[1] ] = now
+			end
+		end
+		
 		
 		tab.timeSlider:SetValue(1)
 		PositionsTab_UpdatePositions(1)

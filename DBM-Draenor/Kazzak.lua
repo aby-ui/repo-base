@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1452, "DBM-Draenor", nil, 557)--Not yet in journal, needs journalID in whatever build they add his ID in
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041705938")
+mod:SetRevision("2019052110231")
 mod:SetCreatureID(94015)
 mod:SetEncounterID(1801)
 mod:SetReCombatTime(20)
@@ -25,7 +25,7 @@ local yellMark						= mod:NewYell(187668)
 local timerDoomD					= mod:NewCDTimer(51, 187466, nil, nil, nil, 3)
 local timerBreathCD					= mod:NewCDTimer(22, 187664, nil, nil, nil, 5)
 
---mod:AddReadyCheckOption(37462, false)--Unknown quest flag
+--mod:AddReadyCheckOption(37462, false, 100)--Unknown quest flag
 mod:AddRangeFrameOption(8, 187668)
 
 function mod:OnCombatStart(delay, yellTriggered)

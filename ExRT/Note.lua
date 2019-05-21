@@ -61,8 +61,9 @@ local frameStrataList = {"BACKGROUND","LOW","MEDIUM","HIGH","DIALOG","FULLSCREEN
 module.db.msgindex = -1
 module.db.lasttext = ""
 
-module.db.encounter_time_p = {}
-
+module.db.encounter_time_p = {}	--phases
+module.db.encounter_time_c = {}	--custom
+module.db.encounter_id = {}
 
 local function GSUB_Icon(spellID)
 	spellID = tonumber(spellID)
@@ -92,12 +93,31 @@ local function GSUB_Player(list,msg)
 	end
 end
 
+local function GSUB_Encounter(list,msg)
+	list = {strsplit(",",list)}
+	local found = false
+	for i=1,#list do
+		list[i] = list[i]:gsub("|c........",""):gsub("|r",""):lower()
+		if module.db.encounter_id[ list[i] ] then
+			found = true
+			break
+		end
+	end
+
+	if found then
+		return msg
+	else
+		return ""
+	end
+end
+
 --[[
 formats:
 {time:75}
 {time:1:15}
 {time:2:30,p2}	--start on phase 2, works only with bigwigs
 {time:0:30,SCC:17:2}	--start on combat log event. format "event:spellID:counter", events: SCC (SPELL_CAST_SUCCESS), SCS (SPELL_CAST_START), SAA (SPELL_AURA_APPLIED), SAR (SPELL_AURA_REMOVED)
+{time:0:30,e,customevent}	--start on ExRT.F.Note_Timer(customevent) function or "/rt note starttimer customevent" 
 ]]
 local function GSUB_Time(t,msg)
 	local lineTime
@@ -137,6 +157,17 @@ local function GSUB_Time(t,msg)
 		phaseText = "P"..phase.." "
 	end
 
+	if type(t)=='string' then
+		local custom_event = t:match(",e,(.+)")
+		if custom_event then
+			t = module.db.encounter_time_c[custom_event]
+			if not t then
+				return "|cffffed88"..format("%d:%02d|r ",floor(lineTime/60),lineTime % 60)..msg.."\n"
+			end
+			currTime = GetTime() - t
+		end
+	end
+
 	if currTime > lineTime then
 		return "|cff555555"..msg:gsub("|c........",""):gsub("|r","").."|r\n"
 	elseif lineTime - currTime <= 10 then
@@ -155,6 +186,8 @@ local function txtWithIcons(t)
 		t = t..(t~="" and t~=" " and "\n" or "").."{self}"
 	end
 	t = string_gsub(t,"{self}",VExRT.Note.SelfText or "")
+
+	t = string_gsub(t,"{[Ee]:([^}]+)}(.-){/[Ee]}",GSUB_Encounter)
 
 	for i=1,8 do
 		t = string_gsub(t,module.db.iconsLocalizatedNames[i],module.db.iconsList[i])
@@ -200,11 +233,11 @@ function module.options:Load()
 	self:CreateTilte()
 
 	module.db.otherIconsAdditionalList = {
-		31821,62618,97462,98008,115310,64843,740,265202,108280,204150,31884,196718,15286,64901,0,
+		31821,62618,97462,98008,115310,64843,740,265202,108280,204150,31884,196718,15286,64901,47536,246287,0,
 		47788,33206,6940,102342,114030,1022,116849,633,204018,207399,0,
 		2825,32182,80353,0,
 		106898,192077,46968,119381,179057,192058,30283,0,
-		29166,32375,114018,108199,49576,47536,0,
+		29166,32375,114018,108199,49576,0,
 		--"Interface\\Icons\\inv_60legendary_ring1c","Interface\\Icons\\inv_60legendary_ring1b","Interface\\Icons\\inv_60legendary_ring1a",0,
 		0,
 		283933,284468,284469,288298,287469,283579,283587,287439,283572,288292,283650,283637,284449,284488,283628,284578,283626,282113,283662,287419,283955,284459,284436,284474,0,
@@ -982,7 +1015,7 @@ function module.options:Load()
 		self.lastUpdate:SetText( L.NoteLastUpdate..": "..VExRT.Note.LastUpdateName.." ("..date("%H:%M:%S %d.%m.%Y",VExRT.Note.LastUpdateTime)..")" )
 	end
 
-	self.chkEnable = ELib:Check(self,L.senable,VExRT.Note.enabled):Point(560+130,-26):Tooltip('/rt note'):Size(18,18):OnClick(function(self) 
+	self.chkEnable = ELib:Check(self,L.senable,VExRT.Note.enabled):Point(560+130,-26):Tooltip("/rt note|n/rt n"):Size(18,18):OnClick(function(self) 
 		if self:GetChecked() then
 			module:Enable()
 		else
@@ -1481,6 +1514,10 @@ function module:addonMessage(sender, prefix, ...)
 				end
 			end
 		end
+
+	elseif prefix == "multiline_timer_sync" then
+		local name = ...
+		ExRT.F.Note_Timer(name)	
 	end 
 end 
 
@@ -1765,45 +1802,58 @@ do
 	end
 
 
-	function module.main:ENCOUNTER_START()
-		if not (VExRT.Note.Text1 or ""):find("{time:([0-9:]+[^{}]*)}") then
-			return
-		end
-		module:RegisterTimer()
-		module.db.encounter_time = GetTime()
-		module.db.encounter_time_p[1] = module.db.encounter_time
-		module.frame:UpdateText()
-		BossPhasesBossmod()
-
-		if (VExRT.Note.Text1 or ""):find("{time:([0-9:]+,S[^{}]*)}") then
-			wipe(module.db.encounter_counters.SCC)
-			wipe(module.db.encounter_counters.SCS)
-			wipe(module.db.encounter_counters.SAA)
-			wipe(module.db.encounter_counters.SAR)
-			local anyEvent
-			string_gsub(VExRT.Note.Text1,"{time:[0-9:]+,(S[^{}]*)}",function(str)
-				local event,spellID,count = strsplit(":",str)
-				if tonumber(count or "") and tonumber(spellID or "") and event and module.db.encounter_counters[event] then
-					anyEvent = true
-					module.db.encounter_counters[event][tonumber(spellID)] = 0
-				end
-			end)
-			if anyEvent then
-				wipe(module.db.encounter_counters_time)
-				module:RegisterEvents("COMBAT_LOG_EVENT_UNFILTERED")
+	function module.main:ENCOUNTER_START(encounterID, encounterName, difficultyID, groupSize)
+		local updateTextReq
+		local noteText = (VExRT.Note.Text1 or "")..(VExRT.Note.SelfText or "")
+		if encounterID and encounterName then
+			module.db.encounter_id[tostring(encounterID)] = true
+			module.db.encounter_id[encounterName] = true
+			if noteText:find("{[Ee]:([^}]+)}.-{/[Ee]}") then
+				updateTextReq = true
 			end
+		end
+		if noteText:find("{time:([0-9:]+[^{}]*)}") then
+			wipe(module.db.encounter_time_c)
+			module:RegisterTimer()
+			module.db.encounter_time = GetTime()
+			module.db.encounter_time_p[1] = module.db.encounter_time
+			updateTextReq = true
+			BossPhasesBossmod()
+	
+			if noteText:find("{time:([0-9:]+,S[^{}]*)}") then
+				wipe(module.db.encounter_counters.SCC)
+				wipe(module.db.encounter_counters.SCS)
+				wipe(module.db.encounter_counters.SAA)
+				wipe(module.db.encounter_counters.SAR)
+				local anyEvent
+				string_gsub(noteText,"{time:[0-9:]+,(S[^{}]*)}",function(str)
+					local event,spellID,count = strsplit(":",str)
+					if tonumber(count or "") and tonumber(spellID or "") and event and module.db.encounter_counters[event] then
+						anyEvent = true
+						module.db.encounter_counters[event][tonumber(spellID)] = 0
+					end
+				end)
+				if anyEvent then
+					wipe(module.db.encounter_counters_time)
+					module:RegisterEvents("COMBAT_LOG_EVENT_UNFILTERED")
+				end
+			end
+		end
+		if updateTextReq then
+			module.frame:UpdateText()
 		end
 	end
 	function module.main:ENCOUNTER_END()
-		if not (VExRT.Note.Text1 or ""):find("{time:([0-9:]+[^{}]*)}") then
-			return
+		wipe(module.db.encounter_id)
+		if ((VExRT.Note.Text1 or "")..(VExRT.Note.SelfText or "")):find("{time:([0-9:]+[^{}]*)}") then
+			module:UnregisterTimer()
+			module.db.encounter_time = nil
+			wipe(module.db.encounter_time_p)
+			wipe(module.db.encounter_time_c)
+	
+			module:UnregisterEvents("COMBAT_LOG_EVENT_UNFILTERED")
 		end
-		module:UnregisterTimer()
-		module.db.encounter_time = nil
-		wipe(module.db.encounter_time_p)
 		module.frame:UpdateText()
-
-		module:UnregisterEvents("COMBAT_LOG_EVENT_UNFILTERED")
 	end
 	local tmr = 0
 	function module:timer(elapsed)
@@ -1847,10 +1897,26 @@ do
 		end
 	end
 
+
+	function ExRT.F.Note_Timer(name)
+		if not name then
+			return
+		end
+		if not module.db.encounter_time then
+			module.main:ENCOUNTER_START()
+		end
+		module.db.encounter_time_c[name] = GetTime()
+	end
+	function ExRT.F.Note_SyncTimer(name)
+		if not name then
+			return
+		end
+		ExRT.F.SendExMsg("multiline_timer_sync",name)
+	end
 end
 
 function module:slash(arg)
-	if arg == "note" then
+	if arg == "note" or arg == "n" then
 		if VExRT.Note.enabled then 
 			module:Disable()
 		else
@@ -1863,6 +1929,16 @@ function module:slash(arg)
 			module.main:ENCOUNTER_END()
 		else
 			module.main:ENCOUNTER_START()
+		end
+	elseif arg and arg:find("^note starttimer ") then
+		local timer = arg:match("^note starttimer (.-)$")
+		if timer then
+			ExRT.F.Note_Timer(timer)
+		end
+	elseif arg and arg:find("^note synctimer ") then
+		local timer = arg:match("^note synctimer (.-)$")
+		if timer then
+			ExRT.F.Note_SyncTimer(timer)
 		end
 	end
 end

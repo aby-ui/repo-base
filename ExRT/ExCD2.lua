@@ -564,6 +564,7 @@ do
 		{115308,119582},						--Brewmaster brew
 		{90633,90628},{90632,90626},{90631,89479},			--Guild Battle Standard
 		{86659,212641},							--Guardian of Ancient Kings [std,glyhed]
+		{200166,191427},						--DH Metamorphosis
 	}
 	for i=1,#sameSpellsData do
 		local list = sameSpellsData[i]
@@ -3828,10 +3829,12 @@ do
 	local spellHeal_trackedSpells = {
 		[207778] = true,
 		[48438] = true,
+		[116670] = true,
 	}
 	local spellHeal_trackedSpells_Register = {
 		[207778] = true,
 		[29166] = true,
+		[115310] = true,
 	}	
 	local spell207778_var = {0,0}
 	function module.main:SPELL_HEAL(sourceGUID,sourceName,sourceFlags,destGUID,destName,destFlags,spellID,critical,amount,overhealing)
@@ -3874,6 +3877,21 @@ do
 					SortAllData()
 				end							
 			end
+		elseif spellID == 116670 and session_gGUIDs[sourceName][278576] then
+			local line = CDList[sourceName][115310]
+			if line then
+				if critical then
+					line.cd = line.cd - 1
+					if line.cd < 0 then 
+						line.cd = 0 
+					end
+					if line.bar and line.bar.data == line then
+						line.bar:UpdateStatus()
+					end
+					UpdateAllData()
+					SortAllData()
+				end							
+			end			
 		end
 	end
 	
@@ -8183,25 +8201,25 @@ module.db.allClassSpells = {
 ["MONK"] = {
 	{100784,3,	{100784,3,	0},	nil,			nil,			nil,			},	--Blackout Kick
 	{115181,3,	nil,			{115181,15,	0},	nil,			nil,			},	--Breath of Fire
-	{218164,5,	nil,			{218164,8,	0},	nil,			{218164,8,	0},	},	--Detox
-	{115450,5,	nil,			nil,			{115450,8,	0},	nil,			},	--Detox
-	{191837,3,	nil,			nil,			{191837,12,	0},	nil,			},	--Essence Font
-	{113656,3,	nil,			nil,			nil,			{113656,24,	0},	},	--Fists of Fury
-	{101545,3,	nil,			nil,			nil,			{101545,25,	0},	},	--Flying Serpent Kick
+	{218164,5,	nil,			{218164,8,	0},	{218164,8,	0},	nil,			},	--Detox
+	{115450,5,	nil,			nil,			nil,			{115450,8,	0},	},	--Detox
+	{191837,3,	nil,			nil,			nil,			{191837,12,	0},	},	--Essence Font
+	{113656,3,	nil,			nil,			{113656,24,	0},nil,				},	--Fists of Fury
+	{101545,3,	nil,			nil,			{101545,25,	0},nil,				},	--Flying Serpent Kick
 	{115203,4,	nil,			{115203,420,	15},	nil,			nil,			},	--Fortifying Brew
-	{243435,4,	nil,			nil,			{243435,90,	15},	nil,			},	--Fortifying Brew
+	{243435,4,	nil,			nil,			nil,			{243435,90,	15},	},	--Fortifying Brew
 	{119381,1,	{119381,60,	3},	nil,			nil,			nil,			},	--Leg Sweep
-	{116849,2,	nil,			nil,			{116849,120,	12},	nil,			},	--Life Cocoon
+	{116849,2,	nil,			nil,			nil,			{116849,120,	12},	},	--Life Cocoon
 	{115078,3,	{115078,45,	0},	nil,			nil,			nil,			},	--Paralysis
 	{115546,5,	{115546,8,	0},	nil,			nil,			nil,			},	--Provoke
-	{115310,1,	nil,			nil,			{115310,180,	0},	nil,			},	--Revival
+	{115310,1,	nil,			nil,			nil,			{115310,180,	0},	},	--Revival
 	{107428,3,	nil,			nil,			{107428,10,	0},	{107428,10,	0},	},	--Rising Sun Kick
 	{109132,3,	{107428,20,	0},	nil,			nil,			nil,			},	--Roll	
-	{116705,3,	nil,			{116705,15,	0},	nil,			{116705,15,	0},	},	--Spear Hand Strike
-	{137639,3,	nil,			nil,			nil,			{137639,90,	15},	},	--Storm, Earth, and Fire
-	{116680,3,	nil,			nil,			{116680,30,	0},	nil,			},	--Thunder Focus Tea
-	{115080,3,	nil,			nil,			nil,			{115080,120,	8},	},	--Touch of Death
-	{122470,3,	nil,			nil,			nil,			{122470,90,	10},	},	--Touch of Karma
+	{116705,3,	nil,			{116705,15,	0},	{116705,15,	0},	nil,			},	--Spear Hand Strike
+	{137639,3,	nil,			nil,			{137639,90,	15},	nil,			},	--Storm, Earth, and Fire
+	{116680,3,	nil,			nil,			nil,			{116680,30,	0},	},	--Thunder Focus Tea
+	{115080,3,	nil,			nil,			{115080,120,	8},	nil,				},	--Touch of Death
+	{122470,3,	nil,			nil,			{122470,90,	10},	nil,			},	--Touch of Karma
 	{101643,4,	{101643,10,	0},	nil,			nil,			nil,			},	--Transcendence
 	{119996,4,	{119996,45,	0},	nil,			nil,			nil,			},	--Transcendence: Transfer
 	{115176,4,	nil,			{115176,300,	8},	nil,			nil,			},	--Zen Meditation
@@ -8220,18 +8238,18 @@ module.db.allClassSpells = {
 	{116841,2,	{116841,30,	6},	nil,			nil,			nil,			},	--Tiger's Lust
 	
 	{122783,4,	nil,			nil,			{122783,90,	6},	{122783,90,	6},	},	--Diffuse Magic
-	{198664,3,	nil,			nil,			{198664,180,	25},	nil,			},	--Invoke Chi-Ji, the Red Crane
-	{197908,3,	nil,			nil,			{197908,90,	12},	nil,			},	--Mana Tea
-	{196725,3,	nil,			nil,			{196725,9,	0},	nil,			},	--Refreshing Jade Wind
-	{198898,3,	nil,			nil,			{198898,30,	0},	nil,			},	--Song of Chi-Ji
-	{115313,3,	nil,			nil,			{115313,10,	0},	nil,			},	--Summon Jade Serpent Statue
+	{198664,3,	nil,			nil,			nil,			{198664,180,	25},	},	--Invoke Chi-Ji, the Red Crane
+	{197908,3,	nil,			nil,			nil,			{197908,90,	12},	},	--Mana Tea
+	{196725,3,	nil,			nil,			nil,			{196725,9,	0},	},	--Refreshing Jade Wind
+	{198898,3,	nil,			nil,			nil,			{198898,30,	0},	},	--Song of Chi-Ji
+	{115313,3,	nil,			nil,			nil,			{115313,10,	0},	},	--Summon Jade Serpent Statue
 	
-	{115288,3,	nil,			nil,			nil,			{115288,60,	0},	},	--Energizing Elixir
-	{261947,3,	nil,			nil,			nil,			{261947,30,	0},	},	--Fist of the White Tiger
-	{123904,3,	nil,			nil,			nil,			{123904,120,	20},	},	--Invoke Xuen, the White Tiger
-	{261715,3,	nil,			nil,			nil,			{261715,6,	0},	},	--Rushing Jade Wind
-	{152173,3,	nil,			nil,			nil,			{152173,90,	12},	},	--Serenity
-	{152175,3,	nil,			nil,			nil,			{152175,24,	0},	},	--Whirling Dragon Punch
+	{115288,3,	nil,			nil,			{115288,60,	0},	nil,			},	--Energizing Elixir
+	{261947,3,	nil,			nil,			{261947,30,	0},	nil,			},	--Fist of the White Tiger
+	{123904,3,	nil,			nil,			{123904,120,	20},	nil,			},	--Invoke Xuen, the White Tiger
+	{261715,3,	nil,			nil,			{261715,6,	0},	nil,			},	--Rushing Jade Wind
+	{152173,3,	nil,			nil,			{152173,90,	12},	nil,			},	--Serenity
+	{152175,3,	nil,			nil,			{152175,24,	0},	nil,			},	--Whirling Dragon Punch
 
 },
 ["DRUID"] = {
@@ -8363,7 +8381,7 @@ module.db.allClassSpells = {
 	{20572,	3,	{20572,	120,	15},	},	--Orc
 	{20549,	3,	{20549,	90,	0},	},	--Tauren
 	{26297,	3,	{26297,	180,	10},	},	--Troll
-	{28730,	3,	{28730,	90,	0},	},	--BloodElf
+	{28730,	3,	{28730,	120,	0},	},	--BloodElf
 	{107079,3,	{107079,120,	4},	},	--Pandaren
 	{256948,3,	{256948,180,	0},	},	--VoidElf
 	{260364,3,	{260364,180,	12},	},	--Nightborne

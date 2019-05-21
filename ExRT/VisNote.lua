@@ -698,9 +698,12 @@ function module.options:Load()
 		{L.S_ZoneT23Siege..": "..L.bossName[2281],{1364,0.5,0.49}},		--Jaina
 
 		--31-40
+		{L.S_ZoneT23Storms..": "..L.bossName[2269],{1345,0.51,0.37,3}},		--Cabal
+		{L.S_ZoneT23Storms..": "..L.bossName[2273],{1346,0.27,0.53,3}},		--Uunat
 	}
 	local mapsSorted = {
 		1,10,
+		{L.S_ZoneT23Storms,32,31},
 		{L.S_ZoneT23Siege,30,29,28,27,26,25,24,23,22,21,20},
 		{L.S_ZoneT22Uldir,9,8,11,7,6,5,4,2,3},
 		{DUNGEONS,12,13,14,15,16,17,18,19},
@@ -754,7 +757,7 @@ function module.options:Load()
 			end
 		end
 		if not dot then
-			dot = self.main.C:CreateTexture()
+			dot = self.main.C:CreateTexture(nil,"ARTWORK",nil,2)
 			dot:SetTexture("Interface\\AddOns\\ExRT\\media\\circle256")
 			dots[dot] = true
 		end
@@ -853,7 +856,7 @@ function module.options:Load()
 			end
 		end
 		if not icon then
-			icon = self.main.C:CreateTexture()
+			icon = self.main.C:CreateTexture(nil,"ARTWORK",nil,-1)
 			icons[icon] = true
 		end
 		local t = icons_list[curr_icon]
@@ -936,7 +939,7 @@ function module.options:Load()
 			end
 		end
 		if not text then
-			text = self.main.C:CreateFontString(nil,"ARTWORK","GameFontNormal")
+			text = self.main.C:CreateFontString(nil,"ARTWORK","GameFontNormal",4)
 			text:SetFont(text:GetFont(),12,"OUTLINE")
 			texts[text] = true
 		end
@@ -1016,7 +1019,7 @@ function module.options:Load()
 			end
 		end
 		if not dot then
-			dot = self.main.C:CreateTexture()
+			dot = self.main.C:CreateTexture(nil,"ARTWORK",nil,1)
 			dot:SetTexture("Interface\\AddOns\\ExRT\\media\\circle256")
 			dot.isC = true
 			objects[dot] = true

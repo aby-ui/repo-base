@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1819, "DBM-TrialofValor", nil, 861)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041705925")
+mod:SetRevision("2019052110708")
 mod:SetCreatureID(114263, 114361, 114360)--114263 Odyn, 114361 Hymdall, 114360 Hyrja 
 mod:SetEncounterID(1958)
 mod:SetZone()
@@ -398,9 +398,6 @@ function mod:SPELL_AURA_APPLIED(args)
 		end
 	elseif spellId == 227490 or spellId == 227491 or spellId == 227498 or spellId == 227499 or spellId == 227500 then--Branded (Draw Power Runes)
 		drawTable[spellId] = args.destName
-		if self.Options.InfoFrame then
-			DBM.InfoFrame:Update()
-		end
 		if spellId == 227490 and args:IsPlayer() then--Purple K (NE)
 			specWarnBranded:Show("|TInterface\\Icons\\Boss_OdunRunes_Purple.blp:12:12|tNE|TInterface\\Icons\\Boss_OdunRunes_Purple.blp:12:12|t")
 			specWarnBranded:Play("mm3")
@@ -422,9 +419,13 @@ function mod:SPELL_AURA_APPLIED(args)
 			specWarnBranded:Play("mm4")
 			yellBranded:Yell(4, args.spellName, 4)
 		end
-		if self.Options.InfoFrame and not DBM.InfoFrame:IsShown() then
-			DBM.InfoFrame:SetHeader(args.spellName)
-			DBM.InfoFrame:Show(6, "function", updateInfoFrame, false, false, true)
+		if self.Options.InfoFrame then
+			if not DBM.InfoFrame:IsShown() then
+				DBM.InfoFrame:SetHeader(args.spellName)
+				DBM.InfoFrame:Show(6, "function", updateInfoFrame, false, false, true)
+			else
+				DBM.InfoFrame:Update()
+			end
 		end
 		if self.Options.NPAuraOnBranded then
 			DBM.Nameplate:Show(true, args.sourceGUID, spellId)

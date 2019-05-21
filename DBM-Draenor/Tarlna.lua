@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1211, "DBM-Draenor", nil, 557)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041705938")
+mod:SetRevision("2019052110231")
 mod:SetCreatureID(81535)
 mod:SetEncounterID(1770)
 mod:SetReCombatTime(20)
@@ -34,7 +34,7 @@ local timerGenesis					= mod:NewCastTimer(14, 169613)
 local timerGenesisCD				= mod:NewCDTimer(45, 169613, nil, nil, nil, 5)--45-60 variation
 local timerGrowUntamedMandragoraCD	= mod:NewCDTimer(30, 176013, nil, nil, nil, 1)
 
---mod:AddReadyCheckOption(37462, false)
+--mod:AddReadyCheckOption(37462, false, 100)
 --mod:AddRangeFrameOption(8, 175979)
 
 local debuffName = DBM:GetSpellInfo(176004)
