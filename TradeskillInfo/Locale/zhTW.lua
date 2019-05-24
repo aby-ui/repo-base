@@ -26,11 +26,9 @@ L["Blacksmithing"] = "鍛造"
 L["Change scale of user interface"] = "改變ui介面的伸縮大小"
 L["Click to try to update local cache."] = "點擊試著更新本機快取"
 L["Color Auction Recipes"] = "彩色化配方"
---[[Translation missing --]]
---[[ L["Color Bag Recipes"] = ""--]] 
+L["Color Bag Recipes"] = "著色背包的配方"
 L["Color Merchant Recipes"] = "彩化商人配方"
---[[Translation missing --]]
---[[ L["Color recipes in bags and banks"] = ""--]] 
+L["Color recipes in bags and banks"] = "著色在背包與銀行中的配方"
 L["Color recipes in Merchant windows"] = "在商人視窗時彩化配方"
 L["Color recipes in the Auction House"] = "在拍賣場時彩色化配方"
 L["Color the alt names in tooltip according to maximum combine difficulty"] = "在提示上彩化alt名稱根據最大結合困難"
@@ -59,8 +57,7 @@ L["Gathered"] = "採集"
 L["Gnomish Engineer"] = "地精工程學"
 L["Goblin Engineer"] = "哥布林工程師"
 L["Herbalism"] = "草藥學"
---[[Translation missing --]]
---[[ L["Hide Minimap Button"] = ""--]] 
+L["Hide Minimap Button"] = "隱藏小地圖按鈕"
 L["HIGH"] = "高"
 L["Horde"] = "部落"
 L["Horde Quest"] = "部落任務"
@@ -149,8 +146,7 @@ L["Tradeskills"] = "交易技能"
 L["Trainer"] = "訓練師"
 L["Trainer Window"] = "訓練師視窗"
 L["Trainer Window options"] = "訓練師視窗選項"
---[[Translation missing --]]
---[[ L["Turn on debug info output"] = ""--]] 
+L["Turn on debug info output"] = "開啟偵錯訊息輸出"
 L["UI"] = true
 L["UI Options"] = "UI 設定"
 L["UI Scale"] = "ui介面伸縮"
@@ -173,8 +169,7 @@ L["Way of the Wok"] = "快炒之道"
 L["Will be able to learn"] = "未來可學"
 L["Will be learnable by"] = "誰未來可學"
 L["You can learn"] = "你現在可學"
---[[Translation missing --]]
---[[ L["You know"] = ""--]] 
+L["You know"] = "你已學"
 L["You will be able to learn"] = "你未來可學"
 
 
