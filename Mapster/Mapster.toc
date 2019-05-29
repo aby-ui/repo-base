@@ -6,8 +6,10 @@
 ## Author: Nevcairiel
 ## SavedVariables: MapsterDB
 ## X-Category: Map
-## Version: 1.8.2
+## Version: 1.8.2-9-g3c1a830
 ## X-License: All rights reserved.
+## X-Curse-Project-ID: 14376
+## X-WoWI-ID: 8306
 
 ## OptionalDeps: Ace3, LibWindow-1.1
 

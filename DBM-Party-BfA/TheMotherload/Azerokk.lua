@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2114, "DBM-Party-BfA", 7, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190416205700")
+mod:SetRevision("20190527231507")
 mod:SetCreatureID(129227)
 mod:SetEncounterID(2106)
 mod:DisableESCombatDetection()--ES fires for nearby trash even if boss isn't pulled
@@ -97,7 +97,7 @@ function mod:SPELL_AURA_APPLIED(args)
 	local spellId = args.spellId
 	if spellId == 257582 then
 		warnRagingGaze:CombinedShow(0.5, args.destName)--In case two adds are up
-		if args:IsPlayer() then
+		if args:IsPlayer() and self:AntiSpam(3.5, 2) then
 			specWarnRagingGaze:Show()
 			specWarnRagingGaze:Play("justrun")
 			specWarnRagingGaze:ScheduleVoice(1.5, "keepmove")
@@ -121,7 +121,7 @@ function mod:SPELL_CAST_START(args)
 		specWarnTectonicSmash:Show()
 		specWarnTectonicSmash:Play("shockwave")
 		timerTectonicSmashCD:Start()
-	elseif spellId == 258627 and self:AntiSpam(3, 1) then
+	elseif spellId == 258627 and self:AntiSpam(3.5, 1) then
 		specWarnQuake:Show()
 		specWarnQuake:Play("watchstep")
 	end

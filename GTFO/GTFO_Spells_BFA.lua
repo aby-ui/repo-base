@@ -748,6 +748,13 @@ GTFO.SpellID["287993"] = {
   sound = 1;
 };
 
+GTFO.SpellID["287365"] = {
+  --desc = "Searing Pitch (Lady Jaina Proudmoore)";
+  sound = 1;
+  negatingDebuffSpellID = 287993;  -- Chilling Touch
+  test = true;
+};
+
 GTFO.SpellID["288808"] = {
   --desc = "Consecration";
   applicationOnly = true;
@@ -756,6 +763,7 @@ GTFO.SpellID["288808"] = {
   sound = 0;
   test = true;
 };
+
 
 --- **********************
 --- * Crucible of Storms *

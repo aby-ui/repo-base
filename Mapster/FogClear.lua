@@ -1937,7 +1937,7 @@ function FogClear:MapExplorationPin_RefreshOverlays(pin, fullUpdate)
 	local exploredTilesKeyed = {}
 	local exploredMapTextures = C_MapExplorationInfo.GetExploredMapTextures(mapID)
 	if exploredMapTextures then
-		for i, exploredTextureInfo in ipairs(exploredMapTextures) do
+		for _i, exploredTextureInfo in ipairs(exploredMapTextures) do
 			local key = exploredTextureInfo.textureWidth * 2^36 + exploredTextureInfo.textureHeight * 2^24 + exploredTextureInfo.offsetX * 2^12 + exploredTextureInfo.offsetY
 			exploredTilesKeyed[key] = true
 		end

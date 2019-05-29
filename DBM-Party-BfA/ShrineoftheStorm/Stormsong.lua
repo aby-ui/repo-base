@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2155, "DBM-Party-BfA", 4, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190416205700")
+mod:SetRevision("20190526205812")
 mod:SetCreatureID(134060)
 mod:SetEncounterID(2132)
 mod:SetZone()
@@ -108,7 +108,7 @@ end
 
 function mod:OnSync(msg, targetname)
 	if msg == "openingRP" and self:AntiSpam(10, 6) then
-		timerRP:Start(19.6)
+		timerRP:Start(24.6)
 	end
 end
 

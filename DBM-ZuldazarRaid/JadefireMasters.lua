@@ -7,7 +7,7 @@ end
 local mod	= DBM:NewMod(dungeonID, "DBM-ZuldazarRaid", 1, 1176)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190423163020")
+mod:SetRevision("20190527213044")
 mod:SetCreatureID(creatureID, creatureID2)
 mod:SetEncounterID(2266, 2285)--2266 horde, 2285 Alliance
 --mod:DisableESCombatDetection()
@@ -89,10 +89,6 @@ local timerMagmaTrapCD					= mod:NewCDCountTimer(55, 284374, nil, nil, nil, 5)--
 --Team Attacks
 
 --local berserkTimer					= mod:NewBerserkTimer(600)
-
---local countdownCollapsingWorld			= mod:NewCountdown(50, 243983, true, 3, 3)
---local countdownRupturingBlood				= mod:NewCountdown("Alt12", 244016, false, 2, 3)
---local countdownFelstormBarrage			= mod:NewCountdown("AltTwo32", 244000, nil, nil, 3)
 
 mod:AddSetIconOption("SetIconEmbers", 286988, true, false, {1, 2, 3})
 --mod:AddRangeFrameOption("8/10")

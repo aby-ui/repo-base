@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("Tonks", "DBM-DMF")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190416205700")
+mod:SetRevision("20190527213044")
 mod:SetZone()
 
 mod:RegisterEvents(
@@ -14,9 +14,7 @@ mod.noStatistics = true
 
 local specWarnMarked			= mod:NewSpecialWarningRun(102341, nil, nil, 2, 4, 2)
 
-local timerGame					= mod:NewBuffActiveTimer(60, 102178)
-
-local countdownGame				= mod:NewCountdownFades(60, 102178)
+local timerGame					= mod:NewBuffActiveTimer(60, 102178, nil, nil, nil, 5, nil, nil, nil, 1, 5)
 
 function mod:SPELL_CAST_SUCCESS(args)
 	if args.spellId == 102341 and UnitGUID("pet") == args.destGUID and self:AntiSpam() then
@@ -28,7 +26,6 @@ end
 function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 	if spellId == 102178 then
 		timerGame:Start()
-		countdownGame:Start(60)
 	end
 end
 
@@ -36,11 +33,9 @@ function mod:UNIT_DIED(args)
 	local cid = self:GetCIDFromGUID(args.destGUID)
 	if cid == 54588 and UnitGUID("pet") == args.destGUID then
 		timerGame:Cancel()
-		countdownGame:Cancel()
 	end
 end
 
 function mod:UNIT_EXITED_VEHICLE(uId)
 	timerGame:Cancel()
-	countdownGame:Cancel()
 end

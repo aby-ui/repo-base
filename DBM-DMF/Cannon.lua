@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("Cannon", "DBM-DMF")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190416205700")
+mod:SetRevision("20190527213044")
 mod:SetZone()
 
 mod:RegisterEvents(
@@ -12,8 +12,6 @@ mod.noStatistics = true
 
 local timerMagicWings				= mod:NewBuffFadesTimer(8, 102116, nil, nil, nil, 5)
 
---local MagicWingsCountdown			= mod:NewCountdownFades(8, 102116)
-
 local markWings = false
 
 local function wingsRemoved()
@@ -22,14 +20,12 @@ end
 
 function mod:SPELL_CAST_SUCCESS(args)
 	if args.spellId == 102120 and args:IsPlayer() then
-		--MagicWingsCountdown:Cancel()
 		timerMagicWings:Cancel()
 	end
 end
 
 function mod:UNIT_AURA(uId)
 	if DBM:UnitBuff("player", DBM:GetSpellInfo(102116)) and not markWings then
-		--MagicWingsCountdown:Start(7.5)
 		timerMagicWings:Start()
 		markWings = true
 		self:Schedule(8.5, wingsRemoved)

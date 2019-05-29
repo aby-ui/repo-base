@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2330, "DBM-ZuldazarRaid", 2, 1176)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019051765919")
+mod:SetRevision("20190527213044")
 mod:SetCreatureID(144747, 144767, 144963, 144941)
 mod:SetEncounterID(2268)
 --mod:DisableESCombatDetection()
@@ -19,7 +19,7 @@ mod:RegisterEventsInCombat(
 	"SPELL_CAST_SUCCESS 282444 285878 282636",
 	"SPELL_AURA_APPLIED 282079 285945 282135 286007 282209 282444 282834 286811 284663 285879 290573",
 	"SPELL_AURA_APPLIED_DOSE 285945 282444",
-	"SPELL_AURA_REMOVED 282079 282135 286007 282834 286811 290573",
+	"SPELL_AURA_REMOVED 282079 282135 286007 282834 286811 290573 282209",
 	"CHAT_MSG_RAID_BOSS_EMOTE",
 	"CHAT_MSG_MONSTER_YELL",
 	"UNIT_SPELLCAST_SUCCEEDED boss1 boss2 boss3 boss4 boss5"
@@ -95,7 +95,7 @@ local specWarnBwonsamdisWrathDispel		= mod:NewSpecialWarningDispel(284663, "Remo
 --Pa'ku's Aspect
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(19013))
 local timerGiftofWindCD					= mod:NewCDTimer(31.6, 282098, nil, nil, nil, 2)
-local timerPakusWrathCD					= mod:NewCDCountTimer(60, 282107, nil, nil, nil, 2, nil, DBM_CORE_DEADLY_ICON)
+local timerPakusWrathCD					= mod:NewCDCountTimer(60, 282107, nil, nil, nil, 2, nil, DBM_CORE_DEADLY_ICON, nil, 1, 5)
 --Gonk's Aspect
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(19016))
 local timerCrawlingHexCD				= mod:NewCDTimer(25.4, 282135, nil, nil, nil, 3, nil, DBM_CORE_CURSE_ICON)
@@ -112,16 +112,12 @@ local timerMindWipeCD					= mod:NewCDTimer(33.7, 285878, nil, nil, nil, 3)
 local timerAkundasWrathCD				= mod:NewCDTimer(60, 283685, nil, nil, nil, 3)
 --Krag'wa
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(19193))
-local timerKragwasWrathCD				= mod:NewCDTimer(49.8, 282636, nil, nil, nil, 3)
+local timerKragwasWrathCD				= mod:NewCDTimer(49.8, 282636, nil, nil, nil, 3, nil, nil, nil, 3, 3)
 --Bwonsamdi
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(19195))
 local timerBwonsamdisWrathCD			= mod:NewCDCountTimer(50, 284666, nil, nil, nil, 3, nil, DBM_CORE_CURSE_ICON..DBM_CORE_HEALER_ICON)
 
 --local berserkTimer					= mod:NewBerserkTimer(600)
-
-local countdownPakusWrath				= mod:NewCountdown(70, 282107, true, nil, 5)
---local countdownLaceratingClaws		= mod:NewCountdown("Alt12", 244016, false, 2, 3)
-local countdownKragwasWrath				= mod:NewCountdown("AltTwo32", 282636, "Ranged", nil, 3)
 
 mod:AddNamePlateOption("NPAuraOnPact", 282079)
 mod:AddNamePlateOption("NPAuraOnPackHunter", 286007)
@@ -159,7 +155,6 @@ function mod:OnCombatStart(delay)
 	end
 	if self:IsHard() then
 		timerKragwasWrathCD:Start(29.3-delay)
-		countdownKragwasWrath:Start(29.3-delay)
 		if self:IsMythic() then
 			timerBwonsamdisWrathCD:Start(51-delay, 1)
 		end
@@ -189,7 +184,6 @@ function mod:SPELL_CAST_START(args)
 		--specWarnPakusWrath:Show(args.sourceName)
 		--specWarnPakusWrath:Play("gathershare")
 		--timerPakusWrathCD:Start()
-		--countdownPakusWrath:Start()
 	elseif spellId == 285889 then
 		timerRaptorFormCD:Start()
 		for i = 1, 4 do
@@ -226,7 +220,6 @@ function mod:SPELL_CAST_SUCCESS(args)
 		self.vb.kragwaCast = self.vb.kragwaCast + 1
 		if self.vb.kragwaCast % 4 == 0 then
 			timerKragwasWrathCD:Start(40)
-			countdownKragwasWrath:Start(40)
 		else
 			timerKragwasWrathCD:Start(3)
 		end
@@ -305,7 +298,7 @@ function mod:SPELL_AURA_APPLIED(args)
 				yellMarkofPrey:Yell()
 			end
 			if self.Options.NPAuraOnFixate then
-				DBM.Nameplate:Show(true, args.sourceGUID, spellId, nil, nil, nil, true, {0.75, 0, 0, 0.75})
+				DBM.Nameplate:Show(true, args.sourceGUID, spellId)
 			end
 		end
 		if not raptorsSeen[args.sourceGUID] then
@@ -413,7 +406,6 @@ function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg, npc, _, _, target)
 		specWarnPakusWrath:Play("gathershare")
 		warnPakuWrath:Schedule(50)
 		timerPakusWrathCD:Start(60, self.vb.pakuWrathCount+1)
-		countdownPakusWrath:Start(60)
 	end
 end
 
@@ -447,8 +439,6 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 			local remaining = total - elapsed
 			DBM:Debug("timerPakusWrathCD extended by: 10 seconds do to boss death with > 40 remaining", 2)
 			timerPakusWrathCD:AddTime(10, self.vb.pakuWrathCount+1)
-			countdownPakusWrath:Cancel()
-			countdownPakusWrath:Start(remaining+10)
 		end
 	elseif spellId == 282080 then--Loa's Pact (entering)
 		if not self.vb.ignoredActivate then
@@ -464,7 +454,6 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 		if cid == 144747 then--Pa'ku's Aspect
 			timerGiftofWindCD:Start(4.8)--Assuming he always starts at 90 energy even when he isn't spawned on pull
 			timerPakusWrathCD:Start(73.5, self.vb.pakuWrathCount+1)--When actual emote fires, first event we can detect
-			countdownPakusWrath:Start(73.5)
 		elseif cid == 144767 then--Gonk's Aspect
 			timerCrawlingHexCD:Start(13.4)--Assuming starting at 70 energy is always true
 			timerRaptorFormCD:Start(15.7)

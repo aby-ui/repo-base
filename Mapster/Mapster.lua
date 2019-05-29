@@ -8,6 +8,8 @@ local Mapster = LibStub("AceAddon-3.0"):NewAddon("Mapster", "AceEvent-3.0", "Ace
 local LibWindow = LibStub("LibWindow-1.1")
 local L = LibStub("AceLocale-3.0"):GetLocale("Mapster")
 
+local WoWClassic = select(4, GetBuildInfo()) < 20000
+
 local defaults = {
 	profile = {
 		hideMapButton = false,
@@ -65,15 +67,19 @@ function Mapster:OnEnable()
 	WorldMapFrame:SetScript("OnDragStop", WorldMapFrameStopMoving)
 
 	-- map transition
-	self:SecureHook(WorldMapFrame, "SynchronizeDisplayState", "WorldMapFrame_SynchronizeDisplayState")
+	if WorldMapFrame.SynchronizeDisplayState then
+		self:SecureHook(WorldMapFrame, "SynchronizeDisplayState", "WorldMapFrame_SynchronizeDisplayState")
+	end
 
 	-- hook Show events for fading
-	self:SecureHook(WorldMapFrame, "OnShow", "WorldMapFrame_OnShow")
+	self:HookScript(WorldMapFrame, "OnShow", "WorldMapFrame_OnShow")
 
 	-- hooks for scale
-	self:SecureHook("HelpPlate_Show")
-	self:SecureHook("HelpPlate_Hide")
-	self:SecureHook("HelpPlate_Button_AnimGroup_Show_OnFinished")
+	if HelpPlate_Show then
+		self:SecureHook("HelpPlate_Show")
+		self:SecureHook("HelpPlate_Hide")
+		self:SecureHook("HelpPlate_Button_AnimGroup_Show_OnFinished")
+	end
 	self:RawHook(WorldMapFrame.ScrollContainer, "GetCursorPosition", "WorldMapFrame_ScrollContainer_GetCursorPosition", true)
 
 	-- hook into EJ icons
@@ -97,6 +103,14 @@ function Mapster:OnEnable()
 		WorldMapUnitPin = pin
 		WorldMapUnitPinSizes = pin.dataProvider:GetUnitPinSizesTable()
 		break
+	end
+
+	-- classic compat stuff
+	if WoWClassic then
+		self:RawHook(WorldMapFrame, "HandleUserActionToggleSelf", function(frame) if frame:IsShown() then frame:Hide() else frame:Show() end end, true)
+		WorldMapFrame:SetIgnoreParentScale(false)
+		WorldMapFrame.BlackoutFrame:Hide()
+		WorldMapFrame.IsMaximized = function() return false end
 	end
 
 	-- close the map on escape

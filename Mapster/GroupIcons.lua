@@ -10,8 +10,6 @@ local MODNAME = "GroupIcons"
 local GroupIcons = Mapster:NewModule(MODNAME, "AceEvent-3.0", "AceHook-3.0")
 
 local fmt = string.format
-local sub = string.sub
-local find = string.find
 
 local _G = _G
 
