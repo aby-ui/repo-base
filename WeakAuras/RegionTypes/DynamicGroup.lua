@@ -192,7 +192,7 @@ local sorters = {
     end
   end,
   custom = function(data)
-    local sortStr = data.sort or ""
+    local sortStr = data.customSort or ""
     local sortFunc = WeakAuras.LoadFunction("return " .. sortStr, data.id, "custom sort") or noop
     return function(a, b)
       WeakAuras.ActivateAuraEnvironment(data.id)
@@ -750,10 +750,14 @@ local function modify(parent, region, data)
     -- Positioning is based on grow information from the data
     if not self:IsSuspended() then
       self.needToPosition = false
-      if animate then
-        WeakAuras.RegisterGroupForPositioning(data.id, self)
+      if #self.sortedChildren > 0 then
+        if animate then
+          WeakAuras.RegisterGroupForPositioning(data.id, self)
+        else
+          self:DoPositionChildren()
+        end
       else
-        self:DoPositionChildren()
+        self:Resize()
       end
     else
       self.needToPosition = true

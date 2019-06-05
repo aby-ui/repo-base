@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2195, "DBM-Uldir", nil, 1031)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190527213044")
+mod:SetRevision("2019053103048")
 mod:SetCreatureID(138967)
 mod:SetEncounterID(2145)
 mod:DisableESCombatDetection()--ES fires moment you throw out CC, so it can't be trusted for combatstart
@@ -376,7 +376,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		end
 		if args:IsPlayer() then
 			yellRupturingBloodFades:Cancel()
-			yellRupturingBloodFades:Countdown(20)
+			yellRupturingBloodFades:Countdown(spellId)
 			specWarnRupturingBloodEdge:Cancel()
 			specWarnRupturingBloodEdge:Schedule(15, DBM_CORE_ROOM_EDGE)
 			specWarnRupturingBloodEdge:CancelVoice()
@@ -388,7 +388,7 @@ function mod:SPELL_AURA_APPLIED(args)
 			specWarnDarkRevolation:Show(self:IconNumToTexture(icon))
 			specWarnDarkRevolation:Play("mm"..icon)
 			yellDarkRevolation:Yell(icon, icon, icon)
-			yellDarkRevolationFades:Countdown(10, nil, icon)
+			yellDarkRevolationFades:Countdown(spellId, nil, icon)
 		end
 		if self.Options.SetIconDarkRev then
 			self:SetIcon(args.destName, icon)

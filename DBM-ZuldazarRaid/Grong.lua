@@ -10,7 +10,7 @@ end
 local mod	= DBM:NewMod(dungeonID, "DBM-ZuldazarRaid", 1, 1176)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190527213044")
+mod:SetRevision("2019053103048")
 mod:SetCreatureID(creatureID)
 mod:SetEncounterID(2263, 2284)--2263 Alliance, 2284 Horde
 --mod:DisableESCombatDetection()
@@ -229,7 +229,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 			specWarnThrowTarget:Show()
 			specWarnThrowTarget:Play("runout")
 			yellThrowTarget:Yell()
-			yellThrowTargetFades:Countdown(6, 3)
+			yellThrowTargetFades:Countdown(spellId, 3)
 		else
 			warnThrowTarget:Show(args.destName)
 		end

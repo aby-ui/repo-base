@@ -979,7 +979,7 @@ local typeControlAdders = {
       args["option" .. i .. "valdelete" .. j] = {
         type = "execute",
         width = 0.15,
-        name = "",
+        name = L["Delete"],
         order = order,
         func = function()
           if option[references] then
@@ -998,7 +998,8 @@ local typeControlAdders = {
         end,
         image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\delete",
         imageWidth = 24,
-        imageHeight = 24
+        imageHeight = 24,
+        control = "WeakAurasIcon"
       }
     end
     args["option" .. i .. "newvaluespace"] = {
@@ -1387,9 +1388,13 @@ local function addControlsForOption(authorOptions, args, data, order, i, keyConf
 
   args["option" .. i .. "collapse"] = {
     type = "execute",
-    name = "",
+    name = nameHead(data, option, option.name -- TODO: find a better way than a giant chain of or.
+                                  or (option.type == "space" and L["Space"])
+                                  or (option.type == "description" and L["Description"])
+                                  or (option.type == "header" and L["Separator"])
+                                  or L["Option #%i"]:format(i)),
     order = order,
-    width = 0.15,
+    width = WeakAuras.doubleWidth - 0.6,
     func = function()
       if option[references] then
         for childID, optionID in pairs(option[references]) do
@@ -1404,20 +1409,8 @@ local function addControlsForOption(authorOptions, args, data, order, i, keyConf
     end,
     image = collapsed and "Interface\\AddOns\\WeakAuras\\Media\\Textures\\expand" or "Interface\\AddOns\\WeakAuras\\Media\\Textures\\collapse" ,
     imageWidth = 18,
-    imageHeight = 18
-  }
-  order = order + 1
-
-  args["option" .. i .. "header"] = {
-    type = "description",
-    width = WeakAuras.doubleWidth - 0.75,
-    name = nameHead(data, option, option.name -- TODO: find a better way than a giant chain of or.
-                                  or (option.type == "space" and L["Space"])
-                                  or (option.type == "description" and L["Description"])
-                                  or (option.type == "header" and L["Separator"])
-                                  or L["Option #%i"]:format(i)),
-    order = order,
-    fontSize = "large",
+    imageHeight = 18,
+    control = "WeakAurasExpand"
   }
   order = order + 1
 
@@ -1425,13 +1418,14 @@ local function addControlsForOption(authorOptions, args, data, order, i, keyConf
   args["option" .. i .. "up"] = {
     type = "execute",
     width = 0.15,
-    name = "",
+    name = L["Move Up"],
     order = order,
     disabled = upDisable,
     func = upFunc,
     image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\moveup",
     imageWidth = 24,
-    imageHeight = 24
+    imageHeight = 24,
+    control = "WeakAurasIcon"
   }
   order = order + 1
 
@@ -1439,37 +1433,40 @@ local function addControlsForOption(authorOptions, args, data, order, i, keyConf
   args["option" .. i .. "down"] = {
     type = "execute",
     width = 0.15,
-    name = "",
+    name = L["Move Down"],
     order = order,
     disabled = downDisable,
     func = downFunc,
     image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\movedown",
     imageWidth = 24,
-    imageHeight = 24
+    imageHeight = 24,
+    control = "WeakAurasIcon"
   }
   order = order + 1
 
   args["option" .. i .. "duplicate"] = {
     type = "execute",
     width = 0.15,
-    name = "",
+    name = L["Duplicate"],
     order = order,
     func = duplicate(data, option, i),
     image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\duplicate",
     imageWidth = 24,
-    imageHeight = 24
+    imageHeight = 24,
+    control = "WeakAurasIcon"
   }
   order = order + 1
 
   args["option" .. i .. "delete"] = {
     type = "execute",
     width = 0.15,
-    name = "",
+    name = L["Delete"],
     order = order,
     func = delete(data, option, i),
     image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\delete",
     imageWidth = 24,
-    imageHeight = 24
+    imageHeight = 24,
+    control = "WeakAurasIcon"
   }
   order = order + 1
 

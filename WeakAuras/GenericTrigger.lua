@@ -80,12 +80,13 @@ local debug = WeakAuras.debug;
 
 local events = WeakAuras.events;
 local loaded_events = WeakAuras.loaded_events;
+local loaded_unit_events = {};
 local loaded_auras = {}; -- id to bool map
 local timers = WeakAuras.timers;
 local specificBosses = WeakAuras.specificBosses;
 
 -- Local functions
-local LoadEvent, HandleEvent, TestForTriState, TestForToggle, TestForLongString, TestForMultiSelect
+local LoadEvent, HandleEvent, HandleUnitEvent, TestForTriState, TestForToggle, TestForLongString, TestForMultiSelect
 local ConstructTest, ConstructFunction
 
 function WeakAuras.split(input)
@@ -638,6 +639,33 @@ function WeakAuras.ScanEvents(event, arg1, arg2, ...)
   WeakAuras.StopProfileSystem("generictrigger " .. orgEvent )
 end
 
+function WeakAuras.ScanUnitEvents(event, unit, ...)
+  WeakAuras.StartProfileSystem("generictrigger " .. event .. " " .. unit)
+  local unit_list = loaded_unit_events[unit]
+  if unit_list then
+    local event_list = unit_list[event]
+    if event_list then
+      for id, triggers in pairs(event_list) do
+        WeakAuras.StartProfileAura(id);
+        WeakAuras.ActivateAuraEnvironment(id);
+        local updateTriggerState = false;
+        for triggernum, data in pairs(triggers) do
+          local allStates = WeakAuras.GetTriggerStateForTrigger(id, triggernum);
+          if (RunTriggerFunc(allStates, data, id, triggernum, event, unit, ...)) then
+            updateTriggerState = true;
+          end
+        end
+        if (updateTriggerState) then
+          WeakAuras.UpdatedTriggerState(id);
+        end
+        WeakAuras.StopProfileAura(id);
+        WeakAuras.ActivateAuraEnvironment(nil);
+      end
+    end
+  end
+  WeakAuras.StopProfileSystem("generictrigger " .. event .. " " .. unit)
+end
+
 function WeakAuras.ScanEventsInternal(event_list, event, arg1, arg2, ... )
   local orgEvent = event;
   for id, triggers in pairs(event_list) do
@@ -710,9 +738,18 @@ function HandleEvent(frame, event, arg1, arg2, ...)
   WeakAuras.StopProfileSystem("generictrigger " .. event);
 end
 
+function HandleUnitEvent(frame, event, unit, ...)
+  WeakAuras.StartProfileSystem("generictrigger " .. event .. " " .. unit);
+  if not(WeakAuras.IsPaused()) then
+    WeakAuras.ScanUnitEvents(event, unit, ...);
+  end
+  WeakAuras.StopProfileSystem("generictrigger " .. event .. " " .. unit);
+end
+
 function GenericTrigger.UnloadAll()
   wipe(loaded_auras);
   wipe(loaded_events);
+  wipe(loaded_unit_events);
   WeakAuras.UnregisterAllEveryFrameUpdate();
 end
 
@@ -728,12 +765,19 @@ function GenericTrigger.UnloadDisplays(toUnload)
         events[id] = nil;
       end
     end
+    for unit, events in pairs(loaded_unit_events) do
+      for eventname, auras in pairs(events) do
+        auras[id] = nil;
+      end
+    end
     WeakAuras.UnregisterEveryFrameUpdate(id);
   end
 end
 
 local genericTriggerRegisteredEvents = {};
+local genericTriggerRegisteredUnitEvents = {};
 local frame = CreateFrame("FRAME");
+frame.unitFrames = {};
 WeakAuras.frames["WeakAuras Generic Trigger Frame"] = frame;
 frame:RegisterEvent("PLAYER_ENTERING_WORLD");
 genericTriggerRegisteredEvents["PLAYER_ENTERING_WORLD"] = true;
@@ -759,20 +803,30 @@ function GenericTrigger.Rename(oldid, newid)
     end
   end
 
+  for unit, events in pairs(loaded_unit_events) do
+    for eventname, auras in pairs(events) do
+      auras[newid] = auras[oldid]
+      auras[oldid] = nil
+    end
+  end
+
   WeakAuras.EveryFrameUpdateRename(oldid, newid)
 end
 
 function LoadEvent(id, triggernum, data)
-  local events = data.events or {};
-  for index, event in pairs(events) do
-    loaded_events[event] = loaded_events[event] or {};
-    if(event == "COMBAT_LOG_EVENT_UNFILTERED" and data.subevent) then
-      loaded_events[event][data.subevent] = loaded_events[event][data.subevent] or {};
-      loaded_events[event][data.subevent][id] = loaded_events[event][data.subevent][id] or {}
-      loaded_events[event][data.subevent][id][triggernum] = data;
-    else
-      loaded_events[event][id] = loaded_events[event][id] or {};
-      loaded_events[event][id][triggernum] = data;
+  if data.events then
+    for index, event in pairs(data.events) do
+      loaded_events[event] = loaded_events[event] or {};
+      if(event == "COMBAT_LOG_EVENT_UNFILTERED" and data.subevents) then
+        for i, subevent in pairs(data.subevents) do
+          loaded_events[event][subevent] = loaded_events[event][subevent] or {};
+          loaded_events[event][subevent][id] = loaded_events[event][subevent][id] or {}
+          loaded_events[event][subevent][id][triggernum] = data;
+        end
+      else
+        loaded_events[event][id] = loaded_events[event][id] or {};
+        loaded_events[event][id][triggernum] = data;
+      end
     end
   end
   if (data.internal_events) then
@@ -780,6 +834,17 @@ function LoadEvent(id, triggernum, data)
       loaded_events[event] = loaded_events[event] or {};
       loaded_events[event][id] = loaded_events[event][id] or {};
       loaded_events[event][id][triggernum] = data;
+    end
+  end
+  if data.unit_events then
+    for unit, events in pairs(data.unit_events) do
+      unit = string.lower(unit)
+      for index, event in pairs(events) do
+        loaded_unit_events[unit] = loaded_unit_events[unit] or {};
+        loaded_unit_events[unit][event] = loaded_unit_events[unit][event] or {};
+        loaded_unit_events[unit][event][id] = loaded_unit_events[unit][event][id] or {}
+        loaded_unit_events[unit][event][id][triggernum] = data;
+      end
     end
   end
 
@@ -793,22 +858,39 @@ local function trueFunction()
 end
 
 local eventsToRegister = {};
+local unitEventsToRegister = {};
 function GenericTrigger.LoadDisplays(toLoad, loadEvent, ...)
   for id in pairs(toLoad) do
     local register_for_frame_updates = false;
     if(events[id]) then
       loaded_auras[id] = true;
       for triggernum, data in pairs(events[id]) do
-        for index, event in pairs(data.events) do
-          if (event == "COMBAT_LOG_EVENT_UNFILTERED_CUSTOM") then
-            eventsToRegister["COMBAT_LOG_EVENT_UNFILTERED"] = true;
-          elseif (event == "FRAME_UPDATE") then
-            register_for_frame_updates = true;
-          else
-            if (genericTriggerRegisteredEvents[event]) then
-              -- Already registered event
+        if data.events then
+          for index, event in pairs(data.events) do
+            if (event == "COMBAT_LOG_EVENT_UNFILTERED_CUSTOM") then
+              if not genericTriggerRegisteredEvents["COMBAT_LOG_EVENT_UNFILTERED"] then
+                eventsToRegister["COMBAT_LOG_EVENT_UNFILTERED"] = true;
+              end
+            elseif (event == "FRAME_UPDATE") then
+              register_for_frame_updates = true;
             else
-              eventsToRegister[event] = true;
+              if (genericTriggerRegisteredEvents[event]) then
+                -- Already registered event
+              else
+                eventsToRegister[event] = true;
+              end
+            end
+          end
+        end
+        if data.unit_events then
+          for unit, events in pairs(data.unit_events) do
+            for index, event in pairs(events) do
+              if (genericTriggerRegisteredUnitEvents[unit] and genericTriggerRegisteredUnitEvents[unit][event]) then
+                -- Already registered event
+              else
+                unitEventsToRegister[unit] = unitEventsToRegister[unit] or {};
+                unitEventsToRegister[unit][event] = true;
+              end
             end
           end
         end
@@ -829,15 +911,33 @@ function GenericTrigger.LoadDisplays(toLoad, loadEvent, ...)
     genericTriggerRegisteredEvents[event] = true;
   end
 
+  for unit, events in pairs(unitEventsToRegister) do
+    for event in pairs(events) do
+      if not frame.unitFrames[unit] then
+        frame.unitFrames[unit] = CreateFrame("FRAME")
+        frame.unitFrames[unit]:SetScript("OnEvent", HandleUnitEvent);
+      end
+      xpcall(frame.unitFrames[unit].RegisterUnitEvent, trueFunction, frame.unitFrames[unit], event, unit)
+      genericTriggerRegisteredUnitEvents[unit] = genericTriggerRegisteredUnitEvents[unit] or {};
+      genericTriggerRegisteredUnitEvents[unit][event] = true;
+    end
+  end
+
   for id in pairs(toLoad) do
     GenericTrigger.ScanWithFakeEvent(id);
   end
 
+  -- Replay events that lead to loading, if we weren't already registered for them
   if (eventsToRegister[loadEvent]) then
     WeakAuras.ScanEvents(loadEvent, ...);
   end
+  local loadUnit = ...
+  if loadUnit and unitEventsToRegister[loadUnit] and unitEventsToRegister[loadUnit][loadEvent] then
+    WeakAuras.ScanUnitEvents(loadEvent, ...);
+  end
 
   wipe(eventsToRegister);
+  wipe(unitEventsToRegister);
 end
 
 function GenericTrigger.FinishLoadUnload()
@@ -860,6 +960,8 @@ function GenericTrigger.Add(data, region)
         local triggerFuncStr, triggerFunc, untriggerFuncStr, untriggerFunc, statesParameter;
         local trigger_events = {};
         local internal_events = {};
+        local trigger_unit_events = {};
+        local trigger_subevents = {};
         local force_events = false;
         local durationFunc, overlayFuncs, nameFunc, iconFunc, textureFunc, stacksFunc, loadFunc;
         local tsuConditionVariables;
@@ -949,12 +1051,21 @@ function GenericTrigger.Add(data, region)
 
             local prototype = event_prototypes[trigger.event];
             if(prototype) then
-              trigger_events = prototype.events;
+              local trigger_all_events = prototype.events;
               internal_events = prototype.internal_events;
               force_events = prototype.force_events;
-              if (type(trigger_events) == "function") then
-                trigger_events = trigger_events(trigger, untrigger);
+              trigger_unit_events = prototype.unit_events;
+              if prototype.subevents then
+                trigger_subevents = prototype.subevents
+                if trigger_subevents and type(trigger_subevents) == "function" then
+                  trigger_subevents = trigger_subevents(trigger, untrigger)
+                end
               end
+              if (type(trigger_all_events) == "function") then
+                trigger_all_events = trigger_all_events(trigger, untrigger);
+              end
+              trigger_events = trigger_all_events.events
+              trigger_unit_events = trigger_all_events.unit_events
               if (type(internal_events) == "function") then
                 internal_events = internal_events(trigger, untrigger);
               end
@@ -1001,14 +1112,46 @@ function GenericTrigger.Add(data, region)
           if((trigger.custom_type == "status" or trigger.custom_type == "stateupdate") and trigger.check == "update") then
             trigger_events = {"FRAME_UPDATE"};
           else
-            trigger_events = WeakAuras.split(trigger.events);
-            for index, event in pairs(trigger_events) do
-              if(event == "COMBAT_LOG_EVENT_UNFILTERED") then
-                -- This is a dirty, lazy, dirty hack. "Proper" COMBAT_LOG_EVENT_UNFILTERED events are indexed by their sub-event types (e.g. SPELL_PERIODIC_DAMAGE),
-                -- but custom COMBAT_LOG_EVENT_UNFILTERED events are not guaranteed to have sub-event types. Thus, if the user specifies that they want to use
-                -- COMBAT_LOG_EVENT_UNFILTERED, this hack renames the event to COMBAT_LOG_EVENT_UNFILTERED_CUSTOM to circumvent the COMBAT_LOG_EVENT_UNFILTERED checks
-                -- that are already in place. Replacing all those checks would be a pain in the ass.
-                trigger_events[index] = "COMBAT_LOG_EVENT_UNFILTERED_CUSTOM";
+            local rawEvents = WeakAuras.split(trigger.events);
+            for index, event in pairs(rawEvents) do
+              -- custom events in the form of event:unit1:unit2:unitX are registered with RegisterUnitEvent
+              local trueEvent
+              local hasParam = false
+              local isCLEU = false
+              local isUnitEvent = false
+              for i in event:gmatch("[^:]+") do
+                if not trueEvent then
+                  trueEvent = string.upper(i)
+                  isCLEU = trueEvent == "CLEU" or trueEvent == "COMBAT_LOG_EVENT_UNFILTERED"
+                elseif isCLEU then
+                  local subevent = string.upper(i)
+                  if WeakAuras.IsCLEUSubevent(subevent) then
+                    tinsert(trigger_subevents, subevent)
+                    hasParam = true
+                  end
+                elseif trueEvent:match("^UNIT_") then
+                  local unit = string.lower(i)
+                  if WeakAuras.baseUnitId[unit] then
+                    trigger_unit_events[unit] = trigger_unit_events[unit] or {}
+                    tinsert(trigger_unit_events[unit], trueEvent)
+                    isUnitEvent = true
+                  end
+                end
+              end
+              if isCLEU then
+                if hasParam then
+                  tinsert(trigger_events, "COMBAT_LOG_EVENT_UNFILTERED")
+                else
+                  -- This is a dirty, lazy, dirty hack. "Proper" COMBAT_LOG_EVENT_UNFILTERED events are indexed by their sub-event types (e.g. SPELL_PERIODIC_DAMAGE),
+                  -- but custom COMBAT_LOG_EVENT_UNFILTERED events are not guaranteed to have sub-event types. Thus, if the user specifies that they want to use
+                  -- COMBAT_LOG_EVENT_UNFILTERED, this hack renames the event to COMBAT_LOG_EVENT_UNFILTERED_CUSTOM to circumvent the COMBAT_LOG_EVENT_UNFILTERED checks
+                  -- that are already in place. Replacing all those checks would be a pain in the ass.
+                  tinsert(trigger_events, "COMBAT_LOG_EVENT_UNFILTERED_CUSTOM")
+                end
+              elseif isUnitEvent then
+                -- not added to trigger_events
+              else
+                tinsert(trigger_events, event)
               end
               force_events = trigger.custom_type == "status" or trigger.custom_type == "stateupdate";
             end
@@ -1034,6 +1177,10 @@ function GenericTrigger.Add(data, region)
           automaticAutoHide = true;
         end
 
+        if trigger.event == "Combat Log" and trigger.subeventPrefix and trigger.subeventSuffix then
+          tinsert(trigger_subevents, trigger.subeventPrefix .. trigger.subeventSuffix)
+        end
+
         events[id] = events[id] or {};
         events[id][triggernum] = {
           trigger = trigger,
@@ -1044,8 +1191,9 @@ function GenericTrigger.Add(data, region)
           events = trigger_events,
           internal_events = internal_events,
           force_events = force_events,
+          unit_events = trigger_unit_events,
           inverse = trigger.use_inverse,
-          subevent = trigger.event == "Combat Log" and trigger.subeventPrefix and trigger.subeventSuffix and (trigger.subeventPrefix..trigger.subeventSuffix);
+          subevents = trigger_subevents,
           unevent = trigger.unevent,
           durationFunc = durationFunc,
           overlayFuncs = overlayFuncs,
@@ -1396,6 +1544,7 @@ do
 
   local spellCharges = {};
   local spellChargesMax = {};
+  local spellCounts = {}
 
   local items = {};
   local itemCdDurs = {};
@@ -1637,7 +1786,7 @@ do
     if (not spellKnown[id] and not ignoreSpellKnown) then
       return;
     end
-    return spellCharges[id], spellChargesMax[id];
+    return spellCharges[id], spellChargesMax[id], spellCounts[id];
   end
 
   function WeakAuras.GetItemCooldown(id)
@@ -1793,19 +1942,9 @@ do
       end
     end
 
-    local spellcount = GetSpellCount(id);
-    local basecd = GetSpellBaseCooldown(id);
-    -- GetSpellCount returns 0 for all spells that have no spell counts, so we only use that information if
-    -- either the spell count is greater than 0
-    -- or we have a ability without a base cooldown
-    -- Checking the base cooldown is not enough though, since some abilities have no base cooldown, but can still be on cooldown
-    -- e.g. Raging Blow that gains a cooldown with a talent
-    if (charges == nil and not onNonGCDCD and (spellcount > 0 or not basecd or basecd == 0)) then
-      charges = spellcount;
-    end
-
     return charges, maxCharges, startTime, duration, unifiedCooldownBecauseRune,
-           startTimeCooldown, durationCooldown, cooldownBecauseRune, startTimeCharges, durationCharges;
+           startTimeCooldown, durationCooldown, cooldownBecauseRune, startTimeCharges, durationCharges,
+           GetSpellCount(id);
   end
 
   function WeakAuras.CheckSpellKnown()
@@ -1820,16 +1959,18 @@ do
 
   function WeakAuras.CheckSpellCooldown(id, runeDuration)
     local charges, maxCharges, startTime, duration, unifiedCooldownBecauseRune,
-          startTimeCooldown, durationCooldown, cooldownBecauseRune, startTimeCharges, durationCharges
+          startTimeCooldown, durationCooldown, cooldownBecauseRune, startTimeCharges, durationCharges,
+          spellCount
           = WeakAuras.GetSpellCooldownUnified(id, runeDuration);
 
     local time = GetTime();
     local remaining = startTime + duration - time;
 
-    local chargesChanged = spellCharges[id] ~= charges;
-    local chargesDifference = (charges or 0) - (spellCharges[id] or 0)
+    local chargesChanged = spellCharges[id] ~= charges or spellCounts[id] ~= spellCount;
+    local chargesDifference = (charges or spellCount or 0) - (spellCharges[id] or spellCount or 0)
     spellCharges[id] = charges;
     spellChargesMax[id] = maxCharges;
+    spellCounts[id] = spellCount
 
     local changed = false
     local spellId = select(7, GetSpellInfo(id))
@@ -1861,7 +2002,7 @@ do
     end
 
     if (chargesDifference ~= 0 ) then
-      WeakAuras.ScanEvents("SPELL_CHARGES_CHANGED", id, chargesDifference, charges or 0);
+      WeakAuras.ScanEvents("SPELL_CHARGES_CHANGED", id, chargesDifference, charges or spellCount or 0);
     end
   end
 
@@ -2040,11 +2181,13 @@ do
     spellKnown[id] = WeakAuras.IsSpellKnownIncludingPet(id);
 
     local charges, maxCharges, startTime, duration, unifiedCooldownBecauseRune,
-          startTimeCooldown, durationCooldown, cooldownBecauseRune, startTimeCharges, durationCharges
+          startTimeCooldown, durationCooldown, cooldownBecauseRune, startTimeCharges, durationCharges,
+          spellCount
           = WeakAuras.GetSpellCooldownUnified(id, GetRuneDuration());
 
     spellCharges[id] = charges;
     spellChargesMax[id] = maxCharges;
+    spellCounts[id] = spellCount
     spellCds:HandleSpell(id, startTime, duration)
     if not unifiedCooldownBecauseRune then
       spellCdsRune:HandleSpell(id, startTime, duration)
@@ -2201,165 +2344,210 @@ end
 -- DBM
 do
   local registeredDBMEvents = {}
-  local bars = {};
-  local nextExpire; -- time of next expiring timer
-  local recheckTimer; -- handle of timer
+  local bars = {}
+  local nextExpire -- time of next expiring timer
+  local recheckTimer -- handle of timer
 
   local function dbmRecheckTimers()
-    local now = GetTime();
-    nextExpire = nil;
-    for k, v in pairs(bars) do
-      if (v.expirationTime < now) then
-        bars[k] = nil;
-        WeakAuras.ScanEvents("DBM_TimerStop", k);
-      elseif (nextExpire == nil) then
-        nextExpire = v.expirationTime;
-      elseif (v.expirationTime < nextExpire) then
-        nextExpire = v.expirationTime;
+    local now = GetTime()
+    nextExpire = nil
+    for id, bar in pairs(bars) do
+      if bar.expirationTime < now then
+        bars[id] = nil
+        WeakAuras.ScanEvents("DBM_TimerStop", id)
+      elseif nextExpire == nil then
+        nextExpire = bar.expirationTime
+      elseif bar.expirationTime < nextExpire then
+        nextExpire = bar.expirationTime
       end
     end
 
-    if (nextExpire) then
-      recheckTimer = timer:ScheduleTimerFixed(dbmRecheckTimers, nextExpire - now);
+    if nextExpire then
+      recheckTimer = timer:ScheduleTimerFixed(dbmRecheckTimers, nextExpire - now)
     end
   end
 
   local function dbmEventCallback(event, ...)
-    if (event == "DBM_TimerStart") then
-      local id, msg, duration, icon, timerType, spellId, colorId = ...;
-      local now = GetTime();
-      local expiring = now + duration;
+    if event == "DBM_TimerStart" then
+      local id, msg, duration, icon, timerType, spellId, dbmType = ...
+      local now = GetTime()
+      local expirationTime = now + duration
       bars[id] = bars[id] or {}
-      -- Store everything, event though we are only using some of those
-      bars[id]["message"] = msg;
-      bars[id]["expirationTime"] = expiring;
-      bars[id]["duration"] = duration;
-      bars[id]["icon"] = icon;
-      bars[id]["timerType"] = timerType;
-      bars[id]["spellId"] = tostring(spellId);
-      bars[id]["colorId"] = colorId;
+      local bar = bars[id]
+      bar.message = msg
+      bar.expirationTime = expirationTime
+      bar.duration = duration
+      bar.icon = icon
+      bar.timerType = timerType
+      bar.spellId = tostring(spellId)
+      bar.count = msg:match("(%d+)") or "0"
+      bar.dbmType = dbmType
 
-      if (nextExpire == nil) then
-        nextExpire = expiring;
-        recheckTimer = timer:ScheduleTimerFixed(dbmRecheckTimers, expiring - now);
-      elseif (expiring < nextExpire) then
-        nextExpire = expiring;
-        timer:CancelTimer(recheckTimer);
-        recheckTimer = timer:ScheduleTimerFixed(dbmRecheckTimers, expiring - now, msg);
+      local barOptions = DBM.Bars.options
+      local r, g, b = 0, 0, 0
+      if dbmType == 1 then
+        r, g, b = barOptions.StartColorAR, barOptions.StartColorAG, barOptions.StartColorAB
+      elseif dbmType == 2 then
+        r, g, b = barOptions.StartColorAER, barOptions.StartColorAEG, barOptions.StartColorAEB
+      elseif dbmType == 3 then
+        r, g, b = barOptions.StartColorDR, barOptions.StartColorDG, barOptions.StartColorDB
+      elseif dbmType == 4 then
+        r, g, b = barOptions.StartColorIR, barOptions.StartColorIG, barOptions.StartColorIB
+      elseif dbmType == 5 then
+        r, g, b = barOptions.StartColorRR, barOptions.StartColorRG, barOptions.StartColorRB
+      elseif dbmType == 6 then
+        r, g, b = barOptions.StartColorPR, barOptions.StartColorPG, barOptions.StartColorPB
+      elseif dbmType == 7 then
+        r, g, b = barOptions.StartColorUIR, barOptions.StartColorUIG, barOptions.StartColorUIB
+      else
+        r, g, b = barOptions.StartColorR, barOptions.StartColorG, barOptions.StartColorB
       end
-      WeakAuras.ScanEvents("DBM_TimerStart", id);
-    elseif (event == "DBM_TimerStop") then
-      local id = ...;
-      bars[id] = nil;
-      WeakAuras.ScanEvents("DBM_TimerStop", id);
-    elseif (event == "kill" or event == "wipe") then -- Wipe or kill, removing all timers
-      local id = ...;
-      bars = {};
-      WeakAuras.ScanEvents("DBM_TimerStopAll", id);
+      bar.dbmColor = {r, g, b}
+
+      WeakAuras.ScanEvents("DBM_TimerStart", id)
+      if nextExpire == nil then
+        recheckTimer = timer:ScheduleTimerFixed(dbmRecheckTimers, expirationTime - now)
+        nextExpire = expirationTime
+      elseif expirationTime < nextExpire then
+        timer:CancelTimer(recheckTimer)
+        recheckTimer = timer:ScheduleTimerFixed(dbmRecheckTimers, expirationTime - now)
+        nextExpire = expirationTime
+      end
+    elseif event == "DBM_TimerStop" then
+      local id = ...
+      bars[id] = nil
+      WeakAuras.ScanEvents("DBM_TimerStop", id)
+    elseif event == "kill" or event == "wipe" then -- Wipe or kill, removing all timers
+      local id = ...
+      bars = {}
+      WeakAuras.ScanEvents("DBM_TimerStopAll", id)
+    elseif event == "DBM_TimerUpdate" then
+      local id, elapsed, duration = ...
+      local now = GetTime()
+      local expirationTime = now + duration - elapsed
+      local bar = bars[id]
+      if bar then
+        bar.duration = duration
+        bar.expirationTime = expirationTime
+        if expirationTime < nextExpire then
+          timer:CancelTimer(recheckTimer)
+          recheckTimer = timer:ScheduleTimerFixed(dbmRecheckTimers, duration - elapsed)
+          nextExpire = expirationTime
+        end
+      end
+      WeakAuras.ScanEvents("DBM_TimerUpdate", id)
     else -- DBM_Announce
-      WeakAuras.ScanEvents(event, ...);
+      WeakAuras.ScanEvents(event, ...)
     end
   end
 
-  function WeakAuras.DBMTimerMatches(timerId, id, message, operator, spellId)
-    if (not bars[timerId]) then
-      return false;
+  function WeakAuras.DBMTimerMatches(timerId, id, message, operator, spellId, dbmType, count)
+    if not bars[timerId] then
+      return false
     end
 
-    local v = bars[timerId];
-
-    if (id and id ~= timerId) then
-      return false;
+    local v = bars[timerId]
+    if id and id ~= "" and id ~= timerId then
+      return false
     end
-    if (spellId and spellId ~= v.spellId) then
-      return false;
+    if spellId and spellId ~= "" and spellId ~= v.spellId then
+      return false
     end
-    if (message and operator) then
-      if(operator == "==") then
-        if (v.message ~= message) then
-          return false;
+    if message and message ~= "" and operator then
+      if operator == "==" then
+        if v.message ~= message then
+          return false
         end
-      elseif (operator == "find('%s')") then
-        if (v.message == nil or not v.message:find(message, 1, true)) then
-          return false;
+      elseif operator == "find('%s')" then
+        if v.message == nil or not v.message:find(message, 1, true) then
+          return false
         end
-      elseif (operator == "match('%s')") then
-        if (v.message == nil or not v.message:match(message)) then
-          return false;
+      elseif operator == "match('%s')" then
+        if v.message == nil or not v.message:match(message) then
+          return false
         end
       end
     end
-    return true;
+    if count and count ~= "" and count ~= v.count then
+      return false
+    end
+    if dbmType and dbmType ~= v.dbmType then
+      return false
+    end
+    return true
   end
 
   function WeakAuras.GetDBMTimerById(id)
-    return bars[id];
+    return bars[id]
   end
 
   function WeakAuras.GetAllDBMTimers()
-    return bars;
+    return bars
   end
 
-  function WeakAuras.GetDBMTimer(id, message, operator, spellId, extendTimer)
-    local bar;
-    for k, v in pairs(bars) do
-      if (WeakAuras.DBMTimerMatches(k, id, message, operator, spellId)
-        and (bar == nil or bars[k].expirationTime < bar.expirationTime)
-        and (bars[k].expirationTime + extendTimer > GetTime() )) then
-        bar = bars[k];
+  function WeakAuras.GetDBMTimer(id, message, operator, spellId, extendTimer, dbmType, count)
+    local bestMatch
+    for timerId, bar in pairs(bars) do
+      if WeakAuras.DBMTimerMatches(timerId, id, message, operator, spellId, dbmType, count)
+      and (bestMatch == nil or bar.expirationTime < bestMatch.expirationTime)
+      and bar.expirationTime + extendTimer > GetTime()
+      then
+        bestMatch = bar
       end
     end
-    return bar;
+    return bestMatch
   end
 
   function WeakAuras.CopyBarToState(bar, states, id, extendTimer)
-    extendTimer = extendTimer or 0;
+    extendTimer = extendTimer or 0
     if extendTimer + bar.duration < 0 then return end
-    states[id] = states[id] or {};
-    local state = states[id];
-    state.show = true;
-    state.changed = true;
-    state.icon = bar.icon;
-    state.message = bar.message;
-    state.name = bar.message;
-    state.expirationTime = bar.expirationTime + extendTimer;
-    state.progressType = 'timed';
-    state.resort = true;
-    state.duration = bar.duration + extendTimer;
-    state.timerType = bar.timerType;
-    state.spellId = bar.spellId;
-    state.colorId = bar.colorId;
-    state.extend = extendTimer;
+    states[id] = states[id] or {}
+    local state = states[id]
+    state.show = true
+    state.changed = true
+    state.icon = bar.icon
+    state.message = bar.message
+    state.name = bar.message
+    state.expirationTime = bar.expirationTime + extendTimer
+    state.progressType = 'timed'
+    state.resort = true
+    state.duration = bar.duration + extendTimer
+    state.timerType = bar.timerType
+    state.spellId = bar.spellId
+    state.count = bar.count
+    state.dbmType = bar.dbmType
+    state.dbmColor = bar.dbmColor
+    state.extend = extendTimer
     if extendTimer ~= 0 then
-        state.autoHide = true
+      state.autoHide = true
     end
   end
 
   function WeakAuras.RegisterDBMCallback(event)
-    if (registeredDBMEvents[event]) then
+    if registeredDBMEvents[event] then
       return
     end
-    if (DBM) then
-      DBM:RegisterCallback(event, dbmEventCallback);
-      registeredDBMEvents[event] = true;
+    if DBM then
+      DBM:RegisterCallback(event, dbmEventCallback)
+      registeredDBMEvents[event] = true
     end
   end
 
   function WeakAuras.GetDBMTimers()
-    return bars;
+    return bars
   end
 
-  local scheduled_scans = {};
+  local scheduled_scans = {}
 
   local function doDbmScan(fireTime)
-    WeakAuras.debug("Performing dbm scan at "..fireTime.." ("..GetTime()..")");
-    scheduled_scans[fireTime] = nil;
-    WeakAuras.ScanEvents("DBM_TimerUpdate");
+    WeakAuras.debug("Performing dbm scan at "..fireTime.." ("..GetTime()..")")
+    scheduled_scans[fireTime] = nil
+    WeakAuras.ScanEvents("DBM_TimerUpdate")
   end
   function WeakAuras.ScheduleDbmCheck(fireTime)
-    if not(scheduled_scans[fireTime]) then
-      scheduled_scans[fireTime] = timer:ScheduleTimerFixed(doDbmScan, fireTime - GetTime() + 0.1, fireTime);
-      WeakAuras.debug("Scheduled dbm scan at "..fireTime);
+    if not scheduled_scans[fireTime] then
+      scheduled_scans[fireTime] = timer:ScheduleTimerFixed(doDbmScan, fireTime - GetTime() + 0.1, fireTime)
+      WeakAuras.debug("Scheduled dbm scan at "..fireTime)
     end
   end
 end
@@ -2367,178 +2555,199 @@ end
 -- BigWigs
 do
   local registeredBigWigsEvents = {}
-  local bars = {};
-  local nextExpire; -- time of next expiring timer
-  local recheckTimer; -- handle of timer
+  local bars = {}
+  local nextExpire -- time of next expiring timer
+  local recheckTimer -- handle of timer
 
   local function recheckTimers()
-    local now = GetTime();
-    nextExpire = nil;
+    local now = GetTime()
+    nextExpire = nil
     for id, bar in pairs(bars) do
-      if (bar.expirationTime < now) then
-        bars[id] = nil;
-        WeakAuras.ScanEvents("BigWigs_StopBar", id);
-      elseif (nextExpire == nil) then
-        nextExpire = bar.expirationTime;
-      elseif (bar.expirationTime < nextExpire) then
-        nextExpire = bar.expirationTime;
+      if bar.expirationTime < now then
+        bars[id] = nil
+        WeakAuras.ScanEvents("BigWigs_StopBar", id)
+      elseif nextExpire == nil then
+        nextExpire = bar.expirationTime
+      elseif bar.expirationTime < nextExpire then
+        nextExpire = bar.expirationTime
       end
     end
 
-    if (nextExpire) then
-      recheckTimer = timer:ScheduleTimerFixed(recheckTimers, nextExpire - now);
+    if nextExpire then
+      recheckTimer = timer:ScheduleTimerFixed(recheckTimers, nextExpire - now)
     end
   end
 
   local function bigWigsEventCallback(event, ...)
-    if (event == "BigWigs_Message") then
-      WeakAuras.ScanEvents("BigWigs_Message", ...);
-    elseif (event == "BigWigs_StartBar") then
+    if event == "BigWigs_Message" then
+      WeakAuras.ScanEvents("BigWigs_Message", ...)
+    elseif event == "BigWigs_StartBar" then
       local addon, spellId, text, duration, icon = ...
-      local now = GetTime();
-      local expirationTime = now + duration;
+      local now = GetTime()
+      local expirationTime = now + duration
 
-      local newBar;
-      bars[text] = bars[text] or {};
-      local bar = bars[text];
-      bar.addon = addon;
-      bar.spellId = tostring(spellId);
-      bar.text = text;
-      bar.duration = duration;
-      bar.expirationTime = expirationTime;
-      bar.icon = icon;
-      WeakAuras.ScanEvents("BigWigs_StartBar", text);
-      if (nextExpire == nil) then
-        recheckTimer = timer:ScheduleTimerFixed(recheckTimers, expirationTime - now);
-        nextExpire = expirationTime;
-      elseif (expirationTime < nextExpire) then
-        timer:CancelTimer(recheckTimer);
-        recheckTimer = timer:ScheduleTimerFixed(recheckTimers, expirationTime - now);
-        nextExpire = expirationTime;
+      local newBar
+      bars[text] = bars[text] or {}
+      local bar = bars[text]
+      bar.addon = addon
+      bar.spellId = tostring(spellId)
+      bar.text = text
+      bar.duration = duration
+      bar.expirationTime = expirationTime
+      bar.icon = icon
+      local BWColorModule = BigWigs:GetPlugin("Colors")
+      bar.bwBarColor = BWColorModule:GetColorTable("barColor", addon, spellId)
+      bar.bwTextColor = BWColorModule:GetColorTable("barText", addon, spellId)
+      bar.bwBackgroundColor = BWColorModule:GetColorTable("barBackground", addon, spellId)
+      local BWEmphasizedModule = BigWigs:GetPlugin("Super Emphasize")
+      bar.emphasized = BWEmphasizedModule:IsSuperEmphasized(addon, spellId) and true or false
+      bar.count = text:match("(%d+)") or "0"
+      bar.cast = not(text:match("^[^<]") and true)
+
+      WeakAuras.ScanEvents("BigWigs_StartBar", text)
+      if nextExpire == nil then
+        recheckTimer = timer:ScheduleTimerFixed(recheckTimers, expirationTime - now)
+        nextExpire = expirationTime
+      elseif expirationTime < nextExpire then
+        timer:CancelTimer(recheckTimer)
+        recheckTimer = timer:ScheduleTimerFixed(recheckTimers, expirationTime - now)
+        nextExpire = expirationTime
       end
-    elseif (event == "BigWigs_StopBar") then
+    elseif event == "BigWigs_StopBar" then
       local addon, text = ...
-      if(bars[text]) then
-        bars[text] = nil;
-        WeakAuras.ScanEvents("BigWigs_StopBar", text);
+      if bars[text] then
+        bars[text] = nil
+        WeakAuras.ScanEvents("BigWigs_StopBar", text)
       end
-    elseif (event == "BigWigs_StopBars"
-      or event == "BigWigs_OnBossDisable"
-      or event == "BigWigs_OnPluginDisable") then
+    elseif event == "BigWigs_StopBars"
+    or event == "BigWigs_OnBossDisable"
+    or event == "BigWigs_OnPluginDisable"
+    then
       local addon = ...
-      for key, bar in pairs(bars) do
-        if (bar.addon == addon) then
-          bars[key] = nil;
-          WeakAuras.ScanEvents("BigWigs_StopBar", key);
+      for id, bar in pairs(bars) do
+        if bar.addon == addon then
+          bars[id] = nil
+          WeakAuras.ScanEvents("BigWigs_StopBar", id)
         end
       end
     end
   end
 
   function WeakAuras.RegisterBigWigsCallback(event)
-    if (registeredBigWigsEvents [event]) then
+    if registeredBigWigsEvents[event] then
       return
     end
-    if (BigWigsLoader) then
-      BigWigsLoader.RegisterMessage(WeakAuras, event, bigWigsEventCallback);
-      registeredBigWigsEvents [event] = true;
+    if BigWigsLoader then
+      BigWigsLoader.RegisterMessage(WeakAuras, event, bigWigsEventCallback)
+      registeredBigWigsEvents[event] = true
     end
   end
 
   function WeakAuras.RegisterBigWigsTimer()
-    WeakAuras.RegisterBigWigsCallback("BigWigs_StartBar");
-    WeakAuras.RegisterBigWigsCallback("BigWigs_StopBar");
-    WeakAuras.RegisterBigWigsCallback("BigWigs_StopBars");
-    WeakAuras.RegisterBigWigsCallback("BigWigs_OnBossDisable");
+    WeakAuras.RegisterBigWigsCallback("BigWigs_StartBar")
+    WeakAuras.RegisterBigWigsCallback("BigWigs_StopBar")
+    WeakAuras.RegisterBigWigsCallback("BigWigs_StopBars")
+    WeakAuras.RegisterBigWigsCallback("BigWigs_OnBossDisable")
   end
 
   function WeakAuras.CopyBigWigsTimerToState(bar, states, id, extendTimer)
-    extendTimer = extendTimer or 0;
+    extendTimer = extendTimer or 0
     if extendTimer + bar.duration < 0 then return end
-    states[id] = states[id] or {};
-    local state = states[id];
-    state.show = true;
-    state.changed = true;
-    state.addon = bar.addon;
-    state.spellId = bar.spellId;
-    state.text = bar.text;
-    state.name = bar.text;
-    state.duration = bar.duration + extendTimer;
-    state.expirationTime = bar.expirationTime + extendTimer;
-    state.resort = true;
-    state.progressType = "timed";
-    state.icon = bar.icon;
-    state.extend = extendTimer;
+    states[id] = states[id] or {}
+    local state = states[id]
+    state.show = true
+    state.changed = true
+    state.addon = bar.addon
+    state.spellId = bar.spellId
+    state.text = bar.text
+    state.name = bar.text
+    state.duration = bar.duration + extendTimer
+    state.expirationTime = bar.expirationTime + extendTimer
+    state.bwBarColor = bar.bwBarColor
+    state.bwTextColor = bar.bwTextColor
+    state.bwBackgroundColor = bar.bwBackgroundColor
+    state.emphasized = bar.emphasized
+    state.count = bar.count
+    state.cast = bar.cast
+    state.resort = true
+    state.progressType = "timed"
+    state.icon = bar.icon
+    state.extend = extendTimer
     if extendTimer ~= 0 then
       state.autoHide = true
     end
   end
 
-  function WeakAuras.BigWigsTimerMatches(id, addon, spellId, textOperator, text)
-    if(not bars[id]) then
-      return false;
+  function WeakAuras.BigWigsTimerMatches(id, message, operator, spellId, emphasized, count, cast)
+    if not bars[id] then
+      return false
     end
 
-    local v = bars[id];
-    local bestMatch;
-    if (addon ~= "" and addon ~= v.addon) then
-      return false;
+    local v = bars[id]
+    local bestMatch
+    if spellId and spellId ~= "" and spellId ~= v.spellId then
+      return false
     end
-    if (spellId ~= "" and spellId ~= v.spellId) then
-      return false;
-    end
-    if (text ~= "") then
-      if(textOperator == "==") then
-        if (v.text ~= text) then
-          return false;
+    if message and message ~= "" and operator then
+      if operator == "==" then
+        if v.text ~= message then
+          return false
         end
-      elseif (textOperator == "find('%s')") then
-        if (v.text == nil or not v.text:find(text, 1, true)) then
-          return false;
+      elseif operator == "find('%s')" then
+        if v.text == nil or not v.text:find(message, 1, true) then
+          return false
         end
-      elseif (textOperator == "match('%s')") then
-        if (v.text == nil or not v.text:match(text)) then
-          return false;
+      elseif operator == "match('%s')" then
+        if v.text == nil or not v.text:match(message) then
+          return false
         end
       end
     end
-    return true;
+    if emphasized ~= nil and v.emphasized ~= emphasized then
+      return false
+    end
+    if count and count ~= "" and count ~= v.count then
+      return false
+    end
+    if cast ~= nil and v.cast ~= cast then
+      return false
+    end
+    return true
   end
 
   function WeakAuras.GetAllBigWigsTimers()
-    return bars;
+    return bars
   end
 
   function WeakAuras.GetBigWigsTimerById(id)
-    return bars[id];
+    return bars[id]
   end
 
-  function WeakAuras.GetBigWigsTimer(addon, spellId, operator, text, extendTimer)
+  function WeakAuras.GetBigWigsTimer(text, operator, spellId, extendTimer, emphasized, count, cast)
     local bestMatch
     for id, bar in pairs(bars) do
-      if (WeakAuras.BigWigsTimerMatches(id, addon, spellId, operator, text)) then
-        if (bestMatch == nil or bar.expirationTime < bestMatch.expirationTime) then
-          if (bar.expirationTime + extendTimer > GetTime()) then
-            bestMatch = bar;
-          end
-        end
+      if WeakAuras.BigWigsTimerMatches(id, text, operator, spellId, emphasized, count, cast)
+      and (bestMatch == nil or bar.expirationTime < bestMatch.expirationTime)
+      and bar.expirationTime + extendTimer > GetTime()
+      then
+        bestMatch = bar
       end
     end
-    return bestMatch;
+    return bestMatch
   end
 
-  local scheduled_scans = {};
+  local scheduled_scans = {}
 
   local function doBigWigsScan(fireTime)
-    WeakAuras.debug("Performing BigWigs scan at "..fireTime.." ("..GetTime()..")");
-    scheduled_scans[fireTime] = nil;
-    WeakAuras.ScanEvents("BigWigs_Timer_Update");
+    WeakAuras.debug("Performing BigWigs scan at "..fireTime.." ("..GetTime()..")")
+    scheduled_scans[fireTime] = nil
+    WeakAuras.ScanEvents("BigWigs_Timer_Update")
   end
 
   function WeakAuras.ScheduleBigWigsCheck(fireTime)
-    if not(scheduled_scans[fireTime]) then
-      scheduled_scans[fireTime] = timer:ScheduleTimerFixed(doBigWigsScan, fireTime - GetTime() + 0.1, fireTime);
-      WeakAuras.debug("Scheduled BigWigs scan at "..fireTime);
+    if not scheduled_scans[fireTime] then
+      scheduled_scans[fireTime] = timer:ScheduleTimerFixed(doBigWigsScan, fireTime - GetTime() + 0.1, fireTime)
+      WeakAuras.debug("Scheduled BigWigs scan at "..fireTime)
     end
   end
 end

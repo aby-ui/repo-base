@@ -6,11 +6,11 @@ WeakAuras.halfWidth = WeakAuras.normalWidth / 2
 WeakAuras.doubleWidth = WeakAuras.normalWidth * 2
 
 local versionStringFromToc = GetAddOnMetadata("WeakAuras", "Version");
-local versionString = "2.12.3"
-local buildTime = "20190501222336"
+local versionString = "2.12.4.1"
+local buildTime = "20190604175100"
 
 --[===[@debug@
-if versionStringFromToc == "2.12.3" then
+if versionStringFromToc == "2.12.4.1" then
   versionStringFromToc = "Dev"
   buildTime = "Dev"
 end
@@ -35,6 +35,9 @@ end
 
 WeakAuras.PowerAurasPath = "Interface\\Addons\\WeakAuras\\PowerAurasMedia\\Auras\\"
 WeakAuras.PowerAurasSoundPath = "Interface\\Addons\\WeakAuras\\PowerAurasMedia\\Sounds\\"
+
+-- force enable WeakAurasCompanion because some addon manager interfere with it
+EnableAddOn("WeakAurasCompanion")
 
 --These function stubs are defined here to reduce the number of errors that occur if WeakAuras.lua fails to compile
 function WeakAuras.RegisterRegionType()

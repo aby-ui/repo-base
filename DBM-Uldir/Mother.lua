@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2167, "DBM-Uldir", nil, 1031)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190527213044")
+mod:SetRevision("2019053103048")
 mod:SetCreatureID(135452)--136429 Chamber 01, 137022 Chamber 02, 137023 Chamber 03
 mod:SetEncounterID(2141)
 mod:DisableESCombatDetection()--ES breaks if you pull boss through door to skip trash. Then after that the trash bugs and continues to throw ES events even after mother is defeated
@@ -295,7 +295,7 @@ function mod:SPELL_AURA_APPLIED(args)
 			specWarnEndemicVirus:Show()
 			specWarnEndemicVirus:Play("runout")
 			yellEndemicVirus:Yell()
-			yellEndemicVirusFades:Countdown(20)
+			yellEndemicVirusFades:Countdown(spellId)
 			updateRangeFrame(self)
 		end
 	elseif spellId == 279663 then

@@ -252,7 +252,10 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
       options["button_" .. arg.name] = {
         type = "execute",
         width = 0.15,
-        name = "",
+        name = function()
+          local collapsed = WeakAuras.IsCollapsed("trigger", name, "", true)
+          return collapsed and L["Show Extra Options"] or L["Hide Extra Options"]
+        end,
         order = order,
         image = function()
           local collapsed = WeakAuras.IsCollapsed("trigger", name, "", true)
@@ -264,7 +267,8 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
           local collapsed = WeakAuras.IsCollapsed("trigger", name, "", true)
           WeakAuras.SetCollapsed("trigger", name, "", not collapsed)
           WeakAuras.ReloadTriggerOptions(data);
-        end
+        end,
+        control = "WeakAurasIcon"
       }
       order = order + 1;
 
@@ -288,7 +292,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
         }
         order = order + 1;
       end
-      if(arg.type == "tristate") then
+      if(arg.type == "tristate" or arg.type == "tristatestring") then
         options["use_"..name] = {
           type = "toggle",
           width = WeakAuras.normalWidth,
@@ -298,6 +302,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
             elseif(value == false) then return "|cFFFF0000 "..L["Negator"].." "..arg.display;
             else return "|cFF00FF00"..arg.display; end
           end,
+          desc = arg.desc,
           get = function()
             local value = trigger["use_"..realname];
             if(value == nil) then return false;
@@ -429,6 +434,9 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
       if(arg.type == "toggle" or arg.type == "tristate") then
         options["use_"..name].width = arg.width or WeakAuras.doubleWidth;
       end
+      if(arg.type == "toggle") then
+        options["use_"..name].desc = arg.desc;
+      end
       if(arg.required) then
         trigger["use_"..realname] = true;
         if not(triggertype) then
@@ -518,7 +526,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
           order = order - 1;
         end
         order = order + 1;
-      elseif(arg.type == "string") then
+      elseif(arg.type == "string" or arg.type == "tristatestring") then
         options[name] = {
           type = "input",
           width = WeakAuras.normalWidth,
@@ -526,8 +534,6 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
           order = order,
           hidden = hidden,
           desc = arg.desc,
-          disabled = function() return not trigger["use_"..realname]; end,
-          get = function() return trigger["use_"..realname] and trigger[realname] or nil; end,
           set = function(info, v)
             trigger[realname] = v;
             WeakAuras.Add(data);
@@ -541,6 +547,15 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
             WeakAuras.SortDisplayButtons();
           end
         };
+
+        if arg.type == "string" then
+          options[name].disabled = function() return not trigger["use_"..realname] end
+          options[name].get = function() return trigger["use_"..realname] and trigger[realname] or nil; end
+        else
+          options[name].disabled = function() return trigger["use_"..realname] == nil end
+          options[name].get = function() return trigger["use_"..realname] ~= nil and trigger[realname] or nil; end
+        end
+
         if(arg.required and not triggertype) then
           options[name].set = function(info, v)
             trigger[realname] = v;
@@ -706,9 +721,10 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
                   return nil;
                 end
               elseif(arg.type == "spell") then
+                local useExactSpellId = (arg.showExactOption and trigger["use_exact_"..realname]) or arg.forceExactOption
                 if(trigger["use_"..realname]) then
                   if (trigger[realname] and trigger[realname] ~= "") then
-                    if (arg.showExactOption and trigger["use_exact_"..realname]) then
+                    if useExactSpellId then
                       local spellId = tonumber(trigger[realname])
                       if (spellId and spellId ~= 0) then
                         return tostring(spellId);
@@ -720,7 +736,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
                       end
                     end
                   end
-                  return arg.showExactOption and trigger["use_exact_"..realname] and L["Invalid Spell ID"] or L["Invalid Spell Name/ID/Link"];
+                  return useExactSpellId and L["Invalid Spell ID"] or L["Invalid Spell Name/ID/Link"];
                 else
                   return nil;
                 end
@@ -1776,11 +1792,41 @@ local function disabeldOrHiddenChild(childOptionTable, info)
   return hiddenChild(childOptionTable, info) or disabledChild(childOptionTable, info);
 end
 
+local function getChildOption(displayOptions, info)
+  for i=1,#info do
+    displayOptions = displayOptions.args[info[i]];
+    if not(displayOptions) then
+      return nil;
+    end
+
+    if (displayOptions.hidden) then
+      local type = type(displayOptions.hidden);
+      if (type == "bool") then
+        if (displayOptions.hidden) then
+          return nil;
+        end
+      elseif (type == "function") then
+        if (displayOptions.hidden(info)) then
+          return nil;
+        end
+      end
+    end
+
+  end
+  return displayOptions
+end
+
 local function getAll(data, info, ...)
   local combinedValues = {};
   local first = true;
   local debug = false;
+  local isToggle = nil
   for index, childId in ipairs(data.controlledChildren) do
+    if isToggle == nil then
+      local childOptions = getChildOption(displayOptions[childId], info)
+      isToggle = childOptions and childOptions.type == "toggle"
+    end
+
     local childData = WeakAuras.GetData(childId);
 
     if(childData) then
@@ -1797,6 +1843,9 @@ local function getAll(data, info, ...)
         for i=#childOptionTable,0,-1 do
           if(childOptionTable[i].get) then
             local values = {childOptionTable[i].get(info, ...)};
+            if isToggle and values[1] == nil then
+              values[1] = false
+            end
             if(first) then
               combinedValues = values;
               first = false;
@@ -1922,30 +1971,6 @@ local function disabledAll(data, info)
   return true;
 end
 
-local function getChildOption(displayOptions, info)
-  for i=1,#info do
-    displayOptions = displayOptions.args[info[i]];
-    if not(displayOptions) then
-      return nil;
-    end
-
-    if (displayOptions.hidden) then
-      local type = type(displayOptions.hidden);
-      if (type == "bool") then
-        if (displayOptions.hidden) then
-          return nil;
-        end
-      elseif (type == "function") then
-        if (displayOptions.hidden(info)) then
-          return nil;
-        end
-      end
-    end
-
-  end
-  return displayOptions
-end
-
 local function replaceNameDescFuncs(intable, data)
 
   local function compareTables(tableA, tableB)
@@ -2027,7 +2052,14 @@ local function replaceNameDescFuncs(intable, data)
     local first = true;
     local combinedKeys = combineKeys(info);
 
+    local isToggle = nil
+
     for index, childId in ipairs(data.controlledChildren) do
+      if isToggle == nil then
+        local childOption = getChildOption(displayOptions[childId], info)
+        isToggle = childOption and childOption.type == "toggle"
+      end
+
       local childData = WeakAuras.GetData(childId);
 
       local regionType = regionPrefix(info[#info]);
@@ -2054,6 +2086,10 @@ local function replaceNameDescFuncs(intable, data)
           local values = {};
           if (get) then
             values = { get(info) };
+            local childOption = getChildOption(displayOptions[childId], info)
+            if isToggle and values[1] == nil then
+              values[1] = false
+            end
           end
           if(first) then
             combinedValues = values;
@@ -2456,9 +2492,9 @@ local function addCollapsibleHeader(options, key, title, order, isGroupTab)
   }
   options[key .. "collapseButton"] = {
     type = "execute",
-    name = "",
+    name = title,
     order = order + 0.1,
-    width = 0.15,
+    width = WeakAuras.doubleWidth,
     func = function(info)
       local isCollapsed = WeakAuras.IsCollapsed("collapse", "region", key, false)
       WeakAuras.SetCollapsed("collapse", "region", key, not isCollapsed)
@@ -2467,15 +2503,8 @@ local function addCollapsibleHeader(options, key, title, order, isGroupTab)
     image = function()
       local isCollapsed = WeakAuras.IsCollapsed("collapse", "region", key, false)
       return isCollapsed and "Interface\\AddOns\\WeakAuras\\Media\\Textures\\expand" or "Interface\\AddOns\\WeakAuras\\Media\\Textures\\collapse", 18, 18
-    end
-  }
-
-  options[key] = {
-    type = "description",
-    name = title,
-    order = order + 0.2,
-    width = WeakAuras.doubleWidth - 0.15,
-    fontSize = "large"
+    end,
+    control = "WeakAurasExpand"
   }
   return function()
     return WeakAuras.IsCollapsed("collapse", "region", key, false)
@@ -2952,8 +2981,7 @@ function WeakAuras.ReloadTriggerOptions(data)
     },
     addTrigger = {
       type = "execute",
-      name = "",
-      desc = L["Add Trigger"],
+      name = L["Add Trigger"],
       order = 1,
       func = function()
         if(data.controlledChildren) then
@@ -2974,12 +3002,12 @@ function WeakAuras.ReloadTriggerOptions(data)
       width = 0.15,
       image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\add",
       imageWidth = 24,
-      imageHeight = 24
+      imageHeight = 24,
+      control = "WeakAurasIcon"
     },
     deleteTrigger = {
       type = "execute",
-      name = "",
-      desc = L["Delete Trigger"],
+      name = L["Delete Trigger"],
       order = 1.1,
       func = deleteTrigger,
       hidden = function()
@@ -2988,12 +3016,12 @@ function WeakAuras.ReloadTriggerOptions(data)
       width = 0.15,
       image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\delete",
       imageWidth = 24,
-      imageHeight = 24
+      imageHeight = 24,
+      control = "WeakAurasIcon"
     },
     triggerUp = {
       type = "execute",
-      name = "",
-      desc = L["Up"],
+      name = L["Up"],
       order = 1.2,
       func = function()
         if(data.controlledChildren) then
@@ -3032,12 +3060,12 @@ function WeakAuras.ReloadTriggerOptions(data)
       width = 0.15,
       image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\moveup",
       imageWidth = 24,
-      imageHeight = 24
+      imageHeight = 24,
+      control = "WeakAurasIcon"
     },
     triggerDown = {
       type = "execute",
-      name = "",
-      desc = L["Down"],
+      name = L["Down"],
       order = 1.3,
       func = function()
         if(data.controlledChildren) then
@@ -3076,12 +3104,12 @@ function WeakAuras.ReloadTriggerOptions(data)
       width = 0.15,
       image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\movedown",
       imageWidth = 24,
-      imageHeight = 24
+      imageHeight = 24,
+      control = "WeakAurasIcon"
     },
     applyTemplate = {
       type = "execute",
-      name = "",
-      desc = L["Apply Template"],
+      name = L["Apply Template"],
       order = 1.4,
       func = function()
         WeakAuras.OpenTriggerTemplate(data);
@@ -3092,7 +3120,8 @@ function WeakAuras.ReloadTriggerOptions(data)
       width = 0.15,
       image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\template",
       imageWidth = 24,
-      imageHeight = 24
+      imageHeight = 24,
+      control = "WeakAurasIcon"
     },
     triggerHeader = {
       type = "header",
@@ -3645,6 +3674,234 @@ function WeakAuras.PositionOptions(id, data, _, hideWidthHeight, disableSelfPoin
   };
 
   return positionOptions;
+end
+
+function WeakAuras.GlowOptions(id, data, order)
+  local hiddenGlowExtra = function()
+    return WeakAuras.IsCollapsed("glow", "glow", "glowextra", true);
+  end
+
+  local indentWidth = 0.1
+
+  local glowOptions = {
+    glowHeader = {
+      type = "header",
+      order = order,
+      name = L["Glow Settings"]
+    },
+    glow = {
+      type = "toggle",
+      width = WeakAuras.normalWidth,
+      name = L["Show Glow Effect"],
+      order = order + 0.02,
+    },
+    glowType = {
+      type = "select",
+      width = WeakAuras.normalWidth,
+      name = L["Type"],
+      order = order + 0.03,
+      values = WeakAuras.glow_types,
+    },
+    glowExtraDescription = {
+      type = "description",
+      name = function()
+        local line = L["|cFFffcc00Glow:|r"]
+        local color = L["Default Color"]
+        if data.useGlowColor then
+          color = L["|c%02x%02x%02x%02xColor|r"]:format(
+            data.glowColor[4] * 255,
+            data.glowColor[1] * 255,
+            data.glowColor[2] * 255,
+            data.glowColor[3] * 255
+          )
+        end
+        if data.glowType == "buttonOverlay" then
+          line = ("%s %s"):format(line, color)
+        elseif data.glowType == "ACShine" then
+          line = L["%s %s, particles: %d, frequency: %0.2f, scale: %0.2f"]:format(
+            line,
+            color,
+            data.glowLines,
+            data.glowFrequency,
+            data.glowScale
+          )
+          if data.glowXOffset ~= 0 or data.glowYOffset ~= 0 then
+            line = L["%s, offset: %0.2f;%0.2f"]:format(line, data.glowXOffset, data.glowYOffset)
+          end
+        elseif data.glowType == "Pixel" then
+          line = L["%s %s, lines: %d, frequency: %0.2f, length: %d, thickness: %d"]:format(
+            line,
+            color,
+            data.glowLines,
+            data.glowFrequency,
+            data.glowLength,
+            data.glowThickness
+          )
+          if data.glowXOffset ~= 0 or data.glowYOffset ~= 0 then
+            line = L["%s, offset: %0.2f;%0.2f"]:format(line, data.glowXOffset, data.glowYOffset)
+          end
+          if data.glowBorder then
+            line = L["%s, border"]:format(line)
+          end
+        end
+        return line
+      end,
+      width = WeakAuras.doubleWidth - 0.15,
+      order = order + 1,
+      fontSize = "medium"
+    },
+    glowExpand = {
+      type = "execute",
+      name = function()
+        local collapsed = WeakAuras.IsCollapsed("glow", "glow", "glowextra", true)
+        return collapsed and L["Show Extra Options"] or L["Hide Extra Options"]
+      end,
+      order = order + 1.01,
+      width = 0.15,
+      image = function()
+        local collapsed = WeakAuras.IsCollapsed("glow", "glow", "glowextra", true);
+        return collapsed and "Interface\\AddOns\\WeakAuras\\Media\\Textures\\edit" or "Interface\\AddOns\\WeakAuras\\Media\\Textures\\editdown"
+      end,
+      imageWidth = 24,
+      imageHeight = 24,
+      func = function()
+        local collapsed = WeakAuras.IsCollapsed("glow", "glow", "glowextra", true);
+        WeakAuras.SetCollapsed("glow", "glow", "glowextra", not collapsed);
+      end,
+      control = "WeakAurasIcon"
+    },
+    glow_space1 = {
+      type = "description",
+      name = "",
+      width = indentWidth,
+      order = order + 1.10,
+      hidden = hiddenGlowExtra,
+    },
+    useGlowColor = {
+      type = "toggle",
+      width = WeakAuras.normalWidth - indentWidth,
+      name = L["Color"],
+      desc = L["If unchecked, then a default color will be used (usually yellow)"],
+      order = order + 1.11,
+      hidden = hiddenGlowExtra
+    },
+    glowColor = {
+      type = "color",
+      width = WeakAuras.normalWidth,
+      name = L["Color"],
+      order = order + 1.12,
+      disabled = function() return not data.useGlowColor end,
+      hidden = hiddenGlowExtra
+    },
+    glow_space2 = {
+      type = "description",
+      name = "",
+      width = indentWidth,
+      order = order + 1.20,
+      hidden = hiddenGlowExtra,
+    },
+    glowLines = {
+      type = "range",
+      width = WeakAuras.normalWidth - indentWidth,
+      name = L["Lines & Particles"],
+      order = order + 1.21,
+      min = 1,
+      softMax = 30,
+      step = 1,
+      hidden = function() return hiddenGlowExtra() or data.glowType == "buttonOverlay" end,
+    },
+    glowFrequency = {
+      type = "range",
+      width = WeakAuras.normalWidth,
+      name = L["Frequency"],
+      order = order + 1.22,
+      softMin = -2,
+      softMax = 2,
+      step = 0.05,
+      hidden = function() return hiddenGlowExtra() or data.glowType == "buttonOverlay" end,
+    },
+    glow_space3 = {
+      type = "description",
+      name = "",
+      width = indentWidth,
+      order = order + 1.30,
+      hidden = function() return hiddenGlowExtra() or data.glowType ~= "Pixel" end,
+    },
+    glowLength = {
+      type = "range",
+      width = WeakAuras.normalWidth - indentWidth,
+      name = L["Length"],
+      order = order + 1.31,
+      min = 1,
+      softMax = 20,
+      step = 0.05,
+      hidden = function() return hiddenGlowExtra() or data.glowType ~= "Pixel" end,
+    },
+    glowThickness = {
+      type = "range",
+      width = WeakAuras.normalWidth,
+      name = L["Thickness"],
+      order = order + 1.32,
+      min = 0.05,
+      softMax = 20,
+      step = 0.05,
+      hidden = function() return hiddenGlowExtra() or data.glowType ~= "Pixel" end,
+    },
+    glow_space4 = {
+      type = "description",
+      name = "",
+      width = indentWidth,
+      order = order + 1.40,
+      hidden = hiddenGlowExtra,
+    },
+    glowXOffset = {
+      type = "range",
+      width = WeakAuras.normalWidth - indentWidth,
+      name = L["X-Offset"],
+      order = order + 1.41,
+      softMin = -100,
+      softMax = 100,
+      step = 0.5,
+      hidden = function() return hiddenGlowExtra() or data.glowType == "buttonOverlay" end,
+    },
+    glowYOffset = {
+      type = "range",
+      width = WeakAuras.normalWidth,
+      name = L["Y-Offset"],
+      order = order + 1.42,
+      softMin = -100,
+      softMax = 100,
+      step = 0.5,
+      hidden = function() return hiddenGlowExtra() or data.glowType == "buttonOverlay" end,
+    },
+    glow_space5 = {
+      type = "description",
+      name = "",
+      width = indentWidth,
+      order = order + 1.50,
+      hidden = hiddenGlowExtra,
+    },
+    glowScale = {
+      type = "range",
+      width = WeakAuras.normalWidth - indentWidth,
+      name = L["Scale"],
+      order = order + 1.52,
+      min = 0.05,
+      softMax = 10,
+      step = 0.05,
+      isPercent = true,
+      hidden = function() return hiddenGlowExtra() or data.glowType ~= "ACShine" end,
+    },
+    glowBorder = {
+      type = "toggle",
+      width = WeakAuras.normalWidth - indentWidth,
+      name = L["Border"],
+      order = order + 1.53,
+      hidden = function() return hiddenGlowExtra() or data.glowType ~= "Pixel" end,
+    }
+  }
+
+  return glowOptions
 end
 
 -- TODO: update this function to not have an unused parameter

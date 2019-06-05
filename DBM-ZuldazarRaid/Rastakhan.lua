@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2335, "DBM-ZuldazarRaid", 2, 1176)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019052923702")
+mod:SetRevision("2019053103048")
 mod:SetCreatureID(145616)--145644 Bwonsamdi
 mod:SetEncounterID(2272)
 --mod:DisableESCombatDetection()
@@ -433,7 +433,7 @@ function mod:SPELL_AURA_APPLIED(args)
 			specWarnScorchingDetonation:Show()
 			specWarnScorchingDetonation:Play("runout")
 			yellScorchingDetonation:Yell()
-			yellScorchingDetonationFades:Countdown(5)
+			yellScorchingDetonationFades:Countdown(spellId)
 		else
 			if playerDeathPhase then
 				if self.Options.AnnounceAlternatePhase then
@@ -480,7 +480,7 @@ function mod:SPELL_AURA_APPLIED(args)
 			specWarnDeathsDoor:Show()
 			specWarnDeathsDoor:Play("runout")
 			yellDeathsDoor:Yell()
-			yellDeathsDoorFades:Countdown(8)
+			yellDeathsDoorFades:Countdown(spellId)
 		else
 			warnDeathsDoor:Show(args.destName)
 		end

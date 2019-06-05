@@ -1282,11 +1282,12 @@ local function addControlsForCondition(args, order, data, conditionVariable, con
     collapsed = WeakAuras.IsCollapsed(data.id, "condition", i, false);
   end
 
-  args["condition" .. i .. "collapse"] = {
+  args["condition" .. i .. "header"] = {
     type = "execute",
-    name = "",
+    name = L["Condition %i"]:format(i),
     order = order,
-    width = 0.15,
+    width = WeakAuras.doubleWidth - 0.45,
+    --fontSize = "large",
     func = function()
       if data.controlledChildren then
         for id, reference in pairs(conditions[i].check.references) do
@@ -1300,22 +1301,14 @@ local function addControlsForCondition(args, order, data, conditionVariable, con
     end,
     image = collapsed and "Interface\\AddOns\\WeakAuras\\Media\\Textures\\expand" or "Interface\\AddOns\\WeakAuras\\Media\\Textures\\collapse" ,
     imageWidth = 18,
-    imageHeight = 18
-  };
-  order = order + 1;
-
-  args["condition" .. i .. "header"] = {
-    type = "description",
-    name = L["Condition %i"]:format(i),
-    order = order,
-    width = WeakAuras.doubleWidth - 0.6,
-    fontSize = "large"
+    imageHeight = 18,
+    control = "WeakAurasExpand"
   };
   order = order + 1;
 
   args["condition" .. i .. "up"] = {
     type = "execute",
-    name = "",
+    name = L["Move Up"],
     order = order,
     disabled = function()
       if (data.controlledChildren) then
@@ -1356,13 +1349,14 @@ local function addControlsForCondition(args, order, data, conditionVariable, con
     width = 0.15,
     image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\moveup",
     imageWidth = 24,
-    imageHeight = 24
+    imageHeight = 24,
+    control = "WeakAurasIcon"
   };
   order = order + 1;
 
   args["condition" .. i .. "down"] = {
     type = "execute",
-    name = "",
+    name = L["Move Down"],
     order = order,
     disabled = function()
       if (data.controlledChildren) then
@@ -1406,13 +1400,14 @@ local function addControlsForCondition(args, order, data, conditionVariable, con
     width = 0.15,
     image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\movedown",
     imageWidth = 24,
-    imageHeight = 24
+    imageHeight = 24,
+    control = "WeakAurasIcon"
   };
   order = order + 1;
 
   args["condition" .. i .. "delete"] = {
     type = "execute",
-    name = "",
+    name = L["Delete"],
     order = order,
     func = function()
       if (data.controlledChildren) then
@@ -1433,7 +1428,8 @@ local function addControlsForCondition(args, order, data, conditionVariable, con
     width = 0.15,
     image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\delete",
     imageWidth = 24,
-    imageHeight = 24
+    imageHeight = 24,
+    control = "WeakAurasIcon"
   };
   order = order + 1;
 

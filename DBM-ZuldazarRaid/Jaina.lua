@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2343, "DBM-ZuldazarRaid", 3, 1176)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190527213044")
+mod:SetRevision("2019053103048")
 mod:SetCreatureID(146409)
 mod:SetEncounterID(2281)
 mod:SetZone()
@@ -503,7 +503,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		if args:IsPlayer() then
 			specWarnFreezingBlood:Show(DBM_ALLY)
 			specWarnFreezingBlood:Play("gathershare")
-			yellFreezingBlood:Countdown(6)
+			yellFreezingBlood:Countdown(spellId)
 		end
 	elseif spellId == 288038 then
 		warnMarkedTarget:CombinedShow(1, args.destName)
@@ -559,7 +559,7 @@ function mod:SPELL_AURA_APPLIED(args)
 			specWarnBroadside:Show(self.vb.broadsideCount)
 			specWarnBroadside:Play("targetyou")
 			yellBroadside:Yell(icon, icon, icon)
-			yellBroadsideFades:Countdown(6, nil, icon)
+			yellBroadsideFades:Countdown(spellId, nil, icon)
 		end
 		if self.Options.SetIconBroadside then
 			self:SetIcon(args.destName, icon)
@@ -569,7 +569,7 @@ function mod:SPELL_AURA_APPLIED(args)
 			specWarnSiegebreaker:Show(self.vb.siegeCount)
 			specWarnSiegebreaker:Play("runout")
 			yellSiegebreaker:Yell()
-			yellSiegebreakerFades:Countdown(8)
+			yellSiegebreakerFades:Countdown(spellId)
 		else
 			warnSiegebreaker:Show(self.vb.siegeCount, args.destName)
 		end

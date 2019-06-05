@@ -3,7 +3,7 @@
 local MAJOR, MINOR = "HereBeDragons-Pins-2.0", 6
 assert(LibStub, MAJOR .. " requires LibStub")
 
-local pins, oldversion = LibStub:NewLibrary(MAJOR, MINOR)
+local pins, _oldversion = LibStub:NewLibrary(MAJOR, MINOR)
 if not pins then return end
 
 local HBD = LibStub("HereBeDragons-2.0")
@@ -198,7 +198,7 @@ local function UpdateMinimapPins(force)
     -- check for all values to be available (starting with 7.1.0, instances don't report coordinates)
     if not x or not y or (rotateMinimap and not facing) then
         minimapPinCount = 0
-        for pin, data in pairs(activeMinimapPins) do
+        for pin in pairs(activeMinimapPins) do
             pin:Hide()
             activeMinimapPins[pin] = nil
         end
@@ -397,14 +397,14 @@ function worldmapProvider:HandlePin(icon, data)
                 local parentMapID = HBD.mapData[data.uiMapID].parent
                 while parentMapID and HBD.mapData[parentMapID] do
                     if parentMapID == uiMapID then
-                        local mapType = HBD.mapData[parentMapID].mapType
+                        local parentMapType = HBD.mapData[parentMapID].mapType
                         -- show on any parent zones if they are normal zones
                         if data.worldMapShowFlag >= HBD_PINS_WORLDMAP_SHOW_PARENT and
-                            (mapType == Enum.UIMapType.Zone or mapType == Enum.UIMapType.Dungeon or mapType == Enum.UIMapType.Micro) then
+                            (parentMapType == Enum.UIMapType.Zone or parentMapType == Enum.UIMapType.Dungeon or parentMapType == Enum.UIMapType.Micro) then
                             show = true
                         -- show on the continent
                         elseif data.worldMapShowFlag >= HBD_PINS_WORLDMAP_SHOW_CONTINENT and
-                            mapType == Enum.UIMapType.Continent then
+                            parentMapType == Enum.UIMapType.Continent then
                             show = true
                         end
                         break

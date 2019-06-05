@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2168, "DBM-Uldir", nil, 1031)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190527213044")
+mod:SetRevision("2019053103048")
 mod:SetCreatureID(137119)--Taloc
 mod:SetEncounterID(2144)
 mod:SetZone()
@@ -190,7 +190,7 @@ function mod:SPELL_AURA_APPLIED(args)
 			specWarnHardenedArteries:Show()
 			specWarnHardenedArteries:Play("runout")
 			yellHardenedArteries:Yell()
-			yellHardenedArteriesFades:Countdown(6)
+			yellHardenedArteriesFades:Countdown(spellId)
 			specWarnHardenedArteriesNear:Cancel()--Cancel CombinedShow if you get affected
 		elseif self:CheckNearby(8, args.destName) and not DBM:UnitDebuff("player", spellId) then
 			specWarnHardenedArteriesNear:CombinedShow(0.5, args.destName)
@@ -202,7 +202,7 @@ function mod:SPELL_AURA_APPLIED(args)
 			specWarnEnlargedHeart:Show()
 			specWarnEnlargedHeart:Play("runout")
 			yellEnlargedHeart:Yell()
-			yellEnlargedHeartFades:Countdown(6)
+			yellEnlargedHeartFades:Countdown(spellId)
 		else
 			if not DBM:UnitDebuff("player", 275189) then
 				specWarnEnlargedHeartOther:Show(args.destName)

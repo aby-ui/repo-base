@@ -1,7 +1,7 @@
 ## Interface: 80100
 ## Title: WeakAuras Options
 ## Author: Mirrored and the WeakAuras Team
-## Version: 2.12.3
+## Version: 2.12.4.1
 ## Notes: Options for WeakAuras
 ## Notes-esES: Opciones para WeakAuras
 ## Notes-deDE: Optionen für WeakAuras
@@ -54,6 +54,8 @@ OptionsFrames\TexturePicker.lua
 OptionsFrames\MoverSizer.lua
 OptionsFrames\FrameChooser.lua
 
+AceGUI-Widgets\AceGUIWidget-WeakAurasExpand.lua
+AceGUI-Widgets\AceGUIWidget-WeakAurasIcon.lua
 AceGUI-Widgets\AceGUIWidget-WeakAurasNewHeaderButton.lua
 AceGUI-Widgets\AceGUIWidget-WeakAurasLoadedHeaderButton.lua
 AceGUI-Widgets\AceGUIWidget-WeakAurasDisplayButton.lua
@@ -64,7 +66,7 @@ AceGUI-Widgets\AceGUIWidget-WeakAurasNewButton.lua
 AceGUI-Widgets\AceGUIWidget-WeakAurasImportButton.lua
 AceGUI-Widgets\AceGUIWidget-WeakAurasSortedDropDown.lua
 AceGUI-Widgets\AceGUIWidget-WeakAurasTwoColumnDropDown.lua
+AceGUI-Widgets\AceGUIContainer-WeakAurasTreeGroup.lua
 
 ## Title-zhCN: |cff880303[爱不易]|r WeakAuras 配置
 ## X-Vendor: AbyUI
-
