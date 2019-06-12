@@ -26,3 +26,5 @@ localization.es.lua
 RestlessCabal.lua
 Uunat.lua
 CrucibleofStormsTrash.lua
+
+## X-Vendor: AbyUI

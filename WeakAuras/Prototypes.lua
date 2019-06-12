@@ -1050,6 +1050,13 @@ WeakAuras.load_prototype = {
       init = "arg",
     },
     {
+      name = "effectiveLevel",
+      display = L["Player Effective Level"],
+      type = "number",
+      init = "arg",
+      desc = L["The effective level differs from the level in e.g. Time Walking dungeons."]
+    },
+    {
       name = "zone",
       display = L["Zone Name"],
       type = "string",
