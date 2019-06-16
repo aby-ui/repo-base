@@ -93,7 +93,7 @@ rematch:InitModule(function()
 		{ spacer=true },
 		{ text=L["Export Listed Teams"], func=function() rematch.Dialog.Share:ExportTeamTab() end, tooltipBody=L["Export all teams listed below to a string you can copy elsewhere, such as forums or emails.\n\nOther Rematch users can then paste these teams into their Rematch via Import Teams.\n\nYou can export a single team by right-clicking one and choosing its Share menu."] },
 		{ text=L["Backup All Teams"], func=rematch.ShowBackupDialog, tooltipBody=L["This will export all teams across all tabs into text that you can paste elsewhere, such as an email to yourself or a text file someplace safe. You can later restore these teams with the Import Teams option."] },
-		{ text=L["Import Teams"], func=rematch.ShowImportDialog, tooltipBody=L["Import a single team or many teams that was exported from Rematch."] },
+		{ text=L["Import Teams"], func=rematch.ShowImportDialog, tooltipBody=L["Import a single team or many teams that were exported from Rematch."] },
 		{ text=L["Import From Pet Battle Teams"], hidden=function() return not IsAddOnLoaded("PetBattleTeams") end, tooltipBody=L["Copy your existing teams from Pet Battle Teams to Rematch."], func=rematch.ShowImportPBTDialog },
 	},rematch.UpdateAutoLoadState)
 

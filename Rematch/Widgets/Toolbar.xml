@@ -305,6 +305,16 @@
 					</OnClick>
 				</Scripts>
 			</Button>
+			<Button parentArray="Buttons" parentKey="Import" inherits="RematchToolbarButtonTemplate">
+				<KeyValues>
+					<KeyValue key="defaultIcon" value="Interface\Icons\Ability_Vehicle_LoadSelfCatapult.blp"/>
+				</KeyValues>
+				<Scripts>
+					<OnClick>
+						RematchToolbar.ButtonOnClick(self,button)
+					</OnClick>
+				</Scripts>
+			</Button>
 			<Button parentArray="Buttons" parentKey="Save" inherits="RematchToolbarButtonTemplate">
 				<KeyValues>
 					<KeyValue key="defaultIcon" value="Interface\AddOns\Rematch\Textures\saveconfirm"/>

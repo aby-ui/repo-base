@@ -124,6 +124,7 @@
     <Include file="..\..\TomCats-DarkshoreRares\CfgTomCats-DarkshoreRares.lua"/>
     <Include file="..\..\BFAInvasionTimer\CfgBFAInvasionTimer.lua"/>
     <Include file="..\..\MethodDungeonTools\CfgMethodDungeonTools.lua"/>
+    <Include file="..\..\Details\CfgDetails.lua"/>
 
     <!-- local
     <Include file="..\..\AtlasLoot\CfgAtlasLoot.lua"/>

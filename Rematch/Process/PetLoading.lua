@@ -315,14 +315,18 @@ function rematch:LoadTeam(key)
 	for i=1,3 do
 		local petID = team[i][1]
 		local levelingPick = rematch.topPicks[pickIndex]
-		if petID==0 and levelingPick then
-			loadin[i][1] = rematch.topPicks[pickIndex]
-			pickIndex = pickIndex + 1
-      elseif petID=="ignored" then
-         loadin[i][1] = C_PetJournal.GetPetLoadOutInfo(i) -- keep loaded pet here if ignored
-      elseif rematch:GetSpecialPetIDType(petID)=="random" then
-         loadin[i][1] = petID -- will come back to this pet later
-         numRandomSlots = numRandomSlots + 1
+		if petID==0 then
+			if levelingPick then -- if there is a pet from the queue
+				loadin[i][1] = rematch.topPicks[pickIndex]
+				pickIndex = pickIndex + 1
+			elseif settings.QueueRandomWhenEmpty then -- if not, and 'Use Random If Queue Empty' checked, pick a random pet
+				loadin[i][1] = "random:0"
+			end
+		elseif petID=="ignored" then
+			loadin[i][1] = C_PetJournal.GetPetLoadOutInfo(i) -- keep loaded pet here if ignored
+		elseif rematch:GetSpecialPetIDType(petID)=="random" then
+			loadin[i][1] = petID -- will come back to this pet later
+			numRandomSlots = numRandomSlots + 1
 		elseif petID and petID~=0 then
          local idType = rematch:GetIDType(petID)
 			if idType=="species" then
@@ -574,6 +578,12 @@ end
 
 -- this will not load a team but look for any pets that have healthier counterparts and load them individually
 function rematch:LoadHealthiestOfLoadedPets()
+
+	-- if a team is being loaded, don't do anything and leave
+	if rematch:IsTimerRunning("ReloadLoadIn") then
+		return
+	end
+
 	-- fill loadin with currently loaded pets and abilities
 	for i=1,3 do
 		loadin[i][1],loadin[i][2],loadin[i][3],loadin[i][4] = C_PetJournal.GetPetLoadOutInfo(i)
@@ -582,8 +592,22 @@ function rematch:LoadHealthiestOfLoadedPets()
 	-- update loadin with healthiest pets
 	rematch:FindHealthiestLoadIn()
 
-	-- only doing one attempt at a LoadLoadIn, no retries and definitely no LoadingDone; there's no team associated with this operation
-	rematch:LoadLoadIn()
+	if not rematch:LoadLoadIn() then -- if first pass didn't finished, try again
+		loadTimeout = 0
+		rematch:StartTimer("TeamlessReloadLoadIn",0.2,rematch.TeamlessReloadLoadIn)
+	end
 
 
+end
+
+-- used in LoadHealthiestOfLoadedPets without respect to any team loaded, will re-attempt pets loads
+function rematch:TeamlessReloadLoadIn()
+	-- will abort if ReloadLoadIn starts up (an actual team is loading)
+	if rematch:IsTimerRunning("ReloadLoadIn") then
+		return
+	end
+	if not rematch:LoadLoadIn() and loadTimeout<20 then
+		loadTimeout = loadTimeout + 1
+		rematch:StartTimer("TeamlessReloadLoadIn",0.25,rematch.ReloadLoadIn)
+	end
 end

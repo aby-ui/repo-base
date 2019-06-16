@@ -144,6 +144,7 @@ L["S_SUMMARYPANEL_OTHERCHARACTERS"] = "其他角色"
 L["S_TUTORIAL_AMOUNT"] = "表示可獲得的數量"
 L["S_TUTORIAL_CLICKTOTRACK"] = "點一下追蹤任務。"
 L["S_TUTORIAL_PARTY"] = "組隊時，藍色星星表示所有隊伍成員都有這些任務!"
+L["S_TUTORIAL_STATISTICS_BUTTON"] = "點一下這裡瀏覽統計資料和其他角色所儲存的任務清單。"
 L["S_TUTORIAL_TIMELEFT"] = "表示剩餘時間 (+4小時, +90分鐘, +30分鐘, 少於30分鐘)"
 L["S_TUTORIAL_WORLDBUTTONS"] = [=[點一下這裡在三種列表類型中循環切換。
 
@@ -154,6 +155,7 @@ L["S_TUTORIAL_WORLDBUTTONS"] = [=[點一下這裡在三種列表類型中循環�
 點一下|cFFFFAA11切換顯示任務|r來隱藏任務位置。]=]
 L["S_TUTORIAL_WORLDMAPBUTTON"] = "按下這個按鈕會顯示整個破碎群島的地圖。"
 L["S_UNKNOWNQUEST"] = "未知的任務"
+L["S_WHATSNEW"] = "更新資訊"
 L["S_WORLDBUTTONS_SHOW_NONE"] = "隱藏任務列表"
 L["S_WORLDBUTTONS_SHOW_TYPE"] = "顯示任務列表"
 L["S_WORLDBUTTONS_SHOW_ZONE"] = "依據區域排列"

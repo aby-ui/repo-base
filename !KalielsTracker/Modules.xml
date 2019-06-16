@@ -6,5 +6,5 @@
 	<Script file="Modules\Addon_PetTracker.lua"/>
 	<Script file="Modules\Addon_TomTom.lua"/>
 	<Script file="Modules\Addon_Others.lua"/>
-	<Script file="Modules\Help.lua"/>
+	<!--<Script file="Modules\Help.lua"/>-->
 </Ui>

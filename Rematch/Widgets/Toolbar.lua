@@ -5,14 +5,40 @@ local toolbar = RematchToolbar
 local settings
 local blizzBugFixLoginTime
 
-local templates = {
-	-- first template is for journal or standalone when BottomPanel is used
-	{"Heal","Bandage","","SafariHat","LesserPetTreat","PetTreat","","SummonRandom"}, -- [1]
-	-- second template is for standalone when BottomPanel is not used
-	{"Heal","Bandage","","SafariHat","LesserPetTreat","PetTreat","","SummonRandom","","Save","SaveAs","FindBattle"}, --[2]
-	-- third temmplate is for minimized window only
-	{"Heal","Bandage","","SafariHat","LesserPetTreat","PetTreat","","SummonRandom","","FindBattle"}, --[3]
+local templates = { {}, {}, {} }
+
+-- potentially more templates will be added, but for now having two sets of toolbar templates
+-- first template is for journal or standalone when BottomPanel is used
+-- second template is for standalone when BottomPanel is not used
+-- third temmplate is for minimized window only
+toolbar.templates = {
+	["Original"] = {
+		{"Heal","Bandage","","SafariHat","LesserPetTreat","PetTreat","","SummonRandom"},
+		{"Heal","Bandage","","SafariHat","LesserPetTreat","PetTreat","","SummonRandom","","Save","SaveAs","FindBattle"},
+		{"Heal","Bandage","","SafariHat","LesserPetTreat","PetTreat","","SummonRandom","","FindBattle"},
+	},
+	["Import"] = {
+		{"Heal","Bandage","SafariHat","LesserPetTreat","PetTreat","SummonRandom","Import"}, -- [1]
+		{"Heal","Bandage","SafariHat","LesserPetTreat","PetTreat","SummonRandom","Import","Save","SaveAs","FindBattle"}, --[2]
+		{"Heal","Bandage","SafariHat","LesserPetTreat","PetTreat","SummonRandom","Import","FindBattle"}, --[3]		
+	}
 }
+
+
+-- switches toolbar button templates; for now just "Original" and "Import" are possible templateNames
+function toolbar:SetTemplate(templateName)
+	local newTemplate = toolbar.templates[templateName]
+	if newTemplate then
+		for i=1,#newTemplate do
+			wipe(templates[i])
+			for j=1,#newTemplate[i] do
+				tinsert(templates[i],newTemplate[i][j])
+			end
+		end
+	end
+end
+toolbar:SetTemplate("Original") -- start with original (OptionPanel will switch to Import during login if option checked)
+
 
 rematch:InitModule(function()
 	settings = RematchSettings
@@ -198,6 +224,9 @@ function toolbar:ButtonOnEnter(once)
 		else
 			rematch.ShowTooltip(self,L["Summon Pet"],format("%s %s\n%s %s",rematch.LMB,L["Random Favorite"],rematch.RMB,L["Random From All"]))
 		end
+	elseif self==toolbar.Import then
+		rematch.ShowTooltip(self,L["Import Teams"], L["Import a single team or many teams that were exported from Rematch."])
+		once = true
 	else -- the rest are secure buttons who will use a GameTooltip based on the button attributes
 		GameTooltip:SetOwner(self,"ANCHOR_NONE") -- item or spells will use GameTooltip
 		local itemID = self:GetAttribute("item")
@@ -311,7 +340,7 @@ function toolbar:ButtonPostClick(button)
 	end
 end
 
--- only SummonRandom, Save, SaveAs and FindBattle have an OnClick handler.
+-- only SummonRandom, Import, Save, SaveAs and FindBattle have an OnClick handler.
 -- for the latter three which have a redirect keyvalue, it passes its click to the
 -- BottomPanel[redirect] version of those buttons.
 -- for SummonRandom it just does the summon/dismiss business.
@@ -325,6 +354,8 @@ function toolbar:ButtonOnClick(button)
 		else -- pet not out, as of 7.3, true=random favorites, false=random all
 			C_PetJournal.SummonRandomPet(button~="RightButton")
 		end
+	elseif self==toolbar.Import then
+		rematch:ShowImportDialog()
 	end
 end
 

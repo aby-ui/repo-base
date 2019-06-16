@@ -1,5 +1,5 @@
 
-
+ 
 --new 8.1.5 C_TaskQuest.GetQuestTimeLeftSeconds
 
 hooksecurefunc (WorldQuestDataProviderMixin, "RefreshAllData", function (self, fromOnShow)
@@ -858,7 +858,7 @@ end
 local tutorial_three = function()
 	local alert = CreateFrame ("frame", "WorldQuestTrackerTutorialAlert3", worldFramePOIs, "MicroButtonAlertTemplate")
 	alert:SetFrameLevel (302)
-	alert.label = "点击这里可显示统计数据，以及其他角色的任务列表."
+	alert.label = L["S_TUTORIAL_STATISTICS_BUTTON"]
 	alert.Text:SetSpacing (4)
 	MicroButtonAlert_SetText (alert, alert.label)
 	alert:SetPoint ("bottomleft", WorldQuestTrackerStatisticsButton, "topleft", 0, 32)

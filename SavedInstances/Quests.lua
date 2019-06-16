@@ -94,12 +94,19 @@ function addon:specialQuests()
 end
 
 local QuestExceptions = {
-  -- some quests are misidentified in scope
-  [7905]  = "Regular", -- Darkmoon Faire referral -- old addon versions misidentified this as monthly
-  [7926]  = "Regular", -- Darkmoon Faire referral
-  [37819] = "Regular", -- Darkmoon Faire races referral
+  -- Expansion
+  -- MoP
+  [32640] = "Weekly", -- Champions of the Thunder King
+  [32641] = "Weekly", -- Champions of the Thunder King
+  [32718] = "Regular", -- Mogu Runes of Fate -- ticket 142: outdated quest flag still shows up
+  [32719] = "Regular", -- Mogu Runes of Fate
+  [33133] = "Regular", -- Warforged Seals outdated quests, no longer weekly
+  [33134] = "Regular", -- Warforged Seals
+  [33338] = "Weekly", -- Empowering the Hourglass
+  [33334] = "Weekly", -- Strong Enough to Survive
 
-  -- order hall quests that old addon versions misidentified as weekly (fixed in r548/7.0.8)
+  -- LEG
+  -- Order Hall
   [44226] = "Regular", -- Order Hall: DH
   [44235] = "Regular", -- Order Hall: Druid
   [44236] = "Regular", -- Order Hall: Druid?
@@ -110,33 +117,6 @@ local QuestExceptions = {
   [44230] = "Regular", -- Order Hall: Priest
   [44204] = "Regular", -- Order Hall: Rogue
   [44205] = "Regular", -- Order Hall: Shaman
-
-  [31752] = "AccountDaily", -- Blingtron
-  [34774] = "AccountDaily", -- Blingtron 5000
-  [40753] = "AccountDaily", -- Blingtron 6000
-
-  -- also pre-populate a few important quests
-  [32640] = "Weekly",  -- Champions of the Thunder King
-  [32641] = "Weekly",  -- Champions of the Thunder King
-  [32718] = "Regular",  -- Mogu Runes of Fate -- ticket 142: outdated quest flag still shows up
-  [32719] = "Regular",  -- Mogu Runes of Fate
-  [33133] = "Regular",  -- Warforged Seals outdated quests, no longer weekly
-  [33134] = "Regular",  -- Warforged Seals
-  [33338] = "Weekly",  -- Empowering the Hourglass
-  [33334] = "Weekly",  -- Strong Enough to Survive
-
-  -- Draenor Pet Battle
-  [37644] = "AccountDaily", -- Mastering the Menagerie (Alliance)
-  [37645] = "AccountDaily", -- Mastering the Menagerie (Horde)
-  [38299] = "AccountDaily", -- Critters of Draenor (Alliance)
-  [38300] = "AccountDaily", -- Critters of Draenor (Horde)
-  [40329] = "AccountWeekly", -- Battle Pet Tamers: Warlords
-
-  -- Pet Battle Dungeons
-  [46292] = "AccountWeekly", -- Pet Battle Challenge Dungeon Deadmines
-  [45539] = "AccountWeekly", -- Pet Battle Challenge Dungeon Wailing Caverns
-  [54186] = "AccountWeekly", -- Pet Battle Challenge Dungeon Gnomeregan
-
   -- Argus
   [48910] = "Weekly", -- Supplying Krokuun
   [48911] = "Weekly", -- Void Inoculation
@@ -145,28 +125,15 @@ local QuestExceptions = {
   [48635] = "Regular", -- More Void Inoculation
   [48636] = "Regular", -- Fueling the Antoran Campaign
 
+  -- BfA
   -- Island Expeditions (Moved to Progress.lua)
   [53435] = "Regular", -- Azerite for the Horde
   [53436] = "Regular", -- Azerite for the Alliance
-
   -- Warfront (Moved to Warfront.lua)
   [53414] = "Regular", -- Stromgarde Alliance
   [53416] = "Regular", -- Stromgarde Horde
   [53992] = "Regular", -- Darkshore Alliance
   [53955] = "Regular", -- Darkshore Horde
-
-  -- Weekend Event
-  [53030] = "Weekly", -- The World Awaits - World Quests
-  [53032] = "Weekly", -- A Burning Path Through Time - TBC Timewalking
-  [53033] = "Weekly", -- A Frozen Path Through Time - WLK Timewalking
-  [53034] = "Weekly", -- A Shattered Path Through Time - CTM Timewalking
-  [53035] = "Weekly", -- A Shattered Path Through Time - MOP Timewalking
-  [54995] = "Weekly", -- A Savage Path Through Time - WOD Timewalking
-  [53036] = "Weekly", -- A Call to Battle - Battlegrounds
-  [53037] = "Weekly", -- Emissary of War - Mythic Dungeons
-  [53038] = "AccountWeekly", -- The Very Best - PvP Pet Battles
-  [53039] = "Weekly", -- The Arena Calls - Arena Skirmishes
-
   -- Call to Arms: Weekly World PvP Quest
   [52944] = "Weekly", -- Call to Arms: Drustvar (Alliance)
   [52958] = "Weekly", -- Call to Arms: Drustvar (Horde)
@@ -180,6 +147,36 @@ local QuestExceptions = {
   [52953] = "Weekly", -- Call to Arms: Vol'dun (Horde)
   [52951] = "Weekly", -- Call to Arms: Zuldazar (Alliance)
   [52952] = "Weekly", -- Call to Arms: Zuldazar (Horde)
+
+  -- General
+  -- Darkmoon Faire
+  [7905]  = "Regular", -- Darkmoon Faire referral -- old addon versions misidentified this as monthly
+  [7926]  = "Regular", -- Darkmoon Faire referral
+  [37819] = "Regular", -- Darkmoon Faire races referral
+
+  -- Blingtron
+  [31752] = "AccountDaily", -- Blingtron 4000
+  [34774] = "AccountDaily", -- Blingtron 5000
+  [40753] = "AccountDaily", -- Blingtron 6000
+  [56042] = "AccountDaily", -- Blingtron 7000
+
+  -- Pet Battle Dungeons
+  [45539] = "AccountWeekly", -- Pet Battle Challenge: Wailing Caverns
+  [46292] = "AccountWeekly", -- Pet Battle Challenge: Deadmines
+  [54186] = "AccountWeekly", -- Pet Battle Challenge: Gnomeregan
+  [56492] = "AccountWeekly", -- Pet Battle Challenge: Stratholme
+
+  -- Weekend Event
+  [53030] = "Weekly", -- The World Awaits - World Quests
+  [53032] = "Weekly", -- A Burning Path Through Time - TBC Timewalking
+  [53033] = "Weekly", -- A Frozen Path Through Time - WLK Timewalking
+  [53034] = "Weekly", -- A Shattered Path Through Time - CTM Timewalking
+  [53035] = "Weekly", -- A Shattered Path Through Time - MOP Timewalking
+  [54995] = "Weekly", -- A Savage Path Through Time - WOD Timewalking
+  [53036] = "Weekly", -- A Call to Battle - Battlegrounds
+  [53037] = "Weekly", -- Emissary of War - Mythic Dungeons
+  [53038] = "AccountWeekly", -- The Very Best - PvP Pet Battles
+  [53039] = "Weekly", -- The Arena Calls - Arena Skirmishes
 }
 addon.QuestExceptions = QuestExceptions
 

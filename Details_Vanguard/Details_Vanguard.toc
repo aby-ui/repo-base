@@ -1,0 +1,13 @@
+## Interface: 80100
+## Title: Details!: Vanguard (plugin)
+## Notes: Show the health and debuffs for tanks in your group.
+## SavedVariablesPerCharacter: _detalhes_databaseVanguard
+## RequiredDeps: Details
+## OptionalDeps: Ace3
+
+enUS.lua
+
+Details_Vanguard.lua
+
+
+## X-Vendor: AbyUI

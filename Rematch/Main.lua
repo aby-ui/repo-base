@@ -24,6 +24,7 @@ rematch.queueNeedsProcessed = nil -- true when queue needs processed at next opp
 rematch.breedNames = {} -- names of breeds in a list indexed 1-10 for use in menu (and lookup for BPBID) and filter
 rematch.breedLookup = {} -- for BPBID, translates name of breed ("B/B") to an index to breedNames to filter
 rematch.timeUIChanged = nil -- GetTime() when a major frame is shown, menu item clicked, etc; to supress OnEnters
+rematch.wasInPVP = nil -- true when player is leaving a pvp battle
 
 -- constants
 rematch.levelingIcon = "Interface\\AddOns\\Rematch\\Textures\\levelingicon"
@@ -525,7 +526,8 @@ function rematch:PET_BATTLE_CLOSE()
 		if frame.showAfterBattle then
 			frame:Show() -- this is for standalone being open and dismissed when battle started
 		end
-		if settings.ShowAfterBattle then
+		if settings.ShowAfterBattle and (not settings.ShowAfterPVEOnly or not rematch.wasInPVP) then
+			print("showing")
 			rematch:AutoShow() -- this is the "Show After Pet Battle" option
 		end
 		if rematch.Notes:IsVisible() and not rematch.Notes.Content.ScrollFrame.EditBox:HasFocus() then
@@ -538,13 +540,13 @@ function rematch:PET_BATTLE_CLOSE()
 			-- then wait a bit and load healthiest pets
 			C_Timer.After(0.75,rematch.LoadHealthiestOfLoadedPets)
 		end
+		rematch.wasInPVP = nil
 		
 		C_Timer.After(0.05,function() 
 			if settings.AutoLoad then 
 			rematch:loadSimilarTeam(rematch.recentTarget) 
 			end
 			end)	
-
 	end
 end
 
@@ -612,7 +614,9 @@ end
 
 function rematch:PET_BATTLE_FINAL_ROUND(winner)
 
-	if settings.AutoWinRecord and (not settings.AutoWinRecordPVPOnly or not C_PetBattles.IsPlayerNPC(2)) then
+	rematch.wasInPVP = not C_PetBattles.IsPlayerNPC(2)
+
+	if settings.AutoWinRecord and (not settings.AutoWinRecordPVPOnly or rematch.wasInPVP) then
 		local key = settings.loadedTeam
 		if key and saved[key] then
 			local team = saved[key]

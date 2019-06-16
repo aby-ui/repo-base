@@ -987,6 +987,7 @@ function LegionRaresTreasures:RegisterWithHandyNotes()
         end
 
         function LegionRaresTreasures:GetNodes(mapFile, isMinimapUpdate, dungeonLevel)
+            if dungeonLevel and dungeonLevel > 1 then return iter, nil, nil end --abyui fix
             return iter, nodes[mapFile], nil
         end
     end

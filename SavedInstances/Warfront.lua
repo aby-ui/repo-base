@@ -82,10 +82,13 @@ function W:UpdateQuest()
   for index, tbl in pairs(warfronts) do
     if not t.Warfront[index] then t.Warfront[index] = {} end
     local curr = tbl[t.Faction]
-    t.Warfront[index] = {
-      scenario = IsQuestFlaggedCompleted(curr.scenario),
-      boss = IsQuestFlaggedCompleted(curr.boss),
-    }
+    if curr then
+      -- faction is not ready on Neutral Pandaren or first login
+      t.Warfront[index] = {
+        scenario = IsQuestFlaggedCompleted(curr.scenario),
+        boss = IsQuestFlaggedCompleted(curr.boss),
+      }
+    end
   end
 end
 

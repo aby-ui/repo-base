@@ -1,0 +1,12 @@
+## Interface: 80100
+## Title: Details!: Tiny Threat (plugin)
+## Notes: Threat meter plugin, show threat for group members in the window. Select it from the Plugin menu in the Orange Cogwheel.
+## RequiredDeps: Details
+## OptionalDeps: Ace3
+
+enUS.lua
+
+Details_TinyThreat.lua
+
+
+## X-Vendor: AbyUI

@@ -1,9 +1,0 @@
-## Interface: 80100
-## Title: Lib: LibDFramework-1.0
-## Notes: Base Framework for many Addons
-
-#@no-lib-strip@
-embeds.xml
-#@end-no-lib-strip@
-
-load.xml

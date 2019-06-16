@@ -1639,6 +1639,7 @@ function DraenorTreasures:RegisterWithHandyNotes()
         end
 
         function DraenorTreasures:GetNodes(mapFile, isMinimapUpdate, dungeonLevel)
+            if dungeonLevel and dungeonLevel > 1 then return iter, nil, nil end --abyui fix
             return iter, nodes[mapFile], nil
         end
     end

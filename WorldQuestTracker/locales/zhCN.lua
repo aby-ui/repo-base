@@ -161,6 +161,7 @@ L["S_SUMMARYPANEL_OTHERCHARACTERS"] = "其他角色"
 L["S_TUTORIAL_AMOUNT"] = "显示接收量"
 L["S_TUTORIAL_CLICKTOTRACK"] = "点击追踪任务。"
 L["S_TUTORIAL_PARTY"] = "队伍中时，蓝星显示此全部队友有此任务！"
+L["S_TUTORIAL_STATISTICS_BUTTON"] = "点击这里查看统计和其它角色已保存列表。"
 L["S_TUTORIAL_TIMELEFT"] = "显示剩余时间（大于4小时，大于90分钟，大于30分钟，小于30分钟）"
 L["S_TUTORIAL_WORLDBUTTONS"] = [=[点击这里可在三种类型的摘要中循环：
 
@@ -171,6 +172,7 @@ L["S_TUTORIAL_WORLDBUTTONS"] = [=[点击这里可在三种类型的摘要中循�
 点击|cFFFFAA11切换任务|r隐藏任务地点。]=]
 L["S_TUTORIAL_WORLDMAPBUTTON"] = "点击这个按钮将向你显示破碎群岛地图。"
 L["S_UNKNOWNQUEST"] = "未知任务"
+L["S_WHATSNEW"] = "更新了什么？"
 L["S_WORLDBUTTONS_SHOW_NONE"] = "隐藏概况"
 L["S_WORLDBUTTONS_SHOW_TYPE"] = "显示概况"
 L["S_WORLDBUTTONS_SHOW_ZONE"] = "按区域排列"

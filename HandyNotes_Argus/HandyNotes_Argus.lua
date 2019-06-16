@@ -2280,6 +2280,7 @@ function Argus:RegisterWithHandyNotes()
         end
 
         function Argus:GetNodes( mapFile, isMinimapUpdate, dungeonLevel )
+            if dungeonLevel and dungeonLevel > 1 then return iter, nil, nil end --abyui fix
 			currentMapFile = mapFile;
             return iter, nodes[mapFile], nil
         end

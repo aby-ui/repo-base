@@ -1757,7 +1757,7 @@ local function SI_GetQuestReward()
   end
   local questTagID, tagName = GetQuestTagInfo(id)
   if questTagID and tagName then
-    isAccount = (questTagID == QUEST_TAG_ACCOUNT)
+    isAccount = (questTagID == Enum.QuestTag.Account)
   else
     isAccount = db.QuestDB.AccountDaily[id] or db.QuestDB.AccountWeekly[id]
     debug("Fetched isAccount")
@@ -2543,7 +2543,7 @@ end
 function core:OnInitialize()
   local versionString = GetAddOnMetadata(addonName, "version")
   --[===[@debug@
-  if versionString == "8.1.3-5-gddfc7c6" then
+  if versionString == "8.1.4-3-gfff3628" then
     versionString = "Dev"
   end
   --@end-debug@]===]
@@ -2609,7 +2609,6 @@ function core:OnInitialize()
   end
   RequestRaidInfo() -- get lockout data
   RequestLFDPlayerLockInfo()
-  C_Calendar.OpenCalendar() -- Request for event info, not actually open the calendar
   addon.dataobject = addon.LDB and addon.LDB:NewDataObject("SavedInstances", {
     text = addonAbbrev,
     type = "launcher",

@@ -4721,13 +4721,13 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 			if (numNews > 0 and WorldQuestTracker.DoubleTapFrame and false) then --adding a false here to not show the news button for now (15/02/2019)
 				-- /run WorldQuestTrackerAddon.db.profile.last_news_time = 0
 			
-				local openNewsButton = DF:CreateButton (WorldQuestTracker.DoubleTapFrame, WorldQuestTracker.OpenNewsWindow, 120, 20, "What's New?", -1, nil, nil, nil, nil, nil, DF:GetTemplate ("button", "WQT_NEWS_BUTTON"), DF:GetTemplate ("font", "WQT_TOGGLEQUEST_TEXT"))
+				local openNewsButton = DF:CreateButton (WorldQuestTracker.DoubleTapFrame, WorldQuestTracker.OpenNewsWindow, 120, 20, L["S_WHATSNEW"], -1, nil, nil, nil, nil, nil, DF:GetTemplate ("button", "WQT_NEWS_BUTTON"), DF:GetTemplate ("font", "WQT_TOGGLEQUEST_TEXT"))
 				openNewsButton:SetPoint ("bottom", WorldQuestTracker.DoubleTapFrame, "top", -5, 2)
 				WorldQuestTracker.NewsButton = openNewsButton
 
 				local numNews = DF:GetNumNews (WorldQuestTracker.GetChangelogTable(), WorldQuestTracker.db.profile.last_news_time)
 				if (numNews > 0) then
-					WorldQuestTracker.NewsButton:SetText ("What's New? (|cFFFFFF00" .. numNews .."|r)")
+					WorldQuestTracker.NewsButton:SetText (L["S_WHATSNEW"] .. " (|cFFFFFF00" .. numNews .. "|r)")
 				end
 			end
 			

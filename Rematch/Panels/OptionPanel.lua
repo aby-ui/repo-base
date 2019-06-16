@@ -355,6 +355,13 @@ end
 panel.funcs.ReverseToolbar = function()
 	rematch.Toolbar:Resize(rematch.Toolbar.width)
 end
+panel.funcs.ShowImportButton = function()
+	rematch.Toolbar:SetTemplate(settings.ShowImportButton and "Import" or "Original")
+	if rematch.Toolbar.width then
+		rematch.Toolbar:Resize(rematch.Toolbar.width)
+	end
+end
+
 panel.funcs.PanelTabsToRight = function()
 	local anchorPoint, relativePoint, xoff = "TOPLEFT", "BOTTOMLEFT", 0
 	if settings.PanelTabsToRight then

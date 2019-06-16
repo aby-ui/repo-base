@@ -55,6 +55,9 @@ rematch.notableGroups = {
 	[23] = L["Zandalar"],
 	[24] = L["Kul Tiras"],
 	[25] = L["Gnomeregan"], 
+	[26] = L["Nazjatar"],
+	[27] = L["Mechagon"],
+	[28] = L["Stratholme"],
 }
 
 rematch.notableNPCs = {
@@ -369,6 +372,45 @@ rematch.notableNPCs = {
 	{ 146002, 25, 2492 }, -- Gnomeregan Guard Wolf
 	{ 145988, 25, 2488 }, -- Pulverizer Bot Mk 60001
 
+	-- Nazjatar
+	{ 154910, 26, 2723 }, -- Prince Wiggletail
+	{ 154912, 26, 2725 }, -- Silence
+	{ 154914, 26, 2727 }, -- Pearlhusk Crawler
+	{ 154916, 26, 2729 }, -- Ravenous Scalespawn
+	{ 154918, 26, 2731 }, -- Kelpstone
+	{ 154920, 26, 2733 }, -- Frenzied Knifefang
+	{ 154911, 26, 2724 }, -- Chomp
+	{ 154913, 26, 2726 }, -- Shadowspike Lurker
+	{ 154915, 26, 2728 }, -- Elderspawn of Nalaada
+	{ 154917, 26, 2730 }, -- Mindshackle
+	{ 154919, 26, 2732 }, -- Voltgorger
+	{ 154921, 26, 2734 }, -- Giant Opaline Conch
+
+	-- Mechagon
+	{ 154922, 27, 2735 }, -- Gnomefeaster
+	{ 154924, 27, 2737 }, -- Goldenbot XD
+	{ 154926, 27, 2739 }, -- CK-9 Micro-Oppression Unit
+	{ 154928, 27, 2741 }, -- Unit 6
+	{ 154923, 27, 2736 }, -- Sputtertube
+	{ 154925, 27, 2738 }, -- Creakclank
+	{ 154927, 27, 2740 }, -- Unit 35
+	{ 154929, 27, 2742 }, -- Unit 17
+
+	-- Stratholme
+	{ 150923, 28, 2609, 2601, 2596 }, -- Belchling, Gargy, Lost Soul
+	{ 150922, 28, 2608 }, -- Sludge Belcher
+	{ 150911, 28, 2597, 2596, 2611 }, -- Crypt Fiend, Lost Soul, Tormented Spirit
+	{ 150914, 28, 2600, 2607, 2606 }, -- Wandering Phantasm, Zasz the Tiny, Plague Whelp
+	{ 150925, 28, 2612 }, -- Liz the Tormentor
+	{ 155145, 28, 2595, 2594, 2593 }, -- Diseased Rat, Plague Rat, Plague Roach
+	{ 155267, 28, 2751, 2596, 2607 }, -- Risen Guard, Lost Soul, Zasz the Tiny
+	{ 155414, 28, 2768, 2769, 2770 }, -- Smokey, Pyro, Infectus
+	{ 150929, 28, 2613 }, -- Nefarious Terry
+	{ 150918, 28, 2603 }, -- Tommy the Cruel
+	{ 150917, 28, 2602 }, -- Huncher
+	{ 150858, 28, 2592 }, -- Blackmane
+
+
 }
 
 -- table of npcID's and the npcID they should actually refer to
@@ -581,6 +623,41 @@ function rematch:NotableTooltipBody()
 	for _,info in ipairs(rematch.notableNPCs) do
 		if info[1]==npcID then
 			return rematch:NotablePetsAsText(info[3],info[4],info[5])
+		end
+	end
+end
+
+-- the following add /npcinfo to get the name of the targeted or mouesovered unit
+-- and /speciesinfo to generate a line of notablenpc for the current battle
+SLASH_REMATCHNPCINFO1 = "/rematchnpcinfo"
+SlashCmdList["REMATCHNPCINFO"] = function()
+	local name,npcID = Rematch:GetUnitNameandID(UnitExists("target") and "target" or "mouseover")
+	print(name,npcID)
+end
+
+SLASH_REMATCHSPECIESINFO1 = "/rematchspeciesinfo"
+SlashCmdList["REMATCHSPECIESINFO"] = function()
+	local speciesIDs = {}
+	local names = {}
+	for i=1,3 do
+		local name = C_PetBattles.GetName(2,i)
+		tinsert(names,name)
+		local speciesID = C_PetBattles.GetPetSpeciesID(2,i)
+		tinsert(speciesIDs,speciesID)
+	end
+	local txt = format("{ , 26, %d, %d, %d }, -- %s, %s, %s", speciesIDs[1] or 0, speciesIDs[2] or 0, speciesIDs[3] or 0, names[1] or "", names[2] or "", names[3] or "")
+	TinyPad.Insert(txt)
+end
+
+
+-- if not on 8.2 client yet, remove stratholme
+if select(4,GetBuildInfo()) < 80200 then
+	for group=26,28 do
+		rematch.notableGroups[group] = nil
+		for i=#rematch.notableNPCs,1,-1 do
+			if rematch.notableNPCs[i][2] == group then
+				tremove(rematch.notableNPCs,i)
+			end
 		end
 	end
 end
