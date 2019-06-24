@@ -192,6 +192,16 @@ GTFO.SpellID["288897"] = {
   sound = 1;
 };
 
+GTFO.SpellID["291166"] = {
+  --desc = "Flame Jet";
+  sound = 1;
+};
+
+GTFO.SpellID["286466"] = {
+  --desc = "Purifying Flame";
+  sound = 1;
+};
+
 
 -- ***********************
 -- * Shrine of the Storm *
@@ -752,7 +762,6 @@ GTFO.SpellID["287365"] = {
   --desc = "Searing Pitch (Lady Jaina Proudmoore)";
   sound = 1;
   negatingDebuffSpellID = 287993;  -- Chilling Touch
-  test = true;
 };
 
 GTFO.SpellID["288808"] = {

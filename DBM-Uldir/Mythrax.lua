@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2194, "DBM-Uldir", nil, 1031)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019061001341")
+mod:SetRevision("2019062400030")
 mod:SetCreatureID(134546)--138324 Xalzaix
 mod:SetEncounterID(2135)
 mod:SetZone()
@@ -295,7 +295,6 @@ function mod:SPELL_AURA_APPLIED(args)
 			yellImminentRuinFades:Countdown(spellId, nil, icon)
 		elseif self:CheckNearby(12, args.destName) and not DBM:UnitDebuff("player", spellId) then
 			specWarnImminentRuinNear:CombinedShow(0.3, args.destName)--Combined show to prevent warning spam if multiple targets near you
-			specWarnImminentRuinNear:CancelVoice()--Avoid spam
 			specWarnImminentRuinNear:ScheduleVoice(0.3, "runaway")
 		--else
 			--warnImminentRuin:CombinedShow(0.3, args.destName)

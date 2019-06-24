@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2330, "DBM-ZuldazarRaid", 2, 1176)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019053103048")
+mod:SetRevision("2019062400030")
 mod:SetCreatureID(144747, 144767, 144963, 144941)
 mod:SetEncounterID(2268)
 --mod:DisableESCombatDetection()
@@ -281,7 +281,6 @@ function mod:SPELL_AURA_APPLIED(args)
 			end
 		elseif self:CheckNearby(8, args.destName) and not DBM:UnitDebuff("player", spellId) then
 			specWarnCrawlingHexNear:CombinedShow(0.3, args.destName)
-			specWarnCrawlingHexNear:CancelVoice()--Avoid spam
 			specWarnCrawlingHexNear:ScheduleVoice(0.3, "runaway")
 		else
 			warnCrawlingHex:CombinedShow(0.3, args.destName)

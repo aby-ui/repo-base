@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2195, "DBM-Uldir", nil, 1031)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019053103048")
+mod:SetRevision("2019062400030")
 mod:SetCreatureID(138967)
 mod:SetEncounterID(2145)
 mod:DisableESCombatDetection()--ES fires moment you throw out CC, so it can't be trusted for combatstart
@@ -379,7 +379,6 @@ function mod:SPELL_AURA_APPLIED(args)
 			yellRupturingBloodFades:Countdown(spellId)
 			specWarnRupturingBloodEdge:Cancel()
 			specWarnRupturingBloodEdge:Schedule(15, DBM_CORE_ROOM_EDGE)
-			specWarnRupturingBloodEdge:CancelVoice()
 			specWarnRupturingBloodEdge:ScheduleVoice(15, "runtoedge")
 		end
 	elseif spellId == 273365 or spellId == 271640 then--Two versions of debuff, one that spawns an add and one that does not (so probably LFR/normal version vs heroic/mythic version)

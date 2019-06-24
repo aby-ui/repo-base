@@ -68,7 +68,7 @@ local function showRealDate(curseDate)
 end
 
 DBM = {
-	Revision = parseCurseDate("20190614210528"),
+	Revision = parseCurseDate("20190624042036"),
 	DisplayVersion = "8.2.0 alpha", -- the string that is shown as version
 	ReleaseRevision = releaseDate(2019, 5, 23, 12) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 }
@@ -6655,7 +6655,21 @@ function DBM:HasMapRestrictions()
 end
 
 do
-	local function playSound(self, path, ignoreSFX)
+	local LSMMediaCacheBuilt = false
+	local sharedMediaFileCache = {}
+	local function buildLSMFileCache()
+		local keytable = {}
+		for k in next, LibStub("LibSharedMedia-3.0", true):HashTable("sound") do
+			tinsert(keytable, k)
+			for i=1,#keytable do
+				local k = keytable[i]
+				local path = LibStub("LibSharedMedia-3.0", true):HashTable("sound")[k]
+				sharedMediaFileCache[path] = true
+			end
+		end
+		LSMMediaCacheBuilt = true
+	end
+	local function playSound(self, path, ignoreSFX, validate)
 		local soundSetting = self.Options.UseSoundChannel
 		if type(path) == "number" then
 			if soundSetting == "Dialog" then
@@ -6666,6 +6680,13 @@ do
 				PlaySound(path)--using SFX channel, leave forceNoDuplicates on.
 			end
 		else
+			if validate then
+				if not LSMMediaCacheBuilt then buildLSMFileCache() end
+				if not sharedMediaFileCache[path] and not path:find("DBM") then
+					DBM:AddMsg("PlaySoundFile failed do to missing media at "..path..". To fix this, re-add missing sound or change setting using this sound to a different sound.")
+					return
+				end
+			end
 			if soundSetting == "Dialog" then
 				PlaySoundFile(path, "Dialog")
 			elseif ignoreSFX or soundSetting == "Master" then
@@ -6676,14 +6697,14 @@ do
 		end
 	end
 
-	function DBM:PlaySoundFile(path, ignoreSFX)
+	function DBM:PlaySoundFile(path, ignoreSFX, validate)
 		if self.Options.SilentMode then return end
-		playSound(self, path, ignoreSFX)
+		playSound(self, path, ignoreSFX, validate)
 	end
 
-	function DBM:PlaySound(path, ignoreSFX)
+	function DBM:PlaySound(path, ignoreSFX, validate)
 		if self.Options.SilentMode then return end
-		playSound(self, path, ignoreSFX)
+		playSound(self, path, ignoreSFX, validate)
 	end
 end
 
@@ -6983,7 +7004,7 @@ do
 		if msg:find(chatPrefix) and not InCombatLockdown() and DBM:AntiSpam(60, "Ogron") and DBM.Options.AutoReplySound then
 			--Might need more validation if people figure out they can just whisper people with chatPrefix to trigger it.
 			--However if I have to add more validation it probably won't work in most languages :\ So lets hope antispam and combat check is enough
-			DBM:PlaySoundFile("sound\\creature\\aggron1\\VO_60_HIGHMAUL_AGGRON_1_AGGRO_1.ogg")
+			DBM:PlaySound(41928)--"sound\\creature\\aggron1\\VO_60_HIGHMAUL_AGGRON_1_AGGRO_1.ogg"
 		elseif msg == "status" and #inCombat > 0 and DBM.Options.StatusEnabled then
 			if not difficultyText then -- prevent error when timer recovery function worked and etc (StartCombat not called)
 				savedDifficulty, difficultyText, difficultyIndex, LastGroupSize, difficultyModifier = DBM:GetCurrentInstanceDifficulty()
@@ -9131,7 +9152,7 @@ do
 			if self.sound > 0 then
 				if self.sound > 1 and DBM.Options.ChosenVoicePack ~= "None" and not voiceSessionDisabled and self.sound <= SWFilterDisabed then return end
 				if not self.option or self.mod.Options[self.option.."SWSound"] ~= "None" then
-					DBM:PlaySoundFile(DBM.Options.RaidWarningSound)
+					DBM:PlaySoundFile(DBM.Options.RaidWarningSound, nil, true)--Validate true
 				end
 			end
 			--Message: Full message text
@@ -9183,7 +9204,7 @@ do
 		if voiceSessionDisabled or voice == "None" then return end
 		local always = DBM.Options.AlwaysPlayVoice
 		if DBM.Options.DontShowTargetAnnouncements and (self.announceType == "target" or self.announceType == "targetcount") and not self.noFilter and not always then return end--don't show announces that are generic target announces
-		if not DBM.Options.DontShowBossAnnounces and (not self.option or self.mod.Options[self.option]) or always then
+		if (not DBM.Options.DontShowBossAnnounces and (not self.option or self.mod.Options[self.option]) or always) and self.sound <= SWFilterDisabed then
 			--Filter tank specific voice alerts for non tanks if tank filter enabled
 			--But still allow AlwaysPlayVoice to play as well.
 			if (name == "changemt" or name == "tauntboss") and DBM.Options.FilterTankSpec and not self.mod:IsTank() and not always then return end
@@ -9379,6 +9400,10 @@ do
 
 	function bossModPrototype:NewPrePhaseAnnounce(stage, color, icon, ...)
 		return newAnnounce(self, "prestage", stage, color or 2, icon or "136116", ...)
+	end
+
+	function bossModPrototype:NewMoveToAnnounce(spellId, color, ...)
+		return newAnnounce(self, "moveto", spellId, color or 3, ...)
 	end
 end
 
@@ -10117,7 +10142,7 @@ do
 		local voice = DBM.Options.ChosenVoicePack
 		if voiceSessionDisabled or voice == "None" then return end
 		if self.mod:IsEasyDungeon() and self.mod.isTrashMod and DBM.Options.FilterTrashWarnings2 then return end
-		if not DBM.Options.DontShowSpecialWarnings and (not self.option or self.mod.Options[self.option]) or always then
+		if (not DBM.Options.DontShowSpecialWarnings and (not self.option or self.mod.Options[self.option]) or always) and self.hasVoice <= SWFilterDisabed then
 			--Filter tank specific voice alerts for non tanks if tank filter enabled
 			--But still allow AlwaysPlayVoice to play as well.
 			if (name == "changemt" or name == "tauntboss") and DBM.Options.FilterTankSpec and not self.mod:IsTank() and not always then return end
@@ -10127,6 +10152,13 @@ do
 	end
 
 	function specialWarningPrototype:ScheduleVoice(t, ...)
+		if voiceSessionDisabled or DBM.Options.ChosenVoicePack == "None" then return end
+		unschedule(self.Play, self.mod, self)--Allow ScheduleVoice to be used in same way as CombinedShow
+		return schedule(t, self.Play, self.mod, self, ...)
+	end
+
+	--Object Permits scheduling voice multiple times for same object
+	function specialWarningPrototype:ScheduleVoiceOverLap(t, ...)
 		if voiceSessionDisabled or DBM.Options.ChosenVoicePack == "None" then return end
 		return schedule(t, self.Play, self.mod, self, ...)
 	end
@@ -10455,7 +10487,7 @@ do
 
 	function DBM:PlaySpecialWarningSound(soundId)
 		local sound = type(soundId) == "number" and self.Options["SpecialWarningSound" .. (soundId == 1 and "" or soundId)] or soundId or self.Options.SpecialWarningSound
-		self:PlaySoundFile(sound)
+		self:PlaySoundFile(sound, nil, true)
 	end
 
 	local function testWarningEnd()

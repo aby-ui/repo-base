@@ -43,7 +43,7 @@
 --
 
 
-local revision =(string.sub("2019060742916", 1, -5))
+local revision =(string.sub("20190622165337", 1, -5))
 local FrameTitle = "DBM_GUI_Option_"	-- all GUI frames get automatically a name FrameTitle..ID
 
 local PanelPrototype = {}
@@ -249,6 +249,8 @@ local function MixinSharedMedia3(mediatype, mediatable)
 		LSM:Register("sound", "Blakbyrd Alert 2", [[Interface\AddOns\DBM-Core\sounds\BlakbyrdAlerts\Alert2.ogg]])
 		LSM:Register("sound", "Blakbyrd Alert 3", [[Interface\AddOns\DBM-Core\sounds\BlakbyrdAlerts\Alert3.ogg]])
 		--User Media
+		--IMPORTANT, as of 8.2+, if you register media that doesn't actually exist, it WILL throw Lua errors
+		--So use CustomSounds very carefully
 		if DBM.Options.CustomSounds >= 1 then
 			LSM:Register("sound", "DBM: Custom 1", [[Interface\AddOns\DBM-CustomSounds\Custom1.ogg]])
 		end

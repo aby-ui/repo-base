@@ -345,6 +345,37 @@ GTFO.SpellID["288949"] = {
   sound = 3;
 };
 
+GTFO.SpellID["287203"] = {
+  --desc = "Trapped";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["289004"] = {
+  --desc = "Stone Smash (Stone Sentinel)";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["286059"] = {
+  --desc = "A Painful Amount of Damage (Opulence)";
+  sound = 3;
+};
+
+GTFO.SpellID["286699"] = {
+  --desc = "Bwonsamdi's Gaze";
+  sound = 3;
+};
+
+GTFO.SpellID["261552"] = {
+  --desc = "Terror Wail (T'zane)";
+  sound = 3;
+};
+
+GTFO.SpellID["261597"] = {
+  --desc = "Coalesced Essence (T'zane)
+  sound = 3
+};
 
 
 -- ***********************

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2142, "DBM-Party-BfA", 6, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190420174733")
+mod:SetRevision("20190618235231")
 mod:SetCreatureID(133379, 133944)
 mod:SetEncounterID(2124)
 mod:SetZone()
@@ -78,7 +78,7 @@ end
 function mod:OnCombatStart(delay)
 	self.vb.noLitShield = nil
 	--Adderis should be in winds, Aspix timers started by Lightning Shield buff
-	timerCycloneStrikeCD:Start(9.8-delay)
+	timerCycloneStrikeCD:Start(9-delay)
 	if not self:IsNormal() then
 		timerArcingBladeCD:Start(7.3-delay)
 	end

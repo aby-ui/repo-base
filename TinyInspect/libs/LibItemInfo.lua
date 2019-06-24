@@ -3,7 +3,7 @@
 -- 物品信息庫 Author: M
 ---------------------------------
 
-local MAJOR, MINOR = "LibItemInfo.7000", 2
+local MAJOR, MINOR = "LibItemInfo.7000", 3
 local lib = LibStub:NewLibrary(MAJOR, MINOR)
 
 if not lib then return end
@@ -110,13 +110,15 @@ function lib:GetItemInfo(link, stats)
     tooltip:SetHyperlink(link)
     local text, level
     for i = 2, 5 do
-        text = _G[tooltip:GetName().."TextLeft" .. i]:GetText() or ""
-        level = select(2, string.match(text, ItemLevelAltPat))
-        if (level) then break end
-        level = string.match(text, ItemLevelPattern)
-        if (level) then break end
-        level = string.match(text, ItemLevelPlusPat)
-        if (level) then break end
+        if (_G[tooltip:GetName().."TextLeft" .. i]) then
+            text = _G[tooltip:GetName().."TextLeft" .. i]:GetText() or ""
+            level = select(2, string.match(text, ItemLevelAltPat))
+            if (level) then break end
+            level = string.match(text, ItemLevelPattern)
+            if (level) then break end
+            level = string.match(text, ItemLevelPlusPat)
+            if (level) then break end
+        end
     end
     if stats then self:GetStatsViaTooltip(tooltip, stats) end
     if (level and string.find(level, "+")) then
@@ -145,11 +147,13 @@ function lib:GetContainerItemLevel(pid, id)
             tooltip:SetBagItem(pid, id)
         end
         for i = 2, 5 do
-            text = _G[tooltip:GetName().."TextLeft" .. i]:GetText() or ""
-            level = select(2, string.match(text, ItemLevelAltPat))
-            if (level) then break end
-            level = string.match(text, ItemLevelPattern)
-            if (level) then break end
+            if (_G[tooltip:GetName().."TextLeft" .. i]) then
+                text = _G[tooltip:GetName().."TextLeft" .. i]:GetText() or ""
+                level = select(2, string.match(text, ItemLevelAltPat))
+                if (level) then break end				
+                level = string.match(text, ItemLevelPattern)
+                if (level) then break end
+            end
         end
     end
     return 0, tonumber(level) or 0
@@ -169,9 +173,11 @@ function lib:GetUnitItemInfo(unit, index, stats)
     end
     local text, level
     for i = 2, 5 do
-        text = _G[unittip:GetName().."TextLeft" .. i]:GetText() or ""
-        level = string.match(text, ItemLevelPattern)
-        if (level) then break end
+        if (_G[unittip:GetName().."TextLeft" .. i]) then
+            text = _G[unittip:GetName().."TextLeft" .. i]:GetText() or ""
+            level = string.match(text, ItemLevelPattern)
+            if (level) then break end
+        end
     end
     self:GetStatsViaTooltip(unittip, stats)
     if (string.match(link, "item:(%d+):")) then

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2168, "DBM-Uldir", nil, 1031)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019061001341")
+mod:SetRevision("2019062400030")
 mod:SetCreatureID(137119)--Taloc
 mod:SetEncounterID(2144)
 mod:SetZone()
@@ -194,7 +194,6 @@ function mod:SPELL_AURA_APPLIED(args)
 			specWarnHardenedArteriesNear:Cancel()--Cancel CombinedShow if you get affected
 		elseif self:CheckNearby(8, args.destName) and not DBM:UnitDebuff("player", spellId) then
 			specWarnHardenedArteriesNear:CombinedShow(0.5, args.destName)
-			specWarnHardenedArteriesNear:CancelVoice()--Avoid spam
 			specWarnHardenedArteriesNear:ScheduleVoice(0.5, "runaway")
 		end
 	elseif spellId == 275205 then
