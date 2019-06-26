@@ -69,6 +69,7 @@ local function recyclePin(pin)
 end
 
 local function clearAllPins(t)
+    if not t then return end
 	for key, pin in pairs(t) do
 		recyclePin(pin)
 		t[key] = nil

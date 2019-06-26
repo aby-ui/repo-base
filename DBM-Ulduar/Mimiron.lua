@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("Mimiron", "DBM-Ulduar")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041705949")
+mod:SetRevision("20190625143403")
 mod:SetCreatureID(33432)
 mod:SetEncounterID(1138)
 mod:DisableESCombatDetection()
@@ -39,9 +39,9 @@ local warnPlasmaBlast			= mod:NewSpecialWarningDefensive(64529, nil, nil, nil, 1
 
 local enrage 					= mod:NewBerserkTimer(900)
 local timerHardmode				= mod:NewTimer(610, "TimerHardmode", 64582)
-local timerP1toP2				= mod:NewTimer(41.5, "TimeToPhase2", "Interface\\Icons\\Spell_Nature_WispSplode", nil, nil, 6)
-local timerP2toP3				= mod:NewTimer(29, "TimeToPhase3", "Interface\\Icons\\Spell_Nature_WispSplode", nil, nil, 6)
-local timerP3toP4				= mod:NewTimer(29, "TimeToPhase4", "Interface\\Icons\\Spell_Nature_WispSplode", nil, nil, 6)
+local timerP1toP2				= mod:NewTimer(41.5, "TimeToPhase2", "136116", nil, nil, 6)
+local timerP2toP3				= mod:NewTimer(29, "TimeToPhase3", "136116", nil, nil, 6)
+local timerP3toP4				= mod:NewTimer(29, "TimeToPhase4", "136116", nil, nil, 6)
 local timerProximityMines		= mod:NewCDTimer(30.2, 63027, nil, nil, nil, 3)
 local timerShockBlast			= mod:NewCastTimer(4, 63631, nil, nil, nil, 2)
 local timerShockBlastCD			= mod:NewCDTimer(35, 63631, nil, nil, nil, 2)

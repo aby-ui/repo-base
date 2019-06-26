@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1862, "DBM-TombofSargeras", nil, 875)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041705925")
+mod:SetRevision("20190625143337")
 mod:SetCreatureID(115844)
 mod:SetEncounterID(2032)
 mod:SetZone()
@@ -40,25 +40,19 @@ local specWarnBurningArmor				= mod:NewSpecialWarningMoveAway(231363, nil, nil, 
 local specWarnBurningArmorTaunt			= mod:NewSpecialWarningTaunt(231363, nil, nil, nil, 1, 2)
 local specWarnRainofBrimstone			= mod:NewSpecialWarningMoveTo(238587, "-Tank", nil, 2, 1, 6)
 
-local timerInfernalBurningCD			= mod:NewNextTimer(59.9, 233062, nil, nil, nil, 2)
-local timerShatteringStarCD				= mod:NewNextCountTimer(31, 233272, nil, nil, nil, 3)
-local timerShatteringStar				= mod:NewBuffFadesTimer(6, 233272, nil, nil, nil, 5)
-local timerCrashingComet				= mod:NewBuffFadesTimer(5, 232249, nil, nil, nil, 5)
+local timerInfernalBurningCD			= mod:NewNextTimer(59.9, 233062, nil, nil, nil, 2, nil, nil, nil, 1, 4)
+local timerShatteringStarCD				= mod:NewNextCountTimer(31, 233272, nil, nil, nil, 3, nil, nil, nil, 3, 4)
+local timerShatteringStar				= mod:NewBuffFadesTimer(6, 233272, nil, nil, nil, 5, nil, nil, nil, 3, 4)
+local timerCrashingComet				= mod:NewBuffFadesTimer(5, 232249, nil, nil, nil, 5, nil, nil, nil, 2, 4)
 local timerCrashingCometCD				= mod:NewCDTimer(18.2, 232249, nil, nil, nil, 3)--18.2-24.7
 local timerInfernalSpikeCD				= mod:NewCDTimer(16, 233055, nil, nil, nil, 3)--16.2-20.7
 local timerBurningArmorCD				= mod:NewCDCountTimer(24.3, 231363, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON)
-local timerBurningArmor					= mod:NewBuffFadesTimer(6, 231363, nil, nil, nil, 5, nil, DBM_CORE_DEADLY_ICON)
+local timerBurningArmor					= mod:NewBuffFadesTimer(6, 231363, nil, nil, nil, 5, nil, DBM_CORE_DEADLY_ICON, nil, mod:IsTank() and 2, 4)
 mod:AddTimerLine(ENCOUNTER_JOURNAL_SECTION_FLAG12)
 local timerRainofBrimstoneCD			= mod:NewCDCountTimer(31, 238587, nil, nil, nil, 5, nil, DBM_CORE_HEROIC_ICON)
 local timerRainofBrimstone				= mod:NewCastTimer(8, 238587, 87701, nil, nil, 5, nil, DBM_CORE_HEROIC_ICON)
 
 --local berserkTimer					= mod:NewBerserkTimer(300)
-
-local countdownInfernalBurning			= mod:NewCountdown(60, 233062)
-local countdownShatteringStar			= mod:NewCountdown("AltTwo6", 233272)
-local countdownShatteringStarFades		= mod:NewCountdownFades("AltTwo6", 233272)
-local countdownCrashingComet			= mod:NewCountdownFades("Alt5", 232249)--Assume for now tank will never get comets and dps will never get burning armor
-local countdownBurningArmor				= mod:NewCountdownFades("Alt6", 231363)--^^
 
 --mod:AddSetIconOption("SetIconOnShield", 228270, true)
 --mod:AddInfoFrameOption(227503, true)
@@ -85,10 +79,8 @@ function mod:OnCombatStart(delay)
 		self.vb.brimstoneCount = 0
 		timerRainofBrimstoneCD:Start(12.1-delay, 1)--12.1-14
 		timerShatteringStarCD:Start(34-delay, 1)
-		countdownShatteringStar:Start(34-delay)
 	else
 		timerShatteringStarCD:Start(24-delay, 1)
-		countdownShatteringStar:Start(24-delay)
 	end
 end
 
@@ -105,7 +97,6 @@ function mod:SPELL_CAST_START(args)
 		specWarnInfernalBurning:Play("findshelter")
 		--specWarnInfernalBurning:ScheduleVoice(3.5, "safenow")
 		timerInfernalBurningCD:Start()
-		countdownInfernalBurning:Start()
 	end
 end
 
@@ -121,23 +112,18 @@ function mod:SPELL_CAST_SUCCESS(args)
 			--["233272-Shattering Star"] = "pull:34.8, 61.2, 60.4, 60.8, 32.9, 30.5, 29.6, 30.4",
 			if nextCount > 4 then
 				timerShatteringStarCD:Start(29.2, nextCount)
-				countdownShatteringStar:Start(29.2)
 			else
 				timerShatteringStarCD:Start(60, nextCount)
-				countdownShatteringStar:Start(60)
 			end
 		else
 			local timer = shatteringStarTimers[nextCount]
 			if timer then
 				timerShatteringStarCD:Start(timer, nextCount)
-				countdownShatteringStar:Start(timer)
 			else
 				if self.vb.shatteringStarCount % 2 == 0 then
 					timerShatteringStarCD:Start(20, nextCount)
-					countdownShatteringStar:Start(20)
 				else
 					timerShatteringStarCD:Start(40, nextCount)
-					countdownShatteringStar:Start(40)
 				end
 			end
 		end
@@ -154,7 +140,6 @@ function mod:SPELL_AURA_APPLIED(args)
 			yellShatteringStar:Schedule(5, 1)
 			yellShatteringStar:Schedule(4, 2)
 			yellShatteringStar:Schedule(3, 3)
-			countdownShatteringStarFades:Start()
 			timerShatteringStar:Start()
 		else
 			warnShatteringStar:Show(self.vb.shatteringStarCount, args.destName)
@@ -163,9 +148,6 @@ function mod:SPELL_AURA_APPLIED(args)
 		if args:IsPlayer() then
 			specWarnBurningArmor:Show()
 			specWarnBurningArmor:Play("runout")
-			if self:IsTank() then
-				countdownBurningArmor:Start()
-			end
 			timerBurningArmor:Start()
 			if self.Options.RangeFrame then
 				if self:IsEasy() then
@@ -196,12 +178,10 @@ function mod:SPELL_AURA_REMOVED(args)
 	if spellId == 233272 then
 		if args:IsPlayer() then
 			yellShatteringStar:Cancel()
-			countdownShatteringStarFades:Cancel()
 			timerShatteringStar:Stop()
 		end
 	elseif spellId == 231363 then
 		if args:IsPlayer() then
-			countdownBurningArmor:Cancel()
 			timerBurningArmor:Stop()
 			if self.Options.RangeFrame then
 				DBM.RangeCheck:Hide()
@@ -210,7 +190,6 @@ function mod:SPELL_AURA_REMOVED(args)
 	elseif spellId == 230345 and args:IsPlayer() then
 		yellCrashingComet:Cancel()
 		timerCrashingComet:Stop()
-		countdownCrashingComet:Cancel()
 		if self.Options.RangeFrame then
 			DBM.RangeCheck:Hide()
 		end
@@ -231,7 +210,6 @@ function mod:UNIT_AURA_UNFILTERED(uId)
 					yellCrashingComet:Yell(5)
 					yellCrashingComet:Countdown(5)
 					timerCrashingComet:Start()
-					countdownCrashingComet:Start()
 					if self.Options.RangeFrame then
 						DBM.RangeCheck:Show(10, nil, nil, nil, nil, 5)
 					end

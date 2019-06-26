@@ -117,6 +117,7 @@ local function expirationTime(regionData)
   end
   return nil
 end
+WeakAuras.ExpirationTime = expirationTime
 
 local function compareExpirationTimes(regionDataA, regionDataB)
   local aExpires = expirationTime(regionDataA)
@@ -136,6 +137,7 @@ local function compareExpirationTimes(regionDataA, regionDataB)
   end
 
 end
+WeakAuras.CompareExpirationTimes = compareExpirationTimes
 
 local function noop() end
 
@@ -235,6 +237,7 @@ local sorters = {
     end
   end
 }
+WeakAuras.SortFunctions = sorters
 
 local function createSortFunc(data)
   local sorter = sorters[data.sort] or sorters.none
@@ -531,6 +534,7 @@ local growers = {
     end
   end
 }
+WeakAuras.GrowFunctions = growers
 
 local function createGrowFunc(data)
   local grower = growers[data.grow] or growers.DOWN
@@ -827,7 +831,7 @@ local function modify(parent, region, data)
       controlPoint:SetWidth(regionData.data.width or regionData.region.width)
       controlPoint:SetHeight(regionData.data.height or regionData.region.height)
       if animate then
-        WeakAuras.CancelAnimation(regionData.controlPoint)
+        WeakAuras.CancelAnimation(regionData.controlPoint, true)
         local xPrev = regionData.xOffset or x
         local yPrev = regionData.yOffset or y
         local xDelta = xPrev - x
@@ -844,9 +848,10 @@ local function modify(parent, region, data)
               local translateFunc = [[
                                 function(progress, _, _, previousAngle, dAngle)
                                     local previousRadius, dRadius = %f, %f;
+                                    local targetX, targetY = %f, %f
                                     local radius = previousRadius + (1 - progress) * dRadius;
                                     local angle = previousAngle + (1 - progress) * dAngle;
-                                    return cos(angle) * radius, sin(angle) * radius;
+                                    return cos(angle) * radius - targetX, sin(angle) * radius - targetY;
                                 end
                             ]]
               anim = {
@@ -854,7 +859,7 @@ local function modify(parent, region, data)
                 duration = 0.2,
                 use_translate = true,
                 translateType = "custom",
-                translateFunc = translateFunc:format(radius1, radius2 - radius1),
+                translateFunc = translateFunc:format(radius1, radius2 - radius1, x, y),
                 x = previousAngle,
                 y = dAngle,
                 selfPoint = data.selfPoint,
@@ -865,8 +870,9 @@ local function modify(parent, region, data)
               local translateFunc = [[
                                 function(progress, _, _, previousAngle, dAngle)
                                     local radius = %f;
+                                    local targetX, targetY = %f, %f
                                     local angle = previousAngle + (1 - progress) * dAngle;
-                                    return cos(angle) * radius, sin(angle) * radius;
+                                    return cos(angle) * radius - targetX, sin(angle) * radius - targetY;
                                 end
                             ]]
               anim = {
@@ -874,7 +880,7 @@ local function modify(parent, region, data)
                 duration = 0.2,
                 use_translate = true,
                 translateType = "custom",
-                translateFunc = translateFunc:format(radius1),
+                translateFunc = translateFunc:format(radius1, x, y),
                 x = previousAngle,
                 y = dAngle,
                 selfPoint = data.selfPoint,

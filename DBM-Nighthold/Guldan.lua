@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1737, "DBM-Nighthold", nil, 786)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041705925")
+mod:SetRevision("20190625143337")
 mod:SetCreatureID(104154)--The Demon Within (111022)
 mod:SetEncounterID(1866)
 mod:SetZone()
@@ -108,39 +108,39 @@ local timerLiquidHellfireCD			= mod:NewNextCountTimer(25, 206219, nil, nil, nil,
 local timerFelEffluxCD				= mod:NewCDCountTimer(10.7, 206514, nil, nil, nil, 3)--10.7-13.5 (14-15 on normal)
 ----Fel Lord Kuraz'mal
 mod:AddTimerLine(Kurazmal)
-local timerFelLordKurazCD			= mod:NewCastTimer(16, "ej13121", nil, nil, nil, 1, 212258)
+local timerFelLordKurazCD			= mod:NewCastTimer(16, "ej13121", nil, nil, nil, 1, 212258, nil, nil, mod:IsTank() and 2, 4)
 local timerShatterEssenceCD			= mod:NewCDTimer(54, 206675, nil, "Tank", nil, 5, nil, DBM_CORE_DEADLY_ICON..DBM_CORE_TANK_ICON)
 local timerFelObeliskCD				= mod:NewCDTimer(16, 206841, nil, nil, nil, 3)
 ----Inquisitor Vethriz
 mod:AddTimerLine(Vethriz)
-local timerVethrizCD				= mod:NewCastTimer(25, "ej13124", nil, nil, nil, 1, 212258)
+local timerVethrizCD				= mod:NewCastTimer(25, "ej13124", nil, nil, nil, 1, 212258, nil, nil, mod:IsTank() and 2, 4)
 local timerGazeofVethrizCD			= mod:NewCDTimer(4.7, 206840, nil, nil, nil, 3)
 ----D'zorykx the Trapper
 mod:AddTimerLine(Dzorykx)
-local timerDzorykxCD				= mod:NewCastTimer(35, "ej13129", nil, nil, nil, 1, 212258)
+local timerDzorykxCD				= mod:NewCastTimer(35, "ej13129", nil, nil, nil, 1, 212258, nil, nil, mod:IsTank() and 2, 4)
 local timerSoulVortexCD				= mod:NewCDTimer(21, 206883, nil, nil, nil, 3)--34-36
 --Stage Two: The Ritual of Aman'thul
 mod:AddTimerLine(SCENARIO_STAGE:format(2))
 local timerTransition				= mod:NewPhaseTimer(19)
-local timerHandofGuldanCD			= mod:NewNextCountTimer(58.5, 212258, nil, nil, nil, 1)
-local timerBondsofFelCD				= mod:NewNextCountTimer(50, 206222, nil, nil, nil, 3)
-local timerEyeofGuldanCD			= mod:NewNextCountTimer(60, 209270, nil, nil, nil, 1)
+local timerHandofGuldanCD			= mod:NewNextCountTimer(58.5, 212258, nil, nil, nil, 1, nil, nil, nil, mod:IsTank() and 2, 4)
+local timerBondsofFelCD				= mod:NewNextCountTimer(50, 206222, nil, nil, nil, 3, nil, nil, nil, 1, 4)
+local timerEyeofGuldanCD			= mod:NewNextCountTimer(60, 209270, nil, nil, nil, 1, nil, nil, nil, not mod:IsTank() and 2, 4)
 --Stage Three: The Master's Power
 mod:AddTimerLine(SCENARIO_STAGE:format(3))
 local timerFlamesofSargerasCD		= mod:NewNextCountTimer("d58.5", 221783, 15643, nil, nil, 3)
 local timerStormOfDestroyerCD		= mod:NewNextCountTimer(16, 161121, 196871, nil, nil, 3)
 local timerWellOfSouls				= mod:NewCastTimer(16, 206939, nil, nil, nil, 5)
-local timerBlackHarvestCD			= mod:NewNextCountTimer(83, 206744, nil, nil, nil, 2)
+local timerBlackHarvestCD			= mod:NewNextCountTimer(83, 206744, nil, nil, nil, 2, nil, nil, nil, 3, 4)
 --Mythic Only
 mod:AddTimerLine(ENCOUNTER_JOURNAL_SECTION_FLAG12)
 local timerWindsCD					= mod:NewCDCountTimer(39, 199446, nil, nil, nil, 2)
 local timerWilloftheDemonWithin		= mod:NewCastTimer(43, 211439, nil, nil, nil, 2)
 local timerParasiticWoundCD			= mod:NewCDTimer(36, 206847, nil, nil, nil, 3)
 local timerWounded					= mod:NewBuffActiveTimer(36, 227009, nil, nil, nil, 6)
-local timerSoulSeverCD				= mod:NewCDCountTimer(36, 220957, nil, nil, nil, 5, nil, DBM_CORE_TANK_ICON)
+local timerSoulSeverCD				= mod:NewCDCountTimer(36, 220957, nil, nil, nil, 5, nil, DBM_CORE_TANK_ICON, nil, mod:IsTank() and 2, 6)
 local timerVisionsofDarkTitan		= mod:NewCastTimer(9, 227008, nil, nil, nil, 2)
-local timerVisionsofDarkTitanCD		= mod:NewCDCountTimer(9, 227008, nil, nil, nil, 2)
-local timerFlameCrashCD				= mod:NewCDCountTimer(20, 227071, nil, nil, nil, 3)
+local timerVisionsofDarkTitanCD		= mod:NewCDCountTimer(9, 227008, nil, nil, nil, 2, nil, nil, nil, 1, 6)
+local timerFlameCrashCD				= mod:NewCDCountTimer(20, 227071, nil, nil, nil, 3, nil, nil, nil, mod:IsTank() and 3, 6)
 local timerSummonNightorbCD			= mod:NewCDCountTimer(10.9, 227283, nil, nil, nil, 1, 225133)
 --Shard
 mod:AddTimerLine(DBM_ADDS)
@@ -148,17 +148,6 @@ local timerManifestAzzinothCD		= mod:NewCDCountTimer(10.9, 221149, nil, nil, nil
 local timerChaosSeedCD				= mod:NewCDTimer(10.9, 221336, nil, nil, nil, 3)
 local timerBulwarkofAzzinothCD		= mod:NewCDTimer(10.9, 221408, nil, nil, nil, 6)
 local timerPurifiedEssence			= mod:NewCastTimer(4, 221486, nil, nil, nil, 2)
-
---Non Mythic
-local countdownBondsOfFel			= mod:NewCountdown(50, 206222)
-local countdownEyeofGuldan			= mod:NewCountdown("Alt50", 209270, "-Tank")
-local countdownHandofGuldan			= mod:NewCountdown("Alt50", 212258, "Tank")
-local countdownLiquidHellfire		= mod:NewCountdown("AltTwo50", 206219, "Ranged")
-local countdownBlackHarvest			= mod:NewCountdown("AltTwo50", 206744)
---mythic
-local countdownVisions				= mod:NewCountdown(50, 227008, nil, nil, 6)
-local countdownSoulSever			= mod:NewCountdown("Alt36", 220957, "Tank", nil, 6)
-local countdownFlameCrash			= mod:NewCountdown("AltTwo36", 227071, "Tank", nil, 6)
 
 mod:AddRangeFrameOption(8, 221606)
 mod:AddSetIconOption("SetIconOnBondsOfFlames", 221783, true)
@@ -217,13 +206,10 @@ local function upValueCapsAreStupid(self)
 	self.vb.azzCount = 0
 	timerParasiticWoundCD:Start(8.3)
 	timerSoulSeverCD:Start(19.3, 1)	
-	countdownSoulSever:Start(19.3)
 	timerManifestAzzinothCD:Start(26.3, 1)
 	timerFlameCrashCD:Start(29.3, 1)
-	countdownFlameCrash:Start(29.3)
 	timerSummonNightorbCD:Start(39.3, 1)
 	timerVisionsofDarkTitanCD:Start(95.1, 1)
-	countdownVisions:Start(95.1)
 end
 
 function mod:OnCombatStart(delay)
@@ -244,19 +230,14 @@ function mod:OnCombatStart(delay)
 	if self:IsMythic() then
 		self:SetCreatureID(104154, 111022)
 		timerBondsofFelCD:Start(self:IsTank() and 6.4 or 8.4, 1)
-		countdownBondsOfFel:Start(self:IsTank() and 6.4 or 8.4)
 		timerDzorykxCD:Start(17-delay)
-		countdownHandofGuldan:Start(17)
 		timerEyeofGuldanCD:Start(26.1-delay, 1)
-		countdownEyeofGuldan:Start(26.1)
 		timerLiquidHellfireCD:Start(36-delay, 1)
-		countdownLiquidHellfire:Start(36)
 	else
 		self:SetCreatureID(104154)
 		timerLiquidHellfireCD:Start(2-delay, 1)
 		timerFelEffluxCD:Start(11-delay, 1)
 		timerFelLordKurazCD:Start(11-delay)
-		countdownHandofGuldan:Start(11)
 		timerVethrizCD:Start(25-delay)
 		timerDzorykxCD:Start(35-delay)
 		self:SetCreatureID(104154)
@@ -299,25 +280,19 @@ function mod:SPELL_CAST_START(args)
 			end
 			if self.vb.liquidHellfireCast == 4 or self.vb.liquidHellfireCast == 6 then
 				timerLiquidHellfireCD:Start(longTimer, self.vb.liquidHellfireCast+1)
-				countdownLiquidHellfire:Start(longTimer)
 			elseif self.vb.liquidHellfireCast == 7 then--TODO, if a longer phase 2 than 7 casts, and continue to see diff timers than 36, build a table
 				timerLiquidHellfireCD:Start(shortTimer, self.vb.liquidHellfireCast+1)
-				countdownLiquidHellfire:Start(shortTimer)
 			else
 				timerLiquidHellfireCD:Start(mediumTimer, self.vb.liquidHellfireCast+1)
-				countdownLiquidHellfire:Start(mediumTimer)
 			end
 		elseif self.vb.phase == 1.5 then
 			if self.vb.liquidHellfireCast == 2 or self:IsHeroic() then
 				timerLiquidHellfireCD:Start(23.8, self.vb.liquidHellfireCast+1)
-				countdownLiquidHellfire:Start(23.8)
 			else--On LFR/Normal the rest are 32 in phase 1.5
 				timerLiquidHellfireCD:Start(32.5, self.vb.liquidHellfireCast+1)
-				countdownLiquidHellfire:Start(32.5)
 			end
 		else--Phase 1
 			timerLiquidHellfireCD:Start(15, self.vb.liquidHellfireCast+1)
-			countdownLiquidHellfire:Start(15)
 		end
 	elseif spellId == 206514 then
 		self.vb.felEffluxCast = self.vb.felEffluxCast + 1
@@ -367,7 +342,6 @@ function mod:SPELL_CAST_START(args)
 			local timer = self:IsMythic() and p3EmpoweredEyeTimersMythic[self.vb.eyeCast+1] or self:IsEasy() and p3EmpoweredEyeTimersEasy[self.vb.eyeCast+1] or p3EmpoweredEyeTimers[self.vb.eyeCast+1]
 			if timer then
 				timerEyeofGuldanCD:Start(timer, self.vb.eyeCast+1)
-				countdownEyeofGuldan:Start(timer)
 			end
 		else
 			local longTimer, shortTimer
@@ -382,10 +356,8 @@ function mod:SPELL_CAST_START(args)
 			end
 			if self.vb.eyeCast == 6 then
 				timerEyeofGuldanCD:Start(longTimer, self.vb.eyeCast+1)--An oddball cast
-				countdownEyeofGuldan:Start(longTimer)
 			else
 				timerEyeofGuldanCD:Start(shortTimer, self.vb.eyeCast+1)
-				countdownEyeofGuldan:Start(shortTimer)
 			end
 		end
 	elseif spellId == 208672 then
@@ -400,7 +372,6 @@ function mod:SPELL_CAST_START(args)
 		local timer = self:IsMythic() and blackHarvestTimersMythic[self.vb.blackHarvestCast+1] or self:IsEasy() and blackHarvestTimersEasy[self.vb.blackHarvestCast+1] or blackHarvestTimers[self.vb.blackHarvestCast+1]
 		if timer then
 			timerBlackHarvestCD:Start(timer, self.vb.blackHarvestCast+1)
-			countdownBlackHarvest:Start(timer)
 		end
 		if self:IsMythic() then
 			if self.vb.blackHarvestCast == 2 then
@@ -439,10 +410,8 @@ function mod:SPELL_CAST_START(args)
 		end
 		if self.vb.severCastCount == 4 or self.vb.severCastCount == 7 then
 			timerSoulSeverCD:Start(50, self.vb.severCastCount+1)
-			countdownSoulSever:Start(50)
 		else
 			timerSoulSeverCD:Start(20, self.vb.severCastCount+1)
-			countdownSoulSever:Start(20)
 		end
 	elseif spellId == 227008 then
 		self.vb.visionCastCount = self.vb.visionCastCount+1
@@ -452,10 +421,8 @@ function mod:SPELL_CAST_START(args)
 		if self.vb.visionCastCount ~= 3 then
 			if self.vb.visionCastCount == 2 then
 				timerVisionsofDarkTitanCD:Start(150)
-				countdownVisions:Start(150)
 			else
 				timerVisionsofDarkTitanCD:Start(90)
-				countdownVisions:Start(90)
 			end
 		end
 		if self.Options.InfoFrame then
@@ -482,19 +449,15 @@ function mod:SPELL_CAST_SUCCESS(args)
 		if self:IsMythic() then
 			local timer = self:IsTank() and 38 or 40
 			timerBondsofFelCD:Start(timer, self.vb.bondsofFelCast+1)
-			countdownBondsOfFel:Start(timer)
 		elseif self:IsHeroic() then
 			local timer = self:IsTank() and 42.4 or 44.4
 			timerBondsofFelCD:Start(timer, self.vb.bondsofFelCast+1)
-			countdownBondsOfFel:Start(timer)
 		elseif self:IsNormal() then
 			local timer = self:IsTank() and 48 or 50
 			timerBondsofFelCD:Start(timer, self.vb.bondsofFelCast+1)
-			countdownBondsOfFel:Start(timer)
 		else
 			local timer = self:IsTank() and 51 or 53
 			timerBondsofFelCD:Start(timer, self.vb.bondsofFelCast+1)
-			countdownBondsOfFel:Start(timer)
 		end
 	elseif spellId == 221783 and self:AntiSpam(35, 1) then
 		self.vb.flamesSargCast = self.vb.flamesSargCast + 1
@@ -520,13 +483,11 @@ function mod:SPELL_CAST_SUCCESS(args)
 		if self:IsMythic() then
 			if self.vb.handofGuldanCast == 1 then
 				timerFelLordKurazCD:Start(165)
-				countdownHandofGuldan:Start(165)
 			end
 		else
 			local timer = handofGuldanTimers[self.vb.handofGuldanCast+1]
 			if timer then
 				timerHandofGuldanCD:Start(timer, self.vb.handofGuldanCast+1)
-				countdownHandofGuldan:Start(timer)
 			end
 		end
 	elseif spellId == 227008 then
@@ -630,20 +591,14 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif spellId == 206516 then--The Eye of Aman'Thul (phase 1 buff)
 		self.vb.phase = 1.5
 		timerLiquidHellfireCD:Stop()
-		countdownLiquidHellfire:Cancel()
 		timerFelEffluxCD:Stop()
 		timerLiquidHellfireCD:Start(5, self.vb.liquidHellfireCast+1)
-		countdownLiquidHellfire:Start(5)
 		timerFelEffluxCD:Start(10, self.vb.felEffluxCast+1)
 	elseif spellId == 227427 then--The Eye of Aman'Thul (phase 3 transition buff)
 		timerBondsofFelCD:Stop()
-		countdownBondsOfFel:Cancel()
 		timerLiquidHellfireCD:Stop()
-		countdownLiquidHellfire:Cancel()
 		timerEyeofGuldanCD:Stop()
-		countdownEyeofGuldan:Cancel()
 		timerHandofGuldanCD:Stop()
-		countdownHandofGuldan:Cancel()
 		timerWindsCD:Start(12, 1)
 		timerWellOfSouls:Start(15)
 		self.vb.eyeCast = 0
@@ -655,25 +610,20 @@ function mod:SPELL_AURA_APPLIED(args)
 			timerFelLordKurazCD:Stop()
 			timerFlamesofSargerasCD:Start(24.5, "1-1")
 			timerEyeofGuldanCD:Start(34.3, 1)
-			countdownEyeofGuldan:Start(34.3)
 			timerBlackHarvestCD:Start(55.7, 1)
-			countdownBlackHarvest:Start(55.7)
 			timerStormOfDestroyerCD:Start(72.6, 1)
 		else
 			self.vb.phase = 3
 			warnPhase3:Show()
 			warnPhase3:Play("pthree")
 			timerBlackHarvestCD:Start(self:IsLFR() and 73 or 63, 1)
-			countdownBlackHarvest:Start(self:IsLFR() and 73 or 63)
 			if self:IsEasy() then
 				timerFlamesofSargerasCD:Start(29, 1)
 				timerEyeofGuldanCD:Start(42.5, 1)
-				countdownEyeofGuldan:Start(42.5)
 				timerStormOfDestroyerCD:Start(94, 1)
 			else
 				timerFlamesofSargerasCD:Start(27.5, "1-1")
 				timerEyeofGuldanCD:Start(39, 1)
-				countdownEyeofGuldan:Start(39)
 				timerStormOfDestroyerCD:Start(84, 1)
 			end
 		end
@@ -759,9 +709,7 @@ function mod:UNIT_DIED(args)
 		self.vb.bossLeft = self.vb.bossLeft - 1
 		timerFlamesofSargerasCD:Stop()
 		timerEyeofGuldanCD:Stop()
-		countdownEyeofGuldan:Cancel()
  		timerBlackHarvestCD:Stop()
- 		countdownBlackHarvest:Cancel()
  		timerStormOfDestroyerCD:Stop()
  		timerWindsCD:Stop()
 	end
@@ -840,29 +788,19 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, bfaSpellId, _, legacySpellId)
 				warnPhase2:Show()
 				warnPhase2:Play("ptwo")
 				timerLiquidHellfireCD:Stop()
-				countdownLiquidHellfire:Cancel()
 				timerFelEffluxCD:Stop()
 				timerTransition:Start(19)
-				local timer = 
 				timerBondsofFelCD:Start(self:IsTank() and 25.5 or 27.6, 1)
-				countdownBondsOfFel:Start(self:IsTank() and 25.5 or 27.6)
 				if self:IsLFR() then
 					timerEyeofGuldanCD:Start(54, 1)
-					countdownEyeofGuldan:Start(54)
 					timerLiquidHellfireCD:Start(67, 1)
-					countdownLiquidHellfire:Start(67)
 				elseif self:IsNormal() then
 					timerEyeofGuldanCD:Start(50.6, 1)
-					countdownEyeofGuldan:Start(50.6)
 					timerLiquidHellfireCD:Start(63.1, 1)
-					countdownLiquidHellfire:Start(63.1)
 				else--Heroic
 					timerHandofGuldanCD:Start(33, 1)
-					countdownHandofGuldan:Start(33)
 					timerEyeofGuldanCD:Start(48, 1)
-					countdownEyeofGuldan:Start(48)
 					timerLiquidHellfireCD:Start(59, 1)
-					countdownLiquidHellfire:Start(59)
 				end
 			end
 		end
@@ -880,10 +818,8 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, bfaSpellId, _, legacySpellId)
 		self.vb.crashCastCount  = self.vb.crashCastCount  + 1
 		if self.vb.crashCastCount == 4 or self.vb.crashCastCount == 7 then
 			timerFlameCrashCD:Start(50, self.vb.crashCastCount+1)
-			countdownFlameCrash:Start(50)
 		else
 			timerFlameCrashCD:Start(20, self.vb.crashCastCount+1)
-			countdownFlameCrash:Start(20)
 		end
 	elseif spellId == 227283 then -- Nightorb
 		self.vb.orbCastCount = self.vb.orbCastCount + 1

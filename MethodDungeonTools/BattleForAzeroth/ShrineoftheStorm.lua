@@ -1,5 +1,5 @@
 local dungeonIndex = 18
-MethodDungeonTools.dungeonTotalCount[dungeonIndex] = {normal=662,teeming=794,teemingEnabled=true}
+MethodDungeonTools.dungeonTotalCount[dungeonIndex] = {normal=695,teeming=794,teemingEnabled=true}
 MethodDungeonTools.mapPOIs[dungeonIndex] = {
     [1] = {
         [1] = {
@@ -1422,7 +1422,7 @@ MethodDungeonTools.dungeonEnemies[dungeonIndex] = {
       ["displayId"] = 84789;
       ["creatureType"] = "Humanoid";
       ["level"] = 121;
-      ["count"] = 18;
+      ["count"] = 36;
       ["characteristics"] = {
          ["Taunt"] = true;
       };
@@ -2135,7 +2135,7 @@ MethodDungeonTools.dungeonEnemies[dungeonIndex] = {
       ["displayId"] = 84796;
       ["creatureType"] = "Humanoid";
       ["level"] = 121;
-      ["count"] = 18;
+      ["count"] = 36;
       ["characteristics"] = {
          ["Taunt"] = true;
       };
@@ -2357,7 +2357,7 @@ MethodDungeonTools.dungeonEnemies[dungeonIndex] = {
       ["stealthDetect"] = true;
       ["name"] = "Living Current";
       ["health"] = 689517;
-      ["count"] = 13;
+      ["count"] = 18;
       ["displayId"] = 88525;
       ["creatureType"] = "Elemental";
       ["level"] = 121;
@@ -2383,7 +2383,7 @@ MethodDungeonTools.dungeonEnemies[dungeonIndex] = {
       };
       ["stealthDetect"] = true;
       ["scale"] = 1.2;
-      ["count"] = 18;
+      ["count"] = 36;
       ["health"] = 1149195;
       ["displayId"] = 65631;
       ["creatureType"] = "Elemental";
@@ -2722,7 +2722,7 @@ MethodDungeonTools.dungeonEnemies[dungeonIndex] = {
       };
       ["id"] = 134417;
       ["health"] = 842743;
-      ["count"] = 10;
+      ["count"] = 12;
       ["displayId"] = 79040;
       ["creatureType"] = "Humanoid";
       ["level"] = 121;
@@ -2955,7 +2955,7 @@ MethodDungeonTools.dungeonEnemies[dungeonIndex] = {
       };
       ["id"] = 140038;
       ["health"] = 153226;
-      ["count"] = 3;
+      ["count"] = 2;
       ["displayId"] = 74319;
       ["creatureType"] = "Beast";
       ["level"] = 120;
@@ -3000,6 +3000,72 @@ MethodDungeonTools.dungeonEnemies[dungeonIndex] = {
       ["level"] = 122;
       ["name"] = "Galecaller Faye";
       ["scale"] = 1;
+   };
+   [28] = {
+      ["clones"] = {
+
+      };
+      ["scale"] = 1;
+      ["spells"] = {
+         [302417] = {};
+         [302418] = {};
+         [302415] = {};
+      };
+      ["characteristics"] = {
+         ["Taunt"] = true;
+      };
+      ["health"] = 305938;
+      ["count"] = 9;
+      ["name"] = "Emissary of the Tides";
+      ["displayId"] = 39391;
+      ["creatureType"] = "Humanoid";
+      ["level"] = 120;
+      ["id"] = 155434;
+      ["iconTexture"] = 132315;
+   };
+   [29] = {
+      ["clones"] = {
+      };
+      ["scale"] = 1;
+      ["spells"] = {
+         [302419] = {};
+         [302420] = {};
+         [302421] = {};
+         [302415] = {};
+      };
+      ["stealthDetect"] = true;
+      ["characteristics"] = {
+         ["Taunt"] = true;
+      };
+      ["health"] = 497151;
+      ["count"] = 9;
+      ["name"] = "Void-Touched Emissary";
+      ["displayId"] = 39391;
+      ["creatureType"] = "Humanoid";
+      ["level"] = 122;
+      ["id"] = 155433;
+      ["iconTexture"] = 132886;
+   };
+   [13] = {
+      ["clones"] = {
+      };
+      ["scale"] = 1;
+      ["spells"] = {
+         [303632] = {};
+         [302415] = {};
+         [290027] = {};
+      };
+      ["characteristics"] = {
+         ["Taunt"] = true;
+      };
+      ["health"] = 7648472;
+      ["count"] = 0;
+      ["name"] = "Enchanted Emissary";
+      ["displayId"] = 39391;
+      ["creatureType"] = "Humanoid";
+      ["level"] = 121;
+      ["id"] = 155432;
+      ["iconTexture"] = 135735;
    };
 };
 

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1447, "DBM-HellfireCitadel", nil, 669)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041705938")
+mod:SetRevision("20190625143352")
 mod:SetCreatureID(93068)
 mod:SetEncounterID(1800)
 mod:SetZone()
@@ -74,15 +74,15 @@ local specWarnEmpBlackHole			= mod:NewSpecialWarningCount(189779, nil, nil, nil,
 --Fire Phase
 ----Boss
 local timerFelStrikeCD				= mod:NewCDTimer(13, 186271, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON)--15.8-17
-local timerFelSurgeCD				= mod:NewCDTimer(29, 186407, nil, "-Tank", 2, 3)
-local timerImpCD					= mod:NewNextTimer(25, "ej11694", nil, nil, nil, 1, 112866)
+local timerFelSurgeCD				= mod:NewCDTimer(29, 186407, nil, "-Tank", 2, 3, nil, nil, nil, 1, 3)
+local timerImpCD					= mod:NewNextTimer(25, "ej11694", nil, nil, nil, 1, 112866, nil, nil, 3, 4)
 ----Big Add
 local timerFelBlazeFlurryCD			= mod:NewCDTimer(12.9, 186453, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON)
 local timerFelChainsCD				= mod:NewCDTimer(30, 186490, nil, "-Tank", nil, 3)--30-34. Often 34 but it can and will be 30 sometimes.
 --Void Phase
 ----Boss
 local timerVoidStrikeCD				= mod:NewCDTimer(15, 186292, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON)
-local timerVoidSurgeCD				= mod:NewCDTimer(29, 186333, nil, "-Tank", 2, 3)
+local timerVoidSurgeCD				= mod:NewCDTimer(29, 186333, nil, "-Tank", 2, 3, nil, nil, nil, 2, 3)
 local timerVoidsCD					= mod:NewNextTimer(30, "ej11714", nil, "Ranged", nil, 1, 697)
 ----Big Add
 local timerWitheringGazeCD			= mod:NewCDTimer(22, 186783, nil, "Tank", 2, 5, nil, DBM_CORE_TANK_ICON)
@@ -92,10 +92,6 @@ local timerEmpBlackHoleCD			= mod:NewCDCountTimer(29.5, 189779, 186546, "-Tank",
 local timerOverwhelmingChaosCD		= mod:NewNextCountTimer(10, 187204, nil, nil, 2, 2, nil, DBM_CORE_HEALER_ICON)
 
 --local berserkTimer					= mod:NewBerserkTimer(360)
-
-local countdownFelSurge				= mod:NewCountdown(30, 186407, "-Tank", nil, 3)
-local countdownVoidSurge			= mod:NewCountdown("Alt30", 186333, "Ranged", nil, 3)
-local countdownImps					= mod:NewCountdown("AltTwo25", "ej11694", "Dps", nil, 4)
 
 --Warning behavior choices for Chains.
 --Cast only gives original target, not all targets, but does so 3 seconds faster. It allows the person to move early and change other players they affect with chains by pre moving.
@@ -151,7 +147,6 @@ local function ImpRepeater(self)
 		warnImps:Show(self.vb.impCount)
 	end
 	timerImpCD:Start(nil, self.vb.impCount+1)
-	countdownImps:Start()
 	self:Schedule(25, ImpRepeater, self)
 	if self.Options.SetIconOnImps then
 		if self.vb.impActive > 0 then--Last set isn't dead yet, use alternate icons
@@ -210,7 +205,6 @@ function mod:OnCombatStart(delay)
 	table.wipe(AddsSeen)
 	timerFelStrikeCD:Start(8-delay)
 	timerFelSurgeCD:Start(21-delay)
-	countdownFelSurge:Start(21-delay)
 end
 
 function mod:OnCombatEnd()
@@ -316,10 +310,8 @@ function mod:SPELL_CAST_SUCCESS(args)
 	local spellId = args.spellId
 	if spellId == 186407 then
 		timerFelSurgeCD:Start()
-		countdownFelSurge:Start()
 	elseif spellId == 186333 then
 		timerVoidSurgeCD:Start()
-		countdownVoidSurge:Start()
 	elseif spellId == 186490 then
 		if self.Options.ChainsBehavior == "Applied" then--Start timer here if method is set to only applied
 			timerFelChainsCD:Start()
@@ -507,7 +499,6 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 		warnFelPortal:Show()
 		if not self:IsLFR() then
 			timerImpCD:Start(10)
-			countdownImps:Start(10)
 			self:Schedule(10, ImpRepeater, self)
 		end
 	elseif spellId == 187006 then--Activate Void Portal
@@ -515,7 +506,6 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 		warnVoidPortal:Show()
 		timerFelStrikeCD:Stop()
 		timerFelSurgeCD:Stop()
-		countdownFelSurge:Cancel()
 		if not self:IsLFR() then
 			timerVoidsCD:Start(10.5)
 			self:Schedule(10.5, VoidsRepeater, self)
@@ -527,7 +517,6 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 		self.vb.phase = 2
 		timerVoidStrikeCD:Start(8.5)--TODO, reverify?
 		timerVoidSurgeCD:Start(17.8)--TODO, reverify?
-		countdownVoidSurge:Start(17.8)--TODO, reverify?
 	elseif spellId == 189047 then--Phase 3 (Shadowfel Phasing)
 		self.vb.phase = 3
 		warnPhase3:Show()
@@ -536,17 +525,13 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 			timerVoidStrikeCD:Stop()--Regardless of what was left on timer, he will use it immediately after shadowfel phasing
 		end
 		timerVoidSurgeCD:Stop()
-		countdownVoidSurge:Cancel()
 		timerFelSurgeCD:Start(7)
-		countdownFelSurge:Start(7)
 		timerFelStrikeCD:Start(8)
 		timerVoidSurgeCD:Start(16)--Regardless of what was left on timer, this resets to 16
-		countdownVoidSurge:Start(16)
 	elseif spellId == 187209 then--Overwhelming Chaos (Activation)
 		self.vb.phase = 4
 		timerImpCD:Stop()
 		timerVoidsCD:Stop()
-		countdownImps:Cancel()
 		self:Unschedule(ImpRepeater)
 		self:Unschedule(VoidsRepeater)
 		timerOverwhelmingChaosCD:Start(nil, 1)

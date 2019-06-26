@@ -510,6 +510,8 @@ TMW.BE = {
 			 287568, -- Enveloping Protection               (Ward of Envelopment, Battle of Dazar'alor raid)
 			 287722, -- Death Denied                        (priest, azerite trait)
 			 288024, -- Diamond Barrier                     (Diamond-Laced Refracting Prism, Battle of Dazar'alor raid)
+			 295271, -- Umbral Shell                        (Void Stone, Crucible of Storms raid)
+			 295431, -- Ephemeral Vigor                     (Abyssal Speaker's Gauntlets, Crucible of Storms raid)
 		},
 		ImmuneToMagicCC = {
 			    642, -- Divine Shield                       (paladin, general)

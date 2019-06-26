@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1147, "DBM-BlackrockFoundry", nil, 457)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041705938")
+mod:SetRevision("20190625143352")
 mod:SetCreatureID(76906)--81315 Crack-Shot, 81197 Raider, 77487 Grom'kar Firemender, 80791 Grom'kar Man-at-Arms, 81318 Iron Gunnery Sergeant, 77560 Obliterator Cannon, 81612 Deforester
 mod:SetEncounterID(1692)
 mod:SetZone()
@@ -48,15 +48,13 @@ local specWarnBurning				= mod:NewSpecialWarningStack(164380, nil, 2)--Mythic
 --Operator Thogar
 local timerProtoGrenadeCD			= mod:NewCDTimer(11, 155864, nil, nil, nil, 3)
 local timerEnkindleCD				= mod:NewCDTimer(11.5, 155921, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON)
-local timerTrainCD					= mod:NewNextCountTimer("d15", 176312, nil, nil, nil, 1, nil, DBM_CORE_DEADLY_ICON)
+local timerTrainCD					= mod:NewNextCountTimer("d15", 176312, nil, nil, nil, 1, nil, DBM_CORE_DEADLY_ICON, nil, 1, 5)
 --Adds
 --local timerCauterizingBoltCD		= mod:NewNextTimer(30, 160140, nil, nil, nil, 4, nil, DBM_CORE_INTERRUPT_ICON)
 local timerIronbellowCD				= mod:NewCDTimer(8.5, 163753, nil, nil, nil, 2, nil, DBM_CORE_HEALER_ICON)
 local timerDelayedSiegeBomb			= mod:NewNextCountTimer(6, 159481)
 
 local berserkTimer					= mod:NewBerserkTimer(492)
-
-local countdownTrain				= mod:NewCountdown(4.5, 176312)
 
 mod:AddInfoFrameOption(176312)
 mod:AddSetIconOption("SetIconOnAdds", "ej9549", false, true)
@@ -372,9 +370,9 @@ local function lanePos(self)
 end
 
 local function laneCheck(self)
+	if self:HasMapRestrictions() then return end
 	local TrainTable = self:IsMythic() and mythicTrains or self:IsLFR() and lfrTrains or otherTrains
 	local train = self.vb.trainCount
-	if self:HasMapRestrictions() then return end
 	local playerLane = lanePos(self)
 	if TrainTable[train] and TrainTable[train][playerLane] then
 		specWarnTrain:Show()
@@ -681,11 +679,9 @@ function mod:CHAT_MSG_MONSTER_YELL(msg, npc, _, _, target)
 			self.vb.trainCount = self.vb.trainCount + 1
 			showTrainWarning(self)
 			if msg == "Fake" then
-				countdownTrain:Start(3.0)
 				laneCheck(self)
 				fakeAdjust = 1.5
 			else
-				countdownTrain:Start()
 				self:Schedule(1.5, laneCheck, self)
 			end
 		end

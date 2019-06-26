@@ -19,6 +19,7 @@
 	local _pairs = pairs --lua local
 	
 	local AddUnique = DetailsFramework.table.addunique --framework
+	local UnitGroupRolesAssigned = DetailsFramework.UnitGroupRolesAssigned --framework
 	
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --> constants
@@ -290,7 +291,7 @@
 							if (name == nome) then
 								local spec = GetArenaOpponentSpec (i)
 								if (spec) then
-									local id, name, description, icon, role, class = GetSpecializationInfoByID (spec) --thanks pas06
+									local id, name, description, icon, role, class = DetailsFramework.GetSpecializationInfoByID (spec) --thanks pas06
 									novo_objeto.role = role
 									novo_objeto.classe = class
 									novo_objeto.enemy = true
@@ -375,11 +376,8 @@
 
 	local pet_blacklist = {}
 	local pet_tooltip_frame = _G.DetailsPetOwnerFinder
-	local pet_text_object = _G ["DetailsPetOwnerFinderTextLeft2"]
-	local follower_text_object = _G ["DetailsPetOwnerFinderTextLeft3"]
-	
-	local line1 = _G ["DetailsPetOwnerFinderTextLeft2"]
-	local line2 = _G ["DetailsPetOwnerFinderTextLeft3"]
+	local pet_text_object = _G ["DetailsPetOwnerFinderTextLeft2"] --not in use
+	local follower_text_object = _G ["DetailsPetOwnerFinderTextLeft3"] --not in use
 
 	local find_pet_found_owner = function (ownerName, serial, nome, flag, self)
 		local ownerGuid = _UnitGUID (ownerName)
@@ -405,7 +403,8 @@
 		pet_tooltip_frame:SetOwner (WorldFrame, "ANCHOR_NONE")
 		pet_tooltip_frame:SetHyperlink ("unit:" .. serial or "")
 		
-		local text1 = line1:GetText()
+		local line1 = _G ["DetailsPetOwnerFinderTextLeft2"]
+		local text1 = line1 and line1:GetText()
 		if (text1 and text1 ~= "") then
 			for playerName, _ in _pairs (_detalhes.tabela_vigente.raid_roster) do
 				local pName = playerName
@@ -416,7 +415,8 @@
 			end
 		end
 		
-		local text2 = line2:GetText()
+		local line2 = _G ["DetailsPetOwnerFinderTextLeft3"]
+		local text2 = line2 and line2:GetText()
 		if (text2 and text2 ~= "") then
 			for playerName, _ in _pairs (_detalhes.tabela_vigente.raid_roster) do
 				local pName = playerName

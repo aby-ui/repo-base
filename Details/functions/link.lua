@@ -28,6 +28,8 @@
 	
 	--templates
 	
+	local UnitGroupRolesAssigned = DetailsFramework.UnitGroupRolesAssigned
+	
 	_detalhes:GetFramework():InstallTemplate ("button", "DETAILS_FORGE_TEXTENTRY_TEMPLATE", {
 		backdrop = {bgFile = [[Interface\Tooltips\UI-Tooltip-Background]], tileSize = 64, tile = true}, --edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1, 
 		backdropcolor = {0, 0, 0, .1},
@@ -3690,7 +3692,7 @@
 					if (data [7]) then
 						local spellid = data[7]:gsub ("ej", "")
 						spellid = tonumber (spellid)
-						local title, description, depth, abilityIcon, displayInfo, siblingID, nextSectionID, filteredByDifficulty, link, startsOpen, flag1, flag2, flag3, flag4 = EJ_GetSectionInfo (spellid)
+						local title, description, depth, abilityIcon, displayInfo, siblingID, nextSectionID, filteredByDifficulty, link, startsOpen, flag1, flag2, flag3, flag4 = DetailsFramework.EncounterJournal.EJ_GetSectionInfo (spellid)
 						spellname, spellicon = title, abilityIcon
 					else
 						return
@@ -3818,7 +3820,7 @@
 				
 				if (type (spellid) == "number") then
 					if (spellid < 0) then
-						local title, description, depth, abilityIcon, displayInfo, siblingID, nextSectionID, filteredByDifficulty, link, startsOpen, flag1, flag2, flag3, flag4 = EJ_GetSectionInfo (abs (spellid))
+						local title, description, depth, abilityIcon, displayInfo, siblingID, nextSectionID, filteredByDifficulty, link, startsOpen, flag1, flag2, flag3, flag4 = DetailsFramework.EncounterJournal.EJ_GetSectionInfo (abs (spellid))
 						spellname, spellicon = title, abilityIcon
 					else
 						spellname, _, spellicon = GetSpellInfo (spellid)

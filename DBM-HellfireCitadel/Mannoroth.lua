@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1395, "DBM-HellfireCitadel", nil, 669)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041705938")
+mod:SetRevision("20190625143352")
 mod:SetCreatureID(91349)--91305 Fel Iron Summoner
 mod:SetEncounterID(1795)
 mod:SetZone()
@@ -74,7 +74,7 @@ local specWarnShadowForce			= mod:NewSpecialWarningSpell(181799, nil, nil, nil, 
 mod:AddTimerLine(OTHER)
 ----Doom Lords
 local timerCurseofLegionCD			= mod:NewNextCountTimer(64.8, 181275, nil, nil, nil, 1, nil, DBM_CORE_HEROIC_ICON)--Maybe see one day, in LFR or something when group is terrible or doesn't kill doom lord portal first
-local timerMarkofDoomCD				= mod:NewCDTimer(31.5, 181099, nil, "-Tank", nil, 3)
+local timerMarkofDoomCD				= mod:NewCDTimer(31.5, 181099, nil, "-Tank", nil, 3, nil, nil, nil, 3, 4)
 --local timerShadowBoltVolleyCD		= mod:NewCDTimer(12, 181126, nil, "-Healer", nil, 4)
 ----Fel Imps
 local timerFelImplosionCD			= mod:NewNextCountTimer(46, 181255, nil, nil, nil, 1, nil, DBM_CORE_DAMAGE_ICON)
@@ -84,17 +84,13 @@ local timerInfernoCD				= mod:NewNextCountTimer(107, 181180, nil, nil, nil, 1)
 local timerWrathofGuldanCD			= mod:NewNextTimer(107, 186348, 169826, nil, nil, 3, nil, DBM_CORE_HEROIC_ICON)
 --Mannoroth
 mod:AddTimerLine(L.name)
-local timerGlaiveComboCD			= mod:NewCDTimer(30, 181354, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON)--30 seconds unless delayed by something else
+local timerGlaiveComboCD			= mod:NewCDTimer(30, 181354, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON, nil, 2, 3)--30 seconds unless delayed by something else
 local timerFelHellfireCD			= mod:NewCDTimer(35, 181557, nil, nil, nil, 2)--35, unless delayed by other things.
 local timerGazeCD					= mod:NewCDTimer(47.1, 181597, 134029, nil, nil, 3, nil, DBM_CORE_DEADLY_ICON)--As usual, some variation do to other abilities
 local timerFelSeekerCD				= mod:NewCDTimer(49.5, 181735, nil, nil, nil, 2)--Small sample size, confirm it's not shorter if not delayed by things.
-local timerShadowForceCD			= mod:NewCDTimer(52.2, 181799, nil, nil, nil, 3, nil, DBM_CORE_DEADLY_ICON)
+local timerShadowForceCD			= mod:NewCDTimer(52.2, 181799, nil, nil, nil, 3, nil, DBM_CORE_DEADLY_ICON, nil, 1, 4)
 
 --local berserkTimer					= mod:NewBerserkTimer(360)
-
-local countdownGlaiveCombo			= mod:NewCountdown("Alt30", 181354, "Tank", nil, 3)
-local countdownMarkOfDoom			= mod:NewCountdownFades("AltTwo15", 181099, nil, nil, 3)
-local countdownShadowForce			= mod:NewCountdown(52, 181799, nil, nil, 3)
 
 mod:AddRangeFrameOption(20, 181099)
 mod:AddSetIconOption("SetIconOnGaze", 181597, false)
@@ -325,9 +321,7 @@ local function updateAllTimers(self, delay)
 		local extend = delay - (total-elapsed)
 		DBM:Debug("timerGlaiveComboCD extended by: "..extend, 2)
 		timerGlaiveComboCD:Stop()
-		countdownGlaiveCombo:Cancel()
 		timerGlaiveComboCD:Update(elapsed, total+extend)
-		countdownGlaiveCombo:Start(delay)
 	end
 	if timerFelSeekerCD:GetRemaining() < delay then
 		local elapsed, total = timerFelSeekerCD:GetTime()
@@ -349,9 +343,7 @@ local function updateAllTimers(self, delay)
 			local extend = delay - (total-elapsed)
 			DBM:Debug("timerShadowForceCD extended by: "..extend, 2)
 			timerShadowForceCD:Stop()
-			countdownShadowForce:Cancel()
 			timerShadowForceCD:Update(elapsed, total+extend)
-			countdownShadowForce:Start(delay)
 		end
 	end
 end
@@ -426,7 +418,6 @@ function mod:SPELL_CAST_START(args)
 	elseif spellId == 181799 or spellId == 182084 then
 		timerShadowForceCD:Start()
 		if self:IsTank() and self.vb.phase == 3 then return end--Doesn't target tanks in phase 3, ever.
-		countdownShadowForce:Start(52.5)
 		specWarnShadowForce:Show()
 		specWarnShadowForce:Play("keepmove")
 		updateAllTimers(self, 8)
@@ -525,7 +516,6 @@ function mod:SPELL_AURA_APPLIED(args)
 		end
 		if args:IsPlayer() then
 			specWarnMarkOfDoom:Show(self:IconNumToString(count))
-			countdownMarkOfDoom:Start()
 			if self:IsMythic() then
 				specWarnMarkOfDoom:Play("mm"..count)
 			else
@@ -619,9 +609,6 @@ function mod:SPELL_AURA_REMOVED(args)
 	local spellId = args.spellId
 	if spellId == 181099 then
 		self.vb.DoomTargetCount = self.vb.DoomTargetCount - 1
-		if args:IsPlayer() then
-			countdownMarkOfDoom:Cancel()
-		end
 		updateRangeFrame(self)
 		if self.Options.SetIconOnDoom2 and not self:IsLFR() then
 			self:SetIcon(args.destName, 0)
@@ -648,7 +635,6 @@ function mod:SPELL_AURA_REMOVED(args)
 				timerFelHellfireCD:Start(28)
 				timerGazeCD:Start(40)
 				timerGlaiveComboCD:Start(42.5)
-				countdownGlaiveCombo:Start(42.5)
 				timerFelSeekerCD:Start(58)
 			end
 		end
@@ -707,19 +693,15 @@ function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg, npc)
 			self.vb.ignoreAdds = true
 			timerFelHellfireCD:Stop()
 			timerShadowForceCD:Stop()
-			countdownShadowForce:Cancel()
 			timerGlaiveComboCD:Stop()
-			countdownGlaiveCombo:Cancel()
 			timerGazeCD:Stop()
 			timerFelSeekerCD:Stop()
 			timerFelHellfireCD:Start(27.8)
 			timerShadowForceCD:Start(32.6)
-			countdownShadowForce:Start(32.6)
 			--BOth gaze and combo seem 44, which you get first is random, and it'll delay other ability
 			--however they are BOTH 44ish, don't let one log fool
 			timerGazeCD:Start(44.5)
 			timerGlaiveComboCD:Start(44.9)
-			countdownGlaiveCombo:Start(44.9)
 			timerFelSeekerCD:Start(68)
 			warnPhase:Show(DBM_CORE_AUTO_ANNOUNCE_TEXTS.stage:format(self.vb.phase))
 			warnPhase:Play("pthree")
@@ -743,9 +725,7 @@ function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg, npc)
 			self.vb.ignoreAdds = true
 			timerFelHellfireCD:Stop()
 			timerShadowForceCD:Stop()
-			countdownShadowForce:Cancel()
 			timerGlaiveComboCD:Stop()
-			countdownGlaiveCombo:Cancel()
 			timerGazeCD:Stop()
 			timerFelSeekerCD:Stop()
 			if timerInfernoCD:GetRemaining(self.vb.infernalCount+1) > 9 then
@@ -753,10 +733,8 @@ function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg, npc)
 			end
 			timerFelHellfireCD:Start(16.9)
 			timerGlaiveComboCD:Start(27.8)
-			countdownGlaiveCombo:Start(27.8)
 			timerGazeCD:Start(35.6)
 			timerShadowForceCD:Start(47.3)
-			countdownShadowForce:Start(47.3)
 			timerFelSeekerCD:Start(65.6)
 			warnPhase:Show(DBM_CORE_AUTO_ANNOUNCE_TEXTS.stage:format(self.vb.phase))
 			warnPhase:Play("pfour")
@@ -818,7 +796,6 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 		timerCurseofLegionCD:Start(5, 1)
 		timerFelHellfireCD:Start(10.5)
 		timerGlaiveComboCD:Start(25.2)
-		countdownGlaiveCombo:Start(25.2)
 		timerFelImplosionCD:Start(27.4, 1)
 		timerFelSeekerCD:Start(40.2)
 		timerGazeCD:Start(49.5)--49.5-53
@@ -829,17 +806,13 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 		self.vb.ignoreAdds = true
 		timerFelHellfireCD:Stop()
 		timerShadowForceCD:Stop()
-		countdownShadowForce:Cancel()
 		timerGlaiveComboCD:Stop()
-		countdownGlaiveCombo:Cancel()
 		timerGazeCD:Stop()
 		timerFelSeekerCD:Stop()
 		timerFelHellfireCD:Start(22.3)
 		timerShadowForceCD:Start(27.1)
-		countdownShadowForce:Start(27.1)
 		timerGazeCD:Start(39.0)
 		timerGlaiveComboCD:Start(39.4)
-		countdownGlaiveCombo:Start(39.4)
 		timerFelSeekerCD:Start(62.5)
 		warnPhase:Show(DBM_CORE_AUTO_ANNOUNCE_TEXTS.stage:format(self.vb.phase))
 		warnPhase:Play("pthree")
@@ -864,9 +837,7 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 		self.vb.ignoreAdds = true
 		timerFelHellfireCD:Stop()
 		timerShadowForceCD:Stop()
-		countdownShadowForce:Cancel()
 		timerGlaiveComboCD:Stop()
-		countdownGlaiveCombo:Cancel()
 		timerGazeCD:Stop()
 		timerFelSeekerCD:Stop()
 		if timerInfernoCD:GetRemaining(self.vb.infernalCount+1) > 3.8 then
@@ -874,10 +845,8 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 		end
 		timerFelHellfireCD:Start(11.4)
 		timerGlaiveComboCD:Start(22.3)
-		countdownGlaiveCombo:Start(22.3)
 		timerGazeCD:Start(30.1)
 		timerShadowForceCD:Start(41.8)
-		countdownShadowForce:Start(45.8)
 		timerFelSeekerCD:Start(60.1)
 		warnPhase:Show(DBM_CORE_AUTO_ANNOUNCE_TEXTS.stage:format(self.vb.phase))
 		warnPhase:Play("pfour")
@@ -896,7 +865,6 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 	elseif spellId == 181354 then--183377 or 185831 also usable with SPELL_CAST_START but i like this way more, cleaner than Antispamming the other spellids
 		specWarnGlaiveCombo:Show()
 		timerGlaiveComboCD:Start()
-		countdownGlaiveCombo:Start()
 		specWarnGlaiveCombo:Play("defensive")
 		updateAllTimers(self, 4)
 	end

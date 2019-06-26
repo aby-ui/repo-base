@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("BrawlRank3", "DBM-Brawlers")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190416205700")
+mod:SetRevision("20190625143048")
 --mod:SetModelID(28649)
 mod:SetZone()
 mod:SetUsedIcons(8)
@@ -38,6 +38,7 @@ function mod:SPELL_CAST_START(args)
 			specWarnShotgunRoar:Show()
 		else
 			warnShotgunRoar:Show()
+			timerShotgunRoarCD:SetSTFade(true)
 		end
 	elseif args.spellId == 138845 then
 		if brawlersMod:PlayerFighting() then
@@ -57,6 +58,7 @@ function mod:SPELL_CAST_START(args)
 			specWarnDivineCircle:Show()
 		else
 			warnDivineCircle:Show()
+			timerDivineCircleCD:SetSTFade(true)
 		end
 	end
 end

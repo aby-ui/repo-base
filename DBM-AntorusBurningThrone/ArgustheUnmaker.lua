@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2031, "DBM-AntorusBurningThrone", nil, 946)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041705925")
+mod:SetRevision("20190625143337")
 mod:SetCreatureID(124828)
 mod:SetEncounterID(2092)
 mod:SetZone()
@@ -113,10 +113,10 @@ local timerBlightOrbCD				= mod:NewCDCountTimer(22, 248317, nil, nil, nil, 3)--2
 local timerTorturedRageCD			= mod:NewCDCountTimer(13, 257296, nil, nil, nil, 2, nil, DBM_CORE_HEALER_ICON)--13-16
 local timerSkyandSeaCD				= mod:NewCDCountTimer(24.9, 255594, nil, nil, nil, 5)--24.9-27.8
 mod:AddTimerLine(ENCOUNTER_JOURNAL_SECTION_FLAG12)--Mythic Stage 1
-local timerSargGazeCD				= mod:NewCDCountTimer(35.2, 258068, nil, nil, nil, 3, nil, DBM_CORE_HEROIC_ICON)
+local timerSargGazeCD				= mod:NewCDCountTimer(35.2, 258068, nil, nil, nil, 3, nil, DBM_CORE_HEROIC_ICON, nil, 1, 4)
 --Stage Two: The Protector Redeemed
 mod:AddTimerLine(SCENARIO_STAGE:format(2))
-local timerSoulBombCD				= mod:NewNextTimer(42, 251570, nil, nil, nil, 3, nil, DBM_CORE_TANK_ICON)
+local timerSoulBombCD				= mod:NewNextTimer(42, 251570, nil, nil, nil, 3, nil, DBM_CORE_TANK_ICON, nil, 3, 4)
 local timerSoulBurstCD				= mod:NewNextCountTimer("d42", 250669, nil, nil, nil, 3)
 local timerEdgeofObliterationCD		= mod:NewCDCountTimer(34, 255826, nil, nil, nil, 2)
 local timerAvatarofAggraCD			= mod:NewCDTimer(59.9, 255199, nil, nil, nil, 5, nil, DBM_CORE_TANK_ICON)
@@ -126,26 +126,15 @@ local timerCosmicRayCD				= mod:NewCDTimer(19.9, 252729, nil, nil, nil, 3)--All 
 local timerCosmicBeaconCD			= mod:NewCDTimer(19.9, 252616, nil, nil, nil, 4, nil, DBM_CORE_INTERRUPT_ICON)--All adds seem to cast it at same time, so one timer for all
 local timerDiscsofNorg				= mod:NewCastTimer(12, 252516, nil, nil, nil, 6)
 mod:AddTimerLine(ENCOUNTER_JOURNAL_SECTION_FLAG12)--Mythic 3
-local timerSoulrendingScytheCD		= mod:NewCDTimer(8.5, 258838, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON)
+local timerSoulrendingScytheCD		= mod:NewCDTimer(8.5, 258838, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON, nil, 2, 3)
 local timerSargSentenceCD			= mod:NewTimer(35.2, "timerSargSentenceCD", 257966, nil, nil, 3, DBM_CORE_HEROIC_ICON)
 local timerEdgeofAnniCD				= mod:NewCDTimer(5.5, 258834, nil, nil, nil, 3, nil, DBM_CORE_DEADLY_ICON)
 --Stage Four: The Gift of Life, The Forge of Loss (Non Mythic)
 mod:AddTimerLine(SCENARIO_STAGE:format(4))
 local timerDeadlyScytheCD			= mod:NewCDTimer(5.5, 258039, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON)
-local timerReorgModuleCD			= mod:NewCDCountTimer(48.1, 256389, nil, nil, nil, 1)
+local timerReorgModuleCD			= mod:NewCDCountTimer(48.1, 256389, nil, nil, nil, 1, nil, nil, nil, not mod:IsTank() and 2, 4)
 
 local berserkTimer					= mod:NewBerserkTimer(600)
-
---Stage One: Storm and Sky
-local countdownSweapingScythe		= mod:NewCountdown("Alt5", 248499, false, nil, 3)--Off by default since it'd be almost non stop, so users can elect into this one
-local countdownSargGaze				= mod:NewCountdown(35, 258068)
---Stage Two: The Protector Redeemed
-local countdownSoulbomb				= mod:NewCountdown("AltTwo50", 251570)
---Stage Three: Mythic
-local countdownSoulScythe			= mod:NewCountdown("Alt5", 258838, "Tank", nil, 3)
---Stage Four
-local countdownDeadlyScythe			= mod:NewCountdown("Alt5", 258039, false, nil, 3)--Off by default since it'd be almost non stop, so users can elect into this one
-local countdownReorgModule			= mod:NewCountdown("Alt48", 256389, "-Tank")
 
 mod:AddSetIconOption("SetIconGift", 255594, true)--5 and 6
 mod:AddSetIconOption("SetIconOnAvatar", 255199, true)--4
@@ -313,14 +302,12 @@ function mod:OnCombatStart(delay)
 	self.vb.firstscytheSwap = false
 	self.vb.rangeCheckNoTouchy = false
 	timerSweepingScytheCD:Start(5.5-delay, 1)
-	countdownSweapingScythe:Start(5.5)
 	timerSkyandSeaCD:Start(10.1-delay, 1)
 	timerTorturedRageCD:Start(12-delay, 1)
 	timerConeofDeathCD:Start(30.3-delay, 1)
 	timerBlightOrbCD:Start(35.2-delay, 1)
 	if self:IsMythic() then
 		timerSargGazeCD:Start(8.2-delay, 1)
-		countdownSargGaze:Start(8.2)
 		self:Schedule(6.2, ToggleRangeFinder, self)--Call Show 5 seconds Before NEXT rages get applied (2 seconds before cast + 3 sec cast time)
 		berserkTimer:Start(660-delay)
 	else
@@ -383,23 +370,18 @@ function mod:SPELL_CAST_START(args)
 		timerBlightOrbCD:Stop()
 		timerTorturedRageCD:Stop()
 		timerSweepingScytheCD:Stop()
-		countdownSweapingScythe:Cancel()
 		timerSkyandSeaCD:Stop()
 		timerNextPhase:Start(16)
 		timerSweepingScytheCD:Start(16.8, 1)
-		countdownSweapingScythe:Start(16.8)
 		timerAvatarofAggraCD:Start(20.9)
 		timerEdgeofObliterationCD:Start(21, 1)
 		timerSoulBombCD:Start(30.3)
-		countdownSoulbomb:Start(30.3)
 		timerSoulBurstCD:Start(30.3, 1)
 		if self:IsMythic() then
 			self:Unschedule(ToggleRangeFinder)
 			self.vb.gazeCount = 0
 			timerSargGazeCD:Stop()
-			countdownSargGaze:Cancel()
 			timerSargGazeCD:Start(25.7, 1)
-			countdownSargGaze:Start(25.7)
 			self:Schedule(23.7, ToggleRangeFinder, self)--Call Show 5 seconds Before NEXT rages get applied (2 seconds before cast + 3 sec cast time)
 		end
 	elseif spellId == 257645 then--Temporal Blast (Stage 3)
@@ -409,15 +391,12 @@ function mod:SPELL_CAST_START(args)
 			self.vb.phase = 3
 			warnPhase:Show(DBM_CORE_AUTO_ANNOUNCE_TEXTS.stage:format(3))
 			timerSweepingScytheCD:Stop()
-			countdownSweapingScythe:Cancel()
 			timerTorturedRageCD:Stop()
 			timerSoulBombCD:Stop()
-			countdownSoulbomb:Cancel()
 			timerSoulBurstCD:Stop()
 			timerEdgeofObliterationCD:Stop()
 			timerAvatarofAggraCD:Stop()
 			timerSargGazeCD:Stop()
-			countdownSargGaze:Cancel()
 			if not self:IsMythic() then
 				timerCosmicRayCD:Start(30)
 				timerCosmicBeaconCD:Start(40)
@@ -439,7 +418,6 @@ function mod:SPELL_CAST_START(args)
 		timerDiscsofNorg:Stop()
 		timerSargGazeCD:Stop()
 		self:Unschedule(ToggleRangeFinder)
-		countdownSargGaze:Cancel()
 		timerNextPhase:Start(35)--or 53.8
 	elseif spellId == 257619 then--Gift of the Lifebinder (p4/p3mythic)
 		warnGiftOfLifebinder:Show()
@@ -454,13 +432,10 @@ function mod:SPELL_CAST_SUCCESS(args)
 			self.vb.firstscytheSwap = true
 		end
 		timerSweepingScytheCD:Start(5.6, self.vb.scytheCastCount+1)
-		countdownSweapingScythe:Start(5.6)
 	elseif spellId == 258039 then
 		timerDeadlyScytheCD:Start()
-		countdownDeadlyScythe:Start(5.5)
 	elseif spellId == 258838 then--Mythic Scythe
 		timerSoulrendingScytheCD:Start()
-		countdownSoulScythe:Start(8.5)
 	elseif spellId == 255826 then
 		self.vb.EdgeofObliteration = self.vb.EdgeofObliteration + 1
 		specWarnEdgeofObliteration:Show()
@@ -476,14 +451,12 @@ function mod:SPELL_CAST_SUCCESS(args)
 		specWarnReorgModule:Show(self.vb.moduleCount)
 		specWarnReorgModule:Play("killmob")
 		timerReorgModuleCD:Start(nil, self.vb.moduleCount+1)
-		countdownReorgModule:Start()
 	elseif spellId == 258029 and self:AntiSpam(5, 7) then--Initialization Sequence (Mythic)
 		self.vb.moduleCount = self.vb.moduleCount + 1
 		specWarnApocModule:Show(self.vb.moduleCount)
 		specWarnApocModule:Play("killmob")
 		local timer = apocModuleTimers[self.vb.moduleCount+1] or 46.6
 		timerReorgModuleCD:Start(timer, self.vb.moduleCount+1)
-		countdownReorgModule:Start(timer)
 	end
 end
 
@@ -603,12 +576,10 @@ function mod:SPELL_AURA_APPLIED(args)
 		if self.vb.phase == 4 then
 			timerSoulBurstCD:Start(40, 2)
 			timerSoulBombCD:Start(80)
-			countdownSoulbomb:Start(80)
 			timerSoulBurstCD:Start(80, 1)
 		else
 			timerSoulBurstCD:Start(19.8, 2)
 			timerSoulBombCD:Start(41.3)
-			countdownSoulbomb:Start(41.3)
 			timerSoulBurstCD:Start(41.3, 1)
 		end
 	elseif spellId == 255199 then
@@ -818,21 +789,17 @@ function mod:SPELL_INTERRUPT(args)
 			self.vb.gazeCount = 0
 			self.vb.EdgeofObliteration = 0
 			timerSoulrendingScytheCD:Start(3.5)
-			countdownSoulScythe:Start(3.5)
 			timerEdgeofAnniCD:Start(5, 1)
 			self:Schedule(5, startAnnihilationStuff, self)
 			timerSargGazeCD:Start(20.2, 1)
-			countdownSargGaze:Start(20.2)
 			self:Schedule(18.2, ToggleRangeFinder, self)--Call Show 5 seconds Before NEXT rages get applied (2 seconds before cast + 3 sec cast time)
 			timerReorgModuleCD:Start(31.3, 1)
-			countdownReorgModule:Start(31.3)
 			timerTorturedRageCD:Start(40, 1)
 			timerSargSentenceCD:Start(53, 1)
 			--self:Schedule(63, checkForMissingSentence, self)
 		else
 			if not self:IsHeroic() then
 				timerSweepingScytheCD:Start(5, 1)
-				countdownSweapingScythe:Start(5)
 			else
 				timerDeadlyScytheCD:Start(5)
 			end
@@ -843,12 +810,10 @@ function mod:SPELL_INTERRUPT(args)
 			end
 			if remainingPercent then
 				timerReorgModuleCD:Start(48.1*remainingPercent, 1)
-				countdownReorgModule:Start(48.1*remainingPercent)
 			end
 			timerTorturedRageCD:Start(10, 1)
 			timerSoulBurstCD:Start(20, 1)--First one is only burst, afterwards it's bomb and burst then burst only again
 			timerSoulBombCD:Start(20)
-			countdownSoulbomb:Start(20)
 		end
 	end
 end
@@ -869,19 +834,16 @@ function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg)
 		self.vb.gazeCount = self.vb.gazeCount + 1
 		if self.vb.phase == 2 then
 			timerSargGazeCD:Start(59.7, self.vb.gazeCount+1)
-			countdownSargGaze:Start(59.7)
 		elseif self.vb.phase == 3 then
 			local timer = sargGazeTimers[self.vb.gazeCount+1]
 			if timer then
 				timerSargGazeCD:Start(timer, self.vb.gazeCount+1)
-				countdownSargGaze:Start(timer)
 				self:Unschedule(ToggleRangeFinder)
 				self:Schedule(5, ToggleRangeFinder, self, true)--Call hide 2 seconds after rages go out, function will check player for debuff and decide
 				self:Schedule(timer-2, ToggleRangeFinder, self)--Call Show 5 seconds Before NEXT rages get applied (2 seconds before cast + 3 sec cast time)
 			end
 		else--Stage 1
 			timerSargGazeCD:Start(35.2, self.vb.gazeCount+1)
-			countdownSargGaze:Start(35.2)
 			self:Unschedule(ToggleRangeFinder)
 			self:Schedule(5, ToggleRangeFinder, self, true)--Call hide 2 seconds after rages go out, function will check player for debuff and decide
 			self:Schedule(33.2, ToggleRangeFinder, self)--Call Show 5 seconds Before NEXT rages get applied (2 seconds before cast + 3 sec cast time)
@@ -898,14 +860,11 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 		self.vb.phase = 3
 		warnPhase:Show(DBM_CORE_AUTO_ANNOUNCE_TEXTS.stage:format(3))
 		timerSweepingScytheCD:Stop()
-		countdownSweapingScythe:Cancel()
 		timerTorturedRageCD:Stop()
 		timerSoulBombCD:Stop()
-		countdownSoulbomb:Cancel()
 		timerSoulBurstCD:Stop()
 		timerEdgeofObliterationCD:Stop()
 		timerSargGazeCD:Stop()
-		countdownSargGaze:Cancel()
 		if not self:IsMythic() then
 			timerCosmicRayCD:Start(42)
 			timerCosmicBeaconCD:Start(52)

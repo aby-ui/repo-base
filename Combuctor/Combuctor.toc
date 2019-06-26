@@ -1,4 +1,4 @@
-## Interface: 80100
+## Interface: 80200
 ## Title: Combuctor
 ## Author: Tuller & Jaliborc (João Cardoso)
 ## Notes: Pants are a dangerous foe

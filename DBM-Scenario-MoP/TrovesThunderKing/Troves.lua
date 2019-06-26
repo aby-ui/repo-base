@@ -1,14 +1,14 @@
 local mod	= DBM:NewMod("d620", "DBM-Scenario-MoP")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041710000")
+mod:SetRevision("20190625143417")
 mod:SetZone()
 
 mod:RegisterCombat("scenario", 1135)
 
 mod:RegisterEventsInCombat(
-	"SPELL_CAST_START",
-	"SPELL_AURA_APPLIED",
+	"SPELL_CAST_START 139777 136844",
+	"SPELL_AURA_APPLIED 139812",
 	"UNIT_AURA player"
 )
 mod.onlyNormal = true
@@ -18,10 +18,8 @@ local warnStoneSmash		= mod:NewCastAnnounce(139777, 3, nil, nil, false)
 local specWarnMightycrash	= mod:NewSpecialWarningMove(136844)
 local specWarnSaurok		= mod:NewSpecialWarningSpell(140009)
 
-local timerEvent			= mod:NewBuffFadesTimer(299, 140000, nil, nil, nil, 6)
+local timerEvent			= mod:NewBuffFadesTimer(299, 140000, nil, nil, nil, 6, nil, nil, nil, 1, 10)
 local timerStoneSmash		= mod:NewCastTimer(3, 139777, nil, false)
-
-local countdownEvent		= mod:NewCountdownFades(299, 140000, nil, nil, 10)
 
 local timerStarted = false
 local timerDebuff = DBM:GetSpellInfo(140000)
@@ -62,11 +60,9 @@ do
 		if DBM:UnitDebuff("player", timerDebuff) and not timerStarted then
 			timerStarted = true
 			timerEvent:Start()
-			countdownEvent:Start()
 		elseif not DBM:UnitDebuff("player", timerDebuff) and timerStarted then
 			timerStarted = false
 			timerEvent:Cancel()
-			countdownEvent:Cancel()
 			self:RegisterShortTermEvents(--First need to wait until after loading screen disabled fires before we end combat, to prevent auto recombat.
 				"LOADING_SCREEN_DISABLED"
 			)

@@ -45,7 +45,7 @@ function Addon:ADDON_LOADED(event, ...)
 
 	self:UnregisterEvent(event)
 	self:StartupSettings()
-	self:WatchCooldowns()
+	self.Cooldown:SetupHooks()
 end
 
 function Addon:PLAYER_ENTERING_WORLD()

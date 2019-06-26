@@ -700,13 +700,29 @@ function module.options:Load()
 		--31-40
 		{L.S_ZoneT23Storms..": "..L.bossName[2269],{1345,0.51,0.37,3}},		--Cabal
 		{L.S_ZoneT23Storms..": "..L.bossName[2273],{1346,0.27,0.53,3}},		--Uunat
+
+		{L.S_ZoneT24Eternal..": "..L.bossName[2298],{1512,0.49,0.48,3}},	--Abyssal Commander Sivara
+		{L.S_ZoneT24Eternal..": "..L.bossName[2305],{1513,0.47,0.19,6}},	--Radiance of Azshara
+		{L.S_ZoneT24Eternal..": "..L.bossName[2289],{1514,0.5,0.5,1}},		--Blackwater Behemoth
+		{L.S_ZoneT24Eternal..": "..L.bossName[2304],{1513,0.47,0.69,6}},	--Lady Ashvane
+		{L.S_ZoneT24Eternal..": "..L.bossName[2303],{1517,0.74,0.47,2.5}},	--Orgozoa
+		{L.S_ZoneT24Eternal..": "..L.bossName[2311],{1518,0.34,0.48,1.5}},	--The Queen's Court
+		{L.S_ZoneT24Eternal..": "..L.bossName[2293],{1519,0.17,0.48,4}},	--Za'qul
+		{L.S_ZoneT24Eternal..": "..L.bossName[2299],{1520,0.47,0.53,1.1}},	--Queen Azshara
+
+		--41-51
+		{L.EJInstanceName[1178].." [1]",{1490,0.6,nil,0.3}},
+		{L.EJInstanceName[1178].." [2]",{1491,nil,nil,0.9}},
+		{L.EJInstanceName[1178].." [3]",{1494,nil,nil,0.9}},
+		{L.EJInstanceName[1178].." [4]",{1497,nil,nil,0.9}},
 	}
 	local mapsSorted = {
 		1,10,
+		{L.S_ZoneT24Eternal,40,39,38,37,36,35,34,33},
 		{L.S_ZoneT23Storms,32,31},
 		{L.S_ZoneT23Siege,30,29,28,27,26,25,24,23,22,21,20},
 		{L.S_ZoneT22Uldir,9,8,11,7,6,5,4,2,3},
-		{DUNGEONS,12,13,14,15,16,17,18,19},
+		{DUNGEONS,41,42,43,44,12,13,14,15,16,17,18,19},
 	}
 	for i=1,#mapsSorted do
 		local p = mapsSorted[i]

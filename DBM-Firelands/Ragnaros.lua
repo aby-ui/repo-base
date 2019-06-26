@@ -1,12 +1,12 @@
 local mod	= DBM:NewMod(198, "DBM-Firelands", nil, 78)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041705904")
+mod:SetRevision("20190625143316")
 mod:SetCreatureID(52409)
 mod:SetEncounterID(1203)
 mod:SetZone()
 mod:SetUsedIcons(1, 2)
-mod:SetModelSound("Sound\\Creature\\RAGNAROS\\VO_FL_RAGNAROS_AGGRO.ogg", "Sound\\Creature\\RAGNAROS\\VO_FL_RAGNAROS_KILL_03.ogg")
+--mod:SetModelSound("Sound\\Creature\\RAGNAROS\\VO_FL_RAGNAROS_AGGRO.ogg", "Sound\\Creature\\RAGNAROS\\VO_FL_RAGNAROS_KILL_03.ogg")
 --Long: blah blah blah (didn't feel like transcribing it)
 --Short: This is my realm
 
@@ -83,9 +83,9 @@ local timerHandRagnaros		= mod:NewCDTimer(25, 98237, nil, "Melee", nil, 2)-- mig
 local timerWrathRagnaros	= mod:NewCDTimer(30, 98263, nil, "Ranged", nil, 3)--It's always 12 seconds after smash unless delayed by magmatrap or hand of rag.
 local timerBurningWound		= mod:NewTargetTimer(20, 99399, nil, "Tank|Healer", nil, 5, nil, DBM_CORE_TANK_ICON)
 local timerFlamesCD			= mod:NewNextTimer(40, 99171, nil, nil, nil, 3)
-local timerMoltenSeedCD		= mod:NewCDTimer(60, 98495, nil, nil, nil, 3, nil, DBM_CORE_DEADLY_ICON)--60 seconds CD in between from seed to seed. 50 seconds using the molten inferno trigger.
+local timerMoltenSeedCD		= mod:NewCDTimer(60, 98495, nil, nil, nil, 3, nil, DBM_CORE_DEADLY_ICON, nil, 1, 4)--60 seconds CD in between from seed to seed. 50 seconds using the molten inferno trigger.
 local timerMoltenInferno	= mod:NewNextTimer(10, 98518, nil, nil, nil, 2)--Cast bar for molten Inferno (seeds exploding)
-local timerLivingMeteorCD	= mod:NewNextCountTimer(45, 99268, nil, nil, nil, 1)
+local timerLivingMeteorCD	= mod:NewNextCountTimer(45, 99268, nil, nil, nil, 1, nil, nil, nil, 2, 4)
 local timerInvokeSons		= mod:NewCastTimer(17, 99014, nil, nil, nil, 1, nil, DBM_CORE_DEADLY_ICON..DBM_CORE_DAMAGE_ICON)--8 seconds for splitting blow, about 8-10 seconds after for them landing, using the average, 9.
 local timerLavaBoltCD		= mod:NewNextTimer(4, 98981)
 local timerBlazingHeatCD	= mod:NewCDTimer(20, 100460, nil, nil, nil, 3)
@@ -93,14 +93,9 @@ local timerPhaseSons		= mod:NewTimer(45, "TimerPhaseSons", 99014, nil, nil, 6)	-
 local timerCloudBurstCD		= mod:NewCDTimer(50, 100714)
 local timerBreadthofFrostCD	= mod:NewCDTimer(45, 100479)
 local timerEntrapingRootsCD	= mod:NewCDTimer(56, 100646, nil, nil, nil, 5)--56-60sec variations. Always cast before empowered sulf, varies between 3 sec before and like 11 sec before.
-local timerEmpoweredSulfCD	= mod:NewCDTimer(56, 100604, nil, nil, nil, 5, nil, DBM_CORE_DEADLY_ICON..DBM_CORE_TANK_ICON)--56-64sec variations
-local timerEmpoweredSulf	= mod:NewBuffActiveTimer(10, 100604, nil, "Tank", nil, 5, nil, DBM_CORE_DEADLY_ICON..DBM_CORE_TANK_ICON)
+local timerEmpoweredSulfCD	= mod:NewCDTimer(56, 100604, nil, nil, nil, 5, nil, DBM_CORE_DEADLY_ICON..DBM_CORE_TANK_ICON, nil, mod:IsTank() and 1, 5)--56-64sec variations
+local timerEmpoweredSulf	= mod:NewBuffActiveTimer(10, 100604, nil, "Tank", nil, 5, nil, DBM_CORE_DEADLY_ICON..DBM_CORE_TANK_ICON, nil, 1, 0)--Countout timer
 local timerDreadFlameCD		= mod:NewCDTimer(40, 100675, nil, false, nil, 5)--Off by default as only the people dealing with them care about it.
-
-local countdownSeeds		= mod:NewCountdown(60, 98495)
-local countdownMeteor		= mod:NewCountdown("Alt45", 99268)
-local countdownEmpoweredSulf= mod:NewCountdown(56, 100604, "Tank")--56-64sec variations
-local countoutEmpoweredSulf	= mod:NewCountout(10, 100604, "Tank")--Counts out th duration of empowered sulfurus, tanks too busy running around to pay attention to a timer, hearing duration counted should be infinitely helpful.
 
 local berserkTimer			= mod:NewBerserkTimer(1080)
 
@@ -171,11 +166,9 @@ local function TransitionEnded()
 		timerSulfurasSmash:Start(15.5)--Also a variation.
 		timerFlamesCD:Start(30)
 		warnLivingMeteorSoon:Schedule(35)
-		countdownMeteor:Start(45)
 		timerLivingMeteorCD:Start(45, 1)
 	elseif phase == 4 then
 		timerLivingMeteorCD:Cancel()
-		countdownMeteor:Cancel()
 		warnLivingMeteorSoon:Cancel()
 		timerFlamesCD:Cancel()
 		timerSulfurasSmash:Cancel()
@@ -184,7 +177,6 @@ local function TransitionEnded()
 		timerCloudBurstCD:Start()
 		timerEntrapingRootsCD:Start(67)
 		timerEmpoweredSulfCD:Start(83)
-		countdownEmpoweredSulf:Start(83)
 	end
 end
 
@@ -223,7 +215,6 @@ end
 local function warnSeeds()
 	warnMoltenSeed:Show()
 	specWarnMoltenSeed:Show()
-	countdownSeeds:Start(60)
 	timerMoltenSeedCD:Start()
 end
 
@@ -287,9 +278,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		warnEmpoweredSulf:Show(args.spellName)
 		specWarnEmpoweredSulf:Show()
 		timerEmpoweredSulf:Schedule(5)--Schedule 10 second bar to start when cast ends for buff active timer.
-		countoutEmpoweredSulf:Schedule(5)
 		timerEmpoweredSulfCD:Start()
-		countdownEmpoweredSulf:Start(56)
 	end
 end		
 mod.SPELL_AURA_APPLIED_DOSE = mod.SPELL_AURA_APPLIED
@@ -319,18 +308,14 @@ function mod:SPELL_CAST_START(args)
 				if self:IsDifficulty("heroic10", "heroic25") then
 					if self.Options.warnSeedsLand then
 						timerMoltenSeedCD:Update(6, 17.5)--Update the timer here if it's off, but timer still starts at yell so it has more visability sooner.
-						countdownSeeds:Start(11.5)
 					else
 						timerMoltenSeedCD:Update(6, 15)--Update the timer here if it's off, but timer still starts at yell so it has more visability sooner.
-						countdownSeeds:Start(9)--9.3-10.5 variation we use 9 to be extra safe as it has worked til now no reason to mess with it.
 					end
 				else
 					if self.Options.warnSeedsLand then
 						timerMoltenSeedCD:Update(16.2, 24)--Update the timer here if it's off, but timer still starts at yell so it has more visability sooner.
-						countdownSeeds:Start(7.8)
 					else
 						timerMoltenSeedCD:Update(16.2, 21.5)--I'll run more transcriptor logs to tweak this
-						countdownSeeds:Start(5.3)
 					end
 				end
 			end
@@ -339,7 +324,6 @@ function mod:SPELL_CAST_START(args)
 		sonsLeft = 8
 		phase = phase + 1
 		self:Unschedule(warnSeeds)
-		countdownSeeds:Cancel()
 		timerMoltenSeedCD:Cancel()
 		timerMagmaTrap:Cancel()
 		timerSulfurasSmash:Cancel()
@@ -442,8 +426,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 		meteorSpawned = meteorSpawned + 1
 		if meteorSpawned == 1 or meteorSpawned % 2 == 0 then--Spam filter, announce at 1, 2, 4, 6, 8, 10 etc. The way that they spawn
 			self:BossTargetScanner(52409, "LivingMeteorTarget", 0.025, 12)
-			timerLivingMeteorCD:Start(45, meteorSpawned+1)--Start new one with new count.
-			countdownMeteor:Start(45)
+			timerLivingMeteorCD:Start(45, meteorSpawned+1)--Start new one with new count
 			warnLivingMeteorSoon:Schedule(35)
 		end
 		if self.Options.MeteorFrame and meteorSpawned == 1 then--Show meteor frame and clear any health or aggro frame because nothing is more important then meteors.

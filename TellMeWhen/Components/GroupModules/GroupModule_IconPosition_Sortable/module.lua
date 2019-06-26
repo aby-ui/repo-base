@@ -301,17 +301,18 @@ function IconPosition_Sortable:PositionIcons()
 	for positionID = 1, #SortedIcons do
 		local icon = SortedIcons[positionID]
 		local x, y = self:Icon_SetPoint(icon, positionID)
+		local sizeX, sizeY = self.group.viewData:Icon_GetSize(icon)
 		if ShrinkGroup and icon.attributes.shown and icon.attributes.realAlpha > 0 then
-			maxX = max(maxX, abs(x))
-			maxY = max(maxY, abs(y))
+			maxX = max(maxX, abs(x) + sizeX)
+			maxY = max(maxY, abs(y) + sizeY)
 		end
 	end
 
 	if ShrinkGroup then
-		local group = self.group
-		local sizeX, sizeY = group.viewData:Icon_GetSize(group[1])
-
-		group:SetSize(maxX + sizeX, maxY + sizeY)
+		-- Frames can't be anchored to other frames that have a size of 0.
+		-- So, we put a minimum of 0.1 to get around this.
+		-- See also: GitHub #1694
+		self.group:SetSize(max(maxX, 0.1), max(maxY, 0.1))
 	end
 end
 

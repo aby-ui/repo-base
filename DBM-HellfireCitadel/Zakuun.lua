@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1391, "DBM-HellfireCitadel", nil, 669)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041705938")
+mod:SetRevision("20190625143352")
 mod:SetCreatureID(89890)
 mod:SetEncounterID(1777)
 mod:SetZone()
@@ -36,6 +36,7 @@ local specWarnWakeofDestruction			= mod:NewSpecialWarningSpell(181499, nil, nil,
 --Armed
 local specWarnDisarmedEnd				= mod:NewSpecialWarningEnd(179667)
 local specWarnSoulCleave				= mod:NewSpecialWarningCount(179406, "Melee", nil, nil, 1, 5)
+local specWarnDisembodiedYou			= mod:NewSpecialWarningYou(179407)
 local specWarnDisembodied				= mod:NewSpecialWarningTaunt(179407)
 local specWarnBefouled					= mod:NewSpecialWarningMoveAway(179711)--Aoe damage was disabled on ptr, bug?
 local specWarnBefouledOther				= mod:NewSpecialWarningTargetCount(179711, false)
@@ -51,15 +52,10 @@ local timerBefouledCD					= mod:NewNextTimer(38, 179711, nil, nil, nil, 3, nil, 
 local timerSoulCleaveCD					= mod:NewNextTimer(40, 179406, nil, nil, nil, 5, nil, DBM_CORE_TANK_ICON)
 local timerCavitationCD					= mod:NewNextTimer(40, 181461, nil, nil, nil, 2)
 --Disarmed
-local timerDisarmCD						= mod:NewNextTimer(85.8, 179667, nil, nil, nil, 6)
-local timerSeedsofDestructionCD			= mod:NewNextCountTimer(14.5, 181508, nil, nil, nil, 3, nil, DBM_CORE_DEADLY_ICON)--14.5-16
+local timerDisarmCD						= mod:NewNextTimer(85.8, 179667, nil, nil, nil, 6, nil, nil, nil, 1, 4)
+local timerSeedsofDestructionCD			= mod:NewNextCountTimer(14.5, 181508, nil, nil, nil, 3, nil, DBM_CORE_DEADLY_ICON, nil, 3, 4)--14.5-16
 
 --local berserkTimer					= mod:NewBerserkTimer(360)
-
-local countdownDisarm					= mod:NewCountdown(85.8, 179667)
-local countdownDisembodied				= mod:NewCountdownFades("AltTwo15", 179407, false)--Depends on whether or not you are going down.
-local countdownSeedsofDestructionCD		= mod:NewCountdown(14.5, 181508)--Seeds cannot be cast while disarm countdown is running, so this is fine.
-local countdownSeedsofDestruction		= mod:NewCountdownFades("Alt5", 181508)--Alt count for expiring is good.
 
 mod:AddRangeFrameOption(10, 179711)
 mod:AddInfoFrameOption(182008, false)
@@ -200,7 +196,6 @@ function mod:OnCombatStart(delay)
 	timerSoulCleaveCD:Start(25-delay, 1)
 	timerCavitationCD:Start(35-delay, 1)
 	timerDisarmCD:Start(86.7-delay)
-	countdownDisarm:Start(86.7-delay)
 	if UnitIsGroupLeader("player") and not self:IsLFR() then
 		if self.Options.SeedsBehavior == "Iconed" then
 			self:SendSync("Iconed")
@@ -253,10 +248,8 @@ function mod:SPELL_CAST_SUCCESS(args)
 		self.vb.SeedsCount = self.vb.SeedsCount + 1
 		if self.vb.Enraged then
 			timerSeedsofDestructionCD:Start(40, self.vb.SeedsCount+1)
-			countdownSeedsofDestructionCD:Start(40)
 		elseif self.vb.SeedsCount < 2 then--Only casts two between phases, unless enraged
 			timerSeedsofDestructionCD:Start(nil, self.vb.SeedsCount+1)
-			countdownSeedsofDestructionCD:Start(14.5)
 		end
 	elseif spellId == 179582 and self:AntiSpam(5, 4) then
 		self.vb.FissureCount = self.vb.FissureCount + 1
@@ -284,7 +277,6 @@ function mod:SPELL_AURA_APPLIED(args)
 		end
 		if self:AntiSpam(5, 2) then
 			self:Schedule(3.5, warnWake, self)
-			countdownSeedsofDestruction:Start()--Everyone, because waves occur.
 		end
 		seedsTargets[#seedsTargets+1] = args.destName
 		self:Unschedule(warnSeeds)
@@ -309,13 +301,10 @@ function mod:SPELL_AURA_APPLIED(args)
 		self.vb.SeedsCount = 0
 		specWarnDisarmed:Show()
 		timerSeedsofDestructionCD:Start(8.5, 1)--8.5-10
-		countdownSeedsofDestructionCD:Start(8.5)
 	elseif spellId == 179681 then--Enrage (has both armed and disarmed abilities)
 		timerDisarmCD:Stop()--Assumed
-		countdownDisarm:Cancel()
 		timerCavitationCD:Stop()
 		timerSeedsofDestructionCD:Stop()
-		countdownSeedsofDestructionCD:Cancel()
 		timerRumblingFissureCD:Stop()
 		timerSoulCleaveCD:Stop()
 		self.vb.Enraged = true
@@ -326,7 +315,6 @@ function mod:SPELL_AURA_APPLIED(args)
 		warnEnrage:Play("enrage")
 		timerRumblingFissureCD:Start(6, 1)--Keep an eye on this
 		timerSeedsofDestructionCD:Start(27, 1)
-		countdownSeedsofDestructionCD:Start(27)
 		timerCavitationCD:Start(35.5, 1)
 	elseif spellId == 189030 or spellId == 189031 or spellId == 189032 then
 		self.vb.befouledTargets = self.vb.befouledTargets + 1
@@ -344,7 +332,7 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif spellId == 179407 then
 		warnDisembodied:CombinedShow(0.3, self.vb.SoulCleaveCount, args.destName)
 		if args:IsPlayer() then
-			countdownDisembodied:Start()
+			specWarnDisembodiedYou:Show()
 		else
 			local uId = DBM:GetRaidUnitId(args.destName)
 			if self:IsTanking(uId, "boss1") then
@@ -377,7 +365,6 @@ function mod:SPELL_AURA_REMOVED(args)
 		timerSoulCleaveCD:Start(23, 1)
 		timerCavitationCD:Start(33, 1)
 		timerDisarmCD:Start()
-		countdownDisarm:Start()
 	elseif spellId == 182008 and self.Options.SetIconOnLatent then
 		self:SetIcon(args.destName, 0)
 	end

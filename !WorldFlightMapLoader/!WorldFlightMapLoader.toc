@@ -1,4 +1,4 @@
-## Interface: 80100
+## Interface: 80200
 ## Title: WorldFlightMap_Loader
 ## Notes: Required to load WorldFlightMap before other flight map addons
 ## Author: Semlar

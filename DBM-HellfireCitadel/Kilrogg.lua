@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1396, "DBM-HellfireCitadel", nil, 669)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041705938")
+mod:SetRevision("20190625143352")
 mod:SetCreatureID(90378)
 mod:SetEncounterID(1786)
 mod:SetZone()
@@ -15,7 +15,6 @@ mod:RegisterEventsInCombat(
 	"SPELL_CAST_SUCCESS 180410 180413",
 	"SPELL_AURA_APPLIED 180313 180200 188929 181488",
 	"SPELL_AURA_APPLIED_DOSE 180200",
-	"SPELL_AURA_REMOVED 181488",
 	"INSTANCE_ENCOUNTER_ENGAGE_UNIT",
 	"CHAT_MSG_MONSTER_YELL",
 	"RAID_BOSS_EMOTE",
@@ -51,19 +50,15 @@ local specWarnRendingHowl			= mod:NewSpecialWarningInterruptCount(183917, "HasIn
 --CDs used for all of them because of them screwing with eachother.
 --Coding them perfectly is probably possible but VERY ugly, would require tones of calculating on the overlaps and lots of on fly adjusting.
 --Adjusting one timer like blackhand no big deal, checking time remaining on THREE other abilities any time one of these are cast, and on fly adjusting, no
-local timerShredCD					= mod:NewCDTimer(17, 180199, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON)
+local timerShredCD					= mod:NewCDTimer(17, 180199, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON, nil, 2, 4)
 local timerHeartseekerCD			= mod:NewCDTimer(25, 180372, nil, nil, nil, 3)
-local timerVisionofDeathCD			= mod:NewCDCountTimer(75, 181488, nil, nil, nil, 5, nil, DBM_CORE_DEADLY_ICON)
+local timerVisionofDeathCD			= mod:NewCDCountTimer(75, 181488, nil, nil, nil, 5, nil, DBM_CORE_DEADLY_ICON, nil, 1, 4)
 local timerDeathThroesCD			= mod:NewCDCountTimer(40, 180224, nil, nil, nil, 2)
 --Adds
 local timerBloodthirsterCD			= mod:NewCDCountTimer(70.3, "ej11266", nil, nil, nil, 1, 131150, DBM_CORE_DAMAGE_ICON)--55969 is an iffy short name for bloodthirster since "bloodthirst" is all I could find that was close
 local timerRendingHowlCD			= mod:NewNextTimer(6, 183917, nil, "HasInterrupt", 2, 4, nil, DBM_CORE_INTERRUPT_ICON)
 
 local berserkTimer					= mod:NewBerserkTimer(600)
-
-local countdownVisionofDeathCD		= mod:NewCountdown(75, 181488, "Tank")
-local countdownShred				= mod:NewCountdown("Alt17", 180199, "Tank")
-local countdownVisionofDeath		= mod:NewCountdownFades("Alt60", 181488)
 
 mod:AddInfoFrameOption("ej11280")
 
@@ -83,11 +78,9 @@ function mod:OnCombatStart(delay)
 	self.vb.visionsCount = 0
 	timerBloodthirsterCD:Start(6-delay, 1)
 	timerShredCD:Start(10-delay)
-	countdownShred:Start(10-delay)
 	timerHeartseekerCD:Start(-delay)
 	timerDeathThroesCD:Start(39-delay, 1)
 	timerVisionofDeathCD:Start(61-delay, 1)
-	countdownVisionofDeathCD:Start(61-delay)
 	berserkTimer:Start(-delay)
 	table.wipe(AddsSeen)
 	if self.Options.InfoFrame then
@@ -106,7 +99,6 @@ function mod:SPELL_CAST_START(args)
 	local spellId = args.spellId
 	if spellId == 180199 then
 		timerShredCD:Start()
-		countdownShred:Start()
 		for i = 1, 5 do--Maybe only 1 needed, but don't know if any adds take boss IDs
 			local bossUnitID = "boss"..i
 			if UnitExists(bossUnitID) and UnitGUID(bossUnitID) == args.sourceGUID and UnitDetailedThreatSituation("player", bossUnitID) then--We are highest threat target
@@ -124,7 +116,6 @@ function mod:SPELL_CAST_START(args)
 		self.vb.visionsCount = self.vb.visionsCount + 1
 		specWarnVisionofDeath:Show(self.vb.visionsCount)
 		timerVisionofDeathCD:Start(nil, self.vb.visionsCount+1)
-		countdownVisionofDeathCD:Start()
 	elseif spellId == 180163 then
 		timerRendingHowlCD:Start(9.8, args.sourceGUID)--Savage strikes, replaces either 2nd or 3rd Howl. When it does, next howl is always 10 seconds later
 		for i = 1, 5 do--Maybe only 1 needed, but don't know if any adds take boss IDs
@@ -185,9 +176,6 @@ function mod:SPELL_AURA_APPLIED(args)
 		end
 	elseif spellId == 181488 then
 		warnVisionofDeath:CombinedShow(0.5, args.destName)
-		if args:IsPlayer() then
-			countdownVisionofDeath:Start()
-		end
 	elseif spellId == 180313 then
 		warnDemonicPossession:CombinedShow(0.5, args.destName)
 	elseif spellId == 180200 then
@@ -196,15 +184,6 @@ function mod:SPELL_AURA_APPLIED(args)
 	end
 end
 mod.SPELL_AURA_APPLIED_DOSE = mod.SPELL_AURA_APPLIED
-
-function mod:SPELL_AURA_REMOVED(args)
-	local spellId = args.spellId
-	if spellId == 181488 then
-		if args:IsPlayer() then
-			countdownVisionofDeath:Cancel()
-		end
-	end
-end
 
 --Boss always pre yells before the 3 adds jump down
 --3 adds always jump down rougly about 8 seconds after yell first two jump down together, one in back and one directly into puddle, gaurenteeing at least one hulking always.

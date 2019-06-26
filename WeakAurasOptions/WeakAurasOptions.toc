@@ -1,7 +1,7 @@
-## Interface: 80100
+## Interface: 80200
 ## Title: WeakAuras Options
 ## Author: Mirrored and the WeakAuras Team
-## Version: 2.12.4.2
+## Version: 2.13.1
 ## Notes: Options for WeakAuras
 ## Notes-esES: Opciones para WeakAuras
 ## Notes-deDE: Optionen für WeakAuras

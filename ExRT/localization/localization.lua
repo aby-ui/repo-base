@@ -24,6 +24,18 @@ zhTW +
 
 local L = localization
 
+local GetClassInfo,GetSpecializationInfoByID,EJ_GetEncounterInfo,EJ_GetInstanceInfo = GetClassInfo,GetSpecializationInfoByID,EJ_GetEncounterInfo,EJ_GetInstanceInfo
+
+if ExRT.isClassic then
+	GetClassInfo = ExRT.Classic.GetClassInfo
+	GetSpecializationInfoByID = ExRT.Classic.GetSpecializationInfoByID
+	EJ_GetEncounterInfo = ExRT.NULLfunc
+	EJ_GetInstanceInfo = ExRT.NULLfunc
+
+	if not EXPANSION_NAME7 then EXPANSION_NAME7 = "BFA" end	--Global rewrite
+	if not TOOLTIP_AZERITE_UNLOCK_LEVELS then TOOLTIP_AZERITE_UNLOCK_LEVELS = "" end	--Global rewrite
+end
+
 --- Class Names
 local classLocalizate = {
 	["WARRIOR"] = GetClassInfo(1),
@@ -239,12 +251,22 @@ local zoneEJids = {
 	S_ZoneT22Uldir = 1031,
 	S_ZoneT23Siege = 1176,
 	S_ZoneT23Storms = 1177,
+	S_ZoneT24Eternal = 1179,
 }
 for prefix,eID in pairs(zoneEJids) do
 	L[prefix] = EJ_GetInstanceInfo(eID)
 end
 
 local encounterIDtoEJidData = {
+	[2298] = 2352,	--Abyssal Commander Sivara
+	[2305] = 2353,	--Radiance of Azshara
+	[2289] = 2347,	--Blackwater Behemoth
+	[2304] = 2354,	--Lady Ashvane
+	[2303] = 2351,	--Orgozoa
+	[2311] = 2359,	--The Queen's Court
+	[2293] = 2349,	--Za'qul
+	[2299] = 2361,	--Queen Azshara
+
 	[2269] = 2328,	--The Restless Cabal
 	[2273] = 2332,	--Uu'nat, Harbinger of the Void
 

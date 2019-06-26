@@ -1,12 +1,12 @@
 local mod	= DBM:NewMod(1195, "DBM-Highmaul", nil, 477)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041705938")
+mod:SetRevision("20190625143352")
 mod:SetCreatureID(78948, 80557, 80551, 99999)--78948 Tectus, 80557 Mote of Tectus, 80551 Shard of Tectus
 mod:SetEncounterID(1722)--Hopefully win will work fine off this because otherwise tracking shard deaths is crappy
 mod:SetZone()
 mod:SetUsedIcons(8, 7, 6, 5, 4, 3, 2, 1)
-mod:SetModelSound("sound\\creature\\tectus\\VO_60_HMR_TECTUS_AGGRO_01.ogg", "sound\\creature\\tectus\\vo_60_hmr_tectus_spell_05.ogg")
+--mod:SetModelSound("sound\\creature\\tectus\\VO_60_HMR_TECTUS_AGGRO_01.ogg", "sound\\creature\\tectus\\vo_60_hmr_tectus_spell_05.ogg")
 
 mod:RegisterCombat("combat")
 mod.syncThreshold = 4--Rise Mountain can occur pretty often.
@@ -48,8 +48,6 @@ local timerCrystalBarrageCD			= mod:NewNextSourceTimer(30, 162346, nil, false, n
 local timerCrystalBarrage			= mod:NewBuffFadesTimer(15, 162346)
 
 local berserkTimer					= mod:NewBerserkTimer(600)
-
-local countdownEarthwarper			= mod:NewCountdown(41, "ej10061", "Melee")
 
 mod:AddSetIconOption("SetIconOnEarthwarper", "ej10061", true, true)
 mod:AddSetIconOption("SetIconOnMote", "ej10064", false, true)--Working with both shard and mote. ej10083 description is bad / This more or less assumes the 4 at a time strat. if you unleash 8 it will fail. Although any guild unleashing 8 is probably doing it wrong (minus LFR)
@@ -131,7 +129,6 @@ function mod:OnCombatStart(delay)
 	self.vb.healthPhase = 1
 	table.wipe(moteH)
 	timerEarthwarperCD:Start(8-delay)
-	countdownEarthwarper:Start(8-delay)
 	timerBerserkerCD:Start(18-delay)
 	if self:IsMythic() then
 		--Figure out berserk
@@ -230,7 +227,6 @@ function mod:SPELL_CAST_SUCCESS(args)
 			timerGiftOfEarthCD:Start(10)--TODO, verify timing on new event
 			timerEarthenFlechettesCD:Start(15)--TODO, verify timing on new event
 			timerEarthwarperCD:Start()--TODO, verify timing on new event
-			countdownEarthwarper:Start()--TODO, verify timing on new event
 			if self.Options.SetIconOnEarthwarper and self.vb.EarthwarperAlive < 9 and not (self:IsMythic() and self.Options.SetIconOnMote) then--Support for marking up to 8 mobs (you're group is terrible)
 				self:ScanForMobs(80599, 2, 9-self.vb.EarthwarperAlive, 1, 0.2, 13, "SetIconOnEarthwarper")
 			end
@@ -244,7 +240,6 @@ function mod:SPELL_CAST_SUCCESS(args)
 			self.vb.healthPhase = 2
 			if not self:IsMythic() then
 				timerEarthwarperCD:Stop()
-				countdownEarthwarper:Cancel()
 				timerBerserkerCD:Stop()
 			end
 		elseif cid == 80551 then

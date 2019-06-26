@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1761, "DBM-Nighthold", nil, 786)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041705925")
+mod:SetRevision("20190625143337")
 mod:SetCreatureID(104528)--109042
 mod:SetEncounterID(1886)
 mod:SetZone()
@@ -66,8 +66,8 @@ local yellCoN						= mod:NewPosYell(218809)
 --Mythic is unknown but I suspect it's inversed. Needs to be revetted with new changes
 --Stage 1: The High Botanist
 mod:AddTimerLine(SCENARIO_STAGE:format(1))
-local timerControlledChaosCD		= mod:NewNextTimer(35, 218438, nil, nil, nil, 3, nil, DBM_CORE_DEADLY_ICON)
-local timerParasiticFetterCD		= mod:NewNextTimer(35, 218304, nil, nil, nil, 3, nil, DBM_CORE_MAGIC_ICON)--Technically can also be made add timer instead of targetted
+local timerControlledChaosCD		= mod:NewNextTimer(35, 218438, nil, nil, nil, 3, nil, DBM_CORE_DEADLY_ICON, nil, 1, 4)
+local timerParasiticFetterCD		= mod:NewNextTimer(35, 218304, nil, nil, nil, 3, nil, DBM_CORE_MAGIC_ICON, nil, not mod:IsTank() and 2, 4)--Technically can also be made add timer instead of targetted
 local timerSolarCollapseCD			= mod:NewNextTimer(35, 218148, nil, nil, nil, 3)
 
 --Stage 2: Nightosis
@@ -77,19 +77,14 @@ local timerFlareCD					= mod:NewCDTimer(8.5, 218806, nil, "Melee", nil, 5, nil, 
 --Stage 3: Pure Forms
 mod:AddTimerLine(SCENARIO_STAGE:format(3))
 local timerToxicSporesCD			= mod:NewCDTimer(8, 219049, nil, nil, nil, 3)--Exception to 35, 40, 50 rule
-local timerGraceOfNatureCD			= mod:NewNextTimer(48, 218927, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON)--48-51
-local timerCoNCD					= mod:NewNextTimer(50, 218809, nil, nil, nil, 3)
+local timerGraceOfNatureCD			= mod:NewNextTimer(48, 218927, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON, nil, 2, 4)--48-51
+local timerCoNCD					= mod:NewNextTimer(50, 218809, nil, nil, nil, 3, nil, nil, nil, not mod:IsTank() and 3, 4)
 mod:AddTimerLine(PLAYER_DIFFICULTY6)
 local timerSummonChaosSpheresCD		= mod:NewNextTimer(35, 223034, nil, nil, nil, 1, nil, DBM_CORE_HEROIC_ICON)
-local timerCollapseofNightCD		= mod:NewNextTimer(35, 223437, nil, nil, nil, 3, nil, DBM_CORE_HEROIC_ICON)
+local timerCollapseofNightCD		= mod:NewNextTimer(35, 223437, nil, nil, nil, 3, nil, DBM_CORE_HEROIC_ICON, nil, not mod:IsTank() and 3, 4)
 local timerChaotiSpheresofNatureCD	= mod:NewNextTimer(35, 223219, nil, nil, nil, 1, nil, DBM_CORE_HEROIC_ICON)
 
 local berserkTimer					= mod:NewBerserkTimer(480)
-
-local countdownControlledChaos		= mod:NewCountdown(35, 218438)
-local countdownParasiticFetter		= mod:NewCountdown("Alt35", 218304, "-Tank")
-local countdownGraceOfNature		= mod:NewCountdown("Alt48", 218927, "Tank", nil, 6)
-local countdownCoN					= mod:NewCountdown("AltTwo50", 218809, "-Tank")
 
 mod:AddRangeFrameOption(8, 218807)
 mod:AddSetIconOption("SetIconOnFetter", 218304, true)
@@ -147,14 +142,10 @@ function mod:OnCombatStart(delay)
 		self.vb.globalTimer = 64
 		timerSolarCollapseCD:Start(5-delay)
 		timerParasiticFetterCD:Start(16-delay)--16-18
-		countdownParasiticFetter:Start(16-delay)
 		timerControlledChaosCD:Start(30-delay)
-		countdownControlledChaos:Start(30-delay)
 		timerPlasmaSpheresCD:Start(45-delay)
 		timerCoNCD:Start(57-delay)
-		countdownCoN:Start(57-delay)
 		timerGraceOfNatureCD:Start(65-delay)
-		countdownGraceOfNature:Start(65-delay)
 		warnGraceofNature:Schedule(60-delay)
 		berserkTimer:Start(540-delay)
 		if self.Options.SetIconOnNaturalist then
@@ -169,9 +160,7 @@ function mod:OnCombatStart(delay)
 		end
 		timerSolarCollapseCD:Start(10-delay)
 		timerParasiticFetterCD:Start(21-delay)
-		countdownParasiticFetter:Start(21-delay)
 		timerControlledChaosCD:Start(-delay)
-		countdownControlledChaos:Start()
 	end
 	if self.Options.NPAuraOnFixate then
 		DBM:FireEvent("BossMod_EnableHostileNameplates")
@@ -194,7 +183,6 @@ function mod:SPELL_CAST_START(args)
 		specWarnControlledChaos:Play("watchstep")
 		--Add filter to make sure it doesn't start timers off chaos spheres dying?
 		timerControlledChaosCD:Start(self.vb.globalTimer)
-		countdownControlledChaos:Start(self.vb.globalTimer)
 	elseif spellId == 223034 then--Summon Chaos Spheres
 		warnSummonChaosSpheres:Show()
 		timerSummonChaosSpheresCD:Start(self.vb.globalTimer)--Unknown
@@ -228,7 +216,6 @@ function mod:SPELL_CAST_START(args)
 		specWarnGraceOfNature:Show()
 		specWarnGraceOfNature:Play("bossout")
 		timerGraceOfNatureCD:Start(self.vb.globalTimer)
-		countdownGraceOfNature:Start(self.vb.globalTimer)
 		warnGraceofNature:Schedule(self.vb.globalTimer-5)
 	elseif spellId == 216830 then--Phase 2
 		self:Unschedule(checkForBuggedBalls)
@@ -236,26 +223,20 @@ function mod:SPELL_CAST_START(args)
 		warnPhase2:Show()
 		warnPhase2:Play("ptwo")
 		timerControlledChaosCD:Stop()
-		countdownControlledChaos:Cancel()
 		timerParasiticFetterCD:Stop()
-		countdownParasiticFetter:Cancel()
 		timerSolarCollapseCD:Stop()
 		if self:IsHeroic() then
 			self.vb.globalTimer = 40
 			timerPlasmaSpheresCD:Start(12)
 			timerParasiticFetterCD:Start(23.5)--SUCCESS
-			countdownParasiticFetter:Start(23.5)--SUCCESS
 			timerSolarCollapseCD:Start(32)
 			timerControlledChaosCD:Start(42)
-			countdownControlledChaos:Start(42)
 		else
 			self.vb.globalTimer = 60
 			timerPlasmaSpheresCD:Start(16)
 			timerParasiticFetterCD:Start(32)--SUCCESS
-			countdownParasiticFetter:Start(32)--SUCCESS
 			timerSolarCollapseCD:Start(45)
 			timerControlledChaosCD:Start(59)
-			countdownControlledChaos:Start(59)
 		end
 	elseif spellId == 216877 then--Phase 3
 		self:Unschedule(checkForBuggedBalls)
@@ -264,38 +245,28 @@ function mod:SPELL_CAST_START(args)
 		warnPhase3:Show()
 		warnPhase3:Play("pthree")
 		timerControlledChaosCD:Stop()
-		countdownControlledChaos:Cancel()
 		timerParasiticFetterCD:Stop()
-		countdownParasiticFetter:Cancel()
 		timerSolarCollapseCD:Stop()
 		timerPlasmaSpheresCD:Stop()
 		timerToxicSporesCD:Start(8)--Unchanged in any difficulty
 		if self:IsHeroic() then
 			self.vb.globalTimer = 50
 			timerGraceOfNatureCD:Start(10.5)
-			countdownGraceOfNature:Start(10.5)
 			warnGraceofNature:Schedule(5.5)
 			timerCoNCD:Start(20)
-			countdownCoN:Start(20)
 			timerPlasmaSpheresCD:Start(26)
 			timerParasiticFetterCD:Start(35.5)
-			countdownParasiticFetter:Start(35.5)
 			timerSolarCollapseCD:Start(42)
 			timerControlledChaosCD:Start(52)
-			countdownControlledChaos:Start(52)
 		else
 			self.vb.globalTimer = 70
 			timerGraceOfNatureCD:Start(13)
-			countdownGraceOfNature:Start(13)
 			warnGraceofNature:Schedule(8)
 			timerCoNCD:Start(26.5)
-			countdownCoN:Start(26.5)
 			timerPlasmaSpheresCD:Start(36)
 			timerParasiticFetterCD:Start(49)
-			countdownParasiticFetter:Start(49)
 			timerSolarCollapseCD:Start(59)
 			timerControlledChaosCD:Start(73)
-			countdownControlledChaos:Start(73)
 		end
 	elseif spellId == 223437 or spellId == 218807 then
 		self.vb.CoNIcon = 1
@@ -306,10 +277,8 @@ function mod:SPELL_CAST_SUCCESS(args)
 	local spellId = args.spellId
 	if spellId == 218424 then
 		timerParasiticFetterCD:Start(self.vb.globalTimer)
-		countdownParasiticFetter:Start(self.vb.globalTimer)
 	elseif spellId == 218807 then
 		timerCoNCD:Start(self.vb.globalTimer)
-		countdownCoN:Start(self.vb.globalTimer)
 	elseif spellId == 223437 then
 		timerCollapseofNightCD:Start(self.vb.globalTimer)
 	end
@@ -387,9 +356,7 @@ function mod:SPELL_AURA_APPLIED(args)
 			end
 			--Arcanist Timers
 			timerCoNCD:Stop()
-			countdownCoN:Cancel()
 			timerControlledChaosCD:Stop()
-			countdownControlledChaos:Cancel()
 			timerSummonChaosSpheresCD:Stop()
 			--Solar Timers
 			timerSolarCollapseCD:Stop()
@@ -400,7 +367,6 @@ function mod:SPELL_AURA_APPLIED(args)
 			timerToxicSporesCD:Stop()
 			timerParasiticFetterCD:Stop()
 			timerGraceOfNatureCD:Stop()
-			countdownGraceOfNature:Cancel()
 			warnGraceofNature:Cancel()
 		end
 		local cid = self:GetCIDFromGUID(args.destGUID)
@@ -411,7 +377,6 @@ function mod:SPELL_AURA_APPLIED(args)
 				
 			elseif cid == 109038 then--Solarist Lives
 				timerCollapseofNightCD:Start(22)
-				countdownCoN:Start(22)
 			elseif cid == 109041 then--Naturalist Lives
 				timerChaotiSpheresofNatureCD:Start(1)
 			end--]]
@@ -421,13 +386,11 @@ function mod:SPELL_AURA_APPLIED(args)
 				--Solarist Tel'arn replaces Solar Collapse with Collapse of Night when Arcanist Tel'arn is killed first. (or second, journal is incomplete)
 				if self.vb.phase == 2 then
 					timerCollapseofNightCD:Start(28)
-					countdownCoN:Start(28)
 					timerPlasmaSpheresCD:Start(40)
 					self:Schedule(45, checkForBuggedBalls, self)
 				else
 					--timerFlareCD:Start(8.2)
 					timerCollapseofNightCD:Start(22)
-					countdownCoN:Start(22)
 					timerPlasmaSpheresCD:Start(35)
 					self:Schedule(40, checkForBuggedBalls, self)
 				end
@@ -462,9 +425,7 @@ function mod:SPELL_AURA_APPLIED(args)
 				if self.vb.phase == 2 then
 					--Arcanist Tel'arn's Call of Night periodically summons Toxic Spores when Naturalist Tel'arn is killed first. (Does this also happen if killed second?)
 					timerCoNCD:Start(42)
-					countdownCoN:Start(42)
 					timerControlledChaosCD:Start(55)
-					countdownControlledChaos:Start(55)
 				else
 					--No ability changes? Probably at least inherits Call of night toxic spores
 				end

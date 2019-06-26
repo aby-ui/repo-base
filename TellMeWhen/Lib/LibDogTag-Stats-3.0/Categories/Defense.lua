@@ -1,5 +1,5 @@
 local MAJOR_VERSION = "LibDogTag-Stats-3.0"
-local MINOR_VERSION = 90000 + tonumber(("$Revision: 26 $"):match("%d+")) or 0
+local MINOR_VERSION = 90000 + tonumber(("$Revision: 35 $"):match("%d+")) or 0
 
 if MINOR_VERSION > _G.DogTag_Stats_MINOR_VERSION then
 	_G.DogTag_Stats_MINOR_VERSION = MINOR_VERSION
@@ -23,9 +23,17 @@ DogTag:AddTag("Stats", "ArmorRating", {
 
 DogTag:AddTag("Stats", "ArmorReduction", {
 	code = function(level)
-		level = level or UnitLevel("player")
 		local base, effectiveArmor = UnitArmor("player");
-		return PaperDollFrame_GetArmorReduction(effectiveArmor, level);
+		if PaperDollFrame_GetArmorReduction then
+			-- Supports WoW BFA+
+			level = level or UnitLevel("player")
+			return PaperDollFrame_GetArmorReduction(effectiveArmor, level);
+		else
+			-- Supports WoW Classic
+			level = level or UnitLevel("player")
+			local armorReduction = effectiveArmor/((85 * level) + 400);
+			return 100 * (armorReduction/(armorReduction + 1));
+		end
 	end,
 	arg = {
 		'level', 'number;undef', "@undef",

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1148, "DBM-Highmaul", nil, 477)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041705938")
+mod:SetRevision("20190625143352")
 mod:SetCreatureID(78238, 78237)--Pol 78238, Phemos 78237
 mod:SetEncounterID(1719)
 mod:SetZone()
@@ -40,25 +40,21 @@ local specWarnArcaneCharge			= mod:NewSpecialWarningSpell(163336, nil, nil, nil,
 
 --Phemos (100-106 second full rotation, 33-34 in between)
 mod:AddTimerLine((DBM:EJ_GetSectionInfo(9590)))
-local timerEnfeeblingRoarCD			= mod:NewNextCountTimer(33, 158057, nil, nil, nil, 5)
-local timerWhirlwindCD				= mod:NewNextCountTimer(33, 157943, nil, nil, nil, 2)
-local timerQuakeCD					= mod:NewNextCountTimer(34, 158200, nil, nil, nil, 2)
+local timerEnfeeblingRoarCD			= mod:NewNextCountTimer(33, 158057, nil, nil, nil, 5, nil, nil, nil, 1, 4)
+local timerWhirlwindCD				= mod:NewNextCountTimer(33, 157943, nil, nil, nil, 2, nil, nil, nil, 1, 4)
+local timerQuakeCD					= mod:NewNextCountTimer(34, 158200, nil, nil, nil, 2, nil, nil, nil, 1, 4)
 --Pol (84 seconds full rotation, 28-29 seconds in between)
 mod:AddTimerLine((DBM:EJ_GetSectionInfo(9595)))
-local timerShieldChargeCD			= mod:NewNextTimer(28, 158134, nil, nil, nil, 3)
-local timerInterruptingShoutCD		= mod:NewNextTimer(28, 158093)--No color classificatoin for this, hmm
-local timerInterruptingShout		= mod:NewCastTimer(3, 158093, nil, "SpellCaster")
-local timerPulverizeCD				= mod:NewNextTimer(29, 158385, nil, nil, nil, 3)--Aoe vs targeted, difficult classification, it's a bit of both
+local timerShieldChargeCD			= mod:NewNextTimer(28, 158134, nil, nil, nil, 3, nil, nil, nil, 2, 4)
+local timerInterruptingShoutCD		= mod:NewNextTimer(28, 158093, nil, nil, nil, 2, nil, nil, nil, 2, 4)--No color classificatoin for this, hmm
+local timerInterruptingShout		= mod:NewCastTimer(3, 158093, nil, "SpellCaster", nil, 5)
+local timerPulverizeCD				= mod:NewNextTimer(29, 158385, nil, nil, nil, 3, nil, nil, nil, 2, 4)--Aoe vs targeted, difficult classification, it's a bit of both
 --^^Even though 6 cd timers, coded smart to only need 2 up at a time, by using the predictability of "next ability" timing.
 mod:AddTimerLine(ENCOUNTER_JOURNAL_SECTION_FLAG12)
 local timerArcaneTwistedCD			= mod:NewNextTimer(55, 163297, nil, nil, nil, 6)
-local timerArcaneVolatilityCD		= mod:NewNextTimer(60, 163372, nil, nil, nil, 3)--Only first one acurate now. Now it's a mess, was fine on beta. 60 second cd. but now it's boss power based, off BOTH bosses and is a real mess
+local timerArcaneVolatilityCD		= mod:NewNextTimer(60, 163372, nil, nil, nil, 3, nil, nil, nil, 3, 4)--Only first one acurate now. Now it's a mess, was fine on beta. 60 second cd. but now it's boss power based, off BOTH bosses and is a real mess
 mod:AddTimerLine(ALL)
 local berserkTimer					= mod:NewBerserkTimer(420)--As reported in feedback threads
-
-local countdownPhemos				= mod:NewCountdown(33, nil, nil, "PhemosSpecial")
-local countdownPol					= mod:NewCountdown("Alt28", nil, nil, "PolSpecial")
-local countdownArcaneVolatility		= mod:NewCountdown("AltTwo60", 163372, "-Tank")
 
 local voicePhemos					= mod:NewVoice(nil, nil, "PhemosSpecialVoice")
 local voicePol						= mod:NewVoice(nil, nil, "PolSpecialVoice")
@@ -179,13 +175,11 @@ function mod:OnCombatStart(delay)
 	self.vb.arcaneDebuff = 0
 	self.vb.PulverizeRadar = false
 	timerQuakeCD:Start(12-delay, 1)
-	countdownPhemos:Start(12-delay)
 	if self:IsMythic() then
 		PhemosEnergyRate = 28
 		polEnergyRate = 23
 		timerArcaneTwistedCD:Start(33-delay)
 		timerArcaneVolatilityCD:Start(65-delay)
-		countdownArcaneVolatility:Start(65-delay)
 		berserkTimer:Start(-delay)
 		if self.Options.RangeFrame then
 			DBM.RangeCheck:Show(8, debuffFilter)
@@ -198,7 +192,6 @@ function mod:OnCombatStart(delay)
 		polEnergyRate = 28
 	end
 	timerShieldChargeCD:Start(polEnergyRate+10-delay)
-	countdownPol:Start(polEnergyRate+10-delay)
 	voicePol:Schedule(polEnergyRate+3.5-delay, "158134") --shield
 	if self.Options.InfoFrame then
 		DBM.InfoFrame:Show(4, "function", updateInfoFrame)
@@ -221,25 +214,21 @@ function mod:SPELL_CAST_START(args)
 		specWarnEnfeeblingRoar:Show(self.vb.EnfeebleCount)
 		if not self:IsMythic() and self.vb.QuakeCount == 1 then--On all other difficulties, quake is 1 second longer (only first)
 			timerQuakeCD:Start(PhemosEnergyRate+1, self.vb.QuakeCount+1)--Next Special
-			countdownPhemos:Start(PhemosEnergyRate+1)	
 			voicePhemos:Schedule(PhemosEnergyRate + 1 - 6.5, "158200")
 		else--On mythic, there is no longer ability than other 2, since 84 is more divisible by 3 than 100 is
 			timerQuakeCD:Start(PhemosEnergyRate, self.vb.QuakeCount+1)--Next Special
-			countdownPhemos:Start(PhemosEnergyRate)
 			voicePhemos:Schedule(PhemosEnergyRate - 6.5, "158200")
 		end
 	elseif spellId == 157943 then
 		self.vb.WWCount = self.vb.WWCount + 1
 		specWarnWhirlWind:Show(self.vb.WWCount)
 		timerEnfeeblingRoarCD:Start(PhemosEnergyRate, self.vb.EnfeebleCount+1)--Next Special
-		countdownPhemos:Start(PhemosEnergyRate)
 		voicePhemos:Schedule(PhemosEnergyRate - 6.8, "158057")
 		voicePhemos:Schedule(PhemosEnergyRate - 5.3, "gather")--Stack
 	elseif spellId == 158134 then
 		specWarnShieldCharge:Show()
 		specWarnShieldCharge:Play("chargemove")
 		timerInterruptingShoutCD:Start(polEnergyRate)--Next Special
-		countdownPol:Start(polEnergyRate)
 		voicePol:Schedule(polEnergyRate - 6.5, "158093") --shot
 		if self:IsSpellCaster() then
 			voicePol:Schedule(polEnergyRate - 0.5, "stopcast")
@@ -249,11 +238,9 @@ function mod:SPELL_CAST_START(args)
 		specWarnInterruptingShout:Play("stopcast")
 		if not self:IsMythic() and self.vb.PulverizeCount == 0 then
 			timerPulverizeCD:Start(polEnergyRate+1)--Next Special
-			countdownPol:Start(polEnergyRate+1)
 			voicePol:Schedule(polEnergyRate + 1 - 6.5, "157952") --pulverize
 		else--On mythic, there is no longer ability than other 2, since 84 is more divisible by 3 than 100 is
 			timerPulverizeCD:Start(polEnergyRate)--Next Special
-			countdownPol:Start(polEnergyRate)
 			voicePol:Schedule(polEnergyRate - 6.5, "157952") --pulverize
 		end
 	elseif spellId == 158200 then
@@ -261,7 +248,6 @@ function mod:SPELL_CAST_START(args)
 		self.vb.QuakeCount = self.vb.QuakeCount + 1
 		specWarnQuake:Show(self.vb.QuakeCount)
 		timerWhirlwindCD:Start(PhemosEnergyRate, self.vb.WWCount+1)
-		countdownPhemos:Start(PhemosEnergyRate)
 		voicePhemos:Schedule(PhemosEnergyRate - 6.5, "whirlwind")--Probably get this sound file renamed to "whirlwind" in 7.0
 	elseif spellId == 157952 then--Pulverize first cast that needs range finder
 		self.vb.PulverizeCount = self.vb.PulverizeCount + 1
@@ -300,7 +286,6 @@ function mod:SPELL_AURA_APPLIED(args)
 			self.vb.arcaneCast = self.vb.arcaneCast + 1
 			local cooldown = arcaneVTimers[self.vb.arcaneCast]
 			timerArcaneVolatilityCD:Start(cooldown)
-			countdownArcaneVolatility:Start(cooldown)
 		end
 		if args:IsPlayer() then
 			specWarnArcaneVolatility:Show()
@@ -334,7 +319,6 @@ function mod:SPELL_AURA_REFRESH(args)
 			self.vb.arcaneCast = self.vb.arcaneCast + 1
 			local cooldown = arcaneVTimers[self.vb.arcaneCast]
 			timerArcaneVolatilityCD:Start(cooldown)
-			countdownArcaneVolatility:Start(cooldown)
 		end
 		if args:IsPlayer() then
 			specWarnArcaneVolatility:Show()
@@ -372,7 +356,6 @@ function mod:SPELL_CAST_SUCCESS(args)
 		self.vb.PulverizeCount = 0
 		specWarnPulverize:Show()
 		timerShieldChargeCD:Start(polEnergyRate)--Next Special
-		countdownPol:Start(polEnergyRate)
 		voicePol:Play("scatter")
 		voicePol:Schedule(polEnergyRate-6.5, "158134")
 		if self.Options.RangeFrame and not DBM:UnitDebuff("player", arcaneDebuff) then--Show range 3 for everyone, unless have arcane debuff, then you already have range 8 showing everyone that's more important

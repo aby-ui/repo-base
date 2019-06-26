@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1202, "DBM-BlackrockFoundry", nil, 457)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041705938")
+mod:SetRevision("20190625144131")
 mod:SetCreatureID(77182)
 mod:SetEncounterID(1696)
 mod:SetZone()
@@ -37,12 +37,10 @@ local specWarnHungerDrive			= mod:NewSpecialWarningSpell("ej9964", nil, nil, nil
 local specWarnHungerDriveEnded		= mod:NewSpecialWarningFades("ej9964", nil, nil, nil, 1, 2)
 
 local timerBlackrockSpinesCD		= mod:NewCDTimer(18.5, 156834, nil, nil, nil, 4, nil, DBM_CORE_INTERRUPT_ICON)--20-23 (cd for barrages themselves too inconsistent and useless. but CD for when he recharges his spines, quite consistent)
-local timerAcidTorrentCD			= mod:NewCDCountTimer(13, 156240, nil, "Tank|Healer", 2, 5, nil, DBM_CORE_TANK_ICON)
+local timerAcidTorrentCD			= mod:NewCDCountTimer(13, 156240, nil, "Tank|Healer", 2, 5, nil, DBM_CORE_TANK_ICON, nil, 2, 4)
 local timerExplosiveShardCD			= mod:NewCDTimer(12, 156390, nil, "MeleeDps", 3, 3)--Every 12-20 seconds
 local timerExplosiveShard			= mod:NewCastTimer(3.5, 156390, nil, "MeleeDps")
 local timerRetchedBlackrockCD		= mod:NewCDTimer(15.5, 156179, nil, "Ranged", 2, 3)
-
-local countdownAcidTorrent			= mod:NewCountdown(13, 156240, "Tank")
 
 mod:AddDropdownOption("InterruptBehavior", {"Smart", "Fixed"}, "Smart", "misc")
 
@@ -72,7 +70,6 @@ function mod:OnCombatStart(delay)
 	timerRetchedBlackrockCD:Start(4.5-delay)--5-7
 	timerExplosiveShardCD:Start(9.5-delay)
 	timerAcidTorrentCD:Start(11-delay, 1)
-	countdownAcidTorrent:Start(12-delay)
 	timerBlackrockSpinesCD:Start(13-delay)--13-16
 --	berserkTimer:Start(-delay)
 end
@@ -92,7 +89,6 @@ function mod:SPELL_CAST_START(args)
 			warnAcidTorrent:Show(self.vb.torrentCount)
 		end
 		timerAcidTorrentCD:Start(nil, self.vb.torrentCount+1)
-		countdownAcidTorrent:Start()
 		specWarnAcidTorrent:ScheduleVoice(3, "changemt")
 	elseif spellId == 156179 then
 		self:ScheduleMethod(0.1, "BossTargetScanner", 77182, "RetchedBlackrockTarget", 0.04, 16)--give 0.1 delay before scan start.
@@ -108,7 +104,6 @@ function mod:SPELL_AURA_REMOVED(args)
 		timerRetchedBlackrockCD:Start(5)
 		timerExplosiveShardCD:Start(6)--7-9
 		timerAcidTorrentCD:Start(11, 1)--11-12
-		countdownAcidTorrent:Start(11)
 		timerBlackrockSpinesCD:Start(13)
 	elseif spellId == 156834 then
 		local bossPower = UnitPower("boss1")
@@ -168,7 +163,6 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 		timerBlackrockSpinesCD:Stop()
 		timerRetchedBlackrockCD:Stop()
 		timerAcidTorrentCD:Stop()
-		countdownAcidTorrent:Cancel()
 		timerExplosiveShardCD:Stop()
 		specWarnHungerDrive:Show()
 		specWarnHungerDrive:Play("phasechange")

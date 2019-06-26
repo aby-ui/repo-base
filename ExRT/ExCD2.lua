@@ -7,6 +7,18 @@ local UnitIsDeadOrGhost, UnitIsConnected, UnitName, UnitCreatureFamily, UnitIsDe
 local RaidInCombat, ClassColorNum, GetDifficultyForCooldownReset, DelUnitNameServer, NumberInRange = ExRT.F.RaidInCombat, ExRT.F.classColorNum, ExRT.F.GetDifficultyForCooldownReset, ExRT.F.delUnitNameServer, ExRT.F.NumberInRange
 local GetEncounterTime, UnitCombatlogname, GetUnitInfoByUnitFlag, ScheduleTimer, CancelTimer, GetRaidDiffMaxGroup, round, table_wipe2, dtime = ExRT.F.GetEncounterTime, ExRT.F.UnitCombatlogname, ExRT.F.GetUnitInfoByUnitFlag, ExRT.F.ScheduleTimer, ExRT.F.CancelTimer, ExRT.F.GetRaidDiffMaxGroup, ExRT.F.Round, ExRT.F.table_wipe, ExRT.F.dtime
 
+local GetSpellLevelLearned, GetInspectSpecialization, GetNumSpecializationsForClassID = GetSpellLevelLearned, GetInspectSpecialization, GetNumSpecializationsForClassID, GetTalentInfo
+local C_SpecializationInfo_GetInspectSelectedPvpTalent
+if ExRT.isClassic then
+	GetSpellLevelLearned = function () return 1 end
+	GetInspectSpecialization = function () return 0 end
+	GetNumSpecializationsForClassID = GetInspectSpecialization
+	GetTalentInfo = ExRT.NULLfunc
+	C_SpecializationInfo_GetInspectSelectedPvpTalent = ExRT.NULLfunc
+else
+	C_SpecializationInfo_GetInspectSelectedPvpTalent = C_SpecializationInfo.GetInspectSelectedPvpTalent
+end
+
 local VExRT, VExRT_CDE = nil
 
 local module = ExRT:New("ExCD2",ExRT.L.cd2)
@@ -307,6 +319,7 @@ module.db.spell_isTalent = {
 	[212084]=true,	[232893]=true,	[202138]=true,	[263648]=true,	
 	--Other & items
 	[67826]=true,
+	[298452]=true,	[299376]=true,	[299378]=true,	[303823]=true,	[304088]=true,	[304121]=true,	[295186]=true,	[298628]=true,	[299334]=true,	[298168]=true,	[299273]=true,	[299275]=true,	[293032]=true,	[299943]=true,	[299944]=true,	[296197]=true,	[299932]=true,	[299933]=true,	[296230]=true,	[299958]=true,	[299959]=true,	[293031]=true,	[300009]=true,	[300010]=true,	[293019]=true,	[298080]=true,	[298081]=true,	[295258]=true,	[299336]=true,	[299338]=true,	[296094]=true,	[299882]=true,	[299883]=true,	[294926]=true,	[300002]=true,	[300003]=true,	[295337]=true,	[299345]=true,	[299347]=true,	[295840]=true,	[299355]=true,	[299358]=true,	[302731]=true,	[302982]=true,	[302983]=true,	[298357]=true,	[299372]=true,	[299374]=true,	[296072]=true,	[299875]=true,	[299876]=true,	[295746]=true,	[300015]=true,	[300016]=true,	[295373]=true,	[299349]=true,	[299353]=true,	[296325]=true,	[299368]=true,	[299370]=true,	[297108]=true,	[298273]=true,	[298277]=true,	
 }
 
 module.db.spell_autoTalent = {		--Для маркировки базовых заклинаний спека, которые являются талантами у других спеков [spellID] = specID
@@ -424,6 +437,20 @@ module.db.spell_cdByTalent_fix = {		--Изменение кд талантом\�
 	[77761] = {288826,-60},
 	[109304] = {287938,-15},
 	[116849] = {277667,-20},
+
+	[296320] = {34433,"*0.85",123040,"*0.85",64843,"*0.85",31884,"*0.862",108280,"*0.877",51533,"*0.877",198067,"*0.877",192249,"*0.877",115203,"*0.9",115203,"*0.9",115310,"*0.9",137639,"*0.9",152173,"*0.9",194223,"*0.9",106951,"*0.9",61336,"*0.9",740,"*0.9",190319,"*0.9",12042,"*0.9",12472,"*0.9",191427,"*0.9",187827,"*0.9",55233,"*0.9",47568,"*0.9",275699,"*0.9",288613,"*0.9",193530,"*0.9",266779,"*0.9",205180,"*0.9",265187,"*0.9",1122,"*0.9",79140,"*0.9",13750,"*0.9",121471,"*0.9",227847,"*0.9",1719,"*0.9",107574,"*0.9"},
+	--[299367] = {34433,"*0.85",123040,"*0.85",64843,"*0.85",31884,"*0.862",108280,"*0.877",51533,"*0.877",198067,"*0.877",192249,"*0.877",115203,"*0.9",115203,"*0.9",115310,"*0.9",137639,"*0.9",152173,"*0.9",194223,"*0.9",106951,"*0.9",61336,"*0.9",740,"*0.9",190319,"*0.9",12042,"*0.9",12472,"*0.9",191427,"*0.9",187827,"*0.9",55233,"*0.9",47568,"*0.9",275699,"*0.9",288613,"*0.9",193530,"*0.9",266779,"*0.9",205180,"*0.9",265187,"*0.9",1122,"*0.9",79140,"*0.9",13750,"*0.9",121471,"*0.9",227847,"*0.9",1719,"*0.9",107574,"*0.9"},
+	--[299369] = {34433,"*0.85",123040,"*0.85",64843,"*0.85",31884,"*0.862",108280,"*0.877",51533,"*0.877",198067,"*0.877",192249,"*0.877",115203,"*0.9",115203,"*0.9",115310,"*0.9",137639,"*0.9",152173,"*0.9",194223,"*0.9",106951,"*0.9",61336,"*0.9",740,"*0.9",190319,"*0.9",12042,"*0.9",12472,"*0.9",191427,"*0.9",187827,"*0.9",55233,"*0.9",47568,"*0.9",275699,"*0.9",288613,"*0.9",193530,"*0.9",266779,"*0.9",205180,"*0.9",265187,"*0.9",1122,"*0.9",79140,"*0.9",13750,"*0.9",121471,"*0.9",227847,"*0.9",1719,"*0.9",107574,"*0.9"},
+	--Priest, Paladin, Shaman, Monk, Druid, Mage, DH, DK, Hunter, Warlock, Rogue, Warrior
+	[293019] = {298080,-15},
+	[294926] = {300002,-30},
+	[298168] = {299273,-30},
+	[295746] = {300015,-42},
+	[293031] = {300009,-15},
+	[296230] = {299958,-15},
+	[297108] = {298273,-30},
+	[298452] = {299376,-15},
+
 }
 
 module.db.tierSetsSpells = {}	--[specID.tierID.tierMark] = {2P Bonus Spell ID, 4P Bonus Spell ID}
@@ -565,6 +592,26 @@ do
 		{90633,90628},{90632,90626},{90631,89479},			--Guild Battle Standard
 		{86659,212641},							--Guardian of Ancient Kings [std,glyhed]
 		{200166,191427},						--DH Metamorphosis
+
+		{295373,299349,299353},	--The Crucible of Flame
+		{295186,298628,299334},	--Worldvein Resonance
+		{302731,302982,302983},	--Ripple in Space
+		{298357,299372,299374},	--Memory of Lucid Dreams
+		{293019,298080,298081},	--Azeroth's Undying Gift
+		{294926,300002,300003},	--Anima of Life and Death
+		{298168,299273,299275},	--Aegis of the Deep
+		{295746,300015,300016},	--Nullification Dynamo
+		{293031,300009,300010},	--Sphere of Suppression
+		{296197,299932,299933},	--The Well of Existence
+		{296094,299882,299883},	--Artifice of Time
+		{293032,299943,299944},	--Life-Binder's Invocation
+		{296072,299875,299876},	--The Ever-Rising Tide
+		{296230,299958,299959},	--Vitality Conduit
+		{295258,299336,299338},	--Essence of the Focusing Iris
+		{295840,299355,299358},	--Condensed Life-Force
+		{297108,298273,298277},	--Blood of the Enemy
+		{295337,299345,299347},	--Purification Protocol
+		{298452,299376,299378},	--The Unbound Force
 	}
 	for i=1,#sameSpellsData do
 		local list = sameSpellsData[i]
@@ -940,6 +987,8 @@ module.db.itemsToSpells = {	-- Тринкеты вида [item ID] = spellID
 	[144242] = 235039,
 	
 	[151978] = 251946,
+
+	[167865] = 295271,
 }
 module.db.itemsArtifacts = {}	-- Artifacts & First trait
 
@@ -976,6 +1025,8 @@ module.db.differentIcons = {	--Другие иконки заклинаниям
 	[31884] = "Interface\\Icons\\spell_holy_avenginewrath",	--Avenging Wrath
 	[1022] = "Interface\\Icons\\spell_holy_sealofprotection",	--Blessing of Protection
 	[62618] = "Interface\\Icons\\spell_holy_powerwordbarrier",	--Power Word: Barrier
+
+	[295271] = 1003587,
 }
 
 module.db.playerName = nil
@@ -4782,7 +4833,7 @@ function module.options:Load()
 	self.addSpellFrame.CURR_SPEC = {}
 	
 	function self.addSpellFrame:SetSpecButtons(class)
-	  	local specByClassTable = module.db.specByClass[class] or {0,-1,-2,-3}
+	  	local specByClassTable = module.db.specByClass[class] or {0,-1,-2,-3,-4}
 	  	local addSpellFrame = module.options.addSpellFrame
 	  	
 	  	local height = addSpellFrame:GetHeight() - 72
@@ -4801,6 +4852,9 @@ function module.options:Load()
 		  		elseif specID == -3 then	
 		  			button.text:SetText(L.classLocalizate["PET"])
 		  			button.icon:SetTexture("Interface\\Icons\\ability_hunter_aspectofthefox")	 
+		  		elseif specID == -4 then	
+		  			button.text:SetText(AZERITE_ESSENCE_ITEM_TYPE or "Essences")
+		  			button.icon:SetTexture(1869493)	 
 		  		end
 	  		else
 		  		local role = ExRT.GDB.ClassSpecializationRole[specID]
@@ -4864,6 +4918,8 @@ function module.options:Load()
 				newValue = "ITEMS"
 			elseif specNum == 3 then
 				newValue = "PET"
+			elseif specNum == 4 then
+				newValue = "ESSENCES"
 			end
 		end
 		local classDB = module.db.allClassSpells[newValue]
@@ -4967,7 +5023,9 @@ function module.options:Load()
 		end
 		
 		if not isItem then
-			GameTooltip:SetHyperlink(self.spellLink)
+			if self.spellLink then
+				GameTooltip:SetHyperlink(self.spellLink)
+			end
 		else
 			local _,itemLink = GetItemInfo(isItem)
 			GameTooltip:SetHyperlink(itemLink or self.spellLink)
@@ -5112,7 +5170,7 @@ function module.options:Load()
 	local function AddSpellFrameButtonsOnClick(self)
 		if not self.disabled then
 			local class = module.options.addSpellFrame.class
-			module.options:addNewSpell((class == "RACIAL" or class == "ITEMS") and "ALL" or class,self.line)
+			module.options:addNewSpell((class == "RACIAL" or class == "ITEMS" or class == "ESSENCES") and "ALL" or class,self.line)
 			module.options.addSpellFrame:Hide()
 		end
 	end
@@ -7390,12 +7448,14 @@ function module.options:Load()
 			[1] = { ButtonPos = { x = 310,	y = -50 },  	HighLightBox = { x = 0, y = -50, width = 660, height = 565 },		ToolTipDir = "DOWN",	ToolTipText = L.cd2HelpHistory },		
 		}
 	}
-	self.HELPButton = ExRT.lib.CreateHelpButton(self,self.HelpPlate,self.tab)
-	self.HELPButton:SetPoint("CENTER",self,"TOPLEFT",0,15)
+	if not ExRT.isClassic then
+		self.HELPButton = ExRT.lib.CreateHelpButton(self,self.HelpPlate,self.tab)
+		self.HELPButton:SetPoint("CENTER",self,"TOPLEFT",0,15)
 	
-	function self.HELPButton:Click2()
-		local min,max=module.options.ScrollBar:GetMinMaxValues()
-		module.options.ScrollBar:SetValue(max)
+		function self.HELPButton:Click2()
+			local min,max=module.options.ScrollBar:GetMinMaxValues()
+			module.options.ScrollBar:SetValue(max)
+		end
 	end
 end
 
@@ -8430,7 +8490,28 @@ module.db.allClassSpells = {
 	{235966,3,	{235966,75,	10},	},	--Velen's Future Sight
 	{235991,3,	{235991,75,	0},	},	--Kil'jaeden's Burning Wish
 	{251946,3,	{251946,120,	3},	},	--ABT Bulwark of Flame
-	
+	{295271,3,	{295271,120,	0},	},	--Void Stone
+},
+["ESSENCES"] = {
+	{295373,3,	{295373,30,	0},	},	--The Crucible of Flame
+	{295186,3,	{295186,60,	0},	},	--Worldvein Resonance
+	{302731,3,	{302731,60,	2},	},	--Ripple in Space
+	{298357,3,	{298357,120,	0},	},	--Memory of Lucid Dreams
+	{293019,3,	{293019,60,	4},	},	--Azeroth's Undying Gift
+	{294926,3,	{294926,150,	0},	},	--Anima of Life and Death
+	{298168,3,	{298168,120,	15},	},	--Aegis of the Deep
+	{295746,3,	{295746,180,	0},	},	--Nullification Dynamo
+	{293031,3,	{293031,60,	0},	},	--Sphere of Suppression
+	{296197,3,	{296197,15,	0},	},	--The Well of Existence
+	{296094,3,	{296094,180,	0},	},	--Artifice of Time
+	{293032,3,	{293032,120,	0},	},	--Life-Binder's Invocation
+	{296072,3,	{296072,30,	8},	},	--The Ever-Rising Tide
+	{296230,3,	{296230,60,	0},	},	--Vitality Conduit
+	{295258,3,	{295258,90,	0},	},	--Essence of the Focusing Iris
+	{295840,3,	{295840,180,	0},	},	--Condensed Life-Force
+	{297108,3,	{297108,120,	0},	},	--Blood of the Enemy
+	{295337,3,	{295337,60,	0},	},	--Purification Protocol
+	{298452,3,	{298452,60,	0},	},	--The Unbound Force
 },
 }
 ]]
@@ -8453,6 +8534,10 @@ moduleInspect.db.inspectID = nil
 moduleInspect.db.inspectCleared = nil
 
 module.db.inspectDB = moduleInspect.db.inspectDB	--Quick fix for other modules
+
+if ExRT.isClassic then
+	SetAchievementComparisonUnit = ExRT.NULLfunc
+end
 
 local inspectForce = false
 function moduleInspect:Force() inspectForce = true end
@@ -8498,6 +8583,72 @@ moduleInspect.db.itemsSlotTable = {
 
 local inspectScantip = CreateFrame("GameTooltip", "ExRTInspectScanningTooltip", nil, "GameTooltipTemplate")
 inspectScantip:SetOwner(UIParent, "ANCHOR_NONE")
+
+do
+	local essenceData = nil
+	local dbcData = {
+		[28] = {298452,298407,298452,298407, 298455,298448,299376,299375, 298456,298449,299378,299377, 298457,298450,299378,299377},
+		[32] = {303823,304081,303823,304081, 304086,304055,304088,304089, 303892,304125,304121,304123, 303894,304533,304121,304123},
+		[4] =  {295186,295078,295186,295078, 295209,295208,298628,298627, 295160,295165,299334,299333, 295210,295166,299334,299333},
+		[25] = {298168,298193,298168,298193, 298169,298351,299273,299274, 298174,298352,299275,299277, 298186,298353,299275,299277},
+		[20] = {293032,296207,293032,296207, 296220,296213,299943,299939, 296221,296214,299944,299940, 299520,299521,299944,299940},
+		[19] = {296197,296136,296197,296136, 296200,296192,299932,299935, 296201,296193,299933,299936, 299529,299530,299933,299936},
+		[21] = {296230,303448,296230,303448, 303472,303463,299958,303474, 296232,303460,299959,303476, 299559,299560,299959,303476},
+		[3] =  {293031,294910,293031,294910, 294906,294919,300009,300012, 294907,294920,300010,300013, 294908,294922,300010,300013},
+		[2] =  {293019,294668,293019,294668, 294653,294687,298080,298082, 294650,294688,298081,298083, 294655,294689,298081,298083},
+		[5] =  {295258,295246,295258,295246, 295262,295251,299336,299335, 295263,295252,299338,299337, 295264,295253,299338,299337},
+		[18] = {296094,296081,296094,296081, 296102,296091,299882,299885, 296103,296089,299883,299887, 299518,299519,299883,299887},
+		[7] =  {294926,294964,294926,294964, 295307,294970,300002,300004, 294945,294969,300003,300005, 295306,294972,300003,300005},
+		[6] =  {295337,295293,295337,295293, 295364,295363,299345,299343, 295352,295351,299347,299346, 295358,295333,299347,299346},
+		[14] = {295840,295834,295840,295834, 295841,295836,299355,299354, 295843,295837,299358,299357, 295892,295839,299358,299357},
+		[15] = {302731,302916,302731,302916, 302778,302957,302982,302984, 302780,302961,302983,302985, 302910,302962,302983,302985},
+		[27] = {298357,298268,298357,298268, 298376,298337,299372,299371, 298377,298339,299374,299373, 298405,298404,299374,299373},
+		[17] = {296072,296050,296072,296050, 296074,296067,299875,299878, 296075,296062,299876,299879, 299522,299523,299876,299879},
+		[13] = {295746,295750,295746,295750, 295747,295844,300015,300018, 295748,295846,300016,300020, 295749,295845,300016,300020},
+		[12] = {295373,295365,295373,295365, 295377,295372,299349,299348, 295379,295369,299353,299350, 295380,295381,299353,299350},
+		[22] = {296325,296320,296325,296320, 296326,296321,299368,299367, 303342,296322,299370,299369, 296328,296324,299370,299369},
+		[23] = {297108,297147,297108,297147, 297120,297177,298273,298274, 297122,297178,298277,298275, 298182,298183,298277,298275},
+	}
+	moduleInspect.db.essenceSpellsData = dbcData
+	local CURRENT_MAX,CURRENT_MIN = 32,2
+
+	function moduleInspect:GetEssenceData()
+		if not essenceData then
+			essenceData = {}
+			for i=CURRENT_MIN,CURRENT_MAX do 
+				local ess = C_AzeriteEssence.GetEssenceHyperlink(i,1)
+				if ess and ess ~= "" and dbcData[i] then
+					ess = ess:match("%[(.-)%]"):gsub("%-","%%-")
+
+					local currData = {
+						name = ess,
+						id = i,
+					}
+					essenceData[#essenceData+1] = currData
+
+					for j=1,4 do
+						for k=0,1 do
+							local spellID = dbcData[i][(j-1)*4+3+k]
+							local spellName,_,spellTexture = GetSpellInfo(spellID)
+
+							currData[j*(k == 0 and 1 or -1)] = {
+								icon = spellTexture,
+								spellID = spellID,
+								previewSpellID = dbcData[i][(j-1)*4+1+k],
+								name = ess,
+								id = i,
+								isMajor = k == 0,
+								tier = j,
+								link = C_AzeriteEssence.GetEssenceHyperlink(i,j),
+							}
+						end
+					end
+				end
+			end
+		end
+		return essenceData
+	end
+end
 
 local inspectLastTime = 0
 local function InspectNext()
@@ -8577,7 +8728,7 @@ end
 local InspectItems = nil
 do
 	local ITEM_LEVEL = (ITEM_LEVEL or "NO DATA FOR ITEM_LEVEL"):gsub("%%d","(%%d+)")
-	local dataNames = {'tiersets','items','items_ilvl','azerite'}
+	local dataNames = {'tiersets','items','items_ilvl','azerite','essence'}
 	function InspectItems(name,inspectedName,inspectSavedID)
 		if moduleInspect.db.inspectCleared or moduleInspect.db.inspectID ~= inspectSavedID then
 			return
@@ -8598,6 +8749,12 @@ do
 		for spellID,_ in pairs(module.db.spell_isAzeriteTalent) do
 			module.db.session_gGUIDs[name] = -spellID
 		end
+		for _,v in pairs(moduleInspect.db.essenceSpellsData) do
+			for _,spellID in pairs(v) do
+				module.db.session_gGUIDs[name] = -spellID
+			end
+		end
+
 		
 		local ilvl_count = 0
 		
@@ -8628,38 +8785,44 @@ do
 					end
 				end
 				
-				local isAzeriteItem = C_AzeriteEmpoweredItem.IsAzeriteEmpoweredItemByID(itemLink)
 				local AzeritePowers = nil
-				if isAzeriteItem then
-					local powers = C_AzeriteEmpoweredItem.GetAllTierInfoByItemID(itemLink,inspectData.classID)
-					if powers then
-						AzeritePowers = {}
-						for j=1,#powers do
-							for k=1,#powers[j].azeritePowerIDs do
-								local powerID = powers[j].azeritePowerIDs[k]
-								
-								local powerData = C_AzeriteEmpoweredItem.GetPowerInfo(powerID)
-								if powerData then
-									local spellName,_,spellTexture = GetSpellInfo(powerData.spellID)
+				if not ExRT.isClassic then
+					local isAzeriteItem = C_AzeriteEmpoweredItem.IsAzeriteEmpoweredItemByID(itemLink)
+					if isAzeriteItem then
+						local powers = C_AzeriteEmpoweredItem.GetAllTierInfoByItemID(itemLink,inspectData.classID)
+						if powers then
+							AzeritePowers = {}
+							for j=1,#powers do
+								for k=1,#powers[j].azeritePowerIDs do
+									local powerID = powers[j].azeritePowerIDs[k]
 									
-									if spellName then
-										AzeritePowers[#AzeritePowers+1] = {
-											name = spellName,
-											icon = spellTexture,
-											id = powerID,
-											item = itemSlotID,
-											itemLink = itemLink,
-											itemID = itemID,
-											spellID = powerData.spellID,
-											tier = j,
-										}
+									local powerData = C_AzeriteEmpoweredItem.GetPowerInfo(powerID)
+									if powerData then
+										local spellName,_,spellTexture = GetSpellInfo(powerData.spellID)
+										
+										if spellName then
+											AzeritePowers[#AzeritePowers+1] = {
+												name = spellName,
+												icon = spellTexture,
+												id = powerID,
+												item = itemSlotID,
+												itemLink = itemLink,
+												itemID = itemID,
+												spellID = powerData.spellID,
+												tier = j,
+											}
+										end
+										
+										module.db.spell_isAzeriteTalent[powerData.spellID] = true
 									end
-									
-									module.db.spell_isAzeriteTalent[powerData.spellID] = true
 								end
 							end
 						end
 					end
+				end
+				local EssencePowers
+				if itemSlotID == 2 and C_AzeriteEssence and select(3,GetItemInfo(itemLink)) == 6 then
+					EssencePowers = moduleInspect:GetEssenceData()
 				end
 
 				if AzeritePowers then
@@ -8711,6 +8874,46 @@ do
 									inspectData.azerite[#inspectData.azerite + 1] = AzeritePowers[k]
 
 									module.db.session_gGUIDs[name] = AzeritePowers[k].spellID
+								end
+							end
+						end
+						if EssencePowers then
+							for k=1,#EssencePowers do
+								if text:find(EssencePowers[k].name.."$") == 1 then
+									local isMajor = _G["ExRTInspectScanningTooltipTextLeft"..(j-1)]:GetText() == " "
+									local tier = 4
+									local r,g,b = tooltipLine:GetTextColor()
+									if abs(r-0.639)<0.01 and abs(g-0.217)<0.01 and abs(b-0.933)<0.01 then	--a335ee
+										tier = 3
+									elseif abs(r-0.117)<0.01 and abs(g-1)<0.01 and abs(b-0)<0.01 then	--1eff00
+										tier = 1
+									elseif abs(r-0)<0.01 and abs(g-0.439)<0.01 and abs(b-0.866)<0.01 then	--0070dd
+										tier = 2
+									else	--ff8000
+										tier = 4
+									end
+
+									if isMajor then
+										local ess = EssencePowers[k][tier]
+										inspectData.essence[#inspectData.essence + 1] = ess
+	
+										module.db.session_gGUIDs[name] = ess.spellID
+										for l=tier-1,1,-1 do
+											local ess = EssencePowers[k][l]
+											module.db.session_gGUIDs[name] = ess.spellID
+										end
+									end
+
+									local ess = EssencePowers[k][tier*(-1)]
+									if not isMajor then
+										inspectData.essence[#inspectData.essence + 1] = ess
+									end
+
+									module.db.session_gGUIDs[name] = ess.spellID
+									for l=tier-1,1,-1 do
+										local ess = EssencePowers[k][l*(-1)]
+										module.db.session_gGUIDs[name] = ess.spellID
+									end
 								end
 							end
 						end
@@ -8832,8 +9035,10 @@ end
 hooksecurefunc("NotifyInspect", function() moduleInspect.db.inspectID = GetTime() moduleInspect.db.inspectCleared = nil end)
 hooksecurefunc("ClearInspectPlayer", function() moduleInspect.db.inspectCleared = true end)
 
-hooksecurefunc("SetAchievementComparisonUnit", function() moduleInspect.db.achievementCleared = nil end)
-hooksecurefunc("ClearAchievementComparisonUnit", function() moduleInspect.db.achievementCleared = true end)
+if not ExRT.isClassic then
+	hooksecurefunc("SetAchievementComparisonUnit", function() moduleInspect.db.achievementCleared = nil end)
+	hooksecurefunc("ClearAchievementComparisonUnit", function() moduleInspect.db.achievementCleared = true end)
+end
 
 do
 	local tmr = 0
@@ -9064,7 +9269,7 @@ do
 				end
 
 				for i=1,4 do
-					local talentID = C_SpecializationInfo.GetInspectSelectedPvpTalent(inspectedName, i)
+					local talentID = C_SpecializationInfo_GetInspectSelectedPvpTalent(inspectedName, i)
 					if talentID then					
 						data[i+7] = 1
 						data.talentsIDs[i+7] = talentID

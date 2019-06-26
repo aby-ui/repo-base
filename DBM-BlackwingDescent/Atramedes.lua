@@ -1,12 +1,12 @@
 local mod	= DBM:NewMod(171, "DBM-BlackwingDescent", nil, 73)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041705904")
+mod:SetRevision("20190625143316")
 mod:SetCreatureID(41442)
 mod:SetEncounterID(1022)
 mod:SetZone()
 mod:SetUsedIcons(8)
-mod:SetModelSound("Sound\\Creature\\Nefarian\\VO_BD_Nefarian_AtramedesIntro.ogg", "Sound\\Creature\\Atramedes\\VO_BD_Atramedes_Event03.ogg")
+--mod:SetModelSound("Sound\\Creature\\Nefarian\\VO_BD_Nefarian_AtramedesIntro.ogg", "Sound\\Creature\\Atramedes\\VO_BD_Atramedes_Event03.ogg")
 --Long: Atramedes, are you going deaf as well as blind? Hurry up and kill them all.
 --Short: Death waits in the darkness!
 

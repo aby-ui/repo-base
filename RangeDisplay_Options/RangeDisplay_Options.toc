@@ -1,4 +1,4 @@
-## Interface: 80100
+## Interface: 80200
 ## Title: RangeDisplay Options
 ## Author: mitch0
 ## Version: v4.8.4

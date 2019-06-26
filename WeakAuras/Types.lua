@@ -370,6 +370,7 @@ WeakAuras.subevent_actual_prefix_types = {
 }
 
 WeakAuras.subevent_suffix_types = {
+  _ABSORBED = L["Absorbed"],
   _DAMAGE = L["Damage"],
   _MISSED = L["Missed"],
   _HEAL = L["Heal"],
@@ -1800,6 +1801,20 @@ WeakAuras.data_stub = {
   authorOptions = {},
 }
 
+WeakAuras.author_option_classes = {
+  toggle = "simple",
+  input = "simple",
+  number = "simple",
+  range = "simple",
+  color = "simple",
+  select = "simple",
+  multiselect = "simple",
+  description = "noninteractive",
+  space = "noninteractive",
+  header = "noninteractive",
+  group = "group"
+}
+
 WeakAuras.author_option_types = {
   toggle = L["Toggle"],
   input = L["String"],
@@ -1811,6 +1826,7 @@ WeakAuras.author_option_types = {
   space = L["Space"],
   multiselect = L["Toggle List"],
   header = L["Separator"],
+  group = WeakAuras.newFeatureString .. L["Option Group"],
 }
 
 WeakAuras.author_option_fields = {
@@ -1866,6 +1882,25 @@ WeakAuras.author_option_fields = {
     useName = false,
     text = "",
   },
+  group = {
+    groupType = "simple",
+    useCollapse = true,
+    collapse = false,
+    limitType = "none",
+    size = 10,
+    subOptions = {},
+  }
+}
+
+WeakAuras.group_limit_types = {
+  none = L["Unlimited"],
+  max = L["Limited"],
+  fixed = L["Fixed Size"],
+}
+
+WeakAuras.group_option_types = {
+  simple = L["Simple"],
+  array = L["Array"],
 }
 
 WeakAuras.difficulty_info = {
@@ -1990,4 +2025,19 @@ WeakAuras.dbm_types = {
   [5] = L["Role"],
   [6] = L["Phase"],
   [7] = L["Important"]
+}
+
+WeakAuras.EJIcons = {
+  tank =      "|TInterface\\EncounterJournal\\UI-EJ-Icons:::::256:64:7:25:7:25|t",
+  dps =       "|TInterface\\EncounterJournal\\UI-EJ-Icons:::::256:64:39:57:7:25|t",
+  healer =    "|TInterface\\EncounterJournal\\UI-EJ-Icons:::::256:64:71:89:7:25|t",
+  mythic =    "|TInterface\\EncounterJournal\\UI-EJ-Icons:::::256:64:103:121:7:25|t",
+  deadly =    "|TInterface\\EncounterJournal\\UI-EJ-Icons:::::256:64:135:153:7:25|t",
+  important = "|TInterface\\EncounterJournal\\UI-EJ-Icons:::::256:64:167:185:7:25|t",
+  interrupt = "|TInterface\\EncounterJournal\\UI-EJ-Icons:::::256:64:199:217:7:25|t",
+  magic =     "|TInterface\\EncounterJournal\\UI-EJ-Icons:::::256:64:231:249:7:25|t",
+  curse =     "|TInterface\\EncounterJournal\\UI-EJ-Icons:::::256:64:7:25:39:57|t",
+  poison =    "|TInterface\\EncounterJournal\\UI-EJ-Icons:::::256:64:39:57:39:57|t",
+  disease =   "|TInterface\\EncounterJournal\\UI-EJ-Icons:::::256:64:71:89:39:57|t",
+  enrage =    "|TInterface\\EncounterJournal\\UI-EJ-Icons:::::256:64:103:121:39:57|t",
 }

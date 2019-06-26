@@ -1,12 +1,12 @@
 local mod	= DBM:NewMod(333, "DBM-DragonSoul", nil, 187)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041705904")
+mod:SetRevision("20190625143316")
 mod:SetCreatureID(56173)
 mod:SetEncounterID(1299)
 mod:SetZone()
 mod:SetUsedIcons(8)
-mod:SetModelSound("sound\\CREATURE\\Deathwing\\VO_DS_DEATHWING_MAELSTROMEVENT_01.OGG", "sound\\CREATURE\\Deathwing\\VO_DS_DEATHWING_MAELSTROMSPELL_04.OGG")
+--mod:SetModelSound("sound\\CREATURE\\Deathwing\\VO_DS_DEATHWING_MAELSTROMEVENT_01.OGG", "sound\\CREATURE\\Deathwing\\VO_DS_DEATHWING_MAELSTROMSPELL_04.OGG")
 
 mod:RegisterCombat("combat")
 mod:SetMinCombatTime(20)
@@ -19,7 +19,7 @@ mod:RegisterEventsInCombat(
 	"SPELL_AURA_REMOVED 106444 106794 108649 106730",
 	"SPELL_SUMMON 109091",
 	"UNIT_DIED",
-	"UNIT_SPELLCAST_SUCCEEDED boss1 target"--Target needed for bolt died detection
+	"UNIT_SPELLCAST_SUCCEEDED boss1 target mouseover"--target/mouseover needed for bolt died detection
 )
 
 local warnMutated					= mod:NewSpellAnnounce("ej4112", 3, 61618)
@@ -57,25 +57,21 @@ local timerMutated					= mod:NewNextTimer(17, "ej4112", nil, nil, nil, 1, 61618)
 local timerImpale					= mod:NewTargetTimer(49.5, 106400, nil, "Tank|Healer", nil, 5, nil, DBM_CORE_TANK_ICON)--45 plus 4 second cast plus .5 delay between debuff ID swap.
 local timerImpaleCD					= mod:NewCDTimer(35, 106400, nil, "Tank|Healer", nil, 5, nil, DBM_CORE_TANK_ICON)
 local timerElementiumCast			= mod:NewCastTimer(7.5, 105651, nil, nil, nil, 1)
-local timerElementiumBlast			= mod:NewCastTimer(8, 105723, nil, nil, nil, 2)--8-10 variation depending on where it's actually going to land. Use the min time.
+local timerElementiumBlast			= mod:NewCastTimer(8, 105723, nil, nil, nil, 2, nil, nil, nil, 1, 4)--8-10 variation depending on where it's actually going to land. Uses the min time.
 local timerElementiumBoltCD			= mod:NewNextTimer(55.5, 105651, nil, nil, nil, 1)
 local timerHemorrhageCD				= mod:NewCDTimer(100.5, 105863, nil, nil, nil, 1)
 local timerCataclysm				= mod:NewCastTimer(60, 106523, nil, nil, nil, 2, nil, DBM_CORE_DEADLY_ICON)
 local timerCataclysmCD				= mod:NewCDTimer(130.5, 106523, nil, nil, nil, 2)--130.5-131.5 variations
 local timerFragmentsCD				= mod:NewNextTimer(90, "ej4115", nil, nil, nil, 1, 106708)--Gear icon for now til i find something more suitable
 local timerTerrorCD					= mod:NewNextTimer(90, "ej4117", nil, nil, nil, 1, 106765)--^
-local timerShrapnel					= mod:NewBuffFadesTimer(6, 106794)
+local timerShrapnel					= mod:NewBuffFadesTimer(6, 106794, nil, nil, nil, 3, nil, nil, nil, not mod:IsMelee() and 1, 4)
 local timerParasite					= mod:NewTargetTimer(10, 108649, nil, nil, nil, 1)
 local timerParasiteCD				= mod:NewCDTimer(60, 108649, nil, nil, nil, 3)
-local timerUnstableCorruption		= mod:NewCastTimer(10, 108813, nil, nil, nil, 2)
+local timerUnstableCorruption		= mod:NewCastTimer(10, 108813, nil, nil, nil, 2, nil, nil, nil, 2, 4)
 local timerTetanus					= mod:NewTargetTimer(6, 106730, nil, "Healer")
 local timerTetanusCD				= mod:NewCDTimer(3.5, 106730, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON)
 
 local berserkTimer					= mod:NewBerserkTimer(900)
-
-local countdownBoltBlast			= mod:NewCountdown(8, 105723)
-local countdownUnstableCorruption	= mod:NewCountdown("Alt10", 108813)
-local countdownShrapnel				= mod:NewCountdown(6, 106794, "-Tank")
 
 mod:AddBoolOption("RangeFrame", true)--For heroic parasites, with debuff filtering.
 mod:AddBoolOption("SetIconOnParasite", true)
@@ -125,7 +121,6 @@ function mod:ScanParasite()
 		local _, _, _, startTime, endTime = UnitCastingInfo(unitID)
 		local castTime = ((endTime or 0) - (startTime or 0)) / 1000
 		timerUnstableCorruption:Update(parasiteScan * 0.1, castTime)
-		countdownUnstableCorruption:Start(castTime - (parasiteScan * 0.1))
 		warnUnstableCorruption = mod:NewCastAnnounce(108813, 4, castTime)
 		warnUnstableCorruption:Show()
 	elseif parasiteScan < 40 then -- failed scan. rescan for 40 times. (40 * 0.1 = 4 sec)
@@ -133,7 +128,6 @@ function mod:ScanParasite()
 		self:ScheduleMethod(0.1, "ScanParasite")
 	else -- if scan failure after 40 loops, use default 10 sec timer.
 		timerUnstableCorruption:Update(parasiteScan * 0.1, 10)
-		countdownUnstableCorruption:Start(10 - (parasiteScan * 0.1))
 		warnUnstableCorruption = mod:NewCastAnnounce(108813, 4, 10)
 		warnUnstableCorruption:Show()		
 	end
@@ -203,7 +197,6 @@ function mod:SPELL_CAST_SUCCESS(args)
 		specWarnElementiumBolt:Show()
 		if not DBM:UnitBuff("player", NozPresence) and not UnitIsDeadOrGhost("player") then--Check for Nozdormu's Presence
 			timerElementiumBlast:Start()
-			countdownBoltBlast:Start()
 			specWarnElementiumBoltDPS:Schedule(10)
 		else
 			timerElementiumCast:Start()
@@ -245,7 +238,6 @@ function mod:SPELL_AURA_APPLIED(args)
 		if args:IsPlayer() then
 			specWarnShrapnel:Show()
 			timerShrapnel:Start() -- Shrapnel debuff lasts 7 secs. But Shrapnel damages 1 sec early before debuff fades. So 6 sec timer will be more good.
-			countdownShrapnel:Start(6)
 		end
 		if (self:IsDifficulty("normal10", "heroic10") and #shrapnelTargets >= 3) or (self:IsDifficulty("normal25", "heroic25", "lfr25") and #shrapnelTargets >= 8) then
 			warnShrapnelTargets()
@@ -294,7 +286,6 @@ function mod:SPELL_AURA_REMOVED(args)
 		timerImpale:Cancel(args.destName)
 	elseif spellId == 106794 and args:IsPlayer() then
 		timerShrapnel:Cancel()
-		countdownShrapnel:Cancel()
 	elseif spellId == 108649 then
 		specWarnParasiteDPS:Show()
 		if self.Options.SetIconOnParasite then
@@ -326,7 +317,6 @@ function mod:UNIT_DIED(args)
 		timerTetanusCD:Cancel(args.destGUID)
 	elseif cid == 57479 then
 		timerUnstableCorruption:Cancel()
-		countdownUnstableCorruption:Cancel()
 	end
 end
 

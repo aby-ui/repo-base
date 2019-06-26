@@ -1,5 +1,5 @@
 local dungeonIndex = 24
-MethodDungeonTools.dungeonTotalCount[dungeonIndex] = {normal=289,teeming=346,teemingEnabled=true}
+MethodDungeonTools.dungeonTotalCount[dungeonIndex] = {normal=303,teeming=346,teemingEnabled=true}
 MethodDungeonTools.mapPOIs[dungeonIndex] = {
     [2] = {
         [1] = {
@@ -1006,7 +1006,7 @@ MethodDungeonTools.dungeonEnemies[dungeonIndex] = {
         };
         ["scale"] = 0.7;
         ["health"] = 191533;
-        ["count"] = 0;
+        ["count"] = 4;
         ["displayId"] = 84115;
         ["creatureType"] = "Beast";
         ["level"] = 120;
@@ -3145,13 +3145,79 @@ MethodDungeonTools.dungeonEnemies[dungeonIndex] = {
         ["characteristics"] = {
             ["Taunt"] = true;
         };
-        ["count"] = 8;
+        ["count"] = 14;
         ["name"] = "Matron Alma";
         ["displayId"] = 84236;
         ["creatureType"] = "Undead";
         ["level"] = 121;
         ["health"] = 919356;
         ["id"] = 135365;
+    };
+    [37] = {
+        ["clones"] = {
+
+        };
+        ["scale"] = 1;
+        ["spells"] = {
+            [302417] = {};
+            [302418] = {};
+            [302415] = {};
+        };
+        ["characteristics"] = {
+            ["Taunt"] = true;
+        };
+        ["health"] = 305938;
+        ["count"] = 4;
+        ["name"] = "Emissary of the Tides";
+        ["displayId"] = 39391;
+        ["creatureType"] = "Humanoid";
+        ["level"] = 120;
+        ["id"] = 155434;
+        ["iconTexture"] = 132315;
+    };
+    [38] = {
+        ["clones"] = {
+        };
+        ["scale"] = 1;
+        ["spells"] = {
+            [302419] = {};
+            [302420] = {};
+            [302421] = {};
+            [302415] = {};
+        };
+        ["stealthDetect"] = true;
+        ["characteristics"] = {
+            ["Taunt"] = true;
+        };
+        ["health"] = 497151;
+        ["count"] = 4;
+        ["name"] = "Void-Touched Emissary";
+        ["displayId"] = 39391;
+        ["creatureType"] = "Humanoid";
+        ["level"] = 122;
+        ["id"] = 155433;
+        ["iconTexture"] = 132886;
+    };
+    [39] = {
+        ["clones"] = {
+        };
+        ["scale"] = 1;
+        ["spells"] = {
+            [303632] = {};
+            [302415] = {};
+            [290027] = {};
+        };
+        ["characteristics"] = {
+            ["Taunt"] = true;
+        };
+        ["health"] = 7648472;
+        ["count"] = 0;
+        ["name"] = "Enchanted Emissary";
+        ["displayId"] = 39391;
+        ["creatureType"] = "Humanoid";
+        ["level"] = 121;
+        ["id"] = 155432;
+        ["iconTexture"] = 135735;
     };
 };
 

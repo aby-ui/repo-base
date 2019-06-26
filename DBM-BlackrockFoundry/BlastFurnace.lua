@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1154, "DBM-BlackrockFoundry", nil, 457)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041705938")
+mod:SetRevision("20190625143352")
 mod:SetCreatureID(76809, 76806)--76809 foreman feldspar, 76806 heart of the mountain, 76809 Security Guard, 76810 Furnace Engineer, 76811 Bellows Operator, 76815 Primal Elementalist, 78463 Slag Elemental, 76821 Firecaller
 mod:SetEncounterID(1690)
 mod:SetZone()
@@ -75,24 +75,17 @@ mod:AddTimerLine(SCENARIO_STAGE:format(1))
 local timerBomb					= mod:NewBuffFadesTimer(15, 155192)
 local timerBlastCD				= mod:NewCDTimer(25, 155209, nil, nil, nil, 2)--25 seconds base. shorter when loading is being channeled by operators.
 local timerRuptureCD			= mod:NewCDTimer(20, 156934, nil, "-Tank", 2, 3)
-local timerEngineer				= mod:NewNextCountTimer(41, "ej9649", nil, nil, nil, 1, 155179)
+local timerEngineer				= mod:NewNextCountTimer(41, "ej9649", nil, nil, nil, 1, 155179, nil, nil, 1, 5)
 local timerBellowsOperator		= mod:NewCDCountTimer(59, "ej9650", nil, nil, nil, 1, 155181)--60-65second variation for sure
 mod:AddTimerLine(SCENARIO_STAGE:format(2))
 local timerVolatileFireCD		= mod:NewCDTimer(20, 176121, nil, false, nil, 3)--Very useful, but off by default since it can be spammy if > 2 adds up at once.
-local timerVolatileFire			= mod:NewBuffFadesTimer(8, 176121)
+local timerVolatileFire			= mod:NewBuffFadesTimer(8, 176121, nil, nil, nil, 5, nil, nil, nil, 1, 4)
 local timerShieldsDown			= mod:NewBuffActiveTimer(30, 158345, nil, "Dps", nil, 6, nil, DBM_CORE_DAMAGE_ICON)
 local timerSlagElemental		= mod:NewNextCountTimer(55, "ej9657", nil, "-Tank", nil, 1, 155196)--Definitely 55 seconds, although current detection method may make it appear 1-2 seconds if slag has to run across room before casting first fixate
-local timerFireCaller			= mod:NewNextCountTimer(45, "ej9659", nil, "Tank", nil, 1, 156937)
-local timerSecurityGuard		= mod:NewNextCountTimer(40, "ej9648", nil, "Tank", nil, 1, 160379, DBM_CORE_TANK_ICON)
+local timerFireCaller			= mod:NewNextCountTimer(45, "ej9659", nil, "Tank", nil, 1, 156937, nil, nil, 3, 4)
+local timerSecurityGuard		= mod:NewNextCountTimer(40, "ej9648", nil, "Tank", nil, 1, 160379, DBM_CORE_TANK_ICON, nil, 2, 4)
 
 local berserkTimer				= mod:NewBerserkTimer(780)
-
-local countdownBlast			= mod:NewCountdown(30, 155209, false, 2)
-local countdownEngineer			= mod:NewCountdown("AltTwo41", "ej9649", "Tank", 2)
---Phase 2 countdowns, no conflict with phase 1 countdowns
-local countdownFireCaller		= mod:NewCountdown("AltTwo64", "ej9659", "Tank")
-local countdownSecurityGuard	= mod:NewCountdown("Alt41", "ej9648", "Tank")
-local countdownVolatileFire		= mod:NewCountdownFades(8, 176121)
 
 local voiceSlagElemental		= mod:NewVoice("ej9657", "-Tank")
 
@@ -195,11 +188,9 @@ local function Engineers(self)
 	if self:IsDifficulty("mythic", "normal") then
 		timerEngineer:Start(35, count+1)
 		self:Schedule(35, Engineers, self)
-		countdownEngineer:Start(35)
 	elseif self:IsHeroic() then
 		timerEngineer:Start(40.5, count+1)
 		self:Schedule(40.5, Engineers, self)
-		countdownEngineer:Start(40.5)
 	end
 end
 
@@ -213,11 +204,9 @@ local function SecurityGuard(self)
 	end
 	if self.vb.phase == 1 then
 		timerSecurityGuard:Start(30.5, count+1)
-		countdownSecurityGuard:Start(30.5)
 		self:Schedule(30.5, SecurityGuard, self)
 	else
 		timerSecurityGuard:Start(40, count+1)
-		countdownSecurityGuard:Start(40)
 		self:Schedule(40, SecurityGuard, self)
 	end
 end
@@ -337,14 +326,11 @@ function mod:OnCombatStart(delay)
 	local blastTimer = self:IsMythic() and 24 or 29
 	self.vb.lastTotal = blastTimer
 	timerBlastCD:Start(blastTimer)
-	countdownBlast:Start(blastTimer)
 	if not self:IsLFR() then
 		self:Schedule(firstTimer, SecurityGuard, self)
 		self:Schedule(firstTimer, Engineers, self)
 		timerSecurityGuard:Start(firstTimer, 2)
-		countdownSecurityGuard:Start(firstTimer)
 		timerEngineer:Start(firstTimer, 2)
-		countdownEngineer:Start(firstTimer)
 		berserkTimer:Start(-delay)
 	end
 	if self.Options.InfoFrame then
@@ -503,7 +489,6 @@ function mod:SPELL_AURA_APPLIED(args)
 				if self:AntiSpam(3, 9) then
 					specVolatileFire:Show()
 					--Only one countdown/yell/runout alert though to avoid spam, user needs to get out of group for first expire, they just need to STAY out for second
-					countdownVolatileFire:Start(debuffTime)
 					specVolatileFire:ScheduleVoice(debuffTime - 4, "runout")
 					if not self:IsLFR() and self.Options.Yell176121 then
 						if self:IsMythic() and self.Options.VFYellType2 == "Countdown" then
@@ -600,7 +585,6 @@ function mod:UNIT_DIED(args)
 		else
 			timerFireCaller:Stop()
 			timerSecurityGuard:Stop()
-			countdownSecurityGuard:Cancel()
 			timerSlagElemental:Stop()
 			self:Unschedule(SecurityGuard)
 			self:Unschedule(FireCaller)
@@ -626,10 +610,8 @@ function mod:UNIT_DIED(args)
 			warnPhase2:Show()
 			self:Unschedule(Engineers)
 			timerEngineer:Stop()
-			countdownEngineer:Cancel()
 			timerBellowsOperator:Stop()
 			timerSecurityGuard:Stop()
-			countdownSecurityGuard:Cancel()
 			self:Unschedule(SecurityGuard)
 			warnPhase2:Play("ptwo")
 			--Start adds timers. Seem same in all modes.
@@ -638,7 +620,6 @@ function mod:UNIT_DIED(args)
 				timerSlagElemental:Start(13, 1)
 				self:Schedule(72, SecurityGuard, self)
 				timerSecurityGuard:Start(71.5, 1)
-				countdownSecurityGuard:Start(71.5)
 				self:Schedule(76, FireCaller, self)
 				timerFireCaller:Start(76, 1)
 			end
@@ -695,8 +676,6 @@ do
 				local bossPower = UnitPower("boss1") --Get Boss Power
 				local elapsed = bossPower / powerRate
 				timerBlastCD:Update(elapsed, totalTime)
-				countdownBlast:Cancel()
-				countdownBlast:Start(totalTime-elapsed)
 			end
 		else
 			local bossPower = UnitPower("boss1") --Get Boss Power
@@ -709,7 +688,6 @@ do
 			elseif bossPower < 5 and self.vb.blastWarned then--Should catch 0, if not, at least 1-4 will fire it but then timer may be a second or so off
 				self.vb.blastWarned = false
 				timerBlastCD:Start(totalTime)
-				countdownBlast:Start(totalTime)
 			end
 		end
 	end

@@ -18,7 +18,7 @@ local _GetChannelName = GetChannelName --> wow api locals
 local _UnitExists = UnitExists --> wow api locals
 local _UnitName = UnitName --> wow api locals
 local _UnitIsPlayer = UnitIsPlayer --> wow api locals
-local _UnitGroupRolesAssigned = UnitGroupRolesAssigned --> wow api locals
+local _UnitGroupRolesAssigned = DetailsFramework.UnitGroupRolesAssigned --> wow api locals
 
 local _detalhes = 		_G._detalhes
 local gump = 			_detalhes.gump
@@ -713,7 +713,7 @@ end
 	end
 
 	function _detalhes:CriarInstancia (_, id)
-		
+
 		if (id and _type (id) == "boolean") then
 			
 			if (#_detalhes.tabela_instancias >= _detalhes.instances_amount) then
@@ -1284,19 +1284,6 @@ end
 			
 		--> setup default wallpaper
 			new_instance.wallpaper.texture = "Interface\\AddOns\\Details\\images\\background"
-			--[[ 7.1.5 isn't sending the background on the 5� return value ~cleanup
-			local spec = GetSpecialization()
-			if (spec) then
-				local id, name, description, icon, _background, role = GetSpecializationInfo (spec)
-				if (_background) then
-					local bg = "Interface\\TALENTFRAME\\" .. _background
-					if (new_instance.wallpaper) then
-						new_instance.wallpaper.texture = bg
-						new_instance.wallpaper.texcoord = {0, 1, 0, 0.703125}
-					end
-				end
-			end
-			--]]
 		
 		--> finish
 			return new_instance
@@ -1315,19 +1302,7 @@ end
 			new_instance:ResetInstanceConfig()
 			--> setup default wallpaper
 			new_instance.wallpaper.texture = "Interface\\AddOns\\Details\\images\\background"
-			--[[ 7.1.5 isn't sending the background on the 5� return value ~cleanup
-			local spec = GetSpecialization()
-			if (spec) then
-				local id, name, description, icon, _background, role = GetSpecializationInfo (spec)
-				if (_background) then
-					local bg = "Interface\\TALENTFRAME\\" .. _background
-					if (new_instance.wallpaper) then
-						new_instance.wallpaper.texture = bg
-						new_instance.wallpaper.texcoord = {0, 1, 0, 0.703125}
-					end
-				end
-			end
-			--]]
+
 		--> internal stuff
 			new_instance.barras = {} --container que ir� armazenar todas as barras
 			new_instance.barraS = {nil, nil} --de x at� x s�o as barras que est�o sendo mostradas na tela

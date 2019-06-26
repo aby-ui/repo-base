@@ -1704,7 +1704,7 @@ function addon:UpdateToonData()
   end
   t.Warmode = C_PvP.IsWarModeDesired()
   local azeriteItemLocation = C_AzeriteItem.FindActiveAzeriteItem()
-  if azeriteItemLocation then
+  if azeriteItemLocation and azeriteItemLocation:IsEquipmentSlot() then
     local xp, totalLevelXP = C_AzeriteItem.GetAzeriteItemXPInfo(azeriteItemLocation)
     local currentLevel = C_AzeriteItem.GetPowerLevel(azeriteItemLocation)
     t.Artifact = format("%d (%d%%)", currentLevel, xp / totalLevelXP  * 100)
@@ -2543,7 +2543,7 @@ end
 function core:OnInitialize()
   local versionString = GetAddOnMetadata(addonName, "version")
   --[===[@debug@
-  if versionString == "8.1.4-3-gfff3628" then
+  if versionString == "8.2.0" then
     versionString = "Dev"
   end
   --@end-debug@]===]

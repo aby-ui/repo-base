@@ -377,6 +377,32 @@ GTFO.SpellID["261597"] = {
   sound = 3
 };
 
+GTFO.SpellID["286525"] = {
+  --desc = "Poison Spray (Injured Bristlequeen)";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["295469"] = {
+  --desc = "Falling Rocks (Rockfall)";
+  sound = 3;
+};
+
+GTFO.SpellID["301146"] = {
+  --desc = "Shattering Smash (Ma'haat the Indomitable)";
+  sound = 3;
+};
+
+GTFO.SpellID["301145"] = {
+  --desc = "Shattering Smash (Ma'haat the Indomitable)";
+  sound = 3;
+};
+
+GTFO.SpellID["301802"] = {
+  --desc = "Water Wall";
+  sound = 3;
+};
+
 
 -- ***********************
 -- * Shrine of the Storm *

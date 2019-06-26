@@ -1,4 +1,4 @@
-## Interface: 80100
+## Interface: 80200
 ## Title: Masque
 ## Version: 8.0.1
 ## Author: StormFX, JJSheets

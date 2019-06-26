@@ -1,8 +1,8 @@
-## Interface: 80100
+## Interface: 80200
 ## Title: GridStatusRaidDebuff(WoD)
 ## Notes: Debuff List for WoD
 ## Author: tptbk(Doadin-Malorne-US)
-## Version: 8.1.0.0
+## Version: 8.2.0.0
 ## Grid Author: Pastamancer & Maia
 ## Dependencies: GridStatusRaidDebuff
 

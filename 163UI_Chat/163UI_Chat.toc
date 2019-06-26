@@ -1,4 +1,4 @@
-## Interface: 80100
+## Interface: 80200
 ## LoadOnDemand: 0
 ## Notes:  一些聊天窗口的设置，缩放、滚动、时间标记、记录行数等。
 

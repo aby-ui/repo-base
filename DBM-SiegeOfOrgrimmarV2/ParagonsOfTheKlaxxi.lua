@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(853, "DBM-SiegeOfOrgrimmarV2", nil, 369)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041710000")
+mod:SetRevision("20190625143417")
 mod:SetCreatureID(71152, 71153, 71154, 71155, 71156, 71157, 71158, 71160, 71161)
 mod:SetEncounterID(1593)
 mod:DisableESCombatDetection()
@@ -132,7 +132,7 @@ local timerMesmerizeCD				= mod:NewCDTimer(34, 142671, nil, nil, nil, 3)
 local timerShieldBash				= mod:NewTargetTimer(6, 143974, nil, "Tank")
 local timerShieldBashCD				= mod:NewCDTimer(17, 143974, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON)
 local timerEncaseInAmber			= mod:NewTargetTimer(10, 142564)
-local timerEncaseInAmberCD			= mod:NewCDTimer(30, 142564, nil, nil, nil, 5)--Technically a next timer but we use cd cause it's only cast if someone is low when it comes off 30 second internal cd. VERY important timer for heroic
+local timerEncaseInAmberCD			= mod:NewCDTimer(30, 142564, nil, nil, nil, 5, nil, nil, nil, 1, 4)--Technically a next timer but we use cd cause it's only cast if someone is low when it comes off 30 second internal cd. VERY important timer for heroic
 --Iyyokuk the Lucid
 local timerInsaneCalculation		= mod:NewBuffActiveTimer(15, 142808)
 local timerInsaneCalculationCD		= mod:NewCDTimer(25, 142416, nil, nil, nil, 3)--25 is minimum but variation is wild (25-50 second variation)
@@ -145,16 +145,13 @@ local timerBloodlettingCD			= mod:NewCDTimer(35, 143280, nil, nil, nil, 1)--35-6
 --Rik'kal the Dissector
 local timerMutate					= mod:NewBuffFadesTimer(20, 143337, nil, false)
 local timerMutateCD					= mod:NewCDCountTimer(31.5, 143337, nil, nil, nil, 3)
-local timerInjectionCD				= mod:NewNextTimer(9.5, 143339, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON)
+local timerInjectionCD				= mod:NewNextTimer(9.5, 143339, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON, nil, 2, 4)
 --Hisek the Swarmkeeper
 --local timerAim						= mod:NewTargetTimer(5, 142948)--or is it 7, conflicting tooltips
 local timerAimCD					= mod:NewCDCountTimer(39.5, 142948, nil, nil, nil, 3)
 local timerRapidFireCD				= mod:NewCDTimer(47, 143243, nil, nil, nil, 2, nil, DBM_CORE_DEADLY_ICON)--Heroic, 47-50 variation
 
 local berserkTimer					= mod:NewBerserkTimer(720)
-
-local countdownEncaseInAmber		= mod:NewCountdown(30, 142564)--Probably switch to secondary countdown if one of his other abilities proves to have priority
-local countdownInjection			= mod:NewCountdown("Alt9.5", 143339, "Tank")
 
 mod:AddRangeFrameOption("6/5/3")
 mod:AddSetIconOption("SetIconOnAim", 142948, false)
@@ -259,7 +256,6 @@ local function CheckBosses(self)
 				if DBM:UnitDebuff("player", vulnerable1) then vulnerable = true end
 			elseif cid == 71158 then--Rik'kal the Dissector
 				timerInjectionCD:Start(8)
-				countdownInjection:Start(8)
 				timerMutateCD:Start(23, 1)
 				if DBM:UnitDebuff("player", vulnerable2) then vulnerable = true end
 			elseif cid == 71153 then--Hisek the Swarmkeeper
@@ -592,8 +588,6 @@ function mod:SPELL_CAST_START(args)
 					specWarnInjection:Show()
 				end
 				timerInjectionCD:Start()
-				countdownInjection:Cancel()--Sometimes boss stutter casts so need to do this
-				countdownInjection:Start()
 				break
 			end
 		end
@@ -644,9 +638,6 @@ function mod:SPELL_AURA_APPLIED(args)
 		specWarnEncaseInAmber:Show(args.destName)
 		timerEncaseInAmber:Start(args.destName)
 		timerEncaseInAmberCD:Start()
-		if self:IsMythic() then
-			countdownEncaseInAmber:Start()
-		end
 	elseif spellId == 143939 then
 		timerGouge:Start(args.destName)
 		if args.IsPlayer() then
@@ -779,7 +770,6 @@ function mod:UNIT_DIED(args)
 	elseif cid == 71155 then--Korven the Prime
 		timerShieldBashCD:Cancel()
 		timerEncaseInAmberCD:Cancel()
-		countdownEncaseInAmber:Cancel()
 	elseif cid == 71160 then--Iyyokuk the Lucid
 		timerInsaneCalculationCD:Cancel()
 	elseif cid == 71154 then--Ka'roz the Locust
@@ -791,7 +781,6 @@ function mod:UNIT_DIED(args)
 	elseif cid == 71158 then--Rik'kal the Dissector
 		timerMutateCD:Cancel()
 		timerInjectionCD:Cancel()
-		countdownInjection:Cancel()
 		self:Unschedule(showRangeFrame)
 	elseif cid == 71153 then--Hisek the Swarmkeeper
 		timerAimCD:Cancel()

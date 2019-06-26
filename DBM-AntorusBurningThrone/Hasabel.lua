@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1985, "DBM-AntorusBurningThrone", nil, 946)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041705925")
+mod:SetRevision("20190625143337")
 mod:SetCreatureID(122104)
 mod:SetEncounterID(2064)
 mod:DisableESCombatDetection()--Remove if blizz fixes clicking portals causing this event to fire (even though boss isn't engaged)
@@ -87,8 +87,8 @@ local specWarnHungeringGloom			= mod:NewSpecialWarningMoveTo(245075, nil, nil, n
 --Platform: Nexus
 mod:AddTimerLine(Nexus)
 local timerRealityTearCD				= mod:NewCDTimer(12.1, 244016, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON)
-local timerCollapsingWorldCD			= mod:NewCDTimer(32.9, 243983, nil, nil, nil, 2, nil, DBM_CORE_DEADLY_ICON)--32.9-41
-local timerFelstormBarrageCD			= mod:NewCDTimer(32.2, 244000, nil, nil, nil, 3)--32.9-41
+local timerCollapsingWorldCD			= mod:NewCDTimer(32.9, 243983, nil, nil, nil, 2, nil, DBM_CORE_DEADLY_ICON, nil, 1, 3)--32.9-41
+local timerFelstormBarrageCD			= mod:NewCDTimer(32.2, 244000, nil, nil, nil, 3, nil, nil, nil, 3, 3)--32.9-41
 local timerTransportPortalCD			= mod:NewCDTimer(41.2, 244677, nil, nil, nil, 1)--41.2-60. most of time 42 on nose.
 --Platform: Xoroth
 mod:AddTimerLine(Xoroth)
@@ -104,11 +104,6 @@ mod:AddTimerLine(Nathreza)
 local timerDelusionsCD					= mod:NewCDTimer(14.6, 245050, nil, nil, nil, 3, nil, DBM_CORE_HEALER_ICON..DBM_CORE_MAGIC_ICON)
 
 --local berserkTimer					= mod:NewBerserkTimer(600)
-
---Platform: Nexus
-local countdownCollapsingWorld			= mod:NewCountdown(50, 243983, true, 3, 3)
-local countdownRealityTear				= mod:NewCountdown("Alt12", 244016, false, 2, 3)
-local countdownFelstormBarrage			= mod:NewCountdown("AltTwo32", 244000, nil, nil, 3)
 
 mod:AddRangeFrameOption("8/10")
 mod:AddBoolOption("ShowAllPlatforms", false)
@@ -147,8 +142,6 @@ local function updateAllTimers(self, ICD)
 		DBM:Debug("timerCollapsingWorldCD extended by: "..extend, 2)
 		timerCollapsingWorldCD:Stop()
 		timerCollapsingWorldCD:Update(elapsed, total+extend)
-		countdownCollapsingWorld:Cancel()
-		countdownCollapsingWorld:Start(ICD)
 	end
 	if timerFelstormBarrageCD:GetRemaining() < ICD then
 		local elapsed, total = timerFelstormBarrageCD:GetTime()
@@ -156,8 +149,6 @@ local function updateAllTimers(self, ICD)
 		DBM:Debug("timerFelstormBarrageCD extended by: "..extend, 2)
 		timerFelstormBarrageCD:Stop()
 		timerFelstormBarrageCD:Update(elapsed, total+extend)
-		countdownFelstormBarrage:Cancel()
-		countdownFelstormBarrage:Start(ICD)
 	end
 	if self.vb.firstPortal and timerTransportPortalCD:GetRemaining() < ICD then
 		local elapsed, total = timerTransportPortalCD:GetTime()
@@ -175,11 +166,8 @@ function mod:OnCombatStart(delay)
 	self.vb.worldCount = 0
 	playerPlatform = 1--Nexus
 	timerRealityTearCD:Start(6.2-delay)
-	countdownRealityTear:Start(6.2-delay)
 	timerCollapsingWorldCD:Start(10.5-delay)--Still variable, 10.5-18
-	countdownCollapsingWorld:Start(10.5-delay)
 	timerFelstormBarrageCD:Start(25.2-delay)
-	countdownFelstormBarrage:Start(25.2-delay)
 end
 
 function mod:OnCombatEnd()
@@ -194,13 +182,10 @@ function mod:SPELL_CAST_START(args)
 		self.vb.worldCount = self.vb.worldCount + 1
 		if self:IsEasy() then
 			timerCollapsingWorldCD:Start(37.7)--37, but offen delayed by ICD
-			countdownCollapsingWorld:Start(37.8)
 		elseif self:IsMythic() then
 			timerCollapsingWorldCD:Start(27.1)
-			countdownCollapsingWorld:Start(27.1)
 		else
 			timerCollapsingWorldCD:Start()
-			countdownCollapsingWorld:Start(31.9)
 		end
 		if self.Options.ShowAllPlatforms or playerPlatform == 1 then--Actually on nexus platform
 			specWarnCollapsingWorld:Show(self.vb.worldCount)
@@ -239,13 +224,10 @@ function mod:SPELL_CAST_START(args)
 		self.vb.felBarrageCast = self.vb.felBarrageCast + 1
 		if self:IsEasy() then
 			timerFelstormBarrageCD:Start(37.8)--37.8-43.8
-			countdownFelstormBarrage:Start(37.8)
 		elseif self:IsMythic() then
 			timerFelstormBarrageCD:Start(27.1)
-			countdownFelstormBarrage:Start(27.1)
 		else
 			timerFelstormBarrageCD:Start()--32.9-41
-			countdownFelstormBarrage:Start(32.2)
 		end
 		if self.Options.ShowAllPlatforms or playerPlatform == 1 then--Actually on nexus platform
 			specWarnFelstormBarrage:Show()
@@ -266,7 +248,6 @@ function mod:SPELL_CAST_SUCCESS(args)
 		end
 	elseif spellId == 244016 then
 		timerRealityTearCD:Start()
-		countdownRealityTear:Start(12.2)
 	end
 end
 

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("BrawlRank6", "DBM-Brawlers")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190416205700")
+mod:SetRevision("20190625143048")
 --mod:SetModelID(39166)
 mod:SetZone()
 
@@ -41,18 +41,29 @@ function mod:SPELL_CAST_START(args)
 			specWarnEightChomps:Play("shockwave")
 		else
 			warnEightChomps:Show()
+			timerEightChompsCD:SetSTFade(true)
 		end
 	elseif args.spellId == 142795 then
 		warnBetterStrongerFaster:Show()
 		timerBetterStrongerFasterCD:Start()
+		if not brawlersMod:PlayerFighting() then
+			timerBetterStrongerFasterCD:SetSTFade(true)
+		end
 	elseif args.spellId == 142769 then
 		warnStasisBeam:Show()
 		timerStasisBeamCD:Start()
+		if not brawlersMod:PlayerFighting() then
+			timerStasisBeamCD:SetSTFade(true)
+		end
 	elseif args.spellId == 282081 then
 		timerDisrobingStrikeCD:Start()
-		if brawlersMod:PlayerFighting() and self:CheckInterruptFilter(args.sourceGUID, false, true) then
-			specWarnDisrobingStrike:Show(args.sourceName)
-			specWarnDisrobingStrike:Play("kickcast")
+		if brawlersMod:PlayerFighting() then
+			if self:CheckInterruptFilter(args.sourceGUID, false, true) then
+				specWarnDisrobingStrike:Show(args.sourceName)
+				specWarnDisrobingStrike:Play("kickcast")
+			end
+		else
+			timerDisrobingStrikeCD:SetSTFade(true)
 		end
 	end
 end
@@ -66,6 +77,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 			specWarnSpitAcid:Play("watchstep")
 		else
 			warnSpitAcid:Show()
+			timerSpitAcidCD:SetSTFade(true)
 		end
 	end
 end

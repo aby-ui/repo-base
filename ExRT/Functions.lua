@@ -1220,3 +1220,65 @@ ExRT.GDB.ClassID = {
 	DRUID=11,
 	DEMONHUNTER=12,
 }
+
+
+if ExRT.isClassic then
+	--GetClassInfo
+	local classLocalizateEngine = {}
+	FillLocalizedClassList(classLocalizateEngine)
+
+	ExRT.Classic.GetClassInfo = function(id) 
+		return classLocalizateEngine[ ExRT.GDB.ClassList[id] ] or "unk" 
+	end
+
+	--GetSpecializationInfoByID
+	local specializationData = {
+		[62] = {name="Arcane",class=8,role="DAMAGER",desc="Manipulates raw Arcane magic, destroying enemies with overwhelming power.|n|nPreferred Weapon: Staff, Wand, Dagger, Sword",icon=135932},
+		[63] = {name="Fire",class=8,role="DAMAGER",desc="Focuses the pure essence of Fire magic, assaulting enemies with combustive flames.|n|nPreferred Weapon: Staff, Wand, Dagger, Sword",icon=135810},
+		[64] = {name="Frost",class=8,role="DAMAGER",desc="Freezes enemies in their tracks and shatters them with Frost magic.|n|nPreferred Weapon: Staff, Wand, Dagger, Sword",icon=135846},
+		[65] = {name="Holy",class=2,role="HEALER",desc="Invokes the power of the Light to heal and protect allies and vanquish evil from the darkest corners of the world.|n|nPreferred Weapon: Sword, Mace, and Shield",icon=135920},
+		[66] = {name="Protection",class=2,role="TANK",desc="Uses Holy magic to shield $Ghimself:herself; and defend allies from attackers.|n|nPreferred Weapon: Sword, Mace, Axe, and Shield",icon=236264},
+		[70] = {name="Retribution",class=2,role="DAMAGER",desc="A righteous crusader who judges and punishes opponents with weapons and Holy magic.|n|nPreferred Weapon: Two-Handed Sword, Mace, Axe",icon=135873},
+		[71] = {name="Arms",class=1,role="DAMAGER",desc="A battle-hardened master of weapons, using mobility and overpowering attacks to strike $Ghis:her; opponents down.|n|nPreferred Weapon: Two-Handed Axe, Mace, Sword",icon=132355},
+		[72] = {name="Fury",class=1,role="DAMAGER",desc="A furious berserker unleashing a flurry of attacks to carve $Ghis:her; opponents to pieces.|n|nPreferred Weapons: Dual Two-Handed Axes, Maces, Swords",icon=132347},
+		[73] = {name="Protection",class=1,role="TANK",desc="A stalwart protector who uses a shield to safeguard $Ghimself:herself; and $Ghis:her; allies.|n|nPreferred Weapon: Axe, Mace, Sword, and Shield",icon=132341},
+		[74] = {name="Ferocity",class=0,role="DAMAGER",desc="Driven by a frenzied persistence to pursue prey, these beasts stop at nothing to achieve victory; even death is temporary for these predators.",icon=236159},
+		[79] = {name="Cunning",class=0,role="DAMAGER",desc="",icon=132150},
+		[81] = {name="Tenacity",class=0,role="TANK",desc="",icon=132121},
+		[102] = {name="Balance",class=11,role="DAMAGER",desc="Can shapeshift into a powerful Moonkin, balancing the power of Arcane and Nature magic to destroy enemies.|n|nPreferred Weapon: Staff, Dagger, Mace",icon=136096},
+		[103] = {name="Feral",class=11,role="DAMAGER",desc="Takes on the form of a great cat to deal damage with bleeds and bites.|n|nPreferred Weapon: Staff, Polearm",icon=132115},
+		[104] = {name="Guardian",class=11,role="TANK",desc="Takes on the form of a mighty bear to absorb damage and protect allies.|n|nPreferred Weapon: Staff, Polearm",icon=132276},
+		[105] = {name="Restoration",class=11,role="HEALER",desc="Channels powerful Nature magic to regenerate and revitalize allies.|n|nPreferred Weapon: Staff, Dagger, Mace",icon=136041},
+		[250] = {name="Blood",class=6,role="TANK",desc="A dark guardian who manipulates and corrupts life energy to sustain $Ghimself:herself; in the face of an enemy onslaught.|n|nPreferred Weapon: Two-Handed Axe, Mace, Sword",icon=135770},
+		[251] = {name="Frost",class=6,role="DAMAGER",desc="An icy harbinger of doom, channeling runic power and delivering vicious weapon strikes.|n|nPreferred Weapons: Dual Axes, Maces, Swords",icon=135773},
+		[252] = {name="Unholy",class=6,role="DAMAGER",desc="A master of death and decay, spreading infection and controlling undead minions to do $Ghis:her; bidding.|n|nPreferred Weapon: Two-Handed Axe, Mace, Sword",icon=135775},
+		[253] = {name="Beast Mastery",class=3,role="DAMAGER",desc="A master of the wild who can tame a wide variety of beasts to assist $Ghim:her; in combat.|n|nPreferred Weapon: Bow, Crossbow, Gun",icon=461112},
+		[254] = {name="Marksmanship",class=3,role="DAMAGER",desc="A master sharpshooter who excels in bringing down enemies from afar.|n|nPreferred Weapon: Bow, Crossbow, Gun",icon=236179},
+		[255] = {name="Survival",class=3,role="DAMAGER",desc="An adaptive ranger who favors using explosives, animal venom, and coordinated attacks with their bonded beast.|n|nPreferred Weapon: Polearm, Staff",icon=461113},
+		[256] = {name="Discipline",class=5,role="HEALER",desc="Uses magic to shield allies from taking damage as well as heal their wounds.|n|nPreferred Weapon: Staff, Wand, Dagger, Mace",icon=135940},
+		[257] = {name="Holy",class=5,role="HEALER",desc="A versatile healer who can reverse damage on individuals or groups and even heal from beyond the grave.|n|nPreferred Weapon: Staff, Wand, Dagger, Mace",icon=237542},
+		[258] = {name="Shadow",class=5,role="DAMAGER",desc="Uses sinister Shadow magic and terrifying Void magic to eradicate enemies.|n|nPreferred Weapon: Staff, Wand, Dagger, Mace",icon=136207},
+		[259] = {name="Assassination",class=4,role="DAMAGER",desc="A deadly master of poisons who dispatches victims with vicious dagger strikes.|n|nPreferred Weapons: Daggers",icon=236270},
+		[260] = {name="Outlaw",class=4,role="DAMAGER",desc="A ruthless fugitive who uses agility and guile to stand toe-to-toe with enemies.|n|nPreferred Weapons: Axes, Maces, Swords, Fist Weapons",icon=236286},
+		[261] = {name="Subtlety",class=4,role="DAMAGER",desc="A dark stalker who leaps from the shadows to ambush $Ghis:her; unsuspecting prey.|n|nPreferred Weapons: Daggers",icon=132320},
+		[262] = {name="Elemental",class=7,role="DAMAGER",desc="A spellcaster who harnesses the destructive forces of nature and the elements.|n|nPreferred Weapon: Mace, Dagger, and Shield",icon=136048},
+		[263] = {name="Enhancement",class=7,role="DAMAGER",desc="A totemic warrior who strikes foes with weapons imbued with elemental power.|n|nPreferred Weapons: Dual Axes, Maces, Fist Weapons",icon=237581},
+		[264] = {name="Restoration",class=7,role="HEALER",desc="A healer who calls upon ancestral spirits and the cleansing power of water to mend allies' wounds.|n|nPreferred Weapon: Mace, Dagger, and Shield",icon=136052},
+		[265] = {name="Affliction",class=9,role="DAMAGER",desc="A master of shadow magic who specializes in drains and damage-over-time spells.|n|nPreferred Weapon: Staff, Wand, Dagger, Sword",icon=136145},
+		[266] = {name="Demonology",class=9,role="DAMAGER",desc="A commander of demons who twists the souls of $Ghis:her; army into devastating power.|n|nPreferred Weapon: Staff, Wand, Dagger, Sword",icon=136172},
+		[267] = {name="Destruction",class=9,role="DAMAGER",desc="A master of chaos who calls down fire to burn and demolish enemies.|n|nPreferred Weapon: Staff, Wand, Dagger, Sword",icon=136186},
+		[268] = {name="Brewmaster",class=10,role="TANK",desc="A sturdy brawler who uses unpredictable movement and mystical brews to avoid damage and protect allies.|n|nPreferred Weapon: Staff, Polearm",icon=608951},
+		[269] = {name="Windwalker",class=10,role="DAMAGER",desc="A martial artist without peer who pummels foes with hands and fists.|n|nPreferred Weapons: Fist Weapons, Axes, Maces, Swords",icon=608953},
+		[270] = {name="Mistweaver",class=10,role="HEALER",desc="A healer who masters the mysterious art of manipulating life energies aided by the wisdom of the Jade Serpent.|n|nPreferred Weapon: Staff, Mace, Sword",icon=608952},
+		[535] = {name="Ferocity",class=0,role="DAMAGER",desc="Driven by a rabid persistence to pursue prey, these carnivorous beasts stop at nothing to achieve victory; even death is temporary for these predators.",icon=236159},
+		[536] = {name="Cunning",class=0,role="DAMAGER",desc="",icon=132150},
+		[537] = {name="Tenacity",class=0,role="TANK",desc="",icon=132121},
+		[577] = {name="Havoc",class=12,role="DAMAGER",desc="A brooding master of warglaives and the destructive power of Fel magic.|n|nPreferred Weapons: Warglaives, Swords, Axes, Fist Weapons",icon=1247264},
+		[581] = {name="Vengeance",class=12,role="TANK",desc="Embraces the demon within to incinerate enemies and protect their allies.|n|nPreferred Weapons: Warglaives, Swords, Axes, Fist Weapons",icon=1247265},
+	}
+
+	ExRT.Classic.GetSpecializationInfoByID = function(id) 
+		local data = specializationData[id] or ExRT.NULL
+		return id, data.name, data.desc, data.icon, data.role, ExRT.GDB.ClassList[data.class]
+	end
+end

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1751, "DBM-Nighthold", nil, 786)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041705925")
+mod:SetRevision("20190625143337")
 mod:SetCreatureID(104881)
 mod:SetEncounterID(1871)
 mod:SetZone()
@@ -16,7 +16,7 @@ mod:RegisterEventsInCombat(
 	"SPELL_CAST_SUCCESS 230403 212492 213275",
 	"SPELL_AURA_APPLIED 213864 216389 213867 213869 212531 213148 213569 212587 230951 212647 215458",
 	"SPELL_AURA_APPLIED_DOSE 212647 215458",
-	"SPELL_AURA_REMOVED 213569 212531 213148 230951",
+	"SPELL_AURA_REMOVED 213569 230951",
 	"SPELL_PERIODIC_DAMAGE 212736 213278 213504 230414",
 	"SPELL_PERIODIC_MISSED 212736 213278 213504 230414",
 	"SPELL_DAMAGE 213520",
@@ -77,7 +77,7 @@ local specWarnFelLash				= mod:NewSpecialWarningSoon(230403, nil, nil, nil, 1, 2
 local timerFrostPhaseCD				= mod:NewNextTimer(80, 213864, nil, nil, nil, 6)
 local timerFirePhaseCD				= mod:NewNextTimer(85, 213867, nil, nil, nil, 6)
 local timerArcanePhaseCD			= mod:NewNextTimer(85, 213869, nil, nil, nil, 6)
-local timerAnnihilateCD				= mod:NewNextCountTimer(40, 212492, nil, "Tank", nil, 5, nil, DBM_CORE_DEADLY_ICON..DBM_CORE_TANK_ICON)
+local timerAnnihilateCD				= mod:NewNextCountTimer(40, 212492, nil, "Tank", nil, 5, nil, DBM_CORE_DEADLY_ICON..DBM_CORE_TANK_ICON, nil, 2, 4)
 --Debuffs
 local timerMarkOfFrostCD			= mod:NewNextTimer(16, 212531, nil, nil, nil, 3)
 local timerSearingBrandCD			= mod:NewNextTimer(16, 213148, nil, nil, nil, 3)
@@ -95,22 +95,16 @@ local timerAnimateFrostCD			= mod:NewNextTimer(16, 213853, 124338, nil, nil, 1, 
 local timerAnimateFireCD			= mod:NewNextTimer(16, 213567, 124338, nil, nil, 1, nil, DBM_CORE_DEADLY_ICON..DBM_CORE_TANK_ICON)--"Animated" short name. Wrong tense but only short spell I can use
 local timerAnimateArcaneCD			= mod:NewNextTimer(16, 213564, 124338, nil, nil, 1, nil, DBM_CORE_DEADLY_ICON..DBM_CORE_DAMAGE_ICON..DBM_CORE_TANK_ICON)--"Animated" short name. Wrong tense but only short spell I can use
 --Animate Specials
-local timerArmageddon				= mod:NewCastTimer(33, 213568, nil, nil, nil, 2, nil, DBM_CORE_DEADLY_ICON)
+local timerArmageddon				= mod:NewCastTimer(33, 213568, nil, nil, nil, 2, nil, DBM_CORE_DEADLY_ICON, nil, 3, 4)
 --Mythic
 mod:AddTimerLine(ENCOUNTER_JOURNAL_SECTION_FLAG12)
 local timerFelSoulCD				= mod:NewNextTimer(15, 230951, nil, nil, nil, 1, nil, DBM_CORE_HEROIC_ICON)
 local timerFelSoul					= mod:NewBuffActiveTimer(45, 230951, nil, nil, nil, 6)
 local timerDecimateCD				= mod:NewCDTimer(16.1, 230504, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON)--17-20 (Tank timer by default, holy/ret/etc that's doing taunting will have to enable by default)
 local timerFelStompCD				= mod:NewNextTimer(25, 230414, nil, nil, nil, 3, nil, DBM_CORE_HEROIC_ICON)
-local timerFelLashCD				= mod:NewNextCountTimer(25, 230403, nil, nil, nil, 2, nil, DBM_CORE_HEROIC_ICON)
+local timerFelLashCD				= mod:NewNextCountTimer(25, 230403, nil, nil, nil, 2, nil, DBM_CORE_HEROIC_ICON, nil, 1, 3)
 
 local berserkTimer					= mod:NewBerserkTimer(600)--480
-
-local countdownFelLash				= mod:NewCountdown(8, 230403)
-local countdownMarkOfFrost			= mod:NewCountdown("Alt30", 212531, nil, nil, 3)
-local countdownSearingBrand			= mod:NewCountdown("Alt30", 213148, nil, nil, 3)
-local countdownAnnihilate			= mod:NewCountdown("Alt30", 212492, "Tank")
-local countdownArmageddon			= mod:NewCountdown("AltTwo33", 213568)
 
 mod:AddRangeFrameOption("8")
 mod:AddSetIconOption("SetIconOnFrozenTempest", 213083, true, true)
@@ -163,7 +157,6 @@ function mod:OnCombatStart(delay)
 	self.vb.armageddonAdds = 0
 	self.vb.lastPhase = 1
 	timerAnnihilateCD:Start(8-delay, 1)
-	countdownAnnihilate:Start(8-delay)
 	--Rest of timers are triggered by frost buff 0.1 seconds into pull
 	table.wipe(chargeTable)
 	table.wipe(searingDetonateIcons)
@@ -200,7 +193,6 @@ function mod:SPELL_CAST_START(args)
 		specWarnAnimateArcane:Play("mobsoon")
 		if not self:IsEasy() then
 			timerArmageddon:Start()
-			countdownArmageddon:Start()
 		end
 	elseif spellId == 213852 then--Replicate: Arcane Orb
 		specWarnArcaneOrb:Show()
@@ -245,7 +237,6 @@ function mod:SPELL_CAST_SUCCESS(args)
 			specWarnFelLash:Schedule(timer-3)
 			specWarnFelLash:ScheduleVoice(timer-3, "gathershare")
 			timerFelLashCD:Start(timer, self.vb.felLashCount+1)
-			countdownFelLash:Start(timer)
 		end
 	elseif spellId == 212492 then--Annihilate
 		self.vb.annihilateCount = self.vb.annihilateCount + 1
@@ -253,7 +244,6 @@ function mod:SPELL_CAST_SUCCESS(args)
 		local timer = self:IsMythic() and mythicAnnihilateTimers[nextCount] or annihilateTimers[nextCount]
 		if timer then	
 			timerAnnihilateCD:Start(timer-3, nextCount)
-			countdownAnnihilate:Start(timer-3)
 		end
 		if nextCount == 6 and not self:IsMythic() then
 			--Better place to start arcane orb timer since it's cast 1.5 seconds after arcane phase begins and this is last annihilate in fire phase
@@ -342,7 +332,6 @@ function mod:SPELL_AURA_APPLIED(args)
 			specWarnFelLash:Schedule(18)
 			specWarnFelLash:ScheduleVoice(18, "gathershare")
 			timerFelLashCD:Start(21, 1)
-			countdownFelLash:Start(21)
 			timerArcaneOrbDetonateCD:Start(35)--Not in combat log, So difficult to fix until transcriptor. Needs verification
 			specWarnArcaneDetonate:Schedule(35)--^^
 			specWarnArcaneDetonate:ScheduleVoice(35, "watchorb")--^^
@@ -367,7 +356,6 @@ function mod:SPELL_AURA_APPLIED(args)
 		if args:IsPlayer() then
 			specWarnMarkOfFrost:Show()
 			specWarnMarkOfFrost:Play("targetyou")
-			countdownMarkOfFrost:Start(5)
 			self:AntiSpam(7, args.destName)
 			yellMarkofFrost:Yell()
 		end
@@ -382,7 +370,6 @@ function mod:SPELL_AURA_APPLIED(args)
 		if args:IsPlayer() then
 			specWarnSearingBrand:Show()
 			specWarnSearingBrand:Play("scatter")
-			countdownSearingBrand:Start()
 		end
 	elseif spellId == 213569 then--Armageddon Applied to mobs
 		self.vb.armageddonAdds = self.vb.armageddonAdds + 1
@@ -425,15 +412,8 @@ function mod:SPELL_AURA_REMOVED(args)
 			warnArmageddon:Show(count)
 			if count == 0 then
 				timerArmageddon:Stop()
-				countdownArmageddon:Cancel()
 			end
 		end
-	elseif spellId == 212531 then--Mark of Frost (5sec Targetting Debuff)
-		if args:IsPlayer() then
-			countdownMarkOfFrost:Cancel()
-		end
-	elseif spellId == 213148 and args:IsPlayer() then--Searing Brand (5sec Targetting Debuff)
-		countdownSearingBrand:Cancel()
 	elseif spellId == 230951 then
 		timerFelSoul:Stop()
 	end

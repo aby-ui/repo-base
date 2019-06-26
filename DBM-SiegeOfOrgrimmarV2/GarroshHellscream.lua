@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(869, "DBM-SiegeOfOrgrimmarV2", nil, 369)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041710000")
+mod:SetRevision("20190625143417")
 mod:SetCreatureID(71865)
 mod:SetEncounterID(1623)
 mod:SetZone()
@@ -77,39 +77,30 @@ local specWarnManifestRage			= mod:NewSpecialWarningInterrupt(147011, nil, nil, 
 local specWarnMaliciousBlast		= mod:NewSpecialWarningStack(147235, nil, 1)
 local specWarnNapalm				= mod:NewSpecialWarningMove(147136)
 
-local timerRoleplay					= mod:NewTimer(120.5, "timerRoleplay", "Interface\\Icons\\Spell_Holy_BorrowedTime")--Wonder if this is somewhat variable?
+local timerRoleplay					= mod:NewTimer(120.5, "timerRoleplay", "237538")--Wonder if this is somewhat variable?
 --Stage 1: A Cry in the Darkness
-local timerDesecrateCD				= mod:NewCDCountTimer(35, 144748, nil, nil, nil, 3)
+local timerDesecrateCD				= mod:NewCDCountTimer(35, 144748, nil, nil, nil, 3, nil, nil, nil, 2, 4)
 local timerHellscreamsWarsongCD		= mod:NewNextTimer(42.2, 144821, nil, "Tank|Healer", nil, 5, nil, DBM_CORE_TANK_ICON)
 local timerFarseerWolfRiderCD		= mod:NewNextTimer(50, "ej8294", nil, nil, nil, 1, 144585)--EJ says they come faster as phase progresses but all i saw was 3 spawn on any given pull and it was 30 50 50
 local timerSiegeEngineerCD			= mod:NewNextTimer(40, "ej8298", nil, nil, nil, 1, 144616)
-local timerPowerIronStar			= mod:NewCastTimer(16.5, 144616, nil, nil, nil, 2, nil, DBM_CORE_DEADLY_ICON)
+local timerPowerIronStar			= mod:NewCastTimer(16.5, 144616, nil, nil, nil, 2, nil, DBM_CORE_DEADLY_ICON, nil, 1, 5)
 --Intermission: Realm of Y'Shaarj
 local timerEnterRealm				= mod:NewNextTimer(145.5, 144866, nil, nil, nil, 6, 144945)
-local timerRealm					= mod:NewBuffActiveTimer(60.5, "ej8305", nil, nil, nil, 6, 144945)--May be too long, but intermission makes more sense than protection buff which actually fades before intermission ends if you do it right.
+local timerRealm					= mod:NewBuffActiveTimer(60.5, "ej8305", nil, nil, nil, 6, 144945, nil, nil, 1, 8)--May be too long, but intermission makes more sense than protection buff which actually fades before intermission ends if you do it right.
 --Stage Two: Power of Y'Shaarj
-local timerWhirlingCorruptionCD		= mod:NewCDCountTimer(49.5, 144985, nil, nil, nil, 2, nil, DBM_CORE_HEALER_ICON)--One bar for both, "empowered" makes timer too long
+local timerWhirlingCorruptionCD		= mod:NewCDCountTimer(49.5, 144985, nil, nil, nil, 2, nil, DBM_CORE_HEALER_ICON, nil, 1, 4)--One bar for both, "empowered" makes timer too long
 local timerWhirlingCorruption		= mod:NewBuffActiveTimer(9, 144985, nil, false)
-local timerTouchOfYShaarjCD			= mod:NewCDCountTimer(45, 145071, nil, nil, nil, 3, nil, DBM_CORE_INTERRUPT_ICON)
+local timerTouchOfYShaarjCD			= mod:NewCDCountTimer(45, 145071, nil, nil, nil, 3, nil, DBM_CORE_INTERRUPT_ICON, nil, 3, 4)
 local timerGrippingDespair			= mod:NewTargetTimer(15, 145183, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON)
 --Starge Three: MY WORLD
 --Starge Four: Heroic Hidden Phase
 local timerEnterGarroshRealm		= mod:NewNextTimer(20, 146984, nil, nil, nil, 6, 144945)
-local timerMaliceCD					= mod:NewNextTimer(29.5, 147209, nil, nil, nil, 3)--29.5-33sec variation
-local timerBombardmentCD			= mod:NewNextTimer(55, 147120, nil, nil, nil, 2, nil, DBM_CORE_HEALER_ICON)
-local timerBombardment				= mod:NewBuffActiveTimer(13, 147120)
+local timerMaliceCD					= mod:NewNextTimer(29.5, 147209, nil, nil, nil, 3, nil, nil, nil, 3, 4)--29.5-33sec variation
+local timerBombardmentCD			= mod:NewNextTimer(55, 147120, nil, nil, nil, 2, nil, DBM_CORE_HEALER_ICON, nil, 1, 4)
+local timerBombardment				= mod:NewBuffActiveTimer(13, 147120, nil, nil, nil, 5, nil, DBM_CORE_HEALER_ICON, nil, 2, 4)
 local timerClumpCheck				= mod:NewNextTimer(3, 147126)
 local timerMaliciousBlast			= mod:NewBuffFadesTimer(3, 147235, nil, false)
 local timerFixate					= mod:NewTargetTimer(12, 147665)
-
-local countdownPowerIronStar		= mod:NewCountdown(16.5, 144616)
-local countdownWhirlingCorruption	= mod:NewCountdown(49.5, 144985)
-local countdownDesecrate			= mod:NewCountdown("Alt35", 144748)
-local countdownTouchOfYShaarj		= mod:NewCountdown("AltTwo45", 145071)
-local countdownRealm				= mod:NewCountdownFades(60.5, "ej8305", nil, nil, 10)
-local countdownBombardment			= mod:NewCountdown(55, 147120)
-local countdownBombardmentEnd		= mod:NewCountdownFades("Alt13", 147120)
-local countdownMalice				= mod:NewCountdown("AltTwo30", 147209)
 
 local berserkTimer					= mod:NewBerserkTimer(1080)
 
@@ -197,7 +188,6 @@ function mod:OnCombatStart(delay)
 	self.vb.phase4Correction = false
 	numberOfPlayers = DBM:GetNumRealGroupMembers()
 	timerDesecrateCD:Start(10.5-delay, 1)
-	countdownDesecrate:Start(10.5-delay)
 	specWarnSiegeEngineer:Schedule(16-delay)
 	timerSiegeEngineerCD:Start(20-delay)
 	timerHellscreamsWarsongCD:Start(22-delay)
@@ -250,16 +240,13 @@ function mod:SPELL_CAST_START(args)
 		end
 		timerWhirlingCorruption:Start()
 		timerWhirlingCorruptionCD:Start(nil, self.vb.whirlCount+1)
-		countdownWhirlingCorruption:Start()
 	elseif spellId == 147120 then
 		self.vb.bombardCount = self.vb.bombardCount + 1
 		local count = self.vb.bombardCount
 		specWarnBombardment:Show(count)
 		specWarnBombardmentOver:Schedule(13)
 		timerBombardment:Start()
-		countdownBombardmentEnd:Start()
 		timerBombardmentCD:Start(bombardCD[count] or 15, count+1)
-		countdownBombardment:Start(bombardCD[count] or 15)
 		timerClumpCheck:Start()
 	elseif spellId == 147011 then
 		if DBM:UnitDebuff("player", starFixate) then--Kiting an Unstable Iron Star
@@ -280,30 +267,24 @@ function mod:SPELL_CAST_SUCCESS(args)
 		self.vb.desecrateCount = self.vb.desecrateCount + 1
 		if self.vb.phase == 1 then
 			timerDesecrateCD:Start(41, self.vb.desecrateCount+1)
-			countdownDesecrate:Start(41)
 		elseif self.vb.phase == 3 then
 			timerDesecrateCD:Start(25, self.vb.desecrateCount+1)
-			countdownDesecrate:Start(25)
 		else--Phase 2
 			timerDesecrateCD:Start(nil, self.vb.desecrateCount+1)
-			countdownDesecrate:Start()
 		end
 		self:BossTargetScanner(71865, "DesecrateTarget", 0.02, 16)
 	elseif args:IsSpellID(145065, 145171) then
 		self.vb.mindControlCount = self.vb.mindControlCount + 1
 		specWarnTouchOfYShaarj:Show()
-		if numberOfPlayers < 2 then return end--Solo raid, no mind controls, so no timers/countdowns
+		if numberOfPlayers < 2 then return end--Solo raid, no mind controls, so no timers
 		if self.vb.phase == 3 then
 			if self.vb.mindControlCount == 1 then--First one in phase is shorter than rest (well that or rest are delayed because of whirling)
 				timerTouchOfYShaarjCD:Start(35, self.vb.mindControlCount+1)
-				countdownTouchOfYShaarj:Start(35)
 			else
 				timerTouchOfYShaarjCD:Start(42, self.vb.mindControlCount+1)
-				countdownTouchOfYShaarj:Start(42)
 			end
 		else
 			timerTouchOfYShaarjCD:Start(nil, self.vb.mindControlCount+1)
-			countdownTouchOfYShaarj:Start()
 		end
 	end
 end
@@ -313,7 +294,6 @@ function mod:SPELL_AURA_APPLIED(args)
 	if spellId == 144945 then
 		warnYShaarjsProtection:Show(args.destName)
 		timerRealm:Start()
-		countdownRealm:Start()
 	elseif args:IsSpellID(145065, 145171) then
 		if spellId == 145065 then
 			warnTouchOfYShaarj:CombinedShow(0.5, args.destName)
@@ -396,7 +376,6 @@ function mod:UNIT_DIED(args)
 		if engineerDied == 2 then
 			specWarnExplodingIronStar:Cancel()
 			timerPowerIronStar:Cancel()
-			countdownPowerIronStar:Cancel()
 		end
 	elseif cid == 71983 then--Farseer Wolf Rider
 		self.vb.shamanAlive = self.vb.shamanAlive - 1
@@ -410,7 +389,6 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 		timerSiegeEngineerCD:Cancel()
 		timerFarseerWolfRiderCD:Cancel()
 		timerDesecrateCD:Cancel()
-		countdownDesecrate:Cancel()
 		timerHellscreamsWarsongCD:Cancel()
 		specWarnSiegeEngineer:Cancel()
 		if self.vb.phase == 1 then
@@ -418,15 +396,10 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 		end
 	elseif spellId == 144866 then--Enter Realm of Y'Shaarj
 		timerPowerIronStar:Cancel()
-		countdownPowerIronStar:Cancel()
 		timerDesecrateCD:Cancel()
-		countdownDesecrate:Cancel()
 		timerTouchOfYShaarjCD:Cancel()
-		countdownTouchOfYShaarj:Cancel()
 		timerWhirlingCorruptionCD:Cancel()
-		countdownWhirlingCorruption:Cancel()
 	elseif spellId == 144956 then--Jump To Ground (intermission ending)
-		countdownRealm:Cancel()
 		timerRealm:Cancel()
 		if timerEnterRealm:GetTime() > 0 then--first cast, phase2 trigger.
 			self.vb.phase = 2
@@ -437,13 +410,10 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 			self.vb.mindControlCount = 0
 			hideInfoFrame(self)
 			timerDesecrateCD:Start(10, 1)
-			countdownDesecrate:Start(10)
 			if numberOfPlayers > 1 then
 				timerTouchOfYShaarjCD:Start(15, 1)
-				countdownTouchOfYShaarj:Start(15)
 			end
 			timerWhirlingCorruptionCD:Start(30, 1)
-			countdownWhirlingCorruption:Start(30)
 			timerEnterRealm:Start()
 		end
 	--"<556.9 21:41:56> [UNIT_SPELLCAST_SUCCEEDED] Garrosh Hellscream [[boss1:Realm of Y'Shaarj::0:145647]]", -- [169886]
@@ -455,29 +425,20 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 		warnPhase3:Show()
 		timerEnterRealm:Cancel()
 		timerDesecrateCD:Cancel()
-		countdownDesecrate:Cancel()
 		timerTouchOfYShaarjCD:Cancel()
-		countdownTouchOfYShaarj:Cancel()
 		timerWhirlingCorruptionCD:Cancel()
-		countdownWhirlingCorruption:Cancel()
 		timerDesecrateCD:Start(21, 1)
-		countdownDesecrate:Start(21)
 		if numberOfPlayers > 1 then
 			timerTouchOfYShaarjCD:Start(30, 1)
-			countdownTouchOfYShaarj:Start(30)
 		end
 		timerWhirlingCorruptionCD:Start(44.5, 1)
-		countdownWhirlingCorruption:Start(44.5)
 	elseif spellId == 146984 then--Phase 4 trigger
 		self.vb.phase = 4
 		self.vb.bombardCount = 0
 		timerEnterRealm:Cancel()
 		timerDesecrateCD:Cancel()
-		countdownDesecrate:Cancel()
 		timerTouchOfYShaarjCD:Cancel()
-		countdownTouchOfYShaarj:Cancel()
 		timerWhirlingCorruptionCD:Cancel()
-		countdownWhirlingCorruption:Cancel()
 		warnPhase4:Show()
 		timerMaliceCD:Start()
 		timerBombardmentCD:Start(70)
@@ -488,9 +449,7 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 	elseif spellId == 147187 and not self.vb.phase4Correction then--Phase 4 timer fixer (Call Gunship) (needed in case anyone in raid watched cinematic)
 		self.vb.phase4Correction = true
 		timerMaliceCD:Update(18.5, 29.5)
-		countdownMalice:Start(11)
 		timerBombardmentCD:Update(20, 70)
-		countdownBombardment:Start(50)
 	elseif spellId == 147126 then--Clump Check
 		timerClumpCheck:Start()
 	end
@@ -510,11 +469,9 @@ function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg, _, _, _, target)
 		end
 		if self:IsMythic() then
 			timerPowerIronStar:Start(11.5)
-			countdownPowerIronStar:Start(11.5)
 			specWarnExplodingIronStar:Schedule(11.5)
 		else
 			timerPowerIronStar:Start()
-			countdownPowerIronStar:Start()
 			specWarnExplodingIronStar:Schedule(16.5	)
         end
 	elseif msg:find("spell:147047") then
@@ -535,7 +492,6 @@ function mod:OnSync(msg, guid)
 		local targetName = DBM:GetFullPlayerNameByGUID(guid)
 		warnMalice:Show(targetName)
 		timerMaliceCD:Start()
-		countdownMalice:Start()
 		if targetName == UnitName("player") then
 			specWarnMaliceYou:Show()
 			yellMalice:Yell()
@@ -560,11 +516,8 @@ function mod:OnSync(msg, guid)
 		timerRoleplay:Start()
 	elseif msg == "phase3End" and self:IsInCombat() then
 		timerDesecrateCD:Cancel()
-		countdownDesecrate:Cancel()
 		timerTouchOfYShaarjCD:Cancel()
-		countdownTouchOfYShaarj:Cancel()
 		timerWhirlingCorruptionCD:Cancel()
-		countdownWhirlingCorruption:Cancel()
 		timerEnterGarroshRealm:Start()
 	end
 end

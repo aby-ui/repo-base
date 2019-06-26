@@ -1,4 +1,4 @@
-## Interface: 80100
+## Interface: 80200
 ## Version: 800r122
 ## Title: |cff00c0ffDejaCharacterStats|r
 ## Author: Dejablue, Kakjens, loudsoul

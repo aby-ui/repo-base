@@ -1,3 +1,5 @@
+if not _G.C_ArtifactUI then return end
+
 local Addon = select(2, ...)
 local Dominos = _G.Dominos
 local ArtifactBar = Dominos:CreateClass('Frame', Addon.ProgressBar)

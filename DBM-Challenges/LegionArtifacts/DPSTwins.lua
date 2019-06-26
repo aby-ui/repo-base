@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("ArtifactTwins", "DBM-Challenges", 2)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041705828")
+mod:SetRevision("20190625143134")
 mod:SetCreatureID(116409, 116410)--Raest Magespear, Karam Magespear
 mod:SetZone()--Healer (1710), Tank (1698), DPS (1703-The God-Queen's Fury), DPS (Fel Totem Fall)
 mod:SetBossHPInfoToHighest()
@@ -31,12 +31,9 @@ local specWarnRune				= mod:NewSpecialWarningMoveTo(236460, nil, nil, nil, 1, 2)
 --Karam
 local timerRisingDragonCD		= mod:NewCDTimer(35, 235426, nil, nil, nil, 2)
 --Raest
-local timerHandCD				= mod:NewNextTimer(28, 235580, nil, nil, nil, 1, 235578, DBM_CORE_DAMAGE_ICON)
+local timerHandCD				= mod:NewNextTimer(28, 235580, nil, nil, nil, 1, 235578, DBM_CORE_DAMAGE_ICON, nil, 1, 4)
 local timerGraspCD				= mod:NewCDTimer(15, 235578, nil, nil, nil, 4, nil, DBM_CORE_INTERRUPT_ICON)
-local timerRuneCD				= mod:NewCDTimer(35, 236460, nil, nil, nil, 5)
-
-local countHand					= mod:NewCountdown(28, 235580)
-local countRune					= mod:NewCountdown("Alt35", 236460)
+local timerRuneCD				= mod:NewCDTimer(35, 236460, nil, nil, nil, 5, nil, nil, nil, 2, 4)
 
 mod.vb.phase = 1
 
@@ -53,7 +50,6 @@ function mod:SPELL_CAST_START(args)
 		else--4
 			warnPhase:Show(DBM_CORE_AUTO_ANNOUNCE_TEXTS.stage:format(4))
 			timerHandCD:Stop()
-			countHand:Cancel()
 		end
 	elseif spellId == 235578 then--Grasp from Beyond
 		specWarnGrasp:Show(args.sourceName)
@@ -89,24 +85,20 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 		if self.vb.phase >= 2 then--Should filter fixate done on pull
 			self.vb.phase = self.vb.phase + 1
 			timerHandCD:Start(9)
-			countHand:Start(9)
 			if self.vb.phase == 3 then
 				warnPhase:Show(DBM_CORE_AUTO_ANNOUNCE_TEXTS.stage:format(3))
 			else--5
 				warnPhase:Show(DBM_CORE_AUTO_ANNOUNCE_TEXTS.stage:format(5))
 				timerRuneCD:Start(18.2)
-				countRune:Start(18.2)
 				timerRisingDragonCD:Start(25)--Only one time? need more data to be sure
 			end
 		end
 	elseif spellId == 235580 then--Hand from Beyond
 		timerHandCD:Start()
-		countHand:Start()
 	elseif spellId == 236468 then--Rune of Summoning
 		specWarnRune:Show(RUNES)
 		specWarnRune:Play("157060")
 		timerRuneCD:Start()
-		countRune:Start()
 	elseif spellId == 235525 then--Tear Rift (about 3 seconds after Dismiss)
 		specWarnRift:Show()
 		specWarnRift:Play("killmob")

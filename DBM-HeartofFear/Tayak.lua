@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(744, "DBM-HeartofFear", nil, 330)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041710000")
+mod:SetRevision("20190625143417")
 mod:SetCreatureID(62543)
 mod:SetEncounterID(1504)
 mod:SetZone()
@@ -40,9 +40,8 @@ local timerUnseenStrike					= mod:NewCastTimer(4.8, 123017)
 local timerUnseenStrikeCD				= mod:NewCDTimer(53, 123017, nil, nil, nil, 3) -- 53~61 cd.
 local timerIntensifyCD					= mod:NewNextTimer(60, 123471)
 local timerBladeTempest					= mod:NewBuffActiveTimer(9, 125310)
-local timerBladeTempestCD				= mod:NewNextTimer(60, 125310, nil, nil, nil, 2)--Always cast after immediately intensify since they essencially have same CD
+local timerBladeTempestCD				= mod:NewNextTimer(60, 125310, nil, nil, nil, 2, nil, nil, nil, 1, 4)--Always cast after immediately intensify since they essencially have same CD
 
-local countdownTempest					= mod:NewCountdown(60, 125310)
 local berserkTimer						= mod:NewBerserkTimer(490)
 
 mod:AddBoolOption("RangeFrame", "Ranged")--For Wind Step
@@ -64,7 +63,6 @@ function mod:OnCombatStart(delay)
 	end
 	if self:IsHeroic() then
 		timerBladeTempestCD:Start(-delay)
-		countdownTempest:Start(-delay)
 	end
 	if self.Options.RangeFrame and not self:IsDifficulty("lfr25") then
 		DBM.RangeCheck:Show(10)
@@ -118,7 +116,6 @@ function mod:SPELL_CAST_START(args)
 		specWarnBladeTempest:Show()
 		timerBladeTempest:Start()
 		timerBladeTempestCD:Start()
-		countdownTempest:Start()
 	end
 end
 
@@ -174,7 +171,6 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 		timerUnseenStrikeCD:Cancel()
 		timerIntensifyCD:Cancel()
 		timerBladeTempestCD:Cancel()
-		countdownTempest:Cancel()
 		specWarnStormUnleashed:Show()
 	end
 end

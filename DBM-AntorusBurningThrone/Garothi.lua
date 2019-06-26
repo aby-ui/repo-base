@@ -1,11 +1,10 @@
 local mod	= DBM:NewMod(1992, "DBM-AntorusBurningThrone", nil, 946)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041705925")
+mod:SetRevision("20190625143337")
 mod:SetCreatureID(122450)
 mod:SetEncounterID(2076)
 mod:SetZone()
---mod:SetBossHPInfoToHighest()
 mod:SetUsedIcons(1, 2, 3, 4, 5, 6, 7)
 mod.respawnTime = 29
 mod:DisableRegenDetection()--Prevent false combat when fighting trash
@@ -46,18 +45,15 @@ local yellDecimationFades				= mod:NewShortFadesYell(244410)
 --Annihilator
 local specWarnAnnihilation				= mod:NewSpecialWarningSpell(244761, nil, nil, nil, 1, 2)
 
-local timerFelBombardmentCD				= mod:NewNextTimer(20.7, 246220, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON)
+local timerFelBombardmentCD				= mod:NewNextTimer(20.7, 246220, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON, nil, 2, 4)
 local timerApocDriveCast				= mod:NewCastTimer(30, 244152, nil, nil, nil, 6)
-local timerSpecialCD					= mod:NewNextSpecialTimer(20)--When cannon unknown
+local timerSpecialCD					= mod:NewNextSpecialTimer(20, nil, nil, nil, nil, 3, nil, nil, nil, 1, 4)--When cannon unknown
 mod:AddTimerLine(Decimator)
-local timerDecimationCD					= mod:NewNextTimer(31.6, 244410, nil, nil, nil, 3)
+local timerDecimationCD					= mod:NewNextTimer(31.6, 244410, nil, nil, nil, 3, nil, nil, nil, 1, 4)
 mod:AddTimerLine(annihilator)
-local timerAnnihilationCD				= mod:NewNextTimer(31.6, 244761, nil, nil, nil, 3)
+local timerAnnihilationCD				= mod:NewNextTimer(31.6, 244761, nil, nil, nil, 3, nil, nil, nil, 1, 4)
 
 --local berserkTimer					= mod:NewBerserkTimer(600)
-
-local countdownChooseCannon				= mod:NewCountdown(15, 245124)
-local countdownFelBombardment			= mod:NewCountdown("Alt20", 246220, "Tank")
 
 mod:AddSetIconOption("SetIconOnDecimation", 244410, true)
 mod:AddSetIconOption("SetIconOnBombardment", 246220, true)
@@ -104,9 +100,7 @@ function mod:OnCombatStart(delay)
 	self.vb.annihilatorHaywire = false
 	self.vb.phase = 1
 	timerSpecialCD:Start(8.5-delay)--First one random.
-	countdownChooseCannon:Start(8.5-delay)
 	timerFelBombardmentCD:Start(9.7-delay)
-	countdownFelBombardment:Start(9.7-delay)
 end
 
 function mod:OnCombatEnd()
@@ -126,8 +120,6 @@ function mod:SPELL_CAST_START(args)
 	elseif spellId == 240277 then
 		timerDecimationCD:Stop()
 		timerFelBombardmentCD:Stop()
-		countdownFelBombardment:Cancel()
-		countdownChooseCannon:Cancel()
 		timerAnnihilationCD:Stop()
 		specWarnApocDrive:Show()
 		specWarnApocDrive:Play("targetchange")
@@ -139,7 +131,6 @@ function mod:SPELL_CAST_SUCCESS(args)
 	local spellId = args.spellId
 	if spellId == 244399 or spellId == 245294 or spellId == 246919 then--Decimation
 		self.vb.lastCannon = 2--Anniilator 1 decimator 2
-		countdownChooseCannon:Start(15.8)
 		if self.vb.phase == 1 or self:IsMythic() then
 			timerAnnihilationCD:Start(15.8)
 		elseif self.vb.phase > 1 and not self:IsMythic() then
@@ -152,7 +143,6 @@ function mod:SPELL_CAST_SUCCESS(args)
 			self.vb.lastCannon = 1--Annihilation 1 Decimation 2
 			specWarnAnnihilation:Show()
 			specWarnAnnihilation:Play("helpsoak")
-			countdownChooseCannon:Start(15.8)
 			if self.vb.phase == 1 or self:IsMythic() then
 				timerDecimationCD:Start(15.8)
 			elseif self.vb.phase > 1 and not self:IsMythic() then
@@ -242,10 +232,8 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 		if self.vb.phase == 2 and not self:IsMythic() then
 			if spellId == 245515 then--decimator-cannon-eject
 				timerAnnihilationCD:Start(22)
-				countdownChooseCannon:Start(22)
 			else--245527 (annihilator-cannon-eject)
 				timerDecimationCD:Start(22)
-				countdownChooseCannon:Start(22)
 			end
 		elseif self:IsMythic() then
 			if self.vb.lastCannon == 1 then--Annihilator Cannon
@@ -256,14 +244,11 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 			--timerSpecialCD:Start(22)--Random cannon
 		end
 		timerFelBombardmentCD:Start(23)
-		countdownFelBombardment:Start(23)
 	elseif spellId == 244150 then--Fel Bombardment
 		if self:IsMythic() then
 			timerFelBombardmentCD:Start(15.7)
-			countdownFelBombardment:Start(15.7)
 		else
 			timerFelBombardmentCD:Start(20.7)
-			countdownFelBombardment:Start(20.7)
 		end
 	elseif spellId == 245124 then
 		if self.vb.annihilatorHaywire and self.vb.lastCannon == 2 then 
@@ -272,10 +257,8 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 			specWarnAnnihilation:Play("helpsoak")
 			if self.vb.phase == 1 or self:IsMythic() then
 				timerDecimationCD:Start(15.8)
-				countdownChooseCannon:Start(15.8)
 			elseif self.vb.phase > 1 and not self:IsMythic() then
 				timerAnnihilationCD:Start(15.8)
-				countdownChooseCannon:Start(15.8)
 			end
 		end
 	end

@@ -1,11 +1,11 @@
 local mod	= DBM:NewMod(331, "DBM-DragonSoul", nil, 187)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041705904")
+mod:SetRevision("20190625143316")
 mod:SetCreatureID(55294)
 mod:SetEncounterID(1297)
 mod:SetZone()
-mod:SetModelSound("sound\\CREATURE\\ULTRAXION\\VO_DS_ULTRAXION_INTRO_01.OGG", "sound\\CREATURE\\ULTRAXION\\VO_DS_ULTRAXION_AGGRO_01.OGG")
+--mod:SetModelSound("sound\\CREATURE\\ULTRAXION\\VO_DS_ULTRAXION_INTRO_01.OGG", "sound\\CREATURE\\ULTRAXION\\VO_DS_ULTRAXION_AGGRO_01.OGG")
 
 mod:RegisterCombat("combat")
 
@@ -31,9 +31,9 @@ local specWarnTwilightEruption		= mod:NewSpecialWarningSpell(106388, nil, nil, 2
 local timerCombatStart				= mod:NewTimer(35, "TimerCombatStart", 2457)
 local timerUnstableMonstrosity		= mod:NewNextTimer(60, 106372, nil, "Healer", nil, 5, nil, DBM_CORE_HEALER_ICON)
 local timerHourofTwilight			= mod:NewCastTimer(5, 106371)
-local timerHourofTwilightCD			= mod:NewNextCountTimer(45.5, 106371, nil, nil, nil, 5)
+local timerHourofTwilightCD			= mod:NewNextCountTimer(45.5, 106371, nil, nil, nil, 5, nil, nil, nil, 2, 4)
 local timerTwilightEruption			= mod:NewCastTimer(5, 106388, nil, nil, nil, 2)
-local timerFadingLight				= mod:NewBuffFadesTimer(10, 109075)
+local timerFadingLight				= mod:NewBuffFadesTimer(10, 109075, nil, nil, nil, 5, nil, nil, nil, 1, 5)
 local timerFadingLightCD			= mod:NewNextTimer(10, 109075, nil, nil, nil, 3, nil, DBM_CORE_DEADLY_ICON)
 local timerGiftofLight				= mod:NewNextTimer(80, 105896, nil, "Healer", nil, 5, nil, DBM_CORE_HEALER_ICON)
 local timerEssenceofDreams			= mod:NewNextTimer(155, 105900, nil, "Healer", nil, 5, nil, DBM_CORE_HEALER_ICON)
@@ -41,9 +41,6 @@ local timerSourceofMagic			= mod:NewNextTimer(215, 105903, nil, "Healer", nil, 5
 local timerLoomingDarkness			= mod:NewBuffFadesTimer(120, 106498)
 
 local berserkTimer					= mod:NewBerserkTimer(360)
-
-local countdownFadingLight			= mod:NewCountdownFades(10, 109075)
-local countdownHourofTwilight		= mod:NewCountdown("Alt45", 106371)
 
 --Raid CDs will have following options: Don't show Raid CDs, Show only My Raid CDs, Show all raid CDs
 
@@ -73,7 +70,6 @@ function mod:OnCombatStart(delay)
 		specWarnHourofTwilightN:Schedule(40.5, hourOfTwilight, hourOfTwilightCount+1)
 	end
 	timerHourofTwilightCD:Start(45.5-delay, 1)
-	countdownHourofTwilight:Start(45.5)
 	timerGiftofLight:Start(-delay)
 	timerEssenceofDreams:Start(-delay)
 	timerSourceofMagic:Start(-delay)
@@ -103,7 +99,6 @@ function mod:SPELL_CAST_START(args)
 		end
 		warnHourofTwilightSoon:Schedule(30.5)
 		timerHourofTwilightCD:Start(45.5, hourOfTwilightCount+1)
-		countdownHourofTwilight:Start(45.5)
 		if self:IsDifficulty("heroic10", "heroic25") then
 			timerFadingLightCD:Start(13)
 			timerHourofTwilight:Start(3)
@@ -131,7 +126,6 @@ function mod:SPELL_AURA_APPLIED(args)
 			local _, _, _, _, duration, expires = DBM:UnitDebuff("player", args.spellName)--Find out what our specific fading light is
 			if duration then
 				specWarnFadingLight:Show()
-				countdownFadingLight:Start(duration-1)--For some reason need to offset it by 1 second to make it accurate but otherwise it's perfect
 				timerFadingLight:Start(duration-1)
 			end
 		else
@@ -149,7 +143,6 @@ function mod:SPELL_AURA_APPLIED(args)
 			local _, _, _, _, duration, expires = DBM:UnitDebuff("player", args.spellName)
 			if duration then
 				specWarnFadingLight:Show()
-				countdownFadingLight:Start(duration-1)
 				timerFadingLight:Start(duration-1)
 			end
 		end

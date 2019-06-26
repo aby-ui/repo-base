@@ -1,4 +1,4 @@
-## Interface: 80100
+## Interface: 80200
 ## Title: Masque: |c0099ff00Kenzo|r
 ## Version: 2.0.0
 ## Author: icw82

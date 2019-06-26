@@ -1180,7 +1180,7 @@
 						GameTooltip:AddLine (button.MyObject.actor)
 						GameTooltip:Show()
 						
-						local name, description, bgImage, buttonImage, loreImage, dungeonAreaMapID, link = EJ_GetInstanceInfo (button.MyObject.ej_id)
+						local name, description, bgImage, buttonImage, loreImage, dungeonAreaMapID, link = DetailsFramework.EncounterJournal.EJ_GetInstanceInfo (button.MyObject.ej_id)
 						
 						modelFrameTexture:SetTexture (bgImage)
 						modelFrameTexture:SetTexCoord (3/512, 370/512, 5/512, 429/512)
@@ -1388,7 +1388,7 @@
 						GameTooltip:AddLine (button.MyObject.actor)
 						GameTooltip:Show()
 						
-						local name, description, bgImage, buttonImage, loreImage, dungeonAreaMapID, link = EJ_GetInstanceInfo (button.MyObject.ej_id)
+						local name, description, bgImage, buttonImage, loreImage, dungeonAreaMapID, link = DetailsFramework.EncounterJournal.EJ_GetInstanceInfo (button.MyObject.ej_id)
 						
 						modelFrameTexture:SetTexture (bgImage)
 						modelFrameTexture:SetTexCoord (3/512, 370/512, 5/512, 429/512)

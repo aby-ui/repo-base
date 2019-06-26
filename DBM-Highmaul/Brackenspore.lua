@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1196, "DBM-Highmaul", nil, 477)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041705938")
+mod:SetRevision("20190625143352")
 mod:SetCreatureID(78491)
 mod:SetEncounterID(1720)
 mod:SetZone()
@@ -38,12 +38,12 @@ local specWarnSporeShooter			= mod:NewSpecialWarningSwitch(163594, "RangedDps", 
 local specWarnFungalFlesheater		= mod:NewSpecialWarningSwitch("ej9995", "-Healer", nil, nil, nil, 2)
 local specWarnMindFungus			= mod:NewSpecialWarningSwitch(163141, "Dps", nil, nil, nil, 2)
 
-local timerInfestingSporesCD		= mod:NewCDCountTimer(57, 159996, nil, nil, nil, 2)--57-63 variation
+local timerInfestingSporesCD		= mod:NewCDCountTimer(57, 159996, nil, nil, nil, 2, nil, nil, nil, 1, 4)--57-63 variation
 local timerRotCD					= mod:NewCDTimer(10, 163241, nil, false, nil, 5, nil, DBM_CORE_TANK_ICON)--it's a useful timer, but not mandatory and this fight has A LOT of timers so off by default for clutter reduction
 local timerNecroticBreathCD			= mod:NewCDTimer(32, 159219, nil, "Tank|Healer", nil, 5, nil, DBM_CORE_TANK_ICON)
 --Adds (all adds are actually NEXT timers however they get dleayed by infesting spores and necrotic breath sometimes so i'm leaving as CD for now)
 local timerSporeShooterCD			= mod:NewCDTimer(57, 163594, nil, "RangedDps", 2, 1, nil, DBM_CORE_DAMAGE_ICON)
-local timerFungalFleshEaterCD		= mod:NewCDCountTimer(120, "ej9995", nil, "-Healer", nil, 1, 163142)
+local timerFungalFleshEaterCD		= mod:NewCDCountTimer(120, "ej9995", nil, "-Healer", nil, 1, 163142, nil, nil, 2, 4)
 local timerDecayCD					= mod:NewCDTimer(9.5, 160013, nil, "Melee", nil, 4)
 local timerMindFungusCD				= mod:NewCDTimer(30, 163141, nil, "MeleeDps", nil, 1, nil, DBM_CORE_DAMAGE_ICON)
 local timerLivingMushroomCD			= mod:NewCDCountTimer(55.5, 160022, nil, "Healer", nil, 5)
@@ -51,9 +51,6 @@ local timerRejuvMushroomCD			= mod:NewCDCountTimer(130, 160021, nil, "Healer", n
 local berserkTimer					= mod:NewBerserkTimer(600)
 mod:AddTimerLine(ENCOUNTER_JOURNAL_SECTION_FLAG12)
 local timerSpecialCD				= mod:NewCDSpecialTimer(20)--Mythic Specials. Shared cd, which special he uses is random. 20-25 second variation, unless delayed by spores. then 20-25+10
-
-local countdownInfestingSpores		= mod:NewCountdown(57, 159996)--The variation on this annoys me, may move countdown to something more reliable if possible
-local countdownFungalFleshEater		= mod:NewCountdown("Alt120", "ej9995", "-Healer")
 
 mod:AddRangeFrameOption(8, 160254, false)
 mod:AddDropdownOption("InterruptCounter", {"Two", "Three", "Four"}, "Two", "misc")
@@ -77,9 +74,7 @@ function mod:OnCombatStart(delay)
 	timerSporeShooterCD:Start(20-delay)--20-26
 	timerNecroticBreathCD:Start(30-delay)
 	timerFungalFleshEaterCD:Start(32-delay, 1)
-	countdownFungalFleshEater:Start(32-delay)
 	timerInfestingSporesCD:Start(45-delay, 1)
-	countdownInfestingSpores:Start(45-delay)
 	specWarnInfestingSpores:ScheduleVoice(38.5-delay, "aesoon")
 	timerRejuvMushroomCD:Start(80-delay, 1)--Todo, verify 80 in all modes and not still 75 in mythic
 	berserkTimer:Start(-delay)
@@ -101,7 +96,6 @@ function mod:SPELL_CAST_START(args)
 		self.vb.sporesCount = self.vb.sporesCount + 1
 		specWarnInfestingSpores:Show(self.vb.sporesCount)
 		timerInfestingSporesCD:Start(nil, self.vb.sporesCount+1)
-		countdownInfestingSpores:Start()
 		specWarnInfestingSpores:ScheduleVoice(50.5, "aesoon")
 	elseif spellId == 160013 then
 		if (self.Options.InterruptCounter == "Two" and self.vb.decayCounter == 2) or (self.Options.InterruptCounter == "Three" and self.vb.decayCounter == 3) or self.vb.decayCounter == 4 then
@@ -195,7 +189,6 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 		self.vb.fleshEaterCount = self.vb.fleshEaterCount + 1
 		specWarnFungalFlesheater:Show(self.vb.fleshEaterCount)
 		timerFungalFleshEaterCD:Start(nil, self.vb.fleshEaterCount+1)
-		countdownFungalFleshEater:Start()
 		specWarnFungalFlesheater:Play("163142k")
 	elseif spellId == 160022 then
 		self.vb.greenShroom = self.vb.greenShroom + 1

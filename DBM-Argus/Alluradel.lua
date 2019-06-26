@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2011, "DBM-Argus", nil, 959)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041705925")
+mod:SetRevision("20190625143337")
 mod:SetCreatureID(124625)
 mod:SetEncounterID(2083)
 mod:SetZone()
@@ -23,11 +23,9 @@ local specWarnBeguilingCharm		= mod:NewSpecialWarningLookAway(247549, nil, nil, 
 local specWarnSadist				= mod:NewSpecialWarningCount(247544, nil, DBM_CORE_AUTO_SPEC_WARN_OPTIONS.stack:format(12, 159515), nil, 1, 2)
 local specWarnSadistOther			= mod:NewSpecialWarningTaunt(247544, nil, nil, nil, 1, 2)
 
-local timerBeguilingCharmCD			= mod:NewCDTimer(34.1, 247549, nil, nil, nil, 2, nil, DBM_CORE_IMPORTANT_ICON)
+local timerBeguilingCharmCD			= mod:NewCDTimer(34.1, 247549, nil, nil, nil, 2, nil, DBM_CORE_IMPORTANT_ICON, nil, 1, 4)
 local timerFelLashCD				= mod:NewCDTimer(31.1, 247604, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON)
 local timerHeartBreakerCD			= mod:NewCDTimer(21.2, 247517, nil, "Healer", nil, 5, nil, DBM_CORE_HEALER_ICON)
-
-local countdownBeguilingCharm		= mod:NewCountdown(34.1, 247549)
 
 mod:AddReadyCheckOption(48620, false)
 
@@ -36,7 +34,6 @@ function mod:OnCombatStart(delay, yellTriggered)
 		timerHeartBreakerCD:Start(5-delay)
 		timerFelLashCD:Start(15-delay)
 		timerBeguilingCharmCD:Start(30-delay)
-		countdownBeguilingCharm:Start(30-delay)
 	end
 end
 
@@ -46,7 +43,6 @@ function mod:SPELL_CAST_START(args)
 		specWarnBeguilingCharm:Show(args.sourceName)
 		specWarnBeguilingCharm:Play("turnaway")
 		timerBeguilingCharmCD:Start()
-		countdownBeguilingCharm:Start()
 	elseif spellId == 247604 then
 		warnFelLash:Show()
 		timerFelLashCD:Start()

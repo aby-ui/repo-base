@@ -138,7 +138,7 @@ View:ImplementsModule("IconModule_IconContainer_Masque", 100, function(Module, i
 	
 	Module.container:ClearAllPoints()
 	Module.container:SetSize(icon:GetSize())
-	Module.container:SetAllPoints()	
+	Module.container:SetAllPoints()
 	Module:Enable()
 
 	---------- Skin-Dependent Module Layout ----------
@@ -150,7 +150,12 @@ View:ImplementsModule("IconModule_IconContainer_Masque", 100, function(Module, i
 
 	local isDefaultSkin = not Module:IsIconSkinned(icon)
 	
-	local frameLevelOffset = isDefaultSkin and 1 or -2
+	local frameLevelOffset
+	if (select(2, LibStub("Masque", true)) or 0) >= 80100 then
+		frameLevelOffset = 1
+	else
+		frameLevelOffset = 1 or (isDefaultSkin and 1 or -2)
+	end
 	
 	if CooldownSweep then
 		CooldownSweep.cooldown:SetFrameLevel( icon:GetFrameLevel() + 0 + frameLevelOffset)

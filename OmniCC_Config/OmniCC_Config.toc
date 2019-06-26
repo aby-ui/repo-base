@@ -1,4 +1,4 @@
-## Interface: 80100
+## Interface: 80200
 ## Title: OmniCC Config
 ## Notes: OmniCC's configuration menu
 ## Notes-koKR: OmniCC의 설정 메뉴

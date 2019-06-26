@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1856, "DBM-TombofSargeras", nil, 875)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041705925")
+mod:SetRevision("20190625143337")
 mod:SetCreatureID(116407)
 mod:SetEncounterID(2036)
 mod:SetZone()
@@ -65,7 +65,7 @@ local specWarnTantrum				= mod:NewSpecialWarningSpell(241590, nil, nil, nil, 2, 
 
 --Harjatan
 mod:AddTimerLine(BOSS)
-local timerUncheckedRageCD			= mod:NewNextCountTimer(20, 231854, nil, nil, nil, 2)--5 power per second heroic, 20 seconds for 100 energy
+local timerUncheckedRageCD			= mod:NewNextCountTimer(20, 231854, nil, nil, nil, 2, nil, nil, nil, 1, 4)--5 power per second heroic, 20 seconds for 100 energy
 local timerDrawInCD					= mod:NewNextTimer(59, 232061, nil, nil, nil, 6)
 local timerCommandingRoarCD			= mod:NewNextTimer(31.8, 232192, nil, nil, nil, 1)
 mod:AddTimerLine(DBM_ADDS)
@@ -79,9 +79,6 @@ mod:AddTimerLine(ENCOUNTER_JOURNAL_SECTION_FLAG12)
 local timerHatchingCD				= mod:NewNextTimer(40.6, 240319, nil, nil, nil, 1)--40.6-42
 
 local berserkTimer					= mod:NewBerserkTimer(360)
-
---Harjatan
-local countdownUncheckedRage		= mod:NewCountdown(20, 231854)
 
 --mod:AddSetIconOption("SetIconOnShield", 228270, true)
 --mod:AddInfoFrameOption(227503, true)
@@ -97,7 +94,6 @@ function mod:OnCombatStart(delay)
 	self.vb.rageCount = 0
 	table.wipe(seenMobs)
 	timerUncheckedRageCD:Start(-delay, 1)
-	countdownUncheckedRage:Start()
 	specWarnUncheckedRage:Schedule(16-delay, 1)
 	specWarnUncheckedRage:ScheduleVoice(16-delay, "gathershare")
 	timerCommandingRoarCD:Start(17.3-delay)
@@ -135,7 +131,6 @@ function mod:SPELL_CAST_START(args)
 		self.vb.rageCount = 0
 		timerCommandingRoarCD:Start(17.1)
 		timerUncheckedRageCD:Start(21.1, 1)--21.1-23.5
-		countdownUncheckedRage:Start(21)
 		specWarnUncheckedRage:Schedule(17, 1)
 		specWarnUncheckedRage:Play(17, "gathershare")
 		timerDrawInCD:Start()
@@ -163,7 +158,6 @@ function mod:SPELL_CAST_SUCCESS(args)
 	elseif spellId == 231854 then--Unchecked Rage
 		self.vb.rageCount = self.vb.rageCount + 1
 		timerUncheckedRageCD:Start(nil, self.vb.rageCount+1)
-		countdownUncheckedRage:Start()
 		specWarnUncheckedRage:Schedule(17, self.vb.rageCount+1)
 		specWarnUncheckedRage:ScheduleVoice(17, "gathershare")
 	elseif spellId == 234129 then
@@ -230,7 +224,6 @@ function mod:SPELL_AURA_APPLIED(args)
 		end
 	elseif spellId == 232061 then
 		timerUncheckedRageCD:Stop()
-		countdownUncheckedRage:Cancel()
 		specWarnUncheckedRage:Cancel()
 		specWarnUncheckedRage:CancelVoice()
 		timerCommandingRoarCD:Stop()

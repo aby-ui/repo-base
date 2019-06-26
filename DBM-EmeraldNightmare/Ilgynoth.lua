@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1738, "DBM-EmeraldNightmare", nil, 768)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019042041352")
+mod:SetRevision("20190625143337")
 mod:SetCreatureID(105393)
 mod:SetEncounterID(1873)
 mod:SetZone()
@@ -66,25 +66,18 @@ local yellCursedBlood				= mod:NewFadesYell(215128)
 mod:AddTimerLine(SCENARIO_STAGE:format(1))
 local timerDeathGlareCD				= mod:NewCDTimer(220, "ej13190", nil, nil, nil, 1, 208697)
 local timerCorruptorTentacleCD		= mod:NewCDTimer(220, "ej13191", nil, nil, nil, 1, 208929)
-local timerNightmareHorrorCD		= mod:NewCDTimer(280, "ej13188", nil, nil, nil, 1, 210289)
-local timerEyeOfFateCD				= mod:NewCDTimer(10, 210984, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON)
+local timerNightmareHorrorCD		= mod:NewCDTimer(280, "ej13188", nil, nil, nil, 1, 210289, nil, nil, nil, 1, 4)
+local timerEyeOfFateCD				= mod:NewCDTimer(10, 210984, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON, nil, 2, 4)
 local timerNightmareishFuryCD		= mod:NewNextTimer(10.9, 215234, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON)
 local timerGroundSlamCD				= mod:NewNextTimer(20.5, 208689, nil, nil, nil, 3)
 mod:AddTimerLine(ENCOUNTER_JOURNAL_SECTION_FLAG12)
-local timerDeathBlossomCD			= mod:NewNextTimer(105, 218415, nil, nil, nil, 2, nil, DBM_CORE_HEROIC_ICON)
+local timerDeathBlossomCD			= mod:NewNextTimer(105, 218415, nil, nil, nil, 2, nil, DBM_CORE_HEROIC_ICON, nil, 3, 4)
 local timerDeathBlossom				= mod:NewCastTimer(15, 218415, nil, nil, nil, 5, nil, DBM_CORE_DEADLY_ICON)
 --Stage Two: The Heart of Corruption
 mod:AddTimerLine(SCENARIO_STAGE:format(2))
-local timerDarkReconstitution		= mod:NewCastTimer(50, 210781, nil, nil, nil, 6, nil, DBM_CORE_DEADLY_ICON)
+local timerDarkReconstitution		= mod:NewCastTimer(50, 210781, nil, nil, nil, 6, nil, DBM_CORE_DEADLY_ICON, nil, 2, 10)
 local timerFinalTorpor				= mod:NewCastTimer(90, 223121, nil, nil, nil, 6, nil, DBM_CORE_DEADLY_ICON)
 local timerCursedBloodCD			= mod:NewNextTimer(15, 215128, nil, nil, nil, 3)
-
---Stage One: The Ruined Ground
-local countdownNightmareHorror		= mod:NewCountdown(50, 210289)
-local countdownEyeofFate			= mod:NewCountdown("Alt10", 210984, "Tank")
-local countdownDeathBlossom			= mod:NewCountdown("AltTwo15", 218415)
---Stage Two: The Heart of Corruption
-local countdownDarkRecon			= mod:NewCountdown("Alt50", 210781, nil, nil, 10)
 
 mod:AddSetIconOption("SetIconOnSpew", 208929, false)
 mod:AddSetIconOption("SetIconOnOoze", "ej13186", false)
@@ -341,10 +334,8 @@ function mod:SPELL_CAST_START(args)
 	elseif spellId == 210781 then--Dark Reconstitution
 		if self:IsMythic() then
 			timerDarkReconstitution:Start(55)
-			countdownDarkRecon:Start(55)
 		else
 			timerDarkReconstitution:Start()
-			countdownDarkRecon:Start()
 		end
 	elseif spellId == 208685 and self:AntiSpam(4, 2) then--Rupturing roar (Untanked tentacle)
 		specWarnDominatorTentacle:Show()
@@ -352,7 +343,6 @@ function mod:SPELL_CAST_START(args)
 		self.vb.deathBlossomCount = self.vb.deathBlossomCount + 1
 		warnDeathBlossom:Show()
 		timerDeathBlossom:Start()
-		countdownDeathBlossom:Start()
 		local nextCount = self.vb.deathBlossomCount + 1
 		local timer = self.vb.phase == 2 and phase2DeathBlossom[nextCount] or phase1DeathBlossom[nextCount]
 		if timer then
@@ -368,10 +358,8 @@ function mod:SPELL_CAST_START(args)
 	elseif spellId == 223121 then
 		if self:IsMythic() then
 			timerFinalTorpor:Start(55)
-			countdownDarkRecon:Start(55)
 		else
 			timerFinalTorpor:Start()
-			countdownDarkRecon:Start(90)
 		end
 	elseif spellId == 208689 and self:AntiSpam(2, 6) then
 		timerGroundSlamCD:Start()
@@ -382,10 +370,8 @@ function mod:SPELL_CAST_SUCCESS(args)
 	local spellId = args.spellId
 	if spellId == 210984 then
 		timerEyeOfFateCD:Start(nil, args.sourceGUID)
-		countdownEyeofFate:Start()
 	elseif spellId == 209387 then--First thing Nightmare Horror casts that can give us GUID
 		timerEyeOfFateCD:Start(14, args.sourceGUID)
-		countdownEyeofFate:Start(14)
 	elseif spellId == 208929 then
 		warnSpewCorruption:CombinedShow(0.5, args.destName)
 		if args:IsPlayer() then
@@ -559,7 +545,6 @@ function mod:OnSync(msg, guid)
 		if cid == 105591 then--Nightmare Horror
 			self.vb.NightmareCount = self.vb.NightmareCount - 1
 			timerEyeOfFateCD:Stop(guid)
-			countdownEyeofFate:Cancel()
 			if self.Options.InfoFrame and self.Options.InfoFrameBehavior == "Adds" then
 				DBM.InfoFrame:Update()
 			end

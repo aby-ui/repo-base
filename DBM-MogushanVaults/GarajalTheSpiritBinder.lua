@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(682, "DBM-MogushanVaults", nil, 317)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041710000")
+mod:SetRevision("20190625143417")
 mod:SetCreatureID(60143)
 mod:SetEncounterID(1434)
 mod:SetZone()
@@ -39,15 +39,13 @@ local specWarnVoodooDollsYou		= mod:NewSpecialWarningYou(122151, false)
 
 local timerTotemCD					= mod:NewNextCountTimer(20, 116174)
 local timerBanishmentCD				= mod:NewCDTimer(65, 116272)
-local timerSoulSever				= mod:NewBuffFadesTimer(30, 116278)--Tank version of spirit realm
-local timerCrossedOver				= mod:NewBuffFadesTimer(30, 116161)--Dps version of spirit realm
+local timerSoulSever				= mod:NewBuffFadesTimer(30, 116278, nil, nil, nil, 5, nil, nil, nil, 1, 4)--Tank version of spirit realm
+local timerCrossedOver				= mod:NewBuffFadesTimer(30, 116161, nil, nil, nil, 5, nil, nil, nil, 1, 4)--Dps version of spirit realm
 local timerSpiritualInnervation		= mod:NewBuffFadesTimer(30, 117549)
 local timerShadowyAttackCD			= mod:NewCDTimer(8, "ej6698", nil, "Tank", nil, nil, 117222)
 local timerFrailSoul				= mod:NewBuffFadesTimer(30, 117723)
 
 local berserkTimer					= mod:NewBerserkTimer(360)
-
-local countdownCrossedOver			= mod:NewCountdownFades(29, 116161)
 
 mod:AddBoolOption("SetIconOnVoodoo", false)
 
@@ -127,7 +125,6 @@ function mod:SPELL_AURA_APPLIED(args)
 			if not self:IsDifficulty("lfr25") then -- lfr do not suicide even you not press the extra button.
 				warnSuicide:Schedule(25)
 			end
-			countdownCrossedOver:Start(29)
 			timerCrossedOver:Start(29)
 		end
 		if not self:IsDifficulty("lfr25") then -- lfr totems not breakable, instead totems can click. so lfr warns can be spam, not needed to warn. also CLEU fires all players, no need to use sync.
@@ -138,7 +135,6 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif spellId == 116278 then--this is tank spell, no delays?
 		if args:IsPlayer() then--no latency check for personal notice you aren't syncing.
 			timerSoulSever:Start()
-			countdownCrossedOver:Start(29)
 			warnSuicide:Schedule(25)
 		end
 	elseif spellId == 117543 and args:IsPlayer() then -- 117543 is healer spell, 117549 is dps spell
@@ -167,11 +163,9 @@ function mod:SPELL_AURA_REMOVED(args)
 			warnSuicide:Cancel()
 		end
 		timerCrossedOver:Cancel()
-		countdownCrossedOver:Cancel()
 	elseif spellId == 116278 and args:IsPlayer() then
 		warnSuicide:Cancel()
 		timerSoulSever:Cancel()
-		countdownCrossedOver:Cancel()
 	elseif spellId == 122151 then
 		self:SendSync("VoodooGoneTargets", args.destGUID)
 	elseif args:IsSpellID(117543, 117549) and args:IsPlayer() then

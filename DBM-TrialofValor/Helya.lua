@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1829, "DBM-TrialofValor", nil, 861)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041705925")
+mod:SetRevision("20190625143337")
 mod:SetCreatureID(114537)
 mod:SetEncounterID(2008)
 mod:SetZone()
@@ -81,12 +81,12 @@ local yellOrbOfCorrosion			= mod:NewPosYell(230267, DBM_CORE_AUTO_YELL_CUSTOM_PO
 
 --Stage One: Low Tide
 mod:AddTimerLine(SCENARIO_STAGE:format(1))
-local timerOrbOfCorruptionCD		= mod:NewNextTimer(25, 229119, "OrbsTimerText", nil, nil, 3, nil, DBM_CORE_DEADLY_ICON)
+local timerOrbOfCorruptionCD		= mod:NewNextTimer(25, 229119, "OrbsTimerText", nil, nil, 3, nil, DBM_CORE_DEADLY_ICON, nil, 3, 4)
 local timerTaintOfSeaCD				= mod:NewCDTimer(14.5, 228088, nil, nil, nil, 3, nil, DBM_CORE_HEALER_ICON)
 local timerBilewaterBreathCD		= mod:NewNextCountTimer(40, 227967, 21131, nil, nil, 5, nil, DBM_CORE_TANK_ICON)--On for everyone though so others avoid it too
 local timerTentacleStrikeCD			= mod:NewNextCountTimer(30, 228730, nil, nil, nil, 5)
 local timerTentacleStrike			= mod:NewCastSourceTimer(6, 228730, nil, nil, nil, 5)
-local timerExplodingOozes			= mod:NewCastTimer(20.5, 227992, nil, nil, nil, 2, nil, DBM_CORE_DAMAGE_ICON)
+local timerExplodingOozes			= mod:NewCastTimer(20.5, 227992, nil, nil, nil, 2, nil, DBM_CORE_DAMAGE_ICON, nil, 1, 4)
 --Stage Two: From the Mists (65%)
 mod:AddTimerLine(SCENARIO_STAGE:format(2))
 local timerFuryofMaw				= mod:NewBuffActiveTimer(32, 228032, nil, nil, nil, 2)
@@ -103,15 +103,9 @@ local timerGiveNoQuarterCD			= mod:NewNextTimer(6, 228633, nil, nil, nil, 3)
 --Stage Three: Helheim's Last Stand
 mod:AddTimerLine(SCENARIO_STAGE:format(3))
 local timerCorruptedBreathCD		= mod:NewCDCountTimer(40, 228565, 21131, nil, nil, 5, nil, DBM_CORE_TANK_ICON)
-local timerOrbOfCorrosionCD			= mod:NewNextTimer(17, 230267, "OrbsTimerText", nil, nil, 3, nil, DBM_CORE_DEADLY_ICON)
+local timerOrbOfCorrosionCD			= mod:NewNextTimer(17, 230267, "OrbsTimerText", nil, nil, 3, nil, DBM_CORE_DEADLY_ICON, nil, 3, 4)
 
 local berserkTimer					= mod:NewBerserkTimer(660)
-
---Stage One: Low Tide
-local countdownOrbs					= mod:NewCountdown("AltTwo18", 229119)
-local countdownOozeExplosions		= mod:NewCountdown(20.5, 227992)
---Stage Two: From the Mists (65%)
---Stage Three: Helheim's Last Stand
 
 mod:AddRangeFrameOption(5, 193367)
 mod:AddSetIconOption("SetIconOnTaint", 228088, false)
@@ -167,13 +161,11 @@ function mod:OnCombatStart(delay)
 		timerTaintOfSeaCD:Start(12.4-delay)
 		timerBilewaterBreathCD:Start(13.3-delay, 1)
 		timerOrbOfCorruptionCD:Start(18-delay, 1, RANGED)--START
-		countdownOrbs:Start(18-delay)
 		timerTentacleStrikeCD:Start(53-delay, 1)
 	elseif self:IsMythic() then
 		self.vb.lastTentacles = 8
 		timerBilewaterBreathCD:Start(11-delay, 1)
 		timerOrbOfCorruptionCD:Start(14-delay, 1, RANGED)--START
-		countdownOrbs:Start(14-delay)
 		timerTaintOfSeaCD:Start(15-delay)
 		timerTentacleStrikeCD:Start(35-delay, 1)
 		berserkTimer:Start(-delay)--11 Min confirmed
@@ -182,7 +174,6 @@ function mod:OnCombatStart(delay)
 		timerBilewaterBreathCD:Start(12-delay, 1)
 		timerTaintOfSeaCD:Start(19-delay)
 		timerOrbOfCorruptionCD:Start(29-delay, 1, RANGED)--START
-		countdownOrbs:Start(29-delay)
 		timerTentacleStrikeCD:Start(36-delay, 1)
 		berserkTimer:Start(-delay)--11 Min assumed
 	end
@@ -212,7 +203,6 @@ function mod:SPELL_CAST_START(args)
 		end
 		--Start ooze stuff here since all their stuff is hidden from combat log
 		timerExplodingOozes:Start()
-		countdownOozeExplosions:Start()
 		specWarnBilewaterSlimes:Schedule(3)
 		specWarnBilewaterSlimes:ScheduleVoice(3, "killmob")
 	elseif spellId == 228390 then
@@ -255,13 +245,10 @@ function mod:SPELL_CAST_START(args)
 		local text = self.vb.orbCount % 2 == 0 and MELEE or RANGED
 		if self:IsMythic() then
 			timerOrbOfCorruptionCD:Start(24, self.vb.orbCount, text)
-			countdownOrbs:Start(24)
 		elseif self:IsEasy() then
 			timerOrbOfCorruptionCD:Start(31.2, self.vb.orbCount, text)
-			countdownOrbs:Start(31.2)
 		else
 			timerOrbOfCorruptionCD:Start(28, self.vb.orbCount, text)
-			countdownOrbs:Start(28)
 		end
 	elseif spellId == 228056 then
 		self.vb.orbCount = self.vb.orbCount + 1
@@ -271,17 +258,13 @@ function mod:SPELL_CAST_START(args)
 			local timer = phase3MythicOrbs[self.vb.orbCount]
 			if timer then
 				timerOrbOfCorrosionCD:Start(timer, self.vb.orbCount, text)
-				countdownOrbs:Start(timer)
 			else
 				timerOrbOfCorrosionCD:Start(12, self.vb.orbCount, text)
-				countdownOrbs:Start(12)
 			end
 		elseif self:IsLFR() then
 			timerOrbOfCorrosionCD:Start(32.7, self.vb.orbCount, text)
-			countdownOrbs:Start(32.7)
 		else--Reverify normal
 			timerOrbOfCorrosionCD:Start(17, self.vb.orbCount, text)
-			countdownOrbs:Start(17)
 		end
 	elseif spellId == 228619 then
 		specWarnLanternofDarkness:Show()
@@ -624,7 +607,6 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, bfaSpellId, _, legacySpellId)
 		timerTentacleStrikeCD:Stop()
 		timerBilewaterBreathCD:Stop()
 		timerOrbOfCorruptionCD:Stop()
-		countdownOrbs:Cancel()
 		warnPhase2:Show()
 		if not self:IsMythic() then
 			--On mythic first fury of maw is instantly on phase change, adds timer is handled by that
@@ -645,22 +627,18 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, bfaSpellId, _, legacySpellId)
 		warnPhase3:Show()
 		if self:IsMythic() then
 			timerOrbOfCorrosionCD:Start(6, 1, RANGED)
-			countdownOrbs:Start(6)
 			timerCorruptedBreathCD:Start(10, 1)
 			timerFuryofMawCD:Start(35, 1)
 		elseif self:IsLFR() then
 			timerOrbOfCorrosionCD:Start(11, 1, RANGED)--Needs recheck
-			countdownOrbs:Start(11)--Needs recheck
 			timerCorruptedBreathCD:Start(40, 1)--Needs recheck
 			timerFuryofMawCD:Start(90, 1)--Needs recheck
 		elseif self:IsNormal() then--May still be same as heroic with variation
 			timerOrbOfCorrosionCD:Start(12, 1, RANGED)--Needs recheck
-			countdownOrbs:Start(12)--Needs more verification
 			timerCorruptedBreathCD:Start(20.5, 1)
 			timerFuryofMawCD:Start(33, 1)--Needs more verification
 		else--Heroic
 			timerOrbOfCorrosionCD:Start(14, 1, RANGED)--Needs more verification
-			countdownOrbs:Start(14)--Needs verification
 			timerCorruptedBreathCD:Start(19.4, 1)
 			timerFuryofMawCD:Start(30, 1)
 		end

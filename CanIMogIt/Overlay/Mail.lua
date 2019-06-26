@@ -39,7 +39,7 @@ end
 
 
 function MailFrame_CIMIOnClick()
-    for i=1,ATTACHMENTS_MAX_SEND do
+    for i=1,ATTACHMENTS_MAX_RECEIVE do
         local frame = _G["OpenMailAttachmentButton"..i]
         if frame then
             MailFrame_CIMIUpdateIcon(frame.CanIMogItOverlay)
@@ -57,7 +57,7 @@ local function HookOverlayMail(event)
     if event ~= "PLAYER_LOGIN" then return end
 
     -- Add hook for the Mail inbox frames.
-    for i=1,ATTACHMENTS_MAX_SEND do
+    for i=1,ATTACHMENTS_MAX_RECEIVE do
         local frame = _G["OpenMailAttachmentButton"..i]
         if frame then
             CIMI_AddToFrame(frame, MailFrame_CIMIUpdateIcon)

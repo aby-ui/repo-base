@@ -1,12 +1,12 @@
 local mod	= DBM:NewMod(317, "DBM-DragonSoul", nil, 187)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041705904")
+mod:SetRevision("20190625143316")
 mod:SetCreatureID(55689)
 mod:SetEncounterID(1296)
 mod:SetZone()
 mod:SetUsedIcons(3, 4, 5, 6, 7, 8)
-mod:SetModelSound("sound\\CREATURE\\HAGARA\\VO_DS_HAGARA_INTRO_01.OGG", "sound\\CREATURE\\HAGARA\\VO_DS_HAGARA_CRYSTALDEAD_05.OGG")
+--mod:SetModelSound("sound\\CREATURE\\HAGARA\\VO_DS_HAGARA_INTRO_01.OGG", "sound\\CREATURE\\HAGARA\\VO_DS_HAGARA_CRYSTALDEAD_05.OGG")
 
 mod:RegisterCombat("combat")
 
@@ -47,16 +47,14 @@ local timerIceLance			= mod:NewBuffActiveTimer(15, 105269)
 local timerIceLanceCD		= mod:NewNextTimer(30, 105269, nil, nil, nil, 5)
 local timerFrostTomb		= mod:NewCastTimer(8, 104448, nil, nil, nil, 3)
 local timerFrostTombCD		= mod:NewNextTimer(20, 104451, nil, nil, nil, 3)
-local timerSpecialCD		= mod:NewTimer(62, "TimerSpecial", "Interface\\Icons\\Spell_Nature_WispSplode", nil, nil, 6)
-local timerTempestCD		= mod:NewNextTimer(62, 105256, nil, nil, nil, 6)
-local timerLightningStormCD	= mod:NewNextTimer(62, 105465, nil, nil, nil, 6)
+local timerSpecialCD		= mod:NewTimer(62, "TimerSpecial", "136116", nil, nil, 6, nil, nil, 1, 4)
+local timerTempestCD		= mod:NewNextTimer(62, 105256, nil, nil, nil, 6, nil, nil, nil, 1, 4)
+local timerLightningStormCD	= mod:NewNextTimer(62, 105465, nil, nil, nil, 6, nil, nil, nil, 1, 4)
 local timerFrostFlakeCD		= mod:NewNextTimer(5, 109325, nil, nil, nil, 3)--^
 local timerStormPillarCD	= mod:NewNextTimer(5, 109557, nil, nil, nil, 3)--Both of these are just spammed every 5 seconds on new targets.
 local timerFeedback			= mod:NewBuffActiveTimer(15, 108934)
 
 local berserkTimer			= mod:NewBerserkTimer(480)
-
-local countdownSpecial		= mod:NewCountdown(62, 105256, true, L.SpecialCount)
 
 mod:AddBoolOption("RangeFrame")--Ice lance spreading in ice phases, and lighting linking in lighting phases (with reverse intent, staying within 10 yards, not out of 10 yards)
 mod:AddBoolOption("SetIconOnFrostflake", false)--You can use an icon if you want, but this is cast on a new target every 5 seconds, often times on 25 man 2-3 have it at same time while finding a good place to drop it.
@@ -96,7 +94,6 @@ function mod:OnCombatStart(delay)
 	timerAssaultCD:Start(4-delay, 1)
 	timerIceLanceCD:Start(10-delay)
 	timerSpecialCD:Start(30-delay)
-	countdownSpecial:Start(30-delay)
 	berserkTimer:Start(-delay)
 	if self.Options.RangeFrame and not self:IsDifficulty("lfr25") then
 		DBM.RangeCheck:Show(3)
@@ -232,7 +229,6 @@ function mod:SPELL_AURA_REMOVED(args)
 		assaultCount = 0
 		timerAssaultCD:Start(nil, 1)
 		timerLightningStormCD:Start()
-		countdownSpecial:Start(62)
 		if self.Options.RangeFrame and not self:IsDifficulty("lfr25") then
 			DBM.RangeCheck:Show(3)
 		end
@@ -262,7 +258,6 @@ function mod:SPELL_AURA_REMOVED(args)
 		assaultCount = 0
 		timerAssaultCD:Start(nil, 1)
 		timerTempestCD:Start()
-		countdownSpecial:Start(62)
 		if self.Options.RangeFrame and not self:IsDifficulty("lfr25") then
 			DBM.RangeCheck:Show(3)
 		end

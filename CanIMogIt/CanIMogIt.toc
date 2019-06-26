@@ -1,7 +1,7 @@
-## Interface: 80100
+## Interface: 80200
 ## Title: Can I Mog It?
 ## Author: TorelTwiddler, Ami Yuy
-## Version: 8.1.5v1.14
+## Version: 8.2.0v1.15
 ## Notes: Adds tooltips to items showing if you have learned a transmog appearance.
 ## Notes-deDE: Fügt Gegenständen Tooltips hinzu, ob eine Transmogrifikationsvorlage bereits bekannt ist.
 ## Notes-esES: Añade a la descripción del objeto si se conoce la apariencia.

@@ -106,6 +106,7 @@ DBM_CORE_NOTESHAREERRORALREADYOPEN	= "为防止未保存的改变，当注记编
 DBM_CORE_ALLMOD_DEFAULT_LOADED		= "本副本里的所有Boss配置已经被初始化"
 DBM_CORE_ALLMOD_STATS_RESETED		= "所有模组的状态已被重置"
 DBM_CORE_MOD_DEFAULT_LOADED			= "将会使用默认设置来进行本场战斗"
+DBM_CORE_SOUNDKIT_MIGRATION			= "因为版本8.2的限制，一个或多个你的特殊警告声音已经被改为默认。DBM现在只能播放插件自带的声音文件，无法直接播放魔兽的音效（例如快跑吧小女孩）"
 
 DBM_CORE_WORLDBOSS_ENGAGED			= "世界Boss-%s可能正在作战。当前还有%s的生命值。 (由%s的DBM发送)"
 DBM_CORE_WORLDBOSS_DEFEATED			= "世界Boss-%s可能战斗结束了。 (由%s的DBM发送)"
@@ -253,11 +254,9 @@ DBM_CORE_TIMER_USAGE	= {
 	"DBM计时器可用命令:",
 	"-----------------",
 	"/dbm timer <秒> <文本>: 启动一个<文本>为名称，长度为<秒>的计时器。",
-	"/dbm ctimer <秒> <文本>: 启动一个<文本>为名称，长度为<秒>的倒计时计时器。",
 	"/dbm ltimer <秒> <文本>: 启动一个<文本>为名称，长度为<秒>的循环计时器。",
-	"/dbm cltimer <秒> <文本>: 启动一个<文本>为名称，长度为<秒>的循环倒计时计时器。",
 	"('Broadcast' 在 'timer' 前会向所有团队成员发送这个计时器(需要队长或助理权限)。",
-	"/dbm timer endloop: 停止所有的 ltimer（循环计时器） 和 cltimer（循环倒计时计时器）."
+	"/dbm timer endloop: 停止所有的 ltimer（循环计时器）."
 }
 
 DBM_ERROR_NO_PERMISSION				= "权限不足。需要队长或助理权限。"

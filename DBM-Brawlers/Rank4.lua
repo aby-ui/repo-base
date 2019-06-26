@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("BrawlRank4", "DBM-Brawlers")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190416205700")
+mod:SetRevision("20190625143048")
 --mod:SetModelID(28115)
 mod:SetZone()
 mod:SetUsedIcons(8)
@@ -45,6 +45,7 @@ function mod:SPELL_CAST_START(args)
 			specWarnFireWall:Play("watchstep")
 		else
 			warnFireWall:Show()
+			--timerFirewallCD:SetSTFade(true)
 		end
 	elseif args.spellId == 291394 then
 		timerDarkOutpourCD:Start()
@@ -53,6 +54,7 @@ function mod:SPELL_CAST_START(args)
 			specWarnDarkOutpour:ScheduleVoice(1, "keepmove")
 		else
 			warnDarkOutpour:Show()
+			timerDarkOutpourCD:SetSTFade(true)
 		end
 	end
 end

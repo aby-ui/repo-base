@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1392, "DBM-HellfireCitadel", nil, 669)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041705938")
+mod:SetRevision("20190625143352")
 mod:SetCreatureID(90435)
 mod:SetEncounterID(1787)
 mod:SetZone()
@@ -18,7 +18,7 @@ mod:RegisterEventsInCombat(
 )
 
 --(ability.id = 181292 or ability.id = 181293 or ability.id = 181296 or ability.id = 181297 or ability.id = 181299 or ability.id = 181300 or ability.id = 180244 or ability.id = 181305) and type = "begincast" or ability.id = 181307 and type = "cast" or (ability.id = 181306 or ability.id = 180115 or ability.id = 180116 or ability.id = 180117 or ability.id = 189197 or ability.id = 189198 or ability.id = 189199 or ability.id = 186882 or ability.id = 186879 or ability.id = 186880 or ability.id = 186881) and (type = "applybuff" or type = "applydebuff")
---TODO, other countdowns, other voices, once ability importance is assessed.
+--TODO, other voices, once ability importance is assessed.
 local warnShadowEnergy				= mod:NewSpellAnnounce(180115, 2)
 local warnExplosiveEnergy			= mod:NewSpellAnnounce(180116, 3)--This one looks more dangerous than other 2, because it enables the Explosive Runes ability
 local warnFoulEnergy				= mod:NewSpellAnnounce(180117, 2)
@@ -45,17 +45,14 @@ local timerLeapCD					= mod:NewPhaseTimer(113.5)--Not techincally a leap timer, 
 local timerPoundCD					= mod:NewNextCountTimer(42, 180244, nil, nil, nil, 2)
 local timerFelOutpouringCD			= mod:NewNextTimer(107, 181292, nil, nil, nil, 2)
 local timerExplosiveRunesCD			= mod:NewNextTimer(48, 181296, nil, nil, nil, 5)
-local timerGraspingHandsCD			= mod:NewNextTimer(107, 181299, nil, nil, nil, 1)
+local timerGraspingHandsCD			= mod:NewNextTimer(107, 181299, nil, nil, nil, 1, nil, DBM_CORE_DAMAGE_ICON, nil, 1, 4)
 --Tank Debuffs. These are also hard coded, but in different place.
 mod:AddTimerLine(TANK)
-local timerExplosiveBurstCD			= mod:NewNextCountTimer(40, 181306, nil, nil, nil, 3)--Everyone needs to know these 2
+local timerExplosiveBurstCD			= mod:NewNextCountTimer(40, 181306, nil, nil, nil, 3, nil, nil, nil, 2, 4)--Everyone needs to know these 2
 local timerFoulCrushCD				= mod:NewNextCountTimer(40, 181307, nil, nil, nil, 1)--Everyone needs to know these 2
 local timerSwatCD					= mod:NewNextCountTimer(40, 181305, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON)
 
 --local berserkTimer				= mod:NewBerserkTimer(360)--Was 8 min on heroic PTR, but that also might have been a bug so will wait to confirm
-
-local countdownGraspingHands		= mod:NewCountdown(40, 181299)
-local countdownExplosiveBurst		= mod:NewCountdown("Alt10", 181306)
 
 mod:AddRangeFrameOption("4/40")
 
@@ -176,7 +173,6 @@ end
 
 local function delayedHands(self, time)
 	timerGraspingHandsCD:Start(time)
-	countdownGraspingHands:Start(time)
 	if not self:IsMythic() then
 		specWarnGraspingHands:CancelVoice()
 		specWarnGraspingHands:ScheduleVoice(time-5, "gather")
@@ -204,7 +200,6 @@ function mod:SPELL_AURA_APPLIED(args)
 	if spellId == 181306 then
 		self.vb.explosiveBurst = self.vb.explosiveBurst + 1
 		self.vb.explodingTank = args.destName
-		countdownExplosiveBurst:Start()
 		if args:IsPlayer() then
 			specWarnExplosiveBurst:Show(self.vb.explosiveBurst)
 			specWarnExplosiveBurst:Play("targetyou")
@@ -233,8 +228,6 @@ function mod:SPELL_AURA_APPLIED(args)
 		self:Unschedule(delayedSwat)
 		self:Unschedule(delayedFowlCrush)
 		self:Unschedule(delayedExplosiveBurst)
-		countdownGraspingHands:Cancel()
-		countdownExplosiveBurst:Cancel()
 		if self:IsMythic() and spellId == 186879 then--Mythic AND enraged
 			timerFelOutpouringCD:Start(8)
 			self:Schedule(8, delayedFelOutpouring, self, 65)--73
@@ -245,7 +238,6 @@ function mod:SPELL_AURA_APPLIED(args)
 			self:Schedule(26, delayedPound, self, 30)--57
 			timerExplosiveRunesCD:Start(39)
 			timerGraspingHandsCD:Start(50)
-			countdownGraspingHands:Start(50)
 			timerLeapCD:Start(96)
 		elseif (self:IsMythic() and spellId == 180115) or spellId == 186879 then--Mythic regular, or heroic/normal enrage
 			timerFelOutpouringCD:Start(11)
@@ -257,7 +249,6 @@ function mod:SPELL_AURA_APPLIED(args)
 			self:Schedule(37, delayedPound, self, 48)--85
 			timerExplosiveRunesCD:Start(53)
 			timerGraspingHandsCD:Start(69)
-			countdownGraspingHands:Start(69)
 			timerLeapCD:Start()
 		else
 			timerFelOutpouringCD:Start(13)
@@ -271,7 +262,6 @@ function mod:SPELL_AURA_APPLIED(args)
 			specWarnGraspingHands:CancelVoice()
 			specWarnGraspingHands:ScheduleVoice(78, "gather")
 			timerGraspingHandsCD:Start(83)
-			countdownGraspingHands:Start(83)
 			timerLeapCD:Start(135.5)
 		end
 	--Non LFR phase changes need reworking post mechanics changes.
@@ -287,8 +277,6 @@ function mod:SPELL_AURA_APPLIED(args)
 		self:Unschedule(delayedSwat)
 		self:Unschedule(delayedFowlCrush)
 		self:Unschedule(delayedExplosiveBurst)
-		countdownGraspingHands:Cancel()
-		countdownExplosiveBurst:Cancel()
 		if (self:IsMythic() and spellId == 186880) then
 			timerExplosiveRunesCD:Start(8)
 			self:Schedule(8, delayedExplosiveRunes, self, 63)--71
@@ -298,7 +286,6 @@ function mod:SPELL_AURA_APPLIED(args)
 			timerPoundCD:Start(19, 1)
 			self:Schedule(19, delayedPound, self, 35)--54
 			timerGraspingHandsCD:Start(35)
-			countdownGraspingHands:Start(35)
 			timerFelOutpouringCD:Start(49)
 			timerLeapCD:Start(96)
 		elseif (self:IsMythic() and spellId == 180116) or spellId == 186880 then
@@ -310,7 +297,6 @@ function mod:SPELL_AURA_APPLIED(args)
 			timerPoundCD:Start(27, 1)
 			self:Schedule(27, delayedPound, self, 42)--69
 			timerGraspingHandsCD:Start(43)
-			countdownGraspingHands:Start(43)
 			timerFelOutpouringCD:Start(59)
 			timerLeapCD:Start()
 		else
@@ -324,7 +310,6 @@ function mod:SPELL_AURA_APPLIED(args)
 			specWarnGraspingHands:CancelVoice()
 			specWarnGraspingHands:ScheduleVoice(46, "gather")
 			timerGraspingHandsCD:Start(51)
-			countdownGraspingHands:Start(51)
 			timerFelOutpouringCD:Start(71)
 			timerLeapCD:Start(135.5)
 		end
@@ -339,11 +324,8 @@ function mod:SPELL_AURA_APPLIED(args)
 		self:Unschedule(delayedSwat)
 		self:Unschedule(delayedFowlCrush)
 		self:Unschedule(delayedExplosiveBurst)
-		countdownGraspingHands:Cancel()
-		countdownExplosiveBurst:Cancel()
 		if (self:IsMythic() and spellId == 186881) then
 			timerGraspingHandsCD:Start(8)
-			countdownGraspingHands:Start(8)
 			self:Schedule(8, delayedHands, self, 75)--83
 			timerFoulCrushCD:Start(15, 1)
 			self:Schedule(15, delayedFowlCrush, self, 31, 2)
@@ -355,7 +337,6 @@ function mod:SPELL_AURA_APPLIED(args)
 			timerLeapCD:Start(96)
 		elseif (self:IsMythic() and spellId == 180117) or spellId == 186881 then
 			timerGraspingHandsCD:Start(11)
-			countdownGraspingHands:Start(11)
 			self:Schedule(11, delayedHands, self, 90)--101
 			timerFoulCrushCD:Start(21, 1)
 			self:Schedule(21, delayedFowlCrush, self, 42, 2)
@@ -369,7 +350,6 @@ function mod:SPELL_AURA_APPLIED(args)
 			specWarnGraspingHands:CancelVoice()
 			specWarnGraspingHands:ScheduleVoice(8, "gather")
 			timerGraspingHandsCD:Start(13)
-			countdownGraspingHands:Start(13)
 			self:Schedule(13, delayedHands, self, 108)--121
 			timerFoulCrushCD:Start(25, 1)
 			self:Schedule(25, delayedFowlCrush, self, 50, 2)
@@ -409,7 +389,6 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerGraspingHandsCD:Start(10)
 		specWarnGraspingHands:CancelVoice()
 		specWarnGraspingHands:ScheduleVoice(5, "gather")
-		countdownGraspingHands:Start(10)
 		self:Schedule(10, delayedHands, self, 35)--45
 		self:Schedule(45, delayedHands, self, 35)--80
 		timerPoundCD:Start(30, 1)
@@ -426,7 +405,6 @@ function mod:SPELL_AURA_REMOVED(args)
 	if spellId == 181306 then
 		self.vb.explodingTank = nil
 		self:Unschedule(trippleBurstCheck)
-		countdownExplosiveBurst:Cancel()
 		updateRangeCheck(self)
 	elseif spellId == 180244 then
 		self.vb.poundActive = false

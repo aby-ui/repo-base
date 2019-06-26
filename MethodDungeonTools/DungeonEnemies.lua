@@ -128,11 +128,13 @@ function MDTDungeonEnemyMixin:OnClick(button, down)
 
     if button == "LeftButton" then
         if IsShiftKeyDown() then
-            MethodDungeonTools:PresetsAddPull(MethodDungeonTools:GetCurrentPull() + 1)
+            local newPullIdx = MethodDungeonTools:GetCurrentPull() + 1
+            MethodDungeonTools:PresetsAddPull(newPullIdx)
             MethodDungeonTools:ReloadPullButtons()
-            MethodDungeonTools:SetSelectionToPull(MethodDungeonTools:GetCurrentPull() + 1)
+            MethodDungeonTools:GetCurrentPreset().value.selection = {newPullIdx}
+            MethodDungeonTools:SetSelectionToPull(newPullIdx)
             MethodDungeonTools:DungeonEnemies_AddOrRemoveBlipToCurrentPull(self,not self.selected,isCTRLKeyDown)
-            MethodDungeonTools:DungeonEnemies_UpdateSelected(MethodDungeonTools:GetCurrentPull())
+            MethodDungeonTools:DungeonEnemies_UpdateSelected(newPullIdx)
             MethodDungeonTools:UpdateProgressbar()
             if false then
                 -- Add to current pull
@@ -240,6 +242,7 @@ function MDTDungeonEnemyMixin:DisplayPatrol(shown)
             patrolPoints[patrolIdx]:SetTexture("Interface\\Worldmap\\X_Mark_64Grey")
             patrolPoints[patrolIdx]:SetSize(4,4)
             patrolPoints[patrolIdx]:SetVertexColor(0,0.2,0.5,0.6)
+            patrolPoints[patrolIdx]:ClearAllPoints()
             patrolPoints[patrolIdx]:SetPoint("CENTER",MethodDungeonTools.main_frame.mapPanelTile1,"TOPLEFT",waypoint.x,waypoint.y)
             patrolPoints[patrolIdx].x = waypoint.x
             patrolPoints[patrolIdx].y = waypoint.y
@@ -287,6 +290,7 @@ local ranOnce
 function MethodDungeonTools:DisplayBlipTooltip(blip,shown)
     if not ranOnce then
         --fix elvui skinning
+        MethodDungeonTools.tooltip:ClearAllPoints()
         MethodDungeonTools.tooltip:SetPoint("TOPLEFT",UIParent,"BOTTOMRIGHT")
         MethodDungeonTools.tooltip:SetPoint("BOTTOMRIGHT",UIParent,"BOTTOMRIGHT")
         MethodDungeonTools.tooltip:Show()
@@ -326,11 +330,13 @@ function MethodDungeonTools:DisplayBlipTooltip(blip,shown)
     text = text ..L"\n\n[Right click for more info]"
     tooltip.String:SetText(text)
 
+    tooltip:ClearAllPoints()
     if db.tooltipInCorner then
         tooltip:SetPoint("BOTTOMRIGHT",MethodDungeonTools.main_frame,"BOTTOMRIGHT",0,0)
         tooltip:SetPoint("TOPLEFT",MethodDungeonTools.main_frame,"BOTTOMRIGHT",-tooltip.mySizes.x,tooltip.mySizes.y)
     else
         --check for bottom clipping
+        tooltip:ClearAllPoints()
         tooltip:SetPoint("TOPLEFT",blip,"BOTTOMRIGHT",30,0)
         tooltip:SetPoint("BOTTOMRIGHT",blip,"BOTTOMRIGHT",30+tooltip.mySizes.x,-tooltip.mySizes.y)
         local bottomOffset = 0
@@ -394,6 +400,7 @@ local function blipDevModeSetup(blip)
 end
 
 function MDTDungeonEnemyMixin:SetUp(data,clone)
+    self:ClearAllPoints()
     self:SetPoint("CENTER",MethodDungeonTools.main_frame.mapPanelTile1,"TOPLEFT",clone.x,clone.y)
     self.normalScale = data.scale*(data.isBoss and 1.7 or 1)*(MethodDungeonTools.scaleMultiplier[db.currentDungeonIdx] or 1)
     self.normalScale = self.normalScale * 0.6
@@ -428,7 +435,11 @@ function MDTDungeonEnemyMixin:SetUp(data,clone)
     if db.enemyStyle == 2 then
         self.texture_Portrait:SetTexture("Interface\\Worldmap\\WorldMapPartyIcon")
     else
-        SetPortraitTextureFromCreatureDisplayID(self.texture_Portrait,data.displayId or 39490)
+        if data.iconTexture then
+            SetPortraitToTexture(self.texture_Portrait,data.iconTexture);
+        else
+            SetPortraitTextureFromCreatureDisplayID(self.texture_Portrait,data.displayId or 39490)
+        end
     end
     self:Show()
     self.texture_Indicator:Hide()
@@ -633,6 +644,22 @@ function MethodDungeonTools:DungeonEnemies_UpdateTeeming()
         end
     end
     MethodDungeonTools:DungeonEnemies_UpdateBlacktoothEvent()
+end
+
+---DungeonEnemies_UpdateBeguiling
+---Updates visibility state of Beguiling NPCs
+function MethodDungeonTools:DungeonEnemies_UpdateBeguiling()
+    local week = preset.week
+    for _,blip in pairs(blips) do
+        local weekData =  blip.clone.week
+        if weekData and not weekData[week] then
+            blip:Disable()
+            blip:Hide()
+        elseif weekData and weekData[week] then
+            blip:Enable()
+            blip:Show()
+        end
+    end
 end
 
 ---DungeonEnemies_UpdateBlacktoothEvent

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1819, "DBM-TrialofValor", nil, 861)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019052110708")
+mod:SetRevision("20190625143337")
 mod:SetCreatureID(114263, 114361, 114360)--114263 Odyn, 114361 Hymdall, 114360 Hyrja 
 mod:SetEncounterID(1958)
 mod:SetZone()
@@ -71,14 +71,14 @@ local yellRunicBrand				= mod:NewPosYell(231297, DBM_CORE_AUTO_YELL_CUSTOM_POSIT
 --Adds (stage 1 and 2)
 mod:AddTimerLine(hymdall)
 local timerDancingBladeCD			= mod:NewNextTimer(31, 228003, nil, nil, nil, 3)--Alternating two times
-local timerHornOfValorCD			= mod:NewNextCountTimer(32, 228012, nil, nil, nil, 2)--Alternating two times
+local timerHornOfValorCD			= mod:NewNextCountTimer(32, 228012, nil, nil, nil, 2, nil, nil, nil, 2, 4)--Alternating two times
 mod:AddTimerLine(hyrja)
 local timerExpelLightCD				= mod:NewNextTimer(32, 228028, nil, nil, nil, 3)--Alternating two times
-local timerShieldofLightCD			= mod:NewNextCountTimer(32, 228270, nil, nil, nil, 3)--Alternating two times
+local timerShieldofLightCD			= mod:NewNextCountTimer(32, 228270, nil, nil, nil, 3, nil, nil, nil, 3, 4)--Alternating two times
 --Stage 1: Halls of Valor was merely a set back
 mod:AddTimerLine(SCENARIO_STAGE:format(1))
-local timerDrawPowerCD				= mod:NewNextTimer(70, 227503, nil, nil, nil, 6)
-local timerDrawPower				= mod:NewCastTimer(33, 227629, nil, nil, nil, 2, nil, DBM_CORE_DEADLY_ICON)
+local timerDrawPowerCD				= mod:NewNextTimer(70, 227503, nil, nil, nil, 6, nil, nil, nil, 1, 4)
+local timerDrawPower				= mod:NewCastTimer(33, 227629, nil, nil, nil, 2, nil, DBM_CORE_DEADLY_ICON, nil, 1, 4)
 --Stage 2: Odyn immitates margok
 mod:AddTimerLine(SCENARIO_STAGE:format(2))
 local timerSpearCD					= mod:NewNextTimer(8, 227697, nil, nil, nil, 3)
@@ -87,22 +87,13 @@ local timerHyrjaCD					= mod:NewNextTimer(70, "ej14006", nil, nil, nil, 1, 22827
 --Stage 3: Odyn immitates lei shen
 mod:AddTimerLine(SCENARIO_STAGE:format(3))
 local timerStormOfJusticeCD			= mod:NewNextTimer(10.9, 227807, nil, nil, nil, 3)
-local timerStormforgedSpearCD		= mod:NewNextTimer(10.9, 228918, 71466, "Tank|Healer", nil, 5, nil, DBM_CORE_TANK_ICON..DBM_CORE_DEADLY_ICON)
+local timerStormforgedSpearCD		= mod:NewNextTimer(10.9, 228918, 71466, "Tank|Healer", nil, 5, nil, DBM_CORE_TANK_ICON..DBM_CORE_DEADLY_ICON, nil, 2, 4)
 --Mythic
 mod:AddTimerLine(ENCOUNTER_JOURNAL_SECTION_FLAG12)
-local timerRunicBrandCD				= mod:NewNextTimer(35, 231297, nil, nil, nil, 3, nil, DBM_CORE_HEROIC_ICON)
+local timerRunicBrandCD				= mod:NewNextTimer(35, 231297, nil, nil, nil, 3, nil, DBM_CORE_HEROIC_ICON, nil, 1, 4)
 local timerRadiantSmite				= mod:NewCastTimer(7.5, 231350, nil, nil, nil, 2, nil, DBM_CORE_HEROIC_ICON)
 
 --local berserkTimer				= mod:NewBerserkTimer(300)
-
---Stage 1: Halls of Valor was merely a set back
-local countdownDrawPower			= mod:NewCountdown(33, 227629)
-local countdownHorn					= mod:NewCountdown("Alt32", 228012)
-local countdownShield				= mod:NewCountdown("AltTwo32", 228270)
---Stage 3: Odyn immitates lei shen
-local countdownStormforgedSpear		= mod:NewCountdown("Alt11", 228918, "Tank")
---Mythic
-local countdownRunicBrand			= mod:NewCountdown(35, 231297)
 
 mod:AddSetIconOption("SetIconOnShield", 228270, true)
 mod:AddInfoFrameOption(227503, true)
@@ -204,31 +195,23 @@ function mod:OnCombatStart(delay)
 	playerDebuff = nil
 	if self:IsMythic() then
 		timerHornOfValorCD:Start(8-delay, 1)
-		countdownHorn:Start(8-delay)
 		timerDancingBladeCD:Start(15-delay)
 		timerShieldofLightCD:Start(20-delay, 1)
 		timerExpelLightCD:Start(25-delay)
 		timerDrawPowerCD:Start(35-delay)
-		countdownDrawPower:Start(35-delay)
 	elseif not self:IsEasy() then
 		timerHornOfValorCD:Start(8-delay, 1)
-		countdownHorn:Start(8-delay)
 		timerDancingBladeCD:Start(16-delay)
 		timerShieldofLightCD:Start(23-delay, 1)
-		countdownShield:Start(23-delay)
 		timerExpelLightCD:Start(32-delay)
 		timerDrawPowerCD:Start(40-delay)
-		countdownDrawPower:Start(40-delay)
 	else--LFR/Normal
 		timerHornOfValorCD:Start(10-delay, 1)
-		countdownHorn:Start(10-delay)
 		timerDancingBladeCD:Start(20-delay)
 		timerShieldofLightCD:Start(30-delay, 1)
-		countdownShield:Start(30-delay)
 		timerExpelLightCD:Start(40-delay)
 		if self:IsNormal() then
 			timerDrawPowerCD:Start(45-delay)
-			countdownDrawPower:Start(45-delay)
 		end
 	end
 	if self.Options.NPAuraOnBranded then
@@ -285,27 +268,22 @@ function mod:SPELL_CAST_START(args)
 				local timer = hornTimers[self.vb.hornCast+1]
 				if timer then
 					timerHornOfValorCD:Start(timer, self.vb.hornCast+1)
-					countdownHorn:Start(timer)
 				end
 			elseif self:IsEasy() then
 				if self.vb.hornCast % 2 == 0 then
 					--timerHornOfValorCD:Start(43, self.vb.hornCast+1)--More data needed. Probably has an alternation
 				else
 					timerHornOfValorCD:Start(70)
-					countdownHorn:Start(70)
 				end
 			else
 				if self.vb.hornCast % 2 == 0 then
 					timerHornOfValorCD:Start(43, self.vb.hornCast+1)
-					countdownHorn:Start(43)
 				else
 					timerHornOfValorCD:Start(27, self.vb.hornCast+1)
-					countdownHorn:Start(27)
 				end
 			end
 		else
 			timerHornOfValorCD:Start(30, self.vb.hornCast+1)--Need more data
-			countdownHorn:Start(30)
 		end
 		updateRangeFrame(self)
 	elseif spellId == 228171 and self:AntiSpam(2, 2) then
@@ -388,7 +366,6 @@ function mod:SPELL_AURA_APPLIED(args)
 		end
 	elseif spellId == 228918 then
 		timerStormforgedSpearCD:Start()--If this can miss, move it to a success event.
-		countdownStormforgedSpear:Start()
 		if args:IsPlayer() then
 			specWarnStormforgedSpear:Show()
 			specWarnStormforgedSpear:Play("justrun")
@@ -494,7 +471,6 @@ function mod:SPELL_AURA_REMOVED(args)
 		end
 	elseif spellId == 227503 then--Draw power, assumed
 		timerDrawPower:Stop()
-		countdownDrawPower:Cancel()
 	elseif spellId == 227490 or spellId == 227491 or spellId == 227498 or spellId == 227499 or spellId == 227500 then--Branded (Draw Power Runes)
 		drawTable[spellId] = nil
 		if self.Options.InfoFrame then
@@ -535,20 +511,16 @@ function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg, npc, _, _, target)
 				local timer = shieldTimers[self.vb.shieldCast+1]
 				if timer then
 					timerShieldofLightCD:Start(timer, self.vb.shieldCast+1)
-					countdownShield:Start(timer)
 				end
 			else
 				if self.vb.shieldCast % 2 == 0 then
 					timerShieldofLightCD:Start(38, self.vb.shieldCast+1)
-					countdownShield:Start(38)
 				else
 					timerShieldofLightCD:Start(32, self.vb.shieldCast+1)
-					countdownShield:Start(32)
 				end
 			end
 		else
 			timerShieldofLightCD:Start(25)
-			countdownShield:Start(25)
 		end
 		local targetname = DBM:GetUnitFullName(target)
 		if targetname then
@@ -573,7 +545,6 @@ function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg, npc, _, _, target)
 			specWarnHyrja:Play("bigmob")
 			timerExpelLightCD:Start(4.7)
 			timerShieldofLightCD:Start(9.7)
-			countdownShield:Start(9.7)
 			if self:IsMythic() then
 				timerHymdallCD:Start(64)
 			elseif self:IsHeroic() then
@@ -585,7 +556,6 @@ function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg, npc, _, _, target)
 			specWarnHymall:Play("bigmob")
 			timerDancingBladeCD:Start(5)
 			timerHornOfValorCD:Start(9.5, 1)
-			countdownHorn:Start(9.5)
 			if self:IsMythic() then
 				timerHyrjaCD:Start(67)
 			elseif self:IsHeroic() then
@@ -600,16 +570,12 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, bfaSpellId, _, legacySpellId)
 	--"<51.36 16:56:28> [UNIT_SPELLCAST_SUCCEEDED] Odyn(??) [[boss1:Draw Power::3-3198-1648-10280-227503-000A6050FC:227503]]", -- [376]
 	if spellId == 227503 or spellId == 229576 then--Draw Power
 		timerDrawPower:Start()
-		countdownDrawPower:Start()
 		if self:IsEasy() then
 			timerDrawPowerCD:Start(75)--LFR phase 2 verified. Might still be 70 in heroic though. no logs long enough for phase 2
-			countdownDrawPower:Start(75)
 		elseif self:IsMythic() then
 			timerDrawPowerCD:Start(65)--65 in phase 1, 66 in phase 2 but i'm ok with using 65 for both for now
-			countdownDrawPower:Start(65)
 		else
 			timerDrawPowerCD:Start()
-			countdownDrawPower:Start(70)
 		end
 		--if self.vb.phase == 2 then
 		--	timerSpearCD:Stop()
@@ -622,7 +588,6 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, bfaSpellId, _, legacySpellId)
 		self.vb.brandActive = true
 		timerRadiantSmite:Start()
 		timerRunicBrandCD:Start()
-		countdownRunicBrand:Start()
 	elseif spellId == 229168 then--Test for Players (Phase 1 end)
 		warnPhase2:Show()
 		self.vb.hornCast = 0--Verify
@@ -631,23 +596,17 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, bfaSpellId, _, legacySpellId)
 		self.vb.dancingBladeCast = 0--Verify
 		timerDancingBladeCD:Stop()
 		timerHornOfValorCD:Stop()
-		countdownHorn:Cancel()
 		timerExpelLightCD:Stop()
 		timerShieldofLightCD:Stop()
-		countdownShield:Cancel()
 		timerDrawPowerCD:Stop()
 		timerDrawPower:Stop()
-		countdownDrawPower:Cancel()
 		timerSpearCD:Start(13)
 		if self:IsEasy() then
 			timerDrawPowerCD:Start(53)
-			countdownDrawPower:Start(53)
 		elseif self:IsMythic() then
 			timerDrawPowerCD:Start(45)
-			countdownDrawPower:Start(45)
 		else
 			timerDrawPowerCD:Start(48)
-			countdownDrawPower:Start(48)
 		end
 		--Timers above started in earliest possible place
 		--Timer started at jump though has to be delayed to avoid phase 1 ClearAllDebuffs events
@@ -664,11 +623,9 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, bfaSpellId, _, legacySpellId)
 		if cid == 114361 then--Hymdall
 			timerDancingBladeCD:Stop()
 			timerHornOfValorCD:Stop()
-			countdownHorn:Cancel()
 		elseif cid == 114360 then--Hyrja
 			timerExpelLightCD:Stop()
 			timerShieldofLightCD:Stop()
-			countdownShield:Cancel()
 		end
 	elseif spellId == 227697 then--Spear of Light
 		if self:IsMythic() then
@@ -686,15 +643,12 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, bfaSpellId, _, legacySpellId)
 		timerHymdallCD:Stop()
 		timerHyrjaCD:Stop()
 		timerDrawPower:Stop()
-		countdownDrawPower:Cancel()
 		timerDrawPowerCD:Stop()
 		warnPhase3:Show()
 		timerStormOfJusticeCD:Start(4)
 		timerStormforgedSpearCD:Start(9)
-		countdownStormforgedSpear:Start(9)
 		if self:IsMythic() then
 			timerRunicBrandCD:Start(21)
-			countdownRunicBrand:Start(21)
 		end
 	end
 end

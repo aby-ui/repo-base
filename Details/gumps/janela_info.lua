@@ -33,11 +33,30 @@ local IconTexCoord = {5/64, 59/64, 5/64, 59/64}
 local CONST_BAR_HEIGHT = 20
 local CONST_TARGET_HEIGHT = 18
 
-local PLAYER_DETAILS_WINDOW_WIDTH = 790
-local PLAYER_DETAILS_WINDOW_HEIGHT = 474
+local PLAYER_DETAILS_WINDOW_WIDTH = 890
+local PLAYER_DETAILS_WINDOW_HEIGHT = 574
 
 local PLAYER_DETAILS_STATUSBAR_HEIGHT = 20
 local PLAYER_DETAILS_STATUSBAR_ALPHA = 1
+
+local containerSettings = {
+	spells = {
+		width = 419,
+		height = 290,
+		point = {"TOPLEFT", DetailsPlayerDetailsWindow, "TOPLEFT", 2, -76},
+		scrollHeight = 264,
+	},
+	targets = {
+		width = 418,
+		height = 150,
+		point = {"BOTTOMLEFT", DetailsPlayerDetailsWindow, "BOTTOMLEFT", 2, 6 + PLAYER_DETAILS_STATUSBAR_HEIGHT},
+	},
+}
+
+local spellInfoSettings = {
+	width = 430,
+	amount = 6,
+}
 
 ------------------------------------------------------------------------------------------------------------------------------
 --self = instancia
@@ -239,7 +258,7 @@ function gump:TrocaBackgroundInfo()
 	
 	info.report_direita:Hide()
 	
-	for i = 1, 5 do
+	for i = 1, spellInfoSettings.amount do
 		info ["right_background" .. i]:Show()
 	end
 	
@@ -264,7 +283,7 @@ function gump:TrocaBackgroundInfo()
 			info.bg2_sec_texture:Show()
 			info.tipo = 2
 
-			for i = 1, 5 do
+			for i = 1, spellInfoSettings.amount do
 				info ["right_background" .. i]:Hide()
 			end
 			
@@ -283,7 +302,7 @@ function gump:TrocaBackgroundInfo()
 			info.bg2_sec_texture:Show()
 			info.tipo = 3
 			
-			for i = 1, 5 do
+			for i = 1, spellInfoSettings.amount do
 				info ["right_background" .. i]:Hide()
 			end
 			
@@ -300,7 +319,7 @@ function gump:TrocaBackgroundInfo()
 			info.bg2_sec_texture:Show()
 			info.tipo = 3
 			
-			for i = 1, 5 do
+			for i = 1, spellInfoSettings.amount do
 				info ["right_background" .. i]:Hide()
 			end
 			
@@ -329,7 +348,7 @@ function gump:TrocaBackgroundInfo()
 			info.bg2_sec_texture:Show()
 			info.tipo = 2
 
-			for i = 1, 5 do
+			for i = 1, spellInfoSettings.amount do
 				info ["right_background" .. i]:Hide()
 			end
 			
@@ -404,7 +423,7 @@ end
 --> esconde as 5 barras a direita na janela de info
 ------------------------------------------------------------------------------------------------------------------------------
 function gump:HidaAllDetalheInfo()
-	for i = 1, 5 do
+	for i = 1, spellInfoSettings.amount do
 		gump:HidaDetalheInfo (i)
 	end
 	for _, barra in _ipairs (info.barras3) do 
@@ -532,7 +551,7 @@ function gump:CriaDetalheInfo (index)
 end
 
 function info:SetDetailInfoConfigs (texture, color, x, y)
-	for i = 1, 5 do
+	for i = 1, spellInfoSettings.amount do
 		if (texture) then
 			info.grupos_detalhes [i].bg:SetStatusBarTexture (texture)
 		end
@@ -553,7 +572,9 @@ end
 function gump:SetaDetalheInfoAltura (index, xmod, ymod)
 	local info = _detalhes.janela_info.grupos_detalhes [index]
 	local janela =  _detalhes.janela_info.container_detalhes
-	local altura = {-10, -63, -118, -173, -228}
+	
+	local altura = {-10, -63, -118, -173, -228, -279}
+	
 	local x1 = 64 + (xmod or 0)
 	local x2 = 00 + (ymod or 0)
 	
@@ -561,26 +582,35 @@ function gump:SetaDetalheInfoAltura (index, xmod, ymod)
 	
 	local background
 	
-	local y = -74 - ((index-1) * 76)
+	local y = -74 - ((index-1) * 79.5)
 	
 	if (index == 1) then
 		_detalhes.janela_info.right_background1:SetPoint ("topleft", _detalhes.janela_info, "topleft", 357 + (xmod or 0), y)
 		background = _detalhes.janela_info.right_background1
+		
 	elseif (index == 2) then
 		_detalhes.janela_info.right_background2:SetPoint ("topleft", _detalhes.janela_info, "topleft", 357 + (xmod or 0), y)
 		background = _detalhes.janela_info.right_background2
+		
 	elseif (index == 3) then
 		_detalhes.janela_info.right_background3:SetPoint ("topleft", _detalhes.janela_info, "topleft", 357 + (xmod or 0), y)
 		background = _detalhes.janela_info.right_background3
+		
 	elseif (index == 4) then
 		_detalhes.janela_info.right_background4:SetPoint ("topleft", _detalhes.janela_info, "topleft", 357 + (xmod or 0), y)
 		background = _detalhes.janela_info.right_background4
+		
 	elseif (index == 5) then
 		_detalhes.janela_info.right_background5:SetPoint ("topleft", _detalhes.janela_info, "topleft", 357 + (xmod or 0), y)
 		background = _detalhes.janela_info.right_background5
+		
+	elseif (index == 6) then
+		_detalhes.janela_info.right_background6:SetPoint ("topleft", _detalhes.janela_info, "topleft", 357 + (xmod or 0), y)
+		background = _detalhes.janela_info.right_background6
+		
 	end
 	
-	background:SetHeight (65)
+	background:SetHeight (75)
 	
 	--3 textos da esquerda e direita
 	local y = -3
@@ -597,7 +627,7 @@ function gump:SetaDetalheInfoAltura (index, xmod, ymod)
 	
 	info.bg:SetPoint ("TOPLEFT", background, "TOPLEFT", 1, -1)
 	info.bg:SetHeight (background:GetHeight() - 2)
-	info.bg:SetWidth (info.bg:GetWidth() - 2) --ofcourse why not
+	info.bg:SetWidth (background:GetWidth())
 	
 	info.bg_end:SetPoint ("LEFT", info.bg, "LEFT", info.bg:GetValue()*2.19, 0)
 	info.bg_end:SetHeight (background:GetHeight()+2)
@@ -623,14 +653,9 @@ function gump:SetaDetalheInfoTexto (index, p, arg1, arg2, arg3, arg4, arg5, arg6
 			info.bg:SetValue (p)
 			info.bg:SetStatusBarColor (1, 1, 1, .5)
 		end
-		
-		--if (index == 1) then
-		--	info.bg_end:Hide()
-		--else
-			info.bg_end:Show()
-			info.bg_end:SetPoint ("LEFT", info.bg, "LEFT", (info.bg:GetValue() * (info.bg:GetWidth()/100)) - 3, 0) -- 2.19
-		--end
-		
+
+		info.bg_end:Show()
+		info.bg_end:SetPoint ("LEFT", info.bg, "LEFT", (info.bg:GetValue() * (info.bg:GetWidth( ) / 100)) - 3, 0) -- 2.19
 		info.bg:Show()
 	end
 	
@@ -679,17 +704,10 @@ end
 ------------------------------------------------------------------------------------------------------------------------------
 local function cria_barras_detalhes()
 	_detalhes.janela_info.grupos_detalhes = {}
-
-	gump:CriaDetalheInfo (1)
-	gump:SetaDetalheInfoAltura (1)
-	gump:CriaDetalheInfo (2)
-	gump:SetaDetalheInfoAltura (2)
-	gump:CriaDetalheInfo (3)
-	gump:SetaDetalheInfoAltura (3)
-	gump:CriaDetalheInfo (4)
-	gump:SetaDetalheInfoAltura (4)
-	gump:CriaDetalheInfo (5)
-	gump:SetaDetalheInfoAltura (5)
+	for i = 1, spellInfoSettings.amount do
+		gump:CriaDetalheInfo (i)
+		gump:SetaDetalheInfoAltura (i)
+	end
 end
 
 
@@ -1044,9 +1062,10 @@ local default_skin = function()
 	for i, infoblock in ipairs (_detalhes.janela_info.grupos_detalhes) do
 		infoblock.bg:SetSize (219, 47) --219 original
 	end
-	local xLocation = {-85, -136, -191, -246, -301}
-	local heightTable = {43, 48, 48, 48, 48}
-	for i = 1, 5 do
+	local xLocation = {-85, -136, -191, -246, -301, -356}
+	local heightTable = {43, 48, 48, 48, 48, 48}
+	
+	for i = 1, spellInfoSettings.amount do
 		window ["right_background" .. i]:SetPoint ("topleft", window, "topleft", 357, xLocation [i]) --357 original
 		window ["right_background" .. i]:SetSize (220, heightTable [i]) --220
 	end
@@ -1160,7 +1179,7 @@ local elvui_skin = function()
 	window.bg1:SetVertexColor (0.27, 0.27, 0.27)
 	window.bg1:SetVertTile (true)
 	window.bg1:SetHorizTile (true)
-	window.bg1:SetSize (790, 454)
+	window.bg1:SetSize (PLAYER_DETAILS_WINDOW_WIDTH, PLAYER_DETAILS_WINDOW_HEIGHT)
 	
 	window:SetBackdrop ({edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1})
 	window:SetBackdropColor (1, 1, 1, 1)
@@ -1234,14 +1253,15 @@ local elvui_skin = function()
 	window.avatar:SetParent (titlebar)
 	
 	--bar container
-	window.container_barras:SetSize (419, 195)
-	window.container_barras:SetPoint ("TOPLEFT", window, "TOPLEFT", 2, -76)
+	window.container_barras:SetPoint (unpack (containerSettings.spells.point))
+	window.container_barras:SetSize (containerSettings.spells.width, containerSettings.spells.height)
+	
 	--target container
-	window.container_alvos:SetPoint ("BOTTOMLEFT", window, "BOTTOMLEFT", 2, 6 + PLAYER_DETAILS_STATUSBAR_HEIGHT)
-	window.container_alvos:SetSize (418, 150)
+	window.container_alvos:SetPoint (unpack (containerSettings.targets.point))
+	window.container_alvos:SetSize (containerSettings.targets.width, containerSettings.targets.height)
 	
 	--texts
-	window.targets:SetPoint ("TOPLEFT", window, "TOPLEFT", 3, -281)
+	window.targets:SetPoint ("topleft", window.container_alvos, "topleft", 3, 18)
 	window.nome:SetPoint ("TOPLEFT", window, "TOPLEFT", 105, -48)
 	
 	--report button
@@ -1263,23 +1283,22 @@ local elvui_skin = function()
 	window.bg2_sec_texture:SetDesaturated (true)
 	window.bg2_sec_texture:SetAlpha (0)
 	
-	--window.bg2_sec_texture:SetAlpha (0.3)
-	
 	window.bg3_sec_texture:SetPoint ("topleft", window.bg2_sec_texture, "topleft", 0, 0)
 	window.bg3_sec_texture:SetPoint ("bottomright", window.bg2_sec_texture, "bottomright", 0, 0)
 	window.bg3_sec_texture:SetTexture (0, 0, 0, 0.3)	
 	
-	--the 5 spell details blocks
+	--the 5 spell details blocks - not working
 	for i, infoblock in ipairs (_detalhes.janela_info.grupos_detalhes) do
-		infoblock.bg:SetSize (330, 47) --227 original
+		infoblock.bg:SetSize (330, 47)
 	end
 	local xLocation = {-85, -136, -191, -246, -301}
-	local heightTable = {43, 48, 48, 48, 47}
-	for i = 1, 5 do
-		window ["right_background" .. i]:SetPoint ("topleft", window, "topleft", 351, xLocation [i]) --451 original
-		window ["right_background" .. i]:SetSize (330, heightTable [i]) --230
-	end
+	local heightTable = {50, 50, 50, 50, 50, 48}
 	
+	for i = 1, spellInfoSettings.amount do
+		window ["right_background" .. i]:SetPoint ("topleft", window, "topleft", 351, xLocation [i])
+		window ["right_background" .. i]:SetSize (spellInfoSettings.width, heightTable [i])
+		
+	end
 	
 	--seta configs dos 5 blocos da direita 
 	info:SetDetailInfoConfigs ("Interface\\AddOns\\Details\\images\\bar_serenity", {1, 1, 1, 0.35}, -6 + 100, 0)
@@ -1287,7 +1306,6 @@ local elvui_skin = function()
 	window.bg1_sec_texture:SetPoint ("topleft", window.bg1, "topleft", 446, -86)
 	window.bg1_sec_texture:SetWidth (337)
 	window.bg1_sec_texture:SetHeight (362)
-		
 
 	--container 3 bars
 	local x_start = 56
@@ -1374,7 +1392,7 @@ local elvui_skin = function()
 	window.container_barras.slider:SetBackdropColor (0, 0, 0, 0.35)
 	window.container_barras.slider:SetBackdropBorderColor (0, 0, 0, 1)
 	
-	window.container_barras.slider:Altura (164)
+	window.container_barras.slider:Altura (containerSettings.spells.scrollHeight)
 	window.container_barras.slider:cimaPoint (0, 13)
 	window.container_barras.slider:baixoPoint (0, -13)
 	
@@ -1650,7 +1668,7 @@ function gump:CriaJanelaInfo()
 		local right_background_X = 457
 		local right_background_Y = {-85, -136, -191, -246, -301}
 		
-		for i = 1, 5 do
+		for i = 1, spellInfoSettings.amount do
 			local right_background1 = CreateFrame ("frame", "DetailsPlayerDetailsWindow_right_background" .. i, SWW)
 			right_background1:EnableMouse (false)
 			right_background1:SetPoint ("topleft", este_gump, "topleft", right_background_X, right_background_Y [i])
@@ -1658,42 +1676,6 @@ function gump:CriaJanelaInfo()
 			Details.gump:ApplyStandardBackdrop (right_background1)
 			este_gump ["right_background" .. i] = right_background1
 		end
-
---[=[		
-		local right_background1 = SWW:CreateTexture ("DetailsPlayerDetailsWindow_right_background1", "background")
-		right_background1:SetTexture ([[Interface\DialogFrame\UI-DialogBox-Background-Dark]])
-		right_background1:SetPoint ("topleft", este_gump, "topleft", right_background_X, -85)
-		right_background1:SetSize (220, 43)
-		right_background1:SetAlpha (alpha_bgs)
-		
-		local right_background2 = SWW:CreateTexture ("DetailsPlayerDetailsWindow_right_background2", "background")
-		right_background2:SetTexture ([[Interface\DialogFrame\UI-DialogBox-Background-Dark]])
-		right_background2:SetPoint ("topleft", este_gump, "topleft", right_background_X, -136)
-		right_background2:SetSize (220, 48)
-		right_background2:SetAlpha (alpha_bgs)
-		este_gump.right_background2 = right_background2
-		
-		local right_background3 = SWW:CreateTexture ("DetailsPlayerDetailsWindow_right_background3", "background")
-		right_background3:SetTexture ([[Interface\DialogFrame\UI-DialogBox-Background-Dark]])
-		right_background3:SetPoint ("topleft", este_gump, "topleft", right_background_X, -191)
-		right_background3:SetSize (220, 48)
-		right_background3:SetAlpha (alpha_bgs)
-		este_gump.right_background3 = right_background3
-		
-		local right_background4 = SWW:CreateTexture ("DetailsPlayerDetailsWindow_right_background4", "background")
-		right_background4:SetTexture ([[Interface\DialogFrame\UI-DialogBox-Background-Dark]])
-		right_background4:SetPoint ("topleft", este_gump, "topleft", right_background_X, -246)
-		right_background4:SetSize (220, 48)
-		right_background4:SetAlpha (alpha_bgs)
-		este_gump.right_background4 = right_background4
-		
-		local right_background5 = SWW:CreateTexture ("DetailsPlayerDetailsWindow_right_background5", "background")
-		right_background5:SetTexture ([[Interface\DialogFrame\UI-DialogBox-Background-Dark]])
-		right_background5:SetPoint ("topleft", este_gump, "topleft", right_background_X, -301)
-		right_background5:SetSize (220, 48)
-		right_background5:SetAlpha (alpha_bgs)
-		este_gump.right_background5 = right_background5
---]=]
 
 	-- fundos especiais de friendly fire e outros
 		este_gump.bg1_sec_texture = SWW:CreateTexture ("DetailsPlayerDetailsWindow_BG1_SEC_Texture", "BORDER")
@@ -2594,11 +2576,24 @@ function gump:CriaJanelaInfo()
 
 	local auras_tab_create = function (tab, frame)
 		local DF = _detalhes.gump
-		local scroll_line_amount = 17
+		local scroll_line_amount = 22
 		local scroll_line_height = 19
-		local scroll_width = 350
+		local scroll_width = 410
+		local scrollHeight = 445
 		local scroll_line_height = 19
-		local text_size = 9
+		local text_size = 10
+		
+		local debuffScrollStartX = 445
+		
+		local headerOffsetsBuffs = {
+			--buff label, uptime, applications, refreshes, wa
+			6, 190, 290, 336, 380
+		}
+		
+		local headerOffsetsDebuffs = {
+			--debuff label, uptime, applications, refreshes, wa
+			426, 630, 729, 775, 820
+		}		
 		
 		local line_onenter = function (self)
 			GameTooltip:SetOwner (self, "ANCHOR_TOPRIGHT")
@@ -2654,9 +2649,9 @@ function gump:CriaJanelaInfo()
 			icon:SetPoint ("left", line, "left", 2, 0)
 			name:SetPoint ("left", icon, "right", 2, 0)
 			uptime:SetPoint ("left", line, "left", 186, 0)
-			apply:SetPoint ("left", line, "left", 260, 0)
-			refresh:SetPoint ("left", line, "left", 290, 0)
-			waButton:SetPoint ("left", line, "left", 322, 0)
+			apply:SetPoint ("left", line, "left", 276, 0)
+			refresh:SetPoint ("left", line, "left", 322, 0)
+			waButton:SetPoint ("left", line, "left", 372, 0)
 			
 			line.Icon = icon
 			line.Name = name
@@ -2670,8 +2665,8 @@ function gump:CriaJanelaInfo()
 			
 			apply:SetJustifyH ("center")
 			refresh:SetJustifyH ("center")
-			apply:SetWidth (20)
-			refresh:SetWidth (20)
+			apply:SetWidth (26)
+			refresh:SetWidth (26)
 			
 			return line
 		end
@@ -2730,24 +2725,26 @@ function gump:CriaJanelaInfo()
 			return f
 		end
 		
+
+		
 		local buffLabel = DF:CreateLabel (frame, "Buff Name")
-		buffLabel:SetPoint (6, -10)
+		buffLabel:SetPoint (headerOffsetsBuffs[1], -10)
 		local uptimeLabel = DF:CreateLabel (frame, "Uptime")
-		uptimeLabel:SetPoint (200, -10)
+		uptimeLabel:SetPoint (headerOffsetsBuffs[2], -10)
 		
 		local appliedLabel = DF:CreateLabel (frame, "A")
-		appliedLabel:SetPoint (270, -10)
+		appliedLabel:SetPoint (headerOffsetsBuffs[3], -10)
 		create_titledesc_frame (appliedLabel.widget, "applications")
 		
 		local refreshedLabel = DF:CreateLabel (frame, "R")
-		refreshedLabel:SetPoint (301, -10)
+		refreshedLabel:SetPoint (headerOffsetsBuffs[4], -10)
 		create_titledesc_frame (refreshedLabel.widget, "refreshes")
 		
 		local waLabel = DF:CreateLabel (frame, "WA")
-		waLabel:SetPoint (330, -10)
+		waLabel:SetPoint (headerOffsetsBuffs[5], -10)
 		create_titledesc_frame (waLabel.widget, "create weak aura")
 		
-		local buffScroll = DF:CreateScrollBox (frame, "$parentBuffUptimeScroll", scroll_buff_refresh, {}, scroll_width, 340, scroll_line_amount, scroll_line_height)
+		local buffScroll = DF:CreateScrollBox (frame, "$parentBuffUptimeScroll", scroll_buff_refresh, {}, scroll_width, scrollHeight, scroll_line_amount, scroll_line_height)
 		buffScroll:SetPoint ("topleft", frame, "topleft", 5, -30)
 		for i = 1, scroll_line_amount do 
 			local line = buffScroll:CreateLine (scroll_createline)
@@ -2759,25 +2756,28 @@ function gump:CriaJanelaInfo()
 		--debuff scroll
 		--icon - name - applications - refreshes - uptime
 		--
+		
 		local debuffLabel = DF:CreateLabel (frame, "Debuff Name")
-		debuffLabel:SetPoint (406, -10)
+		debuffLabel:SetPoint (headerOffsetsDebuffs[1], -10)
 		local uptimeLabel2 = DF:CreateLabel (frame, "Uptime")
-		uptimeLabel2:SetPoint (600, -10)
+		uptimeLabel2:SetPoint (headerOffsetsDebuffs[2], -10)
 		
 		local appliedLabel2 = DF:CreateLabel (frame, "A")
-		appliedLabel2:SetPoint (668, -10)
+		appliedLabel2:SetPoint (headerOffsetsDebuffs[3], -10)
 		create_titledesc_frame (appliedLabel2.widget, "applications")
 		
 		local refreshedLabel2 = DF:CreateLabel (frame, "R")
-		refreshedLabel2:SetPoint (699, -10)
+		refreshedLabel2:SetPoint (headerOffsetsDebuffs[4], -10)
 		create_titledesc_frame (refreshedLabel2.widget, "refreshes")
 		
 		local waLabel2 = DF:CreateLabel (frame, "WA")
-		waLabel2:SetPoint (728, -10)
+		waLabel2:SetPoint (headerOffsetsDebuffs[5], -10)
 		create_titledesc_frame (waLabel2.widget, "create weak aura")
 
-		local debuffScroll = DF:CreateScrollBox (frame, "$parentDebuffUptimeScroll", scroll_buff_refresh, {}, scroll_width, 340, scroll_line_amount, scroll_line_height)
-		debuffScroll:SetPoint ("topleft", frame, "topleft", 405, -30)
+		
+		
+		local debuffScroll = DF:CreateScrollBox (frame, "$parentDebuffUptimeScroll", scroll_buff_refresh, {}, scroll_width, scrollHeight, scroll_line_amount, scroll_line_height)
+		debuffScroll:SetPoint ("topleft", frame, "topleft", debuffScrollStartX, -30)
 		for i = 1, scroll_line_amount do 
 			local line = debuffScroll:CreateLine (scroll_createline)
 			line.AuraType = "DEBUFF"
@@ -4445,7 +4445,7 @@ function gump:CriaJanelaInfo()
 				for i = 1, 5 do
 					local bg_line1 = tooltip:CreateTexture (nil, "artwork")
 					bg_line1:SetTexture (bg_texture)
-					bg_line1:SetPoint ("topleft", tooltip, "topleft", 0, -2 + (((i-1) * 12) * -1) + (y * (i-1)) + 2) --it's physics, okay? physics...
+					bg_line1:SetPoint ("topleft", tooltip, "topleft", 0, -2 + (((i-1) * 12) * -1) + (y * (i-1)) + 2)
 					bg_line1:SetPoint ("topright", tooltip, "topright", -0, -2 + (((i-1) * 12) * -1)  + (y * (i-1)) + 2)
 					bg_line1:SetHeight (bg_height + 4)
 					bg_line1:SetAlpha (bg_alpha)
@@ -4755,6 +4755,7 @@ function gump:CriaJanelaInfo()
 			width = 16,
 			height = 14,
 		}
+		
 		_detalhes:CreatePlayerDetailsTab ("Compare", Loc ["STRING_INFO_TAB_COMPARISON"], --[1] tab name [2] localized name
 			function (tabOBject, playerObject)  --[2] condition
 				
@@ -4832,21 +4833,29 @@ function gump:CriaJanelaInfo()
 			compare_create, --[5] oncreate
 			iconTableCompare --icon table
 		)
+		
+		-- ~compare ~newcompare
+		-- ~compare
+		
+
+		
+		
 	
 	-- ~tab ~tabs
 		function este_gump:ShowTabs()
-			local amt_positive = 0
+			local tabsShown = 0
+			local secondRowIndex = 1
+			local breakLine = 6 --th tab it'll start the second line
 
-			for index = #_detalhes.player_details_tabs, 1, -1 do
+			for index = 1, #_detalhes.player_details_tabs do
 				
 				local tab = _detalhes.player_details_tabs [index]
 				
 				if (tab:condition (info.jogador, info.atributo, info.sub_atributo)) then
 				
+					--test if can show the tutorial for the comparison tab
 					if (tab.tabname == "Compare") then
-					
 						--_detalhes:SetTutorialCVar ("DETAILS_INFO_TUTORIAL1", false)
-					
 						if (not _detalhes:GetTutorialCVar ("DETAILS_INFO_TUTORIAL1")) then
 							_detalhes:SetTutorialCVar ("DETAILS_INFO_TUTORIAL1", true)
 							
@@ -4857,28 +4866,44 @@ function gump:CriaJanelaInfo()
 							alert:SetPoint ("bottom", tab.widget or tab, "top", 5, 28)
 							alert:Show()
 						end
-
 					end
 				
 					tab:Show()
-					amt_positive = amt_positive + 1
+					tabsShown = tabsShown + 1
+					
 					tab:ClearAllPoints()
 					
 					--get the button width
 					local buttonTemplate = gump:GetTemplate ("button", "DETAILS_TAB_BUTTON_TEMPLATE")
 					local buttonWidth = buttonTemplate.width + 1
 					
-					PixelUtil.SetSize (tab, buttonTemplate.width, buttonTemplate.height)
-					PixelUtil.SetPoint (tab, "bottomright", info, "topright",  -9 - (buttonWidth * (amt_positive-1)), -72)
-					tab:SetAlpha (0.8)
+					--pixelutil might not be compatible with classic wow
+					if (PixelUtil) then
+						PixelUtil.SetSize (tab, buttonTemplate.width, buttonTemplate.height)
+						if (tabsShown >= breakLine) then --next row of icons
+							PixelUtil.SetPoint (tab, "bottomright", info, "topright",  -514 + (buttonWidth * (secondRowIndex)), -50)
+							secondRowIndex = secondRowIndex + 1
+						else
+							PixelUtil.SetPoint (tab, "bottomright", info, "topright",  -514 + (buttonWidth * tabsShown), -72)
+						end
+					else
+						tab:SetSize (buttonTemplate.width, buttonTemplate.height)
+						if (tabsShown >= breakLine) then --next row of icons
+							tab:SetPoint ("bottomright", info, "topright",  -514 + (buttonWidth * (secondRowIndex)), -50)
+							secondRowIndex = secondRowIndex + 1
+						else
+							tab:SetPoint ("bottomright", info, "topright", -514 + (buttonWidth * tabsShown), -72)
+						end
+					end
 					
+					tab:SetAlpha (0.8)
 				else
 					tab.frame:Hide()
 					tab:Hide()
 				end
 			end
 			
-			if (amt_positive < 2) then
+			if (tabsShown < 2) then
 				_detalhes.player_details_tabs[1]:SetPoint ("BOTTOMLEFT", info.container_barras, "TOPLEFT",  490 - (94 * (1-0)), 1)
 			end
 			
@@ -4942,6 +4967,9 @@ function _detalhes:CreatePlayerDetailsTab (tabname, localized_name, condition, f
 		local overlay, textdistance, leftpadding, textheight, short_method --nil
 		
 		newTabButton:SetIcon (texture, width, height, "overlay", coords, overlay, textdistance, leftpadding, textheight, short_method)
+		if (iconSettings.desaturated) then
+			newTabButton.icon:SetDesaturated (true)
+		end
 	end
 	
 	if (newTabButton.fillfunction) then

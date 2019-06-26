@@ -13,8 +13,8 @@ local GetSpellInfo = _G.GetSpellInfo
 local GetTime = _G.GetTime
 local GetNetStats = _G.GetNetStats
 
-local UnitCastingInfo = _G.UnitCastingInfo
-local UnitChannelInfo = _G.UnitChannelInfo
+local UnitCastingInfo = _G.UnitCastingInfo or _G.CastingInfo
+local UnitChannelInfo = _G.UnitChannelInfo or _G.ChannelInfo
 
 local IsHarmfulSpell = _G.IsHarmfulSpell
 local IsHelpfulSpell = _G.IsHelpfulSpell
@@ -82,7 +82,9 @@ function CastBar:OnCreate()
 		self.latencyBar = lb
 
 		local sb = CreateFrame('StatusBar', nil, container)
-		sb:SetScript('OnValueChanged', function(s, value) self:OnValueChanged(value) end)
+		sb:SetScript('OnValueChanged', function(_, value)
+			self:OnValueChanged(value)
+		end)
 
 			local timeText = sb:CreateFontString(nil, 'OVERLAY', 'GameFontHighlightSmall')
 			timeText:SetJustifyH('RIGHT')
@@ -199,8 +201,13 @@ function CastBar:OnUpdateChanneling(elapsed)
 	end
 end
 
-function CastBar:OnValueChanged(value)
+function CastBar:OnChannelingValueChanged(value)
 	self.timeText:SetFormattedText('%.1f', value)
+	self.spark:SetValue(value)
+end
+
+function CastBar:OnCastingValueChanged(value)
+	self.timeText:SetFormattedText('%.1f', self.tend - value)
 	self.spark:SetValue(value)
 end
 
@@ -231,10 +238,8 @@ end
 
 -- channeling events
 function CastBar:UNIT_SPELLCAST_CHANNEL_START(event, unit, castID, spellID)
-	-- if unit ~= self.unit then return end
-
 	self:SetProperty("unit", unit)
-	self:UpdateChannelling(true)
+	self:UpdateChanneling(true)
 	self:SetProperty("castID", castID)
 	self:SetProperty("state", "start")
 end
@@ -242,7 +247,7 @@ end
 function CastBar:UNIT_SPELLCAST_CHANNEL_UPDATE(event, unit, castID, spellID)
 	if castID ~= self:GetProperty('castID') then return end
 
-	self:UpdateChannelling()
+	self:UpdateChanneling()
 end
 
 function CastBar:UNIT_SPELLCAST_CHANNEL_STOP(event, unit, castID, spellID)
@@ -252,8 +257,6 @@ function CastBar:UNIT_SPELLCAST_CHANNEL_STOP(event, unit, castID, spellID)
 end
 
 function CastBar:UNIT_SPELLCAST_START(event, unit, castID, spellID)
-	-- if unit ~= self.unit then return end
-
 	self:SetProperty("unit", unit)
 	self:UpdateCasting(true)
 	self:SetProperty("castID", castID)
@@ -472,10 +475,12 @@ function CastBar:Layout()
 	return self
 end
 
-function CastBar:UpdateChannelling(reset)
+function CastBar:UpdateChanneling(reset)
 	if reset then
 		self:Reset()
 	end
+
+	self.OnValueChanged = self.OnChannelingValueChanged
 
 	local name, text, texture, startTime, endTime, _, _, spellID = UnitChannelInfo(self:GetProperty("unit"))
 
@@ -488,6 +493,8 @@ function CastBar:UpdateChannelling(reset)
 		local vmin = 0
 		local vmax = (endTime - startTime) / 1000
 		local v = endTime / 1000 - GetTime()
+
+		self.tend = vmax
 
 		local sb = self.statusBar
 		sb:SetMinMaxValues(0, (endTime - startTime) / 1000)
@@ -510,6 +517,8 @@ function CastBar:UpdateCasting(reset)
 		self:Reset()
 	end
 
+	self.OnValueChanged = self.OnCastingValueChanged
+
 	local name, text, texture, startTime, endTime, _, _, _, spellID = UnitCastingInfo(self:GetProperty("unit"))
 
 	if name then
@@ -522,6 +531,8 @@ function CastBar:UpdateCasting(reset)
 		local vmax = (endTime - startTime) / 1000
 		local v = GetTime() - startTime / 1000
 		local latency = self:GetLatency()
+
+		self.tend = vmax
 
 		local sb = self.statusBar
 		sb:SetMinMaxValues(vmin, vmax)
@@ -554,6 +565,8 @@ function CastBar:Reset()
 end
 
 function CastBar:SetupDemo()
+	self.OnValueChanged = self.OnCastingValueChanged
+
 	local spellID = self:GetRandomspellID()
 	local name, _, icon = GetSpellInfo(spellID)
 
@@ -561,6 +574,7 @@ function CastBar:SetupDemo()
 	self:SetProperty("label", name)
 	self:SetProperty("icon", icon)
 	self:SetProperty("spell", spellID)
+	self.tend = 1
 
 	self.statusBar:SetMinMaxValues(0, 1)
 	self.statusBar:SetValue(0.75)

@@ -1,13 +1,13 @@
 local mod	= DBM:NewMod(1731, "DBM-Nighthold", nil, 786)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041705925")
+mod:SetRevision("20190625143337")
 mod:SetCreatureID(104288)
 mod:SetEncounterID(1867)
 mod:SetZone()
 mod:SetUsedIcons(1)
 mod:SetHotfixNoticeRev(15058)
-mod:SetModelSound("Sound\\Creature\\Trilliax\\VO_701_Trilliax_19.ogg", "Sound\\Creature\\Trilliax\\VO_701_Trilliax_19.ogg")
+--mod:SetModelSound("Sound\\Creature\\Trilliax\\VO_701_Trilliax_19.ogg", "Sound\\Creature\\Trilliax\\VO_701_Trilliax_19.ogg")
 
 mod:RegisterCombat("combat")
 
@@ -58,8 +58,8 @@ local specWarnTidyUp				= mod:NewSpecialWarningDodge(207513, nil, nil, nil, 2, 2
 local specWarnEchoDuder				= mod:NewSpecialWarningSwitchCount(214880, nil, nil, nil, 1, 2)
 
 --General
-local timerArcaneSlashCD			= mod:NewCDTimer(9, 206641, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON)
-local timerPhaseChange				= mod:NewNextTimer(45, 155005, nil, nil, nil, 6)
+local timerArcaneSlashCD			= mod:NewCDTimer(9, 206641, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON, nil, 2, 4)
+local timerPhaseChange				= mod:NewNextTimer(45, 155005, nil, nil, nil, 6, nil, nil, nil, 1, 4)
 --Cleaner
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(13285))
 local timerToxicSliceCD				= mod:NewCDTimer(18, 206788, nil, nil, nil, 3)
@@ -68,17 +68,13 @@ local timerCleansingRageCD			= mod:NewNextTimer(10, 206820, nil, nil, nil, 2)
 --Maniac
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(13281))
 local timerArcingBondsCD			= mod:NewCDTimer(5, 208924, nil, nil, nil, 3)--5.7-8
-local timerAnnihilationCD			= mod:NewCDTimer(20.3, 207630, nil, nil, nil, 2, nil, DBM_CORE_DEADLY_ICON)
+local timerAnnihilationCD			= mod:NewCDTimer(20.3, 207630, nil, nil, nil, 2, nil, DBM_CORE_DEADLY_ICON, nil, 3, 4)
 --Caretaker
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(13282))
 local timerTidyUpCD					= mod:NewNextTimer(10, 207513, nil, nil, nil, 1)
 local timerSucculentFeastCD			= mod:NewNextTimer(4.5, 207502, nil, nil, nil, 3)
 mod:AddTimerLine(ENCOUNTER_JOURNAL_SECTION_FLAG12)
 local timerEchoDuder				= mod:NewNextTimer(10, 214880, nil, nil, nil, 1, nil, DBM_CORE_HEROIC_ICON)
-
-local countdownModes				= mod:NewCountdown(40, 206560)--All modes
-local countdownAnnihilation			= mod:NewCountdown("AltTwo20", 207630)
-local countdownArcaneSlash			= mod:NewCountdown("Alt20", 206641, "Tank")
 
 mod:AddRangeFrameOption(12, 208506)
 mod:AddInfoFrameOption(214573, false)
@@ -101,10 +97,8 @@ function mod:OnCombatStart(delay)
 	self.vb.maniacCount = 0
 	self.vb.caretakerCount = 0
 	timerArcaneSlashCD:Start(7-delay)
-	countdownArcaneSlash:Start(7-delay)
 	timerToxicSliceCD:Start(10.5-delay, "boss")
 	timerPhaseChange:Start(45)--Maniac
-	countdownModes:Start(45)
 	--On combat start he starts in a custom cleaner mode (206570) that doesn't have sterilize or cleansing rage abilities but casts cake and ArcaneSlashs more often
 	if self.Options.InfoFrame then
 		DBM.InfoFrame:SetHeader(DBM_NO_DEBUFF:format(spellName))
@@ -168,47 +162,40 @@ function mod:SPELL_CAST_SUCCESS(args)
 		self.vb.toxicSliceCooldown = 22--Still 22? 27 in mythic logs
 		warnCleanerMode:Show(self.vb.cleanerCount)
 		timerArcaneSlashCD:Stop()
-		countdownArcaneSlash:Cancel()
 		--timerSterilizeCD:Start()--Used 1-3 seconds later
 		timerCleansingRageCD:Start()--10
 		timerToxicSliceCD:Start(13, "boss")
 		timerArcaneSlashCD:Start(19.5)
-		countdownArcaneSlash:Start(19.5)
+		timerPhaseChange:Stop()
 		timerPhaseChange:Start(45)--Maniac
-		countdownModes:Start(45)
 	elseif spellId == 206557 then--Maniac Mode (40 seconds)
 		self.vb.maniacCount = self.vb.maniacCount + 1
 		self.vb.ArcaneSlashCooldown = 7
 		warnManiacMode:Show(self.vb.maniacCount)
 		timerToxicSliceCD:Stop("boss")--Must be stopped here too since first cleaner mode has no buff removal
 		timerArcaneSlashCD:Stop()
-		countdownArcaneSlash:Stop()
 		timerArcingBondsCD:Start(5)--Updated Jan 24, make sure it's ok consistently
 		timerArcaneSlashCD:Start(9)--Updated Jan 24, make sure it's ok consistently
-		countdownArcaneSlash:Start(9)
 		timerAnnihilationCD:Start(nil, "boss")--20
-		countdownAnnihilation:Start()--20
+		timerPhaseChange:Stop()
 		timerPhaseChange:Start(40)--Caretaker
-		countdownModes:Start(40)
 		if self:IsMythic() and self.vb.maniacCount == 2 then
 			timerEchoDuder:Start(10)
 		end
 	elseif spellId == 206559 then--Caretaker Mode (15 seconds)
 		self.vb.caretakerCount = self.vb.caretakerCount + 1
 		timerArcaneSlashCD:Stop()
-		countdownArcaneSlash:Cancel()
 		warnCaretakerMode:Show(self.vb.caretakerCount)
 		timerSucculentFeastCD:Start()--4.5-5
 		timerTidyUpCD:Start()--10-11
+		timerPhaseChange:Stop()
 		timerPhaseChange:Start(13)--Cleaner
-		countdownModes:Start(13)
 		if self:IsMythic() and self.vb.caretakerCount == 3 then
 			timerEchoDuder:Start(8)--VERIFY, it's more extrapolated than first echo
 			--timerAnnihilationCD:Start(38, "echo")--Not a very accurate place/way to do it
 		end
 	elseif spellId == 206641 then--Arcane ArcaneSlash
 		timerArcaneSlashCD:Start(self.vb.ArcaneSlashCooldown)
-		countdownArcaneSlash:Start(self.vb.ArcaneSlashCooldown)
 	end
 end
 
@@ -323,6 +310,5 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, bfaSpellId, _, legacySpellId)
 		specWarnAnnihilation:Show()
 		specWarnAnnihilation:Play("farfromline")
 		timerArcaneSlashCD:Stop()
-		countdownArcaneSlash:Cancel()
 	end
 end

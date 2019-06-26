@@ -4,7 +4,7 @@ local Anshal	= DBM:EJ_GetSectionInfo(3166)
 local Nezir		= DBM:EJ_GetSectionInfo(3178)
 local Rohash	= DBM:EJ_GetSectionInfo(3172)
 
-mod:SetRevision("2019041705904")
+mod:SetRevision("20190625143316")
 mod:SetCreatureID(45870, 45871, 45872)
 mod:SetEncounterID(1035)
 mod:SetZone()
@@ -31,8 +31,8 @@ local warnWindBlast			= mod:NewSpellAnnounce(86193, 3)
 local warnStormShield		= mod:NewSpellAnnounce(93059, 3)
 local warnPoisonToxic	 	= mod:NewSpellAnnounce(86281, 3)
 local warnGatherStrength	= mod:NewTargetAnnounce(86307, 4)
-local warnSpecialSoon		= mod:NewAnnounce("warnSpecialSoon", 2, "Interface\\Icons\\INV_Enchant_EssenceMagicLarge")--Hurricane/Sleet Storm/Zephyr in single announce
-local warnSpecial			= mod:NewAnnounce("warnSpecial", 3, "Interface\\Icons\\INV_Enchant_EssenceMagicLarge")--Hurricane/Sleet Storm/Zephyr in single announce
+local warnSpecialSoon		= mod:NewAnnounce("warnSpecialSoon", 2, "132866")--Hurricane/Sleet Storm/Zephyr in single announce
+local warnSpecial			= mod:NewAnnounce("warnSpecial", 3, "132866")--Hurricane/Sleet Storm/Zephyr in single announce
 
 local specWarnSpecial		= mod:NewSpecialWarning("specWarnSpecial", nil, nil, nil, 2)
 local specWarnIcePatch      = mod:NewSpecialWarningMove(86111)
@@ -50,8 +50,8 @@ local timerPoisonToxic		= mod:NewBuffActiveTimer(5, 86281)
 local timerPoisonToxicCD	= mod:NewCDTimer(21, 86281)--is this a CD or a next timer?
 local timerPermaFrostCD		= mod:NewCDTimer(10, 86081, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON)
 local timerSoothingBreezeCD	= mod:NewNextTimer(32.5, 86205, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON)
-local timerSpecial			= mod:NewTimer(95, "timerSpecial", "Interface\\Icons\\INV_Enchant_EssenceMagicLarge", nil, nil, 6)--hurricane/Sleet storm/Zephyr share CD. Shortened cause sometimes slipstreams end early, even though cd is a little longer
-local timerSpecialActive	= mod:NewTimer(15, "timerSpecialActive", "Interface\\Icons\\INV_Enchant_EssenceMagicLarge", nil, nil, 6)
+local timerSpecial			= mod:NewTimer(95, "timerSpecial", "132866", nil, nil, 6)--hurricane/Sleet storm/Zephyr share CD. Shortened cause sometimes slipstreams end early, even though cd is a little longer
+local timerSpecialActive	= mod:NewTimer(15, "timerSpecialActive", "132866", nil, nil, 6)
 
 local enrageTimer			= mod:NewBerserkTimer(480) -- Both normal and heroic mode
 

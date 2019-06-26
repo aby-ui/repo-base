@@ -111,7 +111,6 @@ L:SetOptionLocalization({
 	TimerEggWeaken		= "Show timer for $spell:87654 regeneration",
 	TimerOrbs			= "Show timer for next Orbs (Expected timer. may not be accurate)",
 	SetIconOnOrbs		= "Set icons on players who have Aggro when Orbs spawn<br/>(Can be target of Orbs)",
-	OrbsCountdown		= "Play countdown sound for Orbs",
 	InfoFrame			= "Show info frame for players who have aggro"
 })
 

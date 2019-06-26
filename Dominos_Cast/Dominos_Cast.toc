@@ -1,4 +1,4 @@
-## Interface: 80100
+## Interface: 80200
 ## Title: Dominos Cast
 ## Title-zhCN: |cFF0099FF[Dominos]|r 施法条模块
 ## Notes: A movable casting bar, with timer

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1744, "DBM-EmeraldNightmare", nil, 768)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041705925")
+mod:SetRevision("20190625143337")
 mod:SetCreatureID(106087)
 mod:SetEncounterID(1876)
 mod:SetZone()
@@ -58,14 +58,14 @@ local yellViolentWinds				= mod:NewYell(218124)
 
 --Spider Form
 mod:AddTimerLine(DBM:GetSpellInfo(210326))
-local timerSpiderFormCD				= mod:NewNextTimer(132, 210326, nil, nil, nil, 6)
+local timerSpiderFormCD				= mod:NewNextTimer(132, 210326, nil, nil, nil, 6, nil, nil, nil, 1, 4)
 local timerFeedingTimeCD			= mod:NewNextCountTimer(50, 212364, nil, nil, nil, 1, nil, DBM_CORE_DAMAGE_ICON)
-local timerNecroticVenomCD			= mod:NewNextCountTimer(21.8, 215443, nil, nil, nil, 3)--This only targets ranged, but melee/tanks need to be sure to also move away from them
+local timerNecroticVenomCD			= mod:NewNextCountTimer(21.8, 215443, nil, nil, nil, 3, nil, nil, nil, 3, 4)--This only targets ranged, but melee/tanks need to be sure to also move away from them
 mod:AddTimerLine(ENCOUNTER_JOURNAL_SECTION_FLAG12)
 local timerNightmareSpawnCD			= mod:NewNextTimer(10, 218630, nil, nil, nil, 1, nil, DBM_CORE_HEROIC_ICON)
 --Roc Form
 mod:AddTimerLine(DBM:GetSpellInfo(210308))
-local timerRocFormCD				= mod:NewNextTimer(47, 210308, nil, nil, nil, 6)
+local timerRocFormCD				= mod:NewNextTimer(47, 210308, nil, nil, nil, 6, nil, nil, nil, 1, 4)
 local timerGatheringCloudsCD		= mod:NewNextTimer(15.8, 212707, nil, nil, nil, 2)
 local timerDarkStormCD				= mod:NewNextTimer(26, 210948, nil, nil, nil, 2)
 local timerTwistingShadowsCD		= mod:NewNextCountTimer(21.5, 210864, nil, nil, nil, 3)
@@ -75,10 +75,6 @@ mod:AddTimerLine(ENCOUNTER_JOURNAL_SECTION_FLAG12)
 local timerViolentWindsCD			= mod:NewNextTimer(40.5, 218124, nil, nil, nil, 5, nil, DBM_CORE_HEROIC_ICON..DBM_CORE_TANK_ICON)
 
 local berserkTimer					= mod:NewBerserkTimer(540)
-
-local countdownPhase				= mod:NewCountdown(30, 155005)
---Spider Form
-local countdownNecroticVenom		= mod:NewCountdown("AltTwo21", 215443)
 
 --mod:AddRangeFrameOption("5")--Add range frame to Necrotic Debuff if detecting it actually works with FindDebuff()
 mod:AddSetIconOption("SetIconOnWeb", 215307)
@@ -142,10 +138,8 @@ function mod:OnCombatStart(delay)
 	self.vb.venomCast = 0
 	self.vb.feedingTimeCast = 0
 	timerNecroticVenomCD:Start(12.2-delay, 1)
-	countdownNecroticVenom:Start(12.2)
 	timerFeedingTimeCD:Start(15.5-delay, 1)
 	timerRocFormCD:Start(90-delay)--Some variation expected. I've seen 90-92. Always happens with energy based bosses
-	countdownPhase:Start(90-delay)
 	berserkTimer:Start(-delay)--540 heroic, other difficulties not confirmed
 	self.vb.platformCount = 1
 	self.vb.ViolentWindsPlat = false
@@ -324,7 +318,6 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, bfaSpellId, _, legacySpellId)
 		timerGatheringCloudsCD:Start()--15.8-16
 		timerDarkStormCD:Start()--26
 		timerSpiderFormCD:Start()
-		countdownPhase:Start(132)--132-135 (used to be 127, so keep an eye on it)
 		if self:IsMythic() and self.vb.platformCount == 2 then--Only happens platform 2, platform 4 (roc form second cast behaves like non mythic
 			self.vb.ViolentWindsPlat = true
 			timerViolentWindsCD:Start(56)--50 plus 6 second cast
@@ -343,9 +336,7 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, bfaSpellId, _, legacySpellId)
 		timerRazorWingCD:Stop()
 		warnSpiderForm:Show()
 		timerNecroticVenomCD:Start(12.2, 1)
-		countdownNecroticVenom:Start(12.2)
 		timerFeedingTimeCD:Start(15.5, 1)
 		timerRocFormCD:Start(92)
-		countdownPhase:Start(92)
 	end
 end

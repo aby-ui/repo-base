@@ -1,4 +1,4 @@
-## Interface: 80100
+## Interface: 80200
 ## Title: AutoTurnIn
 ## Version: 7.0.9
 ## Author: Alexandr Shubert

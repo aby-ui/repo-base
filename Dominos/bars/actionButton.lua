@@ -153,25 +153,63 @@ end
 hooksecurefunc('ActionButton_UpdateHotkeys', ActionButton.UpdateHotkey)
 
 --button visibility
-function ActionButton:ShowGrid(reason)
-	if InCombatLockdown() then return end
+if Addon:IsBuild("classic") then
+	function ActionButton:ShowGrid()
+		if InCombatLockdown() then return end
 
-	self:SetAttribute("showgrid", bit.bor(self:GetAttribute("showgrid"), reason))
+		self:SetAttribute("showgrid", (self:GetAttribute("showgrid") or 0) + 1)
 
-	if self:GetAttribute("showgrid") > 0 and not self:GetAttribute("statehidden") then
-		self:Show()
+		if not self:GetAttribute("statehidden") then
+			self:Show()
+		end
+	end
+
+	function ActionButton:HideGrid()
+		if InCombatLockdown() then return end
+
+		local showgrid = (self:GetAttribute("showgrid") or 0)
+		if showgrid > 0 then
+			self:SetAttribute("showgrid", showgrid - 1)
+		end
+
+		if self:GetAttribute("showgrid") == 0 and not HasAction(self.action) then
+			self:Hide()
+		end
+	end
+else
+	function ActionButton:ShowGrid(reason)
+		if InCombatLockdown() then return end
+
+		self:SetAttribute("showgrid", bit.bor(self:GetAttribute("showgrid"), reason))
+
+		if self:GetAttribute("showgrid") > 0 and not self:GetAttribute("statehidden") then
+			self:Show()
+		end
+	end
+
+	function ActionButton:HideGrid(reason)
+		if InCombatLockdown() then return end
+
+		local showgrid = self:GetAttribute("showgrid");
+		if showgrid > 0 then
+			self:SetAttribute("showgrid", bit.band(showgrid, bit.bnot(reason)));
+		end
+
+		if self:GetAttribute("showgrid") == 0 and not HasAction(self.action) then
+			self:Hide()
+		end
 	end
 end
 
-function ActionButton:HideGrid(reason)
+function ActionButton:UpdateGrid()
 	if InCombatLockdown() then return end
 
-	local showgrid = self:GetAttribute("showgrid");
-	if showgrid > 0 then
-		self:SetAttribute("showgrid", bit.band(showgrid, bit.bnot(reason)));
+	local showgrid = (self:GetAttribute("showgrid") or 0)
+	if showgrid > 0 and not self:GetAttribute("statehidden") then
+		self:Show()
 	end
 
-	if self:GetAttribute("showgrid") == 0 and not HasAction(self.action) then
+	if showgrid == 0 and not HasAction(self.action) then
 		self:Hide()
 	end
 end
@@ -198,10 +236,6 @@ end
 
 function ActionButton:UpdateShowEquippedItemBorders()
 	self.Border:SetParent(Addon:ShowEquippedItemBorders() and self or HiddenFrame)
-end
-
-function ActionButton:UpdateState()
-	ActionButton_UpdateState(self)
 end
 
 --utility function, resyncs the button's current action, modified by state

@@ -1497,7 +1497,7 @@ If you have any control blocks (e.g. if/then), you'll need return statements.
 |cff7fffff-|r To get a reference to the 'unit' for Unit Conditions, use variable "thisunit". 
 |cff7fffff-|r To insert a reference to another icon by GUID, shift click that icon while this editbox has focus.
 
-If more help is needed (but not help about how to write Lua code), open a ticket on CurseForge. For help on how to write Lua, go to the internet.]]
+If more help is needed (but not help about how to write Lua code), try the TMW Discord. For help on how to write Lua, go to the internet.]]
 
 
 L["CONDITIONPANEL_OLD"] = "<|cffff1300OLD|r>"
@@ -1891,7 +1891,7 @@ L["HELP"] = "Help"
 L["HELP_ISSUES"] = "Bugs & Feature Requests"
 L["HELP_ISSUES_DESC"] = [[Report bugs and request features on the official TellMeWhen issue tracker on GitHub.]]
 L["HELP_COMMUNITY"] = "Community Discord"
-L["HELP_COMMUNITY_DESC"] = [[Join the official TellMeWhen discord! 
+L["HELP_COMMUNITY_DESC"] = [[Join the official TellMeWhen discord!
 
 Ask questions, share configuration, or just hang out with other TellMeWhen users.]]
 

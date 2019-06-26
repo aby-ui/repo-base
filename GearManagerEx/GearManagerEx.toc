@@ -1,4 +1,4 @@
-## Interface: 80100
+## Interface: 80200
 ## Title: GearManagerEx
 ## Version: 3.01
 ## Author: Abin

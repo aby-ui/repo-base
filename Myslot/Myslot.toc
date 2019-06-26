@@ -1,4 +1,4 @@
-## Interface: 80100
+## Interface: 80200
 ## Title: Myslot
 ## Notes: Myslot is for transferring settings between accounts. Feedback farmer1992@gmail.com
 ## Notes-zhCN: 保存你的技能按钮位置。反馈：farmer1992@gmail.com

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1997, "DBM-AntorusBurningThrone", nil, 946)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041705925")
+mod:SetRevision("20190625143337")
 mod:SetCreatureID(122369, 122333, 122367)--Chief Engineer Ishkar, General Erodus, Admiral Svirax
 mod:SetEncounterID(2070)
 mod:SetZone()
@@ -73,30 +73,21 @@ local yellShockGrenadeFades				= mod:NewShortFadesYell(244737)
 
 --General
 mod:AddTimerLine(GENERAL)
-local timerExploitWeaknessCD			= mod:NewCDTimer(8.5, 244892, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON)
+local timerExploitWeaknessCD			= mod:NewCDTimer(8.5, 244892, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON, nil, 2, 3)
 local timerShockGrenadeCD				= mod:NewCDTimer(14.7, 244722, nil, nil, nil, 3, nil, DBM_CORE_HEROIC_ICON)
-local timerAssumeCommandCD				= mod:NewNextTimer(90, 245227, nil, nil, nil, 6)
+local timerAssumeCommandCD				= mod:NewNextTimer(90, 245227, nil, nil, nil, 6, nil, nil, nil, 2, 4)
 --In Pod
 ----Admiral Svirax
 mod:AddTimerLine(Svirax)
-local timerFusilladeCD					= mod:NewNextCountTimer(29.3, 244625, nil, nil, nil, 2, nil, DBM_CORE_DEADLY_ICON)
+local timerFusilladeCD					= mod:NewNextCountTimer(29.3, 244625, nil, nil, nil, 2, nil, DBM_CORE_DEADLY_ICON, nil, 3, 4)
 ----Chief Engineer Ishkar
 mod:AddTimerLine(Ishkar)
 local timerEntropicMineCD				= mod:NewCDTimer(10, 245161, nil, nil, nil, 3)
 ----General Erodus
 mod:AddTimerLine(Erodus)
-local timerSummonReinforcementsCD		= mod:NewNextTimer(8.4, 245546, nil, nil, nil, 1, nil, DBM_CORE_DAMAGE_ICON)
+local timerSummonReinforcementsCD		= mod:NewNextTimer(8.4, 245546, nil, nil, nil, 1, nil, DBM_CORE_DAMAGE_ICON, nil, 1, 4)
 
 --local berserkTimer					= mod:NewBerserkTimer(600)
-
---General
-local countdownAssumeCommand			= mod:NewCountdown("Alt50", 245227)
-local countdownExploitWeakness			= mod:NewCountdown("Alt8", 244892, "Tank", nil, 3)
---In Pod
-----Admiral Svirax
-local countdownFusillade				= mod:NewCountdown("AltTwo30", 244625)
-----General Erodus
-local countdownReinforcements			= mod:NewCountdown(25, 245546)
 
 mod:AddSetIconOption("SetIconOnAdds", 245546, true, true)
 mod:AddRangeFrameOption("8")
@@ -128,9 +119,7 @@ function mod:OnCombatStart(delay)
 	timerEntropicMineCD:Start(5.1-delay)
 	--Out of Pod
 	timerSummonReinforcementsCD:Start(8-delay)
-	countdownReinforcements:Start(8-delay)
 	timerAssumeCommandCD:Start(90-delay)
-	countdownAssumeCommand:Start(90-delay)
 	if self:IsMythic() then
 		timerShockGrenadeCD:Start(15)
 	end
@@ -149,9 +138,6 @@ function mod:SPELL_CAST_START(args)
 		specWarnFusillade:Show(felShield)
 		specWarnFusillade:Play("findshield")
 		timerFusilladeCD:Start(nil, self.vb.FusilladeCount+1)
-		if not self:IsLFR() then
-			countdownFusillade:Start(29.3)
-		end
 	elseif spellId == 246505 then
 		if self:CheckInterruptFilter(args.sourceGUID, false, true) then
 			specWarnPyroblast:Show(args.sourceName)
@@ -164,28 +150,20 @@ function mod:SPELL_CAST_START(args)
 		specWarnAssumeCommand:Play("targetchange")
 		timerShockGrenadeCD:Stop()
 		timerExploitWeaknessCD:Stop()
-		countdownExploitWeakness:Cancel()
 		timerExploitWeaknessCD:Start(8)--8-14 (basically depends how fast you get there) If you heroic leap and are super fast. it's cast pretty much instantly on mob activation
-		countdownExploitWeakness:Start(8)
 		local cid = self:GetCIDFromGUID(args.sourceGUID)
 		if cid == 122369 then--Chief Engineer Ishkar
 			timerEntropicMineCD:Start(8)
 			timerFusilladeCD:Stop()--Seems this timer resets too
-			countdownFusillade:Cancel()
 			timerFusilladeCD:Start(15.9, 1)--Start Updated Fusillade
-			countdownFusillade:Start(15.9)
 			--TODO, reinforcements fix
 		elseif cid == 122333 then--General Erodus
 			timerSummonReinforcementsCD:Start(11)--Starts elite ones
-			countdownReinforcements:Start(11)
 		elseif cid == 122367 then--Admiral Svirax
 			self.vb.FusilladeCount = 0
 			timerFusilladeCD:Start(15, 1)
-			countdownFusillade:Start(15)
 			timerSummonReinforcementsCD:Stop()--Seems this timer resets too
-			countdownReinforcements:Cancel()
 			timerSummonReinforcementsCD:Start(16)--Start updated reinforcements timer
-			countdownReinforcements:Start(16)
 		end
 		if self:IsMythic() then
 			timerShockGrenadeCD:Start(9.7)
@@ -199,10 +177,8 @@ function mod:SPELL_CAST_SUCCESS(args)
 		timerShockGrenadeCD:Start()--21
 	elseif spellId == 244892 then
 		timerExploitWeaknessCD:Start()
-		countdownExploitWeakness:Start(8.5)
 	elseif spellId == 245227 then--Assume Command
 		timerAssumeCommandCD:Start(90)
-		countdownAssumeCommand:Start(90)
 	elseif spellId == 253037 then
 		if args:IsPlayer() then
 			specWarnDemonicChargeYou:Show()
@@ -308,16 +284,13 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 			timerEntropicMineCD:Stop()
 		elseif cid == 122333 then--General Erodus
 			timerSummonReinforcementsCD:Stop()--Elite ones
-			countdownReinforcements:Cancel()
 		elseif cid == 122367 then--Admiral Svirax
 			timerFusilladeCD:Stop()
-			countdownFusillade:Cancel()
 		end
 	elseif spellId == 245546 then--Summon Reinforcements (major adds)
 		specWarnSummonReinforcements:Show()
 		specWarnSummonReinforcements:Play("killmob")
 		timerSummonReinforcementsCD:Start(35)
-		countdownReinforcements:Start(35)
 		if self.Options.SetIconOnAdds then
 			self:ScanForMobs(122890, 0, self.vb.lastIcon, 1, 0.1, 12, "SetIconOnAdds")
 		end

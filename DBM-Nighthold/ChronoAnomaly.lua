@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1725, "DBM-Nighthold", nil, 786)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041705925")
+mod:SetRevision("20190625143337")
 mod:SetCreatureID(104415)--104731 (Depleted Time Particle). 104676 (Waning Time Particle). 104491 (Accelerated Time particle). 104492 (Slow Time Particle)
 mod:SetEncounterID(1865)
 mod:SetZone()
@@ -41,16 +41,13 @@ local specWarnBigAdd				= mod:NewSpecialWarningSwitch("ej13022", "-Healer", nil,
 
 local timerTemporalOrbsCD			= mod:NewNextCountTimer(30, 219815, nil, nil, nil, 2)
 local timerPowerOverwhelmingCD		= mod:NewNextCountTimer(60, 211927, nil, nil, nil, 4, nil, DBM_CORE_INTERRUPT_ICON)
-local timerTimeBomb					= mod:NewBuffFadesTimer(30, 206617, nil, nil, nil, 5)
+local timerTimeBomb					= mod:NewBuffFadesTimer(30, 206617, nil, nil, nil, 5, nil, nil, nil, 3, 4)
 local timerTimeBombCD				= mod:NewNextCountTimer(30, 206617, nil, nil, nil, 3)
 local timerBurstofTimeCD			= mod:NewNextCountTimer(30, 206614, nil, nil, nil, 3)
 local timerTimeReleaseCD			= mod:NewNextCountTimer(30, 206610, nil, "Healer", nil, 5, nil, DBM_CORE_HEALER_ICON)
 local timerChronoPartCD				= mod:NewCDTimer(5, 206607, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON)
-local timerBigAddCD					= mod:NewNextCountTimer(30, 206700, nil, nil, nil, 1)--Switch to waning time particle when section info known
+local timerBigAddCD					= mod:NewNextCountTimer(30, 206700, nil, nil, nil, 1, nil, nil, nil, 1, 4)--Switch to waning time particle when section info known
 local timerNextPhase				= mod:NewPhaseTimer(74)--Used anywhere phase change is NOT immediately after power overwhelming
-
-local countdownBigAdd				= mod:NewCountdown(30, 206700)--Switch to waning time particle when section info known
-local countdownTimeBomb				= mod:NewCountdownFades("AltTwo30", 206617)
 
 mod:AddRangeFrameOption(10, 206617)
 mod:AddInfoFrameOption(206610)
@@ -70,13 +67,11 @@ local function updateTimeBomb(self)
 		specWarnTimeBomb:Cancel()
 		specWarnTimeBomb:CancelVoice()
 		timerTimeBomb:Stop()
-		countdownTimeBomb:Cancel()
 		yellTimeBomb:Cancel()
 		local debuffTime = expires - GetTime()
 		specWarnTimeBomb:Schedule(debuffTime - 5)	-- Show "move away" warning 5secs before explode
 		specWarnTimeBomb:ScheduleVoice(debuffTime - 5, "runout")
 		timerTimeBomb:Start(debuffTime)
-		countdownTimeBomb:Start(debuffTime)
 		yellTimeBomb:Schedule(debuffTime-1, 1)
 		yellTimeBomb:Schedule(debuffTime-2, 2)
 		yellTimeBomb:Schedule(debuffTime-3, 3)
@@ -161,7 +156,6 @@ function mod:SPELL_AURA_REMOVED(args)
 			specWarnTimeBomb:Cancel()
 			specWarnTimeBomb:CancelVoice()
 			timerTimeBomb:Stop()
-			countdownTimeBomb:Cancel()
 			yellTimeBomb:Cancel()
 			if self.Options.RangeFrame then
 				DBM.RangeCheck:Hide()
@@ -202,7 +196,6 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, bfaSpellId, _, legacySpellId)
 				timerTimeReleaseCD:Start(5, 1)
 				self:Schedule(5, delayedTimeRelease, self, 13, 2)--18
 				timerBigAddCD:Start(23, 1)
-				countdownBigAdd:Start(23)
 				timerTimeBombCD:Start(28, 1)
 				self:Schedule(28, delayedTimeBomb, self, 5, 2)--33
 				timerTemporalOrbsCD:Start(38, 1)
@@ -212,7 +205,6 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, bfaSpellId, _, legacySpellId)
 				timerTimeReleaseCD:Start(5, 1)
 				self:Schedule(5, delayedTimeRelease, self, 15, 2)--20
 				timerBigAddCD:Start(28, 1)
-				countdownBigAdd:Start(28)
 				timerTimeBombCD:Start(35, 1)
 				timerTemporalOrbsCD:Start(48, 1)
 				timerPowerOverwhelmingCD:Start(84, 1)
@@ -230,7 +222,6 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, bfaSpellId, _, legacySpellId)
 				timerTemporalOrbsCD:Start(10, 1)
 				self:Schedule(5, delayedTimeBomb, self, 10, 2)--15
 				timerBigAddCD:Start(20, 1)
-				countdownBigAdd:Start(20)
 				self:Schedule(15, delayedTimeBomb, self, 10, 3)--25
 				timerTimeReleaseCD:Start(30, 1)
 				self:Schedule(10, delayedOrbs, self, 25, 2)--35
@@ -295,7 +286,6 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, bfaSpellId, _, legacySpellId)
 				self:Schedule(20, delayedOrbs, self, 18, 2)--38
 				self:Schedule(25, delayedTimeBomb, self, 15, 3)--40
 				timerBigAddCD:Start(43, 1)
-				countdownBigAdd:Start(43)
 				self:Schedule(38, delayedOrbs, self, 7, 3)--45
 				timerPowerOverwhelmingCD:Start(55, 1)
 			elseif self:IsNormal() then--Updated Jan 17
@@ -304,7 +294,6 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, bfaSpellId, _, legacySpellId)
 				self:Schedule(5, delayedTimeRelease, self, 23, 2)--28
 				timerTemporalOrbsCD:Start(30, 1)
 				timerBigAddCD:Start(38, 1)
-				countdownBigAdd:Start(38)
 				timerPowerOverwhelmingCD:Start(90, 1)
 			else--LFR
 				
@@ -314,7 +303,6 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, bfaSpellId, _, legacySpellId)
 				timerTimeBombCD:Start(2, 1)
 				timerTimeReleaseCD:Start(7, 1)
 				timerBigAddCD:Start(9, 1)
-				countdownBigAdd:Start(9)
 				timerTemporalOrbsCD:Start(14, 1)
 				timerPowerOverwhelmingCD:Start(19, 1)
 			elseif self:IsHeroic() then--Updated May 26, 2017
@@ -380,7 +368,6 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, bfaSpellId, _, legacySpellId)
 			if self:IsMythic() then--Updated Jan 25
 				timerTimeReleaseCD:Start(5, 1)
 				timerBigAddCD:Start(7, 1)
-				countdownBigAdd:Start(7)
 				timerTemporalOrbsCD:Start(12, 1)
 				timerPowerOverwhelmingCD:Start(22, 1)
 			elseif self:IsHeroic() then--Updated May 26, 2017
@@ -391,7 +378,6 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, bfaSpellId, _, legacySpellId)
 				self:Schedule(25, delayedTimeRelease, self, 5, 4)--30
 				self:Schedule(30, delayedTimeRelease, self, 5, 5)--35
 				timerBigAddCD:Start(38, 1)
-				countdownBigAdd:Start(38)
 				self:Schedule(35, delayedTimeRelease, self, 8, 6)--43
 				timerPowerOverwhelmingCD:Start(50, 1)
 			elseif self:IsNormal() then--Normal confirmed
@@ -408,7 +394,6 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, bfaSpellId, _, legacySpellId)
 				self:Schedule(10, delayedTimeRelease, self, 5, 3)--15
 				self:Schedule(15, delayedTimeRelease, self, 5, 4)--20
 				timerBigAddCD:Start(23, 1)
-				countdownBigAdd:Start(23)
 				timerTemporalOrbsCD:Start(25, 1)
 				timerPowerOverwhelmingCD:Start(30, 1)
 			elseif self:IsHeroic() then--Updated Dec 2
@@ -430,7 +415,6 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, bfaSpellId, _, legacySpellId)
 				self:Schedule(15, delayedTimeRelease, self, 5, 4)--20
 				timerTemporalOrbsCD:Start(23, 1)
 				timerBigAddCD:Start(25, 1)
-				countdownBigAdd:Start(25)
 				timerPowerOverwhelmingCD:Start(30, 1)
 			elseif self:IsHeroic() then--Updated Dec 2
 				--Goes into Full Power here?
@@ -462,7 +446,6 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, bfaSpellId, _, legacySpellId)
 		specWarnBigAdd:Play("bigmobsoon")
 	elseif spellId == 207972 then--Full Power, he's just gonna run in circles aoeing the raid and stop using abilities
 		timerBigAddCD:Stop()
-		countdownBigAdd:Cancel()
 		timerTemporalOrbsCD:Stop()
 		timerPowerOverwhelmingCD:Stop()
 		timerTimeReleaseCD:Stop()

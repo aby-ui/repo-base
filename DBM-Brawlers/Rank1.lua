@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("BrawlRank1", "DBM-Brawlers")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190416205700")
+mod:SetRevision("20190625143048")
 --mod:SetModelID(46327)--Last Boss of Rank 1
 mod:SetZone()
 
@@ -35,6 +35,7 @@ function mod:SPELL_CAST_START(args)
 			specWarnChomp:Play("shockwave")
 		else
 			warnChomp:Show()--Give reg warnings for spectators
+			timerChompCD:SetSTFade(true)
 		end
 	elseif spellId == 290486 then
 		timerDaFifHammerCD:Start()
@@ -43,6 +44,7 @@ function mod:SPELL_CAST_START(args)
 			specWarnDaFifHammer:Play("shockwave")
 		else
 			warnDaFifHammer:Show()--Give reg warnings for spectators
+			timerDaFifHammerCD:SetSTFade(true)
 		end
 	elseif spellId == 140983 then
 		--timerCantataofFlootingCD:Start()
@@ -51,6 +53,7 @@ function mod:SPELL_CAST_START(args)
 			specWarnCantataofFlooting:Play("kickcast")
 		else
 			warnCantataofFlooting:Show()--Give reg warnings for spectators
+			--timerCantataofFlootingCD:SetSTFade(true)
 		end
 	end
 end

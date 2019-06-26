@@ -31,6 +31,8 @@ local SaveRaidRoster,SaveCurrentRaidRoster
 local C_Calendar_GetDate
 if ExRT.clientVersion >= 80100 then
 	C_Calendar_GetDate = C_DateAndTime.GetCurrentCalendarTime
+elseif ExRT.isClassic then
+	C_Calendar_GetDate = ExRT.NULLfunc
 else
 	C_Calendar_GetDate = C_Calendar.GetDate
 end

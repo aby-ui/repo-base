@@ -372,8 +372,10 @@ function module.options:Load()
 		[3] = { ButtonPos = { x = 50,  y = -187 }, 	HighLightBox = { x = 0, y = -195, width = 660, height = 30 },		ToolTipDir = "RIGHT",	ToolTipText = L.inviteHelpAutoAccept },
 		[4] = { ButtonPos = { x = 50,  y = -255},  	HighLightBox = { x = 0, y = -230, width = 660, height = 105 },		ToolTipDir = "RIGHT",	ToolTipText = L.inviteHelpAutoPromote },
 	}
-	self.HELPButton = ExRT.lib.CreateHelpButton(self,self.HelpPlate)
-	self.HELPButton:SetPoint("CENTER",self,"TOPLEFT",0,15)
+	if not ExRT.isClassic then
+		self.HELPButton = ExRT.lib.CreateHelpButton(self,self.HelpPlate)
+		self.HELPButton:SetPoint("CENTER",self,"TOPLEFT",0,15)
+	end
 
 	self.dropDown:SetText( L.inviterank.." " .. GuildControlGetRankName(VExRT.InviteTool.Rank) or "")
 	self.dropDownAutoPromote:SetText( L.inviterank.." " .. (VExRT.InviteTool.PromoteRank == 0 and L.inviteAutoPromoteDontUseGuild or GuildControlGetRankName(VExRT.InviteTool.PromoteRank) or ""))

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(155, "DBM-ThroneFourWinds", nil, 75)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041705904")
+mod:SetRevision("20190625143316")
 mod:SetCreatureID(46753)
 mod:SetEncounterID(1034)
 mod:SetZone()
@@ -51,9 +51,6 @@ local timerSquallLineCD		= mod:NewCDTimer(20, 91129, nil, nil, nil, 3, nil, DBM_
 
 local berserkTimer			= mod:NewBerserkTimer(600)
 
-local countdownClouds		= mod:NewCountdown(10, 89588, false)
-local countdownFeedback		= mod:NewCountdown(20, 87904, false)
-
 mod:AddBoolOption("LightningRodIcon")
 mod:AddBoolOption("RangeFrame", true)
 
@@ -66,11 +63,9 @@ function mod:CloudRepeat()
 	if self:IsInCombat() then--Don't schedule if not in combat, prevent an infinite loop from happening if for some reason one got scheduled exactly on boss death.
 		if self:IsDifficulty("heroic10", "heroic25") then
 			timerLightningCloudCD:Start(10)
-			countdownClouds:Start(10)
 			self:ScheduleMethod(10, "CloudRepeat")
 		else
 			timerLightningCloudCD:Start()
-			countdownClouds:Start(15)
 			self:ScheduleMethod(15, "CloudRepeat")
 		end
 	end
@@ -100,13 +95,10 @@ function mod:SPELL_AURA_APPLIED(args)
 	if args.spellId == 87904 then
 		warnFeedback:Show(args.destName, args.amount or 1)
 		timerFeedback:Cancel()--prevent multiple timers spawning with diff args.
-		countdownFeedback:Cancel()
 		if self:IsDifficulty("normal10", "normal25") then
 			timerFeedback:Start(30, args.amount or 1)
-			countdownFeedback:Start(30)
 		else
 			timerFeedback:Start(20, args.amount or 1)
-			countdownFeedback:Start(20)
 		end
 	elseif args.spellId == 88301 then--Acid Rain (phase 2 debuff)
 		if args.amount and args.amount > 1 and args:IsPlayer() then

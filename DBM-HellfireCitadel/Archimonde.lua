@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1438, "DBM-HellfireCitadel", nil, 669)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041705938")
+mod:SetRevision("20190625144131")
 mod:SetCreatureID(91331)--Doomfire Spirit (92208), Hellfire Deathcaller (92740), Felborne Overfiend (93615), Dreadstalker (93616), Infernal doombringer (94412)
 mod:SetEncounterID(1799)
 mod:SetZone()
@@ -101,21 +101,21 @@ mod:AddTimerLine(SCENARIO_STAGE:format(1))
 local timerDoomfireCD				= mod:NewCDTimer(41.5, 182826, nil, nil, nil, 1)--182826 cast, 182879 fixate. Doomfire only fixates ranged, but ALL dps switch to it.
 local timerAllureofFlamesCD			= mod:NewCDTimer(47.5, 183254, nil, nil, nil, 2)
 local timerFelBurstCD				= mod:NewCDTimer(52, 183817, nil, nil, 2, 3, nil, DBM_CORE_DEADLY_ICON)
-local timerDeathbrandCD				= mod:NewCDCountTimer(42.5, 183828, nil, nil, nil, 1)--Everyone, for tanks/healers to know when debuff/big hit, for dps to know add coming
+local timerDeathbrandCD				= mod:NewCDCountTimer(42.5, 183828, nil, nil, nil, 1, nil, nil, nil, 1, 3)--Everyone, for tanks/healers to know when debuff/big hit, for dps to know add coming
 local timerDesecrateCD				= mod:NewCDTimer(26.3, 185590, nil, nil, 2, 2)
 local timerLightCD					= mod:NewNextTimer(10, 183963, nil, nil, nil, 5)
 ----Hellfire Deathcaller
 local timerShadowBlastCD			= mod:NewCDTimer(7.3, 183864, nil, "Tank", nil, 5)
 --Phase 2: Hand of the Legion
 mod:AddTimerLine(SCENARIO_STAGE:format(2))
-local timerShackledTormentCD		= mod:NewCDCountTimer(31.5, 184931, nil, nil, nil, 3)
+local timerShackledTormentCD		= mod:NewCDCountTimer(31.5, 184931, nil, nil, nil, 3, nil, nil, nil, not mod:IsTank() and 3, 3)
 local timerWroughtChaosCD			= mod:NewCDTimer(51.7, 184265, nil, nil, nil, 3, nil, DBM_CORE_DEADLY_ICON)
 --Phase 2.5
 local timerFelborneOverfiendCD		= mod:NewNextCountTimer(44.3, "ej11603", nil, nil, nil, 1, 186662)
 --Phase 3: The Twisting Nether
 mod:AddTimerLine(SCENARIO_STAGE:format(3))
-local timerDemonicFeedbackCD		= mod:NewCDCountTimer(35, 187180, nil, nil, nil, 2)
-local timerNetherBanishCD			= mod:NewCDCountTimer(61.9, 186961, nil, nil, nil, 5)
+local timerDemonicFeedbackCD		= mod:NewCDCountTimer(35, 187180, nil, nil, nil, 2, nil, nil, nil, 2, 3)
+local timerNetherBanishCD			= mod:NewCDCountTimer(61.9, 186961, nil, nil, nil, 5, nil, nil, nil, 1, 3)
 --Phase 3.5:
 local timerRainofChaosCD			= mod:NewCDCountTimer(62, 182225, 23426, nil, nil, 2)
 ----The Nether
@@ -124,22 +124,11 @@ mod:AddTimerLine(ENCOUNTER_JOURNAL_SECTION_FLAG12)
 local timerDarkConduitCD			= mod:NewNextCountTimer(107, 190394, nil, "-Melee", 2, 3)
 local timerMarkOfLegionCD			= mod:NewNextCountTimer(107, 187050, 28836, nil, nil, 3)
 local timerInfernalsCD				= mod:NewNextCountTimer(107, 187111, 23426, nil, nil, 1, 1122)
-local timerSourceofChaosCD			= mod:NewNextCountTimer(107, 190703, nil, nil, 2, 1)
+local timerSourceofChaosCD			= mod:NewNextCountTimer(107, 190703, nil, nil, 2, 1, nil, DBM_CORE_TANK_ICON, nil, 2, 4)
 local timerTwistedDarknessCD		= mod:NewNextCountTimer(107, 190821, 189894, nil, nil, 1)
-local timerSeethingCorruptionCD		= mod:NewNextCountTimer(107, 190506, 66911, nil, nil, 2, nil, DBM_CORE_DEADLY_ICON)
+local timerSeethingCorruptionCD		= mod:NewNextCountTimer(107, 190506, 66911, nil, nil, 2, nil, DBM_CORE_DEADLY_ICON, nil, 1, 4)
 
 --local berserkTimer				= mod:NewBerserkTimer(360)
-
---countdowns kind of blow with this fights timer variations.
---Everything but overfiend is a CD
---I don't want to use a countdown on something thats 47-56 like allure or 52-70 like felburst
-local countdownWroughtChaos			= mod:NewCountdownFades("Alt5", 184265, nil, nil, 3)
-local countdownNetherBanish			= mod:NewCountdown(61.9, 186961, nil, nil, 3)
-local countdownDemonicFeedback		= mod:NewCountdown("Alt35", 186961, nil, nil, 3)
-local countdownDeathBrand			= mod:NewCountdown(42, 183828, "Tank", 2, 3)
-local countdownShackledTorment		= mod:NewCountdown("AltTwo42", 184931, "-Tank", nil, 3)
-local countdownSeethingCorruption	= mod:NewCountdown(61.9, 190506)
-local countdownSourceofChaos		= mod:NewCountdown("Alt35", 190703, "Tank")
 
 mod:AddRangeFrameOption("6/8/10")
 mod:AddSetIconOption("SetIconOnFelBurst", 183634, true)
@@ -549,7 +538,6 @@ local function sourceOfChaosCheck(self)
 	if cooldown then
 		--Subtrack 5 from next cd, since this check is running 5 seconds late
 		timerSourceofChaosCD:Start(cooldown-5, self.vb.sourceOfChaosCast+1)
-		countdownSourceofChaos:Start(cooldown-5)
 		--Schedule Late check for 5 seconds AFTER cast
 		self:Schedule(cooldown, sourceOfChaosCheck, self)
 	end
@@ -596,8 +584,6 @@ local function updateAllTimers(self, ICD, AllureSpecial)
 			DBM:Debug("timerDeathbrandCD extended by: "..extend, 2)
 			timerDeathbrandCD:Stop()
 			timerDeathbrandCD:Update(elapsed, total+extend, self.vb.deathBrandCount+1)
-			countdownDeathBrand:Cancel()
-			countdownDeathBrand:Start(ICD)
 		end
 		if phase == 1.5 then
 			if not AllureSpecial and timerDesecrateCD:GetRemaining() < ICD then
@@ -622,8 +608,6 @@ local function updateAllTimers(self, ICD, AllureSpecial)
 			DBM:Debug("timerShackledTormentCD extended by: "..extend, 2)
 			timerShackledTormentCD:Stop()
 			timerShackledTormentCD:Update(elapsed, total+extend, self.vb.tormentCast+1)
-			countdownShackledTorment:Cancel()
-			countdownShackledTorment:Start(ICD)
 		end
 		if not self:IsEasy() and timerWroughtChaosCD:GetRemaining() < ICD then
 			local elapsed, total = timerWroughtChaosCD:GetTime()
@@ -638,8 +622,6 @@ local function updateAllTimers(self, ICD, AllureSpecial)
 			DBM:Debug("timerDeathbrandCD extended by: "..extend, 2)
 			timerDeathbrandCD:Stop()
 			timerDeathbrandCD:Update(elapsed, total+extend, self.vb.deathBrandCount+1)
-			countdownDeathBrand:Cancel()
-			countdownDeathBrand:Start(ICD)
 		end
 	else
 		if timerShackledTormentCD:GetRemaining(self.vb.tormentCast+1) < ICD then
@@ -648,8 +630,6 @@ local function updateAllTimers(self, ICD, AllureSpecial)
 			DBM:Debug("timerShackledTormentCD extended by: "..extend, 2)
 			timerShackledTormentCD:Stop()
 			timerShackledTormentCD:Update(elapsed, total+extend, self.vb.tormentCast+1)
-			countdownShackledTorment:Cancel()
-			countdownShackledTorment:Start(ICD)
 		end
 		if not self:IsEasy() and timerWroughtChaosCD:GetRemaining() < ICD then
 			local elapsed, total = timerWroughtChaosCD:GetTime()
@@ -665,8 +645,6 @@ local function updateAllTimers(self, ICD, AllureSpecial)
 			specWarnDemonicFeedbackSoon:Cancel()
 			timerDemonicFeedbackCD:Stop()
 			timerDemonicFeedbackCD:Update(elapsed, total+extend, self.vb.demonicCount+1)
-			countdownDemonicFeedback:Cancel()
-			countdownDemonicFeedback:Start(ICD)
 		end
 		if timerNetherBanishCD:GetRemaining(self.vb.netherBanish2+1) < ICD then
 			local elapsed, total = timerNetherBanishCD:GetTime(self.vb.netherBanish2+1)
@@ -674,8 +652,6 @@ local function updateAllTimers(self, ICD, AllureSpecial)
 			DBM:Debug("timerNetherBanishCD extended by: "..extend, 2)
 			timerNetherBanishCD:Stop()
 			timerNetherBanishCD:Update(elapsed, total+extend, self.vb.netherBanish2+1)
-			countdownNetherBanish:Cancel()
-			countdownNetherBanish:Start(ICD)
 		end
 	end
 end
@@ -697,7 +673,6 @@ function mod:OnCombatStart(delay)
 	playerBanished = false
 	timerDoomfireCD:Start(5.1-delay)
 	timerDeathbrandCD:Start(15-delay, 1)
-	countdownDeathBrand:Start(15-delay)
 	timerAllureofFlamesCD:Start(30-delay)
 	warnFelBurstSoon:Schedule(35-delay)
 	timerFelBurstCD:Start(40-delay)
@@ -751,8 +726,6 @@ function mod:SPELL_CAST_START(args)
 		specWarnDeathBrand:Show(self.vb.deathBrandCount)
 		timerDeathbrandCD:Stop()
 		timerDeathbrandCD:Start(nil, self.vb.deathBrandCount+1)
-		countdownDeathBrand:Cancel()
-		countdownDeathBrand:Start()
 		local tanking, status = UnitDetailedThreatSituation("player", "boss1")
 		if tanking or (status == 3) then
 			specWarnDeathBrand:Play("defensive")
@@ -781,7 +754,6 @@ function mod:SPELL_CAST_START(args)
 		local cooldown = seethingCorruptionTimers[self.vb.seethingCorruptionCount+1]
 		if cooldown then
 			timerSeethingCorruptionCD:Start(cooldown, self.vb.seethingCorruptionCount+1)
-			countdownSeethingCorruption:Start(cooldown)
 		end
 		specWarnSeethingCorruption:Play("watchstep")
 	elseif spellId == 184931 then
@@ -789,10 +761,8 @@ function mod:SPELL_CAST_START(args)
 		self.vb.tormentCast = self.vb.tormentCast + 1
 		if self.vb.phase < 3 then
 			timerShackledTormentCD:Start(36.5, self.vb.tormentCast+1)
-			countdownShackledTorment:Start(36.5)
 		else
 			timerShackledTormentCD:Start(31, self.vb.tormentCast+1)
-			countdownShackledTorment:Start(31)
 		end
 		updateAllTimers(self, 7, true)
 	elseif spellId == 187180 then
@@ -802,7 +772,6 @@ function mod:SPELL_CAST_START(args)
 			specWarnDemonicFeedback:Play("scatter")
 		end
 		timerDemonicFeedbackCD:Start(nil, self.vb.demonicCount+1)
-		countdownDemonicFeedback:Start()
 		updateAllTimers(self, 3.5)
 	elseif spellId == 182225 then
 		self.vb.rainOfChaos = self.vb.rainOfChaos + 1
@@ -851,7 +820,6 @@ function mod:SPELL_CAST_START(args)
 		local cooldown = sourceofChaosTimers[self.vb.sourceOfChaosCast+1]
 		if cooldown then
 			timerSourceofChaosCD:Start(cooldown, self.vb.sourceOfChaosCast+1)
-			countdownSourceofChaos:Start(cooldown)
 			--Schedule Late check for 5 seconds AFTER cast
 			self:Schedule(cooldown+5, sourceOfChaosCheck, self)
 		end
@@ -877,8 +845,6 @@ function mod:SPELL_CAST_START(args)
 		timerAllureofFlamesCD:Stop()
 		timerDeathbrandCD:Stop()
 		timerShackledTormentCD:Stop()
-		countdownShackledTorment:Cancel()
-		countdownDeathBrand:Cancel()
 		timerWroughtChaosCD:Stop()
 	end
 end
@@ -950,9 +916,6 @@ function mod:SPELL_AURA_APPLIED(args)
 				specWarnWroughtChaos:Show()
 				specWarnWroughtChaos:Play("186123")
 				yellWroughtChaos:Yell()
-				countdownWroughtChaos:Start()
-			else
-				countdownWroughtChaos:Start(6)
 			end
 		end
 		if not playerBanished or not self.Options.FilterOtherPhase then
@@ -968,9 +931,6 @@ function mod:SPELL_AURA_APPLIED(args)
 				yellFocusedChaos:Schedule(3, 2)
 				yellFocusedChaos:Schedule(2, 3)
 				yellFocusedChaos:Schedule(1, 4)
-				countdownWroughtChaos:Start()
-			else
-				countdownWroughtChaos:Start(6)
 			end
 		end
 		if not playerBanished or not self.Options.FilterOtherPhase then
@@ -1034,7 +994,6 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif spellId == 186961 then
 		self.vb.netherPortal = true
 		self.vb.TouchOfShadows = 0
-		countdownNetherBanish:Start()
 		if args:IsPlayer() then
 			specWarnNetherBanish:Show()
 			specWarnNetherBanish:Play("teleyou")
@@ -1240,7 +1199,6 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 		timerAllureofFlamesCD:Stop()
 		timerDeathbrandCD:Stop()
 		timerLightCD:Stop()
-		countdownDeathBrand:Cancel()
 		--Begin phase 2
 		warnPhase2:Show()
 		warnPhase2:Play("ptwo")
@@ -1248,10 +1206,8 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 			timerWroughtChaosCD:Start(5)
 		end
 		timerDeathbrandCD:Start(35, self.vb.deathBrandCount+1)--35-39
-		countdownDeathBrand:Start(35)
 		timerAllureofFlamesCD:Start(40)--40-45
 		timerShackledTormentCD:Start(25, self.vb.tormentCast+1)--17-25 (almost always 25, but sometimes it comes earlier, unsure why)
-		countdownShackledTorment:Start(25)
 		updateRangeFrame(self)
 --	"<301.70 23:49:52> [UNIT_SPELLCAST_SUCCEEDED] Archimonde(Omegal) [[boss1:Allow Phase 3 Spells::0:190118]]", -- [8737]
 --	"<301.70 23:49:52> [CHAT_MSG_MONSTER_YELL] CHAT_MSG_MONSTER_YELL#Lok'tar ogar! They are pushed back! To the portal! Gul'dan is mine!#Grommash Hellscream###Grommash H
@@ -1264,25 +1220,18 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 			timerAllureofFlamesCD:Stop()--Done for rest of fight
 			timerDeathbrandCD:Stop()--Done for rest of fight
 			timerShackledTormentCD:Stop()--Resets to 55 on non mythic, no longer cast on mythic
-			countdownShackledTorment:Cancel()
-			countdownDeathBrand:Cancel()
 			timerNetherBanishCD:Start(10.9, 1)
-			countdownNetherBanish:Start(10.9)
 			timerDemonicFeedbackCD:Start(29, 1)--29-33
 			self:Schedule(23.5, setDemonicFeedback, self)
-			countdownDemonicFeedback:Start(29)
 			timerShackledTormentCD:Start(55, self.vb.tormentCast+1)
-			countdownShackledTorment:Start(55)
 		else
 			table.wipe(shacklesTargets)--Just to reduce infoframe overhead
 			timerDarkConduitCD:Start(8, 1)
 			setDarkConduit(self)
 			timerMarkOfLegionCD:Start(20, 1)
 			timerInfernalsCD:Start(35, 1)
-			countdownSourceofChaos:Start(49)
 			timerSourceofChaosCD:Start(49, 1)
 			timerSeethingCorruptionCD:Start(61, 1)
-			countdownSeethingCorruption:Start(61)
 			timerTwistedDarknessCD:Start(75, 1)
 			if UnitIsGroupLeader("player") then
 				if self.Options.MarkBehavior == "Numbered" then

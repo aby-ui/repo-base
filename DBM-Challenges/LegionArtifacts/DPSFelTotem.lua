@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("ArtifactFelTotem", "DBM-Challenges", 2)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041705828")
+mod:SetRevision("20190625143134")
 mod:SetCreatureID(117230, 117484)--Tugar, Jormog
 mod:SetZone()--Healer (1710), Tank (1698), DPS (1703-The God-Queen's Fury), DPS (Fel Totem Fall)
 mod:SetBossHPInfoToHighest()
@@ -38,8 +38,6 @@ local timerEarthquakeCD		= mod:NewNextTimer(60, 237950, nil, nil, nil, 2)
 local timerFelSurgeCD		= mod:NewCDTimer(25, 242496, nil, nil, nil, 3)--25-33
 local timerFelRuptureCD		= mod:NewCDTimer(10.9, 241664, nil, nil, nil, 3)--10.9-13.4
 local timerFelBurstCD		= mod:NewCDCountTimer(10.9, 242733, nil, nil, nil, 3)--HIGHLY variable
-
---local countdownTimer		= mod:NewCountdownFades(10, 141582)
 
 --[[
 ["242733-Fel Burst"] = "pull:40.2, 23.1, 21.8, 20.7, 21.9, 18.2, 17.7, 19.2, 15.4, 15.8, 14.6, 23.1, 13.3, 12.1, 12.1, 24.3, 10.9, 12.1, 12.1, 19.4",

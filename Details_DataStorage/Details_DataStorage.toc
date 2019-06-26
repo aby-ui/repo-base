@@ -1,4 +1,4 @@
-## Interface: 80100
+## Interface: 80200
 ## Title: Details!: Storage
 ## Notes: Stores information for Details! Damage Meter
 ## DefaultState: Enabled

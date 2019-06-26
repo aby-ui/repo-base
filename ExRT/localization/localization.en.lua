@@ -231,6 +231,7 @@ L.RaidCheckMinFlaskExpMin = "min."
 L.RaidCheckDisableInLFR = "Disable in LFR"
 L.RaidCheckVRunesCheck = "Check vantus runes"
 L.RaidCheckVRunesChat = "Vantus runes to chat"
+L.RaidCheckLQFlask = "Enable tracking low quality flasks during ready check"
 
 L.marksbarstart = "Clear"
 L.marksbardel = "Delete"

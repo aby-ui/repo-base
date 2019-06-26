@@ -3,14 +3,14 @@
 		A bagnon options panel
 --]]
 
-local AddonName, Addon = ...
+local _, Addon = ...
 local OptionsPanel = Addon.Classy:New('Frame'); Addon.OptionsPanel = OptionsPanel
 
 function OptionsPanel:New(name, parent, title, subtitle, icon)
 	local f = self:Bind(CreateFrame('Frame', name))
 	f.name = title
 	f.parent = parent
-	
+
 	local text = f:CreateFontString(nil, 'ARTWORK', 'GameFontNormalLarge')
 	text:SetPoint('TOPLEFT', 16, -16)
 	if icon then
@@ -27,7 +27,7 @@ function OptionsPanel:New(name, parent, title, subtitle, icon)
 	subtext:SetJustifyH('LEFT')
 	subtext:SetJustifyV('TOP')
 	subtext:SetText(subtitle)
-	
+
 	InterfaceOptions_AddCategory(f)
 
 	return f

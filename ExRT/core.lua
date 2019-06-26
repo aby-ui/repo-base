@@ -1,4 +1,4 @@
---	04.12.2018
+--	12.06.2019
 
 --[[
 3930
@@ -49,10 +49,17 @@
 4010
 * toc update
 * Removed combat restrictions for loading for some modules
+
+4030
+* 8.2.0 Update
+* Raid check: added support for new food/flasks
+* Raid Cooldowns: Added essences
+* Raid Inspect: Added essences
+* Can be launched on classic (1.12.1/1.13) client
 ]]
 local GlobalAddonName, ExRT = ...
 
-ExRT.V = 4010
+ExRT.V = 4030
 ExRT.T = "R"
 
 ExRT.OnUpdate = {}		--> таймеры, OnUpdate функции
@@ -62,6 +69,7 @@ ExRT.MiniMapMenu = {}		--> изменение меню кнопки на мин�
 ExRT.Modules = {}		--> список всех модулей
 ExRT.ModulesLoaded = {}		--> список загруженных модулей [для Dev & Advanced]
 ExRT.ModulesOptions = {}
+ExRT.Classic = {}		--> функции для работы на классик клиенте
 ExRT.Debug = {}
 ExRT.RaidVersions = {}
 ExRT.Temp = {}
@@ -81,8 +89,11 @@ do
 	local version, buildVersion, buildDate, uiVersion = GetBuildInfo()
 	
 	ExRT.clientUIinterface = uiVersion
-	local expansion,majorPatch,minorPatch = (version or "1.0.0"):match("^(%d+)%.(%d+)%.(%d+)")
+	local expansion,majorPatch,minorPatch = (version or "2.0.0"):match("^(%d+)%.(%d+)%.(%d+)")
 	ExRT.clientVersion = (expansion or 0) * 10000 + (majorPatch or 0) * 100 + (minorPatch or 0)
+end
+if ExRT.clientVersion < 20000 then
+	ExRT.isClassic = true
 end
 -------------> smart DB <-------------
 ExRT.SDB = {}
@@ -201,7 +212,7 @@ function ExRT.mod:HookEvent(event)
 	self.eventsCounter[event] = self.eventsCounter[event] and self.eventsCounter[event] + 1 or 1
 end
 
-	
+
 function ExRT.mod:RegisterEvents(...)
 	for i=1,select("#", ...) do
 		local event = select(i,...)
@@ -230,6 +241,38 @@ function ExRT.mod:UnregisterEvents(...)
 		end
 		self.main.events[event] = nil
 		ExRT.F.dprint(self.name,'UnregisterEvent',event)
+	end
+end
+if ExRT.isClassic then
+	function ExRT.mod:RegisterEvents(...)
+		for i=1,select("#", ...) do
+			local event = select(i,...)
+			if event ~= "COMBAT_LOG_EVENT_UNFILTERED" then
+				pcall(self.main.RegisterEvent,self.main,event)
+			else
+				if not self.CLEU then self.CLEU = CreateFrame("Frame") end
+				self.CLEU:SetScript("OnEvent",self.main.COMBAT_LOG_EVENT_UNFILTERED)
+				self.CLEU:RegisterEvent('COMBAT_LOG_EVENT_UNFILTERED')
+			end
+			self.main.events[event] = true
+			ExRT.F.dprint(self.name,'RegisterEvent',event)
+		end
+	end
+	
+	function ExRT.mod:UnregisterEvents(...)
+		for i=1,select("#", ...) do
+			local event = select(i,...)
+			if event ~= "COMBAT_LOG_EVENT_UNFILTERED" then
+				pcall(self.main.UnregisterEvent,self.main,event)
+			else
+				if self.CLEU then
+					self.CLEU:SetScript("OnEvent",nil)
+					self.CLEU:UnregisterAllEvents()
+				end
+			end
+			self.main.events[event] = nil
+			ExRT.F.dprint(self.name,'UnregisterEvent',event)
+		end
 	end
 end
 
@@ -322,8 +365,10 @@ do
 			end
 		end
 	end)
-	petBattleTracker:RegisterEvent("PET_BATTLE_OPENING_START")
-	petBattleTracker:RegisterEvent("PET_BATTLE_CLOSE")
+	if not ExRT.isClassic then
+		petBattleTracker:RegisterEvent("PET_BATTLE_OPENING_START")
+		petBattleTracker:RegisterEvent("PET_BATTLE_CLOSE")
+	end
 	function ExRT.mod:RegisterHideOnPetBattle(frame)
 		hideOnPetBattle[#hideOnPetBattle + 1] = frame
 	end

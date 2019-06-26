@@ -1452,7 +1452,7 @@
 					<OnClick>
 						TMW.IE.db.global.ConfigWarning = false
 						self:GetParent():Hide()
-						TMW.wIE:Load(1)
+						TMW.IE:Load(1)
 					</OnClick>
 				</Scripts>
 			</Button>

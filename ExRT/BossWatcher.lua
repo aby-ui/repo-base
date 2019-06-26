@@ -10929,7 +10929,7 @@ function BWInterfaceFrameLoad()
 				end
 				curHP = hp
 			end
-			if curHP ~= 0 and curHP ~= destData.maxhp and (not destData.maxhp or curHP < destData.maxhp) then
+			if curHP ~= 0 and curHP ~= destData.maxhp and (not destData.maxhp or curHP < destData.maxhp) and (not destData.lastSeen or segment+15 < destData.lastSeen) then
 				text = text .. GetGUID(destGUID) .. GUIDtoText(" (%s)",destGUID) .. " "..(destData.maxhp and (destData.maxhp-curHP).."/"..destData.maxhp..format(" <%.1f%%>",(1-curHP/destData.maxhp)*100) or "-"..curHP) .. "|n"
 			end
 		end
@@ -11625,6 +11625,7 @@ function BWInterfaceFrameLoad()
 				end
 				now = now + d[2]
 				destData.res[ d[1] ] = now
+				destData.lastSeen = d[1]
 			end
 		end
 		

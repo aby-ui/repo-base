@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1726, "DBM-EmeraldNightmare", nil, 768)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041705925")
+mod:SetRevision("20190625143337")
 mod:SetCreatureID(103769)
 mod:SetEncounterID(1864)
 mod:SetZone()
@@ -69,26 +69,19 @@ mod:AddTimerLine(SCENARIO_STAGE:format(1))
 local timerDarkeningSoulCD				= mod:NewCDTimer(7, 206651, nil, "Healer|Tank", nil, 5, nil, DBM_CORE_MAGIC_ICON..DBM_CORE_TANK_ICON)
 local timerNightmareBladesCD			= mod:NewNextTimer(15.7, 206656, nil, "-Tank", 2, 3)
 local timerLurkingEruptionCD			= mod:NewCDCountTimer(20.5, 208322, nil, "-Tank", 2, 3)
-local timerCorruptionHorrorCD			= mod:NewNextCountTimer(82.5, 210264, nil, nil, nil, 1, nil, DBM_CORE_DAMAGE_ICON)
+local timerCorruptionHorrorCD			= mod:NewNextCountTimer(82.5, 210264, nil, nil, nil, 1, nil, DBM_CORE_DAMAGE_ICON, nil, 1, 4)
 local timerCorruptingNovaCD				= mod:NewNextTimer(20, 207830, nil, nil, nil, 2)
 local timerTormentingSwipeCD			= mod:NewCDTimer(10, 224649, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON)
 --Stage Two: From the Shadows
 mod:AddTimerLine(SCENARIO_STAGE:format(2))
 local timerBondsOfTerrorCD				= mod:NewCDTimer(14.1, 209034, nil, "-Tank", 2, 3)
-local timerCorruptionMeteorCD			= mod:NewCDCountTimer(28, 206308, 57467, nil, nil, 3, nil, DBM_CORE_DEADLY_ICON)--Short text "meteor"
+local timerCorruptionMeteorCD			= mod:NewCDCountTimer(28, 206308, 57467, nil, nil, 3, nil, DBM_CORE_DEADLY_ICON, nil, not mod:IsTank() and 3, 4)--Short text "meteor"
 local timerBlackeningSoulCD				= mod:NewCDTimer(7.2, 209158, nil, "Healer|Tank", nil, 5, nil, DBM_CORE_MAGIC_ICON..DBM_CORE_TANK_ICON)
-local timerNightmareInfusionCD			= mod:NewCDTimer(61.5, 209443, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON)--61.5-62.5
-local timerCallOfNightmaresCD			= mod:NewCDTimer(40, 205588, nil, nil, nil, 1, nil, DBM_CORE_DAMAGE_ICON)
+local timerNightmareInfusionCD			= mod:NewCDTimer(61.5, 209443, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON, nil, 2, 4)--61.5-62.5
+local timerCallOfNightmaresCD			= mod:NewCDTimer(40, 205588, nil, nil, nil, 1, nil, DBM_CORE_DAMAGE_ICON, nil, 1, 4)
 --Stage Three: Darkness and stuff
 mod:AddTimerLine(SCENARIO_STAGE:format(3))
 local timerNightmareTentacleCD			= mod:NewCDTimer(20, "ej12977", nil, nil, nil, 1, 93708)--226194 is an icon consideration now
-
---Stage One: The Decent Into Madness
-local countdownCorruptionHorror			= mod:NewCountdown(82.5, 210264)
---Stage Two: From the Shadows
-local countdownCallOfNightmares			= mod:NewCountdown(40, 205588)
-local countdownNightmareInfusion		= mod:NewCountdown("Alt61", 209443, "Tank")
-local countdownMeteor					= mod:NewCountdown("AltTwo28", 206308, "-Tank")
 
 mod:AddInfoFrameOption("ej12970")
 mod:AddBoolOption("InfoFrameFilterDream", true)
@@ -160,7 +153,6 @@ function mod:OnCombatStart(delay)
 	timerLurkingEruptionCD:Start(13.6-delay, 1)
 	timerNightmareBladesCD:Start(18.5-delay)
 	timerCorruptionHorrorCD:Start(58.4-delay, 1)
-	countdownCorruptionHorror:Start(58.4)
 	if self.Options.InfoFrame then
 		DBM.InfoFrame:SetHeader(corruptionName)
 		if self.Options.InfoFrameFilterDream then
@@ -193,10 +185,8 @@ function mod:SPELL_CAST_START(args)
 	elseif spellId == 209443 then
 		if self.vb.phase == 3 then
 			timerNightmareInfusionCD:Start(31.5)
-			countdownNightmareInfusion:Start(31.5)
 		else
 			timerNightmareInfusionCD:Start()
-			countdownNightmareInfusion:Start()
 		end
 		local targetName, uId = self:GetBossTarget(args.sourceGUID, true)
 		if self:IsTanking("player", "boss1", nil, true) then
@@ -214,7 +204,6 @@ function mod:SPELL_CAST_START(args)
 		specWarnInconHorror:Show(self.vb.inconHorror)
 		specWarnInconHorror:Play("killmob")
 		timerCallOfNightmaresCD:Start(nil, self.vb.inconHorror+1)
-		countdownCallOfNightmares:Start()
 	end
 end
 
@@ -232,7 +221,6 @@ function mod:SPELL_CAST_SUCCESS(args)
 		specWarnCorruptionHorror:Show(self.vb.corruptionHorror)
 		specWarnCorruptionHorror:Play("bigmob")
 		timerCorruptionHorrorCD:Start(nil, self.vb.corruptionHorror+1)
-		countdownCorruptionHorror:Start()
 	end
 end
 
@@ -347,7 +335,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		if args:IsPlayer() then
 			specWarnCorruptionMeteorYou:Show()
 			specWarnCorruptionMeteorYou:Play("targetyou")
-			yellMeteor:Countdown(5)
+			yellMeteor:Countdown(spellId)
 		else
 			if playerHasDream then
 				specWarnCorruptionMeteorTo:Show(args.destName)
@@ -441,10 +429,8 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, bfaSpellId, _, legacySpellId)
 		self.vb.meteorCount = self.vb.meteorCount + 1
 		if self.vb.phase == 3 then
 			timerCorruptionMeteorCD:Start(35, self.vb.meteorCount+1)--35-38 in phase 3
-			countdownMeteor:Start(35)
 		else
 			timerCorruptionMeteorCD:Start(nil, self.vb.meteorCount+1)--Generally always 28
-			countdownMeteor:Start(28)
 		end
 	elseif spellId == 209000 then--Nightmare Blades (casting not in combat log)
 		if self.vb.phase == 3 then
@@ -469,15 +455,11 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, bfaSpellId, _, legacySpellId)
 		timerNightmareBladesCD:Stop()
 		timerLurkingEruptionCD:Stop()
 		timerCorruptionHorrorCD:Stop()
-		countdownCorruptionHorror:Cancel()
 		timerBlackeningSoulCD:Start(7)
 		timerBondsOfTerrorCD:Start(14)
 		timerCorruptionMeteorCD:Start(21, 1)
-		countdownMeteor:Start(21)
 		timerCallOfNightmaresCD:Start(23, 1)
-		countdownCallOfNightmares:Start(23)
 		timerNightmareInfusionCD:Start(30)
-		countdownNightmareInfusion:Start(30)
 		updateRangeFrame(self)
 		self:RegisterShortTermEvents(
 			"SPELL_PERIODIC_ENERGIZE 208385"
@@ -489,16 +471,11 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, bfaSpellId, _, legacySpellId)
 		timerBlackeningSoulCD:Stop()
 		timerBondsOfTerrorCD:Stop()
 		timerCallOfNightmaresCD:Stop()
-		countdownCallOfNightmares:Cancel()
 		timerCorruptionMeteorCD:Stop()
-		countdownMeteor:Cancel()
 		timerNightmareInfusionCD:Stop()
-		countdownNightmareInfusion:Cancel()
 		timerNightmareInfusionCD:Start(11)
-		countdownNightmareInfusion:Start(11)
 		timerBlackeningSoulCD:Start(15)
 		timerCorruptionMeteorCD:Start(20.5, 1)
-		countdownMeteor:Start(20.5)
 		timerNightmareBladesCD:Start(30)
 		self:UnregisterShortTermEvents()
 	elseif spellId == 226194 then--Writhing Deep

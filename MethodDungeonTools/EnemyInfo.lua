@@ -8,7 +8,7 @@ local AceGUI = LibStub("AceGUI-3.0")
 local db
 local L = select(2, ...).L
 
-local tinsert,Model_Reset = table.insert,Model_Reset
+local tinsert = table.insert
 
 
 
@@ -53,18 +53,21 @@ end
 AceGUI:RegisterLayout("ThreeColums", function(content, children)
     if children[1] then
         children[1]:SetWidth(content:GetWidth()/3)
+        children[1].frame:ClearAllPoints()
         children[1].frame:SetPoint("TOPLEFT", content, "TOPLEFT", 0, 0)
         children[1].frame:SetPoint("BOTTOMLEFT", content, "BOTTOMLEFT", 0, 0)
         children[1].frame:Show()
     end
     if children[2] then
         children[2]:SetWidth(content:GetWidth()/3)
+        children[2].frame:ClearAllPoints()
         children[2].frame:SetPoint("TOPLEFT", children[1].frame, "TOPRIGHT", 0, 0)
         children[2].frame:SetPoint("BOTTOMLEFT", children[1].frame, "BOTTOMRIGHT", 0, 0)
         children[2].frame:Show()
     end
     if children[3] then
         children[3]:SetWidth(content:GetWidth()/3)
+        children[3].frame:ClearAllPoints()
         children[3].frame:SetPoint("TOPLEFT", children[2].frame, "TOPRIGHT", 0, 0)
         children[3].frame:SetPoint("BOTTOMLEFT", children[2].frame, "BOTTOMRIGHT", 0, 0)
         children[3].frame:Show()
@@ -85,6 +88,7 @@ local function MakeEnemeyInfoFrame()
     f:SetCallback("OnClose", function(widget)
 
     end)
+    f.frame:ClearAllPoints()
     f.frame:SetAllPoints(MethodDungeonToolsScrollFrame)
 
     local originalHide = MethodDungeonTools.main_frame.Hide
@@ -139,6 +143,7 @@ local function MakeEnemeyInfoFrame()
         modelDummyIcon:SetImageSize(leftContainer.frame:GetWidth()-20, 249)
         modelDummyIcon:SetDisabled(true)
         modelContainer:AddChild(modelDummyIcon)
+        model:ClearAllPoints()
         model:SetPoint("BOTTOM",modelContainer.frame,"BOTTOM",0,10)
         MethodDungeonTools:FixAceGUIShowHide(model,modelContainer.frame,true)
 
@@ -378,7 +383,7 @@ function MDT:UpdateEnemyInfoFrame(enemyIdx)
     local f = MDT.EnemyInfoFrame
     f:SetTitle(data.name)
     f.model:SetDisplayInfo(data.displayId or 39490)
-    Model_Reset(f.model)
+    f.model:ResetModel()
 
     local enemies = {}
     for mobIdx,edata in ipairs(MDT.dungeonEnemies[db.currentDungeonIdx]) do

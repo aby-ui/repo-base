@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1153, "DBM-Highmaul", nil, 477)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041705938")
+mod:SetRevision("20190625143352")
 mod:SetCreatureID(79015)
 mod:SetEncounterID(1723)
 mod:SetZone()
@@ -53,21 +53,17 @@ local specWarnExpelMagicFelMove		= mod:NewSpecialWarningMove(172917)--Under you 
 
 local timerVulnerability			= mod:NewBuffActiveTimer(23, 160734, nil, nil, nil, 6)--more like 23-24 than 20
 local timerTrampleCD				= mod:NewCDTimer(16, 163101, nil, nil, nil, 3)
-local timerExpelMagicFire			= mod:NewBuffFadesTimer(11.5, 162185, nil, false, 2)--Has countdown, and fight has a lot of itmers now, i found this timer HIGHLY distracting when trying to process multiple important ability cds at once.
+local timerExpelMagicFire			= mod:NewBuffFadesTimer(11.5, 162185, nil, false, 2, 5, nil, nil, nil, 1, 4)
 local timerExpelMagicFireCD			= mod:NewCDTimer(58, 162185, nil, nil, nil, 3)--58-66 Variation
 local timerExpelMagicFrost			= mod:NewBuffActiveTimer(20, 161411, nil, false, 3)
 local timerExpelMagicFrostCD		= mod:NewCDTimer(60, 161411, nil, nil, nil, 2)--60-63 variation
 local timerExpelMagicShadowCD		= mod:NewCDTimer(59, 162184, nil, "Tank|Healer", nil, 5)--60-63 variation
 local timerExpelMagicArcane			= mod:NewTargetTimer(10, 162186, nil, "Tank|Healer")
 local timerExpelMagicArcaneCD		= mod:NewCDTimer(26, 162186, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON)--26-32
-local timerBallsCD					= mod:NewNextCountTimer(30, 161612, nil, nil, nil, 5)
+local timerBallsCD					= mod:NewNextCountTimer(30, 161612, nil, nil, nil, 5, nil, nil, nil, 1, 5)
 mod:AddTimerLine(ENCOUNTER_JOURNAL_SECTION_FLAG12)
 local timerExpelMagicFelCD			= mod:NewCDTimer(15.5, 172895, nil, "-Tank", 2, 3, nil, DBM_CORE_HEROIC_ICON)--Mythic
-local timerExpelMagicFel			= mod:NewBuffFadesTimer(12, 172895)--Mythic
-
-local countdownMagicFire			= mod:NewCountdownFades(11.5, 162185)
-local countdownBalls				= mod:NewCountdown("Alt30", 161612)
-local countdownFel					= mod:NewCountdownFades("AltTwo11", 172895)
+local timerExpelMagicFel			= mod:NewBuffFadesTimer(12, 172895, nil, nil, nil, 5, nil, nil, nil, 3, 4)--Mythic
 
 mod:AddRangeFrameOption("5")
 mod:AddSetIconOption("SetIconOnMC", 163472, false)
@@ -103,7 +99,6 @@ local function checkBossForgot(self)
 	DBM:Debug("checkBossForgot ran, which means expected balls 10 seconds late, starting 20 second timer for next balls")
 --	self.vb.ballsCount = self.vb.ballsCount + 1
 	timerBallsCD:Start(20, self.vb.ballsCount+1)
-	countdownBalls:Start(20)
 	self:Schedule(13.5, ballsWarning, self)
 end
 
@@ -129,7 +124,6 @@ function mod:OnCombatStart(delay)
 	timerExpelMagicFireCD:Start(6-delay)
 	timerExpelMagicArcaneCD:Start(30-delay)
 	timerBallsCD:Start(36-delay, 1)
-	countdownBalls:Start(36-delay)
 	timerExpelMagicFrostCD:Start(40-delay)
 	timerExpelMagicShadowCD:Start(55-delay)
 	self:Schedule(29.5-delay, ballsWarning, self)
@@ -179,7 +173,6 @@ function mod:SPELL_CAST_START(args)
 		else
 			timerExpelMagicFireCD:Start()
 		end
-		countdownMagicFire:Start()
 		specWarnExpelMagicFire:Play("scattersoon")
 		specWarnExpelMagicFire:ScheduleVoice(5, "scatter")
 		self:Schedule(11.5, closeRange, self)
@@ -279,7 +272,6 @@ function mod:SPELL_AURA_APPLIED(args)
 		if args:IsPlayer() then
 			specWarnExpelMagicFel:Show()
 			timerExpelMagicFel:Start()
-			countdownFel:Start()
 			yellExpelMagicFel:Schedule(11)--Yell right before expire, not apply
 			if not self:HasMapRestrictions() then
 				lastX, LastY = UnitPosition("player")
@@ -367,9 +359,7 @@ function mod:SPELL_AURA_REMOVED(args)
 		if ballsRemaining > 5 then--If 5 seconds or less on timer, balls are already falling and will not be delayed. If remaining >5 it'll be delayed by 20 seconds (entirety of charge phase)
 			timerBallsCD:Stop()
 			timerBallsCD:Start(ballsRemaining+23, self.vb.ballsCount+1)
-			countdownBalls:Cancel()
 			specWarnBallsSoon:Cancel()
-			countdownBalls:Start(ballsRemaining+23)
 			self:Unschedule(ballsWarning)
 			self:Unschedule(checkBossForgot)--Cancel check boss forgot
 			self:Schedule(ballsRemaining+16.5, ballsWarning, self)
@@ -415,7 +405,6 @@ function mod:OnSync(msg, targetname)
 		self:Unschedule(ballsWarning)
 		self:Unschedule(checkBossForgot)
 		timerBallsCD:Stop()--Sometimes balls still hit even with > 5-6 seconds, cancel timers an count
-		countdownBalls:Cancel()--Then code below will just fix it all on it's own
 		local timer
 		if self.vb.shieldCharging then
 			timer = 52
@@ -426,7 +415,6 @@ function mod:OnSync(msg, targetname)
 		end
 		warnBallsHit:Show(self.vb.ballsCount)
 		timerBallsCD:Start(timer, self.vb.ballsCount+1)
-		countdownBalls:Start(timer)
 		self:Schedule(timer-6.5, ballsWarning, self)
 		self:Schedule(timer+10, checkBossForgot, self)--Fire checkbossForgot 10 seconds after raid should have soaked or taken damage
 	end

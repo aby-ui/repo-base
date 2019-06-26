@@ -834,8 +834,8 @@ DF.RuneIDs = {
 
 function DF:GetSpellsForEncounterFromJournal (instanceEJID, encounterEJID)
 
-	EJ_SelectInstance (instanceEJID) 
-	local name, description, encounterID, rootSectionID, link = EJ_GetEncounterInfo (encounterEJID) --taloc (primeiro boss de Uldir)
+	DetailsFramework.EncounterJournal.EJ_SelectInstance (instanceEJID) 
+	local name, description, encounterID, rootSectionID, link = DetailsFramework.EncounterJournal.EJ_GetEncounterInfo (encounterEJID) --taloc (primeiro boss de Uldir)
 	
 	if (not name) then
 		print ("DetailsFramework: Encounter Info Not Found!", instanceEJID, encounterEJID)

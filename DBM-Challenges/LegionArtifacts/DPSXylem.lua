@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("ArtifactXylem", "DBM-Challenges", 2)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041705828")
+mod:SetRevision("20190625143134")
 mod:SetCreatureID(115244)
 mod:SetZone()--Healer (1710), Tank (1698), DPS (1703-The God-Queen's Fury), DPS (Fel Totem Fall)
 mod.soloChallenge = true
@@ -43,8 +43,6 @@ local timerArcaneAnnihilationCD		= mod:NewNextTimer(5, 234728, nil, nil, nil, 4,
 local timerShadowBarrageCD			= mod:NewCDTimer(40.0, 231443, nil, nil, nil, 3)--Actually used both phases
 --Arcane Phase
 local timerDrawPowerCD				= mod:NewCDTimer(18.2, 231522, nil, nil, nil, 4, nil, DBM_CORE_INTERRUPT_ICON)
-
---local countdownTimer				= mod:NewCountdownFades(10, 141582)
 
 local activeBossGUIDS = {}
 

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("DSTrash", "DBM-DragonSoul")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041705904")
+mod:SetRevision("20190625143316")
 mod:SetModelID(39378)
 mod:SetZone()
 mod.isTrashMod = true
@@ -21,7 +21,7 @@ local yellBoulder			= mod:NewYell(107597)
 local specWarnFlames		= mod:NewSpecialWarningMove(105579)
 
 local timerDrakes			= mod:NewTimer(253, "TimerDrakes", 61248)
-local timerRoleplay			= mod:NewTimer(45.5, "timerRoleplay", "Interface\\Icons\\Spell_Holy_BorrowedTime")
+local timerRoleplay			= mod:NewTimer(45.5, "timerRoleplay", "237538")
 --Leave this timer for now, I think this is the same.
 --it still seems timed, just ends earlier if you kill 15 drakes.
 --No one knew it ended at 24 drakes before hotfix because timer always expired before any raid hit 24, so we often just saw the hard capped event limit.

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1986, "DBM-AntorusBurningThrone", nil, 946)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041705925")
+mod:SetRevision("20190625143337")
 mod:SetCreatureID(122468, 122467, 122469)--122468 Noura, 122467 Asara, 122469 Diima, 125436 Thu'raya (mythic only)
 mod:SetEncounterID(2073)
 mod:SetZone()
@@ -82,11 +82,11 @@ local timerBossIncoming					= mod:NewTimer(61, "timerBossIncoming", nil, nil, ni
 mod:AddTimerLine(Noura)
 local timerFieryStrikeCD				= mod:NewCDTimer(10.5, 244899, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON)
 local timerWhirlingSaberCD				= mod:NewNextTimer(35.1, 245627, nil, nil, nil, 3)--35-45
-local timerFulminatingPulseCD			= mod:NewNextTimer(40.1, 253520, nil, nil, nil, 3)
+local timerFulminatingPulseCD			= mod:NewNextTimer(40.1, 253520, nil, nil, nil, 3, nil, nil, nil, mod:IsHealer() and 2, 4)
 --Asara, Mother of Night
 mod:AddTimerLine(Asara)
 local timerShadowBladesCD				= mod:NewCDTimer(27.6, 246329, nil, nil, nil, 3)
-local timerStormofDarknessCD			= mod:NewNextCountTimer(56.8, 252861, nil, nil, nil, 2, nil, DBM_CORE_HEALER_ICON)--57+
+local timerStormofDarknessCD			= mod:NewNextCountTimer(56.8, 252861, nil, nil, nil, 2, nil, DBM_CORE_HEALER_ICON, nil, 3, 4)--57+
 --Diima, Mother of Gloom
 mod:AddTimerLine(Diima)
 local timerFlashFreezeCD				= mod:NewCDTimer(10.1, 245518, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON)
@@ -98,20 +98,14 @@ local timerCosmicGlareCD				= mod:NewCDTimer(15.8, 250757, nil, nil, nil, 3, nil
 --Torment of the Titans
 mod:AddTimerLine(torment)
 ----Activations timers
-local timerMachinationsofAmanThulCD		= mod:NewCastTimer(85, 250335, nil, nil, nil, 6)
-local timerFlamesofKhazgorothCD			= mod:NewCastTimer(85, 250333, nil, nil, nil, 6)
-local timerSpectralArmyofNorgannonCD	= mod:NewCastTimer(85, 250334, nil, nil, nil, 6)
-local timerFuryofGolgannethCD			= mod:NewCastTimer(85, 249793, nil, nil, nil, 6)
+local timerMachinationsofAmanThulCD		= mod:NewCastTimer(85, 250335, nil, nil, nil, 6, nil, nil, nil, 1, 5)
+local timerFlamesofKhazgorothCD			= mod:NewCastTimer(85, 250333, nil, nil, nil, 6, nil, nil, nil, 1, 5)
+local timerSpectralArmyofNorgannonCD	= mod:NewCastTimer(85, 250334, nil, nil, nil, 6, nil, nil, nil, 1, 5)
+local timerFuryofGolgannethCD			= mod:NewCastTimer(85, 249793, nil, nil, nil, 6, nil, nil, nil, 1, 5)
 ----Actual phase stuff
 local timerMachinationsofAman			= mod:NewCastTimer(20, 250095, nil, nil, nil, 5, nil, DBM_CORE_DAMAGE_ICON)
 
 --local berserkTimer					= mod:NewBerserkTimer(600)
-
---Noura, Mother of Flames
-local countdownTitans					= mod:NewCountdown(85, "ej16138")
-local countdownFulminatingPulse			= mod:NewCountdown("Alt40", 253520, "Healer")
---Asara, Mother of Night
-local countdownStormofDarkness			= mod:NewCountdown("AltTwo57", 252861)
 
 mod:AddSetIconOption("SetIconOnFulminatingPulse2", 253520, false)
 mod:AddSetIconOption("SetIconOnChilledBlood2", 245586, false)
@@ -159,9 +153,7 @@ function mod:OnCombatStart(delay)
 	timerShadowBladesCD:Start(10.9-delay)
 	if not self:IsEasy() then
 		timerFulminatingPulseCD:Start(20.3-delay)
-		countdownFulminatingPulse:Start(20.3-delay)
 		timerStormofDarknessCD:Start(26-delay, 1)
-		countdownStormofDarkness:Start(26-delay)
 	end
 	if self.Options.NPAuraOnVisageofTitan then
 		DBM:FireEvent("BossMod_EnableHostileNameplates")
@@ -225,7 +217,6 @@ function mod:SPELL_CAST_START(args)
 		specWarnStormofDarkness:Show(self.vb.stormCount)
 		specWarnStormofDarkness:Play("findshelter")
 		timerStormofDarknessCD:Start(56.8, self.vb.stormCount+1)
-		countdownStormofDarkness:Start(56.8)
 	elseif spellId == 253650 then
 		specWarnOrbofFrost:Show()
 		specWarnOrbofFrost:Play("161411")
@@ -258,12 +249,10 @@ function mod:SPELL_CAST_SUCCESS(args)
 		timerFlashFreezeCD:Start()
 	elseif spellId == 253520 and self:AntiSpam(3, 3) then
 		timerFulminatingPulseCD:Start()
-		countdownFulminatingPulse:Start(40.1)
 	elseif spellId == 245532 and self:AntiSpam(3, 2) then
 		timerChilledBloodCD:Start()
 		specWarnChilledBlood:Play("healall")
 	elseif (spellId == 250335 or spellId == 250333 or spellId == 250334 or spellId == 249793) and self:IsInCombat() then--Torment selections
-		countdownTitans:Start()
 		if spellId == 250335 then--Machinations of Aman'Thul
 			timerMachinationsofAmanThulCD:Start()
 		elseif spellId == 250333 then--Flames of Khaz'goroth
@@ -507,13 +496,11 @@ function mod:UNIT_TARGETABLE_CHANGED(uId)
 			timerFieryStrikeCD:Start(11.8)
 			if not self:IsEasy() then
 				timerFulminatingPulseCD:Start(20.6)
-				countdownFulminatingPulse:Start(20.6)
 			end
 		else
 			timerFieryStrikeCD:Stop()
 			timerWhirlingSaberCD:Stop()
 			timerFulminatingPulseCD:Stop()
-			countdownFulminatingPulse:Cancel()
 		end
 	elseif cid == 122467 then--Asara
 		if targetWeWarn then
@@ -521,7 +508,6 @@ function mod:UNIT_TARGETABLE_CHANGED(uId)
 		else
 			timerShadowBladesCD:Stop()
 			timerStormofDarknessCD:Stop()
-			countdownStormofDarkness:Cancel()
 		end
 	elseif cid == 122469 then--Diima
 		if targetWeWarn then

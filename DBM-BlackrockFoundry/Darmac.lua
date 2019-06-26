@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1122, "DBM-BlackrockFoundry", nil, 457)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041705938")
+mod:SetRevision("20190625143352")
 mod:SetCreatureID(76865)--No need to add beasts to this. It's always main boss that's engaged first and dies last.
 mod:SetEncounterID(1694)
 mod:SetZone()
@@ -65,14 +65,14 @@ local yellInfernoBreath				= mod:NewYell(154989)
 
 --Boss basic attacks
 mod:AddTimerLine(CORE_ABILITIES)--Core Abilities
-local timerPinDownCD				= mod:NewCDTimer(19.7, 155365, nil, "Ranged", 2)--Every 19.7 seconds unless delayed by other things. CD timer used for this reason
-local timerCallthePackCD			= mod:NewCDTimer(31.5, 154975, nil, "Tank", 2, 1, nil, DBM_CORE_TANK_ICON)--almost always 31, but cd resets to 11 whenever boss dismounts a beast (causing some calls to be less or greater than 31 seconds apart. In rare cases, boss still interrupts his own cast/delays cast even when not caused by gaining beast buff
+local timerPinDownCD				= mod:NewCDTimer(19.7, 155365, nil, "Ranged", 2, 3, nil, nil, nil, 1, 4)--Every 19.7 seconds unless delayed by other things. CD timer used for this reason
+local timerCallthePackCD			= mod:NewCDTimer(31.5, 154975, nil, "Tank", 2, 1, nil, DBM_CORE_TANK_ICON, nil, 2, 4)--almost always 31, but cd resets to 11 whenever boss dismounts a beast (causing some calls to be less or greater than 31 seconds apart. In rare cases, boss still interrupts his own cast/delays cast even when not caused by gaining beast buff
 --Boss gained abilities (beast deaths grant boss new abilities)
 mod:AddTimerLine(SPELL_BUCKET_ABILITIES_UNLOCKED)--Abilities Unlocked
 local timerRendandTearCD			= mod:NewCDTimer(12, 155385, nil, nil, nil, 3)
 local timerSuperheatedShrapnelCD	= mod:NewCDTimer(14.2, 155499, nil, nil, nil, 3)
 local timerTantrumCD				= mod:NewNextCountTimer(29.5, 162275, nil, nil, nil, 2, nil, DBM_CORE_HEALER_ICON)
-local timerEpicenterCD				= mod:NewCDCountTimer(19.5, 159043, nil, "Melee")
+local timerEpicenterCD				= mod:NewCDCountTimer(19.5, 159043, nil, "Melee", nil, 3, nil, nil, nil, 3, 4)
 --Beast abilities (living)
 mod:AddTimerLine(BATTLE_PET_DAMAGE_NAME_8)--Beast
 local timerSavageHowlCD				= mod:NewCDTimer(25, 155198, nil, "Healer|Tank|RemoveEnrage", 2, 5, nil, DBM_CORE_ENRAGE_ICON)
@@ -81,10 +81,6 @@ local timerStampedeCD				= mod:NewCDTimer(20, 155247, nil, nil, nil, 3)--20-30 a
 local timerInfernoBreathCD			= mod:NewNextTimer(20, 154989, nil, nil, nil, 3)
 
 local berserkTimer					= mod:NewBerserkTimer(720)
-
-local countdownPinDown				= mod:NewCountdown(19.7, 154960, "Ranged")
-local countdownCallPack				= mod:NewCountdown("Alt31", 154975, "Tank")
-local countdownEpicenter			= mod:NewCountdown("AltTwo20", 159043, "Melee")
 
 mod:AddRangeFrameOption("8/7/3", nil, "-Melee")
 mod:AddSetIconOption("SetIconOnSpear", 154960)--Not often I make icon options on by default but this one is universally important. YOu always break players out of spear, in any strat.
@@ -121,7 +117,6 @@ local function updateBeastTimers(self, all, spellId, adjust)
 	if self.vb.FaultlineAbilites and (self:IsMythic() and spellId == 155462 or all) then--Faultline
 		timerEpicenterCD:Stop()
 		timerEpicenterCD:Start(24, self.vb.epicenterCount+1)
-		countdownEpicenter:Start(24)
 	end
 	--Base ability Timers are reset any time boss gains new abilites. Timers are next timers but vary depending on what abilities boss possesses
 	if adjust then return end--adjust true means triggered by boss dismounted on mythic, this doesn't reset pin down or call of the pack
@@ -129,42 +124,28 @@ local function updateBeastTimers(self, all, spellId, adjust)
 		if self.vb.ElekkAbilities and self.vb.WolfAbilities then--Wolf, elekk AND rylak
 			timerCallthePackCD:Stop()--Just to not repeatedly see timer update before expires
 			timerPinDownCD:Stop()--Just to not repeatedly see timer update before expires
-			countdownPinDown:Cancel()
-			countdownCallPack:Cancel()
 			if self:IsDifficulty("lfr") then--Todo, see if normal also does this, since the 41 second timer is both normal and LFR
 				timerCallthePackCD:Start(26)--Verified twice over in LFR.
-				countdownCallPack:Start(26)
 			else
 				timerCallthePackCD:Start(17)
-				countdownCallPack:Start(17)
 			end
 			timerPinDownCD:Start(23)
-			countdownPinDown:Start(23)
 		else--TODO, i need data on rylak with wolf (2) or rylak with elekk (2).
 			timerCallthePackCD:Stop()--Just to not repeatedly see timer update before expires
 			timerPinDownCD:Stop()--Just to not repeatedly see timer update before expires
-			countdownCallPack:Cancel()
-			countdownPinDown:Cancel()
 			--This can't actually happen in LFR so doesn't need anything special
 			timerCallthePackCD:Start(15)--rylak alone verified 15 seconds
-			countdownCallPack:Start(15)
 			timerPinDownCD:Start(13.5)
-			countdownPinDown:Start(13.5)
 		end
 	else--Elekk alone verified, wolf alone verified. Wolf AND Elekk together verified. These timers only alter once rylak abilities activated.
 		timerCallthePackCD:Stop()--Just to not repeatedly see timer update before expires
 		timerPinDownCD:Stop()--Just to not repeatedly see timer update before expires
-		countdownCallPack:Cancel()
-		countdownPinDown:Cancel()
 		if self:IsDifficulty("lfr") then--Todo, see if normal also does this, since the 41 second timer is both normal and LFR
 			timerCallthePackCD:Start(24)
-			countdownCallPack:Start(24)
 		else
 			timerCallthePackCD:Start(11)
-			countdownCallPack:Start(11)
 		end
 		timerPinDownCD:Start(12)
-		countdownPinDown:Start(12)
 	end
 end
 
@@ -200,14 +181,11 @@ function mod:OnCombatStart(delay)
 	self.vb.tantrumCount = 0
 	table.wipe(activeBossGUIDS)
 	timerPinDownCD:Start(9.5-delay)
-	countdownPinDown:Start(9.5-delay)
 	if self:IsLFR() then
 		--Now confirmed.
 		timerCallthePackCD:Start(20-delay)--Time for cast finish, not cast start, because only cast finish is sure thing. cast start can be interrupted
-		countdownCallPack:Start(20-delay)
 	else
 		timerCallthePackCD:Start(9.5-delay)--Time for cast finish, not cast start, because only cast finish is sure thing. cast start can be interrupted
-		countdownCallPack:Start(9.5-delay)
 	end
 	if self.Options.RangeFrame then
 		DBM.RangeCheck:Show(3)
@@ -246,7 +224,6 @@ function mod:SPELL_CAST_START(args)
 			specWarnEpicenter:Show()--Warn melee during cast to move outa head of time.
 		end
 		timerEpicenterCD:Start(nil, self.vb.epicenterCount+1)
-		countdownEpicenter:Start()
 	end
 end
 
@@ -267,10 +244,8 @@ function mod:SPELL_CAST_SUCCESS(args)
 		end
 		if self:IsDifficulty("normal", "lfr") then
 			timerCallthePackCD:Start(41.5)--40+1.5
-			countdownCallPack:Start(41.5)	
 		else
 			timerCallthePackCD:Start()--30+1.5
-			countdownCallPack:Start()
 		end
 	end
 end
@@ -413,7 +388,6 @@ function mod:INSTANCE_ENCOUNTER_ENGAGE_UNIT()
 					self.vb.epicenterCount = 0
 					self:UnregisterShortTermEvents()--UNIT_TARGETABLE_CHANGED no longer used, and in fact unregistered to prevent bug with how it fires when faultline dies
 					timerEpicenterCD:Start(10, 1)
-					countdownEpicenter:Start(10)
 					--Cancel timers for abilities he can't use from other dead beasts
 					timerRendandTearCD:Stop()
 					timerSuperheatedShrapnelCD:Stop()
@@ -423,10 +397,8 @@ function mod:INSTANCE_ENCOUNTER_ENGAGE_UNIT()
 					local remaining = timerCallthePackCD:GetRemaining()
 					if remaining < 20 then--if less than 20, it's changed to 20, else, current timer finishes if > 20
 						DBM:Debug("Call timer less than 20 remaining, CD reset to 20 by blizzard failsafe")
-						countdownCallPack:Cancel()
 						timerCallthePackCD:Stop()
 						timerCallthePackCD:Start(20)
-						countdownCallPack:Start(20)
 					end
 				end
 			end
@@ -460,7 +432,6 @@ function mod:UNIT_DIED(args)
 			timerTantrumCD:Stop()
 		elseif cid == 76946 then
 			timerEpicenterCD:Stop()
-			countdownEpicenter:Cancel()
 		end
 	end
 end
@@ -489,7 +460,6 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 	elseif spellId == 155365 then--Cast
 		specWarnPinDown:Show()
 		timerPinDownCD:Start()
-		countdownPinDown:Start()
 		specWarnPinDown:Play("spear")
 	elseif spellId == 155423 then--Face Random Non-Tank (beast version)
 		specWarnInfernoBreath:Show()

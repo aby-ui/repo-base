@@ -1,5 +1,5 @@
 local dungeonIndex = 17
-MethodDungeonTools.dungeonTotalCount[dungeonIndex] = {normal=224,teeming=260,teemingEnabled=true}
+MethodDungeonTools.dungeonTotalCount[dungeonIndex] = {normal=246,teeming=260,teemingEnabled=true}
 
 MethodDungeonTools.mapPOIs[dungeonIndex] = {
     [1] = {
@@ -64,7 +64,7 @@ MethodDungeonTools.dungeonEnemies[dungeonIndex] = {
       ["characteristics"] = {
          ["Taunt"] = true;
       };
-      ["count"] = 5;
+      ["count"] = 8;
       ["name"] = "Animated Guardian";
       ["displayId"] = 83252;
       ["creatureType"] = "Undead";
@@ -1499,6 +1499,72 @@ MethodDungeonTools.dungeonEnemies[dungeonIndex] = {
       ["level"] = 121;
       ["health"] = 612904;
       ["id"] = 137478;
+   };
+   [32] = {
+      ["clones"] = {
+
+      };
+      ["scale"] = 1;
+      ["spells"] = {
+         [302417] = {};
+         [302418] = {};
+         [302415] = {};
+      };
+      ["characteristics"] = {
+         ["Taunt"] = true;
+      };
+      ["health"] = 305938;
+      ["count"] = 4;
+      ["name"] = "Emissary of the Tides";
+      ["displayId"] = 39391;
+      ["creatureType"] = "Humanoid";
+      ["level"] = 120;
+      ["id"] = 155434;
+      ["iconTexture"] = 132315;
+   };
+   [33] = {
+      ["clones"] = {
+      };
+      ["scale"] = 1;
+      ["spells"] = {
+         [302419] = {};
+         [302420] = {};
+         [302421] = {};
+         [302415] = {};
+      };
+      ["stealthDetect"] = true;
+      ["characteristics"] = {
+         ["Taunt"] = true;
+      };
+      ["health"] = 497151;
+      ["count"] = 4;
+      ["name"] = "Void-Touched Emissary";
+      ["displayId"] = 39391;
+      ["creatureType"] = "Humanoid";
+      ["level"] = 122;
+      ["id"] = 155433;
+      ["iconTexture"] = 132886;
+   };
+   [34] = {
+      ["clones"] = {
+      };
+      ["scale"] = 1;
+      ["spells"] = {
+         [303632] = {};
+         [302415] = {};
+         [290027] = {};
+      };
+      ["characteristics"] = {
+         ["Taunt"] = true;
+      };
+      ["health"] = 7648472;
+      ["count"] = 0;
+      ["name"] = "Enchanted Emissary";
+      ["displayId"] = 39391;
+      ["creatureType"] = "Humanoid";
+      ["level"] = 121;
+      ["id"] = 155432;
+      ["iconTexture"] = 135735;
    };
 };
 

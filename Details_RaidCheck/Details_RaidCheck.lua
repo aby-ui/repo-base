@@ -4,10 +4,11 @@ local UnitBuff = UnitBuff
 local GetSpellInfo = GetSpellInfo
 local UnitClass = UnitClass
 local UnitName = UnitName
-local UnitGroupRolesAssigned = UnitGroupRolesAssigned
 local CLASS_ICON_TCOORDS = CLASS_ICON_TCOORDS
 
 local DF = DetailsFramework
+
+local UnitGroupRolesAssigned = DF.UnitGroupRolesAssigned
 
 --> build the list of buffs to track
 local flask_list = DetailsFramework.FlaskIDs
@@ -869,6 +870,10 @@ end
 				
 				if (_G._detalhes) then
 
+					if (DetailsFramework.IsClassicWow()) then
+						return
+					end
+				
 					--> create widgets
 					CreatePluginFrames()
 

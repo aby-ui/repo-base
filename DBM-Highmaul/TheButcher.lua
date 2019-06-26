@@ -1,11 +1,11 @@
 local mod	= DBM:NewMod(971, "DBM-Highmaul", nil, 477)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041705938")
+mod:SetRevision("20190625143352")
 mod:SetCreatureID(77404)
 mod:SetEncounterID(1706)
 mod:SetZone()
-mod:SetModelSound("sound\\creature\\thebutcher\\VO_60_OGRERAID_BUTCHER_AGGRO.ogg", "sound\\creature\\thebutcher\\VO_60_OGRERAID_BUTCHER_SPELL_B.ogg")
+--mod:SetModelSound("sound\\creature\\thebutcher\\VO_60_OGRERAID_BUTCHER_AGGRO.ogg", "sound\\creature\\thebutcher\\VO_60_OGRERAID_BUTCHER_SPELL_B.ogg")
 
 mod:RegisterCombat("combat")
 
@@ -32,16 +32,13 @@ local specWarnBoundingCleaveEnded	= mod:NewSpecialWarningEnd(156160)
 local specWarnPaleVitriol			= mod:NewSpecialWarningMove(163046, nil, nil, nil, nil, 2)--Mythic
 
 local timerCleaveCD					= mod:NewCDTimer(6, 156157, nil, false, nil, 5)
-local timerTenderizerCD				= mod:NewCDTimer(15.2, 156151, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON)
+local timerTenderizerCD				= mod:NewCDTimer(15.2, 156151, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON, nil, 2, 4)
 local timerCleaverCD				= mod:NewCDTimer(7.5, 156143, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON)
 local timerGushingWounds			= mod:NewBuffFadesTimer(15, 156152)
-local timerBoundingCleaveCD			= mod:NewNextCountTimer(60, 156160, nil, nil, nil, 2)
+local timerBoundingCleaveCD			= mod:NewNextCountTimer(60, 156160, nil, nil, nil, 2, nil, nil, nil, 1, 4)
 local timerBoundingCleave			= mod:NewCastTimer(15, 156160, nil, nil, nil, 2)
 
 local berserkTimer					= mod:NewBerserkTimer(300)
-
-local countdownTenderizer			= mod:NewCountdown("Alt17", 156151, "Tank")
-local countdownBoundingCleave		= mod:NewCountdown(60, 156160)
 
 mod.vb.cleaveCount = 0
 mod.vb.boundingCleave = 0
@@ -52,12 +49,10 @@ function mod:OnCombatStart(delay)
 	self.vb.boundingCleave = 0
 	self.vb.isFrenzied = false
 	timerTenderizerCD:Start(6-delay)
-	countdownTenderizer:Start(6-delay)
 	timerCleaveCD:Start(10-delay)--Verify this wasn't caused by cleave bug.
 	timerCleaverCD:Start(12-delay)
 	timerBoundingCleaveCD:Start(-delay, 1)
 	specWarnBoundingCleave:ScheduleVoice(53.5-delay, "156160")
-	countdownBoundingCleave:Start(-delay)
 	if self:IsMythic() then
 		berserkTimer:Start(240-delay)
 		self:RegisterShortTermEvents(
@@ -103,7 +98,6 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif spellId == 156151 then
 		local amount = args.amount or 1
 		timerTenderizerCD:Start()
-		countdownTenderizer:Start()
 		if amount >= 2 then
 			if args:IsPlayer() then
 				specWarnTenderizer:Show(amount)
@@ -128,11 +122,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		local bossProgress = bossPower * 0.3--Under frenzy he gains energy twice as fast. So about 3.33 energy per seocnd, 30 seconds to full power.
 		local timeRemaining = 30-bossProgress
 		timerBoundingCleaveCD:Update(bossProgress, 30, self.vb.boundingCleave+1)--Will bar update work correctly on a count bar? Looking at code I don't think it will, it doesn't accept/pass on extra args in Update call.
-		countdownBoundingCleave:Cancel()
 		specWarnBoundingCleave:CancelVoice()
-		if timeRemaining >= 3 then--Don't start countdown if only 2 seconds left
-			countdownBoundingCleave:Start(timeRemaining)
-		end
 		if timeRemaining >= 8.5 then--Prevent a number lower than 2
 			specWarnBoundingCleave:ScheduleVoice(30-bossProgress-6.5, "156160")
 		end
@@ -176,20 +166,16 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 		self.vb.cleaveCount = 0
 		self.vb.boundingCleave = self.vb.boundingCleave + 1
 		timerCleaveCD:Stop()
-		countdownTenderizer:Cancel()
 		specWarnBoundingCleave:Show(self.vb.boundingCleave)
 		timerTenderizerCD:Start(15)
-		countdownTenderizer:Start(15)
 		timerCleaverCD:Start(21)
 		if self.vb.isFrenzied then
 			timerBoundingCleave:Start(5)
 			timerBoundingCleaveCD:Start(30, self.vb.boundingCleave+1)
-			countdownBoundingCleave:Start(30)
 			specWarnBoundingCleave:ScheduleVoice(23.5, "156160")
 		else
 			timerBoundingCleave:Start(9)
 			timerBoundingCleaveCD:Start(nil, self.vb.boundingCleave+1)
-			countdownBoundingCleave:Start(60)
 			specWarnBoundingCleave:ScheduleVoice(53.5, "156160")
 		end
 	end

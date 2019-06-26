@@ -76,6 +76,7 @@ do
 
         if not fade then
             fade = fader_Create(frame)
+            faders[frame] = fade
         end
 
         fade(toAlpha, duration)

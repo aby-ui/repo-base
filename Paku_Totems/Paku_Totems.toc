@@ -1,4 +1,4 @@
-## Interface: 80100
+## Interface: 80200
 ## Title: Pa'ku Totems
 ## Author: jaxdahl
 ## Version: 1.62

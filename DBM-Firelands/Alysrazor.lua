@@ -1,11 +1,11 @@
 local mod	= DBM:NewMod(194, "DBM-Firelands", nil, 78)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041705904")
+mod:SetRevision("20190625143316")
 mod:SetCreatureID(52530)
 mod:SetEncounterID(1206)
 mod:SetZone()
-mod:SetModelSound("Sound\\Creature\\ALYSRAZOR\\VO_FL_ALYSRAZOR_AGGRO.ogg", "Sound\\Creature\\ALYSRAZOR\\VO_FL_ALYSRAZOR_TRANSITION_02.ogg")
+--mod:SetModelSound("Sound\\Creature\\ALYSRAZOR\\VO_FL_ALYSRAZOR_AGGRO.ogg", "Sound\\Creature\\ALYSRAZOR\\VO_FL_ALYSRAZOR_TRANSITION_02.ogg")
 --Long: I serve a new master now, mortals!
 --Short: Reborn in Flame!
 
@@ -28,7 +28,7 @@ mod:RegisterEvents(
 local warnMolting				= mod:NewCountAnnounce(99464, 3)
 local warnFirestormSoon			= mod:NewPreWarnAnnounce(100744, 10, 3)
 local warnCataclysm				= mod:NewCastAnnounce(102111, 3)
-local warnPhase					= mod:NewAnnounce("WarnPhase", 3, "Interface\\Icons\\Spell_Nature_WispSplode")
+local warnPhase					= mod:NewAnnounce("WarnPhase", 3, "136116")
 local warnNewInitiate			= mod:NewAnnounce("WarnNewInitiate", 3, 61131)
 
 local specWarnFirestorm			= mod:NewSpecialWarningSpell(100744, nil, nil, nil, 2, 2)
@@ -41,17 +41,14 @@ local timerCombatStart			= mod:NewCombatTimer(33)
 local timerFieryVortexCD		= mod:NewNextTimer(179, 99794, nil, nil, nil, 6)
 local timerMoltingCD			= mod:NewNextTimer(60, 99464, nil, nil, nil, 5)
 local timerCataclysm			= mod:NewCastTimer(5, 102111, nil, nil, nil, 5)--Heroic
-local timerCataclysmCD			= mod:NewCDTimer(31, 102111, nil, nil, nil, 5, nil, DBM_CORE_DEADLY_ICON)--Heroic
-local timerFirestormCD			= mod:NewCDTimer(83, 100744, nil, nil, nil, 2, nil, DBM_CORE_DEADLY_ICON)--Heroic
+local timerCataclysmCD			= mod:NewCDTimer(31, 102111, nil, nil, nil, 5, nil, DBM_CORE_DEADLY_ICON, nil, 2, 4)--Heroic
+local timerFirestormCD			= mod:NewCDTimer(83, 100744, nil, nil, nil, 2, nil, DBM_CORE_DEADLY_ICON, nil, 1, 4)--Heroic
 local timerPhaseChange			= mod:NewTimer(33.5, "TimerPhaseChange", 99816, nil, nil, 6)
 local timerHatchEggs			= mod:NewTimer(50, "TimerHatchEggs", 42471, nil, nil, 1)
 local timerNextInitiate			= mod:NewTimer(32, "timerNextInitiate", 61131, nil, nil, 1)
 local timerTantrum				= mod:NewBuffActiveTimer(10, 99362, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON)
 local timerSatiated				= mod:NewBuffActiveTimer(15, 99359, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON)
 local timerBlazingClaw			= mod:NewTargetTimer(15, 99844, nil, false, nil, 5)
-
-local countdownFirestorm		= mod:NewCountdown(83, 100744)
-local countdownCataclysm		= mod:NewCountdown("Alt31", 102111)
 
 mod:AddBoolOption("InfoFrame", false)
 
@@ -74,10 +71,8 @@ function mod:OnCombatStart(delay)
 	if self:IsDifficulty("heroic10", "heroic25") then
 		timerFieryVortexCD:Start(243-delay)--Probably not right.
 		timerCataclysmCD:Start(32-delay)
-		countdownCataclysm:Start(32-delay)
 		timerHatchEggs:Start(42-delay)
 		timerFirestormCD:Start(94-delay)
-		countdownFirestorm:Start(94-delay)--Perhaps some tuning.
 		warnFirestormSoon:Schedule(84-delay)
 		timerHatchEggs:Start(37-delay)
 	else
@@ -149,10 +144,8 @@ function mod:SPELL_AURA_REMOVED(args)
 		timerHatchEggs:Start(16)
 		if self.vb.cataCast < 3 then
 			timerCataclysmCD:Start(10)--10 seconds after first firestorm ends
-			countdownCataclysm:Start(10)
 		else
 			timerCataclysmCD:Start(20)--20 seconds after second one ends. (or so i thought, my new logs show only 4 cataclysms not 5. wtf. I hate inconsistencies
-			countdownCataclysm:Start(20)
 		end
 	elseif spellId == 99432 and self:IsInCombat() then--Burnout removed (50 energy)
 		warnPhase:Show(4)
@@ -178,14 +171,12 @@ function mod:SPELL_CAST_START(args)
 		timerCataclysm:Start()
 		if self.vb.cataCast == 1 or self.vb.cataCast == 3 then--Cataclysm is cast 5 times, but there is a firestorm in middle them affecting CD on 2nd and 4th, so you only want to start 30 sec bar after first and third
 			timerCataclysmCD:Start()
-			countdownCataclysm:Start()
 		end
 	elseif spellId == 100744 then
 		specWarnFirestorm:Show()
 		specWarnFirestorm:Play("aesoon")
 		if self.vb.cataCast < 3 then--Firestorm is only cast 2 times per phase. This essencially makes cd bar only start once.
 			timerFirestormCD:Start()
-			countdownFirestorm:Start(83)--Perhaps some tuning.
 			warnFirestormSoon:Cancel()--Just in case it's wrong. WoL may not be perfect, i'll have full transcriptor logs soon.
 			warnFirestormSoon:Schedule(73)
 		end
@@ -256,9 +247,7 @@ function mod:RAID_BOSS_EMOTE(msg)
 			timerFieryVortexCD:Start(225)
 			timerHatchEggs:Start(22)
 			timerCataclysmCD:Start(18)
-			countdownCataclysm:Start(18)
 			timerFirestormCD:Start(70)
-			countdownFirestorm:Start(70)
 			warnFirestormSoon:Schedule(60)
 			self.vb.cataCast = 0
 		else

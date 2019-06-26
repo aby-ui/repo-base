@@ -13,7 +13,7 @@ local _UFC = UnitAffectingCombat --> wow api local
 local _IsInRaid = IsInRaid --> wow api local
 local _IsInGroup = IsInGroup --> wow api local
 local _UnitName = UnitName --> wow api local
-local _UnitGroupRolesAssigned = UnitGroupRolesAssigned --> wow api local
+local _UnitGroupRolesAssigned = DetailsFramework.UnitGroupRolesAssigned
 local _UnitHealth = UnitHealth --> wow api local
 local _UnitHealthMax = UnitHealthMax --> wow api local
 local _UnitIsPlayer = UnitIsPlayer --> wow api local
@@ -826,6 +826,10 @@ function Vanguard:OnEvent (_, event, arg1, token, time, who_serial, who_name, wh
 		if (AddonName == "Details_Vanguard") then
 			
 			if (_G._detalhes) then
+			
+				if (DetailsFramework.IsClassicWow()) then
+					return
+				end
 				
 				local MINIMAL_DETAILS_VERSION_REQUIRED = 1
 				local default_saved_table = {

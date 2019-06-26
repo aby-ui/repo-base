@@ -1,13 +1,13 @@
 local mod	= DBM:NewMod(1203, "DBM-BlackrockFoundry", nil, 457)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041705938")
+mod:SetRevision("20190625143352")
 mod:SetCreatureID(77557, 77231, 77477)
 mod:SetEncounterID(1695)
 mod:SetZone()
 mod:SetBossHPInfoToHighest()
 mod:SetUsedIcons(5, 4, 3, 2, 1)
-mod:SetModelSound("sound\\creature\\marak\\vo_60_ironmaidens_marak_08.ogg", "sound\\creature\\marak\\vo_60_ironmaidens_marak_08.ogg")
+--mod:SetModelSound("sound\\creature\\marak\\vo_60_ironmaidens_marak_08.ogg", "sound\\creature\\marak\\vo_60_ironmaidens_marak_08.ogg")
 mod.respawnTime = 29.5
 
 mod:RegisterCombat("combat")
@@ -92,9 +92,9 @@ local yellHeartseeker					= mod:NewYell(158010, nil, false)
 
 --Ship
 mod:AddTimerLine(Ship)
-local timerShipCD						= mod:NewNextCountTimer(198, "ej10019", nil, nil, nil, 6, 76204)
+local timerShipCD						= mod:NewNextCountTimer(198, "ej10019", nil, nil, nil, 6, 76204, nil, nil, 1, 5)
 local timerBombardmentAlphaCD			= mod:NewNextTimer(18, 157854, nil, nil, nil, 2, nil, DBM_CORE_DEADLY_ICON)
-local timerWarmingUp					= mod:NewCastTimer(90, 158849, nil, nil, nil, 6)
+local timerWarmingUp					= mod:NewCastTimer(90, 158849, nil, nil, nil, 6, nil, nil, nil, 1, 5)
 --Ground
 ----Admiral Gar'an
 mod:AddTimerLine(Garan)
@@ -104,18 +104,12 @@ local timerPenetratingShotCD			= mod:NewCDCountTimer(28.8, 164271, nil, nil, nil
 local timerDeployTurretCD				= mod:NewCDCountTimer(20.2, 158599, nil, nil, nil, 1, nil, DBM_CORE_DAMAGE_ICON)--20.2-23.5
 ----Enforcer Sorka
 mod:AddTimerLine(Sorka)
-local timerBladeDashCD					= mod:NewCDCountTimer(20, 155794, nil, "Ranged|Tank", nil, 5, nil, DBM_CORE_TANK_ICON)
+local timerBladeDashCD					= mod:NewCDCountTimer(20, 155794, nil, "Ranged|Tank", nil, 5, nil, DBM_CORE_TANK_ICON, nil, mod:IsTank() and 3, 4)
 local timerConvulsiveShadowsCD			= mod:NewNextCountTimer(55.6, 156214, nil, nil, nil, 3)--Timer only enabled on mythic, On non mythic, it's just an unimportant dot. On mythic, MUCH more important because user has to run out of raid and get dispelled.
 ----Marak the Blooded
 mod:AddTimerLine(Marak)
-local timerBloodRitualCD				= mod:NewCDCountTimer(20, 158078, nil, nil, nil, 5, nil, DBM_CORE_TANK_ICON)
+local timerBloodRitualCD				= mod:NewCDCountTimer(20, 158078, nil, nil, nil, 5, nil, DBM_CORE_TANK_ICON, nil, mod:IsTank() and 2, 4)
 local timerHeartSeekerCD				= mod:NewCDCountTimer(70, 158010, nil, "Ranged", nil, 3)
-
-local countdownShip						= mod:NewCountdown(198, "ej10019")
-local countdownWarmingUp				= mod:NewCountdown(90, 158849)
-local countdownBloodRitual				= mod:NewCountdownFades("Alt5", 158078, "Tank")
-local countdownBladeDash				= mod:NewCountdown("AltTwo20", 155794, "Tank")
-local countdownDarkHunt					= mod:NewCountdownFades("AltTwo8", 158315)
 
 mod:AddSetIconOption("SetIconOnRapidFire", 156626, true)
 mod:AddSetIconOption("SetIconOnBloodRitual", 158078, true)
@@ -141,12 +135,7 @@ mod.vb.boatMissionActive = false
 mod.vb.lastBoatPower = 0
 local preyDebuff, bloodcallingDebuff = DBM:GetSpellInfo(170395), DBM:GetSpellInfo(170405)
 
-local UnitPosition, UnitIsConnected, GetTime =  UnitPosition, UnitIsConnected, GetTime
 local playerOnBoat = false
-
-local function isPlayerOnBoat()
-	return playerOnBoat
-end
 
 --For canceling timers if player is on boat team, timers will return when they get off boat
 local function checkBoatOn(self, count)
@@ -155,7 +144,6 @@ local function checkBoatOn(self, count)
 		timerBloodRitualCD:Stop()
 		timerRapidFireCD:Stop()
 		timerBladeDashCD:Stop()
-		countdownBladeDash:Cancel()
 		timerHeartSeekerCD:Stop()
 		timerConvulsiveShadowsCD:Stop()
 		timerPenetratingShotCD:Stop()
@@ -173,7 +161,7 @@ function mod:ConvulsiveTarget(targetname, uId)
 	if not DBM.Options.DontShowFarWarnings then
 		noFilter = true
 	end
-	if (noFilter or not isPlayerOnBoat()) then
+	if (noFilter or not playerOnBoat) then
 		if self.Options.SpecWarn156214target then
 			specWarnConvulsiveShadowsOther:Show(self.vb.convulsiveShadows, targetname)
 		else
@@ -218,13 +206,9 @@ function mod:OnCombatStart(delay)
 	self.vb.lastBoatPower = 0
 	playerOnBoat = false
 	timerBladeDashCD:Start(8-delay, 1)
-	if self:IsMythic() then
-		countdownBladeDash:Start(8-delay)
-	end
 	timerBloodRitualCD:Start(12.4-delay, 1)
 	timerRapidFireCD:Start(15.5-delay, 1)
 	timerShipCD:Start(59.5-delay, 1)
-	countdownShip:Start(59.5-delay)
 	self:RegisterShortTermEvents(
 		"UNIT_HEALTH_FREQUENT boss1 boss2 boss3"
 	)
@@ -246,43 +230,39 @@ function mod:SPELL_CAST_START(args)
 	end
 	if spellId == 158078 then
 		self.vb.bloodRitual = self.vb.bloodRitual + 1
-		if noFilter or not isPlayerOnBoat() then--Blood Ritual. Still safest way to start timer, in case no sync
+		if noFilter or not playerOnBoat then--Blood Ritual. Still safest way to start timer, in case no sync
 			timerBloodRitualCD:Start(nil, self.vb.bloodRitual+1)
 		end
 	elseif spellId == 156626 then--Rapid Fire. Still safest way to start timer, in case no sync
 		self.vb.rapidfire = self.vb.rapidfire + 1
-		if noFilter or not isPlayerOnBoat() then
+		if noFilter or not playerOnBoat then
 			timerRapidFireCD:Start(nil, self.vb.rapidfire+1)
 		end
 	elseif spellId == 158599 then
 		self.vb.turret = self.vb.turret + 1
-		if (noFilter or not isPlayerOnBoat()) then
+		if (noFilter or not playerOnBoat) then
 			specWarnDeployTurret:Show()
 			specWarnDeployTurret:Play("158599")
 			timerDeployTurretCD:Start(nil, self.vb.turret+1)
 		end
 	elseif spellId == 155794 then
-		if noFilter or not isPlayerOnBoat() then
+		if noFilter or not playerOnBoat then
 			self:ScheduleMethod(0.1, "BossTargetScanner", 77231, "BladeDashTarget", 0.1, 16)
 			timerBladeDashCD:Stop()
 			timerBladeDashCD:Start(nil, self.vb.bladeDash+1)
-			if self:IsMythic() then
-				countdownBladeDash:Cancel()
-				countdownBladeDash:Start()
-			end
 		end
 	elseif spellId == 158008 then
 		self.vb.heartseeker = self.vb.heartseeker + 1
-		if noFilter or not isPlayerOnBoat() then
+		if noFilter or not playerOnBoat then
 			timerHeartSeekerCD:Start(nil, self.vb.heartseeker+1)
 		end
 	--Begin Deck Abilities
-	elseif spellId == 158708 and (noFilter or isPlayerOnBoat()) then
+	elseif spellId == 158708 and (noFilter or playerOnBoat) then
 		specWarnEarthenbarrier:Show(args.sourceName)
 		specWarnEarthenbarrier:Play("kickcast")
-	elseif spellId == 158707 and (noFilter or isPlayerOnBoat()) then
+	elseif spellId == 158707 and (noFilter or playerOnBoat) then
 		warnProtectiveEarth:Show()
-	elseif spellId == 158692 and (noFilter or isPlayerOnBoat()) then
+	elseif spellId == 158692 and (noFilter or playerOnBoat) then
 		specWarnDeadlyThrow:Show()
 	elseif spellId == 156109 then
 		self.vb.shadowsWarned = false
@@ -300,15 +280,15 @@ function mod:SPELL_CAST_SUCCESS(args)
 		noFilter = true
 	end
 	if spellId == 157854 then
-		if noFilter or not isPlayerOnBoat() then
+		if noFilter or not playerOnBoat then
 			warnBombardmentAlpha:Show(self.vb.alphaOmega)
 			timerBombardmentAlphaCD:Start()
 		end
-	elseif spellId == 157886 and (noFilter or not isPlayerOnBoat()) then
+	elseif spellId == 157886 and (noFilter or not playerOnBoat) then
 		specWarnBombardmentOmega:Show(self.vb.alphaOmega)
 		self.vb.alphaOmega = self.vb.alphaOmega + 1
 	elseif spellId == 156109 and self:IsMythic() then
-		if noFilter or not isPlayerOnBoat() then
+		if noFilter or not playerOnBoat then
 			timerConvulsiveShadowsCD:Start(nil, self.vb.convulsiveShadows+1)
 		end
 	elseif spellId == 155794 then
@@ -324,7 +304,7 @@ function mod:SPELL_AURA_APPLIED(args)
 	end
 	if spellId == 164271 then
 		self.vb.penetratingShot = self.vb.penetratingShot + 1
-		if noFilter or not isPlayerOnBoat() then
+		if noFilter or not playerOnBoat then
 			if self.Options.SpecWarn164271target then
 				specWarnPenetratingShotOther:Show(self.vb.penetratingShot, args.destName)
 			else
@@ -337,7 +317,7 @@ function mod:SPELL_AURA_APPLIED(args)
 				specWarnPenetratingShot:Play("gathershare")
 			end
 		end
-	elseif spellId == 156214 and not self.vb.shadowsWarned and (noFilter or not isPlayerOnBoat()) then
+	elseif spellId == 156214 and not self.vb.shadowsWarned and (noFilter or not playerOnBoat) then
 		--Count not showed here because spreads aren't counted
 		warnConvulsiveShadows:CombinedShow(0.5, args.destName)--Combined because a bad lingeringshadows drop may have multiple.
 		if args:IsPlayer() and self:IsMythic() then
@@ -347,10 +327,9 @@ function mod:SPELL_AURA_APPLIED(args)
 		end
 	elseif spellId == 158315 then
 		self.vb.darkHunt = self.vb.darkHunt + 1
-		if (noFilter or not isPlayerOnBoat()) then
+		if (noFilter or not playerOnBoat) then
 			if args:IsPlayer() then
 				specWarnDarkHunt:ScheduleVoice(1.5, "defensive")
-				countdownDarkHunt:Start()
 				specWarnDarkHunt:Show()
 			else
 				if self.Options.SpecWarn158315target then
@@ -365,7 +344,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		if self.Options.SetIconOnHeartSeeker and not self:IsLFR() then
 			self:SetSortedIcon(1, args.destName, 3, 3)
 		end
-		if (noFilter or not isPlayerOnBoat()) then
+		if (noFilter or not playerOnBoat) then
 			warnBloodsoakedHeartseeker:CombinedShow(0.5, self.vb.heartseeker, args.destName)
 			if args:IsPlayer() then
 				specWarnBloodsoakedHeartseeker:Show()
@@ -377,8 +356,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		if self.Options.SetIconOnBloodRitual and not self:IsLFR() then
 			self:SetIcon(args.destName, 2)
 		end
-		if (noFilter or not isPlayerOnBoat()) then
-			countdownBloodRitual:Start()
+		if (noFilter or not playerOnBoat) then
 			if self.Options.HudMapOnBloodRitual then
 				DBMHudMap:RegisterRangeMarkerOnPartyMember(spellId, "highlight", args.destName, 3.5, 7, 1, 0, 0, 0.5, nil, true, 2):Pulse(0.5, 0.5)
 			end
@@ -402,7 +380,7 @@ function mod:SPELL_AURA_APPLIED(args)
 			if self.Options.SetIconOnRapidFire and not self:IsLFR() then
 				self:SetIcon(args.destName, 1, 7)
 			end
-			if (noFilter or not isPlayerOnBoat()) then
+			if (noFilter or not playerOnBoat) then
 				if self:CheckNearby(5, args.destName) and self.Options.SpecWarn156631close then
 					specWarnRapidFireNear:Show(args.destName)
 					specWarnRapidFireNear:Play("runaway")
@@ -418,7 +396,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		warnSanguineStrikes:Show(args.destName)
 		--warnSanguineStrikes:Play("healall")
 	--Begin Deck Abilities
-	elseif spellId == 158702 and (noFilter or isPlayerOnBoat()) then
+	elseif spellId == 158702 and (noFilter or playerOnBoat) then
 		warnFixate:CombinedShow(0.5, args.destName)
 		if args:IsPlayer() and self:AntiSpam(3, 1) then--it spams sometimes
 			specWarnFixate:Show()
@@ -459,7 +437,6 @@ function mod:UNIT_DIED(args)
 		timerDeployTurretCD:Stop()
 	elseif cid == 77231 then--Sorka
 		timerBladeDashCD:Stop()
-		countdownBladeDash:Cancel()
 		timerConvulsiveShadowsCD:Stop()
 		timerDarkHuntCD:Stop()
 	elseif cid == 78351 or cid == 78341 or cid == 78343 then--boat bosses
@@ -470,7 +447,6 @@ end
 function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 	if spellId == 158849 then
 		timerWarmingUp:Start()
-		countdownWarmingUp:Start()
 		--No emote trigger, backup
 		if not self.vb.boatMissionActive then
 			--self:Schedule(1, checkBoatOn, self, 1)
@@ -480,7 +456,6 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 			--Timers that always cancel on mythic, regardless of boss going up
 			if self:IsMythic() then
 				timerBladeDashCD:Stop()
-				countdownBladeDash:Cancel()
 				timerBloodRitualCD:Stop()
 				timerHeartSeekerCD:Stop()
 			else--This cancels in all modes
@@ -491,7 +466,6 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 				warnShip:Play("1695ukurogg")
 			elseif cid == 77231 then--Sorka
 				timerBladeDashCD:Stop()
-				countdownBladeDash:Cancel()
 				timerConvulsiveShadowsCD:Stop()
 				timerDarkHuntCD:Stop()
 				warnShip:Play("1695gorak")
@@ -514,13 +488,11 @@ function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg, npc)
 		warnShip:Show(npc)
 		if self.vb.ship < 3 then
 			timerShipCD:Start(nil, self.vb.ship+1)
-			countdownShip:Start()
 		end
 		--Timers that always cancel on mythic, regardless of boss going up
 		if self:IsMythic() then
 			self:Schedule(3, function()
 				timerBladeDashCD:Stop()
-				countdownBladeDash:Cancel()
 				timerBloodRitualCD:Stop()
 				timerHeartSeekerCD:Stop()
 			end)
@@ -541,7 +513,6 @@ function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg, npc)
 			self.vb.boatMissionActive = 77231
 			self:Schedule(3, function()
 				timerBladeDashCD:Stop()
-				countdownBladeDash:Cancel()
 				timerConvulsiveShadowsCD:Stop()
 				timerDarkHuntCD:Stop()
 			end)
@@ -586,7 +557,7 @@ function mod:CHAT_MSG_ADDON(prefix, msg, channel, targetName)
 			if self.Options.SetIconOnRapidFire and not self:IsLFR() then
 				self:SetIcon(targetName, 1, 10)
 			end
-			if DBM.Options.DontShowFarWarnings and isPlayerOnBoat() then return end--Anything below this line doesn't concern people on boat
+			if DBM.Options.DontShowFarWarnings and playerOnBoat then return end--Anything below this line doesn't concern people on boat
 			if self:CheckNearby(5, targetName) and self.Options.SpecWarn156631close then
 				specWarnRapidFireNear:Show(targetName)
 				specWarnRapidFireNear:Play("runaway")
@@ -614,7 +585,6 @@ function mod:UNIT_HEALTH_FREQUENT(uId)
 	local hp = UnitHealth(uId) / UnitHealthMax(uId)
 	if hp < 0.20 and self.vb.phase ~= 2 then
 		timerShipCD:Stop()
-		countdownShip:Cancel()
 		self.vb.phase = 2
 		warnPhase2:Show()
 		warnPhase2:Play("ptwo")
@@ -632,7 +602,6 @@ function mod:UNIT_POWER_FREQUENT(uId, type)
 				DBM:Debug("checkBoatPlayer finished")
 				timerBombardmentAlphaCD:Stop()
 				timerWarmingUp:Stop()
-				countdownWarmingUp:Cancel()
 				if playerOnBoat then -- leave boat
 					playerOnBoat = false
 					specWarnReturnBase:Show()
@@ -645,8 +614,6 @@ function mod:UNIT_POWER_FREQUENT(uId, type)
 				--These abilites resume when boat phase ends with thes timers, they do NOT resume previous timers where they left off.
 				timerBladeDashCD:Stop()
 				timerBladeDashCD:Start(8, 1)
-				countdownBladeDash:Cancel()
-				countdownBladeDash:Start(8)
 				timerBloodRitualCD:Stop()
 				timerBloodRitualCD:Start(12.5, 1)--Variation on this may be same as penetrating shot variation. when it's marak returning from boat may be when it's 9.7
 				--These are altered by boat ending, even though boss continues casting it during boat phases.

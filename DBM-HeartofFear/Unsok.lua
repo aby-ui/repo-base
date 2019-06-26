@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(737, "DBM-HeartofFear", nil, 330)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041710000")
+mod:SetRevision("20190625143417")
 mod:SetCreatureID(62511)
 mod:SetEncounterID(1499)
 mod:SetZone()
@@ -76,8 +76,6 @@ local timerMassiveStompCD		= mod:NewCDTimer(18, 122408, nil, "Melee", nil, 2)--1
 local timerFlingCD				= mod:NewCDTimer(25, 122413, nil, "Tank", nil, 5)--25-40sec variation.
 local timerAmberExplosionAMCD	= mod:NewTimer(46, "timerAmberExplosionAMCD", 122402, nil, nil, 4)--Special timer just for amber monstrosity. easier to cancel, easier to tell apart. His bar is the MOST important and needs to be seperate from any other bar option.
 local timerAmberExplosion		= mod:NewCastTimer(2.5, 122402)
-
-local countdownAmberExplosion	= mod:NewCountdown(49, 122398)
 
 local berserkTimer				= mod:NewBerserkTimer(600)
 
@@ -277,7 +275,6 @@ function mod:SPELL_AURA_APPLIED(args)
 			specwarnReshape:Show()
 			warnReshapeLifeTutor:Show()
 			timerAmberExplosionCD:Start(15, args.destName)--Only player needs to see this, they are only person who can do anything about it.
-			countdownAmberExplosion:Start(15)
 			if self.Options.FixNameplates and IsAddOnLoaded("TidyPlates_ThreatPlates") then
 				if TPTPNormal == true then
 					TidyPlatesThreat.db.profile.nameplate.toggle["Normal"] = false
@@ -306,7 +303,6 @@ function mod:SPELL_AURA_REMOVED(args)
 		Constructs = Constructs - 1
 		if args:IsPlayer() then
 			self:UnregisterShortTermEvents()
-			countdownAmberExplosion:Cancel()
 			playerIsConstruct = false
 			if self.Options.FixNameplates and IsAddOnLoaded("TidyPlates_ThreatPlates") then
 				if TPTPNormal == true and not TidyPlatesThreat.db.profile.nameplate.toggle["Normal"] then--Normal plates were on when we pulled but aren't on now.
@@ -353,7 +349,6 @@ function mod:SPELL_CAST_START(args)
 		elseif args.sourceGUID == UnitGUID("player") then--Cast by YOU
 			specwarnAmberExplosionYou:Show(args.spellName)
 			timerAmberExplosionCD:Start(13, args.sourceName)--Only player needs to see this, they are only person who can do anything about it.
-			countdownAmberExplosion:Start(13)
 		end
 	elseif spellId == 122402 then--Amber Monstrosity
 		if playerIsConstruct and GetTime() - lastStrike >= 3.5 then--Player is construct and Amber Strike will be available before cast ends.

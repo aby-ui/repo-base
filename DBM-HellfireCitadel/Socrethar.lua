@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1427, "DBM-HellfireCitadel", nil, 669)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041705938")
+mod:SetRevision("20190625143352")
 mod:SetCreatureID(92330)
 mod:SetEncounterID(1794)
 mod:SetZone()
@@ -66,10 +66,10 @@ local specWarnEternalHunger			= mod:NewSpecialWarningRun(188666, nil, nil, nil, 
 local yellEternalHunger				= mod:NewYell(188666, nil, false)
 
 --Soulbound Construct
-local timerReverberatingBlowCD		= mod:NewCDCountTimer(17, 180008, nil, "Tank|Healer", 2, 5, nil, DBM_CORE_TANK_ICON)
+local timerReverberatingBlowCD		= mod:NewCDCountTimer(17, 180008, nil, "Tank|Healer", 2, 5, nil, DBM_CORE_TANK_ICON, nil, 2, 4)
 local timerFelPrisonCD				= mod:NewCDTimer(29, 182994, nil, nil, nil, 3)--29-33
 local timerVolatileFelOrbCD			= mod:NewCDTimer(23, 180221, 186532, nil, nil, 3)
-local timerFelChargeCD				= mod:NewCDTimer(23, 182051, nil, nil, nil, 3)
+local timerFelChargeCD				= mod:NewCDTimer(23, 182051, nil, nil, nil, 3, nil, nil, nil, 2, 4)
 local timerApocalypticFelburstCD	= mod:NewCDCountTimer(30, 188693, 206388, nil, nil, 2, nil, DBM_CORE_HEROIC_ICON)
 --Socrethar
 local timerTransition				= mod:NewPhaseTimer(6.5)
@@ -77,16 +77,12 @@ local timerExertDominanceCD			= mod:NewCDCountTimer(4.5, 183331, nil, "-Healer",
 local timerApocalypseCD				= mod:NewCDTimer(46, 183329, nil, nil, nil, 2)
 --Adds
 local timerSargereiDominatorCD		= mod:NewNextCountTimer(60, "ej11456", nil, nil, nil, 1, 184053)
-local timerHauntingSoulCD			= mod:NewCDCountTimer(29, "ej11462", nil, nil, nil, 1, 182769)
+local timerHauntingSoulCD			= mod:NewCDCountTimer(29, "ej11462", nil, nil, nil, 1, 182769, nil, nil, 1, 5)
 local timerGiftofManariCD			= mod:NewCDTimer(11, 184124, nil, nil, nil, 3)
 --Mythic
 local timerVoraciousSoulstalkerCD	= mod:NewCDCountTimer(59.5, "ej11778", 151869, nil, nil, 1, 190776, DBM_CORE_HEROIC_ICON)
 
 --local berserkTimer				= mod:NewBerserkTimer(360)
-
-local countdownReverberatingBlow	= mod:NewCountdown(17, 180008, "Tank", nil, 4)--Every 17 seconds now, so count last 4
-local countdownCharge				= mod:NewCountdown("Alt23", 182051)
-local countdownSouls				= mod:NewCountdown(29, "ej11462")
 
 mod:AddRangeFrameOption(10, 184124)
 mod:AddHudMapOption("HudMapOnOrb", 180221)
@@ -180,10 +176,8 @@ function mod:OnCombatStart(delay)
 	playerInConstruct = false
 	table.wipe(soulsSeen)
 	timerReverberatingBlowCD:Start(4.3-delay, 1)
-	countdownReverberatingBlow:Start(4.3-delay)
 	timerVolatileFelOrbCD:Start(12-delay)
 	timerFelChargeCD:Start(29-delay)
-	countdownCharge:Start(29-delay)
 	timerFelPrisonCD:Start(51-delay)--Seems drastically changed. 51 in all newer logs
 	if self:IsMythic() then
 		timerVoraciousSoulstalkerCD:Start(20-delay, 1)
@@ -216,7 +210,6 @@ function mod:SPELL_CAST_START(args)
 	if spellId == 180008 then
 		self.vb.ReverberatingBlow = self.vb.ReverberatingBlow + 1
 		timerReverberatingBlowCD:Start(nil, self.vb.ReverberatingBlow+1)
-		countdownReverberatingBlow:Start()
 		specWarnReverberatingBlow:Show(self.vb.ReverberatingBlow)
 	elseif spellId == 181288 then
 		specWarnFelPrison:Show()
@@ -229,10 +222,8 @@ function mod:SPELL_CAST_START(args)
 	elseif spellId == 182051 then
 		if self:IsNormal() then
 			timerFelChargeCD:Start(30)
-			countdownCharge:Start(30)
 		else
 			timerFelChargeCD:Start()
-			countdownCharge:Start()
 		end
 		--Must have delay, to avoid same bug as oregorger. Boss has 2 target scans
 		self:ScheduleMethod(0.1, "BossTargetScanner", args.sourceGUID, "ChargeTarget", 0.1, 10, true)
@@ -298,7 +289,6 @@ function mod:SPELL_CAST_SUCCESS(args)
 		self.vb.kickCount2 = 0
 		warnEjectSoul:Show()
 		timerReverberatingBlowCD:Stop()
-		countdownReverberatingBlow:Cancel()
 		timerFelPrisonCD:Stop()
 		timerVolatileFelOrbCD:Stop()
 		timerFelChargeCD:Stop()
@@ -306,7 +296,6 @@ function mod:SPELL_CAST_SUCCESS(args)
 		timerTransition:Start()--Time until boss is attackable
 		timerSargereiDominatorCD:Start(23, 1)
 		timerHauntingSoulCD:Start(30, 1)--30-33
-		countdownSouls:Start(30)
 		timerApocalypseCD:Start(53)--53-58
 		self:RegisterShortTermEvents(
 			"UNIT_TARGETABLE_CHANGED"
@@ -337,13 +326,11 @@ function mod:SPELL_AURA_APPLIED(args)
 					timerHauntingSoulCD:Start(40, self.vb.ghostSpawn+1)
 					if playerInConstruct then
 						specWarnSouls:Show(self.vb.ghostSpawn)
-						countdownSouls:Start(40)
 					end
 				else
 					timerHauntingSoulCD:Start(nil, self.vb.ghostSpawn+1)
 					if playerInConstruct then
 						specWarnSouls:Show(self.vb.ghostSpawn)
-						countdownSouls:Start(29)
 					end
 				end
 			end
@@ -402,10 +389,6 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif spellId == 190466 then
 		if args.sourceGUID == UnitGUID("player") then
 			playerInConstruct = true
-		else
-			--At time this starts, don't know who construct will be
-			--So started for all, then canceled for all but player who becomes construct
-			countdownSouls:Cancel()
 		end
 	elseif (spellId == 183017 or spellId == 180415) and self:AntiSpam(5, args.destName) and args:GetDestCreatureID() ~= 91765 then
 		warnFelPrison:CombinedShow(0.3, args.destName)
@@ -485,21 +468,17 @@ function mod:UNIT_TARGETABLE_CHANGED(uId)
 		timerExertDominanceCD:Stop()
 		timerSargereiDominatorCD:Stop()
 		timerHauntingSoulCD:Stop()
-		countdownSouls:Cancel()
 		timerApocalypseCD:Stop()
 		self:UnregisterShortTermEvents()
 		timerVolatileFelOrbCD:Start(13)
 		timerFelChargeCD:Start(30.5)
-		countdownCharge:Start(30.5)
 		timerFelPrisonCD:Start(50)
 		if self:IsMythic() then
 			timerReverberatingBlowCD:Start(11, 1)
-			countdownReverberatingBlow:Start(11)
 			timerVoraciousSoulstalkerCD:Start(20, 1)
 			timerApocalypticFelburstCD:Start(nil, 1)
 		else
 			timerReverberatingBlowCD:Start(8, 1)
-			countdownReverberatingBlow:Start(8)
 		end
 	end
 end

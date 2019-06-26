@@ -3,14 +3,21 @@ local Loc = LibStub ("AceLocale-3.0"):GetLocale ( "Details" )
 
 local UnitName = UnitName
 local UnitGUID = UnitGUID
-local UnitGroupRolesAssigned = UnitGroupRolesAssigned
+local UnitGroupRolesAssigned = DetailsFramework.UnitGroupRolesAssigned
 local select = select
 local floor = floor
 
 local GetNumGroupMembers = GetNumGroupMembers
+
 local ItemUpgradeInfo = LibStub ("LibItemUpgradeInfo-1.0")
-local LibGroupInSpecT = LibStub ("LibGroupInSpecT-1.1")
---local LibGroupInSpecT = false
+--local LibGroupInSpecT = LibStub ("LibGroupInSpecT-1.1") --disabled due to classic wow
+local ItemUpgradeInfo
+local LibGroupInSpecT
+
+if (DetailsFramework.IsClassicWow()) then
+	ItemUpgradeInfo = false
+	LibGroupInSpecT = false
+end
 
 local storageDebug = false
 local store_instances = _detalhes.InstancesToStoreData
@@ -423,9 +430,9 @@ function _detalhes:ResetSpecCache (forced)
 		table.wipe (_detalhes.cached_specs)
 		
 		if (_detalhes.track_specs) then
-			local my_spec = GetSpecialization()
+			local my_spec = DetailsFramework.GetSpecialization()
 			if (type (my_spec) == "number") then
-				local spec_number = GetSpecializationInfo (my_spec)
+				local spec_number = DetailsFramework.GetSpecializationInfo (my_spec)
 				if (type (spec_number) == "number") then
 					local pguid = UnitGUID (_detalhes.playername)
 					if (pguid) then
@@ -1793,29 +1800,33 @@ function ilvl_core:CalcItemLevel (unitid, guid, shout)
 			end
 		end
 		
-		local spec = GetInspectSpecialization (unitid)
-		if (spec and spec ~= 0) then
-			_detalhes.cached_specs [guid] = spec
-		end
+		local spec
+		local talents = {}
+		
+		if (not DetailsFramework.IsClassicWow()) then
+			spec = GetInspectSpecialization (unitid)
+			if (spec and spec ~= 0) then
+				_detalhes.cached_specs [guid] = spec
+			end
 		
 --------------------------------------------------------------------------------------------------------
-		
-		local talents = {}
-		for i = 1, 7 do
-			for o = 1, 3 do
-				local talentID, name, texture, selected, available = GetTalentInfo (i, o, 1, true, unitid)
-				if (selected) then
-					tinsert (talents, talentID)
-					break
+
+			for i = 1, 7 do
+				for o = 1, 3 do
+					--need to review this in classic
+					local talentID, name, texture, selected, available = GetTalentInfo (i, o, 1, true, unitid)
+					if (selected) then
+						tinsert (talents, talentID)
+						break
+					end
 				end
 			end
-		end
 		
-		if (talents [1]) then
-			_detalhes.cached_talents [guid] = talents
-			--print (UnitName (unitid), "talents:", unpack (talents))
+			if (talents [1]) then
+				_detalhes.cached_talents [guid] = talents
+				--print (UnitName (unitid), "talents:", unpack (talents))
+			end
 		end
-		
 --------------------------------------------------------------------------------------------------------
 
 		if (ilvl_core.forced_inspects [guid]) then

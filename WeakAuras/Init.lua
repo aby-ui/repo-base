@@ -5,12 +5,12 @@ WeakAuras.normalWidth = 1.25
 WeakAuras.halfWidth = WeakAuras.normalWidth / 2
 WeakAuras.doubleWidth = WeakAuras.normalWidth * 2
 
-local versionStringFromToc = GetAddOnMetadata("WeakAuras", "Version");
-local versionString = "2.12.4.2"
-local buildTime = "20190609153943"
+local versionStringFromToc = GetAddOnMetadata("WeakAuras", "Version")
+local versionString = "2.13.1"
+local buildTime = "20190626033040"
 
 --[===[@debug@
-if versionStringFromToc == "2.12.4.2" then
+if versionStringFromToc == "2.13.1" then
   versionStringFromToc = "Dev"
   buildTime = "Dev"
 end
@@ -36,7 +36,7 @@ end
 WeakAuras.PowerAurasPath = "Interface\\Addons\\WeakAuras\\PowerAurasMedia\\Auras\\"
 WeakAuras.PowerAurasSoundPath = "Interface\\Addons\\WeakAuras\\PowerAurasMedia\\Sounds\\"
 
--- force enable WeakAurasCompanion because some addon manager interfere with it
+-- force enable WeakAurasCompanion because some addon managers interfere with it
 EnableAddOn("WeakAurasCompanion")
 
 --These function stubs are defined here to reduce the number of errors that occur if WeakAuras.lua fails to compile

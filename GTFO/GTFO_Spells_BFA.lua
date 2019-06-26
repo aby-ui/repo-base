@@ -202,6 +202,10 @@ GTFO.SpellID["286466"] = {
   sound = 1;
 };
 
+GTFO.SpellID["297252"] = {
+  --desc = "Residual Gas";
+  sound = 1;
+};
 
 -- ***********************
 -- * Shrine of the Storm *

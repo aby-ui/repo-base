@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1667, "DBM-EmeraldNightmare", nil, 768)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041705925")
+mod:SetRevision("20190625143337")
 mod:SetCreatureID(100497)
 mod:SetEncounterID(1841)
 mod:SetZone()
@@ -36,17 +36,12 @@ local specWarnRendFlesh				= mod:NewSpecialWarningDefensive(197942, "Tank", nil,
 local specWarnRendFleshOther		= mod:NewSpecialWarningTaunt(197942, nil, nil, nil, 3, 2)
 local specWarnOverwhelmOther		= mod:NewSpecialWarningTaunt(197943, nil, nil, nil, 1, 2)
 
-local timerFocusedGazeCD			= mod:NewNextCountTimer(40, 198006, nil, nil, nil, 3)
-local timerRendFleshCD				= mod:NewNextCountTimer(20, 197942, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON)
-local timerOverwhelmCD				= mod:NewNextTimer(10, 197943, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON)
+local timerFocusedGazeCD			= mod:NewNextCountTimer(40, 198006, nil, nil, nil, 3, nil, nil, nil, 1, 4)
+local timerRendFleshCD				= mod:NewNextCountTimer(20, 197942, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON, nil, 2, 4)
+local timerOverwhelmCD				= mod:NewNextTimer(10, 197943, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON, nil, 3, 4)
 local timerRoaringCacophonyCD		= mod:NewNextCountTimer(30, 197969, nil, nil, nil, 2, nil, DBM_CORE_HEALER_ICON)
 
 local berserkTimer					= mod:NewBerserkTimer(300)
-
-local countdownFocusedGazeCD		= mod:NewCountdown(40, 198006)
-local countdownRendFlesh			= mod:NewCountdown("Alt20", 198006, "Tank")
-local countdownOverwhelm			= mod:NewCountdown("AltTwo10", 197943, "Tank", nil, 3)
-local countdownFocusedGaze			= mod:NewCountdownFades(6, 198006)
 
 mod:AddSetIconOption("SetIconOnCharge", 198006, true)
 mod:AddInfoFrameOption(198108, false)
@@ -106,11 +101,8 @@ function mod:OnCombatStart(delay)
 	self.vb.rendCount = 0
 	self.vb.tankCount = self:GetNumAliveTanks() or 2
 	timerOverwhelmCD:Start(-delay)
-	countdownOverwhelm:Start(-delay)
 	timerRendFleshCD:Start(13-delay, 1)
-	countdownRendFlesh:Start(13-delay)
 	timerFocusedGazeCD:Start(19-delay, 1)
-	countdownFocusedGazeCD:Start(19-delay)
 	if self:IsMythic() then
 		timerRoaringCacophonyCD:Start(18-delay, 1)
 	else
@@ -134,7 +126,6 @@ function mod:SPELL_CAST_START(args)
 	if spellId == 197942 then
 		self.vb.rendCount = self.vb.rendCount + 1
 		timerRendFleshCD:Start(nil, self.vb.rendCount+1)
-		countdownRendFlesh:Start()
 		if self:IsTanking("player", "boss1", nil, true) then
 			specWarnRendFlesh:Show()
 			specWarnRendFlesh:Play("defensive")
@@ -181,7 +172,6 @@ function mod:SPELL_CAST_SUCCESS(args)
 	local spellId = args.spellId
 	if spellId == 197943 then
 		timerOverwhelmCD:Start()
-		countdownOverwhelm:Start()
 	end
 end
 
@@ -190,8 +180,6 @@ function mod:SPELL_AURA_APPLIED(args)
 	if spellId == 198006 then
 		self.vb.chargeCount = self.vb.chargeCount + 1
 		timerFocusedGazeCD:Start(nil, self.vb.chargeCount+1)
-		countdownFocusedGazeCD:Start()
-		countdownFocusedGaze:Start()
 		local icon = 0
 		local secondCount
 		--Icons 6/4 used to ensure no conflict with BW.

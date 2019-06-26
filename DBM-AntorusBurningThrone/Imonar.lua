@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2009, "DBM-AntorusBurningThrone", nil, 946)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041705925")
+mod:SetRevision("20190625143337")
 mod:SetCreatureID(124158)--or 124158 or 125692
 mod:SetEncounterID(2082)
 mod:SetZone()
@@ -63,21 +63,16 @@ local yellEmpPulseGrenade				= mod:NewYell(250006)
 --Stage One: Attack Force
 local timerShocklanceCD					= mod:NewCDTimer(4, 247367, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON)--4-5.1
 local timerSleepCanisterCD				= mod:NewCDTimer(11.3, 247552, nil, nil, nil, 3, nil, DBM_CORE_MAGIC_ICON)--11.3-13.4
-local timerPulseGrenadeCD				= mod:NewCDTimer(17, 247376, nil, nil, nil, 3)--17?
+local timerPulseGrenadeCD				= mod:NewCDTimer(17, 247376, nil, nil, nil, 3, nil, nil, nil, 1, 4)--17?
 --Stage Two: Contract to Kill
 local timerSeverCD						= mod:NewCDTimer(7.2, 247687, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON)
-local timerChargedBlastsCD				= mod:NewCDTimer(18.2, 247716, nil, nil, nil, 3)
+local timerChargedBlastsCD				= mod:NewCDTimer(18.2, 247716, nil, nil, nil, 3, nil, nil, nil, 3, 4)
 local timerShrapnalBlastCD				= mod:NewCDCountTimer(13.3, 247923, nil, nil, nil, 3)
 --Stage Three/Five: The Perfect Weapon
 
 --Intermission: On Deadly Ground
 
 local berserkTimer						= mod:NewBerserkTimer(420)
-
---Stage One: Attack Force
-local countdownPulseGrenade				= mod:NewCountdown(17, 247376)
---Stage Two: Contract to Kill
-local countdownChargedBlasts			= mod:NewCountdown("AltTwo18", 247716)
 
 mod:AddSetIconOption("SetIconOnSleepCanister", 247552, true)
 mod:AddSetIconOption("SetIconOnEmpPulse2", 250006, false)
@@ -148,11 +143,9 @@ function mod:OnCombatStart(delay)
 	if not self:IsLFR() then--Don't seem to be in LFR
 		if self:IsMythic() then
 			timerPulseGrenadeCD:Start(12.5-delay)--14.2
-			countdownPulseGrenade:Start(12.5-delay)
 			berserkTimer:Start(480-delay)--8min
 		else
 			timerPulseGrenadeCD:Start(14.2-delay)--14.2
-			countdownPulseGrenade:Start(14.2-delay)
 		end
 	end
 end
@@ -174,14 +167,11 @@ function mod:SPELL_CAST_START(args)
 			specWarnPulseGrenade:Show()
 			specWarnPulseGrenade:Play("watchstep")
 			timerPulseGrenadeCD:Start()
-			countdownPulseGrenade:Start()
 		else--Empowered
 			if self.vb.phase == 5 then--Only happens on mythic and only phase where empowered isn't long cd
 				timerPulseGrenadeCD:Start(13.3)
-				countdownPulseGrenade:Start(13.3)
 			else
 				timerPulseGrenadeCD:Start(25.5)
-				countdownPulseGrenade:Start(25.5)
 			end
 		end
 	elseif spellId == 247923 or spellId == 248070 then
@@ -211,10 +201,8 @@ function mod:SPELL_CAST_START(args)
 		specWarnChargedBlastsUnknown:Play("farfromline")
 		if self:IsMythic() and self.vb.phase < 4 then
 			timerChargedBlastsCD:Start(13.4)
-			countdownChargedBlasts:Start(13.4)
 		else
 			timerChargedBlastsCD:Start()--18.2
-			countdownChargedBlasts:Start(18.2)
 		end
 	end
 end
@@ -334,7 +322,6 @@ function mod:SPELL_AURA_REMOVED(args)
 			warnPhase:Play("ptwo")
 			timerSeverCD:Start(6.6)--6.6-8.2
 			timerChargedBlastsCD:Start(8.4)
-			countdownChargedBlasts:Start(8.4)
 			timerShrapnalBlastCD:Start(12, 1)
 		elseif self.vb.phase == 3 then
 			warnPhase:Play("pthree")
@@ -342,12 +329,10 @@ function mod:SPELL_AURA_REMOVED(args)
 				timerShocklanceCD:Start(4)--NOT empowered
 				timerSleepCanisterCD:Start(7.9)
 				timerPulseGrenadeCD:Start(12.6)--Empowered
-				countdownPulseGrenade:Start(12.6)
 				timerShrapnalBlastCD:Start(13.9, 1)--Empowered
 			else
 				timerShocklanceCD:Start(5)--Empowered
 				timerPulseGrenadeCD:Start(6.3)--Empowered
-				countdownPulseGrenade:Start(6.3)
 				timerShrapnalBlastCD:Start(15.4, 1)--Empowered
 			end
 		elseif self.vb.phase == 4 then--Mythic Only
@@ -360,7 +345,6 @@ function mod:SPELL_AURA_REMOVED(args)
 			warnPhase:Play("pfive")
 			timerShocklanceCD:Start(5)--Empowered
 			timerPulseGrenadeCD:Start(7)--Empowered
-			countdownPulseGrenade:Start(7)
 			timerSleepCanisterCD:Start(12.9)
 			timerShrapnalBlastCD:Start(15.5, 1)--Empowered
 		end
@@ -437,10 +421,8 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 	if spellId == 248995 or spellId == 248194 then
 		timerSeverCD:Stop()
 		timerChargedBlastsCD:Stop()
-		countdownChargedBlasts:Cancel()
 		timerShrapnalBlastCD:Stop()
 		timerPulseGrenadeCD:Stop()
-		countdownPulseGrenade:Cancel()
 		timerSleepCanisterCD:Stop()
 		timerShocklanceCD:Stop()
 		warnPhase:Play("phasechange")

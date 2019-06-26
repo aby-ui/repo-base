@@ -1,3 +1,5 @@
+if not _G.C_AzeriteItem then return end
+
 local Addon = select(2, ...)
 local Dominos = _G.Dominos
 local AzeriteBar = Dominos:CreateClass("Frame", Addon.ProgressBar)

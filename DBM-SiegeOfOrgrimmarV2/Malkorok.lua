@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(846, "DBM-SiegeOfOrgrimmarV2", nil, 369)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041710000")
+mod:SetRevision("20190625143417")
 mod:SetCreatureID(71454)
 mod:SetEncounterID(1595)
 mod:SetZone()
@@ -44,16 +44,12 @@ local timerBloodRage					= mod:NewBuffActiveTimer(22.5, 142879, nil, nil, nil, 6
 local timerDisplacedEnergyCD			= mod:NewNextTimer(11, 142913, nil, nil, nil, 3)
 --Might of the Kor'kron
 local timerArcingSmashCD				= mod:NewCDCountTimer(19, 142815, nil, nil, nil, 3, nil, DBM_CORE_DEADLY_ICON)
-local timerImplodingEnergy				= mod:NewCastTimer(10, 142986, nil, nil, nil, 5)--Always 10 seconds after arcing
+local timerImplodingEnergy				= mod:NewCastTimer(10, 142986, nil, nil, nil, 5, nil, nil, nil, 1, 5)--Always 10 seconds after arcing
 local timerSeismicSlamCD				= mod:NewNextCountTimer(19.5, 142851, nil, nil, nil, 3)--Works exactly same as arcingsmash 18 sec unless delayed by breath. two sets of 3
-local timerBreathofYShaarjCD			= mod:NewNextCountTimer(70, 142842, nil, nil, nil, 2, nil, DBM_CORE_DEADLY_ICON)
+local timerBreathofYShaarjCD			= mod:NewNextCountTimer(70, 142842, nil, nil, nil, 2, nil, DBM_CORE_DEADLY_ICON, nil, 2, 4)
 local timerFatalStrike					= mod:NewTargetTimer(30, 142990, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON)
 
 local berserkTimer						= mod:NewBerserkTimer(360)
-
-local countdownImplodingEnergy			= mod:NewCountdown(10, 142986, nil, nil, 5)
-
-local countdownBreathofYShaarj			= mod:NewCountdown(10, 142842, nil, nil, 5, nil, true)
 
 mod:AddRangeFrameOption("8/5")--Various things
 mod:AddSetIconOption("SetIconOnDisplacedEnergy", 142913, false)
@@ -88,7 +84,6 @@ function mod:OnCombatStart(delay)
 	timerSeismicSlamCD:Start(5-delay, 1)
 	timerArcingSmashCD:Start(11-delay, 1)
 	timerBreathofYShaarjCD:Start(68-delay, 1)
-	countdownBreathofYShaarj:Start(68-delay)
 	if self:IsDifficulty("lfr25") then
 		berserkTimer:Start(720-delay)
 	else
@@ -125,7 +120,6 @@ function mod:SPELL_CAST_START(args)
 			timerSeismicSlamCD:Start(7.5, 1)
 			timerArcingSmashCD:Start(14, 1)
 			timerBreathofYShaarjCD:Start(70, 2)
-			countdownBreathofYShaarj:Start(70)
 		else--Breath 2
 			if self.Options.BloodrageArrow then
 				for uId in DBM:GetGroupMembers() do
@@ -150,7 +144,6 @@ function mod:SPELL_CAST_START(args)
 		timerSeismicSlamCD:Start(7.5, 1)
 		timerArcingSmashCD:Start(14, 1)
 		timerBreathofYShaarjCD:Start(70, 1)
-		countdownBreathofYShaarj:Start(70)
 		if self.Options.RangeFrame and self:IsRanged() then
 			DBM.RangeCheck:Show(5)
 		end
@@ -235,7 +228,6 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 		self.vb.arcingSmashCount = self.vb.arcingSmashCount + 1
 		specWarnArcingSmash:Show(self.vb.arcingSmashCount)
 		timerImplodingEnergy:Start()
-		countdownImplodingEnergy:Start()
 		specWarnImplodingEnergySoon:Schedule(6)
 		if self.vb.arcingSmashCount < 3 then
 			timerArcingSmashCD:Start(nil, self.vb.arcingSmashCount+1)

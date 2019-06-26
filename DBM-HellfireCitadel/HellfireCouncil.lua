@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1432, "DBM-HellfireCitadel", nil, 669)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041705938")
+mod:SetRevision("20190625143352")
 mod:SetCreatureID(92142, 92144, 92146)--Blademaster Jubei'thos (92142). Dia Darkwhisper (92144). Gurthogg Bloodboil (92146) 
 mod:SetEncounterID(1778)
 mod:SetZone()
@@ -58,26 +58,23 @@ local specWarnBloodBoil				= mod:NewSpecialWarningStack(184355, nil, 3)
 mod:AddTimerLine(Jubei)
 --Blademaster Jubei'thos
 --local timerFelstormCD				= mod:NewCDTimer(30.5, 183701, nil, nil, nil, 2)
-local timerMirrorImage				= mod:NewBuffActiveTimer(51.5, 183885, nil, nil, nil, 6)--About 51.5
+local timerMirrorImage				= mod:NewBuffActiveTimer(51.5, 183885, nil, nil, nil, 6, nil, nil, nil, 1, 5)--About 51.5
 local timerMirrorImageCD			= mod:NewCDTimer(75, 183885, nil, nil, nil, 1)
 local timerWickedStrikeCD			= mod:NewCDTimer(10.5, 186993, nil, nil, nil, 2)
 mod:AddTimerLine(Dia)
 --Dia Darkwhisper
 local timerMarkofNecroCD			= mod:NewCDTimer(60, 184449, 28836, "Healer", nil, 5, nil, DBM_CORE_HEALER_ICON)
-local timerReapCD					= mod:NewCDTimer(54, 184476, nil, nil, nil, 3)--54-71
+local timerReapCD					= mod:NewCDTimer(54, 184476, nil, nil, nil, 3, nil, nil, nil, 2, 4)--54-71
 local timerNightmareVisageCD		= mod:NewCDTimer(30, 184657, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON)
-local timerDarknessCD				= mod:NewCDTimer(75, 184681, nil, nil, nil, 2, nil, DBM_CORE_DEADLY_ICON)
+local timerDarknessCD				= mod:NewCDTimer(75, 184681, nil, nil, nil, 2, nil, DBM_CORE_DEADLY_ICON, nil, 1, 5)
 mod:AddTimerLine(Gurtogg)
 --Gurtogg Bloodboil
 local timerFelRageCD				= mod:NewCDCountTimer(60, 184360, nil, nil, nil, 3)--60-84 (maybe this is HP based, cause this variation is stupid)
-local timerDemoLeapCD				= mod:NewCDTimer(75, 184366, nil, nil, nil, 2)--Most will never see this ability since he's 3rd in the special rotation and he dies first in most strats
+local timerDemoLeapCD				= mod:NewCDTimer(75, 184366, nil, nil, nil, 2, nil, nil, nil, 1, 5)--Most will never see this ability since he's 3rd in the special rotation and he dies first in most strats
 local timerTaintedBloodCD			= mod:NewNextCountTimer(15.8, 184357)
 local timerBloodBoilCD				= mod:NewCDTimer(7.3, 184355, nil, false, nil, 3, nil, DBM_CORE_HEROIC_ICON)
 
 local berserkTimer					= mod:NewBerserkTimer(600)
-
-local countdownSpecial				= mod:NewCountdown(75, 184681)--spellid is only one of 3 specials but whatever
-local countdownReap					= mod:NewCountdownFades("Alt4", 184476)
 
 mod:AddRangeFrameOption(8, 184476)
 
@@ -182,7 +179,6 @@ function mod:SPELL_CAST_START(args)
 		if DBM:UnitDebuff("player", markofNecroDebuff) and self:AntiSpam(5, 5) then
 			specWarnReap:Show()
 			yellReap:Yell()
-			countdownReap:Start()
 			specWarnReap:Play("runout")
 			if self.Options.RangeFrame then
 				DBM.RangeCheck:Show(8)
@@ -200,7 +196,6 @@ function mod:SPELL_CAST_SUCCESS(args)
 	if spellId == 183480 and self:AntiSpam(8, 1) then
 		self.vb.jubeiGone = true
 		warnMirrorImage:Show()
-		countdownSpecial:Start(72.8)
 		timerMirrorImage:Start()
 		if not self.vb.bloodboilDead then--Leap is next if bloodboil not dead
 			timerDemoLeapCD:Start(72.8)
@@ -248,7 +243,6 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif spellId == 184365 and not args:IsDestTypePlayer() then--IsDestTypePlayer because it could be wrong spellid and one applied to players when he lands on them, so to avoid spammy mess, filter
 		specWarnDemolishingLeap:Show()
 		specWarnDemolishingLeap:Play("runaway")
-		countdownSpecial:Start()
 		if not self.vb.diaDead then--Dia is next in natural order, unless dead
 			timerDarknessCD:Start()
 		elseif not self.vb.jubeiDead then--Jubi if dia is dead.
@@ -343,7 +337,6 @@ end
 function mod:RAID_BOSS_EMOTE(msg, npc)
 	if msg:find("spell:184681") then
 		specWarnDarkness:Show()
-		countdownSpecial:Start()
 		if not self.vb.jubeiDead then--jubei is next in natural order, unless dead
 			timerMirrorImageCD:Start()
 		elseif not self.vb.bloodboilDead then--Bloodboil wasn't dead but jubei is, leap is next

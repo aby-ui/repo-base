@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(850, "DBM-SiegeOfOrgrimmarV2", nil, 369)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041710000")
+mod:SetRevision("20190625143417")
 mod:SetCreatureID(71515)
 mod:SetEncounterID(1603)
 mod:SetZone()
@@ -68,7 +68,7 @@ local yellHuntersMark				= mod:NewYell(143882, nil, false)
 local specWarnHuntersMarkOther		= mod:NewSpecialWarningTarget(143882, false)
 
 --Nazgrim Core Abilities
-local timerAddsCD					= mod:NewNextCountTimer(45, "ej7920", nil, nil, nil, 1, "Interface\\Icons\\ability_warrior_offensivestance")
+local timerAddsCD					= mod:NewNextCountTimer(45, "ej7920", nil, nil, nil, 1, "132349", nil, nil, 1, 4)
 local timerSunder					= mod:NewTargetTimer(30, 143494, nil, "Tank|Healer")
 local timerSunderCD					= mod:NewCDTimer(7.5, 143494, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON)
 local timerExecuteCD				= mod:NewCDTimer(18, 143502, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON)
@@ -77,12 +77,9 @@ local timerBattleStanceCD			= mod:NewNextTimer(60, 143589, nil, nil, nil, 6)
 local timerBerserkerStanceCD		= mod:NewNextTimer(60, 143594, nil, nil, nil, 6)
 local timerDefensiveStanceCD		= mod:NewNextTimer(60, 143593, nil, nil, nil, 6)
 --Nazgrim Rage Abilities
-local timerCoolingOff				= mod:NewBuffFadesTimer(15, 143484)
+local timerCoolingOff				= mod:NewBuffFadesTimer(15, 143484, nil, nil, nil, 5, nil, nil, nil, 2, 4)
 --Kor'kron Adds
 local timerEmpoweredChainHealCD		= mod:NewNextSourceTimer(6, 143473, nil, nil, nil, 4, nil, DBM_CORE_INTERRUPT_ICON)
-
-local countdownAdds					= mod:NewCountdown(45, "ej7920", "-Healer")
-local countdownCoolingOff			= mod:NewCountdownFades("Alt15", 143484)
 
 local berserkTimer					= mod:NewBerserkTimer(600)
 
@@ -216,7 +213,6 @@ function mod:OnCombatStart(delay)
 	self.vb.defensiveActive = false
 	self.vb.allForcesReleased = false
 	timerAddsCD:Start(-delay, 1)
-	countdownAdds:Start()
 	berserkTimer:Start(-delay)
 end
 
@@ -327,7 +323,6 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif spellId == 143484 then
 		warnCoolingOff:Show(args.destName)
 		timerCoolingOff:Start()
-		countdownCoolingOff:Start()
 	elseif spellId == 143480 then
 		warnAssasinsMark:Show(args.destName)
 		if args:IsPlayer() then
@@ -409,7 +404,6 @@ function mod:OnSync(msg)
 		specWarnAdds:Show(self.vb.addsCount)
 		if self.vb.addsCount < 10 then
 			timerAddsCD:Start(nil, self.vb.addsCount+1)
-			countdownAdds:Start()
 		end
 		if self.Options.SetIconOnAdds then
 			if self:IsMythic() or self.vb.addsCount > 6 then--3 Adds

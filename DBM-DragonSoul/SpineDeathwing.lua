@@ -1,12 +1,12 @@
 local mod	= DBM:NewMod(318, "DBM-DragonSoul", nil, 187)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041705904")
+mod:SetRevision("20190625143316")
 mod:SetCreatureID(53879)
 mod:SetEncounterID(1291)
 mod:SetZone()
 mod:SetUsedIcons(6, 5, 4, 3, 2, 1)
-mod:SetModelSound("sound\\CREATURE\\Deathwing\\VO_DS_DEATHWING_BACKEVENT_01.OGG", "sound\\CREATURE\\Deathwing\\VO_DS_DEATHWING_BACKSLAY_01.OGG")
+--mod:SetModelSound("sound\\CREATURE\\Deathwing\\VO_DS_DEATHWING_BACKEVENT_01.OGG", "sound\\CREATURE\\Deathwing\\VO_DS_DEATHWING_BACKSLAY_01.OGG")
 
 mod:RegisterCombat("combat")
 
@@ -39,12 +39,9 @@ local specWarnSealArmor		= mod:NewSpecialWarningSpell(105847, "Dps")
 local specWarnAmalgamation	= mod:NewSpecialWarningSpell("ej4054", false)
 
 local timerSealArmor		= mod:NewCastTimer(23, 105847, nil, nil, nil, 6)
-local timerBarrelRoll		= mod:NewCastTimer(5, "ej4050", nil, nil, nil, 2, nil, DBM_CORE_DEADLY_ICON)
+local timerBarrelRoll		= mod:NewCastTimer(5, "ej4050", nil, nil, nil, 2, nil, DBM_CORE_DEADLY_ICON, nil, 1, 3)
 local timerGripCD			= mod:NewNextTimer(32, 105490, nil, nil, nil, 3)
 local timerDeathCD			= mod:NewCDTimer(8.5, 106199, nil, nil, nil, 5)--8.5-10sec variation.
-
-local countdownRoll			= mod:NewCountdown(5, "ej4050")
-local countdownGrip			= mod:NewCountdown("Alt32", 105490, "-Tank")--Can get confusing if used with roll countdown. This is off by default but can be turned on by someone willing to sort out the confusion on their own.
 
 mod:AddBoolOption("InfoFrame", true)
 mod:AddBoolOption("SetIconOnGrip", true)
@@ -140,14 +137,8 @@ function mod:SPELL_CAST_START(args)
 			corruptionActive[args.sourceGUID] = 0
 			if self:IsDifficulty("normal25", "heroic25") then
 				timerGripCD:Start(16, args.sourceGUID)
-				if countCorruptionActive() < 2 then--because using countdowns with more then 1 will be noisy not informative.
-					countdownGrip:Start(16, nil, args.sourceGUID)
-				end
 			else
 				timerGripCD:Start(nil, args.sourceGUID)
-				if countCorruptionActive() < 2 then--because using countdowns with more then 1 will be noisy not informative.
-					countdownGrip:Start(32, nil, args.sourceGUID)
-				end
 			end
 		end
 		corruptionActive[args.sourceGUID] = corruptionActive[args.sourceGUID] + 1
@@ -183,7 +174,6 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif spellId == 105490 then
 		gripTargets[#gripTargets + 1] = args.destName
 		timerGripCD:Cancel(args.sourceGUID)
-		countdownGrip:Cancel(args.sourceGUID)
 		if corruptionActive[args.sourceGUID] then
 			corruptionActive[args.sourceGUID] = nil
 		end
@@ -250,18 +240,15 @@ function mod:RAID_BOSS_EMOTE(msg)
 	if msg == L.DRoll or msg:find(L.DRoll) then
 		self:Unschedule(checkTendrils)--In case you manage to spam spin him, we don't want to get a bunch of extra stuff scheduled.
 		self:Unschedule(clearTendrils)--^
-		countdownRoll:Cancel()--^
 		if self:AntiSpam(3, 1) then
 			specWarnRoll:Show()--Warn you right away.
 		end
 		self:Schedule(3, checkTendrils)--After 3 seconds of roll starting, check tendrals, you should have leveled him out by now if this wasn't on purpose.
 		if numberOfPlayers > 1 then
 			timerBarrelRoll:Start(5)
-			countdownRoll:Start(5)
 			self:Schedule(8, clearTendrils)--Clearing 3 seconds after the roll should be sufficent
 		else
 			timerBarrelRoll:Start(10)
-			countdownRoll:Start(10)
 			self:Schedule(13, clearTendrils)--Clearing 3 seconds after the roll should be sufficent
 		end
 		if self.Options.InfoFrame and not DBM.InfoFrame:IsShown() then
@@ -272,7 +259,6 @@ function mod:RAID_BOSS_EMOTE(msg)
 		self:Unschedule(checkTendrils)
 		self:Unschedule(clearTendrils)
 		clearTendrils()
-		countdownRoll:Cancel()
 		timerBarrelRoll:Cancel()
 	end
 end
@@ -281,7 +267,6 @@ function mod:UNIT_DIED(args)
 	local cid = self:GetCIDFromGUID(args.destGUID)
 	if cid == 53891 or cid == 56162 or cid == 56161 then
 		timerGripCD:Cancel(args.sourceGUID)
-		countdownGrip:Cancel(args.sourceGUID)
 		warnAmalgamation:Schedule(4.5)--4.5-5 seconds after corruption dies.
 		specWarnAmalgamation:Schedule(4.5)
 		if self:IsDifficulty("heroic10", "heroic25") then

@@ -164,8 +164,8 @@ L["FriendlyInterruptedDesc"] = "Disable the alert that occurs when an enemy succ
 L["epicbattleground"] = "Epic Battlegrounds"
 L["epicbattlegroundDesc"] = "Alerts occur in Epic Battlegrounds.|n|nYou're welcome."
 
-L["OnlyIfPvPFlagged"] = true
-L["OnlyIfPvPFlaggedDesc"] = true
+L["OnlyIfPvPFlagged"] = "Only in PvP"
+L["OnlyIfPvPFlaggedDesc"] = "If enabled, alerts will no longer play unless you are PvP flagged; such as in War Mode or in a PvP instance. Those areas still need to be enabled for GSA to function there, even if this option is enabled.|n|n|cffC41F3BWARNING: This also disables alerts while in a Duel, so remember to toggle it off!|r"
 
 L["TankTauntsOFF"] = "Intimidation"
 L["TankTauntsOFF_Desc"] = "Alerts the fading of Intimidation: a damage amplification effect originating from tank specializations."

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(741, "DBM-HeartofFear", nil, 330)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041710000")
+mod:SetRevision("20190625143417")
 mod:SetCreatureID(62397)
 mod:SetEncounterID(1498)
 mod:SetZone()
@@ -61,7 +61,7 @@ local timerRainOfBladesCD				= mod:NewCDTimer(48, 122406, nil, nil, nil, 2)--48-
 local timerRainOfBlades					= mod:NewBuffActiveTimer(7.5, 122406)
 local timerRecklessness					= mod:NewBuffActiveTimer(30, 125873, nil, nil, nil, 6)--Heroic recklessness
 local timerReinforcementsCD				= mod:NewNextCountTimer(50, "ej6554", nil, nil, nil, 1)--EJ says it's 45 seconds after adds die but it's actually 50 in logs. EJ is not updated for current tuning.
-local timerImpalingSpear				= mod:NewTargetTimer(50, 122224)--Filtered to only show your own target, may change to a popup option later that lets you pick whether you show ALL of them or your own (all will be spammy)
+local timerImpalingSpear				= mod:NewTargetTimer(50, 122224, nil, nil, nil, 5, nil, nil, nil, 1, 10)--Filtered to only show your own target, may change to a popup option later that lets you pick whether you show ALL of them or your own (all will be spammy)
 local timerAmberPrisonCD				= mod:NewCDTimer(36, 121876, nil, false, nil, 5)--Reduce bar spam like Zarthik / each add has their own CD. This is on by default since it concerns everyone.
 local timerCorrosiveResinCD				= mod:NewCDTimer(36, 122064, nil, false, nil, 5)--^^
 local timerResidue						= mod:NewBuffFadesTimer(120, 122055)
@@ -71,8 +71,6 @@ local timerKorthikStrikeCD				= mod:NewCDTimer(50, 123963)--^^
 local timerWindBombCD					= mod:NewCDTimer(6, 131830, nil, nil, nil, 3)--^^
 
 local berserkTimer						= mod:NewBerserkTimer(480)
-
-local countdownImpalingSpear			= mod:NewCountdown(49, 122224, nil, nil, 10) -- like Crossed Over, warns 1 sec earlier.
 
 mod:AddBoolOption("AmberPrisonIcons", true)
 
@@ -107,11 +105,9 @@ end
 
 function mod:SPELL_AURA_APPLIED(args)
 	local spellId = args.spellId
-	if spellId == 122224 and args.sourceName == UnitName("player") then
+	if spellId == 122224 and args.sourceGUID == UnitGUID("player") then
 		warnImpalingSpear:Cancel()
 		warnImpalingSpear:Schedule(40)
-		countdownImpalingSpear:Cancel()
-		countdownImpalingSpear:Start()
 		timerImpalingSpear:Start(args.destName)
 	elseif spellId == 121881 then--Not a mistake, 121881 is targeting spellid.
 		warnAmberPrison:CombinedShow(0.3, args.destName)
@@ -148,9 +144,8 @@ mod.SPELL_AURA_REFRESH = mod.SPELL_AURA_APPLIED
 
 function mod:SPELL_AURA_REMOVED(args)
 	local spellId = args.spellId
-	if spellId == 122224 and args.sourceName == UnitName("player") then
+	if spellId == 122224 and args.sourceGUID == UnitGUID("player") then
 		warnImpalingSpear:Cancel()
-		countdownImpalingSpear:Cancel()
 		timerImpalingSpear:Cancel(args.destName)
 	elseif spellId == 121885 and self.Options.AmberPrisonIcons then--Not a mistake, 121885 is frozon spellid
 		self:SetIcon(args.destName, 0)

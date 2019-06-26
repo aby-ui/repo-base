@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(687, "DBM-MogushanVaults", nil, 317)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041710000")
+mod:SetRevision("20190625143417")
 mod:SetCreatureID(60701, 60708, 60709, 60710)--Adds: 60731 Undying Shadow, 60958 Pinning Arrow
 mod:SetEncounterID(1436)
 mod:SetZone()
@@ -75,7 +75,7 @@ local timerChargingShadowsCD	= mod:NewCDTimer(12, 117685)
 local timerUndyingShadowsCD		= mod:NewCDTimer(41.5, 117506, nil, nil, nil, 1)--For most part it's right, but i also think on normal he can only summon a limited amount cause he did seem to skip one? leaving a CD for now until know for sure.
 local timerFixate			  	= mod:NewTargetTimer(20, 118303)
 local timerUSRevive				= mod:NewTimer(60, "timerUSRevive", 117539, nil, nil, 1)
-local timerShieldOfDarknessCD  	= mod:NewNextTimer(42.5, 117697)
+local timerShieldOfDarknessCD  	= mod:NewNextTimer(42.5, 117697, nil, nil, nil, 5, nil, nil, nil, 3, 4)
 --Meng
 local timerMaddeningShoutCD		= mod:NewCDTimer(47, 117708, nil, nil, nil, 3)--47-50 sec variation. So a CD timer instead of next.
 local timerDeliriousCD			= mod:NewCDTimer(20.5, 117837, nil, "RemoveEnrage", nil, 5)
@@ -83,7 +83,7 @@ local timerDeliriousCD			= mod:NewCDTimer(20.5, 117837, nil, "RemoveEnrage", nil
 local timerMassiveAttackCD		= mod:NewCDTimer(5, 117921)--This timer needed for all players to figure out Flanking Orders moves.
 local timerAnnihilateCD			= mod:NewNextTimer(39, 117948, nil, nil, nil, 3)
 local timerFlankingOrdersCD		= mod:NewCDTimer(40, 117910)--Every 40 seconds on normal, but on heroic it has a 40-50 second variation so has to be a CD bar instead of next
-local timerImperviousShieldCD	= mod:NewCDTimer(42, 117961)
+local timerImperviousShieldCD	= mod:NewCDTimer(42, 117961, nil, nil, nil, 5, nil, nil, nil, 1, 4)
 --Subetai
 local timerVolleyCD				= mod:NewNextTimer(41, 118094, nil, nil, nil, 3)
 local timerRainOfArrowsCD		= mod:NewTimer(50.5, "timerRainOfArrowsCD", 118122, nil, nil, 3)--heroic 41s fixed cd. normal and lfr 50.5~60.5 variable cd.
@@ -92,9 +92,6 @@ local timerSleightOfHandCD		= mod:NewCDTimer(42, 118162)
 local timerSleightOfHand		= mod:NewBuffActiveTimer(11, 118162)--2+9 (cast+duration)
 
 local berserkTimer				= mod:NewBerserkTimer(600)
-
-local countdownImperviousShield	= mod:NewCountdown(42, 117961)
-local countdownShieldOfDarkness	= mod:NewCountdown(42.5, 117697)
 
 mod:AddBoolOption("RangeFrame", "Ranged")--For multiple abilities. the abiliies don't seem to target melee (unless a ranged is too close or a melee is too far.)
 
@@ -131,7 +128,6 @@ function mod:OnCombatStart(delay)
 	if self:IsHeroic() then
 		rainTimerText = DBM_CORE_AUTO_TIMER_TEXTS.next:format(DBM:GetSpellInfo(118122))
 		timerImperviousShieldCD:Start(40.7)
-		countdownImperviousShield:Start(40.7)
 		warnImperviousShieldSoon:Schedule(35.7)
 	else
 		rainTimerText = DBM_CORE_AUTO_TIMER_TEXTS.cd:format(DBM:GetSpellInfo(118122))
@@ -224,7 +220,6 @@ function mod:SPELL_CAST_START(args)
 		warnShieldOfDarknessSoon:Schedule(40.5, 2)
 		warnShieldOfDarknessSoon:Schedule(41.5, 1)
 		timerShieldOfDarknessCD:Start()
-		countdownShieldOfDarkness:Start()
 	elseif spellId == 117833 then
 		warnCrazyThought:Show()
 		specWarnCrazyThought:Show(args.sourceName)
@@ -248,15 +243,12 @@ function mod:SPELL_CAST_START(args)
 		warnImperviousShield:Show(args.sourceName)
 		specWarnImperviousShield:Show(args.sourceName)
 		timerImperviousShieldCD:Start()
-		countdownImperviousShield:Cancel()
 		if self:IsDifficulty("heroic10") then--Is this still different?
 			warnImperviousShieldSoon:Schedule(57)
 			timerImperviousShieldCD:Start(62)
-			countdownImperviousShield:Start(62)
 		else
 			warnImperviousShieldSoon:Schedule(37)
 			timerImperviousShieldCD:Start()
-			countdownImperviousShield:Start(42)
 		end
 	end
 end
@@ -288,7 +280,6 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 			zianActive = false
 			timerChargingShadowsCD:Cancel()
 			timerShieldOfDarknessCD:Cancel()
-			countdownShieldOfDarkness:Cancel()
 			warnShieldOfDarknessSoon:Cancel()
 			timerUndyingShadowsCD:Start(30)--This boss retains Undying Shadows
 			if self.Options.RangeFrame and not subetaiActive then--Close range frame, but only if zian is also not active, otherwise we still need it
@@ -303,7 +294,6 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 			timerMassiveAttackCD:Cancel()
 			timerAnnihilateCD:Cancel()
 			timerImperviousShieldCD:Cancel()
-			countdownImperviousShield:Cancel()
 			warnImperviousShieldSoon:Cancel()
 			timerFlankingOrdersCD:Start(30)--This boss retains Flanking Orders
 		elseif UnitName(uId) == Subetai then
@@ -360,7 +350,6 @@ function mod:CHAT_MSG_MONSTER_YELL(msg, boss)
 			warnShieldOfDarknessSoon:Schedule(38, 2)
 			warnShieldOfDarknessSoon:Schedule(39, 1)
 			timerShieldOfDarknessCD:Start(40)
-			countdownShieldOfDarkness:Start(40)
 		end
 		if self.Options.RangeFrame then
 			DBM.RangeCheck:Show(8)

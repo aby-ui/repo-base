@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1750, "DBM-EmeraldNightmare", nil, 768)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041705925")
+mod:SetRevision("20190625143337")
 mod:SetCreatureID(104636)
 mod:SetEncounterID(1877)
 mod:SetZone()
@@ -53,11 +53,11 @@ local yellScornedTouch				= mod:NewYell(211471)
 
 --Cenarius
 mod:AddTimerLine(L.name)
-local timerNightmareBramblesCD		= mod:NewCDTimer(30, 210290, nil, "-Tank", 2, 3)--On for all, for now. Doesn't target melee but melee still have to be aware. Just not AS aware.
+local timerNightmareBramblesCD		= mod:NewCDTimer(30, 210290, nil, "-Tank", 2, 3, nil, nil, nil, 3, 4)--On for all, for now. Doesn't target melee but melee still have to be aware. Just not AS aware.
 local timerDreadThornsCD			= mod:NewCDTimer(34, 210346, nil, false, 3, 5, nil, DBM_CORE_TANK_ICON)--Optional but off by default
-local timerNightmareBlastCD			= mod:NewNextTimer(32.5, 213162, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON)
-local timerForcesOfNightmareCD		= mod:NewCDCountTimer(77.6, 212726, nil, nil, nil, 1)--77.8-80
-local timerSpearOfNightmaresCD		= mod:NewCDTimer(18.2, 214529, nil, "Melee|Healer", 3, 5, nil, DBM_CORE_TANK_ICON)
+local timerNightmareBlastCD			= mod:NewNextTimer(32.5, 213162, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON, nil, 2, 4)
+local timerForcesOfNightmareCD		= mod:NewCDCountTimer(77.6, 212726, nil, nil, nil, 1, nil, nil, nil, 1, 4)--77.8-80
+local timerSpearOfNightmaresCD		= mod:NewCDTimer(18.2, 214529, nil, "Melee|Healer", 3, 5, nil, DBM_CORE_TANK_ICON, nil, 2, 4)
 local timerBeastsOfNightmareCD		= mod:NewCDTimer(30, 214876, nil, nil, 2, 3, nil, DBM_CORE_DEADLY_ICON)
 local timerEntanglingNightmareCD	= mod:NewNextTimer(51, 214505, nil, nil, nil, 1, nil, DBM_CORE_DAMAGE_ICON)
 ----Malfurion
@@ -68,13 +68,6 @@ local timerScornedTouchCD			= mod:NewCDTimer(20.7, 211471, nil, nil, nil, 3, nil
 local timerTouchofLifeCD			= mod:NewCDTimer(15, 211368, nil, nil, nil, 4, nil, DBM_CORE_INTERRUPT_ICON)
 local timerRottenBreathCD			= mod:NewCDTimer(24.3, 211192, nil, nil, nil, 3)
 local timerDisiccatingStompCD		= mod:NewCDTimer(32, 211073, nil, nil, nil, 2, nil, DBM_CORE_HEALER_ICON)
-
---Cenarius
-local countdownForcesOfNightmare	= mod:NewCountdown(78.8, 212726)
-local countdownNightmareBrambles	= mod:NewCountdown("AltTwo30", 210290, "Ranged")--Never once saw this target melee
-local countdownNightmareBlast		= mod:NewCountdown("Alt32", 213162, "Tank")
-local countdownSpearOfNightmares	= mod:NewCountdown("Alt18", 214529, "Melee", 2)
-----Forces of Nightmare
 
 mod:AddRangeFrameOption(8, 211471)
 mod:AddSetIconOption("SetIconOnWisps", "ej13348", false, true)
@@ -102,13 +95,10 @@ function mod:OnCombatStart(delay)
 	self.vb.addsCount = 0
 	self.vb.sisterCount = 0
 	timerForcesOfNightmareCD:Start(7.2-delay, 1)--7.2-8.6
-	countdownForcesOfNightmare:Start(7.2-delay)
 	timerDreadThornsCD:Start(14-delay)
-	timerNightmareBramblesCD:Start(27.5-delay)--Cast finish. Cast start is actually a yell and not worth using anyways since DBM doesn't warn spawn point until cast finish
-	countdownNightmareBrambles:Start(27.5-delay)
+	timerNightmareBramblesCD:Start(27.5-delay)--Cast finish.
 	if self:IsMythic() then
 		timerNightmareBlastCD:Start(30.5-delay)
-		countdownNightmareBlast:Start(30.5-delay)
 	end
 	self:RegisterShortTermEvents(
 		"INSTANCE_ENCOUNTER_ENGAGE_UNIT"
@@ -137,7 +127,6 @@ function mod:SPELL_CAST_START(args)
 		specWarnForcesOfNightmare:Show(self.vb.addsCount)
 		specWarnForcesOfNightmare:Play("mobsoon")
 		timerForcesOfNightmareCD:Start(nil, self.vb.addsCount+1)
-		countdownForcesOfNightmare:Start()
 	elseif spellId == 212630 or spellId == 214249 then--214249 is phase 2
 		warnCleansingGround:Show()
 	elseif (spellId == 211073 or spellId == 226821) and self:AntiSpam(10, args.sourceGUID) then
@@ -159,7 +148,6 @@ function mod:SPELL_CAST_START(args)
 		end
 	elseif spellId == 214529 then
 		timerSpearOfNightmaresCD:Start()
-		countdownSpearOfNightmares:Start(18.2)
 		local targetName, uId, bossuid = self:GetBossTarget(104636, true)
 		if self:IsTanking("player", bossuid, nil, true) then
 			specWarnSpearOfNightmares:Show()
@@ -171,7 +159,6 @@ function mod:SPELL_CAST_START(args)
 		end
 	elseif spellId == 213162 then
 		timerNightmareBlastCD:Start()
-		countdownNightmareBlast:Start(32.8)
 		local targetName, uId, bossuid = self:GetBossTarget(104636, true)
 		if self:IsTanking("player", bossuid, nil, true) then
 			specWarnNightmareBlast:Show()
@@ -301,14 +288,11 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, bfaSpellId, _, legacySpellId)
 		warnPhase2:Play("ptwo")
 		timerForcesOfNightmareCD:Stop()
 		timerNightmareBlastCD:Stop()
-		countdownNightmareBlast:Cancel()
 		timerDreadThornsCD:Stop()
 		timerNightmareBramblesCD:Stop()
 		timerCleansingGroundCD:Stop()
-		countdownForcesOfNightmare:Cancel()
 		timerNightmareBramblesCD:Start(13)
 		timerSpearOfNightmaresCD:Start(20)
-		countdownSpearOfNightmares:Start(20)
 		timerCleansingGroundCD:Start(30.5)
 		timerEntanglingNightmareCD:Start(35)
 --		if self:IsMythic() then

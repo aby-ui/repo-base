@@ -1,4 +1,4 @@
-local VERSION = 88
+local VERSION = 89
 
 --[[
 Special icons for rares, pvp or pet battle quests in list
@@ -271,6 +271,9 @@ Updated German localization by Sunflow72
 Added seconds for time remaining (<5min)
 Added Calligraphy game helper for alliance
 8.2.0 PTR update
+
+8.2.0 Update
+Added icon for quests for achievements (can be disabled via option)
 ]]
 
 local GlobalAddonName, WQLdb = ...
@@ -375,6 +378,8 @@ local LOCALE =
 		expulsomReplace = "Заменить награды аксессуаров на Дистиллиум",
 		enableBountyColors = "Включить цвета заданий посланников",
 		calligraphyGameHelper = "Включить Calligraphy Helper",
+		addQuestsNazjatar = "Добавить задания Назжатара",
+		questsForAchievements = "Показывать задания для достижений",
 	} or
 	locale == "deDE" and {    --by Sunflow72
 	        gear = "Ausrüstung",
@@ -436,6 +441,8 @@ local LOCALE =
 	        expulsomReplace = "Ersetzt Schmuckstücke durch Expulsom",
 	        enableBountyColors = "Aktiviert die Farben der Kopfgeldquests",
 	        calligraphyGameHelper = "Aktiviert Kalligraphie-Helfer",
+		addQuestsNazjatar = "Add quests from Nazjatar",
+		questsForAchievements = "Show quests for achievements",
 	} or
 	locale == "frFR" and {
 		gear = "Équipement",
@@ -497,6 +504,8 @@ local LOCALE =
 		expulsomReplace = "Replace trinkets rewards with Expulsom",
 		enableBountyColors = "Enable bounty quests colors",
 		calligraphyGameHelper = "Enable Calligraphy Helper",
+		addQuestsNazjatar = "Add quests from Nazjatar",
+		questsForAchievements = "Show quests for achievements",
 	} or
 	(locale == "esES" or locale == "esMX") and {
 		gear = "Equipo",
@@ -558,6 +567,8 @@ local LOCALE =
 		expulsomReplace = "Replace trinkets rewards with Expulsom",
 		enableBountyColors = "Enable bounty quests colors",
 		calligraphyGameHelper = "Enable Calligraphy Helper",
+		addQuestsNazjatar = "Add quests from Nazjatar",
+		questsForAchievements = "Show quests for achievements",
 	} or	
 	locale == "itIT" and {
 		gear = "Equipaggiamento",
@@ -619,6 +630,8 @@ local LOCALE =
 		expulsomReplace = "Replace trinkets rewards with Expulsom",
 		enableBountyColors = "Enable bounty quests colors",
 		calligraphyGameHelper = "Enable Calligraphy Helper",
+		addQuestsNazjatar = "Add quests from Nazjatar",
+		questsForAchievements = "Show quests for achievements",
 	} or
 	locale == "ptBR" and {
 		gear = "Equipamento",
@@ -680,6 +693,8 @@ local LOCALE =
 		expulsomReplace = "Replace trinkets rewards with Expulsom",
 		enableBountyColors = "Enable bounty quests colors",
 		calligraphyGameHelper = "Enable Calligraphy Helper",
+		addQuestsNazjatar = "Add quests from Nazjatar",
+		questsForAchievements = "Show quests for achievements",
 	} or
 	locale == "koKR" and {
 		gear = "장비",
@@ -741,6 +756,8 @@ local LOCALE =
 		expulsomReplace = "Replace trinkets rewards with Expulsom",
 		enableBountyColors = "Enable bounty quests colors",
 		calligraphyGameHelper = "Enable Calligraphy Helper",
+		addQuestsNazjatar = "Add quests from Nazjatar",
+		questsForAchievements = "Show quests for achievements",
 	} or
 	locale == "zhCN" and {	--by sprider00
 		gear = "装备",
@@ -802,6 +819,8 @@ local LOCALE =
 		expulsomReplace = "把饰品奖励替换成驱灵金",
 		enableBountyColors = "启用悬赏任务颜色",
 		calligraphyGameHelper = "启用书法游戏助手",
+		addQuestsNazjatar = "添加纳沙塔尔的任务",
+		questsForAchievements = "显示成就需要的任务",
 	} or
 	locale == "zhTW" and {	--by sprider00
 		gear = "裝備",
@@ -863,6 +882,8 @@ local LOCALE =
 		expulsomReplace = "Replace trinkets rewards with Expulsom",
 		enableBountyColors = "Enable bounty quests colors",
 		calligraphyGameHelper = "Enable Calligraphy Helper",
+		addQuestsNazjatar = "Add quests from Nazjatar",
+		questsForAchievements = "Show quests for achievements",
 	} or 
 	{
 		gear = "Gear",
@@ -924,6 +945,8 @@ local LOCALE =
 		expulsomReplace = "Replace trinkets rewards with Expulsom",
 		enableBountyColors = "Enable emissary quests colors",
 		calligraphyGameHelper = "Enable Calligraphy Helper",
+		addQuestsNazjatar = "Add quests from Nazjatar",
+		questsForAchievements = "Show quests for achievements",
 	}
 
 local filters = {
@@ -1646,14 +1669,6 @@ do
 	end
 end
 do
-	local mapColorsOld = {
-		[864] = format("%02x%02x%02x",255,149,126),
-		[863] = format("%02x%02x%02x",255,220,59),
-		[862] = format("%02x%02x%02x",206,225,24),
-		[942] = format("%02x%02x%02x",206,225,24),
-		[895] = format("%02x%02x%02x",255,220,59),
-		[896] = format("%02x%02x%02x",191,160,125),
-	}	
 	local mapColors = {
 		[864] = format("%02x%02x%02x",255,169,186),
 		[863] = format("%02x%02x%02x",255,200,100),
@@ -1661,6 +1676,7 @@ do
 		[942] = format("%02x%02x%02x",206,225,84),
 		[895] = format("%02x%02x%02x",255,200,100),
 		[896] = format("%02x%02x%02x",220,180,165),
+		[1355] = format("%02x%02x%02x",142,160,255),
 	}
 	WorldQuestList.mapTextColorData = mapColors
 	function WorldQuestList:GetMapTextColor(mapID)
@@ -1739,6 +1755,12 @@ do
 		[882] = {11545.8,6622.92,8287.5,4450},		--macari
 		[830] = {3772.92,2654.17,58.334,177.084},	--krokun
 		[885] = {11279.2,-1789.58,7879.17,-4056.25},	--antorus
+
+		[1355] = {1586.0,2797.5,-2654,-62.5},
+		--[[
+			48	61	-449.2	1052.9
+			49	62	-491.6	1024.3
+		]]
 	}
 	function WorldQuestList:GetQuestWorldCoord(questID)
 		if cache[questID] then
@@ -1824,6 +1846,11 @@ do
 		[1593] = 2160,
 		[1594] = 2162,
 		[1592] = 2161,
+
+		[1738] = 2373,
+		[1739] = 2400,
+		[1740] = 2391,
+		[1742] = 2391,
 	}
 	local fg_list = {
 		[2164] = "Both",
@@ -1836,6 +1863,10 @@ do
 		[2160] = "Alliance",
 		[2162] = "Alliance",
 		[2161] = "Alliance",
+
+		[2391] = "Both",
+		[2373] = "Horde",
+		[2400] = "Alliance",
 	}
 	function WorldQuestList:IsFactionCurrency(currencyID)
 		if list[currencyID or 0] then
@@ -1894,6 +1925,48 @@ function WorldQuestList:SetMapArrowsHelp(x,y)
 	ArrowsHelpFrame:ClearAllPoints()
 	ArrowsHelpFrame:SetPoint("CENTER",WorldMapButton,"BOTTOMRIGHT",-WorldMapButton:GetWidth() * (1 - x),WorldMapButton:GetHeight() * (1 - y))
 	ArrowsHelpFrame:Show()
+end
+
+do
+	local questToAchievement = {
+		[52798] = 13041,
+		[50786] = 13022,
+		[53704] = 13285,
+		[55344] = 13512,	--Zuldazar
+		[55342] = 13512,	--Nazmir
+		[55343] = 13512,	--Voldun
+		[55264] = 13512,	--Dru
+		[55340] = 13512,	--Tir
+		[55341] = 13512,	--Storm	
+		[53346] = 13059,
+		[54415] = 13437,
+		[54512] = 13426,
+		[53196] = 13050,
+		[52159] = 13050,
+		[49994] = 13060,
+		[53189] = 13060,
+		[53188] = 13060,
+		[51173] = 13009,
+		[51178] = 13035,
+		[50717] = 13025,
+		[50717] = 13026,
+		[50899] = 13026,
+		[50559] = 13023,
+		[51127] = 13023,
+		[54689] = 13435,
+		[54498] = 13440,
+		[54505] = 13441,
+		[50665] = 13021,
+	}
+	function WorldQuestList:IsQuestForAchievement(questID)
+		if questID and questToAchievement[questID] then
+			local achievementID = questToAchievement[questID]
+			local id, name, points, completed, month, day, year, description, flags, icon, rewardText, isGuildAch, wasEarnedByMe, earnedBy = GetAchievementInfo(achievementID)
+			return true, achievementID, completed
+		else
+			return false
+		end
+	end
 end
 
 local function WorldQuestList_Line_OnEnter(self)
@@ -2163,6 +2236,15 @@ local function WorldQuestList_LineName_OnEnter(self)
 		GameTooltip:AddLine(format("QuestID: %d",questID),.5,.5,1)
 	
 		GameTooltip:Show()
+
+		if line.achievementID then
+			local link = GetAchievementLink(line.achievementID)
+			if link then
+				local tooltip = GetAdditionalTooltip(2)
+				tooltip:SetHyperlink(link)
+				tooltip:Show()
+			end
+		end
 	elseif line.isLeveling and questID and not line.isTreasure then
 		GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
 		GameTooltip:SetHyperlink("quest:"..questID)
@@ -2174,6 +2256,9 @@ end
 local function WorldQuestList_LineName_OnLeave(self)
 	GameTooltip_Hide()
 	WorldQuestList_Line_OnLeave(self:GetParent())
+	for _,tip in pairs(additionalTooltips) do
+		tip:Hide()
+	end
 end
 
 function WorldQuestList_LineName_OnClick(self,button)
@@ -2970,6 +3055,11 @@ do
 	list[#list+1] = {text = GetFaction(2160),	func = SetIgnoreFilter,	arg1 = "faction2160IgnoreFilter",	checkable = true,	shownFunc = function() return WorldQuestList:IsFactionAvailable(2160) and not WorldQuestList:IsLegionZone() end	}
 	list[#list+1] = {text = GetFaction(2162),	func = SetIgnoreFilter,	arg1 = "faction2162IgnoreFilter",	checkable = true,	shownFunc = function() return WorldQuestList:IsFactionAvailable(2162) and not WorldQuestList:IsLegionZone() end	}
 	list[#list+1] = {text = GetFaction(2161),	func = SetIgnoreFilter,	arg1 = "faction2161IgnoreFilter",	checkable = true,	shownFunc = function() return WorldQuestList:IsFactionAvailable(2161) and not WorldQuestList:IsLegionZone() end	}
+	if is82 then
+		list[#list+1] = {text = GetFaction(2391),	func = SetIgnoreFilter,	arg1 = "faction2391IgnoreFilter",	checkable = true,	shownFunc = function() return WorldQuestList:IsFactionAvailable(2391) and not WorldQuestList:IsLegionZone() end	}
+		list[#list+1] = {text = GetFaction(2400),	func = SetIgnoreFilter,	arg1 = "faction2400IgnoreFilter",	checkable = true,	shownFunc = function() return WorldQuestList:IsFactionAvailable(2400) and not WorldQuestList:IsLegionZone() end	}
+		list[#list+1] = {text = GetFaction(2373),	func = SetIgnoreFilter,	arg1 = "faction2373IgnoreFilter",	checkable = true,	shownFunc = function() return WorldQuestList:IsFactionAvailable(2373) and not WorldQuestList:IsLegionZone() end	}
+	end	
 	
 	list[#list+1] = {text = CLOSE,			func = function() ELib.ScrollDropDown.Close() end,		padding = 16,	}
 
@@ -3543,6 +3633,16 @@ do
 	}
 
 	list[#list+1] = {
+		text = LOCALE.questsForAchievements,
+		func = function()
+			VWQL.ShowQuestAchievements = not VWQL.ShowQuestAchievements
+			WorldQuestList_Update()
+		end,
+		checkable = true,
+		shownFunc = function() return not WorldQuestList:IsLegionZone() end,
+	}
+
+	list[#list+1] = {
 		text = LOCALE.expulsomReplace,
 		func = function()
 			VWQL.ExpulsomReplace = not VWQL.ExpulsomReplace
@@ -3570,6 +3670,15 @@ do
 		end,
 		checkable = true,
 		shownFunc = function() return WorldQuestList:IsLegionZone() or not WorldQuestList.optionsDropDown:IsVisible() end,
+	}
+	list[#list+1] = {
+		text = LOCALE.addQuestsNazjatar,
+		func = function()
+			VWQL.OppositeContinentNazjatar = not VWQL.OppositeContinentNazjatar
+			WorldQuestList_Update()
+		end,
+		checkable = true,
+		shownFunc = function() return not WorldQuestList:IsLegionZone() or not WorldQuestList.optionsDropDown:IsVisible() end,
 	}
 	list[#list+1] = {
 		text = "|T1339312:16:16:0:0:512:128:452:468:23:38|t "..LOCALE.hideLegion,
@@ -3673,6 +3782,10 @@ do
 				self.List[i].checkState = VWQL.ExpulsomReplace
 			elseif self.List[i].text == LOCALE.calligraphyGameHelper then
 				self.List[i].checkState = not VWQL.DisableCalligraphy
+			elseif self.List[i].text == LOCALE.addQuestsNazjatar then
+				self.List[i].checkState = not VWQL.OppositeContinentNazjatar
+			elseif self.List[i].text == LOCALE.questsForAchievements then
+				self.List[i].checkState = not VWQL.ShowQuestAchievements
 			end
 		end		
 		anchorSubMenu[1].checkState = not VWQL.Anchor
@@ -4318,6 +4431,77 @@ end
 WQL_AreaPOIDataProviderMixin.WQL_Signature = true
 
 
+
+WorldQuestList.Waypoints = {}
+
+WQL_WayDataProviderMixin = CreateFromMixins(AreaPOIDataProviderMixin)
+
+function WQL_WayDataProviderMixin:OnShow()
+end
+
+function WQL_WayDataProviderMixin:GetPinTemplate()
+	return "WQL_WayPinTemplate";
+end
+function WQL_WayDataProviderMixin:RemoveAllData()
+	self:GetMap():RemoveAllPinsByTemplate(self:GetPinTemplate())
+end
+function WQL_WayDataProviderMixin:RefreshAllData()
+	if not self:GetMap() then	--fix error on load
+		return
+	end
+	self:RemoveAllData()
+	
+	local mapID = self:GetMap():GetMapID()
+
+	for i=1,#WorldQuestList.Waypoints do
+		local waypoint = WorldQuestList.Waypoints[i]
+		local x,y = waypoint.x,waypoint.y
+		local passMapCheck = mapID == waypoint.mapID
+		local size = 1
+		if not passMapCheck then
+			local xMin,xMax,yMin,yMax = C_Map.GetMapRectOnMap(waypoint.mapID,mapID)
+			if xMin ~= xMax and yMin ~= yMax then
+				x = xMin + x * (xMax - xMin)
+				y = yMin + y * (yMax - yMin)
+
+				passMapCheck = true
+				size = .65		
+			end
+		end
+		if passMapCheck then
+			local pin = self:GetMap():AcquirePin(self:GetPinTemplate(), {
+				areaPoiID = 0,
+				name = "X",
+				description = "WQL Arrow",
+				size = size,
+				position = CreateVector2D(x, y),
+				atlasName = "XMarksTheSpot",
+				clickData = {
+					x = x,
+					y = y,
+					mapID = mapID,
+				},
+				data = waypoint,
+			})
+		end
+	end
+end
+WQL_WayDataProviderMixin.WQL_Signature = true
+
+WorldMapFrame:AddDataProvider(WQL_WayDataProviderMixin)
+
+function WorldQuestList:WaypointRemove(waypoint)
+	waypoint = waypoint or WorldQuestList.Waypoints[1]
+	for i=#WorldQuestList.Waypoints,1,-1 do
+		if WorldQuestList.Waypoints[i] == waypoint then
+			tremove(WorldQuestList.Waypoints,i)
+			WQL_WayDataProviderMixin:RefreshAllData()
+			return
+		end
+	end
+end
+
+
 local inspectScantip = CreateFrame("GameTooltip", GlobalAddonName.."WorldQuestListInspectScanningTooltip", nil, "GameTooltipTemplate")
 inspectScantip:SetOwner(UIParent, "ANCHOR_NONE")
 
@@ -4539,6 +4723,7 @@ local function WorldQuestList_Leveling_Update()
 		line.faction.f.reputationList = nil
 		line.isInvasionPoint = nil
 		line.timeleft.f._t = nil
+		line.achievementID = nil
 		
 		line.isLeveling = true
 		line.isTreasure = nil
@@ -4653,7 +4838,7 @@ local function WorldQuestList_Treasure_Update()
 					for j=2,#rewardsTable do
 						local name,link,quality,itemLevel,_,_,_,_,_,icon = GetItemInfo(rewardsTable[j])
 						if name then
-							rewardText = rewardText .. ", |T"..icon..":0|t "..name
+							rewardText = (rewardText or "") .. ", |T"..icon..":0|t "..name
 						end
 						rewardLink2 = link
 					end
@@ -4781,6 +4966,7 @@ local function WorldQuestList_Treasure_Update()
 		line.faction.f.reputationList = nil
 		line.isInvasionPoint = nil
 		line.timeleft.f._t = nil
+		line.achievementID = nil
 		
 		line.isLeveling = true
 		line.isTreasure = true
@@ -5073,6 +5259,8 @@ WorldQuestList.GeneralMaps = GENERAL_MAPS
 
 local ArgusZonesList = {830,885,882}
 
+WorldQuestList.NULLTable = {}
+
 function WorldQuestList_Update(preMapID,forceUpdate)
 	if not WorldQuestList:IsVisible() and not VWQL[charKey].HideMap and not forceUpdate then
 	--if not WorldQuestList:IsVisible() then
@@ -5135,6 +5323,13 @@ function WorldQuestList_Update(preMapID,forceUpdate)
 					info.dX,info.dY,info.dMap = info.x,info.y,mapID
 					info.x,info.y = mapAreaID == 619 and 0.87,mapAreaID == 619 and 0.165
 				end
+			end
+		elseif not VWQL.OppositeContinentNazjatar and (mapAreaID == 875 or mapAreaID == 876) then
+			local oppositeMapQuests = C_TaskQuest.GetQuestsForPlayerByMapID(1355)
+			for _,info in pairs(oppositeMapQuests or WorldQuestList.NULLTable) do
+				taskInfo[#taskInfo+1] = info
+				info.dX,info.dY,info.dMap = info.x,info.y,1355
+				info.x,info.y = 0.87, 0.12
 			end
 		end
 	end
@@ -5330,6 +5525,7 @@ function WorldQuestList_Update(preMapID,forceUpdate)
 				local reputationList
 				local highlightFaction
 				local debugLine = ""
+				local showAchievement
 				
 				local professionFix
 				local IsPvPQuest
@@ -5452,6 +5648,11 @@ function WorldQuestList_Update(preMapID,forceUpdate)
 							highlightFaction = true
 						end
 					end
+				end
+
+				local isAchievement, questAchievementId, isAchievementCompleted = WorldQuestList:IsQuestForAchievement(questID)
+				if isAchievement and not isAchievementCompleted and not VWQL.ShowQuestAchievements then
+					showAchievement = questAchievementId
 				end
 				
 				
@@ -5918,8 +6119,7 @@ function WorldQuestList_Update(preMapID,forceUpdate)
 					elseif factionID and VWQL[charKey]["faction"..factionID.."IgnoreFilter"] and WorldQuestList:IsFactionAvailable(factionID) then
 						isValidLine = 1
 					end
-				end
-									
+				end									
 				
 				if isValidLine == 1 then
 					TableQuestsViewed[ questID ] = true
@@ -5960,6 +6160,7 @@ function WorldQuestList_Update(preMapID,forceUpdate)
 						disableLFG = WorldQuestList:IsQuestDisabledForLFG(questID) or worldQuestType == LE.LE_QUEST_TAG_TYPE_PET_BATTLE,
 						highlightFaction = highlightFaction,
 						debugLine = debugLine,
+						showAchievement = showAchievement,
 					})
 				end
 				
@@ -6032,7 +6233,7 @@ function WorldQuestList_Update(preMapID,forceUpdate)
 			for i=1,#result do
 				local info = result[i].info
 				if info and info.questId and info.x then
-					if (O.generalMapType == 3 and VWQL.ArgusMap) or (mapAreaID == 619 and info.x == 0.87 and info.y == 0.165) then
+					if (O.generalMapType == 3 and VWQL.ArgusMap) or (mapAreaID == 619 and info.x == 0.87 and info.y == 0.165) or ((mapAreaID == 875 or mapAreaID == 876) and info.x == 0.87 and info.y == 0.12) then
 						info = WorldQuestList:GetRadiantWQPosition(info,result)
 					end
 					pinsToRemove[info.questId] = nil
@@ -6125,7 +6326,16 @@ function WorldQuestList_Update(preMapID,forceUpdate)
             questNameWidth = questNameWidth - 15
 		end
 		
-		if data.isInvasion then
+		line.achievementID = nil
+		if data.showAchievement then
+			line.secondicon:SetAtlas("QuestNormal")
+			--"TrivialQuests"	"groupfinder-icon-quest"
+			line.secondicon:SetWidth(16)
+			
+			questNameWidth = questNameWidth - 15
+
+			line.achievementID = data.showAchievement
+		elseif data.isInvasion then
 			if data.isInvasion == 2 then
 				local factionTag = UnitFactionGroup("player")
 				line.secondicon:SetAtlas(factionTag == "Alliance" and "worldquest-icon-horde" or "worldquest-icon-alliance")
@@ -6487,7 +6697,15 @@ SlashCmdList["WQLSlash"] = function(arg)
 				if mapID then
 					local wX,wY = WorldQuestList:GetQuestWorldCoord2(-10,mapID,x / 100,y / 100,true)
 					if wX and wY then
-						WQLdb.Arrow:ShowRunTo(wX,wY,5,nil,true)
+						local waypoint = {
+							mapID = mapID,
+							x = x/100,
+							y = y/100,
+							wX = wX,
+							wY = wY,
+						}
+						WQLdb.Arrow:ShowRunTo(wX,wY,5,nil,true,nil,waypoint)
+						WorldQuestList.Waypoints[1] = waypoint
 					end
 				end
 			end
@@ -8158,6 +8376,33 @@ do
 								if itemID == 152668 and numItems and numItems > 1 then
 									amount = numItems
 								end
+							elseif itemID == 169480 then
+								iconAtlas = SlotToIcon.INVTYPE_CHEST
+								ajustSize = 10
+							elseif itemID == 169479 then
+								iconAtlas = SlotToIcon.INVTYPE_HEAD
+								ajustSize = 10
+							elseif itemID == 169477 then
+								iconAtlas = SlotToIcon.INVTYPE_WAIST
+								ajustSize = 10
+							elseif itemID == 169484 then
+								iconAtlas = SlotToIcon.INVTYPE_SHOULDER
+								ajustSize = 10
+							elseif itemID == 169478 then
+								iconAtlas = SlotToIcon.INVTYPE_WRIST
+								ajustSize = 10
+							elseif itemID == 169482 then
+								iconAtlas = SlotToIcon.INVTYPE_LEGS
+								ajustSize = 10
+							elseif itemID == 169481 then
+								iconAtlas = SlotToIcon.INVTYPE_CLOAK
+								ajustSize = 10
+							elseif itemID == 169483 then
+								iconAtlas = SlotToIcon.INVTYPE_FEET
+								ajustSize = 10
+							elseif itemID == 169485 then
+								iconAtlas = SlotToIcon.INVTYPE_HAND
+								ajustSize = 10
 							end
 							if worldQuestType == LE.LE_QUEST_TAG_TYPE_PET_BATTLE then
 								iconVirtual = true

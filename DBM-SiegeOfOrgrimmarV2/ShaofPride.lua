@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(867, "DBM-SiegeOfOrgrimmarV2", nil, 369)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041710000")
+mod:SetRevision("20190625143417")
 mod:SetCreatureID(71734)
 mod:SetEncounterID(1604)
 mod:SetZone()
@@ -60,21 +60,18 @@ local specWarnMockingBlast		= mod:NewSpecialWarningInterrupt(144379)
 local timerGiftOfTitansCD		= mod:NewNextTimer(25.5, 144359, nil, "-Tank", nil, 3)--NOT cast or tied or boss, on it's own. Off for tanks because it can't target tanks, ever
 --These abilitie timings are all based on boss1 UNIT_POWER. All timers have a 1 second variance
 local timerMarkCD				= mod:NewNextTimer(20.5, 144351, nil, "Healer", nil, 5, nil, DBM_CORE_HEALER_ICON)
-local timerSelfReflectionCD		= mod:NewNextTimer(25, 144800, nil, nil, nil, 1)
+local timerSelfReflectionCD		= mod:NewNextTimer(25, 144800, nil, nil, nil, 1, nil, nil, nil, 2, 4)
 local timerWoundedPrideCD		= mod:NewNextTimer(30, 144358, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON)--A tricky on that is based off unit power but with variable timings, but easily workable with an 11, 26 rule
 local timerBanishmentCD			= mod:NewNextTimer(37.5, 145215, nil, nil, nil, 3, nil, DBM_CORE_HEROIC_ICON)
 local timerCorruptedPrisonCD	= mod:NewNextTimer(53, 144574, nil, nil, nil, 3)--Technically 51 for Imprison base cast, but this is timer til debuffs go out.
-local timerManifestationCD		= mod:NewNextTimer(60, "ej8262", nil, nil, nil, 1, "Interface\\Icons\\achievement_raid_terraceofendlessspring04")
-local timerSwellingPrideCD		= mod:NewNextCountTimer(75.5, 144400, nil, nil, nil, 2)
+local timerManifestationCD		= mod:NewNextTimer(60, "ej8262", nil, nil, nil, 1, "627685")
+local timerSwellingPrideCD		= mod:NewNextCountTimer(75.5, 144400, nil, nil, nil, 2, nil, nil, nil, 1, 4)
 local timerWeakenedResolve		= mod:NewBuffFadesTimer(60, 147207, nil, false)
 --Pride
 local timerBurstingPride		= mod:NewCastTimer(3, 144911)
 local timerProjection			= mod:NewCastTimer(6, 146822)
 
 local berserkTimer				= mod:NewBerserkTimer(600)
-
-local countdownSwellingPride	= mod:NewCountdown(75.5, 144400)
-local countdownReflection		= mod:NewCountdown("Alt25", 144800)
 
 mod:AddInfoFrameOption("ej8255")
 mod:AddSetIconOption("SetIconOnMark", 144351, false)
@@ -98,11 +95,9 @@ function mod:OnCombatStart(delay)
 		timerWoundedPrideCD:Start(10-delay)
 	end
 	timerSelfReflectionCD:Start(-delay)
-	countdownReflection:Start(-delay)
 	timerCorruptedPrisonCD:Start(-delay)
 	timerManifestationCD:Start(-delay)
 	timerSwellingPrideCD:Start(-delay, 1)
-	countdownSwellingPride:Start(-delay)
 	berserkTimer:Start(-delay)
 	self.vb.woundCount = 0
 	manifestationWarned = false
@@ -136,14 +131,11 @@ function mod:SPELL_CAST_START(args)
 		end
 	elseif spellId == 144832 then
 		--These abilitie cd reset on SPELL_CAST_START (they no longer desync though, they sync back up after first off sync cast)
-		countdownReflection:Cancel()
-		countdownSwellingPride:Cancel()
 		timerSwellingPrideCD:Cancel()
 		if not self:IsDifficulty("lfr25") then
 			timerWoundedPrideCD:Start()
 		end
 		timerSelfReflectionCD:Start()
-		countdownReflection:Start()
 		timerCorruptedPrisonCD:Start()
 		if self:IsMythic() then
 			timerBanishmentCD:Start()
@@ -159,11 +151,9 @@ function mod:SPELL_CAST_SUCCESS(args)
 		--Since we register this event anyways for bursting, might as well start cd bars here instead
 		timerMarkCD:Start(10.5)
 		timerSelfReflectionCD:Start()
-		countdownReflection:Start()
 		timerCorruptedPrisonCD:Start()
 		timerManifestationCD:Start()
 		timerSwellingPrideCD:Start(nil, self.vb.swellingCount + 1)
-		countdownSwellingPride:Start()
 		if not self:IsDifficulty("lfr25") then
 			timerWoundedPrideCD:Start(11)
 		end
@@ -196,7 +186,6 @@ function mod:SPELL_CAST_SUCCESS(args)
 		self.vb.woundCount = 0
 		timerManifestationCD:Start()--Not yet verified if altered or not
 		timerSwellingPrideCD:Start(75, self.vb.swellingCount + 1)--Not yet verified if altered or not (it would be 62 instead of 60 though since we'd be starting at 0 energy instead of cast finish of last swelling)
-		countdownSwellingPride:Start(75)--Not yet verified if altered or not (it would be 62 instead of 60 though since we'd be starting at 0 energy instead of cast finish of last swelling)
 	elseif spellId == 144800 then
 		specWarnSelfReflection:Show()
 	elseif spellId == 146823 and self.Options.SetIconOnFragment then--Banishment cast. Not want to use applied for add mark scheduling

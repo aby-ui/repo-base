@@ -1,12 +1,12 @@
 local mod	= DBM:NewMod(168, "DBM-BastionTwilight", nil, 72)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041705904")
+mod:SetRevision("20190625143316")
 mod:SetCreatureID(45213)
 mod:SetEncounterID(1082, 1083)--Muiti encounter id. need to verify.
 mod:SetZone()
 mod:SetUsedIcons(1, 2, 3, 4, 5, 6, 7, 8)
-mod:SetModelSound("Sound\\Creature\\Sinestra\\VO_BT_Sinestra_Aggro01.ogg", "Sound\\Creature\\Sinestra\\VO_BT_Sinestra_Kill02.ogg")
+--mod:SetModelSound("Sound\\Creature\\Sinestra\\VO_BT_Sinestra_Aggro01.ogg", "Sound\\Creature\\Sinestra\\VO_BT_Sinestra_Kill02.ogg")
 --Long: We were fools to entrust an imbecile like Cho'gall with such a sacred duty! I will deal with you intruders myself!
 --Short: Powerless....
 
@@ -42,7 +42,7 @@ local specWarnEggWeaken		= mod:NewSpecialWarningSwitch("ej3238", "Ranged")
 local specWarnIndomitable	= mod:NewSpecialWarningDispel(90045, "RemoveEnrage")
 
 local timerBreathCD			= mod:NewCDTimer(21, 90125, nil, nil, nil, 2)
-local timerOrbs				= mod:NewTimer(28, "TimerOrbs", 92852, nil, nil, 3, DBM_CORE_DEADLY_ICON)
+local timerOrbs				= mod:NewTimer(28, "TimerOrbs", 92852, nil, nil, 3, DBM_CORE_DEADLY_ICON, nil, 1, 4)
 local timerWrack			= mod:NewNextTimer(61, 89421, nil, "Healer", nil, 5, nil, DBM_CORE_HEALER_ICON)
 local timerExtinction		= mod:NewCastTimer(16, 86227)
 local timerEggWeakening		= mod:NewTimer(4, "TimerEggWeakening", 61357)
@@ -50,8 +50,6 @@ local timerEggWeaken		= mod:NewTimer(30, "TimerEggWeaken", 61357, nil, nil, 5, D
 local timerDragon			= mod:NewNextTimer(50, "ej3231", nil, nil, nil, 1, 69002)
 local timerRedEssenceCD		= mod:NewNextTimer(22, 87946)--21-23 seconds after red egg dies
 local timerRedEssence		= mod:NewBuffFadesTimer(180, 87946)
-
-local countdownOrbs			= mod:NewCountdown(28, 92852, nil, "OrbsCountdown")
 
 mod:AddBoolOption("SetIconOnOrbs", true)
 mod:AddBoolOption("InfoFrame", false)--Does not filter tanks. not putting ugly hack in info frame, its simpley an aggro tracker
@@ -152,7 +150,6 @@ function mod:OrbsRepeat()
 		warnOrbSoon:Schedule(26, 2)
 		warnOrbSoon:Schedule(27, 1)
 	end
-	countdownOrbs:Start(28)
 	specWarnOrbs:Show()--generic aoe warning on spawn, before we have actual targets yet.
 	if self:IsInCombat() then
 		self:ScheduleMethod(28, "OrbsRepeat")
@@ -182,7 +179,6 @@ function mod:OnCombatStart(delay)
 		warnOrbSoon:Schedule(27-delay, 2)
 		warnOrbSoon:Schedule(28-delay, 1)
 	end
-	countdownOrbs:Start(29-delay)
 	self:ScheduleMethod(29-delay, "OrbsRepeat")
 	if self.Options.InfoFrame then
 		DBM.InfoFrame:SetHeader(L.HasAggro)
@@ -225,7 +221,6 @@ function mod:SPELL_AURA_APPLIED(args)
 		if self.Options.WarnOrbSoon then
 			warnOrbSoon:Cancel()
 		end
-		countdownOrbs:Cancel()
 		self:UnscheduleMethod("OrbsRepeat")
 		if self.Options.SetIconOnOrbs then
 			self:ClearIcons()
@@ -287,9 +282,7 @@ function mod:UNIT_DIED(args)
 				warnOrbSoon:Schedule(28, 2)
 				warnOrbSoon:Schedule(29, 1)
 			end
-			countdownOrbs:Cancel()
 			self:UnscheduleMethod("OrbsRepeat")
-			countdownOrbs:Start(30)
 			self:ScheduleMethod(30, "OrbsRepeat")
 		end
 	end

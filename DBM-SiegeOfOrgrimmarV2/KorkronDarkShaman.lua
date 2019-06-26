@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(856, "DBM-SiegeOfOrgrimmarV2", nil, 369)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041710000")
+mod:SetRevision("20190625143417")
 mod:SetCreatureID(71859, 71858)--haromm, Kardris
 mod:SetEncounterID(1606)
 mod:SetZone()
@@ -61,15 +61,12 @@ local timerAshenWallCD				= mod:NewCDTimer(32.5, 144070, nil, nil, nil, 3)--Pret
 local timerIronTombCD				= mod:NewCDTimer(31.5, 144328, nil, nil, nil, 3)--Pretty much a next timers unless boss is casting something else
 --Wavebinder Kardris
 local timerToxicStormCD				= mod:NewCDTimer(32, 144005, nil, nil, nil, 3)--Pretty much a next timers unless boss is casting something else
-local timerFoulGeyserCD				= mod:NewCDTimer(32.5, 143990, nil, nil, nil, 1)--Pretty much a next timers unless boss is casting something else
+local timerFoulGeyserCD				= mod:NewCDTimer(32.5, 143990, nil, nil, nil, 1, nil, nil, nil, 1, 4)--Pretty much a next timers unless boss is casting something else
 local timerFallingAsh				= mod:NewCastTimer(17, 143973)
-local timerFallingAshCD				= mod:NewCDCountTimer(32.5, 143973, nil, nil, nil, 2, nil, DBM_CORE_HEALER_ICON)--Pretty much a next timers unless boss is casting something else
+local timerFallingAshCD				= mod:NewCDCountTimer(32.5, 143973, nil, nil, nil, 2, nil, DBM_CORE_HEALER_ICON, nil, 2, 5)--Pretty much a next timers unless boss is casting something else
 local timerIronPrison				= mod:NewTargetTimer(60, 144330, nil, "Healer")
 local timerIronPrisonCD				= mod:NewCDTimer(31.5, 144330, nil, nil, nil, 5)--Pretty much a next timers unless boss is casting something else
 local timerIronPrisonSelf			= mod:NewBuffFadesTimer(60, 144330)
-
-local countdownFoulGeyser			= mod:NewCountdown(32.5, 143990)
-local countdownFallingAsh			= mod:NewCountdown("Alt15", 143973)
 
 local berserkCD						= mod:NewCDTimer(540, 26662)
 
@@ -153,7 +150,6 @@ function mod:SPELL_CAST_START(args)
 	elseif spellId == 143990 and self:CheckTankDistance(args.sourceGUID, 50) then
 		timerFoulGeyserCD:Start()
 		specWarnFoulGeyser:Show()
-		countdownFoulGeyser:Start()
 	elseif spellId == 144070 and self:CheckTankDistance(args.sourceGUID, 30) then
 		timerAshenWallCD:Start()
 		specWarnAshenWall:Show()
@@ -268,11 +264,9 @@ function mod:OnSync(msg)
 		if self:IsMythic() then--On heroic, base spell 1 second cast, not 2.
 			timerFallingAshCD:Start(16, self.vb.ashCount+1)
 			specWarnFallingAsh:Schedule(13)--Give special warning 3 seconds before happens, not cast
-			countdownFallingAsh:Start(16)
 		else
 			timerFallingAshCD:Start(nil, self.vb.ashCount+1)
 			specWarnFallingAsh:Schedule(14)--Give special warning 3 seconds before happens, not cast
-			countdownFallingAsh:Start(17)
 		end
 	end
 end

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1704, "DBM-EmeraldNightmare", nil, 768)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041705925")
+mod:SetRevision("20190625143337")
 mod:SetCreatureID(102679)--Ysondre, 102683 (Emeriss), 102682 (Lethon), 102681 (Taerar)
 mod:SetEncounterID(1854)
 mod:SetZone()
@@ -85,12 +85,9 @@ local timerSiphonSpiritCD			= mod:NewNextTimer(49.9, 203888, nil, nil, nil, 1, n
 local timerShadowBurstCD			= mod:NewNextTimer(14.5, 204040, nil, nil, nil, 3)--Air
 --Taerar
 mod:AddTimerLine(Taerar)
-local timerShadesOfTaerarCD			= mod:NewNextTimer(48.5, 204100, nil, "-Healer", nil, 1)
+local timerShadesOfTaerarCD			= mod:NewNextTimer(48.5, 204100, nil, "-Healer", nil, 1, nil, nil, nil, 1, 4)
 local timerSeepingFogCD				= mod:NewCDTimer(15.5, 205341, nil, false, 2, 3, 24814)--Spawn pretty often, and timers don't help dodge, so now off by default
 local timerBellowingRoarCD			= mod:NewCDTimer(44.5, 204078, 118699, nil, nil, 2)--Air
-
---Taerar
-local countdownShadesOfTaerar		= mod:NewCountdown(48.5, 204100, "Tank")
 
 mod:AddRangeFrameOption(10, 203787)
 mod:AddSetIconOption("SetIconOnInfection", 203787, false)
@@ -382,7 +379,6 @@ function mod:INSTANCE_ENCOUNTER_ENGAGE_UNIT()
 				timerBellowingRoarCD:Stop()
 				timerBreathCD:Start(17, bossName)
 				timerShadesOfTaerarCD:Start(19.5)--19.5-21
-				countdownShadesOfTaerar:Start(19.5)
 				timerSeepingFogCD:Start(25)
 			end
 			self:SendSync("IEEU", bossName, unitGUID)
@@ -443,7 +439,6 @@ function mod:OnSync(msg, targetName, guid)
 			end
 		elseif cid == 102681 then--Taerar
 			timerShadesOfTaerarCD:Stop()
-			countdownShadesOfTaerar:Cancel()
 			timerSeepingFogCD:Stop()
 			if not self:IsEasy() then
 				timerBellowingRoarCD:Start(44.5)
@@ -465,12 +460,10 @@ function mod:OnSync(msg, targetName, guid)
 			timerBellowingRoarCD:Stop()
 			timerBreathCD:Start(17, targetName)
 			timerShadesOfTaerarCD:Start(19.5)--19.5-21
-			countdownShadesOfTaerar:Start(19.5)
 			timerSeepingFogCD:Start(25)
 		end
 	elseif msg == "Shades" then
 		timerShadesOfTaerarCD:Start()
-		countdownShadesOfTaerar:Start()
 	elseif msg == "Fear" then
 		timerBellowingRoarCD:Start()
 	elseif msg == "SiphonSpirit" then

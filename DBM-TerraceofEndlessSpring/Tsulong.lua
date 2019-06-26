@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(742, "DBM-TerraceofEndlessSpring", nil, 320)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041710000")
+mod:SetRevision("20190625143827")
 mod:SetCreatureID(62442)--62919 Unstable Sha, 62969 Embodied Terror
 mod:SetEncounterID(1505)
 mod:SetReCombatTime(60)--fix lfr combat re-starts after killed.
@@ -22,8 +22,8 @@ local warnNight							= mod:NewSpellAnnounce("ej6310", 2, 108558)
 local warnSunbeam						= mod:NewSpellAnnounce(122789, 3)
 local warnNightmares					= mod:NewTargetAnnounce(122770, 4)--Target scanning will only work on 1 target on 25 man (only is 1 target on 10 man so they luck out)
 local warnDay							= mod:NewSpellAnnounce("ej6315", 2, 122789)
-local warnSummonUnstableSha				= mod:NewSpellAnnounce("ej6320", 3, "Interface\\Icons\\achievement_raid_terraceofendlessspring04")
-local warnSummonEmbodiedTerror			= mod:NewCountAnnounce("ej6316", 4, "Interface\\Icons\\achievement_raid_terraceofendlessspring04")
+local warnSummonUnstableSha				= mod:NewSpellAnnounce("ej6320", 3, "627685")
+local warnSummonEmbodiedTerror			= mod:NewCountAnnounce("ej6316", 4, "627685")
 local warnSunBreath						= mod:NewCountAnnounce(122855, 3)
 local warnLightOfDay					= mod:NewStackAnnounce(123716, 1, nil, "Healer", "warnLightOfDay")
 
@@ -39,18 +39,15 @@ local specWarnTerrorize					= mod:NewSpecialWarningDispel(123012, "Healer")
 local timerNightCD						= mod:NewNextTimer(121, "ej6310", nil, nil, nil, 6, 130013)
 local timerSunbeamCD					= mod:NewCDTimer(41, 122789)
 local timerShadowBreathCD				= mod:NewCDTimer(26, 122752, nil, "Tank|Healer", nil, 5)
-local timerNightmaresCD					= mod:NewNextTimer(15.5, 122770, nil, nil, nil, 3)
+local timerNightmaresCD					= mod:NewNextTimer(15.5, 122770, nil, nil, nil, 3, nil, nil, nil, 1, 4)
 local timerDarkOfNightCD				= mod:NewCDTimer(30.5, "ej6550", nil, nil, nil, 1, 130013)
 local timerDayCD						= mod:NewNextTimer(121, "ej6315", nil, nil, nil, 6, 122789)
-local timerSummonUnstableShaCD			= mod:NewNextTimer(18, "ej6320", nil, nil, nil, 1, "Interface\\Icons\\achievement_raid_terraceofendlessspring04")
-local timerSummonEmbodiedTerrorCD		= mod:NewNextCountTimer(41, "ej6316", nil, nil, nil, 1, "Interface\\Icons\\achievement_raid_terraceofendlessspring04")
+local timerSummonUnstableShaCD			= mod:NewNextTimer(18, "ej6320", nil, nil, nil, 1, "627685")
+local timerSummonEmbodiedTerrorCD		= mod:NewNextCountTimer(41, "ej6316", nil, nil, nil, 1, "627685")
 local timerTerrorizeCD					= mod:NewCDTimer(13.5, 123012, nil, nil, nil, 5)--Besides being cast 14 seconds after they spawn, i don't know if they recast it if they live too long, their health was too undertuned to find out.
-local timerSunBreathCD					= mod:NewNextCountTimer(29, 122855)
+local timerSunBreathCD					= mod:NewNextCountTimer(29, 122855, nil, nil, nil, 5, nil, nil, nil, mod:IsHealer() and 1, 4)
 local timerBathedinLight				= mod:NewBuffFadesTimer(6, 122858, nil, "Healer", nil, 5)
 local timerLightOfDay					= mod:NewTargetTimer(6, 123716, nil, "Healer", nil, 5)
-
-local countdownNightmares				= mod:NewCountdown(15.5, 122770, false)
-local countdownSunBreath				= mod:NewCountdown(29, 122855, "Healer")
 
 local berserkTimer						= mod:NewBerserkTimer(490)--a little over 8 min, basically 3rd dark phase is auto berserk.
 
@@ -80,8 +77,6 @@ end
 function mod:OnCombatStart(delay)
 	timerShadowBreathCD:Start(8.5-delay)
 	timerNightmaresCD:Start(15-delay)
-	countdownNightmares:Cancel() -- sometimes it doubles OnCombatStart, wtf?..
-	countdownNightmares:Start(15-delay)
 	timerSunbeamCD:Start(43-delay)--Sometimes he doesn't emote first cast, so we start a bar for SECOND cast on pull, if we does cast it though, we'll update bar off first cast
 	timerDayCD:Start(-delay)
 	if not self:IsDifficulty("lfr25") then
@@ -120,7 +115,6 @@ function mod:SPELL_CAST_START(args)
 		warnSunBreath:Show(breathCount)
 		if timerNightCD:GetTime() < 100 then
 			timerSunBreathCD:Start(29, breathCount+1)
-			countdownSunBreath:Start(29)
 		end
 	end
 end
@@ -160,7 +154,6 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 		self:BossTargetScanner(62442, "ShadowsTarget")
 		if timerDayCD:GetTime() < 106 then
 			timerNightmaresCD:Start()
-			countdownNightmares:Start(15.5)
 		end
 	elseif spellId == 123252 and self:IsInCombat() then--Dread Shadows Cancel (Sun Phase)
 		lightOfDayCount = 0
@@ -169,11 +162,9 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 		timerShadowBreathCD:Cancel()
 		timerSunbeamCD:Cancel()
 		timerNightmaresCD:Cancel()
-		countdownNightmares:Cancel()
 		timerDarkOfNightCD:Cancel()
 		warnDay:Show()
 		timerSunBreathCD:Start(29, 1)
-		countdownSunBreath:Start(29)
 		timerNightCD:Start()
 	elseif spellId == 122953 and self:AntiSpam(2, 1) then--Summon Unstable Sha (122946 is another ID, but it always triggers at SAME time as Dread Shadows Cancel so can just trigger there too without additional ID scanning.
 		warnSummonUnstableSha:Show()
@@ -184,11 +175,9 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 		timerSummonUnstableShaCD:Cancel()
 		timerSummonEmbodiedTerrorCD:Cancel()
 		timerSunBreathCD:Cancel()
-		countdownSunBreath:Cancel()
 		warnNight:Show()
 		timerShadowBreathCD:Start(10)
 		timerNightmaresCD:Start()
-		countdownNightmares:Start(15.5)
 		timerDayCD:Start()
 		if self:IsHeroic() then
 			timerDarkOfNightCD:Start(10)

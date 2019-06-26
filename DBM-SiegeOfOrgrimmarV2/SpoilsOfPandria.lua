@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(870, "DBM-SiegeOfOrgrimmarV2", nil, 369)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041710000")
+mod:SetRevision("20190625143417")
 mod:SetCreatureID(73720, 71512)
 mod:SetEncounterID(1594)
 mod:DisableESCombatDetection()
@@ -71,7 +71,7 @@ local timerCombatStarts			= mod:NewCombatTimer(18)
 --Massive Crate of Goods
 local timerReturnToStoneCD		= mod:NewNextTimer(12, 145489)
 local timerSetToBlowCD			= mod:NewNextTimer(9.6, 145996, nil, nil, nil, 3, nil, DBM_CORE_DEADLY_ICON)
-local timerSetToBlow			= mod:NewBuffFadesTimer(30, 145996)
+local timerSetToBlow			= mod:NewBuffFadesTimer(30, 145996, nil, nil, nil, 5, nil, DBM_CORE_DEADLY_ICON, nil, 1, 4)
 --Stout Crate of Goods
 local timerMatterScramble		= mod:NewCastTimer(7, 145288, nil, "-Tank")
 local timerMatterScrambleCD		= mod:NewCDTimer(18, 145288, nil, nil, nil, 5)--18-22 sec variation. most of time it's 20 exactly, unsure what causes the +-2 variations
@@ -89,11 +89,8 @@ local timerBlazingChargeCD		= mod:NewNextTimer(12, 145712, nil, false)
 local timerGustingCraneKickCD	= mod:NewCDTimer(18, 146180)
 local timerPathOfBlossomsCD		= mod:NewCDTimer(15, 146253)
 
-local countdownSetToBlow		= mod:NewCountdownFades(29, 145996)
-
 --Berserk Timer stuff
 local berserkTimer				= mod:NewTimer(480, DBM_CORE_GENERIC_TIMER_BERSERK, 28131, nil, "timer_berserk")
-local countdownBerserk			= mod:NewCountdown(20, 26662, nil, nil, nil, nil, true)
 local berserkWarning1			= mod:NewAnnounce(DBM_CORE_GENERIC_WARNING_BERSERK, 1, nil, "warning_berserk", false)
 local berserkWarning2			= mod:NewAnnounce(DBM_CORE_GENERIC_WARNING_BERSERK, 4, nil, "warning_berserk", false)
 
@@ -203,7 +200,6 @@ function mod:SPELL_AURA_APPLIED(args)
 		if args:IsPlayer() then
 			local _, _, _, _, _, expires = DBM:UnitDebuff("player", args.spellName)
 			local buffTime = expires-GetTime()
-			countdownSetToBlow:Start(buffTime)
 			timerSetToBlow:Start(buffTime)
 			specWarnSetToBlow:Schedule(buffTime)
 		end
@@ -219,7 +215,6 @@ end
 function mod:SPELL_AURA_REMOVED(args)
 	local spellId = args.spellId
 	if spellId == 145987 and args:IsPlayer() then
-		countdownSetToBlow:Cancel()
 		timerSetToBlow:Cancel()
 		specWarnSetToBlow:Cancel()
 	elseif spellId == 145692 then
@@ -289,7 +284,6 @@ function mod:UPDATE_UI_WIDGET(table)
 	if time > worldTimer then
 		maxTimer = time
 		berserkTimer:Cancel()
-		countdownBerserk:Cancel()
 		berserkTimer:Start(time+1)
 	end
 	if time % 10 == 0 then
@@ -302,8 +296,6 @@ function mod:UPDATE_UI_WIDGET(table)
 			berserkWarning2:Show(1, DBM_CORE_MIN)
 		elseif time == 30 and self.Options["timer_berserk"] and self:AntiSpam(2, 5) then
 			berserkWarning2:Show(30, DBM_CORE_SEC)
-		elseif time == 20 and self:AntiSpam(2, 5) then
-			countdownBerserk:Start()
 		elseif time == 10 and self.Options["timer_berserk"] and self:AntiSpam(2, 5) then
 			berserkWarning2:Show(10, DBM_CORE_SEC)
 		end

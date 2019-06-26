@@ -14,6 +14,7 @@ local targetX, targetY
 local hideTime, hideDistance
 local dontHide
 local isWorldCoord
+local currWaypoint
 
 local textureArrow,textureTop = "Interface\\AddOns\\WorldQuestsList\\Arrows", "Interface\\AddOns\\WorldQuestsList\\Arrows-Down"
 
@@ -132,6 +133,9 @@ do
 					arrow:SetVertexColor(red, perc, 0)
 					txtrng:SetTextColor(red, perc, 0)
 					if distance >= hideDistance then
+						if currWaypoint then
+							WorldQuestList:WaypointRemove(currWaypoint)
+						end
 						frame:Hide()
 					end
 				else
@@ -147,6 +151,9 @@ do
 						txtrng:SetTextColor(red, 1, 0)
 					end
 					if distance <= hideDistance then
+						if currWaypoint then
+							WorldQuestList:WaypointRemove(currWaypoint)
+						end
 						frame:Hide()			
 					end
 				end
@@ -174,6 +181,9 @@ do
 	
 	function functionOnUpdateWorld(self, elapsed)
 		if hideTime and GetTime() > hideTime then
+			if currWaypoint then
+				WorldQuestList:WaypointRemove(currWaypoint)
+			end
 			frame:Hide()
 		end
 
@@ -237,7 +247,7 @@ end
 ----------------------
 --  Public Methods  --
 ----------------------
-local function show(runAway, x, y, distance, time, world, hide)
+local function show(runAway, x, y, distance, time, world, hide, waypoint)
 	local player
 	frame:Hide()
 	if x == "_static" then
@@ -274,6 +284,7 @@ local function show(runAway, x, y, distance, time, world, hide)
 	end
 	isWorldCoord = world
 	dontHide = hide
+	currWaypoint = waypoint
 end
 
 function arrowFrame:ShowRunTo(...)

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1426, "DBM-HellfireCitadel", nil, 669)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041705938")
+mod:SetRevision("20190625143352")
 mod:SetCreatureID(90019)--Main ID is door, door death= win. 94515 Siegemaster Mar'tak
 mod:SetEncounterID(1778)
 mod:SetZone()
@@ -15,7 +15,7 @@ mod:RegisterEventsInCombat(
 	"SPELL_CAST_START 184394 181155 185816 183452 181968 180945 190748",
 	"SPELL_AURA_APPLIED 180079 184243 180927 184369 180076",
 	"SPELL_AURA_APPLIED_DOSE 184243",
-	"SPELL_AURA_REMOVED 184369 184243",
+	"SPELL_AURA_REMOVED 184369",
 	"SPELL_CAST_SUCCESS 184370",
 	"UNIT_DIED",
 	"CHAT_MSG_MONSTER_YELL",
@@ -89,9 +89,6 @@ local timerBerserkersCD				= mod:NewCDCountTimer(40, "ej11425", nil, nil, nil, 1
 local timerSiegeVehicleCD			= mod:NewTimer(60, "timerSiegeVehicleCD", 160240, nil, nil, 1)--Cannot find any short text timers that will fit the bill
 
 --local berserkTimer				= mod:NewBerserkTimer(360)
-
-local countdownHowlingAxe			= mod:NewCountdownFades("Alt7", 184369)
-local countdownSlam					= mod:NewCountdownFades("Alt11", 184243, false)
 
 local voiceFelfireSiegeVehicles		= mod:NewVoice("ej11428")--One option for locations, independant of integration with vehicle announce objects.
 
@@ -218,10 +215,6 @@ function mod:SPELL_AURA_APPLIED(args)
 			local amount = args.amount or 1
 			warnSlam:Show(args.destName, amount)
 		end
-		if args:IsPlayer() then
-			countdownSlam:Cancel()
-			countdownSlam:Start()
-		end
 	elseif spellId == 180927 then--Vehicle Spawns
 		self.vb.vehicleCount = self.vb.vehicleCount + 1
 		local Count = self.vb.vehicleCount
@@ -305,7 +298,6 @@ function mod:SPELL_AURA_APPLIED(args)
 		if args:IsPlayer() then
 			specWarnHowlingAxe:Show()
 			yellHowlingAxe:Yell()
-			countdownHowlingAxe:Start()
 			specWarnHowlingAxe:Play("runout")
 			updateRangeFrame(self, true)
 		end
@@ -324,8 +316,6 @@ function mod:SPELL_AURA_REMOVED(args)
 		if self.Options.HudMapOnAxe then
 			DBMHudMap:FreeEncounterMarkerByTarget(spellId, args.destName)
 		end
-	elseif spellId == 184243 and args:IsPlayer() then
-		countdownSlam:Cancel()
 	end
 end
 
@@ -373,7 +363,6 @@ function mod:OnSync(msg)
 	if not self:IsInCombat() then return end
 	if msg == "BossLeaving" and self:AntiSpam(20, 5) then
 		timerHowlingAxeCD:Stop()
-		countdownHowlingAxe:Cancel()
 		timerShockwaveCD:Stop()
 		if self.Options.RangeFrame then
 			DBM.RangeCheck:Hide()

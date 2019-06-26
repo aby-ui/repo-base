@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("BrawlRank5", "DBM-Brawlers")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190416205700")
+mod:SetRevision("20190625143048")
 --mod:SetModelID(6923)
 mod:SetZone()
 
@@ -26,6 +26,7 @@ function mod:SPELL_CAST_START(args)
 			specWarnPolymorph:Play("targetyou")
 		else
 			warnPolymorph:Show()
+			timerPolymorphCD:SetSTFade(true)
 		end
 	end
 end

@@ -3,4 +3,5 @@
 	<Script file="templates.lua"/>
 
 	<Frame name="WQL_AreaPOIPinTemplate" inherits="BaseHighlightableMapPoiPinTemplate" enableMouse="true" mixin="WQL_AreaPOIPinMixin" virtual="true" />
+	<Frame name="WQL_WayPinTemplate" inherits="BaseHighlightableMapPoiPinTemplate" enableMouse="true" mixin="WQL_WayPinMixin" virtual="true" />
 </Ui>

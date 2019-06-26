@@ -33,16 +33,16 @@ do
 	C_Timer.After (10, function()
 
 		--load encounter journal
-		EJ_SelectInstance (INSTANCE_EJID)
+		DetailsFramework.EncounterJournal.EJ_SelectInstance (INSTANCE_EJID)
 
-		local InstanceName = EJ_GetInstanceInfo (INSTANCE_EJID)
+		local InstanceName = DetailsFramework.EncounterJournal.EJ_GetInstanceInfo (INSTANCE_EJID)
 
 		--build the boss name list
 		local BOSSNAMES = {}
 		local ENCOUNTERS = {}
 		
 		for i = 1, #PORTRAIT_LIST do
-			local bossName = EJ_GetEncounterInfoByIndex (i, INSTANCE_EJID)
+			local bossName = DetailsFramework.EncounterJournal.EJ_GetEncounterInfoByIndex (i, INSTANCE_EJID)
 			if (bossName) then
 				tinsert (BOSSNAMES, bossName)
 				local encounterTable = {
@@ -134,16 +134,16 @@ do
 	C_Timer.After (10, function()
 
 		--load encounter journal
-		EJ_SelectInstance (INSTANCE_EJID)
+		DetailsFramework.EncounterJournal.EJ_SelectInstance (INSTANCE_EJID)
 
-		local InstanceName = EJ_GetInstanceInfo (INSTANCE_EJID)
+		local InstanceName = DetailsFramework.EncounterJournal.EJ_GetInstanceInfo (INSTANCE_EJID)
 
 		--build the boss name list
 		local BOSSNAMES = {}
 		local ENCOUNTERS = {}
 		
 		for i = 1, #PORTRAIT_LIST do
-			local bossName = EJ_GetEncounterInfoByIndex (i, INSTANCE_EJID)
+			local bossName = DetailsFramework.EncounterJournal.EJ_GetEncounterInfoByIndex (i, INSTANCE_EJID)
 			if (bossName) then
 				tinsert (BOSSNAMES, bossName)
 				local encounterTable = {
@@ -242,16 +242,16 @@ do
 	C_Timer.After (10, function()
 
 		--load encounter journal
-		EJ_SelectInstance (INSTANCE_EJID)
+		DetailsFramework.EncounterJournal.EJ_SelectInstance (INSTANCE_EJID)
 
-		local InstanceName = EJ_GetInstanceInfo (INSTANCE_EJID)
+		local InstanceName = DetailsFramework.EncounterJournal.EJ_GetInstanceInfo (INSTANCE_EJID)
 
 		--build the boss name list
 		local BOSSNAMES = {}
 		local ENCOUNTERS = {}
 		
 		for i = 1, #PORTRAIT_LIST do
-			local bossName = EJ_GetEncounterInfoByIndex (i, INSTANCE_EJID)
+			local bossName = DetailsFramework.EncounterJournal.EJ_GetEncounterInfoByIndex (i, INSTANCE_EJID)
 			if (bossName) then
 				tinsert (BOSSNAMES, bossName)
 				local encounterTable = {
@@ -350,16 +350,16 @@ do
 	function Details:ScheduleInstallRaidDataForAntorus()
 
 		--load encounter journal
-		EJ_SelectInstance (INSTANCE_EJID)
+		DetailsFramework.EncounterJournal.EJ_SelectInstance (INSTANCE_EJID)
 
-		local InstanceName = EJ_GetInstanceInfo (INSTANCE_EJID)
+		local InstanceName = DetailsFramework.EncounterJournal.EJ_GetInstanceInfo (INSTANCE_EJID)
 
 		--build the boss name list
 		local BOSSNAMES = {}
 		local ENCOUNTERS = {}
 		
 		for i = 1, #PORTRAIT_LIST do
-			local bossName = EJ_GetEncounterInfoByIndex (i, INSTANCE_EJID)
+			local bossName = DetailsFramework.EncounterJournal.EJ_GetEncounterInfoByIndex (i, INSTANCE_EJID)
 			if (bossName) then
 				tinsert (BOSSNAMES, bossName)
 				local encounterTable = {

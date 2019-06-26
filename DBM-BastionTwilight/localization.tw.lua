@@ -103,7 +103,6 @@ L:SetOptionLocalization({
 	TimerEggWeaken		= "顯示$spell:87654重生的計時器",
 	TimerOrbs			= "顯示下一個暗影寶珠的計時器(猜測的時間，可能不準確)",
 	SetIconOnOrbs		= "標記圖示給暗影寶珠的目標(可能的目標)",
-	OrbsCountdown		= "為暗影寶珠播放倒數音效",
 	InfoFrame			= "為有仇恨的玩家顯示訊息框"
 })
 

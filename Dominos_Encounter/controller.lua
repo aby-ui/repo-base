@@ -1,11 +1,13 @@
+if not _G.PlayerPowerBarAlt then return end
+
 local AddonName, Addon = ...
 local EncounterBarModule = Dominos:NewModule('EncounterBar', 'AceEvent-3.0')
 
 function EncounterBarModule:OnInitialize()
 	_G['PlayerPowerBarAlt'].ignoreFramePositionManager = true
-	
+
 	local timer = Dominos:CreateHiddenFrame('Frame')
-	
+
 	timer:SetScript('OnUpdate', function()
 		self:RepositionBar()
 		timer:Hide()
@@ -35,6 +37,6 @@ end
 
 function EncounterBarModule:RepositionBar()
 	if self.frame then
-		self.frame:Layout()	
+		self.frame:Layout()
 	end
 end

@@ -1,4 +1,4 @@
-## Interface: 80100
+## Interface: 80200
 ## Version: 18.07.24
 ## Title: TipTac
 ## Author: Aezay (Earthen Ring EU)

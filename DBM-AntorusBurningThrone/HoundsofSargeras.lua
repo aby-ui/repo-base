@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1987, "DBM-AntorusBurningThrone", nil, 946)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041705925")
+mod:SetRevision("20190625143337")
 mod:SetCreatureID(122477, 122135)--122477 F'harg, 122135 Shatug
 mod:SetEncounterID(2074)
 mod:SetZone()
@@ -75,11 +75,6 @@ local timerSiphonCorruptionCD			= mod:NewCDTimer(77, 244056, nil, nil, nil, 3)
 
 --local berserkTimer					= mod:NewBerserkTimer(600)
 
---F'harg
-local countdownBurningMaw				= mod:NewCountdown("Alt10", 251448, "Tank", nil, 3)
---Shatug
-local countdownCorruptingMaw			= mod:NewCountdown("Alt10", 251447, "Tank", nil, 3)
-
 mod:AddSetIconOption("SetIconOnWeightofDarkness2", 254429, false)
 --mod:AddInfoFrameOption(239154, true)
 mod:AddRangeFrameOption("5/8")
@@ -90,8 +85,6 @@ mod.vb.longTimer = 95.9
 mod.vb.mediumTimer = 77
 
 local function UpdateAllTimers(self)
-	countdownBurningMaw:Cancel()
-	countdownCorruptingMaw:Cancel()
 	--Fire Doggo
 	timerBurningMawCD:Stop()
 	timerMoltenTouchCD:AddTime(15)
@@ -111,9 +104,7 @@ function mod:OnCombatStart(delay)
 	self.vb.WeightDarkIcon = 1
 	--Fire doggo
 	timerBurningMawCD:Start(8.2-delay)--was same on heroic/mythic, or now
-	--countdownBurningMaw:Start(8.2-delay)
 	timerCorruptingMawCD:Start(8.9-delay)--was same on heroic/normal, for now
-	--countdownCorruptingMaw:Start(8.9-delay)
 	--Shadow doggo
 	if self:IsMythic() then
 		self.vb.longTimer = 88.3--88.3-89
@@ -218,21 +209,12 @@ function mod:SPELL_CAST_SUCCESS(args)
 		warnBurningMaw:Show(args.destName)
 		if self:IsMythic() then
 			timerBurningMawCD:Start(9.7)
-			if self:CheckInterruptFilter(args.sourceGUID, true) then
-				countdownBurningMaw:Start(9.7)
-			end
 		else
 			timerBurningMawCD:Start()
-			if self:CheckInterruptFilter(args.sourceGUID, true) then
-				countdownBurningMaw:Start()
-			end
 		end
 	elseif spellId == 245098 then
 		warnCorruptingMaw:Show(args.destName)
 		timerCorruptingMawCD:Start()
-		if self:CheckInterruptFilter(args.sourceGUID, true) then
-			countdownCorruptingMaw:Start()
-		end
 	end
 end
 

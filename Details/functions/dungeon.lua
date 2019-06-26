@@ -170,7 +170,7 @@ function mythicDungeonCharts:OnBossDefeated()
 	local currentCombat = Details:GetCurrentCombat()
 	local segmentType = currentCombat:GetCombatType()
 	local bossInfo = currentCombat:GetBossInfo()
-	local mythicLevel = C_ChallengeMode.GetActiveKeystoneInfo()
+	local mythicLevel = C_ChallengeMode and C_ChallengeMode.GetActiveKeystoneInfo()
 	
 	if (mythicLevel and mythicLevel > 0) then
 		if (mythicDungeonCharts.ChartTable and mythicDungeonCharts.ChartTable.Running and bossInfo) then

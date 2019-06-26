@@ -1,5 +1,5 @@
 
-
+local UnitGroupRolesAssigned = DetailsFramework.UnitGroupRolesAssigned
 
 --> check unloaded files:
 if (
@@ -273,18 +273,19 @@ function _G._detalhes:Start()
 			self.listener:RegisterEvent ("START_TIMER")
 			self.listener:RegisterEvent ("UNIT_NAME_UPDATE")
 
-			self.listener:RegisterEvent ("PET_BATTLE_OPENING_START")
-			self.listener:RegisterEvent ("PET_BATTLE_CLOSE")
-			
 			self.listener:RegisterEvent ("PLAYER_ROLES_ASSIGNED")
 			self.listener:RegisterEvent ("ROLE_CHANGED_INFORM")
 			
 			self.listener:RegisterEvent ("UNIT_FACTION")
-			self.listener:RegisterEvent ("PLAYER_SPECIALIZATION_CHANGED")
-			self.listener:RegisterEvent ("PLAYER_TALENT_UPDATE")
-			
-			self.listener:RegisterEvent ("CHALLENGE_MODE_START")
-			self.listener:RegisterEvent ("CHALLENGE_MODE_COMPLETED")
+
+			if (not DetailsFramework.IsClassicWow()) then
+				self.listener:RegisterEvent ("PET_BATTLE_OPENING_START")
+				self.listener:RegisterEvent ("PET_BATTLE_CLOSE")
+				self.listener:RegisterEvent ("PLAYER_SPECIALIZATION_CHANGED")
+				self.listener:RegisterEvent ("PLAYER_TALENT_UPDATE")
+				self.listener:RegisterEvent ("CHALLENGE_MODE_START")
+				self.listener:RegisterEvent ("CHALLENGE_MODE_COMPLETED")
+			end
 			
 			--test immersion stuff
 			------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------			
@@ -338,13 +339,14 @@ function _G._detalhes:Start()
 			local newFrame = CreateFrame ("frame", "DetailsMythicPlusFrame", UIParent)
 			newFrame.DevelopmentDebug = false
 			
-			--[
+			--disabling the mythic+ feature if the user is playing in wow classic
+			if (not DetailsFramework.IsClassicWow()) then
 				newFrame:RegisterEvent ("CHALLENGE_MODE_START")
 				newFrame:RegisterEvent ("CHALLENGE_MODE_COMPLETED")
 				newFrame:RegisterEvent ("ZONE_CHANGED_NEW_AREA")
 				newFrame:RegisterEvent ("ENCOUNTER_END")
 				newFrame:RegisterEvent ("START_TIMER")
-			--]]
+			end
 			
 			--[[
 				all mythic segments have:
@@ -958,7 +960,7 @@ function _G._detalhes:Start()
 					return
 				end
 				
-				local ejID = EJ_GetInstanceForMap (mapID)
+				local ejID = DetailsFramework.EncounterJournal.EJ_GetInstanceForMap (mapID)
 
 				--> setup the mythic run info
 				self.MythicPlus.Started = true
@@ -1822,7 +1824,10 @@ function _G._detalhes:Start()
 		
 		--> auto run frame to dispatch scrtips for some events that details! doesn't handle
 		local auto_run_code_dispatch = CreateFrame ("frame")
-		auto_run_code_dispatch:RegisterEvent ("PLAYER_SPECIALIZATION_CHANGED")
+		
+		if (not DetailsFramework.IsClassicWow()) then
+			auto_run_code_dispatch:RegisterEvent ("PLAYER_SPECIALIZATION_CHANGED")
+		end
 		
 		auto_run_code_dispatch.OnEventFunc = function (self, event)
 			--> ignore events triggered more than once in a small time window
@@ -1870,6 +1875,14 @@ function _G._detalhes:Start()
 
 	--> override the overall data flag on this release only (remove on the next release)
 	--Details.overall_flag = 0x10
+	
+	--show warning message about classic beta
+	
+	if (not DetailsFramework.IsClassicWow()) then
+		print ("|CFFFFFF00[Details!]: this version of Details! is being ported to Classic WoW, bugs may appear here on BfA, report at Discord (/details discord).")
+	else
+		print ("|CFFFFFF00[Details!]: thanks for testing Details! Damage Meter for Classic WoW, report bugs at Discord (/details discord).")
+	end
 
 end
 

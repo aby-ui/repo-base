@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1197, "DBM-Highmaul", nil, 477)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041705938")
+mod:SetRevision("20190625143352")
 mod:SetCreatureID(77428, 78623)
 mod:SetEncounterID(1705)
 mod:SetZone()
@@ -104,32 +104,23 @@ local specWarnDarkStar							= mod:NewSpecialWarningSpell(178607, nil, nil, nil,
 local timerArcaneWrathCD						= mod:NewCDTimer(50, 156238, nil, "-Tank", nil, 3)--Pretty much a next timer, HOWEVER can get delayed by other abilities so only reason it's CD timer anyways
 local timerDestructiveResonanceCD				= mod:NewCDTimer(15, 156467, nil, "-Melee", nil, 3)--16-30sec variation noted. I don't like it
 local timerMarkOfChaos							= mod:NewTargetTimer(8, 158605, nil, "Tank")
-local timerMarkOfChaosCD						= mod:NewCDTimer(50.5, 158605, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON)
-local timerForceNovaCD							= mod:NewCDCountTimer(45, 157349, nil, nil, nil, 2)--45-52
+local timerMarkOfChaosCD						= mod:NewCDTimer(50.5, 158605, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON, nil, 2, 5)
+local timerForceNovaCD							= mod:NewCDCountTimer(45, 157349, nil, nil, nil, 2, nil, nil, nil, 3, 4)--45-52
 local timerForceNovaFortification				= mod:NewNextTimer(9, 157349, nil, nil, nil, 2)--For repeating nova
 local timerSummonArcaneAberrationCD				= mod:NewCDCountTimer(45, "ej9945", nil, "-Healer", nil, 1, 156471, DBM_CORE_DAMAGE_ICON)--45-52 Variation Noted
 --Intermission: Lineage of Power
 mod:AddTimerLine(DBM_CORE_INTERMISSION)
-local timerTransition							= mod:NewPhaseTimer(74)
+local timerTransition							= mod:NewPhaseTimer(74, nil, nil, nil, nil, nil, nil, nil, nil, 1, 5)
 local timerCrushArmorCD							= mod:NewNextTimer(6, 158553, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON)
 local timerKickToFaceCD							= mod:NewCDTimer(17, 158563, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON)
 --Mythic
 mod:AddTimerLine(ENCOUNTER_JOURNAL_SECTION_FLAG12)
-local timerGaze									= mod:NewBuffFadesTimer(15, 165595, nil, nil, nil, 3)
+local timerGaze									= mod:NewBuffFadesTimer(15, 165595, nil, nil, nil, 3, nil, nil, nil, 2, 4)
 local timerGlimpseOfMadnessCD					= mod:NewNextCountTimer(27, 165243, nil, nil, nil, 1)
 local timerInfiniteDarknessCD					= mod:NewNextTimer(62, 165102, nil, "Healer", 2, 5, nil, DBM_CORE_HEALER_ICON)
-local timerEnvelopingNightCD					= mod:NewNextCountTimer(63, 165876, nil, nil, nil, 2)--60 seconds plus 3 second cast
-local timerDarkStarCD							= mod:NewCDTimer(61, 178607, nil, nil, nil, 3)--61-65 Variations noticed
+local timerEnvelopingNightCD					= mod:NewNextCountTimer(63, 165876, nil, nil, nil, 2, nil, nil, nil, 1, 4)--60 seconds plus 3 second cast
+local timerDarkStarCD							= mod:NewCDTimer(61, 178607, nil, nil, nil, 3, nil, nil, nil, 3, 4)--61-65 Variations noticed
 local timerNightTwistedCD						= mod:NewTimer(30, "timerNightTwistedCD", 172138, nil, nil, 1)
-
-local countdownArcaneWrath						= mod:NewCountdown(50, 156238, false, 2)--Important to the assigned soakers on mythic, but pretty much spam to everyone else
-local countdownMarkofChaos						= mod:NewCountdown("Alt50", 158605, "Tank")
-local countdownForceNova						= mod:NewCountdown("AltTwo45", 157349)
-local countdownTransition						= mod:NewCountdown(74, 157278)
---Mythic
-local countdownEnvelopingNight					= mod:NewCountdown(63, 165876)
-local countdownGaze								= mod:NewCountdownFades("Alt10", 165595)
-local countdownDarkStar							= mod:NewCountdown("AltTwo61", 178607)
 
 mod:AddRangeFrameOption("35/13/5")
 mod:AddSetIconOption("SetIconOnBrandedDebuff", 156225, false)
@@ -256,16 +247,12 @@ end
 
 local function stopP3Timers()
 	timerArcaneWrathCD:Stop()
-	countdownArcaneWrath:Cancel()
 	timerDestructiveResonanceCD:Stop()
 	timerSummonArcaneAberrationCD:Stop()
 	timerMarkOfChaosCD:Stop()
-	countdownMarkofChaos:Cancel()
 	timerForceNovaCD:Stop()
 	specWarnForceNova:CancelVoice()
-	countdownForceNova:Cancel()
 	timerForceNovaFortification:Stop()
-	countdownForceNova:Cancel()
 	specWarnForceNova:Cancel()
 end
 local function NightTwisted(self)
@@ -290,13 +277,10 @@ function mod:OnCombatStart(delay)
 	self.vb.envelopingCount = 0
 	self.vb.mineCount = 0
 	timerArcaneWrathCD:Start(5.5-delay)
-	countdownArcaneWrath:Start(5.5-delay)
 	timerDestructiveResonanceCD:Start(15-delay)
 	timerSummonArcaneAberrationCD:Start(25-delay, 1)
 	timerMarkOfChaosCD:Start(33.5-delay)
-	countdownMarkofChaos:Start(33.5-delay)
 	timerForceNovaCD:Start(-delay, 1)
-	countdownForceNova:Start(-delay)
 	specWarnForceNova:Schedule(38.5-delay, "157349")
 	--Fix number of bosses reported by status whispers for normal
 	--Assuming this can be changed after mod load without breaking things.
@@ -329,7 +313,6 @@ function mod:SPELL_CAST_START(args)
 	local spellId = args.spellId
 	if args:IsSpellID(156238, 163988, 163989, 163990) then
 		timerArcaneWrathCD:Start()
-		countdownArcaneWrath:Start()
 	-----
 	--Users complain BW timers more accurate. here is proof BW timers are completely wrong actually
 	--There is no magic timer table for mines. It's a variable cd (a shitty one at that) that cannot be predicted accurately.
@@ -369,13 +352,11 @@ function mod:SPELL_CAST_START(args)
 		specWarnForceNova:Show()
 		local novaTime = self.vb.forceCount == 1 and 45 or 50.5--Often 51, but 2x I did see 50.5 so 50.5 is safer
 		timerForceNovaCD:Start(novaTime, self.vb.forceCount+1)
-		countdownForceNova:Start(novaTime)
 		specWarnForceNova:ScheduleVoice(novaTime-6.5, "157349")
 	elseif spellId == 164232 then
 		self.vb.forceCount = self.vb.forceCount + 1
 		local novaTime = self.vb.forceCount == 1 and 45 or 50.5
 		timerForceNovaCD:Start(novaTime, self.vb.forceCount+1)
-		countdownForceNova:Start(novaTime)
 		specWarnForceNova:ScheduleVoice(novaTime-6.5, "157349")
 		if self:IsMythic() and self.vb.phase == 1 then--Also replication empowered
 			self.vb.RepNovaActive = true
@@ -400,13 +381,10 @@ function mod:SPELL_CAST_START(args)
 		specWarnForceNova:Show()
 		local novaTime = self.vb.forceCount == 1 and 45 or 50.5
 		timerForceNovaCD:Start(novaTime, self.vb.forceCount+1)
-		countdownForceNova:Start(novaTime)
 		specWarnForceNova:ScheduleVoice(novaTime-6.5, "157349")
-		--Fortified novas, 3 novas not just 1. Start additional timer/Countdown for novas 2 and 3
+		--Fortified novas, 3 novas not just 1. Start additional timer for novas 2 and 3
 		timerForceNovaFortification:Start()
 		timerForceNovaFortification:Schedule(9)
-		countdownForceNova:Start(9)
-		countdownForceNova:Start(18)
 		specWarnForceNova:Schedule(9)
 		specWarnForceNova:Schedule(18)
 	elseif spellId == 164240 then
@@ -414,11 +392,9 @@ function mod:SPELL_CAST_START(args)
 		self.vb.RepNovaActive = true
 		if self:IsMythic() then
 			self:Schedule(27, delayedRangeUpdate, self)--Also Fortification empowered
-			--Fortified novas, 3 novas not just 1. Start additional timer/Countdown for novas 2 and 3
+			--Fortified novas, 3 novas not just 1. Start additional timer for novas 2 and 3
 			timerForceNovaFortification:Start()
 			timerForceNovaFortification:Schedule(9)
-			countdownForceNova:Start(9)
-			countdownForceNova:Start(18)
 			specWarnForceNovaRep:Schedule(9)
 			specWarnForceNovaRep:Schedule(18)
 			specWarnForceNova:ScheduleVoice(9, "range5")
@@ -439,7 +415,6 @@ function mod:SPELL_CAST_START(args)
 		specWarnForceNovaRep:Show()
 		local novaTime = self.vb.forceCount == 1 and 45 or 50.5
 		timerForceNovaCD:Start(novaTime, self.vb.forceCount+1)
-		countdownForceNova:Start(novaTime)
 		specWarnForceNova:ScheduleVoice(novaTime-6.5, "157349")
 		specWarnForceNova:Play("range5") --keep range 5 yards
 	-----
@@ -472,7 +447,6 @@ function mod:SPELL_CAST_START(args)
 		local tanking, status = UnitDetailedThreatSituation("player", "boss1")
 		self.vb.noTaunt = true
 		timerMarkOfChaosCD:Start()
-		countdownMarkofChaos:Start()
 		if spellId == 158605 then
 			if self.Options.warnMarkOfChaos and targetName then
 				warnMarkOfChaos:Show(targetName)
@@ -536,12 +510,10 @@ function mod:SPELL_CAST_START(args)
 		specWarnEnvelopingNight:Show(self.vb.envelopingCount)
 		specWarnEnvelopingNight:Play("aesoon")
 		timerEnvelopingNightCD:Start(nil, self.vb.envelopingCount+1)
-		countdownEnvelopingNight:Start()
 	elseif spellId == 178607 then
 		warnDarkStar:Show()
 		specWarnDarkStar:Show()
 		timerDarkStarCD:Start()
-		countdownDarkStar:Start()
 	end
 end
 
@@ -732,9 +704,7 @@ function mod:SPELL_AURA_APPLIED(args)
 			local amount = args.amount or 1
 			specWarnGaze:Show(amount)
 			timerGaze:Stop()
-			countdownGaze:Cancel()
 			timerGaze:Start()
-			countdownGaze:Start()
 			if self.Options.GazeYellType == "Countdown" then
 				yellGaze:Schedule(14, 1)
 				yellGaze:Schedule(13, 2)
@@ -804,7 +774,6 @@ function mod:SPELL_AURA_REMOVED(args)
 	elseif spellId == 165595 then
 		if args:IsPlayer() then
 			timerGaze:Stop()
-			countdownGaze:Cancel()
 		end
 		updateRangeFrame(self)
 	end
@@ -830,19 +799,14 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 	if spellId == 164751 or spellId == 164810 then--Teleport to Fortification/Teleport to Replication.
 		self.vb.isTransition = true
 		timerArcaneWrathCD:Stop()
-		countdownArcaneWrath:Cancel()
 		timerDestructiveResonanceCD:Stop()
 		timerSummonArcaneAberrationCD:Stop()
 		timerMarkOfChaosCD:Stop()
-		countdownMarkofChaos:Cancel()
 		timerForceNovaCD:Stop()
-		countdownForceNova:Cancel()
 		specWarnForceNova:CancelVoice()
 		timerForceNovaFortification:Stop()
-		countdownForceNova:Cancel()
 		specWarnForceNova:Cancel()
 		timerTransition:Start()
-		countdownTransition:Start()
 		warnPhase:Play("ptran")
 		updateRangeFrame(self)
 		if spellId == 164810 then
@@ -860,14 +824,11 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 		self.vb.noTaunt = false
 		specWarnTransitionEnd:Show()
 		timerArcaneWrathCD:Start(8.5)
-		countdownArcaneWrath:Start(8.5)
 		timerDestructiveResonanceCD:Start(18)
 		timerSummonArcaneAberrationCD:Start(28, 1)
 		timerMarkOfChaosCD:Start(36.5)
-		countdownMarkofChaos:Start(36.5)
 		timerForceNovaCD:Start(48.5, 1)
 		specWarnForceNova:ScheduleVoice(42, "157349")
-		countdownForceNova:Start(48.5)
 		if spellId == 158012 then
 			if self:IsMythic() then
 				self.vb.phase = 2
@@ -892,10 +853,6 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 		end
 		updateRangeFrame(self)
 	elseif spellId == 164336 then--Teleport to Displacement (first phase change that has no transition)
-		--Cancel countdowns, since timers are altered by this transition
-		countdownArcaneWrath:Cancel()
-		countdownMarkofChaos:Cancel()
-		countdownForceNova:Cancel()
 		specWarnForceNova:CancelVoice()
 		local tr1 = timerArcaneWrathCD:GetRemaining()
 		local tr2 = timerDestructiveResonanceCD:GetRemaining()
@@ -907,22 +864,24 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 		--but casts can be delayed 3-13 seconds based on how many get backed up in queue :\
 		local n = 10 -- just extend 10s if left time is below 10s.
 		if tr1 > 0 and tr1 < 10 then
-		--	countdownArcaneWrath:Start(tr1+n)
+			timerArcaneWrathCD:Stop()
 			timerArcaneWrathCD:Start(tr1+n)
 		end
 		if tr2 > 0 and tr2 < 10 then
+			timerDestructiveResonanceCD:Stop()
 			timerDestructiveResonanceCD:Start(tr2+n)
 		end
 		if tr3 > 0 and tr3 < 10 then
+			timerSummonArcaneAberrationCD:Stop()
 			timerSummonArcaneAberrationCD:Start(tr3+n)
 		end
 		if tr4 > 0 and tr4 < 10 then
+			timerMarkOfChaosCD:Stop()
 			timerMarkOfChaosCD:Start(tr4+n)
-		--	countdownMarkofChaos:Start(tr4+n)
 		end
 		if tr5 > 0 and tr5 < 10 then
+			timerForceNovaCD:Stop()
 			timerForceNovaCD:Start(tr5+n)
-		--	countdownForceNova:Start(tr5+n)
 		end
 		self.vb.phase = 2
 		warnPhase:Show(DBM_CORE_AUTO_ANNOUNCE_TEXTS.stage:format(2))
@@ -935,9 +894,7 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 		timerInfiniteDarknessCD:Start(9)--First timer 8-12 second variable, almost always 10. I'll make 9 for now so it's semi accurate in both situations
 		timerGlimpseOfMadnessCD:Start(20, 1)
 		timerDarkStarCD:Start(29)
-		countdownDarkStar:Start(29)
 		timerEnvelopingNightCD:Start(55, 1)
-		countdownEnvelopingNight:Start(55)
 		self:RegisterShortTermEvents(
 			"SPELL_PERIODIC_DAMAGE 176533",
 			"SPELL_ABSORBED 176533"

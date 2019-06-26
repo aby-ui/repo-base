@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1123, "DBM-BlackrockFoundry", nil, 457)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041705938")
+mod:SetRevision("20190625143352")
 mod:SetCreatureID(76814)--76794 Cinder Wolf, 80590 Aknor Steelbringer
 mod:SetEncounterID(1689)
 mod:SetZone()
@@ -52,22 +52,16 @@ local specWarnCharringBreathOther		= mod:NewSpecialWarningTaunt(155074)
 
 local timerLavaSlashCD					= mod:NewCDTimer(14.5, 155318, nil, false, nil, 3)
 local timerMoltenTorrentCD				= mod:NewCDTimer(14, 154932, nil, "Ranged", 2, 3)
-local timerSummonEnchantedArmamentsCD	= mod:NewCDTimer(45, 156724, nil, "Ranged", 2, 3)--45-47sec variation
-local timerSummonCinderWolvesCD			= mod:NewNextTimer(76, 155776, nil, nil, nil, 1)
-local timerOverheated					= mod:NewTargetTimer(14, 154950, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON)
+local timerSummonEnchantedArmamentsCD	= mod:NewCDTimer(45, 156724, nil, "Ranged", 2, 3, nil, nil, nil, 2, 4)--45-47sec variation
+local timerSummonCinderWolvesCD			= mod:NewNextTimer(76, 155776, nil, nil, nil, 1, nil, nil, nil, 1, 4)
+local timerOverheated					= mod:NewTargetTimer(14, 154950, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON, nil, 2, 4)
 local timerCharringBreathCD				= mod:NewNextTimer(5, 155074, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON)
 local timerFixate						= mod:NewBuffFadesTimer(9.6, 154952)
 local timerBlazingRadianceCD			= mod:NewCDTimer(12, 155277, nil, false, nil, 3)--somewhat important but not important enough. there is just too much going on to be distracted by this timer
-local timerFireStormCD					= mod:NewNextCountTimer(61, 155493, nil, nil, nil, 2, nil, DBM_CORE_HEALER_ICON)
+local timerFireStormCD					= mod:NewNextCountTimer(61, 155493, nil, nil, nil, 2, nil, DBM_CORE_HEALER_ICON, nil, 1, 5)
 local timerFireStorm					= mod:NewBuffActiveTimer(14, 155493, nil, nil, nil, 6)
 
 local berserkTimer						= mod:NewBerserkTimer(420)
-
-local countdownCinderWolves				= mod:NewCountdown(76, 155776)
-local countdownFireStorm				= mod:NewCountdown(61, 155493)--Same count as wolves cause never happen at same time, in fact they alternate.
-local countdownEnchantedArmaments		= mod:NewCountdown("Alt45", 156724, false, 2)
-local countdownOverheated				= mod:NewCountdownFades("Alt20", 154950, "Tank")
-local countdownMoltenTorrent			= mod:NewCountdownFades("AltTwo6", 154932)
 
 mod:AddRangeFrameOption("10/6")
 mod:AddSetIconOption("SetIconOnAdds", 155776, true, true)
@@ -98,7 +92,6 @@ function mod:OnCombatStart(delay)
 	timerLavaSlashCD:Start(11-delay)
 	timerMoltenTorrentCD:Start(30-delay)
 	timerSummonCinderWolvesCD:Start(60-delay)
-	countdownCinderWolves:Start(60-delay)
 	if self:IsMythic() then
 		berserkTimer:Start(-delay)
 	end
@@ -137,7 +130,6 @@ function mod:SPELL_CAST_SUCCESS(args)
 		timerBlazingRadianceCD:Start(34)
 		timerFireStormCD:Start(nil, self.vb.firestorm+1)
 		specWarnFireStorm:ScheduleVoice(56.5, "aesoon")
-		countdownFireStorm:Start()
 		specWarnCinderWolves:Play("killmob")
 		wolfIcon = 2
 		if self.Options.SetIconOnAdds and not self:IsLFR() then
@@ -215,7 +207,6 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerMoltenTorrentCD:Start()
 		if args:IsPlayer() then
 			specWarnMoltenTorrent:Show()
-			countdownMoltenTorrent:Start(6)
 			specWarnMoltenTorrent:Play("runin")
 			yellMoltenTorrent:Schedule(5, 1)
 			yellMoltenTorrent:Schedule(4, 2)
@@ -229,7 +220,6 @@ function mod:SPELL_AURA_APPLIED(args)
 		specWarnOverheated:Show()
 		timerOverheated:Start(args.destName)
 		timerCharringBreathCD:Start()
-		countdownOverheated:Start()
 	end
 end
 mod.SPELL_AURA_APPLIED_DOSE = mod.SPELL_AURA_APPLIED
@@ -250,7 +240,6 @@ function mod:SPELL_AURA_REMOVED(args)
 		end
 	elseif spellId == 154950 then
 		timerOverheated:Cancel(args.destName)
-		countdownOverheated:Cancel()
 	elseif spellId == 154952 then
 		if args:IsPlayer() then
 			timerFixate:Stop()
@@ -310,10 +299,8 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 		warnSummonEnchantedArmaments:Show()
 		if self:IsMythic() then
 			timerSummonEnchantedArmamentsCD:Start(20)
-			countdownEnchantedArmaments:Start(20)
 		else
 			timerSummonEnchantedArmamentsCD:Start()
-			countdownEnchantedArmaments:Start()
 		end
 	elseif spellId == 154914 then
 		warnLavaSlash:Show()
@@ -325,7 +312,6 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 		timerFireStorm:Start()
 		timerMoltenTorrentCD:Start(42.5)
 		timerSummonCinderWolvesCD:Start()
-		countdownCinderWolves:Start()
 		specWarnFireStorm:Play("gather")
 	end
 end

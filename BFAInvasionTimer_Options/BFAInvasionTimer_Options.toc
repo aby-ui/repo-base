@@ -1,4 +1,4 @@
-## Interface: 80100
+## Interface: 80200
 ## Title: BFAInvasionTimer_Options
 ## Author: Funkydude
 ## Notes: BFAInvasionTimer Configuration Options.
@@ -12,7 +12,7 @@
 ## Notes-koKR: BFAInvasionTimer|1을;를; 설정하는 옵션입니다.
 ## Notes-ptBR: BFAInvasionTimer Opções de Configuração.
 ## Notes-ruRU: BFAInvasionTimer параметры настроек.
-## Version: v8.1.7
+## Version: v8.2.1
 ## LoadOnDemand: 1
 ## Dependencies: BFAInvasionTimer
 

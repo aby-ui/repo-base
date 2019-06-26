@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("ArtifactQueen", "DBM-Challenges", 2)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041705828")
+mod:SetRevision("20190625143134")
 mod:SetCreatureID(116484, 116499, 116496)--Sigryn, Jarl Velbrand, Runeseer Faljar
 mod:SetEncounterID(2059)
 mod:SetZone()--Healer (1710), Tank (1698), DPS (1703-The God-Queen's Fury), DPS (Fel Totem Fall)
@@ -39,7 +39,7 @@ local specWarnKnowledge			= mod:NewSpecialWarningSwitch(237952, nil, nil, nil, 1
 --Timers obviously affected by CC usage
 local timerThrowSpearCD			= mod:NewCDTimer(13.4, 238694, nil, nil, nil, 3)
 --local timerAdvanceCD			= mod:NewCDTimer(13.4, 237849, nil, nil, nil, 2)
-local timerBloodFatherCD		= mod:NewCDCountTimer(13.4, 237945, nil, nil, nil, 2)
+local timerBloodFatherCD		= mod:NewCDCountTimer(13.4, 237945, nil, nil, nil, 2, nil, nil, nil, 1, 4)
 local timerDarkWingsCD			= mod:NewCDTimer(20, 237772, nil, nil, nil, 3)
 --Jarl Velbrand
 local timerBerserkersRageCD		= mod:NewCDCountTimer(13.4, 237947, nil, nil, nil, 3)
@@ -47,8 +47,6 @@ local timerBladeStormCD			= mod:NewCDCountTimer(13.4, 237857, nil, nil, nil, 2)
 --Runeseer Faljar
 local timerRunicDetonationCD	= mod:NewCDCountTimer(13.4, 237914, nil, nil, nil, 5)
 local timerKnowledgeCD			= mod:NewCDCountTimer(13.4, 237952, nil, nil, nil, 3)
-
-local countdownTimer			= mod:NewCountdown(13.4, 237945)
 
 --This may not be accurate way to do it, it may be some kind of shared CD like HFC council and just be grossly affected by CCs
 --These are ones consistent between 4 pulls (including kill) though
@@ -79,7 +77,6 @@ function mod:OnCombatStart(delay)
 	timerBerserkersRageCD:Start(26, 1)
 	timerRunicDetonationCD:Start(43, 1)
 	timerBloodFatherCD:Start(61, 1)
-	countdownTimer:Start(61)
 	timerKnowledgeCD:Start(98, 1)
 	timerBladeStormCD:Start(125, 1)
 	timerDarkWingsCD:Start(146)
@@ -108,7 +105,6 @@ function mod:SPELL_CAST_START(args)
 		local timer = bloodFatherTimers[bloodCount+1]
 		if timer then
 			timerBloodFatherCD:Start(timer, bloodCount+1)
-			countdownTimer:Start(timer)
 		end
 	elseif spellId == 237857 then
 		bladeCount = bladeCount + 1

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1873, "DBM-TombofSargeras", nil, 875)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041705925")
+mod:SetRevision("20190625143337")
 mod:SetCreatureID(116939)--Maiden of Valor 120437
 mod:SetEncounterID(2038)
 mod:SetZone()
@@ -71,30 +71,21 @@ local specWarnRainoftheDestroyer	= mod:NewSpecialWarningCount(240396, nil, nil, 
 local timerRP						= mod:NewRPTimer(41)
 mod:AddTimerLine(SCENARIO_STAGE:format(1))
 local timerTouchofSargerasCD		= mod:NewCDCountTimer(42, 239207, nil, nil, nil, 3)--42+
-local timerRuptureRealitiesCD		= mod:NewCDCountTimer(60, 239132, nil, nil, nil, 2)
+local timerRuptureRealitiesCD		= mod:NewCDCountTimer(60, 239132, nil, nil, nil, 2, nil, nil, nil, 1, 4)
 local timerUnboundChaosCD			= mod:NewCDCountTimer(35, 234059, nil, nil, nil, 3)--35-60 (lovely huh?)
 local timerShadowyBladesCD			= mod:NewCDTimer(30, 236571, nil, nil, nil, 3)--30-46
-local timerDesolateCD				= mod:NewCDTimer(11.4, 236494, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON)
+local timerDesolateCD				= mod:NewCDTimer(11.4, 236494, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON, nil, 2, 3)
 ----Maiden of Valor
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(14713))
-local timerCorruptedMatrixCD		= mod:NewNextTimer(40, 233556, nil, nil, nil, 5)
+local timerCorruptedMatrixCD		= mod:NewNextTimer(40, 233556, nil, nil, nil, 5, nil, nil, nil, 3, 4)
 local timerCorruptedMatrix			= mod:NewCastTimer(10, 233556, nil, nil, nil, 5)
 --Stage Two: An Avatar Awakened
 mod:AddTimerLine(SCENARIO_STAGE:format(2))
-local timerDarkMarkCD				= mod:NewNextCountTimer(34, 239739, nil, nil, nil, 3)
+local timerDarkMarkCD				= mod:NewNextCountTimer(34, 239739, nil, nil, nil, 3, nil, nil, nil, not mod:IsTank() and 2, 4)
 local timerRainoftheDestroyerCD		= mod:NewNextCountTimer(35, 240396, nil, nil, nil, 3)
-local timerRainoftheDestroyer		= mod:NewCastTimer(5.5, 240396, 206577, nil, nil, 3)--Shortname: Comet Impact
+local timerRainoftheDestroyer		= mod:NewCastTimer(5.5, 240396, 206577, nil, nil, 3, nil, nil, nil, 3, 4)--Shortname: Comet Impact
 
 local berserkTimer					= mod:NewBerserkTimer(420)
-
---Stage One: A Slumber Disturbed
-local countdownCleansingProtocol	= mod:NewCountdownFades(18, 233856)
-local countdownDesolate				= mod:NewCountdown("Alt11", 236494, "Tank", nil, 3)
-local countdownCorruptedMatrix		= mod:NewCountdown("AltTwo40", 233556)
---Stage Two
-local countdownRuptureRealities		= mod:NewCountdown(60, 239132)
-local countdownDarkMark				= mod:NewCountdown("Alt40", 239739, "-Tank", 2)
-local countdownRainofthedDestroyer	= mod:NewCountdown("AltTwo35", 240396)
 
 mod:AddSetIconOption("SetIconOnShadowyBlades", 236571, true)
 mod:AddSetIconOption("SetIconOnDarkMark", 239739, true)
@@ -277,12 +268,9 @@ function mod:SPELL_CAST_START(args)
 		specWarnRuptureRealities:Play("justrun")
 		if self.vb.phase == 2 then
 			timerRuptureRealitiesCD:Start(37, self.vb.realityCount+1)
-			countdownRuptureRealities:Start(37)
 			local elapsedDark, totalDark = timerDarkMarkCD:GetTime(self.vb.darkMarkCast+1)
 			local remaining = totalDark - elapsedDark
 			if remaining < 9.8 then
-				countdownDarkMark:Cancel()
-				countdownDarkMark:Start(9.8)
 				if totalDark == 0 then--Timer aleady expired
 					timerDarkMarkCD:Start(9.8, self.vb.darkMarkCast+1)
 					DBM:Debug("Timer extend firing for Dark Mark. Extend amount: ".."9.8", 2)
@@ -301,7 +289,6 @@ function mod:SPELL_CAST_START(args)
 	elseif spellId == 233856 then
 		specWarnCleansingProtocol:Show()
 		specWarnCleansingProtocol:Play("targetchange")
-		countdownCleansingProtocol:Start()
 	elseif spellId == 233556 and self:AntiSpam(2, 2) and self.vb.phase == 1 and not self:IsLFR() then
 		specWarnCorruptedMatrix:Show(beamName)
 		specWarnCorruptedMatrix:Play("bosstobeam")
@@ -323,7 +310,6 @@ function mod:SPELL_CAST_START(args)
 		timerUnboundChaosCD:Stop()
 		timerCorruptedMatrix:Stop()
 		timerCorruptedMatrixCD:Stop()
-		countdownCorruptedMatrix:Cancel()
 		
 		warnPhase2:Show()
 		warnPhase2:Play("ptwo")
@@ -335,12 +321,9 @@ function mod:SPELL_CAST_START(args)
 		end
 		if self:IsMythic() then
 			timerRainoftheDestroyerCD:Start(15, 1)
-			countdownRainofthedDestroyer:Start(15)
 			timerDarkMarkCD:Start(31.6, 1)
-			countdownDarkMark:Start(31.6)
 		else
 			timerDarkMarkCD:Start(21, 1)
-			countdownDarkMark:Start(21)
 		end
 	end
 end
@@ -353,10 +336,8 @@ function mod:SPELL_CAST_SUCCESS(args)
 	elseif spellId == 233556 and self:AntiSpam(2, 4) then
 		if self:IsMythic() then
 			timerCorruptedMatrixCD:Start(12)
-			countdownCorruptedMatrix:Start(12)
 		else
 			timerCorruptedMatrixCD:Start()
-			countdownCorruptedMatrix:Start()
 		end
 	end
 end
@@ -431,7 +412,6 @@ function mod:SPELL_AURA_REMOVED(args)
 	elseif spellId == 241008 then--Cleansing Protocol Shield
 		self.vb.shieldActive = false
 		warnCleansingEnded:Show()
-		countdownCleansingProtocol:Cancel()
 	end
 end
 
@@ -450,7 +430,6 @@ function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg, npc, _, _, target)
 		specWarnRainoftheDestroyer:Play("helpsoak")
 		timerRainoftheDestroyer:Start()
 		timerRainoftheDestroyerCD:Start(nil, self.vb.rainCount+1)
-		countdownRainofthedDestroyer:Start()
 	end
 end
 
@@ -500,10 +479,8 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, bfaSpellId, _, legacySpellId)
 		self.vb.darkMarkCast = self.vb.darkMarkCast + 1
 		if self:IsMythic() then
 			timerDarkMarkCD:Start(25, self.vb.darkMarkCast+1)
-			countdownDarkMark:Start(25)
 		else
 			timerDarkMarkCD:Start(nil, self.vb.darkMarkCast+1)--34
-			countdownDarkMark:Start(34)
 		end
 	elseif spellId == 236571 or spellId == 236573 then--Shadow Blades
 		self.vb.bladesIcon = 1--SHOULD always fire first

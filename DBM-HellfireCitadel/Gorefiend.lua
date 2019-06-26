@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1372, "DBM-HellfireCitadel", nil, 669)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041705938")
+mod:SetRevision("20190625143352")
 mod:SetCreatureID(90199)
 mod:SetEncounterID(1783)
 mod:SetZone()
@@ -55,13 +55,10 @@ local timerSharedFateCD					= mod:NewNextCountTimer(29, 179909, nil, "-Tank", 2,
 local timerCrushingDarknessCD			= mod:NewNextTimer(10, 180017, nil, false, 2, 2)--Actually 16, but i delay start by 6 seconds for reduced spam
 local timerFeastofSouls					= mod:NewNextTimer(123.5, 181973, nil, nil, nil, 6)--Probably next timer too, or close to it, depends how consistent energy gains are, may have small variation, like gruul
 
-local timerDigest						= mod:NewCastTimer(40, 181295, nil, nil, nil, nil, nil, DBM_CORE_DEADLY_ICON)
+local timerDigest						= mod:NewCastTimer(40, 181295, nil, nil, nil, nil, nil, DBM_CORE_DEADLY_ICON, nil, 1, 8)
 local timerCrushingDarkness				= mod:NewCastTimer(6, 180017, nil, false)
 
 --local berserkTimer					= mod:NewBerserkTimer(360)
-
-local countdownShadowofDeath			= mod:NewCountdownFades("Alt5", 179864)
-local countdownDigest					= mod:NewCountdown("Alt40", 181295, nil, nil, 8)
 
 mod:AddSetIconOption("SetIconOnFate", 179909)
 mod:AddSetIconOption("SetIconOnDoom", 179977, false)
@@ -213,7 +210,6 @@ function mod:SPELL_AURA_APPLIED(args)
 		warnShadowofDeath:CombinedShow(0.5, self.vb.shadowOfDeathCount, args.destName)
 		if args:IsPlayer() then
 			specWarnShadowofDeath:Show(self.vb.shadowOfDeathCount)
-			countdownShadowofDeath:Start()
 			specWarnShadowofDeath:Play("teleyou")
 		end
 		--Check if it's a tank (todo, maybe just change it to count == 2 to reduce cpu, the tank is pretty much always 2/6
@@ -272,10 +268,8 @@ function mod:SPELL_AURA_APPLIED(args)
 		if args:IsPlayer() then
 			if self:IsMythic() then
 				timerDigest:Start(35)
-				countdownDigest:Start(35)
 			else
 				timerDigest:Start()
-				countdownDigest:Start()
 			end
 			playerDown = true
 			if self.Options.RangeFrame then
@@ -325,7 +319,6 @@ function mod:SPELL_AURA_REMOVED(args)
 	elseif spellId == 181295 then
 		if args:IsPlayer() then
 			timerDigest:Stop()
-			countdownDigest:Cancel()
 			playerDown = false
 			if self.Options.RangeFrame and self:IsInCombat() then
 				DBM.RangeCheck:Show(5)

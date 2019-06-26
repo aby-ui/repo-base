@@ -156,7 +156,6 @@ L:SetOptionLocalization({
 	NefBreathTimer			= "计时条：奈法利安的$spell:94124冷却时间",
 	InfoFrame				= "信息框：奥妮克希亚的电能",
 	SetWater				= "在拉怪时自动取消水体碰撞效果（战斗结束后会自动恢复）",
-	TankArrow				= "DBM箭头：复活的坚骨战士风筝方向（适用于单坦风筝战术）",--npc 41918
 	SetIconOnCinder			= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(79339),
 	RangeFrame				= "为$spell:79339显示距离监视器（10码）",-- Shows everyone if you have debuff, only players with icons if not
 	FixShadowblaze        = "自动同步$spell:94085时间（实验功能，利用首领的喊话进行同步）",	

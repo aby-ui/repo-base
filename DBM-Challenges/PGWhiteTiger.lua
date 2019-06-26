@@ -7,7 +7,7 @@ local mod	= DBM:NewMod("d640", "DBM-Challenges", 1, nil, function(t)
 end)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041705828")
+mod:SetRevision("20190625143134")
 mod:SetZone()
 mod.noStatistics = true
 
@@ -70,8 +70,6 @@ local timerHealIllusionCD	= mod:NewNextTimer(20, 142238, nil, nil, nil, 4)
 --Healer
 local timerAquaBombCD		= mod:NewCDTimer(12, 145206, nil, false, nil, 5)--12-22 second variation? off by default do to this
 local timerSonicBlastCD		= mod:NewCDTimer(6, 145200, nil, nil, nil, 2)--8-11sec variation
-
-local countdownTimer		= mod:NewCountdownFades(10, 141582)
 
 local started = false
 
@@ -180,8 +178,6 @@ function mod:SCENARIO_UPDATE(newStep)
 	local diffID, currWave, maxWave, duration = C_Scenario.GetProvingGroundsInfo()
 	if diffID > 0 then
 		started = true
-		countdownTimer:Cancel()
-		countdownTimer:Start(duration)
 		if DBM.Options.AutoRespond then--Use global whisper option
 			self:RegisterShortTermEvents(
 				"CHAT_MSG_WHISPER"
@@ -189,7 +185,6 @@ function mod:SCENARIO_UPDATE(newStep)
 		end
 	elseif started then
 		started = false
-		countdownTimer:Cancel()
 		self:UnregisterShortTermEvents()
 	end
 end

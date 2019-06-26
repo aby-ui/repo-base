@@ -612,7 +612,7 @@ local movement_onupdate = function (self, elapsed)
 			show_instance_ids()
 			instance_ids_shown = nil
 			
-			if (need_show_group_guide) then
+			if (need_show_group_guide and not DetailsFramework.IsClassicWow()) then
 				_detalhes.MicroButtonAlert.Text:SetText (Loc ["STRING_WINDOW1ATACH_DESC"])
 				_detalhes.MicroButtonAlert:SetPoint ("bottom", need_show_group_guide.baseframe, "top", 0, 30)
 				_detalhes.MicroButtonAlert:SetHeight (320)
@@ -748,10 +748,12 @@ local movement_onupdate = function (self, elapsed)
 							instancia_alvo:SnapAlert()
 							_detalhes.snap_alert.playing = true
 							
-							_detalhes.MicroButtonAlert.Text:SetText (string.format (Loc ["STRING_ATACH_DESC"], self.instance.meu_id, instancia_alvo.meu_id))
-							_detalhes.MicroButtonAlert:SetPoint ("bottom", instancia_alvo.baseframe.cabecalho.modo_selecao.widget, "top", 0, 18)
-							_detalhes.MicroButtonAlert:SetHeight (200)
-							_detalhes.MicroButtonAlert:Show()
+							if (not DetailsFramework.IsClassicWow()) then
+								_detalhes.MicroButtonAlert.Text:SetText (string.format (Loc ["STRING_ATACH_DESC"], self.instance.meu_id, instancia_alvo.meu_id))
+								_detalhes.MicroButtonAlert:SetPoint ("bottom", instancia_alvo.baseframe.cabecalho.modo_selecao.widget, "top", 0, 18)
+								_detalhes.MicroButtonAlert:SetHeight (200)
+								_detalhes.MicroButtonAlert:Show()
+							end
 						end
 					end
 				end
@@ -1018,7 +1020,10 @@ local function move_janela (baseframe, iniciando, instancia, just_updating)
 		_detalhes.snap_alert.playing = false
 		_detalhes.snap_alert.animIn:Stop()
 		_detalhes.snap_alert.animOut:Play()
-		_detalhes.MicroButtonAlert:Hide()
+		
+		if (not DetailsFramework.IsClassicWow()) then
+			_detalhes.MicroButtonAlert:Hide()
+		end
 
 		if (instancia_alvo and instancia_alvo.ativa and instancia_alvo.baseframe) then
 			instancia_alvo.h_esquerda:Stop()
@@ -2179,7 +2184,7 @@ local icon_frame_on_enter = function (self)
 			
 			local class_icon, class_L, class_R, class_T, class_B = _detalhes:GetClassIcon (class)
 			
-			local spec_id, spec_name, spec_description, spec_icon, spec_role, spec_class = GetSpecializationInfoByID (spec or 0) --thanks pas06
+			local spec_id, spec_name, spec_description, spec_icon, spec_role, spec_class = DetailsFramework.GetSpecializationInfoByID (spec or 0) --thanks pas06
 			local spec_L, spec_R, spec_T, spec_B 
 			if (spec_id) then
 				spec_L, spec_R, spec_T, spec_B  = unpack (_detalhes.class_specs_coords [spec])
@@ -4882,15 +4887,6 @@ function _detalhes:InstanceWallpaper (texture, anchor, alpha, texcoord, width, h
 	end
 	
 	if (not wallpaper.texture and not texture) then
-	--[[ 7.1.5 isn't sending the background on the 5� return value ~cleanup
-		local spec = GetSpecialization()
-		if (spec) then
-			local _, _, _, _, _background = GetSpecializationInfo (spec)
-			if (_background) then
-				texture = "Interface\\TALENTFRAME\\".._background
-			end
-		end
-	--]]	
 		texture = "Interface\\AddOns\\Details\\images\\background"
 		
 		texcoord = {0, 1, 0, 0.7}
@@ -6088,7 +6084,7 @@ function _detalhes:GetSegmentInfo (index)
 			elseif (combat.instance_type == "party") then
 				local ej_id = combat.is_boss.ej_instance_id
 				if (ej_id) then
-					local name, description, bgImage, buttonImage, loreImage, dungeonAreaMapID, link = EJ_GetInstanceInfo (ej_id)
+					local name, description, bgImage, buttonImage, loreImage, dungeonAreaMapID, link = DetailsFramework.EncounterJournal.EJ_GetInstanceInfo (ej_id)
 					if (bgImage) then
 						background = bgImage
 						background_coords = party_wallpaper_tex
@@ -6359,7 +6355,7 @@ local build_segment_list = function (self, elapsed)
 								if (index and name and encounterID) then
 									--EJ_SelectInstance (instanceID)
 									--creature info pode ser sempre 1, n�o usar o index do boss
-									local id, name, description, displayInfo, iconImage = EJ_GetCreatureInfo (1, encounterID)
+									local id, name, description, displayInfo, iconImage = DetailsFramework.EncounterJournal.EJ_GetCreatureInfo (1, encounterID)
 									if (iconImage) then
 										CoolTip:AddIcon (iconImage, 2, "top", 128, 64)
 									end
@@ -6376,7 +6372,7 @@ local build_segment_list = function (self, elapsed)
 							else
 								local ej_id = thisCombat.is_boss.ej_instance_id
 								if (ej_id and ej_id ~= 0) then
-									local name, description, bgImage, buttonImage, loreImage, dungeonAreaMapID, link = EJ_GetInstanceInfo (ej_id)
+									local name, description, bgImage, buttonImage, loreImage, dungeonAreaMapID, link = DetailsFramework.EncounterJournal.EJ_GetInstanceInfo (ej_id)
 									if (name) then
 										if (thisCombat.instance_type == "party") then
 											CoolTip:SetWallpaper (2, bgImage, party_wallpaper_tex, party_wallpaper_color, true)
@@ -6629,7 +6625,7 @@ local build_segment_list = function (self, elapsed)
 					if (encounter_name and instanceID and instanceID ~= 0) then
 						local index, name, description, encounterID, rootSectionID, link = _detalhes:GetEncounterInfoFromEncounterName (instanceID, encounter_name)
 						if (index and name and encounterID) then
-							local id, name, description, displayInfo, iconImage = EJ_GetCreatureInfo (index, encounterID)
+							local id, name, description, displayInfo, iconImage = DetailsFramework.EncounterJournal.EJ_GetCreatureInfo (index, encounterID)
 							if (iconImage) then
 								CoolTip:AddIcon (iconImage, 2, "top", 128, 64)
 							end
@@ -6644,7 +6640,7 @@ local build_segment_list = function (self, elapsed)
 					else
 						local ej_id = _detalhes.tabela_vigente.is_boss.ej_instance_id
 						if (ej_id and ej_id ~= 0) then
-							local name, description, bgImage, buttonImage, loreImage, dungeonAreaMapID, link = EJ_GetInstanceInfo (ej_id)
+							local name, description, bgImage, buttonImage, loreImage, dungeonAreaMapID, link = DetailsFramework.EncounterJournal.EJ_GetInstanceInfo (ej_id)
 							if (name) then
 								if (_detalhes.tabela_vigente.instance_type == "party") then
 									CoolTip:SetWallpaper (2, bgImage, party_wallpaper_tex, party_wallpaper_color, true)

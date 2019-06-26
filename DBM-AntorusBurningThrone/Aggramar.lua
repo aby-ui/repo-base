@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1984, "DBM-AntorusBurningThrone", nil, 946)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041705925")
+mod:SetRevision("20190625143337")
 mod:SetCreatureID(121975)
 mod:SetEncounterID(2063)
 mod:SetZone()
@@ -52,22 +52,17 @@ local specWarnSearingTempest			= mod:NewSpecialWarningRun(245301, nil, nil, nil,
 local specWarnFlare						= mod:NewSpecialWarningDodge(245983, "-Melee", nil, 2, 2, 2)
 
 --Stage One: Wrath of Aggramar
-local timerTaeshalachTechCD				= mod:NewNextCountTimer(61, 244688, nil, nil, nil, 5, nil, DBM_CORE_TANK_ICON)
+local timerTaeshalachTechCD				= mod:NewNextCountTimer(61, 244688, nil, nil, nil, 5, nil, DBM_CORE_TANK_ICON, nil, 1, 4)
 local timerFoeBreakerCD					= mod:NewNextCountTimer(6.1, 245458, nil, nil, nil, 5, nil, DBM_CORE_TANK_ICON)
 local timerFlameRendCD					= mod:NewNextCountTimer(6.1, 245463, nil, nil, nil, 5, nil, DBM_CORE_TANK_ICON)
 local timerTempestCD					= mod:NewNextTimer(6.1, 245301, nil, nil, nil, 2, nil, DBM_CORE_DEADLY_ICON)
 local timerScorchingBlazeCD				= mod:NewCDTimer(6.5, 245994, nil, nil, nil, 3)--6.5-8
 local timerRavenousBlazeCD				= mod:NewCDTimer(22.2, 254452, nil, nil, nil, 3, nil, DBM_CORE_HEROIC_ICON)
-local timerWakeofFlameCD				= mod:NewCDTimer(24.3, 244693, nil, nil, nil, 3)
+local timerWakeofFlameCD				= mod:NewCDTimer(24.3, 244693, nil, nil, nil, 3, nil, nil, nil, not mod:IsTank() and 3, 4)
 --Stage Two: Champion of Sargeras
-local timerFlareCD						= mod:NewCDTimer(15, 245983, nil, "-Melee", 2, 3)
+local timerFlareCD						= mod:NewCDTimer(15, 245983, nil, "-Melee", 2, 3, nil, nil, nil, 2, 4)
 
 local berserkTimer						= mod:NewBerserkTimer(600)
-
---Stages One: Wrath of Aggramar
-local countdownTaeshalachTech			= mod:NewCountdown(61, 244688)
-local countdownFlare					= mod:NewCountdown("Alt15", 245983, "-Tank")
-local countdownWakeofFlame				= mod:NewCountdown("AltTwo24", 244693, "-Tank")
 
 mod:AddSetIconOption("SetIconOnBlaze2", 254452, false)--Both off by default, both conflit with one another
 mod:AddSetIconOption("SetIconOnAdds", 244903, false, true)--Both off by default, both conflit with one another
@@ -289,18 +284,14 @@ function mod:OnCombatStart(delay)
 		comboUsed[4] = false
 		timerRavenousBlazeCD:Start(4-delay)
 		timerWakeofFlameCD:Start(10.7-delay)--Health based?
-		countdownWakeofFlame:Start(10.7-delay)
 		timerTaeshalachTechCD:Start(14.3-delay, 1)--Health based?
-		countdownTaeshalachTech:Start(14.3-delay)
 		berserkTimer:Start(540-delay)
 		table.wipe(comboDebug)
 		comboDebugCounter = 0
 	else
 		timerScorchingBlazeCD:Start(4.8-delay)
 		timerWakeofFlameCD:Start(5.1-delay)
-		countdownWakeofFlame:Start(5.1-delay)
 		timerTaeshalachTechCD:Start(35-delay, 1)
-		countdownTaeshalachTech:Start(35-delay)
 	end
 	--Everyone should lose spread except tanks which should stay stacked. Maybe melee are safe too?
 	if self.Options.RangeFrame and not self:IsTank() then
@@ -372,7 +363,6 @@ function mod:SPELL_CAST_START(args)
 		local techTimer = timerTaeshalachTechCD:GetRemaining(self.vb.techCount+1)
 		if techTimer == 0 or techTimer > 24 then
 			timerWakeofFlameCD:Start()
-			countdownWakeofFlame:Start(24.3)
 		end
 		self:BossTargetScanner(args.sourceGUID, "WakeTarget", 0.1, 12, true, nil, nil, nil, true)
 	elseif spellId == 245458 or spellId == 255059 then
@@ -532,10 +522,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerRavenousBlazeCD:Stop()
 		timerWakeofFlameCD:Stop()
 		timerFlareCD:Stop()
-		countdownFlare:Cancel()
-		countdownWakeofFlame:Cancel()
 		timerTaeshalachTechCD:Stop()
-		countdownTaeshalachTech:Cancel()
 		timerFoeBreakerCD:Stop()
 		timerFlameRendCD:Stop()
 		timerTempestCD:Stop()
@@ -570,7 +557,6 @@ function mod:SPELL_AURA_REMOVED(args)
 		self.vb.rendCount = 0
 		--timerScorchingBlazeCD:Start(3)--Unknown
 		timerTaeshalachTechCD:Start(37, self.vb.techCount+1)
-		countdownTaeshalachTech:Start(37)
 		if self:IsMythic() then
 			timerRavenousBlazeCD:Start(23)
 		else
@@ -580,15 +566,9 @@ function mod:SPELL_AURA_REMOVED(args)
 		if self.vb.phase == 2 then
 			warnPhase:Play("ptwo")
 			timerFlareCD:Start(self:IsMythic() and 8 or 10)
-			if self:IsMythic() then
-				countdownFlare:Start(8)
-			end
 		elseif self.vb.phase == 3 then
 			warnPhase:Play("pthree")
 			timerFlareCD:Start(self:IsMythic() and 8 or 10)
-			if self:IsMythic() then
-				countdownFlare:Start(8)
-			end
 		end
 		if self.Options.RangeFrame and not self:IsTank() then
 			DBM.RangeCheck:Show(6)
@@ -633,8 +613,6 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 		timerRavenousBlazeCD:Stop()
 		timerWakeofFlameCD:Stop()
 		timerFlareCD:Stop()
-		countdownFlare:Cancel()
-		countdownWakeofFlame:Cancel()
 		if self:IsMythic() then
 			--Reset combo and tech count if needed
 			if self.vb.techCount == 5 then
@@ -657,7 +635,6 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 		end
 		warnTaeshalachTech:Show(self.vb.techCount)
 		timerTaeshalachTechCD:Start(nil, self.vb.techCount+1)
-		countdownTaeshalachTech:Start()
 		if self.Options.InfoFrame then
 			DBM.InfoFrame:SetHeader(DBM:GetSpellInfo(spellId))
 			DBM.InfoFrame:Show(5, "function", updateInfoFrame, false, false, true)
@@ -672,21 +649,13 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 		if self.vb.phase == 1 then
 			if self:IsMythic() then
 				timerWakeofFlameCD:Start(10.3)
-				countdownWakeofFlame:Start(10.3)
 			else
 				timerWakeofFlameCD:Start(7)
-				countdownWakeofFlame:Start(7)
 			end
 		elseif self.vb.phase == 2 then
 			timerFlareCD:Start(self:IsMythic() and 6.6 or 8.6)
-			if self:IsMythic() then
-				countdownFlare:Start(6.6)
-			end
 		else--Stage 3
 			timerFlareCD:Start(self:IsMythic() and 8 or 10)
-			if self:IsMythic() then
-				countdownFlare:Start(8)
-			end
 		end
 		if self.Options.InfoFrame then
 			DBM.InfoFrame:Hide()

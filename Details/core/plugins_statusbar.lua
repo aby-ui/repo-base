@@ -18,7 +18,8 @@
 	local _math_floor = math.floor --> api local
 	local _ipairs = ipairs --> api local
 
-
+	local UnitGroupRolesAssigned = DetailsFramework.UnitGroupRolesAssigned
+	
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --> status bar core functions
 

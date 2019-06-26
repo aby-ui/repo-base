@@ -12,19 +12,21 @@ module.db.tableFood = {
 --Haste		Mastery		Crit		Versa		Int		Str 		Agi		Stam		Stam		Special
 						[185736]=50,
 [257413]=50,	[257418]=50,	[257408]=50,	[257422]=50,	[259449]=75,	[259452]=75,	[259448]=75,	[259453]=75,	[288074]=50,
-[257415]=75,	[257420]=75,	[257410]=75,	[257424]=75,	[259455]=100,	[259456]=100,	[259454]=100,	[259457]=100,	[288075]=75,
+[257415]=75,	[257420]=75,	[257410]=75,	[257424]=75,	[259455]=100,	[259456]=100,	[259454]=100,	[259457]=75,	[288075]=75,
 								[290468]=75,	[290469]=75,	[290467]=75,	--85 actually
 								[285719]=50,	[285720]=50,	[285721]=50,	[288074]=50,	[288075]=75,	[286171]=75,
-								
+								[297117]=130,	[297118]=130,	[297116]=130,
+[297034]=100,	[297035]=100,	[297039]=100,	[297037]=100,							[297119]=100,	[297040]=100,
 }
-module.db.StaminaFood = {[201638]=true,[259457]=true,[288075]=true,[288074]=true,}
+module.db.StaminaFood = {[201638]=true,[259457]=true,[288075]=true,[288074]=true,[297119]=true,[297040]=true}
 
-module.db.tableFood_headers = {0,50,75,100}
+module.db.tableFood_headers = {0,50,75,100,130}
 module.db.tableFlask =  {
 	--Stamina,	Int,		Agi,		Str 
 	[251838]=238,	[251837]=238,	[251836]=238,	[251839]=238,
+	[298839]=360,	[298837]=360,	[298836]=360,	[298841]=360,	
 }
-module.db.tableFlask_headers = {0,238}
+module.db.tableFlask_headers = {0,238,360}
 module.db.tablePotion = {
 	[188024]=true,	--Run haste
 	[250871]=true,	--Mana
@@ -36,6 +38,18 @@ module.db.tablePotion = {
 	[279154]=true,	--Stamina
 	[279153]=true,	--Str
 	[251231]=true,	--Armor
+
+	[298152]=true,	--Int
+	[298146]=true,	--Agi
+	[298153]=true,	--Stamina
+	[298154]=true,	--Str
+	[298155]=true,	--Armor
+
+	[298225]=true,	--Potion of Empowered Proximity
+	[298317]=true,	--Potion of Focused Resolve
+	[300714]=true,	--Potion of Unbridled Fury
+	[300741]=true,	--Potion of Wild Mending
+	
 	
 	[251316]=true,	--Potion of Bursting Blood
 	[269853]=true,	--Potion of Rising Death
@@ -51,6 +65,7 @@ module.db.hsSpells = {
 	[188016] = true,
 	--[188018] = true,
 	[250870] = true,
+	[301308] = true,
 }
 module.db.raidBuffs = {
 	{ATTACK_POWER_TOOLTIP or "AP","WARRIOR",6673,264761},
@@ -69,8 +84,8 @@ module.db.RaidCheckReadyCheckHideSchedule = nil
 module.db.tableRunes = {[224001]=15,[270058]=60}
 
 module.db.minFoodLevelToActual = {
-	[100] = 50,
-	[125] = 75,
+	[100] = 100,
+	[125] = 130,
 }
 
 
@@ -441,7 +456,9 @@ local function GetFlask(checkType)
 				for j=1,#f[ flaskStats ] do
 					if f[ flaskStats ][j][2] <= showExpFlasks_seconds and f[ flaskStats ][j][2] >= 0 then
 						local mins = floor( f[ flaskStats ][j][2] / 60 )
-						strings_list[#strings_list + 1] = format("%s%s",f[ flaskStats ][j][1] or "?", "("..(mins == 0 and "<1" or tostring(mins))..")")
+						strings_list[#strings_list + 1] = format("%s%s%s",f[ flaskStats ][j][1] or "?", "("..(mins == 0 and "<1" or tostring(mins))..")", i < #module.db.tableFlask_headers and i > 1 and (not VExRT.RaidCheck.FlaskLQ) and " LQ" or "")
+					elseif i < #module.db.tableFlask_headers and i > 1 and not VExRT.RaidCheck.FlaskLQ then
+						strings_list[#strings_list + 1] = format("%s%s",f[ flaskStats ][j][1] or "?"," LQ")
 					end
 				end
 			end
@@ -636,14 +653,14 @@ function module.options:Load()
 	end)
 
 	
-	self.minFoodLevel100 = ELib:Radio(self,"50",VExRT.RaidCheck.FoodMinLevel == 100):Point("LEFT",self.minFoodLevelAny,"RIGHT", 75, 0):OnClick(function(self) 
+	self.minFoodLevel100 = ELib:Radio(self,module.db.minFoodLevelToActual[100],VExRT.RaidCheck.FoodMinLevel == 100):Point("LEFT",self.minFoodLevelAny,"RIGHT", 75, 0):OnClick(function(self) 
 		self:SetChecked(true)
 		module.options.minFoodLevelAny:SetChecked(false)
 		module.options.minFoodLevel125:SetChecked(false)
 		VExRT.RaidCheck.FoodMinLevel = 100
 	end)
 	
-	self.minFoodLevel125 = ELib:Radio(self,"75",VExRT.RaidCheck.FoodMinLevel == 125):Point("LEFT",self.minFoodLevel100,"RIGHT", 75, 0):OnClick(function(self) 
+	self.minFoodLevel125 = ELib:Radio(self,module.db.minFoodLevelToActual[125],VExRT.RaidCheck.FoodMinLevel == 125):Point("LEFT",self.minFoodLevel100,"RIGHT", 75, 0):OnClick(function(self) 
 		self:SetChecked(true)
 		module.options.minFoodLevelAny:SetChecked(false)
 		module.options.minFoodLevel100:SetChecked(false)
@@ -674,8 +691,12 @@ function module.options:Load()
 		VExRT.RaidCheck.FlaskExp = 2
 	end)
 
+	self.checkLQFlask = ELib:Check(self,L.RaidCheckLQFlask,not VExRT.RaidCheck.FlaskLQ):Point("TOPLEFT",self.level2optLine,7,-195):OnClick(function(self) 
+		VExRT.RaidCheck.FlaskLQ = not VExRT.RaidCheck.FlaskLQ
+	end)
+
 	
-	self.chkPotion = ELib:Check(self,L.raidcheckPotionCheck,VExRT.RaidCheck.PotionCheck):Point("TOPLEFT",self.level2optLine,7,-195):OnClick(function(self) 
+	self.chkPotion = ELib:Check(self,L.raidcheckPotionCheck,VExRT.RaidCheck.PotionCheck):Point("TOPLEFT",self.level2optLine,7,-220):OnClick(function(self) 
 		if self:GetChecked() then
 			VExRT.RaidCheck.PotionCheck = true
 			module.options.potionToChat:Enable()
@@ -707,7 +728,7 @@ function module.options:Load()
 	self.optReadyCheckFrame:SetBackdropColor(0,0,0,0.3)
 	self.optReadyCheckFrame:SetBackdropBorderColor(.24,.25,.30,0)
 	ELib:Border(self.optReadyCheckFrame,2,.24,.25,.30,1)
-	self.optReadyCheckFrame:SetPoint("TOP",0,-445)
+	self.optReadyCheckFrame:SetPoint("TOP",0,-470)
 
 	self.optReadyCheckFrameHeader = ELib:Text(self.optReadyCheckFrame,L.raidcheckReadyCheck):Size(550,20):Point("BOTTOMLEFT",self.optReadyCheckFrame,"TOPLEFT",10,1):Bottom()
 

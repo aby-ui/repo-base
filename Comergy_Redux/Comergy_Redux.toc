@@ -1,6 +1,6 @@
 ## Title: Comergy Redux
 ## Version: r32
-## Interface: 80100
+## Interface: 80200
 ## Author: Asymptote
 ## Notes: Simple, nice-looking power bar addon for all classes.
 ## DefaultState: Enabled

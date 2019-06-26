@@ -86,6 +86,12 @@
 			return
 		end
 		
+		if (DetailsFramework.IsClassicWow()) then
+			--average item level doesn't exists
+			--talent information is very different
+			return
+		end
+		
 		--> check the player level
 		local playerLevel = UnitLevel ("player")
 		if (not playerLevel) then
@@ -116,10 +122,10 @@
 		end
 		
 		--> get the spec ID
-		local spec = GetSpecialization()
+		local spec = DetailsFramework.GetSpecialization()
 		local currentSpec
 		if (spec) then
-			local specID = GetSpecializationInfo (spec)
+			local specID = DetailsFramework.GetSpecializationInfo (spec)
 			if (specID and specID ~= 0) then
 				currentSpec = specID
 			end

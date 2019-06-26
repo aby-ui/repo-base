@@ -1920,9 +1920,9 @@
 				local player
 				local pet_attribute
 				
-				local role = UnitGroupRolesAssigned ("player")
-				local spec = GetSpecialization()
-				role = spec and GetSpecializationRole (spec) or role
+				local role = DetailsFramework.UnitGroupRolesAssigned ("player")
+				local spec = DetailsFramework.GetSpecialization()
+				role = spec and DetailsFramework.GetSpecializationRole (spec) or role
 
 				if (role == "DAMAGER") then
 					player = combat (DETAILS_ATTRIBUTE_DAMAGE, _detalhes.playername)
@@ -1980,7 +1980,7 @@
 			local GC = GameCooltip
 			GC:SetOption ("YSpacingMod", 0)
 
-			local role = UnitGroupRolesAssigned ("player")
+			local role = DetailsFramework.UnitGroupRolesAssigned ("player")
 
 			if (spell.n_dmg) then
 			    

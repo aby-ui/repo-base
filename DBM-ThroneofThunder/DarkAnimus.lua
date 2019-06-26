@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(824, "DBM-ThroneofThunder", nil, 362)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041710000")
+mod:SetRevision("20190625143417")
 mod:SetCreatureID(69427)
 mod:SetEncounterID(1576)
 mod:SetZone()
@@ -46,19 +46,15 @@ local specWarnInterruptingJolt		= mod:NewSpecialWarningCount(138763, nil, nil, n
 local timerMatterSwap				= mod:NewTargetTimer(12, 138609)--If not dispelled, it ends after 12 seconds regardless
 local timerExplosiveSlam			= mod:NewTargetTimer(25, 138569, nil, "Tank|Healer")
 --Boss
-local timerAnimusActivation			= mod:NewCastTimer(60, 139537, nil, nil, nil, 6)--LFR only
+local timerAnimusActivation			= mod:NewCastTimer(60, 139537, nil, nil, nil, 6, nil, nil, nil, 1, 5)--LFR only
 local timerSiphonAnimaCD			= mod:NewNextCountTimer(20, 138644)--Needed mainly for heroic. not important on normal/LFR
-local timerAnimaRingCD				= mod:NewNextTimer(24.2, 136954, nil, "Tank", nil, 5)--Updated/Verified post march 19 hotfix
+local timerAnimaRingCD				= mod:NewNextTimer(24.2, 136954, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON, nil, 2, 4)--Updated/Verified post march 19 hotfix
 local timerAnimaFontCD				= mod:NewCDTimer(25, 138691, nil, nil, nil, 3)
 local timerInterruptingJolt			= mod:NewCastTimer(2.2, 138763)
-local timerInterruptingJoltCD		= mod:NewCDCountTimer(21.5, 138763, nil, nil, nil, 2)--seems 23~24 normal and lfr. every 21.5 exactly on heroic
+local timerInterruptingJoltCD		= mod:NewCDCountTimer(21.5, 138763, nil, nil, nil, 2, nil, nil, nil, 1, 4)--seems 23~24 normal and lfr. every 21.5 exactly on heroic
 local timerEmpowerGolemCD			= mod:NewCDTimer(16, 138780)
 
 local berserkTimer					= mod:NewBerserkTimer(600)
-
-local countdownActivation			= mod:NewCountdown(60, 139537)
-local countdownInterruptingJolt		= mod:NewCountdown(21.5, 138763)
-local countdownAnimaRing			= mod:NewCountdown(24.2, 136954, "Tank", nil, nil, nil, true)
 
 local crimsonWake = DBM:GetSpellInfo(138485)--Debuff ID I believe, not cast one. Same spell name though
 local siphon = 0
@@ -70,7 +66,6 @@ local function PowerDelay()
 	local power = UnitPower("boss1")
 	if power >= 70 and power < 75 then
 		timerInterruptingJoltCD:Start(18, 1)
-		countdownInterruptingJolt:Start(18)
 	end
 end
 
@@ -102,7 +97,6 @@ function mod:SPELL_CAST_START(args)
 	if spellId == 136954 then
 		self:BossTargetScanner(69427, "AnimaRingTarget", 0.02, 12)
 		timerAnimaRingCD:Start()
-		countdownAnimaRing:Start()
 	elseif args:IsSpellID(138763, 139867, 139869) then--Normal version is 2.2 sec cast. Heroic is 1.4 second cast. LFR is 3.8 sec cast (thus why it has different spellid)
 		jolt = jolt + 1
 		specWarnInterruptingJolt:Show(jolt)
@@ -113,7 +107,6 @@ function mod:SPELL_CAST_START(args)
 		end
 		if self:IsHeroic() then
 			timerInterruptingJoltCD:Start(nil, jolt+1)
-			countdownInterruptingJolt:Start()
 		else
 			timerInterruptingJoltCD:Start(23, jolt+1)
 		end
@@ -159,7 +152,6 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif spellId == 139537 then
 		warnActivation:Show()
 		timerAnimusActivation:Start()
-		countdownActivation:Start()
 	elseif spellId == 138691 then
 		warnAnimaFont:Show(args.destName)
 		timerAnimaFontCD:Start()
@@ -213,7 +205,6 @@ function mod:INSTANCE_ENCOUNTER_ENGAGE_UNIT()
 		if self:IsHeroic() then
 			timerAnimaFontCD:Start(14)
 			timerAnimaRingCD:Start(23)
-			countdownAnimaRing:Start(23)
 			timerSiphonAnimaCD:Start(120, 1)--VERY important on heroic. boss activaet on pull, you have 2 minutes to do as much with adds as you can before he starts using siphon anima
 		elseif self:IsDifficulty("normal10", "normal25") then
 			timerSiphonAnimaCD:Start(5.3, 1)
@@ -225,9 +216,7 @@ function mod:OnSync(msg, guid)
 	if msg == "WakeTarget" and guid then
 		warnCrimsonWake:Show(DBM:GetFullPlayerNameByGUID(guid))
 	elseif msg == "TestFunction" then
-		countdownAnimaRing:Start(13)
 		timerAnimaRingCD:Start(13)
-		countdownInterruptingJolt:Start(11)
 		timerInterruptingJoltCD:Start(11)
 	end
 end

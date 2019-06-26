@@ -8,7 +8,7 @@ local _UnitName = UnitName --> wow api
 local _UnitDetailedThreatSituation = UnitDetailedThreatSituation
 local _IsInRaid = IsInRaid --> wow api
 local _IsInGroup = IsInGroup --> wow api
-local _UnitGroupRolesAssigned = UnitGroupRolesAssigned --> wow api
+local _UnitGroupRolesAssigned = DetailsFramework.UnitGroupRolesAssigned --> wow api
 local GetUnitName = GetUnitName
 
 local _ipairs = ipairs --> lua api
@@ -639,6 +639,10 @@ function ThreatMeter:OnEvent (_, event, ...)
 		if (AddonName == "Details_TinyThreat") then
 			
 			if (_G._detalhes) then
+			
+				if (DetailsFramework.IsClassicWow()) then
+					return
+				end
 				
 				--> create widgets
 				CreatePluginFrames (data)

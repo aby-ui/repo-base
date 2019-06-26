@@ -91,7 +91,6 @@ function BagBarController:OnEnable()
 	for _, button in pairs(bagButtons) do
 		Addon:GetModule('ButtonThemer'):Register(button, 'Bag Bar', {
 			Icon = button.icon,
-			-- Border = button.IconBorder
 		 })
 	end
 end
@@ -108,7 +107,6 @@ function BagBarController:Unload()
 end
 
 local function resize(o, size)
-	-- local width, height = o:GetSize()
 	o:SetSize(size, size)
 end
 

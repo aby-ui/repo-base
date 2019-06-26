@@ -8,6 +8,11 @@ local ELib,L = ExRT.lib,ExRT.L
 local GetTime, CombatLogGetCurrentEventInfo = GetTime, CombatLogGetCurrentEventInfo
 local string_gsub, strsplit, tonumber, format = string.gsub, strsplit, tonumber, format
 
+local GetSpecialization = GetSpecialization
+if ExRT.isClassic then
+	GetSpecialization = ExRT.NULLfunc
+end
+
 module.db.iconsList = {
 	"|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_1:0|t",
 	"|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_2:0|t",
@@ -240,6 +245,15 @@ function module.options:Load()
 		29166,32375,114018,108199,49576,0,
 		--"Interface\\Icons\\inv_60legendary_ring1c","Interface\\Icons\\inv_60legendary_ring1b","Interface\\Icons\\inv_60legendary_ring1a",0,
 		0,
+		295705,295791,300705,300961,300698,294847,300962,295421,300957,295704,295601,295795,300701,294726,295850,294711,295346,294715,295138,295332,295807,295348,295796,0,
+		301930,298424,298595,301180,292279,292133,292167,292084,292205,305094,292138,292307,292127,292247,0,
+		296894,296673,295916,296449,304951,296746,296389,296701,296462,296421,296566,0,
+		296650,297333,296752,297206,302779,296693,302836,296555,296944,296725,298054,0,
+		298526,296698,296691,298156,298164,298242,298103,304280,295825,295779,295818,298430,300244,295161,298548,295766,300308,298459,0,
+		297325,299914,300395,301829,301807,301947,300088,301832,300546,296850,297586,297656,303306,299563,304409,297564,296704,297585,303188,0,
+		301068,300635,295249,292963,292971,295444,300133,303818,301117,294515,299616,299708,300584,295173,296084,293509,303832,304733,304709,302593,295099,292565,294652,298192,295999,292996,0,
+		300478,303644,299250,302999,297912,299251,299094,299252,299253,299254,300074,298531,300626,299178,300076,300848,303825,300518,298014,300807,301518,300879,300866,298787,298425,298756,299276,301424,303980,297371,300743,297907,304475,298569,298018,300428,303657,297372,300492,297972,297937,299255,299890,300205,297934,298121,298021,0,
+		0,
 		283933,284468,284469,288298,287469,283579,283587,287439,283572,288292,283650,283637,284449,284488,283628,284578,283626,282113,283662,287419,283955,284459,284436,284474,0,
 		282181,289412,285654,282082,285671,281936,285658,282247,289292,283069,289556,285875,282380,281938,283078,282243,282215,282379,282179,285660,282010,290574,285994,0,
 		286436,284453,284089,286988,282036,288151,281959,286989,282037,284399,286396,288051,285634,287615,286487,287747,286379,286503,284146,284388,282040,284374,286086,284028,282041,285645,286425,0,
@@ -264,11 +278,12 @@ function module.options:Load()
 	Script for autoicons:
 	
 	/run function F(eID)local f=select(4,EJ_GetEncounterInfoByIndex(eID))repeat local I=C_EncounterJournal.GetSectionInfo(f)local O=I and (I.headerType == 3)if O then f=I.siblingSectionID end until not O return f end
-	/run function C(f) local I=C_EncounterJournal.GetSectionInfo(f) if I.firstChildSectionID then C(I.firstChildSectionID)end if I.spellID and I.spellID~=0 then L[I.spellID]=true end if I.siblingSectionID then C(I.siblingSectionID) end end
-	/run for i=1,9 do L={} local f=F(i) C(f)local s="" for q,w in pairs(L)do s=s..q.."," end print(s..'0,') end
+	/run function C(f) local I=C_EncounterJournal.GetSectionInfo(f) if I.firstChildSectionID then C(I.firstChildSectionID)end if I.spellID and I.spellID~=0 and P(I.spellID) then L[I.spellID]=true end if I.siblingSectionID then C(I.siblingSectionID) end end
+	/run function P(s)local i=GetSpellTexture(s)if not U[i]then U[i]=1 return true end end for i=1,8 do L,U={},{} local f=F(i) C(f)local s="" for q,w in pairs(L)do s=s..q.."," end print(s..'0,')JJBox(s..'0,') end
 	]]
 	
 	module.db.encountersList = {
+		{1512,2298,2305,2289,2304,2303,2311,2293,2299},
 		{L.S_ZoneT23Storms,2269,2273},
 		{1358,2265,2263,2284,2266,2285,2271,2268,2272,2276,2280,2281},
 		{1148,2144,2141,2136,2134,2128,2145,2135,2122},

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1983, "DBM-AntorusBurningThrone", nil, 946)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041705925")
+mod:SetRevision("20190625143337")
 mod:SetCreatureID(122366)
 mod:SetEncounterID(2069)
 mod:SetZone()
@@ -60,17 +60,12 @@ local timerTormentofFelCD				= mod:NewNextTimer(61, 243979, nil, nil, nil, 6)
 local timerTormentofShadowsCD			= mod:NewNextTimer(61, 243974, nil, nil, nil, 6)
 --The Fallen Nathrezim
 mod:AddTimerLine(BOSS)
-local timerShadowStrikeCD				= mod:NewCDTimer(8.5, 243960, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON)--8.5-14 (most of time it's 9.7 or more, But lowest has to be used
+local timerShadowStrikeCD				= mod:NewCDTimer(8.5, 243960, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON, nil, 2, 3)--8.5-14 (most of time it's 9.7 or more, But lowest has to be used
 local timerDarkFissureCD				= mod:NewCDTimer(32, 243999, nil, nil, nil, 3)--32-33
-local timerMarkedPreyCD					= mod:NewNextTimer(30.3, 244042, nil, nil, nil, 3)
-local timerNecroticEmbraceCD			= mod:NewNextTimer(30, 244093, nil, nil, nil, 3)
+local timerMarkedPreyCD					= mod:NewNextTimer(30.3, 244042, nil, nil, nil, 3, nil, nil, nil, 1, 4)
+local timerNecroticEmbraceCD			= mod:NewNextTimer(30, 244093, nil, nil, nil, 3, nil, nil, nil, 3, 4)
 
 local berserkTimer						= mod:NewBerserkTimer(390)
-
---The Fallen Nathrezim
-local countdownShadowStrike				= mod:NewCountdown("Alt9", 243960, "Tank", nil, 3)
-local countdownMarkedPrey				= mod:NewCountdown(30, 244042)
-local countdownNecroticEmbrace			= mod:NewCountdown("AltTwo30", 244093)
 
 mod:AddSetIconOption("SetIconOnMarkedPrey", 244042, true)
 mod:AddSetIconOption("SetIconEmbrace", 244094, true)
@@ -87,13 +82,10 @@ function mod:OnCombatStart(delay)
 	playerAffected = false
 	timerTormentofFlamesCD:Start(5-delay)
 	timerShadowStrikeCD:Start(9.3-delay)
-	countdownShadowStrike:Start(9.3-delay)
 	timerDarkFissureCD:Start(17.4-delay)--success
 	timerMarkedPreyCD:Start(25.2-delay)
-	countdownMarkedPrey:Start(25.2-delay)
 	if not self:IsEasy() then
 		timerNecroticEmbraceCD:Start(35-delay)
-		countdownNecroticEmbrace:Start(35-delay)
 	end
 	berserkTimer:Start(310-delay)--Confirmed normal/heroic/mythic
 	if self.Options.RangeFrame then
@@ -115,17 +107,14 @@ function mod:SPELL_CAST_SUCCESS(args)
 	if spellId == 243960 or spellId == 257644 then--257644 LFR shadow strike
 		warnShadowStrike:Show()
 		timerShadowStrikeCD:Show()
-		countdownShadowStrike:Start(9)
 	elseif spellId == 244093 then--Necrotic Embrace Cast
 		timerNecroticEmbraceCD:Start()
-		countdownNecroticEmbrace:Start(30.3)
 	elseif spellId == 243999 then
 		specWarnDarkFissure:Show()
 		specWarnDarkFissure:Play("watchstep")
 		timerDarkFissureCD:Start()
 	elseif spellId == 122366 then
 		timerMarkedPreyCD:Start()
-		countdownMarkedPrey:Start(30.3)
 	end
 end
 

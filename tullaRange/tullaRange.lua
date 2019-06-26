@@ -6,17 +6,14 @@
 
 --locals and speed
 local AddonName, Addon = ...
-local _G = _G
-local next = next
-local pairs = pairs
 
 local DB_KEY = 'TULLARANGE_COLORS'
 local UPDATE_DELAY = 0.15
-local ATTACK_BUTTON_FLASH_TIME = _G['ATTACK_BUTTON_FLASH_TIME']
+local ATTACK_BUTTON_FLASH_TIME = _G.ATTACK_BUTTON_FLASH_TIME
 
-local IsActionInRange = _G['IsActionInRange']
-local IsUsableAction = _G['IsUsableAction']
-local HasAction = _G['HasAction']
+local IsActionInRange = _G.IsActionInRange
+local IsUsableAction = _G.IsUsableAction
+local HasAction = _G.HasAction
 
 --[[
 	Helper Functions
@@ -61,7 +58,7 @@ function Addon:Load()
 	-- create a frame for watching for the options menu to show up
 	-- when it does, load the options menu
 	do
-		local optionsWatcher = CreateFrame('Frame', nil, _G['InterfaceOptionsFrame'])
+		local optionsWatcher = CreateFrame('Frame', nil, InterfaceOptionsFrame)
 
 		optionsWatcher:SetScript('OnShow', function(watcher)
 			watcher:SetScript('OnShow', nil)

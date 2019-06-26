@@ -7,8 +7,11 @@ local GetSpellCooldown = _G.GetSpellCooldown
 local GetTime = _G.GetTime
 local cooldowns = {}
 
-local function cooldown_CanShow(cooldown)
-    local start, duration = cooldown._occ_start, cooldown._occ_duration
+local Cooldown = {}
+
+-- queries
+function Cooldown:CanShow()
+    local start, duration = self._occ_start, self._occ_duration
 
     -- no active cooldown
     if start <= 0 or duration <= 0 then
@@ -16,7 +19,7 @@ local function cooldown_CanShow(cooldown)
     end
 
     -- over min duration
-    local sets = cooldown._occ_settings
+    local sets = self._occ_settings
     if not (sets and sets.enabled and duration > (sets.minDuration or 0)) then
         return false
     end
@@ -43,141 +46,162 @@ local function cooldown_CanShow(cooldown)
     return true
 end
 
-local function cooldown_GetKind(cooldown)
-    if cooldown.currentCooldownType == COOLDOWN_TYPE_LOSS_OF_CONTROL then
+function Cooldown:GetKind()
+    if self.currentCooldownType == COOLDOWN_TYPE_LOSS_OF_CONTROL then
         return "loc"
     end
 
-    local parent = cooldown:GetParent()
-    if parent and parent.chargeCooldown == cooldown then
+    local parent = self:GetParent()
+    if parent and parent.chargeCooldown == self then
         return "charge"
     end
 
     return "default"
 end
 
-local function cooldown_GetPriority(cooldown)
-    if cooldown._occ_kind ==  "charge" then
-        return 2
+function Cooldown:GetPriority()
+    if self._occ_kind ==  "charge" then
+        return 1
     end
 
-    return 1
+    return 2
 end
 
-local function cooldown_ShowText(cooldown)
-    local newDisplay = Addon.Display:GetOrCreate(cooldown:GetParent() or cooldown)
-    local oldDisplay = cooldown._occ_display
+-- actions
+function Cooldown:Initialize()
+    if cooldowns[self] then return end
+    cooldowns[self] = true
+
+    self._occ_start = 0
+    self._occ_duration = 0
+    self._occ_settings = Addon:GetCooldownSettings(self)
+
+    self:HookScript("OnShow", Cooldown.OnVisibilityUpdated)
+    self:HookScript("OnHide", Cooldown.OnVisibilityUpdated)
+end
+
+function Cooldown:ShowText()
+    local newDisplay = Addon.Display:GetOrCreate(self:GetParent() or self)
+    local oldDisplay = self._occ_display
 
     if oldDisplay and oldDisplay ~= newDisplay then
-        oldDisplay:RemoveCooldown(cooldown)
+        oldDisplay:RemoveCooldown(self)
     end
 
     if newDisplay then
-        newDisplay:AddCooldown(cooldown)
+        newDisplay:AddCooldown(self)
     end
 
-    cooldown._occ_display = newDisplay
+    self._occ_display = newDisplay
 end
 
-local function cooldown_HideText(cooldown)
-    local display = cooldown._occ_display
+function Cooldown:HideText()
+    local display = self._occ_display
 
     if display then
-        display:RemoveCooldown(cooldown)
-
-        cooldown._occ_display  = nil
+        display:RemoveCooldown(self)
+        self._occ_display  = nil
     end
 end
 
-local function cooldown_UpdateText(cooldown)
-    if cooldown._occ_show and cooldown:IsVisible() then
-        cooldown_ShowText(cooldown)
+function Cooldown:UpdateText()
+    if self._occ_show and self:IsVisible() then
+        Cooldown.ShowText(self)
     else
-        cooldown_HideText(cooldown)
+        Cooldown.HideText(self)
     end
 end
 
-local function cooldown_SetTimer(cooldown, start, duration)
-    if cooldown._occ_start == start and cooldown._occ_duration == duration then
-        return
-    end
-
-    cooldown._occ_start = start
-    cooldown._occ_duration = duration
-    cooldown._occ_kind = cooldown_GetKind(cooldown)
-    cooldown._occ_show = cooldown_CanShow(cooldown)
-    cooldown._occ_priority = cooldown_GetPriority(cooldown)
-
-    cooldown_UpdateText(cooldown)
-end
-
-local function cooldown_OnVisibilityUpdated(cooldown)
-    if cooldown.noCooldownCount or cooldown:IsForbidden() then return end
-
-    cooldown_UpdateText(cooldown)
-end
-
-local function cooldown_Initialize(cooldown)
-    if cooldowns[cooldown] then return end
-
-    cooldowns[cooldown] = true
-    cooldown._occ_start = 0
-    cooldown._occ_duration = 0
-    cooldown._occ_settings = Addon:GetCooldownSettings(cooldown)
-
-    cooldown:HookScript("OnShow", cooldown_OnVisibilityUpdated)
-    cooldown:HookScript("OnHide", cooldown_OnVisibilityUpdated)
-end
-
-local function cooldown_OnSetCooldown(cooldown, start, duration)
-    if cooldown.noCooldownCount or cooldown:IsForbidden() then return end
-
-    start = start or 0
-    duration = duration or 0
-
-    cooldown_Initialize(cooldown)
-    cooldown_SetTimer(cooldown, start, duration)
-end
-
-local function cooldown_OnSetCooldownDuration(cooldown)
-    if cooldown.noCooldownCount or cooldown:IsForbidden() then return end
-
-    local start, duration = cooldown:GetCooldownTimes()
+function Cooldown:Refresh()
+    local start, duration = self:GetCooldownTimes()
 
     start = (start or 0) / 1000
     duration = (duration or 0) / 1000
 
-    cooldown_Initialize(cooldown)
-    cooldown_SetTimer(cooldown, start, duration)
+    Cooldown.Initialize(self)
+    Cooldown.SetTimer(self, start, duration)
 end
 
-local function cooldown_OnSetDisplayAsPercentage(cooldown)
-    if cooldown.noCooldownCount or cooldown:IsForbidden() then return end
+function Cooldown:SetTimer(start, duration)
+    if self._occ_start == start and self._occ_duration == duration then
+        return
+    end
 
-    cooldown.noCooldownCount = true
+    self._occ_start = start
+    self._occ_duration = duration
+    self._occ_kind = Cooldown.GetKind(self)
+    self._occ_show = Cooldown.CanShow(self)
+    self._occ_priority = Cooldown.GetPriority(self)
 
-    cooldown_HideText(cooldown)
+    Cooldown.UpdateText(self)
 end
 
--- exports
-function Addon:WatchCooldowns()
+function Cooldown:SetNoCooldownCount(disable, owner)
+    owner = owner or true
+
+    if disable then
+        if not self.noCooldownCount then
+            self.noCooldownCount = owner
+            Cooldown.HideText(self)
+        end
+    elseif self.noCooldownCount == owner then
+        self.noCooldownCount = nil
+        Cooldown.Refresh(self)
+    end
+end
+
+-- events
+function Cooldown:OnSetCooldown(start, duration)
+    if self.noCooldownCount or self:IsForbidden() then return end
+
+    start = start or 0
+    duration = duration or 0
+
+    Cooldown.Initialize(self)
+    Cooldown.SetTimer(self, start, duration)
+end
+
+function Cooldown:OnSetCooldownDuration()
+    if self.noCooldownCount or self:IsForbidden() then return end
+
+    Cooldown.Refresh(self)
+end
+
+function Cooldown:SetDisplayAsPercentage()
+    if self.noCooldownCount or self:IsForbidden() then return end
+
+    Cooldown.SetNoCooldownCount(self, true)
+end
+
+function Cooldown:OnVisibilityUpdated()
+    if self.noCooldownCount or self:IsForbidden() then return end
+
+    Cooldown.UpdateText(self)
+end
+
+-- misc
+function Cooldown:SetupHooks()
+    local hooksecurefunc = _G.hooksecurefunc
     local Cooldown_MT = getmetatable(_G.ActionButton1Cooldown).__index
 
-    hooksecurefunc(Cooldown_MT, "SetCooldown", cooldown_OnSetCooldown)
-    hooksecurefunc(Cooldown_MT, "SetCooldownDuration", cooldown_OnSetCooldownDuration)
-    hooksecurefunc("CooldownFrame_SetDisplayAsPercentage", cooldown_OnSetDisplayAsPercentage)
+    hooksecurefunc(Cooldown_MT, "SetCooldown", Cooldown.OnSetCooldown)
+    hooksecurefunc(Cooldown_MT, "SetCooldownDuration", Cooldown.OnSetCooldownDuration)
+    hooksecurefunc("CooldownFrame_SetDisplayAsPercentage", Cooldown.SetDisplayAsPercentage)
 end
 
-function Addon:UpdateCooldownSettings()
-    for cooldown in pairs(cooldowns) do
-        local newSettings = self:GetCooldownSettings(cooldown)
+function Cooldown:UpdateSettings()
+    for cd in pairs(cooldowns) do
+        local newSettings = Addon:GetCooldownSettings(cd)
 
-        if cooldown._occ_settings ~= newSettings then
-            cooldown._occ_settings = newSettings
-            cooldown._occ_start = 0
-            cooldown._occ_duration = 0
+        if cd._occ_settings ~= newSettings then
+            cd._occ_settings = newSettings
+            cd._occ_start = 0
+            cd._occ_duration = 0
 
-            cooldown_OnSetCooldownDuration(cooldown)
+            Cooldown.Refresh(cd)
         end
     end
 end
+
+-- exports
+Addon.Cooldown = Cooldown

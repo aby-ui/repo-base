@@ -1895,6 +1895,10 @@ function StreamOverlay:OnEvent (_, event, ...)
 			player_name = UnitName ("player")
 			
 			if (_G._detalhes) then
+			
+				if (DetailsFramework.IsClassicWow()) then
+					return
+				end
 
 				--> create widgets
 				CreatePluginFrames()

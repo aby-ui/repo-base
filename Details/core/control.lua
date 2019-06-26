@@ -33,6 +33,8 @@
 	local atributo_custom = _detalhes.atributo_custom --details local
 	local info = _detalhes.janela_info --details local
 	
+	local UnitGroupRolesAssigned = DetailsFramework.UnitGroupRolesAssigned
+	
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --> constants
 	
@@ -115,7 +117,7 @@
 			local mapID = C_Map.GetBestMapForUnit ("player")
 			local ejid
 			if (mapID) then
-				ejid = EJ_GetInstanceForMap (mapID)
+				ejid = DetailsFramework.EncounterJournal.EJ_GetInstanceForMap (mapID)
 			end
 			
 			if (not mapID) then
@@ -123,7 +125,6 @@
 				return
 			end
 		
-			--local ejid = EJ_GetCurrentInstance()
 			if (ejid == 0) then
 				ejid = _detalhes:GetInstanceEJID()
 			end
@@ -551,9 +552,7 @@
 						mapID = 0
 					end
 					
-					local ejid = EJ_GetInstanceForMap (mapID)
-					
-					--local ejid = EJ_GetCurrentInstance()
+					local ejid = DetailsFramework.EncounterJournal.EJ_GetInstanceForMap (mapID)
 					
 					if (ejid == 0) then
 						ejid = _detalhes:GetInstanceEJID()
@@ -575,7 +574,7 @@
 			end		
 			
 			--> tag as a mythic dungeon segment, can be any type of segment, this tag also avoid the segment to be tagged as trash
-			local mythicLevel = C_ChallengeMode.GetActiveKeystoneInfo()
+			local mythicLevel = C_ChallengeMode and C_ChallengeMode.GetActiveKeystoneInfo()
 			if (mythicLevel and mythicLevel >= 2) then
 				_detalhes.tabela_vigente.is_mythic_dungeon_segment = true
 				_detalhes.tabela_vigente.is_mythic_dungeon_run_id = _detalhes.mythic_dungeon_id
@@ -1070,10 +1069,10 @@
 				return
 			end
 			local _, playerClass = UnitClass ("player")
-			local specIndex = GetSpecialization()
+			local specIndex = DetailsFramework.GetSpecialization()
 			local playerSpecID
 			if (specIndex) then
-				playerSpecID = GetSpecializationInfo (specIndex)
+				playerSpecID = DetailsFramework.GetSpecializationInfo (specIndex)
 			end
 
 			if (playerSpecID and playerClass) then

@@ -29,6 +29,14 @@ function _detalhes:OpenWelcomeWindow()
 		window:SetScript ("OnMouseUp", function() window:StopMovingOrSizing() end)
 		window:SetScript ("OnHide", function()
 			_detalhes.tabela_historico:resetar()
+			
+			if (DetailsFramework.IsClassicWow()) then
+				local new_instance = Details:GetWindow (1)
+				new_instance.row_info.use_spec_icons = false
+				new_instance.row_info.icon_file = [[Interface\AddOns\Details\images\classes_small]]
+				new_instance:SetBarSpecIconSettings (false)
+			end
+			
 		end)
 
 		local rodape_bg = window:CreateTexture (nil, "artwork")

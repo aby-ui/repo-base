@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(683, "DBM-TerraceofEndlessSpring", nil, 320)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041710000")
+mod:SetRevision("20190625143417")
 mod:SetCreatureID(60585, 60586, 60583)--60583 Protector Kaolan, 60585 Elder Regail, 60586 Elder Asani
 mod:SetEncounterID(1409)
 mod:SetZone()
@@ -60,10 +60,7 @@ local timerLightningStorm			= mod:NewBuffActiveTimer(14, 118077)
 --Protector Kaolan
 local timerTouchOfShaCD				= mod:NewCDTimer(29, 117519)--Need new heroic data, timers confirmed for 10 man and 25 man normal as 29 and 12
 local timerDefiledGroundCD			= mod:NewNextTimer(15.5, 117986, nil, "Melee")
-local timerExpelCorruptionCD		= mod:NewNextTimer(38.5, 117975, nil, nil, nil, 2)--It's a next timer, except first cast. that one variates.
-
-local countdownLightningStorm		= mod:NewCountdown(42, 118077, false)
-local countdownExpelCorruption		= mod:NewCountdown(38.5, 117975)
+local timerExpelCorruptionCD		= mod:NewNextTimer(38.5, 117975, nil, nil, nil, 2, nil, nil, nil, 1, 4)--It's a next timer, except first cast. that one variates.
 
 local berserkTimer					= mod:NewBerserkTimer(490)
 
@@ -189,7 +186,6 @@ function mod:SPELL_AURA_APPLIED(args)
 		if phase == 2 then
 			if args:GetDestCreatureID() == 60585 then--Elder Regail
 				timerLightningStormCD:Start(25.5)--Starts 25.5~27
-				countdownLightningStorm:Start(25.5)
 			elseif args:GetDestCreatureID() == 60586 then--Elder Asani
 				timerCorruptingWatersCD:Start(10)
 			elseif args:GetDestCreatureID() == 60583 then--Protector Kaolan
@@ -198,10 +194,8 @@ function mod:SPELL_AURA_APPLIED(args)
 		elseif phase == 3 then
 			if args:GetDestCreatureID() == 60583 then--Elder Regail
 				timerLightningStormCD:Start(9.5)--His LS cd seems to reset in phase 3 since the CD actually changes.
-				countdownLightningStorm:Start(9.5)
 			elseif args:GetDestCreatureID() == 60583 then--Protector Kaolan
 				timerExpelCorruptionCD:Start(5)--5-10 second variation for first cast.
---				countdownExpelCorruption:Start(5)--There seems to be a variation on when he casts first one, but ONLY first one has variation
 			end
 		end
 	elseif spellId == 118191 and args:IsPlayer() then
@@ -236,7 +230,6 @@ function mod:SPELL_CAST_START(args)
 	elseif spellId == 117975 then
 		specWarnExpelCorruption:Show()
 		timerExpelCorruptionCD:Start()
-		countdownExpelCorruption:Start(38.5)
 	elseif spellId == 117227 then
 		specWarnCorruptingWaters:Show()
 		timerCorruptingWatersCD:Start()
@@ -244,10 +237,8 @@ function mod:SPELL_CAST_START(args)
 		specWarnLightningStorm:Show()
 		if phase == 3 then
 			timerLightningStormCD:Start(32)
-			countdownLightningStorm:Start(32)
 		else
 			timerLightningStormCD:Start(41)
-			countdownLightningStorm:Start(41)
 		end
 	elseif spellId == 118312 then--Asani water bolt
 		if asaniCasts == 3 then asaniCasts = 0 end
@@ -270,7 +261,6 @@ function mod:SPELL_CAST_SUCCESS(args)
 		if args:GetSrcCreatureID() == 60585 then--Elder Regail
 			timerLightningPrisonCD:Cancel()
 			timerLightningStormCD:Cancel()
-			countdownLightningStorm:Cancel()
 			if self.Options.RangeFrame then
 				DBM.RangeCheck:Hide()
 			end

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(868, "DBM-SiegeOfOrgrimmarV2", nil, 369)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041710000")
+mod:SetRevision("20190625143417")
 mod:SetCreatureID(72311, 72560, 72249, 73910, 72302, 72561, 73909)--Boss needs to engage off friendly NCPS, not the boss. I include the boss too so we don't detect a win off losing varian. :)
 mod:SetEncounterID(1622)
 mod:DisableESCombatDetection()
@@ -34,9 +34,9 @@ mod:RegisterEventsInCombat(
 --Stage 2: Bring Her Down!
 local warnFracture					= mod:NewTargetAnnounce(146899, 3)
 local warnChainHeal					= mod:NewCastAnnounce(146757, 4)
-local warnAdd						= mod:NewCountAnnounce("ej8553", 2, "Interface\\ICONS\\INV_Misc_Head_Orc_01.blp")
+local warnAdd						= mod:NewCountAnnounce("ej8553", 2, "134170")
 local warnProto						= mod:NewCountAnnounce("ej8587", 2, 59961)
-local warnTowerOpen					= mod:NewAnnounce("warnTowerOpen", 1, "Interface\\ICONS\\Achievement_BG_DefendXtowers_AV.blp")
+local warnTowerOpen					= mod:NewAnnounce("warnTowerOpen", 1, "236351")
 local warnDemolisher				= mod:NewSpellAnnounce("ej8562", 3, 116040)
 local warnTowerGrunt				= mod:NewAnnounce("warnTowerGrunt", 3, 89253)
 ----High Enforcer Thranok (Road)
@@ -72,7 +72,7 @@ local specWarnPulsingFlames			= mod:NewSpecialWarningCount(147042, false, nil, n
 
 --Stage 2: Bring Her Down!
 local timerCombatStarts				= mod:NewCombatTimer(34.5)
-local timerAddsCD					= mod:NewNextCountTimer(54.7, "ej8553", nil, nil, nil, 1, "Interface\\ICONS\\INV_Misc_Head_Orc_01.blp")
+local timerAddsCD					= mod:NewNextCountTimer(54.7, "ej8553", nil, nil, nil, 1, "134170")
 local timerProtoCD					= mod:NewNextCountTimer(54.7, "ej8587", nil, nil, nil, 1, 59961)
 local timerTowerCD					= mod:NewTimer(99, "timerTowerCD", 88852, nil, nil, 5)
 local timerTowerGruntCD				= mod:NewTimer(60, "timerTowerGruntCD", 89253, nil, nil, 1, DBM_CORE_HEROIC_ICON)

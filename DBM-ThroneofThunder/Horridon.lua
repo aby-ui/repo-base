@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(819, "DBM-ThroneofThunder", nil, 362)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041710000")
+mod:SetRevision("20190625143417")
 mod:SetCreatureID(68476)
 mod:SetEncounterID(1575)
 mod:SetZone()
@@ -29,7 +29,7 @@ TODO: See if this has some target scanning. On heroic these can one shot non tan
 local warnCharge				= mod:NewTargetAnnounce(136769, 4)
 local warnPuncture				= mod:NewStackAnnounce(136767, 2, nil, "Tank|Healer")
 local warnAdds					= mod:NewAnnounce("warnAdds", 2, 43712)--Some random troll icon
-local warnOrbofControl			= mod:NewAnnounce("warnOrbofControl", 4, "INTERFACE\\ICONS\\INV_MISC_ORB_01.BLP")
+local warnOrbofControl			= mod:NewAnnounce("warnOrbofControl", 4, "134333")
 local warnCrackedShell			= mod:NewStackAnnounce(137240, 2)
 local warnBestialCry			= mod:NewStackAnnounce(136817, 3)
 local warnRampage				= mod:NewTargetAnnounce(136821, 4, nil, "Tank|Healer")

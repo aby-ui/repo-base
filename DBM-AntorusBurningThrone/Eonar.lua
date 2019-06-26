@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2025, "DBM-AntorusBurningThrone", nil, 946)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041705925")
+mod:SetRevision("20190625143337")
 mod:SetCreatureID(124445)
 mod:SetEncounterID(2075)
 mod:SetZone()
@@ -79,15 +79,10 @@ local timerPurifierCD					= mod:NewTimer(90, "timerPurifier", 250074, nil, nil, 
 local timerBatsCD						= mod:NewTimer(90, "timerBats", 242080, nil, nil, 1, DBM_CORE_DAMAGE_ICON)
 --Mythic 
 mod:AddTimerLine(ENCOUNTER_JOURNAL_SECTION_FLAG12)
-local timerFinalDoom					= mod:NewCastTimer(50, 249121, nil, nil, nil, 2, nil, DBM_CORE_DEADLY_ICON)
-local timerFinalDoomCD					= mod:NewCDCountTimer(90, 249121, nil, nil, nil, 4, nil, DBM_CORE_HEROIC_ICON)
+local timerFinalDoom					= mod:NewCastTimer(50, 249121, nil, nil, nil, 2, nil, DBM_CORE_DEADLY_ICON, nil, 2, 5)
+local timerFinalDoomCD					= mod:NewCDCountTimer(90, 249121, nil, nil, nil, 4, nil, DBM_CORE_HEROIC_ICON, nil, 1, 5)
 
 --local berserkTimer					= mod:NewBerserkTimer(600)
-
---The Paraxis
---local countdownRainofFel				= mod:NewCountdown("Alt60", 248332)--Not accurate enough yet. not until timer correction is added to handle speed of raids dps affecting sequence
---Mythic
-local countdownFinalDoom				= mod:NewCountdown("AltTwo90", 249121)
 
 mod:AddSetIconOption("SetIconOnFeedbackTargeted2", 249016, false)
 mod:AddInfoFrameOption(250030, true)
@@ -247,7 +242,6 @@ function mod:OnCombatStart(delay)
 			timerObfuscatorCD:Start(46, DBM_CORE_BOTTOM)
 			timerPurifierCD:Start(65.7, DBM_CORE_MIDDLE)
 			timerFinalDoomCD:Start(59.3-delay, 1)
-			countdownFinalDoom:Start(59.3-delay)
 			timerBatsCD:Start(195, 1)
 			self:Schedule(195, startBatsStuff, self)
 		elseif self:IsHeroic() then
@@ -302,7 +296,6 @@ function mod:SPELL_CAST_START(args)
 		local timer = finalDoomTimers[self.vb.finalDoomCast+1]
 		if timer then
 			timerFinalDoomCD:Start(timer, self.vb.finalDoomCast+1)
-			countdownFinalDoom:Start(timer)
 		end
 	elseif spellId == 250701 and self:CheckInterruptFilter(args.sourceGUID, true) then
 		specWarnSwing:Show()

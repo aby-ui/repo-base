@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(831, "DBM-ThroneofThunder", nil, 362)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041710000")
+mod:SetRevision("20190625143417")
 mod:SetCreatureID(69473)--69888
 mod:SetEncounterID(1580, 1581)
 mod:SetZone()
@@ -50,22 +50,16 @@ local specWarnCreation			= mod:NewSpecialWarningCount(138321, "-Healer")
 local specWarnCallEssence		= mod:NewSpecialWarningSpell(139040, "-Healer")
 
 --Anima
-local timerMurderousStrikeCD	= mod:NewCDTimer(33, 138333, nil, "Tank", nil, 5)--Gains 3 power per second roughly and uses special at 100 Poewr
+local timerMurderousStrikeCD	= mod:NewCDTimer(33, 138333, nil, "Tank", nil, 5, nil, nil, nil, 3, 4)--Gains 3 power per second roughly and uses special at 100 Poewr
 local timerSanguineHorrorCD		= mod:NewCDCountTimer(41, 138338, nil, nil, nil, 1)--CD not known. No one fights him in anima phase for more than like 1-2 seconds.
-local timerAnimaExplosion		= mod:NewNextTimer(15, 138295, nil, nil, nil, 3)
+local timerAnimaExplosion		= mod:NewNextTimer(15, 138295, nil, nil, nil, 3, nil, nil, nil, 2, 4)
 --Vita
-local timerFatalStrikeCD		= mod:NewCDTimer(10, 138334, nil, "Tank", nil, 5)--Gains 10 power per second roughly and uses special at 100 Poewr
+local timerFatalStrikeCD		= mod:NewCDTimer(10, 138334, nil, "Tank", nil, 5, nil, nil, nil, 3, 4)--Gains 10 power per second roughly and uses special at 100 Poewr
 local timerUnstableVita			= mod:NewTargetTimer(12, 138297, nil, nil, nil, 3)
 local timerCracklingStalkerCD	= mod:NewCDCountTimer(41, 138339, nil, nil, nil, 1)
 --General
-local timerCreationCD			= mod:NewCDCountTimer(32.5, 138321)--32.5-35second variation
-local timerCallEssenceCD		= mod:NewNextTimer(15.5, 139040)
-
-local countdownUnstableVita		= mod:NewCountdownFades("Alt11", 138297)
-local countdownAnimaExplosion	= mod:NewCountdownFades("Alt15", 138296)
-local countdownCreation			= mod:NewCountdown(32.5, 138321, nil, nil, nil, nil, true)
-local countdownMurderousStrike	= mod:NewCountdown("AltTwo33", 138333, "Tank")
-local countdownFatalStrike		= mod:NewCountdown("AltTwo10", 138334, "Tank")
+local timerCreationCD			= mod:NewCDCountTimer(32.5, 138321, nil, nil, nil, 1, nil, nil, nil, 1, 4)--32.5-35second variation
+local timerCallEssenceCD		= mod:NewNextTimer(15.5, 139040, nil, nil, nil, 1)
 
 mod:AddBoolOption("SetIconsOnVita", false)--Both the vita target and furthest from vita target
 
@@ -106,7 +100,6 @@ function mod:OnCombatStart(delay)
 	stalkerCount = 0
 	horrorCount = 0
 	timerCreationCD:Start(11-delay, 1)
-	countdownCreation:Start(11-delay)
 end
 
 function mod:SPELL_CAST_START(args)
@@ -128,7 +121,6 @@ function mod:SPELL_CAST_START(args)
 		creationCount = creationCount + 1
 		specWarnCreation:Show(creationCount)
 		timerCreationCD:Start(nil, creationCount+1)
-		countdownCreation:Start()
 	end
 end
 
@@ -136,10 +128,8 @@ function mod:SPELL_CAST_SUCCESS(args)
 	local spellId = args.spellId
 	if spellId == 138333 then
 		timerMurderousStrikeCD:Start()
-		countdownMurderousStrike:Start()
 	elseif spellId == 138334 then
 		timerFatalStrikeCD:Start()
-		countdownFatalStrike:Start()
 	end
 end
 
@@ -150,10 +140,8 @@ function mod:SPELL_AURA_APPLIED(args)
 		radenPower = radenPower / 3
 		horrorCount = 0
 		timerFatalStrikeCD:Cancel()
-		countdownFatalStrike:Cancel()
 		timerCracklingStalkerCD:Cancel()
 		timerMurderousStrikeCD:Start(33-radenPower)
-		countdownMurderousStrike:Start(33-radenPower)
 		timerSanguineHorrorCD:Start(8, 1)
 		warnAnima:Show()
 	elseif spellId == 138332 then--Vita Phase
@@ -168,11 +156,9 @@ function mod:SPELL_AURA_APPLIED(args)
 		stalkerCount = 0
 		warnVita:Show()
 		timerMurderousStrikeCD:Cancel()
-		countdownMurderousStrike:Cancel()
 		timerSanguineHorrorCD:Cancel()
 		timerCracklingStalkerCD:Start(stalkerupdate, 1)
 		timerFatalStrikeCD:Start(10-radenPower)
-		countdownFatalStrike:Start(10-radenPower)
 	elseif spellId == 139318 then--Anima Sensitivity
 		if args:IsPlayer() then
 			specWarnAninaSensitive:Show()
@@ -188,10 +174,8 @@ function mod:SPELL_AURA_APPLIED(args)
 			yellUnstableAnima:Yell()
 			if spellId == 138295 then--10 seconds
 				timerAnimaExplosion:Start(10)
-				countdownAnimaExplosion:Start(10)
 			else--15
 				timerAnimaExplosion:Start(15)
-				countdownAnimaExplosion:Start(15)
 			end
 		end
 	elseif args:IsSpellID(138297, 138308) then--Unstable Vita (138297 cast, 138308 jump)
@@ -214,11 +198,6 @@ function mod:SPELL_AURA_APPLIED(args)
 				specWarnUnstablVitaJump:Show()
 			end
 			yellUnstableVita:Yell()
-			if self:IsDifficulty("heroic25") then
-				countdownUnstableVita:Start(5)
-			else
-				countdownUnstableVita:Start()
-			end
 		end
 	end
 end
@@ -232,14 +211,12 @@ function mod:SPELL_AURA_REMOVED(args)
 		SetRaidTarget(furthestDistancePlayer, 0)--Use SetRaidTarget because seticon expects targetname, no point in changing it twice for no reason
 	elseif spellId == 138288 or spellId == 138295 then
 		timerAnimaExplosion:Cancel()
-		countdownAnimaExplosion:Cancel()
 	end
 end
 
 function mod:SPELL_DAMAGE(_, sourceName, _, _, destGUID, destName, _, _, spellId, spellName)
 	if spellId == 138296 and self:AntiSpam(5, 4) and sourceName == UnitName("player") then--Solo Soak
 		timerAnimaExplosion:Start(15)
-		countdownAnimaExplosion:Start(15)
 	end
 end
 mod.SPELL_MISSED = mod.SPELL_DAMAGE
@@ -248,17 +225,13 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 	if spellId == 139040 then--Call Essence
 		specWarnCallEssence:Show()
 		timerCallEssenceCD:Start()
-		countdownCreation:Start(15)
 	elseif spellId == 139073 then--Phase 2 (the Ruin Trigger)
 		warnPhase2:Show()
 		timerCracklingStalkerCD:Cancel()
 		timerSanguineHorrorCD:Cancel()
 		timerMurderousStrikeCD:Cancel()
-		countdownMurderousStrike:Cancel()
 		timerFatalStrikeCD:Cancel()
-		countdownFatalStrike:Cancel()
 		timerCreationCD:Cancel()
-		countdownCreation:Cancel()
 		timerCallEssenceCD:Start()
 	end
 end

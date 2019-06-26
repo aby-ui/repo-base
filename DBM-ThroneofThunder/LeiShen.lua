@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(832, "DBM-ThroneofThunder", nil, 362)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041710000")
+mod:SetRevision("20190625143417")
 mod:SetCreatureID(68397)--Diffusion Chain Conduit 68696, Static Shock Conduit 68398, Bouncing Bolt conduit 68698, Overcharge conduit 68697
 mod:SetEncounterID(1579)
 mod:SetZone()
@@ -72,15 +72,15 @@ local specWarnHelmOfCommand				= mod:NewSpecialWarningYou(139011, nil, nil, nil,
 local timerConduitCD					= mod:NewTimer(40, "timerConduitCD", 135695, nil, nil, 6)
 local timerStaticShock					= mod:NewBuffFadesTimer(8, 135695)
 local timerStaticShockCD				= mod:NewCDTimer(40, 135695, nil, nil, nil, 3)
-local timerDiffusionChainCD				= mod:NewCDTimer(40, 135991, nil, nil, nil, 3)
+local timerDiffusionChainCD				= mod:NewCDTimer(40, 135991, nil, nil, nil, 3, nil, nil, nil, 3, 4)
 local timerOvercharge					= mod:NewCastTimer(6, 136295)
 local timerOverchargeCD					= mod:NewCDTimer(40, 136295, nil, nil, nil, 3)
-local timerBouncingBoltCD				= mod:NewCDTimer(40, 136361, nil, nil, nil, 5)
+local timerBouncingBoltCD				= mod:NewCDTimer(40, 136361, nil, nil, nil, 5, nil, nil, nil, 3, 4)
 local timerSuperChargedConduits			= mod:NewBuffActiveTimer(47, 137045)--Actually intermission only, but it fits best with conduits
 --Phase 1
-local timerDecapitateCD					= mod:NewCDTimer(50, 134912, nil, "Tank", nil, 5)--Cooldown with some variation. 50-57ish or so.
+local timerDecapitateCD					= mod:NewCDTimer(50, 134912, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON, nil, 2, 4)--Cooldown with some variation. 50-57ish or so.
 local timerThunderstruck				= mod:NewCastTimer(4.8, 135095)--4 sec cast. + landing 0.8~1.3 sec.
-local timerThunderstruckCD				= mod:NewNextCountTimer(46, 135095, nil, nil, nil, 3)--Seems like an exact bar
+local timerThunderstruckCD				= mod:NewNextCountTimer(46, 135095, nil, nil, nil, 3, nil, nil, nil, 1, 4)--Seems like an exact bar
 --Phase 2
 local timerFussionSlashCD				= mod:NewCDTimer(42.5, 136478, nil, "Tank", nil, 5)
 local timerLightningWhip				= mod:NewCastTimer(4, 136850)
@@ -94,11 +94,6 @@ local timerHelmOfCommand				= mod:NewCDTimer(14, 139011, nil, nil, nil, 3)
 local timerMassSpellReflect				= mod:NewBuffActiveTimer(5, 114028)
 
 local berserkTimer						= mod:NewBerserkTimer(900)--Confirmed in LFR, probably the same in all modes though?
-
-local countdownThunderstruck			= mod:NewCountdown(46, 135095)
-local countdownBouncingBolt				= mod:NewCountdown(40, 136361, nil, nil, nil, nil, true)--Pretty big deal on heroic, it's the one perminent ability you see in all strats. Should now play nice with thunderstruck with alternate voice code in ;)
-local countdownDiffusionChain			= mod:NewCountdown(40, 135991, nil, nil, nil, nil, true)
-local countdownStaticShockFades			= mod:NewCountdownFades(7, 135695, false)--May confuse with thundershock option default so off as default.
 
 mod:AddBoolOption("RangeFrame")
 mod:AddBoolOption("OverchargeArrow")--On by default because the overcharge target is always pinned and unable to run away. You must always run to them, so everyone will want this arrow on
@@ -167,7 +162,6 @@ function mod:OnCombatStart(delay)
 	self.vb.goreCount = 0
 	self.vb.reflectCount = 0
 	timerThunderstruckCD:Start(25-delay, 1)
-	countdownThunderstruck:Start(25-delay)
 	timerDecapitateCD:Start(40-delay)--First seems to be 45, rest 50. it's a CD though, not a "next"
 	timerConduitCD:Start(11-delay)--First always 11 seconds after engage, unless not in range of a pillar within 11 seconds, then cast instantly after 11 sec mark the moment he is in range of pillar
 	berserkTimer:Start(-delay)
@@ -196,10 +190,8 @@ function mod:SPELL_CAST_START(args)
 		timerThunderstruck:Start()
 		if self.vb.phase < 3 then
 			timerThunderstruckCD:Start(nil, self.vb.thunderCount+1)
-			countdownThunderstruck:Start()
 		else
 			timerThunderstruckCD:Start(30, self.vb.thunderCount+1)
-			countdownThunderstruck:Start(30)
 		end
 	--"<206.2 20:38:58> [UNIT_SPELLCAST_SUCCEEDED] Lei Shen [[boss1:Lightning Whip::0:136845]]", -- [13762] --This event comes about .5 seconds earlier than SPELL_CAST_START. Maybe worth using?
 	elseif spellId == 136850 then
@@ -251,7 +243,6 @@ function mod:SPELL_AURA_APPLIED(args)
 			end
 			yellStaticShock:Schedule(3, playerName, 5)
 			timerStaticShock:Start()
-			countdownStaticShockFades:Start()
 		else
 			if not self.vb.intermissionActive and self:IsMelee() then return end--Melee do not help soak these during normal phases, only during intermissions
 			local uId = DBM:GetRaidUnitId(args.destName)
@@ -326,9 +317,6 @@ function mod:SPELL_CAST_SUCCESS(args)
 		warnDiffusionChain:Show(self.vb.diffusionCastTarget)
 		if not self.vb.intermissionActive then
 			timerDiffusionChainCD:Start()
-			if not (self.vb.phase == 2 and self.vb.westDestroyed) or not self:IsHeroic() then--Disable this countdown in phase 2 if using bouncing bolt strat. so they don't overlap. this is mainly for the diffusion chain strat (ie overloading DC and static shock on heroic vs bouncing and static)
-				countdownDiffusionChain:Start()
-			end
 			specWarnDiffusionChainSoon:Schedule(36)
 		end
 	elseif spellId == 136543 and self:AntiSpam(2, 1) then
@@ -361,7 +349,6 @@ function mod:SPELL_AURA_REMOVED(args)
 		timerStaticShockCD:Cancel()
 	elseif spellId == 135681 and args:GetDestCreatureID() == 68397 and not self.vb.intermissionActive then--East (Diffusion Chain)
 		timerDiffusionChainCD:Cancel()
-		countdownDiffusionChain:Cancel()
 		specWarnDiffusionChainSoon:Cancel()
 		if self.Options.RangeFrame and self:IsRanged() then--Shouldn't target melee during a normal pillar, only during intermission when all melee are with ranged and out of melee range of boss
 			if self.vb.phase == 1 then
@@ -374,7 +361,6 @@ function mod:SPELL_AURA_REMOVED(args)
 		timerOverchargeCD:Cancel()
 	elseif spellId == 135683 and args:GetDestCreatureID() == 68397 and not self.vb.intermissionActive then--West (Bouncing Bolt)
 		timerBouncingBoltCD:Cancel()
-		countdownBouncingBolt:Cancel()
 		specWarnBouncingBoltSoon:Cancel()
 	--Conduit deactivations
 	elseif spellId == 135695 and self.Options.SetIconOnStaticShock then
@@ -442,7 +428,6 @@ function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg, _, _, _, target)
 				end
 				if self.vb.eastDestroyed then
 					timerDiffusionChainCD:Start(14)
-					countdownDiffusionChain:Start(14)
 					if self.Options.RangeFrame and self:IsRanged() then
 						DBM.RangeCheck:Show(8)
 					end
@@ -452,9 +437,6 @@ function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg, _, _, _, target)
 				end
 				if self.vb.westDestroyed then
 					timerBouncingBoltCD:Start(14)
-					if not self.vb.eastDestroyed or not self:IsHeroic() then--Why in the hell would you do that? Diffusion chaim & bouncing bolts? you must be nuts
-						countdownBouncingBolt:Start(14)--Of the two, diffusion chains more important so we disable bouncing count
-					end
 				end
 			end
 		elseif self.vb.phase == 3 then--Start Phase 3 timers
@@ -466,7 +448,6 @@ function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg, _, _, _, target)
 			timerViolentGaleWindsCD:Start(20)
 			timerLightningWhipCD:Start(21.5, 1)
 			timerThunderstruckCD:Start(36, 1)
-			countdownThunderstruck:Start(36)
 			timerSummonBallLightningCD:Start(41.5, 1)
 			if self:IsHeroic() then
 				--Basically a CD, may come later if delayed by other crap
@@ -476,16 +457,12 @@ function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg, _, _, _, target)
 				end
 				if self.vb.eastDestroyed then
 					timerDiffusionChainCD:Start(28)
-					if not self.vb.westDestroyed or not self:IsHeroic() then--Why in the fuck would you do that? Diffusion chaim & bouncing bolts? you must be nuts
-						countdownDiffusionChain:Start(28)
-					end
 				end
 				if self.vb.southDestroyed then
 					timerOverchargeCD:Start(28)
 				end
 				if self.vb.westDestroyed then--Technically also 28, however
 					timerBouncingBoltCD:Start(32)--Always goes second, over any of other 3 abilities, and that delays it by 4 seconds
-					countdownBouncingBolt:Start(32)
 				end
 			end
 		end
@@ -541,7 +518,6 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 		specWarnDiffusionChainSoon:Cancel()
 		specWarnBouncingBoltSoon:Cancel()
 		timerThunderstruckCD:Cancel()
-		countdownThunderstruck:Cancel()
 		timerDecapitateCD:Cancel()
 		timerFussionSlashCD:Cancel()
 		timerLightningWhipCD:Cancel()
@@ -549,10 +525,8 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 		timerSuperChargedConduits:Start()
 		timerStaticShockCD:Cancel()
 		timerDiffusionChainCD:Cancel()
-		countdownDiffusionChain:Cancel()
 		timerOverchargeCD:Cancel()
 		timerBouncingBoltCD:Cancel()
-		countdownBouncingBolt:Cancel()
 		if not self.vb.eastDestroyed or self:IsHeroic() then
 			if self:IsDifficulty("lfr25") then
 				timerDiffusionChainCD:Start(10)
@@ -592,9 +566,6 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 		specWarnBouncingBolt:Show()
 		if not self.vb.intermissionActive then
 			timerBouncingBoltCD:Start(40)
-			if not (self.vb.phase == 2 and self.vb.eastDestroyed) or not self:IsHeroic() then--Disable this countdown in phase 2 if using diffusion strat
-				countdownBouncingBolt:Start(40)
-			end
 			specWarnBouncingBoltSoon:Schedule(36)
 		end
 	elseif spellId == 136869 and self:AntiSpam(2, 4) then--Violent Gale Winds

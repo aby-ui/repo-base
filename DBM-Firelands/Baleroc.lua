@@ -1,12 +1,12 @@
 local mod	= DBM:NewMod(196, "DBM-Firelands", nil, 78)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041705904")
+mod:SetRevision("20190625143316")
 mod:SetCreatureID(53494)
 mod:SetEncounterID(1200)
 mod:SetZone()
 mod:SetUsedIcons(8, 7, 6, 5, 4, 3, 2, 1)
-mod:SetModelSound("Sound\\Creature\\BALEROC\\VO_FL_BALEROC_AGGRO.ogg", "Sound\\Creature\\BALEROC\\VO_FL_BALEROC_KILL_02.ogg")
+--mod:SetModelSound("Sound\\Creature\\BALEROC\\VO_FL_BALEROC_AGGRO.ogg", "Sound\\Creature\\BALEROC\\VO_FL_BALEROC_KILL_02.ogg")
 --Long: You are forbidden from entering my masters domain mortals.
 --Short: You have been judged
 
@@ -40,8 +40,6 @@ local timerCountdown		= mod:NewBuffFadesTimer(8, 99516, nil, nil, nil, 5)
 local timerCountdownCD		= mod:NewNextTimer(45, 99516, nil, nil, nil, 3, nil, DBM_CORE_HEROIC_ICON)
 local timerVitalFlame		= mod:NewBuffFadesTimer(15, 99263, nil, nil, nil, 5)
 local timerTormented		= mod:NewBuffFadesTimer(40, 99257, nil, nil, nil, 5)
-
-local countdownShards		= mod:NewCountdown(34, 99259, false)
 
 local berserkTimer			= mod:NewBerserkTimer(360)
 
@@ -265,7 +263,6 @@ function mod:SPELL_CAST_START(args)
 		self.vb.tormentIcon = 8
 		specWarnShardsTorment:Show(self.vb.shardCount)
 		specWarnShardsTorment:Play("specialsoon")
-		countdownShards:Start(34)
 		if self.Options.ResetShardsinThrees and (self:IsDifficulty("normal25", "heroic25") and self.vb.shardCount == 3 or self:IsDifficulty("normal10", "heroic10") and self.vb.shardCount == 2) then
 			self.vb.shardCount = 0
 			timerShardsTorment:Start(34, 1)

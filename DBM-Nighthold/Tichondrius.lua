@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1762, "DBM-Nighthold", nil, 786)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041705925")
+mod:SetRevision("20190625143337")
 mod:SetCreatureID(103685)
 mod:SetEncounterID(1862)
 mod:SetZone()
@@ -52,22 +52,16 @@ local specWarnBurningSoul			= mod:NewSpecialWarningMoveAway(216040, nil, nil, ni
 local yellBurningSoul				= mod:NewYell(216040)
 
 local timerCarrionPlagueCD			= mod:NewNextCountTimer(25, 212997, nil, nil, nil, 3)
-local timerSeekerSwarmCD			= mod:NewNextCountTimer(25, 213238, nil, nil, nil, 3)
+local timerSeekerSwarmCD			= mod:NewNextCountTimer(25, 213238, nil, nil, nil, 3, nil, nil, nil, 1, 4)
 local timerBrandOfArgusCD			= mod:NewNextCountTimer(25, 212794, nil, nil, nil, 3)--Concider short timer 156225
-local timerFeastOfBloodCD			= mod:NewNextCountTimer(25, 208230, nil, nil, 2, 1)
-local timerEchoesOfVoidCD			= mod:NewNextCountTimer(65, 213531, nil, nil, nil, 2)
+local timerFeastOfBloodCD			= mod:NewNextCountTimer(25, 208230, nil, nil, 2, 1, nil, nil, nil, mod:IsTank() and 3, 4)
+local timerEchoesOfVoidCD			= mod:NewNextCountTimer(65, 213531, nil, nil, nil, 2, nil, nil, nil, 2, 4)
 local timerIllusionaryNightCD		= mod:NewNextCountTimer(125, 206365, nil, nil, nil, 6)
-local timerIllusionaryNight			= mod:NewBuffActiveTimer(32, 206365, nil, nil, nil, 6)
+local timerIllusionaryNight			= mod:NewBuffActiveTimer(32, 206365, nil, nil, nil, 6, nil, nil, nil, 1, 10)
 local timerAddsCD					= mod:NewAddsTimer(25, 216726, nil, "-Healer")
 local timerCarrionNightmare			= mod:NewNextCountTimer(4, 215988, nil, nil, nil, 2)
 
 local berserkTimer					= mod:NewBerserkTimer(463)
-
-local countdownSeekerSwarm			= mod:NewCountdown(25, 213238)
-local countdownEchoesOfVoid			= mod:NewCountdown("Alt65", 213531)
-local countdownFeastOfBlood			= mod:NewCountdown("AltTwo25", 208230, "Tank")
-local countdownNightPhase			= mod:NewCountdown(32, 206365, nil, nil, 10)
-local countdownCarrionNightmare 	= mod:NewCountdown("Alt4", 215988, false, 2, 3)
 
 mod:AddRangeFrameOption(8, 216040)
 mod:AddSetIconOption("SetIconOnBrandOfArgus", 212794, true)
@@ -168,11 +162,8 @@ function mod:OnCombatStart(delay)
 	table.wipe(argusTargets)
 	timerCarrionPlagueCD:Start(7-delay, 1)--Cast end
 	timerFeastOfBloodCD:Start(20-delay, 1)
-	countdownFeastOfBlood:Start(20-delay)
 	timerSeekerSwarmCD:Start(25-delay, 1)
-	countdownSeekerSwarm:Start(25-delay)
 	timerEchoesOfVoidCD:Start(55-delay, 1)
-	countdownEchoesOfVoid:Start(55-delay)
 	timerIllusionaryNightCD:Start(130-delay, 1)
 	if not self:IsEasy() then
 		timerBrandOfArgusCD:Start(15-delay, 1)
@@ -204,7 +195,6 @@ function mod:SPELL_CAST_START(args)
 		specWarnCarrionNightmare:Play("watchstep")
 		if self.vb.carrionNightmare < 6 then
 			timerCarrionNightmare:Start(nil, self.vb.carrionNightmare+1)
-			countdownCarrionNightmare:Start()
 		end
 	elseif spellId == 212997 then
 		if self.vb.darkPhase then--He casts it immediately after a Night phase ends
@@ -222,17 +212,13 @@ function mod:SPELL_CAST_START(args)
 				timerBrandOfArgusCD:Start(10, 1)
 			end
 			timerFeastOfBloodCD:Start(14.5, 1)
-			countdownFeastOfBlood:Start(14.5)
 			timerSeekerSwarmCD:Start(20, 1)
-			countdownSeekerSwarm:Start(20)
 			timerAddsCD:Start(20)
 			timerIllusionaryNightCD:Start(123, 1)
 			if self.vb.phase == 2 then--The Nightborne
 				timerEchoesOfVoidCD:Start(50, 1)
-				countdownEchoesOfVoid:Start(50)
 			else--The Legion
 				timerEchoesOfVoidCD:Start(55, 1)
-				countdownEchoesOfVoid:Start(55)
 			end
 		end
 	elseif spellId == 213238 then
@@ -248,7 +234,6 @@ function mod:SPELL_CAST_START(args)
 		end
 		if timer then
 			timerSeekerSwarmCD:Start(timer, self.vb.seekerSwarmCast+1)
-			countdownSeekerSwarm:Start(timer)
 		end
 		if DBM:UnitDebuff("player", carrionDebuff) then
 			yellSeekerSwarm:Yell()
@@ -264,33 +249,25 @@ function mod:SPELL_CAST_START(args)
 			--Only cast twice per cycle
 			if self.vb.phase == 1 then
 				timerEchoesOfVoidCD:Start(65, 2)
-				countdownEchoesOfVoid:Start(65)
 			elseif self.vb.phase == 2 then
 				timerEchoesOfVoidCD:Start(67.5, 2)
-				countdownEchoesOfVoid:Start(67.5)
 			else
 				timerEchoesOfVoidCD:Start(59.7, 2)
-				countdownEchoesOfVoid:Start(59.7)
 			end
 		end
 	elseif spellId == 206365 then--Phase Change
 		--stops may not be needed if sharedTimer Table works
 		timerCarrionPlagueCD:Stop()
 		timerSeekerSwarmCD:Stop()
-		countdownSeekerSwarm:Cancel()
 		timerBrandOfArgusCD:Stop()
 		timerFeastOfBloodCD:Stop()
-		countdownFeastOfBlood:Cancel()
 		timerEchoesOfVoidCD:Stop()
-		countdownEchoesOfVoid:Cancel()
 		self.vb.darkPhase = true
 		self.vb.carrionNightmare = 0
 		self.vb.batsKilled = 0
 		self.vb.essenceCount = 0
 		timerIllusionaryNight:Start()
-		countdownNightPhase:Start()
 		timerCarrionNightmare:Start(6, 1)
-		countdownCarrionNightmare:Start(6)
 	elseif spellId == 216034 and self:CheckInterruptFilter(args.sourceGUID, false, true) then
 		specWarnBlastNova:Show(args.sourceName)
 		specWarnBlastNova:Play("kickcast")
@@ -339,7 +316,6 @@ function mod:SPELL_CAST_SUCCESS(args)
 		end
 		if timer then
 			timerFeastOfBloodCD:Start(timer, self.vb.feastOfBloodCast+1)
-			countdownFeastOfBlood:Start(timer)
 		end
 	end
 end

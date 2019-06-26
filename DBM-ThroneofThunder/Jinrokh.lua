@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(827, "DBM-ThroneofThunder", nil, 362)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041710000")
+mod:SetRevision("20190625143417")
 mod:SetCreatureID(69465)
 mod:SetEncounterID(1577)
 mod:SetZone()
@@ -37,11 +37,9 @@ local timerThrowCD					= mod:NewCDTimer(26, 137175, nil, nil, nil, 5)--90-93 var
 local timerStorm					= mod:NewBuffActiveTimer(17, 137313)--2 second cast, 15 second duration
 local timerStormCD					= mod:NewCDTimer(60.5, 137313, nil, nil, nil, 2)--90-93 variable (60.5~67 seconds after throw)
 local timerIonization				= mod:NewBuffFadesTimer(24, 138732)
-local timerIonizationCD				= mod:NewNextTimer(61.5, 138732, nil, nil, nil, 3)
+local timerIonizationCD				= mod:NewNextTimer(61.5, 138732, nil, nil, nil, 3, nil, nil, nil, 1, 4)
 
 local berserkTimer					= mod:NewBerserkTimer(540)
-
-local countdownIonization			= mod:NewCountdown(61.5, 138732)
 
 mod:AddBoolOption("RangeFrame")
 
@@ -83,7 +81,6 @@ function mod:OnCombatStart(delay)
 	timerThrowCD:Start(30-delay)
 	if self:IsHeroic() then
 		timerIonizationCD:Start(60-delay)
-		countdownIonization:Start(60-delay)
 		berserkTimer:Start(360-delay)
 	else
 		berserkTimer:Start(-delay)
@@ -109,7 +106,6 @@ function mod:SPELL_CAST_START(args)
 		timerThrowCD:Start()
 		if self:IsHeroic() then
 			timerIonizationCD:Start()
-			countdownIonization:Start()
 		end
 		--Only register electrified waters events during storm. Avoid high cpu events during rest of fight.
 		self:RegisterShortTermEvents(

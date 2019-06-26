@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(825, "DBM-ThroneofThunder", nil, 362)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041710000")
+mod:SetRevision("20190625143417")
 mod:SetCreatureID(67977)
 mod:SetEncounterID(1565)
 mod:SetZone()
@@ -33,14 +33,11 @@ local specWarnSummonBats			= mod:NewSpecialWarningSwitch("ej7140", "Tank")--Dps 
 local timerBiteCD					= mod:NewCDTimer(8, 135251, nil, "Tank", nil, 5)
 local timerRockfallCD				= mod:NewCDTimer(10, 134476, nil, nil, nil, 3)
 local timerCallTortosCD				= mod:NewNextTimer(60.5, 136294, nil, nil, nil, 1)
-local timerStompCD					= mod:NewCDCountTimer(47, 134920, nil, nil, nil, 2)
-local timerBreathCD					= mod:NewCDTimer(46, 133939, nil, nil, nil, 4)--TODO, adjust timer when Growing Anger is cast, so we can use a Next bar more accurately
+local timerStompCD					= mod:NewCDCountTimer(47, 134920, nil, nil, nil, 2, nil, nil, nil, 1, 4)
+local timerBreathCD					= mod:NewCDTimer(46, 133939, nil, nil, nil, 4, nil, nil, nil, 2, 4)--TODO, adjust timer when Growing Anger is cast, so we can use a Next bar more accurately
 local timerSummonBatsCD				= mod:NewCDTimer(45, "ej7140", nil, nil, nil, 1, 136685)--45-47. This doesn't always sync up to furious stone breath. Longer fight goes on more out of sync they get. So both bars needed I suppose
 local timerStompActive				= mod:NewBuffActiveTimer(10.8, 134920)--Duration of the rapid caveins
 local timerShellConcussion			= mod:NewBuffFadesTimer(20, 136431)
-
-local countdownStomp				= mod:NewCountdown(47, 134920, nil, 2)
-local countdownBreath				= mod:NewCountdown("Alt46", 133939, nil, 2) -- Coundown for the kicker.
 
 local berserkTimer					= mod:NewBerserkTimer(780)
 
@@ -94,9 +91,7 @@ function mod:OnCombatStart(delay)
 	timerRockfallCD:Start(15-delay)
 	timerCallTortosCD:Start(21-delay)
 	timerStompCD:Start(27-delay, 1)
-	countdownStomp:Start(27-delay)
 	timerBreathCD:Start(-delay)
-	countdownBreath:Start(-delay)
 	if self:IsHeroic() then
 		if self.Options.InfoFrame then
 			DBM.InfoFrame:SetHeader(L.WrongDebuff:format(shelldName))
@@ -122,7 +117,6 @@ function mod:SPELL_CAST_START(args)
 			specWarnStoneBreath:Show(args.sourceName)
 		end
 		timerBreathCD:Start()
-		countdownBreath:Start()
 	elseif spellId == 136294 then
 		if self:AntiSpam(5, 4) then
 			specWarnCallofTortos:Show()
@@ -140,7 +134,6 @@ function mod:SPELL_CAST_START(args)
 		timerStompActive:Start()
 		timerRockfallCD:Start(7.4)--When the spam of rockfalls start
 		timerStompCD:Start(nil, stompCount+1)
-		countdownStomp:Start()
 		if self.Options.AnnounceCooldowns then
 			DBM:PlayCountSound(stompCount)
 		end

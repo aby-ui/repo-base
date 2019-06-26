@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(818, "DBM-ThroneofThunder", nil, 362)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041710000")
+mod:SetRevision("20190625143417")
 mod:SetCreatureID(68036)--Crimson Fog 69050
 mod:SetEncounterID(1572)
 mod:SetZone()
@@ -56,8 +56,8 @@ local timerHardStareCD				= mod:NewCDTimer(12, 133765, nil, "Tank|Healer", nil, 
 local timerSeriousWound				= mod:NewTargetTimer(60, 133767, nil, "Tank|Healer")
 local timerLingeringGazeCD			= mod:NewCDTimer(46, 138467, nil, nil, nil, 3)
 local timerForceOfWillCD			= mod:NewCDTimer(20, 136413, nil, nil, nil, 3, nil, DBM_CORE_DEADLY_ICON)--Actually has a 20 second cd but rarely cast more than once per phase because of how short the phases are (both beams phases cancel this ability)
-local timerLightSpectrumCD			= mod:NewNextTimer(60, "ej6891", nil, nil, nil, 6)
-local timerDisintegrationBeam		= mod:NewBuffActiveTimer(55, "ej6882", nil, nil, nil, 6)
+local timerLightSpectrumCD			= mod:NewNextTimer(60, "ej6891", nil, nil, nil, 6, nil, nil, nil, 1, 5)
+local timerDisintegrationBeam		= mod:NewBuffActiveTimer(55, "ej6882", nil, nil, nil, 6, nil, nil, nil, 1, 5)
 local timerDisintegrationBeamCD		= mod:NewNextTimer(136, "ej6882", nil, nil, nil, 6)
 local timerLifeDrainCD				= mod:NewCDTimer(40, 133795, nil, nil, nil, 3)
 local timerLifeDrain				= mod:NewBuffActiveTimer(18, 133795)
@@ -66,9 +66,6 @@ local timerDarkParasiteCD			= mod:NewCDTimer(60.5, 133597, nil, "Healer", nil, 5
 local timerDarkParasite				= mod:NewTargetTimer(30, 133597, nil, false, 2)--Spammy bar in 25 man not useful.
 local timerDarkPlague				= mod:NewTargetTimer(30, 133598, nil, false, 2)--Spammy bar in 25 man not useful.
 local timerObliterateCD				= mod:NewNextTimer(80, 137747, nil, nil, nil, 2)--Heroic
-
-local countdownLightSpectrum		= mod:NewCountdown(60, "ej6891")
-local countdownDisintegrationbeam	= mod:NewCountdownFades(55, "ej6882")
 
 local berserkTimer					= mod:NewBerserkTimer(600)
 
@@ -123,11 +120,9 @@ local function BeamEnded()
 	end
 	if mod:IsDifficulty("lfr25") then
 		timerLightSpectrumCD:Start(66)
-		countdownLightSpectrum:Start(66)
 		timerDisintegrationBeamCD:Start(186)
 	else
 		timerLightSpectrumCD:Start(39)
-		countdownLightSpectrum:Start(39)
 		timerDisintegrationBeamCD:Start()
 	end
 end
@@ -180,7 +175,6 @@ function mod:OnCombatStart(delay)
 	timerLingeringGazeCD:Start(15.5-delay)
 	timerForceOfWillCD:Start(33.5-delay)
 	timerLightSpectrumCD:Start(40-delay)
-	countdownLightSpectrum:Start(40-delay)
 	if self:IsHeroic() then
 		timerDarkParasiteCD:Start(-delay)
 		timerIceWallCD:Start(127-delay)
@@ -434,7 +428,6 @@ function mod:CHAT_MSG_MONSTER_EMOTE(msg, npc, _, _, target)
 		specWarnDisintegrationBeam:Show()
 		--Best to start next phase bars when this one ends, so artifically create a "phase end" trigger
 		timerDisintegrationBeam:Start()
-		countdownDisintegrationbeam:Start()
 		self:Schedule(55, BeamEnded)
 	end
 end

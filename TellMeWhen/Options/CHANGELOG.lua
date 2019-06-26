@@ -3,6 +3,16 @@ if not TMW then return end
 TMW.CHANGELOG_LASTVER="7.4.0"
 
 TMW.CHANGELOG = [==[
+## v8.6.1
+* Buff/Debuff equivalency improvements
+* Added Kul Tiran and Zandalari to the Unit Race condition
+
+### Bug Fixes
+* Fixed #1690: Framelevel issue with latest alphas of Masque.
+* Fixed #1694: Empty group shrinks to minimum size of 1 icon.
+* Fixed that Reactive Ability icons wouldn't use the No Mana state.
+* Fixed #1697: Error when logging in in WoW 8.2.
+
 ## v8.6.0
 
 ### Discord
@@ -15,6 +25,7 @@ TMW.CHANGELOG = [==[
 * You can now toggle an icon's enabled/disabled state by Ctrl+clicking it. (#22)
 * New setting for Combat Event icons: Only if Conditions Passing. (#20)
 * Unit Conditions can now be copied from one icon to another. (#18)
+* Added Raise Abomination to the totem icon type for DKs (#1688)
 
 ### Bug Fixes
 * Fixed a bug that caused export strings to sometimes contain a large amount of superfluous defaults.

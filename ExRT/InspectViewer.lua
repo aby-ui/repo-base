@@ -108,7 +108,13 @@ module.db.topEnchGems = {
 
 
 module.db.achievementsList = {
-	{	--BfD
+	{	--TEP
+		L.S_ZoneT24Eternal,
+		13718,13719,13725,13726,13727,13728,13729,13730,13731,13732,13733,13784,13785,
+	},{	--CoS
+		L.S_ZoneT23Storms,
+		13414,13416,13417,13418,13419,
+	},{	--BfD
 		L.S_ZoneT23Siege,
 		13289,13290,13291,13292,13293,13295,13299,13300,13311,13312,13313,13314,13322,
 	},{	--Uldir
@@ -165,7 +171,11 @@ module.db.achievementsList = {
 	},
 }
 module.db.achievementsList_statistic = {
-	{	--BfD
+	{	--TEP
+		0,0,0,{13587,13588,13589,13590},{13595,13596,13597,13598},{13591,13592,13593,13594},{13600,13601,13602,13603},{13604,13605,13606,13607},{13608,13609,13610,13611},{13612,13613,13614,13615},{13616,13617,13618,13619},
+	},{	--CoS
+		0,{13404,13405,13406,13407},{13408,13411,13412,13413},
+	},{	--BfD
 		0,0,0,{13328,13329,13330,13331},{13332,13333,13334,13336},{13354,13355,13356,13357},{13358,13359,13361,13362},{13363,13364,13365,13366},{13367,13368,13369,13370},{13371,13372,13373,13374},{13375,13376,13377,13378},{13379,13380,13381,13382},
 	},{	--Uldir
 		0,0,0,{12786,12787,12788,12789},{12790,12791,12792,12793},{12798,12799,12800,12801},{12802,12803,12804,12805},{12794,12795,12796,12797},{12808,12809,12810,12811},{12813,12814,12815,12816},{12817,12818,12819,12820},
@@ -296,6 +306,11 @@ end
 
 function module.options:Load()
 	self:CreateTilte()
+
+	local GetSpecializationInfoByID = GetSpecializationInfoByID
+	if ExRT.isClassic then
+		GetSpecializationInfoByID = ExRT.Classic.GetSpecializationInfoByID
+	end
 	
 	local function reloadChks(self)
 		local clickID = self.id
@@ -930,15 +945,38 @@ function module.options:Load()
 						line.time:Hide()
 						line.otherInfo:Hide()
 						line.otherInfoTooltipFrame:Hide()
+
+						line.ilvl:SetText("")
 						
-						for j=1,16 do
-							line.items[j]:Hide()
-							line.items[j].border:Hide()
+						local it = -1
+
+						local db = data.essence					
+						if db then
+							if #db > 0 then
+								it = it + 1
+							end
+							for j=1,#db do
+								local power = db[j]
+								
+								local icon = line.items[it]
+								if not icon then
+									break
+								end
+								
+								icon.texture:SetTexture(power.icon)
+								icon.link = "spell:"..power.spellID
+								icon.sid = nil
+								local tier = power.link:gsub("%[.-%]","T"..power.tier..(power.isMajor and "+" or ""))
+								icon.text:SetText(tier or "")
+								icon:Show()
+								
+								it = it + 1
+							end
 						end
 
 						local db = data.azerite					
 						if db then
-							local it,lastItem = 0
+							local lastItem = 0
 							for j=1,#db do
 								local power = db[j]
 								if lastItem ~= power.item then

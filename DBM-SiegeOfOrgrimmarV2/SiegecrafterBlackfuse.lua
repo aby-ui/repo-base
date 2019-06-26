@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(865, "DBM-SiegeOfOrgrimmarV2", nil, 369)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041710000")
+mod:SetRevision("20190625143417")
 mod:SetCreatureID(71504)--71591 Automated Shredder
 mod:SetEncounterID(1601)
 mod:SetZone()
@@ -60,10 +60,10 @@ local yellCrawlerMineFixate				= mod:NewYell("ej8212", nil, false)
 --Siegecrafter Blackfuse
 local timerProtectiveFrenzy				= mod:NewBuffActiveTimer(10, 145365, nil, false, nil, nil, nil, nil, nil, 2)
 local timerElectroStaticCharge			= mod:NewTargetTimer(60, 143385, nil, "Tank")
-local timerElectroStaticChargeCD		= mod:NewCDTimer(17, 143385, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON)--17-22 second variation
+local timerElectroStaticChargeCD		= mod:NewCDTimer(17, 143385, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON, nil, 2, 4)--17-22 second variation
 local timerLaunchSawbladeCD				= mod:NewCDTimer(10, 143265, nil, nil, nil, 3)--10-15sec cd
 --Automated Shredders
-local timerAutomatedShredderCD			= mod:NewNextTimer(60, "ej8199", nil, "Tank", nil, 1, 85914, DBM_CORE_TANK_ICON)
+local timerAutomatedShredderCD			= mod:NewNextTimer(60, "ej8199", nil, "Tank", nil, 1, 85914, DBM_CORE_TANK_ICON, nil, 2, 4)
 local timerOverloadCD					= mod:NewCDCountTimer(10, 145444, nil, nil, nil, 2, nil, DBM_CORE_HEALER_ICON)
 local timerDeathFromAboveDebuff			= mod:NewTargetTimer(5, 144210, nil, "-Healer")
 local timerDeathFromAboveCD				= mod:NewNextTimer(40, 144208, nil, "-Healer")
@@ -73,10 +73,6 @@ local timerPatternRecognition			= mod:NewBuffFadesTimer(60, 144236, nil, false)
 local timerLaserFixate					= mod:NewBuffFadesTimer(15, 143828)
 local timerBreakinPeriod				= mod:NewTargetTimer(60, 145269, nil, false)--Many mines can be up at once so timer off by default do to spam
 local timerMagneticCrush				= mod:NewBuffActiveTimer(30, 144466)
-
-local countdownAssemblyLine				= mod:NewCountdown(40, "ej8202", false)
-local countdownShredder					= mod:NewCountdown(60, "ej8199", "Tank")
-local countdownElectroStatic			= mod:NewCountdown("Alt17", 143385, "Tank")
 
 mod:AddInfoFrameOption("ej8202")
 mod:AddSetIconOption("SetIconOnMines", "ej8212", false, true)
@@ -172,7 +168,6 @@ function mod:OnCombatStart(delay)
 	self.vb.shredderCount = 0
 	self.vb.shockwaveOvercharged = false
 	timerAutomatedShredderCD:Start(35-delay, 1)
-	countdownShredder:Start(35-delay)
 end
 
 function mod:OnCombatEnd()
@@ -205,7 +200,6 @@ function mod:SPELL_CAST_SUCCESS(args)
 		end
 	elseif spellId == 143385 then
 		timerElectroStaticChargeCD:Start()
-		countdownElectroStatic:Start()
 	end
 end
 
@@ -268,7 +262,6 @@ function mod:SPELL_AURA_REFRESH(args)
 		warnElectroStaticCharge:Show(args.destName, amount)
 		timerElectroStaticCharge:Start(args.destName)
 		timerElectroStaticChargeCD:Start()
-		countdownElectroStatic:Start()
 	end
 end
 
@@ -313,7 +306,6 @@ function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg, npc, _, _, target)
 		warnAssemblyLine:Show(self.vb.weapon)
 		specWarnAssemblyLine:Show(self.vb.weapon)
 		timerAssemblyLineCD:Start(nil, self.vb.weapon + 1)
-		countdownAssemblyLine:Start()
 		if self.Options.InfoFrame then
 			DBM.InfoFrame:SetHeader(assemblyLine.."("..self.vb.weapon..")")
 			if not DBM.InfoFrame:IsShown() then
@@ -328,7 +320,6 @@ function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg, npc, _, _, target)
 		specWarnAutomatedShredder:Show(self.vb.shredderCount)
 		timerDeathFromAboveCD:Start(18)
 		timerAutomatedShredderCD:Start(nil, self.vb.shredderCount+14)
-		countdownShredder:Start()
 	end
 end
 

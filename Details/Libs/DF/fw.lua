@@ -1,5 +1,5 @@
 
-local dversion = 149
+local dversion = 151
 local major, minor = "DetailsFramework-1.0", dversion
 local DF, oldminor = LibStub:NewLibrary (major, minor)
 
@@ -24,6 +24,94 @@ DF.AuthorInfo = {
 	Name = "Tercioo",
 	Discord = "https://discord.gg/AGSzAZX",
 }
+
+if (not PixelUtil) then
+	--check if is in classic wow, if it is, build a replacement for PixelUtil
+	local gameVersion = GetBuildInfo()
+	if (gameVersion:match("%d") == "1") then
+		PixelUtil = {
+			SetWidth = function (self, width) self:SetWidth (width) end,
+			SetHeight = function (self, height) self:SetHeight (height) end,
+			SetSize = function (self, width, height) self:SetSize (width, height) end,
+			SetPoint = function (self, ...) self:SetPoint (...) end,
+		}
+	end
+end
+
+function DF.IsClassicWow()
+	local gameVersion = GetBuildInfo()
+	if (gameVersion:match ("%d") == "1") then
+		return true
+	end
+	return false
+end
+
+function DF.UnitGroupRolesAssigned (unitId)
+	if (UnitGroupRolesAssigned) then
+		return UnitGroupRolesAssigned (unitId)
+	else
+		--attempt to guess the role by the player spec
+		
+		--at the moment just return none
+		return "NONE"
+	end
+end
+
+--return the specialization of the player it self
+function DF.GetSpecialization()
+	if (GetSpecialization) then
+		return GetSpecialization()
+	end
+	
+	return nil
+end
+
+function DF.GetSpecializationInfoByID (...)
+	if (GetSpecializationInfoByID) then
+		return GetSpecializationInfoByID (...)
+	end
+	
+	return nil
+end
+
+function DF.GetSpecializationInfo (...)
+	if (GetSpecializationInfo) then
+		return GetSpecializationInfo (...)
+	end
+	
+	return nil
+end
+
+function DF.GetSpecializationRole (...)
+	if (GetSpecializationRole) then
+		return GetSpecializationRole (...)
+	end
+	
+	return nil
+end
+
+--build dummy encounter journal functions if they doesn't exists
+--this is done for compatibility with classic and if in the future EJ_ functions are moved to C_
+DF.EncounterJournal = {
+	EJ_GetCurrentInstance = EJ_GetCurrentInstance or function() return nil end,
+	EJ_GetInstanceForMap = EJ_GetInstanceForMap or function() return nil end,
+	EJ_GetInstanceInfo = EJ_GetInstanceInfo or function() return nil end,
+	EJ_SelectInstance = EJ_SelectInstance or function() return nil end,
+	
+	EJ_GetEncounterInfoByIndex = EJ_GetEncounterInfoByIndex or function() return nil end,
+	EJ_GetEncounterInfo = EJ_GetEncounterInfo or function() return nil end,
+	EJ_SelectEncounter = EJ_SelectEncounter or function() return nil end,
+	
+	EJ_GetSectionInfo = EJ_GetSectionInfo or function() return nil end,
+	EJ_GetCreatureInfo = EJ_GetCreatureInfo or function() return nil end,
+	EJ_SetDifficulty = EJ_SetDifficulty or function() return nil end,
+	EJ_GetNumLoot = EJ_GetNumLoot or function() return 0 end,
+	EJ_GetLootInfoByIndex = EJ_GetLootInfoByIndex or function() return nil end,
+}
+
+if (not EJ_GetCurrentInstance) then
+	
+end
 
 --> will always give a very random name for our widgets
 local init_counter = math.random (1, 1000000)
@@ -2496,9 +2584,9 @@ function DF:ReskinSlider (slider, heightOffset)
 end
 
 function DF:GetCurrentSpec()
-	local specIndex = GetSpecialization()
+	local specIndex = DF.GetSpecialization()
 	if (specIndex) then
-		local specID = GetSpecializationInfo (specIndex)
+		local specID = DF.GetSpecializationInfo (specIndex)
 		if (specID and specID ~= 0) then
 			return specID
 		end
@@ -2786,8 +2874,8 @@ DF.CLEncounterID = {
 function DF:GetPlayerRole()
 	local assignedRole = UnitGroupRolesAssigned ("player")
 	if (assignedRole == "NONE") then
-		local spec = GetSpecialization()
-		return spec and GetSpecializationRole (spec) or "NONE"
+		local spec = DF.GetSpecialization()
+		return spec and DF.GetSpecializationRole (spec) or "NONE"
 	end
 	return assignedRole
 end

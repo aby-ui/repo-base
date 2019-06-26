@@ -1,12 +1,12 @@
 local mod	= DBM:NewMod(332, "DBM-DragonSoul", nil, 187)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041705904")
+mod:SetRevision("20190625143316")
 mod:SetCreatureID(56598)--56427 is Boss, but engage trigger needs the ship which is 56598
 --mod:SetEncounterID(1298)--Fires when ship get actual engage. need to adjust timer.
 mod:SetMainBossID(56427)
 mod:SetZone()
-mod:SetModelSound("sound\\CREATURE\\WarmasterBlackhorn\\VO_DS_BLACKHORN_INTRO_01.OGG", "sound\\CREATURE\\WarmasterBlackhorn\\VO_DS_BLACKHORN_SLAY_01.OGG")
+--mod:SetModelSound("sound\\CREATURE\\WarmasterBlackhorn\\VO_DS_BLACKHORN_INTRO_01.OGG", "sound\\CREATURE\\WarmasterBlackhorn\\VO_DS_BLACKHORN_SLAY_01.OGG")
 
 mod:RegisterCombat("combat")
 mod:SetMinCombatTime(20)
@@ -60,8 +60,8 @@ local timerHarpoonCD				= mod:NewCDTimer(6.5, 108038, nil, "Dps", nil, 5, nil, D
 local timerHarpoonActive			= mod:NewBuffActiveTimer(20, 108038, nil, "Dps", nil, 5, nil, DBM_CORE_DAMAGE_ICON)--Seems to always hold at least 20 seconds, beyond that, RNG, but you always get at least 20 seconds before they "snap" free.
 local timerReloadingCast			= mod:NewCastTimer(10, 108039, nil, "Dps", nil, 5, nil, DBM_CORE_DAMAGE_ICON)
 local timerTwilightOnslaught		= mod:NewCastTimer(7, 107588, nil, nil, nil, 5)
-local timerTwilightOnslaughtCD		= mod:NewNextCountTimer(35, 107588, nil, nil, nil, 5)
-local timerSapperCD					= mod:NewNextTimer(39.8, "ej4200", nil, nil, nil, 1, 107752, DBM_CORE_HEROIC_ICON)
+local timerTwilightOnslaughtCD		= mod:NewNextCountTimer(35, 107588, nil, nil, nil, 5, nil, nil, nil, 1, 4)
+local timerSapperCD					= mod:NewNextTimer(39.8, "ej4200", nil, nil, nil, 1, 107752, DBM_CORE_HEROIC_ICON, nil, 2, 4)
 local timerDegenerationCD			= mod:NewCDTimer(8.5, 107558, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON)--8.5-9.5 variation.
 local timerBladeRushCD				= mod:NewCDTimer(15.5, 107595, nil, nil, nil, 3)
 local timerBroadsideCD				= mod:NewNextTimer(70, 110153, nil, nil, nil, nil, nil, DBM_CORE_HEROIC_ICON)
@@ -72,9 +72,6 @@ local timerDevastateCD				= mod:NewCDTimer(8.5, 108042, nil, "Tank", nil, 5, nil
 local timerSunder					= mod:NewTargetTimer(30, 108043, nil, "Tank|Healer", nil, 5, nil, DBM_CORE_TANK_ICON)
 local timerConsumingShroud			= mod:NewCDTimer(30, 110214, nil, nil, nil, 3)
 local timerTwilightBreath			= mod:NewCDTimer(20.5, 110212, nil, "Tank|Healer", nil, 5, nil, DBM_CORE_TANK_ICON)
-
-local countdownTwilightOnslaught	= mod:NewCountdown(35, 107588)
-local countdownSapper				= mod:NewCountdown("Alt40", "ej4200")
 
 local berserkTimer					= mod:NewBerserkTimer(240)
 
@@ -89,7 +86,6 @@ local CVAR = false
 local function Phase2Delay()
 	mod:UnscheduleMethod("AddsRepeat")
 	timerSapperCD:Cancel()
-	countdownSapper:Cancel()
 	timerRoarCD:Start(10)
 	timerTwilightFlamesCD:Start(10.5)
 	timerShockwaveCD:Start(13)--13-16 second variation
@@ -140,13 +136,11 @@ function mod:OnCombatStart(delay)
 	timerAdd:Start(22.8-delay)
 	self:ScheduleMethod(22.8-delay, "AddsRepeat")
 	timerTwilightOnslaughtCD:Start(46.9-delay, 1)
-	countdownTwilightOnslaught:Start(46.9-delay)
 	if self:IsDifficulty("heroic10", "heroic25") then
 		timerBroadsideCD:Start(57-delay)
 	end
 	if not self:IsDifficulty("lfr25") then--No sappers in LFR
 		timerSapperCD:Start(69-delay)
-		countdownSapper:Start(69-delay)
 	end
 	if self.Options.SetTextures and GetCVarBool("projectedTextures") then--This is only true if projected textures were on when we pulled and option to control setting is also on.
 		CVAR = true--so set this variable to true, which means we are allowed to mess with users graphics settings
@@ -168,7 +162,6 @@ function mod:SPELL_CAST_START(args)
 		specWarnTwilightOnslaught:Show()
 		timerTwilightOnslaught:Start()
 		timerTwilightOnslaughtCD:Start(nil, twilightOnslaughtCount + 1)
-		countdownTwilightOnslaught:Start()
 	elseif spellId == 108046 then
 		self:ScheduleMethod(0.2, "ShockwaveTarget")
 		timerShockwaveCD:Start()
@@ -221,7 +214,6 @@ function mod:SPELL_AURA_APPLIED(args)
 		end
 	elseif spellId == 108040 and not phase2Started then--Goriona is being shot by the ships Artillery Barrage (phase 2 trigger)
 		timerTwilightOnslaughtCD:Cancel()
-		countdownTwilightOnslaught:Cancel()
 		timerBroadsideCD:Cancel()
 		self:Schedule(10, Phase2Delay)--seems to only sapper comes even phase2 started. so delays only sapper stuff.
 		phase2Started = true
@@ -261,7 +253,6 @@ mod.SPELL_MISSED = mod.SPELL_DAMAGE
 function mod:RAID_BOSS_EMOTE(msg)
 	if msg == L.SapperEmote or msg:find(L.SapperEmote) then
 		timerSapperCD:Start()
-		countdownSapper:Start()
 		specWarnSapper:Show()
 	elseif msg == L.Broadside or msg:find(L.Broadside) then
 		timerBroadsideCD:Start()

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(866, "DBM-SiegeOfOrgrimmarV2", nil, 369)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041710000")
+mod:SetRevision("20190625143417")
 mod:SetCreatureID(72276)
 --mod:SetEncounterID(1624)
 mod:SetZone()
@@ -44,7 +44,6 @@ local specWarnResidualCorruption		= mod:NewSpecialWarningSpell(145073, false)--s
 --Test of Serenity (DPS)
 local specWarnTearReality				= mod:NewSpecialWarningDodge(144482)
 --Test of Reliance (Healer)
-local specWarnDishearteningLaugh		= mod:NewSpecialWarningSpell(146707, false, nil, nil, 2)
 local specWarnLingeringCorruption		= mod:NewSpecialWarningDispel(144514)
 local specWarnBottomlessPitMove			= mod:NewSpecialWarningMove(146703)
 --Test of Confidence (tank)
@@ -59,22 +58,18 @@ local timerUnleashedAngerCD				= mod:NewCDTimer(11, 145216, nil, "Tank", nil, 5,
 local timerBlindHatred					= mod:NewBuffActiveTimer(30, 145226, nil, nil, nil, 6, nil, DBM_CORE_DEADLY_ICON)
 local timerBlindHatredCD				= mod:NewNextTimer(30, 145226, nil, nil, nil, 6, nil, DBM_CORE_DEADLY_ICON)
 --All Tests
-local timerLookWithin					= mod:NewBuffFadesTimer(60, "ej8220", nil, nil, nil, 6)
+local timerLookWithin					= mod:NewBuffFadesTimer(60, "ej8220", nil, nil, nil, 6, nil, nil, nil, 1, 4)
 --Test of Serenity (DPS)
 local timerTearRealityCD				= mod:NewCDTimer(8.5, 144482)--8.5-10sec variation
 --Test of Reliance (Healer)
 local timerDishearteningLaughCD			= mod:NewNextTimer(12, 146707)
-local timerLingeringCorruptionCD		= mod:NewNextTimer(15.5, 144514, nil, nil, nil, 5)
+local timerLingeringCorruptionCD		= mod:NewNextTimer(15.5, 144514, nil, nil, nil, 5, nil, nil, nil, 2, 4)
 --Test of Confidence (tank)
 local timerTitanicSmashCD				= mod:NewCDTimer(14.5, 144628, nil, nil, nil, 3)--14-17sec variation
 local timerPiercingCorruptionCD			= mod:NewCDTimer(14, 144657, nil, nil, nil, 5)--14-17sec variation
-local timerHurlCorruptionCD				= mod:NewNextTimer(20, 144649, nil, nil, nil, 4, nil, DBM_CORE_INTERRUPT_ICON)
+local timerHurlCorruptionCD				= mod:NewNextTimer(20, 144649, nil, nil, nil, 4, nil, DBM_CORE_INTERRUPT_ICON, nil, 2, 3)
 
 local berserkTimer						= mod:NewBerserkTimer(418)
-
-local countdownLookWithin				= mod:NewCountdownFades(59, "ej8220")
-local countdownLingeringCorruption		= mod:NewCountdown("Alt15.5", 144514)
-local countdownHurlCorruption			= mod:NewCountdown("Alt20", 144649)
 
 --Upvales, don't need variables
 local corruptionLevel = DBM:EJ_GetSectionInfo(8252)
@@ -147,13 +142,11 @@ function mod:SPELL_CAST_START(args)
 	elseif spellId == 144649 then
 		specWarnHurlCorruption:Show(args.sourceName)
 		timerHurlCorruptionCD:Start()
-		countdownHurlCorruption:Start()
 	elseif spellId == 144657 then
 		specWarnPiercingCorruption:Show()
 		timerPiercingCorruptionCD:Start()
 	elseif spellId == 146707 then
 		warnDishearteningLaugh:Show()
-		specWarnDishearteningLaugh:Show()
 		timerDishearteningLaughCD:Start()
 	end
 end
@@ -163,13 +156,11 @@ function mod:SPELL_AURA_APPLIED(args)
 	if spellId == 144514 then
 		specWarnLingeringCorruption:Show(args.destName)
 		timerLingeringCorruptionCD:Start()
-		countdownLingeringCorruption:Start()
 	elseif spellId == 145226 then
 		self:SendSync("BlindHatredStarted")
 	elseif args:IsSpellID(144849, 144850, 144851) and args:IsPlayer() then--Look Within
 		playerInside = true
 		timerLookWithin:Start()
-		countdownLookWithin:Start()
 	elseif spellId == 146703 and args:IsPlayer() and self:AntiSpam(3, 2) then
 		specWarnBottomlessPitMove:Show()
 	elseif spellId == 146124 then
@@ -190,14 +181,11 @@ function mod:SPELL_AURA_REMOVED(args)
 			playerInside = false
 			timerTearRealityCD:Cancel()
 			timerLingeringCorruptionCD:Cancel()
-			countdownLingeringCorruption:Cancel()
 			timerDishearteningLaughCD:Cancel()
 			timerTitanicSmashCD:Cancel()
 			timerHurlCorruptionCD:Cancel()
-			countdownHurlCorruption:Cancel()
 			timerPiercingCorruptionCD:Cancel()
 			timerLookWithin:Cancel()
-			countdownLookWithin:Cancel()
 		end
 	elseif spellId == 145226 then
 		self:SendSync("BlindHatredEnded")
@@ -219,12 +207,10 @@ function mod:UNIT_DIED(args)
 		self:SendSync("ManifestationDied", args.destGUID)
 	elseif cid == 72001 then--Greater Corruption (Healer Test)
 		timerLingeringCorruptionCD:Cancel()
-		countdownLingeringCorruption:Cancel()
 		timerDishearteningLaughCD:Cancel()
 	elseif cid == 72051 then--Titanic Corruption (Tank Test)
 		timerTitanicSmashCD:Cancel()
 		timerHurlCorruptionCD:Cancel()
-		countdownHurlCorruption:Cancel()
 		timerPiercingCorruptionCD:Cancel()
 	end
 end

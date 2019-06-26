@@ -212,14 +212,14 @@ do
 	end
 	
 	function _detalhes:GetEncounterInfoFromEncounterName (EJID, encountername)
-		EJ_SelectInstance (EJID)
+		DetailsFramework.EncounterJournal.EJ_SelectInstance (EJID)
 		for i = 1, 20 do
-			local name = EJ_GetEncounterInfoByIndex (i, EJID)
+			local name = DetailsFramework.EncounterJournal.EJ_GetEncounterInfoByIndex (i, EJID)
 			if (not name) then
 				return
 			end
 			if (name == encountername or name:find (encountername)) then
-				return i, EJ_GetEncounterInfoByIndex (i, EJID)
+				return i, DetailsFramework.EncounterJournal.EJ_GetEncounterInfoByIndex (i, EJID)
 			end
 		end
 	end
@@ -242,7 +242,7 @@ do
 		end
 		
 		if (ejID and ejID ~= 0) then
-			local name, description, bgImage, buttonImage, loreImage, dungeonAreaMapID, link = EJ_GetInstanceInfo (ejID)
+			local name, description, bgImage, buttonImage, loreImage, dungeonAreaMapID, link = DetailsFramework.EncounterJournal.EJ_GetInstanceInfo (ejID)
 			if (name) then
 				if (instanceType == "party") then
 					return loreImage --bgImage
@@ -292,7 +292,7 @@ do
 		if (encounterName and ejID and ejID ~= 0) then
 			local index, name, description, encounterID, rootSectionID, link = _detalhes:GetEncounterInfoFromEncounterName (ejID, encounterName)
 			if (index and name and encounterID) then
-				local id, name, description, displayInfo, iconImage = EJ_GetCreatureInfo (1, encounterID)
+				local id, name, description, displayInfo, iconImage = DetailsFramework.EncounterJournal.EJ_GetCreatureInfo (1, encounterID)
 				if (iconImage) then
 					return iconImage
 				end
@@ -306,9 +306,14 @@ do
 	function _detalhes:GetEncounterActorsName (EJ_EncounterID)
 		--code snippet from wowpedia
 		local actors = {}
-		local stack, encounter, _, _, curSectionID = {}, EJ_GetEncounterInfo (EJ_EncounterID)
+		local stack, encounter, _, _, curSectionID = {}, DetailsFramework.EncounterJournal.EJ_GetEncounterInfo (EJ_EncounterID)
+		
+		if (not curSectionID) then
+			return actors
+		end
+		
 		repeat
-			local title, description, depth, abilityIcon, displayInfo, siblingID, nextSectionID, filteredByDifficulty, link, startsOpen, flag1, flag2, flag3, flag4 = EJ_GetSectionInfo (curSectionID)
+			local title, description, depth, abilityIcon, displayInfo, siblingID, nextSectionID, filteredByDifficulty, link, startsOpen, flag1, flag2, flag3, flag4 = DetailsFramework.EncounterJournal.EJ_GetSectionInfo (curSectionID)
 			if (displayInfo ~= 0 and abilityIcon == "") then
 				actors [title] = {model = displayInfo, info = description}
 			end
@@ -332,7 +337,6 @@ do
 	end
 	
 	function _detalhes:GetCurrentDungeonBossListFromEJ()
-		--local EJ_CInstance = EJ_GetCurrentInstance()
 		
 		local mapID = C_Map.GetBestMapForUnit ("player")
 		
@@ -341,26 +345,26 @@ do
 			return
 		end
 		
-		local EJ_CInstance = EJ_GetInstanceForMap(mapID)
+		local EJ_CInstance = DetailsFramework.EncounterJournal.EJ_GetInstanceForMap(mapID)
 		
 		if (EJ_CInstance and EJ_CInstance ~= 0) then
 			if (_detalhes.encounter_dungeons [EJ_CInstance]) then
 				return _detalhes.encounter_dungeons [EJ_CInstance]
 			end
 		
-			EJ_SelectInstance (EJ_CInstance)
+			DetailsFramework.EncounterJournal.EJ_SelectInstance (EJ_CInstance)
 			
-			local name, description, bgImage, buttonImage, loreImage, dungeonAreaMapID, link = EJ_GetInstanceInfo (EJ_CInstance)
+			local name, description, bgImage, buttonImage, loreImage, dungeonAreaMapID, link = DetailsFramework.EncounterJournal.EJ_GetInstanceInfo (EJ_CInstance)
 			
 			local boss_list = {
 				[EJ_CInstance] = {name, description, bgImage, buttonImage, loreImage, dungeonAreaMapID, link}
 			}
 			
 			for i = 1, 20 do
-				local encounterName, description, encounterID, rootSectionID, link = EJ_GetEncounterInfoByIndex (i, EJ_CInstance)
+				local encounterName, description, encounterID, rootSectionID, link = DetailsFramework.EncounterJournal.EJ_GetEncounterInfoByIndex (i, EJ_CInstance)
 				if (encounterName) then
 					for o = 1, 6 do
-						local id, creatureName, creatureDescription, displayInfo, iconImage = EJ_GetCreatureInfo (o, encounterID)
+						local id, creatureName, creatureDescription, displayInfo, iconImage = DetailsFramework.EncounterJournal.EJ_GetCreatureInfo (o, encounterID)
 						if (id) then
 							boss_list [creatureName] = {encounterName, encounterID, creatureName, iconImage, EJ_CInstance}
 						else

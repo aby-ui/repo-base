@@ -1,12 +1,12 @@
 local mod	= DBM:NewMod(1128, "DBM-Highmaul", nil, 477)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041705938")
+mod:SetRevision("20190625143352")
 mod:SetCreatureID(78714)
 mod:SetEncounterID(1721)
 mod:SetZone()
 --mod:SetUsedIcons(7)
-mod:SetModelSound("sound\\creature\\kargath\\VO_60_HMR_KARGATH_INTRO1.ogg", "sound\\creature\\kargath\\VO_60_HMR_KARGATH_SPELL2.ogg")
+--mod:SetModelSound("sound\\creature\\kargath\\VO_60_HMR_KARGATH_INTRO1.ogg", "sound\\creature\\kargath\\VO_60_HMR_KARGATH_SPELL2.ogg")
 
 mod:RegisterCombat("combat")
 
@@ -36,17 +36,12 @@ local specWarnFlameJet				= mod:NewSpecialWarningMove(159311)
 local specWarnOnTheHunt				= mod:NewSpecialWarningMoveTo(162497, nil, DBM_CORE_AUTO_SPEC_WARN_OPTIONS.run:format(162497), nil, nil, 2)--Does not need yell, tigers don't cleave other targets like berserker rush does.
 
 local timerPillarCD					= mod:NewNextTimer(20, "ej9394", nil, nil, nil, nil, 159202)
-local timerChainHurlCD				= mod:NewNextTimer(106, 159947, nil, nil, nil, 6)--177776
-local timerSweeperCD				= mod:NewTimer(55, "timerSweeperCD", 177258, nil, nil, 6)
+local timerChainHurlCD				= mod:NewNextTimer(106, 159947, nil, nil, nil, 6, nil, nil, nil, 1, 5)--177776
+local timerSweeperCD				= mod:NewTimer(55, "timerSweeperCD", 177258, nil, nil, 6, nil, nil, nil, 1, 5)
 local timerBerserkerRushCD			= mod:NewCDTimer(45, 158986, nil, nil, nil, 3, nil, DBM_CORE_DEADLY_ICON)--45 to 70 variation. Small indication that you can use a sequence to get it a little more accurate but even then it's variable. Pull1: 48, 60, 46, 70, 45, 51, 46, 70. Pull2: 48, 60, 50, 55, 45. Mythic pull1, 48, 50, 57, 49
-local timerImpaleCD					= mod:NewCDTimer(43.5, 159113, nil, "Tank|Healer", nil, 5, nil, DBM_CORE_TANK_ICON)--Highly variable now, seems better adjusted for berserker rush interaction
+local timerImpaleCD					= mod:NewCDTimer(43.5, 159113, nil, "Tank|Healer", nil, 5, nil, DBM_CORE_TANK_ICON, nil, 2, 4)--Highly variable now, seems better adjusted for berserker rush interaction
 mod:AddTimerLine(ENCOUNTER_JOURNAL_SECTION_FLAG12)
-local timerTigerCD					= mod:NewNextTimer(110, "ej9396", nil, "-Tank", nil, 1, 162497, DBM_CORE_HEROIC_ICON)
-
-local countdownChainHurl			= mod:NewCountdown(106, 159947)
-local countdownSweeper				= mod:NewCountdown(55, 177776, nil, mod.localization.options.countdownSweeper)
-local countdownTiger				= mod:NewCountdown("Alt110", "ej9396", "-Tank")--Tigers never bother tanks so not tanks probelm
-local countdownImpale				= mod:NewCountdown("Alt45", 159113, "Tank")--Slightly veriable based on other spells
+local timerTigerCD					= mod:NewNextTimer(110, "ej9396", nil, "-Tank", nil, 1, 162497, DBM_CORE_HEROIC_ICON, nil, 3, 4)
 
 mod:AddRangeFrameOption(4, 159386)
 
@@ -75,16 +70,13 @@ end
 function mod:OnCombatStart(delay)
 	timerPillarCD:Start(24-delay)
 	timerImpaleCD:Start(35-delay)
-	countdownImpale:Start(35-delay)
 	timerBerserkerRushCD:Start(48-delay)
 	timerChainHurlCD:Start(91-delay)
-	countdownChainHurl:Start(91-delay)
 	if self.Options.RangeFrame and not self:IsLFR() then
 		DBM.RangeCheck:Show(4)--For Mauling Brew splash damage.
 	end
 	if self:IsMythic() then
 		timerTigerCD:Start()
-		countdownTiger:Start()
 	end
 	specWarnChainHurl:ScheduleVoice(84.5-delay, "159947r") --ready for hurl
 end
@@ -103,14 +95,12 @@ function mod:SPELL_CAST_START(args)
 			specWarnImpale:Show()
 		end
 		timerImpaleCD:Start()
-		countdownImpale:Start()
 		if self:IsHealer() then
 			specWarnImpale:Play("tankheal")
 		end
 	elseif spellId == 159947 then
 		specWarnChainHurl:Show()
 		timerChainHurlCD:Start()
-		countdownChainHurl:Start()
 		specWarnChainHurl:ScheduleVoice(99.5, "159947r") --ready for hurl
 	elseif spellId == 158986 then
 		timerBerserkerRushCD:Start()
@@ -125,7 +115,6 @@ function mod:SPELL_AURA_APPLIED(args)
 		warnChainHurl:CombinedShow(0.5, args.destName)
 		if args:IsPlayer() then
 			timerSweeperCD:Start()
-			countdownSweeper:Start()--TODO,scan for punted or whatever knockdown is and cancel.
 			specWarnChainHurl:Play("159947y") --you are the target
 		else
 			if self:AntiSpam(2, 2) then
@@ -174,7 +163,6 @@ function mod:SPELL_CAST_SUCCESS(args)
 	local spellId = args.spellId
 	if spellId == 181113 then--Encounter Spawn
 		timerTigerCD:Start()
-		countdownTiger:Start()
 	end
 end
 

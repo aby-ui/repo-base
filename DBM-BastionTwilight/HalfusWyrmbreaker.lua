@@ -1,11 +1,11 @@
 local mod	= DBM:NewMod(156, "DBM-BastionTwilight", nil, 72)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041705904")
+mod:SetRevision("20190625143316")
 mod:SetCreatureID(44600)
 mod:SetEncounterID(1030)
 mod:SetZone()
-mod:SetModelSound("Sound\\Creature\\Chogall\\VO_BT_Chogall_BotEvent02.ogg", "Sound\\Creature\\Halfus\\VO_BT_Halfus_Event07.ogg")
+--mod:SetModelSound("Sound\\Creature\\Chogall\\VO_BT_Chogall_BotEvent02.ogg", "Sound\\Creature\\Halfus\\VO_BT_Halfus_Event07.ogg")
 --Long: Halfus! Hear me! The master calls, the master wants! Protect our secrets, Halfus! Destroy the intruders! Murder for his glory, murder for his hunger!
 --Short: Dragons to my side!
 

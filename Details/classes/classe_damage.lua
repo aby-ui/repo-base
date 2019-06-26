@@ -2770,22 +2770,22 @@ end
 	elseif (classe == "UNGROUPPLAYER") then
 		if (self.enemy) then
 			if (_detalhes.faction_against == "Horde") then
-				--texture:SetTexture ("Interface\\ICONS\\Achievement_Character_Orc_Male")
-				texture:SetTexture ("Interface\\ICONS\\PVPCurrency-Honor-Horde.blp")
+				texture:SetTexture ("Interface\\ICONS\\Achievement_Character_Troll_Male")
+				--texture:SetTexture ("Interface\\ICONS\\PVPCurrency-Honor-Horde.blp")
 				texture:SetTexCoord (0.05, 0.95, 0.05, 0.95)
 			else
-				--texture:SetTexture ("Interface\\ICONS\\Achievement_Character_Human_Male")
-				texture:SetTexture ("Interface\\ICONS\\PVPCurrency-Honor-Alliance.blp")
+				texture:SetTexture ("Interface\\ICONS\\Achievement_Character_Nightelf_Female")
+				--texture:SetTexture ("Interface\\ICONS\\PVPCurrency-Honor-Alliance.blp")
 				texture:SetTexCoord (0.05, 0.95, 0.05, 0.95)
 			end
 		else
 			if (_detalhes.faction_against == "Horde") then
-				--texture:SetTexture ("Interface\\ICONS\\Achievement_Character_Human_Male")
-				texture:SetTexture ("Interface\\ICONS\\PVPCurrency-Honor-Alliance.blp")
+				texture:SetTexture ("Interface\\ICONS\\Achievement_Character_Nightelf_Female")
+				--texture:SetTexture ("Interface\\ICONS\\PVPCurrency-Honor-Alliance.blp")
 				texture:SetTexCoord (0.05, 0.95, 0.05, 0.95)
 			else
-				--texture:SetTexture ("Interface\\ICONS\\Achievement_Character_Orc_Male")
-				texture:SetTexture ("Interface\\ICONS\\PVPCurrency-Honor-Horde.blp")
+				texture:SetTexture ("Interface\\ICONS\\Achievement_Character_Troll_Male")
+				--texture:SetTexture ("Interface\\ICONS\\PVPCurrency-Honor-Horde.blp")
 				texture:SetTexCoord (0.05, 0.95, 0.05, 0.95)
 			end
 		end
@@ -4613,7 +4613,7 @@ function atributo_damage:MontaDetalhesDamageDone (spellid, barra, instancia)
 			if (debuff_uptime) then
 				hits_string = hits_string .. "  |cFFDDDD44(" .. _math_floor (debuff_uptime / info.instancia.showing:GetCombatTime() * 100) .. "% uptime)|r"
 			end
-
+			
 			local spell_cast = misc_actor.spell_cast and misc_actor.spell_cast [spellid]
 			
 			if (not spell_cast and misc_actor.spell_cast) then
@@ -4938,7 +4938,7 @@ function atributo_damage:MontaTooltipAlvos (esta_barra, index, instancia)
 				end
 			end
 		end
-	end	
+	end
 
 	_table_sort (habilidades, _detalhes.Sort2)
 

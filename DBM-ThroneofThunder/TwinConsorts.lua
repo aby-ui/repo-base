@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(829, "DBM-ThroneofThunder", nil, 362)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041710000")
+mod:SetRevision("20190625143417")
 mod:SetCreatureID(68905, 68904)--Lu'lin 68905, Suen 68904
 mod:SetEncounterID(1560)
 mod:SetZone()
@@ -39,7 +39,7 @@ local warnTiger							= mod:NewSpellAnnounce(138855)
 local warnSerpent						= mod:NewSpellAnnounce(138306)
 local warnOx							= mod:NewSpellAnnounce(138300)
 --Dusk
-local warnDusk							= mod:NewAnnounce("warnDusk", 2, "Interface\\Icons\\achievement_zone_easternplaguelands")--"achievement_zone_easternplaguelands" (best Dusk icon i could find)
+local warnDusk							= mod:NewAnnounce("warnDusk", 2, "236760")--"achievement_zone_easternplaguelands" (best Dusk icon i could find)
 local warnTidalForce					= mod:NewCastAnnounce(137531, 3, 2)
 
 --Darkness
@@ -64,7 +64,7 @@ local timerTearsOfTheSunCD				= mod:NewCDTimer(41, 137404)
 local timerTearsOfTheSun				= mod:NewBuffActiveTimer(10, 137404)
 local timerBeastOfNightmaresCD			= mod:NewCDTimer(51, 137375, nil, "Tank|Healer")
 --Light
-local timerDuskCD						= mod:NewTimer(360, "timerDuskCD", "Interface\\Icons\\achievement_zone_easternplaguelands")--it seems always 360s after combat entered. (day timer is variables, so not reliable to day phase)
+local timerDuskCD						= mod:NewTimer(360, "timerDuskCD", "236760")--it seems always 360s after combat entered. (day timer is variables, so not reliable to day phase)
 local timerLightOfDayCD					= mod:NewCDTimer(6, 137403, nil, false)--Trackable in day phase using UNIT event since boss1 can be used in this phase. Might be useful for heroic to not run behind in shadows too early preparing for a special
 local timerFanOfFlamesCD				= mod:NewCDTimer(12, 137408, nil, "Tank|Healer")
 local timerFanOfFlames					= mod:NewTargetTimer(30, 137408, nil, "Tank")

@@ -2,7 +2,7 @@ if select(2, UnitClass("player")) ~= "WARLOCK" then return end
 local mod	= DBM:NewMod("d594", "DBM-Scenario-MoP")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041710000")
+mod:SetRevision("20190625143417")
 mod:SetZone()
 
 mod:RegisterCombat("scenario", 1112)
@@ -43,15 +43,13 @@ local timerSpellFlameCD			= mod:NewNextTimer(11, 134234)--(6 seconds after engag
 local timerHellfireCD			= mod:NewNextTimer(33, 134225)--(15 after engage)
 local timerLostSoulsCD			= mod:NewTimer(43, "timerLostSoulsCD", 51788)--43-50 second variation. (engage is same as cd, 43)
 --Kanrethad Ebonlocke
-local timerCombatStarts			= mod:NewCombatTimer(33)--Honestly i'm tired of localizing this, but last time i tried to add a generic "NewCombatTimer" it didn't work, at all. Maybe someone else can do this, since we have about 20 mods that could use it
-local timerPitLordCast			= mod:NewCastTimer(10, 138789)
-local timerSummonImpSwarmCast 	= mod:NewCastTimer(10, 138685)
-local timerSummonFelhunterCast	= mod:NewCastTimer(9, 138751)
-local timerSummonDoomlordCast	= mod:NewCastTimer(10, 138755)
+local timerCombatStarts			= mod:NewCombatTimer(33)
+local timerPitLordCast			= mod:NewCastTimer(10, 138789, nil, nil, nil, 1)
+local timerSummonImpSwarmCast 	= mod:NewCastTimer(10, 138685, nil, nil, nil, 1)
+local timerSummonFelhunterCast	= mod:NewCastTimer(9, 138751, nil, nil, nil, 1)
+local timerSummonDoomlordCast	= mod:NewCastTimer(10, 138755, nil, nil, nil, 1)
 local timerEnslaveDemon			= mod:NewTargetTimer(300, 1098)
-local timerDoom					= mod:NewBuffFadesTimer(419, 138558)
-
-local countdownDoom				= mod:NewCountdownFades(419, 138558, nil, nil, 10)
+local timerDoom					= mod:NewBuffFadesTimer(419, 138558, nil, nil, nil, 5, nil, nil, nil, 1, 10)
 
 local kanrathadAlive = true--So we don't warn to enslave pit lord when he dies and enslave fades.
 
@@ -96,7 +94,6 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerEnslaveDemon:Start(args.destName)
 	elseif args.spellId == 138558 then
 		timerDoom:Start()
-		countdownDoom:Start()
 	end
 end
 
@@ -106,7 +103,6 @@ function mod:SPELL_AURA_REMOVED(args)
 		specWarnEnslavePitLord:Show()
 	elseif args.spellId == 138558 then
 		timerDoom:Cancel()
-		countdownDoom:Cancel()
 	end
 end
 

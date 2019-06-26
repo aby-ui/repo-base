@@ -145,7 +145,6 @@ L:SetOptionLocalization({
 	NefBreathTimer			= "為奈法利安的$spell:77826的冷卻時間顯示計時器",
 	InfoFrame				= "為$journal:3284顯示資訊框架",
 	SetWater				= "進入戰鬥後自動停用水體細節<br/>(離開戰鬥後回到啟用)",
-	TankArrow				= "為風箏復生的白骨戰士的人顯示DBM箭頭<br/>(設計為只有一個風箏坦)",--npc 41918
 	RangeFrame				= "為$spell:79339顯示距離框(10碼)<br/>(當你中減益時顯示所有人, 否則只顯示中的人)"
 })
 
