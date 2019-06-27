@@ -159,6 +159,7 @@ local function UpdateWidgetContext(frame, unit)
 		--print("Anchoring to", unit.name, unit.unitid)
 
 		--CombatWidgetFrame:SetParent(frame)
+        CombatWidgetFrame:ClearAllPoints()
 		CombatWidgetFrame:SetParent(WorldFrame)
 		CombatWidgetFrame:SetPoint("CENTER", frame, "CENTER")
 

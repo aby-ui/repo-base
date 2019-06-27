@@ -331,7 +331,7 @@ local function GetDefaultAuraList()
 		[GetSpellInfo(221886)]    = 1.1,  -- Divine Steed
 		[GetSpellInfo(116841)]    = 1,    -- Tiger's Lust
 		[GetSpellInfo(286349)]    = 1,    -- Gladiator's Maledict
-		[GetSpellInfo(286342)]    = 1,    -- Gladiator's Safeguard
+		["286342"]                = 1,    -- Gladiator's Safeguard
 		[GetSpellInfo(277187)]    = 1,    -- Gladiator's Emblem
 		[GetSpellInfo(97463)]     = 1,    -- Rallying Cry
 		[GetSpellInfo(12975)]     = 1.3,  -- Last Stand

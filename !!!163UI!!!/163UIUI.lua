@@ -913,6 +913,7 @@ end
 
 function UUI.Center.ButtonUpdateTooltip(self)
     if not self.addonName then return end
+    GameTooltip:ClearAllPoints()
     GameTooltip_SetDefaultAnchor(GameTooltip, self)
     UUI.SetAddonTooltip(self.addonName, GameTooltip);
     GameTooltip:Show();

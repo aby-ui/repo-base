@@ -266,3 +266,12 @@ if WorldMap_AddQuestTimeToTooltip then
     end)
 end
 --]]
+
+local playSoundFileOrigin = PlaySoundFile
+PlaySoundFile = function(file, channel)
+    if not tonumber(file) and not tostring(file):lower():find("^interface") then
+        if DEBUG_MODE then print(file) end
+        return
+    end
+    playSoundFileOrigin(file, channel)
+end

@@ -1419,7 +1419,7 @@ function GetModulesOptionsTable()
 			order = i + 0.2,
 		}
 		args["pos"..i.."default"] = {
-			name = "|T:1:55|t|cff808080"..(OTF.MODULES_UI_ORDER[i] == AUTO_QUEST_POPUP_TRACKER_MODULE and L"Popup " or "")..OTF.MODULES_UI_ORDER[i].Header.Text:GetText()..(OTF.MODULES_UI_ORDER[i] == SCENARIO_CONTENT_TRACKER_MODULE and " *" or ""),
+			name = "|T:1:55|t|cff808080"..(OTF.MODULES_UI_ORDER[i] == AUTO_QUEST_POPUP_TRACKER_MODULE and L"Popup " or "")..(OTF.MODULES_UI_ORDER[i].Header.Text:GetText() or " = ")..(OTF.MODULES_UI_ORDER[i] == SCENARIO_CONTENT_TRACKER_MODULE and " *" or ""),
 			type = "description",
 			width = "normal",
 			order = i + 0.3,

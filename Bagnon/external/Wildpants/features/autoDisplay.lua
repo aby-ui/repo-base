@@ -129,51 +129,51 @@ function AutoDisplay:HookInterfaceEvents()
 	hooksecurefunc('CloseAllBags', hideInventory)
 
 	-- backpack
-	local oToggleBackpack = ToggleBackpack
-	ToggleBackpack = function()
-		if not Addon:ToggleBag('inventory', BACKPACK_CONTAINER) then
-			oToggleBackpack()
-		end
-	end
+	-- local oToggleBackpack = ToggleBackpack
+	-- ToggleBackpack = function()
+	-- 	if not Addon:ToggleBag('inventory', BACKPACK_CONTAINER) then
+	-- 		oToggleBackpack()
+	-- 	end
+	-- end
 
-	local oOpenBackpack = OpenBackpack
-	OpenBackpack = function()
-		if not Addon:ShowBag('inventory', BACKPACK_CONTAINER) then
-			oOpenBackpack()
-		end
-	end
+	-- local oOpenBackpack = OpenBackpack
+	-- OpenBackpack = function()
+	-- 	if not Addon:ShowBag('inventory', BACKPACK_CONTAINER) then
+	-- 		oOpenBackpack()
+	-- 	end
+	-- end
 
 	-- single bag
-	local oToggleBag = ToggleBag
-	ToggleBag = function(bag)
-		local frame = Addon:IsBankBag(bag) and 'bank' or 'inventory'
-		if not Addon:ToggleBag(frame, bag) then
-			oToggleBag(bag)
-		end
-	end
+	-- local oToggleBag = ToggleBag
+	-- ToggleBag = function(bag)
+	-- 	local frame = Addon:IsBankBag(bag) and 'bank' or 'inventory'
+	-- 	if not Addon:ToggleBag(frame, bag) then
+	-- 		oToggleBag(bag)
+	-- 	end
+	-- end
 
-	local oOpenBag = OpenBag
-	OpenBag = function(bag)
-		local frame = Addon:IsBankBag(bag) and 'bank' or 'inventory'
-		if not Addon:ShowBag(frame, bag) then
-			oOpenBag(bag)
-		end
-	end
+	-- local oOpenBag = OpenBag
+	-- OpenBag = function(bag)
+	-- 	local frame = Addon:IsBankBag(bag) and 'bank' or 'inventory'
+	-- 	if not Addon:ShowBag(frame, bag) then
+	-- 		oOpenBag(bag)
+	-- 	end
+	-- end
 
 	-- all bags
-	local oOpenAllBags = OpenAllBags
-	OpenAllBags = function(frame)
-		if not Addon:ShowFrame('inventory') then
-			oOpenAllBags(frame)
-		end
-	end
+	-- local oOpenAllBags = OpenAllBags
+	-- OpenAllBags = function(frame)
+	-- 	if not Addon:ShowFrame('inventory') then
+	-- 		oOpenAllBags(frame)
+	-- 	end
+	-- end
 
-	if ToggleAllBags then
-		local oToggleAllBags = ToggleAllBags
-		ToggleAllBags = function()
-			if not Addon:ToggleFrame('inventory') then
-				oToggleAllBags()
-			end
-		end
-	end
+	-- if ToggleAllBags then
+	-- 	local oToggleAllBags = ToggleAllBags
+	-- 	ToggleAllBags = function()
+	-- 		if not Addon:ToggleFrame('inventory') then
+	-- 			oToggleAllBags()
+	-- 		end
+	-- 	end
+	-- end
 end

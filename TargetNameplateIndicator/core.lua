@@ -120,6 +120,7 @@ local bounceOffset = 5
 local bounceDuration = 0.3
 local function BounceAnimation(self) -- SetLooping('BOUNCE') is producing broken animations, so we're just simulating what it's supposed to do
 	local tx, bounce = self.tx, self.bounce
+    do return end --aby82 if tx:IsProtected() then return end
     local p1, rel, p2, x, y = tx:GetPoint()
     if p1 then tx:ClearAllPoints() end
 	if self.up then
