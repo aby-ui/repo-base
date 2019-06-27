@@ -101,7 +101,7 @@
           </Anchor>
         </Anchors>
         <Scripts>
-          <OnClick function="HideParentPanel" />
+          <OnClick function="HideParentPanelAby" />
         </Scripts>
       </Button>
       <Frame inherits="InsetFrameTemplate" useParentLevel="true" parentKey="Inset">

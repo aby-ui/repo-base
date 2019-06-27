@@ -1,3 +1,4 @@
+HideParentPanelAby = function(self) if self:GetParent() then self:GetParent():Hide() end end
 
 BuildEnv(...)
 

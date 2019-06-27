@@ -78,7 +78,7 @@ local AcceptButton = CreateFrame('Button', nil, PlayerInfoDialog, 'UIPanelButton
     AcceptButton:SetScript('OnClick', function(self)
         if InfoParent:IsShown() then
             Activities:SetPersonInfo(ContactInput:GetText(), TelInput:GetText(), AccountInput:GetText(), AddressInput:GetText())
-            HideParentPanel(self)
+            HideParentPanelAby(self)
         else
             if PlayerInfoDialog.foldText then
                 Summary:SetText(PlayerInfoDialog.foldText)
@@ -92,7 +92,7 @@ local CancelButton = CreateFrame('Button', nil, PlayerInfoDialog, 'UIPanelButton
     CancelButton:SetPoint('BOTTOMLEFT', PlayerInfoDialog, 'BOTTOM', 0, 20)
     CancelButton:SetSize(120, 22)
     CancelButton:SetText(CANCEL)
-    CancelButton:SetScript('OnClick', HideParentPanel)
+    CancelButton:SetScript('OnClick', HideParentPanelAby)
 end
 
 local Filters = {

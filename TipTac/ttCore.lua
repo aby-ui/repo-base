@@ -1228,7 +1228,7 @@ function gttEventHooks.OnTooltipCleared(self,...)
 	tt:ApplyBackdrop(self);
 
 	-- remove the padding that might have been set to fit health/power bars
-	--self:SetPadding(0,0);
+	self:SetPadding(0,0);
 
 	-- wipe the vars
 	wipe(u);
@@ -1363,10 +1363,11 @@ local function OnHyperlinkEnter(self,refString)
 	local linkToken = refString:match("^([^:]+)");
 	if (supportedHyperLinks[linkToken]) then
 		--GameTooltip_SetDefaultAnchor(gtt,self);
-        gtt:SetOwner(UIParent, "ANCHOR_CURSOR")
-        gtt:SetUnit("player")
+        gtt:ClearAllPoints()
+        gtt:SetOwner(self, "ANCHOR_CURSOR")
+        --gtt:SetUnit("player")
 		gtt:SetHyperlink(refString);
-        tt:AnchorFrameToMouse(gtt);
+        --tt:AnchorFrameToMouse(gtt);
 	end
 end
 

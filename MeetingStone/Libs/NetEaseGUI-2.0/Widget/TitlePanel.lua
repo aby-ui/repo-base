@@ -37,7 +37,7 @@ function TitlePanel:Constructor(parent)
     border:SetTexture([[Interface\DialogFrame\UI-DialogBox-Corner]])
     border:SetPoint('TOPRIGHT', -4, -4)
 
-    CloseButton:SetScript('OnClick', HideParentPanel)
+    CloseButton:SetScript('OnClick', HideParentPanelAby)
 
     self.Title = Title
     self.CloseButton = CloseButton
