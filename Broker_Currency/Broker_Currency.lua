@@ -829,11 +829,13 @@ do
             ["show1718"] = true,  --8.1泰坦
             ["show1716"] = true,  --8.1PVP
             ["show1717"] = true,  --8.1PVP
+            ["show1721"] = true,  --8.1PVP
 			["summary1560"] = true,
             ["summary1580"] = true,
             ["summary1718"] = true,
             ["summary1716"] = true,
             ["summary1717"] = true,
+            ["summary1721"] = true,
 			summaryColorDark = { r = 0, g = 0, b = 0, a = 0 },
 			summaryColorLight = { r = 1, g = 1, b = 1, a = .3 },
             update810 = true,
@@ -856,6 +858,12 @@ do
             Broker_CurrencyCharDB.summary1155 = false
             Broker_CurrencyCharDB.summary1273 = false
             Broker_CurrencyCharDB.summary1220 = false
+        end
+
+        if not Broker_CurrencyCharDB.update820 then
+            Broker_CurrencyCharDB.update820 = true
+            Broker_CurrencyCharDB.show1721 = true
+            Broker_CurrencyCharDB["summary1721"] = true
         end
 
 		-- ----------------------------------------------------------------------------

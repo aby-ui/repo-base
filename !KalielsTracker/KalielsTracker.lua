@@ -1514,7 +1514,8 @@ local function SetHooks()
 				else
 					if db.questDefaultActionMap then
                         QuestMapFrame_OpenToQuestDetails(block.id);
-					else
+                    else
+                        if QuestInfoSealFrame then QuestInfoSealFrame:ClearAllPoints() end
 						QuestLogPopupDetailFrame_Show(questLogIndex);
 					end
 				end
@@ -1523,7 +1524,16 @@ local function SetHooks()
 		else
 			ObjectiveTracker_ToggleDropDown(block, QuestObjectiveTracker_OnOpenDropDown);
 		end
-	end
+    end
+
+    --abyui
+    if QuestFrame_SetMaterial then
+        hooksecurefunc("QuestFrame_SetMaterial", function(panel)
+            if panel == QuestFrameDetailPanel then
+                if QuestInfoSealFrame then QuestInfoSealFrame:ClearAllPoints() end
+            end
+        end)
+    end
 
 	function QuestObjectiveTracker_OnOpenDropDown(self)  -- R
 		local block = self.activeFrame;

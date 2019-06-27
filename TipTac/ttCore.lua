@@ -1228,7 +1228,7 @@ function gttEventHooks.OnTooltipCleared(self,...)
 	tt:ApplyBackdrop(self);
 
 	-- remove the padding that might have been set to fit health/power bars
-	self:SetPadding(0,0);
+	-- self:SetPadding(0,0);
 
 	-- wipe the vars
 	wipe(u);
