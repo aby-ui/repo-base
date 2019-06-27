@@ -64,7 +64,7 @@ CoreOnEvent("CHAT_MSG_SYSTEM", function(event, msg)
                 U1DBG.ap_spell[cast_id] = 1
                 U1Message("恭喜！本次能量翻倍，" .. more_info)
                 PlaySound(73277)
-                PlaySoundFile("Sound\\character\\Human\\HumanVocalFemale\\HumanFemaleCheer02.ogg")
+                PlaySound(2689) --"Sound\\character\\Human\\HumanVocalFemale\\HumanFemaleCheer02.ogg")
                 --PlaySound(33338)
                 --PlaySoundFile("Sound\\Event Sounds\\OgreEventCheerUnique.ogg")
             else

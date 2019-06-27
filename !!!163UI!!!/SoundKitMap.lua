@@ -307,3 +307,40 @@ map = {
   ["ui_73_artifact_relics_trait_revealonly"] = 90080, --UI_73_ARTIFACT_RELICS_TRAIT_REVEAL_ONLY
 }
 
+local map_82 = {
+    ["Sound\\Spells\\ShaysBell.ogg"] = 6555,
+    ["Sound\\Spells\\FluteRun.ogg"] = 7734,
+    ["Sound\\Spells\\NetherwindFocusImpact.ogg"] = 8701,
+    ["Sound\\Spells\\PolyMorphCow.ogg"] = 8943,
+    ["Sound\\Spells\\RockBiterImpact.ogg"] = 3620,
+    ["Sound\\Spells\\YarrrrImpact.ogg"] = 5754,
+    ["Sound\\Spells\\valentines_brokenheart.ogg"] = 8693,
+    ["Sound\\Creature\\MillhouseManastorm\\TEMPEST_Millhouse_Ready01.ogg"] = 11176,
+    ["Sound\\Creature\\MillhouseManastorm\\TEMPEST_Millhouse_Pyro01.ogg"] = 11179,
+    ["Sound\\Creature\\MillhouseManastorm\\TEMPEST_Millhouse_Ready01.ogg"] = 11176,
+    ["Sound\\Creature\\Satyre\\SatyrePissed4.ogg"] = 6332,
+    ["Sound\\Creature\\Mortar Team\\MortarTeamPissed9.ogg"] = 6255,
+
+    ["Sound\\Character\\BloodElf\\BloodElfFemaleOpenFire01.ogg"] = 9633,
+    ["Sound\\Interface\\LFG_RoleCheck.ogg"] = 17317,
+    ["Sound\\Interface\\Aggro_Pulled_Aggro.ogg"] = 15263,
+    ["Sound\\Interface\\UI_70_Artifact_Forge_ColorChange_03.ogg"] = 15263,
+
+    ["sound\\doodad\\belltolltribal.ogg"] = 6675,
+}
+local map_82_std = {}
+for k, v in pairs(map_82) do map_82_std[k:lower():gsub("\\", "/")] = v end
+
+local playSoundFileOrigin = PlaySoundFile
+PlaySoundFile = function(file, channel)
+    if not file then return end
+    if not tonumber(file) and not tostring(file):lower():find("^interface") then
+        local id = map_82_std[file:lower():gsub("\\", "/")]
+        if id then
+            return PlaySound(id, channel)
+        end
+        if DEBUG_MODE then print(file) end
+    else
+        playSoundFileOrigin(file, channel)
+    end
+end

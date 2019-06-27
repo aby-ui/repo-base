@@ -99,10 +99,9 @@ U1RegisterAddon("163UI_CombatTimer", {
                 "女声开火", "Sound\\Character\\BloodElf\\BloodElfFemaleOpenFire01.ogg",
                 "哐", "Sound\\Interface\\LFG_RoleCheck.ogg",
                 "嘭", "Sound\\Interface\\Aggro_Pulled_Aggro.ogg",
-                "咯噔", "Sound\\Interface\\UI_70_Artifact_Forge_ColorChange_03.ogg",
-                "口哨1", "Sound\\Character\\EmoteCatCallWhistle01.ogg",
+                "咯噔", "Interface/AddOns/163UI_CombatTimer/interface_ui_70_artifact_forge_colorchange_03.ogg",
             },
-            default = "Sound\\Interface\\UI_70_Artifact_Forge_ColorChange_03.ogg",
+            default = "Interface/AddOns/163UI_CombatTimer/interface_ui_70_artifact_forge_colorchange_03.ogg",
             callback = function(cfg, v, loading) if not v or loading then return end U1CT_PlaySound(true) end,
         }
     },

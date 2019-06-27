@@ -1615,7 +1615,7 @@ function EventHandlers.UPDATE_SHAPESHIFT_FORM()
         MainFrameToggle()
 
         if ((form > 0) and (form < 4) and (Comergy_Settings.StealthSound) and (status.shapeshiftForm == 0)) then
-            PlaySoundFile("Sound\\interface\\iQuestUpdate.ogg")
+            PlaySound(17317) --("Sound\\interface\\iQuestUpdate.ogg")
         end
         status.shapeshiftForm = form
     end
