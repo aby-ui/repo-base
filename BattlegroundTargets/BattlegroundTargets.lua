@@ -1393,7 +1393,7 @@ function BattlegroundTargets:CreateInterfaceOptions()
 	GVAR.InterfaceOptions.CONFIG:SetPoint("TOPLEFT", GVAR.InterfaceOptions.Title, "BOTTOMLEFT", 0, -10)
 	GVAR.InterfaceOptions.CONFIG:SetScript("OnClick", function()
 		InterfaceOptionsFrame_Show()
-		HideUIPanel(GameMenuFrame)
+		GameMenuFrame:Hide()
 		BattlegroundTargets:Frame_Toggle(GVAR.OptionsFrame)
 	end)
 

@@ -1856,10 +1856,10 @@ function EventAlert_SlashHandler(msg)
 
 	if (cmdtype == "options" or cmdtype == "opt") then
 		if not EA_Options_Frame:IsVisible() then
-			-- ShowUIPanel(EA_Options_Frame);
+			-- EA_Options_Frame:Show();
 			EA_Options_Frame:Show();
 		else
-			-- HideUIPanel(EA_Options_Frame);
+			-- EA_Options_Frame:Hide();
 			EA_Options_Frame:Hide();
 		end
 

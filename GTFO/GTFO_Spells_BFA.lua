@@ -207,6 +207,13 @@ GTFO.SpellID["297252"] = {
   sound = 1;
 };
 
+GTFO.SpellID["288700"] = {
+  --desc = "Windwall (Cyclarus)";
+  sound = 1;
+};
+
+
+
 -- ***********************
 -- * Shrine of the Storm *
 -- ***********************

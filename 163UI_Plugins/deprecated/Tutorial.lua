@@ -203,7 +203,7 @@ function TutorialU1Frame_Update(currentTutorial)
 	end
 
 	-- show
-    ShowUIPanel(TutorialU1Frame)
+    TutorialU1Frame:Show()
 	--TutorialU1Frame:Show();
 	TutorialU1Frame_CheckNextPrevButtons();
 end
@@ -259,7 +259,7 @@ end
 
 function TutorialU1Frame_Hide()
 	PlaySound(851); --"igMainMenuClose"
-	HideUIPanel(TutorialU1Frame);
+	TutorialU1Frame:Hide();
 end
 
 function TutorialU1Frame_SetTutorial(datas)
@@ -289,7 +289,7 @@ CoreOnEvent("PLAYER_LOGIN", function()
     end)
     btn:SetScript("OnClick", function()
         if WorldMapFrame:IsVisible() and UIPanelWindows["WorldMapFrame"] and UIPanelWindows["WorldMapFrame"].area == "full" then
-            HideUIPanel(WorldMapFrame)
+            WorldMapFrame:Hide()
         end
         TutorialU1Frame_SetTutorial({
             [201] = {

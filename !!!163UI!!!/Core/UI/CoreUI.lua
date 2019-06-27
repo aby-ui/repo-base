@@ -363,14 +363,14 @@ function CoreUIShowKeyBindingFrame(scrollTo)
     if not IsAddOnLoaded("Blizzard_BindingUI") then KeyBindingFrame_LoadUI(); end
 
     if ( scrollTo == nil ) then
-        ShowUIPanel(KeyBindingFrame);
+        KeyBindingFrame:Show();
         return;
     else
         local num = GetNumBindings();
         for i = 1, num, 1 do
             local header, _, _ = GetBinding(i);
             if ( header == scrollTo) then
-                ShowUIPanel(KeyBindingFrame);
+                KeyBindingFrame:Show();
                 KeyBindingFrameScrollFrameScrollBar:SetValue((i -1)*KEY_BINDING_HEIGHT);
                 CoreUIShowCallOut(_G[format("KeyBindingFrameBinding%d", i-KeyBindingFrameScrollFrame.offset)], nil, nil, -15, 3, -385, -5)
                 break;

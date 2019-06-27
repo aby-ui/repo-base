@@ -1622,7 +1622,7 @@ if deal_taint_other then
     local function hook()
         PlayerTalentFrame_Toggle = function()
             if ( not PlayerTalentFrame:IsShown() ) then
-                ShowUIPanel(PlayerTalentFrame);
+                PlayerTalentFrame:Show();
                 TalentMicroButtonAlert:Hide();
             else
                 PlayerTalentFrame_Close();

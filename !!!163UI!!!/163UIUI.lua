@@ -169,7 +169,7 @@ function UUI.Raise(raise)
         end
     else
         if GameMenuFrame:IsVisible() then
-            HideUIPanel(GameMenuFrame);
+            GameMenuFrame:Hide();
         else
             main:SetFrameStrata("MEDIUM");
             main:Lower();
@@ -600,7 +600,7 @@ function UUI.Top.Create(main)
 
     --右上角关闭按钮
     main.btnClose = main:Button(nil, "UIPanelCloseButton"):Size(30):TR(5, 5)
-    :SetScript("OnClick", function(self) HideUIPanel(self:GetParent()) end)
+    :SetScript("OnClick", function(self) self:GetParent(:Hide()) end)
     :un()
     --关闭按钮的边框
     main:Texture(nil, nil, "Interface\\Buttons\\UI-CheckBox-Up"):TL(main.btnClose,1,0):BR(main.btnClose,-1,-1):un()
@@ -1942,7 +1942,7 @@ function U1_CreateMinimapButton()
 end
 
 function UUI.ToggleUI(self, button)
-    if GameMenuFrame:IsVisible() then HideUIPanel(GameMenuFrame) end
+    if GameMenuFrame:IsVisible() then GameMenuFrame:Hide() end
     if UUI():IsVisible() then UUI():Hide() else UUI():Show() end
 end
 

@@ -92,7 +92,7 @@ end
 local NChat_SetHyperlink_Origin = ItemRefTooltip.SetHyperlink;
 ItemRefTooltip.SetHyperlink = function(self,link)
     if(strsub(link, 1, LINK_LEN)==LINK_NAME) then
-        HideUIPanel(self);
+        self:Hide();
         return;
     end
     return NChat_SetHyperlink_Origin(self,link);

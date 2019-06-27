@@ -2190,13 +2190,9 @@ L["SOUND_SOUNDTOPLAY"] = "Sound to Play"
 L["SOUND_CUSTOM"] = "Custom sound file"
 L["SOUND_CUSTOM_DESC"] = [[Insert the path to a custom sound to play. You can also input a numeric Sound Kit ID.
 
-Here are some examples, where "file" is the name of your sound, and "ext" is the file's extension (ogg or mp3 only!):
+Files must be nested under the "Interface" folder in WoW's installation - e.g. "Interface/AddOns/file.ext". Only ogg and mp3 formats are supported.
 
-- "CustomSounds/file.ext": a file placed in a new folder named "CustomSounds" that is in WoW's root directory (the same location as Wow.exe, Interface and WTF folders, etc)
-
-- "Interface/AddOns/file.ext": a loose file in the AddOns folder
-
-- "file.ext": a loose file in WoW's root directory
+Sound Kit IDs can be found by browsing https://www.wowhead.com/sounds - the URL for the page for each sound contains the Sound Kit ID.
 
 NOTE: WoW must be restarted before it will recognize files that did not exist when it was started up.]]
 L["SOUND_TAB"] = "Sound"

@@ -508,7 +508,7 @@
 					</OnLoad>
 					<OnClick>
 						PlaySound163("gsTitleOptionOK");
-						HideUIPanel(EA_Options_Frame);
+						EA_Options_Frame:Hide();
 						EventAlert_Options_CloseAnchorFrames();
 					</OnClick>
 				</Scripts>
@@ -958,7 +958,7 @@
 						_G[self:GetName().."Text"]:SetText(EA_XOPT_CANCEL);
 					</OnLoad>
 					<OnClick>
-						HideUIPanel(EA_SpellCondition_Frame);
+						EA_SpellCondition_Frame:Hide();
 					</OnClick>
 				</Scripts>
 			</Button>
@@ -1407,7 +1407,7 @@
 						_G[self:GetName().."Text"]:SetText(EA_XOPT_CANCEL);
 					</OnLoad>
 					<OnClick>
-						HideUIPanel(EA_GroupEventSetting_Frame);
+						EA_GroupEventSetting_Frame:Hide();
 					</OnClick>
 				</Scripts>
 			</Button>
@@ -1428,7 +1428,7 @@
 					</OnLoad>
 					<OnClick>
 						EAFun_GroupEvent_SaveFrameToGroupEvent();
-						HideUIPanel(EA_GroupEventSetting_Frame);
+						EA_GroupEventSetting_Frame:Hide();
 					</OnClick>
 				</Scripts>
 			</Button>

@@ -3,6 +3,12 @@ if not TMW then return end
 TMW.CHANGELOG_LASTVER="7.4.0"
 
 TMW.CHANGELOG = [==[
+## v8.6.3
+### Bug Fixes
+* Fixed #1698 (again): Utils.lua:438: attempt to index local 'path' (a number value)
+* Switched WoW-built-in sounds that TMW registers with LSM to use FileDataIDs instead of paths, since paths aren't allowed anymore in WoW 8.2.
+ * Note that if you have other addons which are still incorrectly registering these sounds (like Omen), they won't work for you.
+
 ## v8.6.2
 ### Bug Fixes
 * Fixed #1698: Utils.lua:438: attempt to index local 'path' (a number value)

@@ -74,7 +74,7 @@ local function NewInstance(width, height, useFauxScroll)
 	_G.ButtonFrameTemplate_HideButtonBar(copyFrame)
 
 	table.insert(_G.UISpecialFrames, frameName)
-	_G.HideUIPanel(copyFrame)
+	_G.copyFrame:Hide()
 
 	copyFrame.title = copyFrame.TitleText
 
@@ -192,7 +192,7 @@ local function NewInstance(width, height, useFauxScroll)
 	editBox:SetFontObject("ChatFontNormal")
 
 	editBox:SetScript("OnEscapePressed", function()
-		_G.HideUIPanel(copyFrame)
+		_G.copyFrame:Hide()
 	end)
 
 	copyFrame.edit_box = editBox
@@ -325,7 +325,7 @@ function prototype:Display(separator)
 		frame.edit_box:SetCursorPosition(0)
 	end
 
-	_G.ShowUIPanel(frame)
+	_G.frame:Show()
 end
 
 function prototype:InsertLine(position, text, dateFormat)

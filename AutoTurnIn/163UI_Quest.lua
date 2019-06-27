@@ -470,7 +470,7 @@ QuestFrameGreetingPanel:HookScript("OnShow", function()
     end
 end)
 
---/run ShowUIPanel(QuestLogFrame) QuestLog_SetSelection(5) AbandonQuest()
+--/run QuestLogFrame:Show() QuestLog_SetSelection(5) AbandonQuest()
 --/run WW:Button("$parentComplete", QuestTitleButton1,"UIPanelButtonTemplate"):Size(100,23):RIGHT()
 --/run QuestTitleButton1Complete:SetSize(80,23)
 --/run for i=1, 100 do local a = _G["QuestTitleButton"..i] if not a then break end WW:Button("$parentComplete", a,"UIPanelButtonTemplate"):Size(50,16):RIGHT(-10,0):SetText("交还"):GetFontString():SetFontObject(U1TextFontSmall) end

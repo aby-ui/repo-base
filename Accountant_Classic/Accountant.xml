@@ -449,7 +449,7 @@
 				</Anchors>
 				<Scripts>
 					<OnClick>
-						HideUIPanel(self:GetParent());
+						self:GetParent(:Hide());
 					</OnClick>
 				</Scripts>
 			</Button>

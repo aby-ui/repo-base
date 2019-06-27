@@ -44,7 +44,7 @@ function DEATH_ANNOUNCE_Init()
     local originSetHyperlink_Origin = ItemRefTooltip.SetHyperlink;
     ItemRefTooltip.SetHyperlink = function(self,link)
         if(strsub(link, 1, 11)=="u1_deathann") then
-            HideUIPanel(self);
+            self:Hide();
             return;
         end
         return originSetHyperlink_Origin(self,link);

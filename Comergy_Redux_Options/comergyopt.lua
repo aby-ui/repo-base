@@ -285,7 +285,7 @@ function CreateColorButton(name, parent, x, y, type, editBox)
             
             ColorPickerFrame:SetColorRGB(r, g, b)
 
-            ShowUIPanel(ColorPickerFrame)
+            ColorPickerFrame:Show()
         end
     end)
 

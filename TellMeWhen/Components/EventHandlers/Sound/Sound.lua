@@ -63,16 +63,16 @@ TMW:RegisterUpgrade(42102, {
 
 
 -- Helper methods
-function Sound:GetSoundFile(sound)
-
-	-- Always tostring the input. Fixes https://github.com/ascott18/TellMeWhen/issues/1698.
-	sound = tostring(sound)
+function Sound:GetSoundFileFromSettingValue(sound)
 
 	sound = TMW:CleanPath(sound)
 	local quiet = TMW:CleanPath("Interface/Quiet.ogg")
 
 	if sound == "" or sound == quiet or sound == "None" then
-		return nil
+		return nil, false
+
+	elseif tonumber(sound) then
+		return sound, true
 
 	elseif strfind(sound, "%.[^/]+$") or tonumber(sound) then
 
@@ -80,13 +80,19 @@ function Sound:GetSoundFile(sound)
 		-- Also allows numbers to pass through for PlaySoundKitID
 		-- Good: file.ogg; path/to/file.ogg
 		-- Bad: file; path/to/file; folder.with.periods/containing/file.ogg
-		return sound
+		return sound, false
 	else
 		-- This will handle sounds from LSM.
 		local s = LSM:Fetch("sound", sound)
+		
+		-- Some addons (BigWigs) are registering soundkitIDs with LSM.
+		if tonumber(s) then
+			return s, false
+		end
+
 		s = TMW:CleanPath(s)
 		if s and s ~= quiet and s ~= "" then
-			return s
+			return s, false
 		end
 	end
 end
@@ -94,19 +100,23 @@ end
 
 -- Required methods
 function Sound:ProcessIconEventSettings(event, eventSettings)
-	return not not self:GetSoundFile(eventSettings.Sound)
+	return not not self:GetSoundFileFromSettingValue(eventSettings.Sound)
 end
 
 function Sound:HandleEvent(icon, eventSettings)
-	local Sound = self:GetSoundFile(eventSettings.Sound)
-	
-	if Sound then
-		if tonumber(Sound) then
-			PlaySound(Sound)
+	return self:PlaySoundFromSettingValue(eventSettings.Sound)
+end
+
+function Sound:PlaySoundFromSettingValue(settingValue)
+	local sound, isKit = self:GetSoundFileFromSettingValue(settingValue)
+
+	if sound then
+		if isKit then
+		 	PlaySound(sound)
 		else
-			PlaySoundFile(Sound, TMW.db.profile.SoundChannel)
+			PlaySoundFile(sound, TMW.db.profile.SoundChannel)
 		end
-		
+
 		return true
 	end
 end
@@ -116,22 +126,25 @@ function Sound:OnRegisterEventHandlerDataTable()
 end
 
 do	-- LSM sound registration
-	LSM:Register("sound", "Rubber Ducky",  [[Sound\Doodad\Goblin_Lottery_Open01.ogg]])
-	LSM:Register("sound", "Cartoon FX",	   [[Sound\Doodad\Goblin_Lottery_Open03.ogg]])
-	LSM:Register("sound", "Explosion", 	   [[Sound\Doodad\Hellfire_Raid_FX_Explosion05.ogg]])
-	LSM:Register("sound", "Shing!", 	   [[Sound\Doodad\PortcullisActive_Closed.ogg]])
-	LSM:Register("sound", "Wham!", 		   [[Sound\Doodad\PVP_Lordaeron_Door_Open.ogg]])
-	LSM:Register("sound", "Simon Chime",   [[Sound\Doodad\SimonGame_LargeBlueTree.ogg]])
-	LSM:Register("sound", "War Drums", 	   [[Sound\Event Sounds\Event_wardrum_ogre.ogg]])
-	LSM:Register("sound", "Cheer", 		   [[Sound\Event Sounds\OgreEventCheerUnique.ogg]])
-	LSM:Register("sound", "Humm", 		   [[Sound\Spells\SimonGame_Visual_GameStart.ogg]])
-	LSM:Register("sound", "Short Circuit", [[Sound\Spells\SimonGame_Visual_BadPress.ogg]])
-	LSM:Register("sound", "Fel Portal",    [[Sound\Spells\Sunwell_Fel_PortalStand.ogg]])
-	LSM:Register("sound", "Fel Nova", 	   [[Sound\Spells\SeepingGaseous_Fel_Nova.ogg]])
-	LSM:Register("sound", "You Will Die!", [[Sound\Creature\CThun\CThunYouWillDie.ogg]])
 
-	LSM:Register("sound", "Die!", 		   [[Sound\Creature\GruulTheDragonkiller\GRULLAIR_Gruul_Slay03.ogg]])
-	LSM:Register("sound", "You Fail!", 	   [[Sound\Creature\Kologarn\UR_Kologarn_slay02.ogg]])
+	-- These are FileIDs, not SoundKitIDs.
+	-- They were obtained by searching https://wow.tools/files/ 
+	LSM:Register("sound", "Rubber Ducky",  566121)
+	LSM:Register("sound", "Cartoon FX",	   566543)
+	LSM:Register("sound", "Explosion", 	   566982)
+	LSM:Register("sound", "Shing!", 	   566240)
+	LSM:Register("sound", "Wham!", 		   566946)
+	LSM:Register("sound", "Simon Chime",   566076)
+	LSM:Register("sound", "War Drums", 	   567275)
+	LSM:Register("sound", "Cheer", 		   567283)
+	LSM:Register("sound", "Humm", 		   569518)
+	LSM:Register("sound", "Short Circuit", 568975)
+	LSM:Register("sound", "Fel Portal",    569215)
+	LSM:Register("sound", "Fel Nova", 	   568582)
+	LSM:Register("sound", "You Will Die!", 546633)
+
+	LSM:Register("sound", "Die!", 		   551339)
+	LSM:Register("sound", "You Fail!", 	   553345)
 
 	LSM:Register("sound", "TMW - Pling 1", [[Interface\Addons\TellMeWhen\Sounds\Pling1.ogg]])
 	LSM:Register("sound", "TMW - Pling 2", [[Interface\Addons\TellMeWhen\Sounds\Pling2.ogg]])

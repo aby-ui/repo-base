@@ -325,7 +325,7 @@ function Accountant_Slash(msg)
 	local function helper(word) table.insert(args, word) end
 	string.gsub(msg, "[_%w]+", helper);
 	if args[1] == 'log'  then
-		ShowUIPanel(AccountantFrame);
+		AccountantFrame:Show();
 	elseif args[1] == 'verbose' then
 		if Accountant_Verbose == nil then
 			Accountant_Verbose = 1;
@@ -577,7 +577,7 @@ end
 
 function Accountant_OnHide()
 	if MYADDONS_ACTIVE_OPTIONSFRAME == self then
-		ShowUIPanel(myAddOnsFrame);
+		myAddOnsFrame:Show();
 	end
 end
 

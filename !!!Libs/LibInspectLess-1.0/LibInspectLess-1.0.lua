@@ -232,7 +232,7 @@ function lib:ADDON_LOADED(addon)
                     if name=="InspectFrame_Show" then
                         InspectFrame.unit = unit;
                         InspectSwitchTabs(1);
-                        ShowUIPanel(InspectFrame);
+                        InspectFrame:Show();
                         InspectFrame_UpdateTabs();
                     elseif name=="InspectFrame_UnitChanged" then
                         InspectPaperDollFrame_OnShow(unit_or_self);

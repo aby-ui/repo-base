@@ -1174,7 +1174,7 @@ function Initialize()
     button:SetWidth(150)
     button:SetScript("OnClick", function()
         InterfaceOptionsFrameCancel_OnClick()
-        HideUIPanel(GameMenuFrame)
+        GameMenuFrame:Hide()
         ToggleOptions()
     end)
 
