@@ -59,7 +59,7 @@ end
 
 -- ElvUI
 local function ElvUI_SetSupport()
-    if KT:CheckAddOn("ElvUI", "11.10", true) then
+    if KT:CheckAddOn("ElvUI", "11.14", true) then
         local E = unpack(_G.ElvUI)
         local B = E:GetModule("Blizzard")
         B.SetObjectiveFrameAutoHide = function() end  -- preventive
@@ -68,9 +68,10 @@ local function ElvUI_SetSupport()
         hooksecurefunc(E, "CheckIncompatible", function(self)
             self.private.skins.blizzard.objectiveTracker = false
         end)
-        hooksecurefunc(E, "ToggleConfig", function(self)
+        hooksecurefunc(E, "ToggleOptionsUI", function(self)
             if E.Libs.AceConfigDialog.OpenFrames[self.name] then
                 local options = self.Options.args.general.args.objectiveFrameGroup.args
+                options.objectiveFrameAutoHide.disabled = true
                 options.objectiveFrameHeight.disabled = true
                 options.bonusObjectivePosition.disabled = true
                 options[addonName.."Warning"] = {
@@ -86,7 +87,7 @@ end
 
 -- Tukui
 local function Tukui_SetSupport()
-    if KT:CheckAddOn("Tukui", "18.22", true) then
+    if KT:CheckAddOn("Tukui", "18.24", true) then
         local T = unpack(_G.Tukui)
         T.Miscellaneous.ObjectiveTracker.Enable = function() end
     end
@@ -124,9 +125,19 @@ end
 
 -- SpartanUI
 local function SpartanUI_SetSupport()
-    if KT:CheckAddOn("SpartanUI", "5.0.11", true) then
+    if KT:CheckAddOn("SpartanUI", "5.1.2", true) then
         local ACD = LibStub("AceConfigDialog-3.0")
         SUI.DB.EnabledComponents.Objectives = false
+        local module = SUI:GetModule("Component_Objectives")
+        local bck_module_OnEnable = module.OnEnable
+        function module:OnEnable()
+            if not SUI.DB.EnabledComponents.Objectives then
+                module:BuildOptions()
+                module:HideOptions()
+                return
+            end
+            bck_module_OnEnable(self)
+        end
         local bck_ACD_Open = ACD.Open
         function ACD:Open(name, ...)
             if name == "SpartanUI" then

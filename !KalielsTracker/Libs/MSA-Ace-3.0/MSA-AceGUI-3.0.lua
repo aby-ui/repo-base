@@ -7,8 +7,8 @@
 local AceGUI = LibStub("AceGUI-3.0")
 
 -- Lua API
-local tconcat = table.concat
 local math_max = math.max
+local xpcall = xpcall
 
 local width_multiplier = 170
 local margin_left = 16
@@ -17,39 +17,14 @@ local margin_left = 16
 -- Internal --
 --------------
 
-local function CreateDispatcher(argCount)
-	local code = [[
-		local xpcall, eh = ...
-		local method, ARGS
-		local function call() return method(ARGS) end
-
-		local function dispatch(func, ...)
-			method = func
-			if not method then return end
-			ARGS = ...
-			return xpcall(call, eh)
-		end
-
-		return dispatch
-	]]
-
-	local ARGS = {}
-	for i = 1, argCount do ARGS[i] = "arg"..i end
-	code = code:gsub("ARGS", tconcat(ARGS, ", "))
-	return assert(loadstring(code, "safecall Dispatcher["..argCount.."]"))(xpcall, errorhandler)
-end
-
-local Dispatchers = setmetatable({}, {__index=function(self, argCount)
-	local dispatcher = CreateDispatcher(argCount)
-	rawset(self, argCount, dispatcher)
-	return dispatcher
-end})
-Dispatchers[0] = function(func)
-	return xpcall(func, errorhandler)
+local function errorhandler(err)
+	return geterrorhandler()(err)
 end
 
 local function safecall(func, ...)
-	return Dispatchers[select("#", ...)](func, ...)
+	if func then
+		return xpcall(func, errorhandler, ...)
+	end
 end
 
 local layoutrecursionblock = nil
@@ -73,14 +48,12 @@ AceGUI:RegisterLayout("MSA-Flow",
 		--height of the current row
 		local rowheight = 0
 		local rowoffset = 0
-		local lastrowoffset
 
 		local width = content.width or content:GetWidth() or 0
 
 		--control at the start of the row
 		local rowstart
 		local rowstartoffset
-		local lastrowstart
 		local isfullheight
 
 		local frameoffset
@@ -138,7 +111,7 @@ AceGUI:RegisterLayout("MSA-Flow",
 					if usedwidth > width then
 						oversize = true
 					end
-					-- put the control on the current row, adding it to the width and checking if the height needs to be increased
+				-- put the control on the current row, adding it to the width and checking if the height needs to be increased
 				else
 					--handles cases where the new height is higher than either control because of the offsets
 					--math.max(rowheight-rowoffset+frameoffset, frameheight-frameoffset+rowoffset)

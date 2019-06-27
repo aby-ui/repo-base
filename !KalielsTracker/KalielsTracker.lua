@@ -560,7 +560,7 @@ local function SetHooks()
 		OTF.isUpdating = false
 	end
 
-	function DEFAULT_OBJECTIVE_TRACKER_MODULE:AddObjective(block, objectiveKey, text, lineType, useFullHeight, dashStyle, colorStyle, adjustForNoText)  -- RO
+	function DEFAULT_OBJECTIVE_TRACKER_MODULE:AddObjective(block, objectiveKey, text, lineType, useFullHeight, dashStyle, colorStyle, adjustForNoText, overrideHeight)  -- RO
 		if objectiveKey == "TimeLeft" then
 			text, colorStyle = GetTaskTimeLeftData(block.id)
 			self:FreeProgressBar(block, block.currentLine)	-- fix ProgressBar duplicity
@@ -626,7 +626,8 @@ local function SetHooks()
 			line.Check.KTskinned = true
 		end
 		-- set the text
-		local height = self:SetStringText(line.Text, text, useFullHeight, colorStyle, block.isHighlighted);
+		local textHeight = self:SetStringText(line.Text, text, useFullHeight, colorStyle, block.isHighlighted);
+		local height = overrideHeight or textHeight;
 		line:SetHeight(height);
 
 		local yOffset;
@@ -1366,6 +1367,7 @@ local function SetHooks()
 
 	local bck_ObjectiveTracker_ReorderModules = ObjectiveTracker_ReorderModules
 	ObjectiveTracker_ReorderModules = function()
+        do return end --aby82
 		local reorder = false
 		for i = 1, #OTF.MODULES do
 			if OTF.MODULES[i] ~= OTF.MODULES_UI_ORDER[i] then
@@ -1882,7 +1884,7 @@ function KT:SaveHeader(module)
 end
 
 function KT:SetHeaderText(module, append)
-	local text = module.title
+	local text = module.title or ""
 	if append then
 		text = format("%s (%s)", text, append)
 	end

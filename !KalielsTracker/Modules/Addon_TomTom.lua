@@ -266,7 +266,7 @@ end
 function M:OnInitialize()
 	_DBG("|cffffff00Init|r - "..self:GetName(), true)
 	db = KT.db.profile
-	self.isLoaded = (KT:CheckAddOn("TomTom", "v80105-1.0.0") and db.addonTomTom)
+	self.isLoaded = (KT:CheckAddOn("TomTom", "v80200-1.0.1") and db.addonTomTom)
 
 	local defaults = KT:MergeTables({
 		profile = {

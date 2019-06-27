@@ -41,9 +41,12 @@ local warning = cWarning..L"Warning:|r UI will be re-loaded!"
 local KTF = KT.frame
 local OTF = ObjectiveTrackerFrame
 
+local overlay
+local overlayShown = false
+
 local _, numQuests = GetNumQuestLogEntries()
 
-local GetModulesOptionsTable, MoveModule, SetSharedColor, IsSpecialLocale	-- functions
+local OverlayFrameUpdate, OverlayFrameHide, GetModulesOptionsTable, MoveModule, SetSharedColor, IsSpecialLocale	-- functions
 
 local defaults = {
 	profile = {
@@ -110,6 +113,7 @@ local defaults = {
 
 		modulesOrder = {
 			"SCENARIO_CONTENT_TRACKER_MODULE",
+			"UI_WIDGET_TRACKER_MODULE",
 			"AUTO_QUEST_POPUP_TRACKER_MODULE",
 			"QUEST_TRACKER_MODULE",
 			"BONUS_OBJECTIVE_TRACKER_MODULE",
@@ -202,6 +206,7 @@ local options = {
 								db.xOffset = 0
 								db.yOffset = 0
 								KT:MoveTracker()
+								OverlayFrameUpdate()
 							end,
 							order = 1.1,
 						},
@@ -229,6 +234,7 @@ local options = {
 								db.yOffset = value
 								KT:MoveTracker()
 								KT:SetSize()
+								OverlayFrameUpdate()
 							end,
 							order = 1.3,
 						},
@@ -242,16 +248,38 @@ local options = {
 							set = function(_, value)
 								db.maxHeight = value
 								KT:SetSize()
+								OverlayFrameUpdate()
 							end,
 							order = 1.4,
 						},
+						maxHeightShowOverlay = {
+							name = "Show Max. height overlay",
+							desc = "Show overlay, for better visualisation Max. height value.",
+							type = "toggle",
+							width = 1.3,
+							get = function()
+								return overlayShown
+							end,
+							set = function()
+								overlayShown = not overlayShown
+								if overlayShown and not overlay then
+									overlay = CreateFrame("Frame", KTF:GetName().."Overlay", KTF)
+									overlay:SetFrameLevel(KTF:GetFrameLevel() + 11)
+									overlay.texture = overlay:CreateTexture(nil, "BACKGROUND")
+									overlay.texture:SetAllPoints()
+									overlay.texture:SetColorTexture(0, 1, 0, 0.3)
+									OverlayFrameUpdate()
+								end
+								overlay:SetShown(overlayShown)
+							end,
+							order = 1.5,
+						},
 						maxHeightNote = {
-							name = cBold..L[" Max. height is related with value Y offset.\n"..
+							name = cBold.."\n"..L[" Max. height is related with value Y offset.\n"..
 								" Content is lesser ... tracker height is automatically increases.\n"..
 								" Content is greater ... tracker enables scrolling."],
 							type = "description",
-							width = "double",
-							order = 1.41,
+							order = 1.6,
 						},
 						frameScrollbar = {
 							name = L"Show scroll indicator",
@@ -262,7 +290,7 @@ local options = {
 								KTF.Bar:SetShown(db.frameScrollbar)
 								KT:SetSize()
 							end,
-							order = 1.5,
+							order = 1.7,
 						},
 						frameStrata = {
 							name = L"Strata",
@@ -281,7 +309,7 @@ local options = {
 								KTF:SetFrameStrata(strata[value])
 								KTF.Buttons:SetFrameStrata(strata[value])
 							end,
-							order = 1.6,
+							order = 1.8,
 						},
 					},
 				},
@@ -1358,11 +1386,33 @@ InterfaceOptionsFrame:HookScript("OnHide", function(self)
 		end
 	end
 	ACR:NotifyChange(addonName)
+
+	OverlayFrameHide()
 end)
+
+hooksecurefunc("OptionsList_SelectButton", function(listFrame, button)
+	OverlayFrameHide()
+end)
+
+function OverlayFrameUpdate()
+	if overlay then
+		overlay:SetSize(280, db.maxHeight)
+		overlay:ClearAllPoints()
+		overlay:SetPoint(db.anchorPoint, 0, 0)
+	end
+end
+
+function OverlayFrameHide()
+	if overlayShown then
+		overlay:Hide()
+		overlayShown = false
+	end
+end
 
 function GetModulesOptionsTable()
 	local numModules = #db.modulesOrder
 	local text
+	local defaultModule, defaultText
 	local args = {
 		descCurOrder = {
 			name = cTitle..L"Current Order",
@@ -1384,13 +1434,27 @@ function GetModulesOptionsTable()
 			order = 20,
 		},
 	}
+
 	for i, module in ipairs(db.modulesOrder) do
 		text = _G[module].Header.Text:GetText()
 		if module == "SCENARIO_CONTENT_TRACKER_MODULE" then
 			text = text.." *"
+		elseif module == "UI_WIDGET_TRACKER_MODULE" then
+			text = "[ "..ZONE.." ]"
 		elseif module == "AUTO_QUEST_POPUP_TRACKER_MODULE" then
 			text = L"Popup "..text
 		end
+
+		defaultModule = OTF.MODULES_UI_ORDER[i]
+		defaultText = defaultModule.Header.Text:GetText()
+		if defaultModule == SCENARIO_CONTENT_TRACKER_MODULE then
+			defaultText = defaultText.." *"
+		elseif defaultModule == UI_WIDGET_TRACKER_MODULE then
+			defaultText = "[ "..ZONE.." ]"
+		elseif defaultModule == AUTO_QUEST_POPUP_TRACKER_MODULE then
+			defaultText = L"Popup "..defaultText
+		end
+
 		args["pos"..i] = {
 			name = " "..text,
 			type = "description",
@@ -1419,7 +1483,7 @@ function GetModulesOptionsTable()
 			order = i + 0.2,
 		}
 		args["pos"..i.."default"] = {
-			name = "|T:1:55|t|cff808080"..(OTF.MODULES_UI_ORDER[i] == AUTO_QUEST_POPUP_TRACKER_MODULE and L"Popup " or "")..(OTF.MODULES_UI_ORDER[i].Header.Text:GetText() or " = ")..(OTF.MODULES_UI_ORDER[i] == SCENARIO_CONTENT_TRACKER_MODULE and " *" or ""),
+			name = "|T:1:55|t|cff808080"..defaultText,
 			type = "description",
 			width = "normal",
 			order = i + 0.3,
