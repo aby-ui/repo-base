@@ -1344,6 +1344,17 @@ function KT:SetupOptions()
 	db = self.db.profile
 	dbChar = self.db.char
 
+    -- 如果有重复的或者不在default里的，则为default, 重复会导致排序错误
+    local exist, def = {}, {}
+    for i, module in ipairs(defaults.profile.modulesOrder) do def[module] = true end
+    for i, module in ipairs(db.modulesOrder) do
+        if not def[module] or exist[module] then
+            db.modulesOrder = copy(defaults.profile.modulesOrder)
+            break
+        end
+        exist[module] = true
+    end
+
 	general.sec2.args.classBorder.name = general.sec2.args.classBorder.name:format(self.RgbToHex(self.classColor))
 
 	general.sec7.args.messageOutput = self:GetSinkAce3OptionsDataTable()
