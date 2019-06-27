@@ -2427,7 +2427,7 @@ L["EVENTS_SETTINGS_COUNTER_NAME_DESC"] = [[Enter the name of the counter to be m
 
 Counter names must be lower-case with no spaces.
 
-Use this counter name in other places where you would like to check this counter (Conditions and Text Displays via the [Counter] DogTag)
+Use this counter name in other places where you would like to check this counter (Conditions, and Text Displays via the [Counter] DogTag)
 
 
 Advanced Users: Counters are stored in TMW.COUNTERS[counterName] = value.   Call TMW:Fire( "TMW_COUNTER_MODIFIED", counterName ) if you change a counter in a custom Lua script.]]
@@ -2437,7 +2437,7 @@ L["EVENTS_SETTINGS_TIMER_NAME_DESC"] = [[Enter the name of the timer to be modif
 
 Timer names must be lower-case with no spaces.
 
-Use this timer name in other places where you would like to check this timer (Conditions and Text Displays via the [Timer] DogTag)]]
+Use this timer name in other places where you would like to check this timer (Conditions, and Text Displays via the [Timer] DogTag)]]
 
 
 L["EVENTS_SETTINGS_COUNTER_OP"] = "Operation"

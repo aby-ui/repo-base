@@ -64,6 +64,10 @@ TMW:RegisterUpgrade(42102, {
 
 -- Helper methods
 function Sound:GetSoundFile(sound)
+
+	-- Always tostring the input. Fixes https://github.com/ascott18/TellMeWhen/issues/1698.
+	sound = tostring(sound)
+
 	sound = TMW:CleanPath(sound)
 	local quiet = TMW:CleanPath("Interface/Quiet.ogg")
 

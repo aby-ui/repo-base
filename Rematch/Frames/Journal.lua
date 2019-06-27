@@ -249,6 +249,7 @@ function journal:ConfigureJournal(hide)
 			if panel.Resize then
 				panel:Resize(280)
 			end
+			panel:ClearAllPoints()
 			panel:SetPoint("BOTTOMLEFT",layout[i]=="left" and 4 or layout[i]=="mid" and 286 or 568,26)
 			panel:Show()
 		elseif panel then

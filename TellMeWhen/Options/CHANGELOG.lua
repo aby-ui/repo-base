@@ -3,6 +3,11 @@ if not TMW then return end
 TMW.CHANGELOG_LASTVER="7.4.0"
 
 TMW.CHANGELOG = [==[
+## v8.6.2
+### Bug Fixes
+* Fixed #1698: Utils.lua:438: attempt to index local 'path' (a number value)
+* Fixed #1699: Several lists when editing notifications were no longer displaying correctly, if at all, in WoW 8.2.
+
 ## v8.6.1
 * Buff/Debuff equivalency improvements
 * Added Kul Tiran and Zandalari to the Unit Race condition
