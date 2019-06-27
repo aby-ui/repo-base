@@ -16,7 +16,7 @@ StaticPopupDialogs["POSTAL_DELETE_MAIL"] = {preferredIndex = 3,
 	OnAccept = function(self)
 		DeleteInboxItem(selectedID)
 		selectedID = nil
-		--OpenMailFrame:Hide()
+		--HideUIPanel(OpenMailFrame)
 	end,
 	showAlert = 1,
 	timeout = 0,
@@ -30,7 +30,7 @@ StaticPopupDialogs["POSTAL_DELETE_MONEY"] = {preferredIndex = 3,
 	OnAccept = function(self)
 		DeleteInboxItem(selectedID)
 		selectedID = nil
-		--OpenMailFrame:Hide()
+		--HideUIPanel(OpenMailFrame)
 	end,
 	OnShow = function(self)
 		MoneyFrame_Update(self.moneyFrame, selectedIDmoney)
@@ -65,7 +65,7 @@ function Postal_DoNotWant.Click(self, button, down)
 		StaticPopup_Hide("COD_CONFIRMATION")
 	end
 	selectedID = nil
-	--OpenMailFrame:Hide()
+	--HideUIPanel(OpenMailFrame)
 end
 
 function Postal_DoNotWant:OnEnable()

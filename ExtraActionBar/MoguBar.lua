@@ -114,7 +114,7 @@ end
 function MOGU_ShowKeyBindingFrame(MOGU_7739b813d90aed43ab9d0eb84ec1c1ae)
     if (MOGU_7739b813d90aed43ab9d0eb84ec1c1ae == nil) then
         KeyBindingFrame_LoadUI();
-        KeyBindingFrame:Show();
+        ShowUIPanel(KeyBindingFrame);
         return;
     end
     local MOGU_b52e349dfc92773f7d6f1dd51228ec0a = GetNumBindings();
@@ -122,7 +122,7 @@ function MOGU_ShowKeyBindingFrame(MOGU_7739b813d90aed43ab9d0eb84ec1c1ae)
         local MOGU_d28056e4bcd8f214a25daeabfe052d6e, MOGU_31c593401a06ae783f934538e503e6e1, MOGU_59981dde119ddaafbcbf4b1ac8eae22d = GetBinding(MOGU_e914904fab9d05d3f54d52bfc31a0f3f);
         if (MOGU_d28056e4bcd8f214a25daeabfe052d6e == MOGU_7739b813d90aed43ab9d0eb84ec1c1ae) then
             KeyBindingFrame_LoadUI();
-            KeyBindingFrame:Show();
+            ShowUIPanel(KeyBindingFrame);
             KeyBindingFrameScrollFrameScrollBar:SetValue((MOGU_e914904fab9d05d3f54d52bfc31a0f3f - 1) * KEY_BINDING_HEIGHT);
         end
     end

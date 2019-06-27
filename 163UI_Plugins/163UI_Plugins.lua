@@ -72,7 +72,7 @@ U1PLUG["GameMenuGC"] = function()
     end
     MainMenuMicroButton:HookScript("OnClick", function()
         if IsControlKeyDown() then
-            if GameMenuFrame:IsVisible() then GameMenuFrame:Hide() end
+            if GameMenuFrame:IsVisible() then HideUIPanel(GameMenuFrame) end
             CoreScheduleBucket("gc", 0.2, gc)
         end
     end)

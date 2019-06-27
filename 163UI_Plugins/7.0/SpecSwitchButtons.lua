@@ -101,14 +101,14 @@ if TalentMicroButton then
     SetOrHookScript(TalentMicroButton, "OnClick", function(self, button)
         if button == "RightButton" then
             if PlayerTalentFrame:IsVisible() then
-                PlayerTalentFrame:Hide()
+                HideUIPanel(PlayerTalentFrame)
             end
             showSwitchButtons()
         elseif (IsControlKeyDown()) then
             U1DB.configs[CONFIG_NAME] = not U1DB.configs[CONFIG_NAME]
             U1Message("切换天赋按钮已 "..(U1DB.configs[CONFIG_NAME] and "禁用" or "启用"))
             if PlayerTalentFrame:IsVisible() then
-                PlayerTalentFrame:Hide()
+                HideUIPanel(PlayerTalentFrame)
             end
         else
             hideSwitchButtons()
@@ -118,7 +118,7 @@ if TalentMicroButton then
     --[[
     TalentMicroButton:HookScript("OnClick", function()
         if IsModifierKeyDown() then
-            PlayerTalentFrame:Hide();
+            HideUIPanel(PlayerTalentFrame);
             local all = GetNumSpecializations()
             if (all>1) then
                 local old, new = GetSpecialization(), 1

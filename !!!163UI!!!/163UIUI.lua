@@ -169,7 +169,7 @@ function UUI.Raise(raise)
         end
     else
         if GameMenuFrame:IsVisible() then
-            GameMenuFrame:Hide();
+            HideUIPanel(GameMenuFrame);
         else
             main:SetFrameStrata("MEDIUM");
             main:Lower();
@@ -1942,7 +1942,7 @@ function U1_CreateMinimapButton()
 end
 
 function UUI.ToggleUI(self, button)
-    if GameMenuFrame:IsVisible() then GameMenuFrame:Hide() end
+    if GameMenuFrame:IsVisible() then HideUIPanel(GameMenuFrame) end
     if UUI():IsVisible() then UUI():Hide() else UUI():Show() end
 end
 

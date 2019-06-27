@@ -743,7 +743,7 @@ hookfunction.FloatingBattlePet_Show=function(speciesID,level)
 			CollectionsJournal_LoadUI();
 		end
 		if (not CollectionsJournal:IsShown()) then
-			CollectionsJournal:Show();
+			ShowUIPanel(CollectionsJournal);
 		end
 		if not UnitAffectingCombat("player") then CollectionsJournal_SetTab(CollectionsJournal, 2) end
 		if (speciesID and speciesID > 0) then

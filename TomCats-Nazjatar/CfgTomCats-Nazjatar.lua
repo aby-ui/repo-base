@@ -1,7 +1,7 @@
 U1RegisterAddon("TomCats-Nazjatar", {
     title = "纳沙塔尔稀有",
     defaultEnable = 1,
-    minimap = "TomCats-NazjatarRaresMinimapButtonButton",
+    minimap = "TomCats-NazjatarMinimapButton",
 
     tags = { TAG_MAPQUEST, },
     icon = "Interface\\AddOns\\TomCats-Nazjatar\\images\\nazjatar-icon",

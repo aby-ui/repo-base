@@ -1145,7 +1145,7 @@ end
 	ColorPickerFrame.extraInfo = info.extraInfo;
 	-- This must come last, since it triggers a call to ColorPickerFrame.func()
 	ColorPickerFrame:SetColorRGB(info.r, info.g, info.b);
-	ColorPickerFrame:Show();
+	ShowUIPanel(ColorPickerFrame);
 end
 
 function ColorPicker_GetPreviousValues()

@@ -118,7 +118,7 @@ local function mmbHookOnClick(self, ...)
     else
         --U1_CloseCompactMode(); --还原并不好用.
         if(GameMenuFrame:IsVisible())then
-            GameMenuFrame:Hide();
+            HideUIPanel(GameMenuFrame);
         end
         UUI.Raise(false);
         if(self._originOnClick) then
