@@ -100,3 +100,36 @@ U1RegisterAddon("HandyNotes_DungeonLocations", {
     defaultEnable = 1,
     load = "LATER",
 })
+
+U1RegisterAddon("TomCats-DarkshoreRares", {
+    title = "黑海岸稀有",
+    defaultEnable = 1,
+    minimap = "TomCats-DarkshoreRaresMinimapButtonButton",
+    tags = { TAG_MAPQUEST, },
+    icon = "Interface\\AddOns\\TomCats-DarkshoreRares\\images\\darnassus-icon",
+    desc = "在黑海岸战争前线大地图上显示稀有精英图标及掉落",
+    pics = 2,
+    { text = "HandyNotes插件设置", callback = function(cfg, v, loading) LibStub("AceConfigDialog-3.0"):Open("HandyNotes") end },
+});
+
+U1RegisterAddon("TomCats-Nazjatar", {
+    title = "纳沙塔尔稀有",
+    defaultEnable = 1,
+    --minimap = "TomCats-NazjatarMinimapButton",
+    tags = { TAG_MAPQUEST, },
+    icon = "Interface\\AddOns\\TomCats-Nazjatar\\images\\nazjatar-icon",
+    desc = "在纳沙塔尔地图上显示稀有精英图标及掉落，也可以作为HandyNotes插件",
+    pics = 2,
+    { text = "HandyNotes插件设置", callback = function(cfg, v, loading) LibStub("AceConfigDialog-3.0"):Open("HandyNotes") end },
+});
+
+U1RegisterAddon("TomCats-Mechagon", {
+    title = "麦卡贡稀有",
+    defaultEnable = 1,
+    --minimap = "TomCats-MechagonMinimapButton",
+    tags = { TAG_MAPQUEST, },
+    icon = "Interface\\AddOns\\TomCats-Mechagon\\images\\mechagon-icon",
+    desc = "在麦卡贡地图上显示稀有精英图标及掉落，也可以作为HandyNotes插件",
+    pics = 2,
+    { text = "HandyNotes插件设置", callback = function(cfg, v, loading) LibStub("AceConfigDialog-3.0"):Open("HandyNotes") end },
+});

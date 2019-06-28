@@ -121,8 +121,6 @@
     <Include file="..\..\AbyBossGuide\CfgAbyBossGuide.lua"/>
     <Include file="..\..\Paku_Totems\CfgPaku_Totems.lua"/>
     <Include file="..\..\ShadowedUnitFrames\CfgShadowedUnitFrames.lua"/>
-    <Include file="..\..\TomCats-DarkshoreRares\CfgTomCats-DarkshoreRares.lua"/>
-    <Include file="..\..\TomCats-Nazjatar\CfgTomCats-Nazjatar.lua"/>
     <Include file="..\..\BFAInvasionTimer\CfgBFAInvasionTimer.lua"/>
     <Include file="..\..\MethodDungeonTools\CfgMethodDungeonTools.lua"/>
     <Include file="..\..\Details\CfgDetails.lua"/>

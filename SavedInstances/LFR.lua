@@ -90,6 +90,10 @@ local LFRInstances = {
   [1950] = { total=3, base=7,  parent=1944, minLvl=120, remap={ 1, 2, 3 }, faction="Horde" }, -- BoD3: Victory or Death (Horde)
 
   [1951] = { total=2, base=1,  parent=1954, minLvl=120, remap={ 1, 2 } }, -- Crucible of Storms
+
+  [2009] = { total=3, base=1,  parent=2016, minLvl=120, remap={ 1, 2, 3 } }, -- The Eternal Palace: The Grand Reception
+  [2010] = { total=3, base=4,  parent=2016, minLvl=120, remap={ 1, 2, 3 } }, -- The Eternal Palace: Depths of the Devoted
+  [2011] = { total=2, base=7,  parent=2016, minLvl=120, remap={ 1, 2 } }, -- The Eternal Palace: The Circle of Stars
 }
 
 local tbl = {}

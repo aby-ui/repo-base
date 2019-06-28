@@ -469,6 +469,7 @@ addon.defaultDB = {
     Currency1716 = true, -- Honorbound Service Medal
     Currency1717 = true, -- 7th Legion Service Medal
     Currency1718 = true, -- Titan Residuum
+    Currency1721 = true, -- Prismatic Manapearl
     CurrencyMax = false,
     CurrencyEarned = true,
     MythicKey = true,
@@ -1413,10 +1414,16 @@ function addon:UpdateInstance(id)
     addon.db.Instances[L["Flex"]..": "..name] = nil -- clean old flex entries
     name = L["LFR"]..": "..name
   end
+  if id == 1966 then -- ignore Arathi Basin Comp Stomp
+    return nil, nil, true
+  end
   if id == 1661 then -- ignore AI Test - Arathi Basin
     return nil, nil, true
   end
   if id == 1508 then -- ignore AI Test - Warsong Gulch
+    return nil, nil, true
+  end
+  if id == 1428 then -- ignore Shado-Pan Showdown
     return nil, nil, true
   end
   if id == 852 and expansionLevel == 5 then -- XXX: Molten Core hack
@@ -2543,7 +2550,7 @@ end
 function core:OnInitialize()
   local versionString = GetAddOnMetadata(addonName, "version")
   --[===[@debug@
-  if versionString == "8.2.0" then
+  if versionString == "8.2.0-1-geb8d7b9" then
     versionString = "Dev"
   end
   --@end-debug@]===]

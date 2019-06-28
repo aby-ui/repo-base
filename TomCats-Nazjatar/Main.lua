@@ -121,7 +121,7 @@ local function ADDON_LOADED(self)
             color = { r = 0, g = 1, b = 0 }
         },
         INCOMPLETE = {
-            getImage = function() return 1121272, 576/1024, 608/1024, 302/512, 334/512 end,
+            getImage = function() return 1121272, 576/1024, 608/1024, 373/512, 405/512 end,
             font = incompleteFont,
             texture = "incomplete",
             color = { r = 0.75, g = 0.75, b = 0.75 }
@@ -493,9 +493,8 @@ function VignettePinMixin:OnMouseLeave()
 end
 
 if (HandyNotes) then
-    -- todo: Change coordinates for the incomplete/complete icon as per the updated wow db
-    local incompleteIcon = {icon = 1121272, tCoordLeft = 575/1024, tCoordRight = 607/1024, tCoordTop = 205/512, tCoordBottom = 237/512 }
-    local completeIcon = {icon = 973338, tCoordLeft = 123/256, tCoordRight = 159/256, tCoordTop = 94/128, tCoordBottom = 126/128 }
+    local incompleteIcon = {icon = 1121272, tCoordLeft = 576/1024, tCoordRight = 608/1024, tCoordTop = 373/512, tCoordBottom = 405/512 }
+    local completeIcon = {icon = 973338, tCoordLeft = 124/256, tCoordRight = 160/256, tCoordTop = 94/128, tCoordBottom = 126/128 }
     local nilFunc = function() return nil end
     local coordLookup = {}
     local HandyNotesPlugin = {
@@ -542,7 +541,7 @@ if (HandyNotes) then
 
     local HandyNotesOptions = {
         type="group",
-        name="TomCat's Tours: " .. addon.params["Map Name"],
+        name="TCT: " .. addon.params["Map Name"],
         get = function(info) return addon.savedVariables.character.enableHandyNotesPlugin or false end,
         set = function(info, v)
             addon.savedVariables.character.enableHandyNotesPlugin = v
@@ -572,7 +571,7 @@ if (TomCats and TomCats.Register) then
                 }
             },
             name = "Rares of Nazjatar",
-            version = "1.0.1"
+            version = "1.0.2"
         }
     )
 end

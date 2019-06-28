@@ -32,6 +32,9 @@ local factionID = {
   2162, -- Storm's Wake
   2163, -- Tortollan Seekers
   2164, -- Champions of Azeroth
+  2373, -- The Unshackled
+  2391, -- Rustbolt Resistance
+  2400, -- Waveblade Ankoan
 }
 
 function P:OnEnable()

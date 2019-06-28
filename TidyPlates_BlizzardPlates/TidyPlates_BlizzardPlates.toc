@@ -2,15 +2,13 @@
 ## Title: Tidy Plates: |cFF3782D1BlizzardPlates
 ## Notes: Blizzard Vanilla´s Plates.
 ## Author: delabarra.
-## Version: 1.5d
+## Version: 1.6
 ## Dependencies: TidyPlates, TidyPlatesHub
 
 TidyPlates_BlizzardPlates.lua
+
 
 ## Title-zhCN: |cff880303[爱不易]|r Tidy 姓名版暴雪经典主题
 ## Title-zhTW: |cff880303[爱不易]|r Tidy 姓名版暴雪经典主题
 ## Notes-zhCN: 模仿7.0之前暴雪默认姓名板的TidyPlates主题
 ## X-Vendor: AbyUI
-
-
-

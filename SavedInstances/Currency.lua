@@ -62,6 +62,7 @@ local currency = {
   1716, -- Honorbound Service Medal
   1717, -- 7th Legion Service Medal
   1718, -- Titan Residuum
+  1721, -- Prismatic Manapearl
 }
 addon.currency = currency
 

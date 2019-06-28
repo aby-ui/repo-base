@@ -403,6 +403,42 @@ GTFO.SpellID["301802"] = {
   sound = 3;
 };
 
+GTFO.SpellID["299994"] = {
+  --desc = "Vent Blast (HK-8 Aerial Oppression Unit)";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["299947"] = {
+  --desc = "Cannon Blast (HK-8 Aerial Oppression Unit)";
+  sound = 3;
+};
+
+GTFO.SpellID["244888"] = {
+  --desc = "Bonk (Moch'k Eight-Thumbs)";
+  sound = 3;
+};
+
+GTFO.SpellID["304200"] = {
+  --desc = "Azerite Cannon (Unit One-Thirty Three-Seven)";
+  sound = 3;
+};
+
+GTFO.SpellID["304460"] = {
+  --desc = "Dark Glaive (Lyani)";
+  sound = 3;
+};
+
+GTFO.SpellID["300257"] = {
+  --desc = "Firestorm (Magister Hathorel)";
+  sound = 3;
+};
+
+GTFO.SpellID["304348"] = {
+  --desc = "Annihilation (Magister Hathorel)";
+  sound = 3;
+};
+
 
 -- ***********************
 -- * Shrine of the Storm *

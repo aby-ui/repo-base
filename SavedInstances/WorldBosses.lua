@@ -57,6 +57,10 @@ addon.WorldBosses = {
   -- Darkshore
   [2329] = { quest=54896, expansion=7, level=120, remove=true }, -- Ivus the Forest Lord
   [2345] = { quest=54895, expansion=7, level=120, remove=true }, -- Ivus the Decayed
+  -- Nazjatar
+  -- haven't found the quest id yet
+  -- [2362] = { quest=?, expansion=7, level=120 }, -- Ulmath, the Soulbinder
+  -- [2363] = { quest=?, expansion=7, level=120 }, -- Wekemara
 
   -- bosses with no EJ entry (eid is a placeholder)
   [9001] = { quest=38276, name=GARRISON_LOCATION_TOOLTIP.." "..BOSS, expansion=5, level=100 },

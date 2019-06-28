@@ -7,7 +7,7 @@ addon.params = {
     ["Timer Delay"] = 5,
     -- todo: Create Rares of Nazjatar icon
     ["Minimap Icon"] = "nazjatar-icon",
-    ["Icon BGColor"] = {118/255,18/255,20/255,0.80 },
+    ["Icon BGColor"] = { 0,0,0,1.0 },
     ["Title Line 1"] = "纳沙塔尔稀有精英",
     ["Title Line 2"] = ""
 }

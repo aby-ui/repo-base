@@ -6,5 +6,6 @@ select(2, ...).TomCatsLibs.Locales.AddLocaleLookup("enUS", {
     ["Boulderfist Hall"] = nil, -- Kor'gresh Coldrage  areas 316, 9631, 9754, 9838
     ["Drywhisker Gorge"] = nil, -- Geomancer Flintdagger  areas 318, 9751
     ["TomCat's Tours"] = nil,
+    ["Darkshore Rares"] = nil,
     ["Unavailable_Below_120"] = "Unavailable for characters below level 120",
 })

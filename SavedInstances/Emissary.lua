@@ -37,6 +37,7 @@ local _switching = {
   [50601] = 50602, -- Storm's Wake / Talanji's Expedition
   [50599] = 50598, -- Proudmoore Admiralty / Zandalari Empire
   [50600] = 50603, -- Order of Embers / Voldunai
+  [56119] = 56120, -- The Waveblade Ankoan / The Unshackled
 }
 
 -- Switching Table

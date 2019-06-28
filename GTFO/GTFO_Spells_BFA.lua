@@ -212,6 +212,26 @@ GTFO.SpellID["288700"] = {
   sound = 1;
 };
 
+GTFO.SpellID["303132"] = {
+  --desc = "Unstable Orb (Shirakess Starseeker)";
+  sound = 1;
+};
+
+GTFO.SpellID["303716"] = {
+  --desc = "Geyser (Deepwater Maw)";
+  sound = 1;
+};
+
+GTFO.SpellID["297537"] = {
+  --desc = "Intense Flames";
+  sound = 1;
+};
+
+GTFO.SpellID["304335"] = {
+  --desc = "Flamestrike (Magister Hathorel)";
+  sound = 1;
+};
+
 
 
 -- ***********************
