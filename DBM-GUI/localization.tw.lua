@@ -5,7 +5,7 @@ local L = DBM_GUI_Translations
 L.MainFrame	= "Deadly Boss Mods"
 
 L.TranslationByPrefix		= "翻譯:"
-L.TranslationBy 			= "Imbav@聖光之願"
+L.TranslationBy 			= "Whyvv@聖光之願"
 L.Website					= "在discord上拜訪我們:|cFF73C2FBhttps://discord.gg/deadlybossmods|r。請在推特上關注@deadlybossmods或@MysticalOS"
 L.WebsiteButton				= "論壇"
 
@@ -160,6 +160,7 @@ L.ExpandUpwards				= "計時條向上延伸"
 L.FillUpBars				= "填滿計時條"
 L.ClickThrough				= "禁用鼠標事件(允許你點擊穿透計時條)"
 L.Bar_Decimal				= "%d秒以下顯示小數點"
+L.Bar_Alpha					= "計時條透明度: %0.1f"
 L.Bar_DBMOnly				= "以下選項只支援 \"DBM\" 計時條風格"
 L.Bar_EnlargeTime			= "計時條時間低於:%d時放大"
 L.Bar_EnlargePercent		= "計時條百分比低於:%0.1f%%時放大"
@@ -169,6 +170,9 @@ L.BarSort					= "依剩餘時間排序"
 L.BarColorByType			= "根據類型上色"
 L.BarInlineIcons			= "顯示嵌入圖示"
 L.ShortTimerText			= "使用較短的計時器文字(如果可用時)"
+L.KeepBar					= "保持計時條顯示直到技能施放"
+L.KeepBar2					= "(當被模組支援)"
+L.FadeBar					= "清除超出範圍技能的計時條"
 
 -- Tab: Spec Warn Frame
 L.Panel_SpecWarnFrame		= "特別警告"
@@ -226,6 +230,7 @@ L.EventWipeSound			= "設置戰鬥滅團時的音效"
 L.EventEngageSound			= "設置戰鬥開戰時的音效"
 L.EventDungeonMusic			= "在地城/團隊內設置撥放的音樂"
 L.EventEngageMusic			= "設置戰鬥中的音樂"
+L.EventTurtleMusic			= "設置turtle beach quests中的音樂"
 L.Area_EventSoundsExtras	= "事件音效選項"
 L.EventMusicCombined		= "允許在地城和戰鬥選擇的所有音效選項(此選項需要UI重載去反映改變)"
 L.Area_EventSoundsFilters	= "事件音效過濾條件"
@@ -269,30 +274,36 @@ L.FilterInterrupts2			= "如果施放者不在目前的目標/專注(總是過�
 L.FilterInterrupts3			= "如果施放者不在目前的目標/專注(總是過濾) 或中斷技在冷卻時 (首領跟小兵都過濾)"
 L.FilterInterruptNoteName	= "過濾可中斷技能的警告(與次數)，如果自訂註記警告沒有包含你的名字"
 L.FilterDispels				= "過濾可驅散技能如果你的驅散技正在冷卻中"
-L.FilterSelfHud				= "從HudMap過濾你自己(排除Hud的距離功能)"
+L.FilterTrashWarnings		= "過濾普通和英雄地城的所有小怪警告"
 
 L.Area_PullTimer			= "開怪計時器過濾選項"
 L.DontShowPTNoID			= "阻擋與你不同區域ID送出的開怪倒數計時條"
 L.DontShowPT				= "不要顯示開怪/休息倒數計時條"
 L.DontShowPTText			= "不要顯示開怪/休息提示文字"
-L.DontPlayPTCountdown		= "不要使用開怪/休息/開戰/自訂計時器倒數音效"
-L.DontShowPTCountdownText	= "不要顯示開怪/休息/開戰/自訂計時器倒數文字"
-L.PT_Threshold				= "不要顯示高於%d秒以上的休息/開戰/自訂倒數計時器文字"
+L.DontShowPTCountdownText	= "不要顯示開怪計時器倒數文字"
+L.DontPlayPTCountdown		= "完全不要使用開怪/休息/開戰/自訂計時器倒數音效"
+L.PT_Threshold				= "不要使用高於%d秒以上的開怪/休息/開戰/自訂倒數計時器音效"
 
 L.Panel_HideBlizzard		= "禁用及隱藏暴雪功能"
 L.Area_HideBlizzard			= "禁用及隱藏暴雪功能選項"
 L.HideBossEmoteFrame		= "首領戰鬥時隱藏團隊首領表情框架"
-L.HideWatchFrame			= "首領戰鬥時隱藏任務目標框架。如果在挑戰模式中，當框架隱藏會在首領戰鬥中建立一個暫時的獎牌計時器。"
+L.HideWatchFrame			= "首領戰鬥時隱藏任務目標框架如果沒有成就追蹤時或是不在傳奇+模式。"
 L.HideGarrisonUpdates		= "首領戰鬥時隱藏要塞任務完成提示"
 L.HideGuildChallengeUpdates	= "首領戰鬥時隱藏公會挑戰完成提示"
 L.HideQuestTooltips			= "首領戰鬥時隱藏滑鼠提示的任務物件"
 L.HideTooltips				= "首領戰鬥時完全地隱藏滑鼠提示"
 L.DisableSFX				= "首領戰鬥時禁用音效頻道"
 L.DisableCinematics			= "禁用遊戲中的過場動畫"
-L.AfterFirst				= "在每次動畫播放一次之後"
+L.OnlyFight					= "只在戰鬥進行中，在每次動畫被播放一次之後"
+L.AfterFirst				= "在副本中每次動畫播放一次之後"
 L.Always					= ALWAYS
 L.CombatOnly				= "在任何戰鬥中禁用"
 L.RaidCombat				= "只在首領戰鬥中禁用"
+L.HideBonusHeader			= "隱藏額外獎勵視窗低於..."
+L.TrivialContent			= "五人地城"--Basically anything below 340
+L.NormalRaider				= "傳奇地城+5和隨機團隊"--Basically, anything below 355
+L.HeroicRaider				= "傳奇地城+10和英雄團隊和非戰爭前線首領"--Basically anything below 370
+L.MythicRaider				= "傳奇團隊"--Basically anything below 385
 
 L.Panel_ExtraFeatures		= "額外功能"
 --

@@ -18,8 +18,8 @@ local print = TMW.print
 local _G = _G
 local bit_band, bit_bor, tinsert, tremove, unpack, wipe =
 	  bit.band, bit.bor, tinsert, tremove, unpack, wipe
-local UnitGUID, GetItemIcon =
-	  UnitGUID, GetItemIcon
+local UnitGUID, GetItemIcon, CombatLogGetCurrentEventInfo =
+	  UnitGUID, GetItemIcon, CombatLogGetCurrentEventInfo
 local GetSpellTexture = TMW.GetSpellTexture
 
 local pGUID = nil -- This can't be defined at load.
@@ -83,6 +83,9 @@ Type:RegisterIconDefaults{
 	CLEUEvents 				= {
 		["*"] 				= false
 	},
+
+	-- If true, prevent handling of an event if the icon's conditions are failing.
+	OnlyIfConditions		= false
 }
 
 Type.RelevantSettings = {
@@ -169,6 +172,9 @@ local function CLEU_OnEvent(icon, _, t, event, h, sourceGUID, sourceName, source
 		end
 	end
 
+	if icon.OnlyIfConditions and (not icon.ConditionObject or icon.ConditionObject.Failed) then
+		return
+	end
 
 	if icon.CLEUNoRefresh then
 		-- Don't handle the event if CLEUNoRefresh is set and the icon's timer is still running.
@@ -489,18 +495,18 @@ function Type:Setup(icon)
 	-- only define units if there are any units. we dont want to waste time iterating an empty table.
 	icon.SourceUnits = nil
 	if icon.SourceUnit ~= "" then
-		local conditionSet
-		icon.SourceUnits, conditionSet = TMW:GetUnits(icon, icon.SourceUnit, icon.SourceConditions)
-		if conditionSet.mightHaveWackyUnitRefs then
+		local unitSet
+		icon.SourceUnits, unitSet = TMW:GetUnits(icon, icon.SourceUnit, icon.SourceConditions)
+		if unitSet.mightHaveWackyUnitRefs then
 			icon.SourceUnits = TMW:GetUnits(icon, icon.SourceUnit)
 		end
 	end
 
 	icon.DestUnits = nil
 	if icon.DestUnit ~= "" then
-		local conditionSet
-		icon.DestUnits, conditionSet = TMW:GetUnits(icon, icon.DestUnit, icon.SourceConditions)
-		if conditionSet.mightHaveWackyUnitRefs then
+		local unitSet
+		icon.DestUnits, unitSet = TMW:GetUnits(icon, icon.DestUnit, icon.DestConditions)
+		if unitSet.mightHaveWackyUnitRefs then
 			icon.DestUnits = TMW:GetUnits(icon, icon.DestUnit)
 		end
 	end

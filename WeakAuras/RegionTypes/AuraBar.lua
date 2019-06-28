@@ -144,6 +144,7 @@ local properties = {
     min = 6,
     softMax = 72,
     step = 1,
+    default = 12
   },
   timerSize = {
     display = L["Second Text Size"],
@@ -152,6 +153,7 @@ local properties = {
     min = 6,
     softMax = 72,
     step = 1,
+    default = 12
   },
   stacksSize = {
     display = L["Stacks Text Size"],
@@ -160,6 +162,7 @@ local properties = {
     min = 6,
     softMax = 72,
     step = 1,
+    default = 12
   },
   width = {
     display = L["Width"],
@@ -168,6 +171,7 @@ local properties = {
     min = 1,
     softMax = screenWidth,
     bigStep = 1,
+    defautl = 32,
   },
   height = {
     display = L["Height"],
@@ -175,7 +179,8 @@ local properties = {
     type = "number",
     min = 1,
     softMax = screenHeight,
-    bigStep = 1
+    bigStep = 1,
+    default = 32
   },
   orientation = {
     display = L["Orientation"],
@@ -327,18 +332,19 @@ local barPrototype = {
 
   ["UpdateProgress"] = function(self)
     -- Limit values
-    self.value   = math.max(self.min, self.value);
-    self.value   = math.min(self.max, self.value);
+    local value = self.value;
+    value = math.max(self.min, value);
+    value = math.min(self.max, value);
 
     -- Alignment variables
-    local progress = (self.value - self.min) / (self.max - self.min);
+    local progress = (value - self.min) / (self.max - self.min);
 
     -- Create statusbar illusion
     if (self.horizontal) then
-      local xProgress = self:GetWidth() * progress;
+      local xProgress = self:GetRealSize() * progress;
       self.fg:SetWidth(xProgress > 0.0001 and xProgress or 0.0001);
     else
-      local yProgress = self:GetHeight() * progress;
+      local yProgress = select(2, self:GetRealSize()) * progress;
       self.fg:SetHeight(yProgress > 0.0001 and yProgress or 0.0001);
     end
 
@@ -364,8 +370,10 @@ local barPrototype = {
       for index, additionalBar in ipairs(self.additionalBars) do
         if (not self.extraTextures[index]) then
           local extraTexture = self:CreateTexture(nil, "ARTWORK");
+          extraTexture:SetSnapToPixelGrid(false)
+          extraTexture:SetTexelSnappingBias(0)
           extraTexture:SetTexture(self:GetStatusBarTexture(), extraTextureWrapMode, extraTextureWrapMode);
-          extraTexture:SetDrawLayer("ARTWORK", index);
+          extraTexture:SetDrawLayer("ARTWORK", min(index, 7));
           self.extraTextures[index] = extraTexture;
         end
 
@@ -407,6 +415,11 @@ local barPrototype = {
           end
         end
 
+        if (self.additionalBarsClip) then
+          startProgress = max(0, min(1, startProgress));
+          endProgress = max(0, min(1, endProgress));
+        end
+
         if ((endProgress - startProgress) == 0) then
           extraTexture:Hide();
         else
@@ -423,15 +436,16 @@ local barPrototype = {
 
           local xOffset = 0;
           local yOffset = 0;
+          local width, height = self:GetRealSize()
           if (self.horizontal) then
-            xOffset = startProgress * self:GetWidth();
-            local width = (endProgress - startProgress) * self:GetWidth();
+            xOffset = startProgress * width;
+            local width = (endProgress - startProgress) * width;
             extraTexture:SetWidth( width  );
-            extraTexture:SetHeight( self:GetHeight() );
+            extraTexture:SetHeight( height );
           else
-            yOffset = startProgress * self:GetHeight();
-            local height = (endProgress - startProgress) * self:GetHeight();
-            extraTexture:SetWidth( self:GetWidth()  );
+            yOffset = startProgress * height;
+            local height = (endProgress - startProgress) * height;
+            extraTexture:SetWidth( width );
             extraTexture:SetHeight( height );
           end
 
@@ -501,18 +515,21 @@ local barPrototype = {
     end
   end,
 
-  ["SetAdditionalBars"] = function(self, additionalBars, colors, min, max, inverse)
+  ["SetAdditionalBars"] = function(self, additionalBars, colors, min, max, inverse, overlayclip)
     self.additionalBars = additionalBars;
     self.additionalBarsColors = colors;
     self.additionalBarsMin = min;
     self.additionalBarsMax = max;
     self.additionalBarsInverse = inverse;
+    self.additionalBarsClip = overlayclip;
     self:UpdateAdditionalBars();
   end,
 
   ["SetAdditionalBarColor"] = function(self, id, color)
     self.additionalBarsColors[id] = color;
-    self.extraTextures[id]:SetVertexColor(unpack(color));
+    if self.extraTextures[id] then
+      self.extraTextures[id]:SetVertexColor(unpack(color));
+    end
   end,
 
   ["GetValue"] = function(self)
@@ -595,6 +612,10 @@ local barPrototype = {
     return self.fg:GetVertexColor();
   end,
 
+  ["GetRealSize"] = function(self)
+    return 0, 0
+  end,
+
   -- Internal variables
   ["min"] = 0,
   ["max"] = 1,
@@ -615,9 +636,15 @@ local function create(parent)
   local bar = CreateFrame("FRAME", nil, region);
   Mixin(bar, SmoothStatusBarMixin);
   local fg = bar:CreateTexture(nil, "ARTWORK");
+  fg:SetSnapToPixelGrid(false)
+  fg:SetTexelSnappingBias(0)
   local bg = bar:CreateTexture(nil, "ARTWORK");
+  bg:SetSnapToPixelGrid(false)
+  bg:SetTexelSnappingBias(0)
   bg:SetAllPoints();
   local spark = bar:CreateTexture(nil, "ARTWORK");
+  spark:SetSnapToPixelGrid(false)
+  spark:SetTexelSnappingBias(0)
   fg:SetDrawLayer("ARTWORK", 0);
   bg:SetDrawLayer("ARTWORK", -1);
   spark:SetDrawLayer("ARTWORK", 7);
@@ -650,6 +677,8 @@ local function create(parent)
   local iconFrame = CreateFrame("FRAME", nil, region);
   region.iconFrame = iconFrame;
   local icon = iconFrame:CreateTexture(nil, "OVERLAY");
+  icon:SetSnapToPixelGrid(false)
+  icon:SetTexelSnappingBias(0)
   region.icon = icon;
   icon:SetTexture("Interface\\Icons\\INV_Misc_QuestionMark");
 
@@ -751,6 +780,25 @@ local function getRotateOffset(object, degrees, point)
   end
 end
 
+local GetRealSize = {
+  ["HORIZONTAL"] = {
+    [true] = function(self)
+      return self.totalWidth - self.iconWidth, self.totalHeight
+    end,
+    [false] = function(self)
+      return self.totalWidth, self.totalHeight
+    end
+  },
+  ["VERTICAL"] = {
+    [true] = function(self)
+      return self.totalWidth, self.totalHeight - self.iconWidth
+    end,
+    [false] = function(self)
+      return self.totalWidth, self.totalHeight
+    end
+  },
+}
+
 -- Orientation helper methods
 local function orientHorizontalInverse(region, data)
   -- Localize
@@ -760,6 +808,8 @@ local function orientHorizontalInverse(region, data)
   -- Reset
   icon:ClearAllPoints();
   bar:ClearAllPoints();
+
+  bar.GetRealSize = GetRealSize["HORIZONTAL"][data.icon or false]
 
   -- Align icon and bar
   if data.icon then
@@ -809,6 +859,8 @@ local function orientHorizontal(region, data)
   local bar, timer, text, icon = region.bar, region.timer, region.text, region.icon;
   local textDegrees = data.rotateText == "LEFT" and 90 or data.rotateText == "RIGHT" and -90 or 0;
 
+  bar.GetRealSize = GetRealSize["HORIZONTAL"][data.icon or false]
+
   -- Reset
   icon:ClearAllPoints();
   bar:ClearAllPoints();
@@ -855,10 +907,13 @@ local function orientHorizontal(region, data)
     text:SetJustifyH("CENTER");
   end
 end
+
 local function orientVerticalInverse(region, data)
   -- Localize
   local bar, timer, text, icon = region.bar, region.timer, region.text, region.icon;
   local textDegrees = data.rotateText == "LEFT" and 90 or data.rotateText == "RIGHT" and -90 or 0;
+
+  bar.GetRealSize = GetRealSize["VERTICAL"][data.icon or false]
 
   -- Reset
   icon:ClearAllPoints();
@@ -897,10 +952,13 @@ local function orientVerticalInverse(region, data)
   text:SetWidth(0);
   text:SetJustifyH("CENTER");
 end
+
 local function orientVertical(region, data)
   -- Localize
   local bar, timer, text, icon = region.bar, region.timer, region.text, region.icon;
   local textDegrees = data.rotateText == "LEFT" and 90 or data.rotateText == "RIGHT" and -90 or 0;
+
+  bar.GetRealSize = GetRealSize["VERTICAL"][data.icon or false]
 
   -- Reset
   icon:ClearAllPoints();
@@ -1018,6 +1076,9 @@ local function modify(parent, region, data)
   -- Adjust region size
   region:SetWidth(data.width);
   region:SetHeight(data.height);
+  region.bar.totalWidth = data.width
+  region.bar.totalHeight = data.height
+
   region.width = data.width;
   region.height = data.height;
   region.scalex = 1;
@@ -1026,6 +1087,7 @@ local function modify(parent, region, data)
   region.stickyDuration = data.stickyDuration;
   region.progressPrecision = data.progressPrecision;
   region.totalPrecision = data.totalPrecision;
+  region.overlayclip = data.overlayclip;
 
   region.overlays = {};
   if (data.overlays) then
@@ -1187,33 +1249,35 @@ local function modify(parent, region, data)
     timer.visible = false;
   end
 
+  -- Icon update function
+  function region:SetIcon(path)
+    -- Set icon options
+    local iconPath = (
+      region.useAuto
+      and path ~= ""
+      and path
+      or data.displayIcon
+      or "Interface\\Icons\\INV_Misc_QuestionMark"
+      );
+    self.icon:SetTexture(iconPath);
+    region.values.icon = "|T"..iconPath..":12:12:0:0:64:64:4:60:4:60|t";
+
+    -- Update text
+    UpdateText(self, data);
+  end
+
   -- Update icon visibility
   if data.icon then
     -- Update icon
     local iconsize = math.min(region.height, region.width);
     icon:SetWidth(iconsize);
     icon:SetHeight(iconsize);
+    region.bar.iconWidth = iconsize
+    region.bar.iconHeight = iconsize
     local texWidth = 0.25 * data.zoom;
     icon:SetTexCoord(GetTexCoordZoom(texWidth))
     icon:SetDesaturated(data.desaturate);
     icon:SetVertexColor(data.icon_color[1], data.icon_color[2], data.icon_color[3], data.icon_color[4]);
-
-    -- Icon update function
-    function region:SetIcon(path)
-      -- Set icon options
-      local iconPath = (
-        region.useAuto
-        and path ~= ""
-        and path
-        or data.displayIcon
-        or "Interface\\Icons\\INV_Misc_QuestionMark"
-        );
-      self.icon:SetTexture(iconPath);
-      region.values.icon = "|T"..iconPath..":12:12:0:0:64:64:4:60:4:60|t";
-
-      -- Update text
-      UpdateText(self, data);
-    end
 
     -- Update icon visibility
     icon:Show();
@@ -1237,6 +1301,8 @@ local function modify(parent, region, data)
     end
     --
   else
+    region.bar.iconWidth = 0
+    region.bar.iconHeight = 0
     stacks:Hide();
     icon:Hide();
   end
@@ -1250,22 +1316,24 @@ local function modify(parent, region, data)
   local tooltipType = WeakAuras.CanHaveTooltip(data);
   if tooltipType and data.useTooltip then
     -- Create and enable tooltip-hover frame
-    region.tooltipFrame = region.tooltipFrame or CreateFrame("frame");
-    region.tooltipFrame:SetAllPoints(icon);
-    region.tooltipFrame:EnableMouse(true);
-    region.tooltipFrame:SetScript("OnEnter", function()
-      WeakAuras.ShowMouseoverTooltip(region, region.tooltipFrame);
-    end);
-    region.tooltipFrame:SetScript("OnLeave", WeakAuras.HideTooltip);
+    if not region.tooltipFrame then
+      region.tooltipFrame = CreateFrame("frame", nil, region);
+      region.tooltipFrame:SetAllPoints(icon);
+      region.tooltipFrame:SetScript("OnEnter", function()
+        WeakAuras.ShowMouseoverTooltip(region, region.tooltipFrame);
+      end);
+      region.tooltipFrame:SetScript("OnLeave", WeakAuras.HideTooltip);
+    end
 
-  -- Disable tooltip
+    region.tooltipFrame:EnableMouse(true);
   elseif region.tooltipFrame then
+    -- Disable tooltip
     region.tooltipFrame:EnableMouse(false);
   end
 
   -- Look for need to use custom text update
   local customTextFunc = nil
-  if (data.displayTextLeft:find("%%c") or data.displayTextRight:find("%%c")) and data.customText then
+  if (WeakAuras.ContainsCustomPlaceHolder(data.displayTextLeft) or WeakAuras.ContainsCustomPlaceHolder(data.displayTextRight)) and data.customText then
     -- Load custom code function
     customTextFunc = WeakAuras.LoadFunction("return "..data.customText, region.id)
   end
@@ -1290,6 +1358,7 @@ local function modify(parent, region, data)
 
     -- Remove custom text update
   else
+    region.values.custom = nil;
     region.UpdateCustomText = nil;
     WeakAuras.UnregisterCustomTextUpdates(region);
   end
@@ -1340,7 +1409,10 @@ local function modify(parent, region, data)
     end
 
     -- Update width
-    self:SetWidth(region.width * scalex);
+    self.bar.totalWidth = region.width * scalex
+    self.bar.iconWidth = iconsize * scalex
+
+    self:SetWidth(self.bar.totalWidth);
     icon:SetWidth(iconsize * scalex);
 
     -- Re-orientate region
@@ -1368,8 +1440,10 @@ local function modify(parent, region, data)
     end
 
     -- Update height
-    self:SetHeight(region.height * scaley);
-    icon:SetHeight(iconsize * scaley);
+    self.bar.totalHeight = region.height * scaley
+    self.bar.iconWidth = iconsize * scaley
+    self:SetHeight(self.bar.totalHeight);
+    icon:SetHeight(self.bar.iconWidth);
   end
   --  region:Scale(1.0, 1.0);
 
@@ -1379,6 +1453,14 @@ local function modify(parent, region, data)
     UpdateText(self, data);
   end
   --  region:SetName("");
+
+  if data.smoothProgress then
+    region.PreShow = function()
+      region.bar:ResetSmoothedValue();
+    end
+  else
+    region.PreShow = nil
+  end
 
   function region:SetValue(value, total)
     local progress = 0;
@@ -1391,6 +1473,7 @@ local function modify(parent, region, data)
     end
 
     if (data.smoothProgress) then
+      region.bar.targetValue = progress
       region.bar:SetSmoothedValue(progress);
     else
       region.bar:SetValue(progress);
@@ -1409,18 +1492,23 @@ local function modify(parent, region, data)
     then
       progress = 1 - progress;
     end
-    region.bar:SetValue(progress);
+    if (data.smoothProgress) then
+      region.bar.targetValue = progress
+      region.bar:SetSmoothedValue(progress);
+    else
+      region.bar:SetValue(progress);
+    end
     UpdateText(region, data);
   end
 
   function region:SetAdditionalProgress(additionalProgress, min, max, inverse)
     local effectiveInverse = (inverse and not region.inverseDirection) or (not inverse and region.inverseDirection);
-    region.bar:SetAdditionalBars(additionalProgress, region.overlays, min, max, effectiveInverse);
+    region.bar:SetAdditionalBars(additionalProgress, region.overlays, min, max, effectiveInverse, region.overlayclip);
   end
 
   function region:TimerTick()
     local adjustMin = region.adjustedMin or 0;
-    self:SetTime( (region.adjustedMax or region.duration) - adjustMin, region.expirationTime - adjustMin, region.inverse);
+    self:SetTime( (region.duration ~= 0 and region.adjustedMax or region.duration) - adjustMin, region.expirationTime - adjustMin, region.inverse);
   end
 
   function region:SetIconColor(r, g, b, a)
@@ -1501,12 +1589,25 @@ local function modify(parent, region, data)
       return;
     end
     region.inverseDirection = inverse;
-    region.bar:SetValue(1 - region.bar:GetValue());
+    if (data.smoothProgress) then
+      if (region.bar.targetValue) then
+        region.bar.targetValue = 1 - region.bar.targetValue
+        region.bar:SetSmoothedValue(region.bar.targetValue);
+      end
+    else
+      region.bar:SetValue(1 - region.bar:GetValue());
+    end
   end
 
   function region:SetOrientation(orientation)
     orient(region, data, orientation);
-    region.bar:SetValue(region.bar:GetValue());
+    if (data.smoothProgress) then
+      if region.bar.targetValue then
+        region.bar:SetSmoothedValue(region.bar.targetValue);
+      end
+    else
+      region.bar:SetValue(region.bar:GetValue());
+    end
   end
 
   function region:SetOverlayColor(id, r, g, b, a)

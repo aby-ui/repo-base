@@ -218,6 +218,11 @@ end
 function U1SaveDBValue(cfg, value)
     if U1.PROFILE_CHANGED then return end
     local old = U1EncodeNIL(U1LoadDBValue(cfg))
+    -- 配合 U1CfgMakeCVarOption 的，强制保存设置，不清理
+    if cfg.dontCompareDefaultWhenSave then
+        U1DB.configs[cfg._path] = U1EncodeNIL(value);
+        return old
+    end
     local has_default, default = U1LoadDBDefault(cfg)
     if type(value) == "table" then
         if has_default and type(default) == "table" and tcovers(value, default) and tcovers(default, value) then
@@ -1062,7 +1067,7 @@ local function simEventsAndLoadCfgs(beforeLogin)
         U1SimulateEvent("SPELLS_CHANGED");
         U1SimulateEvent("WORLD_MAP_UPDATE");
         U1SimulateEvent("QUEST_LOG_UPDATE");
-        if(UnitIsDeadOrGhost("player")) then U1SimulateEvent("PLAYER_DEAD") else U1SimulateEvent("PLAYER_ALIVE") end
+        if(UnitIsDeadOrGhost("player")) then U1SimulateEvent("PLAYER_DEAD") end --else U1SimulateEvent("PLAYER_ALIVE") end
         if(not InCombatLockdown())then U1SimulateEvent("PLAYER_REGEN_ENABLED") end
         if(GetNumGroupMembers()>0) then U1SimulateEvent("GROUP_ROSTER_UPDATE") end
     end
@@ -1370,13 +1375,6 @@ end
 local addonsToEnable = {} --ADDON_LOADED时还不能启用class和LATER的插件，不然暴雪还是会加载，要到VARIABLES_LOADED里启用.
 
 function U1:PLAYER_LOGIN()
-    if U1DBG.first_run then
-        --在ADDON_LOADED里调用无效
-        SetCVar("floatingCombatTextCombatDamage", "1")
-        SetCVar("floatingCombatTextCombatHealing", "1")
-        U1DBG.first_run = nil
-    end
-
     U1.playerLogin = true
 
     if not U1.variableLoaded then
@@ -1508,6 +1506,8 @@ function U1:ADDON_LOADED(event, name)
 
         U1.db = db;
         U1DBG = U1DBG or { first_run = true }
+        U1DBG.ap_spell = nil
+        U1DBG.AtlasLootReverseDBx = nil
         db.selectedTag = db.selectedTag or defaultDB.selectedTag;
 
         if U1.returnFromDisableAll then
@@ -1627,7 +1627,7 @@ function U1:ADDON_LOADED(event, name)
                 local name, server = UnitName(unit)
                 local fullName = U1UnitFullName(unit)
                 if fullName and U1STAFF[fullName] then
-                    InspectFrameTitleText:SetText("|cffff00ff爱不易开发者|r " .. GetUnitName(unit, true));
+                    InspectFrameTitleText:SetText("|cffff00ff" .. U1STAFF[fullName] .. "|r " .. GetUnitName(unit, true));
                 else
                     local pvpname = UnitPVPName(unit)
                     if not pvpname then return end
@@ -1707,8 +1707,8 @@ function EnableOrLoadDependencies(name, info, loaded)
 end
 
 function U1:VARIABLES_LOADED(calledFromLogin)
-    SetCVar("scriptErrors", DEBUG_MODE and 1 or 0) --TODO aby8
-
+    -- 先LOGIN的情况，第一次从LOGIN调用的不执行，真的事件来了RunOnNextFrame（忘了为啥了）
+    -- 先VAR的情况，第一次过来直接加载，第二次不会调用
     if calledFromLogin~=1 then
         if not U1.playerLogin then
             loadNormalCfgs(1, nil, nil);
@@ -1721,6 +1721,27 @@ function U1:VARIABLES_LOADED(calledFromLogin)
 
     U1.variableLoaded = true
     --print("VARIABLES_LOADED", db, U1DB, db==U1DB, db==defaultDB);
+
+    -- cvar变量多角色公用，所以仅在插件初次执行的时候设置
+    if U1DBG.first_run then
+        local deep
+        function deep(cfg)
+            if cfg.defaultFirstRun ~= nil then
+                if type(cfg.defaultFirstRun) == "function" then
+                    cfg.defaultFirstRun = cfg.defaultFirstRun()
+                end
+                U1CfgCallBack(cfg, cfg.defaultFirstRun, false) --如果loading=true则不会设置上
+                if false then U1Message("U1DBG.first_run " .. cfg.text .. " " .. cfg._path .. "," .. cfg.defaultFirstRun) end
+            end
+            for _, sub in ipairs(cfg) do deep(sub) end
+        end
+        for _, addon in U1IterateAllAddons() do
+            for _, cfg in ipairs(addon) do
+                deep(cfg)
+            end
+        end
+        U1DBG.first_run = nil
+    end
 
     --如果提前打开，则暴雪加载插件的时候，如果 OptionalDeps 存在而且已启用，则加载本插件的时候会自动先加载 OptionalDeps。
     --但是如果不提前打开，则必须严格加载每个插件，不能依赖暴雪自动加载LOD的

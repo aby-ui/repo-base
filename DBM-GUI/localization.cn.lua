@@ -1,8 +1,8 @@
-﻿-- Diablohu(diablohudream@gmail.com) 
+-- Diablohu(diablohudream@gmail.com)
 -- yleaf(yaroot@gmail.com)
 -- sunlcy@NGA
 -- Mini Dragon(projecteurs@gmail.com)
--- Last update: 2018/07/10
+-- Last update: 2019/02/22
 
 if GetLocale() ~= "zhCN" then return end
 if not DBM_GUI_Translations then DBM_GUI_Translations = {} end
@@ -167,6 +167,7 @@ L.ExpandUpwards				= "快消失的计时条在上"
 L.FillUpBars				= "填充计时条"
 L.ClickThrough				= "禁用鼠标点击事件（允许你点击计时条后面的目标）"
 L.Bar_Decimal				= "%d秒以内显示小数点"
+L.Bar_Alpha					= "计时条透明度: %0.1f"
 L.Bar_DBMOnly				= "以下设置只对 \"DBM\" 计时条有效 (两个判断的操作符是或，任一就变大)"
 L.Bar_EnlargeTime			= "在%d秒后计时条变大"
 L.Bar_EnlargePercent		= "在%0.1f%%后计时条变大"
@@ -176,6 +177,9 @@ L.BarSort					= "按剩余时间排序"
 L.BarColorByType			= "按类着色"
 L.BarInlineIcons			= "显示条内图标"
 L.ShortTimerText			= "使用更短的计时条文字 (当可行时)"
+L.KeepBar					= "保持计时条显示直到技能被释放"
+L.KeepBar2					= "(当被模组支持时)"
+L.FadeBar					= "隐藏超出技能范围的计时条"
 
 -- Tab: Spec Warn Frame
 L.Panel_SpecWarnFrame		= "特殊警报"
@@ -275,7 +279,7 @@ L.FilterInterrupts2			= "如果被打断对象不是当前目标/焦点(总是)�
 L.FilterInterrupts3			= "如果被打断对象不是当前目标/焦点(总是)或者打断技能正在冷却(Boss和小怪)"
 L.FilterInterruptNoteName	= "当自定义注记内没有包含你的名字的时候，过滤掉打断提示 (带计数)"
 L.FilterDispels				= "当驱散技能在冷却时, 过滤掉驱散提示"
-L.FilterSelfHud				= "把自己从HudMap中过滤掉 (不包括和距离有关的功能)"
+L.FilterTrashWarnings		= "当进入普通或英雄副本时，过滤掉所有小怪警报"
 
 L.Area_PullTimer			= "开怪和倒计时过滤设置"
 L.DontShowPTNoID			= "不显示不同区域发送的倒计时"
@@ -295,10 +299,16 @@ L.HideQuestTooltips			= "Boss战斗中隐藏鼠标提示窗体(tooltips)中的�
 L.HideTooltips				= "Boss战斗中完全隐藏鼠标提示窗体(tooltips)"
 L.DisableSFX				= "Boss战斗中关闭音效"
 L.DisableCinematics			= "自动跳过游戏内过场动画"
-L.AfterFirst				= "仅第一次播放"
+L.OnlyFight					= "在战斗时跳过已经播放过的"
+L.AfterFirst				= "跳过已经播放过的"
 L.Always					= "总是跳过"
 L.CombatOnly				= "在任何战斗中隐藏"
 L.RaidCombat				= "只在Boss战斗中隐藏"
+L.HideBonusHeader			= "隐藏奖励拾取投掷"
+L.TrivialContent			= "低于5M掉落"--Basically anything below 340
+L.NormalRaider				= "低于5层大秘和随机团掉落"--Basically, anything below 355
+L.HeroicRaider				= "低于10层大秘，H副本"--Basically anything below 370
+L.MythicRaider				= "M副本"--Basically anything below 385
 
 L.Panel_ExtraFeatures		= "其他功能"
 --

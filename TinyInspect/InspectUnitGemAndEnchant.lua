@@ -16,9 +16,9 @@ local EnchantParts = {
     [2]  = {1, NECKSLOT},
     [11] = {1, FINGER1SLOT},
     [12] = {1, FINGER1SLOT},
-    [15] = {1, BACKSLOT},
+--  [15] = {1, BACKSLOT},
     [16] = {1, MAINHANDSLOT},
-    [17] = {1, SECONDARYHANDSLOT},
+--    [17] = {1, SECONDARYHANDSLOT},
 --  [3]  = {0, SHOULDERSLOT},
 --  [9]  = {0, WRISTSLOT},
 --  [10] = {0, HANDSSLOT},
@@ -191,7 +191,7 @@ local function ShowGemAndEnchant(frame, ItemLink, anchorFrame, itemframe)
         icon:Show()
         anchorFrame = icon
     elseif (not enchantID and EnchantParts[itemframe.index]) then
-        if (qty == 6 and (itemframe.index==16 or itemframe.index==17)) then else
+        if (qty == 6 and (itemframe.index==2 or itemframe.index==16 or itemframe.index==17)) then else
             num = num + 1
             icon = GetIconFrame(frame)
             icon.title = ENCHANTS .. ": " .. EnchantParts[itemframe.index][2]

@@ -29,8 +29,8 @@ L["Critical Strike Rating"] = "致命一擊點數"
 L["DCS's Hide At Zero"] = "以DCS方式隱藏0值"
 L["Decimals"] = "小數點"
 L["Defense"] = "防禦"
+L["Dejablue's improved character stats panel view."] = "Dejablue的角色屬性統計面板增強。"
 L["DejaCharacterStats Slash commands (/dcstats):"] = "DejaCharacterStats指令(/dcstats)"
-L["Displays \"Enhancements\" category stats to two decimal places."] = "顯示\"強化\"欄位的屬性到兩個小數點。"
 L["Displays a durability bar next to each item."] = "在每個物品的旁邊顯示耐久度條。"
 L["Displays average item durability on the character shirt slot and durability frames."] = "在角色介面襯衫欄與耐久度框架顯示平均物品耐久度。"
 L["Displays average item level to one decimal place."] = "顯示平均物品等級到小數點一位。"
@@ -38,6 +38,7 @@ L["Displays average item level to two decimal places."] = "顯示平均物品等
 L["Displays average item level with class colors."] = "以職業顏色顯示平均物品等級"
 L["Displays each equipped item's durability."] = "顯示每個已裝備物品的耐久度。"
 L["Displays each equipped item's repair cost."] = "顯示每個已裝備物品的修理費用。"
+L["Displays 'Enhancements' category stats to two decimal places."] = "'強化'欄位的屬性顯示到兩個小數點。"
 L["Displays Equipped/Available item levels unless equal."] = "顯示已裝備/可用的物品等級除非相等。"
 L["Displays the class crest background."] = "顯示職業紋章背景。"
 L["Displays the DCS scrollbar."] = "顯示DCS滾動條。"
@@ -53,10 +54,12 @@ L["General global cooldown refresh time."] = "一般通用冷卻刷新時間。"
 L["Global Cooldown"] = "通用冷卻"
 L["Haste Rating"] = "加速點數"
 L["Hide Character Stats"] = "隱藏角色屬性"
-L["Hides \"Enhancements\" stats if their displayed value would be zero. Checking \"Decimals\" changes the displayed value."] = [=[隱藏"強化"屬性如果它們的值為零。
-勾選"小數點"會改變顯示的數值。]=]
-L["Hides \"Enhancements\" stats only if their numerical value is exactly zero. For example, if stat value is 0.001%, then it would be displayed as 0%."] = [=[隱藏"強化"屬性只有當它們的數值完全為零時。
+L["Hide low level mastery"] = "隱藏低等級精通"
+L["Hides 'Enhancements' stats if their displayed value would be zero. Checking 'Decimals' changes the displayed value."] = [=[隱藏'強化'屬性如果顯示的值為零。
+勾選'小數點'會改變顯示的數值。]=]
+L["Hides 'Enhancements' stats only if their numerical value is exactly zero. For example, if stat value is 0.001%, then it would be displayed as 0%."] = [=[隱藏'強化'屬性只有當數值完全為零時。
 舉例，如果屬性數值為0.001%，那麼它將顯示為0％。]=]
+L["Hides Mastery stat until the character starts to have benefit from it. Hiding Mastery with Select-A-Stat™ in the character panel has priority over this setting."] = "隱藏精通屬性直到角色開始從中受益。使用角色視窗中Select-A-Stat™的精通隱藏會優先於此設置。"
 L["Item Durability"] = "物品耐久度"
 L["Item Level"] = "物品等級"
 L["Item Repair Cost"] = "物品修理費用"

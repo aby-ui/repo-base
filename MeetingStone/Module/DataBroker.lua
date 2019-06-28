@@ -20,7 +20,7 @@ function DataBroker:OnInitialize()
             local anchor = owner:GetBottom() < GetScreenHeight() / 2 and 'ANCHOR_TOP' or 'ANCHOR_BOTTOM'
             GameTooltip:SetOwner(owner, anchor)
             GameTooltip:SetText(L['集合石'])
-            if C_LFGList.GetActiveEntryInfo() then
+            if C_LFGList.HasActiveEntryInfo() then
                 GameTooltip:AddDoubleLine(ICON1 .. L['申请人数'], C_LFGList.GetNumApplicants(), 1, 1, 1, 1, 1, 1)
             else
                 GameTooltip:AddDoubleLine(ICON1 .. L['申请中活动'], C_LFGList.GetNumApplications(), 1, 1, 1, 1, 1, 1)
@@ -196,7 +196,7 @@ end
 function DataBroker:UpdateLabel()
     self.BrokerObject.text = format(
         App:HasApp() and TEXT_FORMAT_WITH_APP or TEXT_FORMAT,
-        C_LFGList.GetActiveEntryInfo() and select(2, C_LFGList.GetNumApplicants()) or select(2, C_LFGList.GetNumApplications()),
+        C_LFGList.HasActiveEntryInfo() and select(2, C_LFGList.GetNumApplicants()) or select(2, C_LFGList.GetNumApplications()),
         self.activityCount or 0,
         self.followQueryCount or 0
     )

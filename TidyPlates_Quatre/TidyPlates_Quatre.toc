@@ -1,4 +1,4 @@
-## Interface: 80000
+## Interface: 80200
 ## Title: Tidy Plates: Quatre Theme
 ## Notes: It's the 4th!
 ## Author: Binny

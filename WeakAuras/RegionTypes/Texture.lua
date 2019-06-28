@@ -4,7 +4,7 @@ local root2 = math.sqrt(2);
 local halfroot2 = root2/2;
 
 local default = {
-  texture = "Textures\\SpellActivationOverlays\\Eclipse_Sun",
+  texture = "450915", -- "Textures\\SpellActivationOverlays\\Eclipse_Sun"
   desaturate = false,
   width = 200,
   height = 200,
@@ -44,6 +44,7 @@ local properties = {
     min = 1,
     softMax = screenWidth,
     bigStep = 1,
+    default = 32
   },
   height = {
     display = L["Height"],
@@ -51,8 +52,14 @@ local properties = {
     type = "number",
     min = 1,
     softMax = screenHeight,
-    bigStep = 1
+    bigStep = 1,
+    default = 32
   },
+  mirror = {
+    display = L["Mirror"],
+    setter = "SetMirror",
+    type = "bool"
+  }
 }
 
 WeakAuras.regionPrototype.AddProperties(properties, default);
@@ -68,6 +75,8 @@ local function create(parent)
   frame:SetMinResize(1, 1);
 
   local texture = frame:CreateTexture();
+  texture:SetSnapToPixelGrid(false)
+  texture:SetTexelSnappingBias(0)
   frame.texture = texture;
   texture:SetAllPoints(frame);
 
@@ -97,9 +106,11 @@ local function modify(parent, region, data)
     return 0.5+vx,0.5-vy , 0.5-vy,0.5-vx , 0.5+vy,0.5+vx , 0.5-vx,0.5+vy
   end
 
+  region.mirror = data.mirror
+
   local function DoTexCoord()
     local mirror_h, mirror_v = region.mirror_h, region.mirror_v;
-    if(data.mirror) then
+    if(region.mirror) then
       mirror_h = not mirror_h;
     end
     local ulx,uly , llx,lly , urx,ury , lrx,lry;
@@ -163,6 +174,11 @@ local function modify(parent, region, data)
   function region:SetRegionHeight(height)
     region.height = height;
     region:Scale(region.scalex, region.scaley);
+  end
+
+  function region:SetMirror(mirror)
+    region.mirror = mirror
+    DoTexCoord()
   end
 
   function region:SetTexture(path)

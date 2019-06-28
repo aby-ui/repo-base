@@ -1,5 +1,5 @@
 --- Kaliel's Tracker
---- Copyright (c) 2012-2018, Marouan Sabbagh <mar.sabbagh@gmail.com>
+--- Copyright (c) 2012-2019, Marouan Sabbagh <mar.sabbagh@gmail.com>
 --- All Rights Reserved.
 ---
 --- This file is part of addon Kaliel's Tracker.
@@ -14,14 +14,10 @@ local _DBG = function(...) if _DBG then _DBG("KT", ...) end end
 local db
 local mediaPath = "Interface\\AddOns\\"..addonName.."\\Media\\"
 local questWaypoints = {}
-local modifiers = {
-	["ALT"] = "Alt",
-	["CTRL"] = "Ctrl",
-	["ALT-CTRL"] = "Alt+Ctrl",
-	["ALT-SHIFT"] = "Alt+Shift",
-	["CTRL-SHIFT"] = "Ctrl+Shift",
-	["ALT-CTRL-SHIFT"] = "Alt+Ctrl+Shift"
-}
+local superTrackedQuestID = 0
+local questChanged = false
+
+local eventFrame
 
 --------------
 -- Internal --
@@ -32,27 +28,13 @@ local function SetupOptions()
 		name = "TomTom",
 		type = "group",
 		args = {
-			tomtomDesc = {
+			tomtomDesc1 = {
 				name = "TomTom support combined Blizzard's POI and TomTom's Arrow.\n\n"..
-					"|cffff7f00Warning:|r Original \"TomTom > Quest Objectives\" options are ignored!\n",
+						"|cffff7f00Warning:|r Original \"TomTom > Quest Objectives\" options are ignored!\n\n\n"..
+						"|TInterface\\WorldMap\\UI-QuestPoi-NumberIcons:32:32:-2:10:256:256:128:160:96:128|t+"..
+						"|T"..mediaPath.."KT-TomTomTag:32:32:-8:10|t...   Active POI button of quest with TomTom Waypoint.",
 				type = "description",
 				order = 1,
-			},
-			tomtomModifier = {
-				name = "Waypoint modifier",
-				type = "select",
-				values = modifiers,
-				get = function()
-					for k, v in pairs(modifiers) do
-						if db.tomtomModifier == k then
-							return k
-						end
-					end
-				end,
-				set = function(_, value)
-					db.tomtomModifier = value
-				end,
-				order = 2,
 			},
 			tomtomArrival = {
 				name = "Arrival distance",
@@ -63,27 +45,17 @@ local function SetupOptions()
 				set = function(_, value)
 					db.tomtomArrival = value
 				end,
-				order = 3,
+				order = 2,
 			},
 			tomtomAnnounce = {
 				name = "Waypoint announcement",
 				desc = "Show announcement when add/remove quest waypoint, inside the chat frame. When disable this option, you always see messages \"No data for quest waypoint\".",
 				type = "toggle",
+				width = 1.1,
 				set = function()
 					db.tomtomAnnounce = not db.tomtomAnnounce
 				end,
-				order = 4,
-			},
-			tomtomHelp = {
-				name = "\n |TInterface\\WorldMap\\UI-QuestPoi-NumberIcons:28:28:-2:7:256:256:224:256:224:256|t"..
-						" |TInterface\\WorldMap\\UI-QuestPoi-NumberIcons:28:28:-2:7:256:256:128:160:96:128|t"..
-						"...  Default Blizzard POI button\n"..
-						" |T"..mediaPath.."UI-QuestPoi-NumberIcons:28:28:-2:7:256:256:224:256:224:256|t"..
-						" |T"..mediaPath.."UI-QuestPoi-NumberIcons:28:28:-2:7:256:256:128:160:96:128|t"..
-						"...  POI button of quest with TomTom Waypoint",
-				type = "description",
-				fontSize = "medium",
-				order = 5,
+				order = 3,
 			},
 		},
 	}
@@ -97,29 +69,65 @@ local function Announce(msg, force)
 	end
 end
 
-local function AddWaypoint(questID)
-	local title = GetQuestLogTitle(GetQuestLogIndexByID(questID))
-	local mapID, floorNumber = GetQuestWorldMapAreaID(questID)
-	if mapID ~= 0 then
-		if IsMapGarrisonMap(mapID) then
-			KT.SetMapByID(mapID)	-- fix
-			local parentData = GetMapHierarchy()
-			if parentData then
-				mapID = parentData[1].id
+local function WorldQuestPOIGetIconInfo(mapAreaID, questID)
+	local x, y
+	local taskInfo = C_TaskQuest.GetQuestsForPlayerByMapID(mapAreaID)
+	if taskInfo then
+		for _, info  in ipairs(taskInfo) do
+			if HaveQuestData(info.questId) then
+				if info.questId == questID then
+					x = info.x
+					y = info.y
+					break
+				end
 			end
 		end
-		
-		KT.SetMapByID(mapID)
-		if floorNumber ~= 0 then
-			SetDungeonMapLevel(floorNumber)
+	end
+	return x, y
+end
+
+local function SetWaypointTag(button, show)
+	if show then
+		if button.KTtomtom then
+			button.KTtomtom:Show()
+		else
+			button.KTtomtom = button:CreateTexture(nil, "OVERLAY", nil, 3)
+			button.KTtomtom:SetTexture(mediaPath.."KT-TomTomTag")
+			button.KTtomtom:SetSize(32, 32)
+			button.KTtomtom:SetPoint("CENTER")
 		end
 	else
-		Announce("|cffff0000No data for quest waypoint|r - "..title, true)
-		return
+		if button.KTtomtom then
+			button.KTtomtom:Hide()
+		end
 	end
-	
-	local completed, x, y, _ = QuestPOIGetIconInfo(questID)
-	if not x or not y then
+end
+
+local function AddWaypoint(questID, silent)
+	local title, mapID
+	local x, y, completed
+	if QuestUtils_IsQuestWorldQuest(questID) then
+		title = C_TaskQuest.GetQuestInfoByQuestID(questID)
+		mapID = C_TaskQuest.GetQuestZoneID(questID)
+		if mapID ~= 0 and KT.GetCurrentMapContinent().mapID == KT.GetMapContinent(mapID).mapID then
+			x, y = WorldQuestPOIGetIconInfo(mapID, questID)
+		end
+	else
+		title = GetQuestLogTitle(GetQuestLogIndexByID(questID))
+		mapID = GetQuestUiMapID(questID)
+		if mapID ~= 0 and KT.GetCurrentMapContinent().mapID == KT.GetMapContinent(mapID).mapID then
+			local wasWorldMapShown = (WorldMapFrame:IsShown())
+			if mapID ~= KT.GetCurrentMapAreaID() then
+				OpenQuestLog(mapID)
+			end
+			completed, x, y = QuestPOIGetIconInfo(questID)
+			if not wasWorldMapShown then
+				HideUIPanel(WorldMapFrame)
+			end
+		end
+	end
+
+	if mapID == 0 or not x or not y then
 		Announce("|cffff0000No data for quest waypoint|r - "..title, true)
 		return
 	end
@@ -130,7 +138,7 @@ local function AddWaypoint(questID)
 		title = "|TInterface\\GossipFrame\\AvailableQuestIcon:0:0:-2:0|t"..title
 	end
 	
-	local uid = TomTom:AddMFWaypoint(mapID, floorNumber, x, y, {
+	local uid = TomTom:AddWaypoint(mapID, x, y, {
 		title = title,
 		silent = true,
 		world = false,
@@ -140,9 +148,14 @@ local function AddWaypoint(questID)
 	uid["questID"] = questID
 	questWaypoints[questID] = uid
 
-	KT:MoveButtons()	-- For addon PetTracker
-	KT.SetMapToCurrentZone()	-- fire WORLD_MAP_UPDATE event
-	Announce("Added a quest waypoint - "..title)
+	if QuestUtils_IsQuestWorldQuest(questID) and WORLD_QUEST_TRACKER_MODULE.usedBlocks[questID] then
+		SetWaypointTag(WORLD_QUEST_TRACKER_MODULE.usedBlocks[questID].TrackedQuest, true)
+	else
+		QuestMapFrame_UpdateAll()
+	end
+	if not silent then
+		Announce("Added a quest waypoint - "..title)
+	end
 end
 
 local function RemoveWaypoint(questID)
@@ -154,7 +167,7 @@ end
 
 local function SetHooks()
 	-- TomTom
-	function TomTom:EnableDisablePOIIntegration()
+	function TomTom:EnableDisablePOIIntegration()	-- R
 		TomTom.profile.poi.enable = false
 		TomTom.profile.poi.modifier = "A"
 		TomTom.profile.poi.setClosest = false
@@ -162,58 +175,24 @@ local function SetHooks()
 	end
 	
 	hooksecurefunc(TomTom, "ClearWaypoint", function(self, uid)
-		if questWaypoints[uid.questID] then
-			questWaypoints[uid.questID] = nil
-			QuestMapFrame_UpdateAll()
-			Announce("Removed a quest waypoint - "..uid.title)
+		local questID = uid.questID
+		if questWaypoints[questID] then
+			questWaypoints[questID] = nil
+			if QuestUtils_IsQuestWorldQuest(questID) and WORLD_QUEST_TRACKER_MODULE.usedBlocks[questID] then
+				SetWaypointTag(WORLD_QUEST_TRACKER_MODULE.usedBlocks[questID].TrackedQuest)
+			else
+				QuestMapFrame_UpdateAll()
+			end
 		end
 	end)
 	
 	-- Blizzard	
-	hooksecurefunc("QuestObjectiveTracker_OnOpenDropDown", function(self)
-		local block = self.activeFrame
-		local info = MSA_DropDownMenu_CreateInfo()
-		local text = "|cff33ff99TomTom|r - %s Waypoint"
-		
-		info.notCheckable = true
-		info.noClickSound = true
-		
-		if questWaypoints[block.id] then
-			info.text = text:format("Remove")
-			info.func = function(_, arg)
-				RemoveWaypoint(arg)
-			end
-		else
-			info.text = text:format("Add")
-			info.func = function(_, arg)
-				SetSuperTrackedQuestID(arg)
-			end
-		end
-		info.arg1 = block.id
-		MSA_DropDownMenu_AddButton(info, MSA_DROPDOWN_MENU_LEVEL)
-	end)
-	
-	local bck_QUEST_TRACKER_MODULE_OnBlockHeaderClick = QUEST_TRACKER_MODULE.OnBlockHeaderClick
-	function QUEST_TRACKER_MODULE:OnBlockHeaderClick(block, mouseButton)
-		if mouseButton ~= "RightButton" and IsModifiedClick(db.tomtomModifier) then
-			MSA_CloseDropDownMenus()
-			if questWaypoints[block.id] then
-				RemoveWaypoint(block.id)
-			else
-				SetSuperTrackedQuestID(block.id)
-			end
-			return
-		end
-		bck_QUEST_TRACKER_MODULE_OnBlockHeaderClick(self, block, mouseButton)
-	end
-	
 	hooksecurefunc("SetSuperTrackedQuestID", function(questID)
-		if IsQuestWatched(GetQuestLogIndexByID(questID)) then
-			local uid = questWaypoints[questID]
-			if uid and TomTom:IsValidWaypoint(uid) then
-				TomTom:SetCrazyArrow(uid, db.tomtomArrival, uid.title)
-			else
+		if questID ~= superTrackedQuestID or not questWaypoints[questID] then
+			RemoveWaypoint(superTrackedQuestID)
+			if IsQuestWatched(GetQuestLogIndexByID(questID)) or IsWorldQuestWatched(questID) or KT.activeTasks[questID] then
 				AddWaypoint(questID)
+				superTrackedQuestID = questID
 			end
 		end
 	end)
@@ -224,26 +203,60 @@ local function SetHooks()
 	end)
 	
 	hooksecurefunc("AbandonQuest", function()
-		RemoveWaypoint(KT.selectedQuest)
+		local questID = QuestMapFrame.DetailsFrame.questID or QuestLogPopupDetailFrame.questID or QuestMapFrame.questID
+		RemoveWaypoint(questID)
 	end)
-	
+
+	hooksecurefunc("BonusObjectiveTracker_OnTaskCompleted", function(questID, xp, money)
+		RemoveWaypoint(questID)
+	end)
+
+	local bck_WORLD_QUEST_TRACKER_MODULE_OnFreeBlock = WORLD_QUEST_TRACKER_MODULE.OnFreeBlock
+	function WORLD_QUEST_TRACKER_MODULE:OnFreeBlock(block)
+		SetWaypointTag(block.TrackedQuest)	-- hide tag for hard watched WQ
+		bck_WORLD_QUEST_TRACKER_MODULE_OnFreeBlock(self, block)
+	end
+
 	local bck_GetQuestWatchInfo = GetQuestWatchInfo
 	GetQuestWatchInfo = function(idx)
-		local questID, title, questLogIndex, numObjectives, requiredMoney, isComplete, startEvent, isAutoComplete, failureTime, timeElapsed, questType, isTask, isBounty, isStory, isOnMap, hasLocalPOI, isHidden = bck_GetQuestWatchInfo(idx)
+		local questID, title, questLogIndex, numObjectives, requiredMoney, isComplete, startEvent, isAutoComplete, failureTime, timeElapsed, questType, isTask, isBounty, isStory, isOnMap, hasLocalPOI, isHidden, isWarCampaign = bck_GetQuestWatchInfo(idx)
 		if not hasLocalPOI then
 			hasLocalPOI = (questWaypoints[questID])
 		end
-		return questID, title, questLogIndex, numObjectives, requiredMoney, isComplete, startEvent, isAutoComplete, failureTime, timeElapsed, questType, isTask, isBounty, isStory, isOnMap, hasLocalPOI, isHidden
+		return questID, title, questLogIndex, numObjectives, requiredMoney, isComplete, startEvent, isAutoComplete, failureTime, timeElapsed, questType, isTask, isBounty, isStory, isOnMap, hasLocalPOI, isHidden, isWarCampaign
 	end
-	
+
 	local bck_QuestPOI_GetButton = QuestPOI_GetButton
 	QuestPOI_GetButton = function(parent, questID, style, index)
 		local poiButton = bck_QuestPOI_GetButton(parent, questID, style, index)
-		local tex = (questWaypoints[questID] and mediaPath or "Interface\\WorldMap\\").."UI-QuestPoi-NumberIcons"
-		poiButton:SetNormalTexture(tex)
-		poiButton:SetPushedTexture(tex)
+		SetWaypointTag(poiButton, questWaypoints[questID])
 		return poiButton
 	end
+end
+
+local function SetFrames()
+	-- Event frame
+	if not eventFrame then
+		eventFrame = CreateFrame("Frame")
+		eventFrame:SetScript("OnEvent", function(_, event, ...)
+			_DBG("Event - "..event, true)
+			if event == "QUEST_WATCH_UPDATE" then
+				local questLogIndex = ...
+				local questID = select(8, GetQuestLogTitle(questLogIndex))
+				if superTrackedQuestID == questID then
+					questChanged = true
+				end
+			elseif event == "QUEST_LOG_UPDATE" then
+				if questChanged then
+					RemoveWaypoint(superTrackedQuestID)
+					AddWaypoint(superTrackedQuestID, true)
+					questChanged = false
+				end
+			end
+		end)
+	end
+	eventFrame:RegisterEvent("QUEST_WATCH_UPDATE")
+	eventFrame:RegisterEvent("QUEST_LOG_UPDATE")
 end
 
 --------------
@@ -253,12 +266,11 @@ end
 function M:OnInitialize()
 	_DBG("|cffffff00Init|r - "..self:GetName(), true)
 	db = KT.db.profile
-	self.isLoaded = (KT:CheckAddOn("TomTom", "v70300-1.0.0") and db.addonTomTom)
+	self.isLoaded = (KT:CheckAddOn("TomTom", "v80200-1.0.1") and db.addonTomTom)
 
 	local defaults = KT:MergeTables({
 		profile = {
-			tomtomModifier = "ALT",
-			tomtomArrival = 0,
+			tomtomArrival = 20,
 			tomtomAnnounce = true,
 		}
 	}, KT.db.defaults)
@@ -268,5 +280,6 @@ end
 function M:OnEnable()
 	_DBG("|cff00ff00Enable|r - "..self:GetName(), true)
 	SetupOptions()
+	SetFrames()
 	SetHooks()
 end

@@ -1,4 +1,4 @@
-## Interface: 80000
+## Interface: 80200
 ## Title: GladiatorlosSA_zhCN(Yike_Xia)
 ## Title-zhCN:GladiatorlosSA_夏一可语音包
 ## Title-zhTW:GladiatorlosSA_夏一可語音包

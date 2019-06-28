@@ -17,8 +17,8 @@ local L = TMW.L
 local print = TMW.print
 local pairs, ipairs =
 	  pairs, ipairs
-local GetItemCooldown, IsItemInRange, IsEquippedItem, GetItemIcon, GetItemInfo =
-	  GetItemCooldown, IsItemInRange, IsEquippedItem, GetItemIcon, GetItemInfo
+local GetItemInfo =
+	  GetItemInfo
 
 local OnGCD = TMW.OnGCD
 local GetSpellTexture = TMW.GetSpellTexture
@@ -119,7 +119,7 @@ local function ItemCooldown_OnUpdate(icon, time)
 
 
 	-- These variables will hold all the attributes that we pass to SetInfo().
-	local inrange, equipped, start, duration, count
+	local inrange, equipped, start, duration, enable, count
 
 	local numChecked = 1
 
@@ -127,9 +127,15 @@ local function ItemCooldown_OnUpdate(icon, time)
 		local item = Items[i]
 		numChecked = i
 
-		start, duration = item:GetCooldown()
+		start, duration, enable = item:GetCooldown()
 
 		if duration then
+			if enable == 0 then
+				-- Enable will be 0 for things like a potion that was used in combat 
+				-- and the cooldown hasn't yet started counting down.
+				start, duration = 0, 0
+			end
+
 			inrange, equipped, count = true, true, item:GetCount()
 			if RangeCheck then
 				inrange = item:IsInRange("target")
@@ -140,7 +146,7 @@ local function ItemCooldown_OnUpdate(icon, time)
 				equipped = false
 			end
 			
-			if equipped and inrange and (duration == 0 or OnGCD(duration)) then
+			if equipped and inrange and enable == 1 and (duration == 0 or OnGCD(duration)) then
 				-- This item is usable. Set the attributes and then stop.
 
 				icon:SetInfo("state; texture; start, duration; stack, stackText; spell",
@@ -178,7 +184,7 @@ local function ItemCooldown_OnUpdate(icon, time)
 	-- otherwise reuse the values obtained above since they are just for the first one
 
 	if numChecked > 1 then
-		start, duration = item2:GetCooldown()
+		start, duration, enable = item2:GetCooldown()
 
 		inrange, count = true, item2:GetCount()
 		if RangeCheck then
@@ -188,6 +194,12 @@ local function ItemCooldown_OnUpdate(icon, time)
 	end
 
 	if duration then
+		if enable == 0 then
+			-- Enable will be 0 for things like a potion that was used in combat 
+			-- and the cooldown hasn't yet started counting down.
+			start, duration = 0, 0
+		end
+		
 		icon:SetInfo("state; texture; start, duration; stack, stackText; spell",
 			not inrange and STATE_UNUSABLE_NORANGE or STATE_UNUSABLE,
 			item2:GetIcon(),

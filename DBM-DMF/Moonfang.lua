@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("Moonfang", "DBM-DMF")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17247 $"):sub(12, -3))
+mod:SetRevision("20190423232607")
 mod:SetCreatureID(71992)
 --mod:SetModelID(328)
 mod:SetZone()
@@ -58,6 +58,6 @@ end
 function mod:SPELL_AURA_APPLIED(args)
 	if args.spellId == 144590 and args:IsPlayer() then
 		specWarnCurse:Show()
-		specWarnCurse:Play(nil, "Sound\\Creature\\Kologarn\\UR_Kologarn_Slay02.ogg")
+		specWarnCurse:Play(nil, 15588)--"Sound\\Creature\\Kologarn\\UR_Kologarn_Slay02.ogg"
 	end
 end

@@ -188,10 +188,14 @@ function addon:HandleAction(name, action)
 		end
 
 	elseif action == "WHISPER" then
-		local editbox = ChatEdit_ChooseBoxForSend()
-		ChatEdit_ActivateChat(editbox)
-		editbox:SetText("/w "..(bnName or name).." ")
-		ChatEdit_ParseText(editbox, 0)
+        if bnName then
+            ChatFrame_SendBNetTell(bnName)
+        else
+            local editbox = ChatEdit_ChooseBoxForSend()
+            ChatEdit_ActivateChat(editbox)
+            editbox:SetText("/w "..(bnName or name).." ")
+            ChatEdit_ParseText(editbox, 0)
+        end
 	end
 end
 

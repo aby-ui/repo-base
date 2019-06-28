@@ -57,12 +57,12 @@ local function UpdateImageAnchor(self)
 		label:SetWidth(width)
 		height = label:GetStringHeight()
 	end
-	
+
 	-- avoid zero-height labels, since they can used as spacers
 	if not height or height == 0 then
 		height = 1
 	end
-	
+
 	self.resizing = true
 	frame:SetHeight(height)
 	frame.height = height
@@ -113,7 +113,7 @@ local methods = {
 	["SetImage"] = function(self, path, ...)
 		local image = self.image
 		image:SetTexture(path)
-		
+
 		if image:GetTexture() then
 			self.imageshown = true
 			local n = select("#", ...)

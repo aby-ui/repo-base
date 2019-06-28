@@ -29,27 +29,40 @@ rematch:InitModule(function()
 	activeTypeMode = 1 -- start off in type tab
 
 	-- setup list scrollframe
-	local scrollFrame = panel.List.ScrollFrame
-	scrollFrame.update = panel.UpdateList
-	scrollFrame.scrollBar.doNotHide = true
-	scrollFrame.stepSize = 264 -- 44*6 or 6 rows
-	if settings.SlimListButtons then
-		HybridScrollFrame_CreateButtons(scrollFrame,"RematchSlimPetListButtonTemplate",28,-1)
-	else
-		HybridScrollFrame_CreateButtons(scrollFrame,"RematchPetListButtonTemplate",44,0)
-	end
---	panel.Selected.Texture:SetDesaturated(true)
-	panel.Selected.Texture:SetHeight(settings.SlimListButtons and 20 or 40)
+	local scrollFrame = panel.List
+	scrollFrame.template = settings.SlimListButtons and "RematchCompactPetListButtonTemplate" or "RematchNewPetListButtonTemplate"
+	scrollFrame.templateType = "RematchCompositeButton"
+	scrollFrame.list = roster.petList
+	scrollFrame.callback = rematch.FillNewPetListButton
+	scrollFrame.preUpdateFunc = panel.PreUpdateFunc
+	scrollFrame.postUpdateFunc = panel.PostUpdateFunc
 end)
 
 function panel:Update()
 	if panel:IsVisible() then
 		panel:UpdateTypeBar()
 		panel:UpdateFilterResults() -- just the frame with the total results and active filters
-		panel:UpdateList()
+		panel.List:Update()
 		local searching = panel.Top.SearchBox:GetText():len()>0
 		panel.Top.SearchBox.Clear:SetShown(searching)
 		panel.Top.SearchBox.Instructions:SetShown(not searching)
+	end
+end
+
+-- callback that runs before the petlist (autoscrollframe) is updated
+function panel:PreUpdateFunc()
+	-- hide the yellow border around the pet icon; if any pet is selected its fill will show it
+	panel.SelectedOverlay:Hide()
+end
+
+-- callback that runs after the petlist is updated
+function panel:PostUpdateFunc()
+	local petCard = rematch.PetCard
+	local focus = GetMouseFocus()
+	-- if pet card is up and it's different than pet under the mouse, update the pet card
+	-- (so pet card changes during mousewheel scroll)
+	if petCard:IsVisible() and focus and focus.petID and focus.petID~=petCard.petID then
+		rematch:ShowPetCard(self,focus.petID)
 	end
 end
 
@@ -130,7 +143,7 @@ end
 
 --[[ List (the bulk of the work is done by Roster.lua) ]]
 
-function panel:UpdateList()
+function panel:oldUpdateList()
 	local numData = #roster.petList
 	local scrollFrame = panel.List.ScrollFrame
 	local offset = HybridScrollFrame_GetOffset(scrollFrame)
@@ -171,7 +184,7 @@ function panel:UpdateList()
 	local buttonHeight = scrollFrame.buttonHeight
 	scrollFrame.stepSize = floor(scrollFrame:GetHeight()/buttonHeight)*buttonHeight
 	HybridScrollFrame_Update(scrollFrame,buttonHeight*numData,buttonHeight)
-	rematch:UpdatePetListHighlights(scrollFrame)
+	--rematch:UpdatePetListHighlights(scrollFrame)
 end
 
 function panel:UpdateFilterResults()
@@ -202,7 +215,6 @@ function panel:SearchBoxOnTextChanged()
 	end
 end
 
-
 -- mirroring ShowTeam() and ShowQueue(), this jumps to the pet panel (usually for "Find Similar" searches)
 function rematch:ShowPets()
 	if not panel:IsVisible() then
@@ -219,13 +231,6 @@ function panel:Resize(width)
 		width = 368 - rematch.MiniQueue:GetWidth() -2
 	end
 	panel:SetWidth(width)
-	for _,button in ipairs(panel.List.ScrollFrame.buttons) do
-		if button.slim then
-			button:SetWidth(width-32-27)
-		else
-			button:SetWidth(width-32-44)
-		end
-	end
 	panel.Top:SetWidth(width)
 	panel.Results:SetWidth(width)
 	-- typebar original width 270
@@ -240,4 +245,5 @@ function panel:Resize(width)
 			button:SetPoint("LEFT",(i-1)*26+5,0)
 		end
 	end
+	panel:Update()
 end

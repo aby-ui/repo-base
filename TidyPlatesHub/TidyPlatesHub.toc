@@ -1,4 +1,4 @@
-## Interface: 80000
+## Interface: 80200
 ## Title: Tidy Plates Hub
 ## Notes: Provides a common configuration panel for supported themes.
 ## Author: Daniel/Binbwen
@@ -16,7 +16,7 @@ functions\Filter.lua
 functions\Style.lua
 functions\Alpha.lua
 functions\Scale.lua
-functions\Color.lua
+functions\ColorThreat.lua
 functions\Text.lua
 functions\Widgets.lua
 

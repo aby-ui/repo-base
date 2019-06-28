@@ -1,0 +1,255 @@
+<Ui>
+
+	<Frame name="RematchTestList" movable="true" parent="UIParent" inherits="BasicFrameTemplate">
+		<Size x="400" y="400"/>
+		<Anchors>
+			<Anchor point="CENTER"/>
+		</Anchors>
+		<Frames>
+			<!-- the list of teams -->
+			<RematchAutoScrollFrame parentKey="List">
+				<Size x="280" y="503"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" x="4" y="-26"/>
+					<Anchor point="BOTTOMRIGHT" x="-5" y="6"/>
+				</Anchors>
+			</RematchAutoScrollFrame>		
+		</Frames>
+		<Scripts>
+			<OnMouseDown>
+				self:StartMoving()
+			</OnMouseDown>
+			<OnMouseUp>
+				self:StopMovingOrSizing()
+			</OnMouseUp>
+		</Scripts>
+	</Frame>
+
+	<!-- New PetListButton using CompositeButton with no child Buttons and no textureSublevel gymnastics -->
+	<RematchCompositeButton name="RematchListButtonTemplate" virtual="true">
+		<Size x="200" y="44"/>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture parentKey="Back" file="Interface\Buttons\ListButtons">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="48" y="-1"/>
+						<Anchor point="BOTTOMRIGHT"/>
+					</Anchors>
+					<TexCoords left="0.01171875" right="0.8125" top="0.01171875" bottom="0.18359375"/>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<Texture parentKey="Pet">
+					<Size x="39" y="39"/>
+					<Anchors>
+						<Anchor point="LEFT" x="4" y="0"/>
+					</Anchors>
+					<TexCoords left="0.075" right="0.925" top="0.075" bottom="0.925"/>
+				</Texture>
+				<Texture parentKey="Notes" file="Interface\AddOns\Rematch\Textures\Footnotes" hidden="false">
+					<Size x="20" y="20"/>
+					<Anchors>
+						<Anchor point="TOPRIGHT" x="-2" y="-3"/>
+					</Anchors>
+					<TexCoords left="0" right="0.125" top="0" bottom="0.25"/>
+				</Texture>
+				<Texture parentKey="Leveling" file="Interface\AddOns\Rematch\Textures\Footnotes" hidden="true">
+					<Size x="20" y="20"/>
+					<Anchors>
+						<Anchor point="TOPRIGHT" x="-22" y="-3"/>
+					</Anchors>
+					<TexCoords left="0.125" right="0.25" top="0" bottom="0.25"/>
+				</Texture>				
+				<!-- FontStrings -->
+				<FontString parentKey="Name" inherits="GameFontNormal" justifyH="LEFT" justifyV="CENTER" text="Pet Name Goes Here">
+					<Size x="0" y="36"/> <!-- y=36 when SubName not shown, 21 when shown -->
+					<Anchors>
+						<Anchor point="TOPLEFT" x="54" y="-4"/> <!-- x is 6+Back's TOPLEFT x -->
+						<Anchor point="TOPRIGHT" x="-32" y="-4"/> <!-- x=-8 when no footnotes shown, -22 when one footnote shown, -32 when breed and at most one footbote, -44 when both footnotes shown -->
+					</Anchors>
+				</FontString>
+				<FontString parentKey="SubName" inherits="GameFontHighlightSmall" justifyH="LEFT" justifyV="TOP" hidden="true">
+					<Size x="0" y="12"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeKey="$parent.Name" relativePoint="BOTTOMLEFT"/>
+						<Anchor point="TOPRIGHT" relativeKey="$parent.Name" relativePoint="BOTTOMRIGHT"/>
+					</Anchors>
+				</FontString>
+				<FontString parentKey="Breed" inherits="GameFontHighlight" justifyH="CENTER" justifyV="CENTER" text="B/B" hidden="false">
+					<Anchors>
+						<Anchor point="BOTTOMRIGHT" x="-3" y="5"/>
+					</Anchors>
+					<Color r="0.9" g="0.9" b="0.9"/>
+				</FontString>
+			</Layer>
+			<Layer level="BORDER">
+				<!-- border around the pet icon to the left -->
+				<Texture parentKey="Rarity">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeKey="$parent.Pet" x="-1" y="1"/>
+						<Anchor point="BOTTOMRIGHT" relativeKey="$parent.Pet" x="1" y="-1"/>
+					</Anchors>
+					<Color r="0.5" g="0.5" b="0.5"/>
+				</Texture>
+				<!-- big type symbol in background right edge of list button -->
+				<Texture parentKey="TypeDecal" file="Interface\AddOns\Rematch\Textures\PetTypeDecals" alpha="0.4">
+					<Size x="59" y="41"/> <!-- was 55x38 -->
+					<Anchors>
+						<Anchor point="RIGHT" x="-1" y="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY">
+				<Texture parentKey="Favorite" atlas="PetJournal-FavoritesIcon" useAtlasSize="true" hidden="false">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="-6" y="5"/>
+					</Anchors>
+				</Texture>
+				<Texture parentKey="LevelBack" atlas="PetJournal-LevelBubble">
+					<Size x="22" y="22"/>
+					<Anchors>
+						<Anchor point="BOTTOMRIGHT" relativeKey="$parent.Pet" relativePoint="BOTTOMRIGHT" x="6" y="-4"/>
+					</Anchors>					
+				</Texture>
+				<FontString parentKey="LevelText" inherits="GameFontNormalSmall" text="25">
+					<Anchors>
+						<Anchor point="CENTER" relativeKey="$parent.LevelBack" relativePoint="CENTER" x="1" y="0"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnEnter>
+				self.Back:SetBlendMode("ADD")
+			</OnEnter>
+			<OnLeave>
+				self.Back:SetBlendMode("BLEND")
+			</OnLeave>
+			<OnMouseDown>
+				if self:HasFocus() then
+					-- if mouse is down while over an active texture, don't "press" the main button
+					self.Back:SetBlendMode("BLEND")
+				end
+			</OnMouseDown>
+			<OnMouseUp>
+				if GetMouseFocus()==self then
+					-- if mouse goes up after it left button, don't "unpress" it
+					self.Back:SetBlendMode("ADD")
+				end
+			</OnMouseUp>
+		</Scripts>
+	</RematchCompositeButton>
+
+	<!-- New TeamListButton using CompositeButton with no child Buttons -->
+	<!-- AutoScrollFrames using this: remember to templateType="RematchCompositeButton"! -->
+	<RematchCompositeButton name="NewRematchTeamListButtonTemplate" virtual="true">
+		<Size x="200" y="44"/> <!-- can be any width; 1px unused across top so 43px usable height -->
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture parentKey="Back" file="Interface\Buttons\ListButtons">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="88" y="-1"/>
+						<Anchor point="BOTTOMRIGHT"/>
+					</Anchors>
+					<TexCoords left="0.01171875" right="0.8125" top="0.01171875" bottom="0.18359375"/>
+				</Texture>
+			</Layer>
+			<!-- Everything in ARTWORK will get promoted to a clickable pseudo-button -->
+			<Layer level="ARTWORK">
+				<Texture parentArray="Pets">
+					<Size x="27" y="39"/>
+					<Anchors>
+						<Anchor point="LEFT" x="2" y="-1"/>
+					</Anchors>
+					<TexCoords left="0.16" right="0.84" top="0.05" bottom="0.95"/>
+				</Texture>
+				<Texture parentArray="Pets">
+					<Size x="27" y="39"/>
+					<Anchors>
+						<Anchor point="LEFT" x="30" y="-1"/>
+					</Anchors>
+					<TexCoords left="0.16" right="0.84" top="0.05" bottom="0.95"/>
+				</Texture>
+				<Texture parentArray="Pets">
+					<Size x="27" y="39"/>
+					<Anchors>
+						<Anchor point="LEFT" x="58" y="-1"/>
+					</Anchors>
+					<TexCoords left="0.16" right="0.84" top="0.05" bottom="0.95"/>
+				</Texture>
+				<Texture parentKey="Notes" file="Interface\AddOns\Rematch\Textures\Footnotes" hidden="true">
+					<Size x="20" y="20"/>
+					<Anchors>
+						<Anchor point="TOPRIGHT" x="-2" y="-3"/>
+					</Anchors>
+					<TexCoords left="0" right="0.125" top="0" bottom="0.25"/>
+				</Texture>
+				<Texture parentKey="Preferences" file="Interface\AddOns\Rematch\Textures\Footnotes" hidden="true">
+					<Size x="20" y="20"/>
+					<Anchors>
+						<Anchor point="TOPRIGHT" x="-22" y="-3"/>
+					</Anchors>
+					<TexCoords left="0.25" right="0.375" top="0" bottom="0.25"/>
+				</Texture>
+				<Texture parentKey="WinRecordBack" file="Interface\AddOns\Rematch\Textures\WinRecord-Back" hidden="true">
+					<Size x="38" y="18"/>
+					<Anchors>
+						<Anchor point="BOTTOMRIGHT" x="-2" y="2"/>
+					</Anchors>
+					<TexCoords left="0" right="0.296875" top="0" bottom="0.28125"/>
+				</Texture>
+				<!-- FontStrings -->
+				<FontString parentKey="Name" inherits="GameFontNormal" justifyH="LEFT" justifyV="CENTER" text="Pet Name Here">
+					<Size x="0" y="36"/> <!-- y=36 when SubName not shown, 21 when shown -->
+					<Anchors>
+						<Anchor point="TOPLEFT" x="94" y="-4"/>
+						<Anchor point="TOPRIGHT" x="-8" y="-4"/> <!-- x=-8 when no footnotes shown, -44 when winrecord or both footnotes shown, -22 when just one footnote shown -->
+					</Anchors>
+				</FontString>
+				<FontString parentKey="SubName" inherits="GameFontHighlightSmall" justifyH="LEFT" justifyV="TOP" text="">
+					<Size x="0" y="12"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeKey="$parent.Name" relativePoint="BOTTOMLEFT"/>
+						<Anchor point="TOPRIGHT" relativeKey="$parent.Name" relativePoint="BOTTOMRIGHT"/>
+					</Anchors>
+				</FontString>
+				<FontString parentKey="WinRecordText" inherits="GameFontHighlight" text="100%" hidden="true">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativePoint="BOTTOMRIGHT" x="-40" y="20"/>
+						<Anchor point="BOTTOMRIGHT" x="-2" y="2"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+			<Layer level="OVERLAY">
+				<Texture parentKey="Texture" atlas="PetJournal-FavoritesIcon" useAtlasSize="true" hidden="true">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="-6" y="5"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnEnter>
+				self.Back:SetBlendMode("ADD")
+			</OnEnter>
+			<OnLeave>
+				self.Back:SetBlendMode("BLEND")
+			</OnLeave>
+			<OnMouseDown>
+				if self:HasFocus() then
+					-- if mouse is down while over an active texture, don't "press" the main button
+					self.Back:SetBlendMode("BLEND")
+				end
+			</OnMouseDown>
+			<OnMouseUp>
+				if GetMouseFocus()==self then
+					-- if mouse goes up after it left button, don't "unpress" it
+					self.Back:SetBlendMode("ADD")
+				end
+			</OnMouseUp>
+		</Scripts>
+	</RematchCompositeButton>
+
+	<Script file="ListButton.lua"/>
+
+</Ui>

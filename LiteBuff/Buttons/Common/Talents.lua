@@ -93,7 +93,7 @@ function button:OnUpdateTimer()
 	--	self.icon:SetAlpha(1)
 	--	self.icon2:SetAlpha(0.4)
 	--end
-	return 1
+	return nil
 end
 
 function button:OnLeaveCombat()

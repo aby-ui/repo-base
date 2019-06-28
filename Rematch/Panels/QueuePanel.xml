@@ -13,9 +13,9 @@
 				</KeyValues>
 				<Layers>
 					<Layer level="ARTWORK">
-						<FontString parentKey="Count" inherits="GameFontNormal">
+						<FontString parentKey="Count" inherits="GameFontNormal" justifyH="LEFT">
 							<Anchors>
-								<Anchor point="LEFT" relativePoint="TOPLEFT" x="52" y="-15"/>
+								<Anchor point="LEFT" relativePoint="TOPLEFT" x="32" y="-15"/>
 							</Anchors>
 						</FontString>
 					</Layer>
@@ -32,50 +32,14 @@
 							</OnClick>	
 						</Scripts>						
 					</Button>
-					<Button parentKey="Toggle" inherits="RematchTopToggleButtonTemplate">
-						<Anchors>
-							<Anchor point="TOPLEFT" x="3" y="-3"/>
-						</Anchors>
-						<Scripts>
-							<OnClick>
-								RematchQueuePanel:ToggleTop()
-							</OnClick>
-						</Scripts>
-					</Button>
 					<!-- Preferences button to right of toggle when preferences active -->
 					<Button parentKey="Preferences" inherits="RematchPreferencesPauseButtonTemplate">
 						<Anchors>
-							<Anchor point="TOPLEFT" x="28" y="-5"/>
+							<Anchor point="TOPLEFT" x="5" y="-5"/>
 						</Anchors>
 						<HitRectInsets>
 							<AbsInset left="-2" right="-220" top="-2" bottom="-2"/>
 						</HitRectInsets>
-					</Button>
-					<Button parentKey="LevelingSlot" inherits="RematchPetListButtonTemplate" useParentLevel="true">
-						<Size x="222" y="44"/>
-						<Anchors>
-							<Anchor point="BOTTOMRIGHT" x="-8" y="4"/>
-						</Anchors>
-						<KeyValues>
-							<KeyValue key="forQueuePanel" value="true" type="boolean"/>
-						</KeyValues>
-						<Layers>
-							<Layer level="ARTWORK">
-								<FontString parentKey="Label" inherits="GameFontNormalSmall">
-									<Anchors>
-										<Anchor point="BOTTOM" relativeTo="RematchQueuePanel" relativePoint="TOP" x="0" y="-39"/>
-									</Anchors>
-									<Color r="0.5" g="0.5" b="0.5"/>
-								</FontString>
-								<!-- line beneath "Pets Leveling: x" -->
-								<Texture parentKey="Underline" inherits="_UI-Frame-InnerTopTile">
-									<Size x="158" y="3"/>
-									<Anchors>
-										<Anchor point="TOPLEFT" relativeTo="RematchQueuePanel" x="32" y="-22"/>
-									</Anchors>
-								</Texture>
-							</Layer>
-						</Layers>
 					</Button>
 				</Frames>
 			</Frame>
@@ -125,53 +89,25 @@
 				</Frames>
 			</Frame>
 
-			<!-- the list of pets in the queue -->
-			<Frame parentKey="List" inherits="RematchInsetFrameTemplate">
+			<!-- the list of pets in the queue; may get reparented between QueuePanel and MiniQueue -->
+			<RematchAutoScrollFrame parentKey="List">
 				<Size x="280" y="503"/>
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeKey="$parent.Top" relativePoint="BOTTOMLEFT" x="0" y="-2"/>
 					<Anchor point="BOTTOMRIGHT"/>
 				</Anchors>
-				<Frames>
-					<ScrollFrame parentKey="ScrollFrame" name="RematchQueueListScrollFrame" inherits="HybridScrollFrameTemplate">
-						<Size x="248" y="503"/>
-						<Anchors>
-							<Anchor point="TOPLEFT" x="4" y="-3"/>
-							<Anchor point="BOTTOMRIGHT" x="-6" y="3"/>
-						</Anchors>
-						<Layers>
-							<Layer level="ARTWORK">
-								<FontString parentKey="Help" inherits="GameFontNormal" justifyH="LEFT" justifyV="CENTER" hidden="true">
-									<Size x="200" y="300"/>
-									<Anchors>
-										<Anchor point="CENTER" x="-8" y="16"/>
-									</Anchors>
-									<Color r="0.75" g="0.75" b="0.75"/>
-								</FontString>
-							</Layer>
-						</Layers>
-						<Frames>
-							<Slider name="RematchQueueListScrollBar" inherits="HybridScrollBarTrimTemplate" parentKey="ScrollBar">
-								<Anchors>
-									<Anchor point="TOPRIGHT" x="2" y="-14"/>
-									<Anchor point="BOTTOMRIGHT" x="2" y="13"/>
-								</Anchors>
-								<Scripts>
-									<OnLoad>
-										self.trackBG:Show()
-										self.trackBG:SetVertexColor(0, 0, 0, 0.75)
-									</OnLoad>
-								</Scripts>
-							</Slider>
-						</Frames>
-						<Scripts>
-							<OnSizeChanged>
-								RematchQueuePanel:Update()
-							</OnSizeChanged>
-						</Scripts>
-					</ScrollFrame>
-				</Frames>
-			</Frame>
+				<Layers>
+					<Layer level="ARTWORK">
+						<FontString parentKey="Help" inherits="GameFontNormal" justifyH="LEFT" justifyV="CENTER" hidden="true">
+							<Size x="200" y="300"/>
+							<Anchors>
+								<Anchor point="CENTER" x="-8" y="16"/>
+							</Anchors>
+							<Color r="0.75" g="0.75" b="0.75"/>
+						</FontString>
+					</Layer>
+				</Layers>
+			</RematchAutoScrollFrame>
 
 			<!-- this button only receives pets; the parent frame only picks up pets -->
 			<!-- this button gets reparented to MiniQueue in its OnShow and returned in its OnHide -->

@@ -210,6 +210,25 @@
 						</Scripts>
 					</Slider>
 
+					<Slider parentKey="Scale" name="$parentScale" inherits="TellMeWhen_EventHandler_ColumnConfig_SliderTemplate" >
+						<Scripts>
+							<OnLoad>
+								TMW:CInit(self)
+
+								self:SetTexts(TMW.L["UIPANEL_SCALE"])
+								self:SetSetting("Scale")
+								
+								self:SetMode(self.MODE_ADJUSTING)
+								self:SetMinMaxValues(0.1, 10)
+								self:SetValueStep(0.01)
+								self:SetRange(1)
+								self:SetTextFormatter(TMW.C.Formatter.PERCENT100, TMW.C.Formatter.PASS)
+
+								self:UseLightColor()
+							</OnLoad>
+						</Scripts>
+					</Slider>
+
 					<Slider parentKey="SizeX" name="$parentSizeX" inherits="TellMeWhen_EventHandler_ColumnConfig_SliderTemplate" >
 						<Scripts>
 							<OnLoad>

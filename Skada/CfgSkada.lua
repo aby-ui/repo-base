@@ -15,6 +15,29 @@
         def.point = "BOTTOMRIGHT"
         def.x = -200
         def.y = 1
+
+        -- 延迟发送, 间隔太短了不行
+        Skada.abyui_sendchat_frame = WW:Frame():Hide()
+        :SetScript("OnUpdate", function(self, elapsed)
+            self.timer = (self.timer or 0) + elapsed; if self.timer < 0.15 then return end; self.timer = 0
+            local t = table.remove(self.lines, 1)
+            if t then
+                Skada._sendchat(unpack(t))
+            else
+                self:Hide()
+            end
+        end)
+        local sf = Skada.abyui_sendchat_frame
+        sf.lines = {}
+        Skada.abyui_sendchat_start = function(...)
+            table.wipe(sf.lines)
+        end
+        Skada.abyui_sendchat_add = function(...)
+            table.insert(sf.lines, {...})
+        end
+        Skada.abyui_sendchat_finish = function(...)
+            sf:Show()
+        end
     end,
 
     {
@@ -29,6 +52,8 @@
                         if U1GetCfgValue("Skada", "chinese_number") then
                             if number <= 9999 then
                                 return n2s(number, nil, true);
+                            elseif number <= 99999 then
+                                return f2s(number/1e4, 2).."万"
                             elseif number <= 999999 then
                                 return f2s(number/1e4, 1).."万"
                             elseif number <= 99999999 then
@@ -54,5 +79,5 @@
     }, 
 });
 
-U1RegisterAddon("SkadaFriendlyFire", { title = "Skada模块-友军误伤", load = "LATER" });
+-- U1RegisterAddon("SkadaFriendlyFire", { title = "Skada模块-友军误伤", load = "LATER" });
 U1RegisterAddon("SkadaExplosiveOrbs", { title = "Skada模块-易爆打球" });

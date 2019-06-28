@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(113, "DBM-Party-Cataclysm", 7, 67)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 174 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 195 $"):sub(12, -3))
 mod:SetCreatureID(42333)
 mod:SetEncounterID(1057)
 mod:SetZone()
@@ -19,8 +19,8 @@ local warnGrip		= mod:NewTargetAnnounce(79351, 3)
 local warnWell		= mod:NewSpellAnnounce(79340, 2)
 local warnShard		= mod:NewSpellAnnounce(79002, 2)
 
-local specWarnGrip	= mod:NewSpecialWarningInterrupt(79351, "HasInterrupt")
-local specWarnCurse	= mod:NewSpecialWarningDispel(79345, "RemoveCurse", nil, 2)
+local specWarnGrip	= mod:NewSpecialWarningInterrupt(79351, "HasInterrupt", nil, nil, 1, 2)
+local specWarnCurse	= mod:NewSpecialWarningDispel(79345, "RemoveCurse", nil, 2, 1, 2)
 
 local timerGrip		= mod:NewTargetTimer(5, 79351)
 
@@ -30,14 +30,16 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerGrip:Start(args.destName)
 	elseif args.spellId == 79345 then
 		specWarnCurse:Show(args.destName)
+		specWarnCurse:Play("helpdispel")
 	end
 end
 
 function mod:SPELL_CAST_START(args)
 	if args.spellId == 82858 then
 		warnShield:Show()
-	elseif args.spellId == 79351 then
+	elseif args.spellId == 79351 and self:CheckInterruptFilter(args.sourceGUID, false, true, true) then
 		specWarnGrip:Show(args.sourceName)
+		specWarnGrip:Play("kickcast")
 	end
 end
 

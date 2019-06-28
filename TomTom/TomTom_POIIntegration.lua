@@ -81,7 +81,7 @@ local function ObjectivesChanged()
 
         if x and y then
             local dist = hbd:GetZoneDistance(map, px, py, map, x, y)
-            if dist < closestdist then
+            if dist and (dist < closestdist) then
                 closest = watchIndex
                 closestdist = dist
             end
@@ -139,8 +139,10 @@ local function ObjectivesChanged()
 end
 
 local eventFrame = CreateFrame("Frame")
-eventFrame:RegisterEvent("QUEST_POI_UPDATE")
-eventFrame:RegisterEvent("QUEST_LOG_UPDATE")
+if not addon.CLASSIC then
+    eventFrame:RegisterEvent("QUEST_POI_UPDATE")
+    eventFrame:RegisterEvent("QUEST_LOG_UPDATE")
+end
 
 eventFrame:SetScript("OnEvent", function(self, event, ...)
     if event == "QUEST_POI_UPDATE" then
@@ -203,7 +205,10 @@ local function poi_OnClick(self, button)
     if not x or not y then
         -- No coordinate information for this quest/objective
         local header = "|cFF33FF99TomTom|r"
-        print(L["%s: No coordinate information found for '%s' at this map level"]:format(header, title or self.questID))
+        if not opts.silent and self.profile.general.announce then
+            local msg = L["%s: No coordinate information found for '%s' at this map level"]:format(header, title or self.questID)
+            ChatFrame1:AddMessage(msg)
+        end
         return
     end
 
@@ -232,9 +237,11 @@ local function poi_OnClick(self, button)
     SetCVar("questPOI", cvar and 1 or 0)
 end
 
-hooksecurefunc("QuestPOIButton_OnClick", function(self, button)
-    poi_OnClick(self, button)
-end)
+if not addon.CLASSIC then
+    hooksecurefunc("QuestPOIButton_OnClick", function(self, button)
+        poi_OnClick(self, button)
+    end)
+end
 
 function TomTom:EnableDisablePOIIntegration()
     enableClicks= TomTom.profile.poi.enable

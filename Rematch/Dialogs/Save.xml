@@ -24,7 +24,7 @@
 						</FontString>
 					</Layer>
 				</Layers>
-				<FontString inherits="GameFontHighlight" justifyH="CENTER"/>
+				<FontString inherits="GameFontHighlight" justifyH="LEFT"/>
 				<Scripts>
 					<OnTextChanged>
 						self:OnTextChanged()

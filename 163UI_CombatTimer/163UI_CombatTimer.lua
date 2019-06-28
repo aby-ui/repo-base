@@ -64,7 +64,7 @@ function U1CT_PlaySound(enter)
         local ogg = U1GetCfgValue(addon, "enter_sound/ogg")
         PlaySoundFile(ogg)
     else
-        PlaySoundFile("Sound\\Character\\EmoteCatCallWhistle02.ogg")
+        PlaySound(7963) --("Sound\\Character\\EmoteCatCallWhistle02.ogg")
     end
 end
 

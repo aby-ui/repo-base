@@ -1,28 +1,6 @@
 
---/dump BrokenIslesArgusButton:IsProtected()
-
---[=[
---WorldMapButton:HookScript ("PreClick", deny_auto_switch)
-
-doesnt existst any more:
-
-WorldMapButton
-WorldMap_CreatePOI
-WorldMap_GetOrCreateTaskPOI
-WorldMap_UpdateQuestBonusObjectives
-
-WorldMapScrollFrame - sub by WorldMapFrame.ScrollContainer
-WorldMapFrame_InWindowedMode - sub by WorldMapFrame.isMaximized
-
-/run WorldQuestTrackerAddon.UpdateZoneWidgets (true)
-
-
-function WorldMapMixin:AddOverlayFrame(templateName, templateType, anchorPoint, relativeTo, relativePoint, offsetX, offsetY)
-this return the bounty board frame, just check if templatename is "WorldMapBountyBoardTemplate"
-
-
-
---]=]
+ 
+--new 8.1.5 C_TaskQuest.GetQuestTimeLeftSeconds
 
 hooksecurefunc (WorldQuestDataProviderMixin, "RefreshAllData", function (self, fromOnShow)
 	--is triggering each 0.5 seconds
@@ -99,62 +77,6 @@ end
 
 local _
 
--------------------------------------------------------------------------------------------------------------------
---search checkpoint: ~8 ~bfa ~kultiras ~zandalar
-
-
---[=[
-	8.0 notepad
-	
-	- which zones will have world quests?
-	- what's the garrison resource for this expansion?
-	- check for new rewards
-	
-	
-	need new functions for:
-		- check for the player current standing map	
-		- get the current map shown in the map frame
-	
-	notes:
-		WorldMapFrame.currentStandingZone > might need changes
-		
-		Check if self <WorldMapFrame>.mapID still keep the mapID
-		
-		WorldQuestTracker.IsASubLevel() might need to be updated
-		
-		All argus and broken shore related functions can be removed
-		
-		WorldQuestTracker.GetCurrentMapAreaID() might have to be replaced
-		
-		Cleanup removing all these locals with the zone name and mapId
-	
-		Remove the filter exceptions
-		
---> BfA world quest zones:
-local PLACEHOLDER_MAPID = 0
-
-local BATTLE_FOR_AZEROTH_ZONES = {
-	--Zandalar horde zones
-		--Nazmir
-		[PLACEHOLDER_MAPID] = true,
-		--Zuldazar
-		[PLACEHOLDER_MAPID] = true,
-		--Voldun
-		[PLACEHOLDER_MAPID] = true,
-	
-	--Kul Tiras aliance zones
-		--Stormsong Valley
-		[PLACEHOLDER_MAPID] = true,
-		--Drustvar
-		[PLACEHOLDER_MAPID] = true,
-		--Tiragarde Sound
-		[PLACEHOLDER_MAPID] = true,
-}
-
-
---]=]
--------------------------------------------------------------------------------------------------------------------
-
 WorldQuestTracker.QuestTrackList = {} --place holder until OnInit is triggered
 WorldQuestTracker.AllTaskPOIs = {}
 WorldQuestTracker.JustAddedToTracker = {}
@@ -169,7 +91,6 @@ WorldQuestTracker.CurrentMapID = 0
 WorldQuestTracker.LastWorldMapClick = 0
 WorldQuestTracker.MapSeason = 0
 WorldQuestTracker.MapOpenedAt = 0
-WorldQuestTracker.QueuedRefresh = 1
 WorldQuestTracker.WorldQuestButton_Click = 0
 WorldQuestTracker.Temp_HideZoneWidgets = 0
 WorldQuestTracker.lastZoneWidgetsUpdate = 0
@@ -191,9 +112,6 @@ end
 local ARROW_UPDATE_FREQUENCE = 0.016
 
 local WorldMapScrollFrame = WorldMapFrame.ScrollContainer
-
-
-
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------
 --> initialize the addon
@@ -251,6 +169,8 @@ function WorldQuestTracker:OnInit()
 	
 	WorldQuestTracker.CreateLoadingIcon()
 	
+	C_Timer.After (.5, WorldQuestTracker.InitializeWorldWidgets)
+	
 	WQTrackerDBChr = WQTrackerDBChr or {}
 	WorldQuestTracker.dbChr = WQTrackerDBChr
 	WorldQuestTracker.dbChr.ActiveQuests = WorldQuestTracker.dbChr.ActiveQuests or {}
@@ -271,6 +191,9 @@ function WorldQuestTracker:OnInit()
 				end
 			end
 		end
+		
+		-- ~review disabling scale since it have some issues for some users
+		WorldQuestTracker.db.profile.map_frame_scale_enabled = false
 	end)
 
 	if (LibWindow) then
@@ -689,21 +612,26 @@ end
 	local D_DAYS = "%dD"
 	function WorldQuestTracker.GetQuest_TimeLeft (questID, formated)
 		local timeLeftMinutes = GetQuestTimeLeftMinutes (questID)
-		if (formated) then
-			local timeString
-			if ( timeLeftMinutes <= WORLD_QUESTS_TIME_CRITICAL_MINUTES ) then
-				timeString = SecondsToTime (timeLeftMinutes * 60)
-			elseif timeLeftMinutes <= 60 + WORLD_QUESTS_TIME_CRITICAL_MINUTES then
-				timeString = SecondsToTime ((timeLeftMinutes - WORLD_QUESTS_TIME_CRITICAL_MINUTES) * 60)
-			elseif timeLeftMinutes < 24 * 60 + WORLD_QUESTS_TIME_CRITICAL_MINUTES then
-				timeString = D_HOURS:format(math.floor(timeLeftMinutes - WORLD_QUESTS_TIME_CRITICAL_MINUTES) / 60)
+		if (timeLeftMinutes) then
+			if (formated) then
+				local timeString
+				if ( timeLeftMinutes <= WORLD_QUESTS_TIME_CRITICAL_MINUTES ) then
+					timeString = SecondsToTime (timeLeftMinutes * 60)
+				elseif timeLeftMinutes <= 60 + WORLD_QUESTS_TIME_CRITICAL_MINUTES then
+					timeString = SecondsToTime ((timeLeftMinutes - WORLD_QUESTS_TIME_CRITICAL_MINUTES) * 60)
+				elseif timeLeftMinutes < 24 * 60 + WORLD_QUESTS_TIME_CRITICAL_MINUTES then
+					timeString = D_HOURS:format(math.floor(timeLeftMinutes - WORLD_QUESTS_TIME_CRITICAL_MINUTES) / 60)
+				else
+					timeString = D_DAYS:format(math.floor(timeLeftMinutes - WORLD_QUESTS_TIME_CRITICAL_MINUTES) / 1440)
+				end
+				
+				return timeString
 			else
-				timeString = D_DAYS:format(math.floor(timeLeftMinutes - WORLD_QUESTS_TIME_CRITICAL_MINUTES) / 1440)
+				return timeLeftMinutes
 			end
-			
-			return timeString
 		else
-			return timeLeftMinutes
+			--since 20/12/2018 time left sometimes is returning nil
+			return 1
 		end
 	end
 
@@ -720,7 +648,7 @@ end
 	--pega o icone para as quest que dao goild
 	local goldCoords = {0, 1, 0, 1}
 	function WorldQuestTracker.GetGoldIcon()
-		return [[Interface\GossipFrame\auctioneerGossipIcon]], goldCoords
+		return [[Interface\AddOns\WorldQuestTracker\media\icon_gold]], goldCoords
 	end
 
 
@@ -881,6 +809,73 @@ local wait_ShowTutorialAlert = function()
 	WorldQuestTracker.TutorialAlertOnHold = nil
 	WorldQuestTracker.ShowTutorialAlert()
 end
+
+local tutorial_one = function()
+
+	local widget = WorldQuestTracker.WorldSummaryQuestsSquares [1]
+	print (widget, widget and widget:IsShown())
+
+	local alert = CreateFrame ("frame", "WorldQuestTrackerTutorialAlert1", worldFramePOIs, "MicroButtonAlertTemplate")
+	alert:SetFrameLevel (302)
+	alert.label = L["S_TUTORIAL_CLICKTOTRACK"]
+	alert.Text:SetSpacing (4)
+	MicroButtonAlert_SetText (alert, alert.label)
+	
+	if (widget and widget:IsShown()) then
+		alert:SetPoint ("bottom", widget, "top", 0, 28)
+	else
+		alert:SetPoint ("topleft", worldFramePOIs, "topleft", 64, -270)
+	end
+	
+	alert.CloseButton:HookScript ("OnClick", hook_AlertCloseButton)
+	alert:Show()
+	
+	WorldQuestTracker.db.profile.TutorialPopupID = WorldQuestTracker.db.profile.TutorialPopupID + 1
+end
+
+local tutorial_two = function()
+	if (WorldQuestTrackerToggleQuestsSummaryButton and WorldQuestTrackerToggleQuestsSummaryButton:IsShown()) then
+		local alert = CreateFrame ("frame", "WorldQuestTrackerTutorialAlert2", worldFramePOIs, "MicroButtonAlertTemplate")
+		alert:SetFrameLevel (302)
+		alert.label = L["S_TUTORIAL_WORLDBUTTONS"]
+		alert.Text:SetSpacing (4)
+		MicroButtonAlert_SetText (alert, alert.label)
+		
+		alert:SetPoint ("bottom", WorldQuestTrackerToggleQuestsSummaryButton, "top", 0, 28)
+		
+		alert.CloseButton:HookScript ("OnClick", hook_AlertCloseButton)
+		alert.Arrow:ClearAllPoints()
+		alert.Arrow:SetPoint ("topleft", alert, "bottomleft", 70, 0)
+		alert:Show()
+		
+		WorldQuestTracker.db.profile.TutorialPopupID = WorldQuestTracker.db.profile.TutorialPopupID + 1
+		
+	else	
+		C_Timer.After (2, WorldQuestTracker.ShowTutorialAlert)
+	end
+end
+
+local tutorial_three = function()
+	local alert = CreateFrame ("frame", "WorldQuestTrackerTutorialAlert3", worldFramePOIs, "MicroButtonAlertTemplate")
+	alert:SetFrameLevel (302)
+	alert.label = L["S_TUTORIAL_STATISTICS_BUTTON"]
+	alert.Text:SetSpacing (4)
+	MicroButtonAlert_SetText (alert, alert.label)
+	alert:SetPoint ("bottomleft", WorldQuestTrackerStatisticsButton, "topleft", 0, 32)
+	alert.Arrow:ClearAllPoints()
+	alert.Arrow:SetPoint ("topleft", alert, "bottomleft", 10, 0)
+	alert.CloseButton:HookScript ("OnClick", hook_AlertCloseButton)
+	alert:Show()
+	
+	WorldQuestTracker.db.profile.TutorialPopupID = WorldQuestTracker.db.profile.TutorialPopupID + 1
+end
+
+local tutorial_four = function()
+	--tutorial four was the tutorial for the centralized button, which has been removed
+	--it just increases the tutorial ID here
+	WorldQuestTracker.db.profile.TutorialPopupID = WorldQuestTracker.db.profile.TutorialPopupID + 1
+end
+
 function WorldQuestTracker.ShowTutorialAlert()
 	
 	WorldQuestTracker.db.profile.TutorialPopupID = WorldQuestTracker.db.profile.TutorialPopupID or 1
@@ -907,62 +902,24 @@ function WorldQuestTracker.ShowTutorialAlert()
 		
 		WorldQuestTracker.UpdateWorldQuestsOnWorldMap (true)
 		
-		if (WorldQuestTracker.db.profile.disable_world_map_widgets) then
-			WorldQuestTrackerToggleQuestsButton:Click()
-		end
-	
-		local alert = CreateFrame ("frame", "WorldQuestTrackerTutorialAlert1", worldFramePOIs, "MicroButtonAlertTemplate")
-		alert:SetFrameLevel (302)
-		alert.label = L["S_TUTORIAL_CLICKTOTRACK"]
-		alert.Text:SetSpacing (4)
-		MicroButtonAlert_SetText (alert, alert.label)
-		
-		if (WorldQuestTracker.WorldMapFrameReference and WorldQuestTracker.WorldMapFrameReference:IsShown()) then
-			alert:SetPoint ("bottom", WorldQuestTracker.WorldMapFrameReference, "top", 0, 28)
-		else
-			alert:SetPoint ("topleft", worldFramePOIs, "topleft", 64, -270)
-		end
-		
-		alert.CloseButton:HookScript ("OnClick", hook_AlertCloseButton)
-		alert:Show()
-		
-		WorldQuestTracker.db.profile.TutorialPopupID = WorldQuestTracker.db.profile.TutorialPopupID + 1
+		C_Timer.After (4, tutorial_one)
+		return
 		
 	elseif (WorldQuestTracker.db.profile.TutorialPopupID == 2) then
 	
-		if (not WorldQuestTracker.db.profile.disable_world_map_widgets) then
-			WorldQuestTrackerToggleQuestsButton:Click()
-		end
-	
-		local alert = CreateFrame ("frame", "WorldQuestTrackerTutorialAlert2", worldFramePOIs, "MicroButtonAlertTemplate")
-		alert:SetFrameLevel (302)
-		alert.label = "Use this button to toggle quests in the World Map. Faction icons switch to Kul'Tiras, Zandalar or Broken Isles map."
-		alert.Text:SetSpacing (4)
-		MicroButtonAlert_SetText (alert, alert.label)
-		
-		alert:SetPoint ("bottom", WorldQuestTrackerToggleQuestsButton, "top", 0, 28)
-		
-		alert.CloseButton:HookScript ("OnClick", hook_AlertCloseButton)
-		alert.Arrow:ClearAllPoints()
-		alert.Arrow:SetPoint ("topleft", alert, "bottomleft", 70, 0)
-		alert:Show()
-		
-		WorldQuestTracker.db.profile.TutorialPopupID = WorldQuestTracker.db.profile.TutorialPopupID + 1
-		
-	elseif (WorldQuestTracker.db.profile.TutorialPopupID == 3) then
-		local alert = CreateFrame ("frame", "WorldQuestTrackerTutorialAlert3", worldFramePOIs, "MicroButtonAlertTemplate")
-		alert:SetFrameLevel (302)
-		alert.label = "Click on Summary to see statistics and a saved list of quests on other characters."
-		alert.Text:SetSpacing (4)
-		MicroButtonAlert_SetText (alert, alert.label)
-		alert:SetPoint ("bottomleft", WorldQuestTrackerRewardHistoryButton, "topleft", 0, 32)
-		alert.Arrow:ClearAllPoints()
-		alert.Arrow:SetPoint ("topleft", alert, "bottomleft", 10, 0)
-		alert.CloseButton:HookScript ("OnClick", hook_AlertCloseButton)
-		alert:Show()
-		
-		WorldQuestTracker.db.profile.TutorialPopupID = WorldQuestTracker.db.profile.TutorialPopupID + 1
+		C_Timer.After (.5, tutorial_two)
+		return
 
+	elseif (WorldQuestTracker.db.profile.TutorialPopupID == 3) then
+	
+		C_Timer.After (.5, tutorial_three)
+		return
+		
+	elseif (WorldQuestTracker.db.profile.TutorialPopupID == 4) then
+	
+		C_Timer.After (.5, tutorial_four)
+		return
+		
 	end
 end
 
@@ -1091,6 +1048,131 @@ end
 
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------
+--> slash commands
+
+SLASH_WQTRACKER1 = "/wqt"
+SLASH_WQTRACKER2 = "/worldquesttracker"
+
+function SlashCmdList.WQTRACKER (msg, editbox)
+
+	if (msg == "statusbar") then
+		WorldQuestTracker.db.profile.bar_visible = true
+		WorldQuestTracker.RefreshStatusBarVisibility()
+		return
+
+	elseif (msg == "info") then
+		local widget = GetMouseFocus()
+		
+		if (widget) then
+			local info = {}
+			
+			--quest info
+			tinsert (info, "Name: " .. (widget.GetName and widget:GetName() or "-No Name-"))
+			
+			if (widget.questID) then
+				local title, factionID, tagID, tagName, worldQuestType, rarity, isElite, tradeskillLineIndex, tagID, tagName, worldQuestType, rarity, isElite, tradeskillLineIndex, allowDisplayPastCritical, gold, goldFormated, rewardName, rewardTexture, numRewardItems, itemName, itemTexture, itemLevel, quantity, quality, isUsable, itemID, isArtifact, artifactPower, isStackable, stackAmount = WorldQuestTracker.GetOrLoadQuestData (widget.questID)
+				tinsert (info, "QuestID: " .. widget.questID .. " Quest Name: " .. (title or "-No Name-"))
+			else
+				tinsert (info, "QuestID: no questID found")
+			end
+			
+			--flags
+			tinsert (info, "Is Rounded 'Zone' World: " .. (widget.IsWorldZoneQuestButton and "true" or "false"))
+			tinsert (info, "Is Zone Summary: " .. (widget.IsZoneSummaryQuestButton and "true" or "false"))
+			tinsert (info, "")
+			
+
+			--is on tracker
+			tinsert (info, "Is on Tracker: " .. (WorldQuestTracker.IsQuestBeingTracked (widget.questID) and "true" or "false"))
+			
+			--zone caches
+			tinsert (info, "Is in Zone QuestID Cache: " .. (WorldQuestTracker.CurrentZoneQuests [widget.questID or 0] and "true" or "false"))
+			
+			local inZoneWidgetsCache = false
+			for _, cachedElement in ipairs (WorldQuestTracker.Cache_ShownWidgetsOnZoneMap) do
+				if (cachedElement == widget) then
+					inZoneWidgetsCache = true
+				end
+			end
+			
+			tinsert (info, "Is in Zone Widget Cache: " .. (inZoneWidgetsCache and "true" or "false"))
+			
+			--world caches
+			local inWorldWidgetsCache = false
+			for _, cachedElement in pairs (WorldQuestTracker.WorldMapSmallWidgets) do
+				if (cachedElement == widget) then
+					inWorldWidgetsCache = true
+				end
+			end
+			tinsert (info, "Is in World Widget Cache: " .. (inWorldWidgetsCache and "true" or "false"))
+			
+			--pin data provider
+			tinsert (info, "")
+			
+			local map = WorldQuestTrackerDataProvider:GetMap()
+			
+			local dataProviderPinInUse = false
+			for pin in map:EnumeratePinsByTemplate ("WorldQuestTrackerWorldMapPinTemplate") do
+				if (pin.Child == widget) then
+					dataProviderPinInUse = true
+				end
+			end
+			tinsert (info, "Pin Data Provider Widget has a Pin: " .. (dataProviderPinInUse and "true" or "false"))
+			
+			local dataProviderValidParenting1 = false
+			local dataProviderValidParenting2 = false
+			for _, cachedElement in pairs (WorldQuestTracker.WorldMapSmallWidgets) do
+				local pin = cachedElement:GetParent()
+				if (pin) then
+					if (pin.Child == cachedElement) then
+						dataProviderValidParenting1 = true
+					end
+					if (pin:IsShown()) then
+						dataProviderValidParenting2 = true
+					end
+				end
+			end
+			
+			tinsert (info, "Pin Data Provider Valid Parent: " .. (dataProviderValidParenting1 and "true" or "false"))
+			tinsert (info, "Pin Data Provider Is Shown: " .. (dataProviderValidParenting2 and "true" or "false"))
+			
+			--parent data
+			tinsert (info, "")
+			
+			local parent = widget:GetParent()
+			if (parent) then
+				tinsert (info, "Parent: " .. (parent.GetName and parent:GetName() or "-No Name-"))
+				tinsert (info, "Parent Is Shown: " .. (parent:IsShown() and "true" or "false"))
+				
+			else
+				tinsert (info, "Parent: -no parent-")
+			end
+			
+			--anchor
+			tinsert (info, "")
+			for i = 1, widget:GetNumPoints() do
+				local a, b, c, e, d = widget:GetPoint (i)
+				tinsert (info, "Point: " .. (type (a) == "table" and (a:GetName() or "-no name-") or a))
+				tinsert (info, "Point: " .. (type (b) == "table" and (b:GetName() or "-no name-") or b))
+				tinsert (info, "Point: " .. (type (c) == "table" and (c:GetName() or "-no name-") or c))
+				tinsert (info, "Point: " .. (type (d) == "table" and (d:GetName() or "-no name-") or d))
+				tinsert (info, "Point: " .. (type (e) == "table" and (e:GetName() or "-no name-") or e))
+			end
+			
+			
+			Details:DumpTable (info)
+			
+		end
+		
+		
+		
+	end
+end
+
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
 --> faction bounty
 
 --function WorldMapMixin:AddOverlayFrame(templateName, templateType, anchorPoint, relativeTo, relativePoint, offsetX, offsetY)
@@ -1156,6 +1238,7 @@ hooksecurefunc (WorldMapFrame.UIElementsFrame.BountyBoard, "AnchorBountyTab", fu
 end)
 --]=]
 
--- stop auto complete doq dow endf thena
+-- stop auto complete doq dow endf thena ends then�
 
 
+function WorldQuestTracker.ShowTutorialAlert() end

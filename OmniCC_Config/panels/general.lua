@@ -1,57 +1,50 @@
 --[[
 	General configuration settings for OmniCC
 --]]
-
-local GeneralOptions = CreateFrame('Frame', 'OmniCCOptions_General')
-local Timer, Cooldown = OmniCC.Timer, OmniCC.Cooldown
+local GeneralOptions = CreateFrame("Frame", "OmniCCOptions_General")
+local OmniCC = _G.OmniCC
 local Sets = OmniCC.sets
-local L = OMNICC_LOCALS
 
-local SUBSECONDS_ABBR = '%.1f' .. (SECONDS_ABBR:match('%%d(.+)'))
-local MINUTES_ABBR = '%.1f' .. (MINUTES_ABBR:match('%%d(.+)'))
+local L = _G.OMNICC_LOCALS
+local SUBSECONDS_ABBR = "%.1f" .. (SECONDS_ABBR:match("%%d(.+)"))
+local MINUTES_ABBR = "%.1f" .. (MINUTES_ABBR:match("%%d(.+)"))
 local BUTTON_SPACING = 8
 local SLIDER_SPACING = 24
 
-
---[[ Panel ]]--
-
 function GeneralOptions:AddWidgets()
 	local enableCDText = self:CreateEnableTextCheckbox()
-	enableCDText:SetPoint('TOPLEFT', self, 'TOPLEFT', 12, -10)
+	enableCDText:SetPoint("TOPLEFT", self, "TOPLEFT", 12, -10)
 
 	local scaleText = self:CreateScaleTextCheckbox()
-	scaleText:SetPoint('TOPLEFT', enableCDText, 'BOTTOMLEFT', 0, -BUTTON_SPACING)
-
-    local aniUpdate = self:CreateUseAniUpdaterCheckbox()
-    aniUpdate:SetPoint('TOPLEFT', scaleText, 'BOTTOMLEFT', 0, -BUTTON_SPACING)
+	scaleText:SetPoint("TOPLEFT", enableCDText, "BOTTOMLEFT", 0, -BUTTON_SPACING)
 
 	local finishEffect = self:CreateFinishEffectPicker()
-	finishEffect:SetPoint('TOPLEFT', aniUpdate, 'BOTTOMLEFT', 4, -BUTTON_SPACING)
+	finishEffect:SetPoint("TOPLEFT", scaleText, "BOTTOMLEFT", 4, -BUTTON_SPACING)
 
 	--sliders
-	local spiralOpacity = self:CreateSpiralOpacitySlider()
-	spiralOpacity:SetPoint('BOTTOMLEFT', self, 'BOTTOMLEFT', 16, 10)
-	spiralOpacity:SetPoint('BOTTOMRIGHT', self, 'BOTTOMRIGHT', -16, 10)
+	-- local spiralOpacity = self:CreateSpiralOpacitySlider()
+	-- spiralOpacity:SetPoint("BOTTOMLEFT", self, "BOTTOMLEFT", 16, 10)
+	-- spiralOpacity:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", -16, 10)
 
 	local minEffectDuration = self:CreateMinEffectDurationSlider()
-	minEffectDuration:SetPoint('BOTTOMLEFT', spiralOpacity, 'TOPLEFT', 0, SLIDER_SPACING)
-	minEffectDuration:SetPoint('BOTTOMRIGHT', spiralOpacity, 'TOPRIGHT', 0, SLIDER_SPACING)
+	minEffectDuration:SetPoint("BOTTOMLEFT", self, "BOTTOMLEFT", 16, 10)
+	minEffectDuration:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", -16, 10)
 
 	local mmSSDuration = self:CreateMMSSSlider()
-	mmSSDuration:SetPoint('BOTTOMLEFT', minEffectDuration, 'TOPLEFT', 0, SLIDER_SPACING)
-	mmSSDuration:SetPoint('BOTTOMRIGHT', minEffectDuration, 'TOPRIGHT', 0, SLIDER_SPACING)
+	mmSSDuration:SetPoint("BOTTOMLEFT", minEffectDuration, "TOPLEFT", 0, SLIDER_SPACING)
+	mmSSDuration:SetPoint("BOTTOMRIGHT", minEffectDuration, "TOPRIGHT", 0, SLIDER_SPACING)
 
 	local tenthsDuration = self:CreateTenthsSlider()
-	tenthsDuration:SetPoint('BOTTOMLEFT', mmSSDuration, 'TOPLEFT', 0, SLIDER_SPACING)
-	tenthsDuration:SetPoint('BOTTOMRIGHT', mmSSDuration, 'TOPRIGHT', 0, SLIDER_SPACING)
+	tenthsDuration:SetPoint("BOTTOMLEFT", mmSSDuration, "TOPLEFT", 0, SLIDER_SPACING)
+	tenthsDuration:SetPoint("BOTTOMRIGHT", mmSSDuration, "TOPRIGHT", 0, SLIDER_SPACING)
 
 	local minDuration = self:CreateMinDurationSlider()
-	minDuration:SetPoint('BOTTOMLEFT', tenthsDuration, 'TOPLEFT', 0, SLIDER_SPACING)
-	minDuration:SetPoint('BOTTOMRIGHT', tenthsDuration, 'TOPRIGHT', 0, SLIDER_SPACING)
+	minDuration:SetPoint("BOTTOMLEFT", tenthsDuration, "TOPLEFT", 0, SLIDER_SPACING)
+	minDuration:SetPoint("BOTTOMRIGHT", tenthsDuration, "TOPRIGHT", 0, SLIDER_SPACING)
 
 	local minSize = self:CreateMinSizeSlider()
-	minSize:SetPoint('BOTTOMLEFT', minDuration, 'TOPLEFT', 0, SLIDER_SPACING)
-	minSize:SetPoint('BOTTOMRIGHT', minDuration, 'TOPRIGHT', 0, SLIDER_SPACING)
+	minSize:SetPoint("BOTTOMLEFT", minDuration, "TOPLEFT", 0, SLIDER_SPACING)
+	minSize:SetPoint("BOTTOMRIGHT", minDuration, "TOPRIGHT", 0, SLIDER_SPACING)
 end
 
 function GeneralOptions:UpdateValues()
@@ -78,9 +71,6 @@ function GeneralOptions:GetGroupSets()
 	return OmniCCOptions:GetGroupSets()
 end
 
-
---[[ Checkboxes ]]--
-
 function GeneralOptions:NewCheckbox(name)
 	local b = OmniCCOptions.CheckButton:New(name, self)
 
@@ -96,7 +86,6 @@ function GeneralOptions:CreateEnableTextCheckbox()
 
 	b.OnEnableSetting = function(self, enable)
 		parent:GetGroupSets().enabled = enable
-		Timer:ForAll('UpdateShown')
 	end
 
 	b.IsSettingEnabled = function(self)
@@ -115,7 +104,7 @@ function GeneralOptions:CreateScaleTextCheckbox()
 
 	b.OnEnableSetting = function(self, enable)
 		parent:GetGroupSets().scaleText = enable
-		Timer:ForAll('UpdateText', true)
+		OmniCC.Display:ForActive("UpdateCooldownTextStyle")
 	end
 
 	b.IsSettingEnabled = function(self)
@@ -127,30 +116,9 @@ function GeneralOptions:CreateScaleTextCheckbox()
 	return b
 end
 
---use ani updater
-function GeneralOptions:CreateUseAniUpdaterCheckbox()
-    local b = self:NewCheckbox(L.UseAniUpdater)
-
-    b.OnEnableSetting = function(self, enable)
-        if Sets.engine == 'ScriptUpdater' then
-            Sets.engine = 'AniUpdater'
-        else
-            Sets.engine = 'ScriptUpdater'
-        end
-    end
-
-    b.IsSettingEnabled = function(self)
-        return Sets.engine == 'AniUpdater'
-    end
-
-    b.tooltip = L.UseAniUpdaterTip
-    return b
-end
-
---[[ Sliders ]]--
-
 function GeneralOptions:NewSlider(name, low, high, step)
 	local s = OmniCCOptions.Slider:New(name, self, low, high, step)
+
 	s:SetHeight(s:GetHeight() + 2)
 
 	self.sliders = self.sliders or {}
@@ -183,12 +151,12 @@ function GeneralOptions:CreateMinSizeSlider()
 	local parent = self
 	local s = self:NewSlider(L.MinSize, 0, 200, 1)
 
-	s.SetSavedValue = function(self, value)
-		parent:GetGroupSets().minSize = value/100
-		Timer:ForAll('UpdateShown')
+	s.SetSavedValue = function(_, value)
+		parent:GetGroupSets().minSize = value / 100
+		OmniCC.Display:ForAll("UpdateCooldownTextShown")
 	end
 
-	s.GetSavedValue = function(self)
+	s.GetSavedValue = function(_)
 		return floor(parent:GetGroupSets().minSize * 100)
 	end
 
@@ -228,7 +196,8 @@ function GeneralOptions:CreateMMSSSlider()
 		else
 			parent:GetGroupSets().mmSSDuration = 0
 		end
-		Timer:ForAll('UpdateText')
+
+		OmniCC.Timer:ForActive("Update")
 	end
 
 	s.GetSavedValue = function(self)
@@ -256,7 +225,8 @@ function GeneralOptions:CreateTenthsSlider()
 
 	s.SetSavedValue = function(self, value)
 		parent:GetGroupSets().tenthsDuration = value
-		Timer:ForAll('UpdateText')
+
+		OmniCC.Timer:ForActive("Update")
 	end
 
 	s.GetSavedValue = function(self)
@@ -275,48 +245,42 @@ function GeneralOptions:CreateTenthsSlider()
 	return s
 end
 
-function GeneralOptions:CreateSpiralOpacitySlider()
-	local parent = self
-	local s = self:NewSlider(L.SpiralOpacity, 0, 1, .01)
+-- function GeneralOptions:CreateSpiralOpacitySlider()
+-- 	local parent = self
+-- 	local s = self:NewSlider(L.SpiralOpacity, 0, 1, .01)
 
-	s.SetSavedValue = function(self, value)
-		parent:GetGroupSets().spiralOpacity = value
-		Cooldown:ForAll('UpdateAlpha')
-	end
+-- 	s.SetSavedValue = function(self, value)
+-- 		parent:GetGroupSets().spiralOpacity = value
+-- 		-- Cooldown:ForAll("UpdateAlpha")
+-- 	end
 
-	s.GetSavedValue = function(self)
-		return parent:GetGroupSets().spiralOpacity
-	end
+-- 	s.GetSavedValue = function(self)
+-- 		return parent:GetGroupSets().spiralOpacity
+-- 	end
 
-	s.GetFormattedText = function(self, value)
-		return floor(value * 100) .. '%'
-	end
+-- 	s.GetFormattedText = function(self, value)
+-- 		return floor(value * 100) .. "%"
+-- 	end
 
-	s.tooltip = L.SpiralOpacityTip
-	return s
-end
-
-
---[[ Dropdown ]]--
+-- 	s.tooltip = L.SpiralOpacityTip
+-- 	return s
+-- end
 
 function GeneralOptions:CreateFinishEffectPicker()
-	local dd = _G.OmniCCOptions.Dropdown:New{
+	local dd =
+		_G.OmniCCOptions.Dropdown:New {
 		parent = self,
-
 		name = L.FinishEffect,
-
 		get = function()
 			return self:GetGroupSets().effect
 		end,
-
 		set = function(_, value)
 			self:GetGroupSets().effect = value
 		end,
-
 		items = function()
 			local t = {}
 
-			for id, effect in pairs(OmniCC.effects) do
+			for id, effect in OmniCC.FX:All() do
 				tinsert(t, {
 					text = effect.name,
 					tooltip = effect.desc,
@@ -331,8 +295,6 @@ function GeneralOptions:CreateFinishEffectPicker()
 	return dd
 end
 
---[[ Load the thing ]]--
-
-OmniCCOptions:AddTab('general', L.GeneralSettings, GeneralOptions)
+OmniCCOptions:AddTab("general", L.GeneralSettings, GeneralOptions)
 GeneralOptions:AddWidgets()
 GeneralOptions:UpdateValues()

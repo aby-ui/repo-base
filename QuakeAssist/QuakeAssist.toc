@@ -1,12 +1,13 @@
-## Interface: 80000
+## Interface: 80200
 ## Title: QuakeAssist
-## Version: 1.03
+## Version: 1.10
 ## Author: Abin
 ## X-Category: Combat
 ## SavedVariables: QuakeAssistDB
 
 Includes\LibAddonManager.lua
 Includes\InterfaceOptionPage-1.0.lua
+Includes\Pre80API.lua
 
 Localization.lua
 Core.lua

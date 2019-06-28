@@ -20,6 +20,7 @@ button:SetAttribute("totem-slot2", 1)
 function button:OnUpdateTimer()
 	local haveTotem, name, startTime, duration = GetTotemInfo(1)
 	if haveTotem and (startTime or 0 ) > 0 and (duration or 0) > 0 then
-		return 1, startTime + duration
-	end
+		return "NONE", startTime + duration
+    end
+    return "R"
 end

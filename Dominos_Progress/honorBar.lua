@@ -1,4 +1,6 @@
-local Addon = select(2, ...)
+if not _G.IsWatchingHonorAsXP then return end
+
+local _, Addon = ...
 local Dominos = _G.Dominos
 local HonorBar = Dominos:CreateClass('Frame', Addon.ProgressBar)
 

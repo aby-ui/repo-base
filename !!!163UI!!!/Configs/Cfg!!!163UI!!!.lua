@@ -1,11 +1,13 @@
 local L = select(2,...).L
 U1_NEW_ICON = '|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|t'
 
-function U1CfgMakeCVarOption(title, cvar, options)
+-- default 仅在插件first run的时候运行，如果是nil则不会设置默认值
+function U1CfgMakeCVarOption(title, cvar, default, options)
     local info = copy(options) or {}
 
     info.text = title
     info.var = "cvar_"..cvar
+    info.dontCompareDefaultWhenSave = true -- 保存时不根据默认值清空，放弃控制玩家默认值的能力，在玩家用其他插件或被其他人上号，回来的时候可以恢复
     local origin_callback = info.callback
 
     if pcall(GetCVarDefault, cvar) then
@@ -13,11 +15,20 @@ function U1CfgMakeCVarOption(title, cvar, options)
             if info.type == "checkbox" or info.type == nil then
                 return GetCVarBool(cvar)
             else
-                return GetCVar(cvar)
+                local v = tostring(GetCVar(cvar))
+                if v == "nil" then return tostring(GetCVarDefault(cvar)) else return v end
             end
         end
         info.callback = function(cfg, v, loading)
-            if loading then return end --加载的时候不根据保存的值设置
+            if loading then
+                if U1DB.configs[cfg._path] == nil then
+                    -- 没用过爱不易不会设置, 跳过default
+                    return
+                end
+                -- 此时v就是U1DB.configs[cfg._path], getvalue加载时不调用
+            end
+            --if cfg._path == "163ui_moreoptions/cvar_floatingCombatTextCombatDamage" then print(v, U1DB.configs[cfg._path], cfg.getvalue()) pdebug() end
+            --加载的时候不根据保存的值设置，目的是这些变量在玩家初次游戏时不变化，只有在玩家去修改的时候才会影响到玩家
             if( false and InCombatLockdown()) then
                 U1Message("战斗中无法设置此选项,请结束战斗后重试.")
             else
@@ -28,9 +39,9 @@ function U1CfgMakeCVarOption(title, cvar, options)
                 end
             end
         end
-        info.default = info.default or function()
-            return info.getvalue()
-        end
+        if info.default ~= nil then U1Message("CVAR选项的default没效果，在参数上设置", info.cvar) end
+        if default ~= nil then info.defaultFirstRun = default end
+        --if info.default == nil then info.default = GetCVarDefault(cvar) end --这里不能用getvalue，否则会乱
     else
         info.disabled = 1
         info.tip = format("已失效``当前版本没有'%s'这个设置变量'", cvar)
@@ -175,7 +186,7 @@ U1RegisterAddon("!!!163UI!!!", {
         var = "disableLaterLoading",
         text = L["延迟加载插件"],
         tip = L["说明`爱不易独家支持，可以先读完蓝条然后再逐一加载插件。会大大加快读条速度，但是加载大型插件时会有卡顿。如果不喜欢这种方式，请取消勾选即可，下次进游戏时就会采用新设置。` `对比测试：`未开启时，在第7.5秒后读完蓝条同时加载完全部插件`开启后，在第3.8秒读完蓝条，第8.0秒加载完全部插件"],
-        default = 1,
+        default = 0,
         getvalue = function() return not U1DB.disableLaterLoading end,
         callback = function(cfg, v, loading)
             U1DB.disableLaterLoading = not v;
@@ -203,15 +214,22 @@ U1RegisterAddon("!!!163UI!!!", {
             if loading then
                 local config = cfg._path
                 local playS, playSF = PlaySound, PlaySoundFile
-                local function shouldRedirect(channel)
+                local wipe, playing, looping, updater = table.wipe, {}, {}, CreateFrame("Frame", "U1_SOUND_REDIRECT")
+                looping[SOUNDKIT.UI_BONUS_LOOT_ROLL_LOOP or ""] = true --LootFrame
+                updater:SetScript("OnUpdate", function(self) wipe(playing) end)
+                if CreateLoopingSoundEffectEmitter then hooksecurefunc("CreateLoopingSoundEffectEmitter", function(startingSound, loopingSound) looping[loopingSound] = true end) end
+                local function shouldRedirect(channel, sound)
+                    if looping[sound] then return end
                     if(not U1GetCfgValue(config)) then return end
                     channel = channel and channel:upper() or "SFX"
                     if(channel == "MASTER") then return end
+                    if playing[sound] then return end
                     if(GetCVarBool("Sound_EnableSFX") and channel~="MUSIC" and channel~="MASTER" and channel~="AMBIENCE") then return end
+                    playing[sound] = true
                     return true
                 end
-                hooksecurefunc("PlaySound", function(sound, channel) if shouldRedirect(channel) then playS(sound, "Master") end end)
-                hooksecurefunc("PlaySoundFile", function(sound, channel) if shouldRedirect(channel) then playSF(sound, "Master") end end)
+                hooksecurefunc("PlaySound", function(sound, channel) if shouldRedirect(channel, sound) then playS(sound, "Master") end end)
+                hooksecurefunc("PlaySoundFile", function(sound, channel) if shouldRedirect(channel, sound) then playSF(sound, "Master") end end)
             else
                 if v then
                     if GetCVarBool("Sound_EnableSFX") then
@@ -219,8 +237,10 @@ U1RegisterAddon("!!!163UI!!!", {
                     end
                     SetCVar("Sound_EnableSFX", "0")
                     SetCVar("Sound_EnableAmbience", "0")
+                    Sound_GameSystem_RestartSoundSystem()
                 end
             end
+            CoreUIShowOrHide(U1_SOUND_REDIRECT, v)
         end
     },
     {

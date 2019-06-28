@@ -3,20 +3,21 @@
 		a finish effect that displays the cooldown at the center of the screen
 --]]
 
-local L = OMNICC_LOCALS
+local Addon = _G[...]
+local L = _G.OMNICC_LOCALS
+
 local Frame = CreateFrame('Frame', nil, UIParent)
 Frame:SetPoint('CENTER')
 Frame:SetSize(50, 50)
 Frame:SetAlpha(0)
+Frame:Hide()
 
 local Icon = Frame:CreateTexture()
 Icon:SetAllPoints()
 
 local Anims = Frame:CreateAnimationGroup()
 Anims:SetLooping('NONE')
-Anims:SetScript('OnFinished', function()
-  Frame:Hide()
-end)
+Anims:SetScript('OnFinished', function() Frame:Hide() end)
 
 local function newAnim(type, order, from, to)
   local anim = Anims:CreateAnimation(type)
@@ -38,26 +39,20 @@ newAnim('Alpha', 1, 0, .7)
 newAnim('Scale', 2, -2.5)
 newAnim('Alpha', 2, .7, 0)
 
-OmniCC:RegisterEffect({
-	id = 'alert',
-	name = L.Alert,
-	desc = L.AlertTip,
-	Setup = function() end,
-	
-	Run = function(self, cooldown)
-		local button = cooldown:GetParent()
-		local icon = OmniCC:GetButtonIcon(button)
+local Alert = Addon.FX:Create("alert", L.Alert, L.AlertTip)
 
-		if icon then
-		  Icon:SetVertexColor(icon:GetVertexColor())
-		  Icon:SetTexture(icon:GetTexture())
-		  Frame:Show()
+function Alert:Run(cooldown)
+	local icon = Addon:GetButtonIcon(cooldown:GetParent())
 
-		  if Anims:IsPlaying() then
-		    Anims:Finish()
-		  end
+	if icon then
+		Icon:SetVertexColor(icon:GetVertexColor())
+		Icon:SetTexture(icon:GetTexture())
+		Frame:Show()
 
-		  Anims:Play()
+		if Anims:IsPlaying() then
+			Anims:Finish()
 		end
+
+		Anims:Play()
 	end
-})
+end

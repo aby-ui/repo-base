@@ -419,7 +419,7 @@ DogTag:AddTag("Unit", "IsShadowform", {
 end
 
 local STEALTH = GetSpellInfo(1784)
-local SHADOWMELD = GetSpellInfo(58984)
+local SHADOWMELD = GetSpellInfo(58984) or GetSpellInfo(743) -- 58984 is the ID in BFA, 743 is the ID in Classic.
 local PROWL = GetSpellInfo(5215)
 DogTag:AddTag("Unit", "IsStealthed", {
 	alias = ("HasAura(aura=%q, unit=unit) or HasAura(aura=%q, unit=unit) or HasAura(aura=%q, unit=unit)"):format(STEALTH, SHADOWMELD, PROWL),
@@ -465,15 +465,17 @@ DogTag:AddTag("Unit", "HasSoulstone", {
 })
 
 local MISDIRECTION = GetSpellInfo(34477)
-DogTag:AddTag("Unit", "HasMisdirection", {
-	alias = ("HasAura(aura=%q, unit=unit)"):format(MISDIRECTION),
-	arg = {
-		'unit', 'string;undef', 'player'
-	},
-	doc = L["Return True if the unit has the Misdirection buff"],
-	example = ('[HasMisdirection] => %q; [HasMisdirection] => ""'):format(L["True"]),
-	category = L["Auras"]
-})
+if MISDIRECTION then -- WoW Classic compat
+	DogTag:AddTag("Unit", "HasMisdirection", {
+		alias = ("HasAura(aura=%q, unit=unit)"):format(MISDIRECTION),
+		arg = {
+			'unit', 'string;undef', 'player'
+		},
+		doc = L["Return True if the unit has the Misdirection buff"],
+		example = ('[HasMisdirection] => %q; [HasMisdirection] => ""'):format(L["True"]),
+		category = L["Auras"]
+	})
+end
 
 local ICE_BLOCK = GetSpellInfo(27619)
 DogTag:AddTag("Unit", "HasIceBlock", {
@@ -498,17 +500,17 @@ DogTag:AddTag("Unit", "HasInvisibility", {
 })
 
 -- Parnic: DI removed in Cataclysm
-if not wow_400 then
 local DIVINE_INTERVENTION = GetSpellInfo(19752)
-DogTag:AddTag("Unit", "HasDivineIntervention", {
-	alias = ("HasAura(aura=%q, unit=unit)"):format(DIVINE_INTERVENTION),
-	arg = {
-		'unit', 'string;undef', 'player'
-	},
-	doc = L["Return True if the unit has the Divine Intervention buff"],
-	example = ('[HasDivineIntervention] => %q; [HasDivineIntervention] => ""'):format(L["True"]),
-	category = L["Auras"]
-})
+if DIVINE_INTERVENTION then
+	DogTag:AddTag("Unit", "HasDivineIntervention", {
+		alias = ("HasAura(aura=%q, unit=unit)"):format(DIVINE_INTERVENTION),
+		arg = {
+			'unit', 'string;undef', 'player'
+		},
+		doc = L["Return True if the unit has the Divine Intervention buff"],
+		example = ('[HasDivineIntervention] => %q; [HasDivineIntervention] => ""'):format(L["True"]),
+		category = L["Auras"]
+	})
 end
 
 DogTag:AddTag("Unit", "HasDebuffType", {

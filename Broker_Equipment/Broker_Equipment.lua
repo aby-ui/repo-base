@@ -233,6 +233,7 @@ end
 
 function Broker_Equipment:PLAYER_LOGIN()
 	self:RegisterEvent('UNIT_INVENTORY_CHANGED')
+    self:RegisterEvent('PLAYER_EQUIPMENT_CHANGED')
 	self:RegisterEvent('EQUIPMENT_SETS_CHANGED')
 	self.EQUIPMENT_SETS_CHANGED = self.UpdateDisplay
 
@@ -248,6 +249,10 @@ function Broker_Equipment:UNIT_INVENTORY_CHANGED(unit)
 	if(unit == 'player') then
 		self:UpdateDisplay()
 	end
+end
+
+function Broker_Equipment:PLAYER_EQUIPMENT_CHANGED()
+    Broker_Equipment:UNIT_INVENTORY_CHANGED('player')
 end
 
 function Broker_Equipment:PLAYER_REGEN_ENABLED()

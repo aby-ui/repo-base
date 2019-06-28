@@ -26,57 +26,14 @@ local bit_band = bit.band
 local tremove = tremove
 local strsplit = strsplit
 local CombatLogGetCurrentEventInfo = CombatLogGetCurrentEventInfo
+local type = type
 
 local VExRT = nil
 
-local module = ExRT.mod:New("BossWatcher",ExRT.L.BossWatcher)
+local module = ExRT:New("BossWatcher",ExRT.L.BossWatcher)
 local ELib,L = ExRT.lib,ExRT.L
 
-module.db.data = {
-	{
-		guids = {},
-		raidguids = {},
-		reaction = {},
-		pets = {},
-		encounterStartGlobal = time(),
-		encounterStart = GetTime(),
-		encounterEnd = GetTime()+1,
-		isEnded = true,
-		graphData = {},
-		positionsData = {},
-		segments = {
-			[1] = {
-				e=true,
-				t=GetTime(),
-				p=1,
-			},
-		},
-		damage = {},
-		damage_seen = {},
-		heal = {},
-		healFrom = {},
-		switch = {},
-		cast = {},
-		interrupts = {},
-		dispels = {},
-		auras = {},
-		power = {},
-		dies = {},
-		chat = {},
-		resurrests = {},
-		summons = {},
-		aurabroken = {},
-		deathLog = {},
-		maxHP = {},
-		reduction = {},
-		tracking = {},	
-		other = {
-			blessing = {},
-			roles = {},
-			rolesGUID = {},
-		},
-	},
-}
+module.db.data = {}
 
 module.db.nowNum = 1
 local fightData,guidData,graphData,reactionData,segmentsData = nil
@@ -121,7 +78,7 @@ module.db.buffsFilters = {
 },
 [9] = {
 	[-1]=L.BossWatcherFilterPotions,
-	[-2]={188028,188027,229206},
+	[-2]={279152,279153,279151,269853,250878,252753,251316,251231},
 },
 }
 module.db.buffsFilterStatus = {}
@@ -171,7 +128,9 @@ module.db.energyPerClass = {
 	["DRUID"] = 	{{0,1,3,10},	{0,3,4,8,10}},
 	["DEMONHUNTER"]={{0,17,18,10},	{0,17,18,10}},
 	["NO"] = 	{{0,1,2,3,6,10},{0,1,2,3,6,10,5,7,8,9,11,12,13,14,15,16,17,18}},
+	["ALL"] =	{{0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25},{0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25}},
 }
+local energyPerClass = module.db.energyPerClass
 
 module.db.schoolsDefault = {0x1,0x2,0x4,0x8,0x10,0x20,0x40}
 module.db.schoolsColors = {
@@ -235,6 +194,17 @@ local ReductionAurasFunctions = {
 	dampenHarmCheck = 4,
 }
 module.db.reductionAuras = {
+	--Paladin
+	[210320] = {0.8,nil,function(auraVar) return (100+auraVar)/100 end},	--Devotion Aura
+
+	--Priest
+	[45242] = 0.85,		--Focused Will
+	[33206] = 0.6,		--Pain Suppression
+	[81782] = 0.75,		--Power Word: Barrier
+	[47585] = 0.4,		--Dispersion
+	[194384] = 1,	--Atonement talent
+
+	--[[
 	--Warrior
 	[871] = 0.6,		--Shield Wall
 	[23920] = {0.7,ReductionAurasFunctions.magic},	--Spell Reflect
@@ -259,7 +229,7 @@ module.db.reductionAuras = {
 	--[45182] = 0.15,									--Cheating Death
 
 	--Priest
-	[45242] = 0.7,		--Focused Will
+	[45242] = 0.85,		--Focused Will
 	[33206] = 0.6,		--Pain Suppression
 	[81782] = 0.75,		--Power Word: Barrier
 	[47585] = 0.4,		--Dispersion
@@ -301,6 +271,7 @@ module.db.reductionAuras = {
 
 	--Other
 	[65116] = {0.9,ReductionAurasFunctions.physical},	--Stoneform
+	]]
 }
 module.db.reductionBySpec = {
 	[63] = {30482,	0.94,	ReductionAurasFunctions.physical,	0x4},	--Mage fire;  16% with artifact trait, 6% without
@@ -347,8 +318,6 @@ local fightData_damage,fightData_damage_seen,fightData_heal,fightData_healFrom,f
 
 local active_segment
 local active_phase
-
-local healFromSpellActive
 
 local deathMaxEvents = 100
 
@@ -627,6 +596,8 @@ local function SLTReductionReg(sourceGUID)
 	SLTReductionFrame:RegisterEvent("UNIT_AURA")
 end
 
+local reductionAtonement = {}
+
 local function addReductionOnPull(unit,destGUID)
 	--------------> Add passive reductions
 	--- Note: this is first reduction check ever and I must don't care about any existens data
@@ -644,6 +615,14 @@ local function addReductionOnPull(unit,destGUID)
 			}
 		}
 		spellsSchool[ reductionSpec[1] ] = reductionSpec[4] or 0x1
+	end
+
+	if unitInspectData and unitInspectData.class == "PRIEST" and specID == 256 and unitInspectData.GUID then
+		if (unitInspectData[7] == 1) then
+			reductionAtonement[ unitInspectData.GUID ] = 0.97
+		else
+			reductionAtonement[ unitInspectData.GUID ] = nil
+		end
 	end
 	
 	if unitInspectData and unitInspectData.class == "DRUID" and specID ~= 104 then
@@ -1075,6 +1054,7 @@ local BossPhasesData = {
 }
 local BossPhasesFrame = CreateFrame("Frame")
 local BossPhasesBossmodPhaseCounter, BossPhasesBossmodPhase, BossPhasesBossmodEnabled = 1
+local BossPhasesBossmodCL
 local BossPhasesBossmod
 function BossPhasesBossmod()
 	if BigWigsLoader and type(BigWigsLoader)=='table' and BigWigsLoader.RegisterMessage then
@@ -1085,6 +1065,22 @@ function BossPhasesBossmod()
 				if not text or not BossPhasesBossmodEnabled then
 					return
 				elseif BossPhasesBossmodPhase ~= text then
+					if BossPhasesBossmodCL or BigWigsAPI then
+						local CL = BossPhasesBossmodCL or BigWigsAPI:GetLocale("BigWigs: Common")
+						BossPhasesBossmodCL = CL
+						if CL and CL.soon and type(text)=='string' then
+							local patt = CL.soon:gsub("%%s","")
+							if CL.soon:find("^%%s") then
+								patt = patt .. "$"
+							else
+								patt = "^" .. patt
+							end
+							if text:find( patt ) then
+								return
+							end
+						end
+					end
+
 					local phaseNumInDB = nil
 					for index,phase in pairs(segmentsData.phaseNames) do
 						if text == phase then
@@ -1112,22 +1108,13 @@ function BossPhasesBossmod()
 	end
 end
 
-local freezeFix = nil
 
 function _BW_Start(encounterID,encounterName)
 	module.db.lastFightID = module.db.lastFightID + 1
 	
-	freezeFix = nil
-	
-	local maxFights = (VExRT.BossWatcher.fightsNum or 10)
-	for i=maxFights,2,-1 do
-		if not freezeFix then
-			freezeFix = module.db.data[i]
-		end
+	local maxFights = (VExRT.BossWatcher.fightsNum or 5)
+	for i=maxFights+1,2,-1 do
 		module.db.data[i] = module.db.data[i-1]
-	end
-	for i=(maxFights+1),25 do
-		module.db.data[i] = nil
 	end
 	
 	fightData_damage = {}
@@ -1142,7 +1129,7 @@ function _BW_Start(encounterID,encounterName)
 	fightData_maxHP = {}
 	fightData_reduction = {}
 	
-	module.db.data[1] = {
+	fightData = {
 		guids = {},
 		raidguids = {},
 		reaction = {},
@@ -1182,13 +1169,12 @@ function _BW_Start(encounterID,encounterName)
 		reduction = fightData_reduction,
 		tracking = {},
 		other = {
-			blessing = {},
 			roles = {},
 			rolesGUID = {},
 		},
 	}
 	
-	fightData = module.db.data[1]
+	module.db.data[1] = fightData
 	
 	wipe(deathLog)
 	wipe(damageTakenLog)
@@ -1228,19 +1214,24 @@ function _BW_Start(encounterID,encounterName)
 			BossPhasesBossmod()
 		end
 		segmentsData.phaseNames = {[1] = 1,}
+		if BossPhasesBossmodCL and BossPhasesBossmodCL.stage then	
+			segmentsData.phaseNames[1] = BossPhasesBossmodCL.stage:format(1)
+		end
 	end
 	
 	_graphSectionTimer = 0
 	_graphSectionTimerRounded = 0
-	_graphRaidSnapshot = {"boss1","boss2","boss3","boss4","boss5","target","focus"}
+	_graphRaidSnapshot = {"boss1","boss2","boss3","boss4","boss5","boss6","target","focus"}
+	local energyPerClass_general = energyPerClass["NO"][1]
 	_graphRaidEnergy = {
-		module.db.energyPerClass["NO"][1],
-		module.db.energyPerClass["NO"][1],
-		module.db.energyPerClass["NO"][1],
-		module.db.energyPerClass["NO"][1],
-		module.db.energyPerClass["NO"][1],
-		module.db.energyPerClass["NO"][1],
-		module.db.energyPerClass["NO"][1],
+		energyPerClass_general,
+		energyPerClass_general,
+		energyPerClass_general,
+		energyPerClass_general,
+		energyPerClass_general,
+		energyPerClass_general,
+		energyPerClass_general,
+		energyPerClass_general,
 	}
 	
 	wipe(var_reductionCurrent)
@@ -1256,13 +1247,16 @@ function _BW_Start(encounterID,encounterName)
 			local name,_,subgroup,_,_,class = GetRaidRosterInfo(i)
 			if name and subgroup <= gMax then
 				_graphRaidSnapshot[#_graphRaidSnapshot + 1] = name
-				local energy = module.db.energyPerClass[class or "NO"]
+				if module.db.allEnergyMode then
+					class = "ALL"
+				end
+				local energy = energyPerClass[class or "NO"]
 				if name == ExRT.SDB.charName then
 					energy = energy and energy[2]
 				else
 					energy = energy and energy[1]
 				end
-				_graphRaidEnergy[#_graphRaidSnapshot] = energy or module.db.energyPerClass["NO"][1]
+				_graphRaidEnergy[#_graphRaidSnapshot] = energy or energyPerClass_general
 				
 				local guid = UnitGUID(name)
 				if guid then
@@ -1284,13 +1278,16 @@ function _BW_Start(encounterID,encounterName)
 				_graphRaidSnapshot[#_graphRaidSnapshot + 1] = name
 				
 				local _,class = UnitClass(unit)
-				local energy = module.db.energyPerClass[class or "NO"]
+				if module.db.allEnergyMode then
+					class = "ALL"
+				end
+				local energy = energyPerClass[class or "NO"]
 				if i == 5 then
 					energy = energy and energy[2]
 				else
 					energy = energy and energy[1]
 				end
-				_graphRaidEnergy[#_graphRaidSnapshot] = energy or module.db.energyPerClass["NO"][1]
+				_graphRaidEnergy[#_graphRaidSnapshot] = energy or energyPerClass_general
 				
 				local guid = UnitGUID(name)
 				if guid then
@@ -1361,9 +1358,26 @@ function _BW_End(encounterID)
 	wipe(var_reductionCurrent)
 	wipe(damageTakenLog)
 	
-	if freezeFix then
-		wipe(freezeFix)
-		freezeFix = nil
+	local maxFights = (VExRT.BossWatcher.fightsNum or 5)
+	for i=25,1,-1 do
+		if module.db.data[i] and module.db.data[i].encounterStart and module.db.data[i].encounterEnd and module.db.data[i].encounterID and (module.db.data[i].encounterEnd - module.db.data[i].encounterStart) < 20 then
+			local c = 0
+			for k,v in pairs(module.db.data[i].raidguids) do 
+				c = c + 1 
+				if c > 1 then
+					break
+				end
+			end
+			if c > 1 then
+				tremove(module.db.data,i)
+			end
+		end
+	end
+	for i=(maxFights+1),25 do
+		if module.db.data[i] then
+			wipe(module.db.data[i])
+		end
+		module.db.data[i] = nil
 	end
 	
 	fightData_damage = nil
@@ -1678,27 +1692,47 @@ local function CLEUParser(self,_,timestamp,event,hideCaster,sourceGUID,sourceNam
 	------ damage
 	---------------------------------
 	if event == "SPELL_DAMAGE" or event == "SPELL_PERIODIC_DAMAGE" then
-		local spellID,_,_,amount,overkill,school,resisted,blocked,absorbed,critical,glancing,crushing,isOffHand,missType = val1,val2,val3,val4,val5,val6,val7,val8,val9,val10,val11,val12,val13,val14
-		--Note, missType param added by myself for tracking function
-		
+		--[[
+			val1	spellID
+			val2	_
+			val3	_
+			val4	amount
+			val5	overkill
+			val6	school
+			val7	resisted
+			val8	blocked
+			val9	absorbed
+			val10	critical
+			val11	glancing
+			val12	crushing
+			val13	isOffHand
+			val14	missType
+				--Note, missType param added by myself for tracking function
+		]]
+
 		--------------> Add damage
-		local destTable = fightData_damage[destGUID]
-		if not destTable then
+		local activeTable = fightData_damage[destGUID]	--destTable
+		if not activeTable then
 			fightData_damage_seen[destGUID] = timestamp
-			destTable = {}
-			fightData_damage[destGUID] = destTable
+			activeTable = {}
+			fightData_damage[destGUID] = activeTable
 		end
-		local sourceTable = destTable[sourceGUID]
-		if not sourceTable then
-			sourceTable = {}
-			destTable[sourceGUID] = sourceTable
+		local activeTable2 = activeTable[destFlags]	--destReaction
+		if not activeTable2 then
+			activeTable2 = {}
+			activeTable[destFlags] = activeTable2
 		end
-		local segmentsTable = sourceTable[event == "SPELL_PERIODIC_DAMAGE" and -spellID or spellID]
-		if not segmentsTable then
-			segmentsTable = {}
-			sourceTable[event == "SPELL_PERIODIC_DAMAGE" and -spellID or spellID] = segmentsTable
+		activeTable = activeTable2[sourceGUID]	--sourceTable
+		if not activeTable then
+			activeTable = {}
+			activeTable2[sourceGUID] = activeTable
 		end
-		local spellTable = segmentsTable[active_segment]
+		activeTable2 = activeTable[event == "SPELL_PERIODIC_DAMAGE" and -val1 or val1]	--segmentsTable
+		if not activeTable2 then
+			activeTable2 = {}
+			activeTable[event == "SPELL_PERIODIC_DAMAGE" and -val1 or val1] = activeTable2
+		end
+		local spellTable = activeTable2[active_segment]	--spellTable
 		if not spellTable then
 			spellTable = {
 				amount = 0,
@@ -1715,76 +1749,75 @@ local function CLEUParser(self,_,timestamp,event,hideCaster,sourceGUID,sourceNam
 				dodge = 0,
 				miss = 0,
 			}
-			segmentsTable[active_segment] = spellTable
-			if school then
-				spellsSchool[spellID] = school
+			activeTable2[active_segment] = spellTable
+			if val6 then
+				spellsSchool[val1] = val6
 			end
 		end
-		spellTable.amount = spellTable.amount + amount
+		spellTable.amount = spellTable.amount + val4
 		spellTable.count = spellTable.count + 1
-		if overkill > 0 then
-			spellTable.overkill = spellTable.overkill + overkill
+		if val5 > 0 then
+			spellTable.overkill = spellTable.overkill + val5
 		end
-		if blocked then
-			spellTable.blocked = spellTable.blocked + blocked
+		if val8 then
+			spellTable.blocked = spellTable.blocked + val8
 		end
-		if absorbed then
-			spellTable.absorbed = spellTable.absorbed + absorbed
+		if val9 then
+			spellTable.absorbed = spellTable.absorbed + val9
 		end
-		if critical then
-			spellTable.crit = spellTable.crit + amount
+		if val10 then
+			spellTable.crit = spellTable.crit + val4
 			spellTable.critcount = spellTable.critcount + 1
-			if spellTable.critmax < amount then
-				spellTable.critmax = amount
+			if spellTable.critmax < val4 then
+				spellTable.critmax = val4
 			end
-			spellTable.critover = spellTable.critover + (overkill > 0 and overkill or 0) + (blocked and blocked or 0) + (absorbed and absorbed or 0)
-		elseif spellTable.hitmax < amount then
-			spellTable.hitmax = amount
+			spellTable.critover = spellTable.critover + (val5 > 0 and val5 or 0) + (val8 and val8 or 0) + (val9 and val9 or 0)
+		elseif spellTable.hitmax < val4 then
+			spellTable.hitmax = val4
 		end
 		
 		
 		
 		--------------> Add death
-		local destData = deathLog[destGUID]
-		if not destData then
-			destData = {}
+		activeTable2 = deathLog[destGUID]	--destData
+		if not activeTable2 then
+			activeTable2 = {}
 			for i=1,deathMaxEvents do
-				destData[i] = {}
+				activeTable2[i] = {}
 			end
-			destData.c = 0
-			deathLog[destGUID] = destData
+			activeTable2.c = 0
+			deathLog[destGUID] = activeTable2
 		end
-		local pos = destData.c
-		pos = pos + 1
-		if pos > deathMaxEvents then
-			pos = 1
+		local tmpVar = activeTable2.c + 1
+		if tmpVar > deathMaxEvents then
+			tmpVar = 1
 		end
-		local deathLine = destData[pos]
-		deathLine.t = 1
-		deathLine.s = sourceGUID
-		deathLine.ti = timestamp
-		deathLine.sp = spellID
-		deathLine.a = amount
-		deathLine.o = overkill
-		deathLine.sc = school
-		deathLine.b = blocked
-		deathLine.ab = absorbed
-		deathLine.c = critical
-		deathLine.ia = nil
-		deathLine.sm = sourceFlags2
-		deathLine.dm = destFlags2
-		local player = raidGUIDs[ destGUID ]
-		if player then
-			deathLine.h = UnitHealth( player )
-			deathLine.hm = UnitHealthMax( player )
+		activeTable2.c = tmpVar
+		activeTable = activeTable2[tmpVar]
+		activeTable.t = 1
+		activeTable.s = sourceGUID
+		activeTable.ti = timestamp
+		activeTable.sp = val1
+		activeTable.a = val4
+		activeTable.o = val5
+		activeTable.sc = val6
+		activeTable.b = val8
+		activeTable.ab = val9
+		activeTable.c = val10
+		activeTable.ia = nil
+		activeTable.sm = sourceFlags2
+		activeTable.dm = destFlags2
+		tmpVar = raidGUIDs[ destGUID ]
+		if tmpVar then
+			activeTable.h = UnitHealth( tmpVar )
+			activeTable.hm = UnitHealthMax( tmpVar )
 		end
-		destData.c = pos
 		
 		
 		
 		--------------> Add reduction
-		local reductuionTable = var_reductionCurrent[destGUID]
-		if reductuionTable then
+		activeTable = var_reductionCurrent[destGUID]
+		if activeTable then
 			local reduction = fightData_reduction[destGUID]
 			if not reduction then
 				reduction = {}
@@ -1795,26 +1828,26 @@ local function CLEUParser(self,_,timestamp,event,hideCaster,sourceGUID,sourceNam
 				reduction2 = {}
 				reduction[sourceGUID] = reduction2
 			end
-			reduction = reduction2[spellID]
+			reduction = reduction2[val1]
 			if not reduction then
 				reduction = {}
-				reduction2[spellID] = reduction
+				reduction2[val1] = reduction
 			end
 			
-			for i=1,#reductuionTable do
-				local reductionSubtable = reductuionTable[i]
+			for i=1,#activeTable do
+				local reductionSubtable = activeTable[i]
 			
-				local amount2 = amount+(absorbed or 0)+(blocked or 0)+overkill
+				local amount2 = val4+(val9 or 0)+(val8 or 0)+val5
 				
 				local isCheck = reductionSubtable.f
 				if not isCheck then
 					isCheck = true
 				elseif isCheck == 1 then --physical
-					isCheck = school == 1
+					isCheck = val6 == 1
 				elseif isCheck == 2 then --magic
-					isCheck = bit_band(school or 0,1) == 0
+					isCheck = bit_band(val6 or 0,1) == 0
 				elseif isCheck == 3 then --feintCheck
-					isCheck = module.db.reductionIsNotAoe[spellID]
+					isCheck = module.db.reductionIsNotAoe[val1]
 				elseif isCheck == 4 then --dampenHarmCheck
 					local unitHealthMax = UnitHealthMax(destName or "?")
 					unitHealthMax = unitHealthMax == 0 and 1400000 or unitHealthMax
@@ -1846,51 +1879,33 @@ local function CLEUParser(self,_,timestamp,event,hideCaster,sourceGUID,sourceNam
 	
 	
 		--------------> Add switch
-		local targetTable = fightData_switch[destGUID]
-		if not targetTable then
-			targetTable = {
+		activeTable = fightData_switch[destGUID]
+		if not activeTable then
+			activeTable = {
 				[1]={},	--cast
 				[2]={},	--target
 				seen=timestamp,
 			}
-			fightData_switch[destGUID] = targetTable
+			fightData_switch[destGUID] = activeTable
 		end
-		local targetCastTable = targetTable[1]
-		if not targetCastTable[sourceGUID] then
-			targetCastTable[sourceGUID] = {timestamp,spellID,1}
+		activeTable2 = activeTable[1]
+		if not activeTable2[sourceGUID] then
+			activeTable2[sourceGUID] = {timestamp,val1,1}
 		end
 		
 		
 
-		--------------> Add healing from
-		if healFromSpellActive and bit_band(destFlags,0x00000040) == 0 and amount > 0 then	--COMBATLOG_OBJECT_REACTION_HOSTILE
-			local healingFromData = damageTakenLog[destGUID]
-			if not healingFromData then
-				healingFromData = {}
-				damageTakenLog[destGUID] = healingFromData
-			end
-			local healingFromDataSize = #healingFromData
-			if healingFromData[healingFromDataSize - 1] == spellID then
-				healingFromData[healingFromDataSize] = healingFromData[healingFromDataSize] + amount
-			else
-				healingFromData[healingFromDataSize + 1] = spellID
-				healingFromData[healingFromDataSize + 2] = amount
-			end
-		end
-		
-		
-		
 		--------------> Add special spells [tracking]
-		if var_trackingDamageSpells[spellID] then
-			fightData.tracking[#fightData.tracking + 1] = {timestamp,sourceGUID,sourceFlags2,destGUID,destFlags2,spellID,amount,overkill,school,blocked,absorbed,critical,missType,s = active_segment}
+		if var_trackingDamageSpells[val1] then
+			fightData.tracking[#fightData.tracking + 1] = {timestamp,sourceGUID,sourceFlags2,destGUID,destFlags2,val1,val4,val5,val6,val8,val9,val10,val14,s = active_segment}
 		end
 		
 		
 		--------------> Other
-		if spellID == 196917 then	-- Light of the Martyr: effective healing fix
+		if val1 == 196917 then	-- Light of the Martyr: effective healing fix
 			local lotmData = spellFix_LotM[sourceGUID]
 			if lotmData then
-				local damageTaken = amount + overkill + (absorbed or 0)
+				local damageTaken = val4 + val5 + (val9 or 0)
 				if damageTaken < (lotmData[1] + lotmData[2]) and (timestamp - lotmData[5]) < 0.2 then
 					local spellTable = lotmData[3]
 					if lotmData[2] == 0 then
@@ -1906,10 +1921,10 @@ local function CLEUParser(self,_,timestamp,event,hideCaster,sourceGUID,sourceNam
 					end
 				end
 			end
-		elseif spellID == 186439 then	-- Shadow Mend
+		elseif val1 == 186439 then	-- Shadow Mend
 			local spellTable = spellFix_SM[destGUID]
 			if spellTable then
-				local damageTaken = amount + overkill + (absorbed or 0)
+				local damageTaken = val4 + val5 + (val9 or 0)
 				local amount = spellTable.amount
 				if amount < damageTaken then
 					spellTable.amount = 0
@@ -1920,7 +1935,7 @@ local function CLEUParser(self,_,timestamp,event,hideCaster,sourceGUID,sourceNam
 		end
 	
 	
-		if missType then
+		if val14 then
 			return spellTable
 		end
 	---------------------------------
@@ -1933,26 +1948,38 @@ local function CLEUParser(self,_,timestamp,event,hideCaster,sourceGUID,sourceNam
 		absorbed = if spell absorbed by ability (ex. DK's egg, Koragh shadow phase)
 		absorbs = if spell is absorb (ex. PW:S, HPally mastery, BloodDK mastery)
 		]]
-		
-		local spellID,_,school,amount,overhealing,absorbed,critical = val1,val2,val3,val4,val5,val6,val7
+		--[[
+			val1	spellID
+			val2	_
+			val3	school
+			val4	amount
+			val5	overhealing
+			val6	absorbed
+			val7	critical
+		]]
 		
 		--------------> Add heal
-		local sourceTable = fightData_heal[sourceGUID]
-		if not sourceTable then
-			sourceTable = {}
-			fightData_heal[sourceGUID] = sourceTable
+		local activeTable = fightData_heal[sourceGUID]	--sourceTable
+		if not activeTable then
+			activeTable = {}
+			fightData_heal[sourceGUID] = activeTable
 		end
-		local destTable = sourceTable[destGUID]
-		if not destTable then
-			destTable = {}
-			sourceTable[destGUID] = destTable
+		local activeTable2 = activeTable[destGUID]		--destTable
+		if not activeTable2 then
+			activeTable2 = {}
+			activeTable[destGUID] = activeTable2
 		end
-		local segmentsTable = destTable[event == "SPELL_PERIODIC_HEAL" and -spellID or spellID]
-		if not segmentsTable then
-			segmentsTable = {}
-			destTable[event == "SPELL_PERIODIC_HEAL" and -spellID or spellID] = segmentsTable
+		activeTable = activeTable2[destFlags]	--destReactTable
+		if not activeTable then
+			activeTable = {}
+			activeTable2[destFlags] = activeTable
 		end
-		local spellTable = segmentsTable[active_segment]
+		activeTable2 = activeTable[event == "SPELL_PERIODIC_HEAL" and -val1 or val1]		--segmentsTable
+		if not activeTable2 then
+			activeTable2 = {}
+			activeTable[event == "SPELL_PERIODIC_HEAL" and -val1 or val1] = activeTable2
+		end
+		local spellTable = activeTable2[active_segment]
 		if not spellTable then
 			spellTable = {
 				amount = 0,
@@ -1966,157 +1993,92 @@ local function CLEUParser(self,_,timestamp,event,hideCaster,sourceGUID,sourceNam
 				hitmax = 0,
 				absorbs = 0,
 			}
-			segmentsTable[active_segment] = spellTable
-			if school then
-				spellsSchool[spellID] = school
+			activeTable2[active_segment] = spellTable
+			if val3 then
+				spellsSchool[val1] = val3
 			end
 		end
-		spellTable.amount = spellTable.amount + amount
-		spellTable.over = spellTable.over + overhealing
-		spellTable.absorbed = spellTable.absorbed + absorbed
+		spellTable.amount = spellTable.amount + val4
+		spellTable.over = spellTable.over + val5
+		spellTable.absorbed = spellTable.absorbed + val6
 		spellTable.count = spellTable.count + 1
-		if critical then
-			spellTable.crit = spellTable.crit + amount + absorbed
+		if val7 then
+			spellTable.crit = spellTable.crit + val4 + val6
 			spellTable.critcount = spellTable.critcount + 1
-			if spellTable.critmax < amount then
-				spellTable.critmax = amount
+			if spellTable.critmax < val4 then
+				spellTable.critmax = val4
 			end
-			spellTable.critover = spellTable.critover + overhealing
-		elseif spellTable.hitmax < amount then
-			spellTable.hitmax = amount
+			spellTable.critover = spellTable.critover + val5
+		elseif spellTable.hitmax < val4 then
+			spellTable.hitmax = val4
 		end
 		
 	
 	
 		--------------> Add death
-		local destData = deathLog[destGUID]
-		if not destData then
-			destData = {}
+		activeTable2 = deathLog[destGUID]
+		if not activeTable2 then
+			activeTable2 = {}
 			for i=1,deathMaxEvents do
-				destData[i] = {}
+				activeTable2[i] = {}
 			end
-			destData.c = 0
-			deathLog[destGUID] = destData
+			activeTable2.c = 0
+			deathLog[destGUID] = activeTable2
 		end
-		local pos = destData.c
-		pos = pos + 1
-		if pos > deathMaxEvents then
-			pos = 1
+		activeTable = activeTable2.c + 1
+		if activeTable > deathMaxEvents then
+			activeTable = 1
 		end
-		local deathLine = destData[pos]
-		deathLine.t = 2
-		deathLine.s = sourceGUID
-		deathLine.ti = timestamp
-		deathLine.sp = spellID
-		deathLine.a = amount
-		deathLine.o = overhealing
-		deathLine.sc = school
-		deathLine.b = nil
-		deathLine.ab = absorbed
-		deathLine.c = critical
-		deathLine.ia = nil
-		deathLine.sm = sourceFlags2
-		deathLine.dm = destFlags2
-		local player = raidGUIDs[ destGUID ]
-		if player then
-			deathLine.h = UnitHealth( player )
-			deathLine.hm = UnitHealthMax( player )
+		activeTable2.c = activeTable
+		activeTable = activeTable2[activeTable]
+		activeTable.t = 2
+		activeTable.s = sourceGUID
+		activeTable.ti = timestamp
+		activeTable.sp = val1
+		activeTable.a = val4
+		activeTable.o = val5
+		activeTable.sc = val3
+		activeTable.b = nil
+		activeTable.ab = val6
+		activeTable.c = val7
+		activeTable.ia = nil
+		activeTable.sm = sourceFlags2
+		activeTable.dm = destFlags2
+		activeTable2 = raidGUIDs[ destGUID ]
+		if activeTable2 then
+			activeTable.h = UnitHealth( activeTable2 )
+			activeTable.hm = UnitHealthMax( activeTable2 )
 		end
-		destData.c = pos
-		
-		
-		
-		
-		--------------> Add healing from
-		if healFromSpellActive then
-			local healingFromAmount = amount - overhealing
-			if healingFromAmount > 0 then
-				local healingFromData = damageTakenLog[destGUID]
-				if healingFromData then
-					local healingFromDataSize = #healingFromData
-					if healingFromDataSize > 0 then
-						local healingFromTable = fightData_healFrom[sourceGUID]
-						if not healingFromTable then
-							healingFromTable = {}
-							fightData_healFrom[sourceGUID] = healingFromTable
-						end
-						local healingFromDestTable = healingFromTable[destGUID]
-						if not healingFromDestTable then
-							healingFromDestTable = {}
-							healingFromTable[destGUID] = healingFromDestTable
-						end
-						local healingFromSpellTable = healingFromDestTable[spellID]
-						if not healingFromSpellTable then
-							healingFromSpellTable = {}
-							healingFromDestTable[spellID] = healingFromSpellTable
-						end
-						for i=(healingFromDataSize - 1),1,-2 do
-							local damageTaken = healingFromData[i+1]
-							if healingFromAmount > damageTaken then
-								healingFromAmount = healingFromAmount - damageTaken
-								
-								local fromSpellID = healingFromData[i]
-								local dataTable = healingFromSpellTable[fromSpellID]
-								if not dataTable then
-									dataTable = {}
-									healingFromSpellTable[fromSpellID] = dataTable
-								end
-								dataTable[active_segment] = (dataTable[active_segment] or 0)+damageTaken
-								
-								healingFromData[i+1] = nil
-								healingFromData[i] = nil
-							else
-								local fromSpellID = healingFromData[i]
-								local dataTable = healingFromSpellTable[fromSpellID]
-								if not dataTable then
-									dataTable = {}
-									healingFromSpellTable[fromSpellID] = dataTable
-								end
-								dataTable[active_segment] = (dataTable[active_segment] or 0)+healingFromAmount
-								
-								healingFromData[i+1] = healingFromData[i+1] - healingFromAmount
-								if healingFromData[i+1] == 0 then
-									healingFromData[i+1] = nil
-									healingFromData[i] = nil
-								end
-								
-								break
-							end
-						end
-					end
-				end
-			end
-		end
-				
+						
 		
 		--------------> Other
 		--[[
 		if negateHealing[destGUID] then
-			spellTable.amount = spellTable.amount - amount
-			spellTable.over = spellTable.over + amount + absorbed
-			spellTable.absorbed = spellTable.absorbed - absorbed
-			if critical then
-				spellTable.crit = spellTable.crit - amount - absorbed
+			spellTable.amount = spellTable.amount - val4
+			spellTable.over = spellTable.over + val4 + val6
+			spellTable.absorbed = spellTable.absorbed - val6
+			if val7 then
+				spellTable.crit = spellTable.crit - val4 - val6
 				spellTable.critcount = spellTable.critcount - 1
-				spellTable.critover = spellTable.critover - overhealing
+				spellTable.critover = spellTable.critover - val5
 			end
 		end
 		]]
-		if spellID == 183998 then	--Light of the Martyr: effective healing fix
+		if val1 == 183998 then	--Light of the Martyr: effective healing fix
 			local lotmData = spellFix_LotM[sourceGUID]
 			if not lotmData then
 				lotmData = {}
 				spellFix_LotM[sourceGUID] = lotmData
 			end
-			lotmData[1] = amount - overhealing
-			lotmData[2] = absorbed
+			lotmData[1] = val4 - val5
+			lotmData[2] = val6
 			lotmData[3] = spellTable
-			lotmData[4] = critical
+			lotmData[4] = val7
 			lotmData[5] = timestamp
-		elseif spellID == 186263 then	--Shadow Mend: effective healing fix, remove damage from debuff
+		elseif val1 == 186263 then	--Shadow Mend: effective healing fix, remove damage from debuff
 			spellFix_SM[destGUID] = spellTable
-		elseif spellID == 213313 then	--Paladin: Divine intervention
-			AddNotRealDeath(destGUID,timestamp,spellID)
+		elseif val1 == 213313 then	--Paladin: Divine intervention
+			AddNotRealDeath(destGUID,timestamp,val1)
 		end
 		
 	---------------------------------
@@ -2133,6 +2095,21 @@ local function CLEUParser(self,_,timestamp,event,hideCaster,sourceGUID,sourceNam
 		if reduction then
 			if spellID == 81782 then
 				sourceGUID = module.db.reductionPowerWordBarrierCaster or sourceGUID
+			elseif spellID == 194384 then
+				reduction = reductionAtonement[sourceGUID] or 1
+				--[[
+				if ExRT.A.Inspect then
+					local db = ExRT.A.Inspect.db.inspectDB
+					for k,v in pairs(db) do
+						if v.GUID == sourceGUID then
+							if v[7] == 1 then
+								reduction = 0.97
+							end
+							break
+						end
+					end
+				end
+				]]
 			end
 		
 			local destData = var_reductionCurrent[ destGUID ]
@@ -2262,7 +2239,9 @@ local function CLEUParser(self,_,timestamp,event,hideCaster,sourceGUID,sourceNam
 		--fightData_auras[ #fightData_auras + 1 ] = {timestamp,sourceGUID,destGUID,UnitIsFriendlyByUnitFlag(sourceFlags),UnitIsFriendlyByUnitFlag(destFlags),spellID,auraType,2,1,s = active_segment}
 		fightData_auras[ #fightData_auras + 1 ] = {timestamp,sourceGUID,destGUID,bit_band(sourceFlags or 0,240) == 16,bit_band(destFlags or 0,240) == 16,spellID,auraType,2,1,s = active_segment}
 		
-		if amount and amount > 0 then
+		if amount and amount > 0 and 
+			spellID ~= 284663 --BfD: Conclave: Bwonsamdi
+		then
 			CLEUParser(self,nil,timestamp,"SPELL_HEAL",hideCaster,sourceGUID,sourceName,sourceFlags,sourceFlags2,destGUID,destName,destFlags,destFlags2,spellID,nil,school,amount,amount,0)
 		end
 	
@@ -2322,7 +2301,7 @@ local function CLEUParser(self,_,timestamp,event,hideCaster,sourceGUID,sourceNam
 			sourceTable = {}
 			fightData_cast[sourceGUID] = sourceTable
 		end
-		sourceTable[ #sourceTable + 1 ] = {timestamp,spellID,1,destGUID,destFlags2,sourceFlags2,s = active_segment}
+		sourceTable[ #sourceTable + 1 ] = {timestamp,spellID,1,destGUID,destFlags2,sourceFlags2,sourceFlags,s = active_segment}
 	
 	
 		--------------> Add switch
@@ -2402,7 +2381,7 @@ local function CLEUParser(self,_,timestamp,event,hideCaster,sourceGUID,sourceNam
 			sourceTable = {}
 			fightData_cast[sourceGUID] = sourceTable
 		end
-		sourceTable[ #sourceTable + 1 ] = {timestamp,spellID,2,destGUID,destFlags2,sourceFlags2,s = active_segment}
+		sourceTable[ #sourceTable + 1 ] = {timestamp,spellID,2,destGUID,destFlags2,sourceFlags2,sourceFlags,s = active_segment}
 		
 		
 		
@@ -2466,10 +2445,15 @@ local function CLEUParser(self,_,timestamp,event,hideCaster,sourceGUID,sourceNam
 			destTable = {}
 			sourceTable[destGUID] = destTable
 		end
-		local segmentsTable = destTable[spellID]
+		local destReactTable = destTable[destFlags]
+		if not destReactTable then
+			destReactTable = {}
+			destTable[destFlags] = destReactTable
+		end
+		local segmentsTable = destReactTable[spellID]
 		if not segmentsTable then
 			segmentsTable = {}
-			destTable[spellID] = segmentsTable
+			destReactTable[spellID] = segmentsTable
 		end
 		local spellTable = segmentsTable[active_segment]
 		if not spellTable then
@@ -2507,8 +2491,7 @@ local function CLEUParser(self,_,timestamp,event,hideCaster,sourceGUID,sourceNam
 			destData.c = 0
 			deathLog[destGUID] = destData
 		end
-		local pos = destData.c
-		pos = pos + 1
+		local pos = destData.c + 1
 		if pos > deathMaxEvents then
 			pos = 1
 		end
@@ -2534,34 +2517,6 @@ local function CLEUParser(self,_,timestamp,event,hideCaster,sourceGUID,sourceNam
 		destData.c = pos
 		
 		
-		
-		
-		--------------> Add healing from
-		if healFromSpellActive then
-			local healingFromTable = fightData_healFrom[sourceGUID]
-			if not healingFromTable then
-				healingFromTable = {}
-				fightData_healFrom[sourceGUID] = healingFromTable
-			end
-			local healingFromDestTable = healingFromTable[destGUID]
-			if not healingFromDestTable then
-				healingFromDestTable = {}
-				healingFromTable[destGUID] = healingFromDestTable
-			end
-			local healingFromSpellTable = healingFromDestTable[spellID]
-			if not healingFromSpellTable then
-				healingFromSpellTable = {}
-				healingFromDestTable[spellID] = healingFromSpellTable
-			end
-			local healingFromSpellTableSpell = healingFromSpellTable[attackerSpellId]
-			if not healingFromSpellTableSpell then
-				healingFromSpellTableSpell = {}
-				healingFromSpellTable[attackerSpellId] = healingFromSpellTableSpell
-			end
-			healingFromSpellTableSpell[active_segment] = (healingFromSpellTableSpell[active_segment] or 0)+amount
-		end
-
-
 		if spellID == 213313 then	--Paladin: Divine intervention
 			AddNotRealDeath(destGUID,timestamp,spellID)
 		end
@@ -2640,8 +2595,9 @@ local function CLEUParser(self,_,timestamp,event,hideCaster,sourceGUID,sourceNam
 			destData.schFunc()
 		end
 		
+		local copyTable
 		for i=destData.c,1,-1 do
-			local copyTable = destData[i]
+			copyTable = destData[i]
 			if copyTable.t then
 				destTableLen = destTableLen + 1
 				destTable[destTableLen] = {
@@ -2680,7 +2636,7 @@ local function CLEUParser(self,_,timestamp,event,hideCaster,sourceGUID,sourceNam
 			end
 		end
 		for i=deathMaxEvents,destData.c+1,-1 do
-			local copyTable = destData[i]
+			copyTable = destData[i]
 			if copyTable.t then
 				destTableLen = destTableLen + 1
 				destTable[destTableLen] = {
@@ -2719,12 +2675,6 @@ local function CLEUParser(self,_,timestamp,event,hideCaster,sourceGUID,sourceNam
 			end
 		end
 		destData.c = 0
-		
-		--------------> Add healing from
-		local healingFromData = damageTakenLog[destGUID]
-		if healingFromData then
-			wipe(healingFromData)
-		end
 	---------------------------------
 	------ summons
 	---------------------------------	
@@ -2889,13 +2839,20 @@ function module:slash(arg)
 		VExRT.BossWatcher.saveVariables = true
 		VExRT.BossWatcher.SAVED_DATA = module.db.data
 		print('Saved')
+	elseif arg == "bw allenergy" or arg == "fl allenergy" then
+		module.db.allEnergyMode = not module.db.allEnergyMode
+		print('All Energy Mode',module.db.allEnergyMode)
+	elseif arg == "bw phase" or arg == "fl phase" then
+		if active_phase then
+			active_phase = active_phase + 1
+			print('Jump to phase',active_phase)
+		end
 	elseif arg:find("^bw ") or arg:find("^fl ") then
 		ExRT.F:FightLog_Open()
 	end
 end
---ExRT.F.BWNS = StartSegment
 
-function module:ClearData()
+function module:ClearData(isFirstLoad)
 	module.db.lastFightID = module.db.lastFightID + 1
 	module.db.nowNum = 1
 	module.db.data = {
@@ -2937,12 +2894,14 @@ function module:ClearData()
 			tracking = {},	
 			fightID = module.db.lastFightID,
 			other = {
-				blessing = {},
 				roles = {},
 				rolesGUID = {},
 			},	
 		},
 	}
+	if isFirstLoad then
+		return
+	end
 	ExRT.F.ScheduleTimer(collectgarbage, 1, "collect")
 	if BWInterfaceFrame and BWInterfaceFrame:IsShown() then
 		BWInterfaceFrame:Hide()
@@ -2951,11 +2910,15 @@ function module:ClearData()
 end
 
 function BWInterfaceFrameLoad()
-	if InCombatLockdown() then
-		print(L.SetErrorInCombat)
-		return
-	end
+	--if InCombatLockdown() then
+	--	print(L.SetErrorInCombat)
+	--	return
+	--end
 	isBWInterfaceFrameLoaded = true
+
+	if not module.db.data[1] then
+		module:ClearData(true)
+	end
 	
 	-- Some upvaules
 	local ipairs,pairs,tonumber,tostring,format,date,min,sort,table = ipairs,pairs,tonumber,tostring,format,date,min,sort,table
@@ -3216,8 +3179,21 @@ function BWInterfaceFrameLoad()
 		end
 	end
 	local function UpdateSegments_SelectPhase(phase)
+		local minX,maxX = #CurrentFight.segments,1
 		for i=1,#CurrentFight.segments do
 			CurrentFight.segments[i].e = CurrentFight.segments[i].p == phase
+			if CurrentFight.segments[i].p == phase then
+				if i < minX then
+					minX = i
+				end
+				if i > maxX then
+					maxX = i
+				end
+			end
+		end
+		if minX ~= #CurrentFight.segments or maxX ~= 1 then
+			BWInterfaceFrame.GraphFrame.G.ZoomMinX = minX - 1
+			BWInterfaceFrame.GraphFrame.G.ZoomMaxX = maxX + 1
 		end
 		BWInterfaceFrame:Hide()
 		BWInterfaceFrame:Show()
@@ -3904,10 +3880,9 @@ function BWInterfaceFrameLoad()
 				end
 			end
 			for mobGUID,mobData in pairs(CurrentFight.cast) do
-				local unitFlag = CurrentFight.reaction[mobGUID]
-				if unitFlag and ExRT.F.GetUnitInfoByUnitFlag(unitFlag,3) == 64 then
-					for i=1,#mobData do
-						local castData = mobData[i]
+				for i=1,#mobData do
+					local castData = mobData[i]
+					if castData[7] and ExRT.F.GetUnitInfoByUnitFlag(castData[7],3) ~= 16 then
 						local _time = timestampToFightTime(castData[1])
 						
 						local tooltipIndex = _time / fight_dur
@@ -4044,6 +4019,8 @@ function BWInterfaceFrameLoad()
 		TLframe.ImprovedSelectSegment.ResetZoom.Text = ELib:Text(TLframe.ImprovedSelectSegment.ResetZoom,"["..L.BossWatcherGraphZoomReset.."]",11):Size(200,13):Point("RIGHT",0,0):Right():Top():Color():Outline()
 		TLframe.ImprovedSelectSegment.ResetZoom:SetWidth( TLframe.ImprovedSelectSegment.ResetZoom.Text:GetStringWidth() )
 		TLframe.ImprovedSelectSegment.ResetZoom:SetScript("OnClick",function (self)
+			BWInterfaceFrame.GraphFrame.G.ZoomMinX = nil
+			BWInterfaceFrame.GraphFrame.G.ZoomMaxX = nil
 			UpdateSegments()
 		end)
 		TLframe.ImprovedSelectSegment.ResetZoom:Hide()
@@ -4542,24 +4519,24 @@ function BWInterfaceFrameLoad()
 		local graph = {[-1]={}}
 		for destGUID,destData in pairs(CurrentFight.damage) do
 			if ExRT.F.table_len(destVar) == 0 or destVar[destGUID] then
-				local isEnemy = false
-				if GetUnitInfoByUnitFlagFix(CurrentFight.reaction[destGUID],2) == 512 then
-					isEnemy = true
-				end
-				if (isEnemy and doEnemy) or (not isEnemy and not doEnemy) then
-					for sourceGUID,sourceData in pairs(destData) do
-						local owner = ExRT.F.Pets:getOwnerGUID(sourceGUID,GetPetsDB())
-						if owner then
-							sourceGUID = owner
-						end
-						if ExRT.F.table_len(sourceVar) == 0 or sourceVar[sourceGUID] then
-							local source = isReverse and destGUID or sourceGUID
-							local dest = isReverse and sourceGUID or destGUID
-							
-							local sourceDamage, destPos = DamageTab_UpdateLines_GetUnit(damage,graph,source,dest,"guid")
-													
-							for spellID,spellSegments in pairs(sourceData) do
-								if spellID ~= 205729 then	--Paladin Blessing
+				for destReaction,destReactData in pairs(destData) do
+					local isEnemy = false
+					if GetUnitInfoByUnitFlagFix(destReaction,2) == 512 then
+						isEnemy = true
+					end
+					if (isEnemy and doEnemy) or (not isEnemy and not doEnemy) then
+						for sourceGUID,sourceData in pairs(destReactData) do
+							local owner = ExRT.F.Pets:getOwnerGUID(sourceGUID,GetPetsDB())
+							if owner then
+								sourceGUID = owner
+							end
+							if ExRT.F.table_len(sourceVar) == 0 or sourceVar[sourceGUID] then
+								local source = isReverse and destGUID or sourceGUID
+								local dest = isReverse and sourceGUID or destGUID
+								
+								local sourceDamage, destPos = DamageTab_UpdateLines_GetUnit(damage,graph,source,dest,"guid")
+														
+								for spellID,spellSegments in pairs(sourceData) do
 									for segment,spellAmount in pairs(spellSegments) do
 										if CurrentFight.segments[segment].e then
 											sourceDamage.eff = sourceDamage.eff + spellAmount.amount - spellAmount.overkill
@@ -4582,58 +4559,6 @@ function BWInterfaceFrameLoad()
 											end
 											graph[ source ][segment] = graph[ source ][segment] + damgeCount
 											graph[ -1 ][segment] = graph[ -1 ][segment] + damgeCount
-										end
-									end
-								end
-							end
-						end
-					end
-					for sourceGUID,blessingList in pairs(CurrentFight.other.blessing) do
-						local sourceData = destData[sourceGUID]
-						if sourceData then
-							local spellSegments = sourceData[205729]
-							if spellSegments then
-								local blessingCount = #blessingList
-								for i=1,blessingCount do
-									if ExRT.F.table_len(sourceVar) == 0 or sourceVar[ blessingList[i] ] then
-										local source = isReverse and destGUID or blessingList[i]
-										local dest = isReverse and blessingList[i] or destGUID	
-										
-										local sourceDamage, destPos = DamageTab_UpdateLines_GetUnit(damage,graph,source,dest,"guid")
-										
-										local pets = ExRT.F.Pets:getPets(sourceGUID,GetPetsDB())
-										local allSeg = {spellSegments}
-										for j=1,#pets do
-											if destData[ pets[j] ] and destData[ pets[j] ][205729] then
-												allSeg[#allSeg + 1] = destData[ pets[j] ][205729]
-											end
-										end
-										
-										for _,spellSegments2 in pairs(allSeg) do
-											for segment,spellAmount in pairs(spellSegments2) do
-												if CurrentFight.segments[segment].e then
-													sourceDamage.eff = sourceDamage.eff + (spellAmount.amount - spellAmount.overkill)/blessingCount
-													sourceDamage.total = sourceDamage.total + (spellAmount.amount + spellAmount.blocked + spellAmount.absorbed)/blessingCount
-													sourceDamage.overkill = sourceDamage.overkill + spellAmount.overkill/blessingCount
-													sourceDamage.blocked = sourceDamage.blocked + spellAmount.blocked/blessingCount
-													sourceDamage.absorbed = sourceDamage.absorbed + spellAmount.absorbed/blessingCount
-													sourceDamage.crit = sourceDamage.crit + spellAmount.crit/blessingCount
-													total = total + (spellAmount.amount - spellAmount.overkill)/blessingCount
-													totalOver = totalOver + (spellAmount.overkill + spellAmount.blocked + spellAmount.absorbed)/blessingCount
-													
-													local damgeCount = (spellAmount.amount + (DamageTab_Variables.ShowAll and (spellAmount.blocked+spellAmount.absorbed) or -spellAmount.overkill))/blessingCount
-													destPos[2] = destPos[2] + damgeCount
-			
-													if not graph[ source ][segment] then
-														graph[ source ][segment] = 0
-													end
-													if not graph[ -1 ][segment] then
-														graph[ -1 ][segment] = 0
-													end
-													graph[ source ][segment] = graph[ source ][segment] + damgeCount
-													graph[ -1 ][segment] = graph[ -1 ][segment] + damgeCount
-												end
-											end
 										end
 									end
 								end
@@ -4750,19 +4675,19 @@ function BWInterfaceFrameLoad()
 		local graph = {[-1]={}}
 		for destGUID,destData in pairs(CurrentFight.damage) do
 			if ExRT.F.table_len(destVar) == 0 or destVar[destGUID] then
-				local isEnemy = false
-				if GetUnitInfoByUnitFlagFix(CurrentFight.reaction[destGUID],2) == 512 then
-					isEnemy = true
-				end
-				if (isEnemy and doEnemy) or (not isEnemy and not doEnemy) then
-					for sourceGUID,sourceData in pairs(destData) do
-						local owner = ExRT.F.Pets:getOwnerGUID(sourceGUID,GetPetsDB())
-						if owner then
-							sourceGUID = owner
-						end
-						if ExRT.F.table_len(sourceVar) == 0 or sourceVar[sourceGUID] then
-							for spellID,spellSegments in pairs(sourceData) do
-								if spellID ~= 205729 then	--Paladin Blessing
+				for destReaction,destReactData in pairs(destData) do
+					local isEnemy = false
+					if GetUnitInfoByUnitFlagFix(destReaction,2) == 512 then
+						isEnemy = true
+					end
+					if (isEnemy and doEnemy) or (not isEnemy and not doEnemy) then
+						for sourceGUID,sourceData in pairs(destReactData) do
+							local owner = ExRT.F.Pets:getOwnerGUID(sourceGUID,GetPetsDB())
+							if owner then
+								sourceGUID = owner
+							end
+							if ExRT.F.table_len(sourceVar) == 0 or sourceVar[sourceGUID] then
+								for spellID,spellSegments in pairs(sourceData) do
 									local sourceDamage, destPos = DamageTab_UpdateLines_GetUnit(damage,graph,spellID,destGUID,"spell",owner and "pet")
 									
 									for segment,spellAmount in pairs(spellSegments) do
@@ -4808,59 +4733,6 @@ function BWInterfaceFrameLoad()
 							end
 						end
 					end
-					for sourceGUID,blessingList in pairs(CurrentFight.other.blessing) do
-						local sourceData = destData[sourceGUID]
-						if sourceData then
-							local spellSegments = sourceData[205729]
-							if spellSegments then
-								local blessingCount = #blessingList
-								for i=1,blessingCount do
-									if ExRT.F.table_len(sourceVar) == 0 or sourceVar[ blessingList[i] ] then
-										local sourceDamage, destPos = DamageTab_UpdateLines_GetUnit(damage,graph,205729,destGUID,"spell",sourceGUID)
-										
-										for segment,spellAmount in pairs(spellSegments) do
-											if CurrentFight.segments[segment].e then
-												sourceDamage.total = sourceDamage.total + (spellAmount.amount + spellAmount.blocked + spellAmount.absorbed)/blessingCount
-												sourceDamage.eff = sourceDamage.eff + (spellAmount.amount - spellAmount.overkill)/blessingCount
-												sourceDamage.count = sourceDamage.count + spellAmount.count/blessingCount
-												sourceDamage.overkill = sourceDamage.overkill + spellAmount.overkill/blessingCount
-												sourceDamage.blocked = sourceDamage.blocked + spellAmount.blocked/blessingCount
-												sourceDamage.absorbed = sourceDamage.absorbed + spellAmount.absorbed/blessingCount
-												sourceDamage.crit = sourceDamage.crit + spellAmount.crit/blessingCount
-												sourceDamage.critcount = sourceDamage.critcount + spellAmount.critcount/blessingCount
-												if sourceDamage.critmax < spellAmount.critmax then
-													sourceDamage.critmax = spellAmount.critmax
-												end
-												sourceDamage.critover = sourceDamage.critover + spellAmount.critover/blessingCount
-												if sourceDamage.hitmax < spellAmount.hitmax then
-													sourceDamage.hitmax = spellAmount.hitmax
-												end
-												sourceDamage.parry = sourceDamage.parry + spellAmount.parry/blessingCount
-												sourceDamage.dodge = sourceDamage.dodge + spellAmount.dodge/blessingCount
-												sourceDamage.miss = sourceDamage.miss + spellAmount.miss/blessingCount
-												total = total + (spellAmount.amount - spellAmount.overkill)/blessingCount
-												totalOver = totalOver + (spellAmount.overkill + spellAmount.blocked + spellAmount.absorbed)/blessingCount
-												
-												local damgeCount = (spellAmount.amount + (DamageTab_Variables.ShowAll and (spellAmount.blocked+spellAmount.absorbed) or -spellAmount.overkill))/blessingCount
-												
-												destPos[2] = destPos[2] + damgeCount
-												
-												if not graph[ 205729 ][segment] then
-													graph[ 205729 ][segment] = 0
-												end
-												if not graph[ -1 ][segment] then
-													graph[ -1 ][segment] = 0
-												end
-												
-												graph[ 205729 ][segment] = graph[ 205729 ][segment] + damgeCount
-												graph[ -1 ][segment] = graph[ -1 ][segment] + damgeCount
-											end
-										end
-									end
-								end
-							end
-						end
-					end	
 				end
 			end
 		end
@@ -5008,63 +4880,64 @@ function BWInterfaceFrameLoad()
 		local totalCount = 0
 		local graph = {[-1]={}}
 		for destGUID,destData in pairs(CurrentFight.damage) do
-			local isEnemy = GetUnitInfoByUnitFlagFix(CurrentFight.reaction[destGUID],2) == 512
-			local mobID = ExRT.F.GUIDtoID(destGUID)
-			if (doEnemy and isEnemy) or (not doEnemy and not isEnemy) then
-				for sourceGUID,sourceData in pairs(destData) do
-					for spellID,spellSegments in pairs(sourceData) do
-						if sourceVar[spellID] or sourceVar[-spellID] then
-							local inDamagePos = ExRT.F.table_find(damage,destGUID,1)
-							if not inDamagePos then
-								inDamagePos = #damage + 1
-								damage[inDamagePos] = {destGUID,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,guid=destGUID,total=0,sources={}}
-							end
-							if not graph[ destGUID ] then
-								graph[ destGUID ] = {}
-							end
-							
-							for segment,spellAmount in pairs(spellSegments) do
-								if CurrentFight.segments[segment].e then
-									damage[inDamagePos].total = damage[inDamagePos].total + spellAmount.amount + spellAmount.blocked + spellAmount.absorbed
-									damage[inDamagePos][2] = damage[inDamagePos][2] + spellAmount.amount - spellAmount.overkill	--amount
-									damage[inDamagePos][3] = damage[inDamagePos][3] + spellAmount.count	--count
-									damage[inDamagePos][4] = damage[inDamagePos][4] + spellAmount.overkill	--overkill
-									damage[inDamagePos][5] = damage[inDamagePos][5] + spellAmount.blocked	--blocked
-									damage[inDamagePos][6] = damage[inDamagePos][6] + spellAmount.absorbed	--absorbed
-									damage[inDamagePos][7] = damage[inDamagePos][7] + spellAmount.crit	--crit
-									damage[inDamagePos][8] = damage[inDamagePos][8] + spellAmount.critcount	--crit count
-									damage[inDamagePos][9] = max(damage[inDamagePos][9],spellAmount.critmax)--crit max
-									damage[inDamagePos][13] = max(damage[inDamagePos][13],spellAmount.hitmax)--hit max
-									damage[inDamagePos][14] = damage[inDamagePos][14] + spellAmount.parry	--parry
-									damage[inDamagePos][15] = damage[inDamagePos][15] + spellAmount.dodge	--dodge
-									damage[inDamagePos][16] = damage[inDamagePos][16] + spellAmount.miss	--other miss
-									total = total + spellAmount.amount - spellAmount.overkill
-									totalOver = totalOver + spellAmount.overkill + spellAmount.blocked + spellAmount.absorbed
-									totalCount = totalCount + spellAmount.count
-									
-									if not graph[ destGUID ][segment] then
-										graph[ destGUID ][segment] = 0
-									end
-									if not graph[ -1 ][segment] then
-										graph[ -1 ][segment] = 0
-									end
+			for destReaction,destReactData in pairs(destData) do
+				local isEnemy = GetUnitInfoByUnitFlagFix(destReaction,2) == 512
+				if (doEnemy and isEnemy) or (not doEnemy and not isEnemy) then
+					for sourceGUID,sourceData in pairs(destReactData) do
+						for spellID,spellSegments in pairs(sourceData) do
+							if sourceVar[spellID] or sourceVar[-spellID] then
+								local inDamagePos = ExRT.F.table_find(damage,destGUID,1)
+								if not inDamagePos then
+									inDamagePos = #damage + 1
+									damage[inDamagePos] = {destGUID,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,guid=destGUID,total=0,sources={}}
+								end
+								if not graph[ destGUID ] then
+									graph[ destGUID ] = {}
+								end
 								
-									local damgeCount = spellAmount.count
-									graph[ destGUID ][segment] = graph[ destGUID ][segment] + damgeCount
-									graph[ -1 ][segment] = graph[ -1 ][segment] + damgeCount
-									
-									local source
-									for i=1,#damage[inDamagePos].sources do
-										if damage[inDamagePos].sources[i][1] == sourceGUID then
-											source = damage[inDamagePos].sources[i]
-											break
+								for segment,spellAmount in pairs(spellSegments) do
+									if CurrentFight.segments[segment].e then
+										damage[inDamagePos].total = damage[inDamagePos].total + spellAmount.amount + spellAmount.blocked + spellAmount.absorbed
+										damage[inDamagePos][2] = damage[inDamagePos][2] + spellAmount.amount - spellAmount.overkill	--amount
+										damage[inDamagePos][3] = damage[inDamagePos][3] + spellAmount.count	--count
+										damage[inDamagePos][4] = damage[inDamagePos][4] + spellAmount.overkill	--overkill
+										damage[inDamagePos][5] = damage[inDamagePos][5] + spellAmount.blocked	--blocked
+										damage[inDamagePos][6] = damage[inDamagePos][6] + spellAmount.absorbed	--absorbed
+										damage[inDamagePos][7] = damage[inDamagePos][7] + spellAmount.crit	--crit
+										damage[inDamagePos][8] = damage[inDamagePos][8] + spellAmount.critcount	--crit count
+										damage[inDamagePos][9] = max(damage[inDamagePos][9],spellAmount.critmax)--crit max
+										damage[inDamagePos][13] = max(damage[inDamagePos][13],spellAmount.hitmax)--hit max
+										damage[inDamagePos][14] = damage[inDamagePos][14] + spellAmount.parry	--parry
+										damage[inDamagePos][15] = damage[inDamagePos][15] + spellAmount.dodge	--dodge
+										damage[inDamagePos][16] = damage[inDamagePos][16] + spellAmount.miss	--other miss
+										total = total + spellAmount.amount - spellAmount.overkill
+										totalOver = totalOver + spellAmount.overkill + spellAmount.blocked + spellAmount.absorbed
+										totalCount = totalCount + spellAmount.count
+										
+										if not graph[ destGUID ][segment] then
+											graph[ destGUID ][segment] = 0
 										end
+										if not graph[ -1 ][segment] then
+											graph[ -1 ][segment] = 0
+										end
+									
+										local damgeCount = spellAmount.count
+										graph[ destGUID ][segment] = graph[ destGUID ][segment] + damgeCount
+										graph[ -1 ][segment] = graph[ -1 ][segment] + damgeCount
+										
+										local source
+										for i=1,#damage[inDamagePos].sources do
+											if damage[inDamagePos].sources[i][1] == sourceGUID then
+												source = damage[inDamagePos].sources[i]
+												break
+											end
+										end
+										if not source then
+											source = {sourceGUID,0}
+											damage[inDamagePos].sources[ #damage[inDamagePos].sources+1 ] = source
+										end
+										source[2] = source[2] + spellAmount.amount + (DamageTab_Variables.ShowAll and (spellAmount.blocked + spellAmount.absorbed) or -spellAmount.overkill) 
 									end
-									if not source then
-										source = {sourceGUID,0}
-										damage[inDamagePos].sources[ #damage[inDamagePos].sources+1 ] = source
-									end
-									source[2] = source[2] + spellAmount.amount + (DamageTab_Variables.ShowAll and (spellAmount.blocked + spellAmount.absorbed) or -spellAmount.overkill) 
 								end
 							end
 						end
@@ -5309,30 +5182,31 @@ function BWInterfaceFrameLoad()
 		local sourceTable = {}
 		local destTable = {}
 		for destGUID,destData in pairs(CurrentFight.damage) do
-			local mobID = ExRT.F.GUIDtoID(destGUID)
-			if GetUnitInfoByUnitFlagFix(CurrentFight.reaction[destGUID],2) == reaction then
-				for sourceGUID,sourceData in pairs(destData) do
-					local owner = ExRT.F.Pets:getOwnerGUID(sourceGUID,GetPetsDB())
-					if owner then
-						sourceGUID = owner
-					end
-					for spellID,spellSegments in pairs(sourceData) do
-						for segment,spellAmount in pairs(spellSegments) do
-							if CurrentFight.segments[segment].e then
-								if not ExRT.F.table_find(destTable,destGUID,1) then
-									destTable[#destTable + 1] = {destGUID,CurrentFight.damage_seen[destGUID] or 0}
-								end
-								if not isBySpellDamage and not ExRT.F.table_find(sourceTable,sourceGUID,1) then
-									sourceTable[#sourceTable + 1] = {sourceGUID,GetGUID(sourceGUID)}
-								elseif isBySpellDamage then
-									if spellID < 0 then
-										spellID = -spellID
+			for destReaction,destReactData in pairs(destData) do
+				if GetUnitInfoByUnitFlagFix(destReaction,2) == reaction then
+					for sourceGUID,sourceData in pairs(destReactData) do
+						local owner = ExRT.F.Pets:getOwnerGUID(sourceGUID,GetPetsDB())
+						if owner then
+							sourceGUID = owner
+						end
+						for spellID,spellSegments in pairs(sourceData) do
+							for segment,spellAmount in pairs(spellSegments) do
+								if CurrentFight.segments[segment].e then
+									if not ExRT.F.table_find(destTable,destGUID,1) then
+										destTable[#destTable + 1] = {destGUID,CurrentFight.damage_seen[destGUID] or 0}
 									end
-									if not ExRT.F.table_find(sourceTable,spellID,1) then
-										local spellName,_,spellIcon = GetSpellInfo(spellID)
-										sourceTable[#sourceTable + 1] = {spellID,spellName,spellIcon}
+									if not isBySpellDamage and not ExRT.F.table_find(sourceTable,sourceGUID,1) then
+										sourceTable[#sourceTable + 1] = {sourceGUID,GetGUID(sourceGUID)}
+									elseif isBySpellDamage then
+										if spellID < 0 then
+											spellID = -spellID
+										end
+										if not ExRT.F.table_find(sourceTable,spellID,1) then
+											local spellName,_,spellIcon = GetSpellInfo(spellID)
+											sourceTable[#sourceTable + 1] = {spellID,spellName,spellIcon}
+										end
+									
 									end
-								
 								end
 							end
 						end
@@ -6355,18 +6229,20 @@ function BWInterfaceFrameLoad()
 				end
 			end
 			for destGUID,destData in pairs(CurrentFight.damage) do
-				for sourceGUID,sourceData in pairs(destData) do
-					if not BWInterfaceFrame.tab.tabs[3].filterS or BWInterfaceFrame.tab.tabs[3].filterS == sourceGUID then
-						if sourceData[spellID] then
-							for segment,spellAmount in pairs(sourceData[spellID]) do
-								local missed = spellAmount.parry + spellAmount.dodge + spellAmount.miss
-								if missed > 0 then
-									local inPos = ExRT.F.table_find(data,destGUID,1)
-									if not inPos then
-										inPos = #data + 1
-										data[inPos] = {destGUID,0,0}
+				for destReaction,destReactData in pairs(destData) do
+					for sourceGUID,sourceData in pairs(destReactData) do
+						if not BWInterfaceFrame.tab.tabs[3].filterS or BWInterfaceFrame.tab.tabs[3].filterS == sourceGUID then
+							if sourceData[spellID] then
+								for segment,spellAmount in pairs(sourceData[spellID]) do
+									local missed = spellAmount.parry + spellAmount.dodge + spellAmount.miss
+									if missed > 0 then
+										local inPos = ExRT.F.table_find(data,destGUID,1)
+										if not inPos then
+											inPos = #data + 1
+											data[inPos] = {destGUID,0,0}
+										end
+										data[inPos][3] = data[inPos][3] + 1
 									end
-									data[inPos][3] = data[inPos][3] + 1
 								end
 							end
 						end
@@ -7074,15 +6950,17 @@ function BWInterfaceFrameLoad()
 		
 		local mobsList = {}
 		for mobGUID,mobData in pairs(CurrentFight.damage) do
-			if ExRT.F.GetUnitInfoByUnitFlag(CurrentFight.reaction[mobGUID],2) == 512 then
-				mobsList[#mobsList+1] = {GetGUID(mobGUID),CurrentFight.damage_seen[mobGUID],mobGUID}
-				for i=1,#CurrentFight.dies do
-					if CurrentFight.dies[i][1]==mobGUID then
-						local raidTarget = module.db.raidTargets[ CurrentFight.dies[i][4] or 0 ]
-						if raidTarget then
-							mobsList[#mobsList][1] = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_".. raidTarget ..":0|t "..mobsList[#mobsList][1]
+			for destReaction,destReactData in pairs(mobData) do
+				if ExRT.F.GetUnitInfoByUnitFlag(destReaction,2) == 512 then
+					mobsList[#mobsList+1] = {GetGUID(mobGUID),CurrentFight.damage_seen[mobGUID],mobGUID}
+					for i=1,#CurrentFight.dies do
+						if CurrentFight.dies[i][1]==mobGUID then
+							local raidTarget = module.db.raidTargets[ CurrentFight.dies[i][4] or 0 ]
+							if raidTarget then
+								mobsList[#mobsList][1] = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_".. raidTarget ..":0|t "..mobsList[#mobsList][1]
+							end
+							break
 						end
-						break
 					end
 				end
 			end
@@ -7331,11 +7209,9 @@ function BWInterfaceFrameLoad()
 			else
 				local reaction = SpellsTab_isFriendly and 256 or 512
 				for GUID,dataGUID in pairs(CurrentFight.cast) do
-					if ExRT.F.GetUnitInfoByUnitFlag(CurrentFight.reaction[GUID],2) == reaction then
-						for i,PlayerCastData in ipairs(dataGUID) do
-							if CurrentFight.segments[ PlayerCastData.s ].e then
-								spells[#spells + 1] = {PlayerCastData[1],PlayerCastData[2],PlayerCastData[3],PlayerCastData[4],PlayerCastData[5],PlayerCastData[6],GUID}
-							end
+					for i,PlayerCastData in ipairs(dataGUID) do
+						if ExRT.F.GetUnitInfoByUnitFlag(PlayerCastData[7],2) == reaction and CurrentFight.segments[ PlayerCastData.s ].e then
+							spells[#spells + 1] = {PlayerCastData[1],PlayerCastData[2],PlayerCastData[3],PlayerCastData[4],PlayerCastData[5],PlayerCastData[6],GUID}
 						end
 					end
 				end
@@ -7431,7 +7307,7 @@ function BWInterfaceFrameLoad()
 			s[#s+1]= SOURCES .. ":"
 			for i=1,min(#ss,10) do
 				local spellName,_,spellTexture = GetSpellInfo(ss[i][1])
-				s[#s+1]= { "|T" .. spellTexture .. ":0|t " .. spellName , format("%d (%.2f%%)",ss[i][2],ss[i][2] / max(1,cs) * 100) }
+				s[#s+1]= { "|T" .. (spellTexture or "") .. ":0|t " ..(spellName or ss[i][1]) , format("%d (%.2f%%)",ss[i][2],ss[i][2] / max(1,cs) * 100) }
 			end
 			if #ss > 10 then
 				local o = 0
@@ -7443,7 +7319,7 @@ function BWInterfaceFrameLoad()
 			tab5.summaryTooltip.tooltip = s
 			tab5.summaryTooltip:Enable()
 		else
-			local spells = {}
+			local spells,spellToTime = {},{}
 			for GUID,dataGUID in pairs(CurrentFight.cast) do
 				if not selfGUID or selfGUID == GUID then
 					for i,PlayerCastData in ipairs(CurrentFight.cast[GUID]) do
@@ -7455,6 +7331,9 @@ function BWInterfaceFrameLoad()
 								spells[inTable] = {spellID,0}
 							end
 							spells[inTable][2] = spells[inTable][2] + 1
+
+							spellToTime[spellID] = spellToTime[spellID] or {}
+							spellToTime[spellID][#spellToTime[spellID] + 1] = timestampToFightTime(PlayerCastData[1]) / fight_dur * (PlayerCastData[3] == 2 and -1 or 1)
 						end
 					end
 				end
@@ -7464,7 +7343,7 @@ function BWInterfaceFrameLoad()
 				local spellName,_,spellTexture = GetSpellInfo(data[1])
 				
 				playersCastsList.L[#playersCastsList.L + 1] = data[2].." "..format("%s%s",spellTexture and "|T"..spellTexture..":0|t " or "",spellName or "???")
-				playersCastsList.IndexToGUID[#playersCastsList.IndexToGUID + 1] = {"spell:"..data[1],nil,data[1]}
+				playersCastsList.IndexToGUID[#playersCastsList.IndexToGUID + 1] = {"spell:"..data[1],0,data[1],nil,spellToTime[ data[1] ]}
 			end
 		end
 		
@@ -7516,15 +7395,16 @@ function BWInterfaceFrameLoad()
 		if SpellsTab_Variables.Type ~= 4 then
 			local SpellsTab_isFriendly = SpellsTab_Variables.Type == 1
 			for sourceGUID,sourceData in pairs(CurrentFight.cast) do
-				local anyEvent = nil
-				for i=1,#sourceData do
-					if CurrentFight.segments[ sourceData[i].s ].e then
-						anyEvent = true
-						break
+				if not ExRT.F.table_find(playersListTable,sourceGUID,1) then
+					for i=1,#sourceData do
+						if 
+							CurrentFight.segments[ sourceData[i].s ].e and 
+							(SpellsTab_Variables.Type == 3 or (SpellsTab_isFriendly and ExRT.F.GetUnitInfoByUnitFlag(sourceData[i][7],1) == 1024) or (not SpellsTab_isFriendly and ExRT.F.GetUnitInfoByUnitFlag(sourceData[i][7],2) == 512))
+						then
+							playersListTable[#playersListTable + 1] = {sourceGUID,GetGUID( sourceGUID ),"|c"..ExRT.F.classColorByGUID(sourceGUID),sourceGUID:find("^Player%-")}
+							break
+						end
 					end
-				end
-				if anyEvent and not ExRT.F.table_find(playersListTable,sourceGUID,1) and (SpellsTab_Variables.Type == 3 or (SpellsTab_isFriendly and ExRT.F.GetUnitInfoByUnitFlag(CurrentFight.reaction[sourceGUID],1) == 1024) or (not SpellsTab_isFriendly and ExRT.F.GetUnitInfoByUnitFlag(CurrentFight.reaction[sourceGUID],2) == 512)) then
-					playersListTable[#playersListTable + 1] = {sourceGUID,GetGUID( sourceGUID ),"|c"..ExRT.F.classColorByGUID(sourceGUID),sourceGUID:find("^Player%-")}
 				end
 			end
 		else
@@ -7846,8 +7726,9 @@ function BWInterfaceFrameLoad()
 		["boss3"] = "*4",
 		["boss4"] = "*5",
 		["boss5"] = "*6",
-		["target"] = "*7",
-		["focus"] = "*8",
+		["boss6"] = "*7",
+		["target"] = "*8",
+		["focus"] = "*9",
 	}
 	local function GraphTab_UnitDropDown_Check(self,checked)
 		local graphData = BWInterfaceFrame.tab.tabs[6].graph.data
@@ -7971,6 +7852,12 @@ function BWInterfaceFrameLoad()
 	end
 	
 	tab.graphicsTab.tabs[2]:SetScript("OnShow",function (self)
+		if BWInterfaceFrame.nowFightID == self.lastFightID then
+			return
+		end
+		self.lastFightID = BWInterfaceFrame.nowFightID
+		BWInterfaceFrame.tab.tabs[6].graphicsTab.tabs[3].lastFightID = nil
+
 		GraphTabLoad()
 		BWInterfaceFrame.tab.tabs[6].graphicsTab.healthDropDown:Show()
 		if not CurrentFight.graphData then
@@ -7997,9 +7884,13 @@ function BWInterfaceFrameLoad()
 		table.sort(BWInterfaceFrame.tab.tabs[6].graphicsTab.dropDown.List,function(a,b)return a._sort < b._sort end)
 	end)
 	tab.graphicsTab.tabs[3]:SetScript("OnShow",function (self)
-		GraphTabLoad()
-		BWInterfaceFrame.tab.tabs[6].graphicsTab.powerDropDown:Show()
-		GraphTab_UpdatePage()
+		if BWInterfaceFrame.nowFightID ~= self.lastFightID then
+			GraphTabLoad()
+			BWInterfaceFrame.tab.tabs[6].graphicsTab.powerDropDown:Show()
+			GraphTab_UpdatePage()
+			self.lastFightID = BWInterfaceFrame.nowFightID
+			BWInterfaceFrame.tab.tabs[6].graphicsTab.tabs[2].lastFightID = nil
+		end
 	end)
 	
 	local function GraphPowerSelectHealthType(_,arg)
@@ -8972,40 +8863,42 @@ function BWInterfaceFrameLoad()
 				end
 				if ExRT.F.table_len(HsourceVar) == 0 or HsourceVar[sourceGUID] then
 					for destGUID,destData in pairs(sourceData) do
-						local isEnemy = not ExRT.F.UnitIsFriendlyByUnitFlag2(CurrentFight.reaction[destGUID])
-						if ExRT.F.table_len(HdestVar) == 0 or HdestVar[destGUID] then
-							if (isEnemy and doEnemy) or (not isEnemy and not doEnemy) then
-								local source = isReverse and destGUID or sourceGUID
-								local dest = isReverse and sourceGUID or destGUID
-								
-								local sourceHeal, destPos = HealingTab_UpdateLines_GetUnit(heal,graph,source,dest,"guid")
-								
-								for spellID,spellSegments in pairs(destData) do
-									for segment,spellAmount in pairs(spellSegments) do
-										if CurrentFight.segments[segment].e then
-											if spellID == 98021 then	--Spirit Link
-												spellAmount = HealingTab_Variables.NULLSpellAmount
+						for destReact,destReactData in pairs(destData) do
+							local isEnemy = not ExRT.F.UnitIsFriendlyByUnitFlag2(destReact)
+							if ExRT.F.table_len(HdestVar) == 0 or HdestVar[destGUID] then
+								if (isEnemy and doEnemy) or (not isEnemy and not doEnemy) then
+									local source = isReverse and destGUID or sourceGUID
+									local dest = isReverse and sourceGUID or destGUID
+									
+									local sourceHeal, destPos = HealingTab_UpdateLines_GetUnit(heal,graph,source,dest,"guid")
+									
+									for spellID,spellSegments in pairs(destReactData) do
+										for segment,spellAmount in pairs(spellSegments) do
+											if CurrentFight.segments[segment].e then
+												if spellID == 98021 then	--Spirit Link
+													spellAmount = HealingTab_Variables.NULLSpellAmount
+												end
+												sourceHeal.eff = sourceHeal.eff + spellAmount.amount - spellAmount.over + spellAmount.absorbed
+												sourceHeal.total = sourceHeal.total + spellAmount.amount + spellAmount.absorbed						--total
+												sourceHeal.overheal = sourceHeal.overheal + spellAmount.over 							--overheal
+												sourceHeal.absorbed = sourceHeal.absorbed + spellAmount.absorbed 						--absorbed
+												sourceHeal.crit = sourceHeal.crit + spellAmount.crit - (HealingTab_Variables.ShowOverheal and 0 or spellAmount.critover)
+												sourceHeal.absorbs = sourceHeal.absorbs + spellAmount.absorbs						--absorbs
+												total = total + spellAmount.amount - spellAmount.over + spellAmount.absorbed
+												totalOver = totalOver + spellAmount.over
+												
+												destPos[2] = destPos[2] + spellAmount.amount + spellAmount.absorbed + (HealingTab_Variables.ShowOverheal and 0 or -spellAmount.over)
+		
+												if not graph[ source ][segment] then
+													graph[ source ][segment] = 0
+												end
+												if not graph[ -1 ][segment] then
+													graph[ -1 ][segment] = 0
+												end
+												local healCount = spellAmount.amount - (HealingTab_Variables.ShowOverheal and 0 or spellAmount.over) + spellAmount.absorbed
+												graph[ source ][segment] = graph[ source ][segment] + healCount
+												graph[ -1 ][segment] = graph[ -1 ][segment] + healCount
 											end
-											sourceHeal.eff = sourceHeal.eff + spellAmount.amount - spellAmount.over + spellAmount.absorbed
-											sourceHeal.total = sourceHeal.total + spellAmount.amount + spellAmount.absorbed						--total
-											sourceHeal.overheal = sourceHeal.overheal + spellAmount.over 							--overheal
-											sourceHeal.absorbed = sourceHeal.absorbed + spellAmount.absorbed 						--absorbed
-											sourceHeal.crit = sourceHeal.crit + spellAmount.crit - (HealingTab_Variables.ShowOverheal and 0 or spellAmount.critover)
-											sourceHeal.absorbs = sourceHeal.absorbs + spellAmount.absorbs						--absorbs
-											total = total + spellAmount.amount - spellAmount.over + spellAmount.absorbed
-											totalOver = totalOver + spellAmount.over
-											
-											destPos[2] = destPos[2] + spellAmount.amount + spellAmount.absorbed + (HealingTab_Variables.ShowOverheal and 0 or -spellAmount.over)
-	
-											if not graph[ source ][segment] then
-												graph[ source ][segment] = 0
-											end
-											if not graph[ -1 ][segment] then
-												graph[ -1 ][segment] = 0
-											end
-											local healCount = spellAmount.amount - (HealingTab_Variables.ShowOverheal and 0 or spellAmount.over) + spellAmount.absorbed
-											graph[ source ][segment] = graph[ source ][segment] + healCount
-											graph[ -1 ][segment] = graph[ -1 ][segment] + healCount
 										end
 									end
 								end
@@ -9071,55 +8964,57 @@ function BWInterfaceFrameLoad()
 				local missData = {}
 				local avgDamage = {}
 				for destGUID,destData in pairs(CurrentFight.damage) do
-					for sourceGUID,sourceData in pairs(destData) do
-						local avgData = avgDamage[sourceGUID]
-						if not avgData then
-							avgData = {}
-							avgDamage[sourceGUID] = avgData
-						end
-						for spellID,spellSegments in pairs(sourceData) do
-							local avgSpell = avgData[spellID]
-							if not avgSpell then
-								avgSpell = {0,0}
-								avgData[spellID] = avgSpell
+					for destReaction,destReactData in pairs(destData) do
+						for sourceGUID,sourceData in pairs(destReactData) do
+							local avgData = avgDamage[sourceGUID]
+							if not avgData then
+								avgData = {}
+								avgDamage[sourceGUID] = avgData
 							end
-							for segment,spellAmount in pairs(spellSegments) do							
-								avgSpell[1] = avgSpell[1] + spellAmount.count
-								avgSpell[2] = avgSpell[2] + spellAmount.amount + spellAmount.blocked + spellAmount.absorbed
-								
-								if spellAmount.parry > 0 or spellAmount.dodge > 0 or spellAmount.miss > 0 then
-									local missDestData = missData[destGUID]
-									if not missDestData then
-										missDestData = {}
-										missData[destGUID] = missDestData
-									end
-									local missSpell = missDestData[sourceGUID]
-									if not missSpell then
-										missSpell = {}
-										missDestData[sourceGUID] = missSpell
-									end
-									local missSpellData = missSpell[spellID]
-									if not missSpellData then
-										missSpellData = {
-											parry = 0,
-											dodge = 0,
-											miss = 0,
-											parry_target = 0,
-											dodge_target = 0,
-											miss_target = 0,
-											segments = {},
-										}
-										missSpell[spellID] = missSpellData
-									end
-									missSpellData.parry = missSpellData.parry+spellAmount.parry
-									missSpellData.dodge = missSpellData.dodge+spellAmount.dodge
-									missSpellData.miss = missSpellData.miss+spellAmount.miss
+							for spellID,spellSegments in pairs(sourceData) do
+								local avgSpell = avgData[spellID]
+								if not avgSpell then
+									avgSpell = {0,0}
+									avgData[spellID] = avgSpell
+								end
+								for segment,spellAmount in pairs(spellSegments) do							
+									avgSpell[1] = avgSpell[1] + spellAmount.count
+									avgSpell[2] = avgSpell[2] + spellAmount.amount + spellAmount.blocked + spellAmount.absorbed
 									
-									if CurrentFight.segments[segment].e then
-										missSpellData.parry_target = missSpellData.parry_target+spellAmount.parry
-										missSpellData.dodge_target = missSpellData.dodge_target+spellAmount.dodge
-										missSpellData.miss_target = missSpellData.miss_target+spellAmount.miss
-										missSpellData.segments[#missSpellData.segments+1] = segment
+									if spellAmount.parry > 0 or spellAmount.dodge > 0 or spellAmount.miss > 0 then
+										local missDestData = missData[destGUID]
+										if not missDestData then
+											missDestData = {}
+											missData[destGUID] = missDestData
+										end
+										local missSpell = missDestData[sourceGUID]
+										if not missSpell then
+											missSpell = {}
+											missDestData[sourceGUID] = missSpell
+										end
+										local missSpellData = missSpell[spellID]
+										if not missSpellData then
+											missSpellData = {
+												parry = 0,
+												dodge = 0,
+												miss = 0,
+												parry_target = 0,
+												dodge_target = 0,
+												miss_target = 0,
+												segments = {},
+											}
+											missSpell[spellID] = missSpellData
+										end
+										missSpellData.parry = missSpellData.parry+spellAmount.parry
+										missSpellData.dodge = missSpellData.dodge+spellAmount.dodge
+										missSpellData.miss = missSpellData.miss+spellAmount.miss
+										
+										if CurrentFight.segments[segment].e then
+											missSpellData.parry_target = missSpellData.parry_target+spellAmount.parry
+											missSpellData.dodge_target = missSpellData.dodge_target+spellAmount.dodge
+											missSpellData.miss_target = missSpellData.miss_target+spellAmount.miss
+											missSpellData.segments[#missSpellData.segments+1] = segment
+										end
 									end
 								end
 							end
@@ -9344,44 +9239,46 @@ function BWInterfaceFrameLoad()
 				end
 				if ExRT.F.table_len(HsourceVar) == 0 or HsourceVar[sourceGUID] then
 					for destGUID,destData in pairs(sourceData) do
-						local isEnemy = not ExRT.F.UnitIsFriendlyByUnitFlag2(CurrentFight.reaction[destGUID])
-						if ExRT.F.table_len(HdestVar) == 0 or HdestVar[destGUID] then
-							if (isEnemy and doEnemy) or (not isEnemy and not doEnemy) then
-								for spellID,spellSegments in pairs(destData) do
-									local sourceHeal, destPos = HealingTab_UpdateLines_GetUnit(heal,graph,spellID,destGUID,"spell",owner and "pet")
-								
-									for segment,spellAmount in pairs(spellSegments) do
-										if CurrentFight.segments[segment].e then
-											if spellID == 98021 and not HealingTab_Variables.ShowOverheal then	--Spirit Link
-												spellAmount = HealingTab_Variables.NULLSpellAmount
-											end
-										
-											sourceHeal.eff = sourceHeal.eff + spellAmount.amount - spellAmount.over + spellAmount.absorbed	--ef
-											sourceHeal.total = sourceHeal.total + spellAmount.amount + spellAmount.absorbed						--total
-											sourceHeal.overheal = sourceHeal.overheal + spellAmount.over 							--overheal
-											sourceHeal.absorbed = sourceHeal.absorbed + spellAmount.absorbed 						--absorbed
-											sourceHeal.count = sourceHeal.count + spellAmount.count 						--count
-											sourceHeal.crit = sourceHeal.crit + spellAmount.crit 							--crit
-											sourceHeal.critcount = sourceHeal.critcount + spellAmount.critcount						--crit-count
-											sourceHeal.critmax = max(sourceHeal.critmax,spellAmount.critmax)						--crit-max
-											sourceHeal.hitmax = max(sourceHeal.hitmax,spellAmount.hitmax)						--hit-max
-											sourceHeal.critover = sourceHeal.critover + spellAmount.critover						--crit overheal
-											sourceHeal.absorbs = sourceHeal.absorbs + spellAmount.absorbs						--absorbs
-											total = total + spellAmount.amount - spellAmount.over + spellAmount.absorbed
-											totalOver = totalOver + spellAmount.over
+						for destReact,destReactData in pairs(destData) do
+							local isEnemy = not ExRT.F.UnitIsFriendlyByUnitFlag2(destReact)
+							if ExRT.F.table_len(HdestVar) == 0 or HdestVar[destGUID] then
+								if (isEnemy and doEnemy) or (not isEnemy and not doEnemy) then
+									for spellID,spellSegments in pairs(destReactData) do
+										local sourceHeal, destPos = HealingTab_UpdateLines_GetUnit(heal,graph,spellID,destGUID,"spell",owner and "pet")
+									
+										for segment,spellAmount in pairs(spellSegments) do
+											if CurrentFight.segments[segment].e then
+												if spellID == 98021 and not HealingTab_Variables.ShowOverheal then	--Spirit Link
+													spellAmount = HealingTab_Variables.NULLSpellAmount
+												end
 											
-											destPos[2] = destPos[2] + spellAmount.amount + spellAmount.absorbed + (HealingTab_Variables.ShowOverheal and 0 or -spellAmount.over)
-	
-											if not graph[ spellID ][segment] then
-												graph[ spellID ][segment] = 0
+												sourceHeal.eff = sourceHeal.eff + spellAmount.amount - spellAmount.over + spellAmount.absorbed	--ef
+												sourceHeal.total = sourceHeal.total + spellAmount.amount + spellAmount.absorbed						--total
+												sourceHeal.overheal = sourceHeal.overheal + spellAmount.over 							--overheal
+												sourceHeal.absorbed = sourceHeal.absorbed + spellAmount.absorbed 						--absorbed
+												sourceHeal.count = sourceHeal.count + spellAmount.count 						--count
+												sourceHeal.crit = sourceHeal.crit + spellAmount.crit 							--crit
+												sourceHeal.critcount = sourceHeal.critcount + spellAmount.critcount						--crit-count
+												sourceHeal.critmax = max(sourceHeal.critmax,spellAmount.critmax)						--crit-max
+												sourceHeal.hitmax = max(sourceHeal.hitmax,spellAmount.hitmax)						--hit-max
+												sourceHeal.critover = sourceHeal.critover + spellAmount.critover						--crit overheal
+												sourceHeal.absorbs = sourceHeal.absorbs + spellAmount.absorbs						--absorbs
+												total = total + spellAmount.amount - spellAmount.over + spellAmount.absorbed
+												totalOver = totalOver + spellAmount.over
+												
+												destPos[2] = destPos[2] + spellAmount.amount + spellAmount.absorbed + (HealingTab_Variables.ShowOverheal and 0 or -spellAmount.over)
+		
+												if not graph[ spellID ][segment] then
+													graph[ spellID ][segment] = 0
+												end
+												if not graph[ -1 ][segment] then
+													graph[ -1 ][segment] = 0
+												end
+												local healCount = spellAmount.amount - (HealingTab_Variables.ShowOverheal and 0 or spellAmount.over) + spellAmount.absorbed
+												
+												graph[ spellID ][segment] = graph[ spellID ][segment] + healCount
+												graph[ -1 ][segment] = graph[ -1 ][segment] + healCount
 											end
-											if not graph[ -1 ][segment] then
-												graph[ -1 ][segment] = 0
-											end
-											local healCount = spellAmount.amount - (HealingTab_Variables.ShowOverheal and 0 or spellAmount.over) + spellAmount.absorbed
-											
-											graph[ spellID ][segment] = graph[ spellID ][segment] + healCount
-											graph[ -1 ][segment] = graph[ -1 ][segment] + healCount
 										end
 									end
 								end
@@ -9437,55 +9334,57 @@ function BWInterfaceFrameLoad()
 				local missData = {}
 				local avgDamage = {}
 				for destGUID,destData in pairs(CurrentFight.damage) do
-					for sourceGUID,sourceData in pairs(destData) do
-						local avgData = avgDamage[sourceGUID]
-						if not avgData then
-							avgData = {}
-							avgDamage[sourceGUID] = avgData
-						end
-						for spellID,spellSegments in pairs(sourceData) do
-							local avgSpell = avgData[spellID]
-							if not avgSpell then
-								avgSpell = {0,0}
-								avgData[spellID] = avgSpell
+					for destReaction,destReactData in pairs(destData) do
+						for sourceGUID,sourceData in pairs(destReactData) do
+							local avgData = avgDamage[sourceGUID]
+							if not avgData then
+								avgData = {}
+								avgDamage[sourceGUID] = avgData
 							end
-							for segment,spellAmount in pairs(spellSegments) do							
-								avgSpell[1] = avgSpell[1] + spellAmount.count
-								avgSpell[2] = avgSpell[2] + spellAmount.amount + spellAmount.blocked + spellAmount.absorbed
-								
-								if spellAmount.parry > 0 or spellAmount.dodge > 0 or spellAmount.miss > 0 then
-									local missDestData = missData[destGUID]
-									if not missDestData then
-										missDestData = {}
-										missData[destGUID] = missDestData
-									end
-									local missSpell = missDestData[sourceGUID]
-									if not missSpell then
-										missSpell = {}
-										missDestData[sourceGUID] = missSpell
-									end
-									local missSpellData = missSpell[spellID]
-									if not missSpellData then
-										missSpellData = {
-											parry = 0,
-											dodge = 0,
-											miss = 0,
-											parry_target = 0,
-											dodge_target = 0,
-											miss_target = 0,
-											segments = {},
-										}
-										missSpell[spellID] = missSpellData
-									end
-									missSpellData.parry = missSpellData.parry+spellAmount.parry
-									missSpellData.dodge = missSpellData.dodge+spellAmount.dodge
-									missSpellData.miss = missSpellData.miss+spellAmount.miss
+							for spellID,spellSegments in pairs(sourceData) do
+								local avgSpell = avgData[spellID]
+								if not avgSpell then
+									avgSpell = {0,0}
+									avgData[spellID] = avgSpell
+								end
+								for segment,spellAmount in pairs(spellSegments) do							
+									avgSpell[1] = avgSpell[1] + spellAmount.count
+									avgSpell[2] = avgSpell[2] + spellAmount.amount + spellAmount.blocked + spellAmount.absorbed
 									
-									if CurrentFight.segments[segment].e then
-										missSpellData.parry_target = missSpellData.parry_target+spellAmount.parry
-										missSpellData.dodge_target = missSpellData.dodge_target+spellAmount.dodge
-										missSpellData.miss_target = missSpellData.miss_target+spellAmount.miss
-										missSpellData.segments[#missSpellData.segments+1] = segment
+									if spellAmount.parry > 0 or spellAmount.dodge > 0 or spellAmount.miss > 0 then
+										local missDestData = missData[destGUID]
+										if not missDestData then
+											missDestData = {}
+											missData[destGUID] = missDestData
+										end
+										local missSpell = missDestData[sourceGUID]
+										if not missSpell then
+											missSpell = {}
+											missDestData[sourceGUID] = missSpell
+										end
+										local missSpellData = missSpell[spellID]
+										if not missSpellData then
+											missSpellData = {
+												parry = 0,
+												dodge = 0,
+												miss = 0,
+												parry_target = 0,
+												dodge_target = 0,
+												miss_target = 0,
+												segments = {},
+											}
+											missSpell[spellID] = missSpellData
+										end
+										missSpellData.parry = missSpellData.parry+spellAmount.parry
+										missSpellData.dodge = missSpellData.dodge+spellAmount.dodge
+										missSpellData.miss = missSpellData.miss+spellAmount.miss
+										
+										if CurrentFight.segments[segment].e then
+											missSpellData.parry_target = missSpellData.parry_target+spellAmount.parry
+											missSpellData.dodge_target = missSpellData.dodge_target+spellAmount.dodge
+											missSpellData.miss_target = missSpellData.miss_target+spellAmount.miss
+											missSpellData.segments[#missSpellData.segments+1] = segment
+										end
 									end
 								end
 							end
@@ -9953,16 +9852,18 @@ function BWInterfaceFrameLoad()
 				sourceGUID = owner
 			end
 			for destGUID,destData in pairs(sourceData) do
-				local isFriendly = ExRT.F.UnitIsFriendlyByUnitFlag2(CurrentFight.reaction[destGUID])
-				if (isFriendly and not doEnemy) or (not isFriendly and doEnemy) then
-					for spellID,spellSegments in pairs(destData) do
-						for segment,spellAmount in pairs(spellSegments) do
-							if CurrentFight.segments[segment].e then
-								if not ExRT.F.table_find(destTable,destGUID,1) then
-									destTable[#destTable + 1] = {destGUID,GetGUID(destGUID)}
-								end
-								if not ExRT.F.table_find(sourceTable,sourceGUID,1) then
-									sourceTable[#sourceTable + 1] = {sourceGUID,GetGUID(sourceGUID)}
+				for destReact,destReactData in pairs(destData) do
+					local isFriendly = ExRT.F.UnitIsFriendlyByUnitFlag2(destReact)
+					if (isFriendly and not doEnemy) or (not isFriendly and doEnemy) then
+						for spellID,spellSegments in pairs(destReactData) do
+							for segment,spellAmount in pairs(spellSegments) do
+								if CurrentFight.segments[segment].e then
+									if not ExRT.F.table_find(destTable,destGUID,1) then
+										destTable[#destTable + 1] = {destGUID,GetGUID(destGUID)}
+									end
+									if not ExRT.F.table_find(sourceTable,sourceGUID,1) then
+										sourceTable[#sourceTable + 1] = {sourceGUID,GetGUID(sourceGUID)}
+									end
 								end
 							end
 						end
@@ -10999,21 +10900,40 @@ function BWInterfaceFrameLoad()
 			["boss3"]=true,
 			["boss4"]=true,
 			["boss5"]=true,
+			["boss6"]=true,
 			["target"]=true,
 			["focus"]=true,
 		},
+		HPList = {},
 	}
+	BWInterfaceFrame.PositionsTab_Variables = PositionsTab_Variables
 	
 	PositionsTab_Variables.BossToMap = {}
 	
 	local function PositionsTab_UpdatePositions(segment)
 		local time = ceil(segment / 2)
+		local tab = BWInterfaceFrame.tab.tabs[10]
 		for i=1,40 do
 			tab.raidFrames[i]:Update(segment)
 		end
-		for i=1,5 do
+		for i=1,6 do
 			tab.unitFrames[i]:Update(time)
 		end
+
+		local text = ""
+		for destGUID,destData in pairs(PositionsTab_Variables.HPList) do
+			local curHP = 0
+			for seg,hp in pairs(destData.res) do
+				if (CurrentFight.segments[seg].t - CurrentFight.encounterStart) > time then
+					break
+				end
+				curHP = hp
+			end
+			if curHP ~= 0 and curHP ~= destData.maxhp and (not destData.maxhp or curHP < destData.maxhp) and (not destData.lastSeen or segment+15 < destData.lastSeen) then
+				text = text .. GetGUID(destGUID) .. GUIDtoText(" (%s)",destGUID) .. " "..(destData.maxhp and (destData.maxhp-curHP).."/"..destData.maxhp..format(" <%.1f%%>",(1-curHP/destData.maxhp)*100) or "-"..curHP) .. "|n"
+			end
+		end
+		tab.scroll.mobsText:SetText(text)
 	end
 	
 	tab.timeSlider = ELib:Slider(tab,L.BossWatcherPositionsSlider):Size(780):Point("TOP",-10,-20):Range(1,1):OnChange(function (self,value)
@@ -11401,7 +11321,7 @@ function BWInterfaceFrameLoad()
 	end
 	
 	tab.unitFrames = {}
-	for i=1,5 do
+	for i=1,6 do
 		local frame = CreateFrame("Button",nil,tab.scroll)
 		tab.unitFrames[i] = frame
 		frame:SetSize(95,20)
@@ -11448,6 +11368,8 @@ function BWInterfaceFrameLoad()
 		
 		frame:Hide()
 	end
+
+	tab.scroll.mobsText = ELib:Text(tab.scroll,"",10):Size(400,0):Point("TOPRIGHT",-5,-3):Left():Color()
 	
 	local function PositionsTab_DotOnUpdate(self,elapsed)
 		self.anim = self.anim + elapsed
@@ -11602,7 +11524,7 @@ function BWInterfaceFrameLoad()
 				tab.raidFrames[i].Unit = nil
 				tab.raidFrames[i]:Update()
 			end
-			for i=1,5 do
+			for i=1,6 do
 				tab.unitFrames[i].Unit = "boss"..i
 				tab.unitFrames[i]:Update(1)
 			end
@@ -11611,7 +11533,7 @@ function BWInterfaceFrameLoad()
 				tab.raidFrames[i].Unit = nil
 				tab.raidFrames[i]:Update()
 			end
-			for i=1,5 do
+			for i=1,6 do
 				tab.unitFrames[i].Unit = nil
 				tab.unitFrames[i]:Update()
 			end
@@ -11627,6 +11549,86 @@ function BWInterfaceFrameLoad()
 		for i=1,#tab.player do
 			tab.player[i].SubDot:SetScale(1)
 		end
+
+		wipe(PositionsTab_Variables.HPList)
+
+		for destGUID,destData in pairs(CurrentFight.damage) do
+			for destReaction,destReactData in pairs(destData) do
+				local isEnemy = false
+				if GetUnitInfoByUnitFlagFix(destReaction,2) == 512 then
+					isEnemy = true
+				end
+				if isEnemy then
+					for sourceGUID,sourceData in pairs(destReactData) do
+						local source = sourceGUID
+						local dest = destGUID
+						
+						local mobData = PositionsTab_Variables.HPList[dest]
+						if not mobData then
+							mobData = {
+								maxhp = CurrentFight.maxHP[dest],
+								damage = {},
+								heal = {},
+								res = {},
+							}
+							PositionsTab_Variables.HPList[dest] = mobData
+						end
+												
+						for spellID,spellSegments in pairs(sourceData) do
+							for segment,spellAmount in pairs(spellSegments) do
+								mobData.damage[segment] = (mobData.damage[segment] or 0) + spellAmount.amount - spellAmount.overkill
+							end
+						end
+					end
+				end
+			end
+		end
+		for sourceGUID,sourceData in pairs(CurrentFight.heal) do
+			for destGUID,destData in pairs(sourceData) do
+				for destReact,destReactData in pairs(destData) do
+					local isEnemy = not ExRT.F.UnitIsFriendlyByUnitFlag2(destReact)
+					if isEnemy then
+						local source = sourceGUID
+						local dest = destGUID
+						
+						local mobData = PositionsTab_Variables.HPList[dest]
+						if not mobData then
+							mobData = {
+								maxhp = CurrentFight.maxHP[dest],
+								damage = {},
+								heal = {},
+								res = {},
+							}
+							PositionsTab_Variables.HPList[dest] = mobData
+						end
+						
+						for spellID,spellSegments in pairs(destReactData) do
+							for segment,spellAmount in pairs(spellSegments) do
+								mobData.damage[segment] = (mobData.damage[segment] or 0) - (spellAmount.amount - spellAmount.over + spellAmount.absorbed)
+							end
+						end
+					end
+				end
+			end
+		end
+
+		for destGUID,destData in pairs(PositionsTab_Variables.HPList) do
+			local dmgList = {}
+			for seg,dmg in pairs(destData.damage) do
+				dmgList[#dmgList+1] = {seg,dmg}
+			end
+			sort(dmgList,function(a,b)return a[1]<b[1] end)
+			local now = 0
+			for i,d in pairs(dmgList) do
+				if not destData.seen then
+					destData.seen = d[1]
+				end
+				now = now + d[2]
+				destData.res[ d[1] ] = now
+				destData.lastSeen = d[1]
+			end
+		end
+		
 		
 		tab.timeSlider:SetValue(1)
 		PositionsTab_UpdatePositions(1)

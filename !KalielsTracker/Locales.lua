@@ -109,4 +109,23 @@ if GetLocale() == "zhCN" or GetLocale() == "zhTW" then
     KT.L["Legion Invasion Monitor"] = "军团入侵监控"
     KT.L["Legion Invasion"] = "军团入侵"
     KT.L["Special"] = "特别奉献"
+
+    KT.L[" Skin options - for Quest item buttons or Active button"] = ""
+    KT.L["Tracker"] = "任务追踪栏"
+    KT.L["Tooltips"] = "鼠标提示"
+    KT.L["Show Rewards"] = "显示奖励"
+    KT.L["Menu items"] = "右键菜单项目"
+    KT.L["Quest default action - World Map"] = "点击任务打开世界地图"
+    KT.L["Notification messages"] = "信息通告"
+    KT.L["Quest messages"] = "任务信息"
+    KT.L["Achievement messages"] = "成就信息"
+    KT.L["Notification sounds"] = "提示音效"
+    KT.L["Quest sounds"] = "任务音效"
+    KT.L["Complete Sound"] = "完成任务提示音"
+
+    KT.L["Order of Modules "] = "模块顺序"
+    KT.L["Modules"] = "模块排序"
+    KT.L["Current Order"] = "当前顺序"
+    KT.L["Default Order"] = "默认排序"
+    KT.L["Popup "] = "自动弹出的"
 end

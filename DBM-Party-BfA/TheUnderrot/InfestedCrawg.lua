@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2131, "DBM-Party-BfA", 8, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17712 $"):sub(12, -3))
+mod:SetRevision("2019051310127")
 mod:SetCreatureID(131817)
 mod:SetEncounterID(2118)
 mod:SetZone()
@@ -12,40 +12,44 @@ mod:RegisterEventsInCombat(
 	"SPELL_AURA_APPLIED 260416 260333",
 	"SPELL_AURA_REMOVED 260416",
 	"SPELL_CAST_START 260793 260292",
-	"UNIT_SPELLCAST_SUCCEEDED boss1"
+	"SPELL_CAST_SUCCESS 260333"
 )
 
---TODO, confirm timers, for tantrum
---local warnSwirlingScythe			= mod:NewTargetAnnounce(195254, 2)
-
+--TODO, a really long normal pull to get timer interactions correct when there are no tantrums
+--These don't exist on WCL, or at least not in a way they can be found easily :\
+--[[
+ability.id = 260333 and type = "cast"
+ or (ability.id = 260793 or ability.id = 260292) and type = "begincast"
+--]]
 local specWarnIndigestion			= mod:NewSpecialWarningSpell(260793, "Tank", nil, nil, 1, 2)
 local specWarnCharge				= mod:NewSpecialWarningDodge(260292, nil, nil, nil, 3, 2)
-local specWarnTantrum				= mod:NewSpecialWarningSpell(260333, nil, nil, nil, 2, 2)
---local yellSwirlingScythe			= mod:NewYell(195254)
---local specWarnGTFO				= mod:NewSpecialWarningGTFO(238028, nil, nil, nil, 1, 2)
+local specWarnTantrum				= mod:NewSpecialWarningCount(260333, nil, nil, nil, 2, 2)
+--local specWarnGTFO				= mod:NewSpecialWarningGTFO(238028, nil, nil, nil, 1, 8)
 
 local timerIndigestionCD			= mod:NewCDTimer(70, 260793, nil, nil, nil, 5, nil, DBM_CORE_TANK_ICON)
-local timerChargeCD					= mod:NewCDTimer(23.1, 260292, nil, nil, nil, 3, nil, DBM_CORE_DEADLY_ICON)
+local timerChargeCD					= mod:NewCDTimer(20.7, 260292, nil, nil, nil, 3, nil, DBM_CORE_DEADLY_ICON)
 local timerTantrumCD				= mod:NewCDTimer(13, 260333, nil, nil, nil, 2, nil, DBM_CORE_HEALER_ICON)
 
---mod:AddRangeFrameOption(5, 194966)
 mod:AddNamePlateOption("NPAuraMetamorphosis", 260416)
 
+mod.vb.IndigestionCast = false--Never used more than once per cycle, whereass charge may or may not be cast twice
+mod.vb.chargeCast = 0
+mod.vb.tantrumCast = 0
+
 function mod:OnCombatStart(delay)
+	self.vb.IndigestionCast = false
+	self.vb.chargeCast = 0
+	self.vb.tantrumCast = 0
 	if self.Options.NPAuraMetamorphosis then
 		DBM:FireEvent("BossMod_EnableHostileNameplates")
 	end
+	--he casts random ability first
 	timerIndigestionCD:Start(8.3-delay)
-	timerChargeCD:Start(20.5-delay)
-	--if not self:IsNormal() then
-		--timerTantrumCD:Start(1-delay)
-	--end
+	timerChargeCD:Start(8.3-delay)
+	--timerTantrumCD:Start(45)
 end
 
 function mod:OnCombatEnd()
---	if self.Options.RangeFrame then
---		DBM.RangeCheck:Hide()
---	end
 	if self.Options.NPAuraMetamorphosis then
 		DBM.Nameplate:Hide(true, nil, nil, nil, true, true)
 	end
@@ -57,13 +61,8 @@ function mod:SPELL_AURA_APPLIED(args)
 		if self.Options.NPAuraMetamorphosis then
 			DBM.Nameplate:Show(true, args.destGUID, spellId, nil, 8)
 		end
-	elseif spellId == 260333 then
-		specWarnTantrum:Show()
-		specWarnTantrum:Play("aesoon")
-		--timerTantrumCD:Start()
 	end
 end
---mod.SPELL_AURA_APPLIED_DOSE = mod.SPELL_AURA_APPLIED
 
 function mod:SPELL_AURA_REMOVED(args)
 	local spellId = args.spellId
@@ -77,36 +76,58 @@ end
 function mod:SPELL_CAST_START(args)
 	local spellId = args.spellId
 	if spellId == 260793 then
+		self.vb.IndigestionCast = true
 		specWarnIndigestion:Show()
 		specWarnIndigestion:Play("breathsoon")
-		timerIndigestionCD:Start()
+		--Charge is always 12 seconds after indigiestion in EVERY combo
+		--Also, regardless of time left on charg timer, Indigestion always resets charge to 12
+		timerChargeCD:Stop()
+		timerChargeCD:Start(12)
+		if not self:IsNormal() then
+			if self.vb.chargeCast == 0 then--No charge yet, it means it's one of the two Indigestion first combos
+				if self.vb.tantrumCast == 0 then--Indigestion, charge, charge, Tantrum
+					--Very niche combat start condition. This segment slightly longer than rest
+					timerTantrumCD:Start(43.7)
+				else
+					--It's only Indigestion, charge, Tantrum
+					timerTantrumCD:Start(26.7)
+				end
+			end
+		else
+			timerIndigestionCD:Start(45)
+			--(will probably never be accurate, since WCL lacks tools to search for normal dungeons)
+		end
 	elseif spellId == 260292 then
+		self.vb.chargeCast = self.vb.chargeCast + 1
 		specWarnCharge:Show()
 		specWarnCharge:Play("chargemove")
-		timerChargeCD:Start()
+		if not self:IsNormal() then
+			--If charge is first, Indigestion will always be cast 10.9 seconds after
+			if not self.vb.IndigestionCast then--charge, indigestion, charge combo.
+				timerIndigestionCD:Start(10.9)
+				timerTantrumCD:Start(37.6)
+			else--Indigestion was first, check for niche Indigestion, charge, charge, Tantrum combo
+				if self.vb.tantrumCast == 0 then
+					timerChargeCD:Start(20)
+				end
+			end
+		else--On normal, just always start the 20 second timer, but allow it to still be corrected by Indigestion Cast
+			timerChargeCD:Start(20)
+		end
 	end
 end
 
---[[
-function mod:SPELL_PERIODIC_DAMAGE(_, _, _, _, destGUID, _, _, _, spellId)
-	if spellId == 228007 and destGUID == UnitGUID("player") and self:AntiSpam(2, 4) then
-		specWarnGTFO:Show()
-		specWarnGTFO:Play("runaway")
+function mod:SPELL_CAST_SUCCESS(args)
+	local spellId = args.spellId
+	if spellId == 260333 then
+		self.vb.IndigestionCast = false
+		self.vb.chargeCast = 0
+		self.vb.tantrumCast = self.vb.tantrumCast + 1
+		timerChargeCD:Stop()
+		specWarnTantrum:Show(self.vb.tantrumCast)
+		specWarnTantrum:Play("aesoon")
+		--Start both bars, what he uses first is random
+		timerIndigestionCD:Start(18.2)
+		timerChargeCD:Start(18.2)
 	end
 end
-mod.SPELL_PERIODIC_MISSED = mod.SPELL_PERIODIC_DAMAGE
-
-function mod:UNIT_DIED(args)
-	local cid = self:GetCIDFromGUID(args.destGUID)
-	if cid == 124396 then
-		
-	end
-end
---]]
-
-function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
-	if spellId == 271775 then--Tantrum Energy Bar
-		timerTantrumCD:Start(15)
-	end
-end
-

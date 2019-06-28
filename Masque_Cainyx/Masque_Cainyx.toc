@@ -1,4 +1,4 @@
-## Interface: 80000
+## Interface: 80200
 ## Title: Masque: |cffff8000Cainyx|r
 ## Version: 7.0.0
 ## Author: WoWLoreConfusedMe

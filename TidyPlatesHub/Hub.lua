@@ -161,14 +161,19 @@ local function BuildHubPanel(panel)
 	--panel.WidgetsAuraMode =  CreateQuickDropdown(objectName.."WidgetsAuraMode", "Filter Mode:", AuraWidgetModes, 1, AlignmentColumn, panel.WidgetsDebuffStyle, 16)		-- used to be WidgetsDebuffMode
 
 	panel.WidgetsMyDebuff = CreateQuickCheckbutton(objectName.."WidgetsMyDebuff", "包括我的Debuffs", AlignmentColumn, panel.WidgetsDebuff, 16)
-	panel.WidgetsMyBuff = CreateQuickCheckbutton(objectName.."WidgetsMyBuff", "包括我的Buffs", AlignmentColumn, panel.WidgetsMyDebuff, 16)
+	-- panel.WidgetsMyBuff = CreateQuickCheckbutton(objectName.."WidgetsMyBuff", "包括我的Buffs", AlignmentColumn, panel.WidgetsMyDebuff, 16)
+    panel.WidgetsHostileBuff = CreateQuickCheckbutton(objectName.."WidgetsHostileBuff", "包括敌对NPC的Buffs", AlignmentColumn, panel.WidgetsMyDebuff, 16)
+    panel.WidgetsHostilePlayerBuff = CreateQuickCheckbutton(objectName.."WidgetsHostilePlayerBuff", "也显示敌对玩家的Buffs（会比较乱）", AlignmentColumn, panel.WidgetsHostileBuff, 32)
+    panel.WidgetsHostileBuffStealableOnly2 = CreateQuickCheckbutton(objectName.."WidgetsHostileBuffStealableOnly2", "仅包括可进攻驱散或可偷取的", AlignmentColumn, panel.WidgetsHostilePlayerBuff, 32)
 
-	panel.WidgetsDebuffListLabel = CreateQuickItemLabel(nil, "额外的光环:", AlignmentColumn, panel.WidgetsMyBuff, 16)
+	panel.WidgetsDebuffListLabel = CreateQuickItemLabel(nil, "额外的光环:", AlignmentColumn, panel.WidgetsHostileBuffStealableOnly2, 16)
 	panel.WidgetsDebuffTrackList = CreateQuickEditbox(objectName.."WidgetsDebuffTrackList", AlignmentColumn, panel.WidgetsDebuffListLabel, 16)
 
 	panel.WidgetsDebuffStyle =  CreateQuickDropdown(objectName.."WidgetsDebuffStyle", "图标样式:", DebuffStyles, 1, AlignmentColumn, panel.WidgetsDebuffTrackList, 16)
 
-	panel.WidgetAuraTrackDispelFriendly = CreateQuickCheckbutton(objectName.."WidgetAuraTrackDispelFriendly", "包括在友好单位上的可驱散的Debuffs", AlignmentColumn, panel.WidgetsDebuffStyle, 16, 4)
+	panel.WidgetAuraTrackStealable = CreateQuickCheckbutton(objectName.."WidgetAuraTrackStealable", "（此项无效）包括敌对单位上的可驱散BUFF", AlignmentColumn, panel.WidgetsDebuffStyle, 16, 4)
+	
+	panel.WidgetAuraTrackDispelFriendly = CreateQuickCheckbutton(objectName.."WidgetAuraTrackDispelFriendly", "（此项无效）包括在友好单位上的可驱散的Debuffs", AlignmentColumn, panel.WidgetAuraTrackStealable, 16, 4)
 	panel.WidgetAuraTrackCurse = CreateQuickCheckbutton(objectName.."WidgetAuraTrackCurse", "诅咒", AlignmentColumn, panel.WidgetAuraTrackDispelFriendly, 16+16, -2)
 	panel.WidgetAuraTrackDisease = CreateQuickCheckbutton(objectName.."WidgetAuraTrackDisease", "疾病", AlignmentColumn, panel.WidgetAuraTrackCurse, 16+16, -2)
 	panel.WidgetAuraTrackMagic = CreateQuickCheckbutton(objectName.."WidgetAuraTrackMagic", "魔法", AlignmentColumn, panel.WidgetAuraTrackDisease, 16+16, -2)
@@ -268,17 +273,20 @@ local function BuildHubPanel(panel)
 	panel.FilterLabel = CreateQuickHeadingLabel(nil, "单位过滤", AlignmentColumn, F, 0, 5)
 	panel.OpacityFiltered, F = CreateQuickSlider(objectName.."OpacityFiltered", "过滤单位透明度:", AlignmentColumn, panel.FilterLabel, 0, 2)
 	panel.ScaleFiltered, F = CreateQuickSlider(objectName.."ScaleFiltered", "过滤单位比例:", AlignmentColumn, F, 0, 2)
-	panel.FilterScaleLock, F = CreateQuickCheckbutton(objectName.."FilterScaleLock", "打勾启动过滤", AlignmentColumn, F, 16)
+	panel.FilterScaleLock = CreateQuickCheckbutton(objectName.."FilterScaleLock", "应用比例于目标单位", AlignmentColumn, F, 280, -17)
 
 	panel.OpacityFilterNeutralUnits, F = CreateQuickCheckbutton(objectName.."OpacityFilterNeutralUnits", "过滤中立", AlignmentColumn, F, 8, 4)
 	panel.OpacityFilterNonElite, F = CreateQuickCheckbutton(objectName.."OpacityFilterNonElite", "过滤非精英", AlignmentColumn, F, 8)
 	panel.OpacityFilterEnemyNPC, F = CreateQuickCheckbutton(objectName.."OpacityFilterEnemyNPC", "过滤敌方NPC", AlignmentColumn, F, 8)
 	panel.OpacityFilterFriendlyNPC, F = CreateQuickCheckbutton(objectName.."OpacityFilterFriendlyNPC", "过滤友方NPC", AlignmentColumn, F, 8)
 	panel.OpacityFilterUntitledFriendlyNPC, F = CreateQuickCheckbutton(objectName.."OpacityFilterUntitledFriendlyNPC", "过滤无头衔的友方NPC", AlignmentColumn, F, 8)	
-
+	--panel.OpacityFilterExcludeQuestMobs, F = CreateQuickCheckbutton(objectName.."OpacityFilterExcludeQuestMobs", "Bypass Filter for Quest Mobs", AlignmentColumn, F, 8)
+	
     panel.OpacityFilterPlayers = CreateQuickCheckbutton(objectName.."OpacityFilterPlayers", "过滤玩家", AlignmentColumn, panel.FilterScaleLock, OffsetColumnB, 4)
 	panel.OpacityFilterInactive = CreateQuickCheckbutton(objectName.."OpacityFilterInactive", "过滤未激活", AlignmentColumn, panel.OpacityFilterPlayers, OffsetColumnB)
-	panel.OpacityFilterMini = CreateQuickCheckbutton(objectName.."OpacityFilterMini", "过滤杂兵", AlignmentColumn, panel.OpacityFilterInactive, OffsetColumnB)
+    panel.OpacityFilterInactiveOnlyInCombat = CreateQuickCheckbutton(objectName.."OpacityFilterInactiveOnlyInCombat", "仅当玩家在战斗时才过滤", AlignmentColumn, panel.OpacityFilterInactive, OffsetColumnB + 20)
+	panel.OpacityFilterMini = CreateQuickCheckbutton(objectName.."OpacityFilterMini", "过滤杂兵", AlignmentColumn, panel.OpacityFilterInactiveOnlyInCombat, OffsetColumnB)
+
 
 	panel.OpacityCustomFilterLabel = CreateQuickItemLabel(nil, "过滤单位名字:", AlignmentColumn, F, 8, 4)
 	panel.OpacityFilterList, L = CreateQuickEditbox(objectName.."OpacityFilterList", AlignmentColumn, panel.OpacityCustomFilterLabel, 8)
@@ -319,9 +327,9 @@ local function BuildHubPanel(panel)
     -- Column 1
 	panel.ThreatLabel = CreateQuickHeadingLabel(nil, "威胁", AlignmentColumn, L, 0, 5)
 	panel.ThreatWarningMode =  CreateQuickDropdown(objectName.."ThreatWarningMode", "威胁模式:", ThreatWarningModes, 1, AlignmentColumn, panel.ThreatLabel, 0, 2)
-	panel.ThreatGlowEnable = CreateQuickCheckbutton(objectName.."ThreatGlowEnable", "开启发光警告", AlignmentColumn, panel.ThreatWarningMode,0)
+	panel.ThreatGlowEnable2 = CreateQuickCheckbutton(objectName.."ThreatGlowEnable2", "开启发光警告", AlignmentColumn, panel.ThreatWarningMode,0)
 
-	panel.ColorThreatColorLabels = CreateQuickItemLabel(nil, "威胁颜色:", AlignmentColumn, panel.ThreatGlowEnable, 0, 2)
+	panel.ColorThreatColorLabels = CreateQuickItemLabel(nil, "威胁颜色:", AlignmentColumn, panel.ThreatGlowEnable2, 0, 2)
 	panel.ColorThreatWarning = CreateQuickColorbox(objectName.."ColorThreatWarning", "警告", AlignmentColumn, panel.ColorThreatColorLabels , 16)
 	panel.ColorThreatTransition = CreateQuickColorbox(objectName.."ColorThreatTransition", "转变", AlignmentColumn, panel.ColorThreatWarning , 16)
 	panel.ColorThreatSafe = CreateQuickColorbox(objectName.."ColorThreatSafe", "安全", AlignmentColumn, panel.ColorThreatTransition, 16)
@@ -331,6 +339,8 @@ local function BuildHubPanel(panel)
 	--[[
 	-- Warning Border Glow
 	--]]
+
+	--
 
     -- Column 2
 	panel.EnableOffTankHighlight = CreateQuickCheckbutton(objectName.."EnableOffTankHighlight", "高亮正在攻击副坦的", AlignmentColumn, panel.ThreatLabel, OffsetColumnB)
@@ -518,7 +528,8 @@ end
 
 function ShowTidyPlatesHubPanel()
     if CreateOptionsPanels then CreateOptionsPanels() CreateOptionsPanels = nil end
-	local profile = TidyPlatesOptions.ActiveProfile
+	local profile = TidyPlates.GetProfile()
+
 	if profile == "Tank" then
 		ShowTidyPlatesHubTankPanel()
 	elseif profile == "Healer" then

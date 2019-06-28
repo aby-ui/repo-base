@@ -41,10 +41,11 @@ L["IE_NOLOADED_GROUP"] = [[Select a group to load:]]
 L["ICON_TOOLTIP2NEW"] = [[|cff7fffffRight-click|r for icon options.
 |cff7fffffLeft-click and drag|r to move this group.
 |cff7fffffRight-click and drag|r to another icon to move/copy.
+|cff7fffffCtrl-click|r to toggle enabled/disabled.
 |cff7fffffDrag|r spells or items onto the icon for quick setup.]]
 L["ICON_TOOLTIP2NEWSHORT"] = [[|cff7fffffRight-click|r for icon options.]]
-L["LDB_TOOLTIP1"] = "|cff7fffffLeft-click|r to toggle the group locks"
-L["LDB_TOOLTIP2"] = "|cff7fffffRight-click|r to show the Icon Editor"
+L["LDB_TOOLTIP1"] = "|cff7fffffLeft-click|r to toggle config mode"
+L["LDB_TOOLTIP2"] = "|cff7fffffRight-click|r to show the options window"
 L["LOADERROR"] = "TellMeWhen_Options could not be loaded: "
 L["LOADINGOPT"] = "Loading TellMeWhen_Options."
 L["ENABLINGOPT"] = "TellMeWhen_Options is disabled. Enabling..."
@@ -104,7 +105,6 @@ All other icons in the group will be made unavailable for individual configurati
 You may wish to customize the group's layout direction and/or sorting options if you use it as a controlled group.]]
 L["ICONMENU_CTRLGROUP_UNAVAILABLE_DESC"] = [[The current icon type does not have the ability to control an entire group.]]
 L["ICONMENU_CTRLGROUP_UNAVAILABLEID_DESC"] = [[Only the first icon in a group (icon ID 1) can be a group controller.]]
-
 
 L["ERROR_MISSINGFILE_REQFILE"] = "A required file"
 L["ERROR_MISSINGFILE"] = [[A complete restart of WoW is required to use TellMeWhen %s.
@@ -676,6 +676,8 @@ L["ICONMENU_DONTREFRESH"] = "Don't Refresh"
 L["ICONMENU_DONTREFRESH_DESC"] = "Check to force the cooldown to not reset if the trigger occurs while it is still counting down."
 L["ICONMENU_CLEU_NOREFRESH"] = "Don't Refresh"
 L["ICONMENU_CLEU_NOREFRESH_DESC"] = "Check to cause the icon to ignore events that happen while the icon's timer is active."
+L["ICONMENU_ONLYIFCONDITIONS"] = "Only If Conditions Passing"
+L["ICONMENU_ONLYIFCONDITIONS_DESC"] = "Only process the event if the icon's conditions are passing."
 
 L["SORTBY"] = "Prioritize"
 L["SORTBYNONE"] = "Normally"
@@ -700,6 +702,10 @@ L["ICONMENU_SORT_STACKS_DESC_DESC"] = "Check this box to prioritize and show spe
 L["ICONMENU_MOVEHERE"] = "Move here"
 L["ICONMENU_COPYHERE"] = "Copy here"
 L["ICONMENU_SWAPWITH"] = "Swap with"
+L["ICONMENU_INSERTHERE"] = "Extract & Insert here"
+L["ICONMENU_INSERTHERE_DESC"] = [[Take %s out of its current position and insert it at the current location of %s. 
+
+Icons will be shifted as needed.]]
 L["ICONMENU_ADDMETA"] = "Add to Meta Icon"
 L["ICONMENU_APPENDCONDT"] = "Add as %q condition"
 L["ICONMENU_ANCHORTO"] = "Anchor to %s"
@@ -717,6 +723,7 @@ L["ICONMENU_SPLIT_NOCOMBAT_DESC"] = "Can't create new groups while in combat. Le
 L["ICONMENU_COPYEVENTHANDLERS"] = "Copy %d |4Notification:Notifications;"
 L["ICONMENU_COPYEVENTHANDLERS_DESC"] = "Copy %s's %d |4Notification:Notifications; to %s."
 L["ICONMENU_COPYCONDITIONS"] = "Copy %d |4Condition:Conditions;"
+L["ICONMENU_COPYCONDITIONS_UNIT"] = "Copy %d Unit |4Condition:Conditions;"
 L["ICONMENU_COPYCONDITIONS_GROUP"] = "Copy %d Group |4Condition:Conditions;"
 L["ICONMENU_COPYCONDITIONS_DESC"] = "Copy %s's %d |4Condition:Conditions; to %s."
 L["ICONMENU_COPYCONDITIONS_DESC_OVERWRITE"] = "This will overwrite %d existing |4condition:conditions;"
@@ -820,7 +827,7 @@ L["UIPANEL_PROFILES"] = "Profiles"
 
 L["UIPANEL_GROUPTYPE"] = "Display Method"
 L["UIPANEL_GROUPTYPE_ICON"] = "Icon"
-L["UIPANEL_GROUPTYPE_ICON_DESC"] = [[Displays the icons in the2 group using TellMeWhen's traditional icon display.]]
+L["UIPANEL_GROUPTYPE_ICON_DESC"] = [[Displays the icons in the group using TellMeWhen's traditional icon display.]]
 L["UIPANEL_GROUPTYPE_BAR"] = "Bar"
 L["UIPANEL_GROUPTYPE_BAR_DESC"] = [[Displays the icons in the group with progress bars attached to the icons.]]
 L["UIPANEL_GROUPTYPE_BARV"] = "Vertical Bar"
@@ -886,6 +893,10 @@ This option is account-wide: all of your profiles will share this setting.
 L["UIPANEL_BARTEXTURE"] = "Bar Texture"
 L["UIPANEL_USE_PROFILE"] = "Use Profile Setting"
 L["UIPANEL_PERFORMANCE"] = "Performance"
+L["UIPANEL_OPENCPUPROFILE"] = "View CPU usage"
+L["UIPANEL_OPENCPUPROFILE_DESC"] = [[View detailed CPU usage metrics about each of your icons.
+
+Also accessible via '/tmw cpu']]
 L["UIPANEL_UPDATEINTERVAL"] = "Update Interval"
 L["UIPANEL_TOOLTIP_UPDATEINTERVAL"] = [[Sets how often (in seconds) icons are checked for show/hide, alpha, conditions, etc.
 
@@ -1434,6 +1445,8 @@ L["CONDITIONPANEL_INSTANCETYPE"] = "Instance Type"
 L["CONDITIONPANEL_INSTANCETYPE_DESC"] = "Checks the type of instance that you are in, including the difficulty setting of any dungeon or raid."
 L["CONDITIONPANEL_INSTANCETYPE_NONE"] = "Outside"
 L["CONDITIONPANEL_INSTANCETYPE_LEGACY"] = "%s (Legacy)"
+L["CONDITIONPANEL_KEYSTONELEVEL"] = "Keystone Level"
+L["CONDITIONPANEL_KEYSTONELEVEL_DESC"] = "Level of the currently active Mythic Keystone"
 L["CONDITIONPANEL_GROUPTYPE"] = "Group Type"
 L["CONDITIONPANEL_GROUPTYPE_DESC"] = "Checks the type of group that you are in (solo, party, or raid)."
 L["CONDITIONPANEL_GROUPSIZE"] = "Instance Size"
@@ -1480,9 +1493,11 @@ If your input is a regular statement to be evaluated, e.g. 'a and b or c', you d
 
 If you have any control blocks (e.g. if/then), you'll need return statements.
 
-To get a reference to this icon/group, use "thisobj". To insert a reference to another icon by GUID, shift click that icon while this editbox has focus.
+|cff7fffff-|r To get a reference to the icon or group, use variable "thisobj". 
+|cff7fffff-|r To get a reference to the 'unit' for Unit Conditions, use variable "thisunit". 
+|cff7fffff-|r To insert a reference to another icon by GUID, shift click that icon while this editbox has focus.
 
-If more help is needed (but not help about how to write Lua code), open a ticket on CurseForge. For help on how to write Lua, go to the internet.]]
+If more help is needed (but not help about how to write Lua code), try the TMW Discord. For help on how to write Lua, go to the internet.]]
 
 
 L["CONDITIONPANEL_OLD"] = "<|cffff1300OLD|r>"
@@ -1872,6 +1887,14 @@ L["MAIN_DESC"] = "Contains the main options for this icon."
 L["UNNAMED"] = "(Unnamed)"
 L["NOTYPE"] = "<No Icon Type>"
 
+L["HELP"] = "Help"
+L["HELP_ISSUES"] = "Bugs & Feature Requests"
+L["HELP_ISSUES_DESC"] = [[Report bugs and request features on the official TellMeWhen issue tracker on GitHub.]]
+L["HELP_COMMUNITY"] = "Community Discord"
+L["HELP_COMMUNITY_DESC"] = [[Join the official TellMeWhen discord!
+
+Ask questions, share configuration, or just hang out with other TellMeWhen users.]]
+
 
 L["MISCELLANEOUS"] = "Miscellaneous"
 L["TEXTMANIP"] = "Text manipulation"
@@ -2167,13 +2190,9 @@ L["SOUND_SOUNDTOPLAY"] = "Sound to Play"
 L["SOUND_CUSTOM"] = "Custom sound file"
 L["SOUND_CUSTOM_DESC"] = [[Insert the path to a custom sound to play. You can also input a numeric Sound Kit ID.
 
-Here are some examples, where "file" is the name of your sound, and "ext" is the file's extension (ogg or mp3 only!):
+Files must be nested under the "Interface" folder in WoW's installation - e.g. "Interface/AddOns/file.ext". Only ogg and mp3 formats are supported.
 
-- "CustomSounds/file.ext": a file placed in a new folder named "CustomSounds" that is in WoW's root directory (the same location as Wow.exe, Interface and WTF folders, etc)
-
-- "Interface/AddOns/file.ext": a loose file in the AddOns folder
-
-- "file.ext": a loose file in WoW's root directory
+Sound Kit IDs can be found by browsing https://www.wowhead.com/sounds - the URL for the page for each sound contains the Sound Kit ID.
 
 NOTE: WoW must be restarted before it will recognize files that did not exist when it was started up.]]
 L["SOUND_TAB"] = "Sound"
@@ -2404,7 +2423,7 @@ L["EVENTS_SETTINGS_COUNTER_NAME_DESC"] = [[Enter the name of the counter to be m
 
 Counter names must be lower-case with no spaces.
 
-Use this counter name in other places where you would like to check this counter (Conditions and Text Displays via the [Counter] DogTag)
+Use this counter name in other places where you would like to check this counter (Conditions, and Text Displays via the [Counter] DogTag)
 
 
 Advanced Users: Counters are stored in TMW.COUNTERS[counterName] = value.   Call TMW:Fire( "TMW_COUNTER_MODIFIED", counterName ) if you change a counter in a custom Lua script.]]
@@ -2414,7 +2433,7 @@ L["EVENTS_SETTINGS_TIMER_NAME_DESC"] = [[Enter the name of the timer to be modif
 
 Timer names must be lower-case with no spaces.
 
-Use this timer name in other places where you would like to check this timer (Conditions and Text Displays via the [Timer] DogTag)]]
+Use this timer name in other places where you would like to check this timer (Conditions, and Text Displays via the [Timer] DogTag)]]
 
 
 L["EVENTS_SETTINGS_COUNTER_OP"] = "Operation"
@@ -2761,9 +2780,10 @@ L["ReducedHealing"] = "Reduced Healing"
 L["DefensiveBuffs"] = "Defensive Buffs"
 L["DefensiveBuffsSingle"] = "Targeted Defensive Buffs"
 L["DefensiveBuffsAOE"] = "AOE Defensive Buffs"
-L["MiscHelpfulBuffs"] = "Misc. Helpful Buffs"
 L["SpeedBoosts"] = "Speed Boosts"
 L["DamageBuffs"] = "Damage Buffs"
+L["ImmuneToInterrupts"] = "Immunity to Interrupt Spells"
+L["ImmuneToSlows"] = "Immunity to Slows"
 
 -- Deprecated
 --L["IncreasedVersatility"] = "Increased Versatility"
@@ -2788,9 +2808,10 @@ L["DamageBuffs"] = "Damage Buffs"
 --L["IncreasedPhysHaste"] = "Increased Physical Haste"
 --L["IncreasedSpellHaste"] = "Increased Spell Haste"
 --L["PhysicalDmgTaken"] = "Physical Damage Taken"
+--L["MiscHelpfulBuffs"] = "Misc. Helpful Buffs"
+--L["PvPSpells"] = "PvP Crowd Control, etc."
 
 L["Heals"] = "Player Heals"
-L["PvPSpells"] = "PvP Crowd Control, etc."
 
 L["GCD"] = "Global Cooldown"
 

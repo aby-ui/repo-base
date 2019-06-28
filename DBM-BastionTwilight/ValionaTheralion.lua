@@ -1,12 +1,12 @@
 local mod	= DBM:NewMod(157, "DBM-BastionTwilight", nil, 72)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 190 $"):sub(12, -3))
+mod:SetRevision("20190625143316")
 mod:SetCreatureID(45992, 45993)
 mod:SetEncounterID(1032)
 mod:SetZone()
 mod:SetUsedIcons(6, 7, 8)
-mod:SetModelSound("Sound\\Creature\\Chogall\\VO_BT_Chogall_BotEvent10.ogg", "Sound\\Creature\\Valiona\\VO_BT_Valiona_Event06.ogg")
+--mod:SetModelSound("Sound\\Creature\\Chogall\\VO_BT_Chogall_BotEvent10.ogg", "Sound\\Creature\\Valiona\\VO_BT_Valiona_Event06.ogg")
 --Long: Valiona, Theralion put them in their place!
 --Short: Enter twilight!
 

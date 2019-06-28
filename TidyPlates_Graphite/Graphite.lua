@@ -22,7 +22,7 @@ local barwidth = 90
 local borderheight = 16
 local barheight = 16
 local widthfactor = 1 -- .85
-local heightfactor = 1.2
+local heightfactor = 1
 
 local StyleDefault = {}
 
@@ -174,6 +174,14 @@ StyleDefault.spellicon = {
 StyleDefault.eliteicon = {
 	show = false,
 	texture = EmptyTexture,
+
+	--texture 				= path.."EliteBorder",
+	width = barwidth*widthfactor,
+	--width = 96*widthfactor,
+	height = barheight*heightfactor,
+	x = 0,
+	y = 0,
+	show=false,
 }
 
 StyleDefault.raidicon = {

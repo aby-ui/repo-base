@@ -1,5 +1,5 @@
 --[[
-Copyright 2011-2018 João Cardoso
+Copyright 2011-2019 João Cardoso
 BagBrother is distributed under the terms of the GNU General Public License (Version 3).
 As a special exception, the copyright holders of this addon do not give permission to
 redistribute and/or modify it.
@@ -18,31 +18,27 @@ This file is part of BagBrother.
 
 local Brother = CreateFrame('Frame', 'BagBrother')
 Brother:SetScript('OnEvent', function(self, event, ...) self[event](self, ...) end)
-Brother:RegisterEvent('ADDON_LOADED')
 Brother:RegisterEvent('PLAYER_LOGIN')
 
 
---[[ Cache Loaded ]]--
+--[[ Server Ready ]]--
 
-function Brother:ADDON_LOADED()
-	self:RemoveEvent('ADDON_LOADED')
+function Brother:PLAYER_LOGIN()
+	self:RemoveEvent('PLAYER_LOGIN')
 	self:StartupCache()
-	self:SetupCharacter()
+	self:SetupEvents()
+	self:UpdateData()
 end
 
 function Brother:StartupCache()
-	local Player = UnitName('player')
-	local Realm = GetRealmName()
-	
+	local player, realm = UnitFullName('player')
 	BrotherBags = BrotherBags or {}
-	BrotherBags[Realm] = BrotherBags[Realm] or {}
-	
-	self.Realm = BrotherBags[Realm]
-	self.Realm[Player] = self.Realm[Player] or {equip = {}}
-	self.Player = self.Realm[Player]
-end
+	BrotherBags[realm] = BrotherBags[realm] or {}
 
-function Brother:SetupCharacter()
+	self.Realm = BrotherBags[realm]
+	self.Realm[player] = self.Realm[player] or {equip = {}}
+	self.Player = self.Realm[player]
+
 	local player = self.Player
 	player.faction = UnitFactionGroup('player') == 'Alliance'
 	player.class = select(2, UnitClass('player'))
@@ -50,20 +46,9 @@ function Brother:SetupCharacter()
 	player.sex = UnitSex('player')
 end
 
-
---[[ Server Ready ]]--
-
-function Brother:PLAYER_LOGIN()
-    if self['ADDON_LOADED'] then
-        self['ADDON_LOADED'](self)
-    end
-	self:RemoveEvent('PLAYER_LOGIN')
-	self:SetupEvents()
-	self:UpdateData()
-end
-
 function Brother:SetupEvents()
 	self:RegisterEvent('UNIT_INVENTORY_CHANGED')
+    self:RegisterEvent('PLAYER_EQUIPMENT_CHANGED')
 	self:RegisterEvent('PLAYER_MONEY')
 	self:RegisterEvent('BAG_UPDATE')
 
@@ -88,6 +73,9 @@ function Brother:UpdateData()
 	self:GUILD_ROSTER_UPDATE()
 	self:PLAYER_MONEY()
 end
+
+
+--[[ API ]]--
 
 function Brother:RemoveEvent(event)
 	self:UnregisterEvent(event)

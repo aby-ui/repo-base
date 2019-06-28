@@ -1,14 +1,15 @@
 local _, ELP = ...
 local db = ELP.db
 
-local ELP_CURRENT_TIER = 8 --Legion
+local ELP_CURRENT_TIER = 8 --BfA
 local ELP_RELIC_SLOT = 30
 
 local curr_items = {}
 local curr_encts = {}
 local curr_insts = {}
+local curr_links = {}
 local curr_retrieving = {}
-ELP.currs = { curr_items, curr_encts, curr_insts, curr_retrieving }
+ELP.currs = { curr_items, curr_encts, curr_insts, curr_retrieving, curr_links }
 
 function ELP_IsRetrieving()
     return next(curr_retrieving) ~= nil
@@ -46,7 +47,7 @@ function ELP_RetrieveDone()
         if EJ_GetSlotFilter() == ELP_RELIC_SLOT then
             tinsert(curr_items, k)
         elseif (db.attr1 == 0 or (db.attr1 ~= 0 and type(db.ITEMS[k])=="table" and db.ITEMS[k][db.attr1]))
-            and (db.attr2 == 0 or (db.attr2 ~= 0 and type(db.ITEMS[k])=="table" and db.ITEMS[k][db.attr2])) then
+            and (db.attr1 == 0 or db.attr2 == 0 or (db.attr2 ~= 0 and type(db.ITEMS[k])=="table" and db.ITEMS[k][db.attr2])) then
             tinsert(curr_items, k)
         end
     end
@@ -70,9 +71,7 @@ function ELP_UpdateItemList()
     local EncounterJournal = EncounterJournal or CreateFrame("Frame")
     EncounterJournal:UnregisterEvent("EJ_LOOT_DATA_RECIEVED")
     EncounterJournal:UnregisterEvent("EJ_DIFFICULTY_UPDATE")
-    wipe(curr_encts)
-    wipe(curr_insts)
-    wipe(curr_items)
+    for _, v in ipairs(ELP.currs) do wipe(v) end
     EJ_SelectTier(ELP_CURRENT_TIER)
     -- force slot filter to avoid too many items listed.
     local forceSlot = db.range > 0 and EJ_GetSlotFilter() == 0
@@ -85,13 +84,19 @@ function ELP_UpdateItemList()
             if not insID then break end
             index = index + 1
             EJ_SelectInstance(insID)
-            EJ_SetDifficulty(i==1 and 16 or 23)
+            local shouldDisplayDifficulty = select(9, EJ_GetInstanceInfo(insID))
+            if shouldDisplayDifficulty then
+                EJ_SetDifficulty(i==1 and 16 or 23)
+            else
+                EJ_SetDifficulty(i==1 and 14 or 1)
+            end
             for loot = 1, EJ_GetNumLoot() do
                 local itemID, encounterID, name, icon, slot, armorType, link = EJ_GetLootInfoByIndex(loot)
                 if not curr_encts[itemID] then
                     if not db.ITEMS[itemID] then curr_retrieving[itemID] = 1 end
                     curr_encts[itemID] = encounterID
                     curr_insts[itemID] = insID
+                    curr_links[itemID] = link
                 end
             end
         end
@@ -123,7 +128,7 @@ function ELP_ScanStats(itemID, itemLink)
     itemID = itemID or GetItemIDFromLink(itemLink)
     local name, link, _, iLevel = GetItemInfo(itemID)
     if not link or not iLevel then return end
-    local fakeLink = format("item:%d::::::::110::::2:%d:3517::", itemID, 1472+(920-iLevel))
+    local fakeLink = format("item:%d::::::::120::::2:%d:3517::", itemID, 1472+(920-iLevel))
     local stats = U1GetItemStats(fakeLink, nil, nil, false, select(3, UnitClass("player")), GetSpecializationInfo(GetSpecialization() or 0))
     if type(stats) == "table" then stats[3],stats[4] = stats[4], stats[3] end
     return stats

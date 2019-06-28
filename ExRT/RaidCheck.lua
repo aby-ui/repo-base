@@ -9,40 +9,25 @@ local ELib,L = ExRT.lib,ExRT.L
 
 module.db.isEncounter = nil
 module.db.tableFood = {
---Haste		Mastery		Crit		Versa		Fire dmg	Other		Int		Str 		Agi		Stam
-[201330]=12,	[201332]=12,	[201223]=12,	[201334]=12,	[201336]=12,
-[225598]=16,	[225599]=16,	[225597]=16,	[225600]=16,	[225601]=16,	[177931]=16,	[201636]=16,	[201634]=16,	[201635]=16,	[201637]=16,
-[225603]=19,	[225604]=19,	[225602]=19,	[225605]=19,	[225606]=19,			[201640]=19,	[201638]=19,	[201639]=19,	[201641]=19,	
-						[185736]=12,
-						
-[257413]=41,	[257418]=41,	[257408]=41,	[257422]=41,					[259449]=75,	[259452]=75,	[259448]=75,	[259453]=75,
-[257415]=55,	[257420]=55,	[257410]=55,	[257424]=55,					[259455]=100,	[259456]=100,	[259454]=100,	[259457]=100,
+--Haste		Mastery		Crit		Versa		Int		Str 		Agi		Stam		Stam		Special
+						[185736]=50,
+[257413]=50,	[257418]=50,	[257408]=50,	[257422]=50,	[259449]=75,	[259452]=75,	[259448]=75,	[259453]=75,	[288074]=50,
+[257415]=75,	[257420]=75,	[257410]=75,	[257424]=75,	[259455]=100,	[259456]=100,	[259454]=100,	[259457]=75,	[288075]=75,
+								[290468]=75,	[290469]=75,	[290467]=75,	--85 actually
+								[285719]=50,	[285720]=50,	[285721]=50,	[288074]=50,	[288075]=75,	[286171]=75,
+								[297117]=130,	[297118]=130,	[297116]=130,
+[297034]=100,	[297035]=100,	[297039]=100,	[297037]=100,							[297119]=100,	[297040]=100,
 }
-if UnitLevel'player' > 110 then module.db.tableFood[185736]=41 end
-module.db.StaminaFood = {[201638]=true,[259457]=true,}
+module.db.StaminaFood = {[201638]=true,[259457]=true,[288075]=true,[288074]=true,[297119]=true,[297040]=true}
 
-module.db.tableFood_headers = UnitLevel'player' <= 110 and {0,12,16,19} or {0,41,55}
-module.db.tableFlask =  UnitLevel'player' <= 110 and {
-	--Stamina,	Int,		Agi,		Str 
-	[188035]=59,	[188031]=59,	[188033]=59,	[188034]=59,
-} or {
+module.db.tableFood_headers = {0,50,75,100,130}
+module.db.tableFlask =  {
 	--Stamina,	Int,		Agi,		Str 
 	[251838]=238,	[251837]=238,	[251836]=238,	[251839]=238,
+	[298839]=360,	[298837]=360,	[298836]=360,	[298841]=360,	
 }
-module.db.tableFlask_headers = UnitLevel'player' <= 110 and {0,59} or {0,238}
-module.db.tablePotion = UnitLevel'player' <= 110 and {
-	[229206]=true,	--All Stats
-	[188017]=true,	--Mana 3k, 17k
-	[188030]=true,	--Mana 4.5k, 25.5k
-	[188024]=true,	--Run haste
-	[188029]=true,	--Armor
-	[188018]=true,	--Health + Mana [alchim]	
-	
-	[188028]=true,	--Potion of the Old War
-	[188027]=true,	--Potion of Deadly Grace
-	[188020]=true,	--Sylvan Elixir
-	[188021]=true,	--Avalanche Elixir
-} or {
+module.db.tableFlask_headers = {0,238,360}
+module.db.tablePotion = {
 	[188024]=true,	--Run haste
 	[250871]=true,	--Mana
 	[252753]=true,	--Mana channel
@@ -53,6 +38,18 @@ module.db.tablePotion = UnitLevel'player' <= 110 and {
 	[279154]=true,	--Stamina
 	[279153]=true,	--Str
 	[251231]=true,	--Armor
+
+	[298152]=true,	--Int
+	[298146]=true,	--Agi
+	[298153]=true,	--Stamina
+	[298154]=true,	--Str
+	[298155]=true,	--Armor
+
+	[298225]=true,	--Potion of Empowered Proximity
+	[298317]=true,	--Potion of Focused Resolve
+	[300714]=true,	--Potion of Unbridled Fury
+	[300741]=true,	--Potion of Wild Mending
+	
 	
 	[251316]=true,	--Potion of Bursting Blood
 	[269853]=true,	--Potion of Rising Death
@@ -68,6 +65,7 @@ module.db.hsSpells = {
 	[188016] = true,
 	--[188018] = true,
 	[250870] = true,
+	[301308] = true,
 }
 module.db.raidBuffs = {
 	{ATTACK_POWER_TOOLTIP or "AP","WARRIOR",6673,264761},
@@ -83,14 +81,11 @@ module.db.RaidCheckReadyCheckTable = {}
 module.db.RaidCheckReadyPPLNum = 0
 module.db.RaidCheckReadyCheckHideSchedule = nil
 
-module.db.tableRunes = UnitLevel'player' <= 110 and {[224001]=true} or {[270058]=true}
+module.db.tableRunes = {[224001]=15,[270058]=60}
 
-module.db.minFoodLevelToActual = UnitLevel'player' <= 110 and {
-	[100] = 16,
-	[125] = 19,
-} or {
-	[100] = 41,
-	[125] = 55,
+module.db.minFoodLevelToActual = {
+	[100] = 100,
+	[125] = 130,
 }
 
 
@@ -180,10 +175,8 @@ local function PublicResults(msg,chat_type)
 	end
 end
 
-local RUNE_POWER = UnitLevel'player' <= 110 and 15 or 60
-
 local function GetRunes(checkType)
-	local f = {[0]={},[RUNE_POWER]={}}
+	local f = {[0]={}}
 	local gMax = ExRT.F.GetRaidDiffMaxGroup()
 	for j=1,40 do
 		local name,_,subgroup = GetRaidRosterInfo(j)
@@ -196,7 +189,8 @@ local function GetRunes(checkType)
 				else
 					local isRune = module.db.tableRunes[spellId]
 					if isRune then
-						f[RUNE_POWER][ #f[RUNE_POWER]+1 ] = name
+						f[isRune] = f[isRune] or {}
+						f[isRune][ #f[isRune]+1 ] = name
 						isAnyBuff = true
 						break
 					end
@@ -209,7 +203,8 @@ local function GetRunes(checkType)
 	end
 	
 	if not checkType or checkType == 1 then
-		for _,stats in ipairs({0,RUNE_POWER}) do
+		for _,stats in ipairs({0,15,60}) do
+			f[stats] = f[stats] or {}
 			local result = format("|cff00ff00%d (%d):|r ",stats,#f[stats])
 			for i=1,#f[stats] do
 				result = result .. f[stats][i]
@@ -226,13 +221,23 @@ local function GetRunes(checkType)
 		if checkType == 3 then
 			checkType = nil
 		end
-		local result = format("|cff00ff00%s (%d):|r ",L.RaidCheckNoRunes,#f[0])
+		f[15] = f[15] or {}
+		local result = format("|cff00ff00%s (%d):|r ",L.RaidCheckNoRunes,#f[0]+#f[15])
 		for i=1,#f[0] do
 			result = result .. f[0][i]
 			if #result > 230 then
 				PublicResults(result,checkType)
 				result = ""
-			elseif i ~= #f[0] then
+			elseif i ~= #f[0] or #f[15] > 0 then
+				result = result .. ", "
+			end
+		end
+		for i=1,#f[15] do
+			result = result .. f[15][i] .. "(15)"
+			if #result > 230 then
+				PublicResults(result,checkType)
+				result = ""
+			elseif i ~= #f[15] then
 				result = result .. ", "
 			end
 		end
@@ -451,7 +456,9 @@ local function GetFlask(checkType)
 				for j=1,#f[ flaskStats ] do
 					if f[ flaskStats ][j][2] <= showExpFlasks_seconds and f[ flaskStats ][j][2] >= 0 then
 						local mins = floor( f[ flaskStats ][j][2] / 60 )
-						strings_list[#strings_list + 1] = format("%s%s",f[ flaskStats ][j][1] or "?", "("..(mins == 0 and "<1" or tostring(mins))..")")
+						strings_list[#strings_list + 1] = format("%s%s%s",f[ flaskStats ][j][1] or "?", "("..(mins == 0 and "<1" or tostring(mins))..")", i < #module.db.tableFlask_headers and i > 1 and (not VExRT.RaidCheck.FlaskLQ) and " LQ" or "")
+					elseif i < #module.db.tableFlask_headers and i > 1 and not VExRT.RaidCheck.FlaskLQ then
+						strings_list[#strings_list + 1] = format("%s%s",f[ flaskStats ][j][1] or "?"," LQ")
 					end
 				end
 			end
@@ -517,6 +524,9 @@ local function GetRaidBuffs(checkType)
 	end
 	
 	if true then
+		if checkType == 3 then
+			checkType = nil
+		end
 		local result = format("|cff00ff00%s|r ",GARRISON_MISSION_PARTY_BUFFS)
 	
 		local isAnyBuff = true
@@ -643,14 +653,14 @@ function module.options:Load()
 	end)
 
 	
-	self.minFoodLevel100 = ELib:Radio(self,"300",VExRT.RaidCheck.FoodMinLevel == 100):Point("LEFT",self.minFoodLevelAny,"RIGHT", 75, 0):OnClick(function(self) 
+	self.minFoodLevel100 = ELib:Radio(self,module.db.minFoodLevelToActual[100],VExRT.RaidCheck.FoodMinLevel == 100):Point("LEFT",self.minFoodLevelAny,"RIGHT", 75, 0):OnClick(function(self) 
 		self:SetChecked(true)
 		module.options.minFoodLevelAny:SetChecked(false)
 		module.options.minFoodLevel125:SetChecked(false)
 		VExRT.RaidCheck.FoodMinLevel = 100
 	end)
 	
-	self.minFoodLevel125 = ELib:Radio(self,"375",VExRT.RaidCheck.FoodMinLevel == 125):Point("LEFT",self.minFoodLevel100,"RIGHT", 75, 0):OnClick(function(self) 
+	self.minFoodLevel125 = ELib:Radio(self,module.db.minFoodLevelToActual[125],VExRT.RaidCheck.FoodMinLevel == 125):Point("LEFT",self.minFoodLevel100,"RIGHT", 75, 0):OnClick(function(self) 
 		self:SetChecked(true)
 		module.options.minFoodLevelAny:SetChecked(false)
 		module.options.minFoodLevel100:SetChecked(false)
@@ -681,8 +691,12 @@ function module.options:Load()
 		VExRT.RaidCheck.FlaskExp = 2
 	end)
 
+	self.checkLQFlask = ELib:Check(self,L.RaidCheckLQFlask,not VExRT.RaidCheck.FlaskLQ):Point("TOPLEFT",self.level2optLine,7,-195):OnClick(function(self) 
+		VExRT.RaidCheck.FlaskLQ = not VExRT.RaidCheck.FlaskLQ
+	end)
+
 	
-	self.chkPotion = ELib:Check(self,L.raidcheckPotionCheck,VExRT.RaidCheck.PotionCheck):Point("TOPLEFT",self.level2optLine,7,-195):OnClick(function(self) 
+	self.chkPotion = ELib:Check(self,L.raidcheckPotionCheck,VExRT.RaidCheck.PotionCheck):Point("TOPLEFT",self.level2optLine,7,-220):OnClick(function(self) 
 		if self:GetChecked() then
 			VExRT.RaidCheck.PotionCheck = true
 			module.options.potionToChat:Enable()
@@ -714,7 +728,7 @@ function module.options:Load()
 	self.optReadyCheckFrame:SetBackdropColor(0,0,0,0.3)
 	self.optReadyCheckFrame:SetBackdropBorderColor(.24,.25,.30,0)
 	ELib:Border(self.optReadyCheckFrame,2,.24,.25,.30,1)
-	self.optReadyCheckFrame:SetPoint("TOP",0,-445)
+	self.optReadyCheckFrame:SetPoint("TOP",0,-470)
 
 	self.optReadyCheckFrameHeader = ELib:Text(self.optReadyCheckFrame,L.raidcheckReadyCheck):Size(550,20):Point("BOTTOMLEFT",self.optReadyCheckFrame,"TOPLEFT",10,1):Bottom()
 

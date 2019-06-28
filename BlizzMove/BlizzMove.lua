@@ -30,7 +30,7 @@ local defaultDB = {
     GuildFrame = {save = true, },
     FriendsFrame = {save = true, },
     ObjectiveTrackerFrame = { save = true, },
-    WorldMapFrame = {save = true, },
+    --WorldMapFrame = {save = true, },
     ScrappingMachineFrame = { save = true, },
     AzeriteEmpoweredItemUI = { save = true, },
 }
@@ -314,6 +314,14 @@ function BM_SetMoveHandler(frameToMove, handler)
         --if w and h then handler:SetClampRectInsets(w-5, -w+5, 0, 0) end
     end --Carbonite同时显示，小地图美化也要挪动一些出屏幕等
 end
+function BM_CreateMover(frame, height, offsetLeft, offsetRight, offsetTop)
+    frame:SetMovable(true)
+    local mover = WW(frame):Frame():Key("_blizMover"):Size(0,height)
+    mover:TL(offsetLeft,offsetTop):TR(offsetRight,offsetTop)
+    mover:EnableMouse():AddFrameLevel(1, frame)
+    --mover:SetClampedToScreen(true) --没效果
+    return mover:un()
+end
 
 local function resetDB()
     for k, v in pairs(db) do
@@ -347,7 +355,7 @@ local function OnEvent(self, event, arg1, arg2)
         --BM_SetMoveHandler(WatchFrame,WatchFrameCollapseExpandButton)
         --userPlaced[WatchFrame] = true --加了也不好，UIParent里写的有问题
         BM_SetMoveHandler(ObjectiveTrackerFrame,ObjectiveTrackerFrame.HeaderMenu.MinimizeButton)
-        WW(ObjectiveTrackerFrame.HeaderMenu):Button("OTFMover"):Size(40,22):RIGHT(ObjectiveTrackerFrame.HeaderMenu.MinimizeButton, "LEFT", 0,0):up():un()
+        WW(ObjectiveTrackerFrame.HeaderMenu):Button("OTFMover"):Size(22,22):RIGHT(ObjectiveTrackerFrame.HeaderMenu.MinimizeButton, "LEFT", 0,0):up():un()
         CoreUIEnableTooltip(OTFMover, "面板移动","Ctrl点击保存位置\nCtrl滚轮缩放\nC+S+A点击重置")
         BM_SetMoveHandler(ObjectiveTrackerFrame,OTFMover)
         BM_SetMoveHandler(GameMenuFrame)
@@ -369,9 +377,15 @@ local function OnEvent(self, event, arg1, arg2)
         BM_SetMoveHandler(MirrorTimer1)
         BM_SetMoveHandler(PVEFrame)
 
+        --和Mapster冲突切无法解决
         --SetCVar("lockedWorldMap", "0") --WorldMap
-        WW(WorldMapFrame):Button("WMAPMover"):Size(150,22):TOP(WorldMapFrame, 0,0):up():un()
-        BM_SetMoveHandler(WorldMapFrame, WMAPMover) --enable scale --abandoned because quest poi --TODO aby8
+        if not IsAddOnLoaded("Mapster") then
+            WW(WorldMapFrame):Button("WMAPMover"):Size(150,22):TOP(WorldMapFrame, 0,0):up():un()
+            BM_SetMoveHandler(WorldMapFrame, WMAPMover) --enable scale --abandoned because quest poi
+            CoreDependCall("Mapster", function()
+                U1Message("Mapster-地图增强与面板移动冲突，请重载界面")
+            end)
+        end
         WorldMapFrame:SetClampedToScreen(true)
 
         BM_SetMoveHandler(TradeFrame)
@@ -467,9 +481,12 @@ local function OnEvent(self, event, arg1, arg2)
         end)
 
         BM_SetMoveHandlerWith(nil, "Blizzard_Collections", function()
-            BM_SetMoveHandler(WardrobeFrame)
-            BM_SetMoveHandler(CollectionsJournal)
+            --BM_SetMoveHandler(WardrobeFrame)
+            --BM_SetMoveHandler(CollectionsJournal)
+            local mover = BM_CreateMover(CollectionsJournal, 26, 30, 30, 0)
+            BM_SetMoveHandler(CollectionsJournal, mover)
         end)
+        CoreDependCall("Rematch", function() RematchJournal:EnableMouse(false) end) --不能遮挡拖动
 
         BM_SetMoveHandlerWith(nil, "Blizzard_GuildUI", function()
             BM_SetMoveHandler(GuildFrame)

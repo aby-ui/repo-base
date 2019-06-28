@@ -14,7 +14,7 @@
 				<Scripts>
 					<OnClick>
 						local Sound = TMW.EVENTS:GetEventHandler("Sound")
-						Sound:TestSound(self, self:GetParent().soundFile)
+						Sound:TestSound(self, self:GetParent().value)
 					</OnClick>
 					<OnEnter>
 						self:GetParent():LockHighlight()

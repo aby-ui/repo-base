@@ -26,5 +26,5 @@ templates.RegisterTemplate("TOTEM", function(button)
 	button.spell2 = RIGHTSPELL
 	button:SetAttribute("spell2", RIGHTSPELL)
 	button:SetFlyProtect()
-	button.OnUpdateTimer = Button_OnUpdateTimer
+	button.OnUpdateTimer = Button_OnUpdateTimer and "Y"
 end, "DUAL")

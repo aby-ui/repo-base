@@ -304,6 +304,18 @@ end
 local configMode = false
 
 local function ShowCharacterStats(unit)
+	--print("ShowCharacterStats")
+	if not PaperDollFrame:IsVisible() and not InterfaceOptionsFrame:IsVisible() then
+		--print("Supressing ShowCharacterStats")
+		return
+	end
+	namespace.configMode = configMode
+	--print("Unsurpressed ShowCharacterStats")
+	--print("DejaCharacterStatsPanelVisible",DejaCharacterStatsPanel:IsVisible())
+	--print("DejaCharacterStatsPanelShown",DejaCharacterStatsPanel:IsShown())
+	--print("InterfaceOptionsFrameIsShown",InterfaceOptionsFrame:IsShown())
+	--print("InterfaceOptionsFrameIsVisible",InterfaceOptionsFrame:IsVisible())
+	--print("PaperDollFrame",PaperDollFrame:IsVisible())
     local stat
     local count, backgroundcount, height = 0, false, 4
 	local hideatzero = gdbprivate.gdb.gdbdefaults.dejacharacterstatsHideAtZeroChecked.SetChecked --placeholder for the checkbox hideatzero
@@ -486,8 +498,9 @@ end
 
 local function DCS_Login_Initialization()
 	local spec = GetSpecialization();
-		--print(spec)
 	local role = GetSpecializationRole(spec)
+	local primaryStat = select(6, GetSpecializationInfo(spec, nil, nil, nil, UnitSex("player")));
+	--print("spec, role, and primarystat",spec,role,primaryStat)
 	if role == "TANK" then
 		ShownData = DCS_TableData:CopyTable(DefaultTankData)
 	else
@@ -844,6 +857,7 @@ local function DCS_ClassCrestBGCheck()
 end
 
 DejaCharacterStatsPanel:Hide()
+
 --[[
 --TODO: rewrite parenting changes with the help of DCS_InterfaceOptConfigButton and DejaCharacterStatsPanel
 DejaCharacterStatsPanel:HookScript("OnShow", function(self)

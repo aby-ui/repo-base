@@ -1,12 +1,7 @@
--- HereBeDragons-Migrate is not supported on WoW 7.x or earlier
-if select(4, GetBuildInfo()) < 80000 then
-    return
-end
-
 local MAJOR, MINOR = "HereBeDragons-Migrate", 2
 assert(LibStub, MAJOR .. " requires LibStub")
 
-local HBDMigrate, oldversion = LibStub:NewLibrary(MAJOR, MINOR)
+local HBDMigrate, _oldversion = LibStub:NewLibrary(MAJOR, MINOR)
 if not HBDMigrate then return end
 
 local SetupMigrationData
@@ -57,7 +52,7 @@ function HBDMigrate:GetLegacyMapInfo(uiMapId)
     if not uiMapIdToIdMap then SetupMigrationData() end
     local c = uiMapIdToIdMap[uiMapId]
     if not c then return end
-    
+
     local m, f = floor(c / 10000), (c % 10000)
     return m, f, MapMigrationData[m].mapFile
 end

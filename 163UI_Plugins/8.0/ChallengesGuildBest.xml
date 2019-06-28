@@ -1,0 +1,60 @@
+<Ui xsi:schemaLocation="http://www.blizzard.com/wow/ui/ ..\FrameXML\UI.xsd">
+    <Include file="ChallengesGuildBest.lua"/>
+
+    <!-- copied from 7.3.0, width - 100 -->
+    <Frame name="ChallengesGuildBestTemplate" parentArray="GuildBests" virtual="true" mixin="ChallengesGuildBestMixin">
+        <Size x="130" y="18"/>
+        <Layers>
+            <Layer level="ARTWORK">
+                <FontString parentKey="CharacterName" inherits="GameFontNormal" justifyH="LEFT">
+                    <Size x="104" y="0"/>
+                    <Anchors>
+                        <Anchor point="LEFT"/>
+                    </Anchors>
+                </FontString>
+                <FontString parentKey="Level" inherits="GameFontNormal" justifyH="RIGHT">
+                    <Size x="26" y="0"/>
+                    <Anchors>
+                        <Anchor point="RIGHT"/>
+                    </Anchors>
+                </FontString>
+            </Layer>
+        </Layers>
+        <Scripts>
+            <OnEnter method="OnEnter"/>
+            <OnLeave function="GameTooltip_Hide"/>
+        </Scripts>
+    </Frame>
+
+    <Frame name="AbyChallengesFrameGuildBest" mixin="ChallengesFrameGuildBestMixin" hidden="true">
+        <Size x="160" y="110"/>
+        <!--<Anchors>
+            <Anchor point="TOPLEFT" relativeKey="$parent.WeeklyBest.Child.Star" relativePoint="BOTTOMRIGHT" x="-16" y="30"/>
+        </Anchors>-->
+        <Layers>
+            <Layer level="BACKGROUND">
+                <Texture atlas="ChallengeMode-guild-background" setAllPoints="true" alpha="0.1"/>
+            </Layer>
+            <Layer level="ARTWORK">
+                <FontString parentKey="Title" inherits="GameFontNormalMed2" text="CHALLENGE_MODE_GUILD_BEST">
+                    <Anchors>
+                        <Anchor point="TOPLEFT" x="15" y="-7"/>
+                    </Anchors>
+                </FontString>
+                <Texture parentKey="Line" atlas="ChallengeMode-RankLineDivider" useAtlasSize="false">
+                    <Size x="146" y="9"/>
+                    <Anchors>
+                        <Anchor point="TOP" x="0" y="-20"/>
+                    </Anchors>
+                </Texture>
+            </Layer>
+        </Layers>
+        <Frames>
+            <Frame inherits="ChallengesGuildBestTemplate" hidden="true">
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeKey="$parent.Title" relativePoint="BOTTOMLEFT" y="-7"/>
+                </Anchors>
+            </Frame>
+        </Frames>
+    </Frame>
+</Ui>

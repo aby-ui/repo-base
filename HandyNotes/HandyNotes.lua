@@ -2,11 +2,6 @@
 HandyNotes
 ]]
 
--- This is the WoW 8.0 version
-if select(4, GetBuildInfo()) < 80000 then
-	return
-end
-
 ---------------------------------------------------------
 -- Addon declaration
 HandyNotes = LibStub("AceAddon-3.0"):NewAddon("HandyNotes", "AceConsole-3.0", "AceEvent-3.0")
@@ -74,6 +69,7 @@ local function recyclePin(pin)
 end
 
 local function clearAllPins(t)
+    if not t then return end
 	for key, pin in pairs(t) do
 		recyclePin(pin)
 		t[key] = nil
@@ -97,6 +93,8 @@ local function getNewPin()
 	local texture = pin:CreateTexture(nil, "OVERLAY")
 	pin.texture = texture
 	texture:SetAllPoints(pin)
+	texture:SetTexelSnappingBias(0)
+	texture:SetSnapToPixelGrid(false)
 	pin:RegisterForClicks("AnyUp", "AnyDown")
 	pin:SetMovable(true)
 	pin:Hide()
@@ -284,7 +282,7 @@ local function IterateNodes(pluginName, uiMapID, minimap)
 			return next, emptyTbl
 		end
 		local iter, data, state = handler:GetNodes(mapFile, minimap, level)
-		local t = { mapFile = mapFile, level, iter = iter, data = data }
+		local t = { mapFile = mapFile, level = level, iter = iter, data = data }
 		return LegacyNodeIterator, t, state
 	else
 		error(("Plugin %s does not have GetNodes or GetNodes2"):format(pluginName))
@@ -620,7 +618,7 @@ function HandyNotes:OnInitialize()
 
 	-- Register options table and slash command
 	LibStub("AceConfigRegistry-3.0"):RegisterOptionsTable("HandyNotes", options)
-	self:RegisterChatCommand("handynotes", function() LibStub("AceConfigDialog-3.0"):Open("HandyNotes") end)
+	self:RegisterChatCommand("handynotes", function() LibStub("AceConfigDialog-3.0"):Open("HandyNotes") LibStub("AceConfigDialog-3.0"):SelectGroup("HandyNotes", "plugins") end)
 	LibStub("AceConfigDialog-3.0"):AddToBlizOptions("HandyNotes", "HandyNotes")
 
 	-- Get the option table for profiles
@@ -647,7 +645,9 @@ function HandyNotes:OnDisable()
 		HBDPins:RemoveAllMinimapIcons("HandyNotes" .. pluginName)
 		clearAllPins(minimapPins[pluginName])
 	end
-	WorldMapFrame:RemoveDataProvider(HandyNotes.WorldMapDataProvider)
+	if WorldMapFrame.dataProviders[HandyNotes.WorldMapDataProvider] then
+		WorldMapFrame:RemoveDataProvider(HandyNotes.WorldMapDataProvider)
+	end
 	HBD.UnregisterCallback(self, "PlayerZoneChanged")
 end
 

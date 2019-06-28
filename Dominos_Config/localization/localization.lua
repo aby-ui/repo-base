@@ -59,15 +59,13 @@ L.ShowInOverrideUI = 'Show With Override UI'
 L.ShowInPetBattleUI = 'Show With Pet Battle UI'
 L.ShowEquippedItemBorders = 'Show Equipped Item Borders'
 
-L.ALT_KEY_TEXT = 'ALT'
-
 L.State_HELP = 'Help'
 L.State_HARM = 'Harm'
 L.State_NOTARGET = 'No Target'
-L.State_ALTSHIFT = 'ALT-' .. SHIFT_KEY_TEXT
-L.State_CTRLSHIFT = CTRL_KEY_TEXT .. '-' .. SHIFT_KEY_TEXT
-L.State_CTRLALT = CTRL_KEY_TEXT .. '-ALT'
-L.State_CTRLALTSHIFT = CTRL_KEY_TEXT .. '-ALT-' .. SHIFT_KEY_TEXT
+L.State_ALTSHIFT = strjoin('-', ALT_KEY_TEXT, SHIFT_KEY_TEXT)
+L.State_CTRLSHIFT = strjoin('-', CTRL_KEY_TEXT, SHIFT_KEY_TEXT)
+L.State_CTRLALT = strjoin('-', CTRL_KEY_TEXT, ALT_KEY_TEXT)
+L.State_CTRLALTSHIFT = strjoin('-', CTRL_KEY_TEXT, ALT_KEY_TEXT, SHIFT_KEY_TEXT)
 
 --totems
 L.ShowTotems = 'Show Totems'

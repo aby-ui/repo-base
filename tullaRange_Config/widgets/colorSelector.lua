@@ -3,8 +3,9 @@
 		A bagnon color selector
 --]]
 
-local AddonName, Addon = ...
+local _, Addon = ...
 local L = Addon.L
+local tullaRange = _G.tullaRange
 local ColorSelector = Addon.Classy:New('Frame'); Addon.ColorSelector = ColorSelector
 
 local backdrop = {
@@ -40,14 +41,14 @@ function ColorSelector:New(colorState, parent)
 	for colorIndex, colorName in ipairs(ColorSliders) do
 		local slider = Addon.Slider:New(L[colorName], f, 0, 100, 1)
 
-		slider.SetSavedValue = function(self, value)
+		slider.SetSavedValue = function(_, value)
 			tullaRange.sets[colorState][colorIndex] = math.floor(value + 0.5) / 100
 			tullaRange:ForceColorUpdate()
 
 			preview:SetVertexColor(tullaRange:GetColor(colorState))
 		end
 
-		slider.GetSavedValue = function(self)
+		slider.GetSavedValue = function()
 			return tullaRange.sets[colorState][colorIndex] * 100
 		end
 
@@ -72,8 +73,6 @@ do
 
 	-- generate spell icons
 	do
-		local offset = 0
-
 		for i = 1, GetNumSpellTabs() do
 			local offset, numSpells = select(3, GetSpellTabInfo(i))
 			local tabEnd = offset + numSpells
@@ -93,7 +92,7 @@ do
 
 		self.preview:SetTexture(texture)
 
-		for i, slider in pairs(self.sliders) do
+		for _, slider in pairs(self.sliders) do
 			slider:UpdateValue()
 		end
 	end

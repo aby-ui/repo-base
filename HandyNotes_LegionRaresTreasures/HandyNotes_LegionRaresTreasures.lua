@@ -697,7 +697,7 @@ end
 
 local options = {
     type = "group",
-    name = "军团再临稀有和财宝",
+    name = "军团再临财宝",
     desc = "破碎群岛稀有和财宝位置",
     get = function(info) return LegionRaresTreasures.db.profile[info.arg] end,
     set = function(info, v) LegionRaresTreasures.db.profile[info.arg] = v; LegionRaresTreasures:Refresh() end,
@@ -987,6 +987,7 @@ function LegionRaresTreasures:RegisterWithHandyNotes()
         end
 
         function LegionRaresTreasures:GetNodes(mapFile, isMinimapUpdate, dungeonLevel)
+            if dungeonLevel and dungeonLevel > 0 then return iter, nil, nil end --abyui fix
             return iter, nodes[mapFile], nil
         end
     end

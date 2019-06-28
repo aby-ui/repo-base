@@ -1,0 +1,214 @@
+<Ui>
+   <!-- lua must load first for mixin -->
+   <Script file="AutoScrollFrame.lua"/>
+
+   <!-- an intrinsic version of AutoScrollFrame -->
+   <Frame name="RematchAutoScrollFrame" mixin="RematchAutoScrollFrameMixin" flattenRenderLayers="true" intrinsic="true">
+	  <Frames>
+		 <!-- background is a black marble inset -->
+		 <Frame parentKey="Background" inherits="RematchInsetFrameTemplate" useParentLevel="true" setAllPoints="true"/>
+		 <ScrollFrame parentKey="ScrollFrame">
+			<Anchors>
+			   <Anchor point="TOPLEFT" x="5" y="-5"/>
+			   <Anchor point="BOTTOMRIGHT" x="-5" y="5"/>
+			</Anchors>
+			<!-- OnSizeChanged will give ScrollChild a size -->
+			<ScrollChild parentKey="ScrollChild">
+			   <Frame/>
+			</ScrollChild>
+			<Frames>
+			   <!-- heavily customized ScrollBar sits inside the right edge of the ScrollFrame -->
+			   <Slider parentKey="ScrollBar">
+				  <Size x="18" y="0"/>
+				  <Anchors>
+					 <Anchor point="TOPRIGHT" x="0" y="-30"/>
+					 <Anchor point="BOTTOMRIGHT" x="0" y="27"/>
+				  </Anchors>
+				  <ThumbTexture parentKey="ScrollThumb" file="Interface\Buttons\UI-ScrollBar-Knob">
+					 <Size x="18" y="24"/>
+					 <TexCoords left="0.2" right="0.8" top="0.125" bottom="0.875"/>
+				  </ThumbTexture>
+				  <!-- scrollbar artwork -->
+				  <Layers>
+					 <Layer level="ARTWORK">
+						<!-- top scrollbar background -->
+						<Texture file="Interface\AddOns\Rematch\Textures\scrollbar.tga">
+						   <Size x="26" y="42"/>
+						   <Anchors>
+							  <Anchor point="BOTTOM" relativePoint="TOP" x="-1.5" y="-9"/>
+						   </Anchors>
+						   <TexCoords left="0" right="0.453125" top="0" bottom="0.15625"/>
+						</Texture>
+						<!-- bottom scrollbar background -->
+						<Texture file="Interface\AddOns\Rematch\Textures\scrollbar.tga">
+						   <Size x="26" y="42"/>
+						   <Anchors>
+							  <Anchor point="TOP" relativePoint="BOTTOM" x="-1.5" y="11"/>
+						   </Anchors>
+						   <TexCoords left="0.515625" right="0.96875" top="0.26171875" bottom="0.41796875"/>
+						</Texture>
+						<!-- middle scrollbar background -->
+						<Texture file="Interface\AddOns\Rematch\Textures\scrollbar.tga">
+						   <Size x="26" y="0"/>
+						   <Anchors>
+							  <Anchor point="TOP" x="-1.5" y="-9"/>
+							  <Anchor point="BOTTOM" x="-1.5" y="11"/>
+						   </Anchors>
+						   <TexCoords left="0" right="0.453125" top="0.15625" bottom="1"/>
+						</Texture>
+					 </Layer>
+				  </Layers>
+				  <Frames>
+					 <!-- traditional scroll up/down arrow buttons -->
+					 <Button parentKey="UpButton" inherits="UIPanelScrollUpButtonTemplate">
+						<HitRectInsets>
+						   <AbsInset left="-2" right="-2" top="-1" bottom="-2"/>
+						</HitRectInsets>
+						<Anchors>
+						   <Anchor point="TOPRIGHT" x="0.25" y="15"/>
+						</Anchors>
+					 </Button>
+					 <Button parentKey="DownButton" inherits="UIPanelScrollDownButtonTemplate">
+						<HitRectInsets>
+						   <AbsInset left="-2" right="-2" top="-2" bottom="-1"/>
+						</HitRectInsets>
+						<Anchors>
+						   <Anchor point="BOTTOMRIGHT" x="0.25" y="-15.5"/>
+						</Anchors>
+					 </Button>
+					 <!-- non-traditional buttons above and below scroll buttons to jump to top/bottom of list -->
+					 <Button parentKey="TopButton">
+						<Size x="18" y="10"/>
+						<HitRectInsets>
+						   <AbsInset left="-2" right="-2" top="-2" bottom="-1"/>
+						</HitRectInsets>
+						<Anchors>
+						   <Anchor point="TOPRIGHT" x="0.25" y="28"/>
+						</Anchors>
+						<NormalTexture file="Interface\AddOns\Rematch\Textures\scrollbar.tga">
+						   <TexCoords left="0.6" right="0.9" top="0.9" bottom="0.975"/>
+						</NormalTexture>
+						<PushedTexture file="Interface\AddOns\Rematch\Textures\scrollbar.tga">
+						   <TexCoords left="0.6" right="0.9" top="0.775" bottom="0.85"/>
+						</PushedTexture>
+						<DisabledTexture file="Interface\AddOns\Rematch\Textures\scrollbar.tga">
+						   <TexCoords left="0.6" right="0.9" top="0.525" bottom="0.6"/>
+						</DisabledTexture>
+						<HighlightTexture file="Interface\AddOns\Rematch\Textures\scrollbar.tga" alphaMode="ADD" alpha="0.75">
+						   <TexCoords left="0.5" right="1" top="0.625" bottom="0.75"/>
+						</HighlightTexture>
+					 </Button>
+					 <Button parentKey="BottomButton">
+						<Size x="18" y="10"/>
+						<HitRectInsets>
+						   <AbsInset left="-2" right="-2" top="-1" bottom="-2"/>
+						</HitRectInsets>
+						<Anchors>
+						   <Anchor point="BOTTOMRIGHT" x="0.25" y="-28"/>
+						</Anchors>
+						<NormalTexture file="Interface\AddOns\Rematch\Textures\scrollbar.tga">
+						   <TexCoords left="0.6" right="0.9" top="0.9" bottom="0.975"/>
+						</NormalTexture>
+						<PushedTexture file="Interface\AddOns\Rematch\Textures\scrollbar.tga">
+						   <TexCoords left="0.6" right="0.9" top="0.775" bottom="0.85"/>
+						</PushedTexture>
+						<DisabledTexture file="Interface\AddOns\Rematch\Textures\scrollbar.tga">
+						   <TexCoords left="0.6" right="0.9" top="0.525" bottom="0.6"/>
+						</DisabledTexture>
+						<HighlightTexture file="Interface\AddOns\Rematch\Textures\scrollbar.tga" alphaMode="ADD" alpha="0.75">
+						   <TexCoords left="0.5" right="1" top="0.625" bottom="0.75"/>
+						</HighlightTexture>
+					 </Button>
+					 <!-- these invisible buttons stretch between the top/bottom of the scrollbar and the thumb
+						  to capture clicks, to prevent using click behavior of bar for better stepping control -->
+					 <Button parentKey="PageUpButton" enabled="false">
+						<Size x="18" y="0"/>
+						<NormalTexture>
+						   <Anchors>
+							  <Anchor point="TOPLEFT" x="2" y="-4"/>
+							  <Anchor point="BOTTOMRIGHT" x="-3" y="0"/>
+						   </Anchors>
+						   <Color r="1" g="1" b="1" a="0"/>
+						</NormalTexture>
+						<PushedTexture>
+						   <Anchors>
+							  <Anchor point="TOPLEFT" x="2" y="-4"/>
+							  <Anchor point="BOTTOMRIGHT" x="-3" y="0"/>
+						   </Anchors>
+						   <Color r="1" g="1" b="1" a="0.05"/>
+						</PushedTexture>
+					 </Button>
+					 <Button parentKey="PageDownButton" enabled="false">
+						<Size x="18" y="0"/>
+						<NormalTexture>
+						   <Anchors>
+							  <Anchor point="TOPLEFT" x="2" y="0"/>
+							  <Anchor point="BOTTOMRIGHT" x="-3" y="3"/>
+						   </Anchors>
+						   <Color r="1" g="1" b="1" a="0"/>
+						</NormalTexture>
+						<PushedTexture>
+						   <Anchors>
+							  <Anchor point="TOPLEFT" x="2" y="0"/>
+							  <Anchor point="BOTTOMRIGHT" x="-3" y="4"/>
+						   </Anchors>
+						   <Color r="1" g="1" b="1" a="0.05"/>
+						</PushedTexture>
+					 </Button>
+				  </Frames>
+			   </Slider>
+			   <!-- invisible ScrollFrame.CaptureButton exists to capture clicks to the empty part of the
+					scrollframe when it's not full; update will stretch it up to last visible button -->
+			   <Button parentKey="CaptureButton">
+				  <Anchors>
+					 <Anchor point="BOTTOMLEFT"/>
+					 <Anchor point="BOTTOMRIGHT" x="-24" y="0"/>
+				  </Anchors>
+			   </Button>
+
+				<!-- this is a flash to appear over a listbutton in response to autoScrollFrame:BlingIndex(index) -->
+			   	<Frame parentKey="Bling" hidden="true">
+					<Layers>
+						<Layer level="BACKGROUND">
+							<Texture file="Interface\Archeology\arch-flareeffect" alphaMode="ADD" alpha="0.5">
+								<Anchors>
+									<Anchor point="TOPLEFT" x="2" y="0"/>
+									<Anchor point="BOTTOMRIGHT" x="-2" y="0"/>
+								</Anchors>
+								<TexCoords left="0.201171875" right="0.716796875" top="0.125" bottom="0.208984375"/>
+							</Texture>
+						</Layer>
+					</Layers>
+					<Animations>
+						<AnimationGroup parentKey="Anim">
+							<Alpha fromAlpha="0" toAlpha="1" change="1" duration="0.1" order="1"/>
+							<Alpha fromAlpha="1" toAlpha="0" change="-1" duration="0.5" order="2"/>
+							<Scripts>
+								<OnFinished>
+									-- hide the frame when the animation ends
+									self:GetParent():Hide()
+								</OnFinished>
+							</Scripts>
+						</AnimationGroup>
+					</Animations>
+					<Scripts>
+						<OnShow>
+							-- when frame is shown, start playing the animation
+							self.Anim:Play()
+						</OnShow>
+					</Scripts>
+				</Frame>
+
+			</Frames>
+		 </ScrollFrame>
+	  </Frames>
+	  <Scripts>
+		 <OnLoad method="OnLoad" intrinsicOrder="precall"/>
+		 <OnShow method="OnShow" intrinsicOrder="precall"/>
+		 <OnSizeChanged method="OnSizeChanged" intrinsicOrder="precall"/>
+	  </Scripts>
+   </Frame>
+
+
+
+</Ui>

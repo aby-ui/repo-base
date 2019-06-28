@@ -645,7 +645,7 @@ function AuctionLite:StartMassBuyout()
       -- top, and mark the list as unsorted so that they will be sorted
       -- properly (and stably) on the next update.
       local sort = function(a, b)
-        return SelectedItems[a] and not SelectedItems[b]; --warbaby
+        return SelectedItems[b] and not SelectedItems[a];
       end
       table.sort(DetailData, sort);
       DetailSort.sorted = false;
@@ -1129,15 +1129,14 @@ function AuctionLite:ApplyDetailSort()
   elseif info.sort == "BidAll" then
     cmp = function(a, b) return a.bid < b.bid end;
   elseif info.sort == "BuyoutEach" then
-    cmp = function(a, b) return a.buyout / a.count < b.buyout / b.count end;
+    cmp = function(a, b) return (a.buyout == 0 and math.huge or a.buyout) / a.count < (b.buyout == 0 and math.huge or b.buyout) / b.count end; --warbaby put items without buyout to last
   elseif info.sort == "BuyoutAll" then
-    cmp = function(a, b) return a.buyout < b.buyout end;
+    cmp = function(a, b) return (a.buyout == 0 and math.huge or a.buyout) < (b.buyout == 0 and math.huge or b.buyout) end; --warbaby
   else
     assert(false);
   end
 
   self:ApplySort(info, data, cmp);
-  self:ApplySort(info, data, cmp); --warbaby
 end
 
 -- Sort the summary view.
@@ -1956,7 +1955,7 @@ function AuctionLite:AuctionFrameBuy_UpdateSummary()
 
       --warbaby add absolute _minprice for show
       if (item._minprice and item._minprice > 0) or (item.price ~= nil and item.price > 0) then
-        MoneyFrame_Update(marketFrame, math.floor(item._minprice>0 and item._minprice or item.price));
+        MoneyFrame_Update(marketFrame, math.floor(item._minprice and item._minprice>0 and item._minprice or item.price));
         marketFrame:Show();
       else
         marketFrame:Hide();

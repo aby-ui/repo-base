@@ -69,9 +69,7 @@ end
 --[[ Options ]]--
 
 function Addon:CreateOptionsLoader()
-	local f = CreateFrame('Frame', nil, InterfaceOptionsFrame)
-	f:SetScript('OnShow', function(self)
-		self:SetScript('OnShow', nil)
+	CreateFrame('Frame', nil, InterfaceOptionsFrame):SetScript('OnShow', function(self)
 		LoadAddOn(ADDON .. '_Config')
 	end)
 end

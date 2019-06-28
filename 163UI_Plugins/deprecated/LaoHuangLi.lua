@@ -368,7 +368,7 @@ end
 local orig_sethyperlink = ItemRefTooltip.SetHyperlink
 ItemRefTooltip.SetHyperlink = function(self,link)
     if(parse_link_chattype(link)) then
-        HideUIPanel(self)
+        self:Hide()
         return
     end
     return orig_sethyperlink(self,link)

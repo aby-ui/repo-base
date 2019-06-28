@@ -1,31 +1,24 @@
-local Lib = LibStub:NewLibrary('LibItemCache-2.0', 9)
+local Lib = LibStub:NewLibrary('LibItemCache-2.0', 14)
 if not Lib then
 	return
 end
 
-local REALM = GetRealmName()
-local PLAYER = UnitName('player')
 local FACTION = UnitFactionGroup('player')
-
 local COMPLETE_LINK = '|c.+|H.+|h.+|h|r'
 local PET_LINK = '|c%s|Hbattlepet:%sx0|h[%s]|h|r'
 local PET_STRING = '^' .. strrep('%d+:', 6) .. '%d+$'
 local EMPTY_FUNC = function() end
-local BROKEN_REALMS = {
-	['Aggra(Português)'] = 'Aggra (Português)',
-	['AzjolNerub'] = 'Azjol-Nerub',
-	['Arakarahm'] = 'Arak-arahm',
-	['Корольлич'] = 'Король-лич',
-}
+local PLAYER, REALM, REALMS
 
-local Realms = GetAutoCompleteRealms()
-if not Realms or #Realms == 0 then
-	Realms = {REALM}
-end
+local FindRealms = function()
+	if not REALM then
+		PLAYER, REALM = UnitFullName('player')
+		REALMS = GetAutoCompleteRealms()
 
-for i,realm in ipairs(Realms) do
-		realm = BROKEN_REALMS[realm] or realm
-		Realms[i] = realm:gsub('(%l)(%u)', '%1 %2') -- names like Blade'sEdge to Blade's Edge
+		if not REALMS or #REALMS == 0 then
+			REALMS = {REALM}
+		end
+	end
 end
 
 local Caches = {}
@@ -96,10 +89,11 @@ function Lib:DeleteOwnerInfo(owner)
 end
 
 function Lib:IterateOwners()
-	local i, players, guilds, suffix = 0
+	FindRealms()
 
+	local i, players, guilds, suffix = 0
 	return function()
-		while i <= #Realms do
+		while i <= #REALMS do
 			local owner = players and players()
 			if owner then
 				return owner .. suffix
@@ -113,10 +107,10 @@ function Lib:IterateOwners()
 			end
 
 			i = i + 1
-			if i <= #Realms then
-				players = Caches:GetPlayers(Realms[i])
-				guilds = Caches:GetGuilds(Realms[i])
-				suffix = Realms[i] ~= REALM and ' - ' .. Realms[i] or ''
+			if i <= #REALMS then
+				players = Caches:GetPlayers(REALMS[i])
+				guilds = Caches:GetGuilds(REALMS[i])
+				suffix = REALMS[i] ~= REALM and ' - ' .. REALMS[i] or ''
 			end
 		end
 	end
@@ -130,7 +124,8 @@ function Lib:GetBagInfo(owner, bag)
 	local cached = self:IsBagCached(realm, name, isguild, bag)
 
 	local api = isguild and 'GetGuildTab' or 'GetBag'
-	local item = cached and Caches[api](Caches, realm, name, bag) or {}
+	local query = cached or isguild and bag ~= GetCurrentGuildBankTab()
+	local item = query and Caches[api](Caches, realm, name, bag) or {}
 
 	if isguild then
 		item.count = 98
@@ -142,12 +137,17 @@ function Lib:GetBagInfo(owner, bag)
 
 	if cached then
 		item.cached = true
-	elseif isguild then
-		item.name, item.icon, item.viewable, item.canDeposit, item.numWithdrawals, item.remainingWithdrawals = GetGuildBankTabInfo(bag)
 	elseif bag == 'equip' then
 		item.count = INVSLOT_LAST_EQUIPPED
 	elseif bag == 'vault' then
 		item.count = 160
+	elseif isguild then
+		local name, icon, view, deposit, withdraw, remaining = GetGuildBankTabInfo(bag)
+		if not query then
+			item.deposit, item.withdraw, item.remaining = deposit, withdraw, remaining
+		end
+
+		item.name, item.icon, item.viewable = name, icon, view
 	else
 		item.free = GetContainerNumFreeSlots(bag)
 
@@ -212,7 +212,14 @@ end
 
 --[[ Advanced ]]--
 
+function Lib:GetOwnerID(owner)
+	local realm, name, isguild = self:GetOwnerAddress(owner)
+	return (isguild and '® ' or '') .. name .. ' - ' .. realm
+end
+
 function Lib:GetOwnerAddress(owner)
+	FindRealms()
+
 	if not owner then
 		return REALM, PLAYER
 	end
@@ -220,11 +227,6 @@ function Lib:GetOwnerAddress(owner)
 	local first, realm = strmatch(owner, '^(.-) *%- *(.+)$')
 	local isguild, name = strmatch(first or owner, '^(®) *(.+)')
 	return realm or REALM, name or first or owner, isguild and true
-end
-
-function Lib:GetOwnerID(owner)
-	local realm, name, isguild = self:GetOwnerAddress(owner)
-	return (isguild and '® ' or '') .. name .. ' - ' .. realm
 end
 
 function Lib:IsOwnerCached(realm, name, isguild)
@@ -240,8 +242,12 @@ function Lib:IsBagCached(realm, name, isguild, bag)
 		return true
 	end
 
+	if isguild then
+		return not self.AtGuild
+	end
+
 	local isBankBag = bag == BANK_CONTAINER or bag == REAGENTBANK_CONTAINER or type(bag) == 'number' and bag > NUM_BAG_SLOTS
-	return isguild and not self.AtGuild or bag == 'vault' and not self.AtVault or isBankBag and not self.AtBank
+	return isBankBag and not self.AtBank or bag == 'vault' and not self.AtVault
 end
 
 function Lib:RestoreItemData(item)
@@ -259,6 +265,7 @@ function Lib:RestoreLinkData(partial)
 	if type(partial) == 'string' and not partial:find(COMPLETE_LINK) then
 		if partial:sub(1,9) == 'battlepet' or partial:find(PET_STRING) then
 			local id, quality = partial:match('(%d+):%d+:(%d+)')
+			local id, quality = tonumber(id), tonumber(quality)
 			local name, icon = C_PetJournal.GetPetInfoBySpeciesID(id)
 			local color = select(4, GetItemQualityColor(quality))
 

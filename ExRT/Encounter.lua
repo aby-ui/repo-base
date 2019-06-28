@@ -5,7 +5,7 @@ local CombatLogGetCurrentEventInfo = CombatLogGetCurrentEventInfo
 
 local VExRT = nil
 
-local module = ExRT.mod:New("Encounter",ExRT.L.sencounter)
+local module = ExRT:New("Encounter",ExRT.L.sencounter)
 local ELib,L = ExRT.lib,ExRT.L
 
 module.db.firstBlood = nil
@@ -192,8 +192,8 @@ function module.options:Load()
 		{1039,2130,2131,2132,2133},	--1036:Aqu'sirr,Tidesage Council,Lord Stormsong,Vol'zith the Whisperer
 		{1004,2139,2142,2140,2143},	--1041:The Golden Serpent,Mchimba the Embalmer,The Council of Tribes,Dazar, The First King	
 
-	        {567,1721,1706,1720,1722,1719,1723,1705},--HM
-		{610,1696,1691,1693,1694,1689,1692,1690,1713,1695,1704},--BF
+	        {610,1721,1706,1720,1722,1719,1723,1705},--HM
+		--{596,1696,1691,1693,1694,1689,1692,1690,1713,1695,1704},--BF
 		{661,1778,1785,1787,1798,1786,1783,1788,1794,1777,1800,1784,1795,1799},--HFC
 		{777,1853,1841,1873,1854,1876,1877,1864},--EN
 		{806,1958,1962,2008},--tov
@@ -201,6 +201,10 @@ function module.options:Load()
 		{850,2032,2048,2036,2037,2050,2054,2052,2038,2051},--tos
 		{909,2076,2074,2064,2070,2075,2082,2069,2088,2073,2063,2092},--antorus
 		{1148,2144,2141,2136,2128,2134,2145,2135,2122},--uldir
+		{1358,2265,2263,2284,2266,2285,2271,2268,2272,2276,2280,2281},	--bfd
+		{L.S_ZoneT23Storms,2269,2273},	--storms
+		{1490,2290,2292,2097,2312,2291,2257,2258,2259,2260},	--mechagon
+		{1512,2298,2305,2289,2304,2303,2311,2293,2299},	--ethernal place
 	}
 
 	local LegacyDiffs = {
@@ -330,7 +334,7 @@ function module.options:Load()
 								encounterLine.pulls = encounterLine.pulls + 1
 							else
 								encounterLine.wipeTime = max( encounterLine.wipeTime or 0, pullTime )
-								if not pullTime or pullTime >= minPullTime or pullTime == 0 then
+								if not pullTime or pullTime >= minPullTime then--or pullTime == 0 then
 									encounterLine.pulls = encounterLine.pulls + 1
 								end
 							end
@@ -372,7 +376,7 @@ function module.options:Load()
 				local legitPulls = 0
 
 				for i=1,#encounterData.pullTable do
-					if not encounterData.pullTable[i].d or encounterData.pullTable[i].d >= minPullTime or encounterData.pullTable[i].d == 0 then
+					if not encounterData.pullTable[i].d or encounterData.pullTable[i].d >= minPullTime then--or encounterData.pullTable[i].d == 0 then
 						legitPulls = legitPulls + 1
 					end
 					if not isFK and encounterData.pullTable[i].k then
@@ -396,7 +400,7 @@ function module.options:Load()
 					prev = eLine.mapID
 				end
 				if prev ~= eLine.mapID or i==1 then
-					local name = C_Map.GetMapInfo(prev or -999)
+					local name = type(prev)=='string' and {name=prev} or C_Map.GetMapInfo(prev or -999)
 					if name then
 						tinsert(encounters,i==1 and 1 or i+1,{
 							isHeader = true,

@@ -21,4 +21,5 @@
   <Script file="FollowItem.lua" />
   <Script file="AppEmptyBlocker.lua" />
   <Script file="RecentItem.lua" />
+  <Script file="FilterBox.lua" />
 </Ui>

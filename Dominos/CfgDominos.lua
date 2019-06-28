@@ -29,6 +29,12 @@
         end
     end,
 
+    toggle = function(name, info, enable, justload)
+        if enable and GroupLootContainer and justload then
+            GroupLootContainer:EnableMouse(false)
+        end
+    end,
+
     {
         text = '选择预设配置方案',
         type = 'radio',

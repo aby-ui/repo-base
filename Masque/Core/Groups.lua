@@ -295,6 +295,23 @@ do
 				end
 			end,
 
+            -- 切换但是不修改状态
+            ToggleWithoutSave = function(self, enable)
+                if enable then
+                    self:ReSkin()
+                else
+                    for Button in pairs(self.Buttons) do
+                        SkinButton(Button, self.Buttons[Button], "Blizzard")
+                    end
+                end
+                local Subs = self.SubList
+                if Subs then
+                    for Sub in pairs(Subs) do
+                        Groups[Sub]:ToggleWithoutSave(enable)
+                    end
+                end
+            end,
+
 			-- Validates and sets a skin option.
 			SetOption = function(self, Option, Value)
 				if Option == "SkinID" then

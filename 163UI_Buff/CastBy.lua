@@ -21,7 +21,7 @@ function CastByHook(auraFunc, ...)
 	-- 	f = "HARMFUL " .. (f or "")
 	-- end
 
-	local _, _, _, _, _, _, _, c = auraFunc(uid, id, f)
+	local _, _, _, _, _, _, c = auraFunc(uid, id, f)
 
 	local cl, str
 	if(c) then
@@ -97,7 +97,7 @@ UpdateMountsData()
 local function hookMountBuffInfo(self, unit, index, filter)
     if InCombatLockdown() then return end
     if not UnitIsPlayer(unit) and not UnitPlayerControlled(unit) then return end
-    if UnitIsUnit(unit, "player") then return end
+    -- if UnitIsUnit(unit, "player") then return end
     local name, texture, count, debuffType, duration, expirationTime, _, _, _, spellId, _, _, _, _, timeMod = UnitAura(unit, index, filter);
     local mountID = mountsData[spellId]
     if (mountID) then
@@ -108,7 +108,7 @@ local function hookMountBuffInfo(self, unit, index, filter)
         GameTooltip:Show()
     end
 
-    local frame = self:GetOwner()
+    local frame = self:GetOwner() if not frame then return end
     local name = frame:GetName()
     if not frame._hook163 and name and name:find("^TargetFrameBuff[0-9]+$") then
         frame._hook163 = 1

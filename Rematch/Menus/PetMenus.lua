@@ -377,8 +377,6 @@ rematch:InitModule(function()
 	},rematch.UpdateRoster)
 
 	rematch:RegisterMenu("PetBreed", { -- Filter->Breed
-		{ text=rmf.GetBreedName, check=true, group="Breed", var=1, size=11, value=rmf.GetValue, func=rmf.ToggleValue },
-		{ text=rmf.GetBreedName, check=true, group="Breed", var=2, size=11, value=rmf.GetValue, func=rmf.ToggleValue },
 		{ text=rmf.GetBreedName, check=true, group="Breed", var=3, size=11, value=rmf.GetValue, func=rmf.ToggleValue },
 		{ text=rmf.GetBreedName, check=true, group="Breed", var=4, size=11, value=rmf.GetValue, func=rmf.ToggleValue },
 		{ text=rmf.GetBreedName, check=true, group="Breed", var=5, size=11, value=rmf.GetValue, func=rmf.ToggleValue },
@@ -387,8 +385,10 @@ rematch:InitModule(function()
 		{ text=rmf.GetBreedName, check=true, group="Breed", var=8, size=11, value=rmf.GetValue, func=rmf.ToggleValue },
 		{ text=rmf.GetBreedName, check=true, group="Breed", var=9, size=11, value=rmf.GetValue, func=rmf.ToggleValue },
 		{ text=rmf.GetBreedName, check=true, group="Breed", var=10, size=11, value=rmf.GetValue, func=rmf.ToggleValue },
-		{ text=NEW, check=true, group="Breed", var=11, size=11, value=rmf.GetValue, func=rmf.ToggleValue },
-		{ text=L["Help"], stay=true, hidden=rmf.HideMenuHelp, icon="Interface\\Common\\help-i", iconCoords={0.15,0.85,0.15,0.85}, tooltipTitle=L["Breed"], tooltipBody=function() return format(L["All breed data is pulled from your installed %s%s\124r addon.\n\nThe breed \"New\" categorizes pets with no breed data. Keep your breed addon up to date to see if they have new data."],rematch.hexWhite,GetAddOnMetadata(rematch.breedSource,"Title") or rematch.breedSource) end },
+		{ text=rmf.GetBreedName, check=true, group="Breed", var=11, size=11, value=rmf.GetValue, func=rmf.ToggleValue },
+		{ text=rmf.GetBreedName, check=true, group="Breed", var=12, size=11, value=rmf.GetValue, func=rmf.ToggleValue },
+		{ text=NEW, check=true, group="Breed", var=0, size=11, value=rmf.GetValue, func=rmf.ToggleValue },
+		{ text=L["Help"], stay=true, hidden=rmf.HideMenuHelp, icon="Interface\\Common\\help-i", iconCoords={0.15,0.85,0.15,0.85}, tooltipTitle=L["Breed"], tooltipBody=function() return format(L["All breed data is pulled from your installed %s%s\124r addon.\n\nThe breed \"New\" categorizes pets with no breed data. Keep your breed addon up to date to see if they have new data."],rematch.hexWhite,GetAddOnMetadata(rematch:GetBreedSource(),"Title") or rematch:GetBreedSource()) end },
 		{ text=RESET, group="Breed", stay=true, func=rmf.ResetTypeGroup },
 	},rematch.UpdateRoster)
 
@@ -557,28 +557,26 @@ function rmf:ToggleRadio(subject,checked)
 end
 
 function rmf:GetBreedName()
-	if (rematch.breedSource=="BattlePetBreedID" and rematch.BPBIDFormat~=BPBID_Options.format) or #rematch.breedNames==0 then
-		rematch:GatherBreedNames()
-	end
-	return rematch.breedNames[self.var] or ""
+	return rematch:GetBreedNameByID(self.var)
 end
 
 function rmf:NotBreedable()
-	return rematch.breedSource~="BattlePetBreedID" and rematch.breedSource~="PetTracker_Breeds" and rematch.breedSource~="LibPetBreedInfo-1.0"
+	return not rematch:GetBreedSource()
+	--return rematch.breedSource~="BattlePetBreedID" and rematch.breedSource~="PetTracker_Breeds" and rematch.breedSource~="LibPetBreedInfo-1.0"
 end
 
 -- returns true if the queue menu should not show
 function rmf:IsNotQueuePet()
-	local parent = rematch:GetMenuParent():GetParent()
-	local queueParent = RematchQueueListScrollFrameScrollChild
-	local miniParent = RematchMiniQueueListScrollFrameScrollChild -- needs more scroll
-	return settings.QueueActiveSort or (parent~=queueParent and parent~=miniParent and parent:GetParent()~=miniParent)
+--	local parent = rematch:GetMenuParent():GetParent()
+--	local miniParent = RematchMiniQueueListScrollFrameScrollChild -- needs more scroll
+--	return settings.QueueActiveSort or (parent~=queueParent and parent~=miniParent and parent:GetParent()~=miniParent)
+	return settings.QueueActiveSort or not rematch:GetMenuParent().forQueue
 end
 
 -- returns true if the open menu is for a pet panel pet
 function rmf:ForPetPanel()
 	local parent = rematch:GetMenuParent():GetParent()
-	return parent==RematchPetListScrollFrameScrollChild or parent:GetParent()==RematchPetListScrollFrameScrollChild
+	return parent and parent:GetParent() and parent:GetParent()==Rematch.PetPanel.List.ScrollFrame
 end
 
 -- returns true if the petID (can be a speciesID) is hidden

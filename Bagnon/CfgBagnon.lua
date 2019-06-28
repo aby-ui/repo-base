@@ -40,10 +40,12 @@ U1RegisterAddon("Bagnon_GuildBank", {
     --load = "NORMAL",
     title = "公会银行",
     desc = "暂时不能更改权限, 如有需要请关闭该子插件",
+    defaultEnable = 0,
 });
 
 U1RegisterAddon("Bagnon_VoidStorage", {
     parent = "Bagnon",
     --load = "NORMAL",
     title = "虚空储存",
+    defaultEnable = 0,
 });

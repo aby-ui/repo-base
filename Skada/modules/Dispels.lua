@@ -63,7 +63,7 @@ Skada:AddLoadableModule("Dispels", nil, function(Skada, L)
 		local max = 0
 		local nr = 1
 
-		for i, player in ipairs(set.players) do
+		for i, player in ipairs(set.players or _empty_table) do
 			if player.dispells > 0 then
 
 				local d = win.dataset[nr] or {}

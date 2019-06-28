@@ -833,6 +833,7 @@ local function sendchat(msg, chan, chantype)
 		BNSendWhisper(chan,msg)
 	end
 end
+Skada._sendchat = sendchat
 
 function Skada:Report(channel, chantype, report_mode_name, report_set_name, max, window)
 
@@ -877,6 +878,8 @@ function Skada:Report(channel, chantype, report_mode_name, report_set_name, max,
 	end
 
 	-- Title
+    Skada.abyui_sendchat_start()
+    local sendchat = (channel == 'guild' or chantype == 'channel') and Skada.abyui_sendchat_add or sendchat
 	sendchat(string.format(L["Skada: %s for %s:"], report_mode.title or report_mode:GetName(), Skada:GetSetLabel(report_set)), channel, chantype)
 
 	-- For each item in dataset, print label and valuetext.
@@ -896,6 +899,7 @@ function Skada:Report(channel, chantype, report_mode_name, report_set_name, max,
 		end
 	end
 
+    Skada.abyui_sendchat_finish()
 end
 
 function Skada:RefreshMMButton()
@@ -1516,6 +1520,12 @@ function Skada:StartCombat()
 	-- Create a new current set unless we are already have one (combat detection kicked in).
 	if not self.current then
 		self.current = createSet(L["Current"])
+        --abyui for Debuff mod
+        for i, mode in ipairs(modes) do
+            if mode.SetInit ~= nil then
+                mode:SetInit(self.current)
+            end
+        end
 	end
 
 	if self.encounterName and
@@ -1663,7 +1673,7 @@ function Skada:find_player(set, playerid)
 end
 
 -- Returns or creates a player in the current.
-function Skada:get_player(set, playerid, playername)
+function Skada:get_player(set, playerid, playername, nochange)
 	-- Add player to set if it does not exist.
 	local player = Skada:find_player(set, playerid)
 
@@ -1675,7 +1685,8 @@ function Skada:get_player(set, playerid, playername)
 
 		local _, playerClass = UnitClass(playername)
 		local playerRole = UnitGroupRolesAssigned(playername)
-		player = {id = playerid, class = playerClass, role = playerRole, name = playername, first = time(), ["time"] = 0}
+		player = {id = playerid, class = playerClass, role = playerRole, name = playername, first = time(), ["time"] = 0 }
+		if nochange then player.first = nil end
 
 		-- Tell each mode to apply its needed attributes.
 		for i, mode in ipairs(modes) do
@@ -1701,6 +1712,7 @@ function Skada:get_player(set, playerid, playername)
 		player.role = playerRole
 	end
 
+    if nochange then return player end
 
 	-- The total set clears out first and last timestamps.
 	if not player.first then

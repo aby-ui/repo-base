@@ -23,8 +23,7 @@ local floor = floor
 local format = format
 local strmatch = strmatch
 local tonumber = tonumber
-local GetMapContinents = GetMapContinents
-local GetCurrentMapContinent = GetCurrentMapContinent
+local GetCurrentMapContinent = Pre80API.GetCurrentMapContinent
 local tinsert = tinsert
 local GetInstanceInfo = GetInstanceInfo
 local GetRealZoneText = GetRealZoneText
@@ -40,7 +39,6 @@ local module = CompactRaid:GetModule("RaidDebuff")
 if not module then return end
 
 local tierList = {}
-local continentList = {}
 local pendingList = {}
 local initDone
 
@@ -298,13 +296,12 @@ function module:ClearUserLevels()
 end
 
 function module:GetZoneDebuffs()
-    do return nil end --TODO aby8
 	local zone = GetInstanceInfo() or GetRealZoneText()
 	if not zone then
 		return
 	end
 
-	local continent = continentList[GetCurrentMapContinent()]
+	local _, continent = GetCurrentMapContinent()
 
 	local _, tier
 	for _, tier in pairs(tierList) do
@@ -473,16 +470,6 @@ function module:InitAPI()
 		BuildInstanceList(i, "raid", tier.instances)
 		BuildInstanceList(i, "party", tier.instances)
 		tinsert(tierList, tier)
-	end
-
-	-- World bosses do not stay in "instances" since 6.0
-	local list = GetMapContinents and { GetMapContinents() } or {} --TODO aby8
-	local i
-	for i = 1, #list do
-		local name = list[i]
-		if type(name) == "string" then
-			tinsert(continentList, name)
-		end
 	end
 
 	initDone = 1

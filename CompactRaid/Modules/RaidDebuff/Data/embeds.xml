@@ -3,4 +3,5 @@
 	<Include file="MistsOfPandaria\embeds.xml"/>
 	<Include file="TheWarlordsOfDraenor\embeds.xml"/>
 	<Include file="Legion\embeds.xml"/>
+	<Include file="BattleForAzeroth\embeds.xml"/>
 </Ui>

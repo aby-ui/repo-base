@@ -38,3 +38,19 @@ L= DBM:GetModLocalization(2198)
 -----------------------
 L= DBM:GetModLocalization(2210)
 
+-----------------------
+-- Ivus (Two Faction Versions) --
+-----------------------
+L= DBM:GetModLocalization(2345)--Ivus the Decayed
+
+L= DBM:GetModLocalization(2329)--Ivus the Forest Lord
+
+-----------------------
+-- Ulmath, the Soulbinder --
+-----------------------
+L= DBM:GetModLocalization(2362)
+
+-----------------------
+-- Wekemara --
+-----------------------
+L= DBM:GetModLocalization(2363)

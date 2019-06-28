@@ -1,4 +1,7 @@
 
+
+
+
 local AddonName, HubData = ...;
 local LocalVars = TidyPlatesHubDefaults
 
@@ -31,32 +34,7 @@ TidyPlatesHubMenus.DebuffStyles = {
 ------------------------------------------------------------------------------
 -- Aura Widget
 ------------------------------------------------------------------------------
-TidyPlatesHubPrefixList = {
-	-- ALL
-	["ALL"] = 1,
-	["All"] = 1,
-	["all"] = 1,
 
-	-- MY
-	["MY"] = 2,
-	["My"] = 2,
-	["my"] = 2,
-
-	-- OTHER
-	["OTHER"] = 3,
-	["Other"] = 3,
-	["other"] = 3,
-
-	-- CC
-	["CC"] = 4,
-	["cc"] = 4,
-	["Cc"] = 4,
-
-	-- NOT
-	["NOT"] = 5,
-	["Not"] = 5,
-	["not"] = 5,
-}
 
 --[[
 * Debuffs are color coded, with poison debuffs having a green border,
@@ -84,6 +62,8 @@ local function GetPrefixPriority(aura)
 	local spellid = tostring(aura.spellid)
 	local name = aura.name
 	-- Lookup using the Prefix & Priority Lists
+	--print(name, prefix, priority)
+
 	local prefix = LocalVars.WidgetsDebuffLookup[spellid] or LocalVars.WidgetsDebuffLookup[name]
 	local priority = LocalVars.WidgetsDebuffPriority[spellid] or LocalVars.WidgetsDebuffPriority[name]
 
@@ -94,6 +74,39 @@ local function GetAuraColor(aura)
 	local color = AURA_TYPE_COLORS[aura.type]
 	if color then return unpack(color) end
 end
+
+TidyPlatesHubPrefixList = {
+	-- ALL
+	["ALL"] = 1,
+	["All"] = 1,
+	["all"] = 1,
+
+	-- MY
+	["MY"] = 2,
+	["My"] = 2,
+	["my"] = 2,
+
+	-- OTHER
+	["OTHER"] = 3,
+	["Other"] = 3,
+	["other"] = 3,
+
+	-- CC
+	["CC"] = 4,
+	["cc"] = 4,
+	["Cc"] = 4,
+
+	-- NOT
+	["NOT"] = 5,
+	["Not"] = 5,
+	["not"] = 5,
+
+	-- Tag
+	["TAG"] = 6,
+	["Tag"] = 6,
+	["tag"] = 6,
+
+}
 
 local DebuffPrefixModes = {
 	-- All
@@ -117,40 +130,58 @@ local DebuffPrefixModes = {
 	-- NOT
 	function(aura)
 		return false
+	end,
+	-- TAG
+	function(aura)
+		-- return true, .75, .65, .40
+		return true, 1, .1, .1
 	end
+
 }
 
 local function SmartFilterMode(aura)
 	local ShowThisAura = false
-	local AuraPriority = 20
-
+	local AuraPriority = 30
 
 	-- My own Buffs and Debuffs
 	if (aura.caster == "player" or aura.caster == "pet") and aura.duration and aura.duration < 150 then
-		if LocalVars.WidgetsMyBuff and aura.effect == "HELPFUL" then
+		if false and LocalVars.WidgetsMyBuff and aura.effect == "HELPFUL" then
 			ShowThisAura = true
 		elseif LocalVars.WidgetsMyDebuff and aura.effect == "HARMFUL" then
 			ShowThisAura = true
 		end
-	end
+    elseif LocalVars.WidgetsHostileBuff and (aura.isNPC or LocalVars.WidgetsHostilePlayerBuff) and aura.reaction == AURA_TARGET_HOSTILE and aura.effect == "HELPFUL" and (not LocalVars.WidgetsHostileBuffStealableOnly2 or aura.stealable) then
+        --abyui hostile npc buff
+        --support not DebuffName
+        local prefix, priority = GetPrefixPriority(aura)
+        if prefix then
+            local show = DebuffPrefixModes[prefix](aura)
+            if not show then return false end
+        end
+        if aura.stealable then
+            return true, -10, 0, 1, 0
+        else
+            return true, -5, 1, 0, 0
+        end
+    end
 
-
-	-- Evaluate for further filtering
+	-- Evaluate for further filtering; 'Priority' means the order of debuff in the list
 	local prefix, priority = GetPrefixPriority(aura)
+
 	-- If the aura is mentioned in the list, evaluate the instruction...
 	if prefix then
-		local show = DebuffPrefixModes[prefix](aura)
+		local show, r, g, b = DebuffPrefixModes[prefix](aura)
 
-		--print(aura.name, show, prefix, priority)
 		if show == true then
-			return true, 20 + (priority or 0)		-- , r, g, b
+			return true, priority, r, g, b		-- , r, g, b
 		else
 			return false
 		end
-	--- When no prefix is mentioned, return the aura.
-	else
-		return ShowThisAura, 20		-- , r, g, b
+	
 	end
+
+	--- When no prefix is mentioned, return the aura.
+	return ShowThisAura, AuraPriority
 
 end
 
@@ -184,11 +215,24 @@ local function TrackDispelType(dispelType)
 end
 
 local function DebuffFilter(aura)
+
+	local BasePriority = 4
+
 	if LocalVars.WidgetAuraTrackDispelFriendly and aura.reaction == AURA_TARGET_FRIENDLY then
 		if aura.effect == "HARMFUL" and TrackDispelType(aura.type) then
 		local r, g, b = GetAuraColor(aura)
-		return true, 10, r, g, b end
+		return true, BasePriority, r, g, b end
 	end
+
+
+
+	if false and LocalVars.WidgetAuraTrackStealable and aura.stealable == true then --abyui
+
+		-- aura.type == "Magic" and aura.effect == "BUFF" instead
+		return true, BasePriority, .2, .6, 1
+	end
+
+
 
 	return SmartFilterMode(aura)
 end
@@ -198,19 +242,19 @@ end
 -- Widget Initializers
 ---------------------------------------------------------------------------------------------------------
 
-local function InitWidget( widgetName, plate, config, createFunction, enabled)
-	local widget = plate.widgets[widgetName]
+local function InitWidget( widgetName, extended, config, createFunction, enabled)
+	local widget = extended.widgets[widgetName]
 
 	if enabled and createFunction and config then
 
 		if widget then
 			if widget.UpdateConfig then widget:UpdateConfig() end
 		else
-			widget = createFunction(plate)
-			plate.widgets[widgetName] = widget
+			widget = createFunction(extended.widgetParent)
+			extended.widgets[widgetName] = widget
 		end
 
-		widget:SetPoint(config.anchor or "TOP", plate, config.x or 0, config.y or 0)
+		widget:SetPoint(config.anchor or "TOP", extended, config.x or 0, config.y or 0)
 
 	elseif widget and widget.Hide then
 		widget:Hide()
@@ -223,7 +267,7 @@ end
 ------------------------------------------------------------------------------
 -- Widget Activation
 ------------------------------------------------------------------------------
-local function OnInitializeWidgets(plate, configTable)
+local function OnInitializeWidgets(extended, configTable)
 
 	local EnableClassWidget = (LocalVars.ClassEnemyIcon or LocalVars.ClassPartyIcon)
 	local EnableTotemWidget = LocalVars.WidgetsTotemIcon
@@ -231,41 +275,41 @@ local function OnInitializeWidgets(plate, configTable)
 	local EnableThreatWidget = LocalVars.WidgetsThreatIndicator
 	local EnableAuraWidget = LocalVars.WidgetsDebuff
 
-	InitWidget( "ClassWidget", plate, configTable.ClassIcon, CreateClassWidget, EnableClassWidget)
-	InitWidget( "TotemWidget", plate, configTable.TotemIcon, CreateTotemIconWidget, EnableTotemWidget)
-	InitWidget( "ComboWidget", plate, configTable.ComboWidget, CreateComboPointWidget, EnableComboWidget)
-	InitWidget( "ThreatWidget", plate, configTable.ThreatLineWidget, CreateThreatLineWidget, EnableThreatWidget)
+	InitWidget( "ClassWidgetHub", extended, configTable.ClassIcon, CreateClassWidget, EnableClassWidget)
+	InitWidget( "TotemWidgetHub", extended, configTable.TotemIcon, CreateTotemIconWidget, EnableTotemWidget)
+	InitWidget( "ComboWidgetHub", extended, configTable.ComboWidget, CreateComboPointWidget, EnableComboWidget)
+	InitWidget( "ThreatWidgetHub", extended, configTable.ThreatLineWidget, CreateThreatLineWidget, EnableThreatWidget)
 
 	if EnableComboWidget and configTable.DebuffWidgetPlus then
-		InitWidget( "AuraWidget", plate, configTable.DebuffWidgetPlus, CreateAuraWidget, EnableAuraWidget)
+		InitWidget( "AuraWidgetHub", extended, configTable.DebuffWidgetPlus, CreateAuraWidget, EnableAuraWidget)
 	else
-		InitWidget( "AuraWidget", plate, configTable.DebuffWidget, CreateAuraWidget, EnableAuraWidget)
+		InitWidget( "AuraWidgetHub", extended, configTable.DebuffWidget, CreateAuraWidget, EnableAuraWidget)
 	end
 
 end
 
-local function OnContextUpdateDelegate(plate, unit)
-	local widgets = plate.widgets
+local function OnContextUpdateDelegate(extended, unit)
+	local widgets = extended.widgets
 
-	if LocalVars.WidgetsComboPoints and widgets.ComboWidget then
-		widgets.ComboWidget:UpdateContext(plate, unit) end
+	if LocalVars.WidgetsComboPoints and widgets.ComboWidgetHub then
+		widgets.ComboWidgetHub:UpdateContext(unit) end
 
-	if LocalVars.WidgetsThreatIndicator and widgets.ThreatWidget then
-		widgets.ThreatWidget:UpdateContext(unit) end		-- Tug-O-Threat
+	if LocalVars.WidgetsThreatIndicator and widgets.ThreatWidgetHub then
+		widgets.ThreatWidgetHub:UpdateContext(unit) end		-- Tug-O-Threat
 
-	if LocalVars.WidgetsDebuff and widgets.AuraWidget then
-		widgets.AuraWidget:UpdateContext(unit) end
+	if LocalVars.WidgetsDebuff and widgets.AuraWidgetHub then
+		widgets.AuraWidgetHub:UpdateContext(unit) end
 end
 
-local function OnUpdateDelegate(plate, unit)
-	local widgets = plate.widgets
+local function OnUpdateDelegate(extended, unit)
+	local widgets = extended.widgets
 
-	if widgets.ClassWidget and ( (LocalVars.ClassEnemyIcon and unit.reaction ~= "FRIENDLY") or (LocalVars.ClassPartyIcon and unit.reaction == "FRIENDLY")) then
-		widgets.ClassWidget:Update(unit, LocalVars.ClassPartyIcon)
+	if widgets.ClassWidgetHub and ( (LocalVars.ClassEnemyIcon and unit.reaction ~= "FRIENDLY") or (LocalVars.ClassPartyIcon and unit.reaction == "FRIENDLY")) then
+		widgets.ClassWidgetHub:Update(unit, LocalVars.ClassPartyIcon)
 	end
 
-	if LocalVars.WidgetsTotemIcon and widgets.TotemWidget then
-		widgets.TotemWidget:Update(unit)
+	if LocalVars.WidgetsTotemIcon and widgets.TotemWidgetHub then
+		widgets.TotemWidgetHub:Update(unit)
 	end
 end
 
@@ -294,3 +338,9 @@ TidyPlatesHubFunctions.OnUpdate = OnUpdateDelegate
 TidyPlatesHubFunctions.OnInitializeWidgets = OnInitializeWidgets
 TidyPlatesHubFunctions.OnContextUpdate = OnContextUpdateDelegate
 TidyPlatesHubFunctions._WidgetDebuffFilter = DebuffFilter
+
+
+
+
+
+

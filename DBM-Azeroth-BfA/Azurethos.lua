@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2199, "DBM-Azeroth-BfA", nil, 1028)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17691 $"):sub(12, -3))
+mod:SetRevision("20190416205700")
 mod:SetCreatureID(136385)
 --mod:SetEncounterID(1880)
 mod:SetReCombatTime(20)
@@ -15,18 +15,29 @@ mod:RegisterEventsInCombat(
 )
 
 --TODO, see if can detect gale force teleport target
---local warnMothersEmbrace			= mod:NewTargetAnnounce(219045, 3)
+local warnGaleForce					= mod:NewTargetAnnounce(274829, 3)
 
-local specWarnAzurethosFury			= mod:NewSpecialWarningRun(274839, nil, nil, nil, 4, 2)
+local specWarnAzurethosFury			= mod:NewSpecialWarningDodge(274839, nil, nil, nil, 2, 2)
 local specWarnGaleForce				= mod:NewSpecialWarningDodge(274829, nil, nil, nil, 2, 2)
+local yellGaleForce					= mod:NewYell(274829)
 local specWarnWingBuffet			= mod:NewSpecialWarningDodge(274832, nil, nil, nil, 1, 2)
 
-local timerAzurethosFuryCD			= mod:NewAITimer(16, 274839, nil, nil, nil, 2)
-local timerGaleForceCD				= mod:NewAITimer(16, 274829, nil, nil, nil, 3)
-local timerWingBuffetCD				= mod:NewAITimer(16, 274832, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON)
+local timerAzurethosFuryCD			= mod:NewCDTimer(46.8, 274839, nil, nil, nil, 2)
+--"Gale Force-274829-npc:136385 = pull:40.7, 47.1, 19.8, 33.7, 47.5, 19.6, 31.9, 18.4, 32.2", --
+--local timerGaleForceCD			= mod:NewAITimer(16, 274829, nil, nil, nil, 3)--2 timers alternating, problem is, joining mid fight you don't know what count you're on
+--"Wing Buffet-274832-npc:136385 = pull:2.8, 42.1, 11.2, 35.9, 11.1, 42.8, 11.5, 35.8, 11.4, 39.8, 10.7, 40.0"
+--local timerWingBuffetCD				= mod:NewAITimer(16, 274832, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON)--Also alternating timers. on a world boss this just won't work
 
 --mod:AddRangeFrameOption(5, 194966)
 --mod:AddReadyCheckOption(37460, false)
+
+function mod:GaleForce(targetname, uId)
+	if not targetname then return end
+	warnGaleForce:Show(targetname)
+	if targetname == UnitName("player") then
+		yellGaleForce:Yell()
+	end
+end
 
 function mod:OnCombatStart(delay, yellTriggered)
 	if yellTriggered then
@@ -46,16 +57,17 @@ function mod:SPELL_CAST_START(args)
 	local spellId = args.spellId
 	if spellId == 274839 then
 		specWarnAzurethosFury:Show()
-		specWarnAzurethosFury:Play("justrun")
+		specWarnAzurethosFury:Play("watchstep")
 		timerAzurethosFuryCD:Start()
 	elseif spellId == 274829 then
 		specWarnGaleForce:Show()
 		specWarnGaleForce:Play("shockwave")
-		timerGaleForceCD:Start()
+		--timerGaleForceCD:Start()
+		self:BossTargetScanner(args.sourceGUID, "GaleForce", 0.05, 1)--One check, boss is already looking at target at time of start, and stops looking at target almost immediately, we need target boss has soon as cast starts
 	elseif spellId == 274832 then
 		specWarnWingBuffet:Show()
 		specWarnWingBuffet:Play("shockwave")
-		timerWingBuffetCD:Start()
+		--timerWingBuffetCD:Start()
 	end
 end
 
@@ -71,7 +83,7 @@ mod.SPELL_PERIODIC_MISSED = mod.SPELL_PERIODIC_DAMAGE
 function mod:UNIT_DIED(args)
 	local cid = self:GetCIDFromGUID(args.destGUID)
 	if cid == 124396 then
-		
+
 	end
 end
 

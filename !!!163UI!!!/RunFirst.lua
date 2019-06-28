@@ -3,6 +3,25 @@ local _, U1 = ...
 U1PlayerName = UnitName("player")
 U1PlayerClass = select(2, UnitClass("player"))
 
+-- 一些常用的变量会被莫名其妙重置的, 必须在VARIABLES_LOADED里设置
+local f01 = CreateFrame("Frame")
+f01:RegisterEvent("VARIABLES_LOADED")
+f01:SetScript("OnEvent", function(self)
+    if U1DB and U1DB.configs then
+        local c = U1DB.configs["163ui_moreoptions/cvar_nameplateMaxDistance"]
+        if c == "0" or c == "nil" then
+            U1DB.configs["163ui_moreoptions/cvar_nameplateMaxDistance"] = "60"
+        end
+    end
+    local dist = GetCVar("nameplateMaxDistance")
+    if not dist or dist == "0" or dist == "nil" or dist == 0 then
+        SetCVar("nameplateMaxDistance", 60)
+    end
+    SetCVar("scriptErrors", DEBUG_MODE and 1 or 0)
+    SetCVar("showQuestTrackingTooltips", 1)
+    self:UnregisterAllEvents()
+end)
+
 --- 全关插件然后再单独启用控制台时, 恢复之前的状态, 方便全关测试是否插件问题然后恢复
 local sum = 0 for i = 1, GetNumAddOns() do sum = sum + GetAddOnEnableState(U1PlayerName,i) end
 U1.returnFromDisableAll = sum == 2

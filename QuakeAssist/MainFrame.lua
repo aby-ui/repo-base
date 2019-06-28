@@ -19,12 +19,16 @@ local frame = CreateFrame("Frame", addon.name.."Frame", UIParent)
 addon.frame = frame
 frame:SetPoint("CENTER")
 frame:SetSize(BAR_WIDTH + BAR_HEIGHT + BAR_SPACING, BAR_HEIGHT * 2 + BAR_SPACING)
-frame:Hide()
 frame:SetMovable(true)
 frame:SetUserPlaced(false)
 frame:SetDontSavePosition(true)
 frame:SetFrameStrata("HIGH")
 frame:SetClampedToScreen(true)
+
+function frame:Disable()
+	self.quakeBar:Hide()
+	self.predictBar:Hide()
+end
 
 local warningText = frame:CreateFontString(frame:GetName().."WarningText", "ARTWORK", "TextStatusBarText")
 frame.warningText = warningText
@@ -66,15 +70,36 @@ mover:SetScript("OnClick", function(self)
 	addon.optionFrame:Open()
 end)
 
-local function CreateStatusBar(name)
-	local statusBar = CreateFrame("StatusBar", name, addon.frame)
+local function Status_OnUpdate(self)
+	local minVal, maxVal = self:GetMinMaxValues()
+	if not maxVal then
+		return -- should never happen but who the hell knows
+	end
+
+	local now = GetTime()
+	if now > maxVal then
+		now = maxVal
+	end
+
+	self:SetValue(now)
+	self.text:SetFormattedText("%.1f", maxVal - now)
+end
+
+local function CreateStatusBar(name, texture, parent, r, g, b)
+	local statusBar = CreateFrame("StatusBar", frame:GetName()..name, parent or addon.frame)
+	statusBar:Hide()
 	statusBar:SetStatusBarTexture(BAR_TEXTURE)
+	statusBar:SetMinMaxValues(0, 1)
 	statusBar:SetHeight(BAR_HEIGHT)
 
 	local icon = statusBar:CreateTexture(name.."Icon", "ARTWORK")
 	statusBar.icon = icon
 	icon:SetSize(BAR_HEIGHT, BAR_HEIGHT)
 	icon:SetPoint("RIGHT", statusBar, "LEFT", -BAR_SPACING, 0)
+
+	if texture then
+		icon:SetTexture(texture)
+	end
 
 	local background = statusBar:CreateTexture(name.."Bkgnd", "BORDER")
 	statusBar.bkgnd = background
@@ -102,51 +127,67 @@ local function CreateStatusBar(name)
 	tile2:SetTexture("Interface\\BUTTONS\\WHITE8X8.BLP")
 	tile2:SetVertexColor(0, 1, 0, 0.4)
 
+	if r then
+		statusBar:SetStatusBarColor(r, g, b)
+		background:SetVertexColor(r / 2, g / 2, b / 2)
+	end
+
+	statusBar:SetScript("OnUpdate", Status_OnUpdate)
+	statusBar:SetScript("OnShow", Status_OnUpdate)
+
 	return statusBar
 end
 
-local quakeBar = CreateStatusBar("QuakeBar")
+local quakeBar = CreateStatusBar("QuakeBar", addon.QUAKE_ICON, addon.frame, 0.75, 0.75, 0)
 frame.quakeBar = quakeBar
-quakeBar:SetStatusBarColor(0.75, 0.75, 0)
-quakeBar.bkgnd:SetVertexColor(0.375, 0.375, 0)
 quakeBar:SetPoint("TOPLEFT", BAR_HEIGHT + BAR_SPACING, 0)
 quakeBar:SetPoint("TOPRIGHT")
 
-local _, _, SPELL_TEXTURE = GetSpellInfo(240447)
-quakeBar.icon:SetTexture(SPELL_TEXTURE)
+local predictBar = CreateStatusBar("PredictBar", 134377, addon.frame, 0.5, 0.5, 1)
+frame.predictBar = predictBar
+predictBar:SetAllPoints(quakeBar)
 
-local castingBar = CreateStatusBar("CastingBar", 0, 1, 0)
+local castingBar = CreateStatusBar("CastingBar", nil, quakeBar)
 frame.castingBar = castingBar
-castingBar:Hide()
 castingBar:SetPoint("TOPLEFT", quakeBar, "BOTTOMLEFT", 0, -BAR_SPACING)
 castingBar:SetWidth(BAR_WIDTH)
-
 castingBar.nameText = castingBar:CreateFontString(castingBar:GetName().."NameText", "ARTWORK", "TextStatusBarText")
 castingBar.nameText:SetPoint("TOP", castingBar, "BOTTOM", 0, -2)
 
-frame:SetScript("OnUpdate", function(self)
-	local quakeEndTime = addon.quakeEndTime
-	if not quakeEndTime then
+function predictBar:RequestNextQuakeInfo()
+	local nextStart, nextEnd = addon:PredictNextQuake()
+	if nextStart then
+		self:SetMinMaxValues(nextStart, nextEnd)
+		Status_OnUpdate(self)
+		self:Show()
+	else
+		self:Hide()
+	end
+end
+
+predictBar:SetScript("OnUpdate", function(self)
+	local nextQuakeTime = addon.nextQuakeStartTime
+	if not nextQuakeTime then
 		return
 	end
 
-	local now = GetTime()
-	quakeBar:SetValue(now)
-	quakeBar.text:SetFormattedText("%.1f", quakeEndTime - now)
-
-	local castingEndTime = addon.castingEndTime
-	if castingEndTime then
-		castingBar:SetValue(now)
-		castingBar.text:SetFormattedText("%.1f", castingEndTime - now)
+	if nextQuakeTime >= GetTime() then
+		Status_OnUpdate(self)
+	else
+		self:RequestNextQuakeInfo()
 	end
 end)
 
-addon:RegisterEventCallback("OnQuake", function(duration, expires)
-	if expires then
-		quakeBar:SetMinMaxValues(expires - duration, expires)
-		frame:Show()
+addon:RegisterEventCallback("OnQuake", function(startTime, endTime)
+	if startTime then
+		quakeBar:SetMinMaxValues(startTime, endTime)
+		quakeBar:Show()
+		predictBar:Hide()
 	else
-		frame:Hide()
+		quakeBar:Hide()
+		if addon.db.predict then
+			predictBar:RequestNextQuakeInfo()
+		end
 	end
 end)
 
@@ -178,13 +219,21 @@ addon:RegisterOptionCallback("position", function(position)
 	if type(position) == "table" and type(position.point) == "string" then
 		frame:SetPoint(position.point, position.relativeTo, position.relativePoint, position.xOffset, position.yOffset)
 	else
-		frame:SetPoint("CENTER")
+		frame:SetPoint("CENTER", 0, -100)
 	end
 end)
 
 addon:RegisterOptionCallback("scale", function(value)
 	if type(value) == "number" and value > 20 and value < 300 then
 		frame:SetScale(value / 100)
+	end
+end)
+
+addon:RegisterOptionCallback("predict", function(value)
+	if value then
+		predictBar:RequestNextQuakeInfo()
+	else
+		predictBar:Hide()
 	end
 end)
 

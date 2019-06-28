@@ -91,9 +91,6 @@ L:SetTimerLocalization({
 ---------------------
 L= DBM:GetModLocalization(131)
 
-L:SetOptionLocalization{
-	PingBlitz	= "當昂布里斯將軍即將閃擊你時點擊小地圖"
-}
 --------------------------
 -- Forgemaster Throngus --
 --------------------------
@@ -279,7 +276,6 @@ L:SetOptionLocalization({
 	WarnSubmerge	= "為鑽進地裡顯示警告",
 	TimerEmerge		= "為鑽出地面顯示計時器",
 	TimerSubmerge	= "為鑽進地裡顯示計時器",
-	CrystalArrow	= "當你附近的人中了$spell:81634時顯示DBM箭頭",
 	RangeFrame		= "顯示距離框 (5碼)"
 })
 
@@ -376,8 +372,7 @@ L:SetOptionLocalization{
 L= DBM:GetModLocalization(186)
 
 L:SetOptionLocalization{
-	RangeFrame	= "顯示距離框",
-	StormArrow	= "為$spell:43648顯示BDM箭頭"
+	RangeFrame	= "顯示距離框"
 }
 
 ---------------
@@ -485,10 +480,6 @@ L:SetMiscLocalization{
 -- High Priest Venoxis --
 -------------------------
 L= DBM:GetModLocalization(175)
-
-L:SetOptionLocalization{
-	LinkArrow		= "當你中了$spell:96477顯顯示DBM箭頭"
-}
 
 ------------------------
 -- Bloodlord Mandokir --

@@ -1,15 +1,35 @@
-local addonName, vars = ...
-local core = vars.core
-SavedInstances = vars
-local L = vars.L
-vars.config = core:NewModule("Config")
-local module = vars.config
+local addonName, addon = ...
+local core = addon.core
+local L = addon.L
+addon.config = core:NewModule("Config")
+local Config = addon.config
 
-local Config = LibStub("AceConfig-3.0")
+-- Lua functions
+local pairs, ipairs, tonumber, tostring, wipe = pairs, ipairs, tonumber, tostring, wipe
+local unpack, date, type, tinsert, sort = unpack, date, type, tinsert, sort
+local _G = _G
 
-local db
+-- WoW API / Variables
+local GetBindingKey = GetBindingKey
+local GetCurrencyInfo = GetCurrencyInfo
+local GetCurrentBindingSet = GetCurrentBindingSet
+local GetRealmName = GetRealmName
+local InterfaceOptionsFrame_OpenToCategory = InterfaceOptionsFrame_OpenToCategory
+local SaveBindings = SaveBindings
+local SetBinding = SetBinding
+local StaticPopup_Show = StaticPopup_Show
+local ALL = ALL
+local COLOR = COLOR
+local CURRENCY = CURRENCY
+local DELETE = DELETE
+local EMBLEM_SYMBOL = EMBLEM_SYMBOL
+local GREEN_FONT_COLOR_CODE = GREEN_FONT_COLOR_CODE
+local LEVEL = LEVEL
+local RED_FONT_COLOR_CODE = RED_FONT_COLOR_CODE
 
-SavedInstances.diff_strings = {
+-- GLOBALS: LibStub, BINDING_NAME_SAVEDINSTANCES, BINDING_HEADER_SAVEDINSTANCES
+
+addon.diff_strings = {
   D1 = DUNGEON_DIFFICULTY1, -- 5 man
   D2 = DUNGEON_DIFFICULTY2, -- 5 man (Heroic)
   D3 = DUNGEON_DIFFICULTY1.." ("..GetDifficultyInfo(23)..")", -- 5 man (Mythic)
@@ -29,9 +49,8 @@ local GOLDFONT = NORMAL_FONT_COLOR_CODE
 
 -- config global functions
 
-function module:OnInitialize()
-  db = vars.db
-  module:SetupOptions()
+function Config:OnInitialize()
+  Config:SetupOptions()
 end
 
 BINDING_NAME_SAVEDINSTANCES = L["Show/Hide the SavedInstances tooltip"]
@@ -39,23 +58,23 @@ BINDING_HEADER_SAVEDINSTANCES = "SavedInstances"
 
 -- general helper functions
 
-function SavedInstances:idtext(instance,diff,info)
+function addon:idtext(instance,diff,info)
   if instance.WorldBoss then
     return L["World Boss"]
   elseif info.ID < 0 then
     return "" -- ticket 144: could be RAID_FINDER or FLEX_RAID, but this is already shown in the instance name so it's redundant anyhow
   elseif not instance.Raid then
     if diff == 23 then
-      return SavedInstances.diff_strings["D3"]
+      return addon.diff_strings["D3"]
     else
-      return SavedInstances.diff_strings["D"..diff]
+      return addon.diff_strings["D"..diff]
     end
   elseif instance.Expansion == 0 then -- classic Raid
-    return SavedInstances.diff_strings.R0
+    return addon.diff_strings.R0
   elseif instance.Raid and diff >= 3 and diff <= 7 then -- pre-WoD raids
-    return SavedInstances.diff_strings["R"..(diff-2)]
+    return addon.diff_strings["R"..(diff-2)]
   elseif diff >= 14 and diff <= 16 then -- WoD raids
-    return SavedInstances.diff_strings["R"..(diff-8)]
+    return addon.diff_strings["R"..(diff-8)]
   else
     return ""
   end
@@ -77,7 +96,7 @@ local function IndicatorOptions()
       name = L["You can combine icons and text in a single indicator if you wish. Simply choose an icon, and insert the word ICON into the text field. Anywhere the word ICON is found, the icon you chose will be substituted in."].." "..L["Similarly, the words KILLED and TOTAL will be substituted with the number of bosses killed and total in the lockout."],
     },
   }
-  for diffname, diffstr in pairs(SavedInstances.diff_strings) do
+  for diffname, diffstr in pairs(addon.diff_strings) do
     local dorder = (tonumber(diffname:match("%d+")) or 0) + 10
     if diffname:find("^R") then dorder = dorder + 10 end
     args[diffname] = {
@@ -90,7 +109,7 @@ local function IndicatorOptions()
           type = "select",
           width = "half",
           name = EMBLEM_SYMBOL,
-          values = vars.Indicators
+          values = addon.Indicators
         },
         [diffname.."Text"] = {
           order = 2,
@@ -105,19 +124,19 @@ local function IndicatorOptions()
           hasAlpha = false,
           name = COLOR,
           disabled = function()
-            return db.Indicators[diffname .. "ClassColor"]
+            return addon.db.Indicators[diffname .. "ClassColor"]
           end,
           get = function(info)
-            db.Indicators[info[#info]] = db.Indicators[info[#info]] or vars.defaultDB.Indicators[info[#info]]
-            local r = db.Indicators[info[#info]][1]
-            local g = db.Indicators[info[#info]][2]
-            local b = db.Indicators[info[#info]][3]
+            addon.db.Indicators[info[#info]] = addon.db.Indicators[info[#info]] or addon.defaultDB.Indicators[info[#info]]
+            local r = addon.db.Indicators[info[#info]][1]
+            local g = addon.db.Indicators[info[#info]][2]
+            local b = addon.db.Indicators[info[#info]][3]
             return r, g, b, nil
           end,
           set = function(info, r, g, b, ...)
-            db.Indicators[info[#info]][1] = r
-            db.Indicators[info[#info]][2] = g
-            db.Indicators[info[#info]][3] = b
+            addon.db.Indicators[info[#info]][1] = r
+            addon.db.Indicators[info[#info]][2] = g
+            addon.db.Indicators[info[#info]][3] = b
           end,
         },
         [diffname.."ClassColor"] = {
@@ -132,7 +151,7 @@ local function IndicatorOptions()
 end
 
 -- options table below
-function module:BuildOptions()
+function Config:BuildOptions()
   local valueslist = { ["always"] = GREEN_FONT_COLOR_CODE..L["Always show"]..FONTEND,
     ["saved"] = L["Show when saved"],
     ["never"] = RED_FONT_COLOR_CODE..L["Never show"]..FONTEND,
@@ -140,48 +159,41 @@ function module:BuildOptions()
   local opts = {
     type = "group",
     name = "SavedInstances",
-    handler = SavedInstances,
+    handler = addon,
     get = function(info)
-      return db.Tooltip[info[#info]]
+      return addon.db.Tooltip[info[#info]]
     end,
     set = function(info, value)
-      SavedInstances.debug(info[#info].." set to: "..tostring(value))
-      db.Tooltip[info[#info]] = value
-      wipe(SavedInstances.scaleCache)
-      wipe(SavedInstances.oi_cache)
-      SavedInstances.oc_cache = nil
+      addon.debug(info[#info].." set to: "..tostring(value))
+      addon.db.Tooltip[info[#info]] = value
+      wipe(addon.scaleCache)
+      wipe(addon.oi_cache)
+      addon.oc_cache = nil
     end,
     args = {
-      debug = {
-        name = "debug",
-        cmdHidden = true,
-        guiHidden = true,
-        type = "execute",
-        func = function() db.dbg = not db.dbg; SavedInstances.debug("Debug set to: "..(db.dbg and "true" or "false")) end,
-      },
       config = {
         name = L["Open config"],
         guiHidden = true,
         type = "execute",
-        func = function() module:ShowConfig() end,
+        func = function() Config:ShowConfig() end,
       },
       time = {
         name = L["Dump time debugging information"],
         guiHidden = true,
         type = "execute",
-        func = function() SavedInstances:timedebug() end,
+        func = function() addon:timedebug() end,
       },
       quest = {
         name = L["Dump quest debugging information"],
         guiHidden = true,
         type = "execute",
-        func = function(...) SavedInstances:questdebug(...) end,
+        func = function(...) addon:questdebug(...) end,
       },
       show = {
         name = L["Show/Hide the SavedInstances tooltip"],
         guiHidden = true,
         type = "execute",
-        func = function() SavedInstances:ToggleDetached() end,
+        func = function() addon:ToggleDetached() end,
       },
       General = {
         order = 1,
@@ -191,7 +203,7 @@ function module:BuildOptions()
           ver = {
             order = 0.5,
             type = "description",
-            name = function() return "Version: SavedInstances "..SavedInstances.version end,
+            name = function() return "Version: SavedInstances "..addon.version end,
           },
           GeneralHeader = {
             order = 2,
@@ -203,11 +215,11 @@ function module:BuildOptions()
             name = L["Show minimap button"],
             desc = L["Show the SavedInstances minimap button"],
             order = 3,
-            hidden = function() return not vars.icon end,
-            get = function(info) return not db.MinimapIcon.hide end,
+            hidden = function() return not addon.icon end,
+            get = function(info) return not addon.db.MinimapIcon.hide end,
             set = function(info, value)
-              db.MinimapIcon.hide = not value
-              vars.icon:Refresh(addonName)
+              addon.db.MinimapIcon.hide = not value
+              addon.icon:Refresh(addonName)
             end,
           },
           DisableMouseover = {
@@ -265,7 +277,7 @@ function module:BuildOptions()
             desc = L["Show name for a category when all displayed instances belong only to that category"],
             order = 13,
             disabled = function()
-              return not db.Tooltip.ShowCategories
+              return not addon.db.Tooltip.ShowCategories
             end,
           },
           CategorySpaces = {
@@ -360,74 +372,102 @@ function module:BuildOptions()
             desc = L["Combine LFR"],
             order = 23.95,
           },
+          ProgressHeader = {
+            order = 31,
+            type = "header",
+            name = L["Quest progresses"],
+          },
+          WarfrontHeader = {
+            order = 33,
+            type = "header",
+            name = L["Warfronts"],
+          },
+          EmissaryHeader = {
+            order = 36,
+            type = "header",
+            name = L["Emissary quests"],
+          },
+          EmissaryFullName = {
+            type = "toggle",
+            order = 39.1,
+            name = L["Show all emissary names"],
+            desc = L["Show both factions' emissay name"],
+          },
+          EmissaryShowCompleted = {
+            type = "toggle",
+            order = 39.2,
+            name = L["Show when completed"],
+            desc = L["Show emissary line when all quests completed"],
+          },
+          CombineEmissary = {
+            type = "toggle",
+            order = 39.3,
+            name = L["Combine Emissaries"],
+            desc = L["Combine emissaries of same expansion"],
+          },
           MiscHeader = {
-            order = 30,
+            order = 40,
             type = "header",
             name = L["Miscellaneous Tracking"],
           },
           TrackDailyQuests = {
             type = "toggle",
-            order = 33,
+            order = 43,
             name = L["Daily Quests"],
           },
           TrackWeeklyQuests = {
             type = "toggle",
-            order = 33.5,
+            order = 43.5,
             name = L["Weekly Quests"],
-          },
-          DailyWorldQuest = {
-            type = "toggle",
-            order = 33.6,
-            name = L["Emissary quests"],
           },
           TrackSkills = {
             type = "toggle",
-            order = 33.75,
+            order = 43.7,
             name = L["Trade skills"],
-          },
-          TrackFarm = {
-            type = "toggle",
-            order = 33.80,
-            name = L["Farm crops"],
           },
           TrackBonus = {
             type = "toggle",
-            order = 33.85,
+            order = 43.8,
             name = L["Bonus rolls"],
           },
           AugmentBonus = {
             type = "toggle",
-            order = 33.95,
+            order = 43.9,
             name = L["Bonus loot frame"],
           },
           TrackLFG = {
             type = "toggle",
-            order = 34,
+            order = 44,
             name = L["LFG cooldown"],
             desc = L["Show cooldown for characters to use LFG dungeon system"],
           },
           TrackDeserter = {
             type = "toggle",
-            order = 35,
+            order = 45,
             name = L["Battleground Deserter"],
             desc = L["Show cooldown for characters to use battleground system"],
           },
           TrackPlayed = {
             type = "toggle",
-            order = 36,
+            order = 46,
             name = L["Time /played"],
           },
           MythicKey = {
             type = "toggle",
-            order = 37,
+            order = 47,
             name = L["Mythic Keystone"],
             desc = L["Track Mythic keystone acquisition"],
           },
           MythicKeyBest = {
             type = "toggle",
-            order = 37.5,
+            order = 47.5,
             name = L["Mythic Best"],
             desc = L["Track Mythic keystone best run"],
+          },
+          TrackParagon = {
+            type = "toggle",
+            order = 48,
+            name = L["Paragon Chests"],
           },
           BindHeader = {
             order = -0.6,
@@ -458,14 +498,14 @@ function module:BuildOptions()
         type = "group",
         name = L["Currency settings"],
         get = function(info)
-          return db.Tooltip[info[#info]]
+          return addon.db.Tooltip[info[#info]]
         end,
         set = function(info, value)
-          SavedInstances.debug(info[#info].." set to: "..tostring(value))
-          db.Tooltip[info[#info]] = value
-          wipe(SavedInstances.scaleCache)
-          wipe(SavedInstances.oi_cache)
-          SavedInstances.oc_cache = nil
+          addon.debug(info[#info].." set to: "..tostring(value))
+          addon.db.Tooltip[info[#info]] = value
+          wipe(addon.scaleCache)
+          wipe(addon.oi_cache)
+          addon.oc_cache = nil
         end,
         args = {
           CurrencyValueColor = {
@@ -500,15 +540,15 @@ function module:BuildOptions()
         type = "group",
         name = L["Indicators"],
         get = function(info)
-          if db.Indicators[info[#info]] ~= nil then -- tri-state boolean logic
-            return db.Indicators[info[#info]]
+          if addon.db.Indicators[info[#info]] ~= nil then -- tri-state boolean logic
+            return addon.db.Indicators[info[#info]]
           else
-            return vars.defaultDB.Indicators[info[#info]]
+            return addon.defaultDB.Indicators[info[#info]]
           end
         end,
         set = function(info, value)
-          SavedInstances.debug("Config set: "..info[#info].." = "..(value and "true" or "false"))
-          db.Indicators[info[#info]] = value
+          addon.debug("Config set: "..info[#info].." = "..(value and "true" or "false"))
+          addon.db.Indicators[info[#info]] = value
         end,
         args = IndicatorOptions(),
       },
@@ -520,15 +560,15 @@ function module:BuildOptions()
         width = "double",
         args = (function()
           local ret = {}
-          for i,cat in ipairs(vars.OrderedCategories()) do
+          for i,cat in ipairs(addon.OrderedCategories()) do
             ret[cat] = {
               order = i,
               type = "group",
-              name = vars.Categories[cat],
+              name = addon.Categories[cat],
               childGroups = "tree",
               args = (function()
                 local iret = {}
-                local insts = SavedInstances:OrderedInstances(cat)
+                local insts = addon:OrderedInstances(cat)
                 for j, inst in ipairs(insts) do
                   iret[inst] = {
                     order = j,
@@ -537,11 +577,11 @@ function module:BuildOptions()
                     -- style = "radio",
                     values = valueslist,
                     get = function(info)
-                      local val = db.Instances[inst].Show
+                      local val = addon.db.Instances[inst].Show
                       return (val and valueslist[val] and val) or "saved"
                     end,
                     set = function(info, value)
-                      db.Instances[inst].Show = value
+                      addon.db.Instances[inst].Show = value
                     end,
                   }
                 end
@@ -553,7 +593,7 @@ function module:BuildOptions()
                   get = function(info) return "" end,
                   set = function(info, value)
                     for j, inst in ipairs(insts) do
-                      db.Instances[inst].Show = value
+                      addon.db.Instances[inst].Show = value
                     end
                   end,
                 }
@@ -612,7 +652,7 @@ function module:BuildOptions()
                 name = L["Connected Realms"],
                 order = 10,
                 disabled = function()
-                  return not (db.Tooltip.ServerSort or db.Tooltip.ServerOnly)
+                  return not (addon.db.Tooltip.ServerSort or addon.db.Tooltip.ServerOnly)
                 end,
                 values = {
                   ["ignore"] = L["Ignore"],
@@ -631,10 +671,10 @@ function module:BuildOptions()
             width = "double",
             args = (function ()
               local toons = {}
-              for toon, _ in pairs(db.Toons) do
+              for toon, _ in pairs(addon.db.Toons) do
                 local tn, ts = toon:match('^(.*) [-] (.*)$')
                 toons[ts] = toons[ts] or {}
-                table.insert(toons[ts],tn)
+                tinsert(toons[ts],tn)
               end
               local ret = {}
               ret.reset = {
@@ -684,7 +724,7 @@ function module:BuildOptions()
                   return true
                 else
                   local err = L["Order must be a number in [0 - 999]"]
-                  SavedInstances.chatMsg(err)
+                  addon.chatMsg(err)
                   return err
                 end
               end
@@ -729,10 +769,10 @@ function module:BuildOptions()
                   --childGroups = "tree",
                   args = (function()
                     local tret = {}
-                    table.sort(stoons)
+                    sort(stoons)
                     for ord, tn in pairs(stoons) do
                       local toon = tn.." - "..server
-                      local t = vars.db.Toons[toon]
+                      local t = addon.db.Toons[toon]
                       local tinfo = ""
                       if t and t.Level and t.LClass then
                         tinfo = tinfo.."\n"..LEVEL.." "..t.Level.." "..t.LClass
@@ -742,7 +782,7 @@ function module:BuildOptions()
                       end
                       tret[tn.."_desc"] = {
                         order = function(info) return t.Order*1000 + ord*10 + 0 end,
-                        name = SavedInstances.ColoredToon(toon),
+                        name = addon.ColoredToon(toon),
                         desc = tn, -- unfortunately does nothing in dialog
                         descStyle = "tooltip",
                         type = "description",
@@ -812,7 +852,22 @@ function module:BuildOptions()
   for k,v in pairs(opts) do
     core.Options[k] = v
   end
-  for i, curr in ipairs(SavedInstances.currency) do
+  local progress = core:GetModule("Progress"):BuildOptions(32)
+  for k, v in pairs(progress) do
+    core.Options.args.General.args[k] = v
+  end
+  local warfront = core:GetModule("Warfront"):BuildOptions(34)
+  for k, v in pairs(warfront) do
+    core.Options.args.General.args[k] = v
+  end
+  for expansion, _ in pairs(addon.Emissaries) do
+    core.Options.args.General.args["Emissary" .. expansion] = {
+      type = "toggle",
+      order = 37 + expansion * 0.1,
+      name = _G["EXPANSION_NAME" .. expansion],
+    }
+  end
+  for i, curr in ipairs(addon.currency) do
     local name,_,tex = GetCurrencyInfo(curr)
     tex = "\124T"..tex..":0\124t "
     core.Options.args.Currency.args["Currency"..curr] = {
@@ -825,16 +880,16 @@ end
 
 -- global functions
 
-function module:table_clone(t)
+function Config:table_clone(t)
   if not t then return nil end
   local r = {}
   for k,v in pairs(t) do
     local nk,nv = k,v
     if type(k) == "table" then
-      nk = module:table_clone(k)
+      nk = Config:table_clone(k)
     end
     if type(v) == "table" then
-      nv = module:table_clone(v)
+      nv = Config:table_clone(v)
     end
     r[nk] = nv
   end
@@ -842,59 +897,59 @@ function module:table_clone(t)
 end
 
 local firstoptiongroup, lastoptiongroup
-function module:ReopenConfigDisplay(f)
-  if InterfaceOptionsFrame:IsShown() then
-    InterfaceOptionsFrame:Hide();
+function Config:ReopenConfigDisplay(f)
+  if _G.InterfaceOptionsFrame:IsShown() then
+    _G.InterfaceOptionsFrame:Hide();
     InterfaceOptionsFrame_OpenToCategory(lastoptiongroup)
     InterfaceOptionsFrame_OpenToCategory(firstoptiongroup)
     InterfaceOptionsFrame_OpenToCategory(f)
   end
 end
 
-function module:SetupOptions()
-  local ACD = LibStub("AceConfigDialog-3.0")
+function Config:SetupOptions()
+  local AceConfigDialog = LibStub("AceConfigDialog-3.0")
   local namespace = "SavedInstances"
-  module:BuildOptions()
+  Config:BuildOptions()
   LibStub("AceConfig-3.0"):RegisterOptionsTable(namespace, core.Options, { "si", "savedinstances" })
-  local fgen = ACD:AddToBlizOptions(namespace, nil, nil, "General")
+  local fgen = AceConfigDialog:AddToBlizOptions(namespace, nil, nil, "General")
   firstoptiongroup = fgen
   fgen.default = function()
-    SavedInstances.debug("RESET: General")
-    db.Tooltip = module:table_clone(vars.defaultDB.Tooltip)
-    db.MinimapIcon = module:table_clone(vars.defaultDB.MinimapIcon)
-    module:ReopenConfigDisplay(fgen)
+    addon.debug("RESET: General")
+    addon.db.Tooltip = Config:table_clone(addon.defaultDB.Tooltip)
+    addon.db.MinimapIcon = Config:table_clone(addon.defaultDB.MinimapIcon)
+    Config:ReopenConfigDisplay(fgen)
   end
-  local fcur = ACD:AddToBlizOptions(namespace, CURRENCY, namespace, "Currency")
+  local fcur = AceConfigDialog:AddToBlizOptions(namespace, CURRENCY, namespace, "Currency")
   fcur.default = fgen.default
-  local find = ACD:AddToBlizOptions(namespace, L["Indicators"], namespace, "Indicators")
+  local find = AceConfigDialog:AddToBlizOptions(namespace, L["Indicators"], namespace, "Indicators")
   find.default = function()
-    SavedInstances.debug("RESET: Indicators")
-    db.Indicators = module:table_clone(vars.defaultDB.Indicators)
-    module:ReopenConfigDisplay(find)
+    addon.debug("RESET: Indicators")
+    addon.db.Indicators = Config:table_clone(addon.defaultDB.Indicators)
+    Config:ReopenConfigDisplay(find)
   end
-  local finst = ACD:AddToBlizOptions(namespace, L["Instances"], namespace, "Instances")
+  local finst = AceConfigDialog:AddToBlizOptions(namespace, L["Instances"], namespace, "Instances")
   finst.default = function()
-    SavedInstances.debug("RESET: Instances")
-    for _,i in pairs(db.Instances) do
+    addon.debug("RESET: Instances")
+    for _,i in pairs(addon.db.Instances) do
       i.Show = "saved"
     end
-    module:ReopenConfigDisplay(finst)
+    Config:ReopenConfigDisplay(finst)
   end
-  local ftoon = ACD:AddToBlizOptions(namespace, L["Characters"], namespace, "Characters")
+  local ftoon = AceConfigDialog:AddToBlizOptions(namespace, L["Characters"], namespace, "Characters")
   lastoptiongroup = ftoon
-  module.ftoon = ftoon
+  Config.ftoon = ftoon
   ftoon.default = function()
-    SavedInstances.debug("RESET: Toons")
-    for _,i in pairs(db.Toons) do
+    addon.debug("RESET: Toons")
+    for _,i in pairs(addon.db.Toons) do
       i.Show = "saved"
     end
-    module:ReopenConfigDisplay(ftoon)
+    Config:ReopenConfigDisplay(ftoon)
   end
 end
 
-function module:ShowConfig()
-  if InterfaceOptionsFrame:IsShown() then
-    InterfaceOptionsFrame:Hide()
+function Config:ShowConfig()
+  if _G.InterfaceOptionsFrame:IsShown() then
+    _G.InterfaceOptionsFrame:Hide()
   else
     InterfaceOptionsFrame_OpenToCategory(lastoptiongroup)
     InterfaceOptionsFrame_OpenToCategory(firstoptiongroup)

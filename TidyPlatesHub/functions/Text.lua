@@ -167,9 +167,27 @@ local function HealthFunctionTotal(unit)
 	return ShortenNumber(health).."|cffffffff ("..ceil(100*(unit.health/unit.healthmax)).."%)", color.r, color.g, color.b
 end
 -- TargetOf
+local cache = {}
 local function HealthFunctionTargetOf(unit)
-	if unit.reaction ~= "FRIENDLY" and unit.isInCombat then
-		return UnitName(unitid.."target")
+	if unit.reaction ~= "FRIENDLY" and unit.isInCombat and unit.unitid then
+        local target = unit.unitid .. "target"
+        if UnitIsPlayer(target) then
+            local n,r = UnitName(target)
+            local key = n .. (r and r or "")
+            if cache[key] then
+                return cache[key]
+            else
+                local c = strbyte(n, 1)
+                if c and c >= 224 then n = n:sub(1, 6) else n = n:sub(1,4) end
+                local _, cls = UnitClass(target)
+                local color = RAID_CLASS_COLORS[cls]
+                if color and color.WrapTextInColorCode then
+                    n = color:WrapTextInColorCode(n)
+                end
+                cache[key] = n
+                return n
+            end
+        end
 	end
 	--[[
 	if (unit.isTarget or (LocalVars.FocusAsTarget and unit.isFocus)) then return UnitName("targettarget")

@@ -1,0 +1,16 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+    <Include file="Libraries.xml" />
+    <Include file="Locales.xml" />
+    <Script file="data\ContributionCollectors.lua" />
+    <Script file="Init.lua" />
+    <Script file="data\Creatures.lua" />
+    <Script file="data\Creatures.Name.lua" />
+    <Script file="data\Creatures.Status.lua" />
+    <Script file="data\Creatures.VignetteInfo.lua" />
+    <Include file="TourWindow.xml" />
+    <Include file="Config.xml" />
+    <Script file="Main.lua" />
+    <Script file="Widget-TomCatsLabel.lua" />
+    <Script file="Widget-TomCatsInteractiveLabel.lua" />
+</Ui>

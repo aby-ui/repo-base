@@ -21,10 +21,6 @@ function ItemSlot:Create()
 	return item
 end
 
-function ItemSlot:Construct(id)
-	return CreateFrame('Button', ADDON..'VaultItemSlot' .. id, nil, 'ContainerFrameItemButtonTemplate')
-end
-
 function ItemSlot:GetBlizzard()
 end
 
@@ -93,6 +89,7 @@ end
 
 function ItemSlot:IsQuestItem() end
 function ItemSlot:IsNew() end
+function ItemSlot:IsPaid() end
 function ItemSlot:IsUpgrade() end
 function ItemSlot:UpdateSlotColor() end
 function ItemSlot:UpdateCooldown() end

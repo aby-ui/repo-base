@@ -1,9 +1,8 @@
-## Interface: 80000
+## Interface: 80200
 ## Title: World Quest Tracker
 ## Notes: Make more easy to see world quests
 ## SavedVariables: WQTrackerDB
 ## SavedVariablesPerCharacter: WQTrackerDBChr
-
 
 #@no-lib-strip@
 libs\libs.xml
@@ -29,7 +28,7 @@ WorldQuestTracker_RareFinder.lua
 WorldQuestTracker_ZoneMap.lua
 WorldQuestTracker_WorldMap.lua
 WorldQuestTracker_Tracker.lua
-#WorldQuestTracker_Taxi.lua
+WorldQuestTracker_Taxi.lua
 
 WorldQuestTrackerMixin.xml
 

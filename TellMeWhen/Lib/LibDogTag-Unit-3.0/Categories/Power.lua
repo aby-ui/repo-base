@@ -142,94 +142,97 @@ DogTag:AddTag("Unit", "FractionalMana", {
 	category = L["Power"]
 })
 
+if ALTERNATE_POWER_INDEX then -- WoW Classic compat
+	DogTag:AddTag("Unit", "AltP", {
+		code = UnitPower,
+		arg = {
+			'unit', 'string;undef', 'player',
+			'index', 'number;undef', ALTERNATE_POWER_INDEX
+		},
+		ret = "number",
+		events = "UNIT_POWER_FREQUENT#$unit",
+		doc = L["Return the current alternate power of unit"],
+		example = ('[AltP] => "%d"'):format(UnitPowerMax("player",ALTERNATE_POWER_INDEX)*.632),
+		category = L["Power"]
+	})
 
-DogTag:AddTag("Unit", "AltP", {
-	code = UnitPower,
-	arg = {
-		'unit', 'string;undef', 'player',
-		'index', 'number;undef', ALTERNATE_POWER_INDEX
-	},
-	ret = "number",
-	events = "UNIT_POWER_FREQUENT#$unit",
-	doc = L["Return the current alternate power of unit"],
-	example = ('[AltP] => "%d"'):format(UnitPowerMax("player",ALTERNATE_POWER_INDEX)*.632),
-	category = L["Power"]
-})
+	DogTag:AddTag("Unit", "MaxAltP", {
+		code = UnitPowerMax,
+		arg = {
+			'unit', 'string;undef', 'player',
+			'index', 'number;undef', ALTERNATE_POWER_INDEX
+		},
+		ret = "number",
+		events = "UNIT_MAXPOWER#$unit",
+		doc = L["Return the maximum alternate power of unit"],
+		example = ('[MaxAltP] => "%d"'):format(UnitPowerMax("player",ALTERNATE_POWER_INDEX)),
+		category = L["Power"]
+	})
 
-DogTag:AddTag("Unit", "MaxAltP", {
-	code = UnitPowerMax,
-	arg = {
-		'unit', 'string;undef', 'player',
-		'index', 'number;undef', ALTERNATE_POWER_INDEX
-	},
-	ret = "number",
-	events = "UNIT_MAXPOWER#$unit",
-	doc = L["Return the maximum alternate power of unit"],
-	example = ('[MaxAltP] => "%d"'):format(UnitPowerMax("player",ALTERNATE_POWER_INDEX)),
-	category = L["Power"]
-})
+	DogTag:AddTag("Unit", "PercentAltP", {
+		alias = "[AltP(unit=unit) / MaxAltP(unit=unit) * 100]:Round(1)",
+		arg = {
+			'unit', 'string;undef', 'player'
+		},
+		doc = L["Return the percentage alternate power of unit"],
+		example = '[PercentAltP] => "63.2"; [PercentAltP:Percent] => "63.2%"',
+		category = L["Power"]
+	})
 
-DogTag:AddTag("Unit", "PercentAltP", {
-	alias = "[AltP(unit=unit) / MaxAltP(unit=unit) * 100]:Round(1)",
-	arg = {
-		'unit', 'string;undef', 'player'
-	},
-	doc = L["Return the percentage alternate power of unit"],
-	example = '[PercentAltP] => "63.2"; [PercentAltP:Percent] => "63.2%"',
-	category = L["Power"]
-})
+	DogTag:AddTag("Unit", "MissingAltP", {
+		alias = "MaxAltP(unit=unit) - AltP(unit=unit)",
+		arg = {
+			'unit', 'string;undef', 'player'
+		},
+		doc = L["Return the missing alternate power of unit"],
+		example = ('[MissingAltP] => "%d"'):format(UnitPowerMax("player",ALTERNATE_POWER_INDEX)*.368),
+		category = L["Power"]
+	})
 
-DogTag:AddTag("Unit", "MissingAltP", {
-	alias = "MaxAltP(unit=unit) - AltP(unit=unit)",
-	arg = {
-		'unit', 'string;undef', 'player'
-	},
-	doc = L["Return the missing alternate power of unit"],
-	example = ('[MissingAltP] => "%d"'):format(UnitPowerMax("player",ALTERNATE_POWER_INDEX)*.368),
-	category = L["Power"]
-})
+	DogTag:AddTag("Unit", "FractionalAltP", {
+		alias = "Concatenate(AltP(unit=unit), '/', MaxAltP(unit=unit))",
+		arg = {
+			'unit', 'string;undef', 'player'
+		},
+		doc = L["Return the current and maximum alternate power of unit"],
+		example = ('[FractionalAltP] => "%d/%d"'):format(UnitPowerMax("player",ALTERNATE_POWER_INDEX)*.632, UnitPowerMax("player",ALTERNATE_POWER_INDEX)),
+		category = L["Power"]
+	})
+end
 
-DogTag:AddTag("Unit", "FractionalAltP", {
-	alias = "Concatenate(AltP(unit=unit), '/', MaxAltP(unit=unit))",
-	arg = {
-		'unit', 'string;undef', 'player'
-	},
-	doc = L["Return the current and maximum alternate power of unit"],
-	example = ('[FractionalAltP] => "%d/%d"'):format(UnitPowerMax("player",ALTERNATE_POWER_INDEX)*.632, UnitPowerMax("player",ALTERNATE_POWER_INDEX)),
-	category = L["Power"]
-})
+if UnitStagger then  -- WoW Classic compat
+	DogTag:AddTag("Unit", "Stagger", {
+		code = UnitStagger,
+		arg = {
+			'unit', 'string;undef', 'player',
+		},
+		ret = "number",
+		events = "UNIT_ABSORB_AMOUNT_CHANGED#$unit",
+		doc = L["Return the current stagger amount of unit"],
+		example = ('[Stagger] => "%d"'):format(UnitStagger("player")),
+		category = L["Power"]
+	})
 
-DogTag:AddTag("Unit", "Stagger", {
-	code = UnitStagger,
-	arg = {
-		'unit', 'string;undef', 'player',
-	},
-	ret = "number",
-	events = "UNIT_ABSORB_AMOUNT_CHANGED#$unit",
-	doc = L["Return the current stagger amount of unit"],
-	example = ('[Stagger] => "%d"'):format(UnitStagger("player")),
-	category = L["Power"]
-})
+	DogTag:AddTag("Unit", "PercentStagger", {
+		alias = "(Stagger(unit=unit) / MaxHP(unit=unit) * 100):Round",
+		arg = {
+			'unit', 'string;undef', 'player',
+		},
+		doc = L["Return the current stagger amount of unit"],
+		example = ('[Stagger] => "%d"'):format(UnitStagger("player")),
+		category = L["Power"]
+	})
 
-DogTag:AddTag("Unit", "PercentStagger", {
-	alias = "(Stagger(unit=unit) / MaxHP(unit=unit) * 100):Round",
-	arg = {
-		'unit', 'string;undef', 'player',
-	},
-	doc = L["Return the current stagger amount of unit"],
-	example = ('[Stagger] => "%d"'):format(UnitStagger("player")),
-	category = L["Power"]
-})
-
-DogTag:AddTag("Unit", "FractionalStagger", {
-	alias = "Concatenate(Stagger(unit=unit), '/', MaxHP(unit=unit))",
-	arg = {
-		'unit', 'string;undef', 'player',
-	},
-	doc = L["Return the current stagger amount of unit"],
-	example = ('[Stagger] => "%d"'):format(UnitStagger("player")),
-	category = L["Power"]
-})
+	DogTag:AddTag("Unit", "FractionalStagger", {
+		alias = "Concatenate(Stagger(unit=unit), '/', MaxHP(unit=unit))",
+		arg = {
+			'unit', 'string;undef', 'player',
+		},
+		doc = L["Return the current stagger amount of unit"],
+		example = ('[Stagger] => "%d"'):format(UnitStagger("player")),
+		category = L["Power"]
+	})
+end
 
 
 DogTag:AddTag("Unit", "TypePower", {

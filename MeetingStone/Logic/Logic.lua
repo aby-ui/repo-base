@@ -103,10 +103,15 @@ function Logic:Exchange(text)
     
 end
 
-function Logic:SEI(activity)
+function Logic:SEI(activity, title, summary)
     if not activity then
         return
     end
+
+    title = title or ''
+    summary = summary or ''
+
+    
 
     self:SendServer('SEI',
         UnitGUID('player'),
@@ -116,7 +121,7 @@ function Logic:SEI(activity)
         activity:GetCustomID(),
         activity:GetMode(),
         activity:GetLoot(),
-        activity:GetSummary(),
+        title .. ' ' .. summary,
         activity:GetItemLevel(),
         activity:GetPvPRating(),
         (select(3, UnitClass('player'))))

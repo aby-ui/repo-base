@@ -16,9 +16,9 @@ function AccountantButton_OnClick(button)
                     return
                 end
 	if AccountantFrame:IsVisible() then
-		HideUIPanel(AccountantFrame);
+		AccountantFrame:Hide();
 	else
-		ShowUIPanel(AccountantFrame);
+		AccountantFrame:Show();
 	end
 	
 end

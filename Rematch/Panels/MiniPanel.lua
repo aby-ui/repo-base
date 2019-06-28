@@ -25,6 +25,33 @@ rematch:InitModule(function()
 	panel.Target.LoadButton.tooltipBody = L["Load the team saved for this target."]
 	panel.timer = 0
 	panel.elapsedLeaving = 0
+
+	-- create models if Debug: No Models is disabled
+	if not settings.DebugNoModels then
+		-- target panel model
+		panel.Target.Model = CreateFrame("PlayerModel",nil,panel.Target)
+		local model = panel.Target.Model
+		model:SetSize(36,42)
+		model:SetPoint("BOTTOMLEFT",panel.Target,"BOTTOM",-120,8)
+		Model_OnLoad(model)
+		model:SetRotation(MODELFRAME_DEFAULT_ROTATION)
+		model:SetPortraitZoom(0.75)
+		model:SetPosition(0,0,-0.075)
+		model:SetScript("OnEvent",Model_OnEvent)
+		-- border frame here is a sibling to the above target model
+		panel.Target.ModelBorder = CreateFrame("Frame",nil,panel.Target,"RematchUseParentLevel")
+		local border = panel.Target.ModelBorder
+		border:SetBackdrop({edgeFile="Interface\\Tooltips\\UI-Tooltip-Border", tile=true, edgeSize=12})
+		border:SetBackdropBorderColor(0.5,0.5,0.5)
+		border:SetPoint("TOPLEFT",model,"TOPLEFT",-5,5)
+		border:SetPoint("BOTTOMRIGHT",model,"BOTTOMRIGHT",5,-5)
+		local back = border:CreateTexture(nil,"BACKGROUND",nil,2)
+		back:SetTexture("Interface\\Destiny\\EndScreenBG")
+		back:SetPoint("TOPLEFT",3,-3)
+		back:SetPoint("BOTTOMRIGHT",-3,3)
+		back:SetVertexColor(0.25,0.25,0.25)
+	end
+
 end)
 
 function panel:Update()
@@ -72,7 +99,8 @@ function panel:Update()
 				button.SpecialBorder:Hide()
             button.Footnote:Hide()
 			end
-		else
+		else -- pet doesn't exist in the slot
+			button.Icon:SetTexture("Interface\\PaperDoll\\UI-Backpack-EmptySlot.blp")
 			button.XP:Hide()
 			button.HP:Hide()
 			button.SpecialBorder:Hide()

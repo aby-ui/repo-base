@@ -37,7 +37,7 @@ if (GetLocale() == "zhCN") then
     MOGUBAR_HIDE_GRID = "隐藏未用的动作按钮";
     MOGUBAR_OTHERS = "其它操作";
     MOGUBAR_CREATE_NEW_BAR = "创建新的动作条";
-    MOGUBAR_TAB_HELP_TEXT = "按住鼠标左键可拖动,\n单击鼠标右键弹出操作菜单,\n鼠标滚轮增加/减少按钮,\nCTRL左键可以切换布局。"
+    MOGUBAR_TAB_HELP_TEXT = "按住鼠标左键可拖动,\n单击鼠标右键弹出操作菜单,\nCTRL滚轮增加/减少按钮,\nCTRL左键可以切换布局。"
 elseif (GetLocale() == "zhTW") then
     MOGUBAR_WINDOWS = "視窗";
     MOGUBAR_UNLOCK_BAR = "解鎖快捷列";

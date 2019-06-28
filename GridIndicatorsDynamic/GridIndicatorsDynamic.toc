@@ -1,4 +1,4 @@
-﻿## Interface: 80000
+﻿## Interface: 80200
 ## Title: GridIndicatorsDynamic
 ## Notes: Additional indicators for Grid
 ## Dependencies: Grid

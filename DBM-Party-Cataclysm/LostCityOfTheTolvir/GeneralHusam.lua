@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(117, "DBM-Party-Cataclysm", 5, 69)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 174 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 195 $"):sub(12, -3))
 mod:SetCreatureID(44577)
 mod:SetEncounterID(1052)
 mod:SetZone()
@@ -16,7 +16,7 @@ mod:RegisterEventsInCombat(
 local warnShockwave 	= mod:NewCastAnnounce(83445, 3)
 local warnIntentions	= mod:NewTargetAnnounce(83113, 3)
 
-local specWarnDetonate	= mod:NewSpecialWarningDodge(91263)
+local specWarnDetonate	= mod:NewSpecialWarningDodge(91263, nil, nil, nil, 2, 2)
 
 local timerShockwaveCD	= mod:NewCDTimer(36, 83445, nil, nil, nil, 2)
 local timerShockwave	= mod:NewCastTimer(5, 83445)
@@ -34,6 +34,7 @@ function mod:SPELL_CAST_START(args)
 		timerShockwaveCD:Start()
 	elseif spellId == 91263 and self:AntiSpam(5) then
 		specWarnDetonate:Show()
+		specWarnDetonate:Play("watchstep")
 	end
 end
 

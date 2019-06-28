@@ -1,10 +1,7 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/">
-	<Script file="effects.lua"/>
-	
-	<Script file="activate.lua"/>
+	<Script file="none.lua"/>
 	<Script file="alert.lua"/>
+	<Script file="flare.lua"/>
 	<Script file="pulse.lua"/>
 	<Script file="shine.lua"/>
-	<Script file="flare.lua"/>
-	<Script file="none.lua"/>
 </Ui>

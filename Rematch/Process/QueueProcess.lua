@@ -11,9 +11,21 @@ local levelingPets = {} -- indexed by petID, lookup table of leveling pets (crea
 rematch.topPicks = {} -- list of petIDs in the order they should be slotted
 rematch.skippedPicks = {} -- list of petIDs skipped due to preferences (for queue panel update)
 
+local alwaysSkip = {} -- lookup table of speciesIDs to always skip in the queue (horde/alliance pets)
+
 rematch:InitModule(function()
 	settings = RematchSettings
 	queue = settings.LevelingQueue
+
+	-- hard-coding pets that can't be slotted or fight in wrong faction
+	if UnitFactionGroup("player")=="Alliance" then
+		alwaysSkip[2444] = true -- Lil' War Machine can't battle while Alliance
+		alwaysSkip[298] = true -- Horde version of Moonkin Hatchling can't slot while Alliance
+	else
+		alwaysSkip[2443] = true -- Lil' Siege Tower can't battle while Horde
+		alwaysSkip[296] = true -- Alliance version of Moonkin Hatchling can't slot while Horde
+	end
+
 end)
 
 -- returns true (and the precise level) of a petID if it can level
@@ -63,16 +75,39 @@ end
 -- that can't level (due to hitting 25 or no longer existing), it slots the most
 -- preferred pet to any active leveling slots, and toasts when the leveling pet changes
 -- NOTE: all places that used to call ProcessQueue directly should now call UpdateQueue!!
+local firstProcessQueueTimeout = 5 -- when this has a value, then the queue is still waiting for first run
 function rematch:ProcessQueue()
 
 	-- if pets not loaded, come back in half a second to try again
 	local numPets,owned = C_PetJournal.GetNumPets()
 	local petLoaded = C_PetJournal.GetPetLoadOutInfo(1)
-	if owned==0 or not petLoaded then
-		return -- if pets aren't loaded, then don't do anything yet
+
+	if (owned==0 or not petLoaded) and firstProcessQueueTimeout then
+		-- special case: if pets in journal loaded but no pets slotted, maybe all slots are empty. hard to say.
+		-- check back every couple seconds until timeout reached; this use case is only going to happen for new
+		-- players who haven't slotted a pet and edge cases like server transfers where slots are emptied
+		if owned > 0 and not petLoaded then
+			C_Timer.After(2,function()
+				if firstProcessQueueTimeout and firstProcessQueueTimeout > 0 then
+					firstProcessQueueTimeout = firstProcessQueueTimeout - 1
+					rematch:ProcessQueue()
+				end
+			end)
+		end
+
+		if firstProcessQueueTimeout > 0 then
+			return -- if pets aren't loaded and timeout hasn't run out, then don't do anything yet
+		end
 	end
 
+	-- first time getting this far, confirm pets in the queue are valid (and replace with sanctuary where possible if not)
+	if firstProcessQueueTimeout then
+		rematch:ValidateQueue()
+	end
+
+
 	rematch.queueNeedsProcessed = nil
+	firstProcessQueueTimeout = nil
 
 	local oldTopPetID = rematch.topPicks[1] -- note top-most pet in queue
 
@@ -153,6 +188,11 @@ end
 
 -- returns true if petID meets the conditions of the current preferences
 function rematch:IsPetPickable(petID)
+	-- if pet's species is in alwaysSkip then never pick it
+	local petInfo = rematch.petInfo:Fetch(petID)
+	if petInfo.speciesID and alwaysSkip[petInfo.speciesID] then
+		return false
+	end
 	local health,maxHealth = C_PetJournal.GetPetStats(petID)
 	if C_PetJournal.PetIsSummonable(petID) or (health and health<1) then
 		-- passed first test, pet is summonable (or dead)

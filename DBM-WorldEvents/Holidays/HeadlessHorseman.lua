@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("d285", "DBM-WorldEvents", 1)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17623 $"):sub(12, -3))
+mod:SetRevision("20190423232607")
 mod:SetCreatureID(23682, 23775)
 --mod:SetModelID(22351)--Model doesn't work/render for some reason.
 mod:SetZone()
@@ -22,7 +22,7 @@ mod:RegisterEventsInCombat(
 
 local warnConflag				= mod:NewTargetAnnounce(42380, 3)
 local warnSquashSoul			= mod:NewTargetAnnounce(42514, 2, nil, false, 2)
-local warnPhase					= mod:NewAnnounce("WarnPhase", 2, "Interface\\Icons\\Spell_Nature_WispSplode")
+local warnPhase					= mod:NewAnnounce("WarnPhase", 2, "136116")
 local warnHorsemanSoldiers		= mod:NewAnnounce("warnHorsemanSoldiers", 2, 97133)
 local warnHorsemanHead			= mod:NewAnnounce("warnHorsemanHead", 3)
 

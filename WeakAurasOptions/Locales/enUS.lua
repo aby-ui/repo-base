@@ -108,7 +108,7 @@ Choose which events cause the custom trigger to be checked.
 Multiple events can be specified using commas or spaces.
 
 |cFF4444FFFor example:|r
-UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED
+UNIT_POWER_UPDATE, UNIT_AURA PLAYER_TARGET_CHANGED
 ]=]
 L["Custom trigger status tooltip"] = [=[
 Choose which events cause the custom trigger to be checked.
@@ -116,7 +116,7 @@ Since this is a status-type trigger, the specified events may be called by WeakA
 Multiple events can be specified using commas or spaces.
 
 |cFF4444FFFor example:|r
-UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED
+UNIT_POWER_UPDATE, UNIT_AURA PLAYER_TARGET_CHANGED
 ]=]
 L["Custom Untrigger"] = "Custom Untrigger"
 L["Custom untrigger event tooltip"] = [=[
@@ -125,7 +125,7 @@ This can be different than the events defined for the trigger.
 Multiple events can be specified using commas or spaces.
 
 |cFF4444FFFor example:|r
-UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED
+UNIT_POWER_UPDATE, UNIT_AURA PLAYER_TARGET_CHANGED
 ]=]
 L["Death"] = "Death"
 L["Death Rune"] = "Death Rune"
@@ -159,7 +159,8 @@ There are several special codes available to make this text dynamic:
 |cFFFF0000%n|r - Name - The name of the display (usually an aura name), or the display's ID if there is no dynamic name
 |cFFFF0000%i|r - Icon - The icon associated with the display
 |cFFFF0000%s|r - Stacks - The number of stacks of an aura (usually)
-|cFFFF0000%c|r - Custom - Allows you to define a custom Lua function that returns a list of string values. %c1 will be replaced by the first value returned, %c2 by the second, etc.]=]
+|cFFFF0000%c|r - Custom - Allows you to define a custom Lua function that returns a list of string values. %c1 will be replaced by the first value returned, %c2 by the second, etc.
+|cFFFF0000%%|r - % - To show a percent sign]=]
 L["Enabled"] = "Enabled"
 L["Enter an aura name, partial aura name, or spell id"] = "Enter an aura name, partial aura name, or spell id"
 L["Event Type"] = "Event Type"
@@ -193,16 +194,16 @@ L["Full Scan"] = "Full Scan"
 L["Ghost Wolf"] = "Ghost Wolf"
 L["Glow Action"] = "Glow Action"
 L["Group aura count description"] = [=[
-The amount of %s members which must be affected by one or more of the given auras for the display to trigger.
-If the entered number is a whole number (e.g. 5), the number of affected raid members will be compared with the entered number.
+The amount of units of type '%s' which must be affected by one or more of the given auras for the display to trigger.
+If the entered number is a whole number (e.g. 5), the number of affected units will be compared with the entered number.
 If the entered number is a decimal (e.g. 0.5), fraction (e.g. 1/2), or percentage (e.g. 50%%), then that fraction of the %s must be affected.
 
 |cFF4444FFFor example:|r
-|cFF00CC00> 0|r will trigger when anyone in the %s is affected
-|cFF00CC00= 100%%|r will trigger when everyone in the %s is affected
-|cFF00CC00!= 2|r will trigger when the number of %s members affected is not exactly 2
-|cFF00CC00<= 0.8|r will trigger when less than 80%% of the %s is affected (4 of 5 party members, 8 of 10 or 20 of 25 raid members)
-|cFF00CC00> 1/2|r will trigger when more than half of the %s is affected
+|cFF00CC00> 0|r will trigger when any unit of type '%s' is is affected
+|cFF00CC00= 100%%|r will trigger when ever unit of type '%s' is affected
+|cFF00CC00!= 2|r will trigger when the number of units of type '%s' affected is not exactly 2
+|cFF00CC00<= 0.8|r will trigger when less than 80%% of the units of type '%s' is affected (4 of 5 party members, 8 of 10 or 20 of 25 raid members)
+|cFF00CC00> 1/2|r will trigger when more than half of the units of type '%s' is affected
 |cFF00CC00>= 0|r will always trigger, no matter what
 ]=]
 L["Group Member Count"] = "Group Member Count"

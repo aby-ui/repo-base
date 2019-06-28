@@ -235,17 +235,24 @@ end
 --[[------------------------------------------------------------
 输入框位于窗口上部, 如果超过屏幕下方则自动
 ---------------------------------------------------------------]]
+local fixPosition = function(self)
+    local _, bottom, _, _ = self:GetRect()
+    if bottom < -10 then
+        U1_Chat_UpdateEditBoxPosition(true, 0)
+    end
+end
+
 WithAllChatFrame(function(f)
     --移动到屏幕下方的时候显示到上面
-    CoreHookScript(f.editBox, "OnShow", function(self)
-        local _, bottom, _, _ = self:GetRect()
-        if bottom < -10 then
-            U1_Chat_UpdateEditBoxPosition(true, 0)
-        end
-    end)
+    CoreHookScript(f.editBox, "OnShow", fixPosition)
     CoreHookScript(f.editBox, "OnHide", function(self)
         U1_Chat_UpdateEditBoxPosition()
     end)
+end)
+
+CoreOnEvent("PLAYER_ENTERING_WORLD", function()
+    WithAllChatFrame(function(f) if f.editBox:IsShown() then fixPosition(f.editBox) end end)
+    return true
 end)
 
 function U1_Chat_UpdateEditBoxPosition(forceTop)

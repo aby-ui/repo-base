@@ -7,9 +7,9 @@
    ||| | |
    ||| | +- speciesID 
    ||| +--- breedID (0 to ignore, or 3-12)
-   ||+----- ability 3 (0 to ignore, or 1-2)
-   |+------ ability 2 (0 to ignore, or 1-2)
-   +------- ability 1 (0 to ignore, or 1-2)
+   ||+----- ability 3 (0 to ignore, or 1-2 for ability, or Q for leveling queue tag)
+   |+------ ability 2 (0 to ignore, or 1-2 for ability, or Q for leveling queue tag)
+   +------- ability 1 (0 to ignore, or 1-2 for ability, or Q for leveling queue tag)
 
    Pet tags are stored in teams and used in import/export strings. When a petID
    ceases to be valid, or if a petID doesn't exist while importing a string,
@@ -25,6 +25,9 @@
       ZR0: Random pet (0 for any pet type, 1-A for a specific pet type)
       ZU:  Unknown
 
+   For leveling queue:
+   - To create a tag for a leveling queue pet: CreatePetTag(petID,"forQueue")
+   - The abilities are "QQQ" to signify it's a pet for the queue (where abilities are not relevant)
 ]]
 
 local _,L = ...
@@ -40,18 +43,24 @@ function rematch:CreatePetTag(petID,...)
    local petInfo = rematch.petInfo:Fetch(petID)
    if petInfo.speciesID and petInfo.valid then
       wipe(newTag)
-      -- add three abilities to tag first
-      for i=1,3 do
-         local abilityID = floor(select(i,...) or 0)
-         if abilityID>=0 and abilityID<=3 then -- if ability is already 0, 1 or 2
-            tinsert(newTag,abilityID) -- no need to look it up
-         else -- otherwise this is an abilityID, convert to 1 or 2 (or 0 if not found)
-            if abilityID==petInfo.abilityList[i] then
-               tinsert(newTag,1)
-            elseif abilityID==petInfo.abilityList[i+3] then
-               tinsert(newTag,2)
-            else
-               tinsert(newTag,0)
+      if select(1,...)=="forQueue" then -- if pet is intended for queue, then plug in Qs for abilities
+         for i=1,3 do
+            tinsert(newTag,"Q")
+         end
+      else
+         -- add three abilities to tag first
+         for i=1,3 do
+            local abilityID = floor(select(i,...) or 0)
+            if abilityID>=0 and abilityID<=3 then -- if ability is already 0, 1 or 2
+               tinsert(newTag,abilityID) -- no need to look it up
+            else -- otherwise this is an abilityID, convert to 1 or 2 (or 0 if not found)
+               if abilityID==petInfo.abilityList[i] then
+                  tinsert(newTag,1)
+               elseif abilityID==petInfo.abilityList[i+3] then
+                  tinsert(newTag,2)
+               else
+                  tinsert(newTag,0)
+               end
             end
          end
       end
@@ -95,6 +104,13 @@ function rematch:GetAbilitiesFromTag(tag)
    end
 end
 
+-- get the speciesID from a petTag
+function rematch:GetSpeciesFromTag(tag)
+   if type(tag)=="string" then
+      return tonumber(tag:sub(5,-1),32)
+   end
+end
+
 -- FindPetFromPetTag takes a tag and returns the best petID for that tag
 -- if notPetID1 to notPetID3 are defined, it will not choose any of those
 -- if no petID is found, the speciesID will be returned as a petID
@@ -111,6 +127,8 @@ function rematch:FindPetFromPetTag(tag,notPetID1,notPetID2,notPetID3)
       local speciesID = tonumber(tag:sub(5,-1),32) -- speciesID begins at 5th character
       if speciesID then
 
+         local forQueue = tag:sub(1,3)=="QQQ"
+
          -- first check if one or less of a speciesID is known
          local numCollected = C_PetJournal.GetNumCollectedInfo(speciesID)
          if numCollected==0 then
@@ -119,7 +137,7 @@ function rematch:FindPetFromPetTag(tag,notPetID1,notPetID2,notPetID3)
             -- get the name of the speciesID, find the petID by name and return it
             local petInfo = rematch.petInfo:Fetch(speciesID)
             local _,petID = C_PetJournal.FindPetIDByName(petInfo.name)
-            if petID~=notPetID1 and petID~=notPetID2 and petID~=notPetID3 then
+            if petID~=notPetID1 and petID~=notPetID2 and petID~=notPetID3 and (not forQueue or (petInfo.level or 0)<25) then
                return petID or speciesID -- return found petID (or speciesID if petID not found)
             else
                return speciesID
@@ -133,7 +151,7 @@ function rematch:FindPetFromPetTag(tag,notPetID1,notPetID2,notPetID3)
          -- go through all owned petIDs to get the best weighted petID
          for petID in rematch.Roster:AllOwnedPets() do
             local petInfo = rematch.petInfo:Fetch(petID)
-            if petInfo.speciesID==speciesID and petID~=notPetID1 and petID~=notPetID2 and petID~=notPetID3 then
+            if petInfo.speciesID==speciesID and petID~=notPetID1 and petID~=notPetID2 and petID~=notPetID3 and (not forQueue or (petInfo.level or 0)<25) then
                local weight = petInfo.rarity -- rarity is lowest weight
                -- if breedID of the tag is 0, ignore breed (use 0 for all candidate breeds)
                -- if breedID is not 0, then matching breeds get a weight of 1

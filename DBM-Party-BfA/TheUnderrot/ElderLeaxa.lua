@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2157, "DBM-Party-BfA", 8, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17712 $"):sub(12, -3))
+mod:SetRevision("20190416205700")
 mod:SetCreatureID(131318)
 mod:SetEncounterID(2111)
 mod:SetZone()
@@ -16,13 +16,13 @@ mod:RegisterEventsInCombat(
 local specWarnBloodBolt				= mod:NewSpecialWarningInterrupt(260879, "HasInterrupt", nil, nil, 1, 2)
 local specWarnCreepingRot			= mod:NewSpecialWarningDodge(260894, nil, nil, nil, 2, 2)
 local specWarnSanguineFeast			= mod:NewSpecialWarningDodge(264757, nil, nil, nil, 2, 2)
---local specWarnGTFO				= mod:NewSpecialWarningGTFO(238028, nil, nil, nil, 1, 2)
+--local specWarnGTFO				= mod:NewSpecialWarningGTFO(238028, nil, nil, nil, 1, 8)
 
 --TODO: Use NewNextSourceTimer to split adds from boss
 local timerBloodBoltCD				= mod:NewCDTimer(6.1, 260879, nil, nil, nil, 4, nil, DBM_CORE_INTERRUPT_ICON)
 local timerCreepingRotCD			= mod:NewNextTimer(15.8, 260894, nil, nil, nil, 3)
 local timerSanguineFeastCD			= mod:NewNextTimer(30, 264757, nil, nil, nil, 3, nil, DBM_CORE_HEROIC_ICON)
-local timerBloodMirrorCD			= mod:NewCDTimer(13, 264603, nil, nil, nil, 1, nil, DBM_CORE_DAMAGE_ICON)
+local timerBloodMirrorCD			= mod:NewCDTimer(47.4, 264603, nil, nil, nil, 1, nil, DBM_CORE_DAMAGE_ICON)--47.4-49.8
 
 mod:AddInfoFrameOption(260685, "Healer")
 
@@ -54,7 +54,7 @@ function mod:SPELL_CAST_START(args)
 		if cid == 131318 then--Main boss
 			timerBloodBoltCD:Start()
 		else
-		
+
 		end
 	elseif spellId == 260894 and self:AntiSpam(3, 1) then
 		specWarnCreepingRot:Show()
@@ -63,7 +63,7 @@ function mod:SPELL_CAST_START(args)
 		if cid == 131318 then--Main boss
 			timerCreepingRotCD:Start()
 		else
-		
+
 		end
 	elseif spellId == 264757 then
 		specWarnSanguineFeast:Show()
@@ -72,10 +72,10 @@ function mod:SPELL_CAST_START(args)
 		if cid == 131318 then--Main boss
 			timerSanguineFeastCD:Start()
 		else
-		
+
 		end
 	elseif spellId == 264603 then
-		--timerBloodMirrorCD:Start()
+		timerBloodMirrorCD:Start()
 	end
 end
 
@@ -83,7 +83,7 @@ end
 function mod:SPELL_PERIODIC_DAMAGE(_, _, _, _, destGUID, _, _, _, spellId)
 	if spellId == 228007 and destGUID == UnitGUID("player") and self:AntiSpam(2, 4) then
 		specWarnGTFO:Show()
-		specWarnGTFO:Play("runaway")
+		specWarnGTFO:Play("watchfeet")
 	end
 end
 mod.SPELL_PERIODIC_MISSED = mod.SPELL_PERIODIC_DAMAGE
@@ -91,7 +91,7 @@ mod.SPELL_PERIODIC_MISSED = mod.SPELL_PERIODIC_DAMAGE
 function mod:UNIT_DIED(args)
 	local cid = self:GetCIDFromGUID(args.destGUID)
 	if cid == 124396 then
-		
+
 	end
 end
 

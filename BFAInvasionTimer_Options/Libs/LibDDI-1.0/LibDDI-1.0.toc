@@ -1,0 +1,12 @@
+## Interface: 80200
+## LoadOnDemand: 1
+## Title: Lib: Dropdown Items
+## Notes: Simple AceGUI3 dropdown item classes for font/statusbar/sound/etc.
+## Author: Funkydude
+## X-Credits: Rabbit
+## X-Category: Library
+## X-License: LGPLv2.1 or later
+## OptionalDeps: Ace3, LibSharedMedia-3.0
+
+lib.xml
+

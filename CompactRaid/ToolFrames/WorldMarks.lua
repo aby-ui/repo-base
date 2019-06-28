@@ -37,7 +37,7 @@ local function Button_OnUpdate(self)
 	end
 end
 
-local NUM_BUTTONS = NUM_WORLD_RAID_MARKERS + 1
+local NUM_BUTTONS = 8 + 1
 
 local i
 for i = 1, NUM_BUTTONS do

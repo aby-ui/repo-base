@@ -1,5 +1,5 @@
 --- Kaliel's Tracker
---- Copyright (c) 2012-2018, Marouan Sabbagh <mar.sabbagh@gmail.com>
+--- Copyright (c) 2012-2019, Marouan Sabbagh <mar.sabbagh@gmail.com>
 --- All Rights Reserved.
 ---
 --- This file is part of addon Kaliel's Tracker.
@@ -41,9 +41,12 @@ local warning = cWarning..L"Warning:|r UI will be re-loaded!"
 local KTF = KT.frame
 local OTF = ObjectiveTrackerFrame
 
-local GetModulesOptionsTable, MoveModule, SetSharedColor, IsSpecialLocale, DecToHex, RgbToHex	-- functions
+local overlay
+local overlayShown = false
 
 local _, numQuests = GetNumQuestLogEntries()
+
+local OverlayFrameUpdate, OverlayFrameHide, GetModulesOptionsTable, MoveModule, SetSharedColor, IsSpecialLocale	-- functions
 
 local defaults = {
 	profile = {
@@ -89,21 +92,28 @@ local defaults = {
 		qiBgrBorder = false,
 		qiXOffset = -5,
 		qiActiveButton = false,
+		qiActiveButtonBindingShow = true,
 
 		hideEmptyTracker = false,
 		collapseInInstance = false,
 		tooltipShow = true,
 		tooltipShowRewards = true,
 		tooltipShowID = true,
-        menuWowheadURL = true,
+        menuWowheadURL = false,
         menuWowheadURLModifier = "ALT",
         questDefaultActionMap = false,
+		questShowTags = true,
 
+		messageQuest = false,
+		messageAchievement = false,
 		sink20OutputSink = "UIErrorsFrame",
 		sink20Sticky = false,
+		soundQuest = false,
+		soundQuestComplete = "KT - Default",
 
 		modulesOrder = {
 			"SCENARIO_CONTENT_TRACKER_MODULE",
+			"UI_WIDGET_TRACKER_MODULE",
 			"AUTO_QUEST_POPUP_TRACKER_MODULE",
 			"QUEST_TRACKER_MODULE",
 			"BONUS_OBJECTIVE_TRACKER_MODULE",
@@ -196,6 +206,7 @@ local options = {
 								db.xOffset = 0
 								db.yOffset = 0
 								KT:MoveTracker()
+								OverlayFrameUpdate()
 							end,
 							order = 1.1,
 						},
@@ -223,6 +234,7 @@ local options = {
 								db.yOffset = value
 								KT:MoveTracker()
 								KT:SetSize()
+								OverlayFrameUpdate()
 							end,
 							order = 1.3,
 						},
@@ -236,16 +248,38 @@ local options = {
 							set = function(_, value)
 								db.maxHeight = value
 								KT:SetSize()
+								OverlayFrameUpdate()
 							end,
 							order = 1.4,
 						},
+						maxHeightShowOverlay = {
+							name = "Show Max. height overlay",
+							desc = "Show overlay, for better visualisation Max. height value.",
+							type = "toggle",
+							width = 1.3,
+							get = function()
+								return overlayShown
+							end,
+							set = function()
+								overlayShown = not overlayShown
+								if overlayShown and not overlay then
+									overlay = CreateFrame("Frame", KTF:GetName().."Overlay", KTF)
+									overlay:SetFrameLevel(KTF:GetFrameLevel() + 11)
+									overlay.texture = overlay:CreateTexture(nil, "BACKGROUND")
+									overlay.texture:SetAllPoints()
+									overlay.texture:SetColorTexture(0, 1, 0, 0.3)
+									OverlayFrameUpdate()
+								end
+								overlay:SetShown(overlayShown)
+							end,
+							order = 1.5,
+						},
 						maxHeightNote = {
-							name = cBold..L[" Max. height is related with value Y offset.\n"..
+							name = cBold.."\n"..L[" Max. height is related with value Y offset.\n"..
 								" Content is lesser ... tracker height is automatically increases.\n"..
 								" Content is greater ... tracker enables scrolling."],
 							type = "description",
-							width = "double",
-							order = 1.41,
+							order = 1.6,
 						},
 						frameScrollbar = {
 							name = L"Show scroll indicator",
@@ -256,7 +290,7 @@ local options = {
 								KTF.Bar:SetShown(db.frameScrollbar)
 								KT:SetSize()
 							end,
-							order = 1.5,
+							order = 1.7,
 						},
 						frameStrata = {
 							name = L"Strata",
@@ -275,7 +309,7 @@ local options = {
 								KTF:SetFrameStrata(strata[value])
 								KTF.Buttons:SetFrameStrata(strata[value])
 							end,
-							order = 1.6,
+							order = 1.8,
 						},
 					},
 				},
@@ -417,6 +451,9 @@ local options = {
 								db.progressBar = value
 								KT.forcedUpdate = true
 								ObjectiveTracker_Update()
+								if PetTracker then
+									PetTracker.Objectives:TrackingChanged()
+								end
 								KT.forcedUpdate = false
 							end,
 							order = 2.9,
@@ -489,19 +526,16 @@ local options = {
 						},
 						fontShadow = {
 							name = L"Font shadow",
+							desc = warning,
 							type = "toggle",
+							confirm = true,
+							confirmText = warning,
 							get = function()
 								return (db.fontShadow == 1)
 							end,
 							set = function(_, value)
 								db.fontShadow = value and 1 or 0
-								KT.forcedUpdate = true
-								KT:SetText()
-								ObjectiveTracker_Update()
-								if PetTracker then
-									PetTracker.Objectives:TrackingChanged()
-								end
-								KT.forcedUpdate = false
+								ReloadUI()	-- WTF
 							end,
 							order = 3.4,
 						},
@@ -535,7 +569,7 @@ local options = {
 								   cBold.."Only for deDE, esES, frFR, ruRU locale."],
 							descStyle = "inline",
 							type = "toggle",
-							width = "double",
+							width = 2.2,
 							disabled = function()
 								return not IsSpecialLocale()
 							end,
@@ -849,7 +883,7 @@ local options = {
 						},
 						qiActiveButton = {
 							name = L"Enable Active button "..beta,
-							desc = L["Show Quest item button for CLOSEST quest as \"Extra Action Button\". "..
+							desc = L["Show Quest item button for CLOSEST quest as \"Extra Action Button\". ".."\n"..
 								   cBold.."Key bind is shared with EXTRAACTIONBUTTON1."],
 							descStyle = "inline",
 							width = "double",
@@ -890,12 +924,31 @@ local options = {
 							end,
 							order = 5.4,
 						},
+						qiActiveButtonBindingShow = {
+							name = "Show Active button Binding text",
+							width = "normal+half",
+							type = "toggle",
+							disabled = function()
+								return not db.qiActiveButton
+							end,
+							set = function()
+								db.qiActiveButtonBindingShow = not db.qiActiveButtonBindingShow
+								KT.ActiveButton:Update()
+							end,
+							order = 5.5,
+						},
+						qiActiveButtonSpacer = {
+							name = " ",
+							type = "description",
+							width = "normal+half",
+							order = 5.51,
+						},
 						addonMasqueLabel = {
-							name = " Skin options - for Quest item buttons or Active button",
+							name = L" Skin options - for Quest item buttons or Active button",
 							type = "description",
 							width = "double",
 							fontSize = "medium",
-							order = 5.5,
+							order = 5.6,
 						},
 						addonMasqueOptions = {
 							name = "Masque",
@@ -906,7 +959,7 @@ local options = {
 							func = function()
 								SlashCmdList["MASQUE"]()
 							end,
-							order = 5.51,
+							order = 5.61,
 						},
 					},
 				},
@@ -917,7 +970,7 @@ local options = {
 					order = 6,
 					args = {
 						trackerTitle = {
-							name = cTitle.."Tracker",
+							name = cTitle..L"Tracker",
 							type = "description",
 							fontSize = "medium",
 							order = 6.1,
@@ -941,7 +994,7 @@ local options = {
 							order = 6.12,
 						},
 						tooltipTitle = {
-							name = "\n"..cTitle.."Tooltips",
+							name = "\n"..cTitle..L"Tooltips",
 							type = "description",
 							fontSize = "medium",
 							order = 6.2,
@@ -956,7 +1009,7 @@ local options = {
 							order = 6.21,
 						},
 						tooltipShowRewards = {
-							name = "Show Rewards",
+							name = L"Show Rewards",
 							desc = "Show Quest Rewards inside tooltips - Artifact Power, Order Resources, Money, Equipment etc.",
 							type = "toggle",
 							disabled = function()
@@ -980,14 +1033,14 @@ local options = {
 							order = 6.23,
 						},
 						menuTitle = {
-							name = "\n"..cTitle.."Menu items",
+							name = "\n"..cTitle..L"Menu items",
 							type = "description",
 							fontSize = "medium",
 							order = 6.3,
 						},
                         menuWowheadURL = {
 							name = L"Wowhead URL",
-							desc = "Show Wowhead URL menu item inside the tracker and Quesl Log.",
+							desc = "Show Wowhead URL menu item inside the tracker and Quest Log.",
 							type = "toggle",
 							set = function()
 								db.menuWowheadURL = not db.menuWowheadURL
@@ -1017,7 +1070,7 @@ local options = {
                             order = 6.4,
                         },
                         questDefaultActionMap = {
-                            name = "Quest default action - World Map",
+                            name = L"Quest default action - World Map",
                             desc = "Set the Quest default action as \"World Map\". Otherwise is the default action \"Quest Details\".",
                             type = "toggle",
                             width = "normal+half",
@@ -1026,19 +1079,84 @@ local options = {
                             end,
                             order = 6.41,
                         },
+						questShowTags = {
+							name = "Show Quest tags",
+							desc = "Show / Hide Quest tags (quest level, quest type) inside the tracker and Quest Log.",
+							type = "toggle",
+							set = function()
+								db.questShowTags = not db.questShowTags
+								ObjectiveTracker_Update()
+								QuestMapFrame_UpdateAll()
+							end,
+							order = 6.42,
+						},
 					},
 				},
 				sec7 = {
-					-- LibSink
+					name = L"Notification messages",
+					type = "group",
+					inline = true,
+					order = 7,
+					args = {
+						messageQuest = {
+							name = L"Quest messages",
+							type = "toggle",
+							set = function()
+								db.messageQuest = not db.messageQuest
+							end,
+							order = 7.1,
+						},
+						messageAchievement = {
+							name = L"Achievement messages",
+							width = 1.1,
+							type = "toggle",
+							set = function()
+								db.messageAchievement = not db.messageAchievement
+							end,
+							order = 7.2,
+						},
+						-- LibSink
+					},
+				},
+				sec8 = {
+					name = L"Notification sounds",
+					type = "group",
+					inline = true,
+					order = 8,
+					args = {
+						soundQuest = {
+							name = L"Quest sounds",
+							type = "toggle",
+							set = function()
+								db.soundQuest = not db.soundQuest
+							end,
+							order = 8.1,
+						},
+						soundQuestComplete = {
+							name = L"Complete Sound",
+							desc = "Addon sounds are prefixed \"KT - \".",
+							type = "select",
+							width = 1.2,
+							disabled = function()
+								return not db.soundQuest
+							end,
+							dialogControl = "LSM30_Sound",
+							values = WidgetLists.sound,
+							set = function(_, value)
+								db.soundQuestComplete = value
+							end,
+							order = 8.11,
+						},
+					},
 				},
 			},
 		},
 		modules = {
-			name = "Modules",
+			name = L"Modules",
 			type = "group",
 			args = {
 				sec1 = {
-					name = "Order of Modules "..beta,
+					name = L"Order of Modules "..beta,
 					type = "group",
 					inline = true,
 					order = 1,
@@ -1064,9 +1182,10 @@ local options = {
 					args = {
 						addonMasque = {
 							name = "Masque",
-							desc = "Version: %s\n\nSupport skinning for quest item buttons.",
+							desc = "Version: %s",
 							descStyle = "inline",
 							type = "toggle",
+							width = 1.05,
 							confirm = true,
 							confirmText = warning,
 							disabled = function()
@@ -1076,13 +1195,20 @@ local options = {
 								db.addonMasque = not db.addonMasque
 								ReloadUI()
 							end,
-							order = 1.2,
+							order = 1.11,
+						},
+						addonMasqueDesc = {
+							name = "Masque adds skinning support for Quest Item buttons.\nIt also affects the Active Button.",
+							type = "description",
+							width = "double",
+							order = 1.12,
 						},
 						addonPetTracker = {
 							name = "PetTracker",
-							desc = "Version: %s\n\n"..beta.." Full support for zone pet tracking.",
+							desc = "Version: %s",
 							descStyle = "inline",
 							type = "toggle",
+							width = 1.05,
 							confirm = true,
 							confirmText = warning,
 							disabled = function()
@@ -1093,21 +1219,36 @@ local options = {
 								PetTracker.Sets.HideTracker = not db.addonPetTracker
 								ReloadUI()
 							end,
-							order = 1.3,
+							order = 1.21,
+						},
+						addonPetTrackerDesc = {
+							name = beta.." PetTracker support adjusts display of zone pet tracking inside "..KT.title..". It also fix some visual bugs.",
+							type = "description",
+							width = "double",
+							order = 1.22,
 						},
 						addonTomTom = {
 							name = "TomTom",
-							desc = "Version: %s\n\n"..beta.." Support for add/remove quest waypoints.",
+							desc = "Version: %s",
 							descStyle = "inline",
 							type = "toggle",
+							width = 1.05,
 							confirm = true,
 							confirmText = warning,
-							disabled = true,
+							disabled = function()
+								return not IsAddOnLoaded("TomTom")
+							end,
 							set = function()
 								db.addonTomTom = not db.addonTomTom
 								ReloadUI()
 							end,
-							order = 1.4,
+							order = 1.31,
+						},
+						addonTomTomDesc = {
+							name = beta.." TomTom support combined Blizzard's POI and\nTomTom's Arrow.",
+							type = "description",
+							width = "double",
+							order = 1.32,
 						},
 					},
 				},
@@ -1203,14 +1344,22 @@ function KT:SetupOptions()
 	db = self.db.profile
 	dbChar = self.db.char
 
-	db.addonTomTom = false
+    -- 如果有重复的或者不在default里的，则为default, 重复会导致排序错误
+    local exist, def = {}, {}
+    for i, module in ipairs(defaults.profile.modulesOrder) do def[module] = true end
+    for i, module in ipairs(db.modulesOrder) do
+        if not def[module] or exist[module] then
+            db.modulesOrder = copy(defaults.profile.modulesOrder)
+            break
+        end
+        exist[module] = true
+    end
 
-	general.sec2.args.classBorder.name = general.sec2.args.classBorder.name:format(RgbToHex(self.classColor))
+	general.sec2.args.classBorder.name = general.sec2.args.classBorder.name:format(self.RgbToHex(self.classColor))
 
-	general.sec7 = self:GetSinkAce3OptionsDataTable()
-	general.sec7.name = L"Output for tracker messages"
-	general.sec7.inline = true
-	general.sec7.order = 7
+	general.sec7.args.messageOutput = self:GetSinkAce3OptionsDataTable()
+	general.sec7.args.messageOutput.inline = true
+	general.sec7.args.messageOutput.disabled = function() return not (db.messageQuest or db.messageAchievement) end
 	self:SetSinkStorage(db)
 
 	options.args.profiles = LibStub("AceDBOptions-3.0"):GetOptionsTable(self.db)
@@ -1248,21 +1397,43 @@ InterfaceOptionsFrame:HookScript("OnHide", function(self)
 		end
 	end
 	ACR:NotifyChange(addonName)
+
+	OverlayFrameHide()
 end)
+
+hooksecurefunc("OptionsList_SelectButton", function(listFrame, button)
+	OverlayFrameHide()
+end)
+
+function OverlayFrameUpdate()
+	if overlay then
+		overlay:SetSize(280, db.maxHeight)
+		overlay:ClearAllPoints()
+		overlay:SetPoint(db.anchorPoint, 0, 0)
+	end
+end
+
+function OverlayFrameHide()
+	if overlayShown then
+		overlay:Hide()
+		overlayShown = false
+	end
+end
 
 function GetModulesOptionsTable()
 	local numModules = #db.modulesOrder
 	local text
+	local defaultModule, defaultText
 	local args = {
 		descCurOrder = {
-			name = cTitle.."Current Order",
+			name = cTitle..L"Current Order",
 			type = "description",
 			width = "double",
 			fontSize = "medium",
 			order = 0.1,
 		},
 		descDefOrder = {
-			name = "|T:1:42|t"..cTitle.."Default Order",
+			name = "|T:1:42|t"..cTitle..L"Default Order",
 			type = "description",
 			width = "normal",
 			fontSize = "medium",
@@ -1274,13 +1445,27 @@ function GetModulesOptionsTable()
 			order = 20,
 		},
 	}
+
 	for i, module in ipairs(db.modulesOrder) do
 		text = _G[module].Header.Text:GetText()
 		if module == "SCENARIO_CONTENT_TRACKER_MODULE" then
 			text = text.." *"
+		elseif module == "UI_WIDGET_TRACKER_MODULE" then
+			text = "[ "..ZONE.." ]"
 		elseif module == "AUTO_QUEST_POPUP_TRACKER_MODULE" then
-			text = "Popup "..text
+			text = L"Popup "..text
 		end
+
+		defaultModule = OTF.MODULES_UI_ORDER[i]
+		defaultText = defaultModule.Header.Text:GetText()
+		if defaultModule == SCENARIO_CONTENT_TRACKER_MODULE then
+			defaultText = defaultText.." *"
+		elseif defaultModule == UI_WIDGET_TRACKER_MODULE then
+			defaultText = "[ "..ZONE.." ]"
+		elseif defaultModule == AUTO_QUEST_POPUP_TRACKER_MODULE then
+			defaultText = L"Popup "..defaultText
+		end
+
 		args["pos"..i] = {
 			name = " "..text,
 			type = "description",
@@ -1309,7 +1494,7 @@ function GetModulesOptionsTable()
 			order = i + 0.2,
 		}
 		args["pos"..i.."default"] = {
-			name = "|T:1:55|t|cff808080"..(OTF.MODULES_UI_ORDER[i] == AUTO_QUEST_POPUP_TRACKER_MODULE and "Popup " or "")..OTF.MODULES_UI_ORDER[i].Header.Text:GetText()..(OTF.MODULES_UI_ORDER[i] == SCENARIO_CONTENT_TRACKER_MODULE and " *" or ""),
+			name = "|T:1:55|t|cff808080"..defaultText,
 			type = "description",
 			width = "normal",
 			order = i + 0.3,
@@ -1338,7 +1523,7 @@ function MoveModule(idx, direction)
 end
 
 function SetSharedColor(color)
-	local name = L"Use border |cff"..RgbToHex(color)..L"color|r"
+	local name = L"Use border |cff"..KT.RgbToHex(color)..L"color|r"
 	local sec4 = general.sec4.args
 	sec4.hdrBgrColorShare.name = name
 	sec4.hdrTxtColorShare.name = name
@@ -1350,25 +1535,6 @@ function IsSpecialLocale()
 			KT.locale == "esES" or
 			KT.locale == "frFR" or
 			KT.locale == "ruRU")
-end
-
-function DecToHex(num)
-	local b, k, hex, d = 16, "0123456789abcdef", "", 0
-	while num > 0 do
-		d = fmod(num, b) + 1
-		hex = strsub(k, d, d)..hex
-		num = floor(num/b)
-	end
-	hex = (hex == "") and "0" or hex
-	return hex
-end
-
-function RgbToHex(color)
-	local r, g, b = DecToHex(color.r*255), DecToHex(color.g*255), DecToHex(color.b*255)
-	r = (strlen(r) < 2) and "0"..r or r
-	g = (strlen(g) < 2) and "0"..g or g
-	b = (strlen(b) < 2) and "0"..b or b
-	return r..g..b
 end
 
 -- Init

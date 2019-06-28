@@ -4,18 +4,31 @@
 --]]
 
 local ADDON, Addon = ...
-local ALTERNATIVE_ICONS = 'Interface/CharacterFrame/TEMPORARYPORTRAIT-%s-%s'
-local ICONS = 'Interface/Icons/Achievement_Character_%s_%s'
 local CLASS_COLOR = '|cff%02x%02x%02x'
+local RACE_PORTRAITS = 'Interface\\CharacterFrame\\TEMPORARYPORTRAIT-%GENDER-%RACE'
+local RACE_ICONS
 
-local ICONLESS_RACES = {
-	['Worgen'] = true,
-	['Goblin'] = true,
-	['VoidElf'] = true,
-	['Nightborne'] = true,
-	['LightforgedDraenei'] = true,
-	['HighmountainTauren'] = true,
-}
+do
+	local characters = 'Interface\\Icons\\Achievement_Character_%RACE_%GENDER'
+	local heads = 'Interface\\Icons\\Achievement_%RACEHead'
+	local inventory = 'Interface\\Icons\\INV_%RACE%GENDER'
+
+	RACE_ICONS = {
+		BloodElf = {characters, characters},
+		Draenei = {characters, characters},
+		Dwarf = {characters, characters},
+		Gnome = {characters, characters},
+		Goblin = {heads},
+		Human = {characters, characters},
+		Nightborne = {inventory, inventory},
+		NightElf = {characters, characters},
+		Orc = {characters, characters},
+		Pandaren = {nil, characters},
+		Tauren = {characters, characters},
+		Troll = {characters, characters},
+		Undead = {characters, characters},
+	}
+end
 
 function Addon:MultipleOwnersFound()
 	local owners = LibStub('LibItemCache-2.0'):IterateOwners()
@@ -27,21 +40,17 @@ function Addon:GetOwnerIcon(owner)
 		return owner.faction == 'Alliance' and 'Interface/Icons/inv_bannerpvp_02' or 'Interface/Icons/inv_bannerpvp_01'
 	end
 
-	local gender = owner.gender == 3 and 'Female' or 'Male'
 	local race = owner.race
-	if not race then
+	if race == 'Scourge' then
+		race = 'Undead'
+	elseif not race then
 		return ''
 	end
 
-	if not ICONLESS_RACES[race] and (race ~= 'Pandaren' or owner.gender == 3) then
-		if race == 'Scourge' then
-			race = 'Undead'
-		end
+	local icon = RACE_ICONS[race] and RACE_ICONS[race][owner.gender-1] or RACE_PORTRAITS
+	local gender = owner.gender == 3 and 'Female' or 'Male'
 
-		return ICONS:format(race, gender)
-	end
-
-	return ALTERNATIVE_ICONS:format(gender, race)
+	return icon:gsub('%%RACE', race):gsub('%%GENDER', gender)
 end
 
 function Addon:GetOwnerColorString(owner)

@@ -190,12 +190,8 @@ local soundChannels = {
 
 TMW.HELP:NewCode("SOUND_TEST_ERROR", 10, false)
 
-function Sound:TestSound(button, soundFile)
-	if tonumber(soundFile) then
-		PlaySound(soundFile)
-	else
-		PlaySoundFile(soundFile, TMW.db.profile.SoundChannel)
-	end
+function Sound:TestSound(button, settingValue)
+	Sound:PlaySoundFromSettingValue(settingValue)
 
 	local error
 
@@ -220,7 +216,7 @@ function Sound:TestSound(button, soundFile)
 			y = 0,
 			text = format(error)
 		}
-	end	
+	end
 end
 
 

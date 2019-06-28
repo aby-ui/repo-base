@@ -13,6 +13,7 @@ ns.L = {
     ShowInspectAngularBorder    = "觀察面板直角邊框",
     ShowInspectColoredLabel     = "觀察面板高亮橙裝武器標簽",
     ShowCharacterItemSheet      = "顯示玩家自己裝備列表",
+    ShowInspectItemSheet        = "顯示觀察面板裝備列表",
     ShowOwnFrameWhenInspecting  = "觀察同時顯示自己裝備列表",
     ShowItemStats               = "顯示裝備屬性統計",
     DisplayPercentageStats      = "裝備屬性換算成百分比數值",

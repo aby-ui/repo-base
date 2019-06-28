@@ -1,8 +1,8 @@
 local mod	= DBM:NewMod(2125, "DBM-Party-BfA", 10, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17722 $"):sub(12, -3))
-mod:SetCreatureID(135358, 135359, 135360)
+mod:SetRevision("20190420174733")
+mod:SetCreatureID(135358, 135359, 135360, 131823, 131824, 131825)--All versions so we can pull boss
 mod:SetEncounterID(2113)
 mod:DisableESCombatDetection()--ES fires For entryway trash pull sometimes, for some reason.
 mod:SetZone()
@@ -27,10 +27,10 @@ local warnAuraofDreadOver			= mod:NewEndAnnounce(268088, 1)
 local specWarnRitual				= mod:NewSpecialWarningSpell(260773, nil, nil, nil, 2, 2)
 local specWarnUnstableMark			= mod:NewSpecialWarningMoveAway(260703, nil, nil, nil, 1, 2)
 local yellUnstableMark				= mod:NewYell(260703)
-local specWarnAuraofDread			= mod:NewSpecialWarningMove(268088, nil, nil, nil, 1, 2)
+local specWarnAuraofDread			= mod:NewSpecialWarningKeepMove(268088, nil, nil, nil, 1, 2)
 local specWarnJaggedNettles			= mod:NewSpecialWarningTarget(260703, "Healer", nil, nil, 1, 2)
 local specWarnSoulManipulation		= mod:NewSpecialWarningSwitch(260907, nil, nil, nil, 1, 2)
---local specWarnGTFO				= mod:NewSpecialWarningGTFO(238028, nil, nil, nil, 1, 2)
+--local specWarnGTFO				= mod:NewSpecialWarningGTFO(238028, nil, nil, nil, 1, 8)
 
 local timerJaggedNettlesCD			= mod:NewNextTimer(13.3, 260741, nil, nil, nil, 5, nil, DBM_CORE_HEALER_ICON)
 local timerSoulManipulationCD		= mod:NewNextTimer(13.3, 260907, nil, nil, nil, 3, nil, DBM_CORE_TANK_ICON)--Always tank? if not, remove tank icon
@@ -38,7 +38,7 @@ local timerUnstableRunicMarkCD		= mod:NewNextTimer(13.3, 260703, nil, nil, nil, 
 
 mod:AddRangeFrameOption(6, 260703)
 mod:AddInfoFrameOption(260773, true)
-mod:AddSetIconOption("SetIconOnTriad", 260805, true, true)
+mod:AddSetIconOption("SetIconOnTriad", 260805, true, true, {8})
 
 mod.vb.activeTriad = nil
 local IrisBuff = DBM:GetSpellInfo(260805)
@@ -49,6 +49,9 @@ function mod:OnCombatStart(delay)
 		DBM.InfoFrame:SetHeader(DBM_CORE_INFOFRAME_POWER)
 		DBM.InfoFrame:Show(3, "enemypower", 2)
 	end
+	--Hack so win detection and bosses remaining work with 6 CIDs
+	self.vb.bossLeft = 3
+	self.numBoss = 3
 end
 
 function mod:OnCombatEnd()
@@ -66,11 +69,11 @@ function mod:SPELL_AURA_APPLIED(args)
 		self.vb.activeTriad = args.destGUID
 		warnActiveTriad:Show(args.destName)
 		local cid = self:GetCIDFromGUID(args.destGUID)
-		if cid == 135360 then--Sister Briar
+		if cid == 135360 or cid == 131825 then--Sister Briar
 			timerJaggedNettlesCD:Start(7.8)--CAST SUCCESS
-		elseif cid == 135358 then--Sister Malady
+		elseif cid == 135358 or cid == 131823 then--Sister Malady
 			timerSoulManipulationCD:Start(11.3)--CAST SUCCESS
-		elseif cid == 135359 then--Sister Solena
+		elseif cid == 135359 or cid == 131824 then--Sister Solena
 			timerUnstableRunicMarkCD:Start(8.5)
 			if self.Options.RangeFrame then
 				DBM.RangeCheck:Show(6)
@@ -99,11 +102,11 @@ function mod:SPELL_AURA_REMOVED(args)
 	local spellId = args.spellId
 	if spellId == 260805 then--Iris
 		local cid = self:GetCIDFromGUID(args.destGUID)
-		if cid == 135360 then--Sister Briar
+		if cid == 135360 or cid == 131825 then--Sister Briar
 			timerJaggedNettlesCD:Stop()
-		elseif cid == 135358 then--Sister Malady
+		elseif cid == 135358 or cid == 131823 then--Sister Malady
 			timerSoulManipulationCD:Stop()
-		elseif cid == 135359 then--Sister Solena
+		elseif cid == 135359 or cid == 131824 then--Sister Solena
 			timerUnstableRunicMarkCD:Stop()
 			if self.Options.RangeFrame then
 				DBM.RangeCheck:Hide()
@@ -154,7 +157,11 @@ do
 			for uId in DBM:GetGroupMembers() do
 				if UnitGUID(uId.."target") == self.vb.activeTriad then
 					self.vb.activeTriad = nil
-					SetRaidTarget(uId.."target", 8)
+					local icon = GetRaidTargetIndex(uId)
+					if not icon then
+						SetRaidTarget(uId.."target", 8)
+						break
+					end
 				end
 				if not (self.vb.activeTriad) then
 					break
@@ -174,7 +181,7 @@ end
 function mod:SPELL_PERIODIC_DAMAGE(_, _, _, _, destGUID, _, _, _, spellId)
 	if spellId == 228007 and destGUID == UnitGUID("player") and self:AntiSpam(2, 4) then
 		specWarnGTFO:Show()
-		specWarnGTFO:Play("runaway")
+		specWarnGTFO:Play("watchfeet")
 	end
 end
 mod.SPELL_PERIODIC_MISSED = mod.SPELL_PERIODIC_DAMAGE
@@ -184,15 +191,15 @@ function mod:UNIT_DIED(args)
 	if cid == 135360 then--Sister Briar
 		timerJaggedNettlesCD:Stop()
 	elseif cid == 135358 then--Sister Malady
-	
+
 	elseif cid == 135359 then--Sister Solena
-		
+
 	end
 end
 
 function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 	if spellId == 257939 then
-	
+
 	end
 end
 --]]

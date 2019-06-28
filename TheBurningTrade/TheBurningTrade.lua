@@ -133,29 +133,55 @@ function TBTFrame_OnLoad(self)
             end
         end
     end
+
     CoreDependCall("Bagnon", function()
         for i=1, 1000 do
-            local f = _G["BagnonItem"..i]
+            local f = _G["BagnonItemSlot"..i]
             if not f then break end
             SetOrHookScript(f, "PreClick", TBT_ContainerItemPreClick);
         end
         local constructID
         hooksecurefunc(Bagnon.ItemSlot, "Create", function()
-            local f = constructID and _G["BagnonItem"..constructID]
+            local f = constructID and _G["BagnonItemSlot"..constructID]
             if(f) then
                 return f:HookScript('PreClick', TBT_ContainerItemPreClick)
             end
         end)
         if Bagnon.ItemSlot.Construct then
             hooksecurefunc(Bagnon.ItemSlot, "Construct", function(self, id)
-                constructID = id
+                constructID = self.nextID or id
             end)
         elseif Bagnon.ItemSlot.ConstructNewItemSlot then
             hooksecurefunc(Bagnon.ItemSlot, "ConstructNewItemSlot", function(self, id)
-                constructID = id
+                constructID = self.nextID or id
             end)
         end
     end)
+
+    CoreDependCall("Combuctor", function()
+        for i=1, 1000 do
+            local f = _G["CombuctorItemSlot"..i]
+            if not f then break end
+            SetOrHookScript(f, "PreClick", TBT_ContainerItemPreClick);
+        end
+        local constructID
+        hooksecurefunc(Combuctor.ItemSlot, "Create", function()
+            local f = constructID and _G["CombuctorItemSlot"..constructID]
+            if(f) then
+                return f:HookScript('PreClick', TBT_ContainerItemPreClick)
+            end
+        end)
+        if Combuctor.ItemSlot.Construct then
+            hooksecurefunc(Combuctor.ItemSlot, "Construct", function(self, id)
+                constructID = self.nextID or id
+            end)
+        elseif Combuctor.ItemSlot.ConstructNewItemSlot then
+            hooksecurefunc(Combuctor.ItemSlot, "ConstructNewItemSlot", function(self, id)
+                constructID = self.nextID or id
+            end)
+        end
+    end)
+
     hooksecurefunc("HandleModifiedItemClick",function(link)
         if IsShiftKeyDown() then
             if IsAddOnLoaded("Blizzard_AuctionUI") then
@@ -421,7 +447,7 @@ local function SetTradeSkillFilter()
             local slotId = findEnchantSlot(v)
             if slotId then
                 if first then
-                    TradeSkillSetFilter(0, slotId, "", "有爱附魔助手 - ".._G[currentEnchantType]) --如果用1，则第一次进游戏时会报错
+                    TradeSkillSetFilter(0, slotId, "", "爱不易附魔助手 - ".._G[currentEnchantType]) --如果用1，则第一次进游戏时会报错
                     first = false
                 else
                     SetTradeSkillInvSlotFilter(slotId, 1, nil);
@@ -504,7 +530,7 @@ function ENHHelper:CreateButton()
         ToggleDropDownMenu(1, nil, ENHHelper.dropdown, self, 0, 0)
     end)
 
-    CoreUIEnableTooltip(btn, "有爱附魔助手", "点击此按钮可以方便的将身上或背包里的装备放入此栏。")
+    CoreUIEnableTooltip(btn, "爱不易附魔助手", "点击此按钮可以方便的将身上或背包里的装备放入此栏。")
 end
 
 local function isLock(item)

@@ -1,18 +1,19 @@
---## Interface: 80000
+--## Interface: 80100
 --## Title: ExaltedPlus
 --## Notes: Enhancements for paragon reputations
 --## Version: 7
 --## Author: Kanegasi
 local addonName = ...
 U1PLUG["ExaltedPlus"] = function()
-local rpt,f=ReputationParagonTooltip,CreateFrame('frame', "ExaltedPlusFrame") f.a=0
-f:RegisterEvent('QUEST_LOG_UPDATE') f:RegisterEvent('UPDATE_FACTION')
-f:SetScript('OnEvent',function()
-	for k in ReputationFrame.paragonFramesPool:EnumerateActive() do if k.factionID then
-		local id,n=k.factionID,GetFactionInfoByID(k.factionID) f[n]=k
-		if not f[id] or f[id].n~=n then f[id]={n=n,v=C_Reputation.GetFactionParagonInfo(id)} end
-	end end
-end)
+local rpt,f=EmbeddedItemTooltip,CreateFrame('frame', "ExaltedPlusFrame") f.a=0
+--f:RegisterEvent('QUEST_LOG_UPDATE') f:RegisterEvent('UPDATE_FACTION')
+local function updateParagonList()
+    for k in ReputationFrame.paragonFramesPool:EnumerateActive() do if k.factionID then
+   		local id,n=k.factionID,GetFactionInfoByID(k.factionID) f[n]=k
+   		if not f[id] or f[id].n~=n then f[id]={n=n,v=C_Reputation.GetFactionParagonInfo(id)} end
+   	end end
+end
+--f:SetScript('OnEvent',updateParagonList)
 f:SetScript('OnUpdate',function(s,e)
 	if s.b then s.a=s.a-e else s.a=s.a+e end
 	if s.a>=1 then s.a=1 s.b=true elseif s.a<=0 then s.a=0 s.b=false end
@@ -28,8 +29,8 @@ function EP_FindFaction(faction)
         local name, description, standingID, barMin, barMax, barValue,_,_,_,_,_,_,_,factionID = GetFactionInfo(i)
         if name == faction then
             local oldName,_,_,_,_ = GetWatchedFactionInfo();
-            if not isGuild and oldName ~= name and U1GetCfgValue(addonName, 'ExaltedPlus/autotrace') then SetWatchedFactionIndex(i) end
-            return standingID, barValue - barMin, factionID
+            if UnitLevel("player") == MAX_PLAYER_LEVEL and not isGuild and oldName ~= name and U1GetCfgValue(addonName, 'ExaltedPlus/autotrace') then SetWatchedFactionIndex(i) end
+            return standingID, barValue - barMin, factionID, i
         end
     end
 end
@@ -73,7 +74,7 @@ end)
 end)--]]
 hooksecurefunc('GameTooltip_AddQuestRewardsToTooltip',function(tip)
     if tip == rpt then
-        local text = _G["ReputationParagonTooltipTextLeft" .. tip:NumLines()]
+        local text = _G[tip:GetName() .. "TextLeft" .. tip:NumLines()]
         if text:GetText() == TOOLTIP_QUEST_REWARDS_STYLE_DEFAULT.headerText and f and f[rpt.factionID] then
             local c = format(ARCHAEOLOGY_COMPLETION,f[rpt.factionID].c)
             text:SetText(text:GetText() .. "  ( " .. c .. " )")
@@ -94,12 +95,13 @@ hooksecurefunc('MainMenuBar_UpdateExperienceBars',function()
 end)
 --]]
 hooksecurefunc('ReputationFrame_Update',function()
+    updateParagonList()
 	for i=1,NUM_FACTIONS_DISPLAYED do
 		local n,x,r,_,m,v,row,bar,_,_,_,_,_,id=GetFactionInfo(ReputationListScrollFrame.offset+i)
 		if id and f[n] and f[id] then
 			v,m,_,f[i]=C_Reputation.GetFactionParagonInfo(id)
 			f[id].c=f[i] and math.modf(v/m)-1 or math.modf(v/m) v=f[i] and mod(v,m)+m or mod(v,m)
-			x=f[i] and CONTRIBUTION_REWARD_TOOLTIP_TITLE or GetText("FACTION_STANDING_LABEL"..r,(UnitSex('player'))).."+"
+			x=f[i] and CONTRIBUTION_REWARD_TOOLTIP_TITLE or GetText("FACTION_STANDING_LABEL"..r,(UnitSex('player')))..(f[id].c > 0 and "*"..f[id].c or "+")
 			f[n].Check:SetShown(false)f[n].Glow:SetShown(false)f[n].Highlight:SetShown(false)f[n].Icon:SetAlpha(f[i] and 1 or .6)
 			row=_G['ReputationBar'..i] row.rolloverText=' '..format(REPUTATION_PROGRESS_FORMAT,v,m) row.standingText=x
 			bar=_G['ReputationBar'..i..'ReputationBar'] bar:SetMinMaxValues(0,m) bar:SetValue(v)

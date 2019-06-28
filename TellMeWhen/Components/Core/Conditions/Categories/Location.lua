@@ -96,7 +96,7 @@ ConditionCategory:RegisterCondition(1,	 "INSTANCE2", {
 	tcoords = CNDT.COMMON.standardtcoords,
 	Env = {
 		GetZoneType2 = function()
-			local _, z = IsInInstance()			
+			local _, z = IsInInstance()
 
 			local _, _, instanceDifficulty, _, _, _, _, instanceMapID = GetInstanceInfo()
 
@@ -172,8 +172,31 @@ ConditionCategory:RegisterCondition(1,	 "INSTANCE2", {
 	end,
 })
 
+ConditionCategory:RegisterCondition(1.1,  "KEYSTONELEVEL", {
+	text = L["CONDITIONPANEL_KEYSTONELEVEL"],
+	tooltip = L["CONDITIONPANEL_KEYSTONELEVEL_DESC"],
+	min = 0,
+	max = 30,
+	unit = false,
+	icon = "Interface\\Icons\\inv_relics_hourglass",
+	tcoords = CNDT.COMMON.standardtcoords,
 
-ConditionCategory:RegisterCondition(1.1, "GROUPSIZE", {
+	Env = {
+		GetActiveKeystoneInfo = function()
+			return C_ChallengeMode.GetActiveKeystoneInfo() or 0
+		end
+	},
+
+	funcstr = [[(GetActiveKeystoneInfo() c.Operator c.Level)]],
+
+	events = function(ConditionObject, c)
+		return
+			ConditionObject:GenerateNormalEventString("SCENARIO_CRITERIA_UPDATE"),
+			ConditionObject:GenerateNormalEventString("CHALLENGE_MODE_START")
+	end
+})
+
+ConditionCategory:RegisterCondition(1.2, "GROUPSIZE", {
 	text = L["CONDITIONPANEL_GROUPSIZE"],
 	tooltip = L["CONDITIONPANEL_GROUPSIZE_DESC"],
 	min = 0,

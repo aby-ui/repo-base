@@ -247,6 +247,7 @@ end
 local EVENTS_DEF = {
 	UNIT_AURA =			{ method = "OnPlayerAura", arg1 = "player" },
 	UNIT_INVENTORY_CHANGED =	{ method = "OnInventoryUpdate", arg1 = "player" },
+    PLAYER_EQUIPMENT_CHANGED =	{ method = "OnInventoryUpdate", arg1 = "player" },
 	--SPELLS_CHANGED =		{ method = "OnSpellUpdate", arg1 = "nil" },
 	BAG_UPDATE =			{ method = "OnBagUpdate" },
 	BAG_UPDATE_COOLDOWN =		{ method = "OnBagUpdate" },

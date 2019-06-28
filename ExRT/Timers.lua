@@ -226,6 +226,11 @@ end
 function module.options:Load()
 	self:CreateTilte()
 
+	local GetSpecializationInfoByID = GetSpecializationInfoByID
+	if ExRT.isClassic then
+		GetSpecializationInfoByID = ExRT.Classic.GetSpecializationInfoByID
+	end
+
 	self.shtml1 = ELib:Text(self,L.timerstxt1,12):Size(650,200):Point(5,-30):Top()
 	self.shtml2 = ELib:Text(self,L.timerstxt2,12):Size(550,200):Point(105,-30):Top():Color()
 	

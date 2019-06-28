@@ -13,33 +13,57 @@ Skada:AddLoadableModule("Debuffs", nil, function(Skada, L)
 	local buffspells = Skada:NewModule(L["Buff spell list"])
         
     local pairs, ipairs = pairs, ipairs
-    local time = time
-        
+    local time, strsplit = time, strsplit
+    --abyui
+    local debug = function() end
+    local function PlayerActiveTime(set, player)
+        local maxtime = 0
+
+        -- Add recorded time (for total set)
+        if player.time > 0 then
+            maxtime = player.time
+        end
+
+        -- Add in-progress time if set is not ended.
+        if (not set.endtime or set.stopped) and player.first then
+            maxtime = maxtime + time() - player.first --we use time() not player.last
+        end
+        return maxtime
+    end
+
 	local function log_auraapply(set, aura)
-		if set then
+		if set and aura.playername then
 
 			-- Get the player.
-			local player = Skada:get_player(set, aura.playerid, aura.playername)
+			local player = Skada:get_player(set, aura.playerid, (strsplit("-", aura.playername)))
 			if player then
 				--Skada:Print("applied "..aura.spellname.. " to "..player.name.. " - "..aura.auratype)
 				-- Add aura to player if it does not exist.
 				-- If it does exist, increment our counter of active instances by 1
-				if not player.auras[aura.spellname] then
-					player.auras[aura.spellname] = {["id"] = aura.spellid, ["name"] = aura.spellname, ["active"] = 1, ["uptime"] = 0, ["auratype"] = aura.auratype, ["started"] = time(), school = aura.spellschool}
+				local au = player.auras[aura.spellname]
+                if not au then
+					au = {["id"] = aura.spellid, ["name"] = aura.spellname, ["active"] = 1, ["uptime"] = 0, ["auratype"] = aura.auratype, ["started"] = time(), school = aura.spellschool }
+					au.count = 1
+                    au.last_apply_time = time()
+                    player.auras[aura.spellname] = au
 				else
-					player.auras[aura.spellname].active = player.auras[aura.spellname].active + 1
-                    player.auras[aura.spellname].started = player.auras[aura.spellname].started or time()
-				end
+					au.active = au.active + 1
+                    au.count = (au.count or 0) + 1
+                    au.started = au.started or time()
+                    au.last_apply_time = time()
+                    if au.spellschool == nil then au.school = aura.spellschool end
+                end
+                if au.started < player.first then au.started = player.first end
 			end
 
 		end
 	end
 
 	local function log_auraremove(set, aura)
-		if set then
+		if set and aura.playername then
 
 			-- Get the player.
-			local player = Skada:get_player(set, aura.playerid, aura.playername)
+			local player = Skada:get_player(set, aura.playerid, (strsplit("-", aura.playername)))
 			if player then
 				--Skada:Print("removed "..aura.spellname.. " to "..player.name.. " - "..aura.auraType)
 				-- If aura does not exist, we know nothing about it and ignore it.
@@ -47,16 +71,20 @@ Skada:AddLoadableModule("Debuffs", nil, function(Skada, L)
 				if player.auras[aura.spellname] then
 					local a = player.auras[aura.spellname]
 					if a.active > 0 then
-						a.active = a.active - 1
+						a.active = 0 --a.active - 1
                         
                         if a.active == 0 and a.started then
                             -- Calculate aura uptime
-                            a.uptime = a.uptime + math.floor((time() - a.started) + 0.5)
-                            
+                            if player.first then
+                                a.started = a.started < player.first and player.first or a.started
+                                a.uptime = a.uptime + math.floor((time() - a.started) + 0.5) --player.last is equal to time()
+                            end
+
                             -- Clear aura start value
                             a.started = nil
                         end
-					end
+                    end
+                    a.started = nil
 				end
 			end
 
@@ -188,7 +216,7 @@ Skada:AddLoadableModule("Debuffs", nil, function(Skada, L)
                     end
                         
                     -- Calculate player max possible uptime.
-                    local maxtime = Skada:PlayerActiveTime(set, player)
+                    local maxtime = PlayerActiveTime(set, player) --Skada:PlayerActiveTime(set, player)
 
                     local d = win.dataset[nr] or {}
                     win.dataset[nr] = d
@@ -224,35 +252,42 @@ Skada:AddLoadableModule("Debuffs", nil, function(Skada, L)
 			for spellname, spell in pairs(player.auras) do
 				if spell.auratype == auratype then
 					auracount = auracount + 1
+--[[
 					aurauptime = aurauptime + spell.uptime
                         
                     -- Account for active auras
                     if spell.active > 0 and spell.started then
                         aurauptime = aurauptime + math.floor((time() - spell.started) + 0.5)
                     end
+]]
 				end
 			end
 
 			if auracount > 0 then
+--[[
 				-- Calculate player max possible uptime.
-				local maxtime = Skada:PlayerActiveTime(set, player)
+                local maxtime = PlayerActiveTime(set, player) --Skada:PlayerActiveTime(set, player)
 
 				-- Now divide by the number of spells to get the average uptime.
 				local uptime = min(maxtime, aurauptime / auracount)
+]]
 
 				local d = win.dataset[nr] or {}
 				win.dataset[nr] = d
                     
 				d.id = player.id
-				d.value = uptime
-				d.valuetext = ("%02.1f%% / %u"):format(uptime / maxtime * 100, auracount)
+				d.value = auracount --uptime
+				--d.valuetext = ("%02.1f%% / %u"):format(uptime / maxtime * 100, auracount)
+                d.valuetext = ("%u"):format(auracount)
 				d.label = player.name
 				d.class = player.class
 				d.role = player.role
 
+--[[
 				if uptime > max then
 					max = uptime
 				end
+]]
 
 				nr = nr + 1
 			end
@@ -270,14 +305,15 @@ Skada:AddLoadableModule("Debuffs", nil, function(Skada, L)
 
 		if player then
 			-- Calculate player max possible uptime.
-			local maxtime = Skada:PlayerActiveTime(set, player)
+            local maxtime = PlayerActiveTime(set, player) --Skada:PlayerActiveTime(set, player)
 
             if maxtime and maxtime > 0 then
                 win.metadata.maxvalue = maxtime
                 for spellname, spell in pairs(player.auras) do
                     if spell.auratype == auratype then
-                        local uptime = min(maxtime, spell.uptime)
-                            
+                        local uptime = spell.uptime --min(maxtime, spell.uptime)
+                        --if spellname == "狡诈契约" then debug(maxtime, uptime, spell.active, spell.started) end
+
                         -- Account for active auras
                         if spell.active > 0 and spell.started then
                             uptime = uptime + math.floor((time() - spell.started) + 0.5)
@@ -292,7 +328,7 @@ Skada:AddLoadableModule("Debuffs", nil, function(Skada, L)
                         local _, _, icon = GetSpellInfo(spell.id)
                         d.icon = icon
                         d.spellid = spell.id
-                        d.valuetext = ("%02.1f%%"):format(uptime / maxtime * 100)
+                        d.valuetext = ("%02.1f%%(%d)"):format(uptime / maxtime * 100, spell.count or 0)
 
                         nr = nr + 1
                     end
@@ -388,19 +424,71 @@ Skada:AddLoadableModule("Debuffs", nil, function(Skada, L)
 		Skada:RemoveMode(buffs)
 	end
 
+    --abyui
+    local UnitAura, UnitGUID = UnitAura, UnitGUID
+    local raidunits = {} for i=1, 40 do raidunits[i] = "raid" ..i end
+    local partyunits = {"player", "party1", "party2", "party3", "party4" }
+
+    function mod:SetInit(set)
+        debug("init", set.name)
+        local units = IsInRaid() and raidunits or partyunits
+        for i, unit in ipairs(units) do
+            local guid = UnitGUID(unit)
+            if not guid then break end
+            local fullname, realm = UnitName(unit)
+            if realm and realm ~= "" then fullname = fullname .. "-" .. realm end
+            for j = 1, Skada.total and 2 or 1 do
+            local set = (j == 1 and set or Skada.total)
+            set.aura_time_start = time()
+            local player = Skada:get_player(set, guid, fullname, true)
+            if player then
+                for i=1, 40 do
+                    local name, icon, _, _, duration, expires, _, isStealable, nameplateShowPersonal, spellID, canApplyAura, isBossDebuff, _, nameplateShowAll, timeMod, value1, value2, value3 = UnitAura(unit, i)
+                    if not name then break end
+                    local apply_time = math.floor(((expires or 0) - GetTime() - (duration or 0)) + time() + 0.5)
+                    local au = player.auras[name]
+                    if not au then
+                        au = {["id"] = spellID, ["name"] = name, ["active"] = 1, ["uptime"] = 0, ["auratype"] = "BUFF", ["started"] = time(), school = nil }
+                        au.count = 1
+                        if expires and expires > 0 then
+                            au.last_apply_time = apply_time
+                        end
+                        player.auras[name] = au
+                    else
+                        -- only for total set
+                        au.active = 1
+                        au.started = time()
+                        --if name == "律法之则" then debug(au.last_apply_time, apply_time, expires, duration, GetTime(), time()) end
+                        if expires and expires > 0 and au.last_apply_time and au.last_apply_time + 4 < apply_time then
+                            au.count = (au.count or 0) + 1
+                        end
+                        au.last_apply_time = apply_time
+                    end
+                end
+            end
+            end
+        end
+    end
+
     function mod:SetComplete(set)
         -- Finalize any remaining auras
+        for j = 1, Skada.total and 2 or 1 do
+        local set = (j==1 and set or Skada.total)
+        debug("Complete", set.name)
+        set.aura_time_start = nil
 		for i, player in ipairs(set.players) do
 			for spellname, spell in pairs(player.auras) do
-				if spell.active > 0 and spell.started then
-                    spell.uptime = spell.uptime + math.floor((time() - spell.started) + 0.5)
-                    spell.active = 0
-                    spell.started = nil
-				end
+				if spell.started and player.first and player.last then
+                    if spell.started < player.first then spell.started = player.first end
+                    spell.uptime = spell.uptime + math.floor((player.last - spell.started) + 0.5)
+                end
+                spell.active = 0
+                spell.started = nil
 			end
-		end
+        end
+        end
     end
-        
+
 	function mod:AddToTooltip(set, tooltip)
 	end
 

@@ -1,4 +1,4 @@
-BGD_Prefs = nil
+﻿BGD_Prefs = nil
 
 -- Binding Variables
 BINDING_HEADER_BGDEFENDER             = "Battleground Defender";
@@ -17,7 +17,7 @@ BINDING_NAME_BGDEFENDER_ANNOUNCE_SAFE = "Node safe";
 function BGD_OnLoad(self)
 ---------
     self:RegisterEvent("ADDON_LOADED")
-    self:RegisterEvent("VARIABLES_LOADED")
+    -- self:RegisterEvent("VARIABLES_LOADED")
     self:RegisterEvent("ZONE_CHANGED_NEW_AREA")
     --BGD_Msg("BG Defender loaded (ver "..GetAddOnMetadata("BGDefender", "Version").."). Type /bgd help for more information.\nConfigure messages using the options screen.")
     SLASH_BGDefender1 = "/BGDefender"
@@ -27,11 +27,16 @@ function BGD_OnLoad(self)
     end
 end
 
-
 ---------
 function BGD_OnEvent(frame, event, ...)
 ---------
+    -- if (event == "VARIABLES_LOADED") then
+	--	frame:UnregisterEvent("VARIABLES_LOADED")
+    -- end
+
     if (event == "ADDON_LOADED") then
+		frame:UnregisterEvent("ADDON_LOADED")
+
         if not BGD_Prefs then
             BGD_Settings_Default()
         else
@@ -55,14 +60,43 @@ function BGD_OnEvent(frame, event, ...)
         BGD_initLocale(BGD_Prefs.locale)
         BGD_initCustomSubZones()
     end
+
     if ((event == "ZONE_CHANGED_NEW_AREA") or (event == "ADDON_LOADED")) then
-        if(BGD_isInBG()) then            
-            -- SetMapToCurrentZone()
+        if(BGD_isInBG()) then
+			DEFAULT_CHAT_FRAME:AddMessage("PVP战场求助已加载", 1.0, 0.5, 0.5)
             BGD_Prefs.ShowUI = BGD_Toggle(true)
        else
             BGD_Prefs.ShowUI = BGD_Toggle(false)
        end
     end
+
+	-- BGD_PrintDebugInfo(frame, event)
+end
+
+
+---------
+function BGD_PrintDebugInfo(frame, event, ...)
+---------
+	DEFAULT_CHAT_FRAME:AddMessage("[BGD] DEBUG...", 1.0, 0.2, 0.2)
+	if frame~=nil and event~=nil then
+		DEFAULT_CHAT_FRAME:AddMessage("[BGD] frame:"..frame:GetName()..", event:"..event, 1.0, 0.2, 0.2)
+	end
+	-- DEFAULT_CHAT_FRAME:AddMessage("[BGD] MapID:"..WorldMapFrame:GetMapID(), 1.0, 0.2, 0.2)
+	DEFAULT_CHAT_FRAME:AddMessage("[BGD] zone:"..GetZoneText(), 1.0, 0.2, 0.2)
+	-- DEFAULT_CHAT_FRAME:AddMessage("[BGD] real zone:"..GetRealZoneText(), 1.0, 0.2, 0.2)
+
+	local instanceMapID, instanceName = BGD_GetInstanceMapID()
+	DEFAULT_CHAT_FRAME:AddMessage("[BGD] instance name: "..tostring(instanceName), 1.0, 0.2, 0.2)
+	DEFAULT_CHAT_FRAME:AddMessage("[BGD] instance map id:"..tostring(instanceMapID), 1.0, 0.2, 0.2)
+end
+
+
+---------
+function BGD_GetInstanceMapID()
+---------
+	-- local name, instanceType, difficultyID, difficultyName, maxPlayers, dynamicDifficulty, isDynamic, instanceMapID, instanceGroupSize = GetInstanceInfo()
+	local name, _, _, _, _, _, _, instanceMapID, _ = GetInstanceInfo()
+	return instanceMapID, name
 end
 
 
@@ -154,12 +188,20 @@ end
 ---------
 local function BGD_GetPlayerPosition()
 ---------
-    local px, py = GetPlayerMapPosition("player")
-    if px~=nil and py~=nil then
-        px=px*100
-        py=py*100
-        return {px, py}
-    end
+	local mapID = C_Map.GetBestMapForUnit("player")
+	if mapID~=nil and C_Map.GetPlayerMapPosition~=nil then
+		local pos = C_Map.GetPlayerMapPosition(mapID, "player")
+
+		-- Make sure pos and GetXY are defined
+		if pos~=nil and pos.GetXY~=nil then
+			local px, py = pos:GetXY()
+			if px~=nil and py~=nil then
+				px=px*100
+				py=py*100
+				return {px, py}
+			end
+		end
+	end
     return nil
 end
 
@@ -268,13 +310,37 @@ end
 ---------
 function BGD_isInBG()
 ---------
-    local zone = GetZoneText()
+    local bgInstanceMapIDs = {
+        [30] = "Alterac Valley",
+        [529] = "Arathi Basin",
+        -- [1105] = "Deepwind Gorge",
+        [566] = "Eye of the Storm",
+        [968] = "Eye of the Storm (Rated)",
+        [628] = "Isle of Conquest",
+        -- [1803] = "Seething Shore",
+        -- [727] = "Silvershard Mines",
+        [607] = "Strand of the Ancients",
+        -- [998] = "Temple of Kotmogu",
+        [761] = "The Battle for Gilneas",
+        [726] = "Twin Peaks",
+        [489] = "Warsong Gulch",
+    }
+    -- New approach to check which BG we are in by using its InstanceID
+    local tmp = bgInstanceMapIDs[BGD_GetInstanceMapID()]
+    if tmp~=nil then
+        DEFAULT_CHAT_FRAME:AddMessage("[BGD] lookup instance map id: "..tmp, 1.0, 0.7, 0.2)
+        return true
+    end
+
+    -- Fall back to the old method for special cases.
     local found = false
-    if ((zone == BGD_AV)  or (zone == BGD_AB)   or (zone == BGD_WSG)  or (zone == BGD_WSL) or 
-        (zone == BGD_SWH) or (zone == BGD_EOTS) or (zone == BGD_SOTA) or (zone == BGD_IOC) or
-        (zone == BGD_GIL) or (zone == BGD_TP)   or (zone == BGD_DMH)  or (zone == BGD_WHS)) then
-        found = true
-    elseif (BGD_isInRaidBG()) then
+    local zone = GetZoneText()
+    -- if ((zone == BGD_AV)  or (zone == BGD_AB)   or (zone == BGD_WSG)  or (zone == BGD_WSL) or 
+    --    (zone == BGD_SWH) or (zone == BGD_EOTS) or (zone == BGD_SOTA) or (zone == BGD_IOC) or
+    --    (zone == BGD_GIL) or (zone == BGD_TP)   or (zone == BGD_DMH)  or (zone == BGD_WHS)) then
+    --    found = true
+    -- else
+    if (BGD_isInRaidBG()) then
         found = true
     elseif (BGD_isInNoSubZoneBG()) then 
 		found = true
@@ -317,6 +383,10 @@ function BGD_ShowStatus()
     DEFAULT_CHAT_FRAME:AddMessage("    战场频道: |cFF00FF00"..BGD_Prefs.BGChat, 1.0, 0.5, 0.0)
     DEFAULT_CHAT_FRAME:AddMessage("    世界区域频道: |cFF00FF00"..BGD_Prefs.RaidChat, 1.0, 0.5, 0.0)
     DEFAULT_CHAT_FRAME:AddMessage("    区域: |cFF00FF00"..GetZoneText().."|r (|cFF00FF00"..GetSubZoneText().."|r)", 1.0, 0.5, 0.0)
+
+    local instanceMapID, instanceName = BGD_GetInstanceMapID()
+    DEFAULT_CHAT_FRAME:AddMessage("    副本频道: |cFF00FF00"..instanceName.."|r (|cFF00FF00"..instanceMapID.."|r)", 1.0, 0.5, 0.0)
+
     if (BGD_isInBG()) then
         DEFAULT_CHAT_FRAME:AddMessage("    自定义一个战场频道? |cFF00FF00是", 1.0, 0.5, 0.0)
     else
@@ -403,6 +473,8 @@ function BGD_Opt_Frame_OnShow(BGD_Opt_Frame)
     UIDropDownMenu_Initialize(BGD_Opt_Drop1, BGD_Opt_Drop1_Initialize)
     UIDropDownMenu_Initialize(BGD_Opt_Drop2, BGD_Opt_Drop2_Initialize)
     UIDropDownMenu_Initialize(BGD_Opt_Drop3, BGD_Opt_Drop3_Initialize)
+    
+    BGD_displayLocaleMessages()
 end
 
 
@@ -540,6 +612,7 @@ function BGD_displayLocaleMessages()
         BGD_Opt_Messages:SetPoint("TOPLEFT", "BGD_Opt_Txt3", "BOTTOMLEFT", 0, -64)
         BGD_Opt_Messages:SetText( "演示信息:" )
     end
+    
     if (BGD_Opt_Safe == nil) then
         BGD_Opt_Safe = BGD_Opt_Frame:CreateFontString( "BGD_Opt_Safe", "ARTWORK", "GameFontNormalSmall" )
         BGD_Opt_Safe:SetPoint("TOPLEFT", "BGD_Opt_Messages", "BOTTOMLEFT", 16, -16)
@@ -557,7 +630,6 @@ function BGD_displayLocaleMessages()
     call = string.gsub(call, "$base", GetSubZoneText())
     BGD_Opt_Inc:SetText( "数量: |cFF00FF00" ..call )
     
-
     if (BGD_Opt_IncPlus == nil) then
         BGD_Opt_IncPlus = BGD_Opt_Frame:CreateFontString( "BGD_Opt_IncPlus", "ARTWORK", "GameFontNormalSmall" )
         BGD_Opt_IncPlus:SetPoint("TOPLEFT", "BGD_Opt_Messages", "BOTTOMLEFT", 16, -48)

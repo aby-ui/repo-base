@@ -42,6 +42,7 @@ wayframe:SetWidth(56)
 wayframe:SetPoint("CENTER", 0, 0)
 wayframe:EnableMouse(true)
 wayframe:SetMovable(true)
+wayframe:SetClampedToScreen(true)
 wayframe:Hide()
 
 -- Frame used to control the scaling of the title and friends
@@ -65,7 +66,7 @@ local function OnDragStop(self, button)
 end
 
 local function OnEvent(self, event, ...)
-	if event == "ZONE_CHANGED_NEW_AREA" and TomTom.profile.arrow.enable then
+	if (event == "ZONE_CHANGED_NEW_AREA" or event == "ZONE_CHANGED") and TomTom.profile.arrow.enable then
 		self:Show()
 	end
 end
@@ -74,6 +75,7 @@ wayframe:SetScript("OnDragStart", OnDragStart)
 wayframe:SetScript("OnDragStop", OnDragStop)
 wayframe:RegisterForDrag("LeftButton")
 wayframe:RegisterEvent("ZONE_CHANGED_NEW_AREA")
+wayframe:RegisterEvent("ZONE_CHANGED")
 wayframe:SetScript("OnEvent", OnEvent)
 
 wayframe.arrow = wayframe:CreateTexture(nil, "OVERLAY")
@@ -239,7 +241,7 @@ end
 
 function TomTom:ShowHideCrazyArrow()
 	if self.profile.arrow.enable then
-		if self.profile.arrow.hideDuringPetBattles and C_PetBattles.IsInBattle() then
+		if self.profile.arrow.hideDuringPetBattles and C_PetBattles and C_PetBattles.IsInBattle() then
 			wayframe:Hide()
 			return
 		end
@@ -567,4 +569,26 @@ end
 -- Returns whether or not the crazy arrow is currently hijacked
 function TomTom:CrazyArrowIsHijacked()
     return wayframe.hijacked
+end
+
+-- Logs Crazy Arrow status
+function TomTom:DebugCrazyArrow()
+    local msg
+    msg = string.format(L["|cffffff78TomTom:|r CrazyArrow %s hijacked"], (wayframe.hijacked and L["is"]) or L["not"])
+    ChatFrame1:AddMessage(msg)
+    msg = string.format(L["|cffffff78TomTom:|r CrazyArrow %s visible"], (wayframe:IsVisible() and L["is"]) or L["not"])
+    ChatFrame1:AddMessage(msg)
+    msg = string.format(L["|cffffff78TomTom:|r Waypoint %s valid"], (active_point and TomTom:IsValidWaypoint(active_point) and L["is"]) or L["not"])
+    ChatFrame1:AddMessage(msg)
+
+    local dist,x,y = TomTom:GetDistanceToWaypoint(active_point)
+    msg = string.format("|cffffff78TomTom:|r Waypoint distance=%s", tostring(dist))
+    ChatFrame1:AddMessage(msg)
+
+    if wayframe:IsVisible() then
+        local point, relativeTo, relativePoint, xOfs, yOfs = wayframe:GetPoint(1)
+        relativeTo = (relativeTo and relativeTo:GetName()) or "UIParent"
+        msg = string.format("|cffffff78TomTom:|r CrazyArrow point=%s frame=%s rpoint=%s xo=%.2f yo=%.2f",  point, relativeTo, relativePoint, xOfs, yOfs)
+        ChatFrame1:AddMessage(msg)
+    end
 end

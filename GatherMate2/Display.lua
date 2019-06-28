@@ -98,20 +98,18 @@ end
 local tooltip_template = "|c%02x%02x%02x%02x%s|r"
 local function showPin(self)
 	if (self.title) then
-		local tooltip, pinset
+		local pinset
 		if self.worldmap then
-			tooltip = WorldMapTooltip
 			pinset = worldmapPins
 		else
-			tooltip = GameTooltip
 			pinset = minimapPins
 		end
 		local x, y = self:GetCenter()
 		local parentX, parentY = UIParent:GetCenter()
 		if ( x > parentX ) then
-			tooltip:SetOwner(self, "ANCHOR_LEFT")
+			GameTooltip:SetOwner(self, "ANCHOR_LEFT")
 		else
-			tooltip:SetOwner(self, "ANCHOR_RIGHT")
+			GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
 		end
 
 		local t = db.trackColors
@@ -121,19 +119,15 @@ local function showPin(self)
 				text = text .. "\n" .. format(tooltip_template, t[pin.nodeType].Alpha*255, t[pin.nodeType].Red*255, t[pin.nodeType].Green*255, t[pin.nodeType].Blue*255, pin.title)
 			end
 		end
-		tooltip:SetText(text)
-		tooltip:Show()
+		GameTooltip:SetText(text)
+		GameTooltip:Show()
 	end
 end
 --[[
 	Pin OnLeave
 ]]
 local function hidePin(self)
-	if self.worldmap then
-		WorldMapTooltip:Hide()
-	else
-		GameTooltip:Hide()
-	end
+	GameTooltip:Hide()
 end
 --[[
 	Pin click handler
@@ -435,6 +429,8 @@ function Display:getMapPin()
 	texture:SetAllPoints(pin)
 	texture:SetTexture(trackingCircle)
 	texture:SetTexCoord(0, 1, 0, 1)
+	texture:SetTexelSnappingBias(0)
+	texture:SetSnapToPixelGrid(false)
 	pin:RegisterForClicks("LeftButtonUp", "RightButtonUp");
 	pin:SetScript("OnEnter", showPin)
 	pin:SetScript("OnLeave", hidePin)

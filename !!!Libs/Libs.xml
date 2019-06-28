@@ -13,13 +13,16 @@
 <Include file="LibNameplateRegistry-1.0\LibNameplateRegistry-1.0\LibNameplateRegistry-1.0.lua"/><!--HHTD, TargetNameplateIndicator-->
 
 <Include file="LibStrataFix\LibStrataFix.lua"/>
-<Include file="LibItemUpgradeInfo-1.0\Core.lua"/><!--Plugin/InventoryLevel.U1GetRealItemLevel-->
+<Include file="LibItemUpgradeInfo-1.0\Core.lua"/><!--Plugin/InventoryLevel.U1GetRealItemLevel/Details-->
 <Include file="LibChatAnims\LibChatAnims\LibChatAnims.lua"/><!--NoTaint/DBM-->
 <Include file="LibDualSpec-1.0\LibDualSpec-1.0.lua"/><!-- Grid/Skada/Masque -->
 <Include file="LibInspectLess-1.0\LibInspectLess-1.0.lua"/><!--TeamStats/RatingSummary-->
 <Include file="LibQTip-1.0\LibQTip-1.0.lua"/><!--Broker_*/Decursive/Archy/_NPCScan-->
 <Include file="LibSink-2.0\LibSink-2.0\LibSink-2.0.lua"/><!--Ellipsis/_NPCScan/LibToast-1.0/Archy-->
-<Include file="LibWindow-1.1\LibWindow-1.1\LibWindow-1.1.lua"/><!--Mapster/BattglegroundTargets/MeetingStone/Skada-->
+<Include file="LibWindow-1.1\LibWindow-1.1\LibWindow-1.1.lua"/><!--Mapster/BattglegroundTargets/MeetingStone/Skada/Details-->
+<Include file="LibDialog-1.0\LibDialog-1.0.lua"/><!--Archy,AtlasLoot,Broker_Dura,MethodDungeonTools,NPCScan,Details-->
+<Include file="LibCompress\LibCompress.lua"/><!--WeakAuras,MDT,Details-->
+<Include file="LibDeflate\LibDeflate.lua"/><!--ExRT,WeakAuras,Details-->
 
 <Include file="UTF8\utf8data.lua"/>
 <Include file="UTF8\utf8.lua"/>

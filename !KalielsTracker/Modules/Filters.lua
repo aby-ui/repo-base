@@ -1,5 +1,5 @@
 --- Kaliel's Tracker
---- Copyright (c) 2012-2018, Marouan Sabbagh <mar.sabbagh@gmail.com>
+--- Copyright (c) 2012-2019, Marouan Sabbagh <mar.sabbagh@gmail.com>
 --- All Rights Reserved.
 ---
 --- This file is part of addon Kaliel's Tracker.
@@ -44,6 +44,7 @@ local instanceQuestDifficulty = {
 	[DIFFICULTY_PRIMARYRAID_MYTHIC] = { Enum.QuestTag.Raid },
 	[DIFFICULTY_PRIMARYRAID_LFR] = { Enum.QuestTag.Raid },
 }
+local factionColor = { ["Horde"] = "ff0000", ["Alliance"] = "007fff" }
 
 local eventFrame
 
@@ -127,28 +128,28 @@ local function SetHooks_AchievementUI()
 end
 
 local function GetActiveWorldEvents()
-	local events = ""
+	local eventsText = ""
 	local date = C_Calendar.GetDate()
 	C_Calendar.SetAbsMonth(date.month, date.year)
 	local numEvents = C_Calendar.GetNumDayEvents(0, date.monthDay)
 	for i=1, numEvents do
-		local title, hour, minute, calendarType, sequenceType = C_Calendar.GetDayEvent(0, date.monthDay, i)
-		if calendarType == "HOLIDAY" then
+		local event = C_Calendar.GetDayEvent(0, date.monthDay, i)
+		if event.calendarType == "HOLIDAY" then
 			local gameHour, gameMinute = GetGameTime()
-			if sequenceType == "START" then
-				if gameHour >= hour and gameMinute >= minute then
-					events = events..title.." "
+			if event.sequenceType == "START" then
+				if gameHour >= event.startTime.hour and gameMinute >= event.startTime.minute then
+					eventsText = eventsText..event.title.." "
 				end
-			elseif sequenceType == "END" then
-				if gameHour <= hour and gameMinute <= minute then
-					events = events..title.." "
+			elseif event.sequenceType == "END" then
+				if gameHour <= event.endTime.hour and gameMinute <= event.endTime.minute then
+					eventsText = eventsText..event.title.." "
 				end
 			else
-				events = events..title.." "
+				eventsText = eventsText..event.title.." "
 			end
 		end
 	end
-	return events
+	return eventsText
 end
 
 local function IsInstanceQuest(questID)
@@ -174,8 +175,8 @@ local function Filter_Quests(self, spec, idx)
 	--KTF.Buttons.reanchor = (KTF.Buttons.num > 0)
 	if GetNumQuestWatches() > 0 then
 		for i=1, numEntries do
-			local _, _, _, isHeader, _, _, _, _, _, _, _, _, isTask, isBounty = GetQuestLogTitle(i)
-			if not isHeader and not isTask and not isBounty then
+			local _, _, _, isHeader, _, _, _, questID, _, _, _, _, isTask, isBounty = GetQuestLogTitle(i)
+			if not isHeader and not isTask and (not isBounty or IsQuestComplete(questID)) then
 				RemoveQuestWatch(i)
 			end
 		end
@@ -183,15 +184,15 @@ local function Filter_Quests(self, spec, idx)
 
 	if spec == "all" then
 		for i=numEntries, 1, -1 do
-			local _, _, _, isHeader, _, _, _, _, _, _, _, _, isTask, isBounty = GetQuestLogTitle(i)
-			if not isHeader and not isTask and not isBounty then
+			local _, _, _, isHeader, _, _, _, questID, _, _, _, _, isTask, isBounty = GetQuestLogTitle(i)
+			if not isHeader and not isTask and (not isBounty or IsQuestComplete(questID)) then
 				AddQuestWatch(i, true)
 			end
 		end
 	elseif spec == "group" then
 		for i=idx, 1, -1 do
-			local _, _, _, isHeader, _, _, _, _, _, _, _, _, isTask, isBounty = GetQuestLogTitle(i)
-			if not isHeader and not isTask and not isBounty then
+			local _, _, _, isHeader, _, _, _, questID, _, _, _, _, isTask, isBounty = GetQuestLogTitle(i)
+			if not isHeader and not isTask and (not isBounty or IsQuestComplete(questID)) then
 				AddQuestWatch(i, true)
 			else
 				break
@@ -199,9 +200,17 @@ local function Filter_Quests(self, spec, idx)
 		end
 		MSA_CloseDropDownMenus()
 	elseif spec == "zone" then
+		local mapID = KT.GetCurrentMapAreaID()
+		if (C_Map.GetMapGroupID(mapID) and not KT.inInstance) or
+				mapID == 1165 then	-- BfA - Dazar'alor
+			local mapInfo = C_Map.GetMapInfo(mapID)
+			OpenQuestLog(mapInfo.parentMapID)
+		else
+			KT.SetMapToCurrentZone()
+		end
 		for i=numEntries, 1, -1 do
 			local _, _, _, isHeader, _, _, _, questID, _, _, isOnMap, _, isTask, isBounty = GetQuestLogTitle(i)
-			if not isHeader and not isTask and not isBounty and isOnMap then
+			if not isHeader and not isTask and (not isBounty or IsQuestComplete(questID)) and isOnMap then
 				if KT.inInstance then
 					if IsInstanceQuest(questID) then
 						AddQuestWatch(i, true)
@@ -211,17 +220,18 @@ local function Filter_Quests(self, spec, idx)
 				end
 			end
 		end
+		HideUIPanel(WorldMapFrame)
 	elseif spec == "daily" then
 		for i=numEntries, 1, -1 do
-			local _, _, _, isHeader, _, _, frequency, _, _, _, _, _, isTask, isBounty = GetQuestLogTitle(i)
-			if not isHeader and not isTask and not isBounty and frequency >= 2 then
+			local _, _, _, isHeader, _, _, frequency, questID, _, _, _, _, isTask, isBounty = GetQuestLogTitle(i)
+			if not isHeader and not isTask and (not isBounty or IsQuestComplete(questID)) and frequency >= 2 then
 				AddQuestWatch(i, true)
 			end
 		end
 	elseif spec == "instance" then
 		for i=numEntries, 1, -1 do
 			local _, _, _, isHeader, _, _, _, questID, _, _, _, _, isTask, isBounty = GetQuestLogTitle(i)
-			if not isHeader and not isTask and not isBounty then
+			if not isHeader and not isTask and (not isBounty or IsQuestComplete(questID)) then
 				local tagID, _ = GetQuestTagInfo(questID)
 				if tagID == Enum.QuestTag.Dungeon or
 					tagID == Enum.QuestTag.Heroic or
@@ -235,7 +245,7 @@ local function Filter_Quests(self, spec, idx)
 	elseif spec == "complete" then
 		for i=numEntries, 1, -1 do
 			local _, _, _, isHeader, _, _, _, questID, _, _, _, _, isTask, isBounty = GetQuestLogTitle(i)
-			if not isHeader and not isTask and not isBounty and IsQuestComplete(questID) then
+			if not isHeader and not isTask and (not isBounty or IsQuestComplete(questID)) and IsQuestComplete(questID) then
 				AddQuestWatch(i, true)
 			end
 		end
@@ -270,11 +280,13 @@ local function Filter_Achievements(self, spec)
 		_DBG(zoneName.." ... "..KT.GetCurrentMapAreaID(), true)
 
 		-- Dungeons & Raids
+		local instanceDifficulty
 		if instance and db.filterAchievCat[instance] then
 			local _, type, difficulty, difficultyName = GetInstanceInfo()
 			local _, _, sufix = strfind(difficultyName, "^.* %((.*)%)$")
+			instanceDifficulty = difficultyName
 			if sufix then
-				difficultyName = sufix
+				instanceDifficulty = sufix
 			end
 			_DBG(type.." ... "..difficulty.." ... "..difficultyName, true)
 		end
@@ -290,31 +302,37 @@ local function Filter_Achievements(self, spec)
 			local name, parentID, _ = GetCategoryInfo(category)
 
 			if db.filterAchievCat[parentID] then
-				if (parentID == 92) or	-- Character
-					(parentID == 96 and name == categoryName) or	-- Quests
-					(parentID == 97 and name == categoryName) or	-- Exploration
-					(parentID == 95 and strfind(zoneName, name)) or	-- Player vs. Player
-					(category == instance or parentID == instance) or	-- Dungeons & Raids
-					(parentID == 169) or	-- Professions
-					(parentID == 201) or	-- Reputation
-					(parentID == 155 and strfind(events, name)) or	-- World Events
-					(category == 15117 or parentID == 15117) or	-- Pet Battles
-					(category == 15246 or parentID == 15246) or	-- Collections
-					(parentID == 15301) then	-- Expansion Features
+				if (parentID == 92) or										-- Character
+						(parentID == 96 and name == categoryName) or		-- Quests
+						(parentID == 97 and name == categoryName) or		-- Exploration
+						(parentID == 95 and strfind(zoneName, name)) or		-- Player vs. Player
+						(category == instance or parentID == instance) or	-- Dungeons & Raids
+						(parentID == 169) or								-- Professions
+						(parentID == 201) or								-- Reputation
+						(parentID == 155 and strfind(events, name)) or		-- World Events
+						(category == 15117 or parentID == 15117) or			-- Pet Battles
+						(category == 15246 or parentID == 15246) or			-- Collections
+						(parentID == 15301) then							-- Expansion Features
 					local aNumItems, _ = GetCategoryNumAchievements(category)
 					for i=1, aNumItems do
 						local track = false
 						local aId, aName, _, aCompleted, _, _, _, aDescription = GetAchievementInfo(category, i)
 						if aId and not aCompleted then
 							--_DBG(aId.." ... "..aName, true)
-							if parentID == 95 or category == 15237 or parentID == 15237 or
-								(not instance and (category == 15117 or parentID == 15117) and strfind(aName.." - "..aDescription, continentName)) then
+							if parentID == 95 or
+									(not instance and (category == 15117 or parentID == 15117) and strfind(aName.." - "..aDescription, continentName)) then
 								track = true
 							elseif strfind(aName.." - "..aDescription, zoneName) then
 								if category == instance or parentID == instance then
-									if strfind(strlower(aName.." - "..aDescription), strlower(difficultyName)) or
-										strfind(aName.." - "..aDescription, "difficulty or higher") then	-- TODO: other languages
-										track = true
+									if instanceDifficulty == "Normal" then
+										if not strfind(aName.." - "..aDescription, "[Heroic|Mythic]") then
+											track = true
+										end
+									else
+										if strfind(aName.." - "..aDescription, instanceDifficulty) or
+												(strfind(aName.." - "..aDescription, "difficulty or higher")) then	-- TODO: other languages
+											track = true
+										end
 									end
 								else
 									track = true
@@ -374,12 +392,14 @@ local function Filter_Achievements(self, spec)
 				--_DBG(category.." ... "..name, true)
 			end
 		end
-		
-		local numTracked = GetNumTrackedAchievements()
-		if numTracked == 0 then
-			KT:Pour(L"There is currently no World Event.", 1, 1, 0)
-		elseif numTracked > 0 then
-			KT:Pour(L"World Event - "..eventName, 1, 1, 0)
+
+		if db.messageAchievement then
+			local numTracked = GetNumTrackedAchievements()
+			if numTracked == 0 then
+				KT:SetMessage(L"There is currently no World Event.", 1, 1, 0)
+			elseif numTracked > 0 then
+				KT:SetMessage(L"World Event - "..eventName, 1, 1, 0)
+			end
 		end
 	end
 	KT.stopUpdate = false
@@ -440,6 +460,15 @@ local function Filter_AchievCat_CheckAll(self, state)
 	end
 end
 
+local function GetInlineFactionIcon()
+	local coords = QUEST_TAG_TCOORDS[strupper(KT.playerFaction)]
+	return CreateTextureMarkup(QUEST_ICONS_FILE, QUEST_ICONS_FILE_WIDTH, QUEST_ICONS_FILE_HEIGHT, 22, 22
+		, coords[1]
+		, coords[2] - 0.02 -- Offset to stop bleeding from next image
+		, coords[3]
+		, coords[4])
+end
+
 function DropDown_Initialize(self, level)
 	local numEntries, numQuests = GetNumQuestLogEntries()
 	local info = MSA_DropDownMenu_CreateInfo()
@@ -454,11 +483,11 @@ function DropDown_Initialize(self, level)
 		MSA_DropDownMenu_AddButton(info)
 
 		info.isTitle = false
-		info.disabled = (db.filterAuto[1] or numQuests == 0)
+		info.disabled = (db.filterAuto[1])
 		info.func = Filter_Quests
 
 		info.text = L"All".." ("..numQuests..")"
-		info.hasArrow = not (db.filterAuto[1] or numQuests == 0)
+		info.hasArrow = not (db.filterAuto[1])
 		info.value = 1
 		info.arg1 = "all"
 		MSA_DropDownMenu_AddButton(info)
@@ -522,7 +551,7 @@ function DropDown_Initialize(self, level)
 		MSA_DropDownMenu_AddButton(info)
 
 		info.text = L"World Event"
-		info.arg1 = "wEvent"
+		info.arg1 = "wevent"
 		MSA_DropDownMenu_AddButton(info)
 
 		info.text = L"Untrack All"
@@ -578,6 +607,11 @@ function DropDown_Initialize(self, level)
 
 			if numEntries > 0 then
 				local headerTitle, headerOnMap, headerShown
+				local warCampaignID = C_CampaignInfo.GetCurrentCampaignID()
+				if warCampaignID then
+					local warCampaignInfo = C_CampaignInfo.GetCampaignInfo(warCampaignID)
+					headerTitle = "|cff"..factionColor[KT.playerFaction]..warCampaignInfo.name..GetInlineFactionIcon()
+				end
 				for i=1, numEntries do
 					local title, _, _, isHeader, _, _, _, questID, _, _, isOnMap, _, isTask, isBounty, _, isHidden = GetQuestLogTitle(i)
 					if isHeader then
@@ -588,15 +622,8 @@ function DropDown_Initialize(self, level)
 						headerTitle = title
 						headerOnMap = isOnMap
 						headerShown = false
-					elseif not isTask and not isBounty and not isHidden then
+					elseif not isTask and (not isBounty or IsQuestComplete(questID)) and not isHidden then
 						if not headerShown then
-							if C_CampaignInfo.IsCampaignQuest(questID) then
-								local warCampaignID = C_CampaignInfo.GetCurrentCampaignID()
-								if warCampaignID then
-									local warCampaignInfo = C_CampaignInfo.GetCampaignInfo(warCampaignID)
-									headerTitle = warCampaignInfo.name
-								end
-							end
 							info.text = (headerOnMap and "|cff00ff00" or "")..headerTitle
 							headerShown = true
 						end
@@ -653,7 +680,7 @@ local function SetFrames()
 				self:UnregisterEvent(event)
 			elseif event == "QUEST_ACCEPTED" then
 				local questID = ...
-				if not IsQuestBounty(questID) and not IsQuestTask(questID) and db.filterAuto[1] then
+				if not IsQuestTask(questID) and (not IsQuestBounty(questID) or IsQuestComplete(questID)) and db.filterAuto[1] then
 					self:RegisterEvent("QUEST_POI_UPDATE")
 				end
 			elseif event == "QUEST_POI_UPDATE" then
@@ -666,9 +693,7 @@ local function SetFrames()
 					Filter_Quests(_, "zone")
 				end
 				if db.filterAuto[2] == "zone" then
-					C_Timer.After(0.1, function()
-						Filter_Achievements(_, "zone")
-					end)
+					Filter_Achievements(_, "zone")
 				end
 			end
 		end)
@@ -693,8 +718,8 @@ local function SetFrames()
 		self:GetNormalTexture():SetVertexColor(1, 1, 1)
 		GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
 		GameTooltip:AddLine(L"Filter", 1, 1, 1)
-		GameTooltip:AddLine(db.filterAuto[1] and L[db.filterAuto[1]]..L" Quests", 0, 1, 0)
-		GameTooltip:AddLine(db.filterAuto[2] and L[db.filterAuto[2]]..L" Achievements", 0, 1, 0)
+		GameTooltip:AddLine(db.filterAuto[1] and "- "..L[db.filterAuto[1]]..L" Quests", 0, 1, 0)
+		GameTooltip:AddLine(db.filterAuto[2] and "- "..L[db.filterAuto[2]]..L" Achievements", 0, 1, 0)
 		GameTooltip:Show()
 	end)
 	button:SetScript("OnLeave", function(self)

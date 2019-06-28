@@ -6,7 +6,7 @@ U1RegisterAddon("Grid", {
 
     tags = { TAG_RAID, },
     icon = "Interface\\AddOns\\Grid\\Media\\icon",
-    desc = "强大的团队框架Grid, 使用有爱warbaby的整合版，提供适合大部分玩家的默认配置。`Grid插件下有许多扩展子模块，可以根据自己的需要选择开启。``如需自行配置显示的内容，需要在设置界面中给不同的|cffffffff指示器|r配置上对应的|cffffffff状态|r，有一些状态自身也有选项，要在'状态页'中进行调整。",
+    desc = "强大的团队框架Grid, 使用爱不易warbaby的整合版，提供适合大部分玩家的默认配置。`Grid插件下有许多扩展子模块，可以根据自己的需要选择开启。``如需自行配置显示的内容，需要在设置界面中给不同的|cffffffff指示器|r配置上对应的|cffffffff状态|r，有一些状态自身也有选项，要在'状态页'中进行调整。",
     pics = 2,
 
     modifier = "|cffcd1a1c[爱不易]|r",
@@ -96,6 +96,7 @@ U1RegisterAddon("GridStatusTankCooldown", {title = "状态：坦克救命技能"
 U1RegisterAddon("GridStatusRaidDebuff", {title = "状态：团队减益", protected = nil, hide = false, load="NORMAL",
     desc = "提供副本Boss的主要Debuff技能的提示。"
 });
+U1RegisterAddon("GridStatusRD_BfA", {title = "争霸艾泽拉斯", protected = nil, hide = nil, load="NORMAL",});
 U1RegisterAddon("GridStatusRD_Legion", {title = "军团再临", protected = nil, hide = nil, load="NORMAL",});
 U1RegisterAddon("GridStatusRD_WoD", {title = "德拉诺之王", protected = nil, hide = nil, load="NORMAL",});
 U1RegisterAddon("GridStatusRD_MoP", {title = "熊猫人之谜", defaultEnable = 0, protected = nil, hide = nil, load="NORMAL",});

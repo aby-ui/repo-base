@@ -28,7 +28,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 local LIBNAME = "LibExtraTip"
 local VERSION_MAJOR = 1
-local VERSION_MINOR = 344
+local VERSION_MINOR = 346
 -- Minor Version cannot be a SVN Revison in case this library is used in multiple repositories
 -- Should be updated manually with each (non-trivial) change
 
@@ -171,8 +171,8 @@ local function OnTooltipSetItem(tooltip)
 				ProcessCallbacks(reg, "item", tooltip, item,quantity,name,link,quality,ilvl,minlvl,itype,isubtype,stack,equiploc,texture)
 				tooltip:Show()
 				if reg.extraTipUsed then
-					reg.extraTip:Show()
-					ProcessCallbacks(reg, "extrashow", tooltip, reg.extraTip)
+					extraTip:Show()
+					ProcessCallbacks(reg, "extrashow", tooltip, extraTip)
 				end
 			end
 		end
@@ -204,8 +204,8 @@ local function OnTooltipSetSpell(tooltip)
 			ProcessCallbacks(reg, "spell", tooltip, link, name, category, spellID)
 			tooltip:Show()
 			if reg.extraTipUsed then
-				reg.extraTip:Show()
-				ProcessCallbacks(reg, "extrashow", tooltip, reg.extraTip)
+				extraTip:Show()
+				ProcessCallbacks(reg, "extrashow", tooltip, extraTip)
 			end
 		end
 	end
@@ -231,8 +231,8 @@ local function OnTooltipSetUnit(tooltip)
 			ProcessCallbacks(reg, "unit", tooltip, name, unitId)
 			tooltip:Show()
 			if reg.extraTipUsed then
-				reg.extraTip:Show()
-				ProcessCallbacks(reg, "extrashow", tooltip, reg.extraTip)
+				extraTip:Show()
+				ProcessCallbacks(reg, "extrashow", tooltip, extraTip)
 			end
 		end
 	end
@@ -240,8 +240,7 @@ end
 
 -- Function that gets run when a registered tooltip's item is cleared.
 local function OnTooltipCleared(tooltip)
-	local self = lib
-	local reg = self.tooltipRegistry[tooltip]
+	local reg = lib.tooltipRegistry[tooltip]
 	if not reg then return end
 
 	if reg.ignoreOnCleared then return end
@@ -252,15 +251,16 @@ local function OnTooltipCleared(tooltip)
 	reg.hasItem = nil
 	reg.item = nil
 	wipe(reg.additional)
-	if reg.extraTip then
-		tinsert(self.extraTippool, reg.extraTip)
-		reg.extraTip:Hide()
-		reg.extraTip:Release()
-		reg.extraTip:ClearLines()
-		reg.extraTip:SetHeight(0)
-		reg.extraTip:SetWidth(0)
-		ProcessCallbacks(reg, "extrahide", tooltip, reg.extraTip)
+	local extraTip = reg.extraTip
+	if extraTip then
 		reg.extraTip = nil
+		extraTip:Release()
+		extraTip:ClearLines()
+		extraTip:SetHeight(0)
+		extraTip:SetWidth(0)
+		extraTip:Hide()
+		ProcessCallbacks(reg, "extrahide", tooltip, extraTip)
+		tinsert(lib.extraTippool, extraTip)
 	end
 end
 
@@ -1015,7 +1015,8 @@ end
 
 -- Sets all the complex spell details
 local function SetSpellDetail(reg, link)
-	local name, subname, icon, ctime, minRange, maxRange, spellID = GetSpellInfo(link)
+	local name, _, icon, ctime, minRange, maxRange, spellID = GetSpellInfo(link)
+	local subname = GetSpellSubtext(spellID)
 	reg.additional.name = name
 	reg.additional.link = link
 	reg.additional.rank = subname
@@ -1260,7 +1261,13 @@ function lib:GenerateTooltipMethodTable() -- Sets up hooks to give the quantity 
 			local minMade, maxMade = C_TradeSkillUI.GetRecipeNumItemsProduced(recipeID)
 			reg.additional.minMade = minMade
 			reg.additional.maxMade = maxMade
-			reg.quantity = (minMade + maxMade) / 2 -- ### todo: may not be an integer, if this causes problems may need to math.floor it
+			if minMade and maxMade then -- protect against nil values
+				reg.quantity = (minMade + maxMade) / 2 -- ### todo: may not be an integer, if this causes problems may need to math.floor it
+			elseif maxMade then
+				reg.quantity = maxMade
+			else
+				reg.quantity = minMade -- note: may still be nil
+			end
 			reg.additional.link = C_TradeSkillUI.GetRecipeItemLink(recipeID) -- Workaround [LTT-56], Remove when fixed by Blizzard
 		end,
 

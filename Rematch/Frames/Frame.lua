@@ -95,6 +95,7 @@ function frame:UpdateCorner()
 	elseif corner=="TOPLEFT" then
 		settings.XPos, settings.YPos = frame:GetLeft(), frame:GetTop()
 	end
+	frame:ClearAllPoints()
 	frame:SetPoint(corner,UIParent,"BOTTOMLEFT",settings.XPos,settings.YPos)
 end
 

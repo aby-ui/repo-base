@@ -1,4 +1,4 @@
-## Interface: 80000
+## Interface: 80200
 ## Notes: Simple Map Mod
 ## Notes-zhCN: 简单实用的地图模块
 ## Notes-frFR: Simples modifications de la carte.
@@ -6,8 +6,10 @@
 ## Author: Nevcairiel
 ## SavedVariables: MapsterDB
 ## X-Category: Map
-## Version: 1.8.1-1-g09f4095
+## Version: 1.8.3
 ## X-License: All rights reserved.
+## X-Curse-Project-ID: 14376
+## X-WoWI-ID: 8306
 
 ## OptionalDeps: Ace3, LibWindow-1.1
 

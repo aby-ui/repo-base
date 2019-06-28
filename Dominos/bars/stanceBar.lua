@@ -1,15 +1,18 @@
---[[
-	stanceBar - a bar for displaying class specific buttons for things like stances/forms/etc
---]]
+-- stanceBar - a bar for displaying class specific buttons for things like stances/forms/etc
+
+local _, Addon = ...
+local playerClass = select(2, UnitClass('player'))
 
 -- don't bother loading the module if the player is currently playing something without a stance
-if not (select(2, UnitClass('player')) == 'DRUID' or select(2, UnitClass('player')) == 'ROGUE' or select(2, UnitClass('player')) == 'PRIEST') then
+if not (
+	playerClass == 'DRUID'
+	or playerClass == 'ROGUE'
+	or (not Addon:IsBuild("classic") and playerClass == 'PRIEST')
+	or (Addon:IsBuild("classic") and (playerClass == 'WARRIOR' or playerClass == 'PALADIN'))
+) then
 	return
 end
 
---[[ Globals ]]--
-
-local AddonName, Addon = ...
 local KeyBound = LibStub('LibKeyBound-1.0')
 
 

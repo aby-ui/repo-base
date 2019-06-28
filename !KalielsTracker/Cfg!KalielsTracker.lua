@@ -12,12 +12,14 @@ U1RegisterAddon("!KalielsTracker", {
 
     toggle = function(name, info, enable, justload)
         if justload then
-            if IsLoggedIn() then
+            if U1IsInitComplete() then
                 local OTF = ObjectiveTrackerFrame
                 OTF:GetScript("OnEvent")(OTF, "PLAYER_ENTERING_WORLD")
                 OTF:GetScript("OnEvent")(OTF, "QUEST_WATCH_LIST_CHANGED")
                 OTF:GetScript("OnEvent")(OTF, "QUEST_LOG_UPDATE")
+                --LibStub("AceAddon-3.0"):GetAddon('!KalielsTracker').Init()
             end
+            if OTFMover then OTFMover:Hide() end
         end
         return true
     end,

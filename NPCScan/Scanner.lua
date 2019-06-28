@@ -49,7 +49,7 @@ do
 		NPCScan:DispatchSensoryCues()
 		NPCScan:SendMessage(EventMessage.DetectedNPC, detectionData)
 
-		-- TODO: Make the Overlays object listen for the NPCScan_DetectedNPC message and run its own methods
+		-- TODO: Make the Overlays object listen for the DetectedNPC message and run its own methods
 		private.Overlays.Found(npcID)
 		private.Overlays.Remove(npcID)
 	end
@@ -96,39 +96,42 @@ local function CanAddToScanList(npcID)
 
 	local npc = Data.NPCs[npcID]
 
-	if npc then
-		if npc.factionGroup == _G.UnitFactionGroup("player") then
+	-- This is a custom NPC addition; no further processing is possible.
+	if not npc then
+		return true
+	end
+
+	if npc.factionGroup == _G.UnitFactionGroup("player") then
+		return false
+	end
+
+	local isTameable = npc.isTameable
+	local detection = profile.detection
+
+	if isTameable and not detection.tameables then
+		return false
+	end
+
+	if not isTameable and not detection.rares then
+		return false
+	end
+
+	if npc:HasQuest() then
+		if not npc:IsQuestComplete() then
+			return true
+		elseif detection.ignoreCompletedQuestObjectives then
+			return false
+		end
+	end
+
+	local achievementID = npc.achievementID
+
+	if achievementID then
+		if detection.achievementIDs[achievementID] == Enum.DetectionGroupStatus.Disabled then
 			return false
 		end
 
-		local isTameable = npc.isTameable
-		local detection = profile.detection
-
-		if isTameable and not detection.tameables then
-			return false
-		end
-
-		if not isTameable and not detection.rares then
-			return false
-		end
-
-		local isquestCompleted = private.IsNPCQuestComplete(npc)
-
-		if not npc.questID or isquestCompleted then
-			local achievementID = npc.achievementID
-
-			if achievementID then
-				if detection.achievementIDs[achievementID] == Enum.DetectionGroupStatus.Disabled then
-					return false
-				end
-
-				if detection.ignoreCompletedAchievementCriteria and private.IsNPCAchievementCriteriaComplete(npc) then
-					return false
-				end
-			end
-		end
-
-		if isquestCompleted and detection.ignoreCompletedQuestObjectives then
+		if detection.ignoreCompletedAchievementCriteria and npc:IsAchievementCriteriaComplete() then
 			return false
 		end
 	end
@@ -139,7 +142,7 @@ end
 local function MergeUserDefinedWithScanList(npcList)
 	if npcList and private.db.profile.detection.userDefined then
 		for npcID in pairs(npcList) do
-			Data.Scanner.NPCs[npcID] = {}
+			Data.Scanner.NPCs[npcID] = _G.setmetatable({}, private.NPCMetatable)
 		end
 	end
 end
@@ -204,7 +207,7 @@ local function UpdateScanListAchievementCriteria()
 	local needsUpdate = false
 
 	for _, npc in pairs(Data.Scanner.NPCs) do
-		if npc.achievementID and npc.achievementCriteriaID and not private.IsNPCAchievementCriteriaComplete(npc) then
+		if npc.achievementID and npc.achievementCriteriaID and not npc:IsAchievementCriteriaComplete() then
 			local _, _, isCompleted = _G.GetAchievementCriteriaInfoByID(npc.achievementID, npc.achievementCriteriaID)
 
 			if isCompleted then
@@ -233,7 +236,7 @@ local function UpdateScanListQuestObjectives()
 		local NPCs = Data.Scanner.NPCs
 
 		for npcID in pairs(NPCs) do
-			if private.IsNPCQuestComplete(NPCs[npcID]) then
+			if NPCs[npcID]:IsQuestComplete() then
 				needsUpdate = true
 			end
 		end
@@ -289,13 +292,18 @@ function NPCScan:UPDATE_MOUSEOVER_UNIT()
 end
 
 do
-	local VIGNETTE_SOURCE_TO_PREFERENCE = {
+	local VignetteSourceToPreference = {
 		[_G.MINIMAP_LABEL] = "ignoreMiniMap",
 		[_G.WORLD_MAP] = "ignoreWorldMap",
 	}
 
+	local IgnoredVignetteAtlasName = {
+		VignetteLoot = true,
+		VignetteLootElite = true,
+	}
+
 	local function IsIgnoringSource(sourceText)
-		return private.db.profile.detection[VIGNETTE_SOURCE_TO_PREFERENCE[sourceText]]
+		return private.db.profile.detection[VignetteSourceToPreference[sourceText]]
 	end
 
 	local function ProcessVignetteGUID(vignetteGUID)
@@ -305,7 +313,7 @@ do
 
 		local vignetteInfo = _G.C_VignetteInfo.GetVignetteInfo(vignetteGUID);
 
-		if not vignetteInfo then
+		if not vignetteInfo or IgnoredVignetteAtlasName[vignetteInfo.atlasName] then
 			return
 		end
 
@@ -315,39 +323,54 @@ do
 			return
 		end
 
+		local vignetteName = vignetteInfo.name
+		local vignetteNPCs = private.VignetteIDToNPCMapping[vignetteInfo.vignetteID]
+
 		local npcID = private.GUIDToCreatureID(vignetteInfo.objectGUID)
 
+		if vignetteNPCs then
+			for index = 1, #vignetteNPCs do
+				local vignetteNPC = vignetteNPCs[index]
+				local npc = Data.Scanner.NPCs[vignetteNPC.npcID]
+
+				if npc then
+					ProcessDetection({
+						npcID = vignetteNPC.npcID,
+						sourceText = sourceText,
+						unitClassification = npc.classification,
+						vignetteName = vignetteName,
+					})
+				end
+			end
+
+			return
+		else
+			private.Debug("Unknown vignette: %s - vignetteID %d (NPC ID %d) in mapID %d", vignetteInfo.name, vignetteInfo.vignetteID, npcID or -1, _G.C_Map.GetBestMapForUnit("player"))
+		end
+
+		local npc = npcID and Data.Scanner.NPCs[npcID] or nil
+
 		-- The objectGUID can be but isn't always an NPC ID, since some NPCs must be summoned from the vignette object.
-		if npcID and Data.Scanner.NPCs[npcID] then
+		if npc then
 			ProcessDetection({
 				npcID = npcID,
-				sourceText = sourceText
+				sourceText = sourceText,
+				unitClassification = npc.classification,
+				vignetteName = vignetteName,
 			})
 
 			return
 		end
 
-		local vignetteNPC = private.VignetteIDToNPCMapping[vignetteInfo.vignetteID]
-
-		if vignetteNPC then
-			if Data.Scanner.NPCs[vignetteNPC.npcID] then
-				ProcessDetection({
-					npcID = vignetteNPC.npcID,
-					sourceText = sourceText
-				})
-			end
-		else
-			private.Debug("Unknown vignette: %s - vignetteID %d (NPC ID %d) in mapID %d", vignetteInfo.name, vignetteInfo.vignetteID, npcID or -1, _G.C_Map.GetBestMapForUnit("player"))
-		end
-
-		local vignetteName = vignetteInfo.name
 		local questID = private.QuestIDFromName[vignetteName]
 
 		if questID then
-			for ID in pairs(private.QuestNPCs[questID]) do
+			for questNPCID, questNPC in pairs(private.QuestNPCs[questID]) do
 				ProcessDetection({
-					npcID = ID,
-					sourceText = sourceText
+					npcID = questNPCID,
+					sourceText = sourceText,
+					unitClassification = questNPC.classification,
+					vignetteName = vignetteName,
 				})
 			end
 
@@ -357,11 +380,14 @@ do
 		end
 
 		npcID = private.NPCIDFromName[vignetteName]
+		npc = npcID and Data.Scanner.NPCs[npcID] or nil
 
-		if npcID then
+		if npc then
 			ProcessDetection({
 				npcID = npcID,
-				sourceText = sourceText
+				sourceText = sourceText,
+				unitClassification = npc.classification,
+				vignetteName = vignetteName,
 			})
 
 			return

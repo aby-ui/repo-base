@@ -1,18 +1,18 @@
-## Interface: 80000
+## Interface: 80200
 ## Title: CompactRaid
-## Version: 4.33
+## Version: 5.09
 ## Author: Abin
 ## SavedVariables: CompactRaidDB
-## SavedVariablesPerCharacter: CompactRaidCharDB
 ## OptionalDeps: Clique, TomTom
 ## X-Category: UnitFrame
 ## X-eMail: abinn32@yahoo.com
-## X-Curse-Packaged-Version: v4.33
+## X-Curse-Packaged-Version: v5.09
 ## X-Curse-Project-Name: CompactRaid
 ## X-Curse-Project-ID: compactraid
 ## X-Curse-Repository-ID: wow/compactraid/mainline
 
 Includes\LibAddonManager.lua
+Includes\Pre80API.lua
 Includes\utf8.lua
 Includes\InterfaceOptionPage-1.0.lua
 Includes\VirtualScrollList-1.0.lua
@@ -20,6 +20,7 @@ Includes\TabFrame-1.0.lua
 Includes\LibAuraGroups-1.0.lua
 Includes\ModularOptionFrame.lua
 Includes\LibPlayerSpells-1.0.lua
+Includes\UnitAuraEx.lua
 
 Locales\enUS.lua
 Locales\zhCN.lua

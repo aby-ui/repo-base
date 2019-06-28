@@ -38,6 +38,8 @@ L.Color_soon = "即将到期"
 L.Color_seconds = "少于1分钟"
 L.Color_minutes = "少于1小时"
 L.Color_hours = "1小时或以上"
+L.Color_charging = "充能中(仍有层数)"
+L.Color_controlled = "昏迷计时"
 
 -- 文字定位
 L.XOffset = "X 偏移"

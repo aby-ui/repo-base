@@ -1,6 +1,7 @@
 local _, U1 = ...;
 U1.ABBR={
     ["tellmewhen"] = "tmw",
+    ["weakauras2"] = "wa",
     ["eventalertmod"] = "eam",
     ["worldquestslist"] = "wql",
     ["worldquesttracker"] = "wqt",
@@ -13,6 +14,7 @@ U1.ABBR={
     ["targetnameplateindicator"] = "tni",
     ["theburningtrade"] = "tbt",
     ["tidyplates"] = "tp",
+    ["methoddungeontools"] = "mdt",
 }
 U1.PINYIN={
 	['DBM:军团5人本']={'dbmjuntuanrenben','dbm:jt5rb'},
@@ -41,6 +43,7 @@ U1.PINYIN={
 	['一键神器能量']={'yijianshenqinengliang','yjsqnl'},
 	['一键驱散']={'yijianqusan','yjqs'},
 	['万圣节糖罐位置']={'wanshengjietangguanweizhi','wsjtgwz'},
+    ['春节长者位置']={'chunjiezhangzheweizhi','cjzzwz'},
 	['下拉菜单增强']={'xialacaidanzengqiang','xlcdzq'},
 	['专业技能助手']={'zhuanyejinengzhushou','zyjnzs'},
 	['世界事件数据']={'shijieshijianshuju','sjsjsj'},
@@ -248,4 +251,12 @@ U1.PINYIN={
     ['战斗计时']={'zhandoujishi','zdjs'},
     ['爱不易装备搜索']={'aibuyizhuangbeisousuo','abyzbss'},
     ['装等显示']={'zhuangdengxianshi','zdxs'},
+    ['装备特质显示']={'zhuangbeitezhixianshi','zbtzxs'},
+    ['帕库图腾标记']={'pakututengbiaoji','pkttbj'},
+    ['SUF头像增强']={'suftouxiangzengqiang','suftxzq'},
+    ['黑海岸稀有']={'heihaianxiyou','hhaxy'},
+    ['震荡助手']={'zhendangzhushou','zdzs'},
+    ['入侵时刻表']={'ruqinshikebiao','rqskb'},
+    ['目标姓名板标记']={'mubiaoxingmingbanbiaoji','mbxmbbj'},
+    ['大秘路线']={'damiluxian','dmlx'},
 }

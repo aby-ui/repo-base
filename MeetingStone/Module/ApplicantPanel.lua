@@ -185,14 +185,14 @@ function ApplicantPanel:OnInitialize()
         end)
     end
 
-    local AutoInvite = GUI:GetClass('CheckBox'):New(self) do
-        AutoInvite:SetPoint('BOTTOMRIGHT', self, 'TOPLEFT', -80, 7)
-        AutoInvite:SetText(L['自动邀请'])
-        AutoInvite:SetScript('OnClick', function(AutoInvite)
-            local checked = AutoInvite:GetChecked()
-            self:SetAutoInvite(checked)
-        end)
-    end
+    -- local AutoInvite = GUI:GetClass('CheckBox'):New(self) do
+    --     AutoInvite:SetPoint('BOTTOMRIGHT', self, 'TOPLEFT', -80, 7)
+    --     AutoInvite:SetText(L['自动邀请'])
+    --     AutoInvite:SetScript('OnClick', function(AutoInvite)
+    --         local checked = AutoInvite:GetChecked()
+    --         self:SetAutoInvite(checked)
+    --     end)
+    -- end
 
     self.ApplicantList = ApplicantList
     self.AutoInvite = AutoInvite
@@ -200,12 +200,7 @@ function ApplicantPanel:OnInitialize()
     self:RegisterEvent('LFG_LIST_APPLICANT_UPDATED', 'UpdateApplicantsList')
     self:RegisterEvent('LFG_LIST_APPLICANT_LIST_UPDATED')
     self:RegisterEvent('LFG_LIST_ACTIVE_ENTRY_UPDATE', function()
-        AutoInvite:SetChecked(select(9, C_LFGList.GetActiveEntryInfo()))
         self:UpdateApplicantsList()
-    end)
-
-    self:RegisterMessage('MEETINGSTONE_PERMISSION_UPDATE', function(_, canCreate, isManager)
-        self.AutoInvite:SetEnabled(C_LFGList.GetActiveEntryInfo() and canCreate)
     end)
 
     self:SetScript('OnShow', self.ClearNewPending)
@@ -235,14 +230,13 @@ end
 
 function ApplicantPanel:UpdateApplicantsList()
     local list = {}
-    local _, activityId = C_LFGList.GetActiveEntryInfo()
     local applicants = C_LFGList.GetApplicants()
 
-    if applicants and activityId then
-        for i, v in ipairs(applicants) do
-            local id, _, _, numMembers = C_LFGList.GetApplicantInfo(v)
+    if applicants and C_LFGList.HasActiveEntryInfo() then
+        for i, id in ipairs(applicants) do
+            local numMembers = C_LFGList.GetApplicantInfo(id).numMembers
             for i = 1, numMembers do
-                tinsert(list, Applicant:New(id, i, activityId))
+                tinsert(list, Applicant:New(id, i, C_LFGList.GetActiveEntryInfo().activityID))
             end
         end
 

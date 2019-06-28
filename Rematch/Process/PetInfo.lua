@@ -62,6 +62,7 @@
       speed: speed stat of the pet (integer)
       rarity: rarity 1-4 of pet (integer)
       isDead: whether the pet is dead (bool)
+      isInjured: whether the pet has less than max health (bool)
       isSummonable: whether the pet can be summoned (bool)
       isRevoked: whether the pet is revoked (bool)
       abilityList: table of pet's abilities (table)
@@ -84,7 +85,11 @@
       numTeams: number of teams the pet belongs to (pet and species only) (integer)
       sourceID: the source index (1=Drop, 2=Quest, 3=Vendor, etc) of the pet (integer)
       moveset: the exact moveset of the pet ("123,456,etc") (string)
-      speciesAt25: whether the pet has a version at level 25 (bool)
+	  speciesAt25: whether the pet has a version at level 25 (bool)
+	  hasNotes: whether the pet has notes
+	  notes: the text of the pet's notes
+	  isLeveling: whether the pet is in the queue
+     isSummoned: whether the pet is currently summoned (companion pet)
       
    How it works:
 
@@ -131,13 +136,14 @@ local apiByStat = {
    displayID="Info", isFavorite="Info", speciesName="Info", name="Info", icon="Info",
    petType="Info", creatureID="Info", sourceText="Info", loreText="Info", isWild="Info",
    canBattle="Info", isTradable="Info", isUnique="Info", isObtainable="Info", health="Stats",
-   maxHealth="Stats", power="Stats", speed="Stats", rarity="Stats", isDead="Dead",
+   maxHealth="Stats", power="Stats", speed="Stats", rarity="Stats", isDead="Dead", isInjured="Dead",
    isSummonable="Other", isRevoked="Other", abilityList="Abilities", levelList="Abilities",
-   valid="Valid", count="Count", fullLevel="FullLevel", needsFanfare="Fanfare",
+   valid="Valid", count="Count", maxCount="Count", fullLevel="FullLevel", needsFanfare="Fanfare",
    breedID="Breed", breedName="Breed", possibleBreedIDs="PossibleBreeds",
    possibleBreedNames="PossibleBreeds", numPossibleBreeds="PossibleBreeds", hasBreed="Breed",
    owned="Valid", battleOwner="Battle", battleIndex="Battle", isSlotted="Slotted",
    inTeams="Teams", numTeams="Teams", sourceID="Source", moveset="Moveset", speciesAt25="SpeciesAt25",
+   notes="Notes", hasNotes="Notes", isLeveling="IsLeveling", isSummoned="IsSummoned", 
 }
 
 -- indexed by petInfo table reference, this will contain reused tables like fetchedAPI
@@ -297,7 +303,7 @@ local queryAPIs = {
    -- petInfo.valid verifies the pet contains information (not a reassigned petID or bad speciesID)
    Valid = function(self)
       local idType = self.idType
-      if idType=="pet" and self.speciesID then
+      if idType=="pet" and self.speciesID then -- if speciesID read ok then "pet" petID is functional
          self.valid = true
          self.owned = true -- owned is only true if regular petID is valid
       elseif (idType=="species" and self.name) or (idType=="leveling" or idType=="ignored" or idType=="random") or (idType=="link" and self.name) or (idType=="battle" and self.name) then
@@ -328,7 +334,10 @@ local queryAPIs = {
    end,
    -- whether a pet isDead
    Dead = function(self)
-      self.isDead = self.health==0 and self.maxHealth>0
+      if self.maxHealth and self.maxHealth > 0 then
+         self.isDead = self.health==0
+         self.isInjured = self.health<self.maxHealth
+      end
    end,
    -- this fills petInfo.breedID and petInfo.breedName depending on which breed addon is enabled, if any
    Breed = function(self)
@@ -367,7 +376,7 @@ local queryAPIs = {
             breedID = 0
             breedName = self.numPossibleBreeds==0 and "NEW" or "???"
          end
-         self.breedID = breedID
+		 self.breedID = breedID
          self.breedName = breedName or breedNames[breedID]
          self.hasBreed = true
       else
@@ -444,6 +453,19 @@ local queryAPIs = {
    SpeciesAt25 = function(self)
       self.speciesAt25 = rematch.speciesAt25[self.speciesID] and true
    end,
+   Notes = function(self)
+		local speciesID = self.speciesID
+		self.notes = RematchSettings.PetNotes[speciesID]
+		if self.notes then
+			self.hasNotes = true
+		end
+   end,
+   IsLeveling = function(self)
+		self.isLeveling = self.owned and rematch:IsPetLeveling(self.petID)
+   end,
+   IsSummoned = function(self)
+		self.isSummoned = C_PetJournal.GetSummonedPetGUID() == self.petID
+   end,
 }
 
 -- rematch:GetBreedSource() is used by the Breed and PossibleBreeds API
@@ -476,6 +498,15 @@ function rematch:GetBreedSource()
       breedSource = false -- none found, only attempt to find a source once
    end
    return breedSource
+end
+
+-- returns the name of a breed by its ID (used by PetMenus' breed menu; not petInfo)
+function rematch:GetBreedNameByID(breedID)
+	if rematch:GetBreedSource()=="PetTracker_Breeds" then
+		return PetTracker:GetBreedIcon(breedID,.85)
+	else
+		return breedNames[breedID]
+	end
 end
 
 local reset -- function used in fetch and petInfo, definining it after fetch

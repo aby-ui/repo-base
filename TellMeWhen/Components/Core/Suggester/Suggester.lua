@@ -807,7 +807,7 @@ function Module:Table_GetNormalSuggestions(suggestions, tbl)
 		-- Optimizations galore!
 
 		-- Checking each number against all the ranges of valid search results 
-		-- is WAY faster then trying to do any sort of exact matching based on 
+		-- is WAY faster then trying to do any kind of exact matching based on 
 		-- the length of the input and the length of the candidate.
 
 		-- We start with the 6 digit numbers because they'll have the most results for 1-digit inputs.

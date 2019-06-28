@@ -191,7 +191,11 @@ CoreDependCall("Blizzard_TradeSkillUI", function()
 
     --- Create Resize Bar ---
     local resizeBar = CreateFrame('Button', nil, TradeSkillFrame)
-    resizeBar:SetAllPoints(TradeSkillFrameBottomBorder)
+    TradeSkillFrame._resizeBar = resizeBar
+    resizeBar:SetPoint("BOTTOMLEFT", TradeSkillFrame)
+    resizeBar:SetPoint("BOTTOMRIGHT", TradeSkillFrame)
+    resizeBar:SetHeight(16)
+    --resizeBar:SetAllPoints(TradeSkillFrameBottomBorder) --broken in 8.1
     resizeBar:SetScript('OnMouseDown', resizeBar_OnMouseDown)
     resizeBar:SetScript('OnMouseUp', resizeBar_OnMouseUp)
     resizeBar:SetScript('OnEnter', resizeBar_OnEnter)

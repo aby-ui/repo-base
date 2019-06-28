@@ -262,7 +262,7 @@ local dcsresetcheck = CreateFrame("Button", "DCSResetButton", DejaCharacterStats
 	--Item Slots
 	local dcsItemsPanelCategoryFS = DejaCharacterStatsPanel:CreateFontString("dcsItemsPanelCategoryFS", "OVERLAY", "GameFontNormal")
 	dcsItemsPanelCategoryFS:SetText('|cffffffff' .. L["Item Slots:"] .. '|r')
-	dcsItemsPanelCategoryFS:SetPoint("TOPLEFT", 25, -240)
+	dcsItemsPanelCategoryFS:SetPoint("TOPLEFT", 25, -260)
 	dcsItemsPanelCategoryFS:SetFontObject("GameFontNormalLarge") --Use instead of SetFont("Fonts\\FRIZQT__.TTF", 15) or Russian, Korean and Chinese characters won't work.
 	
 	--Miscellaneous

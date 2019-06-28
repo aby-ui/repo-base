@@ -33,12 +33,12 @@ button:SetAttribute("spell2", button.spell2)
 function button:OnUpdateTimer()
 	local expires = addon:GetUnitBuffTimer("player", self.spell2, 1)
 	if expires then
-		return expires, expires
+		return expires and "NONE" or "R", expires
 	end
 
 	if UnitHealth("pet") > 0 then
 		local spell = petSpells[self.index]
-		return spell and IsSpellKnown(spell, true)
+		return spell and IsSpellKnown(spell, true) and "NONE"
 	end
 end
 

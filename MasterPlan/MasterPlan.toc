@@ -1,4 +1,4 @@
-## Interface: 80000
+## Interface: 80200
 ## Title: Master Plan
 ## Notes: Garrision missions UI tweaks.
 ## Author: foxlit

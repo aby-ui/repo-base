@@ -40,7 +40,7 @@
 	
     <Script file="Common\CrystalOfInsanity.lua"/>
     <Script file="Common\LightforgedRune.lua"/>
-	<Script file="Common\Alchemy.lua"/>
+	<!--<Script file="Common\Alchemy.lua"/>-->
     <Script file="Common\IntelliMount.lua"/>
 
 </Ui>

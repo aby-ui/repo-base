@@ -98,8 +98,9 @@ local function Button_OnUpdateTimer(self, spell)
 
 	local duration, curEnchant = self.tempEnehcntDuration, self.curEnchant
 	if duration and duration > 0 and curEnchant and strfind(spell, curEnchant) then
-		return 1, GetTime() + duration / 1000
-	end
+		return "NONE", GetTime() + duration / 1000
+    end
+    return "R"
 end
 
 local function Button_OnTooltipText(self, tooltip)

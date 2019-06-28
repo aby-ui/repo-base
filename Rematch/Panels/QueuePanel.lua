@@ -20,28 +20,34 @@ rematch:InitModule(function()
 	queue = settings.LevelingQueue
 
 	panel.Top.QueueButton:SetText(L["Queue"])
-   panel.Top.LevelingSlot.Label:SetText(L["Current Leveling Pet"])
+   
+	local scrollFrame = panel.List
+	scrollFrame.template = settings.SlimListButtons and "RematchCompactPetListButtonTemplate" or "RematchNewPetListButtonTemplate"
+	scrollFrame.templateType = "RematchCompositeButton"
+	scrollFrame.list = queue
+	scrollFrame.callback = rematch.FillNewPetListButton
+	scrollFrame.postUpdateFunc = panel.PostUpdateFunc	
 
 	-- setup list scrollframe
-	local scrollFrame = panel.List.ScrollFrame
-	scrollFrame.update = panel.UpdateList
-	scrollFrame.scrollBar.doNotHide = true
-	scrollFrame.stepSize = 264 -- 44*6 or 6 rows
+	-- local scrollFrame = panel.List.ScrollFrame
+	-- scrollFrame.update = panel.UpdateList
+	-- scrollFrame.scrollBar.doNotHide = true
+	-- scrollFrame.stepSize = 264 -- 44*6 or 6 rows
 
-	if settings.SlimListButtons then
-		HybridScrollFrame_CreateButtons(scrollFrame,"RematchSlimPetListButtonTemplate",28,-1)
-	else
-		HybridScrollFrame_CreateButtons(scrollFrame,"RematchPetListButtonTemplate",44,0)
-	end
+	-- if settings.SlimListButtons then
+	-- 	HybridScrollFrame_CreateButtons(scrollFrame,"RematchSlimPetListButtonTemplate",28,-1)
+	-- else
+	-- 	HybridScrollFrame_CreateButtons(scrollFrame,"RematchPetListButtonTemplate",44,0)
+	-- end
 
-	for _,button in ipairs(scrollFrame.buttons) do
-		button.forQueuePanel = true
-	end
+	-- for _,button in ipairs(scrollFrame.buttons) do
+	-- 	button.forQueuePanel = true
+	-- end
 
 	settings.QueueSortOrder = settings.QueueSortOrder or 1
 
 	local queueHelp = L["This is the leveling queue. Drag pets you want to level here.\n\nRight click any of the three battle pet slots and choose 'Put Leveling Pet Here' to mark it as a leveling slot you want controlled by the queue.\n\nWhile a leveling slot is active, the queue will fill the slot with the top-most pet in the queue. When this pet reaches level 25 (gratz!) it will leave the queue and the next pet in the queue will take its place.\n\nTeams saved with a leveling slot will reserve that slot for future leveling pets."]
-	scrollFrame.Help:SetText(queueHelp)
+	panel.List.Help:SetText(queueHelp)
 
 	rematch:RegisterMenu("QueueMenu", { -- menu for Queue button in topright of panel
 		{ text=L["Sort by:"], highlight=true, disabled=true },
@@ -72,70 +78,32 @@ rematch:InitModule(function()
 
 end)
 
+-- callback that runs after the petlist is updated
+function panel:PostUpdateFunc()
+	local petCard = rematch.PetCard
+	local focus = GetMouseFocus()
+	-- if pet card is up and it's different than pet under the mouse, update the pet card
+	-- (so pet card changes during mousewheel scroll)
+	if petCard:IsVisible() and focus and focus.petID and focus.petID~=petCard.petID then
+		rematch:ShowPetCard(self,focus.petID)
+	end
+	-- show instructions "This is the leveling queue. Drag pets here..etc." if queue is empty
+	panel.List.Help:SetShown(#queue==0 and not rematch.MiniQueue:IsVisible())
+end
+
 ------------------
 
 function panel:Update()
 	if panel:IsVisible() then
 		panel:UpdateTop()
-		panel:UpdateList()
+		panel.List:Update()
 	end
 end
-
--- updates the list of queued pets
-function panel:UpdateList()
-	local numData = #queue
-	local scrollFrame = panel.List.ScrollFrame
-	local offset = HybridScrollFrame_GetOffset(scrollFrame)
-	local buttons = scrollFrame.buttons
-	local lastVisibleButton
-
-	local petOnCursor = rematch:GetCursorPet()
-
-	for i=1,#buttons do
-		local index = i + offset
-		local button = buttons[i]
-		if ( index <= numData ) then
-			button.index = index
-			local petID = queue[index]
-			rematch:FillPetListButton(button,petID)
-			rematch:DimQueueListButton(button,rematch.skippedPicks[petID])
-			if petOnCursor==petID then -- dim pet if it's on cursor
-				button:SetAlpha(0.4)
-			else
-				button:SetAlpha(1)
-			end
-			button:Show()
-			lastVisibleButton = button
-		else
-			button.index = nil
-			button:Hide()
-		end
-	end
-	HybridScrollFrame_Update(scrollFrame, scrollFrame.buttonHeight*numData, scrollFrame.buttonHeight)
-	rematch:UpdatePetListHighlights(scrollFrame)
-
-	-- capture frame appears between the last visible button and the bottom
-	-- of the scrollframe
-	local capture = panel.DropButton.Capture
-	if not scrollFrame.scrollBar:IsEnabled() then -- scrollframe isn't completely full
-		if lastVisibleButton then
-			capture:SetPoint("TOPLEFT",lastVisibleButton,"BOTTOMLEFT",-43,0)
-		else
-			capture:SetPoint("TOPLEFT",scrollFrame,"TOPLEFT")
-		end
-		capture:SetPoint("BOTTOMRIGHT",scrollFrame)
-		capture:Show()
-	else -- queue buttons fill scrollFrame, hide capture
-		capture:Hide()
-	end
-
-	scrollFrame.Help:SetShown(#queue==0)
-end
-
 
 --[[ Leveling Slot ]]
 
 -- this is called by the DropButton's click on receivedrag, to place a leveling pet in the top slot
+-- note: this is still used in several places, do not remove
 function panel:LevelingSlotReceiveDrag(index)
 	if index then
 		local petID = rematch:GetCursorPet()
@@ -146,7 +114,18 @@ function panel:LevelingSlotReceiveDrag(index)
 			else
 				rematch:InsertPetToQueue(index,petID)
 				ClearCursor()
+				panel:BlingPetID(petID)
 			end
+		end
+	end
+end
+
+-- flashes the given petID in the queue
+function panel:BlingPetID(petID)
+	for queueIndex,queuedPetID in ipairs(queue) do
+		if queuedPetID==petID then
+			panel.List:BlingIndex(queueIndex)
+			return
 		end
 	end
 end
@@ -159,16 +138,10 @@ end
 -- an InsertLevelingPet at that index.
 function panel:InsertLineOnUpdate(elapsed)
 	local insertLine = self.InsertLine
-	local scrollFrame = rematch.QueuePanel.DropButton:GetParent().List.ScrollFrame
+	local scrollFrame = rematch.QueuePanel.List.ScrollFrame -- DropButton:GetParent().List.ScrollFrame
 
-	if panel.Top.LevelingSlot:IsVisible() then
-		panel.DropButton.SlotBorder:Show()
-		panel.DropButton:SetPoint("TOPLEFT",panel.Top)
-		panel.DropButton:SetPoint("BOTTOMRIGHT",panel.Top)
-	else
-		panel.DropButton.SlotBorder:Hide()
-		panel.DropButton:ClearAllPoints()
-	end
+	panel.DropButton.SlotBorder:Hide()
+	panel.DropButton:ClearAllPoints()
 
 	if not MouseIsOver(scrollFrame) then
 		insertLine:Hide() -- not over the scrollframe, hide the insert frame/line
@@ -180,13 +153,12 @@ function panel:InsertLineOnUpdate(elapsed)
 	insertLine:SetPoint("CENTER",UIParent,"BOTTOMLEFT",x/scale,y/scale)
 
 	-- adjust width of pulsing line to the buttons it will be displayed between
-	insertLine.Texture:SetWidth(scrollFrame.buttons[1]:GetWidth()-6)
+	insertLine.Texture:SetWidth(panel.List:GetButtonWidth()-6)
 
-	-- now check if mouse is over capture area of an empty/partially full scrollframe
-	if self.Capture:IsVisible() and MouseIsOver(self.Capture) then
+	if panel.List:IsOverEmptyArea() then
 		insertLine.index = -1 -- if so can mark index to -1 to add to queue and leave
 		if #queue>0 then
-			insertLine.Texture:SetPoint("CENTER",scrollFrame.buttons[#queue],"BOTTOM")
+			insertLine.Texture:SetPoint("CENTER",scrollFrame.Buttons[#queue],"BOTTOM")
 			insertLine.Texture:Show()
 		else
 			insertLine.Texture:Hide()
@@ -198,11 +170,11 @@ function panel:InsertLineOnUpdate(elapsed)
 	-- now go through each button and see if we're over that button (can't GetMouseFocus() since
 	-- mouse is intercepted) to know where to put the line texture
 	insertLine.index = nil -- will be index to insert if applicable
-	for i,button in ipairs(scrollFrame.buttons) do
+	for i,button in ipairs(scrollFrame.Buttons) do
 		local relativeTo
 		local isVisible = button:IsVisible()
 		if MouseIsOver(button) or (button.Pet and MouseIsOver(button.Pet)) or (button.Icon and MouseIsOver(button.Icon)) then
-			if abs(y/scale-button:GetTop())<(scrollFrame.buttonHeight/2) then -- if cursor is closer to top of button
+			if abs(y/scale-button:GetTop())<(panel.List.buttonHeight/2) then -- if cursor is closer to top of button
 				relativeTo = "TOP" -- anchor line there
 				insertLine.index = button.index -- and set its index to this button
 			else -- if cursor is closer to bottom of button
@@ -212,7 +184,7 @@ function panel:InsertLineOnUpdate(elapsed)
 			-- now position the line texture itself relative to the button it's over instead of the parent insertLine
 			insertLine.Texture:SetPoint("CENTER",button,relativeTo)
 			-- before leaving, make sure line isn't above or below scrollframe (button is partially displayed)
-			if (relativeTo=="TOP" and button:GetTop()>scrollFrame:GetTop()+2) or (relativeTo=="BOTTOM" and button:GetBottom()<scrollFrame:GetBottom()-2) then
+			if (relativeTo=="TOP" and button:GetTop()>scrollFrame:GetTop()+6) or (relativeTo=="BOTTOM" and button:GetBottom()<scrollFrame:GetBottom()-6) then
 				insertLine.index = nil -- prevent insertLine from being clickable (it checks for index)
 				insertLine.Texture:Hide()
 				insertLine:Show() -- going to keep insertLine up to intercept clicks
@@ -262,42 +234,43 @@ end
 function rematch:DimQueueListButton(button,dim)
 	dim = dim and true -- convert nil to false
 	local v = dim and 0.4 or 1
-	if button.slim then -- slim format button
-		button.Level:SetTextColor(v,v,v)
-		button.Pet.Icon:SetDesaturated(dim)
-		button.Pet.Icon:SetVertexColor(v,v,v)
+	if button.compact then -- compact format button
+		button.LevelText:SetTextColor(v,v,v)
+		button.Pet:SetDesaturated(dim)
+		button.Pet:SetVertexColor(v,v,v)
 		button.Breed:SetTextColor(v,v,v)
-		button.Type:SetDesaturated(dim)
-		button.Type:SetVertexColor(v,v,v)
-		button.Favorite.Texture:SetDesaturated(dim)
-		button.Favorite.Texture:SetVertexColor(v,v,v)
+		button.TypeDecal:SetDesaturated(dim)
+		button.TypeDecal:SetVertexColor(v,v,v)
+		button.Favorite:SetDesaturated(dim)
+		button.Favorite:SetVertexColor(v,v,v)
+		button.Notes:SetDesaturated(dim)
+		button.Notes:SetVertexColor(v,v,v)
 		if dim then
 			button.Name:SetTextColor(v,v,v)
-			rematch:SetFaceplate(button)
+			button.Back:SetVertexColor(0.15,0.15,0.15)
 		end
 	else -- standard format
 		if dim then
 			button.Name:SetTextColor(v,v,v)
 			button.SubName:SetTextColor(v,v,v)
-			button.Pet.Level.Text:SetTextColor(v,v,v)
+			button.LevelText:SetTextColor(v,v,v)
 			button.Breed:SetTextColor(v,v,v)
 			-- we don't want to mess with desaturation of rarity borders; replace with default slot border
-			button.Pet.IconBorder:SetTexture("Interface\\Buttons\\UI-QuickSlot2")
-			button.Pet.IconBorder:SetVertexColor(v,v,v)
+			button.Rarity:SetVertexColor(v,v,v)
 		else -- not dimmed, put everything back to normal
 			-- button.Name is colored in FillPetListButton (preserve rarity coloring if enabled)
 			button.SubName:SetTextColor(1,1,1)
-			button.Pet.Level.Text:SetTextColor(1,0.82,0)
+			button.LevelText:SetTextColor(1,0.82,0)
 			button.Breed:SetTextColor(0.9,0.9,0.9)
 		end
-		button.Pet.Icon:SetDesaturated(dim)
-		button.Pet.Icon:SetVertexColor(v,v,v)
-		button.Pet.Favorite.Texture:SetDesaturated(dim)
-		button.Pet.Favorite.Texture:SetVertexColor(v,v,v)
-		button.Pet.Level.BG:SetDesaturated(dim)
-		button.Pet.Level.BG:SetVertexColor(v,v,v)
-		button.TypeIcon:SetDesaturated(dim)
-		button.TypeIcon:SetVertexColor(v,v,v)
+		button.Pet:SetDesaturated(dim)
+		button.Pet:SetVertexColor(v,v,v)
+		button.Favorite:SetDesaturated(dim)
+		button.Favorite:SetVertexColor(v,v,v)
+		button.LevelBack:SetDesaturated(true)
+		button.LevelBack:SetVertexColor(v,v,v)
+		button.TypeDecal:SetDesaturated(dim)
+		button.TypeDecal:SetVertexColor(v,v,v)
 	end
 end
 
@@ -319,7 +292,7 @@ function rematch:ShowQueue(petID)
 		end
 	end
 	-- if key provided, scroll to team (which should be on the team panel workingList at this point)
-	if petID then 
+	if petID then
 		local index
 		for i=1,#queue do
 			if queue[i]==petID then
@@ -327,26 +300,14 @@ function rematch:ShowQueue(petID)
 			end
 		end
 		if index then
-			local parent = rematch.MiniQueue:IsVisible() and rematch.MiniQueue or panel
-			rematch:ListScrollToIndex(parent.List.ScrollFrame,index)
-			rematch:ListBling(parent.List.ScrollFrame,"petID",petID)
+			panel.List:ScrollToIndex(index)
+			panel.List:BlingIndex(index)
 		end
 	end
 end
 
 
 function panel:UpdateTop()
-	panel.Top.Toggle:SetEnabled(#queue>0 and true)
-	-- updates whether to show leveling slot at top of queue
-	if settings.ShowLevelingSlot and #queue>0 then
-		panel.Top:SetHeight(88)
-		panel.Top.LevelingSlot:Show()
-		local petID = settings.LevelingQueue[1] -- top-most leveling pet always
-		rematch:FillPetListButton(panel.Top.LevelingSlot,petID)
-	else
-		panel.Top:SetHeight(29)
-		panel.Top.LevelingSlot:Hide()
-	end
 	-- update counter for pets in queue
 	panel.Top.Count:SetText(format(L["Leveling Pets: %s%s"],rematch.hexWhite,#queue))
 	local anchorTo = panel.Top -- what further components (Status, Preferences, List) anchor to
@@ -370,18 +331,12 @@ function panel:UpdateTop()
 	if team and rematch:ArePreferencesActive() then
 		panel.Top.Preferences:Show()
 		panel.Top.Preferences.Paused:SetShown(settings.QueueNoPreferences)
-		panel.Top.Count:SetPoint("LEFT",panel,"TOPLEFT",52,-15)
+		panel.Top.Count:SetPoint("LEFT",panel,"TOPLEFT",28,-15)
 	else
 		panel.Top.Preferences:Hide()
-		panel.Top.Count:SetPoint("LEFT",panel,"TOPLEFT",32,-15)
+		panel.Top.Count:SetPoint("LEFT",panel,"TOPLEFT",10,-15)
 	end
 	panel.List:SetPoint("TOPLEFT",anchorTo,"BOTTOMLEFT",0,-2)
-	rematch:SetTopToggleButton(panel.Top.Toggle,settings.ShowLevelingSlot)
-end
-
-function panel:ToggleTop()
-	settings.ShowLevelingSlot = not settings.ShowLevelingSlot
-	panel:Update()
 end
 
 function panel:ShowFillQueueDialog(more)
@@ -397,16 +352,6 @@ end
 
 function panel:Resize(width)
 	panel:SetWidth(width)
-	for _,button in ipairs(panel.List.ScrollFrame.buttons) do
-		if button.slim then
-			button:SetWidth(width-32-27)
-		else
-			button:SetWidth(width-32-44)
-		end
-	end
 	panel.Top:SetWidth(width)
-	panel.Top.LevelingSlot:SetWidth(width-58)
-	panel.Top.LevelingSlot.Underline:SetWidth(width-122)
-	panel.DropButton.InsertLine.Texture:SetWidth(panel.List.ScrollFrame.buttons[1]:GetWidth())
 	panel.Status:SetWidth(width)
 end

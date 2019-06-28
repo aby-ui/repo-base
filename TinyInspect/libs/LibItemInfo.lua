@@ -3,7 +3,7 @@
 -- 物品信息庫 Author: M
 ---------------------------------
 
-local MAJOR, MINOR = "LibItemInfo.7000", 2
+local MAJOR, MINOR = "LibItemInfo.7000", 3
 local lib = LibStub:NewLibrary(MAJOR, MINOR)
 
 if not lib then return end
@@ -12,6 +12,8 @@ local locale = GetLocale()
 
 --物品等級匹配規則
 local ItemLevelPattern = gsub(ITEM_LEVEL, "%%d", "(%%d+)")
+local ItemLevelPlusPat = gsub(ITEM_LEVEL_PLUS, "%%d%+", "(%%d+%%+)")
+local ItemLevelAltPat = gsub(gsub(gsub(ITEM_LEVEL_ALT, "%(", "%%%("), "%)", "%%%)"), "%%d", "(%%d+)")
 
 --Toolip
 local tooltip = CreateFrame("GameTooltip", "LibItemLevelTooltip1", UIParent, "GameTooltipTemplate")
@@ -108,24 +110,50 @@ function lib:GetItemInfo(link, stats)
     tooltip:SetHyperlink(link)
     local text, level
     for i = 2, 5 do
-        text = _G[tooltip:GetName().."TextLeft" .. i]:GetText() or ""
-        level = string.match(text, ItemLevelPattern)
-        if (level) then break end
+        if (_G[tooltip:GetName().."TextLeft" .. i]) then
+            text = _G[tooltip:GetName().."TextLeft" .. i]:GetText() or ""
+            level = select(2, string.match(text, ItemLevelAltPat))
+            if (level) then break end
+            level = string.match(text, ItemLevelPattern)
+            if (level) then break end
+            level = string.match(text, ItemLevelPlusPat)
+            if (level) then break end
+        end
     end
-    self:GetStatsViaTooltip(tooltip, stats)
-    return 0, tonumber(level) or 0, GetItemInfo(link)
+    if stats then self:GetStatsViaTooltip(tooltip, stats) end
+    if (level and string.find(level, "+")) then
+        return 0, level, GetItemInfo(link)
+    else
+        return 0, tonumber(level) or 0, GetItemInfo(link)
+    end
 end
 
---獲取容器裏物品裝備等級(傳家寶/神器)
+--獲取容器裏物品裝備等級
 function lib:GetContainerItemLevel(pid, id)
+--[[
+    if (pid < 0) then
+        local link = GetContainerItemLink(pid, id)
+        return self:GetItemInfo(link)
+    end
+--]]
     local text, level
     if (pid and id) then
         tooltip:SetOwner(UIParent, "ANCHOR_NONE")
-        tooltip:SetBagItem(pid, id)
+        if pid == BANK_CONTAINER then
+            tooltip:SetInventoryItem('player', BankButtonIDToInvSlotID(id))
+        elseif pid == REAGENTBANK_CONTAINER then
+            return 0, 0 --材料银行不用管 ReagentBankButtonIDToInvSlotID
+        else
+            tooltip:SetBagItem(pid, id)
+        end
         for i = 2, 5 do
-            text = _G[tooltip:GetName().."TextLeft" .. i]:GetText() or ""
-            level = string.match(text, ItemLevelPattern)
-            if (level) then break end
+            if (_G[tooltip:GetName().."TextLeft" .. i]) then
+                text = _G[tooltip:GetName().."TextLeft" .. i]:GetText() or ""
+                level = select(2, string.match(text, ItemLevelAltPat))
+                if (level) then break end				
+                level = string.match(text, ItemLevelPattern)
+                if (level) then break end
+            end
         end
     end
     return 0, tonumber(level) or 0
@@ -145,9 +173,11 @@ function lib:GetUnitItemInfo(unit, index, stats)
     end
     local text, level
     for i = 2, 5 do
-        text = _G[unittip:GetName().."TextLeft" .. i]:GetText() or ""
-        level = string.match(text, ItemLevelPattern)
-        if (level) then break end
+        if (_G[unittip:GetName().."TextLeft" .. i]) then
+            text = _G[unittip:GetName().."TextLeft" .. i]:GetText() or ""
+            level = string.match(text, ItemLevelPattern)
+            if (level) then break end
+        end
     end
     self:GetStatsViaTooltip(unittip, stats)
     if (string.match(link, "item:(%d+):")) then

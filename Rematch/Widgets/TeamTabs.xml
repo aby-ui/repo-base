@@ -108,7 +108,7 @@
 		<Size x="30" y="30"/>
 		<Layers>
 			<Layer level="ARTWORK">
-				<Texture parentKey="Texture" file="Interface\Icons\INV_Misc_QuestionMark" setAllPoints="true"/>
+				<Texture parentKey="Texture" setAllPoints="true"/>
 			</Layer>
 			<Layer level="OVERLAY">
 				<Texture parentKey="Selected" file="Interface\Buttons\CheckButtonHilight" alphaMode="ADD" setAllPoints="true" hidden="true"/>

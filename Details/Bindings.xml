@@ -1,0 +1,74 @@
+<Bindings>
+	<Binding name="DETAILS_RESET_SEGMENTS" description="Clear all segments." header="DETAILS_KEYBIND_SEGMENTCONTROL" category="Details!">
+		_detalhes.tabela_historico:resetar()
+	</Binding>
+	
+	<Binding name="DETAILS_SCROLL_DOWN" description="Scroll down the window which you have the mouse over." header="DETAILS_KEYBIND_SCROLLING" category="Details!">
+		DetailsKeyBindScrollDown()
+	</Binding>
+	
+	<Binding name="DETAILS_SCROLL_UP" description="Scroll up the window which you have the mouse over." category="Details!">
+		DetailsKeyBindScrollUp()
+	</Binding>
+
+	<Binding name="DETAILS_REPORT_WINDOW1" description="Report data shown on window #1." header="DETAILS_KEYBIND_REPORT" category="Details!">
+		_detalhes:FastReportWindow (1)
+	</Binding>
+	<Binding name="DETAILS_REPORT_WINDOW2" description="Report data shown on window #2." category="Details!">
+		_detalhes:FastReportWindow (2)
+	</Binding>
+
+	<Binding name="DETAILS_TOGGLE_ALL" description="open or close all windows" header="DETAILS_KEYBIND_WINDOW_CONTROL" category="Details!">
+		_detalhes:ToggleWindows()
+	</Binding>
+
+	<Binding name="DETAILS_TOOGGLE_WINDOW1" description="Toggle window 1." category="Details!">
+		_detalhes:ToggleWindow (1)
+	</Binding>
+	<Binding name="DETAILS_TOOGGLE_WINDOW2" description="Toggle window 2." category="Details!">
+		_detalhes:ToggleWindow (2)
+	</Binding>
+	<Binding name="DETAILS_TOOGGLE_WINDOW3" description="Toggle window 3." category="Details!">
+		_detalhes:ToggleWindow (3)
+	</Binding>
+	<Binding name="DETAILS_TOOGGLE_WINDOW4" description="Toggle window 4." category="Details!">
+		_detalhes:ToggleWindow (4)
+	</Binding>
+	<Binding name="DETAILS_TOOGGLE_WINDOW5" description="Toggle window 5." category="Details!">
+		_detalhes:ToggleWindow (5)
+	</Binding>
+
+
+	<Binding name="DETAILS_BOOKMARK1" description="Change the display on the first window to bookmark #1." header="DETAILS_KEYBIND_BOOKMARK" category="Details!">
+		DetailsChangeDisplayFromBookmark (1);
+	</Binding>
+	<Binding name="DETAILS_BOOKMARK2" description="Change the display on the first window to bookmark #2." category="Details!">
+		DetailsChangeDisplayFromBookmark (2);
+	</Binding>
+	<Binding name="DETAILS_BOOKMARK3" description="Change the display on the first window to bookmark #3." category="Details!">
+		DetailsChangeDisplayFromBookmark (3);
+	</Binding>
+	<Binding name="DETAILS_BOOKMARK4" description="Change the display on the first window to bookmark #4." category="Details!">
+		DetailsChangeDisplayFromBookmark (4);
+	</Binding>
+	<Binding name="DETAILS_BOOKMARK5" description="Change the display on the first window to bookmark #5." category="Details!">
+		DetailsChangeDisplayFromBookmark (5);
+	</Binding>
+	<Binding name="DETAILS_BOOKMARK6" description="Change the display on the first window to bookmark #6." category="Details!">
+		DetailsChangeDisplayFromBookmark (6);
+	</Binding>
+	<Binding name="DETAILS_BOOKMARK7" description="Change the display on the first window to bookmark #7." category="Details!">
+		DetailsChangeDisplayFromBookmark (7);
+	</Binding>
+	<Binding name="DETAILS_BOOKMARK8" description="Change the display on the first window to bookmark #8." category="Details!">
+		DetailsChangeDisplayFromBookmark (8);
+	</Binding>
+	<Binding name="DETAILS_BOOKMARK9" description="Change the display on the first window to bookmark #9." category="Details!">
+		DetailsChangeDisplayFromBookmark (9);
+	</Binding>
+	<Binding name="DETAILS_BOOKMARK10" description="Change the display on the first window to bookmark #10." category="Details!">
+		DetailsChangeDisplayFromBookmark (10);
+	</Binding>
+	
+	
+</Bindings>

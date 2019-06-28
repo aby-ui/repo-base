@@ -259,7 +259,7 @@ function Fizzle:UpdateItems()
 			local str = _G[item.."FizzleS"]
 			local v1, v2 = GetInventoryItemDurability(id)
 			v1, v2 = tonumber(v1) or 0, tonumber(v2) or 0
-			local percent = v1 / v2 * 100
+			local percent = v2 > 0 and v1 / v2 * 100 or 0
 
 			if (((v2 ~= 0) and ((percent ~= 100) or db.DisplayWhenFull)) and not db.HideText) then
 				local text
@@ -300,12 +300,14 @@ end
 
 function Fizzle:CharacterFrame_OnShow()
 	self:RegisterEvent("UNIT_INVENTORY_CHANGED", "UpdateItems")
+    self:RegisterEvent("PLAYER_EQUIPMENT_CHANGED", "UpdateItems")
 	self:RegisterBucketEvent("UPDATE_INVENTORY_DURABILITY", 0.5, "UpdateItems")
 	self:UpdateItems()
 end
 
 function Fizzle:CharacterFrame_OnHide()
 	self:UnregisterEvent("UNIT_INVENTORY_CHANGED")
+    self:UnregisterEvent("PLAYER_EQUIPMENT_CHANGED")
 	self:UnregisterBucket("UPDATE_INVENTORY_DURABILITY")
 end
 

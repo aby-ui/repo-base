@@ -44,7 +44,7 @@ end
 
 function AccountantOptions_OnHide(self)
 	if(MYADDONS_ACTIVE_OPTIONSFRAME == self) then
-		ShowUIPanel(myAddOnsFrame);
+		myAddOnsFrame:Show();
 	end
 end
 

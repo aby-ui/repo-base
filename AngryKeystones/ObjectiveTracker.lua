@@ -34,39 +34,6 @@ local function timeFormatMS(timeAmount)
 end
 Mod.timeFormatMS = timeFormatMS
 
-local function Deaths_OnEnter(self)
-	GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-	GameTooltip:SetText(DEATHS, HIGHLIGHT_FONT_COLOR:GetRGB())
-
-	local list = {}
-	local deathsCount = 0
-	for unit,count in pairs(Addon.ProgressTracker.playerDeaths) do
-		local _, class = UnitClass(unit)
-		deathsCount = deathsCount + count
-		table.insert(list, { count = count, unit = unit, class = class })
-	end
-	table.sort(list, function(a, b)
-		if a.count ~= b.count then
-			return a.count > b.count
-		else
-			return a.unit < b.unit
-		end
-	end)
-
-	for _,item in ipairs(list) do
-		local color = RAID_CLASS_COLORS[item.class] or HIGHLIGHT_FONT_COLOR
-		GameTooltip:AddDoubleLine(item.unit, item.count, color.r, color.g, color.b, HIGHLIGHT_FONT_COLOR:GetRGB())
-	end
-	GameTooltip:AddLine(" ")
-	GameTooltip:AddDoubleLine(Addon.Locale.timeLost, timeFormat(deathsCount*5))
-
-	GameTooltip:Show()
-end
-
-local function Deaths_OnLeave()
-	GameTooltip:Hide()
-end
-
 local function GetTimerFrame(block)
 	if not block.TimerFrame then
 		local TimerFrame = CreateFrame("Frame", nil, block)
@@ -161,7 +128,6 @@ local function ShowBlock(timerID, elapsedTime, timeLimit)
 end
 
 hooksecurefunc("Scenario_ChallengeMode_UpdateTime", UpdateTime)
---hooksecurefunc("Scenario_ChallengeMode_SetUpAffixes", SetUpAffixes)
 hooksecurefunc("Scenario_ChallengeMode_ShowBlock", ShowBlock)
 
 local keystoneWasCompleted = false

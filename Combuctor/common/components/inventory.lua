@@ -7,21 +7,27 @@ local ADDON, Addon = ...
 local Frame = Addon:NewClass('InventoryFrame', 'Frame', Addon.Frame)
 Frame.Title = LibStub('AceLocale-3.0'):GetLocale(ADDON).TitleBags
 Frame.Bags = {BACKPACK_CONTAINER, 1, 2, 3, 4}
+Frame.MainMenuButtons = {
+	MainMenuBarBackpackButton,
+	CharacterBag0Slot, CharacterBag1Slot, CharacterBag2Slot, CharacterBag3Slot
+}
 
 function Frame:OnShow()
 	Addon.Frame.OnShow(self)
-	self:CheckBagButtons(true)
+	self:HighlightMainMenu(true)
 end
 
 function Frame:OnHide()
 	Addon.Frame.OnHide(self)
-	self:CheckBagButtons(false)
+	self:HighlightMainMenu(false)
 end
 
-function Frame:CheckBagButtons(checked)
-	MainMenuBarBackpackButton:SetChecked(checked)
-	CharacterBag0Slot:SetChecked(checked)
-	CharacterBag1Slot:SetChecked(checked)
-	CharacterBag2Slot:SetChecked(checked)
-	CharacterBag3Slot:SetChecked(checked)
+function Frame:HighlightMainMenu(checked)
+	for i, button in pairs(self.MainMenuButtons) do
+		if checked then
+			button.SlotHighlightTexture:Show()
+		else
+			button.SlotHighlightTexture:Hide()
+		end
+	end
 end

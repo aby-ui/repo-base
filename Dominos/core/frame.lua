@@ -6,7 +6,7 @@
 local AddonName, Addon = ...
 local Frame = Addon:CreateClass('Frame')
 local L = LibStub('AceLocale-3.0'):GetLocale(AddonName)
-local FlyPaper = _G.FlyPaper
+local FlyPaper = LibStub("LibFlyPaper-1.0")
 
 local active = {}
 local unused = {}

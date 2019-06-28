@@ -5,6 +5,14 @@ local AddOnFolderName, private = ...
 local NPCs = private.Data.NPCs
 
 -- ----------------------------------------------------------------------------
+-- Multiple zones
+-- ----------------------------------------------------------------------------
+NPCs[107924] = { -- Darkfiend Tormentor
+	questID = -1,
+	vignetteID = -1,
+}
+
+-- ----------------------------------------------------------------------------
 -- Azsuna
 -- ----------------------------------------------------------------------------
 NPCs[89016] = { -- Ravyn-Drath
@@ -89,10 +97,12 @@ NPCs[91100] = { -- Brogozog
 
 NPCs[91113] = { -- Tide Behemoth
 	questID = 38217, -- Tide Behemoth
+	vignetteID = -1,
 }
 
 NPCs[91114] = { -- Tide Behemoth
 	questID = 38217, -- Tide Behemoth
+	vignetteID = -1,
 }
 
 NPCs[91115] = { -- Tide Behemoth
@@ -118,6 +128,16 @@ NPCs[91579] = { -- Doomlord Kazrok
 NPCs[93622] = { -- Mortiferous
 	questID = 45516, -- Mortiferous
 	vignetteID = 1840, -- Mortiferous
+}
+
+NPCs[99846] = { -- Raging Earth
+	questID = -1,
+	vignetteID = -1,
+}
+
+NPCs[99886] = { -- Pacified Earth
+	questID = -1,
+	vignetteID = -1,
 }
 
 NPCs[101596] = { -- Charfeather
@@ -167,14 +187,17 @@ NPCs[107136] = { -- Houndmaster Stroxis
 
 NPCs[107169] = { -- Horux
 	questID = 42286, -- Houndmaster Stroxis
+	vignetteID = 1351, -- Houndmaster Stroxis
 }
 
 NPCs[107170] = { -- Zorux
 	questID = 42286, -- Houndmaster Stroxis
+	vignetteID = 1351, -- Houndmaster Stroxis
 }
 
 NPCs[107266] = { -- Commander Soraax
 	questID = 44673, -- Commander Soraax
+	vignetteID = 1690,
 }
 
 NPCs[107269] = { -- Inquisitor Tivos
@@ -209,38 +232,47 @@ NPCs[109504] = { -- Ragemaw
 
 NPCs[109575] = { -- Valakar the Thirsty
 	questID = 45515, -- Valakar the Thirsty
+	vignetteID = 1839,
 }
 
 NPCs[109584] = { -- Fjordun
 	questID = 45499, -- Fjordun
+	vignetteID = 1823,
 }
 
 NPCs[109594] = { -- Stormfeather
 	questID = 45497, -- Stormfeather
+	vignetteID = 1822,
 }
 
 NPCs[109620] = { -- The Whisperer
 	questID = 45496, -- The Whisperer
+	vignetteID = 1821,
 }
 
 NPCs[109630] = { -- Immolian
 	questID = 45495, -- Immolian
+	vignetteID = 1820,
 }
 
 NPCs[109641] = { -- Arcanor Prime
 	questID = 45494, -- Arcanor Prime
+	vignetteID = 1819,
 }
 
 NPCs[109653] = { -- Marblub the Massive
 	questID = 45492, -- Marblub the Massive
+	vignetteID = 1817,
 }
 
 NPCs[109677] = { -- Chief Treasurer Jabrill
 	questID = 45491, -- Chief Treasurer Jabrill
+	vignetteID = 1816,
 }
 
 NPCs[109702] = { -- Deepclaw
 	questID = 45489, -- Deepclaw
+	vignetteID = 1814,
 }
 
 NPCs[111434] = { -- Sea King Tidross
@@ -250,10 +282,17 @@ NPCs[111434] = { -- Sea King Tidross
 
 NPCs[111454] = { -- Bestrix
 	questID = 43961, -- Bestrix
+	vignetteID = 1607,
+}
+
+NPCs[111674] = { -- Cinderwing
+	questID = 43960,
+	vignetteID = 1606,
 }
 
 NPCs[111939] = { -- Lysanis Shadesoul
 	questID = 43956, -- Lysanis Shadesoul
+	vignetteID = 1604,
 }
 
 NPCs[112636] = { -- Sinister Leyrunner
@@ -264,6 +303,30 @@ NPCs[112636] = { -- Sinister Leyrunner
 NPCs[112637] = { -- Devious Sunrunner
 	achievementQuestID = 44081, -- Treacherous Leyrunners
 	vignetteID = 1623, -- Treacherous Stallions
+}
+
+-- ----------------------------------------------------------------------------
+-- Darkheart Thicket
+-- ----------------------------------------------------------------------------
+NPCs[99362] = { -- Kudzilla
+	vignetteID = 1244,
+}
+
+NPCs[101660] = { -- Rage Rot
+	vignetteID = 1243,
+}
+
+-- ----------------------------------------------------------------------------
+-- Halls of Valor
+-- ----------------------------------------------------------------------------
+NPCs[96647] = { -- Earlnoc the Beastbreaker
+	questID = 42240, -- Halls of Valor: Ponderous Poaching
+	vignetteID = 1064
+}
+
+NPCs[99802] = { -- Arthfael
+	questID = 42239, -- Halls of Valor: The Bear King
+	vignetteID = 1247,
 }
 
 -- ----------------------------------------------------------------------------
@@ -500,38 +563,47 @@ NPCs[107926] = { -- Hannval the Butcher
 
 NPCs[108790] = { -- Den Mother Ylva
 	questID = 42785, -- DANGER: Den Mother Ylva
+	vignetteID = 1539,
 }
 
 NPCs[108822] = { -- Huntress Estrid
 	questID = 42798, -- DANGER: Huntress Estrid
+	vignetteID = 1536,
 }
 
 NPCs[108827] = { -- Fjorlag, the Grave's Chill
 	questID = 45507, -- Fjorlag, the Grave's Chill
+	vignetteID = 1831,
 }
 
 NPCs[108885] = { -- Aegir Wavecrusher
 	questID = 42820, -- DANGER: Aegir Wavecrusher
+	vignetteID = 1532,
 }
 
 NPCs[109015] = { -- Lagertha
 	questID = 42964, -- DANGER: Lagertha
+	vignetteID = 1531,
 }
 
 NPCs[109113] = { -- Boulderfall, the Eroded
 	questID = 40067, -- 7.0 Stormheim - Boulderfall - twh
+	vignetteID = 1537,
 }
 
 NPCs[109195] = { -- Soulbinder Halldora
 	questID = 42953, -- DANGER: Soulbinder Halldora
+	vignetteID = 1535,
 }
 
 NPCs[109317] = { -- Rulf Bonesnapper
 	questID = 42963, -- DANGER: Rulf Bonesnapper
+	vignetteID = 1534,
 }
 
 NPCs[109318] = { -- Runeseer Sigvid
 	questID = 42991, -- DANGER: Runeseer Sigvid
+	vignetteID = 1533,
 }
 
 NPCs[110363] = { -- Roteye
@@ -676,6 +748,7 @@ NPCs[103785] = { -- Well-Fed Bear
 
 NPCs[104523] = { -- Shalas'aman
 	questID = 45500, -- Shalas'aman
+	vignetteID = 1824,
 }
 
 NPCs[108879] = { -- Humongris
@@ -691,14 +764,17 @@ NPCs[109281] = { -- Malisandra
 	toys = {
 		{ itemID = 130171 }, -- Cursed Orb
 	},
+	vignetteID = 1825,
 }
 
 NPCs[109648] = { -- Witchdoctor Grgl-Brgl
 	questID = 45493, -- Witchdoctor Grgl-Brgl
+	vignetteID = 1818,
 }
 
 NPCs[109692] = { -- Lytheron
 	questID = 45490, -- Lytheron
+	vignetteID = 1815,
 }
 
 NPCs[109708] = { -- Undergrell Ringleader
@@ -708,23 +784,27 @@ NPCs[109708] = { -- Undergrell Ringleader
 
 NPCs[109990] = { -- Nylaathria the Forgotten
 	questID = 45488, -- Nylaathria the Forgotten
+	vignetteID = 1813,
 }
 
 NPCs[110342] = { -- Rabxach
 	questID = 45487, -- Rabxach
+	vignetteID = 1812,
 }
 
 NPCs[110346] = { -- Aodh Witherpetal
-	questID = 43344, -- DANGER: Aodh Witherpetal
+	questID = 45485,
 	vignetteID = 1811,
 }
 
 NPCs[110361] = { -- Harbinger of Screams
 	questID = 45484, -- Harbinger of Screams
+	vignetteID = 1810,
 }
 
 NPCs[110367] = { -- Ealdis
 	questID = 45483, -- Ealdis
+	vignetteID = 1809,
 }
 
 NPCs[110562] = { -- Bahagar
@@ -738,58 +818,72 @@ NPCs[110562] = { -- Bahagar
 -- ----------------------------------------------------------------------------
 NPCs[116166] = { -- Eye of Gurgh
 	questID = 47068, -- Rare Elite 25
+	vignetteID = 1970,
 }
 
 NPCs[116953] = { -- Corrupted Bonebreaker
 	questID = 46101, -- Rare Elite 12
+	vignetteID = 1513,
 }
 
 NPCs[117086] = { -- Emberfire
 	questID = 46093, -- Rare Elite 04
+	vignetteID = 1848,
 }
 
 NPCs[117089] = { -- Inquisitor Chillbane
 	questID = 46096, -- Rare Elite 07
+	vignetteID = 1849,
 }
 
 NPCs[117090] = { -- Xorogun the Flamecarver
 	questID = 46100, -- Rare Elite 11
+	vignetteID = 1850,
 }
 
 NPCs[117091] = { -- Felmaw Emberfiend
 	questID = 46095, -- Rare Elite 06
+	vignetteID = 1851,
 }
 
 NPCs[117093] = { -- Felbringer Xar'thok
 	questID = 46099, -- Rare Elite 10
+	vignetteID = 1847,
 }
 
 NPCs[117094] = { -- Malorus the Soulkeeper
 	questID = 46092, -- Rare Elite 03
+	vignetteID = 1883,
 }
 
 NPCs[117095] = { -- Dreadblade Annihilator
 	questID = 46098, -- Rare Elite 09
+	vignetteID = 1852,
 }
 
 NPCs[117096] = { -- Potionmaster Gloop
 	questID = 46094, -- Rare Elite 05
+	vignetteID = 1853,
 }
 
 NPCs[117103] = { -- Felcaller Zelthae
 	questID = 46102, -- Rare Elite 13
+	vignetteID = 1846,
 }
 
 NPCs[117136] = { -- Doombringer Zar'thoz
 	questID = 46097, -- Rare Elite 08
+	vignetteID = 1854,
 }
 
 NPCs[117140] = { -- Salethan the Broodwalker
 	questID = 46091, -- Rare Elite 02
+	vignetteID = 1855,
 }
 
 NPCs[117141] = { -- Malgrazoth
 	questID = 46090, -- Rare Elite 01
+	vignetteID = 1856,
 }
 
 NPCs[117303] = { -- Malificus
@@ -802,42 +896,92 @@ NPCs[117470] = { -- Si'vash
 
 NPCs[118993] = { -- Dreadeye
 	questID = 46202, -- Rare Elite 14
+	vignetteID = 1885,
 }
 
 NPCs[119629] = { -- Lord Hel'Nurath
 	questID = 46304, -- Rare Elite 15
+	vignetteID = 1887,
 }
 
 NPCs[119718] = { -- Imp Mother Bruva
 	questID = 46313, -- Rare Elite 16
+	vignetteID = 1888,
 }
 
 NPCs[120998] = { -- Flllurlokkr
 	questID = 46951, -- Rare Elite 17
+	vignetteID = 1905,
 }
 
 NPCs[121016] = { -- Aqueux
 	questID = 46953, -- Rare Elite 18
+	vignetteID = 1907,
 }
 
 NPCs[121029] = { -- Brood Mother Nix
 	questID = 46965, -- Rare Elite 19
+	vignetteID = 1917,
 }
 
 NPCs[121037] = { -- Grossir
 	questID = 46995, -- Rare Elite 20
+	vignetteID = 1947,
 }
 
 NPCs[121046] = { -- Brother Badatin
 	questID = 47001, -- Rare Elite 21
+	vignetteID = 1948,
+}
+
+NPCs[121049] = { -- Baleful Knight-Captain
+	vignetteID = 1959,
+}
+
+NPCs[121051] = { -- Unstable Abyssal
+	vignetteID = 1968,
+}
+
+NPCs[121056] = { -- Malformed Terrorguard
+	vignetteID = 1961,
+}
+
+NPCs[121068] = { -- Volatile Imp
+	vignetteID = 1966,
+}
+
+NPCs[121073] = { -- Deranged Succubus
+	vignetteID = 1962,
+}
+
+NPCs[121077] = { -- Lambent Felhunter
+	vignetteID = 1967,
+}
+
+NPCs[121088] = { -- Warped Voidlord
+	vignetteID = 1960,
+}
+
+NPCs[121090] = { -- Demented Shivarra
+	vignetteID = 1963,
+}
+
+NPCs[121092] = { -- Anomalous Observer
+	vignetteID = 1965,
 }
 
 NPCs[121107] = { -- Lady Eldrathe
 	questID = 47026, -- Rare Elite 22
+	vignetteID = 1954,
+}
+
+NPCs[121108] = { -- Ruinous Overfiend
+	vignetteID = 1964,
 }
 
 NPCs[121112] = { -- Somber Dawn
 	questID = 47028, -- Rare Elite 23
+	vignetteID = 1955,
 }
 
 NPCs[121124] = { -- Apocron
@@ -846,6 +990,7 @@ NPCs[121124] = { -- Apocron
 
 NPCs[121134] = { -- Duke Sithizi
 	questID = 47036, -- Rare Elite 24
+	vignetteID = 1969,
 }
 
 -- ----------------------------------------------------------------------------
@@ -881,6 +1026,7 @@ NPCs[95872] = { -- Skullhat
 
 NPCs[96072] = { -- Durguth
 	questID = 45508, -- Durguth
+	vignetteID = -1,
 }
 
 NPCs[96410] = { -- Majestic Elderhorn
@@ -1049,22 +1195,27 @@ NPCs[102863] = { -- Bruiser
 
 NPCs[104481] = { -- Ala'washte
 	questID = 45514, -- Ala'washte
+	vignetteID = 1838,
 }
 
 NPCs[104484] = { -- Olokk the Shipbreaker
 	questID = 45511, -- Olokk the Shipbreaker
+	vignetteID = 1835,
 }
 
 NPCs[104513] = { -- Defilia
 	questID = 45513, -- Defilia
+	vignetteID = 1837,
 }
 
 NPCs[104517] = { -- Mawat'aki
 	questID = 45512, -- Mawat'aki
+	vignetteID = 1836,
 }
 
 NPCs[104524] = { -- Ormagrogg
 	questID = 45510, -- Ormagrogg
+	vignetteID = 1834,
 }
 
 NPCs[109498] = { -- Xaander
@@ -1084,10 +1235,12 @@ NPCs[109501] = { -- Darkful
 
 NPCs[110378] = { -- Drugon the Frostblood
 	questID = 44503, -- Tracking Quest
+	vignetteID = -1,
 }
 
 NPCs[125951] = { -- Obsidian Deathwarder
 	questID = 48381, -- Unknown
+	vignetteID = 2055,
 }
 
 -- ----------------------------------------------------------------------------
@@ -1181,6 +1334,8 @@ NPCs[103575] = { -- Reef Lord Raj'his
 
 NPCs[103787] = { -- Baconlisk
 	isTameable = true,
+	questID = -1,
+	vignetteID = -1,
 }
 
 NPCs[103827] = { -- King Morgalash
@@ -1211,6 +1366,12 @@ NPCs[104522] = { -- Selenyi
 
 NPCs[104698] = { -- Colerian
 	questID = 45503, -- Colerian
+	vignetteID = -1,
+}
+
+NPCs[105632] = { -- Broodmother Shu'malis
+	questID = -1,
+	vignetteID = -1,
 }
 
 NPCs[105547] = { -- Rauren
@@ -1220,10 +1381,17 @@ NPCs[105547] = { -- Rauren
 
 NPCs[105728] = { -- Scythemaster Cil'raman
 	questID = 45505, -- Scythemaster Cil'raman
+	vignetteID = 1829,
+}
+
+NPCs[105739] = { -- Sanaar
+	questID = -1,
+	vignetteID = -1,
 }
 
 NPCs[105899] = { -- Oglok the Furious
 	questID = 45506, -- Oglok the Furious
+	vignetteID = 1830,
 }
 
 NPCs[106351] = { -- Artificer Lothaire
@@ -1263,6 +1431,7 @@ NPCs[109054] = { -- Shal'an
 
 NPCs[109943] = { -- Ana-Mouz
 	questID = 44501, -- Tracking Quest
+	vignetteID = -1,
 }
 
 NPCs[109954] = { -- Magister Phaedris
@@ -1276,7 +1445,8 @@ NPCs[110024] = { -- Mal'Dreth the Corruptor
 }
 
 NPCs[110321] = { -- Na'zak the Fiend
-	questID = 43513 -- Na'zak the Fiend
+	questID = 43513, -- Na'zak the Fiend
+	vignetteID = -1,
 }
 
 NPCs[110340] = { -- Myonix
@@ -1370,26 +1540,32 @@ NPCs[112497] = { -- Maia the White
 
 NPCs[112705] = { -- Achronos
 	questID = 45478, -- Achronos
+	vignetteID = 1807,
 }
 
 NPCs[112756] = { -- Sorallus
 	questID = 45477, -- Sorallus
+	vignetteID = 1806,
 }
 
 NPCs[112757] = { -- Magistrix Vilessa
 	questID = 45476, -- Magistrix Vilessa
+	vignetteID = 1805,
 }
 
 NPCs[112758] = { -- Auditor Esiel
 	questID = 45475, -- Auditor Esiel
+	vignetteID = 1804,
 }
 
 NPCs[112759] = { -- Az'jatar
 	questID = 45471, -- Az'jatar
+	vignetteID = 1802,
 }
 
 NPCs[112760] = { -- Volshax, Breaker of Will
 	questID = 45474, -- Volshax, Breaker of Will
+	vignetteID = 1803,
 }
 
 NPCs[112802] = { -- Mar'tura
@@ -1405,15 +1581,39 @@ NPCs[113368] = { -- Llorian
 
 NPCs[113694] = { -- Pashya
 	isTameable = true,
+	questID = -1,
+	vignetteID = -1
 }
 
 -- ----------------------------------------------------------------------------
 -- Eye of Azshara
 -- ----------------------------------------------------------------------------
+NPCs[91788] = { -- Shellmaw
+	questID = -1,
+	vignetteID = 1229,
+}
+
+NPCs[108543] = { -- Dread Captain Thedon
+	questID = -1,
+	vignetteID = 1527,
+}
+
 NPCs[101411] = { -- Gom Crabbar
 	questID = 42712, -- Eye of Azshara: Termination Claws
+	vignetteID = 1228,
+}
+
+NPCs[101467] = { -- Jaggen-Ra
+	questID = -1,
+	vignetteID = 1230,
+}
+
+NPCs[108541] = { -- Dread Corsair
+	questID = -1,
+	vignetteID = -1,
 }
 
 NPCs[111573] = { -- Kosumoth the Hungering
 	questID = 45479, -- Kosumoth the Hungering
+	vignetteID = 1808,
 }

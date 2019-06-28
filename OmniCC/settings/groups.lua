@@ -1,52 +1,56 @@
---[[
-	groups.lua
-		manages group behaviour
---]]
+--[[ groups.lua: manages group behaviour ]]--
 
-OmniCC.Cache = {}
+local Addon = _G[...]
 
-
---[[ Queries ]]--
-
-function OmniCC:GetGroupSettingsFor(cooldown)
-	local group = self:GetGroup(cooldown)
-	return self:GetGroupSettings(group)
+local function getFirstAncestorWithName(cooldown)
+	local frame = cooldown
+	repeat
+		local name = frame:GetName()
+		if name then
+			return name
+		end
+		frame = frame:GetParent()
+	until not frame
 end
 
-function OmniCC:GetGroupSettings(group)
-	return self.sets.groupSettings[group]
-end
-
-function OmniCC:GetGroup(cooldown)
-	local id = self.Cache[cooldown]
-	if not id then
-		id = self:FindGroup(cooldown)
-		self.Cache[cooldown] = id
+function Addon:GetCooldownSettings(cooldown)
+	local id = self:GetCooldownGroupID(cooldown)
+	if id then
+		return self:GetGroupSettings(id)
 	end
-
-	return id
 end
 
-function OmniCC:FindGroup(cooldown)
-	local parent = cooldown:GetParent()
-	local name = cooldown:GetName() or (parent and parent:GetName())
-	if name then
-		local groups = self.sets.groups
-		for i = #groups, 1, -1 do
-			local group = groups[i]
-			if group.enabled then
-				for _, pattern in pairs(group.rules) do
-					if name:match(pattern) then
-						return group.id
+function Addon:GetCooldownGroupID(cooldown)
+	if self.sets then
+		local name = getFirstAncestorWithName(cooldown)
+
+		if name then
+			local groups = self.sets.groups
+
+			for i = #groups, 1, -1 do
+				local group = groups[i]
+
+				if group.enabled then
+					for _, pattern in pairs(group.rules) do
+						if name:match(pattern) then
+							return group.id
+						end
 					end
 				end
 			end
 		end
+
+		return 'base'
 	end
-	return 'base'
 end
 
-function OmniCC:GetGroupIndex(id)
+function Addon:GetGroupSettings(id)
+	if self.sets then
+		return self.sets.groupSettings[id]
+	end
+end
+
+function Addon:GetGroupIndex(id)
 	for i, group in pairs(self.sets.groups) do
 		if group.id == id then
 			return i
@@ -54,10 +58,9 @@ function OmniCC:GetGroupIndex(id)
 	end
 end
 
-
 --[[ Modifications ]]--
 
-function OmniCC:AddGroup(id)
+function Addon:AddGroup(id)
 	if not self:GetGroupIndex(id) then
 		self.sets.groupSettings[id] = self:StartupGroup(CopyTable(self.sets.groupSettings['base']))
 		tinsert(self.sets.groups, {id = id, rules = {}, enabled = true})
@@ -67,8 +70,9 @@ function OmniCC:AddGroup(id)
 	end
 end
 
-function OmniCC:RemoveGroup(id)
+function Addon:RemoveGroup(id)
 	local index = self:GetGroupIndex(id)
+
 	if index then
 		self.sets.groupSettings[id] = nil
 		tremove(self.sets.groups, index)
@@ -78,17 +82,7 @@ function OmniCC:RemoveGroup(id)
 	end
 end
 
-function OmniCC:UpdateGroups()
-	for cooldown, group in pairs(self.Cache) do
-		local newGroup = self:FindGroup(cooldown)
-		if group ~= newGroup then
-			self.Cache[cooldown] = newGroup
-			self.Cooldown.UpdateAlpha(cooldown)
-
-			local timer = cooldown.omnicc
-			if timer and timer.visible then
-				timer:UpdateText(true)
-			end
-		end
-	end
+function Addon:UpdateGroups()
+	self.Cooldown:UpdateSettings()
+	self.Display:ForActive("UpdateCooldownText")
 end

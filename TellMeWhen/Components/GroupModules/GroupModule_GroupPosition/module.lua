@@ -333,9 +333,11 @@ function GroupPosition:SetPos()
 	-- For some reason this was 1 on one of my groups, which caused some issues with animations
 	gs.Level = max(gs.Level, 5)
 
+	group:SetFlattensRenderLayers(true)
 	group:SetFrameStrata(gs.Strata)
 	group:SetFrameLevel(gs.Level)
 	group:SetScale(gs.Scale)
+	--group:SetToplevel(true)
 end
 
 function GroupPosition:Reset()

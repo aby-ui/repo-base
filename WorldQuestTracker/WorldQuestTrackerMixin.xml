@@ -2,4 +2,5 @@
 	<Frame name="WorldQuestTrackerTaxiPinTemplate" mixin="WorldQuestTrackerPinMixin" virtual="true"></Frame>
 	<Frame name="WorldQuestTrackerPinTemplate" mixin="WorldQuestTrackerPinMixin" virtual="true"></Frame>
 	<Frame name="WorldQuestTrackerRarePinTemplate" mixin="WorldQuestTrackerPinMixin" virtual="true"></Frame>
+	<Frame name="WorldQuestTrackerWorldMapPinTemplate" mixin="WorldQuestTrackerPinMixin" virtual="true"></Frame>
 </Ui>

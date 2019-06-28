@@ -18,10 +18,10 @@ local activeFilters = {} -- list of filter groups that are active
 local priority = { "Favorite", "Collected", "Types", "Rarity", "Sources", "Tough",
 						 "Level", "Other", "Breed", "Strong", "Similar", "Moveset", "Script" }
 
-local petInfo = {} -- where the various stats of a pet are stored (petID, speciesID, etc)
+local petInfo -- this will be rematch.petInfo as each new pet is looked at
 local filterFuncs = {} -- each filter group has a filterFuncs entry to process the petInfo
 
-local sortReference = { "name", "level", "rarity", "petType", "maxHealth", "power", "speed" }
+local sortReference = { "speciesName", "level", "rarity", "petType", "maxHealth", "power", "speed" }
 local sortStatsTable -- will be the SortStats tempTable
 local sortFavoritesTable -- will be the Favorites tempTable (improves speed 57% over using PetIsFavorite)
 local sortRelevanceTable -- will be the SearchRelevance tempTable
@@ -45,6 +45,8 @@ function roster:UpdatePetList()
 		return -- don't do anything if list doesn't need updated
 	end
 	roster.petListNeedsUpdated = nil
+
+	local oldPetListSize = #roster.petList
 
 	-- start with a clean slate
 	wipe(roster.petList)
@@ -75,6 +77,7 @@ function roster:UpdatePetList()
 
 	-- now go through each petID and add ones that should be listed to petList
 	for petID in roster:AllPets() do
+		petInfo = rematch.petInfo:Fetch(petID)
 		if roster:FilterPetByPetID(petID) then -- if pet is to be added
 			if favoritesFirst and petInfo.isFavorite then
 				sortFavoritesTable[petID] = true -- note favorites
@@ -118,31 +121,37 @@ function roster:UpdatePetList()
 		end
 	end
 
+	-- if the number of pets listed has changed, then do an extra PetPanel update
+	if #roster.petList ~= oldPetListSize then
+		rematch.PetPanel:Update() -- this fixes the potential scroll offset bug when pet list changes length
+	end
+
 	-- whew! all done. now the cleanup
 	rematch:WipeTempTables()
 	if roster:GetFilter("Script","code") then
 		rematch:CleanupScriptEnvironment()
 	end
+
 end
 
 -- run the petID through each active filter and return false at first failure
 -- if true returned, pet should be listed
 function roster:FilterPetByPetID(petID)
 
-	-- gather information about the pet into petInfo
-	if type(petID)=="string" then -- if this is an owned pet
-		petInfo.owned = true
-		petInfo.speciesID, petInfo.customName, petInfo.level, petInfo.xp, petInfo.maxXp, petInfo.displayID, petInfo.isFavorite, petInfo.name, petInfo.icon, petInfo.petType, petInfo.creatureID, petInfo.sourceText, petInfo.description, petInfo.isWild, petInfo.canBattle, petInfo.tradable, petInfo.unique, petInfo.obtainable = C_PetJournal.GetPetInfoByPetID(petID)
-		petInfo.petID = petID
-      if not petInfo.canBattle then
-         petInfo.level = 0
-      end
-	elseif type(petID)=="number" then -- if this a pet user doesn't own
-		petInfo.owned = false
-		petInfo.name, petInfo.icon, petInfo.petType, petInfo.creatureID, petInfo.sourceText, petInfo.description, petInfo.isWild, petInfo.canBattle, petInfo.tradable, petInfo.unique, petInfo.obtainable, petInfo.displayID = C_PetJournal.GetPetInfoBySpeciesID(petID)
-		petInfo.speciesID = petID
-		petInfo.petID, petInfo.customName, petInfo.level, petInfo.xp, petInfo.maxXp, petInfo.isFavorite = nil, nil, nil, nil, nil, nil
-	end
+	-- -- gather information about the pet into petInfo
+	-- if type(petID)=="string" then -- if this is an owned pet
+	-- 	petInfo.owned = true
+	-- 	petInfo.speciesID, petInfo.customName, petInfo.level, petInfo.xp, petInfo.maxXp, petInfo.displayID, petInfo.isFavorite, petInfo.name, petInfo.icon, petInfo.petType, petInfo.creatureID, petInfo.sourceText, petInfo.description, petInfo.isWild, petInfo.canBattle, petInfo.tradable, petInfo.unique, petInfo.obtainable = C_PetJournal.GetPetInfoByPetID(petID)
+	-- 	petInfo.petID = petID
+    --   if not petInfo.canBattle then
+    --      petInfo.level = 0
+    --   end
+	-- elseif type(petID)=="number" then -- if this a pet user doesn't own
+	-- 	petInfo.owned = false
+	-- 	petInfo.name, petInfo.icon, petInfo.petType, petInfo.creatureID, petInfo.sourceText, petInfo.description, petInfo.isWild, petInfo.canBattle, petInfo.tradable, petInfo.unique, petInfo.obtainable, petInfo.displayID = C_PetJournal.GetPetInfoBySpeciesID(petID)
+	-- 	petInfo.speciesID = petID
+	-- 	petInfo.petID, petInfo.customName, petInfo.level, petInfo.xp, petInfo.maxXp, petInfo.isFavorite = nil, nil, nil, nil, nil, nil
+	-- end
 
 	if not petInfo.name then
 		return -- if the pet no longer exists (was released)
@@ -239,7 +248,7 @@ function filterFuncs.Level()
 		elseif GetFilter(self,"Level","MovesetNot25") then
 			return not roster:IsMovesetAt25(petInfo.speciesID)
 		elseif petInfo.owned then
-			local level = petInfo.level
+			local level = petInfo.level or 0
 			if GetFilter(self,"Level",1) and level>0 and level<8 then
 				return true
 			elseif GetFilter(self,"Level",2) and level>7 and level<15 then
@@ -263,9 +272,9 @@ function filterFuncs.Other()
 		return false
 	end
 	-- Other -> Tradable/Not Tradable
-	if GetFilter(self,"Other","Tradable") and not petInfo.tradable then
+	if GetFilter(self,"Other","Tradable") and not petInfo.isTradable then
 		return false
-	elseif GetFilter(self,"Other","NotTradable") and petInfo.tradable then
+	elseif GetFilter(self,"Other","NotTradable") and petInfo.isTradable then
 		return false
 	end
 	-- Other -> Can Battle/Can't Battle
@@ -315,15 +324,8 @@ function filterFuncs.Other()
 end
 
 function filterFuncs.Breed()
-	if not petInfo.owned or not petInfo.canBattle then
-		return false -- pets not owned have no breed
-	end
-	return GetFilter(self,"Breed",(rematch:GetBreedIndex(petInfo.petID) or 13)-2) or false
+	return petInfo.owned and GetFilter(self,"Breed",petInfo.breedID) or false
 end
-
---function filterFuncs.Strong()
---	return roster:IsStrong(petInfo.speciesID) or false
---end
 
 function filterFuncs.Strong()
    -- return roster:IsStrong(petInfo.speciesID) or false
@@ -389,7 +391,7 @@ end
 function filterFuncs.Script()
 	local abilityList, levelList = rematch:GetAbilities(petInfo.speciesID)
 	-- TODO: use petInfo for scripts instead of ridiculous number of args?
-	if not rematch:RunScriptFilter(petInfo.owned, petInfo.petID, petInfo.speciesID, petInfo.customName, petInfo.level, petInfo.xp, petInfo.maxXp, petInfo.displayID, petInfo.isFavorite, petInfo.name, petInfo.icon, petInfo.petType, petInfo.creatureID, petInfo.sourceText, petInfo.description, petInfo.isWild, petInfo.canBattle, petInfo.tradable, petInfo.unique, petInfo.obtainable, abilityList, levelList) then
+	if not rematch:RunScriptFilter(petInfo.owned, petInfo.petID, petInfo.speciesID, petInfo.customName, petInfo.level, petInfo.xp, petInfo.maxXp, petInfo.displayID, petInfo.isFavorite, petInfo.name, petInfo.icon, petInfo.petType, petInfo.creatureID, petInfo.sourceText, petInfo.description, petInfo.isWild, petInfo.canBattle, petInfo.isTradable, petInfo.isUnique, petInfo.isObtainable, abilityList, levelList) then
 		return false
 	end
 end
@@ -441,7 +443,7 @@ function roster:RunSearchMatch(mask)
 	local relevance
 
 	-- match species name; relevance 3/4
-	relevance = matchRelevance(speciesID,mask,petInfo.name,3)
+	relevance = matchRelevance(speciesID,mask,petInfo.speciesName,3)
 	if relevance then
 		return relevance
 	end
@@ -523,7 +525,7 @@ function roster:GetSortStat()
 	end
 	if owned then -- for owned pets
 		if sortOrder==1 and sortByNickname then -- sortStat is customName if SortByNickname enabled
-			return petInfo.customName or petInfo.name -- returning customName or real name early
+			return petInfo.customName or petInfo.speciesName -- returning customName or real name early
 		end
 	elseif sortOrder==2 then -- for missing pets when level is the sort order
 		petInfo.level = 0 -- give it a fixed value so the sort is stable

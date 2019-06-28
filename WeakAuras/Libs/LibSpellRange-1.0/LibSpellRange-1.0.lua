@@ -10,7 +10,7 @@
 -- @name LibSpellRange-1.0.lua
 
 local major = "SpellRange-1.0"
-local minor = 12
+local minor = 13
 
 assert(LibStub, format("%s requires LibStub.", major))
 
@@ -93,12 +93,10 @@ local function UpdateBook(bookType)
 	for spellBookID = 1, max do
 		local type, baseSpellID = GetSpellBookItemInfo(spellBookID, bookType)
 		
-		if type == "SPELL" then
+		if type == "SPELL" or type == "PETACTION" then
 			local currentSpellName = GetSpellBookItemName(spellBookID, bookType)
 			local link = GetSpellLink(currentSpellName)
 			local currentSpellID = tonumber(link and link:gsub("|", "||"):match("spell:(%d+)"))
-			
-			local baseSpellName = GetSpellInfo(baseSpellID)
 
 			-- For each entry we add to a table,
 			-- only add it if there isn't anything there already.
@@ -113,15 +111,20 @@ local function UpdateBook(bookType)
 			if currentSpellName and not spellsByName[strlower(currentSpellName)] then
 				spellsByName[strlower(currentSpellName)] = spellBookID
 			end
-			if baseSpellName and not spellsByName[strlower(baseSpellName)] then
-				spellsByName[strlower(baseSpellName)] = spellBookID
-			end
-			
 			if currentSpellID and not spellsByID[currentSpellID] then
 				spellsByID[currentSpellID] = spellBookID
 			end
-			if baseSpellID and not spellsByID[baseSpellID] then
-				spellsByID[baseSpellID] = spellBookID
+			
+			if type == "SPELL" then
+				-- PETACTION (pet abilities) don't return a spellID for baseSpellID,
+				-- so base spells only work for proper player spells.
+				local baseSpellName = GetSpellInfo(baseSpellID)
+				if baseSpellName and not spellsByName[strlower(baseSpellName)] then
+					spellsByName[strlower(baseSpellName)] = spellBookID
+				end
+				if baseSpellID and not spellsByID[baseSpellID] then
+					spellsByID[baseSpellID] = spellBookID
+				end
 			end
 		end
 	end

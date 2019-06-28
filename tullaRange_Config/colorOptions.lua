@@ -3,19 +3,20 @@
 		General Bagnon settings
 --]]
 
-local AddonName, Addon = ...
+local _, Addon = ...
 local L = Addon.L
+
 local ColorOptions
 do
 	ColorOptions = Addon.OptionsPanel:New(
-		'tullaRange_ColorOptions', 
+		'tullaRange_ColorOptions',
 		nil,
-		'tullaRange', 
+		'tullaRange',
 		L.ColorSettingsTitle
 	)
-	
+
 	-- ColorOptions:Hide()
-	
+
 	Addon.ColorOptions = ColorOptions
 end
 
@@ -72,12 +73,12 @@ function ColorOptions:UpdateWidgets()
 	end
 
 	if self.sliders then
-		for i, s in pairs(self.sliders) do
+		for _, s in pairs(self.sliders) do
 			s:UpdateValue()
 		end
 	end
 
-	for i, type in self:GetColorTypes() do
+	for _, type in self:GetColorTypes() do
 		local selector = self:GetColorSelector(type)
 		selector:UpdateValues()
 	end

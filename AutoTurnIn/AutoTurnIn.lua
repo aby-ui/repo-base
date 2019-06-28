@@ -15,13 +15,13 @@ local Q_ALL, Q_DAILY, Q_EXCEPTDAILY = 1, 2, 3
 
 AutoTurnIn = LibStub("AceAddon-3.0"):NewAddon("AutoTurnIn", "AceEvent-3.0", "AceConsole-3.0")
 AutoTurnIn.TOC = select(4, GetBuildInfo())
-AutoTurnIn.defaults = {enabled = true, all = 2, trivial = false, completeonly = false,
+AutoTurnIn.defaults = {enabled = false, all = 1, trivial = false, completeonly = false,
                        lootreward = 1, tournament = 2,
 					   darkmoonteleport=true, todarkmoon=true, togglekey=4, darkmoonautostart=true, showrewardtext=true,
 					   version=TOCVersion, autoequip = false, debug=false,
 					   questlevel=true, watchlevel=true, questshare=false,
 					   armor = {}, weapon = {}, stat = {}, secondary = {},
-					   relictoggle=true, artifactpowertoggle=true}
+					   relictoggle=true, artifactpowertoggle=true, reviveBattlePet=false}
 
 AutoTurnIn.ldb, AutoTurnIn.allowed = nil, nil
 AutoTurnIn.funcList = {[1] = function() return false end, [2]=IsAltKeyDown, [3]=IsControlKeyDown, [4]=IsShiftKeyDown}
@@ -144,6 +144,7 @@ function AutoTurnIn:RegisterGossipEvents()
 	self:RegisterEvent("QUEST_COMPLETE")
 	self:RegisterEvent("QUEST_LOG_UPDATE")
 	self:RegisterEvent("QUEST_ACCEPTED")
+	if AutoTurnInCharacterDB.reviveBattlePet and select(2, UnitClass("player")) == "HUNTER" then self:RegisterEvent("GOSSIP_CONFIRM") end
 	
 	local gossipFunc1 = function() AutoTurnIn:Print(L["ivechosen"]); SelectGossipOption(1) end
 	local gossipFunc2 = function() if (GetNumGossipOptions() == 2) then SelectGossipOption(1) end end
@@ -153,7 +154,7 @@ function AutoTurnIn:RegisterGossipEvents()
 	AutoTurnIn.knownGossips = {
 		["93188"]=gossipFunc1, -- Mongar
 		["96782"]=gossipFunc1, -- Lucian Trias
-	    ["97004"]=gossipFunc1, -- "Red" Jack Findle
+		["97004"]=gossipFunc1, -- "Red" Jack Findle
 		["55267"]=gossipFunc1, -- YoungPandaren
 		["79815"]=gossipFunc2, -- Grunlek, free seals Alliance
 		["77377"]=gossipFunc2, -- Kristen Stoneforge, free seals Horde
@@ -351,11 +352,20 @@ function AutoTurnIn:isDarkmoonAndAllowed(questCount)
 			(GetZoneText() == L["Darkmoon Island"])
 end
 
+function AutoTurnIn:GOSSIP_CONFIRM(event, _, message, cost)
+	if message == L["ReviveBattlePetA"] and cost == 1000 then
+		local dialog = StaticPopup_FindVisible("GOSSIP_CONFIRM")
+		if dialog then
+			StaticPopup_OnClick(dialog, 1)
+		end
+	end
+end
+
 function AutoTurnIn:GOSSIP_SHOW()
 	if (not self:AllowedToHandle(true)) then
 		return
 	end
-	
+
 	-- darkmoon fairy gossip sometime turns in quest too fast so I can't relay only on quest number count. It often lie.
 	-- this flag is set in VarArgForActiveQuests if any quest may be turned in
 	self.DarkmoonAllowToProceed = true	
@@ -371,7 +381,7 @@ function AutoTurnIn:GOSSIP_SHOW()
 		for k, v in pairs(options) do
 			if ((v ~= "gossip") and strfind(v, "|cFF0008E8%(")) then
 				local opcount = GetNumGossipOptions()
-				SelectGossipOption((opcount == 1) and 1 or  math.floor(k / GetNumGossipOptions()) + 1)
+				return SelectGossipOption((opcount == 1) and 1 or  math.floor(k / GetNumGossipOptions()) + 1)
 			end
 		end
 	end
@@ -408,7 +418,19 @@ end
 function AutoTurnIn:HandleGossip()
 	local guid = AutoTurnIn:GetNPCGUID()
 	local func = AutoTurnIn.knownGossips[guid]
-	if func then func() end
+	if func then 
+		func() 
+	else
+		-- https://www.wowinterface.com/forums/showthread.php?t=49210 adaptation
+		if AutoTurnInCharacterDB.reviveBattlePet then
+			for i = 1, GetNumGossipOptions() do
+				local gossipText, gossipType = select(i * 2 - 1, GetGossipOptions())
+				if gossipText == L["ReviveBattlePetQ"] then
+					return SelectGossipOption(i, "", true)
+				end
+			end
+		end 
+	end
 end 
 
 -- return true if an item is of `ranged` type and is suitable with current options
@@ -850,7 +872,6 @@ end
 -- gossip and quest interaction goes through a sequence of windows: gossip [shows a list of available quests] - quest[describes specified quest]
 -- sometimes some parts of this chain is skipped. For example, priest in Honor Hold show quest window directly. This is a trick to handle 'toggle key'
 hooksecurefunc(QuestFrame, "Hide", function() AutoTurnIn.allowed = nil end)
--- if (GetItemCount(45724, false) > 0) then 
-	-- UseItemByName(45724) 
--- end
+
 -- /run local a=UnitGUID("npc"); for word in a:gmatch("Creature%-%d+%-%d+%-%d+%-%d+%-(%d+)%-") do print(word) end
+-- https://www.townlong-yak.com/

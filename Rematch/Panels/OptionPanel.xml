@@ -29,7 +29,58 @@
 		</Scripts>
 	</CheckButton>
 
-	<Button name="RematchOptionListButtonTemplate" virtual="true">
+	<RematchCompositeButton name="RematchOptionListButtonTemplate" virtual="true">
+		<Size x="0" y="26"/>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture parentKey="HeaderBack" file="Interface\AddOns\Rematch\Textures\backplate.tga">
+					<Anchors>
+						<Anchor point="TOPLEFT"/>
+						<Anchor point="BOTTOMRIGHT"/>
+					</Anchors>
+					<TexCoords left="0" right="1" top="0.5" bottom="1"/>
+					<Color r="0.25" g="0.25" b="0.25"/>
+				</Texture>
+			</Layer>		
+			<Layer level="BORDER">
+				<Texture parentKey="CheckButton" file="Interface\AddOns\Rematch\Textures\checkbuttons">
+					<Size x="26" y="26"/>
+					<Anchors>
+						<Anchor point="LEFT" x="0" y="0"/>
+					</Anchors>
+					<TexCoords left="0.75" right="1" top="0.5" bottom="0.75"/>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<FontString parentKey="Text" inherits="GameFontNormal" justifyH="LEFT">
+					<Size x="0" y="24"/>
+					<Anchors>
+						<Anchor point="LEFT" relativeKey="$parent.CheckButton" relativePoint="RIGHT" x="2" y="0"/>
+						<Anchor point="RIGHT" x="-8" y="0"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnEnter>
+				RematchOptionPanel.ListButtonOnEnter(self)
+			</OnEnter>
+			<OnLeave>
+				RematchOptionPanel.ListButtonOnLeave(self)
+			</OnLeave>
+			<OnMouseDown>
+				RematchOptionPanel.ListButtonOnMouseDown(self)
+			</OnMouseDown>
+			<OnMouseUp>
+				RematchOptionPanel.ListButtonOnMouseUp(self)
+			</OnMouseUp>
+			<OnClick>
+				RematchOptionPanel.ListButtonOnClick(self,button)
+			</OnClick>
+		</Scripts>		
+	</RematchCompositeButton>
+
+	<Button name="OldRematchOptionListButtonTemplate" virtual="true">
 		<Size x="248" y="24"/>
 		<Frames>
 			<CheckButton parentKey="CheckButton" motionScriptsWhileDisabled="true">
@@ -172,7 +223,20 @@
 	<Frame name="RematchOptionPanel" inherits="RematchPanelTemplate" hidden="true">
 		<Frames>
 
-			<Frame parentKey="List" inherits="RematchInsetFrameTemplate">
+			<RematchAutoScrollFrame parentKey="List">
+				<Size x="280" y="503"/>
+				<Anchors>
+					<Anchor point="TOPLEFT"/>
+					<Anchor point="BOTTOMRIGHT"/>
+				</Anchors>
+				<Frames>
+					<Frame parentKey="Reticle">
+
+					</Frame>
+				</Frames>
+			</RematchAutoScrollFrame>
+
+			<!-- <Frame parentKey="List" inherits="RematchInsetFrameTemplate">
 				<Size x="280" y="503"/>
 				<Anchors>
 					<Anchor point="TOPLEFT"/>
@@ -201,7 +265,7 @@
 						</Frames>
 					</ScrollFrame>
 				</Frames>
-			</Frame>
+			</Frame> -->
 
 			<Frame parentKey="Growth">
 				<Size x="248" y="48"/>
@@ -250,57 +314,15 @@
 				</Frames>
 			</Frame> <!-- Growth -->
 
-			<!-- this looks just like a regular check option but has an editbox too -->
-			<Frame parentKey="CustomScale">
-				<Size x="248" y="24"/>
-				<Frames>
-					<CheckButton parentKey="CheckButton" motionScriptsWhileDisabled="true">
-						<Size x="26" y="26"/>
-						<Anchors>
-							<Anchor point="LEFT" x="4" y="0"/>
-						</Anchors>
-						<NormalTexture file="Interface\Buttons\UI-CheckBox-Up"/>
-						<PushedTexture file="Interface\Buttons\UI-CheckBox-Down"/>
-						<HighlightTexture file="Interface\Buttons\UI-CheckBox-Highlight" alphaMode="ADD"/>
-						<CheckedTexture file="Interface\Buttons\UI-CheckBox-Check"/>
-						<DisabledCheckedTexture file="Interface\Buttons\UI-CheckBox-Check-Disabled"/>
-						<Scripts>
-							<OnClick>
-								RematchOptionPanel.CheckButtonOnClick(self)
-							</OnClick>
-							<OnEnter>
-								RematchOptionPanel.ListButtonOnEnter(self)
-							</OnEnter>
-							<OnLeave>
-								Rematch:HideTooltip()
-							</OnLeave>
-						</Scripts>
-					</CheckButton>
-				</Frames>
-				<Layers>
-					<Layer level="ARTWORK">
-						<FontString parentKey="Text" inherits="GameFontHighlight" justifyH="LEFT">
-						<Size x="0" y="24"/>
-							<Anchors>
-								<Anchor point="LEFT" relativeKey="$parent.CheckButton" relativePoint="RIGHT" x="2" y="0"/>
-							</Anchors>
-						</FontString>
-					</Layer>
-				</Layers>
-				<Frames>
-					<Button parentKey="ScaleButton" inherits="RematchStretchButtonTemplate,RematchTooltipScripts">
-						<Size x="64" y="24"/>
-						<Anchors>
-							<Anchor point="LEFT" relativeKey="$parent.Text" relativePoint="RIGHT" x="2" y="0"/>
-						</Anchors>
-						<Scripts>
-							<OnClick>
-								RematchOptionPanel.ShowCustomScaleDialog(self)
-							</OnClick>
-						</Scripts>
-					</Button>
-				</Frames>
-			</Frame> <!-- CustomScale -->
+			<!-- this button is attached to the Custom Scale list button to open a dialog -->
+			<Button parentKey="CustomScaleButton" inherits="RematchStretchButtonTemplate,RematchTooltipScripts">
+				<Size x="64" y="24"/>
+				<Scripts>
+					<OnClick>
+						RematchOptionPanel.ShowCustomScaleDialog(self)
+					</OnClick>
+				</Scripts>
+			</Button>
 
 		</Frames>
 	</Frame>

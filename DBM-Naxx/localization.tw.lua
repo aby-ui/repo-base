@@ -1,5 +1,4 @@
-﻿if GetLocale() ~= "zhTW" then return end
-
+if GetLocale() ~= "zhTW" then return end
 local L
 
 -------------------
@@ -11,15 +10,8 @@ L:SetGeneralLocalization({
 	name = "阿努比瑞克漢"
 })
 
-L:SetWarningLocalization({
-	SpecialLocust		= "蝗蟲風暴",
-	WarningLocustFaded	= "蝗蟲風暴結束"
-})
-
 L:SetOptionLocalization({
-	SpecialLocust		= "為蝗蟲風暴顯示特別警告",
-	WarningLocustFaded	= "當蝗蟲風暴結束時顯示警告",
-	ArachnophobiaTimer	= "為蜘蛛恐懼症 (成就)顯示計時器"
+	ArachnophobiaTimer	= "為蜘蛛恐懼症(成就)顯示計時器"
 })
 
 L:SetMiscLocalization({
@@ -180,8 +172,7 @@ L:SetGeneralLocalization({
 })
 
 L:SetOptionLocalization({
-	SpecialWarningInjection		= "當你中了突變注射時顯示特別警告",
-	SetIconOnInjectionTarget	= "為突變注射的目標設置圖示"
+	SpecialWarningInjection		= "當你中了突變注射時顯示特別警告"
 })
 
 L:SetWarningLocalization({
@@ -292,13 +283,13 @@ L:SetWarningLocalization({
 })
 
 L:SetMiscLocalization({
-	yell				= "你們這些蠢貨已經主動步入了陷阱。",
-	WarningWave1		= "%d %s",
-	WarningWave2		= "%d %s 和 %d %s",
-	WarningWave3		= "%d %s, %d %s 和 %d %s",
-	Trainee				= "受訓員",
-	Knight				= "死亡騎士",
-	Rider				= "騎兵"
+	yell			= "你們這些蠢貨已經主動步入了陷阱。",
+	WarningWave1	= "%d %s",
+	WarningWave2	= "%d %s 和 %d %s",
+	WarningWave3	= "%d %s, %d %s 和 %d %s",
+	Trainee			= "受訓員",
+	Knight			= "死亡騎士",
+	Rider			= "騎兵"
 })
 
 ---------------------
@@ -338,7 +329,7 @@ L:SetMiscLocalization({
 L = DBM:GetModLocalization("Sapphiron")
 
 L:SetGeneralLocalization({
-	name 				= "薩菲隆"
+	name = "薩菲隆"
 })
 
 L:SetOptionLocalization({
@@ -348,13 +339,11 @@ L:SetOptionLocalization({
 	TimerAir			= "為空中階段顯示計時器",
 	TimerLanding		= "為降落顯示計時器",
 	TimerIceBlast		= "為冰息術顯示計時器",
-	WarningDeepBreath	= "為冰息術顯示特別警告",
-	WarningIceblock		= "當你中了冰箱時大喊"
+	WarningDeepBreath	= "為冰息術顯示特別警告"
 })
 
 L:SetMiscLocalization({
 	EmoteBreath			= "%s深深地吸了一口氣。",
-	WarningYellIceblock	= "我是冰塊!"
 })
 
 L:SetWarningLocalization({
@@ -399,3 +388,4 @@ L:SetWarningLocalization({
 L:SetTimerLocalization({
 	TimerPhase2	= "第二階段"
 })
+

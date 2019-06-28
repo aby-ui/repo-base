@@ -1,12 +1,12 @@
 ## Author: Torhal
 ## DefaultState: enabled
-## Interface: 80000
+## Interface: 80200
 ## LoadManagers: AddonLoader
 ## OptionalDeps: Ace3, LibDataBroker-1.1, LibQTip-1.0, TipTac
 ## SavedVariables: Broker_CurrencyDB
 ## SavedVariablesPerCharacter: Broker_CurrencyCharDB
 ## Title: Broker: Currency
-## Version:  8.0.1.4
+## Version:  8.1.0.1
 
 ## Notes: LDB display of currencies, gold totals and session / daily / weekly statistics for all characters on a server.
 ## Notes-deDE: LDB-Anzeige von Währungen, Summe des Goldes und Gold-Statistik pro Sitzung / Tag / Woche für alle Charaktere auf einem Server.

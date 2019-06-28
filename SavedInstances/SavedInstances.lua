@@ -1,26 +1,19 @@
-local addonName, vars = ...
-SavedInstances = vars
-local addon = vars
+local addonName, addon = ...
 local addonAbbrev = "SI"
-vars.core = LibStub("AceAddon-3.0"):NewAddon(addonName, "AceEvent-3.0", "AceTimer-3.0", "AceBucket-3.0")
-local core = vars.core
-local L = vars.L
-vars.LDB = LibStub("LibDataBroker-1.1", true)
-vars.icon = vars.LDB and LibStub("LibDBIcon-1.0", true)
+local core = addon.core
+local L = addon.L
 
 local QTip = LibStub("LibQTip-1.0")
-local dataobject, db, config
-local maxdiff = 23 -- max number of instance difficulties
+local db
+local maxdiff = 33 -- max number of instance difficulties
 local maxcol = 4 -- max columns per player+instance
-local maxid = 2000 -- highest possible value for an instanceID, current max (Tomb of Sargeras) is 1676
+local maxid = 3000 -- highest possible value for an instanceID, current max (Battle of Dazar'alor) is 2070
 
--- local (optimal) references to provided functions
 local table, math, bit, string, pairs, ipairs, unpack, strsplit, time, type, wipe, tonumber, select, strsub =
   table, math, bit, string, pairs, ipairs, unpack, strsplit, time, type, wipe, tonumber, select, strsub
-local GetSavedInstanceInfo, GetNumSavedInstances, GetSavedInstanceChatLink, GetLFGDungeonNumEncounters, GetLFGDungeonEncounterInfo, GetNumRandomDungeons, GetLFGRandomDungeonInfo, GetLFGDungeonInfo, LFGGetDungeonInfoByID, GetLFGDungeonRewards, GetTime, UnitIsUnit, GetInstanceInfo, IsInInstance, SecondsToTime, GetQuestResetTime, GetGameTime, GetCurrencyInfo, GetNumGroupMembers =
-  GetSavedInstanceInfo, GetNumSavedInstances, GetSavedInstanceChatLink, GetLFGDungeonNumEncounters, GetLFGDungeonEncounterInfo, GetNumRandomDungeons, GetLFGRandomDungeonInfo, GetLFGDungeonInfo, LFGGetDungeonInfoByID, GetLFGDungeonRewards, GetTime, UnitIsUnit, GetInstanceInfo, IsInInstance, SecondsToTime, GetQuestResetTime, GetGameTime, GetCurrencyInfo, GetNumGroupMembers
+local GetSavedInstanceInfo, GetNumSavedInstances, GetSavedInstanceChatLink, GetLFGDungeonNumEncounters, GetLFGDungeonEncounterInfo, GetNumRandomDungeons, GetLFGRandomDungeonInfo, GetLFGDungeonInfo, LFGGetDungeonInfoByID, GetLFGDungeonRewards, GetTime, UnitIsUnit, GetInstanceInfo, IsInInstance, SecondsToTime, GetQuestResetTime, GetGameTime, GetCurrencyInfo, GetNumGroupMembers, UnitAura =
+  GetSavedInstanceInfo, GetNumSavedInstances, GetSavedInstanceChatLink, GetLFGDungeonNumEncounters, GetLFGDungeonEncounterInfo, GetNumRandomDungeons, GetLFGRandomDungeonInfo, GetLFGDungeonInfo, LFGGetDungeonInfoByID, GetLFGDungeonRewards, GetTime, UnitIsUnit, GetInstanceInfo, IsInInstance, SecondsToTime, GetQuestResetTime, GetGameTime, GetCurrencyInfo, GetNumGroupMembers, UnitAura
 
--- local (optimal) references to Blizzard's strings
 local RAID_CLASS_COLORS = RAID_CLASS_COLORS
 local RAID_FINDER = PLAYER_DIFFICULTY3
 local FONTEND = FONT_COLOR_CODE_CLOSE
@@ -36,9 +29,9 @@ local INSTANCE_SAVED, TRANSFER_ABORT_TOO_MANY_INSTANCES, NO_RAID_INSTANCES_SAVED
   INSTANCE_SAVED, TRANSFER_ABORT_TOO_MANY_INSTANCES, NO_RAID_INSTANCES_SAVED
 
 local ALREADY_LOOTED = ERR_LOOT_GONE:gsub("%(.*%)","")
+ALREADY_LOOTED = ALREADY_LOOTED:gsub("（.*）","") -- fix on zhCN and zhTW
 
-local UnitAura = UnitAura
--- Unit Aura functions that return info about the first Aura matching the spellName or spellID given on the unit.
+-- Unit Aura functions that return info about the first aura matching the spellName or spellID given on the unit.
 local SI_GetUnitAura = function(unit, spell, filter)
     for i = 1, 40 do
         local name, _, _, _, _, _, _, _, _, spellId = UnitAura(unit, i, filter)
@@ -58,7 +51,15 @@ local SI_GetUnitDebuff = function(unit, spell, filter)
     return SI_GetUnitAura(unit, spell, filter)
 end
 
-vars.Indicators = {
+local currency = addon.currency
+local QuestExceptions = addon.QuestExceptions
+local TimewalkingItemQuest = addon.TimewalkingItemQuest
+local scantt = addon.scantt
+local KeystonetoAbbrev = addon.KeystonetoAbbrev
+local KeystoneAbbrev = addon.KeystoneAbbrev
+local Emissaries = addon.Emissaries
+
+addon.Indicators = {
   ICON_STAR = ICON_LIST[1] .. "16:16:0:0|t",
   ICON_CIRCLE = ICON_LIST[2] .. "16:16:0:0|t",
   ICON_DIAMOND = ICON_LIST[3] .. "16:16:0:0|t",
@@ -70,390 +71,25 @@ vars.Indicators = {
   BLANK = "None",
 }
 
-local KeystoneAbbrev = {
-  [197] = L["EoA"],
-  [198] = L["DHT"],
-  [199] = L["BRH"],
-  [200] = L["HoV"],
-  [206] = L["Nelt"],
-  [207] = L["VotW"],
-  [208] = L["MoS"],
-  [209] = L["Arc"],
-  [210] = L["CoS"],
-  [227] = L["L Kara"],
-  [233] = L["CoEN"],
-  [234] = L["U Kara"],
-  [239] = L["SotT"],
-}
-
-local KeystonetoAbbrev = {
-  ["Eye of Azshara"] = L["EoA"],
-  ["Darkheart Thicket"] = L["DHT"],
-  ["Black Rook Hold"] = L["BRH"],
-  ["Halls of Valor"] = L["HoV"],
-  ["Neltharion's Lair"] = L["Nelt"],
-  ["Vault of the Wardens"] = L["VotW"],
-  ["Maw of Souls"] = L["MoS"],
-  ["The Arcway"] = L["Arc"],
-  ["Court of Stars"] = L["CoS"],
-  ["Return to Karazhan: Lower"] = L["L Kara"],
-  ["Cathedral of Eternal Night"] = L["CoEN"],
-  ["Return to Karazhan: Upper"] = L["U Kara"],
-  ["Seat of the Triumvirate"] = L["SotT"],
-}
-
-vars.Categories = { }
+addon.Categories = { }
 local maxExpansion
 for i = 0,10 do
   local ename = _G["EXPANSION_NAME"..i]
   if ename then
     maxExpansion = i
-    vars.Categories["D"..i] = ename .. ": " .. LFG_TYPE_DUNGEON
-    vars.Categories["R"..i] = ename .. ": " .. LFG_TYPE_RAID
+    addon.Categories["D"..i] = ename .. ": " .. LFG_TYPE_DUNGEON
+    addon.Categories["R"..i] = ename .. ": " .. LFG_TYPE_RAID
   else
     break
   end
 end
 
-local tooltip, indicatortip
+-- eventInfo format: [iconTexture] = true
+local eventInfo = {}
+local tooltip, indicatortip = nil, nil
+addon.indicatortip = indicatortip
 local thisToon = UnitName("player") .. " - " .. GetRealmName()
 local maxlvl = MAX_PLAYER_LEVEL_TABLE[#MAX_PLAYER_LEVEL_TABLE]
-local scantt = CreateFrame("GameTooltip", "SavedInstancesScanTooltip", UIParent, "GameTooltipTemplate")
-
-local currency = {
-  --390, -- Conquest Points
-  --392, -- Honor Points
-  --395, -- Justice Points
-  81, -- Epicurean Award
-  241, -- Champion's Seal
-  391, -- Tol Barad Commendation
-  402, -- Ironpaw Token
-  416, -- Mark of the World Tree
-  515, -- Darkmoon Prize Ticket
-  697, -- Elder Charm of Good Fortune
-  738, -- Lesser Charm of Good Fortune
-  752, -- Mogu Rune of Fate
-  776, -- Warforged Seal
-  777, -- Timeless Coin
-  789, -- Bloody Coin
-  823, -- Apexis Crystal
-  824, -- Garrison Resources
-  994, -- Seal of Tempered Fate
-  1101, -- Oil
-  1129, -- Seal of Inevitable Fate
-  1149, -- Sightless Eye
-  1155, -- Ancient Mana
-  1166, -- Timewarped Badge
-  1191, -- Valor Points
-  1220, -- Order Resources
-  1226, -- Nethershards
-  1273, -- Seal of Broken Fate
-  1275, -- Curious Coin
-  1299, -- Brawler's Gold
-  1314, -- Lingering Soul Fragment
-  1342, -- Legionfall War Supplies
-  1501, -- Writhing Essence
-  1508, -- Veiled Argunite
-  1533, -- Wakening Essence
-  1565, -- Rich Azerite Fragment
-  1710, -- Seafarer's Dubloon
-  1580, -- Seal of Wartorn Fate
-  1560, -- War Resources
-  1587, -- War Supplies
-}
-addon.currency = currency
-
-addon.LFRInstances = {
-  -- index is the id found in LFGDungeons.dbc or using the command below.
-  -- /script local id,name; for i=1,GetNumRFDungeons() do id,name = GetRFDungeonInfo(i);print(i..". "..name.." ("..id..")");end
-  -- total is boss count, base is boss offset,
-  -- parent is instance name to use, GetLFGDungeonInfo() or using the command below.
-  -- /run for i, v in ipairs(GetLFRChoiceOrder()) do print(i, v, GetLFGDungeonInfo(v)) end
-  -- altid is for alternate LFRID for higher level toons
-
-  [416] = { total=4, base=1,  parent=448, altid=843 }, -- DS1: The Siege of Wyrmrest Temple
-  [417] = { total=4, base=5,  parent=448, altid=844 }, -- DS2: Fall of Deathwing
-
-  [527] = { total=3, base=1,  parent=532, altid=830 }, -- MSV1: Guardians of Mogu'shan
-  [528] = { total=3, base=4,  parent=532, altid=831 }, -- MSV2: The Vault of Mysteries
-  [529] = { total=3, base=1,  parent=534, altid=832 }, -- HoF1: The Dread Approach
-  [530] = { total=3, base=4,  parent=534, altid=833 }, -- HoF2: Nightmare of Shek'zeer
-  [526] = { total=4, base=1,  parent=536, altid=834 }, -- TeS1: Terrace of Endless Spring
-  [610] = { total=3, base=1,  parent=634, altid=835 }, -- ToT1: Last Stand of the Zandalari
-  [611] = { total=3, base=4,  parent=634, altid=836 }, -- ToT2: Forgotten Depths
-  [612] = { total=3, base=7,  parent=634, altid=837 }, -- ToT3: Halls of Flesh-Shaping
-  [613] = { total=3, base=10, parent=634, altid=838 }, -- ToT4: Pinnacle of Storms
-  [716] = { total=4, base=1,  parent=766, altid=839 }, -- SoO1: Vale of Eternal Sorrows
-  [717] = { total=4, base=5,  parent=766, altid=840 }, -- SoO2: Gates of Retribution
-  [724] = { total=3, base=9,  parent=766, altid=841 }, -- SoO3: The Underhold
-  [725] = { total=3, base=12, parent=766, altid=842 }, -- SoO4: Downfall
-
-  [849] = { total=3, base=1,  parent=897, altid=1363 }, -- Highmaul1: Walled City
-  [850] = { total=3, base=4,  parent=897, altid=1364 }, -- Highmaul2: Arcane Sanctum
-  [851] = { total=1, base=7,  parent=897, altid=1365 }, -- Highmaul3: Imperator's Rise
-  [847] = { total=3, base=1,  parent=900, altid=1361, remap={ 1, 2, 7 } }, -- BRF1: Slagworks
-  [846] = { total=3, base=4,  parent=900, altid=1360, remap={ 3, 5, 8 } }, -- BRF2: The Black Forge
-  [848] = { total=3, base=7,  parent=900, altid=1362, remap={ 4, 6, 9 } }, -- BRF3: Iron Assembly
-  [823] = { total=1, base=10, parent=900, altid=1359 }, -- BRF4: Blackhand's Crucible
-
-  [982] = { total=3, base=1,  parent=989, altid=1366 }, -- Hellfire1: Hellbreach
-  [983] = { total=3, base=4,  parent=989, altid=1367 }, -- Hellfire2: Halls of Blood
-  [984] = { total=3, base=7,  parent=989, altid=1368, remap={ 7, 8,  11 } }, -- Hellfire3: Bastion of Shadows
-  [985] = { total=3, base=10, parent=989, altid=1369, remap={ 9, 10, 12 } }, -- Hellfire4: Destructor's Rise
-  [986] = { total=1, base=13, parent=989, altid=1370 }, -- Hellfire5: The Black Gate
-
-  [1287] = { total=3, base=1,  parent=1350, altid=nil, remap={ 1, 2, 3 } }, -- EN1: Darkbough
-  [1288] = { total=3, base=4,  parent=1350, altid=nil, remap={ 1, 2, 3 } }, -- EN2: Tormented Guardians
-  [1289] = { total=1, base=7,  parent=1350, altid=nil, remap={ 1 } },       -- EN3: Rift of Aln
-
-  [1411] = { total=3, base=1,  parent=1439, altid=nil }, -- ToV
-
-  [1290] = { total=3, base=1,  parent=1353, altid=nil }, -- NH1: Arcing Aqueducts
-  [1291] = { total=3, base=4,  parent=1353, altid=nil, remap={ 1, 2, 3 } }, -- NH2: Royal Athenaeum
-  [1292] = { total=3, base=7,  parent=1353, altid=nil, remap={ 1, 2, 3 } }, -- NH3: Nightspire
-  [1293] = { total=1, base=10, parent=1353, altid=nil, remap={ 1 } }, -- NH4: Betrayer's Rise
-
-  [1494] = { total=3, base=1, parent=1527, altid=nil, remap={ 1, 2, 3 } }, -- ToS1: The Gates of Hell (6/27/17)
-  [1495] = { total=3, base=4, parent=1527, altid=nil, remap={ 1, 2, 3 } }, -- ToS2: Wailing Halls (7/11/17)
-  [1496] = { total=2, base=7, parent=1527, altid=nil, remap={ 1, 2 } }, -- ToS3: Chamber of the Avatar (7/25/17)
-  [1497] = { total=1, base=9, parent=1527, altid=nil, remap={ 1 } }, -- ToS4: Deceiver's Fall (8/8/17)
-
-  [1610] = { total=3, base=1, parent=1642, altid=nil, remap={ 1, 2, 3 } }, -- Antorus: Light's Breach
-  [1611] = { total=3, base=4, parent=1642, altid=nil, remap={ 1, 2, 3 } }, -- Antorus: Forbidden Descent
-  [1612] = { total=3, base=7, parent=1642, altid=nil, remap={ 1, 2, 3 } }, -- Antorus: Hope's End
-  [1613] = { total=2, base=10, parent=1642, altid=nil, remap={ 1, 2 } }, -- Antorus: Seat of the Pantheon
-}
-
-local tmp = {}
-for id, info in pairs(addon.LFRInstances) do
-  tmp[id] = info
-  if info.altid then
-    tmp[info.altid] = info
-  end
-end
-addon.LFRInstances = tmp
-
-addon.WorldBosses = {
-  -- encounter index is embedded in the Hjournal hyperlink
-  [691] = { quest=32099, expansion=4, level=90 }, -- Sha of Anger
-  [725] = { quest=32098, expansion=4, level=90 }, -- Galleon
-  [814] = { quest=32518, expansion=4, level=90 }, -- Nalak
-  [826] = { quest=32519, expansion=4, level=90 }, -- Oondasta
-  [857] = { quest=33117, expansion=4, level=90, name=L["The Four Celestials"]  }, -- Chi-Ji
-  --[858] = { quest=nil, expansion=4, level=90 }, -- Yu'lon
-  --[859] = { quest=nil, expansion=4, level=90 }, -- Niuzao
-  --[860] = { quest=nil, expansion=4, level=90 }, -- Xuen
-  [861] = { quest=nil,   expansion=4, level=90 }, -- Ordos
-
-  --[[
-  [1291] = { quest=37460,  expansion=5, level=100 }, -- Drov the Ruiner
-  [1211] = { quest=37462,  expansion=5, level=100 }, -- Tarlna the Ageless
-  --]]
-  [1211] = { quest=37462,  expansion=5, level=100, -- Drov/Tarlna share a loot and quest atm
-    name=select(2,EJ_GetCreatureInfo(1,1291)):match("^[^ ]+").." / "..
-    select(2,EJ_GetCreatureInfo(1,1211)):match("^[^ ]+")},
-  [1291] = { remove=true }, -- Drov cleanup
-
-  [1262] = { quest=37464, expansion=5, level=100 }, -- Rukhmar
-  [1452] = { quest=39380, expansion=5, level=100 }, -- Kazzak
-
-  [1749] = { quest=42270, expansion=6, level=110 }, -- Nithogg
-  [1756] = { quest=42269, expansion=6, level=110, name=EJ_GetEncounterInfo(1756) }, -- The Soultakers
-  [1763] = { quest=42779, expansion=6, level=110 }, -- Shar'thos
-  [1769] = { quest=43192, expansion=6, level=110 }, -- Levantus
-  [1770] = { quest=42819, expansion=6, level=110 }, -- Humongris
-  [1774] = { quest=43193, expansion=6, level=110 }, -- Calamir
-  [1783] = { quest=43513, expansion=6, level=110 }, -- Na'zak the Fiend
-  [1789] = { quest=43448, expansion=6, level=110 }, -- Drugon the Frostblood
-  [1790] = { quest=43512, expansion=6, level=110 }, -- Ana-Mouz
-  [1795] = { quest=43985, expansion=6, level=110 }, -- Flotsam
-  [1796] = { quest=44287, expansion=6, level=110 }, -- Withered Jim
-  [1883] = { quest=46947, expansion=6, level=110 }, -- Brutallus
-  [1884] = { quest=46948, expansion=6, level=110 }, -- Malificus
-  [1885] = { quest=46945, expansion=6, level=110 }, -- Si'vash
-  [1956] = { quest=47061, expansion=6, level=110 }, -- Apocron
-
-  -- Argus Greater Invasions
-  [2010] = { quest=49169, name=EJ_GetEncounterInfo(2010), expansion=6, level=110}, -- Matron Folnuna
-  [2011] = { quest=49167, name=EJ_GetEncounterInfo(2011), expansion=6, level=110}, -- Mistress Alluradel
-  [2012] = { quest=49166, name=EJ_GetEncounterInfo(2012), expansion=6, level=110}, -- Inquisitor Meto
-  [2013] = { quest=49170, name=EJ_GetEncounterInfo(2013), expansion=6, level=110}, -- Occularus
-  [2014] = { quest=49171, name=EJ_GetEncounterInfo(2014), expansion=6, level=110}, -- Sotanathor
-  [2015] = { quest=49168, name=EJ_GetEncounterInfo(2015), expansion=6, level=110}, -- Pit Lord Vilemus
-
-  -- bosses with no EJ entry (eid is a placeholder)
-  [9001] = { quest=38276, name=GARRISON_LOCATION_TOOLTIP.." "..BOSS, expansion=5, level=100 },
-  [9002] = { quest=47461, name="Lord Kazzak", expansion=6, level=110},          -- Lord Kazzak (13th Anniversary)
-  [9003] = { quest=47462, name="Azuregos", expansion=6, level=110},             -- Azuregos (13th Anniversary)
-  [9004] = { quest=47463, name="Dragon of Nightmare", expansion=6, level=110},  -- Dragon of Nightmare (13th Anniversary)
-}
-
-local _specialQuests = {
-  -- Isle of Thunder
-  [32610] = { zid=504, lid=94221 }, -- Shan'ze Ritual Stone looted
-  [32611] = { zid=504, lid1=95350 },-- Incantation of X looted
-  [32626] = { zid=504, lid=94222 }, -- Key to the Palace of Lei Shen looted
-  [32609] = { zid=504, aid=8104, aline="Left5"  }, -- Trove of the Thunder King (outdoor chest)
-  -- Timeless Isle
-  [32962] = { zid=554, aid=8743, daily=true },  -- Zarhym
-  [32961] = { zid=554, daily=true },  -- Scary Ghosts and Nice Sprites
-  [32956] = { zid=554, aid=8727, acid=2, aline="Right7" }, -- Blackguard's Jetsam
-  [32957] = { zid=554, aid=8727, acid=1, aline="Left7" },  -- Sunken Treasure
-  [32970] = { zid=554, aid=8727, acid=3, aline="Left8" },  -- Gleaming Treasure Satchel
-  [32968] = { zid=554, aid=8726, acid=2, aline="Right7" }, -- Rope-Bound Treasure Chest
-  [32969] = { zid=554, aid=8726, acid=1, aline="Left7" },  -- Gleaming Treasure Chest
-  [32971] = { zid=554, aid=8726, acid=3, aline="Left8" },  -- Mist-Covered Treasure Chest
-  -- Garrison
-  [37638] = { zone=GARRISON_LOCATION_TOOLTIP, aid=9162 }, -- Bronze Defender
-  [37639] = { zone=GARRISON_LOCATION_TOOLTIP, aid=9164 }, -- Silver Defender
-  [37640] = { zone=GARRISON_LOCATION_TOOLTIP, aid=9165 }, -- Golden Defender
-  [38482] = { zone=GARRISON_LOCATION_TOOLTIP, aid=9826 }, -- Platinum Defender
-  -- Tanaan Jungle
-  [39287] = { zid=534, daily=true }, -- Deathtalon
-  [39288] = { zid=534, daily=true }, -- Terrorfist
-  [39289] = { zid=534, daily=true }, -- Doomroller
-  [39290] = { zid=534, daily=true }, -- Vengeance
-  -- Order Hall
-  [42481] = { zid=717, daily=true }, -- Warlock: Ritual of Doom
-  [44707] = { zid=719, daily=true, sid=228651 }, -- Demon Hunter: Twisting Nether
-}
-
-function addon:specialQuests()
-  for qid, qinfo in pairs(_specialQuests) do
-    qinfo.quest = qid
-
-    if not qinfo.name and (qinfo.lid or qinfo.lid1) then
-      local itemname, itemlink = GetItemInfo(qinfo.lid or qinfo.lid1)
-      if itemlink and qinfo.lid then
-        qinfo.name = itemlink.." ("..LOOT..")"
-      elseif itemname and qinfo.lid1 then
-        local name = itemname:match("^[^%s]+")
-        if name and #name > 0 then
-          qinfo.name = name.." ("..LOOT..")"
-        end
-      end
-    elseif not qinfo.name and qinfo.aid and qinfo.acid then
-      local l = GetAchievementCriteriaInfo(qinfo.aid, qinfo.acid)
-      if l then
-        qinfo.name = l:gsub("%p$","")
-      end
-    elseif not qinfo.name and qinfo.aid then
-      scantt:SetOwner(UIParent,"ANCHOR_NONE")
-      scantt:SetAchievementByID(qinfo.aid)
-      local l = _G[scantt:GetName().."Text"..(qinfo.aline or "Left1")]
-      l = l and l:GetText()
-      if l then
-        qinfo.name = l:gsub("%p$","")
-      end
-    elseif not qinfo.name and qinfo.sid then
-      qinfo.name = GetSpellInfo(qinfo.sid)
-    end
-    if not qinfo.name or #qinfo.name == 0 then
-      local title, link = addon:QuestInfo(qid)
-      if title then
-        title = title:gsub("%p?%s*[Tt]racking%s*[Qq]uest","")
-        title = strtrim(title)
-        qinfo.name = title
-      end
-    end
-
-    if not qinfo.zone and qinfo.zid then
-      qinfo.zone = C_Map.GetMapInfo(qinfo.zid).name
-    end
-  end
-
-  return _specialQuests
-end
-
-local QuestExceptions = {
-  -- some quests are misidentified in scope
-  [7905]  = "Regular", -- Darkmoon Faire referral -- old addon versions misidentified this as monthly
-  [7926]  = "Regular", -- Darkmoon Faire referral
-  [37819] = "Regular", -- Darkmoon Faire races referral
-
-  -- order hall quests that old addon versions misidentified as weekly (fixed in r548/7.0.8)
-  [44226] = "Regular", -- Order Hall: DH
-  [44235] = "Regular", -- Order Hall: Druid
-  [44236] = "Regular", -- Order Hall: Druid?
-  [44212] = "Regular", -- Order Hall: Hunter
-  [44208] = "Regular", -- Order Hall: Mage
-  [44238] = "Regular", -- Order Hall: Monk
-  [44219] = "Regular", -- Order Hall: Paladin
-  [44230] = "Regular", -- Order Hall: Priest
-  [44204] = "Regular", -- Order Hall: Rogue
-  [44205] = "Regular", -- Order Hall: Shaman
-
-  [31752] = "AccountDaily", -- Blingtron
-  [34774] = "AccountDaily", -- Blingtron 5000
-  [40753] = "AccountDaily", -- Blingtron 6000
-  -- also pre-populate a few important quests
-  [32640] = "Weekly",  -- Champions of the Thunder King
-  [32641] = "Weekly",  -- Champions of the Thunder King
-  [32718] = "Regular",  -- Mogu Runes of Fate -- ticket 142: outdated quest flag still shows up
-  [32719] = "Regular",  -- Mogu Runes of Fate
-  [33133] = "Regular",  -- Warforged Seals outdated quests, no longer weekly
-  [33134] = "Regular",  -- Warforged Seals
-  [33338] = "Weekly",  -- Empowering the Hourglass
-  [33334] = "Weekly",  -- Strong Enough to Survive
-
-  -- From Archmage Timear -
-  [44164] = "Weekly", -- A Burning Path Through Time - Burning Crusade Timewalking
-  [44166] = "Weekly", -- A Frozen Path Through Time - Wrath of the Lich King Timewalking
-  [44167] = "Weekly", -- A Shattered Path Through Time - Cataclysm Timewalking
-  [44171] = "Weekly", -- Emisary of War - Complete Legion Mythics
-  [44172] = "Weekly", -- The Arena Calls - Win Legion Arena Skirmishes
-  [44173] = "Weekly", -- A Call to Battle - Win Battlegrounds
-  [44174] = "Weekly", -- The Very Best - Win PvP Pet Battles
-  [44175] = "Weekly", -- The World Awaits - Complete Broken Isles World Quests
-  [45799] = "Weekly", -- A Shrouded Path Through Time - Mists of Pandaria Timewalking
-
-  -- Pet Battle Dungeons
-  [46292] = "Weekly", -- Pet Battle Challenge Dungeon Deadmines
-  [45539] = "Weekly", -- Pet Battle Challenge Dungeon Wailing Caverns
-
-  -- Argus
-  [48910] = "Weekly", -- Supplying Krokuun
-  [48911] = "Weekly", -- Void Inoculation
-  [48912] = "Weekly", -- Supplying the Antoran Campaign
-}
-
-local WoDSealQuests = {
-  [36058] = "Weekly",  -- Seal of Dwarven Bunker
-  -- Seal of Ashran quests
-  [36054] = "Weekly",
-  [37454] = "Weekly",
-  [37455] = "Weekly",
-  [36056] = "Weekly",
-  [37456] = "Weekly",
-  [37457] = "Weekly",
-  [36057] = "Weekly",
-  [37458] = "Weekly",
-  [37459] = "Weekly",
-  [36055] = "Weekly",
-  [37452] = "Weekly",
-  [37453] = "Weekly",
-}
-
-for k,v in pairs(WoDSealQuests) do
-  QuestExceptions[k] = v
-end
-
-local LegionSealQuests = {
-  [43895] = "Weekly",
-  [43896] = "Weekly",
-  [43897] = "Weekly",
-  [43892] = "Weekly",
-  [43893] = "Weekly",
-  [43894] = "Weekly",
-  [43510] = "Weekly", -- order hall
-  [47851] = "Weekly", -- Mark of Honor x5
-  [47864] = "Weekly", -- Mark of Honor x10
-  [47865] = "Weekly", -- Mark of Honor x20
-}
-
-for k,v in pairs(LegionSealQuests) do
-  QuestExceptions[k] = v
-end
 
 function addon:QuestInfo(questid)
   if not questid or questid == 0 then return nil end
@@ -471,8 +107,7 @@ end
 addon.chatMsg = chatMsg
 
 local function debug(...)
-  --addon.db.dbg = true
-  if addon.db.dbg then
+  if addon.db.Tooltip.DebugMode then
     chatMsg(...)
   end
 end
@@ -488,32 +123,35 @@ local function bugReport(msg)
   chatMsg("Please report this bug at: https://github.com/SavedInstances/SavedInstances/issues")
   addon.bugreport["url"] = now
 end
+addon.bugReport = bugReport
 
 local GTToffset = time() - GetTime()
 local function GetTimeToTime(val)
   if not val then return nil end
   return val + GTToffset
 end
+addon.GetTimeToTime = GetTimeToTime
 
 function addon:timedebug()
-  chatMsg("Version: %s (%s)", addon.version, addon.revision)
-  chatMsg("Realm: %s (%s)", GetRealmName(), addon:GetRegion())
-  chatMsg("Zone: %s (%s)", GetRealZoneText(), addon:GetCurrentMapAreaID())
+  chatMsg("Version: %s", self.version)
+  chatMsg("Realm: %s (%s)", GetRealmName(), self:GetRegion())
+  chatMsg("Zone: %s (%s)", GetRealZoneText(), self:GetCurrentMapAreaID())
   chatMsg("time()=%s GetTime()=%s", time(), GetTime())
   chatMsg("Local time: %s local", date("%A %c"))
   chatMsg("GetGameTime: %s:%s server",GetGameTime())
-  chatMsg("C_Calendar.GetDate: %s %s/%s/%s server",C_Calendar.GetDate())
+  local t = C_DateAndTime.GetCurrentCalendarTime()
+  chatMsg("C_DateAndTime.GetCurrentCalendarTime: %s %s/%s/%s server",t.weekday,t.month,t.monthDay,t.year)
   chatMsg("GetQuestResetTime: %s",SecondsToTime(GetQuestResetTime()))
   chatMsg(date("Daily reset: %a %c local (based on GetQuestResetTime)",time()+GetQuestResetTime()))
-  chatMsg("Local to server offset: %d hours",SavedInstances:GetServerOffset())
-  local t = SavedInstances:GetNextDailyResetTime()
-  chatMsg("Next daily reset: %s local, %s server",date("%a %c",t), date("%a %c",t+3600*SavedInstances:GetServerOffset()))
-  t = SavedInstances:GetNextWeeklyResetTime()
-  chatMsg("Next weekly reset: %s local, %s server",date("%a %c",t), date("%a %c",t+3600*SavedInstances:GetServerOffset()))
-  t = SavedInstances:GetNextDailySkillResetTime()
-  chatMsg("Next skill reset: %s local, %s server",date("%a %c",t), date("%a %c",t+3600*SavedInstances:GetServerOffset()))
-  t = SavedInstances:GetNextDarkmoonResetTime()
-  chatMsg("Next Darkmoon reset: %s local, %s server",date("%a %c",t), date("%a %c",t+3600*SavedInstances:GetServerOffset()))
+  chatMsg("Local to server offset: %d hours",self:GetServerOffset())
+  t = self:GetNextDailyResetTime()
+  chatMsg("Next daily reset: %s local, %s server",date("%a %c",t), date("%a %c",t+3600*self:GetServerOffset()))
+  t = self:GetNextWeeklyResetTime()
+  chatMsg("Next weekly reset: %s local, %s server",date("%a %c",t), date("%a %c",t+3600*self:GetServerOffset()))
+  t = self:GetNextDailySkillResetTime()
+  chatMsg("Next skill reset: %s local, %s server",date("%a %c",t), date("%a %c",t+3600*self:GetServerOffset()))
+  t = self:GetNextDarkmoonResetTime()
+  chatMsg("Next Darkmoon reset: %s local, %s server",date("%a %c",t), date("%a %c",t+3600*self:GetServerOffset()))
 end
 
 local function questTableToString(t)
@@ -526,7 +164,7 @@ local function questTableToString(t)
 end
 
 function addon:questdebug(info)
-  local t = vars.db.Toons[thisToon]
+  local t = addon.db.Toons[thisToon]
   local ql = GetQuestsCompleted()
 
   local cmd = info.input
@@ -580,6 +218,7 @@ local function abbreviate(iname)
   iname = iname:gsub("Cataclysm", "Cata")
   iname = iname:gsub("Mists of Pandaria", "MoP")
   iname = iname:gsub("Warlords of Draenor", "WoD")
+  iname = iname:gsub("Battle for Azeroth", "BfA")
 
   return iname
 end
@@ -595,7 +234,7 @@ function addon:formatNumber(num, ismoney)
     num = math.floor(num / 10000)
     post = " \124TInterface\\MoneyFrame\\UI-GoldIcon:0:0:2:0\124t"
   end
-  if vars.db.Tooltip.NumberFormat then
+  if addon.db.Tooltip.NumberFormat then
     local str = ""
     local neg = num < 0
     num = math.abs(num)
@@ -621,13 +260,15 @@ function addon:formatNumber(num, ismoney)
   end
 end
 
-vars.defaultDB = {
+addon.defaultDB = {
   DBVersion = 12,
   History = { }, -- for tracking 5 instance per hour limit
   -- key: instance string; value: time first entered
   Toons = { }, 	-- table key: "Toon - Realm"; value:
   -- Class: string
   -- Level: integer
+  -- Race: string
+  -- LastSeen: integer
   -- AlwaysShow: boolean REMOVED
   -- Show: string "always", "never", "saved"
   -- Daily1: expiry (normal) REMOVED
@@ -641,6 +282,14 @@ vars.defaultDB = {
   -- PlayedTotal: integer
   -- Money: integer
   -- Zone: string
+  -- Warmode: boolean
+  -- Artifact: string
+  -- Paragon: table
+  -- oRace: string
+  -- isResting: boolean
+  -- MaxXP: integer
+  -- XP: integer
+  -- RestXP: integer
 
   -- currency: key: currencyID  value:
   -- amount: integer
@@ -661,36 +310,71 @@ vars.defaultDB = {
   -- Link: hyperlink
   -- Expires: expiration
 
-  -- FarmPlanted: integer
-  -- FarmHarvested: integer
-  -- FarmCropPlanted: key: spellID value: count
-  -- FarmCropReady: key: spellID value: count
-  -- FarmExpires: expiration
-
   -- BonusRoll: key: int value:
   -- name: string
   -- time: int
-  -- currencyID: int
+  -- costCurrencyID: int
+  -- currencyID: int or nil
   -- money: integer or nil
   -- item: linkstring or nil
 
   -- MythicKey
   -- name: string
   -- ResetTime: expiry
-  -- level: string
+  -- mapID: int
+  -- level: int
   -- color: string
   -- link: string
+
   -- MythicKeyBest
   -- lastweeklevel: int
   -- ResetTime: expiry
   -- level: string
   -- weeklyReward: boolean
+
+  -- REMOVED
   -- DailyWorldQuest
   -- days[0,1,2]
   -- name
   -- dayleft
   -- questneed
   -- questdone
+
+  -- Emissary
+  -- [expansionLevel] = {
+  --   unlocked = (boolean),
+  --   days = {
+  --     [Day] = {
+  --       isComplete = isComplete,
+  --       isFinish = isFinish,
+  --       questDone = questDone,
+  --       questReward = {
+  --         money = money,
+  --         itemName = itemName,
+  --         itemLvl = itemLvl,
+  --         quality = quality,
+  --         currencyID = currencyID,
+  --         quantity = quantity,
+  --       },
+  --     },
+  --   },
+  -- }
+
+  -- Progress
+  -- [index] = {
+  --   unlocked = (boolean), -- if player can complete this quest
+  --   isComplete = isComplete,
+  --   isFinish = isFinish,
+  --   numFulfilled = numFulfilled,
+  --   numRequired = numRequired,
+  --   -- others
+  -- }
+
+  -- Warfront
+  -- [index] = {
+  --   scenario = (boolean),
+  --   boss = (boolean),
+  -- }
 
   Indicators = {
     D1Indicator = "BLANK", -- indicator: ICON_*, BLANK
@@ -774,31 +458,32 @@ vars.defaultDB = {
     TrackLFG = true,
     TrackDeserter = true,
     TrackSkills = true,
-    TrackFarm = true,
     TrackBonus = false,
     TrackPlayed = true,
     AugmentBonus = true,
     CurrencyValueColor = true,
-    Currency776 = false, -- Warforged Seals
-    Currency738 = false, -- Lesser Charm of Good Fortune
-    Currency823 = false,  -- Apexis Crystal
-    Currency824 = false,  -- Garrison Resources
-    Currency1101= false,  -- Oil
-    Currency994 = false, -- Seal of Tempered Fate
-    Currency1129= false, -- Seal of Inevitable Fate
-    Currency1155= true,  -- Ancient Mana
-    Currency1166= true,  -- Timewarped Badge
-    Currency1191= true,  -- Valor Points
-    Currency1220= true,  -- Order Resources
-    Currency1226= false, -- Nethershards
-    Currency1273= true,  -- Seal of Broken Fate
-    Currency1149= true,  -- Sightless Eye
+    Currency1710 = true, -- Seafarer's Dubloon
+    Currency1580 = true, -- Seal of Wartorn Fate
+    Currency1560 = true, -- War Resources
+    Currency1587 = true, -- War Supplies
+    Currency1716 = true, -- Honorbound Service Medal
+    Currency1717 = true, -- 7th Legion Service Medal
+    Currency1718 = true, -- Titan Residuum
     CurrencyMax = false,
     CurrencyEarned = true,
     MythicKey = true,
     MythicKeyBest = true,
-    DailyWorldQuest = true,
+    Emissary6 = false, -- LEG Emissary
+    Emissary7 = true, -- BfA Emissary
+    EmissaryFullName = true,
+    EmissaryShowCompleted = true,
+    CombineEmissary = false,
     AbbreviateKeystone = true,
+    TrackParagon = true,
+    Progress1 = true, -- PvP Conquest
+    Progress2 = true, -- Island Weekly
+    Warfront1 = true, -- Arathi Highlands
+    Warfront2 = true, -- Darkshores
   },
   Instances = { }, 	-- table key: "Instance name"; value:
   -- Show: boolean
@@ -828,6 +513,30 @@ vars.defaultDB = {
     AccountDaily = {},
     AccountWeekly = {},
   },
+  Warfront = {},
+  -- Track Warfronts
+  -- [index] = {
+  --   captureSide = ("Alliance" or "Horde"), -- Capture Side of Warfront
+  --   contributing = (boolean), -- if it is contributing
+  --   restTime = restTime, -- timeOfNextStateChange
+  -- }
+  Emissary = {
+    Cache = {},
+    Expansion = {},
+  },
+  -- Track emissaries
+  -- Cache: [questID] = questName
+  -- Expansion:
+  -- [expansionLevel] = {
+  --   [1, 2, 3] = {
+  --     questID = {
+  --       ["Alliance"] = questID,
+  --       ["Horde"] = questID,
+  --     },
+  --     questNeed = questNeed,
+  --     expiredTime = expiredTime,
+  --   }
+  -- }
   RealmMap = {},
 }
 
@@ -881,7 +590,7 @@ end
 
 function addon.ColoredToon(toon, fullname)
   local str = (fullname and toon) or strsplit(' ',toon)
-  local t = vars.db.Toons[toon]
+  local t = addon.db.Toons[toon]
   local class = t and t.Class
   if class then
     return ClassColorise(class, str)
@@ -896,7 +605,7 @@ local function CurrencyColor(amt, max)
   if max == nil or max == 0 then
     return samt
   end
-  if vars.db.Tooltip.CurrencyValueColor then
+  if addon.db.Tooltip.CurrencyValueColor then
     local pct = amt / max
     local color = GREENFONT
     if pct == 1 then
@@ -921,13 +630,14 @@ end
 -- convert local time -> server time: add this value
 -- convert server time -> local time: subtract this value
 function addon:GetServerOffset()
-  local serverDate = C_Calendar.GetDate()
-  local serverDay, serverWeekday, serverMonth, serverMinute, serverHour, serverYear = serverDate.monthDay, serverDate.weekday, serverDate.month, serverDate.minute, serverDate.hour, serverDate.year
-  local localDay = tonumber(date("%w")) -- 0-based starts on Sun
+  local serverDate = C_DateAndTime.GetCurrentCalendarTime() -- 1-based starts on Sun
+  local serverWeekday, serverMinute, serverHour = serverDate.weekday, serverDate.minute, serverDate.hour
+  -- #211: date("%w") is 0-based starts on Sun
+  local localWeekday = tonumber(date("%w")) + 1
   local localHour, localMinute = tonumber(date("%H")), tonumber(date("%M"))
-  if serverDay == (localDay + 1)%7 then -- server is a day ahead
+  if serverWeekday == (localWeekday + 1)%7 then -- server is a day ahead
     serverHour = serverHour + 24
-  elseif localDay == (serverDay + 1)%7 then -- local is a day ahead
+  elseif localWeekday == (serverWeekday + 1)%7 then -- local is a day ahead
     localHour = localHour + 24
   end
   local server = serverHour + serverMinute / 60
@@ -946,9 +656,6 @@ function addon:GetRegion()
     if not reg or #reg ~= 2 then
       local gcr = GetCurrentRegion()
       reg = gcr and ({ "US", "KR", "EU", "TW", "CN" })[gcr]
-    end
-    if not reg or #reg ~= 2 then
-      reg = (GetCVar("realmList") or ""):match("^(%a+)%.")
     end
     if not reg or #reg ~= 2 then -- other test realms?
       reg = (GetRealmName() or ""):match("%((%a%a)%)")
@@ -1021,7 +728,7 @@ do
   function addon:GetNextDarkmoonResetTime()
     -- Darkmoon faire runs from first Sunday of each month to following Saturday
     -- this function returns an approximate time after the end of the current month's faire
-    local monthInfo = C_Calendar.GetMonthInfo();
+    local monthInfo = C_Calendar.GetMonthInfo()
     local firstweekday = monthInfo.firstWeekday
     local firstsunday = ((firstweekday == 1) and 1) or (9 - firstweekday)
     dmf_end.year = monthInfo.year
@@ -1036,27 +743,72 @@ do
   end
 end
 
+function addon:QuestIgnored(questID)
+  if (TimewalkingItemQuest[questID]) then
+    -- Timewalking Item Quests
+    for _, iconTexture in ipairs(TimewalkingItemQuest[questID]) do
+      if eventInfo[iconTexture] then
+        -- Timewalking Weedend Event ONGOING
+        return
+      end
+    end
+    return true
+  end
+  return
+end
+
 function addon:QuestCount(toonname)
   local t
   if toonname then
-    t = vars and vars.db.Toons and vars.db.Toons[toonname]
+    t = addon and addon.db.Toons and addon.db.Toons[toonname]
   else -- account-wide quests
     t = db
   end
   if not t then return 0,0 end
   local dailycount, weeklycount = 0,0
   -- ticket 96: GetDailyQuestsCompleted() is unreliable, the response is laggy and it fails to count some quests
-  for _,info in pairs(t.Quests) do
-    if info.isDaily then
-      dailycount = dailycount + 1
-    else
-      weeklycount = weeklycount + 1
+  local id, info
+  for id, info in pairs(t.Quests) do
+    if not self:QuestIgnored(id) then
+      if info.isDaily then
+        dailycount = dailycount + 1
+      else
+        weeklycount = weeklycount + 1
+      end
     end
   end
   return dailycount, weeklycount
 end
 
 -- local addon functions below
+
+local function UpdateEventInfo()
+  local current, monthInfo = C_DateAndTime.GetCurrentCalendarTime(), C_Calendar.GetMonthInfo()
+  local month, day, year = current.month, current.monthDay, current.year
+  local showMonth, showYear = monthInfo.month, monthInfo.year
+  local monthOffset = -12 * (showYear - year) + month - showMonth
+  local numEvents = C_Calendar.GetNumDayEvents(monthOffset, day)
+  debug("numEvents: " .. numEvents)
+  for i = 1, numEvents do
+    local event = C_Calendar.GetDayEvent(monthOffset, day, i)
+    if event.iconTexture then
+      debug("iconTexture: " .. event.iconTexture)
+      if event.sequenceType == "START" then
+        local hour, minute = event.startTime.hour, event.startTime.minute
+        if hour < current.hour or (hour == current.hour and minute < current.minute) then
+          eventInfo[event.iconTexture] = true
+        end
+      elseif event.sequenceType == "END" then
+        local hour, minute = event.startTime.hour, event.startTime.minute
+        if hour > current.hour or (hour == current.hour and minute > current.minute) then
+          eventInfo[event.iconTexture] = true
+        end
+      else -- "ONGOING"
+        eventInfo[event.iconTexture] = true
+      end
+    end
+  end
+end
 
 local function GetLastLockedInstance()
   local numsaved = GetNumSavedInstances()
@@ -1092,6 +844,8 @@ addon.transInstance = {
   [552] = 1011, -- Arcatraz: ticket 216 frFR
   [1516] = 1190, -- Arcway: ticket 227/233 ptBR
   [1651] = 1347, -- Return to Karazhan: ticket 237 (fake LFDID)
+  [545] = 185, -- The Steamvault: issue #143 esES
+  [1530] = 1353, -- The Nighthold: issue #186 frFR
 }
 
 -- some instances (like sethekk halls) are named differently by GetSavedInstanceInfo() and LFGGetDungeonInfoByID()
@@ -1100,7 +854,7 @@ function addon:FindInstance(name, raid)
   if not name or #name == 0 then return nil end
   local nname = addon:normalizeName(name)
   -- first pass, direct match
-  local info = vars.db.Instances[name]
+  local info = addon.db.Instances[name]
   if info then
     return name, info.LFDID
   end
@@ -1120,7 +874,7 @@ function addon:FindInstance(name, raid)
     end
   end
   -- normalized substring match
-  for truename, info in pairs(vars.db.Instances) do
+  for truename, info in pairs(addon.db.Instances) do
     local tname = addon:normalizeName(truename)
     if (tname:find(nname, 1, true) or nname:find(tname, 1, true)) and
       info.Raid == raid then -- Tempest Keep: The Botanica
@@ -1142,7 +896,7 @@ function addon:LookupInstance(id, name, raid)
     truename = addon:UpdateInstance(id)
   end
   if truename then
-    instance = vars.db.Instances[truename]
+    instance = addon.db.Instances[truename]
   end
   if not instance then
     debug("LookupInstance() failed to find instance: "..(name or "")..":"..(id or 0).." : "..GetLocale())
@@ -1158,14 +912,14 @@ function addon:LookupInstance(id, name, raid)
       bugReport("SavedInstances: ERROR: Refresh() failed to find instance: "..name.." : "..GetLocale().." : "..(lid or "x"))
     end
     instance = {}
-    --vars.db.Instances[name] = instance
+    --addon.db.Instances[name] = instance
   end
   return truename, instance
 end
 
 function addon:InstanceCategory(instance)
   if not instance then return nil end
-  instance = vars.db.Instances[instance]
+  instance = addon.db.Instances[instance]
   if instance.Holiday then return "H" end
   if instance.Random then return "N" end
   return ((instance.Raid and "R") or ((not instance.Raid) and "D")) .. instance.Expansion
@@ -1175,7 +929,7 @@ function addon:InstancesInCategory(targetcategory)
   -- returns a table of the form { "instance1", "instance2", ... }
   if (not targetcategory) then return { } end
   local list = { }
-  for instance, _ in pairs(vars.db.Instances) do
+  for instance, _ in pairs(addon.db.Instances) do
     if addon:InstanceCategory(instance) == targetcategory then
       table.insert(list, instance)
     end
@@ -1186,7 +940,7 @@ end
 function addon:CategorySize(category)
   if not category then return nil end
   local i = 0
-  for instance, _ in pairs(vars.db.Instances) do
+  for instance, _ in pairs(addon.db.Instances) do
     if category == addon:InstanceCategory(instance) then
       i = i + 1
     end
@@ -1280,6 +1034,7 @@ local _instance_exceptions = {
     25315, -- Kil'jaeden
   },
   [1347] = { total=8 }, -- Return to Karazhan
+  [1701] = { total=4 }, -- Siege of Boralus
 }
 
 function addon:instanceException(LFDID)
@@ -1306,8 +1061,8 @@ end
 
 function addon:instanceBosses(instance,toon,diff)
   local killed,total,base = 0,0,1
-  local remap = nil
-  local inst = vars.db.Instances[instance]
+  local remap, origin
+  local inst = addon.db.Instances[instance]
   local save = inst and inst[toon] and inst[toon][diff]
   if inst.WorldBoss then
     return (save[1] and 1 or 0), 1, 1
@@ -1320,13 +1075,23 @@ function addon:instanceBosses(instance,toon,diff)
     total = LFR.total or total
     base = LFR.base or base
     remap = LFR.remap
+    origin = LFR.origin
   end
   if not save then
-    return killed, total, base, remap
+    return killed, total, base, remap, origin
   elseif save.Link then
     local bits = save.Link:match(":(%d+)\124h")
     bits = bits and tonumber(bits)
     if bits then
+      if inst.LFDID == 1944 then
+        -- Battle of Dazar'alor
+        -- https://github.com/SavedInstances/SavedInstances/issues/233
+        if db.Toons[toon].Faction == "Alliance" then
+          bits = bit.band(bits, 0x3134D)
+        else
+          bits = bit.band(bits, 0x3135A)
+        end
+      end
       while bits > 0 do
         if bit.band(bits,1) > 0 then
           killed = killed + 1
@@ -1339,13 +1104,13 @@ function addon:instanceBosses(instance,toon,diff)
       killed = killed + (save[i] and 1 or 0)
     end
   end
-  return killed, total, base, remap
+  return killed, total, base, remap, origin
 end
 
 local lfrkey = "^"..L["LFR"]..": "
 local function instanceSort(i1, i2)
-  local instance1 = vars.db.Instances[i1]
-  local instance2 = vars.db.Instances[i2]
+  local instance1 = addon.db.Instances[i1]
+  local instance2 = addon.db.Instances[i2]
   local level1 = instance1.RecLevel or 0
   local level2 = instance2.RecLevel or 0
   local id1 = instance1.LFDID or instance1.WorldBoss or 0
@@ -1356,7 +1121,7 @@ local function instanceSort(i1, i2)
   if i2:match(lfrkey) then key2 = key2 - 20000 end
   if instance1.WorldBoss then key1 = key1 - 30000 end
   if instance2.WorldBoss then key2 = key2 - 30000 end
-  if vars.db.Tooltip.ReverseInstances then
+  if addon.db.Tooltip.ReverseInstances then
     return key1 < key2
   else
     return key2 < key1
@@ -1382,7 +1147,7 @@ function addon:OrderedCategories()
   if addon.oc_cache then return addon.oc_cache end
   local orderedlist = { }
   local firstexpansion, lastexpansion, expansionstep, firsttype, lasttype
-  if vars.db.Tooltip.NewFirst then
+  if addon.db.Tooltip.NewFirst then
     firstexpansion = maxExpansion
     lastexpansion = 0
     expansionstep = -1
@@ -1391,7 +1156,7 @@ function addon:OrderedCategories()
     lastexpansion = maxExpansion
     expansionstep = 1
   end
-  if vars.db.Tooltip.RaidsFirst then
+  if addon.db.Tooltip.RaidsFirst then
     firsttype = "R"
     lasttype = "D"
   else
@@ -1400,11 +1165,11 @@ function addon:OrderedCategories()
   end
   for i = firstexpansion, lastexpansion, expansionstep do
     table.insert(orderedlist, firsttype .. i)
-    if vars.db.Tooltip.CategorySort == "EXPANSION" then
+    if addon.db.Tooltip.CategorySort == "EXPANSION" then
       table.insert(orderedlist, lasttype .. i)
     end
   end
-  if vars.db.Tooltip.CategorySort == "TYPE" then
+  if addon.db.Tooltip.CategorySort == "TYPE" then
     for i = firstexpansion, lastexpansion, expansionstep do
       table.insert(orderedlist, lasttype .. i)
     end
@@ -1418,7 +1183,7 @@ local function DifficultyString(instance, diff, toon, expired, killoverride, tot
   if not instance then
     setting = "D1"
   else
-    local inst = vars.db.Instances[instance]
+    local inst = addon.db.Instances[instance]
     if not inst or not inst.Raid then -- 5-man
       if diff == 2 then -- heroic
         setting = "D2"
@@ -1437,24 +1202,24 @@ local function DifficultyString(instance, diff, toon, expired, killoverride, tot
       setting = "D1"
     end
   end
-  local prefs = vars.db.Indicators
+  local prefs = addon.db.Indicators
   local classcolor = prefs[setting .. "ClassColor"]
   if classcolor == nil then
-    classcolor = vars.defaultDB.Indicators[setting .. "ClassColor"]
+    classcolor = addon.defaultDB.Indicators[setting .. "ClassColor"]
   end
   if expired then
     color = GRAY_COLOR
   elseif classcolor then
-    color = (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[vars.db.Toons[toon].Class]
+    color = (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[addon.db.Toons[toon].Class]
   else
-    prefs[setting.."Color"]  = prefs[setting.."Color"] or vars.defaultDB.Indicators[setting.."Color"]
+    prefs[setting.."Color"]  = prefs[setting.."Color"] or addon.defaultDB.Indicators[setting.."Color"]
     color = prefs[setting.."Color"]
   end
-  local text = prefs[setting.."Text"] or vars.defaultDB.Indicators[setting.."Text"]
-  local indicator = prefs[setting.."Indicator"] or vars.defaultDB.Indicators[setting.."Indicator"]
+  local text = prefs[setting.."Text"] or addon.defaultDB.Indicators[setting.."Text"]
+  local indicator = prefs[setting.."Indicator"] or addon.defaultDB.Indicators[setting.."Indicator"]
   text = ColorCodeOpen(color) .. text .. FONTEND
   if text:find("ICON", 1, true) and indicator ~= "BLANK" then
-    text = text:gsub("ICON", FONTEND .. vars.Indicators[indicator] .. ColorCodeOpen(color))
+    text = text:gsub("ICON", FONTEND .. addon.Indicators[indicator] .. ColorCodeOpen(color))
   end
   if text:find("KILLED", 1, true) or text:find("TOTAL", 1, true) then
     local killed, total
@@ -1509,15 +1274,15 @@ function addon:UpdateInstanceData()
       info.name = select(2,EJ_GetCreatureInfo(1,eid))
     end
     info.name = info.name or "UNKNOWN"..eid
-    local instance = vars.db.Instances[info.name]
+    local instance = addon.db.Instances[info.name]
     if info.remove then -- cleanup hook
-      vars.db.Instances[info.name] = nil
+      addon.db.Instances[info.name] = nil
       addon.WorldBosses[eid] = nil
     else
       if not instance then
         added = added + 1
         instance = {}
-        vars.db.Instances[info.name] = instance
+        addon.db.Instances[info.name] = instance
       end
       instance.Show = instance.Show or "saved"
       instance.WorldBoss = eid
@@ -1534,7 +1299,7 @@ function addon:UpdateInstanceData()
   local merges = 0
   local conflicts = 0
   local purges = 0
-  for instname, inst in pairs(vars.db.Instances) do
+  for instname, inst in pairs(addon.db.Instances) do
     local truename
     if inst.WorldBoss then
       truename = wbid_to_name[inst.WorldBoss]
@@ -1546,14 +1311,14 @@ function addon:UpdateInstanceData()
     if not truename then
       if inst.LFDID and id_blacklist[inst.LFDID] then
         debug("Removing blacklisted entry in instance database: "..instname)
-        vars.db.Instances[instname] = nil
+        addon.db.Instances[instname] = nil
       else
         debug("Ignoring unmatched entry in instance database: "..instname)
       end
     elseif instname == truename then
     -- this is the canonical entry, nothing to do
     else -- this is a stale entry, merge data and remove it
-      local trueinst = vars.db.Instances[truename]
+      local trueinst = addon.db.Instances[truename]
       if not trueinst or trueinst == inst then
         debug("Merge error in UpdateInstanceData: "..truename)
       else
@@ -1572,7 +1337,7 @@ function addon:UpdateInstanceData()
         -- copy config settings, favoring old entry
         trueinst.Show = inst.Show or trueinst.Show
         -- clear stale entry
-        vars.db.Instances[instname] = nil
+        addon.db.Instances[instname] = nil
         renames = renames + 1
       end
     end
@@ -1585,7 +1350,7 @@ function addon:UpdateInstanceData()
 				if difficulty == 7 or difficulty == 17 then -- Difficulties 7 and 17 are for (legacy) LFR modes -> Kill them... with fire!
 					debug("Purge LFR lockout entry for " .. truename .. ":" .. instname .. ":" .. key)
 					purges = purges + 1
-					vars.db.Instances[instname][key][difficulty] = nil
+					addon.db.Instances[instname][key][difficulty] = nil
 				end
 			end
 		  end
@@ -1595,7 +1360,7 @@ function addon:UpdateInstanceData()
   -- addon.lfdid_to_name = lfdid_to_name
   -- addon.wbid_to_name = wbid_to_name
 
-  vars.config:BuildOptions() -- refresh config table
+  addon.config:BuildOptions() -- refresh config table
 
   starttime = debugprofilestop()-starttime
   debug("UpdateInstanceData(): completed in %.3f ms : %d added, %d renames, %d merges, %d conflicts, %d purges.", starttime, added, renames, merges, conflicts, purges)
@@ -1632,7 +1397,7 @@ function addon:UpdateInstance(id)
   if subtypeID == LFG_SUBTYPEID_SCENARIO and typeID ~= TYPEID_RANDOM_DUNGEON then -- ignore non-random scenarios
     return nil, nil, true
   end
-  if typeID == 2 and subtypeID == 0 and difficulty == 14 and maxPlayers == 0 then
+  if typeID == 2 and subtypeID == 0 and difficulty == 17 and maxPlayers == 0 then
     --print("ignoring "..id, GetLFGDungeonInfo(id))
     return nil, nil, true -- ignore bogus LFR entries
   end
@@ -1641,12 +1406,18 @@ function addon:UpdateInstance(id)
     return nil, nil, true -- ignore old Flex entries
   end
   if addon.LFRInstances[id] then -- ensure uniqueness (eg TeS LFR)
-    local lfrid = vars.db.Instances[name] and vars.db.Instances[name].LFDID
+    local lfrid = addon.db.Instances[name] and addon.db.Instances[name].LFDID
     if lfrid and addon.LFRInstances[lfrid] then
-      vars.db.Instances[name] = nil -- clean old LFR entries
+      addon.db.Instances[name] = nil -- clean old LFR entries
     end
-    vars.db.Instances[L["Flex"]..": "..name] = nil -- clean old flex entries
+    addon.db.Instances[L["Flex"]..": "..name] = nil -- clean old flex entries
     name = L["LFR"]..": "..name
+  end
+  if id == 1661 then -- ignore AI Test - Arathi Basin
+    return nil, nil, true
+  end
+  if id == 1508 then -- ignore AI Test - Warsong Gulch
+    return nil, nil, true
   end
   if id == 852 and expansionLevel == 5 then -- XXX: Molten Core hack
     return nil, nil, true -- ignore Molten Core holiday version, which has no save
@@ -1658,14 +1429,14 @@ function addon:UpdateInstance(id)
     return nil, nil, true
   end
 
-  local instance = vars.db.Instances[name]
+  local instance = addon.db.Instances[name]
   local newinst = false
   if not instance then
     debug("UpdateInstance: "..id.." "..(name or "nil").." "..(expansionLevel or "nil").." "..(recLevel or "nil").." "..(maxPlayers or "nil"))
     instance = {}
     newinst = true
   end
-  vars.db.Instances[name] = instance
+  addon.db.Instances[name] = instance
   instance.Show = instance.Show or "saved"
   instance.Encounters = nil -- deprecated
   instance.LFDupdated = nil
@@ -1686,8 +1457,8 @@ end
 
 function addon:updateSpellTip(spellid)
   local slot
-  vars.db.spelltip = vars.db.spelltip or {}
-  vars.db.spelltip[spellid] = vars.db.spelltip[spellid] or {}
+  addon.db.spelltip = addon.db.spelltip or {}
+  addon.db.spelltip[spellid] = addon.db.spelltip[spellid] or {}
   for i=1,20 do
     local id = select(10, SI_GetUnitDebuff("player",i))
     if id == spellid then slot = i end
@@ -1697,7 +1468,7 @@ function addon:updateSpellTip(spellid)
     scantt:SetUnitDebuff("player",slot)
     for i=1,scantt:NumLines()-1 do
       local left = _G[scantt:GetName().."TextLeft"..i]
-      vars.db.spelltip[spellid][i] = left:GetText()
+      addon.db.spelltip[spellid][i] = left:GetText()
     end
   end
 end
@@ -1708,16 +1479,16 @@ function addon:UpdateToonData()
   wipe(addon.activeHolidays)
   -- blizz internally conflates all the holiday flags, so we have to detect which is really active
   for i=1, GetNumRandomDungeons() do
-    local id, name = GetLFGRandomDungeonInfo(i);
-    local d = vars.db.Instances[name]
+    local id, name = GetLFGRandomDungeonInfo(i)
+    local d = addon.db.Instances[name]
     if d and d.Holiday then
       addon.activeHolidays[name] = true
     end
   end
 
   local nextreset = addon:GetNextDailyResetTime()
-  for instance, i in pairs(vars.db.Instances) do
-    for toon, t in pairs(vars.db.Toons) do
+  for instance, i in pairs(addon.db.Instances) do
+    for toon, t in pairs(addon.db.Toons) do
       if i[toon] then
         for difficulty, d in pairs(i[toon]) do
           if d.Expires and d.Expires < time() then
@@ -1754,7 +1525,7 @@ function addon:UpdateToonData()
     end
   end
   -- update random toon info
-  local t = vars.db.Toons[thisToon]
+  local t = addon.db.Toons[thisToon]
   local now = time()
   if addon.logout or addon.PlayedTime or addon.playedpending then
     if addon.PlayedTime then
@@ -1784,185 +1555,162 @@ function addon:UpdateToonData()
   for _,id in ipairs(addon.pvpdesertids) do
     t.pvpdesert = GetTimeToTime(select(6, SI_GetUnitDebuff("player",GetSpellInfo(id)))) or t.pvpdesert
     if t.pvpdesert then addon:updateSpellTip(id) end
-    end
-    for toon, ti in pairs(vars.db.Toons) do
-      if ti.LFG1 and (ti.LFG1 < now) then ti.LFG1 = nil end
-      if ti.LFG2 and (ti.LFG2 < now) then ti.LFG2 = nil end
-      if ti.pvpdesert and (ti.pvpdesert < now) then ti.pvpdesert = nil end
-      ti.Quests = ti.Quests or {}
-    end
-    local IL,ILe = GetAverageItemLevel()
-    if IL and tonumber(IL) and tonumber(IL) > 0 then -- can fail during logout
-      t.IL, t.ILe = tonumber(IL), tonumber(ILe)
-    end
-    local rating = (GetPersonalRatedInfo and GetPersonalRatedInfo(4))
-    t.RBGrating = tonumber(rating) or t.RBGrating
-    core:scan_item_cds()
-    -- Daily Reset
-    if nextreset and nextreset > time() then
-      for toon, ti in pairs(vars.db.Toons) do
-        if not ti.DailyResetTime or (ti.DailyResetTime < time()) then
-          for id,qi in pairs(ti.Quests) do
-            if qi.isDaily then
-              ti.Quests[id] = nil
-            end
-          end
-          if ti.DailyWorldQuest then
-            if ti.DailyWorldQuest.days1 then
-              ti.DailyWorldQuest.days0 = ti.DailyWorldQuest.days1
-              ti.DailyWorldQuest.days0.dayleft = 0
-              ti.DailyWorldQuest.days1 = nil
-            end
-            if ti.DailyWorldQuest.days2 then
-              ti.DailyWorldQuest.days1 = ti.DailyWorldQuest.days2
-              ti.DailyWorldQuest.days1.dayleft = 1
-              ti.DailyWorldQuest.days2 = nil
-            end
-          end
-          ti.DailyResetTime = (ti.DailyResetTime and ti.DailyResetTime + 24*3600) or nextreset
-        end
-      end
-      t.DailyResetTime = nextreset
-      if not db.DailyResetTime or (db.DailyResetTime < time()) then -- AccountDaily reset
-        for id,qi in pairs(db.Quests) do
+  end
+  for toon, ti in pairs(addon.db.Toons) do
+    if ti.LFG1 and (ti.LFG1 < now) then ti.LFG1 = nil end
+    if ti.LFG2 and (ti.LFG2 < now) then ti.LFG2 = nil end
+    if ti.pvpdesert and (ti.pvpdesert < now) then ti.pvpdesert = nil end
+    ti.Quests = ti.Quests or {}
+  end
+  local IL,ILe = GetAverageItemLevel()
+  if IL and tonumber(IL) and tonumber(IL) > 0 then -- can fail during logout
+    t.IL, t.ILe = tonumber(IL), tonumber(ILe)
+  end
+  local rating = (GetPersonalRatedInfo and GetPersonalRatedInfo(4))
+  t.RBGrating = tonumber(rating) or t.RBGrating
+  core:GetModule("Tradeskills"):ScanItemCDs()
+  local Progress = core:GetModule("Progress")
+  -- Daily Reset
+  if nextreset and nextreset > time() then
+    for toon, ti in pairs(addon.db.Toons) do
+      if not ti.DailyResetTime or (ti.DailyResetTime < time()) then
+        for id,qi in pairs(ti.Quests) do
           if qi.isDaily then
-            db.Quests[id] = nil
-          end
-      end
-      db.DailyResetTime = nextreset
-      end
-    end
-    -- Skill Reset
-    for toon, ti in pairs(vars.db.Toons) do
-      if ti.Skills then
-        for spellid, sinfo in pairs(ti.Skills) do
-          if sinfo.Expires and sinfo.Expires < time() then
-            ti.Skills[spellid] = nil
+            ti.Quests[id] = nil
           end
         end
-      end
-      if ti.FarmExpires and ti.FarmExpires < time() then
-        ti.FarmPlanted = 0
-        ti.FarmHarvested = 0
-        if ti.FarmCropPlanted and next(ti.FarmCropPlanted) then
-          ti.FarmCropReady = ti.FarmCropPlanted
-          ti.FarmCropPlanted = nil
-        end
-        ti.FarmExpires = nil
+        Progress:OnDailyReset(toon)
+        ti.DailyResetTime = (ti.DailyResetTime and ti.DailyResetTime + 24*3600) or nextreset
       end
     end
-    -- Weekly Reset
-    nextreset = addon:GetNextWeeklyResetTime()
-    if nextreset and nextreset > time() then
-      for toon, ti in pairs(vars.db.Toons) do
-        if not ti.WeeklyResetTime or (ti.WeeklyResetTime < time()) then
-          ti.currency = ti.currency or {}
-          for _,idx in ipairs(currency) do
-            local ci = ti.currency[idx]
-            if ci and ci.earnedThisWeek then
-              ci.earnedThisWeek = 0
+    t.DailyResetTime = nextreset
+    if not db.DailyResetTime or (db.DailyResetTime < time()) then -- AccountDaily reset
+      for id,qi in pairs(db.Quests) do
+        if qi.isDaily then
+          db.Quests[id] = nil
+        end
+    end
+    -- Emissary Quest Reset
+    if addon.db.Emissary and addon.db.Emissary.Expansion then
+      local expansionLevel, tbl
+      for expansionLevel, tbl in pairs(addon.db.Emissary.Expansion) do
+        while tbl[1] and tbl[1].expiredTime < time() do
+          tbl[1] = tbl[2]
+          tbl[2] = tbl[3]
+          tbl[3] = nil
+          for toon, ti in pairs(addon.db.Toons) do
+            if ti.Emissary then
+              local t = ti.Emissary[expansionLevel]
+              if t and t.unlocked then
+                t.days[1] = t.days[2]
+                t.days[2] = t.days[3]
+                t.days[3] = {
+                  isComplete = false,
+                  isFinish = false,
+                  questDone = 0,
+                }
+              end
             end
           end
-          ti.WeeklyResetTime = (ti.WeeklyResetTime and ti.WeeklyResetTime + 7*24*3600) or nextreset
-        end
-      end
-      t.WeeklyResetTime = nextreset
-    end
-    for toon, ti in pairs(vars.db.Toons) do
-      for id,qi in pairs(ti.Quests) do
-        if not qi.isDaily and (qi.Expires or 0) < time() then
-          ti.Quests[id] = nil
-        end
-        if QuestExceptions[id] == "Regular" then -- adjust exceptions
-          ti.Quests[id] = nil
         end
       end
     end
-    for toon, ti in pairs(vars.db.Toons) do
-      if ti.MythicKey and (ti.MythicKey.ResetTime or 0) < time() then
-        ti.MythicKey = {}
-      end
-    end
-    for toon, ti in pairs(vars.db.Toons) do
-      if ti.MythicKeyBest and (ti.MythicKeyBest.ResetTime or 0) < time() then
-        if ti.MythicKeyBest.level and ti.MythicKeyBest.level > 0 then
-          ti.MythicKeyBest.LastWeekLevel = ti.MythicKeyBest.level
-          ti.MythicKeyBest.WeeklyReward = true
-        end
-        ti.MythicKeyBest.level = 0
-        ti.MythicKeyBest.ResetTime = addon:GetNextWeeklyResetTime()
-      end
-    end
-    for id,qi in pairs(db.Quests) do -- AccountWeekly reset
-      if not qi.isDaily and (qi.Expires or 0) < time() then
-        db.Quests[id] = nil
-    end
-    end
-    addon:UpdateCurrency()
-    local zone = GetRealZoneText()
-    if zone and #zone > 0 then
-      t.Zone = zone
-    end
-    local lrace, race = UnitRace("player")
-    local faction, lfaction = UnitFactionGroup("player")
-    t.Faction = faction
-    if race == "Pandaren" then
-      t.Race = lrace.." ("..lfaction..")"
-    else
-      t.Race = lrace
-    end
-
-    t.LastSeen = time()
-end
-
-function addon:UpdateCurrency()
-  if addon.logout then return end -- currency is unreliable during logout
-  local t = vars.db.Toons[thisToon]
-  t.Money = GetMoney()
-  t.currency = wipe(t.currency or {})
-  for _,idx in ipairs(currency) do
-    local _, amount, _, earnedThisWeek, weeklyMax, totalMax, discovered = GetCurrencyInfo(idx)
-    if idx == 390 and amount == 0 then
-      discovered = false -- discovery flag broken for conquest points
-    end
-    if not discovered then
-      t.currency[idx] = nil
-    else
-      local ci = t.currency[idx] or {}
-      ci.amount, ci.earnedThisWeek, ci.weeklyMax, ci.totalMax = amount, earnedThisWeek, weeklyMax, totalMax
-      if idx == 396 then -- VP has a weekly max scaled by 100
-        ci.weeklyMax = ci.weeklyMax and math.floor(ci.weeklyMax/100)
-      end
-      if idx == 390 or idx == 395 or idx == 396 then -- these have a total max scaled by 100
-        ci.totalMax = ci.totalMax and math.floor(ci.totalMax/100)
-      end
-      if idx == 390 then -- these have a weekly earned scaled by 100
-        ci.earnedThisWeek = ci.earnedThisWeek and math.floor(ci.earnedThisWeek/100)
-      end
-      if idx == 1129 then -- Seal of Tempered Fate returns zero for weekly quantities
-        ci.weeklyMax = 3 -- the max via quests
-        ci.earnedThisWeek = 0
-        for id in pairs(WoDSealQuests) do
-          if IsQuestFlaggedCompleted(id) then
-            ci.earnedThisWeek = ci.earnedThisWeek + 1
-          end
-        end
-      elseif idx == 1273 then -- Seal of Broken Fate returns zero for weekly quantities
-        ci.weeklyMax = 3 -- the max via quests
-        ci.earnedThisWeek = 0
-        for id in pairs(LegionSealQuests) do
-          if IsQuestFlaggedCompleted(id) then
-            ci.earnedThisWeek = ci.earnedThisWeek + 1
-          end
-        end
-      end
-      ci.season = addon:GetSeasonCurrency(idx)
-      if ci.weeklyMax == 0 then ci.weeklyMax = nil end -- don't store useless info
-      if ci.totalMax == 0 then ci.totalMax = nil end -- don't store useless info
-      if ci.earnedThisWeek == 0 then ci.earnedThisWeek = nil end -- don't store useless info
-      t.currency[idx] = ci
+    db.DailyResetTime = nextreset
     end
   end
+  -- Skill Reset
+  for toon, ti in pairs(addon.db.Toons) do
+    if ti.Skills then
+      for spellid, sinfo in pairs(ti.Skills) do
+        if sinfo.Expires and sinfo.Expires < time() then
+          ti.Skills[spellid] = nil
+        end
+      end
+    end
+  end
+  -- Weekly Reset
+  nextreset = addon:GetNextWeeklyResetTime()
+  if nextreset and nextreset > time() then
+    for toon, ti in pairs(addon.db.Toons) do
+      if not ti.WeeklyResetTime or (ti.WeeklyResetTime < time()) then
+        ti.currency = ti.currency or {}
+        for _,idx in ipairs(currency) do
+          local ci = ti.currency[idx]
+          if ci and ci.earnedThisWeek then
+            ci.earnedThisWeek = 0
+          end
+        end
+        Progress:OnWeeklyReset(toon)
+        ti.WeeklyResetTime = (ti.WeeklyResetTime and ti.WeeklyResetTime + 7*24*3600) or nextreset
+      end
+    end
+    t.WeeklyResetTime = nextreset
+  end
+  for toon, ti in pairs(addon.db.Toons) do
+    for id,qi in pairs(ti.Quests) do
+      if not qi.isDaily and (qi.Expires or 0) < time() then
+        ti.Quests[id] = nil
+      end
+      if QuestExceptions[id] == "Regular" then -- adjust exceptions
+        ti.Quests[id] = nil
+      end
+    end
+  end
+  for toon, ti in pairs(addon.db.Toons) do
+    if ti.MythicKey and (ti.MythicKey.ResetTime or 0) < time() then
+      ti.MythicKey = {}
+    end
+  end
+  for toon, ti in pairs(addon.db.Toons) do
+    if ti.MythicKeyBest and (ti.MythicKeyBest.ResetTime or 0) < time() then
+      if ti.MythicKeyBest.level and ti.MythicKeyBest.level > 0 then
+        ti.MythicKeyBest.LastWeekLevel = ti.MythicKeyBest.level
+        ti.MythicKeyBest.WeeklyReward = true
+      end
+      ti.MythicKeyBest.level = 0
+      ti.MythicKeyBest.ResetTime = addon:GetNextWeeklyResetTime()
+    end
+  end
+  for id,qi in pairs(db.Quests) do -- AccountWeekly reset
+    if not qi.isDaily and (qi.Expires or 0) < time() then
+      db.Quests[id] = nil
+    end
+  end
+  addon:UpdateCurrency()
+  local zone = GetRealZoneText()
+  if zone and #zone > 0 then
+    t.Zone = zone
+  end
+  t.Level = UnitLevel("player")
+  local lrace, race = UnitRace("player")
+  local faction, lfaction = UnitFactionGroup("player")
+  t.Faction = faction
+  t.oRace = race
+  if race == "Pandaren" then
+    t.Race = lrace.." ("..lfaction..")"
+  else
+    t.Race = lrace
+  end
+  if not addon.logout then
+    t.isResting = IsResting()
+    t.MaxXP = UnitXPMax("player")
+    if t.Level < maxlvl then
+      t.XP = UnitXP("player")
+      t.RestXP = GetXPExhaustion()
+    else
+      t.XP = nil
+      t.RestXP = nil
+    end
+  end
+  t.Warmode = C_PvP.IsWarModeDesired()
+  local azeriteItemLocation = C_AzeriteItem.FindActiveAzeriteItem()
+  if azeriteItemLocation and azeriteItemLocation:IsEquipmentSlot() then
+    local xp, totalLevelXP = C_AzeriteItem.GetAzeriteItemXPInfo(azeriteItemLocation)
+    local currentLevel = C_AzeriteItem.GetPowerLevel(azeriteItemLocation)
+    t.Artifact = format("%d (%d%%)", currentLevel, xp / totalLevelXP  * 100)
+  end
+
+  t.LastSeen = time()
 end
 
 function addon:QuestIsDarkmoonMonthly()
@@ -1984,7 +1732,7 @@ function addon:GetCurrentMapAreaID()
 end
 
 local function SI_GetQuestReward()
-  local t = vars and vars.db.Toons[thisToon]
+  local t = addon and addon.db.Toons[thisToon]
   if not t then return end
   local id = GetQuestID() or -1
   local title = GetTitleText() or ""
@@ -2009,7 +1757,7 @@ local function SI_GetQuestReward()
   end
   local questTagID, tagName = GetQuestTagInfo(id)
   if questTagID and tagName then
-    isAccount = (questTagID == QUEST_TAG_ACCOUNT)
+    isAccount = (questTagID == Enum.QuestTag.Account)
   else
     isAccount = db.QuestDB.AccountDaily[id] or db.QuestDB.AccountWeekly[id]
     debug("Fetched isAccount")
@@ -2069,7 +1817,7 @@ local function openIndicator(...)
   indicatortip = QTip:Acquire("SavedInstancesIndicatorTooltip", ...)
   indicatortip:Clear()
   indicatortip:SetHeaderFont(core:HeaderFont())
-  indicatortip:SetScale(vars.db.Tooltip.Scale)
+  indicatortip:SetScale(addon.db.Tooltip.Scale)
 end
 
 local function finishIndicator(parent)
@@ -2082,10 +1830,14 @@ local function finishIndicator(parent)
   indicatortip:Show()
 end
 
-local function ShowToonTooltip(cell, arg, ...)
+-- Hover Tooltips
+local hoverTooltip = {}
+addon.hoverTooltip = hoverTooltip
+
+hoverTooltip.ShowToonTooltip = function (cell, arg, ...)
   local toon = arg
   if not toon then return end
-  local t = vars.db.Toons[toon]
+  local t = addon.db.Toons[toon]
   if not t then return end
   openIndicator(2, "LEFT","RIGHT")
   local ftex = ""
@@ -2096,12 +1848,23 @@ local function ShowToonTooltip(cell, arg, ...)
   end
   indicatortip:SetCell(indicatortip:AddHeader(),1,ftex..ClassColorise(t.Class, toon))
   indicatortip:SetCell(1,2,ClassColorise(t.Class, LEVEL.." "..t.Level.." "..(t.LClass or "")))
+  if t.Level < maxlvl and t.XP then
+    local restXP = (t.RestXP or 0) + t.MaxXP / 20 * ((time() - t.LastSeen) / (60 * (t.isResting and 8 or 32)))
+    local percent = min(floor(restXP / t.MaxXP * 100), t.oRace == "Pandaren" and 300 or 150)
+    indicatortip:AddLine(COMBAT_XP_GAIN, format("%.0f%% + %.0f%%", t.XP / t.MaxXP * 100, percent))
+  end
   indicatortip:AddLine(STAT_AVERAGE_ITEM_LEVEL,("%d "):format(t.IL or 0)..STAT_AVERAGE_ITEM_LEVEL_EQUIPPED:format(t.ILe or 0))
+  if t.Artifact then
+    indicatortip:AddLine(ARTIFACT_POWER, t.Artifact)
+  end
   if t.RBGrating and t.RBGrating > 0 then
     indicatortip:AddLine(BATTLEGROUND_RATING, t.RBGrating)
   end
   if t.Money then
     indicatortip:AddLine(MONEY,addon:formatNumber(t.Money,true))
+  end
+  if t.Warmode and t.Warmode == true then
+    indicatortip:AddLine(PVP_LABEL_WAR_MODE, PVP_WAR_MODE_ENABLED)
   end
   if t.Zone then
     indicatortip:AddLine(ZONE,t.Zone)
@@ -2115,7 +1878,7 @@ local function ShowToonTooltip(cell, arg, ...)
     local when = date("%c",t.LastSeen)
     indicatortip:AddLine(L["Last updated"],when)
   end
-  if vars.db.Tooltip.TrackPlayed and t.PlayedTotal and t.PlayedLevel and ChatFrame_TimeBreakDown then
+  if addon.db.Tooltip.TrackPlayed and t.PlayedTotal and t.PlayedLevel and ChatFrame_TimeBreakDown then
     --indicatortip:AddLine((TIME_PLAYED_TOTAL):format((TIME_DAYHOURMINUTESECOND):format(ChatFrame_TimeBreakDown(t.PlayedTotal))))
     --indicatortip:AddLine((TIME_PLAYED_LEVEL):format((TIME_DAYHOURMINUTESECOND):format(ChatFrame_TimeBreakDown(t.PlayedLevel))))
     indicatortip:AddLine((TIME_PLAYED_TOTAL):format(""),SecondsToTime(t.PlayedTotal))
@@ -2124,14 +1887,14 @@ local function ShowToonTooltip(cell, arg, ...)
   finishIndicator()
 end
 
-local function ShowQuestTooltip(cell, arg, ...)
+hoverTooltip.ShowQuestTooltip = function (cell, arg, ...)
   local toon,cnt,isDaily = unpack(arg)
   local qstr = cnt.." "..(isDaily and L["Daily Quests"] or L["Weekly Quests"])
   local t = db
   local scopestr = L["Account"]
   local reset
   if toon then
-    t = vars.db.Toons[toon]
+    t = addon.db.Toons[toon]
     if not t then return end
     scopestr = ClassColorise(t.Class, toon)
     reset = (isDaily and t.DailyResetTime) or (not isDaily and t.WeeklyResetTime)
@@ -2146,16 +1909,19 @@ local function ShowQuestTooltip(cell, arg, ...)
       SecondsToTime(reset - time()))
   end
   local ql = {}
-  local zonename
+  local zonename, id
   for id,qi in pairs(t.Quests) do
     if (not isDaily) == (not qi.isDaily) then
-      zonename = qi.Zone and qi.Zone.name or ""
-      table.insert(ql,zonename.." # "..id)
+      if not addon:QuestIgnored(id) then
+        zonename = qi.Zone and qi.Zone.name or ""
+        table.insert(ql,zonename.." # "..id)
+      end
     end
   end
   table.sort(ql)
   for _,e in ipairs(ql) do
-    local id = tonumber(e:match("# (%d+)"))
+    zonename, id = e:match("(.*) # (%d+)")
+    id = tonumber(id)
     local qi = t.Quests[id]
     local line = indicatortip:AddLine()
     local link = qi.Link
@@ -2176,18 +1942,10 @@ local function ShowQuestTooltip(cell, arg, ...)
   finishIndicator()
 end
 
-local function skillsort(s1, s2)
-  if s1.Expires ~= s2.Expires then
-    return (s1.Expires or 0) < (s2.Expires or 0)
-  else
-    return (s1.Title or "") < (s2.Title or "")
-  end
-end
-
-local function ShowSkillTooltip(cell, arg, ...)
+hoverTooltip.ShowSkillTooltip = function (cell, arg, ...)
   local toon, cnt = unpack(arg)
   local cstr = cnt.." "..L["Trade Skill Cooldowns"]
-  local t = vars.db.Toons[toon]
+  local t = addon.db.Toons[toon]
   if not t then return end
   openIndicator(3, "LEFT","RIGHT","RIGHT")
   local tname = ClassColorise(t.Class, toon)
@@ -2199,7 +1957,13 @@ local function ShowSkillTooltip(cell, arg, ...)
   for _,sinfo in pairs(t.Skills) do
     table.insert(tmp,sinfo)
   end
-  table.sort(tmp, skillsort)
+  table.sort(tmp, function (s1, s2)
+    if s1.Expires ~= s2.Expires then
+      return (s1.Expires or 0) < (s2.Expires or 0)
+    else
+      return (s1.Title or "") < (s2.Title or "")
+    end
+  end)
 
   for _,sinfo in ipairs(tmp) do
     local line = indicatortip:AddLine()
@@ -2211,58 +1975,132 @@ local function ShowSkillTooltip(cell, arg, ...)
   finishIndicator()
 end
 
-function addon:plantName(spellid)
-  local name = GetSpellInfo(spellid)
-  if not name then return "unknown" end
-  name = name:gsub(L["Plant"],"")
-  name = name:gsub(L["Throw"],"")
-  name = name:gsub(L["Seeds"],"")
-  name = name:gsub(L["Seed"],"")
-  name = strtrim(name)
-  return name
-end
-
-local function ShowFarmTooltip(cell, arg, ...)
-  local toon = arg
-  local t = vars.db.Toons[toon]
-  if not t then return end
-  openIndicator(2, "LEFT","RIGHT")
-  local tname = ClassColorise(t.Class, toon)
-  indicatortip:AddHeader()
-  indicatortip:SetCell(1,1,tname,"LEFT")
-  indicatortip:SetCell(1,2,L["Farm Crops"],"RIGHT")
-
-  local exp = t.FarmExpires
-  if exp and exp > time() then
-    indicatortip:AddLine(YELLOWFONT .. L["Time Left"] .. ":" .. FONTEND, SecondsToTime(exp - time()))
-  end
-  indicatortip:AddLine(YELLOWFONT .. L["Crops harvested today"] .. ":" .. FONTEND,(t.FarmHarvested or 0))
-  indicatortip:AddLine(YELLOWFONT .. L["Crops planted today"] .. ":" .. FONTEND,  (t.FarmPlanted or 0))
-  local crops
-  if t.FarmCropPlanted and next(t.FarmCropPlanted) then
-    crops = t.FarmCropPlanted
-    indicatortip:AddLine(YELLOWFONT .. L["Crops growing"] .. ":" .. FONTEND)
-  elseif t.FarmCropReady and next(t.FarmCropReady) then
-    crops = t.FarmCropReady
-    indicatortip:AddLine(YELLOWFONT .. L["Crops ready"] .. ":" .. FONTEND)
-  end
-  if crops then
-    for spellid,cnt in pairs(crops) do
-      local line = indicatortip:AddLine()
-      indicatortip:SetCell(line,1, addon:plantName(spellid),"LEFT")
-      indicatortip:SetCell(line,2,"x"..cnt,"RIGHT")
+hoverTooltip.ShowEmissarySummary = function (cell, arg, ...)
+  local expansionLevel, days = unpack(arg)
+  local day
+  local first = true
+  openIndicator(2, "LEFT", "RIGHT")
+  for _, day in pairs(days) do
+    if first == false then
+      indicatortip:AddSeparator(6,0,0,0,0)
+    end
+    first = false
+    indicatortip:AddHeader(L["Emissary quests"], "+" .. (day - 1) .. " " .. L["Day"])
+    local tbl = {}
+    local toon, t
+    for toon, t in pairs(addon.db.Toons) do
+      local info = (
+        t.Emissary and t.Emissary[expansionLevel] and
+        t.Emissary[expansionLevel].days and t.Emissary[expansionLevel].days[day]
+      )
+      if info then
+        tbl[t.Faction] = true
+      end
+    end
+    if (not tbl.Alliance and not tbl.Horde) or (not addon.db.Emissary.Expansion[expansionLevel][day]) then
+      indicatortip:AddLine(L["Emissary Missing"], "")
+    else
+      local globalInfo = addon.db.Emissary.Expansion[expansionLevel][day]
+      local merge = (globalInfo.questID.Alliance == globalInfo.questID.Horde) and true or false
+      local header, fac, toon, t = false
+      for fac, _ in pairs(tbl) do
+        if merge == false then header = false end
+        for toon, t in pairs(addon.db.Toons) do
+          if t.Faction == fac then
+            local info = (
+              t.Emissary and t.Emissary[expansionLevel] and
+              t.Emissary[expansionLevel].days and t.Emissary[expansionLevel].days[day]
+            )
+            if info then
+              if header == false then
+                local name = addon.db.Emissary.Cache[globalInfo.questID[fac]]
+                if not name then
+                  name = L["Emissary Missing"]
+                end
+                indicatortip:AddLine(name)
+                header = true
+              end
+              local text
+              if info.isComplete == true then
+                text = "\124T"..READY_CHECK_READY_TEXTURE..":0|t"
+              elseif info.isFinish == true then
+                text = "\124T"..READY_CHECK_WAITING_TEXTURE..":0|t"
+              else
+                text = info.questDone
+                if globalInfo.questNeed then
+                  text = text .. "/" .. globalInfo.questNeed
+                end
+              end
+              indicatortip:AddLine(ClassColorise(t.Class, toon), text)
+            end
+          end
+        end
+      end
     end
   end
   finishIndicator()
 end
 
-local function ShowBonusTooltip(cell, arg, ...)
+hoverTooltip.ShowEmissaryTooltip = function (cell, arg, ...)
+  local expansionLevel, day, toon = unpack(arg)
+  local info = db.Toons[toon].Emissary[expansionLevel].days[day]
+  if not info then return end
+  openIndicator(2, "LEFT", "RIGHT")
+  local globalInfo = addon.db.Emissary.Expansion[expansionLevel][day] or {}
+  local text
+  if info.isComplete == true then
+    text = "\124T"..READY_CHECK_READY_TEXTURE..":0|t"
+  elseif info.isFinish == true then
+    text = "\124T"..READY_CHECK_WAITING_TEXTURE..":0|t"
+  else
+    text = info.questDone
+    if globalInfo.questNeed then
+      text = text .. "/" .. globalInfo.questNeed
+    end
+  end
+  indicatortip:AddLine(ClassColorise(db.Toons[toon].Class, toon), text)
+  text = (
+    globalInfo.questID and db.Emissary.Cache[globalInfo.questID[db.Toons[toon].Faction]]
+  ) or L["Emissary Missing"]
+  indicatortip:AddLine()
+  indicatortip:SetCell(2, 1, text, "LEFT", 2)
+  if info.questReward then
+    text = ""
+    if info.questReward.itemName then
+      text = "|c" .. select(4, GetItemQualityColor(info.questReward.quality)) ..
+            "[" .. info.questReward.itemName .. "(" .. info.questReward.itemLvl .. ")]" .. FONTEND
+    elseif info.questReward.money then
+      text = GetMoneyString(info.questReward.money)
+    elseif info.questReward.currencyID then
+      text = "\124T" .. select(3, GetCurrencyInfo(info.questReward.currencyID)) .. ":0\124t " .. info.questReward.quantity
+    end
+    indicatortip:AddLine()
+    indicatortip:SetCell(3, 1, text, "RIGHT", 2)
+  end
+  finishIndicator()
+end
+
+hoverTooltip.ShowParagonTooltip = function (cell, arg, ...)
+  local toon = arg
+  local t = addon.db.Toons[toon]
+  if not t or not t.Paragon then return end
+  openIndicator(2, "LEFT", "RIGHT")
+  indicatortip:AddHeader(ClassColorise(t.Class, toon), #t.Paragon)
+  for k, v in pairs(t.Paragon) do
+    local name = GetFactionInfoByID(v)
+    indicatortip:AddLine()
+    indicatortip:SetCell(k + 1, 1, name, "RIGHT", 2)
+  end
+  finishIndicator()
+end
+
+hoverTooltip.ShowBonusTooltip = function (cell, arg, ...)
   local toon = arg
   local parent
   if type(toon) == "table" then
     toon, parent = unpack(toon)
   end
-  local t = vars.db.Toons[toon]
+  local t = addon.db.Toons[toon]
   if not t or not t.BonusRoll then return end
   openIndicator(4, "LEFT","LEFT","LEFT","LEFT")
   local tname = ClassColorise(t.Class, toon)
@@ -2274,7 +2112,7 @@ local function ShowBonusTooltip(cell, arg, ...)
   for i,roll in ipairs(t.BonusRoll) do
     if i > 10 then break end
     local line = indicatortip:AddLine()
-    local icon = roll.currencyID and select(3,GetCurrencyInfo(roll.currencyID))
+    local icon = roll.costCurrencyID and select(3,GetCurrencyInfo(roll.costCurrencyID))
     if icon then
       indicatortip:SetCell(line,1, " \124T"..icon..":0\124t ")
     end
@@ -2283,6 +2121,15 @@ local function ShowBonusTooltip(cell, arg, ...)
     end
     if roll.item then
       indicatortip:SetCell(line,3,roll.item)
+    elseif roll.currencyID then
+      local currencyIcon = select(3, GetCurrencyInfo(roll.currencyID))
+      local str = "\124T" .. currencyIcon .. ":0\124t "
+      if roll.money then
+        str = str .. roll.money
+      else
+        str = str .. GetCurrencyInfo(roll.currencyID)
+      end
+      indicatortip:SetCell(line,3,str)
     elseif roll.money then
       indicatortip:SetCell(line,3,GetMoneyString(roll.money))
     end
@@ -2293,7 +2140,7 @@ local function ShowBonusTooltip(cell, arg, ...)
   finishIndicator(parent)
 end
 
-local function ShowAccountSummary(cell, arg, ...)
+hoverTooltip.ShowAccountSummary = function (cell, arg, ...)
   openIndicator(2, "LEFT","RIGHT")
   indicatortip:SetCell(indicatortip:AddHeader(),1,GOLDFONT..L["Account Summary"]..FONTEND,"LEFT",2)
 
@@ -2302,7 +2149,7 @@ local function ShowAccountSummary(cell, arg, ...)
   local ttoons = 0
   local tmaxtoons = 0
   local r = {}
-  for toon, t in pairs(vars.db.Toons) do -- deliberately include ALL toons
+  for toon, t in pairs(addon.db.Toons) do -- deliberately include ALL toons
     local realm = toon:match(" %- (.+)$")
     local money = t.Money or 0
     tmoney = tmoney + money
@@ -2318,7 +2165,7 @@ local function ShowAccountSummary(cell, arg, ...)
   end
   indicatortip:AddLine(L["Characters"], ttoons)
   indicatortip:AddLine(string.format(L["Level %d Characters"],maxlvl), tmaxtoons)
-  if vars.db.Tooltip.TrackPlayed then
+  if addon.db.Tooltip.TrackPlayed then
     indicatortip:AddLine((TIME_PLAYED_TOTAL):format(""),SecondsToTime(ttime))
   end
   indicatortip:AddLine(TOTAL.." "..MONEY,addon:formatNumber(tmoney,true))
@@ -2354,7 +2201,7 @@ local function ShowAccountSummary(cell, arg, ...)
   finishIndicator()
 end
 
-local function ShowWorldBossTooltip(cell, arg, ...)
+hoverTooltip.ShowWorldBossTooltip = function (cell, arg, ...)
   local worldbosses = arg[1]
   local toon = arg[2]
   local saved = arg[3]
@@ -2362,13 +2209,13 @@ local function ShowWorldBossTooltip(cell, arg, ...)
   openIndicator(2, "LEFT","RIGHT")
   local line = indicatortip:AddHeader()
   local toonstr = (db.Tooltip.ShowServer and toon) or strsplit(' ', toon)
-  local t = vars.db.Toons[toon]
+  local t = addon.db.Toons[toon]
   local reset = t.WeeklyResetTime or addon:GetNextWeeklyResetTime()
-  indicatortip:SetCell(line, 1, ClassColorise(vars.db.Toons[toon].Class, toonstr), indicatortip:GetHeaderFont(), "LEFT")
+  indicatortip:SetCell(line, 1, ClassColorise(addon.db.Toons[toon].Class, toonstr), indicatortip:GetHeaderFont(), "LEFT")
   indicatortip:SetCell(line, 2, GOLDFONT .. L["World Bosses"] .. FONTEND, indicatortip:GetHeaderFont(), "RIGHT")
   indicatortip:AddLine(YELLOWFONT .. L["Time Left"] .. ":" .. FONTEND, SecondsToTime(reset - time()))
   for _, instance in ipairs(worldbosses) do
-    local thisinstance = vars.db.Instances[instance]
+    local thisinstance = addon.db.Instances[instance]
     if thisinstance then
       local info = thisinstance[toon] and thisinstance[toon][2]
       local n = indicatortip:AddLine()
@@ -2383,36 +2230,36 @@ local function ShowWorldBossTooltip(cell, arg, ...)
   finishIndicator()
 end
 
-local function ShowLFRTooltip(cell, arg, ...)
-  local boxname = arg[1]
-  local toon = arg[2]
-  local lfrmap = arg[3]
-  local t = vars.db.Toons[toon]
-  if not boxname or not t or not lfrmap then return end
+hoverTooltip.ShowLFRTooltip = function (cell, arg, ...)
+  local boxname, toon, tbl = unpack(arg)
+  local t = addon.db.Toons[toon]
+  if not boxname or not t or not tbl then return end
   openIndicator(3, "LEFT", "LEFT","RIGHT")
   local line = indicatortip:AddHeader()
   local toonstr = (db.Tooltip.ShowServer and toon) or strsplit(' ', toon)
   local reset = t.WeeklyResetTime or addon:GetNextWeeklyResetTime()
-  indicatortip:SetCell(line, 1, ClassColorise(vars.db.Toons[toon].Class, toonstr), indicatortip:GetHeaderFont(), "LEFT", 1)
+  indicatortip:SetCell(line, 1, ClassColorise(addon.db.Toons[toon].Class, toonstr), indicatortip:GetHeaderFont(), "LEFT", 1)
   indicatortip:SetCell(line, 2, GOLDFONT .. boxname .. FONTEND, indicatortip:GetHeaderFont(), "RIGHT", 2)
   indicatortip:AddLine(YELLOWFONT .. L["Time Left"] .. ":" .. FONTEND, nil, SecondsToTime(reset - time()))
   for i=1,20 do
-    local instance = lfrmap[boxname..":"..i]
+    local instance = tbl[i]
     local diff = 2
     if instance then
       indicatortip:SetCell(indicatortip:AddLine(), 1, YELLOWFONT .. instance .. FONTEND, "CENTER",3)
-      local thisinstance = vars.db.Instances[instance]
+      local thisinstance = addon.db.Instances[instance]
       local info = thisinstance[toon] and thisinstance[toon][diff]
-      local killed, total, base, remap = addon:instanceBosses(instance,toon,diff)
+      local killed, total, base, remap, origin = addon:instanceBosses(instance,toon,diff)
       for i=base,base+total-1 do
         local bossid = i
         if remap then
           bossid = remap[i-base+1]
         end
-        local bossname = GetLFGDungeonEncounterInfo(thisinstance.LFDID, bossid);
+        local bossname = GetLFGDungeonEncounterInfo(thisinstance.LFDID, bossid)
         local n = indicatortip:AddLine()
         indicatortip:SetCell(n, 1, bossname, "LEFT", 2)
-        if info and info[bossid] then
+        -- for LFRs that are different between two factions
+        -- https://github.com/SavedInstances/SavedInstances/pull/238
+        if info and info[origin and origin[i-base+1] or bossid] then
           indicatortip:SetCell(n, 3, REDFONT..ALREADY_LOOTED..FONTEND, "RIGHT", 1)
         else
           indicatortip:SetCell(n, 3, GREENFONT..AVAILABLE..FONTEND, "RIGHT", 1)
@@ -2423,13 +2270,13 @@ local function ShowLFRTooltip(cell, arg, ...)
   finishIndicator()
 end
 
-local function ShowIndicatorTooltip(cell, arg, ...)
+hoverTooltip.ShowIndicatorTooltip = function (cell, arg, ...)
   local instance = arg[1]
   local toon = arg[2]
   local diff = arg[3]
   if not instance or not toon or not diff then return end
   openIndicator(3, "LEFT", "LEFT","RIGHT")
-  local thisinstance = vars.db.Instances[instance]
+  local thisinstance = addon.db.Instances[instance]
   local worldboss = thisinstance and thisinstance.WorldBoss
   local info = thisinstance[toon][diff]
   local id = info.ID
@@ -2438,7 +2285,7 @@ local function ShowIndicatorTooltip(cell, arg, ...)
   indicatortip:SetCell(nameline, 2, GOLDFONT .. instance .. FONTEND, indicatortip:GetHeaderFont(), "RIGHT", 2)
   local toonline = indicatortip:AddHeader()
   local toonstr = (db.Tooltip.ShowServer and toon) or strsplit(' ', toon)
-  indicatortip:SetCell(toonline, 1, ClassColorise(vars.db.Toons[toon].Class, toonstr), indicatortip:GetHeaderFont(), "LEFT", 1)
+  indicatortip:SetCell(toonline, 1, ClassColorise(addon.db.Toons[toon].Class, toonstr), indicatortip:GetHeaderFont(), "LEFT", 1)
   indicatortip:SetCell(toonline, 2, addon:idtext(thisinstance,diff,info), "RIGHT", 2)
   local EMPH = " !!! "
   if info.Extended then
@@ -2459,8 +2306,36 @@ local function ShowIndicatorTooltip(cell, arg, ...)
     indicatortip:SetCell(n, 2, info.ID, "RIGHT", 2)
   end
   if info.Link then
+    local link = info.Link
+    if thisinstance.LFDID == 1944 then
+      -- Battle of Dazar'alor
+      -- https://github.com/SavedInstances/SavedInstances/issues/233
+      local locFaction = UnitFactionGroup("player")
+      if db.Toons[toon].Faction ~= locFaction then
+        local bits = tonumber(link:match(":(%d+)\124h"))
+        if db.Toons[toon].Faction == "Alliance" then
+          bits = bit.band(bits, 0x3134D)
+          if bit.band(bits, 0x1) > 0 then -- Grong the Revenant (Alliance)
+            bits = bit.bor(bits, 0x2)
+          end
+          if bit.band(bits, 0x4) > 0 then -- Jadefire Masters (Alliance)
+            bits = bit.bor(bits, 0x10)
+          end
+        else
+          bits = bit.band(bits, 0x3135A)
+          if bit.band(bits, 0x2) > 0 then -- Grong, the Jungle Lord (Horde)
+            bits = bit.bor(bits, 0x1)
+          end
+          if bit.band(bits, 0x10) > 0 then -- Jadefire Masters (Horde)
+            bits = bit.bor(bits, 0x4)
+          end
+        end
+        link = "\124cffff8000\124Hinstancelock:Player-0000-00000000:2070:"
+          .. diff .. ":" .. bits .. "\124h[Battle of Dazar'alor]\124h\124r"
+      end
+    end
     scantt:SetOwner(UIParent,"ANCHOR_NONE")
-    scantt:SetHyperlink(info.Link)
+    scantt:SetHyperlink(link)
     local name = scantt:GetName()
     local gotbossinfo
     for i=2,scantt:NumLines() do
@@ -2476,7 +2351,7 @@ local function ShowIndicatorTooltip(cell, arg, ...)
     end
     if not gotbossinfo then
       local exc = addon:instanceException(thisinstance.LFDID)
-      local bits = tonumber(info.Link:match(":(%d+)\124h"))
+      local bits = tonumber(link:match(":(%d+)\124h"))
       if exc and bits then
         for i=1,exc.total do
           local n = indicatortip:AddLine()
@@ -2506,7 +2381,7 @@ local function ShowIndicatorTooltip(cell, arg, ...)
       if worldboss then
         bossname = addon.WorldBosses[worldboss].name or "UNKNOWN"
       else
-        bossname = GetLFGDungeonEncounterInfo(thisinstance.LFDID, bossid);
+        bossname = GetLFGDungeonEncounterInfo(thisinstance.LFDID, bossid)
       end
       local n = indicatortip:AddLine()
       indicatortip:SetCell(n, 1, bossname, "LEFT", 2)
@@ -2520,35 +2395,13 @@ local function ShowIndicatorTooltip(cell, arg, ...)
   finishIndicator()
 end
 
-local colorpat = "\124c%c%c%c%c%c%c%c%c"
-local weeklycap = CURRENCY_WEEKLY_CAP:gsub("%%%d*?([ds])","%%%1")
-local weeklycap_scan = weeklycap:gsub("%%d","(%%d+)"):gsub("%%s","(\124c%%x%%x%%x%%x%%x%%x%%x%%x)")
-weeklycap = weeklycap:gsub("%%d","%%s")
-local totalcap = CURRENCY_TOTAL_CAP:gsub("%%%d*?([ds])","%%%1")
-local totalcap_scan = totalcap:gsub("%%d","(%%d+)"):gsub("%%s","(\124c%%x%%x%%x%%x%%x%%x%%x%%x)")
-totalcap = totalcap:gsub("%%d","%%s")
-local season_scan = CURRENCY_SEASON_TOTAL:gsub("%%%d*?([ds])","(%%%1*)")
-
-function addon:GetSeasonCurrency(idx)
-  scantt:SetOwner(UIParent,"ANCHOR_NONE")
-  scantt:SetCurrencyByID(idx)
-  local name = scantt:GetName()
-  for i=1,scantt:NumLines() do
-    local left = _G[name.."TextLeft"..i]
-    if left:GetText():find(season_scan) then
-      return left:GetText()
-    end
-  end
-  return nil
-end
-
-local function ShowSpellIDTooltip(cell, arg, ...)
+hoverTooltip.ShowSpellIDTooltip = function (cell, arg, ...)
   local toon, spellid, timestr = unpack(arg)
   if not toon or not spellid or not timestr then return end
   openIndicator(2, "LEFT","RIGHT")
-  indicatortip:AddHeader(ClassColorise(vars.db.Toons[toon].Class, strsplit(' ', toon)), timestr)
+  indicatortip:AddHeader(ClassColorise(addon.db.Toons[toon].Class, strsplit(' ', toon)), timestr)
   if spellid > 0 then
-    local tip = vars.db.spelltip and vars.db.spelltip[spellid]
+    local tip = addon.db.spelltip and addon.db.spelltip[spellid]
     for i=1,#tip do
       indicatortip:AddLine("")
       indicatortip:SetCell(indicatortip:GetLineCount(),1,tip[i], nil, "LEFT",2, nil, nil, nil, 250)
@@ -2562,13 +2415,21 @@ local function ShowSpellIDTooltip(cell, arg, ...)
   finishIndicator()
 end
 
-local function ShowCurrencyTooltip(cell, arg, ...)
+local weeklycap = CURRENCY_WEEKLY_CAP:gsub("%%%d*?([ds])","%%%1")
+local weeklycap_scan = weeklycap:gsub("%%d","(%%d+)"):gsub("%%s","(\124c%%x%%x%%x%%x%%x%%x%%x%%x)")
+weeklycap = weeklycap:gsub("%%d","%%s")
+local totalcap = CURRENCY_TOTAL_CAP:gsub("%%%d*?([ds])","%%%1")
+local totalcap_scan = totalcap:gsub("%%d","(%%d+)"):gsub("%%s","(\124c%%x%%x%%x%%x%%x%%x%%x%%x)")
+totalcap = totalcap:gsub("%%d","%%s")
+local season_scan = CURRENCY_SEASON_TOTAL:gsub("%%%d*?([ds])","(%%%1*)")
+
+hoverTooltip.ShowCurrencyTooltip = function (cell, arg, ...)
   local toon, idx, ci = unpack(arg)
   if not toon or not idx or not ci then return end
   local name,_,tex = GetCurrencyInfo(idx)
   tex = " \124T"..tex..":0\124t"
   openIndicator(2, "LEFT","RIGHT")
-  indicatortip:AddHeader(ClassColorise(vars.db.Toons[toon].Class, strsplit(' ', toon)), CurrencyColor(ci.amount or 0,ci.totalMax)..tex)
+  indicatortip:AddHeader(ClassColorise(addon.db.Toons[toon].Class, strsplit(' ', toon)), CurrencyColor(ci.amount or 0,ci.totalMax)..tex)
 
   scantt:SetOwner(UIParent,"ANCHOR_NONE")
   scantt:SetCurrencyByID(idx)
@@ -2588,15 +2449,24 @@ local function ShowCurrencyTooltip(cell, arg, ...)
     end
   end
   if ci.weeklyMax and ci.weeklyMax > 0 then
-    if not spacer then indicatortip:AddLine(" "); spacer = true end
+    if not spacer then
+      indicatortip:AddLine(" ")
+      spacer = true
+    end
     indicatortip:AddLine(weeklycap:format("", CurrencyColor(ci.earnedThisWeek or 0,ci.weeklyMax), addon:formatNumber(ci.weeklyMax)))
   end
   if ci.totalMax and ci.totalMax > 0 then
-    if not spacer then indicatortip:AddLine(" "); spacer = true end
+    if not spacer then
+      indicatortip:AddLine(" ")
+      spacer = true
+    end
     indicatortip:AddLine(totalcap:format("", CurrencyColor(ci.amount or 0,ci.totalMax), addon:formatNumber(ci.totalMax)))
   end
   if ci.season and #ci.season > 0 then
-    if not spacer then indicatortip:AddLine(" "); spacer = true end
+    if not spacer then
+      indicatortip:AddLine(" ")
+      spacer = true
+    end
     local str = ci.season
     local num = str:match("(%d+)")
     if num then
@@ -2607,7 +2477,7 @@ local function ShowCurrencyTooltip(cell, arg, ...)
   finishIndicator()
 end
 
-local function ShowCurrencySummary(cell, arg, ...)
+hoverTooltip.ShowCurrencySummary = function (cell, arg, ...)
   local idx = arg
   if not idx then return end
   local name,_,tex = GetCurrencyInfo(idx)
@@ -2617,7 +2487,7 @@ local function ShowCurrencySummary(cell, arg, ...)
   local total = 0
   local tmax
   local temp = {}
-  for toon, t in pairs(vars.db.Toons) do -- deliberately include ALL toons
+  for toon, t in pairs(addon.db.Toons) do -- deliberately include ALL toons
     local ci = t.currency and t.currency[idx]
     if ci and ci.amount then
       tmax = tmax or ci.totalMax
@@ -2663,6 +2533,7 @@ function core:toonInit()
   ti.Order = ti.Order or 50
   ti.Quests = ti.Quests or {}
   ti.Skills = ti.Skills or {}
+  ti.DailyWorldQuest = nil -- REMOVED
   -- try to get a reset time, but don't overwrite existing, which could break quest list
   -- real update comes later in UpdateToonData
   ti.DailyResetTime = ti.DailyResetTime or addon:GetNextDailyResetTime()
@@ -2672,40 +2543,41 @@ end
 function core:OnInitialize()
   local versionString = GetAddOnMetadata(addonName, "version")
   --[===[@debug@
-  if versionString == "8.0.5" then
+  if versionString == "8.2.0" then
     versionString = "Dev"
   end
   --@end-debug@]===]
-  SavedInstances.version = versionString
+  addon.version = versionString
 
-  SavedInstancesDB = SavedInstancesDB or vars.defaultDB
+  SavedInstancesDB = SavedInstancesDB or addon.defaultDB
   -- begin backwards compatibility
   if not SavedInstancesDB.DBVersion or SavedInstancesDB.DBVersion < 10 then
-    SavedInstancesDB = vars.defaultDB
+    SavedInstancesDB = addon.defaultDB
   elseif SavedInstancesDB.DBVersion < 12 then
-    SavedInstancesDB.Indicators = vars.defaultDB.Indicators
+    SavedInstancesDB.Indicators = addon.defaultDB.Indicators
     SavedInstancesDB.DBVersion = 12
   end
 
   -- end backwards compatibilty
   db = db or SavedInstancesDB
-  vars.db = db
-  config = vars.config
+  addon.db = db
   core:toonInit()
   db.Lockouts = nil -- deprecated
   db.History = db.History or {}
-  db.Quests = db.Quests or vars.defaultDB.Quests
-  db.QuestDB = db.QuestDB or vars.defaultDB.QuestDB
-  for name,default in pairs(vars.defaultDB.Tooltip) do
+  db.Emissary = db.Emissary or addon.defaultDB.Emissary
+  db.Quests = db.Quests or addon.defaultDB.Quests
+  db.QuestDB = db.QuestDB or addon.defaultDB.QuestDB
+  db.Warfront = db.Warfront or addon.defaultDB.Warfront
+  for name,default in pairs(addon.defaultDB.Tooltip) do
     db.Tooltip[name] = (db.Tooltip[name]==nil and default) or db.Tooltip[name]
   end
   for _, id in ipairs(addon.currency) do
     local name = "Currency"..id
-    db.Tooltip[name] = (db.Tooltip[name]==nil and  vars.defaultDB.Tooltip[name]) or db.Tooltip[name]
+    db.Tooltip[name] = (db.Tooltip[name]==nil and  addon.defaultDB.Tooltip[name]) or db.Tooltip[name]
   end
   local currtmp = {}
   for _,idx in ipairs(currency) do currtmp[idx] = true end
-  for toon, t in pairs(vars.db.Toons) do
+  for toon, t in pairs(addon.db.Toons) do
     t.Order = t.Order or 50
     if t.currency then -- clean old undiscovered currency entries
       for idx, ci in pairs(t.currency) do
@@ -2737,7 +2609,7 @@ function core:OnInitialize()
   end
   RequestRaidInfo() -- get lockout data
   RequestLFDPlayerLockInfo()
-  vars.dataobject = vars.LDB and vars.LDB:NewDataObject("SavedInstances", {
+  addon.dataobject = addon.LDB and addon.LDB:NewDataObject("SavedInstances", {
     text = addonAbbrev,
     type = "launcher",
     icon = "Interface\\Addons\\SavedInstances\\icon.tga",
@@ -2755,15 +2627,14 @@ function core:OnInitialize()
       elseif button == "LeftButton" then
         addon:ToggleDetached()
       else
-        config:ShowConfig()
+        addon.config:ShowConfig()
       end
     end
   })
-  if vars.icon then
-    vars.icon:Register(addonName, vars.dataobject, db.MinimapIcon)
-    vars.icon:Refresh(addonName)
+  if addon.icon then
+    addon.icon:Register(addonName, addon.dataobject, db.MinimapIcon)
+    addon.icon:Refresh(addonName)
   end
-  addon.BonusRollShow() -- catch roll-on-load
 end
 
 function core:OnEnable()
@@ -2774,25 +2645,17 @@ function core:OnEnable()
   self:RegisterEvent("CHAT_MSG_SYSTEM", "CheckSystemMessage")
   self:RegisterEvent("CHAT_MSG_CURRENCY", "CheckSystemMessage")
   self:RegisterEvent("CHAT_MSG_LOOT", "CheckSystemMessage")
-  self:RegisterBucketEvent("CURRENCY_DISPLAY_UPDATE", 0.25, function() addon:UpdateCurrency() end)
-  self:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")
-  self:RegisterBucketEvent("TRADE_SKILL_LIST_UPDATE", 1)
-  self:RegisterBucketEvent("PLAYER_ENTERING_WORLD", 1, RequestRaidInfo)
+  self:RegisterEvent("CHAT_MSG_COMBAT_XP_GAIN", function() addon:UpdateToonData() end)
+  self:RegisterEvent("PLAYER_UPDATE_RESTING", function() addon:UpdateToonData() end)
+  self:RegisterEvent("PLAYER_ENTERING_WORLD", function() addon:UpdateToonData(); C_Timer.After(1, RequestRaidInfo) end)
+  -- self:RegisterBucketEvent("PLAYER_ENTERING_WORLD", 1, RequestRaidInfo)
   self:RegisterBucketEvent("LFG_LOCK_INFO_RECEIVED", 1, RequestRaidInfo)
-  self:RegisterEvent("BONUS_ROLL_RESULT", "BonusRollResult")
   self:RegisterEvent("PLAYER_LOGOUT", function() addon.logout = true ; addon:UpdateToonData() end) -- update currency spent
   self:RegisterEvent("LFG_COMPLETION_REWARD", "RefreshLockInfo") -- for random daily dungeon tracking
   self:RegisterEvent("BOSS_KILL")
-  self:RegisterEvent("ENCOUNTER_END", "EncounterEnd")
-  self:RegisterEvent("BAG_UPDATE", "RefreshMythicKeyInfo")
-  self:RegisterEvent("CHALLENGE_MODE_MAPS_UPDATE", "RefreshMythicKeyInfo")
-  self:RegisterEvent("PLAYER_ENTERING_WORLD", "RefreshDailyWorldQuestInfo")
-  self:RegisterEvent("ADDON_LOADED", "RefreshDailyWorldQuestInfo")
-  self:RegisterEvent("QUEST_LOG_UPDATE", "RefreshDailyWorldQuestInfo")
-  self:RegisterEvent("QUEST_WATCH_LIST_CHANGED", "RefreshDailyWorldQuestInfo")
-  self:RegisterEvent("CHAT_MSG_MONSTER_YELL")
+  self:RegisterEvent("ENCOUNTER_END")
   self:RegisterEvent("TIME_PLAYED_MSG", function(_,total,level)
-    local t = thisToon and vars and vars.db and vars.db.Toons[thisToon]
+    local t = thisToon and addon and addon.db and addon.db.Toons[thisToon]
     if total > 0 and t then
       t.PlayedTotal = total
       t.PlayedLevel = level
@@ -2822,9 +2685,7 @@ function core:OnEnable()
   C_ChatInfo.RegisterAddonMessagePrefix(addonName)
   addon:HistoryEvent("PLAYER_ENTERING_WORLD") -- update after initial load
   addon:specialQuests()
-  core:RefreshMythicKeyInfo()
   core:updateRealmMap()
-  core:RefreshDailyWorldQuestInfo()
 end
 
 function core:ADDON_LOADED()
@@ -2885,8 +2746,8 @@ end
 function core:updateRealmMap()
   local realm = GetRealmName():gsub("%s+","")
   local lmap = GetAutoCompleteRealms()
-  local rmap = vars.db.RealmMap or {}
-  vars.db.RealmMap = rmap
+  local rmap = addon.db.RealmMap or {}
+  addon.db.RealmMap = rmap
   if lmap and next(lmap) then -- connected realms detected
     table.sort(lmap)
     local mapid = rmap[realm] -- find existing map
@@ -2910,200 +2771,25 @@ function core:updateRealmMap()
   end
 end
 
-function core:RefreshMythicKeyInfo(event)
-
-  if (event ~= "CHALLENGE_MODE_MAPS_UPDATE") then C_MythicPlus.RequestRewards() end -- This event is fired after the rewards data was requested, causing yet another refresh if not checked for
-
-  local t = vars.db.Toons[thisToon]
-  local _
-  t.MythicKey = {}
-  for bagID = 0, 4 do
-    for invID = 1, GetContainerNumSlots(bagID) do
-      local itemID = GetContainerItemID(bagID, invID)
-      if itemID and itemID == 138019 then
-        local keyLink = GetContainerItemLink(bagID, invID)
-        local KeyInfo = {strsplit(':', keyLink)}
-        local mapID = tonumber(KeyInfo[3])
-        local mapLevel = tonumber(KeyInfo[4])
-        local color
-        if KeyInfo[4] == "0" then
-          _,_,_,color = GetItemQualityColor(0)
-        elseif mapLevel >= 10 then
-          _,_,_,color = GetItemQualityColor(4)
-        elseif mapLevel >= 7 then
-          _,_,_,color = GetItemQualityColor(3)
-        elseif mapLevel >= 4 then
-          _,_,_,color = GetItemQualityColor(2)
-        else
-          _,_,_,color = GetItemQualityColor(1)
-        end
-        if vars.db.Tooltip.DebugMode then
-          DEFAULT_CHAT_FRAME:AddMessage(tostring(KeyInfo[1]))
-          DEFAULT_CHAT_FRAME:AddMessage(tostring(KeyInfo[2]))
-          DEFAULT_CHAT_FRAME:AddMessage(tostring(KeyInfo[3]))
-          DEFAULT_CHAT_FRAME:AddMessage(tostring(KeyInfo[4]))
-          DEFAULT_CHAT_FRAME:AddMessage(tostring(KeyInfo[5]))
-          DEFAULT_CHAT_FRAME:AddMessage(tostring(KeyInfo[6]))
-          DEFAULT_CHAT_FRAME:AddMessage(tostring(KeyInfo[7]))
-          DEFAULT_CHAT_FRAME:AddMessage(tostring(KeyInfo[8]))
-          DEFAULT_CHAT_FRAME:AddMessage(tostring(KeyInfo[9]))
-          DEFAULT_CHAT_FRAME:AddMessage(tostring(KeyInfo[10]))
-          DEFAULT_CHAT_FRAME:AddMessage(tostring(KeyInfo[11]))
-          DEFAULT_CHAT_FRAME:AddMessage(tostring(KeyInfo[12]))
-          DEFAULT_CHAT_FRAME:AddMessage(tostring(KeyInfo[13]))
-          DEFAULT_CHAT_FRAME:AddMessage(tostring(KeyInfo[14]))
-          DEFAULT_CHAT_FRAME:AddMessage(tostring(KeyInfo[15]))
-          DEFAULT_CHAT_FRAME:AddMessage(tostring(KeyInfo[16]))
-          DEFAULT_CHAT_FRAME:AddMessage(tostring(KeyInfo[17]))
-          DEFAULT_CHAT_FRAME:AddMessage(tostring(KeyInfo[18]))
-          DEFAULT_CHAT_FRAME:AddMessage(tostring(KeyInfo[19]))
-          DEFAULT_CHAT_FRAME:AddMessage(tostring(KeyInfo[20]))
-        end
-        t.MythicKey.abbrev = KeystoneAbbrev[mapID]
-        t.MythicKey.link = C_ChallengeMode.GetMapUIInfo(mapID)
-        t.MythicKey.color = color
-        t.MythicKey.level = mapLevel
-        t.MythicKey.ResetTime = addon:GetNextWeeklyResetTime()
-        t.MythicKey.link = keyLink
-      end
-    end
-  end
-  local MythicMaps = { }
-  C_MythicPlus.RequestMapInfo()
-  MythicMaps = C_ChallengeMode.GetMapTable()
-  local bestlevel = 0
-  for i = 1, #MythicMaps do
-    local _, level = C_MythicPlus.GetWeeklyBestForMap(MythicMaps[i]);
-    if level then
-      if level > bestlevel then
-        bestlevel = level
-      end
-    end
-  end
-  if t.MythicKeyBest and (t.MythicKeyBest.ResetTime or 0) < time() then -- dont know weekly reset function will run early or not
-    if t.MythicKeyBest.level and t.MythicKeyBest.level > 0 then
-      t.MythicKeyBest.LastWeekLevel = t.MythicKeyBest.level
-  end
-  end
-  t.MythicKeyBest = t.MythicKeyBest or { }
-  t.MythicKeyBest.ResetTime = addon:GetNextWeeklyResetTime()
-  t.MythicKeyBest.level = bestlevel
-  t.MythicKeyBest.WeeklyReward = C_MythicPlus.IsWeeklyRewardAvailable()
-end
-
-function core:RefreshDailyWorldQuestInfo()
-  local t = vars.db.Toons[thisToon]
-  t.DailyWorldQuest = {}
-  local BountyQuest = GetQuestBountyInfoForMapID(876)
-  for BountyIndex, BountyInfo in ipairs(BountyQuest) do
-    local title = GetQuestLogTitle(GetQuestLogIndexByID(BountyInfo.questID))
-    local timeleft = C_TaskQuest.GetQuestTimeLeftMinutes(BountyInfo.questID)
-    local _, _, isFinish, questDone, questNeed = GetQuestObjectiveInfo(BountyInfo.questID, 1, false)
-    if timeleft then
-      if timeleft > 2880 then
-        if t.DailyWorldQuest.days2 then else t.DailyWorldQuest.days2 = {} end
-        t.DailyWorldQuest.days2.name = title
-        t.DailyWorldQuest.days2.dayleft = 2
-        t.DailyWorldQuest.days2.questneed = questNeed
-        t.DailyWorldQuest.days2.questdone = questDone
-        t.DailyWorldQuest.days2.isfinish = isFinish
-        t.DailyWorldQuest.days2.iscompleted = IsQuestFlaggedCompleted(BountyInfo.questID)
-      elseif timeleft > 1440 then
-        if t.DailyWorldQuest.days1 then else t.DailyWorldQuest.days1 = {} end
-        t.DailyWorldQuest.days1.name = title
-        t.DailyWorldQuest.days1.dayleft = 1
-        t.DailyWorldQuest.days1.questneed = questNeed
-        t.DailyWorldQuest.days1.questdone = questDone
-        t.DailyWorldQuest.days1.isfinish = isFinish
-        t.DailyWorldQuest.days1.iscompleted = IsQuestFlaggedCompleted(BountyInfo.questID)
-      else
-        if t.DailyWorldQuest.days0 then else t.DailyWorldQuest.days0 = {} end
-        t.DailyWorldQuest.days0.name = title
-        t.DailyWorldQuest.days0.dayleft = 0
-        t.DailyWorldQuest.days0.questneed = questNeed
-        t.DailyWorldQuest.days0.questdone = questDone
-        t.DailyWorldQuest.days0.isfinish = isFinish
-        t.DailyWorldQuest.days0.iscompleted = IsQuestFlaggedCompleted(BountyInfo.questID)
-      end
-    end
-  end
-  if IsQuestFlaggedCompleted(43341) then
-    if t.DailyWorldQuest.days0 == nil then
-      t.DailyWorldQuest.days0 = {}
-      t.DailyWorldQuest.days0.dayleft = 0
-      t.DailyWorldQuest.days0.iscompleted = true
-      t.DailyWorldQuest.days0.name = L["Emissary Missing"]
-    end
-    if t.DailyWorldQuest.days1 == nil then
-      t.DailyWorldQuest.days1 = {}
-      t.DailyWorldQuest.days1.dayleft = 1
-      t.DailyWorldQuest.days1.iscompleted = true
-      t.DailyWorldQuest.days1.name = L["Emissary Missing"]
-    end
-    if t.DailyWorldQuest.days2 == nil then
-      t.DailyWorldQuest.days2 = {}
-      t.DailyWorldQuest.days2.dayleft = 2
-      t.DailyWorldQuest.days2.iscompleted = true
-      t.DailyWorldQuest.days2.name = L["Emissary Missing"]
-    end
-  end
-end
-
 function core:getRealmGroup(realm)
   -- returns realm-group-id, { realm1, realm2, ...} for connected realm, or nil,nil for unconnected
   realm = realm:gsub("%s+","")
-  local rmap = vars.db.RealmMap
+  local rmap = addon.db.RealmMap
   local gid = rmap and rmap[realm]
   return gid, gid and rmap[gid]
 end
 
-function core:CHAT_MSG_MONSTER_YELL(event, msg, bossname)
-  -- cheapest possible outdoor boss detection for players lacking a proper boss mod
-  -- should work for sha and nalak, oon and gal report a related mob
-  local t = vars.db.Toons[thisToon]
-  local now = time()
-  if bossname and t then
-    bossname = tostring(bossname) -- for safety
-    local diff = select(4,GetInstanceInfo())
-    if diff and #diff > 0 then bossname = bossname .. ": ".. diff end
-    t.lastbossyell = bossname
-    t.lastbossyelltime = now
-    --debug("CHAT_MSG_MONSTER_YELL: "..tostring(bossname));
-  end
-end
-
 function core:BossModEncounterEnd(modname, bossname)
-  local t = vars.db.Toons[thisToon]
-  local now = time()
-  if bossname and t and now > (t.lastbosstime or 0) + 2*60 then
-    -- boss mods can often detect completion before ENCOUNTER_END
-    -- also some world bosses never send ENCOUNTER_END
-    -- enough timeout to prevent overwriting, but short enough to prevent cross-boss contamination
-    bossname = tostring(bossname) -- for safety
-    local diff = select(4,GetInstanceInfo())
-    if diff and #diff > 0 then bossname = bossname .. ": ".. diff end
-    t.lastboss = bossname
-    t.lastbosstime = now
-  end
-  debug("%s refresh: %s",(modname or "BossMod"),tostring(bossname));
-  core:RefreshLockInfo()
+  debug("%s refresh: %s", (modname or "BossMod"), tostring(bossname))
+  addon:BossRecord(thisToon, bossname, select(3, GetInstanceInfo()), true)
+  self:RefreshLockInfo()
 end
 
-function core:EncounterEnd(event, encounterID, encounterName, difficultyID, raidSize, endStatus)
-  debug("EncounterEnd:%s:%s:%s:%s:%s",tostring(encounterID),tostring(encounterName),tostring(difficultyID),tostring(raidSize),tostring(endStatus))
+function core:ENCOUNTER_END(event, encounterID, encounterName, difficultyID, raidSize, endStatus)
+  debug("ENCOUNTER_END:%s:%s:%s:%s:%s", tostring(encounterID), tostring(encounterName), tostring(difficultyID), tostring(raidSize), tostring(endStatus))
   if endStatus ~= 1 then return end -- wipe
-  core:RefreshLockInfo()
-  local t = vars.db.Toons[thisToon]
-  if not t then return end
-  local name = encounterName
-  if difficultyID and difficultyID > 0 then
-    local diff = GetDifficultyInfo(difficultyID)
-    if diff and #diff > 0 then
-      name = name ..": "..diff
-    end
-  end
-  t.lastboss = name
-  t.lastbosstime = time()
+  self:RefreshLockInfo()
+  addon:BossRecord(thisToon, encounterName, difficultyID)
 end
 
 function core:BOSS_KILL(event, encounterID, encounterName, ...)
@@ -3112,7 +2798,7 @@ function core:BOSS_KILL(event, encounterID, encounterName, ...)
   if name and type(name) == "string" then
     name = name:gsub(",.*$","") -- remove extraneous trailing boss titles
     name = strtrim(name)
-    core:BossModEncounterEnd("BOSS_KILL", name)
+    self:BossModEncounterEnd("BOSS_KILL", name)
   end
 end
 
@@ -3134,7 +2820,7 @@ local function doExplicitReset(instancemsg, failed)
     if not failed then
       C_ChatInfo.SendAddonMessage(addonName, "GENERATION_ADVANCE", reportchan)
     end
-    if vars.db.Tooltip.ReportResets then
+    if addon.db.Tooltip.ReportResets then
       local msg = instancemsg or RESET_INSTANCES
       msg = msg:gsub("\1241.+;.+;","") -- ticket 76, remove |1;; escapes on koKR
       SendChatMessage("<"..addonName.."> "..msg, reportchan)
@@ -3193,7 +2879,6 @@ function addon.HistoryEvent(f, evt, ...)
   end
 end
 
-
 addon.histReapTime = 60*60 -- 1 hour
 addon.histLimit = 10 -- instances per hour
 function addon:histZoneKey()
@@ -3201,7 +2886,7 @@ function addon:histZoneKey()
   if insttype == nil or insttype == "none" or insttype == "arena" or insttype == "pvp" then -- pvp doesnt count
     return nil
   end
-  if IsInLFGDungeon() or IsInScenarioGroup() then -- LFG instances don't count
+  if (IsInLFGDungeon() or IsInScenarioGroup()) and diff ~= 19 then -- LFG instances don't count, but Holiday Event counts
     return nil
   end
   if C_Garrison.IsOnGarrisonMap() then -- Garrisons don't count
@@ -3210,7 +2895,7 @@ function addon:histZoneKey()
   -- check if we're locked (using FindInstance so we don't complain about unsaved unknown instances)
   local truename = addon:FindInstance(instname, insttype == "raid")
   local locked = false
-  local inst = truename and vars.db.Instances[truename]
+  local inst = truename and addon.db.Instances[truename]
   inst = inst and inst[thisToon]
   for d=1,maxdiff do
     if inst and inst[d] and inst[d].Locked then
@@ -3230,20 +2915,20 @@ function addon:histZoneKey()
   end
   local key = thisToon..":"..instname..":"..insttype..":"..diff
   if not locked then
-    key = key..":"..vars.db.histGeneration
+    key = key..":"..addon.db.histGeneration
   end
   return key, desc, locked
 end
 
 function addon:HistoryUpdate(forcereset, forcemesg)
-  vars.db.histGeneration = vars.db.histGeneration or 1
+  addon.db.histGeneration = addon.db.histGeneration or 1
   if forcereset and addon:histZoneKey() then -- delay reset until we zone out
     debug("HistoryUpdate reset delayed")
     addon.delayedReset = true
   end
   if (forcereset or addon.delayedReset) and not addon:histZoneKey() then
     debug("HistoryUpdate generation advance")
-    vars.db.histGeneration = (vars.db.histGeneration + 1) % 100000
+    addon.db.histGeneration = (addon.db.histGeneration + 1) % 100000
     addon.delayedReset = false
   end
   local now = time()
@@ -3255,7 +2940,7 @@ function addon:HistoryUpdate(forcereset, forcemesg)
   local newzone, newdesc, locked = addon:histZoneKey()
   -- touch zone we left
   if addon.histLastZone then
-    local lz = vars.db.History[addon.histLastZone]
+    local lz = addon.db.History[addon.histLastZone]
     if lz then
       lz.last = now
     end
@@ -3266,12 +2951,12 @@ function addon:HistoryUpdate(forcereset, forcemesg)
   addon.histInGroup = addon:InGroup()
   -- touch/create new zone
   if newzone then
-    local nz = vars.db.History[newzone]
+    local nz = addon.db.History[newzone]
     if not nz then
       nz = { create = now, desc = newdesc }
-      vars.db.History[newzone] = nz
+      addon.db.History[newzone] = nz
       if locked then -- creating a locked instance, delete unlocked version
-        vars.db.History[newzone..":"..vars.db.histGeneration] = nil
+        addon.db.History[newzone..":"..addon.db.histGeneration] = nil
       end
     end
     nz.last = now
@@ -3279,11 +2964,11 @@ function addon:HistoryUpdate(forcereset, forcemesg)
   -- reap old zones
   local livecnt = 0
   local oldestkey, oldesttime
-  for zk, zi in pairs(vars.db.History) do
+  for zk, zi in pairs(addon.db.History) do
     if now > zi.last + addon.histReapTime or
       zi.last > (now + 3600) then -- temporary bug fix
       debug("Reaping %s",zi.desc)
-      vars.db.History[zk] = nil
+      addon.db.History[zk] = nil
     else
       livecnt = livecnt + 1
       if not oldesttime or zi.last < oldesttime then
@@ -3301,21 +2986,21 @@ function addon:HistoryUpdate(forcereset, forcemesg)
       addon.lasthistdbg = msg
       debug(msg)
     end
-    --debug(vars.db.History)
+    --debug(addon.db.History)
   end
   -- display update
 
-  if forcemesg or (vars.db.Tooltip.LimitWarn and zoningin and livecnt >= addon.histLimit-1) then
+  if forcemesg or (addon.db.Tooltip.LimitWarn and zoningin and livecnt >= addon.histLimit-1) then
     chatMsg(L["Warning: You've entered about %i instances recently and are approaching the %i instance per hour limit for your account. More instances should be available in %s."],livecnt, addon.histLimit, oldestremt)
   end
   addon.histLiveCount = livecnt
   addon.histOldest = oldestremt
   if db.Tooltip.HistoryText and livecnt > 0 then
-    vars.dataobject.text = "("..livecnt.."/"..(oldestremt or "?")..")"
+    addon.dataobject.text = "("..livecnt.."/"..(oldestremt or "?")..")"
     addon.histTextthrottle = math.min(oldestrem+1, addon.histTextthrottle or 15)
     addon.resetDetect:SetScript("OnUpdate", addon.histTextUpdate)
   else
-    vars.dataobject.text = addonAbbrev
+    addon.dataobject.text = addonAbbrev
     addon.resetDetect:SetScript("OnUpdate", nil)
   end
 end
@@ -3346,7 +3031,7 @@ end
 -- Lightweight refresh of just quest flag information
 -- all may be nil if not instantiataed
 function core:QuestRefresh(recoverdaily, questcomplete, nextreset, weeklyreset)
-  local tiq = vars.db.Toons[thisToon]
+  local tiq = addon.db.Toons[thisToon]
   tiq = tiq and tiq.Quests
   if not tiq then return end
   nextreset = nextreset or addon:GetNextDailyResetTime()
@@ -3411,7 +3096,10 @@ end
 function core:Refresh(recoverdaily)
   -- update entire database from the current character's perspective
   addon:UpdateInstanceData()
-  if not addon.instancesUpdated then addon.RefreshPending = true; return end -- wait for UpdateInstanceData to succeed
+  if not addon.instancesUpdated then
+    addon.RefreshPending = true
+    return
+  end -- wait for UpdateInstanceData to succeed
   local nextreset = addon:GetNextDailyResetTime()
   if not nextreset or ((nextreset - time()) > (24*3600 - 5*60)) then  -- allow 5 minutes for quest DB to update after daily rollover
     debug("Skipping core:Refresh() near daily reset")
@@ -3419,7 +3107,7 @@ function core:Refresh(recoverdaily)
     return
   end
   local temp = localarr("RefreshTemp")
-  for name, instance in pairs(vars.db.Instances) do -- clear current toons lockouts before refresh
+  for name, instance in pairs(addon.db.Instances) do -- clear current toons lockouts before refresh
     local id = instance.LFDID
     if instance[thisToon]
     -- disabled for ticket 178/195:
@@ -3459,7 +3147,7 @@ function core:Refresh(recoverdaily)
 
   local weeklyreset = addon:GetNextWeeklyResetTime()
   for id,_ in pairs(addon.LFRInstances) do
-    local numEncounters, numCompleted = GetLFGDungeonNumEncounters(id);
+    local numEncounters, numCompleted = GetLFGDungeonNumEncounters(id)
     if ( numCompleted and numCompleted > 0 and weeklyreset ) then
       local truename, instance = addon:LookupInstance(id, nil, true)
       instance[thisToon] = instance[thisToon] or temp[truename] or { }
@@ -3471,7 +3159,7 @@ function core:Refresh(recoverdaily)
       end
       info.ID = -1*numEncounters
       for i=1, numEncounters do
-        local bossName, texture, isKilled = GetLFGDungeonEncounterInfo(id, i);
+        local bossName, texture, isKilled = GetLFGDungeonEncounterInfo(id, i)
         info[i] = isKilled
       end
     end
@@ -3492,7 +3180,7 @@ function core:Refresh(recoverdaily)
       wbsave[einfo.savename or einfo.name]
       ) then
       local truename = einfo.name
-      local instance = vars.db.Instances[truename]
+      local instance = addon.db.Instances[truename]
       instance[thisToon] = instance[thisToon] or temp[truename] or { }
       local info = instance[thisToon][2] or {}
       wipe(info)
@@ -3504,13 +3192,14 @@ function core:Refresh(recoverdaily)
   end
 
   core:QuestRefresh(recoverdaily, questcomplete, nextreset, weeklyreset)
+  core:GetModule('Warfront'):UpdateQuest()
 
   local icnt, dcnt = 0,0
   for name, _ in pairs(temp) do
-    if vars.db.Instances[name][thisToon] then
-      for diff,info in pairs(vars.db.Instances[name][thisToon]) do
+    if addon.db.Instances[name][thisToon] then
+      for diff,info in pairs(addon.db.Instances[name][thisToon]) do
         if not info.ID then
-          vars.db.Instances[name][thisToon][diff] = nil
+          addon.db.Instances[name][thisToon][diff] = nil
           dcnt = dcnt + 1
         end
       end
@@ -3526,10 +3215,6 @@ end
 local function UpdateTooltip(self,elap)
   if not tooltip or not tooltip:IsShown() then return end
   if addon.firstupdate then
-    -- ticket 155: fix QTip backdrop which somehow gets corrupted sometimes, no idea why
-    tooltip:SetBackdrop(GameTooltip:GetBackdrop())
-    tooltip:SetBackdropColor(GameTooltip:GetBackdropColor());
-    tooltip:SetBackdropBorderColor(GameTooltip:GetBackdropBorderColor())
     addon:SkinFrame(tooltip, "SavedInstancesTooltip")
     addon.firstupdate = false
   end
@@ -3582,7 +3267,7 @@ do
       wipe(cnext_list)
       cnext_pos = 1
       for n,_ in pairs(t) do
-        local t = vars.db.Toons[n]
+        local t = addon.db.Toons[n]
         local tn, tr = n:match('^(.*) [-] (.*)$')
         if t and
           (t.Show ~= "never" or (n == thisToon and settings.SelfAlways))  and
@@ -3650,6 +3335,7 @@ do
     return cnext, t, nil
   end
 end
+addon.cpairs = cpairs
 
 function addon:IsDetached()
   return addon.detachframe and addon.detachframe:IsShown()
@@ -3675,17 +3361,23 @@ function addon:ShowDetached()
     f:EnableMouse(true)
     f:SetUserPlaced(true)
     f:SetAlpha(0.5)
-    if vars.db.Tooltip.posx and vars.db.Tooltip.posy then
-      f:SetPoint("TOPLEFT",vars.db.Tooltip.posx,-vars.db.Tooltip.posy)
+    if addon.db.Tooltip.posx and addon.db.Tooltip.posy then
+      f:SetPoint("TOPLEFT",addon.db.Tooltip.posx,-addon.db.Tooltip.posy)
     else
       f:SetPoint("CENTER")
     end
     f:SetScript("OnMouseDown", function() f:StartMoving() end)
-    f:SetScript("OnMouseUp", function() f:StopMovingOrSizing()
-      vars.db.Tooltip.posx = f:GetLeft()
-      vars.db.Tooltip.posy = UIParent:GetTop() - (f:GetTop()*f:GetScale())
+    f:SetScript("OnMouseUp", function()
+      f:StopMovingOrSizing()
+      addon.db.Tooltip.posx = f:GetLeft()
+      addon.db.Tooltip.posy = UIParent:GetTop() - (f:GetTop()*f:GetScale())
     end)
-    f:SetScript("OnHide", function() if tooltip then QTip:Release(tooltip); tooltip = nil end  end )
+    f:SetScript("OnHide", function()
+      if tooltip then
+        QTip:Release(tooltip)
+        tooltip = nil
+      end
+    end)
     f:SetScript("OnUpdate", function(self)
       if not tooltip then f:Hide(); return end
       local w,h = tooltip:GetSize()
@@ -3694,7 +3386,7 @@ function addon:ShowDetached()
     f:SetScript("OnKeyDown", function(self,key)
       if key == "ESCAPE" then
         f:SetPropagateKeyboardInput(false)
-        f:Hide();
+        f:Hide()
       end
     end)
     f:EnableKeyboard(true)
@@ -3797,13 +3489,13 @@ function core:ShowTooltip(anchorframe)
   local showall = ShowAll()
   if tooltip and tooltip:IsShown() and
     core.showall == showall and
-    core.scale == (addon.scaleCache[showall] or vars.db.Tooltip.Scale)
+    core.scale == (addon.scaleCache[showall] or addon.db.Tooltip.Scale)
   then
     return -- skip update
   end
   local starttime = debugprofilestop()
   core.showall = showall
-  local showexpired = showall or vars.db.Tooltip.ShowExpired
+  local showexpired = showall or addon.db.Tooltip.ShowExpired
   if tooltip then QTip:Release(tooltip) end
   tooltip = QTip:Acquire("SavedInstancesTooltip", 1, "LEFT")
   tooltip:SetCellMarginH(0)
@@ -3811,7 +3503,7 @@ function core:ShowTooltip(anchorframe)
   tooltip:SetScript("OnUpdate", UpdateTooltip)
   addon.firstupdate = true
   tooltip:Clear()
-  core.scale = addon.scaleCache[showall] or vars.db.Tooltip.Scale
+  core.scale = addon.scaleCache[showall] or addon.db.Tooltip.Scale
   tooltip:SetScale(core.scale)
   tooltip:SetHeaderFont(core:HeaderFont())
   addon:HistoryUpdate()
@@ -3822,7 +3514,7 @@ function core:ShowTooltip(anchorframe)
     headText = string.format("%s%s%s",GOLDFONT,addonName,FONTEND)
   end
   local headLine = tooltip:AddHeader(headText)
-  tooltip:SetCellScript(headLine, 1, "OnEnter", ShowAccountSummary )
+  tooltip:SetCellScript(headLine, 1, "OnEnter", hoverTooltip.ShowAccountSummary )
   tooltip:SetCellScript(headLine, 1, "OnLeave", CloseTooltips)
   addon:UpdateToonData()
   local columns = localarr("columns")
@@ -3831,30 +3523,30 @@ function core:ShowTooltip(anchorframe)
     columnCache[showall][toon] = false
   end
   -- allocating columns for characters
-  for toon, t in cpairs(vars.db.Toons) do
-    if vars.db.Toons[toon].Show == "always" or
-      (toon == thisToon and vars.db.Tooltip.SelfAlways) then
+  for toon, t in cpairs(addon.db.Toons) do
+    if addon.db.Toons[toon].Show == "always" or
+      (toon == thisToon and addon.db.Tooltip.SelfAlways) then
       addColumns(columns, toon, tooltip)
     end
   end
   -- determining how many instances will be displayed per category
   local categoryshown = localarr("categoryshown") -- remember if each category will be shown
   local instancesaved = localarr("instancesaved") -- remember if each instance has been saved or not (boolean)
-  local wbcons = vars.db.Tooltip.CombineWorldBosses
+  local wbcons = addon.db.Tooltip.CombineWorldBosses
   local worldbosses = wbcons and localarr("worldbosses")
   local wbalways = false
-  local lfrcons = vars.db.Tooltip.CombineLFR
+  local lfrcons = addon.db.Tooltip.CombineLFR
   local lfrbox = lfrcons and localarr("lfrbox")
   local lfrmap = lfrcons and localarr("lfrmap")
   for _, category in ipairs(addon:OrderedCategories()) do
     for _, instance in ipairs(addon:OrderedInstances(category)) do
-      local inst = vars.db.Instances[instance]
+      local inst = addon.db.Instances[instance]
       if inst.Show == "always" then
         categoryshown[category] = true
       end
       if inst.Show ~= "never" then
         if wbcons and inst.WorldBoss and inst.Expansion <= GetExpansionLevel() then
-          if vars.db.Tooltip.ReverseInstances then
+          if addon.db.Tooltip.ReverseInstances then
             table.insert(worldbosses, instance)
           else
             table.insert(worldbosses, 1, instance)
@@ -3870,7 +3562,7 @@ function core:ShowTooltip(anchorframe)
             lfrbox[lfrboxid] = true
           end
         end
-        for toon, t in cpairs(vars.db.Toons, true) do
+        for toon, t in cpairs(addon.db.Toons, true) do
           for diff = 1, maxdiff do
             if inst[toon] and inst[toon][diff] then
               if (inst[toon][diff].Expires > 0) then
@@ -3894,7 +3586,7 @@ function core:ShowTooltip(anchorframe)
   end
   local categories = 0
   -- determining how many categories have instances that will be shown
-  if vars.db.Tooltip.ShowCategories then
+  if addon.db.Tooltip.ShowCategories then
     for category, _ in pairs(categoryshown) do
       categories = categories + 1
     end
@@ -3911,23 +3603,23 @@ function core:ShowTooltip(anchorframe)
   end
   for _, category in ipairs(addon:OrderedCategories()) do
     if categoryshown[category] then
-      if not firstcategory and vars.db.Tooltip.CategorySpaces then
+      if not firstcategory and addon.db.Tooltip.CategorySpaces then
         addsep()
       end
-      if (categories > 1 or vars.db.Tooltip.ShowSoloCategory) and categoryshown[category] then
+      if (categories > 1 or addon.db.Tooltip.ShowSoloCategory) and categoryshown[category] then
         local line = tooltip:AddLine()
         categoryrow[category] = line
         blankrow[line] = true
       end
       for _, instance in ipairs(addon:OrderedInstances(category)) do
-        local inst = vars.db.Instances[instance]
+        local inst = addon.db.Instances[instance]
         if not (wbcons and inst.WorldBoss) and
           not (lfrcons and addon.LFRInstances[inst.LFDID]) then
           if inst.Show == "always" then
             instancerow[instance] = instancerow[instance] or tooltip:AddLine()
           end
           if inst.Show ~= "never" then
-            for toon, t in cpairs(vars.db.Toons, true) do
+            for toon, t in cpairs(addon.db.Toons, true) do
               for diff = 1, maxdiff do
                 if inst[toon] and inst[toon][diff] and (inst[toon][diff].Expires > 0 or showexpired) then
                   instancerow[instance] = instancerow[instance] or tooltip:AddLine()
@@ -3950,12 +3642,12 @@ function core:ShowTooltip(anchorframe)
   end
   -- now printing instance data
   for instance, row in pairs(instancerow) do
-    local inst = vars.db.Instances[instance]
+    local inst = addon.db.Instances[instance]
     tooltip:SetCell(row, 1, (instancesaved[instance] and GOLDFONT or GRAYFONT) .. instance .. FONTEND)
     if addon.LFRInstances[inst.LFDID] then
       tooltip:SetLineScript(row, "OnMouseDown", OpenLFR, inst.LFDID)
     end
-    for toon, t in cpairs(vars.db.Toons, true) do
+    for toon, t in cpairs(addon.db.Toons, true) do
       if inst[toon] then
         local showcol = localarr("showcol")
         local showcnt = 0
@@ -3978,7 +3670,7 @@ function core:ShowTooltip(anchorframe)
             local col = columns[toon..base]
             tooltip:SetCell(row, col,
               DifficultyString(instance, diff, toon, inst[toon][diff].Expires == 0), span)
-            tooltip:SetCellScript(row, col, "OnEnter", ShowIndicatorTooltip, {instance, toon, diff})
+            tooltip:SetCellScript(row, col, "OnEnter", hoverTooltip.ShowIndicatorTooltip, {instance, toon, diff})
             tooltip:SetCellScript(row, col, "OnLeave", CloseTooltips)
             if addon.LFRInstances[inst.LFDID] then
               tooltip:SetCellScript(row, col, "OnMouseDown", OpenLFR, inst.LFDID)
@@ -4007,32 +3699,41 @@ function core:ShowTooltip(anchorframe)
     end
     for boxname, line in pairs(lfrbox) do
       local boxtype, pinstance = boxname:match("^([^:]+): (.+)$")
-      local pinst = vars.db.Instances[pinstance]
+      local pinst = addon.db.Instances[pinstance]
       local boxid = pinst.LFDID
       local firstid
       local total = 0
+      local flag = false -- flag for LFRs that are different between two factions
+      local tbl, other = {}, {}
       for lfdid, lfrinfo in pairs(addon.LFRInstances) do
         if lfrinfo.parent == pinst.LFDID and lfrmap[lfdid] then
-          firstid = math.min(lfdid, firstid or lfdid)
-          total = total + lfrinfo.total
-          lfrmap[boxname..":"..lfrinfo.base] = lfrmap[lfdid]
+          if (not lfrinfo.faction) or (lfrinfo.faction == UnitFactionGroup("player")) then
+            firstid = math.min(lfdid, firstid or lfdid)
+          end
+          if lfrinfo.faction and lfrinfo.faction == "Horde" then
+            flag = true
+            other[lfrinfo.base] = lfrmap[lfdid]
+          else
+            -- count total bosses for only one faction
+            total = total + lfrinfo.total
+            tbl[lfrinfo.base] = lfrmap[lfdid]
+          end
         end
       end
       tooltip:SetCell(line, 1, (instancesaved[boxid] and GOLDFONT or GRAYFONT) .. boxname .. FONTEND)
       tooltip:SetLineScript(line, "OnMouseDown", OpenLFR, firstid)
-      for toon, t in cpairs(vars.db.Toons, true) do
+      for toon, t in cpairs(addon.db.Toons, true) do
         local saved = 0
         local diff = 2
-        for key, instance in pairs(lfrmap) do
-          if string.match(key,boxname..":%d+$") then
-            saved = saved + addon:instanceBosses(instance, toon, diff)
-          end
+        local curr = (flag and t.Faction == "Horde") and other or tbl
+        for key, instance in pairs(curr) do
+          saved = saved + addon:instanceBosses(instance, toon, diff)
         end
         if saved > 0 then
           addColumns(columns, toon, tooltip)
           local col = columns[toon..1]
           tooltip:SetCell(line, col, DifficultyString(pinstance, diff, toon, false, saved, total),4)
-          tooltip:SetCellScript(line, col, "OnEnter", ShowLFRTooltip, {boxname, toon, lfrmap})
+          tooltip:SetCellScript(line, col, "OnEnter", hoverTooltip.ShowLFRTooltip, {boxname, toon, curr})
           tooltip:SetCellScript(line, col, "OnLeave", CloseTooltips)
         end
       end
@@ -4041,15 +3742,15 @@ function core:ShowTooltip(anchorframe)
 
   -- combined world bosses
   if wbcons and next(worldbosses) and (wbalways or instancesaved[L["World Bosses"]]) then
-    if not firstcategory and vars.db.Tooltip.CategorySpaces then
+    if not firstcategory and addon.db.Tooltip.CategorySpaces then
       addsep()
     end
     local line = tooltip:AddLine((instancesaved[L["World Bosses"]] and YELLOWFONT or GRAYFONT) .. L["World Bosses"] .. FONTEND)
-    for toon, t in cpairs(vars.db.Toons, true) do
+    for toon, t in cpairs(addon.db.Toons, true) do
       local saved = 0
       local diff = 2
       for _, instance in ipairs(worldbosses) do
-        local inst = vars.db.Instances[instance]
+        local inst = addon.db.Instances[instance]
         if inst[toon] and inst[toon][diff] and inst[toon][diff].Expires > 0 then
           saved = saved + 1
         end
@@ -4058,7 +3759,7 @@ function core:ShowTooltip(anchorframe)
         addColumns(columns, toon, tooltip)
         local col = columns[toon..1]
         tooltip:SetCell(line, col, DifficultyString(worldbosses[1], diff, toon, false, saved, #worldbosses),4)
-        tooltip:SetCellScript(line, col, "OnEnter", ShowWorldBossTooltip, {worldbosses, toon, saved})
+        tooltip:SetCellScript(line, col, "OnEnter", hoverTooltip.ShowWorldBossTooltip, {worldbosses, toon, saved})
         tooltip:SetCellScript(line, col, "OnLeave", CloseTooltips)
       end
     end
@@ -4066,17 +3767,17 @@ function core:ShowTooltip(anchorframe)
 
   local holidayinst = localarr("holidayinst")
   local firstlfd = true
-  for instance, info in pairs(vars.db.Instances) do
+  for instance, info in pairs(addon.db.Instances) do
     if showall or
-      (info.Holiday and vars.db.Tooltip.ShowHoliday) or
-      (info.Random and vars.db.Tooltip.ShowRandom) then
-      for toon, t in cpairs(vars.db.Toons, true) do
+      (info.Holiday and addon.db.Tooltip.ShowHoliday) or
+      (info.Random and addon.db.Tooltip.ShowRandom) then
+      for toon, t in cpairs(addon.db.Toons, true) do
         local d = info[toon] and info[toon][1]
         if d then
           addColumns(columns, toon, tooltip)
           local row = holidayinst[instance]
           if not row then
-            if not firstcategory and vars.db.Tooltip.CategorySpaces and firstlfd then
+            if not firstcategory and addon.db.Tooltip.CategorySpaces and firstlfd then
               addsep()
               firstlfd = false
             end
@@ -4096,9 +3797,9 @@ function core:ShowTooltip(anchorframe)
   end
 
   -- random dungeon
-  if vars.db.Tooltip.TrackLFG or showall then
+  if addon.db.Tooltip.TrackLFG or showall then
     local cd1,cd2 = false,false
-    for toon, t in cpairs(vars.db.Toons, true) do
+    for toon, t in cpairs(addon.db.Toons, true) do
       cd2 = cd2 or t.LFG2
       cd1 = cd1 or (t.LFG1 and (not t.LFG2 or showall))
       if t.LFG1 or t.LFG2 then
@@ -4107,7 +3808,7 @@ function core:ShowTooltip(anchorframe)
     end
     local randomLine
     if cd1 or cd2 then
-      if not firstcategory and vars.db.Tooltip.CategorySpaces and firstlfd then
+      if not firstcategory and addon.db.Tooltip.CategorySpaces and firstlfd then
         addsep()
         firstlfd = false
       end
@@ -4115,115 +3816,134 @@ function core:ShowTooltip(anchorframe)
       cd1 = cd1 and tooltip:AddLine(YELLOWFONT .. LFG_TYPE_RANDOM_DUNGEON..cooldown .. FONTEND)
       cd2 = cd2 and tooltip:AddLine(YELLOWFONT .. GetSpellInfo(71041) .. FONTEND)
     end
-    for toon, t in cpairs(vars.db.Toons, true) do
+    for toon, t in cpairs(addon.db.Toons, true) do
       local d1 = (t.LFG1 and t.LFG1 - time()) or -1
       local d2 = (t.LFG2 and t.LFG2 - time()) or -1
       if d1 > 0 and (d2 < 0 or showall) then
         local col = columns[toon..1]
         local tstr = SecondsToTime(d1, false, false, 1)
         tooltip:SetCell(cd1, col, ClassColorise(t.Class,tstr), "CENTER",maxcol)
-        tooltip:SetCellScript(cd1, col, "OnEnter", ShowSpellIDTooltip, {toon,-1,tstr})
+        tooltip:SetCellScript(cd1, col, "OnEnter", hoverTooltip.ShowSpellIDTooltip, {toon,-1,tstr})
         tooltip:SetCellScript(cd1, col, "OnLeave", CloseTooltips)
       end
       if d2 > 0 then
         local col = columns[toon..1]
         local tstr = SecondsToTime(d2, false, false, 1)
         tooltip:SetCell(cd2, col, ClassColorise(t.Class,tstr), "CENTER",maxcol)
-        tooltip:SetCellScript(cd2, col, "OnEnter", ShowSpellIDTooltip, {toon,71041,tstr})
+        tooltip:SetCellScript(cd2, col, "OnEnter", hoverTooltip.ShowSpellIDTooltip, {toon,71041,tstr})
         tooltip:SetCellScript(cd2, col, "OnLeave", CloseTooltips)
       end
     end
   end
-  if vars.db.Tooltip.TrackDeserter or showall then
+  if addon.db.Tooltip.TrackDeserter or showall then
     local show = false
-    for toon, t in cpairs(vars.db.Toons, true) do
+    for toon, t in cpairs(addon.db.Toons, true) do
       if t.pvpdesert then
         show = true
         addColumns(columns, toon, tooltip)
       end
     end
     if show then
-      if not firstcategory and vars.db.Tooltip.CategorySpaces and firstlfd then
+      if not firstcategory and addon.db.Tooltip.CategorySpaces and firstlfd then
         addsep()
         firstlfd = false
       end
       show = tooltip:AddLine(YELLOWFONT .. DESERTER .. FONTEND)
     end
-    for toon, t in cpairs(vars.db.Toons, true) do
+    for toon, t in cpairs(addon.db.Toons, true) do
       if t.pvpdesert and time() < t.pvpdesert then
         local col = columns[toon..1]
         local tstr = SecondsToTime(t.pvpdesert - time(), false, false, 1)
         tooltip:SetCell(show, col, ClassColorise(t.Class,tstr), "CENTER",maxcol)
-        tooltip:SetCellScript(show, col, "OnEnter", ShowSpellIDTooltip, {toon,26013,tstr})
+        tooltip:SetCellScript(show, col, "OnEnter", hoverTooltip.ShowSpellIDTooltip, {toon,26013,tstr})
         tooltip:SetCellScript(show, col, "OnLeave", CloseTooltips)
       end
     end
   end
 
   do
+    UpdateEventInfo() -- fetch current event info before rendering
     local showd, showw
-    for toon, t in cpairs(vars.db.Toons, true) do
+    for toon, t in cpairs(addon.db.Toons, true) do
       local dc, wc = addon:QuestCount(toon)
-      if dc > 0 and (vars.db.Tooltip.TrackDailyQuests or showall) then
+      if dc > 0 and (addon.db.Tooltip.TrackDailyQuests or showall) then
         showd = true
         addColumns(columns, toon, tooltip)
       end
-      if wc > 0 and (vars.db.Tooltip.TrackWeeklyQuests or showall) then
+      if wc > 0 and (addon.db.Tooltip.TrackWeeklyQuests or showall) then
         showw = true
         addColumns(columns, toon, tooltip)
       end
     end
     local adc, awc = addon:QuestCount(nil)
-    if adc > 0 and (vars.db.Tooltip.TrackDailyQuests or showall) then showd = true end
-    if awc > 0 and (vars.db.Tooltip.TrackWeeklyQuests or showall) then showw = true end
-    if not firstcategory and vars.db.Tooltip.CategorySpaces and (showd or showw) then
+    if adc > 0 and (addon.db.Tooltip.TrackDailyQuests or showall) then showd = true end
+    if awc > 0 and (addon.db.Tooltip.TrackWeeklyQuests or showall) then showw = true end
+    if not firstcategory and addon.db.Tooltip.CategorySpaces and (showd or showw) then
       addsep()
     end
     if showd then
       showd = tooltip:AddLine(YELLOWFONT .. L["Daily Quests"] .. (adc > 0 and " ("..adc..")" or "") .. FONTEND)
       if adc > 0 then
-        tooltip:SetCellScript(showd, 1, "OnEnter", ShowQuestTooltip, {nil,adc,true})
+        tooltip:SetCellScript(showd, 1, "OnEnter", hoverTooltip.ShowQuestTooltip, {nil,adc,true})
         tooltip:SetCellScript(showd, 1, "OnLeave", CloseTooltips)
       end
     end
     if showw then
       showw = tooltip:AddLine(YELLOWFONT .. L["Weekly Quests"] .. (awc > 0 and " ("..awc..")" or "") .. FONTEND)
       if awc > 0 then
-        tooltip:SetCellScript(showw, 1, "OnEnter", ShowQuestTooltip, {nil,awc,false})
+        tooltip:SetCellScript(showw, 1, "OnEnter", hoverTooltip.ShowQuestTooltip, {nil,awc,false})
         tooltip:SetCellScript(showw, 1, "OnLeave", CloseTooltips)
       end
     end
-    for toon, t in cpairs(vars.db.Toons, true) do
+    for toon, t in cpairs(addon.db.Toons, true) do
       local dc, wc = addon:QuestCount(toon)
       local col = columns[toon..1]
       if showd and col and dc > 0 then
         tooltip:SetCell(showd, col, ClassColorise(t.Class,dc), "CENTER",maxcol)
-        tooltip:SetCellScript(showd, col, "OnEnter", ShowQuestTooltip, {toon,dc,true})
+        tooltip:SetCellScript(showd, col, "OnEnter", hoverTooltip.ShowQuestTooltip, {toon,dc,true})
         tooltip:SetCellScript(showd, col, "OnLeave", CloseTooltips)
       end
       if showw and col and wc > 0 then
         tooltip:SetCell(showw, col, ClassColorise(t.Class,wc), "CENTER",maxcol)
-        tooltip:SetCellScript(showw, col, "OnEnter", ShowQuestTooltip, {toon,wc,false})
+        tooltip:SetCellScript(showw, col, "OnEnter", hoverTooltip.ShowQuestTooltip, {toon,wc,false})
         tooltip:SetCellScript(showw, col, "OnLeave", CloseTooltips)
       end
     end
   end
 
-  if vars.db.Tooltip.TrackSkills or showall then
+  core:GetModule("Progress"):ShowTooltip(tooltip, columns, showall, function()
+    if not firstcategory and addon.db.Tooltip.CategorySpaces then
+      addsep()
+    end
+    if addon.db.Tooltip.ShowCategories then
+      tooltip:AddLine(YELLOWFONT .. L["Quest progresses"] .. FONTEND)
+    end
+  end)
+
+  core:GetModule("Warfront"):ShowTooltip(tooltip, columns, showall, function()
+    if not firstcategory and addon.db.Tooltip.CategorySpaces then
+      addsep()
+    end
+    if addon.db.Tooltip.ShowCategories then
+      tooltip:AddLine(YELLOWFONT .. L["Warfronts"] .. FONTEND)
+    end
+  end)
+
+  if addon.db.Tooltip.TrackSkills or showall then
     local show = false
-    for toon, t in cpairs(vars.db.Toons, true) do
+    for toon, t in cpairs(addon.db.Toons, true) do
       if t.Skills and next(t.Skills) then
         show = true
         addColumns(columns, toon, tooltip)
       end
     end
     if show then
-      if not firstcategory and vars.db.Tooltip.CategorySpaces then
+      if not firstcategory and addon.db.Tooltip.CategorySpaces then
         addsep()
       end
       show = tooltip:AddLine(YELLOWFONT .. L["Trade Skill Cooldowns"] .. FONTEND)
     end
-    for toon, t in cpairs(vars.db.Toons, true) do
+    for toon, t in cpairs(addon.db.Toons, true) do
       local cnt = 0
       if t.Skills then
         for _ in pairs(t.Skills) do cnt = cnt + 1 end
@@ -4231,15 +3951,15 @@ function core:ShowTooltip(anchorframe)
       if cnt > 0 then
         local col = columns[toon..1]
         tooltip:SetCell(show, col, ClassColorise(t.Class,cnt), "CENTER",maxcol)
-        tooltip:SetCellScript(show, col, "OnEnter", ShowSkillTooltip, {toon, cnt})
+        tooltip:SetCellScript(show, col, "OnEnter", hoverTooltip.ShowSkillTooltip, {toon, cnt})
         tooltip:SetCellScript(show, col, "OnLeave", CloseTooltips)
       end
     end
   end
 
-  if vars.db.Tooltip.MythicKey or showall then
+  if addon.db.Tooltip.MythicKey or showall then
     local show = false
-    for toon, t in cpairs(vars.db.Toons, true) do
+    for toon, t in cpairs(addon.db.Toons, true) do
       if t.MythicKey then
         if t.MythicKey.link then
           show = true
@@ -4248,34 +3968,37 @@ function core:ShowTooltip(anchorframe)
       end
     end
     if show then
-      if not firstcategory and vars.db.Tooltip.CategorySpaces then
+      if not firstcategory and addon.db.Tooltip.CategorySpaces then
         addsep()
       end
       show = tooltip:AddLine(YELLOWFONT .. L["Mythic Keystone"] .. FONTEND)
     end
-    for toon, t in cpairs(vars.db.Toons, true) do
+    for toon, t in cpairs(addon.db.Toons, true) do
       if t.MythicKey then
         if t.MythicKey.link then
           local col = columns[toon..1]
-          if vars.db.Tooltip.AbbreviateKeystone then
-            if t.MythicKey.abbrev then
-              tooltip:SetCell(show, col, "|c"..t.MythicKey.color..t.MythicKey.abbrev.." ("..t.MythicKey.level..")"..FONTEND, "CENTER",maxcol)
+          local name
+          if addon.db.Tooltip.AbbreviateKeystone then
+            if t.MythicKey.mapID then
+              name = addon.KeystoneAbbrev[t.MythicKey.mapID] or t.MythicKey.name
             else
-              local kabbrev = KeystonetoAbbrev[t.MythicKey.link] or t.MythicKey.link
-              tooltip:SetCell(show, col, "|c"..t.MythicKey.color..kabbrev.." ("..t.MythicKey.level..")"..FONTEND, "CENTER",maxcol)
+              -- TODO: this is fallback to previous version, remove this in future
+              name = t.MythicKey.abbrev or t.MythicKey.name or t.MythicKey.link
             end
           else
-          tooltip:SetCell(show, col, "|c"..t.MythicKey.color..t.MythicKey.link.." ("..t.MythicKey.level..")"..FONTEND, "CENTER",maxcol)
+            -- TODO: this is fallback to previous version, remove this in future
+            name = t.MythicKey.name or t.MythicKey.link
           end
+          tooltip:SetCell(show, col, "|c" .. t.MythicKey.color .. name .. " (" .. t.MythicKey.level .. ")" .. FONTEND, "CENTER", maxcol)
           tooltip:SetCellScript(show, col, "OnMouseDown", ChatLink, t.MythicKey.link)
         end
       end
     end
   end
 
-  if vars.db.Tooltip.MythicKeyBest or showall then
+  if addon.db.Tooltip.MythicKeyBest or showall then
     local show = false
-    for toon, t in cpairs(vars.db.Toons, true) do
+    for toon, t in cpairs(addon.db.Toons, true) do
       if t.MythicKeyBest then
         if t.MythicKeyBest.level and t.MythicKeyBest.level > 0 then
           show = true
@@ -4288,12 +4011,12 @@ function core:ShowTooltip(anchorframe)
       end
     end
     if show then
-      if not firstcategory and vars.db.Tooltip.CategorySpaces then
+      if not firstcategory and addon.db.Tooltip.CategorySpaces then
         addsep()
       end
       show = tooltip:AddLine(YELLOWFONT .. L["Mythic Key Best"] .. FONTEND)
     end
-    for toon, t in cpairs(vars.db.Toons, true) do
+    for toon, t in cpairs(addon.db.Toons, true) do
       if t.MythicKeyBest then
         local keydesc = ""
         if t.MythicKeyBest.level and t.MythicKeyBest.level > 0 then
@@ -4317,44 +4040,121 @@ function core:ShowTooltip(anchorframe)
     end
   end
 
-  if vars.db.Tooltip.DailyWorldQuest or showall then
-    local show = {}
-    for toon, t in cpairs(vars.db.Toons, true) do
-      if t.DailyWorldQuest then
-        for day,DailyInfo in pairs(t.DailyWorldQuest) do
-          if DailyInfo.name then
-            if(not show[DailyInfo.dayleft] or show[DailyInfo.dayleft] == L["Emissary Missing"]) then
-              show[DailyInfo.dayleft] = DailyInfo.name
+  local firstEmissary, expansionLevel = true
+  for expansionLevel, _ in pairs(addon.Emissaries) do
+    if addon.db.Tooltip["Emissary" .. expansionLevel] or showall then
+      local day, tbl, show
+      for toon, t in cpairs(addon.db.Toons, true) do
+        if t.Emissary and t.Emissary[expansionLevel] and t.Emissary[expansionLevel].unlocked then
+          for day, tbl in pairs(t.Emissary[expansionLevel].days) do
+            if showall or addon.db.Tooltip.EmissaryShowCompleted == true or tbl.isComplete == false then
+              if not show then show = {} end
+              if not show[day] then show[day] = {} end
+              if not show[day][1] then
+                show[day][1] = t.Faction
+              elseif show[day][1] ~= t.Faction then
+                show[day][2] = t.Faction
+              end
             end
-            addColumns(columns, toon, tooltip)
           end
+          addColumns(columns, toon, tooltip)
         end
       end
-    end
 
-	if not firstcategory and vars.db.Tooltip.CategorySpaces then
-          addsep()
-	end
-	if vars.db.Tooltip.ShowCategories then
-		tooltip:AddLine(YELLOWFONT .. L["Emissary Quests"] .. FONTEND)
-	end
-    for dayleft = 0 , 2 do
-      if show[dayleft] then
-        local showday = show[dayleft]
-			show[dayleft] = tooltip:AddLine(GOLDFONT .. showday .. " (+" .. dayleft .. " " .. L["Day"] .. ")" .. FONTEND)
-      end
-    end
-    for toon, t in cpairs(vars.db.Toons, true) do
-      if t.DailyWorldQuest then
-        for day,DailyInfo in pairs(t.DailyWorldQuest) do
-          if show[DailyInfo.dayleft] then
-            local col = columns[toon..1]
-            if DailyInfo.iscompleted == true then
-              tooltip:SetCell(show[DailyInfo.dayleft], col, "\124T"..READY_CHECK_READY_TEXTURE..":0|t", "CENTER", maxcol)
-            elseif DailyInfo.isfinish == true then
-              tooltip:SetCell(show[DailyInfo.dayleft], col, "\124T"..READY_CHECK_WAITING_TEXTURE..":0|t", "CENTER", maxcol)
-            else
-              tooltip:SetCell(show[DailyInfo.dayleft], col, DailyInfo.questdone .. "/" .. DailyInfo.questneed , "CENTER",maxcol)
+      if show then
+        if firstEmissary == true then
+          if not firstcategory and addon.db.Tooltip.CategorySpaces then
+            addsep()
+          end
+          if addon.db.Tooltip.ShowCategories then
+            tooltip:AddLine(YELLOWFONT .. L["Emissary Quests"] .. FONTEND)
+          end
+          firstEmissary = false
+        end
+
+        if addon.db.Tooltip.CombineEmissary then
+          local line = tooltip:AddLine(GOLDFONT .. _G["EXPANSION_NAME" .. expansionLevel] .. FONTEND)
+          tooltip:SetCellScript(line, 1, "OnEnter", hoverTooltip.ShowEmissarySummary, {expansionLevel, {1, 2, 3}})
+          tooltip:SetCellScript(line, 1, "OnLeave", CloseTooltips)
+          for toon, t in cpairs(addon.db.Toons, true) do
+            if t.Emissary and t.Emissary[expansionLevel] and t.Emissary[expansionLevel].unlocked then
+              for day = 1, 3 do
+                tbl = t.Emissary[expansionLevel].days[day]
+                if tbl then
+                  local col, text = columns[toon..day]
+                  if tbl.isComplete == true then
+                    text = "\124T"..READY_CHECK_READY_TEXTURE..":0|t"
+                  elseif tbl.isFinish == true then
+                    text = "\124T"..READY_CHECK_WAITING_TEXTURE..":0|t"
+                  else
+                    text = tbl.questDone
+                    if (
+                      addon.db.Emissary.Expansion[expansionLevel][day] and
+                      addon.db.Emissary.Expansion[expansionLevel][day].questNeed
+                    ) then
+                      text = text .. "/" .. addon.db.Emissary.Expansion[expansionLevel][day].questNeed
+                    end
+                  end
+                  tooltip:SetCell(line, col, text, "CENTER", 1)
+                  tooltip:SetCellScript(line, col, "OnEnter", hoverTooltip.ShowEmissaryTooltip, {expansionLevel, day, toon})
+                  tooltip:SetCellScript(line, col, "OnLeave", CloseTooltips)
+                end
+              end
+            end
+          end
+        else
+          for day = 1, 3 do
+            if show[day] and show[day][1] then
+              local name = ""
+              if not addon.db.Emissary.Expansion[expansionLevel][day] then
+                name = L["Emissary Missing"]
+              else
+                local length, tbl = 0, addon.db.Emissary.Expansion[expansionLevel][day].questID
+                if addon.db.Emissary.Cache[tbl[show[day][1]]] then
+                  name = addon.db.Emissary.Cache[tbl[show[day][1]]]
+                  length = length + 1
+                end
+                if (length == 0 or addon.db.Tooltip.EmissaryFullName) and show[day][2] then
+                  if tbl[show[day][1]] ~= tbl[show[day][2]] and addon.db.Emissary.Cache[tbl[show[day][2]]] then
+                    if length > 0 then
+                      name = name .. " / "
+                    end
+                    name = name .. addon.db.Emissary.Cache[tbl[show[day][2]]]
+                    length = length + 1
+                  end
+                end
+                if length == 0 then
+                  name = L["Emissary Missing"]
+                end
+              end
+              local line = tooltip:AddLine(GOLDFONT .. name .. " (+" .. (day - 1) .. " " .. L["Day"] .. ")" .. FONTEND)
+              tooltip:SetCellScript(line, 1, "OnEnter", hoverTooltip.ShowEmissarySummary, {expansionLevel, {day}})
+              tooltip:SetCellScript(line, 1, "OnLeave", CloseTooltips)
+
+              for toon, t in cpairs(addon.db.Toons, true) do
+                if t.Emissary and t.Emissary[expansionLevel] and t.Emissary[expansionLevel].unlocked then
+                  tbl = t.Emissary[expansionLevel].days[day]
+                  if tbl then
+                    local col, text = columns[toon..1]
+                    if tbl.isComplete == true then
+                      text = "\124T"..READY_CHECK_READY_TEXTURE..":0|t"
+                    elseif tbl.isFinish == true then
+                      text = "\124T"..READY_CHECK_WAITING_TEXTURE..":0|t"
+                    else
+                      text = tbl.questDone
+                      if (
+                        addon.db.Emissary.Expansion[expansionLevel][day] and
+                        addon.db.Emissary.Expansion[expansionLevel][day].questNeed
+                      ) then
+                        text = text .. "/" .. addon.db.Emissary.Expansion[expansionLevel][day].questNeed
+                      end
+                    end
+                    tooltip:SetCell(line, col, text, "CENTER", maxcol)
+                    tooltip:SetCellScript(line, col, "OnEnter", hoverTooltip.ShowEmissaryTooltip, {expansionLevel, day, toon})
+                    tooltip:SetCellScript(line, col, "OnLeave", CloseTooltips)
+                  end
+                end
+              end
             end
           end
         end
@@ -4362,64 +4162,54 @@ function core:ShowTooltip(anchorframe)
     end
   end
 
-  if vars.db.Tooltip.TrackFarm or showall then
-    local toonfarm = localarr("toonfarm")
+  if addon.db.Tooltip.TrackParagon or showall then
     local show
-    for toon, t in cpairs(vars.db.Toons, true) do
-      if (t.FarmPlanted or 0) > 0 or (t.FarmHarvested or 0) > 0 or
-        (t.FarmCropReady and next(t.FarmCropReady)) then
-        toonfarm[toon] = (t.FarmHarvested or 0).."/"..(t.FarmPlanted or 0)
+    for toon, t in cpairs(addon.db.Toons, true) do
+      if t.Paragon and #t.Paragon > 0 then
         show = true
         addColumns(columns, toon, tooltip)
       end
     end
     if show then
-      if not firstcategory and vars.db.Tooltip.CategorySpaces then
+      if not firstcategory and addon.db.Tooltip.CategorySpaces then
         addsep()
       end
-      show = tooltip:AddLine(YELLOWFONT .. L["Farm Crops"] .. FONTEND)
-    end
-    for toon, t in cpairs(vars.db.Toons, true) do
-      if toonfarm[toon] then
-        local col = columns[toon..1]
-        tooltip:SetCell(show, col, ClassColorise(t.Class,toonfarm[toon]), "CENTER",maxcol)
-        tooltip:SetCellScript(show, col, "OnEnter", ShowFarmTooltip, toon)
-        tooltip:SetCellScript(show, col, "OnLeave", CloseTooltips)
+      show = tooltip:AddLine(YELLOWFONT .. L["Paragon Chests"] .. FONTEND)
+      for toon, t in cpairs(addon.db.Toons, true) do
+        if t.Paragon and #t.Paragon > 0 then
+          local col = columns[toon..1]
+          tooltip:SetCell(show, col, #t.Paragon, "CENTER", maxcol)
+          tooltip:SetCellScript(show, col, "OnEnter", hoverTooltip.ShowParagonTooltip, toon)
+          tooltip:SetCellScript(show, col, "OnLeave", CloseTooltips)
+        end
       end
     end
   end
 
-  if vars.db.Tooltip.TrackBonus or showall then
+  if addon.db.Tooltip.TrackBonus or showall then
     local show
     local toonbonus = localarr("toonbonus")
-    for toon, t in cpairs(vars.db.Toons, true) do
-      if t.BonusRoll and t.BonusRoll[1] then
-        local gold = 0
-        for _,roll in ipairs(t.BonusRoll) do
-          if roll.money then
-            gold = gold + 1
-          else
-            break
-          end
-        end
-        toonbonus[toon] = gold
+    for toon, t in cpairs(addon.db.Toons, true) do
+      local count = addon:BonusRollCount(toon)
+      if count then
+        toonbonus[toon] = count
         show = true
         addColumns(columns, toon, tooltip)
       end
     end
     if show then
-      if not firstcategory and vars.db.Tooltip.CategorySpaces then
+      if not firstcategory and addon.db.Tooltip.CategorySpaces then
         addsep()
       end
       show = tooltip:AddLine(YELLOWFONT .. L["Roll Bonus"] .. FONTEND)
     end
-    for toon, t in cpairs(vars.db.Toons, true) do
+    for toon, t in cpairs(addon.db.Toons, true) do
       if toonbonus[toon] then
         local col = columns[toon..1]
         local str = toonbonus[toon]
         if str > 0 then str = "+"..str end
         tooltip:SetCell(show, col, ClassColorise(t.Class,str), "CENTER",maxcol)
-        tooltip:SetCellScript(show, col, "OnEnter", ShowBonusTooltip, toon)
+        tooltip:SetCellScript(show, col, "OnEnter", hoverTooltip.ShowBonusTooltip, toon)
         tooltip:SetCellScript(show, col, "OnLeave", CloseTooltips)
       end
     end
@@ -4427,10 +4217,10 @@ function core:ShowTooltip(anchorframe)
 
   local firstcurrency = true
   for _,idx in ipairs(currency) do
-    local setting = vars.db.Tooltip["Currency"..idx]
+    local setting = addon.db.Tooltip["Currency"..idx]
     if setting or showall then
       local show
-      for toon, t in cpairs(vars.db.Toons, true) do
+      for toon, t in cpairs(addon.db.Toons, true) do
         -- ci.name, ci.amount, ci.earnedThisWeek, ci.weeklyMax, ci.totalMax
         local ci = t.currency and t.currency[idx]
         local gotsome
@@ -4449,22 +4239,22 @@ function core:ShowTooltip(anchorframe)
       end
       local currLine
       if show then
-        if not firstcategory and vars.db.Tooltip.CategorySpaces and firstcurrency then
+        if not firstcategory and addon.db.Tooltip.CategorySpaces and firstcurrency then
           addsep()
           firstcurrency = false
         end
         currLine = tooltip:AddLine(YELLOWFONT .. show .. FONTEND)
         tooltip:SetLineScript(currLine, "OnMouseDown", OpenCurrency)
-        tooltip:SetCellScript(currLine, 1, "OnEnter", ShowCurrencySummary, idx)
+        tooltip:SetCellScript(currLine, 1, "OnEnter", hoverTooltip.ShowCurrencySummary, idx)
         tooltip:SetCellScript(currLine, 1, "OnLeave", CloseTooltips)
         tooltip:SetCellScript(currLine, 1, "OnMouseDown", OpenCurrency)
 
-        for toon, t in cpairs(vars.db.Toons, true) do
+        for toon, t in cpairs(addon.db.Toons, true) do
           local ci = t.currency and t.currency[idx]
           local col = columns[toon..1]
           if ci and col then
             local earned, weeklymax, totalmax = "","",""
-            if vars.db.Tooltip.CurrencyMax then
+            if addon.db.Tooltip.CurrencyMax then
               if (ci.weeklyMax or 0) > 0 then
                 weeklymax = "/"..addon:formatNumber(ci.weeklyMax)
               end
@@ -4472,7 +4262,7 @@ function core:ShowTooltip(anchorframe)
                 totalmax = "/"..addon:formatNumber(ci.totalMax)
               end
             end
-            if vars.db.Tooltip.CurrencyEarned or showall then
+            if addon.db.Tooltip.CurrencyEarned or showall then
               earned = CurrencyColor(ci.amount,ci.totalMax)..totalmax
             end
             local str
@@ -4484,11 +4274,11 @@ function core:ShowTooltip(anchorframe)
               end
             end
             if str then
-              if not vars.db.Tooltip.CurrencyValueColor then
+              if not addon.db.Tooltip.CurrencyValueColor then
                 str = ClassColorise(t.Class,str)
               end
               tooltip:SetCell(currLine, col, str, "CENTER",maxcol)
-              tooltip:SetCellScript(currLine, col, "OnEnter", ShowCurrencyTooltip, {toon, idx, ci})
+              tooltip:SetCellScript(currLine, col, "OnEnter", hoverTooltip.ShowCurrencyTooltip, {toon, idx, ci})
               tooltip:SetCellScript(currLine, col, "OnLeave", CloseTooltips)
               tooltip:SetCellScript(currLine, col, "OnMouseDown", OpenCurrency)
             end
@@ -4508,17 +4298,17 @@ function core:ShowTooltip(anchorframe)
       if db.Tooltip.ShowServer then
         toonstr = toonstr .. "\n" .. toonserver
       end
-      tooltip:SetCell(headLine, col, ClassColorise(vars.db.Toons[toon].Class, toonstr),
+      tooltip:SetCell(headLine, col, ClassColorise(addon.db.Toons[toon].Class, toonstr),
         tooltip:GetHeaderFont(), "CENTER", maxcol)
-      tooltip:SetCellScript(headLine, col, "OnEnter", ShowToonTooltip, toon)
+      tooltip:SetCellScript(headLine, col, "OnEnter", hoverTooltip.ShowToonTooltip, toon)
       tooltip:SetCellScript(headLine, col, "OnLeave", CloseTooltips)
     end
   end
   -- we now know enough to put in the category names where necessary
-  if vars.db.Tooltip.ShowCategories then
+  if addon.db.Tooltip.ShowCategories then
     for category, row in pairs(categoryrow) do
-      if (categories > 1 or vars.db.Tooltip.ShowSoloCategory) and categoryshown[category] then
-        tooltip:SetCell(row, 1, YELLOWFONT .. vars.Categories[category] .. FONTEND, "LEFT", tooltip:GetColumnCount())
+      if (categories > 1 or addon.db.Tooltip.ShowSoloCategory) and categoryshown[category] then
+        tooltip:SetCell(row, 1, YELLOWFONT .. addon.Categories[category] .. FONTEND, "LEFT", tooltip:GetColumnCount())
       end
     end
   end
@@ -4542,7 +4332,7 @@ function core:ShowTooltip(anchorframe)
     local noneLine = tooltip:AddLine()
     tooltip:SetCell(noneLine, 1, GRAYFONT .. NO_RAID_INSTANCES_SAVED .. FONTEND, "LEFT", tooltip:GetColumnCount())
   end
-  if vars.db.Tooltip.ShowHints then
+  if addon.db.Tooltip.ShowHints then
     tooltip:AddSeparator(8,0,0,0,0)
     local hintLine, hintCol
     if not addon:IsDetached() then
@@ -4610,8 +4400,8 @@ function core:ShowTooltip(anchorframe)
       local scale = tooltip:GetScale()
       local w,h = tooltip:GetSize()
       local sw,sh = UIParent:GetSize()
-      w = w*scale;
-      h = h*scale;
+      w = w*scale
+      h = h*scale
       if w > sw or h > sh then
         scale = scale / math.max(w/sw, h/sh)
         scale = scale*0.95 -- 5% slop to speed convergeance
@@ -4633,17 +4423,17 @@ local function ResetConfirmed()
     addon:HideDetached()
   end
   -- clear saves
-  for instance, i in pairs(vars.db.Instances) do
-    for toon, t in pairs(vars.db.Toons) do
+  for instance, i in pairs(addon.db.Instances) do
+    for toon, t in pairs(addon.db.Toons) do
       i[toon] = nil
     end
   end
-  wipe(vars.db.Toons) -- clear toon db
+  wipe(addon.db.Toons) -- clear toon db
   addon.PlayedTime = nil -- reset played cache
   core:toonInit() -- rebuild thisToon
   core:Refresh()
-  vars.config:BuildOptions() -- refresh config table
-  vars.config:ReopenConfigDisplay(vars.config.ftoon)
+  addon.config:BuildOptions() -- refresh config table
+  addon.config:ReopenConfigDisplay(addon.config.ftoon)
 end
 
 
@@ -4661,7 +4451,7 @@ StaticPopupDialogs["SAVEDINSTANCES_RESET"] = {
 }
 
 local function DeleteCharacter(toon)
-  if toon == thisToon or not vars.db.Toons[toon] then
+  if toon == thisToon or not addon.db.Toons[toon] then
     chatMsg("ERROR: Failed to delete "..toon..". Character is active or does not exist.")
     return
   end
@@ -4670,12 +4460,12 @@ local function DeleteCharacter(toon)
     addon:HideDetached()
   end
   -- clear saves
-  for instance, i in pairs(vars.db.Instances) do
+  for instance, i in pairs(addon.db.Instances) do
     i[toon] = nil
   end
-  vars.db.Toons[toon] = nil
-  vars.config:BuildOptions() -- refresh config table
-  vars.config:ReopenConfigDisplay(vars.config.ftoon)
+  addon.db.Toons[toon] = nil
+  addon.config:BuildOptions() -- refresh config table
+  addon.config:ReopenConfigDisplay(addon.config.ftoon)
 end
 
 StaticPopupDialogs["SAVEDINSTANCES_DELETE_CHARACTER"] = {
@@ -4691,502 +4481,3 @@ StaticPopupDialogs["SAVEDINSTANCES_DELETE_CHARACTER"] = {
   enterClicksFirstButton = false,
   showAlert = true,
 }
-
-local trade_spells = {
-  -- Alchemy
-  -- Vanilla
-  [11479] = "xmute", 	-- Transmute: Iron to Gold
-  [11480] = "xmute", 	-- Transmute: Mithril to Truesilver
-  [17559] = "xmute", 	-- Transmute: Air to Fire
-  [17566] = "xmute", 	-- Transmute: Earth to Life
-  [17561] = "xmute", 	-- Transmute: Earth to Water
-  [17560] = "xmute", 	-- Transmute: Fire to Earth
-  [17565] = "xmute", 	-- Transmute: Life to Earth
-  [17563] = "xmute", 	-- Transmute: Undeath to Water
-  [17562] = "xmute", 	-- Transmute: Water to Air
-  [17564] = "xmute", 	-- Transmute: Water to Undeath
-  -- BC
-  [28566] = "xmute", 	-- Transmute: Primal Air to Fire
-  [28585] = "xmute", 	-- Transmute: Primal Earth to Life
-  [28567] = "xmute", 	-- Transmute: Primal Earth to Water
-  [28568] = "xmute", 	-- Transmute: Primal Fire to Earth
-  [28583] = "xmute", 	-- Transmute: Primal Fire to Mana
-  [28584] = "xmute", 	-- Transmute: Primal Life to Earth
-  [28582] = "xmute", 	-- Transmute: Primal Mana to Fire
-  [28580] = "xmute", 	-- Transmute: Primal Shadow to Water
-  [28569] = "xmute", 	-- Transmute: Primal Water to Air
-  [28581] = "xmute", 	-- Transmute: Primal Water to Shadow
-  -- WotLK
-  [60893] = 3, 		-- Northrend Alchemy Research: 3 days
-  [53777] = "xmute", 	-- Transmute: Eternal Air to Earth
-  [53776] = "xmute", 	-- Transmute: Eternal Air to Water
-  [53781] = "xmute", 	-- Transmute: Eternal Earth to Air
-  [53782] = "xmute", 	-- Transmute: Eternal Earth to Shadow
-  [53775] = "xmute", 	-- Transmute: Eternal Fire to Life
-  [53774] = "xmute", 	-- Transmute: Eternal Fire to Water
-  [53773] = "xmute", 	-- Transmute: Eternal Life to Fire
-  [53771] = "xmute", 	-- Transmute: Eternal Life to Shadow
-  [54020] = "xmute", 	-- Transmute: Eternal Might
-  [53779] = "xmute", 	-- Transmute: Eternal Shadow to Earth
-  [53780] = "xmute", 	-- Transmute: Eternal Shadow to Life
-  [53783] = "xmute", 	-- Transmute: Eternal Water to Air
-  [53784] = "xmute", 	-- Transmute: Eternal Water to Fire
-  [66658] = "xmute", 	-- Transmute: Ametrine
-  [66659] = "xmute", 	-- Transmute: Cardinal Ruby
-  [66660] = "xmute", 	-- Transmute: King's Amber
-  [66662] = "xmute", 	-- Transmute: Dreadstone
-  [66663] = "xmute", 	-- Transmute: Majestic Zircon
-  [66664] = "xmute", 	-- Transmute: Eye of Zul
-  -- Cata
-  [78866] = "xmute", 	-- Transmute: Living Elements
-  [80244] = "xmute", 	-- Transmute: Pyrium Bar
-  -- MoP
-  [114780] = "xmute", 	-- Transmute: Living Steel
-  -- WoD
-  [175880] = true,	-- Secrets of Draenor
-  [156587] = true,	-- Alchemical Catalyst (4)
-  [168042] = true,	-- Alchemical Catalyst (10), 3 charges w/ 24hr recharge
-  [181643] = "xmute",	-- Transmute: Savage Blood
-  -- Legion
-  [188800] = "wildxmute", -- Transmute: Wild Transmutation (Rank 1)
-  [188801] = "wildxmute", -- Transmute: Wild Transmutation (Rank 2)
-  [188802] = "wildxmute", -- Transmute: Wild Transmutation (Rank 3)
-  [213248] = "legionxmute", -- Transmute: Ore to Cloth
-  [213249] = "legionxmute", -- Transmute: Cloth to Skins
-  [213250] = "legionxmute", -- Transmute: Skins to Ore
-  [213251] = "legionxmute", -- Transmute: Ore to Herbs
-  [213252] = "legionxmute", -- Transmute: Cloth to Herbs
-  [213253] = "legionxmute", -- Transmute: Skins to Herbs
-  [213254] = "legionxmute", -- Transmute: Fish to Gems
-  [213255] = "legionxmute", -- Transmute: Meat to Pants
-  [213256] = "legionxmute", -- Transmute: Meat to Pet
-  [213257] = "legionxmute", -- Transmute: Blood of Sargeras
-  [247701] = "legionxmute", -- Transmute: Primal Sargerite
-  -- BfA
-  [251832] = "legionxmute", -- Transmute: Expulsom
-  [251314] = "legionxmute", -- Transmute: Cloth to Skins
-  [251822] = "legionxmute", -- Transmute: Fish to Gems
-  [251306] = "legionxmute", -- Transmute: Herbs to Cloth
-  [251305] = "legionxmute", -- Transmute: Herbs to Ore
-  [251808] = "legionxmute", -- Transmute: Meat to Pet
-  [251310] = "legionxmute", -- Transmute: Ore to Cloth
-  [251311] = "legionxmute", -- Transmute: Ore to Gems
-  [251309] = "legionxmute", -- Transmute: Ore to Herbs
-
-  -- Enchanting
-  [28027] = "sphere", 	-- Prismatic Sphere (2-day shared, 5.2.0 verified)
-  [28028] = "sphere", 	-- Void Sphere (2-day shared, 5.2.0 verified)
-  [116499] = true, 	-- Sha Crystal
-  [177043] = true,	-- Secrets of Draenor
-  [169092] = true,	-- Temporal Crystal
-
-  -- Jewelcrafting
-  [47280] = true, 	-- Brilliant Glass, still has a cd (5.2.0 verified)
-  [73478] = true, 	-- Fire Prism, still has a cd (5.2.0 verified)
-  [131691] = "facet", 	-- Imperial Amethyst/Facets of Research
-  [131686] = "facet", 	-- Primordial Ruby/Facets of Research
-  [131593] = "facet", 	-- River's Heart/Facets of Research
-  [131695] = "facet", 	-- Sun's Radiance/Facets of Research
-  [131690] = "facet", 	-- Vermilion Onyx/Facets of Research
-  [131688] = "facet", 	-- Wild Jade/Facets of Research
-  [140050] = true,	-- Serpent's Heart
-  [176087] = true,	-- Secrets of Draenor
-  [170700] = true,	-- Taladite Crystal
-
-  -- Tailoring
-  [143011] = true,	-- Celestial Cloth
-  [125557] = true, 	-- Imperial Silk
-  [56005] = 7, 		-- Glacial Bag (5.2.0 verified)
-  [176058] = true,	-- Secrets of Draenor
-  [168835] = true,	-- Hexweave Cloth
-  -- Dreamcloth
-  [75141] = 7, 		-- Dream of Skywall
-  [75145] = 7, 		-- Dream of Ragnaros
-  [75144] = 7, 		-- Dream of Hyjal
-  [75142] = 7,	 	-- Dream of Deepholm
-  [75146] = 7, 		-- Dream of Azshara
-
-  -- Inscription
-  [61288] = true, 	-- Minor Inscription Research
-  [61177] = true, 	-- Northrend Inscription Research
-  [86654] = true, 	-- Horde Forged Documents
-  [89244] = true, 	-- Alliance Forged Documents
-  [112996] = true, 	-- Scroll of Wisdom
-  [169081] = true,	-- War Paints
-  [177045] = true,	-- Secrets of Draenor
-  [176513] = true,	-- Draenor Merchant Order
-
-  -- Blacksmithing
-  [138646] = true, 	-- Lightning Steel Ingot
-  [143255] = true,	-- Balanced Trillium Ingot
-  [171690] = true,	-- Truesteel Ingot
-  [176090] = true,	-- Secrets of Draenor
-
-  -- Leatherworking
-  [140040] = "magni", 	-- Magnificence of Leather
-  [140041] = "magni",	-- Magnificence of Scales
-  [142976] = true,	-- Hardened Magnificent Hide
-  [171391] = true,	-- Burnished Leather
-  [176089] = true,	-- Secrets of Draenor
-
-  -- Engineering
-  [139176] = true,	-- Stabilized Lightning Source
-  [169080] = true, 	-- Gearspring Parts
-  [177054] = true,	-- Secrets of Draenor
-
-  [126459] = "item",	-- Blingtron 4000
-  [161414] = "item",	-- Blingtron 5000
-  [54710]  = "item",	-- MOLL-E
-  [67826]  = "item",	-- Jeeves
-
-  [67833] = "item",	-- Wormhole Generator: Northrend
-  [126755] = "item",	-- Wormhole Generator: Pandaria
-  [163830] = "item",	-- Wormhole Centrifuge
-  [23453] = "item", 	-- Ultrasafe Transporter: Gadgetzhan
-  [36941] = "item",	-- Ultrasafe Transporter: Toshley's Station
-}
-
-local cdname = {
-  ["xmute"] =  GetSpellInfo(2259).. ": "..L["Transmute"],
-  ["wildxmute"] =  GetSpellInfo(2259).. ": "..L["Wild Transmute"],
-  ["legionxmute"] =  GetSpellInfo(2259).. ": "..L["Legion Transmute"],
-  ["facet"] =  GetSpellInfo(25229)..": "..L["Facets of Research"],
-  ["sphere"] = GetSpellInfo(7411).. ": "..GetSpellInfo(28027),
-  ["magni"] =  GetSpellInfo(2108).. ": "..GetSpellInfo(140040)
-}
-
-local itemcds = { -- [itemid] = spellid
-  [87214] = 126459, 	-- Blingtron 4000
-  [111821] = 161414, 	-- Blingtron 5000
-  [132530] = 200146,	-- Reaves: Bling (Blingtron 6000)
-  [40768] = 54710, 	-- MOLL-E
-  [49040] = 67826,	-- Jeeves
-  [132525] = 200087,	-- Reaves: Repair
-  [112059] = 163830,	-- Wormhole Centrifuge
-  [48933] = 67833,	-- Wormhole Generator: Northrend
-  [87215] = 126755,	-- Wormhole Generator: Pandaria
-  [18986] = 23453, 	-- Ultrasafe Transporter: Gadgetzhan
-  [30544] = 36941,	-- Ultrasafe Transporter: Toshley's Station
-}
-
-function core:scan_item_cds()
-  for itemid, spellid in pairs(itemcds) do
-    local start, duration = GetItemCooldown(itemid)
-    if start and duration and start > 0 then
-      core:record_skill(spellid, GetTimeToTime(start+duration))
-    end
-  end
-end
-
-function core:record_skill(spellID, expires)
-  if not spellID then return end
-  local cdinfo = trade_spells[spellID]
-  if not cdinfo then
-    addon.skillwarned = addon.skillwarned or {}
-    if expires and expires > 0 and not addon.skillwarned[spellID] then
-      addon.skillwarned[spellID] = true
-      bugReport("Unrecognized trade skill cd "..(GetSpellInfo(spellID) or "??").." ("..spellID..")")
-    end
-    return
-  end
-  local t = vars and vars.db.Toons[thisToon]
-  if not t then return end
-  local spellName = GetSpellInfo(spellID)
-  t.Skills = t.Skills or {}
-  local idx = spellID
-  local title = spellName
-  local link = nil
-  if cdinfo == "item" then
-    if not expires then
-      core:ScheduleTimer("scan_item_cds", 2) -- theres a delay for the item to go on cd
-      return
-    end
-    for itemid, spellid in pairs(itemcds) do
-      if spellid == spellID then
-        title,link = GetItemInfo(itemid) -- use item name as some item spellnames are ambiguous or wrong
-        title = title or spellName
-      end
-    end
-  elseif type(cdinfo) == "string" then
-    idx = cdinfo
-    title = cdname[cdinfo] or title
-  elseif expires ~= 0 then
-    local slink = GetSpellLink(spellID)
-    if slink and #slink > 0 then  -- tt scan for the full name with profession
-      link = "\124cffffd000\124Henchant:"..spellID.."\124h[X]\124h\124r"
-      scantt:SetOwner(UIParent,"ANCHOR_NONE")
-      scantt:SetHyperlink(link)
-      local l = _G[scantt:GetName().."TextLeft1"]
-      l = l and l:GetText()
-      if l and #l > 0 then
-        title = l
-        link = link:gsub("X",l)
-      else
-        link = nil
-      end
-    end
-  end
-  if expires == 0 then
-    if t.Skills[idx] then -- a cd ended early
-      debug("Clearing Trade skill cd: %s (%s)",spellName,spellID)
-    end
-    t.Skills[idx] = nil
-    return
-  elseif not expires then
-    expires = addon:GetNextDailySkillResetTime()
-    if not expires then return end -- ticket 127
-    if type(cdinfo) == "number" then -- over a day, make a rough guess
-      expires = expires + (cdinfo-1)*24*60*60
-    end
-  end
-  expires = math.floor(expires)
-  local sinfo = t.Skills[idx] or {}
-  t.Skills[idx] = sinfo
-  local change = expires - (sinfo.Expires or 0)
-  if math.abs(change) > 180 and addon.db.dbg then -- updating expiration guess (more than 3 min update lag)
-    debug("Trade skill cd: "..(link or title).." ("..spellID..") "..
-      (sinfo.Expires and string.format("%d",change).." sec" or "(new)")..
-      " Local time: "..date("%c",expires))
-  end
-  sinfo.Title = title
-  sinfo.Link = link
-  sinfo.Expires = expires
-
-  return true
-end
-
-function core:TradeSkillRescan(spellid)
-  local scan = core:TRADE_SKILL_LIST_UPDATE()
-  if TradeSkillFrame and TradeSkillFrame.filterTbl and
-    (scan == 0 or not addon.seencds or not addon.seencds[spellid]) then
-    -- scan failed, probably because the skill is hidden - try again
-    addon.filtertmp = wipe(addon.filtertmp or {})
-    for k,v in pairs(TradeSkillFrame.filterTbl) do addon.filtertmp[k] = v end
-    TradeSkillOnlyShowMakeable(false)
-    TradeSkillOnlyShowSkillUps(false)
-    SetTradeSkillCategoryFilter(-1)
-    SetTradeSkillInvSlotFilter(-1, 1, 1)
-    ExpandTradeSkillSubClass(0)
-    local rescan = core:TRADE_SKILL_LIST_UPDATE()
-    debug("Rescan: "..(rescan==scan and "Failed" or "Success"))
-    TradeSkillOnlyShowMakeable(addon.filtertmp.hasMaterials);
-    TradeSkillOnlyShowSkillUps(addon.filtertmp.hasSkillUp);
-    SetTradeSkillCategoryFilter(addon.filtertmp.subClassValue or -1)
-    SetTradeSkillInvSlotFilter(addon.filtertmp.slotValue or -1, 1, 1)
-  end
-end
-
-function core:TRADE_SKILL_LIST_UPDATE()
-  local cnt = 0
-  if C_TradeSkillUI.IsTradeSkillLinked() or C_TradeSkillUI.IsTradeSkillGuild() then return end
-  local recipeids = C_TradeSkillUI.GetFilteredRecipeIDs()
-  for _, spellid in ipairs(recipeids) do
-    local cd, daily = C_TradeSkillUI.GetRecipeCooldown(spellid)
-    if cd and daily -- GetTradeSkillCooldown often returns WRONG answers for daily cds
-      and not tonumber(trade_spells[spellid]) then -- daily flag incorrectly set for some multi-day cds (Northrend Alchemy Research)
-      cd = addon:GetNextDailySkillResetTime()
-    elseif cd then
-      cd = time() + cd  -- on cd
-    else
-      cd = 0 -- off cd or no cd
-    end
-    core:record_skill(spellid, cd)
-    if cd then
-      addon.seencds = addon.seencds or {}
-      addon.seencds[spellid] = true
-      cnt = cnt + 1
-    end
-  end
-
-  return cnt
-end
-
-local farm_spells = {
-    [111102]="plant", -- Plant Green Cabbage
-    [123361]="plant", -- Plant Juicycrunch Carrot
-    [123388]="plant", -- Plant Scallions
-    [123485]="plant", -- Plant Mogu Pumpkin
-    [123535]="plant", -- Plant Red Blossom Leek
-    [123565]="plant", -- Plant Pink Turnip
-    [123568]="plant", -- Plant White Turnip
-    [123771]="plant", -- Plant Golden Seed
-    [123772]="plant", -- Plant Seed of Harmony
-    [123773]="plant", -- Plant Snakeroot Seed
-    [123774]="plant", -- Plant Enigma Seed
-    [123775]="plant", -- Plant Magebulb Seed
-    [123776]="plant", -- Plant Soybean Seed
-    [123777]="plant", -- Plant Ominous Seed
-    [123892]="plant", -- Plant Autumn Blossom Sapling
-    [123893]="plant", -- Plant Spring Blossom Seed
-    [123894]="plant", -- Plant Winter Blossom Sapling
-    [123895]="plant", -- Plant Kyparite Seed
-    [129623]="plant", -- Plant Windshear Cactus Seed
-    [129628]="plant", -- Plant Raptorleaf Seed
-    [129863]="plant", -- Plant Songbell Seed
-    [129974]="plant", -- Plant Witchberries
-    [129976]="plant", -- Plant Jade Squash
-    [129978]="plant", -- Plant Striped Melon
-    [130170]="plant", -- Plant Spring Blossom Sapling
-    [133036]="plant", -- Plant Unstable Portal Shard
-
-    [116356]="throw", -- Throw Green Cabbage Seeds
-    [123362]="throw", -- Throw Juicycrunch Carrot Seeds
-    [123389]="throw", -- Throw Scallion Seeds
-    [123486]="throw", -- Throw Mogu Pumpkin Seeds
-    [123537]="throw", -- Throw Red Blossom Leek Seeds
-    [123566]="throw", -- Throw Pink Turnip Seeds
-    [123567]="throw", -- Throw White Turnip Seeds
-    [131093]="throw", -- Throw Witchberry Seeds
-    [131094]="throw", -- Throw Jade Squash Seeds
-    [131095]="throw", -- Throw Striped Melon Seeds
-    [139975]="throw", -- Throw Songbell Seeds
-    [139977]="throw", -- Throw Snakeroot Seeds
-    [139978]="throw", -- Throw Enigma Seeds
-    [139981]="throw", -- Throw Magebulb Seeds
-    [139983]="throw", -- Throw Windshear Cactus Seeds
-    [139986]="throw", -- Throw Raptorleaf Seeds
-
-    [111123]="harvest", -- Harvest Green Cabbage
-    [115063]="harvest", -- Harvest EZ-Gro Green Cabbage
-    [123353]="harvest", -- Harvest Juicycrunch Carrot
-    [123355]="harvest", -- Harvest Plump Green Cabbage
-    [123356]="harvest", -- Harvest Plump Juicycrunch Carrot
-    [123375]="harvest", -- Harvest Scallions
-    [123380]="harvest", -- Harvest Plump Scallions
-    [123445]="harvest", -- Harvest Mogu Pumpkin
-    [123451]="harvest", -- Harvest Plump Mogu Pumpkin
-    [123516]="harvest", -- Harvest Winter Blossom Tree
-    [123522]="harvest", -- Harvest Plump Red Blossom Leek
-    [123524]="harvest", -- Harvest Red Blossom Leek
-    [123548]="harvest", -- Harvest Pink Turnip
-    [123549]="harvest", -- Harvest Plump Pink Turnip
-    [123570]="harvest", -- Harvest White Turnip
-    [123571]="harvest", -- Harvest Plump White Turnip
-    [129673]="harvest", -- Harvest Golden Lotus
-    [129674]="harvest", -- Harvest Fool\'s Cap
-    [129675]="harvest", -- Harvest Snow Lily
-    [129676]="harvest", -- Harvest Silkweed
-    [129687]="harvest", -- Harvest Green Tea Leaf
-    [129705]="harvest", -- Harvest Rain Poppy
-    [129757]="harvest", -- Harvest Snakeroot
-    [129796]="harvest", -- Harvest Magebulb
-    [129814]="harvest", -- Harvest Windshear Cactus
-    [129843]="harvest", -- Harvest Raptorleaf
-    [129887]="harvest", -- Harvest Songbell
-    [129983]="harvest", -- Harvest Witchberries
-    [129984]="harvest", -- Harvest Plump Witchberries
-    [130025]="harvest", -- Harvest Jade Squash
-    [130026]="harvest", -- Harvest Plump Jade Squash
-    [130042]="harvest", -- Harvest Striped Melon
-    [130043]="harvest", -- Harvest Plump Striped Melon
-    [130109]="harvest", -- Harvest Terrible Turnip
-    [130140]="harvest", -- Harvest Autumn Blossom Tree
-    [130168]="harvest", -- Harvest Spring Blossom Tree
-    [133106]="harvest", -- Harvest Portal Shard
-}
-
-function core:record_farm(spellID)
-  local ft = farm_spells[spellID]
-  if not ft then return end
-  local t = vars and vars.db.Toons[thisToon]
-  if not t then return end
-  if ft == "plant" or ft == "throw" then
-    local amt = (ft == "plant" and 1 or 4)
-    t.FarmPlanted = (t.FarmPlanted or 0) + amt
-    t.FarmCropPlanted = t.FarmCropPlanted or {}
-    t.FarmCropPlanted[spellID] = (t.FarmCropPlanted[spellID] or 0) + amt
-  elseif ft == "harvest" then
-    if t.FarmExpires and time() + 60 > t.FarmExpires then -- assume this is a fresh day
-      t.FarmExpires = t.FarmExpires - 60
-      addon:UpdateToonData() -- ticket 132: ensure refresh if we're harvesting right after reset
-    end
-    t.FarmHarvested = (t.FarmHarvested or 0) + 1
-    t.FarmCropReady = nil
-  end
-  t.FarmExpires = addon:GetNextDailySkillResetTime()
-  debug("Farm "..ft..": planted="..(t.FarmPlanted or 0)..
-    " harvested="..(t.FarmHarvested or 0).." expires="..date("%c",t.FarmExpires or 0))
-end
-
-function core:UNIT_SPELLCAST_SUCCEEDED(evt, unit, spellName, rank, lineID, spellID)
-  if unit ~= "player" then return end
-  if trade_spells[spellID] then
-    debug("UNIT_SPELLCAST_SUCCEEDED: %s (%s)",GetSpellLink(spellID),spellID)
-    if not core:record_skill(spellID) then return end
-    core:ScheduleTimer("TradeSkillRescan", 0.5, spellID)
-  elseif farm_spells[spellID] then
-    debug("UNIT_SPELLCAST_SUCCEEDED: %s (%s)",GetSpellLink(spellID),spellID)
-    core:record_farm(spellID)
-  end
-end
-
-function core:BonusRollResult(event, rewardType, rewardLink, rewardQuantity, rewardSpecID)
-  local t = vars.db.Toons[thisToon]
-  debug("BonusRollResult:%s:%s:%s:%s (boss=%s|%s)",
-    tostring(rewardType), tostring(rewardLink), tostring(rewardQuantity), tostring(rewardSpecID),
-    tostring(t and t.lastboss), tostring(t and t.lastbossyell))
-  if not t then return end
-  if not rewardType then return end -- sometimes get a bogus message, ignore it
-  t.BonusRoll = t.BonusRoll or {}
-  --local rewardstr = _G["BONUS_ROLL_REWARD_"..string.upper(rewardType)]
-  local now = time()
-  local bossname = t.lastboss
-  if now > (t.lastbosstime or 0) + 3*60 then -- user rolled before lastboss was updated, ignore the stale one. Roll timeout is 3 min.
-    bossname = nil
-  end
-  if not bossname and t.lastbossyell and now < (t.lastbossyelltime or 0) + 10*60 then
-    bossname = t.lastbossyell -- yell fallback
-  end
-  if not bossname then
-    bossname = GetSubZoneText() or GetRealZoneText() -- zone fallback
-  end
-  local roll = { name = bossname, time = now, currencyID = BonusRollFrame.currencyID }
-  if rewardType == "money" then
-    roll.money = rewardQuantity
-  elseif rewardType == "artifact_power" then
-    roll.money = 25 -- Hacky and cludgy but it'll do for now
-    --roll.item = rewardlink -- Possible alternative to at least show Artifact Power rewarded
-  elseif rewardType == "item" then
-    roll.item = rewardLink
-  end
-  table.insert(t.BonusRoll, 1, roll)
-  local limit = 25
-  for i=limit+1, table.maxn(t.BonusRoll) do
-    t.BonusRoll[i] = nil
-  end
-end
-
-function addon.BonusRollShow()
-  local t = vars.db.Toons[thisToon]
-  if not t or not BonusRollFrame then return end
-  local binfo = t.BonusRoll
-  local frame = addon.BonusFrame
-  if not binfo or #binfo == 0 or not vars.db.Tooltip.AugmentBonus then
-    if frame then frame:Hide() end
-    return
-  end
-  if not frame then
-    frame = CreateFrame("Button", "SavedInstancesBonusRollFrame", BonusRollFrame, "SpellBookSkillLineTabTemplate")
-    addon.BonusFrame = frame
-    --frame:SetSize(BonusRollFrame:GetHeight(), BonusRollFrame:GetHeight())
-    frame:SetPoint("LEFT", BonusRollFrame, "RIGHT",0,8)
-    frame.text = addon.BonusFrame:CreateFontString(nil, "OVERLAY","GameFontNormal")
-    frame.text:SetPoint("CENTER")
-    frame:SetScript("OnEnter", function() ShowBonusTooltip(nil, { thisToon, frame }) end )
-    frame:SetScript("OnLeave", CloseTooltips)
-    frame:SetScript("OnClick", nil)
-    frame.text:Show()
-  end
-  local bonus = 0
-  for _,rinfo in ipairs(binfo) do
-    if rinfo.money then
-      bonus = bonus + 1
-    else
-      break
-    end
-  end
-  frame.text:SetText((bonus > 0 and "+" or "")..bonus)
-  frame:Show()
-end
-
-hooksecurefunc("BonusRollFrame_StartBonusRoll", addon.BonusRollShow)

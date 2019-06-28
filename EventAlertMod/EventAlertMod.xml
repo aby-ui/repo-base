@@ -49,7 +49,7 @@
 				<Scripts>
 					<OnClick>
 					PlaySound163("gsTitleOptionOK");
-					HideUIPanel(EA_Version_Frame);
+					EA_Version_Frame:Hide();
 				</OnClick>
 				</Scripts>
 			</Button>

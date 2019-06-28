@@ -1,10 +1,10 @@
-## Interface: 80000
+## Interface: 80200
 ## Title: Grail
 ## LoadOnDemand: 1
 ## Dependencies: Wholly
 ## Author: Scott M Harrison
 ## Notes: Knows about quests
-## Version: 097
+## Version: 099
 ## SavedVariables: GrailDatabase
 ## SavedVariablesPerCharacter: GrailDatabasePlayer
 

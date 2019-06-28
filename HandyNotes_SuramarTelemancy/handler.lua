@@ -7,7 +7,6 @@ ns.HL = HL
 
 local next = next
 local GameTooltip = GameTooltip
-local WorldMapTooltip = WorldMapTooltip
 local HandyNotes = HandyNotes
 
 local function work_out_texture(atlas)
@@ -42,9 +41,8 @@ local get_point_info = function(point)
         return point.label, texture
     end
 end
-local get_point_info_by_coord = function(mapFile, coord)
-    mapFile = string.gsub(mapFile, "_terrain%d+$", "")
-    return get_point_info(ns.points[mapFile] and ns.points[mapFile][coord])
+local get_point_info_by_coord = function(uiMapId, coord)
+    return get_point_info(ns.points[uiMapId] and ns.points[uiMapId][coord])
 end
 
 local function handle_tooltip(tooltip, point)
@@ -62,9 +60,8 @@ local function handle_tooltip(tooltip, point)
     end
     tooltip:Show()
 end
-local handle_tooltip_by_coord = function(tooltip, mapFile, coord)
-    mapFile = string.gsub(mapFile, "_terrain%d+$", "")
-    return handle_tooltip(tooltip, ns.points[mapFile] and ns.points[mapFile][coord])
+local handle_tooltip_by_coord = function(tooltip, uiMapId, coord)
+    return handle_tooltip(tooltip, ns.points[uiMapId] and ns.points[uiMapId][coord])
 end
 
 ---------------------------------------------------------
@@ -72,22 +69,21 @@ end
 local HLHandler = {}
 local info = {}
 
-function HLHandler:OnEnter(mapFile, coord)
-    local tooltip = self:GetParent() == WorldMapFrame:GetCanvas() and WorldMapTooltip or GameTooltip
+function HLHandler:OnEnter(uiMapId, coord)
+    local tooltip = GameTooltip
     if ( self:GetCenter() > UIParent:GetCenter() ) then -- compare X coordinate
         tooltip:SetOwner(self, "ANCHOR_LEFT")
     else
         tooltip:SetOwner(self, "ANCHOR_RIGHT")
     end
-    handle_tooltip_by_coord(tooltip, mapFile, coord)
+    handle_tooltip_by_coord(tooltip, uiMapId, coord)
 end
 
-local function createWaypoint(button, mapFile, coord)
+local function createWaypoint(button, uiMapId, coord)
     if TomTom then
-        local mapId = HandyNotes:GetMapFiletoMapID(mapFile)
         local x, y = HandyNotes:getXY(coord)
-        TomTom:AddWaypoint(mapId, x, y, {
-            title = get_point_info_by_coord(mapFile, coord),
+        TomTom:AddWaypoint(uiMapId, x, y, {
+            title = get_point_info_by_coord(uiMapId, coord),
             persistent = nil,
             minimap = true,
             world = true
@@ -95,8 +91,8 @@ local function createWaypoint(button, mapFile, coord)
     end
 end
 
-local function hideNode(button, mapFile, coord)
-    ns.hidden[mapFile][coord] = true
+local function hideNode(button, uiMapId, coord)
+    ns.hidden[uiMapId][coord] = true
     HL:Refresh()
 end
 
@@ -140,21 +136,17 @@ do
     HL_Dropdown.displayMode = "MENU"
     HL_Dropdown.initialize = generateMenu
 
-    function HLHandler:OnClick(button, down, mapFile, coord)
+    function HLHandler:OnClick(button, down, uiMapId, coord)
         if button == "RightButton" and not down then
-            currentZone = string.gsub(mapFile, "_terrain%d+$", "")
+            currentZone = uiMapId
             currentCoord = coord
             ToggleDropDownMenu(1, nil, HL_Dropdown, self, 0, 0)
         end
     end
 end
 
-function HLHandler:OnLeave(mapFile, coord)
-    if self:GetParent() == WorldMapFrame:GetCanvas() then
-        WorldMapTooltip:Hide()
-    else
-        GameTooltip:Hide()
-    end
+function HLHandler:OnLeave(uiMapId, coord)
+    GameTooltip:Hide()
 end
 
 do
@@ -172,11 +164,10 @@ do
         end
         return nil, nil, nil, nil
     end
-    function HLHandler:GetNodes(mapFile, minimap, level)
+    function HLHandler:GetNodes2(uiMapId, minimap)
         currentLevel = level
-        mapFile = string.gsub(mapFile, "_terrain%d+$", "")
-        currentZone = mapFile
-        return iter, ns.points[mapFile], nil
+        currentZone = uiMapId
+        return iter, ns.points[uiMapId], nil
     end
     function ns:ShouldShow(point)
         if point.entrance and not ns.db.entrances then

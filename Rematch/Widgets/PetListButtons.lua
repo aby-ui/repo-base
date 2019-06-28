@@ -28,9 +28,9 @@ function rematch:FillPetSlot(button,petID)
 	if button.Level then
 		button.Level.Text:SetText(petInfo.level)
 		button.Level:SetShown(not button.hideLevel and petInfo.canBattle and petInfo.level and (petInfo.level<25 or not RematchSettings.HideLevelBubbles))
-		button.IsDead:SetShown(petInfo.isDead)
+		--button.IsDead:SetShown(petInfo.isDead)
 		button.Favorite:SetShown(not button.hideFavorite and petInfo.isFavorite)
-		button.Blood:SetShown(petInfo.canBattle and petInfo.health and petInfo.health<petInfo.maxHealth)
+		--button.Blood:SetShown(petInfo.canBattle and petInfo.health and petInfo.health<petInfo.maxHealth)
 		if petInfo.rarity and not RematchSettings.HideRarityBorders then
 			button.IconBorder:SetTexture("Interface\\AddOns\\Rematch\\Textures\\rarityborder")
 			button.IconBorder:SetVertexColor(ITEM_QUALITY_COLORS[petInfo.rarity-1].r, ITEM_QUALITY_COLORS[petInfo.rarity-1].g, ITEM_QUALITY_COLORS[petInfo.rarity-1].b)
@@ -38,78 +38,71 @@ function rematch:FillPetSlot(button,petID)
 			button.IconBorder:SetTexture("Interface\\Buttons\\UI-QuickSlot2")
 			button.IconBorder:SetVertexColor(1,1,1)
 		end
-
+		if petInfo.isDead then
+			button.Status:SetTexCoord(0,0.3125,0,0.625)
+			button.Status:Show()
+		elseif petInfo.isInjured then
+			button.Status:SetTexCoord(0.3125,0.625,0,0.625)
+			button.Status:Show()
+		else
+			button.Status:Hide()
+		end
 	end
 end
 
--- PetPanel, QueuePanel and LoadoutPanel use this function to fill in their list buttons
+-- THIS IS THE OLD VERSION, NOW ONLY USED BY LOADOUTPANELS
+-- PetPanel and QueuePanel use FillNewPetListButton defined elsewhere in this file
 function rematch:FillPetListButton(button,petID,forLoadout)
+
+	local petInfo = rematch.petInfo:Fetch(petID)
+
 	button.petID = petID
-	if button.slim then
-		-- slim vs normal buttons are too radically different; slim function will handle everything if needed
-		return rematch:FillSlimPetListButton(button)
-	end
 	rematch:FillPetSlot(button.Pet,petID) -- handles the icon, level, rarity
 	local idType = rematch:GetIDType(petID)
 	local showBreed = false
 	local showLeveling = false
 	local showNotes = false
+	local showInTeam = false
 	local desaturate = true
 	local xoff = -4
 	local yoff = -12
 
-	local _, speciesID, customName, level, xp, maxXP, isFavorite, name, icon, petType, canBattle
-	if idType=="pet" then -- this is an owned pet
-		speciesID, customName, level, xp, maxXP, _, isFavorite, name, icon, petType, _, _, _, _, canBattle = C_PetJournal.GetPetInfoByPetID(petID)
-		if rematch.breedSource and canBattle then
-			local breed = rematch:GetBreedByPetID(petID)
-			button.Breed:SetText(breed)
-			showBreed = true
-			yoff = rematch.breedSource=="PetTracker_Breeds" and -4 or -6
-		end
-		if RematchSettings.PetNotes[speciesID] then
-			showNotes = true
-			button.Notes:SetPoint("TOPRIGHT",button,"TOPRIGHT",xoff,yoff)
-			xoff = xoff-22
-		end
-		if rematch:IsPetLeveling(petID) and not button.forQueuePanel then
-			showLeveling = true
-			button.Leveling:SetPoint("TOPRIGHT",button,"TOPRIGHT",xoff,yoff)
-		end
-		desaturate = false
-		if C_PetJournal.PetNeedsFanfare(petID) then
-			customName = format("%s%s",rematch.hexBlue,L["A New Pet!"])
-		end
-	elseif idType=="species" then -- speciesID for unowned pets
-		name,_,petType = C_PetJournal.GetPetInfoBySpeciesID(petID)
-		if RematchSettings.PetNotes[petID] then
-			showNotes = true
-			button.Notes:SetPoint("TOPRIGHT",button,"TOPRIGHT",xoff,yoff)
-		end
+	if petInfo.breedName then
+		button.Breed:SetText(petInfo.breedName)
+		showBreed = true
+		yoff = rematch:GetBreedSource()=="PetTracker_Breeds" and -4 or -6
 	end
+	if petInfo.hasNotes then
+		showNotes = true
+		button.Notes:SetPoint("TOPRIGHT",button,"TOPRIGHT",xoff,yoff)
+		xoff = xoff-22
+	end
+	if petInfo.isLeveling then
+		showLeveling = true
+		button.Leveling:SetPoint("TOPRIGHT",button,"TOPRIGHT",xoff,yoff)
+	end
+	if petInfo.needsFanFare then
+		customName = format("%s%s",rematch.hexBlue,L["A New Pet!"])
+	end	
 
 	-- set type icon
-	rematch:FillPetTypeIcon(button.TypeIcon,petType,forLoadout and "Interface\\PetBattles\\PetIcon-")
-	button.TypeIcon:SetDesaturated(desaturate)
+	rematch:FillPetTypeIcon(button.TypeIcon,petInfo.petType,"Interface\\PetBattles\\PetIcon-")
 
-	if customName then -- pet has a custom name, so show both customName and name
-		button.Name:SetText(customName)
+	if petInfo.customName then -- pet has a custom name, so show both customName and name
+		button.Name:SetText(petInfo.customName)
 		button.Name:SetHeight(21)
-		button.SubName:SetText(name)
+		button.SubName:SetText(petInfo.speciesName)
+		button.SubName:SetHeight(12)
 		button.SubName:Show()
 	else -- no customName, show just one line, the name or that it's empty
-		button.Name:SetText(name or L["Empty Battle Pet Slot"])
+		button.Name:SetText(petInfo.name or L["Empty Battle Pet Slot"])
 		button.Name:SetHeight(36)
+		button.SubName:SetHeight(12)
 		button.SubName:Hide()
 	end
 
-	if desaturate then
-		button.Name:SetTextColor(0.5,0.5,0.5)
-	elseif RematchSettings.ColorPetNames and idType=="pet" then
-		local rarity = select(5,C_PetJournal.GetPetStats(petID))
-		if rarity then
-			button.Name:SetTextColor(ITEM_QUALITY_COLORS[rarity-1].r, ITEM_QUALITY_COLORS[rarity-1].g, ITEM_QUALITY_COLORS[rarity-1].b)
-		end
+	if RematchSettings.ColorPetNames and petInfo.rarity then
+		button.Name:SetTextColor(ITEM_QUALITY_COLORS[petInfo.rarity-1].r, ITEM_QUALITY_COLORS[petInfo.rarity-1].g, ITEM_QUALITY_COLORS[petInfo.rarity-1].b)
 	else
 		button.Name:SetTextColor(1,0.82,0)
 	end
@@ -128,110 +121,48 @@ function rematch:FillPetListButton(button,petID,forLoadout)
 	button.Leveling:SetShown(showLeveling)
 	button.Notes:SetShown(showNotes)
 
-	if GetMouseFocus()==button then
-		rematch:ShowPetCard(button,petID)
+	-- special handling for empty slots -- note this assumes only loadout slots use this function
+	if not petID then
+		local slot = button:GetParent():GetID()
+		if slot and slot>=1 and slot<=3 and button.SubName then
+			button.Pet.Icon:SetTexture("Interface\\PaperDoll\\UI-Backpack-EmptySlot.blp") -- use empty icon instead of red questionmark
+	
+			if select(5,C_PetJournal.GetPetLoadOutInfo(slot)) then -- if slot is locked (due to lack of spell/achievement likely)
+				local UNLOCK_REQUIREMENTS = {
+					[1] = {requirement = "SPELL", id = "119467"},
+					[2] = {requirement = "ACHIEVEMENT", id = "7433"},
+					[3] = {requirement = "ACHIEVEMENT", id = "6566"}
+				}
+				if UNLOCK_REQUIREMENTS[slot].requirement == "ACHIEVEMENT" and UNLOCK_REQUIREMENTS[slot].id then
+					button.Name:SetText(GetAchievementLink(UNLOCK_REQUIREMENTS[slot].id))
+				elseif UNLOCK_REQUIREMENTS[slot].requirement == "SPELL" and UNLOCK_REQUIREMENTS[slot].id then
+					button.Name:SetText(GetSpellLink(UNLOCK_REQUIREMENTS[slot].id))
+				end
+				button.SubName:SetText(_G["BATTLE_PET_UNLOCK_HELP_"..slot])
+			else -- slot is just empty but available
+				button.Name:SetText(format(BATTLE_PET_SLOT, slot))
+				button.SubName:SetText(BATTLE_PET_SLOT_DRAG_HERE)
+			end
+			button.SubName:Show()
+			button.SubName:SetHeight(40)
+		end
+
+	
+		-- if (UNLOCK_REQUIREMENTS[i].requirement == "ACHIEVEMENT" and UNLOCK_REQUIREMENTS[i].id) then
+		-- 	loadoutPlate.requirement.str:SetText(GetAchievementLink(UNLOCK_REQUIREMENTS[i].id));
+		-- 	loadoutPlate.requirement.achievementID = UNLOCK_REQUIREMENTS[i].id;
+		-- elseif (UNLOCK_REQUIREMENTS[i].requirement == "SPELL" and UNLOCK_REQUIREMENTS[i].id) then
+		-- 	loadoutPlate.requirement.str:SetText(GetSpellLink(UNLOCK_REQUIREMENTS[i].id));
+		-- 	loadoutPlate.requirement.spellID = UNLOCK_REQUIREMENTS[i].id;
+		-- end
+		-- loadoutPlate.helpFrame.text:SetText(_G["BATTLE_PET_UNLOCK_HELP_"..i]);
+		-- loadoutPlate.helpFrame:Show();
+
 	end
+
+
 end
 
--- FillPetListButton for the Combact List Format (SlimListButton) is a separate function since it's so different
-function rematch:FillSlimPetListButton(button)
-	local petID = button.petID
-	local idType = rematch:GetIDType(petID)
-	local settings = RematchSettings
-	local xoff = -6 -- offset from right edge where name will be anchored
-	button.Level:Hide()
-	button.Favorite:Hide()
-	button.Breed:Hide()
-	button.Notes:Hide()
-	button.Leveling:Hide()
-	button.Pet.IsDead:Hide()
-	button.Name:SetFontObject(settings.SlimListSmallText and GameFontNormalSmall or GameFontNormal)
-	button.Pet.petID = petID
-	local _, speciesID, customName, level, isFavorite, name, icon, petType, canBattle
-
-	if idType=="pet" then
-		speciesID, customName, level, _, _, _, isFavorite, name, icon, petType, _, _, _, _, canBattle = C_PetJournal.GetPetInfoByPetID(petID)
-		button.Name:SetTextColor(1,0.82,0)
-
-		if C_PetJournal.PetNeedsFanfare(petID) then
-			customName = format("%s%s",rematch.hexBlue,L["A New Pet!"])
-			icon = "Interface\\Icons\\Item_Shop_GiftBox01"
-		end
-
-		button.Pet.Icon:SetTexture(icon)
-		button.Pet.Icon:SetDesaturated(false)
-		button.Type:SetDesaturated(false)
-
-		if canBattle and (level<25 or not RematchSettings.HideLevelBubbles) then
-			button.Level:SetText(level)
-			button.Level:Show()
-		end
-		if isFavorite then
-			button.Favorite:Show()
-		end
-		local health,maxHealth,_,_,rarity = C_PetJournal.GetPetStats(petID)
-		rarity = rarity or 1
-		rematch:SetFaceplate(button,ITEM_QUALITY_COLORS[rarity-1].r, ITEM_QUALITY_COLORS[rarity-1].g, ITEM_QUALITY_COLORS[rarity-1].b)
-
-		if health==0 and maxHealth>0 then
-			button.Pet.IsDead:Show()
-		end
-
-		-- tint pets that can't be summoned (revoked, wrong faction, etc) red
-		if C_PetJournal.PetIsSummonable(petID) or (health and health<1) then
-			button.Pet.Icon:SetVertexColor(1,1,1)
-		else
-			button.Pet.Icon:SetVertexColor(1,0,0)
-		end
-
-		if rematch.breedSource and canBattle then
-			local breed = rematch:GetBreedByPetID(petID)
-			button.Breed:SetText(breed)
-			button.Breed:Show()
-			xoff = xoff - 24
-		end
-
-		if settings.PetNotes[speciesID] then
-			button.Notes:SetPoint("RIGHT",xoff,0.5)
-			button.Notes:Show()
-			xoff = xoff - button.Notes:GetWidth()
-		end
-
-		if rematch:IsPetLeveling(petID) and not button.forQueuePanel then
-			button.Leveling:SetPoint("RIGHT",xoff,0)
-			button.Leveling:Show()
-			xoff = xoff - button.Leveling:GetWidth()
-		end
-
-	elseif idType=="species" then
-
-		name,icon,petType = C_PetJournal.GetPetInfoBySpeciesID(petID)
-
-		button.Name:SetTextColor(0.5,0.5,0.5)
-		button.Pet.Icon:SetTexture(icon)
-		button.Pet.Icon:SetDesaturated(true)
-		button.Pet.Icon:SetVertexColor(1,1,1)
-		button.Type:SetDesaturated(true)
-
-		rematch:SetFaceplate(button,nil)
-
-		if settings.PetNotes[petID] then
-			button.Notes:SetPoint("RIGHT",xoff,0.5)
-			button.Notes:Show()
-			xoff = xoff - button.Notes:GetWidth()
-		end
-
-	end
-
-	rematch:FillPetTypeIcon(button.Type,petType,"Interface\\PetBattles\\PetIcon-")
-
-	button.Name:SetText(customName or name)
-	button.Name:SetPoint("RIGHT",xoff,0)
-
-	if GetMouseFocus()==button then
-		rematch:ShowPetCard(button,petID)
-	end
-end
 
 function rematch:PetListButtonOnEnter()
 	rematch:ShowPetCard(self,self.petID)
@@ -282,6 +213,9 @@ end
 function rematch:PetListButtonPetOnClick(button)
 	-- check if pet being linked here
 	if self.noPickup then return end -- this pet is for display purposes, don't allow pickup or right-click
+	if not self.petID then
+		self = self:GetParent() -- if texture being clicked, shift to parent button for manipulation
+	end
 	if rematch.HandlePetRightClick(self,self.petID,button) then return end
 	if rematch.HandlePetShiftClick(self,self.petID) then return end
 	rematch.PetListButtonOnDragStart(self,button)
@@ -313,7 +247,7 @@ end
 
 function rematch:PetListButtonOnDoubleClick()
 	if rematch:GetIDType(self.petID)=="pet" then
-		if RematchSettings.QueueDoubleClick and self.forQueuePanel and self.petID and RematchSettings.LevelingQueue[1]~=self.petID then
+		if RematchSettings.QueueDoubleClick and self.forQueue and self.petID and RematchSettings.LevelingQueue[1]~=self.petID then
 			rematch:MovePetInQueue(self.petID,-2) -- -2 is "Move To Top" direction
 		elseif RematchSettings.NoSummonOnDblClick then
 			return -- do nothing if "No Summon On Double Click" is checked
@@ -353,4 +287,277 @@ function rematch:UpdatePetListHighlights(scrollFrame)
 			end
 		end
 	end
+end
+
+-- ** new fills here **
+-- it's a mess (handles 2 different pet lists (normal, compact) and 4 different queue
+-- views (normal, compact, miniqueue normal, miniqueue compact)) but will clean up later
+
+-- callback for pet list buttons to fill their content
+function rematch:FillNewPetListButton(petID)
+	local settings = RematchSettings
+	self.petID = petID
+	local petInfo = rematch.petInfo:Fetch(petID)
+	if not petInfo.valid then
+		return
+	end
+
+	-- flag buttons that are being shown in the queue (different menu, doesn't show leveling icon)
+	self.forQueue = self:GetParent():GetParent()==rematch.QueuePanel.List.ScrollFrame
+
+	-- both compact and normal share many identical fill tasks; do them here
+	rematch.FillCommonPetListButton(self,petID)
+
+	-- if this is a compact-mode button, finish with its specific function
+	if self.compact then
+		return rematch.FillCompactListButton(self,petID)
+	end
+
+	-- finish filling in normal mode buttons
+
+	-- hide Back texture (bling will do whole button if Back is missing/not visible)
+	self.Back:SetShown(not self.forMiniQueue)
+
+	-- rarity
+	local rarity = petInfo.rarity
+	if rarity and not settings.HideRarityBorders then
+		self.Rarity:SetVertexColor(ITEM_QUALITY_COLORS[petInfo.rarity-1].r, ITEM_QUALITY_COLORS[petInfo.rarity-1].g, ITEM_QUALITY_COLORS[petInfo.rarity-1].b)
+	else
+		self.Rarity:SetVertexColor(0.5,0.5,0.5)
+	end
+
+	-- notes and leveling buttons
+	-- change right anchor of name depending on footnotes/breed
+	local hasNotes, isLeveling, inTeams = (not self.forMiniQueue and petInfo.hasNotes), (not self.forQueue and petInfo.isLeveling), (not self.forMiniQueue and RematchSettings.ShowInTeamsFootnotes and petInfo.inTeams)
+	-- self.Notes:SetShown(hasNotes)
+	-- self.Leveling:SetShown(isLeveling)
+	-- self.Leveling:SetPoint("TOPRIGHT",-2 - (hasNotes and 20 or 0),-3)
+
+
+	local footnoteX = -2
+	-- notes
+	if hasNotes then
+		self.Notes:Show()
+		self.Notes:SetPoint("TOPRIGHT",footnoteX,-3)
+		footnoteX = footnoteX - 20
+	else
+		self.Notes:Hide()
+	end
+	-- leveling
+	if isLeveling then
+		self.Leveling:Show()
+		self.Leveling:SetPoint("TOPRIGHT",footnoteX,-3)
+		footnoteX = footnoteX - 20
+	else
+		self.Leveling:Hide()
+	end
+	-- inTeams
+	if inTeams then
+		self.InTeams:Show()
+		self.InTeams:SetPoint("TOPRIGHT",footnoteX,-3)
+		footnoteX = footnoteX - 20
+	else
+		self.InTeams:Hide()
+	end
+
+	if not self.forMiniQueue then
+		-- name and subname (subname is species name if pet has been renamed)
+		self.Name:SetPoint("TOPRIGHT", min(footnoteX,-32), -4)
+		self.Name:Show()
+		if petInfo.customName then
+			self.Name:SetHeight(21)
+			self.Name:SetText(petInfo.customName)
+			self.SubName:SetText(petInfo.speciesName)
+			self.SubName:Show()
+		else
+			self.Name:SetHeight(36)
+			self.Name:SetText(petInfo.speciesName)
+			self.SubName:Hide()
+		end
+		-- coloring name
+		if petInfo.owned and not petInfo.isRevoked and petInfo.isSummonable then
+			if settings.ColorPetNames then
+				self.Name:SetTextColor(ITEM_QUALITY_COLORS[petInfo.rarity-1].r, ITEM_QUALITY_COLORS[petInfo.rarity-1].g, ITEM_QUALITY_COLORS[petInfo.rarity-1].b)
+			else
+				self.Name:SetTextColor(1,0.82,0)
+			end
+		else
+			self.Name:SetTextColor(0.5,0.5,0.5)
+		end
+	else
+		self.Name:Hide()
+		self.SubName:Hide()
+	end
+
+	-- rare case of pet being wrapped (store or promotional pet waiting to be opened)
+	if petInfo.needsFanfare then
+		self.Name:SetText(format("%s%s",rematch.hexBlue,L["A New Pet!"]))
+		self.Pet:SetTexture("Interface\\Icons\\Item_Shop_GiftBox01")
+	end
+
+	if self.forQueue then
+		rematch:DimQueueListButton(self,rematch.skippedPicks[petInfo.petID])
+	end
+
+end
+
+-- callback for compact-mode pet list buttons
+function rematch:FillCompactListButton(petID)
+
+	local petInfo = rematch.petInfo:Fetch(petID)
+
+	-- in compact buttons, the background is the rarity color
+	local rarity = petInfo.rarity
+	if rarity then
+		self.Back:SetTexCoord(0,1,0.5,1)
+		self.Back:SetVertexColor(ITEM_QUALITY_COLORS[petInfo.rarity-1].r*.6, ITEM_QUALITY_COLORS[petInfo.rarity-1].g*.6, ITEM_QUALITY_COLORS[petInfo.rarity-1].b*.6)
+	else -- for unowned pets, using the black background (like teams)
+		self.Back:SetTexCoord(0,1,0,0.5)
+		self.Back:SetVertexColor(1,1,1)
+	end
+
+	local rightAnchor = petInfo.breedName and -25 or -2
+	local hasNotes, isLeveling, inTeams = (not self.forMiniQueue and petInfo.hasNotes), (not self.forQueue and petInfo.isLeveling), (RematchSettings.ShowInTeamsFootnotes and not self.forMiniQueue and petInfo.inTeams)
+	self.Notes:SetShown(hasNotes)
+	self.Notes:SetPoint("RIGHT",rightAnchor,0)
+	rightAnchor = rightAnchor + (hasNotes and -20 or 0)
+	self.Leveling:SetShown(isLeveling)
+	self.Leveling:SetPoint("RIGHT",rightAnchor,0)
+	rightAnchor = rightAnchor + (isLeveling and -20 or 0)
+	self.InTeams:SetShown(inTeams)
+	self.InTeams:SetPoint("RIGHT",rightAnchor,0)
+	rightAnchor = rightAnchor + (isLeveling and -20 or 0)
+
+	if not self.forMiniQueue then
+		self.Name:SetFontObject(RematchSettings.SlimListSmallText and GameFontNormalSmall or GameFontNormal)
+		self.Name:SetText(petInfo.name)
+		self.Name:Show()
+
+		if petInfo.owned and not petInfo.isRevoked and petInfo.isSummonable then
+			self.Name:SetTextColor(1,0.82,0)
+		else
+			self.Name:SetTextColor(0.5,0.5,0.5)
+		end
+
+		-- set right name anchor depending on footnotes and breed
+		self.Name:SetPoint("RIGHT",rightAnchor-2,0)
+
+	else -- pets in miniqueue don't show a name
+		self.Name:Hide()
+	end
+
+
+	-- rare case of pet being wrapped (store or promotional pet waiting to be opened)
+	if petInfo.needsFanfare then
+		self.Name:SetText(format("%s%s",rematch.hexBlue,L["A New Pet!"]))
+		self.Pet:SetTexture("Interface\\Icons\\Item_Shop_GiftBox01")
+	end
+
+	if self.forQueue then
+		rematch:DimQueueListButton(self,rematch.skippedPicks[petInfo.petID])
+	end
+
+end
+
+-- do the fills that are common with both compact and normal pet list buttons
+function rematch:FillCommonPetListButton(petID)
+
+	local settings = RematchSettings
+
+	self.forMiniQueue = self.forQueue and rematch.MiniQueue:IsVisible() -- true if this is a fill for a miniqueue pet
+
+	local petInfo = rematch.petInfo:Fetch(petID)
+
+	self.Pet:SetTexture(petInfo.icon)
+	self.Pet:SetDesaturated(not petInfo.owned)
+
+	-- breed
+	local breed = petInfo.breedName
+	if breed and not self.forMiniQueue then
+		self.Breed:SetText(breed)
+		self.Breed:Show()
+	else
+		self.Breed:Hide()
+	end
+
+	if not self.forMiniQueue or self.compact then
+		rematch:FillPetTypeIcon(self.TypeDecal,petInfo.petType,self.compact and "Interface\\PetBattles\\PetIcon-")
+		self.TypeDecal:SetDesaturated(not petInfo.owned)
+		self.TypeDecal:Show()
+	else
+		self.TypeDecal:Hide()
+	end
+
+	-- if pet is revoked, then color it red (specific functions will color name red too)
+	if petInfo.isRevoked then
+		self.Pet:SetVertexColor(1,0,0)
+	elseif not petInfo.isSummonable then
+		self.Pet:SetDesaturated(true)
+	else
+		self.Pet:SetVertexColor(1,1,1)
+	end
+
+	-- show overlay if pet is dead or injured
+	if petInfo.isDead then
+		self.Status:SetTexCoord(0,0.3125,0,0.625)
+		self.Status:Show()
+	elseif petInfo.isInjured then
+		self.Status:SetTexCoord(0.3125,0.625,0,0.625)
+		self.Status:Show()
+	else
+		self.Status:Hide()
+	end
+
+	-- if pet is summoned, add border around pet
+	if petInfo.isSummoned then
+		-- queue and pet panels share this fill function; only want to select summoned
+		-- pet on pet panel. self's parent's parent's parent is PetPanel if so
+		local parentPanel = self:GetParent():GetParent():GetParent():GetParent()
+		if parentPanel==rematch.PetPanel then
+			parentPanel.SelectedOverlay:SetParent(self)
+			parentPanel.SelectedOverlay:SetPoint("TOPLEFT",self.Back,"TOPLEFT")
+			parentPanel.SelectedOverlay:SetPoint("BOTTOMRIGHT",self.Back,"BOTTOMRIGHT")
+			parentPanel.SelectedOverlay:Show()		
+		end
+	end
+
+	-- level bubble and level
+	local showLevel = petInfo.canBattle and petInfo.level and (not settings.HideLevelBubbles or petInfo.level<25)
+	if not self.compact then
+		self.LevelBack:SetShown(showLevel)
+	end
+	self.LevelText:SetShown(showLevel)
+	self.LevelText:SetText(petInfo.level or "")
+
+	self.Favorite:SetShown(petInfo.isFavorite)
+
+end
+
+-- clicking the leveling footnote in a petlist will jump to the pet in the queue
+local function findPetInQueue(self)
+	rematch:ShowQueue(self:GetParent().petID)
+end
+
+local function findPetInTeams(self)
+	local petID = self:GetParent().petID
+	rematch.TeamPanel:SetTeamSearch(petID)
+	rematch:AutoShow()
+	rematch:ShowTeam()
+end
+
+
+-- when a pet listbutton is created
+function rematch:PetListButtonOnLoad()
+	self:RegisterForClicks("AnyUp")
+	self:RegisterForDrag("LeftButton")
+	-- hook up scripts for notes texture
+	if self.Notes then
+		self:SetTextureScript(self.Notes,"OnEnter",rematch.Notes.OnEnter)
+		self:SetTextureScript(self.Notes,"OnLeave",rematch.Notes.OnLeave)
+		self:SetTextureScript(self.Notes,"OnClick",rematch.Notes.OnClick)
+		--self:SetTextureScript(self.Leveling,"OnClick",findPetInQueue)
+		--self:SetTextureScript(self.InTeams,"OnClick",findPetInTeams)
+	end
+	-- and pet icon
+	self:SetTextureScript(self.Pet,"OnClick",rematch.PetListButtonPetOnClick)
 end

@@ -45,8 +45,8 @@ do
 	local ClickFrame = CreateFrame("Button", nil, UIParent)
 
 	TabFrame1:SetBackdrop({
-		bgFile="Interface\\DialogFrame\\UI-DialogBox-Background",
-		edgeFile="Interface\\DialogFrame\\UI-DialogBox-Border",
+		bgFile="Interface\\DialogFrame\\UI-DialogBox-Background",--131071
+		edgeFile="Interface\\DialogFrame\\UI-DialogBox-Border",--131072
 		tile=1, tileSize=32, edgeSize=32,
 		insets={left=11, right=12, top=12, bottom=11}
 	});
@@ -220,7 +220,7 @@ do
 			self:ShowMenu(self.dropdown.values)
 		end
 	end
-	
+
 	ClickFrame:SetAllPoints(DBM_GUI_OptionsFrame)
 	ClickFrame:SetFrameStrata("TOOLTIP")
 	ClickFrame:RegisterForClicks("AnyDown")
@@ -230,9 +230,9 @@ do
 	end)
 
 	------------------------------------------------------------------------------------------
-	
+
 	local dropdownPrototype = CreateFrame("Frame")
-	
+
 	function dropdownPrototype:SetSelectedValue(selected)
 		if selected and self.values and type(self.values) == "table" then
 			for k,v in next, self.values do
@@ -244,7 +244,7 @@ do
 			end
 		end
 	end
-	
+
 	function DBM_GUI:CreateDropdown(title, values, vartype, var, callfunc, width, height, parent)
 		local FrameTitle = "DBM_GUI_DropDown"
 		-- Check Values
@@ -254,7 +254,7 @@ do
 				entry.value = entry.value or entry.text
 			end
 		end
-		
+
 		-- Create the Dropdown Frame
 		local dropdown = CreateFrame("Frame", FrameTitle..self:GetNewID(), parent or self.frame, "DBM_GUI_DropDownMenuTemplate")
 		dropdown.creator = self
@@ -297,7 +297,7 @@ do
 			dropdown.titletext:SetFontObject('GameFontNormalSmall')
 			dropdown.titletext:SetText(title)
 		end
-		
+
 		local obj = setmetatable(dropdown, {__index = dropdownPrototype})
 
 		if vartype and vartype == "DBM" and DBM.Options[var] ~= nil then
@@ -306,6 +306,14 @@ do
 			dropdown:SetScript("OnShow", function() dropdown:SetSelectedValue(DBM.Bars:GetOption(var)) end)
 		elseif vartype then
 			dropdown:SetScript("OnShow", function() dropdown:SetSelectedValue(vartype.Options[var]) end)
+		else--For external modules like DBM-RaidLeadTools
+			for k,v in next, dropdown.values do
+				if v.value ~= nil and v.value == var or v.text == var then
+					_G[dropdown:GetName().."Text"]:SetText(v.text)
+					dropdown.value = v.value
+					dropdown.text = v.text
+				end
+			end
 		end
 
 		return obj

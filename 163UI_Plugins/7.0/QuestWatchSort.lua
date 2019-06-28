@@ -67,7 +67,7 @@ local function UpdateQuestsDistance()
             local currDist = GetDistanceSqToQuest(GetQuestLogIndexByID(GetSuperTrackedQuestID()))
             if currDist and currDist - nearest > nearest * 0.07 + 1000 then
                 SetSuperTrackedQuestID(questID)
-                PlaySoundFile("Sound\\Interface\\UI_BonusLootRoll_End_01.ogg")
+                PlaySound(31581) --"Sound\\Interface\\UI_BonusLootRoll_End_01.ogg"
                 --PlaySoundFile("Sound\\Interface\\UI_BonusLootRoll_Start_01.ogg", "master")
                 --PlaySound(73276, "master") --"UI_WorldQuest_Map_Select"
                 --PlaySound(8939, "master") --"KeyRingClose"
@@ -128,7 +128,8 @@ frame:SetScript("OnEvent", function(self, event)
         EnableOrDisable()
     else
         if (event == "NEW_WMO_CHUNK" and not WorldMapFrame:IsVisible()) then
-            SetMapToCurrentZone() --Entering Dalaran Guardian Hall, map is not updated.
+            local mapId = C_Map.GetBestMapForUnit("player")
+            if mapId then WorldMapFrame:SetMapID(mapId) end
         end
         UpdateQuestsDistance()
     end

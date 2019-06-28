@@ -16,16 +16,45 @@ LunarFestival.points = {}
 local db
 local defaults = { profile = { completed = false, icon_scale = 1.4, icon_alpha = 0.8 } }
 
+local continents = {
+	[12]  = true, -- Kalimdor
+	[13]  = true, -- Eastern Kingdoms
+	[101] = true, -- Outland
+	[113] = true, -- Northrend
+	[424] = true, -- Pandaria
+	[572] = true, -- Draenor
+	[619] = true, -- Broken Isles
+	[875] = true, -- Zandalar
+	[876] = true, -- Kul Tiras
+}
+
+local notes = {
+	[8619]  = "Inside the dungeon.", -- Elder Morndeep, Blackrock Depths
+	[8635]  = "Inside Earthsong Falls.", -- Elder Splitrock, Maraudon
+	[8644]  = "Inside Lower Blackrock Spire.", -- Elder Stonefort, Lower Blackrock Spire
+	[8647]  = "Speak to Zidormi at the north of the zone to gain access to this Elder.",
+	[8648]  = "Speak to Zidormi in Tirisfal to gain access to The Undercity.",
+	[8652]  = "Speak to Zidormi in Tirisfal to gain access to Brill.",
+	[8676]  = "Inside the dungeon.", -- Elder Wildmane, Zul'Farrak
+	[8713]  = "Inside the dungeon.", -- Elder Starsong, Sunken Temple
+	[8715]  = "Speak to Zidormi in Darkshore to gain access to Teldrassil.",
+	[8718]  = "Speak to Zidormi in Darkshore to gain access to Darnassus.",
+	[8721]  = "Speak to Zidormi in Darkshore to gain access to Lor'danel.",
+	[8727]  = "Inside the dungeon.", -- Elder Farwhisper, Stratholme
+	[13017] = "Inside the dungeon.", -- Elder Jarten, Utgarde Keep
+	[13021] = "Inside the dungeon.", -- Elder Igasho, The Nexus
+	[13022] = "Inside the dungeon.", -- Elder Nurgen, Azjol-Nerub
+	[13023] = "Inside the dungeon.", -- Elder Kilias, Drak'Tharon Keep
+	[13065] = "Inside the dungeon.", -- Elder Ohanzee, Gundrak
+	[13066] = "Inside the dungeon.", -- Elder Yurauk, Halls of Stone
+	[13067] = "Inside the dungeon.", -- Elder Chogan'gada, Utgarde Pinnacle
+}
 
 -- upvalues
 local _G = getfenv(0)
 
 local C_Timer_NewTicker = _G.C_Timer.NewTicker
-local CalendarGetDate = _G.CalendarGetDate
-local CalendarGetDayEvent = _G.CalendarGetDayEvent
-local CalendarGetMonth = _G.CalendarGetMonth
-local CalendarGetNumDayEvents = _G.CalendarGetNumDayEvents
-local CalendarSetAbsMonth = _G.CalendarSetAbsMonth
+local C_Calendar = _G.C_Calendar
 local GameTooltip = _G.GameTooltip
 local GetAchievementCriteriaInfo = _G.GetAchievementCriteriaInfo
 local GetGameTime = _G.GetGameTime
@@ -46,21 +75,6 @@ local points = LunarFestival.points
 
 
 -- plugin handler for HandyNotes
-local function infoFromCoord(mapFile, coord)
-	mapFile = gsub(mapFile, "_terrain%d+$", "")
-
-	local point = points[mapFile] and points[mapFile][coord]
-
-	if point == "Zidormi" then
-		return point
-	else
-		local nameOfElder = GetAchievementCriteriaInfo(point[2], point[3])
-		local isInDungeon = point[4]
-
-		return nameOfElder, isInDungeon
-	end
-end
-
 function LunarFestival:OnEnter(mapFile, coord)
 	local tooltip = self:GetParent() == WorldMapButton and WorldMapTooltip or GameTooltip
 
@@ -70,17 +84,13 @@ function LunarFestival:OnEnter(mapFile, coord)
 		tooltip:SetOwner(self, "ANCHOR_RIGHT")
 	end
 
-	local nameOfElder, isInDungeon = infoFromCoord(mapFile, coord)
+	local point = points[mapFile] and points[mapFile][coord]
+	local nameOfElder = GetAchievementCriteriaInfo(point[2], point[3])
 
 	tooltip:SetText(nameOfElder)
 
-	if nameOfElder == "Zidormi" then
-		tooltip:AddLine("Talk to the Time Keeper to travel back in time if you can't find the Elder.", 1, 1, 1)
-		tooltip:AddLine(" ")
-	end
-
-	if isInDungeon then
-		tooltip:AddLine("Inside the dungeon instance.", 1, 1, 1)
+	if notes[point[1]] then
+		tooltip:AddLine(notes[point[1]])
 		tooltip:AddLine(" ")
 	end
 
@@ -103,22 +113,23 @@ end
 
 local function createWaypoint(mapFile, coord)
 	local x, y = HandyNotes:getXY(coord)
-	local m = HandyNotes:GetMapFiletoMapID(mapFile)
+	local point = points[mapFile] and points[mapFile][coord]
+	local nameOfElder = GetAchievementCriteriaInfo(point[2], point[3])
 
-	local nameOfElder = infoFromCoord(mapFile, coord)
-
-	TomTom:AddMFWaypoint(m, nil, x, y, { title = nameOfElder })
-	TomTom:SetClosestWaypoint()
+	TomTom:AddWaypoint(mapFile, x, y, { title = nameOfElder, persistent = nil, minimap = true, world = true })
 end
 
 local function createAllWaypoints()
 	for mapFile, coords in next, points do
+		if not continents[mapFile] then
 		for coord, questID in next, coords do
-			if coord and (db.completed or not completedQuests[questID]) then
+			if coord and (db.completed or not completedQuests[questID[1]]) then
 				createWaypoint(mapFile, coord)
 			end
 		end
+		end
 	end
+	TomTom:SetClosestWaypoint()
 end
 
 function LunarFestival:OnClick(button, down, mapFile, coord)
@@ -134,71 +145,23 @@ end
 
 do
 	-- custom iterator we use to iterate over every node in a given zone
-	local function iter(t, prestate)
-		if not LunarFestival.isEnabled then return nil end
-		if not t then return nil end
+	local function iterator(t, prev)
+		if not LunarFestival.isEnabled then return end
+		if not t then return end
 
-		local state, value = next(t, prestate)
-
-		while state do -- have we reached the end of this zone?
-			if value == "Zidormi" then
-				return state, nil, "interface\\icons\\spell_holy_borrowedtime", db.icon_scale, db.icon_alpha
-			elseif (db.completed or not completedQuests[value[1]]) then
+		local coord, value = next(t, prev)
+		while coord do
+			if value and (db.completed or not completedQuests[value[1]]) then
 				local icon = value[4] and "interface\\icons\\spell_hunter_lonewolf" or "interface\\icons\\inv_misc_elvencoins"
-				return state, nil, icon, db.icon_scale, db.icon_alpha
+				return coord, nil, icon, db.icon_scale, db.icon_alpha
 			end
 
-			state, value = next(t, state) -- get next data
-		end
-
-		return nil, nil, nil, nil
-	end
-
-	local function iterCont(t, prestate)
-		if not LunarFestival.isEnabled then return nil end
-		if not t then return nil end
-
-		local zone = t.Z
-		local mapFile = HandyNotes:GetMapIDtoMapFile(t.C[zone])
-		local state, value, data, cleanMapFile
-
-		while mapFile do
-			cleanMapFile = gsub(mapFile, "_terrain%d+$", "")
-			data = points[cleanMapFile]
-
-			if data then -- only if there is data for this zone
-				state, value = next(data, prestate)
-
-				while state do -- have we reached the end of this zone?
-					if value == "Zidormi" then
-						return state, mapFile, "interface\\icons\\spell_holy_borrowedtime", db.icon_scale, db.icon_alpha
-					elseif (db.completed or not completedQuests[value[1]]) then
-						local icon = value[4] and "interface\\icons\\spell_hunter_lonewolf" or "interface\\icons\\inv_misc_elvencoins"
-						return state, mapFile, icon, db.icon_scale, db.icon_alpha
-					end
-
-					state, value = next(data, state) -- get next data
-				end
-			end
-
-			-- get next zone
-			zone = next(t.C, zone)
-			t.Z = zone
-			mapFile = HandyNotes:GetMapIDtoMapFile(t.C[zone])
-			prestate = nil
+			coord, value = next(t, coord)
 		end
 	end
 
-	function LunarFestival:GetNodes(mapFile)
-		local C = HandyNotes:GetContinentZoneList(mapFile) -- Is this a continent?
-
-		if C then
-			local tbl = { C = C, Z = next(C) }
-			return iterCont, tbl, nil
-		else
-			mapFile = gsub(mapFile, "_terrain%d+$", "")
-			return iter, points[mapFile], nil
-		end
+	function LunarFestival:GetNodes2(mapID, minimap)
+		return iterator, points[mapID]
 	end
 end
 
@@ -206,8 +169,8 @@ end
 -- config
 local options = {
 	type = "group",
-	name = "Lunar Festival",
-	desc = "Lunar Festival elder NPC locations.",
+	name = "春节长者", --"Lunar Festival",
+	desc = "春节长者地图位置.", --"Lunar Festival elder NPC locations"
 	get = function(info) return db[info[#info]] end,
 	set = function(info, v)
 		db[info[#info]] = v
@@ -250,25 +213,27 @@ local options = {
 -- check
 local setEnabled = false
 local function CheckEventActive()
-	local _, month, day, year = CalendarGetDate()
-	local curMonth, curYear = CalendarGetMonth()
+	local calendar = C_Calendar.GetDate()
+	local month, day, year = calendar.month, calendar.monthDay, calendar.year
+
+	local monthInfo = C_Calendar.GetMonthInfo()
+	local curMonth, curYear = monthInfo.month, monthInfo.year
+
 	local monthOffset = -12 * (curYear - year) + month - curMonth
 	local numEvents = C_Calendar.GetNumDayEvents(monthOffset, day)
 
 	for i=1, numEvents do
-		local _, eventHour, _, eventType, state, _, texture = CalendarGetDayEvent(monthOffset, day, i)
+		local event = C_Calendar.GetDayEvent(monthOffset, day, i)
 
-		if texture == 235469 or texture == 235470 or texture == 235471 then
-			if state == "ONGOING" then
-				setEnabled = true
-			else
-				local hour = GetGameTime()
+		if event.iconTexture == 235469 or event.iconTexture == 235470 or event.iconTexture == 235471 then
+			local hour, minute = GetGameTime()
 
-				if state == "END" and hour <= eventHour or state == "START" and hour >= eventHour then
-					setEnabled = true
-				else
-					setEnabled = false
-				end
+			setEnabled = event.sequenceType == "ONGOING" -- or event.sequenceType == "INFO"
+
+			if event.sequenceType == "START" then
+				setEnabled = hour >= event.startTime.hour and (hour > event.startTime.hour or minute >= event.startTime.minute)
+			elseif event.sequenceType == "END" then
+				setEnabled = hour <= event.endTime.hour and (hour < event.endTime.hour or minute <= event.endTime.minute)
 			end
 		end
 	end
@@ -295,16 +260,31 @@ end
 function LunarFestival:OnEnable()
 	self.isEnabled = false
 
-	--[[
-	local HereBeDragons = LibStub("HereBeDragons-1.0", true)
+	local HereBeDragons = LibStub("HereBeDragons-2.0", true)
 	if not HereBeDragons then
-		HandyNotes:Print("Your installed copy of HandyNotes is out of date and the Lunar Festival plug-in will not work correctly.  Please update HandyNotes to version 1.4.0 or newer.")
+		HandyNotes:Print("Your installed copy of HandyNotes is out of date and the Lunar Festival plug-in will not work correctly.  Please update HandyNotes to version 1.5.0 or newer.")
 		return
 	end
-	--]]
 
-	local _, month, _, year = CalendarGetDate()
-    C_Calendar.SetAbsMonth(month, year)
+	for continentMapID in next, continents do
+		local children = C_Map.GetMapChildrenInfo(continentMapID)
+		for _, map in next, children do
+			local coords = points[map.mapID]
+			if coords then
+				for coord, criteria in next, coords do
+					local mx, my = HandyNotes:getXY(coord)
+					local cx, cy = HereBeDragons:TranslateZoneCoordinates(mx, my, map.mapID, continentMapID)
+					if cx and cy then
+						points[continentMapID] = points[continentMapID] or {}
+						points[continentMapID][HandyNotes:getCoord(cx, cy)] = criteria
+					end
+				end
+			end
+		end
+	end
+
+	local calendar = C_Calendar.GetDate()
+	C_Calendar.SetAbsMonth(calendar.month, calendar.year)
 
 	C_Timer_NewTicker(15, CheckEventActive)
 	HandyNotes:RegisterPluginDB("LunarFestival", self, options)

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(133, "DBM-Party-Cataclysm", 3, 71)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 190 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 194 $"):sub(12, -3))
 mod:SetCreatureID(40319)
 mod:SetEncounterID(1048)
 mod:SetZone()
@@ -21,9 +21,9 @@ mod:RegisterEventsInCombat(
 --local warnShredding				= mod:NewSpellAnnounce(75271, 3)
 local warnFlamingFixate	 		= mod:NewTargetAnnounce(82850, 4)
 
-local specWarnFlamingFixate		= mod:NewSpecialWarningRun(82850, nil, nil, nil, 4)
-local specWarnDevouring 		= mod:NewSpecialWarningDodge(90950, nil, nil, nil, 2)
-local specWarnSeepingTwilight	= mod:NewSpecialWarningMove(75317)
+local specWarnFlamingFixate		= mod:NewSpecialWarningRun(82850, nil, nil, nil, 4, 2)
+local specWarnDevouring 		= mod:NewSpecialWarningDodge(90950, nil, nil, nil, 2, 2)
+local specWarnSeepingTwilight	= mod:NewSpecialWarningMove(75317, nil, nil, nil, 2, 2)
 
 local timerAddCD				= mod:NewCDTimer(22, 90949, nil, nil, nil, 1, nil, DBM_CORE_DAMAGE_ICON)--22-27. 24 is the average
 local timerDevouringCD			= mod:NewCDTimer(40, 90950, nil, nil, nil, 3)
@@ -46,12 +46,14 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerDevouring:Cancel()
 	elseif args.spellId == 75317 and args:IsPlayer() then
 		specWarnSeepingTwilight:Show()
+		specWarnSeepingTwilight:Play("runaway")
 	end
 end
 
 function mod:SPELL_CAST_START(args)
 	if args.spellId == 90950 then
 		specWarnDevouring:Show()
+		specWarnDevouring:Play("breathsoon")
 		timerDevouring:Start()
 		timerDevouringCD:Start()
 	end
@@ -87,6 +89,7 @@ function mod:UNIT_AURA_UNFILTERED(uId)
 		fixateWarned[name] = true
 		if uId == "player" then
 			specWarnFlamingFixate:Show()
+			specWarnFlamingFixate:Play("justrun")
 		else
 			warnFlamingFixate:Show(DBM:GetUnitFullName(uId))
 		end

@@ -1,0 +1,8 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+	<Button name="SUF_SecureUnitTemplate" virtual="true" inherits="SecureUnitButtonTemplate, SecureHandlerStateTemplate">
+		<Attributes>
+			<Attribute name="refreshUnitChange" type="string" value="local unit = self:GetAttribute('unit'); if unit then RegisterStateDriver(self, 'vehicleui', ('[target=%s,unithasvehicleui]vehicle; no'):format(unit)) else UnregisterStateDriver(self, 'vehicleui') end" />
+			<Attribute name="_onstate-vehicleui" type="string" value="local unit = self:GetAttribute('unit'); if unit and newstate == 'vehicle' and UnitPlayerOrPetInRaid(unit) and not UnitTargetsVehicleInRaidUI(unit) then self:SetAttribute('toggleForVehicle', false) else self:SetAttribute('toggleForVehicle', true) end" />
+		</Attributes>
+	</Button>
+</Ui>

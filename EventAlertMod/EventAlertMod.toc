@@ -1,4 +1,4 @@
-﻿## Interface: 80000
+﻿## Interface: 80200
 ## Title: EventAlertMod
 ## Title-zhTW: [EventAlertMod] 法術監控觸發提示
 ## Title-zhCN: [EventAlertMod] 法术监控触发提示
@@ -12,8 +12,8 @@
 ## LoadOnDemand: 0
 ## SavedVariables: EA_Config,EA_Position,EA_Items,EA_AltItems,EA_TarItems,EA_ScdItems,EA_GrpItems,EA_Pos,EA_Deleted
 
-libs\ActionButton\EventAlert_ActionBarButtonSpellActivationAlert.xml
-libs\ActionButton\EventAlert_ActionButtonOverlayGlow.lua
+#libs\ActionButton\EventAlert_ActionBarButtonSpellActivationAlert.xml
+#libs\ActionButton\EventAlert_ActionButtonOverlayGlow.lua
 
 locale\localization.comm.lua
 locale\localization.tw.lua

@@ -142,9 +142,9 @@ function templates.SetButtonScrollable(button, spellList, attr, snippet)
 	for i = 1, #spellList do
 		local data = spellList[i]
 		if type(data) == "table" then
-			button:SetAttribute("spellList"..i, data.spell)
+			button:SetAttribute("spellList"..i, data.id)
 			if i == 1 then
-				button:SetAttribute(attr, data.spell)
+				button:SetAttribute(attr, data.id) --fix
 			end
 		end
 	end

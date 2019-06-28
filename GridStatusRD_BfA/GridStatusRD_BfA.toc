@@ -1,0 +1,17 @@
+## Interface: 80200
+## Title: GridStatusRaidDebuff(BfA)
+## Notes: Debuff List for Battle for Azeroth
+## Author: tptbk(Doadin-Malorne-US)
+## Version: 8.2.0.0
+## Grid Author: Pastamancer & Maia
+## Dependencies: GridStatusRaidDebuff
+
+CheckCompat.lua
+Uldir.lua
+Azeroth.lua
+BattleofDazaralor.lua
+CrucibleofStorms.lua
+
+
+## Title: |cff880303[爱不易]|r Grid 团队减益BfA
+## X-Vendor: AbyUI

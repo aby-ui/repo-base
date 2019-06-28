@@ -1,4 +1,22 @@
-
+local zoneOrder = {
+    [C_Map.GetMapInfo(1358).name] = 1,
+    [C_Map.GetMapInfo(1162).name] = 1.1,
+    [C_Map.GetMapInfo(1041).name] = 1.2,
+    [C_Map.GetMapInfo(1038).name] = 1.3,
+    [C_Map.GetMapInfo(974).name] = 1.4,
+    [C_Map.GetMapInfo(1010).name] = 1.5,
+    [C_Map.GetMapInfo(1015).name] = 1.6,
+    [C_Map.GetMapInfo(936).name] = 1.7,
+    [C_Map.GetMapInfo(1004).name] = 1.8,
+    [C_Map.GetMapInfo(934).name] = 1.9,
+    [C_Map.GetMapInfo(1039).name] = 1.91,
+    [C_Map.GetMapInfo(1148).name] = 2.4, --奥迪尔
+    [C_Map.GetMapInfo(909).name] = 2.5, --王座
+    [C_Map.GetMapInfo(850).name] = 3,
+    [C_Map.GetMapInfo(764).name] = 4,
+    [C_Map.GetMapInfo(807).name] = 5,
+    [C_Map.GetMapInfo(777).name] = 6,
+}
 ---------------------------------------------------------
 --	Library
 ---------------------------------------------------------
@@ -68,6 +86,12 @@ local ignore_ids = {
 	[57723] = true, -- Exhaustion
 	[95809] = true, -- Insanity (hunter pet Ancient Hysteria debuff)
     [195776] = true, -- 月羽疫病
+    [224127] = true, -- Crackling Surge Shammy Debuff
+    [190185] = true, -- Feral Spirit Shammy Debuff
+    [224126] = true, -- Icy Edge Shammy Debuff
+    [197509] = true, -- Bloodworm DK Debuff
+    [5215] = true, -- Prowl Druid Debuff
+    [115191] = true, -- Stealth Rogue Debuff
 }
 
 local clientVersion
@@ -300,6 +324,18 @@ function GridStatusRaidDebuff:OnInitialize()
 	self.super.OnInitialize(self)
 	self:RegisterStatuses()
 	db = self.db.profile.debuff_options
+    --重伤优先级下降
+    local graviousSpellId = 240559
+    local spellName = GetSpellInfo(graviousSpellId)
+    local detected = self.db.profile.detected_debuff
+    if detected then
+        for zone, t in pairs(db) do
+            -- 检测到了重伤但没有设置
+            if detected[zone] and detected[zone][spellName] == graviousSpellId and not t[spellName] then
+                t[spellName] = { c_prior = 3, i_prior = 3, }
+            end
+        end
+    end
 end
 
 function GridStatusRaidDebuff:OnEnable()
@@ -346,6 +382,7 @@ function GridStatusRaidDebuff:CheckDetectZone()
 	if detectStatus then
 		self:CreateZoneMenu(realzone)
 		if not debuff_list[realzone] then debuff_list[realzone] = {} end
+    -- FIXME
 		self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED", "ScanNewDebuff")
 	else
 		self:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
@@ -443,42 +480,52 @@ function GridStatusRaidDebuff:UpdateAllUnits()
 	end
 end
 
-function GridStatusRaidDebuff:ScanNewDebuff(e)
-    local ts, event, hideCaster, srcguid, srcname, srcflg, srcraidflg, dstguid, dstname, dstflg, dstraidflg, spellId, name, _, buffType= CombatLogGetCurrentEventInfo()
-	if not name then return end
+function GridStatusRaidDebuff:ScanNewDebuff(unitid, guid)
+    local timestamp, event, hideCaster, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destFlags, destRaidFlags, spellId, name, spellSchool, auraType = CombatLogGetCurrentEventInfo()
 	local settings = self.db.profile["alert_RaidDebuff"]
 	if (settings.enable and debuff_list[realzone]) then
-		if event == "SPELL_AURA_APPLIED" and srcguid and not GridRoster:IsGUIDInRaid(srcguid) and GridRoster:IsGUIDInRaid(dstguid)
+		if event == "SPELL_AURA_APPLIED" and sourceGUID and auraType == "DEBUFF" and not GridRoster:IsGUIDInGroup(sourceGUID) and GridRoster:IsGUIDInGroup(destGUID)
 			and not debuff_list[realzone][name] then
 			if ignore_ids[spellId] then return end --Ignore Dazed
 
 			-- Filter out non-debuff effects, only debuff effects are shown
 			-- No reason to detect buffs too
 			local unitid, debuff
-			unitid = GridRoster:GetUnitidByGUID(dstguid)
-			debuff = buffType == 'DEBUFF' --aby8
-			--if (UnitDebuff(unitid, name)) then
-			--	debuff = true
-			-- else
-			-- 	self:Debug("Debuff not found", name)
-			--end
+			unitid = GridRoster:GetUnitidByGUID(destGUID)
+			debuff = true --aby8 already checked auraType
+--[[
+            for i=1,40 do
+                local spellname = UnitDebuff(unitid, i)
+                if not spellname then break end
+                if spellname == name then
+                    debuff = true
+                else
+                    self:Debug("Debuff not found", name)
+                end
+			    --if (UnitDebuff(unitid, i)) then
+			    --	debuff = true
+			    -- else
+			    -- 	self:Debug("Debuff not found", name)
+			    --end
+            end
+--]]
 			if not debuff then return end
 
-			self:Debug("New Debuff", srcname, dstname, name, unitid, tostring(debuff))
-			-- self:Debug("New Debuff", srcname, dstname, name)
+			self:Debug("New Debuff", sourceName, destName, name, unitid, tostring(debuff))
 
 			self:DebuffLocale(realzone, name, spellId, 5, 5, true, true)
 			if not self.db.profile.detected_debuff[realzone] then self.db.profile.detected_debuff[realzone] = {} end
 			if not self.db.profile.detected_debuff[realzone][name] then self.db.profile.detected_debuff[realzone][name] = spellId end
 
-			self:LoadZoneDebuff(realzone, name)
+            self:LoadZoneDebuff(realzone, name)
+			
 		end
 	end
 end
 
 function GridStatusRaidDebuff:ScanUnit(unitid, unitGuid)
 	local guid = unitGuid or UnitGUID(unitid)
-	--if not GridRoster:IsGUIDInRaid(guid) then	return end
+	--if not GridRoster:IsGUIDInGroup(guid) then	return end
 
 	local name, rank, icon, count, debuffType, duration, expirationTime, caster, isStealable, shouldConsolidate, spellId
 	local settings = self.db.profile["alert_RaidDebuff"]
@@ -519,7 +566,7 @@ function GridStatusRaidDebuff:ScanUnit(unitid, unitGuid)
 					if di_prior < data.i_prior then
 						di_prior = data.i_prior
 						d_name = name
-						d_icon = not data.noicon and icon
+						d_icon = 	not data.noicon and icon
 						-- if data.timer and dt_prior < data.i_prior then
 						if data.timer then
 							d_startTime = expirationTime - duration
@@ -636,6 +683,7 @@ end
 
 function GridStatusRaidDebuff:DebuffId(zoneid, first, second, icon_priority, color_priority, timer, stackable, color, default_disable, noicon)
 	local zone = C_Map.GetMapInfo(zoneid).name
+    if stackable == nil then stackable = true end
 
 	if (zone) then
 		self:DebuffLocale(zone, first, second, icon_priority, color_priority, timer, stackable, color, default_disable, noicon)
@@ -660,7 +708,7 @@ function GridStatusRaidDebuff:BossNameLocale(zone, order, en_boss)
 
 	args[zone].args[boss] = {
 			type = "group",
-			name = fmt("%s%s%s","   [ ", boss," ]"),
+			name = fmt("|cff00ff00%s%s%s|r","[ ", boss," ]"),
                         desc = L["Option for %s"]:format(boss),
 			order = ord,
 			guiHidden = true,
@@ -726,8 +774,12 @@ function GridStatusRaidDebuff:LoadZoneDebuff(zone, name)
 	local args = self.options.args[zone].args
 
 	-- Code by Mikk
+
 	k = debuff_list[zone][name]
+
+
 	local order = k.order
+
 	-- Make it sorted by name. Values become 9999.0 -- 9999.99999999
 	if order==9999 then
 		local a,b,c = string.byte(name, 1, 3)
@@ -735,12 +787,12 @@ function GridStatusRaidDebuff:LoadZoneDebuff(zone, name)
 	end
 	-- End of code by Mikk
 
-	if not args[name] then
+	if not args[name] and k then
 		description = L["Enable %s"]:format(name)
 
 		tip:SetHyperlink("spell:"..k.debuffId)
 		if tip:NumLines() > 1 then
-			description = tip[tip:NumLines()]:GetText()
+			description = tip[tip:NumLines()]:GetText().. "\nID: " .. k.debuffId
 		end
 
 		menuName = fmt("|T%s:0|t%s", k.icon, name)
@@ -909,13 +961,7 @@ function GridStatusRaidDebuff:LoadZoneDebuff(zone, name)
 	end
 end
 
-local zoneOrder = {
-    [C_Map.GetMapInfo(909).name] = 1,
-    [C_Map.GetMapInfo(850).name] = 2,
-    [C_Map.GetMapInfo(764).name] = 3,
-    [C_Map.GetMapInfo(807).name] = 4,
-    [C_Map.GetMapInfo(777).name] = 5,
-}
+
 function GridStatusRaidDebuff:CreateZoneMenu(zone)
 	local args
 	if not debuff_list[zone] then

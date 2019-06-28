@@ -184,7 +184,9 @@ CATEGORY = {
             [73] = true,
             [74] = true,
         },
-        activities = {}
+        activities = {
+            [303] = true,
+        }
     },
     [3] = {
         groups = {
@@ -285,6 +287,7 @@ CATEGORY = {
     },
     [7] = {
         groups = {
+            [135] = true,
             [136] = true,
             [137] = true,
             [138] = true,
@@ -296,11 +299,19 @@ CATEGORY = {
             [144] = true,
             [145] = true,
             [146] = true,
-            [147] = true,
+            [251] = true,
+            [252] = true,
         },
-        activities = {}
+        activities = {
+            [657] = true,
+        },
     }
 }
+
+--/run a=LFGListFrame.EntryCreation dump(C_LFGList.GetAvailableActivityGroups(a.selectedCategory, bit.bor(a.baseFilters, a.selectedFilters)))
+--/dump C_LFGList.GetActivityGroupInfo(251)
+--/run a=LFGListFrame.EntryCreation dump(C_LFGList.GetAvailableActivities(a.selectedCategory, 0, bit.bor(a.baseFilters, a.selectedFilters)))
+--/dump C_LFGList.GetActivityInfo(657)
 
 RAID_CLASS_COLORS = {}
 CLASS_ICON_TCOORDS = {}
@@ -808,52 +819,6 @@ DEFAULT_SPAMWORD = [[
 !支.*付.*宝
 !淘.*宝
 5173
-急速低价
-!手.*工
-!马.*云
-gzs
-!必.*出
-!必.*掉
-橙装包
-!歪.*歪
-!电.*话
-!代.*刷
-!带.*刷
-!带.*打
-!代.*打
-100-110
-1-100
-!手.*动
-!手.*工
-!支.*持
-!加.*q
-!账.*号
-!g.*团
-!老.*板
-!消.*费
-!顾.*客
-xiao
-fei
-xf
-!亻.*立
-!灵.*魂.*兽
-猎人跨服
-LR跨服
-!%d+元
-5173
-bug幽灵虎
-bug黑市
-!tao.*bao
-!w.*信
-!微.*信
-!支.*付.*宝
-!淘.*宝
-112233
-111111
-333333
-咨询
-!^接.*
-认准
 平台
 门票
 LFG:

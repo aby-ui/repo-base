@@ -13,11 +13,12 @@
         text = "配置选项",
         callback = function()
             LibStub("AceConfigDialog-3.0"):Open("HandyNotes")
+            LibStub("AceConfigDialog-3.0"):SelectGroup("HandyNotes", "plugins")
         end
     },
     {
         text = "重置数据",
-        tip = "说明`为了加快载入速度，有爱修改HandyNotes每个版本只查询一次数据，把数据保存起来，如果有问题请重置一下",
+        tip = "说明`为了加快载入速度，爱不易修改HandyNotes每个版本只查询一次数据，把数据保存起来，如果有问题请重置一下",
         reload = 1,
         callback = function()
             HandyNotesDB._mapData = nil
@@ -71,13 +72,31 @@ U1RegisterAddon("HandyNotes_SummerFestival", {
 
 U1RegisterAddon("HandyNotes_Argus", {
     title = "阿古斯地图宝箱",
-    defaultEnable = 1,
+    defaultEnable = 0,
     load = "LATER",
     modifier = "Vincero@NGA汉化",
 })
 
 U1RegisterAddon("HandyNotes_LunarFestival", {
     title = "春节长者位置",
+    defaultEnable = 1,
+    load = "LATER",
+})
+
+U1RegisterAddon("HandyNotes_Arathi", {
+    title = "阿拉希稀有位置",
+    defaultEnable = 1,
+    load = "LATER",
+})
+
+U1RegisterAddon("HandyNotes_WarfrontRares", {
+    title = "战争前线稀有位置",
+    defaultEnable = 1,
+    load = "LATER",
+})
+
+U1RegisterAddon("HandyNotes_DungeonLocations", {
+    title = "老地图副本入口",
     defaultEnable = 1,
     load = "LATER",
 })

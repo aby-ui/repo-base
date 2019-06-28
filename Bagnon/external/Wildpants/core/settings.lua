@@ -74,6 +74,10 @@ local ProfileDefaults = {
 		columns = 14,
 		width = 600,
 		height = 500,
+        showBags = true,
+        hiddenBags = {
+            [-3] = true,
+        },
 		x = 95
 	}, FrameDefaults),
 
@@ -101,7 +105,7 @@ function Addon:StartupSettings()
 		profiles = {},
 
 		resetPlayer = true,
-		displayBank = true, closeBank = true, displayAuction = true, displayGuild = true, displayMail = true, displayTrade = true, displayCraft = true,
+		displayBank = true, closeBank = true, displayAuction = true, displayGuild = true, displayMail = true, displayTrade = true, displayCraft = true, displayScrapping = true,
 		flashFind = true, tipCount = true, fading = true,
 
 		glowAlpha = 0.5,

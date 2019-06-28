@@ -1,4 +1,4 @@
-﻿## Interface: 80000
+## Interface: 80200
 ## X-Min-Interface: 80000
 ## Title:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Siege of Orgrimmar V2|r
 ## Title-ruRU:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Осада Оргриммара|r
@@ -42,7 +42,3 @@ SiegecrafterBlackfuse.lua
 ParagonsOfTheKlaxxi.lua
 GarroshHellscream.lua
 SoOTrash.lua
-
-
-
-## X-Vendor: AbyUI

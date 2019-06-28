@@ -19,28 +19,62 @@
 					</OnLoad>
 				</Scripts>
 			</CheckButton>
-			<EditBox parentKey="FakeMax" inherits="TellMeWhen_TimeEditBoxTemplate" autoFocus="false">
-				<Size x="45" y="15"/>
+			<Frame parentKey="FakeMax">
+				<Size y="17"/>
+				<Anchors>
+					<Anchor point="TOP" y="-12"/>
+					<Anchor point="RIGHT" x="-10"/>
+				</Anchors>
+				<Layers>
+					<Layer level="ARTWORK">
+						<FontString parentKey="text" inherits="GameFontHighlightSmall" justifyH="LEFT">
+							<Anchors>
+								<Anchor point="BOTTOMLEFT" relativePoint="TOPLEFT"/>
+								<Anchor point="RIGHT"/>
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+				<Frames>
+					<EditBox parentKey="FakeMaxTime" inherits="TellMeWhen_TimeEditBoxTemplate" autoFocus="false" setAllPoints="true">
+						<Scripts>
+							<OnLoad>
+								TMW:CInit(self)
+
+								self:SetTexts(TMW.L["ICONMENU_FAKEMAX"], TMW.L["ICONMENU_FAKEMAX_DESC"])
+								self:SetSetting("BarDisplay_FakeMax")
+
+								self:CScriptAdd("ReloadRequested", function()
+									self:SetShown(TMW.CI.icon.typeData.barIsTimer ~= false)
+									local settings = self:GetSettingTable()
+									self:SetEnabled(not settings.BarDisplay_Invert)
+								end)
+							</OnLoad>
+						</Scripts>
+					</EditBox>
+					<EditBox parentKey="FakeMaxValue" inherits="TellMeWhen_InputBoxTemplate" autoFocus="false" setAllPoints="true">
+						<Scripts>
+							<OnLoad>
+								TMW:CInit(self)
+
+								self:SetTexts(TMW.L["ICONMENU_FAKEMAX"], TMW.L["ICONMENU_FAKEMAX_DESC"])
+								self:SetSetting("BarDisplay_FakeMax")
+
+								self:CScriptAdd("ReloadRequested", function()
+									self:SetShown(TMW.CI.icon.typeData.barIsTimer == false)
+									local settings = self:GetSettingTable()
+									self:SetEnabled(not settings.BarDisplay_Invert)
+								end)
+							</OnLoad>
+						</Scripts>
+					</EditBox>
+				</Frames>
 				<Scripts>
 					<OnLoad>
 						self.text:SetText(TMW.L["ICONMENU_FAKEMAX"])
-						--self.text:SetWidth(50)
-						self.text:ClearAllPoints()
-						self.text:SetPoint("LEFT", self, "RIGHT", 2, 0)
-						self.text:SetPoint("RIGHT", self:GetParent(), "RIGHT", -5, 0)
-						
-						TMW:CInit(self)
-
-						self:SetTexts(TMW.L["ICONMENU_FAKEMAX"], TMW.L["ICONMENU_FAKEMAX_DESC"])
-						self:SetSetting("BarDisplay_FakeMax")
-
-						self:CScriptAdd("ReloadRequested", function()
-							local settings = self:GetSettingTable()
-							self:SetEnabled(not settings.BarDisplay_Invert)
-						end)
 					</OnLoad>
 				</Scripts>
-			</EditBox>
+			</Frame>
 
 			<CheckButton parentKey="Reverse" inherits="TellMeWhen_CheckTemplate">
 				<Anchors>
@@ -138,7 +172,6 @@
 				self:SetTitle(TMW.L["CONFIGPANEL_TIMERBAR_BARDISPLAY_HEADER"])
 				
 				self.Invert:ConstrainLabel(self.FakeMax)
-				self.FakeMax:ConstrainLabel(self, "RIGHT")
 
 				self.Reverse:ConstrainLabel(self.BarGCD)
 				self.BarGCD:ConstrainLabel(self, "RIGHT")

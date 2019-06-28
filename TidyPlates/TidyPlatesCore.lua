@@ -1,11 +1,15 @@
 -- Tidy Plates - SMILE! :-D
 
+
+
 ---------------------------------------------------------------------------------------------------------------------
 -- Variables and References
 ---------------------------------------------------------------------------------------------------------------------
 local addonName, TidyPlatesInternal = ...
 local TidyPlatesCore = CreateFrame("Frame", nil, WorldFrame)
+
 TidyPlates = {}
+TidyPlatesDebug = false
 
 -- Local References
 local _
@@ -44,6 +48,11 @@ local RaidIconCoordinate = {
 ---------------------------------------------------------------------------------------------------------------------
 -- Core Function Declaration
 ---------------------------------------------------------------------------------------------------------------------
+
+
+-- Debug Mode
+local function TidyPlatesDebugMessage(...) if TidyPlatesDebug then print(...) end end
+
 -- Helpers
 local function ClearIndices(t) if t then for i,v in pairs(t) do t[i] = nil end return t end end
 local function IsPlateShown(plate) return plate and plate:IsShown() end
@@ -70,7 +79,7 @@ local OnUpdateCasting, OnStartCasting, OnStopCasting, OnUpdateCastMidway
 -- Event Functions
 local OnShowNameplate, OnHideNameplate, OnUpdateNameplate, OnResetNameplate
 local OnHealthUpdate, UpdateUnitCondition
-local UpdateUnitContext, OnRequestWidgetUpdate, OnRequestDelegateUpdate
+local UpdateUnitContext, OnRequestWidgetUpdate, OnRequestDelegateUpdate, UpdateUnitTarget
 local UpdateUnitIdentity
 local OnNewNameplate
 
@@ -408,7 +417,7 @@ do
 		-- plate:GetChildren():Hide()
 
 		-- Gather Information
-		unitid = PlatesVisible[plate]
+		local unitid = PlatesVisible[plate]
 		UpdateReferences(plate)
 
 		UpdateUnitIdentity(unitid)
@@ -419,7 +428,7 @@ do
 
 	-- OnHealthUpdate
 	function OnHealthUpdate(plate)
-		unitid = PlatesVisible[plate]
+		local unitid = PlatesVisible[plate]
 
 		UpdateUnitCondition(plate, unitid)
 		ProcessUnitChanges()
@@ -432,7 +441,7 @@ do
 		plate.UpdateMe = true
 		extended.unitcache = ClearIndices(extended.unitcache)
 		extended.stylename = ""
-		unitid = PlatesVisible[plate]
+		local unitid = PlatesVisible[plate]
 
 		OnShowNameplate(plate, unitid)
 	end
@@ -522,6 +531,11 @@ do
 			unit.class = ""
 			unit.type = "NPC"
 		end
+
+		-- If name is unavailable, queue for update.  
+		--if unit.name == UNKNOWNOBJECT then
+		--	plate.UpdateMe = true
+		--end
 	end
 
 
@@ -541,11 +555,31 @@ do
 
 		if activetheme.OnContextUpdate then activetheme.OnContextUpdate(extended, unit) end
 		if activetheme.OnUpdate then activetheme.OnUpdate(extended, unit) end
-	end
+    end
+
+    local nameplateNtarget = setmetatable({}, { __index = function(t, k) t[k] = k .. "target" return t[k] end})
+    local SpecialNPCS = {
+        ["148716"] = true,  --收割
+        ["148893"] = true,
+        ["148894"] = true,
+        ["148962"] = true,  --贪婪的追猎者
+        ["144807"] = true,  --贪婪的追猎者
+    }
+    function UpdateUnitTarget(plate, unitid)
+        unit.isTargetingYou = nil
+        if not unit.guid then return end
+        local npcId = select(6,strsplit("-", unit.guid))
+        -- Reaping monsters
+        if SpecialNPCS[npcId] then
+            unit.isTargetingYou = UnitIsUnit(nameplateNtarget[unitid], "player")
+        end
+    end
 
 	-- UpdateUnitCondition: High volatility data
 	function UpdateUnitCondition(plate, unitid)
 		UpdateReferences(plate)
+        if not unitid then return end
+        UpdateUnitTarget(plate, unitid)
 
 		unit.level = UnitEffectiveLevel(unitid)
 
@@ -559,6 +593,8 @@ do
 		unit.healthmax = UnitHealthMax(unitid) or 1
         unit.power = UnitPower(unitid) or 0
         unit.powermax = UnitPowerMax(unitid) or 1
+		unit.absorb = UnitGetTotalAbsorbs(unitid)
+		unit.absorbmax = max(unit.absorb, unit.absorbmax or 0)
 
 		unit.threatValue = UnitThreatSituation("player", unitid) or 0
 		unit.threatSituation = ThreatReference[unit.threatValue]
@@ -611,15 +647,21 @@ do
 
 	-- UpdateIndicator_HealthBar: Updates the value on the health bar
 	function UpdateIndicator_HealthBar()
-		visual.healthbar:SetMinMaxValues(0, unit.healthmax)
-		visual.healthbar:SetValue(unit.health)
+		local healthRange = unit.healthmax + unit.absorbmax
+		visual.healthbar:SetMinMaxValues(0, healthRange)
+		visual.healthbar:SetValue(unit.health, unit.absorb)
 	end
 
 
 	-- UpdateIndicator_Name:
 	function UpdateIndicator_Name()
-		visual.name:SetText(unit.name)
-		--unit.pvpname
+
+		-- Set Special-Case Regions
+		if activetheme.SetNameText then
+			local text, r, g, b, a = activetheme.SetNameText(unit)
+			visual.name:SetText( text or unit.name)
+			visual.name:SetTextColor(r or 1, g or 1, b or 1, a or 1)
+		else visual.name:SetText(unit.name) end
 
 		-- Name Color
 		if activetheme.SetNameColor then
@@ -685,7 +727,9 @@ do
 		if activetheme.SetHealthbarColor then
 			visual.healthbar:SetAllColors(activetheme.SetHealthbarColor(unit))
 
-		else visual.healthbar:SetStatusBarColor(unit.red, unit.green, unit.blue) end
+		else 
+			visual.healthbar:SetStatusBarColor(unit.red, unit.green, unit.blue) 
+		end
 
 		-- Name Color
 		if activetheme.SetNameColor then
@@ -789,10 +833,12 @@ do
 
 		local castBar = extended.visual.castbar
 
-		local name, text, texture, startTime, endTime, isTradeSkill, castID, notInterruptible
+		local name, subText, text, texture, startTime, endTime, isTradeSkill, castID, notInterruptible
 
 		if channeled then
 			name, text, texture, startTime, endTime, isTradeSkill, notInterruptible = UnitChannelInfo(unitid)
+			--name, text, texture, startTimeMS, endTimeMS, isTradeSkill, notInterruptible = UnitChannelInfo("unit")
+
 			castBar:SetScript("OnUpdate", OnUpdateCastBarReverse)
 		else
 			name, text, texture, startTime, endTime, isTradeSkill, castID, notInterruptible = UnitCastingInfo(unitid)
@@ -807,7 +853,8 @@ do
 
 		visual.spelltext:SetText(text)
 		visual.spellicon:SetTexture(texture)
-		castBar:SetMinMaxValues( startTime, endTime )
+
+		castBar:SetMinMaxValues( startTime, endTime ) 
 
 		local r, g, b, a = 1, 1, 0, 1
 
@@ -929,16 +976,17 @@ do
 		OnNewNameplate(plate)
 	 end
 
+
+
+
 	function CoreEvents:NAME_PLATE_UNIT_ADDED(...)
 		local unitid = ...
 		local plate = GetNamePlateForUnit(unitid);
 
-		-- Personal Display
-		if UnitIsUnit("player", unitid) then
-			-- plate:GetChildren():_Show()
-		-- Normal Plates
-		else
-			plate:GetChildren():Hide()
+		-- We're not going to theme the personal unit bar
+		if plate and not UnitIsUnit("player", unitid) then
+			local childFrame = plate:GetChildren()
+			if childFrame then childFrame:Hide() end
 			OnShowNameplate(plate, unitid)
 		end
 
@@ -951,6 +999,7 @@ do
 		OnHideNameplate(plate, unitid)
 	end
 
+
 	function CoreEvents:PLAYER_TARGET_CHANGED()
 		HasTarget = UnitExists("target") == true;
 		SetUpdateAll()
@@ -961,14 +1010,22 @@ do
 		local plate = PlatesByUnit[unitid]
 
 		if plate then OnHealthUpdate(plate) end
-    end
+	end
 
-    function CoreEvents:UNIT_HEALTH(...)
-   		local unitid = ...
-   		local plate = PlatesByUnit[unitid]
+	function CoreEvents:UNIT_HEALTH(...)
+		local unitid = ...
+		local plate = PlatesByUnit[unitid]
 
-   		if plate then OnHealthUpdate(plate) end
-   	end
+		if plate then OnHealthUpdate(plate) end
+	end
+
+	function CoreEvents:UNIT_ABSORB_AMOUNT_CHANGED(...)
+		local unitid = ...
+		local plate = PlatesByUnit[unitid]
+
+		if plate then OnHealthUpdate(plate) end
+	end
+
 
 	function CoreEvents:PLAYER_REGEN_ENABLED()
 		InCombat = false
@@ -1010,6 +1067,9 @@ do
 		end
 	 end
 
+
+
+
 	function CoreEvents:UNIT_SPELLCAST_CHANNEL_START(...)
 		local unitid = ...
 		if UnitIsUnit("player", unitid) or not ShowCastBars then return end
@@ -1039,6 +1099,8 @@ do
 
 	CoreEvents.UNIT_LEVEL = UnitConditionChanged
 	CoreEvents.UNIT_THREAT_SITUATION_UPDATE = function(event, unitid)
+        --UNIT_THREAT_SITUATION_UPDATE, player
+        if unitid ~= "player" then return end
         for _, nameplate in pairs(C_NamePlate.GetNamePlates()) do
             if nameplate.UnitFrame.unitExists then
                 if UnitThreatSituation("player", nameplate.UnitFrame.displayedUnit) then
@@ -1053,6 +1115,17 @@ do
 	CoreEvents.PLAYER_FOCUS_CHANGED = WorldConditionChanged
 	CoreEvents.PLAYER_CONTROL_LOST = WorldConditionChanged
 	CoreEvents.PLAYER_CONTROL_GAINED = WorldConditionChanged
+
+--[[
+    CoreEvents.UNIT_TARGET = function(event, unitid)
+        if not unitid then return end
+        local plate = GetNamePlateForUnit(unitid)
+        if plate then
+            UpdateReferences(plate)
+            UpdateUnitTarget(plate, unitid)
+        end
+    end
+]]
 
 	-- Registration of Blizzard Events
 	TidyPlatesCore:SetFrameStrata("TOOLTIP") 	-- When parented to WorldFrame, causes OnUpdate handler to run close to last

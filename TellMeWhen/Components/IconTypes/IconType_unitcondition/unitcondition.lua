@@ -24,6 +24,7 @@ Type.desc = L["ICONMENU_UNITCNDTIC_DESC"]
 Type.menuIcon = "Interface\\Icons\\inv_misc_punchcards_yellow"
 Type.AllowNoName = true
 Type.hasNoGCD = true
+Type.unitType = "unitid"
 Type.canControlGroup = true
 Type.menuSpaceAfter = true
 
@@ -88,6 +89,8 @@ local function ConditionIcon_OnUpdate(icon, time)
 	local unitStatus = icon.__unitConditionStatus
 
 	-- Use originalUnits as the length because translatedUnits can have holes in it.
+	-- We want to iterate over every unit that might have been getting checked,
+	-- not just only those units which pass the conditions and are thus exposed on the UnitSet.
 	for u = 1, #UnitSet.originalUnits do
 		local unit = Units[u]
 		if unit and UnitExists(unit) then
@@ -131,9 +134,12 @@ local function ConditionIcon_OnUpdate(icon, time)
 				state = 0
 			end
 
-			if not icon:YieldInfo(true, state, start, duration, unit) then
-				return
+			if state ~= 0 and icon.States[state].Alpha > 0 then
+				if not icon:YieldInfo(true, state, start, duration, unit) then
+					return
+				end
 			end
+
 		end
 	end
 

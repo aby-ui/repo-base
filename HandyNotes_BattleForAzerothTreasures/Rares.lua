@@ -4,29 +4,42 @@ local merge = ns.merge
 local path = ns.path
 
 merge(ns.points[862], { -- Zuldazar
-    [81202100] = {quest=50280, npc=129961, item=161042, achievement=12944, criteria=41850,}, -- Atal'zul Gotaka
-    [64403240] = {quest=50439, npc=129954, item=161043, achievement=12944, criteria=41851,}, -- Gahz'ralka
-    [44007660] = {quest=51083, npc=136428, item=160979, achievement=12944, criteria=41852,}, -- Dark Chronicler
-    [53204480] = {quest=51080, npc=136413, item=161047, achievement=12944, criteria=41853,}, -- Syrawon the Dominus
-    [48205400] = {quest=49972, npc=131476, item=161125, achievement=12944, criteria=41869,}, -- Zayoos
+    [80972163] = {quest=50280, npc=129961, item=161042, achievement=12944, criteria=41850, note="Climb the ropes onto the ship"}, -- Atal'zul Gotaka
+    [53944489] = path{quest=50280},
+    [64253271] = {quest=50439, npc=129954, item=161043, achievement=12944, criteria=41851,}, -- Gahz'ralka
+    [44157652] = {quest=51083, npc=136428, item=160979, achievement=12944, criteria=41852,}, -- Dark Chronicler
+    [53404465] = {quest=51080, npc=136413, item=161047, achievement=12944, criteria=41853, note="In cave, down the river"}, -- Syrawon the Dominus
+    [48005424] = {quest=49972, npc=131476, item=161125, achievement=12944, criteria=41869,}, -- Zayoos
     [58777395] = {quest=49911, npc=131233, item=161033, achievement=12944, criteria=41870,}, -- Lei-zhi
-    [49705740] = {quest=49410, npc=129343, item=161034, achievement=12944, criteria=41871,}, -- Avatar of Xolotal
-    [59601820] = {quest=49267, npc=128699, item=161104, achievement=12944, criteria=41872,}, -- Bloodbulge
-    [46606520] = {quest=49004, npc=127939, item=161029, achievement=12944, criteria=41873,}, -- Torraske the Eternal
-    [68604820] = {quest=48543, npc=126637, item=160984, achievement=12944, criteria=41874,}, -- Kandak
+    [49855744] = {quest=49410, npc=129343, item=161034, achievement=12944, criteria=41871, note="In cave",}, -- Avatar of Xolotal
+    [49605911] = path{quest=49410},
+    [59821830] = {quest=49267, npc=128699, item=161104, achievement=12944, criteria=41872,}, -- Bloodbulge
+    [46616533] = {quest=49004, npc=127939, item=161029, achievement=12944, criteria=41873,}, -- Torraske the Eternal
+    [68714875] = {quest=48543, npc=126637, item=160984, achievement=12944, criteria=41874,}, -- Kandak
     [59605640] = {quest=48333, npc=120899, item=160947, achievement=12944, criteria=41875,}, -- Kul'krazahn
-    [74002820] = {quest=47792, npc=124185, item=161035, achievement=12944, criteria=41876,}, -- Golrakahn
-    [70803240] = {quest=nil, npc=122004, item=161091, achievement=12944, criteria=41877,}, -- Umbra'jin
-    [65201020] = {quest=50693, npc=134760, item=160958, achievement=12944, criteria=41855,}, -- Darkspeaker Jo'la
+    [74112850] = {quest=47792, npc=124185, item=161035, achievement=12944, criteria=41876,}, -- Golrakahn
+    [71423239] = {quest=47567, npc=122004, item=161091, achievement=12944, criteria=41877, note="In cave",}, -- Umbra'jin
+    [70333301] = path{quest=47567},
+    [65411022] = {quest=50693, npc=134760, item=160958, achievement=12944, criteria=41855,}, -- Darkspeaker Jo'la
     [42003620] = {quest=50677, npc=134738, item=160978, achievement=12944, criteria=41856,}, -- Hakbi the Risen
     [61904622] = {quest=50508, npc=134048, item=162613, achievement=12944, criteria=41858, note="Interact with Strange Egg",}, -- Vukuba
-    [44002540] = {quest=50438, npc=133842, item=161040, achievement=12944, criteria=41859,}, -- Warcrawler Karkithiss
+    [43952544] = {quest=50438, npc=133842, item=161040, achievement=12944, criteria=41859,}, -- Warcrawler Karkithiss
     [60626627] = {quest=50281, npc=134782, item=161022, achievement=12944, criteria=41863,}, -- Murderbeak
-    [74003940] = {quest=50269, npc=133190, achievement=12944, criteria=41864,}, -- Daggerjaw
-    [80003600] = {quest=50260, npc=133155, achievement=12944, criteria=41865,}, -- G'Naat
-    [75603600] = {quest=50159, npc=132244, item=161112, achievement=12944, criteria=41866,}, -- Kiboku
+    [74203930] = {quest=50269, npc=133190, achievement=12944, criteria=41864,}, -- Daggerjaw
+    [79973597] = {quest=50260, npc=133155, achievement=12944, criteria=41865,}, -- G'Naat
+    [75613582] = {quest=50159, npc=132244, item=161112, achievement=12944, criteria=41866,}, -- Kiboku
     [66203240] = {quest=50034, npc=131718, item=161020, achievement=12944, criteria=41867,}, -- Bramblewing
-    [77601120] = {quest=50013, npc=131687, item=161109, achievement=12944, criteria=41868,}, -- Tambano
+    [77711029] = {quest=50013, npc=131687, item=161109, achievement=12944, criteria=41868,}, -- Tambano
+    -- Life Finds a Way... To Die!
+    [67732903] = {npc=135512, achievement=13048, criteria=41675, note="Shares spawn timer with Azuresail the Ancient and Kil'Tawan",}, -- Thuderfoot the Brutosaur
+    [67102657] = {npc=135510, achievement=13048, criteria=41676, note="Shares spawn timer with Thunderfoot and Kil'Tawan",}, -- Azuresail the Diemetrodon
+    [71134034] = {npc=139365, achievement=13048, criteria=41672, note="South of Savagelands",}, -- Queenfeather the Ravasaur
+    [52394771] = {npc=129323, achievement=13048, criteria=41674, note="Can be found near the road in the grass",}, -- The Sabertusk Empress
+    [66082238] = {npc=143910, achievement=13048, criteria=41684, note="South of the Nesingwary's Trek windrider",}, -- Sludgecrusher the Anklyodon
+    [61622537] = {npc=130741, achievement=13048, criteria=41673, note="Fighting Ten'gor at crossroad",}, -- Nol'ixwan the Direhorn
+    [71242184] = {npc=123502, achievement=13048, criteria=41677, note="On the road from Zeb'ahari to Tal'gurub",}, -- King K'tal the Devilsaur
+    -- Mushroom Harvest
+    [45537917] = {npc=143314, achievement=13027, criteria=41391, note="On the beach, between trees",}, -- Bane of the Woods
 })
 merge(ns.points[1165], { -- Dazar'alor
     [55378240] = {quest=48333, npc=120899, item=160947, achievement=12944, criteria=41875,}, -- Kul'krazahn
@@ -48,8 +61,9 @@ merge(ns.points[863], { -- Nazmir
     [48985082] = {quest=48623, npc=126907, achievement=12942, criteria=41474,}, -- Wardrummer Zurula
     [38722674] = {quest=49469, npc=129657, achievement=12942, criteria=41476,}, -- Za'amar the Queen's Blade
     [78084451] = {quest=50355, npc=133539, achievement=12942, criteria=41478,}, -- Lo'kuno
-    [54138091] = {quest=50569, npc=134298, achievement=12942, criteria=41444,}, -- Azerite-Infused Elemental
-    [43069033] = {quest=48541, npc=126635, achievement=12942, criteria=41448,}, -- Blood Priest Xak'lar
+    [54128110] = {quest=50569, npc=134298, achievement=12942, criteria=41444,}, -- Azerite-Infused Elemental
+    [43199131] = {quest=48541, npc=126635, achievement=12942, criteria=41448, note="In cave, behind waterfall"}, -- Blood Priest Xak'lar
+    [43069011] = path{quest=48541},
     [53694287] = {quest=49317, npc=129005, achievement=12942, criteria=41451,}, -- King Kooba
     [41665344] = {quest=48462, npc=126187, achievement=12942, criteria=41453,}, -- Corpse Bringer Yal'kar
     [33538708] = {quest=48638, npc=127001, achievement=12942, criteria=41455,}, -- Gwugnug the Cursed
@@ -64,40 +78,48 @@ merge(ns.points[863], { -- Nazmir
     [36555053] = {quest=50348, npc=133531, achievement=12942, criteria=41475,}, -- Xu'ba
     [38887148] = {quest=50423, npc=133812, achievement=12942, criteria=41477,}, -- Zanxib
     [52605489] = {quest=50040, npc=128930, achievement=12942, criteria=41479,}, -- Mala'kili and Rohnkor
+    -- Life Finds a Way... To Die!
+    [25706971] = {npc=143898, achievement=13048, criteria=41683, note="Flying close to the road from Vol'dun to Zuldazar",}, -- Makatau the Pterrordax
+    -- Mushroom Harvest
+    [52357020] = {npc=143316, achievement=13027, criteria=41390, note="South of Heart of Darkness. Entrance is from the north side of Xal'vor ruins",}, -- Skullcap
+    [73614870] = {npc=143311, achievement=13027, criteria=41393, note="In cave, entrance at 73.2 49.7",}, -- Toadcruel
+    -- [73204970] = path(), Path without quest?
 })
 merge(ns.points[864], { -- Vol'dun
     [50378160] = {quest=51058, npc=135852, achievement=12943, criteria=41606,}, -- Ak'tar
-    [54661534] = {quest=51095, npc=130439, achievement=12943, criteria=41607,}, -- Ashmane
+    [54701517] = {quest=47532, npc=130439, achievement=12943, criteria=41607,}, -- Ashmane
     [49058905] = {quest=49252, npc=128553, achievement=12943, criteria=41608,}, -- Azer'tor
     [31008109] = {quest=49251, npc=128497, achievement=12943, criteria=41609,}, -- Bajiani the Slick
-    [49064989] = {quest=nil, npc=129476, achievement=12943, criteria=41610,}, -- Bloated Krolusk
+    [49064989] = {quest=47562, npc=129476, achievement=12943, criteria=41610,}, -- Bloated Krolusk
     [56105356] = {quest=51079, npc=136393, achievement=12943, criteria=41611,}, -- Bloodwing Bonepicker
     [41272449] = {quest=51073, npc=136346, achievement=12943, criteria=41612,}, -- Captain Stef "Marrow" Quin
     [42679245] = {quest=50905, npc=124722, achievement=12943, criteria=41613,}, -- Commodore Calhoun
     [61853788] = {quest=51077, npc=136335, achievement=12943, criteria=41614,}, -- Enraged Krolusk
     [64004757] = {quest=49270, npc=128674, achievement=12943, criteria=41615,}, -- Gut-Gut the Glutton
     [53685347] = {quest=47533, npc=130443, achievement=12943, criteria=41616, note="In cave"}, -- Hivemother Kraxi
-    [53835149] = path(47533),
+    [53835149] = path{quest=47533},
     [37428498] = {quest=49392, npc=129283, achievement=12943, criteria=41617,}, -- Jumbo Sandsnapper
-    [60561756] = {quest=nil, npc=136341, achievement=12943, criteria=41618,}, -- Jungleweb Hunter
+    [60561801] = {quest=51074, npc=136341, achievement=12943, criteria=41618,}, -- Jungleweb Hunter
     [35085183] = {quest=50528, npc=128686, achievement=12943, criteria=41619,}, -- Kamid the Trapper
-    [38284138] = {quest=51424, npc=137681, achievement=12943, criteria=41620, note="In cave"}, -- King Clickyclack
-    [37354050] = path(51424),
+    [38284138] = {quest=51424, item=161108, npc=137681, achievement=12943, criteria=41620, note="In cave"}, -- King Clickyclack
+    [37354050] = path{quest=51424},
     [43758624] = {quest=50898, npc=128951, achievement=12943, criteria=41621,}, -- Nez'ara
     [49017210] = {quest=51126, npc=136340, achievement=12943, criteria=41622,}, -- Relic Hunter Hazaak
     [44538023] = {quest=48960, npc=127776, achievement=12943, criteria=41623,}, -- Scaleclaw Broodmother
-    [32716522] = {quest=nil, npc=136336, achievement=12943, criteria=41624,}, -- Scorpox
+    [32716522] = {quest=51076, npc=136336, achievement=12943, criteria=41624,}, -- Scorpox
     [24736850] = {quest=51075, npc=136338, achievement=12943, criteria=41625,}, -- Sirokar
     [46972518] = {quest=50637, npc=134571, achievement=12943, criteria=41626, note="In cave",}, -- Skycaller Teskris
-    [46242714] = path(50637),
+    [46242714] = path{quest=50637},
     [51263645] = {quest=50686, npc=134745, achievement=12943, criteria=41627,}, -- Skycarver Krakit
-    [66842511] = {quest=nil, npc=136304, achievement=12943, criteria=41628,}, -- Songstress Nahjeen
+    [66892446] = {quest=51063, npc=136304, achievement=12943, criteria=41628,}, -- Songstress Nahjeen
     [57197349] = {quest=49674, npc=130401, achievement=12943, criteria=41629,}, -- Vathikur
     [37084616] = {quest=49373, npc=129180, achievement=12943, criteria=41630,}, -- Warbringer Hozzik
     [30115256] = {quest=50662, npc=134638, achievement=12943, criteria=41631,}, -- Warlord Zothix
     [50713086] = {quest=50658, npc=134625, achievement=12943, criteria=41632,}, -- Warmother Captive
     [43915405] = {quest=48319, npc=129411, achievement=12943, criteria=41633, note="Inside skeleton under the sand"}, -- Zunashi the Exile
-    [43985246] = path(48319),
+    [43985246] = path{quest=48319},
+    -- Mushroom Harvest
+    [61101826] = {npc=143313, achievement=13027, criteria=41392, note="Shrouded Shore, on the hill",}, -- Portakillo
 })
 merge(ns.points[895], { -- Tiragarde Sound
     [75147848] = {quest=50156, npc=132182, achievement=12939, criteria=41793,}, -- Auditor Dolp
@@ -141,14 +163,14 @@ merge(ns.points[1161], { -- Boralus
 merge(ns.points[896], { -- Drustvar
     [59933466] = {quest=47884, npc=124548, achievement=12941, criteria=41706,}, -- Betsy
     [58901790] = {quest=48842, npc=127333, achievement=12941, criteria=41708,}, -- Barbthorn Queen
-    [66585068] = {quest=48978, npc=126621, achievement=12941, criteria=41711,}, -- Bonesquall
+    [66585068] = {quest=48978, item=154376, npc=126621, achievement=12941, criteria=41711,}, -- Bonesquall
     [59245526] = {quest=48981, npc=127877, achievement=12941, criteria=41713, note="Pick one to fight; Dagger from Longfang, mail gloves from Henry",}, -- Longfang & Henry Breakwater
-    [52074697] = {quest=49216, npc=129904, achievement=12941, criteria=41715,}, -- Cottontail Matron
+    [52074697] = {quest=49216, item=163036, npc=129904, achievement=12941, criteria=41715,}, -- Cottontail Matron
     [65002266] = {quest=49311, npc=128973, achievement=12941, criteria=41718,}, -- Whargarble the Ill-Tempered
     [50842040] = {quest=49388, npc=127129, achievement=12941, criteria=41720,}, -- Grozgore
     [51352957] = {quest=49481, npc=129805, achievement=12941, criteria=41722,}, -- Beshol
     [63414020] = {quest=49530, npc=129995, achievement=12941, criteria=41724,}, -- Emily Mayville
-    [56572924] = {quest=49602, npc=130143, achievement=12941, criteria=41726,}, -- Balethorn
+    [56572924] = {quest=49602, item=160475, npc=130143, achievement=12941, criteria=41726,}, -- Balethorn
     [31011831] = {quest=50546, npc=134213, achievement=12941, criteria=41728,}, -- Executioner Blackwell
     [22934796] = {quest=50688, npc=134754, achievement=12941, criteria=41729,}, -- Hyo'gi
     [34966921] = {quest=51383, npc=137529, achievement=12941, criteria=41732,}, -- Arvon the Betrayed
@@ -157,7 +179,7 @@ merge(ns.points[896], { -- Drustvar
     [24242193] = {quest=51749, npc=138866, item=154217, achievement=12941, criteria=41748,}, -- Fungi Trio (quest 51887 also?)
     [30476344] = {quest=51923, npc=139322, item=154315, achievement=12941, criteria=41751,}, -- Whitney "Steelclaw" Ramsay
     [66574259] = {quest=48178, npc=125453, item=158583, achievement=12941, criteria=41707,}, -- Quillrat Matriarch
-    [72786036] = {quest=48928, npc=127651, achievement=12941, criteria=41709,}, -- Vicemaul
+    [72786036] = {quest=48928, item=160474, npc=127651, achievement=12941, criteria=41709,}, -- Vicemaul
     [62956938] = {quest=48979, npc=127844, achievement=12941, criteria=41712,}, -- Gluttonous Yeti
     [43463611] = {quest=49137, achievement=12941, criteria=41714,}, -- Ancient Sarcophagus
     [59557181] = {quest=49269, npc=128707, achievement=12941, criteria=41717,}, -- Rimestone
@@ -196,8 +218,8 @@ merge(ns.points[942], { -- Stormsong Valley
     [53005200] = {quest=50692, npc=139385, item=160464, achievement=12940, criteria=41775,}, -- Deepfang
     [63003300] = {quest=52303, npc=140938, item=154460, achievement=12940, criteria=41776,}, -- Croaker
     [66905200] = {quest=52121, npc=139968, item=154183, achievement=12940, criteria=41777,}, -- Corrupted Tideskipper (also i:162028)
-    [51405540] = {quest=50731, npc=136183, item=154857, achievement=12940, criteria=nil,}, -- Crushtacean (shares q:50731 c:41778 with Dagrus)
-    [67804000] = {quest=50731, npc=134897, item=160476, achievement=12940, criteria=nil,}, -- Dagrus the Scorned (shares q:50731 c:41778 with Crushtacean)
+    [51405540] = {quest=52466, npc=136183, item=154857, achievement=12940, criteria=41778,}, -- Crushtacean
+    [67804000] = {quest=50731, npc=134897, item=160476, achievement=12940, criteria=43470,}, -- Dagrus the Scorned
     [49807000] = {quest=50037, npc=135939, item=158299, achievement=12940, criteria=41782,}, -- Vinespeaker Ratha
     [53106910] = {quest=50024, npc=135947, achievement=12940, criteria=41787,}, -- Strange Mushroom Ring
     [33607500] = {quest=52460, npc=141226, achievement=12940, criteria=41815,}, -- Haegol the Hammer
@@ -209,7 +231,7 @@ merge(ns.points[942], { -- Stormsong Valley
     [42807500] = {quest=50819, npc=130079, item=154431, achievement=12940, criteria=41843,}, -- Wagga Snarltusk
     [43404490] = {quest=51762, npc=138963, item=160477, achievement=12940, criteria=41844,}, -- Nestmother Acada
     [42006280] = {quest=52461, npc=141239, item=159169, achievement=12940, criteria=41845,}, -- Osca the Bloodied
-    [73806080] = {quest=52125, npc=139988, achievement=12940, criteria=41846,}, -- Sandfang
+    [73806080] = {quest=52125, npc=139988, item=154389, achievement=12940, criteria=41846,}, -- Sandfang
     [60004600] = {quest=52123, npc=139980, item=154449, achievement=12940, criteria=41847,}, -- Taja the Tidehowler
     [53406450] = {quest=52323, npc=140925, item=159179, achievement=12940, criteria=nil, faction="Horde",}, -- Doc Marrtens
     [53416451] = {quest=52324, npc=141043, item=nil, achievement=12940, criteria=nil, faction="Alliance", note="Talk to Doc Marrtens",}, -- Jakala the Cruel

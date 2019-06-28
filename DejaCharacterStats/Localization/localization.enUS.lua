@@ -7,124 +7,83 @@ if namespace.locale == "enUS" then
 	-- The EU English game client also
 	-- uses the US English locale code.
 
--- ################################
--- ## Slash Commands ##
--- ################################
-
---	L["/dcstats"] = ""
---	L["DejaCharacterStats Slash commands (/dcstats):"] = ""
---	L["  /dcstats config: Open the DejaCharacterStats addon config menu."] = "" --configuration
---	L["  /dcstats reset:  Resets DejaCharacterStats frames to default positions."] = ""
---	L["Resetting config to defaults"] = "" --configuration
---	L["DejaCharacterStats is currently using "] = ""
---	L[" kbytes of memory"] = "" --kilobytes
---	L["DejaCharacterStats is currently using "] = ""
---	L[" kbytes of memory after garbage collection"] = "" --kilobytes
---	L["config"] = "" --configuration
---	L["dumpconfig"] = "" --configuration
---	L["With defaults"] = ""
---	L["Direct table"] = ""
---	L["reset"] = ""
---	L["perf"] = "" --performance
---	L["Reset to Default"] = ""
-
--- ################################
--- ## Global Options Left Column ##
--- ################################
-
---	L["Equipped/Available"] = "Equipped/Available Checkbox Name"
---	L['Displays Equipped/Available item levels unless equal.'] = "Equipped/Available Checkbox Mouseover Description"
-
---	L["Decimals"] = "Decimals Checkbox Name"
---	L['Displays "Enhancements" category stats to two decimal places.'] = "Decimals Checkbox Mouseover Description"
-
---	L["Ilvl Decimals"] = "Ilvl Decimals Checkbox Name"
---	L['Displays average item level to two decimal places.'] = "Ilvl Decimals Checkbox Mouseover Description"
-
---	L['Durability '] = "Durability Checkbox Name"
---	L['Displays the average Durability percentage for equipped items in the stat frame.'] = "Durability Checkbox Mouseover Description"
-
---	L['Repair Total '] = "Repair Total Checkbox Name"
---	L['Displays the Repair Total before discounts for equipped items in the stat frame.'] = "Repair Total Checkbox Mouseover Description"
-
--- ################################
-
---	L["Durability Bars"] = "Durability Bars Checkbox Name"
---	L["Displays a durability bar next to each item." ] = "Durability Bars Checkbox Mouseover Description"
-
---	L["Average Durability"] = "Average Dura Checkbox Name"
---	L["Displays average item durability on the character shirt slot and durability frames."] = "Average Durability Checkbox Mouseover Description"
-
---	L["Item Durability"] = "Item Durability Checkbox Name"
---	L["Displays each equipped item's durability."] = "Item Durability Checkbox Mouseover Description"
-
---	L["Item Repair Cost"] = "Item Repair Cost Checkbox Name"
---	L["Displays each equipped item's repair cost."] = "Item Repair Cost Checkbox Mouseover Description"
-
--- ################################
-
---	L["Expand"] = "Expand Checkbox Name"
---	L['Displays the Expand button for the character stats frame.'] = "Expand Checkbox Mouseover Description"
---	L['Show Character Stats'] = "Expand paperdoll frame button mouseover text when stats frame is hidden"
---	L['Hide Character Stats'] = "Expand paperdoll frame button mouseover text when stats frame is shown"
-
---	L["Scrollbar"] = "Scrollbar Checkbox Name"
---	L['Displays the DCS scrollbar.'] = "Scrollbar Checkbox Mouseover Description"
-
--- ################################
--- ## Character Options Right Column ##
--- ################################
-
---	L["Show All Stats"] = "All Stats Checkbox Name"
---	L['Checked displays all stats. Unchecked displays relevant stats. Use Shift-scroll to snap to the top or bottom.'] = "All Stats Checkbox Mouseover Description"
-
---	L["Select-A-Stat™"]  = "Select-A-Stat™ Checkbox Name" -- Try to use something snappy and silly like a Fallout or 1950's appliance feature.
---	L['Select which stats to display. Use Shift-scroll to snap to the top or bottom.'] = "Select-A-Stat™ Checkbox Mouseover Description"
-
--- ################################
--- ## Stats ##
--- ################################
-
---	L["Durability"] = "Durability Stat Name" -- Be sure to include the colon ":" or it will conflict wih the options checkbox.
---	L["Durability %s"] = "Durability stat tooltip white mouseover title. You must use %%s to show %s. " -- ## --> %s MUST be included <-- ## 
---	L["Average equipped item durability percentage."] = "Durability stat mouseover tooltip yellow description."
-
---	L["Repair Total"] = "Repair Tot Stat Name" -- Be sure to include the colon ":" or it will conflict wih the options checkbox.
---	L["Repair Total %s"] = "Repair Total stat tooltip white mouseover title. You must use %%s to show %s. " -- ## --> %s MUST be included <-- ## 
---	L["Total equipped item repair cost before discounts."] = "Repair Total stat mouseover tooltip yellow description."
-
--- ## Attributes ##
-
---	L["Health"] = ""
---	L["Power"] = ""
---	L["Druid Mana"] = ""
---	L["Armor"] = ""
---	L["Strength"] = ""
---	L["Agility"] = ""
---	L["Intellect"] = ""
---	L["Stamina"] = ""
---	L["Damage"] = ""
---	L["Attack Power"] = ""
---	L["Attack Speed"] = ""
---	L["Spell Power"] = ""
---	L["Mana Regen"] = ""
---	L["Energy Regen"] = ""
---	L["Rune Regen"] = ""
---	L["Focus Regen"] = ""
---	L["Movement Speed"] = ""
---	L["Durability"] = ""
---	L["Repair Total"] = ""
-
--- ## Enhancements ##
-
---	L["Critical Strike"] = ""
---	L["Haste"] = ""
---	L["Versatility"] = ""
---	L["Mastery"] = ""
---	L["Leech"] = ""
---	L["Avoidance"] = ""
---	L["Dodge"] = ""
---	L["Parry"] = ""
---	L["Block"] = ""
+--L["  /dcstats config: Opens the DejaCharacterStats addon config menu."] = "/dcstats config: Open the DejaCharacterStats addon config menu."
+--L["  /dcstats reset:  Resets DejaCharacterStats options to default."] = "/dcstats reset:  Resets DejaCharacterStats options to default."
+--L["%s of %s increases %s by %.2f%%"] = "%s of %s increases %s by %.2f%%"
+--L["About DCS"] = "About DCS"
+--L["All Stats"] = "All Stats"
+--L["Attack"] = "Attack"
+--L["Average Durability"] = "Average Durability"
+--L["Average equipped item durability percentage."] = "Average equipped item durability percentage."
+--L["Average Item Level:"] = "Average Item Level:"
+--L["Avoidance Rating"] = "Avoidance Rating"
+--L["Blizzard's Hide At Zero"] = "Blizzard's Hide At Zero"
+--L["Character Stats:"] = "Character Stats:"
+--L["Class Colors"] = "Class Colors"
+--L["Class Crest Background"] = "Class Crest Background"
+--L["Critical Strike Rating"] = "Critical Strike Rating"
+--L["DCS's Hide At Zero"] = "DCS's Hide At Zero"
+--L["Decimals"] = "Decimals"
+--L["Defense"] = "Defense"
+--L["Dejablue's improved character stats panel view."] = "Dejablue's improved character stats panel view."
+--L["DejaCharacterStats Slash commands (/dcstats):"] = "DejaCharacterStats Slash commands (/dcstats):"
+--L["Displays a durability bar next to each item."] = "Displays a durability bar next to each item."
+--L["Displays average item durability on the character shirt slot and durability frames."] = "Displays average item durability on the character shirt slot and durability frames."
+--L["Displays average item level to one decimal place."] = "Displays average item level to one decimal place."
+--L["Displays average item level to two decimal places."] = "Displays average item level to two decimal places."
+--L["Displays average item level with class colors."] = "Displays average item level with class colors."
+--L["Displays each equipped item's durability."] = "Displays each equipped item's durability."
+--L["Displays each equipped item's repair cost."] = "Displays each equipped item's repair cost."
+--L["Displays 'Enhancements' category stats to two decimal places."] = "Displays 'Enhancements' category stats to two decimal places."
+--L["Displays Equipped/Available item levels unless equal."] = "Displays Equipped/Available item levels unless equal."
+--L["Displays the class crest background."] = "Displays the class crest background."
+--L["Displays the DCS scrollbar."] = "Displays the DCS scrollbar."
+--L["Displays the Expand button for the character stats frame."] = "Displays the Expand button for the character stats frame."
+--L["Displays the item level of each equipped item."] = "Displays the item level of each equipped item."
+--L["Dodge Rating"] = "Dodge Rating"
+--L["Durability"] = "Durability"
+--L["Durability Bars"] = "Durability Bars"
+--L["Equipped/Available"] = "Equipped/Available"
+--L["Expand"] = "Expand"
+--L["General"] = "General"
+--L["General global cooldown refresh time."] = "General global cooldown refresh time."
+--L["Global Cooldown"] = "Global Cooldown"
+--L["Haste Rating"] = "Haste Rating"
+--L["Hide Character Stats"] = "Hide Character Stats"
+--L["Hide low level mastery"] = "Hide low level mastery"
+--L["Hides 'Enhancements' stats if their displayed value would be zero. Checking 'Decimals' changes the displayed value."] = "Hides 'Enhancements' stats if their displayed value would be zero. Checking 'Decimals' changes the displayed value."
+--L["Hides 'Enhancements' stats only if their numerical value is exactly zero. For example, if stat value is 0.001%, then it would be displayed as 0%."] = "Hides 'Enhancements' stats only if their numerical value is exactly zero. For example, if stat value is 0.001%, then it would be displayed as 0%."
+--L["Hides Mastery stat until the character starts to have benefit from it. Hiding Mastery with Select-A-Stat™ in the character panel has priority over this setting."] = "Hides Mastery stat until the character starts to have benefit from it. Hiding Mastery with Select-A-Stat™ in the character panel has priority over this setting."
+--L["Item Durability"] = "Item Durability"
+--L["Item Level"] = "Item Level"
+--L["Item Repair Cost"] = "Item Repair Cost"
+--L["Item Slots:"] = "Item Slots:"
+--L["Leech Rating"] = "Leech Rating"
+--L["Lock DCS"] = "Lock DCS"
+--L["Main Hand"] = "Main Hand"
+--L["Mastery Rating"] = "Mastery Rating"
+--L["Miscellaneous:"] = "Miscellaneous:"
+--L["Movement Speed"] = "Movement Speed"
+--L["Off Hand"] = "Off Hand"
+--L["Offense"] = "Offense"
+--L["One Decimal Place"] = "One Decimal Place"
+--L["Parry Rating"] = "Parry Rating"
+--L["Ratings"] = "Ratings"
+--L["Relevant Stats"] = "Relevant Stats"
+--L["Repair Total"] = "Repair Total"
+--L["Requires Level "] = "Requires Level "
+--L["Reset Stats"] = "Reset Stats"
+--L["Reset to Default"] = "Reset to Default"
+--L["Resets order of stats."] = "Resets order of stats."
+--L["Scrollbar"] = "Scrollbar"
+--L["Show all stats."] = "Show all stats."
+--L["Show Character Stats"] = "Show Character Stats"
+--L["Show only stats relevant to your class spec."] = "Show only stats relevant to your class spec."
+--L["Total equipped item repair cost before discounts."] = "Total equipped item repair cost before discounts."
+--L["Two Decimal Places"] = "Two Decimal Places"
+--L["Unlock DCS"] = "Unlock DCS"
+--L["Versatility Rating"] = "Versatility Rating"
+--L["weapon auto attack (white) DPS."] = "weapon auto attack (white) DPS. "
+--L["Weapon DPS"] = "Weapon DPS"
 
 return end

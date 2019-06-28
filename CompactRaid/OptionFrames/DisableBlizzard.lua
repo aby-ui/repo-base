@@ -35,31 +35,7 @@ end
 
 DisableBlizzardFrame(CompactRaidFrameManager)
 DisableBlizzardFrame(CompactRaidFrameContainer)
-DisableBlizzardFrame(CompactUnitFrameProfilesGeneralOptionsFrame)
-DisableBlizzardFrame(CompactUnitFrameProfilesRaidStylePartyFrames)
-DisableBlizzardFrame(CompactUnitFrameProfilesProfileSelector)
-DisableBlizzardFrame(CompactUnitFrameProfilesSaveButton)
-DisableBlizzardFrame(CompactUnitFrameProfilesDeleteButton)
-
-CompactUnitFrameProfiles:UnregisterAllEvents()
-CompactUnitFrameProfiles:SetScript("OnEvent", nil)
 UIParent:UnregisterEvent("GROUP_ROSTER_UPDATE")
-
--- Display some infomation so the user won't get confused when he sees a blank page
-local prompt = CompactUnitFrameProfiles:CreateFontString(nil, "ARTWORK", "GameFontNormal")
-prompt:SetText(L["over ride prompt"])
-prompt:SetPoint("TOP", 0, -120)
-
-local button = CreateFrame("Button", "CompactRaidOverrideButton", CompactUnitFrameProfiles, "UIPanelButtonTemplate")
-button:SetSize(120, 24)
-button:SetPoint("TOP", prompt, "BOTTOM", 0, -16)
-button:SetText(SETTINGS)
-
-button:SetScript("OnClick", function(self)
-	HideUIPanel(InterfaceOptionsFrame)
-	HideUIPanel(GameMenuFrame)
-	addon.optionFrame:Show()
-end)
 
 local blizzPartyParent = CreateFrame("Frame", "CompactRaidDisableBlizzardPartyParentFrame", UIParent, "SecureFrameTemplate")
 blizzPartyParent:Hide()
@@ -89,4 +65,35 @@ addon:RegisterOptionCallback("showParty", function(value)
 			bkgnd:SetParent(UIParent)
 		end
 	end
+end)
+
+addon:RegisterEventCallback("OnInitialize", function()
+	if not CompactUnitFrameProfiles then
+		return
+	end
+
+	DisableBlizzardFrame(CompactUnitFrameProfilesGeneralOptionsFrame)
+	DisableBlizzardFrame(CompactUnitFrameProfilesRaidStylePartyFrames)
+	DisableBlizzardFrame(CompactUnitFrameProfilesProfileSelector)
+	DisableBlizzardFrame(CompactUnitFrameProfilesSaveButton)
+	DisableBlizzardFrame(CompactUnitFrameProfilesDeleteButton)
+
+	CompactUnitFrameProfiles:UnregisterAllEvents()
+	CompactUnitFrameProfiles:SetScript("OnEvent", nil)
+
+	-- Display some infomation so the user won't get confused when he sees a blank page
+	local prompt = CompactUnitFrameProfiles:CreateFontString(nil, "ARTWORK", "GameFontNormal")
+	prompt:SetText(L["over ride prompt"])
+	prompt:SetPoint("TOP", 0, -120)
+
+	local button = CreateFrame("Button", "CompactRaidOverrideButton", CompactUnitFrameProfiles, "UIPanelButtonTemplate")
+	button:SetSize(120, 24)
+	button:SetPoint("TOP", prompt, "BOTTOM", 0, -16)
+	button:SetText(SETTINGS)
+
+	button:SetScript("OnClick", function(self)
+		HideUIPanel(InterfaceOptionsFrame)
+		HideUIPanel(GameMenuFrame)
+		addon.optionFrame:Show()
+	end)
 end)

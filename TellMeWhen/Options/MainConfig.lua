@@ -23,9 +23,7 @@ local CI = TMW.CI
 
 
 local TabGroup = IE:RegisterTabGroup("MAIN", L["MAIN"], 3, function(tabGroup)
-	local titlePrepend = "TellMeWhen v" .. TELLMEWHEN_VERSION_FULL
-
-	IE.Header:SetText(titlePrepend)
+	IE.Header:SetText("TellMeWhen v" .. TELLMEWHEN_VERSION_FULL)
 end)
 TabGroup:SetTexts(L["MAIN"], L["TABGROUP_MAIN_DESC"])
 
@@ -247,10 +245,10 @@ function IE:ProcessChangelogData()
 	log = log:trim(" \t\r\n")
 
 	-- Replace 4 equals with h2
-	log = log:gsub("[ \t]*====(.-)====[ \t]*", "<h2>%1</h2>")
+	log = log:gsub("### (.-)[\r\n]+", "<h2>%1</h2>\n")
 
 	-- Replace 3 equals with h1, formatting as a version name
-	log = log:gsub("[ \t]*===(.-)===[ \t]*", "<h1>TellMeWhen %1</h1>")
+	log = log:gsub("## (.-)[\r\n]+", "<h1>TellMeWhen %1</h1>\n")
 
 	-- Remove extra space after closing header tags
 	log = log:gsub("(</h.>)%s*", "%1")
@@ -267,7 +265,7 @@ function IE:ProcessChangelogData()
 	log = log .. "<br/>"
 
 	-- Convert asterisks to colored dashes
-	log = log:gsub(">%s*(*+)%s*(.-)<", bullets)
+	log = log:gsub(">([ \t]*%*)%s*(.-)<", bullets)
 
 	-- Remove double breaks 
 	log = log:gsub("<br/><br/>", "<br/>")
@@ -342,3 +340,6 @@ TMW:RegisterCallback("TMW_CONFIG_LOADED", function()
 		IE.db.global.LastChangelogVersion = TELLMEWHEN_VERSIONNUMBER
 	end
 end)
+
+
+IE:RegisterTab("MAIN", "HELP", "Help", 101):SetTexts(L["HELP"])

@@ -118,13 +118,14 @@ do
 	showTooltipsInCombatToggle:SetPoint('TOP', showTooltipsToggle, 'BOTTOM', 8, -2)
 
 	--show override ui
-	local useBlizzardOverrideUIToggle = GeneralPanel:Add('CheckButton', {
-		name = L.ShowOverrideUI,
-		get = function() return ParentAddon:UsingOverrideUI() end,
-		set = function(_, enable) ParentAddon:SetUseOverrideUI(enable) end
-	})
-	useBlizzardOverrideUIToggle:SetPoint('TOP', showTooltipsInCombatToggle, 'BOTTOM', -8, -10)
-
+	if ParentAddon:IsBuild("retail") then
+		local useBlizzardOverrideUIToggle = GeneralPanel:Add('CheckButton', {
+			name = L.ShowOverrideUI,
+			get = function() return ParentAddon:UsingOverrideUI() end,
+			set = function(_, enable) ParentAddon:SetUseOverrideUI(enable) end
+		})
+		useBlizzardOverrideUIToggle:SetPoint('TOP', showTooltipsInCombatToggle, 'BOTTOM', -8, -10)
+	end
 
 	--right click unit
 	local rightClickUnitSelector = GeneralPanel:Add('Dropdown', {

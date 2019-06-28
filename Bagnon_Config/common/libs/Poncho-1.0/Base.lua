@@ -1,5 +1,5 @@
 --[[
-Copyright 2011-2018 João Cardoso
+Copyright 2011-2019 João Cardoso
 Poncho is distributed under the terms of the GNU General Public License (Version 3).
 
 As a special exception, the copyright holders of this library give you permission to embed it

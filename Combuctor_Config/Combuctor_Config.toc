@@ -1,10 +1,10 @@
-## Interface: 80000
+## Interface: 80200
 ## Title: Combuctor Config
 ## Author: Tuller and Jaliborc (João Cardoso)
 ## Notes: An options menu for Combuctor
 ## Dependencies: Combuctor
 ## LoadOnDemand: 1
-## Version: 8.0.1
+## Version: 8.1.1
 
 main.lua
 common\Wildpants_Config.xml

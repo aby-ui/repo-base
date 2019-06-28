@@ -39,6 +39,7 @@ local AchievementID = {
 	ImInYourBaseKillingYourDudes = 7932,
 	JungleStalker = 10070,
 	KingOfTheMonsters = 9601,
+	LifeFindsAWayToDie = 13048,
 	MakingTheCut = 9617,
 	MillionsOfYearsOfEvolutionVsMyFist = 8123,
 	MushroomHarvest = 13027,

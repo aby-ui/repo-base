@@ -419,6 +419,7 @@
 					</Layer>
 				</Layers>
 				<Frames>
+					<!--
 					<PlayerModel parentKey="Model">
 						<Size x="36" y="42"/>
 						<Anchors>
@@ -434,7 +435,9 @@
 							<OnEvent function="Model_OnEvent"/>
 						</Scripts>
 					</PlayerModel>
+					-->
 					<!-- border of model is separate so we don't need to make model a sub-frame -->
+					<!--
 					<Frame parentKey="ModelBorder" useParentLevel="true">
 						<Backdrop edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
 							<EdgeSize val="12"/>
@@ -456,6 +459,7 @@
 							</Layer>
 						</Layers>
 					</Frame>
+					-->
 					<Button parentArray="Pets" inherits="RematchSlotTemplate,RematchPetClicks">
 						<Anchors>
 							<Anchor point="BOTTOMLEFT" relativePoint="BOTTOM" x="-58" y="4"/>

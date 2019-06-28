@@ -1,10 +1,10 @@
-## Interface: 80000
+## Interface: 80200
 ## Title: Bagnon Void Storage
 ## Author: Jaliborc (João Cardoso)
 ## Notes: Single window display for your void storage
 ## RequiredDeps: Bagnon
 ## LoadOnDemand: 1
-## Version: 8.0.2
+## Version: 8.1.9
 
 localization\localization.xml
 main.lua

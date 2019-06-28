@@ -44,6 +44,7 @@ function ActivitiesParent:OnInitialize()
         Blocker:SetParent(self)
         Blocker:Show()
         Blocker:Hide()
+        Blocker.SetText = nop
 
         Blocker:SetCallback('OnCheck', function()
             if not Activities:IsConnected() then
@@ -57,6 +58,7 @@ function ActivitiesParent:OnInitialize()
             end
         end)
         Blocker:SetCallback('OnFormat', function(Blocker)
+            if not Blocker or not Blocker.SetText then return end
             if not Activities:IsConnected() then
                 Blocker:SetText(L['服务器连线中，请稍候'])
             elseif not Activities:IsReady() then

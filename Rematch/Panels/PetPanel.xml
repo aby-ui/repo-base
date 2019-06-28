@@ -1,5 +1,290 @@
 <Ui>
 
+	<RematchCompositeButton name="RematchCompactPetListButtonTemplate" virtual="true">
+		<Size x="200" y="26"/>>
+		<KeyValues>
+			<KeyValue key="compact" value="true" type="boolean"/>
+		</KeyValues>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture parentKey="Back" file="Interface\AddOns\Rematch\Textures\backplate.tga">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="27" y="0"/>
+						<Anchor point="BOTTOMRIGHT"/>
+					</Anchors>
+					<TexCoords left="0" right="1" top="0.5" bottom="1"/>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<Texture parentKey="Pet">
+					<Size x="25" y="25"/>
+					<Anchors>
+						<Anchor point="LEFT" x="1" y="0"/>
+					</Anchors>
+					<TexCoords left="0.078125" right="0.921875" top="0.078125" bottom="0.921875"/>
+				</Texture>
+				<FontString parentKey="Name" inherits="GameFontNormal" justifyH="LEFT">
+					<Size x="0" y="21"/>
+					<Anchors>
+						<Anchor point="LEFT" x="52" y="0"/>
+						<Anchor point="RIGHT" x="-6" y="0"/>
+					</Anchors>
+				</FontString>
+				<FontString parentKey="Breed" inherits="SystemFont_Tiny">
+					<Anchors>
+						<Anchor point="CENTER" relativePoint="RIGHT" x="-12" y="0"/>
+					</Anchors>
+				</FontString>				
+				<Texture parentKey="Notes" file="Interface\AddOns\Rematch\Textures\Footnotes" hidden="false">
+					<Size x="20" y="20"/>
+					<Anchors>
+						<Anchor point="RIGHT" x="-24" y="0"/>
+					</Anchors>
+					<TexCoords left="0" right="0.125" top="0" bottom="0.25"/>
+				</Texture>
+			</Layer>
+			<Layer level="BORDER">
+				<Texture parentKey="TypeDecal" file="Interface\PetBattles\PetIcon-Beast">
+					<Size x="20" y="20"/>
+					<Anchors>
+						<Anchor point="LEFT" relativeKey="$parent.Pet" relativePoint="RIGHT" x="2" y="0"/>
+					</Anchors>
+					<TexCoords left="0.4921875" right="0.796875" top="0.50390625" bottom="0.65625"/>
+				</Texture>
+				<FontString parentKey="LevelText" inherits="SystemFont_Outline_Small" text="25">
+					<Anchors>
+						<Anchor point="CENTER" relativeKey="$parent.TypeDecal" relativePoint="BOTTOMRIGHT" x="-4" y="6"/>
+					</Anchors>
+					<FontHeight>
+						<AbsValue val="9"/>
+					</FontHeight>
+					<Color r=".9" g=".9" b=".9"/>
+				</FontString>				
+			</Layer>
+			<Layer level="OVERLAY">
+				<!-- blue up arrow on right side; in this layer so it's not clickable -->
+				<Texture parentKey="Leveling" file="Interface\AddOns\Rematch\Textures\Footnotes" hidden="false">
+					<Size x="20" y="20"/>
+					<Anchors>
+						<Anchor point="RIGHT" x="-44" y="0"/>
+					</Anchors>
+					<TexCoords left="0.125" right="0.25" top="0" bottom="0.25"/>
+				</Texture>				
+				<Texture parentKey="InTeams" file="Interface\AddOns\Rematch\Textures\Footnotes" hidden="false">
+					<Size x="20" y="20"/>
+					<Anchors>
+						<Anchor point="RIGHT" x="-64" y="0"/>
+					</Anchors>
+					<TexCoords left="0.5" right="0.625" top="0.5" bottom="0.75"/>
+				</Texture>				
+				<!-- either the dead or injured texture (maybe others in the future) -->
+				<Texture parentKey="Status" file="Interface\AddOns\Rematch\Textures\petstatus.tga" hidden="true">
+					<Size x="24" y="24"/>
+					<Anchors>
+						<Anchor point="LEFT" x="2" y="-1"/>
+					</Anchors>
+				</Texture>
+
+				<Texture parentKey="Favorite" atlas="PetJournal-FavoritesIcon" hidden="true">
+					<Size x="20" y="20"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="-5" y="5"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				Rematch.PetListButtonOnLoad(self)
+			</OnLoad>
+			<OnEnter>
+				self.Back:SetBlendMode("ADD")
+				Rematch.PetListButtonOnEnter(self)
+			</OnEnter>
+			<OnLeave>
+				self.Back:SetBlendMode("BLEND")
+				Rematch.PetListButtonOnLeave(self)
+			</OnLeave>
+			<OnMouseDown>
+				if self:HasFocus() then
+					-- if mouse is down while over an active texture, don't "press" the main button
+					self.Back:SetBlendMode("BLEND")
+				end
+			</OnMouseDown>
+			<OnMouseUp>
+				if GetMouseFocus()==self then
+					-- if mouse goes up after it left button, don't "unpress" it
+					self.Back:SetBlendMode("ADD")
+				end
+			</OnMouseUp>
+			<OnClick>
+				if self:HasFocus() then
+					Rematch.PetListButtonOnClick(self,button)
+				end
+			</OnClick>
+			<OnDoubleClick>
+				if self:HasFocus() then
+					Rematch.PetListButtonOnDoubleClick(self)
+				end
+			</OnDoubleClick>			
+			<OnDragStart>
+				Rematch.PetListButtonOnDragStart(self)
+			</OnDragStart>			
+		</Scripts>		
+	</RematchCompositeButton>
+
+	<RematchCompositeButton name="RematchNewPetListButtonTemplate" virtual="true">
+		<Size x="200" y="44"/> <!-- can be any width; 1px unused across top so 43px usable height -->
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture parentKey="Back" file="Interface\AddOns\Rematch\Textures\backplate.tga">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="48" y="0"/>
+						<Anchor point="BOTTOMRIGHT"/>
+					</Anchors>
+					<TexCoords left="0" right="1" top="0" bottom="0.5"/>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<Texture parentKey="Pet">
+					<Size x="40" y="40"/>
+					<Anchors>
+						<Anchor point="LEFT" x="3" y="0"/>
+					</Anchors>
+					<TexCoords left="0.078125" right="0.921875" top="0.078125" bottom="0.921875"/>
+					<!-- <TexCoords left="0.075" right="0.925" top="0.075" bottom="0.925"/> -->
+				</Texture>
+				<Texture parentKey="Notes" file="Interface\AddOns\Rematch\Textures\Footnotes" hidden="false">
+					<Size x="20" y="20"/>
+					<Anchors>
+						<Anchor point="TOPRIGHT" x="-2" y="-3"/>
+					</Anchors>
+					<TexCoords left="0" right="0.125" top="0" bottom="0.25"/>
+				</Texture>
+				<!-- FontStrings -->
+				<FontString parentKey="Name" inherits="GameFontNormal" justifyH="LEFT" justifyV="CENTER" text="Pet Name Goes Here">
+					<Size x="0" y="36"/> <!-- y=36 when SubName not shown, 21 when shown -->
+					<Anchors>
+						<Anchor point="TOPLEFT" x="54" y="-4"/> <!-- x is 6+Back's TOPLEFT x -->
+						<Anchor point="TOPRIGHT" x="-32" y="-4"/> <!-- x=-8 when no footnotes shown, -22 when one footnote shown, -32 when breed and at most one footbote, -44 when both footnotes shown -->
+					</Anchors>
+				</FontString>
+				<FontString parentKey="SubName" inherits="GameFontHighlightSmall" justifyH="LEFT" justifyV="TOP" hidden="true">
+					<Size x="0" y="12"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeKey="$parent.Name" relativePoint="BOTTOMLEFT"/>
+						<Anchor point="TOPRIGHT" relativeKey="$parent.Name" relativePoint="BOTTOMRIGHT"/>
+					</Anchors>
+				</FontString>
+				<FontString parentKey="Breed" inherits="GameFontHighlight" justifyH="CENTER" justifyV="CENTER" text="B/B" hidden="false">
+					<Anchors>
+						<Anchor point="BOTTOMRIGHT" x="-3" y="5"/>
+					</Anchors>
+					<Color r="0.9" g="0.9" b="0.9"/>
+				</FontString>
+			</Layer>
+			<Layer level="BORDER">
+				<!-- big type symbol in background right edge of list button -->
+				<Texture parentKey="TypeDecal" file="Interface\AddOns\Rematch\Textures\PetTypeDecals" alpha="0.4" hidden="true">
+					<Size x="58" y="41"/> <!-- was 55x38 -->
+					<Anchors>
+						<Anchor point="RIGHT" x="-1" y="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY">
+				<!-- blue up arrow on right side; in this layer so it's not clickable -->
+				<Texture parentKey="Leveling" file="Interface\AddOns\Rematch\Textures\Footnotes" hidden="true">
+					<Size x="20" y="20"/>
+					<Anchors>
+						<Anchor point="TOPRIGHT" x="-22" y="-3"/>
+					</Anchors>
+					<TexCoords left="0.125" right="0.25" top="0" bottom="0.25"/>
+				</Texture>
+				<Texture parentKey="InTeams" file="Interface\AddOns\Rematch\Textures\Footnotes" hidden="false">
+					<Size x="20" y="20"/>
+					<Anchors>
+						<Anchor point="TOPRIGHT" x="-43" y="-3"/>
+					</Anchors>
+					<TexCoords left="0.5" right="0.625" top="0.5" bottom="0.75"/>
+				</Texture>
+				<!-- border around the pet icon to the left -->
+				<Texture parentKey="Rarity" file="Interface\AddOns\Rematch\Textures\slotborder.tga">
+					<Size x="44" y="44"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeKey="$parent.Pet" x="-2" y="2"/>
+						<!-- <Anchor point="BOTTOMRIGHT" relativeKey="$parent.Pet" x="3" y="-3"/> -->
+					</Anchors>
+					<!-- <Color r="0.5" g="0.5" b="0.5"/> -->
+					<TexCoords left="0" right="0.34375" top="0" bottom="0.34375"/>
+				</Texture>
+				<!-- either the dead or injured texture (maybe others in the future) -->
+				<Texture parentKey="Status" file="Interface\AddOns\Rematch\Textures\petstatus.tga" hidden="true">
+					<Size x="39" y="39"/>
+					<Anchors>
+						<Anchor point="LEFT" x="4" y="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY" textureSubLevel="2">
+				<Texture parentKey="Favorite" atlas="PetJournal-FavoritesIcon" useAtlasSize="true" hidden="true">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="-6" y="5"/>
+					</Anchors>
+				</Texture>
+				<Texture parentKey="LevelBack" atlas="PetJournal-LevelBubble">
+					<Size x="22" y="22"/>
+					<Anchors>
+						<Anchor point="BOTTOMRIGHT" relativeKey="$parent.Pet" relativePoint="BOTTOMRIGHT" x="6" y="-4"/>
+					</Anchors>					
+				</Texture>
+				<FontString parentKey="LevelText" inherits="GameFontNormalSmall" text="25">
+					<Anchors>
+						<Anchor point="CENTER" relativeKey="$parent.LevelBack" relativePoint="CENTER" x="1" y="0"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				Rematch.PetListButtonOnLoad(self)
+			</OnLoad>
+			<OnEnter>
+				self.Back:SetBlendMode("ADD")
+				Rematch.PetListButtonOnEnter(self)
+			</OnEnter>
+			<OnLeave>
+				self.Back:SetBlendMode("BLEND")
+				Rematch.PetListButtonOnLeave(self)
+			</OnLeave>
+			<OnMouseDown>
+				if self:HasFocus() then
+					-- if mouse is down while over an active texture, don't "press" the main button
+					self.Back:SetBlendMode("BLEND")
+				end
+			</OnMouseDown>
+			<OnMouseUp>
+				if GetMouseFocus()==self then
+					-- if mouse goes up after it left button, don't "unpress" it
+					self.Back:SetBlendMode("ADD")
+				end
+			</OnMouseUp>
+			<OnClick>
+				if self:HasFocus() then
+					Rematch.PetListButtonOnClick(self,button)
+				end
+			</OnClick>
+			<OnDoubleClick>
+				if self:HasFocus() then
+					Rematch.PetListButtonOnDoubleClick(self)
+				end
+			</OnDoubleClick>			
+			<OnDragStart>
+				Rematch.PetListButtonOnDragStart(self)
+			</OnDragStart>			
+		</Scripts>
+	</RematchCompositeButton>
+
 	<!-- template for the typebar tabs -->
 	<Button name="RematchTypeBarTabTemplate" inherits="RematchTabTemplate" virtual="true">
 		<Size x="84" y="24"/>
@@ -159,40 +444,23 @@
 			</Frame>
 
 			<!-- this contains the list of pets -->
-			<Frame parentKey="List" inherits="RematchInsetFrameTemplate">
+			<RematchAutoScrollFrame parentKey="List">
+				<Size x="280" y="503"/>
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeKey="$parent.Top" relativePoint="BOTTOMLEFT" x="0" y="-2"/>
 					<Anchor point="BOTTOMRIGHT"/>
 				</Anchors>
-				<Frames>
-					<ScrollFrame parentKey="ScrollFrame" name="RematchPetListScrollFrame" inherits="HybridScrollFrameTemplate">
-						<Size x="248" y="503"/>
-						<Anchors>
-							<Anchor point="TOPLEFT" x="4" y="-3"/>
-							<Anchor point="BOTTOMRIGHT" x="-6" y="3"/>
-						</Anchors>
-						<Frames>
-							<Slider name="RematchPetListScrollBar" inherits="HybridScrollBarTrimTemplate" parentKey="ScrollBar">
-								<Anchors>
-									<Anchor point="TOPRIGHT" x="2" y="-14"/>
-									<Anchor point="BOTTOMRIGHT" x="2" y="13"/>
-								</Anchors>
-								<Scripts>
-									<OnLoad>
-										self.trackBG:Show()
-										self.trackBG:SetVertexColor(0, 0, 0, 0.75)
-									</OnLoad>
-								</Scripts>
-							</Slider>
-						</Frames>
-						<Scripts>
-							<OnSizeChanged>
-								RematchPetPanel:Update()
-							</OnSizeChanged>
-						</Scripts>
-					</ScrollFrame>
-				</Frames>
+			</RematchAutoScrollFrame>
+
+			<!-- border placed around currently summoned pet -->
+			<Frame parentKey="SelectedOverlay" inherits="RematchSelectedOverlayTemplate" hidden="true">
+				<Size x="200" y="44"/>
+				<!-- <Backdrop edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
+					<EdgeSize val="16"/>
+					<BorderColor r="1" g="0.82" b="0.5"/>
+				</Backdrop> -->
 			</Frame>
+
 			<!-- Selected gets reparented and positioned onto team buttons that are loaded -->
 			<Frame parentKey="Selected" useParentLevel="true" hidden="true">
 				<Layers>
@@ -208,6 +476,8 @@
 					</Layer>
 				</Layers>
 			</Frame>
+
+
 		</Frames>
 	</Frame>
 

@@ -1,11 +1,9 @@
 local major = "DRData-1.0"
-local minor = 1047
+local minor = 1049
 assert(LibStub, string.format("%s requires LibStub.", major))
 
 local Data = LibStub:NewLibrary(major, minor)
 if( not Data ) then return end
-
-local wow_700 = select(4, GetBuildInfo()) >= 70000
 
 local L = {
 	-- WoD
@@ -21,9 +19,24 @@ local L = {
 local locale = GetLocale()
 if locale == "deDE" then
 L["!!Main Addon Description"] = "Bietet visuelle, akustische und schriftliche Benachrichtigungen über Cooldowns, Buffs and so ziemlich alles andere."
+L["ABSORBAMT"] = "Menge der Abschirmung des Schildes"
+L["ABSORBAMT_DESC"] = "Überprüft die totale Menge des abschirmenden Schutzes des Schildes auf der Einheit."
+L["ACTIVE"] = [=[If the %d stands for Integer than it means: 
+
+Nummer aktiv. 
+
+for counting porposes: "Zählen aktiv"
+]=]
+L["ADDONSETTINGS_DESC"] = "Generele Konfiguration des Addons"
 L["AIR"] = "Luft"
+L["ALLOWCOMM"] = "Erlaube das teilen im Spiel "
+L["ALLOWCOMM_DESC"] = [=[Erlaube anderen TMW Benutzern dir Daten zu schicken: 
+
+Ein UI Reload oder neuerliches starten des Clients sind nötig bevor Daten empfangen werden können. 
+]=]
 L["ALLOWVERSIONWARN"] = "Melde neue Version"
 L["ALPHA"] = "Alpha"
+L["ANCHOR_CURSOR_DUMMY"] = "TMW Positionsanzeige Anker Attrappe. "
 L["ANIM_ACTVTNGLOW"] = "Icon: Aktivierungs Rahmen"
 L["ANIM_ACTVTNGLOW_DESC"] = "Zeigt den Zauberaktivierungs-Rahmen von Blizzard auf dem Icon an."
 L["ANIM_COLOR_DESC"] = "Stelle Farbe und Deckkraft ein."
@@ -5414,9 +5427,9 @@ L["worldboss"] = "Chefe do mundo"
 
 elseif locale == "ruRU" then
 L["!!Main Addon Description"] = "Обеспечивает визуальные, звуковые и текстовые оповещения о готовности заклинаний, способностей, наличии баффов/дебаффов и почти всего остального."
-L["ABSORBAMT"] = "Количество поглощаемого урона"
+L["ABSORBAMT"] = "Количество поглощаемого щитом урона"
 L["ABSORBAMT_DESC"] = "Проверяет общую сумму поглощающих щитов, которые имеет объект"
-L["ACTIVE"] = "% активно"
+L["ACTIVE"] = "%d активно"
 L["ADDONSETTINGS_DESC"] = "Настройка всех основных параметров аддона"
 L["AIR"] = "Воздух"
 L["ALLOWCOMM"] = "Разрешает поделиться в игре"
@@ -8314,7 +8327,7 @@ L["SOUND_EVENT_ONCHARGELOST_DESC"] = "此事件在一个被检测的充能类型
 L["SOUND_EVENT_ONCLEU"] = "在战斗事件发生时"
 L["SOUND_EVENT_ONCLEU_DESC"] = "此事件在图标处理一个战斗事件时触发."
 L["SOUND_EVENT_ONCONDITION"] = "在设置的条件通过时"
-L["SOUND_EVENT_ONCONDITION_DESC"] = "当你设置的条件通过时触发此事件."
+L["SOUND_EVENT_ONCONDITION_DESC"] = "当你设置的条件通过时触发一次此事件."
 L["SOUND_EVENT_ONDURATION"] = "在持续时间改变时"
 L["SOUND_EVENT_ONDURATION_DESC"] = [=[此事件在图标计时器的持续时间改变时触发.
 
@@ -8352,7 +8365,7 @@ L["SOUND_EVENT_ONUIERROR_DESC"] = "此事件在图标处理一个战斗错误事
 L["SOUND_EVENT_ONUNIT"] = "在单位改变时"
 L["SOUND_EVENT_ONUNIT_DESC"] = "当图标显示信息中的单位改变时触发此事件."
 L["SOUND_EVENT_WHILECONDITION"] = "当设置的条件通过时"
-L["SOUND_EVENT_WHILECONDITION_DESC"] = "此类型的通知事件会在你设置的条件通过时触发。"
+L["SOUND_EVENT_WHILECONDITION_DESC"] = "此类型的通知事件会在你设置的条件通过时持续触发。"
 L["SOUND_SOUNDTOPLAY"] = "要播放的音效"
 L["SOUND_TAB"] = "音效"
 L["SOUND_TAB_DESC"] = "设置用于播放的声音。 你可以使用LibSharedMedia的声音或者指定一个声音文件。"
@@ -11130,6 +11143,7 @@ local spellsAndProvidersByCategory = {
 		[  3355] = 187650, -- Freezing Trap
 		[ 19386] = true, -- Wyvern Sting
 		[209790] = true, -- Freezing Arrow
+		[213691] = true, -- Scatter Shot
 		-- Mage
 		[   118] = true, -- Polymorph
 		[ 28272] = true, -- Polymorph (pig)
@@ -11150,8 +11164,7 @@ local spellsAndProvidersByCategory = {
 		-- Priest
 		[   605] = true, -- Dominate Mind
 		[  9484] = true, -- Shackle Undead
-		[ 64044] = true, -- Psychic Horror (Horror effect)
-		[ 200196] = true, -- Holy Word: Chastise
+		[200196] = true, -- Holy Word: Chastise
 		-- Rogue
 		[  1776] = true, -- Gouge
 		[  6770] = true, -- Sap
@@ -11166,6 +11179,9 @@ local spellsAndProvidersByCategory = {
 		[  6789] = true, -- Mortal Coil
 		-- Pandaren
 		[107079] = true, -- Quaking Palm
+		-- Demon Hunter
+		[217832] = true, -- Imprison
+		[221527] = true, -- Improve Imprison
 	},
 
 	--[[ SILENCES ]]--
@@ -11204,9 +11220,10 @@ local spellsAndProvidersByCategory = {
 		[207685] = true, -- Sigil of Misery
 		-- Druid
 		[ 33786] = true, -- Cyclone
+		[209753] = true, -- Cyclone (Balance)
 		-- Hunter
-		[213691] = true, -- Scatter Shot
 		[186387] = true, -- Bursting Shot
+		[224729] = true, -- Bursting Shot
 		-- Mage
 		[ 31661] = true, -- Dragon's Breath
 		-- Monk
@@ -11216,6 +11233,7 @@ local spellsAndProvidersByCategory = {
 		[105421] = true, -- Blinding Light -- FIXME: is this the right category? Its missing from blizzard's list
 		-- Priest
 		[  8122] = true, -- Psychic Scream
+		[226943] = true, -- Mind Bomb
 		-- Rogue
 		[  2094] = true, -- Blind
 		-- Warlock
@@ -11247,6 +11265,9 @@ local spellsAndProvidersByCategory = {
 		[211881] = true, -- Fel Eruption
 		-- Druid
 		[203123] = true, -- Maim
+		[236025] = true, -- Maim (Honor talent)
+		[236026] = true, -- Maim (Honor talent)
+		[22570] = true, -- Maim (Honor talent)
 		[  5211] = true, -- Mighty Bash
 		[163505] = 1822, -- Rake (Stun from Prowl)
 		-- Hunter
@@ -11262,7 +11283,7 @@ local spellsAndProvidersByCategory = {
 		[   853] = true, -- Hammer of Justice
 		-- Priest
 		[200200] = true, -- Holy word: Chastise
-		[226943] = true, -- Mind Bomb
+		[ 64044] = true, -- Psychic Horror
 		-- Rogue
 		-- Shadowstrike note: 196958 is the stun, but it never applies to players,
 		-- so I haven't included it.
@@ -11272,7 +11293,7 @@ local spellsAndProvidersByCategory = {
 		-- Shaman
 		[118345] = true, -- Pulverize (Primal Earth Elemental)
 		[118905] = true, -- Static Charge (Capacitor Totem)
-		[204399] = true, -- Earthfury (pvp talent)
+		--[204399] = true, -- Earthfury (pvp talent)
 		-- Warlock
 		[ 89766] = true, -- Axe Toss (Felguard)
 		[ 30283] = true, -- Shadowfury
@@ -11280,6 +11301,7 @@ local spellsAndProvidersByCategory = {
 		-- Warrior
 		[132168] = true, -- Shockwave
 		[132169] = true, -- Storm Bolt
+		[237744] = true, -- Warbringer
 		-- Tauren
 		[ 20549] = true, -- War Stomp
 	},

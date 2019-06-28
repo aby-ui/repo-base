@@ -32,17 +32,76 @@ local GetQuestLogRewardMoney = GetQuestLogRewardMoney
 local GetQuestTagInfo = GetQuestTagInfo
 local GetNumQuestLogRewards = GetNumQuestLogRewards
 local GetQuestInfoByQuestID = C_TaskQuest.GetQuestInfoByQuestID
-local GetQuestTimeLeftMinutes = C_TaskQuest.GetQuestTimeLeftMinutes
 
 local MapRangeClamped = DF.MapRangeClamped
 local FindLookAtRotation = DF.FindLookAtRotation
 local GetDistance_Point = DF.GetDistance_Point
 
+local triggerScheduledWidgetUpdate = function (timerObject)
+	local widget = timerObject.widget
+	local questID = widget.questID
+	
+	if (not widget:IsShown()) then
+		return
+	end
+	
+	if (HaveQuestRewardData (questID)) then
+		--is a zone widget placed in the world hub
+		if (widget.IsWorldZoneQuestButton) then
+			WorldQuestTracker.SetupWorldQuestButton (widget, true)
+		
+		--is a square button in the world map
+		elseif (widget.IsWorldQuestButton) then
+			WorldQuestTracker.UpdateWorldWidget (widget, true)
+		
+		--is a zone widget placed in the zone
+		elseif (widget.IsZoneQuestButton) then
+			WorldQuestTracker.SetupWorldQuestButton (widget, true)
+		
+		--is a zone widget placed in the taxi map
+		elseif (widget.IsTaxiQuestButton) then
+			WorldQuestTracker.SetupWorldQuestButton (widget, true)
+		
+		--is a zone widget placed in the zone summary frame
+		elseif (widget.IsZoneSummaryButton) then
+			WorldQuestTracker.SetupWorldQuestButton (widget, true)
+		
+		end
+	else
+		WorldQuestTracker.CheckQuestRewardDataForWidget (widget, false, true)
+	end
+end
 
+function WorldQuestTracker.CheckQuestRewardDataForWidget (widget, noScheduleRefresh, noRequestData)
+	local questID = widget.questID
+	
+	if (not questID) then
+		return false
+	end
+	
+	if (not HaveQuestRewardData (questID)) then
+		
+		--if this is from a re-schedule it already requested the data
+		if (not noRequestData) then
+			--ask que server for the reward data
+			C_TaskQuest.RequestPreloadRewardData (questID)
+		end
+	
+		if (not noScheduleRefresh) then
+			local timer = C_Timer.NewTimer (1, triggerScheduledWidgetUpdate)
+			timer.widget = widget
+			return false, true
+		end
+		
+		return false
+	end
+	
+	return true
+end
 
-
-
-
+function WorldQuestTracker.HaveDataForQuest (questID)
+	return HaveQuestData (questID) and HaveQuestRewardData (questID)
+end
 
 --return the list of quests on the tracker
 function WorldQuestTracker.GetTrackedQuests()
@@ -105,6 +164,8 @@ function WorldQuestTracker.GetMapName (uiMapId)
 	if (mapInfo) then
 		local mapName = mapInfo and mapInfo.name or "wrong map id"
 		return mapName
+	else
+		return "wrong map id"
 	end
 end
 
@@ -304,8 +365,11 @@ function WorldQuestTracker.GetQuestFilterTypeAndOrder (worldQuestType, gold, rew
 		filter = FILTER_TYPE_GOLD
 		
 	end	
+	
+	--print (rewardName, rewardTexture)
 
 	if (rewardName) then
+		--print (rewardName, rewardTexture) --reputation token
 		--resources
 		if (WorldQuestTracker.MapData.ResourceIcons [rewardTexture]) then
 			order = WorldQuestTracker.db.profile.sort_order [WQT_QUESTTYPE_RESOURCE]
@@ -313,7 +377,7 @@ function WorldQuestTracker.GetQuestFilterTypeAndOrder (worldQuestType, gold, rew
 		
 		--reputation
 		elseif (WorldQuestTracker.MapData.ReputationIcons [rewardTexture]) then
-			order = WorldQuestTracker.db.profile.sort_order [WQT_QUESTTYPE_RESOURCE]
+			order = WorldQuestTracker.db.profile.sort_order [WQT_QUESTTYPE_REPUTATION]
 			filter = FILTER_TYPE_REPUTATION_TOKEN
 		
 		--trade skill
@@ -356,10 +420,10 @@ end
 
 --create a tooltip scanner
 local GameTooltipFrame = CreateFrame ("GameTooltip", "WorldQuestTrackerScanTooltip", nil, "GameTooltipTemplate")
-local GameTooltipFrameTextLeft1 = _G ["WorldQuestTrackerScanTooltipTextLeft2"]
-local GameTooltipFrameTextLeft2 = _G ["WorldQuestTrackerScanTooltipTextLeft3"]
-local GameTooltipFrameTextLeft3 = _G ["WorldQuestTrackerScanTooltipTextLeft4"]
-local GameTooltipFrameTextLeft4 = _G ["WorldQuestTrackerScanTooltipTextLeft5"]
+--local GameTooltipFrameTextLeft1 = _G ["WorldQuestTrackerScanTooltipTextLeft2"]
+--local GameTooltipFrameTextLeft2 = _G ["WorldQuestTrackerScanTooltipTextLeft3"]
+--local GameTooltipFrameTextLeft3 = _G ["WorldQuestTrackerScanTooltipTextLeft4"]
+--local GameTooltipFrameTextLeft4 = _G ["WorldQuestTrackerScanTooltipTextLeft5"]
 
 --attempt to get the item level of the item
 function WorldQuestTracker.RewardRealItemLevel (questID)
@@ -367,23 +431,23 @@ function WorldQuestTracker.RewardRealItemLevel (questID)
 	--GameTooltipFrame:SetHyperlink (itemLink)
 	GameTooltipFrame:SetQuestLogItem ("reward", 1, questID)
 	
-	local Text = GameTooltipFrameTextLeft1:GetText() or GameTooltipFrameTextLeft2:GetText() or ""
+	local Text = _G ["WorldQuestTrackerScanTooltipTextLeft2"] and _G ["WorldQuestTrackerScanTooltipTextLeft2"]:GetText() or _G ["WorldQuestTrackerScanTooltipTextLeft3"] and _G ["WorldQuestTrackerScanTooltipTextLeft3"]:GetText() or ""
 	local itemLevel = tonumber (Text:match ("%d+"))
 	
 	return itemLevel or 1
 end
 
---try to guess the amount of artifact power the item can give ï¿½rtifact ~artifact
+--try to guess the amount of artifact power the item can give ãrtifact ~artifact
 	
 	--asia
 	function WorldQuestTracker.RewardIsArtifactPowerAsian (itemLink) -- thanks @yuk6196 on curseforge
 
 		GameTooltipFrame:SetOwner (WorldFrame, "ANCHOR_NONE")
 		GameTooltipFrame:SetHyperlink (itemLink)
-		local text = GameTooltipFrameTextLeft1:GetText()
+		local text = _G ["WorldQuestTrackerScanTooltipTextLeft2"] and _G ["WorldQuestTrackerScanTooltipTextLeft2"]:GetText()
 
 		if (text and text:match ("|cFFE6CC80")) then
-			local power = GameTooltipFrameTextLeft3:GetText()
+			local power = _G ["WorldQuestTrackerScanTooltipTextLeft4"] and _G ["WorldQuestTrackerScanTooltipTextLeft4"]:GetText()
 			if (power) then
 				local n = tonumber (power:match ("[%d.]+"))
 				if (power:find (SECOND_NUMBER)) then
@@ -397,9 +461,9 @@ end
 			end
 		end
 
-		local text2 = GameTooltipFrameTextLeft2:GetText()
+		local text2 = _G ["WorldQuestTrackerScanTooltipTextLeft3"] and _G ["WorldQuestTrackerScanTooltipTextLeft3"]:GetText()
 		if (text2 and text2:match ("|cFFE6CC80")) then
-			local power = GameTooltipFrameTextLeft4:GetText()
+			local power = _G ["WorldQuestTrackerScanTooltipTextLeft5"] and _G ["WorldQuestTrackerScanTooltipTextLeft5"]:GetText()
 			if (power) then
 				local n = tonumber (power:match ("[%d.]+"))
 				if (power:find (SECOND_NUMBER)) then
@@ -427,10 +491,10 @@ end
 
 			GameTooltipFrame:SetOwner (WorldFrame, "ANCHOR_NONE")
 			GameTooltipFrame:SetHyperlink (itemLink)
-			local text = GameTooltipFrameTextLeft1:GetText()
+			local text = _G ["WorldQuestTrackerScanTooltipTextLeft2"] and _G ["WorldQuestTrackerScanTooltipTextLeft2"]:GetText()
 			
 			if (text and text:match ("|cFFE6CC80")) then
-				local power = GameTooltipFrameTextLeft3:GetText()
+				local power = _G ["WorldQuestTrackerScanTooltipTextLeft4"] and _G ["WorldQuestTrackerScanTooltipTextLeft4"]:GetText()
 				if (power) then
 					if (power:find (w1) or power:find (w2)) then
 
@@ -467,9 +531,9 @@ end
 				end
 			end
 			
-			local text2 = GameTooltipFrameTextLeft2:GetText()
+			local text2 = _G ["WorldQuestTrackerScanTooltipTextLeft3"] and _G ["WorldQuestTrackerScanTooltipTextLeft3"]:GetText()
 			if (text2 and text2:match ("|cFFE6CC80")) then
-				local power = GameTooltipFrameTextLeft4:GetText()
+				local power = _G ["WorldQuestTrackerScanTooltipTextLeft5"] and _G ["WorldQuestTrackerScanTooltipTextLeft5"]:GetText()
 				if (power) then
 				
 					if (power:find (w1) or power:find (w2)) then
@@ -519,8 +583,8 @@ end
 			GameTooltipFrame:SetOwner (WorldFrame, "ANCHOR_NONE")
 			GameTooltipFrame:SetHyperlink (itemLink)
 
-			local text = GameTooltipFrameTextLeft1:GetText()
-			local power = GameTooltipFrameTextLeft3:GetText()
+			local text = _G ["WorldQuestTrackerScanTooltipTextLeft2"] and _G ["WorldQuestTrackerScanTooltipTextLeft2"]:GetText()
+			local power = _G ["WorldQuestTrackerScanTooltipTextLeft4"] and _G ["WorldQuestTrackerScanTooltipTextLeft4"]:GetText()
 			
 			if ((text and text:match ("|cFFE6CC80")) or (power and power:match (ARTIFACT_POWER))) then
 			
@@ -561,9 +625,9 @@ end
 				end
 			end
 
-			local text2 = GameTooltipFrameTextLeft2:GetText() --thanks @Prejudice182 on curseforge
+			local text2 = _G ["WorldQuestTrackerScanTooltipTextLeft3"] and _G ["WorldQuestTrackerScanTooltipTextLeft3"]:GetText() --thanks @Prejudice182 on curseforge
 			if (text2 and text2:match ("|cFFE6CC80")) then
-				local power = GameTooltipFrameTextLeft4:GetText()
+				local power = _G ["WorldQuestTrackerScanTooltipTextLeft5"] and _G ["WorldQuestTrackerScanTooltipTextLeft5"]:GetText()
 				if (power) then
 				
 					if (power:find (SECOND_NUMBER)) then
@@ -607,17 +671,18 @@ end
 	function WorldQuestTracker.GetQuestReward_Resource (questID)
 		local numQuestCurrencies = GetNumQuestLogRewardCurrencies (questID)
 		if (numQuestCurrencies == 2) then
-		
 			for i = 1, numQuestCurrencies do
 				local name, texture, numItems = GetQuestLogRewardCurrencyInfo (i, questID)
 				--legion invasion quest
 				if (texture and 
-					(
-						(type (texture) == "number" and texture == 132775) or
-						(type (texture) == "string" and (texture:find ("inv_datacrystal01") or texture:find ("inv_misc_summonable_boss_token")))
-					)   
-				) then -- [[Interface\Icons\inv_datacrystal01]]
-				else
+						(
+							(type (texture) == "number" and texture == 132775) or
+							(type (texture) == "string" and (texture:find ("inv_datacrystal01") or texture:find ("inv_misc_summonable_boss_token")))
+						)   
+					) then -- [[Interface\Icons\inv_datacrystal01]]
+					
+				--BFA invasion quest (this check will force it to get the second reward
+				elseif (not WorldQuestTracker.MapData.IgnoredRewardTexures [texture]) then
 					return name, texture, numItems
 				end
 			end
@@ -631,14 +696,8 @@ end
 
 	--local ItemTooltipScan = CreateFrame ("GameTooltip", "WQTItemTooltipScan", UIParent, "EmbeddedItemTooltip")
 	local ItemTooltipScan = CreateFrame ("GameTooltip", "WQTItemTooltipScan", UIParent, "InternalEmbeddedItemTooltipTemplate")
-	ItemTooltipScan.texts = {
-		_G ["WQTItemTooltipScanTooltipTextLeft1"],
-		_G ["WQTItemTooltipScanTooltipTextLeft2"],
-		_G ["WQTItemTooltipScanTooltipTextLeft3"],
-		_G ["WQTItemTooltipScanTooltipTextLeft4"],
-	}
 	ItemTooltipScan.patern = ITEM_LEVEL:gsub ("%%d", "(%%d+)") --from LibItemUpgradeInfo-1.0
-
+	
 	--pega o premio item da quest
 	function WorldQuestTracker.GetQuestReward_Item (questID)
 		if (not HaveQuestData (questID)) then
@@ -650,17 +709,30 @@ end
 		if (numQuestCurrencies == 1) then
 			--is artifact power?
 			local name, texture, numItems = GetQuestLogRewardCurrencyInfo (1, questID)
+			
 			if (texture == 1830317 or texture == 2065624) then
-				--the taxi map tooltip is adding the reward to the world map quest tooltip
-				GameTooltip_AddQuestRewardsToTooltip (WorldMapTooltip, questID)
+			
+				--[=[
+					--the taxi map tooltip is adding the reward to the world map quest tooltip
+					GameTooltip_AddQuestRewardsToTooltip (WorldMapTooltip, questID)
+					
+					local amount
+					local t2 = WorldMapTooltipTooltipTextLeft2 and WorldMapTooltipTooltipTextLeft2:GetText()
+					if (t2) then
+						amount = tonumber (t2:match (" %d+ "))
+					end
+					
+					if (WorldMapTooltip:IsShown()) then
+						local owner = WorldMapTooltip:GetOwner()
+						if (owner and owner.UpdateTooltip) then
+							owner:UpdateTooltip()
+						end
+					end
+					--]=]
+				--return name, texture, 0, 1, 1, false, 0, true, amount or 0, false, 1
 				
-				local amount
-				local t2 = WorldMapTooltipTooltipTextLeft2 and WorldMapTooltipTooltipTextLeft2:GetText()
-				if (t2) then
-					amount = tonumber (t2:match (" %d+ "))
-				end
-				
-				return name, texture, 0, 1, 1, false, 0, true, amount or 0, false, 1
+				--numItems are now given the amount of azerite (BFA 17-09-2018), no more tooltip scan required
+				return name, texture, 0, 1, 1, false, 0, true, numItems or 0, false, 1
 			end
 		end
 		
@@ -673,7 +745,8 @@ end
 				if (itemName) then
 					EmbeddedItemTooltip_SetItemByQuestReward (ItemTooltipScan, 1, questID)
 					for i = 1, 4 do
-						local text = ItemTooltipScan.texts [i]:GetText()
+						local textString = _G ["WQTItemTooltipScanTooltipTextLeft" .. i]
+						local text = textString and textString:GetText()
 						if (text and text ~= "") then
 							local ilvl = tonumber (text:match (ItemTooltipScan.patern))
 							if (ilvl) then
@@ -704,11 +777,11 @@ end
 						return itemName, itemTexture, itemLevel, quantity, quality, isUsable, itemID, false, 0, itemStackCount > 1, itemStackCount
 					end
 				else
-					--ainda nï¿½o possui info do item
+					--ainda não possui info do item
 					return
 				end
 			else
-				--ainda nï¿½o possui info do item
+				--ainda não possui info do item
 				return
 			end
 		end

@@ -257,8 +257,16 @@ local UnitSet = TMW:NewClass("UnitSet"){
 				-- Override the parent used for the conditions (for Lua conditions mainly)
 				ConditionObjectConstructor.parent = parent or self
 				
-				-- Get a modifiable version
+				-- Modify the conditions:
+				-- Add a UnitExists condition to the beginning, so the rest of the conditions
+				-- will short circuit to false if the unit being checked doesn't exist.
 				local ModifiableConditions = ConditionObjectConstructor:GetPostUserModifiableConditions()
+				local exists = ConditionObjectConstructor:Modify_WrapExistingAndPrependNew()
+				exists.Type = "EXISTS"
+				exists.Unit = "unit" -- this will get replaced momentarily
+				ModifiableConditions[2].AndOr = "AND" -- AND together the exists condition and all subsequent conditions.
+
+				-- Substitute out "unit" with the actual unit being checked.
 				for _, condition in TMW:InNLengthTable(ModifiableConditions) do
 					condition.Unit = condition.Unit
 					:gsub("^unit", unit .. "-")
@@ -413,14 +421,14 @@ end
 TMW:MakeFunctionCached(UNITS, "GetUnitSet")
 
 function UNITS:GetOriginalUnitTable(unitSettings)
-	unitSettings = TMW:CleanString(unitSettings):
-	lower(): -- all units should be lowercase
-	-- Stripping color codes doesn't matter now since they aren't inserted now ("#" isnt inserted either)
-	-- but keep this here for compatibility with old setups.
-	gsub("|cffff0000", ""): -- strip color codes (NOTE LOWERCASE)
-	gsub("|r", ""):
-	gsub("#", "") -- strip the # from the dropdown 
-	.. " "
+	unitSettings = TMW:CleanString(unitSettings)
+		:lower() -- all units should be lowercase
+		-- Stripping color codes doesn't matter now since they aren't inserted now ("#" isnt inserted either)
+		-- but keep this here for compatibility with old setups.
+		:gsub("|cffff0000", "") -- strip color codes (NOTE LOWERCASE)
+		:gsub("|r", "")
+		:gsub("#", "") -- strip the # from the dropdown 
+		.. " "
 
 
 	--SUBSTITUTE "party" with "party1-4", etc
@@ -473,7 +481,7 @@ function UNITS:GetOriginalUnitTable(unitSettings)
 		end
 	end
 
-	local Units = TMW:SplitNames(unitSettings) -- get a table of everything
+	local Units = TMW:SplitNames(unitSettings, true) -- get a table of everything
 
 	-- REMOVE DUPLICATES
 	TMW.tRemoveDuplicates(Units)

@@ -121,7 +121,6 @@ L:SetOptionLocalization({
 	TimerEggWeaken		= "计时条：$spell:87654再生",
 	TimerOrbs			= "计时条：暗影宝珠冷却时间",
 	SetIconOnOrbs		= "在暗影宝珠刷新时自动为获得仇恨的团员添加团队标记<br/>（可能成为宝珠的目标）",
-	OrbsCountdown		= "倒计时警报：暗影宝珠",
 	InfoFrame			= "信息框：获得仇恨的团员的列表"
 })
 

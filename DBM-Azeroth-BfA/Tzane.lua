@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2139, "DBM-Azeroth-BfA", nil, 1028)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17584 $"):sub(12, -3))
+mod:SetRevision("20190416205700")
 mod:SetCreatureID(132701)
 --mod:SetEncounterID(1880)
 mod:SetReCombatTime(20)
@@ -12,7 +12,7 @@ mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
 	"SPELL_CAST_START 262004 261600 261552",
-	"SPELL_CAST_SUCCESS 262004 261605",
+	"SPELL_CAST_SUCCESS 262004",
 	"SPELL_AURA_APPLIED 261605",
 	"SPELL_AURA_REMOVED 261605"
 )
@@ -26,12 +26,12 @@ local specWarnConsumingSpirits		= mod:NewSpecialWarningMoveAway(261605, nil, nil
 local yellConsumingSpirits			= mod:NewYell(261605)
 local specWarnTerrorWall			= mod:NewSpecialWarningDodge(261552, nil, nil, nil, 3, 2)
 
---local specWarnGTFO				= mod:NewSpecialWarningGTFO(238028, nil, nil, nil, 1, 2)
+--local specWarnGTFO				= mod:NewSpecialWarningGTFO(238028, nil, nil, nil, 1, 8)
 
-local timerCrushingSlamCD			= mod:NewAITimer(16, 262004, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON)
-local timerCoalescedEssenceCD		= mod:NewAITimer(16, 261600, nil, nil, nil, 3)
-local timerConsumingSpiritsCD		= mod:NewAITimer(16, 261605, nil, nil, nil, 3)
-local timerTerrorWallCD				= mod:NewAITimer(16, 261552, nil, nil, nil, 3)
+local timerCrushingSlamCD			= mod:NewCDTimer(23.2, 262004, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON)--24.8-31?
+local timerCoalescedEssenceCD		= mod:NewCDTimer(23.6, 261600, nil, nil, nil, 3)--25-28?
+local timerConsumingSpiritsCD		= mod:NewCDTimer(21.9, 261605, nil, nil, nil, 3)--21-35?
+local timerTerrorWallCD				= mod:NewCDTimer(23.2, 261552, nil, nil, nil, 3)--24-29?
 
 mod:AddRangeFrameOption(8, 261605)
 --mod:AddReadyCheckOption(37460, false)
@@ -76,8 +76,6 @@ function mod:SPELL_CAST_SUCCESS(args)
 			specWarnCrushingSlamOther:Show(args.destName)
 			specWarnCrushingSlamOther:Play("tauntboss")
 		end
-	elseif spellId == 261605 then
-		timerConsumingSpiritsCD:Start()
 	end
 end
 
@@ -85,6 +83,7 @@ function mod:SPELL_AURA_APPLIED(args)
 	local spellId = args.spellId
 	if spellId == 261605 then
 		warnConsumingSpirits:CombinedShow(0.3, args.destName)
+		timerConsumingSpiritsCD:DelayedStart(0.3)
 		if args:IsPlayer() then
 			specWarnConsumingSpirits:Show()
 			specWarnConsumingSpirits:Play("runout")
@@ -111,7 +110,7 @@ end
 function mod:SPELL_PERIODIC_DAMAGE(_, _, _, _, destGUID, _, _, _, spellId)
 	if spellId == 228007 and destGUID == UnitGUID("player") and self:AntiSpam(2, 1) then
 		specWarnGTFO:Show()
-		specWarnGTFO:Play("runaway")
+		specWarnGTFO:Play("watchfeet")
 	end
 end
 mod.SPELL_PERIODIC_MISSED = mod.SPELL_PERIODIC_DAMAGE

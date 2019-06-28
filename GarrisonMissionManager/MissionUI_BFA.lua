@@ -10,7 +10,6 @@ local LE_FOLLOWER_TYPE_GARRISON_8_0 = LE_FOLLOWER_TYPE_GARRISON_8_0
 local After = C_Timer.After
 -- [AUTOLOCAL END]
 
-local Widget = addon_env.Widget
 addon_env.event_frame = addon_env.event_frame or CreateFrame("Frame")
 local event_frame = addon_env.event_frame
 local event_handlers = addon_env.event_handlers

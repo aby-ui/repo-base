@@ -21,7 +21,7 @@ function Bag:New(parent, id)
 
 	local count = bag:CreateFontString(nil, 'OVERLAY')
 	count:SetFontObject('NumberFontNormal')
-	count:SetPoint('BOTTOM', 2, 3)
+	count:SetPoint('BOTTOMRIGHT', -4, 3)
 	count:SetJustifyH('RIGHT')
 
 	local filter = CreateFrame('Frame', nil, bag)

@@ -305,9 +305,11 @@ df.rename = TplPanelButton(df):SetText(L["Rename"]):Size(60, 20):LEFT(df.profile
         or prof.name == newname
         ) then return end
 
-        prof.name = newname
-        f.scroll.update()
-        f.detailframe:UpdateDetail()
+    prof.name = newname
+    f.scroll.update()
+    f.detailframe:UpdateDetail()
+    f.detailframe:DeselectAll()
+    f.detailframe:Hide()
 end)
 
 df.save = TplPanelButton(df):SetText(L["Save"]):Size(50, 20):LEFT(df.delete, 'RIGHT', 10, 0):SetScript('OnClick', function()
@@ -339,6 +341,8 @@ df.save = TplPanelButton(df):SetText(L["Save"]):Size(50, 20):LEFT(df.delete, 'RI
             U1Profiles:SaveProfile(prof)
             f.scroll.update()
             f.detailframe:UpdateDetail()
+            f.detailframe:DeselectAll()
+            f.detailframe:Hide()
         end
     end
 end)

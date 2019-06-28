@@ -557,20 +557,27 @@ elseif pclass == "MONK" then
 		}
 	}
 elseif pclass == "DEATHKNIGHT" then
-	local cachedName = TMW:TryGetNPCName(27829)
-	local name = function()
-		if cachedName then return cachedName end
-		cachedName = TMW:TryGetNPCName(27829)
-		return cachedName
+	local npcName = function(npcID)
+		local cachedName = TMW:TryGetNPCName(npcID)
+		return function()
+			if cachedName then return cachedName end
+			cachedName = TMW:TryGetNPCName(npcID)
+			return cachedName
+		end
 	end
-
+	local name = GetSpellInfo(49206) .. " & " .. GetSpellInfo(288853)
 	TMW.COMMON.CurrentClassTotems = {
 		name = name,
-		desc = function() return L["ICONMENU_TOTEM_GENERIC_DESC"]:format(name()) end,
+		desc = function() return L["ICONMENU_TOTEM_GENERIC_DESC"]:format(name) end,
 		texture = GetSpellTexture(49206),
-		[3] = { -- wow blizzard, so nice. put the gargoyle in slot 3 why dontcha.
+		[1] = { -- Raise Abomination (pvp talent)
 			hasVariableNames = false,
-			name = name,
+			name = npcName(149555),
+			texture = GetSpellTexture(288853),
+		},
+		[3] = { -- Ebon Gargoyle
+			hasVariableNames = false,
+			name = npcName(27829),
 			texture = GetSpellTexture(49206),
 		}
 	}

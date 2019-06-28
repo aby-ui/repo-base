@@ -1,0 +1,39 @@
+<Ui>
+
+	<Script file="CompositeButton.lua"/>
+
+	<Button name="RematchCompositeButton" intrinsic="true" hidden="true">
+		<Scripts>
+			<OnLoad intrinsicOrder="precall">
+				RematchCompositeButton.OnPreLoad(self)
+			</OnLoad>
+			<OnEnter intrinsicOrder="precall">
+				RematchCompositeButton.OnPreEnter(self)
+			</OnEnter>
+			<OnLeave intrinsicOrder="precall">
+				RematchCompositeButton.OnPreLeave(self)
+			</OnLeave>
+			<OnMouseDown intrinsicOrder="precall">
+				RematchCompositeButton.OnPreMouseDown(self)
+			</OnMouseDown>
+			<OnMouseUp intrinsicOrder="precall">
+				RematchCompositeButton.OnPreMouseUp(self)
+			</OnMouseUp>
+			<OnClick intrinsicOrder="precall">
+				RematchCompositeButton.OnPreClick(self,button)
+			</OnClick>
+			<OnHide intrinsicOrder="precall">
+				RematchCompositeButton.OnPreHide(self)
+			</OnHide>
+		</Scripts>
+	</Button>
+
+	<Frame name="RematchHighlightOverlay" parent="UIParent" useParentLevel="true" hidden="true">
+		<Layers>
+			<Layer level="OVERLAY">
+				<Texture alphaMode="ADD" setAllPoints="true" alpha="0.75"/>
+			</Layer>
+		</Layers>
+	</Frame>
+
+</Ui>

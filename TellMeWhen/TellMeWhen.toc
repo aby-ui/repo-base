@@ -1,14 +1,23 @@
-# Originally by Nephthys of Hyjal
-# Major Updates by Oozebull of Twisting Nether, Xenyr of Aszune, and Cybeloras of Aerie Peak
+#  --------------------
+#  TellMeWhen
+#  Originally by Nephthys of Hyjal <lieandswell@yahoo.com>
+# 
+#  Other contributions by:
+# 		Sweetmms of Blackrock, Oozebull of Twisting Nether, Oodyboo of Mug'thol,
+# 		Banjankri of Blackrock, Predeter of Proudmoore, Xenyr of Aszune
+# 
+#  Currently maintained by
+#  Cybeloras of Aerie Peak
+#  --------------------
 
 
 # Also dont forget to bump both of these - X-Interface is used to get the interface version in-game to check that the user is using a current client.
-## Interface: 80000
+## Interface: 80200
 # DONT FORGET TO TOC BUMP TELLMEWHEN_OPTIONS TOO!!
-## X-Interface: 80000
+## X-Interface: 80200
 ## Title: TellMeWhen
 
-## Version: 8.5.3
+## Version: 8.6.3
 ## Author: Cybeloras of Aerie Peak
 
 ## Notes: Provides visual, auditory, and textual notifications about cooldowns, buffs, and pretty much every other element of combat.
@@ -19,7 +28,7 @@
 ## Notes-ruRU: Визуальные, звуковые и текстовые оповещения о готовности заклинаний, способностей, наличии баффов\дебаффов и многого другого.
 ## Notes-esES: Proporciona notificaciones visuales, auditivas y textuales sobre tiempos de reutilización, ventajas y básicamente cualquier otra cosa. 
 
-## OptionalDeps: Masque, Ace3, OmniCC, tullaCC, sct, sctd, MikScrollingBattleText, Parrot, DRData-1.0, LibDogTag-3.0, LibDogTag-Unit-3.0, LibDogTag-Unit-3.0, LibDogTag-Stats-3.0, LibSpellRange-1.0, LibOO-1.0, LibRangeCheck-2.0, LibBabble-CreatureType-3.0, LibBabble-Race-3.0, ElvUI, DBM-Core, BigWigs
+## OptionalDeps: Masque, Ace3, OmniCC, tullaCC, sct, sctd, MikScrollingBattleText, Parrot, DRData-1.0, LibDogTag-3.0, LibDogTag-Unit-3.0, LibDogTag-Stats-3.0, LibSpellRange-1.0, LibOO-1.0, LibRangeCheck-2.0, LibBabble-CreatureType-3.0, LibBabble-Race-3.0, ElvUI, DBM-Core, BigWigs
 # The per character settings are the old settings, but we still need them to upgrade to the new ones. If they aren't defined, then they will be deleted immediately
 ## SavedVariablesPerCharacter: TellMeWhen_Settings
 ## SavedVariables: TellMeWhenDB

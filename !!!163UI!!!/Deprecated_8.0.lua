@@ -73,7 +73,7 @@ function Aby_UnitDebuff(unit, indexOrName, filterOrNil, filter, ...) return Aby_
 
 CanComplainChat = CanComplainChat or function(lineID)
     local loc = PlayerLocation:CreateFromChatLineID(lineID);
-    return C_ChatInfo.CanReportPlayer(loc)
+    return C_ReportSystem.CanReportPlayer(loc)
 end
 
 RegisterAddonMessagePrefix = RegisterAddonMessagePrefix or C_ChatInfo.RegisterAddonMessagePrefix
@@ -237,3 +237,32 @@ do
 	SPELL_POWER_OBSOLETE = Enum.PowerType.Obsolete;
 	SPELL_POWER_OBSOLETE2 = Enum.PowerType.Obsolete2;
 end
+
+--[[------------------------------------------------------------
+8.1
+---------------------------------------------------------------]]
+do
+    GetNumIgnores = GetNumIgnores or C_FriendList.GetNumIgnores
+end
+
+function C_LFGListGetSearchResultInfo(resultID)
+    --local id, activityId, title, comment, voiceChat, iLvl, honorLevel, age, numBNetFriends, numCharFriends, numGuildMates, isDelisted, leader, numMembers
+    local info = C_LFGList.GetSearchResultInfo(resultID);
+    if not info then return end
+    return info.searchResultID, info.activityID, info.name, info.comment, info.voiceChat, info.requiredItemLevel, info.requiredHonorLevel,
+    info.age, info.numBNetFriends, info.numCharFriends, info.numGuildMates, info.isDelisted, info.leaderName, info.numMembers
+end
+
+--[[------------------------------------------------------------
+8.1.5
+---------------------------------------------------------------]]
+WorldMapTooltip = WorldMapTooltip or GameTooltip
+--[[
+hooksecurefunc("TaskPOI_OnEnter", function(self) self.UpdateTooltip = nil end)
+if WorldMap_AddQuestTimeToTooltip then
+    hooksecurefunc("WorldMap_AddQuestTimeToTooltip", function()
+        local o = GameTooltip:GetOwner()
+        if o and o.OnTabEnter and not o._abyui then o._abyui = 1 hooksecurefunc(o, "OnTabEnter", function(self) self.UpdateTooltip = nil end) end
+    end)
+end
+--]]

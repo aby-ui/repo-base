@@ -47,10 +47,16 @@ U1RegisterAddon("EN_UnitFrames", {
         type = 'radio',
         var = 'numberformat',
         default = 1,
-        options = {'万进位', 1, '千进位', 2},
+        cols = 3,
+        options = {'万进位', 1, '千进位', 0, '暴雪式', 2},
         text = '血量格式',
         callback = function(_, v)
             if(EUF_CurrentOptions) then
+                if v == 2 then
+                    EUF_CurrentOptions['BLIZZ_NUMBERFORMAT'] = 1
+                else
+                    EUF_CurrentOptions['BLIZZ_NUMBERFORMAT'] = 0
+                end
                 EUF_CurrentOptions['NUMBERFORMAT'] = v
 				EUF_Options_Update("NUMBERFORMAT", v);
             end
@@ -58,6 +64,19 @@ U1RegisterAddon("EN_UnitFrames", {
     },
     {
         type="text",text="玩家头像增强",
+        {
+            var = "showBlizPlayerHP",
+            default = 1,
+            text = "玩家血条显示暴雪默认数值",
+            callback = function(cfg, v, loading)
+                PlayerFrameHealthBarText:SetAlpha(v and 1 or 0)
+                PlayerFrameHealthBarTextLeft:SetAlpha(v and 1 or 0)
+                PlayerFrameHealthBarTextRight:SetAlpha(v and 1 or 0)
+                PlayerFrameManaBarText:SetAlpha(v and 1 or 0)
+                PlayerFrameManaBarTextLeft:SetAlpha(v and 1 or 0)
+                PlayerFrameManaBarTextRight:SetAlpha(v and 1 or 0)
+            end,
+        },
         {
             var = "player",
             default = 1,
@@ -106,6 +125,23 @@ U1RegisterAddon("EN_UnitFrames", {
             callback = function(cfg, v, loading)
                 EUF_Options_Update("TARGETHPMPPERCENT", v and 1 or 0);
             end,
+        },
+        {
+            var = "target_bliz",
+            text = "目标血条显示暴雪默认数值",
+            tip = "说明`很多人习惯目标血量始终显示为详细数值，这样可以调节玩家数值显示为百分比，所以增加此选项，取消勾选时，始终显示详细数值.",
+            default = 0,
+            callback = function(cfg, v, loading)
+                EUF_Options_Update("TARGETHPMPBLIZ", v and 1 or 0);
+                if not loading then EUF_TargetFrameDisplay_Update() end
+            end,
+            {
+                text = "暴雪数值显示方式",
+                callback = function()
+                    CoreIOF_OTC(InterfaceOptionsDisplayPanel);
+                    CoreUIShowCallOut(InterfaceOptionsDisplayPanel, InterfaceOptionsDisplayPanelDisplayDropDownLabel, InterfaceOptionsDisplayPanelDisplayDropDownButton, -10, 10, 10, -10)
+                end,
+            },
         },
         {
             text = "目标的目标",

@@ -14,6 +14,7 @@ addon.optionFrame = frame
 local group = frame:CreateMultiSelectionGroup(GENERAL)
 frame:AnchorToTopLeft(group)
 
+group:AddButton(L["predict next quake"], "predict")
 group:AddButton(L["lock position"], "lock")
 group:AddButton(L["voice alert"], "voice")
 
@@ -71,6 +72,7 @@ addon:RegisterEventCallback("OnInitialize", function(db, isNew)
 	if isNew then
 		db.lock = 1
 		db.voice = 1
+		db.predict = 1
 	end
 
 	--if type(db.tolerance) ~= "number" or db.tolerance < 0 or db.tolerance > 500 then

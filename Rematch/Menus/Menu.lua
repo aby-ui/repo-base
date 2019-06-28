@@ -136,6 +136,13 @@ function rematch:ShowMenu(name,anchorPoint,relativeTo,relativePoint,anchorXoff,a
 	frame.Title:Hide()
 	frame.Shadow:SetPoint("TOPLEFT",3,-3)
 
+	-- special case for a notable npcs menu when npcs are not yet cached; make an attempt and carry on
+	if name=="NotableNPCs" and not rematch:GetMenu("NotableNPCs") then
+		rematch:CacheNpcIDs()
+		rematch.notablesCached = true -- may not be really cached but need menu built NOW
+		rematch:CreateNpcMenus()
+	end
+
 	local numItems = #menus[name]
 	local maxWidth = 32
 	local hasSubMenu -- becomes true if any item in this menu has a sub-menu

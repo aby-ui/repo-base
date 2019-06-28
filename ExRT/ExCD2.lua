@@ -7,9 +7,21 @@ local UnitIsDeadOrGhost, UnitIsConnected, UnitName, UnitCreatureFamily, UnitIsDe
 local RaidInCombat, ClassColorNum, GetDifficultyForCooldownReset, DelUnitNameServer, NumberInRange = ExRT.F.RaidInCombat, ExRT.F.classColorNum, ExRT.F.GetDifficultyForCooldownReset, ExRT.F.delUnitNameServer, ExRT.F.NumberInRange
 local GetEncounterTime, UnitCombatlogname, GetUnitInfoByUnitFlag, ScheduleTimer, CancelTimer, GetRaidDiffMaxGroup, round, table_wipe2, dtime = ExRT.F.GetEncounterTime, ExRT.F.UnitCombatlogname, ExRT.F.GetUnitInfoByUnitFlag, ExRT.F.ScheduleTimer, ExRT.F.CancelTimer, ExRT.F.GetRaidDiffMaxGroup, ExRT.F.Round, ExRT.F.table_wipe, ExRT.F.dtime
 
+local GetSpellLevelLearned, GetInspectSpecialization, GetNumSpecializationsForClassID = GetSpellLevelLearned, GetInspectSpecialization, GetNumSpecializationsForClassID, GetTalentInfo
+local C_SpecializationInfo_GetInspectSelectedPvpTalent
+if ExRT.isClassic then
+	GetSpellLevelLearned = function () return 1 end
+	GetInspectSpecialization = function () return 0 end
+	GetNumSpecializationsForClassID = GetInspectSpecialization
+	GetTalentInfo = ExRT.NULLfunc
+	C_SpecializationInfo_GetInspectSelectedPvpTalent = ExRT.NULLfunc
+else
+	C_SpecializationInfo_GetInspectSelectedPvpTalent = C_SpecializationInfo.GetInspectSelectedPvpTalent
+end
+
 local VExRT, VExRT_CDE = nil
 
-local module = ExRT.mod:New("ExCD2",ExRT.L.cd2)
+local module = ExRT:New("ExCD2",ExRT.L.cd2)
 local ELib,L = ExRT.lib,ExRT.L
 
 module._C = {}
@@ -90,7 +102,7 @@ module.db.findspecspells = {
 	[202767] = 102, [190984] = 102, --[78674] = 102, 
 	[210722] = 103, [52610] = 103, --[1822] = 103, 
 	[200851] = 104, [33917] = 104, --[22842] = 104,
-	[208253] = 105, [188550] = 105, [8936] = 105, 
+	[208253] = 105, [188550] = 105, --[8936] = 105, 
 
 	[205223] = 250, [206930] = 250, [50842] = 250,
 	[190778] = 251, [49143] = 251, [49184] = 251,
@@ -118,7 +130,7 @@ module.db.findspecspells = {
 	
 	[214326] = 268, [205523] = 268, [121253] = 268, 
 	[205320] = 269, [113656] = 269, --[100780] = 269,
-	[205406] = 270, [115151] = 270, [116670] = 270,
+	[205406] = 270, [115151] = 270, --[116670] = 270,
 	
 	[201467] = 577, [162243] = 577, [198013] = 577,
 	[207407] = 581, [203782] = 581, [228477] = 581,
@@ -307,10 +319,12 @@ module.db.spell_isTalent = {
 	[212084]=true,	[232893]=true,	[202138]=true,	[263648]=true,	
 	--Other & items
 	[67826]=true,
+	[298452]=true,	[299376]=true,	[299378]=true,	[303823]=true,	[304088]=true,	[304121]=true,	[295186]=true,	[298628]=true,	[299334]=true,	[298168]=true,	[299273]=true,	[299275]=true,	[293032]=true,	[299943]=true,	[299944]=true,	[296197]=true,	[299932]=true,	[299933]=true,	[296230]=true,	[299958]=true,	[299959]=true,	[293031]=true,	[300009]=true,	[300010]=true,	[293019]=true,	[298080]=true,	[298081]=true,	[295258]=true,	[299336]=true,	[299338]=true,	[296094]=true,	[299882]=true,	[299883]=true,	[294926]=true,	[300002]=true,	[300003]=true,	[295337]=true,	[299345]=true,	[299347]=true,	[295840]=true,	[299355]=true,	[299358]=true,	[302731]=true,	[302982]=true,	[302983]=true,	[298357]=true,	[299372]=true,	[299374]=true,	[296072]=true,	[299875]=true,	[299876]=true,	[295746]=true,	[300015]=true,	[300016]=true,	[295373]=true,	[299349]=true,	[299353]=true,	[296325]=true,	[299368]=true,	[299370]=true,	[297108]=true,	[298273]=true,	[298277]=true,	
 }
 
 module.db.spell_autoTalent = {		--Для маркировки базовых заклинаний спека, которые являются талантами у других спеков [spellID] = specID
 	[107574] = 73,
+	[288826] = 104,
 }
 
 module.db.spell_talentsList = {}
@@ -363,6 +377,7 @@ module.db.spell_charge_fix = {		--Спелы с зарядами
 	[61336]=1,
 	[22842]=1,
 	[18562]=200383,
+	[12051]=273330,
 }
 
 module.db.spell_durationByTalent_fix = {	--Изменение длительности талантом\глифом   вид: [спелл] = {spellid глифа\таланта, изменение времени (-10;10;*0.5;*1.5)}
@@ -416,6 +431,26 @@ module.db.spell_cdByTalent_fix = {		--Изменение кд талантом\�
 	[18562] = {200383,-3},
 	[740] = {197073,-60},
 	[102342] = {197061,-15},
+	[48792] = {288424,-15},
+	[106898] = {288826,-60},
+	[77764] = {288826,-60},
+	[77761] = {288826,-60},
+	[109304] = {287938,-15},
+	[116849] = {277667,-20},
+
+	[296320] = {34433,"*0.85",123040,"*0.85",64843,"*0.85",31884,"*0.862",108280,"*0.877",51533,"*0.877",198067,"*0.877",192249,"*0.877",115203,"*0.9",115203,"*0.9",115310,"*0.9",137639,"*0.9",152173,"*0.9",194223,"*0.9",106951,"*0.9",61336,"*0.9",740,"*0.9",190319,"*0.9",12042,"*0.9",12472,"*0.9",191427,"*0.9",187827,"*0.9",55233,"*0.9",47568,"*0.9",275699,"*0.9",288613,"*0.9",193530,"*0.9",266779,"*0.9",205180,"*0.9",265187,"*0.9",1122,"*0.9",79140,"*0.9",13750,"*0.9",121471,"*0.9",227847,"*0.9",1719,"*0.9",107574,"*0.9"},
+	--[299367] = {34433,"*0.85",123040,"*0.85",64843,"*0.85",31884,"*0.862",108280,"*0.877",51533,"*0.877",198067,"*0.877",192249,"*0.877",115203,"*0.9",115203,"*0.9",115310,"*0.9",137639,"*0.9",152173,"*0.9",194223,"*0.9",106951,"*0.9",61336,"*0.9",740,"*0.9",190319,"*0.9",12042,"*0.9",12472,"*0.9",191427,"*0.9",187827,"*0.9",55233,"*0.9",47568,"*0.9",275699,"*0.9",288613,"*0.9",193530,"*0.9",266779,"*0.9",205180,"*0.9",265187,"*0.9",1122,"*0.9",79140,"*0.9",13750,"*0.9",121471,"*0.9",227847,"*0.9",1719,"*0.9",107574,"*0.9"},
+	--[299369] = {34433,"*0.85",123040,"*0.85",64843,"*0.85",31884,"*0.862",108280,"*0.877",51533,"*0.877",198067,"*0.877",192249,"*0.877",115203,"*0.9",115203,"*0.9",115310,"*0.9",137639,"*0.9",152173,"*0.9",194223,"*0.9",106951,"*0.9",61336,"*0.9",740,"*0.9",190319,"*0.9",12042,"*0.9",12472,"*0.9",191427,"*0.9",187827,"*0.9",55233,"*0.9",47568,"*0.9",275699,"*0.9",288613,"*0.9",193530,"*0.9",266779,"*0.9",205180,"*0.9",265187,"*0.9",1122,"*0.9",79140,"*0.9",13750,"*0.9",121471,"*0.9",227847,"*0.9",1719,"*0.9",107574,"*0.9"},
+	--Priest, Paladin, Shaman, Monk, Druid, Mage, DH, DK, Hunter, Warlock, Rogue, Warrior
+	[293019] = {298080,-15},
+	[294926] = {300002,-30},
+	[298168] = {299273,-30},
+	[295746] = {300015,-42},
+	[293031] = {300009,-15},
+	[296230] = {299958,-15},
+	[297108] = {298273,-30},
+	[298452] = {299376,-15},
+
 }
 
 module.db.tierSetsSpells = {}	--[specID.tierID.tierMark] = {2P Bonus Spell ID, 4P Bonus Spell ID}
@@ -478,6 +513,8 @@ module.db.spell_afterCombatNotReset = {	--Запрещать сброс кд п�
 	
 	[199740]=true,
 	[160452]=true,
+
+	--[271466]=true,
 }
 module.db.spell_reduceCdByHaste = {	--Заклинания, кд которых уменьшается хастой
 	[12294]=true,
@@ -554,6 +591,27 @@ do
 		{115308,119582},						--Brewmaster brew
 		{90633,90628},{90632,90626},{90631,89479},			--Guild Battle Standard
 		{86659,212641},							--Guardian of Ancient Kings [std,glyhed]
+		{200166,191427},						--DH Metamorphosis
+
+		{295373,299349,299353},	--The Crucible of Flame
+		{295186,298628,299334},	--Worldvein Resonance
+		{302731,302982,302983},	--Ripple in Space
+		{298357,299372,299374},	--Memory of Lucid Dreams
+		{293019,298080,298081},	--Azeroth's Undying Gift
+		{294926,300002,300003},	--Anima of Life and Death
+		{298168,299273,299275},	--Aegis of the Deep
+		{295746,300015,300016},	--Nullification Dynamo
+		{293031,300009,300010},	--Sphere of Suppression
+		{296197,299932,299933},	--The Well of Existence
+		{296094,299882,299883},	--Artifice of Time
+		{293032,299943,299944},	--Life-Binder's Invocation
+		{296072,299875,299876},	--The Ever-Rising Tide
+		{296230,299958,299959},	--Vitality Conduit
+		{295258,299336,299338},	--Essence of the Focusing Iris
+		{295840,299355,299358},	--Condensed Life-Force
+		{297108,298273,298277},	--Blood of the Enemy
+		{295337,299345,299347},	--Purification Protocol
+		{298452,299376,299378},	--The Unbound Force
 	}
 	for i=1,#sameSpellsData do
 		local list = sameSpellsData[i]
@@ -591,9 +649,9 @@ module.db.spell_reduceCdCast = {	--Заклинания, применение к
 	[201430]={{109304,270581},-1},
 	[120360]={{109304,270581,253},-2,{109304,270581,254},-1.5},
 	[19434]={{109304,270581},-1.5},
-	[185358]={{109304,270581},-0.75,{193526,260404},-3},
+	[185358]={{109304,270581},-0.75,{288613,260404},-3},
 	[186387]={{109304,270581,254},-0.5},
-	[257620]={{109304,270581},-0.75,{193526,260404},-3},
+	[257620]={{109304,270581},-0.75,{288613,260404},-3},
 	[212431]={{109304,270581},-1},
 	[198670]={{109304,270581},-1.75},	
 	[187708]={{109304,270581},-1.75},
@@ -651,12 +709,13 @@ module.db.spell_startCDbyAuraFade = {	--Заклинания, кд которы�
 module.db.spell_startCDbyAuraApplied = {	--Заклинания, кд которых запускается только при наложении ауры (вида [aura_spellID] = CD_spellID)
 	[117679]=33891,
 	[59628]=57934,
+	[212800]=198589,	--blur fix
 }
 module.db.spell_startCDbyAuraApplied_fix = {}
 for _,spellID in pairs(module.db.spell_startCDbyAuraApplied) do module.db.spell_startCDbyAuraApplied_fix[spellID] = true end
 
 module.db.spell_reduceCdByAuraFade = {	--Заклинания, кд которых уменьшается при спадении ауры до окончания времени действия. !Важно обязательное время действия для таких заклинаний
-	[47788]={{47788,200209},-120},
+	[47788]={{47788,200209},-110},
 }
 module.db.spell_battleRes = {		--Заклинания-воскрешения [WOD]
 	[20484]=true,
@@ -928,6 +987,8 @@ module.db.itemsToSpells = {	-- Тринкеты вида [item ID] = spellID
 	[144242] = 235039,
 	
 	[151978] = 251946,
+
+	[167865] = 295271,
 }
 module.db.itemsArtifacts = {}	-- Artifacts & First trait
 
@@ -959,6 +1020,13 @@ module.db.differentIcons = {	--Другие иконки заклинаниям
 	[90633] = "Interface\\Icons\\inv_guild_standard_horde_c",
 	[90632] = "Interface\\Icons\\inv_guild_standard_horde_b",
 	[90631] = "Interface\\Icons\\inv_guild_standard_horde_a",
+
+	--Prevent replacing icons for players with some talents
+	[31884] = "Interface\\Icons\\spell_holy_avenginewrath",	--Avenging Wrath
+	[1022] = "Interface\\Icons\\spell_holy_sealofprotection",	--Blessing of Protection
+	[62618] = "Interface\\Icons\\spell_holy_powerwordbarrier",	--Power Word: Barrier
+
+	[295271] = 1003587,
 }
 
 module.db.playerName = nil
@@ -3811,9 +3879,13 @@ do
 	
 	local spellHeal_trackedSpells = {
 		[207778] = true,
+		[48438] = true,
+		[116670] = true,
 	}
 	local spellHeal_trackedSpells_Register = {
 		[207778] = true,
+		[29166] = true,
+		[115310] = true,
 	}	
 	local spell207778_var = {0,0}
 	function module.main:SPELL_HEAL(sourceGUID,sourceName,sourceFlags,destGUID,destName,destFlags,spellID,critical,amount,overhealing)
@@ -3841,6 +3913,36 @@ do
 					end)
 				end							
 			end				
+		elseif spellID == 48438 and session_gGUIDs[sourceName][287251] then
+			local line = CDList[sourceName][29166]
+			if line then
+				if (amount - overhealing) == 0 then
+					line.cd = line.cd - 1
+					if line.cd < 0 then 
+						line.cd = 0 
+					end
+					if line.bar and line.bar.data == line then
+						line.bar:UpdateStatus()
+					end
+					UpdateAllData()
+					SortAllData()
+				end							
+			end
+		elseif spellID == 116670 and session_gGUIDs[sourceName][278576] then
+			local line = CDList[sourceName][115310]
+			if line then
+				if critical then
+					line.cd = line.cd - 1
+					if line.cd < 0 then 
+						line.cd = 0 
+					end
+					if line.bar and line.bar.data == line then
+						line.bar:UpdateStatus()
+					end
+					UpdateAllData()
+					SortAllData()
+				end							
+			end			
 		end
 	end
 	
@@ -4731,7 +4833,7 @@ function module.options:Load()
 	self.addSpellFrame.CURR_SPEC = {}
 	
 	function self.addSpellFrame:SetSpecButtons(class)
-	  	local specByClassTable = module.db.specByClass[class] or {0,-1,-2,-3}
+	  	local specByClassTable = module.db.specByClass[class] or {0,-1,-2,-3,-4}
 	  	local addSpellFrame = module.options.addSpellFrame
 	  	
 	  	local height = addSpellFrame:GetHeight() - 72
@@ -4750,6 +4852,9 @@ function module.options:Load()
 		  		elseif specID == -3 then	
 		  			button.text:SetText(L.classLocalizate["PET"])
 		  			button.icon:SetTexture("Interface\\Icons\\ability_hunter_aspectofthefox")	 
+		  		elseif specID == -4 then	
+		  			button.text:SetText(AZERITE_ESSENCE_ITEM_TYPE or "Essences")
+		  			button.icon:SetTexture(1869493)	 
 		  		end
 	  		else
 		  		local role = ExRT.GDB.ClassSpecializationRole[specID]
@@ -4813,6 +4918,8 @@ function module.options:Load()
 				newValue = "ITEMS"
 			elseif specNum == 3 then
 				newValue = "PET"
+			elseif specNum == 4 then
+				newValue = "ESSENCES"
 			end
 		end
 		local classDB = module.db.allClassSpells[newValue]
@@ -4916,7 +5023,9 @@ function module.options:Load()
 		end
 		
 		if not isItem then
-			GameTooltip:SetHyperlink(self.spellLink)
+			if self.spellLink then
+				GameTooltip:SetHyperlink(self.spellLink)
+			end
 		else
 			local _,itemLink = GetItemInfo(isItem)
 			GameTooltip:SetHyperlink(itemLink or self.spellLink)
@@ -5061,7 +5170,7 @@ function module.options:Load()
 	local function AddSpellFrameButtonsOnClick(self)
 		if not self.disabled then
 			local class = module.options.addSpellFrame.class
-			module.options:addNewSpell((class == "RACIAL" or class == "ITEMS") and "ALL" or class,self.line)
+			module.options:addNewSpell((class == "RACIAL" or class == "ITEMS" or class == "ESSENCES") and "ALL" or class,self.line)
 			module.options.addSpellFrame:Hide()
 		end
 	end
@@ -7339,12 +7448,14 @@ function module.options:Load()
 			[1] = { ButtonPos = { x = 310,	y = -50 },  	HighLightBox = { x = 0, y = -50, width = 660, height = 565 },		ToolTipDir = "DOWN",	ToolTipText = L.cd2HelpHistory },		
 		}
 	}
-	self.HELPButton = ExRT.lib.CreateHelpButton(self,self.HelpPlate,self.tab)
-	self.HELPButton:SetPoint("CENTER",self,"TOPLEFT",0,15)
+	if not ExRT.isClassic then
+		self.HELPButton = ExRT.lib.CreateHelpButton(self,self.HelpPlate,self.tab)
+		self.HELPButton:SetPoint("CENTER",self,"TOPLEFT",0,15)
 	
-	function self.HELPButton:Click2()
-		local min,max=module.options.ScrollBar:GetMinMaxValues()
-		module.options.ScrollBar:SetValue(max)
+		function self.HELPButton:Click2()
+			local min,max=module.options.ScrollBar:GetMinMaxValues()
+			module.options.ScrollBar:SetValue(max)
+		end
 	end
 end
 
@@ -7862,7 +7973,7 @@ module.db.allClassSpells = {
 	{187707,3,	nil,			nil,			nil,			{187707,15,	0},	},	--Muzzle
 	{257044,3,	nil,			nil,			{257044,20,	0},	nil,			},	--Rapid Fire
 	{187698,3,	{187698,30,	0},	nil,			nil,			nil,			},	--Tar Trap
-	{193526,3,	nil,			nil,			{193526,180,	15},	nil,			},	--Trueshot
+	{288613,3,	nil,			nil,			{288613,120,	15},	nil,			},	--Trueshot
 	
 	{131894,3,	{131894,60,	15},	nil,			nil,			nil,			},	--A Murder of Crows
 	{120360,3,	nil,			{120360,20,	3},	{120360,20,	3},	nil,			},	--Barrage
@@ -7945,7 +8056,7 @@ module.db.allClassSpells = {
 	
 	{121536,3,	nil,			{121536,20,	0},	{121536,20,	0},	nil,			},	--Angelic Feather
 	{110744,3,	nil,			{110744,15,	0},	{110744,15,	0},	nil,			},	--Divine Star
-	{246287,3,	nil,			{246287,75,	0},	nil,			nil,			},	--Evangelism
+	{246287,3,	nil,			{246287,90,	0},	nil,			nil,			},	--Evangelism
 	{120517,3,	nil,			{120517,40,	0},	{120517,40,	0},	nil,			},	--Halo
 	{271466,1,	nil,			{271466,180,	0},	nil,			nil,			},	--Luminous Barrier
 	{123040,3,	nil,			{123040,60,	12},	nil,			nil,			},	--Mindbender
@@ -8150,25 +8261,25 @@ module.db.allClassSpells = {
 ["MONK"] = {
 	{100784,3,	{100784,3,	0},	nil,			nil,			nil,			},	--Blackout Kick
 	{115181,3,	nil,			{115181,15,	0},	nil,			nil,			},	--Breath of Fire
-	{218164,5,	nil,			{218164,8,	0},	nil,			{218164,8,	0},	},	--Detox
-	{115450,5,	nil,			nil,			{115450,8,	0},	nil,			},	--Detox
-	{191837,3,	nil,			nil,			{191837,12,	0},	nil,			},	--Essence Font
-	{113656,3,	nil,			nil,			nil,			{113656,24,	0},	},	--Fists of Fury
-	{101545,3,	nil,			nil,			nil,			{101545,25,	0},	},	--Flying Serpent Kick
+	{218164,5,	nil,			{218164,8,	0},	{218164,8,	0},	nil,			},	--Detox
+	{115450,5,	nil,			nil,			nil,			{115450,8,	0},	},	--Detox
+	{191837,3,	nil,			nil,			nil,			{191837,12,	0},	},	--Essence Font
+	{113656,3,	nil,			nil,			{113656,24,	0},nil,				},	--Fists of Fury
+	{101545,3,	nil,			nil,			{101545,25,	0},nil,				},	--Flying Serpent Kick
 	{115203,4,	nil,			{115203,420,	15},	nil,			nil,			},	--Fortifying Brew
-	{243435,4,	nil,			nil,			{243435,90,	15},	nil,			},	--Fortifying Brew
+	{243435,4,	nil,			nil,			nil,			{243435,90,	15},	},	--Fortifying Brew
 	{119381,1,	{119381,60,	3},	nil,			nil,			nil,			},	--Leg Sweep
-	{116849,2,	nil,			nil,			{116849,120,	12},	nil,			},	--Life Cocoon
+	{116849,2,	nil,			nil,			nil,			{116849,120,	12},	},	--Life Cocoon
 	{115078,3,	{115078,45,	0},	nil,			nil,			nil,			},	--Paralysis
 	{115546,5,	{115546,8,	0},	nil,			nil,			nil,			},	--Provoke
-	{115310,1,	nil,			nil,			{115310,180,	0},	nil,			},	--Revival
+	{115310,1,	nil,			nil,			nil,			{115310,180,	0},	},	--Revival
 	{107428,3,	nil,			nil,			{107428,10,	0},	{107428,10,	0},	},	--Rising Sun Kick
 	{109132,3,	{107428,20,	0},	nil,			nil,			nil,			},	--Roll	
-	{116705,3,	nil,			{116705,15,	0},	nil,			{116705,15,	0},	},	--Spear Hand Strike
-	{137639,3,	nil,			nil,			nil,			{137639,90,	15},	},	--Storm, Earth, and Fire
-	{116680,3,	nil,			nil,			{116680,30,	0},	nil,			},	--Thunder Focus Tea
-	{115080,3,	nil,			nil,			nil,			{115080,120,	8},	},	--Touch of Death
-	{122470,3,	nil,			nil,			nil,			{122470,90,	10},	},	--Touch of Karma
+	{116705,3,	nil,			{116705,15,	0},	{116705,15,	0},	nil,			},	--Spear Hand Strike
+	{137639,3,	nil,			nil,			{137639,90,	15},	nil,			},	--Storm, Earth, and Fire
+	{116680,3,	nil,			nil,			nil,			{116680,30,	0},	},	--Thunder Focus Tea
+	{115080,3,	nil,			nil,			{115080,120,	8},	nil,				},	--Touch of Death
+	{122470,3,	nil,			nil,			{122470,90,	10},	nil,			},	--Touch of Karma
 	{101643,4,	{101643,10,	0},	nil,			nil,			nil,			},	--Transcendence
 	{119996,4,	{119996,45,	0},	nil,			nil,			nil,			},	--Transcendence: Transfer
 	{115176,4,	nil,			{115176,300,	8},	nil,			nil,			},	--Zen Meditation
@@ -8187,18 +8298,18 @@ module.db.allClassSpells = {
 	{116841,2,	{116841,30,	6},	nil,			nil,			nil,			},	--Tiger's Lust
 	
 	{122783,4,	nil,			nil,			{122783,90,	6},	{122783,90,	6},	},	--Diffuse Magic
-	{198664,3,	nil,			nil,			{198664,180,	25},	nil,			},	--Invoke Chi-Ji, the Red Crane
-	{197908,3,	nil,			nil,			{197908,90,	12},	nil,			},	--Mana Tea
-	{196725,3,	nil,			nil,			{196725,9,	0},	nil,			},	--Refreshing Jade Wind
-	{198898,3,	nil,			nil,			{198898,30,	0},	nil,			},	--Song of Chi-Ji
-	{115313,3,	nil,			nil,			{115313,10,	0},	nil,			},	--Summon Jade Serpent Statue
+	{198664,3,	nil,			nil,			nil,			{198664,180,	25},	},	--Invoke Chi-Ji, the Red Crane
+	{197908,3,	nil,			nil,			nil,			{197908,90,	12},	},	--Mana Tea
+	{196725,3,	nil,			nil,			nil,			{196725,9,	0},	},	--Refreshing Jade Wind
+	{198898,3,	nil,			nil,			nil,			{198898,30,	0},	},	--Song of Chi-Ji
+	{115313,3,	nil,			nil,			nil,			{115313,10,	0},	},	--Summon Jade Serpent Statue
 	
-	{115288,3,	nil,			nil,			nil,			{115288,60,	0},	},	--Energizing Elixir
-	{261947,3,	nil,			nil,			nil,			{261947,30,	0},	},	--Fist of the White Tiger
-	{123904,3,	nil,			nil,			nil,			{123904,120,	20},	},	--Invoke Xuen, the White Tiger
-	{261715,3,	nil,			nil,			nil,			{261715,6,	0},	},	--Rushing Jade Wind
-	{152173,3,	nil,			nil,			nil,			{152173,90,	12},	},	--Serenity
-	{152175,3,	nil,			nil,			nil,			{152175,24,	0},	},	--Whirling Dragon Punch
+	{115288,3,	nil,			nil,			{115288,60,	0},	nil,			},	--Energizing Elixir
+	{261947,3,	nil,			nil,			{261947,30,	0},	nil,			},	--Fist of the White Tiger
+	{123904,3,	nil,			nil,			{123904,120,	20},	nil,			},	--Invoke Xuen, the White Tiger
+	{261715,3,	nil,			nil,			{261715,6,	0},	nil,			},	--Rushing Jade Wind
+	{152173,3,	nil,			nil,			{152173,90,	12},	nil,			},	--Serenity
+	{152175,3,	nil,			nil,			{152175,24,	0},	nil,			},	--Whirling Dragon Punch
 
 },
 ["DRUID"] = {
@@ -8224,7 +8335,7 @@ module.db.allClassSpells = {
 	{18562,	3,	nil,			nil,			nil,			nil,			{18562,	25,	0},	},	--Swiftmend
 	{5217,	3,	nil,			nil,			{5217,	30,	10},	nil,			nil,			},	--Tiger's Fury
 	{740,	1,	nil,			nil,			nil,			nil,			{740,	180,	8},	},	--Tranquility
-	{102793,3,	nil,			nil,			nil,			nil,			{102793,60,	10},	},	--Ursol's Vortex
+	{102793,3,	nil,			nil,			nil,			{102793,60,	10},	{102793,60,	10},	},	--Ursol's Vortex
 	{48438,	3,	nil,			nil,			nil,			nil,			{48438,	10,	0},	},	--Wild Growth
 	
 	{205636,3,	nil,			{205636,60,	0},	nil,			nil,			nil,			},	--Force of Nature
@@ -8243,7 +8354,6 @@ module.db.allClassSpells = {
 	
 	{155835,3,	nil,			nil,			nil,			{155835,40,	0},	nil,			},	--Bristling Fur
 	{102558,3,	nil,			nil,			nil,			{102558,180,	30},	nil,			},	--Incarnation: Guardian of Ursoc
-	{236748,3,	nil,			nil,			nil,			{236748,30,	0},	nil,			},	--Intimidating Roar
 	{204066,3,	nil,			nil,			nil,			{204066,75,	0},	nil,			},	--Lunar Beam
 	
 	{102351,3,	nil,			nil,			nil,			nil,			{102351,30,	0},	},	--Cenarion Ward
@@ -8331,7 +8441,7 @@ module.db.allClassSpells = {
 	{20572,	3,	{20572,	120,	15},	},	--Orc
 	{20549,	3,	{20549,	90,	0},	},	--Tauren
 	{26297,	3,	{26297,	180,	10},	},	--Troll
-	{28730,	3,	{28730,	90,	0},	},	--BloodElf
+	{28730,	3,	{28730,	120,	0},	},	--BloodElf
 	{107079,3,	{107079,120,	4},	},	--Pandaren
 	{256948,3,	{256948,180,	0},	},	--VoidElf
 	{260364,3,	{260364,180,	12},	},	--Nightborne
@@ -8380,7 +8490,28 @@ module.db.allClassSpells = {
 	{235966,3,	{235966,75,	10},	},	--Velen's Future Sight
 	{235991,3,	{235991,75,	0},	},	--Kil'jaeden's Burning Wish
 	{251946,3,	{251946,120,	3},	},	--ABT Bulwark of Flame
-	
+	{295271,3,	{295271,120,	0},	},	--Void Stone
+},
+["ESSENCES"] = {
+	{295373,3,	{295373,30,	0},	},	--The Crucible of Flame
+	{295186,3,	{295186,60,	0},	},	--Worldvein Resonance
+	{302731,3,	{302731,60,	2},	},	--Ripple in Space
+	{298357,3,	{298357,120,	0},	},	--Memory of Lucid Dreams
+	{293019,3,	{293019,60,	4},	},	--Azeroth's Undying Gift
+	{294926,3,	{294926,150,	0},	},	--Anima of Life and Death
+	{298168,3,	{298168,120,	15},	},	--Aegis of the Deep
+	{295746,3,	{295746,180,	0},	},	--Nullification Dynamo
+	{293031,3,	{293031,60,	0},	},	--Sphere of Suppression
+	{296197,3,	{296197,15,	0},	},	--The Well of Existence
+	{296094,3,	{296094,180,	0},	},	--Artifice of Time
+	{293032,3,	{293032,120,	0},	},	--Life-Binder's Invocation
+	{296072,3,	{296072,30,	8},	},	--The Ever-Rising Tide
+	{296230,3,	{296230,60,	0},	},	--Vitality Conduit
+	{295258,3,	{295258,90,	0},	},	--Essence of the Focusing Iris
+	{295840,3,	{295840,180,	0},	},	--Condensed Life-Force
+	{297108,3,	{297108,120,	0},	},	--Blood of the Enemy
+	{295337,3,	{295337,60,	0},	},	--Purification Protocol
+	{298452,3,	{298452,60,	0},	},	--The Unbound Force
 },
 }
 ]]
@@ -8403,6 +8534,10 @@ moduleInspect.db.inspectID = nil
 moduleInspect.db.inspectCleared = nil
 
 module.db.inspectDB = moduleInspect.db.inspectDB	--Quick fix for other modules
+
+if ExRT.isClassic then
+	SetAchievementComparisonUnit = ExRT.NULLfunc
+end
 
 local inspectForce = false
 function moduleInspect:Force() inspectForce = true end
@@ -8448,6 +8583,72 @@ moduleInspect.db.itemsSlotTable = {
 
 local inspectScantip = CreateFrame("GameTooltip", "ExRTInspectScanningTooltip", nil, "GameTooltipTemplate")
 inspectScantip:SetOwner(UIParent, "ANCHOR_NONE")
+
+do
+	local essenceData = nil
+	local dbcData = {
+		[28] = {298452,298407,298452,298407, 298455,298448,299376,299375, 298456,298449,299378,299377, 298457,298450,299378,299377},
+		[32] = {303823,304081,303823,304081, 304086,304055,304088,304089, 303892,304125,304121,304123, 303894,304533,304121,304123},
+		[4] =  {295186,295078,295186,295078, 295209,295208,298628,298627, 295160,295165,299334,299333, 295210,295166,299334,299333},
+		[25] = {298168,298193,298168,298193, 298169,298351,299273,299274, 298174,298352,299275,299277, 298186,298353,299275,299277},
+		[20] = {293032,296207,293032,296207, 296220,296213,299943,299939, 296221,296214,299944,299940, 299520,299521,299944,299940},
+		[19] = {296197,296136,296197,296136, 296200,296192,299932,299935, 296201,296193,299933,299936, 299529,299530,299933,299936},
+		[21] = {296230,303448,296230,303448, 303472,303463,299958,303474, 296232,303460,299959,303476, 299559,299560,299959,303476},
+		[3] =  {293031,294910,293031,294910, 294906,294919,300009,300012, 294907,294920,300010,300013, 294908,294922,300010,300013},
+		[2] =  {293019,294668,293019,294668, 294653,294687,298080,298082, 294650,294688,298081,298083, 294655,294689,298081,298083},
+		[5] =  {295258,295246,295258,295246, 295262,295251,299336,299335, 295263,295252,299338,299337, 295264,295253,299338,299337},
+		[18] = {296094,296081,296094,296081, 296102,296091,299882,299885, 296103,296089,299883,299887, 299518,299519,299883,299887},
+		[7] =  {294926,294964,294926,294964, 295307,294970,300002,300004, 294945,294969,300003,300005, 295306,294972,300003,300005},
+		[6] =  {295337,295293,295337,295293, 295364,295363,299345,299343, 295352,295351,299347,299346, 295358,295333,299347,299346},
+		[14] = {295840,295834,295840,295834, 295841,295836,299355,299354, 295843,295837,299358,299357, 295892,295839,299358,299357},
+		[15] = {302731,302916,302731,302916, 302778,302957,302982,302984, 302780,302961,302983,302985, 302910,302962,302983,302985},
+		[27] = {298357,298268,298357,298268, 298376,298337,299372,299371, 298377,298339,299374,299373, 298405,298404,299374,299373},
+		[17] = {296072,296050,296072,296050, 296074,296067,299875,299878, 296075,296062,299876,299879, 299522,299523,299876,299879},
+		[13] = {295746,295750,295746,295750, 295747,295844,300015,300018, 295748,295846,300016,300020, 295749,295845,300016,300020},
+		[12] = {295373,295365,295373,295365, 295377,295372,299349,299348, 295379,295369,299353,299350, 295380,295381,299353,299350},
+		[22] = {296325,296320,296325,296320, 296326,296321,299368,299367, 303342,296322,299370,299369, 296328,296324,299370,299369},
+		[23] = {297108,297147,297108,297147, 297120,297177,298273,298274, 297122,297178,298277,298275, 298182,298183,298277,298275},
+	}
+	moduleInspect.db.essenceSpellsData = dbcData
+	local CURRENT_MAX,CURRENT_MIN = 32,2
+
+	function moduleInspect:GetEssenceData()
+		if not essenceData then
+			essenceData = {}
+			for i=CURRENT_MIN,CURRENT_MAX do 
+				local ess = C_AzeriteEssence.GetEssenceHyperlink(i,1)
+				if ess and ess ~= "" and dbcData[i] then
+					ess = ess:match("%[(.-)%]"):gsub("%-","%%-")
+
+					local currData = {
+						name = ess,
+						id = i,
+					}
+					essenceData[#essenceData+1] = currData
+
+					for j=1,4 do
+						for k=0,1 do
+							local spellID = dbcData[i][(j-1)*4+3+k]
+							local spellName,_,spellTexture = GetSpellInfo(spellID)
+
+							currData[j*(k == 0 and 1 or -1)] = {
+								icon = spellTexture,
+								spellID = spellID,
+								previewSpellID = dbcData[i][(j-1)*4+1+k],
+								name = ess,
+								id = i,
+								isMajor = k == 0,
+								tier = j,
+								link = C_AzeriteEssence.GetEssenceHyperlink(i,j),
+							}
+						end
+					end
+				end
+			end
+		end
+		return essenceData
+	end
+end
 
 local inspectLastTime = 0
 local function InspectNext()
@@ -8527,7 +8728,7 @@ end
 local InspectItems = nil
 do
 	local ITEM_LEVEL = (ITEM_LEVEL or "NO DATA FOR ITEM_LEVEL"):gsub("%%d","(%%d+)")
-	local dataNames = {'tiersets','items','items_ilvl','azerite'}
+	local dataNames = {'tiersets','items','items_ilvl','azerite','essence'}
 	function InspectItems(name,inspectedName,inspectSavedID)
 		if moduleInspect.db.inspectCleared or moduleInspect.db.inspectID ~= inspectSavedID then
 			return
@@ -8548,6 +8749,12 @@ do
 		for spellID,_ in pairs(module.db.spell_isAzeriteTalent) do
 			module.db.session_gGUIDs[name] = -spellID
 		end
+		for _,v in pairs(moduleInspect.db.essenceSpellsData) do
+			for _,spellID in pairs(v) do
+				module.db.session_gGUIDs[name] = -spellID
+			end
+		end
+
 		
 		local ilvl_count = 0
 		
@@ -8555,6 +8762,7 @@ do
 		
 		local isArtifactEqipped = 0
 		local ArtifactIlvlSlot1,ArtifactIlvlSlot2 = 0,0
+		local mainHandSlot, offHandSlot = 0,0
 		for i=1,#moduleInspect.db.itemsSlotTable do
 			local itemSlotID = moduleInspect.db.itemsSlotTable[i]
 			--local itemLink = GetInventoryItemLink(inspectedName, itemSlotID)
@@ -8577,38 +8785,48 @@ do
 					end
 				end
 				
-				local isAzeriteItem = C_AzeriteEmpoweredItem.IsAzeriteEmpoweredItemByID(itemLink)
 				local AzeritePowers = nil
-				if isAzeriteItem then
-					local powers = C_AzeriteEmpoweredItem.GetAllTierInfoByItemID(itemLink,inspectData.classID)
-					if powers then
-						AzeritePowers = {}
-						for j=1,#powers do
-							for k=1,#powers[j].azeritePowerIDs do
-								local powerID = powers[j].azeritePowerIDs[k]
-								
-								local powerData = C_AzeriteEmpoweredItem.GetPowerInfo(powerID)
-								if powerData then
-									local spellName,_,spellTexture = GetSpellInfo(powerData.spellID)
+				if not ExRT.isClassic then
+					local isAzeriteItem = C_AzeriteEmpoweredItem.IsAzeriteEmpoweredItemByID(itemLink)
+					if isAzeriteItem then
+						local powers = C_AzeriteEmpoweredItem.GetAllTierInfoByItemID(itemLink,inspectData.classID)
+						if powers then
+							AzeritePowers = {}
+							for j=1,#powers do
+								for k=1,#powers[j].azeritePowerIDs do
+									local powerID = powers[j].azeritePowerIDs[k]
 									
-									if spellName then
-										AzeritePowers[#AzeritePowers+1] = {
-											name = spellName,
-											icon = spellTexture,
-											id = powerID,
-											item = itemSlotID,
-											itemLink = itemLink,
-											itemID = itemID,
-											spellID = powerData.spellID,
-										}
+									local powerData = C_AzeriteEmpoweredItem.GetPowerInfo(powerID)
+									if powerData then
+										local spellName,_,spellTexture = GetSpellInfo(powerData.spellID)
+										
+										if spellName then
+											AzeritePowers[#AzeritePowers+1] = {
+												name = spellName,
+												icon = spellTexture,
+												id = powerID,
+												item = itemSlotID,
+												itemLink = itemLink,
+												itemID = itemID,
+												spellID = powerData.spellID,
+												tier = j,
+											}
+										end
+										
+										module.db.spell_isAzeriteTalent[powerData.spellID] = true
 									end
-									
-									module.db.session_gGUIDs[name] = powerData.spellID
-									module.db.spell_isAzeriteTalent[powerData.spellID] = true
 								end
 							end
 						end
 					end
+				end
+				local EssencePowers
+				if itemSlotID == 2 and C_AzeriteEssence and select(3,GetItemInfo(itemLink)) == 6 then
+					EssencePowers = moduleInspect:GetEssenceData()
+				end
+
+				if AzeritePowers then
+					inspectData.azerite["i"..itemSlotID] = AzeritePowers
 				end
 				
 				for j=2, inspectScantip:NumLines() do
@@ -8641,19 +8859,61 @@ do
 							
 							inspectData['items_ilvl'][itemSlotID] = ilvl
 							
-							if isArtifactEqipped > 0 then
-								if itemSlotID == 16 then
-									ArtifactIlvlSlot1 = ilvl
-								else
-									ArtifactIlvlSlot2 = ilvl
-								end
+							if itemSlotID == 16 then
+								mainHandSlot = ilvl
+								ArtifactIlvlSlot1 = ilvl
+							elseif itemSlotID == 17 then
+								offHandSlot = ilvl
+								ArtifactIlvlSlot2 = ilvl
 							end
 						end
 						
 						if AzeritePowers then
 							for k=1,#AzeritePowers do
-								if text:find(AzeritePowers[k].name) == 3 then
+								if text:find(AzeritePowers[k].name.."$") == 3 then
 									inspectData.azerite[#inspectData.azerite + 1] = AzeritePowers[k]
+
+									module.db.session_gGUIDs[name] = AzeritePowers[k].spellID
+								end
+							end
+						end
+						if EssencePowers then
+							for k=1,#EssencePowers do
+								if text:find(EssencePowers[k].name.."$") == 1 then
+									local isMajor = _G["ExRTInspectScanningTooltipTextLeft"..(j-1)]:GetText() == " "
+									local tier = 4
+									local r,g,b = tooltipLine:GetTextColor()
+									if abs(r-0.639)<0.01 and abs(g-0.217)<0.01 and abs(b-0.933)<0.01 then	--a335ee
+										tier = 3
+									elseif abs(r-0.117)<0.01 and abs(g-1)<0.01 and abs(b-0)<0.01 then	--1eff00
+										tier = 1
+									elseif abs(r-0)<0.01 and abs(g-0.439)<0.01 and abs(b-0.866)<0.01 then	--0070dd
+										tier = 2
+									else	--ff8000
+										tier = 4
+									end
+
+									if isMajor then
+										local ess = EssencePowers[k][tier]
+										inspectData.essence[#inspectData.essence + 1] = ess
+	
+										module.db.session_gGUIDs[name] = ess.spellID
+										for l=tier-1,1,-1 do
+											local ess = EssencePowers[k][l]
+											module.db.session_gGUIDs[name] = ess.spellID
+										end
+									end
+
+									local ess = EssencePowers[k][tier*(-1)]
+									if not isMajor then
+										inspectData.essence[#inspectData.essence + 1] = ess
+									end
+
+									module.db.session_gGUIDs[name] = ess.spellID
+									for l=tier-1,1,-1 do
+										local ess = EssencePowers[k][l*(-1)]
+										module.db.session_gGUIDs[name] = ess.spellID
+									end
 								end
 							end
 						end
@@ -8736,8 +8996,12 @@ do
 		end
 		if isArtifactEqipped > 0 then
 			inspectData['ilvl'] = inspectData['ilvl'] - ArtifactIlvlSlot1 - ArtifactIlvlSlot2 + max(ArtifactIlvlSlot1,ArtifactIlvlSlot2) * 2
+			
+		elseif mainHandSlot > 0 and offHandSlot == 0 then
+			inspectData['ilvl'] = inspectData['ilvl'] + mainHandSlot
 		end
-		inspectData['ilvl'] = inspectData['ilvl'] / ((inspectData['items'][17] or isArtifactEqipped > 0) and 16 or 15)
+		inspectData['ilvl'] = inspectData['ilvl'] / 16
+		
 
 		--------> ExCD2
 		for tierUID,count in pairs(inspectData['tiersets']) do
@@ -8771,15 +9035,17 @@ end
 hooksecurefunc("NotifyInspect", function() moduleInspect.db.inspectID = GetTime() moduleInspect.db.inspectCleared = nil end)
 hooksecurefunc("ClearInspectPlayer", function() moduleInspect.db.inspectCleared = true end)
 
-hooksecurefunc("SetAchievementComparisonUnit", function() moduleInspect.db.achievementCleared = nil end)
-hooksecurefunc("ClearAchievementComparisonUnit", function() moduleInspect.db.achievementCleared = true end)
+if not ExRT.isClassic then
+	hooksecurefunc("SetAchievementComparisonUnit", function() moduleInspect.db.achievementCleared = nil end)
+	hooksecurefunc("ClearAchievementComparisonUnit", function() moduleInspect.db.achievementCleared = true end)
+end
 
 do
 	local tmr = 0
 	local queueTimer = 0
 	function moduleInspect:timer(elapsed)
 		tmr = tmr + elapsed
-		if tmr > (inspectForce and 1.2 or 3.5) then
+		if tmr > (inspectForce and 1 or 2) then
 			queueTimer = queueTimer + tmr
 			tmr = 0
 			if queueTimer > 60 then
@@ -8916,7 +9182,7 @@ do
 				for i,slotID in ipairs(moduleInspect.db.itemsSlotTable) do
 					local link = GetInventoryItemLink(inspectedName, slotID)
 				end
-				ScheduleTimer(InspectItems, inspectForce and 0.8 or 1.5, name, inspectedName, moduleInspect.db.inspectID)
+				ScheduleTimer(InspectItems, inspectForce and 0.65 or 1.3, name, inspectedName, moduleInspect.db.inspectID)
 				if not inspectForce then
 					--ScheduleTimer(InspectItems, 2.3, name, inspectedName, moduleInspect.db.inspectID)
 				end
@@ -9003,7 +9269,7 @@ do
 				end
 
 				for i=1,4 do
-					local talentID = C_SpecializationInfo.GetInspectSelectedPvpTalent(inspectedName, i)
+					local talentID = C_SpecializationInfo_GetInspectSelectedPvpTalent(inspectedName, i)
 					if talentID then					
 						data[i+7] = 1
 						data.talentsIDs[i+7] = talentID

@@ -1,4 +1,6 @@
 <Ui>
     <Script file="copyAnimationSystem.lua"/>
     <Script file="copyUIParent.lua"/>
+    <Include file="copyActionBarFrame.xml"/>
+    <Script file="copyActionButton.lua"/>
 </Ui>

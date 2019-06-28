@@ -36,19 +36,26 @@ local DogTagEventHandler = function(event, icon)
 end
 
 function TMW:CreateDogTagEventString(...)
-	local eventString = "TMW_GLOBAL_UPDATE_POST"
+	-- We return a function here so that we aren't performing
+	-- TMW:RegisterCallback(Processor.changedEvent, DogTagEventHandler)
+	-- unless the DogTag ever gets actually used by an icon.
+	-- This is a non-trivial performance boost in high-icon-count setups.
+	local processors = { ... }
+	return function() 
+		local eventString = "TMW_GLOBAL_UPDATE_POST"
 
-	for i, dataProcessorName in TMW:Vararg(...) do
-		local Processor = TMW.Classes.IconDataProcessor.ProcessorsByName[dataProcessorName]
-		TMW:RegisterCallback(Processor.changedEvent, DogTagEventHandler)
-		
-		--if i > 1 then
-			eventString = eventString .. ";"
-		--end
+		for i, dataProcessorName in pairs(processors) do
+			local Processor = TMW.Classes.IconDataProcessor.ProcessorsByName[dataProcessorName]
+			TMW:RegisterCallback(Processor.changedEvent, DogTagEventHandler)
+			
+			--if i > 1 then
+				eventString = eventString .. ";"
+			--end
 
-		eventString = eventString .. Processor.changedEvent .. "#$icon"
+			eventString = eventString .. Processor.changedEvent .. "#$icon"
+		end
+		return eventString
 	end
-	return eventString
 end
 
 TMW:RegisterCallback("TMW_GLOBAL_UPDATE_POST", DogTag.FireEvent, DogTag)

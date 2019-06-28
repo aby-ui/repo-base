@@ -24,7 +24,7 @@ local function Button_OnUpdateTimer(self, spell)
 		local expires = addon:GetUnitBuffTimer("player", spell, 1)
 		if expires then
 			self.affectedUnit = "player"
-			return 1, expires
+			return "NONE", expires
 		end
 	end
 
@@ -37,7 +37,7 @@ local function Button_OnUpdateTimer(self, spell)
 				local expires = addon:GetUnitBuffTimer(unit, spell, 1)
 				if expires then
 					self.affectedUnit = unit
-					return 1, expires
+					return "NONE", expires
 				end
 			end
 		end
@@ -53,6 +53,8 @@ local function Button_OnUpdateTimer(self, spell)
         self.alertIcon.icon:SetTexture(self.icon.icon:GetTexture())
         self.alertIcon:Show()
     end
+
+    return "R"
 end
 
 local function Button_AllowSelf(self)

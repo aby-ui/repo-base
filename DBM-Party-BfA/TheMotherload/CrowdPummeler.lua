@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2109, "DBM-Party-BfA", 7, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17704 $"):sub(12, -3))
+mod:SetRevision("20190416205700")
 mod:SetCreatureID(129214)
 mod:SetEncounterID(2105)
 mod:SetZone()
@@ -25,7 +25,7 @@ local warnCoinMagnet				= mod:NewSpellAnnounce(271903, 2)
 local specWarnStaticPulse			= mod:NewSpecialWarningSpell(262347, nil, nil, nil, 2, 2)
 local specWarnShockingClaw			= mod:NewSpecialWarningDodge(257337, nil, nil, nil, 2, 2)
 local specWarnThrowCoins			= mod:NewSpecialWarningMove(271784, "Tank", nil, nil, 1, 2)
---local specWarnGTFO				= mod:NewSpecialWarningGTFO(238028, nil, nil, nil, 1, 2)
+--local specWarnGTFO				= mod:NewSpecialWarningGTFO(238028, nil, nil, nil, 1, 8)
 
 local timerStaticPulseCD			= mod:NewCDTimer(23.1, 262347, nil, nil, nil, 2)
 local timerFootbombLauncherCD		= mod:NewCDTimer(36.5, 269493, nil, nil, nil, 5)
@@ -94,7 +94,7 @@ end
 function mod:SPELL_PERIODIC_DAMAGE(_, _, _, _, destGUID, _, _, _, spellId)
 	if spellId == 228007 and destGUID == UnitGUID("player") and self:AntiSpam(2, 4) then
 		specWarnGTFO:Show()
-		specWarnGTFO:Play("runaway")
+		specWarnGTFO:Play("watchfeet")
 	end
 end
 mod.SPELL_PERIODIC_MISSED = mod.SPELL_PERIODIC_DAMAGE
@@ -102,7 +102,7 @@ mod.SPELL_PERIODIC_MISSED = mod.SPELL_PERIODIC_DAMAGE
 function mod:UNIT_DIED(args)
 	local cid = self:GetCIDFromGUID(args.destGUID)
 	if cid == 124396 then
-		
+
 	end
 end
 --]]

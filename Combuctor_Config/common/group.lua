@@ -7,7 +7,7 @@ local CONFIG, Config = ...
 local ADDON, Addon = Config.addon, _G[Config.addon]
 local L = LibStub('AceLocale-3.0'):GetLocale(CONFIG)
 
-local Options = LibStub('Poncho-1.0')(nil, CONFIG, nil, nil, SushiGroup)
+local Options = LibStub('Poncho-1.0')(nil, CONFIG, nil, nil, SushiMagicGroup)
 Options.frameID = 'inventory'
 Options.sets = Addon.sets
 Addon.Options = Options
@@ -16,27 +16,11 @@ Addon.Options = Options
 --[[ Constructor ]]--
 
 function Options:NewPanel(parent, title, subtitle, content)
-	local panel = CreateFrame('Frame')
-	panel.parent = parent
-	panel.name = title
-	panel:Hide()
-
-	local group = self(panel)
-	group.title, group.subtitle, group.content = title, subtitle, content
-	group:SetPoint('BOTTOMRIGHT', -4, 5)
-	group:SetPoint('TOPLEFT', 4, -11)
-	group:SetResizing('HORIZONTAL')
-	group:SetSize(0, 0)
-	group:SetChildren(group.OnUpdate)
-
-	InterfaceOptions_AddCategory(panel)
+	local group = self:CreateOptionsCategory(parent, title)
+	group:SetFooter('By João Cardoso and Jason Greer')
+	group:SetSubtitle(subtitle)
+	group:SetContent(content)
 	return group
-end
-
-function Options:OnUpdate()
-	self:CreateHeader(self.title, 'GameFontNormalLarge')
-	self:CreateHeader(self.subtitle, 'GameFontHighlightSmall').bottom = 11
-	self:content()
 end
 
 
@@ -50,22 +34,17 @@ end
 
 --[[ Widgets ]]--
 
-function Options:CreateHeader(text, font, underline)
-	local child = self:Create('Header')
-	child:SetText(text:gsub('ADDON', ADDON))
-	child:SetUnderlined(underline)
-	child:SetWidth(585)
-	child:SetFont(font)
-	return child
+function Options:CreateHeader(text, ...)
+	return SushiMagicGroup.CreateHeader(self, text:gsub('ADDON', ADDON), ...)
 end
 
 function Options:CreateRow(height, content)
-	local group = self:Bind(Options(self))
+	local group = Options(self)
 	group.sets = self.sets
-	group:SetResizing('HORIZONTAL')
+	group:ClearAllPoints()
 	group:SetHeight(height)
-	group:SetChildren(content)
-	return group
+	group:SetContent(content)
+	return self:Bind(group)
 end
 
 function Options:CreateFauxScroll(maxEntries, entryHeight, content)
@@ -74,12 +53,12 @@ function Options:CreateFauxScroll(maxEntries, entryHeight, content)
 	group:SetWidth(self:GetWidth())
 	group:SetMaxDisplayed(13)
 	group:SetEntrySize(26)
-	group:SetChildren(content)
+	group:SetContent(content)
 	return group
 end
 
 function Options:CreateFramesDropdown()
-	local drop = self:Create('Dropdown')
+	local drop = self:CreateChild('Dropdown')
 	drop:SetValue(self.frameID)
 	drop:SetLabel(L.Frame)
 	drop:AddLine('inventory', INVENTORY_TOOLTIP)
@@ -147,7 +126,7 @@ end
 
 function Options:CreateColor(arg)
 	local color = self.sets[arg]
-	local child = self:Create('ColorPicker')
+	local child = self:CreateChild('ColorPicker')
 	child:EnableAlpha(true)
 	child:SetValue(color[1], color[2], color[3])
 	child:SetText(L[arg:gsub('^.', strupper)])
@@ -170,7 +149,7 @@ end
 
 function Options:CreateInput(type, arg)
 	local title = arg:gsub('^.', strupper)
-	local child = self:Create(type)
+	local child = self:CreateChild(type)
 	child:SetLabel(L[title])
 	child:SetValue(self.sets[arg])
 	child.sets = self.sets

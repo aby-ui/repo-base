@@ -3,5 +3,5 @@
 	<Include file="Artwork\embeds.xml"/>
 	<Include file="ClickSets\embeds.xml"/>
 	<Include file="CornerIndicators\embeds.xml"/>
-	<Include file="RaidDebuff\embeds.xml"/>
+	<Include file="RaidDebuff\embeds.xml" />
 </Ui>

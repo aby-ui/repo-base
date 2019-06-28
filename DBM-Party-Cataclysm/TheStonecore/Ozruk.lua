@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(112, "DBM-Party-Cataclysm", 7, 67)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 174 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 195 $"):sub(12, -3))
 mod:SetCreatureID(42188)
 mod:SetEncounterID(1058)
 mod:SetZone()
@@ -17,22 +17,21 @@ mod:RegisterEventsInCombat(
 
 local warnShatterSoon		= mod:NewSoonAnnounce(78807, 3)
 local warnBulwark			= mod:NewSpellAnnounce(78939, 3)
-local warnGroundSlam		= mod:NewCastAnnounce(78903, 4, nil, nil, "Tank")
 local warnEnrage			= mod:NewSpellAnnounce(80467, 3, nil, "Tank")
 local warnEnrageSoon		= mod:NewSoonAnnounce(80467, 2, nil, "Tank")
 
-local specWarnGroundSlam	= mod:NewSpecialWarningMove(78903, "Tank")
-local specWarnShatter		= mod:NewSpecialWarningRun(78807, "Melee", nil, 2, 4)
+local specWarnGroundSlam	= mod:NewSpecialWarningDodge(78903, "Tank", nil, nil, 1, 2)
+local specWarnShatter		= mod:NewSpecialWarningRun(78807, "Melee", nil, 2, 4, 2)
 
 --local timerShatterCD		= mod:NewCDTimer(19, 78807)
 local timerBulwark			= mod:NewBuffActiveTimer(10, 78939)
 local timerBulwarkCD		= mod:NewCDTimer(20, 78939)
 local timerShatter			= mod:NewCastTimer(3, 78807, nil, "Melee", 2, 2, nil, DBM_CORE_DEADLY_ICON)
 
-local prewarnEnrage = false
+mod.vb.prewarnEnrage = false
 
 function mod:OnCombatStart(delay)
-	prewarnEnrage = false
+	self.vb.prewarnEnrage = false
 end
 
 function mod:SPELL_AURA_APPLIED(args)
@@ -56,20 +55,21 @@ function mod:SPELL_CAST_START(args)
 		timerShatter:Start()
 --		timerShatterCD:Start()
 		specWarnShatter:Show()
+		specWarnShatter:Play("justrun")
 	elseif args.spellId == 92426 then
 		warnShatterSoon:Show()
 	elseif args.spellId == 78903 then
-		warnGroundSlam:Show()
 		specWarnGroundSlam:Show()
+		specWarnGroundSlam:Play("shockwave")
 	end
 end
 
 function mod:UNIT_HEALTH(uId)
 	local h = UnitHealth(uId) / UnitHealthMax(uId)
-	if h > 75 and prewarnEnrage then
-		prewarnEnrage = false
-	elseif h > 33 and h < 37 and not prewarnEnrage then
+	if h > 75 and self.vb.prewarnEnrage then
+		self.vb.prewarnEnrage = false
+	elseif h > 33 and h < 37 and not self.vb.prewarnEnrage then
 		warnEnrageSoon:Show()
-		prewarnEnrage = true
+		self.vb.prewarnEnrage = true
 	end
 end

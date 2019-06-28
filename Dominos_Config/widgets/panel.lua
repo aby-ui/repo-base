@@ -1,8 +1,10 @@
 --[[ a generic widget for holding stuff ]]--
 
-local Addon = select(2, ...)
+local AddonName, Addon = ...
 local Panel = Addon:CreateClass('Frame')
 local L = LibStub('AceLocale-3.0'):GetLocale('Dominos-Config')
+local ParentAddonName = GetAddOnDependencies(AddonName)
+local ParentAddon = _G[ParentAddonName]
 
 local max = math.max
 local round = function(v) return math.floor(v + 0.5) end
@@ -347,8 +349,11 @@ function Panel:AddAdvancedOptions()
 	self:NewLeftToRightCheckbox()
 	self:NewTopToBottomCheckbox()
 	self:NewClickThroughCheckbox()
-	self:NewShowInOverrideUICheckbox()
-	self:NewShowInPetBattleUICheckbox()
+
+	if ParentAddon:IsBuild("retail") then
+		self:NewShowInOverrideUICheckbox()
+		self:NewShowInPetBattleUICheckbox()
+	end
 
 	self.showStatesEditBox = self:NewTextInput{
 		name = L.ShowStates,

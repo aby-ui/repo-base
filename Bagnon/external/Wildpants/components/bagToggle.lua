@@ -35,7 +35,7 @@ end
 function BagToggle:OnClick(button)
 	if button == 'LeftButton' then
 		local profile = self:GetProfile()
-		profile.showBags = not profile.showBags or nil
+		profile.showBags = not profile.showBags
 		self:SendFrameSignal('BAG_FRAME_TOGGLED')
 	else
 		local menu = {}

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("Noth", "DBM-Naxx", 3)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 280 $"):sub(12, -3))
+mod:SetRevision("2019051932251")
 mod:SetCreatureID(15954)
 mod:SetEncounterID(1117)
 mod:SetModelID(16590)
@@ -13,16 +13,16 @@ mod:RegisterEventsInCombat(
 	"UNIT_SPELLCAST_SUCCEEDED boss1"
 )
 
-local warnTeleportNow	= mod:NewAnnounce("WarningTeleportNow", 3, 46573)
-local warnTeleportSoon	= mod:NewAnnounce("WarningTeleportSoon", 1, 46573)
+local warnTeleportNow	= mod:NewAnnounce("WarningTeleportNow", 3, "135736")
+local warnTeleportSoon	= mod:NewAnnounce("WarningTeleportSoon", 1, "135736")
 local warnCurse			= mod:NewSpellAnnounce(29213, 2)
 
-local specWarnAdds		= mod:NewSpecialWarningAdds(216726, "-Healer", nil, nil, 1, 2)
+local specWarnAdds		= mod:NewSpecialWarningAdds(29212, "-Healer", nil, nil, 1, 2)
 
-local timerTeleport		= mod:NewTimer(90, "TimerTeleport", 46573, nil, nil, 6)
-local timerTeleportBack	= mod:NewTimer(70, "TimerTeleportBack", 46573, nil, nil, 6)
+local timerTeleport		= mod:NewTimer(90, "TimerTeleport", "135736", nil, nil, 6)
+local timerTeleportBack	= mod:NewTimer(70, "TimerTeleportBack", "135736", nil, nil, 6)
 local timerCurseCD		= mod:NewCDTimer(53.3, 29213, nil, nil, nil, 5, nil, DBM_CORE_CURSE_ICON)
-local timerAddsCD		= mod:NewAddsTimer(30, 216726, nil, "-Healer")
+local timerAddsCD		= mod:NewAddsTimer(30, 29212, nil, "-Healer")
 
 mod.vb.teleCount = 0
 mod.vb.addsCount = 0

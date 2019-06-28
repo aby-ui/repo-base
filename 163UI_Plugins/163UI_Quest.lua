@@ -258,6 +258,7 @@ QuestFrameGreetingPanel:HookScript("OnShow", function()
     end
     for i=(numActiveQuests + 1), (numActiveQuests + numAvailableQuests), 1 do
         local titleButton = _G["QuestTitleButton"..i]
+        if not titleButton then break end
         if not titleButton.btnComplete then createButtons(titleButton, true) end
         titleButton.btnComplete:Hide()
         titleButton.btnAccept:Show()

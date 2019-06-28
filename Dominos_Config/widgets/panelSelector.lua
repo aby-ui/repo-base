@@ -87,15 +87,19 @@ end
 function PanelSelector:OnSelect(id) end
 
 function PanelSelector:OnMouseWheel(delta)
-	local min, max = 0, self:GetScrollChild():GetWidth() - self:GetWidth()
+	
+	local _min, _max = 0, self:GetScrollChild():GetWidth() - self:GetWidth()
 	local value = self:GetHorizontalScroll() or 0
 
 	if IsShiftKeyDown() and (delta > 0) then
-	   self:SetHorizontalScroll(min)
+	   self:SetHorizontalScroll(_min)
 	elseif IsShiftKeyDown() and (delta < 0) then
-	   self:SetHorizontalScroll(max)
+	   self:SetHorizontalScroll(_max)
 	else
-	   self:SetHorizontalScrollTo(value - delta * 32)
+	   --self:SetHorizontalScrollTo(value - delta * 32)
+	
+		--scroll whole buttons at a time!
+		self:SetHorizontalScroll(min(max((64 * (min(max(((self:GetHorizontalScroll()/64) + 1) - (delta), 1), #self.buttons))) - 64, 0), max(self:GetWidth(), self:GetScrollChild():GetWidth()) - self:GetWidth()))
 	end
 end
 

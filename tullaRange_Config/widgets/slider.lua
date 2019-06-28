@@ -3,7 +3,7 @@
 		A options slider
 --]]
 
-local AddonName, Addon = ...
+local _, Addon = ...
 local Slider = Addon.Classy:New('Slider'); Addon.Slider = Slider
 
 --[[ Constructor ]]--

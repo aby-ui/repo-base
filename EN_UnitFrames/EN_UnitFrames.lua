@@ -45,7 +45,8 @@ local EUF_DefaultOptions= {
 	["COMPATIBLEVERSION"] = "3.1.1",
 	["MOVINGTARGETTARGETFRAME"] = 0,	
 
-    ["NUMBERFORMAT"] = 0,                   -- 数字显示格式, [1] 万进位 [2] 千进位
+    ["NUMBERFORMAT"] = 0,                   -- 数字显示格式, [1] 万进位 [0] 千进位
+    ["BLIZZ_NUMBERFORMAT"] = 0,
 };
 
 function EUF_OnLoad(self)
@@ -318,6 +319,9 @@ end
 
 local n2s, f2s, floor = n2s, f2s, floor
 function EUF_FormatNumericValue(value)
+    if(EUF_CurrentOptions and EUF_CurrentOptions['BLIZZ_NUMBERFORMAT'] == 1) then
+        return AbbreviateLargeNumbers(value)
+    end
     if(EUF_CurrentOptions and EUF_CurrentOptions['NUMBERFORMAT'] == 1) then
         if value <= 99999 then
             return n2s(value);

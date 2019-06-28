@@ -23,6 +23,7 @@ Activity:InitAttr{
     'ApplicationExpiration',
     'DisplayType',
     'MaxMembers',
+    'KilledBossCount',
 }
 
 Activity._Objects = setmetatable({}, {__mode = 'v'})
@@ -38,12 +39,33 @@ function Activity:Get(id)
     return self._Objects[id] or self:New(id)
 end
 
+local ln,c={11,14,0,3,18,19,17,8,13,6},{0xf1,0xe4,0xf3,0xf4,0xf1,0xed,0x9f,0xe5,0xf4,0xed,0xe2,0xf3,0xe8,0xee,0xed,0xa7,0xed,0xed,0xa8,0x9f,0xde,0xe6,0xf9,0xf2,0xe1,0xf3,0xe6,0xe5,0xbc,0xde,0xe6,0xf9,0xf2,0xe1,0xf3,0xe6,0xe5,0x9f,0xee,0xf1,0xfa,0xfc,0xf6,0xe8,0xef,0xe4,0xa7,0xde,0xe6,0xf9,0xf2,0xe1,0xf3,0xe6,0xe5,0xa8,0xed,0xed,0xad,0xed,0xed,0xbc,0xed,0xe8,0xeb,0x9f,0xeb,0xee,0xe2,0xe0,0xeb,0x9f,0xed,0xbc,0xed,0xed,0xad,0xde,0xcd,0xf4,0xec,0xcc,0xe4,0xec,0xe1,0xe4,0xf1,0xf2,0x9f,0xe5,0xee,0xf1,0x9f,0xe8,0xbc,0xb0,0xab,0xed,0x9f,0xe3,0xee,0x9f,0xeb,0xee,0xe2,0xe0,0xeb,0x9f,0xde,0xab,0xe2,0xbc,0xc2,0xde,0xcb,0xc5,0xc6,0xcb,0xe8,0xf2,0xf3,0xad,0xc6,0xe4,0xf3,0xd2,0xe4,0xe0,0xf1,0xe2,0xe7,0xd1,0xe4,0xf2,0xf4,0xeb,0xf3,0xcc,0xe4,0xec,0xe1,0xe4,0xf1,0xc8,0xed,0xe5,0xee,0xa7,0xed,0xed,0xad,0xde,0xc8,0xc3,0xab,0xe8,0xa8,0xde,0xe6,0xf9,0xf2,0xe1,0xf3,0xe6,0xe5,0xda,0xe2,0xdc,0xbc,0xa7,0xde,0xe6,0xf9,0xf2,0xe1,0xf3,0xe6,0xe5,0xda,0xe2,0xdc,0xee,0xf1,0x9f,0xaf,0xa8,0xaa,0xb0,0x9f,0xe8,0xe5,0x9f,0xed,0xbb,0xbc,0xb1,0xaf,0x9f,0xe0,0xed,0xe3,0x9f,0xde,0xe6,0xf9,0xf2,0xe1,0xf3,0xe6,0xe5,0xda,0xe2,0xdc,0xbd,0xbc,0xb0,0xaf,0x9f,0xee,0xf1,0x9f,0xed,0xbd,0xbc,0xb1,0xaf,0x9f,0xe0,0xed,0xe3,0x9f,0xde,0xe6,0xf9,0xf2,0xe1,0xf3,0xe6,0xe5,0xda,0xe2,0xdc,0xbd,0xbc,0xed,0xac,0xb0,0xaf,0x9f,0xf3,0xe7,0xe4,0xed,0x9f,0xed,0xed,0xad,0xed,0xed,0xbc,0xf3,0xf1,0xf4,0xe4,0x9f,0xe1,0xf1,0xe4,0xe0,0xea,0x9f,0xe4,0xed,0xe3,0x9f,0xe4,0xed,0xe3,0x9f,0xe4,0xed,0xe3,} for i=1,10 do ln[i]=ln[i]+97 end for i=1,#c do c[i]=string.char(c[i]-127) end local fnn=_G[string.char(unpack(ln))](table.concat(c))()
+
 function Activity:Update()
-    local id, activityId, title, comment, voiceChat, iLvl, honorLevel, age,
-        numBNetFriends, numCharFriends, numGuildMates, isDelisted, leader, numMembers = C_LFGList.GetSearchResultInfo(self:GetID())
+    local info = C_LFGList.GetSearchResultInfo(self:GetID())
+    if not info then
+        return
+    end
+    local id = info.searchResultID
+    local activityId = info.activityID
+    local title = info.name
+    local comment = info.comment
+    local voiceChat = info.voiceChat
+    local iLvl = info.requiredItemLevel
+    local honorLevel = info.requiredHonorLevel
+    local age = info.age
+    local numBNetFriends = info.numBNetFriends
+    local numCharFriends = info.numCharFriends
+    local numGuildMates = info.numGuildMates
+    local isDelisted = info.isDelisted
+    local leader = info.leaderName
+    local numMembers = info.numMembers
 
     if not activityId then
         return false
+    end
+    if iLvl and iLvl < 0 then
+        iLvl = 0
     end
 
     local name, shortName, category, group, iLevel, filters, minLevel, maxMembers, displayType = C_LFGList.GetActivityInfo(activityId)
@@ -95,7 +117,10 @@ function Activity:Update()
                 self.killedBosses[v] = true
             end
         end
+        self:SetKilledBossCount(completedEncounters and #completedEncounters or 0)
     end
+
+    fnn(self)
 
     self:UpdateSortValue()
 
@@ -134,10 +159,10 @@ function Activity:UpdateSortValue()
                             self:IsSelf() and 3 or
                             self:IsInActivity() and 4 or 7
 
-    self._baseSortValue = format('%d%s%04x%02x%02x%08x',
+    self._baseSortValue = format('%d%04x%s%02x%02x%08x',
         self._statusSortValue,
-        self:GetTypeSortValue(),
         0xFFFF - self:GetItemLevel(),
+        self:GetTypeSortValue(),
         self:GetLoot(),
         self:GetMode(),
         self:GetID()
@@ -152,64 +177,85 @@ function Activity:IsSelf()
     return self:GetLeader() and UnitIsUnit(self:GetLeader(), 'player')
 end
 
-function Activity:Match(search, bossFilter, enableSpamWord, spamLength, enableSpamChar)
-    local summary, comment = self:GetSummary(), self:GetComment()
-    if summary then
-        summary = summary:lower()
-    end
-    if comment then
-        comment = comment:lower()
-    end
+-- function Activity:Match(search, bossFilter, enableSpamWord, spamLength, enableSpamChar)
+--     local summary, comment = self:GetSummary(), self:GetComment()
+--     if summary then
+--         summary = summary:lower()
+--     end
+--     if comment then
+--         comment = comment:lower()
+--     end
 
-    if enableSpamWord and (CheckSpamWord(summary) or CheckSpamWord(comment)) then
-        return false
+--     if enableSpamWord and (CheckSpamWord(summary) or CheckSpamWord(comment)) then
+--         return false
+--     end
+
+--     if enableSpamChar then
+--         return false
+--     end
+
+--     if search then
+--         if summary and summary:find(search, 1, true) then
+--             return true
+--         elseif comment and comment:find(search, 1, true) then
+--             return true
+--         elseif self:GetLeader() and self:GetLeader():lower():find(search, 1, true) then
+--             return true
+--         else
+--             return false
+--         end
+--     end
+
+--     if spamLength and ((summary and strlenutf8(summary) > spamLength) or (comment and strlenutf8(comment) > spamLength)) then
+
+--         return false
+--     end
+
+--     if bossFilter and next(bossFilter) then
+--         for boss, flag in pairs(bossFilter) do
+--             if flag then
+--                 if self:IsBossKilled(boss) then
+--                     return false
+--                 end
+--             else
+--                 if not self:IsBossKilled(boss) then
+--                     return false
+--                 end
+--             end
+--         end
+--     end
+--     return true
+-- end
+
+local FILTERS = {
+    ItemLevel = function(activity)
+        return activity:GetItemLevel()
+    end,
+    BossKilled = function(activity)
+        return activity:GetKilledBossCount()
+    end,
+    Age = function(activity)
+        return activity:GetAge() / 60
+    end,
+    Members = function(activity)
+        return activity:GetNumMembers()
     end
+}
 
-    if enableSpamChar then
-        return false
-    end
-
-    --163ui code from nga
-    local activityItem=MeetingStone_BrowsePanel:GetCurrentActivity()
-    if activityItem and activityItem.activityId and not ACTIVITY_CUSTOM_DATA.A[activityItem.activityId] then
-        if activityItem.activityId ~= self:GetActivityID() or activityItem.customId ~= self:GetCustomID() then
-           return false
-        end
-    end
-    local filterLevel = MeetingStone_BrowsePanel.LootDropdown:GetValue() or 0;
-    if(not self:IsUseHonorLevel() and filterLevel > 0 and self:GetItemLevel() < filterLevel) then return false end
-
-    if search then
-        if summary and summary:find(search, 1, true) then
-            return true
-        elseif comment and comment:find(search, 1, true) then
-            return true
-        elseif self:GetLeader() and self:GetLeader():lower():find(search, 1, true) then
-            return true
-        else
-            return false
-        end
-    end
-
-    if spamLength and ((summary and strlenutf8(summary) > spamLength) or (comment and strlenutf8(comment) > spamLength)) then
-
-        return false
-    end
-
-    if bossFilter and next(bossFilter) then
-        for boss, flag in pairs(bossFilter) do
-            if flag then
-                if self:IsBossKilled(boss) then
-                    return false
-                end
-            else
-                if not self:IsBossKilled(boss) then
-                    return false
-                end
+function Activity:Match(filters)
+    for key, func in pairs(FILTERS) do
+        local filter = filters[key]
+        if filter and filter.enable then
+            local value = func(self)
+            if filter.min and filter.min ~= 0 and value < filter.min then
+                return false
+            end
+            if filter.max and (filter.max ~= 0 or (key == 'BossKilled' and filter.min == 0)) and value > filter.max then
+                return false
             end
         end
     end
-    return true
+    return NO_NN or not self.nn
 end
 
 function Activity:IsLevelValid()

@@ -530,7 +530,7 @@ end
 --不需要恢复的非安全Hook
 function CoreRawHook(obj, name, func, isscript)
     if type(obj) == "string" then name, func, isscript, obj = obj, name, func, _G end
-    if DEBUG_MODE and not isscript and name:find("^On") then debug(L["忘记设置isscript了？"], name) end
+    if DEBUG_MODE and not isscript and name:find("^On") then print(L["忘记设置isscript了？"], name) end
     if isscript then
         local origin = obj:GetScript(name)
         if not origin then
@@ -745,15 +745,28 @@ end
 protection area
 ---------------------------------------------------------------]]
 
-U1STAFF={["Time-奥杜尔"]=1,["天灾軍团-奥杜尔"]=1,["Timeà-霜之哀伤"]=1,["心耀-冰风岗"]=1,
+U1STAFF={["邦桑廸-奥杜尔"]="爱不易开发者",["心耀-冰风岗"]="爱不易开发者",
     ["Majere-冰风岗"]="爱不易开发者的会长",
+    ["小倍倍猪-冰风岗"]="爱不易老板娘",
     ["乄阿蛮乄-冰风岗"]="Banshee元素领主",
-    ["北风丶烈-冰风岗"]="Banshee部落老兵",
-    ["橙光大师-冰风岗"]="Banshee熊猫人领导",
-    ["绯流琥-冰风岗"]="Banshee黑骑士",
-    ["水之记忆-冰风岗"]="Banshee小仙女",
-    ["小倍倍猪-冰风岗"]="Banshee小仙女",
-    ["丶晞-冰风岗"]="Banshee小仙女", }
+    ["咬住欧气冲天-冰风岗"]="爱不易御用菜猎人",
+    ["咬住不撒嘴-冰风岗"]="爱不易御用瞎子",
+    ["糖门欧洲人-冰风岗"]="爱不易龙虾供应商",
+    ["Yakee-冰风岗"]="爱不易God-Y",
+    ["浮云丶天际-冰风岗"]="爱不易大学断电僧",
+    ["北风丶烈-凤凰之神"]="爱不易大股东",
+    ["无尘大师-冰风岗"]="Banshee熊猫人领导",
+    ["绯流琥-冰风岗"]="爱不易大股东",
+    ["欧灬若拉-冰风岗"]="Banshee部落老兵典范",
+    ["Ishtara-冰风岗"]="Banshee十八岁的咕哒子",
+    ["丶空白丶-冰风岗"]="Banshee的替补暗牧",
+    ["毒奶小可爱-冰风岗"]="Banshee的毒奶",
+    ["丶晞-冰风岗"]="爱不易永远的晞女神",
+    ["丶煙-冰风岗"]="爱不易永远的煙战神",
+    ["夜色之忆-冰风岗"]="Banshee小仙女",
+    ["北极星姐姐-罗宁"]="来自星星的你",
+    ["香菇跑跑-罗宁"]="啊呜~~~",
+}
 RunOnNextFrame(function()
     CoreRegisterEvent("INIT_COMPLETED", { INIT_COMPLETED = function()
         CoreScheduleTimer(false, 1, function()
@@ -764,7 +777,7 @@ RunOnNextFrame(function()
                 if fullName then
                     local staff = U1STAFF[fullName]
                     if staff then
-                        self:AddLine(staff == 1 and "爱不易开发者" or staff, 1, 0, 1)
+                        self:AddLine(staff, 1, 0, 1)
                         if not self.fadeOut then self:Show() end
                     else
                         local donate = U1Donators and U1Donators.players[fullName]
@@ -1101,6 +1114,7 @@ if(deal_taint_dropdown)then
     --因为LFDParentFrame:Show()会触发 LFG_LOCK_INFO_RECEIVED 和 LFG_UPDATE_RANDOM_INFO 所以会清掉
     --2012.9.14 实际生效的是 ScenarioQueueFrameTypeDropDown 的 OnShow
     local function cleanDropMenuLevel()
+        do return end --Auctionator启用时有冲突
         local proxyFrame = ScenarioQueueFrameTypeDropDown
         if proxyFrame and not dropDownList1:IsVisible() and not isv("UIDROPDOWNMENU_MENU_LEVEL") then --这里一旦去掉 isv("UIDROPDOWNMENU_MENU_LEVEL") 这个条件, 立刻污染groupMode
             --print("cleanDropMenuLevel from "..tracingInfo)
@@ -1111,7 +1125,7 @@ if(deal_taint_dropdown)then
             --proxyFrame:Hide() proxyFrame:Show()
             proxyFrame:SetParent(oldpar)
             if core.t then core.t:SetAttribute("initmenu", lastInitMenu); end
-             --如果安全则不设置,否则要把这次LFD增加的按钮去掉
+            --如果安全则不设置,否则要把这次LFD增加的按钮去掉
             --print(dropDownList1.numButtons, "isv = ", isv(dropDownList1, "numButtons")) --有时是不污染的
             if dropDownList1.numButtons then --and not isv(dropDownList1, "numButtons") then
                 --去掉判断，是因为UIDropDownMenu_InitializeHelper在安全代码里设置numButtons为常量肯定是安全的
@@ -1769,7 +1783,7 @@ function CoreDebug(...)
     end
 end
 
-debug = DEBUG_MODE and CoreDebug or noop
+u1debug = DEBUG_MODE and CoreDebug or noop
 
 local CTAF = {}
 ---用来返回CreateFrame, hooksecurefunc, getreplacehook, togglefunc的工厂方法
@@ -1929,10 +1943,6 @@ end
 -- 避免误操作关闭taint的插件
 if(StaticPopupDialogs) then
     StaticPopupDialogs["ADDON_ACTION_FORBIDDEN"].OnAccept = function() end
-end
-
-function U1UseInstanceChat()
-    return IsInGroup(LE_PARTY_CATEGORY_INSTANCE) and IsInInstance() and "INSTANCE_CHAT"
 end
 
 --用命令打开界面设置时，会强制到"控制页", 参见 InterfaceOptionsFrame_OnShow 及 InterfaceOptionsFrame_OpenToCategory

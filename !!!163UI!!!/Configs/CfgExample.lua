@@ -59,7 +59,7 @@ U1RegisterAddon("$NAME$", {
         alwaysEnable = true, --总是可用
         tip = "", --用`分割的说明
         default = 1, --不会自动保存，除非有getvalue, 一般如果callback里if loading then return end的话，就不会强制覆盖用户已有的值
-        default = function() end, --注意这里在插件加载前就有调用，所以不适合读取插件数据, 一般不用
+        default = function() end, --注意这里在插件加载前就有调用，所以不适合读取插件数据, 一般不用, U1GetValue在各选项初始加载时会调用default
         getvalue = function() end, --当打开面板和退出游戏时会调用，加载游戏时不调用, 插件没加载的时候也不会调用
         callback = function(cfg, v, loading) end,
         confirm = "text", --提供此选项，则设置会出现提示

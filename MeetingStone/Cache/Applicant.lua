@@ -54,7 +54,15 @@ local APPLICANT_ALREADY_TOUGHT = {
 }
 
 function Applicant:Constructor(id, index, activityId)
-    local id, status, pendingStatus, numMembers, isNew, comment, orderID = C_LFGList.GetApplicantInfo(id)
+    -- local id, status, pendingStatus, numMembers, isNew, comment, orderID = C_LFGList.GetApplicantInfo(id)
+    
+    local info = C_LFGList.GetApplicantInfo(id)
+    local status = info.applicationStatus
+    local pendingStatus = info.pendingApplicationStatus
+    local numMembers = info.numMembers
+    local isNew = info.isNew
+    local comment = info.comment
+    local orderID = info.displayOrderID
     local name, class, localizedClass, level, itemLevel, honorLevel, tank, healer, damage, assignedRole, relationship = C_LFGList.GetApplicantMemberInfo(id, index)
     local msg, isMeetingStone, progression, pvpRating, source  = DecodeDescriptionData(comment)
 

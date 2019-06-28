@@ -15,6 +15,8 @@ local rematch = Rematch
 
 ]]
 
+local npcCacheTimeout = 5 -- number of times cache will be attempted before giving up
+
 rematch:InitModule(function()
 	if not RematchSettings.DebugNoCache then
 		rematch:CacheNpcIDs()
@@ -25,13 +27,14 @@ end)
 rematch.notableNames = {[1]=L["Imported Team"]} -- name of NPCs, indexed by NPC IDs
 
 -- groups are listed in reverse order on the menu (most recent content at top)
+-- if a group is removed, make it false and make sure no targets have its index
 rematch.notableGroups = {
 	[0] = OTHER, -- Little Tommy Newcomer, Jeremy Feasel, Christoph VonFeasel
 	[1] = L["Eastern Kingdom"],
 	[2] = L["Kalimdor"],
 	[3] = L["Outland"],
 	[4] = L["Northrend"],
-	[5] = L["Cataclysm"],
+	[5] = false, -- was Cataclysm
 	[6] = L["Pandaria"],
 	[7] = L["Beasts of Fable"],
 	[8] = L["Celestial Tournament"],
@@ -47,18 +50,26 @@ rematch.notableGroups = {
 	[18] = L["Azsuna"],
 	[19] = L["Broken Isle"],
 	[20] = L["Wailing Caverns"],
-   [21] = L["Deadmines"],
-   [22] = L["Mac'Aree"],
-   [23] = L["Krokuun"],
-   [24] = L["Antoran Wastes"],
+	[21] = L["Deadmines"],
+	[22] = L["Argus"],
+	[23] = L["Zandalar"],
+	[24] = L["Kul Tiras"],
+	[25] = L["Gnomeregan"], 
+	[26] = L["Nazjatar"],
+	[27] = L["Mechagon"],
+	[28] = L["Stratholme"],
 }
 
 rematch.notableNPCs = {
 
 	-- Other
+	{ L["Darkmoon Faire"], 0 },
 	{ 85519, 0, 1475,1476,1477 }, -- Christoph VonFeasel
 	{ 67370, 0, 1067,1065,1066 }, -- Jeremy Feasel
+	{ L["Timeless Isle"], 0 },
 	{ 73626, 0, 1339 }, -- Little Tommy Newcomer
+	{ L["Maelstrom"], 0 },
+	{ 66815, 0, 984,983,985 }, -- Bordin Steadyfist
 
 	-- Eastern Kingdom
    { 124617, 1, 2068,2067,2066 }, -- Environeer Bert
@@ -74,6 +85,7 @@ rematch.notableNPCs = {
 	{ 65651, 1, 878,877,879 }, -- Lindsay
 	{ 65648, 1, 875,876,874 }, -- Old MacDonald
 	{ 63194, 1, 885,884,883 }, -- Steven Lisbane
+	{ 66822, 1, 987,986,988 }, -- Goz Banefury
 
 	-- Kalimdor
 	{ 115286, 2, 1983,1981,1982 }, -- Crysa
@@ -89,6 +101,8 @@ rematch.notableNPCs = {
 	{ 66442, 2, 922,923,921 }, -- Zoltan
 	{ 66137, 2, 897,899,898 }, -- Zonya the Sadist
 	{ 66126, 2, 889,890 }, -- Zunta
+	{ 66819, 2, 982,980,981 }, -- Brok
+	{ 66824, 2, 989,991,990 }, -- Obalis
 
 	-- Outland
 	{ 66557, 3, 964,963,962 }, -- Bloodknight Antari
@@ -106,10 +120,6 @@ rematch.notableNPCs = {
 	{ 66638, 4, 973,971,972 }, -- Okrut Dragonwaste
 
 	-- Cataclysm
-	{ 66815, 5, 984,983,985 }, -- Bordin Steadyfist
-	{ 66819, 5, 982,980,981 }, -- Brok
-	{ 66822, 5, 987,986,988 }, -- Goz Banefury
-	{ 66824, 5, 989,991,990 }, -- Obalis
 
 	-- Pandaria
 	{ 66741, 6, 1012,1011,1010 }, -- Aki the Chosen
@@ -291,29 +301,115 @@ rematch.notableNPCs = {
    {119344, 21, 2025}, -- Klutz's Battle Bird
    {119407, 21, 2032}, -- Cookie's Leftovers
 
-   -- Mac'Aree (22)
-   {128013, 22, 2101}, -- Bucky
-   {128017, 22, 2105}, -- Corrupted Blood of Argus
-   {128015, 22, 2103}, -- Gloamwing
-   {128018, 22, 2106}, -- Mar'cuus
-   {128016, 22, 2104}, -- Shadeflicker
-   {128014, 22, 2102}, -- Snozz
+	-- Argus
+	{L["Antorian Wastes"], 22},
+	{128020, 22, 2108}, -- Bloat
+	{128021, 22, 2109}, -- Earseeker
+	{128023, 22, 2111}, -- Minixis
+	{128024, 22, 2110}, -- One-of-Many
+	{128022, 22, 2112}, -- Pilfer
+	{128019, 22, 2107}, -- Watcher
+	{L["Krokuun"], 22},
+	{128009, 22, 2092}, -- Baneglow
+	{128011, 22, 2099}, -- Deathscreech
+	{128008, 22, 2096}, -- Foulclaw
+	{128012, 22, 2100}, -- Gnasher
+	{128010, 22, 2098}, -- Retch
+	{128007, 22, 2095}, -- Ruinhoof
+	{L["Mac'Aree"], 22},
+    {128013, 22, 2101}, -- Bucky
+	{128017, 22, 2105}, -- Corrupted Blood of Argus
+	{128015, 22, 2103}, -- Gloamwing
+	{128018, 22, 2106}, -- Mar'cuus
+	{128016, 22, 2104}, -- Shadeflicker
+	{128014, 22, 2102}, -- Snozz
+	
+	-- Zandalar
+	{L["Nazmir"], 23},
+	{141588, 23, 2157}, -- Bloodtusk
+	{141799, 23, 2338, 2339, 2340}, -- Grady Prett
+	{141814, 23, 2341, 2343, 2344}, -- Korval Darkbeard
+	{141529, 23, 2334, 2335, 2336}, -- Lozu
+	{L["Vol'dun"], 23},
+	{141879, 23, 2345, 2346, 2347}, -- Keeyo
+	{142054, 23, 2359, 2357, 2358}, -- Kusa
+	{141945, 23, 2355, 2354, 2353}, -- Sizzik
+	{141969, 23, 2356}, -- Spineleaf
+	{L["Zuldazar"], 23},
+	{142151, 23, 2367}, -- Jammer
+	{142096, 23, 2360, 2361, 2363}, -- Karaga
+	{142114, 23, 2364, 2365, 2366}, -- Talia Sparkbrow
+	{142234, 23, 2368, 2370, 2371}, -- Zujai
 
-   -- Krokuun (23)
-   {128009, 23, 2092}, -- Baneglow
-   {128011, 23, 2099}, -- Deathscreech
-   {128008, 23, 2096}, -- Foulclaw
-   {128012, 23, 2100}, -- Gnasher
-   {128010, 23, 2098}, -- Retch
-   {128007, 23, 2095}, -- Ruinhoof
+	-- Kul Tiras
+	{L["Tiragarde Sound"], 24},
+	{141479, 24, 2330, 2332, 2333}, -- Burly
+	{141215, 24, 2230}, -- Chitara
+	{141292, 24, 2233, 2232, 2231}, -- Delia Hanako
+	{141077, 24, 2229, 2228, 2227}, -- Kwint
+	{L["Drustvar"], 24},
+	{139489, 24, 2193, 2194, 2195}, -- Captain Hermes
+	{140461, 24, 2209, 2208, 2206}, -- Dilbert McClint
+	{140813, 24, 2210, 2211, 2212}, -- Fizzie Sparkwhistle
+	{140880, 24, 2213, 2214, 2215}, -- Michael Skarn
+	{L["Stormsong Valley"], 24},
+	{139987, 24, 2200}, -- Brittlespine
+	{140315, 24, 2205, 2203, 2204}, -- Eddie Fixit
+	{141002, 24, 2220, 2221, 2222}, -- Ellie Vern
+	{141046, 24, 2223, 2225, 2226}, -- Leana Darkwind
 
-   -- Antorian Wastes (24)
-   {128020, 24, 2108}, -- Bloat
-   {128021, 24, 2109}, -- Earseeker
-   {128023, 24, 2111}, -- Minixis
-   {128024, 24, 2110}, -- One-of-Many
-   {128022, 24, 2112}, -- Pilfer
-   {128019, 24, 2107}, -- Watcher
+	-- Gnomeregan
+	{ 146001, 25, 2501 }, -- Prototype Annoy-O-Tron
+	{ 146182, 25, 2503 }, -- Living Sludge
+	{ 146183, 25, 2502 }, -- Living Napalm
+	{ 146181, 25, 2504 }, -- Living Permafrost
+	{ 146932, 25, 2497, 2498, 2499 }, -- Door Control Console
+	{ 145971, 25, 2486 }, -- Cockroach
+	{ 145968, 25, 2485 }, -- Leper Rat
+	{ 146005, 25, 2495 }, -- Bloated Leper Rat
+	{ 146004, 25, 2494 }, -- Gnomeregan Guard Mechanostrider
+	{ 146003, 25, 2493 }, -- Gnomeregan Guard Tiger
+	{ 146002, 25, 2492 }, -- Gnomeregan Guard Wolf
+	{ 145988, 25, 2488 }, -- Pulverizer Bot Mk 60001
+
+	-- Nazjatar
+	{ 154910, 26, 2723 }, -- Prince Wiggletail
+	{ 154912, 26, 2725 }, -- Silence
+	{ 154914, 26, 2727 }, -- Pearlhusk Crawler
+	{ 154916, 26, 2729 }, -- Ravenous Scalespawn
+	{ 154918, 26, 2731 }, -- Kelpstone
+	{ 154920, 26, 2733 }, -- Frenzied Knifefang
+	{ 154911, 26, 2724 }, -- Chomp
+	{ 154913, 26, 2726 }, -- Shadowspike Lurker
+	{ 154915, 26, 2728 }, -- Elderspawn of Nalaada
+	{ 154917, 26, 2730 }, -- Mindshackle
+	{ 154919, 26, 2732 }, -- Voltgorger
+	{ 154921, 26, 2734 }, -- Giant Opaline Conch
+
+	-- Mechagon
+	{ 154922, 27, 2735 }, -- Gnomefeaster
+	{ 154924, 27, 2737 }, -- Goldenbot XD
+	{ 154926, 27, 2739 }, -- CK-9 Micro-Oppression Unit
+	{ 154928, 27, 2741 }, -- Unit 6
+	{ 154923, 27, 2736 }, -- Sputtertube
+	{ 154925, 27, 2738 }, -- Creakclank
+	{ 154927, 27, 2740 }, -- Unit 35
+	{ 154929, 27, 2742 }, -- Unit 17
+
+	-- Stratholme
+	{ 150923, 28, 2609, 2601, 2596 }, -- Belchling, Gargy, Lost Soul
+	{ 150922, 28, 2608 }, -- Sludge Belcher
+	{ 150911, 28, 2597, 2596, 2611 }, -- Crypt Fiend, Lost Soul, Tormented Spirit
+	{ 150914, 28, 2600, 2607, 2606 }, -- Wandering Phantasm, Zasz the Tiny, Plague Whelp
+	{ 150925, 28, 2612 }, -- Liz the Tormentor
+	{ 155145, 28, 2595, 2594, 2593 }, -- Diseased Rat, Plague Rat, Plague Roach
+	{ 155267, 28, 2751, 2596, 2607 }, -- Risen Guard, Lost Soul, Zasz the Tiny
+	{ 155414, 28, 2768, 2769, 2770 }, -- Smokey, Pyro, Infectus
+	{ 150929, 28, 2613 }, -- Nefarious Terry
+	{ 150918, 28, 2603 }, -- Tommy the Cruel
+	{ 150917, 28, 2602 }, -- Huncher
+	{ 150858, 28, 2592 }, -- Blackmane
+
 
 }
 
@@ -418,11 +514,14 @@ function rematch:CacheNpcIDs()
 		local failed
 		-- cache notable NPCs
 		for _,info in ipairs(rematch.notableNPCs) do
-			local name,success = rematch:GetNameFromNpcTooltip(info[1],true)
-			if success and not rematch.notableNames[info[1]] then
-				rematch.notableNames[info[1]] = name
-			elseif not success then
-				failed = true
+			local npcID = info[1]
+			if type(npcID)=="number" then
+				local name,success = rematch:GetNameFromNpcTooltip(npcID,true)
+				if success and not rematch.notableNames[npcID] then
+					rematch.notableNames[npcID] = name
+				elseif not success then
+					failed = true
+				end
 			end
 		end
 		-- cache saved NPCs
@@ -436,14 +535,14 @@ function rematch:CacheNpcIDs()
 				end
 			end
 		end
-		if failed then
-			C_Timer.After(0.5,rematch.CacheNpcIDs) -- some weren't cached, try again later
+		if failed and npcCacheTimeout>0 then
+			npcCacheTimeout = npcCacheTimeout - 1
+			C_Timer.After(1.0,rematch.CacheNpcIDs) -- some weren't cached, try again later
 		else
 			rematch.notablesCached = true
 		end
 	end
 end
-
 
 -- this returns the passed speciesIDs (or links) as a string of type icons 
 function rematch:NotablePetsAsText(...)
@@ -469,7 +568,9 @@ function rematch:CreateNpcMenus()
 	local menu = {}
 	-- create "NotableNPCs" to display each group
 	for i=#rematch.notableGroups,0,-1 do
-		tinsert(menu,{text=rematch.notableGroups[i],subMenu=format("NotableSubMenu%02d",i)})
+		if rematch.notableGroups[i] then
+			tinsert(menu,{text=rematch.notableGroups[i],subMenu=format("NotableSubMenu%02d",i)})
+		end
 	end
 	tinsert(menu,{text=L["Help"], hidden=function() return RematchSettings.HideMenuHelp or rematch:GetMenuParent()~=RematchLoadoutPanel.Target.TargetButton end, stay=true, icon="Interface\\Common\\help-i", iconCoords={0.15,0.85,0.15,0.85}, tooltipTitle=L["Noteworthy Targets"], tooltipBody=L["These are noteworthy targets such as tamers and legendary pets.\n\nChoose one to view the pets you would battle.\n\nTargets with a \124TInterface\\RaidFrame\\ReadyCheck-Ready:14\124t already have a team saved."]})
 
@@ -479,8 +580,12 @@ function rematch:CreateNpcMenus()
 	for index,info in pairs(rematch.notableNPCs) do
 		local groupName = format("NotableSubMenu%02d",info[2])
 		menu[groupName] = menu[groupName] or {}
-		local name = rematch:GetNameFromNpcID(info[1])
-		tinsert(menu[groupName],{text=name,npcID=info[1],icon=rematch.NpcHasTeamSaved,iconCoords={0,1,0,1},tooltipBody=rematch.NotableTooltipBody,func=rematch.PickNpcID})
+		if type(info[1])=="number" then
+			local name = rematch:GetNameFromNpcID(info[1])
+			tinsert(menu[groupName],{text=name,npcID=info[1],icon=rematch.NpcHasTeamSaved,iconCoords={0,1,0,1},tooltipBody=rematch.NotableTooltipBody,func=rematch.PickNpcID})
+		else
+			tinsert(menu[groupName],{text=info[1],highlight=true})
+		end
 	end
 	-- now register them all
 	for groupName in pairs(menu) do
@@ -518,6 +623,41 @@ function rematch:NotableTooltipBody()
 	for _,info in ipairs(rematch.notableNPCs) do
 		if info[1]==npcID then
 			return rematch:NotablePetsAsText(info[3],info[4],info[5])
+		end
+	end
+end
+
+-- the following add /npcinfo to get the name of the targeted or mouesovered unit
+-- and /speciesinfo to generate a line of notablenpc for the current battle
+SLASH_REMATCHNPCINFO1 = "/rematchnpcinfo"
+SlashCmdList["REMATCHNPCINFO"] = function()
+	local name,npcID = Rematch:GetUnitNameandID(UnitExists("target") and "target" or "mouseover")
+	print(name,npcID)
+end
+
+SLASH_REMATCHSPECIESINFO1 = "/rematchspeciesinfo"
+SlashCmdList["REMATCHSPECIESINFO"] = function()
+	local speciesIDs = {}
+	local names = {}
+	for i=1,3 do
+		local name = C_PetBattles.GetName(2,i)
+		tinsert(names,name)
+		local speciesID = C_PetBattles.GetPetSpeciesID(2,i)
+		tinsert(speciesIDs,speciesID)
+	end
+	local txt = format("{ , 26, %d, %d, %d }, -- %s, %s, %s", speciesIDs[1] or 0, speciesIDs[2] or 0, speciesIDs[3] or 0, names[1] or "", names[2] or "", names[3] or "")
+	TinyPad.Insert(txt)
+end
+
+
+-- if not on 8.2 client yet, remove stratholme
+if select(4,GetBuildInfo()) < 80200 then
+	for group=26,28 do
+		rematch.notableGroups[group] = nil
+		for i=#rematch.notableNPCs,1,-1 do
+			if rematch.notableNPCs[i][2] == group then
+				tremove(rematch.notableNPCs,i)
+			end
 		end
 	end
 end

@@ -10,7 +10,7 @@
     nopic = 1,
 
     toggle = function(name, info, enable, justload)
-        if justload and IsLoggedIn() then
+        if U1IsInitComplete() and enable then
             BGD_Toggle(true)
         elseif not enable then
             BGD_Toggle(false)

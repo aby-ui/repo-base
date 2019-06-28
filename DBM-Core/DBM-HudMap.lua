@@ -1,4 +1,4 @@
-﻿--Original code and concept by Antiarc. Used and modified with his permission.
+--Original code and concept by Antiarc. Used and modified with his permission.
 --First adaptation in dbm credits to VEM team. Continued on their behalf do to no time from origiinal author to make it an external mod or DBM plugin.
 
 local ADDON_NAME = ...
@@ -14,7 +14,6 @@ local error, print = error, print
 local CallbackHandler = LibStub:GetLibrary("CallbackHandler-1.0")
 local updateFrame = CreateFrame("Frame", "DBMHudMapUpdateFrame")
 local onUpdate, Point, Edge
-local followedUnits = {}
 local callbacks = CallbackHandler:New(mod)
 local activeMarkers = 0
 local hudarActive = false
@@ -48,44 +47,44 @@ end
 local targetCanvasAlpha
 
 local textureLookup = {
-	star		= [[Interface\TARGETINGFRAME\UI-RaidTargetingIcon_1.blp]],
-	circle		= [[Interface\TARGETINGFRAME\UI-RaidTargetingIcon_2.blp]],
-	diamond		= [[Interface\TARGETINGFRAME\UI-RaidTargetingIcon_3.BLP]],
-	triangle	= [[Interface\TARGETINGFRAME\UI-RaidTargetingIcon_4.blp]],
-	moon		= [[Interface\TARGETINGFRAME\UI-RaidTargetingIcon_5.blp]],
-	square		= [[Interface\TARGETINGFRAME\UI-RaidTargetingIcon_6.blp]],
-	cross		= [[Interface\TARGETINGFRAME\UI-RaidTargetingIcon_7.blp]],
-	skull		= [[Interface\TARGETINGFRAME\UI-RaidTargetingIcon_8.blp]],
-	cross2		= [[Interface\RAIDFRAME\ReadyCheck-NotReady.blp]],
-	check		= [[Interface\RAIDFRAME\ReadyCheck-Ready.blp]],
-	question	= [[Interface\RAIDFRAME\ReadyCheck-Waiting.blp]],
-	targeting	= [[Interface\Minimap\Ping\ping5.blp]],
+	star		= 137001,--[[Interface\TARGETINGFRAME\UI-RaidTargetingIcon_1.blp]]
+	circle		= 137002,--[[Interface\TARGETINGFRAME\UI-RaidTargetingIcon_2.blp]]
+	diamond		= 137003,--[[Interface\TARGETINGFRAME\UI-RaidTargetingIcon_3.BLP]]
+	triangle	= 137004,--[[Interface\TARGETINGFRAME\UI-RaidTargetingIcon_4.blp]]
+	moon		= 137005,--[[Interface\TARGETINGFRAME\UI-RaidTargetingIcon_5.blp]]
+	square		= 137006,--[[Interface\TARGETINGFRAME\UI-RaidTargetingIcon_6.blp]]
+	cross		= 137007,--[[Interface\TARGETINGFRAME\UI-RaidTargetingIcon_7.blp]]
+	skull		= 137008,--[[Interface\TARGETINGFRAME\UI-RaidTargetingIcon_8.blp]]
+	cross2		= 136813,--[[Interface\RAIDFRAME\ReadyCheck-NotReady.blp]]
+	check		= 136814,--[[Interface\RAIDFRAME\ReadyCheck-Ready.blp]]
+	question	= 136815,--[[Interface\RAIDFRAME\ReadyCheck-Waiting.blp]]
+	targeting	= 136439,--[[Interface\Minimap\Ping\ping5.blp]]
 	highlight	= [[Interface\AddOns\DBM-Core\textures\alert_circle]],
 	timer		= [[Interface\AddOns\DBM-Core\textures\timer]],
-	glow		= [[Interface\GLUES\MODELS\UI_Tauren\gradientCircle]],
-	party		= [[Interface\MINIMAP\PartyRaidBlips]],
-	ring		= [[SPELLS\CIRCLE]],
-	rune1		= [[SPELLS\AURARUNE256.BLP]],
-	rune2		= [[SPELLS\AURARUNE9.BLP]],
-	rune3		= [[SPELLS\AURARUNE_A.BLP]],
-	rune4		= [[SPELLS\AURARUNE_B.BLP]],
-	odunblue	= [[Interface\Icons\Boss_OdunRunes_Blue.blp]],--Blue fishies
-	odungreen	= [[Interface\Icons\Boss_OdunRunes_Green.blp]],--Green cube
-	odunorange	= [[Interface\Icons\Boss_OdunRunes_Orange.blp]],--Orange N
-	odunpurple	= [[Interface\Icons\Boss_OdunRunes_Purple.blp]],--Purple K
-	odunyellow	= [[Interface\Icons\Boss_OdunRunes_Yellow.blp]],--Yellow H
-	astrored	= [[Interface\Icons\icon_7fx_nightborn_astromancer_red.blp]],--Wolf
-	astroyellow	= [[Interface\Icons\icon_7fx_nightborn_astromancer_yellow.blp]],--Crab
-	astroblue	= [[Interface\Icons\icon_7fx_nightborn_astromancer_blue.blp]],--Dragon
-	astrogreen	= [[Interface\Icons\icon_7fx_nightborn_astromancer_green.blp]],--Hunter
-	paw			= [[SPELLS\Agility_128.blp]],
-	cyanstar	= [[SPELLS\CYANSTARFLASH.BLP]],
-	summon		= [[SPELLS\DarkSummon.blp]],
-	reticle		= [[SPELLS\Reticle_128.blp]],
-	fuzzyring	= [[SPELLS\WHITERINGTHIN128.BLP]],
-	fatring		= [[SPELLS\WhiteRingFat128.blp]],
-	swords		= [[SPELLS\Strength_128.blp]],
-	beam1		= [[Textures\SPELLCHAINEFFECTS\Beam_01]]
+	glow		= 132039,--[[Interface\GLUES\MODELS\UI_Tauren\gradientCircle]]
+	party		= 249183,--[[Interface\MINIMAP\PartyRaidBlips]]
+	ring		= 165793,--[[SPELLS\CIRCLE]]
+	rune1		= 165630,--[[SPELLS\AURARUNE256.BLP]]
+	rune2		= 165637,--[[SPELLS\AURARUNE9.BLP]]
+	rune3		= 165638,--[[SPELLS\AURARUNE_A.BLP]]
+	rune4		= 165639,--[[SPELLS\AURARUNE_B.BLP]]
+	odunblue	= 1323035,--[[Interface\Icons\Boss_OdunRunes_Blue.blp]]--Blue fishies
+	odungreen	= 1323036,--[[Interface\Icons\Boss_OdunRunes_Green.blp]]--Green cube
+	odunorange	= 1323039,--[[Interface\Icons\Boss_OdunRunes_Orange.blp]]--Orange N
+	odunpurple	= 1323037,--[[Interface\Icons\Boss_OdunRunes_Purple.blp]]--Purple K
+	odunyellow	= 1323038,--[[Interface\Icons\Boss_OdunRunes_Yellow.blp]]--Yellow H
+	astrored	= 1391537,--[[Interface\Icons\icon_7fx_nightborn_astromancer_red.blp]]--Wolf
+	astroyellow	= 1391538,--[[Interface\Icons\icon_7fx_nightborn_astromancer_yellow.blp]]--Crab
+	astroblue	= 1391535,--[[Interface\Icons\icon_7fx_nightborn_astromancer_blue.blp]]--Dragon
+	astrogreen	= 1391536,--[[Interface\Icons\icon_7fx_nightborn_astromancer_green.blp]]--Hunter
+	paw			= 165558,--[[SPELLS\Agility_128.blp]]
+	cyanstar	= 165860,--[[SPELLS\CYANSTARFLASH.BLP]]
+	summon		= 165881,--[[SPELLS\DarkSummon.blp]]
+	reticle		= 166706,--[[SPELLS\Reticle_128.blp]]
+	fuzzyring	= 167208,--[[SPELLS\WHITERINGTHIN128.BLP]]
+	fatring		= 167207,--[[SPELLS\WhiteRingFat128.blp]]
+	swords		= 166984,--[[SPELLS\Strength_128.blp]]
+	beam1		= 424588--[[Textures\SPELLCHAINEFFECTS\Beam_01]]
 }
 
 local textureKeys, textureVals = {}, {}
@@ -444,7 +443,7 @@ local function DrawRouteLineCustom(T, C, sx, sy, ex, ey, w, extend, relPoint)
 		Bwid = ((l * c) - (w * s)) * TAXIROUTE_LINEFACTOR_2;
 		Bhgt = ((w * c) - (l * s)) * TAXIROUTE_LINEFACTOR_2;
 		BLx, BLy, BRy = (w / l) * sc, s * s, (l / w) * sc;
-		BRx, TLx, TLy, TRx = 1 - BLy, BLy, 1 - BRy, 1 - BLx; 
+		BRx, TLx, TLy, TRx = 1 - BLy, BLy, 1 - BRy, 1 - BLx;
 		TRy = BRx;
 	else
 		Bwid = ((l * c) + (w * s)) * TAXIROUTE_LINEFACTOR_2;
@@ -684,7 +683,7 @@ Edge = setmetatable({
 		elseif self.dx and self.dy then
 			dx, dy = self.dx, self.dy
 		end
-		
+
 		if self.w then
 			w = self.w
 		else
@@ -694,7 +693,7 @@ Edge = setmetatable({
 		local visible
 		if sx and sy and dx and dy then
 			local px, py = mod:GetUnitPosition("player")
-			local radius = zoomScale * zoomScale 
+			local radius = zoomScale * zoomScale
 			local d1 = pow(px - sx, 2) + pow(py - sy, 2)
 			local d2 = pow(px - dx, 2) + pow(py - dy, 2)
 			visible = d1 < radius or d2 < radius
@@ -761,9 +760,6 @@ do
 		Free = function(self, noAnimate)
 			if self:OnFree(noAnimate) == false then return end
 
-			if self.follow then
-				followedUnits[self.follow] = nil
-			end
 			for edge, _ in pairs(self.edges) do
 				edge:Free()
 			end
@@ -800,11 +796,11 @@ do
 			return self
 		end,
 
+		--Doubt anything actually uses Follow call, should probably be stripped out
 		Follow = function(self, unit)
 			self.stickX = nil
 			self.stickY = nil
 			self.follow = unit
-			followedUnits[unit] = self
 			return self
 		end,
 
@@ -1016,7 +1012,7 @@ do
 		SetTexture = function(self, texfile, blend)
 			local tex = self.texture
 			texfile = texfile or "glow"
-			tex:SetTexture(textureLookup[texfile] or texfile or [[Interface\GLUES\MODELS\UI_Tauren\gradientCircle]])
+			tex:SetTexture(textureLookup[texfile] or texfile or 132039)--[[Interface\GLUES\MODELS\UI_Tauren\gradientCircle]]
 			if texCoordLookup[texfile] then
 				tex:SetTexCoord(unpack(texCoordLookup[texfile]))
 			else
@@ -1399,7 +1395,7 @@ end
 function mod:DistanceBetweenPoints(x1, y1, x2, y2)
 	local dx = x2 - x1
 	local dy = y2 - y1
-	return abs(pow((dx*dx)+(dy*dy), 0.5))	
+	return abs(pow((dx*dx)+(dy*dy), 0.5))
 end
 
 function mod:DistanceToPoint(unit, x, y)
@@ -1498,7 +1494,7 @@ do
 		end
 
 		local hyp = abs(sqrt((dx * dx) + (dy * dy)))
-		local x, y = sin(angle + bearing), cos(angle + bearing)
+		x, y = sin(angle + bearing), cos(angle + bearing)
 		nx, ny = -x * hyp, -y * hyp
 
 		if alwaysShow then

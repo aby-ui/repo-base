@@ -1,5 +1,5 @@
 -- For All Indents And Purposes
-local revision = 17
+local revision = 18
 -- Maintainer: kristofer.karlsson@gmail.com
 
 -- For All Indents And Purposes -
@@ -22,12 +22,9 @@ local revision = 17
 -- Read through this code for further usage help.
 -- (The documentation IS the code)
 
-if not IndentationLib then
-IndentationLib = {}
-end
+TMW.indentLib = {}
 
-if not IndentationLib.revision or revision > IndentationLib.revision then
-local lib = IndentationLib
+local lib = TMW.indentLib
 lib.revision = revision
 
 local stringlen = string.len
@@ -852,54 +849,6 @@ local GetTime = GetTime
 local editboxSetText
 local editboxGetText
 
--- Caret code (thanks Tem!)
-local function critical_enter(editbox)
-	local script = editbox:GetScript("OnTextSet")
-	if script then
-		editbox:SetScript("OnTextSet", nil)
-	end
-	return script
-end
-
-local function critical_leave(editbox, script)
-	if script then
-		editbox:SetScript("OnTextSet", script)
-	end
-end
-
-local function setCaretPos_main(editbox, pos)
-	local text = editboxGetText(editbox)
-	
-	if stringlen(text) > 0 then
-		editboxSetText(editbox, stringinsert(text, pos, "a"))
-		editbox:HighlightText(pos, pos + 1)
-		editbox:Insert("\0")
-	end
-end
-
-local function getCaretPos(editbox)
-	local script = critical_enter(editbox)
-	
-	local text = editboxGetText(editbox)
-	editbox:Insert("\1")
-	local pos = stringfind(editboxGetText(editbox), "\1", 1, 1)
-	editboxSetText(editbox, text)
-	
-	if pos then
-		setCaretPos_main(editbox, pos - 1)
-	end
-	critical_leave(editbox, script)
-	
-	return (pos or 0) - 1
-end
-
-local function setCaretPos(editbox, pos)
-	local script = critical_enter(editbox)
-	setCaretPos_main(editbox, pos)
-	critical_leave(editbox, script, script2)
-end
--- end of caret code
-
 function lib.stripWowColors(code)
 	
 	-- HACK!
@@ -1019,7 +968,7 @@ function lib.colorCodeEditbox(editbox)
 		return
 	end
 	
-	local pos = getCaretPos(editbox)
+	local pos = editbox:GetCursorPosition()
 	
 	local code
 	code, pos = lib.stripWowColorsWithPos(orgCode, pos)
@@ -1031,7 +980,6 @@ function lib.colorCodeEditbox(editbox)
 	
 	editboxStringCache[editbox] = newCode
 	if orgCode ~= newCode then
-		local script, script2 = critical_enter(editbox)
 		decodeCache[editbox] = nil
 		local stringlenNewCode = stringlen(newCode)
 		
@@ -1040,9 +988,8 @@ function lib.colorCodeEditbox(editbox)
 			if newPos < 0 then newPos = 0 end
 			if newPos > stringlenNewCode then newPos = stringlenNewCode end
 			
-			setCaretPos(editbox, newPos)
+			editbox:SetCursorPosition(newPos)
 		end
-		critical_leave(editbox, script, script2)
 	end
 	
 	if editboxNumLinesCache[editbox] ~= numLines then
@@ -1063,7 +1010,7 @@ function lib.indentEditbox(editbox)
 		return
 	end
 	
-	local pos = getCaretPos(editbox)
+	local pos = editbox:GetCursorPosition()
 	
 	local code
 	code, pos = lib.stripWowColorsWithPos(orgCode, pos)
@@ -1073,7 +1020,6 @@ function lib.indentEditbox(editbox)
 	newCode = lib.padWithLinebreaks(newCode)
 	editboxIndentCache[editbox] = newCode
 	if code ~= newCode then
-		local script, script2 = critical_enter(editbox)
 		decodeCache[editbox] = nil
 		
 		local stringlenNewCode = stringlen(newCode)
@@ -1084,9 +1030,8 @@ function lib.indentEditbox(editbox)
 			if newPos < 0 then newPos = 0 end
 			if newPos > stringlenNewCode then newPos = stringlenNewCode end
 			
-			setCaretPos(editbox, newPos)
+			editbox:SetCursorPosition(newPos)
 		end
-		critical_leave(editbox, script, script2)
 	end
 end
 
@@ -1275,6 +1220,4 @@ defaultColorTable["or"] = logicColor2
 defaultColorTable["not"] = logicColor2
 
 defaultColorTable[0] = "|r"
-
-end
 

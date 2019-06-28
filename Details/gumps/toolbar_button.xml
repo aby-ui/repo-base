@@ -1,0 +1,40 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/ ..\FrameXML\UI.xsd">
+
+	<Frame name="DetailsToolbarButton" virtual="true" hidden="true">
+
+		<Size>
+			<AbsDimension x="14" y="14"/>
+		</Size>
+		
+		<Scripts>
+			<OnEnter>
+				DetailsToolbarButtonOnEnter (self);
+			</OnEnter>
+			
+			<OnLeave>
+				DetailsToolbarButtonOnLeave (self);
+			</OnLeave>
+		</Scripts>
+		
+		<Layers>
+			<Layer level="BORDER">
+				<Texture name="$parentStar" parentKey="Star" file="interface\cooldown\star4" alphaMode="ADD" alpha="0">
+					<Size x="40" y="40"/>
+					<Anchors>
+						<Anchor point="CENTER"/>
+					</Anchors>
+					<Color r="0.985" g="0.111" b="0.125"/>
+				</Texture>
+			</Layer>
+		</Layers>	
+		
+		<Animations>
+			<AnimationGroup parentKey="StarAnim">
+				<Rotation targetKey="$parent.$parent.Star" degrees="-90" duration="0.9" order="1"/>
+				<Alpha targetKey="$parent.$parent.Star" change="0.50" duration="0.3667" order="1"/>
+				<Alpha targetKey="$parent.$parent.Star" change="-0.50" duration="0.5333" order="2"/>
+			</AnimationGroup>
+		</Animations>
+
+	</Frame>
+</Ui>

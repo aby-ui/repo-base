@@ -1,0 +1,33 @@
+## Interface: 80200
+## X-Min-Interface: 80200
+## Title:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0The Eternal Palace|r
+## Title-koKR:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0영원한 궁전|r
+## Author: MysticalOS
+## LoadOnDemand: 1
+## RequiredDeps: DBM-Core
+## SavedVariables: DBMEternalPalace_AllSavedVars
+## SavedVariablesPerCharacter: DBMEternalPalace_SavedStats
+## X-DBM-Mod: 1
+## X-DBM-Mod-Type: RAID
+## X-DBM-Mod-Category: BFA
+## X-DBM-Mod-Has-Mythic : 1
+## X-DBM-Mod-Name: The Eternal Palace
+## X-DBM-Mod-Name-koKR: 영원한 궁전
+## X-DBM-Mod-Sort: 405
+## X-DBM-Mod-MapID: 2164
+## X-DBM-Mod-MinCoreRevision: 17286
+## X-DBM-Mod-MinExpansion: 7
+localization.en.lua
+localization.cn.lua
+AbyssalCommanderSivara.lua
+RadianceofAzshara.lua
+BlackwaterBehemoth.lua
+LadyPriscillaAshvane.lua
+Orgozoa.lua
+TheQueensCourt.lua
+Zaqul.lua
+QueenAzshara.lua
+EternalPalaceTrash.lua
+
+
+## X-Vendor: AbyUI

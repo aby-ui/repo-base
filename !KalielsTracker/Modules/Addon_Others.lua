@@ -1,5 +1,5 @@
 --- Kaliel's Tracker
---- Copyright (c) 2012-2018, Marouan Sabbagh <mar.sabbagh@gmail.com>
+--- Copyright (c) 2012-2019, Marouan Sabbagh <mar.sabbagh@gmail.com>
 --- All Rights Reserved.
 ---
 --- This file is part of addon Kaliel's Tracker.
@@ -59,23 +59,25 @@ end
 
 -- ElvUI
 local function ElvUI_SetSupport()
-    if KT:CheckAddOn("ElvUI", "10.75", true) then
+    if KT:CheckAddOn("ElvUI", "11.14", true) then
         local E = unpack(_G.ElvUI)
-        E.Blizzard.SetObjectiveFrameHeight = function() end
-        E.Blizzard.MoveObjectiveFrame = function() end
+        local B = E:GetModule("Blizzard")
+        B.SetObjectiveFrameAutoHide = function() end  -- preventive
+        B.SetObjectiveFrameHeight = function() end
+        B.MoveObjectiveFrame = function() end
         hooksecurefunc(E, "CheckIncompatible", function(self)
             self.private.skins.blizzard.objectiveTracker = false
         end)
-        hooksecurefunc(E, "ToggleConfig", function(self)
-            local ACD = LibStub("AceConfigDialog-3.0-ElvUI")
-            if ACD.OpenFrames[self.name] then
+        hooksecurefunc(E, "ToggleOptionsUI", function(self)
+            if E.Libs.AceConfigDialog.OpenFrames[self.name] then
                 local options = self.Options.args.general.args.objectiveFrameGroup.args
+                options.objectiveFrameAutoHide.disabled = true
                 options.objectiveFrameHeight.disabled = true
                 options.bonusObjectivePosition.disabled = true
                 options[addonName.."Warning"] = {
                     name = KTwarning,
                     type = "description",
-                    order = options.objectiveFrameHeader.order + 0.5
+                    order = options.objectiveFrameHeader.order + 0.5,
                 }
                 self.Options.args.skins.args.blizzard.args.objectiveTracker.disabled = true
             end
@@ -85,7 +87,7 @@ end
 
 -- Tukui
 local function Tukui_SetSupport()
-    if KT:CheckAddOn("Tukui", "18.01", true) then
+    if KT:CheckAddOn("Tukui", "18.24", true) then
         local T = unpack(_G.Tukui)
         T.Miscellaneous.ObjectiveTracker.Enable = function() end
     end
@@ -112,7 +114,7 @@ end
 
 -- SyncUI
 local function SyncUI_SetSupport()
-    if KT:CheckAddOn("SyncUI", "1.5.4", true) then
+    if KT:CheckAddOn("SyncUI", "8.0.3", true) then
         SyncUI_ObjTracker.Show = function() end
         SyncUI_ObjTracker:Hide()
         SyncUI_ObjTracker:SetScript("OnLoad", nil)
@@ -123,9 +125,19 @@ end
 
 -- SpartanUI
 local function SpartanUI_SetSupport()
-    if KT:CheckAddOn("SpartanUI", "4.6.0", true) then
+    if KT:CheckAddOn("SpartanUI", "5.1.2", true) then
         local ACD = LibStub("AceConfigDialog-3.0")
         SUI.DB.EnabledComponents.Objectives = false
+        local module = SUI:GetModule("Component_Objectives")
+        local bck_module_OnEnable = module.OnEnable
+        function module:OnEnable()
+            if not SUI.DB.EnabledComponents.Objectives then
+                module:BuildOptions()
+                module:HideOptions()
+                return
+            end
+            bck_module_OnEnable(self)
+        end
         local bck_ACD_Open = ACD.Open
         function ACD:Open(name, ...)
             if name == "SpartanUI" then
@@ -134,6 +146,7 @@ local function SpartanUI_SetSupport()
                 options[addonName.."Warning"] = {
                     name = KTwarning,
                     type = "description",
+                    order = 1000,
                 }
             end
             bck_ACD_Open(self, name, ...)
@@ -143,7 +156,7 @@ end
 
 -- SuperVillain UI
 local function SVUI_SetSupport()
-    if KT:CheckAddOn("SVUI_!Core", "1.5", true) then
+    if KT:CheckAddOn("SVUI_!Core", "1.5.1", true) then
         if IsAddOnLoaded("SVUI_QuestTracker") then
             DisableAddOn("SVUI_QuestTracker")
             StaticPopup_Show(addonName.."_ReloadUI")
@@ -173,6 +186,37 @@ local function Chinchilla_SetCompatibility()
     end
 end
 
+-- Dugi Questing Essential
+local function DQE_SetCompatibility()
+    if IsAddOnLoaded("DugisGuideViewerZ") then
+        DugisGuideViewer:SetDB(false, DGV_MOVEWATCHFRAME)
+        DugisGuideViewer:SetDB(false, DGV_WATCHFRAMEBORDER)
+        function DugisGuideViewer:IncompatibleAddonLoaded()    -- R
+            return true
+        end
+    end
+end
+
+-- Dominos
+local function Dominos_SetCompatibility()
+    if IsAddOnLoaded("Dominos") then
+        local function ReanchorActiveButton()
+            local button = KT.frame.ActiveButton
+            if button and DominosFrameextra then
+                button:SetParent(DominosFrameextra)
+                button:ClearAllPoints()
+                button:SetPoint("CENTER", 0, 0.5)
+            end
+        end
+        hooksecurefunc(Dominos, "OnEnable", function(self)
+            ReanchorActiveButton()
+        end)
+        hooksecurefunc(KT.ActiveButton, "OnEnable", function(self)
+            ReanchorActiveButton()
+        end)
+    end
+end
+
 --------------
 -- External --
 --------------
@@ -193,6 +237,8 @@ function M:OnEnable()
     SpartanUI_SetSupport()
     SVUI_SetSupport()
     Chinchilla_SetCompatibility()
+    DQE_SetCompatibility()
+    Dominos_SetCompatibility()
 end
 
 -- Masque

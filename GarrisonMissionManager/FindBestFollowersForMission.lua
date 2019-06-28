@@ -106,7 +106,7 @@ local function FindBestFollowersForMission(mission, followers, mode)
    end
 
    local mission_frame = _G[GarrisonFollowerOptions[followers.type].missionFrame]
-   local type70 = followers.type == LE_FOLLOWER_TYPE_GARRISON_7_0
+   local type70 = (followers.type == LE_FOLLOWER_TYPE_GARRISON_7_0 or followers.type == LE_FOLLOWER_TYPE_GARRISON_8_0)
 
    local slots = mission.numFollowers
    if (slots > followers_count and not type70) or addon_env.b then return end

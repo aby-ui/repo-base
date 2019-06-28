@@ -2,8 +2,16 @@ local GlobalAddonName, ExRT = ...
 
 local VExRT = nil
 
-local module = ExRT.mod:New("Note",ExRT.L.message,nil,true)
+local module = ExRT:New("Note",ExRT.L.message,nil,true)
 local ELib,L = ExRT.lib,ExRT.L
+
+local GetTime, CombatLogGetCurrentEventInfo = GetTime, CombatLogGetCurrentEventInfo
+local string_gsub, strsplit, tonumber, format = string.gsub, strsplit, tonumber, format
+
+local GetSpecialization = GetSpecialization
+if ExRT.isClassic then
+	GetSpecialization = ExRT.NULLfunc
+end
 
 module.db.iconsList = {
 	"|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_1:0|t",
@@ -37,9 +45,9 @@ module.db.otherIconsList = {
 	{"{tank}","|TInterface\\LFGFrame\\UI-LFG-ICON-PORTRAITROLES:16:16:0:0:64:64:0:19:22:41|t","Interface\\LFGFrame\\UI-LFG-ICON-ROLES",0,0.26171875,0.26171875,0.5234375},
 	{"{healer}","|TInterface\\LFGFrame\\UI-LFG-ICON-PORTRAITROLES:16:16:0:0:64:64:20:39:1:20|t","Interface\\LFGFrame\\UI-LFG-ICON-ROLES",0.26171875,0.5234375,0,0.26171875},
 	{"{dps}","|TInterface\\LFGFrame\\UI-LFG-ICON-PORTRAITROLES:16:16:0:0:64:64:20:39:22:41|t","Interface\\LFGFrame\\UI-LFG-ICON-ROLES",0.26171875,0.5234375,0.26171875,0.5234375},
-	{"{T}","|TInterface\\LFGFrame\\UI-LFG-ICON-PORTRAITROLES:16:16:0:0:64:64:0:19:22:41|t","Interface\\LFGFrame\\UI-LFG-ICON-ROLES",0,0.26171875,0.26171875,0.5234375},
-	{"{H}","|TInterface\\LFGFrame\\UI-LFG-ICON-PORTRAITROLES:16:16:0:0:64:64:20:39:1:20|t","Interface\\LFGFrame\\UI-LFG-ICON-ROLES",0.26171875,0.5234375,0,0.26171875},
-	{"{D}","|TInterface\\LFGFrame\\UI-LFG-ICON-PORTRAITROLES:16:16:0:0:64:64:20:39:22:41|t","Interface\\LFGFrame\\UI-LFG-ICON-ROLES",0.26171875,0.5234375,0.26171875,0.5234375},
+	--{"{T}","|TInterface\\LFGFrame\\UI-LFG-ICON-PORTRAITROLES:16:16:0:0:64:64:0:19:22:41|t","Interface\\LFGFrame\\UI-LFG-ICON-ROLES",0,0.26171875,0.26171875,0.5234375},
+	--{"{H}","|TInterface\\LFGFrame\\UI-LFG-ICON-PORTRAITROLES:16:16:0:0:64:64:20:39:1:20|t","Interface\\LFGFrame\\UI-LFG-ICON-ROLES",0.26171875,0.5234375,0,0.26171875},
+	--{"{D}","|TInterface\\LFGFrame\\UI-LFG-ICON-PORTRAITROLES:16:16:0:0:64:64:20:39:22:41|t","Interface\\LFGFrame\\UI-LFG-ICON-ROLES",0.26171875,0.5234375,0.26171875,0.5234375},
 }
 
 module.db.iconsLocalizatedNames = {
@@ -58,12 +66,134 @@ local frameStrataList = {"BACKGROUND","LOW","MEDIUM","HIGH","DIALOG","FULLSCREEN
 module.db.msgindex = -1
 module.db.lasttext = ""
 
-local string_gsub = string.gsub
+module.db.encounter_time_p = {}	--phases
+module.db.encounter_time_c = {}	--custom
+module.db.encounter_id = {}
+
+local function GSUB_Icon(spellID)
+	spellID = tonumber(spellID)
+	
+	local spellTexture = select(3,GetSpellInfo(spellID))
+	spellTexture = "|T"..(spellTexture or "Interface\\Icons\\INV_MISC_QUESTIONMARK")..":16|t"
+
+	return spellTexture
+end
+
+local function GSUB_Player(list,msg)
+	list = {strsplit(",",list)}
+	local found = false
+	local myName = (ExRT.SDB.charName):lower()
+	for i=1,#list do
+		list[i] = list[i]:gsub("|c........",""):gsub("|r",""):lower()
+		if strsplit("-",list[i]) == myName then
+			found = true
+			break
+		end
+	end
+
+	if found then
+		return msg
+	else
+		return ""
+	end
+end
+
+local function GSUB_Encounter(list,msg)
+	list = {strsplit(",",list)}
+	local found = false
+	for i=1,#list do
+		list[i] = list[i]:gsub("|c........",""):gsub("|r",""):lower()
+		if module.db.encounter_id[ list[i] ] then
+			found = true
+			break
+		end
+	end
+
+	if found then
+		return msg
+	else
+		return ""
+	end
+end
+
+--[[
+formats:
+{time:75}
+{time:1:15}
+{time:2:30,p2}	--start on phase 2, works only with bigwigs
+{time:0:30,SCC:17:2}	--start on combat log event. format "event:spellID:counter", events: SCC (SPELL_CAST_SUCCESS), SCS (SPELL_CAST_START), SAA (SPELL_AURA_APPLIED), SAR (SPELL_AURA_REMOVED)
+{time:0:30,e,customevent}	--start on ExRT.F.Note_Timer(customevent) function or "/rt note starttimer customevent" 
+]]
+local function GSUB_Time(t,msg)
+	local lineTime
+	if t:find(":") then
+		lineTime = tonumber(t:match("(%d+):") or "0",nil) * 60 + tonumber(t:match(":(%d+)") or "0",nil)
+	else
+		lineTime = tonumber(t:match("^(%d+)") or "0",nil)
+	end
+
+	local phase = t:match(",p(%d+)")
+
+	if not module.db.encounter_time then
+		return "|cffffed88"..(phase and "P"..phase.." " or "")..format("%d:%02d|r ",floor(lineTime/60),lineTime % 60)..msg.."\n"
+	end
+
+	local currTime = GetTime() - module.db.encounter_time
+
+	local CLEU = t:match(",S")
+	if CLEU then
+		local _,lineMark = strsplit(",",t)
+		t = module.db.encounter_counters_time[lineMark or ""]
+		if t then
+			currTime = GetTime() - t
+		else
+			return "|cffffed88"..format("%d:%02d|r ",floor(lineTime/60),lineTime % 60)..msg.."\n"
+		end
+	end
+
+	local phaseText = ""
+	if phase then
+		t = module.db.encounter_time_p[tonumber(phase)]
+		if not t then
+			return "|cffffed88"..format("P%s %d:%02d|r ",phase,floor(lineTime/60),lineTime % 60)..msg.."\n"
+		end
+		currTime = GetTime() - t
+
+		phaseText = "P"..phase.." "
+	end
+
+	if type(t)=='string' then
+		local custom_event = t:match(",e,(.+)")
+		if custom_event then
+			t = module.db.encounter_time_c[custom_event]
+			if not t then
+				return "|cffffed88"..format("%d:%02d|r ",floor(lineTime/60),lineTime % 60)..msg.."\n"
+			end
+			currTime = GetTime() - t
+		end
+	end
+
+	if currTime > lineTime then
+		return "|cff555555"..msg:gsub("|c........",""):gsub("|r","").."|r\n"
+	elseif lineTime - currTime <= 10 then
+		t = lineTime - currTime
+		return "|cff00ff00"..phaseText..format("%d:%02d ",floor(t/60),t % 60)..msg:gsub("|c........",""):gsub("|r",""):gsub(ExRT.SDB.charName,"|r|cffff0000>%1<|r|cff00ff00").."|r\n"
+	else
+		t = lineTime - currTime
+		return "|cffffed88"..phaseText..format("%d:%02d|r ",floor(t/60),t % 60)..msg.."\n"
+	end
+end
 
 local function txtWithIcons(t)
 	t = t or ""
-	t = string_gsub(t,"||T","|T")
-	t = string_gsub(t,"||t","|t")
+
+	if not t:find("{self}") then
+		t = t..(t~="" and t~=" " and "\n" or "").."{self}"
+	end
+	t = string_gsub(t,"{self}",VExRT.Note.SelfText or "")
+
+	t = string_gsub(t,"{[Ee]:([^}]+)}(.-){/[Ee]}",GSUB_Encounter)
+
 	for i=1,8 do
 		t = string_gsub(t,module.db.iconsLocalizatedNames[i],module.db.iconsList[i])
 		t = string_gsub(t,"{rt"..i.."}",module.db.iconsList[i])
@@ -76,31 +206,28 @@ local function txtWithIcons(t)
 	for i=1,#module.db.otherIconsList do
 		t = string_gsub(t,module.db.otherIconsList[i][1],module.db.otherIconsList[i][2])
 	end
+	t = string_gsub(t,"{icon:([^}]+)}","|T%1:16|t")
 	
-	local spellLastPos = t:find("{spell:%d+}")
-	while spellLastPos do
-		local template,spell = t:match("({spell:(%d+)})")
-		local _,spellTexture
-		spell = tonumber(spell)
-		if spell then
-			_,_,spellTexture = GetSpellInfo( spell )
-			spellTexture = "|T"..(spellTexture or "Interface\\Icons\\INV_MISC_QUESTIONMARK")..":16|t"
-		end
-		spellTexture = spellTexture or ""
-		
-		if template:find("%-") then
-			template = string_gsub(template,"%-","%%%-")
-		end
-		
-		t = string_gsub(t,template,spellTexture)
-		
-		local spellNewPos = t:find("{spell:%d+}")
-		if spellLastPos == spellNewPos then
-			break
-		end
-		spellLastPos = spellNewPos
+	t = string_gsub(t,"{spell:(%d+)}",GSUB_Icon)
+
+	t = string_gsub(t,"{[Pp]:([^}]+)}(.-){/[Pp]}",GSUB_Player)
+
+	local isHealer,isDD,isTank = false,false,false
+	local spec = GetSpecialization()
+	if spec then
+		local role = select(5,GetSpecializationInfo(spec))
+		if role == "HEALER" then isHealer = true end
+		if role == "TANK" then isTank = true end
+		if role == "DAMAGER" then isDD = true end
 	end
-	
+	if not isHealer then t = string_gsub(t,"{[Hh]}.-{/[Hh]}","") end
+	if not isTank then t = string_gsub(t,"{[Tt]}.-{/[Tt]}","") end
+	if not isDD then t = string_gsub(t,"{[Dd]}.-{/[Dd]}","") end
+	t = string_gsub(t,"{0}.-{/0}","")
+
+	t = string_gsub(t.."\n","{time:([0-9:]+[^{}]*)}(.-)\n",GSUB_Time)
+	t = string_gsub(t, "\n$", "")
+
 	t = string_gsub(t,"%b{}","")
 	return t
 end
@@ -111,58 +238,97 @@ function module.options:Load()
 	self:CreateTilte()
 
 	module.db.otherIconsAdditionalList = {
-		31821,62618,97462,98008,115310,64843,740,108280,204150,31842,196718,15286,207946,0,
+		31821,62618,97462,98008,115310,64843,740,265202,108280,204150,31884,196718,15286,64901,47536,246287,0,
 		47788,33206,6940,102342,114030,1022,116849,633,204018,207399,0,
 		2825,32182,80353,0,
-		106898,192077,46968,119381,179057,192058,0,
+		106898,192077,46968,119381,179057,192058,30283,0,
+		29166,32375,114018,108199,49576,0,
 		--"Interface\\Icons\\inv_60legendary_ring1c","Interface\\Icons\\inv_60legendary_ring1b","Interface\\Icons\\inv_60legendary_ring1a",0,
 		0,
-		246220,254948,244761,244969,0,
-		244056,244825,244057,244054,244055,248819,248815,244768,244131,0,
-		254130,244892,254771,244722,253037,244625,245227,246505,257974,244172,0,
-		244016,243983,244689,244915,244598,244926,245050,245118,244849,244613,244001,0,
-		246305,254769,249017,249015,249014,249016,245764,248332,0,
-		247367,247687,254244,247949,247641,247932,247681,248070,248068,0,
-		254919,248214,246833,246504,246516,249535,254795,244328,0,
-		243960,248732,244042,243999,244093,243968,243977,243980,243961,0,
-		250097,250333,250334,249793,252861,253650,245627,246329,253520,245532,250757,245518,244899,0,
-		255058,245458,255061,243431,244693,244912,254452,254022,245632,0,
-		258838,257296,258030,248165,255826,248317,257869,257931,257215,255199,253903,253901,257966,258000,251570,250669,258837,248396,248167,0,
+		295705,295791,300705,300961,300698,294847,300962,295421,300957,295704,295601,295795,300701,294726,295850,294711,295346,294715,295138,295332,295807,295348,295796,0,
+		301930,298424,298595,301180,292279,292133,292167,292084,292205,305094,292138,292307,292127,292247,0,
+		296894,296673,295916,296449,304951,296746,296389,296701,296462,296421,296566,0,
+		296650,297333,296752,297206,302779,296693,302836,296555,296944,296725,298054,0,
+		298526,296698,296691,298156,298164,298242,298103,304280,295825,295779,295818,298430,300244,295161,298548,295766,300308,298459,0,
+		297325,299914,300395,301829,301807,301947,300088,301832,300546,296850,297586,297656,303306,299563,304409,297564,296704,297585,303188,0,
+		301068,300635,295249,292963,292971,295444,300133,303818,301117,294515,299616,299708,300584,295173,296084,293509,303832,304733,304709,302593,295099,292565,294652,298192,295999,292996,0,
+		300478,303644,299250,302999,297912,299251,299094,299252,299253,299254,300074,298531,300626,299178,300076,300848,303825,300518,298014,300807,301518,300879,300866,298787,298425,298756,299276,301424,303980,297371,300743,297907,304475,298569,298018,300428,303657,297372,300492,297972,297937,299255,299890,300205,297934,298121,298021,0,
 		0,
-		233283,230345,234264,233272,233062,231363,0,
-		233894,234015,239401,233426,233983,233441,236283,233430,0,
-		237630,236442,236529,236518,236547,233263,236305,236596,236694,234996,234995,0,
-		239375,239420,230959,230276,241509,230273,230362,230920,0,
-		240066,241600,234016,233429,231729,240315,231854,241594,0,
-		236142,235968,236340,236361,235969,236513,235927,236158,236449,236131,236072,236241,235924,235907,0,
-		241635,235028,241636,236061,235267,248812,234891,235271,235240,235213,235538,243276,235534,241593,238028,0,
-		236494,240623,233556,239207,240594,235572,242017,240249,240728,239212,0,
-		238430,240910,239932,235120,238502,236710,236378,244834,241564,0,
+		283933,284468,284469,288298,287469,283579,283587,287439,283572,288292,283650,283637,284449,284488,283628,284578,283626,282113,283662,287419,283955,284459,284436,284474,0,
+		282181,289412,285654,282082,285671,281936,285658,282247,289292,283069,289556,285875,282380,281938,283078,282243,282215,282379,282179,285660,282010,290574,285994,0,
+		286436,284453,284089,286988,282036,288151,281959,286989,282037,284399,286396,288051,285634,287615,286487,287747,286379,286503,284146,284388,282040,284374,286086,284028,282041,285645,286425,0,
+		284556,286541,284573,287424,284558,284527,290654,286040,282939,284798,284814,283507,289776,284941,285014,289383,284611,284943,287037,284470,283604,287652,289155,285479,284802,284881,284645,285995,284614,284567,286026,284546,287072,284883,287070,290648,284424,284817,284081,284664,287074,284519,284493,286501,0,
+		282592,282135,286833,282098,282447,286811,282107,284663,286060,282411,285878,282736,282155,286007,282636,290617,282209,285889,290573,285945,282079,282444,285893,290570,0,
+		284933,286509,284446,288053,284730,290448,285172,286779,288449,284276,288576,289915,284781,287333,285349,284688,289162,284831,285178,285572,284676,289858,289890,288048,285003,285010,286671,286742,286672,289924,288117,285213,285190,287147,284377,288415,0,
+		288939,288792,289699,282205,282182,286051,282245,282408,284214,287167,282401,284145,287929,287877,287114,284042,284219,286735,287952,289696,283411,287297,287891,284168,289023,287293,289132,286480,289644,286646,0,
+		285382,284383,284360,284120,287887,290437,285420,288190,284106,286563,284316,288191,287889,287995,284760,287169,285118,285075,284997,288258,286558,284393,284864,285342,285350,285017,284405,284262,0,
+		287626,290036,290084,287565,289219,290621,288747,282841,289220,289488,290087,285725,285253,288671,287490,288325,288719,285459,287365,288169,285177,288218,288297,290030,288534,285212,289985,288394,288221,288345,289387,288647,285828,288475,288380,288412,289861,289940,289379,289866,288219,287925,288038,0,
 		0,
-		204284,204766,204372,204471,204448,204316,0,
-		206617,205707,219823,206607,207011,207012,207013,219808,0,
-		214573,206641,206488,206798,207631,208499,208910,207141,206792,206557,206560,206559,207513,0,
-		215458,212647,212587,213166,213564,213864,213867,213869,0,
-		206921,206388,214486,205649,206936,207720,221875,207439,206517,206949,206433,206589,0,
-		212997,208230,212794,213531,206365,212795,215988,0,
-		205348,206677,206376,206352,205863,205368,0,
-		218806,219049,219009,218148,218424,218438,218774,218807,218508,0,
-		209166,209165,208659,208944,209244,209973,232974,209568,210022,0,
-		210339,210296,206985,206515,209011,206384,206555,206581,227550,209518,206840,206516,0,
-		--[[
-		0,
-		228053,227992,227903,228056,227967,228565,228032,228730,193367,232450,0,
-		228758,228768,228769,228744,228810,228818,228253,228228,228248,227514,227894,227642,0,
-		229582,229583,227498,229579,229580,228012,228162,231350,227807,228914,228007,0,
-		]]
+		275189,271728,271222,275205,272584,270290,273179,275445,272582,271296,271965,0,
+		279663,267787,267821,279660,267878,274205,279669,268198,268245,267795,268095,0,
+		262255,262364,262313,262291,262370,262314,262378,262277,262288,0,
+		275772,265248,264954,267334,265451,265374,267180,267312,265646,265662,265360,278218,264382,270620,270589,278220,264210,265264,270954,0,
+		275170,266948,265217,267242,275055,274999,265178,265212,265206,265370,274989,0,265127,276276,265129,0,
+		276299,273889,273432,273316,273363,274363,274387,273434,276434,276659,273288,273451,274358,273359,274271,274168,274195,273254,276093,273350,273556,273361,274396,273365,0,
+		273951,279013,272480,273945,276922,272536,276900,272336,273282,273554,276863,272407,273810,274019,279157,274113,274230,0,
+		270443,267813,263482,263372,273405,270287,263436,273406,267579,267816,270447,275204,267660,276764,263235,267409,272513,263284,274262,267427,267412,273540,267509,267462,277007,272508,267700,273480,263416,274577,274536,263326,263217,263307,268174,275008,270428,263227,0,
 	}
+
+	--[[
+	Script for autoicons:
+	
+	/run function F(eID)local f=select(4,EJ_GetEncounterInfoByIndex(eID))repeat local I=C_EncounterJournal.GetSectionInfo(f)local O=I and (I.headerType == 3)if O then f=I.siblingSectionID end until not O return f end
+	/run function C(f) local I=C_EncounterJournal.GetSectionInfo(f) if I.firstChildSectionID then C(I.firstChildSectionID)end if I.spellID and I.spellID~=0 and P(I.spellID) then L[I.spellID]=true end if I.siblingSectionID then C(I.siblingSectionID) end end
+	/run function P(s)local i=GetSpellTexture(s)if not U[i]then U[i]=1 return true end end for i=1,8 do L,U={},{} local f=F(i) C(f)local s="" for q,w in pairs(L)do s=s..q.."," end print(s..'0,')JJBox(s..'0,') end
+	]]
 	
 	module.db.encountersList = {
-		{1148,2144,2141,2136,2128,2134,2145,2135,2122},
+		{1512,2298,2305,2289,2304,2303,2311,2293,2299},
+		{L.S_ZoneT23Storms,2269,2273},
+		{1358,2265,2263,2284,2266,2285,2271,2268,2272,2276,2280,2281},
+		{1148,2144,2141,2136,2134,2128,2145,2135,2122},
+		{EXPANSION_NAME7..": "..DUNGEONS,-1012,-968,-1041,-1022,-1030,-1023,-1002,-1001,-1036,-1021},
 		{909,2076,2074,2064,2070,2075,2082,2069,2088,2073,2063,2092},
 		{850,2032,2048,2036,2037,2050,2054,2052,2038,2051},
 		{764,1849,1865,1867,1871,1862,1886,1842,1863,1872,1866},
 	}
+
+	module.db.mapToEncounter = {
+		--BfD
+		[1358] = {2265,2263,2266},
+		[1352] = {2276,2280},
+		[1353] = 2271,
+		[1354] = 2268,
+		[1357] = 2272,
+		[1364] = 2281,
+
+		--Uldir
+		[1148] = 2144,
+		[1149] = 2141,
+		[1151] = 2136,
+		[1153] = 2128,
+		[1152] = 2134,
+		[1154] = {2145,2135},
+		[1155] = 2122,
+
+		--5ppl
+		[1010] = -1012,	
+		[934] = -968,	[935] = -968,
+		[1004] = -1041,	
+		[1041] = -1022,	[1042] = -1022,	
+		[1038] = -1030,	[1043] = -1030,	
+		
+		[1162] = -1023,	
+		[974] = -1002,	[975] = -1002,	[974] = -1002,	[975] = -1002,	[976] = -1002,	[977] = -1002,	[978] = -1002,	[979] = -1002,	[980] = -1002,
+		[936] = -1001,	
+		[1039] = -1036,	[1040] = -1036,	
+		[1015] = -1021,	[1016] = -1021,	[1017] = -1021,	[1018] = -1021,	[1029] = -1021,	
+	}
+
+
+	function self:GetBossName(bossID)
+		return bossID < 0 and L.EJInstanceName[ -bossID ] or L.bossName[ bossID ]
+	end
 
 	local BlackNoteNow = nil
 	local NoteIsSelfNow = nil
@@ -176,22 +342,108 @@ function module.options:Load()
 	self.decorationLine.texture:SetColorTexture(1,1,1,1)
 	self.decorationLine.texture:SetGradientAlpha("VERTICAL",.24,.25,.30,1,.27,.28,.33,1)
 
-	self.tab = ELib:Tabs(self,0,L.message,L.minimapmenuset):Point(0,-45):Size(660,570):SetTo(1)
+	self.tab = ELib:Tabs(self,0,L.message,L.minimapmenuset,HELP_LABEL):Point(0,-45):Size(797,570):SetTo(1)
 	self.tab:SetBackdropBorderColor(0,0,0,0)
 	self.tab:SetBackdropColor(0,0,0,0)
 	
 	self.tab.tabs[1]:SetPoint("TOPLEFT",0,20)
 
-	self.NotesList = ELib:ScrollList(self.tab.tabs[1]):Size(175,435):Point(5,-130)
+	self.NotesList = ELib:ScrollList(self.tab.tabs[1]):Size(175+37,435):Point(5,-130)
 	self.NotesList.selected = 1
+
+	local function SwapBlackNotes(noteFrom,noteTo)
+		if noteTo < 1 or noteFrom < 1 or noteTo > #VExRT.Note.Black or noteFrom > #VExRT.Note.Black or not VExRT.Note.Black[noteTo] or not VExRT.Note.Black[noteFrom] then
+			return
+		end
+		local text = VExRT.Note.Black[noteTo]
+		local title = VExRT.Note.BlackNames[noteTo]
+		local boss = VExRT.Note.AutoLoad[noteTo]
+		local lastUpdateName = VExRT.Note.BlackLastUpdateName[noteTo]
+		local lastUpdateTime = VExRT.Note.BlackLastUpdateTime[noteTo]
+
+		VExRT.Note.Black[noteTo] = VExRT.Note.Black[noteFrom]
+		VExRT.Note.BlackNames[noteTo] = VExRT.Note.BlackNames[noteFrom]
+		VExRT.Note.AutoLoad[noteTo] = VExRT.Note.AutoLoad[noteFrom]
+		VExRT.Note.BlackLastUpdateName[noteTo] = VExRT.Note.BlackLastUpdateName[noteFrom]
+		VExRT.Note.BlackLastUpdateTime[noteTo] = VExRT.Note.BlackLastUpdateTime[noteFrom]
+
+		VExRT.Note.Black[noteFrom] = text
+		VExRT.Note.BlackNames[noteFrom] = title
+		VExRT.Note.AutoLoad[noteFrom] = boss
+		VExRT.Note.BlackLastUpdateName[noteFrom] = lastUpdateName
+		VExRT.Note.BlackLastUpdateTime[noteFrom] = lastUpdateTime
+
+		module.options:NotesListUpdateNames()
+		module.options.NotesList.selected = noteTo + 2
+		module.options.NotesList:Update()
+	end
+
+	self.NotesList.ButtonMoveUp = CreateFrame("Button",nil,self.NotesList)
+	self.NotesList.ButtonMoveUp:Hide()
+	self.NotesList.ButtonMoveUp:SetSize(8,8)
+	self.NotesList.ButtonMoveUp:SetScript("OnClick",function(self)
+		SwapBlackNotes(self.index,self.index - 1)
+	end)
+	self.NotesList.ButtonMoveUp.i = self.NotesList.ButtonMoveUp:CreateTexture()
+	self.NotesList.ButtonMoveUp.i:SetPoint("CENTER")
+	self.NotesList.ButtonMoveUp.i:SetSize(16,16)	
+	self.NotesList.ButtonMoveUp.i:SetTexture("Interface\\AddOns\\ExRT\\media\\DiesalGUIcons16x256x128")
+	self.NotesList.ButtonMoveUp.i:SetTexCoord(0.25,0.3125,0.625,0.5)
+
+	self.NotesList.ButtonMoveDown = CreateFrame("Button",nil,self.NotesList)
+	self.NotesList.ButtonMoveDown:Hide()
+	self.NotesList.ButtonMoveDown:SetSize(8,8)
+	self.NotesList.ButtonMoveDown:SetScript("OnClick",function(self)
+		SwapBlackNotes(self.index,self.index + 1)
+	end)
+	self.NotesList.ButtonMoveDown.i = self.NotesList.ButtonMoveDown:CreateTexture()
+	self.NotesList.ButtonMoveDown.i:SetPoint("CENTER")
+	self.NotesList.ButtonMoveDown.i:SetSize(16,16)	
+	self.NotesList.ButtonMoveDown.i:SetTexture("Interface\\AddOns\\ExRT\\media\\DiesalGUIcons16x256x128")
+	self.NotesList.ButtonMoveDown.i:SetTexCoord(0.25,0.3125,0.5,0.625)
+
+
+	self.NotesList.UpdateAdditional = function(self,val)
+		self.ButtonMoveUp:Hide()
+		self.ButtonMoveDown:Hide()
+		for i=1,#self.List-1 do
+			if self.selected == self.List[i].index then
+				self.ButtonMoveUp:SetPoint("BOTTOMRIGHT",self.List[i],"RIGHT",-2,0)
+				self.ButtonMoveDown:SetPoint("TOPRIGHT",self.List[i],"RIGHT",-2,0)
+				self.ButtonMoveUp:SetParent(self.List[i])
+				self.ButtonMoveDown:SetParent(self.List[i])
+				self.ButtonMoveUp.index = self.List[i].index - 2
+				self.ButtonMoveDown.index = self.List[i].index - 2
+				if i > 3 then
+					self.ButtonMoveUp:Show()
+				end
+				if i >= 3 and i <= #self.List-2 then
+					self.ButtonMoveDown:Show()
+				end
+				return
+			end
+		end	
+	end
 	
 	local function NotesListUpdateNames()
+		local bossesToGreen = {}
+		local mapID = C_Map.GetBestMapForUnit("player")
+		if mapID and module.db.mapToEncounter[mapID] then
+			local encounters = module.db.mapToEncounter[mapID]
+			if type(encounters) == 'table' then
+				for i=1,#encounters do
+					bossesToGreen[ encounters[i] ] = true
+				end
+			else
+				bossesToGreen[encounters] = true
+			end
+		end
 		self.NotesList.L = {}
 		
 		self.NotesList.L[1] = "|cff55ee55"..L.messageTab1
 		self.NotesList.L[2] = L.NoteSelf
 		for i=1,#VExRT.Note.Black do
-			self.NotesList.L[i+2] = VExRT.Note.BlackNames[i] or i
+			self.NotesList.L[i+2] = (VExRT.Note.AutoLoad[i] and (bossesToGreen[ VExRT.Note.AutoLoad[i] ] and "|cff00ff00" or "|cffffff00").."["..module.options:GetBossName(VExRT.Note.AutoLoad[i]).."]|r" or "")..(VExRT.Note.BlackNames[i] or i)
 		end
 		self.NotesList.L[#self.NotesList.L + 1] = L.NoteAdd
 		self.NotesList:Update()
@@ -210,9 +462,12 @@ function module.options:Load()
 	end
 	self.UpdatePageAfterGettingNote = UpdatePageAfterGettingNote
 	
+	module.options.LastIndex = 1
 	function self.NotesList:SetListValue(index)
+		module.options.LastIndex = index
+
 		ExRT.lib.ShowOrHide(module.options.buttonsend,index == 1)
-		ExRT.lib.ShowOrHide(module.options.textCancel,index == 1)
+		--ExRT.lib.ShowOrHide(module.options.textCancel,index == 1)
 		ExRT.lib.ShowOrHide(module.options.buttoncopy,index > 2)
 		
 		BlackNoteNow = nil
@@ -241,7 +496,7 @@ function module.options:Load()
 			
 			module.options.DraftName:SetText( VExRT.Note.DefName or "" )
 			
-			module.options.autoLoadDropdown:SetText(VExRT.Note.AutoLoad[0] and L.bossName[ VExRT.Note.AutoLoad[0] ] or "-")
+			module.options.autoLoadDropdown:SetText(VExRT.Note.AutoLoad[0] and module.options:GetBossName(VExRT.Note.AutoLoad[0]) or "-")
 		elseif index == 2 then
 			module.options.NoteEditBox.EditBox:SetText(VExRT.Note.SelfText or "")
 			module.options.DraftName:SetText( L.NoteSelf )
@@ -271,9 +526,13 @@ function module.options:Load()
 			BlackNoteNow = index
 			module.options.DraftName:SetText( VExRT.Note.BlackNames[index] or index )
 			
-			module.options.autoLoadDropdown:SetText(VExRT.Note.AutoLoad[index] and L.bossName[ VExRT.Note.AutoLoad[index] ] or "-")
+			module.options.autoLoadDropdown:SetText(VExRT.Note.AutoLoad[index] and module.options:GetBossName(VExRT.Note.AutoLoad[index]) or "-")
 		end
 	end
+
+	self.NotesList:SetScript("OnShow",function(self)
+		NotesListUpdateNames()
+	end)
 	
 	function self.NotesList:HoverListValue(isHover,index)
 		if not isHover then
@@ -284,13 +543,49 @@ function module.options:Load()
 			if index == 2 then
 				GameTooltip:AddLine(L.NoteSelfTooltip)
 			elseif index ~= #self.L and index > 2 then
-				GameTooltip:AddLine(L.NoteTabCopyTooltip)
+				local i = index - 2
+				if VExRT.Note.BlackLastUpdateName[i] then
+					GameTooltip:AddLine(L.NoteLastUpdate..": "..VExRT.Note.BlackLastUpdateName[i].." ("..date("%d.%m.%Y %H:%M",VExRT.Note.BlackLastUpdateTime[i] or 0)..")")
+				end
+				--GameTooltip:AddLine(L.NoteTabCopyTooltip)
 			end
 			GameTooltip:Show()
 		end
 	end
+
+	self.DuplicateDraft = ELib:Button(self.tab.tabs[1],L.NoteDuplicate):Size(120,20):Point("RIGHT",0,0):Point("TOP",self.NotesList,0,1):OnClick(function (self)
+		local pos = #VExRT.Note.Black + 1
+
+		local text = module.options.LastIndex == 1 and (VExRT.Note.Text1 or "") or
+				module.options.LastIndex == 2 and (VExRT.Note.SelfText or "") or
+				(VExRT.Note.Black[module.options.LastIndex - 2] or "")
+		local title = (module.options.LastIndex > 2 and VExRT.Note.BlackNames[module.options.LastIndex - 2]) or 
+				(module.options.LastIndex == 1 and VExRT.Note.DefName)
+		if not title then title = nil end
+
+		local boss = module.options.LastIndex == 1 and VExRT.Note.AutoLoad[0] or
+				module.options.LastIndex > 2 and VExRT.Note.AutoLoad[module.options.LastIndex - 2]
+		if not boss then boss = nil end
+
+		local lastUpdateName = module.options.LastIndex > 2 and VExRT.Note.BlackLastUpdateName[module.options.LastIndex - 2]
+		if not lastUpdateName then lastUpdateName = nil end
+
+		local lastUpdateTime = module.options.LastIndex > 2 and VExRT.Note.BlackLastUpdateTime[module.options.LastIndex - 2]
+		if not lastUpdateTime then lastUpdateTime = nil end
+
+		VExRT.Note.Black[pos] = text
+		VExRT.Note.BlackNames[pos] = title
+		VExRT.Note.AutoLoad[pos] = boss
+		VExRT.Note.BlackLastUpdateName[pos] = lastUpdateName
+		VExRT.Note.BlackLastUpdateTime[pos] = lastUpdateTime
+
+		NotesListUpdateNames()
+		module.options.NotesList:SetListValue(pos+2)
+		module.options.NotesList.selected = pos+2
+		module.options.NotesList:Update()
+	end)
 	
-	self.RemoveDraft = ELib:Button(self.tab.tabs[1],L.NoteRemove):Size(150,20):Point("RIGHT",0,0):Point("TOP",self.NotesList,0,1):Disable():OnClick(function (self)
+	self.RemoveDraft = ELib:Button(self.tab.tabs[1],L.NoteRemove):Size(120,20):Point("RIGHT",self.DuplicateDraft,"LEFT",-5,0):Point("TOP",self.NotesList,0,1):Disable():OnClick(function (self)
 		if not BlackNoteNow then
 			return
 		end
@@ -300,10 +595,14 @@ function module.options:Load()
 				VExRT.Note.Black[i] = VExRT.Note.Black[i + 1]
 				VExRT.Note.BlackNames[i] = VExRT.Note.BlackNames[i + 1]
 				VExRT.Note.AutoLoad[i] = VExRT.Note.AutoLoad[i + 1]
+				VExRT.Note.BlackLastUpdateName[i] = VExRT.Note.BlackLastUpdateName[i + 1]
+				VExRT.Note.BlackLastUpdateTime[i] = VExRT.Note.BlackLastUpdateTime[i + 1]
 			else
 				VExRT.Note.Black[i] = nil
 				VExRT.Note.BlackNames[i] = nil
 				VExRT.Note.AutoLoad[i] = nil
+				VExRT.Note.BlackLastUpdateName[i] = nil
+				VExRT.Note.BlackLastUpdateTime[i] = nil
 			end
 		end
 		NotesListUpdateNames()
@@ -330,11 +629,12 @@ function module.options:Load()
 		
 		VExRT.Note.AutoLoad[index] = encounterID
 		
-		module.options.autoLoadDropdown:SetText(encounterID and L.bossName[ encounterID ] or "-")
+		module.options.autoLoadDropdown:SetText(encounterID and module.options:GetBossName(encounterID) or "-")
+		NotesListUpdateNames()
 		ELib:DropDownClose()
 	end
 	
-	self.autoLoadDropdown = ELib:DropDown(self.tab.tabs[1],300,15):AddText(L.NoteAutoloadOnBoss):Point("TOPRIGHT",self.RemoveDraft,"BOTTOMRIGHT",-2,-5):Size(300):SetText(VExRT.Note.AutoLoad[0] and L.bossName[ VExRT.Note.AutoLoad[0] ] or "-")
+	self.autoLoadDropdown = ELib:DropDown(self.tab.tabs[1],300,25):AddText(ENCOUNTER_JOURNAL_ENCOUNTER..":"):Point("TOPRIGHT",self.DuplicateDraft,"BOTTOMRIGHT",-2,-5):Size(300):SetText(VExRT.Note.AutoLoad[0] and L.bossName[ VExRT.Note.AutoLoad[0] ] or "-")
 	do
 		local List = self.autoLoadDropdown.List
 		List[#List+1] = {
@@ -344,22 +644,42 @@ function module.options:Load()
 		for i=1,#module.db.encountersList do
 			local instance = module.db.encountersList[i]
 			List[#List+1] = {
-				text = (C_Map.GetMapInfo(instance[1] or 0) or {}).name or "???",
+				text = type(instance[1])=='string' and instance[1] or (C_Map.GetMapInfo(instance[1] or 0) or {}).name or "???",
 				isTitle = true,
 			}
 			for j=2,#instance do
 				List[#List+1] = {
-					text = L.bossName[ instance[j] ],
+					text = module.options:GetBossName(instance[j]),
 					arg1 = instance[j],
 					func = autoLoadDropdown_SetValue,
 				}
 			end
 		end
 	end
+
+	local IsFormattingOn = VExRT.Note.OptionsFormatting
+	self.optFormatting = ELib:Check(self.tab.tabs[1],FORMATTING,VExRT.Note.OptionsFormatting):Point("TOPLEFT",self.NotesList,"TOPRIGHT",9,-25):Size(20,20):OnClick(function(self) 
+		if self:GetChecked() then
+			VExRT.Note.OptionsFormatting = true
+		else
+			VExRT.Note.OptionsFormatting = nil
+		end
+		IsFormattingOn = VExRT.Note.OptionsFormatting
+		module.options.NotesList:SetListValue(module.options.LastIndex or 1)
+	end)  	
 	
-	self.NoteEditBox = ELib:MultiEdit(self.tab.tabs[1]):Point("TOPLEFT",self.NotesList,"TOPRIGHT",9,-75):Size(469,294+91-25)
-	
-	self.NoteEditBox:Add730fix()	--Temp fix for cursor
+	self.NoteEditBox = ELib:MultiEdit(self.tab.tabs[1]):Point("TOPLEFT",self.NotesList,"TOPRIGHT",9,-75):Size(469+100,294+91-25)
+
+
+	self.NoteEditBox.EditBox._SetText = self.NoteEditBox.EditBox.SetText
+	function self.NoteEditBox.EditBox:SetText(text)
+		if IsFormattingOn then
+			text = text:gsub("||([cr])","|%1")
+		end
+		return self:_SetText(text)
+	end
+
+	--self.NoteEditBox:Add730fix()	--Temp fix for cursor
 	
 	self.textClear = ELib:Text(self.NoteEditBox,"["..L.messagebutclear.."]"):Point("RIGHT",self.NoteEditBox,"BOTTOMRIGHT",-22,-6):Color()
 	self.textClear:SetShadowColor(1,1,1,0)
@@ -377,6 +697,7 @@ function module.options:Load()
 		self.textClear:SetShadowColor(1,1,1,0)
 	end)
 	
+	--[[
 	self.textCancel = ELib:Text(self.NoteEditBox,"["..CANCEL.."]"):Point("RIGHT",self.textClear,"LEFT",-5,0):Color()
 	self.textCancel:SetShadowColor(1,1,1,0)
 	self.textCancel:SetShadowOffset(1,-1)
@@ -394,23 +715,78 @@ function module.options:Load()
 	self.buttonCuncel:SetScript("OnLeave",function()
 		self.textCancel:SetShadowColor(1,1,1,0)
 	end)
+	]]
 		
-	function self.NoteEditBox.EditBox:OnTextChanged()
+	function self.NoteEditBox.EditBox:OnTextChanged(isUser)
+		if not isUser and (not module.options.InsertFix or GetTime() - module.options.InsertFix > 0.1) then
+			return
+		end
+		local text = self:GetText()
+		if IsFormattingOn then
+			text = text:gsub("|([cr])","||%1")
+		end
 		if NoteIsSelfNow then
-			VExRT.Note.SelfText = self:GetText()
+			VExRT.Note.SelfText = text
 			module.frame:UpdateText()
 		elseif BlackNoteNow then
-			VExRT.Note.Black[ BlackNoteNow ] = self:GetText()
+			VExRT.Note.Black[ BlackNoteNow ] = text
+
+			VExRT.Note.BlackLastUpdateName[BlackNoteNow] = ExRT.SDB.charKey
+			VExRT.Note.BlackLastUpdateTime[BlackNoteNow] = time()
 		else
-			if self:GetText() ~= VExRT.Note.Text1 then
+			VExRT.Note.Text1 = text
+			if module.frame.text:GetText() ~= txtWithIcons(VExRT.Note.Text1) then
 				module.options.buttonsend:Anim(true)
 			else
 				module.options.buttonsend:Anim(false)
 			end
 		end
 	end
+	local last_highlight_start,last_highlight_end,last_cursor_pos = 0,0,0
+	local IsFormattingOn_Saved
+	self.NoteEditBox.EditBox:SetScript("OnKeyDown",function(self,key)
+		if IsFormattingOn and key == "LCTRL" then
+			module.options.InsertFix = nil
+			IsFormattingOn_Saved = true
+			IsFormattingOn = nil
+			local h_start,h_end = module.options.NoteEditBox:GetTextHighlight()
+			local h_cursor = self:GetCursorPosition()
+			local text = module.options.NoteEditBox.EditBox:GetText()
+
+			last_highlight_start,last_highlight_end,last_cursor_pos = h_start,h_end,h_cursor
+			
+			local c_start,c_end,c_cursor = 0,0,0
+			text:sub(1,h_start):gsub("|([cr])",function() c_start = c_start + 1 end)
+			text:sub(1,h_end):gsub("|([cr])",function() c_end = c_end + 1 end)
+			text:sub(1,h_cursor):gsub("|([cr])",function() c_cursor = c_cursor + 1 end)
+
+			text = text:gsub("|([cr])","||%1")
+			module.options.NoteEditBox.EditBox:_SetText(text)
+
+			module.options.NoteEditBox.EditBox:HighlightText( h_start+c_start, h_end+c_end )
+			module.options.NoteEditBox.EditBox:SetCursorPosition( h_cursor+c_cursor )
+		end
+	end)
+	self.NoteEditBox.EditBox:SetScript("OnKeyUp",function(self,key)
+		if IsFormattingOn_Saved and key == "LCTRL" then
+			local text = module.options.NoteEditBox.EditBox:GetText()
+			local h_start,h_end = module.options.NoteEditBox:GetTextHighlight()
+			local h_cursor = self:GetCursorPosition()
+			local c_start,c_end,c_cursor = 0,0,0
+			text:sub(1,h_start):gsub("||([cr])",function() c_start = c_start + 1 end)
+			text:sub(1,h_end):gsub("||([cr])",function() c_end = c_end + 1 end)
+			text:sub(1,h_cursor):gsub("||([cr])",function() c_cursor = c_cursor + 1 end)
+
+			IsFormattingOn = true
+			IsFormattingOn_Saved = nil
+			module.options.InsertFix = nil
+			module.options.NotesList:SetListValue(module.options.LastIndex or 1)
+			module.options.NoteEditBox.EditBox:HighlightText( h_start-c_start,h_end-c_end )
+			module.options.NoteEditBox.EditBox:SetCursorPosition( h_cursor-c_cursor )
+		end
+	end)
 	
-	self.buttonsend = ELib:Button(self.tab.tabs[1],L.messagebutsend):Size(469,20):Point("TOPLEFT",self.NotesList,"TOPRIGHT",9,-50):Tooltip(L.messagebutsendtooltip):OnClick(function (self)
+	self.buttonsend = ELib:Button(self.tab.tabs[1],L.messagebutsend):Size(469+102,20):Point("TOPLEFT",self.NotesList,"TOPRIGHT",9,-50):Tooltip(L.messagebutsendtooltip):OnClick(function (self)
 		module.frame:Save() 
 		
 		if IsShiftKeyDown() then
@@ -447,7 +823,7 @@ function module.options:Load()
 		end
 	end
 	
-	self.buttoncopy = ELib:Button(self.tab.tabs[1],L.messageButCopy):Size(469,20):Point("TOPLEFT",self.NotesList,"TOPRIGHT",9,-50):OnClick(function (self)
+	self.buttoncopy = ELib:Button(self.tab.tabs[1],L.messageButCopy):Size(469+102,20):Point("TOPLEFT",self.NotesList,"TOPRIGHT",9,-50):OnClick(function (self)
 		if not BlackNoteNow then
 			return
 		end
@@ -475,12 +851,17 @@ function module.options:Load()
 		end
 		local txt = module.options.NoteEditBox.EditBox:GetText()
 		local pos = module.options.NoteEditBox.EditBox:GetCursorPosition()
-		if not self and mypos then
+		if not self and type(mypos)=='number' then
 			pos = mypos
 		end
 		txt = string.sub (txt, 1 , pos) .. addedText .. string.sub (txt, pos+1)
+		module.options.InsertFix = GetTime()
 		module.options.NoteEditBox.EditBox:SetText(txt)
-		module.options.NoteEditBox.EditBox:SetCursorPosition(pos+string.len(addedText))
+		local adjust = 0
+		if IsFormattingOn then
+			addedText:gsub("||",function() adjust = adjust + 1 end)
+		end
+		module.options.NoteEditBox.EditBox:SetCursorPosition(pos+addedText:len()-adjust)
 	end
 
 	self.buttonicons = {}
@@ -627,7 +1008,7 @@ function module.options:Load()
 		self.html:SetShadowColor(0, 0, 0, 1)
 	end
 	self.raidnames = {}
-	for i=1,30 do
+	for i=1,35 do
 		self.raidnames[i] = CreateFrame("Button", nil,self.tab.tabs[1])
 		self.raidnames[i]:SetSize(105,14)
 		self.raidnames[i]:SetPoint("TOPLEFT", 5+math.floor((i-1)/5)*108,-55-14*((i-1)%5))
@@ -641,6 +1022,7 @@ function module.options:Load()
 
 		self.raidnames[i]:SetScript("OnEnter", RaidNamesOnEnter)
 		self.raidnames[i]:SetScript("OnLeave", RaidNamesOnLeave)
+
 	end
 	
 	self.lastUpdate = ELib:Text(self.tab.tabs[1],"",11):Size(600,20):Point("TOPLEFT",self.NotesList,"BOTTOMLEFT",3,-6):Top():Color()
@@ -648,7 +1030,7 @@ function module.options:Load()
 		self.lastUpdate:SetText( L.NoteLastUpdate..": "..VExRT.Note.LastUpdateName.." ("..date("%H:%M:%S %d.%m.%Y",VExRT.Note.LastUpdateTime)..")" )
 	end
 
-	self.chkEnable = ELib:Check(self,L.senable,VExRT.Note.enabled):Point(560,-26):Tooltip('/rt note'):Size(18,18):OnClick(function(self) 
+	self.chkEnable = ELib:Check(self,L.senable,VExRT.Note.enabled):Point(560+130,-26):Tooltip("/rt note|n/rt n"):Size(18,18):OnClick(function(self) 
 		if self:GetChecked() then
 			module:Enable()
 		else
@@ -656,7 +1038,7 @@ function module.options:Load()
 		end
 	end)  
 	
-	self.chkFix = ELib:Check(self,L.messagebutfix,VExRT.Note.Fix):Point(430,-26):Tooltip(L.messagebutfixtooltip):Size(18,18):OnClick(function(self) 
+	self.chkFix = ELib:Check(self,L.messagebutfix,VExRT.Note.Fix):Point(430+130,-26):Tooltip(L.messagebutfixtooltip):Size(18,18):OnClick(function(self) 
 		if self:GetChecked() then
 			VExRT.Note.Fix = true
 			module.frame:SetMovable(false)
@@ -860,8 +1242,32 @@ function module.options:Load()
 		self.NoteEditBox.EditBox:SetText(VExRT.Note.Text1) 
 	end
 
+	self.textHelp = ELib:Text(self.tab.tabs[3],
+		"|cffffff00||cffRRGGBB|r...|cffffff00||r|r - "..L.NoteHelp1..
+		"|n|cffffff00{D}|r...|cffffff00{/D}|r - "..format(L.NoteHelp2,DAMAGER)..
+		"|n|cffffff00{H}|r...|cffffff00{/H}|r - "..format(L.NoteHelp2,HEALER)..
+		"|n|cffffff00{T}|r...|cffffff00{/T}|r - "..format(L.NoteHelp2,TANK)..
+		"|n|cffffff00{spell:|r|cff00ff0017|r|cffffff00}|r - "..L.NoteHelp3..
+		"|n|cffffff00{self}|r - "..L.NoteHelp4..
+		"|n|cffffff00{p:|r|cff00ff00JaneD|r|cffffff00,|r|cff00ff00JennyB-HowlingFjord|r|cffffff00}|r...|cffffff00{/p}|r - "..L.NoteHelp5..
+		"|n|cffffff00{icon:|r|cff00ff00Interface/Icons/inv_hammer_unique_sulfuras|r|cffffff00}|r - "..L.NoteHelp6..
+		"|n|cffffff00{time:|r|cff00ff002:45|r|cffffff00}|r - "..L.NoteHelp7
+	):Point("TOPLEFT",5,-20):Point("TOPRIGHT",-5,-20):Color()
+
 	module:RegisterEvents("GROUP_ROSTER_UPDATE")
 	module.main:GROUP_ROSTER_UPDATE()
+
+
+	local function ResizeOptionFrameShow() ExRT.Options.Frame:SetWidth( 1000 ) end
+	local function ResizeOptionFrameHide() ExRT.Options.Frame:SetWidth( ExRT.Options.Frame.Width ) end
+	self.onShowFrame = CreateFrame('Frame',nil,self)
+	self.onShowFrame:SetPoint("TOPLEFT",0,0)
+	self.onShowFrame:SetSize(1,1)
+	self.onShowFrame:SetScript("OnShow",ResizeOptionFrameShow)
+	self.onShowFrame:SetScript("OnHide",ResizeOptionFrameHide)
+	ResizeOptionFrameShow()
+
+	self:SetWidth(797)
 end
 
 
@@ -903,15 +1309,10 @@ function module.frame:UpdateFont()
 end
 
 function module.frame:UpdateText()
-	local selfText = VExRT.Note.SelfText or ""
 	if VExRT.Note.ShowOnlyPersonal then
-		self.text:SetText(txtWithIcons(selfText))
+		self.text:SetText(txtWithIcons(""))
 	else
-		local text = VExRT.Note.Text1 or ""
-		if text ~= "" and selfText ~= "" then 
-			text = text .. "\n" 
-		end
-		self.text:SetText(txtWithIcons(text..selfText)) 
+		self.text:SetText(txtWithIcons(VExRT.Note.Text1 or "")) 
 	end
 end
 
@@ -942,6 +1343,7 @@ module.frame.red_back:SetScript("OnUpdate",function(self,tmr)
 	self.b:SetColorTexture(1, 0, 0, max(0, .4 * min(2,red_back_t)/2))
 end)
 
+
 module.frame.text = module.frame:CreateFontString(nil,"ARTWORK")
 module.frame.text:SetFont(ExRT.F.defFont, 12)
 module.frame.text:SetPoint("TOPLEFT",5,-5)
@@ -965,7 +1367,12 @@ end)
 
 
 function module.frame:Save(blackNoteID)
-	VExRT.Note.Text1 = (blackNoteID and VExRT.Note.Black[blackNoteID] or module.options.NoteEditBox and module.options.NoteEditBox.EditBox:GetText() or VExRT.Note.Text1 or "")
+	VExRT.Note.Text1 = (blackNoteID and VExRT.Note.Black[blackNoteID] or VExRT.Note.Text1 or "")
+
+	if not blackNoteID and module.options.NoteEditBox and VExRT.Note.OptionsFormatting then
+	--	VExRT.Note.Text1 = VExRT.Note.Text1:gsub("|([Ttcr])","||%1")
+	end
+
 	if #VExRT.Note.Text1 == 0 then
 		VExRT.Note.Text1 = " "
 	end
@@ -982,10 +1389,21 @@ function module.frame:Save(blackNoteID)
 			j = j + 1
 		end
 	end
+	local encounterID = VExRT.Note.AutoLoad[blackNoteID or 0] or "-"
+	local noteName = (blackNoteID and VExRT.Note.BlackNames[blackNoteID]) or (not blackNoteID and VExRT.Note.DefName) or ""
+
+	if blackNoteID then
+		VExRT.Note.AutoLoad[0] = VExRT.Note.AutoLoad[blackNoteID]
+		VExRT.Note.DefName = VExRT.Note.BlackNames[blackNoteID]
+		if VExRT.Note.DefName then
+			VExRT.Note.DefName = VExRT.Note.DefName:gsub("%*$","")
+		end
+	end
+
 	for i=1,#arrtosand do
 		ExRT.F.SendExMsg("multiline",indextosnd.."\t"..arrtosand[i])
 	end
-	ExRT.F.SendExMsg("multiline_add",ExRT.F.CreateAddonMsg(indextosnd,VExRT.Note.AutoLoad[blackNoteID or 0] or "-",blackNoteID and VExRT.Note.BlackNames[blackNoteID] or VExRT.Note.DefName or ""))
+	ExRT.F.SendExMsg("multiline_add",ExRT.F.CreateAddonMsg(indextosnd,encounterID,noteName))
 end 
 
 function module.frame:Clear() 
@@ -1055,24 +1473,42 @@ function module:addonMessage(sender, prefix, ...)
 			return
 		end
 		encounterID = tonumber(encounterID)
+		if noteName == "" then noteName = nil end
 		VExRT.Note.AutoLoad[0] = encounterID
 		VExRT.Note.DefName = noteName
 		if VExRT.Note.SaveAllNew then
-			noteName = noteName:gsub("%**$","*")
 			local finded = false
-			for i=1,#VExRT.Note.Black do
-				if VExRT.Note.BlackNames[i] == noteName then
-					VExRT.Note.Black[i] = VExRT.Note.Text1
-					VExRT.Note.AutoLoad[i] = encounterID
-					finded = true
-					break
+			if noteName then			
+				noteName = noteName:gsub("%*+$","").."*"
+				for i=1,#VExRT.Note.Black do
+					if VExRT.Note.BlackNames[i] == noteName and VExRT.Note.AutoLoad[i] == encounterID then
+						VExRT.Note.Black[i] = VExRT.Note.Text1
+						VExRT.Note.AutoLoad[i] = encounterID
+						VExRT.Note.BlackLastUpdateName[i] = sender
+						VExRT.Note.BlackLastUpdateTime[i] = time()
+						finded = true
+						break
+					end
 				end
+			elseif encounterID then
+				for i=1,#VExRT.Note.Black do
+					if VExRT.Note.AutoLoad[i] == encounterID and (not VExRT.Note.BlackNames[i] or VExRT.Note.BlackNames[i] == "") then
+						VExRT.Note.Black[i] = VExRT.Note.Text1
+						VExRT.Note.BlackLastUpdateName[i] = sender
+						VExRT.Note.BlackLastUpdateTime[i] = time()
+						finded = true
+						break
+					end
+				end				
+
 			end
 			if not finded then
 				local newIndex = #VExRT.Note.Black + 1
 				VExRT.Note.Black[newIndex] = VExRT.Note.Text1
 				VExRT.Note.AutoLoad[newIndex] = encounterID
 				VExRT.Note.BlackNames[newIndex] = noteName
+				VExRT.Note.BlackLastUpdateName[newIndex] = sender
+				VExRT.Note.BlackLastUpdateTime[newIndex] = time()
 				if module.options.NotesListUpdateNames then
 					module.options.NotesListUpdateNames()
 				end
@@ -1093,6 +1529,10 @@ function module:addonMessage(sender, prefix, ...)
 				end
 			end
 		end
+
+	elseif prefix == "multiline_timer_sync" then
+		local name = ...
+		ExRT.F.Note_Timer(name)	
 	end 
 end 
 
@@ -1161,12 +1601,19 @@ function module.main:ADDON_LOADED()
 	end	
 	if VExRT.Addon.Version < 3895 then
 		VExRT.Note.OnlyPromoted = true
-	end	
+	end
+	if VExRT.Addon.Version < 3960 then
+		VExRT.Note.OptionsFormatting = true
+	end
+
 	VExRT.Note.BlackNames = VExRT.Note.BlackNames or {}
 	
 	for i=1,3 do
 		VExRT.Note.Black[i] = VExRT.Note.Black[i] or ""
 	end
+
+	VExRT.Note.BlackLastUpdateName = VExRT.Note.BlackLastUpdateName or {}
+	VExRT.Note.BlackLastUpdateTime = VExRT.Note.BlackLastUpdateTime or {}
 	
 	VExRT.Note.Strata = VExRT.Note.Strata or "HIGH"
 	
@@ -1176,13 +1623,18 @@ function module.main:ADDON_LOADED()
 	module.frame:SetFrameStrata(VExRT.Note.Strata)
 end
 
+function module.main:PLAYER_LOGIN()
+	if VExRT.Note.enabled then
+		module.frame:UpdateText()
+	end
+end
 
 function module:Enable()
 	VExRT.Note.enabled = true
 	if module.options.chkEnable then
 		module.options.chkEnable:SetChecked(true)
 	end
-	module:RegisterEvents("ENCOUNTER_START")
+	module:RegisterEvents("PLAYER_SPECIALIZATION_CHANGED","PLAYER_LOGIN","ENCOUNTER_END","ENCOUNTER_START")
 	if VExRT.Note.HideOutsideRaid then
 		module:RegisterEvents("GROUP_ROSTER_UPDATE")
 	end
@@ -1200,7 +1652,7 @@ function module:Disable()
 	if module.options.chkEnable then
 		module.options.chkEnable:SetChecked(false)
 	end
-	module:UnregisterEvents('PLAYER_REGEN_DISABLED','PLAYER_REGEN_ENABLED','ZONE_CHANGED_NEW_AREA',"ENCOUNTER_START")
+	module:UnregisterEvents('PLAYER_REGEN_DISABLED','PLAYER_REGEN_ENABLED','ZONE_CHANGED_NEW_AREA',"PLAYER_SPECIALIZATION_CHANGED","PLAYER_LOGIN","ENCOUNTER_END","ENCOUNTER_START")
 	module:Visibility()
 end
 
@@ -1241,34 +1693,58 @@ function module:Visibility()
 	end
 end
 
+local party_uids = {'player','party1','party2','party3','party4'}
 function module.main:GROUP_ROSTER_UPDATE()
 	C_Timer.After(1, module.Visibility)
 	if not module.options.raidnames then
 		return
 	end	
-	local n = GetNumGroupMembers() or 0
-	local gMax = ExRT.F.GetRaidDiffMaxGroup()
 	for i=1,8 do gruevent[i] = 0 end
-	for i=1,n do
-		local name,_,subgroup,_,_,class = GetRaidRosterInfo(i)
-		if name and subgroup <= gMax and gruevent[subgroup] then
-			gruevent[subgroup] = gruevent[subgroup] + 1
-			local cR,cG,cB = ExRT.F.classColorNum(class)
-
-			local POS = gruevent[subgroup] + (subgroup - 1) * 5
-			local obj = module.options.raidnames[POS]
-			
-			if obj then
-				name = ExRT.F.delUnitNameServer(name)
-				local colorCode = ExRT.F.classColor(class)
-				obj.iconText = "||c"..colorCode..name.."||r "
-				obj.iconTextShift = name
-				obj.html:SetText(name)
-				obj.html:SetTextColor(cR, cG, cB, 1)
+	if IsInRaid() then
+		local n = GetNumGroupMembers() or 0
+		local gMax = 7
+		for i=1,n do
+			local name,_,subgroup,_,_,class = GetRaidRosterInfo(i)
+			if name and subgroup <= gMax and gruevent[subgroup] then
+				gruevent[subgroup] = gruevent[subgroup] + 1
+				local cR,cG,cB = ExRT.F.classColorNum(class)
+	
+				local POS = gruevent[subgroup] + (subgroup - 1) * 5
+				local obj = module.options.raidnames[POS]
+				
+				if obj then
+					name = ExRT.F.delUnitNameServer(name)
+					local colorCode = ExRT.F.classColor(class)
+					obj.iconText = "||c"..colorCode..name.."||r "
+					obj.iconTextShift = name
+					obj.html:SetText(name)
+					obj.html:SetTextColor(cR, cG, cB, 1)
+				end
 			end
 		end
+	else
+		for i=1,5 do
+			local name = UnitName(party_uids[i])
+			if name then
+				gruevent[1] = gruevent[1] + 1
+
+				local _,class = UnitClass(party_uids[i])
+				local cR,cG,cB = ExRT.F.classColorNum(class)
+	
+				local POS = gruevent[1]
+				local obj = module.options.raidnames[POS]
+				
+				if obj then
+					local colorCode = ExRT.F.classColor(class)
+					obj.iconText = "||c"..colorCode..name.."||r "
+					obj.iconTextShift = name
+					obj.html:SetText(name)
+					obj.html:SetTextColor(cR, cG, cB, 1)
+				end
+			end
+		end		
 	end
-	for i=1,6 do
+	for i=1,7 do
 		for j=(gruevent[i]+1),5 do
 			local frame = module.options.raidnames[(i-1)*5+j]
 			frame.iconText = ""
@@ -1290,43 +1766,172 @@ function module.main:ZONE_CHANGED_NEW_AREA()
 	C_Timer.After(5, module.Visibility)
 end
 
+function module.main:PLAYER_SPECIALIZATION_CHANGED()
+	module.frame:UpdateText()
+end
+
+
 do
-	local encountersUsed = {}
-	function module.main:ENCOUNTER_START(encounterID,encounterName)
-		local _, zoneType, difficulty, _, _, _, _, mapID = GetInstanceInfo()
-		if difficulty == 7 or difficulty == 17 then	--Disable if LFR
-			return false
-		end
-		if encountersUsed[encounterID] then
+	local BossPhasesBossmodAdded
+	local function BossPhasesBossmod()
+		if BossPhasesBossmodAdded then
 			return
 		end
-		encountersUsed[encounterID] = true
-		local limit = #VExRT.Note.Black
-		for i=1,limit do
-			local text = VExRT.Note.Black[i]
-			if text:find("^{[eEеЕ][pPрР]:"..encounterID.."}") or (encounterName and (text:lower()):find("^{[eе][pр]:"..(encounterName:lower()).."}")) then
-				VExRT.Note.SelfText = VExRT.Note.Black[i]
-				module.frame:UpdateText()
-				break
+		if BigWigsLoader and type(BigWigsLoader)=='table' and BigWigsLoader.RegisterMessage then
+			local r = {}
+			local patt
+			function r:BigWigs_Message (event, mod, key, text, ...)
+				if (key == "stages") then
+					if type(text)~='string' then
+						return
+					end
+
+					if not patt and BigWigsAPI then
+						local CL = BigWigsAPI:GetLocale("BigWigs: Common")
+						if CL and CL.soon then
+							patt = CL.soon:gsub("%%s","")
+							if CL.soon:find("^%%s") then
+								patt = patt .. "$"
+							else
+								patt = "^" .. patt
+							end
+						end
+					end
+					if patt and text:find( patt ) then
+						return
+					end
+
+					local phase = text:match ("%d+")
+					phase = tonumber (phase or "")
+					if phase then
+						wipe(module.db.encounter_time_p)
+						module.db.encounter_time_p[phase] = GetTime()
+					end
+				end
+			end
+
+			BigWigsLoader.RegisterMessage (r, "BigWigs_Message")
+			
+			BossPhasesBossmodAdded = true
+		end
+	end
+
+
+	function module.main:ENCOUNTER_START(encounterID, encounterName, difficultyID, groupSize)
+		local updateTextReq
+		local noteText = (VExRT.Note.Text1 or "")..(VExRT.Note.SelfText or "")
+		if encounterID and encounterName then
+			module.db.encounter_id[tostring(encounterID)] = true
+			module.db.encounter_id[encounterName] = true
+			if noteText:find("{[Ee]:([^}]+)}.-{/[Ee]}") then
+				updateTextReq = true
 			end
 		end
-		for i=0,limit do
-			if VExRT.Note.AutoLoad[i] == encounterID then
-				ExRT.F.Timer(SendNoteByEncounter, 1.8, i)
-				break
-			end
-			if i == limit then
-				IsUpdateNoteByEncounterFromMe = nil
-				return
+		if noteText:find("{time:([0-9:]+[^{}]*)}") then
+			wipe(module.db.encounter_time_c)
+			module:RegisterTimer()
+			module.db.encounter_time = GetTime()
+			module.db.encounter_time_p[1] = module.db.encounter_time
+			updateTextReq = true
+			BossPhasesBossmod()
+	
+			if noteText:find("{time:([0-9:]+,S[^{}]*)}") then
+				wipe(module.db.encounter_counters.SCC)
+				wipe(module.db.encounter_counters.SCS)
+				wipe(module.db.encounter_counters.SAA)
+				wipe(module.db.encounter_counters.SAR)
+				local anyEvent
+				string_gsub(noteText,"{time:[0-9:]+,(S[^{}]*)}",function(str)
+					local event,spellID,count = strsplit(":",str)
+					if tonumber(count or "") and tonumber(spellID or "") and event and module.db.encounter_counters[event] then
+						anyEvent = true
+						module.db.encounter_counters[event][tonumber(spellID)] = 0
+					end
+				end)
+				if anyEvent then
+					wipe(module.db.encounter_counters_time)
+					module:RegisterEvents("COMBAT_LOG_EVENT_UNFILTERED")
+				end
 			end
 		end
-		IsUpdateNoteByEncounterFromMe = true
-		ExRT.F.Timer(ExRT.F.SendExMsg, 0.3, "multiline_req","ENCOUNTER")
+		if updateTextReq then
+			module.frame:UpdateText()
+		end
+	end
+	function module.main:ENCOUNTER_END()
+		wipe(module.db.encounter_id)
+		if ((VExRT.Note.Text1 or "")..(VExRT.Note.SelfText or "")):find("{time:([0-9:]+[^{}]*)}") then
+			module:UnregisterTimer()
+			module.db.encounter_time = nil
+			wipe(module.db.encounter_time_p)
+			wipe(module.db.encounter_time_c)
+	
+			module:UnregisterEvents("COMBAT_LOG_EVENT_UNFILTERED")
+		end
+		module.frame:UpdateText()
+	end
+	local tmr = 0
+	function module:timer(elapsed)
+		tmr = tmr + elapsed
+		if tmr > 1 then
+			tmr = 0
+			module.frame:UpdateText()
+		end
+	end
+
+	module.db.encounter_counters_time = {}
+	module.db.encounter_counters = {
+		SCC = {},
+		SCS = {},
+		SAA = {},
+		SAR = {},
+	}
+	local ECT = module.db.encounter_counters_time
+	local SCC = module.db.encounter_counters.SCC
+	local SCS = module.db.encounter_counters.SCS
+	local SAA = module.db.encounter_counters.SAA
+	local SAR = module.db.encounter_counters.SAR
+	function module.main:COMBAT_LOG_EVENT_UNFILTERED()
+		local _,event,_,_,_,_,_,_,_,_,_,spellID = CombatLogGetCurrentEventInfo()
+		if event == "SPELL_CAST_SUCCESS" and SCC[spellID] then
+			SCC[spellID] = SCC[spellID] + 1
+			ECT[ "SCC:"..spellID..":"..SCC[spellID] ] = GetTime()
+			ECT[ "SCC:"..spellID..":"..0 ] = GetTime()
+		elseif event == "SPELL_CAST_START" and SCS[spellID] then
+			SCS[spellID] = SCS[spellID] + 1
+			ECT[ "SCS:"..spellID..":"..SCS[spellID] ] = GetTime()
+			ECT[ "SCS:"..spellID..":"..0 ] = GetTime()
+		elseif event == "SPELL_AURA_APPLIED" and SAA[spellID] then
+			SAA[spellID] = SAA[spellID] + 1
+			ECT[ "SAA:"..spellID..":"..SAA[spellID] ] = GetTime()
+			ECT[ "SAA:"..spellID..":"..0 ] = GetTime()
+		elseif event == "SPELL_AURA_REMOVED" and SAR[spellID] then
+			SAR[spellID] = SAR[spellID] + 1
+			ECT[ "SAR:"..spellID..":"..SAR[spellID] ] = GetTime()
+			ECT[ "SAR:"..spellID..":"..0 ] = GetTime()
+		end
+	end
+
+
+	function ExRT.F.Note_Timer(name)
+		if not name then
+			return
+		end
+		if not module.db.encounter_time then
+			module.main:ENCOUNTER_START()
+		end
+		module.db.encounter_time_c[name] = GetTime()
+	end
+	function ExRT.F.Note_SyncTimer(name)
+		if not name then
+			return
+		end
+		ExRT.F.SendExMsg("multiline_timer_sync",name)
 	end
 end
 
 function module:slash(arg)
-	if arg == "note" then
+	if arg == "note" or arg == "n" then
 		if VExRT.Note.enabled then 
 			module:Disable()
 		else
@@ -1334,5 +1939,21 @@ function module:slash(arg)
 		end
 	elseif arg == "editnote" or arg == "edit note" then
 		ExRT.Options:Open(module.options)
+	elseif arg == "note timer" then
+		if module.db.encounter_time then
+			module.main:ENCOUNTER_END()
+		else
+			module.main:ENCOUNTER_START()
+		end
+	elseif arg and arg:find("^note starttimer ") then
+		local timer = arg:match("^note starttimer (.-)$")
+		if timer then
+			ExRT.F.Note_Timer(timer)
+		end
+	elseif arg and arg:find("^note synctimer ") then
+		local timer = arg:match("^note synctimer (.-)$")
+		if timer then
+			ExRT.F.Note_SyncTimer(timer)
+		end
 	end
 end

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(119, "DBM-Party-Cataclysm", 5, 69)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 185 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 195 $"):sub(12, -3))
 mod:SetCreatureID(43612)
 mod:SetEncounterID(1053)
 mod:SetZone()
@@ -21,10 +21,10 @@ local warnLashings				= mod:NewTargetAnnounce(82506, 3, nil, "Tank|Healer", 2)--
 local warnRepentance			= mod:NewSpellAnnounce(82320, 2)	-- kind of add phase
 local warnSoulSever				= mod:NewTargetAnnounce(82255, 4)
 
-local specWarnHeavenFury		= mod:NewSpecialWarningMove(81942)
-local specWarnHallowedGround 	= mod:NewSpecialWarningMove(88814)
-local specWarnSoulSever			= mod:NewSpecialWarningYou(82255, nil, nil, nil, 3)
-local specWarnSoulSeverDps		= mod:NewSpecialWarningSwitch(82255, "Dps")
+local specWarnHeavenFury		= mod:NewSpecialWarningMove(81942, nil, nil, nil, 1, 2)
+local specWarnHallowedGround 	= mod:NewSpecialWarningMove(88814, nil, nil, nil, 1, 2)
+local specWarnSoulSever			= mod:NewSpecialWarningYou(82255, nil, nil, nil, 3, 2)
+local specWarnSoulSeverDps		= mod:NewSpecialWarningSwitch(82255, "Dps", nil, nil, 1, 2)
 
 local timerPlagueAges			= mod:NewTargetTimer(9, 82622, nil, "Healer", 2, 5)
 local timerLashings				= mod:NewTargetTimer(20, 82506, nil, "Tank|Healer", 2, 5)
@@ -53,15 +53,18 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif spellId == 82255 then
 		if args:IsPlayer() then
 			specWarnSoulSever:Show()
+			specWarnSoulSever:Play("targetyou")
 		else
 			warnSoulSever:Show(args.destName)
 		end
 		specWarnSoulSeverDps:Schedule(4)
+		specWarnSoulSeverDps:ScheduleVoice(4, "killmob")
 		timerSoulSever:Start(args.destName)
 		timerSoulSeverCD:Start()
 	elseif spellId == 88814 and args:IsPlayer() and GetTime() - spamSIS > 5.5 then
 		spamSIS = GetTime()
 		specWarnHallowedGround:Show()
+		specWarnHallowedGround:Play("runaway")
 	end
 end
 
@@ -78,6 +81,7 @@ function mod:SPELL_DAMAGE(_, _, _, _, destGUID, _, _, _, spellId)
 	if spellId == 81942 and destGUID == UnitGUID("player") and GetTime() - spamSIS > 3 then
 		spamSIS = GetTime()
 		specWarnHeavenFury:Show()
+		specWarnHeavenFury:Play("runaway")
 	end
 end
 		

@@ -230,7 +230,7 @@ local function Reactive_OnUpdate(icon, time)
 			start, duration = 0, 0
 		end
 
-		inrange, nomana = true
+		inrange, nomana = true, nil
 		if RangeCheck then
 			inrange = IsSpellInRange(NameFirst, "target")
 			if inrange == 1 or inrange == nil then
@@ -246,7 +246,7 @@ local function Reactive_OnUpdate(icon, time)
 	
 	if duration then
 		icon:SetInfo("state; texture; start, duration; charges, maxCharges, chargeStart, chargeDur; stack, stackText; spell",
-			not inrange and STATE_UNUSABLE_NORANGE or nomana and STATE_DEFAULT_NOMANA or STATE_UNUSABLE,
+			not inrange and STATE_UNUSABLE_NORANGE or nomana and STATE_UNUSABLE_NOMANA or STATE_UNUSABLE,
 			icon.FirstTexture,
 			start, duration,
 			charges, maxCharges, chargeStart, chargeDur,

@@ -55,7 +55,7 @@
 
 			<CheckButton parentKey="CLEUNoRefresh" name="$parentCLEUNoRefresh" inherits="TellMeWhen_CheckTemplate">
 				<Anchors>
-					<Anchor point="LEFT" relativeTo="$parentCLEUDur" relativePoint="RIGHT" x="2" y="-1"/>
+					<Anchor point="LEFT" relativeKey="$parent.CLEUDur" relativePoint="RIGHT" x="2" y="-1"/>
 				</Anchors>
 				<Scripts>
 					<OnLoad>
@@ -68,10 +68,24 @@
 					</OnLoad>
 				</Scripts>
 			</CheckButton>
+
+			<CheckButton parentKey="OnlyIfConditions" inherits="TellMeWhen_CheckTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeKey="$parent.CLEUDur" relativePoint="BOTTOMLEFT" x="0" y="-3"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						TMW:CInit(self)
+
+						self:SetTexts(TMW.L["ICONMENU_ONLYIFCONDITIONS"], TMW.L["ICONMENU_ONLYIFCONDITIONS_DESC"])
+						self:SetSetting("OnlyIfConditions")
+					</OnLoad>
+				</Scripts>
+			</CheckButton>
 			
 			<EditBox parentKey="SourceUnit" name="$parentSourceUnit" inherits="TellMeWhen_UnitEditBox">
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeKey="$parent.CLEUDur" relativePoint="BOTTOMLEFT" x="0" y="-20"/>
+					<Anchor point="TOPLEFT" relativeKey="$parent.OnlyIfConditions" relativePoint="BOTTOMLEFT" x="0" y="-13"/>
 					<Anchor point="RIGHT" x="-5" />
 				</Anchors>
 				<Scripts>

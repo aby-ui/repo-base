@@ -214,8 +214,7 @@ do
 		profileBrowser.container = container
 
 		local viewport = Addon.ScrollableContainer:New(profileBrowser)
-		viewport:SetPoint('TOPLEFT', profileBrowser)
-		viewport:SetPoint('BOTTOMRIGHT', profileBrowser)
+		viewport:SetAllPoints(profileBrowser)
 		viewport:SetChild(container)
 		profileBrowser.viewport = viewport
 
@@ -284,7 +283,7 @@ do
 
 			local height = (#self.buttons * self.buttons[1]:GetHeight()) + #self.buttons * self.buttonPadding
 			self.container:SetSize(width, height)
-			-- self.viewport:SetChild(self.container)
+			self.viewport:SetChild(self.container)
 		end
 
 		function profileBrowser:GetOrCreateButton(i)

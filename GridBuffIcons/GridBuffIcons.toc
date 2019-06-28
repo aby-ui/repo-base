@@ -1,4 +1,4 @@
-## Interface: 80000
+## Interface: 80200
 ## Title: GridBuffIcons
 
 ## Author: warbaby @ 爱不易

@@ -99,8 +99,10 @@ local petName, petIcon
 function button:OnUpdateTimer()
 	if petAlive and petName and petIcon then
 		local data = spellList[self.index]
-		return data and petName == data.spell and petIcon == data.icon
-	end
+		return data and petName == data.spell and petIcon == data.icon and "NONE" or "Y"
+    else
+        return not (petAlive and petName) and "R"
+    end
 end
 
 -- I have no idea, at the moment when UNIT_PET event fires UnitName("pet") often returns nil, so the only solution is

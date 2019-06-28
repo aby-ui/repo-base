@@ -82,7 +82,7 @@ function Addon:Toggle()
                 MainPanel:SelectPanel(ActivitiesParent)
             elseif App:HasNewFollower() then
                 MainPanel:SelectPanel(AppParent)
-            elseif C_LFGList.GetActiveEntryInfo() then
+            elseif C_LFGList.HasActiveEntryInfo() then
                 MainPanel:SelectPanel(ManagerPanel)
             end
             Addon:ShowModule('MainPanel')

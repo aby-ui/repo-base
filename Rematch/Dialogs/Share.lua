@@ -164,6 +164,7 @@ function rematch:ShowImportDialog()
 	dialog.TabPicker:SetPoint("TOP",dialog.MultiLine,"BOTTOM",0,-12)
 	dialog.TabPicker:Show()
 	dialog.Accept:Disable()
+	dialog.Other:Disable()
 
 	dialog.Other:SetScript("OnEnter",share.ShowImportLoadTooltip)
 	dialog.Other:SetScript("OnLeave",rematch.HideTooltip)

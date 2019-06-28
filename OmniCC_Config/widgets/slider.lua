@@ -16,6 +16,7 @@ function Slider:New(name, parent, low, high, step)
 	f:SetMinMaxValues(low, high)
 	f:SetValueStep(step)
 	f:EnableMouseWheel(true)
+	f:SetObeyStepOnDrag(true)
 
 	_G[f:GetName() .. 'Text']:SetText(name)
 	_G[f:GetName() .. 'Text']:SetFontObject('GameFontNormalLeft')
@@ -47,9 +48,9 @@ function Slider:OnShow()
 end
 
 function Slider:OnValueChanged(value)
-	local min = self:GetMinMaxValues()
-	local step = self:GetValueStep()
-	local value = min + ceil((value - min) / step) * step
+	-- local min = self:GetMinMaxValues()
+	-- local step = self:GetValueStep()
+	-- local value = min + ceil((value - min) / step) * step
 
 	self:SetSavedValue(value)
 	self:UpdateText(self:GetSavedValue())

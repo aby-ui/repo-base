@@ -1,0 +1,97 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+
+    <Button name="TomCats-NazjatarRareButtonTemplate" virtual="true" hidden="true">
+        <Size x="200" y="18"/>
+        <Layers>
+            <Layer>
+                <Texture atlas="VignetteKill" hidden="true" parentKey="incomplete">
+                    <Size x="14" y="14"/>
+                    <Anchors>
+                        <Anchor point="LEFT" />
+                    </Anchors>
+                </Texture>
+                <Texture atlas="Capacitance-General-WorkOrderCheckmark" hidden="true" parentKey="complete">
+                    <Size x="14" y="14"/>
+                    <Anchors>
+                        <Anchor point="LEFT" />
+                    </Anchors>
+                </Texture>
+                <Texture file="Interface\Buttons\UI-GroupLoot-Pass-Up" hidden="true" parentKey="unavailable">
+                    <Size x="14" y="14"/>
+                    <Anchors>
+                        <Anchor point="LEFT" />
+                    </Anchors>
+                </Texture>
+            </Layer>
+        </Layers>
+        <ButtonText name="$parentText" parentKey="text" justifyH="LEFT">
+            <Anchors>
+                <Anchor point="LEFT" x="18" y="0"/>
+            </Anchors>
+            <Color r="0.75" g="0.75" b="0.75"/>
+        </ButtonText>
+        <NormalFont style="GameFontNormal" />
+    </Button>
+
+    <Frame name="TomCats-NazjatarTourWindowTemplate" toplevel="true" movable="true" parent="UIParent" hidden="true" virtual="true" inherits="PortraitFrameTemplate">
+        <Size x="500" y="500" />
+        <Anchors>
+            <Anchor point="CENTER" relativeTo="UIParent" relativePoint="CENTER" x="0" y="0" />
+        </Anchors>
+        <Layers>
+            <Layer level="ARTWORK">
+                <FontString name="$parentTitle2Text" inherits="GameFontNormalSmall2" justifyV="MIDDLE" justifyH="CENTER">
+                    <Anchors>
+                        <Anchor point="CENTER" relativePoint="TOP">
+                            <Offset>
+                                <AbsDimension x="0" y="-42" />
+                            </Offset>
+
+                        </Anchor>
+                    </Anchors>
+                </FontString>
+            </Layer>
+            <Layer level = "OVERLAY" textureSubLevel="-2">
+                <Texture name="$parentPortraitBackground" parentKey="portrait">
+                    <Size x="61" y="61" />
+                    <Anchors>
+                        <Anchor point="TOPLEFT" x="-6" y="8" />
+                    </Anchors>
+                </Texture>
+            </Layer>
+        </Layers>
+        <Frames>
+            <Frame name="$parentInset" useParentLevel="true" inherits="InsetFrameTemplate" parentKey="Inset">
+                <Anchors>
+                    <Anchor point="TOPLEFT" x="4" y="-60" />
+                    <Anchor point="BOTTOMRIGHT" x="-6" y="6" />
+                </Anchors>
+            </Frame>
+            <ScrollFrame name="$parentRaresScrollFrame" useParentLevel="true" parentKey="bossesScroll" inherits="UIPanelScrollFrameCodeTemplate">
+                <Anchors>
+                    <Anchor point="TOPLEFT" x="12" y="-63" />
+                    <Anchor point="BOTTOMRIGHT" x="-6" y="10" />
+                </Anchors>
+                <Frames>
+                    <Slider name="$parentScrollBar" inherits="MinimalScrollBarTemplate" parentKey="ScrollBar">
+                        <Anchors>
+                            <Anchor point="TOPRIGHT" x="0" y="-17"/>
+                            <Anchor point="BOTTOMRIGHT" x="0" y="17"/>
+                        </Anchors>
+                        <Scripts>
+                            <OnLoad>
+                                    self.trackBG:SetVertexColor(0.2, 0.13, 0.08, 0.25);
+                            </OnLoad>
+                        </Scripts>
+                    </Slider>
+                </Frames>
+                <ScrollChild>
+                    <Frame name="$parentScrollChild" parentKey="child">
+                        <Size x="200" y="200"/>
+                    </Frame>
+                </ScrollChild>
+            </ScrollFrame>
+        </Frames>
+    </Frame>
+</Ui>

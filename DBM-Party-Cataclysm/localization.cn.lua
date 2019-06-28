@@ -99,10 +99,6 @@ L:SetTimerLocalization({
 ---------------------
 L= DBM:GetModLocalization(131)
 
-L:SetOptionLocalization{
-	PingBlitz	= "当乌比斯将军准备对你迅猛突袭时自动点击小地图"
-}
-
 --------------------------
 -- Forgemaster Throngus --
 --------------------------
@@ -288,7 +284,6 @@ L:SetOptionLocalization({
 	WarnSubmerge	= "警报：钻地",
 	TimerEmerge		= "计时条：下一次出现",
 	TimerSubmerge	= "计时条：下一次钻地",
-	CrystalArrow	= "DBM箭头：当$spell:81634目标距你过近时",
 	RangeFrame		= "距离监视器（5码）"
 })
 
@@ -383,8 +378,7 @@ L= DBM:GetModLocalization(186)
 
 L:SetOptionLocalization{
 	StormIcon	= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(43648),
-	RangeFrame	= "距离监视器（10码）",
-	StormArrow	= "DBM箭头：$spell:43648"
+	RangeFrame	= "距离监视器（10码）"
 }
 
 ---------------
@@ -500,8 +494,7 @@ L:SetMiscLocalization{
 L= DBM:GetModLocalization(175)
 
 L:SetOptionLocalization{
-	SetIconOnToxicLink	= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(96477),
-	LinkArrow			= "DBM箭头：当你受到$spell:96477影响时"
+	SetIconOnToxicLink	= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(96477)
 }
 
 ------------------------

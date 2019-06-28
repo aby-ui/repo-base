@@ -15,6 +15,7 @@ end
 local statformat
 local multiplier
 local notexactlyzero
+local hidemastery
 --hideatzero gets used in DCSLayouts, so there's small use to make faster access to it here.
 
 local function DCS_Decimals()
@@ -165,6 +166,13 @@ local function DCS_Decimals()
 			end
 			local color_format = statformat
 			if (UnitLevel("player") < SHOW_MASTERY_LEVEL) then
+				if not namespace.configMode then
+					if hidemastery then
+						statFrame:Hide();
+						--print("hiding")
+						return;
+					end
+				end
 				color_mastery = "|cff7f7f7f" .. color_mastery .. "|r"
 				color_format = "|cff7f7f7f" .. color_format .. "|r"
 			end
@@ -340,6 +348,37 @@ local DCS_DecimalCheck = CreateFrame("CheckButton", "DCS_DecimalCheck", DejaChar
 		PaperDollFrame_UpdateStats() --for Enhancements to have updated accuracy and visibility
 	end)
 
+		gdbprivate.gdbdefaults.gdbdefaults.dejacharacterstatsHideMasteryChecked = {
+		SetChecked = true,
+	}	
+
+local DCS_MasteryCheck = CreateFrame("CheckButton", "DCS_MasteryCheck", DejaCharacterStatsPanel, "InterfaceOptionsCheckButtonTemplate")
+	DCS_MasteryCheck:RegisterEvent("PLAYER_LOGIN")
+	DCS_MasteryCheck:ClearAllPoints()
+	--DCS_DecimalCheck:SetPoint("TOPLEFT", 30, -205)
+	DCS_MasteryCheck:SetPoint("TOPLEFT", "dcsStatsPanelcategoryFS", 7, -75) 
+	DCS_MasteryCheck:SetScale(1)
+	--DCS_MasteryCheck.tooltipText = L["Hides mastery stat till the character starts to have benefit from it. Unselected mastery stat in PaperDollFrame takes priority over this setting."] --Creates a tooltip on mouseover.
+	DCS_MasteryCheck.tooltipText = L["Hides Mastery stat until the character starts to have benefit from it. Hiding Mastery with Select-A-Stat™ in the character panel has priority over this setting."] --Creates a tooltip on mouseover. 
+	_G[DCS_MasteryCheck:GetName() .. "Text"]:SetText(L["Hide low level mastery"])
+	
+	DCS_MasteryCheck:SetScript("OnEvent", function(self, event, arg1)
+		if event == "PLAYER_LOGIN" then
+			hidemastery= gdbprivate.gdb.gdbdefaults.dejacharacterstatsHideMasteryChecked.SetChecked
+			namespace.hidemastery = hidemastery
+			self:SetChecked(hidemastery)
+			DCS_Decimals() --PaperDollFrame_UpdateStats() here isn't needed
+		end
+	end)
+
+	DCS_MasteryCheck:SetScript("OnClick", function(self,event,arg1) 
+		hidemastery = self:GetChecked(true) --hidemastery = not hidemastery
+		namespace.hidemastery = hidemastery
+		gdbprivate.gdb.gdbdefaults.dejacharacterstatsHideMasteryChecked.SetChecked = hidemastery
+		DCS_Decimals()
+		PaperDollFrame_UpdateStats() --refresh of mastery visibility
+	end)
+	
 	gdbprivate.gdbdefaults.gdbdefaults.dejacharacterstatsHideAtZeroChecked = {
 		SetChecked = true,
 	}

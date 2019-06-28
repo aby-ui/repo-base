@@ -1,3 +1,4 @@
+if UnitLevel("player") > 119 then return end
 ------------------------------------------------------------
 -- copy from CrystalOfInsanity.lua by 163ui 2017/10
 ------------------------------------------------------------
@@ -54,5 +55,5 @@ function button:OnUpdateTimer(spell)
 	end
 
 	self:SetConflictIcon(conflict)
-	return expires or conflict, expires
+	return (expires or conflict) and "NONE" or "R", expires
 end

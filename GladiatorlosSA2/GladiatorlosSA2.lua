@@ -6,7 +6,7 @@
  local LSM = LibStub("LibSharedMedia-3.0")
  local self, GSA, PlaySoundFile = GladiatorlosSA, GladiatorlosSA, PlaySoundFile
  local GSA_TEXT = "|cff69CCF0GladiatorlosSA2|r (|cffFFF569/gsa|r)"
- local GSA_VERSION = "|cffFF7D0A vB2 |r(|cFF00FF968.0 Battle for Azeroth [BETA]|r)"
+ local GSA_VERSION = "|cffFF7D0A B10 |r(|cFF00FF968.2 Battle for Azeroth|r)"
  local GSA_AUTHOR = " "
  local gsadb
  local soundz,sourcetype,sourceuid,desttype,destuid = {},{},{},{},{}
@@ -76,7 +76,7 @@
 		all = false,
 		arena = true,
 		battleground = true,
-		disablelargebg = false,
+		epicbattleground = false,
 		field = false,
 		path = GSA_LOCALEPATH[GetLocale()] or "GladiatorlosSA2\\Voice_enUS",
 		path_male = GSA_LOCALEPATH[GetLocale()] or "GladiatorlosSA2\\Voice_enUS",
@@ -101,125 +101,59 @@
 		class = false,
 		interruptedfriendly = true,
 		
-		purge = false,
-		spellSteal = false,
-		diceRoll = false,
-		implosion = false,
-		littleMoon = false,
-		middleMoon = false,
-		explosiveKeg = false,
-		cure = false,
-		dispel = false,
-		rapture = false,
-		unstableAffliction = false,
-		PredatorSwiftness = false,
-		eyeBeam = false,
+		-- Unrecorded abilities
+		_PHDragonCharge = false,
+		_PHheroicLeap = false,
+		aimedShot = false,
+		beastWithin = false,
+		BeastWithinDown = false,
+		boomTrap = false,
+		BullRush = false,
+		CurseOfFragility = false,
+		CurseOfTongues = false,
+		CurseOfWeakness = false,
+		dancingRuneWeapon = false,
+		DeathChain = false,
+		DeathPact = false,
+		DeathsAdvance = false,
+		DemonicTyrant = false,
+		divineProtection = false,
+		doubleBarrel = false,
+		DragonBreath = false,
+		ExecutionSentence = false,
+		Feint = false,
+		FeintDown = false,
+		Fireblood = false,
+		Flourish = false,
+		Healthstone = false,
+		hibernate = false,
+		Icefury = false,
+		Interlope = false,
+		intimidation = false,
+		lastStand = false,
+		MightyOxKick = false,
+		Neurotoxin = false,
+		NimbleBrew = false,
+		Overrun = false,
+		Premonition = false,
+		RaiseDead = false,
+		safeguard = false,
+		secondWind = false,
+		ShieldOfVirtue = false,
+		soothe = false,
+		SpatialRift = false,
+		SpatialRift2 = false,
+		Spellwarding = false,
+		SpellwardingDown = false,
+		survivalTactics = false,
+		sweepingStrikes = false,
+		SweepingStrikesDown = false,
+		TremorTotem = false,
+		UrsolsVortex = false,
+		warpath = false,
 		
-		success = false,
-		
-		chaosBolt = false,
-		apocalypse = false,
-		karmaDown = false,
-		
-		soothingMist = false,
-		shiningForce = false,
-		thunderstorm = false,
-		stickyBomb = false,
-		typhoon = false,
-		felLash = false,
-		camouflage = false,
-		stealth = false,
-		prowl = false,
-		barrage = false,
-		
-		leapOfFaith = false,
-		deathGrip = false,
-		hook = false,
-		forbearanceDown = false,
-		mageShield = false,
-		strikeOfTheWindlord = false,
-		
-		--PH sounds are disabled until they match the rest of the voice pack, however that ends up being.
-		--Remember to rename the sound files.
-		_PHgreaterFade = false,
-		_PHgreaterFadeDown = false,
-		_PHfaerieSwarm = false,
-		_PHringOfPeace = false,
-		_PHcallObserver = false,
-		_PHdarkglare = false,
-		_PHinnerFocus = false,
-		_PHinnerFocusDown = false,
-		_PHmarkOfAluneth = false,
-		_PHebonbolt = false,
-		_PHthalkiel = false,
-		_PHashamanesFrenzy = false,
-		
-		--The following defaults were changed in 1.16.3.
-		vampiricBlood = false,
-		tombstone = false,
-		tombstoneDown = false,
-		runetap = false,
-		dash = false,
-		cenarionWard = false,
-		BristlingFur = false,
-		mastersCall = false,
-		cheetah = false, 
-		mendingBandage = false,
-		manaTea = false,
-		zenMeditation = false,
-		zenMeditationDown = false,
-		lightAegis = false, 
-		ardentDefender = false,
-		defenderDown = false,
-		ancientKings = false,
-		kingsDown = false,
-		archangelHealing = false,
-		archangelDamage = false,
-		sprint = false,
-		spiritLink = false, 
-		spiritLinkDown = false,
-		sacrificialPact = false,
-		shieldWall = false,
-		shieldWallDown = false,
-		
-		bigHeal = false,		
-		shackleUndead = false,
-		cataclysm = false,
-		
-		battleStandard = false,
-		gorefiendGrasp = false,
-		defile = false,
-		chillStreak = false,
-		sindragosaFury = false,
-		manaBreak = false,
-		displacerBeast = false,
-		renewal = false,
-		wildCharge = false,
-		Exhilaration = false,
-		murderOfCrows = false, 
-		snakeHunter = false,
-		presenceOfMind = false,
-		CometStorm = false,
-		Meteor = false,
-		iceFloes = false, 
-		invokeOx = false, 
-		pony = false,
-		shadowfiend = false,
-		desperatePrayer = false, 
-		mindbender = false,
-		holySerenity = false, 
-		cannonballBarrage = false,
-		exsanguinate = false,
-		stormElemental = false,
-		fireElemental = false,
-		earthElemental = false,
-		windRushTotem = false,
-		LiquidMagma = false,
-		protectionTotem = false,
-		commandingShout = false,
-		dragonRoar = false,
-		Ravager = false,
-		demoShout = false,
+		--purge = false,
+		--spellSteal = false,
 		
 		custom = {},
 	}	
@@ -379,24 +313,53 @@
 		self:PlaySound(list[spellID],extend,genderZ)
 
  end
+ 
+ function GSA:CheckFriendlyDebuffs(spellID)
+	if spellID == 87204 or			-- Vampiric Touch Horrify
+		spellID == 196364 or 		-- Unstable Affliction Silence
+		spellID == 1330 or 			-- Garrote Silence
+		spellID == 1833 or 			-- Cheap Shot
+		spellID == 6770 or 			-- Sap
+		spellID == 3355 or 			-- Freezing Trap
+		spellID == 212332 or 		-- Smash (DK Abomination)
+		spellID == 212337 or 		-- Powerful Smash (DK Abomination)
+		spellID == 91800 or 		-- Gnaw (DK Ghoul)
+		spellID == 91797 or 		-- Monstrous Claw (DK Ghoul)
+		spellID == 163505 or 		-- Rake Stun
+		spellID == 199086 or 		-- Warpath Stun
+		spellID == 202335 or 		-- Double Barrel Stun
+		spellID == 215652 or 		-- Shield of Virtue silence
+		spellID == 19577 or 		-- Intimidation (pet stun)
+		spellID == 302144 then 		-- Gladiator's Maledict
+		return true
+	end
+end
+
+function GSA:CheckForEpicBG(instanceMapID)
+	if instanceMapID == 2118 or		-- Wintergrasp [Epic]
+		instanceMapID == 30 or		-- Alterac Valley
+		instanceMapID == 628 or		-- Isle of Conquest
+		instanceMapID == 1280 or	-- Southshore vs Tarren Mill
+		instanceMapID == 1191 then	-- Trashcan
+		return true
+	end
+end
 
  function GladiatorlosSA:COMBAT_LOG_EVENT_UNFILTERED(event , ...)
 	--Disable By Location
 	local _,currentZoneType = IsInInstance()
-	local _,isBigBG = GetInstanceInfo(mapID)
---	if (not ((currentZoneType == "none" and gsadb.field) or ((currentZoneType == "pvp" and gsadb.battleground) and ((isBigBG == "30" or "628") and gsadb.disablelargebg)) or (currentZoneType == "arena" and gsadb.arena) or gsadb.all)) then
-	if (not ((currentZoneType == "none" and gsadb.field) or (currentZoneType == "pvp" and gsadb.battleground) or (currentZoneType == "arena" and gsadb.arena) or gsadb.all)) then
+	local _,_,_,_,_,_,_,instanceMapID = GetInstanceInfo()
+	if (not ((currentZoneType == "none" and gsadb.field) or 												-- World
+		(currentZoneType == "pvp" and gsadb.battleground and not self:CheckForEpicBG(instanceMapID)) or 	-- Battleground
+		(currentZoneType == "pvp" and gsadb.epicbattleground and self:CheckForEpicBG(instanceMapID)) or		-- Epic Battleground
+		(currentZoneType == "arena" and gsadb.arena) or 													-- Arena
+		(currentZoneType == "scenario" and gsadb.arena) or 													-- Scenario
+		gsadb.all)) then																					-- Anywhere
 		return
 	end
-	--Disable If Large Battleground
---	local _,isBigBG = GetInstanceInfo(mapID)
---		if ((isBigBG == "30" or "628") and gsadb.disablelargebg) then
---		return
---	end
-	--testlines Disable If Not Flagged In World
---	local _,flaggedPvP = UnitIsPVP("player")
---	if ((flaggedPvP == "1") and gsadb.onlyflagged and currentZoneType == "none") then
---	end
+	--if ((currentZoneType == "none") and (gsadb.onlyflagged and not UnitIsPVP("player"))) then -- PvP Flag checking (Note, seems buggy)
+	--	return
+	--end
 	local timestamp,event,hideCaster,sourceGUID,sourceName,sourceFlags,sourceFlags2,destGUID,destName,destFlags,destFlags2,spellID = CombatLogGetCurrentEventInfo()
 	--select ( 1 , ... );
 	if not GSA_EVENT[event] then return end
@@ -452,29 +415,19 @@
 	sourceuid.any = true
 
 	if (event == "SPELL_AURA_APPLIED" and desttype[COMBATLOG_FILTER_HOSTILE_PLAYERS] and (not gsadb.aonlyTF or destuid.target or destuid.focus) and not gsadb.aruaApplied) then
-	--The following section is to disable alerts for aura applications (such as dispel protection) from your team onto theirs. IDs should be identical to the ones below.
-	-- 87204 = Vampiric Embrace || 196364 = Unstable Affliction || 207171 = Remorseless Winter || 1330 = Garrote - Silence || 1833 = Cheap Shot || 6770 = Sap || 3355 = Freezing Trap || 212332 = Smash (DK Abomination) || 212337 = Powerful Smash (DK Abomination) || 91800 = Gnaw (DK Ghoul) || 91797 = Monstrous Blow (DK Ghoul) || 163505 = Druid Rake Stun
-		if spellID == 87204 or spellID == 196364 or spellID == 207171 or spellID == 1330 or spellID == 1833 or spellID == 6770 or spellID == 3355 or spellID == 212332 or spellID == 212337 or spellID == 91800 or spellID == 91797 or spellID == 163505 then return end
-			--if (MapID == 40 or InstanceMapID == 4710) and gsadb.disablelargebg then return end
-				self:PlaySpell("auraApplied", spellID, sourceGUID, destGUID)
+		if self:CheckFriendlyDebuffs(spellID) then
+			return 
+		end
+		self:PlaySpell("auraApplied", spellID, sourceGUID, destGUID)
 	elseif (event == "SPELL_AURA_APPLIED" and (desttype[COMBATLOG_FILTER_FRIENDLY_UNITS] or desttype[COMBATLOG_FILTER_ME]) and (not gsadb.aonlyTF or destuid.target or destuid.focus) and not gsadb.auraApplied) then
-	--The following section is to enable alerts for aura applications (such as dispel protection) onto your team from theirs. IDs should be identical to the ones below.
-		if spellID == 87204 or spellID == 196364 or spellID == 207171 or spellID == 1330 or spellID == 1833 or spellID == 6770 or spellID == 3355 or spellID == 212332 or spellID == 212337 or spellID == 91800 or spellID == 91797 or spellID == 163505 then
-			--if (MapID == 40 or InstanceMapID == 4710) and gsadb.disablelargebg then return end
-				self:PlaySpell("auraApplied", spellID, sourceGUID, destGUID)
+		if self:CheckFriendlyDebuffs(spellID) then
+			self:PlaySpell("auraApplied", spellID, sourceGUID, destGUID)
 		end
 	elseif (event == "SPELL_AURA_REMOVED" and desttype[COMBATLOG_FILTER_HOSTILE_PLAYERS] and (not gsadb.ronlyTF or destuid.target or destuid.focus) and not gsadb.auraRemoved) then
-			--if (MapID == 40 or InstanceMapID == 4710) and gsadb.disablelargebg then return end
 			self:PlaySpell("auraRemoved", spellID, sourceGUID, destGUID)
 	elseif (event == "SPELL_CAST_START" and sourcetype[COMBATLOG_FILTER_HOSTILE_PLAYERS] and (not gsadb.conlyTF or sourceuid.target or sourceuid.focus) and not gsadb.castStart) then
-			--if (MapID == 40 or InstanceMapID == 4710) and gsadb.disablelargebg then return end
-				--if spellID == 2060 or spellID == 82326 or spellID == 77472 or spellID == 5185 or spellID == 116670 or spellID == 194509 or spellID == 152118 then
-				--	if currentZoneType == "arena" then
-				--		self:PlaySpell("castStart", spellID, sourceGUID, destGUID)
-				--else return end
 			self:PlaySpell("castStart", spellID, sourceGUID, destGUID)
 	elseif (event == "SPELL_CAST_SUCCESS" and sourcetype[COMBATLOG_FILTER_HOSTILE_PLAYERS] and (not gsadb.sonlyTF or sourceuid.target or sourceuid.focus) and not gsadb.castSuccess) then
-			--if (MapID == 40 or InstanceMapID == 4710) and gsadb.disablelargebg then return end
 		if self:Throttle(tostring(spellID).."default", 0.05) then return end
 		if gsadb.class and currentZoneType == "arena" then
 			if spellID == 42292 or spellID == 208683 or spellID == 195710 then
@@ -548,25 +501,19 @@
  end
 
 -- play drinking in arena
- --local DRINK_SPELL, REFRESHMENT_SPELL, FOOD_SPELL = GetSpellInfo(104270), GetSpellInfo(167152), GetSpellInfo(5006), GetSpellInfo(138292)
  function GladiatorlosSA:UNIT_AURA(event,uid)
- --
- --	local _,currentZoneType = IsInInstance()
---
---	if uid:find("arena") and gsadb.drinking then
---	-- if gsadb.drinking then
---		if (UnitAura(uid,DRINK_SPELL) or UnitAura(uid,REFRESHMENT_SPELL) or UnitAura(uid,FOOD_SPELL)) and currentZoneType == "arena" then
---
---			local genderZ
---			if gsadb.genderVoice then
---				genderZ = UnitSex(uid)
---			end
---
---			if self:Throttle(tostring(104270) .. uid, 4) then return end
---			self:PlaySound("drinking",extend,genderZ)
---		end
---	end
+ 	local _,currentZoneType = IsInInstance()
+
+	--if gsadb.drinking then--if uid:find("arena") and gsadb.drinking then 
+		if gsadb.drinking then
+			if (AuraUtil.FindAuraByName("Drinking",uid) or AuraUtil.FindAuraByName("Food",uid) or AuraUtil.FindAuraByName("Refreshment",uid) or AuraUtil.FindAuraByName("Drink",uid)) and currentZoneType == "arena" then
+				if self:Throttle(tostring(104270) .. uid, 4) then return end
+			self:PlaySound("drinking",extend,genderZ)
+			end
+		end
+	--end
  end
+
 
  function GladiatorlosSA:Throttle(key,throttle)
 	if (not self.throttled) then

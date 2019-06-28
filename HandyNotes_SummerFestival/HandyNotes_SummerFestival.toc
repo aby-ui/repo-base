@@ -1,15 +1,11 @@
-## Interface: 80000
+## Interface: 80200
 ## Title: HandyNotes_SummerFestival
 ## Notes: Displays the locations of Summer Festival bonfires.
 ## Author: Ethan Centaurai
-## Version: v1.3
+## Version: v1.6.1
 ## X-Category: Map & Minimap
 ## SavedVariables: HandyNotes_SummerFestivalDB
 ## RequiredDeps: HandyNotes
-## X-Curse-Packaged-Version: v1.3
-## X-Curse-Project-Name: HandyNotes_SummerFestival
-## X-Curse-Project-ID: handynotes_summerfestival
-## X-Curse-Repository-ID: wow/handynotes_summerfestival/mainline
 
 Core.lua
 

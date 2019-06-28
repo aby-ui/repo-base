@@ -181,58 +181,67 @@ function ELib:Shadow2(self,size,offsetX,offsetY,isBold)
 	end
 end
 
+do
+	local function MakeSolidButton(self)
+		self.Button:ClearAllPoints()
+		self.Button:SetAllPoints()
+		self.Button.i:Hide()
+		self.l:Hide()
+	end
+	function ELib:DropDown(parent,text)
+		local self = CreateFrame("Frame", nil, parent)
+		self:SetHeight(22)
+		
+		self.b = self:CreateTexture(nil,"BACKGROUND",nil,1)
+		self.b:SetAllPoints()
+		self.b:SetColorTexture(0.04,0.04,0.14,.97)
+		
+		self.t = self:CreateFontString(nil,"ARTWORK","GameFontHighlightSmall")
+		self.t:SetPoint("LEFT",8,0)
+		self.t:SetText(text)
+		
+		self.l = self:CreateTexture(nil,"BACKGROUND",nil,2)
+		self.l:SetColorTexture(.22,.22,.3,1)
+		self.l:SetPoint("TOPLEFT",self,"TOPRIGHT",-23,0)
+		self.l:SetPoint("BOTTOMRIGHT",self,"BOTTOMRIGHT",-22,0)
+		
+		ELib.Templates:Border(self,.22,.22,.3,1,1)
+		self.shadow = ELib:Shadow2(self,16)
+		
+		self.ShadowLeftBottom:Hide()
+		self.ShadowBottom:Hide()
+		self.ShadowBottomLeftInside:Hide()
+		self.ShadowBottomRightInside:Hide()
+		self.ShadowBottomRight:Hide()
+		
+		self.Button = CreateFrame("Button", nil, self)
+		self.Button:SetSize(22,22)
+		self.Button:SetPoint("RIGHT")
+		
+		self.Button.i = self.Button:CreateTexture(nil,"ARTWORK")
+		self.Button.i:SetTexture("Interface\\AddOns\\WorldQuestsList\\navButtons")
+		self.Button.i:SetPoint("CENTER")
+		self.Button.i:SetTexCoord(0,.25,0,1)
+		self.Button.i:SetSize(22,22)
+		
+		self.Button.hl = self.Button:CreateTexture(nil, "BACKGROUND")
+		self.Button.hl:SetPoint("TOPLEFT", 0, 0)
+		self.Button.hl:SetPoint("BOTTOMRIGHT", 0, 0)
+		self.Button.hl:SetTexture("Interface\\Buttons\\WHITE8X8")
+		self.Button.hl:SetVertexColor(.7,.7,1,.25)
+		self.Button.hl:Hide()
+		
+		self.Button:SetScript("OnEnter",function(self) self.hl:Show() end)
+		self.Button:SetScript("OnLeave",function(self) self.hl:Hide() end)
+		self:SetScript("OnHide",function (self) ELib.ScrollDropDown.AutoClose(self.Button) end)
+		self.Button:SetScript("OnClick",function(self) ELib.ScrollDropDown.ClickButton(self) end)
+		
+		self.Button.isButton = true
 
-function ELib:DropDown(parent,text)
-	local self = CreateFrame("Frame", nil, parent)
-	self:SetHeight(22)
+		self.MakeSolidButton = MakeSolidButton
 	
-	self.b = self:CreateTexture(nil,"BACKGROUND",nil,1)
-	self.b:SetAllPoints()
-	self.b:SetColorTexture(0.04,0.04,0.14,.97)
-	
-	self.t = self:CreateFontString(nil,"ARTWORK","GameFontHighlightSmall")
-	self.t:SetPoint("LEFT",8,0)
-	self.t:SetText(text)
-	
-	self.l = self:CreateTexture(nil,"BACKGROUND",nil,2)
-	self.l:SetColorTexture(.22,.22,.3,1)
-	self.l:SetPoint("TOPLEFT",self,"TOPRIGHT",-23,0)
-	self.l:SetPoint("BOTTOMRIGHT",self,"BOTTOMRIGHT",-22,0)
-	
-	ELib.Templates:Border(self,.22,.22,.3,1,1)
-	self.shadow = ELib:Shadow2(self,16)
-	
-	self.ShadowLeftBottom:Hide()
-	self.ShadowBottom:Hide()
-	self.ShadowBottomLeftInside:Hide()
-	self.ShadowBottomRightInside:Hide()
-	self.ShadowBottomRight:Hide()
-	
-	self.Button = CreateFrame("Button", nil, self)
-	self.Button:SetSize(22,22)
-	self.Button:SetPoint("RIGHT")
-	
-	self.Button.i = self.Button:CreateTexture(nil,"ARTWORK")
-	self.Button.i:SetTexture("Interface\\AddOns\\WorldQuestsList\\navButtons")
-	self.Button.i:SetPoint("CENTER")
-	self.Button.i:SetTexCoord(0,.25,0,1)
-	self.Button.i:SetSize(22,22)
-	
-	self.Button.hl = self.Button:CreateTexture(nil, "BACKGROUND")
-	self.Button.hl:SetPoint("TOPLEFT", 0, 0)
-	self.Button.hl:SetPoint("BOTTOMRIGHT", 0, 0)
-	self.Button.hl:SetTexture("Interface\\Buttons\\WHITE8X8")
-	self.Button.hl:SetVertexColor(.7,.7,1,.25)
-	self.Button.hl:Hide()
-	
-	self.Button:SetScript("OnEnter",function(self) self.hl:Show() end)
-	self.Button:SetScript("OnLeave",function(self) self.hl:Hide() end)
-	self:SetScript("OnHide",function (self) ELib.ScrollDropDown.AutoClose(self.Button) end)
-	self.Button:SetScript("OnClick",function(self) ELib.ScrollDropDown.ClickButton(self) end)
-	
-	self.Button.isButton = true
-
-	return self
+		return self
+	end
 end	
 
 function ELib:CreateBorder(parent,sZ)

@@ -60,17 +60,13 @@ MoneyTypeInfo["AUCTIONLITE_DEPOSIT"] = {
 -- Determine the correct deposit for a single item.
 function AuctionLite:CalculateDeposit()
   local time = self:GetDuration();
-
-  local _, _, _, _, _, _, link = self:GetAuctionSellItemInfoAndLink();
-  local numItems = self:CountItems(link);
   local stacks = SellStacks:GetNumber();
   local size = SellSize:GetNumber();
 
-  local numPosted = math.min(numItems, stacks * size);
+  local startPrice = MoneyInputFrame_GetCopper(SellBidPrice);
+  local buyoutPrice = MoneyInputFrame_GetCopper(SellBuyoutPrice);
 
-  local _, _, count = GetAuctionSellItemInfo();
-
-  return math.floor(CalculateAuctionDeposit(time) * numPosted / count);
+  return GetAuctionDeposit(time, startPrice, buyoutPrice, size, stacks);
 end
 
 -- Update the deposit field.
@@ -181,9 +177,9 @@ function AuctionLite:SellStacksMaxButton_OnClick()
   if link ~= nil then
     local size = SellSize:GetNumber();
     local numItems = self:CountItems(link);
-	  
+
 	local stacks = (numItems - numItems % size) / size;
-	
+
 	SellStacks:SetText(stacks);
     AuctionLite:UserChangedSize();
   end
@@ -196,9 +192,9 @@ function AuctionLite:SellSizeMaxButton_OnClick()
   if link ~= nil then
     local stacks = SellStacks:GetNumber();
     local numItems = self:CountItems(link);
-	  
+
 	local size = (numItems - numItems % stacks) / stacks;
-	
+
 	SellSize:SetText(size);
     AuctionLite:UserChangedSize();
   end

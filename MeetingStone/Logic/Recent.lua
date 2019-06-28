@@ -96,7 +96,7 @@ function Recent:GetCurrentActivity()
 end
 
 function Recent:LFG_LIST_ACTIVE_ENTRY_UPDATE()
-    if C_LFGList.GetActiveEntryInfo() then
+    if C_LFGList.HasActiveEntryInfo() then
         local activity = CreatePanel:GetCurrentActivity()
         if not activity:IsSoloActivity() then
             self.activity = CreatePanel:GetCurrentActivity()

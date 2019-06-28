@@ -258,9 +258,10 @@ end
 ------------------------------------------------------------
 
 local function OnDynamicUnitFrameCreated(unitFrame)
-	local module
-	for _, module in pairs(modules) do
-		if module:IsEnabled() then
+	local i
+	for i = 1, addon:NumModules() do
+		local module = addon:GetModule(i)
+		if module and module:IsEnabled() then
 			addon:CallModuleFunc(module, "OnCreateDynamic", unitFrame)
 			if type(module.OnCreateVisual) == "function" then
 				OnCreateVisualEnumProc(unitFrame, module, 1)

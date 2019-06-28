@@ -21,6 +21,46 @@ rematch:InitModule(function()
 	hooksecurefunc(C_PetJournal,"SetPetLoadOutInfo",function() rematch:StartTimer("LoadoutsChanging",0,panel.UpdateLoadouts) end)
 	-- to avoid watching CURSOR_UPDATE all the time, only registering for event on a PickupPet
 	hooksecurefunc(C_PetJournal,"PickupPet",rematch.CURSOR_UPDATE)
+
+	-- only create models if the Debug: No Models setting is disabled
+	if not settings.DebugNoModels then
+		-- target panel model
+		panel.Target.Model = CreateFrame("PlayerModel",nil,panel.Target)
+		local model = panel.Target.Model
+		model:SetSize(48,48)
+		model:SetPoint("TOPLEFT",10,-32)
+		model:SetPoint("BOTTOMLEFT",10,8)
+		Model_OnLoad(model)
+		model:SetRotation(MODELFRAME_DEFAULT_ROTATION)
+		model:SetPortraitZoom(0.75)
+		model:SetPosition(0,0,-0.075)
+		model:SetScript("OnEvent",Model_OnEvent)
+		-- border frame here is a sibling to the above target model
+		panel.Target.ModelBorder = CreateFrame("Frame",nil,panel.Target,"RematchUseParentLevel")
+		local border = panel.Target.ModelBorder
+		border:SetBackdrop({edgeFile="Interface\\Tooltips\\UI-Tooltip-Border", tile=true, edgeSize=12})
+		border:SetBackdropBorderColor(0.5,0.5,0.5)
+		border:SetPoint("TOPLEFT",model,"TOPLEFT",-5,5)
+		border:SetPoint("BOTTOMRIGHT",model,"BOTTOMRIGHT",5,-5)
+		local back = border:CreateTexture(nil,"BACKGROUND",nil,2)
+		back:SetTexture("Interface\\Destiny\\EndScreenBG")
+		back:SetPoint("TOPLEFT",3,-3)
+		back:SetPoint("BOTTOMRIGHT",-3,3)
+		back:SetVertexColor(0.25,0.25,0.25)
+		-- models for the each loadout slot
+		for i=1,3 do
+			-- /dump Rematch.LoadoutPanel.Loadouts[1].ModelScene
+			panel.Loadouts[i].ModelScene = CreateFrame("ModelScene",nil,panel.Loadouts[i],"ModelSceneMixinTemplate,RematchUseParentLevel")
+			local model = panel.Loadouts[i].ModelScene
+			model:SetSize(88,100)
+			model:SetPoint("BOTTOMRIGHT",-1,1)
+			model.Shadows = model:CreateTexture(nil,"ARTWORK")
+			model.Shadows:SetSize(69,42)
+			model.Shadows:SetPoint("BOTTOM",4,8)
+			model.Shadows:SetAtlas("PetJournal-BattleSlot-Shadow")
+		end
+	end
+
 end)
 
 function panel:Update()
@@ -68,21 +108,25 @@ function panel:UpdateLoadouts()
 			end
 			button.HP:Show()
 			-- update model of loaded pet (if it's a different model; to avoid model restarting at first frame)
-			if button.displayID ~= displayID then
-				button.displayID = displayID
-				local _,loadoutSceneID = C_PetJournal.GetPetModelSceneInfoBySpeciesID(speciesID)
-				button.ModelScene:TransitionToModelSceneID(loadoutSceneID, CAMERA_TRANSITION_TYPE_IMMEDIATE, CAMERA_MODIFICATION_TYPE_DISCARD, true)
-				local actor = button.ModelScene:GetActorByTag("pet")
-				if actor then
-					actor:SetModelByCreatureDisplayID(displayID)
-					actor:SetAnimationBlendOperation(LE_MODEL_BLEND_OPERATION_NONE)
+			if button.ModelScene then
+				if button.displayID ~= displayID then
+					button.displayID = displayID
+					local _,loadoutSceneID = C_PetJournal.GetPetModelSceneInfoBySpeciesID(speciesID)
+					button.ModelScene:TransitionToModelSceneID(loadoutSceneID, CAMERA_TRANSITION_TYPE_IMMEDIATE, CAMERA_MODIFICATION_TYPE_DISCARD, true)
+					local actor = button.ModelScene:GetActorByTag("pet")
+					if actor then
+						actor:SetModelByCreatureDisplayID(displayID)
+						actor:SetAnimationBlendOperation(LE_MODEL_BLEND_OPERATION_NONE)
+					end
 				end
+				button.ModelScene:Show()
 			end
-			button.ModelScene:Show()
 		else
 			button.XP:Hide()
 			button.HP:Hide()
-			button.ModelScene:Hide()
+			if button.ModelScene then
+				button.ModelScene:Hide()
+			end
 		end
 		-- update loaded abilities
 		for j=1,3 do
@@ -107,6 +151,7 @@ function panel:UpdateLoadouts()
 		end
 
 		button.LockOverlay:SetShown((C_PetBattles.GetPVPMatchmakingInfo() or not C_PetJournal.IsJournalUnlocked()) and true)
+		button.LockOverlay.petID = petID
 	end
 end
 
@@ -278,8 +323,10 @@ function panel:UpdateTarget(unit)
 	target.Name:SetText(name)
 
 	local show = npcID and true
-	target.Model:SetShown(show)
-	target.ModelBorder:SetShown(show)
+	if target.Model then
+		target.Model:SetShown(show)
+		target.ModelBorder:SetShown(show)
+	end
 	target.GreenCheck:SetShown(show and saved[npcID])
 	target.SaveStatus:SetShown(show)
 	target.LoadSaveButton:SetShown(show)
@@ -319,12 +366,14 @@ end
 
 -- shared by LoadoutPanel.Target and MiniPanel.Target
 function panel:UpdateTargetModelandPets(frame,unit,npcID,vs)
-	if unit then -- target can have a different model than its npcID (ie Garrison Creatures)
-		frame.Model:SetUnit(unit)
-	else
-		frame.Model:SetCreature(npcID)
+	if frame.Model then
+		if unit then -- target can have a different model than its npcID (ie Garrison Creatures)
+			frame.Model:SetUnit(unit)
+		else
+			frame.Model:SetCreature(npcID)
+		end
+		frame.Model:Show()
 	end
-	frame.Model:Show()
 	-- display notable pets (if any)
 	local hasPets -- becomes the index of the last notable pet displayed
 	if rematch.notableNames[npcID] then -- notable npcID targeted, display its team

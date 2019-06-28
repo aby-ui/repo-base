@@ -9,16 +9,31 @@ local IconScale = 1.0
 
 -- InFlight uses FlightMapFrame directly, so it's necessary to change references
 FlightMapFrame = WorldMapFrame
+-- TaxiFrame = WorldMapFrame
 
 -- Map data functions
 local MapSizeCache = {} -- [uiMapID] = {left, top, right, bottom, etc}
 local function GetCurrentMapContinent(uiMapID)
-	local uiMapID = uiMapID -- or WorldMapFrame:GetMapID()
+	--local uiMapID = uiMapID -- or WorldMapFrame:GetMapID()
 	if uiMapID then
 		local continent = MapUtil.GetMapParentInfo(uiMapID, Enum.UIMapType.Continent)
 		if continent then
 			return continent.mapID
 		end
+	end
+end
+
+local function GetParentZone(uiMapID)
+	if uiMapID then
+		local zone = MapUtil.GetMapParentInfo(uiMapID, Enum.UIMapType.Zone, true)
+		if zone then
+			return zone.mapID
+		end
+		local continent = MapUtil.GetMapParentInfo(WorldMapFrame:GetMapID(), Enum.UIMapType.Continent)
+		if continent then
+			return continent.mapID
+		end
+		return uiMapID
 	end
 end
 
@@ -136,23 +151,37 @@ end
 
 function WorldFlightMapProvider:OnEvent(event, ...)
 	if event == 'TAXIMAP_OPENED' then
-		self:SetTaxiState(true)
-		self.taxiMap = GetMapSize(GetTaxiMapID())
-		
-		local playerMapID = C_Map.GetBestMapForUnit('player')
-		local playerMapInfo = C_Map.GetMapInfo(playerMapID)
-		self.playerContinent = GetCurrentMapContinent(playerMapID)
-		
-		if not self:GetMap():IsShown() and not InCombatLockdown() then
-			ToggleWorldMap()
-			if self.playerContinent == 905 and playerMapInfo.mapType > 3 and playerMapInfo.parentMapID then
-				self:GetMap():SetMapID(playerMapInfo.parentMapID)
-			else
-				self:GetMap():SetMapID(self.playerContinent)
+		-- You can't take a flight in combat, and opening the world map in combat taints the interface
+		-- Therefor we need to prevent the interaction in the first place
+		if InCombatLockdown() then
+			CloseTaxiMap()
+		else
+			self:SetTaxiState(true)
+			self.taxiMap = GetMapSize(GetTaxiMapID())
+			
+			local playerMapID = C_Map.GetBestMapForUnit('player')
+			local playerMapInfo = C_Map.GetMapInfo(playerMapID)
+			self.playerContinent = GetCurrentMapContinent(playerMapID)
+			
+			if not self:GetMap():IsShown() and not InCombatLockdown() then
+				ToggleWorldMap()
+				--if self.playerContinent == 905 and playerMapInfo.mapType > Enum.UIMapType.Zone and playerMapInfo.parentMapID then
+				--	self:GetMap():SetMapID(playerMapInfo.parentMapID)
+				-- Zoom to parent zone if we're in a lower map
+				-- We used to zoom out until we could fit multiple flight points on the same map, but this is simpler
+				-- if playerMapInfo.mapType > Enum.UIMapType.Zone and playerMapInfo.parentMapID then
+				if playerMapInfo.parentMapID then
+					local parentZone = GetParentZone(playerMapID)
+					if parentZone then
+						self:GetMap():SetMapID(parentZone)
+					end
+				--else
+					--self:GetMap():SetMapID(self.playerContinent)
+				end
 			end
-		end
 
-		self:RefreshAllData()
+			self:RefreshAllData()
+		end
 	elseif event == 'TAXIMAP_CLOSED' then
 		self:SetTaxiState(false)
 
@@ -196,11 +225,11 @@ function WorldFlightMapProvider:AddFlightNode(taxiNodeData)
 				end
 			--else
 			if not drawPin then
-				taxiNodeData.position.x = mapTaxiX
-				taxiNodeData.position.y = mapTaxiY
+				-- taxiNodeData.position.x = mapTaxiX
+				-- taxiNodeData.position.y = mapTaxiY
 				drawPin = true
 			end
-			
+
 			if drawPin then
 				-- Duplicating all of this from frameXML because we need to raise the frame level of the pins
 				local playAnim = taxiNodeData.state ~= Enum.FlightPathState.Unreachable;
@@ -221,6 +250,16 @@ function WorldFlightMapProvider:AddFlightNode(taxiNodeData)
 				end
 				
 				self.slotIndexToPin[taxiNodeData.slotIndex] = pin;
+
+                --[[
+                if self.worldMap.mapID == 895 and taxiNodeData.textureKitPrefix == "FlightMaster_Ferry" then
+                    --print(taxiNodeData.textureKitPrefix, taxiNodeData.nodeID, self.worldMap.mapInfo.mapType, self.worldMap.mapID)
+                    local A = 7414.582/13106.25 --WorldFlightMapProvider.worldMap.width
+                    local X, Y = 0.2, 0.36
+                    taxiNodeData.position.x = taxiNodeData.position.x * (A or 1) + (X or 0)
+                    taxiNodeData.position.y = taxiNodeData.position.y * (A or 1) + (Y or 0)
+                end
+                --]]
 
 				pin:SetPosition(taxiNodeData.position:GetXY());
 				pin.taxiNodeData = taxiNodeData;
@@ -259,17 +298,19 @@ function WorldFlightMapProvider:HighlightRouteToPin(pin)
 		local startPin = self.slotIndexToPin[sourceIndex]
 		local destPin = self.slotIndexToPin[destIndex]
 
-		local Line = self.linePool:Acquire()
-		Line:SetNonBlocking(true)
-		Line:SetAtlas('_UI-Taxi-Line-horizontal')
-		Line:SetThickness(32)
-		Line:SetStartPoint('CENTER', startPin)
-		Line:SetEndPoint('CENTER', destPin)
-		Line:Show()
+		if startPin and destPin then
+			local Line = self.linePool:Acquire()
+			Line:SetNonBlocking(true)
+			Line:SetAtlas('_UI-Taxi-Line-horizontal')
+			Line:SetThickness(32)
+			Line:SetStartPoint('CENTER', startPin)
+			Line:SetEndPoint('CENTER', destPin)
+			Line:Show()
 
-		-- force show all the pins in the route
-		startPin:Show()
-		destPin:Show()
+			-- force show all the pins in the route
+			startPin:Show()
+			destPin:Show()
+		end
 	end
 end
 

@@ -1,3 +1,4 @@
+local addonName = ...
 --[[------------------------------------------------------------
 默认银行界面打开全部银行背包
 ---------------------------------------------------------------]]
@@ -207,6 +208,7 @@ function U1IsDoingWorldQuest()
     end
 end
 
+--[[
 CoreOnEvent("CHAT_MSG_SYSTEM", function(event, msg)
     if msg == ERR_PARTY_CONVERTED_TO_RAID and not IsInInstance() and U1IsDoingWorldQuest() then
         if DBM and not U1DBMAlert then
@@ -239,6 +241,7 @@ CoreOnEvent("CHAT_MSG_SYSTEM", function(event, msg)
         end
     end
 end)
+--]]
 
 --[[------------------------------------------------------------
 公会新闻手工加载
@@ -250,11 +253,160 @@ U1PLUG["FixBlizGuild"] = function()
         local btn = WW:Button("$parentGetNewsButton", parent, "UIMenuButtonStretchTemplate"):SetTextFont(ChatFontNormal, 13, ""):SetAlpha(0.8):SetText("加载新闻"):Size(100, 30):CENTER(0, 0):AddFrameLevel(3, parent):SetScript("OnClick", function(self)
             U1QueryGuildNews()
             QueryGuildNews = U1QueryGuildNews
-            self:Hide()
-            --self:ClearAllPoints() self:SetPoint("TOPRIGHT", -1, 33) self:SetSize(50, 30) self:SetText("刷新")
+            --self:Hide()
+            self:ClearAllPoints() self:SetPoint("TOPRIGHT", -1, 33) self:SetSize(80, 30) self:SetText("加载新闻")
         end):un()
         CoreUIEnableTooltip(btn, '爱不易', '手工加载公会新闻，减少卡顿，可以在"爱不易设置-小功能集合"里关闭此功能')
     end
     CoreDependCall("Blizzard_GuildUI", function() createLoadButton(GuildNewsFrame) end)
     CoreDependCall("Blizzard_Communities", function() createLoadButton(CommunitiesFrameGuildDetailsFrameNews) end)
+end
+
+--[[------------------------------------------------------------
+点击打开成就面板
+---------------------------------------------------------------]]
+local newSetItemRef = function(link, text, button, ...)
+    local _, _, id = link:find("achievement:([0-9]+):")
+    if id and button == "RightButton" then
+        if ( not AchievementFrame ) then
+            AchievementFrame_LoadUI();
+        end
+        if ( not AchievementFrame:IsShown() ) then
+            AchievementFrame_ToggleAchievementFrame();
+        end
+        AchievementFrame_SelectAchievement(tonumber(id));
+    end
+end
+hooksecurefunc("SetItemRef", newSetItemRef);
+
+--[[------------------------------------------------------------
+大米赛季光辉事迹
+---------------------------------------------------------------]]
+CoreDependCall("Blizzard_ChallengesUI", function()
+    local aID10, aID15 = 13448, 13449 --13079, 13080
+    local crits, numCrits = {}, GetAchievementNumCriteria(aID10)
+    hooksecurefunc("ChallengesFrame_Update", function(self)
+        --[[
+        table.wipe(crits)
+        local ar10 = select(4, GetAchievementInfo(aID10))
+        local ar15 = select(4, GetAchievementInfo(aID15))
+        for i=1, numCrits do
+            local name, _, _, complete = GetAchievementCriteriaInfo(aID15, i)
+            if complete == 1 then
+                crits[name] = 15
+            else
+                name, _, _, complete = GetAchievementCriteriaInfo(aID10, i)
+                if complete == 1 then crits[name] = 10 end
+            end
+        end
+        --]]
+
+        for i, icon in pairs(ChallengesFrame.DungeonIcons) do
+            --local name = C_ChallengeMode.GetMapUIInfo(icon.mapID)
+            if not icon.tex then
+                WW(icon):CreateTexture():SetSize(24,24):BOTTOM(0, 3):Key("tex"):up():un()
+                SetOrHookScript(icon, "OnEnter", function()
+                    GameTooltip_AddBlankLineToTooltip(GameTooltip);
+                    GameTooltip:AddLine("爱不易提供：")
+                    GameTooltip:AddLine("\124TInterface/Minimap/ObjectIconsAtlas:16:16:0:0:1024:512:575:607:205:237\124t 已限时10层")
+                    GameTooltip:AddLine("\124TInterface/Minimap/ObjectIconsAtlas:16:16:0:0:1024:512:575:607:239:271\124t 已限时15层")
+                    GameTooltip:Show()
+                end)
+            end
+            icon.tex:Show()
+            local inTimeInfo, overtimeInfo = C_MythicPlus.GetSeasonBestForMap(icon.mapID);
+            if inTimeInfo then
+                if inTimeInfo.level >= 15 then
+                    icon.tex:SetAtlas("VignetteKillElite")
+                elseif inTimeInfo.level >= 10 then
+                    icon.tex:SetAtlas("VignetteKill")
+                else
+                    icon.tex:Hide()
+                end
+            else
+                icon.tex:Hide()
+            end
+        end
+    end)
+    --ChallengesFrame_Update(ChallengesFrame)
+end)
+
+--[[------------------------------------------------------------
+丰灵头
+---------------------------------------------------------------]]
+do
+    local items = {166796, 166798, 166797, 166799, 166800, 166801 } for i, v in ipairs(items) do items[v] = true end
+    local pattern = "^" .. string.format(LOOT_ITEM_SELF, "(.+)") .. "$" --"你获得了物品：%s。"
+    CoreOnEvent("CHAT_MSG_LOOT", function(event, msg)
+        local _, _, link = msg:find(pattern)
+        local itemId = link and select(3, link:find("\124Hitem:(%d+):"))
+        itemId = itemId and tonumber(itemId)
+        if itemId and items[itemId] then
+            for i=1, 120 do
+                local type, id = GetActionInfo(i)
+                if type == "item" and items[id] then
+                    PickupItem(itemId)
+                    PlaceAction(i)
+                    ClearCursor()
+                    U1Message("已自动将动作条上的"..(select(2, GetItemInfo(id))).."替换为"..link)
+                    break
+                end
+            end
+        end
+    end)
+
+    --GetSpellSubtext(7744)
+    local racial = {
+        7744, --亡灵意志
+        69179, --奥术洪流
+        26297, --巨魔
+        33697, --兽人
+        20549, --牛头人
+        69070, --火箭跳 --69041, --火箭腰带
+        274738, --先祖召唤 玛格汉兽人
+        255654, --至高岭 蛮牛冲撞
+        260364, --夜之子
+
+        20594, --矮人石像
+        58984, --暗夜精灵
+        28880, --德莱尼
+        265221, --黑铁矮人
+        59752, --自利
+        20589, --侏儒逃脱
+        256948, --虚空精灵
+        255647, --光铸
+        68992, --狼人
+    }
+    for _, id in ipairs(racial) do racial[GetSpellInfo(id)] = true end --racial["炽天使"] = true
+    local pattern = "^" .. string.format(ERR_LEARN_SPELL_S, "(.+)") .. "$" --"你学会新的法术：%s"
+    CoreOnEvent("CHAT_MSG_SYSTEM", function(event, msg)
+        if not U1GetCfgValue(addonName, 'AutoSwapRacial') then return end
+        local _, _, link = msg:find(pattern)
+        if link then
+            local _, _, id, name = link:find("\124Hspell:(%d+).-\124h%[(.-)%]\124h")
+            if id and name and racial[name] then
+                for i=1, 120 do
+                    local type, oldid = GetActionInfo(i)
+                    if type == "spell" then
+                        local oldname = GetSpellInfo(oldid)
+                        if racial[oldname] and name ~= oldname then
+                            local replace
+                            replace = function()
+                                id = tonumber(id)
+                                PickupSpell(id)
+                                PlaceAction(i)
+                                if select(4, GetCursorInfo()) == id then
+                                    return C_Timer.After(0.3, replace)
+                                end
+                                ClearCursor()
+                                U1Message("已自动将动作条上的"..(GetSpellLink(oldid)).."替换为"..link)
+                            end
+                            C_Timer.After(0.3, replace)
+                            break
+                        end
+                    end
+                end
+            end
+        end
+    end)
 end

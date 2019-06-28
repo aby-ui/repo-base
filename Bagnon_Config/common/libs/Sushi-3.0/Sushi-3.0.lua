@@ -1,5 +1,5 @@
 --[[
-Copyright 2008-2018 João Cardoso
+Copyright 2008-2019 João Cardoso
 Sushi is distributed under the terms of the GNU General Public License (or the Lesser GPL).
 This file is part of Sushi.
 
@@ -21,9 +21,22 @@ function MakeSushi(version, type, name, ...)
 	local name = 'Sushi' .. name
 	local class = _G[name] or LibStub('Poncho-1.0')(type, name, ...)
 	local old = rawget(class, 'version')
-	
+
 	if not old or version > old then
 		class.version = version
 		return class, old
 	end
 end
+
+local root = 'Interface\\AddOns\\' .. ... .. '\\'
+local location = debugstack(1,1,0):match('^(.+)\\Sushi[%d\.\-]+\.lua')
+if location:sub(1,3) == '...' then
+	for i = 4, strlen(location) do
+		if root:find(location:sub(4, i) .. '$') then
+			location = root .. location:sub(i+1)
+			break
+		end
+	end
+end
+
+Sushi_Directory = location

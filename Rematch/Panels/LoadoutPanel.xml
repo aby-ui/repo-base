@@ -139,6 +139,7 @@
 				<BarTexture file="Interface\TargetingFrame\UI-StatusBar"/>
 				<BarColor r="0.1" g="1.0" b="0.1" />
 			</StatusBar>
+<!-- 			
 			<ModelScene parentKey="ModelScene" useParentLevel="true" inherits="ModelSceneMixinTemplate">
 				<Size x="88" y="100"/>
 				<Anchors>
@@ -155,6 +156,7 @@
 					</Layer>
 				</Layers>
 			</ModelScene>
+			 -->
 			<Button parentKey="Pet" useParentLevel="true" enableMouse="false" inherits="RematchBasePetListButtonTemplate">
 				<Size x="209" y="44"/>
 				<Anchors>
@@ -220,7 +222,7 @@
 					</OnReceiveDrag>
 				</Scripts>
 			</Button>
-			<Button parentKey="LockOverlay" setAllPoints="true" hidden="true">
+			<Button parentKey="LockOverlay" setAllPoints="true" inherits="RematchPetClicks" hidden="true">
 				<Layers>
 					<Layer level="ARTWORK">
 						<Texture>
@@ -239,13 +241,18 @@
 				<Scripts>
 					<OnShow>
 						self:SetFrameLevel(self:GetParent():GetFrameLevel()+6)
+						if not self.mouseHooked then
+							self.mouseHooked = true
+							self:HookScript("OnEnter",Rematch.LoadoutPanel.LockedButtonOnEnter)
+							self:HookScript("OnLeave",Rematch.HideTooltip)
+						end
 					</OnShow>
-					<OnEnter>
+					<!-- <OnEnter>
 						Rematch.LoadoutPanel.LockedButtonOnEnter(self)
 					</OnEnter>
 					<OnLeave>
 						Rematch:HideTooltip()
-					</OnLeave>
+					</OnLeave> -->
 				</Scripts>
 			</Button>
 			<Frame parentKey="Bling" inherits="RematchPanelBlingTemplate"/>
@@ -363,7 +370,7 @@
 						<NormalFont style="GameFontNormal"/>
 						<HighlightFont style="GameFontHighlight"/>
 					</Button>
-					<PlayerModel parentKey="Model">
+					<!-- <PlayerModel parentKey="Model">
 						<Size x="48" y="0"/>
 						<Anchors>
 							<Anchor point="TOPLEFT" x="10" y="-32"/>
@@ -378,9 +385,9 @@
 							</OnLoad>
 							<OnEvent function="Model_OnEvent"/>
 						</Scripts>
-					</PlayerModel>
+					</PlayerModel> -->
 					<!-- border of model is separate so we don't need to make model a sub-frame -->
-					<Frame parentKey="ModelBorder" useParentLevel="true">
+					<!-- <Frame parentKey="ModelBorder" useParentLevel="true">
 						<Backdrop edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
 							<EdgeSize val="12"/>
 							<BorderColor r="0.5" g="0.5" b="0.5"/>
@@ -400,7 +407,7 @@
 								</Texture>
 							</Layer>
 						</Layers>
-					</Frame>
+					</Frame> -->
 					<Button parentArray="Pets" parentKey="Pet1" inherits="RematchSlotTemplate,RematchPetClicks"/>
 					<Button parentArray="Pets" parentKey="Pet2" inherits="RematchSlotTemplate,RematchPetClicks">
 						<Anchors>

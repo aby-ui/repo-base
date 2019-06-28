@@ -15,6 +15,11 @@ SRTI_MSG_HELP_TEXT = SRTI_TITLE .. SRTI_MSG_HELP_TEXT;
 BINDING_HEADER_SRTI_TITLE = SRTI_OPTIONS_BLZ_INTERFACE_PANEL_NAME;
 
 
+igMainMenuOptionCheckBoxOn = 856
+igMainMenuOptionCheckBoxOff = 857
+igMiniMapZoomOut = 824
+igMiniMapZoomIn = 823
+
 local iconStrings = {
 	none = 0,
 	clear = 0,
@@ -174,7 +179,7 @@ function srti.frame:Show()
                                         	self:Hide();
 						return;
 					end
-					PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON);
+					PlaySound(igMainMenuOptionCheckBoxOn, "SPX");
 					SetPortraitTexture( srti.frame.p, "target" );
 --]]		                end
 
@@ -193,7 +198,7 @@ function srti.frame:Show()
 						self.lingering = nil;
 						self.hiding = curtime;
 						self.showinghowing = nil;
-						PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_OFF);
+						PlaySound(igMainMenuOptionCheckBoxOff, "SPX");
 					elseif ( not self.lingering ) then
 						self.lingering = curtime;
 					end
@@ -321,7 +326,7 @@ function srti.frame:Show()
 					self.lingering = nil
 					self.showing = nil
 					self.index = nil;
-					PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_OFF);
+					PlaySound(igMainMenuOptionCheckBoxOff, "SPX");
 				end
 			end
 		end);
@@ -334,13 +339,13 @@ function srti.frame:Show()
 				end
 				if ( ( arg1 == "RightButton" and index and index > 0 ) or ( self.index and self.index > 0 and self.index == index ) ) then
 					self.index = index;
-					PlaySound163("igMiniMapZoomOut");
+					PlaySound(igMiniMapZoomOut, "SPX");
 					srti.SetRaidTarget(0);
 				elseif ( self.index ) then
-					PlaySound163("igMiniMapZoomIn");
+					PlaySound(igMiniMapZoomIn, "SPX");
 					srti.SetRaidTarget(self.index);
 				else
-					PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_OFF);
+					PlaySound(igMainMenuOptionCheckBoxOff, "SPX");
 				end
 				self.showing = nil;
 				self.hiding = GetTime();
@@ -395,7 +400,7 @@ srti.frame:SetScript("OnEvent", function(self,event,...)
 			self.index = nil;
 			self.showing = nil;
 			self.hiding = GetTime();
-			PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_OFF);
+			PlaySound(igMainMenuOptionCheckBoxOff, "SPX");
 			self.exists = nil;
 		elseif ( self.exists ) then
 			self.exists = nil;
@@ -461,36 +466,40 @@ end
 end
 
 function srti.IsNameplateUnderMouse()
-    do return end --163ui fix 7.2
+	--do return end --163ui fix 7.2
 	local numch = WorldFrame:GetNumChildren();
 	if numch > 0 then
 		for i=1,numch do
 			local f=select(i,WorldFrame:GetChildren());
-			if f:IsShown() and f:IsMouseOver() then
-				-- 3rd party nameplate addons
-				if f.aloftData then -- Aloft
-					return 1;
-				end
-				if f.extended then -- TidyPlates
-					return 1;
-				end
-				if f.done then -- caelNameplates + clones (shNameplates, ...)
-					return 1;
-				end
-				if f.styled then -- rNameplates (zork)
-					return 1;
-				end
-				if f.healthOriginal then -- dNameplates + eNameplates
-					return 1;
-				end
-				if f.NPAHooked then -- NPA (NamePlatesAdvanced)
-					return 1;
-				end
-				-- default nameplates
-				-- 4.1
-				local fname = f:GetName();
-				if fname and string.find(fname, "NamePlate%d+") then
-					return 1;
+			x = f:IsForbidden()  -- Check for forbidden frames
+			if x then
+			else
+				if f:IsShown() and f:IsMouseOver() then
+					-- 3rd party nameplate addons
+					if f.aloftData then -- Aloft
+						return 1;
+					end
+					if f.extended then -- TidyPlates
+						return 1;
+					end 
+					if f.done then -- caelNameplates + clones (shNameplates, ...)
+						return 1;
+					end
+					if f.styled then -- rNameplates (zork)
+						return 1;
+					end
+					if f.healthOriginal then -- dNameplates + eNameplates
+						return 1;
+					end
+					if f.NPAHooked then -- NPA (NamePlatesAdvanced)
+						return 1;
+					end
+					-- default nameplates
+					-- 4.1
+					local fname = f:GetName();
+					if fname and string.find(fname, "NamePlate%d+") then
+						return 1;
+					end
 				end
 			end
 		end

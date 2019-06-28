@@ -1,6 +1,6 @@
 local _, ELP = ...
 local db = ELP.db
-local curr_items, curr_encts, curr_insts = unpack(ELP.currs)
+local curr_items, curr_encts, curr_insts, _, curr_links = unpack(ELP.currs)
 
 local INSTANCE_LOOT_BUTTON_HEIGHT = 64;
 
@@ -48,10 +48,12 @@ hook EncounterJournal_SetLootButton
 ---------------------------------------------------------------]]
 local OTHER_CLASS = GetItemSubClassInfo(LE_ITEM_CLASS_ARMOR, 0)
 EncounterJournal_SetLootButton_ELP = function(item)
+    if not item.UpdateTooltip then item.UpdateTooltip = item:GetScript("OnEnter") end --for Azerite Tooltip Update
     if db.range == 0 then return ELP_RunHooked("EncounterJournal_SetLootButton", item) end
     local itemID = curr_items[item.index]
     local encounterID = curr_encts[itemID]
     local name, link, quality, iLevel, reqLevel, class, subclass, maxStack, equipSlot, icon, vendorPrice = GetItemInfo(itemID)
+    link = curr_links[itemID]
     item.link = link;
     if ( name ) then
         item.name:SetText(format("|cffb37fff%s|r", name)); --a335ee
@@ -73,7 +75,7 @@ EncounterJournal_SetLootButton_ELP = function(item)
 
         SetItemButtonQuality(item, 4, itemID);
 
-        item.link = "\231\189\145\046\230\152\147" .. select(2, GetItemInfo(format("item:%d::::::::110::::2:%d:3517::", itemID, 1472+((db.forcelevel or 900)-iLevel)))) .. "\230\156\137\46\231\136\177"
+        item.link = link; --"\231\189\145\046\230\152\147" .. select(2, GetItemInfo(format("item:%d::::::::120:70::23:1:%d:3524::", itemID, 1472+((db.forcelevel or 900)-iLevel)))) .. "\230\156\137\46\231\136\177"
     else
         item.name:SetText(RETRIEVING_ITEM_INFO);
         item.icon:SetTexture("Interface\\Icons\\INV_Misc_QuestionMark");

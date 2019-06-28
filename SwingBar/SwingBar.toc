@@ -1,4 +1,4 @@
-﻿## Interface: 80000
+﻿## Interface: 80200
 ## Title: SwingBar
 ## Notes: Shows the progress of the normal attack
 ## Author: 独孤傲雪,Warbaby

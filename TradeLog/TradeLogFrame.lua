@@ -6,7 +6,7 @@ function TradeLogFrame_OnLoad(self)
     TradeLog_SetHyperlink_Origin = ItemRefTooltip.SetHyperlink;
     ItemRefTooltip.SetHyperlink = function(self,link)
         if(strsub(link, 1, 8)=="tradelog") then
-            HideUIPanel(self);
+            self:Hide();
             return;
         end
         return TradeLog_SetHyperlink_Origin(self,link);

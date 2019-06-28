@@ -13,7 +13,6 @@ U1RegisterAddon("DBM_Mods_WoD", {
 U1RegisterAddon("DBM-Draenor", {title = '德拉诺世界BOSS', parent = "DBM_Mods_WoD", protected = 1, });
 U1RegisterAddon("DBM-Party-WoD", {title = "德拉诺5人本", parent = "DBM_Mods_WoD", protected = 1, });
 U1RegisterAddon("DBM-GarrisonInvasions", {title = 'DBM:要塞入侵', parent = "DBM_Mods_WoD", protected = 1, });
-U1RegisterAddon("DBM-HellfireCitadel", {title = "地狱火堡垒", parent = "DBM_Mods_WoD", protected = 1, });
 U1RegisterAddon("DBM-Highmaul", {title = 'DBM:悬槌堡', parent = "DBM_Mods_WoD", protected = 1, });
 U1RegisterAddon("DBM-HellfireCitadel", {title = 'DBM:地狱火堡垒', parent = "DBM_Mods_WoD", protected = 1, });
 U1RegisterAddon("DBM-BlackrockFoundry", {title = 'DBM:黑石铸造厂', parent = "DBM_Mods_WoD", protected = 1, });

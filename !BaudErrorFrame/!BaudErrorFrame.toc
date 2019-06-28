@@ -1,4 +1,4 @@
-## Interface: 80000
+## Interface: 80200
 ## Title: !BaudErrorFrame
 ## Notes: 收集和汇总错误信息
 ## Author: Baudzilla

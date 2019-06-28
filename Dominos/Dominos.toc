@@ -1,9 +1,9 @@
-## Interface: 80000
+## Interface: 80200
 ## Title: Dominos
 ## Notes: A main actionbar replacement
 ## Author: Tuller
-## Version: 8.0.6
-## SavedVariables: DominosDB, DominosVersion
+## Version: 8.2.7
+## SavedVariables: DominosDB
 ## OptionalDeps: Ace3, LibKeyBound-1.0, LibSharedMedia-3.0, Masque, FlyPaper
 embeds.xml
 localization.xml
@@ -18,7 +18,6 @@ core\overrideController.lua
 core\tooltipController.lua
 core\bindingsController.lua
 bars\barStates.lua
-bars\multiActionBarFixer.lua
 bars\actionButton.lua
 bars\actionBar.lua
 bars\petBar.lua
@@ -27,7 +26,7 @@ bars\bagBar.lua
 bars\menuBar.lua
 bars\extraActionBar.lua
 bars\vehicleBar.lua
-## bars\castBar.lua
+plugins\multiActionBarFixer.lua
 plugins\slashCommands.lua
 plugins\launcher.lua
 plugins\blizzardHider.lua

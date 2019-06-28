@@ -258,6 +258,7 @@
                 </Anchors>
                 <Scripts>
                     <OnClick>
+                        CoreIOF_OTC(LibStub("AceLocale-3.0"):GetLocale("AuctionLite", false)["AuctionLite"])
                         CoreIOF_OTC(LibStub("AceLocale-3.0"):GetLocale("AuctionLite", false)["Sell Tab"])
                     </OnClick>
                 </Scripts>

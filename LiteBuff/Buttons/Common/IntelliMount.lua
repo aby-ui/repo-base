@@ -38,7 +38,7 @@ button:SetAttribute('_onmouseup', [[
     self:ChildUpdate('onmouseup', '_onmouseup')
 ]])
 button.OnMountStateChanged = function(self, mounted)
-    self.status = mounted and 1 or -1
+    self.status = mounted and "Y" or nil
     return self:UpdateStatus()
 end
 button:SetAttribute('_onstate-mountstate', [[
@@ -69,6 +69,10 @@ local utilityMounts = {
    	--{ id = 179244, passenger = 1 }, --代驾型机械路霸，只能自己坐
     { id = 214791, underwater = 1 },  --深海喂食者
     { id = 223018, underwater = 1 },  --深海水母
+    { id = 278979, underwater = 1 },  --拍浪水母
+    { id = 253711, underwater = 1 },  --池塘水母
+    { id = 228919, underwater = 1 },  --暗水鳐鱼
+    { id = 278803, underwater = 1 },  --无尽之海鳐鱼
     { id = 245725, passenger = 1 }, --奥格瑞玛拦截飞艇
     { id = 245723, passenger = 1 }, --暴风城逐天战机
 
@@ -142,6 +146,8 @@ CoreDependCall("Blizzard_Collections", function()
 end)
 
 CoreOnEvent("PLAYER_ENTERING_WORLD", function()
+    button.status = IsMounted() and "Y" or nil
+    button:UpdateStatus()
     UpdateMountsData()
     return "REMOVE"
 end)
@@ -162,7 +168,7 @@ function LBIntelliMountSummon(utility, delay)
     if not delay and IsSwimming() and utility=="normal" then
         if GetTime() - (delay_timer or 0) < 0.25 then
             CoreCancelBucket("IntelliMountDelay")
-            utility = "underwater"
+            utility = "surface"
         else
             utility = IsFlyableArea() and "normal" or "surface"
             delay_timer = GetTime()

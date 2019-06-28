@@ -199,7 +199,7 @@ local function ConstructTextEditor(frame)
   end)
 
   local editorError = group.frame:CreateFontString(nil, "OVERLAY");
-  editorError:SetFont("Fonts\\FRIZQT__.TTF", 10)
+  editorError:SetFont(STANDARD_TEXT_FONT, 10)
   editorError:SetJustifyH("LEFT");
   editorError:SetJustifyV("TOP");
   editorError:SetTextColor(1, 0, 0);
@@ -209,7 +209,7 @@ local function ConstructTextEditor(frame)
   local editorLine = CreateFrame("Editbox", nil, group.frame);
   -- Set script on enter pressed..
   editorLine:SetPoint("BOTTOMRIGHT", editor.frame, "TOPRIGHT", -10, -15);
-  editorLine:SetFont("Fonts\\FRIZQT__.TTF", 10)
+  editorLine:SetFont(STANDARD_TEXT_FONT, 10)
   editorLine:SetJustifyH("RIGHT");
   editorLine:SetWidth(80);
   editorLine:SetHeight(20);
@@ -243,11 +243,12 @@ local function ConstructTextEditor(frame)
     end
   end);
 
-  function group.Open(self, data, path, enclose, multipath, reloadOptions)
+  function group.Open(self, data, path, enclose, multipath, reloadOptions, setOnParent)
     self.data = data;
     self.path = path;
     self.multipath = multipath;
     self.reloadOptions = reloadOptions;
+    self.setOnParent = setOnParent;
     if(frame.window == "texture") then
       frame.texturePicker:CancelClose();
     elseif(frame.window == "icon") then
@@ -284,7 +285,7 @@ local function ConstructTextEditor(frame)
       end
       self.oldOnTextChanged(...);
     end);
-    if(data.controlledChildren) then
+    if(data.controlledChildren and not setOnParent) then
       local singleText;
       local sameTexts = true;
       local combinedText = "";
@@ -360,7 +361,7 @@ local function ConstructTextEditor(frame)
   end
 
   function group.Close(self)
-    if(self.data.controlledChildren) then
+    if(self.data.controlledChildren and not self.setOnParent) then
       local textById = editor.combinedText and extractTexts(editor:GetText(), self.data.controlledChildren);
       for index, childId in pairs(self.data.controlledChildren) do
         local text = editor.combinedText and (textById[childId] or "") or editor:GetText();

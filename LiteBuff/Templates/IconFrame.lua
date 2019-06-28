@@ -89,12 +89,12 @@ function templates.CreateIconFrame(parent)
 
     local outset = 0
     frame.border = frame:CreateTexture('$parentBorder', 'OVERLAY')
-    frame.border:SetPoint('TOPLEFT', -outset, outset)
-    frame.border:SetPoint('BOTTOMRIGHT', outset, -outset)
+    frame.border:SetSize(62, 62)
+    frame.border:SetPoint("CENTER")
     frame.border:SetTexture[[Interface\Buttons\UI-ActionButton-Border]]
     frame.border:SetBlendMode("ADD")
-    frame.border:SetAlpha(0.9)
-    frame.border:SetTexCoord(14/64, 49/64, 15/64, 50/64)
+    --frame.border:SetAlpha(0.9)
+    --frame.border:SetTexCoord(14/64, 49/64, 15/64, 50/64)
 
 	frame.text = frame:CreateFontString(nil, "ARTWORK", "TextStatusBarText")
 	frame.text:ClearAllPoints()
@@ -103,6 +103,7 @@ function templates.CreateIconFrame(parent)
 	frame.cooldown = CreateFrame("Cooldown", nil, frame, "CooldownFrameTemplate")
 	frame.cooldown:SetAllPoints(frame.icon)
     frame.cooldown.noCooldownCount = true
+    --frame.cooldown:SetReverse(true)
 --163uiedit
 
 	frame:RegisterEvent("SPELL_UPDATE_COOLDOWN")

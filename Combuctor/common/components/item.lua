@@ -5,7 +5,7 @@
 
 local ADDON, Addon = ...
 local Cache = LibStub('LibItemCache-2.0')
-local ItemSlot = Addon:NewClass('ItemSlot', 'Button')
+local ItemSlot = Addon:NewClass('ItemSlot', 'ItemButton')
 ItemSlot.unused = {}
 ItemSlot.nextID = 0
 
@@ -38,71 +38,69 @@ function ItemSlot:Create()
 	local item = self:Bind(self:GetBlizzard(id) or self:Construct(id))
 	local name = item:GetName()
 
-	-- add a quality border texture
-	local border = item:CreateTexture(nil, 'OVERLAY')
-	border:SetSize(67, 67)
-	border:SetPoint('CENTER', item)
-	border:SetTexture([[Interface\Buttons\UI-ActionButton-Border]])
-	border:SetBlendMode('ADD')
-	border:Hide()
+	item.UpdateTooltip = nil
+	item.Flash = item:CreateAnimationGroup()
+	item.IconGlow = item:CreateTexture(nil, 'OVERLAY', nil, -1)
+	item.Cooldown, item.QuestBorder = _G[name .. 'Cooldown'], _G[name .. 'IconQuestTexture']
 
-	-- add flash find animation
-	local flash = item:CreateAnimationGroup()
+	item.newitemglowAnim:SetLooping('NONE')
+	item.IconOverlay:SetAtlas('AzeriteIconFrame')
+	item.QuestBorder:SetTexture(TEXTURE_ITEM_QUEST_BANG)
+	item.IconGlow:SetTexture('Interface\\Buttons\\UI-ActionButton-Border')
+	item.IconGlow:SetBlendMode('ADD')
+	item.IconGlow:SetPoint('CENTER')
+	item.IconGlow:SetSize(67, 67)
+
 	for i = 1, 3 do
-		local fade = flash:CreateAnimation('Alpha')
+		local fade = item.Flash:CreateAnimation('Alpha')
 		fade:SetOrder(i * 2)
 		fade:SetDuration(.2)
 		fade:SetFromAlpha(.8)
 		fade:SetToAlpha(0)
 
-		local fade = flash:CreateAnimation('Alpha')
+		local fade = item.Flash:CreateAnimation('Alpha')
 		fade:SetOrder(i * 2 + 1)
 		fade:SetDuration(.3)
 		fade:SetFromAlpha(0)
 		fade:SetToAlpha(.8)
 	end
 
-	item.UpdateTooltip = nil
-	item.Border, item.Flash = border, flash
-	item.newitemglowAnim:SetLooping('NONE')
-	item.QuestBorder = _G[name .. 'IconQuestTexture']
-	item.Cooldown = _G[name .. 'Cooldown']
 	item:SetScript('OnShow', item.OnShow)
 	item:SetScript('OnHide', item.OnHide)
-    if item:GetScript('PreClick') then item:HookScript('PreClick', item.OnPreClick) else item:SetScript('PreClick', item.OnPreClick) end --abyui
+	--abyui fix put regent to regent bank, conflict with TheBurningTrade
+	if item:GetScript('PreClick') then item:HookScript('PreClick', item.OnPreClick) else item:SetScript('PreClick', item.OnPreClick) end
 	item:HookScript('OnDragStart', item.OnDragStart)
 	item:HookScript('OnClick', item.OnClick)
 	item:SetScript('OnEnter', item.OnEnter)
 	item:SetScript('OnLeave', item.OnLeave)
 	item:SetScript('OnEvent', nil)
-	item:HideBorder()
 
 	return item
 end
 
 function ItemSlot:GetNextID()
-	self.nextID = self.nextID + 1
-	return self.nextID
+    self.nextID = self.nextID + 1
+    return self.nextID
 end
 
 function ItemSlot:Construct(id)
-	return CreateFrame('Button', ADDON..self.Name..id, nil, 'ContainerFrameItemButtonTemplate')
+    return CreateFrame('ItemButton', ADDON..self.Name..id, nil, 'ContainerFrameItemButtonTemplate')
 end
 
 function ItemSlot:GetBlizzard(id)
-	if Addon.sets.displayBlizzard or not Addon:AreBasicFramesEnabled() then
-		return
-	end
+    if Addon.sets.displayBlizzard or not Addon:AreBasicFramesEnabled() then
+        return
+    end
 
-	local bag = ceil(id / MAX_CONTAINER_ITEMS)
-	local slot = (id-1) % MAX_CONTAINER_ITEMS + 1
-	local item = _G[format('ContainerFrame%dItem%d', bag, slot)]
+    local bag = ceil(id / MAX_CONTAINER_ITEMS)
+    local slot = (id-1) % MAX_CONTAINER_ITEMS + 1
+    local item = _G[format('ContainerFrame%dItem%d', bag, slot)]
 
-	if item then
-		item:SetID(0)
-		item:ClearAllPoints()
-		return item
-	end
+    if item then
+        item:SetID(0)
+        item:ClearAllPoints()
+        return item
+    end
 end
 
 function ItemSlot:Restore()
@@ -112,7 +110,8 @@ end
 function ItemSlot:Free()
 	self:Hide()
 	self:SetParent(nil)
-	self.frame, self.depositSlot = nil
+	self.frame = nil
+	self.depositSlot = nil
 	tinsert(self.unused, self)
 end
 
@@ -124,7 +123,7 @@ function ItemSlot:OnShow()
 	self:RegisterSignal('SEARCH_CHANGED', 'UpdateSearch')
 	self:RegisterSignal('SEARCH_TOGGLED', 'UpdateSearch')
 	self:RegisterSignal('FLASH_ITEM', 'OnItemFlashed')
-	self:Update()
+	if(self:GetID()) then self:Update() end --abyui
 end
 
 function ItemSlot:OnHide()
@@ -193,14 +192,14 @@ function ItemSlot:OnClick(button)
 end
 
 function ItemSlot:OnModifiedClick(...)
-	local link = self:IsCached() and self.info.link
+	local link = self.info.cached and self.info.link
 	if link and not HandleModifiedItemClick(link) then
 		self:OnClick(...)
 	end
 end
 
 function ItemSlot:OnEnter()
-	if self:IsCached() then
+	if self.info.cached then
 		local dummy = ItemSlot:GetDummySlot()
 		dummy:SetParent(self)
 		dummy:SetAllPoints(self)
@@ -223,21 +222,26 @@ end
 --[[ Update ]]--
 
 function ItemSlot:Update()
-	local info = self:GetInfo()
+	self.info = self:GetInfo()
+	self.hasItem = self.info.id and true
+	self.readable = self.info.readable
+	self:After(0.1, 'UpdateSecondary')
+	self:UpdateSlotColor()
+	self:UpdateBorder()
 
-	self.info, self.hasItem, self.readable = info, info.id and true, info.readable
-	self:After(0.1, 'SecondaryUpdate')
-	self:SetLocked(info.locked)
-	self:UpdateCooldown()
-
-	SetItemButtonTexture(self, info.icon or self:GetEmptyItemIcon())
-	SetItemButtonCount(self, info.count)
+	SetItemButtonTexture(self, self.info.icon or self:GetEmptyItemIcon())
+	SetItemButtonCount(self, self.info.count)
 end
 
-function ItemSlot:SecondaryUpdate()
+function ItemSlot:UpdateLocked()
+	self.info = self:GetInfo()
+	self:SetLocked(self.info.locked)
+end
+
+function ItemSlot:UpdateSecondary()
 	self:UpdateFocus()
 	self:UpdateSearch()
-	self:UpdateSlotColor()
+	self:UpdateCooldown()
 	self:UpdateUpgradeIcon()
 
 	if GameTooltip:IsOwned(self) then
@@ -246,23 +250,53 @@ function ItemSlot:SecondaryUpdate()
 end
 
 
---[[ Basic Features ]]--
+--[[ Appearance ]]--
 
-function ItemSlot:UpdateLocked()
-	self:SetLocked(self:GetInfo().locked)
-end
+function ItemSlot:UpdateBorder()
+	local id, quality = self.info.id, self.info.quality
+	local new = Addon.sets.glowNew and self:IsNew()
+	local quest, questID = self:IsQuestItem()
+	local paid = self:IsPaid()
+	local r, g, b
 
-function ItemSlot:SetLocked(locked)
-	SetItemButtonDesaturated(self, locked)
-end
-
-function ItemSlot:UpdateCooldown()
-	if self.info.id and (not self:IsCached()) then
-		ContainerFrame_UpdateCooldown(self:GetBag(), self)
-	else
-		self.Cooldown:Hide()
-		CooldownFrame_Set(self.Cooldown, 0, 0, 0)
+	if new and not self.flashAnim:IsPlaying() then
+		self.flashAnim:Play()
+		self.newitemglowAnim:Play()
 	end
+
+	if id then
+		if Addon.sets.glowQuest and quest then
+			r, g, b = 1, .82, .2
+		elseif Addon.sets.glowUnusable and Unfit:IsItemUnusable(id) then
+			r, g, b = RED_FONT_COLOR.r, RED_FONT_COLOR.g, RED_FONT_COLOR.b
+		elseif Addon.sets.glowSets and ItemSearch:InSet(self.info.link) then
+	  	r, g, b = .1, 1, 1
+		elseif Addon.sets.glowQuality and type(quality) == "number" and quality > 1 then
+			r, g, b = GetItemQualityColor(quality)
+		end
+	end
+
+	self.IconBorder:SetTexture(id and C_ArtifactUI.GetRelicInfoByItemID(id) and 'Interface\\Artifacts\\RelicIconFrame' or 'Interface\\Common\\WhiteIconFrame')
+	self.IconBorder:SetVertexColor(r, g, b)
+	self.IconBorder:SetShown(r)
+
+	self.IconGlow:SetVertexColor(r, g, b, Addon.sets.glowAlpha)
+	self.IconGlow:SetShown(r)
+
+	self.NewItemTexture:SetAtlas(quality and NEW_ITEM_ATLAS_BY_QUALITY[quality] or 'bags-glow-white')
+	self.NewItemTexture:SetShown(new and not paid)
+
+	self.IconOverlay:SetShown(id and C_AzeriteEmpoweredItem.IsAzeriteEmpoweredItemByID(id))
+	self.BattlepayItemTexture:SetShown(new and paid)
+	self.QuestBorder:SetShown(questID)
+end
+
+function ItemSlot:UpdateSlotColor()
+	local color = not self.info.id and Addon.sets.colorSlots and Addon.sets[self:GetBagType() .. 'Color']
+	local r, g, b = color and color[1] or 1, color and color[2] or 1, color and color[3] or 1
+
+	SetItemButtonTextureVertexColor(self, r,g,b)
+	self:GetNormalTexture():SetVertexColor(r,g,b)
 end
 
 function ItemSlot:UpdateUpgradeIcon()
@@ -274,80 +308,17 @@ function ItemSlot:UpdateUpgradeIcon()
 	end
 end
 
-function ItemSlot:UpdateSlotColor()
-	if not self.info.id and Addon.sets.colorSlots then
-		local color = Addon.sets[self:GetBagType() .. 'Color']
-		self:SetSlotColor(color[1], color[2], color[3])
+function ItemSlot:SetLocked(locked)
+	SetItemButtonDesaturated(self, locked)
+end
+
+function ItemSlot:UpdateCooldown()
+	if self.info.id and (not self.info.cached) then
+		ContainerFrame_UpdateCooldown(self:GetBag(), self)
 	else
-		self:SetSlotColor(1, 1, 1)
+		self.Cooldown:Hide()
+		CooldownFrame_Set(self.Cooldown, 0, 0, 0)
 	end
-end
-
-function ItemSlot:SetSlotColor(...)
-	SetItemButtonTextureVertexColor(self, ...)
-	self:GetNormalTexture():SetVertexColor(...)
-end
-
-
---[[ Border Glow ]]--
-
-function ItemSlot:UpdateBorder()
-	self:HideBorder()
-
-	local link = self.info.link
-	if link then
-		local isQuestItem, isQuestStarter = self:IsQuestItem()
-		if isQuestStarter then
-			self.QuestBorder:SetTexture(TEXTURE_ITEM_QUEST_BANG)
-			self.QuestBorder:Show()
-			return
-		end
-
-		local quality = self.info.quality
-		if Addon.sets.glowNew and self:IsNew() then
-			if not self.flashAnim:IsPlaying() then
-				self.flashAnim:Play()
-				self.newitemglowAnim:SetLooping('NONE')
-				self.newitemglowAnim:Play()
-			end
-
-			if self:IsPaid() then
-				return self.BattlepayItemTexture:Show()
-			else
-				self.NewItemTexture:SetAtlas(quality and NEW_ITEM_ATLAS_BY_QUALITY[quality] or 'bags-glow-white')
-				self.NewItemTexture:Show()
-				return
-			end
-		end
-
-		if Addon.sets.glowQuest and isQuestItem then
-			return self:SetBorderColor(1, .82, .2)
-		end
-
-		if Addon.sets.glowSets and ItemSearch:InSet(link) then
-	   		return self:SetBorderColor(.1, 1, 1)
-	  	end
-
-		if Addon.sets.glowUnusable and Unfit:IsItemUnusable(link) then
-			return self:SetBorderColor(RED_FONT_COLOR.r, RED_FONT_COLOR.g, RED_FONT_COLOR.b)
-		end
-
-		if Addon.sets.glowQuality and quality and quality > 1 then
-			self:SetBorderColor(GetItemQualityColor(quality))
-		end
-	end
-end
-
-function ItemSlot:SetBorderColor(r, g, b)
-	self.Border:SetVertexColor(r, g, b, Addon.sets.glowAlpha)
-	self.Border:Show()
-end
-
-function ItemSlot:HideBorder()
-	self.QuestBorder:Hide()
-	self.Border:Hide()
-	self.NewItemTexture:Hide()
-	self.BattlepayItemTexture:Hide()
 end
 
 
@@ -357,15 +328,8 @@ function ItemSlot:UpdateSearch()
 	local search = Addon.canSearch and Addon.search or ''
 	local matches = search == '' or ItemSearch:Matches(self.info.link, search)
 
-	if matches then
-		self:SetAlpha(1)
-		self:UpdateLocked()
-		self:UpdateBorder()
-	else
-		self:SetLocked(true)
-		self:SetAlpha(0.4)
-		self:HideBorder()
-	end
+	self:SetAlpha(matches and 1 or 0.3)
+	self:SetLocked(not matches or self.info.locked)
 end
 
 function ItemSlot:UpdateFocus()
@@ -417,7 +381,6 @@ function ItemSlot:AnchorTooltip()
 	end
 end
 
-
 function ItemSlot:UpdateTooltip()
 	self:OnEnter()
 end
@@ -427,11 +390,11 @@ end
 
 function ItemSlot:IsQuestItem()
 	if self.info.id then
-		if self:IsCached() then
+		if self.info.cached then
 			return select(12, GetItemInfo(self.info.id)) == LE_ITEM_CLASS_QUESTITEM or ItemSearch:Tooltip(self.info.link, QUEST_LOWER), false
 		else
-			local isQuestItem, questID, isActive = GetContainerItemQuestInfo(self:GetBag(), self:GetID())
-			return isQuestItem, (questID and not isActive)
+			local isQuest, questID, isActive = GetContainerItemQuestInfo(self:GetBag(), self:GetID())
+			return isQuest, (questID and not isActive)
 		end
 	end
 end
@@ -473,7 +436,7 @@ function ItemSlot:GetEmptyItemIcon()
 end
 
 
---[[ Performance ]]--
+--[[ Extra ]]--
 
 function ItemSlot:After(time, action)
 	local lock = 'scheduled' .. action

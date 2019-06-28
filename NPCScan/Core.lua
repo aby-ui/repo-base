@@ -56,14 +56,8 @@ end
 local NPCIDFromName = {}
 private.NPCIDFromName = NPCIDFromName
 
-local QuestNPCs = {}
-private.QuestNPCs = QuestNPCs
-
 local QuestIDFromName = {}
 private.QuestIDFromName = QuestIDFromName
-
-local VignetteIDToNPCMapping = {}
-private.VignetteIDToNPCMapping = VignetteIDToNPCMapping
 
 -- ----------------------------------------------------------------------------
 -- AddOn Methods.
@@ -144,65 +138,74 @@ function NPCScan:OnEnable()
 	-- ----------------------------------------------------------------------------
 	for mapID, map in pairs(Data.Maps) do
 		for npcID in pairs(map.NPCs) do
-			local npc = Data.NPCs[npcID]
-
-			if not npc then
-				npc = {}
-				Data.NPCs[npcID] = npc
-			end
+			local npc = private.InitializeNPC(npcID)
 
 			map.NPCs[npcID] = npc
 
 			npc.mapIDs = npc.mapIDs or {}
 			npc.mapIDs[#npc.mapIDs + 1] = mapID
-			npc.npcID = npcID
-
-			-- This sets values for NPCIDFromName, which is used for vignette detection.
-			self:GetNPCNameFromID(npcID)
 
 			table.sort(npc.mapIDs, private.SortByMapNameThenByID)
-
-			if npc.questID then
-				local npcIDs = QuestNPCs[npc.questID]
-				if not npcIDs then
-					npcIDs = {}
-					QuestNPCs[npc.questID] = npcIDs
-				end
-
-				npcIDs[npcID] = true
-
-				local questName = NPCScan:GetQuestNameFromID(npc.questID)
-				if questName and questName ~= _G.UNKNOWN then
-					QuestIDFromName[questName] = npc.questID
-				end
-			end
-
-			if npc.vignetteID then
-				VignetteIDToNPCMapping[npc.vignetteID] = npc
-			end
 		end
 	end
 
 	private.InitializeAchievements()
 
+	local hasChecked = {}
+
+	local questMapIDs = {
+		[Enum.MapID.Argus] = true,
+		[Enum.MapID.BrokenIsles] = true,
+		[Enum.MapID.KulTiras] = true,
+		[Enum.MapID.Zandalar] = true,
+	}
+
+	local vignetteMapIDs = {
+		[Enum.MapID.Argus] = true,
+		[Enum.MapID.BrokenIsles] = true,
+		[Enum.MapID.Draenor] = true,
+		[Enum.MapID.KulTiras] = true,
+		[Enum.MapID.Pandaria] = true,
+		[Enum.MapID.Zandalar] = true,
+	}
+
 	for mapID, map in pairs(Data.Maps) do
-		if mapID >= Enum.MapID.Zuldazar then
-			local mapHeaderPrinted
+		local continent = _G.MapUtil.GetMapParentInfo(mapID, _G.Enum.UIMapType.Continent, true)
 
-			for npcID in pairs(map.NPCs) do
-				local npc = map.NPCs[npcID]
+		local missingData = {}
+		local mapHeaderPrinted
 
-				if not npc.questID and not npc.achievementQuestID then
-					if not mapHeaderPrinted then
-						mapHeaderPrinted = true
-						private.Debug("-- ----------------------------------------------------------------------------")
-						private.Debug("-- %s (%d)", HereBeDragons:GetLocalizedMap(mapID), mapID)
-						private.Debug("-- ----------------------------------------------------------------------------")
-					end
+		for npcID in pairs(map.NPCs) do
+			local npc = map.NPCs[npcID]
 
-					private.Debug("NPC %d (%s) has no questID.", npcID, self:GetNPCNameFromID(npcID))
+			if not hasChecked[npcID] then
+				local questID = npc.questID or npc.achievementQuestID
+
+				if not questID and (not continent or questMapIDs[continent.mapID]) then
+					missingData[npcID] = "questID"
 				end
+
+				if not npc.vignetteID and (not continent or vignetteMapIDs[continent.mapID]) then
+					if missingData[npcID] then
+						missingData[npcID] = ("%s, vignetteID"):format(missingData[npcID])
+					else
+						missingData[npcID] = "vignetteID"
+					end
+				end
+
+				hasChecked[npcID] = true
 			end
+		end
+
+		for npcID, missingText in pairs(missingData) do
+			if not mapHeaderPrinted then
+				mapHeaderPrinted = true
+				private.Debug("-- ----------------------------------------------------------------------------")
+				private.Debug("-- %s (%d)", HereBeDragons:GetLocalizedMap(mapID) or _G.UNKNOWN, mapID)
+				private.Debug("-- ----------------------------------------------------------------------------")
+			end
+
+			private.Debug("NPC %d (%s) is missing: %s.", npcID, self:GetNPCNameFromID(npcID), missingText)
 		end
 	end
 

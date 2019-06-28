@@ -11,11 +11,280 @@ local loadin = {{},{},{}}
 local loadingKey -- key of team being loaded
 local loadTimeout -- LoadLoadIn attempts (max 10)
 local missing = {} -- slots that have a missing pet (indexed by slot, equals petID if a substitue found, true otherwise)
+local mytarget
+local needreload = false
+local mylasttarget
 
 rematch:InitModule(function()
 	settings = RematchSettings
 	saved = RematchSaved
 end)
+
+function rematch:Renew(team)
+	for i=1,3 do
+		local petID = team[i][1] -- the petID we intend to load
+		-- if pet is not missing/substituted and it's not a leveling pet
+		if petID ~= 0 and not missing[i] and not rematch:IsPetLeveling(petID) then
+			local health,maxHealth,power,speed = rematch:GetPetStats(petID)
+			if health and health<maxHealth then
+				local speciesID,_,level = C_PetJournal.GetPetInfoByPetID(petID)
+				if C_PetJournal.GetNumCollectedInfo(speciesID)>1 then -- if player has more than one
+					local healthiestPetID = petID
+					for cPetID in rematch.Roster:AllOwnedPets() do
+						local cSpeciesID,_,cLevel = C_PetJournal.GetPetInfoByPetID(cPetID)
+						if cSpeciesID==speciesID and (settings.LoadHealthiestAny or cLevel==level) then
+							local cHealth,cMaxHealth,cPower,cSpeed = rematch:GetPetStats(cPetID)
+							if cHealth>health and (settings.LoadHealthiestAny or (cMaxHealth==maxHealth and cPower==power and cSpeed==speed)) then
+								local isTeammate -- prevent substituting a version that's going to another slot
+								for j=1,3 do
+									if i~=j and team[j][1]==cPetID then
+										isTeammate = true
+									end
+								end
+								if not isTeammate then
+									healthiestPetID = cPetID
+								end
+							end
+						end
+					end
+					-- found a healthier version of the pet, replace it in the loadin
+					if healthiestPetID and healthiestPetID~=petID then
+						team[i][1] = healthiestPetID
+					end
+				end
+			end
+		end
+	end
+end
+
+function rematch:checkTeamHealth(team) 
+	local validTeam = true 
+	if mytarget == 98489 then -- 海难俘虏
+		for i=1,3 do 
+			local petID = team[i][1] 
+			-- rematch:print( i, type(petID),format("%s", petID))
+			if type(petID) == "string" then
+				if not rematch:IsPetLeveling(petID) then
+					local petHP, petMaxHP, val1, val2, val3 = C_PetJournal.GetPetStats(petID) 
+					-- rematch:print(i,format("%s", petID), petHP, petMaxHP, val1, val2, val3) 
+					if petHP and petMaxHP then 
+						if petHP < petMaxHP*0.75 then
+							-- rematch:print(i,format("%s", petID),format("\124cff00ffffWounded\124r"))
+							validTeam = false 
+							break
+						end
+					end
+				else
+					-- validTeam = false 
+					-- break
+				end 
+			end 
+		end
+	elseif mytarget == 68561 then -- 小艺
+		for i=1,1 do 
+			local petID = team[i][1] 
+			-- rematch:print( i, type(petID),format("%s", petID))
+			if type(petID) == "string" then
+				if not rematch:IsPetLeveling(petID) then
+					local petHP, petMaxHP, val1, val2, val3 = C_PetJournal.GetPetStats(petID) 
+					-- rematch:print(i,format("%s", petID), petHP, petMaxHP, val1, val2, val3) 
+					if petHP and petMaxHP then 
+						if petHP < 691 then
+							-- rematch:print(i,format("%s", petID),format("\124cff00ffffWounded\124r"))
+							validTeam = false 
+							break
+						end
+					end
+				else
+					-- validTeam = false 
+					-- break
+				end 
+			end 
+		end
+	else  --除了上面的宠物对战外其他NPC都使用下面的默认逻辑判断。
+		for i=1,3 do  
+		--修改1，3中的数字可以指定要检查哪个宠物的血量。数字代表宠物坑号，后一个数字必需大于或者等于前一个数字。最大为3.
+			local petID = team[i][1] 
+			-- rematch:print( i, type(petID),format("%s", petID))
+			if type(petID) == "string" then
+				if not rematch:IsPetLeveling(petID) then
+					local petHP, petMaxHP, val1, val2, val3 = C_PetJournal.GetPetStats(petID) 
+					-- rematch:print(i,format("%s", petID), petHP, petMaxHP, val1, val2, val3) 
+					if petHP and petMaxHP then 
+						if petHP < petMaxHP*1 then  -- 修改这个0.8即可改变最低合格血量标准。最高为1，如果改成1意味着不满血就不合格。
+							-- rematch:print(i,format("%s", petID),format("\124cff00ffffWounded\124r"))
+							validTeam = false 
+							break
+						end
+					end
+				else
+					-- validTeam = false 
+					-- break
+				end 
+			end 
+		end
+	end 
+	-- rematch:print( validTeam )
+	return validTeam
+end 
+
+function rematch:loadSimilarTeam(key) 
+	local npcID = key
+	mytarget = key
+	if mylasttarget ~= key then
+		needreload = true
+	end
+	mylasttarget = key
+	local loadout = rematch.info
+	wipe(loadout)
+	if npcID then 
+		local team = saved[npcID] 
+		if team then 
+			local teamTitle = rematch:GetTeamTitle(npcID) 
+			local teamKey = rematch:GetTeamTitle(npcID):match("(%S-)[%d-]")
+			local replaced = false 
+			local foundbkp = false
+			local MyBackupTeamID
+			local MyBackupTeam
+			
+			if teamTitle then
+				--Try to load binding team
+				if settings.LoadHealthiest then 
+					rematch:Renew(team)
+				end
+				if rematch:checkTeamHealth(team) then 
+					for slot=1,3 do
+						loadout[1],loadout[2],loadout[3],loadout[4] = C_PetJournal.GetPetLoadOutInfo(slot)
+						for i=1,4 do
+							if team[slot][i] ~= loadout[i] then
+								needreload =true
+								break
+							end
+						end
+						if needreload then
+							break
+						end					
+					end
+					if needreload then
+						rematch:print(format("\124cff00ffffLoad binding team %s\124r",teamTitle)) 
+						needreload = false
+						rematch:LoadTeam(npcID) 
+					end
+					replaced = true 
+				end 
+				--Try to load binding team End			
+				--rematch:print( teamKey )
+				if teamKey then
+					local replaceteamlist = {}
+					-- Try to load replace team
+					if not replaced then                   
+						for k, v in pairs(saved) do 
+							--rematch:print(format("\124cff00ffff test1 \124r"), rematch:GetTeamTitle(k),rematch:GetTeamTitle(k):match("(%S-)[%d+]"))
+							if rematch:GetTeamTitle(k):match("(%S-)[%d-]") == teamKey then 
+								local index = rematch:GetTeamTitle(k):match("%d+$")
+								if index ~= nil then
+									table.insert (replaceteamlist,{
+										["index"] = tonumber(index),
+										["id"] = k,
+										["team"] = v
+									})
+								end
+							end 
+
+							if rematch:GetTeamTitle(k):match("(%S-)[%d-]") ~= teamKey and rematch:GetTeamTitle(k):match(teamKey) then 
+								-- rematch:print(format("\124cff00ffff Found guaranteed team %s\124r", k)) 
+								MyBackupTeamID = k
+								MyBackupTeam = v
+								foundbkp = true
+								
+							end 
+
+						end
+
+						if table.getn(replaceteamlist) > 0 then
+							table.sort(replaceteamlist, function(a,b)
+            		return tonumber(a.index) < tonumber(b.index)
+        			end)
+							for k, v in pairs(replaceteamlist) do
+								--rematch:print("id is ",v.index)
+								if settings.LoadHealthiest then
+									rematch:Renew(v.team)
+								end
+								if rematch:checkTeamHealth(v.team) then 
+									for slot=1,3 do
+										loadout[1],loadout[2],loadout[3],loadout[4] = C_PetJournal.GetPetLoadOutInfo(slot)
+										for i=1,4 do
+											if v.team[slot][i] ~= loadout[i] then
+												needreload =true
+												break
+											end
+										end	
+										if needreload then
+											break
+										end			
+									end
+									if needreload then
+										rematch:print(format("\124cff00ffff Load Replaced Team %s\124r", v.id)) 
+										needreload = false
+										rematch:LoadTeam(v.id) 
+									end
+
+									replaced = true 
+									break
+								end 
+							end
+						end
+					end
+					-- Try to load replace team End
+					-- Try to load guaranteed team
+					if not replaced then
+						if foundbkp then
+							for slot=1,3 do
+								loadout[1],loadout[2],loadout[3],loadout[4] = C_PetJournal.GetPetLoadOutInfo(slot)
+								for i=1,4 do
+									if MyBackupTeam[slot][i] ~= loadout[i] then
+										needreload =true
+										break
+									end
+								end
+								if needreload then
+									break
+								end					
+							end
+							if needreload then
+								rematch:print(format("\124cff00ffff Load guaranteed team %s\124r", MyBackupTeamID))
+								needreload = false
+								rematch:LoadTeam(MyBackupTeamID)
+							end	
+							replaced = true
+						end 
+					end 
+					-- Try to load guaranteed team end
+				end
+			end	
+			-- Try to load binding team anyway
+			if not replaced then 
+				for slot=1,3 do
+					loadout[1],loadout[2],loadout[3],loadout[4] = C_PetJournal.GetPetLoadOutInfo(slot)
+					for i=1,4 do
+						if team[slot][i] ~= loadout[i] then
+							needreload =true
+							break
+						end
+					end
+					if needreload then
+						break
+					end					
+				end
+				if needreload then
+					rematch:print(format("\124cff00ffff Load binding team anyway %s\124r",teamTitle)) 
+					needreload = false
+					rematch:LoadTeam(npcID)  
+				end
+			end 
+		end
+	end
+end
 
 function rematch:LoadTeam(key)
 
@@ -35,8 +304,6 @@ function rematch:LoadTeam(key)
 		return
 	end
 
-	rematch.TeamPanel:NotifyTeamLoading(L["Loading..."]) -- desaturate loaded team and say it's loading
-
 	loadingKey = key --  note what team we're about to load
 
 	for i=1,3 do wipe(loadin[i]) end -- start with clean loadin
@@ -48,14 +315,18 @@ function rematch:LoadTeam(key)
 	for i=1,3 do
 		local petID = team[i][1]
 		local levelingPick = rematch.topPicks[pickIndex]
-		if petID==0 and levelingPick then
-			loadin[i][1] = rematch.topPicks[pickIndex]
-			pickIndex = pickIndex + 1
-      elseif petID=="ignored" then
-         loadin[i][1] = C_PetJournal.GetPetLoadOutInfo(i) -- keep loaded pet here if ignored
-      elseif rematch:GetSpecialPetIDType(petID)=="random" then
-         loadin[i][1] = petID -- will come back to this pet later
-         numRandomSlots = numRandomSlots + 1
+		if petID==0 then
+			if levelingPick then -- if there is a pet from the queue
+				loadin[i][1] = rematch.topPicks[pickIndex]
+				pickIndex = pickIndex + 1
+			elseif settings.QueueRandomWhenEmpty then -- if not, and 'Use Random If Queue Empty' checked, pick a random pet
+				loadin[i][1] = "random:0"
+			end
+		elseif petID=="ignored" then
+			loadin[i][1] = C_PetJournal.GetPetLoadOutInfo(i) -- keep loaded pet here if ignored
+		elseif rematch:GetSpecialPetIDType(petID)=="random" then
+			loadin[i][1] = petID -- will come back to this pet later
+			numRandomSlots = numRandomSlots + 1
 		elseif petID and petID~=0 then
          local idType = rematch:GetIDType(petID)
 			if idType=="species" then
@@ -130,14 +401,14 @@ function rematch:FindHealthiestLoadIn()
 		-- if pet is not missing/substituted and it's not a leveling pet
 		if petID and not missing[i] and not rematch:IsPetLeveling(petID) then
 			local health,maxHealth,power,speed = rematch:GetPetStats(petID)
-			if health and health<maxHealth then
+			if health then -- and health<maxHealth then
 				local speciesID,_,level = C_PetJournal.GetPetInfoByPetID(petID)
 				if C_PetJournal.GetNumCollectedInfo(speciesID)>1 then -- if player has more than one
 					local healthiestPetID = petID
 					for cPetID in rematch.Roster:AllOwnedPets() do
 						local cSpeciesID,_,cLevel = C_PetJournal.GetPetInfoByPetID(cPetID)
 						if cSpeciesID==speciesID and (settings.LoadHealthiestAny or cLevel==level) then
-                     local cHealth,cMaxHealth,cPower,cSpeed = rematch:GetPetStats(cPetID)
+                     	local cHealth,cMaxHealth,cPower,cSpeed = rematch:GetPetStats(cPetID)
 							if cHealth>health and (settings.LoadHealthiestAny or (cMaxHealth==maxHealth and cPower==power and cSpeed==speed)) then
 								local isTeammate -- prevent substituting a version that's going to another slot
 								for j=1,3 do
@@ -146,6 +417,7 @@ function rematch:FindHealthiestLoadIn()
 									end
 								end
 								if not isTeammate then
+									health = cHealth
 									healthiestPetID = cPetID
 								end
 							end
@@ -235,11 +507,14 @@ function rematch:LoadingDone(unsuccessful)
 	if rematch.LoadedTeamPanel:IsVisible() then
 		rematch.LoadedTeamPanel.Bling:Show()
 	end
+	if rematch.TeamPanel:IsVisible() then
+		rematch.TeamPanel:BlingKey(loadingKey)
+	end
 	rematch:AssignSpecialSlots()
 	rematch:UpdateQueue() -- team change may mean leveling pet preferences changed; this also does an UpdateUI
 
 	-- ShowOnInjured to summon window if any loaded pets are injured
-	if settings.AutoLoad and settings.ShowOnInjured and not rematch.Frame:IsVisible() and not rematch.Journal:IsVisible() then
+	if settings.AutoLoad and settings.ShowOnInjured and not rematch.Frame:IsVisible() then
 		for i=1,3 do
 			local petID = C_PetJournal.GetPetLoadOutInfo(i)
 			if petID then
@@ -253,7 +528,7 @@ function rematch:LoadingDone(unsuccessful)
 	end
 
 	-- SafariHatShine to summon window if a team loads with a low level pet and the safari hat is not equipped
-	if settings.SafariHatShine and not rematch.Frame:IsVisible() and not rematch.Journal:IsVisible() then
+	if settings.SafariHatShine and not rematch.Frame:IsVisible() then
 		local safariBuff = GetItemSpell(92738)
 		if safariBuff and not rematch:UnitBuff(safariBuff) and rematch:IsLowLevelPetLoaded() then
 			rematch:AutoShow()
@@ -292,12 +567,47 @@ function rematch:LoadingDone(unsuccessful)
 		end
 	end
 
-	RematchWinRecordToast:Hide() -- if a winrecord toast is showing from a previous team, stop it
-
 end
 
 -- use this to wipe loadedTeam instead of setting it directly
 function rematch:UnloadTeam()
 	settings.loadedTeam = nil
 	rematch:AssignSpecialSlots() -- will clear leveling slots
+end
+
+
+-- this will not load a team but look for any pets that have healthier counterparts and load them individually
+function rematch:LoadHealthiestOfLoadedPets()
+
+	-- if a team is being loaded, don't do anything and leave
+	if rematch:IsTimerRunning("ReloadLoadIn") then
+		return
+	end
+
+	-- fill loadin with currently loaded pets and abilities
+	for i=1,3 do
+		loadin[i][1],loadin[i][2],loadin[i][3],loadin[i][4] = C_PetJournal.GetPetLoadOutInfo(i)
+	end
+
+	-- update loadin with healthiest pets
+	rematch:FindHealthiestLoadIn()
+
+	if not rematch:LoadLoadIn() then -- if first pass didn't finished, try again
+		loadTimeout = 0
+		rematch:StartTimer("TeamlessReloadLoadIn",0.2,rematch.TeamlessReloadLoadIn)
+	end
+
+
+end
+
+-- used in LoadHealthiestOfLoadedPets without respect to any team loaded, will re-attempt pets loads
+function rematch:TeamlessReloadLoadIn()
+	-- will abort if ReloadLoadIn starts up (an actual team is loading)
+	if rematch:IsTimerRunning("ReloadLoadIn") then
+		return
+	end
+	if not rematch:LoadLoadIn() and loadTimeout<20 then
+		loadTimeout = loadTimeout + 1
+		rematch:StartTimer("TeamlessReloadLoadIn",0.25,rematch.ReloadLoadIn)
+	end
 end

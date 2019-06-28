@@ -94,7 +94,10 @@ function CanIMogItTooltipScanner:CIMI_SetItem(itemLink, bag, slot)
     elseif bag and slot then
         self:SetBagItem(bag, slot)
     else
-        self:SetHyperlink(itemLink)
+        local isBattlepet = string.match(itemLink, ".*(battlepet):.*") == "battlepet"
+        if not isBattlepet then
+            self:SetHyperlink(itemLink)
+        end
     end
 end
 

@@ -7,6 +7,9 @@
 local CONFIG, Config = ...
 local L = LibStub('AceLocale-3.0'):NewLocale(CONFIG, 'enUS', true, 'raw')
 
+-- global
+L.ConfirmGlobals = 'Are you sure you want to disable specific settings for this character? All specific settings will be lost.'
+
 -- general
 L.GeneralDesc = 'These are general features that can be toggled depending on your preferences.'
 L.Locked = 'Lock Frames'
@@ -14,7 +17,6 @@ L.Fading = 'Fading Effects'
 L.TipCount = 'Tooltip Item Count'
 L.CountGuild = 'Include Guild Banks'
 L.FlashFind = 'Flash Find'
-L.EmptySlots = 'Display Background on Empty Slots'
 L.DisplayBlizzard = 'Display Blizzard Frames for Hidden Bags'
 
 -- frame
@@ -63,14 +65,15 @@ L.DisplaySettingsDesc = 'These settings allow you to configure when your invento
 L.DisplayInventory = 'Display Inventory'
 L.CloseInventory = 'Close Inventory'
 
-L.DisplayBank = 'Visiting the Bank'
-L.DisplayAuction = 'Visiting the Auction House'
+L.DisplayBank = 'At the Bank'
+L.DisplayGuildbank = 'At the Guild Bank'
+L.DisplayAuction = 'At the Auction House'
+L.DisplayMail = 'At a Mailbox'
 L.DisplayTrade = 'Trading Items'
-L.DisplayCraft = 'Crafting'
-L.DisplayMail = 'Checking a Mailbox'
-L.DisplayGuildbank = 'Visiting the Guild Bank'
-L.DisplayPlayer = 'Opening the Character Info'
+L.DisplayScrapping = 'Scrapping Gear'
 L.DisplayGems = 'Socketing Items'
+L.DisplayCraft = 'Crafting'
+L.DisplayPlayer = 'Opening the Character Info'
 
 L.CloseCombat = 'Entering Combat'
 L.CloseVehicle = 'Entering a Vehicle'
@@ -81,13 +84,15 @@ L.CloseMap = 'Opening the World Map'
 -- colors
 L.ColorSettings = 'Color Settings'
 L.ColorSettingsDesc = 'These settings allow you to change how item slots are presented on ADDON frames for easier identification.'
-L.GlowQuality = 'Highlight Items by Quality'
-L.GlowNew = 'Highlight New Items'
-L.GlowQuest = 'Highlight Quest Items'
-L.GlowUnusable = 'Highlight Unusable Items'
-L.GlowSets = 'Highlight Equipment Set Items'
-L.ColorSlots = 'Color Empty Slots by Bag Type'
+L.GlowQuality = 'Color Items by Quality'
+L.GlowQuest = 'Color Quest Items'
+L.GlowUnusable = 'Color Unusable Items'
+L.GlowSets = 'Color Equipment Sets'
+L.GlowNew = 'Flash New Items'
+L.GlowAlpha = 'Glow Brightness'
 
+L.EmptySlots = 'Display Background'
+L.ColorSlots = 'Color by Bag Type'
 L.NormalColor = 'Normal Color'
 L.LeatherColor = 'Leatherworking Color'
 L.InscribeColor = 'Inscription Color'
@@ -99,7 +104,6 @@ L.MineColor = 'Mining Color'
 L.TackleColor = 'Tackle Box Color'
 L.RefrigeColor = 'Refrigerator Color'
 L.ReagentColor = 'Reagent Bank Color'
-L.GlowAlpha = 'Highlight Brightness'
 
 -- rulesets
 L.RuleSettings = 'Item Rulesets'

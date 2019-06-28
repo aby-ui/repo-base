@@ -27,6 +27,8 @@ function Profile:OnInitialize()
             ignoreHash     = {},
             spamWord       = {},
             searchProfiles = {},
+            filters = {
+            }
         },
     }
 
@@ -518,4 +520,14 @@ function Profile:ResetCombatData()
         dd = 0, dt = 0, hd = 0, dead = 0, time = 0,
     }
     return self.cdb.profile.combatData
+end
+
+function Profile:GetFilters(categoryId)
+    return self.gdb.global.filters[categoryId] or {}
+end
+
+function Profile:SetFilters(categoryId, filters)
+    
+    self.gdb.global.filters[categoryId] = filters
+    self:SendMessage('MEETINGSTONE_FILTERS_UPDATE')
 end

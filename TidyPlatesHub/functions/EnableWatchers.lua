@@ -44,7 +44,7 @@ local ThreatFunctionList = {
 	--	ThreatFunctionList[ScaleFunctionsUniversal[LocalVars.ScaleSpotlightMode]] or
 	--	ThreatFunctionList[NameColorFunctions[LocalVars.HeadlineEnemyColor]] or
 	--	ThreatFunctionList[NameColorFunctions[LocalVars.HeadlineFriendlyColor]]
-	--	or LocalVars.ThreatGlowEnable then
+	--	or LocalVars.ThreatGlowEnable2 then
 
 	--		SetCVar("threatWarning", 3)
 	--end

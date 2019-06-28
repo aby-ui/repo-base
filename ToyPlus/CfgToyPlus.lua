@@ -1,6 +1,6 @@
 U1RegisterAddon("ToyPlus", {
     title = "玩具箱",
-    tags = { TAG_MANAGEMENT, TAG_GOOD },
+    tags = { TAG_MANAGEMENT },
     defaultEnable = 0,
 
     desc = "便捷的玩具窗口，再也不用占用动作条位置了",

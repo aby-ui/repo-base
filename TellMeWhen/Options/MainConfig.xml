@@ -65,6 +65,156 @@
 		</Frames>
 	</Frame>
 
+	<Frame name="TellMeWhen_HelpSection" virtual="true" >
+		<Size y="100"/>
+		<KeyValues>
+			<KeyValue key="tmwClass" type="string" value="Config_Frame"/>
+		</KeyValues>
+		
+		<Anchors>
+			<Anchor point="LEFT"/>
+			<Anchor point="RIGHT" />
+		</Anchors>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture parentKey="Background" setAllPoints="true"/>
+				<Texture parentKey="Logo" >
+					<Anchors>
+						<Anchor point="TOPLEFT" x="10" y="-10" />
+						<!-- <Anchor point="BOTTOMRIGHT" y="0.5"/> -->
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY">
+				<FontString parentKey="Header" wordwrap="false" inherits="GameFontNormalHuge3" justifyH="CENTER" alpha="1">
+					<Anchors>
+						<Anchor point="BOTTOM" relativePoint="TOP" y="0"/>
+						<Anchor point="LEFT" x="1" />
+						<Anchor point="RIGHT" x="-1" />
+					</Anchors>
+				</FontString>
+
+				<FontString parentKey="Desc" inherits="GameFontHighlight" justifyH="LEFT">
+					<Anchors>
+						<Anchor point="TOP" y="-10"/>
+						<Anchor point="LEFT" relativeKey="$parent.Logo" relativePoint="RIGHT" x="25" />
+						<Anchor point="RIGHT" x="-20" />
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<EditBox parentKey="Url" inherits="TellMeWhen_InputBoxTemplate" >
+				<Size y="25"/>
+				<Anchors>
+					<Anchor point="TOP" relativeKey="$parent.Desc" relativePoint="BOTTOM" y="-15"/>
+					<Anchor point="LEFT" relativeKey="$parent.Desc" />
+					<Anchor point="RIGHT" relativeKey="$parent.Desc" />
+				</Anchors>
+
+				<Scripts>
+					<OnLoad>
+						TMW:CInit(self)
+						self:SetFontObject(GameFontHighlightLarge)
+					</OnLoad>
+					<OnTextChanged>
+
+						if not self.text then
+							self.text = self:GetText()
+						end
+
+						if not userInput then return end
+
+						self:SetText(self.text)
+					</OnTextChanged>
+				</Scripts>
+			</EditBox>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				TMW:CInit(self)
+				self:Show()
+				self.Background:SetColorTexture(.66, .66, .66, 0.09)
+			</OnLoad>
+			<OnSizeChanged>
+				self:AdjustHeight(10)
+			</OnSizeChanged>
+		</Scripts>
+	</Frame>
+	
+	<Frame parentKey="Help" inherits="TellMeWhen_IE_PageTemplate">
+		<Frames>
+
+			<Frame parentKey="Container">
+				<Anchors>
+					<Anchor point="TOP" y="-5"/>
+					<Anchor point="BOTTOM" y="5"/>
+					<Anchor point="LEFT" x="70" />
+					<Anchor point="RIGHT" x="-70" />
+				</Anchors>
+						
+				<Layers>
+					<Layer level="BACKGROUND">
+						
+<!-- 						
+						<Texture parentKey="discord" file="Interface\AddOns\TellMeWhen\Textures\discord-logo-white">
+							<Size x="128" y="128"/>
+							<Anchors>
+								<Anchor point="TOPLEFT" relativeKey="$parent.github" relativePoint="BOTTOMLEFT" x="-18" y="-0.5"/>
+							</Anchors>
+						</Texture> -->
+					</Layer>
+				</Layers>
+
+				<Frames>
+					<Frame parentKey="Github" inherits="TellMeWhen_HelpSection" >
+						<Size y="100"/>
+
+						<Anchors>
+							<Anchor point="TOP" y="-40" />
+						</Anchors>
+
+						<Scripts>
+							<OnLoad inherit="prepend">
+								self.Logo:SetSize(50, 50)
+								self.Url:SetText("https://git.io/fhbL9")
+								self.Logo:SetTexture("Interface/AddOns/TellMeWhen/Textures/github-mark-light")
+								self.Header:SetText(TMW.L["HELP_ISSUES"])
+								self.Desc:SetText(TMW.L["HELP_ISSUES_DESC"])
+								self:AdjustHeight(10)
+							</OnLoad>
+						</Scripts>
+					</Frame>
+
+					<Frame parentKey="Discord" inherits="TellMeWhen_HelpSection"  >
+						<Size y="100"/>
+						<Anchors>
+							<Anchor point="TOP" relativeKey="$parent.Github" relativePoint="BOTTOM" y="-50" />
+						</Anchors>
+						<Scripts>
+							<OnLoad inherit="prepend">
+								self.Logo:SetSize(64, 64)
+								self.Url:SetText("https://discord.gg/NH7RmcP")
+								self.Logo:SetTexture("Interface/AddOns/TellMeWhen/Textures/discord-logo-white")
+								self.Logo:SetPoint("TOPLEFT", 5, -5)
+								self.Header:SetText(TMW.L["HELP_COMMUNITY"])
+								self.Desc:SetText(TMW.L["HELP_COMMUNITY_DESC"])
+								self:AdjustHeight(10)
+							</OnLoad>
+						</Scripts>
+					</Frame>
+				</Frames>
+				<Scripts>
+					<OnLoad>
+						TMW:ConvertContainerToScrollFrame(self, false, 0, 12)
+						self.ScrollFrame:SetWheelStepAmount(25)
+					</OnLoad>
+				</Scripts>
+			</Frame>
+
+		</Frames>
+	</Frame>
+
 
 	<Frame parentKey="Main" inherits="TellMeWhen_IE_PageTemplate">
 		<Frames>
@@ -205,6 +355,24 @@
 					</OnLoad>
 				</Scripts>
 			</Slider>
+
+			<Button parentKey="OpenProfiling" inherits="TellMeWhen_ButtonTemplate">
+				<Anchors>
+					<Anchor point="TOP" relativeKey="$parent.Interval" />
+					<Anchor point="RIGHT" x="-10" />
+					<Anchor point="LEFT" relativePoint="CENTER" x="10" />
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						self:SetText(TMW.L["UIPANEL_OPENCPUPROFILE"], TMW.L["UIPANEL_OPENCPUPROFILE_DESC"])
+						self:SetWidth(self:GetTextWidth()+15)
+					</OnLoad>
+					<OnClick>
+						TMW:SlashCommand("cpu")
+					</OnClick>
+				</Scripts>
+			</Button>
+
 			<!-- No longer applicable in WoW BfA - UnitAura doesn't allow query by name anymore. -->
 			<!-- <Slider parentKey="EffThreshold" inherits="TellMeWhen_SliderTemplate">
 				<Anchors>

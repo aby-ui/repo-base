@@ -1,6 +1,6 @@
 <!--
 	Kaliel's Tracker
-	Copyright (c) 2012-2018, Marouan Sabbagh <mar.sabbagh@gmail.com>
+	Copyright (c) 2012-2019, Marouan Sabbagh <mar.sabbagh@gmail.com>
 	All Rights Reserved.
 
 	This file is part of addon Kaliel's Tracker.
@@ -59,4 +59,79 @@
             </OnLoad>
         </Scripts>
     </Frame>
+
+    <ScrollFrame name="KT_BonusObjectiveTrackerBlockTemplate" hidden="true" virtual="true" alpha="0">
+        <Size x="240" y="10"/>
+        <Frames>
+            <Button parentKey="TrackedQuest">
+                <Layers>
+                    <Layer level="BACKGROUND" textureSubLevel="-2">
+                        <Texture parentKey="Glow" alphaMode="ADD" file="Interface/WorldMap/UI-QuestPoi-IconGlow">
+                            <Size x="50" y="50" />
+                            <Anchors>
+                                <Anchor point="CENTER" />
+                            </Anchors>
+                        </Texture>
+                    </Layer>
+                    <Layer level="BACKGROUND" textureSubLevel="-1">
+                        <Texture parentKey="Underlay">
+                            <Size x="34" y="34" />
+                            <Anchors>
+                                <Anchor point="CENTER" y="-2" />
+                            </Anchors>
+                        </Texture>
+                    </Layer>
+                    <Layer level="OVERLAY">
+                        <Texture parentKey="Texture">
+                            <Anchors>
+                                <Anchor point="CENTER" />
+                            </Anchors>
+                        </Texture>
+                    </Layer>
+                    <Layer level="OVERLAY" textureSubLevel="2">
+                        <Texture parentKey="SelectedGlow" alphaMode="ADD" />
+                    </Layer>
+                </Layers>
+                <Scripts>
+                    <OnLoad>
+                        self:RegisterForClicks("LeftButtonUp", "RightButtonUp");
+                    </OnLoad>
+                    <OnClick>
+                        PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON);
+                        SetSuperTrackedQuestID(self.questID);
+                        WorldMapPing_StartPingQuest(self.questID);
+                    </OnClick>
+                </Scripts>
+            </Button>
+        </Frames>
+        <ScrollChild>
+            <Frame parentKey="ScrollContents">
+                <Size x="10" y="10"/>
+            </Frame>
+        </ScrollChild>
+        <Animations>
+            <AnimationGroup parentKey="AnimIn">
+                <Translation parentKey="TransOut" childKey="ScrollContents" offsetX="0" offsetY="0" duration="0.01" endDelay="0" order="1"/>
+                <Alpha fromAlpha="0" toAlpha="1" duration="0.1" order="2"/>
+                <Translation parentKey="TransIn" childKey="ScrollContents" offsetX="0" offsetY="0" duration="0" order="2"/>
+                <Scripts>
+                    <OnFinished function="BonusObjectiveTracker_OnBlockAnimInFinished"/>
+                </Scripts>
+            </AnimationGroup>
+            <AnimationGroup parentKey="AnimOut">
+                <Alpha fromAlpha="1" toAlpha="0" duration="0.5" startDelay="3.5" order="1"/>
+                <Scripts>
+                    <OnFinished function="BonusObjectiveTracker_OnBlockAnimOutFinished"/>
+                </Scripts>
+            </AnimationGroup>
+        </Animations>
+        <Scripts>
+            <OnLoad>
+                self:SetWidth(OBJECTIVE_TRACKER_LINE_WIDTH);
+            </OnLoad>
+            <OnEnter function="BonusObjectiveTracker_OnBlockEnter"/>
+            <OnLeave function="BonusObjectiveTracker_OnBlockLeave"/>
+            <OnMouseUp function="BonusObjectiveTracker_OnBlockClick" />
+        </Scripts>
+    </ScrollFrame>
 </Ui>

@@ -1,11 +1,11 @@
-## Interface: 80000
+## Interface: 80200
 ## Title: GridStatusRaidDebuff
 ## Notes: Adds a status to Grid for debuffs applied by Raid Bosses.
 ## Notes-ruRU: Дополнительный модуль для Gridа, отображает дебаффы рейдовых боссов.
 ## Notes-zhCN: [Grid] 在 Grid 添加团队减益状态提示。
 ## Notes-zhTW: [Grid] 在 Grid 添加團隊減益狀態提示。
 ## Author: Azelkeeber(KR-Tirion),Toadkiller,Stassart,tptbk(Doadin-Malorne-US)
-## Version: 8.0.1.4
+## Version: 8.2.0.0
 ## Grid Author: Pastamancer & Maia
 ## Dependencies: Grid
 ## OptionalDeps: LibBabble-Zone-3.0, LibBabble-Boss-3.0, AceLocale-3.0

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(283, "DBM-Party-Cataclysm", 12, 184)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 174 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 195 $"):sub(12, -3))
 mod:SetCreatureID(54544)
 mod:SetEncounterID(1884)
 mod:SetZone()
@@ -18,7 +18,7 @@ mod.onlyHeroic = true
 local warnGuidance		= mod:NewSpellAnnounce(102472, 3)
 local warnGuidanceStack	= mod:NewCountAnnounce(102472, 2, nil, false)
 
-local specwarnStardust	= mod:NewSpecialWarningInterrupt(102173, "HasInterrupt")
+local specwarnStardust	= mod:NewSpecialWarningInterrupt(102173, "HasInterrupt", nil, nil, 1, 2)
 
 local timerGuidance		= mod:NewNextTimer(20, 102472)
 
@@ -33,7 +33,8 @@ function mod:SPELL_CAST_START(args)
 	if args.spellId == 102472 then
 		warnGuidance:Show()
 		timerGuidance:Start()
-	elseif args.spellId == 102173 then
+	elseif args.spellId == 102173 and self:CheckInterruptFilter(args.sourceGUID, false, true) then
 		specwarnStardust:Show(args.sourceName)
+		specwarnStardust:Play("kickcast")
 	end
 end

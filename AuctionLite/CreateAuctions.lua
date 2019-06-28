@@ -92,7 +92,7 @@ function AuctionLite:StartAuctions(bid, buyout, time, size, stacks, name, link)
     MultisellError = false;
 
     -- Start the new auction, ignoring console spam.
-    StartAuction(bid, buyout, time, size, stacks);
+    PostAuction(bid, buyout, time, size, stacks);
     self:IgnoreMessage(ERR_AUCTION_STARTED, stacks);
 
     -- If it's a multisell, wait for it to complete.  Note that we might

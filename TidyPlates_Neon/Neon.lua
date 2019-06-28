@@ -1,4 +1,3 @@
-
 ---------------------------------------------
 -- Style Definition
 ---------------------------------------------
@@ -293,6 +292,8 @@ StyleTextOnly.eliteicon.texture = EmptyTexture
 StyleTextOnly.customtext.size = fontsize - 2
 StyleTextOnly.customtext.flags = "NONE"
 StyleTextOnly.customtext.y = VerticalAdjustment-8
+StyleTextOnly.customtext.align = "CENTER"
+StyleTextOnly.customtext.anchor = "CENTER"
 StyleTextOnly.name.size = fontsize
 StyleTextOnly.name.y = VerticalAdjustment + 1
 StyleTextOnly.level.show = false

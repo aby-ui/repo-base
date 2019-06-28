@@ -72,5 +72,6 @@ local ThisAddon, AddonDB = ...
     AddonDB[2] = GlobalDatabase                                                     -- Global Database
     AddonDB[3] = SavedVars                                                          -- Profile Saved Variables
     AddonDB[4] = LocalizedText                                                      -- Localized text
+    AddonDB[5] = CopyTable(SavedVars)                                               -- Default Old Values
 
 ----------------------------------------------------------------------------------------------------<<END>>

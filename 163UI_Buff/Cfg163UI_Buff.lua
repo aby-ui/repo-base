@@ -22,9 +22,8 @@ U1RegisterAddon("163UI_Buff", {
     },
     {
         text = "玩家增益时间设置", type = "text",
-        U1CfgMakeCVarOption("显示BUFF持续时间", "buffDurations", {
+        U1CfgMakeCVarOption("显示BUFF持续时间", "buffDurations", 1, {
             tip = "说明`请通过默认的设置界面进行设置",
-            default = 1,
             reload = 1,
             {
                 var = "na",
@@ -77,7 +76,7 @@ U1RegisterAddon("163UI_Buff", {
 
     {
         text = "目标增益减益设置", type = "text",
-        U1CfgMakeCVarOption("显示目标所有BUFF/DEBUFF", "noBuffDebuffFilterOnTarget", {
+        U1CfgMakeCVarOption("显示目标所有BUFF/DEBUFF", "noBuffDebuffFilterOnTarget", nil, {
             tip = "说明`显示所有状态而不仅仅是你施放的。",
             reload = false,
         }),

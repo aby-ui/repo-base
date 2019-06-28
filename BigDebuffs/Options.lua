@@ -1,5 +1,6 @@
 local BigDebuffs = LibStub("AceAddon-3.0"):GetAddon("BigDebuffs")
 local L = LibStub("AceLocale-3.0"):GetLocale("BigDebuffs")
+local SM = LibStub("LibSharedMedia-3.0")
 
 local WarningDebuffs = {}
 for i = 1, #BigDebuffs.WarningDebuffs do
@@ -250,6 +251,13 @@ function BigDebuffs:SetupOptions()
 						desc = L["Redirects other debuffs to the BigDebuffs anchor"],
 						order = 3,
 					},
+					increaseBuffs = {
+						type = "toggle",
+						width = "double",
+						name = L["Increase Maximum Buffs"],
+						desc = L["Sets the maximum buffs to 6"],
+						order = 4,
+					},
 					cooldownCount = {
 						type = "toggle",
 						width = "normal",
@@ -257,12 +265,39 @@ function BigDebuffs:SetupOptions()
 						desc = L["Allow Blizzard and other addons to display countdown text on the icons"],
 						order = 5,
 					},
-					increaseBuffs = {
-						type = "toggle",
-						width = "double",
-						name = L["Increase Maximum Buffs"],
-						desc = L["Sets the maximum buffs to 6"],
-						order = 4,
+					cooldownFont = {
+						type = "select",
+						name = L["Font"], 
+						desc = L["Select font for cd timers"],
+						order = 6,
+						values = function()
+							local fonts, newFonts = SM:List("font"), {}
+							for k, v in pairs(fonts) do
+								newFonts[v] = v
+							end
+							return newFonts
+						end,
+					},
+					cooldownFontSize = {
+						type = "range",
+						name = L["Font Size"],
+						desc = L["Set the cd timers font size"],
+						min = 1,
+						max = 30,
+						step = 1,
+						order = 7,
+					},
+					cooldownFontEffect = {
+						type = "select",
+						name = L["Font Effect"],
+						desc = L["Set the cd timers font effect"],
+						values = {
+							["MONOCHROME"] = "MONOCHROME",
+							["OUTLINE"] = "OUTLINE",
+							["THICKOUTLINE"] = "THICKOUTLINE",
+							[""] = "NONE",
+						},
+						order = 7,
 					},
 					maxDebuffs = {
 						type = "range",
@@ -384,6 +419,43 @@ function BigDebuffs:SetupOptions()
 						type = "group",
 						inline = true,
 						args = WarningDebuffs,
+					},
+					inRaid = {
+						name = L["Extras"],
+						order = 40,
+						type = "group",
+						inline = true,
+						get = function(info)
+							local name = info[#info]
+							return self.db.profile.raidFrames.inRaid[name]
+						end,
+						set = function(info, value)
+							local name = info[#info]
+							self.db.profile.raidFrames.inRaid[name] = value
+							self:Refresh()
+						end,
+						args = {
+							hide = {
+								name = L["Hide in Raids"],
+								desc = L["Hide BigDebuffs in Raids"],
+								type = "toggle",
+								order = 1
+							},
+							size = {
+								type = "range",
+								disabled = function(info)
+									local name = info[2]
+									return not self.db.profile.raidFrames[name].hide
+								end,
+								name = L["Group Size"],
+								desc = L["Hides BigDebuffs for groups larger than group size"],
+								width = "double",
+								min = 5,
+								max = 40,
+								step = 5,
+								order = 2
+							}
+						}
 					}
 
 				}
@@ -412,12 +484,46 @@ function BigDebuffs:SetupOptions()
 						desc = L["Allow Blizzard and other addons to display countdown text on the icons"],
 						order = 2,
 					},
+					cooldownFont = {
+						type = "select",
+						name = L["Font"], 
+						desc = L["Select font for cd timers"],
+						order = 3,
+						values = function()
+							local fonts, newFonts = SM:List("font"), {}
+							for k, v in pairs(fonts) do
+								newFonts[v] = v
+							end
+							return newFonts
+						end,
+					},
+					cooldownFontSize = {
+						type = "range",
+						name = L["Font Size"],
+						desc = L["Set the cd timers font size"],
+						min = 1,
+						max = 30,
+						step = 1,
+						order = 4,
+					},
+					cooldownFontEffect = {
+						type = "select",
+						name = L["Font Effect"],
+						desc = L["Set the cd timers font effect"],
+						values = {
+							["MONOCHROME"] = "MONOCHROME",	
+							["OUTLINE"] = "OUTLINE",
+							["THICKOUTLINE"] = "THICKOUTLINE",
+							[""] = "NONE",
+						},
+						order = 5,
+					},
 					tooltips = {
 						type = "toggle",
 						width = "full",
 						name = L["Show Tooltips"],
 						desc = L["Show spell information when mousing over the icon"],
-						order = 3,
+						order = 6,
 					},
 					player = {
 						type = "group",

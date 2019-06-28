@@ -55,20 +55,139 @@ local function getAuraMatchesList(name)
   end
 end
 
-function WeakAuras.GetBuffTriggerOptions(data, trigger)
+function WeakAuras.GetBuffConversionOptions(data, optionTriggerChoices)
+  local trigger;
+  if (not data.controlledChildren) then
+    local triggernum = optionTriggerChoices[data.id];
+    if (triggernum) then
+      trigger = data.triggers[triggernum].trigger;
+    end
+  end
+  local aura_options = {
+    convertToBuffTrigger2SpaceBefore = {
+      type = "description",
+      width = 0.3,
+      order = 8.4,
+      name = "",
+      hidden = function()
+        -- For those that update without restarting
+        return not WeakAuras.CanConvertBuffTrigger2
+      end,
+    },
+    convertToBuffTrigger2 = {
+      type = "execute",
+      width = WeakAuras.doubleWidth - 0.6,
+      name = L["Convert to New Aura Trigger"],
+      order = 8.5,
+      hidden = function()
+        -- For those that update without restarting
+        return not WeakAuras.CanConvertBuffTrigger2
+      end,
+      disabled = function()
+        if (not WeakAuras.CanConvertBuffTrigger2) then
+          return true;
+        end
+        if (not WeakAuras.CanConvertBuffTrigger2(trigger)) then
+          return true;
+        end
+        return false;
+      end,
+      desc = function()
+        local _, err = WeakAuras.CanConvertBuffTrigger2(trigger);
+        return err or ""
+      end,
+      func = function()
+        if(data.controlledChildren) then
+          for index, childId in pairs(data.controlledChildren) do
+            local childData = WeakAuras.GetData(childId);
+            local trigger = childData.triggers[optionTriggerChoices[childId]] and childData.triggers[optionTriggerChoices[childId]].trigger;
+            if (trigger) then
+              WeakAuras.ConvertBuffTrigger2(trigger);
+              WeakAuras.Add(childData);
+              WeakAuras.ReloadTriggerOptions(childData);
+            end
+          end
+          WeakAuras.Add(data);
+          WeakAuras.ReloadTriggerOptions(data);
+        else
+          WeakAuras.ConvertBuffTrigger2(trigger);
+          WeakAuras.Add(data);
+          WeakAuras.ReloadTriggerOptions(data);
+        end
+      end
+    },
+    convertToBuffTrigger2SpaceAfter = {
+      type = "description",
+      width = 0.3,
+      order = 8.6,
+      name = "",
+      hidden = function()
+        -- For those that update without restarting
+        return not WeakAuras.CanConvertBuffTrigger2
+      end,
+    },
+    convertToBuffTrigger2SpaceBeforeDesc = {
+      type = "description",
+      width = 0.4,
+      order = 8.1,
+      name = "",
+      hidden = function()
+        -- For those that update without restarting
+        return not WeakAuras.CanConvertBuffTrigger2
+      end,
+    },
+    convertToBuffTrigger2Desc = {
+      type = "description",
+      width = WeakAuras.doubleWidth - 0.8,
+      order = 8.2,
+      name = function()
+        if (not WeakAuras.CanConvertBuffTrigger2) then
+          return "";
+        end
+        local _, err = WeakAuras.CanConvertBuffTrigger2(trigger);
+        return err or "";
+      end,
+      hidden = function()
+        -- For those that update without restarting
+        return not WeakAuras.CanConvertBuffTrigger2
+      end,
+    },
+    convertToBuffTrigger2SpaceAfterDesc = {
+      type = "description",
+      width = 0.4,
+      order = 8.3,
+      name = "",
+      hidden = function()
+        -- For those that update without restarting
+        return not WeakAuras.CanConvertBuffTrigger2
+      end,
+    },
+  }
+  return aura_options;
+end
+
+local function GetBuffTriggerOptions(data, optionTriggerChoices)
+  local trigger;
+  if (not data.controlledChildren) then
+    local triggernum = optionTriggerChoices[data.id];
+    if (triggernum) then
+      trigger = data.triggers[triggernum].trigger;
+    end
+  end
+
   local spellCache = WeakAuras.spellCache;
   local ValidateNumeric = WeakAuras.ValidateNumeric;
   local aura_options = {
     fullscan = {
       type = "toggle",
       name = L["Use Full Scan (High CPU)"],
-      width = "double",
+      width = WeakAuras.doubleWidth,
       order = 9,
     },
     autoclone = {
       type = "toggle",
       name = L["Show all matches (Auto-clone)"],
-      width = "double",
+      width = WeakAuras.doubleWidth,
       hidden = function() return not (trigger.type == "aura" and trigger.fullscan); end,
       set = function(info, v)
         trigger.autoclone = v;
@@ -85,7 +204,7 @@ function WeakAuras.GetBuffTriggerOptions(data, trigger)
     useName = {
       type = "toggle",
       name = L["Aura(s)"],
-      width = "half",
+      width = WeakAuras.halfWidth,
       order = 10,
       hidden = function() return not (trigger.type == "aura" and not trigger.fullscan and trigger.unit ~= "multi"); end,
       disabled = true,
@@ -93,12 +212,14 @@ function WeakAuras.GetBuffTriggerOptions(data, trigger)
     },
     use_name = {
       type = "toggle",
+      width = WeakAuras.normalWidth,
       name = L["Aura Name"],
       order = 10,
       hidden = function() return not (trigger.type == "aura" and trigger.fullscan); end
     },
     name_operator = {
       type = "select",
+      width = WeakAuras.normalWidth,
       name = L["Operator"],
       order = 11,
       disabled = function() return not trigger.use_name end,
@@ -108,7 +229,7 @@ function WeakAuras.GetBuffTriggerOptions(data, trigger)
     name = {
       type = "input",
       name = L["Aura Name"],
-      width = "double",
+      width = WeakAuras.doubleWidth,
       order = 12,
       disabled = function() return not trigger.use_name end,
       hidden = function() return not (trigger.type == "aura" and trigger.fullscan); end,
@@ -128,12 +249,14 @@ function WeakAuras.GetBuffTriggerOptions(data, trigger)
     },
     use_tooltip = {
       type = "toggle",
+      width = WeakAuras.normalWidth,
       name = L["Tooltip"],
       order = 13,
       hidden = function() return not (trigger.type == "aura" and trigger.fullscan and trigger.unit ~= "multi"); end
     },
     tooltip_operator = {
       type = "select",
+      width = WeakAuras.normalWidth,
       name = L["Operator"],
       order = 14,
       disabled = function() return not trigger.use_tooltip end,
@@ -142,21 +265,21 @@ function WeakAuras.GetBuffTriggerOptions(data, trigger)
     },
     tooltip = {
       type = "input",
+      width = WeakAuras.doubleWidth,
       name = L["Tooltip"],
-      width = "double",
       order = 15,
       disabled = function() return not trigger.use_tooltip end,
       hidden = function() return not (trigger.type == "aura" and trigger.fullscan and trigger.unit ~= "multi"); end
     },
     use_stealable = {
       type = "toggle",
+      width = WeakAuras.doubleWidth,
       name = function(input)
         local value = trigger.use_stealable;
         if(value == nil) then return L["Stealable"];
         elseif(value == false) then return "|cFFFF0000 "..L["Negator"].." "..L["Stealable"];
         else return "|cFF00FF00"..L["Stealable"]; end
       end,
-      width = "double",
       order = 16,
       hidden = function() return not (trigger.type == "aura" and trigger.fullscan and trigger.unit ~= "multi"); end,
       get = function()
@@ -179,12 +302,14 @@ function WeakAuras.GetBuffTriggerOptions(data, trigger)
     },
     use_spellId = {
       type = "toggle",
+      width = WeakAuras.normalWidth,
       name = L["Spell ID"],
       order = 17,
       hidden = function() return not (trigger.type == "aura" and trigger.fullscan and trigger.unit ~= "multi"); end
     },
     spellId = {
       type = "input",
+      width = WeakAuras.normalWidth,
       name = L["Spell ID"],
       order = 18,
       disabled = function() return not trigger.use_spellId end,
@@ -192,12 +317,14 @@ function WeakAuras.GetBuffTriggerOptions(data, trigger)
     },
     use_debuffClass = {
       type = "toggle",
+      width = WeakAuras.normalWidth,
       name = L["Debuff Type"],
       order = 19,
       hidden = function() return not (trigger.type == "aura" and trigger.fullscan); end
     },
     debuffClass = {
       type = "select",
+      width = WeakAuras.normalWidth,
       name = L["Debuff Type"],
       order = 20,
       disabled = function() return not trigger.use_debuffClass end,
@@ -206,8 +333,8 @@ function WeakAuras.GetBuffTriggerOptions(data, trigger)
     },
     multiuse_name = {
       type = "toggle",
+      width = WeakAuras.halfWidth,
       name = L["Aura Name"],
-      width = "half",
       order = 10,
       hidden = function() return not (trigger.type == "aura" and not trigger.fullscan and trigger.unit == "multi"); end,
       disabled = true,
@@ -215,8 +342,8 @@ function WeakAuras.GetBuffTriggerOptions(data, trigger)
     },
     multiicon = {
       type = "execute",
+      width = WeakAuras.halfWidth,
       name = "",
-      width = "half",
       image = function()
         if (not trigger.name) then return "" end;
         local icon =  spellCache.GetIcon(trigger.name);
@@ -227,6 +354,7 @@ function WeakAuras.GetBuffTriggerOptions(data, trigger)
     },
     multiname = {
       type = "input",
+      width = WeakAuras.normalWidth,
       name = L["Aura Name"],
       desc = L["Enter an aura name, partial aura name, or spell id"],
       order = 12,
@@ -247,9 +375,9 @@ function WeakAuras.GetBuffTriggerOptions(data, trigger)
     },
     name1icon = {
       type = "execute",
+      width = WeakAuras.halfWidth,
       name = function() return getAuraMatchesLabel(trigger.names[1]) end,
       desc = function() return getAuraMatchesList(trigger.names[1]) end,
-      width = "half",
       image = function()
         local icon = spellCache.GetIcon(trigger.names[1]);
         return icon and tostring(icon) or "", 18, 18
@@ -260,6 +388,7 @@ function WeakAuras.GetBuffTriggerOptions(data, trigger)
     },
     name1 = {
       type = "input",
+      width = WeakAuras.normalWidth,
       name = L["Aura Name"],
       desc = L["Enter an aura name, partial aura name, or spell id"],
       order = 12,
@@ -282,17 +411,17 @@ function WeakAuras.GetBuffTriggerOptions(data, trigger)
     },
     name2space = {
       type = "execute",
+      width = WeakAuras.halfWidth,
       name = L["or"],
-      width = "half",
       image = function() return "", 0, 0 end,
       order = 13,
       hidden = function() return not (trigger.type == "aura" and trigger.names[1] and not trigger.fullscan and trigger.unit ~= "multi"); end,
     },
     name2icon = {
       type = "execute",
+      width = WeakAuras.halfWidth,
       name = function() return getAuraMatchesLabel(trigger.names[2]) end,
       desc = function() return getAuraMatchesList(trigger.names[2]) end,
-      width = "half",
       image = function()
         local icon = spellCache.GetIcon(trigger.names[2]);
         return icon and tostring(icon) or "", 18, 18
@@ -303,6 +432,7 @@ function WeakAuras.GetBuffTriggerOptions(data, trigger)
     },
     name2 = {
       type = "input",
+      width = WeakAuras.normalWidth,
       order = 15,
       name = "",
       hidden = function() return not (trigger.type == "aura" and trigger.names[1] and not trigger.fullscan and trigger.unit ~= "multi"); end,
@@ -324,17 +454,17 @@ function WeakAuras.GetBuffTriggerOptions(data, trigger)
     },
     name3space = {
       type = "execute",
+      width = WeakAuras.halfWidth,
       name = "",
-      width = "half",
       image = function() return "", 0, 0 end,
       order = 16,
       hidden = function() return not (trigger.type == "aura" and trigger.names[2] and not trigger.fullscan and trigger.unit ~= "multi"); end,
     },
     name3icon = {
       type = "execute",
+      width = WeakAuras.halfWidth,
       name = function() return getAuraMatchesLabel(trigger.names[3]) end,
       desc = function() return getAuraMatchesList(trigger.names[3]) end,
-      width = "half",
       image = function()
         local icon = spellCache.GetIcon(trigger.names[3]);
         return icon and tostring(icon) or "", 18, 18
@@ -345,6 +475,7 @@ function WeakAuras.GetBuffTriggerOptions(data, trigger)
     },
     name3 = {
       type = "input",
+      width = WeakAuras.normalWidth,
       order = 18,
       name = "",
       hidden = function() return not (trigger.type == "aura" and trigger.names[2] and not trigger.fullscan and trigger.unit ~= "multi"); end,
@@ -366,17 +497,17 @@ function WeakAuras.GetBuffTriggerOptions(data, trigger)
     },
     name4space = {
       type = "execute",
+      width = WeakAuras.halfWidth,
       name = "",
-      width = "half",
       image = function() return "", 0, 0 end,
       order = 19,
       hidden = function() return not (trigger.type == "aura" and trigger.names[3] and not trigger.fullscan and trigger.unit ~= "multi"); end,
     },
     name4icon = {
       type = "execute",
+      width = WeakAuras.halfWidth,
       name = function() return getAuraMatchesLabel(trigger.names[4]) end,
       desc = function() return getAuraMatchesList(trigger.names[4]) end,
-      width = "half",
       image = function()
         local icon = spellCache.GetIcon(trigger.names[4]);
         return icon and tostring(icon) or "", 18, 18
@@ -408,8 +539,8 @@ function WeakAuras.GetBuffTriggerOptions(data, trigger)
     },
     name5space = {
       type = "execute",
+      width = WeakAuras.halfWidth,
       name = "",
-      width = "half",
       image = function() return "", 0, 0 end,
       order = 22,
       disabled = function() return not spellCache.GetIcon(trigger.names[5]) end,
@@ -417,9 +548,9 @@ function WeakAuras.GetBuffTriggerOptions(data, trigger)
     },
     name5icon = {
       type = "execute",
+      width = WeakAuras.halfWidth,
       name = function() return getAuraMatchesLabel(trigger.names[5]) end,
       desc = function() return getAuraMatchesList(trigger.names[5]) end,
-      width = "half",
       image = function()
         local icon = spellCache.GetIcon(trigger.names[5]);
         return icon and tostring(icon) or "", 18, 18
@@ -429,6 +560,7 @@ function WeakAuras.GetBuffTriggerOptions(data, trigger)
     },
     name5 = {
       type = "input",
+      width = WeakAuras.normalWidth,
       order = 24,
       name = "",
       hidden = function() return not (trigger.type == "aura" and trigger.names[4] and not trigger.fullscan and trigger.unit ~= "multi"); end,
@@ -451,7 +583,7 @@ function WeakAuras.GetBuffTriggerOptions(data, trigger)
     name6space = {
       type = "execute",
       name = "",
-      width = "half",
+      width = WeakAuras.halfWidth,
       image = function() return "", 0, 0 end,
       order = 25,
       hidden = function() return not (trigger.type == "aura" and trigger.names[5] and not trigger.fullscan and trigger.unit ~= "multi"); end,
@@ -460,7 +592,7 @@ function WeakAuras.GetBuffTriggerOptions(data, trigger)
       type = "execute",
       name = function() return getAuraMatchesLabel(trigger.names[6]) end,
       desc = function() return getAuraMatchesList(trigger.names[6]) end,
-      width = "half",
+      width = WeakAuras.halfWidth,
       image = function()
         local icon = spellCache.GetIcon(trigger.names[6]);
         return icon and tostring(icon) or "", 18, 18
@@ -471,6 +603,7 @@ function WeakAuras.GetBuffTriggerOptions(data, trigger)
     },
     name6 = {
       type = "input",
+      width = WeakAuras.normalWidth,
       order = 27,
       name = "",
       hidden = function() return not (trigger.type == "aura" and trigger.names[5] and not trigger.fullscan and trigger.unit ~= "multi"); end,
@@ -493,7 +626,7 @@ function WeakAuras.GetBuffTriggerOptions(data, trigger)
     name7space = {
       type = "execute",
       name = "",
-      width = "half",
+      width = WeakAuras.halfWidth,
       image = function() return "", 0, 0 end,
       order = 28,
       hidden = function() return not (trigger.type == "aura" and trigger.names[6] and not trigger.fullscan and trigger.unit ~= "multi"); end,
@@ -502,7 +635,7 @@ function WeakAuras.GetBuffTriggerOptions(data, trigger)
       type = "execute",
       name = function() return getAuraMatchesLabel(trigger.names[7]) end,
       desc = function() return getAuraMatchesList(trigger.names[7]) end,
-      width = "half",
+      width = WeakAuras.halfWidth,
       image = function()
         local icon = spellCache.GetIcon(trigger.names[7]);
         return icon and tostring(icon) or "", 18, 18
@@ -513,6 +646,7 @@ function WeakAuras.GetBuffTriggerOptions(data, trigger)
     },
     name7 = {
       type = "input",
+      width = WeakAuras.normalWidth,
       order = 30,
       name = "",
       hidden = function() return not (trigger.type == "aura" and trigger.names[6] and not trigger.fullscan and trigger.unit ~= "multi"); end,
@@ -535,7 +669,7 @@ function WeakAuras.GetBuffTriggerOptions(data, trigger)
     name8space = {
       type = "execute",
       name = "",
-      width = "half",
+      width = WeakAuras.halfWidth,
       image = function() return "", 0, 0 end,
       order = 31,
       hidden = function() return not (trigger.type == "aura" and trigger.names[7] and not trigger.fullscan and trigger.unit ~= "multi"); end,
@@ -544,7 +678,7 @@ function WeakAuras.GetBuffTriggerOptions(data, trigger)
       type = "execute",
       name = function() return getAuraMatchesLabel(trigger.names[8]) end,
       desc = function() return getAuraMatchesList(trigger.names[8]) end,
-      width = "half",
+      width = WeakAuras.halfWidth,
       image = function()
         local icon = spellCache.GetIcon(trigger.names[8]);
         return icon and tostring(icon) or "", 18, 18
@@ -555,6 +689,7 @@ function WeakAuras.GetBuffTriggerOptions(data, trigger)
     },
     name8 = {
       type = "input",
+      width = WeakAuras.normalWidth,
       order = 33,
       name = "",
       hidden = function() return not (trigger.type == "aura" and trigger.names[7] and not trigger.fullscan and trigger.unit ~= "multi"); end,
@@ -577,7 +712,7 @@ function WeakAuras.GetBuffTriggerOptions(data, trigger)
     name9space = {
       type = "execute",
       name = "",
-      width = "half",
+      width = WeakAuras.halfWidth,
       image = function() return "", 0, 0 end,
       order = 34,
       hidden = function() return not (trigger.type == "aura" and trigger.names[8] and not trigger.fullscan and trigger.unit ~= "multi"); end,
@@ -586,7 +721,7 @@ function WeakAuras.GetBuffTriggerOptions(data, trigger)
       type = "execute",
       name = function() return getAuraMatchesLabel(trigger.names[9]) end,
       desc = function() return getAuraMatchesList(trigger.names[9]) end,
-      width = "half",
+      width = WeakAuras.halfWidth,
       image = function()
         local icon = spellCache.GetIcon(trigger.names[9]);
         return icon and tostring(icon) or "", 18, 18
@@ -597,6 +732,7 @@ function WeakAuras.GetBuffTriggerOptions(data, trigger)
     },
     name9 = {
       type = "input",
+      width = WeakAuras.normalWidth,
       order = 36,
       name = "",
       hidden = function() return not (trigger.type == "aura" and trigger.names[8] and not trigger.fullscan and trigger.unit ~= "multi"); end,
@@ -618,6 +754,7 @@ function WeakAuras.GetBuffTriggerOptions(data, trigger)
     },
     useUnit = {
       type = "toggle",
+      width = WeakAuras.normalWidth,
       name = L["Unit"],
       order = 40,
       disabled = true,
@@ -626,6 +763,7 @@ function WeakAuras.GetBuffTriggerOptions(data, trigger)
     },
     unit = {
       type = "select",
+      width = WeakAuras.normalWidth,
       name = L["Unit"],
       order = 41,
       values = function()
@@ -656,6 +794,7 @@ function WeakAuras.GetBuffTriggerOptions(data, trigger)
     },
     useSpecificUnit = {
       type = "toggle",
+      width = WeakAuras.normalWidth,
       name = L["Specific Unit"],
       order = 42,
       disabled = true,
@@ -664,13 +803,15 @@ function WeakAuras.GetBuffTriggerOptions(data, trigger)
     },
     specificUnit = {
       type = "input",
+      width = WeakAuras.normalWidth,
       name = L["Specific Unit"],
       order = 43,
-      desc = L["Can be a name or a UID (e.g., party1). A name only works on friendly players in your group."],
+      desc = L["Can be a Name or a Unit ID (e.g. party1). A name only works on friendly players in your group."],
       hidden = function() return not (trigger.type == "aura" and trigger.unit == "member") end
     },
     useGroup_count = {
       type = "toggle",
+      width = WeakAuras.normalWidth,
       name = L["Group Member Count"],
       disabled = true,
       hidden = function() return not (trigger.type == "aura" and trigger.unit == "group"); end,
@@ -681,7 +822,7 @@ function WeakAuras.GetBuffTriggerOptions(data, trigger)
       type = "select",
       name = L["Operator"],
       order = 46,
-      width = "half",
+      width = WeakAuras.halfWidth,
       values = operator_types,
       hidden = function() return not (trigger.type == "aura" and trigger.unit == "group"); end,
       get = function() return trigger.group_countOperator; end
@@ -694,7 +835,7 @@ function WeakAuras.GetBuffTriggerOptions(data, trigger)
         return L["Group aura count description"]:format(groupType, groupType, groupType, groupType, groupType, groupType, groupType);
       end,
       order = 47,
-      width = "half",
+      width = WeakAuras.halfWidth,
       hidden = function() return not (trigger.type == "aura" and trigger.unit == "group"); end,
       get = function() return trigger.group_count; end,
       set = function(info, v)
@@ -711,12 +852,14 @@ function WeakAuras.GetBuffTriggerOptions(data, trigger)
     },
     useGroupRole = {
       type = "toggle",
+      width = WeakAuras.normalWidth,
       name = L["Filter by Group Role"],
       order = 47.1,
       hidden = function() return not (trigger.type == "aura" and trigger.unit == "group"); end,
     },
     group_role = {
       type = "select",
+      width = WeakAuras.normalWidth,
       name = L["Group Role"],
       values = WeakAuras.role_types,
       hidden = function() return not (trigger.type == "aura" and trigger.unit == "group"); end,
@@ -728,13 +871,13 @@ function WeakAuras.GetBuffTriggerOptions(data, trigger)
       type = "toggle",
       name = L["Ignore self"],
       order = 47.3,
-      width = "double",
+      width = WeakAuras.doubleWidth,
       hidden = function() return not (trigger.type == "aura" and trigger.unit == "group"); end,
     },
     groupclone = {
       type = "toggle",
       name = L["Show all matches (Auto-clone)"],
-      width = "double",
+      width = WeakAuras.doubleWidth,
       hidden = function() return not (trigger.type == "aura" and trigger.unit == "group"); end,
       set = function(info, v)
         trigger.groupclone = v;
@@ -750,6 +893,7 @@ function WeakAuras.GetBuffTriggerOptions(data, trigger)
     },
     name_info = {
       type = "select",
+      width = WeakAuras.normalWidth,
       name = L["Name Info"],
       order = 47.5,
       hidden = function() return not (trigger.type == "aura" and trigger.unit == "group" and not trigger.groupclone); end,
@@ -765,6 +909,7 @@ function WeakAuras.GetBuffTriggerOptions(data, trigger)
     },
     stack_info = {
       type = "select",
+      width = WeakAuras.normalWidth,
       name = L["Stack Info"],
       order = 47.6,
       hidden = function() return not (trigger.type == "aura" and trigger.unit == "group" and not trigger.groupclone); end,
@@ -782,11 +927,12 @@ function WeakAuras.GetBuffTriggerOptions(data, trigger)
       type = "toggle",
       name = L["Hide When Not In Group"],
       order = 47.7,
-      width = "double",
+      width = WeakAuras.doubleWidth,
       hidden = function() return not (trigger.type == "aura" and trigger.unit == "group"); end,
     },
     useDebuffType = {
       type = "toggle",
+      width = WeakAuras.normalWidth,
       name = L["Aura Type"],
       order = 50,
       disabled = true,
@@ -795,6 +941,7 @@ function WeakAuras.GetBuffTriggerOptions(data, trigger)
     },
     debuffType = {
       type = "select",
+      width = WeakAuras.normalWidth,
       name = L["Aura Type"],
       order = 51,
       values = debuff_types,
@@ -802,7 +949,7 @@ function WeakAuras.GetBuffTriggerOptions(data, trigger)
     },
     subcount = {
       type = "toggle",
-      width = "double",
+      width = WeakAuras.doubleWidth,
       name = L["Use tooltip \"size\" instead of stacks"],
       hidden = function() return not (trigger.type == "aura" and trigger.fullscan) end,
       order = 55
@@ -810,13 +957,14 @@ function WeakAuras.GetBuffTriggerOptions(data, trigger)
     subcountCount = {
       type = "select",
       values = tooltip_count,
-      width = "double",
+      width = WeakAuras.doubleWidth,
       name = L["Use nth value from tooltip:"],
       hidden = function() return not (trigger.type == "aura" and trigger.fullscan and trigger.subcount) end,
       order = 55.5
     },
     useRem = {
       type = "toggle",
+      width = WeakAuras.normalWidth,
       name = L["Remaining Time"],
       hidden = function() return not (trigger.type == "aura" and trigger.unit ~= "multi"); end,
       order = 56
@@ -825,7 +973,7 @@ function WeakAuras.GetBuffTriggerOptions(data, trigger)
       type = "select",
       name = L["Operator"],
       order = 57,
-      width = "half",
+      width = WeakAuras.halfWidth,
       values = operator_types,
       disabled = function() return not trigger.useRem; end,
       hidden = function() return not (trigger.type == "aura" and trigger.unit ~= "multi"); end,
@@ -836,13 +984,14 @@ function WeakAuras.GetBuffTriggerOptions(data, trigger)
       name = L["Remaining Time"],
       validate = ValidateNumeric,
       order = 58,
-      width = "half",
+      width = WeakAuras.halfWidth,
       disabled = function() return not trigger.useRem; end,
       hidden = function() return not (trigger.type == "aura" and trigger.unit ~= "multi"); end,
       get = function() return trigger.useRem and trigger.rem or nil end
     },
     useCount = {
       type = "toggle",
+      width = WeakAuras.normalWidth,
       name = L["Stack Count"],
       hidden = function() return not (trigger.type == "aura" and trigger.unit ~= "multi"); end,
       order = 60
@@ -851,7 +1000,7 @@ function WeakAuras.GetBuffTriggerOptions(data, trigger)
       type = "select",
       name = L["Operator"],
       order = 62,
-      width = "half",
+      width = WeakAuras.halfWidth,
       values = operator_types,
       disabled = function() return not trigger.useCount; end,
       hidden = function() return not (trigger.type == "aura" and trigger.unit ~= "multi"); end,
@@ -862,13 +1011,14 @@ function WeakAuras.GetBuffTriggerOptions(data, trigger)
       name = L["Stack Count"],
       validate = ValidateNumeric,
       order = 65,
-      width = "half",
+      width = WeakAuras.halfWidth,
       disabled = function() return not trigger.useCount; end,
       hidden = function() return not (trigger.type == "aura" and trigger.unit ~= "multi"); end,
       get = function() return trigger.useCount and trigger.count or nil end
     },
     ownOnly = {
       type = "toggle",
+      width = WeakAuras.doubleWidth,
       name = function()
         local value = trigger.ownOnly;
         if(value == nil) then return L["Own Only"];
@@ -900,27 +1050,54 @@ function WeakAuras.GetBuffTriggerOptions(data, trigger)
       order = 70,
       hidden = function() return not (trigger.type == "aura"); end
     },
+    useBuffShowOn = {
+      type = "toggle",
+      width = WeakAuras.normalWidth,
+      name = L["Show On"],
+      order = 71,
+      disabled = true,
+      hidden = function()
+        return not (trigger.type == "aura" and not(trigger.unit ~= "group" and trigger.fullscan and trigger.autoclone) and trigger.unit ~= "multi" and not(trigger.unit == "group" and not trigger.groupclone));
+      end,
+      get = function() return true end
+    },
     buffShowOn = {
       type = "select",
-      name = L["Show On"],
+      width = WeakAuras.normalWidth,
+      name = "",
       values = WeakAuras.bufftrigger_progress_behavior_types,
-      order = 71,
+      order = 71.1,
       get = function() return trigger.buffShowOn end,
-      hidden = function() return not (trigger.type == "aura" and not(trigger.unit ~= "group" and trigger.autoclone) and trigger.unit ~= "multi" and not(trigger.unit == "group" and not trigger.groupclone)); end
+      hidden = function()
+        return not (trigger.type == "aura" and not(trigger.unit ~= "group" and trigger.fullscan and trigger.autoclone) and trigger.unit ~= "multi" and not(trigger.unit == "group" and not trigger.groupclone));
+      end
     },
     unitExists = {
       type = "toggle",
+      width = WeakAuras.normalWidth,
       name = L["Show If Unit Is Invalid"],
       order = 72,
-      width = "double",
       hidden = function()
         return not (trigger.type == "aura"
-          and not(trigger.unit ~= "group" and trigger.autoclone)
+          and not(trigger.unit ~= "group" and trigger.fullscan and trigger.autoclone)
           and trigger.unit ~= "multi"
           and trigger.unit ~= "group"
           and trigger.unit ~= "player");
       end
-    }
+    },
+    linespacer = {
+      type = "description",
+      order = 73,
+      width = WeakAuras.doubleWidth,
+      name = "",
+      hidden = function()
+        -- For those that update without restarting
+        return not WeakAuras.CanConvertBuffTrigger2
+      end,
+    },
+
   };
   return aura_options;
 end
+
+WeakAuras.RegisterTriggerSystemOptions({"aura"}, GetBuffTriggerOptions);

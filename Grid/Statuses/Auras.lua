@@ -73,6 +73,8 @@ local spell_names = {
 local buff_names = {}
 local player_buff_names = {}
 local debuff_names = {}
+Grid.buff_names = buff_names;
+Grid.player_buff_names = player_buff_names;
 
 local debuff_types = {
 	["Curse"] = "dispel_curse",
@@ -1461,7 +1463,7 @@ function GridStatusAuras:UnitGainedBuff(guid, class, name, rank, icon, count, de
 	settings.icon = icon
 
 	if settings.enable and not settings.missing then -- and settings[class] ~= false then -- ##DELETE
-		local start = expirationTime and (expirationTime - duration)  --and settings.statusText ~= "count" and settings.statusText ~= "dur_count"  --163ui GID Text force show timeleft 
+		local start = expirationTime and (expirationTime - duration)  --and settings.statusText ~= "count" and settings.statusText ~= "dur_count"  --163ui GID Text force show timeleft
 		local timeLeft = expirationTime and expirationTime > now and (expirationTime - now) or 0
 		local text, color = self:StatusTextColor(settings, count, timeLeft)
 		if duration and expirationTime and duration > 0 and expirationTime > 0 then
@@ -1790,7 +1792,7 @@ function GridStatusAuras:ScanUnitAuras(event, unit, guid)
 
 			-- scan for buffs
 			if buff_names[spellID] then
-				buff_names[spellID] = true
+                buff_names_seen[spellID] = true
 				self:UnitGainedBuff(guid, class, spellID, rank, icon, count, debuffType, duration, expirationTime, caster, isStealable)
 			elseif buff_names[name] then
 				buff_names_seen[name] = true
@@ -1801,7 +1803,7 @@ function GridStatusAuras:ScanUnitAuras(event, unit, guid)
 			if caster == 'player' then
 				if player_buff_names[spellID] then
 					player_buff_names_seen[spellID] = true
-					self:UnitGainedPlayerBuff(guid, class, spellID, nil, icon, count, debuffType, duration, expirationTime, caster, isStealable)
+					self:UnitGainedPlayerBuff(guid, class, spellID, rank, icon, count, debuffType, duration, expirationTime, caster, isStealable)
 				elseif player_buff_names[name] then
 				player_buff_names_seen[name] = true
 				self:UnitGainedPlayerBuff(guid, class, name, rank, icon, count, debuffType, duration, expirationTime, caster, isStealable)

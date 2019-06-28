@@ -81,7 +81,7 @@ function GridStatusOverflow:UpdateUnit(event, unit)
             settings.priority,
             nil,
             settings.color,
-            format("%d", amount / 10000 + 0.5),
+            format("%d", amount / 1000 + 0.5),
             amount,
             amount,
             SPELL_ICON,

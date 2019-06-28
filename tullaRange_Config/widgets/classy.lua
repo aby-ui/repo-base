@@ -2,7 +2,7 @@
 	misc things I need to get my widget framework workingish
 --]]
 
-local AddonName, Addon = ...
+local _, Addon = ...
 
 Addon.Classy = {
 	New = function(self, frameType, parentClass)
@@ -14,8 +14,8 @@ Addon.Classy = {
 			class.super = parentClass
 		end
 
-		class.Bind = function(self, obj)
-			return setmetatable(obj, self.mt)
+		class.Bind = function(c, obj)
+			return setmetatable(obj, c.mt)
 		end
 
 		return class

@@ -38,6 +38,7 @@ local GetQuestTagInfo = GetQuestTagInfo
 local GetNumQuestLogRewards = GetNumQuestLogRewards
 local GetQuestInfoByQuestID = C_TaskQuest.GetQuestInfoByQuestID
 local GetQuestTimeLeftMinutes = C_TaskQuest.GetQuestTimeLeftMinutes
+local GetQuestsForPlayerByMapID = C_TaskQuest.GetQuestsForPlayerByMapID
 
 local MapRangeClamped = DF.MapRangeClamped
 local FindLookAtRotation = DF.FindLookAtRotation
@@ -75,9 +76,6 @@ end
 
 
 function WorldQuestTracker.AddQuestTomTom (questID, mapID, noRemove)
-
-	print (questID, mapID)
-
 	local x, y = C_TaskQuest.GetQuestLocation (questID, mapID)
 	local title, factionID, tagID, tagName, worldQuestType, rarity, isElite, tradeskillLineIndex = WorldQuestTracker.GetQuest_Info (questID)
 	
@@ -127,14 +125,7 @@ function WorldQuestTracker.AddQuestToTracker (self, questID, mapID)
 		local iconText = self.IconText
 		local questType = self.QuestType
 		local numObjectives = self.numObjectives
-		
---		if (type (iconText) == "string") then --no good
---			iconText = iconText:gsub ("|c%x?%x?%x?%x?%x?%x?%x?%x?", "")
---			iconText = iconText:gsub ("|r", "")
---			iconText = tonumber (iconText)
---		end
---removing this, the reward amount can now be a number or a string, we cannot check for amount without checking first if is a number (on tracker only)
-		
+
 		if (iconTexture) then
 			tinsert (WorldQuestTracker.QuestTrackList, {
 				questID = questID, 
@@ -180,27 +171,42 @@ end
 
 --remove todas as quests do tracker
 function WorldQuestTracker.RemoveAllQuestsFromTracker()
+	local isShowingWorld = WorldQuestTrackerAddon.GetCurrentZoneType() == "world"
+	
 	for i = #WorldQuestTracker.QuestTrackList, 1, -1 do
+		--get the quest table with info about the quest
 		local quest = WorldQuestTracker.QuestTrackList [i]
-		local questID = quest.questID
-		local widget = WorldQuestTracker.GetWorldWidgetForQuest (questID)
-		if (widget) then
-			if (widget.onStartTrackAnimation:IsPlaying()) then
-				widget.onStartTrackAnimation:Stop()
-			end
-			widget.onEndTrackAnimation:Play()
-		end
-		--remove da tabela
+		
+		--remove the quest from the tracker
 		tremove (WorldQuestTracker.QuestTrackList, i)
+		
+		--remove tracking indicator on the quest icon
+		local questID = quest.questID
+		
+		if (isShowingWorld) then
+			--quest locations
+			for _, widget in pairs (WorldQuestTracker.WorldMapSmallWidgets) do
+				if (widget:IsShown() and widget.questID == questID) then
+					widget.onEndTrackAnimation:Play()
+				end
+			end
+			--quest summary
+			for _, widget in pairs (WorldQuestTracker.WorldSummaryQuestsSquares) do
+				if (widget:IsShown() and widget.questID == questID) then
+					widget.onEndTrackAnimation:Play()
+				end
+			end
+		else
+			--zone map widgets
+			for _, widget in pairs (WorldQuestTracker.ZoneWidgetPool) do
+				if (widget:IsShown() and widget.questID == questID) then
+					widget.onEndTrackAnimation:Play()
+				end
+			end
+		end
 	end
 	
 	WorldQuestTracker.RefreshTrackerWidgets()
-	
-	if (WorldQuestTrackerAddon.GetCurrentZoneType() == "world") then
-		WorldQuestTracker.UpdateWorldQuestsOnWorldMap()
-	elseif (WorldQuestTrackerAddon.GetCurrentZoneType() == "zone") then
-		WorldQuestTracker.UpdateZoneWidgets()
-	end
 end
 
 --o cliente n�o tem o tempo restante da quest na primeira execu��o
@@ -937,6 +943,11 @@ function WorldQuestTracker:PLAYER_STOPPED_MOVING()
 	playerIsMoving = false
 end
 
+--making a cooldown to update the player position to avoid creating a table on tick due to C_Map.GetPlayerMapPosition call
+local nextPlayerPositionUpdateCooldown = -1
+local currentPlayerX = 0
+local currentPlayerY = 0
+
 -- ~trackertick ~trackeronupdate ~tick ~onupdate ~ontick �ntick �nupdate
 local TrackerOnTick = function (self, deltaTime)
 	if (self.NextPositionUpdate < 0) then
@@ -954,21 +965,28 @@ local TrackerOnTick = function (self, deltaTime)
 		end
 	end
 	
-	local mapPosition = C_Map.GetPlayerMapPosition (WorldQuestTracker.GetCurrentStandingMapAreaID(), "player")
-	if (not mapPosition) then
-		return
+	if (nextPlayerPositionUpdateCooldown < 0) then
+		--reset cooldown
+		nextPlayerPositionUpdateCooldown = 1
+		
+		--update the player position
+		local mapPosition = C_Map.GetPlayerMapPosition (WorldQuestTracker.GetCurrentStandingMapAreaID(), "player")
+		if (not mapPosition) then
+			return
+		end
+		currentPlayerX, currentPlayerY = mapPosition.x, mapPosition.y
+	else
+		nextPlayerPositionUpdateCooldown = nextPlayerPositionUpdateCooldown - deltaTime
 	end
-	local x, y = mapPosition.x, mapPosition.y
-	
+
 	if (self.NextArrowUpdate < 0) then
-		local questYaw = (FindLookAtRotation (_, x, y, self.questX, self.questY) + p)%pipi
+		local questYaw = (FindLookAtRotation (_, currentPlayerX, currentPlayerY, self.questX, self.questY) + p)%pipi
 		local playerYaw = GetPlayerFacing()
 		local angle = (((questYaw + playerYaw)%pipi)+pi)%pipi
 		local imageIndex = 1+(floor (MapRangeClamped (_, 0, pipi, 1, 144, angle)) + 48)%144 --48� quadro � o que aponta para o norte
 		local line = ceil (imageIndex / 12)
 		local coord = (imageIndex - ((line-1) * 12)) / 12
 		self.Arrow:SetTexCoord (coord-0.0833, coord, 0.0833 * (line-1), 0.0833 * line)
-		--self.ArrowDistance:SetTexCoord (coord-0.0905, coord-0.0160, 0.0833 * (line-1), 0.0833 * line) -- 0.0763
 		self.ArrowDistance:SetTexCoord (coord-0.0833, coord, 0.0833 * (line-1), 0.0833 * line) -- 0.0763
 		
 		self.NextArrowUpdate = ARROW_UPDATE_FREQUENCE
@@ -979,7 +997,7 @@ local TrackerOnTick = function (self, deltaTime)
 	self.NextPositionUpdate = self.NextPositionUpdate - deltaTime
 	
 	if ((playerIsMoving or self.ForceUpdate) and self.NextPositionUpdate < 0) then
-		local distance = GetDistance_Point (_, x, y, self.questX, self.questY)
+		local distance = GetDistance_Point (_, currentPlayerX, currentPlayerY, self.questX, self.questY)
 		local x = zoneXLength * distance
 		local y = zoneYLength * distance
 		local yards = (x*x + y*y) ^ 0.5
@@ -1059,29 +1077,39 @@ function WorldQuestTracker.SortTrackerByQuestDistance()
 	WorldQuestTracker.RefreshTrackerWidgets()
 end
 
---atualiza os widgets e reajusta a ancora
+
+--update quests on the quest tracker
 function WorldQuestTracker.RefreshTrackerWidgets()
-	--under development
-	--if (true) then return end
 
 	if (WorldQuestTracker.LastTrackerRefresh and WorldQuestTracker.LastTrackerRefresh+0.2 > GetTime()) then
 		return
 	end
 	WorldQuestTracker.LastTrackerRefresh = GetTime()
 
-	--reordena as quests
+	--reorder quests in the tracker
 	WorldQuestTracker.ReorderQuestsOnTracker()
-	--atualiza as quest no tracker
+	
+	--do the update
 	local y = -30
 	local nextWidget = 1
 	local needSortByDistance = 0
 	local onlyCurrentMap = WorldQuestTracker.db.profile.tracker_only_currentmap
 	
+	local currentMap = WorldQuestTracker.GetCurrentStandingMapAreaID()
+	local taskInfo = GetQuestsForPlayerByMapID (currentMap, currentMap)
+	
 	for index, quest in ipairs (WorldQuestTracker.QuestTrackList) do
 		--verifica se a quest esta ativa, ela pode ser desativada se o jogador estiver dentro da area da quest
 		if (HaveQuestData (quest.questID)) then
 			local title, factionID, tagID, tagName, worldQuestType, rarity, isElite, tradeskillLineIndex = WorldQuestTracker.GetQuest_Info (quest.questID)
-			--print (quest.questID)
+			
+			--check if the quest has a continent map id and try to cast the continent id to zone id
+			if (quest.mapID == WorldQuestTracker.MapData.ZoneIDs.ZANDALAR or quest.mapID == WorldQuestTracker.MapData.ZoneIDs.KULTIRAS) then
+				if (WorldQuestTracker.CurrentZoneQuests [quest.questID] and WorldQuestTracker.CurrentZoneQuestsMapID == currentMap) then
+					quest.mapID = currentMap
+				end
+			end
+			
 			if (not quest.isDisabled and title and (not onlyCurrentMap or (onlyCurrentMap and Sort_currentMapID == quest.mapID))) then
 				local widget = WorldQuestTracker.GetOrCreateTrackerWidget (nextWidget)
 				widget:ClearAllPoints()

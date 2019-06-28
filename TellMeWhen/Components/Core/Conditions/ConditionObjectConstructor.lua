@@ -72,6 +72,26 @@ function ConditionObjectConstructor:Modify_AppendNew()
 end
 
 --- Calls :GetPostUserModifiableConditions(), wraps the existing conditions in parenthesis if needed,
+-- and then appends a new condition to the start that can be configured as desired.
+-- @return [table] The settings of a new single condition.
+function ConditionObjectConstructor:Modify_WrapExistingAndPrependNew()	
+	local ModifiableConditions = self:GetPostUserModifiableConditions()
+	local mod = ModifiableConditions -- Alias for brevity
+	
+	mod.n = mod.n + 1
+	local new = mod[mod.n]
+	mod[mod.n] = nil
+	tinsert(mod, 1, new)
+
+	if mod.n > 2 then
+		mod[2].PrtsBefore = mod[2].PrtsBefore + 1
+		mod[mod.n].PrtsAfter = mod[mod.n].PrtsAfter + 1
+	end
+	
+	return new
+end
+
+--- Calls :GetPostUserModifiableConditions(), wraps the existing conditions in parenthesis if needed,
 -- and then appends a new condition to the end that can be configured as desired.
 -- @return [table] The settings of a new single condition.
 function ConditionObjectConstructor:Modify_WrapExistingAndAppendNew()	

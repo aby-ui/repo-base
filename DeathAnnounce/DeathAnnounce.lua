@@ -44,7 +44,7 @@ function DEATH_ANNOUNCE_Init()
     local originSetHyperlink_Origin = ItemRefTooltip.SetHyperlink;
     ItemRefTooltip.SetHyperlink = function(self,link)
         if(strsub(link, 1, 11)=="u1_deathann") then
-            HideUIPanel(self);
+            self:Hide();
             return;
         end
         return originSetHyperlink_Origin(self,link);
@@ -187,7 +187,7 @@ function DEATH_ANNOUNCE_CLEU(...)
         if not IsRaidMemberFlag(sourceFlags) then return end
         if sourceGUID == playerGUID and U1GetCfgValue and U1GetCfgValue("deathannounce/yell") then
             SendChatMessage(string.format("我已打断%s的%s", destName, GetSpellLink(param4)), "YELL")
-        else
+        elseif sourceName then
             if RaidAlerter_SET and RaidAlerter_SET.Break_Magic then return end
             --太刷屏了，加了个开关
             if sourceGUID == playerGUID or (U1GetCfgValue and U1GetCfgValue("deathannounce/othersir")) then
@@ -224,6 +224,7 @@ function DEATH_ANNOUNCE_CLEU(...)
 
     if ( subevent == "UNIT_DIED" ) then
         if not UnitIsFeignDeath(destName) then
+            if DEBUG_MODE then print(DEATH_ANNOUNCE_OVK[destName], ...) end
             local h,n = DEATH_ANNOUNCE_GetBossHealth()
             DEATH_ANNOUNCE_OVK[destName] = (DEATH_ANNOUNCE_OVK[destName] or " "):sub(2)..(h and "@"..h or "")
             DEATH_ANNOUNCE_Print(destName ..DEATH_ANNOUNCE_LOCALE_DIE .. DEATH_ANNOUNCE_OVK[destName], "DEFAULT", true, destName);

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("BWDTrash", "DBM-BlackwingDescent")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 185 $"):sub(12, -3))
+mod:SetRevision("2019041705904")
 mod:SetModelID(29539)
 mod:SetZone()
 mod.isTrashMod = true

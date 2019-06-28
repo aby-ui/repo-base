@@ -13,7 +13,7 @@ U1RegisterAddon("163UI_Chat", {
     ------- Options --------
     {
         var="worldchannel",
-        default = 1,
+        default = false,
         text="加入世界频道",
         callback = function(cfg, v, loading)
             if v then
@@ -26,6 +26,10 @@ U1RegisterAddon("163UI_Chat", {
                 end
             else
                 LeaveChannelByName(U1_CHAT_WORLD_CHANNEL)
+            end
+            if DuowanChat and DuowanChat.SetBFChannelMuted and dwChannel_RefreshMuteButton then
+                DuowanChat:SetBFChannelMuted(not v)
+                dwChannel_RefreshMuteButton()
             end
         end,
     },

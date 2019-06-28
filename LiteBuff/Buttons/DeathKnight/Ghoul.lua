@@ -22,5 +22,5 @@ button:RequireSpell(46584)
 button:SetFlyProtect()
 
 function button:OnUpdateTimer()
-	return UnitExists("pet")
+	return UnitExists("pet") and "NONE" or "R"
 end

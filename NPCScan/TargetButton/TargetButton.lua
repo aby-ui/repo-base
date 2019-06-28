@@ -211,7 +211,9 @@ function TargetButton:UpdateData(_, data)
 		end
 
 		if self.needsUnitData then
-			if data.sourceText then
+			local sourceText = self.SourceText:GetText()
+
+			if data.sourceText and (not sourceText or sourceText == "") then
 				self.SourceText:SetText(data.sourceText)
 			end
 
@@ -238,7 +240,12 @@ function TargetButton:Activate(data)
 	self.npcName = data.npcName
 
 	self:SetSpecialText()
-	self.SourceText:SetText(data.sourceText)
+
+	if data.vignetteName and data.vignetteName ~= data.npcName then
+		self.SourceText:SetText(("%s %s"):format(data.sourceText, _G.PARENS_TEMPLATE:format(data.vignetteName)))
+	else
+		self.SourceText:SetText(data.sourceText)
+	end
 
 	if data.unitToken then
 		self.PortraitModel:SetUnit(data.unitToken)
@@ -390,7 +397,7 @@ function TargetButton:SetSpecialText(fakeCriteriaCompleted)
 	local npcData = self.npcData
 
 	if npcData and npcData.achievementID then
-		local isCriteriaCompleted = fakeCriteriaCompleted or private.IsNPCAchievementCriteriaComplete(Data.NPCs[self.npcID])
+		local isCriteriaCompleted = fakeCriteriaCompleted or Data.NPCs[self.npcID]:IsAchievementCriteriaComplete()
 		local achievementName = Data.Achievements[npcData.achievementID].name
 
 		self.SpecialText:SetFormattedText("%s%s|r", isCriteriaCompleted and _G.GREEN_FONT_COLOR_CODE or _G.RED_FONT_COLOR_CODE, achievementName)

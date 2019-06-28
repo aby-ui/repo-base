@@ -19,19 +19,7 @@ local MenuBar = Addon:CreateClass('Frame', Addon.ButtonBar); Addon.MenuBar = Men
 
 --[[ local constants ]]--
 
-local MICRO_BUTTONS = {
-	"CharacterMicroButton",
-	"SpellbookMicroButton",
-	"TalentMicroButton",
-	"AchievementMicroButton",
-	"QuestLogMicroButton",
-	"GuildMicroButton",
-	"LFDMicroButton",
-	"EJMicroButton",
-	"CollectionsMicroButton",
-	"StoreMicroButton",
-	"MainMenuMicroButton"
-}
+local MICRO_BUTTONS = _G.MICRO_BUTTONS
 
 local MICRO_BUTTON_NAMES = {
 	['CharacterMicroButton'] = _G['CHARACTER_BUTTON'],
@@ -44,7 +32,8 @@ local MICRO_BUTTON_NAMES = {
 	['EJMicroButton'] = _G['ENCOUNTER_JOURNAL'],
 	['MainMenuMicroButton'] = _G['MAINMENU_BUTTON'],
 	['StoreMicroButton'] = _G['BLIZZARD_STORE'],
-	['CollectionsMicroButton'] = _G['COLLECTIONS']
+	['CollectionsMicroButton'] = _G['COLLECTIONS'],
+	['HelpMicroButton'] = _G['HELP_BUTTON']
 }
 
 --[[ Menu Bar ]]--
@@ -83,30 +72,32 @@ function MenuBar:Create(...)
 
 	hooksecurefunc('UpdateMicroButtons', requestLayoutUpdate)
 
-	local petBattleFrame = _G['PetBattleFrame'].BottomFrame.MicroButtonFrame
+	if _G.PetBattleFrame then
+		local petMicroButtons = _G.PetBattleFrame.BottomFrame.MicroButtonFrame
 
-	getOrHook(petBattleFrame, 'OnShow', function()
-		bar.isPetBattleUIShown = true
-		requestLayoutUpdate()
-	end)
+		getOrHook(petMicroButtons, 'OnShow', function()
+			bar.isPetBattleUIShown = true
+			requestLayoutUpdate()
+		end)
 
-	getOrHook(petBattleFrame, 'OnHide', function()
-		bar.isPetBattleUIShown = nil
-		requestLayoutUpdate()
-	end)
+		getOrHook(petMicroButtons, 'OnHide', function()
+			bar.isPetBattleUIShown = nil
+			requestLayoutUpdate()
+		end)
+	end
 
+	local overrideActionBar = _G.OverrideActionBar
+	if overrideActionBar then
+		getOrHook(overrideActionBar, 'OnShow', function()
+			bar.isOverrideUIShown = Addon:UsingOverrideUI()
+			requestLayoutUpdate()
+		end)
 
-	local overrideActionBar = _G['OverrideActionBar']
-
-	getOrHook(overrideActionBar, 'OnShow', function()
-		bar.isOverrideUIShown = Addon:UsingOverrideUI()
-		requestLayoutUpdate()
-	end)
-
-	getOrHook(overrideActionBar, 'OnHide', function()
-		bar.isOverrideUIShown = nil
-		requestLayoutUpdate()
-	end)
+		getOrHook(overrideActionBar, 'OnHide', function()
+			bar.isOverrideUIShown = nil
+			requestLayoutUpdate()
+		end)
+	end
 
 	return bar
 end
@@ -204,7 +195,10 @@ end
 
 function MenuBar:LayoutNormal()
 	for _, name in pairs(MICRO_BUTTONS) do
-		_G[name]:Hide()
+		local button = _G[name]
+		if button then
+			button:Hide()
+		end
 	end
 
 	for _, button in pairs(self.buttons) do

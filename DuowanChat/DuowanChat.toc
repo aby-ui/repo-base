@@ -1,4 +1,4 @@
-## Interface: 80000
+## Interface: 80200
 ## Title: DuowanChat
 # Title-zhCN: 聊天增强
 # Title-zhTW: 聊天增强

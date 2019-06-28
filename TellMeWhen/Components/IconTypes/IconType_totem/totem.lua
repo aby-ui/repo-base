@@ -87,9 +87,11 @@ if numSlots > 1 then
 		for i = 1, 5 do
 			if totemData[i] then
 				tinsert(data, function(check)
-					check:SetTexts(totemData[i].name, nil)
 					check:SetSetting("TotemSlots")
 					check:SetSettingBitID(i)
+					check:CScriptAdd("ReloadRequested", function()
+						check:SetTexts(TMW.get(totemData[i].name), nil)
+					end)
 				end)
 			end
 		end
@@ -153,6 +155,8 @@ function Type:Setup(icon)
 
 	-- Put the enabled slots into a table so we don't have to do bitmagic in the OnUpdate function.
 	icon.Slots = wipe(icon.Slots or {})
+	local enabledSlots = 0
+	local onlySlot = nil
 	for i=1, 5 do
 		local settingBit = bit.lshift(1, i - 1)
 
@@ -163,6 +167,15 @@ function Type:Setup(icon)
 			-- Force the only slot. This might not be the first slot.
 			if numSlots == 1 then
 				icon.Slots[i] = true
+			end
+
+			if icon.Slots[i] then
+				enabledSlots = enabledSlots + 1
+				if enabledSlots == 1 then
+					onlySlot = totemData[i] 
+				else
+					onlySlot = nil
+				end
 			end
 		end
 	end
@@ -179,7 +192,14 @@ function Type:Setup(icon)
 
 	icon.Spells = TMW:GetSpells(name, true)
 
-	icon.FirstTexture = icon.Spells.FirstString and GetSpellTexture(icon.Spells.FirstString) or Type.menuIcon
+	icon.FirstTexture = icon.Spells.FirstString and GetSpellTexture(icon.Spells.FirstString) 
+	if not icon.FirstTexture and onlySlot then
+		icon.FirstTexture = onlySlot.texture and TMW.get(onlySlot.texture)
+	end
+	if not icon.FirstTexture then
+		icon.FirstTexture = Type.menuIcon
+	end
+
 	icon:SetInfo("reverse; texture; spell",
 		true,
 		icon.FirstTexture,

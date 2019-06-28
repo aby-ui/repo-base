@@ -119,10 +119,10 @@ end
 
 function rematch:ShowPreferencesDialog(prefSet,prefKey,prefLoaded)
 
-	if not prefSet and not prefKey then
+	if not prefSet or not prefKey then
 		prefSet,prefKey,prefLoaded = rematch:GetPrefSetFrom(self)
 	end
-
+	
 	if not prefSet or (prefSet=="team" and not saved[prefKey]) or (prefSet=="tab" and not settings.TeamGroups[prefKey]) then
 		return -- if team or tab is not known, leave
 	end

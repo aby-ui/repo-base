@@ -1,4 +1,4 @@
-﻿if GetLocale() ~= "zhTW" then return end
+if GetLocale() ~= "zhTW" then return end
 local L
 
 -----------------
@@ -80,7 +80,6 @@ L:SetOptionLocalization({
 	timerStrike			= "為下一次虐殺/煉獄之刃顯示計時器",
 	TimerBladeActive	= "為目前虐殺/煉獄之刃顯示持續時間",
 	TimerBladeNext		= "為下一次巴勒羅克之刃顯示計時器",
-	ArrowOnCountdown	= "當你中了$spell:99516時顯示DBM箭頭",
 	InfoFrame			= "為$spell:99262堆疊顯示訊息框",
 	RangeFrame			= "為$spell:99404顯示距離框(5碼)"
 })
@@ -98,7 +97,6 @@ L:SetOptionLocalization({
 	timerNextSpecial	= "為下一次特殊技能顯示計時器",
 	RangeFrameSeeds		= "為$spell:98450顯示距離框(12碼)",
 	RangeFrameCat		= "為$spell:98374顯示距離框(10碼)",
-	LeapArrow			= "當$spell:98476在附近時顯示DBM箭頭",
 	IconOnLeapingFlames	= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(98476)
 })
 

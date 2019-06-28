@@ -19,6 +19,7 @@ end
 function WeakAuras.regionPrototype.AddAdjustedDurationOptions(options, data, order)
   options.useAdjustededMin = {
     type = "toggle",
+    width = WeakAuras.normalWidth,
     name = L["Set Minimum Progress"],
     desc = L["Values/Remaining Time below this value are displayed as no progress."],
     order = order
@@ -26,6 +27,7 @@ function WeakAuras.regionPrototype.AddAdjustedDurationOptions(options, data, ord
 
   options.adjustedMin = {
     type = "range",
+    width = WeakAuras.normalWidth,
     min = 0,
     softMax = 200,
     bigStep = 1,
@@ -36,7 +38,7 @@ function WeakAuras.regionPrototype.AddAdjustedDurationOptions(options, data, ord
 
   options.useAdjustedMinSpacer = {
     type = "description",
-    width = "normal",
+    width = WeakAuras.normalWidth,
     name = "",
     order = order + 0.02,
     hidden = function() return not (not data.useAdjustededMin and data.useAdjustededMax) end,
@@ -44,6 +46,7 @@ function WeakAuras.regionPrototype.AddAdjustedDurationOptions(options, data, ord
 
   options.useAdjustededMax = {
     type = "toggle",
+    width = WeakAuras.normalWidth,
     name = L["Set Maximum Progress"],
     desc = L["Values/Remaining Time above this value are displayed as full progress."],
     order = order + 0.03
@@ -51,6 +54,7 @@ function WeakAuras.regionPrototype.AddAdjustedDurationOptions(options, data, ord
 
   options.adjustedMax = {
     type = "range",
+    width = WeakAuras.normalWidth,
     min = 0,
     softMax = 200,
     bigStep = 1,
@@ -61,7 +65,7 @@ function WeakAuras.regionPrototype.AddAdjustedDurationOptions(options, data, ord
 
   options.useAdjustedMaxSpacer = {
     type = "description",
-    width = "normal",
+    width = WeakAuras.normalWidth,
     name = "",
     order = order + 0.05,
     hidden = function() return not (data.useAdjustededMin and not data.useAdjustededMax) end,
@@ -140,7 +144,7 @@ local function SoundPlayHelper(self)
   WeakAuras.StartProfileSystem("sound");
   local options = self.soundOptions;
   self.soundHandle = nil;
-  if (options.sound_type == "Stop") then
+  if (not options or options.sound_type == "Stop") then
     WeakAuras.StopProfileSystem("sound");
     return;
   end
@@ -152,17 +156,23 @@ local function SoundPlayHelper(self)
 
   if (options.sound == " custom") then
     if (options.sound_path) then
-      local _, handle = PlaySoundFile(options.sound_path, options.sound_channel or "Master");
-      self.soundHandle = handle;
+      local ok, _, handle = pcall(PlaySoundFile, options.sound_path, options.sound_channel or "Master");
+      if ok then
+        self.soundHandle = handle;
+      end
     end
   elseif (options.sound == " KitID") then
     if (options.sound_kit_id) then
-      local _, handle = PlaySound(options.sound_kit_id, options.sound_channel or "Master");
-      self.soundHandle = handle;
+      local ok, _, handle = pcall(PlaySound,options.sound_kit_id, options.sound_channel or "Master");
+      if ok then
+        self.soundHandle = handle;
+      end
     end
   else
-    local _, handle = PlaySoundFile(options.sound, options.sound_channel or "Master");
-    self.soundHandle = handle;
+    local ok, _, handle = pcall(PlaySoundFile, options.sound, options.sound_channel or "Master");
+    if ok then
+      self.soundHandle = handle;
+    end
   end
   WeakAuras.StopProfileSystem("sound");
 end
@@ -183,6 +193,9 @@ local function SoundPlay(self, options)
 end
 
 local function SendChat(self, options)
+  if (not options) then
+    return
+  end
   WeakAuras.HandleChatAction(options.message_type, options.message, options.message_dest, options.message_channel, options.r, options.g, options.b, self, options.message_custom);
 end
 
@@ -201,7 +214,8 @@ local function UpdatePosition(self)
 
   local xOffset = self.xOffset + (self.xOffsetAnim or 0);
   local yOffset = self.yOffset + (self.yOffsetAnim or 0);
-  self:SetPoint(self.anchorPoint, self.relativeTo, self.relativePoint, xOffset, yOffset );
+
+  xpcall(self.SetPoint, geterrorhandler(), self, self.anchorPoint, self.relativeTo, self.relativePoint, xOffset, yOffset);
 end
 
 local function ResetPosition(self)
@@ -266,6 +280,10 @@ local function SetRegionAlpha(self, alpha)
   self:SetAlpha(self.animAlpha or self.alpha or 1);
 end
 
+local function GetRegionAlpha(self)
+  return self.animAlpha or self.alpha or 1;
+end
+
 local function SetAnimAlpha(self, alpha)
   if (self.animAlpha == alpha) then
     return;
@@ -290,6 +308,7 @@ function WeakAuras.regionPrototype.create(region)
   region.GetYOffset = GetYOffset;
   region.ResetPosition = ResetPosition;
   region.SetRegionAlpha = SetRegionAlpha;
+  region.GetRegionAlpha = GetRegionAlpha;
   region.SetAnimAlpha = SetAnimAlpha;
 end
 
@@ -304,8 +323,16 @@ function WeakAuras.regionPrototype.modify(parent, region, data)
   local hasAdjustedMin = defaultsForRegion and defaultsForRegion.useAdjustededMin ~= nil and data.useAdjustededMin;
   local hasAdjustedMax = defaultsForRegion and defaultsForRegion.useAdjustededMax ~= nil and data.useAdjustededMax;
 
-  region.adjustedMin = hasAdjustedMin and data.adjustedMin and data.adjustedMin > 0 and data.adjustedMin;
-  region.adjustedMax = hasAdjustedMax and data.adjustedMax and data.adjustedMax > 0 and data.adjustedMax;
+  if (hasAdjustedMin) then
+    region.adjustedMin = data.adjustedMin and data.adjustedMin >= 0 and data.adjustedMin;
+  else
+    region.adjustedMin = nil;
+  end
+  if (hasAdjustedMax) then
+    region.adjustedMax = data.adjustedMax and data.adjustedMax >= 0 and data.adjustedMax;
+  else
+    region.adjustedMax = nil;
+  end
   region.inverse = false;
 
   region:SetOffset(data.xOffset or 0, data.yOffset or 0);
@@ -328,6 +355,7 @@ end
 local function UpateRegionValues(region)
   local remaining  = region.expirationTime - GetTime();
   local duration  = region.duration;
+  local progressPrecision = region.progressPrecision and math.abs(region.progressPrecision) or 1
 
   local remainingStr     = "";
   if remaining == math.huge then
@@ -337,15 +365,14 @@ local function UpateRegionValues(region)
     remaining       = remaining % 60;
     remainingStr     = remainingStr..string.format("%02i", remaining);
   elseif remaining > 0 then
-    -- remainingStr = remainingStr..string.format("%."..(data.progressPrecision or 1).."f", remaining);
-    if region.progressPrecision == 4 and remaining <= 3 then
+    if progressPrecision == 4 and remaining <= 3 then
       remainingStr = remainingStr..string.format("%.1f", remaining);
-    elseif region.progressPrecision == 5 and remaining <= 3 then
+    elseif progressPrecision == 5 and remaining <= 3 then
       remainingStr = remainingStr..string.format("%.2f", remaining);
-    elseif (region.progressPrecision == 4 or region.progressPrecision == 5) and remaining > 3 then
+    elseif (progressPrecision == 4 or progressPrecision == 5) and remaining > 3 then
       remainingStr = remainingStr..string.format("%d", remaining);
     else
-      remainingStr = remainingStr..string.format("%."..(region.progressPrecision or 1).."f", remaining);
+      remainingStr = remainingStr..string.format("%."..progressPrecision.."f", remaining);
     end
   else
     remainingStr     = " ";
@@ -359,6 +386,7 @@ local function UpateRegionValues(region)
     duration       = duration % 60;
     durationStr     = durationStr..string.format("%02i", duration);
   elseif duration > 0 then
+    local totalPrecision = region.totalPrecision and math.abs(region.totalPrecision) or 1
     -- durationStr = durationStr..string.format("%."..(data.totalPrecision or 1).."f", duration);
     if region.totalPrecision == 4 and duration <= 3 then
       durationStr = durationStr..string.format("%.1f", duration);
@@ -367,7 +395,7 @@ local function UpateRegionValues(region)
     elseif (region.totalPrecision == 4 or region.totalPrecision == 5) and duration > 3 then
       durationStr = durationStr..string.format("%d", duration);
     else
-      durationStr = durationStr..string.format("%."..(region.totalPrecision or 1).."f", duration);
+      durationStr = durationStr..string.format("%."..(totalPrecision).."f", duration);
     end
   else
     durationStr     = " ";
@@ -425,7 +453,7 @@ function WeakAuras.regionPrototype.AddSetDurationInfo(region)
       else
         UpateRegionValues(region);
         local adjustMin = region.adjustedMin or 0;
-        region:SetTime((region.adjustedMax or duration) - adjustMin, expirationTime - adjustMin, inverse);
+        region:SetTime((duration ~= 0 and region.adjustedMax or duration) - adjustMin, expirationTime - adjustMin, inverse);
         if duration > 0 then
           self:SetScript("OnUpdate", function() WeakAuras.TimerTick(region) end);
         else
@@ -443,7 +471,8 @@ end
 
 -- Expand/Collapse function
 
-function WeakAuras.regionPrototype.AddExpandFunction(data, region, id, cloneId, parent, parentRegionType)
+function WeakAuras.regionPrototype.AddExpandFunction(data, region, cloneId, parent, parentRegionType)
+  local id = data.id
   local indynamicgroup = parentRegionType == "dynamicgroup";
   local ingroup = parentRegionType == "group";
 
@@ -451,28 +480,54 @@ function WeakAuras.regionPrototype.AddExpandFunction(data, region, id, cloneId, 
     WeakAuras.Animate("display", data, "main", data.animation.main, region, false, nil, true, cloneId);
   end
 
+  function region:OptionsClosed()
+    region:EnableMouse(false)
+    region:SetScript("OnMouseDown", nil)
+  end
+
+  function region:ClickToPick()
+    region:EnableMouse(true)
+    region:SetScript("OnMouseDown", function()
+      WeakAuras.PickDisplay(region.id, nil, true)
+    end)
+    if region.GetFrameStrata and region:GetFrameStrata() == "TOOLTIP" then
+      region:SetFrameStrata("HIGH")
+    end
+  end
+
   local hideRegion;
   if(indynamicgroup) then
     hideRegion = function()
+      if region.PreHide then
+        region:PreHide()
+      end
+      if WeakAuras.checkConditions[id] then
+        WeakAuras.checkConditions[id](region, true);
+      end
       region:Hide();
       if (cloneId) then
-        WeakAuras.ReleaseClone(id, cloneId, data.regionType);
+        WeakAuras.ReleaseClone(region.id, cloneId, data.regionType);
+        parent:RemoveChild(id, cloneId)
+      else
+        parent:DeactivateChild(id, cloneId);
       end
-      parent:ControlChildren();
     end
   else
     hideRegion = function()
+      if region.PreHide then
+        region:PreHide()
+      end
+      if WeakAuras.checkConditions[id] then
+        WeakAuras.checkConditions[id](region, true);
+      end
       region:Hide();
       if (cloneId) then
-        WeakAuras.ReleaseClone(id, cloneId, data.regionType);
+        WeakAuras.ReleaseClone(region.id, cloneId, data.regionType);
       end
     end
   end
 
   if(indynamicgroup) then
-    if not(cloneId) then
-      parent:PositionChildren();
-    end
     function region:Collapse()
       if (not region.toShow) then
         return;
@@ -483,7 +538,6 @@ function WeakAuras.regionPrototype.AddExpandFunction(data, region, id, cloneId, 
       if (not WeakAuras.Animate("display", data, "finish", data.animation.finish, region, false, hideRegion, nil, cloneId)) then
         hideRegion();
       end
-      parent:ControlChildren();
 
       if (region.SoundRepeatStop) then
         region:SoundRepeatStop();
@@ -497,15 +551,15 @@ function WeakAuras.regionPrototype.AddExpandFunction(data, region, id, cloneId, 
       if(region.PreShow) then
         region:PreShow();
       end
-
-      parent:EnsureTrays();
       region.justCreated = nil;
-      region:SetFrameLevel(WeakAuras.GetFrameLevelFor(id));
+      region:SetFrameLevel(WeakAuras.GetFrameLevelFor(region.id));
+      region:Show();
+
       WeakAuras.PerformActions(data, "start", region);
       if not(WeakAuras.Animate("display", data, "start", data.animation.start, region, true, startMainAnimation, nil, cloneId)) then
         startMainAnimation();
       end
-      parent:ControlChildren();
+      parent:ActivateChild(data.id, cloneId);
     end
   elseif not(data.controlledChildren) then
     function region:Collapse()
@@ -541,7 +595,7 @@ function WeakAuras.regionPrototype.AddExpandFunction(data, region, id, cloneId, 
       if(region.PreShow) then
         region:PreShow();
       end
-      region:SetFrameLevel(WeakAuras.GetFrameLevelFor(id));
+      region:SetFrameLevel(WeakAuras.GetFrameLevelFor(region.id));
       region:Show();
       WeakAuras.PerformActions(data, "start", region);
       if not(WeakAuras.Animate("display", data, "start", data.animation.start, region, true, startMainAnimation, nil, cloneId)) then
@@ -564,15 +618,15 @@ end
 
 -- WORKAROUND Texts don't get the right size by default in WoW 7.3
 function WeakAuras.regionPrototype.SetTextOnText(text, str)
-  text:SetWidth(0); -- This makes the text use its internal text size calculation
+  if (text:GetText() == str) then
+    return
+  end
+
   text:SetText(str);
-  local w = text:GetWidth();
-  w = w + max(15, w / 20);
-  text:SetWidth(w); -- But that internal text size calculation is wrong, see ticket 1014
 end
 
 function WeakAuras.SetTextureOrAtlas(texture, path, wrapModeH, wrapModeV)
-  if type(path) == "string" and GetAtlasInfo(path) then
+  if type(path) == "string" and C_Texture.GetAtlasInfo(path) then
     texture:SetAtlas(path);
   else
     texture:SetTexture(path, wrapModeH, wrapModeV);
