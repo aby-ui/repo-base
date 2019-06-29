@@ -1,0 +1,338 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+
+    <Button name="TomCats-MechagonMiniMapButtonTemplate" virtual="true" frameStrata="MEDIUM" frameLevel="10" dontSavePosition="true">
+        <Size x="32" y="32"/>
+        <Anchors>
+            <Anchor point="CENTER" relativeTo="Minimap" relativePoint="CENTER" x="-78.674" y="-18.193" />
+        </Anchors>
+        <Animations>
+            <AnimationGroup parentKey="MinimapLoopPulseAnim" looping="REPEAT">
+                <Alpha childKey="LoopingGlow" duration="0.5" order="1" fromAlpha="0" toAlpha="1"/>
+                <Alpha childKey="LoopingGlow" startDelay="0.5" duration="1" order="1" fromAlpha="1" toAlpha="0"/>
+                <Scale childKey="LoopingGlow" duration="0.75" order="1" fromScaleX="0.75" fromScaleY="0.75" toScaleX="1.1" toScaleY="1.1"/>
+                <Scripts>
+                    <OnPlay>
+                        self:GetParent().LoopingGlow:Show();
+                    </OnPlay>
+                    <OnStop>
+                        self:GetParent().LoopingGlow:Hide();
+                    </OnStop>
+                    <OnFinished>
+                        self:GetParent().LoopingGlow:Hide();
+                    </OnFinished>
+                </Scripts>
+            </AnimationGroup>
+            <AnimationGroup parentKey="MinimapPulseAnim" setToFinalAlpha="true">
+                <Alpha childKey="CircleGlow" duration="0.1" order="1" fromAlpha="0" toAlpha="1"/>
+                <Alpha childKey="CircleGlow" startDelay="0.1" duration="0.5" order="1" fromAlpha="1" toAlpha="0"/>
+                <Scale childKey="CircleGlow" duration="0.25" order="1" fromScaleX="0.75" fromScaleY="0.75" toScaleX="1.75" toScaleY="1.75"/>
+                <Alpha childKey="SoftButtonGlow" duration="0.5" order="1" fromAlpha="0" toAlpha="1"/>
+                <Alpha childKey="SoftButtonGlow" startDelay="0.5" duration="0.5" order="1" fromAlpha="1" toAlpha="0"/>
+                <Scale childKey="SoftButtonGlow" duration="0.75" order="1" fromScaleX="1" fromScaleY="1" toScaleX="1.5" toScaleY="1.5"/>
+                <Scripts>
+                    <OnPlay>
+                        self:GetParent().CircleGlow:Show();
+                        self:GetParent().SoftButtonGlow:Show();
+                    </OnPlay>
+                    <OnStop>
+                        self:GetParent().CircleGlow:Hide();
+                        self:GetParent().SoftButtonGlow:Hide();
+                    </OnStop>
+                    <OnFinished>
+                        self:GetParent().CircleGlow:Hide();
+                        self:GetParent().SoftButtonGlow:Hide();
+                    </OnFinished>
+                </Scripts>
+            </AnimationGroup>
+            <AnimationGroup parentKey="MinimapAlertAnim" setToFinalAlpha="true">
+                <Alpha childKey="AlertText" duration="0.25" order="1" fromAlpha="0" toAlpha="1"/>
+                <Alpha childKey="AlertBG" duration="0.25" order="1" fromAlpha="0" toAlpha="1"/>
+                <Scale childKey="AlertBG" duration="0.25" order="1" fromScaleX="0.1" fromScaleY="1" toScaleX="1" toScaleY="1">
+                    <Origin point="CENTER">
+                        <Offset x="65" y="0"/>
+                    </Origin>
+                </Scale>
+                <Alpha childKey="SideToastGlow" duration="0.5" order="1" fromAlpha="0" toAlpha="1"/>
+                <Alpha childKey="SideToastGlow" startDelay="0.5" duration="0.5" order="1" fromAlpha="1" toAlpha="0"/>
+                <Scale childKey="SideToastGlow" duration="0.5" order="1" fromScaleX="1" fromScaleY="1" toScaleX="2" toScaleY="1">
+                    <Origin point="RIGHT">
+                        <Offset x="-10" y="0"/>
+                    </Origin>
+                </Scale>
+                <Alpha childKey="AlertText" startDelay="5" duration="0.25" order="2" fromAlpha="1" toAlpha="0"/>
+                <Alpha childKey="AlertBG" startDelay="5" duration="0.25" order="2" fromAlpha="1" toAlpha="0"/>
+                <Scale childKey="AlertBG" startDelay="5" duration="0.25" order="2" fromScaleX="1" fromScaleY="1" toScaleX="0.1" toScaleY="1">
+                    <Origin point="RIGHT">
+                        <Offset x="0" y="0"/>
+                    </Origin>
+                </Scale>
+                <Scripts>
+                    <OnPlay>
+                        self:GetParent().AlertBG:Show();
+                        self:GetParent().AlertText:Show();
+                        self:GetParent().SideToastGlow:Show();
+                        self:GetParent().MinimapPulseAnim:Play();
+                    </OnPlay>
+                    <OnStop>
+                        self:GetParent().AlertBG:Hide();
+                        self:GetParent().AlertText:Hide();
+                        self:GetParent().SideToastGlow:Hide();
+                        self:GetParent().MinimapPulseAnim:Stop();
+                    </OnStop>
+                    <OnFinished>
+                        self:GetParent().AlertBG:Hide();
+                        self:GetParent().AlertText:Hide();
+                        self:GetParent().SideToastGlow:Hide();
+                        self:GetParent().MinimapPulseAnim:Stop();
+                    </OnFinished>
+                </Scripts>
+            </AnimationGroup>
+        </Animations>
+        <Layers>
+            <Layer level="BORDER">
+                <Texture parentKey="AlertBG" hidden="true" alpha="0" atlas="GarrLanding-MinimapAlertBG" useAtlasSize="true">
+                    <Anchors>
+                        <Anchor point="RIGHT" relativePoint="CENTER"/>
+                    </Anchors>
+                </Texture>
+            </Layer>
+            <Layer level="BACKGROUND">
+                <Texture name="$parentBackground" file="Interface\Minimap\UI-Minimap-Background">
+                    <Size x="25" y="25"/>
+                    <Anchors>
+                        <Anchor point="TOPLEFT">
+                            <Offset x="3" y="-3"/>
+                        </Anchor>
+                    </Anchors>
+                    <Color r="1" g="1" b="1" a="0.6" />
+                </Texture>
+            </Layer>
+            <Layer level="ARTWORK">
+                <Texture parentKey="LoopingGlow" hidden="true" alpha="0" alphaMode="ADD" atlas="GarrLanding-CircleGlow" useAtlasSize="true">
+                    <Anchors>
+                        <Anchor point="CENTER"/>
+                    </Anchors>
+                </Texture>
+                <Texture parentKey="SideToastGlow" hidden="true" alpha="0" alphaMode="ADD" atlas="GarrLanding-SideToast-Glow" useAtlasSize="true">
+                    <Anchors>
+                        <Anchor point="CENTER"/>
+                    </Anchors>
+                </Texture>
+            </Layer>
+            <Layer textureSubLevel="2">
+                <Texture name="$parentIcon" file="Interface\Minimap\Tracking\None">
+                    <Size x="20" y="20"/>
+                    <Anchors>
+                        <Anchor point="TOPLEFT">
+                            <Offset x="6" y="-6"/>
+                        </Anchor>
+                    </Anchors>
+                </Texture>
+            </Layer>
+            <Layer level="OVERLAY">
+                <FontString parentKey="AlertText" hidden="true" alpha="0" justifyH="RIGHT" inherits="GameFontHighlightLeft">
+                    <Size x="138" y="45"/>
+                    <Anchors>
+                        <Anchor point="RIGHT" relativePoint="LEFT" x="4" y="0"/>
+                    </Anchors>
+                </FontString>
+                <Texture parentKey="CircleGlow" hidden="true" alpha="1" alphaMode="ADD" atlas="GarrLanding-CircleGlow" useAtlasSize="true">
+                    <Anchors>
+                        <Anchor point="CENTER"/>
+                    </Anchors>
+                </Texture>
+                <Texture parentKey="SoftButtonGlow" hidden="true" alpha="1" alphaMode="ADD" atlas="GarrLanding-SideToast-Glow" useAtlasSize="true">
+                    <Anchors>
+                        <Anchor point="CENTER"/>
+                    </Anchors>
+                </Texture>
+            </Layer>
+            <Layer level="OVERLAY" textureSubLevel="4">
+                <Texture name="$parentBorder" file="Interface\Minimap\MiniMap-TrackingBorder">
+                    <Size x="54" y="54"/>
+                    <Anchors>
+                        <Anchor point="TOPLEFT"/>
+                    </Anchors>
+                </Texture>
+            </Layer>
+            <Layer level="OVERLAY" textureSubLevel="3">
+                <Texture name="$parentIconOverlay" hidden="true">
+                    <Anchors>
+                        <Anchor point="TOPLEFT" relativeTo="$parentIcon"/>
+                        <Anchor point="BOTTOMRIGHT" relativeTo="$parentIcon"/>
+                    </Anchors>
+                    <Color r="0.0" g="0.0" b="0.0" a="0.5"/>
+                </Texture>
+            </Layer>
+        </Layers>
+        <Scripts>
+            <OnLoad>
+                    self:RegisterForDrag("LeftButton")
+                    local name = self:GetName()
+                    local isDragging = false
+                    local tooltipIsShowing = false
+                    local Ax, Ay, scale, top, right
+                    local r = 80
+                    local preferences = {}
+                    local handlers = {}
+                    local shape = GetMinimapShape and GetMinimapShape() or "ROUND"
+
+                    local function RefreshMeasurements()
+                        Ax, Ay = Minimap:GetCenter()
+                        scale = self:GetEffectiveScale()
+                        right = UIParent:GetRight()
+                        top = UIParent:GetTop()
+                    end
+
+                    local function ButtonDown()
+                        _G[name .. "Icon"]:SetPoint("TOPLEFT", self, "TOPLEFT", 8, -8);
+                        _G[name .. "IconOverlay"]:Show();
+                    end
+
+                    local function ButtonUp()
+                        _G[name .. "Icon"]:SetPoint("TOPLEFT", self, "TOPLEFT", 6, -6);
+                        _G[name .. "IconOverlay"]:Hide();
+                    end
+
+                    local function OnMouseDown()
+                        ButtonDown()
+                    end
+
+                    local function OnMouseUp()
+                        ButtonUp()
+                    end
+
+                    local function OnClick()
+                        if (handlers.OnClick) then
+                            handlers.OnClick()
+                        end
+                    end
+
+                    local function UpdatePosition()
+                        local rad = preferences.position
+                        if (GetMinimapShape and GetMinimapShape() == "SQUARE") then
+                            local x, y = math.cos(rad), math.sin(rad)
+                            local h = 113.14
+                            x = math.max(-80, math.min(x * h, 80))
+                            y = math.max(-80, math.min(y * h, 80))
+                            self:SetPoint("CENTER", Minimap, "CENTER", x, y)
+                        else
+                            local Cx = r * math.cos(rad)
+                            local Cy = r * math.sin(rad)
+                            self:SetPoint("CENTER", Minimap, "CENTER", Cx, Cy)
+                        end
+                        local buttonRight = self:GetRight()
+                        if (buttonRight > right) then
+                            local point = { self:GetPoint() }
+                            local adj = (buttonRight - right) * scale
+                            point[4] = point[4] - adj
+                            self:SetPoint(unpack(point))
+                        end
+                        local buttonTop = self:GetTop()
+                        if (buttonTop > top) then
+                            local point = { self:GetPoint() }
+                            local adj = (buttonTop - top) * scale
+                            point[5] = point[5] - adj
+                            self:SetPoint(unpack(point))
+                        end
+                    end
+
+                    local function UpdatePositionByCursor()
+                        local Bx, By = GetCursorPosition()
+                        preferences.position = math.atan2((By / scale) - Ay, (Bx / scale) - Ax)
+                        UpdatePosition()
+                    end
+
+                    local function OnUpdate()
+                        if (isDragging) then
+                            UpdatePositionByCursor()
+                        else
+                            local newShape = GetMinimapShape and GetMinimapShape() or "ROUND"
+                            if (shape ~= newShape) then
+                                shape = newShape
+                                UpdatePosition()
+                            end
+                        end
+                    end
+
+                    local function OnDragStart()
+                        if (tooltipIsShowing) then
+                            self.tooltip:Hide()
+                            tooltipIsShowing = false
+                        end
+                        RefreshMeasurements()
+                        self:ClearAllPoints()
+                        isDragging = true
+                    end
+
+                    local function OnDragStop()
+                        ButtonUp()
+                        isDragging = false
+                    end
+
+                    local function OnEnter()
+                        if (self.tooltip and (not isDragging)) then
+                            self.tooltip.Show(self)
+                            tooltipIsShowing = true
+                        end
+                    end
+
+                    local function OnLeave()
+                        if (self.tooltip) then
+                            self.tooltip.Hide()
+                            tooltipIsShowing = false
+                        end
+                    end
+
+                    function self:GetPreferences()
+                        if (not preferences.position) then
+                            local _, _, _, Bx, By = self:GetPoint()
+                            local Ax, Ay = Minimap:GetCenter()
+                            preferences.position = math.atan2(By - Ay, Bx - Ax)
+                        end
+                        return preferences
+                    end
+
+                    function self:SetPreferences(savedPreferences)
+                        if (savedPreferences) then
+                            if (savedPreferences.position and type(savedPreferences.position) == "number") then
+                                preferences = savedPreferences
+                            end
+                            RefreshMeasurements()
+                            UpdatePosition()
+                            if (savedPreferences.hidden) then
+                                self:Hide()
+                            end
+                        end
+                    end
+
+                    function self:SetEnabled(enabled)
+                        if (enabled) then
+                            self:Show()
+                            preferences.hidden = false
+                        else
+                            self:Hide()
+                            preferences.hidden = true
+                        end
+                    end
+
+                    function self:SetHandler(handlerType, handler)
+                        handlers[handlerType] = handler
+                    end
+
+                    self:SetScript("OnMouseDown", OnMouseDown)
+                    self:SetScript("OnMouseUp", OnMouseUp)
+                    self:SetScript("OnClick", OnClick)
+                    self:SetScript("OnDragStart", OnDragStart)
+                    self:SetScript("OnDragStop", OnDragStop)
+                    self:SetScript("OnUpdate", OnUpdate)
+                    self:SetScript("OnEnter", OnEnter)
+                    self:SetScript("OnLeave", OnLeave)
+            </OnLoad>
+        </Scripts>
+        <HighlightTexture alphaMode="ADD" file="Interface\Minimap\UI-Minimap-ZoomButton-Highlight"/>
+
+    </Button>
+    <Script file="Charms.lua" />
+</Ui>

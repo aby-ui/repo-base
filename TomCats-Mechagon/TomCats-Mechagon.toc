@@ -1,0 +1,18 @@
+## Interface: 80200
+## Title: TomCat's Tours: Rares of Mechagon
+## Author: TomCat
+## X-Website: http://www.tomcatstours.com
+## Version: 1.0.2
+## DefaultState: enabled
+## SavedVariablesPerCharacter: TomCats_Mechagon_Character
+## OptionalDeps: TomCats,HandyNotes
+## X-Part-Of: TomCat's Tours:
+## X-Category: Achievements, Map, Miscellaneous
+## X-Localizations: enUS, deDE, esES, esMX, frFR, itIT, koKR, ptBR, ruRU, zhCN, zhTW
+
+Main.xml
+
+
+## Title: |cff880303[爱不易]|r TomCats-麦卡贡稀有
+## Notes-zhCN: 在麦卡贡显示稀有位置及掉落
+## X-Vendor: AbyUI

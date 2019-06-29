@@ -1,0 +1,59 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+    <Frame name="TomCats-MechagonInterfaceOptionsPanel" hidden="false" parent="InterfaceOptionsFramePanelContainer">
+        <Layers>
+            <Layer level="ARTWORK">
+                <FontString name="$parentTitle" text="Rares of Arathi Highlands" inherits="GameFontNormalLarge" justifyH="LEFT" justifyV="TOP">
+                    <Anchors>
+                        <Anchor point="TOPLEFT">
+                            <Offset>
+                                <AbsDimension x="16" y="-16"/>
+                            </Offset>
+                        </Anchor>
+                    </Anchors>
+                </FontString>
+            </Layer>
+        </Layers>
+        <Frames>
+            <CheckButton name="$parentEnableMinimapButton" inherits="InterfaceOptionsCheckButtonTemplate">
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeTo="$parentTitle" relativePoint="BOTTOMLEFT">
+                        <Offset>
+                            <AbsDimension x="-2" y="-8"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+                <Scripts>
+                    <OnLoad>
+                            self.type = CONTROLTYPE_CHECKBOX
+                            self.Text:SetText("Enable Minimap Button")
+                            self.tooltipText = "Enables or disables the minimap button"
+                            BlizzardOptionsPanel_RegisterControl(self, self:GetParent())
+                            self.defaultValue = "1"
+                            self.GetValue = function(self)
+                                local currentValue = _G["TomCats-MechagonMinimapButton"]:GetPreferences().hidden
+                                if (currentValue) then return "0" end
+                                return "1"
+                            end
+                            self.SetValue = function(self, value)
+                                if (value == "1") then
+                                    _G["TomCats-MechagonMinimapButton"]:SetEnabled(true)
+                                else
+                                    _G["TomCats-MechagonMinimapButton"]:SetEnabled(false)
+                                end
+                            end
+                    </OnLoad>
+                </Scripts>
+            </CheckButton>
+        </Frames>
+        <Scripts>
+            <OnLoad>
+                if (TomCats) then
+                    self.name = "Rares of Mechagon"
+                    self.parent = "TomCat's Tours"
+                    InterfaceOptionsPanel_OnLoad(self);
+                end
+            </OnLoad>
+        </Scripts>
+    </Frame>
+</Ui>
