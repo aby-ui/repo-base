@@ -589,12 +589,11 @@ eventFrame.UNIT_SPELLCAST_INTERRUPTED = eventFrame.UNIT_SPELLCAST_STOP
 ------------------------------------------------------------------------
 
 function eventFrame:COMBAT_LOG_EVENT_UNFILTERED(event, timestamp, combatEvent, hideCaster, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destFlags, destRaidFlags, spellID, spellName, spellSchool)
-	if combatEvent ~= "SPELL_RESURRECT" then return end
-
 	if IS_WOW_8 then
 		timestamp, combatEvent, hideCaster, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destFlags, destRaidFlags, spellID, spellName, spellSchool = CombatLogGetCurrentEventInfo()
 	end
 
+	if combatEvent ~= "SPELL_RESURRECT" then return end
 	local destUnit = unitFromGUID[destGUID]
 	if not destUnit then return end
 	debug(3, combatEvent, "on", destName, "by", sourceName)

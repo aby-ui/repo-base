@@ -761,8 +761,10 @@ local function ModifyUnitTooltip()
 	GameTooltipTextLeft1:SetFormattedText(("%s"):rep(#lineOne),unpack(lineOne));
 	-- Info Line
 	local gttLine = _G["GameTooltipTextLeft"..lineInfoIndex];
-	gttLine:SetFormattedText(("%s"):rep(#lineInfo),unpack(lineInfo));
-	gttLine:SetTextColor(1,1,1);
+    if gttLine then
+	    gttLine:SetFormattedText(("%s"):rep(#lineInfo),unpack(lineInfo));
+	    gttLine:SetTextColor(1,1,1);
+    end
 end
 
 -- Add "Targeted By" line

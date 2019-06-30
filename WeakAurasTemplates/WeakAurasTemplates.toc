@@ -1,7 +1,7 @@
 ## Interface: 80200
 ## Title: WeakAuras Templates
 ## Author: The WeakAuras Team
-## Version: 2.13.1
+## Version: 2.13.2
 ## Notes: Templates for WeakAuras
 ## X-Category: Interface Enhancements
 ## Globe-Main: WeakAuras

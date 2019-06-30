@@ -432,10 +432,10 @@ do
         currentZone = uiMapID
         isMinimap = minimap
         if minimap and ns.map_spellids[uiMapID] then
-            if ns.map_spellids[mapFile] == true then
+            if ns.map_spellids[uiMapID] == true then
                 return iter
             end
-            if UnitHasBuff("player", ns.map_spellids[mapFile]) then
+            if UnitHasBuff("player", ns.map_spellids[uiMapID]) then
                 return iter
             end
         end

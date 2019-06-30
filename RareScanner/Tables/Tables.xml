@@ -1,0 +1,8 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/"   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"   xsi:schemaLocation="http://www.blizzard.com/wow/ui/">
+	<Script file="DisplayTables.lua"/>
+	<Script file="LootTables.lua"/>
+	<Script file="ZoneTables.lua"/>
+	<Script file="RareTables.lua"/>
+	<Script file="ContainerTables.lua"/>
+	<Script file="AchievementTables.lua"/>
+</Ui>

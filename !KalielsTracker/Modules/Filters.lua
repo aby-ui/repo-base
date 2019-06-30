@@ -205,8 +205,6 @@ local function Filter_Quests(self, spec, idx)
 				mapID == 1165 then	-- BfA - Dazar'alor
 			local mapInfo = C_Map.GetMapInfo(mapID)
 			OpenQuestLog(mapInfo.parentMapID)
-		else
-			KT.SetMapToCurrentZone()
 		end
 		for i=numEntries, 1, -1 do
 			local _, _, _, isHeader, _, _, _, questID, _, _, isOnMap, _, isTask, isBounty = GetQuestLogTitle(i)

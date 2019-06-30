@@ -62,7 +62,7 @@ ns.points = {
         [41003328] = path{quest=50707, note="Path behind the waterfall"},
         [41973566] = path{quest=50707},
         [61065863] = {quest=50947, achievement=12851, criteria=40994, npc=133208, note="Event: kill Da White Shark first",}, -- Da White Shark's Bounty
-        [71821677] = {quest=50949, achievement=12851, criteria=40995, note="In cave",}, -- The Exile's Lament
+        [71821677] = {quest=50949, item=163036, achievement=12851, criteria=40995, note="In cave",}, -- The Exile's Lament
         [71161767] = path{quest=50949},
         [56123806] = {quest=51338, achievement=12851, criteria=40996, note="In cave behind waterfall",}, -- Cache of Secrets
         [52974719] = {quest=51624, achievement=12851, criteria=40997}, -- Riches of Tor'nowa
@@ -99,6 +99,22 @@ ns.points = {
         [46228295] = {quest=49889, achievement=12771, criteria=40864,}, -- Venomous Seal
         [76826220] = {quest=50045, achievement=12771, criteria=40865, note="Underwater cave",}, -- Swallowed Naga Chest
         [35455498] = {quest=49313, achievement=12771, criteria=40866, note="In cave",}, -- Wunja's Trove
+        -- Hoppin' Sad (Lost Spawn of Krag'wa)
+        [65605090] = {quest=53417, achievement=13028, minimap=true, atlas="WildBattlePetCapturable",}, --verify
+        [69105790] = {quest=53418, achievement=13028, minimap=true, atlas="WildBattlePetCapturable",}, --verify
+        [56106490] = {quest=53419, achievement=13028, minimap=true, atlas="WildBattlePetCapturable",},
+        [52804290] = {quest=53420, achievement=13028, minimap=true, atlas="WildBattlePetCapturable",}, --verify
+        [33506160] = {quest=53421, achievement=13028, minimap=true, atlas="WildBattlePetCapturable",},
+        [45609100] = {quest=53422, achievement=13028, minimap=true, atlas="WildBattlePetCapturable",}, --verify
+        [28408230] = {quest=53423, achievement=13028, minimap=true, atlas="WildBattlePetCapturable", note="Cave in cliffs",}, --verify
+        [24209160] = {quest=53424, achievement=13028, minimap=true, atlas="WildBattlePetCapturable",}, --verify
+        [21706930] = {quest=53425, achievement=13028, minimap=true, atlas="WildBattlePetCapturable",},
+        -- [52804290] = {quest=53426, achievement=13828, minimap=true,}, -- maybe?
+        [25694058] = {quest=53426, achievement=13028, minimap=true, atlas="WildBattlePetCapturable",},
+        -- junk
+        [41575046] = {quest=49916, junk=true, label=CHEST,},
+        [41596574] = {quest=49916, junk=true, label=CHEST,},
+        [28048187] = {quest=50895, junk=true, label=CHEST,},
     },
     [864] = { -- Vol'dun
         [46598801] = {quest=50237, achievement=12849, criteria=40966, note="Use mine cart",}, -- Ashvane Spoils
@@ -135,6 +151,7 @@ ns.points = {
         [62832267] = {quest=53145, minimap=true, atlas="VignetteLootElite", scale=1.2, achievement=13016, criteria=41355, note="Down from Tortaka Refuge",}, -- Kurt's Ornate Key
         -- junk
         [46984656] = {quest=50883, junk=true, label="Mysterious trashpile", achievement=12482, note="In alcove, Summon Jani, give her Charged Ranishu Antennae"},
+        [59631517] = {quest=50914, junk=true, label=CHEST,},
         [61071734] = {quest=50914, junk=true, label=CHEST,},
         [53841481] = {quest=50915, junk=true, label=CHEST,},
         [60843637] = {quest=50916, junk=true, label=CHEST,},
@@ -183,6 +200,7 @@ ns.points = {
         [70602270] = {quest=53407, item=163716, atlas="poi-workorders", minimap=true, achievement=13057, criteria=41543, note="Behind Jay the Tavern Bard",}, -- Inebriation
         [74403540] = {quest=53408, item=163714, atlas="poi-workorders", minimap=true, achievement=13057, criteria=41541, note="On the fireplace mantel",}, -- Lively Men
         -- junk:
+        [83673580] = {quest=53631, junk=true, label="Dusty Marine Supplies",},
         [76967543] = {quest=48593, junk=true, label=CHEST_SM,},
         [78008050] = {quest=48595, junk=true, label=CHEST_SM,},
         [76358090] = {quest=48595, junk=true, label=CHEST_SM,},
@@ -213,15 +231,20 @@ ns.points = {
         [25472416] = {quest=53474, item=163796, minimap=true, achievement=12995, criteria=41705, note="Click on Witch Torch",}, -- Enchanted Chest
         [25751995] = {quest=53357, achievement=12995, criteria=41698, note="Get keys from Gorging Raven",}, -- Merchant's Chest
         [44222770] = {quest=53386, item=163742, achievement=12995, criteria=41700, note="Left Right Down Up",}, -- Runebound Chest
-        [18515133] = {quest=53471, minimap=true, achievement=12995, criteria=41702, note="Click on Witch Torch",}, -- Hexed Chest
+        [18515133] = {quest=53471, item=163789, minimap=true, achievement=12995, criteria=41702, note="Click on Witch Torch",}, -- Hexed Chest
         [67767367] = {quest=53473, item=163791, minimap=true, achievement=12995, criteria=41704, note="Click on Witch Torch",}, -- Ensorcelled Chest
-        [24304840] = {quest=53475, achievement=12995, criteria=41752,}, -- Stolen Thornspeaker Cache
+        [24304840] = {quest=53475, minimap=true, achievement=12995, criteria=41752,}, -- Stolen Thornspeaker Cache
         -- junk
         [65312905] = {quest=51871, junk=true, label=CHEST_SM,},
         [57862187] = {quest=51875, junk=true, label=CHEST_SM,},
         [58642825] = {quest=51875, junk=true, label=CHEST_SM,},
         [50332252] = {quest=51878, junk=true, label=CHEST_SM,},
+        [62094463] = {quest=51882, junk=true, label=CHEST_SM,},
         [60306860] = {quest=51896, junk=true, label=CHEST_SM,},
+        [26222993] = {quest=51907, junk=true, label=CHEST_SM,},
+        [23181263] = {quest=5191, junk=true, label=CHEST_SM,},
+        [24223681] = {quest=51911, junk=true, label=CHEST_SM,},
+        [39326173] = {quest=51914, junk=true, label=CHEST_SM,},
     },
     [942] = { -- Stormsong Valley
         [66901200] = {quest=51449, achievement=12853, criteria=41061,}, -- Weathered Treasure Chest
@@ -289,5 +312,9 @@ ns.points = {
         [41141101] = path{quest=48938},
         -- junk
         [48981013] = {quest=49142, junk=true, label=CHEST,},
+    },
+    [1355] = { -- Nazjatar
+    },
+    [1462] = { -- Mechagon
     },
 }

@@ -538,7 +538,6 @@ local function SetHooks()
 			_DBG("|cffffff00Update ... "..dbgReason, true)
 		end
 		bck_ObjectiveTracker_Update(reason, id)
-		OTF.isUpdating = true
 		FixedButtonsReanchor()
 		if dbChar.collapsed then
 			local _, numQuests = GetNumQuestLogEntries()
@@ -551,13 +550,11 @@ local function SetHooks()
 			OTFHeader.Title:SetText(title)
 		end
 		if reason == OBJECTIVE_TRACKER_UPDATE_STATIC then
-			OTF.isUpdating = false
 			return
 		elseif KT.IsTableEmpty(KT.activeTasks) then
 			KT:ToggleEmptyTracker()
 		end
 		KT:SetSize()
-		OTF.isUpdating = false
 	end
 
 	function DEFAULT_OBJECTIVE_TRACKER_MODULE:AddObjective(block, objectiveKey, text, lineType, useFullHeight, dashStyle, colorStyle, adjustForNoText, overrideHeight)  -- RO
@@ -1532,6 +1529,11 @@ local function SetHooks()
             if panel == QuestFrameDetailPanel then
                 if QuestInfoSealFrame then QuestInfoSealFrame:ClearAllPoints() end
             end
+        end)
+    end
+    if OpenQuestLog then
+        hooksecurefunc("OpenQuestLog", function()
+            if QuestInfoSealFrame then QuestInfoSealFrame:ClearAllPoints() end
         end)
     end
 

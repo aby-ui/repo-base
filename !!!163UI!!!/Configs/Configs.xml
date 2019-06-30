@@ -76,7 +76,6 @@
     <Include file="..\..\MeetingStone\CfgMeetingStone.lua"/>
     <Include file="..\..\MerchantEx\CfgMerchantEx.lua"/>
     <Include file="..\..\MySlot\CfgMySlot.lua"/>
-    <Include file="..\..\NPCScan\CfgNPCScan.lua"/>
     <Include file="..\..\OmniBar\CfgOmniBar.lua"/>
     <Include file="..\..\OmniCC\CfgOmniCC.lua"/>
     <Include file="..\..\Parrot\CfgParrot.lua"/>
@@ -124,11 +123,14 @@
     <Include file="..\..\BFAInvasionTimer\CfgBFAInvasionTimer.lua"/>
     <Include file="..\..\MethodDungeonTools\CfgMethodDungeonTools.lua"/>
     <Include file="..\..\Details\CfgDetails.lua"/>
+    <Include file="..\..\RareScanner\CfgRareScanner.lua"/>
 
     <!-- local
     <Include file="..\..\AtlasLoot\CfgAtlasLoot.lua"/>
     <Include file="..\..\RaidAchievement\CfgRaidAchievement.lua"/>
-
+    -->
+    <!-- removed
+    <Include file="..\..\NPCScan\CfgNPCScan.lua"/>
     -->
 
     <Include file="Custom.xml"/>

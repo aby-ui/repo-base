@@ -1,8 +1,0 @@
-<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
-..\FrameXML\UI.xsd">
-    <Script file="Decorators\EliteTargetButton.lua"/>
-    <Script file="Decorators\NormalTargetButton.lua"/>
-    <Script file="Decorators\RareTargetButton.lua"/>
-    <Script file="TargetButton.lua"/>
-    <Script file="TargetButtonManager.lua"/>
-</Ui>

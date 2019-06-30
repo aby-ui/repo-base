@@ -525,7 +525,7 @@ if (HandyNotes) then
                     end
                     return coord, uiMapID,
                     icon,
-                    2.0, 1.0
+                    1.5, 1.0
                 else
                     return nil
                 end

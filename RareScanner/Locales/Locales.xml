@@ -1,0 +1,14 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/"   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"   xsi:schemaLocation="http://www.blizzard.com/wow/ui/">
+	<Script file="RareScanner-enUS.lua"/>
+	<Script file="RareScanner-esES.lua"/>
+	<Script file="RareScanner-esMX.lua"/>
+	<Script file="RareScanner-itIT.lua"/>
+	<Script file="RareScanner-ptBR.lua"/>
+	<Script file="RareScanner-enGB.lua"/>
+	<Script file="RareScanner-ruRU.lua"/>
+	<Script file="RareScanner-frFR.lua"/>
+	<Script file="RareScanner-deDE.lua"/>
+	<Script file="RareScanner-koKR.lua"/>
+	<Script file="RareScanner-zhCN.lua"/>
+	<Script file="RareScanner-zhTW.lua"/>
+</Ui>

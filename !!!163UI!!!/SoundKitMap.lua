@@ -334,10 +334,13 @@ for k, v in pairs(map_82) do map_82_std[k:lower():gsub("\\", "/")] = v end
 local playSoundFileOrigin = PlaySoundFile
 PlaySoundFile = function(file, channel)
     if not file then return end
+    if type(file) == "number" then
+        return PlaySound(file, channel, false)
+    end
     if not tonumber(file) and not tostring(file):lower():find("^interface") then
         local id = map_82_std[file:lower():gsub("\\", "/")]
         if id then
-            return PlaySound(id, channel)
+            return PlaySound(id, channel, false)
         end
         if DEBUG_MODE then print(file) end
     else

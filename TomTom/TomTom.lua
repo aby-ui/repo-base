@@ -1144,7 +1144,7 @@ function TomTom:SetClosestWaypoint()
         local ctxt = RoundCoords(x, y, 2)
         local desc = data.title and data.title or ""
         local sep = data.title and " - " or ""
-        if not opts.silent and self.profile.general.announce then
+        if self.profile.general.announce then
             local msg = string.format(L["|cffffff78TomTom:|r Selected waypoint (%s%s%s) in %s"], desc, sep, ctxt, zoneName)
             ChatFrame1:AddMessage(msg)
         end
@@ -1155,7 +1155,9 @@ function TomTom:SetClosestWaypoint()
         else
            msg = L["|cffffff78TomTom:|r Could not find a closest waypoint in this continent."]
         end
-        ChatFrame1:AddMessage(msg)
+        if self.profile.general.announce then
+            ChatFrame1:AddMessage(msg)
+        end
     end
     return uid
 end

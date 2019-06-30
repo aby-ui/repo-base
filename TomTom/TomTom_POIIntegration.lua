@@ -205,7 +205,7 @@ local function poi_OnClick(self, button)
     if not x or not y then
         -- No coordinate information for this quest/objective
         local header = "|cFF33FF99TomTom|r"
-        if not opts.silent and self.profile.general.announce then
+        if self.profile.general.announce then
             local msg = L["%s: No coordinate information found for '%s' at this map level"]:format(header, title or self.questID)
             ChatFrame1:AddMessage(msg)
         end

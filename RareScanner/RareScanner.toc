@@ -1,0 +1,36 @@
+﻿## Interface: 80200
+## Title: RareScanner
+## Notes: Minimap scanner. Warns you visually with a button and a miniature and plays a sound everytime a rare NPC, treasure/chest or event shows up in your minimap
+## Notes-esES: Escaner del minimapa. Avisa con un mensaje, una miniatura y reproduce un sonido cada vez que un NPC raro, tesoro o evento aparece en tu minimapa.
+## Notes-esMX: Escaner del minimapa. Avisa con un mensaje, una miniatura y reproduce un sonido cada vez que un NPC raro, tesoro o evento aparece en tu minimapa.
+## Notes-ptBR: Scanner do minimapa. Avisa com uma mensagem, uma miniatura e produz um sinal sonoro cada vez que um NPC raro, tesouro ou evento aparece no seu minimapa.
+## Notes-zhTW: 小地圖掃描器。 當每次稀有NPC、寶藏/寶箱或事件出現在您的小地圖上時，使用一個按鈕與縮小的模型視覺化提醒您並撥放聲音。
+## Notes-zhCN: 小地图扫描器。 当每次稀有NPC、宝藏/宝箱或事件出现在您的小地图上时，使用一个按钮与缩小的模型视觉化提醒您并拨放声音。
+## Notes-deDE: Minimap scanner. Warns you visually with a button and a miniature and plays a sound everytime a rare NPC, treasure/chest or event shows up in your minimap.
+## Notes-ruRU: Сканер миникарты. Визуально оповещает вас с помощью кнопки и миниатюры, а также воспроизводит звук каждый раз, когда на миникарте появляется редкий НИП, сокровище/сундук или событие
+## Notes-koKR: 미니맵 스캐너. 매번 희귀 NPC, 보물/상자 또는 이벤트를 소리와 함께 시각적으로 미니 맵에 표시하여 알립니다.
+## Notes-itIT: Scanner Minimappa. Crea un avviso sonoro e grafico riportante una miniatura e un pulsante ogniqualvolta un PNG, tesoro, cassa o evento apparirà sulla minimappa
+## Author: maqjav, Maciza-Tyrande
+## Version: 5.4.1
+## SavedVariables: RareScannerDB
+## OptionalDeps: Ace3
+## X-Category: Achievements, Map, Miscellaneous
+## X-Credits: maqjav, Maciza-Tyrande
+## X-Date: Jun. 27, 2019
+## X-Email: maqjav@gmail.com
+## X-License: All Rights Reserved
+## X-Localizations: enUS, enGB, deDE, esES, esMX, frFR, ruRU, itIT, ptBR, koKR, zhCN, zhTW
+
+Libs\Libs.xml
+Locales\Locales.xml
+Tables\Tables.xml
+Core.lua
+MapPlugin\RSRarePinTemplate.xml
+CommsPlugin\RsCommunications.lua
+LogPlugin\RSLogWindow.lua
+LootPlugin\RSLootTemplate.xml
+Config.lua
+
+
+## Title: |cff880303[爱不易]|r RareScanner 稀有精英提示
+## X-Vendor: AbyUI
