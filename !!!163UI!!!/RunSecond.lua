@@ -113,6 +113,7 @@ CoreDependCall("Blizzard_ObjectiveTracker", function()
     CoreOnEvent("PLAYER_REGEN_ENABLED", hook_Scenario_AddSpells)
     CoreOnEvent("PLAYER_REGEN_DISABLED", hook_Scenario_AddSpells)
 
+    --[=[
     local wqItems163 = {} --物品按钮定时刷新隐藏, 不能setparent，也不能SetAllPoints()
     local function update_WorldQuestItemButtons()
         if InCombatLockdown() then return end
@@ -167,6 +168,7 @@ CoreDependCall("Blizzard_ObjectiveTracker", function()
     CoreOnEvent("PLAYER_REGEN_ENABLED", update_WorldQuestItemButtons)
     CoreOnEvent("PLAYER_REGEN_DISABLED", update_WorldQuestItemButtons)
     CoreScheduleTimer(true, 0.5, update_WorldQuestItemButtons)
+    --]=]
 end)
 
 CoreDependCall("Blizzard_InspectUI", function()

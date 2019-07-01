@@ -260,7 +260,7 @@ merge(ns.points[1355], { -- Nazjatar
     [45602560] = {quest=56275, npc=152465, item=169355, achievement=13691, criteria=45538,}, -- Needlespine
     [35604120] = {quest=56292, npc=152548, item=169370, achievement=13691, criteria=45545,}, -- Scale Matriarch Gratinax
     [27403720] = {quest=56293, npc=152545, item=169370, achievement=13691, criteria=45546,}, -- Scale Matriarch Vynara
-    [28704630] = {quest=56294, npc=152553, item=169370, achievement=13691, criteria=45547,}, -- Scale Matriarch Zodia
+    [28704630] = {quest=56294, npc=152542, item=169370, achievement=13691, criteria=45547,}, -- Scale Matriarch Zodia
     [37201320] = {quest=56274, npc=144644, item=169366, achievement=13691, criteria=45537,}, -- Mirecrawler
     [36003960] = {quest=56273, npc=152553, item=170180, achievement=13691, criteria=45533,}, -- Garnetscale
     [52207400] = {quest=56285, npc=152555, item=169359, achievement=13691, criteria=45532,}, -- Elderspawn Nalaada
@@ -299,7 +299,7 @@ merge(ns.points[1355], { -- Nazjatar
     [49406580] = {quest=nil, npc=155836, item=nil,}, -- Theurgist Nitara
     [48352400] = {quest=nil, npc=150468, item=169376,}, -- Vor'koth
     [36901120] = {quest=55584, npc=150191, item=169373,}, -- Avarius
-    [54804200] = {quest=55366, npc=149653, item=169375,}, -- Carniverous Lasher
+    [54804200] = {quest=55366, npc=149653, item=169375,}, -- Carnivorous Lasher (also seen 56296 + 56587)
 })
 merge(ns.points[1462], { -- Mechagon
     [62802600] = {quest=55814, npc=150342, item=167042, achievement=13470, criteria=45138,}, -- Earthbreaker Gulroc

@@ -68,7 +68,7 @@ local function showRealDate(curseDate)
 end
 
 DBM = {
-	Revision = parseCurseDate("20190629220557"),
+	Revision = parseCurseDate("20190701154522"),
 	DisplayVersion = "8.2.2 alpha", -- the string that is shown as version
 	ReleaseRevision = releaseDate(2019, 6, 26) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 }
@@ -5472,7 +5472,7 @@ do
 			self:FlashClientIcon()
 			local voice = DBM.Options.ChosenVoicePack
 			local path = 8585--"Sound\\Creature\\CThun\\CThunYouWillDIe.ogg"
-			if not voiceSessionDisabled or voice ~= "None" then
+			if not voiceSessionDisabled and voice ~= "None" then
 				path = "Interface\\AddOns\\DBM-VP"..voice.."\\checkhp.ogg"
 			end
 			self:PlaySound(path)

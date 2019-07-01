@@ -57,7 +57,7 @@ FriendsMenuXP_Buttons["IGNORE"] = {
     func = function(name) AddOrDelIgnore(name); end,
     show = function(name)
         if(name == UnitName("player")) then return end;
-        for i = 1, GetNumIgnores() do
+        for i = 1, C_FriendList.GetNumIgnores() do
             if(name == GetIgnoreName(i)) then
                 return nil;
             end
@@ -71,7 +71,7 @@ FriendsMenuXP_Buttons["CANCEL_IGNORE"] = {
     func = function(name) AddOrDelIgnore(name); end,
     show = function(name)
         if(name == UnitName("player")) then return end;
-        for i = 1, GetNumIgnores() do
+        for i = 1, C_FriendList.GetNumIgnores() do
             if(name == GetIgnoreName(i)) then
                 return 1;
             end

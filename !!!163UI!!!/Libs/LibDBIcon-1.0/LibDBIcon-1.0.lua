@@ -147,7 +147,8 @@ do
 			local diagRadiusH = sqrt(2*(h)^2)-10
 			x = max(-w, min(x*diagRadiusW, w))
 			y = max(-h, min(y*diagRadiusH, h))
-		end
+        end
+        button:ClearAllPoints()
 		button:SetPoint("CENTER", Minimap, "CENTER", x, y)
 	end
 end

@@ -266,3 +266,25 @@ if WorldMap_AddQuestTimeToTooltip then
     end)
 end
 --]]
+
+--[[------------------------------------------------------------
+8.2.0
+---------------------------------------------------------------]]
+--Interface\FrameXML\QuestInfo.lua:389: Action[SetPoint] failed because[SetPoint would result in anchor family connection]: attempted from: QuestInfoSealFrame:SetPoint.
+if OpenQuestLog then
+    hooksecurefunc("OpenQuestLog", function()
+        if QuestInfoSealFrame then QuestInfoSealFrame:ClearAllPoints() end
+    end)
+end
+--战斗中打开寻求组队
+if LFGListUtil_GetQuestCategoryData then
+    local origin = LFGListUtil_GetQuestCategoryData
+    hooksecurefunc("LFGListUtil_GetQuestCategoryData", function(...)
+        if InCombatLockdown() and not PVEFrame:IsVisible() then
+            local activityID, categoryID, filters, questName = origin(...);
+            if activityID then
+                PVEFrame:Show()
+            end
+        end
+    end)
+end

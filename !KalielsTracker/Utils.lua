@@ -11,8 +11,35 @@ local floor = math.floor
 local fmod = math.fmod
 local format = string.format
 local next = next
+local strfind = string.find
 local strlen = string.len
 local strsub = string.sub
+local tonumber = tonumber
+
+-- Version
+function KT.IsHigherVersion(newVersion, oldVersion)
+    local result = false
+    local _, _, nV1, nV2, nV3 = strfind(newVersion, "(%d+)%.(%d+)%.(%d+)")
+    local _, _, oV1, oV2, oV3 = strfind(oldVersion, "(%d+)%.(%d+)%.(%d+)")
+    nV1, nV2, nV3 = tonumber(nV1), tonumber(nV2), tonumber(nV3)
+    oV1, oV2, oV3 = tonumber(oV1), tonumber(oV2), tonumber(oV3)
+    if nV1 == oV1 then
+        if nV2 == oV2 then
+            if nV3 > oV3 then
+                result = true
+            end
+        else
+            if nV2 > oV2 then
+                result = true
+            end
+        end
+    else
+        if nV1 > oV1 then
+            result = true
+        end
+    end
+    return result
+end
 
 -- Table
 function KT.IsTableEmpty(table)

@@ -3,7 +3,7 @@
 		Methods for managing frame creation and display
 --]]
 
-local _, Addon = ...
+local ADDON, Addon = ...
 Addon.frames = {}
 
 
@@ -52,7 +52,7 @@ function Addon:ShowFrame(id, manual)
 	local frame = self:CreateFrame(id)
 	if frame then
 		frame.manualShown = frame.manualShown or manual
-		frame:Show()
+		frame:Show() --ShowUIPanel(frame)
 	end
 	return frame
 end
@@ -61,7 +61,7 @@ function Addon:HideFrame(id, manual)
 	local frame = self:GetFrame(id)
 	if frame and (manual or not frame.manualShown) then
 		frame.manualShown = nil
-		frame:Hide()
+		frame:Hide() --HideUIPanel(frame)
 	end
 	return frame
 end

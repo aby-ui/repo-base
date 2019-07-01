@@ -48,7 +48,7 @@ function RareScanner:RSGetItemInfo(itemID)
 	end
 	
 	if (not private.dbglobal.loot_info[itemID]) then
-		local itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, iconFileDataID, itemSellPrice, itemClassID, itemSubClassID, bindType, expacID, itemSetID, isCraftingReagent = GetItemInfo(itemID)
+		local retOk, itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, iconFileDataID, itemSellPrice, itemClassID, itemSubClassID, bindType, expacID, itemSetID, isCraftingReagent = pcall(GetItemInfo, itemID)
 		if (itemLink and itemRarity and itemEquipLoc and iconFileDataID and itemClassID and itemSubClassID) then
 			private.dbglobal.loot_info[itemID] = { itemLink, itemRarity, itemEquipLoc, iconFileDataID, itemClassID, itemSubClassID }
 			return unpack(private.dbglobal.loot_info[itemID])

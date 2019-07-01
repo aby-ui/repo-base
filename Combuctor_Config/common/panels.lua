@@ -8,7 +8,7 @@ local ADDON, Addon = Config.addon, _G[Config.addon]
 local L = LibStub('AceLocale-3.0'):GetLocale(CONFIG)
 local LADDON = (LibStub('AceLocale-3.0'):GetLocale(Config.addon))[Config.addon]
 
-local PATRONS = {{title='Jenkins',people={'Robert Schultz','Gnare','Robert McCarthy','Sandra Stevens'}},{},{title='Ambassador',people={'Fernando Bandeira','Michael Irving','Julia Frizzell','Peggy Webb','Lolari','Craig Falb','Chris Jones'}}} -- generated patron list
+local PATRONS = {{title='Jenkins',people={'Sembiance ','Gnare ','Eitrigg A. Runefire','Lars Romeijn'}},{},{title='Ambassador',people={'Fernando Bandeira','Michael Irving','Julia Frizzell','Peggy Webb','Lolari ','Craig Falb','Mary Barrentine','Grey Sample'}}} -- generated patron list
 local SLOT_COLOR_TYPES = {}
 for id, name in pairs(Addon.BAG_TYPES) do
 	tinsert(SLOT_COLOR_TYPES, name)
@@ -70,7 +70,7 @@ Addon.FrameOptions = Addon.Options:NewPanel(LADDON, L.FrameSettings, L.FrameSett
 		self:CreateRow(Config.displayRowHeight, function(row)
 			if Config.components then
 				if self.frameID ~= 'guild' then
-					row:CreateCheck('bagFrame')
+					row:CreateCheck('bagToggle')
 					row:CreateCheck('sort')
 				end
 

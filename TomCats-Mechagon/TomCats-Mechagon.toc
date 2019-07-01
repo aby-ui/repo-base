@@ -2,10 +2,10 @@
 ## Title: TomCat's Tours: Rares of Mechagon
 ## Author: TomCat
 ## X-Website: http://www.tomcatstours.com
-## Version: 1.0.2
+## Version: 1.0.5
 ## DefaultState: enabled
 ## SavedVariablesPerCharacter: TomCats_Mechagon_Character
-## OptionalDeps: TomCats,HandyNotes
+## OptionalDeps: TomCats,HandyNotes,TomTom
 ## X-Part-Of: TomCat's Tours:
 ## X-Category: Achievements, Map, Miscellaneous
 ## X-Localizations: enUS, deDE, esES, esMX, frFR, itIT, koKR, ptBR, ruRU, zhCN, zhTW

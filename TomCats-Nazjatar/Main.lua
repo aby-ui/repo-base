@@ -237,6 +237,25 @@ updateQuests = function()
     end
 end
 
+local lastWaypoint
+
+local function onClickWayPoint(v)
+    if (TomTom) then
+        local currentMapID = C_Map.GetBestMapForUnit("player")
+        if (addon.params["Vignette MapID"] == currentMapID) then
+            if (lastWaypoint) then
+                TomTom:RemoveWaypoint(lastWaypoint)
+            end
+            lastWaypoint = TomTom:AddWaypoint(addon.params["Vignette MapID"], v["Locations"][1][1], v["Locations"][1][2], {
+                title = v["Name"],
+                persistent = false,
+                minimap = true,
+                world = true
+            })
+        end
+    end
+end
+
 function initializeQuests()
     quests = {}
     labels = {}
@@ -255,6 +274,9 @@ function initializeQuests()
             local label = AceGUI:Create("TomCatsInteractiveLabel")
             label:SetCallback("OnEnter", function(widget)
                 addon.showItemTooltip(widget.frame, v, true)
+            end)
+            label:SetCallback("OnClick", function()
+                onClickWayPoint(v)
             end)
             label:SetCallback("OnLeave", addon.hideItemTooltip)
             local button = CreateFrame("BUTTON", "TomCats-NazjatarRareButton"..k, UIParent, "TomCats-NazjatarRareButtonTemplate")
@@ -470,11 +492,19 @@ function addon.hideItemTooltip()
     EmbeddedItemTooltip:Hide()
 end
 
+local function pinOnClick(pin)
+    local creature = D["Creatures by Vignette ID"][pin.vignetteID]
+    if (creature) then
+        onClickWayPoint(creature)
+    end
+end
+
 local VignettePinMixin_OnMouseEnter_Orig = VignettePinMixin.OnMouseEnter
 
 function VignettePinMixin:OnMouseEnter()
     local creature = D["Creatures by Vignette ID"][self.vignetteID]
     if (creature) then
+        self:SetScript("OnMouseUp", pinOnClick)
         addon.showItemTooltip(self, creature, true, 10, 5)
     else
         return VignettePinMixin_OnMouseEnter_Orig(self)
@@ -536,6 +566,11 @@ if (HandyNotes) then
         end,
         OnLeave = function()
             addon.hideItemTooltip()
+        end,
+        OnClick = function(_, button, down, _, coord)
+            if button == "LeftButton" and not down then
+                onClickWayPoint(coordLookup[coord])
+            end
         end
     }
 
@@ -571,7 +606,7 @@ if (TomCats and TomCats.Register) then
                 }
             },
             name = "Rares of Nazjatar",
-            version = "1.0.2"
+            version = "1.0.6"
         }
     )
 end

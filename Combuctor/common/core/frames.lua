@@ -52,7 +52,7 @@ function Addon:ShowFrame(id, manual)
 	local frame = self:CreateFrame(id)
 	if frame then
 		frame.manualShown = frame.manualShown or manual
-		ShowUIPanel(frame)
+		frame:Show() --ShowUIPanel(frame)
 	end
 	return frame
 end
@@ -61,7 +61,7 @@ function Addon:HideFrame(id, manual)
 	local frame = self:GetFrame(id)
 	if frame and (manual or not frame.manualShown) then
 		frame.manualShown = nil
-		HideUIPanel(frame)
+		frame:Hide() --HideUIPanel(frame)
 	end
 	return frame
 end

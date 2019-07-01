@@ -29,7 +29,7 @@ local DEBUG_MODE = false
 
 -- Config constants
 local CURRENT_DB_VERSION = 5
-local CURRENT_LOOT_DB_VERSION = 10
+local CURRENT_LOOT_DB_VERSION = 11
 
 -- Hard reset versions
 local CURRENT_ADDON_VERSION = 500

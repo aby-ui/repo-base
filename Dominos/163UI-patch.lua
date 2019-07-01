@@ -78,17 +78,17 @@ function Dominos:U1_GetPreset(style)
 
     else
         frames.menu = {
-            x = 0, y = 0, point = 'BOTTOMRIGHT',
+            x = 0, y = 0, point = 'LEFT',
             anchor = '1RC',
-            spacing = 3, padW = 4, padH = 4,
-            scale = 0.9,
+            spacing = -2, padW = 1, padH = 1,
+            scale = 1.0,
         }
 
         frames.bags = {
-            x = 0, y = 0, point = 'TOPLEFT',
-            anchor = 'menuRT',
-            scale = 0.93,
-            spacing = 2,
+            x = 0, y = 0, point = 'BOTTOMLEFT',
+            anchor = 'menuRC',
+            scale = 0.90,
+            spacing = 3, padW = 2, padH = 2,
         }
 
         for i = 1, 10 do

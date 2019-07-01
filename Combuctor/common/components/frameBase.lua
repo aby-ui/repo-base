@@ -42,8 +42,9 @@ function Frame:UpdateAppearance()
 	self:SetScale(self.profile.scale)
 
 	if managed then
-		HideUIPanel(self)
-		ShowUIPanel(self)
+		--HideUIPanel(self)
+		--ShowUIPanel(self)
+		self:Show()
 	else
 		self:ClearAllPoints()
 		self:SetPoint(self:GetPosition())

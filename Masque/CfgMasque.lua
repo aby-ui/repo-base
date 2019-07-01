@@ -84,7 +84,7 @@ end
 
 --:ListAddons() :ListGroups(addon)
 function U1GetMasqueCore()
-    local Masque = Masque or LibStub'AceAddon-3.0':GetAddon'Masque'
+    local Masque = Masque or LibStub('AceAddon-3.0'):GetAddon('Masque', true)
     return Masque and Masque.Core
 end
 

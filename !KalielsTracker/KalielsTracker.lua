@@ -26,6 +26,7 @@ local gsub = string.gsub
 local ipairs = ipairs
 local pairs = pairs
 local strfind = string.find
+local tonumber = tonumber
 local tinsert = table.insert
 local tremove = table.remove
 local unpack = unpack
@@ -106,6 +107,19 @@ WORLD_QUEST_TRACKER_MODULE.buttonOffsets.groupFinder = { 2, 2 }
 --------------
 -- Internal --
 --------------
+
+local function ResetIncompatibleProfiles(version)
+	if KT.db.global.version and KT.IsHigherVersion(version, KT.db.global.version) then
+		local profile
+		for _, v in ipairs(KT.db:GetProfiles()) do
+			profile = KT.db.profiles[v]
+            for k, _ in pairs(profile) do
+                profile[k] = nil
+            end
+		end
+		StaticPopup_Show(addonName.."_Info", nil, "任务增强的设置已经重置，因为新版本 %s 无法使用老版本的设置.", {version})
+	end
+end
 
 local function SetHeaders(type)
 	local bgrColor = db.hdrBgrColorShare and KT.borderColor or db.hdrBgrColor
@@ -1531,11 +1545,6 @@ local function SetHooks()
             end
         end)
     end
-    if OpenQuestLog then
-        hooksecurefunc("OpenQuestLog", function()
-            if QuestInfoSealFrame then QuestInfoSealFrame:ClearAllPoints() end
-        end)
-    end
 
 	function QuestObjectiveTracker_OnOpenDropDown(self)  -- R
 		local block = self.activeFrame;
@@ -2198,6 +2207,21 @@ function KT:MergeTables(source, target)
 	return target
 end
 
+StaticPopupDialogs[addonName.."_Info"] = {
+	text = "|T"..mediaPath.."KT_logo:22:22:0:0|t"..NORMAL_FONT_COLOR_CODE..KT.title.."|r",
+	subText = "...",
+	button2 = CLOSE,
+	OnShow = function(self)
+		if self.text.text_arg1 then
+			self.text:SetText(self.text:GetText().." - "..self.text.text_arg1)
+		end
+		self.SubText:SetFormattedText(self.text.text_arg2, unpack(self.data))
+		self.SubText:SetTextColor(1, 1, 1)
+	end,
+	timeout = 0,
+	whileDead = 1
+}
+
 StaticPopupDialogs[addonName.."_WowheadURL"] = {
 	text = "|T"..mediaPath.."KT_logo:22:22:0:-1|t"..NORMAL_FONT_COLOR_CODE..KT.title.."|r - Wowhead URL",
 	button2 = CLOSE,
@@ -2266,6 +2290,7 @@ function KT:OnInitialize()
 	self:SetupOptions()
 	db = self.db.profile
 	dbChar = self.db.char
+	--ResetIncompatibleProfiles("3.1.8")
 
 	-- Blizzard frame resets
 	OTF.IsUserPlaced = function() return true end

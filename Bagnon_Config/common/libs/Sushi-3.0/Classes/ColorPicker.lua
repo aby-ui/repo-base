@@ -18,7 +18,7 @@ along with Sushi. If not, see <http://www.gnu.org/licenses/>.
 --]]
 
 local Check = SushiCheck
-local Color = MakeSushi(4, 'CheckButton', 'ColorPicker', nil, nil, Check)
+local Color = MakeSushi(5, 'CheckButton', 'ColorPicker', nil, nil, Check)
 if not Color then
 	return
 end
@@ -81,7 +81,8 @@ function Color:OnClick ()
 		self:SaveColor(r, g, b, a)
 	end
 
-	ShowUIPanel(ColorPickerFrame)
+	ColorPickerFrame:Show()
+	--ShowUIPanel(ColorPickerFrame)
 	PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
 end
 
