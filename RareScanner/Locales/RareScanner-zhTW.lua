@@ -104,7 +104,7 @@ if AL then
 	AL["LOOT_OTHER_FILTERS_DESC"] = "其他過濾器"
 	AL["LOOT_PANEL_OPTIONS"] = "戰利品選項"
 	AL["LOOT_SUBCATEGORY_FILTERS"] = "子類別過濾器"
-	AL["LOOT_TOGGLE_FILTER"] = "點擊以切換過濾"
+	AL["LOOT_TOGGLE_FILTER"] = "點擊Alt+滑鼠左鍵以切換過濾"
 	AL["LOOT_TOOLTIP_POSITION"] = "戰利品滑鼠提示位置"
 	AL["LOOT_TOOLTIP_POSITION_DESC"] = "設定滑鼠指向戰利品圖示時，滑鼠提示出現的位置 (相對於按鈕)。"
 	AL["MAIN_BUTTON_OPTIONS"] = "主按鈕選項"
@@ -116,6 +116,10 @@ if AL then
 	AL["MAP_MENU_SHOW_RARE_NPCS"] = "在地圖上顯示稀有NPC圖示"
 	AL["MAP_NEVER"] = "從未"
 	AL["MAP_OPTIONS"] = "地圖選項"
+	--[[Translation missing --]]
+	AL["MAP_SCALE_ICONS"] = "Scale of the icons"
+	--[[Translation missing --]]
+	AL["MAP_SCALE_ICONS_DESC"] = "This will adjust the scale of the icons, being the value of 1 the original size."
 	AL["MAP_SHOW_ICON_AFTER_COLLECTED"] = "拾取後仍保持顯示箱子圖示"
 	AL["MAP_SHOW_ICON_AFTER_COLLECTED_DESC"] = "停用以後，在拾取箱子之後圖示將會消失。"
 	AL["MAP_SHOW_ICON_AFTER_DEAD"] = "在擊殺後仍然顯示圖示"
@@ -139,46 +143,26 @@ if AL then
 	AL["NOT_TARGETEABLE"] = "無法設為目標"
 	AL["NOTE_130350"] = "你必須沿著這個位置右邊的路徑騎上稀有到此箱子。"
 	AL["NOTE_131453"] = "你必須騎上[春天守護者-暫譯]到這個位置，這匹馬是友善的稀有怪，通常可在箱子左邊的路徑找到。"
-	--[[Translation missing --]]
-	AL["NOTE_150342"] = "Only available during the event [Drill Rig DR-TR35]."
-	--[[Translation missing --]]
-	AL["NOTE_150394"] = "In order to kill him you have to bring him to the coordinates 63.38, where there is a device with blue lightning. Once the NPC is touched by lightning, it will explode and you will be able to loot him."
-	--[[Translation missing --]]
-	AL["NOTE_151124"] = "You have to loot a [Smashed Transport Relay] from the enemies that appear during the event [Drill Rig DR-JD99] (coordinates 59.67) and then use it on the machine that is found on the platform."
-	--[[Translation missing --]]
-	AL["NOTE_151202"] = "In order to summon him you have to connect the [Wires] on the shore, with the [Pylons] inside the water."
-	--[[Translation missing --]]
-	AL["NOTE_151308"] = "Only available during [Drill Rig] events."
-	--[[Translation missing --]]
-	AL["NOTE_151569"] = "You require a [Hundred-Fathom Lure] to summon it."
-	--[[Translation missing --]]
-	AL["NOTE_151627"] = "You need to use a [Exothermic Evaporator Coil] on the machine that is found on the platform."
-	--[[Translation missing --]]
-	AL["NOTE_151884"] = "Only available while doing the daily quest [Aid from Nordrassil] obtained from Mylune. While you are on this quest you will find mushrooms under the trees. When you click on these mushrooms they will become stationary. You have to do this two more times before the previous mushrooms disappear and then the rare NPC will show up."
-	--[[Translation missing --]]
-	AL["NOTE_151933"] = "In order to kill him you have to use [Beastbot Powerpack] (you can get the schema at the coordinates 60.41)."
-	--[[Translation missing --]]
-	AL["NOTE_152007"] = "It is wandering in this area, so the coordinates might not be very accurate."
-	--[[Translation missing --]]
-	AL["NOTE_152113"] = "Only available during the event [Drill Rig DR-CC88]."
-	--[[Translation missing --]]
-	AL["NOTE_152569"] = "When you aproach to him, he will tell you a colour that he hates. Once you know what colour it is, you have to go to the coordinates 63.41 where you will be painted that colour. When you will come back to his position, he will attack you."
-	--[[Translation missing --]]
-	AL["NOTE_153000"] = "It is wandering in this area, so the coordinates might not be very accurate."
-	--[[Translation missing --]]
-	AL["NOTE_153200"] = "Only available during the event [Drill Rig DR-JD41]."
-	--[[Translation missing --]]
-	AL["NOTE_153205"] = "Only available during the event [Drill Rig DR-JD99]."
-	--[[Translation missing --]]
-	AL["NOTE_153206"] = "Only available during the event [Drill Rig DR-TR28]."
-	--[[Translation missing --]]
-	AL["NOTE_153228"] = "It shows up after killing a LOT of [Upgraded Sentry] that wander around the area."
-	--[[Translation missing --]]
-	AL["NOTE_154225"] = "He is available only on the interface that you can access using [Personal Time Displacer]. This item is a reward from the daily quest [The Other Place] obtained from Chromie."
-	--[[Translation missing --]]
-	AL["NOTE_154701"] = "Only available during the event [Drill Rig DR-CC61]."
-	--[[Translation missing --]]
-	AL["NOTE_154739"] = "Only available during the event [Drill Rig DR-CC73]."
+	AL["NOTE_150342"] = "在事件[鑽探機 DR-TR35]進行期間可用"
+	AL["NOTE_150394"] = "你需要把他帶到坐標63.38，那裡有一個藍色閃電裝置，當NPC觸碰到閃電時他會爆炸，然後你就可以拾取戰利品。"
+	AL["NOTE_151124"] = "你需要在事件[鑽探機 DR-JD99]進行期間（坐標59.67）從小怪身上拾取[砸壞的運輸繼電器]，然後在這個機器上使用"
+	AL["NOTE_151202"] = "你需要在岸邊用水里的電線塔連接電線才能召喚他"
+	AL["NOTE_151308"] = "在事件[鑽探機]進行期間可用"
+	AL["NOTE_151569"] = "你需要一个[百噚誘餌]来召唤他。"
+	AL["NOTE_151627"] = "你需要在平台的機器上使用一個[發熱蒸發器線圈]。"
+	AL["NOTE_151884"] = "僅在蜜露恩發放日常任務[來自諾達希爾的援助]時有效。該日常要求你在樹底下找蘑菇，當你點擊一個蘑菇時它會停滯，你需要在它消失前再點2個蘑菇，NPC才會出現"
+	AL["NOTE_151933"] = "你需要使用[野獸機器人動力包]才能擊殺他（你可以在坐標60.41找到圖紙）"
+	AL["NOTE_152007"] = "它會在這個區域遊蕩，所以坐標可能不太精確。"
+	AL["NOTE_152113"] = "在事件[鑽探機 DR-CC88]進行期間可用"
+	AL["NOTE_152569"] = "你靠近他時他會告訴你一個他討厭的顏色，你要到坐標63.41被染成這個顏色，然後回來找他，他就會攻擊你。"
+	AL["NOTE_153000"] = "它會在這個區域遊蕩，所以坐標可能不太精確。"
+	AL["NOTE_153200"] = "在事件[鑽探機 DR-JD41]進行期間可用"
+	AL["NOTE_153205"] = "在事件[鑽探機 DR-JD99]進行期間可用"
+	AL["NOTE_153206"] = "在事件[鑽探機 DR-TR28]進行期間可用"
+	AL["NOTE_153228"] = "需要擊殺很多[升級版哨衛]才會在這個區域出現"
+	AL["NOTE_154225"] = "需要使用[個人時光轉移裝置]訪問他的接口，這個物品是克羅米發放日常任務[另一個地方]的獎勵品"
+	AL["NOTE_154701"] = "在事件[鑽探機 DR-CC61]進行期間可用"
+	AL["NOTE_154739"] = "在事件[鑽探機 DR-CC73]進行期間可用"
 	AL["NOTE_280951"] = "沿著鐵路走直到你找到推車，然後騎上他來發現財寶。"
 	AL["NOTE_287239"] = "如果您是部落，您必須完成沃魯敦活動才能進入神殿。"
 	AL["NOTE_289647"] = "財寶在洞穴內。入口位於座標65.11，介於快到山頂的一些樹中間。"
@@ -198,42 +182,24 @@ if AL then
 	AL["NOTE_297891"] = "您必須按以下順序停用符文：左，下，上，右"
 	AL["NOTE_297892"] = "您必須按以下順序停用符文：左，右，下，上"
 	AL["NOTE_297893"] = "您必須按以下順序停用符文：右，上，左，下"
-	--[[Translation missing --]]
-	AL["NOTE_326395"] = "You have to enable the [Arcane device] that is found on top of a table beside the chest in order to start the minigame. To pass the game you have to separate the three triangles. Click on the orbs to switch their positions."
-	--[[Translation missing --]]
-	AL["NOTE_326396"] = "You have to enable the [Arcane device] that is found on the ground beside the chest in order to start the minigame. To pass the game you have to separate the two rectangles. Click on the orbs to switch their positions."
-	--[[Translation missing --]]
-	AL["NOTE_326397"] = "You have to enable the [Arcane device] that is found on the ground beside the chest in order to start the minigame. To pass the game you have to line up three red runes."
-	--[[Translation missing --]]
-	AL["NOTE_326398"] = "You have to enable the [Arcane device] that is found on top of a table beside the chest in order to start the minigame. To pass the game you have to line up four cyan runes."
-	--[[Translation missing --]]
-	AL["NOTE_326399"] = "It's in a cave underwater. You have to complete a minigame where you have to shoot the fire balls before they touch the circles on the ground. Everytime a ball touches the ground or you use the spell without hitting a ball, the energy will decrease, and if it reaches zero then you will have to start again."
-	--[[Translation missing --]]
-	AL["NOTE_326400"] = "It is in a cave. You have to complete a minigame where you have to shoot the fire balls before they touch the circles on the ground. Everytime a ball touches the ground or you use the spell without hitting a ball, the energy will decrease, and if it reaches zero then you will have to start again."
-	--[[Translation missing --]]
-	AL["NOTE_326403"] = "It is inside the building. You have to access it from the back."
-	--[[Translation missing --]]
-	AL["NOTE_326405"] = "It is between some ruins in the highest level of the map."
-	--[[Translation missing --]]
-	AL["NOTE_326406"] = "It is on top of a mountain in the highest level of the map. It's hard to get there on foot, but it's possible from the south side."
-	--[[Translation missing --]]
-	AL["NOTE_326407"] = "It is on top of a mountain in the highest level of the map."
-	--[[Translation missing --]]
-	AL["NOTE_326408"] = "It is in a cave underwater. The entrance is in the lake to the south (coordinates 74,40)."
-	--[[Translation missing --]]
-	AL["NOTE_326410"] = "It is in a cave in the lower level of the map."
-	--[[Translation missing --]]
-	AL["NOTE_326411"] = "It is between some stones in the highest level of the map."
-	--[[Translation missing --]]
-	AL["NOTE_326413"] = "It is in a cave in the lower level of the map."
-	--[[Translation missing --]]
-	AL["NOTE_326415"] = "It requires flying or you can use a [Goblin Glider Kit] from the tall mountain beside. The chest is on top of the coral bridge."
-	--[[Translation missing --]]
-	AL["NOTE_326416"] = "It is in the highest level of the map, inside a tower in ruins."
-	--[[Translation missing --]]
-	AL["NOTE_329783"] = "It is on the roof (access at coordinates 83.33). You have to complete a minigame where you have to shoot the fire balls before they touch the circles on the ground. Everytime a ball touches the ground or you use the spell without hitting a ball, the energy will decrease, and if it reaches zero then you will have to start again."
-	--[[Translation missing --]]
-	AL["NOTE_332220"] = "You have to complete a minigame where you have to shoot the fire balls before they touch the circles on the ground. Everytime a ball touches the ground or you use the spell without hitting a ball, the energy will decrease, and if it reaches zero then you will have to start again."
+	AL["NOTE_326395"] = "點擊桌上箱子旁的[秘法裝置]開始小遊戲。需要將三個三角形分開，點擊寶珠交換位置。"
+	AL["NOTE_326396"] = "點擊桌上箱子旁的[秘法裝置]開始小遊戲。需要將二個長方形分開，點擊寶珠交換位置。"
+	AL["NOTE_326397"] = "點擊桌上箱子旁的[秘法裝置]開始小遊戲。需要將三個紅色的符文連成一線。。"
+	AL["NOTE_326398"] = "點擊桌上箱子旁的[秘法裝置]開始小遊戲。需要將四個青色的符文連成一線。。"
+	AL["NOTE_326399"] = "在水下的洞裡。你需要完成一個小遊戲，在火球碰到地上到圓圈前射擊他們。當火球碰到地面或者你的技能沒有打到火球時能量會減少，當能量歸零你需要從頭開始遊戲。"
+	AL["NOTE_326400"] = "在洞裡。你需要完成一個小遊戲，在火球碰到地上到圓圈前射擊他們。當火球碰到地面或者你的技能沒有打到火球時能量會減少，當能量歸零你需要從頭開始遊戲。"
+	AL["NOTE_326403"] = "在建築物內，你需要從建築物後面進入"
+	AL["NOTE_326405"] = "在地圖最頂層的一堆廢墟中間"
+	AL["NOTE_326406"] = "在地圖最頂層的山頂上，非常難以到達，但是從地圖南邊上去是可行的。"
+	AL["NOTE_326407"] = "在地圖最頂層的山頂上"
+	AL["NOTE_326408"] = "入口在南方湖面水下的洞裡(坐標57,39)"
+	AL["NOTE_326410"] = "在地圖最底層的洞裡"
+	AL["NOTE_326411"] = "在地圖最頂層的一堆石頭中間"
+	AL["NOTE_326413"] = "在地圖最底層的洞裡"
+	AL["NOTE_326415"] = "需要解鎖飛行，或者你可以用[哥布林滑翔工具組]從旁邊的高山頂上滑過去。寶箱在珊瑚橋的頂部。"
+	AL["NOTE_326416"] = "在地圖的最高層，廢墟中的塔內"
+	AL["NOTE_329783"] = "在坐標83.33的屋頂上。你需要完成一個小遊戲，在火球碰到地上到圓圈前射擊他們。當火球碰到地面或者你的技能沒有打到火球時能量會減少，當能量歸零你需要從頭開始遊戲。"
+	AL["NOTE_332220"] = "你需要完成一個小遊戲，在火球碰到地上到圓圈前射擊他們。當火球碰到地面或者你的技能沒有打到火球時能量會減少，當能量歸零你需要從頭開始遊戲。"
 	AL["PROFILES"] = "設定檔"
 	AL["RAIDS"] = "團隊"
 	AL["SHOW_CHAT_ALERT"] = "顯示聊天通知"

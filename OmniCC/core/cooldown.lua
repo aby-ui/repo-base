@@ -112,11 +112,16 @@ function Cooldown:UpdateText()
     end
 end
 
-function Cooldown:Refresh()
+function Cooldown:Refresh(force)
     local start, duration = self:GetCooldownTimes()
 
     start = (start or 0) / 1000
     duration = (duration or 0) / 1000
+
+    if force then
+        self._occ_start = nil
+        self._occ_duration = nil
+    end
 
     Cooldown.Initialize(self)
     Cooldown.SetTimer(self, start, duration)
@@ -146,7 +151,7 @@ function Cooldown:SetNoCooldownCount(disable, owner)
         end
     elseif self.noCooldownCount == owner then
         self.noCooldownCount = nil
-        Cooldown.Refresh(self)
+        Cooldown.Refresh(self, true)
     end
 end
 
@@ -195,10 +200,7 @@ function Cooldown:UpdateSettings()
 
         if cd._occ_settings ~= newSettings then
             cd._occ_settings = newSettings
-            cd._occ_start = 0
-            cd._occ_duration = 0
-
-            Cooldown.Refresh(cd)
+            Cooldown.Refresh(cd, true)
         end
     end
 end

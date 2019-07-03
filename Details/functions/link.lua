@@ -2113,6 +2113,8 @@
 			local iconsize = {14, 14}
 			
 			local game_sounds = {
+			--8.2 broke file paths, removing them until a way of converting to soundIds is possible
+				--[=[
 				["Horde Banner Down"] = [[Sound\event\EVENT_VashjirIntro_HordeBannerDown_01.ogg]],
 				["Mast Crack"] = [[Sound\event\EVENT_VashjirIntro_MastCrack_01.ogg]],
 				["Orc Attack "] = [[Sound\event\EVENT_VashjirIntro_OrcAttackVox_03.ogg]],
@@ -2138,6 +2140,7 @@
 				["Beat 02"] = [[Sound\DOODAD\GO_PA_Kungfugear_bag_Left04.OGG]],
 				["Water Drop"] = [[Sound\DOODAD\Hellfire_DW_Pipe_Type4_01.ogg]],
 				["Frog"] = [[Sound\EMITTERS\Emitter_Dalaran_Petstore_Frog_01.ogg]],
+				--]=]
 			}
 			
 			local sound_options = function()

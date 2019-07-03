@@ -555,10 +555,28 @@ local function GetGemItemID(itemLink, index)
   return 0
 end
 
+local function GetGemBonuses(itemLink, index)
+  local bonuses = {}
+  local _, gemLink = GetItemGem(itemLink, index)
+  if gemLink ~= nil then
+    local gemSplit = GetItemSplit(gemLink)
+    for index=1, gemSplit[OFFSET_BONUS_ID] do
+      bonuses[#bonuses + 1] = gemSplit[OFFSET_BONUS_ID + index]
+    end
+  end
+
+  if #bonuses > 0 then
+    return table.concat(bonuses, ':')
+  end
+
+  return 0
+end
+
 local function GetItemStringFromItemLink(slotNum, itemLink, itemLoc, debugOutput)
   local itemSplit = GetItemSplit(itemLink)
   local simcItemOptions = {}
   local gems = {}
+  local gemBonuses = {}
 
   -- Item id
   local itemId = itemSplit[OFFSET_ITEM_ID]
@@ -576,9 +594,11 @@ local function GetItemStringFromItemLink(slotNum, itemLink, itemLoc, debugOutput
       local gemId = GetGemItemID(itemLink, gemIndex)
       if gemId > 0 then
         gems[gemIndex] = gemId
+        gemBonuses[gemIndex] = GetGemBonuses(itemLink, gemIndex)
       end
     else
       gems[gemIndex] = 0
+      gemBonuses[gemIndex] = 0
     end
   end
 
@@ -586,9 +606,16 @@ local function GetItemStringFromItemLink(slotNum, itemLink, itemLoc, debugOutput
   while #gems > 0 and gems[#gems] == 0 do
     table.remove(gems, #gems)
   end
+  -- Remove any trailing zeros from the gem bonuses
+  while #gemBonuses > 0 and gemBonuses[#gemBonuses] == 0 do
+    table.remove(gemBonuses, #gemBonuses)
+  end
 
   if #gems > 0 then
     simcItemOptions[#simcItemOptions + 1] = 'gem_id=' .. table.concat(gems, '/')
+    if #gemBonuses > 0 then
+      simcItemOptions[#simcItemOptions + 1] = 'gem_bonus_id=' .. table.concat(gemBonuses, '/')
+    end
   end
 
   -- New style item suffix, old suffix style not supported

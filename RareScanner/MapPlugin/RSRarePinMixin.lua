@@ -74,6 +74,7 @@ function RSRarePinMixin:OnAcquired(npcID, npcInfo)
 		atlasName = RareScanner.NPC_LEGION_VIGNETTE;
 	end
 	self.Texture:SetAtlas(atlasName, true);
+	self.Texture:SetScale(private.db.map.scale)
 	
 	-- Sets texture colours
 	if (self.notDiscovered and not self.achievementLink) then

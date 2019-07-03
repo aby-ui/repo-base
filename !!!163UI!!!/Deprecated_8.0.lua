@@ -271,11 +271,23 @@ end
 8.2.0
 ---------------------------------------------------------------]]
 --Interface\FrameXML\QuestInfo.lua:389: Action[SetPoint] failed because[SetPoint would result in anchor family connection]: attempted from: QuestInfoSealFrame:SetPoint.
-if OpenQuestLog then
-    hooksecurefunc("OpenQuestLog", function()
-        if QuestInfoSealFrame then QuestInfoSealFrame:ClearAllPoints() end
+if QuestInfoSealFrame then
+    QuestInfoSealFrame._originSetPoint = QuestInfoSealFrame.SetPoint
+    QuestInfoSealFrame.SetPoint = function(self, ...)
+        QuestInfoSealFrame:ClearAllPoints()
+        QuestInfoSealFrame._originSetPoint(self, ...)
+    end
+end
+
+if QuestLogPopupDetailFrame and QuestLogPopupDetailFrame.ShowMapButton then
+    QuestLogPopupDetailFrame.ShowMapButton:SetScript("PreClick", function(self)
+        if InCombatLockdown() and not WorldMapFrame:IsShown() then WorldMapFrame:Show() end
+    end)
+    QuestLogPopupDetailFrame.ShowMapButton:SetScript("PostClick", function(self)
+        self:GetParent():Hide()
     end)
 end
+
 --战斗中打开寻求组队
 if LFGListUtil_GetQuestCategoryData then
     local origin = LFGListUtil_GetQuestCategoryData

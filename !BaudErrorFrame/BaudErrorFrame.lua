@@ -239,6 +239,7 @@ function BaudErrorFrame_OnShow(self)
     BaudErrorFrameMinimapCount:SetText("");
     BaudErrorFrame.lastCount = #ErrorList;
     PlaySound(SOUNDKIT and SOUNDKIT.GS_TITLE_OPTION_EXIT or "gsTitleOptionExit");
+    self:ClearAllPoints()
     self:SetPoint("CENTER");
     BaudErrorFrameScrollBar_Update();
 end

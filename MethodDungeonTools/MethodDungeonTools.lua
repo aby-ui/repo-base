@@ -201,6 +201,7 @@ end
 MethodDungeonTools.dungeonTotalCount = {}
 MethodDungeonTools.scaleMultiplier = {}
 
+--[[8.1.5 old data
 local affixWeeks = { --affixID as used in C_ChallengeMode.GetAffixInfo(affixID)
     [1] = {[1]=6,[2]=3,[3]=9,[4]=117},
     [2] = {[1]=5,[2]=13,[3]=10,[4]=117},
@@ -214,6 +215,21 @@ local affixWeeks = { --affixID as used in C_ChallengeMode.GetAffixInfo(affixID)
     [10] = {[1]=8,[2]=12,[3]=10,[4]=117},
     [11] = {[1]=7,[2]=13,[3]=9,[4]=117},
     [12] = {[1]=11,[2]=3,[3]=10,[4]=117},
+}
+]]
+local affixWeeks = { --affixID as used in C_ChallengeMode.GetAffixInfo(affixID)
+    [1] = {[1]=5,[2]=3,[3]=9,[4]=117},
+    [2] = {[1]=7,[2]=2,[3]=10,[4]=117},
+    [3] = {[1]=6,[2]=4,[3]=9,[4]=117},
+    [4] = {[1]=5,[2]=14,[3]=10,[4]=117},
+    [5] = {[1]=11,[2]=2,[3]=9,[4]=117},
+    [6] = {[1]=8,[2]=4,[3]=10,[4]=117},
+    [7] = {[1]=7,[2]=12,[3]=9,[4]=117},
+    [8] = {[1]=5,[2]=13,[3]=10,[4]=117},
+    [9] = {[1]=6,[2]=3,[3]=9,[4]=117},
+    [10] = {[1]=11,[2]=3,[3]=10,[4]=117},
+    [11] = {[1]=7,[2]=13,[3]=9,[4]=117},
+    [12] = {[1]=8,[2]=12,[3]=10,[4]=117},
 }
 
 local dungeonList = {
@@ -1417,11 +1433,11 @@ function MethodDungeonTools:GetCurrentPreset()
     return db.presets[db.currentDungeonIdx][db.currentPreset[db.currentDungeonIdx]]
 end
 
----GetCurrentTeeming
+---IsWeekTeeming
 ---Returns if the current week has an affix week set that inlcludes the teeming affix
 function MethodDungeonTools:IsWeekTeeming(week)
     if not week then week = MethodDungeonTools:GetCurrentAffixWeek() or 1 end
-    return week == 2 or week == 6 or week == 9
+    return week == 1 or week == 4 or week == 8
 end
 
 ---IsPresetTeeming

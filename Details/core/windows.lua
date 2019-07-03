@@ -3044,6 +3044,7 @@
 	
 	function panel:Open (text, callback, host, default)
 		if (host) then
+			panel:ClearAllPoints()
 			panel:SetPoint ("center", host, "center")
 		end
 		

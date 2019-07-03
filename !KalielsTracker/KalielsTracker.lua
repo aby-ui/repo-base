@@ -1506,6 +1506,43 @@ local function SetHooks()
 		PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON);
 	end
 
+    local function AbyQuestLogPopupDetailFrame_Show(questLogIndex)
+
+    	local questID = select(8, GetQuestLogTitle(questLogIndex));
+    	if ( QuestLogPopupDetailFrame.questID == questID and QuestLogPopupDetailFrame:IsShown() ) then
+            QuestLogPopupDetailFrame:Hide(); --abyui
+    		return;
+    	end
+
+    	QuestLogPopupDetailFrame.questID = questID;
+
+    	local questLogIndex = GetQuestLogIndexByID(questID);
+
+    	SelectQuestLogEntry(questLogIndex);
+    	StaticPopup_Hide("ABANDON_QUEST");
+    	StaticPopup_Hide("ABANDON_QUEST_WITH_ITEMS");
+    	SetAbandonQuest();
+
+    	QuestMapFrame_UpdateQuestDetailsButtons();
+
+    	QuestLogPopupDetailFrame_Update(true);
+        --abyui
+        if InCombatLockdown() then
+            QuestLogPopupDetailFrame:Show()
+        else
+            ShowUIPanel(QuestLogPopupDetailFrame);
+        end
+    	PlaySound(SOUNDKIT.IG_QUEST_LOG_OPEN);
+
+    	-- portrait
+    	local questPortrait, questPortraitText, questPortraitName, questPortraitMount = GetQuestLogPortraitGiver();
+    	if (questPortrait and questPortrait ~= 0 and QuestLogShouldShowPortrait()) then
+    		QuestFrame_ShowQuestPortrait(QuestLogPopupDetailFrame, questPortrait, questPortraitMount, questPortraitText, questPortraitName, -3, -42);
+    	else
+    		QuestFrame_HideQuestPortrait();
+    	end
+    end
+
 	function QUEST_TRACKER_MODULE:OnBlockHeaderClick(block, mouseButton)  -- R
 		if ( ChatEdit_TryInsertQuestLinkForQuestID(block.id) ) then
 			return;
@@ -1524,10 +1561,10 @@ local function SetHooks()
 					ShowQuestComplete(questLogIndex);
 				else
 					if db.questDefaultActionMap then
+                        if InCombatLockdown() and not WorldMapFrame:IsShown() then WorldMapFrame:Show() end
                         QuestMapFrame_OpenToQuestDetails(block.id);
                     else
-                        if QuestInfoSealFrame then QuestInfoSealFrame:ClearAllPoints() end
-						QuestLogPopupDetailFrame_Show(questLogIndex);
+                        AbyQuestLogPopupDetailFrame_Show(questLogIndex);
 					end
 				end
 			end
@@ -1535,15 +1572,6 @@ local function SetHooks()
 		else
 			ObjectiveTracker_ToggleDropDown(block, QuestObjectiveTracker_OnOpenDropDown);
 		end
-    end
-
-    --abyui
-    if QuestFrame_SetMaterial then
-        hooksecurefunc("QuestFrame_SetMaterial", function(panel)
-            if panel == QuestFrameDetailPanel then
-                if QuestInfoSealFrame then QuestInfoSealFrame:ClearAllPoints() end
-            end
-        end)
     end
 
 	function QuestObjectiveTracker_OnOpenDropDown(self)  -- R

@@ -3984,7 +3984,7 @@ function window:CreateFrame1()
 		frame1.chooseAvatarButton:SetTextColor (button_color_rgb)
 		
 		g:NewLabel (frame1, _, "$parentChooseAvatarLabel", "ChooseAvatarLabel", Loc ["STRING_OPTIONS_AVATAR"], "GameFontHighlightLeft")
-		frame1.ChooseAvatarLabel:SetPoint ("topright", frame1.chooseAvatarButton, "topright", -50, -25)
+		frame1.ChooseAvatarLabel:SetPoint ("topright", frame1.chooseAvatarButton, "topright", -50, -35)
 		frame1.ChooseAvatarLabel:SetTextColor (button_color_rgb)
 
 	--> avatar preview
@@ -4016,16 +4016,16 @@ function window:CreateFrame1()
 			return true
 		end)
 		frame1.chooseAvatarButton:SetHook ("OnMouseDown", function()
-			frame1.avatarPreview:SetPoint (avatar_x_anchor2+2, -158)
-			frame1.avatarPreview2:SetPoint (avatar_x_anchor2+2, -160)
-			frame1.avatarNickname:SetPoint (avatar_x_anchor2+110, -192)
-			frame1.ChooseAvatarLabel:SetPoint ("topright", frame1.chooseAvatarButton, "topright", -49, -26)
+			frame1.avatarPreview:SetPoint (avatar_x_anchor2+2, -138)
+			frame1.avatarPreview2:SetPoint (avatar_x_anchor2+2, -140)
+			frame1.avatarNickname:SetPoint (avatar_x_anchor2+110, -172)
+			frame1.ChooseAvatarLabel:SetPoint ("topright", frame1.chooseAvatarButton, "topright", -49, -36)
 		end)
 		frame1.chooseAvatarButton:SetHook ("OnMouseUp", function()
-			frame1.avatarPreview:SetPoint (avatar_x_anchor2+1, -157)
-			frame1.avatarPreview2:SetPoint (avatar_x_anchor2+1, -159)
-			frame1.avatarNickname:SetPoint (avatar_x_anchor2+109, -191)
-			frame1.ChooseAvatarLabel:SetPoint ("topright", frame1.chooseAvatarButton, "topright", -50, -25)
+			frame1.avatarPreview:SetPoint (avatar_x_anchor2+1, -137)
+			frame1.avatarPreview2:SetPoint (avatar_x_anchor2+1, -139)
+			frame1.avatarNickname:SetPoint (avatar_x_anchor2+109, -171)
+			frame1.ChooseAvatarLabel:SetPoint ("topright", frame1.chooseAvatarButton, "topright", -50, -35)
 		end)
 		
 		--window:CreateLineBackground2 (frame1, "chooseAvatarButton", "chooseAvatarButton", Loc ["STRING_OPTIONS_AVATAR_DESC"], nil, {1, 0.8, 0}, button_color_rgb)
@@ -4270,7 +4270,7 @@ function window:CreateFrame1()
 			frame1.CreateWindowButton:SetIcon ([[Interface\Buttons\UI-AttributeButton-Encourage-Up]], nil, nil, nil, nil, nil, nil, 2)
 			frame1.CreateWindowButton:SetTextColor (button_color_rgb)
 			
-		--set color
+		--set window color
 			local windowcolor_callback = function (button, r, g, b, a)
 			
 				local instance = _G.DetailsOptionsWindow.instance
@@ -4356,6 +4356,72 @@ function window:CreateFrame1()
 			frame1.ClassColorsButton:SetIcon ([[Interface\AddOns\Details\images\icons]], nil, nil, nil, {430/512, 459/512, 4/512, 30/512}, nil, nil, 2) -- , "orange"
 			frame1.ClassColorsButton:SetTextColor (button_color_rgb)
 		
+		--click through ~clickthrough
+			
+			--in combat only
+			g:NewLabel (frame1, _, "$parentclickThroughInCombatLabel", "clickThroughInCombatLabel", "In Combat Only", "GameFontHighlightLeft")
+			
+			g:NewSwitch (frame1, _, "$parentclickThroughInCombatSlider", "clickThroughInCombatSlider", 60, 20, _, _, _G.DetailsOptionsWindow.instance.clickthrough_incombatonly, nil, nil, nil, nil, options_switch_template)
+			frame1.clickThroughInCombatSlider:SetAsCheckBox()
+			
+			frame1.clickThroughInCombatSlider:SetPoint ("left", frame1.clickThroughInCombatLabel, "right", 2, 0)
+			frame1.clickThroughInCombatSlider.OnSwitch = function (self, _, value) --> slider, fixedValue, sliderValue (false, true)
+				_G.DetailsOptionsWindow.instance:UpdateClickThroughSettings (value)
+				
+				if (_detalhes.options_group_edit and not DetailsOptionsWindow.loading_settings) then
+					for _, this_instance in ipairs (_G.DetailsOptionsWindow.instance:GetInstanceGroup()) do
+						if (this_instance ~= _G.DetailsOptionsWindow.instance) then
+							this_instance:UpdateClickThroughSettings (value)
+						end
+					end
+				end
+			end
+			
+			window:CreateLineBackground2 (frame1, "clickThroughInCombatSlider", "clickThroughInCombatLabel", "Only apply click through when in combat.")
+			
+			--window
+			g:NewLabel (frame1, _, "$parentclickThroughWindowLabel", "clickThroughWindowLabel", "Affect Window", "GameFontHighlightLeft")
+			
+			g:NewSwitch (frame1, _, "$parentclickThroughWindowSlider", "clickThroughWindowSlider", 60, 20, _, _, _G.DetailsOptionsWindow.instance.clickthrough_window, nil, nil, nil, nil, options_switch_template)
+			frame1.clickThroughWindowSlider:SetAsCheckBox()
+			
+			frame1.clickThroughWindowSlider:SetPoint ("left", frame1.clickThroughWindowLabel, "right", 2, 0)
+			frame1.clickThroughWindowSlider.OnSwitch = function (self, _, value) --> slider, fixedValue, sliderValue (false, true)
+				_G.DetailsOptionsWindow.instance:UpdateClickThroughSettings (nil, value)
+				
+				if (_detalhes.options_group_edit and not DetailsOptionsWindow.loading_settings) then
+					for _, this_instance in ipairs (_G.DetailsOptionsWindow.instance:GetInstanceGroup()) do
+						if (this_instance ~= _G.DetailsOptionsWindow.instance) then
+							this_instance:UpdateClickThroughSettings (nil, value)
+						end
+					end
+				end
+			end
+			
+			window:CreateLineBackground2 (frame1, "clickThroughWindowSlider", "clickThroughWindowLabel", "The window will be click through.")
+			
+			--bars
+			g:NewLabel (frame1, _, "$parentclickThroughBarsLabel", "clickThroughBarsLabel", "Affect Bars", "GameFontHighlightLeft")
+			
+			g:NewSwitch (frame1, _, "$parentclickThroughBarsSlider", "clickThroughBarsSlider", 60, 20, _, _, _G.DetailsOptionsWindow.instance.clickthrough_rows, nil, nil, nil, nil, options_switch_template)
+			frame1.clickThroughBarsSlider:SetAsCheckBox()
+			
+			frame1.clickThroughBarsSlider:SetPoint ("left", frame1.clickThroughBarsLabel, "right", 2, 0)
+			frame1.clickThroughBarsSlider.OnSwitch = function (self, _, value) --> slider, fixedValue, sliderValue (false, true)
+				_G.DetailsOptionsWindow.instance:UpdateClickThroughSettings (nil, nil, value)
+				
+				if (_detalhes.options_group_edit and not _G.DetailsOptionsWindow.loading_settings) then
+					for _, this_instance in ipairs (_G.DetailsOptionsWindow.instance:GetInstanceGroup()) do
+						if (this_instance ~= _G.DetailsOptionsWindow.instance) then
+							this_instance:UpdateClickThroughSettings (nil, nil, value)
+						end
+					end
+				end
+			end
+			
+			window:CreateLineBackground2 (frame1, "clickThroughBarsSlider", "clickThroughBarsLabel", "Player bars will be click through, won't show tooltips when hover hover them.")
+			
+		
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 	--> Time Type
@@ -4394,6 +4460,8 @@ function window:CreateFrame1()
 		
 		g:NewLabel (frame1, _, "$parentWindowControlsAnchor", "WindowControlsLabel", Loc ["STRING_OPTIONS_WC_ANCHOR"], "GameFontNormal")
 		g:NewLabel (frame1, _, "$parentToolsAnchor", "ToolsLabel", Loc ["STRING_OPTIONS_TOOLS_ANCHOR"], "GameFontNormal")
+		
+		g:NewLabel (frame1, _, "$parentClickThroughAnchor", "clickThroughLabel", "Click Through", "GameFontNormal")
 
 		local w_start = 10
 		
@@ -4405,22 +4473,20 @@ function window:CreateFrame1()
 		frame1.GeneralIdentityLabel:SetPoint (avatar_x_anchor, window.top_start_at)
 		
 		frame1.nicknameLabel:SetPoint (avatar_x_anchor, -115)
-		frame1.chooseAvatarButton:SetPoint (avatar_x_anchor+1, -140)
+		frame1.chooseAvatarButton:SetPoint (avatar_x_anchor+1, -115)
 		
-		frame1.avatarPreview:SetPoint (avatar_x_anchor2+1, -157)
-		frame1.avatarPreview2:SetPoint (avatar_x_anchor2+1, -159)
-		frame1.avatarNickname:SetPoint (avatar_x_anchor2+109, -191)
+		frame1.avatarPreview:SetPoint (avatar_x_anchor2+1, -137)
+		frame1.avatarPreview2:SetPoint (avatar_x_anchor2+1, -139)
+		frame1.avatarNickname:SetPoint (avatar_x_anchor2+109, -171)
 		
-		frame1.IgnoreNicknamesLabel:SetPoint (avatar_x_anchor, -235)
-		frame1.realmNameLabel:SetPoint (avatar_x_anchor, -255)
+		frame1.IgnoreNicknamesLabel:SetPoint (avatar_x_anchor, -215)
+		frame1.realmNameLabel:SetPoint (avatar_x_anchor, -235)
 		
 		--frame1.ToolsLabel:SetPoint (avatar_x_anchor, -265)
 		--frame1.EraseDataLabel:SetPoint (avatar_x_anchor, -290)
 		--frame1.BookmarkButton:SetPoint (avatar_x_anchor, -315)
 		--frame1.ClassColorsButton:SetPoint (avatar_x_anchor, -340)
-		
 
-		
 		local x = avatar_x_anchor
 		
 		local right_side = {
@@ -4428,11 +4494,16 @@ function window:CreateFrame1()
 			{"LockButton", 2},
 			{"CloseButton", 3},
 			{"BreakSnapButton", 4},
-			{"SetWindowColorButton", 5},
-			{"CreateWindowButton", 6, true},
+			--{"SetWindowColorButton", 5},
+			{"CreateWindowButton", 6}, --, true
+			
+			{"clickThroughLabel", 14, true},
+			{"clickThroughInCombatLabel", 15},
+			{"clickThroughWindowLabel", 16},
+			{"clickThroughBarsLabel", 17},
 		}
 		
-		window:arrange_menu (frame1, right_side, x, -285)
+		window:arrange_menu (frame1, right_side, x, -265)
 		
 		local left_side = {
 			{"GeneralAnchorLabel", 1, true},
@@ -4452,6 +4523,9 @@ function window:CreateFrame1()
 			{frame1.EraseDataLabel, 11},
 			{frame1.BookmarkButton, 12},
 			{frame1.ClassColorsButton, 13},
+			
+
+			
 			
 			--{"WindowControlsLabel", 9, true},
 			--{"LockButton", 10},
@@ -11276,7 +11350,7 @@ end --> if not window
 		_G.DetailsOptionsWindow1AbbreviateDropdown.MyObject:Select (_detalhes.ps_abbreviation)
 		_G.DetailsOptionsWindow1SliderUpdateSpeed.MyObject:SetValue (_detalhes.update_speed)
 		_G.DetailsOptionsWindow1AnimateSlider.MyObject:SetValue (_detalhes.use_row_animations)
-
+		
 		_G.DetailsOptionsWindow1WindowControlsAnchor:SetText (string.format (Loc ["STRING_OPTIONS_WC_ANCHOR"], editing_instance.meu_id))
 		
 		_G.DetailsOptionsWindow1EraseDataDropdown.MyObject:Select (_detalhes.segments_auto_erase)
@@ -11290,6 +11364,10 @@ end --> if not window
 			else
 				_G.DetailsOptionsWindow1LockButton.MyObject:SetText (Loc ["STRING_OPTIONS_WC_LOCK"])
 			end
+			
+			_G.DetailsOptionsWindow1clickThroughInCombatSlider.MyObject:SetValue (editing_instance.clickthrough_incombatonly)
+			_G.DetailsOptionsWindow1clickThroughWindowSlider.MyObject:SetValue (editing_instance.clickthrough_window)
+			_G.DetailsOptionsWindow1clickThroughBarsSlider.MyObject:SetValue (editing_instance.clickthrough_rows)  
 		end
 		
 		_G.DetailsOptionsWindow1BreakSnapButton.MyObject:Disable()

@@ -42,8 +42,12 @@ newAnim('Alpha', 2, .7, 0)
 local Alert = Addon.FX:Create("alert", L.Alert, L.AlertTip)
 
 function Alert:Run(cooldown)
-	local icon = Addon:GetButtonIcon(cooldown:GetParent())
+	local parent = cooldown:GetParent()
+	if parent:IsForbidden() then
+		return
+	end
 
+	local icon = Addon:GetButtonIcon(parent)
 	if icon then
 		Icon:SetVertexColor(icon:GetVertexColor())
 		Icon:SetTexture(icon:GetTexture())

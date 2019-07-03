@@ -33,6 +33,7 @@ if not LibKeyBound then return end -- no upgrade needed
 
 local _G = _G
 local NUM_MOUSE_BUTTONS = 31
+local SaveBindings = SaveBindings or AttemptToSaveBindings
 
 -- CallbackHandler
 LibKeyBound.events = LibKeyBound.events or _G.LibStub('CallbackHandler-1.0'):New(LibKeyBound)

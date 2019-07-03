@@ -20,9 +20,6 @@
 			[279739] = "drinking",
 			--Was I drunk when I did this??
 			
-			-- Gladiator's Maledict :^)
-			[302144] = "thisGameSucks";
-			
 			-- Backlash (Aura Applied)
 			[87204] = "backlashFear", -- Vampiric Touch Dispel (Priest)
 			[196364] = "backlashSilence", -- Unstable Affliction Dispel (Warlock)
@@ -547,6 +544,9 @@
 			[256948] = "SpatialRift", -- Spatial Rift (Void Elf)
 			[257040] = "SpatialRift2", -- Spatial Rift Teleport (Spatial Warp) (Void Elf)
 			[255654] = "BullRush", -- Bull Rush (Highmountain Racial)
+			-- Gladiator's Maledict :^)
+			--[302144] = "thisGameSucks",
+			[305252] = "thisGameSucks", -- 8.2 
 			
 			-- Death Knight (Cast Success)
 			[47528] = "mindFreeze",
@@ -619,7 +619,7 @@
 			[5215] = "prowl",
 			[22570] = "maim",
 			[236026] = "maim",
-			[209749] = "_PHfaerieSwarm",
+			[209749] = "faerieSwarm",
 			--[210722] = "_PHashamanesFrenzy",
 			[2908] = "soothe",
 			[202246] = "Overrun", -- Overrun Guardian Druid Honor Talent
@@ -751,6 +751,7 @@
 			[198103] = "earthElemental", -- Updated for Legion
 			[192249] = "stormElemental", -- Updated for Legion
 			[204437] = "lightningLasso",
+			[305483] = "lightningLasso", -- 8.2
 			[51490] = "thunderstorm",
 			
 			-- Shaman (Totems)

@@ -8,6 +8,10 @@ local Pulse = Addon.FX:Create("pulse", L.Pulse, L.PulseTip)
 
 function Pulse:Run(cooldown)
 	local parent = cooldown:GetParent()
+	if parent:IsForbidden() then
+		return
+	end
+
 	local icon = Addon:GetButtonIcon(parent)
 
 	if parent and icon then

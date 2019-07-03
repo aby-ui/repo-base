@@ -6,7 +6,7 @@
  local LSM = LibStub("LibSharedMedia-3.0")
  local self, GSA, PlaySoundFile = GladiatorlosSA, GladiatorlosSA, PlaySoundFile
  local GSA_TEXT = "|cff69CCF0GladiatorlosSA2|r (|cffFFF569/gsa|r)"
- local GSA_VERSION = "|cffFF7D0A B10 |r(|cFF00FF968.2 Battle for Azeroth|r)"
+ local GSA_VERSION = "|cffFF7D0A B11 |r(|cFF00FF968.2 Battle for Azeroth|r)"
  local GSA_AUTHOR = " "
  local gsadb
  local soundz,sourcetype,sourceuid,desttype,destuid = {},{},{},{},{}
@@ -125,6 +125,7 @@
 		FeintDown = false,
 		Fireblood = false,
 		Flourish = false,
+		holyWordSalvation = false,
 		Healthstone = false,
 		hibernate = false,
 		Icefury = false,
@@ -138,6 +139,7 @@
 		Premonition = false,
 		RaiseDead = false,
 		safeguard = false,
+		safeguardDown = false,
 		secondWind = false,
 		ShieldOfVirtue = false,
 		soothe = false,
@@ -148,7 +150,6 @@
 		survivalTactics = false,
 		sweepingStrikes = false,
 		SweepingStrikesDown = false,
-		TremorTotem = false,
 		UrsolsVortex = false,
 		warpath = false,
 		

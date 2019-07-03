@@ -85,7 +85,8 @@ local PROFILE_DEFAULTS = {
 			keepShowingAfterDead = false,
 			keepShowingAfterCollected = false,
 			maxSeenTime = 0,
-			maxSeenTimeContainer = 5
+			maxSeenTimeContainer = 5,
+			scale = 1.0
 		},
 		loot = {
 			filteredLootCategories = {},
@@ -1198,6 +1199,11 @@ function RareScanner:DumpBrokenData()
 			if (not npcInfo.mapID or npcInfo.mapID == 0 or not npcInfo.coordY or not npcInfo.coordX) then
 				private.dbglobal.rares_found[npcID] = nil
 			end
+			
+			-- If the NPC belongs to Mechagon or Nazjatar and its set as eternal death, reset it
+			if (npcInfo.mapID and (npcInfo.mapID == 1462 or npcInfo.mapID == 1355) and private.dbchar.rares_killed and private.dbchar.rares_killed[npcID] == ETERNAL_DEATH) then
+				private.dbchar.rares_killed[npcID] = nil
+			end
 		end
 	end
 end
@@ -1235,7 +1241,7 @@ function RareScanner:MarkCompletedAchievements()
 		local _, _, _, completed, _, _, _, _, _, _, _, _, wasEarnedByMe, _ = GetAchievementInfo(achievementID)
 		if (completed and wasEarnedByMe) then
 			for i, npcID in ipairs(entities) do
-				if (private.ZONE_IDS[npcID] and not private.dbchar.rares_killed[npcID]) then
+				if (private.ZONE_IDS[npcID] and not private.RESETABLE_KILLS_ZONE_IDS[private.ZONE_IDS[npcID].zoneID] and not private.dbchar.rares_killed[npcID]) then
 					private.dbchar.rares_killed[npcID] = ETERNAL_DEATH
 				elseif (private.CONTAINER_ZONE_IDS[npcID] and not private.dbchar.containers_opened[npcID]) then
 					private.dbchar.containers_opened[npcID] = ETERNAL_COLLECTED
@@ -1249,7 +1255,7 @@ function RareScanner:MarkCompletedAchievements()
 				for criteriaIndex = 1, numCriteria do
 					local criteriaString, _, criteriaCompleted, _, _, _, _, npcID, _, _, _, _, _ = GetAchievementCriteriaInfo(achievementID, criteriaIndex);
 					if (criteriaCompleted) then
-						if (private.ZONE_IDS[npcID] and not private.dbchar.rares_killed[npcID]) then
+						if (private.ZONE_IDS[npcID] and not private.RESETABLE_KILLS_ZONE_IDS[private.ZONE_IDS[npcID].zoneID] and not private.dbchar.rares_killed[npcID]) then
 							private.dbchar.rares_killed[npcID] = ETERNAL_DEATH
 						elseif (private.CONTAINER_ZONE_IDS[npcID] and not private.dbchar.containers_opened[npcID]) then
 							private.dbchar.containers_opened[npcID] = ETERNAL_COLLECTED

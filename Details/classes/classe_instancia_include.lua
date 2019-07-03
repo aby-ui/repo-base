@@ -91,6 +91,12 @@ end
 
 _detalhes.instance_defaults = {
 
+	--> click through settings
+	clickthrough_toolbaricons = false,
+	clickthrough_rows = false,
+	clickthrough_window = false,
+	clickthrough_incombatonly = true,
+
 	--> window settings
 		ignore_mass_showhide = false,
 	--skin

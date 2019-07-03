@@ -460,7 +460,7 @@ function GSA:OnOptionCreate()
 								inline = true,
 								name = L["General Abilities"],
 								order = 30,					      		
-								args = listOption({195901,214027,34709,302144},"auraApplied"),
+								args = listOption({195901,214027,34709},"auraApplied"),
 							},
 							dispelkickback = { -- AuraApplied
 								type = 'group',
@@ -829,7 +829,7 @@ function GSA:OnOptionCreate()
 								inline = true,
 								name = L["General Abilities"],
 								order = 30,
-								args = listOption({178207,2825,272678,80353,90355,160452,32182,204361,204362,28730,232633,25046,50613,69179,155145,129597,202719,80483,107079,20549,58984,20594,7744,59752,42292,214027,208683,195710,23034,23035,213664,6262,265221,256948,257040,255654},"castSuccess"),
+								args = listOption({178207,2825,272678,80353,90355,160452,32182,204361,204362,28730,232633,25046,50613,69179,155145,129597,202719,80483,107079,20549,58984,20594,7744,59752,42292,214027,208683,195710,23034,23035,213664,6262,265221,256948,257040,255654,305252},"castSuccess"),
 							},
 							enemyInterrupts = { -- CastSuccess
 								type = 'group',
@@ -920,7 +920,7 @@ function GSA:OnOptionCreate()
 								inline = true,
 								name = L["|cff9482C9Warlock|r"],
 								order = 150,
-								args = listOption({6789,5484,48020,111859,111895,111896,111897,111898,1122,205180,201996,199954,199892,199890},"castSuccess"),
+								args = listOption({6789,48020,111859,111895,111896,111897,111898,1122,205180,201996,199954,199892,199890},"castSuccess"),
 							},
 							warrior	= { -- CastSuccess
 								type = 'group',
