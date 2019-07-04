@@ -8,18 +8,18 @@ local requestPartyKeystones
 -- 1: Overflowing, 2: Skittish, 3: Volcanic, 4: Necrotic, 5: Teeming, 6: Raging, 7: Bolstering, 8: Sanguine, 9: Tyrannical, 10: Fortified, 11: Bursting, 12: Grievous, 13: Explosive, 14: Quaking
 -- 1溢出 2无常 3火山 4死疽 5繁盛 6暴怒 7激励 8血池 9残暴 10坚韧 11崩裂 12重伤 13易爆 14震荡 15冷酷
 local affixSchedule = {
-	{ 10, 8, 4 },
-	{ 9, 11, 2 },
-	{ 10, 5, 14 },
-	{ 9, 6, 4 },
 	{ 10, 7, 2 },
-	{ 9, 5, 3 },
-	{ 10, 8, 12 },
-	{ 9, 7, 13 },
-	{ 10, 11, 14 },
-	{ 9, 6, 3 },
-	{ 10, 5, 13 },
+	{ 9, 6, 4 },
+	{ 10, 5, 14 },
+	{ 9, 11, 2 },
+	{ 10, 8, 4 },
 	{ 9, 7, 12 },
+	{ 10, 5, 13 },
+	{ 9, 6, 3 },
+	{ 10, 11, 3 },
+	{ 9, 7, 13 },
+	{ 10, 8, 12 },
+	{ 9, 5, 3 },
 }
 local currentWeek
 local currentKeystoneMapID
