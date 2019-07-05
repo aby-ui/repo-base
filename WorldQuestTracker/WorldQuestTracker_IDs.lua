@@ -78,6 +78,7 @@ WorldQuestTracker.MapData.ZoneIDs = {
 		TOLDAGOR =	1169,
 		
 		NAZJATAR = 	1355, --patch 8.2
+		MECHAGON = 	1462, --patch 8.2
 }
 
 --all zones with world quests
@@ -117,6 +118,7 @@ WorldQuestTracker.MapData.WorldQuestZones = {
 		
 		--8.2
 		[WorldQuestTracker.MapData.ZoneIDs.NAZJATAR] = 		true,
+		[WorldQuestTracker.MapData.ZoneIDs.MECHAGON] = 	true,
 }
 
 --list of map ids for world quest hubs

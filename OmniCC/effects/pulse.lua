@@ -80,12 +80,11 @@ do
 
 	function Pulse:Create(owner)
 		local pulse = Addon:CreateHiddenFrame("Frame", nil, owner)
+
 		pulse:SetAllPoints(owner)
 		pulse:SetToplevel(true)
 		pulse:SetScript("OnHide", pulseFrame_OnHide)
-
 		pulse.icon = pulseFrame_CreateIcon(pulse)
-
 		pulse.animation = pulseFrame_CreateAnimation(pulse)
 
 		local effects = self.effects

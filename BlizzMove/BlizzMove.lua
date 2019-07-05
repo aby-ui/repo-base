@@ -29,7 +29,7 @@ local defaultDB = {
     CollectionsJournal = {save = true, },
     GuildFrame = {save = true, },
     FriendsFrame = {save = true, },
-    ObjectiveTrackerFrame = { save = true, },
+    ObjectiveTrackerFrame_abyuiBG = { save = true, },
     --WorldMapFrame = {save = true, },
     ScrappingMachineFrame = { save = true, },
     AzeriteEmpoweredItemUI = { save = true, },
@@ -332,6 +332,36 @@ local function resetDB()
     end
 end
 
+function BM_CreateBackground(frame, name, ...)
+    local bg = WW:Frame(name, UIParent):SetSize(frame:GetSize()):un()
+    bg:SetPoint(frame:GetPoint())
+    --WW(bg):CreateTexture():ALL():SetColorTexture(0, 1, 0, 0.5):up()
+    frame:SetParent(bg)
+    frame:ClearAllPoints()
+    local points = { ... }
+    if #points == 0 then
+        frame:SetAllPoints(bg)
+    else
+        for i = 1, #points do frame:SetPoint(points[i], bg, points[i], 0, 0) end
+    end
+    frame:SetMovable(true)
+    if not frame:IsMovable() then return end
+    frame:SetUserPlaced(true)
+    if not frame.__blizzMoveHooked then
+        frame.originSetPoint = frame.SetPoint
+        hooksecurefunc(frame, "SetPoint", function(self)
+            self:ClearAllPoints()
+            if #points == 0 then
+                frame:SetAllPoints(bg)
+            else
+                for i = 1, #points do frame:originSetPoint(points[i], bg, points[i], 0, 0) end
+            end
+        end)
+        frame.__blizzMoveHooked = 1
+    end
+    return bg
+end
+
 local function OnEvent(self, event, arg1, arg2)
     --Debug(event, arg1, arg2)
     if event == "PLAYER_ENTERING_WORLD" then
@@ -339,6 +369,8 @@ local function OnEvent(self, event, arg1, arg2)
 
         frame:RegisterEvent("ADDON_LOADED") --for blizz lod addons
         db = BlizzMoveDB and BlizzMoveDB.version == defaultDB.version and BlizzMoveDB or defaultDB
+        if db.ObjectiveTrackerFrame then db.ObjectiveTrackerFrame_abyuiBG = db.ObjectiveTrackerFrame db.ObjectiveTrackerFrame = nil end
+
         BlizzMoveDB = db
         for k, v in pairs(db) do
             if type(v)=="table" then
@@ -354,10 +386,13 @@ local function OnEvent(self, event, arg1, arg2)
         BM_SetMoveHandler(FriendsFrame)
         --BM_SetMoveHandler(WatchFrame,WatchFrameCollapseExpandButton)
         --userPlaced[WatchFrame] = true --加了也不好，UIParent里写的有问题
-        --BM_SetMoveHandler(ObjectiveTrackerFrame,ObjectiveTrackerFrame.HeaderMenu.MinimizeButton)
-        --WW(ObjectiveTrackerFrame.HeaderMenu):Button("OTFMover"):Size(22,22):RIGHT(ObjectiveTrackerFrame.HeaderMenu.MinimizeButton, "LEFT", 0,0):up():un()
-        --CoreUIEnableTooltip(OTFMover, "面板移动","Ctrl点击保存位置\nCtrl滚轮缩放\nC+S+A点击重置")
-        --BM_SetMoveHandler(ObjectiveTrackerFrame,OTFMover)
+
+        WW(ObjectiveTrackerFrame.HeaderMenu):Button("OTFMover"):Size(22,22):RIGHT(ObjectiveTrackerFrame.HeaderMenu.MinimizeButton, "LEFT", 0,0):up():un()
+        CoreUIEnableTooltip(OTFMover, "面板移动","Ctrl点击保存位置\nCtrl滚轮缩放\nC+S+A点击重置")
+        local bg = BM_CreateBackground(ObjectiveTrackerFrame, "ObjectiveTrackerFrame_abyuiBG", "TOPLEFT", "BOTTOMRIGHT")
+        BM_SetMoveHandler(bg,OTFMover)
+        BM_SetMoveHandler(bg,ObjectiveTrackerFrame.HeaderMenu.MinimizeButton)
+
         BM_SetMoveHandler(GameMenuFrame)
         BM_SetMoveHandler(GossipFrame)
         BM_SetMoveHandler(DressUpFrame)

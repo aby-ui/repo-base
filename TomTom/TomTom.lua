@@ -1062,6 +1062,30 @@ local function usage()
 end
 
 TomTom.CZWFromMapID = {}
+local overrides = {
+    [101] = {mapType = Enum.UIMapType.World}, -- Outland
+    [125] = {mapType = Enum.UIMapType.Zone}, -- Dalaran
+    [126] = {mapType = Enum.UIMapType.Micro},
+    [195] = {suffix = "1"}, -- Kaja'mine
+    [196] = {suffix = "2"}, -- Kaja'mine
+    [197] = {suffix = "3"}, -- Kaja'mine
+    [501] = {mapType = Enum.UIMapType.Zone}, -- Dalaran
+    [502] = {mapType = Enum.UIMapType.Micro},
+    [572] = {mapType = Enum.UIMapType.World}, -- Draenor
+    [579] = {suffix = "1"}, -- Lunarfall Excavation
+    [580] = {suffix = "2"}, -- Lunarfall Excavation
+    [581] = {suffix = "3"}, -- Lunarfall Excavation
+    [585] = {suffix = "1"}, -- Frostwall Mine
+    [586] = {suffix = "2"}, -- Frostwall Mine
+    [587] = {suffix = "3"}, -- Frostwall Mine
+    [625] = {mapType = Enum.UIMapType.Orphan}, -- Dalaran
+    [626] = {mapType = Enum.UIMapType.Micro}, -- Dalaran
+    [627] = {mapType = Enum.UIMapType.Zone},
+    [628] = {mapType = Enum.UIMapType.Micro},
+    [629] = {mapType = Enum.UIMapType.Micro},
+    [943] = {suffix = FACTION_HORDE}, -- Arathi Highlands
+    [1044] = {suffix = FACTION_ALLIANCE},
+}
 
 function TomTom:GetCZWFromMapID(m)
     local zone, continent, world, map
@@ -1082,13 +1106,15 @@ function TomTom:GetCZWFromMapID(m)
             TomTom.CZWFromMapID[map] = {continent, zone, world}
             return continent, zone, world
         end
-        if mapInfo.mapType == Enum.UIMapType.Zone then
+        local mapType = (overrides[m] and overrides[m].mapType) or mapInfo.mapType
+        if mapType == Enum.UIMapType.Zone then
             -- Its a zone map
             zone = m
-        elseif mapInfo.mapType == Enum.UIMapType.Continent then
+        elseif mapType == Enum.UIMapType.Continent then
             continent = m
-        elseif mapInfo.mapType == Enum.UIMapType.World then
+        elseif mapType == Enum.UIMapType.World then
             world = m
+            continent = continent or m -- Hack for one continent worlds
         end
         m = mapInfo.parentMapID
     until (m == 0)
@@ -1189,28 +1215,6 @@ SLASH_TOMTOM_WAY3 = "/tomtomway"
 TomTom.NameToMapId = {}
 local NameToMapId = TomTom.NameToMapId
 
-local overrides = {
-    [125] = {mapType = Enum.UIMapType.Zone}, -- Dalaran
-    [126] = {mapType = Enum.UIMapType.Micro},
-    [195] = {suffix = "1"}, -- Kaja'mine
-    [196] = {suffix = "2"}, -- Kaja'mine
-    [197] = {suffix = "3"}, -- Kaja'mine
-    [501] = {mapType = Enum.UIMapType.Zone}, -- Dalaran
-    [502] = {mapType = Enum.UIMapType.Micro},
-    [579] = {suffix = "1"}, -- Lunarfall Excavation
-    [580] = {suffix = "2"}, -- Lunarfall Excavation
-    [581] = {suffix = "3"}, -- Lunarfall Excavation
-    [585] = {suffix = "1"}, -- Frostwall Mine
-    [586] = {suffix = "2"}, -- Frostwall Mine
-    [587] = {suffix = "3"}, -- Frostwall Mine
-    [625] = {mapType = Enum.UIMapType.Orphan}, -- Dalaran
-    [626] = {mapType = Enum.UIMapType.Micro}, -- Dalaran
-    [627] = {mapType = Enum.UIMapType.Zone},
-    [628] = {mapType = Enum.UIMapType.Micro},
-    [629] = {mapType = Enum.UIMapType.Micro},
-    [943] = {suffix = FACTION_HORDE}, -- Arathi Highlands
-    [1044] = {suffix = FACTION_ALLIANCE},
-}
 
 do
     -- Fetch the names of the zones

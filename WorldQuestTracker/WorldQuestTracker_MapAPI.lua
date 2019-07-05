@@ -437,7 +437,7 @@ function WorldQuestTracker.RewardRealItemLevel (questID)
 	return itemLevel or 1
 end
 
---try to guess the amount of artifact power the item can give ãrtifact ~artifact
+--try to guess the amount of artifact power the item can give ï¿½rtifact ~artifact
 	
 	--asia
 	function WorldQuestTracker.RewardIsArtifactPowerAsian (itemLink) -- thanks @yuk6196 on curseforge
@@ -777,11 +777,11 @@ end
 						return itemName, itemTexture, itemLevel, quantity, quality, isUsable, itemID, false, 0, itemStackCount > 1, itemStackCount
 					end
 				else
-					--ainda não possui info do item
+					--ainda nï¿½o possui info do item
 					return
 				end
 			else
-				--ainda não possui info do item
+				--ainda nï¿½o possui info do item
 				return
 			end
 		end

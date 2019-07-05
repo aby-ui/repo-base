@@ -344,6 +344,7 @@ PlaySoundFile = function(file, channel)
         end
         if DEBUG_MODE then print(file) end
     else
-        playSoundFileOrigin(file, channel)
+        local ok = pcall(playSoundFileOrigin, file, channel)
+        if not ok and DEBUG_MODE then print(file) end
     end
 end

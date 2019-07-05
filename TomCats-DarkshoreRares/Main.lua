@@ -52,6 +52,7 @@ function C_VignetteInfo.GetVignetteInfo(vignetteGUID)
         return creature["Vignette Info"]
     end
     local vignetteInfo = GetVignetteInfo_Orig(vignetteGUID)
+    if not vignetteInfo then return nil end
     if (C_VignetteInfo.GetVignettePosition(vignetteGUID, P["Vignette MapID"]) and D["Creatures by Vignette ID"][vignetteInfo.vignetteID]) then
         vignetteInfo.onWorldMap = true
         vignetteInfo.hasTooltip = true
@@ -571,7 +572,7 @@ if (TomCats and TomCats.Register) then
                 }
             },
             name = "Rares of Darkshore",
-            version = "1.2.9"
+            version = "1.2.10"
         }
     )
 end

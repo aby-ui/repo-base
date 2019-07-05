@@ -113,7 +113,7 @@ CoreDependCall("Blizzard_ObjectiveTracker", function()
     CoreOnEvent("PLAYER_REGEN_ENABLED", hook_Scenario_AddSpells)
     CoreOnEvent("PLAYER_REGEN_DISABLED", hook_Scenario_AddSpells)
 
-    --[=[
+    ---[=[
     local wqItems163 = {} --物品按钮定时刷新隐藏, 不能setparent，也不能SetAllPoints()
     local function update_WorldQuestItemButtons()
         if InCombatLockdown() then return end
@@ -142,29 +142,31 @@ CoreDependCall("Blizzard_ObjectiveTracker", function()
             end
         end
     end
-    local hook_WorldQuest_Update = function(self)
-        --if not IsAddOnLoaded("!KalielsTracker") then return end
-        self = self or WORLD_QUEST_TRACKER_MODULE
-        if not self.ShowWorldQuests then return end
+    local hook_WorldQuest_Update = function(module, isWorldQuests)
+        return function(self)
+            --if not IsAddOnLoaded("!KalielsTracker") then return end
+            self = self or module
+            if isWorldQuests and not self.ShowWorldQuests then return end
 
-        -- 除了watches之外，还有一个当前区域的世界任务，所以不循环GetNumWorldQuestWatches直接循环usedBlocks
-        --- @see Blizzard_ObjectiveTracker\Blizzard_BonusObjectiveTracker.lua   UpdateTrackedWorldQuests(module)
-        --- @see Blizzard_ObjectiveTracker\Blizzard_BonusObjectiveTracker.lua   AddBonusObjectiveQuest
-        --- @see Blizzard_ObjectiveTracker\Blizzard_ObjectiveTracker.lua        DEFAULT_OBJECTIVE_TRACKER_MODULE:GetBlock(id)
-        for questID, block in pairs(WORLD_QUEST_TRACKER_MODULE.usedBlocks) do
-            if block and block.itemButton and block.itemButton:IsShown() then
-                local questLogIndex = GetQuestLogIndexByID(questID);
-                local link, item, charges, showItemWhenComplete = GetQuestLogSpecialItemInfo(questLogIndex);
-                if link then
-                    local blizBtn = block.itemButton
-                    if wqItems163[blizBtn] and type(wqItems163[blizBtn])=="table" then wqItems163[blizBtn].link = link else wqItems163[blizBtn] = link end
+            -- 除了watches之外，还有一个当前区域的世界任务，所以不循环GetNumWorldQuestWatches直接循环usedBlocks
+            --- @see Blizzard_ObjectiveTracker\Blizzard_BonusObjectiveTracker.lua   UpdateTrackedWorldQuests(module)
+            --- @see Blizzard_ObjectiveTracker\Blizzard_BonusObjectiveTracker.lua   AddBonusObjectiveQuest
+            --- @see Blizzard_ObjectiveTracker\Blizzard_ObjectiveTracker.lua        DEFAULT_OBJECTIVE_TRACKER_MODULE:GetBlock(id)
+            for questID, block in pairs(module.usedBlocks) do
+                if block and block.itemButton and block.itemButton:IsShown() then
+                    local questLogIndex = GetQuestLogIndexByID(questID);
+                    local link, item, charges, showItemWhenComplete = GetQuestLogSpecialItemInfo(questLogIndex);
+                    if link then
+                        local blizBtn = block.itemButton
+                        if wqItems163[blizBtn] and type(wqItems163[blizBtn])=="table" then wqItems163[blizBtn].link = link else wqItems163[blizBtn] = link end
+                    end
                 end
             end
+            update_WorldQuestItemButtons()
         end
-
-        update_WorldQuestItemButtons()
     end
-    hooksecurefunc(WORLD_QUEST_TRACKER_MODULE, "Update", hook_WorldQuest_Update)
+    hooksecurefunc(WORLD_QUEST_TRACKER_MODULE, "Update", hook_WorldQuest_Update(WORLD_QUEST_TRACKER_MODULE, true))
+    hooksecurefunc(QUEST_TRACKER_MODULE, "Update", hook_WorldQuest_Update(QUEST_TRACKER_MODULE, false))
     CoreOnEvent("PLAYER_REGEN_ENABLED", update_WorldQuestItemButtons)
     CoreOnEvent("PLAYER_REGEN_DISABLED", update_WorldQuestItemButtons)
     CoreScheduleTimer(true, 0.5, update_WorldQuestItemButtons)

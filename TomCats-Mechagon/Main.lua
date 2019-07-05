@@ -52,7 +52,8 @@ function C_VignetteInfo.GetVignetteInfo(vignetteGUID)
         return creature["Vignette Info"]
     end
     local vignetteInfo = GetVignetteInfo_Orig(vignetteGUID)
-    if (vignette and C_VignetteInfo.GetVignettePosition(vignetteGUID, P["Vignette MapID"]) and D["Creatures by Vignette ID"][vignetteInfo.vignetteID]) then
+    if not vignetteInfo then return nil end
+    if (C_VignetteInfo.GetVignettePosition(vignetteGUID, P["Vignette MapID"]) and D["Creatures by Vignette ID"][vignetteInfo.vignetteID]) then
         vignetteInfo.onWorldMap = true
         vignetteInfo.hasTooltip = true
     end
@@ -553,9 +554,13 @@ if (HandyNotes) then
                     if (creature["Status"] == addon.STATUS.COMPLETE) then
                         icon = completeIcon
                     end
+                    local alpha = 1.0
+                    if (minimap) then
+                        alpha = 0.50
+                    end
                     return coord, uiMapID,
                     icon,
-                    1.5, 1.0
+                    1.5, alpha
                 else
                     return nil
                 end
@@ -606,7 +611,7 @@ if (TomCats and TomCats.Register) then
                 }
             },
             name = "Rares of Mechagon",
-            version = "1.0.5"
+            version = "1.0.9"
         }
     )
 end
