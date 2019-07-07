@@ -196,23 +196,23 @@ function RareScannerDataProviderMixin:AddPin(npcID, npcInfo, mapID)
 		-- Ignore if its killed and we want to keep showing its icon
 		if (not npcInfo.notDiscovered and not keepShowingAfterDead and private.db.map.maxSeenTime ~= 0 and time() - npcInfo.foundTime > private.db.map.maxSeenTime * 3600) then
 			-- If its an achievement icon it doesn't make sence to hide it because timing
-			if (private.ACHIEVEMENT_ZONE_IDS[mapID]) then
-				local hasAchievement = false
-				for i, achievementID in ipairs(private.ACHIEVEMENT_ZONE_IDS[mapID]) do
-					if (RS_tContains(private.ACHIEVEMENT_TARGET_IDS[achievementID], npcID)) then
-						hasAchievement = true
-						break
-					end
-				end
+			--if (private.ACHIEVEMENT_ZONE_IDS[mapID]) then
+			--	local hasAchievement = false
+			--	for i, achievementID in ipairs(private.ACHIEVEMENT_ZONE_IDS[mapID]) do
+			--		if (RS_tContains(private.ACHIEVEMENT_TARGET_IDS[achievementID], npcID)) then
+			--			hasAchievement = true
+			--			break
+			--		end
+			--	end
 				
-				if (not hasAchievement) then
+			--	if (not hasAchievement) then
 					--RareScanner:PrintDebugMessage("DEBUG: Ignorado NPC por haberle visto hace mas tiempo del configurado")
-					return false
-				end
-			else
+			--		return false
+			--	end
+			--else
 				--RareScanner:PrintDebugMessage("DEBUG: Ignorado NPC por haberle visto hace mas tiempo del configurado")
 				return false
-			end
+			--end
 		end
 	-- If its a container
 	elseif (npcInfo.atlasName == RareScanner.CONTAINER_VIGNETTE or npcInfo.atlasName == RareScanner.CONTAINER_ELITE_VIGNETTE) then
@@ -273,7 +273,7 @@ function RareScannerDataProviderMixin:AddPin(npcID, npcInfo, mapID)
 		return false
 	end
 	
-	-- It last time seen wrong, fix it
+	-- If last time seen wrong, fix it
 	if (not npcInfo.notDiscovered and (not npcInfo.foundTime or (time() - npcInfo.foundTime <= 0))) then
 		private.dbglobal.rares_found[npcID].foundTime = time()
 		--RareScanner:PrintDebugMessage("DEBUG: La hora de ultimo avistamiento estaba corrupta, arreglado!")

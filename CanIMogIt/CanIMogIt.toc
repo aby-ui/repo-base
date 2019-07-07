@@ -17,7 +17,7 @@
 ## X-Website: http://mods.curse.com/addons/wow/can-i-mog-it
 ## SavedVariables: CanIMogItOptions, CanIMogItDatabase
 ## OptionalDeps: AdiBags, ArkInventory, ElvUI, LiteBag
-embeds.xml
+#embeds.xml
 core.lua
 Locale\_locales.xml
 constants.lua

@@ -23,6 +23,12 @@
                         <Anchor point="LEFT" />
                     </Anchors>
                 </Texture>
+                <Texture atlas="transmog-icon-checkmark" hidden="true" parentKey="achieved">
+                    <Size x="14" y="14"/>
+                    <Anchors>
+                        <Anchor point="LEFT" />
+                    </Anchors>
+                </Texture>
             </Layer>
         </Layers>
         <ButtonText name="$parentText" parentKey="text" justifyH="LEFT">

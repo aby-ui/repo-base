@@ -7,6 +7,7 @@ local tinsert, tremove = table.insert, table.remove
 local Bag = tdPack('Bag')
 local Slot = tdPack('Slot')
 local Pack = tdPack:NewModule('Pack', CreateFrame('Frame'), 'Event', 'Update')
+_G.tdPack = Pack
 local L = tdPack:GetLocale()
 
 local STATUS_FREE       = 0
@@ -127,7 +128,13 @@ end
 
 function Pack:PackReady()
     wipe(self.bags)
-    
+
+    if TDPACK_ONLY_REAGENT then
+        local reagent = Bag:New('reagent')
+        tinsert(self.bags, reagent)
+        return reagent:Sort()
+    end
+
     local bag, bank
 	local ignored = TDPACK_IGNORE_BAGS
 	local ignored_bank = TDPACK_IGNORE_BAGS_NO_BANK
@@ -181,6 +188,7 @@ function Pack:PackFinish()
     wipe(self.bags)
 	TDPACK_IGNORE_BAGS = nil
 	TDPACK_IGNORE_BAGS_NO_BANK = nil
+    TDPACK_ONLY_REAGENT = nil
 end
 
 ------ status

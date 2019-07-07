@@ -108,7 +108,8 @@ if AL then
 	AL["LOOT_TOOLTIP_POSITION"] = "戰利品滑鼠提示位置"
 	AL["LOOT_TOOLTIP_POSITION_DESC"] = "設定滑鼠指向戰利品圖示時，滑鼠提示出現的位置 (相對於按鈕)。"
 	AL["MAIN_BUTTON_OPTIONS"] = "主按鈕選項"
-	AL["MAP_MENU_DISABLE_LAST_SEEN_FILTER"] = "顯示存活的稀有NPC即使是在很久之前見過"
+	--[[Translation missing --]]
+	AL["MAP_MENU_DISABLE_LAST_SEEN_FILTER"] = "Show rare NPCs that you saw a long time ago but that can respawn"
 	AL["MAP_MENU_SHOW_CONTAINERS"] = "在地圖上顯示寶箱圖示"
 	AL["MAP_MENU_SHOW_EVENTS"] = "在地圖上顯示事件圖示"
 	AL["MAP_MENU_SHOW_NOT_DISCOVERED"] = "未發現的實體"
@@ -116,10 +117,8 @@ if AL then
 	AL["MAP_MENU_SHOW_RARE_NPCS"] = "在地圖上顯示稀有NPC圖示"
 	AL["MAP_NEVER"] = "從未"
 	AL["MAP_OPTIONS"] = "地圖選項"
-	--[[Translation missing --]]
-	AL["MAP_SCALE_ICONS"] = "Scale of the icons"
-	--[[Translation missing --]]
-	AL["MAP_SCALE_ICONS_DESC"] = "This will adjust the scale of the icons, being the value of 1 the original size."
+	AL["MAP_SCALE_ICONS"] = "圖示大小"
+	AL["MAP_SCALE_ICONS_DESC"] = "這將調整地圖上的圖示大小，數值1表示原始大小"
 	AL["MAP_SHOW_ICON_AFTER_COLLECTED"] = "拾取後仍保持顯示箱子圖示"
 	AL["MAP_SHOW_ICON_AFTER_COLLECTED_DESC"] = "停用以後，在拾取箱子之後圖示將會消失。"
 	AL["MAP_SHOW_ICON_AFTER_DEAD"] = "在擊殺後仍然顯示圖示"
@@ -161,6 +160,7 @@ if AL then
 	AL["NOTE_153206"] = "在事件[鑽探機 DR-TR28]進行期間可用"
 	AL["NOTE_153228"] = "需要擊殺很多[升級版哨衛]才會在這個區域出現"
 	AL["NOTE_154225"] = "需要使用[個人時光轉移裝置]訪問他的接口，這個物品是克羅米發放日常任務[另一個地方]的獎勵品"
+	AL["NOTE_154342"] = "需要使用[個人時光轉移裝置]訪問他的接口，這個物品是克羅米發放日常任務[另一個地方]的獎勵品"
 	AL["NOTE_154701"] = "在事件[鑽探機 DR-CC61]進行期間可用"
 	AL["NOTE_154739"] = "在事件[鑽探機 DR-CC73]進行期間可用"
 	AL["NOTE_280951"] = "沿著鐵路走直到你找到推車，然後騎上他來發現財寶。"

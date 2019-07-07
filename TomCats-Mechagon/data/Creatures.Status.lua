@@ -4,6 +4,7 @@ local D = addon.getLocalVars()
 local playerFaction = addon.playerFaction
 
 local STATUS = {
+    ACHIEVED = 9,
     COMPLETE = 0,
     HIDDEN = 1,
     UNAVAILABLE = 2,
@@ -31,7 +32,11 @@ local function refreshStatusForCreature(creature)
     else
         -- everything else
         if (not IsQuestFlaggedCompleted(creature[playerFaction .. " Tracking ID"])) then
-            status = STATUS.LOOT_ELIGIBLE
+            if addon.rareAchieved and addon.rareAchieved[creature[playerFaction .. " Tracking ID"]] then
+                status = STATUS.ACHIEVED
+            else
+                status = STATUS.LOOT_ELIGIBLE
+            end
         end
         if (creature["Type"] == "Boss") then
             -- world boss has extra statuses

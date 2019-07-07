@@ -11,6 +11,7 @@ addon.params = {
     ["Title Line 1"] = "纳沙塔尔稀有精英",
     ["Title Line 2"] = ""
 }
+addon.rareAchievements = { 13691 } --abyui
 
 -- If ACP is enabled, conditionally hook GetAddOnInfo to set the short name to be displayed in the ACP Group By Name control panel
 local _, _, _, ACP_ENABLED = GetAddOnInfo("ACP")

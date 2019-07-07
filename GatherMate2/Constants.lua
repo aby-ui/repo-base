@@ -119,6 +119,7 @@ local node_ids = {
 		[NL["Mauve Stinger School"]]			= 197,
 		[NL["Viper Fish School"]]				= 198,
 		[NL["Ionized Minnows"]]					= 199,
+		[NL["Sentry Fish School"]]				= 1101,
 	},
 	["Mining"] = {
 		[NL["Copper Vein"]] 					= 201,
@@ -368,6 +369,7 @@ local node_ids = {
 		[NL["Glowing Tome"]]					= 557,
 		[NL["Mana-Infused Gem"]]				= 558,
 		[NL["Twice-Fortified Arcwine"]]			= 559,
+		[NL["Mechanized Chest"]]				= 560,
 	},
 	["Archaeology"] = {
 		-- cata archeolgy objects
@@ -586,6 +588,7 @@ local node_textures = {
 		[197] = icon_path.."Fish\\fish_hook.tga", -- 8.2 fish TODO
 		[198] = icon_path.."Fish\\fish_hook.tga", -- 8.2 fish TODO
 		[199] = icon_path.."Fish\\fish_hook.tga", -- 8.2 fish TODO
+		[1101] = icon_path.."Fish\\fish_hook.tga", -- 8.2 fish TODO
 	},
 	["Mining"] = {
 		[201] = icon_path.."Mine\\copper.tga",
@@ -657,9 +660,9 @@ local node_textures = {
 		[267] = icon_path.."Mine\\stormsilver.tga",
 		[268] = icon_path.."Mine\\stormsilver.tga",
 		[269] = icon_path.."Mine\\stormsilver.tga",
-		[270] = icon_path.."Mine\\ghostiron.tga", -- osmenite TODO
-		[271] = icon_path.."Mine\\ghostiron.tga", -- osmenite TODO
-		[272] = icon_path.."Mine\\ghostiron.tga", -- osmenite TODO
+		[270] = icon_path.."Mine\\osmenite.tga",
+		[271] = icon_path.."Mine\\osmenite.tga",
+		[272] = icon_path.."Mine\\osmenite.tga",
 	},
 	["Extract Gas"] = {
 		[301] = icon_path.."Gas\\windy_cloud.tga",
@@ -762,7 +765,7 @@ local node_textures = {
 		[489] = icon_path.."Herb\\sirens_pollen.tga",
 		[490] = icon_path.."Herb\\star_moss.tga",
 		[491] = icon_path.."Herb\\winters_kiss.tga",
-		[492] = icon_path.."Herb\\rain_poppy.tga", -- Zin'anthid TODO
+		[492] = icon_path.."Herb\\zinanthid.tga",
 	},
 	["Treasure"] = {
 		[501] = icon_path.."Treasure\\clam.tga",
@@ -824,6 +827,7 @@ local node_textures = {
 		[557] = icon_path.."Treasure\\ancient_mana.tga",
 		[558] = icon_path.."Treasure\\ancient_mana.tga",
 		[559] = icon_path.."Treasure\\ancient_mana.tga",
+		[560] = icon_path.."Treasure\\treasure.tga",
 	},
 	["Archaeology"] = {
 		[601] = icon_path.."Archaeology\\shovel.tga",

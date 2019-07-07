@@ -136,7 +136,7 @@ function Mod:CHALLENGE_MODE_COMPLETED()
 		if elapsed == false then
 			splits[index] = floor(timeElapsed / 1000)
 			missingCount = missingCount + 1
-		elseif elapse == true then
+		elseif elapsed == true then
 			missingCount = missingCount + 1
 		end
 	end

@@ -42,10 +42,16 @@ function PackButton:New(parent)
 		local frameID = self:GetParent().frameID
         _G.TDPACK_IGNORE_BAGS_NO_BANK = nil
 
-        if(tdPack:GetModule("Pack").isBankOpened) then
+        if button == "RightButton" and not IsModifierKeyDown() then
+            self:OnClick(button)
+        elseif(tdPack:GetModule("Pack").isBankOpened) then
             if(frameID == 'bank') then
+                if button == "MiddleButton" then
+                    TDPACK_ONLY_REAGENT = true
+                    return tdPack:Pack(IsShiftKeyDown() and 'asc' or IsControlKeyDown() and 'desc' or nil)
+                end
                 TDPACK_IGNORE_BAGS = true
-                return tdPack:Pack()
+                return tdPack:Pack(button == "RightButton" and IsShiftKeyDown() and 'asc' or button == "RightButton" and IsControlKeyDown() and 'desc' or nil)
             else
                 return StaticPopup_Show("TDPACK_CONFIRM_BANK", nil, nil, staticPopupData)
             end
@@ -68,7 +74,10 @@ function PackButton:New(parent)
 		tooltip:AddDoubleLine(L['Ctrl + Left-Click'], L['Load from bank'], 0, 1, 0, 0, 1, 0)
 		tooltip:AddDoubleLine(L['Shift + Right-Click'], L['Pack asc'], 0, 1, 0, 0, 1, 0)
 		tooltip:AddDoubleLine(L['Ctrl + Right-Click'], L['Pack desc'], 0, 1, 0, 0, 1, 0)
-		tooltip:AddDoubleLine(L['<Right Click> '], L['Open tdPack config frame'], 0, 1, 0, 0, 1, 0)
+        if self:GetParent().frameID == 'bank' then
+            tooltip:AddDoubleLine(L['<Middle Click> '], L['Pack reagent bag'], 0, 1, 1, 0, 1, 1)
+        end
+		tooltip:AddDoubleLine(L['<Right Click> '], L['Open tdPack config frame'], 0, 1, 1, 0, 1, 1)
         if tdPack_BAGS then
             local ignore = -(#tdPack_BAGS.bag - 5 + #tdPack_BAGS.bank - 8)
             if ignore > 0 then

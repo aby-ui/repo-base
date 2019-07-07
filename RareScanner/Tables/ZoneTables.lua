@@ -84,6 +84,17 @@ private.PERMANENT_KILLS_ZONE_IDS = {
 	[1462] = { "all" };
 }
 
+-- Mechagon construction projects
+private.CONSTRUCTION_PROJECTS = {
+	["TR28"] = 153206; --Ol' Big Tusk
+	["TR35"] = 150342; --Earthbreaker Gulroc
+	["CC61"] = 154701; --Gorged Gear-Cruncher
+	["CC73"] = 154739; --Caustic Mechaslime
+	["CC88"] = 152113; --The Kleptoboss
+	["JD41"] = 153200; --Boilburn
+	["JD99"] = 153205; --Gemicide
+}
+
 private.ZONE_IDS = {
 	[50062] = { zoneID = 207, x = 0.296, y = 0.412 }; --Aeonaxx
 	[58778] = { zoneID = 390, x = 0.35, y = 0.894 }; --Aetha
@@ -2470,14 +2481,14 @@ private.ZONE_IDS = {
 	[152416] = { zoneID = 1355, artID = 1186, x = 0.6530330181121826, y = 0.3873058557510376 }; --Allseer Oma'kil
 	[153309] = { zoneID = 1355, artID = 1186, x = 0.41599998, y = 0.246 }; --Alzana, Arrow of Thunder
 	[152794] = { zoneID = 1355, artID = 1186, x = 0.6468421220779419, y = 0.5671629905700684 }; --Amethyst Spireshell
-	[152566] = { zoneID = 0 }; --Anemonar
+	[152566] = { zoneID = 1355, x = 0.578, y = 0.548 }; --Anemonar
 	[151934] = { zoneID = 1462, artID = 1276, x = 0.5260941982269287, y = 0.405854195356369 }; --Arachnoid Harvester
-	[154342] = { zoneID = 0 }; --Arachnoid Harvester
+	[154342] = { zoneID = 1462, x = 0.51, y = 0.37 }; --Arachnoid Harvester
 	[150394] = { zoneID = 1462, artID = 1276, x = 0.6210655570030212, y = 0.4033252894878388 }; --Armored Vaultbot
 	[154968] = { zoneID = 1462, artID = 1276, x = 0.5418246984481812, y = 0.4815337061882019 }; --Armored Vaultbot
-	[150191] = { zoneID = 0 }; --Avarius
+	[150191] = { zoneID = 1355, x = 0.368, y = 0.111999996 }; --Avarius
 	[155331] = { zoneID = 0 }; --Azerite Behemoth
-	[152361] = { zoneID = 0 }; --Banescale the Packfather
+	[152361] = { zoneID = 1355, x = 0.698, y = 0.538 }; --Banescale the Packfather
 	[152712] = { zoneID = 1355, artID = 1186, x = 0.3740364909172058, y = 0.8254230618476868 }; --Blindlight
 	[153200] = { zoneID = 1462, artID = 1276, x = 0.5058590173721313, y = 0.5108755826950073 }; --Boilburn
 	[153299] = { zoneID = 1355, artID = 1186, x = 0.638, y = 0.57 }; --Bonebreaker Szun
@@ -2501,7 +2512,7 @@ private.ZONE_IDS = {
 	[152414] = { zoneID = 1355, artID = 1186, x = 0.6561412215232849, y = 0.3285042643547058 }; --Elder Unu
 	[152555] = { zoneID = 1355, artID = 1186, x = 0.5207043886184692, y = 0.7544835209846497 }; --Elderspawn Nalaada
 	[154153] = { zoneID = 1462, artID = 1276, x = 0.5538221597671509, y = 0.5517669916152954 }; --Enforcer KX-T57
-	[151159] = { zoneID = 0 }; --Fleetfoot
+	[151159] = { zoneID = 1462, x = 0.45400003, y = 0.402 }; --Fleetfoot
 	[151202] = { zoneID = 1462, artID = 1276, x = 0.6562564373016357, y = 0.5141762495040894 }; --Foul Manifestation
 	[151884] = { zoneID = 1462, artID = 1276, x = 0.4521, y = 0.4312 }; --Fungarian Furor
 	[153308] = { zoneID = 1355, x = 0.48599997, y = 0.406 }; --Fury of Azshara
@@ -2519,7 +2530,7 @@ private.ZONE_IDS = {
 	[152448] = { zoneID = 1355, artID = 1186, x = 0.4601023197174072, y = 0.5410823822021484 }; --Iridescent Glimmershell
 	[153300] = { zoneID = 1355, artID = 1186, x = 0.42200002, y = 0.69 }; --Iron Zoko
 	[151684] = { zoneID = 1462, artID = 1276, x = 0.7724449634552002, y = 0.4471794962882996 }; --Jawbreaker
-	[152567] = { zoneID = 0 }; --Kelpwillow
+	[152567] = { zoneID = 1355, x = 0.48400003, y = 0.704 }; --Kelpwillow
 	[152007] = { zoneID = 1462, artID = 1276, x = 0.4126, y = 0.3488 }; --Killsaw
 	[152323] = { zoneID = 1355, x = 0.288, y = 0.29 }; --King Gakula
 	[152624] = { zoneID = 0 }; --King Gakula
@@ -2538,8 +2549,8 @@ private.ZONE_IDS = {
 	[151686] = { zoneID = 0 }; --Nimblepaws the Thief
 	[153206] = { zoneID = 1462, artID = 1276, x = 0.5567029118537903, y = 0.3939937353134155 }; --Ol' Big Tusk
 	[151680] = { zoneID = 0 }; --Orangetooth
-	[152397] = { zoneID = 0 }; --Oronu
-	[152764] = { zoneID = 0 }; --Oxidized Leachbeast
+	[152397] = { zoneID = 1355, x = 0.76199996, y = 0.262 }; --Oronu
+	[152764] = { zoneID = 1462, x = 0.518, y = 0.612 }; --Oxidized Leachbeast
 	[151702] = { zoneID = 1462, artID = 1276, x = 0.2311172634363174, y = 0.6817215085029602 }; --Paol Pondwader
 	[152681] = { zoneID = 1355, artID = 1186, x = 0.4304642081260681, y = 0.8794395923614502 }; --Prince Typhonus
 	[152682] = { zoneID = 1355, artID = 1186, x = 0.4299296736717224, y = 0.7552899718284607 }; --Prince Vortran
@@ -2548,8 +2559,8 @@ private.ZONE_IDS = {
 	[151918] = { zoneID = 0 }; --Raz'kah of the North
 	[153297] = { zoneID = 0 }; --REUSE
 	[153298] = { zoneID = 0 }; --REUSE
-	[151296] = { zoneID = 0 }; --Rocket
-	[150583] = { zoneID = 0 }; --Rockweed Shambler
+	[151296] = { zoneID = 1462, x = 0.52, y = 0.41599998 }; --Rocket
+	[150583] = { zoneID = 1355, x = 0.3, y = 0.404 }; --Rockweed Shambler
 	[150575] = { zoneID = 1462, artID = 1276, x = 0.4035278856754303, y = 0.5298742651939392 }; --Rumblerocks
 	[152182] = { zoneID = 1462, artID = 1276, x = 0.6583449840545654, y = 0.7917572855949402 }; --Rustfeather
 	[152892] = { zoneID = 0 }; --Rusty Mechanocrawler
@@ -2558,10 +2569,10 @@ private.ZONE_IDS = {
 	[152795] = { zoneID = 1355, artID = 1186, x = 0.7877688407897949, y = 0.3183858394622803 }; --Sandclaw Stoneshell
 	[152548] = { zoneID = 1355, x = 0.35599998, y = 0.412 }; --Scale Matriarch Gratinax
 	[152545] = { zoneID = 1355, artID = 1186, x = 0.2716850638389587, y = 0.3703687191009522 }; --Scale Matriarch Vynara
-	[152542] = { zoneID = 0 }; --Scale Matriarch Zodia
+	[152542] = { zoneID = 1355, x = 0.284, y = 0.46400002 }; --Scale Matriarch Zodia
 	[150937] = { zoneID = 1462, artID = 1276, x = 0.1940868645906448, y = 0.8028293251991272 }; --Seaspit
 	[153296] = { zoneID = 1355, artID = 1186, x = 0.336714506149292, y = 0.414139449596405 }; --Shalan'ali Stormtongue
-	[152552] = { zoneID = 0 }; --Shassera
+	[152552] = { zoneID = 1355, x = 0.624, y = 0.068 }; --Shassera
 	[153088] = { zoneID = 0 }; --Shiny Mechaspider
 	[153301] = { zoneID = 1355, artID = 1186, x = 0.33200002, y = 0.39200002 }; --Shirakess Starseeker
 	[153658] = { zoneID = 1355, artID = 1186, x = 0.3856897354125977, y = 0.1750708222389221 }; --Shiz'narasz the Consumer
@@ -2582,17 +2593,17 @@ private.ZONE_IDS = {
 	[154225] = { zoneID = 1462, artID = 1276, x = 0.5721, y = 0.5838 }; --The Rusty Prince
 	[151623] = { zoneID = 1462, artID = 1276, x = 0.7227, y = 0.5012 }; --The Scrap King
 	[151625] = { zoneID = 1462, artID = 1276, x = 0.716579020023346, y = 0.4898616671562195 }; --The Scrap King
-	[153898] = { zoneID = 0 }; --Tidelord Aquatus
+	[153898] = { zoneID = 1355, x = 0.61, y = 0.288 }; --Tidelord Aquatus
 	[153928] = { zoneID = 1355, x = 0.576, y = 0.26 }; --Tidelord Dispersius
-	[154148] = { zoneID = 0 }; --Tidemistress Leth'sindra
+	[154148] = { zoneID = 1355, x = 0.65199995, y = 0.22600001 }; --Tidemistress Leth'sindra
 	[152360] = { zoneID = 1355, artID = 1186, x = 0.6840462684631348, y = 0.4719468951225281 }; --Toxigore the Alpha
 	[151940] = { zoneID = 1462, artID = 1276, x = 0.5869404077529907, y = 0.2426794916391373 }; --Uncle T'Rogg
 	[153304] = { zoneID = 1355, x = 0.682, y = 0.33 }; --Undana Frostbarb
 	[153307] = { zoneID = 1355, x = 0.48599997, y = 0.406 }; --Unleashed Arcanofiend
-	[152568] = { zoneID = 0 }; --Urduu
+	[152568] = { zoneID = 1355, x = 0.314, y = 0.294 }; --Urduu
 	[151719] = { zoneID = 1355, artID = 1186, x = 0.6729288101196289, y = 0.3458338975906372 }; --Voice in the Deeps
 	[153303] = { zoneID = 1355, artID = 1186, x = 0.33, y = 0.4 }; --Voidblade Kassar
-	[150468] = { zoneID = 0 }; --Vor'koth
+	[150468] = { zoneID = 1355, x = 0.482, y = 0.24200001 }; --Vor'koth
 	[153313] = { zoneID = 0 }; --Vyz'olgo the Mind-Taker
 	[152671] = { zoneID = 0 }; --Wekemara
 	[151916] = { zoneID = 0 }; --Zaegra Sharpaxe
@@ -2601,7 +2612,7 @@ private.ZONE_IDS = {
 	[155811] = { zoneID = 1355, artID = 1186, x = 0.3344057202339172, y = 0.3012655973434448 }; --Commander Minzera
 	[155838] = { zoneID = 1355, artID = 1186, x = 0.791060209274292, y = 0.509932816028595 }; --Incantatrix Vazina
 	[155583] = { zoneID = 1462, artID = 1276, x = 0.8229547142982483, y = 0.7772676348686218 }; --Scrapclaw
-	[155841] = { zoneID = 0 }; --Shadowbinder Athissa
+	[155841] = { zoneID = 1355, x = 0.734, y = 0.314 }; --Shadowbinder Athissa
 	[155836] = { zoneID = 1355, artID = 1186, x = 0.4939302206039429, y = 0.6553937792778015 }; --Theurgist Nitara
 	[155840] = { zoneID = 1355, artID = 1186, x = 0.4742978811264038, y = 0.3220067024230957 }; --Warlord Zalzjar
 	[155660] = { zoneID = 1355, artID = 1186, x = 0.4851377606391907, y = 0.4048052430152893 }; --General Purpose Bunny JMF

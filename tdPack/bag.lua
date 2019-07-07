@@ -11,6 +11,7 @@ local Bag = tdPack:NewModule('Bag')
 local bagClasses = {
     bag = {0, 1, 2, 3, 4},
     bank = {-1, 5, 6, 7, 8, 9, 10, 11},
+    reagent = {-3},
 }
 
 tdPack_BAGS = bagClasses

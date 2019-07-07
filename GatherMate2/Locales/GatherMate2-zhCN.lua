@@ -559,4 +559,5 @@ NL["Winter's Kiss"] = "凛冬之吻"
 NL["Wintersbite"] = "冬刺草"
 NL["Withered Herb"] = "枯萎的草药"
 NL["Zandalari Archaeology Find"] = "赞达拉考古发现"
+NL["Zin'anthid"] = "龙眼珊瑚"
 

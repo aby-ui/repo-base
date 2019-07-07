@@ -51,7 +51,7 @@ function RareScanner:RequestGroupDataOnChange()
 end
 
 local already_reported = {}
-function RareScanner:ReportRareFound(npcID, vignetteInfo)
+function RareScanner:ReportRareFound(npcID, vignetteInfo, coordinates)
 	-- avoid spaming the same npc while jumping to another realm
 	if (already_reported[npcID]) then
 		return
@@ -105,7 +105,13 @@ function RareScanner:ReportRareFound(npcID, vignetteInfo)
 		currentMap = v
 	end
 
-	local vignettePosition = C_VignetteInfo.GetVignettePosition(vignetteInfo.vignetteGUID, currentMap)
+	local vignettePosition = nil
+	if (coordinates and coordinates.x and coordinates.y) then
+		vignettePosition = coordinates
+	else
+		vignettePosition = C_VignetteInfo.GetVignettePosition(vignetteInfo.vignetteGUID, currentMap)
+	end
+	
 	if (not vignettePosition) then
 		return
 	end
@@ -150,6 +156,7 @@ function RareScanner:ReportRareFound(npcID, vignetteInfo)
 end
 
 function RareScanner:DataReceived(_, data)
+	-- Avoids receive too much information while in combat
 	local status, dataDeserialized = LibStub("AceSerializer-3.0"):Deserialize(data)
 	if (status) then
 		if (not RareScanner:ValidateReceivedData(dataDeserialized)) then
@@ -204,8 +211,10 @@ function RareScanner:DataReceived(_, data)
 				end
 				
 				for _,v in ipairs(lootTable) do 
-					if (not RS_tContains(private.dbglobal.rares_loot[npcID], v)) then
-						table.insert(private.dbglobal.rares_loot[npcID], v)
+					if (not InCombatLockdown()) then --avoid script ran too long error
+						if (not RS_tContains(private.dbglobal.rares_loot[npcID], v)) then
+							table.insert(private.dbglobal.rares_loot[npcID], v)
+						end
 					end
 				end
 			else
@@ -281,8 +290,10 @@ function RareScanner:DataReceived(_, data)
 							end
 							
 							for _,l in ipairs(v.lootTable) do 
-								if (not RS_tContains(private.dbglobal.rares_loot[k], l)) then
-									table.insert(private.dbglobal.rares_loot[k], l)
+								if (not InCombatLockdown()) then --avoid script ran too long error
+									if (not RS_tContains(private.dbglobal.rares_loot[k], l)) then
+										table.insert(private.dbglobal.rares_loot[k], l)
+									end
 								end
 							end
 						else

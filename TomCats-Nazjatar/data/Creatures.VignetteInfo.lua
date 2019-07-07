@@ -45,6 +45,8 @@ function addon.addOrUpdateVignetteInfo(creature)
             vignetteInfo.onWorldMap = true
             if (status == STATUS.LOOT_ELIGIBLE) then
                 vignetteInfo.atlasName = "VignetteKill"
+            elseif (status == STATUS.ACHIEVED) then
+                vignetteInfo.atlasName = "transmog-icon-revert-small" --"tradeskills-star-off" --abyui
             else
                 vignetteInfo.atlasName = "Capacitance-General-WorkOrderCheckmark"
             end

@@ -410,3 +410,35 @@ do
         end
     end)
 end
+
+--[[------------------------------------------------------------
+拾取材料
+---------------------------------------------------------------]]
+do
+    local items = { [168217]=30, [168216]=10, [168215]=5 }
+    local pattern = "^" .. string.format(LOOT_ITEM_SELF, "(.+)") .. "$" --"你获得了物品：%s。"
+    CoreOnEvent("CHAT_MSG_LOOT", function(event, msg)
+        local _, _, link = msg:find(pattern)
+        local itemId = link and select(3, link:find("\124Hitem:(%d+):"))
+        itemId = itemId and tonumber(itemId)
+        if itemId and items[itemId] then
+            CoreScheduleBucket("AbyUI_8.2_RECYLE", 0.5, function()
+                local found = {}
+                for container=BACKPACK_CONTAINER, NUM_BAG_SLOTS do
+                    local slots = GetContainerNumSlots(container)
+                    for slot=1, slots do
+                        local _, count, _, _, _, _, slotLink, _, _, slotItemID = GetContainerItemInfo(container, slot)
+                        if items[slotItemID] then
+                            found[slotItemID] = found[slotItemID] or 0 + count
+                        end
+                    end
+                end
+                local s = "包内零件:"
+                for k, v in pairs(items) do
+                    s = s .. format(" %s:|cff%s%d|r/%d", select(2, GetItemInfo(k)), found[k] and found[k] >= v and "00ff00" or "ff0000", found[k] or 0, v)
+                end
+                U1Message(s)
+            end)
+        end
+    end)
+end

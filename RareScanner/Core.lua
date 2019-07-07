@@ -29,7 +29,7 @@ local DEBUG_MODE = false
 
 -- Config constants
 local CURRENT_DB_VERSION = 5
-local CURRENT_LOOT_DB_VERSION = 11
+local CURRENT_LOOT_DB_VERSION = 12
 
 -- Hard reset versions
 local CURRENT_ADDON_VERSION = 500
@@ -266,12 +266,23 @@ scanner_button:RegisterEvent("LOOT_OPENED")
 -- Avoid addon on cinematics
 scanner_button:RegisterEvent("CINEMATIC_START")
 
+-- Chat messages
+scanner_button:RegisterEvent("CHAT_MSG_MONSTER_YELL")
+
 -- Captures all events
 local guildiesNames = nil
 scanner_button:SetScript("OnEvent", function(self, event, ...)
 	-- Vignette info
 	if (event == "VIGNETTE_MINIMAP_UPDATED") then
-		self:CheckNotificationCache(self, ...)
+		-- Get viggnette data
+		local id = ...
+		local vignetteInfo = C_VignetteInfo.GetVignetteInfo(id)
+		if (not vignetteInfo) then
+			return
+		else
+			vignetteInfo.id = id
+			self:CheckNotificationCache(self, vignetteInfo)
+		end
 	-- Out of combat actions
 	elseif (event == "PLAYER_REGEN_ENABLED") then
 		if (self.pendingToShow) then
@@ -333,44 +344,10 @@ scanner_button:SetScript("OnEvent", function(self, event, ...)
 			end
 			-- check if killed
 			if (npcID and private.dbglobal.rares_found[npcID] and not private.dbchar.rares_killed[npcID]) then
-				-- check if its a non rare NPC but its part of an achievement
-				local processed = false
-				local npcName = RareScanner:GetNpcName(npcID)
-				if (private.ZONE_IDS[npcID]) then
-					local mapID = private.ZONE_IDS[npcID].zoneID
-					if (private.ACHIEVEMENT_ZONE_IDS[mapID]) then
-						for i, achievementID in ipairs(private.ACHIEVEMENT_ZONE_IDS[mapID]) do
-							if (RS_tContains(private.ACHIEVEMENT_TARGET_IDS[achievementID], npcID)) then
-								local numCriteria = GetAchievementNumCriteria(achievementID);
-								if (numCriteria > 0) then
-									for criteriaIndex = 1, numCriteria do
-										local name, _, completed, _, _, _, _, assetID, _, _, _, _, _ = GetAchievementCriteriaInfo(achievementID, criteriaIndex);
-										if (assetID == npcID or (npcName and RS_tContains(name, npcName) or RS_tContains(npcName, name))) then
-											if (completed) then
-												RareScanner:PrintDebugMessage("DEBUG: Identificado un NPC raro muerto que no muestra el dragon plateado pero que forma parte de un logro y la muerte de este NPC esta completada.")
-												RareScanner:ProcessKill(npcID)
-												return
-											else
-												RareScanner:PrintDebugMessage("DEBUG: Identificado un NPC raro que no muestra el dragon plateado pero que forma parte de un logro y no lo hemos matado.")
-											end
-											
-											processed = true
-										end
-									end
-								end
-							end
-							
-							if (processed) then
-								return
-							end
-						end
-					end
-					
-					if (not processed and unitClassification ~= "rare" and unitClassification ~= "rareelite") then
-						-- properly killed
-						RareScanner:PrintDebugMessage("DEBUG: Identificado un NPC raro muerto porque ha dejado de ser raro en algun momento de la historia y no nos habiamos enterado.")
-						RareScanner:ProcessKill(npcID)
-					end
+				if (unitClassification ~= "rare" and unitClassification ~= "rareelite") then
+					-- properly killed
+					RareScanner:PrintDebugMessage("DEBUG: Identificado un NPC raro muerto porque ha dejado de ser raro en algun momento de la historia y nos habiamos enterado.")
+					RareScanner:ProcessKill(npcID)
 				else
 					RareScanner:PrintDebugMessage("DEBUG: Identificado un NPC raro muerto que sigue siendo raro, por lo tanto no lo hemos debido de matar nosotros.")
 					private.dbglobal.rares_found[npcID].foundTime = time()
@@ -553,6 +530,32 @@ scanner_button:SetScript("OnEvent", function(self, event, ...)
 		end
 		
 		self:UnregisterEvent("GUILD_ROSTER_UPDATE")
+	-- Chat
+	elseif (event == "CHAT_MSG_MONSTER_YELL") then
+		-- Only for Mechagon (lets don't support everywhere yet to see its performance)
+		local currentMap = C_Map.GetBestMapForUnit("player")
+		if (currentMap and currentMap == 1462) then
+			local message, name = ...
+			if (name) then
+				local npcID = RareScanner:GetNpcId(name)
+				-- Arachnoid Harvester fix
+				if (npcID and npcID == 154342) then
+					npcID = 151934
+				end
+				-- Simulates vignette event
+				if (npcID and private.ZONE_IDS[npcID] and not private.dbchar.rares_killed[npcID]) then
+					local vignetteInfo = {}
+					vignetteInfo.atlasName = RareScanner.NPC_VIGNETTE
+					vignetteInfo.id = time()
+					vignetteInfo.name = name
+					vignetteInfo.objectGUID = "a-a-a-a-a-"..npcID.."-a"
+					vignetteInfo.x = private.ZONE_IDS[npcID].x
+					vignetteInfo.y = private.ZONE_IDS[npcID].y
+					self:CheckNotificationCache(self, vignetteInfo)
+				end
+			end
+		end
+	-- Others
 	elseif (event == "CINEMATIC_START") then
 		if (self:IsVisible()) then
 			self:HideButton()
@@ -648,20 +651,21 @@ end
 
 -- Checks if the rare has been found already in the last 5 minutes
 local already_notified = {}
-function scanner_button:CheckNotificationCache(self, id)	
-	-- Get viggnette data
-	local vignetteInfo = C_VignetteInfo.GetVignetteInfo(id)
-	if (not vignetteInfo) then
-		return
-	end
-
+function scanner_button:CheckNotificationCache(self, vignetteInfo)	
 	local iconid = vignetteInfo.atlasName
 	local name = vignetteInfo.name
 	local _, _, _, _, _, npcID, _ = strsplit("-", vignetteInfo.objectGUID);
 	
 	if (npcID) then
 		npcID = tonumber(npcID)
-		RareScanner:ReportRareFound(npcID, vignetteInfo)
+		if (vignetteInfo.x and vignetteInfo.y) then
+			local coordinates = {}
+			coordinates.x = vignetteInfo.x
+			coordinates.y = vignetteInfo.y
+			RareScanner:ReportRareFound(npcID, vignetteInfo, coordinates)
+		else
+			RareScanner:ReportRareFound(npcID, vignetteInfo)
+		end
 		
 		-- If we have it as dead but we got a notification it means that the restart time is wrong (this happends mostly with war fronts)
 		if (private.dbchar.rares_killed[npcID]) then
@@ -711,10 +715,10 @@ function scanner_button:CheckNotificationCache(self, id)
 			
 			-- disable button alert for containers
 			if (not private.db.display.displayButtonContainers) then
-				if already_notified[id] then
+				if already_notified[vignetteInfo.id] then
 					return
 				else
-					already_notified[id] = true
+					already_notified[vignetteInfo.id] = true
 					self:PlaySoundAlert(iconid)
 					self:DisplayMessages(name)
 					return
@@ -746,10 +750,10 @@ function scanner_button:CheckNotificationCache(self, id)
 	end
 	
 	-- Check if we have found the NPC in the last 5 minutes
-	if (already_notified[id]) then
+	if (already_notified[vignetteInfo.id]) then
 		return
 	else
-		already_notified[id] = true
+		already_notified[vignetteInfo.id] = true
 	end
 
 	-- Filters NPC by zone just in case it belong to a different are from the current player's position
@@ -807,9 +811,13 @@ function scanner_button:CheckNotificationCache(self, id)
 		end
 	end
 	
+	-- sets recently seen
+	private.dbglobal.recentlySeen[npcID] = true
+
 	-- timer to reset already found NPC
 	C_Timer.After(RESCAN_TIMER, function() 
-		already_notified[id] = false 
+		already_notified[vignetteInfo.id] = false 
+		private.dbglobal.recentlySeen[npcID] = nil
 	end)
 end
 
@@ -1027,7 +1035,7 @@ function RareScanner:RefreshRaresFoundList()
 	end
 	
 	if (not CLEAN_RARES_FOUND_TIMER) then
-		CLEAN_RARES_FOUND_TIMER = C_Timer.NewTimer(CLEAN_RARES_FOUND_DELAY, function() 
+		CLEAN_RARES_FOUND_TIMER = C_Timer.NewTicker(CLEAN_RARES_FOUND_DELAY, function() 
 			RareScanner:RefreshRaresFoundList()
 		end)
 	end
@@ -1142,6 +1150,9 @@ function RareScanner:InitializeDataBase()
 		if (not private.dbglobal.rares_loot) then
 			private.dbglobal.rares_loot = {}
 		end
+		
+		-- Initialize recently seen (resets previous values)
+		private.dbglobal.recentlySeen = {}
 	  
 		-- Adds about panel to wow options
 		local about_panel = LibStub:GetLibrary("LibAboutPanel", true)
@@ -1444,6 +1455,16 @@ function RareScanner:SetEventName(eventID, name)
 	end
 	if (not private.dbglobal.event_names[GetLocale()][eventID]) then
 		private.dbglobal.event_names[GetLocale()][eventID] = name
+	end
+end
+
+function RareScanner:GetNpcId(name) 
+	if (private.dbglobal.rare_names[GetLocale()]) then
+		for k, v in pairs(private.dbglobal.rare_names[GetLocale()]) do
+			if (RS_tContains(v, name)) then
+				return k;
+			end
+		end
 	end
 end
 

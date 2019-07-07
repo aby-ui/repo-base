@@ -224,7 +224,7 @@ local function ProgressBar_SetValue(self, percent)
 				reapingFrame:SetSize(56, 16)
 				reapingFrame:SetPoint("BOTTOMRIGHT", self, "TOPRIGHT", 0, 0)
 		
-				reapingFrame.Icon = CreateFrame("Frame", nil, block, "ScenarioChallengeModeAffixTemplate")
+				reapingFrame.Icon = CreateFrame("Frame", nil, reapingFrame, "ScenarioChallengeModeAffixTemplate")
 				reapingFrame.Icon:SetPoint("LEFT", reapingFrame, "LEFT", 0, 0)
 				reapingFrame.Icon:SetSize(14, 14)
 				reapingFrame.Icon.Portrait:SetSize(12, 12)

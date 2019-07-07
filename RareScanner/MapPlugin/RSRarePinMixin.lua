@@ -22,6 +22,20 @@ ItemToolTip.shoppingTooltips = { ItemToolTipComp1, ItemToolTipComp2 }
 local ETERNAL_DEATH = -1
 local TOOLTIP_MAX_WIDTH = 250
 
+-- Textures
+local GREEN_NPC_TEXTURE = "Interface\\AddOns\\RareScanner\\Media\\Icons\\GreenSkullDark.blp"
+local YELLOW_NPC_TEXTURE = "Interface\\AddOns\\RareScanner\\Media\\Icons\\YellowSkullDark.blp"
+local RED_NPC_TEXTURE = "Interface\\AddOns\\RareScanner\\Media\\Icons\\RedSkullDark.blp"
+local PINK_NPC_TEXTURE = "Interface\\AddOns\\RareScanner\\Media\\Icons\\PinkSkullDark.blp"
+local GREEN_CONTAINER_TEXTURE = "Interface\\AddOns\\RareScanner\\Media\\Icons\\GreenChest.blp"
+local YELLOW_CONTAINER_TEXTURE = "Interface\\AddOns\\RareScanner\\Media\\Icons\\YellowChest.blp"
+local RED_CONTAINER_TEXTURE = "Interface\\AddOns\\RareScanner\\Media\\Icons\\RedChest.blp"
+local PINK_CONTAINER_TEXTURE = "Interface\\AddOns\\RareScanner\\Media\\Icons\\PinkChest.blp"
+local GREEN_EVENT_TEXTURE = "Interface\\AddOns\\RareScanner\\Media\\Icons\\GreenStar.blp"
+local YELLOW_EVENT_TEXTURE = "Interface\\AddOns\\RareScanner\\Media\\Icons\\YellowStar.blp"
+local RED_EVENT_TEXTURE = "Interface\\AddOns\\RareScanner\\Media\\Icons\\RedStar.blp"
+local PINK_EVENT_TEXTURE = "Interface\\AddOns\\RareScanner\\Media\\Icons\\PinkStar.blp"
+
 RSRarePinMixin = CreateFromMixins(MapCanvasPinMixin);
  
 function RSRarePinMixin:OnLoad()
@@ -73,37 +87,48 @@ function RSRarePinMixin:OnAcquired(npcID, npcInfo)
 	if (atlasName == RareScanner.NPC_VIGNETTE or atlasName == RareScanner.NPC_VIGNETTE_ELITE) then
 		atlasName = RareScanner.NPC_LEGION_VIGNETTE;
 	end
-	self.Texture:SetAtlas(atlasName, true);
 	self.Texture:SetScale(private.db.map.scale)
 	
 	-- Sets texture colours
-	if (self.notDiscovered and not self.achievementLink) then
-		self.Texture:SetVertexColor(1, 0, 0);
-	elseif (self.notDiscovered and self.achievementLink) then
-		if (self.isContainer) then
-			self.Texture:SetVertexColor(1, 0.5, 0);
+	if (private.dbglobal.recentlySeen and private.dbglobal.recentlySeen[npcID]) then
+		if (self.isNpc) then
+			self.Texture:SetTexture(PINK_NPC_TEXTURE)
+		elseif (self.isContainer) then
+			self.Texture:SetTexture(PINK_CONTAINER_TEXTURE)
 		else
-			self.Texture:SetVertexColor(0.8, 0.4, 0);
-		end
-	elseif (self.achievementLink) then
-		if (self.isContainer) then
-			self.Texture:SetVertexColor(1, 1, 0);
-		else
-			self.Texture:SetVertexColor(0.2, 1, 1);
+			self.Texture:SetTexture(PINK_EVENT_TEXTURE)
 		end
 	else
-		self.Texture:SetVertexColor(1, 1, 1);
+		if (self.notDiscovered and not self.achievementLink) then
+			if (self.isNpc) then
+				self.Texture:SetTexture(RED_NPC_TEXTURE)
+			elseif (self.isContainer) then
+				self.Texture:SetTexture(RED_CONTAINER_TEXTURE)
+			else
+				self.Texture:SetTexture(RED_EVENT_TEXTURE)
+			end
+		elseif (self.notDiscovered and self.achievementLink) then
+			if (self.isNpc) then
+				self.Texture:SetTexture(YELLOW_NPC_TEXTURE)
+			elseif (self.isContainer) then
+				self.Texture:SetTexture(YELLOW_CONTAINER_TEXTURE)
+			else
+				self.Texture:SetTexture(YELLOW_EVENT_TEXTURE)
+			end
+		elseif (self.achievementLink) then
+			if (self.isNpc) then
+				self.Texture:SetTexture(GREEN_NPC_TEXTURE)
+			elseif (self.isContainer) then
+				self.Texture:SetTexture(GREEN_CONTAINER_TEXTURE)
+			else
+				self.Texture:SetTexture(GREN_EVENT_TEXTURE)
+			end
+		else
+			self.Texture:SetAtlas(atlasName, true);
+		end
 	end
 	self.HighlightTexture:SetAtlas(atlasName, true);
 	self.ShowAnim:Play();
-	
-	-- Eternal death
-	if (self.isNpc and private.PERMANENT_KILLS_ZONE_IDS[npcInfo.mapID] and (RS_tContains(private.PERMANENT_KILLS_ZONE_IDS[npcInfo.mapID], "all") or RS_tContains(private.PERMANENT_KILLS_ZONE_IDS[npcInfo.mapID], C_Map.GetMapArtID(npcInfo.mapID)))) then
-		self.killable = true
-	else
-		self.killable = false
-	end
-	
 	self:SetPosition(self.x, self.y);
 end
  
@@ -199,12 +224,12 @@ function RSRarePinMixin:OnMouseEnter()
 		tooltip:SetCell(line, 1, self:TextColor(string.format(AL["MAP_TOOLTIP_ACHIEVEMENT"], self.achievementLink), "FFFFCC"), nil, "LEFT", 10, nil, nil, nil, TOOLTIP_MAX_WIDTH)
 		tooltip:SetCellScript(line, 1, "OnEnter", showAchievementTooltip, self.achievementLink)
 		tooltip:SetCellScript(line, 1, "OnLeave", hideItemToolTip)
-		
-		-- Notes
-		if (AL["NOTE_"..self.npcID] ~= "NOTE_"..self.npcID) then
-			line = tooltip:AddLine()
-			tooltip:SetCell(line, 1, self:TextColor(AL["NOTE_"..self.npcID], "FFFFCC"), nil, "LEFT", 10, nil, nil, nil, TOOLTIP_MAX_WIDTH)
-		end
+	end
+	
+	-- Notes
+	if (AL["NOTE_"..self.npcID] ~= "NOTE_"..self.npcID) then
+		line = tooltip:AddLine()
+		tooltip:SetCell(line, 1, self:TextColor(AL["NOTE_"..self.npcID], "FFFFCC"), nil, "LEFT", 10, nil, nil, nil, TOOLTIP_MAX_WIDTH)
 	end
 	
 	-- Loot
@@ -268,22 +293,20 @@ function RSRarePinMixin:OnMouseEnter()
 		line = tooltip:AddLine()
 		tooltip:SetCell(line, 1, self:TextColor(AL["MAP_TOOLTIP_IGNORE_ICON"], "00FF00"), nil, "LEFT", 10, nil, nil, nil, TOOLTIP_MAX_WIDTH)
 	elseif (not private.dbchar.rares_killed[self.npcID] and not private.dbchar.containers_opened[self.npcID]) then
-		if (self.killable or not self.isNpc) then	
-			-- Separator
-			line = tooltip:AddSeparator(1, 1)
-			line = tooltip:AddLine()
-			
-			local text
-			if (self.isNpc) then
-				text = AL["MAP_TOOLTIP_KILLED"]
-			elseif (self.isContainer) then
-				text = AL["MAP_TOOLTIP_CONTAINER_LOOTED"]
-			elseif (self.isEvent) then
-				text = AL["MAP_TOOLTIP_EVENT_DONE"]
-			end
-			
-			tooltip:SetCell(line, 1, self:TextColor(text, "00FF00"), nil, "LEFT", 10, nil, nil, nil, TOOLTIP_MAX_WIDTH)
+		-- Separator
+		line = tooltip:AddSeparator(1, 1)
+		line = tooltip:AddLine()
+		
+		local text
+		if (self.isNpc) then
+			text = AL["MAP_TOOLTIP_KILLED"]
+		elseif (self.isContainer) then
+			text = AL["MAP_TOOLTIP_CONTAINER_LOOTED"]
+		elseif (self.isEvent) then
+			text = AL["MAP_TOOLTIP_EVENT_DONE"]
 		end
+		
+		tooltip:SetCell(line, 1, self:TextColor(text, "00FF00"), nil, "LEFT", 10, nil, nil, nil, TOOLTIP_MAX_WIDTH)
 	else
 		-- Separator
 		line = tooltip:AddSeparator(1, 1)
@@ -326,8 +349,7 @@ function RSRarePinMixin:OnMouseDown(button)
 	--Killed if discovered
 	if (button == "LeftButton" and IsShiftKeyDown()) then
 		-- Ignored
-		if (self.isNpc and self.killable) then
-			self.killable = false
+		if (self.isNpc) then
 			RareScanner:ProcessKill(self.npcID)
 			self:Hide();
 		elseif (self.isContainer) then

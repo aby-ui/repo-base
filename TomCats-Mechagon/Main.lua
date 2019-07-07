@@ -114,12 +114,31 @@ local function ADDON_LOADED(self)
     warningFont:SetFontObject(SystemFont_Small)
     warningFont:SetJustifyH("CENTER")
     warningFont:SetTextColor(1, 0, 0)
+    -- initial achievements abyui
+    addon.rareAchieved = {}
+    for _, v in ipairs(addon.rareAchievements or {}) do
+        for i = 1, GetAchievementNumCriteria(v) or 0 do
+            local description, type, completed, quantity, requiredQuantity, characterName, flags, assetID, quantityString, criteriaID = GetAchievementCriteriaInfo(v, i)
+            if assetID then
+                addon.rareAchieved[assetID] = completed
+            end
+        end
+    end
+    local achievedFont = CreateFont("Achieved")
+    achievedFont:SetFontObject(SystemFont_Small)
+    achievedFont:SetTextColor(1, 1, 0)
     QUEST_STATUS = {
         COMPLETE = {
             getImage = function() return 973338, 124/256, 160/256, 94/128, 126/128 end,
             font = completeFont,
             texture = "complete",
             color = { r = 0, g = 1, b = 0 }
+        },
+        ACHIEVED = {
+            getImage = function() return "Interface/Transmogrify/Transmogrify", 450/512, 482/512, 88/512, 120/512 end,
+            font = achievedFont,
+            texture = "achieved",
+            color = { r = 1, g = 1, b = 0 }
         },
         INCOMPLETE = {
             getImage = function() return 1121272, 576/1024, 608/1024, 373/512, 405/512 end,
@@ -226,6 +245,11 @@ updateQuests = function()
             if (not D["Creatures"][quests[k]["Creature ID"]]["Locations"][warfrontPhases[addon.getWarfrontPhase()]]) then
                 if (quests[k].status ~= QUEST_STATUS.UNAVAILABLE) then
                     quests[k].status = QUEST_STATUS.UNAVAILABLE
+                    setQuestLabelStyle(quests[k])
+                end
+            elseif addon.rareAchieved[k] then
+                if (quests[k].status ~= QUEST_STATUS.ACHIEVED) then
+                    quests[k].status = QUEST_STATUS.ACHIEVED
                     setQuestLabelStyle(quests[k])
                 end
             else
@@ -525,6 +549,9 @@ end
 
 if (HandyNotes) then
     local incompleteIcon = {icon = 1121272, tCoordLeft = 576/1024, tCoordRight = 608/1024, tCoordTop = 373/512, tCoordBottom = 405/512 }
+    --local achievedIcon = {icon = "Interface/Transmogrify/Transmogrify", tCoordLeft = 243/512, tCoordRight = 271/512, tCoordTop = 127/512, tCoordBottom = 153/512 }
+    --local achievedIcon = {icon = "Interface/Transmogrify/Transmogrify", tCoordLeft = 300/512, tCoordRight = 325/512, tCoordTop = 127/512, tCoordBottom = 151/512 }
+    local achievedIcon = {icon = "Interface/Transmogrify/Transmogrify", tCoordLeft = 273/512, tCoordRight = 298/512, tCoordTop = 127/512, tCoordBottom = 151/512 }
     local completeIcon = {icon = 973338, tCoordLeft = 124/256, tCoordRight = 160/256, tCoordTop = 94/128, tCoordBottom = 126/128 }
     local nilFunc = function() return nil end
     local coordLookup = {}
@@ -537,7 +564,7 @@ if (HandyNotes) then
                 local vignetteInfo = creature["Vignette Info"]
                 if (vignetteInfo and vignetteInfo.name) then
                     local location = creature["Locations"][warfrontPhases[addon.getWarfrontPhase()]]
-                    if (location and (((creature["Status"] == addon.STATUS.COMPLETE) or (creature["Status"] == addon.STATUS.LOOT_ELIGIBLE)))) then
+                    if (location and (((creature["Status"] == addon.STATUS.COMPLETE) or (creature["Status"] == addon.STATUS.LOOT_ELIGIBLE) or (creature["Status"] == addon.STATUS.ACHIEVED)))) then
                         table.insert(vignettes, D["Creatures"][creatureID])
                     end
                 end
@@ -554,13 +581,18 @@ if (HandyNotes) then
                     if (creature["Status"] == addon.STATUS.COMPLETE) then
                         icon = completeIcon
                     end
+                    if (creature["Status"] == addon.STATUS.ACHIEVED) then
+                        icon = achievedIcon
+                    end
+                    local scale = 1.5
                     local alpha = 1.0
                     if (minimap) then
                         alpha = 0.50
+                        scale = 2.0
                     end
                     return coord, uiMapID,
                     icon,
-                    1.5, alpha
+                    scale, alpha
                 else
                     return nil
                 end
@@ -611,7 +643,7 @@ if (TomCats and TomCats.Register) then
                 }
             },
             name = "Rares of Mechagon",
-            version = "1.0.9"
+            version = "1.0.10"
         }
     )
 end
