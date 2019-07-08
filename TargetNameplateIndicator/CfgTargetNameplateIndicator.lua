@@ -18,6 +18,23 @@ U1RegisterAddon("TargetNameplateIndicator", {
         var = "anim",
         default = true,
         callback = function() TargetNameplateIndicator:SetOptions() end,
+
+        {
+            text = "动画幅度",
+            var = "bounce_off",
+            default = 5,
+            type = "spin",
+            range = { 5, 50, 5 },
+            callback = function() TargetNameplateIndicator:SetOptions() end,
+        },
+        {
+            text = "动画时长",
+            var = "bounce_dur",
+            default = 0.3,
+            type = "spin",
+            range = { 0.1, 1, 0.1 },
+            callback = function() TargetNameplateIndicator:SetOptions() end,
+        }
     },
 
     {

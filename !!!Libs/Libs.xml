@@ -12,7 +12,7 @@
 
 <Include file="LibNameplateRegistry-1.0\LibNameplateRegistry-1.0\LibNameplateRegistry-1.0.lua"/><!--HHTD, TargetNameplateIndicator-->
 
-<Include file="LibStrataFix\LibStrataFix.lua"/>
+<!--<Include file="LibStrataFix\LibStrataFix.lua"/>-->
 <Include file="LibItemUpgradeInfo-1.0\Core.lua"/><!--Plugin/InventoryLevel.U1GetRealItemLevel/Details-->
 <Include file="LibChatAnims\LibChatAnims\LibChatAnims.lua"/><!--NoTaint/DBM-->
 <Include file="LibDualSpec-1.0\LibDualSpec-1.0.lua"/><!-- Grid/Skada/Masque -->
