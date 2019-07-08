@@ -96,6 +96,11 @@ local function OnShow(self, ...)
                 self:SetPoint(settings.point,settings.relativeTo, settings.relativePoint, settings.xOfs,settings.yOfs)
                 if self:GetHeight()~=h then self:SetHeight(h) end
                 if self:GetWidth()~=w then self:SetWidth(w) end
+                if self:GetRight() <= 0 or self:GetLeft() >= GetScreenWidth() or self:GetTop() <= 0 or self:GetBottom() >= GetScreenHeight() then
+                    self:ClearAllPoints()
+                    self:SetPoint("CENTER")
+                    settings.point, settings.relativeTo, settings.relativePoint, settings.xOfs, settings.yOfs = nil, nil, nil, nil, nil
+                end
                 self.__blizzMove = nil
             end
         end

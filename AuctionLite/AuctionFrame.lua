@@ -156,7 +156,7 @@ function AuctionLite:CreateTab(name, frame)
   PanelTemplates_SetNumTabs(AuctionFrame, tabIndex);
 
   frame:SetParent(AuctionFrame);
-  frame:ClearAllPoints()
+  frame:ClearAllPoints();
   frame:SetPoint("TOPLEFT", AuctionFrame, "TOPLEFT", 0, 0);
 
   return tabIndex;

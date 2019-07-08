@@ -3,7 +3,7 @@ H.H.T.D. World of Warcraft Add-on
 Copyright (c) 2009-2018 by John Wellesz (hhtd@2072productions.com)
 All rights reserved
 
-Version 2.4.9.1
+Version 2.4.9.2
 
 In World of Warcraft healers have to die. This is a cruel truth that you're
 taught very early in the game. This add-on helps you influence this unfortunate
@@ -285,7 +285,7 @@ function Announcer:HHTD_HEALER_MOUSE_OVER(selfevent, isFriend, healerProfile)
         previousUnitGuid = healerProfile.guid;
     end
 
-    self:PlaySoundFile("Sound\\interface\\AlarmClockWarning3.ogg");
+    self:PlaySoundFile(567458);
     -- self:Debug(INFO, "AlarmClockWarning3.ogg played");
 end
 
@@ -295,7 +295,7 @@ function Announcer:HHTD_TARGET_LOCKED (selfevent, isFriend, healerProfile)
         return;
     end
 
-    self:PlaySoundFile("Sound\\interface\\AuctionWindowOpen.ogg");
+    self:PlaySoundFile(567482);
     --self:Debug(INFO, "AuctionWindowOpen.ogg played");
 
     local sex = UnitSex("target");

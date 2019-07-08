@@ -969,7 +969,7 @@ function BrowsePanel:ToggleActivityMenu(anchor, activity)
         {
             text = WHISPER_LEADER,
             func = function() ChatFrame_SendTell(activity:GetLeader()) end,
-            disabled = not activity:GetLeader() or not activity:IsApplication(),
+            disabled = not activity:GetLeader(),-- or not activity:IsApplication(),
             tooltipTitle = not activity:IsApplication() and WHISPER,
             tooltipText = not activity:IsApplication() and LFG_LIST_MUST_SIGN_UP_TO_WHISPER,
             tooltipOnButton = true,

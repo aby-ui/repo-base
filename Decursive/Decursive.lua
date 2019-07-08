@@ -1,7 +1,7 @@
 --[[
     This file is part of Decursive.
 
-    Decursive (v 2.7.6.2) add-on for World of Warcraft UI
+    Decursive (v 2.7.6.3) add-on for World of Warcraft UI
     Copyright (C) 2006-2018 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Starting from 2009-10-31 and until said otherwise by its author, Decursive
@@ -17,7 +17,7 @@
     Decursive is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY.
 
-    This file was last updated on 2018-07-22T10:20:47Z
+    This file was last updated on 2019-07-07T17:17:02Z
 --]]
 -------------------------------------------------------------------------------
 
@@ -248,11 +248,7 @@ function D:PlaySound (UnitID, Caller) --{{{
         local Debuffs, IsCharmed = self:UnitCurableDebuffs(UnitID, true);
         if Debuffs[1] or IsCharmed then
 
-            -- good sounds: Sound\\Doodad\\BellTollTribal.wav
-            --          Sound\\interface\\AuctionWindowOpen.wav
-            --          Sound\\interface\\AlarmClockWarning3.wav
-            
-
+            -- since WoW 8.2, one has to use ids found at https://wow.tools/files/
             self:SafePlaySoundFile(self.profile.SoundFile);
 
             self.Status.SoundPlayed = true;
@@ -871,6 +867,6 @@ end
 
 
 
-T._LoadedFiles["Decursive.lua"] = "2.7.6.2";
+T._LoadedFiles["Decursive.lua"] = "2.7.6.3";
 
 -- Sin

@@ -1,7 +1,7 @@
 --[[
     This file is part of Decursive.
 
-    Decursive (v 2.7.6.2) add-on for World of Warcraft UI
+    Decursive (v 2.7.6.3) add-on for World of Warcraft UI
     Copyright (C) 2006-2018 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Starting from 2009-10-31 and until said otherwise by its author, Decursive
@@ -17,7 +17,7 @@
     Decursive is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY.
 
-    This file was last updated on 2018-08-09T22:30:55Z
+    This file was last updated on 2019-07-07T17:17:02Z
 --]]
 -------------------------------------------------------------------------------
 
@@ -89,7 +89,7 @@ local DebugTextTable    = T._DebugTextTable;
 local Reported          = {};
 
 local UNPACKAGED = "@pro" .. "ject-version@";
-local VERSION = "2.7.6.2";
+local VERSION = "2.7.6.3";
 
 T._LoadedFiles = {};
 T._LoadedFiles["Dcr_DIAG.lua"] = false; -- here for consistency but useless in this particular file
@@ -292,7 +292,7 @@ do
         _Debug(unpack(TIandBI));
 
 
-        DebugHeader = ("%s\n2.7.6.2  %s(%s)  CT: %0.4f D: %s %s %s BDTHFAd: %s nDrE: %d Embeded: %s W: %d (LA: %d TAMU: %d) TA: %d NDRTA: %d BUIE: %d TI: [dc:%d, lc:%d, y:%d, LEBY:%d, LB:%d, TTE:%u] (%s, %s, %s, %s)"):format(instructionsHeader, -- "%s\n
+        DebugHeader = ("%s\n2.7.6.3  %s(%s)  CT: %0.4f D: %s %s %s BDTHFAd: %s nDrE: %d Embeded: %s W: %d (LA: %d TAMU: %d) TA: %d NDRTA: %d BUIE: %d TI: [dc:%d, lc:%d, y:%d, LEBY:%d, LB:%d, TTE:%u] (%s, %s, %s, %s)"):format(instructionsHeader, -- "%s\n
         tostring(DC.MyClass), tostring(UnitLevel("player") or "??"), NiceTime(), date(), GetLocale(), -- %s(%s)  CT: %0.4f D: %s %s
         BugGrabber and "BG" .. (T.BugGrabber and "e" or "") or "NBG", -- %s
         tostring(T._BDT_HotFix1_applyed), -- BDTHFAd: %s
@@ -868,14 +868,14 @@ do
             ["AceLocale-3.0"] = 6,
             ["AceTimer-3.0"] = 17,
 
-            ["AceGUI-3.0"] = 35,
+            ["AceGUI-3.0"] = 36,
             ["AceConfig-3.0"] = 3,
             ["AceConfigCmd-3.0"] = 14,
-            ["AceConfigDialog-3.0"] = 66,
-            ["AceConfigRegistry-3.0"] = 18,
+            ["AceConfigDialog-3.0"] = 73,
+            ["AceConfigRegistry-3.0"] = 20,
 
             ["LibDataBroker-1.1"] = 4,
-            ["LibDBIcon-1.0"] = 36,
+            ["LibDBIcon-1.0"] = 43,
             ["LibQTip-1.0"] = 46,
             ["CallbackHandler-1.0"] = 7,
         };
@@ -1074,4 +1074,4 @@ do
     end
 end
 
-T._LoadedFiles["Dcr_DIAG.lua"] = "2.7.6.2";
+T._LoadedFiles["Dcr_DIAG.lua"] = "2.7.6.3";

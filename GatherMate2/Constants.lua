@@ -369,7 +369,10 @@ local node_ids = {
 		[NL["Glowing Tome"]]					= 557,
 		[NL["Mana-Infused Gem"]]				= 558,
 		[NL["Twice-Fortified Arcwine"]]			= 559,
+		-- bfa 8.2 treasures
 		[NL["Mechanized Chest"]]				= 560,
+		[NL["Glimmering Chest"]]				= 561,
+		[NL["Prismatic Crystal"]]				= 562,
 	},
 	["Archaeology"] = {
 		-- cata archeolgy objects
@@ -585,10 +588,10 @@ local node_textures = {
 		[194] = icon_path.."Fish\\slimy_mackerel.tga",
 		[195] = icon_path.."Fish\\tiragarde_perch.tga",
 		[196] = icon_path.."Fish\\utaka.tga",
-		[197] = icon_path.."Fish\\fish_hook.tga", -- 8.2 fish TODO
-		[198] = icon_path.."Fish\\fish_hook.tga", -- 8.2 fish TODO
-		[199] = icon_path.."Fish\\fish_hook.tga", -- 8.2 fish TODO
-		[1101] = icon_path.."Fish\\fish_hook.tga", -- 8.2 fish TODO
+		[197] = icon_path.."Fish\\mauvestinger.tga",
+		[198] = icon_path.."Fish\\viperfish.tga",
+		[199] = icon_path.."Fish\\ionizedminnow.tga",
+		[1101] = icon_path.."Fish\\sentryfish.tga",
 	},
 	["Mining"] = {
 		[201] = icon_path.."Mine\\copper.tga",
@@ -828,6 +831,8 @@ local node_textures = {
 		[558] = icon_path.."Treasure\\ancient_mana.tga",
 		[559] = icon_path.."Treasure\\ancient_mana.tga",
 		[560] = icon_path.."Treasure\\treasure.tga",
+		[561] = icon_path.."Treasure\\treasure.tga",
+		[562] = icon_path.."Treasure\\ancient_mana.tga",
 	},
 	["Archaeology"] = {
 		[601] = icon_path.."Archaeology\\shovel.tga",

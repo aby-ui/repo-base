@@ -2,6 +2,8 @@
 BuildEnv(...)
 
 MainPanel = Addon:NewModule(GUI:GetClass('Panel'):New(UIParent), 'MainPanel', 'AceEvent-3.0', 'AceBucket-3.0')
+_G.MeetingStone_MainPanel_AbyUI = MainPanel
+table.insert(UISpecialFrames, 'MeetingStone_MainPanel_AbyUI')
 
 function MainPanel:OnInitialize()
     GUI:Embed(self, 'Refresh', 'Help', 'Blocker')
