@@ -3,7 +3,7 @@ local W = addon.core:NewModule("Warfront", "AceEvent-3.0", "AceTimer-3.0")
 local thisToon = UnitName("player") .. " - " .. GetRealmName()
 
 -- Lua functions
-local pairs = pairs
+local pairs, type = pairs, type
 
 -- WoW API / Variables
 local C_ContributionCollector_GetName = C_ContributionCollector.GetName
@@ -23,12 +23,12 @@ local warfronts = {
   {
     Alliance = {
       id = 116,
-      scenario = 53414, -- Warfront: The Battle for Stromgarde (Alliance)
+      scenario = {53414}, -- Warfront: The Battle for Stromgarde (Alliance)
       boss = 52847, -- Doom's Howl
     },
     Horde = {
       id = 11,
-      scenario = 53416, -- Warfront: The Battle for Stromgarde (Horde)
+      scenario = {53416}, -- Warfront: The Battle for Stromgarde (Horde)
       boss = 52848, -- The Lion's Roar
     },
   },
@@ -36,12 +36,12 @@ local warfronts = {
   {
     Alliance = {
       id = 117,
-      scenario = 53992, -- Warfront: The Battle for Darkshore (Alliance)
+      scenario = {53992}, -- Warfront: The Battle for Darkshore (Alliance)
       boss = 54895, -- Ivus the Decayed
     },
     Horde = {
       id = 118,
-      scenario = 53955, -- Warfront: The Battle for Darkshore (Horde)
+      scenario = {53955}, -- Warfront: The Battle for Darkshore (Horde)
       boss = 54896, -- Ivus the Forest Lord
     },
   },
@@ -85,9 +85,12 @@ function W:UpdateQuest()
     if curr then
       -- faction is not ready on Neutral Pandaren or first login
       t.Warfront[index] = {
-        scenario = IsQuestFlaggedCompleted(curr.scenario),
+        scenario = {},
         boss = IsQuestFlaggedCompleted(curr.boss),
       }
+      for i, v in pairs(curr.scenario) do
+        t.Warfront[index].scenario[i] = IsQuestFlaggedCompleted(v)
+      end
     end
   end
 end
@@ -100,7 +103,7 @@ function W:OnReset(index, captureSide)
     if t.Faction == captureSide then
       tbl.boss = false
     else
-      tbl.scenario = false
+      tbl.scenario = {}
     end
   end
   self:UpdateQuest()
@@ -148,8 +151,25 @@ function W:ShowTooltip(tooltip, columns, showall, preshow)
                 end
               elseif not addon.db.Warfront[index].contributing then
                 if value.scenario then
-                  text = "\124T" .. READY_CHECK_READY_TEXTURE .. ":0|t"
+                  if type(value.scenario) == 'table' then
+                    local completed = 0
+                    local length = #tbl.Alliance.scenario
+                    for _, v in pairs(value.scenario) do
+                      if v then
+                        completed = completed + 1
+                      end
+                    end
+                    if completed == length then
+                      text = "\124T" .. READY_CHECK_READY_TEXTURE .. ":0|t"
+                    else
+                      text = completed .. "/" .. length
+                    end
+                  else
+                    -- old data fallback
+                    text = "\124T" .. READY_CHECK_READY_TEXTURE .. ":0|t"
+                  end
                 else
+                  -- old data fallback
                   text = "0/1"
                 end
               end

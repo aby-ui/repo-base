@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2342, "DBM-ZuldazarRaid", 2, 1176)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019061001341")
+mod:SetRevision("2019071013908")
 mod:SetCreatureID(145261)
 mod:SetEncounterID(2271)
 --mod:DisableESCombatDetection()
@@ -142,7 +142,7 @@ do
 			local unitName = DBM:GetUnitFullName(uId)
 			local count = incandescentStacks[unitName]
 			if count then
-				addLine(unitName, Incan.."--"..count)
+				addLine(unitName, Incan.."-"..count)
 			end
 		end
 		--Incandescent Full
@@ -153,7 +153,7 @@ do
 			local spellName, _, _, _, _, expireTime = DBM:UnitDebuff(uId, 284798)
 			if expireTime then
 				local remaining = expireTime-GetTime()
-				addLine(name, grosslyIncan.."--"..math.floor(remaining))
+				addLine(name, grosslyIncan.."-"..math.floor(remaining))
 			end
 		end
 		--Player personal checks (Always Tracked)

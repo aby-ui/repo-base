@@ -2,5 +2,5 @@
 ..\FrameXML\UI.xsd">
 	<Include file="AceConfig-3.0\AceConfig-3.0.xml"/>
 	<Include file="LibAboutPanel\LibAboutPanel.lua"/>
-    <Include file="LibQTip-1.0\LibQTip-1.0.lua"/>
+	<Include file="LibQTip-1.0\LibQTip-1.0.lua"/>
 </Ui>

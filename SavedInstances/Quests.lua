@@ -147,6 +147,8 @@ local QuestExceptions = {
   [52953] = "Weekly", -- Call to Arms: Vol'dun (Horde)
   [52951] = "Weekly", -- Call to Arms: Zuldazar (Alliance)
   [52952] = "Weekly", -- Call to Arms: Zuldazar (Horde)
+  -- Mechagon
+  [56116] = "Regular", -- Even More Recycling
 
   -- General
   -- Darkmoon Faire
@@ -155,6 +157,7 @@ local QuestExceptions = {
   [37819] = "Regular", -- Darkmoon Faire races referral
 
   -- Blingtron
+  -- update `ShowQuestTooltip` in SavedInstances.lua when updating Blingtron quest list
   [31752] = "AccountDaily", -- Blingtron 4000
   [34774] = "AccountDaily", -- Blingtron 5000
   [40753] = "AccountDaily", -- Blingtron 6000

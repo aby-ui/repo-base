@@ -13,7 +13,7 @@
 ## X-Credits: OttoDeFe for the launher icon.
 ## SavedVariables: GatherMate2DB, GatherMate2HerbDB, GatherMate2MineDB, GatherMate2FishDB, GatherMate2GasDB, GatherMate2TreasureDB, GatherMate2ArchaeologyDB, GatherMate2LoggingDB
 ## X-Category: Map
-## Version: 1.44.1
+## Version: 1.44.2
 ## X-License: ARR
 ## OptionalDeps: Ace3, LibDataBroker-1.1, HereBeDragons
 ## LoadManagers: AddonLoader

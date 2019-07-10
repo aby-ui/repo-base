@@ -789,6 +789,7 @@ function GatherMate2WorldMapPinMixin:OnAcquired(coord, nodeID, nodeType, zone)
 	self.texture:SetTexture(nodeTextures[nodeType][nodeID])
 	self.texture:SetTexCoord(0, 1, 0, 1)
 	self.texture:SetVertexColor(1, 1, 1, 1)
+	self:EnableMouse(db.worldMapIconsInteractive)
 end
 
 function GatherMate2WorldMapPinMixin:OnMouseEnter()

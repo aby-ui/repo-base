@@ -2557,4 +2557,7 @@ private.NPC_DISPLAY_IDS = {
 	[155841] = 92503, --Shadowbinder Athissa
 	[155836] = 92499, --Theurgist Nitara
 	[155840] = 91768, --Warlord Zalzjar
+	[155660] = 31174, --General Purpose Bunny JMF
+	[150342] = 160, --Earthbreaker Gulroc
+	[151308] = 11611, --Boggac Skullbash
 }

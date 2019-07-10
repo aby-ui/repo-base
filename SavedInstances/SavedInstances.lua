@@ -847,6 +847,7 @@ addon.transInstance = {
   [1651] = 1347, -- Return to Karazhan: ticket 237 (fake LFDID)
   [545] = 185, -- The Steamvault: issue #143 esES
   [1530] = 1353, -- The Nighthold: issue #186 frFR
+  [585] = 1154, -- Magisters' Terrace: issue #293 frFR
 }
 
 -- some instances (like sethekk halls) are named differently by GetSavedInstanceInfo() and LFGGetDungeonInfoByID()
@@ -1940,7 +1941,7 @@ hoverTooltip.ShowQuestTooltip = function (cell, arg, ...)
       end
     end
     -- Exception: Some quests should not show zone name, such as Blingtron
-    if (id == 31752 or id == 34774 or id == 40753) then
+    if (id == 31752 or id == 34774 or id == 40753 or id == 56042) then
       zonename = ""
     end
     indicatortip:SetCell(line,1,zonename,"LEFT")
@@ -2550,7 +2551,7 @@ end
 function core:OnInitialize()
   local versionString = GetAddOnMetadata(addonName, "version")
   --[===[@debug@
-  if versionString == "8.2.1" then
+  if versionString == "8.2.1-6-g84ecc51" then
     versionString = "Dev"
   end
   --@end-debug@]===]
@@ -3981,24 +3982,16 @@ function core:ShowTooltip(anchorframe)
       show = tooltip:AddLine(YELLOWFONT .. L["Mythic Keystone"] .. FONTEND)
     end
     for toon, t in cpairs(addon.db.Toons, true) do
-      if t.MythicKey then
-        if t.MythicKey.link then
-          local col = columns[toon..1]
-          local name
-          if addon.db.Tooltip.AbbreviateKeystone then
-            if t.MythicKey.mapID then
-              name = addon.KeystoneAbbrev[t.MythicKey.mapID] or t.MythicKey.name
-            else
-              -- TODO: this is fallback to previous version, remove this in future
-              name = t.MythicKey.abbrev or t.MythicKey.name or t.MythicKey.link
-            end
-          else
-            -- TODO: this is fallback to previous version, remove this in future
-            name = t.MythicKey.name or t.MythicKey.link
-          end
-          tooltip:SetCell(show, col, "|c" .. t.MythicKey.color .. name .. " (" .. t.MythicKey.level .. ")" .. FONTEND, "CENTER", maxcol)
-          tooltip:SetCellScript(show, col, "OnMouseDown", ChatLink, t.MythicKey.link)
+      if t.MythicKey and t.MythicKey.link then
+        local col = columns[toon..1]
+        local name
+        if addon.db.Tooltip.AbbreviateKeystone then
+          name = addon.KeystoneAbbrev[t.MythicKey.mapID] or t.MythicKey.name
+        else
+          name = t.MythicKey.name
         end
+        tooltip:SetCell(show, col, "|c" .. t.MythicKey.color .. name .. " (" .. t.MythicKey.level .. ")" .. FONTEND, "CENTER", maxcol)
+        tooltip:SetCellScript(show, col, "OnMouseDown", ChatLink, t.MythicKey.link)
       end
     end
   end

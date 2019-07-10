@@ -2,7 +2,7 @@
 -- AddOn namespace.
 -----------------------------------------------------------------------
 local LibStub = _G.LibStub
-local RareScanner = LibStub("AceAddon-3.0"):NewAddon("RareScanner", "AceComm-3.0")
+local RareScanner = LibStub("AceAddon-3.0"):NewAddon("RareScanner")
 
 local ADDON_NAME, private = ...
 RareScanner.GARRISON_CACHE_IDS = { 236916, 237191, 237724, 237722, 237723, 237720 }
@@ -29,10 +29,10 @@ local DEBUG_MODE = false
 
 -- Config constants
 local CURRENT_DB_VERSION = 5
-local CURRENT_LOOT_DB_VERSION = 12
+local CURRENT_LOOT_DB_VERSION = 13
 
 -- Hard reset versions
-local CURRENT_ADDON_VERSION = 500
+local CURRENT_ADDON_VERSION = 600
 local HARD_RESET = {
 	[500] = true
 }
@@ -254,11 +254,6 @@ scanner_button:RegisterEvent("PLAYER_REGEN_ENABLED")
 scanner_button:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 scanner_button:RegisterEvent("PLAYER_TARGET_CHANGED")
 
--- Communications
-scanner_button:RegisterEvent("GROUP_ROSTER_UPDATE")
-scanner_button:RegisterEvent("GROUP_JOINED")
-scanner_button:RegisterEvent("PLAYER_TARGET_CHANGED")
-
 -- Items events
 scanner_button:RegisterEvent("GET_ITEM_INFO_RECEIVED")
 scanner_button:RegisterEvent("LOOT_OPENED")
@@ -268,9 +263,9 @@ scanner_button:RegisterEvent("CINEMATIC_START")
 
 -- Chat messages
 scanner_button:RegisterEvent("CHAT_MSG_MONSTER_YELL")
+scanner_button:RegisterEvent("CHAT_MSG_MONSTER_EMOTE")
 
 -- Captures all events
-local guildiesNames = nil
 scanner_button:SetScript("OnEvent", function(self, event, ...)
 	-- Vignette info
 	if (event == "VIGNETTE_MINIMAP_UPDATED") then
@@ -498,38 +493,6 @@ scanner_button:SetScript("OnEvent", function(self, event, ...)
 				end
 			end
 		end
-	-- Communications
-	elseif (event == "GROUP_JOINED") then
-		RareScanner.numPlayers = GetNumGroupMembers()
-		RareScanner:RequestGroupDataOnChange()
-	elseif (event == "GROUP_ROSTER_UPDATE") then
-		-- checks if new player joined
-		if (IsInGroup()) then
-			if (IsInInstance()) then
-				RareScanner:PrintDebugMessage("DEBUG: Estas en una estancia, no enviamos mensajes")
-				return
-			end
-			RareScanner:RequestGroupDataOnChange()
-		else
-			RareScanner.numPlayers = 0
-			if (SEND_DATA_PARTY_TIMER) then
-				SEND_DATA_PARTY_TIMER:Cancel()
-			end
-		end
-	elseif (event == "GUILD_ROSTER_UPDATE") then
-		RareScanner:PrintDebugMessage("DEBUG: Informacion de la hermandad obtenida")
-		
-		if (not guildiesNames) then
-			guildiesNames = {}
-			local i = 1
-			while (i <= GetNumGuildMembers()) do
-				local name, _, _ = GetGuildRosterInfo(i)
-				table.insert(guildiesNames, name)
-				i = i + 1
-			end
-		end
-		
-		self:UnregisterEvent("GUILD_ROSTER_UPDATE")
 	-- Chat
 	elseif (event == "CHAT_MSG_MONSTER_YELL") then
 		-- Only for Mechagon (lets don't support everywhere yet to see its performance)
@@ -546,12 +509,35 @@ scanner_button:SetScript("OnEvent", function(self, event, ...)
 				if (npcID and private.ZONE_IDS[npcID] and not private.dbchar.rares_killed[npcID]) then
 					local vignetteInfo = {}
 					vignetteInfo.atlasName = RareScanner.NPC_VIGNETTE
-					vignetteInfo.id = time()
+					vignetteInfo.id = "NPC"..npcID
 					vignetteInfo.name = name
 					vignetteInfo.objectGUID = "a-a-a-a-a-"..npcID.."-a"
 					vignetteInfo.x = private.ZONE_IDS[npcID].x
 					vignetteInfo.y = private.ZONE_IDS[npcID].y
 					self:CheckNotificationCache(self, vignetteInfo)
+				end
+			end
+		end
+	elseif (event == "CHAT_MSG_MONSTER_EMOTE") then
+		-- Only for Mechagon Construction Projects
+		local currentMap = C_Map.GetBestMapForUnit("player")
+		if (currentMap and currentMap == 1462) then
+			local message, name = ...
+			for k, npcID in pairs(private.CONSTRUCTION_PROJECTS) do
+				if (RS_tContains(message, k)) then
+					-- Simulates vignette event
+					if (npcID and private.ZONE_IDS[npcID] and not private.dbchar.rares_killed[npcID]) then
+						local vignetteInfo = {}
+						vignetteInfo.atlasName = RareScanner.NPC_VIGNETTE
+						vignetteInfo.id = "NPC"..npcID
+						vignetteInfo.name = RareScanner:GetNpcName(npcID)
+						vignetteInfo.objectGUID = "a-a-a-a-a-"..npcID.."-a"
+						vignetteInfo.x = private.ZONE_IDS[npcID].x
+						vignetteInfo.y = private.ZONE_IDS[npcID].y
+						self:CheckNotificationCache(self, vignetteInfo)
+					end
+					
+					return
 				end
 			end
 		end
@@ -662,9 +648,9 @@ function scanner_button:CheckNotificationCache(self, vignetteInfo)
 			local coordinates = {}
 			coordinates.x = vignetteInfo.x
 			coordinates.y = vignetteInfo.y
-			RareScanner:ReportRareFound(npcID, vignetteInfo, coordinates)
+			RareScanner:UpdateRareFound(npcID, vignetteInfo, coordinates)
 		else
-			RareScanner:ReportRareFound(npcID, vignetteInfo)
+			RareScanner:UpdateRareFound(npcID, vignetteInfo)
 		end
 		
 		-- If we have it as dead but we got a notification it means that the restart time is wrong (this happends mostly with war fronts)
@@ -819,6 +805,89 @@ function scanner_button:CheckNotificationCache(self, vignetteInfo)
 		already_notified[vignetteInfo.id] = false 
 		private.dbglobal.recentlySeen[npcID] = nil
 	end)
+end
+
+function RareScanner:UpdateRareFound(npcID, vignetteInfo, coordinates)
+	local currentMap
+	
+	-- If its a NPC
+	if (vignetteInfo.atlasName == RareScanner.NPC_VIGNETTE or vignetteInfo.atlasName == RareScanner.NPC_LEGION_VIGNETTE or vignetteInfo.atlasName == RareScanner.NPC_VIGNETTE_ELITE) then
+		-- Extracts zoneID from database that its more accurate
+		if (private.ZONE_IDS[npcID] and type(private.ZONE_IDS[npcID].zoneID) == "number" and private.ZONE_IDS[npcID].zoneID ~= 0) then
+			currentMap = private.ZONE_IDS[npcID].zoneID
+		-- If it shows up in different places, be sure that we got a good one
+		elseif (private.ZONE_IDS[npcID] and type(private.ZONE_IDS[npcID].zoneID) == "table") then
+			local playerCurrentMap = C_Map.GetBestMapForUnit("player")
+			if (RS_tContains(private.ZONE_IDS[npcID], playerCurrentMap)) then
+				currentMap = playerCurrentMap
+			end
+		-- If we dont have it in our database gets the players map
+		else
+			currentMap = C_Map.GetBestMapForUnit("player")
+		end
+	-- If its a container
+	elseif (vignetteInfo.atlasName == RareScanner.CONTAINER_VIGNETTE or vignetteInfo.atlasName == RareScanner.CONTAINER_ELITE_VIGNETTE) then 
+		-- Extracts zoneID from database that its more accurate
+		if (private.CONTAINER_ZONE_IDS[npcID]) then
+			currentMap = private.CONTAINER_ZONE_IDS[npcID].zoneID
+		-- If we dont have it in our database gets the players map
+		else
+			currentMap = C_Map.GetBestMapForUnit("player")
+		end
+	-- If its an event
+	elseif (vignetteInfo.atlasName == RareScanner.EVENT_VIGNETTE) then 
+		-- Extracts zoneID from database that its more accurate
+		if (private.EVENT_ZONE_IDS[npcID]) then
+			currentMap = private.EVENT_ZONE_IDS[npcID].zoneID
+		-- If we dont have it in our database gets the players map
+		else
+			currentMap = C_Map.GetBestMapForUnit("player")
+		end
+	end
+	
+	-- Ignore if incorrect mapID
+	if (not currentMap or currentMap == 0) then
+		return
+	end
+	
+	-- If we got a list of zones, get the first one
+	if (type (currentMap) == "table") then
+		local i, v = next(currentMap, nil)
+		currentMap = v
+	end
+
+	local vignettePosition = nil
+	if (coordinates and coordinates.x and coordinates.y) then
+		vignettePosition = coordinates
+	else
+		vignettePosition = C_VignetteInfo.GetVignettePosition(vignetteInfo.vignetteGUID, currentMap)
+	end
+	
+	if (not vignettePosition) then
+		return
+	end
+	
+	local mapX = vignettePosition.x
+	local mapY = vignettePosition.y
+	local atlas = vignetteInfo.atlasName
+	local art = C_Map.GetMapArtID(currentMap)
+	
+	-- If its already in our database, just update the timestamp and the new position
+	if (private.dbglobal.rares_found[npcID]) then
+		private.dbglobal.rares_found[npcID].foundTime = time()
+		private.dbglobal.rares_found[npcID].coordX = mapX
+		private.dbglobal.rares_found[npcID].coordY = mapY
+		
+		-- If we don't have artID add it
+		if (not private.dbglobal.rares_found[npcID].artID) then
+			private.dbglobal.rares_found[npcID].artID = art
+		end
+			
+		RareScanner:PrintDebugMessage("DEBUG: Detectado NPC que ya habiamos localizado, se actualiza la fecha y sus coordenadas")
+	else		
+		private.dbglobal.rares_found[npcID] = { mapID = currentMap, coordX = mapX, coordY = mapY, atlasName = atlas, artID = art, foundTime = time() }
+		RareScanner:PrintDebugMessage("DEBUG: Guardado en private.dbglobal.rares_found (ID: "..npcID.." MAPID: "..currentMap.." COORDX: "..mapX.." COORDY: "..mapY.." TIMESTAMP: "..time().." ATLASNAME: "..atlas.." ARTID: "..art)
+	end
 end
 
 function RareScanner:ZoneFiltered(npcID)
@@ -1075,9 +1144,6 @@ function RareScanner:OnInitialize()
 	-- Initialize setup panels
 	self:SetupOptions()
 	
-	-- Forzes obtain roster data for group finder matters
-	GuildRoster()
-	
 	-- Setup our map provider
 	WorldMapFrame:AddDataProvider(CreateFromMixins(RareScannerDataProviderMixin));
 	
@@ -1119,7 +1185,7 @@ function RareScanner:InitializeDataBase()
 		self:PrintMessage(AL["DATABASE_HARD_RESET"])
 		
 		-- Reload database
-		RareScanner:InitializeDataBase()
+		RareScanner:InitializeDataBase()	
 	-- Loads normally database
 	else
 		self.db.RegisterCallback(self, "OnProfileChanged", "RefreshOptions")
@@ -1162,9 +1228,6 @@ function RareScanner:InitializeDataBase()
 		
 		-- Refresh rare sharing variables
 		self:RefreshRaresFoundList()
-		
-		-- Request to the guild their rare founds
-		RareScanner:RequestGuildData()
 		
 		-- Cache names and initialize filter list
 		if (not private.dbglobal.dbversion) then
@@ -1220,28 +1283,34 @@ function RareScanner:DumpBrokenData()
 end
 
 function RareScanner:DumpRepeatedLoot()
-	if (private.dbglobal.rares_loot and next(private.dbglobal.rares_loot) ~= nil) then
-		for npcID, items in pairs(private.dbglobal.rares_loot) do
-			local cleanItemsList = {}
-			
-			if (private.LOOT_TABLE_IDS[npcID]) then
-				for _, itemID in ipairs(items) do
-					if (not RS_tContains(private.LOOT_TABLE_IDS[npcID], itemID) and not RS_tContains(cleanItemsList, itemID)) then
-						table.insert(cleanItemsList, itemID)
+	-- With version 13 we disabled loot sharing
+	-- It seems some loot was being spoofed producing errors
+	if (CURRENT_LOOT_DB_VERSION == 13) then
+		private.dbglobal.rares_loot = {}
+	else
+		if (private.dbglobal.rares_loot and next(private.dbglobal.rares_loot) ~= nil) then
+			for npcID, items in pairs(private.dbglobal.rares_loot) do
+				local cleanItemsList = {}
+				
+				if (private.LOOT_TABLE_IDS[npcID]) then
+					for _, itemID in ipairs(items) do
+						if (not RS_tContains(private.LOOT_TABLE_IDS[npcID], itemID) and not RS_tContains(cleanItemsList, itemID)) then
+							table.insert(cleanItemsList, itemID)
+						end
+					end
+				elseif (private.dbglobal.rares_loot[npcID]) then
+					for _, itemID in ipairs(items) do
+						if (not RS_tContains(cleanItemsList, itemID)) then
+							table.insert(cleanItemsList, itemID)
+						end
 					end
 				end
-			elseif (private.dbglobal.rares_loot[npcID]) then
-				for _, itemID in ipairs(items) do
-					if (not RS_tContains(cleanItemsList, itemID)) then
-						table.insert(cleanItemsList, itemID)
-					end
+				
+				if (next(cleanItemsList) ~= nil) then
+					private.dbglobal.rares_loot[npcID] = cleanItemsList
+				else
+					private.dbglobal.rares_loot[npcID] = nil
 				end
-			end
-			
-			if (next(cleanItemsList) ~= nil) then
-				private.dbglobal.rares_loot[npcID] = cleanItemsList
-			else
-				private.dbglobal.rares_loot[npcID] = nil
 			end
 		end
 	end
