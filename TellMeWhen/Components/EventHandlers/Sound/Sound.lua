@@ -112,7 +112,7 @@ function Sound:PlaySoundFromSettingValue(settingValue)
 
 	if sound then
 		if isKit then
-		 	PlaySound(sound)
+		 	PlaySound(sound, TMW.db.profile.SoundChannel)
 		else
 			PlaySoundFile(sound, TMW.db.profile.SoundChannel)
 		end

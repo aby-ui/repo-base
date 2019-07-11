@@ -874,6 +874,8 @@ L["UIPANEL_ROLE_DESC"] = "Check to allow this group to show when your current sp
 L["ROLEf"] = "Role: %s"
 L["UIPANEL_PTSINTAL"] = "Points in talent"
 L["UIPANEL_TALENTLEARNED"] = "Talent learned"
+L["UIPANEL_AZESSLEARNED"] = "Azerite Essence Active"
+L["UIPANEL_AZESSLEARNED_MAJOR"] = "Major Azerite Essence Active"
 L["UIPANEL_PVPTALENTLEARNED"] = "PvP Talent learned"
 L["UIPANEL_GLYPH"] = "Glyph active"
 L["UIPANEL_GLYPH_DESC"] = "Checks if you have a particular glyph active."
@@ -2252,6 +2254,9 @@ L["SOUND_CHANNEL_DESC"] = [[Choose the sound channel and volume setting that you
 Selecting %q will let sounds be played even when sounds are turned off.]]
 L["SOUND_CHANNEL_MASTER"] = "Master"
 
+L["SOUND_ERROR_BADFILE"] = [[This sound cannot be played because the file was not found.
+
+If this is a custom sound file, ensure the file is nested under the "Interface" folder in WoW's installation, and that you have restarted the game since putting it there.]]
 L["SOUND_ERROR_ALLDISABLED"] = [[This sound cannot be tested because the game sounds are completely disabled.
 
 Change this setting in Blizzard's sound options.]]
@@ -2271,6 +2276,7 @@ L["SOUNDERROR2"] = [[Custom WAV files are not supported by WoW 4.0+
 
 (Sounds built into WoW will still work, though)]]
 L["SOUNDERROR3"] = "Only OGG and MP3 files are supported!"
+L["SOUNDERROR4"] = "Since WoW 8.2, Custom files must be under the Interface directory"
 
 L["ANN_TAB"] = "Text"
 L["ANN_TAB_DESC"] = [[Outputs text to chat channels, UI frames, or other AddOns.]]

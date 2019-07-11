@@ -314,6 +314,36 @@ ns.points = {
         [48981013] = {quest=49142, junk=true, label=CHEST,},
     },
     [1355] = { -- Nazjatar
+		-- [43227436] = {quest=56290, minimap=true, achievement=13549, label=CHEST_AR,}, -- forgot what this is 		
+		[85203860] = {quest=55938, minimap=true, achievement=13549, label=CHEST_AR,},
+		[80302980] = {quest=55939, minimap=true, achievement=13549, label=CHEST_AR,},
+		[74805320] = {quest=55940, minimap=true, achievement=13549, label=CHEST_AR,},
+		[73313580] = {quest=55941, minimap=true, achievement=13549, label=CHEST_AR, note="Inside Temple, bottom floor"},
+		[79502720] = {quest=55942, minimap=true, achievement=13549, label=CHEST_AR},
+		[64303350] = {quest=55943, minimap=true, achievement=13549, label=CHEST_AR},
+		[56493390] = {quest=55944, minimap=true, achievement=13549, label=CHEST_AR, note="Top of the cliffs"},
+		[52904980] = {quest=55945, minimap=true, achievement=13549, label=CHEST_AR},
+		[58103510] = {quest=55946, minimap=true, achievement=13549, label=CHEST_AR, note="Underwater Cave"}, [57303900] = path{quest=55946},
+		[44804880] = {quest=55947, minimap=true, achievement=13549, label=CHEST_AR},
+		[43305810] = {quest=55948, minimap=true, achievement=13549, label=CHEST_AR},
+		[49506450] = {quest=55949, minimap=true, achievement=13549, label=CHEST_AR},
+		[38707440] = {quest=55950, minimap=true, achievement=13549, label=CHEST_AR},
+		[48508740] = {quest=55951, minimap=true, achievement=13549, label=CHEST_AR},
+		[34704350] = {quest=55952, minimap=true, achievement=13549, label=CHEST_AR, note="Inside Cave"}, [37404280] = path{quest=55952},
+		[26003230] = {quest=55953, minimap=true, achievement=13549, label=CHEST_AR, note="Under Starfish pile"},
+		[34504050] = {quest=55954, minimap=true, achievement=13549, label=CHEST_AR},
+		[50605000] = {quest=55955, minimap=true, achievement=13549, label=CHEST_AR, note="Inside Cave"}, [49705030] = path{quest=55955},
+		[39804930] = {quest=55956, minimap=true, achievement=13549, label=CHEST_AR},
+		[38006060] = {quest=55957, minimap=true, achievement=13549, label=CHEST_AR},
+		
+		[61502290] = {quest=55958, minimap=true, achievement=13549, label=AR_TRUNK, note="Inside Cave"}, [61401990] = path{quest=55958}, -- game quest id: 55359
+		[37906040] = {quest=55959, minimap=true, achievement=13549, label=AR_TRUNK},
+		[55701440] = {quest=55961, minimap=true, achievement=13549, label=AR_TRUNK}, -- game quest id: 55998 
+		[64202850] = {quest=55962, minimap=true, achievement=13549, label=AR_TRUNK, note="Click Arcane device on the side on the right"}, -- game quest id: 55996
+		[43901680] = {quest=55963, minimap=true, achievement=13549, label=AR_TRUNK},
+		[37900650] = {quest=55960, minimap=true, achievement=13549, label=AR_TRUNK, note="Underwater Cave"}, [39701000] = path{quest=55960}, 
+		[24803520] = {quest=56912, minimap=true, achievement=13549, label=AR_TRUNK, note="Inside Cave"}, [26703380] = path{quest=56912}, -- game quest id: 56913
+		[80503190] = {quest=56547, minimap=true, achievement=13549, label=AR_TRUNK, note="Up the building"}, [83003380] = path{quest=56547}, -- game quest id: 56913
     },
     [1462] = { -- Mechagon
     },

@@ -283,8 +283,8 @@ hooksecurefunc("SetItemRef", newSetItemRef);
 大米赛季光辉事迹
 ---------------------------------------------------------------]]
 CoreDependCall("Blizzard_ChallengesUI", function()
-    local aID10, aID15 = 13448, 13449 --13079, 13080
-    local crits, numCrits = {}, GetAchievementNumCriteria(aID10)
+    -- local aID10, aID15 = 13780, 13781 --s2: 13448, 13449 --s1: 13079, 13080
+    -- local crits, numCrits = {}, GetAchievementNumCriteria(aID10)
     hooksecurefunc("ChallengesFrame_Update", function(self)
         --[[
         table.wipe(crits)
@@ -308,8 +308,8 @@ CoreDependCall("Blizzard_ChallengesUI", function()
                 SetOrHookScript(icon, "OnEnter", function()
                     GameTooltip_AddBlankLineToTooltip(GameTooltip);
                     GameTooltip:AddLine("爱不易提供：")
-                    GameTooltip:AddLine("\124TInterface/Minimap/ObjectIconsAtlas:16:16:0:0:1024:512:575:607:205:237\124t 已限时10层")
-                    GameTooltip:AddLine("\124TInterface/Minimap/ObjectIconsAtlas:16:16:0:0:1024:512:575:607:239:271\124t 已限时15层")
+                    GameTooltip:AddLine("\124TInterface/Minimap/ObjectIconsAtlas:16:16:0:0:1024:512:577:609:443:475\124t 已限时10层")
+                    GameTooltip:AddLine("\124TInterface/Minimap/ObjectIconsAtlas:16:16:0:0:1024:512:577:609:477:509\124t 已限时15层")
                     GameTooltip:Show()
                 end)
             end

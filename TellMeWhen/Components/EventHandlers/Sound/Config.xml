@@ -14,7 +14,7 @@
 				<Scripts>
 					<OnClick>
 						local Sound = TMW.EVENTS:GetEventHandler("Sound")
-						Sound:TestSound(self, self:GetParent().value)
+						Sound:TestSound(self:GetParent(), self:GetParent().value)
 					</OnClick>
 					<OnEnter>
 						self:GetParent():LockHighlight()
@@ -75,7 +75,7 @@
 						<Scripts>
 							<OnClick>
 								local Sound = TMW.EVENTS:GetEventHandler("Sound")
-								Sound:TestSound(self, self:GetParent():GetText())
+								Sound:TestSound(self:GetParent(), self:GetParent():GetText())
 							</OnClick>
 						</Scripts>
 					</Button>
@@ -131,14 +131,12 @@
 							elseif not strfind(soundFile, "%.[^\\/]+$") then
 								-- Warn about no extensions
 								warningText = soundFile ~= "" and TMW.L["SOUNDERROR1"]
-							elseif strfind(strlower(soundFile), "%.wav$") and select(4, GetBuildInfo()) > 40000 then
-								-- Custom wav files are no longer allowed.
-								-- Don't force it to be nothing, because the user might be entering a built-in wav file,
-								-- which is still valid.
-								warningText = TMW.L["SOUNDERROR2"]
 							elseif not (strfind(strlower(soundFile), "%.ogg$") or strfind(strlower(soundFile), "%.mp3$")) then
 								-- Only ogg and mp3 are supported.
 								warningText = TMW.L["SOUNDERROR3"]
+							elseif not strfind(strlower(soundFile), "interface[\\/]") then
+								-- Since wow 8.2, custom sounds must be in the interface directory.
+								warningText = TMW.L["SOUNDERROR4"]
 							end
 
 							if warningText then

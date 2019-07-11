@@ -8,10 +8,10 @@
 -- :IterateOptionsTables() (and :GetOptionsTable() if only given one argument) return a function reference that the requesting config handling addon must call with valid "uiType", "uiName".
 -- @class file
 -- @name AceConfigRegistry-3.0
--- @release $Id: AceConfigRegistry-3.0.lua 1202 2019-05-15 23:11:22Z nevcairiel $
+-- @release $Id: AceConfigRegistry-3.0.lua 1207 2019-06-23 12:08:33Z nevcairiel $
 local CallbackHandler = LibStub("CallbackHandler-1.0")
 
-local MAJOR, MINOR = "AceConfigRegistry-3.0", 19
+local MAJOR, MINOR = "AceConfigRegistry-3.0", 20
 local AceConfigRegistry = LibStub:NewLibrary(MAJOR, MINOR)
 
 if not AceConfigRegistry then return end
@@ -160,6 +160,7 @@ local typedkeys={
 	},
 	select={
 		values=ismethodtable,
+		sorting=optmethodtable,
 		style={
 			["nil"]=true,
 			["string"]={dropdown=true,radio=true},

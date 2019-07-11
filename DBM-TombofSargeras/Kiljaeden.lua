@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1898, "DBM-TombofSargeras", nil, 875)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190625143337")
+mod:SetRevision("2019071111703")
 mod:SetCreatureID(117269)--121227 Illiden? 121193 Shadowsoul
 mod:SetEncounterID(2051)
 mod:SetZone()
@@ -66,7 +66,7 @@ local yellFocusedDreadflame			= mod:NewShortYell(238502)
 local yellFocusedDreadflameFades	= mod:NewFadesYell(238502)
 local specWarnFocusedDreadflameOther= mod:NewSpecialWarningTarget(238502, nil, nil, nil, 1, 2)
 local specWarnBurstingDreadflame	= mod:NewSpecialWarningMoveAway(238430, nil, nil, nil, 1, 2)
-local yellBurstingDreadflame		= mod:NewPosYell(238430, DBM_CORE_AUTO_YELL_CUSTOM_POSITION)
+local yellBurstingDreadflame		= mod:NewPosYell(238430, DBM_CORE_AUTO_YELL_CUSTOM_POSITION2)
 local yellBurstingDreadflameFades	= mod:NewShortFadesYell(238430, nil, false)
 --Stage Two: Reflected Souls
 local specWarnSRHopeless			= mod:NewSpecialWarningYou(237590, nil, nil, 2, 3, 2)

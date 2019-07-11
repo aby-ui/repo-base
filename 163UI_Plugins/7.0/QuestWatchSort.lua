@@ -129,7 +129,7 @@ frame:SetScript("OnEvent", function(self, event)
     else
         if (event == "NEW_WMO_CHUNK" and not WorldMapFrame:IsVisible()) then
             local mapId = C_Map.GetBestMapForUnit("player")
-            if mapId then WorldMapFrame:SetMapID(mapId) end
+            if mapId and WorldMapFrame.ScrollContainer.currentScale and WorldMapFrame.ScrollContainer.currentScale > 0 then WorldMapFrame:SetMapID(mapId) end
         end
         UpdateQuestsDistance()
     end

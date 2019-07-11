@@ -1670,7 +1670,6 @@ TMW:NewClass("Config_Page", "Config_Frame"){
 	end,
 
 	ReloadRequested = function(self)
-		print("PAGE RELOAD", self:GetParentKey())
 
 		if IE.CurrentTab and IE.CurrentTab.pageKey == self:GetParentKey() then
 			IE.CurrentTab:CScriptCall("PageReloadRequested", self)
@@ -4087,7 +4086,6 @@ TMW:NewClass("HistorySet") {
 	end,
 
 	AttemptBackup = function(self, location, settings)
-		print("running backup")
 
 		if not location or not settings then
 			return

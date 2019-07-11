@@ -223,6 +223,10 @@ function HELP:ShowNext()
 
 	HELP.Arrow:Show()
 
+	-- Seems to help fix issues where the background won't show up initially.
+	HELP.Frame:Hide()
+	HELP.Frame:Show()
+
 
 	-- if the help had a setting associated, set it now
 	if help.onlyOnceSetting then

@@ -3,6 +3,19 @@ if not TMW then return end
 TMW.CHANGELOG_LASTVER="7.4.0"
 
 TMW.CHANGELOG = [==[
+## v8.6.5
+### Bug Fixes
+* The Major Azerite Essence Active condition will now properly update after changing essence.
+
+## v8.6.4
+* New Conditions: 
+ * Azerite Essence Active
+ * Major Azerite Essence Active
+* Added better error messages when testing sounds for sound notifications.
+
+### Bug Fixes
+* Fixed an issue where custom sounds entered by a SoundKitID would not play using the configured sound channel.
+
 ## v8.6.3
 ### Bug Fixes
 * Fixed #1698 (again): Utils.lua:438: attempt to index local 'path' (a number value)

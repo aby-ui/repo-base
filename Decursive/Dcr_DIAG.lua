@@ -892,8 +892,8 @@ do
             for k,v in pairs(UseLibStub) do
                 if LibStub:GetLibrary(k, true) then
                     if (select(2, LibStub:GetLibrary(k))) < v then
-                        table.insert(Errors, ("The shared library |cFF00FF00%s|r is out-dated, revision |cFF0077FF%s|r at least is required. You have |cFF0077DD%s|r\n"):format(k, tostring(v), select(2, LibStub:GetLibrary(k))));
-                        LibraryIssues = true;
+                        --table.insert(Errors, ("The shared library |cFF00FF00%s|r is out-dated, revision |cFF0077FF%s|r at least is required. You have |cFF0077DD%s|r\n"):format(k, tostring(v), select(2, LibStub:GetLibrary(k))));
+                        --LibraryIssues = true;
                     end
                 else
                     table.insert(Errors, ("The shared library |cFF00FF00%s|r could not be found!!!\n"):format(k));

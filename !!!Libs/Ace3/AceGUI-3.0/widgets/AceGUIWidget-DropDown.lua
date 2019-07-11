@@ -1,9 +1,9 @@
---[[ $Id: AceGUIWidget-DropDown.lua 1202 2019-05-15 23:11:22Z nevcairiel $ ]]--
+--[[ $Id: AceGUIWidget-DropDown.lua 1209 2019-06-24 21:01:01Z nevcairiel $ ]]--
 local AceGUI = LibStub("AceGUI-3.0")
 
 -- Lua APIs
 local min, max, floor = math.min, math.max, math.floor
-local select, pairs, ipairs, type = select, pairs, ipairs, type
+local select, pairs, ipairs, type, tostring = select, pairs, ipairs, type, tostring
 local tsort = table.sort
 
 -- WoW APIs
@@ -356,7 +356,7 @@ end
 
 do
 	local widgetType = "Dropdown"
-	local widgetVersion = 31
+	local widgetVersion = 34
 
 	--[[ Static data ]]--
 
@@ -592,6 +592,14 @@ do
 
 	-- exported
 	local sortlist = {}
+	local function sortTbl(x,y)
+		local num1, num2 = tonumber(x), tonumber(y)
+		if num1 and num2 then -- numeric comparison, either two numbers or numeric strings
+			return num1 < num2
+		else -- compare everything else tostring'ed
+			return tostring(x) < tostring(y)
+		end
+	end
 	local function SetList(self, list, order, itemType)
 		self.list = list
 		self.pullout:Clear()
@@ -602,7 +610,7 @@ do
 			for v in pairs(list) do
 				sortlist[#sortlist + 1] = v
 			end
-			tsort(sortlist)
+			tsort(sortlist, sortTbl)
 
 			for i, key in ipairs(sortlist) do
 				AddListItem(self, key, list[key], itemType)

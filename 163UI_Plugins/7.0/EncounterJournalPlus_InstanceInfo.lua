@@ -296,7 +296,7 @@ local function RenderEncounterJournalInstances()
     local dungeonsTab, raidsTab = GetEncounterJournalInstanceTabs();
     local savedInstances = savedDB[(raidsTab ~= nil and not raidsTab:IsEnabled()) and "raids" or "dungeons"];
 
-    RenderSavedInstancesOverview(savedDB);
+    --RenderSavedInstancesOverview(savedDB);
 
     HandleEncounterJournalScrollInstances(function(instanceButton)
         local instanceName = EJ_GetInstanceInfo(instanceButton.instanceID);
@@ -351,8 +351,8 @@ function EncounterJournalPlus_InstanceInfo_OnEvent(self, event, arg1)
             end
         end);
 
-        EncounterJournalEncounter_OnHook();
-        EncounterJournalTierDropdown_OnSelect();
+        --EncounterJournalEncounter_OnHook();
+        --EncounterJournalTierDropdown_OnSelect();
         EncounterJournalInstanceTab_OnClick();
     elseif event == "UPDATE_INSTANCE_INFO" then
         RenderEncounterJournalInstances();

@@ -477,6 +477,15 @@ GTFO.SpellID["294894"] = {
   sound = 3;
 };
 
+GTFO.SpellID["302207"] = {
+  --desc = "Proximal Chaos (Unleashed Arcanofiend)";
+  sound = 3;
+};
+
+GTFO.SpellID["301774"] = {
+  --desc = "Mental Collapse (Moon Priestess Liara)";
+  sound = 3;
+};
 
 -- ***********************
 -- * Shrine of the Storm *
@@ -1446,7 +1455,81 @@ GTFO.SpellID["298588"] = {
   sound = 3;
 };
 
+GTFO.SpellID["300129"] = {
+  --desc = "Self-Destruct Protocol (Malfunctioning Scrapbot)";
+  sound = 3;
+};
 
+GTFO.SpellID["300659"] = {
+  --desc = "Consuming Slime (Toxic Monstrosity)";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["298259"] = {
+  --desc = "Gooped (Gunker)";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["295552"] = {
+  --desc = "Cannon Blast (HK-8 Aerial Oppression Unit)";
+  sound = 3;
+};
+
+GTFO.SpellID["296150"] = {
+  --desc = "Vent Blast (HK-8 Aerial Oppression Unit)";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["296279"] = {
+  --desc = "Anti-Trespassing Teleport (HK-8 Aerial Oppression Unit)";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["301177"] = {
+  --desc = "Lift-Off (HK-8 Aerial Oppression Unit)";
+  sound = 3;
+};
+
+GTFO.SpellID["294128"] = {
+  --desc = "Rocket Barrage (Rocket Tonk)";
+  sound = 3;
+};
+
+GTFO.SpellID["282945"] = {
+  --desc = "Buzz Saw (Buzz Saw)";
+  sound = 3;
+};
+
+GTFO.SpellID["295130"] = {
+  --desc = "Neutralize Threat (Detect-o-Bot)";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["294954"] = {
+  --desc = "Self-Trimming Hedge (Head Machinist Sparkflux)";
+  sound = 3;
+};
+
+GTFO.SpellID["285460"] = {
+  --desc = "Discom-BOMB-ulator (Head Machinist Sparkflux)";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["291915"] = {
+  --desc = "Plasma Orb (King Mechagon)";
+  sound = 3;
+};
+
+GTFO.SpellID["291856"] = {
+  --desc = "Recalibrate (King Mechagon)";
+  sound = 3;
+};
 
 -- **********************
 -- * The Eternal Palace *

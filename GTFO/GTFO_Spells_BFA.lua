@@ -243,6 +243,15 @@ GTFO.SpellID["304360"] = {
   damageMinimum = 1;
 };
 
+GTFO.SpellID["299401"] = {
+  --desc = "Fragment of the Void (Infestation of Madness)";
+  sound = 1;
+};
+
+GTFO.SpellID["301839"] = {
+  --desc = "Void Dance (Ulmath)";
+  sound = 1;
+};
 
 -- ***********************
 -- * Shrine of the Storm *
@@ -861,6 +870,42 @@ GTFO.SpellID["300160"] = {
   sound = 1;
 };
 
+GTFO.SpellID["300675"] = {
+  --desc = "Toxic Fog (Toxic Lurker)";
+  sound = 1;
+};
+
+GTFO.SpellID["298212"] = {
+  --desc = "Sludge Bolt (Gunker)";
+  tankSound = 1;
+  sound = 0;
+};
+
+GTFO.SpellID["285020"] = {
+  --desc = "Whirling Edge (The Platinum Pummeler)";
+  sound = 1;
+};
+
+GTFO.SpellID["294291"] = {
+  --desc = "Process Waste (Waste Processing Unit)";
+  sound = 1;
+};
+
+GTFO.SpellID["294549"] = {
+  --desc = "Furnace Flames";
+  sound = 1;
+};
+
+GTFO.SpellID["291949"] = {
+  --desc = "Venting Flames (K.U.-J.0.)";
+  sound = 1;
+};
+
+GTFO.SpellID["285443"] = {
+  --desc = "Hidden Flame Cannon (Head Machinist Sparkflux)";
+  applicationOnly = true;
+  sound = 1;
+};
 
 
 -- **********************

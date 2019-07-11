@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1829, "DBM-TrialofValor", nil, 861)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190625143337")
+mod:SetRevision("2019071111703")
 mod:SetCreatureID(114537)
 mod:SetEncounterID(2008)
 mod:SetZone()
@@ -53,7 +53,7 @@ local warnOrbOfCorrosion			= mod:NewTargetAnnounce(230267, 3)
 
 --Stage One: Low Tide
 local specWarnOrbOfCorruption		= mod:NewSpecialWarningYou(229119, nil, nil, nil, 1, 5)
-local yellOrbOfCorruption			= mod:NewPosYell(229119, DBM_CORE_AUTO_YELL_CUSTOM_POSITION)
+local yellOrbOfCorruption			= mod:NewPosYell(229119, DBM_CORE_AUTO_YELL_CUSTOM_POSITION2)
 local specWarnTaintofSeaPre			= mod:NewSpecialWarningYou(228088, "false", nil, nil, 1, 2)
 local specWarnTaintofSea			= mod:NewSpecialWarningDodge(228088, nil, nil, nil, 1, 2)
 local yellTaint						= mod:NewPosYell(228088, DBM_CORE_AUTO_YELL_CUSTOM_POSITION, false)
@@ -77,7 +77,7 @@ local specWarnGiveNoQuarter			= mod:NewSpecialWarningDodge(228633, nil, nil, nil
 --Stage Three: Helheim's Last Stand
 local specWarnCorruptedBreath		= mod:NewSpecialWarningCount(228565, nil, nil, nil, 2)
 local specWarnOrbOfCorrosion		= mod:NewSpecialWarningYou(230267, nil, nil, nil, 1, 5)
-local yellOrbOfCorrosion			= mod:NewPosYell(230267, DBM_CORE_AUTO_YELL_CUSTOM_POSITION)
+local yellOrbOfCorrosion			= mod:NewPosYell(230267, DBM_CORE_AUTO_YELL_CUSTOM_POSITION2)
 
 --Stage One: Low Tide
 mod:AddTimerLine(SCENARIO_STAGE:format(1))
@@ -407,8 +407,8 @@ function mod:SPELL_AURA_APPLIED(args)
 		if args:IsPlayer() then
 			specWarnTaintofSeaPre:Show()
 			specWarnTaintofSeaPre:Play("targetyou")
-			yellTaint:Yell(self.vb.taintIcon, "", self.vb.taintIcon)
-			yellTaint:Schedule(2, self.vb.taintIcon, "", self.vb.taintIcon)
+			yellTaint:Yell(self.vb.taintIcon, "")
+			yellTaint:Schedule(2, self.vb.taintIcon, "")
 		end
 		self.vb.taintIcon = self.vb.taintIcon + 1
 	end

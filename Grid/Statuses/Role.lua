@@ -161,6 +161,7 @@ function GridStatusRole:OnStatusEnable(status)
 	self:RegisterEvent("PLAYER_REGEN_ENABLED", "UpdateAllUnits")
 	self:RegisterEvent("GROUP_ROSTER_UPDATE", "UpdateAllUnits")
     self:RegisterBucketEvent("GROUP_ROSTER_UPDATE", 0.5, "UpdateAllUnits")
+    self:RegisterBucketEvent("PLAYER_ENTERING_WORLD", 0.5, "UpdateAllUnits")
 
 	self:RegisterMessage("Grid_RosterUpdate", "UpdateAllUnits")
 end

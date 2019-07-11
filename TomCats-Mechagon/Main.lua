@@ -644,7 +644,7 @@ if (TomCats and TomCats.Register) then
                 }
             },
             name = "Rares of Mechagon",
-            version = "1.0.11"
+            version = "1.0.12"
         }
     )
 end

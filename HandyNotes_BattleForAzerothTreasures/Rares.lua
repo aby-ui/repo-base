@@ -243,20 +243,20 @@ merge(ns.points[942], { -- Stormsong Valley
 })
 --[===[
 merge(ns.points[1355], { -- Nazjatar
-    [78003280] = {quest=56276, npc=151870, item=169369, achievement=13691, criteria=45543,}, -- Sandcastle
-    -- [] = {quest=nil, npc=152566, item=nil, achievement=13691, criteria=45522,}, -- Anemonar
-    -- [] = {quest=nil, npc=152567, item=nil, achievement=13691, criteria=45535,}, -- Kelpwillow
-    -- [] = {quest=nil, npc=152397, item=nil, achievement=13691, criteria=45539,}, -- Oronu
-    -- [] = {quest=nil, npc=152568, item=nil, achievement=13691, criteria=45557,}, -- Urduu
-    [71605420] = {quest=nil, npc=152561, item=nil, achievement=13691, criteria=45524,note="Spawns after you kill Siltstalker",}, -- Banescale the Packfather
-    [56204360] = {quest=nil, npc=152291, item=nil, achievement=13691, criteria=45530,}, -- Deepglider
-    [28802900] = {quest=55671, npc=152323, item=169371, achievement=13691, criteria=45536,}, -- King Gakula
+    [78003280] = {quest=56276, npc=151870, item=169369, achievement=13691, criteria=45543,note="Summoned using a [Scrying Stone]"}, -- Sandcastle
+    [58805460] = {quest=56281, npc=152566, item=170184, achievement=13691, criteria=45522,note="Requires killing a Colossal Ray on top of it for spawn"}, -- Anemonar
+    [50606920] = {quest=56287, npc=152567, item=170184, achievement=13691, criteria=45535,note="Requries charming a Muck Slug using a [Prismatic Crystal] and bringing it in front of him"}, -- Kelpwillow
+    [78602580] = {quest=56288, npc=152397, item=170184, achievement=13691, criteria=45539,note="Requires summoning the Drowned Hatchling pet in front of him"}, -- Oronu
+    [31603060] = {quest=56299, npc=152568, item=170184, achievement=13691, criteria=45557,note="Must kill a Staghorn Reefwalker in front of him"}, -- Urduu
+    [71605420] = {quest=56282, npc=152561, item=170179, achievement=13691, criteria=45524,note="Spawns after you kill Siltstalker",}, -- Banescale the Packfather
+    [56204360] = {quest=56272, npc=152291, item=nil, achievement=13691, criteria=45530,}, -- Deepglider
+    [28802900] = {quest=55671, npc=152323, item=169371, achievement=13691, criteria=45536,note="Requires to Shoo the Bloodfin Tadpoles until the King emotes a few times"}, -- King Gakula
     [71405480] = {quest=56297, npc=152359, item=170179, achievement=13691, criteria=45550,}, -- Siltstalker the Packmother
     [64604700] = {quest=56278, npc=152360, item=170178, achievement=13691, criteria=45556,}, -- Toxigore the Alpha
-    [63803260] = {quest=nil, npc=152414, item=nil, achievement=13691, criteria=45531,}, -- Elder Unu
-    [52404200] = {quest=nil, npc=152415, item=nil, achievement=13691, criteria=45519,}, -- Alga the Eyeless
-    [69204020] = {quest=nil, npc=152416, item=nil, achievement=13691, criteria=45520,}, -- Allseer Oma'kil
-    [47205500] = {quest=56286, npc=152448, item=169352, achievement=13691, criteria=45534,}, -- Iridescent Glimmershell
+    [63803260] = {quest=56284, npc=152414, item=nil, achievement=13691, criteria=45531,}, -- Elder Unu
+    [52404200] = {quest=56279, npc=152415, item=nil, achievement=13691, criteria=45519,}, -- Alga the Eyeless
+    [69204020] = {quest=56280, npc=152416, item=nil, achievement=13691, criteria=45520,}, -- Allseer Oma'kil
+    [47205500] = {quest=56286, npc=152448, item=169352, achievement=13691, criteria=45534,note="Requires killing Glimmershell Hulks around his spawn points"}, -- Iridescent Glimmershell
     [45602560] = {quest=56275, npc=152465, item=169355, achievement=13691, criteria=45538,}, -- Needlespine
     [35604120] = {quest=56292, npc=152548, item=169370, achievement=13691, criteria=45545,}, -- Scale Matriarch Gratinax
     [27403720] = {quest=56293, npc=152545, item=169370, achievement=13691, criteria=45546,}, -- Scale Matriarch Vynara
@@ -264,40 +264,23 @@ merge(ns.points[1355], { -- Nazjatar
     [37201320] = {quest=56274, npc=144644, item=169366, achievement=13691, criteria=45537,}, -- Mirecrawler
     [36003960] = {quest=56273, npc=152553, item=170180, achievement=13691, criteria=45533,}, -- Garnetscale
     [52207400] = {quest=56285, npc=152555, item=169359, achievement=13691, criteria=45532,}, -- Elderspawn Nalaada
-    [49008800] = {quest=nil, npc=152556, item=nil, achievement=13691, criteria=45528,}, -- Chasm-Haunter
+    [49008800] = {quest=56270, npc=152556, item=nil, achievement=13691, criteria=45528,}, -- Chasm-Haunter
     [43008760] = {quest=56289, npc=152681, item=169367, achievement=13691, criteria=45540,}, -- Prince Typhonus
     [42807480] = {quest=56290, npc=152682, item=169368, achievement=13691, criteria=45541,}, -- Prince Vortran
     [36408000] = {quest=56269, npc=152712, item=169372, achievement=13691, criteria=45525,}, -- Blindlight
     [72203620] = {quest=56268, npc=152794, item=169363, achievement=13691, criteria=45521,}, -- Amethyst Spireshell
     [64804060] = {quest=56277, npc=152795, item=169350, achievement=13691, criteria=45544,}, -- Sandclaw Stoneshell
-    [37801440] = {quest=nil, npc=153658, item=nil, achievement=13691, criteria=45549,}, -- Shiz'narasz the Consumer
-    [62402960] = {quest=nil, npc=153898, item=nil, achievement=13691, criteria=45553,}, -- Tidelord Aquatus
-    [57602600] = {quest=nil, npc=153928, item=nil, achievement=13691, criteria=45554,}, -- Tidelord Dispersius
+    [37801440] = {quest=56296, npc=153658, item=170182, achievement=13691, criteria=45549,}, -- Shiz'narasz the Consumer
+    [62402960] = {quest=56122, npc=153898, item=170502, achievement=13691, criteria=45553,note="Must kill chanelling Azsh'ari Invokers until it spawns"}, -- Tidelord Aquatus
+    [57602600] = {quest=56123, npc=153928, item=170502, achievement=13691, criteria=45554,note="Must kill chanelling Azsh'ari Invokers until it spawns"}, -- Tidelord Dispersius
     [39005930] = {quest=56271, npc=152756, item=169361, achievement=13691, criteria=45529,}, -- Daggertooth Terror
     [63401160] = {quest=56295, npc=152552, item=170187, achievement=13691, criteria=45548,}, -- Shassera
     [67152325] = {quest=56106, npc=154148, item=170196, achievement=13691, criteria=45555,}, -- Tidemistress Leth'sindra
-    [40805950] = {quest=56283, npc=152464, item=169356, achievement=13691, criteria=45527,}, -- Caverndark Terror
-    [62405950] = {quest=56291, npc=150583, item=169374, achievement=13691, criteria=45542,}, -- Rockweed Shambler
+    [40800735] = {quest=56283, npc=152464, item=169356, achievement=13691, criteria=45527,}, -- Caverndark Terror
+    [62405950] = {quest=56291, npc=150583, item=169374, achievement=13691, criteria=45542,note="Has a chance to spawn after you kill Algans"}, -- Rockweed Shambler
     [57605220] = {quest=56298, npc=152290, item=169163, achievement=13691, criteria=45551,}, -- Soundless
-    [67603460] = {quest=nil, npc=151719, item=nil, achievement=13691, criteria=45558, note="Get a Molted Shell to break rocks"}, -- Voice in the Deeps
-    [83403300] = {quest=nil, npc=152729, item=nil,}, -- Moon Priestess Liara
-    [83603740] = {quest=nil, npc=152736, item=nil,}, -- Guardian Tannin
-    [33204000] = {quest=nil, npc=153296, item=nil,}, -- Shalan'ali Stormtongue
-    [63805700] = {quest=nil, npc=153299, item=nil,}, -- Bonebreaker Szun
-    [42804300] = {quest=nil, npc=153300, item=nil,}, -- Iron Zoko
-    [33203920] = {quest=nil, npc=153301, item=nil,}, -- Shirakess Starseeker
-    [43004240] = {quest=nil, npc=153302, item=nil,}, -- Glacier Mage Zhiela
-    [33603020] = {quest=nil, npc=153303, item=nil,}, -- Voidblade Kassar
-    [68203300] = {quest=nil, npc=153304, item=nil,}, -- Undana Frostbarb
-    [68403340] = {quest=nil, npc=153305, item=nil,}, -- Zanj'ir Brutalizer
-    [61202440] = {quest=nil, npc=153309, item=nil,}, -- Alzana, Arrow of Thunder
-    [61801220] = {quest=nil, npc=153310, item=nil,}, -- Qalina, Spear of Ice
-    [33403020] = {quest=nil, npc=153311, item=nil,}, -- Slitherblade Azanz
-    [41402400] = {quest=nil, npc=153312, item=nil,}, -- Kyx'zhul the Deepspeaker
-    [60401440] = {quest=nil, npc=153314, item=nil,}, -- Aldrantiss
-    [33402940] = {quest=nil, npc=155811, item=nil,}, -- Commander Minzera
-    [49406580] = {quest=nil, npc=155836, item=nil,}, -- Theurgist Nitara
-    [48352400] = {quest=nil, npc=150468, item=169376,}, -- Vor'koth
+    [67603460] = {quest=56300, npc=151719, item=nil, achievement=13691, criteria=45558, note="Get a Molted Shell to break rocks"}, -- Voice in the Deeps
+    [48352400] = {quest=55603, npc=150468, item=169376,}, -- Vor'koth
     [36901120] = {quest=55584, npc=150191, item=169373,}, -- Avarius
     [54804200] = {quest=55366, npc=149653, item=169375,}, -- Carnivorous Lasher (also seen 56296 + 56587)
 })
