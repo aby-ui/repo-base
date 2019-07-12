@@ -2,7 +2,6 @@ local _, T = ...
 if T.Mark ~= 50 then return end
 local G, L, EV = T.Garrison, T.L, T.Evie
 local countFreeFollowers = G.countFreeFollowers
-local GameTooltip = AltGameTooltip or GameTooltip
 
 local function HookOnShow(self, OnShow)
 	self:HookScript("OnShow", OnShow)
@@ -1323,7 +1322,7 @@ do -- Equipment
 			end
 			return
 		end
-		local pf, ef = CreateFrame("Button", nil, nil, "SecureActionButtonTemplate"), owner
+		local pf, ef = CreateFrame("Button", nil, nil, "InsecureActionButtonTemplate"), owner
 		pf:Hide()
 		pf:SetScript("PreClick", CP_PreClick)
 		pf:SetScript("PostClick", CP_PostClick)

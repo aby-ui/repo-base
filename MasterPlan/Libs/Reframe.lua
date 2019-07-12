@@ -1,6 +1,5 @@
 local _, T = ...
 local E = T.Evie
-local GameTooltip = AltGameTooltip or GameTooltip
 
 function T.GetMouseFocus()
 	local f = GetMouseFocus()

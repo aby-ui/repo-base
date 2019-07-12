@@ -6,10 +6,9 @@
 ## LoadOnDemand: 1
 ## RequiredDeps: Blizzard_GarrisonUI, MasterPlanA
 ## SavedVariablesPerCharacter: MasterPlanPC
-## Version: 0.115
-## X-Version-Key: canary
+## Version: 0.116
+## X-Version-Key: reach
 Libs/Evie.lua
-Libs/AltGameTooltip.xml
 Libs/Reframe.lua
 Locale.lua
 Mark-50.lua

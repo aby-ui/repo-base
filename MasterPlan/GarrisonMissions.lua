@@ -5,7 +5,6 @@ local EV, G, L = T.Evie, T.Garrison, T.L
 local roamingParty, easyDrop = T.MissionsUI.roamingParty, T.MissionsUI.easyDrop
 local MISSION_PAGE_FRAME = GarrisonMissionFrame.MissionTab.MissionPage
 local SHIP_MISSION_PAGE = GarrisonShipyardFrame.MissionTab.MissionPage
-local GameTooltip = AltGameTooltip or GameTooltip
 
 local function HideOwnedGameTooltip(self)
 	if GameTooltip:IsOwned(self) then

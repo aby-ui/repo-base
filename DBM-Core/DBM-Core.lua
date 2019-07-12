@@ -68,7 +68,7 @@ local function showRealDate(curseDate)
 end
 
 DBM = {
-	Revision = parseCurseDate("20190711163541"),
+	Revision = parseCurseDate("20190712161545"),
 	DisplayVersion = "8.2.4 alpha", -- the string that is shown as version
 	ReleaseRevision = releaseDate(2019, 7, 9) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 }
@@ -6780,7 +6780,6 @@ function DBM:SendTimerInfo(mod, target)
 				end
 				timeLeft = totalTime - elapsed
 				if timeLeft > 0 and totalTime > 0 then
-					--mod, timeLeft, totalTime, id
 					SendAddonMessage("D4", ("TI\t%s\t%s\t%s\t%s"):format(mod.id, timeLeft, totalTime, uId), "WHISPER", target)
 				end
 			end

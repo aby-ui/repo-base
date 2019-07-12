@@ -1,7 +1,6 @@
 local _, T = ...
 if T.Mark ~= 50 then return end
 local G, L, EV = T.Garrison, T.L, T.Evie
-local GameTooltip = AltGameTooltip or GameTooltip
 
 local summaryTab = CreateFrame("Frame", nil, GarrisonMissionFrame, "GarrisonMissionBaseFrameTemplate") do
 	summaryTab:Hide()

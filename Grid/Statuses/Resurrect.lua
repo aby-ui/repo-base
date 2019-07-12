@@ -173,7 +173,7 @@ function GridStatusResurrect:UpdateUnit(unit, guid)
 		icon = "Interface\\ICONS\\Spell_Shadow_Soulgem"
 		startTime = endTime - 360
 		duration = 360
-	else -- CASTING or PENDING
+	elseif casterUnit then -- CASTING or PENDING
 		if IS_WOW_8 then
 			_, _, icon, startTime = UnitCastingInfo(casterUnit)
 		else

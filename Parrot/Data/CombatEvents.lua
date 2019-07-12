@@ -141,7 +141,7 @@ end
 -- functions to retrieve player-names (to hide realm-names)
 --]]
 local function retrieveSourceName(info)
-	if not info.sourceName then return end
+	if not info.sourceName or not info.sourceID then return end
 	if db1.profile.hideUnitNames == true then
 		return "__NONAME__"
 	end

@@ -75,7 +75,7 @@ function AtlasLootReverse:OnInitialize()
         'AtlasLootTooltipTEMP' } do
         local f = _G[tip]
         if(f) then
-            CoreRawHook(f, 'OnTooltipSetItem', OnTooltipSetItem, true)
+            SetOrHookScript(f, 'OnTooltipSetItem', OnTooltipSetItem)
         end
     end
 end
