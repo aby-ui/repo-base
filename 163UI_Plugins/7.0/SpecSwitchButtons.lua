@@ -39,15 +39,23 @@ if TalentMicroButton then
 
         if buttons == nil then
             buttons = {}
-            for i = 1, GetNumSpecializations() do
+            for i = 1, GetNumSpecializations() + 1 do
                 buttons[i] = CreateFrame("Button", "$parentSpecSwitch" .. i, TalentMicroButton, "UIPanelButtonTemplate") --"UIMenuButtonStretchTemplate")
                 buttons[i]:SetSize(60, 22)
-                buttons[i]:SetText((select(2, GetSpecializationInfo(i))))
+                if i == GetNumSpecializations() + 1 then
+                    buttons[i]:SetText("项链")
+                    buttons[i]:SetScript("OnClick", OpenAzeriteEssenceUIFromItemLocation)
+                    if UnitLevel("player") < MAX_PLAYER_LEVEL then
+                        buttons[i]:SetEnabled(false)
+                    end
+                else
+                    buttons[i]:SetText((select(2, GetSpecializationInfo(i))))
+                    buttons[i].spec = i
+                    buttons[i]:SetScript("OnClick", switchOnClick)
+                end
                 buttons[i]:SetFrameStrata("Tooltip")
-                buttons[i].spec = i
                 buttons[i]:SetScript("OnEnter", switchOnEnter)
                 buttons[i]:SetScript("OnLeave", switchOnLeave)
-                buttons[i]:SetScript("OnClick", switchOnClick)
                 buttons[i]:SetMotionScriptsWhileDisabled(true)
             end
         end
@@ -77,7 +85,7 @@ if TalentMicroButton then
             end
         end
 
-        for i = 1, #buttons do
+        for i = 1, #buttons - 1 do
             if buttons[i].spec == GetSpecialization() then
                 buttons[i]:SetEnabled(false)
             else

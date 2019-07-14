@@ -196,6 +196,7 @@ do
 	
 	function _detalhes:ShowAllSwitch()
 	
+	--[=[ --tutorial removed, I don't think is necessary anymore, July 2019
 		--_detalhes:SetTutorialCVar ("SWITCH_PANEL_FIRST_OPENED", false)
 		if (not _detalhes:GetTutorialCVar ("SWITCH_PANEL_FIRST_OPENED")) then
 			_detalhes:SetTutorialCVar ("SWITCH_PANEL_FIRST_OPENED", true)
@@ -225,8 +226,8 @@ do
 			local t = close:CreateFontString (nil, "overlay", "GameFontNormal")
 			t:SetPoint ("center", 0, 0)
 			t:SetText ("CLOSE")
-
 		end
+	--]=]
 	
 		if (all_switch:IsShown()) then
 			return all_switch:Hide()
@@ -237,8 +238,8 @@ do
 		all_switch:ClearAllPoints()
 		all_switch:SetPoint ("bottom", self.baseframe.UPFrame, "top", 4)
 		
-		all_switch.ShowAnimation:Play()
-		--all_switch:Show()
+		--all_switch.ShowAnimation:Play()
+		all_switch:Show()
 		
 		if (_detalhes.switch.frame:IsShown()) then
 			_detalhes.switch:CloseMe()
@@ -555,6 +556,8 @@ do
 	
 ---------------------------------------------------------------------------------------------------------------------------
 
+	--animation has been disabled (July 2019)
+	--they aren't called anymore on showing and hiding the bookmark frame
 	--show animation
 	local animHub = _detalhes.gump:CreateAnimationHub (frame, function() frame:Show() end)
 	_detalhes.gump:CreateAnimation (animHub, "scale", 1, 0.04, 0, 1, 1, 1, "LEFT", 0, 0)
@@ -570,9 +573,10 @@ do
 ---------------------------------------------------------------------------------------------------------------------------
 	
 	function _detalhes.switch:CloseMe()
-		--_detalhes.switch.frame:Hide()
+		_detalhes.switch.frame:Hide()
+		_detalhes.switch.frame:ClearAllPoints()
 		
-		_detalhes.switch.frame.HideAnimation:Play()
+		--_detalhes.switch.frame.HideAnimation:Play()
 		
 		GameCooltip:Hide()
 		_detalhes.switch.frame:SetBackdropColor (0, 0, 0, .7)
@@ -865,7 +869,7 @@ function _detalhes.switch:ShowMe (instancia)
 			_detalhes.switch:ClearSegmentBlocks()
 		end
 	end
-
+	
 	--> check if there is some custom contidional
 	if (instancia.atributo == 5) then
 		local custom_object = instancia:GetCustomObject()
@@ -918,9 +922,10 @@ function _detalhes.switch:ShowMe (instancia)
 	_detalhes.switch:Update()
 	
 	_detalhes.switch.frame:SetScale (instancia.window_scale)
-	--_detalhes.switch.frame:Show()
-	_detalhes.switch.frame.ShowAnimation:Play()
+	_detalhes.switch.frame:Show()
+	--_detalhes.switch.frame.ShowAnimation:Play()
 	
+	--[=[ --removed bookmark tutorials July 2019
 	if (not _detalhes.tutorial.bookmark_tutorial) then
 	
 		if (not SwitchPanelTutorial) then
@@ -963,6 +968,7 @@ function _detalhes.switch:ShowMe (instancia)
 		SwitchPanelTutorial.info_label:SetWidth (_detalhes.switch.frame:GetWidth()-30)
 		SwitchPanelTutorial.close_label:SetWidth (_detalhes.switch.frame:GetWidth()-30)
 	end
+	--]=]
 	
 	_detalhes.switch:Resize (precisa_mostrar)
 	--instancia:StatusBarAlert (right_click_text, right_click_texture) --icon, color, time

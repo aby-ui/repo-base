@@ -332,7 +332,7 @@ end
 
 function TradeskillInfo:HookTradeSkillUI()
 	if TradeSkillFrame and not self:IsHooked("TradeSkillFrame_SetSelection") then
-		self:SecureHook(TradeSkillFrame.DetailsFrame, "SetSelectedRecipeID", "TradeSkillFrame_SetSelection")
+		self:SecureHook(TradeSkillFrame.DetailsFrame, "RefreshDisplay", "TradeSkillFrame_SetSelection")
 
 		-- add our text fields
 		local fsSkillText = TradeSkillFrame.DetailsFrame:CreateFontString("TradeskillInfoSkillText", "BACKGROUND", "GameFontHighlightSmall")
@@ -441,20 +441,15 @@ function TradeskillInfo:TradeSkillFrame_SetSelection(id)
 	if not TradeSkillFrame.DetailsFrame.selectedRecipeID then return end
 
 	local recipeInfo = C_TradeSkillUI.GetRecipeInfo(TradeSkillFrame.DetailsFrame.selectedRecipeID)
+	if not recipeInfo then return end
+
 	local spellId = recipeInfo.recipeID
+	local appendText = ""
 
 	if self:CombineExists(spellId) then
-		local yPos = 50
-
 		if self:ShowingSkillLevel() then
 			-- insert skill required
-			if TradeskillInfoSkillText then
-				TradeskillInfoSkillText:SetText(L["Skill Level"] .. ": " .. self:GetColoredDifficulty(spellId))
-				TradeskillInfoSkillText:Show()
-				yPos = yPos + 4 + TradeskillInfoSkillText:GetHeight()
-			end
-		else
-			TradeskillInfoSkillText:Hide()
+			appendText = appendText .. "|cFFFFD200" .. L["Skill Level"] .. ": |r" .. self:GetColoredDifficulty(spellId) .. "|n"
 		end
 
 		if self:ShowingSkillProfit() then
@@ -470,15 +465,27 @@ function TradeskillInfo:TradeSkillFrame_SetSelection(id)
 			end
 
 			-- insert item value and reagent costs
-			TradeskillInfoProfitText:SetText(profitLabel .. ": " .. string.format("%s - %s = %s", self:GetMoneyString(value), self:GetMoneyString(cost), self:GetMoneyString(profit)))
---			TradeskillInfoProfitText:SetPoint("TOPLEFT", 5, -yPos)
-			TradeskillInfoProfitText:Show()
-			yPos = yPos + 4 + TradeskillInfoProfitText:GetHeight()
-		else
-			TradeskillInfoProfitText:Hide()
+			appendText = appendText .. "|cFFFFD200" .. profitLabel .. ": |r" .. string.format("%s - %s = %s", self:GetMoneyString(value), self:GetMoneyString(cost), self:GetMoneyString(profit))
 		end
 
---		TradeSkillDescription:SetPoint("TOPLEFT", 5, -yPos)
+		-- no, I don't like this either.
+		local numReagents = C_TradeSkillUI.GetRecipeNumReagents(TradeSkillFrame.DetailsFrame.selectedRecipeID)
+
+		if numReagents > 0 then
+			TradeSkillFrame.DetailsFrame.Contents.SourceText:SetPoint("TOP", TradeSkillFrame.DetailsFrame.Contents.Reagents[numReagents], "BOTTOM", 0, -15)
+		else
+			TradeSkillFrame.DetailsFrame.Contents.SourceText:SetPoint("TOP", TradeSkillFrame.DetailsFrame.Contents.ReagentLabel, "TOP")
+		end
+
+		local origText = TradeSkillFrame.DetailsFrame.Contents.SourceText:GetText()
+
+		if not origText or #origText == 0 then
+			TradeSkillFrame.DetailsFrame.Contents.SourceText:SetText(appendText)
+		else
+			TradeSkillFrame.DetailsFrame.Contents.SourceText:SetText(origText .. "|n|n" .. appendText)
+		end
+
+		TradeSkillFrame.DetailsFrame.Contents.SourceText:Show()
 	end
 end
 

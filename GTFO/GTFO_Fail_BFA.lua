@@ -1535,7 +1535,6 @@ GTFO.SpellID["291856"] = {
 -- * The Eternal Palace *
 -- **********************
 
--- TODO: Arcanado (Radiance of Azshara)
 -- TODO: Arcing Current (Orgozoa)
 -- TODO: Hatchery Moulting (Orgozoa)
 -- TODO: Fanatical Verdict (The Queen's Court)
@@ -1545,7 +1544,6 @@ GTFO.SpellID["291856"] = {
 GTFO.SpellID["293001"] = {
   --desc = "Death from Below (Blackwater Behemoth)";
   sound = 3;
-  test = true;
 };
 
 GTFO.SpellID["298595"] = {
@@ -1562,11 +1560,36 @@ GTFO.SpellID["296566"] = {
   test = true;
 };
 
+GTFO.SpellID["304070"] = {
+  --desc = "Arcanado";
+  sound = 3;
+};
+
+GTFO.SpellID["296421"] = {
+  --desc = "Arcanado";
+  sound = 3;
+};
+
+GTFO.SpellID["304067"] = {
+  --desc = "Arcanado Burst (Sak'ja)";
+  sound = 3;
+};
+
+GTFO.SpellID["296449"] = {
+  --desc = "Arcanado Burst (Radiance of Azshara)";
+  sound = 3;
+};
+
+GTFO.SpellID["304026"] = {
+  --desc = "Arcane Bomb (Vizja'ra)";
+  applicationOnly = true;
+  sound = 3;
+};
+
 GTFO.SpellID["296746"] = {
   --desc = "Arcane Bomb (Radiance of Azshara)";
   sound = 3;
   applicationOnly = true;
-  test = true;
 };
 
 GTFO.SpellID["299093"] = {
@@ -1578,19 +1601,21 @@ GTFO.SpellID["299093"] = {
 GTFO.SpellID["296555"] = {
   --desc = "Coral Growth (Lady Ashvane)";
   sound = 3;
-  test = true;
+};
+
+GTFO.SpellID["298054"] = {
+  --desc = "Upsurge (Lady Ashvane)";
+  sound = 3;
 };
 
 GTFO.SpellID["298087"] = {
   --desc = "Dribbling Ichor (Orgozoa)";
   sound = 3;
-  test = true;
 };
 
 GTFO.SpellID["300308"] = {
   --desc = "Eggsplosion (Orgozoa)";
   sound = 3;
-  test = true;
 };
 
 GTFO.SpellID["301808"] = {

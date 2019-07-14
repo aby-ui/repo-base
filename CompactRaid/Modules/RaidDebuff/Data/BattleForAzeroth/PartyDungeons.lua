@@ -236,3 +236,9 @@ module:RegisterDebuff(TIER, INSTANCE, 0, 268008)
 module:RegisterDebuff(TIER, INSTANCE, 0, 273677)
 module:RegisterDebuff(TIER, INSTANCE, 0, 274149, 3)
 module:RegisterDebuff(TIER, INSTANCE, 0, 269686, 3)
+
+INSTANCE = 1178 -- 麦卡贡 
+module:RegisterDebuff(TIER, INSTANCE, 0, 298259, 6) -- 束缚粘液 
+module:RegisterDebuff(TIER, INSTANCE, 0, 297257) -- 电荷充能 
+module:RegisterDebuff(TIER, INSTANCE, 0, 303885) -- 爆裂喷发 
+module:RegisterDebuff(TIER, INSTANCE, 0, 292267) -- 超荷电磁炮

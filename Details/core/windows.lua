@@ -685,7 +685,7 @@
 				if (self.baseframe.stretch_direction == "top") then
 					for _, instancia in _ipairs (self.stretchToo) do
 						instancia.baseframe:SetHeight (self.baseframe:GetHeight())
-						local mod = (self.baseframe:GetHeight() - instancia.baseframe._place.altura) / 2
+						local mod = (self.baseframe:GetHeight() - (instancia.baseframe._place.altura or instancia.baseframe:GetHeight())) / 2
 						instancia:RestoreMainWindowPositionNoResize (instancia.baseframe._place, nil, mod)
 					end
 				elseif (self.baseframe.stretch_direction == "bottom") then

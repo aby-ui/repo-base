@@ -1,6 +1,13 @@
 -- local zone = "The Eternal Palace"
 local zoneid = 1512
 
+GridStatusRaidDebuff:DebuffId(zoneid, 299705, 1, 5, 5, true) --Dark Passage
+GridStatusRaidDebuff:DebuffId(zoneid, 303550, 1, 5, 5, true) --Frost Bolt Volley
+GridStatusRaidDebuff:DebuffId(zoneid, 300743, 1, 5, 5, true) --Void Touched
+GridStatusRaidDebuff:DebuffId(zoneid, 118905, 1, 5, 5, true) --Static Charge
+GridStatusRaidDebuff:DebuffId(zoneid, 304771, 1, 5, 5, true) --Queen's Disgust
+GridStatusRaidDebuff:DebuffId(zoneid, 295822, 1, 5, 5, true) --Conductive Pulse
+
 -- Trash
 GridStatusRaidDebuff:DebuffId(zoneid, 303298, 1, 5, 5, true) --Hunter's Quarry
 GridStatusRaidDebuff:DebuffId(zoneid, 303296, 1, 5, 5, true) --Poison-Dipped Arrow
@@ -18,6 +25,19 @@ GridStatusRaidDebuff:DebuffId(zoneid, 295779, 1, 5, 5, true) --Aqua Lance
 GridStatusRaidDebuff:DebuffId(zoneid, 292307, 1, 5, 5, true) --Gaze from Below
 GridStatusRaidDebuff:DebuffId(zoneid, 298459, 1, 5, 5, true) --Amniotic Eruption
 GridStatusRaidDebuff:DebuffId(zoneid, 300244, 1, 5, 5, true) --Raging Rapids
+GridStatusRaidDebuff:DebuffId(zoneid, 303630, 1, 5, 5, true) --Explosive Darkness
+GridStatusRaidDebuff:DebuffId(zoneid, 303422, 1, 5, 5, true) --Blizzard
+GridStatusRaidDebuff:DebuffId(zoneid, 303625, 1, 5, 5, true) --Aura of Suffering
+GridStatusRaidDebuff:DebuffId(zoneid, 303747, 1, 5, 5, true) --Ice Tomb
+GridStatusRaidDebuff:DebuffId(zoneid, 303373, 1, 5, 5, true) --Toxic Bolt Volley
+GridStatusRaidDebuff:DebuffId(zoneid, 304765, 1, 5, 5, true) --Filth
+GridStatusRaidDebuff:DebuffId(zoneid, 303382, 1, 5, 5, true) --Venom Bomb
+GridStatusRaidDebuff:DebuffId(zoneid, 303619, 1, 5, 5, true) --Dread
+GridStatusRaidDebuff:DebuffId(zoneid, 303501, 1, 5, 5, true) --Rending Strike
+GridStatusRaidDebuff:DebuffId(zoneid, 303958, 1, 5, 5, true) --Nightmare Pool
+GridStatusRaidDebuff:DebuffId(zoneid, 6136, 1, 5, 5, true) --Chilled
+GridStatusRaidDebuff:DebuffId(zoneid, 303942, 1, 5, 5, true) --Coalesced Nightmares
+GridStatusRaidDebuff:DebuffId(zoneid, 303913, 1, 5, 5, true) --Lingering Soul
 
 -- Abyssal Commander Sivara
 GridStatusRaidDebuff:BossNameId(zoneid, 10, "Abyssal Commander Sivara")
@@ -76,3 +96,45 @@ GridStatusRaidDebuff:DebuffId(zoneid, 298156, 81, 5, 5, true, true) --Desensitiz
 GridStatusRaidDebuff:DebuffId(zoneid, 298306, 82, 5, 5, true) --Incubation Fluid
 GridStatusRaidDebuff:DebuffId(zoneid, 296101, 83, 5, 5, true) --Rewind
 
+-- The Queen's Court
+GridStatusRaidDebuff:BossNameId(zoneid, 90, "The Queen's Court")
+GridStatusRaidDebuff:DebuffId(zoneid, 301830, 91, 5, 5, true) --Pashmar's Touch
+GridStatusRaidDebuff:DebuffId(zoneid, 296851, 92, 5, 5, true) --Fanatical Verdict
+GridStatusRaidDebuff:DebuffId(zoneid, 300545, 93, 5, 5, true) --Mighty Rupture
+GridStatusRaidDebuff:DebuffId(zoneid, 297585, 94, 5, 5, true) --Obey or Suffer
+GridStatusRaidDebuff:DebuffId(zoneid, 304409, 95, 5, 5, true) --Repeat Performance
+GridStatusRaidDebuff:DebuffId(zoneid, 304128, 96, 5, 5, true) --Deferred Sentence
+GridStatusRaidDebuff:DebuffId(zoneid, 303188, 97, 5, 5, true) --In Formation
+
+-- Za'qul
+GridStatusRaidDebuff:BossNameId(zoneid, 100, "Za'qul")
+GridStatusRaidDebuff:DebuffId(zoneid, 296018, 101, 5, 5, true) --Manic Dread
+GridStatusRaidDebuff:DebuffId(zoneid, 303619, 102, 5, 5, true) --Dread
+GridStatusRaidDebuff:DebuffId(zoneid, 293509, 103, 5, 5, true) --Manifest Nightmares
+GridStatusRaidDebuff:DebuffId(zoneid, 292971, 104, 5, 5, true) --Hysteria
+GridStatusRaidDebuff:DebuffId(zoneid, 298192, 105, 5, 5, true) --Dark Beyond
+GridStatusRaidDebuff:DebuffId(zoneid, 295327, 106, 5, 5, true) --Shattered Psyche
+GridStatusRaidDebuff:DebuffId(zoneid, 296015, 107, 5, 5, true) --Caustic Delirium
+GridStatusRaidDebuff:DebuffId(zoneid, 303981, 108, 5, 5, true) --Nether Portal
+
+-- Queen Azshara
+GridStatusRaidDebuff:BossNameId(zoneid, 120, "Queen Azshara")
+GridStatusRaidDebuff:DebuffId(zoneid, 302999, 121, 5, 5, true) --Arcane Vulnerability
+GridStatusRaidDebuff:DebuffId(zoneid, 299276, 122, 5, 5, true) --Sanction
+GridStatusRaidDebuff:DebuffId(zoneid, 300001, 123, 5, 5, true) --Devotion
+GridStatusRaidDebuff:DebuffId(zoneid, 298781, 124, 5, 5, true) --Arcane Orb
+GridStatusRaidDebuff:DebuffId(zoneid, 299251, 125, 5, 5, true) --Obey!
+GridStatusRaidDebuff:DebuffId(zoneid, 297656, 126, 5, 5, true) --Stand Alone
+GridStatusRaidDebuff:DebuffId(zoneid, 299255, 127, 5, 5, true) --Stand Alone!
+GridStatusRaidDebuff:DebuffId(zoneid, 299249, 128, 5, 5, true) --Suffer!
+GridStatusRaidDebuff:DebuffId(zoneid, 299254, 129, 5, 5, true) --Stand Together!
+GridStatusRaidDebuff:DebuffId(zoneid, 297907, 130, 5, 5, true) --Cursed Heart
+GridStatusRaidDebuff:DebuffId(zoneid, 303657, 131, 5, 5, true) --Arcane Burst
+GridStatusRaidDebuff:DebuffId(zoneid, 299094, 132, 5, 5, true) --Beckon
+GridStatusRaidDebuff:DebuffId(zoneid, 298569, 133, 5, 5, true) --Drained Soul
+GridStatusRaidDebuff:DebuffId(zoneid, 298756, 134, 5, 5, true) --Serrated Edge
+GridStatusRaidDebuff:DebuffId(zoneid, 301078, 135, 5, 5, true) --Charged Spear
+GridStatusRaidDebuff:DebuffId(zoneid, 298018, 136, 5, 5, true) --Frozen
+GridStatusRaidDebuff:DebuffId(zoneid, 300492, 137, 5, 5, true) --Static Shock
+GridStatusRaidDebuff:DebuffId(zoneid, 298014, 138, 5, 5, true) --Cold Blast
+GridStatusRaidDebuff:DebuffId(zoneid, 303825, 139, 5, 5, true) --Crushing Depths

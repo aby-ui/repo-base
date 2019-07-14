@@ -2,7 +2,7 @@
 ## Title: GridStatusRaidDebuff(BfA)
 ## Notes: Debuff List for Battle for Azeroth
 ## Author: tptbk(Doadin-Malorne-US)
-## Version: 8.2.0.1
+## Version: 8.2.0.2
 ## Grid Author: Pastamancer & Maia
 ## Dependencies: GridStatusRaidDebuff
 

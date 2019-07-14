@@ -41,23 +41,16 @@ do
 	end
 	
 	_detalhes.SpecSpellList = { --~spec
-	
-		--demonhunter shared
---		[185123] = ??, -- "Throw Glaive"
---		[196718] = ??, -- "Darkness"
---		[183752] = ??, -- "Consume Magic"
---		[131347] = ??, -- "Glide"
---		[200166] = ??, -- "Metamorphosis"
 
 		-- havoc demon hunter --577
 		[198793] = 577, -- "Vengeful Retreat"
 		[162243] = 577, -- "Demon's Bite"
-		[213241] = 577, -- "Felblade"
-		[213243] = 577, -- "Felblade"
+		--[213241] = 577, -- "Felblade" --both specs has
+		--[213243] = 577, -- "Felblade"
 		[179057] = 577, -- "Chaos Nova"
 		[188499] = 577, -- "Blade Dance"
 		[198013] = 577, -- "Eye Beam"
-		[201467] = 577, -- "Fury of the Illidari"
+		--[201467] = 577, -- "Fury of the Illidari" --removed from the game
 		[178963] = 577, -- "Consume Soul"
 		[162794] = 577, -- "Chaos Strike"
 		[211881] = 577, -- "Fel Eruption"
@@ -78,17 +71,20 @@ do
 		[207407] = 581, -- "Soul Carver"
 
 		-- Unholy Death Knight:
-		[165395] = 252, -- Necrosis
+		--[165395] = 252, -- Necrosis --removed from the game
 		[49206] = 252, -- Summon Gargoyle
 		[63560] = 252, -- Dark Transformation
 		[85948] = 252, -- Festering Strike
-		[49572] = 252, -- Shadow Infusion
+		--[49572] = 252, -- Shadow Infusion --removed from the game
 		[55090] = 252, -- Scourge Strike
 		[46584] = 252, -- Raise Dead
-		[51160] = 252, -- Ebon Plaguebringer
+		--[51160] = 252, -- Ebon Plaguebringer --removed from the game 
+		[77575] = 252, --Outbreak --added July 7
+		[47541] = 252, --Death Coil --added July 7
+		[191587] = 252, --Virulent Plague  --added July 7
 		
 		-- Frost Death Knight:
-		[130735] = 251, -- Soul Reaper
+		--[130735] = 251, -- Soul Reaper --removed from the game 
 		[51271] = 251, -- Pillar of Frost
 		[49020] = 251, -- Obliterate --old?
 		[66198] = 251, -- Obliterate Off-Hand
@@ -99,24 +95,27 @@ do
 		[49184] = 251, -- Howling Blast
 		
 		-- Blood Death Knight:
-		[165394] = 250, -- Runic Strikes
+		--[165394] = 250, -- Runic Strikes --removed from the game 
 		[114866] = 250, -- Soul Reaper
-		[49222] = 250, -- Bone Shield
+		--[49222] = 250, -- Bone Shield --removed from the game 
 		[55233] = 250, -- Vampiric Blood
 		[49028] = 250, -- Dancing Rune Weapon
 		[48982] = 250, -- Rune Tap
 		[56222] = 250, -- Dark Command
+		[206930] = 250, --Heart Strike --added July 7
+		[50842] = 250, --Blood Boil --added July 7
+		[195182] = 250, --Marrowrend --added July 7
 		
 		-- Balance Druid:
 		[48505] = 102, -- Starfall
 		[112071] = 102, -- Celestial Alignment
 		[78675] = 102, -- Solar Beam
 		[93399] = 102, -- Shooting Stars
-		[2912] = 102, -- Starfire
+		--[2912] = 102, -- Starfire --both specs has
 		--[78674] = 102, -- Starsurge
 
 		-- Feral Druid:
-		[171746] = 103, -- Claws of Shirvallah
+		--[171746] = 103, -- Claws of Shirvallah --removed from the game 
 		[22570] = 103, -- Maim
 		[16974] = 103, -- Predatory Swiftness
 		[52610] = 103, -- Savage Roar
@@ -129,11 +128,11 @@ do
 		[155835] = 104, -- Bristling Fur
 		[155578] = 104, -- Guardian of Elune
 		[80313] = 104, -- Pulverize
-		[159232] = 104, -- Ursa Major
-		[33745] = 104, -- Lacerate
-		[135288] = 104, -- Tooth and Claw
+		--[159232] = 104, -- Ursa Major --removed from the game 
+		--[33745] = 104, -- Lacerate --removed from the game 
+		--[135288] = 104, -- Tooth and Claw --removed from the game 
 		[6807] = 104, -- Maul
-		[62606] = 104, -- Savage Defense
+		--[62606] = 104, -- Savage Defense --removed from the game 
 		
 		-- Restoration Druid:
 		[145205] = 105, -- Wild Mushroom
@@ -214,20 +213,20 @@ do
 		[257338] = 64, -- ebonbolt
 		
 		-- Brewmaster Monk:
-		[157676] = 268, -- Chi Explosion
+		--[157676] = 268, -- Chi Explosion --removed from the game 
 		[119582] = 268, -- Purifying Brew
 		[115308] = 268, -- Elusive Brew
 		[115295] = 268, -- Guard
 		[115181] = 268, -- Breath of Fire
 		[121253] = 268, -- Keg Smash
-		[115180] = 268, -- Dizzying Haze
+		--[115180] = 268, -- Dizzying Haze --removed from the game 
 
 		-- Windwalker Monk:
 		[152175] = 269, -- Hurricane Strike
 		[116095] = 269, -- Disable
 		[122470] = 269, -- Touch of Karma
 		[124280] = 269, -- Touch of Karma
-		[128595] = 269, -- Combat Conditioning
+		--[128595] = 269, -- Combat Conditioning --removed from the game 
 		[101545] = 269, -- Flying Serpent Kick
 		[113656] = 269, -- Fists of Fury
 		[117418] = 269, -- Fists of Fury
@@ -235,7 +234,7 @@ do
 		-- Mistweaver Monk:
 		[115310] = 270, -- Revival
 		[116680] = 270, -- Thunder Focus Tea
-		[115460] = 270, -- Detonate Chi
+		--[115460] = 270, -- Detonate Chi --removed from the game 
 		[116670] = 270, -- Uplift
 		[115294] = 270, -- Mana Tea
 		[116849] = 270, -- Life Cocoon
@@ -245,14 +244,14 @@ do
 		
 		-- Holy Paladin:
 		[156910] = 65, -- Beacon of Faith
-		[157007] = 65, -- Beacon of Insight --nao existe mais
+		--[157007] = 65, -- Beacon of Insight --removed from the game 
 		[85222] = 65, -- Light of Dawn
 		[31821] = 65, -- Devotion Aura
 		[82326] = 65, -- Holy Light
-		[148039] = 65, -- Sacred Shield --nao existe mais
+		--[148039] = 65, -- Sacred Shield --removed from the game 
 		[53563] = 65, -- Beacon of Light
-		[82327] = 65, -- Holy Radiance --nao existe mais
-		[2812] = 65, -- Denounce --nao existe mais
+		--[82327] = 65, -- Holy Radiance --removed from the game 
+		--[2812] = 65, -- Denounce --removed from the game 
 		[20473] = 65, -- Holy Shock
 		
 		-- Protection Paladin:
@@ -263,8 +262,8 @@ do
 
 		-- Retribution Paladin:
 		[157048] = 70, -- Final Verdict
-		[20164] = 70, -- Seal of Justice
-		[879] = 70, -- Exorcism
+		--[20164] = 70, -- Seal of Justice --removed from the game 
+		--[879] = 70, -- Exorcism --removed from the game 
 		[53385] = 70, -- Divine Storm
 		[224266] = 70, -- Templar's Verdict
 		[224239] = 70, -- Divine Storm
@@ -301,7 +300,7 @@ do
 		-- Shadow Priest:
 		[15286] = 258, -- Vampiric Embrace
 		[32379] = 258, -- Shadow Word: Death
-		[73510] = 258, -- Mind Spike
+		--[73510] = 258, -- Mind Spike --removed from the game 
 		[78203] = 258, -- Shadowy Apparitions
 		[34914] = 258, -- Vampiric Touch
 		[8092] = 258, -- Mind Blast
@@ -315,9 +314,9 @@ do
 		[5374] = 259, -- Mutilate
 		[27576] = 259, -- Mutilate Off-Hand
 		[79134] = 259, -- Venomous Wounds
-		[192759] = 259, -- Kingsbane
-		[222062] = 259, -- Kingsbane
-		[192760] = 259, -- Kingsbane
+		--[192759] = 259, -- Kingsbane --removed from the game 
+		--[222062] = 259, -- Kingsbane --removed from the game 
+		--[192760] = 259, -- Kingsbane --removed from the game 
 		[185565] = 259, -- Poisoned Knife
 		[51723] = 259, -- Fan of Knives
 		[703] = 259, -- Garrote
@@ -339,86 +338,87 @@ do
 		[195452] = 261, -- Nightblade
 
 		-- Elemental Shaman:
-		[165399] = 262, -- Elemental Overload
-		[165477] = 262, -- Unleashed Fury
+		--[165399] = 262, -- Elemental Overload --removed from the game 
+		--[165477] = 262, -- Unleashed Fury --removed from the game 
 		[165339] = 262, -- Ascendance
-		[165462] = 262, -- Unleash Flame
+		--[165462] = 262, -- Unleash Flame --removed from the game 
 		[170374] = 262, -- Mastery: Molten Earth
 		[61882] = 262, -- Earthquake
 		[77756] = 262, -- Lava Surge
-		[86108] = 262, -- Mail Specialization
-		[88766] = 262, -- Fulmination
+		--[88766] = 262, -- Fulmination --removed from the game 
 		[60188] = 262, -- Elemental Fury
-		[29000] = 262, -- Elemental Reach
-		[62099] = 262, -- Shamanism
-		[123099] = 262, -- Spiritual Insight
+		--[29000] = 262, -- Elemental Reach --removed from the game 
+		--[62099] = 262, -- Shamanism --removed from the game 
+		--[123099] = 262, -- Spiritual Insight --removed from the game 
 		[51490] = 262, -- Thunderstorm
 		[8042] = 262, -- Earth Shock
 
 		-- Enhancement Shaman:
-		[165368] = 263, -- Lightning Strikes
-		[117012] = 263, -- Unleashed Fury
+		--[165368] = 263, -- Lightning Strikes --removed from the game 
+		--[117012] = 263, -- Unleashed Fury --removed from the game 
 		[165341] = 263, -- Ascendance
-		[73680] = 263, -- Unleash Elements
+		--[73680] = 263, -- Unleash Elements --removed from the game 
 		[77223] = 263, -- Mastery: Enhanced Elements
 		[51533] = 263, -- Feral Spirit
 		[58875] = 263, -- Spirit Walk
-		[51530] = 263, -- Maelstrom Weapon
-		[86099] = 263, -- Mail Specialization
-		[1535] = 263, -- Fire Nova
-		[8190] = 263, -- Magma Totem
+		--[51530] = 263, -- Maelstrom Weapon --removed from the game 
+		--[1535] = 263, -- Fire Nova --removed from the game 
+		--[8190] = 263, -- Magma Totem --removed from the game 
 		[166221] = 263, -- Enhanced Weapons
 		[33757] = 263, -- Windfury
 		[17364] = 263, -- Stormstrike
 		[32175] = 263, -- Stormstrike
 		[32176] = 263, -- Stormstrike off hand
 		[16282] = 263, -- Flurry
-		[86629] = 263, -- Dual Wield
-		[10400] = 263, -- Flametongue
+		--[10400] = 263, -- Flametongue --removed from the game 
 		[10444] = 263, -- Flametongue attack
 		[60103] = 263, -- Lava Lash
-		[30814] = 263, -- Mental Quickness
-		[51522] = 263, -- Primal Wisdom
+		--[30814] = 263, -- Mental Quickness --removed from the game 
+		--[51522] = 263, -- Primal Wisdom --removed from the game 
 
 		-- Restoration Shaman:
 		[157153] = 264, -- Cloudburst Totem
 		[157154] = 264, -- High Tide
 		[165391] = 264, -- Purification
-		[165479] = 264, -- Unleashed Fury
+		--[165479] = 264, -- Unleashed Fury
 		[165344] = 264, -- Ascendance
 		[77226] = 264, -- Mastery: Deep Healing
 		[98008] = 264, -- Spirit Link Totem
 		[108280] = 264, -- Healing Tide Totem
 		[77472] = 264, -- Healing Wave
-		[86100] = 264, -- Mail Specialization
 		[51564] = 264, -- Tidal Waves
 		[1064] = 264, -- Chain Heal
 		[16196] = 264, -- Resurgence
-		[974] = 264, -- Earth Shield
+		--[974] = 264, -- Earth Shield --can be used by all specs as a talent
 		[52127] = 264, -- Water Shield
 		[77130] = 264, -- Purify Spirit
-		[55453] = 264, -- Telluric Currents
-		[95862] = 264, -- Meditation
+		--[55453] = 264, -- Telluric Currents
+		--[95862] = 264, -- Meditation
 		[16213] = 264, -- Restorative Waves
 		[61295] = 264, -- Riptide
-		[112858] = 264, -- Spiritual Insight
+		--[112858] = 264, -- Spiritual Insight
 
 		-- Affliction :
-		[152109] = 265, -- Soulburn: Haunt
-		[165367] = 265, -- Eradication
+		--[152109] = 265, -- Soulburn: Haunt --removed from the game 
+		--[165367] = 265, -- Eradication --removed from the game 
 		[113860] = 265, -- Dark Soul: Misery
 		[77215] = 265, -- Mastery: Potent Afflictions
-		[86121] = 265, -- Soul Swap
+		--[86121] = 265, -- Soul Swap --removed from the game 
 		[48181] = 265, -- Haunt
 		[980] = 265, -- Agony
 		[103103] = 265, -- Drain Soul
 		[27243] = 265, -- Seed of Corruption
 		[117198] = 265, -- Soul Shards
-		[74434] = 265, -- Soulburn
+		--[74434] = 265, -- Soulburn --removed from the game 
 		[108558] = 265, -- Nightfall
 		[30108] = 265, -- Unstable Affliction
 		[233490] = 265, -- Unstable Affliction
-
+		[233496] = 265, -- Unstable Affliction
+		[233497] = 265, -- Unstable Affliction
+		[233498] = 265, -- Unstable Affliction
+		[233499] = 265, -- Unstable Affliction
+		
+		
 		--  Demonology Warlock:
 		[157695] = 266, -- Demonbolt
 		[264178] = 266, -- Demonbolt
@@ -428,25 +428,25 @@ do
 		[171975] = 266, -- Grimoire of Synergy
 		[30146] = 266, -- Summon Felguard
 		[114592] = 266, -- Wild Imps
-		[1949] = 266, -- Hellfire
+		--[1949] = 266, -- Hellfire --removed from the game 
 		[105174] = 266, -- Hand of Gul'dan
 		[86040] = 266, -- Hand of Gul'dan
-		[6353] = 266, -- Soul Fire
-		[109151] = 266, -- Demonic Leap
-		[108869] = 266, -- Decimation
-		[104315] = 266, -- Demonic Fury
+		--[6353] = 266, -- Soul Fire --destruction talent
+		--[109151] = 266, -- Demonic Leap --removed from the game 
+		--[108869] = 266, -- Decimation --removed from the game 
+		--[104315] = 266, -- Demonic Fury --removed from the game 
 		[124913] = 266, -- Doom
-		[103958] = 266, -- Metamorphosis
-		[122351] = 266, -- Molten Core
+		--[103958] = 266, -- Metamorphosis --removed from the game 
+		--[122351] = 266, -- Molten Core --removed from the game 
 
 		--  Destruction Warlock:
-		[157696] = 267, -- Charred Remains
-		[165363] = 267, -- Devastation
+		--[157696] = 267, -- Charred Remains --removed from the game 
+		--[165363] = 267, -- Devastation --removed from the game 
 		[113858] = 267, -- Dark Soul: Instability
 		[77220] = 267, -- Mastery: Emberstorm
-		[120451] = 267, -- Flames of Xoroth
+		--[120451] = 267, -- Flames of Xoroth --removed from the game 
 		[117896] = 267, -- Backdraft
-		[109784] = 267, -- Aftermath
+		--[109784] = 267, -- Aftermath --removed from the game 
 		[108683] = 267, -- Fire and Brimstone
 		[17877] = 267, -- Shadowburn
 		[80240] = 267, -- Havoc
@@ -464,55 +464,52 @@ do
 		[165365] = 71, -- Weapon Mastery
 		[167105] = 71, -- Colossus Smash
 		[12328] = 71, -- Sweeping Strikes
-		[86101] = 71, -- Plate Specialization
 		[1464] = 71, -- Slam
-		[56636] = 71, -- Taste for Blood
+		--[56636] = 71, -- Taste for Blood --removed from the game 
 		[12294] = 71, -- Mortal Strike
-		[12712] = 71, -- Seasoned Soldier
+		--[12712] = 71, -- Seasoned Soldier --removed from the game 
 		[772] = 71, -- Rend
-		[174737] = 71, -- Enhanced Rend
+		--[174737] = 71, -- Enhanced Rend --removed from the game 
 
 		--  Fury Warrior:
-		[165383] = 72, -- Cruelty
+		--[165383] = 72, -- Cruelty --removed from the game 
 		[12950] = 72, -- Meat Cleaver
-		[46915] = 72, -- Bloodsurge
-		[86110] = 72, -- Plate Specialization
-		[169679] = 72, -- Furious Strikes
-		[169683] = 72, -- Unquenchable Thirst
-		[81099] = 72, -- Single-Minded Fury
+		--[46915] = 72, -- Bloodsurge --removed from the game 
+		--[169679] = 72, -- Furious Strikes --removed from the game 
+		--[169683] = 72, -- Unquenchable Thirst --removed from the game 
+		--[81099] = 72, -- Single-Minded Fury --removed from the game 
 		[85288] = 72, -- Raging Blow
 		[12323] = 72, -- Piercing Howl
-		[100130] = 72, -- Wild Strike
+		--[100130] = 72, -- Wild Strike --removed from the game 
 		[23881] = 72, -- Bloodthirst
-		[23588] = 72, -- Crazed Berserker
-		[46917] = 72, -- Titan's Grip
+		--[23588] = 72, -- Crazed Berserker --removed from the game 
+		--[46917] = 72, -- Titan's Grip --removed from the game 
 
 		--  Protection Warrior:
-		[152276] = 73, -- Gladiator's Resolve
-		[159362] = 73, -- Blood Craze
+		--[152276] = 73, -- Gladiator's Resolve
+		--[159362] = 73, -- Blood Crazy
 		[165393] = 73, -- Shield Mastery
-		[114192] = 73, -- Mocking Banner
+		--[114192] = 73, -- Mocking Banner
 		[76857] = 73, -- Mastery: Critical Block
-		[161798] = 73, -- Riposte
-		[84608] = 73, -- Bastion of Defense
+		--[161798] = 73, -- Riposte
+		--[84608] = 73, -- Bastion of Defense
 		[1160] = 73, -- Demoralizing Shout
-		[86535] = 73, -- Plate Specialization
 		[871] = 73, -- Shield Wall
 		[169680] = 73, -- Heavy Repercussions
-		[169685] = 73, -- Unyielding Strikes
+		--[169685] = 73, -- Unyielding Strikes
 		[12975] = 73, -- Last Stand
 		[6572] = 73, -- Revenge
 		[20243] = 73, -- Devastate
 		[2565] = 73, -- Shield Block
-		[161608] = 73, -- Bladed Armor
+		--[161608] = 73, -- Bladed Armor --removed from the game 
 		[23922] = 73, -- Shield Slam
 		[46953] = 73, -- Sword and Board
 		[122509] = 73, -- Ultimatum
-		[29144] = 73, -- Unwavering Sentinel
-		[157497] = 73, -- Improved Block
+		--[29144] = 73, -- Unwavering Sentinel --removed from the game 
+		--[157497] = 73, -- Improved Block --removed from the game 
 		[6343] = 73, -- Thunder Clap
-		[71] = 73, -- Defensive Stance
-		[157494] = 73, -- Improved Defensive Stance
+		--[71] = 73, -- Defensive Stance --removed from the game 
+		--[157494] = 73, -- Improved Defensive Stance --removed from the game 
 
 	}
 	

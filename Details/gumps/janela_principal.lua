@@ -1160,7 +1160,6 @@ local function BFrame_scripts (baseframe, instancia)
 end
 
 local function backgrounddisplay_scripts (backgrounddisplay, baseframe, instancia)
-
 	backgrounddisplay:SetScript ("OnEnter", function (self)
 		OnEnterMainWindow (instancia, self)
 	end)
@@ -3478,8 +3477,8 @@ function gump:CriaJanelaPrincipal (ID, instancia, criando)
 	backgrounddisplay:SetFrameLevel (3)
 	backgroundframe.instance = instancia
 	backgrounddisplay.instance = instancia
-	instancia.backgroundDisplay = backgrounddisplay
-
+	instancia.windowBackgroundDisplay = backgrounddisplay
+	
 	--> row frame is the parent of rows, it have setallpoints on baseframe
 	local rowframe = CreateFrame ("frame", "DetailsRowFrame"..ID, _UIParent)
 	rowframe:SetAllPoints (baseframe)
@@ -3495,7 +3494,7 @@ function gump:CriaJanelaPrincipal (ID, instancia, criando)
 	switchbutton:SetPoint ("bottomright", backgrounddisplay, "bottomright")
 	switchbutton:SetFrameLevel (backgrounddisplay:GetFrameLevel()+1)
 	
-	instancia.switchButton = switchbutton
+	instancia.windowSwitchButton = switchbutton
 	
 	--> avoid mouse hover over a high window when the menu is open for a lower instance.
 	local anti_menu_overlap = CreateFrame ("frame", "Details_WindowFrameAntiMenuOverlap" .. ID, UIParent)
@@ -7289,8 +7288,8 @@ function _detalhes:UpdateClickThrough()
 				self.bgframe:EnableMouse (false)
 				self.rowframe:EnableMouse (false)
 				self.floatingframe:EnableMouse (false)
-				self.switchButton:EnableMouse (false)
-				self.backgroundDisplay:EnableMouse (false)
+				self.windowSwitchButton:EnableMouse (false)
+				self.windowBackgroundDisplay:EnableMouse (false)
 				self.baseframe.UPFrame:EnableMouse (false)
 
 			else
@@ -7298,8 +7297,8 @@ function _detalhes:UpdateClickThrough()
 				self.bgframe:EnableMouse (true)
 				self.rowframe:EnableMouse (true)
 				self.floatingframe:EnableMouse (true)
-				self.switchButton:EnableMouse (true)
-				self.backgroundDisplay:EnableMouse (true)
+				self.windowSwitchButton:EnableMouse (true)
+				self.windowBackgroundDisplay:EnableMouse (true)
 				self.baseframe.UPFrame:EnableMouse (true)
 			end
 			
@@ -7327,8 +7326,8 @@ function _detalhes:UpdateClickThrough()
 			self.bgframe:EnableMouse (true)
 			self.rowframe:EnableMouse (true)
 			self.floatingframe:EnableMouse (true)
-			self.switchButton:EnableMouse (true)
-			self.backgroundDisplay:EnableMouse (true)
+			self.windowSwitchButton:EnableMouse (true)
+			self.windowBackgroundDisplay:EnableMouse (true)
 			self.baseframe.UPFrame:EnableMouse (true)
 			
 			--titlebar icons, forcing true because the player isn't in combat and the inCombat setting is enabled
@@ -7363,8 +7362,8 @@ function _detalhes:UpdateClickThrough()
 			self.bgframe:EnableMouse (false)
 			self.rowframe:EnableMouse (false)
 			self.floatingframe:EnableMouse (false)
-			self.switchButton:EnableMouse (false)
-			self.backgroundDisplay:EnableMouse (false)
+			self.windowSwitchButton:EnableMouse (false)
+			self.windowBackgroundDisplay:EnableMouse (false)
 			self.baseframe.UPFrame:EnableMouse (false)
 
 		else
@@ -7372,8 +7371,8 @@ function _detalhes:UpdateClickThrough()
 			self.bgframe:EnableMouse (true)
 			self.rowframe:EnableMouse (true)
 			self.floatingframe:EnableMouse (true)
-			self.switchButton:EnableMouse (true)
-			self.backgroundDisplay:EnableMouse (true)
+			self.windowSwitchButton:EnableMouse (true)
+			self.windowBackgroundDisplay:EnableMouse (true)
 			self.baseframe.UPFrame:EnableMouse (true)
 		end
 		

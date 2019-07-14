@@ -253,6 +253,12 @@ GTFO.SpellID["301839"] = {
   sound = 1;
 };
 
+GTFO.SpellID["278069"] = {
+  --desc = "Rocket Boots (Pest Remover Mk. II)";
+  sound = 1;
+};
+
+
 -- ***********************
 -- * Shrine of the Storm *
 -- ***********************
@@ -934,19 +940,23 @@ GTFO.SpellID["292307"] = {
   --desc = "Gaze from Below (Blackwater Behemoth)";
   sound = 1;
   --affirmingDebuffSpellID = 292133; -- Bioluminescence
-  test = true;
 };
 
 GTFO.SpellID["292247"] = {
   --desc = "Bioelectric Feelers (Blackwater Behemoth)";
   sound = 4;
-  test = true;
 };
 
 GTFO.SpellID["295920"] = {
   --desc = "Ancient Tempest (Radiance of Azshara)";
+  applicationOnly = true;
   sound = 1;
-  test = true; -- Is this too spammy? annoying?
+};
+
+GTFO.SpellID["299152"] = {
+  --desc = "Waterlogged";
+  applicationOnly = true;
+  sound = 0;
 };
 
 GTFO.SpellID["296752"] = {
