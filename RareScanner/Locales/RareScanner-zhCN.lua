@@ -45,6 +45,8 @@ if AL then
 	AL["DISPLAY_NPC_ICONS_DESC"] = "禁用时，稀有NPC的图标不会显示在世界地图上"
 	AL["DISPLAY_OPTIONS"] = "显示选项"
 	AL["DUNGEONS_SCENARIOS"] = "副本/场景战役"
+	AL["ENABLE_SCAN_CHAT"] = "NPC喊话搜寻开关"
+	AL["ENABLE_SCAN_CHAT_DESC"] = "启用后每当稀有NPC喊话或有其他聊天文字信息时会有视觉警告和声音提醒。"
 	AL["ENABLE_SCAN_CONTAINERS"] = "宝藏或宝箱搜寻开关"
 	AL["ENABLE_SCAN_CONTAINERS_DESC"] = "启用以后当每次你的小地图上有宝藏或宝箱出现时会有视觉警告与声音提醒"
 	AL["ENABLE_SCAN_EVENTS"] = "事件搜寻开关"
@@ -136,6 +138,10 @@ if AL then
 	AL["MAP_TOOLTIP_KILLED"] = "Shift+左键标记为已击杀"
 	AL["MAP_TOOLTIP_NOT_FOUND"] = "你未曾见过这个NPC也没有人共享给你。"
 	AL["MAP_TOOLTIP_SEEN"] = "上次相见: %s"
+	--[[Translation missing --]]
+	AL["MARKER"] = "Target marker"
+	--[[Translation missing --]]
+	AL["MARKER_DESC"] = "Choose the marker to add on top of the target when you click the main button."
 	AL["MESSAGE_OPTIONS"] = "消息选项"
 	AL["MIDDLE_BUTTON"] = "鼠标中键点击"
 	AL["NOT_TARGETEABLE"] = "无法设为目标"

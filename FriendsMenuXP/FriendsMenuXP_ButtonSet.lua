@@ -83,7 +83,7 @@ FriendsMenuXP_Buttons["CANCEL_IGNORE"] = {
 FriendsMenuXP_Buttons["REPORT_SPAM"] = {
     text = FMXP_BUTTON_REPORT_PLAYER_FOR..REPORT_SPAMMING,
     func = function(name, dropdown)
-        PlayerReportFrame:InitiateReport(PLAYER_REPORT_TYPE_SPAM, name, PlayerLocation:CreateFromChatLineID(dropdown.lineID))
+        C_ReportSystem.OpenReportPlayerDialog(PLAYER_REPORT_TYPE_SPAM, name, PlayerLocation:CreateFromChatLineID(dropdown.lineID));
     end,
     show = function(name, dropdown)
         local location = dropdown.lineID and PlayerLocation:CreateFromChatLineID(dropdown.lineID)
@@ -94,7 +94,7 @@ FriendsMenuXP_Buttons["REPORT_SPAM"] = {
 FriendsMenuXP_Buttons["REPORT_BAD_LANGUAGE"] = {
     text = FMXP_BUTTON_REPORT_PLAYER_FOR..REPORT_BAD_LANGUAGE,
     func = function(name, dropdown)
-        PlayerReportFrame:InitiateReport(PLAYER_REPORT_TYPE_LANGUAGE, name, PlayerLocation:CreateFromChatLineID(dropdown.lineID))
+        C_ReportSystem.OpenReportPlayerDialog(PLAYER_REPORT_TYPE_LANGUAGE, name, PlayerLocation:CreateFromChatLineID(dropdown.lineID));
     end,
     show = function(name, dropdown)
         local location = dropdown.lineID and PlayerLocation:CreateFromChatLineID(dropdown.lineID)

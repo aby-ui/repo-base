@@ -767,20 +767,6 @@ function Simulationcraft:GetBagItemStrings()
   return bagItems
 end
 
-function Simulationcraft:GetReoriginationArrayStacks()
-  local questStart = 53571
-  local questEnd = 53580
-  local stacks = 0
-
-  for questId = questStart, questEnd do
-    if IsQuestFlaggedCompleted(questId) then
-      stacks = stacks + 1
-    end
-  end
-
-  return stacks
-end
-
 -- Scan buffs to determine which loa racial this player has, if any
 function Simulationcraft:GetZandalariLoa()
   local zandalariLoa = nil
@@ -875,7 +861,7 @@ end
 function Simulationcraft:PrintSimcProfile(debugOutput, noBags, links)
   -- addon metadata
   local versionComment = '# SimC Addon ' .. 'in AbyUI' --aby GetAddOnMetadata('Simulationcraft', 'Version')
-  local simcVersionWarning = '# Requires SimulationCraft 815-01 or newer'
+  local simcVersionWarning = '# Requires SimulationCraft 820-01 or newer'
 
   -- Basic player info
   local _, realmName, _, _, _, _, region, _, _, realmLatinName, _ = nil --aby LibRealmInfo:GetRealmInfoByUnit('player')
@@ -983,7 +969,7 @@ function Simulationcraft:PrintSimcProfile(debugOutput, noBags, links)
     local unlockedEssences = Simulationcraft:GetUnlockedAzeriteEssencesString()
 
     if essences then
-      simulationcraftProfile = simulationcraftProfile .. '# ' .. essences .. '\n'
+      simulationcraftProfile = simulationcraftProfile .. essences .. '\n'
     end
     if unlockedEssences then
       -- output as a comment, SimC doesn't care about unlocked powers but users might
@@ -1017,14 +1003,6 @@ function Simulationcraft:PrintSimcProfile(debugOutput, noBags, links)
       simulationcraftProfile = simulationcraftProfile .. '# ' .. bagItems[i].name .. '\n'
       simulationcraftProfile = simulationcraftProfile .. '# ' .. bagItems[i].string .. '\n'
     end
-  end
-
-  -- collect additional info and output in comments
-  local reoriginationArrayStacks = Simulationcraft:GetReoriginationArrayStacks()
-  if reoriginationArrayStacks > 0 then
-    simulationcraftProfile = simulationcraftProfile .. '\n'
-    simulationcraftProfile = simulationcraftProfile .. '# Stacks of reorigination array based on hidden quest completion\n'
-    simulationcraftProfile = simulationcraftProfile .. '# bfa.reorigination_array_stacks=' .. reoriginationArrayStacks .. '\n'
   end
 
   if links and #links > 0 then

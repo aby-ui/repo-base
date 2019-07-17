@@ -11588,6 +11588,16 @@ elseif GAME_LOCALE == "zhCN" then
         ["Imonar the Soulhunter"] = "猎魂者伊墨纳尔",
         ["Essence of Eonar"] = "保卫艾欧娜尔",
         ["Argus the Unmaker"] = "寂灭者阿古斯",
+
+        ["Abyssal Commander Sivara"] = "深渊指挥官西瓦拉",
+        ["Radiance of Azshara"] = "艾萨拉之辉",
+        ["Blackwater Behemoth"] = "黑水巨鳗",
+        ["Lady Ashvane"] = "艾什凡女勋爵",
+        ["Orgozoa"] = "奥戈佐亚",
+        ["The Queen's Court"] = "女王法庭",
+        ["Za'qul"] = "扎库尔",
+        ["Queen Azshara"] = "艾萨拉女王",
+
 	["\"Captain\" Cookie"] = "“船长”曲奇",
 	["Acidmaw"] = "酸喉",
 	["Adarogg"] = "阿达罗格",

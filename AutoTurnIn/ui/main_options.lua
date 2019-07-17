@@ -77,6 +77,8 @@ local EquipReward = newCheckbox("Equip", L["autoequip"], "autoequip")
 local Debug = newCheckbox("Debug", L["debug"], "debug")
 -- share quest (!!! alpha)
 local ShareQuests = newCheckbox("ShareQuests", L["ShareQuestsLabel"], "questshare")
+-- accept share quest --abyui
+local AcceptShared = newCheckbox("AcceptShared", L["AcceptSharedQuestsLabel"], "acceptshare")
 -- 'Show QuestLevel' CheckBox
 local ShowQuestLevel = newCheckbox("QuestLevel", L["questlevel"], "questlevel")
 -- 'Show Watch Quest Level' CheckBox
@@ -126,7 +128,7 @@ ShowWatchLevel:SetPoint("TOPLEFT", ShowQuestLevel, "BOTTOMLEFT", 0, -10)
 ShareQuests:SetPoint("TOPLEFT", ShowWatchLevel, "BOTTOMLEFT", 0, -10)
 RelicToggle:SetPoint("TOPLEFT", TournamentDropDown, "BOTTOMLEFT", 17, -10)
 ArtifactPowerToggle:SetPoint("TOPLEFT", RelicToggle, "BOTTOMLEFT", 0, -10)
-
+AcceptShared:SetPoint("TOPLEFT", ArtifactPowerToggle, "BOTTOMLEFT", 0, -10)
 
 OptionsPanel.refresh = function()
 	if ( MakeACopy ) then 
@@ -153,6 +155,7 @@ OptionsPanel.refresh = function()
 	ShowQuestLevel:SetChecked(ptable.TempConfig.questlevel)
 	ShowWatchLevel:SetChecked(ptable.TempConfig.watchlevel)
 	ShareQuests:SetChecked(ptable.TempConfig.questshare)
+    AcceptShared:SetChecked(ptable.TempConfig.acceptshare)
 	RelicToggle:SetChecked(ptable.TempConfig.relictoggle)
 	ArtifactPowerToggle:SetChecked(ptable.TempConfig.artifactpowertoggle)	
 

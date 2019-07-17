@@ -19,7 +19,7 @@ AutoTurnIn.defaults = {enabled = false, all = 1, trivial = false, completeonly =
                        lootreward = 1, tournament = 2,
 					   darkmoonteleport=true, todarkmoon=true, togglekey=4, darkmoonautostart=true, showrewardtext=true,
 					   version=TOCVersion, autoequip = false, debug=false,
-					   questlevel=true, watchlevel=true, questshare=false,
+					   questlevel=true, watchlevel=true, questshare=false, acceptshare=false,
 					   armor = {}, weapon = {}, stat = {}, secondary = {},
 					   relictoggle=true, artifactpowertoggle=true, reviveBattlePet=false}
 
@@ -116,6 +116,7 @@ function AutoTurnIn:OnEnable()
 	DB.questlevel = DB.questlevel == nil and true or DB.questlevel
 	DB.watchlevel = DB.watchlevel == nil and true or DB.watchlevel
 	DB.questshare = DB.questshare == nil and false or DB.questshare
+    DB.acceptshare = DB.acceptshare == nil and false or DB.acceptshare
     DB.relictoggle = DB.relictoggle == nil and true or DB.relictoggle
 	DB.artifactpowertoggle = DB.artifactpowertoggle == nil and true or DB.artifactpowertoggle
 
@@ -399,6 +400,10 @@ function AutoTurnIn:QUEST_DETAIL()
 		QuestInfoDescriptionText:SetAlphaGradient(0, -1)
 		QuestInfoDescriptionText:SetAlpha(1)
 		AcceptQuest()
+    elseif AutoTurnInCharacterDB.acceptshare and (UnitInParty("questnpc") or UnitInRaid("questnpc")) then
+        QuestInfoDescriptionText:SetAlphaGradient(0, -1)
+        QuestInfoDescriptionText:SetAlpha(1)
+        AcceptQuest()
 	end
 end
 

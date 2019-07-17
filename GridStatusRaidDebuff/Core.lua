@@ -1,5 +1,6 @@
 local zoneOrder = {
-    [C_Map.GetMapInfo(1358).name] = 1,
+    [C_Map.GetMapInfo(1512).name] = 1,
+    [C_Map.GetMapInfo(1358).name] = 1.1,
     [C_Map.GetMapInfo(1162).name] = 1.1,
     [C_Map.GetMapInfo(1041).name] = 1.2,
     [C_Map.GetMapInfo(1038).name] = 1.3,
@@ -402,7 +403,9 @@ function GridStatusRaidDebuff:ZoneCheck()
 	-- Force map to right zone
 	--SetMapToCurrentZone()
 	local mapid = C_Map.GetBestMapForUnit("player")
-	local localzone = C_Map.GetMapInfo(mapid).name
+    if type(mapid) == "number" then
+	    local localzone = C_Map.GetMapInfo(mapid).name
+    end
 
 	-- zonetype is a module variable
 	instzone, zonetype = GetInstanceInfo()

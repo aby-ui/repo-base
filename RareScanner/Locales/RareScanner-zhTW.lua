@@ -45,6 +45,10 @@ if AL then
 	AL["DISPLAY_NPC_ICONS_DESC"] = "當停用時，稀有NPC圖示不會顯示在世界地圖上。"
 	AL["DISPLAY_OPTIONS"] = "顯示選項"
 	AL["DUNGEONS_SCENARIOS"] = "地城/事件"
+	--[[Translation missing --]]
+	AL["ENABLE_SCAN_CHAT"] = "Toggle searching for rare NPCs through chat messages"
+	--[[Translation missing --]]
+	AL["ENABLE_SCAN_CHAT_DESC"] = "When this is activated you will be warned visually and with a sound everytime a rare NPC yells or a chat message related with a rare NPCs is detected."
 	AL["ENABLE_SCAN_CONTAINERS"] = "搜尋寶藏或寶箱"
 	AL["ENABLE_SCAN_CONTAINERS_DESC"] = "啟用時，每當你的小地圖上有寶藏或寶箱出現，都會有視覺警告與聲音提醒。"
 	AL["ENABLE_SCAN_EVENTS"] = "搜尋事件"
@@ -137,6 +141,10 @@ if AL then
 	AL["MAP_TOOLTIP_KILLED"] = "Shift-左鍵點擊來設置為已擊殺"
 	AL["MAP_TOOLTIP_NOT_FOUND"] = "你還沒見過此NPC並且也還沒有人跟你分享。"
 	AL["MAP_TOOLTIP_SEEN"] = "多久前見過：%s"
+	--[[Translation missing --]]
+	AL["MARKER"] = "Target marker"
+	--[[Translation missing --]]
+	AL["MARKER_DESC"] = "Choose the marker to add on top of the target when you click the main button."
 	AL["MESSAGE_OPTIONS"] = "訊息選項"
 	AL["MIDDLE_BUTTON"] = "中鍵點擊"
 	AL["NOT_TARGETEABLE"] = "無法設為目標"

@@ -19,6 +19,7 @@ privateTable.L = setmetatable({
     ["questTypeExceptDaily"] = "除日常外的全部",
     ["TrivialQuests"]="接受低等级任务",
 	["ShareQuestsLabel"] = "自动与队友分享任务",
+    ["AcceptSharedQuestsLabel"] = "自动接受队友分享的任务",
     ["CompleteOnly"] = "只自动交任务(不自动接)",
 
 	["lootTypeLabel"]="有奖励的任务",
@@ -36,6 +37,10 @@ privateTable.L = setmetatable({
 	["DarkmoonAutoLabel"]="暗月：开始游戏",
 	["Darkmoon Island"]="Darkmoon Island",
 	["Darkmoon Faire Mystic Mage"]="Darkmoon Faire Mystic Mage",
+
+    ["ReviveBattlePetLabel"]="宠物训练师自动治疗（暂不支持）", --todo abyui
+   	["ReviveBattlePetQ"]="I'd like to heal and revive my battle pets.",
+   	["ReviveBattlePetA"]="A small fee for supplies is required.",
 	
 	["The Jade Forest"]="The Jade Forest",
     ["Scared Pandaren Cub"]="Scared Pandaren Cub",

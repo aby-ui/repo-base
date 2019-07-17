@@ -29,6 +29,7 @@ privateTable.L = setmetatable({
     ["questTypeExceptDaily"] = "except daily",
     ["TrivialQuests"]="Accept 'grey' quests",
 	["ShareQuestsLabel"] = "Quest auto sharing",
+    ["AcceptSharedQuestsLabel"] = "Auto accept shared quest",
     ["CompleteOnly"] = "Turn in only",
 
 	["lootTypeLabel"]="Quests with rewards",

@@ -29,7 +29,7 @@ local DEBUG_MODE = false
 
 -- Config constants
 local CURRENT_DB_VERSION = 5
-local CURRENT_LOOT_DB_VERSION = 13
+local CURRENT_LOOT_DB_VERSION = 14
 
 -- Hard reset versions
 local CURRENT_ADDON_VERSION = 600
@@ -47,11 +47,13 @@ local PROFILE_DEFAULTS = {
 			scanRares = true,
 			scanContainers = true,
 			scanEvents = true,
+			scanChatAlerts = true,
 			scanGarrison = false,
 			scanInstances = true,
 			scanOnTaxi = true,
 			filteredRares = {},
-			filteredZones = {}
+			filteredZones = {},
+			marker = 8
 		},
 		sound = {
 			soundPlayed = "Horn",
@@ -495,6 +497,11 @@ scanner_button:SetScript("OnEvent", function(self, event, ...)
 		end
 	-- Chat
 	elseif (event == "CHAT_MSG_MONSTER_YELL") then
+		-- If not disabled
+		if (not private.db.general.scanChatAlerts) then
+			return
+		end
+		
 		-- Only for Mechagon (lets don't support everywhere yet to see its performance)
 		local currentMap = C_Map.GetBestMapForUnit("player")
 		if (currentMap and currentMap == 1462) then
@@ -505,6 +512,12 @@ scanner_button:SetScript("OnEvent", function(self, event, ...)
 				if (npcID and npcID == 154342) then
 					npcID = 151934
 				end
+				
+				-- The Scrap King fix
+				if ((npcID == 151623 or npcID == 151625) and (private.dbchar.rares_killed[151623] or private.dbchar.rares_killed[151625])) then
+					return
+				end
+				
 				-- Simulates vignette event
 				if (npcID and private.ZONE_IDS[npcID] and not private.dbchar.rares_killed[npcID]) then
 					local vignetteInfo = {}
@@ -519,6 +532,11 @@ scanner_button:SetScript("OnEvent", function(self, event, ...)
 			end
 		end
 	elseif (event == "CHAT_MSG_MONSTER_EMOTE") then
+		-- If not disabled
+		if (not private.db.general.scanChatAlerts) then
+			return
+		end
+		
 		-- Only for Mechagon Construction Projects
 		local currentMap = C_Map.GetBestMapForUnit("player")
 		if (currentMap and currentMap == 1462) then
@@ -977,7 +995,7 @@ function scanner_button:ShowButton()
 	if (self.npcID and (self.iconid == RareScanner.NPC_VIGNETTE or self.iconid == RareScanner.NPC_LEGION_VIGNETTE or self.iconid == RareScanner.NPC_VIGNETTE_ELITE)) then
 		self.Description_text:SetText(AL["CLICK_TARGET"])
 		
-		self:SetAttribute("macrotext", "/cleartarget\n/targetexact "..self.name.."\n/tm 8")
+		self:SetAttribute("macrotext", "/cleartarget\n/targetexact "..self.name.."\n/tm "..private.db.general.marker)
 		
 		-- show button
 		self:Show()

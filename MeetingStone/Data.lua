@@ -301,10 +301,11 @@ CATEGORY = {
             [146] = true,
             [251] = true,
             [252] = true,
+            [253] = true,
             [254] = true,
         },
         activities = {
-            [657] = true,
+            [657] = true, --=C_LFGList.GetActivityInfo(657) 世界首领
         },
     }
 }

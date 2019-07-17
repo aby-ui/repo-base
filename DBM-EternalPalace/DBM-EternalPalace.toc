@@ -20,6 +20,7 @@
 ## X-DBM-Mod-MinExpansion: 7
 localization.en.lua
 localization.cn.lua
+localization.tw.lua
 AbyssalCommanderSivara.lua
 RadianceofAzshara.lua
 BlackwaterBehemoth.lua
