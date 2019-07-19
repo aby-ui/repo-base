@@ -289,8 +289,19 @@ local function GetGeneralOptions()
 					end,
 					width = "full",
 				},
-				marker = {
+				showMaker = {
 					order = 7,
+					name = AL["ENABLE_MARKER"],
+					desc = AL["ENABLE_MARKER_DESC"],
+					type = "toggle",
+					get = function() return private.db.general.showMaker end,
+					set = function(_, value)
+						private.db.general.showMaker = value
+					end,
+					width = "full",
+				},
+				marker = {
+					order = 8,
 					type = "select",
 					dialogControl = 'RS_Markers',
 					name = AL["MARKER"],
@@ -301,14 +312,15 @@ local function GetGeneralOptions()
 						setMarker(value)
 					end,
 					width = "normal",
+					disabled = function() return not private.db.general.showMaker end,
 				},
 				separatorMessages = {
-					order = 8,
+					order = 9,
 					type = "header",
 					name = "",
 				},
 				sync = {
-					order = 9,
+					order = 10,
 					name = AL["SYNCRONIZE"],
 					desc = AL["SYNCRONIZE_DESC"],
 					type = "execute",
@@ -316,7 +328,7 @@ local function GetGeneralOptions()
 					width = "double",
 				},
 				test = {
-					order = 10,
+					order = 11,
 					name = AL["TEST"],
 					desc = AL["TEST_DESC"],
 					type = "execute",
@@ -599,8 +611,19 @@ local function GetFilterOptions()
 			handler = RareScanner,
 			desc = AL["FILTER"],
 			args = {
-				rareFiltersSearch = {
+				filterOnlyMap = {
 					order = 1,
+					type = "toggle",
+					name = AL["FILTER_NPCS_ONLY_MAP"],
+					desc = AL["FILTER_NPCS_ONLY_MAP_DESC"],
+					get = function() return private.db.rareFilters.filterOnlyMap end,
+					set = function(_, value)
+						private.db.rareFilters.filterOnlyMap = value
+					end,
+					width = "full",
+				},
+				rareFiltersSearch = {
+					order = 2,
 					type = "input",
 					name = AL["FILTERS_SEARCH"],
 					desc = AL["FILTERS_SEARCH_DESC"],
@@ -618,7 +641,7 @@ local function GetFilterOptions()
 					width = "full",
 				},
 				continents = {
-					order = 2.1,
+					order = 3.1,
 					type = "select",
 					name = AL["FILTER_CONTINENT"],
 					desc = AL["FILTER_CONTINENT_DESC"],
@@ -650,7 +673,7 @@ local function GetFilterOptions()
 					width = "normal",
 				},
 				subzones = {
-					order = 2.2,
+					order = 3.2,
 					type = "select",
 					name = AL["FILTER_ZONE"],
 					desc = AL["FILTER_ZONE_DESC"],
@@ -667,7 +690,7 @@ local function GetFilterOptions()
 					disabled = function() return (next(filter_options.args.subzones.values) == nil) end,
 				},
 				rareFiltersClear = {
-					order = 2.3,
+					order = 3.3,
 					name = AL["CLEAR_FILTERS_SEARCH"],
 					desc = AL["CLEAR_FILTERS_SEARCH_DESC"],
 					type = "execute",
@@ -685,12 +708,12 @@ local function GetFilterOptions()
 					width = "normal",
 				},
 				separator = {
-					order = 3,
+					order = 4,
 					type = "header",
 					name = AL["FILTERS"],
 				},
 				rareFiltersToogleAll = {
-					order = 4,
+					order = 5,
 					name = AL["TOGGLE_FILTERS"],
 					desc = AL["TOGGLE_FILTERS_DESC"],
 					type = "execute",
@@ -710,7 +733,7 @@ local function GetFilterOptions()
 					width = "full",
 				},
 				rareFilters = {
-					order = 5,
+					order = 6,
 					type = "multiselect",
 					name = AL["FILTER_RARE_LIST"],
 					desc = AL["FILTER_RARE_LIST_DESC"],
@@ -788,8 +811,19 @@ local function GetZonesFilterOptions()
 			handler = RareScanner,
 			desc = AL["ZONES_FILTER"],
 			args = {
-				zoneFiltersSearch = {
+				filterOnlyMap = {
 					order = 1,
+					type = "toggle",
+					name = AL["FILTER_ZONES_ONLY_MAP"],
+					desc = AL["FILTER_ZONES_ONLY_MAP_DESC"],
+					get = function() return private.db.zoneFilters.filterOnlyMap end,
+					set = function(_, value)
+						private.db.zoneFilters.filterOnlyMap = value
+					end,
+					width = "full",
+				},
+				zoneFiltersSearch = {
+					order = 2,
 					type = "input",
 					name = AL["FILTERS_SEARCH"],
 					desc = AL["ZONES_FILTERS_SEARCH_DESC"],
@@ -803,7 +837,7 @@ local function GetZonesFilterOptions()
 					width = "full",
 				},
 				continents = {
-					order = 2.1,
+					order = 3.1,
 					type = "select",
 					name = AL["FILTER_CONTINENT"],
 					desc = AL["FILTER_CONTINENT_DESC"],
@@ -829,7 +863,7 @@ local function GetZonesFilterOptions()
 					width = "normal",
 				},
 				zoneFiltersClear = {
-					order = 2.2,
+					order = 3.2,
 					name = AL["CLEAR_FILTERS_SEARCH"],
 					desc = AL["CLEAR_FILTERS_SEARCH_DESC"],
 					type = "execute",
@@ -843,12 +877,12 @@ local function GetZonesFilterOptions()
 					width = "normal",
 				},
 				separator = {
-					order = 3,
+					order = 4,
 					type = "header",
 					name = AL["ZONES_FILTER"],
 				},
 				zoneFiltersToogleAll = {
-					order = 4,
+					order = 5,
 					name = AL["TOGGLE_FILTERS"],
 					desc = AL["TOGGLE_FILTERS_DESC"],
 					type = "execute",
@@ -868,7 +902,7 @@ local function GetZonesFilterOptions()
 					width = "full",
 				},
 				zoneFilters = {
-					order = 5,
+					order = 6,
 					type = "multiselect",
 					name = AL["FILTER_ZONES_LIST"],
 					desc = AL["FILTER_ZONES_LIST_DESC"],

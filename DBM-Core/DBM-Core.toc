@@ -19,7 +19,7 @@
 ## X-Website: http://www.deadlybossmods.com
 ## X-Curse-Project-ID: 3358
 ## X-WoWI-ID: 8814
-## Version: 8.2.5-1-gf1097ae3e
+## Version: 8.2.6-14-geb403d634
 
 #@no-lib-strip@
 Libs\LibLatency\LibLatency.xml

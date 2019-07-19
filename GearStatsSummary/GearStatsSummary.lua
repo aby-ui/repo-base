@@ -52,7 +52,7 @@ local function ScanItemTooltip(unit, slot)
 	end
 	tip:SetInventoryItem(unit, slot);
 	tip:Show();
-	
+
 	local itemLevel, GemsSlotCount, GemsEmptyCount = 0, 0, 0;
 	local itemSet;
 	local ret;
@@ -89,6 +89,7 @@ local function ScanItemTooltip(unit, slot)
 	
 	tip:Hide();
     --if (slot == 16 or slot == 17) and itemLevel ~= 750 and not UnitIsUnit(unit, "player") then itemLevel=itemLevel+15 end
+    if slot == 2 and GetInventoryItemQuality(unit, 2) == 6 then GemsSlotCount,GemsEmptyCount = 0, 0 end --abyui 艾泽拉斯之心有4孔
 	return itemLevel, itemSet, GemsSlotCount, GemsEmptyCount
 end
 

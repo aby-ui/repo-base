@@ -58,6 +58,8 @@ GTFO.IgnoreScan["218508"] = true; -- Recursive Strikes
 GTFO.IgnoreScan["186416"] = true; -- Torment of Flames
 GTFO.IgnoreScan["80354"] = true; -- Time Warp
 GTFO.IgnoreScan["258018"] = true; -- Sense of Dread
+GTFO.IgnoreScan["294856"] = true; -- Unstable Mixture
+
 
 
 

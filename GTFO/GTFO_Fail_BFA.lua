@@ -1541,6 +1541,16 @@ GTFO.SpellID["291856"] = {
 -- TODO: Tentacle Slam (Za'qul)
 -- TODO: Arcane Burst (Queen Azshara)
 
+GTFO.SpellID["303876"] = {
+  --desc = "Overwhelming Toxin (Abyssal Commander Sivara)";
+  sound = 3;
+};
+
+GTFO.SpellID["303875"] = {
+  --desc = "Overwhelming Frost (Abyssal Commander Sivara)";
+  sound = 3;
+};
+
 GTFO.SpellID["293001"] = {
   --desc = "Death from Below (Blackwater Behemoth)";
   sound = 3;
@@ -1550,13 +1560,6 @@ GTFO.SpellID["298595"] = {
   --desc = "Glowing Stinger (Blackwater Behemoth)";
   applicationOnly = true;
   sound = 3;
-  test = true;
-};
-
-GTFO.SpellID["296566"] = {
-  --desc = "Tidefist (Radiance of Azshara)";
-  sound = 3;
-  affirmingDebuffSpellID = 296566; -- Tidefist
   test = true;
 };
 
@@ -1587,6 +1590,12 @@ GTFO.SpellID["304026"] = {
 };
 
 GTFO.SpellID["296746"] = {
+  --desc = "Arcane Bomb (Radiance of Azshara)";
+  sound = 3;
+  applicationOnly = true;
+};
+
+GTFO.SpellID["304027"] = {
   --desc = "Arcane Bomb (Radiance of Azshara)";
   sound = 3;
   applicationOnly = true;
@@ -1634,18 +1643,20 @@ GTFO.SpellID["299705"] = {
 GTFO.SpellID["292565"] = {
   --desc = "Crushing Grasp (Za'qul)";
   sound = 3;
-  test = true;
 };
 
 GTFO.SpellID["298120"] = {
   --desc = "Lightning Orbs (Queen Azshara)";
   sound = 3;
-  test = true;
 };
 
 GTFO.SpellID["300518"] = {
   --desc = "Arcane Detonation (Queen Azshara)";
   sound = 3;
-  test = true;
 };
 
+GTFO.SpellID["303963"] = {
+  --desc = "Void Slam (Horrific Shrieker)";
+  sound = 3;
+  tankSound = 0;
+};

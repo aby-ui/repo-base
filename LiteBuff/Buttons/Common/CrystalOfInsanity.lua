@@ -9,7 +9,7 @@ local _, addon = ...
 local L = addon.L
 
 local AURA_NAME = GetSpellInfo(127230)
-local CONFLICTS = addon:BuildSpellList(nil, 127230, 105689, 105691, 105693, 105694, 105696, 242551, 188031, 188034, 188035, 188033, 251839, 251837, 251836, 251838).conflicts
+local CONFLICTS = addon:BuildSpellList(nil, 127230, 105689, 105691, 105693, 105694, 105696, 242551, 188031, 188034, 188035, 188033, 251839, 251837, 251836, 251838, 298841, 298836, 298837, 298839).conflicts
 
 local crystalName, crystalLink
 

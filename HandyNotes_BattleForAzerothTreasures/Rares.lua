@@ -320,6 +320,6 @@ merge(ns.points[1462], { -- Mechagon
     [69205340] = {quest=56367, npc=154701, item=167846, achievement=13470, criteria=45410,}, -- Gorged Gear-Cruncher
     [66505870] = {quest=56368, npc=154739, item=nil, achievement=13470, criteria=45411,}, -- Caustic Mechaslime
     [80902020] = {quest=nil, npc=155060, item=nil, achievement=13470, criteria=45433,}, -- Doppel Ganger
-    [81407600] = {quest=56737, npc=155583, item=168490, achievement=13470, criteria=nil,}, -- Scrapclaw
+    [81407600] = {quest=56737, npc=155583, item=168490, achievement=13470, criteria=45691,}, -- Scrapclaw
 })
 --]===]

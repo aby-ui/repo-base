@@ -53,6 +53,7 @@ local PROFILE_DEFAULTS = {
 			scanOnTaxi = true,
 			filteredRares = {},
 			filteredZones = {},
+			showMaker = true,
 			marker = 8
 		},
 		sound = {
@@ -72,10 +73,13 @@ local PROFILE_DEFAULTS = {
 			autoHideLogWindow = 0
 		},
 		rareFilters = {
-			filtersToggled = true
+			filtersToggled = true,
+			filterOnlyMap = false
+			
 		},
 		zoneFilters = {
-			filtersToggled = true
+			filtersToggled = true,
+			filterOnlyMap = false
 		},
 		map = {
 			displayNpcIcons = false,
@@ -701,7 +705,7 @@ function scanner_button:CheckNotificationCache(self, vignetteInfo)
 		elseif (iconid == RareScanner.EVENT_VIGNETTE and not private.db.general.scanEvents) then
 			return
 		-- disable zones alerts if the player is in that zone
-		elseif (next(private.db.general.filteredZones) ~= nil and private.db.general.filteredZones[zone_id] == false) then
+		elseif (not private.db.zoneFilters.filterOnlyMap and next(private.db.general.filteredZones) ~= nil and private.db.general.filteredZones[zone_id] == false) then
 			return
 		-- disable alerts for containers
 		elseif (iconid == RareScanner.CONTAINER_VIGNETTE or iconid == RareScanner.CONTAINER_ELITE_VIGNETTE) then
@@ -766,7 +770,7 @@ function scanner_button:CheckNotificationCache(self, vignetteInfo)
 	end
 	
 	-- Check if the NPC is filtered, in which case we don't show anything
-	if (npcID and next(private.db.general.filteredRares) ~= nil and private.db.general.filteredRares[npcID] == false) then
+	if (npcID and not private.db.rareFilters.filterOnlyMap and next(private.db.general.filteredRares) ~= nil and private.db.general.filteredRares[npcID] == false) then
 		return
 	end
 	
@@ -995,7 +999,11 @@ function scanner_button:ShowButton()
 	if (self.npcID and (self.iconid == RareScanner.NPC_VIGNETTE or self.iconid == RareScanner.NPC_LEGION_VIGNETTE or self.iconid == RareScanner.NPC_VIGNETTE_ELITE)) then
 		self.Description_text:SetText(AL["CLICK_TARGET"])
 		
-		self:SetAttribute("macrotext", "/cleartarget\n/targetexact "..self.name.."\n/tm "..private.db.general.marker)
+		if (private.db.general.showMaker) then
+			self:SetAttribute("macrotext", "/cleartarget\n/targetexact "..self.name.."\n/tm "..private.db.general.marker)
+		else
+			self:SetAttribute("macrotext", "/cleartarget\n/targetexact "..self.name)
+		end
 		
 		-- show button
 		self:Show()
@@ -1361,7 +1369,7 @@ function RareScanner:MarkCompletedAchievements()
 							private.dbchar.events_completed[npcID] = ETERNAL_COMPLETED
 						else
 							for npcID, name in pairs (private.dbglobal.rare_names[GetLocale()]) do
-								if (RS_tContains(name, criteriaString)) then
+								if (RS_tContains(name, criteriaString) and private.ZONE_IDS[npcID] and not private.RESETABLE_KILLS_ZONE_IDS[private.ZONE_IDS[npcID].zoneID]) then
 									private.dbchar.rares_killed[npcID] = ETERNAL_DEATH
 									break
 								end

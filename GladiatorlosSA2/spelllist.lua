@@ -72,6 +72,7 @@
 			--[200851] = "rageOfSleeper",
 			--[203727] = "thorns", -- (Resto)
 			[236696] = "thorns", -- (Feral/Balance)
+			[305497] = "thorns", -- Resto/Feral/Balance 8.2
 			[163505] = "rakeStun",
 
 			-- Hunter (Aura Applied)

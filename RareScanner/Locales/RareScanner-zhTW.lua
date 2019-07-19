@@ -46,6 +46,10 @@ if AL then
 	AL["DISPLAY_OPTIONS"] = "顯示選項"
 	AL["DUNGEONS_SCENARIOS"] = "地城/事件"
 	--[[Translation missing --]]
+	AL["ENABLE_MARKER"] = "Toggle target marker"
+	--[[Translation missing --]]
+	AL["ENABLE_MARKER_DESC"] = "When this is activated it will show a marker on top of the target when you click the main button"
+	--[[Translation missing --]]
 	AL["ENABLE_SCAN_CHAT"] = "Toggle searching for rare NPCs through chat messages"
 	--[[Translation missing --]]
 	AL["ENABLE_SCAN_CHAT_DESC"] = "When this is activated you will be warned visually and with a sound everytime a rare NPC yells or a chat message related with a rare NPCs is detected."
@@ -67,12 +71,20 @@ if AL then
 	AL["FILTER"] = "過濾NPC"
 	AL["FILTER_CONTINENT"] = "大陸/類別"
 	AL["FILTER_CONTINENT_DESC"] = "大陸或類別名稱"
+	--[[Translation missing --]]
+	AL["FILTER_NPCS_ONLY_MAP"] = "Enable filters only in the world map"
+	--[[Translation missing --]]
+	AL["FILTER_NPCS_ONLY_MAP_DESC"] = "When enabled you will still get alerts from filtered NPCs but they won't show up in your world map. When disabled you won't get alerts from filtered NPCs at all."
 	AL["FILTER_RARE_LIST"] = "過濾要搜尋的稀有NPC"
 	AL["FILTER_RARE_LIST_DESC"] = "搜尋這個稀有NPC。|n停用後，發現這個NPC時不會通知。"
 	AL["FILTER_ZONE"] = "區域"
 	AL["FILTER_ZONE_DESC"] = "大陸或類別內的區域"
 	AL["FILTER_ZONES_LIST"] = "區域清單"
 	AL["FILTER_ZONES_LIST_DESC"] = "啟用/停用這個區域的通知。停用後，在這個區域中發現稀有NPC、事件或寶箱不會通知。"
+	--[[Translation missing --]]
+	AL["FILTER_ZONES_ONLY_MAP"] = "Enable filters only in the world map"
+	--[[Translation missing --]]
+	AL["FILTER_ZONES_ONLY_MAP_DESC"] = "When enabled you will still get alerts from NPCs that belong to filtered zones but they won't show up in your world map. When disabled you won't get alerts from NPCs that belong to filtered zones at all."
 	AL["FILTERS"] = "過濾稀有NPC"
 	AL["FILTERS_SEARCH"] = "搜尋"
 	AL["FILTERS_SEARCH_DESC"] = "輸入NPC名字來過濾下方的清單"

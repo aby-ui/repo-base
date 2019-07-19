@@ -488,7 +488,7 @@ function GSA:OnOptionCreate()
 								inline = true,
 								name = L["|cffFF7D0ADruid|r"],
 								order = 70,
-								args = listOption({102560,102543,102558,33891,61336,22812,252216,1850,69369,102342,102351,155835,29166,194223,236696,163505,106951},"auraApplied"),
+								args = listOption({102560,102543,102558,33891,61336,22812,252216,1850,69369,102342,102351,155835,29166,194223,236696,305497,163505,106951},"auraApplied"),
 							},
 							hunter = { -- AuraApplied
 								type = 'group',

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2361, "DBM-EternalPalace", nil, 1179)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019071740256")
+mod:SetRevision("20190718160637")
 mod:SetCreatureID(152910)
 mod:SetEncounterID(2299)
 mod:SetZone()
@@ -420,8 +420,7 @@ function mod:SPELL_CAST_START(args)
 		self.vb.bigAddCount = 0
 		warnPhase:Show(DBM_CORE_AUTO_ANNOUNCE_TEXTS.stage:format(2))
 		warnPhase:Play("ptwo")
-		timerQueensDecreeCD:Stop()
-		timerArcaneOrbsCD:Stop()
+		timerHulkSpawnCD:Stop()--For good measure
 		if self:IsHard() then
 			timerBeckonCD:Start(25, 1)--START
 			timerReversalofFortuneCD:Start(68.1, 1)
@@ -615,27 +614,51 @@ function mod:SPELL_AURA_APPLIED(args)
 			local text
 			if spellId == 299249 then--Soak Orbs
 				specWarnQueensDecree:ScheduleVoiceOverLap(0+playerDecreeCount, "helpsoak")
-				text = playerDecreeCount == 0 and L.SoakOrb or text..", "..L.SoakOrb
+				if text then
+					text = text..", "..L.SoakOrb
+				else
+					text = L.SoakOrb
+				end
 				playerDecreeYell = playerDecreeYell + 2--100s 2-Stack/1-Solo, 10s 2-Moving/1-Stay, 1s 2-Soak/1-NoSoak
 			elseif spellId == 299251 then--Dodge Orbs
 				specWarnQueensDecree:ScheduleVoiceOverLap(0+playerDecreeCount, "watchorb")
-				text = playerDecreeCount == 0 and L.AvoidOrb or text..", "..L.AvoidOrb
+				if text then
+					text = text..", "..L.AvoidOrb
+				else
+					text = L.AvoidOrb
+				end
 				playerDecreeYell = playerDecreeYell + 1--100s 2-Stack/1-Solo, 10s 2-Moving/1-Stay, 1s 2-Soak/1-NoSoak
 			elseif spellId == 299254 then--Group Up
 				specWarnQueensDecree:ScheduleVoiceOverLap(0+playerDecreeCount, "gather")
-				text = playerDecreeCount == 0 and L.GroupUp or text..", "..L.GroupUp
+				if text then
+					text = text..", "..L.GroupUp
+				else
+					text = L.GroupUp
+				end
 				playerDecreeYell = playerDecreeYell + 200--100s 2-Stack/1-Solo, 10s 2-Moving/1-Stay, 1s 2-Soak/1-NoSoak
 			elseif spellId == 299255 then--Don't Group Up
 				specWarnQueensDecree:ScheduleVoiceOverLap(0+playerDecreeCount, "scatter")
-				text = playerDecreeCount == 0 and L.Spread or text..", "..L.Spread
+				if text then
+					text = text..", "..L.Spread
+				else
+					text = L.Spread
+				end
 				playerDecreeYell = playerDecreeYell + 100--100s 2-Stack/1-Solo, 10s 2-Moving/1-Stay, 1s 2-Soak/1-NoSoak
 			elseif spellId == 299252 then--Keep Moving
 				specWarnQueensDecree:ScheduleVoiceOverLap(0+playerDecreeCount, "keepmove")
-				text = playerDecreeCount == 0 and L.Move or text..", "..L.Move
+				if text then
+					text = text..", "..L.Move
+				else
+					text = L.Move
+				end
 				playerDecreeYell = playerDecreeYell + 20--100s 2-Stack/1-Solo, 10s 2-Moving/1-Stay, 1s 2-Soak/1-NoSoak
 			elseif spellId == 299253 then--Stop Moving
 				specWarnQueensDecree:ScheduleVoiceOverLap(0+playerDecreeCount, "stopmove")
-				text = playerDecreeCount == 0 and L.DontMove or text..", "..L.DontMove
+				if text then
+					text = text..", "..L.DontMove
+				else
+					text = L.DontMove
+				end
 				playerDecreeYell = playerDecreeYell + 10--100s 2-Stack/1-Solo, 10s 2-Moving/1-Stay, 1s 2-Soak/1-NoSoak
 			end
 			playerDecreeCount = playerDecreeCount + 1--Increased after voices, because of way voice scheduling is being done
@@ -906,7 +929,7 @@ function mod:INSTANCE_ENCOUNTER_ENGAGE_UNIT()
 				specWarnHulk:Show(self.vb.bigAddCount)
 				specWarnHulk:Play("bigmob")
 				local timer = self:IsHard() and phase1HeroicAddTimers[self.vb.bigAddCount+1] or phase1NormalAddTimers[self.vb.bigAddCount+1]
-				if timer then
+				if timer and self.vb.phase == 1 then
 					timerHulkSpawnCD:Start(timer, self.vb.bigAddCount+1)
 				end
 			elseif cid == 153090 or cid == 153091 then--Phase 3 Sirens becoming active

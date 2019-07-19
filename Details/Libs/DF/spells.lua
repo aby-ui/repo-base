@@ -790,6 +790,13 @@ DF.FlaskIDs = {
 	[251837] = true, -- Flask of Endless Fathoms intellect
 	[251838] = true, -- Flask of the Vast Horizon stamina
 	[251839] = true, -- Flask of the Undertow strength
+
+	------------------------------------------------------------------------
+	--revision ny nullKomplex july 07 2019
+	[298836] = true, -- Greater Flask of the Currents agility
+	[298837] = true, -- Greater Flask of Endless Fathoms intellect
+	[298839] = true, -- Greater Flask of the Vast Horizon stamina
+	[298841] = true, -- Greater Flask of the Undertow strength
 }
 
 DF.FoodIDs = {
@@ -812,6 +819,31 @@ DF.FoodIDs = {
 	[259455] = 100, --Bountiful Captain's Feast intellect
 	[259457] = 100, --Bountiful Captain's Feast stamina
 	[257427] = 100, --Bountiful Captain's Feast strength
+	
+	------------------------------------------------------------------------
+	--revision ny nullKomplex july 07 2019
+	[288074] = 113, -- Wild Berry Bread stamina (maybe fake it as 41?)
+
+	[285721] = 60, -- Druid Rebirth trait agility
+	[285719] = 60, -- Druid Rebirth trait intellect
+	[285720] = 60, -- Druid Rebirth trait strength
+
+	-- Put in 70 section:
+	[288075] = 150, -- Seasoned Steak and Potatoes (70?)
+
+	[290467] = 85, -- Boralus Blood Sausage agility
+	[290468] = 85, -- Boralus Blood Sausage intellect
+	[290469] = 85, -- Boralus Blood Sausage strength
+
+	[297037] =  93, -- Bil'Tong versatility
+	[297034] =  93, -- Baked Port Tato haste
+	[297035] =  93, -- Abyssal-Fried Rissole mastery
+	[297039] =  93, -- Mech-Dowel's "Big Mech" critical
+	[297040] =  198, -- Fragrant Kakavia stamina (93?)
+
+	[297116] = 131, -- Famine Evaluator And Snack Table agility
+	[297117] = 131, -- Famine Evaluator And Snack Table intellect
+	[297118] = 131, -- Famine Evaluator And Snack Table strength
 }
 
 DF.PotionIDs = {
@@ -823,6 +855,19 @@ DF.PotionIDs = {
 	[269853] = true, --Potion of Rising Death (range)
 	[251316] = true, --Potion of Bursting Blood (melee)
 	[251231] = true, --Steelskin Potion (tank)
+	
+	------------------------------------------------------------------------
+	--revision ny nullKomplex july 07 2019
+	[298146] = true, -- Superior Battle Potion of Agility
+	[298152] = true, -- Superior Battle Potion of Intellect
+	[298153] = true, -- Superior Battle Potion of Stamina
+	[298154] = true, -- Superior Battle Potion of Strength
+
+	[298317] = true, -- Potion of Focused Resolve (crit)
+	[300714] = true, -- Potion of Unbridled Fury (fire damage)
+	[298225] = true, -- Potion of Empowered Proximity (main stat per enemy)
+	[298155] = true, -- Superior Steelskin Potion (tank)
+	[300741] = true, -- Potion of Wild Mending (healer)
 }
 
 DF.RuneIDs = {

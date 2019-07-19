@@ -1,7 +1,7 @@
-local mod	= DBM:NewMod(2210, "DBM-Azeroth-BfA", nil, 1028)
+local mod	= DBM:NewMod(2210, "DBM-Azeroth-BfA", 2, 1028)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190416205700")
+mod:SetRevision("2019071921921")
 mod:SetCreatureID(138794)
 --mod:SetEncounterID(1880)
 mod:SetReCombatTime(20)

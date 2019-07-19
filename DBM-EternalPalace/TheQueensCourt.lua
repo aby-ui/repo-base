@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2359, "DBM-EternalPalace", nil, 1179)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019071750410")
+mod:SetRevision("20190718175401")
 mod:SetCreatureID(152852, 152853)--Pashmar 152852, Silivaz 152853
 mod:SetEncounterID(2311)
 mod:SetZone()
@@ -97,7 +97,7 @@ local timerFanaticalVerdictCD			= mod:NewNextTimer(26.7, 296850, nil, nil, nil, 
 local timerViolentOutburstCD			= mod:NewNextTimer(104.4, 297325, nil, nil, nil, 2)
 local timerPotentSparkCD				= mod:NewNextTimer(92.2, 301947, nil, nil, nil, 1)
 
---local berserkTimer					= mod:NewBerserkTimer(600)
+local berserkTimer						= mod:NewBerserkTimer(600)
 
 mod:AddNamePlateOption("NPAuraOnSoP", 296704)
 --mod:AddRangeFrameOption(6, 264382)
@@ -119,6 +119,7 @@ function mod:OnCombatStart(delay)
 		if self:IsMythic() then
 			--Pashmar
 			timerPotentSparkCD:Start(20.2-delay)
+			berserkTimer:Start(450-delay)
 		else
 			timerPotentSparkCD:Start(15.8-delay)
 		end

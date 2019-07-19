@@ -45,6 +45,10 @@ if AL then
 	AL["DISPLAY_NPC_ICONS_DESC"] = "禁用时，稀有NPC的图标不会显示在世界地图上"
 	AL["DISPLAY_OPTIONS"] = "显示选项"
 	AL["DUNGEONS_SCENARIOS"] = "副本/场景战役"
+	--[[Translation missing --]]
+	AL["ENABLE_MARKER"] = "Toggle target marker"
+	--[[Translation missing --]]
+	AL["ENABLE_MARKER_DESC"] = "When this is activated it will show a marker on top of the target when you click the main button"
 	AL["ENABLE_SCAN_CHAT"] = "NPC喊话搜寻开关"
 	AL["ENABLE_SCAN_CHAT_DESC"] = "启用后每当稀有NPC喊话或有其他聊天文字信息时会有视觉警告和声音提醒。"
 	AL["ENABLE_SCAN_CONTAINERS"] = "宝藏或宝箱搜寻开关"
@@ -65,12 +69,20 @@ if AL then
 	AL["FILTER"] = "NPC过滤"
 	AL["FILTER_CONTINENT"] = "大陆/星球"
 	AL["FILTER_CONTINENT_DESC"] = "大陆名或星球名"
+	--[[Translation missing --]]
+	AL["FILTER_NPCS_ONLY_MAP"] = "Enable filters only in the world map"
+	--[[Translation missing --]]
+	AL["FILTER_NPCS_ONLY_MAP_DESC"] = "When enabled you will still get alerts from filtered NPCs but they won't show up in your world map. When disabled you won't get alerts from filtered NPCs at all."
 	AL["FILTER_RARE_LIST"] = "稀有NPC搜索过滤"
 	AL["FILTER_RARE_LIST_DESC"] = "稀有NPC搜索过滤开关。禁用时发现这个NPC不会警报。"
 	AL["FILTER_ZONE"] = "地区"
 	AL["FILTER_ZONE_DESC"] = "大陆或星球内的地区"
 	AL["FILTER_ZONES_LIST"] = "地区列表"
 	AL["FILTER_ZONES_LIST_DESC"] = "地区警报开关。禁用时在这个地区发现稀有NPC和宝箱不会发出警报。"
+	--[[Translation missing --]]
+	AL["FILTER_ZONES_ONLY_MAP"] = "Enable filters only in the world map"
+	--[[Translation missing --]]
+	AL["FILTER_ZONES_ONLY_MAP_DESC"] = "When enabled you will still get alerts from NPCs that belong to filtered zones but they won't show up in your world map. When disabled you won't get alerts from NPCs that belong to filtered zones at all."
 	AL["FILTERS"] = "稀有NPC过滤"
 	AL["FILTERS_SEARCH"] = "搜索"
 	AL["FILTERS_SEARCH_DESC"] = "输入NPC的名称过滤以下列表"
@@ -138,10 +150,8 @@ if AL then
 	AL["MAP_TOOLTIP_KILLED"] = "Shift+左键标记为已击杀"
 	AL["MAP_TOOLTIP_NOT_FOUND"] = "你未曾见过这个NPC也没有人共享给你。"
 	AL["MAP_TOOLTIP_SEEN"] = "上次相见: %s"
-	--[[Translation missing --]]
-	AL["MARKER"] = "Target marker"
-	--[[Translation missing --]]
-	AL["MARKER_DESC"] = "Choose the marker to add on top of the target when you click the main button."
+	AL["MARKER"] = "目标标记"
+	AL["MARKER_DESC"] = "当您点击屏幕中弹出的标签时，会将一个标记添加到目标头上。"
 	AL["MESSAGE_OPTIONS"] = "消息选项"
 	AL["MIDDLE_BUTTON"] = "鼠标中键点击"
 	AL["NOT_TARGETEABLE"] = "无法设为目标"

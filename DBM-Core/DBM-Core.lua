@@ -68,9 +68,9 @@ local function showRealDate(curseDate)
 end
 
 DBM = {
-	Revision = parseCurseDate("20190717050410"),
-	DisplayVersion = "8.2.6 alpha", -- the string that is shown as version
-	ReleaseRevision = releaseDate(2019, 7, 16) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+	Revision = parseCurseDate("20190719034450"),
+	DisplayVersion = "8.2.7 alpha", -- the string that is shown as version
+	ReleaseRevision = releaseDate(2019, 7, 17) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 }
 DBM.HighestRelease = DBM.ReleaseRevision --Updated if newer version is detected, used by update nags to reflect critical fixes user is missing on boss pulls
 
@@ -311,16 +311,19 @@ DBM.ModLists = {}
 DBM.Counts = {
     --{	text	= "果紫VPguozi",	value 	= "guozi", path = "Interface\\AddOns\\DBM-Core\\Sounds\\guozi\\", max = 10},
    	--{	text	= "桃桃VPTaoTao",	value 	= "taotao", path = "Interface\\AddOns\\DBM-Core\\Sounds\\TaoTao\\", max = 10},
-	--{	text	= "Moshne (Male)",	value 	= "Mosh", path = "Interface\\AddOns\\DBM-Core\\Sounds\\Mosh\\", max = 5},
 	{	text	= "Corsica (Female)",value 	= "Corsica", path = "Interface\\AddOns\\DBM-Core\\Sounds\\Corsica\\", max = 10},
 	{	text	= "守望先锋：小美",	value 	= "Meicn", path = "Interface\\AddOns\\DBM-Core\\Sounds\\Overwatch\\Mei\\cn\\", max = 5},
 	{	text	= "守望先锋：死神",	value 	= "Reaper", path = "Interface\\AddOns\\DBM-Core\\Sounds\\Overwatch\\Reaper\\", max = 5},
-	--{	text	= "Koltrane (Male)",value 	= "Kolt", path = "Interface\\AddOns\\DBM-Core\\Sounds\\Kolt\\", max = 10},
-	--{	text	= "Pewsey (Male)",value 	= "Pewsey", path = "Interface\\AddOns\\DBM-Core\\Sounds\\Pewsey\\", max = 10},
-	--{	text	= "Bear (Male Child)",value = "Bear", path = "Interface\\AddOns\\DBM-Core\\Sounds\\Bear\\", max = 10},
-	--{	text	= "Anshlun (ptBR Male)",value = "Anshlun", path = "Interface\\AddOns\\DBM-Core\\Sounds\\Anshlun\\", max = 10},
-	--{	text	= "Neryssa (ptBR Female)",value = "Neryssa", path = "Interface\\AddOns\\DBM-Core\\Sounds\\Neryssa\\", max = 10},
+	--{	text	= "Koltrane",value 	= "Kolt", path = "Interface\\AddOns\\DBM-Core\\Sounds\\Kolt\\", max = 10},
+	--{	text	= "Smooth",value 	= "Smooth", path = "Interface\\AddOns\\DBM-Core\\Sounds\\Smooth\\", max = 10},
+	--{	text	= "Smooth (Reverb)",value 	= "SmoothR", path = "Interface\\AddOns\\DBM-Core\\Sounds\\SmoothReverb\\", max = 10},
+	--{	text	= "Pewsey",value 	= "Pewsey", path = "Interface\\AddOns\\DBM-Core\\Sounds\\Pewsey\\", max = 10},
+	--{	text	= "Bear (Child)",value = "Bear", path = "Interface\\AddOns\\DBM-Core\\Sounds\\Bear\\", max = 10},
+	--{	text	= "Moshne",	value 	= "Mosh", path = "Interface\\AddOns\\DBM-Core\\Sounds\\Mosh\\", max = 5},
+	--{	text	= "Anshlun (ptBR)",value = "Anshlun", path = "Interface\\AddOns\\DBM-Core\\Sounds\\Anshlun\\", max = 10},
+	--{	text	= "Neryssa (ptBR)",value = "Neryssa", path = "Interface\\AddOns\\DBM-Core\\Sounds\\Neryssa\\", max = 10},
 }
+--Sounds use SoundKit Ids (not file data ids)
 DBM.Victory = {
 	{text = "None",value  = "None"},
 	{text = "Random",value  = "Random"},
@@ -342,29 +345,30 @@ DBM.Defeat = {
 	{text = "Valithria: Failures",value = 17067, length=4},--"Sound\\Creature\\ValithriaDreamwalker\\IC_Valithria_Berserk01.ogg"
 	{text = "Yogg-Saron: Laugh",value = 15757, length=4},--"Sound\\Creature\\YoggSaron\\UR_YoggSaron_Slay01.ogg"
 }
+--Music uses file data IDs
 DBM.Music = {--Contains all music media, period
 	{text = "None",value  = "None"},
 	{text = "Random",value  = "Random"},
-	{text = "Anduin Part 1 B",value = "sound\\music\\Legion\\MUS_70_AnduinPt1_B.mp3", length=140},--68230
-	{text = "Anduin Part 2 B",value = "sound\\music\\Legion\\MUS_70_AnduinPt2_B.mp3", length=111},--68230
-	{text = "Bronze Jam",value = "Sound\\Music\\ZoneMusic\\IcecrownRaid\\IR_BronzeJam.mp3", length=116},--118800
-	{text = "Invincible",value = "Sound\\Music\\Draenor\\MUS_Invincible.mp3", length=197},--49536
-	{text = "Nightsong",value = "Sound\\Music\\cataclysm\\MUS_NightElves_GU01.mp3", length=160},--71181
-	{text = "Ulduar: Titan Orchestra",value = "Sound\\Music\\ZoneMusic\\UlduarRaidInt\\UR_TitanOrchestraIntro.mp3", length=102},--15873
+	{text = "Anduin Part 1 B",value = 1417242, length=140},--"sound\\music\\Legion\\MUS_70_AnduinPt1_B.mp3" Soundkit: 68230
+	{text = "Anduin Part 2 B",value = 1417248, length=111},--"sound\\music\\Legion\\MUS_70_AnduinPt2_B.mp3" Soundkit: 68230
+	{text = "Bronze Jam",value = 350021, length=116},--"Sound\\Music\\ZoneMusic\\IcecrownRaid\\IR_BronzeJam.mp3" Soundkit: 118800
+	{text = "Invincible",value = 1100052, length=197},--"Sound\\Music\\Draenor\\MUS_Invincible.mp3" Soundkit: 49536
+	{text = "Nightsong",value = 441705, length=160},--"Sound\\Music\\cataclysm\\MUS_NightElves_GU01.mp3" Soundkit: 71181
+	{text = "Ulduar: Titan Orchestra",value = 298910, length=102},--"Sound\\Music\\ZoneMusic\\UlduarRaidInt\\UR_TitanOrchestraIntro.mp3" Soundkit: 15873
 }
 DBM.DungeonMusic = {--Filtered list of media assigned to dungeon/raid background music catagory
 	{text = "None",value  = "None"},
 	{text = "Random",value  = "Random"},
-	{text = "Anduin Part 1 B",value = "sound\\music\\Legion\\MUS_70_AnduinPt1_B.mp3", length=140},--68230
-	{text = "Nightsong",value = "Sound\\Music\\cataclysm\\MUS_NightElves_GU01.mp3", length=160},--71181
-	{text = "Ulduar: Titan Orchestra",value = "Sound\\Music\\ZoneMusic\\UlduarRaidInt\\UR_TitanOrchestraIntro.mp3", length=102},--15873
+	{text = "Anduin Part 1 B",value = 1417242, length=140},--"sound\\music\\Legion\\MUS_70_AnduinPt1_B.mp3" Soundkit: 68230
+	{text = "Nightsong",value = 441705, length=160},--"Sound\\Music\\cataclysm\\MUS_NightElves_GU01.mp3" Soundkit: 71181
+	{text = "Ulduar: Titan Orchestra",value = 298910, length=102},--"Sound\\Music\\ZoneMusic\\UlduarRaidInt\\UR_TitanOrchestraIntro.mp3" Soundkit: 15873
 }
 DBM.BattleMusic = {--Filtered list of media assigned to boss/encounter background music catagory
 	{text = "None",value  = "None"},
 	{text = "Random",value  = "Random"},
-	{text = "Anduin Part 2 B",value = "sound\\music\\Legion\\MUS_70_AnduinPt2_B.mp3", length=111},--68230
-	{text = "Bronze Jam",value = "Sound\\Music\\ZoneMusic\\IcecrownRaid\\IR_BronzeJam.mp3", length=116},--118800
-	{text = "Invincible",value = "Sound\\Music\\Draenor\\MUS_Invincible.mp3", length=197},--49536
+	{text = "Anduin Part 2 B",value = 1417248, length=111},--"sound\\music\\Legion\\MUS_70_AnduinPt2_B.mp3" Soundkit: 68230
+	{text = "Bronze Jam",value = 350021, length=116},--"Sound\\Music\\ZoneMusic\\IcecrownRaid\\IR_BronzeJam.mp3" Soundkit: 118800
+	{text = "Invincible",value = 1100052, length=197},--"Sound\\Music\\Draenor\\MUS_Invincible.mp3" Soundkit: 49536
 }
 
 ------------------------
@@ -1167,17 +1171,6 @@ do
 			end
 		end
 		--Check if any of countdown sounds are using missing voice pack
-		local voice1 = self.Options.CountdownVoice
-		local voice2 = self.Options.CountdownVoice2
-		local voice3 = self.Options.CountdownVoice3v2
-		if voice1 == "None" then--Migrate to new setting
-			self.Options.CountdownVoice = self.DefaultOptions.CountdownVoice
-			self.Options.DontPlayCountdowns = true
-		end
-		if voice3 == "HoTS_R" and select(4, GetAddOnInfo("DBM-CountPack-HoTS")) then
-			--Heroes count pack already installed, migrate user setting instead of forcing pewsey voice
-			self.Options.CountdownVoice3v2 = "HoTS_Ravenlord"
-		end
 		local found1, found2, found3 = false, false, false
 		for i = 1, #self.Counts do
 			local voice = self.Counts[i].value
@@ -1187,7 +1180,7 @@ do
 			if voice == self.Options.CountdownVoice2 then
 				found2 = true
 			end
-			if voice == self.Options.CountdownVoice3v2 then
+			if voice == self.Options.CountdownVoice3 then
 				found3 = true
 			end
 		end
@@ -1200,8 +1193,8 @@ do
 			self.Options.CountdownVoice2 = self.DefaultOptions.CountdownVoice2
 		end
 		if not found3 then
-			AddMsg(DBM, DBM_CORE_VOICE_COUNT_MISSING:format(3, self.DefaultOptions.CountdownVoice3v2))
-			self.Options.CountdownVoice3v2 = self.DefaultOptions.CountdownVoice3v2
+			AddMsg(DBM, DBM_CORE_VOICE_COUNT_MISSING:format(3, self.DefaultOptions.CountdownVoice3))
+			self.Options.CountdownVoice3 = self.DefaultOptions.CountdownVoice3
 		end
 		self:BuildVoiceCountdownCache()
 		--Break timer recovery
@@ -1335,7 +1328,9 @@ do
 									else
 										local id = tonumber(subTabs[k])
 										if id then
-											self.AddOns[#self.AddOns].subTabs[k] = GetRealZoneText(id):trim() or id
+											local name = GetRealZoneText(id):trim() or id
+											local subname = strsplit("-", name)--For handling zones like Warfront: Arathi - Alliance
+											self.AddOns[#self.AddOns].subTabs[k] = subname
 										else
 											self.AddOns[#self.AddOns].subTabs[k] = (subTabs[k]):trim()
 										end
@@ -3272,7 +3267,7 @@ function DBM:LoadModOptions(modId, inCombat, first)
 						end
 					--Fix default options for countdowns that were set to 0 because no defaults existed at time they were created, but do now.
 					elseif option:find("CVoice") then
-						if savedOptions[id][profileNum][option] and savedOptions[id][profileNum][option] == 0 and mod.DefaultOptions[option] and mod.DefaultOptions[option] ~= 0 then
+						if savedOptions[id][profileNum][option] and (type(savedOptions[id][profileNum][option]) == "number") and (savedOptions[id][profileNum][option] == 0) and mod.DefaultOptions[option] and mod.DefaultOptions[option] ~= 0 then
 							savedOptions[id][profileNum][option] = mod.DefaultOptions[option]
 							self:Debug("Migrated "..option.." to option defaults", 2)
 						end
@@ -3839,9 +3834,8 @@ do
 			end
 			local path = "MISSING"
 			if self.Options.EventSoundTurle == "Random" then
-				local usedTable = self.Options.EventSoundMusicCombined and DBM.Music or DBM.BattleMusic
-				local random = fastrandom(3, #usedTable)
-				path = usedTable[random].value
+				local random = fastrandom(3, #DBM.Music)
+				path = DBM.Music[random].value
 			else
 				path = self.Options.EventSoundTurle
 			end
@@ -4046,9 +4040,10 @@ function DBM:LoadMod(mod, force)
 		self:Debug("LoadMod failed because mod table not valid")
 		return false
 	end
-	if mod.isWorldBoss and not IsInInstance() and not force then
+	--Block loading world boss mods by zoneID, except if it's a heroic warfront
+	if mod.isWorldBoss and not IsInInstance() and not force and difficultyIndex ~= 149 then
 		return
-	end--Don't load world boss mod this way.
+	end
 	if mod.minRevision > self.Revision then
 		if self:AntiSpam(60, "VER_MISMATCH") then--Throttle message in case person keeps trying to load mod (or it's a world boss player keeps targeting
 			self:AddMsg(DBM_CORE_LOAD_MOD_VER_MISMATCH:format(mod.name))
@@ -6487,7 +6482,7 @@ function DBM:GetCurrentInstanceDifficulty()
 		return "normal5", difficultyName.." - ", difficulty, instanceGroupSize, keystoneLevel
 	elseif difficulty == 14 or difficulty == 38 then
 		return "normal", difficultyName.." - ", difficulty, instanceGroupSize, keystoneLevel
-	elseif difficulty == 15 or difficulty == 39 then
+	elseif difficulty == 15 or difficulty == 39 or difficulty == 149 then
 		return "heroic", difficultyName.." - ", difficulty, instanceGroupSize, keystoneLevel
 	elseif difficulty == 16 or difficulty == 40 then
 		return "mythic", difficultyName.." - ", difficulty, instanceGroupSize, keystoneLevel
@@ -6503,8 +6498,8 @@ function DBM:GetCurrentInstanceDifficulty()
 		return "mythic", difficultyName.." - ", difficulty, instanceGroupSize, keystoneLevel
 	elseif difficulty == 24 or difficulty == 33 then
 		return "timewalker", difficultyName.." - ", difficulty, instanceGroupSize, keystoneLevel
---	elseif difficulty == 25 then--Used by Ashran in 7.x.
---		return "pvpscenario", difficultyName.." - ", difficulty, instanceGroupSize, keystoneLevel
+	elseif difficulty == 147 or difficulty == 149 then
+		return "warfront", difficultyName.." - ", difficulty, instanceGroupSize, keystoneLevel
 	else--failsafe
 		return "normal5", "", difficulty, instanceGroupSize, keystoneLevel
 	end
@@ -7206,29 +7201,34 @@ do
 end
 
 --To speed up creating new mods.
-function DBM:FindDungeonMapIDs(low, peak)
+function DBM:FindDungeonMapIDs(low, peak, contains)
 	local start = low or 1
-	local range = peak or 3000
+	local range = peak or 4000
 	self:AddMsg("-----------------")
 	for i = start, range do
 		local dungeon = GetRealZoneText(i)
 		if dungeon and dungeon ~= "" then
-			self:AddMsg(i..": "..dungeon)
+			if not contains or contains and dungeon:find(contains) then
+				self:AddMsg(i..": "..dungeon)
+			end
 		end
 	end
 end
 
-function DBM:FindInstanceIDs(low, peak)
+function DBM:FindInstanceIDs(low, peak, contains)
 	local start = low or 1
 	local range = peak or 3000
 	self:AddMsg("-----------------")
 	for i = start, range do
 		local instance = EJ_GetInstanceInfo(i)
 		if instance then
-			self:AddMsg(i..": "..instance)
+			if not contains or contains and instance:find(contains) then
+				self:AddMsg(i..": "..instance)
+			end
 		end
 	end
 end
+
 
 --/run DBM:FindEncounterIDs(1179)--Eternal Palace
 --/run DBM:FindEncounterIDs(1178, 23)--Dungeon Template (mythic difficulty)
@@ -9383,43 +9383,6 @@ do
 	end
 end
 
-----------------------------
---  Countdown/out object  --
-----------------------------
-do
-	local countdownProtoType = {}
-	local function oldCountdownNag()
-		if DBM:AntiSpam(10, "CountNag") then
-			DBM:AddMsg("You are using a mod that's calling obsolete countdown object. Update ALL of your DBM modules to latest version")
-		end
-	end
-	function countdownProtoType:Start(timer, count)
-		oldCountdownNag()
-	end
-	countdownProtoType.Show = countdownProtoType.Start
-
-	function countdownProtoType:Schedule(t)
-		oldCountdownNag()
-	end
-
-	function countdownProtoType:Cancel()
-		oldCountdownNag()
-	end
-	countdownProtoType.Stop = countdownProtoType.Cancel
-
-	function bossModPrototype:NewCountdown(...)
-		oldCountdownNag()
-	end
-
-	function bossModPrototype:NewCountdownFades(...)
-		oldCountdownNag()
-	end
-
-	function bossModPrototype:NewCountout(...)
-		oldCountdownNag()
-	end
-end
-
 --------------------
 --  Yell Object  --
 --------------------
@@ -10205,7 +10168,7 @@ do
 		return newSpecialWarning(self, "prewarn", text, time, optionDefault, ...)
 	end
 
-	function DBM:PlayCountSound(number, forceVoice)
+	function DBM:PlayCountSound(number, forceVoice, forcePath)
 		if number > 10 then return end
 		local voice
 		if forceVoice then--For options example
@@ -10215,11 +10178,15 @@ do
 		end
 		local path
 		local maxCount = 5
-		for i = 1, #self.Counts do
-			if self.Counts[i].value == voice then
-				path = self.Counts[i].path
-				maxCount = self.Counts[i].max
-				break
+		if forcePath then
+			path = forcePath
+		else
+			for i = 1, #self.Counts do
+				if self.Counts[i].value == voice then
+					path = self.Counts[i].path
+					maxCount = self.Counts[i].max
+					break
+				end
 			end
 		end
 		if not path or (number > maxCount) then return end
@@ -10294,7 +10261,7 @@ do
 	function DBM:BuildVoiceCountdownCache()
 		countvoice1 = self.Options.CountdownVoice
 		countvoice2 = self.Options.CountdownVoice2
-		countvoice3 = self.Options.CountdownVoice3v2
+		countvoice3 = self.Options.CountdownVoice3
 		local voicesFound = 0
 		for i = 1, #self.Counts do
 			local curVoice = self.Counts[i]
@@ -10328,12 +10295,15 @@ do
 			DBM:BuildVoiceCountdownCache()
 		end
 		local maxCount, path
-		if voice == 2 then
+		if type(voice) == "string" then
+			maxCount = 5--Safe to assume if it's not one of the built ins, it's likely heroes/OW, which has a max of 5
+			path = voice
+		elseif voice == 2 then
 			maxCount = countvoice2max or 10
 			path = countpath2 or "Interface\\AddOns\\DBM-Core\\Sounds\\Kolt\\"
 		elseif voice == 3 then
 			maxCount = countvoice3max or 5
-			path = countpath3 or "Interface\\AddOns\\DBM-Core\\Sounds\\Heroes\\Necromancer\\"
+			path = countpath3 or "Interface\\AddOns\\DBM-Core\\Sounds\\Smooth\\"
 		else
 			maxCount = countvoice1max or 10
 			path = countpath1 or "Interface\\AddOns\\DBM-Core\\Sounds\\Corsica\\"
@@ -10466,7 +10436,7 @@ do
 			local countVoice, countVoiceMax = 0, self.countdownMax or 4
 			if self.option then
 				countVoice = self.mod.Options[self.option .. "CVoice"]
-				if not self.fade and countVoice > 0 then--Started not started faded and has count voice assigned
+				if not self.fade and (type(countVoice) == "string" or countVoice > 0) then--Started without faded and has count voice assigned
 					playCountdown(id, timer, countVoice, countVoiceMax)--timerId, timer, voice, count
 				end
 			end
@@ -11622,7 +11592,7 @@ do
 
 	do
 		local iconSortTable = {}
-		local iconSet = 0
+		local iconSet = {}
 
 		local function sort_by_group(v1, v2)
 			return DBM:GetRaidSubgroup(DBM:GetUnitFullName(v1)) < DBM:GetRaidSubgroup(DBM:GetUnitFullName(v2))
