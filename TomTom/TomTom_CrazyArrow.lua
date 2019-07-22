@@ -48,9 +48,9 @@ wayframe:Hide()
 -- Frame used to control the scaling of the title and friends
 local titleframe = CreateFrame("Frame", nil, wayframe)
 
-wayframe.title = titleframe:CreateFontString("OVERLAY", nil, "GameFontHighlightSmall")
-wayframe.status = titleframe:CreateFontString("OVERLAY", nil, "GameFontNormalSmall")
-wayframe.tta = titleframe:CreateFontString("OVERLAY", nil, "GameFontNormalSmall")
+wayframe.title = titleframe:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+wayframe.status = titleframe:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+wayframe.tta = titleframe:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
 wayframe.title:SetPoint("TOP", wayframe, "BOTTOM", 0, 0)
 wayframe.status:SetPoint("TOP", wayframe.title, "BOTTOM", 0, 0)
 wayframe.tta:SetPoint("TOP", wayframe.status, "BOTTOM", 0, 0)
@@ -259,6 +259,12 @@ function TomTom:ShowHideCrazyArrow()
 		-- Do not allow the arrow to be invisible
 		if TomTom.db.profile.arrow.alpha < 0.1 then
 		    TomTom.db.profile.arrow.alpha = 1.0
+		end
+		-- Set the stratum
+		if TomTom.db.profile.arrow.highstrata then
+		    wayframe:SetFrameStrata("HIGH")
+		else
+		    wayframe:SetFrameStrata("MEDIUM")
 		end
 		wayframe:SetAlpha(TomTom.db.profile.arrow.alpha)
 		local width = TomTom.db.profile.arrow.title_width

@@ -1668,21 +1668,27 @@ if (bountyBoard) then
 			
 			local numCompleted, numTotal = self:CalculateBountySubObjectives (bounty)
 			
-			if (numCompleted) then
-				bountyButton.objectiveCompletedText:SetText (numCompleted .. "/" .. numTotal)
-				bountyButton.objectiveCompletedText:SetAlpha (.92)
-				bountyButton.objectiveCompletedBackground:SetAlpha (.4)
-				
-				if (not bountyButton.objectiveCompletedText:IsShown()) then
-					bountyButton.objectiveCompletedAnimation:Play()
+			if (WorldQuestTracker.db.profile.show_emissary_info) then
+				if (numCompleted) then
+					bountyButton.objectiveCompletedText:SetText (numCompleted .. "/" .. numTotal)
+					bountyButton.objectiveCompletedText:SetAlpha (.92)
+					bountyButton.objectiveCompletedBackground:SetAlpha (.4)
+					
+					if (not bountyButton.objectiveCompletedText:IsShown()) then
+						bountyButton.objectiveCompletedAnimation:Play()
+					end
+				else
+					bountyButton.objectiveCompletedText:SetText ("")
+					bountyButton.objectiveCompletedBackground:SetAlpha (0)
 				end
 			else
 				bountyButton.objectiveCompletedText:SetText ("")
 				bountyButton.objectiveCompletedBackground:SetAlpha (0)
 			end
 			
+			
 			local bountyQuestID = bounty.questID
-			if (bountyQuestID and HaveQuestData (bountyQuestID)) then
+			if (bountyQuestID and HaveQuestData (bountyQuestID) and WorldQuestTracker.db.profile.show_emissary_info) then
 				local questIndex = GetQuestLogIndexByID (bountyQuestID)
 				local title, level, suggestedGroup, isHeader, isCollapsed, isComplete, frequency, questID, startEvent, displayQuestID, isOnMap, hasLocalPOI, isTask, isStory = GetQuestLogTitle (questIndex)
 			
@@ -1741,6 +1747,9 @@ if (bountyBoard) then
 					end
 
 				end
+			else
+				bountyButton.timeLeftText:SetText ("")
+				--bountyButton.Icon:SetTexture (nil)
 			end
 			
 			bountyButton.lastUpdateByWQT = GetTime()

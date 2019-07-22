@@ -435,7 +435,8 @@ do
                 end
                 local s = "包内零件:"
                 for k, v in pairs(items) do
-                    s = s .. format(" %s:|cff%s%d|r/%d", select(2, GetItemInfo(k)), found[k] and found[k] >= v and "00ff00" or "ff0000", found[k] or 0, v)
+                    local _, link = GetItemInfo(k)
+                    if link then s = s .. format(" %s:|cff%s%d|r/%d", link, found[k] and found[k] >= v and "00ff00" or "ff0000", found[k] or 0, v) end
                 end
                 U1Message(s)
             end)

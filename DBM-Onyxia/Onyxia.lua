@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("Onyxia", "DBM-Onyxia")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190516161606")
+mod:SetRevision("20190720220117")
 mod:SetCreatureID(10184)
 mod:SetEncounterID(1084)
 mod:SetZone()
@@ -37,7 +37,6 @@ local timerBreath			= mod:NewCastTimer(8, 18584, nil, nil, nil, 3)
 local timerBigAddCD			= mod:NewAddsTimer(44.9, 68959, nil, "-Healer")
 
 mod:AddBoolOption("SoundWTF3", true, "sound")
-local sndFunny				= mod:NewSound(nil, true, false)--falsing OptionName makes it compatible
 
 mod.vb.warned_preP2 = false
 mod.vb.warned_preP3 = false
@@ -50,9 +49,9 @@ function mod:OnCombatStart(delay)
     self.vb.warned_preP2 = false
 	self.vb.warned_preP3 = false
 	if self.Options.SoundWTF3 then
-		sndFunny:Play("Interface\\AddOns\\DBM-Onyxia\\sounds\\dps-very-very-slowly.ogg")
-		sndFunny:Schedule(20, "Interface\\AddOns\\DBM-Onyxia\\sounds\\hit-it-like-you-mean-it.ogg")
-		sndFunny:Schedule(30, "Interface\\AddOns\\DBM-Onyxia\\sounds\\now-hit-it-very-hard-and-fast.ogg")
+		DBM:PlaySoundFile("Interface\\AddOns\\DBM-Onyxia\\sounds\\dps-very-very-slowly.ogg")
+		self:Schedule(20, DBM.PlaySoundFile, DBM, "Interface\\AddOns\\DBM-Onyxia\\sounds\\hit-it-like-you-mean-it.ogg")
+		self:Schedule(30, DBM.PlaySoundFile, DBM, "Interface\\AddOns\\DBM-Onyxia\\sounds\\now-hit-it-very-hard-and-fast.ogg")
 	end
 end
 
@@ -65,8 +64,8 @@ function mod:Whelps()--Not right, need to fix
 		self:ScheduleMethod(70, "Whelps")
 		-- we replay sounds as long as p2 is running
 		if self.Options.SoundWTF3 then
-			sndFunny:Play("Interface\\AddOns\\DBM-Onyxia\\sounds\\i-dont-see-enough-dots.ogg")
-			sndFunny:Schedule(35, "Interface\\AddOns\\DBM-Onyxia\\sounds\\throw-more-dots.ogg")
+			DBM:PlaySoundFile("Interface\\AddOns\\DBM-Onyxia\\sounds\\i-dont-see-enough-dots.ogg")
+			self:Schedule(35, DBM.PlaySoundFile, DBM, "Interface\\AddOns\\DBM-Onyxia\\sounds\\throw-more-dots.ogg")
 		end
 	end
 end
@@ -83,8 +82,8 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 		timerNextFlameBreath:Cancel()
 		self:ScheduleMethod(5, "Whelps")
 		if self.Options.SoundWTF3 then
-			sndFunny:Schedule(10, "Interface\\AddOns\\DBM-Onyxia\\sounds\\throw-more-dots.ogg")
-			sndFunny:Schedule(17, "Interface\\AddOns\\DBM-Onyxia\\sounds\\whelps-left-side-even-side-handle-it.ogg")
+			self:Schedule(10, DBM.PlaySoundFile, DBM, "Interface\\AddOns\\DBM-Onyxia\\sounds\\throw-more-dots.ogg")
+			self:Schedule(17, DBM.PlaySoundFile, DBM, "Interface\\AddOns\\DBM-Onyxia\\sounds\\whelps-left-side-even-side-handle-it.ogg")
 		end
 	elseif msg == L.YellP3 or msg:find(L.YellP3) then
 		self.vb.phase = 3
@@ -95,10 +94,10 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 		timerBigAddCD:Stop()
 		--warnWhelpsSoon:Cancel()
 		if self.Options.SoundWTF3 then
-			sndFunny:Schedule(20, "Interface\\AddOns\\DBM-Onyxia\\sounds\\now-hit-it-very-hard-and-fast.ogg")
-   			sndFunny:Schedule(35, "Interface\\AddOns\\DBM-Onyxia\\sounds\\i-dont-see-enough-dots.ogg")
-			sndFunny:Schedule(50, "Interface\\AddOns\\DBM-Onyxia\\sounds\\hit-it-like-you-mean-it.ogg")
-			sndFunny:Schedule(65, "Interface\\AddOns\\DBM-Onyxia\\sounds\\throw-more-dots.ogg")
+			self:Schedule(20, DBM.PlaySoundFile, DBM, "Interface\\AddOns\\DBM-Onyxia\\sounds\\now-hit-it-very-hard-and-fast.ogg")
+   			self:Schedule(35, DBM.PlaySoundFile, DBM, "Interface\\AddOns\\DBM-Onyxia\\sounds\\i-dont-see-enough-dots.ogg")
+			self:Schedule(50, DBM.PlaySoundFile, DBM, "Interface\\AddOns\\DBM-Onyxia\\sounds\\hit-it-like-you-mean-it.ogg")
+			self:Schedule(65, DBM.PlaySoundFile, DBM, "Interface\\AddOns\\DBM-Onyxia\\sounds\\throw-more-dots.ogg")
 		end
 	end
 end
@@ -123,13 +122,13 @@ end
 
 function mod:SPELL_DAMAGE(_, _, _, _, destGUID, _, _, _, spellId)
 	if spellId == 68867 and destGUID == UnitGUID("player") and self.Options.SoundWTF3 then		-- Tail Sweep
-		sndFunny:Play("Interface\\AddOns\\DBM-Onyxia\\sounds\\watch-the-tail.ogg")
+		DBM:PlaySoundFile("Interface\\AddOns\\DBM-Onyxia\\sounds\\watch-the-tail.ogg")
 	end
 end
 
 function mod:UNIT_DIED(args)
 	if self:IsInCombat() and args:IsPlayer() and self.Options.SoundWTF3 then
-		sndFunny:Play("Interface\\AddOns\\DBM-Onyxia\\sounds\\thats-a-fucking-fifty-dkp-minus.ogg")
+		DBM:PlaySoundFile("Interface\\AddOns\\DBM-Onyxia\\sounds\\thats-a-fucking-fifty-dkp-minus.ogg")
 	end
 end
 

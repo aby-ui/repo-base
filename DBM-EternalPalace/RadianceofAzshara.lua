@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2353, "DBM-EternalPalace", nil, 1179)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019071740256")
+mod:SetRevision("20190721164525")
 mod:SetCreatureID(152364)
 mod:SetEncounterID(2305)
 mod:SetZone()
@@ -57,7 +57,7 @@ local timerAncientTempestCD				= mod:NewNextTimer(95.9, 295916, nil, nil, nil, 6
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(20078))
 local timerGaleBuffetCD					= mod:NewCDTimer(22.6, 304098, nil, nil, nil, 2)
 
---local berserkTimer					= mod:NewBerserkTimer(600)
+local berserkTimer						= mod:NewBerserkTimer(600)
 
 --mod:AddRangeFrameOption(6, 264382)
 --mod:AddInfoFrameOption(275270, true)
@@ -88,6 +88,7 @@ function mod:OnCombatStart(delay)
 	timerUnshacklingPowerCD:Start(10-delay, 1)
 	timerTideFistCD:Start(15-delay, 1)
 	timerAncientTempestCD:Start(95.6)
+	berserkTimer:Start(self:IsMythic() and 540 or 720-delay)
 end
 
 function mod:OnCombatEnd()
@@ -228,11 +229,11 @@ function mod:UNIT_DIED(args)
 			self.vb.tideFistCount = 0
 			self.vb.arcaneBombCount = 0
 			timerArcaneBombCD:Stop()
-			timerArcanadoBurstCD:Start(6, 1)
-			timerArcaneBombCD:Start(7, 1)
-			timerUnshacklingPowerCD:Start(10, 1)
-			timerTideFistCD:Start(15, 1)
-			timerAncientTempestCD:Start(95.8)
+			timerArcanadoBurstCD:Start(9, 1)
+			timerArcaneBombCD:Start(10, 1)
+			timerUnshacklingPowerCD:Start(13, 1)
+			timerTideFistCD:Start(18, 1)
+			timerAncientTempestCD:Start(98.8)
 		end
 	end
 end

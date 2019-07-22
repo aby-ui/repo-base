@@ -61,10 +61,10 @@ end
 
 function Cooldown:GetPriority()
     if self._occ_kind ==  "charge" then
-        return 1
+        return 2
     end
 
-    return 2
+    return 1
 end
 
 -- actions

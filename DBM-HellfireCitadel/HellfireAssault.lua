@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1426, "DBM-HellfireCitadel", nil, 669)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190625143352")
+mod:SetRevision("20190720220053")
 mod:SetCreatureID(90019)--Main ID is door, door death= win. 94515 Siegemaster Mar'tak
 mod:SetEncounterID(1778)
 mod:SetZone()
@@ -89,8 +89,6 @@ local timerBerserkersCD				= mod:NewCDCountTimer(40, "ej11425", nil, nil, nil, 1
 local timerSiegeVehicleCD			= mod:NewTimer(60, "timerSiegeVehicleCD", 160240, nil, nil, 1)--Cannot find any short text timers that will fit the bill
 
 --local berserkTimer				= mod:NewBerserkTimer(360)
-
-local voiceFelfireSiegeVehicles		= mod:NewVoice("ej11428")--One option for locations, independant of integration with vehicle announce objects.
 
 mod:AddRangeFrameOption(8, 184369)
 mod:AddHudMapOption("HudMapOnAxe", 184369)
@@ -246,16 +244,13 @@ function mod:SPELL_AURA_APPLIED(args)
 			if Count == 1 or Count == 3 or Count == 5 or Count == 12 or Count == 14 or Count == 16 or Count == 18 then--Left
 				timerSiegeVehicleCD:Start(mythicVehicleTimers[Count], "("..DBM_CORE_LEFT..")")
 				DBM:Debug("Starting a left vehicle timer")
-				voiceFelfireSiegeVehicles:Schedule(1, "left")--Schedule voice here because it's a left vehicle starting a timer for another left vehicle
 			elseif Count == 2 or Count == 4 or Count == 6 or Count == 13 or Count == 15 or Count == 17 or Count == 19 then--Right
 				timerSiegeVehicleCD:Start(mythicVehicleTimers[Count], "("..DBM_CORE_RIGHT..")")
 				DBM:Debug("Starting a right vehicle timer")
-				voiceFelfireSiegeVehicles:Schedule(1, "right")--Schedule voice here because it's a right vehicle starting a timer for another right vehicle
 			elseif Count == 11 then--Last center, start both next left and right timers
 				timerSiegeVehicleCD:Start(mythicVehicleTimers[Count-1], "("..DBM_CORE_LEFT..")")--Time for this one stored in 10 slot in table
 				timerSiegeVehicleCD:Start(mythicVehicleTimers[Count], "("..DBM_CORE_RIGHT..")")
 				DBM:Debug("Starting a left and a right vehicle timer after center phase")
-				voiceFelfireSiegeVehicles:Schedule(1, "center")
 			elseif Count == 7 or Count == 8 or Count == 9 then--Center
 				if Count == 8 then--Hack to allow timer not to overwrite another center timer
 					timerSiegeVehicleCD:Start(mythicVehicleTimers[Count], "( "..DBM_CORE_MIDDLE.." )")
@@ -263,16 +258,8 @@ function mod:SPELL_AURA_APPLIED(args)
 					timerSiegeVehicleCD:Start(mythicVehicleTimers[Count], "("..DBM_CORE_MIDDLE..")")
 				end
 				DBM:Debug("Starting a Center timer")
-				if Count == 7 then--Need a left voice
-					voiceFelfireSiegeVehicles:Schedule(1, "left")
-				elseif Count == 8 then--Now right voice
-					voiceFelfireSiegeVehicles:Schedule(1, "right")
-				else--Finally, center voice
-					voiceFelfireSiegeVehicles:Schedule(1, "center")
-				end
 			elseif Count == 10 then--No timer started at 10
 				DBM:Debug("Doing no timer for vehicle 10")
-				voiceFelfireSiegeVehicles:Schedule(1, "center")
 				return
 			else
 				DBM:AddMsg("No Vehicle timer information beyond this point. If you have log or video of this pull, please share it")

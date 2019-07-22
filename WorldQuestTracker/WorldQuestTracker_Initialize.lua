@@ -138,6 +138,8 @@ do
 			
 			disable_world_map_widgets = false,
 			
+			show_emissary_info = true,
+			
 			worldmap_widgets = {
 				textsize = 9,
 				scale = 1,

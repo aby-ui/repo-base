@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1154, "DBM-BlackrockFoundry", nil, 457)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190625143352")
+mod:SetRevision("20190720220053")
 mod:SetCreatureID(76809, 76806)--76809 foreman feldspar, 76806 heart of the mountain, 76809 Security Guard, 76810 Furnace Engineer, 76811 Bellows Operator, 76815 Primal Elementalist, 78463 Slag Elemental, 76821 Firecaller
 mod:SetEncounterID(1690)
 mod:SetZone()
@@ -37,6 +37,7 @@ local warnFixate				= mod:NewTargetAnnounce(155196, 4)
 local warnVolatileFire			= mod:NewTargetAnnounce(176121, 4, nil, false, 2)--Spam. disable by default.
 local warnFireCaller			= mod:NewCountAnnounce("ej9659", 3, 156937, "Tank", nil, nil, 2)
 local warnSecurityGuard			= mod:NewCountAnnounce("ej9648", 2, 160379, "Tank", nil, nil, 2)
+local warnSlagElemental			= mod:NewCountAnnounce("ej9657", 2, 155179, nil, nil, nil, 2)
 --Phase 3
 local warnPhase3				= mod:NewPhaseAnnounce(3, 2, nil, nil, nil, nil, nil, 2)
 local warnMelt					= mod:NewTargetAnnounce(155225, 4)--Every 10 sec.
@@ -60,7 +61,6 @@ local specWarnPyroclasm			= mod:NewSpecialWarningInterrupt(156937, false)
 local specVolatileFire			= mod:NewSpecialWarningMoveAway(176121)
 local specWarnTwoVolatileFire	= mod:NewSpecialWarning("specWarnTwoVolatileFire", nil, nil, nil, 3)--A person with double volatile fire is extremely dangerous, they will kill everyone
 local yellVolatileFire			= mod:NewYell(176121)
---local specWarnSlagElemental		= mod:NewSpecialWarningSwitch("ej9657", "Dps")-- is really needed in mythic? needs review (Slay Elemental, 176143)
 local specWarnShieldsDown		= mod:NewSpecialWarningSwitch("ej9655", "Dps")
 local specWarnEarthShield		= mod:NewSpecialWarningDispel(155173, "MagicDispeller")
 local specWarnSlagPool			= mod:NewSpecialWarningMove(155743)
@@ -86,8 +86,6 @@ local timerFireCaller			= mod:NewNextCountTimer(45, "ej9659", nil, "Tank", nil, 
 local timerSecurityGuard		= mod:NewNextCountTimer(40, "ej9648", nil, "Tank", nil, 1, 160379, DBM_CORE_TANK_ICON, nil, 2, 4)
 
 local berserkTimer				= mod:NewBerserkTimer(780)
-
-local voiceSlagElemental		= mod:NewVoice("ej9657", "-Tank")
 
 mod:AddRangeFrameOption(8)
 mod:AddBoolOption("InfoFrame")
@@ -417,9 +415,10 @@ function mod:SPELL_AURA_APPLIED(args)
 			else
 				timerSlagElemental:Start(nil, count+1)
 			end
-			voiceSlagElemental:Play("ej9657")
+			warnSlagElemental:Show(count)
+			warnSlagElemental:Play("ej9657")
 			if count < 12 then
-				voiceSlagElemental:Schedule(1.5, nil, "Interface\\AddOns\\DBM-VP"..DBM.Options.ChosenVoicePack.."\\count\\"..count..".ogg")
+				warnSlagElemental:ScheduleVoice(1.5, nil, "Interface\\AddOns\\DBM-VP"..DBM.Options.ChosenVoicePack.."\\count\\"..count..".ogg")
 			end
 		end
 		warnFixate:CombinedShow(1, args.destName)

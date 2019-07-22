@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2347, "DBM-EternalPalace", nil, 1179)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019071740256")
+mod:SetRevision("20190719221715")
 mod:SetCreatureID(150653)
 mod:SetEncounterID(2289)
 mod:SetZone()
@@ -49,7 +49,7 @@ local timerPiercingBarbCD				= mod:NewNextTimer(29.9, 301494, nil, nil, nil, 3, 
 local timerNextPhase					= mod:NewPhaseTimer(100)
 local timerCavitation					= mod:NewCastTimer(32, 292083, nil, nil, nil, 4, nil, DBM_CORE_INTERRUPT_ICON, nil, 1, 4)
 
---local berserkTimer					= mod:NewBerserkTimer(600)
+local berserkTimer						= mod:NewBerserkTimer(720)
 
 mod:AddRangeFrameOption(5, 292247)
 mod:AddInfoFrameOption(292133, true)
@@ -108,7 +108,8 @@ function mod:OnCombatStart(delay)
 	if self:IsMythic() then
 		timerPiercingBarbCD:Start(13-delay)
 	end
-	timerNextPhase:Start(100)--Power Drain (when it leaves) not 10 seconds after when it casts cav
+	timerNextPhase:Start(100-delay)--Power Drain (when it leaves) not 10 seconds after when it casts cav
+	berserkTimer:Start(self:IsHard() and 545 or 720-delay)
 	if self.Options.InfoFrame then
 		DBM.InfoFrame:SetHeader(OVERVIEW)
 		DBM.InfoFrame:Show(8, "function", updateInfoFrame, false, false)

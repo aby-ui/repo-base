@@ -521,7 +521,7 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 				
 				local f = DF:CreateSimplePanel (UIParent, 460, 90, "Discord Server", "WorldQuestTrackerSharePanel")
 				f:SetFrameStrata ("TOOLTIP")
-				f:SetPoint ("center", WorldMapScrollFrame, "center")
+				f:SetPoint ("center", UIParent, "center", 0, 0)
 				
 				DF:CreateBorder (f)
 				
@@ -1029,11 +1029,26 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 					return
 				end
 				
-				if (option == "show_summary_minimize_button") then
-					WorldQuestTracker.db.profile.show_summary_minimize_button = value
+				if (option == "emissary_quest_info") then 
+					WorldQuestTracker.db.profile.show_emissary_info = value
+					GameCooltip:Hide()
 					if (WorldQuestTrackerAddon.GetCurrentZoneType() == "zone") then
 						WorldQuestTracker.UpdateZoneSummaryFrame()
 					end
+					return
+				end
+
+				if (option == "show_summary_minimize_button") then
+					WorldQuestTracker.db.profile.show_summary_minimize_button = value
+					
+					if (WorldQuestTrackerAddon.GetCurrentZoneType() == "zone") then
+						WorldQuestTracker.UpdateZoneSummaryFrame()
+					end
+					if (WorldQuestTrackerAddon.GetCurrentZoneType() == "world") then
+						WorldQuestTracker.UpdateWorldQuestsOnWorldMap()
+					end
+					
+					WorldQuestTracker.ForceRefreshBountyBoard()
 					
 					GameCooltip:Hide()
 					return
@@ -4052,6 +4067,11 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 				add_checkmark_icon (WorldQuestTracker.db.profile.bar_visible, true)
 				GameCooltip:AddMenu (1, options_on_click, "bar_visible", not WorldQuestTracker.db.profile.bar_visible)
 				
+				--show emissary quest info
+				GameCooltip:AddLine ("Emissary Quest Info")
+				add_checkmark_icon (WorldQuestTracker.db.profile.show_emissary_info, true)
+				GameCooltip:AddMenu (1, options_on_click, "emissary_quest_info", not WorldQuestTracker.db.profile.show_emissary_info)
+				
 				-- frame scale and frame align options
 				GameCooltip:AddLine ("$div")
 				--
@@ -4740,7 +4760,6 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 	if (not WorldMapFrame.isMaximized) then
 		WorldQuestTracker.UpdateWorldMapFrameAnchor()
 	end
-
 	
 	-- ~frame scale
 	if (WorldQuestTracker.db.profile.map_frame_scale_enabled) then

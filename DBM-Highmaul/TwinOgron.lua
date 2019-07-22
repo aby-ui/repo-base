@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1148, "DBM-Highmaul", nil, 477)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190625143352")
+mod:SetRevision("20190720220053")
 mod:SetCreatureID(78238, 78237)--Pol 78238, Phemos 78237
 mod:SetEncounterID(1719)
 mod:SetZone()
@@ -55,9 +55,6 @@ local timerArcaneTwistedCD			= mod:NewNextTimer(55, 163297, nil, nil, nil, 6)
 local timerArcaneVolatilityCD		= mod:NewNextTimer(60, 163372, nil, nil, nil, 3, nil, nil, nil, 3, 4)--Only first one acurate now. Now it's a mess, was fine on beta. 60 second cd. but now it's boss power based, off BOTH bosses and is a real mess
 mod:AddTimerLine(ALL)
 local berserkTimer					= mod:NewBerserkTimer(420)--As reported in feedback threads
-
-local voicePhemos					= mod:NewVoice(nil, nil, "PhemosSpecialVoice")
-local voicePol						= mod:NewVoice(nil, nil, "PolSpecialVoice")
 
 mod:AddRangeFrameOption("8/3", 163372)
 mod:AddInfoFrameOption("ej9586")
@@ -192,7 +189,6 @@ function mod:OnCombatStart(delay)
 		polEnergyRate = 28
 	end
 	timerShieldChargeCD:Start(polEnergyRate+10-delay)
-	voicePol:Schedule(polEnergyRate+3.5-delay, "158134") --shield
 	if self.Options.InfoFrame then
 		DBM.InfoFrame:Show(4, "function", updateInfoFrame)
 	end
@@ -212,43 +208,35 @@ function mod:SPELL_CAST_START(args)
 	if spellId == 158057 then
 		self.vb.EnfeebleCount = self.vb.EnfeebleCount + 1
 		specWarnEnfeeblingRoar:Show(self.vb.EnfeebleCount)
+		specWarnEnfeeblingRoar:Play("158057")
 		if not self:IsMythic() and self.vb.QuakeCount == 1 then--On all other difficulties, quake is 1 second longer (only first)
 			timerQuakeCD:Start(PhemosEnergyRate+1, self.vb.QuakeCount+1)--Next Special
-			voicePhemos:Schedule(PhemosEnergyRate + 1 - 6.5, "158200")
 		else--On mythic, there is no longer ability than other 2, since 84 is more divisible by 3 than 100 is
 			timerQuakeCD:Start(PhemosEnergyRate, self.vb.QuakeCount+1)--Next Special
-			voicePhemos:Schedule(PhemosEnergyRate - 6.5, "158200")
 		end
 	elseif spellId == 157943 then
 		self.vb.WWCount = self.vb.WWCount + 1
 		specWarnWhirlWind:Show(self.vb.WWCount)
+		specWarnWhirlWind:Play("whirlwind")
 		timerEnfeeblingRoarCD:Start(PhemosEnergyRate, self.vb.EnfeebleCount+1)--Next Special
-		voicePhemos:Schedule(PhemosEnergyRate - 6.8, "158057")
-		voicePhemos:Schedule(PhemosEnergyRate - 5.3, "gather")--Stack
 	elseif spellId == 158134 then
 		specWarnShieldCharge:Show()
 		specWarnShieldCharge:Play("chargemove")
 		timerInterruptingShoutCD:Start(polEnergyRate)--Next Special
-		voicePol:Schedule(polEnergyRate - 6.5, "158093") --shot
-		if self:IsSpellCaster() then
-			voicePol:Schedule(polEnergyRate - 0.5, "stopcast")
-		end
 	elseif spellId == 158093 then
 		specWarnInterruptingShout:Show()
 		specWarnInterruptingShout:Play("stopcast")
 		if not self:IsMythic() and self.vb.PulverizeCount == 0 then
 			timerPulverizeCD:Start(polEnergyRate+1)--Next Special
-			voicePol:Schedule(polEnergyRate + 1 - 6.5, "157952") --pulverize
 		else--On mythic, there is no longer ability than other 2, since 84 is more divisible by 3 than 100 is
 			timerPulverizeCD:Start(polEnergyRate)--Next Special
-			voicePol:Schedule(polEnergyRate - 6.5, "157952") --pulverize
 		end
 	elseif spellId == 158200 then
 		self.vb.LastQuake = GetTime()
 		self.vb.QuakeCount = self.vb.QuakeCount + 1
 		specWarnQuake:Show(self.vb.QuakeCount)
+		specWarnQuake:Play("158200")
 		timerWhirlwindCD:Start(PhemosEnergyRate, self.vb.WWCount+1)
-		voicePhemos:Schedule(PhemosEnergyRate - 6.5, "whirlwind")--Probably get this sound file renamed to "whirlwind" in 7.0
 	elseif spellId == 157952 then--Pulverize first cast that needs range finder
 		self.vb.PulverizeCount = self.vb.PulverizeCount + 1
 		warnPulverize:Show(self.vb.PulverizeCount)
@@ -289,8 +277,8 @@ function mod:SPELL_AURA_APPLIED(args)
 		end
 		if args:IsPlayer() then
 			specWarnArcaneVolatility:Show()
-			yellArcaneVolatility:Yell()
 			specWarnArcaneVolatility:Play("runout")
+			yellArcaneVolatility:Yell()
 		end
 		if self.Options.RangeFrame then
 			if DBM:UnitDebuff("player", arcaneDebuff) then
@@ -322,8 +310,8 @@ function mod:SPELL_AURA_REFRESH(args)
 		end
 		if args:IsPlayer() then
 			specWarnArcaneVolatility:Show()
-			yellArcaneVolatility:Yell()
 			specWarnArcaneVolatility:Play("runout")
+			yellArcaneVolatility:Yell()
 		end
 		if self.Options.RangeFrame then
 			if DBM:UnitDebuff("player", arcaneDebuff) then
@@ -355,9 +343,8 @@ function mod:SPELL_CAST_SUCCESS(args)
 		self.vb.PulverizeRadar = true
 		self.vb.PulverizeCount = 0
 		specWarnPulverize:Show()
+		specWarnPulverize:Show("scatter")
 		timerShieldChargeCD:Start(polEnergyRate)--Next Special
-		voicePol:Play("scatter")
-		voicePol:Schedule(polEnergyRate-6.5, "158134")
 		if self.Options.RangeFrame and not DBM:UnitDebuff("player", arcaneDebuff) then--Show range 3 for everyone, unless have arcane debuff, then you already have range 8 showing everyone that's more important
 			DBM.RangeCheck:Show(3, nil)
 		end

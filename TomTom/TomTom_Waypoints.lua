@@ -70,6 +70,7 @@ local waypointMap = {}
 
 function TomTom:SetWaypoint(waypoint, callbacks, show_minimap, show_world)
     local m, x, y = unpack(waypoint)
+    local profile = self.profile
 
     -- Try to acquire a waypoint from the frame pool
     local point = table.remove(pool)
@@ -86,11 +87,8 @@ function TomTom:SetWaypoint(waypoint, callbacks, show_minimap, show_world)
         table.insert(all_points, minimap)
 
         minimap.icon = minimap:CreateTexture(nil,"OVERLAY")
-        minimap.icon:SetTexture(waypoint.minimap_icon or "Interface\\AddOns\\TomTom\\Images\\GoldGreenDot")
         minimap.icon:SetPoint("CENTER", 0, 0)
-        minimap.icon:SetHeight(waypoint.minimap_icon_size or 16)
-        minimap.icon:SetWidth(waypoint.minimap_icon_size or 16)
-        minimap.icon:SetBlendMode("ADD")  -- ADD/BLEND
+        minimap.icon:SetBlendMode("BLEND")  -- ADD/BLEND
 
         minimap.arrow = minimap:CreateTexture(nil,"OVERLAY")
         minimap.arrow:SetTexture("Interface\\AddOns\\TomTom\\Images\\MinimapArrow-Green")
@@ -115,13 +113,10 @@ function TomTom:SetWaypoint(waypoint, callbacks, show_minimap, show_world)
         end
 
         local worldmap = CreateFrame("Button", nil, TomTomMapOverlay)
-        worldmap:SetHeight(waypoint.worldmap_icon_size or 16)
-        worldmap:SetWidth(waypoint.worldmap_icon_size or 16)
         worldmap:RegisterForClicks("RightButtonUp")
         worldmap.icon = worldmap:CreateTexture(nil, "OVERLAY")
         worldmap.icon:SetAllPoints()
         worldmap.icon:SetBlendMode("BLEND")
-        worldmap.icon:SetTexture(waypoint.worldmap_icon or "Interface\\AddOns\\TomTom\\Images\\GoldGreenDot")
         worldmap:RegisterEvent("NEW_WMO_CHUNK")
         worldmap:SetScript("OnEnter", World_OnEnter)
         worldmap:SetScript("OnLeave", World_OnLeave)
@@ -141,6 +136,24 @@ function TomTom:SetWaypoint(waypoint, callbacks, show_minimap, show_world)
     point.callbacks = callbacks
     point.worldmap.callbacks = callbacks and callbacks.world
     point.minimap.callbacks = callbacks and callbacks.minimap
+
+    -- Set up the minimap.icon
+    if waypoint.minimap_displayID then
+         SetPortraitTextureFromCreatureDisplayID(point.minimap.icon, waypoint.minimap_displayID)
+    else
+        point.minimap.icon:SetTexture(waypoint.minimap_icon or profile.minimap.default_icon)
+    end
+    point.minimap.icon:SetHeight(waypoint.minimap_icon_size or profile.minimap.default_iconsize)
+    point.minimap.icon:SetWidth(waypoint.minimap_icon_size or profile.minimap.default_iconsize)
+
+    -- Set up the worldmap.icon
+    if waypoint.worldmap_displayID then
+         SetPortraitTextureFromCreatureDisplayID(point.worldmap.icon, waypoint.worldmap_displayID)
+    else
+        point.worldmap.icon:SetTexture(waypoint.worldmap_icon or profile.worldmap.default_icon)
+    end
+    point.worldmap:SetHeight(waypoint.worldmap_icon_size or profile.worldmap.default_iconsize)
+    point.worldmap:SetWidth(waypoint.worldmap_icon_size or profile.worldmap.default_iconsize)
 
     -- Process the callbacks table to put distances in a consumable format
     if callbacks and callbacks.distance then

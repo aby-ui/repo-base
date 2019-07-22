@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2361, "DBM-EternalPalace", nil, 1179)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190718160637")
+mod:SetRevision("20190720192405")
 mod:SetCreatureID(152910)
 mod:SetEncounterID(2299)
 mod:SetZone()
@@ -167,7 +167,7 @@ local timerNetherPortalCD				= mod:NewCDTimer(35, 303980, nil, nil, nil, 3)--35 
 local timerOverloadCD					= mod:NewCDCountTimer(54.9, 301431, nil, nil, nil, 5, nil, DBM_CORE_IMPORTANT_ICON)
 local timerPiercingGazeCD				= mod:NewCDTimer(65, 300768, nil, nil, nil, 3)
 
---local berserkTimer					= mod:NewBerserkTimer(600)
+local berserkTimer						= mod:NewBerserkTimer(600)
 
 mod:AddNamePlateOption("NPAuraOnTorment", 297912)
 mod:AddNamePlateOption("NPAuraOnInfuriated", 300428)
@@ -331,6 +331,7 @@ function mod:OnCombatStart(delay)
 	timerHulkSpawnCD:Start(42-delay, 1)
 	timerBeckonCD:Start(54.8-delay, 1)--START
 	timerArcaneOrbsCD:Start(69.8-delay, 1)
+	berserkTimer:Start(843-delay)
 	if self:IsMythic() then
 		self.vb.maxDecree = 3
 		timerDivideandConquerCD:Start(1-delay)
@@ -490,7 +491,7 @@ end
 
 function mod:SPELL_CAST_SUCCESS(args)
 	local spellId = args.spellId
-	if spellId == 302208 then
+	if spellId == 302208 and self:AntiSpam(4, 6) then
 		warnPressureSurge:Show()
 	elseif spellId == 298014 then
 		timerColdBlastCD:Start()

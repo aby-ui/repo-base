@@ -254,10 +254,18 @@ local function createconfig()
 				width = "double",
 				arg = "arrow.stickycorpse",
 			},
+			strata = {
+				order = 16,
+				type = "toggle",
+				name = L["Place the arrow in the HIGH strata"],
+				desc = L["If your arrow is covered up by something else, try this to bump it up a layer."],
+				width = "double",
+				arg = "arrow.highstrata",
+			},
 			display = {
 				type = "group",
 				name = L["Arrow display"],
-				order = 15,
+				order = 16,
 				inline = true,
 				args = {
 					help = {
@@ -409,6 +417,7 @@ local function createconfig()
 				arg = "minimap.enable",
 			},
 			otherzone = {
+				order = 3,
 				type = "toggle",
 				name = L["Display waypoints from other zones"],
 				desc = L["TomTom can hide waypoints in other zones, this setting toggles that functionality"],
@@ -417,6 +426,7 @@ local function createconfig()
 				disabled = true,
 			},
 			tooltip = {
+				order = 4,
 				type = "toggle",
 				name = L["Enable mouseover tooltips"],
 				desc = L["TomTom can display a tooltip containing information abouto waypoints, when they are moused over.  This setting toggles that functionality"],
@@ -424,11 +434,34 @@ local function createconfig()
 				arg = "minimap.tooltip",
 			},
 			rightclick = {
+				order = 5,
 				type = "toggle",
 				name = L["Enable the right-click contextual menu"],
 				desc = L["Enables a menu when right-clicking on a waypoint allowing you to clear or remove waypoints"],
 				width = "double",
 				arg = "minimap.menu",
+			},
+			iconsize = {
+				order = 10,
+				type = "range",
+				name = L["Minimap Icon Size"],
+				desc = L["This setting allows you to control the default size of the minimap icon. "],
+				min = 4, max = 64, step = 2,
+				arg = "minimap.default_iconsize",
+			},
+			icon = {
+				order = 11,
+				type = "select",
+				name = L["Minimap Icon"],
+				desc = L["This setting allows you to select the default icon for the minimap"],
+				values = {
+					["Interface\\AddOns\\TomTom\\Images\\GoldGreenDot"] = "Old Gold Green Dot",
+--					["Interface\\AddOns\\TomTom\\Images\\GoldBlueDotNew"] = "New Gold Blue Dot",
+--					["Interface\\AddOns\\TomTom\\Images\\GoldGreenDotNew"] = "New Gold Green Dot",
+--					["Interface\\AddOns\\TomTom\\Images\\GoldPurpleDotNew"] = "New Gold Purple Dot",
+--					["Interface\\AddOns\\TomTom\\Images\\GoldRedDotNew"] = "New Gold Red Dot",
+				},
+				arg = "minimap.default_icon",
 			},
 		},
 	} -- End minimap options
@@ -521,6 +554,14 @@ local function createconfig()
 						min = 0, max = 2, step = 1,
 						arg = "mapcoords.playeraccuracy",
 					},
+					playeroffset = {
+						order = 8,
+						type = "range",
+						name = L["Player coordinate offset"],
+						desc = L["Coordinates can be slid from the default location, to accomodate other addons.  This setting allows you to control that offset"],
+						min = -16, max = 48, step = 1,
+						arg = "mapcoords.playeroffset",
+					},
 				},
 			},
 			cursor = {
@@ -536,7 +577,6 @@ local function createconfig()
 						width = "double",
 						arg = "mapcoords.cursorenable",
 					},
-
 					cursoraccuracy = {
 						order = 5,
 						type = "range",
@@ -544,6 +584,44 @@ local function createconfig()
 						desc = L["Coordinates can be displayed as simple XX, YY coordinate, or as more precise XX.XX, YY.YY.  This setting allows you to control that precision"],
 						min = 0, max = 2, step = 1,
 						arg = "mapcoords.cursoraccuracy",
+					},
+					cursoroffset = {
+						order = 7,
+						type = "range",
+						name = L["Cursor coordinate offset"],
+						desc = L["Coordinates can be slid from the default location, to accomodate other addons.  This setting allows you to control that offset"],
+						min = -32, max = 64, step = 1,
+						arg = "mapcoords.cursoroffset",
+					},
+				},
+			},
+			icon = {
+				order = 9,
+				type = "group",
+				inline = true,
+				name = L["Icon Control"],
+				args = {
+				iconsize = {
+						order = 20,
+						type = "range",
+						name = L["World Map Icon Size"],
+						desc = L["This setting allows you to control the default size of the world map icon"],
+						min = 4, max = 64, step = 2,
+						arg = "worldmap.default_iconsize",
+					},
+					icon_default = {
+						order = 21,
+						type = "select",
+						name = L["World Map Icon"],
+						desc = L["This setting allows you to select the default icon for the world map"],
+						values = {
+							["Interface\\AddOns\\TomTom\\Images\\GoldGreenDot"] = "Old Gold Green Dot",
+--							["Interface\\AddOns\\TomTom\\Images\\GoldBlueDotNew"] = "New Gold Blue Dot",
+--							["Interface\\AddOns\\TomTom\\Images\\GoldGreenDotNew"] = "New Gold Green Dot",
+--							["Interface\\AddOns\\TomTom\\Images\\GoldPurpleDotNew"] = "New Gold Purple Dot",
+--							["Interface\\AddOns\\TomTom\\Images\\GoldRedDotNew"] = "New Gold Red Dot",
+						},
+						arg = "worldmap.default_icon",
 					},
 				},
 			},
@@ -820,6 +898,7 @@ SlashCmdList["TOMTOM"] = function(msg)
 		registered = true
 	end
 
+	InterfaceOptionsFrame_OpenToCategory("TomTom")
 	InterfaceOptionsFrame_OpenToCategory("TomTom")
 end
 
