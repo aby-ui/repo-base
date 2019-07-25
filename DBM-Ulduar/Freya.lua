@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("Freya", "DBM-Ulduar")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041705949")
+mod:SetRevision("20190722195205")
 
 mod:SetCreatureID(32906)
 mod:SetEncounterID(1133)
@@ -137,18 +137,10 @@ function mod:SPELL_AURA_REMOVED(args)
 	end
 end
 
-function mod:CHAT_MSG_MONSTER_YELL(msg)
-	if msg == L.SpawnYell then
-		adds[33202] = true
-		adds[32916] = true
-		adds[32919] = true
-	end
-end
-
 function mod:UNIT_DIED(args)
 	local cid = self:GetCIDFromGUID(args.destGUID)
 	if cid == 33202 or cid == 32916 or cid == 32919 then
-		if self:AntiSpam(20) and not self:IsTrivial(85) then
+		if self:AntiSpam(17, 1) and not self:IsTrivial(85) then
 			timerSimulKill:Start()
 			warnSimulKill:Show()
 		end
@@ -161,5 +153,12 @@ function mod:UNIT_DIED(args)
 			timerSimulKill:Stop()
 		end
 	end
+end
 
+function mod:CHAT_MSG_MONSTER_YELL(msg)
+	if msg == L.SpawnYell then
+		adds[33202] = true
+		adds[32916] = true
+		adds[32919] = true
+	end
 end

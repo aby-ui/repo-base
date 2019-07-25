@@ -68,7 +68,7 @@ local function showRealDate(curseDate)
 end
 
 DBM = {
-	Revision = parseCurseDate("20190721164525"),
+	Revision = parseCurseDate("20190724030328"),
 	DisplayVersion = "8.2.8 alpha", -- the string that is shown as version
 	ReleaseRevision = releaseDate(2019, 7, 19) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 }
@@ -5655,9 +5655,17 @@ do
 		return onMonsterMessage(self, "emote", msg)
 	end
 
-	function DBM:CHAT_MSG_RAID_BOSS_EMOTE(msg, ...)
+	function DBM:CHAT_MSG_RAID_BOSS_EMOTE(msg, sender, ...)
 		onMonsterMessage(self, "emote", msg)
-		return self:FilterRaidBossEmote(msg, ...)
+		local id = msg:match("|Hspell:([^|]+)|h")
+		if id then
+			local spellId = tonumber(id)
+			if spellId then
+				local spellName = DBM:GetSpellInfo(spellId)
+				self:Debug("CHAT_MSG_RAID_BOSS_EMOTE fired: "..sender.."'s "..spellName.."("..spellId..")", 2)
+			end
+		end
+		return self:FilterRaidBossEmote(msg, sender, ...)
 	end
 
 	function DBM:RAID_BOSS_EMOTE(msg, ...)--This is a mirror of above prototype only it has less args, both still exist for some reason.
@@ -11597,7 +11605,6 @@ do
 			end
 			scanID = scanID or 1
 			if not startIcon then startIcon = 1 end
-			startIcon = startIcon or 8
 			local uId = DBM:GetRaidUnitId(target)
 			if uId or UnitExists(target) then--target accepts uid, unitname both.
 				uId = uId or target

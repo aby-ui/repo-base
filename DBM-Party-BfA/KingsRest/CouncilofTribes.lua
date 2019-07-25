@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2170, "DBM-Party-BfA", 3, 1041)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190420174733")
+mod:SetRevision("20190723234605")
 mod:SetCreatureID(135475, 135470, 135472)
 mod:SetEncounterID(2140)
 mod:SetZone()
@@ -42,7 +42,7 @@ local specWarnEarthwall				= mod:NewSpecialWarningDispel(267256, "MagicDispeller
 
 --Kula the Butcher
 local timerWhirlingAxesCD			= mod:NewCDTimer(10.8, 266206, nil, nil, nil, 3)--Used inactive
-local timerSeveringAxeCD			= mod:NewCDTimer(13, 266231, nil, nil, nil, 3)--Actual timer needs doing
+local timerSeveringAxeCD			= mod:NewCDTimer(21.8, 266231, nil, nil, nil, 3)
 --Aka'ali the Conqueror
 local timerBarrelThroughCD			= mod:NewCDTimer(23.1, 266951, nil, nil, nil, 3)--Used inactive
 local timerDebilitatingBackhandCD	= mod:NewCDTimer(24.3, 266237, nil, nil, nil, 5, nil, DBM_CORE_TANK_ICON..DBM_CORE_DEADLY_ICON)
@@ -159,7 +159,7 @@ end
 function mod:SPELL_CAST_SUCCESS(args)
 	local spellId = args.spellId
 	if spellId == 266231 then
-		--timerSeveringAxeCD:Start()--Not enough data
+		timerSeveringAxeCD:Start(21.8)
 	end
 end
 

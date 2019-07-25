@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("GeneralVezax", "DBM-Ulduar")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041705949")
+mod:SetRevision("20190722195205")
 mod:SetCreatureID(33271)
 mod:SetEncounterID(1134)
 mod:SetModelID(28548)
@@ -17,15 +17,16 @@ mod:RegisterEventsInCombat(
 	"RAID_BOSS_EMOTE"
 )
 
+--TODO, log, detect, and cancel hardmode timer when any vapors get broken
 local warnShadowCrash			= mod:NewTargetAnnounce(62660, 4)
-local warnLeechLife				= mod:NewTargetAnnounce(63276, 3)
+local warnLeechLife				= mod:NewTargetNoFilterAnnounce(63276, 3)
 local warnSaroniteVapor			= mod:NewCountAnnounce(63337, 2)
 
 local specWarnShadowCrash		= mod:NewSpecialWarningDodge(62660, nil, nil, nil, 1, 2)
 local specWarnShadowCrashNear	= mod:NewSpecialWarningClose(62660, nil, nil, nil, 1, 2)
 local yellShadowCrash			= mod:NewYell(62660)
 local specWarnSurgeDarkness		= mod:NewSpecialWarningDefensive(62662, nil, nil, 2, 1, 2)
-local specWarnLifeLeechYou		= mod:NewSpecialWarningYou(63276, nil, nil, nil, 3, 2)
+local specWarnLifeLeechYou		= mod:NewSpecialWarningMoveAway(63276, nil, nil, nil, 3, 2)
 local yellLifeLeech				= mod:NewYell(63276)
 local specWarnLifeLeechNear 	= mod:NewSpecialWarningClose(63276, nil, nil, 2, 1, 2)
 local specWarnSearingFlames		= mod:NewSpecialWarningInterruptCount(62661, "HasInterrupt", nil, nil, 1, 2)
@@ -50,7 +51,7 @@ local animusName = DBM:EJ_GetSectionInfo(17651)
 function mod:ShadowCrashTarget(targetname, uId)
 	if not targetname then return end
 	if self.Options.SetIconOnShadowCrash then
-		self:SetIcon(targetname, 8, 10)
+		self:SetIcon(targetname, 8, 5)
 	end
 	if targetname == UnitName("player") then
 		specWarnShadowCrash:Show()

@@ -182,11 +182,14 @@ local trade_spells = {
   [161414] = "item", -- Blingtron 5000
   [200061] = "item", -- Rechargeable Reaves Battery
   [261602] = "item", -- Katy's Stampwhistle
+  [298926] = "item", -- Blingtron 7000
   -- Wormhole
   [67833]  = "item", -- Wormhole Generator: Northrend
   [126755] = "item", -- Wormhole Generator: Pandaria
   [163830] = "item", -- Wormhole Centrifuge (Draenor)
   [250796] = "item", -- Wormhole Generator: Argus
+  [299083] = "item", -- Wormhole Generator: Kul Tiras
+  [299084] = "item", -- Wormhole Generator: Zandalar
   -- Transporter
   [23453]  = "item", -- Ultrasafe Transporter: Gadgetzhan
   [36941]  = "item", -- Ultrasafe Transporter: Toshley's Station
@@ -199,11 +202,14 @@ local itemcds = { -- [itemid] = spellid
   [111821] = 161414, -- Blingtron 5000
   [144341] = 200061, -- Rechargeable Reaves Battery
   [156833] = 261602, -- Katy's Stampwhistle
+  [168667] = 298926, -- Blingtron 7000
   -- Wormhole
   [48933]  = 67833,  -- Wormhole Generator: Northrend
   [87215]  = 126755, -- Wormhole Generator: Pandaria
   [112059] = 163830, -- Wormhole Centrifuge (Draenor)
   [151652] = 250796, -- Wormhole Generator: Argus
+  [168807] = 299083, -- Wormhole Generator: Kul Tiras
+  [168808] = 299084, -- Wormhole Generator: Zandalar
   -- Transporter
   [18986]  = 23453,  -- Ultrasafe Transporter: Gadgetzhan
   [30544]  = 36941,  -- Ultrasafe Transporter: Toshley's Station
@@ -355,7 +361,7 @@ function TradeskillsModule:TRADE_SKILL_LIST_UPDATE()
   return cnt
 end
 
-function TradeskillsModule:UNIT_SPELLCAST_SUCCEEDED(evt, unit, spellName, rank, lineID, spellID)
+function TradeskillsModule:UNIT_SPELLCAST_SUCCEEDED(_, unit, _, spellID)
   if unit ~= "player" then return end
   if trade_spells[spellID] then
     addon.debug("UNIT_SPELLCAST_SUCCEEDED: %s (%s)",GetSpellLink(spellID),spellID)

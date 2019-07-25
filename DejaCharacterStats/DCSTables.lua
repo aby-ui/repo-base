@@ -336,6 +336,47 @@ DCS_TableData.StatData.RatingCategory = {
     updateFunc = function()	end
 }
 
+function MovementSpeed_OnUpdate(statFrame, elapsedTime) --Added this so Vehicles update as well. Shouldn't be too bad if other addons access this function, but still not as clean as I would like.
+	local unit = statFrame.unit;
+	local _, runSpeed, flightSpeed, swimSpeed = GetUnitSpeed(unit);
+	runSpeed = runSpeed/BASE_MOVEMENT_SPEED*100;
+	flightSpeed = flightSpeed/BASE_MOVEMENT_SPEED*100;
+	swimSpeed = swimSpeed/BASE_MOVEMENT_SPEED*100;
+
+	-- Pets seem to always actually use run speed
+	if (unit == "pet") then
+		swimSpeed = runSpeed;
+	end
+
+	-- Determine whether to display running, flying, or swimming speed
+	local speed = runSpeed;
+	local swimming = IsSwimming(unit);
+	if (UnitInVehicle(unit)) then
+		local vehicleSpeed = GetUnitSpeed("Vehicle")/BASE_MOVEMENT_SPEED*100;
+		speed = vehicleSpeed
+	elseif (swimming) then
+		speed = swimSpeed;
+	elseif (IsFlying(unit)) then
+		speed = flightSpeed;
+	end
+
+	-- Hack so that your speed doesn't appear to change when jumping out of the water
+	if (IsFalling(unit)) then
+		if (statFrame.wasSwimming) then
+			speed = swimSpeed;
+		end
+	else
+		statFrame.wasSwimming = swimming;
+	end
+
+	local valueText = format("%d%%", speed+0.5);
+	PaperDollFrame_SetLabelAndText(statFrame, STAT_MOVEMENT_SPEED, valueText, false, speed);
+	statFrame.speed = speed;
+	statFrame.runSpeed = runSpeed;
+	statFrame.flightSpeed = flightSpeed;
+	statFrame.swimSpeed = swimSpeed;
+end
+
 local move_speed  --Needs a colon like all other stats have. Concatenated so we don't have to redo every localization to include a colon.
 if namespace.locale == "zhTW" then
 	move_speed = L["Movement Speed"] .. "：" --Chinese colon
@@ -382,6 +423,22 @@ DCS_TableData.StatData.DCS_ALTERNATEMANA = {
 		else
 			statFrame:Hide();
 		end
+	end
+}
+
+DCS_TableData.StatData.DCS_MOVESPEED = { --Added this so Vehicles update as well
+	updateFunc = function(statFrame, unit)
+		if ( unit ~= "player" ) then
+			statFrame:Hide();
+			return;
+		end
+
+		statFrame.wasSwimming = nil;
+		statFrame.unit = unit;
+		statFrame:Show();
+		MovementSpeed_OnUpdate(statFrame);
+
+		statFrame.onEnterFunc = MovementSpeed_OnEnter;
 	end
 }
 

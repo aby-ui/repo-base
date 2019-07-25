@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("Freya_Elders", "DBM-Ulduar")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041705949")
+mod:SetRevision("20190722195205")
 
 -- passive mod to provide information for multiple fight (trash respawn)
 -- mod:SetCreatureID(32914, 32915, 32913)
@@ -12,8 +12,7 @@ mod:RegisterEvents(
 	"SPELL_AURA_APPLIED 62310 62928"
 )
 
-local warnImpale				= mod:NewTargetAnnounce(62928)
-
+local specWarnImpale			= mod:NewSpecialWarningTaunt(62928, nil, nil, nil, 1, 2)
 local specWarnFistofStone		= mod:NewSpecialWarningRun(62344, "Tank", nil, nil, 4, 2)
 local specWarnGroundTremor		= mod:NewSpecialWarningCast(62932, "SpellCaster")
 
@@ -45,7 +44,10 @@ end
 
 function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(62310, 62928) then 			-- Impale
-		warnImpale:Show(args.destName)
+		if not args:IsPlayer() then
+			specWarnImpale:Show(args.destName)
+			specWarnImpale:Play("tauntboss")
+		end
 		timerImpale:Start(args.destName)
 	end
 end
