@@ -301,6 +301,9 @@ do
         EMPTY_SOCKET_PRISMATIC = true,
         EMPTY_SOCKET_RED = true,
         EMPTY_SOCKET_YELLOW = true,
+        EMPTY_SOCKET_PUNCHCARDYELLOW = false,
+        EMPTY_SOCKET_PUNCHCARDRED = false,
+        EMPTY_SOCKET_PUNCHCARDBLUE = false,
     }
 
     local _item_stat_tbl = {}
@@ -316,7 +319,7 @@ do
         local waist_extra_slot = false
 
         for id, slot in next, slots do
-            local link = slot~="MainHand" and slot~="SecondaryHand" and GetInventoryItemLink(unit, id) --GetInventorySlotInfo(slot..'Slot')
+            local link = GetInventoryItemLink(unit, id) --slot~="MainHand" and slot~="SecondaryHand" and GetInventorySlotInfo(slot..'Slot')
             if(link) then
                 local i_slot, i_gem = 0, 0
 
@@ -330,28 +333,30 @@ do
                 slot_s = slot_s + i_slot
                 --print(link:gsub("\124", "/"), i_slot, GetItemGem(link, 1), GetItemGem(link, 2), GetItemGem(link, 3))
 
-                for i = 1, 3 do
-                    local gemname, gemlink = GetItemGem(link, i)
-                    if(gemlink) then
-                        local name, link, quality, iLevel, reqLevel, itype, subType = GetItemInfo(gemlink)
-                        gem_s = gem_s + 1
-                        --[[ 6.0之前的逻辑
-                        if(iLevel == MAX_PLAYER_LEVEL) then
-                            if(quality >= 4) then
-                                top_s = top_s + 1
+                if slot == 'Waist' or i_slot > 0 then
+                    for i = 1, 3 do
+                        local gemname, gemlink = GetItemGem(link, i)
+                        if(gemlink) then
+                            local name, link, quality, iLevel, reqLevel, itype, subType = GetItemInfo(gemlink)
+                            gem_s = gem_s + 1
+                            --[[ 6.0之前的逻辑
+                            if(iLevel == MAX_PLAYER_LEVEL) then
+                                if(quality >= 4) then
+                                    top_s = top_s + 1
+                                else
+                                    sec_s = sec_s + 1
+                                end
                             else
-                                sec_s = sec_s + 1
+                                oth_s = oth_s + 1
                             end
-                        else
-                            oth_s = oth_s + 1
+                            --]]
+                            if(quality >= 3) then
+                                sec_s = sec_s + 1
+                            else
+                                oth_s = oth_s + 1
+                            end
+                            i_gem = i_gem + 1
                         end
-                        --]]
-                        if(quality >= 3) then
-                            sec_s = sec_s + 1
-                        else
-                            oth_s = oth_s + 1
-                        end
-                        i_gem = i_gem + 1
                     end
                 end
 

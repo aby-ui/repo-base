@@ -443,3 +443,28 @@ do
         end
     end)
 end
+
+--[[------------------------------------------------------------
+项链特质鼠标中键点击查看
+---------------------------------------------------------------]]
+CoreDependCall("Blizzard_AzeriteEssenceUI", function()
+    if AzeriteEssenceUI and AzeriteEssenceUI.EssenceList and AzeriteEssenceUI.EssenceList.buttons then
+        for _, btn in ipairs(AzeriteEssenceUI.EssenceList.buttons) do
+            btn:HookScript("OnEnter", function(self)
+                self._abyuiNext = 0
+                GameTooltip:AddLine("中键点击查看下一级(爱不易提供)", 0, 1, 0)
+                GameTooltip:Show()
+            end)
+            btn:HookScript("OnClick", function(self, button)
+                if button == "MiddleButton" then
+                    btn._abyuiNext = (btn._abyuiNext or 0) + 1
+                    GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+                    GameTooltip:SetAzeriteEssence(self.essenceID, (self.rank + btn._abyuiNext) % 4 );
+                    GameTooltip:AddLine("中键点击查看下一级(爱不易提供)", 0, 1, 0)
+                    GameTooltip:Show();
+                end
+            end)
+            btn:RegisterForClicks("AnyUp")
+        end
+    end
+end)

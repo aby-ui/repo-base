@@ -42,6 +42,7 @@ local function PraseItemSet(text)
 	end 
 end
 
+local trinket82 = GetItemInfo(167555) --口袋计算装置
 local function ScanItemTooltip(unit, slot)
     if not unit then return end
 	tip:SetOwner(UIParent, "ANCHOR_NONE")
@@ -72,20 +73,22 @@ local function ScanItemTooltip(unit, slot)
 		end
 	end
 
-	for i = 1,4 do
-		local texture = _G[ tip:GetName() .."Texture"..i]
-		if ( texture ) then
-			local texture = _G[ tip:GetName() .."Texture"..i]:GetTexture();
-			if ( texture ) then
-				--if string.find(texture, "gem") then
-					GemsSlotCount = GemsSlotCount + 1
-					if string.find(texture, "EmptySocket") then
-						GemsEmptyCount = GemsEmptyCount + 1
-					end
-				--end
-			end
-		end
-	end
+    if _G[ tip:GetName() .."TextLeft1"]:GetText() ~= trinket82 then
+        for i = 1,4 do
+            local texture = _G[ tip:GetName() .."Texture"..i]
+            if ( texture ) then
+                local texture = _G[ tip:GetName() .."Texture"..i]:GetTexture();
+                if ( texture ) then
+                    --if string.find(texture, "gem") then
+                    GemsSlotCount = GemsSlotCount + 1
+                    if string.find(texture, "EmptySocket") then
+                        GemsEmptyCount = GemsEmptyCount + 1
+                    end
+                    --end
+                end
+            end
+        end
+    end
 	
 	tip:Hide();
     --if (slot == 16 or slot == 17) and itemLevel ~= 750 and not UnitIsUnit(unit, "player") then itemLevel=itemLevel+15 end

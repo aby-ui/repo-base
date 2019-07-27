@@ -289,6 +289,7 @@ local function OnInitializeWidgets(extended, configTable)
 end
 
 local function OnContextUpdateDelegate(extended, unit)
+    if not extended then return end
 	local widgets = extended.widgets
 
 	if LocalVars.WidgetsComboPoints and widgets.ComboWidgetHub then
@@ -302,6 +303,7 @@ local function OnContextUpdateDelegate(extended, unit)
 end
 
 local function OnUpdateDelegate(extended, unit)
+    if not extended then return end
 	local widgets = extended.widgets
 
 	if widgets.ClassWidgetHub and ( (LocalVars.ClassEnemyIcon and unit.reaction ~= "FRIENDLY") or (LocalVars.ClassPartyIcon and unit.reaction == "FRIENDLY")) then

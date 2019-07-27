@@ -45,14 +45,10 @@ if AL then
 	AL["DISPLAY_NPC_ICONS_DESC"] = "當停用時，稀有NPC圖示不會顯示在世界地圖上。"
 	AL["DISPLAY_OPTIONS"] = "顯示選項"
 	AL["DUNGEONS_SCENARIOS"] = "地城/事件"
-	--[[Translation missing --]]
-	AL["ENABLE_MARKER"] = "Toggle target marker"
-	--[[Translation missing --]]
-	AL["ENABLE_MARKER_DESC"] = "When this is activated it will show a marker on top of the target when you click the main button"
-	--[[Translation missing --]]
-	AL["ENABLE_SCAN_CHAT"] = "Toggle searching for rare NPCs through chat messages"
-	--[[Translation missing --]]
-	AL["ENABLE_SCAN_CHAT_DESC"] = "When this is activated you will be warned visually and with a sound everytime a rare NPC yells or a chat message related with a rare NPCs is detected."
+	AL["ENABLE_MARKER"] = "切換目標是否標記"
+	AL["ENABLE_MARKER_DESC"] = "當啟用以後，點擊主按鈕將在目標頭頂上個標記。"
+	AL["ENABLE_SCAN_CHAT"] = "切換是否透過聊天訊息搜尋稀有NPC"
+	AL["ENABLE_SCAN_CHAT_DESC"] = "啟用以後，每當稀有NPC大喊或是偵測到相關的聊天訊息時，將發出視覺以及聲音提醒。"
 	AL["ENABLE_SCAN_CONTAINERS"] = "搜尋寶藏或寶箱"
 	AL["ENABLE_SCAN_CONTAINERS_DESC"] = "啟用時，每當你的小地圖上有寶藏或寶箱出現，都會有視覺警告與聲音提醒。"
 	AL["ENABLE_SCAN_EVENTS"] = "搜尋事件"
@@ -71,20 +67,16 @@ if AL then
 	AL["FILTER"] = "過濾NPC"
 	AL["FILTER_CONTINENT"] = "大陸/類別"
 	AL["FILTER_CONTINENT_DESC"] = "大陸或類別名稱"
-	--[[Translation missing --]]
-	AL["FILTER_NPCS_ONLY_MAP"] = "Enable filters only in the world map"
-	--[[Translation missing --]]
-	AL["FILTER_NPCS_ONLY_MAP_DESC"] = "When enabled you will still get alerts from filtered NPCs but they won't show up in your world map. When disabled you won't get alerts from filtered NPCs at all."
+	AL["FILTER_NPCS_ONLY_MAP"] = "只在世界地圖中啟用過濾器"
+	AL["FILTER_NPCS_ONLY_MAP_DESC"] = "啟用以後，您仍會收到已過濾稀有的提醒，但這些提醒不會顯示在世界地圖中，停用以後，您將無法從過濾後的稀有收到警報。"
 	AL["FILTER_RARE_LIST"] = "過濾要搜尋的稀有NPC"
 	AL["FILTER_RARE_LIST_DESC"] = "搜尋這個稀有NPC。|n停用後，發現這個NPC時不會通知。"
 	AL["FILTER_ZONE"] = "區域"
 	AL["FILTER_ZONE_DESC"] = "大陸或類別內的區域"
 	AL["FILTER_ZONES_LIST"] = "區域清單"
 	AL["FILTER_ZONES_LIST_DESC"] = "啟用/停用這個區域的通知。停用後，在這個區域中發現稀有NPC、事件或寶箱不會通知。"
-	--[[Translation missing --]]
-	AL["FILTER_ZONES_ONLY_MAP"] = "Enable filters only in the world map"
-	--[[Translation missing --]]
-	AL["FILTER_ZONES_ONLY_MAP_DESC"] = "When enabled you will still get alerts from NPCs that belong to filtered zones but they won't show up in your world map. When disabled you won't get alerts from NPCs that belong to filtered zones at all."
+	AL["FILTER_ZONES_ONLY_MAP"] = "只在世界地圖中啟用過濾器"
+	AL["FILTER_ZONES_ONLY_MAP_DESC"] = "啟用以後，您仍會收到已過濾區域中稀有的提醒，但這些提醒不會顯示在世界地圖中，停用後，您將無法從屬於過濾區域的稀有收到警報。"
 	AL["FILTERS"] = "過濾稀有NPC"
 	AL["FILTERS_SEARCH"] = "搜尋"
 	AL["FILTERS_SEARCH_DESC"] = "輸入NPC名字來過濾下方的清單"
@@ -124,8 +116,7 @@ if AL then
 	AL["LOOT_TOOLTIP_POSITION"] = "戰利品滑鼠提示位置"
 	AL["LOOT_TOOLTIP_POSITION_DESC"] = "設定滑鼠指向戰利品圖示時，滑鼠提示出現的位置 (相對於按鈕)。"
 	AL["MAIN_BUTTON_OPTIONS"] = "主按鈕選項"
-	--[[Translation missing --]]
-	AL["MAP_MENU_DISABLE_LAST_SEEN_FILTER"] = "Show rare NPCs that you saw a long time ago but that can respawn"
+	AL["MAP_MENU_DISABLE_LAST_SEEN_FILTER"] = "顯示你很久以前見過可重生的稀有NPC。"
 	AL["MAP_MENU_SHOW_CONTAINERS"] = "在地圖上顯示寶箱圖示"
 	AL["MAP_MENU_SHOW_EVENTS"] = "在地圖上顯示事件圖示"
 	AL["MAP_MENU_SHOW_NOT_DISCOVERED"] = "未發現的實體"
@@ -153,10 +144,8 @@ if AL then
 	AL["MAP_TOOLTIP_KILLED"] = "Shift-左鍵點擊來設置為已擊殺"
 	AL["MAP_TOOLTIP_NOT_FOUND"] = "你還沒見過此NPC並且也還沒有人跟你分享。"
 	AL["MAP_TOOLTIP_SEEN"] = "多久前見過：%s"
-	--[[Translation missing --]]
-	AL["MARKER"] = "Target marker"
-	--[[Translation missing --]]
-	AL["MARKER_DESC"] = "Choose the marker to add on top of the target when you click the main button."
+	AL["MARKER"] = "目標標記"
+	AL["MARKER_DESC"] = "點擊主按鈕，選擇目標頂部的標記。"
 	AL["MESSAGE_OPTIONS"] = "訊息選項"
 	AL["MIDDLE_BUTTON"] = "中鍵點擊"
 	AL["NOT_TARGETEABLE"] = "無法設為目標"

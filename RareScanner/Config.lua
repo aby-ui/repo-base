@@ -566,13 +566,24 @@ local function GetFilterOptions()
 			if (zoneID) then
 				for k, v in pairs(private.dbglobal.rare_names[GetLocale()]) do 
 					if (private.ZONE_IDS[k]) then
+						local tempName = v
 						if (npcName) then
 							if ((private.ZONE_IDS[k].zoneID == zoneID or (type(private.ZONE_IDS[k].zoneID) == "table" and RS_Set(private.ZONE_IDS[k].zoneID)[zoneID])) and RS_tContains(v,npcName)) then
-								filter_options.args.rareFilters.values[v] = k
+								local i = 2
+								while (filter_options.args.rareFilters.values[tempName]) do
+									tempName = v..' ('..i..')'
+									i = i+1
+								end
+								filter_options.args.rareFilters.values[tempName] = k
 							end
 						else
 							if (private.ZONE_IDS[k].zoneID == zoneID or (type(private.ZONE_IDS[k].zoneID) == "table" and RS_Set(private.ZONE_IDS[k].zoneID)[zoneID])) then
-								filter_options.args.rareFilters.values[v] = k
+								local i = 2
+								while (filter_options.args.rareFilters.values[tempName]) do
+									tempName = v..' ('..i..')'
+									i = i+1
+								end
+								filter_options.args.rareFilters.values[tempName] = k
 							end
 						end
 					else

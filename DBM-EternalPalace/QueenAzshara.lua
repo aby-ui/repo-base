@@ -1,11 +1,11 @@
 local mod	= DBM:NewMod(2361, "DBM-EternalPalace", nil, 1179)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190723192931")
+mod:SetRevision("2019072603627")
 mod:SetCreatureID(152910)
 mod:SetEncounterID(2299)
 mod:SetZone()
-mod:SetUsedIcons(3, 2, 1)
+mod:SetUsedIcons(4, 3, 2, 1)
 mod:SetHotfixNoticeRev(20190715000000)--2019, 7, 15
 --mod:SetMinSyncRevision(16950)
 --mod.respawnTime = 29--Respawn is near instant on ptr, boss requires clicking to engage, no body pulling anyways
@@ -156,6 +156,7 @@ local timerArcaneBurstCD				= mod:NewCDCountTimer(58.2, 303657, nil, nil, nil, 3
 local timerAzsharasIndomitableCD		= mod:NewCDTimer(100, "ej20410", nil, nil, nil, 1, 298531, DBM_CORE_DAMAGE_ICON)
 --Stage Three: Song of the Tides
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(20340))
+local timerStageThreeBerserk			= mod:NewTimer(180, "timerStageThreeBerserk", 28131)
 --local timerEnergizeWardofPowerCD		= mod:NewAITimer(58.2, 303657, nil, nil, nil, 5)
 --local timerStaticShockCD				= mod:NewAITimer(58.2, 300492, nil, nil, nil, 3)
 --local timerCrystallineShieldCD		= mod:NewCDTimer(17, 300620, nil, nil, nil, 3, nil, DBM_CORE_DAMAGE_ICON..DBM_CORE_IMPORTANT_ICON)
@@ -175,7 +176,7 @@ mod:AddNamePlateOption("NPAuraOnInfuriated", 300428)
 mod:AddInfoFrameOption(298569, true)
 mod:AddBoolOption("SortDesc", false)
 mod:AddBoolOption("ShowTimeNotStacks", false)
-mod:AddSetIconOption("SetIconOnArcaneBurst", 303657, true, false, {1, 2, 3})
+mod:AddSetIconOption("SetIconOnArcaneBurst", 303657, true, false, {1, 2, 3, 4})
 
 mod.vb.phase = 1
 mod.vb.stageOneBossesLeft = 2
@@ -943,6 +944,9 @@ function mod:INSTANCE_ENCOUNTER_ENGAGE_UNIT()
 					self.vb.phase = 3
 					warnPhase:Show(DBM_CORE_AUTO_ANNOUNCE_TEXTS.stage:format(3))
 					warnPhase:Play("pthree")
+					if self:IsMythic() then
+						timerStageThreeBerserk:Start(180)
+					end
 				end
 			end
 		end
@@ -1028,6 +1032,7 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 		timerNetherPortalCD:Start(23.9)
 		timerPiercingGazeCD:Start(43.9)
 		if self:IsMythic() then--Just copied from heroic for now
+			timerStageThreeBerserk:Stop()
 			timerGreaterReversalCD:Start(48.8, 1)
 			timerBeckonCD:Start(68.9, 1)--START
 		elseif self:IsHeroic() then

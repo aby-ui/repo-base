@@ -1299,9 +1299,13 @@ function RareScanner:DumpBrokenData()
 			if (not npcInfo.mapID or npcInfo.mapID == 0 or not npcInfo.coordY or not npcInfo.coordX) then
 				private.dbglobal.rares_found[npcID] = nil
 			end
-			
+		end
+	end
+	
+	if (private.dbchar.rares_killed and next(private.dbchar.rares_killed) ~= nil) then
+		for npcID, timestamp in pairs(private.dbchar.rares_killed) do
 			-- If the NPC belongs to Mechagon or Nazjatar and its set as eternal death, reset it
-			if (npcInfo.mapID and (npcInfo.mapID == 1462 or npcInfo.mapID == 1355) and private.dbchar.rares_killed and private.dbchar.rares_killed[npcID] == ETERNAL_DEATH) then
+			if (timestamp == ETERNAL_DEATH and private.ZONE_IDS[npcID] and (private.ZONE_IDS[npcID].zoneID == 1462 or private.ZONE_IDS[npcID].zoneID == 1355)) then
 				private.dbchar.rares_killed[npcID] = nil
 			end
 		end

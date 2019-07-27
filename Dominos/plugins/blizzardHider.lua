@@ -98,4 +98,22 @@ end
 if VerticalMultiBarsContainer then
     VerticalMultiBarsContainer:UnregisterAllEvents()
     hide(VerticalMultiBarsContainer)
+
+    -- a hack to preserve the multi action bar spacing behavior for the quest log
+    hooksecurefunc("MultiActionBar_Update", function()
+        local width = 0
+        local showLeft = SHOW_MULTI_ACTIONBAR_3
+        local showRight = SHOW_MULTI_ACTIONBAR_4
+        local stack = GetCVarBool("multiBarRightVerticalLayout")
+
+        if showLeft then
+            width = width + VERTICAL_MULTI_BAR_WIDTH
+        end
+
+        if showRight and not stack then
+            width = width + VERTICAL_MULTI_BAR_WIDTH
+        end
+
+        VerticalMultiBarsContainer:SetWidth(width)
+    end)
 end

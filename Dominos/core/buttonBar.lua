@@ -216,8 +216,8 @@ function ButtonBar:Layout()
 		local x = xOff + buttonWidth*col
 		local y = yOff + buttonHeight*row
 
-		button:SetParent(self.header)
 		button:ClearAllPoints()
+		button:SetParent(self.header)
 		button:SetPoint('TOPLEFT', x, -y)
 	end
 
