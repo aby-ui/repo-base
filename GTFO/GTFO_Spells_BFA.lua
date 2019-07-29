@@ -951,6 +951,7 @@ GTFO.SpellID["295920"] = {
   --desc = "Ancient Tempest (Radiance of Azshara)";
   applicationOnly = true;
   sound = 1;
+  test = true;
 };
 
 GTFO.SpellID["299152"] = {
@@ -1022,8 +1023,4 @@ GTFO.SpellID["297907"] = {
 GTFO.SpellID["303981"] = {
   --desc = "Nether Portal (Queen Azshara)";
   sound = 1;
-  test = true;
 };
-
-
-

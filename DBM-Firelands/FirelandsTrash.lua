@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("FirelandsTrash", "DBM-Firelands")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041705904")
+mod:SetRevision("20190417005904")
 mod:SetModelID(38765)
 mod:SetZone()
 mod.isTrashMod = true

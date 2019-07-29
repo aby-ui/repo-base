@@ -1,4 +1,4 @@
-## Interface: 80200
+﻿## Interface: 80200
 ## X-Min-Interface: 80000
 ## Title:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Pandaria|r
 ## Title-koKR:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0판다리아|r
@@ -22,6 +22,9 @@
 ## X-DBM-Mod-MapID: 870,1064
 ## X-DBM-Mod-LoadCID: 62346,60491,69161,69099,71952,71954,72057,71953,71955,69768,69769,69841,69842
 ## X-DBM-Mod-MinCoreRevision: 14002
+## X-Curse-Project-ID: 85688
+## X-WoWI-ID: 23199
+
 localization.en.lua
 localization.de.lua
 localization.es.lua

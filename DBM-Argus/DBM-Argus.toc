@@ -19,6 +19,9 @@
 ## X-DBM-Mod-MapID: 1779
 ## X-DBM-Mod-LoadCID: 124625,124555,124719,124592,124492,124514
 ## X-DBM-Mod-MinCoreRevision: 14737
+## X-Curse-Project-ID: 301324
+## X-WoWI-ID: 24905
+
 localization.en.lua
 localization.cn.lua
 localization.de.lua

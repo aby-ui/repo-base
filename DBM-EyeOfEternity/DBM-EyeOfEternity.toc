@@ -1,4 +1,4 @@
-## Interface: 80200
+﻿## Interface: 80200
 ## X-Min-Interface: 80000
 ## Title:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Eye of Eternity|r
 ## Title-deDE:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Das Auge der Ewigkeit|r
@@ -19,6 +19,9 @@
 ## X-DBM-Mod-MapID: 616
 ## X-DBM-Mod-Sort: 905
 ## X-DBM-Mod-MinCoreRevision: 12473
+## X-Curse-Project-ID: 43970
+## X-WoWI-ID: 21522
+
 localization.en.lua
 localization.fr.lua
 localization.de.lua

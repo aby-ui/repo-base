@@ -3,7 +3,7 @@
     <Frame name="TomCats-MechagonInterfaceOptionsPanel" hidden="false" parent="InterfaceOptionsFramePanelContainer">
         <Layers>
             <Layer level="ARTWORK">
-                <FontString name="$parentTitle" text="Rares of Arathi Highlands" inherits="GameFontNormalLarge" justifyH="LEFT" justifyV="TOP">
+                <FontString name="$parentTitle" text="Rares of Mechagon" inherits="GameFontNormalLarge" justifyH="LEFT" justifyV="TOP">
                     <Anchors>
                         <Anchor point="TOPLEFT">
                             <Offset>

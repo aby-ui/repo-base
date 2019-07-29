@@ -1,4 +1,4 @@
-## Interface: 80200
+﻿## Interface: 80200
 ## X-Min-Interface: 80000
 ## Title:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Challenges|r
 ## Title-deDE:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Herausforderungen|r
@@ -29,6 +29,8 @@
 ## X-DBM-Mod-Sort: 516
 ## X-DBM-Mod-MapID: 1148, 1698, 1710, 1703, 1702, 1684, 1673, 1616
 ## X-DBM-Mod-MinCoreRevision: 16130
+## X-Curse-Project-ID: 61621
+
 localization.en.lua
 localization.de.lua
 localization.es.lua

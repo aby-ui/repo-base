@@ -1,4 +1,4 @@
-## Interface: 80200
+﻿## Interface: 80200
 ## X-Min-Interface: 80000
 ## Title:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Heart of Fear|r
 ## Title-ruRU:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Сердце Страха|r
@@ -20,6 +20,9 @@
 ## X-DBM-Mod-Sort: 704
 ## X-DBM-Mod-MapID: 1009
 ## X-DBM-Mod-MinCoreRevision: 12473
+## X-Curse-Project-ID: 85688
+## X-WoWI-ID: 23199
+
 localization.en.lua
 localization.kr.lua
 localization.ru.lua

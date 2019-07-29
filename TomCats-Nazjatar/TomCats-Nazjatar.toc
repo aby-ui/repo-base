@@ -2,7 +2,7 @@
 ## Title: TomCat's Tours: Rares of Nazjatar
 ## Author: TomCat
 ## X-Website: http://www.tomcatstours.com
-## Version: 1.0.12
+## Version: 1.0.13
 ## DefaultState: enabled
 ## SavedVariablesPerCharacter: TomCats_Nazjatar_Character
 ## OptionalDeps: TomCats,HandyNotes,TomTom

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("BoTrash", "DBM-BastionTwilight")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041705904")
+mod:SetRevision("20190417005904")
 mod:SetModelID(37193)
 mod:SetZone()
 mod.isTrashMod = true

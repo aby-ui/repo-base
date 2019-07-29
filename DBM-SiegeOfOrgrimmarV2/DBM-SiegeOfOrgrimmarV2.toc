@@ -1,4 +1,4 @@
-## Interface: 80200
+﻿## Interface: 80200
 ## X-Min-Interface: 80000
 ## Title:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Siege of Orgrimmar V2|r
 ## Title-ruRU:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Осада Оргриммара|r
@@ -19,6 +19,9 @@
 ## X-DBM-Mod-Sort: 701
 ## X-DBM-Mod-MapID: 1136
 ## X-DBM-Mod-MinCoreRevision: 14002
+## X-Curse-Project-ID: 85688
+## X-WoWI-ID: 23199
+
 localization.en.lua
 localization.br.lua
 localization.de.lua

@@ -48,7 +48,7 @@ hook EncounterJournal_SetLootButton
 ---------------------------------------------------------------]]
 local OTHER_CLASS = GetItemSubClassInfo(LE_ITEM_CLASS_ARMOR, 0)
 EncounterJournal_SetLootButton_ELP = function(item)
-    if not item.UpdateTooltip then item.UpdateTooltip = item:GetScript("OnEnter") end --for Azerite Tooltip Update
+    --if not item.UpdateTooltip then item.UpdateTooltip = item:GetScript("OnEnter") end --for Azerite Tooltip Update
     if db.range == 0 then return ELP_RunHooked("EncounterJournal_SetLootButton", item) end
     local itemID = curr_items[item.index]
     local encounterID = curr_encts[itemID]

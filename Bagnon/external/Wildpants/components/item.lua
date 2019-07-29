@@ -385,6 +385,7 @@ function ItemSlot:UpdateTooltip()
 	self:OnEnter()
 end
 
+if AbyUpdateTooltipWrapperFunc then ItemSlot.UpdateTooltip = AbyUpdateTooltipWrapperFunc(ItemSlot.UpdateTooltip, 2) end
 
 --[[ Data ]]--
 

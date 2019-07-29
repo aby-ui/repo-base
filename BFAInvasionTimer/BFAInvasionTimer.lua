@@ -72,7 +72,7 @@ do
 		3, -- Zuldazar
 	}
 	--13317 pvp achiev
-	local GameTooltip = GameTooltip
+	local tt = CreateFrame("GameTooltip", "BFAITtooltip", UIParent, "GameTooltipTemplate")
 	local FormatShortDate = FormatShortDate
 	ShowTip = function(tip)
 		local coloredZones = {}
@@ -106,11 +106,6 @@ do
 				end
 			end
 		end
-		-- XXX remove BFAInvasionData[2] check
-		if BFAInvasionData[2] == 0 then
-			coloredZones = {"", "", "", "", "", ""}
-		end
-		-- XXX end
 
 		local splitLine = false
 		if not frame.db.profile.tooltipHideMedals then
@@ -184,13 +179,13 @@ do
         tip:AddLine("左键拖动，右键选项")
 	end
 	HideTip = function()
-		GameTooltip:Hide()
+		tt:Hide()
 	end
 	OnEnter = function(f)
-		GameTooltip:SetOwner(f, "ANCHOR_NONE")
-		GameTooltip:SetPoint("BOTTOM", f, "TOP")
-		ShowTip(GameTooltip)
-		GameTooltip:Show()
+		tt:SetOwner(f, "ANCHOR_NONE")
+		tt:SetPoint("BOTTOM", f, "TOP")
+		ShowTip(tt)
+		tt:Show()
 	end
 end
 
@@ -438,10 +433,9 @@ do
 				end
 
 				if mode == 2 then
-					-- XXX remove BFAInvasionData[2] check
-					StartBroker(BFAInvasionData[2] == 0 and L.next or L.next:format(zoneNames[nextAvailableZone]), t, 1044517) -- 1044517 = Interface/Icons/Achievement_Garrison_Invasion
+					StartBroker(L.next:format(zoneNames[nextAvailableZone]), t, 1044517) -- 1044517 = Interface/Icons/Achievement_Garrison_Invasion
 				else
-					StartBar(BFAInvasionData[2] == 0 and L.next or L.next:format(zoneNames[nextAvailableZone]), t, 0, 1044517) -- 1044517 = Interface/Icons/Achievement_Garrison_Invasion
+					StartBar(L.next:format(zoneNames[nextAvailableZone]), t, 0, 1044517) -- 1044517 = Interface/Icons/Achievement_Garrison_Invasion
 					frame:UnregisterEvent("QUEST_TURNED_IN")
 				end
 
@@ -482,11 +476,7 @@ frame:SetScript("OnEvent", function(f)
 	f:UnregisterEvent("PLAYER_LOGIN")
 
 	if type(BFAInvasionData) ~= "table" then
-		if type(BFAInvasionTime) == "number" then
-			BFAInvasionData = {BFAInvasionTime, 0}
-		else
-			BFAInvasionData = {0, 0}
-		end
+		BFAInvasionData = {0, 0}
 	end
 
 	-- saved variables database setup
@@ -565,7 +555,7 @@ frame:SetScript("OnEvent", function(f)
 			print("|cFF33FF99BFA入侵计时|r:", L.firstRunWarning)
 		end
 		local x = GetLocale()
-		if x == "ptBR" then -- XXX temp
+		if x == "esES" or x == "esMX" or x == "koKR" then -- XXX temp, Options/Locales needs updated
 			print("|cFF33FF99BFAInvasionTimer|r is missing locale for", x, "and needs your help! Please visit the project page on GitHub for more info.")
 		end
 	end)

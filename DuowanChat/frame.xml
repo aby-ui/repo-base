@@ -17,10 +17,10 @@
 		<Size>
 			<AbsDimension x="23" y="23"/>
 		</Size>
-		<Anchors>
+		<!--<Anchors>
 			<Anchor point="LEFT" relativeTo="ChatFrameMenuButton" relativePoint="RIGHT"/>
-		</Anchors>
-		<Scripts>		
+		</Anchors>-->
+		<Scripts>
 			<OnClick>
 				DWCIconButton_OnClick(self, button);
 			</OnClick>

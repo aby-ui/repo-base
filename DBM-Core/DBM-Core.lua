@@ -68,7 +68,7 @@ local function showRealDate(curseDate)
 end
 
 DBM = {
-	Revision = parseCurseDate("20190726003627"),
+	Revision = parseCurseDate("20190728182456"),
 	DisplayVersion = "8.2.10 alpha", -- the string that is shown as version
 	ReleaseRevision = releaseDate(2019, 7, 24) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 }
@@ -3263,13 +3263,13 @@ function DBM:LoadModOptions(modId, inCombat, first)
 					elseif option:find("TColor") then
 						if savedOptions[id][profileNum][option] and savedOptions[id][profileNum][option] == 0 and mod.DefaultOptions[option] and mod.DefaultOptions[option] ~= 0 then
 							savedOptions[id][profileNum][option] = mod.DefaultOptions[option]
-							self:Debug("Migrated "..option.." to option defaults", 2)
+							self:Debug("Migrated "..option.." to option defaults")
 						end
 					--Fix default options for countdowns that were set to 0 because no defaults existed at time they were created, but do now.
 					elseif option:find("CVoice") then
 						if savedOptions[id][profileNum][option] and (type(savedOptions[id][profileNum][option]) == "number") and (savedOptions[id][profileNum][option] == 0) and mod.DefaultOptions[option] and mod.DefaultOptions[option] ~= 0 then
 							savedOptions[id][profileNum][option] = mod.DefaultOptions[option]
-							self:Debug("Migrated "..option.." to option defaults", 2)
+							self:Debug("Migrated "..option.." to option defaults")
 						end
 					--Fix options for custom special warning sounds not in addons folder that are not using soundkit IDs
 					elseif option:find("SWSound") then
@@ -3277,7 +3277,7 @@ function DBM:LoadModOptions(modId, inCombat, first)
 							local searchMsg = (savedOptions[id][profileNum][option]):lower()
 							if not searchMsg:find("addons") then
 								savedOptions[id][profileNum][option] = mod.DefaultOptions[option]
-								self:Debug("Migrated "..option.." to option defaults", 2)
+								self:Debug("Migrated "..option.." to option defaults")
 							end
 						end
 					end

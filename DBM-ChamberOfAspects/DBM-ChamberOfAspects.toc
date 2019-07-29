@@ -1,4 +1,4 @@
-## Interface: 80200
+﻿## Interface: 80200
 ## X-Min-Interface: 80000
 ## Title:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Chamber of Aspects|r
 ## Title-deDE:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Kammer der Aspekte|r
@@ -36,6 +36,9 @@
 ## X-DBM-Mod-Sort: 906
 ## X-DBM-Mod-MapID: 615,724
 ## X-DBM-Mod-MinCoreRevision: 12473
+## X-Curse-Project-ID: 43970
+## X-WoWI-ID: 21522
+
 localization.en.lua
 localization.de.lua
 localization.ru.lua

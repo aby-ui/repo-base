@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("IsleTimeless", "DBM-TimelessIsle")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041705850")
+mod:SetRevision("20190417005850")
 mod:SetZone(DBM_DISABLE_ZONE_DETECTION)
 
 mod:RegisterEvents(

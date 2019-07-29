@@ -1,4 +1,4 @@
-## Interface: 80200
+﻿## Interface: 80200
 ## X-Min-Interface: 80000
 ## Title:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Throne of Thunder|r
 ## Title-ruRU:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Престол Гроз|r
@@ -20,6 +20,9 @@
 ## X-DBM-Mod-Sort: 702
 ## X-DBM-Mod-MapID: 1098
 ## X-DBM-Mod-MinCoreRevision: 14569
+## X-Curse-Project-ID: 85688
+## X-WoWI-ID: 23199
+
 localization.en.lua
 localization.it.lua
 localization.kr.lua

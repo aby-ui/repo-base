@@ -1,4 +1,4 @@
-## Interface: 80200
+﻿## Interface: 80200
 ## X-Min-Interface: 80000
 ## Title:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Scenario-MoP|r
 ## Title-ruRU:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Сценарии-MoP|r
@@ -27,6 +27,9 @@
 ## X-DBM-Mod-Sort: 707
 ## X-DBM-Mod-MapID: 1000,999,1031,1103,1102,1135,1112,1030,1005,1104,1050,1048,1051,1095,1024,1130,1144,1099,1131,1157
 ## X-DBM-Mod-MinCoreRevision: 14565
+## X-Curse-Project-ID: 85688
+## X-WoWI-ID: 23199
+
 localization.en.lua
 localization.kr.lua
 localization.de.lua

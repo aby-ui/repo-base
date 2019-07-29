@@ -1,4 +1,27 @@
 local addon = select(2, ...)
+
+-- Begin interim restart checking code
+function split(inputstr)
+    local t={}
+    for str in string.gmatch(inputstr, "([^.]+)") do
+        table.insert(t, str)
+    end
+    return t
+end
+
+local function convertVersionToNumber(version)
+    local parts = split(version)
+    return tonumber(parts[1]) * 1000000 + tonumber(parts[2]) * 1000 + tonumber(parts[3])
+end
+
+local addonTOCVersion = convertVersionToNumber(GetAddOnMetadata("TomCats-Mechagon", "version"))
+local newFilesSinceVersion = convertVersionToNumber("1.0.0")
+
+if (newFilesSinceVersion > addonTOCVersion) then
+    DEFAULT_CHAT_FRAME:AddMessage("|cffff0000Warning: TomCat's Tours requires that you restart WoW in order for the recent update to function properly|r")
+end
+-- End interim restart checking code
+
 local D, L, P = addon.getLocalVars()
 local TCL = addon.TomCatsLibs
 local AceGUI = LibStub("AceGUI-3.0")
@@ -96,7 +119,31 @@ function C_VignetteInfo.FindBestUniqueVignette(vignetteGUIDs)
     return index
 end
 
+local function replaceMapOnShow(mapFrame)
+    local dataproviders = mapFrame["dataProviders"]
+    local provider
+    for k, v in pairs(dataproviders) do
+        if (k.uniqueVignettesGUIDs) then
+            provider = k
+        end
+    end
+    function provider:OnShow()
+        self:RegisterEvent("VIGNETTES_UPDATED");
+        self.ticker = C_Timer.NewTicker(0.1, function() self:UpdatePinPositions() end);
+    end
+    if (provider.ticker) then
+        provider.ticker:Cancel()
+        provider:OnShow()
+    end
+end
+
 local function ADDON_LOADED(self)
+    replaceMapOnShow(WorldMapFrame)
+    if not BattlefieldMapFrame then
+        hooksecurefunc("BattlefieldMap_LoadUI", function() replaceMapOnShow(BattlefieldMapFrame) end)
+    else
+        replaceMapOnShow(BattlefieldMapFrame)
+    end
     windowSettings = addon.savedVariables.character.windowSettings or { width = 360, height = 330 }
     local completeFont = CreateFont("Complete")
     completeFont:SetFontObject(SystemFont_Small)
@@ -644,7 +691,7 @@ if (TomCats and TomCats.Register) then
                 }
             },
             name = "Rares of Mechagon",
-            version = "1.0.12"
+            version = "1.0.13"
         }
     )
 end

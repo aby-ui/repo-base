@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("Zarithrian", "DBM-ChamberOfAspects", 2)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041705949")
+mod:SetRevision("20190417005949")
 mod:SetCreatureID(39746)
 mod:SetEncounterID(1148)
 mod:SetModelID(32179)

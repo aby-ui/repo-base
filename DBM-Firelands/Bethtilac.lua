@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(192, "DBM-Firelands", nil, 78)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("2019041705904")
+mod:SetRevision("20190417005904")
 mod:SetCreatureID(52498)
 mod:SetEncounterID(1197)
 mod:SetZone()

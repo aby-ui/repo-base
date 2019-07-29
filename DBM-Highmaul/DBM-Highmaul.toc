@@ -1,4 +1,4 @@
-## Interface: 80200
+﻿## Interface: 80200
 ## X-Min-Interface: 80000
 ## Title:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Highmaul|r
 ## Title-koKR:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0높은망치|r
@@ -20,6 +20,9 @@
 ## X-DBM-Mod-Sort: 603
 ## X-DBM-Mod-MapID: 1228
 ## X-DBM-Mod-MinCoreRevision: 15211
+## X-Curse-Project-ID: 101956
+## X-WoWI-ID: 24535
+
 localization.en.lua
 localization.kr.lua
 localization.ru.lua

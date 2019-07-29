@@ -897,6 +897,38 @@ do
     TempEnchant1:SetScript("OnUpdate", nil)
     TempEnchant2:SetScript("OnUpdate", nil)
     TempEnchant3:SetScript("OnUpdate", nil)
+
+    local lastModifierTime = 0
+    CoreOnEvent("MODIFIER_STATE_CHANGED", function() lastModifierTime = GetTime() end)
+    function AbyUpdateTooltipWrapperFunc(func, interval, caller)
+        return function(self, ...)
+            if self == nil then self = caller end
+            if self == nil then return end
+            local t = self._abyUTT or 0
+            local now = GetTime()
+            if now - t < interval and t > lastModifierTime then return end
+            self._abyUTT = now
+            return func(self, ...)
+        end
+    end
+    local function replaceUpdateTooltipWithWrapper(self)
+        if self.UpdateTooltip == self._abyNewUT then return end
+        self._abyOldUT = self.UpdateTooltip
+        self.UpdateTooltip = AbyUpdateTooltipWrapperFunc(self.UpdateTooltip, 1, self)
+        self._abyNewUT = self.UpdateTooltip
+    end
+    hooksecurefunc("PaperDollItemSlotButton_OnEnter", replaceUpdateTooltipWithWrapper)
+    CoreDependCall("Blizzard_EncounterJournal", function()
+        hooksecurefunc("EncounterJournal_SetLootButton", function(self)
+            self.UpdateTooltip = AbyUpdateTooltipWrapperFunc(self:GetScript("OnEnter"), 2)
+        end)
+    end)
+    hooksecurefunc("EquipmentFlyout_Show", function()
+        for _, v in pairs(EquipmentFlyoutFrame.buttons) do
+            replaceUpdateTooltipWithWrapper(v)
+        end
+    end)
+    --bagnon and combuctor see components/item.lua
 end
 
 --[==[-替换WorldFrame_OnUpdate，其中大量运算只是为了UIParent隐藏时, level>=60 是为了其中的Tutorial

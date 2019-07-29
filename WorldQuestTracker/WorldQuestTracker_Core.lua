@@ -554,7 +554,7 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 				
 					local f = DF:CreateSimplePanel (UIParent, config.scroll_width + 30, config.scroll_height + 30, "World Quest Tracker Quest Blacklist", "WorldQuestTrackerBanPanel")
 					f:SetFrameStrata ("DIALOG")
-					f:SetPoint ("center", WorldMapScrollFrame, "center")
+					f:SetPoint ("center", UIParent, "center")
 					
 					DF:CreateBorder (f)
 					
