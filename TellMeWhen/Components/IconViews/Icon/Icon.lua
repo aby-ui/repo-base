@@ -98,9 +98,13 @@ View:RegisterGroupDefaults{
 	SettingsPerView = {
 		icon = {
 			TextLayout = "icon1",
+			BorderColor = "ff000000",
+			BorderIcon = 0,
 		}
 	}
 }
+
+View:RegisterConfigPanel_XMLTemplate(50, "TellMeWhen_GM_IconView")
 
 View:ImplementsModule("IconModule_Alpha", 10, true)
 View:ImplementsModule("IconModule_CooldownSweep", 20, function(Module, icon)
@@ -135,10 +139,18 @@ end)
 View:ImplementsModule("IconModule_Texts", 60, true)
 View:ImplementsModule("IconModule_IconContainer_Masque", 100, function(Module, icon)
 	local Modules = icon.Modules
+
+	local group = icon.group
+	local gspv = group:GetSettingsPerView()
+
+	Module:SetBorder(gspv.BorderIcon, gspv.BorderColor)
+	
+	local inset = gspv.BorderIcon
+	local sizeX, sizeY = icon:GetSize()
 	
 	Module.container:ClearAllPoints()
-	Module.container:SetSize(icon:GetSize())
-	Module.container:SetAllPoints()
+	Module.container:SetSize(sizeX - 2*inset, sizeY - 2*inset)
+	Module.container:SetPoint("TOPLEFT", inset, -inset)
 	Module:Enable()
 
 	---------- Skin-Dependent Module Layout ----------

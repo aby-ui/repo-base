@@ -69,7 +69,7 @@ function RSLootMixin:OnEnter()
 	--local itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, iconFileDataID, itemSellPrice, itemClassID, itemSubClassID, bindType, expacID, itemSetID, isCraftingReagent = GetItemInfo(self.itemID)
 	local itemLink, itemRarity, itemEquipLoc, iconFileDataID, itemClassID, itemSubClassID = RareScanner:RSGetItemInfo(self.itemID)
 	--print("itemName "..(itemName or "nil")..", itemLink "..(itemLink or "nil")..", itemRarity "..(itemRarity or "nil")..", itemLevel "..(itemLevel or "nil")..", itemMinLevel "..(itemMinLevel or "nil")..", itemType "..(itemType or "nil")..", itemSubType "..(itemSubType or "nil")..", itemStackCount "..(itemStackCount or "nil")..", itemEquipLoc "..(itemEquipLoc or "nil")..", iconFileDataID "..(iconFileDataID or "nil")..", itemSellPrice "..(itemSellPrice or "nil")..", itemClassID "..(itemClassID or "nil")..", itemSubClassID "..(itemSubClassID or "nil")..", bindType "..(bindType or "nil")..", expacID "..(expacID or "nil")..", itemSetID "..(itemSetID or "nil")..", isCraftingReagent "..(isCraftingReagent and "true" or "false"))
-	RareScanner:PrintDebugMessage("DEBUG: itemID "..self.itemID..", itemEquipLoc "..(itemEquipLoc or "nil")..", itemClassID "..(itemClassID or "nil")..", itemSubClassID "..(itemSubClassID or "nil"))
+	--RareScanner:PrintDebugMessage("DEBUG: itemID "..self.itemID..", itemEquipLoc "..(itemEquipLoc or "nil")..", itemClassID "..(itemClassID or "nil")..", itemSubClassID "..(itemSubClassID or "nil"))
 
 	local toolTip = self:GetParent().LootBarToolTip
 	toolTip:SetOwner(self:GetParent():GetParent(), private.db.loot.lootTooltipPosition)
@@ -171,50 +171,50 @@ end
 function RareScanner:ApplyLootFilters(itemID, itemLink, itemRarity, itemEquipLoc, itemClassID, itemSubClassID)
 	-- Quality filter
 	if (itemRarity < tonumber(private.db.loot.lootMinQuality)) then
-		RareScanner:PrintDebugMessage("DEBUG: Filtrado el objeto "..itemID.." por estar filtrado por calidad.")
+		--RareScanner:PrintDebugMessage("DEBUG: Filtrado el objeto "..itemID.." por estar filtrado por calidad.")
 		return false
 	-- Category filter
 	elseif (private.db.loot.filteredLootCategories[itemClassID] and private.db.loot.filteredLootCategories[itemClassID][itemSubClassID] == false) then
-		RareScanner:PrintDebugMessage("DEBUG: Filtrado el objeto "..itemID.." por estar filtrado por categoria.")
+		--RareScanner:PrintDebugMessage("DEBUG: Filtrado el objeto "..itemID.." por estar filtrado por categoria.")
 		return false
 	-- Equipable filter
 	elseif (private.db.loot.filterNotEquipableItems and (itemClassID == 2 or itemClassID == 4)) then --weapons or armor
 		if (not IsEquipable(itemClassID, itemSubClassID, itemEquipLoc)) then
-			RareScanner:PrintDebugMessage("DEBUG: Filtrado el objeto "..itemID.." por no ser equipable. Categoria "..itemClassID..", subcategoria "..itemSubClassID)
+			--RareScanner:PrintDebugMessage("DEBUG: Filtrado el objeto "..itemID.." por no ser equipable. Categoria "..itemClassID..", subcategoria "..itemSubClassID)
 			return false;
 		end
 	-- Transmog filter
 	elseif (private.db.loot.showOnlyTransmogItems and (itemClassID == 2 or (itemClassID == 4 and itemSubClassID ~= 0))) then --weapons or armor (not rings, necks, etc.)	
 		if (not IsEquipable(itemClassID, itemSubClassID, itemEquipLoc)) then
-			RareScanner:PrintDebugMessage("DEBUG: Filtrado el objeto "..itemID.." por no ser equipable y por lo tanto transfigurable. Categoria "..itemClassID..", subcategoria "..itemSubClassID)
+			--RareScanner:PrintDebugMessage("DEBUG: Filtrado el objeto "..itemID.." por no ser equipable y por lo tanto transfigurable. Categoria "..itemClassID..", subcategoria "..itemSubClassID)
 			return false
 		elseif (C_TransmogCollection.PlayerHasTransmog(itemID)) then
-			RareScanner:PrintDebugMessage("DEBUG: Filtrado el objeto "..itemID.." por no ser transfigurable (PlayerHasTransmog)")
+			--RareScanner:PrintDebugMessage("DEBUG: Filtrado el objeto "..itemID.." por no ser transfigurable (PlayerHasTransmog)")
 			return false
 		else 
 			if (not ScanToolTipFor(itemLink, TRANSMOGRIFY_TOOLTIP_APPEARANCE_UNKNOWN)) then
-				RareScanner:PrintDebugMessage("DEBUG: Filtrado el objeto "..itemID.." por no ser transfigurable (ToolTip)")
+				--RareScanner:PrintDebugMessage("DEBUG: Filtrado el objeto "..itemID.." por no ser transfigurable (ToolTip)")
 				return false
 			end
 		end
 	-- Collection mount filter
 	elseif (private.db.loot.filterCollectedItems and itemClassID == 15 and itemSubClassID == 5) then --mount
 		if (ScanToolTipFor(itemLink, ITEM_SPELL_KNOWN)) then
-			RareScanner:PrintDebugMessage("DEBUG: Filtrado el objeto "..itemID.." por tenerlo ya en la coleccion de monturas (ToolTip)")
+			--RareScanner:PrintDebugMessage("DEBUG: Filtrado el objeto "..itemID.." por tenerlo ya en la coleccion de monturas (ToolTip)")
 			return false
 		end
 	-- Collection pet filter
 	-- Unique pets
 	elseif (private.db.loot.filterCollectedItems and itemClassID == 15 and itemSubClassID == 2) then --pets
 		if (ScanToolTipFor(itemLink, format(ITEM_PET_KNOWN, "1", "1"))) then
-			RareScanner:PrintDebugMessage("DEBUG: Filtrado el objeto "..itemID.." por tenerlo ya en la coleccion de mascotas (ToolTip)")
+			--RareScanner:PrintDebugMessage("DEBUG: Filtrado el objeto "..itemID.." por tenerlo ya en la coleccion de mascotas (ToolTip)")
 			return false
 		end
 	-- Collection toy filter
 	-- Toys have different categories under miscelanious
 	elseif (private.db.loot.filterCollectedItems) then --toy
 		if (ScanToolTipFor(itemLink, TOY) and ScanToolTipFor(itemLink, ITEM_SPELL_KNOWN)) then
-			RareScanner:PrintDebugMessage("DEBUG: Filtrado el objeto "..itemID.." por tenerlo ya en la coleccion de juguetes (ToolTip)")
+			--RareScanner:PrintDebugMessage("DEBUG: Filtrado el objeto "..itemID.." por tenerlo ya en la coleccion de juguetes (ToolTip)")
 			return false
 		end
 	end

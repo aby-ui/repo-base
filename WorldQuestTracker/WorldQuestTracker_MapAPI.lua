@@ -115,8 +115,23 @@ function WorldQuestTracker.ZoneHaveWorldQuest (mapID)
 	return WorldQuestTracker.MapData.WorldQuestZones [mapID or WorldQuestTracker.GetCurrentMapAreaID()]
 end
 
---is a argus zone?
+--is a argus zone? - back compatibility with mods
 function WorldQuestTracker.IsArgusZone (mapID)
+	return WorldQuestTracker.IsNewEXPZone (mapID)
+end
+
+--check if the zone is a new zone added
+function WorldQuestTracker.IsNewEXPZone (mapID)
+	--battle for azeroth
+	if (WorldQuestTracker.MapData.ZoneIDs.NAZJATAR == mapID) then
+		return true
+		
+	elseif (WorldQuestTracker.MapData.ZoneIDs.MECHAGON == mapID) then
+		return true
+	end
+	
+	--[=[
+	--Legion
 	if (WorldQuestTracker.MapData.ZoneIDs.ANTORAN == mapID) then
 		return true
 	elseif (WorldQuestTracker.MapData.ZoneIDs.KROKUUN == mapID) then
@@ -124,6 +139,7 @@ function WorldQuestTracker.IsArgusZone (mapID)
 	elseif (WorldQuestTracker.MapData.ZoneIDs.MCCAREE == mapID) then
 		return true
 	end
+	--]=]
 end
 
 --is the current map zone a world quest hub?

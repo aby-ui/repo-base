@@ -140,7 +140,7 @@ local function parseSpellsString(setting, doLower, keepDurations)
 
 	return buffNames
 end
-parseSpellsString = TMW:MakeFunctionCached(parseSpellsString)
+parseSpellsString = TMW:MakeNArgFunctionCached(3, parseSpellsString)
 
 
 local function getSpellNames(setting, doLower, firstOnly, toname, hash, allowRenaming)

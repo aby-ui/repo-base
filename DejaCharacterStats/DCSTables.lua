@@ -248,6 +248,11 @@ DCS_TableData.StatData.ItemLevelFrame = {
     category   = true,
     frame      = char_ctats_pane.ItemLevelFrame,
     updateFunc = function(statFrame)
+		-- Check for DejaCharacterStats. Lets hide the frame if the AddOn is not loaded.
+		if IsAddOnLoaded("ElvUI") then
+			_G.CharacterStatsPane.ItemLevelFrame.Value:Show()
+			_G.CharacterFrame.ItemLevelText:SetText('')
+		end
 		local avgItemLevel, avgItemLevelEquipped = GetAverageItemLevel()
 		local DCS_DecimalPlaces
 		local multiplier
@@ -338,11 +343,12 @@ DCS_TableData.StatData.RatingCategory = {
 
 function MovementSpeed_OnUpdate(statFrame, elapsedTime) --Added this so Vehicles update as well. Shouldn't be too bad if other addons access this function, but still not as clean as I would like.
 	local unit = statFrame.unit;
-	local _, runSpeed, flightSpeed, swimSpeed = GetUnitSpeed(unit);
+	local currentSpeed, runSpeed, flightSpeed, swimSpeed = GetUnitSpeed(unit);
 	runSpeed = runSpeed/BASE_MOVEMENT_SPEED*100;
 	flightSpeed = flightSpeed/BASE_MOVEMENT_SPEED*100;
 	swimSpeed = swimSpeed/BASE_MOVEMENT_SPEED*100;
-
+	currentSpeed = currentSpeed/BASE_MOVEMENT_SPEED*100;
+	
 	-- Pets seem to always actually use run speed
 	if (unit == "pet") then
 		swimSpeed = runSpeed;
@@ -356,6 +362,8 @@ function MovementSpeed_OnUpdate(statFrame, elapsedTime) --Added this so Vehicles
 		speed = vehicleSpeed
 	elseif (swimming) then
 		speed = swimSpeed;
+	elseif (UnitOnTaxi("player") ) then
+		speed = currentSpeed;
 	elseif (IsFlying(unit)) then
 		speed = flightSpeed;
 	end

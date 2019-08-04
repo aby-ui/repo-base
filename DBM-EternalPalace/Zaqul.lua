@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2349, "DBM-EternalPalace", nil, 1179)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190719221715")
+mod:SetRevision("20190731182120")
 mod:SetCreatureID(150859)
 mod:SetEncounterID(2293)
 mod:SetZone()
@@ -13,10 +13,10 @@ mod:SetUsedIcons(1, 2, 3, 4)
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
-	"SPELL_CAST_START 301141 292963 296257 303978 301068 303543 302593 296018 304733 296078",
+	"SPELL_CAST_START 301141 292963 296257 303978 301068 303543 302593 296018 304733 296078 295814",
 	"SPELL_CAST_SUCCESS 292963 302503 293509 303543 296018 302504 295444 294515 299708",
 	"SPELL_SUMMON 300732",
-	"SPELL_AURA_APPLIED 292971 292981 295480 300133 292963 302503 293509 295327 303971 296078 303543 296018 302504 300584",
+	"SPELL_AURA_APPLIED 292971 292981 295480 300133 292963 302503 293509 295327 303971 296078 303543 296018 302504",
 	"SPELL_AURA_APPLIED_DOSE 292971",
 	"SPELL_AURA_REMOVED 292971 292963 293509 303971 296078 303543 296018",
 	"SPELL_AURA_REMOVED_DOSE 292971",
@@ -34,9 +34,10 @@ mod:RegisterEventsInCombat(
 --TODO, void slam, who does it target? random or the tank? if random, can we target scan it?
 --TODO, pause/resume (or reset) timers for boss shielding/split phase in stage 4 mythic?
 --[[
-(ability.id = 301141 or ability.id = 303543 or ability.id = 296018 or ability.id = 292963 or ability.id = 296257 or ability.id = 304733 or ability.id = 303978 or ability.id = 301068 or ability.id = 302593 or ability.id = 296078) and type = "begincast"
+(ability.id = 301141 or ability.id = 303543 or ability.id = 296018 or ability.id = 292963 or ability.id = 296257 or ability.id = 304733 or ability.id = 303978 or ability.id = 302593 or ability.id = 296078 or ability.id = 295814) and type = "begincast"
  or (ability.id = 292963 or ability.id = 302503 or ability.id = 296018 or ability.id = 302504 or ability.id = 303543 or ability.id = 295444 or ability.id = 294515 or ability.id = 299708) and type = "cast"
- or (ability.id = 300584 or ability.id = 293509) and type = "applydebuff"
+ or (ability.id = 300584 or ability.id = 293509 or ability.id = 296084) and type = "applydebuff"
+ or ability.id = 292963 or ability.id = 302503 or ability.id = 296018 or ability.id = 302504
 --]]
 local warnPhase							= mod:NewPhaseChangeAnnounce(2, nil, nil, nil, nil, nil, 2)
 local warnDiscipleofNzoth				= mod:NewTargetNoFilterAnnounce(292981, 4)
@@ -91,9 +92,10 @@ local timerDeliriumsDescentCD			= mod:NewCDTimer(35, 304733, nil, nil, nil, 3)
 local timerDarkPulseCD					= mod:NewCDTimer(93.5, 303978, nil, nil, nil, 6, nil, DBM_CORE_DEADLY_ICON)
 local timerManicDreadCD					= mod:NewCDTimer(75.4, 296018, nil, "Healer", nil, 5, nil, DBM_CORE_MAGIC_ICON)--75-83
 ----Mythic
-local timerPsychoticSplitCD				= mod:NewCDTimer(66.6, 301068, nil, nil, nil, 6, nil, DBM_CORE_MYTHIC_ICON..DBM_CORE_DEADLY_ICON)--Mythic
-local timerDreadScreamCD				= mod:NewAITimer(58.2, 303543, nil, "Healer", nil, 5, nil, DBM_CORE_MYTHIC_ICON..DBM_CORE_MAGIC_ICON)--Mythic
-local timerVoidSlamCD					= mod:NewAITimer(58.2, 302593, nil, nil, nil, 3)--Mythic
+local timerPsychoticSplitCD				= mod:NewCDTimer(100, 301068, nil, nil, nil, 6, nil, DBM_CORE_MYTHIC_ICON..DBM_CORE_DEADLY_ICON)--Mythic
+local timerPsychoticSplit				= mod:NewCastTimer(25, 301068, nil, nil, nil, 5, nil, DBM_CORE_MYTHIC_ICON..DBM_CORE_DAMAGE_ICON)
+local timerDreadScreamCD				= mod:NewCDTimer(8.5, 303543, nil, "Healer", nil, 5, nil, DBM_CORE_MYTHIC_ICON..DBM_CORE_MAGIC_ICON)--Mythic
+local timerVoidSlam						= mod:NewCastTimer(4.1, 302593, nil, nil, nil, 3)--Mythic
 
 local berserkTimer						= mod:NewBerserkTimer(600)
 
@@ -153,6 +155,7 @@ function mod:SPELL_CAST_START(args)
 		--timerDreadCD:Stop()
 		--New Stage 2 timers
 		timerManifestNightmaresCD:Start(37.2)
+		timerHorrificSummonerCD:SetFade(true)--Start fading this timer until P4, timer still exists on the script loop, but we just want to dim timer until it means something again
 		--timerMaddeningEruptionCD:Start(1)--1-3 seconds after this cast
 	elseif spellId == 304733 then--Delirium's Descent
 		if self.vb.phase < 3 then
@@ -160,7 +163,7 @@ function mod:SPELL_CAST_START(args)
 			warnPhase:Show(DBM_CORE_AUTO_ANNOUNCE_TEXTS.stage:format(3))
 			warnPhase:Play("pthree")
 			--Timers actually stopped
-			timerManifestNightmaresCD:Stop()
+			--timerManifestNightmaresCD:Stop()
 			--Timers that never stop, but might need time added to them if they come off cd during transition
 			--timerDreadCD:Stop()
 			--timerCrushingGraspCD:Stop()
@@ -172,16 +175,17 @@ function mod:SPELL_CAST_START(args)
 		specWarnDarkPulse:Show()
 		specWarnDarkPulse:Play("attackshield")
 		timerDarkPulseCD:Start()
-	elseif spellId == 301068 then
+	elseif spellId == 295814 then
 		specWarnPsychoticSplit:Show()
 		specWarnPsychoticSplit:Play("changetarget")
 		timerPsychoticSplitCD:Start()
-		timerDreadScreamCD:Start(4)
-		timerVoidSlamCD:Start(4)
+		timerDreadScreamCD:Start(15.8)--SUCCESS
+	elseif spellId == 301068 then
+		timerPsychoticSplit:Start(25)
 	elseif spellId == 302593 then
 		specWarnVoidSlam:Show()
 		specWarnVoidSlam:Play("shockwave")
-		timerVoidSlamCD:Start()
+		timerVoidSlam:Start()
 	end
 end
 
@@ -288,15 +292,6 @@ function mod:SPELL_AURA_APPLIED(args)
 		end
 	elseif spellId == 303971 or spellId == 296078 then--Dark Pulse
 		--timerManicDreadCD:Stop()
-	elseif spellId == 300584 and self.vb.phase < 4 then--Reality Portal (Only works on non mythic)
-		self.vb.phase = 4
-		timerDeliriumsDescentCD:Stop()
-		timerMaddeningEruptionCD:Stop()
-		if self:IsMythic() then
-			timerPsychoticSplitCD:Start(73.1)
-		else
-			timerDarkPulseCD:Start(73.1)
-		end
 	end
 end
 mod.SPELL_AURA_APPLIED_DOSE = mod.SPELL_AURA_APPLIED
@@ -361,12 +356,11 @@ mod.SPELL_PERIODIC_MISSED = mod.SPELL_PERIODIC_DAMAGE
 
 function mod:UNIT_DIED(args)
 	local cid = self:GetCIDFromGUID(args.destGUID)
-	if cid == 154175 then--Horric Summoner
-
-	elseif cid == 154682 then--echo-of-fear
+	if cid == 154682 then--echo-of-fear
 		timerDreadScreamCD:Stop()
 	elseif cid == 154685 then--echo-of-delirium
-		timerVoidSlamCD:Stop()
+		timerVoidSlam:Stop()
+	--elseif cid == 154175 then--Horric Summoner
 	end
 end
 
@@ -379,8 +373,6 @@ function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg, npc, _, _, target)
 		self.vb.phase = 3
 		warnPhase:Show(DBM_CORE_AUTO_ANNOUNCE_TEXTS.stage:format(3))
 		warnPhase:Play("pthree")
-		--Timers actually stopped
-		timerManifestNightmaresCD:Stop()
 		--Timers that never stop, but might need time added to them if they come off cd during transition
 		--timerDreadCD:Stop()
 		--timerCrushingGraspCD:Stop()
@@ -401,6 +393,11 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 		self.vb.phase = 4
 		timerDeliriumsDescentCD:Stop()
 		timerMaddeningEruptionCD:Stop()
+		--The time between last dread and first manic dread is always 65, so when he transitions into P4
+		--Multiple logs confirm it literally just deletes 10 seconds off existing timer, no timer reset
+		timerDreadCD:RemoveTime(10)
+		timerHorrificSummonerCD:SetFade(false)--Unfade, they can start spawning again
+		--TODO, sometimes the P4 transition timing causes the next nightmares to be skipped, if we can figure out exact timing of that, can do a +35 to existing timer?
 		if self:IsMythic() then
 			timerPsychoticSplitCD:Start(75.1)
 		else

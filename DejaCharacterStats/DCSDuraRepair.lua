@@ -124,7 +124,11 @@ local function putcenter(fontstring,slot,size)
 			fontstring:SetPoint("RIGHT",slot,"LEFT",-10,-2)
 		end
 	else
-		fontstring:SetPoint("CENTER",slot,"CENTER",1,-2)
+		if (slot == CharacterNeckSlot) then
+			fontstring:SetPoint("CENTER",slot,"CENTER",1,3)
+		else			
+			fontstring:SetPoint("CENTER",slot,"CENTER",1,-2)
+		end
 	end
 	fontstring:SetFont("Fonts\\FRIZQT__.TTF", size, "THINOUTLINE")
 end

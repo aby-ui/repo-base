@@ -53,6 +53,8 @@ Config.Events = {
 		"SPELL_SUMMON", -- normal
 	"SPACE",
 		"SPELL_HEAL", -- normal
+		"SPELL_HEAL_CRIT", -- normal (fake event)
+		"SPELL_HEAL_NONCRIT", -- normal (fake event)
 		"SPELL_RESURRECT", -- normal
 	"SPACE",
 		"SPELL_ENERGIZE", -- normal

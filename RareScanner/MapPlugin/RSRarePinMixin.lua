@@ -27,14 +27,17 @@ local GREEN_NPC_TEXTURE = "Interface\\AddOns\\RareScanner\\Media\\Icons\\GreenSk
 local YELLOW_NPC_TEXTURE = "Interface\\AddOns\\RareScanner\\Media\\Icons\\YellowSkullDark.blp"
 local RED_NPC_TEXTURE = "Interface\\AddOns\\RareScanner\\Media\\Icons\\RedSkullDark.blp"
 local PINK_NPC_TEXTURE = "Interface\\AddOns\\RareScanner\\Media\\Icons\\PinkSkullDark.blp"
+local BLUE_NPC_TEXTURE = "Interface\\AddOns\\RareScanner\\Media\\Icons\\BlueSkullDark.blp"
 local GREEN_CONTAINER_TEXTURE = "Interface\\AddOns\\RareScanner\\Media\\Icons\\GreenChest.blp"
 local YELLOW_CONTAINER_TEXTURE = "Interface\\AddOns\\RareScanner\\Media\\Icons\\YellowChest.blp"
 local RED_CONTAINER_TEXTURE = "Interface\\AddOns\\RareScanner\\Media\\Icons\\RedChest.blp"
 local PINK_CONTAINER_TEXTURE = "Interface\\AddOns\\RareScanner\\Media\\Icons\\PinkChest.blp"
+local BLUE_CONTAINER_TEXTURE = "Interface\\AddOns\\RareScanner\\Media\\Icons\\BlueChest.blp"
 local GREEN_EVENT_TEXTURE = "Interface\\AddOns\\RareScanner\\Media\\Icons\\GreenStar.blp"
 local YELLOW_EVENT_TEXTURE = "Interface\\AddOns\\RareScanner\\Media\\Icons\\YellowStar.blp"
 local RED_EVENT_TEXTURE = "Interface\\AddOns\\RareScanner\\Media\\Icons\\RedStar.blp"
 local PINK_EVENT_TEXTURE = "Interface\\AddOns\\RareScanner\\Media\\Icons\\PinkStar.blp"
+local BLUE_EVENT_TEXTURE = "Interface\\AddOns\\RareScanner\\Media\\Icons\\BlueStar.blp"
 
 RSRarePinMixin = CreateFromMixins(MapCanvasPinMixin);
  
@@ -51,7 +54,6 @@ function RSRarePinMixin:OnAcquired(npcID, npcInfo)
 	self.x = npcInfo.coordX
 	self.y = npcInfo.coordY
 	self.mapID = npcInfo.mapID
-	self.killed = private.dbchar.rares_killed[npcID]
 	self.isNpc = npcInfo.atlasName == RareScanner.NPC_VIGNETTE or npcInfo.atlasName == RareScanner.NPC_LEGION_VIGNETTE or npcInfo.atlasName == RareScanner.NPC_VIGNETTE_ELITE
 	self.isContainer = npcInfo.atlasName == RareScanner.CONTAINER_VIGNETTE or npcInfo.atlasName == RareScanner.CONTAINER_ELITE_VIGNETTE
 	self.isEvent = npcInfo.atlasName == RareScanner.EVENT_VIGNETTE
@@ -90,7 +92,13 @@ function RSRarePinMixin:OnAcquired(npcID, npcInfo)
 	self.Texture:SetScale(private.db.map.scale)
 	
 	-- Sets texture colours
-	if (private.dbglobal.recentlySeen and private.dbglobal.recentlySeen[npcID]) then
+	if (self.isNpc and private.dbchar.rares_killed[npcID]) then
+		self.Texture:SetTexture(BLUE_NPC_TEXTURE)
+	elseif (self.isContainer and private.dbchar.containers_opened[npcID]) then
+		self.Texture:SetTexture(BLUE_CONTAINER_TEXTURE)
+	elseif (self.isEvent and private.dbchar.events_completed[npcID]) then
+		self.Texture:SetTexture(BLUE_EVENT_TEXTURE)
+	elseif (private.dbglobal.recentlySeen and private.dbglobal.recentlySeen[npcID]) then
 		if (self.isNpc) then
 			self.Texture:SetTexture(PINK_NPC_TEXTURE)
 		elseif (self.isContainer) then
@@ -350,7 +358,7 @@ function RSRarePinMixin:OnMouseDown(button)
 	if (button == "LeftButton" and IsShiftKeyDown()) then
 		-- Ignored
 		if (self.isNpc) then
-			RareScanner:ProcessKill(self.npcID)
+			RareScanner:ProcessKill(self.npcID, true)
 			self:Hide();
 		elseif (self.isContainer) then
 			RareScanner:ProcessOpenContainer(self.npcID)

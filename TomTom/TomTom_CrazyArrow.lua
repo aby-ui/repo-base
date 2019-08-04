@@ -39,7 +39,6 @@ local twopi = math.pi * 2
 local wayframe = CreateFrame("Button", "TomTomCrazyArrow", UIParent)
 wayframe:SetHeight(42)
 wayframe:SetWidth(56)
-wayframe:SetPoint("CENTER", 0, 0)
 wayframe:EnableMouse(true)
 wayframe:SetMovable(true)
 wayframe:SetClampedToScreen(true)
@@ -63,12 +62,26 @@ end
 
 local function OnDragStop(self, button)
 	self:StopMovingOrSizing()
+	self:SetUserPlaced(false)
+	-- point, relativeTo, relativePoint, xOfs, yOfs
+	TomTom.profile.arrow.position = { self:GetPoint() }
+	TomTom.profile.arrow.position[2] = nil  -- Note we are relative to UIParent
 end
 
 local function OnEvent(self, event, ...)
 	if (event == "ZONE_CHANGED_NEW_AREA" or event == "ZONE_CHANGED") and TomTom.profile.arrow.enable then
 		self:Show()
+		return
 	end
+	if (event == "PLAYER_ENTERING_WORLD") then
+        wayframe:ClearAllPoints()
+        if TomTom.profile.arrow.position then
+            local pos = TomTom.profile.arrow.position
+            wayframe:SetPoint(pos[1], UIParent, pos[3], pos[4], pos[5])
+        else
+            wayframe:SetPoint("CENTER", 0, 0)
+        end
+    end
 end
 
 wayframe:SetScript("OnDragStart", OnDragStart)
@@ -76,6 +89,7 @@ wayframe:SetScript("OnDragStop", OnDragStop)
 wayframe:RegisterForDrag("LeftButton")
 wayframe:RegisterEvent("ZONE_CHANGED_NEW_AREA")
 wayframe:RegisterEvent("ZONE_CHANGED")
+wayframe:RegisterEvent("PLAYER_ENTERING_WORLD")
 wayframe:SetScript("OnEvent", OnEvent)
 
 wayframe.arrow = wayframe:CreateTexture(nil, "OVERLAY")
@@ -504,7 +518,7 @@ local function wayframe_OnEvent(self, event, arg1, ...)
 	end
 end
 
-wayframe:SetScript("OnEvent", wayframe_OnEvent)
+wayframe:HookScript("OnEvent", wayframe_OnEvent)
 
 --[[-------------------------------------------------------------------------
 --  API for manual control of Crazy Arrow

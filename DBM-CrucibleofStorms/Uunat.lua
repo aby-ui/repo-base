@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2332, "DBM-CrucibleofStorms", nil, 1177)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190711011642")
+mod:SetRevision("20190711204923")
 mod:SetCreatureID(145371)
 mod:SetEncounterID(2273)
 mod:SetZone()

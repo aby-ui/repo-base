@@ -244,7 +244,22 @@ function _detalhes:AbreJanelaInfo (jogador, from_att_change, refresh, ShiftKeyDo
 	info:ShowTabs()
 	gump:Fade (info, 0)
 	
-	return jogador:MontaInfo()
+	--check which tab was selected and reopen that tab
+	if (info.selectedTab == "Summary") then
+		return jogador:MontaInfo()
+	else
+		--open tab
+		for index = 1, #_detalhes.player_details_tabs do
+			local tab = _detalhes.player_details_tabs [index]
+			if (tab:condition (info.jogador, info.atributo, info.sub_atributo)) then
+				if (tab.tabname == info.selectedTab) then
+					--_detalhes.player_details_tabs [index]:Click()
+					--_detalhes.player_details_tabs [index].onclick()
+					_detalhes.player_details_tabs [index]:OnShowFunc()
+				end
+			end
+		end
+	end
 end
 
 -- for beta todo: info background need a major rewrite
@@ -4838,7 +4853,7 @@ function gump:CriaJanelaInfo()
 		-- ~compare
 		
 
-		
+
 		
 	
 	-- ~tab ~tabs
@@ -4907,6 +4922,7 @@ function gump:CriaJanelaInfo()
 				_detalhes.player_details_tabs[1]:SetPoint ("BOTTOMLEFT", info.container_barras, "TOPLEFT",  490 - (94 * (1-0)), 1)
 			end
 			
+			--selected by default
 			_detalhes.player_details_tabs[1]:Click()
 		end
 
@@ -4925,15 +4941,15 @@ function gump:CriaJanelaInfo()
 	
 end
 
+info.selectedTab = "Summary"
+
 _detalhes.player_details_tabs = {}
 
 function _detalhes:CreatePlayerDetailsTab (tabname, localized_name, condition, fillfunction, onclick, oncreate, iconSettings)
 	if (not tabname) then
 		tabname = "unnamed"
 	end
-	
-	local index = #_detalhes.player_details_tabs
-	
+
 	--create a button for the tab
 	local newTabButton = gump:CreateButton (info, onclick, 20, 20)
 	newTabButton:SetTemplate ("DETAILS_TAB_BUTTON_TEMPLATE")
@@ -4997,7 +5013,7 @@ function _detalhes:CreatePlayerDetailsTab (tabname, localized_name, condition, f
 	
 	newTabButton.frame:SetBackdropColor (0, 0, 0, 0.3)
 	newTabButton.frame:SetBackdropBorderColor (.3, .3, .3, 0)
-
+	
 	newTabButton.frame:SetPoint ("TOPLEFT", info.container_barras, "TOPLEFT", 0, 2)
 	newTabButton.frame:SetPoint ("bottomright", info, "bottomright", -3, 3)
 	newTabButton.frame:SetSize (569, 274)
@@ -5008,26 +5024,42 @@ function _detalhes:CreatePlayerDetailsTab (tabname, localized_name, condition, f
 	
 	if (not onclick) then
 		--> hide all tabs
-		newTabButton:SetScript ("OnClick", function() 
+		newTabButton.OnShowFunc = function (self) 
+			self = self.MyObject or self
+			
 			for _, tab in _ipairs (_detalhes.player_details_tabs) do
 				tab.frame:Hide()
 				tab:SetTemplate ("DETAILS_TAB_BUTTON_TEMPLATE")
 			end
 			
-			newTabButton:SetTemplate ("DETAILS_TAB_BUTTONSELECTED_TEMPLATE")
-			newTabButton.frame:Show()
-		end)
+			self:SetTemplate ("DETAILS_TAB_BUTTONSELECTED_TEMPLATE")
+			self.frame:Show()
+			info.selectedTab = self.tabname
+		end
+		
+		newTabButton:SetScript ("OnClick", newTabButton.OnShowFunc)
 	else
 		--> custom
-		newTabButton:SetScript ("OnClick", function() 
+		newTabButton.OnShowFunc = function (self) 
+			self = self.MyObject or self
+			
 			for _, tab in _ipairs (_detalhes.player_details_tabs) do
 				tab.frame:Hide()
 				tab:SetTemplate ("DETAILS_TAB_BUTTON_TEMPLATE")
 			end
 			
-			newTabButton:SetTemplate ("DETAILS_TAB_BUTTONSELECTED_TEMPLATE")
-			onclick()
-		end)
+			self:SetTemplate ("DETAILS_TAB_BUTTONSELECTED_TEMPLATE")
+			
+			info.selectedTab = self.tabname
+			
+			--run onclick func
+			local result, errorText = pcall (self.onclick)
+			if (not result) then
+				print (errorText)
+			end
+		end
+		
+		newTabButton:SetScript ("OnClick", newTabButton.OnShowFunc)
 	end
 	
 	newTabButton:SetScript ("PostClick", function (self)

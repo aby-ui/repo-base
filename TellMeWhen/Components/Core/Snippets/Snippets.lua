@@ -76,7 +76,7 @@ end
 
 TMW:RegisterCallback("TMW_INITIALIZE", RunSnippets)
 
-TMW:RegisterCallback("TMW_ON_PROFILE", function(event, profileEvent, arg2, arg3)
+TMW:RegisterCallback("TMW_ON_PROFILE_PRE", function(event, profileEvent, arg2, arg3)
 	if profileEvent == "OnProfileChanged" then
 		RunSnippets()
 	end

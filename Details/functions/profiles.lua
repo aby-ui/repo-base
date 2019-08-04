@@ -1272,6 +1272,9 @@ local default_global_data = {
 		spell_school_cache = {},
 		global_plugin_database = {},
 		
+	--> death log
+		show_totalhitdamage_on_overkill = false,
+		
 	--> switch tables
 		switchSaved = {slots = 4, table = {
 			{["atributo"] = 1, ["sub_atributo"] = 1}, --damage done

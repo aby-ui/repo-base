@@ -119,7 +119,7 @@ TMW:NewClass("Resizer_Generic"){
 		-- This method is rather pointless (its just a wrapper),
 		-- but having consistency is nice so that I don't have to remember if the coords returned
 		-- are comparable to other Standardized coordinates/sizes
-		return GetCursorPosition()    
+		return GetCursorPosition()
 	end,
 	GetStandardizedSize = function(self)
 		local parent = self.parent

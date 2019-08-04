@@ -3336,16 +3336,16 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 				
 				GameCooltip:AddLine ("$div")
 				
-				--[=[ --this is deprecated at the moment, but might be needed again in the future
+				--[= --this is deprecated at the moment, but might be needed again in the future
 				if (WorldQuestTracker.db.profile.filter_force_show_brokenshore) then
-					GameCooltip:AddLine ("Ignore Argus")
-					GameCooltip:AddLine ("World quets on Argus map will always be shown.", "", 2)
+					GameCooltip:AddLine ("Ignore New Zones", "", 1, "orange")
+					GameCooltip:AddLine ("World quets on new zones will always be shown.\n\nCurrent new zones:\n-Najatar\n-Machagon.", "", 2)
 					GameCooltip:AddIcon ([[Interface\ICONS\70_inscription_vantus_rune_tomb]], 1, 1, 23*.54, 37*.40, 0, 1, 0, 1)
 					GameCooltip:AddIcon ([[Interface\BUTTONS\UI-CheckBox-Check]], 1, 2, 16, 16, 0, 1, 0, 1, overlayColor, nil, true)
 				else
-					GameCooltip:AddLine ("Ignore Argus", "", 1, "silver")
-					GameCooltip:AddLine ("World quets on Argus map will always be shown.", "", 2)
-					GameCooltip:AddIcon (WQT_GENERAL_STRINGS_AND_ICONS.criteria.icon, 1, 1, 23*.54, 37*.40, l, r, t, b, nil, nil, true)
+					GameCooltip:AddLine ("Ignore New Zones", "", 1, "silver")
+					GameCooltip:AddLine ("World quets on new zones will always be shown.\n\nCurrent new zones:\n-Najatar\n-Machagon", "", 2)
+					--GameCooltip:AddIcon ([[Interface\ICONS\70_inscription_vantus_rune_tomb]], 1, 1, 23*.54, 37*.40, l, r, t, b, nil, nil, true)
 				end
 				GameCooltip:AddMenu (1, toggle_brokenshore_bypass)
 				--]=]

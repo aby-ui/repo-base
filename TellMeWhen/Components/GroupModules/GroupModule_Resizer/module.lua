@@ -20,7 +20,7 @@ local print = TMW.print
 
 TMW:NewClass("GroupModule_Resizer", "GroupModule", "Resizer_Generic"){
 	tooltipTitle = L["RESIZE"],
-	
+
 	METHOD_EXTENSIONS = {
 		OnImplementIntoGroup = function(self)
 			local group = self.group

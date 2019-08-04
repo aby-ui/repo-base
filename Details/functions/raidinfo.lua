@@ -3,6 +3,101 @@
 --> install data for raiding tiers
 
 do
+	--> data for The Eternal Palace (BFA tier 2)
+	
+	local INSTANCE_EJID = 1179
+	local INSTANCE_MAPID = 2164
+	local HDIMAGESPATH = "Details\\images\\raid"
+	local HDFILEPREFIX = "EternalPalaceRaid"
+	local LOADINGSCREEN_FILE, LOADINGSCREEN_COORDS  = "Expansion07\\Main\\LoadingScreen_Nazjatar_RAID", {0, 1, 285/1024, 875/1024}
+	local EJ_LOREBG = "UI-EJ-LOREBG-EternalPalace"
+	
+	local PORTRAIT_LIST = {
+		3012047, --Sivara - Abyssal Commander Sivara
+		3012062, --Blackwater Behemoth - Blackwater Behemoth
+		3012062, --Radiance of Azshara - Radiance of Azshara
+		3012055, --Lady Ashvane - Lady Ashvane
+		3012054, --Orgozoa - Orgozoa
+		3012057, --Silivaz - The Queen's Court
+		3012064, --Za'qul - Za'qul, Harbinger of Ny'alotha
+		3012056, --Queen Azshara - Queen Azshara
+	}
+	
+	local ENCOUNTER_ID_CL = {
+		2298, 2289, 2305, 2304, 2303, 2311, 2293, 2299,
+		[2298] = 1, --Abyssal Commander Sivara
+		[2289] = 2, --Blackwater Behemoth
+		[2305] = 3, --Radiance of Azshara
+		[2304] = 4, --Lady Ashvane
+		[2303] = 5, --Orgozoa
+		[2311] = 6, --The Queen's Court
+		[2293] = 7, --Za'qul, Harbinger of Ny'alotha
+		[2299] = 8, --Queen Azshara
+	}
+	
+	local ENCOUNTER_ID_EJ = {
+		2352, 2347, 2353, 2354, 2351, 2359, 2349,
+		[2352] = 1, --Abyssal Commander Sivara
+		[2347] = 2, --Blackwater Behemoth
+		[2353] = 3, --Radiance of Azshara
+		[2354] = 4, --Lady Ashvane
+		[2351] = 5, --Orgozoa
+		[2359] = 6, --The Queen's Court
+		[2349] = 7, --Za'qul, Harbinger of Ny'alotha
+		[2361] = 8, --Queen Azshara
+	}
+	
+	--> install the raid
+	C_Timer.After (10, function()
+
+		--load encounter journal
+		DetailsFramework.EncounterJournal.EJ_SelectInstance (INSTANCE_EJID)
+
+		local InstanceName = DetailsFramework.EncounterJournal.EJ_GetInstanceInfo (INSTANCE_EJID)
+
+		--build the boss name list
+		local BOSSNAMES = {}
+		local ENCOUNTERS = {}
+		
+		for i = 1, #PORTRAIT_LIST do
+			local bossName = DetailsFramework.EncounterJournal.EJ_GetEncounterInfoByIndex (i, INSTANCE_EJID)
+			if (bossName) then
+				tinsert (BOSSNAMES, bossName)
+				local encounterTable = {
+					boss = bossName,
+					--portrait = "Interface\\EncounterJournal\\" .. PORTRAIT_LIST [i],
+					portrait = PORTRAIT_LIST [i],
+				}
+				tinsert (ENCOUNTERS, encounterTable)
+			else
+				break
+			end
+		end
+		
+		_detalhes:InstallEncounter ({
+			id = INSTANCE_MAPID, --map id
+			ej_id = INSTANCE_EJID, --encounter journal id
+			name = InstanceName,
+			icons = "Interface\\AddOns\\" .. HDIMAGESPATH .. "\\" .. HDFILEPREFIX .. "_BossFaces",
+			icon = "Interface\\AddOns\\" .. HDIMAGESPATH .. "\\" .. HDFILEPREFIX .. "_Icon256x128",
+			is_raid = true,
+			backgroundFile = {file = "Interface\\Glues\\LOADINGSCREENS\\" .. LOADINGSCREEN_FILE, coords = LOADINGSCREEN_COORDS},
+			backgroundEJ = "Interface\\EncounterJournal\\" .. EJ_LOREBG,
+			
+			encounter_ids = ENCOUNTER_ID_EJ,
+			encounter_ids2 = ENCOUNTER_ID_CL,
+			boss_names = BOSSNAMES,
+			encounters = ENCOUNTERS,
+			
+			boss_ids = { 
+				--npc ids
+			},
+		})
+	end)
+
+end
+
+do
 	--> data for Crucible of Storms (BFA tier 1)
 	
 	local INSTANCE_EJID = 1177

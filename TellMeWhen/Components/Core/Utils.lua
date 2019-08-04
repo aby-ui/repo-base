@@ -222,7 +222,7 @@ Formatter{
 ---------------------------------
 
 local cacheMetatable = {
-	__mode == 'kv'
+	__mode = 'kv'
 }
 
 function TMW:MakeFunctionCached(obj, method)
@@ -252,6 +252,93 @@ function TMW:MakeFunctionCached(obj, method)
 
 		return ret1
 	end
+
+	if type(obj) == "table" then
+		obj[method] = wrapper
+	end
+
+	return wrapper, cache
+end
+
+function TMW:MakeNArgFunctionCached(argCount, obj, method)
+	local func
+	if type(obj) == "table" and type(method) == "string" then
+		func = obj[method]
+		argCount = argCount + 1 -- account for self
+	elseif type(obj) == "function" then
+		func = obj
+	else
+		error("Usage: TMW:MakeNArgFunctionCached(argCount, object/function [, method])")
+	end
+
+	-- Build up a function that works on the exact number of args expected.
+	-- This function stores the return value in a series of nested tables,
+	-- thereby requiring no string coersions or concatenations
+	-- to form a cache key, making this a fair bit faster
+	-- than the more general MakeFunctionCached.
+	--[[
+		In the following test, NArgFunctionCached performed 3.5x faster than MakeFunctionCached.
+		At a 100% hit rate, it was about 3.6x better.
+		At a very high miss rate (index = 10000000000), it was 3x better.
+		With 4 arguments at high miss rate, it was 2.4x better.
+		With 4 arguments at 100% hit rate, it was 4.3x better.
+
+
+		function Baseline()
+			return 1
+		end
+
+		local index = 10000
+		local f1 = TMW:MakeFunctionCached(Baseline)
+		local f2 = TMW:MakeNArgFunctionCached(1, Baseline)
+
+		function Test1()
+			f1(floor(random()*index))
+		end
+		function Test2()
+			f2(floor(random()*index))
+		end
+
+	]]
+
+	local funcStr = [[
+			local cachemeta = { __mode = 'kv' }
+			local cache = setmetatable({}, cachemeta)
+			local nilKey = {}
+			local func = ...
+			return function(]]
+
+	for i = 1, argCount do
+		if i > 1 then funcStr = funcStr .. "," end
+		funcStr = funcStr .. "arg" .. i
+	end
+
+	funcStr = funcStr .. [[)
+	local next, prev, key = cache
+	]]
+
+	for i = 1, argCount do
+		funcStr = funcStr .. "\n key = arg" .. i .. " == nil and nilKey or arg" .. i
+		funcStr = funcStr .. "\n prev = next; next = prev[key]"
+		if i < argCount then
+			funcStr = funcStr .. "\n if not next then next = setmetatable({}, cachemeta) prev[key] = next end"
+		end
+	end
+
+	funcStr = funcStr .. [[
+	if next ~= nil then return next end
+	local ret = func(]]
+	for i = 1, argCount do
+		if i > 1 then funcStr = funcStr .. "," end
+		funcStr = funcStr .. "arg" .. i
+	end
+	funcStr = funcStr .. [[)
+		prev[key] = ret
+		return ret;
+	end, cache
+	]]
+
+	local wrapper, cache = loadstring(funcStr)(func)
 
 	if type(obj) == "table" then
 		obj[method] = wrapper
@@ -587,7 +674,7 @@ function TMW:StringToCachedRGBATable(str)
 	local r, g, b, a, flags = TMW:StringToRGBA(str)
 	return {r=r,g=g,b=b,a=a, flags=flags}
 end
-TMW:MakeFunctionCached(TMW, "StringToCachedRGBATable")
+TMW:MakeSingleArgFunctionCached(TMW, "StringToCachedRGBATable")
 
 
 -- Adapted from https://github.com/mjackson/mjijackson.github.com/blob/master/2008/02/rgb-to-hsl-and-rgb-to-hsv-color-model-conversion-algorithms-in-javascript.txt
@@ -667,7 +754,7 @@ function TMW:ColorStringToCachedHSVATable(str)
 	local h, s, v = TMW:RGBToHSV(r, g, b)
 	return {h=h, s=s, v=v, a=a, flags=flags}
 end
-TMW:MakeFunctionCached(TMW, "ColorStringToCachedHSVATable")
+TMW:MakeSingleArgFunctionCached(TMW, "ColorStringToCachedHSVATable")
 
 function TMW:HSVAToColorString(h, s, v, a, flags)
 	local r, g, b = TMW:HSVToRGB(h, s, v)

@@ -418,7 +418,7 @@ function UNITS:GetUnitSet(unitSettings, SerializedConditions)
 	
 	return UnitSet:New(unitSettings, TEMP_conditionsSettingSource, TEMP_conditionsParents)
 end
-TMW:MakeFunctionCached(UNITS, "GetUnitSet")
+TMW:MakeNArgFunctionCached(2, UNITS, "GetUnitSet")
 
 function UNITS:GetOriginalUnitTable(unitSettings)
 	unitSettings = TMW:CleanString(unitSettings)

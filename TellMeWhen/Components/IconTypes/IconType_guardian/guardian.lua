@@ -122,7 +122,7 @@ else
 	})
 end
 
-local function Guardian(duration, spell, triggerMatch, extraData)
+local function Info(duration, spell, triggerMatch, extraData)
 	local data = {
 		duration = duration,
 		texture = GetSpellTexture(spell),
@@ -139,38 +139,38 @@ end
 
 Type.GuardianInfo = {
 	
-	[ 98035] = Guardian(12, 104316, false), -- Dreadstalker
-	[    89] = Guardian(30, 1122, false), -- Infernal (Destro)
-	[103673] = Guardian(20, 205180, false), -- Darkglare (Afflic)
+	[ 98035] = Info(12, 104316, false), -- Dreadstalker
+	[    89] = Info(30, 1122, false), -- Infernal (Destro)
+	[103673] = Info(20, 205180, false), -- Darkglare (Afflic)
 	
 	-- Wild Imp (HoG)
-	[ 55659] = Guardian(12, 211158, false, { 
+	[ 55659] = Info(12, 211158, false, { 
 		isWildImp = true, 
 		triggerSpell = 105174, -- Not the real trigger spell. Set for the tooltip only.
 		-- triggerSpell = 104317,
 	}),
 
  	-- Wild Imp (Inner Demons passive)
-	[143622] = Guardian(12, 279910, true, { isWildImp = true, }),
+	[143622] = Info(12, 279910, true, { isWildImp = true, }),
 
-	[136398] = Guardian(15, 267987, true), -- Illidari Satyr (Inner Demons passive)
-	[136402] = Guardian(15, 268001, true), -- Ur'zul (Inner Demons passive)
-	[136403] = Guardian(15, 267991, true), -- Void Terror (Inner Demons passive)
-	[136404] = Guardian(15, 267992, true), -- Bilescourge (Inner Demons passive)
-	[136397] = Guardian(15, 267986, true), -- Prince Malchezzar (Inner Demons passive)
-	[136399] = Guardian(15, 267988, true), -- Vicious Hellhound (Inner Demons passive)
-	[136401] = Guardian(15, 267989, true), -- Eyes of Gul'dan (Inner Demons passive)
-	[136406] = Guardian(15, 267994, true), -- Shivarra (Inner Demons passive)
-	[136407] = Guardian(15, 267995, true), -- Wrathguard (Inner Demons passive)
-	[136408] = Guardian(15, 267996, true), -- Darkhound (Inner Demons passive)
+	[136398] = Info(15, 267987, true), -- Illidari Satyr (Inner Demons passive)
+	[136402] = Info(15, 268001, true), -- Ur'zul (Inner Demons passive)
+	[136403] = Info(15, 267991, true), -- Void Terror (Inner Demons passive)
+	[136404] = Info(15, 267992, true), -- Bilescourge (Inner Demons passive)
+	[136397] = Info(15, 267986, true), -- Prince Malchezzar (Inner Demons passive)
+	[136399] = Info(15, 267988, true), -- Vicious Hellhound (Inner Demons passive)
+	[136401] = Info(15, 267989, true), -- Eyes of Gul'dan (Inner Demons passive)
+	[136406] = Info(15, 267994, true), -- Shivarra (Inner Demons passive)
+	[136407] = Info(15, 267995, true), -- Wrathguard (Inner Demons passive)
+	[136408] = Info(15, 267996, true), -- Darkhound (Inner Demons passive)
 
 
-	[135816] = Guardian(15, 264119, true), -- Summon Vilefiend
-	[135002] = Guardian(15, 265187, true), -- Summon Demonic Tyrant
+	[135816] = Info(15, 264119, true), -- Summon Vilefiend
+	[135002] = Info(15, 265187, true), -- Summon Demonic Tyrant
 
-	[17252] = Guardian(15, 111898, true), -- Grimorie: Felguard
-	[107024] = Guardian(15, 212459, true), -- Call Fel Lord
-	[107100] = Guardian(20, 201996, true), -- Call Observer
+	[ 17252] = Info(15, 111898, true), -- Grimorie: Felguard
+	[107024] = Info(15, 212459, true), -- Call Fel Lord
+	[107100] = Info(20, 201996, true), -- Call Observer
 }
 
 local GuardianInfo = Type.GuardianInfo
@@ -224,7 +224,7 @@ local Guardian = TMW:NewClass(){
 
 		self.duration = info.duration
 		self.texture = info.texture
-	end,	
+	end,
 
 	Empower = function(self)
 		self.duration = self.duration + 15

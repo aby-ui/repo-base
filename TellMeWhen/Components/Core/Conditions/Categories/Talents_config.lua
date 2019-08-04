@@ -116,8 +116,12 @@ function Module:OnInitialize()
 end
 function Module:Table_Get()
 	wipe(self.table)
-
-	for _, info in pairs(C_AzeriteEssence.GetEssences()) do
+	local essences = C_AzeriteEssence.GetEssences()
+	if not essences then  
+		return self.table
+	end
+	
+	for _, info in pairs(essences) do
 		self.table[info.ID] = strlowerCache[info.name]
 	end
 

@@ -210,8 +210,8 @@ local bulletColors = {
 }
 
 local function bullets(b, text)
-	local numDashes = #b 
-	
+	local numDashes = #b
+
 	if numDashes <= 0 then
 		return "><p>" .. text .. "</p><"
 	end
@@ -219,7 +219,7 @@ local function bullets(b, text)
 	local color = bulletColors[(numDashes-1) % #bulletColors + 1]
 	
 	-- This is not a regular space. It is U+2002 - EN SPACE
-	local dashes = (" "):rep(numDashes) .. "•"
+	local dashes = ("　"):rep(numDashes) .. "●" --(" ")
 
 	return "><p>|cFF" .. color .. dashes .. " |r" .. text .. "</p><"
 end

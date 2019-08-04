@@ -24,6 +24,7 @@ function ProgressBar:New(id, modes, ...)
 end
 
 function ProgressBar:Create(...)
+    if DEBUG_MODE then pdebug() end
 	local bar = ProgressBar.proto.Create(self, ...)
 
 	bar:SetFrameStrata('BACKGROUND')

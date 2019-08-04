@@ -1828,7 +1828,7 @@ L["GROUPSELECT_TOOLTIP"] = [[|cff7fffffClick|r to edit.
 |cff7fffffClick-and-drag|r to reorder or change domain.]]
 
 L["GROUP_UNAVAILABLE"] = "|TInterface/PaperDollInfoFrame/UI-GearManager-LeaveItem-Transparent:20|t This group cannot be shown due to its overly-restrictive spec/role settings."
-
+L["GROUP_CANNOT_INTERACTIVELY_POSITION"] = "Could not reposition group because the anchor target is restricted. Use the manual position controls in the group settings."
 
 --[=[L["CNDT_SLIDER_DESC_BASE"] = [[|cff7fffffMousewheel|r to adjust.
 |cff7fffffShift-Mousewheel|r to adjust x10.
@@ -2508,6 +2508,10 @@ L["CLEU_SPELL_ENERGIZE_DESC"] = "Occurs when resources (health/mana/rage/energy/
 L["CLEU_SPELL_EXTRA_ATTACKS"] = "Extra Attacks Gained"
 L["CLEU_SPELL_EXTRA_ATTACKS_DESC"] = "Occurs when extra melee swings are granted by procs."
 L["CLEU_SPELL_HEAL"] = "Heal"
+L["CLEU_SPELL_HEAL_CRIT"] = "Heal Crit"
+L["CLEU_SPELL_HEAL_CRIT_DESC"] = [[Occurs when any heal does critical healing. This will occur at the same time as the %q event.]]
+L["CLEU_SPELL_HEAL_NONCRIT"] = "Heal Non-Crit"
+L["CLEU_SPELL_HEAL_NONCRIT_DESC"] = [[Occurs when any heal does non-critical healing. This will occur at the same time as the %q event.]]
 L["CLEU_SPELL_INSTAKILL"] = "Instant Kill"
 L["CLEU_SPELL_INTERRUPT"] = "Interrupt - Spell Interrupted"
 L["CLEU_SPELL_INTERRUPT_DESC"] = [[Occurs when a spell cast is interrupted.

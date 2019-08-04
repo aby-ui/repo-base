@@ -2458,7 +2458,7 @@ private.RARE_LIST = {
 	154153, --Enforcer KX-T57
 	151159, --Fleetfoot
 	151202, --Foul Manifestation
-	151884, --Fungarian Furor
+	135497, --Fungarian Furor
 	153308, --Fury of Azshara
 	152553, --Garnetscale
 	153228, --Gear Checker Cogstar

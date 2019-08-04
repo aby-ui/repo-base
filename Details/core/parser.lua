@@ -669,7 +669,9 @@
 		end
 		if (_is_in_instance) then
 			if (overkill and overkill > 0) then
-				amount = amount - overkill
+				--if enabled it'll cut the amount of overkill from the last hit (which killed the actor)
+				--when disabled it'll show the total damage done for the latest hit
+				--amount = amount - overkill
 			end
 		end
 		

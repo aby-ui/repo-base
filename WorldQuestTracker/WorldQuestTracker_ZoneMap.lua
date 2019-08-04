@@ -522,7 +522,6 @@ function WorldQuestTracker.UpdateZoneWidgets (forceUpdate)
 	
 	WorldQuestTracker.UpdateRareIcons (mapID)
 	
-	-- or (mapID ~= WorldQuestTracker.LastMapID and not WorldQuestTracker.IsArgusZone (mapID)) -- 8.0 removed
 	if (WorldQuestTracker.IsWorldQuestHub (mapID)) then
 		return WorldQuestTracker.HideZoneWidgets()
 	
@@ -649,7 +648,7 @@ function WorldQuestTracker.UpdateZoneWidgets (forceUpdate)
 						end
 
 						--todo: broken shore is outdated, as well as argus
-						if (passFilter or (forceShowBrokenShore and WorldQuestTracker.IsArgusZone (mapID))) then
+						if (passFilter or (forceShowBrokenShore and WorldQuestTracker.IsNewEXPZone (mapID))) then
 							local widget = WorldQuestTracker.GetOrCreateZoneWidget (index)
 							
 							if (widget.questID ~= questID or forceUpdate or not widget.Texture:GetTexture()) then

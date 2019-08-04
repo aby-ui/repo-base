@@ -179,11 +179,18 @@ function RareScannerDataProviderMixin:AddPin(npcID, npcInfo, mapID)
 		
 		-- If killed ignore it
 		local keepShowingAfterDead = false
-		if (private.dbchar.rares_killed[npcID] and not private.db.map.keepShowingAfterDead) then
-			--RareScanner:PrintDebugMessage("DEBUG: Ignorado por estar muerto")
-			return false
-		elseif (private.dbchar.rares_killed[npcID] and private.db.map.keepShowingAfterDead) then
-			keepShowingAfterDead = true
+		if (private.dbchar.rares_killed[npcID]) then
+			if (not private.db.map.keepShowingAfterDead and not private.db.map.keepShowingAfterDeadReseteable) then
+				return false
+			elseif (private.db.map.keepShowingAfterDead) then
+				--RareScanner:PrintDebugMessage("DEBUG: Mostrandose por keepShowingAfterDead")
+				keepShowingAfterDead = true
+			elseif (private.db.map.keepShowingAfterDeadReseteable and private.RESETABLE_KILLS_ZONE_IDS[npcInfo.mapID] and (RS_tContains(private.RESETABLE_KILLS_ZONE_IDS[npcInfo.mapID], "all") or RS_tContains(private.RESETABLE_KILLS_ZONE_IDS[npcInfo.mapID],npcInfo.artID))) then
+				--RareScanner:PrintDebugMessage("DEBUG: Mostrandose por keepShowingAfterDeadReseteable")
+				keepShowingAfterDead = true
+			else
+				return false
+			end
 		end
 		
 		-- If filtered we dont show either
@@ -195,24 +202,7 @@ function RareScannerDataProviderMixin:AddPin(npcID, npcInfo, mapID)
 		-- If its been seen after our max show time
 		-- Ignore if its killed and we want to keep showing its icon
 		if (not npcInfo.notDiscovered and not keepShowingAfterDead and private.db.map.maxSeenTime ~= 0 and time() - npcInfo.foundTime > private.db.map.maxSeenTime * 3600) then
-			-- If its an achievement icon it doesn't make sence to hide it because timing
-			--if (private.ACHIEVEMENT_ZONE_IDS[mapID]) then
-			--	local hasAchievement = false
-			--	for i, achievementID in ipairs(private.ACHIEVEMENT_ZONE_IDS[mapID]) do
-			--		if (RS_tContains(private.ACHIEVEMENT_TARGET_IDS[achievementID], npcID)) then
-			--			hasAchievement = true
-			--			break
-			--		end
-			--	end
-				
-			--	if (not hasAchievement) then
-					--RareScanner:PrintDebugMessage("DEBUG: Ignorado NPC por haberle visto hace mas tiempo del configurado")
-			--		return false
-			--	end
-			--else
-				--RareScanner:PrintDebugMessage("DEBUG: Ignorado NPC por haberle visto hace mas tiempo del configurado")
-				return false
-			--end
+			return false
 		end
 	-- If its a container
 	elseif (npcInfo.atlasName == RareScanner.CONTAINER_VIGNETTE or npcInfo.atlasName == RareScanner.CONTAINER_ELITE_VIGNETTE) then
@@ -220,7 +210,6 @@ function RareScannerDataProviderMixin:AddPin(npcID, npcInfo, mapID)
 		if (not private.db.general.scanGarrison) then
 			-- check if the container is the garrison cache
 			if (RS_tContains(RareScanner.GARRISON_CACHE_IDS, npcID)) then
-				--RareScanner:PrintDebugMessage("DEBUG: Ignorado por ser cofre de la ciudadela y estar siendo filtrado")
 				return
 			end
 		end

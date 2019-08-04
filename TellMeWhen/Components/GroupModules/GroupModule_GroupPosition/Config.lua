@@ -64,7 +64,7 @@ function Module:OnSuggest()
 	local frame = EnumerateFrames()
 	while frame do
 		local name = frame:GetName()
-		if name and _G[name] == frame and frame:GetPoint() and frame:GetHeight() > 0 and frame:GetWidth() > 0 then
+		if name and _G[name] == frame and frame:GetNumPoints() > 0 and frame:GetHeight() > 0 and frame:GetWidth() > 0 then
 			self.Table[frame] = name
 		end
 		frame = EnumerateFrames(frame)

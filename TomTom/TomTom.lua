@@ -389,7 +389,6 @@ function TomTom:ShowHideCoordBlock()
             TomTomBlock:SetClampedToScreen(true)
             TomTomBlock:RegisterForDrag("LeftButton")
             TomTomBlock:RegisterForClicks("RightButtonUp")
-            TomTomBlock:SetPoint("TOP", Minimap, "BOTTOM", -20, -10)
 
             TomTomBlock.Text = TomTomBlock:CreateFontString(nil, "OVERLAY", "GameFontNormal")
             TomTomBlock.Text:SetJustifyH("CENTER")
@@ -411,6 +410,8 @@ function TomTom:ShowHideCoordBlock()
             TomTomBlock:SetScript("OnLeave", Block_OnLeave)
             TomTomBlock:SetScript("OnDragStop", Block_OnDragStop)
             TomTomBlock:SetScript("OnDragStart", Block_OnDragStart)
+            TomTomBlock:RegisterEvent("PLAYER_ENTERING_WORLD")
+            TomTomBlock:SetScript("OnEvent", Block_OnEvent)
         end
         -- Show the frame
         TomTomBlock:Show()
@@ -424,6 +425,15 @@ function TomTom:ShowHideCoordBlock()
         -- Update the height and width
         TomTomBlock:SetHeight(opt.height)
         TomTomBlock:SetWidth(opt.width)
+
+        -- Set the block position
+        TomTomBlock:ClearAllPoints()
+        if self.profile.block.position then
+            local pos = self.profile.block.position
+            TomTomBlock:SetPoint(pos[1], UIParent, pos[3], pos[4], pos[5])
+        else
+            TomTomBlock:SetPoint("TOP", UIParent, "BOTTOM", -20, -10)
+        end
 
         -- Update the font size
         local font,height = TomTomBlock.Text:GetFont()
@@ -1041,6 +1051,10 @@ do
 
     function Block_OnDragStop(self, button, down)
         self:StopMovingOrSizing()
+        self:SetUserPlaced(false)
+        -- point, relativeTo, relativePoint, xOfs, yOfs
+        TomTom.db.profile.block.position = { self:GetPoint() }
+        TomTom.db.profile.block.position[2] = nil  -- Note we are relative to UIParent
     end
 
     function Block_OnClick(self, button, down)
@@ -1050,6 +1064,12 @@ do
         TomTom:AddWaypoint(m, x, y, {
             title = desc,
         })
+    end
+
+    function Block_OnEvent(self, event, ...)
+        if (event == "PLAYER_ENTERING_WORLD") then
+            TomTom:ShowHideCoordBlock()
+        end
     end
 end
 

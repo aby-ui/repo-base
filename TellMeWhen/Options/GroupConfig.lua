@@ -390,7 +390,7 @@ function IE:LoadGroup(isRefresh, group)
 end
 
 -- TellMeWhen_NoGroupsWarning
-TMW:RegisterCallback("TMW_GROUP_SETUP_POST", function()
+local noGroupsChecker = function()
 	-- GLOBALS: TellMeWhen_NoGroupsWarning
 	if not TMW.Locked then
 		for group in TMW:InGroups() do
@@ -404,7 +404,11 @@ TMW:RegisterCallback("TMW_GROUP_SETUP_POST", function()
 	else
 		TellMeWhen_NoGroupsWarning:Hide()
 	end
-end)
+end
+TMW:RegisterCallback("TMW_GROUP_SETUP_POST", noGroupsChecker)
+-- Need to also register TMW_GLOBAL_UPDATE_POST in case there are actually zero groups
+-- in the user's profile, in which case TMW_GROUP_SETUP_POST will never fire at all.
+TMW:RegisterCallback("TMW_GLOBAL_UPDATE_POST", noGroupsChecker)
 
 
 ---------- Add/Delete ----------

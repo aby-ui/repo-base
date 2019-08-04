@@ -3,6 +3,16 @@ if not TMW then return end
 TMW.CHANGELOG_LASTVER="7.4.0"
 
 TMW.CHANGELOG = [==[
+## v8.6.6
+* Added border options to the standard Icon view (#1705).
+* Added Heal Crit & Non-Crit events to the Combat Event icon (#1685).
+
+### Bug Fixes
+* Fixed a number of errors around the Azerite Essence Active conditions that would occur for characters without a Heart of Azeroth (i.e. sub level 120).
+* Fixed an issue that prevented a descriptive message from being visible in the icon editor when no icon is loaded.
+* Added workarounds to errors that will arise when anchoring a group to a "restricted" region (like a nameplate).
+* Fixed #1696: When swapping profiles, run snippets before setting up icons.
+
 ## v8.6.5
 ### Bug Fixes
 * The Major Azerite Essence Active condition will now properly update after changing essence.

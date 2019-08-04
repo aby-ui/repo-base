@@ -127,6 +127,7 @@
 <Script  file="..\Components\IconModules\IconModule_Tooltip\module.lua" />
 
 <!-- ..\Components\IconViews\includes.config.xml -->
+<Include file="..\Components\IconViews\Icon\Config.xml" />
 <Include file="..\Components\IconViews\Bar\Config.xml" />
 
 <!-- ..\Components\IconTypes\includes.config.xml -->

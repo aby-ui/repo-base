@@ -24,7 +24,7 @@
 								-- Just incase they haven't restarted after installing the version
 								-- that first included this font (v7.3.5)
 								if not self:SetFont(font, 12) then
-									font = "Fonts\\FRIZQT__.TTF"
+									font = GameFontNormal:GetFont() --"Fonts\\FRIZQT__.TTF"
 								end
 
 								self:SetFont(font, 12)

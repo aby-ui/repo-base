@@ -84,7 +84,7 @@ function TMW:GetItems(setting)
 
 	return items
 end
-TMW:MakeFunctionCached(TMW, "GetItems")
+TMW:MakeSingleArgFunctionCached(TMW, "GetItems")
 
 
 

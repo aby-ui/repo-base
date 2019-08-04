@@ -499,7 +499,7 @@ function rf.IsTargetARare()
 		
 			--> check if is a non registered rare
 			if (not WorldQuestTracker.MapData.RaresToScan [npcId]) then
-				if (WorldQuestTracker.IsArgusZone (WorldQuestTracker.GetCurrentMapAreaID())) then
+				if (WorldQuestTracker.IsNewEXPZone (WorldQuestTracker.GetCurrentMapAreaID())) then
 					local unitClassification = UnitClassification ("target")
 					if (unitClassification == "rareelite") then
 						print ("|cFFFF9900[WQT]|r " .. L["S_RAREFINDER_NPC_NOTREGISTERED"] .. ":", UnitName ("target"), "NpcID:", npcId)
@@ -655,9 +655,7 @@ rf:SetScript ("OnEvent", function (self, event, ...)
 		rf.IsTargetARare()
 		
 	elseif (event == "VIGNETTES_UPDATED") then
-		--if (WorldQuestTracker.IsArgusZone (WorldQuestTracker.GetCurrentMapAreaID())) then
-			rf.ScanMinimapForRares()
-		--end
+		rf.ScanMinimapForRares()
 	end
 end)
 

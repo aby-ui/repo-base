@@ -159,33 +159,35 @@ local function CLEU_OnEvent(icon, _, t, event, h, sourceGUID, sourceName, source
 		-- Fake an event that allow filtering based on the spell that caused an interrupt rather than the spell that was interrupted.
 		-- Fire it in addition to, not in place of, SPELL_INTERRUPT
 		CLEU_OnEvent(icon, _, t, "SPELL_INTERRUPT_SPELL", h, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destFlags, destRaidFlags, arg1, arg2, arg3, arg4, arg5, ...)
-	elseif event == "SPELL_DAMAGE" then
-		local _, _, _, _, critical = ...
+	elseif event == "SPELL_DAMAGE" or event == "SPELL_HEAL" then
+		local _, healCrit, _, _, critical = ...
+		if event == "SPELL_HEAL" then critical = healCrit end
+		
 		if critical then
 			-- Fake an event that fires if there was a crit. Fire mages like this.
 			-- Fire it in addition to, not in place of, SPELL_DAMAGE.
-			CLEU_OnEvent(icon, _, t, "SPELL_DAMAGE_CRIT", h, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destFlags, destRaidFlags, arg1, arg2, arg3, arg4, arg5, ...)
+			CLEU_OnEvent(icon, _, t, event .."_CRIT", h, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destFlags, destRaidFlags, arg1, arg2, arg3, arg4, arg5, ...)
 		else
 			-- Fake an event that fires if there was not a crit. Fire mages don't like this.
 			-- Fire it in addition to, not in place of, SPELL_DAMAGE.
-			CLEU_OnEvent(icon, _, t, "SPELL_DAMAGE_NONCRIT", h, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destFlags, destRaidFlags, arg1, arg2, arg3, arg4, arg5, ...)
-		end
-	end
-
-	if icon.OnlyIfConditions and (not icon.ConditionObject or icon.ConditionObject.Failed) then
-		return
-	end
-
-	if icon.CLEUNoRefresh then
-		-- Don't handle the event if CLEUNoRefresh is set and the icon's timer is still running.
-		local attributes = icon.attributes
-		if TMW.time - attributes.start < attributes.duration then
-			return
+			CLEU_OnEvent(icon, _, t, event .. "_NONCRIT", h, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destFlags, destRaidFlags, arg1, arg2, arg3, arg4, arg5, ...)
 		end
 	end
 
 
 	if icon.AllowAnyEvents or icon.CLEUEvents[event] then
+
+		if icon.OnlyIfConditions and (not icon.ConditionObject or icon.ConditionObject.Failed) then
+			return
+		end
+	
+		if icon.CLEUNoRefresh then
+			-- Don't handle the event if CLEUNoRefresh is set and the icon's timer is still running.
+			local attributes = icon.attributes
+			if TMW.time - attributes.start < attributes.duration then
+				return
+			end
+		end
 
 		if icon.SourceFlags then
 			-- icon.SourceFlags is nil if it is default, so we don't go into this code if we don't need to.
@@ -332,6 +334,8 @@ local function CLEU_OnEvent(icon, _, t, event, h, sourceGUID, sourceName, source
 			--"SPELL_REFLECT", -- normal BUT NOT ACTUALLY AN EVENT
 			--"SPELL_EXTRA_ATTACKS", -- normal
 			--"SPELL_HEAL", -- normal
+			--"SPELL_HEAL_CRIT", -- normal BUT NOT ACTUALLY AN EVENT
+			--"SPELL_HEAL_NONCRIT", -- normal BUT NOT ACTUALLY AN EVENT
 			--"SPELL_ENERGIZE", -- normal
 			--"SPELL_DRAIN", -- normal
 			--"SPELL_LEECH", -- normal

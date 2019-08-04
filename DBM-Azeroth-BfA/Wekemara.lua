@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2363, "DBM-Azeroth-BfA", 5, 1028)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190719021921")
+mod:SetRevision("20190731020149")
 mod:SetCreatureID(152671)--155702/spawn-of-wekemara
 mod:SetEncounterID(2318)
 mod:SetReCombatTime(20)
@@ -28,7 +28,7 @@ local yellShockBurst				= mod:NewYell(303488)
 local yellShockBurstFades			= mod:NewShortFadesYell(303488)
 --local specWarnGTFO				= mod:NewSpecialWarningGTFO(238028, nil, nil, nil, 1, 8)
 
-local timerBioelectricblastCD		= mod:NewCDTimer(20.4, 303319, nil, nil, nil, 3, nil, DBM_CORE_DEADLY_ICON)
+local timerBioelectricblastCD		= mod:NewCDTimer(19.1, 303319, nil, nil, nil, 3, nil, DBM_CORE_DEADLY_ICON)
 local timerShockburstCD				= mod:NewCDTimer(37, 303488, nil, nil, nil, 3)
 local timerElectricDischargeCD		= mod:NewCDTimer(25.6, 303451, nil, nil, nil, 2, nil, DBM_CORE_HEALER_ICON)
 

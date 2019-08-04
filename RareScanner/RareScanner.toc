@@ -11,7 +11,7 @@
 ## Notes-koKR: 미니맵 스캐너. 매번 희귀 NPC, 보물/상자 또는 이벤트를 소리와 함께 시각적으로 미니 맵에 표시하여 알립니다.
 ## Notes-itIT: Scanner Minimappa. Crea un avviso sonoro e grafico riportante una miniatura e un pulsante ogniqualvolta un PNG, tesoro, cassa o evento apparirà sulla minimappa
 ## Author: maqjav, Maciza-Tyrande
-## Version: 5.5.5
+## Version: 5.6
 ## SavedVariables: RareScannerDB
 ## OptionalDeps: Ace3
 ## X-Category: Achievements, Map, Miscellaneous

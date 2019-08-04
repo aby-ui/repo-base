@@ -1705,7 +1705,7 @@
 					if (instancia.rows_showing == 0 and instancia:GetSegment() == -1) then -- -1 overall data
 						if (not instancia:IsShowingOverallDataWarning()) then
 							local tutorial = _detalhes:GetTutorialCVar ("OVERALLDATA_WARNING1") or 0
-							if ((type (tutorial) == "number") and (tutorial < 6)) then
+							if ((type (tutorial) == "number") and (tutorial < 60)) then
 								_detalhes:SetTutorialCVar ("OVERALLDATA_WARNING1", tutorial + 1)
 								instancia:ShowOverallDataWarning (true)
 							end

@@ -623,11 +623,15 @@
 						<FontString parentKey="title" inherits="GameFontNormalHuge3">
 							<Anchors>
 								<Anchor point="TOP" y="-10"/>
+								<Anchor point="LEFT"/>
+								<Anchor point="RIGHT"/>
 							</Anchors>
 						</FontString>
 						<FontString parentKey="text" wordwrap="true" inherits="GameFontHighlight">
 							<Anchors>
 								<Anchor point="TOP" relativeKey="$parent.title" relativePoint="BOTTOM" y="-10"/>
+								<Anchor point="LEFT" relativeKey="$parent.title"/>
+								<Anchor point="RIGHT" relativeKey="$parent.title"/>
 							</Anchors>
 						</FontString>
 					</Layer>
@@ -637,12 +641,12 @@
 						self.title:SetText(TMW.L["IE_NOLOADED_ICON"])
 						self.text:SetText(TMW.L["IE_NOLOADED_ICON_DESC"])
 
-						self.text:SetWidth(self:GetWidth() - 25)
+						<!-- self.text:SetWidth(self:GetWidth() - 25) -->
 						self:SetHeight(self.text:GetStringHeight() + self.title:GetStringHeight() + 32)
 					</OnLoad>
-					<OnSizeChanged>
+					<OnUpdate>
 						self:SetHeight(self.text:GetStringHeight() + self.title:GetStringHeight() + 32)
-					</OnSizeChanged>
+					</OnUpdate>
 				</Scripts>
 			</Frame>
 		</Frames>

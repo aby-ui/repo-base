@@ -407,8 +407,10 @@ CNDT.Env.AzeriteEssenceMap_MAJOR = {}
 function CNDT:AZERITE_ESSENCE_UPDATE()
 	wipe(Env.AzeriteEssenceMap)
 	wipe(Env.AzeriteEssenceMap_MAJOR)
+	local milestones = C_AzeriteEssence.GetMilestones()
+	if not milestones then return end
 	
-	for _, slot in pairs(C_AzeriteEssence.GetMilestones()) do
+	for _, slot in pairs(milestones) do
 		if slot.unlocked then
 			local equippedEssenceId = C_AzeriteEssence.GetMilestoneEssence(slot.ID)
 			if equippedEssenceId then
@@ -441,7 +443,7 @@ for i, kind in TMW:Vararg("", "_MAJOR") do
 			editbox:SetTexts(L["SPELLTOCHECK"], L["CNDT_ONLYFIRST"])
 		end,
 		useSUG = "azerite_essence",
-		icon = function() return C_AzeriteEssence.GetEssences()[1].icon end,
+		icon = "Interface\\Icons\\" .. (kind == "" and "inv_radientazeritematrix" or "spell_azerite_essence_15"),
 		tcoords = CNDT.COMMON.standardtcoords,
 		funcstr = function(ConditionObject, c)
 			CNDT:RegisterEvent("AZERITE_ESSENCE_UPDATE")

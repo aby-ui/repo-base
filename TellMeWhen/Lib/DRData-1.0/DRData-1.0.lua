@@ -1,5 +1,5 @@
 local major = "DRData-1.0"
-local minor = 1049
+local minor = 1050
 assert(LibStub, string.format("%s requires LibStub.", major))
 
 local Data = LibStub:NewLibrary(major, minor)
@@ -11137,12 +11137,10 @@ local spellsAndProvidersByCategory = {
 	--[[ INCAPACITATES ]]--
 	incapacitate = {
 		-- Druid
-		[    99] = true, -- Incapacitating Roar (talent)
-		[203126] = true, -- Maim (with blood trauma pvp talent)
+		[236025] = true, -- Maim incap
 		-- Hunter
 		[  3355] = 187650, -- Freezing Trap
-		[ 19386] = true, -- Wyvern Sting
-		[209790] = true, -- Freezing Arrow
+		[203337] = 187650, -- Freezing Trap talented
 		[213691] = true, -- Scatter Shot
 		-- Mage
 		[   118] = true, -- Polymorph
@@ -11156,15 +11154,15 @@ local spellsAndProvidersByCategory = {
 		[161354] = true, -- Polymorph (monkey)
 		[161355] = true, -- Polymorph (penguin)
 		[161372] = true, -- Polymorph (peacock)
-		[ 82691] = true, -- Ring of Frost
+		[277787] = true, -- Polymorph (direhorn)
+		[277792] = true, -- Polymorph (bumblebee)
+		[ 82691] = 113724, -- Ring of Frost
 		-- Monk
 		[115078] = true, -- Paralysis
 		-- Paladin
 		[ 20066] = true, -- Repentance
 		-- Priest
-		[   605] = true, -- Dominate Mind
-		[  9484] = true, -- Shackle Undead
-		[200196] = true, -- Holy Word: Chastise
+		[ 200196] = 88625, -- Holy Word: Chastise incap
 		-- Rogue
 		[  1776] = true, -- Gouge
 		[  6770] = true, -- Sap
@@ -11173,15 +11171,18 @@ local spellsAndProvidersByCategory = {
 		[211004] = true, -- Hex (spider)
 		[210873] = true, -- Hex (raptor)
 		[211015] = true, -- Hex (cockroach)
-		[211010] = true, -- Hex (snake)
+		[211010] = true, -- Hex
+		[277784] = true, -- Hex
+		[277778] = true, -- Hex
+		[269352] = true, -- Hex
+		[197214] = true, -- Sundering
 		-- Warlock
-		[   710] = true, -- Banish
 		[  6789] = true, -- Mortal Coil
 		-- Pandaren
 		[107079] = true, -- Quaking Palm
 		-- Demon Hunter
 		[217832] = true, -- Imprison
-		[221527] = true, -- Improve Imprison
+		[221527] = true, -- Imprison talented
 	},
 
 	--[[ SILENCES ]]--
@@ -11189,149 +11190,137 @@ local spellsAndProvidersByCategory = {
 		-- Death Knight
 		[ 47476] = true, -- Strangulate
 		-- Demon Hunter
-		[204490] = true, -- Sigil of Silence
+		[204490] = 202137, -- Sigil of Silence
 		-- Druid
+		[81261] = true, -- Solar Beam
 		-- Hunter
-		[202933] = true, -- Spider Sting (pvp talent)
+		[202933] = 202914, -- Spider Sting
 		-- Mage
 		-- Paladin
-		[ 31935] = true, -- Avenger's Shield
+		[217824] = 31935, -- Prot pala silence
 		-- Priest
 		[ 15487] = true, -- Silence
-		[199683] = true, -- Last Word (SW: Death silence)
 		-- Rogue
-		[  1330] = true, -- Garrote
-		-- Blood Elf
-		[ 25046] = true, -- Arcane Torrent (Energy version)
-		[ 28730] = true, -- Arcane Torrent (Priest/Mage/Lock version)
-		[ 50613] = true, -- Arcane Torrent (Runic power version)
-		[ 69179] = true, -- Arcane Torrent (Rage version)
-		[ 80483] = true, -- Arcane Torrent (Focus version)
-		[129597] = true, -- Arcane Torrent (Monk version)
-		[155145] = true, -- Arcane Torrent (Paladin version)
-		[202719] = true, -- Arcane Torrent (DH version)
+		[  1330] = 703, -- Garrote
 	},
 
 	--[[ DISORIENTS ]]--
 	disorient = {
 		-- Death Knight
-		[207167] = true, -- Blinding Sleet (talent) -- FIXME: is this the right category?
+		[207167] = true, -- Blinding Sleet
 		-- Demon Hunter
-		[207685] = true, -- Sigil of Misery
+		[207685] = 207684, -- Sigil of Misery
 		-- Druid
-		[ 33786] = true, -- Cyclone
+		[  2637] = true, -- Hibernate
+		[ 33786] = true, -- Cyclone (rdruid/feral)
 		[209753] = true, -- Cyclone (Balance)
+		[236748] = true, -- Disorienting Roar
 		-- Hunter
-		[186387] = true, -- Bursting Shot
-		[224729] = true, -- Bursting Shot
 		-- Mage
 		[ 31661] = true, -- Dragon's Breath
 		-- Monk
-		[198909] = true, -- Song of Chi-ji -- FIXME: is this the right category( tooltip specifically says disorient, so I guessed here)
-		[202274] = true, -- Incendiary Brew -- FIXME: is this the right category( tooltip specifically says disorient, so I guessed here)
+		[198909] = 198898, -- Song of Chi-ji
+		[202274] = 115181, -- Incendiary Brew
 		-- Paladin
-		[105421] = true, -- Blinding Light -- FIXME: is this the right category? Its missing from blizzard's list
+		[105421] = 115750, -- Blinding Light
 		-- Priest
 		[  8122] = true, -- Psychic Scream
-		[226943] = true, -- Mind Bomb
+		[   605] = true, -- Dominate Mind
+		[226943] = 205369, -- Mind Bomb
 		-- Rogue
 		[  2094] = true, -- Blind
 		-- Warlock
-		[  5782] = true, -- Fear -- probably unused
-		[118699] = 5782, -- Fear -- new debuff ID since MoP
-		[130616] = 5782, -- Fear (with Glyph of Fear)
-		[  5484] = true, -- Howl of Terror (talent)
-		[115268] = true, -- Mesmerize (Shivarra)
+		[118699] = 5782, -- Fear
 		[  6358] = true, -- Seduction (Succubus)
+		[261589] = 261589, -- Seduction (Player)
 		-- Warrior
-		[  5246] = true, -- Intimidating Shout (main target)
+		[  5246] = true, -- Intimidating Shout
 	},
 
 	--[[ STUNS ]]--
 	stun = {
 		-- Death Knight
-		-- Abomination's Might note: 207165 is the stun, but is never applied to players,
-		-- so I haven't included it.
-		[108194] = true, -- Asphyxiate (talent for unholy)
-		[221562] = true, -- Asphyxiate (baseline for blood)
-		[ 91800] = true, -- Gnaw (Ghoul)
-		[ 91797] = true, -- Monstrous Blow (Dark Transformation Ghoul)
-		[207171] = true, -- Winter is Coming (Remorseless winter stun)
+		[108194] = true, -- Asphyxiate (unholy/frost)
+		[221562] = true, -- Asphyxiate (blood)
+		[ 91800] = 47481, -- Gnaw
+		[ 91797] = 47481, -- Gnaw (transformed)
+		[210141] = 210128, -- Zombie Explosion
+		[235612] = 279302, -- frost dk stun
+		[287254] = 196770, -- remorseless winter stun
 		-- Demon Hunter
 		[179057] = true, -- Chaos Nova
-		[200166] = true, -- Metamorphosis
-		[205630] = true, -- Illidan's Grasp, primary effect
-		[208618] = true, -- Illidan's Grasp, secondary effect
+		[205630] = 205630, -- Illidan's Grasp, primary effect
+		[208618] = 208173, -- Illidan's Grasp, secondary effect
 		[211881] = true, -- Fel Eruption
 		-- Druid
-		[203123] = true, -- Maim
-		[236025] = true, -- Maim (Honor talent)
-		[236026] = true, -- Maim (Honor talent)
-		[22570] = true, -- Maim (Honor talent)
+		[203123] = true, -- Maim stun
 		[  5211] = true, -- Mighty Bash
 		[163505] = 1822, -- Rake (Stun from Prowl)
+		[202244] = 202246, -- Overrun bear stun
 		-- Hunter
 		[117526] = 109248, -- Binding Shot
 		[ 24394] = 19577, -- Intimidation
 		-- Mage
 
 		-- Monk
-		[120086] =   true, -- Fists of Fury (with Heavy-Handed Strikes, pvp talent)
-		[232055] =   true, -- Fists of Fury (new ID in 7.1)
+		[202346] = 121253, -- Keg stun
 		[119381] =   true, -- Leg Sweep
 		-- Paladin
 		[   853] = true, -- Hammer of Justice
 		-- Priest
-		[200200] = true, -- Holy word: Chastise
-		[ 64044] = true, -- Psychic Horror
+		[200200] = 88625, -- Holy word: Chastise stun
+		[ 64044] = true, -- Psychic Horror stun
 		-- Rogue
-		-- Shadowstrike note: 196958 is the stun, but it never applies to players,
-		-- so I haven't included it.
 		[  1833] = true, -- Cheap Shot
 		[   408] = true, -- Kidney Shot
 		[199804] = true, -- Between the Eyes
 		-- Shaman
 		[118345] = true, -- Pulverize (Primal Earth Elemental)
-		[118905] = true, -- Static Charge (Capacitor Totem)
-		--[204399] = true, -- Earthfury (pvp talent)
+		[118905] = 192058, -- Static Charge (Capacitor Totem)
+		[204437] = true, -- Lightning Lasso
 		-- Warlock
-		[ 89766] = true, -- Axe Toss (Felguard)
+		[ 89766] = 111898, -- Axe Toss (Felguard)
+		[ 89766] = 89766, -- Axe Toss (Felguard) 2
 		[ 30283] = true, -- Shadowfury
-		[ 22703] = 1122, -- Summon Infernal
 		-- Warrior
-		[132168] = true, -- Shockwave
-		[132169] = true, -- Storm Bolt
-		[237744] = true, -- Warbringer
+		[132168] = 46968, -- Shockwave
+		[132169] = 107570, -- Storm Bolt
+		[199085] = 6544, -- Heroic Leap stun
 		-- Tauren
 		[ 20549] = true, -- War Stomp
+		[255723] = true, -- Bull Rush
+		-- Kul Tiran
+		[287712] = true, -- Haymaker
 	},
 
 	--[[ ROOTS ]]--
 	root = {
 		-- Death Knight
-		[ 96294] = true, -- Chains of Ice (Chilblains Root)
-		[204085] = true, -- Deathchill (pvp talent)
+		[204085] = 45524, -- Deathchill root
+		[198121] = true, -- Frostbite
+		[233395] = 196770, -- Frozen Center
 		-- Druid
 		[   339] = true, -- Entangling Roots
-		[102359] = true, -- Mass Entanglement (talent)
-		[ 45334] = true, -- Immobilized (wild charge, bear form)
+		[235963] = true, -- Entangling Roots undispellable
+		[170855] = 102342, -- Entangling Roots ironbark
+		[102359] = true, -- Mass Entanglement
+		[ 45334] = 16979, -- Immobilized (wild charge, bear form)
 		-- Hunter
-		[ 53148] = 61685, -- Charge (Tenacity pet)
-		[162480] = true, -- Steel Trap
-		[190927] = true, -- Harpoon
-		[200108] = true, -- Ranger's Net
+		[162480] = 162488, -- Steel Trap root
+		[190927] = 190925, -- Harpoon
 		[212638] = true, -- tracker's net
-		[201158] = true, -- Super Sticky Tar (Expert Trapper, Hunter talent, Tar Trap effect)
 		-- Mage
 		[   122] = true, -- Frost Nova
 		[ 33395] = true, -- Freeze (Water Elemental)
-		-- [157997] = true, -- Ice Nova -- since 6.1, ice nova doesn't DR with anything
-		[228600] = true, -- Glacial spike (talent)
+		[228600] = 199786, -- Glacial spike
 		-- Monk
 		[116706] = 116095, -- Disable
 		-- Priest
+		-- Warlock
+		[233582] = 17962, -- Destro root
 		-- Shaman
-		[ 64695] = true, -- Earthgrab Totem
+		[ 64695] = 51485, -- Earthgrab Totem
+		[285515] = 196840, -- frost shock root (talent)
 	},
 
 	--[[ KNOCKBACK ]]--
@@ -11348,7 +11337,7 @@ local spellsAndProvidersByCategory = {
 		[  6360] = true, -- Whiplash
 		[115770] = true, -- Fellash
 	},
-} 
+}
 
 -- Map deprecatedCategories to the new ones
 local deprecatedCategories = {
@@ -11426,7 +11415,7 @@ end
 
 -- Seconds before DR resets
 function Data:GetResetTime(category)
-	CheckDeprecatedCategory(cat)
+	CheckDeprecatedCategory(category)
 	return Data.resetTimes[category or "default"] or Data.resetTimes.default
 end
 

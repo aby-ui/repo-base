@@ -130,6 +130,10 @@ if AL then
 	AL["MAP_SHOW_ICON_AFTER_COLLECTED_DESC"] = "停用以後，在拾取箱子之後圖示將會消失。"
 	AL["MAP_SHOW_ICON_AFTER_DEAD"] = "在擊殺後仍然顯示圖示"
 	AL["MAP_SHOW_ICON_AFTER_DEAD_DESC"] = "停用後，圖示將在殺死NPC後消失。再次找到NPC後，圖標就會出現。這個選項只適用於在殺死它們後繼續進行追蹤的NPC。"
+	--[[Translation missing --]]
+	AL["MAP_SHOW_ICON_AFTER_DEAD_RESETEABLE"] = "Keep showing NPC icons after death (only in resetable zones)"
+	--[[Translation missing --]]
+	AL["MAP_SHOW_ICON_AFTER_DEAD_RESETEABLE_DESC"] = "When disabled the icon will disappear after you kill the NPC. The icon will reappear as soon as you find the NPC again. This option only works with NPCs that keep being rares after killing them in zones that reset with world quests."
 	AL["MAP_SHOW_ICON_CONTAINER_MAX_SEEN_TIME"] = "隱藏箱子圖示的計時器(以分計)"
 	AL["MAP_SHOW_ICON_CONTAINER_MAX_SEEN_TIME_DESC"] = "設置自從你看到箱子以來最大的分鐘數。在此時間之後，再次找到箱子以前，圖示不再顯示在世界地圖上。如果你選擇0分鐘，則不論你看過箱子有多長時間都會顯示圖示，此過濾器不適用於包含於成就的箱子。"
 	AL["MAP_SHOW_ICON_MAX_SEEN_TIME"] = "自從你遇見稀有NPC以來的最長時間"
@@ -158,7 +162,7 @@ if AL then
 	AL["NOTE_151308"] = "在事件[鑽探機]進行期間可用"
 	AL["NOTE_151569"] = "你需要一个[百噚誘餌]来召唤他。"
 	AL["NOTE_151627"] = "你需要在平台的機器上使用一個[發熱蒸發器線圈]。"
-	AL["NOTE_151884"] = "僅在蜜露恩發放日常任務[來自諾達希爾的援助]時有效。該日常要求你在樹底下找蘑菇，當你點擊一個蘑菇時它會停滯，你需要在它消失前再點2個蘑菇，NPC才會出現"
+	AL["NOTE_135497"] = "僅在蜜露恩發放日常任務[來自諾達希爾的援助]時有效。該日常要求你在樹底下找蘑菇，當你點擊一個蘑菇時它會停滯，你需要在它消失前再點2個蘑菇，NPC才會出現"
 	AL["NOTE_151933"] = "你需要使用[野獸機器人動力包]才能擊殺他（你可以在坐標60.41找到圖紙）"
 	AL["NOTE_152007"] = "它會在這個區域遊蕩，所以坐標可能不太精確。"
 	AL["NOTE_152113"] = "在事件[鑽探機 DR-CC88]進行期間可用"

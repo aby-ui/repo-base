@@ -89,7 +89,7 @@ function SUG:DoSuggest()
 
 	wipe(SUGpreTable)
 
-	local tbl = SUG.CurrentModule:Table_Get()
+	local tbl = SUG.CurrentModule:Table_Get() or {}
 
 	local start = debugprofilestop()
 	SUG.CurrentModule:Table_GetNormalSuggestions(SUGpreTable, tbl)
