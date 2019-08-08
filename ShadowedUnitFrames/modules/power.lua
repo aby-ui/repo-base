@@ -4,7 +4,7 @@ ShadowUF:RegisterModule(Power, "powerBar", ShadowUF.L["Power bar"], true)
 
 function Power:OnEnable(frame)
 	frame.powerBar = frame.powerBar or ShadowUF.Units:CreateBar(frame)
-	
+
 	frame:RegisterUnitEvent("UNIT_POWER_FREQUENT", self, "Update")
 	frame:RegisterUnitEvent("UNIT_MAXPOWER", self, "Update")
 	frame:RegisterUnitEvent("UNIT_CONNECTION", self, "Update")
@@ -54,7 +54,7 @@ function Power:UpdateColor(frame)
 		local class = frame:UnitClassToken()
 		color = class and ShadowUF.db.profile.classColors[class]
 	end
-	
+
 	if( not color ) then
 		color = ShadowUF.db.profile.powerColors[frame.powerBar.currentType]
 		if( not color ) then

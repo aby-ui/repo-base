@@ -19,22 +19,22 @@ function XP:OnEnable(frame)
 		frame.xpBar:SetScript("OnEnter", OnEnter)
 		frame.xpBar:SetScript("OnLeave", OnLeave)
 		frame.xpBar:EnableMouse(true)
-		
+
 		frame.xpBar.xp = ShadowUF.Units:CreateBar(frame.xpBar)
 		frame.xpBar.xp:SetPoint("BOTTOMLEFT", frame.xpBar)
 		frame.xpBar.xp:SetPoint("BOTTOMRIGHT", frame.xpBar)
-				
+
 		if( frame.unitType == "player" ) then
 			frame.xpBar.rep = ShadowUF.Units:CreateBar(frame.xpBar)
 			frame.xpBar.rep:SetPoint("TOPLEFT", frame.xpBar)
 			frame.xpBar.rep:SetPoint("TOPRIGHT", frame.xpBar)
 		end
-		
+
 		frame.xpBar.rested = CreateFrame("StatusBar", nil, frame.xpBar.xp)
 		frame.xpBar.rested:SetFrameLevel(frame.xpBar.xp:GetFrameLevel() - 1)
 		frame.xpBar.rested:SetAllPoints(frame.xpBar.xp)
 	end
-	
+
 	frame:RegisterNormalEvent("ENABLE_XP_GAIN", self, "Update")
 	frame:RegisterNormalEvent("DISABLE_XP_GAIN", self, "Update")
 
@@ -59,10 +59,10 @@ function XP:OnLayoutApplied(frame)
 	if( frame.visibility.xpBar ) then
 		frame.xpBar.xp:SetStatusBarTexture(ShadowUF.Layout.mediaPath.statusbar)
 		frame.xpBar.xp:SetStatusBarColor(ShadowUF.db.profile.xpColors.normal.r, ShadowUF.db.profile.xpColors.normal.g, ShadowUF.db.profile.xpColors.normal.b, ShadowUF.db.profile.bars.alpha)
-		
+
 		frame.xpBar.xp.background:SetVertexColor(ShadowUF.db.profile.xpColors.normal.r, ShadowUF.db.profile.xpColors.normal.g, ShadowUF.db.profile.xpColors.normal.b, ShadowUF.db.profile.bars.backgroundAlpha)
 		frame.xpBar.xp.background:SetTexture(ShadowUF.Layout.mediaPath.statusbar)
-		
+
 		frame.xpBar.rested:SetStatusBarTexture(ShadowUF.Layout.mediaPath.statusbar)
 		frame.xpBar.rested:SetStatusBarColor(ShadowUF.db.profile.xpColors.rested.r, ShadowUF.db.profile.xpColors.rested.g, ShadowUF.db.profile.xpColors.rested.b, ShadowUF.db.profile.bars.alpha)
 
@@ -80,7 +80,7 @@ local function formatNumber(number)
 		number, found = string.gsub(number, "^(-?%d+)(%d%d%d)", "%1,%2")
 		if( found == 0 ) then break end
 	end
-	
+
 	return number
 end
 
@@ -91,11 +91,11 @@ function XP:UpdateRep(frame)
 		frame.xpBar.rep:Hide()
 		return
 	end
-	
+
 	-- Blizzard stores faction info related to Exalted, not your current level, so get more mathier to find the current reputation using the current standing tier
 	current = math.abs(min - current)
 	max = math.abs(min - max)
-		
+
 	local color = FACTION_BAR_COLORS[reaction]
 	frame.xpBar.rep:SetMinMaxValues(0, max)
 	frame.xpBar.rep:SetValue(current)
@@ -111,19 +111,19 @@ function XP:UpdateXP(frame)
 		frame.xpBar.xp:Hide()
 		return
 	end
-	
+
 	local current, max
 	if( frame.unitOwner == "player" ) then
 		current, max = UnitXP(frame.unitOwner), UnitXPMax(frame.unitOwner)
 	else
 		current, max = GetPetExperience()
 	end
-	
+
 	local min = math.min(0, current)
 	frame.xpBar.xp:SetMinMaxValues(min, max)
 	frame.xpBar.xp:SetValue(current)
 	frame.xpBar.xp:Show()
-	
+
 	if( frame.unitOwner == "player" and GetXPExhaustion() ) then
 		frame.xpBar.rested:SetMinMaxValues(min, max)
 		frame.xpBar.rested:SetValue(math.min(current + GetXPExhaustion(), max))
@@ -143,7 +143,7 @@ function XP:Update(frame)
 		ShadowUF.Layout:SetBarVisibility(frame, "xpBar", false)
 		return
 	end
-	
+
 	ShadowUF.Layout:SetBarVisibility(frame, "xpBar", true)
 	if( frame.xpBar.rep and frame.xpBar.rep:IsVisible() and frame.xpBar.xp:IsVisible() ) then
 		frame.xpBar.rep:SetHeight(frame.xpBar:GetHeight() * 0.48)

@@ -3,7 +3,7 @@ local L		= mod:GetLocalizedStrings()
 local Riplimb	= DBM:EJ_GetSectionInfo(2581)
 local Rageface	= DBM:EJ_GetSectionInfo(2583)
 
-mod:SetRevision("20190625143316")
+mod:SetRevision("20190808031548")
 mod:SetCreatureID(53691)
 mod:SetEncounterID(1205)
 mod:SetZone()
@@ -25,6 +25,7 @@ mod:RegisterEventsInCombat(
 	"UNIT_DIED"
 )
 
+--TODO, this mod was the template for the original target scanner that eventually made it into core. Now, it's time to move this mod to either that object or the UnitTarget scanner before timewalking
 local warnFaceRage				= mod:NewTargetAnnounce(99947, 4)
 local warnRage					= mod:NewTargetAnnounce(100415, 3)
 local warnWary					= mod:NewTargetAnnounce(100167, 2, nil, false)
@@ -58,42 +59,34 @@ local timerFaceRageCD			= mod:NewCDTimer(27, 99947, nil, false, nil, 5)--Has a 2
 
 local berserkTimer				= mod:NewBerserkTimer(600)
 
-mod:AddBoolOption("SetIconOnFaceRage", false)
-mod:AddBoolOption("SetIconOnRage", false)
+mod:AddSetIconOption("SetIconOnFaceRage", 99945, false, false, {8})
+mod:AddSetIconOption("SetIconOnRage", 100415, false, false, {6})
 
-local prewarnedPhase2 = false
-local ripLimbDead = false
+mod.vb.prewarnedPhase2 = false
+mod.vb.ripLimbDead = false
 local trapScansDone = 0
 
 function mod:ImmoTrapTarget(targetname)
-	warnImmoTrap:Show(targetname)
+	if not targetname then return end
 	if targetname == UnitName("player") then
 		specWarnImmTrap:Show()
 		yellImmoTrap:Yell()
+	elseif self:CheckNearby(6, targetname) then
+		specWarnImmTrapNear:Show(targetname)
 	else
-		local uId = DBM:GetRaidUnitId(targetname)
-		if uId then
-			local inRange = DBM.RangeCheck:GetDistance("player", uId)
-			if inRange and inRange < 6 then
-				specWarnImmTrapNear:Show(targetname)
-			end
-		end
+		warnImmoTrap:Show(targetname)
 	end
 end
 
 function mod:CrystalTrapTarget(targetname)
-	warnCrystalPrison:Show(targetname)
+	if not targetname then return end
 	if targetname == UnitName("player") then
 		specWarnCrystalTrap:Show()
 		yellCrystalTrap:Yell()
+	elseif self:CheckNearby(6, targetname) then
+		specWarnCrystalTrapNear:Show(targetname)
 	else
-		local uId = DBM:GetRaidUnitId(targetname)
-		if uId then
-			local inRange = DBM.RangeCheck:GetDistance("player", uId)
-			if inRange and inRange < 6 then
-				specWarnCrystalTrapNear:Show(targetname)
-			end
-		end
+		warnCrystalPrison:Show(targetname)
 	end
 end
 
@@ -111,7 +104,7 @@ local function getBossuId()
 			if UnitName(uId.."target") == L.name and not UnitIsPlayer(uId.."target") then
 				UnitID = uId.."target"
 				break
-			end			
+			end
 		end
 	end
 	return UnitID
@@ -161,8 +154,8 @@ function mod:TrapHandler(SpellID, ScansDone)
 end
 
 function mod:OnCombatStart(delay)
-	prewarnedPhase2 = false
-	ripLimbDead = false
+	self.vb.prewarnedPhase2 = false
+	self.vb.ripLimbDead = false
 	trapScansDone = 0
 --	timerCrystalPrisonCD:Start(-delay)--Don't know yet, Need to run transcriptor with combat logging turned OFF to get the timestamps right.
 	timerSpearCD:Start(20-delay)--High variation, just a CD?
@@ -196,7 +189,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		if args:IsPlayer() and (args.amount or 1) >= 8 then
 			specWarnTears:Show(args.amount)
 		end
-		if self:IsDifficulty("heroic10", "heroic25") then
+		if self:IsHeroic() then
 			timerTears:Start(30, args.destName)
 		else
 			timerTears:Start(args.destName)
@@ -223,7 +216,7 @@ function mod:SPELL_CAST_START(args)
 		warnSpear:Show()--Only valid until rip dies
 		specWarnSpear:Show()
 		timerSpearCD:Start()
-	elseif spellId == 99840 and ripLimbDead then	--This is cast after Riplimb dies.
+	elseif spellId == 99840 and self.vb.ripLimbDead then	--This is cast after Riplimb dies.
 		warnMagmaRupture:Show()
 		timerMagmaRuptureCD:Start()
 	end
@@ -256,10 +249,10 @@ end
 function mod:UNIT_HEALTH(uId)
 	if self:GetUnitCreatureId(uId) == 53691 then
 		local h = UnitHealth(uId) / UnitHealthMax(uId) * 100
-		if h > 50 and prewarnedPhase2 then
-			prewarnedPhase2 = false
-		elseif h > 33 and h < 36 and not prewarnedPhase2 and self:IsDifficulty("normal10", "normal25") then
-			prewarnedPhase2 = true
+		if h > 50 and self.vb.prewarnedPhase2 then
+			self.vb.prewarnedPhase2 = false
+		elseif h > 33 and h < 36 and not self.vb.prewarnedPhase2 and not self:IsHeroic() then
+			self.vb.prewarnedPhase2 = true
 			warnPhase2Soon:Show()
 		end
 	end
@@ -270,7 +263,7 @@ function mod:UNIT_DIED(args)
 	if cid == 53694 then
 		timerSpearCD:Cancel()--Cancel it and replace it with other timer
 		timerMagmaRuptureCD:Start(10)
-		ripLimbDead = true
+		self.vb.ripLimbDead = true
 	elseif cid == 53695 then
 		timerFaceRageCD:Cancel()
 	end

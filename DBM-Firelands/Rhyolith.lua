@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(193, "DBM-Firelands", nil, 78)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190625143316")
+mod:SetRevision("20190808031548")
 mod:SetCreatureID(52558)--or does 53772 die instead?didn't actually varify this fires right unit_died event yet so we'll see tonight
 mod:SetEncounterID(1204)
 mod:SetZone()
@@ -31,7 +31,6 @@ local warnPhase2Soon		= mod:NewPrePhaseAnnounce(2, 2)
 local warnPhase2			= mod:NewPhaseAnnounce(2, 3)
 
 local specWarnMagmaFlow		= mod:NewSpecialWarningSpell(97225, nil, nil, nil, 2)
-local specWarnFlameStomp	= mod:NewSpecialWarningSpell(97282, false)
 
 local timerFragmentCD		= mod:NewNextTimer(22.5, "ej2531", nil, nil, nil, 1, 98136)
 local timerSparkCD			= mod:NewNextCountTimer(22.5, "ej2532", nil, nil, nil, 1, 98552)
@@ -41,32 +40,30 @@ local timerSuperheated		= mod:NewNextTimer(10, 101304)		--Add the 10 second part
 local timerMoltenSpew		= mod:NewNextTimer(6, 98034, nil, nil, nil, 2)		--6secs after Drinking Magma
 local timerMagmaFlowActive	= mod:NewBuffActiveTimer(10, 97225)	--10 second buff volcano has, after which the magma line explodes.
 
-local spamAdds = 0
-local phase2Started = false
-local sparkCount = 0
-local fragmentCount = 0
-local prewarnedPhase2 = false
+mod.vb.phase2Started = false
+mod.vb.sparkCount = 0
+mod.vb.fragmentCount = 0
+mod.vb.prewarnedPhase2 = false
 
 function mod:OnCombatStart(delay)
 	timerFragmentCD:Start(-delay)
 	timerHeatedVolcano:Start(30-delay)
 	timerFlameStomp:Start(16-delay)
-	if self:IsDifficulty("heroic10", "heroic25") then
+	if self:IsHeroic() then
 		timerSuperheated:Start(300-delay)--5 min on heroic
 	else
 		timerSuperheated:Start(360-delay)--6 min on normal
 	end
-	spamAdds = 0
-	phase2Started = false
-	sparkCount = 0
-	fragmentCount = 1--Fight starts out 1 cycle in so only 1 more spawns before pattern reset.
-	prewarnedPhase2 = false
+	self.vb.phase2Started = false
+	self.vb.sparkCount = 0
+	self.vb.fragmentCount = 1--Fight starts out 1 cycle in so only 1 more spawns before pattern reset.
+	self.vb.prewarnedPhase2 = false
 end
 
 function mod:SPELL_AURA_APPLIED(args)
 	local spellId = args.spellId
-	if spellId == 99846 and not phase2Started then
-		phase2Started = true
+	if spellId == 99846 and not self.vb.phase2Started then
+		self.vb.phase2Started = true
 		warnPhase2:Show()
 		if timerFlameStomp:GetTime() > 0 then--This only happens if it was still on CD going into phase
 			timerFlameStomp:Cancel()
@@ -91,8 +88,7 @@ function mod:SPELL_CAST_START(args)
 		timerMoltenSpew:Start()
 	elseif spellId == 97282 then
 		warnFlameStomp:Show()
-		specWarnFlameStomp:Show()
-		if not phase2Started then
+		if not self.vb.phase2Started then
 			timerFlameStomp:Start()
 		else--13sec cd in phase 2
 			timerFlameStomp:Start(13)
@@ -104,7 +100,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 	local spellId = args.spellId
 	if spellId == 98493 then
 		warnHeatedVolcano:Show()
-		if self:IsDifficulty("heroic10", "heroic25") then
+		if self:IsHeroic() then
 			timerHeatedVolcano:Start()
 		else
 			timerHeatedVolcano:Start(40)
@@ -119,17 +115,17 @@ end
 function mod:SPELL_SUMMON(args)
 	local spellId = args.spellId
 	if spellId == 98136 and self:AntiSpam(5, 2) then
-		fragmentCount = fragmentCount + 1
+		self.vb.fragmentCount = self.vb.fragmentCount + 1
 		warnFragments:Show()
-		if fragmentCount < 2 then
+		if self.vb.fragmentCount < 2 then
 			timerFragmentCD:Start()
 		else--Spark is next start other CD bar and reset count.
-			fragmentCount = 0
-			timerSparkCD:Start(22.5, sparkCount+1)
+			self.vb.fragmentCount = 0
+			timerSparkCD:Start(22.5, self.vb.sparkCount+1)
 		end
 	elseif spellId == 98552 then
-		sparkCount = sparkCount + 1
-		warnShard:Show(sparkCount)
+		self.vb.sparkCount = self.vb.sparkCount + 1
+		warnShard:Show(self.vb.sparkCount)
 		timerFragmentCD:Start()
 	end
 end
@@ -137,10 +133,10 @@ end
 function mod:UNIT_HEALTH(uId)
 	if self:GetUnitCreatureId(uId) == 52558 then
 		local h = UnitHealth(uId) / UnitHealthMax(uId) * 100
-		if h > 35 and prewarnedPhase2 then
-			prewarnedPhase2 = false
-		elseif h > 28 and h < 22 and not prewarnedPhase2 then
-			prewarnedPhase2 = true
+		if h > 35 and self.vb.prewarnedPhase2 then
+			self.vb.prewarnedPhase2 = false
+		elseif h > 28 and h < 22 and not self.vb.prewarnedPhase2 then
+			self.vb.prewarnedPhase2 = true
 			warnPhase2Soon:Show()
 		end
 	end

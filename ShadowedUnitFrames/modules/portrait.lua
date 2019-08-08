@@ -13,7 +13,7 @@ end
 function Portrait:OnEnable(frame)
 	frame:RegisterUnitEvent("UNIT_PORTRAIT_UPDATE", self, "UpdateFunc")
 	frame:RegisterUnitEvent("UNIT_MODEL_CHANGED", self, "Update")
-	
+
 	frame:RegisterUpdateFunc(self, "UpdateFunc")
 end
 
@@ -31,7 +31,7 @@ function Portrait:OnPreLayoutApply(frame, config)
 			frame.portraitModel:SetScript("OnHide", resetGUID)
 			frame.portraitModel.parent = frame
 		end
-				
+
 		frame.portrait = frame.portraitModel
 		frame.portrait:Show()
 
@@ -52,7 +52,7 @@ function Portrait:UpdateFunc(frame)
 		if( frame.portrait.guid ~= guid ) then
 			self:Update(frame)
 		end
-		
+
 		frame.portrait.guid = guid
 	else
 		self:Update(frame)

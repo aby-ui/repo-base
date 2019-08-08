@@ -5,7 +5,7 @@ function Druid:OnEnable(frame)
 	frame.druidBar = frame.druidBar or ShadowUF.Units:CreateBar(frame)
 
 	frame:RegisterUnitEvent("UNIT_DISPLAYPOWER", self, "PowerChanged")
-	
+
 	frame:RegisterUpdateFunc(self, "PowerChanged")
 	frame:RegisterUpdateFunc(self, "Update")
 end

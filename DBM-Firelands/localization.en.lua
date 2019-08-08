@@ -5,10 +5,6 @@ local L
 -----------------
 L= DBM:GetModLocalization(192)
 
-L:SetOptionLocalization({
-	RangeFrame			= "Show range frame (10)"
-})
-
 L:SetMiscLocalization({
 	EmoteSpiderlings 	= "Spiderlings have been roused from their nest!"
 })
@@ -39,14 +35,12 @@ L:SetOptionLocalization({
 	WarnNewInitiate		= "Show a warning for new Blazing Talon Initiate",
 	timerNextInitiate	= "Show a timer for next Blazing Talon Initiate",
 	TimerPhaseChange	= "Show a timer till next phase",
-	TimerHatchEggs		= "Show a timer till next eggs are hatched",
-	InfoFrame			= "Show info frame for $spell:98734"
+	TimerHatchEggs		= "Show a timer till next eggs are hatched"
 })
 
 L:SetMiscLocalization({
 	YellPull		= "I serve a new master now, mortals!",
 	YellPhase2		= "These skies are MINE!",
-	FullPower		= "spell:99925",--This is in the emote, shouldn't need localizing, just msg:find
 	LavaWorms		= "Fiery Lava Worms erupt from the ground!",--Might use this one day if i feel it needs a warning for something. Or maybe pre warning for something else (like transition soon)
 	East			= "East",
 	West			= "West",
@@ -57,11 +51,6 @@ L:SetMiscLocalization({
 -- Shannox --
 -------------
 L= DBM:GetModLocalization(195)
-
-L:SetOptionLocalization({
-	SetIconOnFaceRage	= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(99947),
-	SetIconOnRage		= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(100415)
-})
 
 -------------
 -- Baleroc --
@@ -83,11 +72,7 @@ L:SetOptionLocalization({
 	warnStrike			= "Show warnings for Decimation/Inferno Strike",
 	timerStrike			= "Show timer for next Decimation/Inferno Strike",
 	TimerBladeActive	= "Show a duration timer for the active Blade",
-	TimerBladeNext		= "Show a next timer for Decimation/Inferno Blade",
-	SetIconOnCountdown	= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(99516),
-	SetIconOnTorment	= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(99256),
-	InfoFrame			= "Show info frame for $spell:99262 stacks",
-	RangeFrame			= "Show range frame (5) for $spell:99257"
+	TimerBladeNext		= "Show a next timer for Decimation/Inferno Blade"
 })
 
 --------------------------------
@@ -102,8 +87,7 @@ L:SetTimerLocalization({
 L:SetOptionLocalization({
 	timerNextSpecial			= "Show timer for next special ability",
 	RangeFrameSeeds				= "Show range frame (12) for $spell:98450",
-	RangeFrameCat				= "Show range frame (10) for $spell:98374",
-	IconOnLeapingFlames			= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(98476)
+	RangeFrameCat				= "Show range frame (10) for $spell:98374"
 })
 
 --------------
@@ -132,11 +116,9 @@ L:SetOptionLocalization({
 	warnEmpoweredSulf			= DBM_CORE_AUTO_ANNOUNCE_OPTIONS.cast:format(100604),
 	timerRageRagnaros			= DBM_CORE_AUTO_TIMER_OPTIONS.cast:format(101109),
 	TimerPhaseSons				= "Show a duration timer for the \"Sons of Flame phase\"",
-	RangeFrame					= "Show range frame",
 	InfoHealthFrame				= "Show info frame for health (<100k hp)",
 	MeteorFrame					= "Show info frame for $spell:99849 targets",
-	AggroFrame					= "Show info frame for players who have no aggro during $journal:2647",
-	BlazingHeatIcons			= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(100460)
+	AggroFrame					= "Show info frame for players who have no aggro during $journal:2647"
 })
 
 L:SetMiscLocalization({

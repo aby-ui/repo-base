@@ -6,4 +6,5 @@
 	<Script file="ContainerTables.lua"/>
 	<Script file="AchievementTables.lua"/>
 	<Script file="Quests.lua"/>
+	<Script file="LootQuests.lua"/>
 </Ui>

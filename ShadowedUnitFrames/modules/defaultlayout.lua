@@ -34,7 +34,7 @@ local function finalizeData(config, useMerge)
 			end
 		end
 	end
-	
+
 	-- Set everything
 	for unit, child in pairs(config.units) do
 		if( self.defaults.profile.units[unit] ) then
@@ -45,7 +45,7 @@ local function finalizeData(config, useMerge)
 				verifyTable(child, self.defaults.profile.units[unit])
 				-- Merge the new child table into the actual units
 				mergeToChild(child, self.db.profile.units[unit], true)
-				
+
 				-- Merge position in too
 				if( useMerge and self.db.profile.positions[unit].point == "" and self.db.profile.positions[unit].relativePoint == "" and self.db.profile.positions[unit].anchorPoint == "" and self.db.profile.positions[unit].x == 0 and self.db.profile.positions[unit].y == 0 ) then
 					self.db.profile.positions[unit] = config.positions[unit]
@@ -55,11 +55,11 @@ local function finalizeData(config, useMerge)
 	end
 
 	self.db.profile.loadedLayout = true
-	
+
 	if( not useMerge ) then
 		config.parentUnit = nil
 		config.units = nil
-		
+
 		for key, data in pairs(config) do
 			self.db.profile[key] = data
 		end
@@ -113,17 +113,17 @@ function ShadowUF:LoadDefaultLayout(useMerge)
 		shadowX = 0.80,
 		shadowY = -0.80,
 	}
-	
+
 	-- Some localizations do not work with Myriad Condensed Web, need to automatically swap it to a localization that will work for it
 	local SML = LibStub:GetLibrary("LibSharedMedia-3.0")
 	if( GetLocale() == "koKR" or GetLocale() == "zhCN" or GetLocale() == "zhTW" ) then
 		config.font.name = SML.DefaultMedia.font
 	end
-	
+
 	config.auraColors = {
 		removable = {r = 1, g = 1, b = 1}
 	}
-	
+
 	config.classColors = {
 		HUNTER = {r = 0.67, g = 0.83, b = 0.45},
 		WARLOCK = {r = 0.58, g = 0.51, b = 0.79},
@@ -141,11 +141,11 @@ function ShadowUF:LoadDefaultLayout(useMerge)
 		VEHICLE = {r = 0.23, g = 0.41, b = 0.23},
 	}
 	config.powerColors = {
-		MANA = {r = 0.30, g = 0.50, b = 0.85}, 
+		MANA = {r = 0.30, g = 0.50, b = 0.85},
 		RAGE = {r = 0.90, g = 0.20, b = 0.30},
 		FOCUS = {r = 1.0, g = 0.50, b = 0.25},
-		ENERGY = {r = 1.0, g = 0.85, b = 0.10}, 
-		RUNES = {r = 0.50, g = 0.50, b = 0.50}, 
+		ENERGY = {r = 1.0, g = 0.85, b = 0.10},
+		RUNES = {r = 0.50, g = 0.50, b = 0.50},
 		RUNIC_POWER = {b = 0.60, g = 0.45, r = 0.35},
 		AMMOSLOT = {r = 0.85, g = 0.60, b = 0.55},
 		FUEL = {r = 0.85, g = 0.47, b = 0.36},
@@ -195,17 +195,17 @@ function ShadowUF:LoadDefaultLayout(useMerge)
 		normal = {r = 0.58, g = 0.0, b = 0.55},
 		rested = {r = 0.0, g = 0.39, b = 0.88},
 	}
-	
+
 	config.positions = {
-		targettargettarget = {anchorPoint = "RC", anchorTo = "#SUFUnittargettarget", x = 0, y = 0}, 
-		targettarget = {anchorPoint = "TL", anchorTo = "#SUFUnittarget", x = 0, y = 0}, 
+		targettargettarget = {anchorPoint = "RC", anchorTo = "#SUFUnittargettarget", x = 0, y = 0},
+		targettarget = {anchorPoint = "TL", anchorTo = "#SUFUnittarget", x = 0, y = 0},
 		focustarget = {anchorPoint = "TL", anchorTo = "#SUFUnitfocus", x = 0, y = 0},
-		party = {point = "TOPLEFT", anchorTo = "#SUFUnitplayer", relativePoint = "TOPLEFT", movedAnchor = "TL", x = 0, y = -60}, 
-		focus = {anchorPoint = "RB", anchorTo = "#SUFUnittarget", x = 35, y = -4}, 
-		target = {anchorPoint = "RC", anchorTo = "#SUFUnitplayer", x = 50, y = 0}, 
-		player = {point = "TOPLEFT", anchorTo = "UIParent", relativePoint = "TOPLEFT", y = -25, x = 20}, 
-		pet = {anchorPoint = "TL", anchorTo = "#SUFUnitplayer", x = 0, y = 0}, 
-		pettarget = {anchorPoint = "C", anchorTo = "UIParent", x = 0, y = 0}, 
+		party = {point = "TOPLEFT", anchorTo = "#SUFUnitplayer", relativePoint = "TOPLEFT", movedAnchor = "TL", x = 0, y = -60},
+		focus = {anchorPoint = "RB", anchorTo = "#SUFUnittarget", x = 35, y = -4},
+		target = {anchorPoint = "RC", anchorTo = "#SUFUnitplayer", x = 50, y = 0},
+		player = {point = "TOPLEFT", anchorTo = "UIParent", relativePoint = "TOPLEFT", y = -25, x = 20},
+		pet = {anchorPoint = "TL", anchorTo = "#SUFUnitplayer", x = 0, y = 0},
+		pettarget = {anchorPoint = "C", anchorTo = "UIParent", x = 0, y = 0},
 		partypet = {anchorPoint = "RB", anchorTo = "$parent", x = 0, y = 0},
 		partytarget = {anchorPoint = "RT", anchorTo = "$parent", x = 0, y = 0},
 		partytargettarget = {anchorPoint = "RT", anchorTo = "$parent", x = 0, y = 0},
@@ -229,7 +229,7 @@ function ShadowUF:LoadDefaultLayout(useMerge)
 		bosstarget = {anchorPoint = "RB", anchorTo = "$parent", x = 0, y = 0},
 		bosstargettarget = {anchorPoint = "RB", anchorTo = "$parent", x = 0, y = 0},
 	}
-	
+
 	-- Parent unit options that all the children will inherit unless they override it
 	config.parentUnit = {
 		portrait = {enabled = false, type = "3D", alignment = "LEFT", width = 0.22, height = 0.50, order = 15, fullBefore = 0, fullAfter = 100},
@@ -267,7 +267,7 @@ function ShadowUF:LoadDefaultLayout(useMerge)
 		castBar = {background = true, height = 0.60, order = 40, icon = "HIDE", name = {enabled = true, size = 0, anchorTo = "$parent", rank = true, anchorPoint = "CLI", x = 1, y = 0}, time = {enabled = true, size = 0, anchorTo = "$parent", anchorPoint = "CRI", x = -1, y = 0}},
 		altPowerBar = {background = true, height = 0.40, order = 100},
 	}
-	
+
 	-- Units configuration
 	config.units = {
 		raid = {
@@ -805,7 +805,7 @@ function ShadowUF:LoadDefaultLayout(useMerge)
 				{text = "[name]"},
 				{text = ""},
 			},
-		},		
+		},
 		target = {
 			width = 190,
 			height = 45,
@@ -951,7 +951,7 @@ function ShadowUF:LoadDefaultLayout(useMerge)
 			},
 		},
 	}
-	
+
 	finalizeData(config, useMerge)
 end
-	
+

@@ -5,7 +5,7 @@ function Priest:OnEnable(frame)
 	frame.priestBar = frame.priestBar or ShadowUF.Units:CreateBar(frame)
 
 	frame:RegisterUnitEvent("UNIT_DISPLAYPOWER", self, "PowerChanged")
-	
+
 	frame:RegisterUpdateFunc(self, "PowerChanged")
 	frame:RegisterUpdateFunc(self, "Update")
 end

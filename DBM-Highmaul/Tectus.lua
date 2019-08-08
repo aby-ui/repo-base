@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1195, "DBM-Highmaul", nil, 477)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190625143352")
+mod:SetRevision("20190807194853")
 mod:SetCreatureID(78948, 80557, 80551, 99999)--78948 Tectus, 80557 Mote of Tectus, 80551 Shard of Tectus
 mod:SetEncounterID(1722)--Hopefully win will work fine off this because otherwise tracking shard deaths is crappy
 mod:SetZone()
@@ -99,7 +99,7 @@ function mod:CustomHealthUpdate()
 	end
 	for guid, health in pairs(moteH) do
 		if not moteGUID[guid] then
-			local newhealth = self:GetBossHPByGUID(guid) or health
+			local newhealth = self:GetBossHP(guid) or health
 			if newhealth >= 1 then
 				self.vb.healthPhase = 3
 				moteC = moteC + 1

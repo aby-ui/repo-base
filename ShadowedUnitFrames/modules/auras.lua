@@ -1,12 +1,12 @@
 local Auras = {}
 local playerUnits = {player = true, vehicle = true, pet = true}
-local mainHand, offHand, ranged, tempEnchantScan = {time = 0}, {time = 0}, {time = 0}
+local mainHand, offHand, tempEnchantScan = {time = 0}, {time = 0}
 local canCure = ShadowUF.Units.canCure
 ShadowUF:RegisterModule(Auras, "auras", ShadowUF.L["Auras"])
 
 function Auras:OnEnable(frame)
 	frame.auras = frame.auras or {}
-	
+
 	frame:RegisterNormalEvent("PLAYER_ENTERING_WORLD", self, "Update")
 	frame:RegisterUnitEvent("UNIT_AURA", self, "Update")
 	frame:RegisterUpdateFunc(self, "Update")
@@ -27,7 +27,7 @@ local function load(text)
 		error(err, 3)
 		return nil
 	end
-		
+
 	return result()
 end
 
@@ -38,7 +38,7 @@ local positionData = setmetatable({}, {
 		local auraGrowth = ShadowUF.Layout:GetAuraGrowth(index)
 		data.xMod = (columnGrowth == "RIGHT" or auraGrowth == "RIGHT") and 1 or -1
 		data.yMod = (columnGrowth ~= "TOP" and auraGrowth ~= "TOP") and -1 or 1
-		
+
 		local auraX, colX, auraY, colY, xOffset, yOffset, initialXOffset, initialYOffset = 0, 0, 0, 0, "", "", "", ""
 		if( columnGrowth == "LEFT" or columnGrowth == "RIGHT" ) then
 			colX = 1
@@ -52,7 +52,7 @@ local positionData = setmetatable({}, {
 			initialYOffset = string.format(" + (%d * offset)", data.yMod)
 			auraX = 2
 		end
-				
+
 		data.initialAnchor = load(string.format([[return function(button, offset)
 			button:ClearAllPoints()
 			button:SetPoint(button.point, button.anchorTo, button.relativePoint, button.xOffset%s, button.yOffset%s)
@@ -62,21 +62,21 @@ local positionData = setmetatable({}, {
 			button:ClearAllPoints()
 			button:SetPoint("%s", positionTo, "%s", %d * (%d%s), %d * (%d%s)) end
 		]], ShadowUF.Layout:ReverseDirection(columnGrowth), columnGrowth, data.xMod, colX, xOffset, data.yMod, colY, yOffset))
-		data.aura = load(string.format([[return function(button, positionTo) 
+		data.aura = load(string.format([[return function(button, positionTo)
 			button:ClearAllPoints()
 			button:SetPoint("%s", positionTo, "%s", %d, %d) end
 		]], ShadowUF.Layout:ReverseDirection(auraGrowth), auraGrowth, data.xMod * auraX, data.yMod * auraY))
-		
+
 		tbl[index] = data
 		return tbl[index]
 	end,
 })
 
 local function positionButton(id,  group, config)
-	local position = positionData[group.forcedAnchorPoint or config.anchorPoint] 
+	local position = positionData[group.forcedAnchorPoint or config.anchorPoint]
 	local button = group.buttons[id]
 	button.isAuraAnchor = nil
-	
+
 	-- Alright, in order to find out where an aura group is going to be anchored to certain buttons need
 	-- to be flagged as suitable anchors visually, this speeds it up because this data is cached and doesn't
 	-- have to be recalculated unless auras are specifically changed
@@ -84,7 +84,7 @@ local function positionButton(id,  group, config)
 		if( position.isSideGrowth and id <= config.perRow ) then
 			button.isAuraAnchor = true
 		end
-		
+
 		if( id % config.perRow == 1 or config.perRow == 1 ) then
 			position.column(button, group.buttons[id - config.perRow], 0)
 
@@ -110,7 +110,7 @@ end
 local columnsHaveScale = {}
 local function positionAllButtons(group, config)
 	local position = positionData[group.forcedAnchorPoint or config.anchorPoint]
-		
+
 	-- Figure out which columns have scaling so we can work out positioning
 	local columnID = 0
 	for id, button in pairs(group.buttons) do
@@ -118,19 +118,19 @@ local function positionAllButtons(group, config)
 			columnID = columnID + 1
 			columnsHaveScale[columnID] = nil
 		end
-		
+
 		if( not columnsHaveScale[columnID] and button.isSelfScaled ) then
 			local size = math.ceil(button:GetSize() * button:GetScale())
 			columnsHaveScale[columnID] = columnsHaveScale[columnID] and math.max(size, columnsHaveScale[columnID]) or size
 		end
 	end
 
-	local columnID = 1
+	columnID = 1
 	for id, button in pairs(group.buttons) do
 		if( id > 1 ) then
 			if( id % config.perRow == 1 or config.perRow == 1 ) then
 				columnID = columnID + 1
-				
+
 				local anchorButton = group.buttons[id - config.perRow]
 				local previousScale, currentScale = columnsHaveScale[columnID - 1], columnsHaveScale[columnID]
 				local offset = 0
@@ -220,12 +220,12 @@ local function updateButton(id, group, config)
 	local button = group.buttons[id]
 	if( not button ) then
 		group.buttons[id] = CreateFrame("Button", nil, group)
-		
+
 		button = group.buttons[id]
 		button:SetScript("OnEnter", showTooltip)
 		button:SetScript("OnLeave", hideTooltip)
 		button:RegisterForClicks("RightButtonUp")
-		
+
 		button.cooldown = CreateFrame("Cooldown", group.parent:GetName() .. "Aura" .. group.type .. id .. "Cooldown", button, "CooldownFrameTemplate")
 		button.cooldown:SetAllPoints(button)
 		button.cooldown:SetReverse(true)
@@ -233,7 +233,7 @@ local function updateButton(id, group, config)
 		button.cooldown:SetDrawSwipe(true)
 		button.cooldown:SetSwipeColor(0, 0, 0, 0.8)
 		button.cooldown:Hide()
-		
+
 		button.stack = button:CreateFontString(nil, "OVERLAY")
 		button.stack:SetFont("Interface\\AddOns\\ShadowedUnitFrames\\media\\fonts\\Myriad Condensed Web.ttf", 10, "OUTLINE")
 		button.stack:SetShadowColor(0, 0, 0, 1.0)
@@ -246,12 +246,12 @@ local function updateButton(id, group, config)
 
 		button.border = button:CreateTexture(nil, "OVERLAY")
 		button.border:SetPoint("CENTER", button)
-		
+
 		button.icon = button:CreateTexture(nil, "BACKGROUND")
 		button.icon:SetAllPoints(button)
 		button.icon:SetTexCoord(0.07, 0.93, 0.07, 0.93)
 	end
-		
+
 	if( ShadowUF.db.profile.auras.borderType == "" ) then
 		button.border:Hide()
 	elseif( ShadowUF.db.profile.auras.borderType == "blizzard" ) then
@@ -263,7 +263,7 @@ local function updateButton(id, group, config)
 		button.border:SetTexCoord(0, 1, 0, 1)
 		button.border:Show()
 	end
-	
+
 	-- Set the button sizing
 	button.cooldown.noCooldownCount = ShadowUF.db.profile.omnicc
 	button.cooldown:SetHideCountdownNumbers(ShadowUF.db.profile.blizzardcc)
@@ -277,7 +277,7 @@ local function updateButton(id, group, config)
 	button.parent = group.parent
 	button:ClearAllPoints()
 	button:Hide()
-	
+
 	-- Position the button quickly
 	positionButton(id, group, config)
 end
@@ -288,10 +288,10 @@ Auras.updateButton = updateButton
 -- Create an aura anchor as well as the buttons to contain it
 local function updateGroup(self, type, config, reverseConfig)
 	self.auras[type] = self.auras[type] or CreateFrame("Frame", nil, self.highFrame)
-	
+
 	local group = self.auras[type]
 	group.buttons = group.buttons or {}
-	
+
 	group.maxAuras = config.perRow * config.maxRows
 	group.totalAuras = 0
 	group.temporaryEnchants = 0
@@ -305,23 +305,22 @@ local function updateGroup(self, type, config, reverseConfig)
 	if( config.anchorOn and reverseConfig.enabled ) then
 		group.forcedAnchorPoint = reverseConfig.anchorPoint
 	end
-	
+
 	if( self.unit == "player" ) then
 		mainHand.time = 0
 		offHand.time = 0
-		ranged.time = 0
 
 		group:SetScript("OnUpdate", config.temporary and tempEnchantScan or nil)
 	else
 		group:SetScript("OnUpdate", nil)
 	end
-	
+
 	-- Update filters used for the anchor
 	group.filter = group.type == "buffs" and "HELPFUL" or group.type == "debuffs" and "HARMFUL" or ""
-	
+
 	for id, button in pairs(group.buttons) do
 		updateButton(id, group, config)
-	end	
+	end
 end
 
 -- Update aura positions based off of configuration
@@ -329,8 +328,8 @@ function Auras:OnLayoutApplied(frame, config)
 	if( frame.auras ) then
 		if( frame.auras.buffs ) then
 			for _, button in pairs(frame.auras.buffs.buttons) do
-				button:Hide() 
-			end 
+				button:Hide()
+			end
 		end
 		if( frame.auras.debuffs ) then
 			for _, button in pairs(frame.auras.debuffs.buttons) do
@@ -338,17 +337,17 @@ function Auras:OnLayoutApplied(frame, config)
 			end
 		end
 	end
-	
+
 	if( not frame.visibility.auras ) then return end
 
 	if( config.auras.buffs.enabled ) then
 		updateGroup(frame, "buffs", config.auras.buffs, config.auras.debuffs)
 	end
-	
+
 	if( config.auras.debuffs.enabled ) then
 		updateGroup(frame, "debuffs", config.auras.debuffs, config.auras.buffs)
 	end
-			
+
 	-- Anchor an aura group to another aura group
 	frame.auras.anchorAurasOn = nil
 	if( config.auras.buffs.enabled and config.auras.debuffs.enabled ) then
@@ -360,7 +359,7 @@ function Auras:OnLayoutApplied(frame, config)
 			frame.auras.anchorAurasChild = frame.auras.debuffs
 		end
 	end
-		
+
 	-- Check if either auras are anchored to each other
 	if( config.auras.buffs.anchorPoint == config.auras.debuffs.anchorPoint and config.auras.buffs.enabled and config.auras.debuffs.enabled and not config.auras.buffs.anchorOn and not config.auras.debuffs.anchorOn ) then
 		frame.auras.anchor = frame.auras[config.auras.buffs.prioritize and "buffs" or "debuffs"]
@@ -394,17 +393,17 @@ local function updateTemporaryEnchant(frame, slot, tempData, hasEnchant, enchant
 	tempData.enchantId = enchantId
 
 	local config = ShadowUF.db.profile.units[frame.parent.unitType].auras[frame.type]
-	
+
 	-- Create any buttons we need
 	if( #(frame.buttons) < frame.temporaryEnchants ) then
 		updateButton(frame.temporaryEnchants, frame, config)
 	end
-				
+
 	local button = frame.buttons[frame.temporaryEnchants]
-	
+
 	-- Purple border
 	button.border:SetVertexColor(0.50, 0, 0.50)
-	
+
 	-- Show the cooldown ring
 	if( not ShadowUF.db.profile.auras.disableCooldown ) then
 		button.cooldown:SetCooldown(tempData.startTime, timeLeft / 1000)
@@ -425,7 +424,7 @@ local function updateTemporaryEnchant(frame, slot, tempData, hasEnchant, enchant
 	button:SetWidth(config.size)
 	button.border:SetHeight(config.size + 1)
 	button.border:SetWidth(config.size + 1)
-	
+
 	-- Stack + icon + show! Never understood why, auras sometimes return 1 for stack even if they don't stack
 	button.auraID = slot
 	button.filter = "TEMP"
@@ -442,7 +441,6 @@ tempEnchantScan = function(self, elapsed)
 	if( self.parent.unit == self.parent.vehicleUnit and self.lastTemporary > 0 ) then
 		mainHand.has = false
 		offHand.has = false
-		ranged.has = false
 
 		self.temporaryEnchants = 0
 		self.lastTemporary = 0
@@ -458,7 +456,7 @@ tempEnchantScan = function(self, elapsed)
 
 	local hasMain, mainTimeLeft, mainCharges, mainEnchantId, hasOff, offTimeLeft, offCharges, offEnchantId = GetWeaponEnchantInfo()
 	self.temporaryEnchants = 0
-	
+
 	if( hasMain ) then
 		self.temporaryEnchants = self.temporaryEnchants + 1
 		updateTemporaryEnchant(self, 16, mainHand, hasMain, mainEnchantId, mainTimeLeft or 0, mainCharges)
@@ -466,15 +464,15 @@ tempEnchantScan = function(self, elapsed)
 	end
 
 	mainHand.has = hasMain
-	
+
 	if( hasOff and self.temporaryEnchants < self.maxAuras ) then
 		self.temporaryEnchants = self.temporaryEnchants + 1
 		updateTemporaryEnchant(self, 17, offHand, hasOff, offEnchantId, offTimeLeft or 0, offCharges)
 		offHand.time = offTimeLeft or 0
 	end
-	
+
 	offHand.has = hasOff
-	
+
 	-- Update if totals changed
 	if( self.lastTemporary ~= self.temporaryEnchants ) then
 		self.lastTemporary = self.temporaryEnchants
@@ -492,7 +490,7 @@ function Auras:UpdateFilter(frame)
 	if( zone == "scenario" ) then zone = "party" end
 
 	local id = zone .. frame.unitType
-	
+
 	local white = ShadowUF.db.profile.filters.zonewhite[zone .. frame.unitType]
 	local black = ShadowUF.db.profile.filters.zoneblack[zone .. frame.unitType]
 	local override = ShadowUF.db.profile.filters.zoneoverride[zone .. frame.unitType]
@@ -539,7 +537,7 @@ local function renderAura(parent, frame, type, config, displayConfig, index, fil
 	if( #(frame.buttons) < frame.totalAuras ) then
 		updateButton(frame.totalAuras, frame, ShadowUF.db.profile.units[frame.parent.unitType].auras[frame.type])
 	end
-		
+
 	-- Show debuff border, or a special colored border if it's stealable
 	local button = frame.buttons[frame.totalAuras]
 	if( isRemovable and not isFriendly and not ShadowUF.db.profile.auras.disableColor ) then
@@ -550,7 +548,7 @@ local function renderAura(parent, frame, type, config, displayConfig, index, fil
 	else
 		button.border:SetVertexColor(0.60, 0.60, 0.60)
 	end
-	
+
 	-- Show the cooldown ring
 	if( not ShadowUF.db.profile.auras.disableCooldown and duration > 0 and endTime > 0 and ( config.timers.ALL or ( category == "player" and config.timers.SELF ) or ( category == "boss" and config.timers.BOSS ) ) ) then
 		button.cooldown:SetCooldown(endTime - duration, duration)
@@ -558,7 +556,7 @@ local function renderAura(parent, frame, type, config, displayConfig, index, fil
 	else
 		button.cooldown:Hide()
 	end
-	
+
 	-- Enlarge auras
 	if( ( category == "player" and config.enlarge.SELF ) or ( category == "boss" and config.enlarge.BOSS ) or ( config.enlarge.REMOVABLE and ( ( isRemovable and not isFriendly ) or ( curable and canCure[auraType]) ) ) ) then
 		button.isSelfScaled = true
@@ -573,7 +571,7 @@ local function renderAura(parent, frame, type, config, displayConfig, index, fil
 	button:SetWidth(config.size)
 	button.border:SetHeight(config.size + 1)
 	button.border:SetWidth(config.size + 1)
-	
+
 	-- Stack + icon + show! Never understood why, auras sometimes return 1 for stack even if they don't stack
 	button.auraID = index
 	button.filter = filter
@@ -589,7 +587,7 @@ end
 -- Scan for auras
 local function scan(parent, frame, type, config, displayConfig, filter)
 	if( frame.totalAuras >= frame.maxAuras or not config.enabled ) then return end
-	
+
 	-- UnitIsFriend returns true during a duel, which breaks stealable/curable detection
 	local isFriendly = not UnitIsEnemy(frame.parent.unit, "player")
 	local curable = (isFriendly and type == "debuffs")
@@ -605,7 +603,7 @@ local function scan(parent, frame, type, config, displayConfig, filter)
 		-- Get down
 		if( frame.totalAuras >= frame.maxAuras ) then break end
 	end
-	
+
 	for i=frame.totalAuras + 1, #(frame.buttons) do frame.buttons[i]:Hide() end
 
 	-- The default 1.30 scale doesn't need special handling, after that it does
@@ -637,7 +635,7 @@ local function anchorGroupToGroup(frame, config, group, childConfig, childGroup)
 		end
 	end
 
-	local position = positionData[childGroup.forcedAnchorPoint or childConfig.anchorPoint] 
+	local position = positionData[childGroup.forcedAnchorPoint or childConfig.anchorPoint]
 	if( position.isSideGrowth ) then
 		position.aura(childGroup.buttons[1], anchorTo)
 	else
@@ -652,7 +650,7 @@ function Auras:Update(frame)
 	local config = ShadowUF.db.profile.units[frame.unitType].auras
 	if( frame.auras.anchor ) then
 		frame.auras.anchor.totalAuras = frame.auras.anchor.temporaryEnchants
-		
+
 		scan(frame.auras, frame.auras.anchor, frame.auras.primary, config[frame.auras.primary], config[frame.auras.primary], frame.auras[frame.auras.primary].filter)
 		scan(frame.auras, frame.auras.anchor, frame.auras.secondary, config[frame.auras.secondary], config[frame.auras.primary], frame.auras[frame.auras.secondary].filter)
 	else
@@ -665,7 +663,7 @@ function Auras:Update(frame)
 			frame.auras.debuffs.totalAuras = 0
 			scan(frame.auras, frame.auras.debuffs, "debuffs", config.debuffs, config.debuffs, frame.auras.debuffs.filter)
 		end
-		
+
 		if( frame.auras.anchorAurasOn ) then
 			anchorGroupToGroup(frame, config[frame.auras.anchorAurasOn.type], frame.auras.anchorAurasOn, config[frame.auras.anchorAurasChild.type], frame.auras.anchorAurasChild)
 		end

@@ -10,7 +10,7 @@ function Runes:OnEnable(frame)
 		frame.runeBar:SetValue(0)
 		frame.runeBar.runes = {}
 		frame.runeBar.blocks = frame.runeBar.runes
-		
+
 		for id=1, 6 do
 			local rune = ShadowUF.Units:CreateBar(frame.runeBar)
 			rune.id = id
@@ -20,11 +20,11 @@ function Runes:OnEnable(frame)
 			else
 				rune:SetPoint("TOPLEFT", frame.runeBar, "TOPLEFT", 0, 0)
 			end
-			
+
 			frame.runeBar.runes[id] = rune
 		end
 	end
-	
+
 	frame:RegisterNormalEvent("RUNE_POWER_UPDATE", self, "UpdateUsable")
 	frame:RegisterUpdateFunc(self, "UpdateUsable")
 end
@@ -43,7 +43,7 @@ function Runes:OnLayoutApplied(frame)
 		else
 			rune.background:Hide()
 		end
-		
+
 		rune.background:SetTexture(ShadowUF.Layout.mediaPath.statusbar)
 		rune.background:SetHorizTile(false)
 		rune:SetStatusBarTexture(ShadowUF.Layout.mediaPath.statusbar)
@@ -76,12 +76,12 @@ function Runes:UpdateUsable(frame, event, id, usable)
 	if( not id or not frame.runeBar.runes[id] ) then
 		return
 	end
-	
+
 	local rune = frame.runeBar.runes[id]
 	local startTime, cooldown, cooled = GetRuneCooldown(id)
 	-- Blizzard changed something with this API apparently and now it can be true/false/nil
 	if( cooled == nil ) then return end
-	
+
 	if( not cooled ) then
 		rune.endTime = startTime + cooldown
 		rune:SetMinMaxValues(startTime, rune.endTime)

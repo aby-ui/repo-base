@@ -177,7 +177,13 @@ function RareScanner:ApplyLootFilters(itemID, itemLink, itemRarity, itemEquipLoc
 	elseif (private.db.loot.filteredLootCategories[itemClassID] and private.db.loot.filteredLootCategories[itemClassID][itemSubClassID] == false) then
 		--RareScanner:PrintDebugMessage("DEBUG: Filtrado el objeto "..itemID.." por estar filtrado por categoria.")
 		return false
-	-- Equipable filter
+	-- Completed quests
+	elseif (private.db.loot.filterItemsCompletedQuest and itemClassID == 12) then --quest item
+		if (not private.LOOT_QUEST_IDS[itemID] or IsQuestFlaggedCompleted(private.LOOT_QUEST_IDS[itemID])) then
+			--RareScanner:PrintDebugMessage("DEBUG: Filtrado el objeto "..itemID.." por ser un objeto de mision que ya esta completada (IsQuestFlaggedCompleted)")
+			return false
+		end
+		-- Equipable filter
 	elseif (private.db.loot.filterNotEquipableItems and (itemClassID == 2 or itemClassID == 4)) then --weapons or armor
 		if (not IsEquipable(itemClassID, itemSubClassID, itemEquipLoc)) then
 			--RareScanner:PrintDebugMessage("DEBUG: Filtrado el objeto "..itemID.." por no ser equipable. Categoria "..itemClassID..", subcategoria "..itemSubClassID)

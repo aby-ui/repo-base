@@ -54,7 +54,7 @@ local zoneNames = {
 
 local OnEnter, ShowTip, HideTip
 do
-	local id = faction == "Horde" and 13284 or 13283 -- Frontline Warrior
+	local idNormal = faction == "Horde" and 13284 or 13283 -- Frontline Warrior
 	local idWarMode = faction == "Horde" and 13388 or 13387 -- Frontline Veteran
 	local achievementPlacement = faction == "Horde" and {
 		4, -- Tiragarde Sound
@@ -74,8 +74,10 @@ do
 	--13317 pvp achiev
 	local tt = CreateFrame("GameTooltip", "BFAITtooltip", UIParent, "GameTooltipTemplate")
 	local FormatShortDate = FormatShortDate
+	local IsWarModeDesired = C_PvP.IsWarModeDesired
 	ShowTip = function(tip)
 		local coloredZones = {}
+		local id = IsWarModeDesired() and idWarMode or idNormal
 		local _, name, _, _, month, day, year, description, _, _, _, _, wasEarnedByMe = GetAchievementInfo(id)
 		if not wasEarnedByMe or not frame.db.profile.tooltipHideAchiev then
 			if wasEarnedByMe then
@@ -230,6 +232,7 @@ do
     local dragStart, dragStop = frame:GetScript("OnDragStart"), frame:GetScript("OnDragStop")
     frame:SetScript("OnDragStart", nil)
     frame:SetScript("OnDragStop", nil)
+	local IsQuestFlaggedCompleted = C_QuestLog and C_QuestLog.IsQuestFlaggedCompleted or IsQuestFlaggedCompleted -- XXX 8.2.5 compat
 	StartBar = function(text, timeLeft, rewardQuestID, icon, paused)
 		if frame.Bar then frame.Bar:Stop() end
 		local bar = candy:New(media:Fetch("statusbar", frame.db.profile.barTexture), frame.db.profile.width, frame.db.profile.height)

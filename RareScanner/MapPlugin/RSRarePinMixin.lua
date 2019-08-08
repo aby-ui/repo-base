@@ -23,16 +23,19 @@ local ETERNAL_DEATH = -1
 local TOOLTIP_MAX_WIDTH = 250
 
 -- Textures
+local NORMAL_NPC_TEXTURE = "Interface\\AddOns\\RareScanner\\Media\\Icons\\OriginalSkull.blp"
 local GREEN_NPC_TEXTURE = "Interface\\AddOns\\RareScanner\\Media\\Icons\\GreenSkullDark.blp"
 local YELLOW_NPC_TEXTURE = "Interface\\AddOns\\RareScanner\\Media\\Icons\\YellowSkullDark.blp"
 local RED_NPC_TEXTURE = "Interface\\AddOns\\RareScanner\\Media\\Icons\\RedSkullDark.blp"
 local PINK_NPC_TEXTURE = "Interface\\AddOns\\RareScanner\\Media\\Icons\\PinkSkullDark.blp"
 local BLUE_NPC_TEXTURE = "Interface\\AddOns\\RareScanner\\Media\\Icons\\BlueSkullDark.blp"
+local NORMAL_CONTAINER_TEXTURE = "Interface\\AddOns\\RareScanner\\Media\\Icons\\OriginalChest.blp"
 local GREEN_CONTAINER_TEXTURE = "Interface\\AddOns\\RareScanner\\Media\\Icons\\GreenChest.blp"
 local YELLOW_CONTAINER_TEXTURE = "Interface\\AddOns\\RareScanner\\Media\\Icons\\YellowChest.blp"
 local RED_CONTAINER_TEXTURE = "Interface\\AddOns\\RareScanner\\Media\\Icons\\RedChest.blp"
 local PINK_CONTAINER_TEXTURE = "Interface\\AddOns\\RareScanner\\Media\\Icons\\PinkChest.blp"
 local BLUE_CONTAINER_TEXTURE = "Interface\\AddOns\\RareScanner\\Media\\Icons\\BlueChest.blp"
+local NORMAL_EVENT_TEXTURE = "Interface\\AddOns\\RareScanner\\Media\\Icons\\OriginalStar.blp"
 local GREEN_EVENT_TEXTURE = "Interface\\AddOns\\RareScanner\\Media\\Icons\\GreenStar.blp"
 local YELLOW_EVENT_TEXTURE = "Interface\\AddOns\\RareScanner\\Media\\Icons\\YellowStar.blp"
 local RED_EVENT_TEXTURE = "Interface\\AddOns\\RareScanner\\Media\\Icons\\RedStar.blp"
@@ -132,7 +135,13 @@ function RSRarePinMixin:OnAcquired(npcID, npcInfo)
 				self.Texture:SetTexture(GREN_EVENT_TEXTURE)
 			end
 		else
-			self.Texture:SetAtlas(atlasName, true);
+			if (self.isNpc) then
+				self.Texture:SetTexture(NORMAL_NPC_TEXTURE)
+			elseif (self.isContainer) then
+				self.Texture:SetTexture(NORMAL_CONTAINER_TEXTURE)
+			else
+				self.Texture:SetTexture(NORMAL_EVENT_TEXTURE)
+			end
 		end
 	end
 	self.HighlightTexture:SetAtlas(atlasName, true);

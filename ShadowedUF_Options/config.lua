@@ -9,7 +9,7 @@ ShadowUF.Config = Config
 --[[
 	The part that makes configuration a pain when you actually try is it gets unwieldly when you're adding special code to deal with
 	showing help for certain cases, swapping tabs etc that makes it work smoothly.
-	
+
 	I'm going to have to split it out into separate files for each type to clean everything up but that takes time and I have other things
 	I want to get done with first.
 
@@ -79,7 +79,7 @@ local function getFrameName(unit)
 	if( unit == "raidpet" or unit == "raid" or unit == "party" or unit == "maintank" or unit == "mainassist" or unit == "boss" or unit == "arena" ) then
 		return string.format("#SUFHeader%s", unit)
 	end
-	
+
 	return string.format("#SUFUnit%s", unit)
 end
 
@@ -87,14 +87,14 @@ local anchorList = {}
 local function getAnchorParents(info)
 	local unit = info[2]
 	for k in pairs(anchorList) do anchorList[k] = nil end
-	
+
 	if( ShadowUF.Units.childUnits[unit] ) then
 		anchorList["$parent"] = string.format(L["%s member"], L.units[ShadowUF.Units.childUnits[unit]])
 		return anchorList
 	end
-	
+
 	anchorList["UIParent"] = L["Screen"]
-	
+
 	-- Don't let a frame anchor to a frame thats anchored to it already (Stop infinite loops-o-doom)
 	local currentName = getFrameName(unit)
 	for _, unitID in pairs(ShadowUF.unitList) do
@@ -102,7 +102,7 @@ local function getAnchorParents(info)
 			anchorList[getFrameName(unitID)] = string.format(L["%s frames"], L.units[unitID] or unitID)
 		end
 	end
-	
+
 	return anchorList
 end
 
@@ -116,7 +116,7 @@ local function selectTabGroup(group, subGroup, key)
 	AceDialog.Status.ShadowedUF.children[group].children[subGroup].status.groups.selected = key
 	AceRegistry:NotifyChange("ShadowedUF")
 end
-							
+
 local function hideAdvancedOption(info)
 	return not ShadowUF.db.profile.advanced
 end
@@ -134,7 +134,7 @@ local function isUnitDisabled(info)
 			break
 		end
 	end
-	
+
 	return not enabled
 end
 
@@ -148,7 +148,7 @@ local function mergeTables(parent, child)
 			parent[key] = value
 		end
 	end
-	
+
 	return parent
 end
 
@@ -157,7 +157,7 @@ local function getName(info)
 	if( ShadowUF.modules[key] and ShadowUF.modules[key].moduleName ) then
 		return ShadowUF.modules[key].moduleName
 	end
-	
+
 	return LOCALIZED_CLASS_NAMES_MALE[key] or INDICATOR_NAMES[key] or L.units[key] or TAG_GROUPS[key] or L[key]
 end
 
@@ -175,13 +175,13 @@ end
 local function set(info, value)
 	local cat, key = string.split(".", info.arg)
 	if( key == "$key" ) then key = info[#(info)] end
-	
+
 	if( not key ) then
 		ShadowUF.db.profile[cat] = value
 	else
 		ShadowUF.db.profile[cat][key] = value
 	end
-	
+
 	if( cat and fullReload[cat] ) then
 		ShadowUF.Layout:CheckMedia()
 		ShadowUF.Layout:Reload()
@@ -212,7 +212,7 @@ end
 -- These are for setting complex options like units.player.auras.buffs.enabled = true or units.player.portrait.enabled = true
 local function setVariable(unit, moduleKey, moduleSubKey, key, value)
 	local configTable = unit == "global" and globalConfig or ShadowUF.db.profile.units[unit]
-		
+
 	-- For setting options like units.player.auras.buffs.enabled = true
 	if( moduleKey and moduleSubKey and configTable[moduleKey][moduleSubKey] ) then
 		configTable[moduleKey][moduleSubKey][key] = value
@@ -238,12 +238,12 @@ end
 
 local function setDirectUnit(unit, moduleKey, moduleSubKey, key, value)
 	if( unit == "global" ) then
-		for unit in pairs(modifyUnits) do
-			if( not specialRestricted(unit, moduleKey, moduleSubKey, key) ) then
-				setVariable(unit, moduleKey, moduleSubKey, key, value)
+		for globalUnit in pairs(modifyUnits) do
+			if( not specialRestricted(globalUnit, moduleKey, moduleSubKey, key) ) then
+				setVariable(globalUnit, moduleKey, moduleSubKey, key, value)
 			end
 		end
-		
+
 		setVariable("global", moduleKey, moduleSubKey, key, value)
 	else
 		setVariable(unit, moduleKey, moduleSubKey, key, value)
@@ -261,7 +261,7 @@ local function setUnit(info, value)
 	if( moduleSubKey == "$parentparent" ) then moduleSubKey = info[#(info) - 2] end
 	if( moduleKey == "$parentparent" ) then moduleKey = info[#(info) - 2] end
 	if( tonumber(moduleSubKey) ) then moduleSubKey = tonumber(moduleSubKey) end
-	
+
 	setDirectUnit(unit, moduleKey, moduleSubKey, key, value)
 end
 
@@ -285,7 +285,7 @@ local function getUnit(info)
 	if( moduleSubKey == "$parentparent" ) then moduleSubKey = info[#(info) - 2] end
 	if( moduleKey == "$parentparent" ) then moduleKey = info[#(info) - 2] end
 	if( tonumber(moduleSubKey) ) then moduleSubKey = tonumber(moduleSubKey) end
-	
+
 	return getVariable(info[2], moduleKey, moduleSubKey, key)
 end
 
@@ -295,7 +295,7 @@ local function getTagName(info)
 	if( ShadowUF.db.profile.tags[tag] and ShadowUF.db.profile.tags[tag].name ) then
 		return ShadowUF.db.profile.tags[tag].name
 	end
-	
+
 	return ShadowUF.Tags.defaultNames[tag] or tag
 end
 
@@ -324,7 +324,7 @@ local function hideRestrictedOption(info)
 	elseif( ( unit == "global" and not globalConfig[key] ) or ( unit ~= "global" and not ShadowUF.db.profile.units[unit][key] ) ) then
 		return true
 	end
-	
+
 	return false
 end
 
@@ -396,7 +396,7 @@ end
 
 local function loadGeneralOptions()
 	SML = SML or LibStub:GetLibrary("LibSharedMedia-3.0")
-	
+
 	local MediaList = {}
 	local function getMediaData(info)
 		local mediaType = info[#(info)]
@@ -407,10 +407,10 @@ local function loadGeneralOptions()
 		for _, name in pairs(SML:List(mediaType)) do
 			MediaList[mediaType][name] = name
 		end
-		
+
 		return MediaList[mediaType]
 	end
-	
+
 
 	local barModules = {}
 	for	key, module in pairs(ShadowUF.modules) do
@@ -418,7 +418,7 @@ local function loadGeneralOptions()
 			barModules["$" .. key] = module.moduleName
 		end
 	end
-	
+
 	local addTextParent = {
 		order = 4,
 		type = "group",
@@ -430,12 +430,12 @@ local function loadGeneralOptions()
 					return false
 				end
 			end
-			
+
 			return true
 		end,
 		args = {},
 	}
-	
+
 	local addTextLabel = {
 		order = function(info) return tonumber(string.match(info[#(info)], "(%d+)")) end,
 		type = "description",
@@ -462,7 +462,7 @@ local function loadGeneralOptions()
 		end,
 		name = "",
 	}
-	
+
 	local addText = {
 		order = function(info) return info[#(info)] + 0.5 end,
 		type = "execute",
@@ -482,7 +482,7 @@ local function loadGeneralOptions()
 			end
 
 			return false
-		end,		
+		end,
 		confirmText = L["Are you sure you want to delete this text? All settings for it will be deleted."],
 		confirm = true,
 		func = function(info)
@@ -490,7 +490,7 @@ local function loadGeneralOptions()
 			for _, unit in pairs(ShadowUF.unitList) do
 				table.remove(ShadowUF.db.profile.units[unit].text, id)
 			end
-			
+
 			addTextParent.args[info[#(info)]] = nil
 			ShadowUF.Layout:Reload()
 		end,
@@ -500,7 +500,7 @@ local function loadGeneralOptions()
 		if( spell and spell ~= "" and not GetSpellInfo(spell) ) then
 			return string.format(L["Invalid spell \"%s\" entered."], spell or "")
 		end
-		
+
 		return true
 	end
 
@@ -557,7 +557,7 @@ local function loadGeneralOptions()
 									if( ShadowUF.db:GetCurrentProfile() == "Import Backup" ) then
 										return L["Your active layout is the profile used for import backup, this cannot be overwritten by an import. Change your profiles to something else and try again."]
 									end
-								
+
 									return layoutData.error or L["You can import another Shadowed Unit Frame users configuration by entering the export code they gave you below. This will backup your old layout to \"Import Backup\".|n|nIt will take 30-60 seconds for it to load your layout when you paste it in, please by patient."]
 								end
 							},
@@ -593,26 +593,26 @@ local function loadGeneralOptions()
 								layoutData.error = string.format(L["Failed to import layout, error:|n|n%s"], err)
 								return
 							end
-							
+
 							layout = layout()
-							
+
 							-- Strip position settings
 							if( not layoutData.positions ) then
 								layout.positions = nil
 							end
-							
+
 							-- Strip visibility settings
 							if( not layoutData.visibility ) then
 								layout.visibility = nil
 							end
-							
+
 							-- Strip any units we don't have included by default
 							for unit in pairs(layout.units) do
 								if( not ShadowUF.defaults.profile.units[unit] ) then
 									layout.units[unit] = nil
 								end
 							end
-							
+
 							-- Check if we need move over the visibility and positions info
 							layout.positions = layout.positions or CopyTable(ShadowUF.db.profile.positions)
 							layout.visibility = layout.visibility or CopyTable(ShadowUF.db.profile.positions)
@@ -625,7 +625,7 @@ local function loadGeneralOptions()
 							ShadowUF.db:SetProfile(currentLayout)
 							ShadowUF.db:ResetProfile()
 							ShadowUF.layoutImporting = nil
-														
+
 							-- Overwrite everything we did import
 							ShadowUF:LoadDefaultLayout()
 							for key, data in pairs(layout) do
@@ -635,7 +635,7 @@ local function loadGeneralOptions()
 									ShadowUF.db.profile[key] = data
 								end
 							end
-							
+
 							ShadowUF:ProfilesChanged()
 						end,
 					},
@@ -681,7 +681,7 @@ local function loadGeneralOptions()
 			},
 		},
 	}
-	
+
 	options.args.general = {
 		type = "group",
 		childGroups = "tab",
@@ -933,7 +933,7 @@ local function loadGeneralOptions()
 									elseif( not value ) then
 										ShadowUF.db.profile.bars.backgroundColor = nil
 									end
-									
+
 									ShadowUF.Layout:Reload()
 								end,
 								get = function(info)
@@ -950,7 +950,7 @@ local function loadGeneralOptions()
 									if( not ShadowUF.db.profile.bars.backgroundColor ) then
 										return {r = 0, g = 0, b = 0}
 									end
-									
+
 									return getColor(info)
 								end,
 								disabled = function(info) return not ShadowUF.db.profile.bars.backgroundColor end,
@@ -1095,7 +1095,7 @@ local function loadGeneralOptions()
 								desc = L["Stagger bar color when the staggered amount is <30% of your HP."],
 								arg = "powerColors.STAGGER_GREEN"
 							},
-							STAGGER_GREEN = {
+							STAGGER_YELLOW = {
 								order = 1,
 								type = "color",
 								name = L["Yellow (>30% HP)"],
@@ -1501,30 +1501,30 @@ local function loadGeneralOptions()
 									-- Verify we entered a good name
 									textData.name = string.trim(textData.name)
 									textData.name = textData.name ~= "" and textData.name or nil
-									
+
 									-- Add the new entry
 									for _, unit in pairs(ShadowUF.unitList) do
 										table.insert(ShadowUF.db.profile.units[unit].text, {enabled = true, name = textData.name or "??", text = "", anchorTo = textData.parent, x = 0, y = 0, anchorPoint = "C", size = 0, width = 0.50})
 									end
-									
+
 									-- Add it to the GUI
 									local id = tostring(#(ShadowUF.db.profile.units.player.text))
 									addTextParent.args[id .. ":label"] = addTextLabel
 									addTextParent.args[id] = addText
 									addTextParent.args[id .. ":sep"] = addTextSep
 									options.args.general.args.text.args[textData.parent] = options.args.general.args.text.args[textData.parent] or addTextParent
-									
+
 									local parent = string.sub(textData.parent, 2)
 									Config.tagWizard[parent] = Config.tagWizard[parent] or Config.parentTable
 									Config.tagWizard[parent].args[id] = Config.tagTextTable
 									Config.tagWizard[parent].args[id .. ":adv"] = Config.advanceTextTable
-									
+
 									quickIDMap[id .. ":adv"] = #(ShadowUF.db.profile.units.player.text)
-									
+
 									-- Reset
 									textData.name = nil
 									textData.parent = nil
-									
+
 								end,
 							},
 						},
@@ -1534,7 +1534,7 @@ local function loadGeneralOptions()
 			layout = layoutManager,
 		},
 	}
-	
+
 	-- Load text
 	for id, text in pairs(ShadowUF.db.profile.units.player.text) do
 		if( text.anchorTo ~= "" and not text.default ) then
@@ -1544,8 +1544,8 @@ local function loadGeneralOptions()
 			options.args.general.args.text.args[text.anchorTo] = addTextParent
 		end
 	end
-	
-	
+
+
 	Config.classTable = {
 		order = 0,
 		type = "color",
@@ -1554,11 +1554,11 @@ local function loadGeneralOptions()
 		width = "half",
 		arg = "classColors.$key",
 	}
-	
+
 	for classToken in pairs(RAID_CLASS_COLORS) do
 		options.args.general.args.color.args.classColors.args[classToken] = Config.classTable
 	end
-	
+
 	options.args.general.args.color.args.classColors.args.PET = Config.classTable
 	options.args.general.args.color.args.classColors.args.VEHICLE = Config.classTable
 end
@@ -1583,7 +1583,7 @@ local function loadHideOptions()
 		get = get,
 		arg = "hidden.$key",
 	}
-	
+
 	options.args.hideBlizzard = {
 		type = "group",
 		name = L["Hide Blizzard"],
@@ -1634,7 +1634,7 @@ local function loadUnitOptions()
 	local function fixPositions(info)
 		local unit = info[2]
 		local key = info[#(info)]
-		
+
 		if( key == "point" or key == "relativePoint" ) then
 			ShadowUF.db.profile.positions[unit].anchorPoint = ""
 			ShadowUF.db.profile.positions[unit].movedAnchor = nil
@@ -1642,7 +1642,7 @@ local function loadUnitOptions()
 			ShadowUF.db.profile.positions[unit].point = ""
 			ShadowUF.db.profile.positions[unit].relativePoint = ""
 		end
-		
+
 		-- Reset offset if it was a manually positioned frame, and it got anchored
 		-- Why 100/-100 you ask? Because anything else requires some sort of logic applied to it
 		-- and this means the frames won't directly overlap too which is a nice bonus
@@ -1651,24 +1651,24 @@ local function loadUnitOptions()
 			ShadowUF.db.profile.positions[unit].y = -100
 		end
 	end
-		
+
 	-- Hide raid option in party config
 	local function hideRaidOrAdvancedOption(info)
 		if( info[2] == "party" and ShadowUF.db.profile.advanced ) then return false end
-		
+
 		return info[2] ~= "raid" and info[2] ~= "raidpet" and info[2] ~= "maintank" and info[2] ~= "mainassist"
 	end
-	
+
 	local function hideRaidOption(info)
 		return info[2] ~= "raid" and info[2] ~= "raidpet" and info[2] ~= "maintank" and info[2] ~= "mainassist"
 	end
-	
+
 	local function hideSplitOrRaidOption(info)
 		if( info[2] == "raid" and ShadowUF.db.profile.units.raid.frameSplit ) then
 			return true
 		end
-		
-		return hideRaidOption(info) 
+
+		return hideRaidOption(info)
 	end
 
 	-- Not every option should be changed via global settings
@@ -1677,25 +1677,25 @@ local function loadUnitOptions()
 		if( unit == "global" or unit == "partypet" ) then
 			return true
 		end
-		
+
 		return hideAdvancedOption(info)
 	end
-	
+
 	local function checkNumber(info, value)
 		return tonumber(value)
 	end
-	
+
 	local function setPosition(info, value)
 		ShadowUF.db.profile.positions[info[2]][info[#(info)]] = value
 		fixPositions(info)
-		
+
 		if( info[2] == "raid" or info[2] == "raidpet" or info[2] == "maintank" or info[2] == "mainassist" or info[2] == "party" or info[2] == "boss" or info[2] == "arena" ) then
 			ShadowUF.Units:ReloadHeader(info[2])
 		else
 			ShadowUF.Layout:Reload(info[2])
 		end
 	end
-	
+
 	local function getPosition(info)
 		return ShadowUF.db.profile.positions[info[2]][info[#(info)]]
 	end
@@ -1704,32 +1704,32 @@ local function loadUnitOptions()
 		local unit = info[2]
 		local key = info[#(info)]
 		local id = unit .. key
-		
+
 		-- Apply effective scaling if it's anchored to UIParent
 		if( ShadowUF.db.profile.positions[unit].anchorTo == "UIParent" ) then
 			value = value * (ShadowUF.db.profile.units[unit].scale * UIParent:GetScale())
 		end
-		
+
 		setPosition(info, tonumber(value))
 	end
-	
+
 	local function getString(info)
 		local unit = info[2]
 		local key = info[#(info)]
 		local id = unit .. key
 		local coord = getPosition(info)
-		
+
 		-- If the frame is created and it's anchored to UIParent, will return the number modified by scale
 		if( ShadowUF.db.profile.positions[unit].anchorTo == "UIParent" ) then
 			coord = coord / (ShadowUF.db.profile.units[unit].scale * UIParent:GetScale())
 		end
-				
+
 		-- OCD, most definitely.
 		-- Pain to check coord == math.floor(coord) because floats are handled oddly with frames and return 0.99999999999435
 		return string.gsub(string.format("%.2f", coord), "%.00$", "")
 	end
-	
-	
+
+
 	-- TAG WIZARD
 	local tagWizard = {}
 	Config.tagWizard = tagWizard
@@ -1810,25 +1810,24 @@ local function loadUnitOptions()
 				},
 			},
 		}
-		
+
 		Config.parentTable = {
 			order = 0,
 			type = "group",
-			hidden = false,
 			name = function(info) return getName(info) or string.sub(info[#(info)], 1) end,
 			hidden = function(info) return not getVariable(info[2], info[#(info)], nil, "enabled") end,
 			args = {}
 		}
-		
+
 		local function hideBlacklistedTag(info)
 			local unit = info[2]
 			local id = tonumber(info[#(info) - 2])
 			local tag = info[#(info)]
 			local cat = info[#(info) - 1]
-			
+
 			if( unit == "global" ) then
-				for unit in pairs(modifyUnits) do
-					if( ShadowUF.Tags.unitRestrictions[tag] == unit ) then
+				for modUnit in pairs(modifyUnits) do
+					if( ShadowUF.Tags.unitRestrictions[tag] == modUnit ) then
 						return false
 					end
 				end
@@ -1836,7 +1835,7 @@ local function loadUnitOptions()
 
 			if( ShadowUF.Tags.unitRestrictions[tag] and ShadowUF.Tags.unitRestrictions[tag] ~= unit ) then
 				return true
-			
+
 			elseif( ShadowUF.Tags.anchorRestriction[tag] ) then
 				if( ShadowUF.Tags.anchorRestriction[tag] ~= getVariable(unit, "text", id, "anchorTo") ) then
 					return true
@@ -1847,7 +1846,7 @@ local function loadUnitOptions()
 
 			return false
 		end
-		
+
 		local function hideBlacklistedGroup(info)
 			local unit = info[2]
 			local id = tonumber(info[#(info) - 1])
@@ -1859,8 +1858,8 @@ local function loadUnitOptions()
 				end
 			else
 				-- If the only units that are in the global configuration have the tag filtered, then don't bother showing it
-				for unit in pairs(modifyUnits) do
-					if( not ShadowUF.Tags.unitBlacklist[tagGroup] or not string.match(unit, ShadowUF.Tags.unitBlacklist[tagGroup]) ) then
+				for modUnit in pairs(modifyUnits) do
+					if( not ShadowUF.Tags.unitBlacklist[tagGroup] or not string.match(modUnit, ShadowUF.Tags.unitBlacklist[tagGroup]) ) then
 						return false
 					end
 				end
@@ -1870,10 +1869,10 @@ local function loadUnitOptions()
 			if( ( block and tagGroup ~= "classtimer" ) or ( not block and tagGroup == "classtimer" ) ) then
 				return true
 			end
-			
+
 			return false
 		end
-		
+
 		local savedTagTexts = {}
 		local function selectTag(info, value)
 			local unit = info[2]
@@ -1885,20 +1884,20 @@ local function loadUnitOptions()
 			if( value ) then
 				if( unit == "global" ) then
 					table.wipe(savedTagTexts)
-					
+
 					-- Set special tag texts based on the unit, so targettarget won't get a tag that will cause errors
 					local tagGroup = ShadowUF.Tags.defaultCategories[tag]
-					for unit in pairs(modifyUnits) do
-						savedTagTexts[unit] = getVariable(unit, "text", id, "text")
-						if( not ShadowUF.Tags.unitBlacklist[tagGroup] or not string.match(unit, ShadowUF.Tags.unitBlacklist[tagGroup]) ) then
-							if( not ShadowUF.Tags.unitRestrictions[tag] or ShadowUF.Tags.unitRestrictions[tag] == unit ) then
+					for modUnit in pairs(modifyUnits) do
+						savedTagTexts[modUnit] = getVariable(modUnit, "text", id, "text")
+						if( not ShadowUF.Tags.unitBlacklist[tagGroup] or not string.match(modUnit, ShadowUF.Tags.unitBlacklist[tagGroup]) ) then
+							if( not ShadowUF.Tags.unitRestrictions[tag] or ShadowUF.Tags.unitRestrictions[tag] == modUnit ) then
 								if( text == "" ) then
-									savedTagTexts[unit] = string.format("[%s]", tag)
+									savedTagTexts[modUnit] = string.format("[%s]", tag)
 								else
-									savedTagTexts[unit] = string.format("%s[( )%s]", savedTagTexts[unit], tag)
+									savedTagTexts[modUnit] = string.format("%s[( )%s]", savedTagTexts[modUnit], tag)
 								end
-								
-								savedTagTexts.global = savedTagTexts[unit]
+
+								savedTagTexts.global = savedTagTexts[modUnit]
 							end
 						end
 					end
@@ -1909,7 +1908,7 @@ local function loadUnitOptions()
 						text = string.format("%s[( )%s]", text, tag)
 					end
 				end
-				
+
 			-- Removing a tag from a single unit, super easy :<
 			else
 				-- Ugly, but it works
@@ -1923,11 +1922,11 @@ local function loadUnitOptions()
 					end
 				end
 			end
-			
+
 			if( unit == "global" ) then
-				for unit in pairs(modifyUnits) do
-					if( savedTagTexts[unit] ) then
-						setVariable(unit, "text", id, "text", savedTagTexts[unit])
+				for modUnit in pairs(modifyUnits) do
+					if( savedTagTexts[modUnit] ) then
+						setVariable(modUnit, "text", id, "text", savedTagTexts[modUnit])
 					end
 				end
 
@@ -1936,19 +1935,19 @@ local function loadUnitOptions()
 				setVariable(unit, "text", id, "text", text)
 			end
 		end
-		
+
 		local function getTag(info)
 			local text = getVariable(info[2], "text", tonumber(info[#(info) - 2]), "text")
 			local tag = info[#(info)]
-			
+
 			-- FUN WITH PATTERN MATCHING
 			if( string.match(text, "%[" .. tag .. "%]") or string.match(text, "%)" .. tag .. "%]") or string.match(text, "%[" .. tag .. "%(") or string.match(text, "%)" .. tag .. "%(") ) then
 				return true
 			end
-			
+
 			return false
 		end
-		
+
 		Config.tagTextTable = {
 			type = "group",
 			name = function(info) return getVariable(info[2], "text", nil, tonumber(info[#(info)])) and getVariable(info[2], "text", tonumber(info[#(info)]), "name") or "" end,
@@ -1970,12 +1969,12 @@ local function loadUnitOptions()
 				},
 			},
 		}
-		
-		
+
+
 		local function getCategoryOrder(info)
 			return info[#(info)] == "health" and 1 or info[#(info)] == "power" and 2 or info[#(info)] == "misc" and 3 or 4
 		end
-		
+
 		for _, cat in pairs(ShadowUF.Tags.defaultCategories) do
 			Config.tagTextTable.args[cat] = Config.tagTextTable.args[cat] or {
 				order = getCategoryOrder,
@@ -1986,34 +1985,34 @@ local function loadUnitOptions()
 				set = selectTag,
 				get = getTag,
 				args = {},
-			}			
+			}
 		end
 
 		Config.tagTable = {
 			order = 0,
 			type = "toggle",
 			hidden = hideBlacklistedTag,
-			name = getTagName, 
+			name = getTagName,
 			desc = getTagHelp,
 		}
-				
+
 		local tagList = {}
 		for tag in pairs(ShadowUF.Tags.defaultTags) do
 			local category = ShadowUF.Tags.defaultCategories[tag] or "misc"
 			Config.tagTextTable.args[category].args[tag] = Config.tagTable
 		end
-			
+
 		for tag, data in pairs(ShadowUF.db.profile.tags) do
 			local category = data.category or "misc"
 			Config.tagTextTable.args[category].args[tag] = Config.tagTable
 		end
-		
+
 		local parentList = {}
 		for id, text in pairs(ShadowUF.db.profile.units.player.text) do
 			parentList[text.anchorTo] = parentList[text.anchorTo] or {}
 			parentList[text.anchorTo][id] = text
 		end
-		
+
 		local nagityNagNagTable = {
 			order = 0,
 			type = "group",
@@ -2028,57 +2027,57 @@ local function loadUnitOptions()
 				},
 			},
 		}
-	
+
 		for parent, list in pairs(parentList) do
 			parent = string.sub(parent, 2)
 			tagWizard[parent] = Config.parentTable
 			Config.parentTable.args.help = nagityNagNagTable
-			
+
 			for id in pairs(list) do
 				tagWizard[parent].args[tostring(id)] = Config.tagTextTable
 				tagWizard[parent].args[tostring(id) .. ":adv"] = Config.advanceTextTable
-				
+
 				quickIDMap[tostring(id) .. ":adv"] = id
 			end
 		end
 	end
-		
+
 	local function disableAnchoredTo(info)
 		local auras = getVariable(info[2], "auras", nil, info[#(info) - 2])
-		
+
 		return auras.anchorOn or not auras.enabled
 	end
-	
+
 	local function disableSameAnchor(info)
 		local buffs = getVariable(info[2], "auras", nil, "buffs")
 		local debuffs = getVariable(info[2], "auras", nil, "debuffs")
 		local anchor = buffs.enabled and buffs.prioritize and "buffs" or "debuffs"
-		
+
 		if( not getVariable(info[2], "auras", info[#(info) - 2], "enabled") ) then
 			return true
 		end
-		
+
 		if( ( info[#(info)] == "x" or info[#(info)] == "y" ) and ( info[#(info) - 2] == "buffs" and buffs.anchorOn or info[#(info) - 2] == "debuffs" and debuffs.anchorOn ) ) then
 			return true
 		end
-		
+
 		if( anchor == info[#(info) - 2] or buffs.anchorOn or debuffs.anchorOn ) then
 			return false
-		end	
-		
+		end
+
 		return buffs.anchorPoint == debuffs.anchorPoint
 	end
-	
+
 	local defaultAuraList = {["BL"] = L["Bottom"], ["TL"] = L["Top"], ["LT"] = L["Left"], ["RT"] = L["Right"]}
 	local advancedAuraList = {["BL"] = L["Bottom Left"], ["BR"] = L["Bottom Right"], ["TL"] = L["Top Left"], ["TR"] = L["Top Right"], ["RT"] = L["Right Top"], ["RB"] = L["Right Bottom"], ["LT"] = L["Left Top"], ["LB"] = L["Left Bottom"]}
 	local function getAuraAnchors()
 		return ShadowUF.db.profile.advanced and advancedAuraList or defaultAuraList
 	end
-	
+
 	local function hideStealable(info)
 		if( not ShadowUF.db.profile.advanced ) then return true end
 		if( info[2] == "player" or info[2] == "pet" or info[#(info) - 2] == "debuffs" ) then return true end
-		
+
 		return false
 	end
 
@@ -2098,7 +2097,7 @@ local function loadUnitOptions()
 			end
 		end
 	end
-	
+
 	local aurasDisabled = function(info) return not getVariable(info[2], "auras", info[#(info) - 2], "enabled") end
 
 	Config.auraTable = {
@@ -2193,12 +2192,12 @@ local function loadUnitOptions()
 						name = L["Prioritize buffs"],
 						desc = L["Show buffs before debuffs when sharing the same anchor point."],
 						hidden = hideBuffOption,
-						disabled = function(info) 
+						disabled = function(info)
 							if( not getVariable(info[2], "auras", info[#(info) - 2], "enabled") ) then return true end
-							
+
 							local buffs = getVariable(info[2], "auras", nil, "buffs")
 							local debuffs = getVariable(info[2], "auras", nil, "debuffs")
-							
+
 							return buffs.anchorOn or debuffs.anchorOn or buffs.anchorPoint ~= debuffs.anchorPoint
 						end,
 						arg = "auras.$parentparent.prioritize"
@@ -2272,7 +2271,7 @@ local function loadUnitOptions()
 						set = function(info, key, value)
 							local tbl = getVariable(info[2], "auras", info[#(info) - 2], "enlarge")
 							tbl[key] = value
-							
+
 							setVariable(info[2], "auras", info[#(info) - 2], "enlarge", tbl)
 							reloadUnitAuras()
 						end,
@@ -2307,7 +2306,7 @@ local function loadUnitOptions()
 						values = getAuraAnchors,
 						disabled = disableAnchoredTo,
 						arg = "auras.$parentparent.anchorPoint",
-					},					
+					},
 					size = {
 						order = 2,
 						type = "range",
@@ -2324,7 +2323,7 @@ local function loadUnitOptions()
 							if( ShadowUF.Layout:GetColumnGrowth(anchorPoint) == "LEFT" or ShadowUF.Layout:GetColumnGrowth(anchorPoint) == "RIGHT" ) then
 								return L["Per column"]
 							end
-							
+
 							return L["Per row"]
 						end,
 						desc = L["How many auras to show in a single row."],
@@ -2344,7 +2343,7 @@ local function loadUnitOptions()
 							if( ShadowUF.Layout:GetColumnGrowth(anchorPoint) == "LEFT" or ShadowUF.Layout:GetColumnGrowth(anchorPoint) == "RIGHT" ) then
 								return true
 							end
-							
+
 							return false
 						end,
 						arg = "auras.$parentparent.maxRows",
@@ -2360,7 +2359,7 @@ local function loadUnitOptions()
 							if( ShadowUF.Layout:GetColumnGrowth(anchorPoint) == "LEFT" or ShadowUF.Layout:GetColumnGrowth(anchorPoint) == "RIGHT" ) then
 								return false
 							end
-							
+
 							return true
 						end,
 						disabled = disableSameAnchor,
@@ -2389,21 +2388,21 @@ local function loadUnitOptions()
 			}
 		}
 	}
-	
+
 	local function hideBarOption(info)
 		local module = info[#(info) - 1]
 		if( ShadowUF.modules[module].moduleHasBar or getVariable(info[2], module, nil, "isBar") ) then
 			return false
 		end
-		
+
 		return true
 	end
-	
+
 	local function disableIfCastName(info)
 		return not getVariable(info[2], "castBar", "name", "enabled")
 	end
-	
-	
+
+
 	Config.barTable = {
 		order = getModuleOrder,
 		name = getName,
@@ -2459,7 +2458,7 @@ local function loadUnitOptions()
 					color.g = g
 					color.b = b
 					color.a = a
-					
+
 					setUnit(info, color)
 				end,
 				get = function(info)
@@ -2467,7 +2466,7 @@ local function loadUnitOptions()
 					if( not color ) then
 						return 0, 0, 0, 1
 					end
-					
+
 					return color.r, color.g, color.b, color.a
 
 				end,
@@ -2517,14 +2516,14 @@ local function loadUnitOptions()
 			}
 		},
 	}
-	
+
 	Config.indicatorTable = {
 		order = 0,
 		name = function(info)
 			if( info[#(info)] == "status" and info[2] == "player" ) then
 				return L["Combat/resting status"]
 			end
-			
+
 			return getName(info)
 		end,
 		desc = function(info) return INDICATOR_DESC[info[#(info)]] end,
@@ -2579,7 +2578,7 @@ local function loadUnitOptions()
 			},
 		},
 	}
-	
+
 	Config.unitTable = {
 		type = "group",
 		childGroups = "tab",
@@ -2614,7 +2613,7 @@ local function loadUnitOptions()
 										if( ShadowUF.Units.unitFrames.pet ) then
 											ShadowUF.Units.unitFrames.pet:SetAttribute("disableVehicleSwap", ShadowUF.db.profile.units[unit].disableVehicle)
 										end
-										
+
 										if( ShadowUF.Units.unitFrames.player ) then
 											ShadowUF.Units:CheckVehicleStatus(ShadowUF.Units.unitFrames.player)
 										end
@@ -3705,7 +3704,7 @@ local function loadUnitOptions()
 								type = "toggle",
 								name = L["Separate raid frames"],
 								desc = L["Splits raid frames into individual frames for each raid group instead of one single frame.|nNOTE! You cannot drag each group frame individualy, but how they grow is set through the column and row growth options."],
-								hidden = function(info) return info[2] ~= "raid" end,	
+								hidden = function(info) return info[2] ~= "raid" end,
 								arg = "frameSplit",
 							},
 							hideSemiRaidRaid = {
@@ -3727,7 +3726,7 @@ local function loadUnitOptions()
 								hidden = hideRaidOption,
 								set = function(info, value)
 									setUnit(info, value)
-									
+
 									ShadowUF.Units:ReloadHeader("party")
 									ShadowUF.Units:ReloadHeader("raid")
 									ShadowUF.modules.movers:Update()
@@ -3766,7 +3765,7 @@ local function loadUnitOptions()
 									elseif( ( value == "TOP" or value == "BOTTOM" ) and attribAnchorPoint ~= "LEFT" and attribAnchorPoint ~= "RIGHT" ) then
 										ShadowUF.db.profile.units[info[2]].attribAnchorPoint = "RIGHT"
 									end
-									
+
 									setUnit(info, value)
 
 									local position = ShadowUF.db.profile.positions[info[2]]
@@ -3780,7 +3779,7 @@ local function loadUnitOptions()
 									ShadowUF.modules.movers:Update()
 								end,
 							},
-							sep2 = { 
+							sep2 = {
 								order = 4,
 								type = "description",
 								name = "",
@@ -3805,7 +3804,7 @@ local function loadUnitOptions()
 									if( attribPoint == "LEFT" or attribPoint == "RIGHT" ) then
 										return {["TOP"] = L["Down"], ["BOTTOM"] = L["Up"]}
 									end
-									
+
 									return {["LEFT"] = L["Right"], ["RIGHT"] = L["Left"]}
 								end,
 								hidden = hideRaidOrAdvancedOption,
@@ -3815,7 +3814,7 @@ local function loadUnitOptions()
 									if( ( value == "LEFT" or value == "RIGHT" ) and attribPoint ~= "BOTTOM" and attribPoint ~= "TOP" ) then
 										ShadowUF.db.profile.units[info[2]].attribPoint = "BOTTOM"
 									end
-								
+
 									setUnit(info, value)
 
 									ShadowUF.Units:ReloadHeader(info[2])
@@ -3823,7 +3822,7 @@ local function loadUnitOptions()
 								end,
 								arg = "attribAnchorPoint",
 							},
-							sep3 = { 
+							sep3 = {
 								order = 7,
 								type = "description",
 								name = "",
@@ -3922,7 +3921,7 @@ local function loadUnitOptions()
 								set = function(info, key, value)
 									local tbl = getVariable(info[2], nil, nil, "filters")
 									tbl[key] = value
-									
+
 									setVariable(info[2], "filters", nil, tbl)
 									ShadowUF.Units:ReloadHeader(info[2])
 									ShadowUF.modules.movers:Update()
@@ -3999,8 +3998,8 @@ local function loadUnitOptions()
 									if( ShadowUF.db.profile.advanced ) then
 										return position[info[#(info)]]
 									end
-									
-									
+
+
 									return position.movedAnchor or position[info[#(info)]]
 								end,
 							},
@@ -4155,7 +4154,7 @@ local function loadUnitOptions()
 						type = "group",
 						inline = false,
 						name = L["Class/misc bars"],
-						hidden = function(info) 
+						hidden = function(info)
 							local unit = info[2]
 							if( unit == "global" ) then
 								return not globalConfig.runeBar and not globalConfig.totemBar and not globalConfig.druidBar and not globalConfig.priestBar and not globalConfig.shamanBar and not globalConfig.xpBar and not globalConfig.staggerBar
@@ -4367,13 +4366,13 @@ local function loadUnitOptions()
 								hidden = false,
 							},
 						},
-					},					
+					},
 					totemBar = {
 						order = 3.6,
 						type = "group",
 						inline = false,
 						name = ShadowUF.modules.totemBar.moduleName,
-						hidden = function(info) 
+						hidden = function(info)
 							local unit = info[2]
 							if( unit == "global" ) then
 								return not globalConfig.totemBar
@@ -4432,7 +4431,7 @@ local function loadUnitOptions()
 								type = "color",
 								name = L["Background color"],
 								disabled = function(info)
-									local emptyBar = getVariable(info[2], nil, nil, "emptyBar") 
+									local emptyBar = getVariable(info[2], nil, nil, "emptyBar")
 									return emptyBar.class and emptyBar.reaciton
 								end,
 								set = function(info, r, g, b)
@@ -4440,7 +4439,7 @@ local function loadUnitOptions()
 									color.r = r
 									color.g = g
 									color.b = b
-									
+
 									setUnit(info, color)
 								end,
 								get = function(info)
@@ -4448,7 +4447,7 @@ local function loadUnitOptions()
 									if( not color ) then
 										return 0, 0, 0
 									end
-									
+
 									return color.r, color.g, color.b
 
 								end,
@@ -4531,7 +4530,6 @@ local function loadUnitOptions()
 								type = "range",
 								name = L["Size"],
 								desc = L["Let's you modify the base font size to either make it larger or smaller."],
-								type = "range",
 								min = -10, max = 10, step = 1, softMin = -5, softMax = 5,
 								hidden = hideAdvancedOption,
 								arg = "castBar.name.size",
@@ -4580,7 +4578,6 @@ local function loadUnitOptions()
 								type = "range",
 								name = L["Size"],
 								desc = L["Let's you modify the base font size to either make it larger or smaller."],
-								type = "range",
 								min = -10, max = 10, step = 1, softMin = -5, softMax = 5,
 								hidden = hideAdvancedOption,
 								arg = "castBar.time.size",
@@ -4728,11 +4725,11 @@ local function loadUnitOptions()
 			},
 		},
 	}
-	
+
 	for _, indicator in pairs(ShadowUF.modules.indicators.list) do
 		Config.unitTable.args.indicators.args[indicator] = Config.indicatorTable
 	end
-	
+
 	-- Check for unit conflicts
 	local function hideZoneConflict()
 		for _, zone in pairs(ShadowUF.db.profile.visibility) do
@@ -4742,14 +4739,14 @@ local function loadUnitOptions()
 				end
 			end
 		end
-	
+
 		return true
 	end
 
 	options.args.profile = LibStub("AceDBOptions-3.0"):GetOptionsTable(ShadowUF.db, true)
 	local LibDualSpec = LibStub("LibDualSpec-1.0", true)
 	if LibDualSpec then LibDualSpec:EnhanceOptions(options.args.profile, ShadowUF.db) end
-	
+
 	options.args.enableUnits = {
 		type = "group",
 		name = L["Enabled Units"],
@@ -4764,7 +4761,7 @@ local function loadUnitOptions()
 					if( not hideZoneConflict() or hideBasicOption() ) then
 						return true
 					end
-					
+
 					return nil
 				end,
 				args = {
@@ -4797,7 +4794,7 @@ local function loadUnitOptions()
 						type = "description",
 						name = function()
 							local text = {}
-						
+
 							for zoneType, zone in pairs(ShadowUF.db.profile.visibility) do
 								local errors = {}
 								for unit, status in pairs(zone) do
@@ -4809,14 +4806,14 @@ local function loadUnitOptions()
 										end
 									end
 								end
-								
+
 								if( #(errors) > 1 ) then
 									table.insert(text, string.format("|cfffed000%s|r have the following overrides: %s", AREA_NAMES[zoneType], table.concat(errors, ", ")))
 								elseif( #(errors) == 1 ) then
 									table.insert(text, string.format("|cfffed000%s|r has the override: %s", AREA_NAMES[zoneType], errors[1]))
 								end
 							end
-							
+
 							return #(text) > 0 and table.concat(text, "|n") or ""
 						end,
 					},
@@ -4831,11 +4828,11 @@ local function loadUnitOptions()
 			},
 		},
 	}
-	
+
 	local sort_units = function(a, b)
 		return a < b
 	end
-	
+
 	options.args.units = {
 		type = "group",
 		name = L["Unit Configuration"],
@@ -4881,7 +4878,7 @@ local function loadUnitOptions()
 											table.insert(units, L.units[unit])
 										end
 									end
-									
+
 									table.sort(units, sort_units)
 									return table.concat(units, ", ")
 								end,
@@ -4893,32 +4890,32 @@ local function loadUnitOptions()
 						type = "group",
 						name = L["Units"],
 						set = function(info, value)
-							local unit = info[#(info)]
 							if( IsShiftKeyDown() ) then
 								for _, unit in pairs(ShadowUF.unitList) do
 									if( ShadowUF.db.profile.units[unit].enabled ) then
 										modifyUnits[unit] = value and true or nil
-										
+
 										if( value ) then
 											globalConfig = mergeTables(globalConfig, ShadowUF.db.profile.units[unit])
 										end
 									end
 								end
 							else
+								local unit = info[#(info)]
 								modifyUnits[unit] = value and true or nil
 
 								if( value ) then
 									globalConfig = mergeTables(globalConfig, ShadowUF.db.profile.units[unit])
 								end
 							end
-							
+
 							-- Check if we have nothing else selected, if so wipe it
 							local hasUnit
 							for k in pairs(modifyUnits) do hasUnit = true break end
 							if( not hasUnit ) then
 								globalConfig = {}
 							end
-							
+
 							AceRegistry:NotifyChange("ShadowedUF")
 						end,
 						get = function(info) return modifyUnits[info[#(info)]] end,
@@ -4949,7 +4946,7 @@ local function loadUnitOptions()
 			},
 		},
 	}
-	
+
 	-- Load modules into the unit table
 	for key, module in pairs(ShadowUF.modules) do
 		local canHaveBar = module.moduleHasBar
@@ -4959,7 +4956,7 @@ local function loadUnitOptions()
 				break
 			end
 		end
-		
+
 		if( canHaveBar ) then
 			Config.unitTable.args.widgetSize.args[key] = Config.barTable
 		end
@@ -4980,7 +4977,7 @@ local function loadUnitOptions()
 			return string.format(L["Adds %s to the list of units to be modified when you change values in this tab."], L.units[info[#(info)]])
 		end,
 	}
-	
+
 	-- Enabled units list
 	local unitCatOrder = {}
 	local enabledUnits = {
@@ -4994,7 +4991,7 @@ local function loadUnitOptions()
 					ShadowUF.db.profile.units[child].enabled = false
 				end
 			end
-			
+
 			ShadowUF.modules.movers:Update()
 			ShadowUF.db.profile.units[unit].enabled = value
 			ShadowUF:LoadUnits()
@@ -5003,7 +5000,7 @@ local function loadUnitOptions()
 			if( unit == "raid" and ShadowUF.Units.headerFrames.party ) then
 				ShadowUF.Units:SetHeaderAttributes(ShadowUF.Units.headerFrames.party, "party")
 			end
-			
+
 			ShadowUF.modules.movers:Update()
 		end,
 		get = function(info)
@@ -5012,11 +5009,11 @@ local function loadUnitOptions()
 		desc = function(info)
 			local unit = info[#(info)]
 			local unitDesc = UNIT_DESC[unit] or ""
-			
+
 			if( ShadowUF.db.profile.units[unit].enabled and ShadowUF.Units.childUnits[unit] ) then
 				if( unitDesc ~= "" ) then unitDesc = unitDesc .. "\n\n" end
 				return unitDesc .. string.format(L["This unit depends on another to work, disabling %s will disable %s."], L.units[ShadowUF.Units.childUnits[unit]], L.units[unit])
-			elseif( not ShadowUF.db.profile.units[unit].enabled ) then 
+			elseif( not ShadowUF.db.profile.units[unit].enabled ) then
 				for child, parent in pairs(ShadowUF.Units.childUnits) do
 					if( parent == unit ) then
 						if( unitDesc ~= "" ) then unitDesc = unitDesc .. "\n\n" end
@@ -5024,19 +5021,19 @@ local function loadUnitOptions()
 					end
 				end
 			end
-			
+
 			return unitDesc ~= "" and unitDesc
 		end,
 		disabled = function(info)
 			local unit = info[#(info)]
 			if( ShadowUF.Units.childUnits[unit] ) then
-				return not ShadowUF.db.profile.units[ShadowUF.Units.childUnits[unit]].enabled	
+				return not ShadowUF.db.profile.units[ShadowUF.Units.childUnits[unit]].enabled
 			end
-			
+
 			return false
 		end,
 	}
-	
+
 	local unitCategory = {
 		order = function(info)
 			local cat = info[#(info)]
@@ -5049,7 +5046,7 @@ local function loadUnitOptions()
 		end,
 		width = "full",
 	}
-	
+
 	for cat, list in pairs(unitCategories) do
 		options.args.enableUnits.args.enabled.args[cat .. "cat"] = unitCategory
 
@@ -5062,7 +5059,7 @@ local function loadUnitOptions()
 		options.args.enableUnits.args.enabled.args[unit] = enabledUnits
 		options.args.units.args.global.args.units.args.units.args[unit] = perUnitList
 		options.args.units.args[unit] = Config.unitTable
-		
+
 		unitCatOrder[unit] = unitCatOrder[unit] or 100
 	end
 end
@@ -5081,7 +5078,7 @@ local function loadFilterOptions()
 		args = {
 		},
 	}
-	
+
 	local function reloadUnitAuras()
 		for _, frame in pairs(ShadowUF.Units.unitFrames) do
 			if( UnitExists(frame.unit) and frame.visibility.auras ) then
@@ -5090,22 +5087,22 @@ local function loadFilterOptions()
 			end
 		end
 	end
-	
+
 	local function setFilterType(info, value)
 		local filter = filterMap[info[#(info) - 2]]
 		local filterType = info[#(info) - 3]
-		
+
 		ShadowUF.db.profile.filters[filterType][filter][info[#(info)]] = value
 		reloadUnitAuras()
 	end
-	
+
 	local function getFilterType(info)
 		local filter = filterMap[info[#(info) - 2]]
 		local filterType = info[#(info) - 3]
-		
+
 		return ShadowUF.db.profile.filters[filterType][filter][info[#(info)]]
 	end
-	
+
 	--- Container widget for the filter listing
 	local filterEditTable = {
 		order = 0,
@@ -5146,9 +5143,9 @@ local function loadFilterOptions()
 						func = function(info, value)
 							local filterType = info[#(info) - 3]
 							local filter = filterMap[info[#(info) - 2]]
-							
+
 							ShadowUF.db.profile.filters[filterType][filter] = nil
-							
+
 							-- Delete anything that used this filter too
 							local filterList = filterType == "whitelists" and ShadowUF.db.profile.filters.zonewhite or filterType == "blacklists" and ShadowUF.db.profile.filters.zoneblack or filterType == "overridelists" and ShadowUF.db.profile.filters.zoneoverride
 							if filterList then
@@ -5158,7 +5155,7 @@ local function loadFilterOptions()
 									end
 								end
 							end
-							
+
 							reloadUnitAuras()
 							rebuildFilters()
 						end,
@@ -5197,12 +5194,12 @@ local function loadFilterOptions()
 				name = L["Auras"],
 				hidden = false,
 				args = {
-				
+
 				},
 			},
 		},
 	}
-	
+
 	-- Spell list for manage aura filters
 	local spellLabel = {
 		order = function(info) return tonumber(string.match(info[#(info)], "(%d+)")) end,
@@ -5218,7 +5215,7 @@ local function loadFilterOptions()
 				return name
 			end,
 	}
-	
+
 	local spellRow = {
 		order = function(info) return tonumber(string.match(info[#(info)], "(%d+)")) + 0.5 end,
 		type = "execute",
@@ -5228,7 +5225,7 @@ local function loadFilterOptions()
 			local spell = spellMap[info[#(info)]]
 			local filter = filterMap[info[#(info) - 2]]
 			local filterType = info[#(info) - 3]
-			
+
 			ShadowUF.db.profile.filters[filterType][filter][spell] = nil
 
 			reloadUnitAuras()
@@ -5250,7 +5247,7 @@ local function loadFilterOptions()
 		fontSize = "medium",
 		name = function(info) return filterMap[info[#(info)]] end,
 	}
-	
+
 	local filterRow = {
 		order = function(info) return tonumber(string.match(info[#(info)], "(%d+)")) + 0.5 end,
 		type = "execute",
@@ -5258,12 +5255,12 @@ local function loadFilterOptions()
 		width = "half",
 		func = function(info)
 			local filterType = info[#(info) - 2]
-			
+
 			AceDialog.Status.ShadowedUF.children.filter.children.filters.status.groups.groups[filterType] = true
 			selectTabGroup("filter", "filters", filterType .. "\001" .. string.match(info[#(info)], "(%d+)"))
 		end
 	}
-		
+
 	local noFilters = {
 		order = 0,
 		type = "description",
@@ -5284,47 +5281,47 @@ local function loadFilterOptions()
 			local zone = info[#(info) - 1]
 			local unit = info[#(info) - 2]
 			local filterKey = ShadowUF.db.profile.filters.whitelists[filter] and "zonewhite" or ShadowUF.db.profile.filters.blacklists[filter] and "zoneblack" or "zoneoverride"
-			
+
 			for _, zoneConfig in pairs(zoneList) do
 				if( zone == "global" or zoneConfig == zone ) then
 					if( unit == "global" ) then
 						globalSettings[zoneConfig .. filterKey] = value and filter or false
-						
-						for _, unit in pairs(ShadowUF.unitList) do
-							ShadowUF.db.profile.filters[filterKey][zoneConfig .. unit] = value and filter or nil
+
+						for _, unitEntry in pairs(ShadowUF.unitList) do
+							ShadowUF.db.profile.filters[filterKey][zoneConfig .. unitEntry] = value and filter or nil
 						end
 					else
 						ShadowUF.db.profile.filters[filterKey][zoneConfig .. unit] = value and filter or nil
 					end
 				end
 			end
-			
+
 			if( zone == "global" ) then
 				globalSettings[zone .. unit .. filterKey] = value and filter or false
 			end
-			
+
 			reloadUnitAuras()
 		end,
 		get = function(info)
 			local filter = filterMap[info[#(info)]]
 			local zone = info[#(info) - 1]
 			local unit = info[#(info) - 2]
-			
-			if( unit == "global" or zone == "global" ) then 
+
+			if( unit == "global" or zone == "global" ) then
 				local id = zone == "global" and zone .. unit or zone
 				local filterKey = ShadowUF.db.profile.filters.whitelists[filter] and "zonewhite" or ShadowUF.db.profile.filters.blacklists[filter] and "zoneblack" or "zoneoverride"
-				
+
 				if( info[#(info)] == "nofilter" ) then
 					return globalSettings[id .. "zonewhite"] == false and globalSettings[id .. "zoneblack"] == false and globalSettings[id .. "zoneoverride"] == false
 				end
 
 				return globalSettings[id .. filterKey] == filter
 			end
-			
+
 			if( info[#(info)] == "nofilter" ) then
 				return not ShadowUF.db.profile.filters.zonewhite[zone .. unit] and not ShadowUF.db.profile.filters.zoneblack[zone .. unit] and not ShadowUF.db.profile.filters.zoneoverride[zone .. unit]
 			end
-			
+
 			return ShadowUF.db.profile.filters.zonewhite[zone .. unit] == filter or ShadowUF.db.profile.filters.zoneblack[zone .. unit] == filter or ShadowUF.db.profile.filters.zoneoverride[zone .. unit] == filter
 		end,
 		args = {
@@ -5337,18 +5334,18 @@ local function loadFilterOptions()
 					local filter = filterMap[info[#(info)]]
 					local zone = info[#(info) - 1]
 					local unit = info[#(info) - 2]
-				
+
 					for _, zoneConfig in pairs(zoneList) do
 						if( zone == "global" or zoneConfig == zone ) then
 							if( unit == "global" ) then
 								globalSettings[zoneConfig .. "zonewhite"] = false
 								globalSettings[zoneConfig .. "zoneblack"] = false
 								globalSettings[zoneConfig .. "zoneoverride"] = false
-								
-								for _, unit in pairs(ShadowUF.unitList) do
-									ShadowUF.db.profile.filters.zonewhite[zoneConfig .. unit] = nil
-									ShadowUF.db.profile.filters.zoneblack[zoneConfig .. unit] = nil
-									ShadowUF.db.profile.filters.zoneoverride[zoneConfig .. unit] = nil
+
+								for _, unitEntry in pairs(ShadowUF.unitList) do
+									ShadowUF.db.profile.filters.zonewhite[zoneConfig .. unitEntry] = nil
+									ShadowUF.db.profile.filters.zoneblack[zoneConfig .. unitEntry] = nil
+									ShadowUF.db.profile.filters.zoneoverride[zoneConfig .. unitEntry] = nil
 								end
 							else
 								ShadowUF.db.profile.filters.zonewhite[zoneConfig .. unit] = nil
@@ -5387,7 +5384,7 @@ local function loadFilterOptions()
 			},
 		},
 	}
-	
+
 	-- Toggle used for set filter zones to enable filters
 	local filterToggle = {
 		order = function(info) return ShadowUF.db.profile.filters.whitelists[filterMap[info[#(info)]]] and 2 or ShadowUF.db.profile.filters.blacklists[filterMap[info[#(info)]]] and 4 or 6 end,
@@ -5403,16 +5400,16 @@ local function loadFilterOptions()
 			elseif( filter.debuffs ) then
 				return L["Filtering debuffs only"]
 			end
-			
+
 			return L["This filter has no aura types set to filter out."]
 		end,
 	}
-	
+
 	-- Load existing filters in
 	-- This needs to be cleaned up later
 	local filterID, spellID = 0, 0
 	local function buildList(type)
-		local manageFiltersTable = {
+		local manageFiltersTableEntry = {
 			order = type == "whitelists" and 1 or type == "blacklists" and 2 or 3,
 			type = "group",
 			name = type == "whitelists" and L["Whitelists"] or type == "blacklists" and L["Blacklists"] or L["Override lists"],
@@ -5427,7 +5424,7 @@ local function loadFilterOptions()
 				},
 			},
 		}
-		
+
 		local hasFilters
 		for name, spells in pairs(ShadowUF.db.profile.filters[type]) do
 			hasFilters = true
@@ -5435,12 +5432,12 @@ local function loadFilterOptions()
 			filterMap[tostring(filterID)] = name
 			filterMap[filterID .. "label"] = name
 			filterMap[filterID .. "row"] = name
-			
-			manageFiltersTable.args[tostring(filterID)] = CopyTable(filterEditTable)
-			manageFiltersTable.args.groups.args[filterID .. "label"] = filterLabel
-			manageFiltersTable.args.groups.args[filterID .. "row"] = filterRow
+
+			manageFiltersTableEntry.args[tostring(filterID)] = CopyTable(filterEditTable)
+			manageFiltersTableEntry.args.groups.args[filterID .. "label"] = filterLabel
+			manageFiltersTableEntry.args.groups.args[filterID .. "row"] = filterRow
 			filterTable.args[tostring(filterID)] = filterToggle
-			
+
 			local hasSpells
 			for spellName in pairs(spells) do
 				if( spellName ~= "buffs" and spellName ~= "debuffs" ) then
@@ -5448,42 +5445,42 @@ local function loadFilterOptions()
 					spellID = spellID + 1
 					spellMap[tostring(spellID)] = spellName
 					spellMap[spellID .. "label"] = spellName
-					
-					manageFiltersTable.args[tostring(filterID)].args.spells.args[spellID .. "label"] = spellLabel
-					manageFiltersTable.args[tostring(filterID)].args.spells.args[tostring(spellID)] = spellRow
+
+					manageFiltersTableEntry.args[tostring(filterID)].args.spells.args[spellID .. "label"] = spellLabel
+					manageFiltersTableEntry.args[tostring(filterID)].args.spells.args[tostring(spellID)] = spellRow
 				end
 			end
-			
+
 			if( not hasSpells ) then
-				manageFiltersTable.args[tostring(filterID)].args.spells.args.noSpells = noSpells
+				manageFiltersTableEntry.args[tostring(filterID)].args.spells.args.noSpells = noSpells
 			end
 		end
-		
+
 		if( not hasFilters ) then
 			if( type == "whitelists" ) then hasWhitelist = nil elseif( type == "blacklists" ) then hasBlacklist = nil else hasOverridelist = nil end
-			manageFiltersTable.args.groups.args.noFilters = noFilters
+			manageFiltersTableEntry.args.groups.args.noFilters = noFilters
 		end
-		
-		return manageFiltersTable
+
+		return manageFiltersTableEntry
 	end
-	
+
 	rebuildFilters = function()
 		for id in pairs(filterMap) do filterTable.args[id] = nil end
-	
+
 		spellID = 0
 		filterID = 0
 		hasBlacklist = true
 		hasWhitelist = true
 		hasOverridelist = true
-	
+
 		table.wipe(filterMap)
 		table.wipe(spellMap)
-		
+
 		options.args.filter.args.filters.args.whitelists = buildList("whitelists")
 		options.args.filter.args.filters.args.blacklists = buildList("blacklists")
 		options.args.filter.args.filters.args.overridelists = buildList("overridelists")
 	end
-		
+
 	local unitFilterSelection = {
 		order = function(info) return info[#(info)] == "global" and 1 or (getUnitOrder(info) + 1) end,
 		type = "group",
@@ -5492,7 +5489,7 @@ local function loadFilterOptions()
 			if( info[#(info)] == "global" ) then
 				return false
 			end
-			
+
 			return not hasWhitelist and not hasBlacklist
 		end,
 		args = {
@@ -5525,9 +5522,9 @@ local function loadFilterOptions()
 			raid = filterTable,
 		}
 	}
-	
+
 	local addFilter = {type = "whitelists"}
-	
+
 	options.args.filter = {
 		type = "group",
 		name = L["Aura Filters"],
@@ -5658,7 +5655,7 @@ local function loadFilterOptions()
 										func = function(info)
 											ShadowUF.db.profile.filters[addFilter.type][addFilter.name] = {buffs = true, debuffs = true}
 											rebuildFilters()
-											
+
 											local id
 											for key, value in pairs(filterMap) do
 												if( value == addFilter.name ) then
@@ -5666,10 +5663,10 @@ local function loadFilterOptions()
 													break
 												end
 											end
-											
+
 											AceDialog.Status.ShadowedUF.children.filter.children.filters.status.groups.groups[addFilter.type] = true
 											selectTabGroup("filter", "filters", addFilter.type .. "\001" .. id)
-											
+
 											table.wipe(addFilter)
 											addFilter.type = "whitelists"
 										end,
@@ -5698,11 +5695,11 @@ end
 local function loadTagOptions()
 	local tagData = {search = ""}
 	local function set(info, value, key)
-		local key = key or info[#(info)]
+		key = key or info[#(info)]
 		if( ShadowUF.Tags.defaultHelp[tagData.name] ) then
 			return
 		end
-		
+
 		-- Reset loaded function + reload tags
 		if( key == "funct" ) then
 			ShadowUF.tagFunc[tagData.name] = nil
@@ -5717,18 +5714,18 @@ local function loadTagOptions()
 
 		ShadowUF.db.profile.tags[tagData.name][key] = value
 	end
-	
+
 	local function stripCode(text)
 		if( not text ) then
 			return ""
 		end
-		
+
 		return string.gsub(string.gsub(text, "|", "||"), "\t", "")
 	end
-	
+
 	local function get(info, key)
-		local key = key or info[#(info)]
-		
+		key = key or info[#(info)]
+
 		if( key == "help" and ShadowUF.Tags.defaultHelp[tagData.name] ) then
 			return ShadowUF.Tags.defaultHelp[tagData.name] or ""
 		elseif( key == "events" and ShadowUF.Tags.defaultEvents[tagData.name] ) then
@@ -5742,26 +5739,26 @@ local function loadTagOptions()
 		elseif( key == "funct" and ShadowUF.Tags.defaultTags[tagData.name] ) then
 			return ShadowUF.Tags.defaultTags[tagData.name] or ""
 		end
-				
+
 		return ShadowUF.db.profile.tags[tagData.name] and ShadowUF.db.profile.tags[tagData.name][key] or ""
 	end
-		
+
 	local function isSearchHidden(info)
 		return tagData.search ~= "" and not string.match(info[#(info)], tagData.search) or false
 	end
-	
+
 	local function editTag(info)
 		tagData.name = info[#(info)]
-		
+
 		if( ShadowUF.Tags.defaultHelp[tagData.name] ) then
 			tagData.error = L["You cannot edit this tag because it is one of the default ones included in this mod. This function is here to provide an example for your own custom tags."]
 		else
 			tagData.error = nil
 		end
-		
+
 		selectDialogGroup("tags", "edit")
 	end
-				
+
 	-- Create all of the tag editor options, if it's a default tag will show it after any custom ones
 	local tagTable = {
 		type = "execute",
@@ -5771,18 +5768,18 @@ local function loadTagOptions()
 		hidden = isSearchHidden,
 		func = editTag,
 	}
-	
+
 	local tagCategories = {}
 	local function getTagCategories(info)
 		for k in pairs(tagCategories) do tagCategories[k] = nil end
-		
+
 		for _, cat in pairs(ShadowUF.Tags.defaultCategories) do
 			tagCategories[cat] = TAG_GROUPS[cat]
 		end
-		
+
 		return tagCategories
 	end
-	
+
 	-- Tag configuration
 	options.args.tags = {
 		type = "group",
@@ -5885,7 +5882,7 @@ local function loadTagOptions()
 									else
 										tagData.addError = nil
 									end
-									
+
 									AceRegistry:NotifyChange("ShadowedUF")
 									return tagData.addError and "" or true
 								end,
@@ -5893,11 +5890,11 @@ local function loadTagOptions()
 									tagData.name = tag
 									tagData.error = nil
 									tagData.addError = nil
-									
+
 									ShadowUF.db.profile.tags[tag] = {func = "function(unit, unitOwner)\n\nend", category = "misc"}
 									options.args.tags.args.general.args.list.args[tag] = tagTable
 									Config.tagTextTable.args.misc.args[tag] = Config.tagTable
-									
+
 									selectDialogGroup("tags", "edit")
 								end,
 							},
@@ -5961,7 +5958,7 @@ local function loadTagOptions()
 								type = "toggle",
 								name = L["Enable frequent updates"],
 								desc = L["Flags the tag for frequent updating, it will update the tag on a timer regardless of any events firing."],
-								set = function(info, value) 
+								set = function(info, value)
 									tagData.frequency = value and 5 or nil
 									set(info, tagData.frequency, "frequency")
 								end,
@@ -5983,18 +5980,18 @@ local function loadTagOptions()
 									else
 										tagData.error = nil
 									end
-									
+
 									if( tagData.error ) then
 										AceRegistry:NotifyChange("ShadowedUF")
 										return ""
 									end
-									
+
 									return true
 								end,
 								set = function(info, value)
 									tagData.frequency = tonumber(value)
 									tagData.frequency = tagData.frequency < 0 and 0 or tagData.frequency
-									
+
 									set(info, tagData.frequency)
 								end,
 								get = function(info) return tostring(get(info) or "") end,
@@ -6039,17 +6036,17 @@ local function loadTagOptions()
 										AceRegistry:NotifyChange("ShadowedUF")
 										return ""
 									end
-									
+
 									tagData.eventError = text
 									tagData.error = nil
-									return true			
+									return true
 								end,
 								set = set,
 								get = function(info)
 									if( tagData.eventError ) then
 										return tagData.eventError
 									end
-									
+
 									return get(info)
 								end,
 							},
@@ -6064,7 +6061,7 @@ local function loadTagOptions()
 									if( ShadowUF.Tags.defaultTags[tagData.name] ) then
 										return true
 									end
-									
+
 									local funct, msg = loadstring("return " .. text)
 									if( not string.match(text, "function") ) then
 										tagData.error = L["You must wrap your code in a function."]
@@ -6076,20 +6073,20 @@ local function loadTagOptions()
 										tagData.error = nil
 										tagData.funcError = nil
 									end
-									
+
 									AceRegistry:NotifyChange("ShadowedUF")
 									return tagData.error and "" or true
 								end,
 								set = function(info, value)
 									value = string.gsub(value, "||", "|")
 									set(info, value)
-									
+
 									-- Try and automatically identify the events this tag is going to want to use
 									if( not tagData.discovery ) then
 										tagData.eventError = nil
 										ShadowUF.db.profile.tags[tagData.name].events = ShadowUF.Tags:IdentifyEvents(value) or ""
 									end
-									
+
 									ShadowUF.Tags:Reload(tagData.name)
 								end,
 								get = function(info)
@@ -6111,9 +6108,9 @@ local function loadTagOptions()
 									if( category ) then
 										Config.tagTextTable.args[category].args[tagData.name] = nil
 									end
-									
+
 									options.args.tags.args.general.args.list.args[tagData.name] = nil
-									
+
 									ShadowUF.db.profile.tags[tagData.name] = nil
 									ShadowUF.tagFunc[tagData.name] = nil
 									ShadowUF.Tags:Reload(tagData.name)
@@ -6191,12 +6188,12 @@ local function loadTagOptions()
 			},
 		},
 	}
-	
+
 	-- Load the initial tag list
 	for tag in pairs(ShadowUF.Tags.defaultTags) do
 		options.args.tags.args.general.args.list.args[tag] = tagTable
 	end
-	
+
 	for tag, data in pairs(ShadowUF.db.profile.tags) do
 		options.args.tags.args.general.args.list.args[tag] = tagTable
 	end
@@ -6214,37 +6211,37 @@ local function loadVisibilityOptions()
 			unitBlacklist[unit] = true
 		end
 	end
-		
+
 	local globalVisibility = {}
 	local function set(info, value)
 		local key = info[#(info)]
 		local unit = info[#(info) - 1]
 		local area = info[#(info) - 2]
-		
+
 		if( key == "enabled" ) then
 			key = ""
 		end
-		
+
 		if( value == nil ) then
 			value = false
 		elseif( value == false ) then
 			value = nil
 		end
-		
+
 		for _, configUnit in pairs(ShadowUF.unitList) do
 			if( ( configUnit == unit or unit == "global" ) and not unitBlacklist[configUnit] ) then
 				ShadowUF.db.profile.visibility[area][configUnit .. key] = value
 			end
 		end
-		
+
 		-- Annoying yes, but only way that works
 		ShadowUF.Units:CheckPlayerZone(true)
-		
+
 		if( unit == "global" ) then
 			globalVisibility[area .. key] = value
 		end
 	end
-	
+
 	local function get(info)
 		local key = info[#(info)]
 		local unit = info[#(info) - 1]
@@ -6260,17 +6257,17 @@ local function loadVisibilityOptions()
 			elseif( globalVisibility[area .. key] == nil ) then
 				return false
 			end
-			
+
 			return globalVisibility[area .. key]
 		elseif( ShadowUF.db.profile.visibility[area][unit .. key] == false ) then
 			return nil
 		elseif( ShadowUF.db.profile.visibility[area][unit .. key] == nil ) then
 			return false
 		end
-			
+
 		return ShadowUF.db.profile.visibility[area][unit .. key]
 	end
-	
+
 	local function getHelp(info)
 		local unit = info[#(info) - 1]
 		local area  = info[#(info) - 2]
@@ -6278,14 +6275,14 @@ local function loadVisibilityOptions()
 		if( key == "enabled" ) then
 			key = ""
 		end
-		
+
 		local current
 		if( unit == "global" ) then
 			current = globalVisibility[area .. key]
 		else
 			current = ShadowUF.db.profile.visibility[area][unit .. key]
 		end
-		
+
 		if( current == false ) then
 			return string.format(L["Disabled in %s"], AREA_NAMES[area])
 		elseif( current == true ) then
@@ -6294,7 +6291,7 @@ local function loadVisibilityOptions()
 
 		return L["Using unit settings"]
 	end
-	
+
 	local areaTable = {
 		type = "group",
 		order = function(info) return info[#(info)] == "none" and 2 or 1 end,
@@ -6306,7 +6303,7 @@ local function loadVisibilityOptions()
 		set = set,
 		args = {},
 	}
-	
+
 	Config.visibilityTable = {
 		type = "group",
 		order = function(info) return info[#(info)] == "global" and 1 or (getUnitOrder(info) + 1) end,
@@ -6325,8 +6322,8 @@ local function loadVisibilityOptions()
 						name = function(info)
 							return string.format(L["Disabling a module on this page disables it while inside %s. Do not disable a module here if you do not want this to happen!."], string.lower(AREA_NAMES[info[2]]))
 						end,
-					},		
-				}, 	
+					},
+				},
 			},
 			enabled = {
 				order = 0.25,
@@ -6350,7 +6347,7 @@ local function loadVisibilityOptions()
 			},
 		}
 	}
-	
+
 	local moduleTable = {
 		order = 1,
 		type = "toggle",
@@ -6363,20 +6360,20 @@ local function loadVisibilityOptions()
 		end,
 		arg = 1,
 	}
-		
+
 	for key, module in pairs(ShadowUF.modules) do
 		if( module.moduleName ) then
 			Config.visibilityTable.args[key] = moduleTable
 		end
 	end
-	
+
 	areaTable.args.global = Config.visibilityTable
 	for _, unit in pairs(ShadowUF.unitList) do
 		if( not unitBlacklist[unit] ) then
 			areaTable.args[unit] = Config.visibilityTable
 		end
 	end
-	
+
 	options.args.visibility = {
 		type = "group",
 		childGroups = "tab",
@@ -6431,7 +6428,7 @@ local function loadAuraIndicatorsOptions()
 			local aura = Indicators.auraConfig[name]
 			groupList[aura.group] = aura.group
 		end
-	
+
 		return groupList
 	end
 
@@ -6447,7 +6444,7 @@ local function loadAuraIndicatorsOptions()
 				auraList[name] = name
 			end
 		end
-	
+
 		return auraList
 	end
 
@@ -6458,7 +6455,7 @@ local function loadAuraIndicatorsOptions()
 		for key, indicator in pairs(ShadowUF.db.profile.auraIndicators.indicators) do
 			indicatorList[key] = indicator.name
 		end
-		
+
 		return indicatorList
 	end
 
@@ -6471,10 +6468,10 @@ local function loadAuraIndicatorsOptions()
 			Indicators.auraConfig[spellID] = nil
 		end
 	end
-	
+
 	local groupMap, auraMap, linkMap = {}, {}, {}
 	local groupID, auraID, linkID = 0, 0, 0
-	
+
 	local reverseClassMap = {}
 	for token, text in pairs(LOCALIZED_CLASS_NAMES_MALE) do
 		reverseClassMap[text] = token
@@ -6507,12 +6504,12 @@ local function loadAuraIndicatorsOptions()
 					totalInGroup = totalInGroup + 1
 				end
 			end
-			
+
 			return string.format(L["%d auras in group"], totalInGroup)
 		end,
 		args = {},
 	}
-	
+
 	local auraConfigTable = {
 		order = 0,
 		type = "group",
@@ -6565,17 +6562,17 @@ local function loadAuraIndicatorsOptions()
 		get = function(info)
 			local aura = auraMap[info[#(info) - 1]]
 			local key = info[#(info)]
-			local config = Indicators.auraConfig[aura]			
+			local config = Indicators.auraConfig[aura]
 			if( key == "color" ) then
 				return config.r, config.g, config.b, config.alpha
 			elseif( key == "selfColor" ) then
 				if( not config.selfColor ) then return 0, 0, 0, 1 end
 				return config.selfColor.r, config.selfColor.g, config.selfColor.b, config.selfColor.alpha
 			end
-			
+
 			return config[key]
 		end,
-		args = {	
+		args = {
 			indicator = {
 				order = 1,
 				type = "select",
@@ -6614,7 +6611,7 @@ local function loadAuraIndicatorsOptions()
 				name = L["Your aura color"],
 				desc = L["This color will be used if the indicator shown is your own, only applies if icons are not used.\nHandy if you want to know if a target has a Rejuvenation on them, but you also want to know if you were the one who casted the Rejuvenation."],
 				hidden = false,
-				disabled = function(info) 
+				disabled = function(info)
 					if( Indicators.auraConfig[auraMap[info[#(info) - 1]]].icon ) then return true end
 					return Indicators.auraConfig[auraMap[info[#(info) - 1]]].player
 				end,
@@ -6672,7 +6669,7 @@ local function loadAuraIndicatorsOptions()
 					ShadowUF.db.profile.auraIndicators.auras[aura] = nil
 					ShadowUF.db.profile.auraIndicators.missing[aura] = nil
 					Indicators.auraConfig[aura] = nil
-					
+
 					-- Check if the group should disappear
 					local groupList = getAuraGroup(info)
 					for groupID, name in pairs(groupMap) do
@@ -6683,7 +6680,7 @@ local function loadAuraIndicatorsOptions()
 							groupMap[groupID] = nil
 						end
 					end
-					
+
 					ShadowUF.Layout:Reload()
 				end,
 			},
@@ -6714,7 +6711,7 @@ local function loadAuraIndicatorsOptions()
 
 			return ShadowUF.db.profile.auraIndicators.filters[indicator][filter][key]
 		end,
-		args = {	
+		args = {
 			help = {
 				order = 0,
 				type = "group",
@@ -6783,7 +6780,7 @@ local function loadAuraIndicatorsOptions()
 			}
 		}
 	}
-	
+
 	local indicatorTable = {
 		order = 1,
 		type = "group",
@@ -6868,13 +6865,13 @@ local function loadAuraIndicatorsOptions()
 						confirmText = L["Are you sure you want to delete this indicator?"],
 						func = function(info)
 							local indicator = info[#(info) - 2]
-							
+
 							options.args.auraIndicators.args.indicators.args[indicator] = nil
 							options.args.auraIndicators.args.auras.args.filters.args[indicator] = nil
 
 							ShadowUF.db.profile.auraIndicators.indicators[indicator] = nil
 							ShadowUF.db.profile.auraIndicators.filters[indicator] = nil
-							
+
 							-- Any aura that was set to us should be swapped back to none
 							for name in pairs(ShadowUF.db.profile.auraIndicators.auras) do
 								local aura = Indicators.auraConfig[name]
@@ -6883,7 +6880,7 @@ local function loadAuraIndicatorsOptions()
 									writeAuraTable(name)
 								end
 							end
-							
+
 							ShadowUF.Layout:Reload()
 						end,
 					},
@@ -6891,7 +6888,7 @@ local function loadAuraIndicatorsOptions()
 			},
 		},
 	}
-	
+
 	local parentLinkTable = {
 		order = 3,
 		type = "group",
@@ -6905,7 +6902,7 @@ local function loadAuraIndicatorsOptions()
 		end,
 		args = {},
 	}
-	
+
 	local childLinkTable = {
 		order = 1,
 		icon = function(info)
@@ -6919,7 +6916,7 @@ local function loadAuraIndicatorsOptions()
 		hidden = function(info)
 			local aura = linkMap[info[#(info)]]
 			local parent = linkMap[info[#(info) - 1]]
-			
+
 			return ShadowUF.db.profile.auraIndicators.linked[aura] ~= parent
 		end,
 		type = "group",
@@ -6935,7 +6932,7 @@ local function loadAuraIndicatorsOptions()
 					local parent = ShadowUF.db.profile.auraIndicators.linked[aura]
 					ShadowUF.db.profile.auraIndicators.linked[aura] = nil
 					parentLinkTable.args[auraID] = nil
-					
+
 					local found
 					for _, to in pairs(ShadowUF.db.profile.auraIndicators.linked) do
 						if( to == parent ) then
@@ -6943,7 +6940,7 @@ local function loadAuraIndicatorsOptions()
 							break
 						end
 					end
-					
+
 					if( not found ) then
 						for id, name in pairs(linkMap) do
 							if( name == parent ) then
@@ -6952,7 +6949,7 @@ local function loadAuraIndicatorsOptions()
 							end
 						end
 					end
-					
+
 					ShadowUF.Layout:Reload()
 				end,
 			},
@@ -6960,7 +6957,7 @@ local function loadAuraIndicatorsOptions()
 	}
 
 	local addAura, addLink, setGlobalUnits, globalConfig = {}, {}, {}, {}
-	
+
 	-- Per unit enabled status
 	unitTable = {
 		order = ShadowUF.Config.getUnitOrder or 1,
@@ -7013,7 +7010,7 @@ local function loadAuraIndicatorsOptions()
 			},
 		}
 	}
-	
+
 	local unitFilterTable = {
 		order = 1,
 		type = "toggle",
@@ -7034,7 +7031,7 @@ local function loadAuraIndicatorsOptions()
 		set = function(info, value)
 			local key = "filter-" .. info[#(info)]
 			globalConfig[key] = not value and true or nil
-			
+
 			for unit in pairs(setGlobalUnits) do
 				ShadowUF.db.profile.units[unit].auraIndicators[key] = globalConfig[key]
 			end
@@ -7056,7 +7053,7 @@ local function loadAuraIndicatorsOptions()
 		desc = function(info)
 			local auraIndicators = ShadowUF.db.profile.units[info[3]].auraIndicators
 			local group = groupName(groupMap[info[#(info)]])
-			
+
 			return auraIndicators[group] and string.format(L["Disabled for %s."], L.units[info[3]]) or string.format(L["Enabled for %s."], L.units[info[3]])
 		end,
 		set = function(info, value) ShadowUF.db.profile.units[info[3]].auraIndicators[groupMap[info[#(info)]]] = not value and true or nil end,
@@ -7078,14 +7075,14 @@ local function loadAuraIndicatorsOptions()
 		set = function(info, value)
 			local auraGroup = groupMap[info[#(info)]]
 			globalConfig[auraGroup] = not value and true or nil
-			
+
 			for unit in pairs(setGlobalUnits) do
 				ShadowUF.db.profile.units[unit].auraIndicators[auraGroup] = globalConfig[auraGroup]
 			end
 		end,
 		get = function(info, value) return not globalConfig[groupMap[info[#(info)]]] end
 	}
-	
+
 	local enabledUnits = {}
 	local function getEnabledUnits()
 		table.wipe(enabledUnits)
@@ -7094,12 +7091,12 @@ local function loadAuraIndicatorsOptions()
 				enabledUnits[unit] = L.units[unit]
 			end
 		end
-		
+
 		return enabledUnits
 	end
 
 	local widthReset
-			
+
 	-- Actual tab view thing
 	options.args.auraIndicators = {
 		order = 4.5,
@@ -7120,7 +7117,7 @@ local function loadAuraIndicatorsOptions()
 						type = "group",
 						name = L["Add Indicator"],
 						args = {
-							add = { 
+							add = {
 								order = 0,
 								type = "group",
 								inline = true,
@@ -7214,16 +7211,16 @@ local function loadAuraIndicatorsOptions()
 										-- so will cheat it, and jump start it by storing the texture if we find it from GetSpellInfo directly
 										Indicators.auraConfig[addAura.name] = {indicator = "", group = group, iconTexture = select(3, GetSpellInfo(addAura.name)), priority = 0, r = 0, g = 0, b = 0}
 										writeAuraTable(addAura.name)
-										
+
 										auraID = auraID + 1
 										auraMap[tostring(auraID)] = addAura.name
 										auraGroupTable.args[tostring(auraID)] = auraConfigTable
 									end
-									
+
 									addAura.name = nil
 									addAura.custom = nil
 									addAura.group = nil
-									
+
 									-- Check if the group exists
 									local gID
 									for id, name in pairs(groupMap) do
@@ -7231,8 +7228,8 @@ local function loadAuraIndicatorsOptions()
 											gID = id
 											break
 										end
-									end											
-									
+									end
+
 									if( not gID ) then
 										groupID = groupID + 1
 										groupMap[tostring(groupID)] = group
@@ -7241,11 +7238,11 @@ local function loadAuraIndicatorsOptions()
 										options.args.auraIndicators.args.units.args.global.args.groups.args[tostring(groupID)] = globalUnitGroupTable
 										options.args.auraIndicators.args.auras.args.groups.args[tostring(groupID)] = auraGroupTable
 									end
-									
+
 									-- Shunt the user to the this groups page
 									AceDialog.Status.ShadowedUF.children.auraIndicators.children.auras.status.groups.selected = tostring(gID or groupID)
 									AceRegistry:NotifyChange("ShadowedUF")
-									
+
 									ShadowUF.Layout:Reload()
 								end,
 							},
@@ -7322,7 +7319,7 @@ local function loadAuraIndicatorsOptions()
 											pID = id
 										end
 									end
-									
+
 									if( not pID ) then
 										linkID = linkID + 1
 										pID = linkID
@@ -7334,14 +7331,14 @@ local function loadAuraIndicatorsOptions()
 										lID = linkID
 										linkMap[tostring(linkID)] = addLink.from
 									end
-																		
+
 									ShadowUF.db.profile.auraIndicators.linked[addLink.from] = addLink.to
 									options.args.auraIndicators.args.linked.args[tostring(pID)] = parentLinkTable
 									parentLinkTable.args[tostring(lID)] = childLinkTable
 
 									addLink.from = nil
 									addLink.to = nil
-									
+
 									ShadowUF.Layout:Reload()
 								end,
 							},
@@ -7434,7 +7431,7 @@ local function loadAuraIndicatorsOptions()
 		end,
 		args = {},
 	}
-	
+
 	local classAuraTable = {
 		order = 1,
 		type = "toggle",
@@ -7471,15 +7468,15 @@ local function loadAuraIndicatorsOptions()
 		get = function(info)
 			local aura = auraMap[info[#(info)]]
 			local class = info[#(info) - 1]
-			
+
 			return not ShadowUF.db.profile.auraIndicators.disabled[class][aura]
 		end,
 	}
-		
-	-- Build links	
+
+	-- Build links
 	local addedFrom = {}
 	for from, to in pairs(ShadowUF.db.profile.auraIndicators.linked) do
-		local pID = addedFrom[to] 
+		local pID = addedFrom[to]
 		if( not pID ) then
 			linkID = linkID + 1
 			pID = linkID
@@ -7488,15 +7485,15 @@ local function loadAuraIndicatorsOptions()
 		end
 
 		linkID = linkID + 1
-		
+
 		ShadowUF.db.profile.auraIndicators.linked[from] = to
 		options.args.auraIndicators.args.linked.args[tostring(pID)] = parentLinkTable
 		parentLinkTable.args[tostring(linkID)] = childLinkTable
-		
+
 		linkMap[tostring(linkID)] = from
 		linkMap[tostring(pID)] = to
 	end
-		
+
 	-- Build the aura configuration
 	local groups = {}
 	for name in pairs(ShadowUF.db.profile.auraIndicators.auras) do
@@ -7506,7 +7503,7 @@ local function loadAuraIndicatorsOptions()
 			auraGroupTable.args[tostring(auraID)] = auraConfigTable
 			classTable.args[tostring(auraID)] = classAuraTable
 			auraID = auraID + 1
-			
+
 			groups[aura.group] = true
 		end
 	end
@@ -7518,7 +7515,7 @@ local function loadAuraIndicatorsOptions()
 
 		options.args.auraIndicators.args.units.args.global.args.groups.args[tostring(groupID)] = globalUnitGroupTable
 		options.args.auraIndicators.args.auras.args.groups.args[tostring(groupID)] = auraGroupTable
-		
+
 		groupID = groupID + 1
 	end
 
@@ -7531,18 +7528,18 @@ local function loadAuraIndicatorsOptions()
 	for unit, config in pairs(ShadowUF.db.profile.units) do
 		options.args.auraIndicators.args.units.args[unit] = unitTable
 	end
-	
+
 	-- Build class status thing
 	for classToken in pairs(RAID_CLASS_COLORS) do
 		options.args.auraIndicators.args.classes.args[classToken] = classTable
 	end
-	
+
 	-- Quickly build the indicator one
 	for key in pairs(ShadowUF.db.profile.auraIndicators.indicators) do
 		options.args.auraIndicators.args.indicators.args[key] = indicatorTable
 		options.args.auraIndicators.args.auras.args.filters.args[key] = auraFilterConfigTable
 	end
-	
+
 	-- Automatically unlock the advanced text configuration for raid frames, regardless of advanced being enabled
 	local advanceTextTable = ShadowUF.Config.advanceTextTable
 	local originalHidden = advanceTextTable.args.sep.hidden
@@ -7550,7 +7547,7 @@ local function loadAuraIndicatorsOptions()
 		if( info[2] == "raid" ) then return false end
 		return originalHidden(info)
 	end
-	
+
 	advanceTextTable.args.anchorPoint.hidden = unlockRaidText
 	advanceTextTable.args.sep.hidden = unlockRaidText
 	advanceTextTable.args.x.hidden = unlockRaidText
@@ -7569,7 +7566,7 @@ local function loadOptions()
 	loadHideOptions()
 	loadTagOptions()
 	loadFilterOptions()
-	loadVisibilityOptions()	
+	loadVisibilityOptions()
 	loadAuraIndicatorsOptions()
 
 	-- Ordering
@@ -7585,7 +7582,7 @@ local function loadOptions()
 
 	-- So modules can access it easier/debug
 	Config.options = options
-	
+
 	-- Options finished loading, fire callback for any non-default modules that want to be included
 	ShadowUF:FireModuleEvent("OnConfigurationLoad")
 end
@@ -7594,15 +7591,15 @@ local defaultToggles
 function Config:Open()
 	AceDialog = AceDialog or LibStub("AceConfigDialog-3.0")
 	AceRegistry = AceRegistry or LibStub("AceConfigRegistry-3.0")
-	
+
 	if( not registered ) then
 		loadOptions()
-		
+
 		AceRegistry:RegisterOptionsTable("ShadowedUF", options, true)
 		AceDialog:SetDefaultSize("ShadowedUF", 895, 570)
 		registered = true
 	end
-	
+
 	AceDialog:Open("ShadowedUF")
 
 	if( not defaultToggles ) then

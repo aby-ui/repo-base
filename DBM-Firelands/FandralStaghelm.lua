@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(197, "DBM-Firelands", nil, 78)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190625143316")
+mod:SetRevision("20190808031548")
 mod:SetCreatureID(52571)
 mod:SetEncounterID(1185)
 mod:SetZone()
@@ -41,7 +41,7 @@ local berserkTimer				= mod:NewBerserkTimer(600)
 
 mod:AddBoolOption("RangeFrameSeeds", true)
 mod:AddBoolOption("RangeFrameCat", false)--Diff options for each ability cause seeds strat is pretty universal, don't blow up raid, but leaps may or may not use a stack strategy, plus melee will never want it on by default.
-mod:AddBoolOption("IconOnLeapingFlames", false)
+mod:AddSetIconOption("IconOnLeapingFlames", 98476, false, false, {8})
 
 mod.vb.abilityCount = 0
 mod.vb.recentlyJumped = false

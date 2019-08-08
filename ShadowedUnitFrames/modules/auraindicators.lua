@@ -15,11 +15,11 @@ Indicators.auraConfig = setmetatable({}, {
 			elseif( msg ) then
 				error(msg, 3)
 			end
-			
+
 			tbl[index] = func
 			if( not tbl[index].group ) then tbl[index].group = "Miscellaneous" end
 		end
-		
+
 		return tbl[index]
 end})
 
@@ -31,7 +31,7 @@ function Indicators:OnEnable(frame)
 	frame.auraIndicators = frame.auraIndicators or CreateFrame("Frame", nil, frame)
 	frame.auraIndicators:SetFrameLevel(4)
 	frame.auraIndicators:Show()
-			
+
 	-- Of course, watch for auras
 	frame:RegisterUnitEvent("UNIT_AURA", self, "UpdateAuras")
 	frame:RegisterUpdateFunc(self, "UpdateAuras")
@@ -44,7 +44,7 @@ end
 
 function Indicators:OnLayoutApplied(frame)
 	if( not frame.auraIndicators ) then return end
-		
+
 	-- Create indicators
 	local id = 1
 	for key, indicatorConfig in pairs(ShadowUF.db.profile.auraIndicators.indicators) do
@@ -73,25 +73,25 @@ function Indicators:OnLayoutApplied(frame)
 			indicator.stack:SetWidth(18)
 			indicator.stack:SetHeight(10)
 			indicator.stack:SetJustifyH("RIGHT")
-			
+
 			frame.auraIndicators["indicator-" .. id] = indicator
 		end
 
 		-- Quick access
 		indicator.filters = ShadowUF.db.profile.auraIndicators.filters[key]
 		indicator.config = ShadowUF.db.profile.units[frame.unitType].auraIndicators
-		
+
 		-- Set up the sizing options
 		indicator:SetHeight(indicatorConfig.height)
 		indicator.texture:SetWidth(indicatorConfig.width - 1)
 		indicator:SetWidth(indicatorConfig.width)
 		indicator.texture:SetHeight(indicatorConfig.height - 1)
-		
+
 		ShadowUF.Layout:AnchorFrame(frame, indicator, indicatorConfig)
-		
+
 		-- Let the auras module quickly access indicators without having to use index
 		frame.auraIndicators[key] = indicator
-		
+
 		id = id + 1
 	end
 end
@@ -213,7 +213,7 @@ function Indicators:UpdateIndicators(frame)
 			else
 				indicator.cooldown:Hide()
 			end
-			
+
 			-- Show either the icon, or a solid color
 			if( indicator.showIcon and indicator.spellIcon ) then
 				indicator.texture:SetTexture(indicator.spellIcon)
@@ -222,7 +222,7 @@ function Indicators:UpdateIndicators(frame)
 				indicator.texture:SetColorTexture(indicator.colorR, indicator.colorG, indicator.colorB)
 				indicator:SetBackdropColor(0, 0, 0, 1)
 			end
-			
+
 			-- Show aura stack
 			if( indicator.showStack and indicator.spellStack > 1 ) then
 				indicator.stack:SetText(indicator.spellStack)
@@ -230,7 +230,7 @@ function Indicators:UpdateIndicators(frame)
 			else
 				indicator.stack:Hide()
 			end
-			
+
 			indicator:Show()
 		else
 			indicator:Hide()
@@ -252,17 +252,17 @@ function Indicators:UpdateAuras(frame)
 			end
 		end
 	end
-	
+
 	-- If they are dead, don't bother showing any indicators yet
 	if( UnitIsDeadOrGhost(frame.unit) or not UnitIsConnected(frame.unit) ) then
 		self:UpdateIndicators(frame)
 		return
 	end
-	
+
 	-- Scan auras
 	scanAuras(frame, "HELPFUL", "buffs")
 	scanAuras(frame, "HARMFUL", "debuffs")
-	
+
 	-- Check for any indicators that are triggered due to something missing
 	for name in pairs(ShadowUF.db.profile.auraIndicators.missing) do
 		if( not auraList[name] and self.auraConfig[name] ) then
@@ -281,7 +281,7 @@ function Indicators:UpdateAuras(frame)
 			end
 		end
 	end
-	
+
 	-- Now force the indicators to update
 	self:UpdateIndicators(frame)
 end

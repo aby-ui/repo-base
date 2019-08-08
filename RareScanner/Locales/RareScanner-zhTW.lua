@@ -14,6 +14,36 @@ if AL then
 	AL["CLEAR_FILTERS_SEARCH"] = "顯示全部"
 	AL["CLEAR_FILTERS_SEARCH_DESC"] = "重設之前的搜尋並且顯示完整的清單"
 	AL["CLICK_TARGET"] = "點一下將NPC設為目標"
+	--[[Translation missing --]]
+	AL["CMD_HELP1"] = "List of commands"
+	--[[Translation missing --]]
+	AL["CMD_HELP2"] = "- Type \"/rarescanner show\" to show all the icons on the world map"
+	--[[Translation missing --]]
+	AL["CMD_HELP3"] = "- Type \"/rarescanner hide\" to hide all the icons on the world map"
+	--[[Translation missing --]]
+	AL["CMD_HELP4"] = "- Type \"/rarescanner toggle\" to show/hide all the icons on the world map"
+	--[[Translation missing --]]
+	AL["CMD_HELP5"] = "- Type \"/rarescanner toggle rares\" or \"/rarescanner tr\" to show/hide icons of NPCs on the world map"
+	--[[Translation missing --]]
+	AL["CMD_HELP6"] = "- Type \"/rarescanner toggle events\" or \"/rarescanner te\" to show/hide icons of events on the world map"
+	--[[Translation missing --]]
+	AL["CMD_HELP7"] = "- Type \"/rarescanner toggle treasures\" or \"/rarescanner tt\" to show/hide icons of treasures on the world map"
+	--[[Translation missing --]]
+	AL["CMD_HIDE"] = "Hiding RareScanner icons in the world map"
+	--[[Translation missing --]]
+	AL["CMD_HIDE_EVENTS"] = "Hiding RareScanner event icons in the world map"
+	--[[Translation missing --]]
+	AL["CMD_HIDE_RARES"] = "Hiding RareScanner rare icons in the world map"
+	--[[Translation missing --]]
+	AL["CMD_HIDE_TREASURES"] = "Hiding RareScanner treasure icons in the world map"
+	--[[Translation missing --]]
+	AL["CMD_SHOW"] = "Showing RareScanner icons in the world map"
+	--[[Translation missing --]]
+	AL["CMD_SHOW_EVENTS"] = "Showing RareScanner event icons in the world map"
+	--[[Translation missing --]]
+	AL["CMD_SHOW_RARES"] = "Showing RareScanner rare icons in the world map"
+	--[[Translation missing --]]
+	AL["CMD_SHOW_TREASURES"] = "Showing RareScanner treasure icons in the world map"
 	AL["CONTAINER"] = "箱子"
 	AL["DATABASE_HARD_RESET"] = "由於最近的資料片以及最新版的RareScanner在數據庫上發生很大的變化，這需要重置數據庫以避免矛盾。 抱歉給你帶來不便。"
 	AL["DISABLE_SEARCHING_RARE_TOOLTIP"] = "停用這個稀有NPC的通知"
@@ -94,6 +124,10 @@ if AL then
 	AL["LOOT_DISPLAY_OPTIONS_DESC"] = "顯示戰利品列的選項"
 	AL["LOOT_FILTER_COLLECTED"] = "過濾已收藏的寵物、坐騎以及玩具。"
 	AL["LOOT_FILTER_COLLECTED_DESC"] = "啟用以後，只有您尚未收集的坐騎、寵物和玩具才會顯示在戰利品欄上。此過濾器不會影響任何其他類別的戰利品。"
+	--[[Translation missing --]]
+	AL["LOOT_FILTER_COMPLETED_QUEST"] = "Filter quest items that don't begin a new quest"
+	--[[Translation missing --]]
+	AL["LOOT_FILTER_COMPLETED_QUEST_DESC"] = "When activated, any item that is a requirement for a quest, or that begins an already completed quest, won't show up on the loot bar."
 	AL["LOOT_FILTER_NOT_EQUIPABLE"] = "過濾不可裝備物品"
 	AL["LOOT_FILTER_NOT_EQUIPABLE_DESC"] = "取消以後，此角色無法裝備的護甲與武器不會出現在戰利品欄上。此過濾器不會影響其他類別任何的戰利品。"
 	AL["LOOT_FILTER_NOT_TRANSMOG"] = "只顯示可塑形的護甲與武器"
@@ -155,18 +189,26 @@ if AL then
 	AL["NOT_TARGETEABLE"] = "無法設為目標"
 	AL["NOTE_130350"] = "你必須沿著這個位置右邊的路徑騎上稀有到此箱子。"
 	AL["NOTE_131453"] = "你必須騎上[春天守護者-暫譯]到這個位置，這匹馬是友善的稀有怪，通常可在箱子左邊的路徑找到。"
+	AL["NOTE_135497"] = "僅在蜜露恩發放日常任務[來自諾達希爾的援助]時有效。該日常要求你在樹底下找蘑菇，當你點擊一個蘑菇時它會停滯，你需要在它消失前再點2個蘑菇，NPC才會出現"
+	--[[Translation missing --]]
+	AL["NOTE_149847"] = "When you aproach to him, he will tell you a colour that he hates. Once you know what colour it is, you have to go to the coordinates 63.41 where you will be painted that colour. When you will come back to his position, he will attack you."
 	AL["NOTE_150342"] = "在事件[鑽探機 DR-TR35]進行期間可用"
 	AL["NOTE_150394"] = "你需要把他帶到坐標63.38，那裡有一個藍色閃電裝置，當NPC觸碰到閃電時他會爆炸，然後你就可以拾取戰利品。"
 	AL["NOTE_151124"] = "你需要在事件[鑽探機 DR-JD99]進行期間（坐標59.67）從小怪身上拾取[砸壞的運輸繼電器]，然後在這個機器上使用"
+	--[[Translation missing --]]
+	AL["NOTE_151159"] = "He is available only when [Oglethorpe Obnoticus] is in Mechagon (coordinates 72.37). He wanders around Mechagon, so check in every street. Killing him makes [OOX-Avenger/MG] to spawn."
 	AL["NOTE_151202"] = "你需要在岸邊用水里的電線塔連接電線才能召喚他"
+	--[[Translation missing --]]
+	AL["NOTE_151296"] = "First check if [Oglethorpe Obnoticus] is in Mechagon (coordinates 72.37). If he is there, then you have to find and kill [OOX-Fleetfoot/MG] (it is a chicken robot wandering around Mechagon). Once you find him and kill him, come back to this icon's coordinates."
 	AL["NOTE_151308"] = "在事件[鑽探機]進行期間可用"
 	AL["NOTE_151569"] = "你需要一个[百噚誘餌]来召唤他。"
 	AL["NOTE_151627"] = "你需要在平台的機器上使用一個[發熱蒸發器線圈]。"
-	AL["NOTE_135497"] = "僅在蜜露恩發放日常任務[來自諾達希爾的援助]時有效。該日常要求你在樹底下找蘑菇，當你點擊一個蘑菇時它會停滯，你需要在它消失前再點2個蘑菇，NPC才會出現"
 	AL["NOTE_151933"] = "你需要使用[野獸機器人動力包]才能擊殺他（你可以在坐標60.41找到圖紙）"
 	AL["NOTE_152007"] = "它會在這個區域遊蕩，所以坐標可能不太精確。"
 	AL["NOTE_152113"] = "在事件[鑽探機 DR-CC88]進行期間可用"
 	AL["NOTE_152569"] = "你靠近他時他會告訴你一個他討厭的顏色，你要到坐標63.41被染成這個顏色，然後回來找他，他就會攻擊你。"
+	--[[Translation missing --]]
+	AL["NOTE_152570"] = "When you aproach to him, he will tell you a colour that he hates. Once you know what colour it is, you have to go to the coordinates 63.41 where you will be painted that colour. When you will come back to his position, he will attack you."
 	AL["NOTE_153000"] = "它會在這個區域遊蕩，所以坐標可能不太精確。"
 	AL["NOTE_153200"] = "在事件[鑽探機 DR-JD41]進行期間可用"
 	AL["NOTE_153205"] = "在事件[鑽探機 DR-JD99]進行期間可用"

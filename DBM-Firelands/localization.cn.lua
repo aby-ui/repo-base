@@ -10,16 +10,6 @@ local L
 -----------------
 L= DBM:GetModLocalization(192)
 
-L:SetWarningLocalization({
-})
-
-L:SetTimerLocalization({
-})
-
-L:SetOptionLocalization({
-	RangeFrame			= "距离监视器（10码）"
-})
-
 L:SetMiscLocalization({
 	EmoteSpiderlings 	= "幼蛛从巢穴里爬出来了！"
 })
@@ -28,18 +18,6 @@ L:SetMiscLocalization({
 -- Lord Rhyolith --
 -------------------
 L= DBM:GetModLocalization(193)
-
-L:SetWarningLocalization({
-})
-
-L:SetTimerLocalization({
-})
-
-L:SetOptionLocalization({
-})
-
-L:SetMiscLocalization({
-})
 
 ---------------
 -- Alysrazor --
@@ -62,14 +40,12 @@ L:SetOptionLocalization({
 	WarnNewInitiate		= "警报：新的炽炎之爪新兵",
 	timerNextInitiate	= "计时条：下一个炽炎之爪新兵",
 	TimerPhaseChange	= "计时条：下一阶段",
-	TimerHatchEggs		= "计时条：下一波蛋孵化",
-	InfoFrame			= "信息框：熔火之羽"
+	TimerHatchEggs		= "计时条：下一波蛋孵化"
 })
 
 L:SetMiscLocalization({
 	YellPull		= "凡人们，我现在侍奉新的主人！",
 	YellPhase2		= "天空，归我统治！",
-	FullPower		= "spell:99925",--This is in the emote, shouldn't need localizing, just msg:find
 	LavaWorms		= "熔岩火虫从地下涌出来了！",--Might use this one day if i feel it needs a warning for something. Or maybe pre warning for something else (like transition soon)
 	PowerLevel		= "熔火之羽",
 	East			= "东",
@@ -81,22 +57,6 @@ L:SetMiscLocalization({
 -- Shannox --
 -------------
 L= DBM:GetModLocalization(195)
-
-L:SetWarningLocalization({
-})
-
-L:SetTimerLocalization({
-})
-
-L:SetOptionLocalization({
-	SetIconOnFaceRage	= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(99945),
-	SetIconOnRage		= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(100415)
-})
-
-L:SetMiscLocalization({
-	Riplimb		= "裂肢",
-	Rageface	= "狂脸"
-})
 
 -------------
 -- Baleroc --
@@ -118,20 +78,13 @@ L:SetOptionLocalization({
 	warnStrike			= "警报：毁灭之刃或地狱火之刃",
 	timerStrike			= "计时条：下一次毁灭之刃或地狱火之刃",
 	TimerBladeActive	= "计时条：当前贝尔洛克之剑的持续时间",
-	TimerBladeNext		= "计时条：下一次贝尔洛克之剑",
-	SetIconOnCountdown	= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(99516),
-	SetIconOnTorment	= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(100232),
-	InfoFrame		= "信息框：活力火花堆叠层数",
-	RangeFrame			= "距离监视器（5码）：应对$spell:99404"
+	TimerBladeNext		= "计时条：下一次贝尔洛克之剑"
 })
 
 --------------------------------
 -- Majordomo Fandral Staghelm --
 --------------------------------
 L= DBM:GetModLocalization(197)
-
-L:SetWarningLocalization({
-})
 
 L:SetTimerLocalization({
 	timerNextSpecial	= "下一次%s（%d）"
@@ -140,11 +93,7 @@ L:SetTimerLocalization({
 L:SetOptionLocalization({
 	timerNextSpecial			= "计时条：下一次特殊技能",
 	RangeFrameSeeds				= "距离监视器（12码）：应对$spell:98450",
-	RangeFrameCat				= "距离监视器（10码）：应对$spell:98374",
-	IconOnLeapingFlames			= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(100208)
-})
-
-L:SetMiscLocalization({
+	RangeFrameCat				= "距离监视器（10码）：应对$spell:98374"
 })
 
 --------------
@@ -171,11 +120,9 @@ L:SetOptionLocalization({
 	warnEmpoweredSulf			= DBM_CORE_AUTO_ANNOUNCE_OPTIONS.cast:format(100997),
 	timerRageRagnaros			= DBM_CORE_AUTO_TIMER_OPTIONS.cast:format(101109),
 	TimerPhaseSons				= "计时条：烈焰之子阶段持续时间",
-	RangeFrame					= "距离监视器",
 	InfoHealthFrame				= "信息框：生命值少于10万的团员的列表",
 	MeteorFrame					= "信息框：$spell:99849的目标",
-	AggroFrame					= "信息框：没有获得熔岩元素仇恨的团员的列表",
-	BlazingHeatIcons			= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(100983)
+	AggroFrame					= "信息框：没有获得熔岩元素仇恨的团员的列表"
 })
 
 L:SetMiscLocalization({
@@ -203,18 +150,6 @@ L:SetGeneralLocalization({
 	name = "火焰之地小怪"
 })
 
-L:SetWarningLocalization({
-})
-
-L:SetTimerLocalization({
-})
-
-L:SetOptionLocalization({
-})
-
-L:SetMiscLocalization({
-})
-
 ----------------
 --  Volcanus  --
 ----------------
@@ -222,9 +157,6 @@ L = DBM:GetModLocalization("Volcanus")
 
 L:SetGeneralLocalization({
 	name = "沃卡纳斯"
-})
-
-L:SetWarningLocalization({
 })
 
 L:SetTimerLocalization({
@@ -248,16 +180,4 @@ L = DBM:GetModLocalization("NexusLegendary")
 
 L:SetGeneralLocalization({
 	name = "泰林纳尔"
-})
-
-L:SetWarningLocalization({
-})
-
-L:SetTimerLocalization({
-})
-
-L:SetOptionLocalization({
-})
-
-L:SetMiscLocalization({
 })

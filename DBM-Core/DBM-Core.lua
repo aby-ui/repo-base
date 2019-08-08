@@ -68,9 +68,9 @@ local function showRealDate(curseDate)
 end
 
 DBM = {
-	Revision = parseCurseDate("20190731182120"),
-	DisplayVersion = "8.2.11 alpha", -- the string that is shown as version
-	ReleaseRevision = releaseDate(2019, 7, 30) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+	Revision = parseCurseDate("20190808032050"),
+	DisplayVersion = "8.2.12", -- the string that is shown as version
+	ReleaseRevision = releaseDate(2019, 8, 7) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 }
 DBM.HighestRelease = DBM.ReleaseRevision --Updated if newer version is detected, used by update nags to reflect critical fixes user is missing on boss pulls
 
@@ -445,7 +445,7 @@ local iconSetRevision = {}
 local iconSetPerson = {}
 local addsGUIDs = {}
 local targetEventsRegistered = false
-local targetMonitor = nil
+local targetMonitor = {}
 local statusWhisperDisabled = false
 local statusGuildDisabled = false
 local dbmToc = 0
@@ -474,7 +474,6 @@ local bannedMods = { -- a list of "banned" (meaning they are replaced by another
 	"DBM-Suramar",--Renamed to DBM-Nighthold
 	"DBM-KulTiras",--Merged to DBM-Azeroth-BfA
 	"DBM-Zandalar",--Merged to DBM-Azeroth-BfA
-	"DBM-PvP",--Discontinued
 }
 
 
@@ -522,6 +521,8 @@ local UnitIsGroupLeader, UnitIsGroupAssistant = UnitIsGroupLeader, UnitIsGroupAs
 local PlaySoundFile, PlaySound = PlaySoundFile, PlaySound
 local Ambiguate = Ambiguate
 local C_TimerNewTicker, C_TimerAfter = C_Timer.NewTicker, C_Timer.After
+--Temp Upvalues for uncommon functions 8.2.5 changes
+local IsQuestFlaggedCompleted = C_QuestLog and C_QuestLog.IsQuestFlaggedCompleted or IsQuestFlaggedCompleted
 
 local SendAddonMessage = C_ChatInfo.SendAddonMessage
 
@@ -4139,9 +4140,9 @@ do
 			self:Debug(uId.." changed targets to "..targetName)
 		end
 		--Active BossUnitTargetScanner
-		if targetMonitor and UnitExists(uId.."target") and UnitPlayerOrPetInRaid(uId.."target") then
+		if targetMonitor[uId] and UnitExists(uId.."target") and UnitPlayerOrPetInRaid(uId.."target") then
 			self:Debug("targetMonitor exists, target exists", 2)
-			local modId, unitId, returnFunc = string.split("\t", targetMonitor)
+			local modId, unitId, returnFunc = string.split("\t", targetMonitor[uId])
 			self:Debug("targetMonitor: "..modId..", "..unitId..", "..returnFunc, 2)
 			local tanking, status = UnitDetailedThreatSituation(unitId, unitId.."target")--Tanking may return 0 if npc is temporarily looking at an NPC (IE fracture) but status will still be 3 on true tank
 			if tanking or (status == 3) then
@@ -4151,7 +4152,7 @@ do
 			local mod = self:GetModByName(modId)
 			self:Debug("targetMonitor success, a valid target that's not a tank", 2)
 			mod[returnFunc](mod, self:GetUnitFullName(unitId.."target"), unitId.."target", unitId)--Return results to warning function with all variables.
-			targetMonitor = nil
+			targetMonitor[uId] = nil
 		end
 	end
 end
@@ -5661,7 +5662,7 @@ do
 		if id then
 			local spellId = tonumber(id)
 			if spellId then
-				local spellName = DBM:GetSpellInfo(spellId)
+				local spellName = DBM:GetSpellInfo(spellId) or DBM_CORE_UNKNOWN
 				self:Debug("CHAT_MSG_RAID_BOSS_EMOTE fired: "..sender.."'s "..spellName.."("..spellId..")", 2)
 			end
 		end
@@ -6352,7 +6353,7 @@ do
 				bossuIdFound = false
 				eeSyncSender = {}
 				eeSyncReceived = 0
-				targetMonitor = nil
+				twipe(targetMonitor)
 				self:CreatePizzaTimer(time, "", nil, nil, nil, true)--Auto Terminate infinite loop timers on combat end
 				self:TransitionToDungeonBGM(false, true)
 				self:Schedule(22, self.TransitionToDungeonBGM, self)
@@ -7644,7 +7645,7 @@ function bossModPrototype:CheckInterruptFilter(sourceGUID, force, checkCooldown,
 	if (DBM.Options.FilterInterrupt2 == "onlyTandF") or self.isTrashMod and (DBM.Options.FilterInterrupt2 == "TandFandBossCooldown") then
 		requireCooldown = false
 	end
-	if requireCooldown and not UnitIsDeadOrGhost("player") and ((GetSpellCooldown(6552)) ~= 0 or (GetSpellCooldown(47528)) ~= 0 or (GetSpellCooldown(282151)) ~= 0 or (GetSpellCooldown(2139)) ~= 0 or (GetSpellCooldown(1766)) ~= 0 or (GetSpellCooldown(106839)) ~= 0 or (GetSpellCooldown(96231)) ~= 0 or (GetSpellCooldown(15487)) ~= 0 or (GetSpellCooldown(57994)) ~= 0 or (GetSpellCooldown(183752)) ~= 0 or (GetSpellCooldown(78675)) ~= 0) then
+	if requireCooldown and (UnitIsDeadOrGhost("player") or (GetSpellCooldown(6552)) ~= 0 or (GetSpellCooldown(47528)) ~= 0 or (GetSpellCooldown(282151)) ~= 0 or (GetSpellCooldown(2139)) ~= 0 or (GetSpellCooldown(1766)) ~= 0 or (GetSpellCooldown(106839)) ~= 0 or (GetSpellCooldown(96231)) ~= 0 or (GetSpellCooldown(15487)) ~= 0 or (GetSpellCooldown(57994)) ~= 0 or (GetSpellCooldown(183752)) ~= 0 or (GetSpellCooldown(78675)) ~= 0) then
 		InterruptAvailable = false--checkCooldown check requested and player has no spell that can interrupt available (or is dead)
 	end
 	if InterruptAvailable and (ignoreTandF or UnitGUID("target") == sourceGUID or UnitGUID("focus") == sourceGUID) then
@@ -7658,7 +7659,7 @@ function bossModPrototype:CheckDispelFilter()
 	--Druid: Nature's Cure (88423), Remove Corruption (2782), Monk: Detox (115450) Monk: Detox (218164), Priest: Purify (527) Priest: Purify Disease (213634), Paladin: Cleanse (4987), Shaman: Cleanse Spirit (51886), Purify Spirit (77130), Mage: Remove Curse (475), Warlock: Singe Magic (89808)
 	--start, duration, enable = GetSpellCooldown
 	--start & duration == 0 if spell not on cd
-	if UnitIsDeadOrGhost("player") then return true end--if dead, can't dispel
+	if UnitIsDeadOrGhost("player") then return false end--if dead, can't dispel
 	if (GetSpellCooldown(88423)) ~= 0 or (GetSpellCooldown(2782)) ~= 0 or (GetSpellCooldown(115450)) ~= 0 or (GetSpellCooldown(218164)) ~= 0 or (GetSpellCooldown(527)) ~= 0 or (GetSpellCooldown(213634)) ~= 0 or (GetSpellCooldown(4987)) ~= 0 or (GetSpellCooldown(51886)) ~= 0 or (GetSpellCooldown(77130)) ~= 0 or (GetSpellCooldown(475)) ~= 0 or (GetSpellCooldown(89808)) ~= 0 then
 		return false
 	end
@@ -7824,8 +7825,12 @@ do
 		DBM:Debug("Boss target scan for "..cidOrGuid.." should be aborting.", 3)
 	end
 
-	function bossModPrototype:BossUnitTargetScannerAbort()
-		targetMonitor = nil
+	function bossModPrototype:BossUnitTargetScannerAbort(uId)
+		if uId then
+			targetMonitor[uId] = nil
+		else--Legacy mod, just wipe entire table
+			twipe(targetMonitor)
+		end
 		DBM:Debug("Boss unit target scan should be aborting.", 3)
 	end
 
@@ -7838,8 +7843,8 @@ do
 		--This code is much prettier if it's in mod, but then it'd require copying and pasting it all the time. SO ugly code in core more convinient.
 		local modId = self.id
 		local scanDuration = scanTime or 1.5
-		targetMonitor = modId.."\t"..unitId.."\t"..returnFunc
-		self:ScheduleMethod(scanDuration, "BossUnitTargetScannerAbort")--In case of BossUnitTargetScanner firing too late, and boss already having changed target before monitor started, it needs to abort after x seconds
+		targetMonitor[unitId] = modId.."\t"..unitId.."\t"..returnFunc
+		self:ScheduleMethod(scanDuration, "BossUnitTargetScannerAbort", unitId)--In case of BossUnitTargetScanner firing too late, and boss already having changed target before monitor started, it needs to abort after x seconds
 	end
 
 	function bossModPrototype:BossTargetScanner(cidOrGuid, returnFunc, scanInterval, scanTimes, scanOnlyBoss, isEnemyScan, isFinalScan, targetFilter, tankFilter)
@@ -8054,7 +8059,8 @@ do
 		["RemoveDisease"] = true,--from ally
 		["RemoveEnrage"] = true,--Can remove enemy enrage. returned in 8.x!
 		["RemoveCurse"] = true,--from ally
-		["MagicDispeller"] = true,--from ENEMY, not debuffs on players. use "Healer" for ally magic dispels. ALL healers can do that.
+		["RemoveMagic"] = true,--from ally
+		["MagicDispeller"] = true,--from ENEMY, not debuffs on players. use "Healer" or "RemoveMagic" for ally magic dispels. ALL healers can do that on retail, and warlock Imps
 		["HasInterrupt"] = true,--Has an interrupt that is 24 seconds or less CD that is BASELINE (not a talent)
 		["HasImmunity"] = true,--Has an immunity that can prevent or remove a spell effect (not just one that reduces damage like turtle or dispursion)
 	}]]
@@ -8080,6 +8086,7 @@ do
 			["RaidCooldown"] = true,--Devotion Aura
 			["RemovePoison"] = true,
 			["RemoveDisease"] = true,
+			["RemoveMagic"] = true,
 			["HasImmunity"] = true,
 		},
 		[66] = {	--Protection Paladin
@@ -8157,6 +8164,7 @@ do
 			["RemoveCurse"] = true,
 			["RemovePoison"] = true,
 			["RemoveEnrage"] = true,
+			["RemoveMagic"] = true,
 		},
 		[250] = {	--Blood DK
 			["Tank"] = true,
@@ -8202,6 +8210,7 @@ do
 			["CasterDps"] = true,--Iffy. Technically yes, but this can't be used to determine eligable target for dps only debuffs
 			["RaidCooldown"] = true,--Power Word: Barrier(Discipline) / Divine Hymn (Holy)
 			["RemoveDisease"] = true,
+			["RemoveMagic"] = true,
 			["MagicDispeller"] = true,
 		},
 		[258] = {	--Shadow Priest
@@ -8252,6 +8261,7 @@ do
 			["SpellCaster"] = true,
 			["RaidCooldown"] = true,--Spirit Link Totem
 			["RemoveCurse"] = true,
+			["RemoveMagic"] = true,
 			["MagicDispeller"] = true,
 			["HasInterrupt"] = true,
 		},
@@ -8261,6 +8271,7 @@ do
 			["RangedDps"] = true,
 			["ManaUser"] = true,
 			["SpellCaster"] = true,
+			["RemoveMagic"] = true,--Singe Magic (Imp)
 			["CasterDps"] = true,
 		},
 		[268] = {	--Brewmaster Monk
@@ -8289,6 +8300,7 @@ do
 			["RaidCooldown"] = true,--Revival
 			["RemovePoison"] = true,
 			["RemoveDisease"] = true,
+			["RemoveMagic"] = true,
 		},
 		[577] = {	--Havok Demon Hunter
 			["Dps"] = true,
@@ -8550,79 +8562,44 @@ end
 ----------------------------
 --  Boss Health Function  --
 ----------------------------
-function DBM:GetBossHP(cId)
-	local uId = bossHealthuIdCache[cId] or "target"
-	if self:GetCIDFromGUID(UnitGUID(uId)) == cId and UnitHealthMax(uId) ~= 0 then
-		if bossHealth[cId] and (UnitHealth(uId) == 0 and not UnitIsDead(uId)) then return bossHealth[cId], uId, UnitName(uId) end--Return last non 0 value if value is 0, since it's last valid value we had.
+function DBM:GetBossHP(cIdOrGUID)
+	local uId = bossHealthuIdCache[cIdOrGUID] or "target"
+	local guid = UnitGUID(uId)
+	--Target or Cached (if already called with this cid or GUID before)
+	if (self:GetCIDFromGUID(guid) == cIdOrGUID or guid == cIdOrGUID) and UnitHealthMax(uId) ~= 0 then
+		if bossHealth[cIdOrGUID] and (UnitHealth(uId) == 0 and not UnitIsDead(uId)) then return bossHealth[cIdOrGUID], uId, UnitName(uId) end--Return last non 0 value if value is 0, since it's last valid value we had.
 		local hp = UnitHealth(uId) / UnitHealthMax(uId) * 100
-		bossHealth[cId] = hp
+		bossHealth[cIdOrGUID] = hp
 		return hp, uId, UnitName(uId)
-	elseif self:GetCIDFromGUID(UnitGUID("focus")) == cId and UnitHealthMax("focus") ~= 0 then
-		if bossHealth[cId] and (UnitHealth("focus") == 0  and not UnitIsDead("focus")) then return bossHealth[cId], "focus", UnitName("focus") end--Return last non 0 value if value is 0, since it's last valid value we had.
+	--Focus
+	elseif (self:GetCIDFromGUID(UnitGUID("focus")) == cIdOrGUID or UnitGUID("focus") == cIdOrGUID) and UnitHealthMax("focus") ~= 0 then
+		if bossHealth[cIdOrGUID] and (UnitHealth("focus") == 0  and not UnitIsDead("focus")) then return bossHealth[cIdOrGUID], "focus", UnitName("focus") end--Return last non 0 value if value is 0, since it's last valid value we had.
 		local hp = UnitHealth("focus") / UnitHealthMax("focus") * 100
-		bossHealth[cId] = hp
+		bossHealth[cIdOrGUID] = hp
 		return hp, "focus", UnitName("focus")
 	else
+		--Boss UnitIds
 		for i = 1, 5 do
 			local unitID = "boss"..i
-			local guid = UnitGUID(unitID)
-			if self:GetCIDFromGUID(guid) == cId and UnitHealthMax(unitID) ~= 0 then
-				if bossHealth[cId] and (UnitHealth(unitID) == 0 and not UnitIsDead(unitID)) then return bossHealth[cId], unitID, UnitName(unitID) end--Return last non 0 value if value is 0, since it's last valid value we had.
+			local bossguid = UnitGUID(unitID)
+			if (self:GetCIDFromGUID(bossguid) == cIdOrGUID or bossguid == cIdOrGUID) and UnitHealthMax(unitID) ~= 0 then
+				if bossHealth[cIdOrGUID] and (UnitHealth(unitID) == 0 and not UnitIsDead(unitID)) then return bossHealth[cIdOrGUID], unitID, UnitName(unitID) end--Return last non 0 value if value is 0, since it's last valid value we had.
 				local hp = UnitHealth(unitID) / UnitHealthMax(unitID) * 100
-				bossHealth[cId] = hp
-				bossHealthuIdCache[cId] = unitID
+				bossHealth[cIdOrGUID] = hp
+				bossHealthuIdCache[cIdOrGUID] = unitID
 				return hp, unitID, UnitName(unitID)
 			end
 		end
+		--Scan raid/party target frames
 		local idType = (IsInRaid() and "raid") or "party"
 		for i = 0, GetNumGroupMembers() do
 			local unitId = ((i == 0) and "target") or idType..i.."target"
-			local guid = UnitGUID(unitId)
-			if self:GetCIDFromGUID(guid) == cId and UnitHealthMax(unitId) ~= 0 then
-				if bossHealth[cId] and (UnitHealth(unitId) == 0 and not UnitIsDead(unitId)) then return bossHealth[cId], unitId, UnitName(unitId) end--Return last non 0 value if value is 0, since it's last valid value we had.
+			local bossguid = UnitGUID(unitId)
+			if (self:GetCIDFromGUID(bossguid) == cIdOrGUID or bossguid == cIdOrGUID) and UnitHealthMax(unitId) ~= 0 then
+				if bossHealth[cIdOrGUID] and (UnitHealth(unitId) == 0 and not UnitIsDead(unitId)) then return bossHealth[cIdOrGUID], unitId, UnitName(unitId) end--Return last non 0 value if value is 0, since it's last valid value we had.
 				local hp = UnitHealth(unitId) / UnitHealthMax(unitId) * 100
-				bossHealth[cId] = hp
-				bossHealthuIdCache[cId] = unitId
-				return hp, unitId, UnitName(unitId)
-			end
-		end
-	end
-	return nil
-end
-
-function DBM:GetBossHPByGUID(guid)
-	local uId = bossHealthuIdCache[guid] or "target"
-	if UnitGUID(uId) == guid and UnitHealthMax(uId) ~= 0 then
-		if bossHealth[guid] and (UnitHealth(uId) == 0 and not UnitIsDead(uId)) then return bossHealth[guid], uId, UnitName(uId) end--Return last non 0 value if value is 0, since it's last valid value we had.
-		local hp = UnitHealth(uId) / UnitHealthMax(uId) * 100
-		bossHealth[guid] = hp
-		return hp, uId, UnitName(uId)
-	elseif UnitGUID("focus") == guid and UnitHealthMax("focus") ~= 0 then
-		if bossHealth[guid] and (UnitHealth("focus") == 0  and not UnitIsDead("focus")) then return bossHealth[guid], "focus", UnitName("focus") end--Return last non 0 value if value is 0, since it's last valid value we had.
-		local hp = UnitHealth("focus") / UnitHealthMax("focus") * 100
-		bossHealth[guid] = hp
-		return hp, "focus", UnitName("focus")
-	else
-		for i = 1, 5 do
-			local unitID = "boss"..i
-			local guid2 = UnitGUID(unitID)
-			if guid == guid2 and UnitHealthMax(unitID) ~= 0 then
-				if bossHealth[guid] and (UnitHealth(unitID) == 0 and not UnitIsDead(unitID)) then return bossHealth[guid], unitID, UnitName(unitID) end--Return last non 0 value if value is 0, since it's last valid value we had.
-				local hp = UnitHealth(unitID) / UnitHealthMax(unitID) * 100
-				bossHealth[guid] = hp
-				bossHealthuIdCache[guid] = unitID
-				return hp, unitID, UnitName(unitID)
-			end
-		end
-		local idType = (IsInRaid() and "raid") or "party"
-		for i = 0, GetNumGroupMembers() do
-			local unitId = ((i == 0) and "target") or idType..i.."target"
-			local guid2 = UnitGUID(unitId)
-			if guid == guid2 and UnitHealthMax(unitId) ~= 0 then
-				if bossHealth[guid] and (UnitHealth(unitId) == 0 and not UnitIsDead(unitId)) then return bossHealth[guid], unitId, UnitName(unitId) end--Return last non 0 value if value is 0, since it's last valid value we had.
-				local hp = UnitHealth(unitId) / UnitHealthMax(unitId) * 100
-				bossHealth[guid] = hp
-				bossHealthuIdCache[guid] = unitId
+				bossHealth[cIdOrGUID] = hp
+				bossHealthuIdCache[cIdOrGUID] = unitId
 				return hp, unitId, UnitName(unitId)
 			end
 		end
@@ -8685,7 +8662,6 @@ function bossModPrototype:GetLowestBossHealth()
 end
 
 bossModPrototype.GetBossHP = DBM.GetBossHP
-bossModPrototype.GetBossHPByGUID = DBM.GetBossHPByGUID
 
 -----------------------
 --  Announce Object  --

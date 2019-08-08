@@ -76,7 +76,7 @@ local function createConfigEnv()
 			end
 
 			return 50000
-		end, 
+		end,
 		UnitHasIncomingResurrection = function(unit) return true end,
 		UnitInOtherParty = function(unit) return getValue("UnitInOtherParty", unit, math.random(0, 1) == 1) end,
 		UnitInPhase = function(unit) return false end,
@@ -104,7 +104,7 @@ local function createConfigEnv()
 				data[9] = 1000
 				unitConfig["UnitCastingInfo" .. unit] = data
 			end
-			
+
 			return unpack(data)
 		end,
 		UnitIsFriend = function(unit) return unit ~= "target" and unit ~= ShadowUF.fakeUnits[unit] and unit ~= "arena" end,
@@ -123,7 +123,7 @@ local function createConfigEnv()
 		UnitPowerType = function(unit)
 			local powerType = math.random(0, 4)
 			powerType = getValue("UnitPowerType", unit, powerType == 4 and 6 or powerType)
-			
+
 			return powerType, powerType == 0 and "MANA" or powerType == 1 and "RAGE" or powerType == 2 and "FOCUS" or powerType == 3 and "ENERGY" or powerType == 6 and "RUNIC_POWER"
 		end,
 		UnitStagger = function(unit)
@@ -132,7 +132,7 @@ local function createConfigEnv()
 		end,
 		UnitAura = function(unit, id, filter)
 			if( type(id) ~= "number" or id > 40 ) then return end
-			
+
 			local texture = filter == "HELPFUL" and "Interface\\Icons\\Spell_Nature_Rejuvenation" or "Interface\\Icons\\Ability_DualWield"
 			local mod = id % 5
 			local auraType = mod == 0 and "Magic" or mod == 1 and "Curse" or mod == 2 and "Poison" or mod == 3 and "Disease" or "none"
@@ -143,7 +143,7 @@ local function createConfigEnv()
 			if( unitID ) then
 				return string.format("%s #%d", L.units[string.gsub(unit, "(%d+)", "")] or unit, unitID)
 			end
-			
+
 			return L.units[unit]
 		end,
 		UnitClass = function(unit)
@@ -171,7 +171,7 @@ end
 local function OnEnter(self)
 	local tooltip = self.tooltipText or self.unitID and string.format("%s #%d", L.units[self.unitType], self.unitID) or L.units[self.unit] or self.unit
 	local additionalText = ShadowUF.Units.childUnits[self.unitType] and L["Child units cannot be dragged, you will have to reposition them through /shadowuf."]
-	
+
 	GameTooltip:SetOwner(self, "ANCHOR_BOTTOMLEFT")
 	GameTooltip:SetText(tooltip, 1, 0.81, 0, 1, true)
 	if( additionalText ) then GameTooltip:AddLine(additionalText, 0.90, 0.90, 0.90, 1) end
@@ -189,7 +189,7 @@ local function setupUnits(childrenOnly)
 			if( frame:IsVisible() and not ShadowUF.db.profile.units[frame.unitType].enabled ) then
 				RegisterUnitWatch(frame, frame.hasStateWatch)
 				if( not UnitExists(frame.unit) ) then frame:Hide() end
-				
+
 			-- Unit's not visible and it's enabled so it should
 			elseif( not frame:IsVisible() and ShadowUF.db.profile.units[frame.unitType].enabled ) then
 				UnregisterUnitWatch(frame)
@@ -215,7 +215,7 @@ local function setupUnits(childrenOnly)
 			frame.unitOwner = nil
 			frame.originalMenu = frame.menu
 			frame.menu = nil
-			
+
 			local unit
 			if( frame.isChildUnit ) then
 				local unitFormat = string.gsub(string.gsub(frame.unitType, "target$", "%%dtarget"), "pet$", "pet%%d")
@@ -223,13 +223,13 @@ local function setupUnits(childrenOnly)
 			else
 				unit = frame.unitType .. (frame.configUnitID or "")
 			end
-			
+
 			ShadowUF.Units.OnAttributeChanged(frame, "unit", unit)
 
 			if( frame.healthBar ) then frame.healthBar:SetScript("OnUpdate", nil) end
 			if( frame.powerBar ) then frame.powerBar:SetScript("OnUpdate", nil) end
 			if( frame.indicators ) then frame.indicators:SetScript("OnUpdate", nil) end
-			
+
 			UnregisterUnitWatch(frame)
 			frame:FullUpdate()
 			frame:Show()
@@ -239,20 +239,20 @@ end
 
 function Movers:Enable()
 	createConfigEnv()
-		
+
 	-- Force create zone headers
 	for type, zone in pairs(ShadowUF.Units.zoneUnits) do
 		if( ShadowUF.db.profile.units[type].enabled ) then
 			ShadowUF.Units:InitializeFrame(type)
 		end
 	end
-	
+
 	-- Setup the headers
 	for _, header in pairs(ShadowUF.Units.headerFrames) do
 		for key in pairs(attributeBlacklist) do
 			header:SetAttribute(key, nil)
 		end
-		
+
 		local config = ShadowUF.db.profile.units[header.unitType]
 		if( config.frameSplit ) then
 			header:SetAttribute("startingIndex", -4)
@@ -265,12 +265,12 @@ function Movers:Enable()
 					end
 				end
 			end
-					
+
 			header:SetAttribute("startingIndex", -math.min(config.maxColumns * config.unitsPerColumn, maxUnits) + 1)
 		elseif( ShadowUF[header.unitType .. "Units"] ) then
 			header:SetAttribute("startingIndex", -#(ShadowUF[header.unitType .. "Units"]) + 1)
 		end
-		
+
 		header.startingIndex = header:GetAttribute("startingIndex")
 		header:SetMovable(true)
 		prepareChildUnits(header, header:GetChildren())
@@ -296,7 +296,7 @@ function Movers:Enable()
 			end
 		end
 	end
-	
+
 	-- Why is this called twice you ask? Child units are created on the OnAttributeChanged call
 	-- so the first call gets all the parent units, the second call gets the child units
 	setupUnits()
@@ -317,24 +317,24 @@ function Movers:Enable()
 	elseif( self.infoFrame ) then
 		self.infoFrame:Hide()
 	end
-	
+
 	self.isEnabled = true
 end
 
 function Movers:Disable()
 	if( not self.isEnabled ) then return nil end
-	
+
 	for func, env in pairs(originalEnvs) do
 		setfenv(func, env)
 		originalEnvs[func] = nil
 	end
-	
+
 	for frame in pairs(ShadowUF.Units.frameList) do
 		if( frame.configMode ) then
 			if( frame.isMoving ) then
 				frame:GetScript("OnDragStop")(frame)
 			end
-			
+
 			frame.configMode = nil
 			frame.unitOwner = nil
 			frame.unit = nil
@@ -351,44 +351,44 @@ function Movers:Disable()
 			frame.OnLeave = frame.originalOnLeave
 			frame:SetMovable(false)
 			frame:RegisterForDrag()
-			
+
 			if( frame.isChildUnit ) then
 				ShadowUF.Units.OnAttributeChanged(frame, "unit", SecureButton_GetModifiedUnit(frame))
 			end
-			
-			
+
+
 			RegisterUnitWatch(frame, frame.hasStateWatch)
 			if( not UnitExists(frame.unit) ) then frame:Hide() end
 		end
 	end
-			
+
 	for type, header in pairs(ShadowUF.Units.headerFrames) do
 		header:SetMovable(false)
 		header:SetAttribute("startingIndex", 1)
 		header:SetAttribute("initial-unitWatch", true)
-		
+
 		if( header.unitType == type or type == "raidParent" ) then
 			ShadowUF.Units:ReloadHeader(header.unitType)
 		end
 	end
-	
+
 	ShadowUF.Units:CheckPlayerZone(true)
 	ShadowUF.Layout:Reload()
-	
+
 	-- Don't store these so everything can be GCed
 	unitConfig = {}
 
 	if( self.infoFrame ) then
 		self.infoFrame:Hide()
 	end
-	
+
 	self.isConfigModeSpec = nil
 	self.isEnabled = nil
 end
 
 OnDragStart = function(self)
 	if( not self:IsMovable() ) then return end
-	
+
 	if( self.unitType == "raid" and ShadowUF.Units.headerFrames.raidParent and ShadowUF.Units.headerFrames.raidParent:IsVisible() ) then
 		self = ShadowUF.Units.headerFrames.raidParent
 	else
@@ -409,13 +409,13 @@ OnDragStop = function(self)
 
 	self.isMoving = nil
 	self:StopMovingOrSizing()
-	
+
 	-- When dragging the frame around, Blizzard changes the anchoring based on the closet portion of the screen
 	-- When a widget is near the top left it uses top left, near the left it uses left and so on, which messes up positioning for header frames
 	local scale = (self:GetScale() * UIParent:GetScale()) or 1
 	local position = ShadowUF.db.profile.positions[self.unitType]
 	local point, _, relativePoint, x, y = self:GetPoint()
-		
+
 	-- Figure out the horizontal anchor
 	if( self.isHeaderFrame ) then
 		if( ShadowUF.db.profile.units[self.unitType].attribAnchorPoint == "RIGHT" ) then
@@ -425,7 +425,7 @@ OnDragStop = function(self)
 			x = self:GetLeft()
 			point = "LEFT"
 		end
-		
+
 		if( ShadowUF.db.profile.units[self.unitType].attribPoint == "BOTTOM" ) then
 			y = self:GetBottom()
 			point = "BOTTOM" .. point
@@ -433,12 +433,12 @@ OnDragStop = function(self)
 			y = self:GetTop()
 			point = "TOP" .. point
 		end
-		
+
 		relativePoint = "BOTTOMLEFT"
 		position.bottom = self:GetBottom() * scale
 		position.top = self:GetTop() * scale
 	end
-	
+
 	position.anchorTo = "UIParent"
 	position.movedAnchor = nil
 	position.anchorPoint = ""
@@ -446,14 +446,14 @@ OnDragStop = function(self)
 	position.relativePoint = relativePoint
 	position.x = x * scale
 	position.y = y * scale
-		
+
 	ShadowUF.Layout:AnchorFrame(UIParent, self, ShadowUF.db.profile.positions[self.unitType])
 
 	-- Unlock the parent frame from the mover now too
 	if( self.parent ) then
 		ShadowUF.Layout:AnchorFrame(UIParent, self.parent, ShadowUF.db.profile.positions[self.parent.unitType])
 	end
-	
+
 	-- Notify the configuration it can update itself now
 	local ACR = LibStub("AceConfigRegistry-3.0", true)
 	if( ACR ) then
@@ -471,7 +471,7 @@ end
 
 function Movers:CreateInfoFrame()
 	if( self.infoFrame ) then return end
-	
+
 	-- Show an info frame that users can lock the frames through
 	local frame = CreateFrame("Frame", nil, UIParent)
 	frame:SetClampedToScreen(true)
@@ -481,19 +481,19 @@ function Movers:CreateInfoFrame()
 	frame:EnableMouse(true)
 	frame:SetMovable(true)
 	frame:RegisterEvent("PLAYER_REGEN_DISABLED")
-	frame:SetScript("OnEvent", function(self)
-		if( not ShadowUF.db.profile.locked and self:IsVisible() ) then
+	frame:SetScript("OnEvent", function(f)
+		if( not ShadowUF.db.profile.locked and f:IsVisible() ) then
 			ShadowUF.db.profile.locked = true
 			Movers:Disable()
-			
+
 			DEFAULT_CHAT_FRAME:AddMessage(L["You have entered combat, unit frames have been locked. Once you leave combat you will need to unlock them again through /shadowuf."])
 		end
 	end)
-	frame:SetScript("OnDragStart", function(self)
-		self:StartMoving()
+	frame:SetScript("OnDragStart", function(f)
+		f:StartMoving()
 	end)
-	frame:SetScript("OnDragStop", function(self)
-		self:StopMovingOrSizing()
+	frame:SetScript("OnDragStop", function(f)
+		f:StopMovingOrSizing()
 	end)
 	frame:SetBackdrop({
 		  bgFile = "Interface\\ChatFrame\\ChatFrameBackground",
@@ -542,13 +542,13 @@ function Movers:CreateInfoFrame()
 	frame.unlink:SetScript("OnLeave", OnLeave)
 	frame.unlink.tooltipText = L["WARNING: This will unlink all frames from each other so you can move them without another frame moving with it."]
 	frame.unlink:SetScript("OnClick", function()
-		for frame in pairs(ShadowUF.Units.frameList) do
-			if( not ShadowUF.Units.childUnits[frame.unitType] and frame:GetScript("OnDragStart") and frame:GetScript("OnDragStop") ) then
-				frame:GetScript("OnDragStart")(frame)
-				frame:GetScript("OnDragStop")(frame)
+		for f in pairs(ShadowUF.Units.frameList) do
+			if( not ShadowUF.Units.childUnits[f.unitType] and f:GetScript("OnDragStart") and f:GetScript("OnDragStop") ) then
+				f:GetScript("OnDragStart")(f)
+				f:GetScript("OnDragStop")(f)
 			end
 		end
-		
+
 		Movers:Update()
 	end)
 

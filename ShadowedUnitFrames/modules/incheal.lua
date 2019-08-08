@@ -38,7 +38,7 @@ function IncHeal:OnLayoutApplied(frame)
 	bar:SetOrientation(frame.healthBar:GetOrientation())
 	bar:SetReverseFill(frame.healthBar:GetReverseFill())
 	bar:Hide()
-	
+
 	local cap = ShadowUF.db.profile.units[frame.unitType][self.frameKey].cap or 1.30
 
 	-- When we can cheat and put the incoming bar right behind the health bar, we can efficiently show the incoming heal bar
@@ -54,7 +54,7 @@ function IncHeal:OnLayoutApplied(frame)
 		end
 
 		bar:ClearAllPoints()
-		
+
 		local point = bar:GetReverseFill() and "RIGHT" or "LEFT"
 		bar:SetPoint("TOP" .. point, frame.healthBar)
 		bar:SetPoint("BOTTOM" .. point, frame.healthBar)
@@ -137,7 +137,7 @@ end
 
 function IncHeal:UpdateFrame(frame)
 	if( not frame.visibility[self.frameKey] or not frame.visibility.healthBar ) then return end
-	
+
 	local amount = UnitGetIncomingHeals(frame.unit) or 0
 	if( amount > 0 and frame.visibility.healAbsorb ) then
 		amount = amount + (UnitGetTotalHealAbsorbs(frame.unit) or 0)

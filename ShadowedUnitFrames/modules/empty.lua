@@ -55,7 +55,7 @@ function Empty:UpdateColor(frame)
 		local class = UnitCreatureFamily(frame.unit) or frame:UnitClassToken()
 		color = class and ShadowUF.db.profile.classColors[class]
 	end
-	
+
 	color = color or frame.emptyBar.background.overrideColor or fallbackColor
 	frame.emptyBar.background:SetVertexColor(color.r, color.g, color.b, ShadowUF.db.profile.bars.alpha)
 end

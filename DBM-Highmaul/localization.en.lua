@@ -10,8 +10,7 @@ L:SetTimerLocalization({
 })
 
 L:SetOptionLocalization({
-	timerSweeperCD			= DBM_CORE_AUTO_TIMER_OPTIONS.next:format(177776),
-	countdownSweeper		= DBM_CORE_AUTO_COUNTDOWN_OPTION_TEXT:format(177776)
+	timerSweeperCD			= DBM_CORE_AUTO_TIMER_OPTIONS.next:format(177776)
 })
 
 ---------------------------

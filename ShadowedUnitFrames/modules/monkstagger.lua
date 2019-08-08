@@ -5,12 +5,12 @@ function Stagger:OnEnable(frame)
 	frame.staggerBar = frame.staggerBar or ShadowUF.Units:CreateBar(frame)
 	frame.staggerBar.timeElapsed = 0
 	frame.staggerBar.parent = frame
-	frame.staggerBar:SetScript("OnUpdate", function(self, elapsed)
-		self.timeElapsed = self.timeElapsed + elapsed
-		if( self.timeElapsed < 0.25 ) then return end
-		self.timeElapsed = self.timeElapsed - 0.25
+	frame.staggerBar:SetScript("OnUpdate", function(f, elapsed)
+		f.timeElapsed = f.timeElapsed + elapsed
+		if( f.timeElapsed < 0.25 ) then return end
+		f.timeElapsed = f.timeElapsed - 0.25
 
-		Stagger:Update(self.parent)
+		Stagger:Update(f.parent)
 	end)
 
 	frame:RegisterUnitEvent("UNIT_MAXHEALTH", self, "UpdateMinMax")

@@ -2,7 +2,7 @@
 ## Title: Shadowed Unit Frames
 ## Notes: Moooooooooooooooooo
 ## Author: Shadowed
-## Version: v4.2.3
+## Version: v4.2.4
 ## SavedVariables: ShadowedUFDB
 ## X-Website: http://www.wowace.com/addons/shadowed-unit-frames/
 ## OptionalDeps: Ace3, LibSharedMedia-3.0, AceGUI-3.0-SharedMediaWidgets, LibDualSpec-1.0, LibSpellRange-1.0, Clique

@@ -29,7 +29,7 @@ local DEBUG_MODE = false
 
 -- Config constants
 local CURRENT_DB_VERSION = 5
-local CURRENT_LOOT_DB_VERSION = 15
+local CURRENT_LOOT_DB_VERSION = 16
 
 -- Hard reset versions
 local CURRENT_ADDON_VERSION = 600
@@ -43,6 +43,12 @@ local CMD_HELP = "help"
 local CMD_SHOW = "show"
 local CMD_HIDE = "hide"
 local CMD_TOGGLE = "toggle"
+local CMD_TOGGLE_RARES = "rares"
+local CMD_TOGGLE_EVENTS = "events"
+local CMD_TOGGLE_TREASURES = "treasures"
+local CMD_TOGGLE_RARES_SHORT = "tr"
+local CMD_TOGGLE_EVENTS_SHORT = "te"
+local CMD_TOGGLE_TREASURES_SHORT = "tt"
 
 -- Locales
 local AL = LibStub("AceLocale-3.0"):GetLocale("RareScanner");
@@ -111,6 +117,7 @@ local PROFILE_DEFAULTS = {
 			filterNotEquipableItems = false,
 			showOnlyTransmogItems = false,
 			filterCollectedItems = true,
+			filterItemsCompletedQuest = true,
 			numItems = 10,
 			numItemsPerRow = 10
 		}
@@ -1601,36 +1608,85 @@ function RareScanner:LoadRareNames(db)
 end
 
 SlashCmdList["RARESCANNER_CMD"] = function(msg)
-	local command = strsplit(" ", msg)
+	local command, entity = strsplit(" ", msg)
 	if (command == CMD_SHOW) then
-		private.db.map.displayNpcIcons = true
-		private.db.map.displayContainerIcons = true
-		private.db.map.displayEventIcons = true
-		RareScanner:PrintMessage(AL["CMD_SHOW"])		
+		RareScanner:CmdShow()	
 	elseif (command == CMD_HIDE) then
-		private.db.map.displayNpcIcons = false
-		private.db.map.displayContainerIcons = false
-		private.db.map.displayEventIcons = false
-		RareScanner:PrintMessage(AL["CMD_HIDE"])	
+		RareScanner:CmdHide()
 	elseif (command == CMD_TOGGLE) then
-		if (not private.db.map.cmdToggle) then
-			private.db.map.displayNpcIcons = false
-			private.db.map.displayContainerIcons = false
-			private.db.map.displayEventIcons = false
-			RareScanner:PrintMessage(AL["CMD_HIDE"])
-			private.db.map.cmdToggle = true
-		else
-			private.db.map.displayNpcIcons = true
-			private.db.map.displayContainerIcons = true
-			private.db.map.displayEventIcons = true
-			RareScanner:PrintMessage(AL["CMD_SHOW"])
-			private.db.map.cmdToggle = false
+		if (not entity) then
+			if (not private.db.map.cmdToggle) then
+				RareScanner:CmdHide()
+				private.db.map.cmdToggle = true
+			else
+				RareScanner:CmdShow()
+				private.db.map.cmdToggle = false
+			end
+		elseif (entity == CMD_TOGGLE_RARES) then
+			RareScanner:CmdToggleRares()
+		elseif (entity == CMD_TOGGLE_EVENTS) then
+			RareScanner:CmdToggleEvents()
+		elseif (entity == CMD_TOGGLE_TREASURES) then
+			RareScanner:CmdToggleTreasures()
 		end
+	elseif (command == CMD_TOGGLE_RARES_SHORT) then
+		RareScanner:CmdToggleRares()
+	elseif (command == CMD_TOGGLE_EVENTS_SHORT) then
+		RareScanner:CmdToggleEvents()
+	elseif (command == CMD_TOGGLE_TREASURES_SHORT) then
+		RareScanner:CmdToggleTreasures()
 	else
 		RareScanner:PrintMessage(AL["CMD_HELP1"])
 		RareScanner:PrintMessage(AL["CMD_HELP2"])
 		RareScanner:PrintMessage(AL["CMD_HELP3"])
 		RareScanner:PrintMessage(AL["CMD_HELP4"])
+		RareScanner:PrintMessage(AL["CMD_HELP5"])
+		RareScanner:PrintMessage(AL["CMD_HELP6"])
+		RareScanner:PrintMessage(AL["CMD_HELP7"])
+	end
+end
+
+function RareScanner:CmdHide()
+	private.db.map.displayNpcIcons = false
+	private.db.map.displayContainerIcons = false
+	private.db.map.displayEventIcons = false
+	RareScanner:PrintMessage(AL["CMD_HIDE"])
+end
+
+function RareScanner:CmdShow()
+	private.db.map.displayNpcIcons = true
+	private.db.map.displayContainerIcons = true
+	private.db.map.displayEventIcons = true
+	RareScanner:PrintMessage(AL["CMD_SHOW"])	
+end
+
+function RareScanner:CmdToggleRares()
+	if (private.db.map.displayNpcIcons) then
+		private.db.map.displayNpcIcons = false
+		RareScanner:PrintMessage(AL["CMD_HIDE_RARES"])
+	else
+		private.db.map.displayNpcIcons = true
+		RareScanner:PrintMessage(AL["CMD_SHOW_RARES"])
+	end
+end
+
+function RareScanner:CmdToggleEvents()
+	if (private.db.map.displayEventIcons) then
+		private.db.map.displayEventIcons = false
+		RareScanner:PrintMessage(AL["CMD_HIDE_EVENTS"])
+	else
+		private.db.map.displayEventIcons = true
+		RareScanner:PrintMessage(AL["CMD_SHOW_EVENTS"])
+	end
+end
+
+function RareScanner:CmdToggleTreasures()
+	if (private.db.map.displayContainerIcons) then
+		private.db.map.displayContainerIcons = false
+		RareScanner:PrintMessage(AL["CMD_HIDE_TREASURES"])
+	else
+		private.db.map.displayContainerIcons = true
+		RareScanner:PrintMessage(AL["CMD_SHOW_TREASURES"])
 	end
 end
 

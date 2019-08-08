@@ -26,13 +26,13 @@ local function faderUpdate(self, elapsed)
 		tempAuraFader(self.parent, self.alphaEnd)
 		self.parent:SetAlpha(self.alphaEnd)
 		self:Hide()
-		
+
 		if( self.fadeType == "in" ) then
 			self.parent:DisableRangeAlpha(false)
 		end
 		return
 	end
-	
+
 	if( self.fadeType == "in" ) then
 		self.parent:SetAlpha((self.timeElapsed / self.fadeTime) * (self.alphaEnd - self.alphaStart) + self.alphaStart)
 	else
@@ -47,7 +47,7 @@ local function startFading(self, type, alpha, speedyFade)
 	if( type == "out" ) then
 		self:DisableRangeAlpha(true)
 	end
-	
+
 	self.fader.fadeTime = speedyFade and 0.15 or type == "in" and 0.25 or type == "out" and 0.75
 	self.fader.fadeType = type
 	self.fader.timeElapsed = 0
@@ -64,11 +64,11 @@ function Fader:OnEnable(frame)
 		frame.fader:SetScript("OnUpdate", faderUpdate)
 		frame.fader:Hide()
 	end
-		
+
 	frame:RegisterNormalEvent("PLAYER_REGEN_ENABLED", self, "Update")
 	frame:RegisterNormalEvent("PLAYER_REGEN_DISABLED", self, "Update")
 	frame:RegisterUpdateFunc(self, "Update")
-	
+
 	if( InCombatLockdown() ) then
 		Fader:PLAYER_REGEN_DISABLED(frame, "PLAYER_REGEN_DISABLED")
 	else
@@ -104,7 +104,7 @@ function Fader:PLAYER_REGEN_ENABLED(frame, event)
 	frame:RegisterUnitEvent("UNIT_HEALTH", self, "Update")
 	frame:RegisterUnitEvent("UNIT_MAXHEALTH", self, "Update")
 	frame:RegisterUnitEvent("UNIT_POWER_FREQUENT", self, "Update")
-	frame:RegisterUnitEvent("UNIT_MAXPOWER", self, "Update")	
+	frame:RegisterUnitEvent("UNIT_MAXPOWER", self, "Update")
 end
 
 function Fader:PLAYER_REGEN_DISABLED(frame, event)
@@ -125,7 +125,7 @@ local activeCastID
 function Fader:CastStart(frame, event, unit, id)
 	if( unit ~= "player" or activeCastID == id ) then return end
 	activeCastID = id
-	
+
 	frame.fader.playerCasting = true
 	self:Update(frame)
 end
@@ -133,7 +133,7 @@ end
 function Fader:CastStop(frame, event, unit, id)
 	if( unit ~= "player" or activeCastID ~= id ) then return end
 	activeCastID = nil
-	
+
 	frame.fader.playerCasting = nil
 	self:Update(frame)
 end

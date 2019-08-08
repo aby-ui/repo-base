@@ -21,13 +21,13 @@ local function createIcons(config, pointsFrame)
 
 	x = x or 0
 	y = y or 0
-	
+
 	for id=1, pointsConfig.max do
 		pointsFrame.icons[id] = pointsFrame.icons[id] or pointsFrame:CreateTexture(nil, "OVERLAY")
 		local texture = pointsFrame.icons[id]
 		texture:SetTexture(pointsConfig.icon)
 		texture:SetSize(config.size or 16, config.size or 16)
-		
+
 		if( id > 1 ) then
 			texture:ClearAllPoints()
 			texture:SetPoint(point, pointsFrame.icons[id - 1], relativePoint, x, y)
@@ -55,7 +55,7 @@ local function createBlocks(config, pointsFrame)
 		texture:SetHeight(pointsFrame:GetHeight())
 		texture:SetWidth(blockWidth)
 		texture:ClearAllPoints()
-		
+
 		if not texture.background and config.background then
 			texture.background = pointsFrame:CreateTexture(nil, "BORDER")
 			texture.background:SetHeight(1)
@@ -91,7 +91,7 @@ local function createBlocks(config, pointsFrame)
 end
 
 function Combo:OnLayoutApplied(frame, config)
-  	local key = self:GetComboPointType()
+	local key = self:GetComboPointType()
 	local pointsFrame = frame[key]
 	if( not pointsFrame ) then return end
 
@@ -104,16 +104,16 @@ function Combo:OnLayoutApplied(frame, config)
 	if( config and not config.isBar ) then
 		ShadowUF.Layout:ToggleVisibility(pointsFrame, frame.visibility[key])
 	end
-	
+
 	if( not frame.visibility[key] ) then return end
-	
+
 	-- Hide the active combo points
 	if( pointsFrame.points ) then
 		for _, texture in pairs(pointsFrame.points) do
 			texture:Hide()
 		end
 	end
-	
+
 	-- Setup for bar display!
 	if( config.isBar ) then
 		pointsFrame.blocks = pointsFrame.blocks or {}
@@ -130,7 +130,7 @@ function Combo:OnLayoutApplied(frame, config)
 
 		-- Position the main frame
 		pointsFrame:SetSize(0.1, 0.1)
-		
+
 		ShadowUF.Layout:AnchorFrame(frame, pointsFrame, config)
 	end
 end
@@ -140,7 +140,7 @@ function Combo:OnDisable(frame)
 end
 
 function Combo:UpdateBarBlocks(frame, event, unit, powerType)
-  	local key = self:GetComboPointType()
+	local key = self:GetComboPointType()
 	local pointsFrame = frame[key]
 	if( not pointsFrame or not pointsFrame.cpConfig.eventType or not pointsFrame.blocks ) then return end
 	if( event and powerType ~= pointsFrame.cpConfig.eventType ) then return end
@@ -172,17 +172,17 @@ function Combo:UpdateBarBlocks(frame, event, unit, powerType)
 end
 
 function Combo:Update(frame, event, unit, powerType)
-  	local key = self:GetComboPointType()
-  	-- Anything power based will have an eventType to filter on
+	local key = self:GetComboPointType()
+	-- Anything power based will have an eventType to filter on
 	if( event and frame[key].cpConfig.eventType and frame[key].cpConfig.eventType ~= powerType ) then return end
 
-  	local points = self:GetPoints(unit)
-	
+	local points = self:GetPoints(unit)
+
 	-- Bar display, hide it if we don't have any combo points
 	if( ShadowUF.db.profile.units[frame.unitType][key].isBar ) then
 		ShadowUF.Layout:SetBarVisibility(frame, key, ShadowUF.db.profile.units[frame.unitType][key].showAlways or (points and points > 0))
 	end
-	
+
 	for id, pointTexture in pairs(frame[key].points) do
 		if( id <= points ) then
 			pointTexture:Show()

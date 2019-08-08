@@ -5,7 +5,7 @@ function Shaman:OnEnable(frame)
 	frame.shamanBar = frame.shamanBar or ShadowUF.Units:CreateBar(frame)
 
 	frame:RegisterUnitEvent("UNIT_DISPLAYPOWER", self, "PowerChanged")
-	
+
 	frame:RegisterUpdateFunc(self, "PowerChanged")
 	frame:RegisterUpdateFunc(self, "Update")
 end

@@ -11,7 +11,7 @@ local function OnEnter(frame)
 		frame.highlight.hasMouseover = true
 		Highlight:Update(frame)
 	end
-		
+
 	frame.highlight.OnEnter(frame)
 end
 
@@ -20,7 +20,7 @@ local function OnLeave(frame)
 		frame.highlight.hasMouseover = nil
 		Highlight:Update(frame)
 	end
-		
+
 	frame.highlight.OnLeave(frame)
 end
 
@@ -30,7 +30,7 @@ function Highlight:OnEnable(frame)
 		frame.highlight:SetFrameLevel(frame.topFrameLevel)
 		frame.highlight:SetAllPoints(frame)
 		frame.highlight:SetSize(1, 1)
-		
+
 		frame.highlight.top = frame.highlight:CreateTexture(nil, "OVERLAY")
 		frame.highlight.top:SetBlendMode("ADD")
 		frame.highlight.top:SetTexture("Interface\\AddOns\\ShadowedUnitFrames\\media\\textures\\highlight")
@@ -39,7 +39,7 @@ function Highlight:OnEnable(frame)
 		frame.highlight.top:SetHeight(30)
 		frame.highlight.top:SetTexCoord(0.3125, 0.625, 0, 0.3125)
 		frame.highlight.top:SetHorizTile(false)
-		
+
 		frame.highlight.left = frame.highlight:CreateTexture(nil, "OVERLAY")
 		frame.highlight.left:SetBlendMode("ADD")
 		frame.highlight.left:SetTexture("Interface\\AddOns\\ShadowedUnitFrames\\media\\textures\\highlight")
@@ -68,18 +68,18 @@ function Highlight:OnEnable(frame)
 		frame.highlight.bottom:SetHorizTile(false)
 		frame.highlight:Hide()
 	end
-	
+
 	frame.highlight.top:SetHeight(ShadowUF.db.profile.units[frame.unitType].highlight.size)
 	frame.highlight.bottom:SetHeight(ShadowUF.db.profile.units[frame.unitType].highlight.size)
 	frame.highlight.left:SetWidth(ShadowUF.db.profile.units[frame.unitType].highlight.size)
 	frame.highlight.right:SetWidth(ShadowUF.db.profile.units[frame.unitType].highlight.size)
-	
-	
+
+
 	if( ShadowUF.db.profile.units[frame.unitType].highlight.aggro ) then
 		frame:RegisterUnitEvent("UNIT_THREAT_SITUATION_UPDATE", self, "UpdateThreat")
 		frame:RegisterUpdateFunc(self, "UpdateThreat")
 	end
-	
+
 	if( ShadowUF.db.profile.units[frame.unitType].highlight.attention and frame.unitType ~= "target" and frame.unitType ~= "focus" ) then
 		frame:RegisterNormalEvent("PLAYER_TARGET_CHANGED", self, "UpdateAttention")
 		frame:RegisterNormalEvent("PLAYER_FOCUS_CHANGED", self, "UpdateAttention")
@@ -94,7 +94,7 @@ function Highlight:OnEnable(frame)
 	if( ShadowUF.db.profile.units[frame.unitType].highlight.mouseover and not frame.highlight.OnEnter ) then
 		frame.highlight.OnEnter = frame.OnEnter
 		frame.highlight.OnLeave = frame.OnLeave
-		
+
 		frame.OnEnter = OnEnter
 		frame.OnLeave = OnLeave
 	end
@@ -114,7 +114,7 @@ end
 
 function Highlight:OnDisable(frame)
 	frame:UnregisterAll(self)
-	
+
 	frame.highlight.hasDebuff = nil
 	frame.highlight.hasThreat = nil
 	frame.highlight.hasAttention = nil
@@ -182,7 +182,7 @@ function Highlight:UpdateAura(frame)
 			local name, _, _, auraType = UnitDebuff(frame.unit, id)
 			if( not name ) then break end
 			if( auraType == "" ) then auraType = "Enrage" end
-			
+
 			if( canCure[auraType] ) then
 				frame.highlight.hasDebuff = auraType
 				break

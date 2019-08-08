@@ -30,6 +30,7 @@
 ## X-DBM-Mod-MapID: 1148, 1698, 1710, 1703, 1702, 1684, 1673, 1616
 ## X-DBM-Mod-MinCoreRevision: 16130
 ## X-Curse-Project-ID: 61621
+## Version: r108-3-gde4f702
 
 localization.en.lua
 localization.de.lua

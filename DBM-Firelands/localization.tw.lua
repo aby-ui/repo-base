@@ -6,10 +6,6 @@ local L
 -----------------
 L= DBM:GetModLocalization(192)
 
-L:SetOptionLocalization({
-	RangeFrame			= "顯示距離框(10碼)"
-})
-
 L:SetMiscLocalization({
 	EmoteSpiderlings 	= "小蜘蛛從牠們的巢穴中被驚動了!"
 })
@@ -40,14 +36,12 @@ L:SetOptionLocalization({
 	WarnNewInitiate		= "為新的熾炎猛禽學徒顯示警告",
 	timerNextInitiate	= "為下一次熾炎猛禽學徒顯示計時器",
 	TimerPhaseChange	= "為下次階段轉換顯示計時器",
-	TimerHatchEggs		= "為下次熔岩蛋孵化顯示計時器",
-	InfoFrame			= "在資訊框架顯示$spell:98734"
+	TimerHatchEggs		= "為下次熔岩蛋孵化顯示計時器"
 })
 
 L:SetMiscLocalization({
 	YellPull		= "我現在有新的主人了，凡人!",
 	YellPhase2		= "這片天空屬於我。",
-	FullPower		= "spell:99925",
 	LavaWorms		= "熾炎熔岩蟲從地上鑽了出來!",
 	East			= "東邊",
 	West			= "西邊",
@@ -79,9 +73,7 @@ L:SetOptionLocalization({
 	warnStrike			= "為虐殺/煉獄之刃顯示警告",
 	timerStrike			= "為下一次虐殺/煉獄之刃顯示計時器",
 	TimerBladeActive	= "為目前虐殺/煉獄之刃顯示持續時間",
-	TimerBladeNext		= "為下一次巴勒羅克之刃顯示計時器",
-	InfoFrame			= "為$spell:99262堆疊顯示訊息框",
-	RangeFrame			= "為$spell:99404顯示距離框(5碼)"
+	TimerBladeNext		= "為下一次巴勒羅克之刃顯示計時器"
 })
 
 --------------------------------
@@ -96,8 +88,7 @@ L:SetTimerLocalization({
 L:SetOptionLocalization({
 	timerNextSpecial	= "為下一次特殊技能顯示計時器",
 	RangeFrameSeeds		= "為$spell:98450顯示距離框(12碼)",
-	RangeFrameCat		= "為$spell:98374顯示距離框(10碼)",
-	IconOnLeapingFlames	= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(98476)
+	RangeFrameCat		= "為$spell:98374顯示距離框(10碼)"
 })
 
 --------------
@@ -123,7 +114,6 @@ L:SetOptionLocalization({
 	WarnEngulfingFlameHeroic	= "為$spell:99171的位置顯示警告(英雄模式)",
 	warnSeedsLand				= "為$spell:98520落地而非熔岩晶粒施放顯示警告/計時器",
 	TimerPhaseSons				= "顯示烈焰之子階段的持續時間計時器",
-	RangeFrame					= "顯示距離框",
 	InfoHealthFrame				= "顯示生命值框架 (低於十萬生命值)",
 	MeteorFrame					= "顯示$spell:99849的目標的訊息框",
 	AggroFrame					= "顯示沒有熔岩煉獄的仇恨的團員的訊息框"

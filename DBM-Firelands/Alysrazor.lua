@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(194, "DBM-Firelands", nil, 78)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190625143316")
+mod:SetRevision("20190808031548")
 mod:SetCreatureID(52530)
 mod:SetEncounterID(1206)
 mod:SetZone()
@@ -17,10 +17,11 @@ mod:RegisterEventsInCombat(
 	"SPELL_AURA_REFRESH 99359",
 	"SPELL_AURA_REMOVED 100744 99432 99362 99359 99844",
 	"SPELL_CAST_SUCCESS 99464",
-	"RAID_BOSS_EMOTE",
+	"CHAT_MSG_RAID_BOSS_EMOTE",
 	"CHAT_MSG_MONSTER_YELL"
 )
 
+--CombatStart timer uses an out of combat event
 mod:RegisterEvents(
 	"SPELL_CAST_START 101223 102111 100761 100744 100559"
 )
@@ -50,7 +51,7 @@ local timerTantrum				= mod:NewBuffActiveTimer(10, 99362, nil, "Tank", nil, 5, n
 local timerSatiated				= mod:NewBuffActiveTimer(15, 99359, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON)
 local timerBlazingClaw			= mod:NewTargetTimer(15, 99844, nil, false, nil, 5)
 
-mod:AddBoolOption("InfoFrame", false)
+mod:AddInfoFrameOption(98734, false)
 
 mod.vb.initiatesSpawned = 0
 mod.vb.cataCast = 0
@@ -58,17 +59,8 @@ mod.vb.moltCast = 0
 local initiate = DBM:EJ_GetSectionInfo(2834)
 local PowerLevel = DBM:GetSpellInfo(98734)
 
-local initiateSpawns = {
-	[1] = L.Both,
-	[2] = L.Both,
-	[3] = L.East,
-	[4] = L.West,
-	[5] = L.East,
-	[6] = L.West
-}
-
 function mod:OnCombatStart(delay)
-	if self:IsDifficulty("heroic10", "heroic25") then
+	if self:IsHeroic() then
 		timerFieryVortexCD:Start(243-delay)--Probably not right.
 		timerCataclysmCD:Start(32-delay)
 		timerHatchEggs:Start(42-delay)
@@ -93,25 +85,22 @@ function mod:OnCombatEnd()
 	if self.Options.InfoFrame then
 		DBM.InfoFrame:Hide()
 	end
-end 
+end
 
 function mod:SPELL_AURA_APPLIED(args)
 	local spellId = args.spellId
 	if spellId == 99362 and ((args.sourceGUID == UnitGUID("target") and self:IsTank()) or not self:IsTank() and (args.sourceGUID == UnitGUID("targettarget") or args.sourceGUID == UnitGUID("focustargettarget"))) then--Only give warning if it's mob you're targeting and you're a tank, or you're targeting the tank it's on and he's targeting the bird.
 		specWarnTantrum:Show()
 		specWarnTantrum:Play("moveboss")
-		timerTantrum:Show()
+		timerTantrum:Start()
 	elseif spellId == 99359 and ((args.sourceGUID == UnitGUID("target") and self:IsTank()) or not self:IsTank() and (args.sourceGUID == UnitGUID("targettarget") or args.sourceGUID == UnitGUID("focustargettarget"))) then--^^ Same as above only with diff spell
-		if self:IsDifficulty("heroic10", "heroic25") then
-			timerSatiated:Start(10)
-		else
-			timerSatiated:Start()
-		end
+		timerSatiated:Start(self:IsHeroic() and 10 or 15)
 	elseif spellId == 99308 then--Gushing Wound
-		specWarnGushingWoundOther:Show(args.destName)
-		specWarnGushingWoundOther:Play("stopheal")
 		if args:IsPlayer() then
 			specWarnGushingWoundSelf:Show()
+		else
+			specWarnGushingWoundOther:Show(args.destName)
+			specWarnGushingWoundOther:Play("stopheal")
 		end
 	elseif spellId == 99432 then--Burnout applied (0 energy)
 		warnPhase:Show(3)
@@ -130,7 +119,7 @@ end
 function mod:SPELL_AURA_REFRESH(args)
 	local spellId = args.spellId
 	if spellId == 99359 and ((args.sourceGUID == UnitGUID("target") and self:IsTank()) or not self:IsTank() and args.sourceGUID == UnitGUID("targettarget")) then--^^ Same as above only with diff spell
-		if self:IsDifficulty("heroic10", "heroic25") then
+		if self:IsHeroic() then
 			timerSatiated:Start(10)
 		else
 			timerSatiated:Start()
@@ -150,11 +139,11 @@ function mod:SPELL_AURA_REMOVED(args)
 	elseif spellId == 99432 and self:IsInCombat() then--Burnout removed (50 energy)
 		warnPhase:Show(4)
 	elseif spellId == 99362 and ((args.sourceGUID == UnitGUID("target") and self:IsTank()) or not self:IsTank() and args.sourceGUID == UnitGUID("targettarget")) then
-		timerTantrum:Cancel()
+		timerTantrum:Stop()
 	elseif spellId == 99359 and ((args.sourceGUID == UnitGUID("target") and self:IsTank()) or not self:IsTank() and args.sourceGUID == UnitGUID("targettarget")) then--^^ Same as above only with diff spell
-		timerSatiated:Cancel()
+		timerSatiated:Stop()
 	elseif spellId == 99844 then
-		timerBlazingClaw:Cancel(args.destName)
+		timerBlazingClaw:Stop(args.destName)
 	end
 end
 
@@ -187,63 +176,49 @@ end
 
 function mod:SPELL_CAST_SUCCESS(args)
 	local spellId = args.spellId
-	if spellId == 99464 and self:IsDifficulty("normal10", "normal25") then
+	if spellId == 99464 and self:IsNormal() then
+		self.vb.moltCast = self.vb.moltCast + 1
 		if self.vb.moltCast < 2 then
 			timerMoltingCD:Start()
-			self.vb.moltCast = self.vb.moltCast + 1
 		end
 		warnMolting:Show(self.vb.moltCast)
 	end
 end
 
-function mod:CHAT_MSG_MONSTER_YELL(msg, mob)
-	if not self:IsInCombat() then return end
-	if msg == L.YellPhase2 or msg:find(L.YellPhase2) then--Basically the pre warn to feiry vortex
-		warnPhase:Show(2)
-		timerMoltingCD:Cancel()
-		timerPhaseChange:Start(33, 3)
-		self.vb.initiatesSpawned = 0
-	--Yes it's ugly, but it works.
-	elseif mob == initiate then
-		self.vb.initiatesSpawned = self.vb.initiatesSpawned + 1
-		warnNewInitiate:Show(initiateSpawns[self.vb.initiatesSpawned])
-		if self.vb.initiatesSpawned == 6 then return end--All 6 are spawned, lets not create any timers.
-		if self:IsDifficulty("heroic10", "heroic25") then
-		--East: 2 adds, firestorm, 2 adds, firestorm, no adds.
-		--West: 2 adds, firestorm, 1 add, firestorm, 1 add.
-			if self.vb.initiatesSpawned == 1 then--First on Both sides
-				timerNextInitiate:Start(22, L.Both)--Next will be on both sides
-			elseif self.vb.initiatesSpawned == 2 then
-				timerNextInitiate:Start(63, L.East)--Next will spawn on east only
-			elseif self.vb.initiatesSpawned == 3 then
-				timerNextInitiate:Start(21, L.West)--Next will spawn west only
-			elseif self.vb.initiatesSpawned == 4 then
-				timerNextInitiate:Start(21, L.East)--Next will spawn east only, just before fire storm
-			elseif self.vb.initiatesSpawned == 5 then
-				timerNextInitiate:Start(40, L.West)--Last will be on west, after a fire storm
-			end
-		else
-			--Using averages, 30-32 and 20-22 are variations.
-			if self.vb.initiatesSpawned == 1 then--First on Both sides
-				timerNextInitiate:Start(31, L.Both)--Next will be on both sides
-			elseif self.vb.initiatesSpawned == 2 then
-				timerNextInitiate:Start(31, L.East)--Next will spawn on east only
-			elseif self.vb.initiatesSpawned == 3 then
-				timerNextInitiate:Start(21, L.West)--Next will spawn west only
-			elseif self.vb.initiatesSpawned == 4 then
-				timerNextInitiate:Start(21, L.East)--Next will spawn east only
-			elseif self.vb.initiatesSpawned == 5 then
-				timerNextInitiate:Start(21, L.West)--Last will be on west
-			end
+do
+	local intiateTimers = {27, 31, 31, 21, 21, 21}
+	local intiateHeroicTimers = {27, 22, 63, 21, 21, 40}
+	local initiateSpawns = {
+		[1] = L.Both,
+		[2] = L.Both,
+		[3] = L.East,
+		[4] = L.West,
+		[5] = L.East,
+		[6] = L.West
+	}
+	function mod:CHAT_MSG_MONSTER_YELL(msg, mob)
+		if not self:IsInCombat() then return end
+		if msg == L.YellPhase2 or msg:find(L.YellPhase2) then--Basically the pre warn to feiry vortex
+			warnPhase:Show(2)
+			timerMoltingCD:Cancel()
+			timerPhaseChange:Start(33, 3)
+			self.vb.initiatesSpawned = 0
+		elseif mob == initiate then--initiates yell when they spawn, and no other time
+			self.vb.initiatesSpawned = self.vb.initiatesSpawned + 1
+			warnNewInitiate:Show(initiateSpawns[self.vb.initiatesSpawned])
+			if self.vb.initiatesSpawned == 6 then return end--All 6 are spawned, lets not create any timers.
+			local nextText = initiateSpawns[self.vb.initiatesSpawned+1]
+			local nextTimer = self:IsHeroic() and intiateHeroicTimers[self.vb.initiatesSpawned+1] or initiateSpawns[self.vb.initiatesSpawned+1]
+			timerNextInitiate:Start(nextTimer, nextText)
 		end
 	end
 end
 
-function mod:RAID_BOSS_EMOTE(msg)
-	if msg == L.FullPower or msg:find(L.FullPower) then
+function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg)
+	if msg:find("spell:99925") then
 		warnPhase:Show(1)
 		timerNextInitiate:Start(13.5, L.Both)
-		if self:IsDifficulty("heroic10", "heroic25") then
+		if self:IsHeroic() then
 			timerFieryVortexCD:Start(225)
 			timerHatchEggs:Start(22)
 			timerCataclysmCD:Start(18)

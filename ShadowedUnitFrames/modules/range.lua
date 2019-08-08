@@ -136,7 +136,7 @@ end
 
 function Range:OnDisable(frame)
 	frame:UnregisterAll(self)
-	
+
 	if( frame.range ) then
 		cancelTimer(frame)
 		frame:SetRangeAlpha(1.0)

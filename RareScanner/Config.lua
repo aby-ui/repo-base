@@ -1170,6 +1170,18 @@ local function GetLootFilterOptions()
 							width = "full",
 							disabled = function() return (not private.db.loot.displayLoot and not private.db.loot.displayLootOnMap) end,
 						},
+						filterItemsCompletedQuest = {
+							order = 5,
+							type = "toggle",
+							name = AL["LOOT_FILTER_COMPLETED_QUEST"],
+							desc = AL["LOOT_FILTER_COMPLETED_QUEST_DESC"],
+							get = function() return private.db.loot.filterItemsCompletedQuest end,
+							set = function(_, value)
+								private.db.loot.filterItemsCompletedQuest = value
+							end,
+							width = "full",
+							disabled = function() return (not private.db.loot.displayLoot and not private.db.loot.displayLootOnMap) end,
+						},
 					},
 					disabled = function() return (not private.db.loot.displayLoot and not private.db.loot.displayLootOnMap) end,
 				}
