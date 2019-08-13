@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2025, "DBM-AntorusBurningThrone", nil, 946)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190625143337")
+mod:SetRevision("20190812033049")
 mod:SetCreatureID(124445)
 mod:SetEncounterID(2075)
 mod:SetZone()
@@ -34,7 +34,7 @@ mod:RegisterEventsInCombat(
  or (ability.id = 250073) and type = "applybuff"
  or target.name = "Volant Kerapteron"
  or target.id = 124445 and ability.id = 250030
- 
+
 4 Life Force LFR Logs, and slower add spawn rates:
 https://www.warcraftlogs.com/reports/bWwmdJ8gCkcP1BYF#fight=1&type=summary&view=events&pins=2%24Off%24%23244F4B%24expression%24(ability.id%20%3D%20249121%20or%20ability.id%20%3D%20250048)%20and%20type%20%3D%20%22begincast%22%20%20or%20(ability.id%20%3D%20246753%20or%20ability.id%20%3D%20254769)%20and%20type%20%3D%20%22cast%22%20%20or%20(ability.id%20%3D%20248332)%20and%20type%20%3D%20%22applydebuff%22%20%20or%20(ability.id%20%3D%20250073)%20and%20type%20%3D%20%22applybuff%22%20%20or%20target.name%20%3D%20%22Volant%20Kerapteron%22
 https://www.warcraftlogs.com/reports/RcjbYJQHWNCt41Fm#fight=24&type=summary&pins=2%24Off%24%23244F4B%24expression%24(ability.id%20%3D%20249121%20or%20ability.id%20%3D%20250048)%20and%20type%20%3D%20%22begincast%22%20%20or%20(ability.id%20%3D%20246753%20or%20ability.id%20%3D%20254769)%20and%20type%20%3D%20%22cast%22%20%20or%20(ability.id%20%3D%20248332)%20and%20type%20%3D%20%22applydebuff%22%20%20or%20(ability.id%20%3D%20250073)%20and%20type%20%3D%20%22applybuff%22%20%20or%20target.name%20%3D%20%22Volant%20Kerapteron%22&view=events
@@ -77,7 +77,7 @@ local timerDestructorCD					= mod:NewTimer(90, "timerDestructor", 254769, nil, n
 local timerObfuscatorCD					= mod:NewTimer(90, "timerObfuscator", 246753, nil, nil, 1, DBM_CORE_DAMAGE_ICON)
 local timerPurifierCD					= mod:NewTimer(90, "timerPurifier", 250074, nil, nil, 1, DBM_CORE_TANK_ICON)
 local timerBatsCD						= mod:NewTimer(90, "timerBats", 242080, nil, nil, 1, DBM_CORE_DAMAGE_ICON)
---Mythic 
+--Mythic
 mod:AddTimerLine(ENCOUNTER_JOURNAL_SECTION_FLAG12)
 local timerFinalDoom					= mod:NewCastTimer(50, 249121, nil, nil, nil, 2, nil, DBM_CORE_DEADLY_ICON, nil, 2, 5)
 local timerFinalDoomCD					= mod:NewCDCountTimer(90, 249121, nil, nil, nil, 4, nil, DBM_CORE_HEROIC_ICON, nil, 1, 5)
@@ -235,7 +235,6 @@ function mod:OnCombatStart(delay)
 		self.vb.lifeRequired = 4
 		if self:IsMythic() then
 			timerRainofFelCD:Start(6-delay, 1)
-			--countdownRainofFel:Start(6-delay)
 			--timerSpearofDoomCD:Start(35-delay, 1)
 			timerDestructorCD:Start(17, DBM_CORE_MIDDLE)
 			self:Schedule(30, checkForDeadDestructor, self, 5)
@@ -246,7 +245,6 @@ function mod:OnCombatStart(delay)
 			self:Schedule(195, startBatsStuff, self)
 		elseif self:IsHeroic() then
 			timerRainofFelCD:Start(9.3-delay, 1)
-			--countdownRainofFel:Start(9.3-delay)
 			timerDestructorCD:Start(7, DBM_CORE_MIDDLE)
 			self:Schedule(27, checkForDeadDestructor, self)
 			timerSpearofDoomCD:Start(34-delay, 1)
@@ -259,7 +257,6 @@ function mod:OnCombatStart(delay)
 			self:Schedule(27, checkForDeadDestructor, self)
 			timerObfuscatorCD:Start(174, 1)
 			--timerRainofFelCD:Start(30-delay, 1)
-			--countdownRainofFel:Start(30-delay)
 		end
 	else
 		self.vb.lifeRequired = 3
@@ -378,7 +375,6 @@ function mod:SPELL_AURA_APPLIED(args)
 			local timer = self:IsMythic() and mythicRainOfFelTimers[self.vb.rainOfFelCount+1] or self:IsHeroic() and heroicRainOfFelTimers[self.vb.rainOfFelCount+1] or self:IsNormal() and normalRainOfFelTimers[self.vb.rainOfFelCount+1]
 			if timer then
 				timerRainofFelCD:Start(timer, self.vb.rainOfFelCount+1)
-				--countdownRainofFel:Start(timer)
 			end
 		end
 		if args:IsPlayer() then
@@ -464,7 +460,7 @@ function mod:UNIT_DIED(args)
 	local cid = self:GetCIDFromGUID(args.destGUID)
 	if cid == 124207 and self.vb.obfuscators > 0 then--Fel-Charged Obfuscator
 		self.vb.obfuscators = self.vb.obfuscators - 1
-	elseif cid == 123760 then 
+	elseif cid == 123760 then
 		if warnedAdds[args.destGUID] and self.vb.destructors > 0 then--Fel-Infused Destructor
 			self.vb.destructors = self.vb.destructors - 1
 		end

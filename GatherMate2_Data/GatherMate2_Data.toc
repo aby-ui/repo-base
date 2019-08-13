@@ -8,9 +8,9 @@
 ## Author: kagaro, Xinhuan
 ## X-Category: Map
 ## X-Email: sal.scotto@gmail.com
-## Version: v31.0
+## Version: v32.0
 ## LoadOnDemand: 1
-## X-Generated-Version: $Revision: 465 $
+## X-Generated-Version: $Revision: 468 $
 ## Dependencies: GatherMate2
 
 MiningData.lua

@@ -39,7 +39,7 @@
 			</Layer>
 			<Layer level="BORDER">
 				<!-- icon of ability in topleft -->
-				<Texture parentKey="Icon" mask="Textures\MinimapMask">
+				<Texture parentKey="Icon">
 					<Size x="40" y="40"/>
 					<Anchors>
 						<Anchor point="TOPLEFT" x="7" y="-7"/>
@@ -53,7 +53,17 @@
 					</Anchors>
 					<TexCoords left="0.4921875" right="0.796875" top="0.50390625" bottom="0.65625"/>
 				</Texture>
+				<MaskTexture parentKey="CircleMask" file="Interface\CharacterFrame\TempPortraitAlphaMask" hWrapMode="CLAMPTOBLACKADDITIVE" vWrapMode="CLAMPTOBLACKADDITIVE">
+					<Size x="39" y="39"/>
+					<Anchors>
+						<Anchor point="CENTER" relativeKey="$parent.Icon" relativePoint="CENTER"/>
+					</Anchors>
+					<MaskedTextures>
+						<MaskedTexture childKey="Icon"/>
+					</MaskedTextures>
+				</MaskTexture>				
 			</Layer>
+			
 			<Layer level="ARTWORK">
 				<!-- line below title area -->
 				<Texture file="Interface\Tooltips\UI-Tooltip-Border">

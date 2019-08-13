@@ -3990,7 +3990,9 @@ function atributo_damage:MontaInfoDamageDone()
 	
 	for _spellid, _skill in _pairs (ActorSkillsContainer) do --> da foreach em cada spellid do container
 		local nome, _, icone = _GetSpellInfo (_spellid)
-		_table_insert (ActorSkillsSortTable, {_spellid, _skill.total, _skill.total/ActorTotalDamage*100, nome, icone, nil, _skill.spellschool})
+		if (nome) then
+			_table_insert (ActorSkillsSortTable, {_spellid, _skill.total, _skill.total/ActorTotalDamage*100, nome, icone, nil, _skill.spellschool})
+		end
 	end
 	
 	--damage rank
@@ -4030,17 +4032,19 @@ function atributo_damage:MontaInfoDamageDone()
 			for _spellid, _skill in _pairs (PetSkillsContainer) do --> da foreach em cada spellid do container
 				local nome, _, icone = _GetSpellInfo (_spellid)
 				--_table_insert (ActorSkillsSortTable, {_spellid, _skill.total, _skill.total/ActorTotalDamage*100, nome .. " |TInterface\\AddOns\\Details\\images\\classes_small_alpha:12:12:0:0:128:128:33:64:96:128|t|c" .. class_color .. PetName:gsub ((" <.*"), "") .. "|r", icone, PetActor, _skill.spellschool})
-				_table_insert (ActorSkillsSortTable, {_spellid, _skill.total, _skill.total/ActorTotalDamage*100, nome .. " (|c" .. class_color .. PetName:gsub ((" <.*"), "") .. "|r)", icone, PetActor, _skill.spellschool})
+				if (nome) then
+					_table_insert (ActorSkillsSortTable, {_spellid, _skill.total, _skill.total/ActorTotalDamage*100, nome .. " (|c" .. class_color .. PetName:gsub ((" <.*"), "") .. "|r)", icone, PetActor, _skill.spellschool})
+				end
 			end
 		end
 	end
 	
 	_table_sort (ActorSkillsSortTable, _detalhes.Sort2)
-
+	
 	gump:JI_AtualizaContainerBarras (#ActorSkillsSortTable + 1)
-
+	
 	local max_ = ActorSkillsSortTable[1] and ActorSkillsSortTable[1][2] or 0 --> dano que a primeiro magia vez
-
+	
 	local barra
 	
 	--aura bar

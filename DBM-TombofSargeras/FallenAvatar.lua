@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1873, "DBM-TombofSargeras", nil, 875)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190625143337")
+mod:SetRevision("20190812033049")
 mod:SetCreatureID(116939)--Maiden of Valor 120437
 mod:SetEncounterID(2038)
 mod:SetZone()
@@ -216,7 +216,6 @@ function mod:OnCombatStart(delay)
 	timerUnboundChaosCD:Start(7-delay, 1)--7
 	self:Schedule(7, setabilityStatus, self, 234059, 0)--Unbound Chaos
 	timerDesolateCD:Start(13-delay)--13
-	countdownDesolate:Start(13-delay)
 	if not self:IsEasy() then
 		showTouchofSarg = true
 		timerTouchofSargerasCD:Start(14.5-delay, 1)
@@ -306,15 +305,13 @@ function mod:SPELL_CAST_START(args)
 		timerShadowyBladesCD:Stop()
 		timerRuptureRealitiesCD:Stop()
 		timerDesolateCD:Stop()
-		countdownDesolate:Cancel()
 		timerUnboundChaosCD:Stop()
 		timerCorruptedMatrix:Stop()
 		timerCorruptedMatrixCD:Stop()
-		
+
 		warnPhase2:Show()
 		warnPhase2:Play("ptwo")
 		timerDesolateCD:Start(19)
-		countdownDesolate:Start(19)
 		timerRuptureRealitiesCD:Start(38, 1)
 		if self.Options.InfoFrame then
 			DBM.InfoFrame:Hide()
@@ -332,7 +329,6 @@ function mod:SPELL_CAST_SUCCESS(args)
 	local spellId = args.spellId
 	if spellId == 236494 then
 		timerDesolateCD:Start()
-		countdownDesolate:Start(11.4)
 	elseif spellId == 233556 and self:AntiSpam(2, 4) then
 		if self:IsMythic() then
 			timerCorruptedMatrixCD:Start(12)

@@ -1,7 +1,7 @@
 -- nearby check yes/no? slowdown may be an isue if someone leaves the mod enabled and always replace node
 local GatherMateData = LibStub("AceAddon-3.0"):NewAddon("GatherMate2_Data")
 local GatherMate = LibStub("AceAddon-3.0"):GetAddon("GatherMate2")
-GatherMateData.generatedVersion = "466"
+GatherMateData.generatedVersion = "469"
 local bcZones = {
 	[94] = true,
 	[95] = true,
@@ -115,6 +115,8 @@ local bfaZones = {
 	[942] = true,
 	[1161] = true,
 	[1165] = true,
+	[1355] = true,
+	[1462] = true,
 }
 
 function GatherMateData:PerformMerge(dbs,style, zoneFilter)

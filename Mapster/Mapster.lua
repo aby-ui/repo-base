@@ -111,6 +111,9 @@ function Mapster:OnEnable()
 		WorldMapFrame:SetIgnoreParentScale(false)
 		WorldMapFrame.BlackoutFrame:Hide()
 		WorldMapFrame.IsMaximized = function() return false end
+
+		WorldMapFrame:SetFrameStrata("HIGH")
+		WorldMapFrame.BorderFrame:SetFrameStrata("LOW")
 	end
 
 	-- close the map on escape
@@ -196,6 +199,9 @@ end
 function Mapster:WorldMapFrame_ScrollContainer_GetCursorPosition()
 	local x,y = self.hooks[WorldMapFrame.ScrollContainer].GetCursorPosition(WorldMapFrame.ScrollContainer)
 	local s = WorldMapFrame:GetScale()
+	if WoWClassic then
+		s = s * UIParent:GetEffectiveScale()
+	end
 	return x / s, y / s
 end
 

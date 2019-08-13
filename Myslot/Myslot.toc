@@ -4,7 +4,7 @@
 ## Notes-zhCN: 保存你的技能按钮位置。反馈：farmer1992@gmail.com
 ## Notes-zhTW: Myslot可以跨帳號綁定技能與按鍵設置。反饋通道：farmer1992@gmail.com
 ## Author: tg123
-## Version: v5.2.6-1-g3074569
+## Version: v5.2.7-1-g934a236
 
 libs\base64.lua
 libs\crc32.lua

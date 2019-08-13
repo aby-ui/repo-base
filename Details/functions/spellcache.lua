@@ -220,7 +220,9 @@ do
 		if (t) then
 			local spellid = t [1]
 			local name, _, icon = _GetSpellInfo (spellid)
-			_rawset (_detalhes.spellcache, spellid, {name, 1, icon})
+			if (name) then
+				_rawset (_detalhes.spellcache, spellid, {name, 1, icon})
+			end
 			return tremove (_detalhes.savedCustomSpells, index)
 		end
 		
@@ -231,10 +233,15 @@ do
 	_detalhes.getspellinfo = function (spellid) return _unpack (_detalhes.spellcache[spellid]) end 
 	_detalhes.GetSpellInfo = _detalhes.getspellinfo
 
-	--> overwrite SpellInfo if spell is a Dot, so GetSpellInfo will return the name modified
+	--> overwrite SpellInfo if the spell is a DoT, so Details.GetSpellInfo will return the name modified
 	function _detalhes:SpellIsDot (spellid)
-		local nome, rank, icone = _GetSpellInfo (spellid)
-		_rawset (_detalhes.spellcache, spellid, {nome .. Loc ["STRING_DOT"], rank, icone})
+		local spellName, rank, spellIcon = _GetSpellInfo (spellid)
+		
+		if (spellName) then
+			_rawset (_detalhes.spellcache, spellid, {spellName .. Loc ["STRING_DOT"], rank, spellIcon})
+		else
+			_rawset (_detalhes.spellcache, spellid, {"Unknown DoT Spell? " .. Loc ["STRING_DOT"], rank, [[Interface\InventoryItems\WoWUnknownItem01]]})
+		end
 	end
 
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

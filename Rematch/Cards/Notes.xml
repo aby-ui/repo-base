@@ -135,19 +135,37 @@
 							<Color r="0.5" g="0.5" b="0.5"/>
 						</Texture>
 						<!-- icon to left of titlebar -->
-						<Texture parentKey="LeftIcon" mask="Textures\MinimapMask">
+						<Texture parentKey="LeftIcon">
 							<Size x="28" y="28"/>
 							<Anchors>
 								<Anchor point="TOPLEFT" x="5" y="-5"/>
 							</Anchors>
 						</Texture>
+						<MaskTexture parentKey="LeftCircleMask" file="Interface\CharacterFrame\TempPortraitAlphaMask" hWrapMode="CLAMPTOBLACKADDITIVE" vWrapMode="CLAMPTOBLACKADDITIVE">
+							<Size x="27" y="27"/>
+							<Anchors>
+								<Anchor point="CENTER" relativeKey="$parent.LeftIcon" relativePoint="CENTER"/>
+							</Anchors>
+							<MaskedTextures>
+								<MaskedTexture childKey="LeftIcon"/>
+							</MaskedTextures>
+						</MaskTexture>								
 						<!-- icon to right of titlebar -->
-						<Texture parentKey="RightIcon" mask="Textures\MinimapMask">
+						<Texture parentKey="RightIcon">
 							<Size x="28" y="28"/>
 							<Anchors>
 								<Anchor point="TOPRIGHT" x="-5" y="-5"/>
 							</Anchors>
 						</Texture>
+						<MaskTexture parentKey="RightCircleMask" file="Interface\CharacterFrame\TempPortraitAlphaMask" hWrapMode="CLAMPTOBLACKADDITIVE" vWrapMode="CLAMPTOBLACKADDITIVE">
+							<Size x="27" y="27"/>
+							<Anchors>
+								<Anchor point="CENTER" relativeKey="$parent.RightIcon" relativePoint="CENTER"/>
+							</Anchors>
+							<MaskedTextures>
+								<MaskedTexture childKey="RightIcon"/>
+							</MaskedTextures>
+						</MaskTexture>								
 					</Layer>
 					<Layer level="ARTWORK">
 						<!-- thin gold border around LeftIcon in titlebar -->

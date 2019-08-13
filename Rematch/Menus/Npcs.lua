@@ -397,18 +397,19 @@ rematch.notableNPCs = {
 	{ 154929, 27, 2742 }, -- Unit 17
 
 	-- Stratholme
-	{ 150923, 28, 2609, 2601, 2596 }, -- Belchling, Gargy, Lost Soul
+	{ 150923, 28, 2609 }, -- Belchling
 	{ 150922, 28, 2608 }, -- Sludge Belcher
-	{ 150911, 28, 2597, 2596, 2611 }, -- Crypt Fiend, Lost Soul, Tormented Spirit
+	{ 150911, 28, 2597 }, -- Crypt Fiend
 	{ 150914, 28, 2600, 2607, 2606 }, -- Wandering Phantasm, Zasz the Tiny, Plague Whelp
 	{ 150925, 28, 2612 }, -- Liz the Tormentor
 	{ 155145, 28, 2595, 2594, 2593 }, -- Diseased Rat, Plague Rat, Plague Roach
-	{ 155267, 28, 2751, 2596, 2607 }, -- Risen Guard, Lost Soul, Zasz the Tiny
-	{ 155414, 28, 2768, 2769, 2770 }, -- Smokey, Pyro, Infectus
+	{ 155267, 28, 2751 }, -- Risen Guard
 	{ 150929, 28, 2613 }, -- Nefarious Terry
 	{ 150918, 28, 2603 }, -- Tommy the Cruel
 	{ 150917, 28, 2602 }, -- Huncher
 	{ 150858, 28, 2592 }, -- Blackmane
+	{ 155414, 28, 2768, 2769, 2770 }, -- Fras Siabi
+	{ 155413, 28, 2774, 2771, 2772 }, -- Postmaster Malown
 
 
 }
@@ -647,17 +648,4 @@ SlashCmdList["REMATCHSPECIESINFO"] = function()
 	end
 	local txt = format("{ , 26, %d, %d, %d }, -- %s, %s, %s", speciesIDs[1] or 0, speciesIDs[2] or 0, speciesIDs[3] or 0, names[1] or "", names[2] or "", names[3] or "")
 	TinyPad.Insert(txt)
-end
-
-
--- if not on 8.2 client yet, remove stratholme
-if select(4,GetBuildInfo()) < 80200 then
-	for group=26,28 do
-		rematch.notableGroups[group] = nil
-		for i=#rematch.notableNPCs,1,-1 do
-			if rematch.notableNPCs[i][2] == group then
-				tremove(rematch.notableNPCs,i)
-			end
-		end
-	end
 end

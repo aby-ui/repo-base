@@ -201,35 +201,19 @@ end
 MethodDungeonTools.dungeonTotalCount = {}
 MethodDungeonTools.scaleMultiplier = {}
 
---[[8.1.5 old data
 local affixWeeks = { --affixID as used in C_ChallengeMode.GetAffixInfo(affixID)
-    [1] = {[1]=6,[2]=3,[3]=9,[4]=117},
-    [2] = {[1]=5,[2]=13,[3]=10,[4]=117},
-    [3] = {[1]=7,[2]=12,[3]=9,[4]=117},
-    [4] = {[1]=8,[2]=4,[3]=10,[4]=117},
-    [5] = {[1]=11,[2]=2,[3]=9,[4]=117},
-    [6] = {[1]=5,[2]=14,[3]=10,[4]=117},
-    [7] = {[1]=6,[2]=4,[3]=9,[4]=117},
-    [8] = {[1]=7,[2]=2,[3]=10,[4]=117},
-    [9] = {[1]=5,[2]=3,[3]=9,[4]=117},
-    [10] = {[1]=8,[2]=12,[3]=10,[4]=117},
-    [11] = {[1]=7,[2]=13,[3]=9,[4]=117},
-    [12] = {[1]=11,[2]=3,[3]=10,[4]=117},
-}
-]]
-local affixWeeks = { --affixID as used in C_ChallengeMode.GetAffixInfo(affixID)
-    [1] = {[1]=5,[2]=3,[3]=9,[4]=117},
-    [2] = {[1]=7,[2]=2,[3]=10,[4]=117},
-    [3] = {[1]=6,[2]=4,[3]=9,[4]=117},
-    [4] = {[1]=5,[2]=14,[3]=10,[4]=117},
-    [5] = {[1]=11,[2]=2,[3]=9,[4]=117},
-    [6] = {[1]=8,[2]=4,[3]=10,[4]=117},
-    [7] = {[1]=7,[2]=12,[3]=9,[4]=117},
-    [8] = {[1]=5,[2]=13,[3]=10,[4]=117},
-    [9] = {[1]=6,[2]=3,[3]=9,[4]=117},
-    [10] = {[1]=11,[2]=3,[3]=10,[4]=117},
-    [11] = {[1]=7,[2]=13,[3]=9,[4]=117},
-    [12] = {[1]=8,[2]=12,[3]=10,[4]=117},
+    [1] = {[1]=5,[2]=3,[3]=9,[4]=119},
+    [2] = {[1]=7,[2]=2,[3]=10,[4]=119},
+    [3] = {[1]=11,[2]=4,[3]=9,[4]=119},
+    [4] = {[1]=5,[2]=14,[3]=10,[4]=119},
+    [5] = {[1]=11,[2]=2,[3]=9,[4]=119},
+    [6] = {[1]=8,[2]=4,[3]=10,[4]=119},
+    [7] = {[1]=11,[2]=3,[3]=9,[4]=119},
+    [8] = {[1]=5,[2]=13,[3]=10,[4]=119},
+    [9] = {[1]=6,[2]=14,[3]=9,[4]=119},
+    [10] = {[1]=7,[2]=12,[3]=10,[4]=119},
+    [11] = {[1]=6,[2]=13,[3]=9,[4]=119},
+    [12] = {[1]=8,[2]=12,[3]=10,[4]=119},
 }
 
 local dungeonList = {
@@ -850,6 +834,7 @@ function MethodDungeonTools:MakeSidePanel(frame)
 	frame.sidePanelDeleteButton.frame:SetDisabledFontObject(fontInstance)
 	frame.sidePanelDeleteButton:SetCallback("OnClick",function(widget,callbackName,value)
 		MethodDungeonTools:HideAllDialogs()
+        frame.DeleteConfirmationFrame:ClearAllPoints()
 		frame.DeleteConfirmationFrame:SetPoint("CENTER",MethodDungeonTools.main_frame,"CENTER",0,50)
 		local currentPresetName = db.presets[db.currentDungeonIdx][db.currentPreset[db.currentDungeonIdx]].text
 		frame.DeleteConfirmationFrame.label:SetText(L"Delete "..currentPresetName.."?")
@@ -908,6 +893,17 @@ function MethodDungeonTools:MakeSidePanel(frame)
     end)
     MethodDungeonTools.main_frame.LiveSessionButton:SetDisabled(not inGroup)
 
+    --MDI
+    frame.MDIButton = AceGUI:Create("Button")
+    frame.MDIButton:SetText("MDI")
+    frame.MDIButton:SetWidth(buttonWidth)
+    frame.MDIButton.frame:SetNormalFontObject(fontInstance)
+    frame.MDIButton.frame:SetHighlightFontObject(fontInstance)
+    frame.MDIButton.frame:SetDisabledFontObject(fontInstance)
+    frame.MDIButton:SetCallback("OnClick",function(widget,callbackName,value)
+        MethodDungeonTools:ToggleMDIMode()
+    end)
+
 	frame.sidePanel.WidgetGroup:AddChild(frame.sidePanelNewButton)
     frame.sidePanel.WidgetGroup:AddChild(frame.sidePanelRenameButton)
     frame.sidePanel.WidgetGroup:AddChild(frame.sidePanelDeleteButton)
@@ -915,12 +911,27 @@ function MethodDungeonTools:MakeSidePanel(frame)
 	frame.sidePanel.WidgetGroup:AddChild(frame.sidePanelImportButton)
 	frame.sidePanel.WidgetGroup:AddChild(frame.sidePanelExportButton)
 	frame.sidePanel.WidgetGroup:AddChild(frame.LinkToChatButton)
+	frame.sidePanel.WidgetGroup:AddChild(frame.MDIButton)
 
 	--frame.sidePanel.WidgetGroup:AddChild(frame.LiveSessionButton)
 
 
 
     --Week Dropdown (Infested / Affixes)
+    local beguilingInfo = {
+        [1] = {
+            ["text"]="Void",
+            ["icon"]= CreateTextureMarkup(132886, 64, 64, 20, 20, 0.1, 0.9, 0.1, 0.9,0,0),
+        },
+        [2] = {
+            ["text"]="Tides",
+            ["icon"]= CreateTextureMarkup(132315, 64, 64, 20, 20, 0.1, 0.9, 0.1, 0.9,0,0),
+        },
+        [3] = {
+            ["text"]="Enchanted",
+            ["icon"]= CreateTextureMarkup(135735, 64, 64, 20, 20, 0.1, 0.9, 0.1, 0.9,0,0),
+        },
+    }
     local function makeAffixString(week,affixes,longText)
         local ret
         local sep = ""
@@ -937,6 +948,14 @@ function MethodDungeonTools:MakeSidePanel(frame)
                 end
                 ret = ret..CreateTextureMarkup(filedataid, 64, 64, 20, 20, 0.1, 0.9, 0.1, 0.9,0,0).."  "
             end
+        end
+        --beguiling configuration
+        local w = week%3
+        if w == 0 then w = 3 end
+        if longText then
+            ret = ret.." ("..beguilingInfo[w].text..")"
+        else
+            ret = ret..beguilingInfo[w].icon
         end
         return ret
     end
@@ -958,7 +977,7 @@ function MethodDungeonTools:MakeSidePanel(frame)
             item:SetOnEnter(function()
                 GameTooltip:SetOwner(item.frame, "ANCHOR_LEFT",-11,-25)
                 local v = affixWeeks[itemIdx]
-                GameTooltip:SetText(makeAffixString(nil,v,true),1,1,1,1)
+                GameTooltip:SetText(makeAffixString(itemIdx,v,true),1,1,1,1)
                 GameTooltip:Show()
             end)
             item:SetOnLeave(function()
@@ -1004,7 +1023,7 @@ function MethodDungeonTools:MakeSidePanel(frame)
         if not selectedWeek then return end
         GameTooltip:SetOwner(affixDropdown.frame, "ANCHOR_LEFT",-6,-41)
         local v = affixWeeks[selectedWeek]
-        GameTooltip:SetText(makeAffixString(nil,v,true),1,1,1,1)
+        GameTooltip:SetText(makeAffixString(selectedWeek,v,true),1,1,1,1)
         GameTooltip:Show()
     end)
     affixDropdown:SetCallback("OnLeave",function(...)
@@ -1064,9 +1083,124 @@ function MethodDungeonTools:MakeSidePanel(frame)
 	--progress bar
 	frame.sidePanel.ProgressBar = CreateFrame("Frame", nil, frame.sidePanel, "ScenarioTrackerProgressBarTemplate")
 	frame.sidePanel.ProgressBar:Show()
+    frame.sidePanel.ProgressBar:ClearAllPoints()
 	frame.sidePanel.ProgressBar:SetPoint("TOP",frame.sidePanel.WidgetGroup.frame,"BOTTOM",-10,5)
     MethodDungeonTools:SkinProgressBar(frame.sidePanel.ProgressBar)
 end
+
+---ToggleMDIMode
+---Enables display to override beguiling+freehold week
+function MethodDungeonTools:ToggleMDIMode()
+    db.MDI.enabled = not db.MDI.enabled
+    MethodDungeonTools:DisplayMDISelector()
+end
+
+function MethodDungeonTools:DisplayMDISelector()
+    local show = db.MDI.enabled
+    db = MethodDungeonTools:GetDB()
+    if not MethodDungeonTools.MDISelector then
+        MethodDungeonTools.MDISelector = AceGUI:Create("SimpleGroup")
+        MethodDungeonTools.MDISelector.frame:SetFrameStrata("HIGH")
+        MethodDungeonTools.MDISelector.frame:SetFrameLevel(50)
+        MethodDungeonTools.MDISelector.frame:SetBackdropColor(unpack(MethodDungeonTools.BackdropColor))
+        --fix show hide
+        local frame = MethodDungeonTools.main_frame
+        local originalShow,originalHide = frame.Show,frame.Hide
+        local widget = MethodDungeonTools.MDISelector.frame
+        function frame:Hide(...)
+            widget:Hide()
+            return originalHide(self, ...);
+        end
+        function frame:Show(...)
+            if db.MDI.enabled then widget:Show() end
+            return originalShow(self, ...);
+        end
+
+        MethodDungeonTools.MDISelector:SetLayout("Flow")
+        MethodDungeonTools.MDISelector.frame.bg = MethodDungeonTools.MDISelector.frame:CreateTexture(nil, "BACKGROUND")
+        MethodDungeonTools.MDISelector.frame.bg:SetAllPoints(MethodDungeonTools.MDISelector.frame)
+        MethodDungeonTools.MDISelector.frame.bg:SetColorTexture(unpack(MethodDungeonTools.BackdropColor))
+        MethodDungeonTools.MDISelector:SetWidth(120)
+        MethodDungeonTools.MDISelector:SetHeight(90)
+        MethodDungeonTools.MDISelector.frame:ClearAllPoints()
+        MethodDungeonTools.MDISelector.frame:SetPoint("BOTTOMLEFT",MethodDungeonTools.main_frame,"BOTTOMLEFT",0,0)
+
+        local label = AceGUI:Create("Label")
+        label:SetText("MDI Mode")
+        MethodDungeonTools.MDISelector:AddChild(label)
+
+        --beguiling
+        MethodDungeonTools.MDISelector.BeguilingDropDown = AceGUI:Create("Dropdown")
+        MethodDungeonTools.MDISelector.BeguilingDropDown:SetLabel("Beguiling:")
+        local beguilingList = {"1. Void","2. Tides","3. Enchanted"}
+        MethodDungeonTools.MDISelector.BeguilingDropDown:SetList(beguilingList)
+        MethodDungeonTools.MDISelector.BeguilingDropDown:SetCallback("OnValueChanged",function(widget,callbackName,key)
+            local preset = MethodDungeonTools:GetCurrentPreset()
+            preset.mdi.beguiling = key
+            MethodDungeonTools:DungeonEnemies_UpdateBeguiling()
+            MethodDungeonTools:UpdateProgressbar()
+            MethodDungeonTools:ReloadPullButtons()
+        end)
+        MethodDungeonTools.MDISelector:AddChild(MethodDungeonTools.MDISelector.BeguilingDropDown)
+
+        --freehold
+        MethodDungeonTools.MDISelector.FreeholdDropDown = AceGUI:Create("Dropdown")
+        MethodDungeonTools.MDISelector.FreeholdDropDown:SetLabel("Freehold:")
+        local freeholdList = {"1. Cutwater","2. Blacktooth","3. Bilge Rats"}
+        MethodDungeonTools.MDISelector.FreeholdDropDown:SetList(freeholdList)
+        MethodDungeonTools.MDISelector.FreeholdDropDown:SetCallback("OnValueChanged",function(widget,callbackName,key)
+            local preset = MethodDungeonTools:GetCurrentPreset()
+            preset.mdi.freehold = key
+            if preset.mdi.freeholdJoined then
+                MethodDungeonTools:DungeonEnemies_UpdateFreeholdCrew(preset.mdi.freehold)
+            end
+            MethodDungeonTools:DungeonEnemies_UpdateBlacktoothEvent()
+            MethodDungeonTools:UpdateProgressbar()
+            MethodDungeonTools:ReloadPullButtons()
+        end)
+        MethodDungeonTools.MDISelector:AddChild(MethodDungeonTools.MDISelector.FreeholdDropDown)
+
+        MethodDungeonTools.MDISelector.FreeholdCheck = AceGUI:Create("CheckBox")
+        MethodDungeonTools.MDISelector.FreeholdCheck:SetLabel("Join Crew")
+        MethodDungeonTools.MDISelector.FreeholdCheck:SetCallback("OnValueChanged",function(widget,callbackName,value)
+            local preset = MethodDungeonTools:GetCurrentPreset()
+            preset.mdi.freeholdJoined = value
+            MethodDungeonTools:DungeonEnemies_UpdateFreeholdCrew()
+            MethodDungeonTools:ReloadPullButtons()
+            MethodDungeonTools:UpdateProgressbar()
+        end)
+        MethodDungeonTools.MDISelector:AddChild(MethodDungeonTools.MDISelector.FreeholdCheck)
+
+
+    end
+    if show then
+        local preset = MethodDungeonTools:GetCurrentPreset()
+        preset.mdi = preset.mdi or {}
+        --beguiling
+        preset.mdi.beguiling = preset.mdi.beguiling or 1
+        MethodDungeonTools.MDISelector.BeguilingDropDown:SetValue(preset.mdi.beguiling)
+        MethodDungeonTools:DungeonEnemies_UpdateBeguiling()
+        --freehold
+        preset.mdi.freehold = preset.mdi.freehold or 1
+        MethodDungeonTools.MDISelector.FreeholdDropDown:SetValue(preset.mdi.freehold)
+        preset.mdi.freeholdJoined = preset.mdi.freeholdJoined or false
+        MethodDungeonTools.MDISelector.FreeholdCheck:SetValue(preset.mdi.freeholdJoined)
+        MethodDungeonTools:DungeonEnemies_UpdateFreeholdCrew()
+        MethodDungeonTools:DungeonEnemies_UpdateBlacktoothEvent()
+        MethodDungeonTools:UpdateProgressbar()
+        MethodDungeonTools:ReloadPullButtons()
+
+        MethodDungeonTools.MDISelector.frame:Show()
+    else
+        MethodDungeonTools:DungeonEnemies_UpdateBeguiling()
+        MethodDungeonTools:UpdateFreeholdSelector(MethodDungeonTools:GetCurrentPreset().week)
+        MethodDungeonTools:DungeonEnemies_UpdateBlacktoothEvent()
+        MethodDungeonTools:UpdateProgressbar()
+        MethodDungeonTools:ReloadPullButtons()
+        MethodDungeonTools.MDISelector.frame:Hide()
+    end
+end
+
 
 function MethodDungeonTools:UpdatePresetDropDown()
 	local dropdown = MethodDungeonTools.main_frame.sidePanel.WidgetGroup.PresetDropDown
@@ -1224,19 +1358,11 @@ function MethodDungeonTools:UpdatePullTooltip(tooltip)
                         local text = newLine..newLine..newLine..v.enemyData.name.." x"..v.enemyData.quantity..newLine
                         text = text..L"Level "..v.enemyData.level.." "..v.enemyData.creatureType..newLine
                         local boss = v.enemyData.isBoss or false
-                        local health = MethodDungeonTools:CalculateEnemyHealth(boss,v.enemyData.baseHealth,db.currentDifficulty)
+                        local health = MethodDungeonTools:CalculateEnemyHealth(boss,v.enemyData.baseHealth,db.currentDifficulty,v.enemyData.ignoreFortified)
                         text = text.."血量 "..MethodDungeonTools:FormatEnemyHealth(health)..""..newLine
 
                         local totalForcesMax = MethodDungeonTools:IsCurrentPresetTeeming() and MethodDungeonTools.dungeonTotalCount[db.currentDungeonIdx].teeming or MethodDungeonTools.dungeonTotalCount[db.currentDungeonIdx].normal
                         text = text..L"Forces: "..MethodDungeonTools:FormatEnemyForces(v.enemyData.count,totalForcesMax,false)
-
-
-                        local reapingText = ''
-                        if v.enemyData.reaping then
-                            local reapingIcon = CreateTextureMarkup(MethodDungeonTools.reapingStatic[tostring(v.enemyData.reaping)].iconTexture, 32, 32, 16, 16, 0, 1, 0, 1,0,0) or ""
-                            reapingText = "Reaping: "..reapingIcon.." "..MethodDungeonTools.reapingStatic[tostring(v.enemyData.reaping)].name .. "\n"
-                        end
-                        text = text.."\n"..reapingText
 
                         tooltip.topString:SetText(text)
                         showData = true
@@ -1244,30 +1370,6 @@ function MethodDungeonTools:UpdatePullTooltip(tooltip)
 					break;
 				end
 			end
-            --reaping icon
-            --[[
-            local reapingIcon = frame.sidePanel.newPullButtons[tooltip.currentPull].reapingIcon
-            if MouseIsOver(reapingIcon) and reapingIcon:IsShown() then
-                --model
-                local bwomsamdiId = 75961
-                if not tooltip.modelNpcId or (tooltip.modelNpcId ~= bwomsamdiId) then
-                    tooltip.Model:SetDisplayInfo(bwomsamdiId)
-                    tooltip.modelNpcId = bwomsamdiId
-                end
-                --topString
-                local risenIcon = CreateTextureMarkup(MethodDungeonTools.reapingStatic["148716"].iconTexture, 32, 32, 16, 16, 0, 1, 0, 1,0,0) or ""
-                local tormentedIcon = CreateTextureMarkup(MethodDungeonTools.reapingStatic["148893"].iconTexture, 32, 32, 16, 16, 0, 1, 0, 1,0,0) or ""
-                local lostIcon = CreateTextureMarkup(MethodDungeonTools.reapingStatic["148894"].iconTexture, 32, 32, 16, 16, 0, 1, 0, 1,0,0) or ""
-                local risenCount,tormentedCount,lostCount = MethodDungeonTools:GetReapingTypesForPull(tooltip.currentPull)
-                local newLine = "\n"
-                local text = newLine..newLine..risenCount.."x "..risenIcon.." Risen Soul"
-                text = text..newLine..newLine..tormentedCount.."x "..tormentedIcon.." Tormented Soul"
-                text = text..newLine..newLine..lostCount.."x "..lostIcon.." Lost Soul"
-                tooltip.topString:SetText(text)
-                showData = true
-            end
-            ]]
-
             if showData then
                 tooltip.topString:Show()
                 tooltip.Model:Show()
@@ -1329,15 +1431,23 @@ function MethodDungeonTools:IsCloneIncluded(enemyIdx,cloneIdx)
     local preset = MethodDungeonTools:GetCurrentPreset()
     local isCloneBlacktoothEvent = MethodDungeonTools.dungeonEnemies[db.currentDungeonIdx][enemyIdx]["clones"][cloneIdx].blacktoothEvent
 
+    --MDI override
+    local week
+    if db.MDI.enabled then
+        week = preset.mdi.beguiling or 1
+    else
+        week = preset.week
+    end
+
     --beguiling weekly configuration
     local weekData = MethodDungeonTools.dungeonEnemies[db.currentDungeonIdx][enemyIdx]["clones"][cloneIdx].week
     if weekData then
-        if weekData[preset.week] then return true else return false end
+        if weekData[week] then return true else return false end
     end
 
-    local week = preset.week%3
+    week = week%3
     if week == 0 then week = 3 end
-    local isBlacktoothWeek = week == 1
+    local isBlacktoothWeek = week == 2
     local cloneFaction = MethodDungeonTools.dungeonEnemies[db.currentDungeonIdx][enemyIdx]["clones"][cloneIdx].faction
 
     if not isCloneBlacktoothEvent or isBlacktoothWeek then
@@ -1517,16 +1627,27 @@ end
 local function round(number, decimals)
     return (("%%.%df"):format(decimals)):format(number)
 end
-function MethodDungeonTools:CalculateEnemyHealth(boss,baseHealth,level)
+function MethodDungeonTools:CalculateEnemyHealth(boss,baseHealth,level,ignoreFortified)
     local fortified = MethodDungeonTools:IsCurrentPresetFortified()
     local tyrannical = MethodDungeonTools:IsCurrentPresetTyrannical()
 	local mult = 1
-	if boss == false and fortified == true then mult = 1.2 end
+	if boss == false and fortified == true and (not ignoreFortified) then mult = 1.2 end
 	if boss == true and tyrannical == true then mult = 1.4 end
-	mult = round((1.10^(level-2))*mult,2)
+	mult = round((1.10^math.max(level-2,0))*mult,2)
 	return round(mult*baseHealth,0)
 end
---613437
+
+function MethodDungeonTools:ReverseCalcEnemyHealth(unit,level,boss)
+    local health = UnitHealthMax(unit)
+    local fortified = MethodDungeonTools:IsCurrentPresetFortified()
+    local tyrannical = MethodDungeonTools:IsCurrentPresetTyrannical()
+    local mult = 1
+    if boss == false and fortified == true then mult = 1.2 end
+    if boss == true and tyrannical == true then mult = 1.4 end
+    mult = round((1.10^math.max(level-2,0))*mult,2)
+    local baseHealth = health/mult
+    return baseHealth
+end
 
 function MethodDungeonTools:FormatEnemyHealth(amount)
 	amount = tonumber(amount)
@@ -1731,6 +1852,11 @@ function MethodDungeonTools:EnsureDBTables()
     end
 
 
+    db.MDI = db.MDI or {}
+    preset.mdi = preset.mdi or {}
+    preset.mdi.freehold = preset.mdi.freehold or 1
+    preset.mdi.freeholdJoined = preset.mdi.freeholdJoined or false
+    preset.mdi.beguiling = preset.mdi.beguiling or 1
 end
 
 
@@ -1769,6 +1895,7 @@ function MethodDungeonTools:UpdateMap(ignoreSetSelection,ignoreReloadPullButtons
     MethodDungeonTools:POI_UpdateAll()
     MethodDungeonTools:ToggleFreeholdSelector(db.currentDungeonIdx == 16)
     MethodDungeonTools:ToggleBoralusSelector(db.currentDungeonIdx == 19)
+    MethodDungeonTools:DisplayMDISelector()
     MethodDungeonTools:DrawAllPresetObjects()
 end
 
@@ -2312,11 +2439,19 @@ function MethodDungeonTools:UpdatePullButtonNPCData(idx)
                             local cloneIsTeeming = MethodDungeonTools.dungeonEnemies[db.currentDungeonIdx][enemyIdx]["clones"][cloneIdx].teeming
                             if (cloneIsTeeming and teeming) or (not cloneIsTeeming and not teeming) or (not cloneIsTeeming and teeming) then
 
+                                --MDI override
+                                local week
+                                if db.MDI.enabled then
+                                    week = preset.mdi.beguiling or 1
+                                else
+                                    week = preset.week
+                                end
+
                                 local isCloneBlacktoothEvent = MethodDungeonTools.dungeonEnemies[db.currentDungeonIdx][enemyIdx]["clones"][cloneIdx].blacktoothEvent
                                 local continue = false
-                                local week = preset.week%3
+                                week = week%3
                                 if week == 0 then week = 3 end
-                                local isBlacktoothWeek = week == 1
+                                local isBlacktoothWeek = week == 2
                                 if isCloneBlacktoothEvent then
                                     if isBlacktoothWeek then
                                         continue = true
@@ -2325,10 +2460,12 @@ function MethodDungeonTools:UpdatePullButtonNPCData(idx)
                                     continue = true
                                 end
 
+
+
                                 --beguiling weekly configuration
                                 local weekData = MethodDungeonTools.dungeonEnemies[db.currentDungeonIdx][enemyIdx]["clones"][cloneIdx].week
                                 if weekData then
-                                    if weekData[preset.week] then continue = true else continue = false end
+                                    if weekData[week] then continue = true else continue = false end
                                 end
 
                                 --check for faction
@@ -2349,7 +2486,7 @@ function MethodDungeonTools:UpdatePullButtonNPCData(idx)
                                     enemyTable[enemyTableIdx].level = level
                                     enemyTable[enemyTableIdx].creatureType = creatureType
                                     enemyTable[enemyTableIdx].baseHealth = baseHealth
-                                    enemyTable[enemyTableIdx].reaping = MethodDungeonTools.dungeonEnemies[db.currentDungeonIdx][enemyIdx]["reaping"]
+                                    enemyTable[enemyTableIdx].ignoreFortified = MethodDungeonTools.dungeonEnemies[db.currentDungeonIdx][enemyIdx]["ignoreFortified"]
                                 end
                             end
                         end
@@ -2359,25 +2496,6 @@ function MethodDungeonTools:UpdatePullButtonNPCData(idx)
 		end
 	end
 	frame.newPullButtons[idx]:SetNPCData(enemyTable)
-
-    --display reaping icon
-    local pullForces = MethodDungeonTools:CountForces(idx,false)
-    local totalForcesMax = MethodDungeonTools:IsCurrentPresetTeeming() and MethodDungeonTools.dungeonTotalCount[db.currentDungeonIdx].teeming or MethodDungeonTools.dungeonTotalCount[db.currentDungeonIdx].normal
-    local currentPercent = pullForces/totalForcesMax
-
-    local oldPullForces
-    if idx == 1 then
-        oldPullForces = 0
-    else
-        oldPullForces =  MethodDungeonTools:CountForces(idx-1,false)
-    end
-    local oldPercent = oldPullForces/totalForcesMax
-
-    if (math.floor(currentPercent/0.2)>math.floor(oldPercent/0.2)) and oldPercent<1 then
-        frame.newPullButtons[idx]:ShowReapingIcon(true,currentPercent,oldPercent)
-    else
-        frame.newPullButtons[idx]:ShowReapingIcon(false,currentPercent,oldPercent)
-    end
 end
 
 
@@ -3009,6 +3127,7 @@ function MethodDungeonTools:GetCurrentAffixWeek()
             return week
         end
     end
+    return 1
 end
 
 ---IsPlayerInGroup
@@ -3178,6 +3297,8 @@ function initFrames()
 
 
     main_frame.contextDropdown = L_Create_UIDropDownMenu("MethodDungeonToolsContextDropDown", nil)
+
+    MethodDungeonTools:EnsureDBTables()
 
 	MethodDungeonTools:CreateMenu();
 	MethodDungeonTools:MakeTopBottomTextures(main_frame);

@@ -66,6 +66,7 @@ local PROFILE_DEFAULTS = {
 			scanOnTaxi = true,
 			filteredRares = {},
 			filteredZones = {},
+			enableTomtomSupport = false,
 			showMaker = true,
 			marker = 8
 		},
@@ -79,6 +80,7 @@ local PROFILE_DEFAULTS = {
 			displayButton = true,
 			displayMiniature = true,
 			displayButtonContainers = true,
+			scale = 0.85,
 			autoHideButton = 0,
 			displayRaidWarning = true,
 			displayChatMessage = true,
@@ -141,7 +143,11 @@ scanner_button:SetClampedToScreen(true)
 scanner_button:RegisterForDrag("LeftButton")
 
 scanner_button:SetScript("OnDragStart", scanner_button.StartMoving)
-scanner_button:SetScript("OnDragStop", scanner_button.StopMovingOrSizing)
+scanner_button:SetScript("OnDragStop",function(self)
+	self:StopMovingOrSizing()
+	private.dbchar.scannerXPos = self:GetLeft()
+	private.dbchar.scannerYPos = self:GetBottom()
+end)
 scanner_button:SetScript("OnEnter", function(self)
 	self:SetBackdropBorderColor(0.9, 0.9, 0.9)
 end)
@@ -265,6 +271,9 @@ scanner_button.LootBar.LootBarToolTipComp2 = _G.CreateFrame("GameTooltip", "Loot
 scanner_button.LootBar.LootBarToolTipComp2:SetScale(0.8)
 scanner_button.LootBar.LootBarToolTip.shoppingTooltips = { scanner_button.LootBar.LootBarToolTipComp1, scanner_button.LootBar.LootBarToolTipComp2 }
 
+-- Player login
+scanner_button:RegisterEvent("PLAYER_LOGIN")
+
 -- Vignette events
 scanner_button:RegisterEvent("VIGNETTE_MINIMAP_UPDATED")
 
@@ -291,8 +300,14 @@ scanner_button:RegisterEvent("QUEST_TURNED_IN")
 
 -- Captures all events
 scanner_button:SetScript("OnEvent", function(self, event, ...)
+	-- Playe login
+	if (event == "PLAYER_LOGIN") then
+		if (private.dbchar.scannerXPos and private.dbchar.scannerYPos) then
+			self:ClearAllPoints()
+			self:SetPoint("BOTTOMLEFT",private.dbchar.scannerXPos,private.dbchar.scannerYPos)
+		end
 	-- Vignette info
-	if (event == "VIGNETTE_MINIMAP_UPDATED") then
+	elseif (event == "VIGNETTE_MINIMAP_UPDATED") then
 		-- Get viggnette data
 		local id = ...
 		local vignetteInfo = C_VignetteInfo.GetVignetteInfo(id)
@@ -600,6 +615,7 @@ scanner_button:SetScript("OnEvent", function(self, event, ...)
 	end
 end)
 
+local tomtom_waypoint
 function RareScanner:ProcessKill(npcID, forzed)
 	-- Mark as killed
 	if (npcID and private.dbglobal.rares_found[npcID] and private.ZONE_IDS[npcID]) then
@@ -914,6 +930,23 @@ function scanner_button:CheckNotificationCache(self, vignetteInfo)
 		end
 	end
 	
+	-- Tomtom support
+    if (TomTom and private.db.general.enableTomtomSupport) then
+		if (tomtom_waypoint) then
+			TomTom:RemoveWaypoint(tomtom_waypoint)
+		end
+		local npcInfo = private.dbglobal.rares_found[npcID]
+		if (npcInfo.coordX and npcInfo.coordY) then
+			tomtom_waypoint = TomTom:AddWaypoint(npcInfo.mapID, tonumber(npcInfo.coordX), tonumber(npcInfo.coordY), {
+				title = name,                
+				persistent = false,
+				minimap = false,
+				world = false,
+				cleardistance = 25
+			})
+		end
+    end
+	
 	-- sets recently seen
 	private.dbglobal.recentlySeen[npcID] = true
 
@@ -1087,6 +1120,9 @@ end
 
 -- Show action
 function scanner_button:ShowButton()
+	-- Resizes the button
+	self:SetScale(private.db.display.scale)
+
 	-- Sets the name
 	self.Title:SetText(self.name)
 	
@@ -1249,6 +1285,7 @@ function RareScanner:Test()
 	scanner_button.npcID = npcTestID
 	scanner_button.name = npcTestName
 	scanner_button.displayID = npcTestDisplayID
+	scanner_button.iconid = RareScanner.NPC_VIGNETTE
 	scanner_button.Title:SetText(npcTestName)
 	scanner_button:DisplayMessages(npcTestName)
 	scanner_button:PlaySoundAlert(RareScanner.NPC_VIGNETTE)

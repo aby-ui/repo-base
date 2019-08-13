@@ -258,6 +258,10 @@ GTFO.SpellID["278069"] = {
   sound = 1;
 };
 
+GTFO.SpellID["273178"] = {
+  --desc = "Blessed Consecration (Lady Liadrin)";
+  sound = 1;
+};
 
 -- ***********************
 -- * Shrine of the Storm *

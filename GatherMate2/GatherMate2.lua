@@ -226,6 +226,7 @@ end
 ]]
 function GatherMate:AddNode(zone, x, y, nodeType, name)
 	local db = gmdbs[nodeType]
+	if not db then return end
 	local id = self:EncodeLoc(x,y)
 	-- db lock check
 	if GatherMate.db.profile.dbLocks[nodeType] then
@@ -244,6 +245,7 @@ end
 ]]
 function GatherMate:InjectNode2(zone, coords, nodeType, nodeID)
 	local db = gmdbs[nodeType]
+	if not db then return end
 	-- db lock check
 	if GatherMate.db.profile.dbLocks[nodeType] then
 		return
@@ -253,6 +255,7 @@ function GatherMate:InjectNode2(zone, coords, nodeType, nodeID)
 	db[zone][coords] = nodeID
 end
 function GatherMate:DeleteNode2(zone, coords, nodeType)
+	if not gmdbs[nodeType] then return end
 	-- db lock check
 	if GatherMate.db.profile.dbLocks[nodeType] then
 		return
@@ -353,6 +356,7 @@ end
 	Remove an item from the DB
 ]]
 function GatherMate:RemoveNode(zone, x, y, nodeType)
+	if not gmdbs[nodeType] then return end
 	local db = gmdbs[nodeType][zone]
 	local coord = self:EncodeLoc(x,y)
 	if db[coord] then
@@ -365,6 +369,7 @@ end
 	Remove an item from the DB by node ID and type
 ]]
 function GatherMate:RemoveNodeByID(zone, nodeType, coord)
+	if not gmdbs[nodeType] then return end
 	-- db lock check
 	if GatherMate.db.profile.dbLocks[nodeType] then
 		return
@@ -451,6 +456,7 @@ end
 	Function to delete all of a specified node from a specific zone
 ]]
 function GatherMate:DeleteNodeFromZone(nodeType, nodeID, zone)
+	if not gmdbs[nodeType] then return end
 	local db = gmdbs[nodeType][zone]
 	if db then
 		for coord, node in pairs(db) do

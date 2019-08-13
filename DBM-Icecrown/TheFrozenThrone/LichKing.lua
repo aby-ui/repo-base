@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("LichKing", "DBM-Icecrown", 5)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190625143403")
+mod:SetRevision("20190810004750")
 mod:SetCreatureID(36597)
 mod:SetEncounterID(1106)
 mod:DisableEEKillDetection()--EE fires at 10%
@@ -117,7 +117,6 @@ local function NextPhase(self)
 		end
 		if self:IsDifficulty("heroic10", "heroic25") then
 			timerTrapCD:Start()
-			countdownShadowTrap:Start()
 		end
 	elseif self.vb.phase == 2 then
 		warnPhase2:Show()
@@ -126,7 +125,6 @@ local function NextPhase(self)
 		end
 		timerSoulreaperCD:Start(40)
 		timerDefileCD:Start(38)
-		countdownDefile:Start(38)
 		timerInfestCD:Start(14)
 		warnDefileSoon:Schedule(33)
 	elseif self.vb.phase == 3 then
@@ -134,7 +132,6 @@ local function NextPhase(self)
 		timerVileSpirit:Start(20)
 		timerSoulreaperCD:Start(40)
 		timerDefileCD:Start(38)
-		countdownDefile:Start(38)
 		timerHarvestSoulCD:Start(14)
 		warnDefileSoon:Schedule(33)
 	end
@@ -346,11 +343,11 @@ do
 	local grabIcon = 2
 	local lastValk = 0
 	local UnitIsUnit, UnitInVehicle, IsInRaid = UnitIsUnit, UnitInVehicle, IsInRaid
-	
+
 	local function scanValkyrTargets(self)
 		if (time() - lastValk) < 10 then    -- scan for like 10secs
 			for uId in DBM:GetGroupMembers() do        -- for every raid member check ..
-				if UnitInVehicle(uId) and not valkyrTargets[uId] then      -- if person #i is in a vehicle and not already announced 
+				if UnitInVehicle(uId) and not valkyrTargets[uId] then      -- if person #i is in a vehicle and not already announced
 					valkyrWarning:Show(UnitName(uId))  -- GetRaidRosterInfo(i) returns the name of the person who got valkyred
 					valkyrTargets[uId] = true          -- this person has been announced
 					if UnitIsUnit(uId, "player") then
@@ -373,7 +370,7 @@ do
 			table.wipe(valkyrTargets)       -- no more valkyrs this round, so lets clear the table
 			grabIcon = 2
 		end
-	end  
+	end
 
 	function mod:SPELL_SUMMON(args)
 		if args.spellId == 69037 then -- Summon Val'kyr

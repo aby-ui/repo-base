@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2332, "DBM-CrucibleofStorms", nil, 1177)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190714222246")
+mod:SetRevision("20190812040831")
 mod:SetCreatureID(145371)
 mod:SetEncounterID(2273)
 mod:SetZone()
@@ -571,7 +571,6 @@ function mod:SPELL_AURA_APPLIED(args)
 				yellUnstableResonanceSign:Yell(self.vb.voidIcon, "")
 				self:Unschedule(updateResonanceYell)
 				self:Schedule(2, updateResonanceYell, self, self.vb.voidIcon)
-				--countdownResonanceFades:Start()
 				timerUnstableResonance:Start()
 				playerAffected = true
 			end
@@ -582,7 +581,6 @@ function mod:SPELL_AURA_APPLIED(args)
 				yellUnstableResonanceSign:Yell(self.vb.tridentOceanicon, "")
 				self:Unschedule(updateResonanceYell)
 				self:Schedule(2, updateResonanceYell, self, self.vb.tridentOceanicon)
-				--countdownResonanceFades:Start()
 				timerUnstableResonance:Start()
 				playerAffected = true
 			end
@@ -593,7 +591,6 @@ function mod:SPELL_AURA_APPLIED(args)
 				yellUnstableResonanceSign:Yell(self.vb.tempestStormIcon, "")
 				self:Unschedule(updateResonanceYell)
 				self:Schedule(2, updateResonanceYell, self, self.vb.tempestStormIcon)
-				--countdownResonanceFades:Start()
 				timerUnstableResonance:Start()
 				playerAffected = true
 			end
@@ -721,7 +718,6 @@ function mod:SPELL_AURA_REMOVED(args)
 	elseif spellId == 293663 or spellId == 293662 or spellId == 293661 then--Unstable Resonance (all)
 		self.vb.resonCount = self.vb.resonCount - 1
 		if args:IsPlayer() then
-			--countdownResonanceFades:Cancel()
 			timerUnstableResonance:Stop()
 			playerAffected = false
 		end

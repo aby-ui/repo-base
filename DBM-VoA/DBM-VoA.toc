@@ -21,7 +21,7 @@
 ## X-DBM-Mod-Sort: 908
 ## X-Curse-Project-ID: 43970
 ## X-WoWI-ID: 21522
-## Version: r289-11-g6cf6184
+## Version: r289-12-g14f4ad5
 
 localization.en.lua
 localization.de.lua

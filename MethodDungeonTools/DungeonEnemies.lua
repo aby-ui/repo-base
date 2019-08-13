@@ -311,12 +311,7 @@ function MethodDungeonTools:DisplayBlipTooltip(blip,shown)
     end
 
     local boss = blip.data.isBoss or false
-    local reapingText = ''
-    if blip.data.reaping then
-        local reapingIcon = CreateTextureMarkup(MethodDungeonTools.reapingStatic[tostring(blip.data.reaping)].iconTexture, 32, 32, 16, 16, 0, 1, 0, 1,0,0) or ""
-        reapingText = L"Reaping: " .. reapingIcon.." "..L[MethodDungeonTools.reapingStatic[tostring(blip.data.reaping)].name] .. "\n"
-    end
-    local health = MethodDungeonTools:CalculateEnemyHealth(boss,data.health,db.currentDifficulty)
+    local health = MethodDungeonTools:CalculateEnemyHealth(boss,data.health,db.currentDifficulty,data.ignoreFortified)
     local group = blip.clone.g and " (G "..blip.clone.g..")" or ""
     local upstairs = blip.clone.upstairs and CreateTextureMarkup("Interface\\MINIMAP\\MiniMap-PositionArrows", 16, 32, 16, 16, 0, 1, 0, 0.5,0,-50) or ""
     --[[
@@ -326,7 +321,6 @@ function MethodDungeonTools:DisplayBlipTooltip(blip,shown)
 
     local text = upstairs..data.name.." "..occurence..group.."\n等级 "..data.level.." "..data.creatureType.."\n血量 "..MethodDungeonTools:FormatEnemyHealth(health).."\n"
     text = text ..L"Forces: "..MethodDungeonTools:FormatEnemyForces(data.count)
-    text = text .. "\n" .. reapingText
     text = text ..L"\n\n[Right click for more info]"
     tooltip.String:SetText(text)
 
@@ -421,15 +415,6 @@ function MDTDungeonEnemyMixin:SetUp(data,clone)
     self.texture_Background:SetVertexColor(1,1,1,1)
     if clone.patrol then self.texture_Background:SetVertexColor(unpack(patrolColor)) end
     self.data = data
-
-
-
-    if self.data.reaping then
-        self.texture_Reaping:SetTexture(MethodDungeonTools.reapingStatic[tostring(self.data.reaping)].iconTexture)
-        --self.texture_Reaping_Outline:SetColorTexture(value.outline)
-        self.texture_Reaping:Hide()
-    end
-
     self.clone = clone
     tinsert(blips,self)
     if db.enemyStyle == 2 then
@@ -649,7 +634,12 @@ end
 ---DungeonEnemies_UpdateBeguiling
 ---Updates visibility state of Beguiling NPCs
 function MethodDungeonTools:DungeonEnemies_UpdateBeguiling()
-    local week = preset.week
+    local week
+    if db.MDI.enabled then
+        week = preset.mdi.beguiling or 1
+    else
+        week = preset.week
+    end
     for _,blip in pairs(blips) do
         local weekData =  blip.clone.week
         if weekData and not weekData[week] then
@@ -660,14 +650,19 @@ function MethodDungeonTools:DungeonEnemies_UpdateBeguiling()
             blip:Show()
         end
     end
-end
+    end
 
 ---DungeonEnemies_UpdateBlacktoothEvent
 ---Updates visibility state of blacktooth event blips
 function MethodDungeonTools:DungeonEnemies_UpdateBlacktoothEvent()
-    local week = preset.week%3
+    local week
+    if db.MDI.enabled then
+        week = preset.mdi.freehold or 1
+    else
+        week = preset.week%3
+    end
     if week == 0 then week = 3 end
-    local isBlacktoothWeek = week == 1
+    local isBlacktoothWeek = week == 2
     for _,blip in pairs(blips) do
         if blip.clone.blacktoothEvent then
             if isBlacktoothWeek then
@@ -725,19 +720,19 @@ end
 
 ---Frehold Crews
 MethodDungeonTools.freeholdCrews = {
-    [1] = {
+    [2] = {--blacktooth
         [129548] = true,
         [129529] = true,
         [129547] = true,
         [126847] = true,
     },
-    [3] = {
+    [1] = {--cutwater
         [129559] = true,
         [129599] = true,
         [126845] = true,
         [129601] = true,
     },
-    [2] = {
+    [3] = {--bilge rat
         [129550] = true,
         [129527] = true,
         [129600] = true,
@@ -748,6 +743,10 @@ MethodDungeonTools.freeholdCrews = {
 ---DungeonEnemies_UpdateFreeholdCrew
 ---Updates the enemies in Freehold to reflect the weekly event of "joining" a crew i.e. disabling npcs of the crew
 function MethodDungeonTools:DungeonEnemies_UpdateFreeholdCrew(crewIdx)
+    --override crew with mdi data
+    if db.MDI.enabled then
+        crewIdx = (preset.mdi.freeholdJoined and preset.mdi.freehold) or nil
+    end
     --if we are not in freehold map we need to tidy up our mess a bit
     if not crewIdx then
         for _,blip in pairs(blips) do
@@ -757,6 +756,7 @@ function MethodDungeonTools:DungeonEnemies_UpdateFreeholdCrew(crewIdx)
         end
         return
     end
+
     local crew = MethodDungeonTools.freeholdCrews[crewIdx]
     for _,blip in pairs(blips) do
         if crew[blip.data.id] and not blip.clone.blacktoothEvent then
@@ -783,27 +783,4 @@ function MethodDungeonTools:GetEnemyForces(npcId)
             end
         end
     end
-end
-
----returns how many of each reaping type are in the specified pull
-local reapingTypeCount = {}
-function MethodDungeonTools:GetReapingTypesForPull(pullIdx)
-    preset = MethodDungeonTools:GetCurrentPreset()
-    db = db or MethodDungeonTools:GetDB()
-    table.wipe(reapingTypeCount)
-
-    for enemyIdx,clones in pairs(preset.value.pulls[pullIdx]) do
-        if tonumber(enemyIdx) then
-            local reapingType = MethodDungeonTools.dungeonEnemies[db.currentDungeonIdx][enemyIdx].reaping
-            if reapingType then
-                for _,cloneIdx in pairs(clones) do
-                    if MethodDungeonTools:IsCloneIncluded(enemyIdx,cloneIdx) then
-                        reapingTypeCount[reapingType] = reapingTypeCount[reapingType] and reapingTypeCount[reapingType]+1 or 1
-                    end
-                end
-            end
-        end
-    end
-
-    return reapingTypeCount[148716] or 0,reapingTypeCount[148893] or 0,reapingTypeCount[148894] or 0
 end

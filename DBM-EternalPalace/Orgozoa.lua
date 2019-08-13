@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2351, "DBM-EternalPalace", nil, 1179)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190731025920")
+mod:SetRevision("20190812040831")
 mod:SetCreatureID(152128)
 mod:SetEncounterID(2303)
 mod:SetZone()
@@ -285,8 +285,8 @@ function mod:SPELL_INTERRUPT(args)
 		timerMassiveIncubator:Stop()
 		timerDesensitizingStingCD:Start(3)
 		timerIncubationFluidCD:Start(18.6)
-		timerDribblingIchorCD:Start(28.9, 1)
-		timerArcingCurrentCD:Start(41.0, 1)
+		timerDribblingIchorCD:Start(26.1, 1)
+		timerArcingCurrentCD:Start(38.2, 1)
 		if self:IsMythic() then
 			timerCalloftheTenderCD:Start(20.3, 1)
 		end

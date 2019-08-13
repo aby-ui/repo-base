@@ -566,7 +566,7 @@ function WorldQuestTracker.UpdateZoneWidgets (forceUpdate)
 	wipe (WorldQuestTracker.Cache_ShownQuestOnZoneMap)
 	wipe (WorldQuestTracker.Cache_ShownWidgetsOnZoneMap)
 	
-	local total_Gold, total_Resources, total_APower = 0, 0, 0
+	local total_Gold, total_Resources, total_APower, total_Pet = 0, 0, 0, 0
 	local scale = WorldQuestTracker.db.profile.zone_map_config.scale
 	
 	local questFailed = false
@@ -659,6 +659,10 @@ function WorldQuestTracker.UpdateZoneWidgets (forceUpdate)
 								
 								local isSpellTarget = SpellCanTargetQuest() and IsQuestIDValidSpellTarget (questID)
 								
+								if (worldQuestType == LE_QUEST_TAG_TYPE_PET_BATTLE) then
+									total_Pet = total_Pet + 1
+								end
+							
 								widget.mapID = mapID
 								widget.questID = questID
 								widget.numObjectives = info.numObjectives
@@ -855,6 +859,8 @@ function WorldQuestTracker.UpdateZoneWidgets (forceUpdate)
 		end
 		
 		WorldQuestTracker.WorldMap_APowerIndicator.Amount = total_APower
+		
+		WorldQuestTracker.WorldMap_PetIndicator.text = total_Pet
 	end
 	
 	WorldQuestTracker.UpdateZoneSummaryFrame()

@@ -112,12 +112,12 @@ MethodDungeonTools.dungeonEnemies[dungeonIndex] = {
          [256138] = {};
       };
       ["id"] = 127799;
-      ["health"] = 383065;
       ["count"] = 4;
+      ["name"] = "Dazar'ai Honor Guard";
       ["displayId"] = 81326;
       ["creatureType"] = "Humanoid";
       ["level"] = 120;
-      ["name"] = "Dazar'ai Honor Guard";
+      ["health"] = 503570;
       ["characteristics"] = {
          ["Taunt"] = true;
          ["Incapacitate"] = true;
@@ -187,12 +187,12 @@ MethodDungeonTools.dungeonEnemies[dungeonIndex] = {
          };
          [9] = {
             ["sublevel"] = 1;
-            ["x"] = 459.71602749679;
+            ["x"] = 458.09438185492;
             ["infested"] = {
                [1] = true;
             };
             ["g"] = 7;
-            ["y"] = -471.03884599719;
+            ["y"] = -474.82268196192;
          };
          [5] = {
             ["y"] = -394.96740325824;
@@ -236,12 +236,12 @@ MethodDungeonTools.dungeonEnemies[dungeonIndex] = {
          [253654] = {};
       };
       ["id"] = 122971;
-      ["health"] = 440525;
       ["count"] = 4;
+      ["name"] = "Dazar'ai Juggernaut";
       ["displayId"] = 81325;
       ["creatureType"] = "Humanoid";
       ["level"] = 120;
-      ["name"] = "Dazar'ai Juggernaut";
+      ["health"] = 579106;
       ["characteristics"] = {
          ["Taunt"] = true;
          ["Incapacitate"] = true;
@@ -302,8 +302,8 @@ MethodDungeonTools.dungeonEnemies[dungeonIndex] = {
             ["sublevel"] = 1;
          };
          [5] = {
-            ["y"] = -462.10901967377;
-            ["x"] = 464.34369361057;
+            ["y"] = -460.21709589194;
+            ["x"] = 466.23559419455;
             ["g"] = 7;
             ["sublevel"] = 1;
          };
@@ -340,12 +340,12 @@ MethodDungeonTools.dungeonEnemies[dungeonIndex] = {
          ["Stun"] = true;
          ["Fear"] = true;
       };
-      ["health"] = 383065;
       ["count"] = 4;
+      ["name"] = "Dazar'ai Augur";
       ["displayId"] = 81336;
       ["creatureType"] = "Humanoid";
       ["level"] = 120;
-      ["name"] = "Dazar'ai Augur";
+      ["health"] = 503570;
       ["id"] = 122972;
    };
    [8] = {
@@ -477,10 +477,10 @@ MethodDungeonTools.dungeonEnemies[dungeonIndex] = {
          [252687] = {};
          [277242] = {};
       };
-      ["count"] = 4;
       ["name"] = "Shadowblade Stalker";
+      ["health"] = 503570;
       ["level"] = 120;
-      ["health"] = 383065;
+      ["count"] = 4;
       ["displayId"] = 84712;
       ["creatureType"] = "Humanoid";
       ["stealth"] = true;
@@ -543,10 +543,10 @@ MethodDungeonTools.dungeonEnemies[dungeonIndex] = {
             ["sublevel"] = 2;
          };
       };
-      ["id"] = 122963;
       ["characteristics"] = {
          ["Taunt"] = true;
       };
+      ["scale"] = 1;
       ["spells"] = {
          [255372] = {};
          [257407] = {};
@@ -560,13 +560,13 @@ MethodDungeonTools.dungeonEnemies[dungeonIndex] = {
       ["isBoss"] = true;
       ["encounterID"] = 2083;
       ["instanceID"] = 968;
-      ["name"] = "Rezan";
-      ["health"] = 2681455;
+      ["health"] = 3524990;
+      ["count"] = 0;
       ["displayId"] = 78188;
       ["creatureType"] = "Undead";
       ["level"] = 122;
-      ["count"] = 0;
-      ["scale"] = 1;
+      ["name"] = "Rezan";
+      ["id"] = 122963;
    };
    [17] = {
       ["clones"] = {
@@ -606,13 +606,13 @@ MethodDungeonTools.dungeonEnemies[dungeonIndex] = {
          [256849] = {};
          [256864] = {};
       };
-      ["name"] = "Dinomancer Kish'o";
-      ["health"] = 919356;
+      ["health"] = 1208568;
+      ["count"] = 10;
       ["displayId"] = 80709;
       ["creatureType"] = "Humanoid";
       ["level"] = 121;
       ["id"] = 129553;
-      ["count"] = 10;
+      ["name"] = "Dinomancer Kish'o";
    };
    [9] = {
       ["clones"] = {
@@ -623,8 +623,8 @@ MethodDungeonTools.dungeonEnemies[dungeonIndex] = {
             ["sublevel"] = 1;
          };
          [1] = {
-            ["y"] = -211.92125364663;
-            ["x"] = 581.10949780324;
+            ["y"] = -215.73948344478;
+            ["x"] = 578.56400086726;
             ["g"] = 9;
             ["sublevel"] = 1;
          };
@@ -658,12 +658,12 @@ MethodDungeonTools.dungeonEnemies[dungeonIndex] = {
          };
          [5] = {
             ["sublevel"] = 1;
-            ["x"] = 458.32344794135;
+            ["x"] = 455.19844206237;
             ["infested"] = {
                [3] = true;
             };
             ["g"] = 14;
-            ["y"] = -111.52749364018;
+            ["y"] = -113.87125810772;
          };
          [10] = {
             ["y"] = -159.70134850622;
@@ -700,12 +700,12 @@ MethodDungeonTools.dungeonEnemies[dungeonIndex] = {
          [255814] = {};
       };
       ["id"] = 127757;
-      ["count"] = 4;
       ["name"] = "Reanimated Honor Guard";
+      ["health"] = 553927;
       ["displayId"] = 80376;
       ["creatureType"] = "Undead";
       ["level"] = 120;
-      ["health"] = 421372;
+      ["count"] = 4;
       ["characteristics"] = {
          ["Taunt"] = true;
          ["Incapacitate"] = true;
@@ -736,12 +736,12 @@ MethodDungeonTools.dungeonEnemies[dungeonIndex] = {
       ["characteristics"] = {
          ["Taunt"] = true;
       };
-      ["name"] = "T'lonja";
-      ["health"] = 766130;
+      ["health"] = 1007140;
+      ["count"] = 6;
       ["displayId"] = 47659;
       ["creatureType"] = "Beast";
       ["level"] = 121;
-      ["count"] = 6;
+      ["name"] = "T'lonja";
       ["id"] = 128455;
    };
    [5] = {
@@ -792,12 +792,12 @@ MethodDungeonTools.dungeonEnemies[dungeonIndex] = {
       ["characteristics"] = {
          ["Taunt"] = true;
       };
-      ["health"] = 651211;
       ["count"] = 6;
+      ["name"] = "Dazar'ai Colossus";
       ["displayId"] = 80338;
       ["creatureType"] = "Mechanical";
       ["level"] = 121;
-      ["name"] = "Dazar'ai Colossus";
+      ["health"] = 856069;
       ["id"] = 122984;
    };
    [10] = {
@@ -828,12 +828,12 @@ MethodDungeonTools.dungeonEnemies[dungeonIndex] = {
          };
          [1] = {
             ["sublevel"] = 1;
-            ["x"] = 572.15586931982;
+            ["x"] = 576.88320070773;
             ["infested"] = {
                [1] = true;
             };
             ["g"] = 9;
-            ["y"] = -211.38723899521;
+            ["y"] = -208.29627174188;
          };
          [4] = {
             ["y"] = -144.6814772613;
@@ -864,12 +864,12 @@ MethodDungeonTools.dungeonEnemies[dungeonIndex] = {
          [277242] = {};
       };
       ["id"] = 127315;
-      ["count"] = 0;
       ["name"] = "Reanimation Totem";
+      ["health"] = 100714;
       ["displayId"] = 82388;
       ["creatureType"] = "Not specified";
       ["level"] = 120;
-      ["health"] = 76613;
+      ["count"] = 0;
       ["characteristics"] = {
          ["Taunt"] = true;
          ["Slow"] = true;
@@ -902,12 +902,12 @@ MethodDungeonTools.dungeonEnemies[dungeonIndex] = {
       ["encounterID"] = 2030;
       ["instanceID"] = 968;
       ["id"] = 122968;
-      ["name"] = "Yazma";
+      ["count"] = 0;
       ["displayId"] = 79568;
       ["creatureType"] = "Humanoid";
       ["level"] = 122;
-      ["health"] = 2987907;
-      ["count"] = 0;
+      ["name"] = "Yazma";
+      ["health"] = 3927846;
    };
    [21] = {
       ["clones"] = {
@@ -937,12 +937,12 @@ MethodDungeonTools.dungeonEnemies[dungeonIndex] = {
          [209859] = {};
       };
       ["id"] = 135989;
-      ["count"] = 0;
       ["name"] = "Shieldbearer of Zul";
+      ["health"] = 498534;
       ["displayId"] = 80904;
       ["creatureType"] = "Undead";
       ["level"] = 120;
-      ["health"] = 291377;
+      ["count"] = 0;
       ["characteristics"] = {
          ["Taunt"] = true;
          ["Incapacitate"] = true;
@@ -1002,8 +1002,8 @@ MethodDungeonTools.dungeonEnemies[dungeonIndex] = {
             ["sublevel"] = 1;
          };
          [5] = {
-            ["y"] = -112.72549314881;
-            ["x"] = 470.18285580207;
+            ["y"] = -116.31924253356;
+            ["x"] = 471.12035622466;
             ["g"] = 14;
             ["sublevel"] = 1;
          };
@@ -1035,12 +1035,12 @@ MethodDungeonTools.dungeonEnemies[dungeonIndex] = {
          [209859] = {};
       };
       ["id"] = 122969;
-      ["count"] = 4;
       ["name"] = "Zanchuli Witch-Doctor";
+      ["health"] = 503570;
       ["displayId"] = 80622;
       ["creatureType"] = "Humanoid";
       ["level"] = 120;
-      ["health"] = 383065;
+      ["count"] = 4;
       ["characteristics"] = {
          ["Taunt"] = true;
          ["Incapacitate"] = true;
@@ -1055,6 +1055,181 @@ MethodDungeonTools.dungeonEnemies[dungeonIndex] = {
          ["Stun"] = true;
          ["Fear"] = true;
       };
+   };
+   [22] = {
+      ["clones"] = {
+         [13] = {
+            ["y"] = -218.49919597229;
+            ["x"] = 459.14186309195;
+            ["sublevel"] = 1;
+            ["g"] = 22;
+            ["week"] = {
+               [3] = true;
+               [6] = true;
+               [9] = true;
+               [12] = true;
+            };
+         };
+         [7] = {
+            ["y"] = -157.00850644419;
+            ["x"] = 503.2806749384;
+            ["week"] = {
+               [5] = true;
+               [2] = true;
+               [11] = true;
+               [8] = true;
+            };
+            ["g"] = 13;
+            ["sublevel"] = 1;
+         };
+         [1] = {
+            ["y"] = -205.44525788581;
+            ["x"] = 458.90792567836;
+            ["sublevel"] = 1;
+            ["week"] = {
+               [1] = true;
+               [10] = true;
+               [4] = true;
+               [7] = true;
+            };
+         };
+         [2] = {
+            ["y"] = -434.56037348003;
+            ["x"] = 503.54399678749;
+            ["sublevel"] = 1;
+            ["g"] = 6;
+            ["week"] = {
+               [1] = true;
+               [10] = true;
+               [4] = true;
+               [7] = true;
+            };
+         };
+         [4] = {
+            ["y"] = -339.63691782877;
+            ["x"] = 537.81386947478;
+            ["week"] = {
+               [1] = true;
+               [10] = true;
+               [4] = true;
+               [7] = true;
+            };
+            ["sublevel"] = 1;
+         };
+         [8] = {
+            ["y"] = -368.74243091578;
+            ["x"] = 567.57207937263;
+            ["week"] = {
+               [5] = true;
+               [2] = true;
+               [11] = true;
+               [8] = true;
+            };
+            ["g"] = 2;
+            ["sublevel"] = 1;
+         };
+         [9] = {
+            ["y"] = -456.69885985073;
+            ["x"] = 460.67986335652;
+            ["week"] = {
+               [5] = true;
+               [2] = true;
+               [11] = true;
+               [8] = true;
+            };
+            ["g"] = 7;
+            ["sublevel"] = 1;
+         };
+         [5] = {
+            ["y"] = -270.35711743825;
+            ["x"] = 446.29663111176;
+            ["week"] = {
+               [5] = true;
+               [2] = true;
+               [11] = true;
+               [8] = true;
+            };
+            ["g"] = 25;
+            ["sublevel"] = 1;
+         };
+         [10] = {
+            ["y"] = -385.98321486016;
+            ["x"] = 550.81424412841;
+            ["sublevel"] = 1;
+            ["g"] = 4;
+            ["week"] = {
+               [3] = true;
+               [6] = true;
+               [9] = true;
+               [12] = true;
+            };
+         };
+         [3] = {
+            ["y"] = -345.83569994491;
+            ["x"] = 570.5484504702;
+            ["week"] = {
+               [1] = true;
+               [10] = true;
+               [4] = true;
+               [7] = true;
+            };
+            ["g"] = 1;
+            ["sublevel"] = 1;
+         };
+         [6] = {
+            ["y"] = -195.23767109489;
+            ["x"] = 461.47139765412;
+            ["week"] = {
+               [5] = true;
+               [2] = true;
+               [11] = true;
+               [8] = true;
+            };
+            ["g"] = 16;
+            ["sublevel"] = 1;
+         };
+         [12] = {
+            ["y"] = -340.65941771733;
+            ["x"] = 534.54570477745;
+            ["sublevel"] = 1;
+            ["week"] = {
+               [3] = true;
+               [6] = true;
+               [9] = true;
+               [12] = true;
+            };
+         };
+         [11] = {
+            ["y"] = -359.79386429516;
+            ["x"] = 459.84183309614;
+            ["sublevel"] = 1;
+            ["g"] = 8;
+            ["week"] = {
+               [3] = true;
+               [6] = true;
+               [9] = true;
+               [12] = true;
+            };
+         };
+      };
+      ["scale"] = 1;
+      ["spells"] = {
+         [302417] = {};
+         [302418] = {};
+         [302415] = {};
+      };
+      ["characteristics"] = {
+         ["Taunt"] = true;
+      };
+      ["health"] = 402856;
+      ["count"] = 4;
+      ["ignoreFortified"] = true;
+      ["name"] = "Emissary of the Tides";
+      ["displayId"] = 39391;
+      ["creatureType"] = "Humanoid";
+      ["level"] = 120;
+      ["id"] = 155434;
+      ["iconTexture"] = 132315;
    };
    [3] = {
       ["clones"] = {
@@ -1113,8 +1288,8 @@ MethodDungeonTools.dungeonEnemies[dungeonIndex] = {
             ["sublevel"] = 1;
          };
          [5] = {
-            ["y"] = -472.45650438646;
-            ["x"] = 464.08888700118;
+            ["y"] = -476.78090823003;
+            ["x"] = 464.89972142104;
             ["teeming"] = true;
             ["g"] = 7;
             ["sublevel"] = 1;
@@ -1130,13 +1305,13 @@ MethodDungeonTools.dungeonEnemies[dungeonIndex] = {
       ["reaping"] = 148893;
       ["scale"] = 1;
       ["spells"] = {
-         [277564] = {};
          [277242] = {};
+         [253544] = {};
          [253517] = {};
          [209859] = {};
          [253526] = {};
          [253548] = {};
-         [253544] = {};
+         [277564] = {};
       };
       ["characteristics"] = {
          ["Taunt"] = true;
@@ -1151,12 +1326,12 @@ MethodDungeonTools.dungeonEnemies[dungeonIndex] = {
          ["Silence"] = true;
          ["Fear"] = true;
       };
-      ["health"] = 383065;
       ["count"] = 4;
+      ["name"] = "Dazar'ai Confessor";
       ["displayId"] = 81330;
       ["creatureType"] = "Humanoid";
       ["level"] = 120;
-      ["name"] = "Dazar'ai Confessor";
+      ["health"] = 503570;
       ["id"] = 122973;
    };
    [6] = {
@@ -1179,8 +1354,8 @@ MethodDungeonTools.dungeonEnemies[dungeonIndex] = {
             ["sublevel"] = 1;
          };
          [4] = {
-            ["y"] = -460.96617205641;
-            ["x"] = 456.05798094627;
+            ["y"] = -458.80398753301;
+            ["x"] = 455.51742466636;
             ["teeming"] = true;
             ["g"] = 7;
             ["sublevel"] = 1;
@@ -1217,41 +1392,26 @@ MethodDungeonTools.dungeonEnemies[dungeonIndex] = {
          ["Silence"] = true;
          ["Fear"] = true;
       };
-      ["count"] = 4;
       ["name"] = "Gilded Priestess";
+      ["health"] = 503570;
       ["displayId"] = 82238;
       ["creatureType"] = "Humanoid";
       ["level"] = 120;
-      ["health"] = 383065;
+      ["count"] = 4;
       ["scale"] = 1;
    };
    [12] = {
       ["clones"] = {
+         [6] = {
+            ["y"] = -139.72297834971;
+            ["x"] = 511.22537774386;
+            ["g"] = 13;
+            ["sublevel"] = 1;
+         };
          [7] = {
             ["y"] = -181.2102014957;
             ["x"] = 449.66549873072;
             ["g"] = 16;
-            ["sublevel"] = 1;
-         };
-         [1] = {
-            ["y"] = -180.17009972189;
-            ["x"] = 586.21481682213;
-            ["g"] = 10;
-            ["sublevel"] = 1;
-         };
-         [2] = {
-            ["sublevel"] = 1;
-            ["x"] = 546.52731743389;
-            ["infested"] = {
-               [2] = true;
-            };
-            ["g"] = 11;
-            ["y"] = -178.138849806;
-         };
-         [4] = {
-            ["y"] = -146.26384596779;
-            ["x"] = 552.62105377052;
-            ["g"] = 12;
             ["sublevel"] = 1;
          };
          [8] = {
@@ -1262,12 +1422,6 @@ MethodDungeonTools.dungeonEnemies[dungeonIndex] = {
             };
             ["g"] = 16;
             ["y"] = -181.06734860891;
-         };
-         [5] = {
-            ["y"] = -149.69207143314;
-            ["x"] = 505.3565413247;
-            ["g"] = 13;
-            ["sublevel"] = 1;
          };
          [3] = {
             ["y"] = -174.07634997422;
@@ -1309,11 +1463,32 @@ MethodDungeonTools.dungeonEnemies[dungeonIndex] = {
             ["g"] = 11;
             ["sublevel"] = 1;
          };
-         [6] = {
-            ["y"] = -139.72297834971;
-            ["x"] = 511.22537774386;
+         [1] = {
+            ["y"] = -180.17009972189;
+            ["x"] = 586.21481682213;
+            ["g"] = 10;
+            ["sublevel"] = 1;
+         };
+         [4] = {
+            ["y"] = -146.26384596779;
+            ["x"] = 552.62105377052;
+            ["g"] = 12;
+            ["sublevel"] = 1;
+         };
+         [5] = {
+            ["y"] = -148.96478547959;
+            ["x"] = 509.17478672867;
             ["g"] = 13;
             ["sublevel"] = 1;
+         };
+         [2] = {
+            ["sublevel"] = 1;
+            ["x"] = 546.52731743389;
+            ["infested"] = {
+               [2] = true;
+            };
+            ["g"] = 11;
+            ["y"] = -178.138849806;
          };
       };
       ["reaping"] = 148716;
@@ -1328,12 +1503,12 @@ MethodDungeonTools.dungeonEnemies[dungeonIndex] = {
       };
       ["stealthDetect"] = true;
       ["scale"] = 1;
-      ["count"] = 4;
       ["name"] = "Shieldbearer of Zul";
+      ["health"] = 498534;
       ["displayId"] = 80904;
       ["creatureType"] = "Undead";
       ["level"] = 120;
-      ["health"] = 379234;
+      ["count"] = 4;
       ["characteristics"] = {
          ["Taunt"] = true;
          ["Incapacitate"] = true;
@@ -1346,6 +1521,170 @@ MethodDungeonTools.dungeonEnemies[dungeonIndex] = {
          ["Silence"] = true;
          ["Repentance"] = true;
       };
+   };
+   [24] = {
+      ["clones"] = {
+         [7] = {
+            ["y"] = -434.58659862591;
+            ["x"] = 504.84566318056;
+            ["week"] = {
+               [5] = true;
+               [2] = true;
+               [11] = true;
+               [8] = true;
+            };
+            ["g"] = 6;
+            ["sublevel"] = 1;
+         };
+         [1] = {
+            ["y"] = -305.24756034958;
+            ["x"] = 456.08534584781;
+            ["sublevel"] = 1;
+            ["g"] = 23;
+            ["week"] = {
+               [1] = true;
+               [10] = true;
+               [4] = true;
+               [7] = true;
+            };
+         };
+         [2] = {
+            ["y"] = -275.28612484369;
+            ["x"] = 538.35169590867;
+            ["week"] = {
+               [1] = true;
+               [10] = true;
+               [7] = true;
+               [4] = true;
+            };
+            ["g"] = 18;
+            ["sublevel"] = 1;
+         };
+         [4] = {
+            ["y"] = -340.37485465888;
+            ["x"] = 535.04104978441;
+            ["week"] = {
+               [5] = true;
+               [2] = true;
+               [11] = true;
+               [8] = true;
+            };
+            ["sublevel"] = 1;
+         };
+         [8] = {
+            ["y"] = -420.26946718352;
+            ["x"] = 561.5286884;
+            ["sublevel"] = 1;
+            ["g"] = 5;
+            ["week"] = {
+               [3] = true;
+               [6] = true;
+               [9] = true;
+               [12] = true;
+            };
+         };
+         [9] = {
+            ["y"] = -465.79408375889;
+            ["x"] = 460.41706287576;
+            ["sublevel"] = 1;
+            ["g"] = 7;
+            ["week"] = {
+               [3] = true;
+               [6] = true;
+               [9] = true;
+               [12] = true;
+            };
+         };
+         [5] = {
+            ["y"] = -213.635826986;
+            ["x"] = 540.77603555886;
+            ["week"] = {
+               [5] = true;
+               [2] = true;
+               [11] = true;
+               [8] = true;
+            };
+            ["g"] = 19;
+            ["sublevel"] = 1;
+         };
+         [10] = {
+            ["y"] = -270.10160166855;
+            ["x"] = 445.93324532525;
+            ["sublevel"] = 1;
+            ["g"] = 25;
+            ["week"] = {
+               [3] = true;
+               [6] = true;
+               [9] = true;
+               [12] = true;
+            };
+         };
+         [3] = {
+            ["y"] = -386.03223385248;
+            ["x"] = 552.76500707673;
+            ["week"] = {
+               [1] = true;
+               [10] = true;
+               [7] = true;
+               [4] = true;
+            };
+            ["g"] = 4;
+            ["sublevel"] = 1;
+         };
+         [6] = {
+            ["y"] = -344.11734752331;
+            ["x"] = 459.95071338437;
+            ["week"] = {
+               [5] = true;
+               [2] = true;
+               [11] = true;
+               [8] = true;
+            };
+            ["sublevel"] = 1;
+         };
+         [12] = {
+            ["y"] = -154.69813183134;
+            ["x"] = 503.28840889817;
+            ["sublevel"] = 1;
+            ["g"] = 13;
+            ["week"] = {
+               [3] = true;
+               [6] = true;
+               [9] = true;
+               [12] = true;
+            };
+         };
+         [11] = {
+            ["y"] = -195.14841136753;
+            ["x"] = 461.32282222639;
+            ["sublevel"] = 1;
+            ["g"] = 16;
+            ["week"] = {
+               [3] = true;
+               [6] = true;
+               [9] = true;
+               [12] = true;
+            };
+         };
+      };
+      ["scale"] = 1;
+      ["spells"] = {
+         [303632] = {};
+         [302415] = {};
+         [290027] = {};
+      };
+      ["characteristics"] = {
+         ["Taunt"] = true;
+      };
+      ["health"] = 10071399;
+      ["count"] = 0;
+      ["ignoreFortified"] = true;
+      ["name"] = "Enchanted Emissary";
+      ["displayId"] = 39391;
+      ["creatureType"] = "Humanoid";
+      ["level"] = 121;
+      ["id"] = 155432;
+      ["iconTexture"] = 135735;
    };
    [13] = {
       ["clones"] = {
@@ -1372,12 +1711,12 @@ MethodDungeonTools.dungeonEnemies[dungeonIndex] = {
       ["encounterID"] = 2036;
       ["instanceID"] = 968;
       ["id"] = 122965;
-      ["count"] = 0;
+      ["name"] = "Vol'kaal";
       ["displayId"] = 79453;
       ["creatureType"] = "Undead";
       ["level"] = 122;
-      ["health"] = 2451616;
-      ["name"] = "Vol'kaal";
+      ["count"] = 0;
+      ["health"] = 3222848;
    };
    [7] = {
       ["clones"] = {
@@ -1406,12 +1745,12 @@ MethodDungeonTools.dungeonEnemies[dungeonIndex] = {
       ["encounterID"] = 2082;
       ["instanceID"] = 968;
       ["id"] = 122967;
-      ["name"] = "Priestess Alun'za";
+      ["health"] = 4532130;
       ["displayId"] = 80293;
       ["creatureType"] = "Humanoid";
       ["level"] = 122;
+      ["name"] = "Priestess Alun'za";
       ["count"] = 0;
-      ["health"] = 3447585;
    };
    [14] = {
       ["clones"] = {
@@ -1440,14 +1779,14 @@ MethodDungeonTools.dungeonEnemies[dungeonIndex] = {
             ["sublevel"] = 1;
          };
          [4] = {
-            ["y"] = -279.07608745574;
-            ["x"] = 539.93835206404;
+            ["y"] = -280.48232467856;
+            ["x"] = 540.8758256645;
             ["g"] = 18;
             ["sublevel"] = 1;
          };
          [5] = {
-            ["y"] = -273.47609811991;
-            ["x"] = 538.33839925244;
+            ["y"] = -269.25733951273;
+            ["x"] = 536.93215532409;
             ["g"] = 18;
             ["sublevel"] = 1;
          };
@@ -1506,8 +1845,8 @@ MethodDungeonTools.dungeonEnemies[dungeonIndex] = {
             ["sublevel"] = 1;
          };
          [24] = {
-            ["y"] = -205.68516590492;
-            ["x"] = 462.35716552706;
+            ["y"] = -202.87266463715;
+            ["x"] = 462.82592244389;
             ["g"] = 22;
             ["sublevel"] = 1;
          };
@@ -1542,14 +1881,14 @@ MethodDungeonTools.dungeonEnemies[dungeonIndex] = {
             ["sublevel"] = 1;
          };
          [25] = {
-            ["y"] = -208.93514523281;
-            ["x"] = 465.60714485496;
+            ["y"] = -207.52890800999;
+            ["x"] = 465.76339716057;
             ["g"] = 22;
             ["sublevel"] = 1;
          };
          [29] = {
-            ["y"] = -301.78553625148;
-            ["x"] = 457.32472863933;
+            ["y"] = -298.50427136136;
+            ["x"] = 456.23097591113;
             ["g"] = 23;
             ["sublevel"] = 1;
          };
@@ -1590,14 +1929,14 @@ MethodDungeonTools.dungeonEnemies[dungeonIndex] = {
             ["sublevel"] = 1;
          };
          [22] = {
-            ["y"] = -204.68515245848;
-            ["x"] = 457.85714793345;
+            ["y"] = -200.77891187358;
+            ["x"] = 456.91964751086;
             ["g"] = 22;
             ["sublevel"] = 1;
          };
          [26] = {
-            ["y"] = -299.03549927378;
-            ["x"] = 455.57470510807;
+            ["y"] = -294.97299967774;
+            ["x"] = 454.63721809655;
             ["g"] = 23;
             ["sublevel"] = 1;
          };
@@ -1673,12 +2012,12 @@ MethodDungeonTools.dungeonEnemies[dungeonIndex] = {
          [251187] = {};
       };
       ["scale"] = 0.6;
-      ["health"] = 76613;
       ["count"] = 1;
+      ["name"] = "Toxic Saurid";
       ["displayId"] = 81323;
       ["creatureType"] = "Beast";
       ["level"] = 120;
-      ["name"] = "Toxic Saurid";
+      ["health"] = 100714;
       ["characteristics"] = {
          ["Taunt"] = true;
          ["Incapacitate"] = true;
@@ -1707,13 +2046,13 @@ MethodDungeonTools.dungeonEnemies[dungeonIndex] = {
          [256884] = {};
          [277564] = {};
       };
-      ["name"] = "Monzumi";
-      ["health"] = 781453;
+      ["health"] = 1027283;
+      ["count"] = 6;
       ["displayId"] = 76483;
       ["creatureType"] = "Beast";
       ["level"] = 121;
       ["id"] = 129552;
-      ["count"] = 6;
+      ["name"] = "Monzumi";
    };
    [15] = {
       ["clones"] = {
@@ -1735,8 +2074,8 @@ MethodDungeonTools.dungeonEnemies[dungeonIndex] = {
             };
          };
          [2] = {
-            ["y"] = -337.91654546646;
-            ["x"] = 529.29022315884;
+            ["y"] = -334.47899998112;
+            ["x"] = 527.88395942802;
             ["infested"] = {
                [2] = true;
             };
@@ -1776,8 +2115,8 @@ MethodDungeonTools.dungeonEnemies[dungeonIndex] = {
             ["sublevel"] = 1;
          };
          [3] = {
-            ["y"] = -345.68942974069;
-            ["x"] = 541.21214166158;
+            ["y"] = -347.25195468306;
+            ["x"] = 542.30592320306;
             ["infested"] = {
                [2] = true;
                [3] = true;
@@ -1802,12 +2141,12 @@ MethodDungeonTools.dungeonEnemies[dungeonIndex] = {
          [255041] = {};
       };
       ["id"] = 128434;
-      ["count"] = 4;
       ["name"] = "Feasting Skyscreamer";
+      ["health"] = 493499;
       ["displayId"] = 76913;
       ["creatureType"] = "Beast";
       ["level"] = 120;
-      ["health"] = 375404;
+      ["count"] = 4;
       ["characteristics"] = {
          ["Taunt"] = true;
          ["Incapacitate"] = true;
@@ -1823,30 +2162,141 @@ MethodDungeonTools.dungeonEnemies[dungeonIndex] = {
          ["Fear"] = true;
       };
    };
-   [22] = {
+   [23] = {
       ["clones"] = {
-
-      };
-      ["scale"] = 1;
-      ["spells"] = {
-         [302417] = {};
-         [302418] = {};
-         [302415] = {};
+         [7] = {
+            ["y"] = -386.14922070626;
+            ["x"] = 551.26909937012;
+            ["week"] = {
+               [5] = true;
+               [2] = true;
+               [11] = true;
+               [8] = true;
+            };
+            ["g"] = 4;
+            ["sublevel"] = 1;
+         };
+         [1] = {
+            ["y"] = -157.46598080656;
+            ["x"] = 538.51147276124;
+            ["sublevel"] = 1;
+            ["g"] = 12;
+            ["week"] = {
+               [1] = true;
+               [10] = true;
+               [4] = true;
+               [7] = true;
+            };
+         };
+         [2] = {
+            ["y"] = -110.37230924874;
+            ["x"] = 462.91832652344;
+            ["sublevel"] = 1;
+            ["week"] = {
+               [1] = true;
+               [10] = true;
+               [4] = true;
+               [7] = true;
+            };
+         };
+         [4] = {
+            ["y"] = -361.26843981078;
+            ["x"] = 459.74169977376;
+            ["sublevel"] = 1;
+            ["g"] = 8;
+            ["week"] = {
+               [1] = true;
+               [10] = true;
+               [4] = true;
+               [7] = true;
+            };
+         };
+         [8] = {
+            ["y"] = -443.60628265724;
+            ["x"] = 460.43620984736;
+            ["week"] = {
+               [5] = true;
+               [2] = true;
+               [11] = true;
+               [8] = true;
+            };
+            ["sublevel"] = 1;
+         };
+         [9] = {
+            ["y"] = -211.63272463732;
+            ["x"] = 541.33898704496;
+            ["sublevel"] = 1;
+            ["g"] = 19;
+            ["week"] = {
+               [3] = true;
+               [6] = true;
+               [9] = true;
+               [12] = true;
+            };
+         };
+         [5] = {
+            ["y"] = -420.14996461394;
+            ["x"] = 561.58856814642;
+            ["week"] = {
+               [1] = true;
+               [10] = true;
+               [4] = true;
+               [7] = true;
+            };
+            ["g"] = 5;
+            ["sublevel"] = 1;
+         };
+         [10] = {
+            ["y"] = -291.796548553;
+            ["x"] = 461.12212089003;
+            ["sublevel"] = 1;
+            ["g"] = 23;
+            ["week"] = {
+               [3] = true;
+               [6] = true;
+               [9] = true;
+               [12] = true;
+            };
+         };
+         [3] = {
+            ["y"] = -271.44664490066;
+            ["x"] = 480.83074314172;
+            ["sublevel"] = 1;
+            ["g"] = 30;
+            ["week"] = {
+               [1] = true;
+               [10] = true;
+               [4] = true;
+               [7] = true;
+            };
+         };
+         [6] = {
+            ["y"] = -212.71729615347;
+            ["x"] = 569.02530990563;
+            ["week"] = {
+               [5] = true;
+               [2] = true;
+               [11] = true;
+               [8] = true;
+            };
+            ["g"] = 9;
+            ["sublevel"] = 1;
+         };
+         [11] = {
+            ["y"] = -193.4544799806;
+            ["x"] = 584.69361339341;
+            ["sublevel"] = 1;
+            ["g"] = 10;
+            ["week"] = {
+               [3] = true;
+               [6] = true;
+               [9] = true;
+               [12] = true;
+            };
+         };
       };
       ["characteristics"] = {
          ["Taunt"] = true;
-      };
-      ["health"] = 305938;
-      ["count"] = 4;
-      ["name"] = "Emissary of the Tides";
-      ["displayId"] = 39391;
-      ["creatureType"] = "Humanoid";
-      ["level"] = 120;
-      ["id"] = 155434;
-      ["iconTexture"] = 132315;
-   };
-   [23] = {
-      ["clones"] = {
       };
       ["scale"] = 1;
       ["spells"] = {
@@ -1856,11 +2306,9 @@ MethodDungeonTools.dungeonEnemies[dungeonIndex] = {
          [302415] = {};
       };
       ["stealthDetect"] = true;
-      ["characteristics"] = {
-         ["Taunt"] = true;
-      };
-      ["health"] = 497151;
+      ["health"] = 654641;
       ["count"] = 4;
+      ["ignoreFortified"] = true;
       ["name"] = "Void-Touched Emissary";
       ["displayId"] = 39391;
       ["creatureType"] = "Humanoid";
@@ -1868,26 +2316,4 @@ MethodDungeonTools.dungeonEnemies[dungeonIndex] = {
       ["id"] = 155433;
       ["iconTexture"] = 132886;
    };
-   [24] = {
-      ["clones"] = {
-      };
-      ["scale"] = 1;
-      ["spells"] = {
-         [303632] = {};
-         [302415] = {};
-         [290027] = {};
-      };
-      ["characteristics"] = {
-         ["Taunt"] = true;
-      };
-      ["health"] = 7648472;
-      ["count"] = 0;
-      ["name"] = "Enchanted Emissary";
-      ["displayId"] = 39391;
-      ["creatureType"] = "Humanoid";
-      ["level"] = 121;
-      ["id"] = 155432;
-      ["iconTexture"] = 135735;
-   };
 };
-

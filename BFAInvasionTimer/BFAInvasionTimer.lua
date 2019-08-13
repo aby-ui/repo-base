@@ -558,7 +558,7 @@ frame:SetScript("OnEvent", function(f)
 			print("|cFF33FF99BFA入侵计时|r:", L.firstRunWarning)
 		end
 		local x = GetLocale()
-		if x == "esES" or x == "esMX" or x == "koKR" then -- XXX temp, Options/Locales needs updated
+		if x == "koKR" then -- XXX temp, Options/Locales needs updated
 			print("|cFF33FF99BFAInvasionTimer|r is missing locale for", x, "and needs your help! Please visit the project page on GitHub for more info.")
 		end
 	end)

@@ -527,7 +527,6 @@ function rematch:PET_BATTLE_CLOSE()
 			frame:Show() -- this is for standalone being open and dismissed when battle started
 		end
 		if settings.ShowAfterBattle and (not settings.ShowAfterPVEOnly or not rematch.wasInPVP) then
-			print("showing")
 			rematch:AutoShow() -- this is the "Show After Pet Battle" option
 		end
 		if rematch.Notes:IsVisible() and not rematch.Notes.Content.ScrollFrame.EditBox:HasFocus() then

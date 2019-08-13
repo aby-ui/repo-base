@@ -267,7 +267,16 @@
 						</Anchors>
 						<Layers>
 							<Layer level="BACKGROUND">
-								<Texture parentKey="Texture" mask="Textures\MinimapMask" setAllPoints="true"/>
+								<Texture parentKey="Texture" setAllPoints="true"/>
+								<MaskTexture parentKey="LeftCircleMask" file="Interface\CharacterFrame\TempPortraitAlphaMask" hWrapMode="CLAMPTOBLACKADDITIVE" vWrapMode="CLAMPTOBLACKADDITIVE">
+									<Size x="27" y="27"/>
+									<Anchors>
+										<Anchor point="CENTER" relativeKey="$parent.Texture" relativePoint="CENTER"/>
+									</Anchors>
+									<MaskedTextures>
+										<MaskedTexture childKey="Texture"/>
+									</MaskedTextures>
+								</MaskTexture>								
 							</Layer>
 							<Layer level="BORDER">
 								<!-- thin gold border around above texture -->
@@ -304,7 +313,16 @@
 						</Anchors>
 						<Layers>
 							<Layer level="BACKGROUND">
-								<Texture parentKey="Texture" mask="Textures\MinimapMask" setAllPoints="true"/>
+								<Texture parentKey="Texture" setAllPoints="true"/>
+								<MaskTexture parentKey="RightCircleMask" file="Interface\CharacterFrame\TempPortraitAlphaMask" hWrapMode="CLAMPTOBLACKADDITIVE" vWrapMode="CLAMPTOBLACKADDITIVE">
+									<Size x="27" y="27"/>
+									<Anchors>
+										<Anchor point="CENTER" relativeKey="$parent.Texture" relativePoint="CENTER"/>
+									</Anchors>
+									<MaskedTextures>
+										<MaskedTexture childKey="Texture"/>
+									</MaskedTextures>
+								</MaskTexture>								
 							</Layer>
 							<Layer level="BORDER">
 								<!-- thin gold border around above texture -->
