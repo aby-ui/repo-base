@@ -2,6 +2,8 @@ local _, Addon = ...
 local Dominos = _G.Dominos
 local ExperienceBar = Dominos:CreateClass("Frame", Addon.ProgressBar)
 
+local IsXPUserDisabled = IsXPUserDisabled or function() return false end
+
 function ExperienceBar:Init()
 	self:Update()
 	self:SetColor(Addon.Config:GetColor("xp"))

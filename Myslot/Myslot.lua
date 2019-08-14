@@ -12,8 +12,8 @@ local _MySlot = pblua.load_proto_ast(MySlot.ast)
 
 local MYSLOT_AUTHOR = "T.G. <farmer1992@gmail.com>"
 
-local MYSLOT_VER = 24
-local MYSLOT_ALLOW_VER = {MYSLOT_VER, 23, 22, 21, 20}
+local MYSLOT_VER = 25
+local MYSLOT_ALLOW_VER = {MYSLOT_VER, 24, 23, 22}
 
 -- local MYSLOT_IS_DEBUG = true
 local MYSLOT_LINE_SEP = IsWindowsClient() and "\r\n" or "\n"
@@ -88,7 +88,7 @@ local function TableToString(s)
 end
 
 function MySlot:Print(msg)
-    DEFAULT_CHAT_FRAME:AddMessage("|CFFFF0000<|r|CFFFFD100My Slot 5|r|CFFFF0000>|r"..(msg or "nil"))
+    DEFAULT_CHAT_FRAME:AddMessage("|CFFFF0000<|r|CFFFFD100Myslot|r|CFFFF0000>|r"..(msg or "nil"))
 end
 
 -- {{{ GetMacroInfo
@@ -234,7 +234,7 @@ function MySlot:Export()
     end
 
     msg.slot = {}
-    for i = 1,MYSLOT_MAX_ACTIONBAR do
+    for i = 1, MYSLOT_MAX_ACTIONBAR do
         local m = self:GetActionInfo(i)
         if m then
             msg.slot[#msg.slot + 1] = m
@@ -272,9 +272,14 @@ function MySlot:Export()
     s = "@ " .. CLASS .. ":" ..UnitClass("player") .. MYSLOT_LINE_SEP .. s
     s = "@ " .. PLAYER ..":" ..UnitName("player") .. MYSLOT_LINE_SEP .. s
     s = "@ " .. L["Time"] .. ":" .. date() .. MYSLOT_LINE_SEP .. s
-    s = "@ Myslot ( V" .. MYSLOT_VER .. ")" .. MYSLOT_LINE_SEP .. s
+    s = "@ Wow (V" .. GetBuildInfo() .. ")" .. MYSLOT_LINE_SEP .. s
+    s = "@ Myslot (V" .. MYSLOT_VER .. ")" .. MYSLOT_LINE_SEP .. s
 
-    s = s .. base64.enc(t)
+    local d = base64.enc(t)
+    local LINE_LEN = 80
+    for i = 1, d:len(), LINE_LEN do
+        s = s .. d:sub(i, i + LINE_LEN - 1) .. MYSLOT_LINE_SEP
+    end
     MYSLOT_ReportFrame_EditBox:SetText(s)
     MYSLOT_ReportFrame_EditBox:HighlightText()
     -- }}}
@@ -288,6 +293,7 @@ function MySlot:Import()
 
     local s = MYSLOT_ReportFrame_EditBox:GetText() or ""
     s = string.gsub(s,"(@.[^\n]*\n)","")
+    s = string.gsub(s,"(#.[^\n]*\n)","")
     s = string.gsub(s,"\n","")
     s = string.gsub(s,"\r","")
     s = base64.dec(s)
@@ -297,18 +303,28 @@ function MySlot:Import()
         return
     end
 
+    local force = _G['MYSLOT_ReportFrameForceImport']:GetChecked()
+
     local ver = s[1]
     local crc = s[5] * 2^24 + s[6] * 2^16 + s[7] * 2^8 + s[8]
     s[5], s[6], s[7] ,s[8] = 0, 0 ,0 ,0
     
     if ( crc ~= bit.band(crc32.enc(s), 2^32 - 1)) then
         MySlot:Print(L["Bad importing text [CRC32]"])
-        return 
+        if force then
+            MySlot:Print(L["Skip bad CRC32"] .. " " .. L["Try force importing"])
+        else
+            return 
+        end
     end
 
     if not tContains(MYSLOT_ALLOW_VER,ver) then
         MySlot:Print(L["Importing text [ver:%s] is not compatible with current version"]:format(ver))
-        return 
+        if force then
+            MySlot:Print(L["Skip unsupported version"] .. " " .. L["Try force importing"])
+        else
+            return 
+        end
     end
 
     local ct = {}
@@ -645,18 +661,26 @@ f:RegisterEvent('ADDON_LOADED')
 f:SetScript("OnEvent", function()
     -- TODO clean up code
     local FRAMENAME = 'MYSLOT_ReportFrame'
-    _G[FRAMENAME..'CloseButton']:SetText(L["Close"])
-    _G[FRAMENAME..'CloseButton']:SetScript('OnClick', function()
+    _G[FRAMENAME .. 'CloseButton']:SetText(L["Close"])
+    _G[FRAMENAME .. 'CloseButton']:SetScript('OnClick', function()
         MYSLOT_ReportFrame:Hide()
     end)
 
-    _G[FRAMENAME..'ImportButton']:SetText(L["Import"])
-    _G[FRAMENAME..'ImportButton']:SetScript('OnClick', function()
+    _G[FRAMENAME .. 'ImportButton']:SetText(L["Import"])
+    _G[FRAMENAME .. 'ImportButton']:SetScript('OnClick', function()
         MySlot:Import()
     end)
 
-    _G[FRAMENAME..'ExportButton']:SetText(L["Export"])
-    _G[FRAMENAME..'ExportButton']:SetScript('OnClick', function()
+    _G[FRAMENAME .. 'ExportButton']:SetText(L["Export"])
+    _G[FRAMENAME .. 'ExportButton']:SetScript('OnClick', function()
         MySlot:Export()
     end)
+
+    _G[FRAMENAME .. 'ForceImportText']:SetText(L["Force Import"])
+    _G[FRAMENAME .. 'ForceImport'].tooltip = L["Skip CRC32, version and any other validation before importing. May cause unknown behavior"]
+
+    -- _G[FRAMENAME .. 'OptionFrameOptionBarText']:SetText(L["Import and Export settings below"])
+    -- _G[FRAMENAME .. 'OptionFrameActionText']:SetText(L["Spell"])
+    -- _G[FRAMENAME .. 'OptionFrameMacroText']:SetText(L["Macro"])
+    -- _G[FRAMENAME .. 'OptionFrameBindingText']:SetText(L["Keys Binding"])
 end)

@@ -75,12 +75,11 @@ local function OnEvent(self, event, ...)
 	end
 	if (event == "PLAYER_ENTERING_WORLD") then
         wayframe:ClearAllPoints()
-        if TomTom.profile.arrow.position then
-            local pos = TomTom.profile.arrow.position
-            wayframe:SetPoint(pos[1], UIParent, pos[3], pos[4], pos[5])
-        else
-            wayframe:SetPoint("CENTER", 0, 0)
+        if not TomTom.profile.arrow.position then
+            TomTom.profile.arrow.position = {"CENTER", nil , "CENTER", 0, 0}
         end
+        local pos = TomTom.profile.arrow.position
+        wayframe:SetPoint(pos[1], UIParent, pos[3], pos[4], pos[5])
     end
 end
 

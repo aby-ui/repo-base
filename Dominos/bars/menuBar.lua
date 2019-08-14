@@ -4,36 +4,66 @@
 
 --[[ globals ]]--
 
-local _G = _G
-local hooksecurefunc = _G.hooksecurefunc
-local table = _G.table
-local ipairs = _G.ipairs
-local pairs = _G.pairs
-local LibStub = _G.LibStub
-local C_StorePublic = _G.C_StorePublic
+local wipe = wipe
+local tinsert = tinsert
+local LibStub = LibStub
+local C_StorePublic = C_StorePublic
 
 local AddonName = ...
 local Addon = LibStub('AceAddon-3.0'):GetAddon(AddonName)
 local MenuBar = Addon:CreateClass('Frame', Addon.ButtonBar); Addon.MenuBar = MenuBar
 
 
---[[ local constants ]]--
+local MICRO_BUTTONS
+if Addon:IsBuild("classic") then
+	MICRO_BUTTONS = {
+		"CharacterMicroButton",
+		"SpellbookMicroButton",
+		"TalentMicroButton",
+		"QuestLogMicroButton",
 
-local MICRO_BUTTONS = _G.MICRO_BUTTONS
+		"SocialsMicroButton",
+		"WorldMapMicroButton",
+
+		"MainMenuMicroButton",
+		"HelpMicroButton"
+	}
+else
+	MICRO_BUTTONS = {
+		"CharacterMicroButton",
+		"SpellbookMicroButton",
+		"TalentMicroButton",
+
+		"AchievementMicroButton",
+
+		"QuestLogMicroButton",
+
+		"GuildMicroButton",
+		"LFDMicroButton",
+		"CollectionsMicroButton",
+		"EJMicroButton",
+		"StoreMicroButton",
+
+		"MainMenuMicroButton"
+		-- "HelpMicroButton"
+	}
+end
 
 local MICRO_BUTTON_NAMES = {
-	['CharacterMicroButton'] = _G['CHARACTER_BUTTON'],
-	['SpellbookMicroButton'] = _G['SPELLBOOK_ABILITIES_BUTTON'],
-	['TalentMicroButton'] = _G['TALENTS_BUTTON'],
-	['AchievementMicroButton'] = _G['ACHIEVEMENT_BUTTON'],
-	['QuestLogMicroButton'] = _G['QUESTLOG_BUTTON'],
-	['GuildMicroButton'] = _G['LOOKINGFORGUILD'],
-	['LFDMicroButton'] = _G['DUNGEONS_BUTTON'],
-	['EJMicroButton'] = _G['ENCOUNTER_JOURNAL'],
-	['MainMenuMicroButton'] = _G['MAINMENU_BUTTON'],
-	['StoreMicroButton'] = _G['BLIZZARD_STORE'],
-	['CollectionsMicroButton'] = _G['COLLECTIONS'],
-	['HelpMicroButton'] = _G['HELP_BUTTON']
+	['CharacterMicroButton'] = CHARACTER_BUTTON,
+	['SpellbookMicroButton'] = SPELLBOOK_ABILITIES_BUTTON,
+	['TalentMicroButton'] = TALENTS_BUTTON,
+	['AchievementMicroButton'] = ACHIEVEMENT_BUTTON,
+	['QuestLogMicroButton'] = QUESTLOG_BUTTON,
+	['GuildMicroButton'] = LOOKINGFORGUILD,
+	['LFDMicroButton'] = DUNGEONS_BUTTON,
+	['EJMicroButton'] = ENCOUNTER_JOURNAL,
+	['MainMenuMicroButton'] = MAINMENU_BUTTON,
+	['StoreMicroButton'] = BLIZZARD_STORE,
+	['CollectionsMicroButton'] = COLLECTIONS,
+	['HelpMicroButton'] = HELP_BUTTON,
+	["SocialsMicroButton"] = SOCIAL_BUTTON,
+	['WorldMapMicroButton'] = WORLDMAP_BUTTON
 }
 
 --[[ Menu Bar ]]--
@@ -72,8 +102,8 @@ function MenuBar:Create(...)
 
 	hooksecurefunc('UpdateMicroButtons', requestLayoutUpdate)
 
-	if _G.PetBattleFrame then
-		local petMicroButtons = _G.PetBattleFrame.BottomFrame.MicroButtonFrame
+	if PetBattleFrame and PetBattleFrame.BottomFrame and PetBattleFrame.BottomFrame.MicroButtonFrame then
+		local petMicroButtons = PetBattleFrame.BottomFrame.MicroButtonFrame
 
 		getOrHook(petMicroButtons, 'OnShow', function()
 			bar.isPetBattleUIShown = true
@@ -86,14 +116,13 @@ function MenuBar:Create(...)
 		end)
 	end
 
-	local overrideActionBar = _G.OverrideActionBar
-	if overrideActionBar then
-		getOrHook(overrideActionBar, 'OnShow', function()
+	if OverrideActionBar then
+		getOrHook(OverrideActionBar, 'OnShow', function()
 			bar.isOverrideUIShown = Addon:UsingOverrideUI()
 			requestLayoutUpdate()
 		end)
 
-		getOrHook(overrideActionBar, 'OnHide', function()
+		getOrHook(OverrideActionBar, 'OnHide', function()
 			bar.isOverrideUIShown = nil
 			requestLayoutUpdate()
 		end)
@@ -125,19 +154,19 @@ function MenuBar:GetButtonInsets()
 end
 
 function MenuBar:UpdateActiveButtons()
-	table.wipe(self.activeButtons)
+	wipe(self.activeButtons)
 
 	for _, name in ipairs(MICRO_BUTTONS) do
 		local button = _G[name]
 
 		if not self:IsMenuButtonDisabled(button) then
-			table.insert(self.activeButtons, button)
+			tinsert(self.activeButtons, button)
 		end
 	end
 end
 
 function MenuBar:UpdateOverrideBarButtons()
-	table.wipe(self.overrideButtons)
+	wipe(self.overrideButtons)
 
 	local isStoreEnabled = C_StorePublic.IsEnabled()
 
@@ -153,7 +182,7 @@ function MenuBar:UpdateOverrideBarButtons()
 		end
 
 		if shouldAddButton then
-			table.insert(self.overrideButtons, _G[buttonName])
+			tinsert(self.overrideButtons, _G[buttonName])
 		end
 	end
 end
@@ -314,9 +343,11 @@ local MenuBarController = Addon:NewModule('MenuBar')
 
 function MenuBarController:OnInitialize()
 	-- fix blizzard nil bug
-	if not _G['AchievementMicroButton_Update'] then
-		_G['AchievementMicroButton_Update'] = function() end
+    -- luacheck: push ignore 111 113
+	if not AchievementMicroButton_Update then
+		AchievementMicroButton_Update = function() end
 	end
+	-- luacheck: pop
 end
 
 function MenuBarController:Load()

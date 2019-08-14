@@ -1,14 +1,12 @@
-﻿-- Mini Dragon(projecteurs@gmail.com)
--- Yike Xia
--- Last update: Jun 10, 2015@13867
-
-if GetLocale() ~= "zhCN" then return end
+﻿if GetLocale() ~= "zhCN" then
+	return
+end
 local L
 
 ---------------
 -- Gruul --
 ---------------
-L= DBM:GetModLocalization(1161)
+L = DBM:GetModLocalization(1161)
 
 L:SetOptionLocalization({
 	MythicSoakBehavior	= "特殊警报：吸收伤害的分组方式 (史诗模式)",
@@ -19,7 +17,7 @@ L:SetOptionLocalization({
 ---------------------------
 -- Oregorger, The Devourer --
 ---------------------------
-L= DBM:GetModLocalization(1202)
+L = DBM:GetModLocalization(1202)
 
 L:SetOptionLocalization({
 	InterruptBehavior	= "设置打断$spell:156879警告的方式",
@@ -30,7 +28,7 @@ L:SetOptionLocalization({
 ---------------------------
 -- The Blast Furnace --
 ---------------------------
-L= DBM:GetModLocalization(1154)
+L = DBM:GetModLocalization(1154)
 
 L:SetWarningLocalization({
 	warnRegulators			= "温度调节器剩下:%d",
@@ -49,39 +47,39 @@ L:SetOptionLocalization({
 })
 
 L:SetMiscLocalization({
-	heatRegulator		= "温度调节器",
-	Regulator			= "调节器 %d",
-	bombNeeded			= "%d个炸弹"
+	heatRegulator	= "温度调节器",
+	Regulator		= "调节器 %d",
+	bombNeeded		= "%d个炸弹"
 })
 
 ------------------
 -- Hans'gar And Franzok --
 ------------------
-L= DBM:GetModLocalization(1155)
+L = DBM:GetModLocalization(1155)
 
 --------------
 -- Flamebender Ka'graz -- 
 --------------
-L= DBM:GetModLocalization(1123)
+L = DBM:GetModLocalization(1123)
 
 --------------------
 --Kromog, Legend of the Mountain --
 --------------------
-L= DBM:GetModLocalization(1162)
+L = DBM:GetModLocalization(1162)
 
 L:SetMiscLocalization({
-	ExRTNotice		= "%s 向你指派了ExRT的符文的站立位置。你的位置: %s"
+	ExRTNotice	= "%s 向你指派了ExRT的符文的站立位置。你的位置: %s"
  })
 
 --------------------------
 -- Beastlord Darmac --
 --------------------------
-L= DBM:GetModLocalization(1122)
+L = DBM:GetModLocalization(1122)
 
 --------------------------
 -- Operator Thogar --
 --------------------------
-L= DBM:GetModLocalization(1147)
+L = DBM:GetModLocalization(1147)
 
 L:SetWarningLocalization({
 	specWarnSplitSoon	= "10秒后分轨"
@@ -112,7 +110,7 @@ L:SetMiscLocalization({
 --------------------------
 -- The Iron Maidens --
 --------------------------
-L= DBM:GetModLocalization(1203)
+L = DBM:GetModLocalization(1203)
 
 L:SetWarningLocalization({
 	specWarnReturnBase	= "返回码头"
@@ -132,7 +130,7 @@ L:SetMiscLocalization({
 --------------------------
 -- Blackhand --
 --------------------------
-L= DBM:GetModLocalization(959)
+L = DBM:GetModLocalization(959)
 
 L:SetWarningLocalization({
 	specWarnMFDPosition		= "死亡标记站位：%s",
@@ -155,5 +153,5 @@ L:SetMiscLocalization({
 L = DBM:GetModLocalization("BlackrockFoundryTrash")
 
 L:SetGeneralLocalization({
-	name =	"黑石铸造厂小怪"
+	name	= "黑石铸造厂小怪"
 })

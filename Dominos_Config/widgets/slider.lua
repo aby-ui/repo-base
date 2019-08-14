@@ -21,11 +21,10 @@ do
 
 	local function editBox_OnTextChanged(self)
 		local value = tonumber(self:GetText())
+		local current = self:GetParent():GetValue()
 
-		if value and value ~= self:GetParent():GetValue() then
-			local min, max = self:GetParent():GetMinMaxValues()
-
-			self:GetParent():SetValue(math.max(math.min(value, max), min))
+		if value and value ~= current then
+			self:GetParent():TrySetValue(value, self:GetParent().softLimits)
 		end
 	end
 
@@ -57,13 +56,11 @@ do
 	local function editBox_OnTabPressed(self)
 		editBox_FocusNext(self, self:GetParent():GetParent():GetChildren())
 
-
 		local value = self:GetNumber()
-		local min, max = self:GetParent():GetMinMaxValues()
 		local current = self:GetParent():GetValue()
 
-		if value and value ~= current and value >= min and value <= max then
-			self:GetParent():SetValue(math.max(math.min(value, max), min))
+		if value and value ~= current then
+			self:GetParent():TrySetValue(value, self:GetParent().softLimits)
 		end
 	end
 
@@ -73,6 +70,7 @@ do
 		f.min = options.min or 0
 		f.max = options.max or 100
 		f.step = options.step or 1
+		f.softLimits = options.softLimits
 		f.GetSavedValue = options.get
 		f.SetSavedValue = options.set
 
@@ -85,7 +83,6 @@ do
 		f:SetValueStep(f.step)
 		f:SetObeyStepOnDrag(true)
 
-		--todo: add edit option
 		local editBox = CreateFrame('EditBox', nil, f)
 		editBox:SetPoint('BOTTOMRIGHT', f, 'TOPRIGHT')
 		editBox:SetNumeric(false)
@@ -99,7 +96,7 @@ do
 		editBox:SetScript('OnEditFocusLost', editBox_OnEditFocusLost)
 		editBox:SetScript('OnEscapePressed', editBox_OnEscapePressed)
 
-		--clear focus whenenter is pressed(minor quality of life preference)
+		-- clear focus whenenter is pressed (minor quality of life preference)
 		editBox:SetScript('OnEnterPressed', editBox_OnEscapePressed)
 		editBox:SetScript('OnTabPressed', editBox_OnTabPressed)
 
@@ -119,6 +116,31 @@ do
 
 	--[[ Frame Events ]]--
 
+	function Slider:TrySetValue(value, breakLimits)
+		local min, max = self:GetMinMaxValues()
+
+		if breakLimits then
+			local changed = false
+			if value < min then
+				min = value
+				changed = true
+			elseif value > max then
+				max = value
+				changed = true
+			end
+
+			if changed then
+				self:SetMinMaxValues(min, max)
+			end
+		else
+			value = Clamp(value, min, max)
+		end
+
+		if value ~= self:GetValue() then
+			self:SetValue(value)
+		end
+	end
+
 	function Slider:OnShow()
 		Addon:Render(self)
 	end
@@ -134,29 +156,10 @@ do
 	end
 
 	function Slider:OnMouseWheel(direction)
-		local step = self:GetValueStep() * direction
 		local value = self:GetValue()
-		local minVal, maxVal = self:GetMinMaxValues()
+		local step = self:GetValueStep() * direction
 
-		--allows for custom editing. May need a way to flag a slider as editable or not(thinking of button bar size sliders).
-		if IsControlKeyDown() then
-			if self.storedMin then
-				self:SetMinMaxValues(self.storedMin, self.storedMax)
-			end
-			return
-		elseif IsShiftKeyDown() then
-			self.storedMin = self.storedMin or minVal
-			self.storedMax = self.storedMax or maxVal
-			minVal, maxVal = minVal - step, maxVal + step
-			self:SetMinMaxValues(minVal, maxVal)
-			return
-		end
-
-		if step > 0 then
-			self:SetValue(min(value+step, maxVal))
-		else
-			self:SetValue(max(value+step, minVal))
-		end
+		self:TrySetValue(value + step, self.softLimits and IsModifierKeyDown())
 	end
 
 	--[[ Update Methods ]]--
@@ -180,6 +183,12 @@ do
 	function Slider:UpdateRange()
 		local min = getOrCall(self, self.min)
 		local max = getOrCall(self, self.max)
+		local value = self:GetSavedValue()
+
+		if self.softLimits then
+			min = math.min(value, min)
+			max = math.max(value, max)
+		end
 
 		local oldMin, oldMax = self:GetMinMaxValues()
 		if oldMin ~= min or oldMax ~= max then
@@ -195,8 +204,10 @@ do
 
 	function Slider:UpdateValue()
 		local min, max = self:GetMinMaxValues()
+		local value = self:GetSavedValue()
+
+		self:SetValue(Clamp(value, min, max))
 		self:SetEnabled(max > min)
-		self:SetValue(self:GetSavedValue())
 	end
 
 	function Slider:UpdateText(value)

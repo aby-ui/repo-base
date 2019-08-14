@@ -1,11 +1,10 @@
-﻿<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+<Ui xmlns="http://www.blizzard.com/wow/ui/" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\FrameXML\UI.xsd">
 
-
-
-<Frame name="MYSLOT_ReportFrame" toplevel="true" movable="true" parent="UIParent" enableMouse="true" hidden="true">
+	<Frame name="MYSLOT_ReportFrame" toplevel="true" movable="true" parent="UIParent" enableMouse="true" hidden="true">
 		<Size>
-			<AbsDimension x="550" y="500"/>
+			<AbsDimension x="650" y="600"/>
 		</Size>
 		<Anchors>
 			<Anchor point="CENTER"/>
@@ -35,7 +34,7 @@
 						</Anchor>
 					</Anchors>
 				</Texture>
-				<FontString name="$parentHeaderText" inherits="GameFontNormal" text="My Slot 5">
+				<FontString name="$parentHeaderText" inherits="GameFontNormalLarge" text="Myslot">
 					<Anchors>
 						<Anchor point="TOP" relativeTo="$parentHeaderTexture">
 							<Offset>
@@ -48,9 +47,9 @@
 		</Layers>
 
 		<Frames>
-		<ScrollFrame name="MYSLOT_ScrollFrame" inherits="UIPanelScrollFrameTemplate">
+			<ScrollFrame name="MYSLOT_ScrollFrame" inherits="UIPanelScrollFrameTemplate">
 				<Size>
-					<AbsDimension x="500" y="430"/>
+					<AbsDimension x="600" y="500"/>
 				</Size>
 				<Anchors>
 					<Anchor point="TOPLEFT">
@@ -62,48 +61,93 @@
 				<ScrollChild>
 					<Frame name="MYSLOT_ScrollFrame_Child" enableMouse="true">
 						<Size>
-							<AbsDimension x="500" y="430"/>
+							<AbsDimension x="600" y="500"/>
 						</Size>
 						<Anchors>
 							<Anchor point="TOPLEFT"/>
 						</Anchors>
 						<Frames>
-							<EditBox name="MYSLOT_ReportFrame_EditBox"  letters="99999999" enableMouse="false" multiLine="true" autoFocus="true">
-										<Size>
-											<AbsDimension x="480" y="400"/>
-										</Size>
-										<Anchors>
-											<Anchor point="TOPLEFT">
-												<Offset>
-													<AbsDimension x="10" y="0"/>
-												</Offset>
-											</Anchor>
-										</Anchors>
-										<Scripts>
-											<OnTextChanged>
-												ScrollingEdit_OnTextChanged(self,MYSLOT_ScrollFrame);
-											</OnTextChanged>
-											<OnCursorChanged>
-												ScrollingEdit_OnCursorChanged(self,x, y-10, w, h);
-											</OnCursorChanged>
-											<OnEscapePressed>
-												self:ClearFocus();
-											</OnEscapePressed>
-										</Scripts>
-										<FontString inherits="GameTooltipTextSmall"/>
-									</EditBox>
+							<EditBox name="MYSLOT_ReportFrame_EditBox" letters="99999999" enableMouse="false" multiLine="true" autoFocus="true">
+								<Size>
+									<AbsDimension x="580" y="480"/>
+								</Size>
+								<Anchors>
+									<Anchor point="TOPLEFT">
+										<Offset>
+											<AbsDimension x="10" y="0"/>
+										</Offset>
+									</Anchor>
+								</Anchors>
+								<Scripts>
+									<OnTextChanged>
+										ScrollingEdit_OnTextChanged(self, MYSLOT_ScrollFrame);
+									</OnTextChanged>
+									<OnCursorChanged>
+										ScrollingEdit_OnCursorChanged(self, x, y - 10, w, h);
+									</OnCursorChanged>
+									<OnEscapePressed>
+										self:ClearFocus();
+									</OnEscapePressed>
+									<OnTextSet>
+										self:HighlightText();
+									</OnTextSet>
+									<OnMouseUp>
+										self:HighlightText();
+									</OnMouseUp>
+								</Scripts>
+								<FontString inherits="GameTooltipTextSmall"/>
+							</EditBox>
 						</Frames>
 					</Frame>
 				</ScrollChild>
 			</ScrollFrame>
+
+			<!-- <Frame name="$parentOptionFrame" enableMouse="true">
+				<Layers>
+					<Layer level="ARTWORK">
+						<FontString name="$parentOptionBarText" text="" inherits="GameFontNormal" justifyH="LEFT" justifyV="TOP">
+							<Anchors>
+								<Anchor point="BOTTOMLEFT" x="40" y="-25" relativeTo="MYSLOT_ScrollFrame_Child"/>
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+				<Frames>
+					<CheckButton name="$parentAction" inherits="OptionsCheckButtonTemplate" checked="true">
+						<Anchors>
+							<Anchor point="BOTTOMLEFT" x="40" y="-60" relativeTo="MYSLOT_ScrollFrame_Child"/>
+						</Anchors>
+						<Scripts>
+							<OnClick></OnClick>
+						</Scripts>
+					</CheckButton>
+					<CheckButton name="$parentMacro" inherits="OptionsCheckButtonTemplate" checked="true">
+						<Anchors>
+							<Anchor point="BOTTOMLEFT" x="180" y="-60" relativeTo="MYSLOT_ScrollFrame_Child"/>
+						</Anchors>
+						<Scripts>
+							<OnClick></OnClick>
+						</Scripts>
+					</CheckButton>
+					<CheckButton name="$parentBinding" inherits="OptionsCheckButtonTemplate" checked="true">
+						<Anchors>
+							<Anchor point="BOTTOMLEFT" x="300" y="-60" relativeTo="MYSLOT_ScrollFrame_Child"/>
+						</Anchors>
+						<Scripts>
+							<OnClick></OnClick>
+						</Scripts>
+					</CheckButton>
+				</Frames>
+			</Frame> -->
+
 			<Button name="$parentCloseButton" hidden="false" inherits="GameMenuButtonTemplate" text="Close">
 				<Size>
-					<AbsDimension x="125" y="25"/>
+					<AbsDimension x="100" y="25"/>
 				</Size>
 				<Anchors>
-					<Anchor point="BOTTOM" >
+					<Anchor point="BOTTOMRIGHT">
 						<Offset>
-							<AbsDimension x="150" y="15"/>
+							<AbsDimension x="-40" y="15"/>
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -113,26 +157,40 @@
 					<AbsDimension x="125" y="25"/>
 				</Size>
 				<Anchors>
-					<Anchor point="BOTTOM" >
+					<Anchor point="BOTTOMLEFT">
 						<Offset>
-							<AbsDimension x="-180" y="15"/>
+							<AbsDimension x="200" y="15"/>
 						</Offset>
 					</Anchor>
 				</Anchors>
-			</Button>						
+			</Button>
+			<CheckButton name="$parentForceImport" inherits="OptionsCheckButtonTemplate" checked="false">
+				<Anchors>
+					<Anchor point="BOTTOMLEFT" x="340" y="13"/>
+				</Anchors>
+				<Scripts>
+					<OnClick> </OnClick>
+					<OnEnter>
+						GameTooltip:SetOwner(self, "ANCHOR_TOP");
+						GameTooltip:SetText(self.tooltip, nil, nil, nil, nil, true);
+						GameTooltip:Show();
+					</OnEnter>
+					<OnLeave function="GameTooltip_Hide"/>
+				</Scripts>
+			</CheckButton>
 			<Button name="$parentExportButton" hidden="false" inherits="GameMenuButtonTemplate" text="Export">
 				<Size>
 					<AbsDimension x="125" y="25"/>
 				</Size>
 				<Anchors>
-					<Anchor point="BOTTOM" >
+					<Anchor point="BOTTOMLEFT">
 						<Offset>
-							<AbsDimension x="0" y="15"/>
+							<AbsDimension x="40" y="15"/>
 						</Offset>
 					</Anchor>
 				</Anchors>
-			</Button>			
+			</Button>
 		</Frames>
-</Frame>
+	</Frame>
 
 </Ui>

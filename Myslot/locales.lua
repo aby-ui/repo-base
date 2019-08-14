@@ -28,14 +28,21 @@ L["Bad importing text [TEXT]"] = true
 L["Close"] = true
 L["Export"] = true
 L["Feedback"] = true
+L["Force Import"] = true
+L["Ignore CRC32 error. may cause unknow behavior"] = true
 L["Ignore unactived pet[id=%s], %s"] = true
 L["Ignore unlearned skill [id=%s], %s"] = true
 L["Import"] = true
+L["Import and Export settings below"] = true
 L["Import is not allowed when you are in combat"] = true
 L["Importing text [ver:%s] is not compatible with current version"] = true
+L["Keys Binding"] = true
+L["Macro"] = true
 L["Macro %s was ignored, check if there is enough space to create"] = true
+L["Spell"] = true
 L["Time"] = true
-L["TOC_NOTES"] = "Myslot is for transferring settings between accounts. Feedback farmer1992@gmail.com"
+L["TOC_NOTES"] = "Myslot is for transfering settings between accounts. Feedback farmer1992@gmail.com"
+L["Try force importing"] = true
 L["Use random mount instead of an unactived mount"] = true
 
 elseif locale == 'deDE' then
@@ -57,21 +64,35 @@ L["Close"] = "Schließen"
 --[[ L["Export"] = "Export"--]] 
 L["Feedback"] = "Rückmeldung"
 --[[Translation missing --]]
+--[[ L["Force Import"] = "Force Import"--]] 
+--[[Translation missing --]]
+--[[ L["Ignore CRC32 error. may cause unknow behavior"] = "Ignore CRC32 error. may cause unknow behavior"--]] 
+--[[Translation missing --]]
 --[[ L["Ignore unactived pet[id=%s], %s"] = "Ignore unactived pet[id=%s], %s"--]] 
 --[[Translation missing --]]
 --[[ L["Ignore unlearned skill [id=%s], %s"] = "Ignore unlearned skill [id=%s], %s"--]] 
 --[[Translation missing --]]
 --[[ L["Import"] = "Import"--]] 
 --[[Translation missing --]]
+--[[ L["Import and Export settings below"] = "Import and Export settings below"--]] 
+--[[Translation missing --]]
 --[[ L["Import is not allowed when you are in combat"] = "Import is not allowed when you are in combat"--]] 
 --[[Translation missing --]]
 --[[ L["Importing text [ver:%s] is not compatible with current version"] = "Importing text [ver:%s] is not compatible with current version"--]] 
 --[[Translation missing --]]
+--[[ L["Keys Binding"] = "Keys Binding"--]] 
+--[[Translation missing --]]
+--[[ L["Macro"] = "Macro"--]] 
+--[[Translation missing --]]
 --[[ L["Macro %s was ignored, check if there is enough space to create"] = "Macro %s was ignored, check if there is enough space to create"--]] 
+--[[Translation missing --]]
+--[[ L["Spell"] = "Spell"--]] 
 --[[Translation missing --]]
 --[[ L["Time"] = "Time"--]] 
 --[[Translation missing --]]
---[[ L["TOC_NOTES"] = "Myslot is for transferring settings between accounts. Feedback farmer1992@gmail.com"--]] 
+--[[ L["TOC_NOTES"] = "Myslot is for transfering settings between accounts. Feedback farmer1992@gmail.com"--]] 
+--[[Translation missing --]]
+--[[ L["Try force importing"] = "Try force importing"--]] 
 --[[Translation missing --]]
 --[[ L["Use random mount instead of an unactived mount"] = "Use random mount instead of an unactived mount"--]] 
 
@@ -94,8 +115,11 @@ elseif locale == 'esES' then
 --[[ L["Close"] = "Close"--]] 
 --[[Translation missing --]]
 --[[ L["Export"] = "Export"--]] 
+L["Feedback"] = "Realimentación"
 --[[Translation missing --]]
---[[ L["Feedback"] = "Feedback"--]] 
+--[[ L["Force Import"] = "Force Import"--]] 
+--[[Translation missing --]]
+--[[ L["Ignore CRC32 error. may cause unknow behavior"] = "Ignore CRC32 error. may cause unknow behavior"--]] 
 --[[Translation missing --]]
 --[[ L["Ignore unactived pet[id=%s], %s"] = "Ignore unactived pet[id=%s], %s"--]] 
 --[[Translation missing --]]
@@ -103,15 +127,25 @@ elseif locale == 'esES' then
 --[[Translation missing --]]
 --[[ L["Import"] = "Import"--]] 
 --[[Translation missing --]]
+--[[ L["Import and Export settings below"] = "Import and Export settings below"--]] 
+--[[Translation missing --]]
 --[[ L["Import is not allowed when you are in combat"] = "Import is not allowed when you are in combat"--]] 
 --[[Translation missing --]]
 --[[ L["Importing text [ver:%s] is not compatible with current version"] = "Importing text [ver:%s] is not compatible with current version"--]] 
 --[[Translation missing --]]
+--[[ L["Keys Binding"] = "Keys Binding"--]] 
+--[[Translation missing --]]
+--[[ L["Macro"] = "Macro"--]] 
+--[[Translation missing --]]
 --[[ L["Macro %s was ignored, check if there is enough space to create"] = "Macro %s was ignored, check if there is enough space to create"--]] 
+--[[Translation missing --]]
+--[[ L["Spell"] = "Spell"--]] 
 --[[Translation missing --]]
 --[[ L["Time"] = "Time"--]] 
 --[[Translation missing --]]
---[[ L["TOC_NOTES"] = "Myslot is for transferring settings between accounts. Feedback farmer1992@gmail.com"--]] 
+--[[ L["TOC_NOTES"] = "Myslot is for transfering settings between accounts. Feedback farmer1992@gmail.com"--]] 
+--[[Translation missing --]]
+--[[ L["Try force importing"] = "Try force importing"--]] 
 --[[Translation missing --]]
 --[[ L["Use random mount instead of an unactived mount"] = "Use random mount instead of an unactived mount"--]] 
 
@@ -137,21 +171,35 @@ elseif locale == 'esMX' then
 --[[Translation missing --]]
 --[[ L["Feedback"] = "Feedback"--]] 
 --[[Translation missing --]]
+--[[ L["Force Import"] = "Force Import"--]] 
+--[[Translation missing --]]
+--[[ L["Ignore CRC32 error. may cause unknow behavior"] = "Ignore CRC32 error. may cause unknow behavior"--]] 
+--[[Translation missing --]]
 --[[ L["Ignore unactived pet[id=%s], %s"] = "Ignore unactived pet[id=%s], %s"--]] 
 --[[Translation missing --]]
 --[[ L["Ignore unlearned skill [id=%s], %s"] = "Ignore unlearned skill [id=%s], %s"--]] 
 --[[Translation missing --]]
 --[[ L["Import"] = "Import"--]] 
 --[[Translation missing --]]
+--[[ L["Import and Export settings below"] = "Import and Export settings below"--]] 
+--[[Translation missing --]]
 --[[ L["Import is not allowed when you are in combat"] = "Import is not allowed when you are in combat"--]] 
 --[[Translation missing --]]
 --[[ L["Importing text [ver:%s] is not compatible with current version"] = "Importing text [ver:%s] is not compatible with current version"--]] 
 --[[Translation missing --]]
+--[[ L["Keys Binding"] = "Keys Binding"--]] 
+--[[Translation missing --]]
+--[[ L["Macro"] = "Macro"--]] 
+--[[Translation missing --]]
 --[[ L["Macro %s was ignored, check if there is enough space to create"] = "Macro %s was ignored, check if there is enough space to create"--]] 
+--[[Translation missing --]]
+--[[ L["Spell"] = "Spell"--]] 
 --[[Translation missing --]]
 --[[ L["Time"] = "Time"--]] 
 --[[Translation missing --]]
---[[ L["TOC_NOTES"] = "Myslot is for transferring settings between accounts. Feedback farmer1992@gmail.com"--]] 
+--[[ L["TOC_NOTES"] = "Myslot is for transfering settings between accounts. Feedback farmer1992@gmail.com"--]] 
+--[[Translation missing --]]
+--[[ L["Try force importing"] = "Try force importing"--]] 
 --[[Translation missing --]]
 --[[ L["Use random mount instead of an unactived mount"] = "Use random mount instead of an unactived mount"--]] 
 
@@ -177,21 +225,35 @@ elseif locale == 'frFR' then
 --[[Translation missing --]]
 --[[ L["Feedback"] = "Feedback"--]] 
 --[[Translation missing --]]
+--[[ L["Force Import"] = "Force Import"--]] 
+--[[Translation missing --]]
+--[[ L["Ignore CRC32 error. may cause unknow behavior"] = "Ignore CRC32 error. may cause unknow behavior"--]] 
+--[[Translation missing --]]
 --[[ L["Ignore unactived pet[id=%s], %s"] = "Ignore unactived pet[id=%s], %s"--]] 
 --[[Translation missing --]]
 --[[ L["Ignore unlearned skill [id=%s], %s"] = "Ignore unlearned skill [id=%s], %s"--]] 
 --[[Translation missing --]]
 --[[ L["Import"] = "Import"--]] 
 --[[Translation missing --]]
+--[[ L["Import and Export settings below"] = "Import and Export settings below"--]] 
+--[[Translation missing --]]
 --[[ L["Import is not allowed when you are in combat"] = "Import is not allowed when you are in combat"--]] 
 --[[Translation missing --]]
 --[[ L["Importing text [ver:%s] is not compatible with current version"] = "Importing text [ver:%s] is not compatible with current version"--]] 
 --[[Translation missing --]]
+--[[ L["Keys Binding"] = "Keys Binding"--]] 
+--[[Translation missing --]]
+--[[ L["Macro"] = "Macro"--]] 
+--[[Translation missing --]]
 --[[ L["Macro %s was ignored, check if there is enough space to create"] = "Macro %s was ignored, check if there is enough space to create"--]] 
+--[[Translation missing --]]
+--[[ L["Spell"] = "Spell"--]] 
 --[[Translation missing --]]
 --[[ L["Time"] = "Time"--]] 
 --[[Translation missing --]]
---[[ L["TOC_NOTES"] = "Myslot is for transferring settings between accounts. Feedback farmer1992@gmail.com"--]] 
+--[[ L["TOC_NOTES"] = "Myslot is for transfering settings between accounts. Feedback farmer1992@gmail.com"--]] 
+--[[Translation missing --]]
+--[[ L["Try force importing"] = "Try force importing"--]] 
 --[[Translation missing --]]
 --[[ L["Use random mount instead of an unactived mount"] = "Use random mount instead of an unactived mount"--]] 
 
@@ -217,21 +279,35 @@ elseif locale == 'itIT' then
 --[[Translation missing --]]
 --[[ L["Feedback"] = "Feedback"--]] 
 --[[Translation missing --]]
+--[[ L["Force Import"] = "Force Import"--]] 
+--[[Translation missing --]]
+--[[ L["Ignore CRC32 error. may cause unknow behavior"] = "Ignore CRC32 error. may cause unknow behavior"--]] 
+--[[Translation missing --]]
 --[[ L["Ignore unactived pet[id=%s], %s"] = "Ignore unactived pet[id=%s], %s"--]] 
 --[[Translation missing --]]
 --[[ L["Ignore unlearned skill [id=%s], %s"] = "Ignore unlearned skill [id=%s], %s"--]] 
 --[[Translation missing --]]
 --[[ L["Import"] = "Import"--]] 
 --[[Translation missing --]]
+--[[ L["Import and Export settings below"] = "Import and Export settings below"--]] 
+--[[Translation missing --]]
 --[[ L["Import is not allowed when you are in combat"] = "Import is not allowed when you are in combat"--]] 
 --[[Translation missing --]]
 --[[ L["Importing text [ver:%s] is not compatible with current version"] = "Importing text [ver:%s] is not compatible with current version"--]] 
 --[[Translation missing --]]
+--[[ L["Keys Binding"] = "Keys Binding"--]] 
+--[[Translation missing --]]
+--[[ L["Macro"] = "Macro"--]] 
+--[[Translation missing --]]
 --[[ L["Macro %s was ignored, check if there is enough space to create"] = "Macro %s was ignored, check if there is enough space to create"--]] 
+--[[Translation missing --]]
+--[[ L["Spell"] = "Spell"--]] 
 --[[Translation missing --]]
 --[[ L["Time"] = "Time"--]] 
 --[[Translation missing --]]
---[[ L["TOC_NOTES"] = "Myslot is for transferring settings between accounts. Feedback farmer1992@gmail.com"--]] 
+--[[ L["TOC_NOTES"] = "Myslot is for transfering settings between accounts. Feedback farmer1992@gmail.com"--]] 
+--[[Translation missing --]]
+--[[ L["Try force importing"] = "Try force importing"--]] 
 --[[Translation missing --]]
 --[[ L["Use random mount instead of an unactived mount"] = "Use random mount instead of an unactived mount"--]] 
 
@@ -257,21 +333,35 @@ elseif locale == 'koKR' then
 --[[Translation missing --]]
 --[[ L["Feedback"] = "Feedback"--]] 
 --[[Translation missing --]]
+--[[ L["Force Import"] = "Force Import"--]] 
+--[[Translation missing --]]
+--[[ L["Ignore CRC32 error. may cause unknow behavior"] = "Ignore CRC32 error. may cause unknow behavior"--]] 
+--[[Translation missing --]]
 --[[ L["Ignore unactived pet[id=%s], %s"] = "Ignore unactived pet[id=%s], %s"--]] 
 --[[Translation missing --]]
 --[[ L["Ignore unlearned skill [id=%s], %s"] = "Ignore unlearned skill [id=%s], %s"--]] 
 --[[Translation missing --]]
 --[[ L["Import"] = "Import"--]] 
 --[[Translation missing --]]
+--[[ L["Import and Export settings below"] = "Import and Export settings below"--]] 
+--[[Translation missing --]]
 --[[ L["Import is not allowed when you are in combat"] = "Import is not allowed when you are in combat"--]] 
 --[[Translation missing --]]
 --[[ L["Importing text [ver:%s] is not compatible with current version"] = "Importing text [ver:%s] is not compatible with current version"--]] 
 --[[Translation missing --]]
+--[[ L["Keys Binding"] = "Keys Binding"--]] 
+--[[Translation missing --]]
+--[[ L["Macro"] = "Macro"--]] 
+--[[Translation missing --]]
 --[[ L["Macro %s was ignored, check if there is enough space to create"] = "Macro %s was ignored, check if there is enough space to create"--]] 
+--[[Translation missing --]]
+--[[ L["Spell"] = "Spell"--]] 
 --[[Translation missing --]]
 --[[ L["Time"] = "Time"--]] 
 --[[Translation missing --]]
---[[ L["TOC_NOTES"] = "Myslot is for transferring settings between accounts. Feedback farmer1992@gmail.com"--]] 
+--[[ L["TOC_NOTES"] = "Myslot is for transfering settings between accounts. Feedback farmer1992@gmail.com"--]] 
+--[[Translation missing --]]
+--[[ L["Try force importing"] = "Try force importing"--]] 
 --[[Translation missing --]]
 --[[ L["Use random mount instead of an unactived mount"] = "Use random mount instead of an unactived mount"--]] 
 
@@ -297,21 +387,35 @@ elseif locale == 'ptBR' then
 --[[Translation missing --]]
 --[[ L["Feedback"] = "Feedback"--]] 
 --[[Translation missing --]]
+--[[ L["Force Import"] = "Force Import"--]] 
+--[[Translation missing --]]
+--[[ L["Ignore CRC32 error. may cause unknow behavior"] = "Ignore CRC32 error. may cause unknow behavior"--]] 
+--[[Translation missing --]]
 --[[ L["Ignore unactived pet[id=%s], %s"] = "Ignore unactived pet[id=%s], %s"--]] 
 --[[Translation missing --]]
 --[[ L["Ignore unlearned skill [id=%s], %s"] = "Ignore unlearned skill [id=%s], %s"--]] 
 --[[Translation missing --]]
 --[[ L["Import"] = "Import"--]] 
 --[[Translation missing --]]
+--[[ L["Import and Export settings below"] = "Import and Export settings below"--]] 
+--[[Translation missing --]]
 --[[ L["Import is not allowed when you are in combat"] = "Import is not allowed when you are in combat"--]] 
 --[[Translation missing --]]
 --[[ L["Importing text [ver:%s] is not compatible with current version"] = "Importing text [ver:%s] is not compatible with current version"--]] 
 --[[Translation missing --]]
+--[[ L["Keys Binding"] = "Keys Binding"--]] 
+--[[Translation missing --]]
+--[[ L["Macro"] = "Macro"--]] 
+--[[Translation missing --]]
 --[[ L["Macro %s was ignored, check if there is enough space to create"] = "Macro %s was ignored, check if there is enough space to create"--]] 
+--[[Translation missing --]]
+--[[ L["Spell"] = "Spell"--]] 
 --[[Translation missing --]]
 --[[ L["Time"] = "Time"--]] 
 --[[Translation missing --]]
---[[ L["TOC_NOTES"] = "Myslot is for transferring settings between accounts. Feedback farmer1992@gmail.com"--]] 
+--[[ L["TOC_NOTES"] = "Myslot is for transfering settings between accounts. Feedback farmer1992@gmail.com"--]] 
+--[[Translation missing --]]
+--[[ L["Try force importing"] = "Try force importing"--]] 
 --[[Translation missing --]]
 --[[ L["Use random mount instead of an unactived mount"] = "Use random mount instead of an unactived mount"--]] 
 
@@ -337,21 +441,35 @@ elseif locale == 'ruRU' then
 --[[Translation missing --]]
 --[[ L["Feedback"] = "Feedback"--]] 
 --[[Translation missing --]]
+--[[ L["Force Import"] = "Force Import"--]] 
+--[[Translation missing --]]
+--[[ L["Ignore CRC32 error. may cause unknow behavior"] = "Ignore CRC32 error. may cause unknow behavior"--]] 
+--[[Translation missing --]]
 --[[ L["Ignore unactived pet[id=%s], %s"] = "Ignore unactived pet[id=%s], %s"--]] 
 --[[Translation missing --]]
 --[[ L["Ignore unlearned skill [id=%s], %s"] = "Ignore unlearned skill [id=%s], %s"--]] 
 --[[Translation missing --]]
 --[[ L["Import"] = "Import"--]] 
 --[[Translation missing --]]
+--[[ L["Import and Export settings below"] = "Import and Export settings below"--]] 
+--[[Translation missing --]]
 --[[ L["Import is not allowed when you are in combat"] = "Import is not allowed when you are in combat"--]] 
 --[[Translation missing --]]
 --[[ L["Importing text [ver:%s] is not compatible with current version"] = "Importing text [ver:%s] is not compatible with current version"--]] 
 --[[Translation missing --]]
+--[[ L["Keys Binding"] = "Keys Binding"--]] 
+--[[Translation missing --]]
+--[[ L["Macro"] = "Macro"--]] 
+--[[Translation missing --]]
 --[[ L["Macro %s was ignored, check if there is enough space to create"] = "Macro %s was ignored, check if there is enough space to create"--]] 
+--[[Translation missing --]]
+--[[ L["Spell"] = "Spell"--]] 
 --[[Translation missing --]]
 --[[ L["Time"] = "Time"--]] 
 --[[Translation missing --]]
---[[ L["TOC_NOTES"] = "Myslot is for transferring settings between accounts. Feedback farmer1992@gmail.com"--]] 
+--[[ L["TOC_NOTES"] = "Myslot is for transfering settings between accounts. Feedback farmer1992@gmail.com"--]] 
+--[[Translation missing --]]
+--[[ L["Try force importing"] = "Try force importing"--]] 
 --[[Translation missing --]]
 --[[ L["Use random mount instead of an unactived mount"] = "Use random mount instead of an unactived mount"--]] 
 
@@ -366,14 +484,25 @@ L["Bad importing text [TEXT]"] = "导入字符不合法 [TEXT]"
 L["Close"] = "关闭"
 L["Export"] = "导出"
 L["Feedback"] = "问题/建议"
+L["Force Import"] = "强制导入"
+L["Ignore CRC32 error. may cause unknow behavior"] = "忽略CRC32错误，可能导致奇怪的后果"
 L["Ignore unactived pet[id=%s], %s"] = "忽略未开启的战斗宠物[id=%s]：%s"
 L["Ignore unlearned skill [id=%s], %s"] = "忽略未掌握技能[id=%s]：%s"
 L["Import"] = "导入"
+--[[Translation missing --]]
+--[[ L["Import and Export settings below"] = "Import and Export settings below"--]] 
 L["Import is not allowed when you are in combat"] = "请在非战斗时候使用导入功能"
 L["Importing text [ver:%s] is not compatible with current version"] = "导入字串 [ver:%s] 不兼容当前版本"
+--[[Translation missing --]]
+--[[ L["Keys Binding"] = "Keys Binding"--]] 
+--[[Translation missing --]]
+--[[ L["Macro"] = "Macro"--]] 
 L["Macro %s was ignored, check if there is enough space to create"] = "宏 [ %s ] 被忽略，请检查是否有足够的空格创建宏"
+--[[Translation missing --]]
+--[[ L["Spell"] = "Spell"--]] 
 L["Time"] = "时间"
 L["TOC_NOTES"] = "保存你的技能按钮位置。反馈：farmer1992@gmail.com"
+L["Try force importing"] = "尝试强制导入"
 L["Use random mount instead of an unactived mount"] = "使用随机坐骑代替没有的坐骑"
 
 elseif locale == 'zhTW' then
@@ -387,14 +516,28 @@ L["Bad importing text [TEXT]"] = "錯誤的導入字串[TEXT]"
 L["Close"] = "關閉"
 L["Export"] = "導出"
 L["Feedback"] = "反饋"
+--[[Translation missing --]]
+--[[ L["Force Import"] = "Force Import"--]] 
+--[[Translation missing --]]
+--[[ L["Ignore CRC32 error. may cause unknow behavior"] = "Ignore CRC32 error. may cause unknow behavior"--]] 
 L["Ignore unactived pet[id=%s], %s"] = "忽略沒有的寵物 [id=%s]：%s"
 L["Ignore unlearned skill [id=%s], %s"] = "忽略未習得技能 [id=%s], %s"
 L["Import"] = "導入"
+--[[Translation missing --]]
+--[[ L["Import and Export settings below"] = "Import and Export settings below"--]] 
 L["Import is not allowed when you are in combat"] = "請在非戰鬥狀態時使用導入功能"
 L["Importing text [ver:%s] is not compatible with current version"] = "導入的字串版本與當前版本不相容。(字串版本號：%s)"
+--[[Translation missing --]]
+--[[ L["Keys Binding"] = "Keys Binding"--]] 
+--[[Translation missing --]]
+--[[ L["Macro"] = "Macro"--]] 
 L["Macro %s was ignored, check if there is enough space to create"] = "忽略巨集 [%s] ，請檢查是否有足夠的欄位創建新巨集"
+--[[Translation missing --]]
+--[[ L["Spell"] = "Spell"--]] 
 L["Time"] = "時間"
 L["TOC_NOTES"] = "Myslot可以跨帳號綁定技能與按鍵設置。反饋通道：farmer1992@gmail.com"
+--[[Translation missing --]]
+--[[ L["Try force importing"] = "Try force importing"--]] 
 L["Use random mount instead of an unactived mount"] = "使用隨機座騎代替沒有的座騎"
 
 end

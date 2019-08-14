@@ -249,6 +249,7 @@ function Panel:NewPaddingSlider()
 		name = L.Padding,
 		min = -16,
 		max = 32,
+		softLimits = true,
 
 		get = function()
 			return self.owner:GetPadding()
@@ -265,6 +266,7 @@ function Panel:NewSpacingSlider()
 		name = L.Spacing,
 		min = -16,
 		max = 32,
+		softLimits = true,
 
 		get = function()
 			return self.owner:GetSpacing()

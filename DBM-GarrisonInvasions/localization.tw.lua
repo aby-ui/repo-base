@@ -1,4 +1,6 @@
-﻿if GetLocale() ~= "zhTW" then return end
+﻿if GetLocale() ~= "zhTW" then
+	return
+end
 local L
 
 --------------------------
@@ -7,21 +9,21 @@ local L
 L = DBM:GetModLocalization("GarrisonInvasions")
 
 L:SetGeneralLocalization({
-	name = "要塞入侵"
+	name	= "要塞入侵"
 })
 
 L:SetWarningLocalization({
-	specWarnRylak	= "冰喉食腐者來了",
-	specWarnWorker	= "害怕的工人在空地上",
-	specWarnSpy		= "一個間諜闖入",
-	specWarnBuilding= "建築物受到攻擊"
+	specWarnRylak		= "冰喉食腐者來了",
+	specWarnWorker		= "害怕的工人在空地上",
+	specWarnSpy			= "一個間諜闖入",
+	specWarnBuilding	= "建築物受到攻擊"
 })
 
 L:SetOptionLocalization({
-	specWarnRylak	= "當萊拉克出現時顯示特別警告",
-	specWarnWorker	= "當害怕的工人在空地上被抓住時顯示特別警告",
-	specWarnSpy		= "當間諜闖入時顯示特別警告",
-	specWarnBuilding= "當建築物受到攻擊時顯示特別警告"
+	specWarnRylak		= "當萊拉克出現時顯示特別警告",
+	specWarnWorker		= "當害怕的工人在空地上被抓住時顯示特別警告",
+	specWarnSpy			= "當間諜闖入時顯示特別警告",
+	specWarnBuilding	= "當建築物受到攻擊時顯示特別警告"
 })
 
 L:SetMiscLocalization({
@@ -45,7 +47,7 @@ L:SetMiscLocalization({
 L = DBM:GetModLocalization("Annihilon")
 
 L:SetGeneralLocalization({
-	name = "災滅"
+	name	= "災滅"
 })
 
 --------------
@@ -54,7 +56,7 @@ L:SetGeneralLocalization({
 L = DBM:GetModLocalization("Teluur")
 
 L:SetGeneralLocalization({
-	name = "泰魯爾"
+	name	= "泰魯爾"
 })
 
 ----------------------
@@ -63,7 +65,7 @@ L:SetGeneralLocalization({
 L = DBM:GetModLocalization("LadyFleshsear")
 
 L:SetGeneralLocalization({
-	name = "灼焰女士"
+	name	= "灼焰女士"
 })
 
 ----------------------
@@ -72,7 +74,7 @@ L:SetGeneralLocalization({
 L = DBM:GetModLocalization("Drogan")
 
 L:SetGeneralLocalization({
-	name = "指揮官德羅甘"
+	name	= "指揮官德羅甘"
 })
 
 ----------------------------
@@ -81,7 +83,7 @@ L:SetGeneralLocalization({
 L = DBM:GetModLocalization("Goggnathog")
 
 L:SetGeneralLocalization({
-	name = "法師領主勾那索格"
+	name	= "法師領主勾那索格"
 })
 
 ------------
@@ -90,5 +92,5 @@ L:SetGeneralLocalization({
 L = DBM:GetModLocalization("Gaur")
 
 L:SetGeneralLocalization({
-	name = "勾爾"
+	name	= "勾爾"
 })

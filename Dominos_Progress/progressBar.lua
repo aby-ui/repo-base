@@ -24,7 +24,6 @@ function ProgressBar:New(id, modes, ...)
 end
 
 function ProgressBar:Create(...)
-    if DEBUG_MODE then pdebug() end
 	local bar = ProgressBar.proto.Create(self, ...)
 
 	bar:SetFrameStrata('BACKGROUND')
@@ -210,12 +209,16 @@ function ProgressBar:GetModeIndex()
 end
 
 function ProgressBar:NextMode()
-	local nextIndex = self:GetModeIndex() + 1
-	if nextIndex > #self.modes then
-		nextIndex = 1
-	end
+	local currentIndex = self:GetModeIndex()
+	local nextIndex = currentIndex
+	local nextMode
 
-	self:SetMode(self.modes[nextIndex])
+	repeat
+		nextIndex = Wrap(nextIndex + 1, #self.modes)
+		nextMode = self.modes[nextIndex]
+	until (currentIndex == nextIndex or Addon.progressBarModes[nextMode]:IsModeActive())
+
+	self:SetMode(nextMode)
 end
 
 function ProgressBar:GetCurrentModeIndex()

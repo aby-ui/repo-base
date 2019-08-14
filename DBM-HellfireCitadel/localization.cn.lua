@@ -1,61 +1,59 @@
-﻿-- Mini Dragon(projecteurs@gmail.com)
--- Blizzard Entertainment
--- Last update: Feb 18 2016, 18:59 UTC@14798
-
-if GetLocale() ~= "zhCN" then return end
+﻿if GetLocale() ~= "zhCN" then
+	return
+end
 local L
 
 ---------------
 -- Hellfire Assault --
 ---------------
-L= DBM:GetModLocalization(1426)
+L = DBM:GetModLocalization(1426)
 
 L:SetTimerLocalization({
-	timerSiegeVehicleCD		= "下一辆攻城车-%s"
+	timerSiegeVehicleCD	= "下一辆攻城车-%s"
 })
 
 L:SetOptionLocalization({
-	timerSiegeVehicleCD =	"计时条：下一辆攻城车"
+	timerSiegeVehicleCD	= "计时条：下一辆攻城车"
 })
 
 L:SetMiscLocalization({
-	AddsSpawn1		=	"乘胜追击！",
-	AddsSpawn2		=	"投掷手雷！",
-	BossLeaving		=	"我会回来的..."--无法确定全角还是半角句号。有问题请联系我
+	AddsSpawn1	= "乘胜追击！",
+	AddsSpawn2	= "投掷手雷！",
+	BossLeaving	= "我会回来的..."--无法确定全角还是半角句号。有问题请联系我
 })
 
 ---------------------------
 -- Iron Reaver --
 ---------------------------
-L= DBM:GetModLocalization(1425)
+L = DBM:GetModLocalization(1425)
 
 ---------------------------
 -- Hellfire High Council --
 ---------------------------
-L= DBM:GetModLocalization(1432)
+L = DBM:GetModLocalization(1432)
 
 ------------------
 -- Kormrok --
 ------------------
-L= DBM:GetModLocalization(1392)
+L = DBM:GetModLocalization(1392)
 
 L:SetMiscLocalization({
-	ExRTNotice		= "%s 向你指派了ExRT的位置。你的位置: 橙色:%s, 绿色:%s, 紫色:%s"
+	ExRTNotice	= "%s 向你指派了ExRT的位置。你的位置: 橙色:%s, 绿色:%s, 紫色:%s"
 })
 
 --------------
 -- Kilrogg Deadeye --
 --------------
-L= DBM:GetModLocalization(1396)
+L = DBM:GetModLocalization(1396)
 
 L:SetMiscLocalization({
-	BloodthirstersSoon		=	"来吧，兄弟们！把握你们的命运！"
+	BloodthirstersSoon	= "来吧，兄弟们！把握你们的命运！"
 })
 
 --------------------
 --Gorefiend --
 --------------------
-L= DBM:GetModLocalization(1372)
+L = DBM:GetModLocalization(1372)
 
 L:SetTimerLocalization({
 	SoDDPS2		= "下一次死亡之影 (%s)",
@@ -64,58 +62,58 @@ L:SetTimerLocalization({
 }) 
 
 L:SetOptionLocalization({
-	SoDDPS2		= "计时条：下一次针对DPS的$spell:179864",
-	SoDTank2	= "计时条：下一次针对坦克的$spell:179864",
-	SoDHealer2	= "计时条：下一次针对治疗的$spell:179864",
+	SoDDPS2			= "计时条：下一次针对DPS的$spell:179864",
+	SoDTank2		= "计时条：下一次针对坦克的$spell:179864",
+	SoDHealer2		= "计时条：下一次针对治疗的$spell:179864",
 	ShowOnlyPlayer	= "只在你被$spell:179909点名时显示HUD"
 })
 --------------------------
 -- Shadow-Lord Iskar --
 --------------------------
-L= DBM:GetModLocalization(1433)
+L = DBM:GetModLocalization(1433)
 
 L:SetWarningLocalization({
-	specWarnThrowAnzu =	"快传安苏之眼给%s！"
+	specWarnThrowAnzu	=	"快传安苏之眼给%s！"
 })
 
 L:SetOptionLocalization({
-	specWarnThrowAnzu =	"特殊警报：当你需要传递$spell:179202给他人时"
+	specWarnThrowAnzu	=	"特殊警报：当你需要传递$spell:179202给他人时"
 })
 
 --------------------------
 -- Fel Lord Zakuun --
 --------------------------
-L= DBM:GetModLocalization(1391)
+L = DBM:GetModLocalization(1391)
 
 L:SetOptionLocalization({
-	SeedsBehavior		= "设定种子的喊叫方式 (需要团长权限)",
-	Iconed				= "星星, 大饼, 菱形, 三角, 月亮。 适合分散式开场。",--Default
-	Numbered			= "1, 2, 3, 4, 5. 适合已分区的开场。",
-	DirectionLine		= "左, 左偏中, 中, 右偏中, 右. 适合直线式开场。",
-	FreeForAll			= "自由发挥. 不分配位置, 只大喊。"
+	SeedsBehavior	= "设定种子的喊叫方式 (需要团长权限)",
+	Iconed			= "星星, 大饼, 菱形, 三角, 月亮。 适合分散式开场。",--Default
+	Numbered		= "1, 2, 3, 4, 5. 适合已分区的开场。",
+	DirectionLine	= "左, 左偏中, 中, 右偏中, 右. 适合直线式开场。",
+	FreeForAll		= "自由发挥. 不分配位置, 只大喊。"
 })
 
 L:SetMiscLocalization({
-	DBMConfigMsg		= "团长已经将种子喊叫方式设定为 %s。",
-	BWConfigMsg			= "团长在用Bigwigs, DBM将会使用数字来提示。"
+	DBMConfigMsg	= "团长已经将种子喊叫方式设定为 %s。",
+	BWConfigMsg		= "团长在用Bigwigs, DBM将会使用数字来提示。"
 })
 
 --------------------------
 -- Xhul'horac --
 --------------------------
-L= DBM:GetModLocalization(1447)
+L = DBM:GetModLocalization(1447)
 
 L:SetOptionLocalization({
-	ChainsBehavior		= "设定邪能锁链的警告方式。时间在开始施法时同步。",
-	Cast				= "当施法开始时只给予原始目标警告。",
-	Applied				= "当施法结束时给予所有受影响的目标警告。",
-	Both				= "开始和结束"
+	ChainsBehavior	= "设定邪能锁链的警告方式。时间在开始施法时同步。",
+	Cast			= "当施法开始时只给予原始目标警告。",
+	Applied			= "当施法结束时给予所有受影响的目标警告。",
+	Both			= "开始和结束"
 })
 
 --------------------------
 -- Socrethar the Eternal --
 --------------------------
-L= DBM:GetModLocalization(1427)
+L = DBM:GetModLocalization(1427)
 
 L:SetOptionLocalization({
 	InterruptBehavior	= "设置打断方式 (需要团长权限)",
@@ -128,25 +126,25 @@ L:SetOptionLocalization({
 --------------------------
 -- Tyrant Velhari --
 --------------------------
-L= DBM:GetModLocalization(1394)
+L = DBM:GetModLocalization(1394)
 
 --------------------------
 -- Mannoroth --
 --------------------------
-L= DBM:GetModLocalization(1395)
+L = DBM:GetModLocalization(1395)
 
 L:SetOptionLocalization({
 	CustomAssignWrath	= "使用玩家角色决定$spell:186348的图标(团长开启有效, 可能和BW或过期DBM冲突)"
 })
 
 L:SetMiscLocalization({
-	felSpire		=	"开始强化邪能尖塔！"
+	felSpire	=	"开始强化邪能尖塔！"
 })
 
 --------------------------
 -- Archimonde --
 --------------------------
-L= DBM:GetModLocalization(1438)
+L = DBM:GetModLocalization(1438)
 
 L:SetWarningLocalization({
 	specWarnBreakShackle	= "枷锁酷刑：拉断%s！"
@@ -167,12 +165,12 @@ L:SetOptionLocalization({
 })
 
 L:SetMiscLocalization({
-	phase2point5		= "面对现实吧，愚蠢的凡人。你们无法抵抗燃烧军团的无穷大军。",
-	First				= "第一个",
-	Second				= "第二个",
-	Third				= "第三个",
-	Fourth				= "第四个",
-	Fifth				= "第五个"
+	phase2point5	= "面对现实吧，愚蠢的凡人。你们无法抵抗燃烧军团的无穷大军。",
+	First			= "第一个",
+	Second			= "第二个",
+	Third			= "第三个",
+	Fourth			= "第四个",
+	Fifth			= "第五个"
 })
 
 -------------
@@ -181,5 +179,5 @@ L:SetMiscLocalization({
 L = DBM:GetModLocalization("HellfireCitadelTrash")
 
 L:SetGeneralLocalization({
-	name =	"地狱火堡垒小怪"
+	name	= "地狱火堡垒小怪"
 })

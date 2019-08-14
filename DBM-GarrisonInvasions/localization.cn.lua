@@ -1,8 +1,6 @@
-﻿-- Mini_Dragon(projecteurs@gmail.com)
--- Special thanks to 178, Yike and Blizzard Entertainment
--- Last update: Apr 25, 2015@13663
-
-if GetLocale() ~= "zhCN" then return end
+﻿if GetLocale() ~= "zhCN" then
+	return
+end
 
 local L
 
@@ -12,21 +10,21 @@ local L
 L = DBM:GetModLocalization("GarrisonInvasions")
 
 L:SetGeneralLocalization({
-	name = "要塞入侵"
+	name	= "要塞入侵"
 })
 
 L:SetWarningLocalization({
-	specWarnRylak	= "暗翼食腐者即将到来",
-	specWarnWorker	= "一个惊恐的工人暴露在开阔地带",
-	specWarnSpy		= "一个间谍混了进来",
-	specWarnBuilding= "一座建筑正受到攻击"
+	specWarnRylak		= "暗翼食腐者即将到来",
+	specWarnWorker		= "一个惊恐的工人暴露在开阔地带",
+	specWarnSpy			= "一个间谍混了进来",
+	specWarnBuilding	= "一座建筑正受到攻击"
 })
 
 L:SetOptionLocalization({
-	specWarnRylak	= "当暗翼食腐者到来时发出特殊警报",
-	specWarnWorker	= "当工人暴露在开阔地带时发出特殊警报",
-	specWarnSpy		= "当间谍混进来时发出特殊警报",
-	specWarnBuilding= "当建筑受到攻击时发出特殊警报"
+	specWarnRylak		= "当暗翼食腐者到来时发出特殊警报",
+	specWarnWorker		= "当工人暴露在开阔地带时发出特殊警报",
+	specWarnSpy			= "当间谍混进来时发出特殊警报",
+	specWarnBuilding	= "当建筑受到攻击时发出特殊警报"
 })
 
 L:SetMiscLocalization({
@@ -50,7 +48,7 @@ L:SetMiscLocalization({
 L = DBM:GetModLocalization("Annihilon")
 
 L:SetGeneralLocalization({
-	name = "安妮希隆" --90802 What hell is this translation??? 什么鬼翻译。
+	name	= "安妮希隆" --90802 What hell is this translation??? 什么鬼翻译。
 })
 
 --------------
@@ -59,7 +57,7 @@ L:SetGeneralLocalization({
 L = DBM:GetModLocalization("Teluur")
 
 L:SetGeneralLocalization({
-	name = "特鲁尔"
+	name	= "特鲁尔"
 })
 
 ----------------------
@@ -68,7 +66,7 @@ L:SetGeneralLocalization({
 L = DBM:GetModLocalization("LadyFleshsear")
 
 L:SetGeneralLocalization({
-	name = "灼血魔女"
+	name	= "灼血魔女"
 })
 
 ----------------------
@@ -77,5 +75,5 @@ L:SetGeneralLocalization({
 L = DBM:GetModLocalization("Drogan")
 
 L:SetGeneralLocalization({
-	name = "指挥官多跟"
+	name	= "指挥官多跟"
 })

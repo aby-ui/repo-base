@@ -428,12 +428,12 @@ function TomTom:ShowHideCoordBlock()
 
         -- Set the block position
         TomTomBlock:ClearAllPoints()
-        if self.profile.block.position then
-            local pos = self.profile.block.position
-            TomTomBlock:SetPoint(pos[1], UIParent, pos[3], pos[4], pos[5])
-        else
-            TomTomBlock:SetPoint("TOP", UIParent, "BOTTOM", -20, -10)
+        if not self.profile.block.position then
+            self.profile.block.position = {"CENTER", nil, "CENTER", 0, -100}
         end
+        local pos = self.profile.block.position
+        TomTomBlock:SetPoint(pos[1], UIParent, pos[3], pos[4], pos[5])
+
 
         -- Update the font size
         local font,height = TomTomBlock.Text:GetFont()
@@ -542,7 +542,7 @@ local dropdown_info = {
         local uid = TomTom.dropdown.uid
         local data = uid
         TomTom:RemoveWaypoint(uid)
-        --TomTom:PrintF("Removing waypoint %0.2f, %0.2f in %s", data.x, data.y, data.zone)
+        --TomTom:Printf("Removing waypoint %0.2f, %0.2f in %s", data.x, data.y, data.zone)
     end,
 },
 { -- Remove all waypoints from this zone
@@ -575,16 +575,15 @@ end,
     func = function()
         -- Add/remove it from the SV file
         local uid = TomTom.dropdown.uid
-        local data = waypoints[uid]
-        if data then
-            local key = TomTom:GetKey(data)
-            local mapId = data[1]
+        if uid then
+            local key = TomTom:GetKey(uid)
+            local mapId = uid[1]
 
             if mapId then
                 if TomTom:UIDIsSaved(uid) then
                     TomTom.waypointprofile[mapId][key] = nil
                 else
-                    TomTom.waypointprofile[mapId][key] = data
+                    TomTom.waypointprofile[mapId][key] = uid
                 end
             end
         end

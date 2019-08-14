@@ -145,7 +145,9 @@ local function createconfig()
 						func = function()
 							if TomTomBlock then
 								TomTomBlock:ClearAllPoints()
-								TomTomBlock:SetPoint("TOP", Minimap, "BOTTOM", -20, -10)
+								local pos = {"CENTER", nil, "CENTER", 0, -100}
+								set({arg="block.position"}, pos)
+								TomTomBlock:SetPoint(pos[1], UIParent, pos[3], pos[4], pos[5])
 							end
 						end,
 					},
@@ -344,7 +346,9 @@ local function createconfig()
 						desc = L["Resets the position of the waypoint arrow if its been dragged off screen"],
 						func = function()
 							TomTomCrazyArrow:ClearAllPoints()
-							TomTomCrazyArrow:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
+							local pos = {"CENTER", nil , "CENTER", 0, 0}
+							set({arg="arrow.position"}, pos)
+							TomTomCrazyArrow:SetPoint(pos[1], UIParent, pos[3], pos[4], pos[5])
 						end,
 					},
 				}

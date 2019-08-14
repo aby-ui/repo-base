@@ -1,20 +1,22 @@
-﻿if GetLocale() ~= "zhTW" then return end
+﻿if GetLocale() ~= "zhTW" then
+	return
+end
 local L
 
 ---------------
 -- Kargath Bladefist --
 ---------------
-L= DBM:GetModLocalization(1128)
+L = DBM:GetModLocalization(1128)
 
 ---------------------------
 -- The Butcher --
 ---------------------------
-L= DBM:GetModLocalization(971)
+L = DBM:GetModLocalization(971)
 
 ---------------------------
 -- Tectus, the Living Mountain --
 ---------------------------
-L= DBM:GetModLocalization(1195)
+L = DBM:GetModLocalization(1195)
 
 L:SetMiscLocalization({
 	pillarSpawn	= "起來吧，群山！"
@@ -23,7 +25,7 @@ L:SetMiscLocalization({
 ------------------
 -- Brackenspore, Walker of the Deep --
 ------------------
-L= DBM:GetModLocalization(1196)
+L = DBM:GetModLocalization(1196)
 
 L:SetOptionLocalization({
 	InterruptCounter	= "重數衰減打算計數",
@@ -35,11 +37,11 @@ L:SetOptionLocalization({
 --------------
 -- Twin Ogron --
 --------------
-L= DBM:GetModLocalization(1148)
+L = DBM:GetModLocalization(1148)
 
 L:SetOptionLocalization({
-	PhemosSpecial	= "為菲莫斯的技能冷卻播放倒數音效",
-	PolSpecial		= "為博爾的技能冷卻播放倒數音效",
+	PhemosSpecial		= "為菲莫斯的技能冷卻播放倒數音效",
+	PolSpecial			= "為博爾的技能冷卻播放倒數音效",
 	PhemosSpecialVoice	= "為菲莫斯的技能播放語音包音效",
 	PolSpecialVoice		= "為博爾的技能播放語音包音效"
 })
@@ -47,7 +49,7 @@ L:SetOptionLocalization({
 --------------------
 --Koragh --
 --------------------
-L= DBM:GetModLocalization(1153)
+L = DBM:GetModLocalization(1153)
 
 L:SetWarningLocalization({
 	specWarnExpelMagicFelFades	= "魔化結束於五秒內 - 回到原位"
@@ -67,10 +69,10 @@ L:SetMiscLocalization({
 --------------------------
 -- Imperator Mar'gok --
 --------------------------
-L= DBM:GetModLocalization(1197)
+L = DBM:GetModLocalization(1197)
 
 L:SetTimerLocalization({
-	timerNightTwistedCD		= "下一次夜狂信徒"
+	timerNightTwistedCD	= "下一次夜狂信徒"
 })
 
 L:SetOptionLocalization({
@@ -81,10 +83,10 @@ L:SetOptionLocalization({
 })
 
 L:SetMiscLocalization({
-	BrandedYell			= "烙印(%d層)%d碼",
-	GazeYell			= "凝視結束於%d秒內",
-	GazeYell2			= "%s中了凝視(%d)",
-	PlayerDebuffs		= "最接近的瘋狂之眼"
+	BrandedYell		= "烙印(%d層)%d碼",
+	GazeYell		= "凝視結束於%d秒內",
+	GazeYell2		= "%s中了凝視(%d)",
+	PlayerDebuffs	= "最接近的瘋狂之眼"
 })
 
 -------------
@@ -93,5 +95,5 @@ L:SetMiscLocalization({
 L = DBM:GetModLocalization("HighmaulTrash")
 
 L:SetGeneralLocalization({
-	name =	"天槌小怪"
+	name	= "天槌小怪"
 })
