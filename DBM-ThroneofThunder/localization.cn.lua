@@ -1,37 +1,35 @@
-﻿-- Simplified Chinese by Diablohu(diablohudream@gmail.com)
--- Last update: 3/2/2013
-
-if GetLocale() ~= "zhCN" then return end
+﻿if GetLocale() ~= "zhCN" then
+	return
+end
 local L
 
 --------------------------
 -- Jin'rokh the Breaker --
 --------------------------
-L= DBM:GetModLocalization(827)
+L = DBM:GetModLocalization(827)
 
 L:SetOptionLocalization({
-	RangeFrame		= "距离监视"
+	RangeFrame	= "距离监视"
 })
-
 
 --------------
 -- Horridon --
 --------------
-L= DBM:GetModLocalization(819)
+L = DBM:GetModLocalization(819)
 
 L:SetWarningLocalization({
 	warnAdds	= "%s"
 })
 
 L:SetTimerLocalization({
-	timerDoor		= "下一个部族大门",
-	timerAdds		= "下一次%s"
+	timerDoor	= "下一个部族大门",
+	timerAdds	= "下一次%s"
 })
 
 L:SetOptionLocalization({
-	warnAdds		= "警报：新的敌人加入战斗",
-	timerDoor		= "计时条：下一个部族大门阶段",
-	timerAdds		= "计时条：下一次小怪"
+	warnAdds	= "警报：新的敌人加入战斗",
+	timerDoor	= "计时条：下一个部族大门阶段",
+	timerAdds	= "计时条：下一次小怪"
 })
 
 L:SetMiscLocalization({
@@ -42,16 +40,16 @@ L:SetMiscLocalization({
 ---------------------------
 -- The Council of Elders --
 ---------------------------
-L= DBM:GetModLocalization(816)
+L = DBM:GetModLocalization(816)
 
 L:SetOptionLocalization({
-	RangeFrame		= "距离监视"
+	RangeFrame	= "距离监视"
 })
 
 ------------
 -- Tortos --
 ------------
-L= DBM:GetModLocalization(825)
+L = DBM:GetModLocalization(825)
 
 L:SetWarningLocalization({
 	warnKickShell			= "%s由>%s<使用（%d次剩余）",
@@ -70,7 +68,7 @@ L:SetMiscLocalization({
 -------------
 -- Megaera --
 -------------
-L= DBM:GetModLocalization(821)
+L = DBM:GetModLocalization(821)
 
 L:SetMiscLocalization({
 	rampageEnds	= "Megaera's rage subsides."
@@ -79,7 +77,7 @@ L:SetMiscLocalization({
 ------------
 -- Ji-Kun --
 ------------
-L= DBM:GetModLocalization(828)
+L = DBM:GetModLocalization(828)
 
 L:SetWarningLocalization({
 	warnFlock		= "%s %s (%d)",
@@ -87,7 +85,7 @@ L:SetWarningLocalization({
 })
 
 L:SetOptionLocalization({
-	RangeFrame		= "Show range frame (10) for $spell:138923"
+	RangeFrame	= "Show range frame (10) for $spell:138923"
 })
 
 L:SetMiscLocalization({
@@ -100,29 +98,29 @@ L:SetMiscLocalization({
 --------------------------
 -- Durumu the Forgotten --
 --------------------------
-L= DBM:GetModLocalization(818)
+L = DBM:GetModLocalization(818)
 
 L:SetWarningLocalization({
 	specWarnDisintegrationBeam	= "%s (%s)"
 })
 
 L:SetOptionLocalization({
-	ArrowOnBeam					= "Show DBM Arrow during $journal:6882 to indicate which direction to move"
+	ArrowOnBeam	= "Show DBM Arrow during $journal:6882 to indicate which direction to move"
 })
 
 ----------------
 -- Primordius --
 ----------------
-L= DBM:GetModLocalization(820)
+L = DBM:GetModLocalization(820)
 
 L:SetOptionLocalization({
-	RangeFrame		= "距离监视其（5码/2码）"
+	RangeFrame	= "距离监视其（5码/2码）"
 })
 
 -----------------
 -- Dark Animus --
 -----------------
-L= DBM:GetModLocalization(824)
+L = DBM:GetModLocalization(824)
 
 L:SetWarningLocalization({
 	warnMatterSwapped	= "%s：>%s<、>%s<交换"
@@ -133,48 +131,48 @@ L:SetOptionLocalization({
 })
 
 L:SetMiscLocalization({
-	Pull		= "The orb explodes!"
+	Pull	= "The orb explodes!"
 })
 
 --------------
 -- Iron Qon --
 --------------
-L= DBM:GetModLocalization(817)
+L = DBM:GetModLocalization(817)
 
 L:SetWarningLocalization({
 	warnDeadZone	= "%s：%s、%s被保护"
 })
 
 L:SetOptionLocalization({
-	RangeFrame		= "距离监视（动态，当存在多名团员过近时显示）"
+	RangeFrame	= "距离监视（动态，当存在多名团员过近时显示）"
 })
 
 -------------------
 -- Twin Consorts --
 -------------------
-L= DBM:GetModLocalization(829)
+L = DBM:GetModLocalization(829)
 
 L:SetOptionLocalization({
-	RangeFrame		= "距离监视（8码）"
+	RangeFrame	= "距离监视（8码）"
 })
 
 L:SetMiscLocalization({
-	DuskPhase		= "Lu'lin! Lend me your strength!"--Not in use, but a backup just in case, so translate in case it's switched to on moments notice on live or next PTR test
+	DuskPhase	= "Lu'lin! Lend me your strength!"--Not in use, but a backup just in case, so translate in case it's switched to on moments notice on live or next PTR test
 })
 
 --------------
 -- Lei Shen --
 --------------
-L= DBM:GetModLocalization(832)
+L = DBM:GetModLocalization(832)
 
 L:SetOptionLocalization({
-	RangeFrame		= "距离监视"--For two different spells
+	RangeFrame	= "距离监视"--For two different spells
 })
 
 ------------
 -- Ra-den --
 ------------
-L= DBM:GetModLocalization(831)
+L = DBM:GetModLocalization(831)
 
 -------------
 --  Trash  --
@@ -182,10 +180,9 @@ L= DBM:GetModLocalization(831)
 L = DBM:GetModLocalization("ToTTrash")
 
 L:SetGeneralLocalization({
-	name =	"雷电王座小怪"
+	name	= "雷电王座小怪"
 })
 
 L:SetOptionLocalization({
-	RangeFrame		= "距离监视（10码）"--For 3 different spells
+	RangeFrame	= "距离监视（10码）"--For 3 different spells
 })
-

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(682, "DBM-MogushanVaults", nil, 317)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190625143417")
+mod:SetRevision("20190814211345")
 mod:SetCreatureID(60143)
 mod:SetEncounterID(1434)
 mod:SetZone()

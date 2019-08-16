@@ -1,18 +1,17 @@
-﻿-- Simplified Chinese by Diablohu(diablohudream@gmail.com)
--- Last update: 2/4/2013
-
-if GetLocale() ~= "zhCN" then return end
+﻿if GetLocale() ~= "zhCN" then
+	return
+end
 local L
 
 ----------------------
 -- Theramore's Fall --
 ----------------------
-L= DBM:GetModLocalization("d566")
+L = DBM:GetModLocalization("d566")
 
 ---------------------------
 -- Arena Of Annihilation --
 ---------------------------
-L= DBM:GetModLocalization("d511")
+L = DBM:GetModLocalization("d511")
 
 --------------
 -- Landfall --

@@ -29,7 +29,7 @@
 ## X-DBM-Mod-MinCoreRevision: 14565
 ## X-Curse-Project-ID: 85688
 ## X-WoWI-ID: 23199
-## Version: r130-3-g3c8859d
+## Version: r130-6-gf6ad86a
 
 localization.en.lua
 localization.kr.lua
@@ -39,24 +39,24 @@ localization.tw.lua
 localization.cn.lua
 localization.fr.lua
 localization.ru.lua
-ABrewingStorm\BrewingStorm.lua
-BattleontheHighSeas\BattleHighSeas.lua
-BloodintheSnow\BloodInSnow.lua
-CryptofForgotenKings\CryptofKings.lua
-DarkHeartOfPandaria\DarkHeartPandaria.lua
-FindingSecretIngredient\FindingIngredient.lua
-TheSecretsofRagefire\SecretsOfRagefire.lua
-ALittlePatience\ALittlePatience.lua
-ArenaOfAnnihilation\ArenaOfAnnihilation.lua
-AssaultofZanvess\AssaultofZanvess.lua
-BrewmoonFestival\BrewmoonFestival.lua
-DaggerInDark\DaggerInDark.lua
-GreenstoneVillage\GreenstoneVillage.lua
-Landfall\Landfall.lua
-TheramoresFall\Theramore.lua
-TrovesThunderKing\Troves.lua
-UngaIngoo\UngaIngoo.lua
-WarlockSolo\GreenFire.lua
+BrewingStorm.lua
+BattleHighSeas.lua
+BloodInSnow.lua
+CryptofKings.lua
+DarkHeartPandaria.lua
+FindingIngredient.lua
+SecretsOfRagefire.lua
+ALittlePatience.lua
+ArenaOfAnnihilation.lua
+AssaultofZanvess.lua
+BrewmoonFestival.lua
+DaggerInDark.lua
+GreenstoneVillage.lua
+Landfall.lua
+Theramore.lua
+Troves.lua
+UngaIngoo.lua
+GreenFire.lua
 
 
 

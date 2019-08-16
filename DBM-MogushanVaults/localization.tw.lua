@@ -1,10 +1,12 @@
-﻿if GetLocale() ~= "zhTW" then return end
+﻿if GetLocale() ~= "zhTW" then
+	return
+end
 local L
 
 ------------
 -- The Stone Guard --
 ------------
-L= DBM:GetModLocalization(679)
+L = DBM:GetModLocalization(679)
 
 L:SetWarningLocalization({
 	SpecWarnOverloadSoon		= "%s即將超載!",
@@ -25,7 +27,7 @@ L:SetMiscLocalization({
 ------------
 -- Feng the Accursed --
 ------------
-L= DBM:GetModLocalization(689)
+L = DBM:GetModLocalization(689)
 
 L:SetWarningLocalization({
 	WarnPhase			= "階段%d",
@@ -35,23 +37,23 @@ L:SetWarningLocalization({
 L:SetOptionLocalization({
 	WarnPhase			= "提示轉換階段",
 	specWarnBarrierNow	= "為你應該使用$spell:115817的時候顯示特別警告(只對隨機團隊有效)",
-	RangeFrame	= DBM_CORE_AUTO_RANGE_OPTION_TEXT_SHORT:format("6") .. "在祕法階段時"
+	RangeFrame			= DBM_CORE_AUTO_RANGE_OPTION_TEXT_SHORT:format("6") .. "在祕法階段時"
 })
 
 L:SetMiscLocalization({
-	Fire		= "噢，至高的神啊!藉由我來融化他們的血肉吧!",
-	Arcane		= "噢，上古的賢者!賜予我祕法的智慧!",
-	Nature		= "噢，偉大的靈魂!賜予我大地之力!",
-	Shadow		= "英雄之靈!以盾護我之身!"
+	Fire	= "噢，至高的神啊!藉由我來融化他們的血肉吧!",
+	Arcane	= "噢，上古的賢者!賜予我祕法的智慧!",
+	Nature	= "噢，偉大的靈魂!賜予我大地之力!",
+	Shadow	= "英雄之靈!以盾護我之身!"
 })
 
 -------------------------------
 -- Gara'jal the Spiritbinder --
 -------------------------------
-L= DBM:GetModLocalization(682)
+L = DBM:GetModLocalization(682)
 
 L:SetMiscLocalization({
-	Pull		= "受死吧，你們!"
+	Pull	= "受死吧，你們!"
 })
 
 ----------------------
@@ -60,7 +62,7 @@ L:SetMiscLocalization({
 L = DBM:GetModLocalization(687)
 
 L:SetWarningLocalization({
-	DarknessSoon		= "黑暗之盾在%d秒"
+	DarknessSoon	= "黑暗之盾在%d秒"
 })
 
 L:SetTimerLocalization({
@@ -69,8 +71,8 @@ L:SetTimerLocalization({
 })
 
 L:SetOptionLocalization({
-	DarknessSoon		= "為$spell:117697提示施放前五秒倒數",
-	timerUSRevive		= "為$spell:117506重新成形顯示計時器"
+	DarknessSoon	= "為$spell:117697提示施放前五秒倒數",
+	timerUSRevive	= "為$spell:117506重新成形顯示計時器"
 })
 
 ------------
@@ -83,7 +85,7 @@ L:SetWarningLocalization({
 })
 
 L:SetTimerLocalization({
-	timerDespawnFloor		= "地板消失"
+	timerDespawnFloor	= "地板消失"
 })
 
 L:SetOptionLocalization({
@@ -94,7 +96,7 @@ L:SetOptionLocalization({
 ------------
 -- Will of the Emperor --
 ------------
-L= DBM:GetModLocalization(677)
+L = DBM:GetModLocalization(677)
 
 L:SetOptionLocalization({
 	InfoFrame		= "為中了$spell:116525的玩家顯示訊息框",

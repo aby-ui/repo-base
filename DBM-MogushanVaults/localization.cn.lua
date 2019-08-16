@@ -1,13 +1,12 @@
-﻿-- Simplified Chinese by Diablohu(diablohudream@gmail.com)
--- Last update: 1/4/2013
-
-if GetLocale() ~= "zhCN" then return end
+﻿if GetLocale() ~= "zhCN" then
+	return
+end
 local L
 
 ------------
 -- The Stone Guard --
 ------------
-L= DBM:GetModLocalization(679)
+L = DBM:GetModLocalization(679)
 
 L:SetWarningLocalization({
 	SpecWarnOverloadSoon		= "%s: 即将施放", -- prepare survival ablility or move boss. need more specific message.
@@ -25,11 +24,10 @@ L:SetMiscLocalization({
 	Overload	= "%s即将过载！"
 })
 
-
 ------------
 -- Feng the Accursed --
 ------------
-L= DBM:GetModLocalization(689)
+L = DBM:GetModLocalization(689)
 
 L:SetWarningLocalization({
 	WarnPhase	= "第%d阶段"
@@ -41,22 +39,20 @@ L:SetOptionLocalization({
 })
 
 L:SetMiscLocalization({
-	Fire		= "噢，至高的神！借我之手融化他们的血肉吧！",
-	Arcane		= "噢，上古的贤者！赐予我魔法的智慧吧！",
-	Nature		= "噢，伟大的神灵！赐予我大地的力量！",
-	Shadow		= "先烈的英灵！用你的盾保护我吧！"
+	Fire	= "噢，至高的神！借我之手融化他们的血肉吧！",
+	Arcane	= "噢，上古的贤者！赐予我魔法的智慧吧！",
+	Nature	= "噢，伟大的神灵！赐予我大地的力量！",
+	Shadow	= "先烈的英灵！用你的盾保护我吧！"
 })
-
 
 -------------------------------
 -- Gara'jal the Spiritbinder --
 -------------------------------
-L= DBM:GetModLocalization(682)
+L = DBM:GetModLocalization(682)
 
 L:SetMiscLocalization({
-	Pull		= "死亡时间到！"
+	Pull	= "死亡时间到！"
 })
-
 
 ----------------------
 -- The Spirit Kings --
@@ -64,7 +60,7 @@ L:SetMiscLocalization({
 L = DBM:GetModLocalization(687)
 
 L:SetWarningLocalization({
-	DarknessSoon		= "黑暗之盾：%d秒后施放"
+	DarknessSoon	= "黑暗之盾：%d秒后施放"
 })
 
 L:SetTimerLocalization({
@@ -73,11 +69,10 @@ L:SetTimerLocalization({
 })
 
 L:SetOptionLocalization({
-	DarknessSoon		= "预警：$spell:117697（提前5秒倒计时）",
-	timerUSRevive		= "计时条：$spell:117506复活",
-	RangeFrame			= "距离监视（8码）"
+	DarknessSoon	= "预警：$spell:117697（提前5秒倒计时）",
+	timerUSRevive	= "计时条：$spell:117506复活",
+	RangeFrame		= "距离监视（8码）"
 })
-
 
 ------------
 L = DBM:GetModLocalization(726)
@@ -87,7 +82,7 @@ L:SetWarningLocalization({
 })
 
 L:SetTimerLocalization({
-	timerDespawnFloor		= "地板消失"
+	timerDespawnFloor	= "地板消失"
 })
 
 L:SetOptionLocalization({
@@ -95,11 +90,10 @@ L:SetOptionLocalization({
 	timerDespawnFloor		= "计时条：平台消失"
 })
 
-
 ------------
 -- Will of the Emperor --
 ------------
-L= DBM:GetModLocalization(677)
+L = DBM:GetModLocalization(677)
 
 L:SetOptionLocalization({
 	InfoFrame		= "信息框：受$spell:116525效果影响的玩家",
@@ -114,4 +108,3 @@ L:SetMiscLocalization({
 	Courage		= "皇帝的勇气出现在壁龛中！",--Emote
 	Boss		= "两个巨型构造体出现在大型的壁龛中！"--Emote
 })
-

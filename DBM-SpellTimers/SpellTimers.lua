@@ -6,7 +6,7 @@
 -- This addon is written and copyrighted by:
 --    * Martin Verges (Nitram @ EU-Azshara)
 --    * Paul Emmerich (Tandanu @ EU-Aegwynn)
--- 
+--
 -- The localizations are written by:
 --    * enGB/enUS: Nitram/Tandanu        http://www.deadlybossmods.com
 --    * deDE: Nitram/Tandanu             http://www.deadlybossmods.com
@@ -26,7 +26,7 @@
 --    * Share Alike. If you alter, transform, or build upon this work, you may distribute the resulting work only under the same or similar license to this one.
 --
 
-local Revision = ("$Revision$"):sub(12, -3)
+local Revision = "2019081550422"
 
 local IsInRaid = IsInRaid
 local IsInInstance = IsInInstance
@@ -42,14 +42,6 @@ local default_settings = {
 	own_bargroup = false,
 	show_portal = true,
 	spells = {
-		{ spell = 86659, bartext = "%spell on %player", cooldown = 8 },-- Paladin: Guardian of Ancient Kings (for Healers/Tanks to see how long cooldown runs)
-		{ spell = 31821, bartext = default_bartext, cooldown = 180 },	-- Paladin: Devotion Aura
-		{ spell = 6346, bartext = default_bartext, cooldown = 180 },	-- Priest: Fear Ward
-		{ spell = 73325, bartext = default_bartext, cooldown = 90 },	-- Priest: Leap of Faith (Life Grip)
-		{ spell = 62618, bartext = default_bartext, cooldown = 180 },	-- Priest: Power Word: Barrier
-		{ spell = 98008, bartext = default_bartext, cooldown = 180 },	-- Shaman: Spirit Link Totem
-		{ spell = 20608, bartext = default_bartext, cooldown = 1800 },	-- Shaman: Reincarnation
-		{ spell = 97462, bartext = default_bartext, cooldown = 180 },	-- Warrior: Rallying Cry CD (for Healers/Tanks to see how long cooldown runs)
 		{ spell = 22700, bartext = default_bartext, cooldown = 600 }, 	-- Field Repair Bot 74A
 		{ spell = 44389, bartext = default_bartext, cooldown = 600 }, 	-- Field Repair Bot 110G
 		{ spell = 54711, bartext = default_bartext, cooldown = 300 }, 	-- Scrapbot Construction Kit
@@ -63,11 +55,13 @@ local default_settings = {
 		{ spell = 32266, bartext = default_bartext, cooldown = 60 }, 	-- Portal: Exodar
 		{ spell = 33691, bartext = default_bartext, cooldown = 60 }, 	-- Portal: Shattrath
 		{ spell = 49360, bartext = default_bartext, cooldown = 60 }, 	-- Portal: Theramore
-		{ spell = 53142, bartext = default_bartext, cooldown = 60 }, 	-- Portal: Dalaran
+		{ spell = 53142, bartext = default_bartext, cooldown = 60 }, 	-- Portal: Dalaran (Northrend)
 		{ spell = 88345, bartext = default_bartext, cooldown = 60 }, 	-- Portal: Tol Barad
 		{ spell = 132620, bartext = default_bartext, cooldown = 60 }, 	-- Portal: Vale of eternal Blossoms
 		{ spell = 120146, bartext = default_bartext, cooldown = 60 }, 	-- Ancient Portal: Dalaran
 		{ spell = 176246, bartext = default_bartext, cooldown = 60 }, 	-- Portal: Stormshield
+		{ spell = 224873, bartext = default_bartext, cooldown = 60 }, 	-- Portal: Dalaran - Broken Isles
+		{ spell = 281400, bartext = default_bartext, cooldown = 60 }, 	-- Portal: Boralus
 	},
 	portal_horde = {
 		{ spell = 11417, bartext = default_bartext, cooldown = 60 }, 	-- Portal: Orgrimmar
@@ -76,11 +70,13 @@ local default_settings = {
 		{ spell = 32667, bartext = default_bartext, cooldown = 60 }, 	-- Portal: Silvermoon
 		{ spell = 35717, bartext = default_bartext, cooldown = 60 }, 	-- Portal: Shattrath
 		{ spell = 49361, bartext = default_bartext, cooldown = 60 }, 	-- Portal: Stonard
-		{ spell = 53142, bartext = default_bartext, cooldown = 60 }, 	-- Portal: Dalaran
+		{ spell = 53142, bartext = default_bartext, cooldown = 60 }, 	-- Portal: Dalaran (Northrend)
 		{ spell = 88346, bartext = default_bartext, cooldown = 60 }, 	-- Portal: Tol Barad
 		{ spell = 132626, bartext = default_bartext, cooldown = 60 }, 	-- Portal: Vale of eternal Blossoms
 		{ spell = 120146, bartext = default_bartext, cooldown = 60 }, 	-- Ancient Portal: Dalaran
 		{ spell = 176244, bartext = default_bartext, cooldown = 60 }, 	-- Portal: Warspear
+		{ spell = 224873, bartext = default_bartext, cooldown = 60 }, 	-- Portal: Dalaran - Broken Isles
+		{ spell = 281402, bartext = default_bartext, cooldown = 60 }, 	-- Portal: Dazar'alor
 	}
 }
 DBM_SpellTimers_Settings = {}
@@ -102,7 +98,7 @@ end
 
 -- functions
 local addDefaultOptions
-do 
+do
 	local function creategui()
 		local createnewentry
 		local CurCount = 0
@@ -130,7 +126,7 @@ do
 			end
 		end
 
-		
+
 		do
 			local area = generalarea
 			local enabled = area:CreateCheckButton(L.Enable, true)
@@ -198,18 +194,18 @@ do
 							self:SetText( string.gsub(text, "%%spell", spellinfo) )
 						end
 					elseif field == "enabled" then
-						self:SetChecked( settings.spells[self.guikey].enabled ) 
+						self:SetChecked( settings.spells[self.guikey].enabled )
 					else
 						self:SetText( settings.spells[self.guikey][field] or "" )
 					end
 				end
-			end	
+			end
 
 			local area = auraarea
 
 			local getadditionalid = CreateFrame("Button", "GetAdditionalID_Pull", area.frame)
-			getadditionalid:SetNormalTexture("Interface\\Buttons\\UI-PlusButton-UP");
-			getadditionalid:SetPushedTexture("Interface\\Buttons\\UI-PlusButton-DOWN");
+			getadditionalid:SetNormalTexture(130838);--"Interface\\Buttons\\UI-PlusButton-UP"
+			getadditionalid:SetPushedTexture(130836);--"Interface\\Buttons\\UI-PlusButton-DOWN"
 			getadditionalid:SetWidth(15)
 			getadditionalid:SetHeight(15)
 
@@ -245,7 +241,7 @@ do
 				getadditionalid:SetPoint("RIGHT", spellid, "LEFT", -15, 0)
 				area.frame:SetHeight( area.frame:GetHeight() + 35 )
 				area.frame:GetParent():SetHeight( area.frame:GetParent():GetHeight() + 35 )
-			
+
 				panel:SetMyOwnHeight()
 				if DBM_GUI_OptionsFramePanelContainer.displayedFrame and CurCount > 1 then
 					DBM_GUI_OptionsFrame:DisplayFrame(panel.frame)
@@ -259,7 +255,7 @@ do
 					end
 				end)
 			end
-			
+
 			if #settings.spells == 0 then
 				createnewentry()
 			else
@@ -284,12 +280,12 @@ do
 			end
 		end
 	end
-	
-	function clearAllSpellBars() 
+
+	function clearAllSpellBars()
 		for k,v in pairs(SpellBarIndex) do
 		   SpellBars:CancelBar(k)
 		   SpellBarIndex[k] = nil
-		end	
+		end
 	end
 
 	local myportals = {}
@@ -343,7 +339,7 @@ do
 
 			rebuildSpellIDIndex()
 		elseif settings.enabled and event == "ENCOUNTER_START" then--Encounter Started
-			clearAllSpellBars() 
+			clearAllSpellBars()
 			--Reset all CDs that are >= 3 minutes EXCEPT shaman reincarnate (20608)
 			self:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 		elseif settings.enabled and event == "ENCOUNTER_END" then--Encounter Ended
@@ -394,7 +390,7 @@ do
 				local fromplayer = sourceName
 				local toplayer = destName		-- Added by Florin Patan
 				local spellid = extraArg1
-			
+
 				if settings.only_from_raid and DBM:GetRaidUnitId(fromplayer) == "none" then return end
 
 				for k,v in pairs(myportals) do

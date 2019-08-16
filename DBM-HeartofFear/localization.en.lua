@@ -3,7 +3,7 @@ local L
 ------------
 -- Imperial Vizier Zor'lok --
 ------------
-L= DBM:GetModLocalization(745)
+L = DBM:GetModLocalization(745)
 
 L:SetWarningLocalization({
 	warnEcho			= "Echo has spawned",
@@ -22,14 +22,14 @@ L:SetOptionLocalization({
 })
 
 L:SetMiscLocalization({
-	Platform			= "flies to one of his platforms!",
-	Defeat				= "We will not give in to the despair of the dark void. If Her will for us is to perish, then it shall be so."
+	Platform	= "flies to one of his platforms!",
+	Defeat		= "We will not give in to the despair of the dark void. If Her will for us is to perish, then it shall be so."
 })
 
 ------------
 -- Blade Lord Ta'yak --
 ------------
-L= DBM:GetModLocalization(744)
+L = DBM:GetModLocalization(744)
 
 L:SetOptionLocalization({
 	UnseenStrikeArrow	= DBM_CORE_AUTO_ARROW_OPTION_TEXT:format(122949),
@@ -39,7 +39,7 @@ L:SetOptionLocalization({
 -------------------------------
 -- Garalon --
 -------------------------------
-L= DBM:GetModLocalization(713)
+L = DBM:GetModLocalization(713)
 
 L:SetWarningLocalization({
 	warnCrush		= "%s",
@@ -61,7 +61,7 @@ L:SetMiscLocalization({
 ----------------------
 -- Wind Lord Mel'jarak --
 ----------------------
-L= DBM:GetModLocalization(741)
+L = DBM:GetModLocalization(741)
 
 L:SetOptionLocalization({
 	AmberPrisonIcons		= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(121885),
@@ -71,7 +71,7 @@ L:SetOptionLocalization({
 ------------
 -- Amber-Shaper Un'sok --
 ------------
-L= DBM:GetModLocalization(737)
+L = DBM:GetModLocalization(737)
 
 L:SetWarningLocalization({
 	warnReshapeLife				= "%s on >%s< (%d)",--Localized because i like class colors on warning and shoving a number into targetname broke it using the generic.
@@ -87,8 +87,8 @@ L:SetWarningLocalization({
 })
 
 L:SetTimerLocalization({
-	timerDestabalize			= "Destabalize (%2$d) : %1$s",
-	timerAmberExplosionAMCD		= "Explosion CD: Monstrosity"
+	timerDestabalize		= "Destabalize (%2$d) : %1$s",
+	timerAmberExplosionAMCD	= "Explosion CD: Monstrosity"
 })
 
 L:SetOptionLocalization({
@@ -109,16 +109,16 @@ L:SetOptionLocalization({
 })
 
 L:SetMiscLocalization({
-	WillPower					= "Will Power"
+	WillPower	= "Will Power"
 })
 
 ------------
 -- Grand Empress Shek'zeer --
 ------------
-L= DBM:GetModLocalization(743)
+L = DBM:GetModLocalization(743)
 
 L:SetWarningLocalization({
-	warnAmberTrap		= "Amber Trap progress: (%d/5)"
+	warnAmberTrap	= "Amber Trap progress: (%d/5)"
 })
 
 L:SetOptionLocalization({
@@ -130,8 +130,8 @@ L:SetOptionLocalization({
 })
 
 L:SetMiscLocalization({
-	PlayerDebuffs		= "Fixated",
-	YellPhase3			= "No more excuses, Empress! Eliminate these cretins or I will kill you myself!"
+	PlayerDebuffs	= "Fixated",
+	YellPhase3		= "No more excuses, Empress! Eliminate these cretins or I will kill you myself!"
 })
 
 -------------
@@ -140,7 +140,7 @@ L:SetMiscLocalization({
 L = DBM:GetModLocalization("HoFTrash")
 
 L:SetGeneralLocalization({
-	name =	"Heart of Fear Trash"
+	name	= "Heart of Fear Trash"
 })
 
 L:SetOptionLocalization({

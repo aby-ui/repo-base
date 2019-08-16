@@ -29,7 +29,6 @@ L["Close"] = true
 L["Export"] = true
 L["Feedback"] = true
 L["Force Import"] = true
-L["Ignore CRC32 error. may cause unknow behavior"] = true
 L["Ignore unactived pet[id=%s], %s"] = true
 L["Ignore unlearned skill [id=%s], %s"] = true
 L["Import"] = true
@@ -39,6 +38,9 @@ L["Importing text [ver:%s] is not compatible with current version"] = true
 L["Keys Binding"] = true
 L["Macro"] = true
 L["Macro %s was ignored, check if there is enough space to create"] = true
+L["Skip bad CRC32"] = true
+L["Skip CRC32, version and any other validation before importing. May cause unknown behavior"] = true
+L["Skip unsupported version"] = true
 L["Spell"] = true
 L["Time"] = true
 L["TOC_NOTES"] = "Myslot is for transfering settings between accounts. Feedback farmer1992@gmail.com"
@@ -66,8 +68,6 @@ L["Feedback"] = "Rückmeldung"
 --[[Translation missing --]]
 --[[ L["Force Import"] = "Force Import"--]] 
 --[[Translation missing --]]
---[[ L["Ignore CRC32 error. may cause unknow behavior"] = "Ignore CRC32 error. may cause unknow behavior"--]] 
---[[Translation missing --]]
 --[[ L["Ignore unactived pet[id=%s], %s"] = "Ignore unactived pet[id=%s], %s"--]] 
 --[[Translation missing --]]
 --[[ L["Ignore unlearned skill [id=%s], %s"] = "Ignore unlearned skill [id=%s], %s"--]] 
@@ -85,6 +85,12 @@ L["Feedback"] = "Rückmeldung"
 --[[ L["Macro"] = "Macro"--]] 
 --[[Translation missing --]]
 --[[ L["Macro %s was ignored, check if there is enough space to create"] = "Macro %s was ignored, check if there is enough space to create"--]] 
+--[[Translation missing --]]
+--[[ L["Skip bad CRC32"] = "Skip bad CRC32"--]] 
+--[[Translation missing --]]
+--[[ L["Skip CRC32, version and any other validation before importing. May cause unknown behavior"] = "Skip CRC32, version and any other validation before importing. May cause unknown behavior"--]] 
+--[[Translation missing --]]
+--[[ L["Skip unsupported version"] = "Skip unsupported version"--]] 
 --[[Translation missing --]]
 --[[ L["Spell"] = "Spell"--]] 
 --[[Translation missing --]]
@@ -119,8 +125,6 @@ L["Feedback"] = "Realimentación"
 --[[Translation missing --]]
 --[[ L["Force Import"] = "Force Import"--]] 
 --[[Translation missing --]]
---[[ L["Ignore CRC32 error. may cause unknow behavior"] = "Ignore CRC32 error. may cause unknow behavior"--]] 
---[[Translation missing --]]
 --[[ L["Ignore unactived pet[id=%s], %s"] = "Ignore unactived pet[id=%s], %s"--]] 
 --[[Translation missing --]]
 --[[ L["Ignore unlearned skill [id=%s], %s"] = "Ignore unlearned skill [id=%s], %s"--]] 
@@ -138,6 +142,12 @@ L["Feedback"] = "Realimentación"
 --[[ L["Macro"] = "Macro"--]] 
 --[[Translation missing --]]
 --[[ L["Macro %s was ignored, check if there is enough space to create"] = "Macro %s was ignored, check if there is enough space to create"--]] 
+--[[Translation missing --]]
+--[[ L["Skip bad CRC32"] = "Skip bad CRC32"--]] 
+--[[Translation missing --]]
+--[[ L["Skip CRC32, version and any other validation before importing. May cause unknown behavior"] = "Skip CRC32, version and any other validation before importing. May cause unknown behavior"--]] 
+--[[Translation missing --]]
+--[[ L["Skip unsupported version"] = "Skip unsupported version"--]] 
 --[[Translation missing --]]
 --[[ L["Spell"] = "Spell"--]] 
 --[[Translation missing --]]
@@ -173,8 +183,6 @@ elseif locale == 'esMX' then
 --[[Translation missing --]]
 --[[ L["Force Import"] = "Force Import"--]] 
 --[[Translation missing --]]
---[[ L["Ignore CRC32 error. may cause unknow behavior"] = "Ignore CRC32 error. may cause unknow behavior"--]] 
---[[Translation missing --]]
 --[[ L["Ignore unactived pet[id=%s], %s"] = "Ignore unactived pet[id=%s], %s"--]] 
 --[[Translation missing --]]
 --[[ L["Ignore unlearned skill [id=%s], %s"] = "Ignore unlearned skill [id=%s], %s"--]] 
@@ -192,6 +200,12 @@ elseif locale == 'esMX' then
 --[[ L["Macro"] = "Macro"--]] 
 --[[Translation missing --]]
 --[[ L["Macro %s was ignored, check if there is enough space to create"] = "Macro %s was ignored, check if there is enough space to create"--]] 
+--[[Translation missing --]]
+--[[ L["Skip bad CRC32"] = "Skip bad CRC32"--]] 
+--[[Translation missing --]]
+--[[ L["Skip CRC32, version and any other validation before importing. May cause unknown behavior"] = "Skip CRC32, version and any other validation before importing. May cause unknown behavior"--]] 
+--[[Translation missing --]]
+--[[ L["Skip unsupported version"] = "Skip unsupported version"--]] 
 --[[Translation missing --]]
 --[[ L["Spell"] = "Spell"--]] 
 --[[Translation missing --]]
@@ -227,8 +241,6 @@ elseif locale == 'frFR' then
 --[[Translation missing --]]
 --[[ L["Force Import"] = "Force Import"--]] 
 --[[Translation missing --]]
---[[ L["Ignore CRC32 error. may cause unknow behavior"] = "Ignore CRC32 error. may cause unknow behavior"--]] 
---[[Translation missing --]]
 --[[ L["Ignore unactived pet[id=%s], %s"] = "Ignore unactived pet[id=%s], %s"--]] 
 --[[Translation missing --]]
 --[[ L["Ignore unlearned skill [id=%s], %s"] = "Ignore unlearned skill [id=%s], %s"--]] 
@@ -246,6 +258,12 @@ elseif locale == 'frFR' then
 --[[ L["Macro"] = "Macro"--]] 
 --[[Translation missing --]]
 --[[ L["Macro %s was ignored, check if there is enough space to create"] = "Macro %s was ignored, check if there is enough space to create"--]] 
+--[[Translation missing --]]
+--[[ L["Skip bad CRC32"] = "Skip bad CRC32"--]] 
+--[[Translation missing --]]
+--[[ L["Skip CRC32, version and any other validation before importing. May cause unknown behavior"] = "Skip CRC32, version and any other validation before importing. May cause unknown behavior"--]] 
+--[[Translation missing --]]
+--[[ L["Skip unsupported version"] = "Skip unsupported version"--]] 
 --[[Translation missing --]]
 --[[ L["Spell"] = "Spell"--]] 
 --[[Translation missing --]]
@@ -281,8 +299,6 @@ elseif locale == 'itIT' then
 --[[Translation missing --]]
 --[[ L["Force Import"] = "Force Import"--]] 
 --[[Translation missing --]]
---[[ L["Ignore CRC32 error. may cause unknow behavior"] = "Ignore CRC32 error. may cause unknow behavior"--]] 
---[[Translation missing --]]
 --[[ L["Ignore unactived pet[id=%s], %s"] = "Ignore unactived pet[id=%s], %s"--]] 
 --[[Translation missing --]]
 --[[ L["Ignore unlearned skill [id=%s], %s"] = "Ignore unlearned skill [id=%s], %s"--]] 
@@ -300,6 +316,12 @@ elseif locale == 'itIT' then
 --[[ L["Macro"] = "Macro"--]] 
 --[[Translation missing --]]
 --[[ L["Macro %s was ignored, check if there is enough space to create"] = "Macro %s was ignored, check if there is enough space to create"--]] 
+--[[Translation missing --]]
+--[[ L["Skip bad CRC32"] = "Skip bad CRC32"--]] 
+--[[Translation missing --]]
+--[[ L["Skip CRC32, version and any other validation before importing. May cause unknown behavior"] = "Skip CRC32, version and any other validation before importing. May cause unknown behavior"--]] 
+--[[Translation missing --]]
+--[[ L["Skip unsupported version"] = "Skip unsupported version"--]] 
 --[[Translation missing --]]
 --[[ L["Spell"] = "Spell"--]] 
 --[[Translation missing --]]
@@ -335,8 +357,6 @@ elseif locale == 'koKR' then
 --[[Translation missing --]]
 --[[ L["Force Import"] = "Force Import"--]] 
 --[[Translation missing --]]
---[[ L["Ignore CRC32 error. may cause unknow behavior"] = "Ignore CRC32 error. may cause unknow behavior"--]] 
---[[Translation missing --]]
 --[[ L["Ignore unactived pet[id=%s], %s"] = "Ignore unactived pet[id=%s], %s"--]] 
 --[[Translation missing --]]
 --[[ L["Ignore unlearned skill [id=%s], %s"] = "Ignore unlearned skill [id=%s], %s"--]] 
@@ -354,6 +374,12 @@ elseif locale == 'koKR' then
 --[[ L["Macro"] = "Macro"--]] 
 --[[Translation missing --]]
 --[[ L["Macro %s was ignored, check if there is enough space to create"] = "Macro %s was ignored, check if there is enough space to create"--]] 
+--[[Translation missing --]]
+--[[ L["Skip bad CRC32"] = "Skip bad CRC32"--]] 
+--[[Translation missing --]]
+--[[ L["Skip CRC32, version and any other validation before importing. May cause unknown behavior"] = "Skip CRC32, version and any other validation before importing. May cause unknown behavior"--]] 
+--[[Translation missing --]]
+--[[ L["Skip unsupported version"] = "Skip unsupported version"--]] 
 --[[Translation missing --]]
 --[[ L["Spell"] = "Spell"--]] 
 --[[Translation missing --]]
@@ -389,8 +415,6 @@ elseif locale == 'ptBR' then
 --[[Translation missing --]]
 --[[ L["Force Import"] = "Force Import"--]] 
 --[[Translation missing --]]
---[[ L["Ignore CRC32 error. may cause unknow behavior"] = "Ignore CRC32 error. may cause unknow behavior"--]] 
---[[Translation missing --]]
 --[[ L["Ignore unactived pet[id=%s], %s"] = "Ignore unactived pet[id=%s], %s"--]] 
 --[[Translation missing --]]
 --[[ L["Ignore unlearned skill [id=%s], %s"] = "Ignore unlearned skill [id=%s], %s"--]] 
@@ -408,6 +432,12 @@ elseif locale == 'ptBR' then
 --[[ L["Macro"] = "Macro"--]] 
 --[[Translation missing --]]
 --[[ L["Macro %s was ignored, check if there is enough space to create"] = "Macro %s was ignored, check if there is enough space to create"--]] 
+--[[Translation missing --]]
+--[[ L["Skip bad CRC32"] = "Skip bad CRC32"--]] 
+--[[Translation missing --]]
+--[[ L["Skip CRC32, version and any other validation before importing. May cause unknown behavior"] = "Skip CRC32, version and any other validation before importing. May cause unknown behavior"--]] 
+--[[Translation missing --]]
+--[[ L["Skip unsupported version"] = "Skip unsupported version"--]] 
 --[[Translation missing --]]
 --[[ L["Spell"] = "Spell"--]] 
 --[[Translation missing --]]
@@ -443,8 +473,6 @@ elseif locale == 'ruRU' then
 --[[Translation missing --]]
 --[[ L["Force Import"] = "Force Import"--]] 
 --[[Translation missing --]]
---[[ L["Ignore CRC32 error. may cause unknow behavior"] = "Ignore CRC32 error. may cause unknow behavior"--]] 
---[[Translation missing --]]
 --[[ L["Ignore unactived pet[id=%s], %s"] = "Ignore unactived pet[id=%s], %s"--]] 
 --[[Translation missing --]]
 --[[ L["Ignore unlearned skill [id=%s], %s"] = "Ignore unlearned skill [id=%s], %s"--]] 
@@ -462,6 +490,12 @@ elseif locale == 'ruRU' then
 --[[ L["Macro"] = "Macro"--]] 
 --[[Translation missing --]]
 --[[ L["Macro %s was ignored, check if there is enough space to create"] = "Macro %s was ignored, check if there is enough space to create"--]] 
+--[[Translation missing --]]
+--[[ L["Skip bad CRC32"] = "Skip bad CRC32"--]] 
+--[[Translation missing --]]
+--[[ L["Skip CRC32, version and any other validation before importing. May cause unknown behavior"] = "Skip CRC32, version and any other validation before importing. May cause unknown behavior"--]] 
+--[[Translation missing --]]
+--[[ L["Skip unsupported version"] = "Skip unsupported version"--]] 
 --[[Translation missing --]]
 --[[ L["Spell"] = "Spell"--]] 
 --[[Translation missing --]]
@@ -485,23 +519,21 @@ L["Close"] = "关闭"
 L["Export"] = "导出"
 L["Feedback"] = "问题/建议"
 L["Force Import"] = "强制导入"
-L["Ignore CRC32 error. may cause unknow behavior"] = "忽略CRC32错误，可能导致奇怪的后果"
 L["Ignore unactived pet[id=%s], %s"] = "忽略未开启的战斗宠物[id=%s]：%s"
 L["Ignore unlearned skill [id=%s], %s"] = "忽略未掌握技能[id=%s]：%s"
 L["Import"] = "导入"
---[[Translation missing --]]
---[[ L["Import and Export settings below"] = "Import and Export settings below"--]] 
+L["Import and Export settings below"] = "导入和到处以下配置"
 L["Import is not allowed when you are in combat"] = "请在非战斗时候使用导入功能"
 L["Importing text [ver:%s] is not compatible with current version"] = "导入字串 [ver:%s] 不兼容当前版本"
---[[Translation missing --]]
---[[ L["Keys Binding"] = "Keys Binding"--]] 
---[[Translation missing --]]
---[[ L["Macro"] = "Macro"--]] 
+L["Keys Binding"] = "按键绑定"
+L["Macro"] = "宏"
 L["Macro %s was ignored, check if there is enough space to create"] = "宏 [ %s ] 被忽略，请检查是否有足够的空格创建宏"
---[[Translation missing --]]
---[[ L["Spell"] = "Spell"--]] 
+L["Skip bad CRC32"] = "忽略CRC32错误"
+L["Skip CRC32, version and any other validation before importing. May cause unknown behavior"] = "忽略CRC32，版本等检查。可能导致未知错误"
+L["Skip unsupported version"] = "忽略不兼容的版本"
+L["Spell"] = "魔法"
 L["Time"] = "时间"
-L["TOC_NOTES"] = "保存你的技能按钮位置。反馈：farmer1992@gmail.com"
+L["TOC_NOTES"] = "Myslot可以帮助你在账号之间共享配置。反馈：farmer1992@gmail.com"
 L["Try force importing"] = "尝试强制导入"
 L["Use random mount instead of an unactived mount"] = "使用随机坐骑代替没有的坐骑"
 
@@ -518,8 +550,6 @@ L["Export"] = "導出"
 L["Feedback"] = "反饋"
 --[[Translation missing --]]
 --[[ L["Force Import"] = "Force Import"--]] 
---[[Translation missing --]]
---[[ L["Ignore CRC32 error. may cause unknow behavior"] = "Ignore CRC32 error. may cause unknow behavior"--]] 
 L["Ignore unactived pet[id=%s], %s"] = "忽略沒有的寵物 [id=%s]：%s"
 L["Ignore unlearned skill [id=%s], %s"] = "忽略未習得技能 [id=%s], %s"
 L["Import"] = "導入"
@@ -532,6 +562,12 @@ L["Importing text [ver:%s] is not compatible with current version"] = "導入的
 --[[Translation missing --]]
 --[[ L["Macro"] = "Macro"--]] 
 L["Macro %s was ignored, check if there is enough space to create"] = "忽略巨集 [%s] ，請檢查是否有足夠的欄位創建新巨集"
+--[[Translation missing --]]
+--[[ L["Skip bad CRC32"] = "Skip bad CRC32"--]] 
+--[[Translation missing --]]
+--[[ L["Skip CRC32, version and any other validation before importing. May cause unknown behavior"] = "Skip CRC32, version and any other validation before importing. May cause unknown behavior"--]] 
+--[[Translation missing --]]
+--[[ L["Skip unsupported version"] = "Skip unsupported version"--]] 
 --[[Translation missing --]]
 --[[ L["Spell"] = "Spell"--]] 
 L["Time"] = "時間"

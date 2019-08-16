@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("d511", "DBM-Scenario-MoP")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190417010000")
+mod:SetRevision("20190814211345")
 mod:SetZone()
 
 mod:RegisterCombat("scenario", 1031)
@@ -12,9 +12,9 @@ mod:RegisterEventsInCombat(
 )
 mod.onlyNormal = true
 
-local warnFlameWall				= mod:NewSpellAnnounce(123966, 4)
+local warnFlameWall		= mod:NewSpellAnnounce(123966, 4)
 
-local specWarnFlameWall			= mod:NewSpecialWarningSpell(123966, nil, nil, nil, 2)
+local specWarnFlameWall	= mod:NewSpecialWarningSpell(123966, nil, nil, nil, 2)
 
 --[[
 --Needs more data, i'm not sure if it has a CD or is just health based atm so no CD timer just yet.

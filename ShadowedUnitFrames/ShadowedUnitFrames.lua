@@ -5,7 +5,7 @@
 ShadowUF = select(2, ...)
 
 local L = ShadowUF.L
-ShadowUF.dbRevision = 59
+ShadowUF.dbRevision = 60
 ShadowUF.playerUnit = "player"
 ShadowUF.enabledUnits = {}
 ShadowUF.modules = {}
@@ -112,6 +112,10 @@ end
 
 function ShadowUF:CheckUpgrade()
 	local revision = self.db.profile.revision or self.dbRevision
+	if (revision <= 59 ) then
+		self.db.profile.font.shadowX = 1.0
+		self.db.profile.font.shadowY = -1.0
+	end
 	if( revision <= 58 ) then
 		for unit, config in pairs(self.db.profile.units) do
 			if config.text then
@@ -836,8 +840,8 @@ function ShadowUF:ShowInfoPanel()
 	frame.hide:SetHeight(20)
 	frame.hide:SetWidth(100)
 	frame.hide:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", 8, 8)
-	frame.hide:SetScript("OnClick", function(self)
-		self:GetParent():Hide()
+	frame.hide:SetScript("OnClick", function(f)
+		f:GetParent():Hide()
 	end)
 end
 

@@ -110,8 +110,8 @@ function ShadowUF:LoadDefaultLayout(useMerge)
 		extra = "",
 		shadowColor = {r = 0, g = 0, b = 0, a = 1},
 		color = {r = 1, g = 1, b = 1, a = 1},
-		shadowX = 0.80,
-		shadowY = -0.80,
+		shadowX = 1.00,
+		shadowY = -1.00,
 	}
 
 	-- Some localizations do not work with Myriad Condensed Web, need to automatically swap it to a localization that will work for it

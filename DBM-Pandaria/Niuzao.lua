@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(859, "DBM-Pandaria", nil, 322, 1)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190503034758")
+mod:SetRevision("20190814211345")
 mod:SetCreatureID(71954)
 mod:SetReCombatTime(20)
 mod:SetZone()
@@ -16,15 +16,15 @@ mod:RegisterEventsInCombat(
 	"UNIT_SPELLCAST_SUCCEEDED target focus"
 )
 
-local warnOxenFortitude			= mod:NewStackAnnounce(144606, 2, nil, false)--144607 player version, but better to just track boss and announce stacks
+local warnOxenFortitude		= mod:NewStackAnnounce(144606, 2, nil, false)--144607 player version, but better to just track boss and announce stacks
 
-local specWarnHeadbutt			= mod:NewSpecialWarningSpell(144610, "Tank")
-local specWarnMassiveQuake		= mod:NewSpecialWarningSpell(144611, nil, nil, nil, 2)
-local specWarnCharge			= mod:NewSpecialWarningDodge(144609, "Melee")--66 and 33%. Maybe add pre warns
+local specWarnHeadbutt		= mod:NewSpecialWarningSpell(144610, "Tank")
+local specWarnMassiveQuake	= mod:NewSpecialWarningSpell(144611, nil, nil, nil, 2)
+local specWarnCharge		= mod:NewSpecialWarningDodge(144609, "Melee")--66 and 33%. Maybe add pre warns
 
-local timerHeadbuttCD			= mod:NewCDTimer(47, 144610, nil, "Tank", nil, 5)
-local timerMassiveQuake			= mod:NewBuffActiveTimer(13, 144611)
-local timerMassiveQuakeCD		= mod:NewCDTimer(48, 144611, nil, nil, nil, 2)
+local timerHeadbuttCD		= mod:NewCDTimer(47, 144610, nil, "Tank", nil, 5)
+local timerMassiveQuake		= mod:NewBuffActiveTimer(13, 144611)
+local timerMassiveQuakeCD	= mod:NewCDTimer(48, 144611, nil, nil, nil, 2)
 
 mod:AddReadyCheckOption(33117, false, 90)
 

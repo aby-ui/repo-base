@@ -1,10 +1,12 @@
-﻿if GetLocale() ~= "zhTW" then return end
+﻿if GetLocale() ~= "zhTW" then
+	return
+end
 local L
 
 --------------------------
 -- Jin'rokh the Breaker --
 --------------------------
-L= DBM:GetModLocalization(827)
+L = DBM:GetModLocalization(827)
 
 L:SetWarningLocalization({
 	specWarnWaterMove	= "%s即將到來 - 離開導電水池!"
@@ -17,7 +19,7 @@ L:SetOptionLocalization({
 --------------
 -- Horridon --
 --------------
-L= DBM:GetModLocalization(819)
+L = DBM:GetModLocalization(819)
 
 L:SetWarningLocalization({
 	warnAdds				= "%s",
@@ -26,8 +28,8 @@ L:SetWarningLocalization({
 })
 
 L:SetTimerLocalization({
-	timerDoor		= "下一個部族的門",
-	timerAdds		= "下一波%s"
+	timerDoor	= "下一個部族的門",
+	timerAdds	= "下一波%s"
 })
 
 L:SetOptionLocalization({
@@ -47,7 +49,7 @@ L:SetMiscLocalization({
 ---------------------------
 -- The Council of Elders --
 ---------------------------
-L= DBM:GetModLocalization(816)
+L = DBM:GetModLocalization(816)
 
 L:SetWarningLocalization({
 	specWarnPossessed	= "%s在%s - 快換目標"
@@ -60,7 +62,7 @@ L:SetOptionLocalization({
 ------------
 -- Tortos --
 ------------
-L= DBM:GetModLocalization(825)
+L = DBM:GetModLocalization(825)
 
 L:SetWarningLocalization({
 	warnKickShell			= "%s被>%s<使用(還剩餘%d)",
@@ -81,7 +83,7 @@ L:SetMiscLocalization({
 -------------
 -- Megaera --
 -------------
-L= DBM:GetModLocalization(821)
+L = DBM:GetModLocalization(821)
 
 L:SetTimerLocalization({
 	timerBreathsCD	= "下一次吐息"
@@ -105,7 +107,7 @@ L:SetMiscLocalization({
 ------------
 -- Ji-Kun --
 ------------
-L= DBM:GetModLocalization(828)
+L = DBM:GetModLocalization(828)
 
 L:SetWarningLocalization({
 	warnFlock			= "%s %s %s",
@@ -148,7 +150,7 @@ L:SetMiscLocalization({
 --------------------------
 -- Durumu the Forgotten --
 --------------------------
-L= DBM:GetModLocalization(818)
+L = DBM:GetModLocalization(818)
 
 L:SetWarningLocalization({
 	warnBeamNormal				= "|cffff0000紅|r:>%s<,|cff0000ff藍|r:>%s<",
@@ -160,22 +162,22 @@ L:SetWarningLocalization({
 })
 
 L:SetOptionLocalization({
-	warnBeam				= "提示射線目標",
-	warnAddsLeft			= "提示還剩餘多少霧獸",
-	specWarnFogRevealed		= "為照出霧獸顯示特別警告",
-	ArrowOnBeam				= "為$journal:6882指示DBM箭頭移動方向",
-	InfoFrame				= "為$spell:133795堆疊顯示訊息框架",
-	SetParticle				= "開戰後自動將投影材質調為低(離開戰鬥後恢復設定)"
+	warnBeam			= "提示射線目標",
+	warnAddsLeft		= "提示還剩餘多少霧獸",
+	specWarnFogRevealed	= "為照出霧獸顯示特別警告",
+	ArrowOnBeam			= "為$journal:6882指示DBM箭頭移動方向",
+	InfoFrame			= "為$spell:133795堆疊顯示訊息框架",
+	SetParticle			= "開戰後自動將投影材質調為低(離開戰鬥後恢復設定)"
 })
 
 L:SetMiscLocalization({
-	LifeYell		= "%s中了生命吸取(%d層)"
+	LifeYell	= "%s中了生命吸取(%d層)"
 })
 
 ----------------
 -- Primordius --
 ----------------
-L= DBM:GetModLocalization(820)
+L = DBM:GetModLocalization(820)
 
 L:SetWarningLocalization({
 	warnDebuffCount		= "突變:%d/5有益和%d有害"
@@ -189,7 +191,7 @@ L:SetOptionLocalization({
 -----------------
 -- Dark Animus --
 -----------------
-L= DBM:GetModLocalization(824)
+L = DBM:GetModLocalization(824)
 
 L:SetWarningLocalization({
 	warnMatterSwapped	= "%s:>%s<和>%s<交換"
@@ -206,21 +208,21 @@ L:SetMiscLocalization({
 --------------
 -- Iron Qon --
 --------------
-L= DBM:GetModLocalization(817)
+L = DBM:GetModLocalization(817)
 
 L:SetWarningLocalization({
 	warnDeadZone	= "%s:%s跟%s開盾"
 })
 
 L:SetOptionLocalization({
-	RangeFrame		= "顯示動態距離框架(當太多人太接近時會動態顯示)",
-	InfoFrame		= "為玩家有$spell:136193顯示訊息框架"
+	RangeFrame	= "顯示動態距離框架(當太多人太接近時會動態顯示)",
+	InfoFrame	= "為玩家有$spell:136193顯示訊息框架"
 })
 
 -------------------
 -- Twin Consorts --
 -------------------
-L= DBM:GetModLocalization(829)
+L = DBM:GetModLocalization(829)
 
 L:SetWarningLocalization({
 	warnNight	= "黑夜階段",
@@ -240,7 +242,7 @@ L:SetMiscLocalization({
 --------------
 -- Lei Shen --
 --------------
-L= DBM:GetModLocalization(832)
+L = DBM:GetModLocalization(832)
 
 L:SetWarningLocalization({
 	specWarnIntermissionSoon	= "超級充能導雷管階段即將到來",
@@ -248,7 +250,7 @@ L:SetWarningLocalization({
 })
 
 L:SetTimerLocalization({
-	timerConduitCD				= "第一次導管技能冷卻"
+	timerConduitCD	= "第一次導管技能冷卻"
 })
 
 L:SetOptionLocalization({
@@ -260,13 +262,13 @@ L:SetOptionLocalization({
 })
 
 L:SetMiscLocalization({
-	StaticYell		= "%s中了靜電震擊(%d)"
+	StaticYell	= "%s中了靜電震擊(%d)"
 })
 
 ------------
 -- Ra-den --
 ------------
-L= DBM:GetModLocalization(831)
+L = DBM:GetModLocalization(831)
 
 L:SetWarningLocalization({
 	specWarnUnstablVitaJump	= "動盪生命傳到你身上!"
@@ -278,7 +280,7 @@ L:SetOptionLocalization({
 })
 
 L:SetMiscLocalization({
-	Defeat					= "慢著!"
+	Defeat	= "慢著!"
 })
 
 -------------
@@ -287,5 +289,5 @@ L:SetMiscLocalization({
 L = DBM:GetModLocalization("ToTTrash")
 
 L:SetGeneralLocalization({
-	name  	="雷霆王座小怪"
+	name	="雷霆王座小怪"
 })

@@ -1,10 +1,12 @@
-﻿if GetLocale() ~= "zhTW" then return end
+﻿if GetLocale() ~= "zhTW" then
+	return
+end
 local L
 
 ------------
 -- Imperial Vizier Zor'lok --
 ------------
-L= DBM:GetModLocalization(745)
+L = DBM:GetModLocalization(745)
 
 L:SetWarningLocalization({
 	warnEcho			= "回聲出現",
@@ -21,19 +23,19 @@ L:SetOptionLocalization({
 })
 
 L:SetMiscLocalization({
-	Platform			= "飛向他的其中一個露臺!",
-	Defeat				= "我們不會居服於黑暗虛空的絕望之下。如果她的意志要我們滅亡，那麼我們就該滅亡。"
+	Platform	= "飛向他的其中一個露臺!",
+	Defeat		= "我們不會居服於黑暗虛空的絕望之下。如果她的意志要我們滅亡，那麼我們就該滅亡。"
 })
 
 ------------
 -- Blade Lord Ta'yak --
 ------------
-L= DBM:GetModLocalization(744)
+L = DBM:GetModLocalization(744)
 
 -------------------------------
 -- Garalon --
 -------------------------------
-L= DBM:GetModLocalization(713)
+L = DBM:GetModLocalization(713)
 
 L:SetWarningLocalization({
 	specwarnUnder	= "離開紫色圓圈範圍!"
@@ -52,12 +54,12 @@ L:SetMiscLocalization({
 ----------------------
 -- Wind Lord Mel'jarak --
 ----------------------
-L= DBM:GetModLocalization(741)
+L = DBM:GetModLocalization(741)
 
 ------------
 -- Amber-Shaper Un'sok --
 ------------
-L= DBM:GetModLocalization(737)
+L = DBM:GetModLocalization(737)
 
 L:SetWarningLocalization({
 	warnReshapeLife				= "%s在>%s<(%d)",
@@ -73,8 +75,8 @@ L:SetWarningLocalization({
 })
 
 L:SetTimerLocalization({
-	timerDestabalize			= "動搖 (%2$d):%1$s",
-	timerAmberExplosionAMCD		= "琥珀爆炸冷卻:琥珀巨怪"
+	timerDestabalize		= "動搖 (%2$d):%1$s",
+	timerAmberExplosionAMCD	= "琥珀爆炸冷卻:琥珀巨怪"
 })
 
 L:SetOptionLocalization({
@@ -93,26 +95,26 @@ L:SetOptionLocalization({
 })
 
 L:SetMiscLocalization({
-	WillPower					= "意志力"
+	WillPower	= "意志力"
 })
 
 ------------
 -- Grand Empress Shek'zeer --
 ------------
-L= DBM:GetModLocalization(743)
+L = DBM:GetModLocalization(743)
 
 L:SetWarningLocalization({
-	warnAmberTrap		= "琥珀陷阱:(%d/5)"
+	warnAmberTrap	= "琥珀陷阱:(%d/5)"
 })
 
 L:SetOptionLocalization({
-	warnAmberTrap		= "為$spell:125826的製作進度顯示警告",
-	InfoFrame			= "為受到$spell:125390的玩家顯示訊息框架"
+	warnAmberTrap	= "為$spell:125826的製作進度顯示警告",
+	InfoFrame		= "為受到$spell:125390的玩家顯示訊息框架"
 })
 
 L:SetMiscLocalization({
-	PlayerDebuffs		= "凝視",
-	YellPhase3			= "不要再找藉口了，女皇!消滅這些侏儒，否則我會親自殺了妳!"
+	PlayerDebuffs	= "凝視",
+	YellPhase3		= "不要再找藉口了，女皇!消滅這些侏儒，否則我會親自殺了妳!"
 })
 
 -------------
@@ -121,7 +123,7 @@ L:SetMiscLocalization({
 L = DBM:GetModLocalization("HoFTrash")
 
 L:SetGeneralLocalization({
-	name =	"恐懼之心小怪"
+	name	= "恐懼之心小怪"
 })
 
 L:SetOptionLocalization({

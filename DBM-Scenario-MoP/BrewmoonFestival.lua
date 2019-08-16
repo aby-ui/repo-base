@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("d539", "DBM-Scenario-MoP")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190417010000")
+mod:SetRevision("20190814211345")
 mod:SetZone()
 
 mod:RegisterCombat("scenario", 1051)
@@ -15,14 +15,14 @@ mod:RegisterEventsInCombat(
 mod.onlyNormal = true
 
 --Li Te
-local warnWaterShell		= mod:NewSpellAnnounce(124653, 2)
+local warnWaterShell	= mod:NewSpellAnnounce(124653, 2)
 --Den Mother Moof
-local warnBurrow			= mod:NewSpellAnnounce(124359, 2)
+local warnBurrow		= mod:NewSpellAnnounce(124359, 2)
 --Warbringer Qobi
-local warnFireLine			= mod:NewCastAnnounce(125392, 4, 3)
+local warnFireLine		= mod:NewCastAnnounce(125392, 4, 3)
 
 --Warbringer Qobi
-local specWarnFireLine		= mod:NewSpecialWarningSpell(125392, nil, nil, nil, 2)
+local specWarnFireLine	= mod:NewSpecialWarningSpell(125392, nil, nil, nil, 2)
 
 function mod:SPELL_AURA_APPLIED(args)
 	if args.spellId == 124428 then

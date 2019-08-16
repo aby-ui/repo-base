@@ -1,10 +1,12 @@
-﻿if GetLocale() ~= "zhTW" then return end
+﻿if GetLocale() ~= "zhTW" then
+	return
+end
 local L
 
 ------------
 -- Protectors of the Endless --
 ------------
-L= DBM:GetModLocalization(683)
+L = DBM:GetModLocalization(683)
 
 L:SetWarningLocalization({
 	warnGroupOrder		= "輪到小隊:%s",
@@ -17,45 +19,42 @@ L:SetOptionLocalization({
 	RangeFrame			= DBM_CORE_AUTO_RANGE_OPTION_TEXT:format(8, 111850) .. "<br/>(當你有debuff時只顯示其他沒有debuff的玩家)"
 })
 
-
 ------------
 -- Tsulong --
 ------------
-L= DBM:GetModLocalization(742)
+L = DBM:GetModLocalization(742)
 
 L:SetMiscLocalization{
-	Victory					= "謝謝你，陌生人。我重獲自由了。"
+	Victory	= "謝謝你，陌生人。我重獲自由了。"
 }
-
 
 -------------------------------
 -- Lei Shi --
 -------------------------------
-L= DBM:GetModLocalization(729)
+L = DBM:GetModLocalization(729)
 
 L:SetWarningLocalization({
-	warnHideOver			= "%s結束"
+	warnHideOver	= "%s結束"
 })
 
 L:SetTimerLocalization({
-	timerSpecialCD			= "特別技能冷卻(%d)"
+	timerSpecialCD	= "特別技能冷卻(%d)"
 })
 
 L:SetOptionLocalization({
-	warnHideOver			= "為$spell:123244結束顯示警告",
-	timerSpecialCD			= "為下一次特別技能冷卻顯示計時器",
-	RangeFrame				= DBM_CORE_AUTO_RANGE_OPTION_TEXT:format(3, 123121) .. "<br/>(消失時顯示所有玩家其餘時間只有顯示坦)"
+	warnHideOver	= "為$spell:123244結束顯示警告",
+	timerSpecialCD	= "為下一次特別技能冷卻顯示計時器",
+	RangeFrame		= DBM_CORE_AUTO_RANGE_OPTION_TEXT:format(3, 123121) .. "<br/>(消失時顯示所有玩家其餘時間只有顯示坦)"
 })
 
 L:SetMiscLocalization{
-	Victory					= "我...啊..喔!我曾經...?我是不是...?這一切...都太...模糊了。"
+	Victory	= "我...啊..喔!我曾經...?我是不是...?這一切...都太...模糊了。"
 }
-
 
 ----------------------
 -- Sha of Fear --
 ----------------------
-L= DBM:GetModLocalization(709)
+L = DBM:GetModLocalization(709)
 
 L:SetWarningLocalization({
 	MoveForward					= "向前穿過去",
@@ -65,10 +64,10 @@ L:SetWarningLocalization({
 })
 
 L:SetTimerLocalization({
-	timerSpecialAbilityCD		= "下一次特別技能",
-	timerSpoHudCD				= "恐懼畏縮/水魄冷卻",
-	timerSpoStrCD				= "水魄/嚴厲襲擊冷卻",
-	timerHudStrCD				= "恐懼畏縮/嚴厲襲擊冷卻"
+	timerSpecialAbilityCD	= "下一次特別技能",
+	timerSpoHudCD			= "恐懼畏縮/水魄冷卻",
+	timerSpoStrCD			= "水魄/嚴厲襲擊冷卻",
+	timerHudStrCD			= "恐懼畏縮/嚴厲襲擊冷卻"
 })
 
 L:SetOptionLocalization({

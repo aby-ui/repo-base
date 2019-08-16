@@ -1,10 +1,12 @@
-﻿if GetLocale() ~= "zhCN" then return end
+﻿if GetLocale() ~= "zhCN" then
+	return
+end
 local L
 
 ---------------
 -- Immerseus --
 ---------------
-L= DBM:GetModLocalization(852)
+L = DBM:GetModLocalization(852)
 
 L:SetMiscLocalization({
 	Victory	= "啊，你成功了!水又再次纯净了。"
@@ -13,7 +15,7 @@ L:SetMiscLocalization({
 ---------------------------
 -- The Fallen Protectors --
 ---------------------------
-L= DBM:GetModLocalization(849)
+L = DBM:GetModLocalization(849)
 
 L:SetWarningLocalization({
 	specWarnMeasures	= "绝处求生即将到来(%s)!"
@@ -22,7 +24,7 @@ L:SetWarningLocalization({
 ---------------------------
 -- Norushen --
 ---------------------------
-L= DBM:GetModLocalization(866)
+L = DBM:GetModLocalization(866)
 
 L:SetMiscLocalization({
 	wasteOfTime	= "很好，我会创造一个力场隔离你们的腐化。"
@@ -31,7 +33,7 @@ L:SetMiscLocalization({
 ------------------
 -- Sha of Pride --
 ------------------
-L= DBM:GetModLocalization(867)
+L = DBM:GetModLocalization(867)
 
 L:SetOptionLocalization({
 	SetIconOnFragment	= "为腐化的碎片设置图示"
@@ -40,11 +42,11 @@ L:SetOptionLocalization({
 --------------
 -- Galakras --
 --------------
-L= DBM:GetModLocalization(868)
+L = DBM:GetModLocalization(868)
 
 L:SetWarningLocalization({
-	warnTowerOpen		= "炮塔门被打开了",
-	warnTowerGrunt		= "塔防蛮兵"
+	warnTowerOpen	= "炮塔门被打开了",
+	warnTowerGrunt	= "塔防蛮兵"
 })
 
 L:SetTimerLocalization({
@@ -74,12 +76,12 @@ L:SetMiscLocalization({
 --------------------
 --Iron Juggernaut --
 --------------------
-L= DBM:GetModLocalization(864)
+L = DBM:GetModLocalization(864)
 
 --------------------------
 -- Kor'kron Dark Shaman --
 --------------------------
-L= DBM:GetModLocalization(856)
+L = DBM:GetModLocalization(856)
 
 L:SetMiscLocalization({
 	PrisonYell	= "%s的囚犯被释放 (%d)"
@@ -88,42 +90,42 @@ L:SetMiscLocalization({
 ---------------------
 -- General Nazgrim --
 ---------------------
-L= DBM:GetModLocalization(850)
+L = DBM:GetModLocalization(850)
 
 L:SetWarningLocalization({
 	warnDefensiveStanceSoon	= "%d秒后防御姿态"
 })
 
 L:SetMiscLocalization({
-	newForces1			= "战士们，快点过来!",
-	newForces2			= "守住大门!",
-	newForces3			= "重整部队!",
-	newForces4			= "库卡隆，来我身边!",
-	newForces5			= "下一队，来前线!",
-	allForces			= "所有库卡隆...听我号令...杀死他们!",
-	nextAdds			= "下一次小兵: "
+	newForces1	= "战士们，快点过来!",
+	newForces2	= "守住大门!",
+	newForces3	= "重整部队!",
+	newForces4	= "库卡隆，来我身边!",
+	newForces5	= "下一队，来前线!",
+	allForces	= "所有库卡隆...听我号令...杀死他们!",
+	nextAdds	= "下一次小兵: "
 })
 
 -----------------
 -- Malkorok -----
 -----------------
-L= DBM:GetModLocalization(846)
+L = DBM:GetModLocalization(846)
 
 ------------------------
 -- Spoils of Pandaria --
 ------------------------
-L= DBM:GetModLocalization(870)
+L = DBM:GetModLocalization(870)
 
 L:SetMiscLocalization({
-	wasteOfTime		= "我们在录音吗?有吗?好。哥布林-泰坦控制模组开始运作，请后退。",
-	Module1 		= "模组一号已准备好系統重置。",
-	Victory			= "模组二号已准备好系統重置。"
+	wasteOfTime	= "我们在录音吗?有吗?好。哥布林-泰坦控制模组开始运作，请后退。",
+	Module1 	= "模组一号已准备好系統重置。",
+	Victory		= "模组二号已准备好系統重置。"
 })
 
 ---------------------------
 -- Thok the Bloodthirsty --
 ---------------------------
-L= DBM:GetModLocalization(851)
+L = DBM:GetModLocalization(851)
 
 L:SetOptionLocalization({
 	RangeFrame	= "显示动态距离框架(10码)<br/>(这是智慧距离框架，当到达血之狂暴阶段时自动切换)"
@@ -132,7 +134,7 @@ L:SetOptionLocalization({
 ----------------------------
 -- Siegecrafter Blackfuse --
 ----------------------------
-L= DBM:GetModLocalization(865)
+L = DBM:GetModLocalization(865)
 
 L:SetMiscLocalization({
 	newWeapons	= "尚未完成的武器开始从生产线上掉落。",
@@ -142,7 +144,7 @@ L:SetMiscLocalization({
 ----------------------------
 -- Paragons of the Klaxxi --
 ----------------------------
-L= DBM:GetModLocalization(853)
+L = DBM:GetModLocalization(853)
 
 L:SetWarningLocalization({
 	specWarnActivatedVulnerable	= "你虛弱于%s - 换坦!",
@@ -155,28 +157,28 @@ L:SetOptionLocalization({
 })
 
 L:SetMiscLocalization({
-	one					= "一",
-	two					= "二",
-	three				= "三",
-	four				= "四",
-	five				= "五",
-	hisekFlavor			= "现在是谁寂然无声啊",
-	KilrukFlavor		= "又是个扑杀虫群的一天",
-	XarilFlavor			= "我只在你的未来看到黑色天空",
-	KaztikFlavor		= "减少只昆虫的虫害",
-	KaztikFlavor2		= "1只螳螂倒下了，还有199只要杀",
-	KorvenFlavor		= "古代帝国的终结",
-	KorvenFlavor2		= "拿着你的格萨尼石板窒息吧",
-	IyyokukFlavor		= "看到机会。剥削他们!",
-	KarozFlavor			= "你再也跳不起来了!",
-	SkeerFlavor			= "一份血腥的喜悦!",
-	RikkalFlavor		= "已满足样本要求"
+	one				= "一",
+	two				= "二",
+	three			= "三",
+	four			= "四",
+	five			= "五",
+	hisekFlavor		= "现在是谁寂然无声啊",
+	KilrukFlavor	= "又是个扑杀虫群的一天",
+	XarilFlavor		= "我只在你的未来看到黑色天空",
+	KaztikFlavor	= "减少只昆虫的虫害",
+	KaztikFlavor2	= "1只螳螂倒下了，还有199只要杀",
+	KorvenFlavor	= "古代帝国的终结",
+	KorvenFlavor2	= "拿着你的格萨尼石板窒息吧",
+	IyyokukFlavor	= "看到机会。剥削他们!",
+	KarozFlavor		= "你再也跳不起来了!",
+	SkeerFlavor		= "一份血腥的喜悦!",
+	RikkalFlavor	= "已满足样本要求"
 })
 
 ------------------------
 -- Garrosh Hellscream --
 ------------------------
-L= DBM:GetModLocalization(869)
+L = DBM:GetModLocalization(869)
 
 L:SetOptionLocalization({
 	RangeFrame			= "显示动态距离框架(10码)<br/>(这是智慧距离框架，当到达$spell:147126门槛时自动切换)",
@@ -185,8 +187,8 @@ L:SetOptionLocalization({
 })
 
 L:SetMiscLocalization({
-	NoReduce			= "无伤害减免",
-	MaliceFadeYell		= "%s的恶意消退中(%d)"
+	NoReduce		= "无伤害减免",
+	MaliceFadeYell	= "%s的恶意消退中(%d)"
 })
 
 -------------
@@ -195,5 +197,5 @@ L:SetMiscLocalization({
 L = DBM:GetModLocalization("SoOTrash")
 
 L:SetGeneralLocalization({
-	name =	"围攻奥格瑞玛小兵"
+	name	= "围攻奥格瑞玛小兵"
 })

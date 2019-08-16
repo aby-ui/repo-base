@@ -144,7 +144,7 @@ end
 -- Cast Bar Hooks
 
 function Player:OnHide()
-	local Latency = Quartz3:GetModule(L["Latency"],true)
+	local Latency = Quartz3:GetModule("Latency", true)
 	if Latency then
 		if Latency:IsEnabled() and Latency.lagbox then
 			Latency.lagbox:Hide()
@@ -207,6 +207,7 @@ local channelingTicks = {
 	-- monk
 	[GetSpellInfo(117952)] = 4, -- crackling jade lightning
 	[GetSpellInfo(191837)] = 3, -- essence font
+	[GetSpellInfo(115175)] = 8, -- soothing mist
 }
 
 local function getChannelingTicks(spell)

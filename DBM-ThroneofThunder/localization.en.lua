@@ -3,7 +3,7 @@ local L
 --------------------------
 -- Jin'rokh the Breaker --
 --------------------------
-L= DBM:GetModLocalization(827)
+L = DBM:GetModLocalization(827)
 
 L:SetWarningLocalization({
 	specWarnWaterMove	= "%s soon - get out from Conductive Water!"
@@ -17,7 +17,7 @@ L:SetOptionLocalization({
 --------------
 -- Horridon --
 --------------
-L= DBM:GetModLocalization(819)
+L = DBM:GetModLocalization(819)
 
 L:SetWarningLocalization({
 	warnAdds				= "%s",
@@ -26,8 +26,8 @@ L:SetWarningLocalization({
 })
 
 L:SetTimerLocalization({
-	timerDoor				= "Next Tribal Door",
-	timerAdds				= "Next %s"
+	timerDoor	= "Next Tribal Door",
+	timerAdds	= "Next %s"
 })
 
 L:SetOptionLocalization({
@@ -42,17 +42,17 @@ L:SetOptionLocalization({
 })
 
 L:SetMiscLocalization({
-	newForces				= "forces pour from the",--Farraki forces pour from the Farraki Tribal Door!
-	chargeTarget			= "stamps his tail!"--Horridon sets his eyes on Eraeshio and stamps his tail!
+	newForces		= "forces pour from the",--Farraki forces pour from the Farraki Tribal Door!
+	chargeTarget	= "stamps his tail!"--Horridon sets his eyes on Eraeshio and stamps his tail!
 })
 
 ---------------------------
 -- The Council of Elders --
 ---------------------------
-L= DBM:GetModLocalization(816)
+L = DBM:GetModLocalization(816)
 
 L:SetWarningLocalization({
-	specWarnPossessed		= "%s on %s - switch targets"
+	specWarnPossessed	= "%s on %s - switch targets"
 })
 
 L:SetOptionLocalization({
@@ -67,7 +67,7 @@ L:SetOptionLocalization({
 ------------
 -- Tortos --
 ------------
-L= DBM:GetModLocalization(825)
+L = DBM:GetModLocalization(825)
 
 L:SetWarningLocalization({
 	warnKickShell			= "%s used by >%s< (%d remaining)",
@@ -83,16 +83,16 @@ L:SetOptionLocalization({
 })
 
 L:SetMiscLocalization({
-	WrongDebuff		= "No %s"
+	WrongDebuff	= "No %s"
 })
 
 -------------
 -- Megaera --
 -------------
-L= DBM:GetModLocalization(821)
+L = DBM:GetModLocalization(821)
 
 L:SetTimerLocalization({
-	timerBreathsCD			= "Next Breath"
+	timerBreathsCD	= "Next Breath"
 })
 
 L:SetOptionLocalization({
@@ -115,7 +115,7 @@ L:SetMiscLocalization({
 ------------
 -- Ji-Kun --
 ------------
-L= DBM:GetModLocalization(828)
+L = DBM:GetModLocalization(828)
 
 L:SetWarningLocalization({
 	warnFlock			= "%s %s %s",
@@ -166,7 +166,7 @@ L:SetMiscLocalization({
 --------------------------
 -- Durumu the Forgotten --
 --------------------------
-L= DBM:GetModLocalization(818)
+L = DBM:GetModLocalization(818)
 
 L:SetWarningLocalization({
 	warnBeamNormal				= "Beam - |cffff0000Red|r : >%s<, |cff0000ffBlue|r : >%s<",
@@ -192,28 +192,28 @@ L:SetOptionLocalization({
 })
 
 L:SetMiscLocalization({
-	LifeYell		= "Life Drain on %s (%d)"
+	LifeYell	= "Life Drain on %s (%d)"
 })
 
 ----------------
 -- Primordius --
 ----------------
-L= DBM:GetModLocalization(820)
+L = DBM:GetModLocalization(820)
 
 L:SetWarningLocalization({
-	warnDebuffCount				= "Mutate progress : %d/5 good & %d bad"
+	warnDebuffCount	= "Mutate progress : %d/5 good & %d bad"
 })
 
 L:SetOptionLocalization({
-	warnDebuffCount				= "Show debuff count warnings when you absorb pools",
-	RangeFrame					= DBM_CORE_AUTO_RANGE_OPTION_TEXT_SHORT:format("5/3"),
-	SetIconOnBigOoze			= "Set icon on $journal:6969"
+	warnDebuffCount		= "Show debuff count warnings when you absorb pools",
+	RangeFrame			= DBM_CORE_AUTO_RANGE_OPTION_TEXT_SHORT:format("5/3"),
+	SetIconOnBigOoze	= "Set icon on $journal:6969"
 })
 
 -----------------
 -- Dark Animus --
 -----------------
-L= DBM:GetModLocalization(824)
+L = DBM:GetModLocalization(824)
 
 L:SetWarningLocalization({
 	warnMatterSwapped	= "%s: >%s< and >%s< swapped"
@@ -221,17 +221,17 @@ L:SetWarningLocalization({
 
 L:SetOptionLocalization({
 	warnMatterSwapped	= "Announce targets swapped by $spell:138618",
-	SetIconOnFont           = DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(138707)
+	SetIconOnFont		= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(138707)
 })
 
 L:SetMiscLocalization({
-	Pull		= "The orb explodes!"
+	Pull	= "The orb explodes!"
 })
 
 --------------
 -- Iron Qon --
 --------------
-L= DBM:GetModLocalization(817)
+L = DBM:GetModLocalization(817)
 
 L:SetWarningLocalization({
 	warnDeadZone	= "%s: %s and %s shielded"
@@ -247,36 +247,36 @@ L:SetOptionLocalization({
 -------------------
 -- Twin Consorts --
 -------------------
-L= DBM:GetModLocalization(829)
+L = DBM:GetModLocalization(829)
 
 L:SetWarningLocalization({
-	warnNight		= "Night phase",
-	warnDay			= "Day phase",
-	warnDusk		= "Dusk phase"
+	warnNight	= "Night phase",
+	warnDay		= "Day phase",
+	warnDusk	= "Dusk phase"
 })
 
 L:SetTimerLocalization({
-	timerDayCD		= "Next day phase",
-	timerDuskCD		= "Next dusk phase"
+	timerDayCD	= "Next day phase",
+	timerDuskCD	= "Next dusk phase"
 })
 
 L:SetOptionLocalization({
-	warnNight		= DBM_CORE_AUTO_ANNOUNCE_OPTIONS.spell:format("ej7641"),
-	warnDay			= DBM_CORE_AUTO_ANNOUNCE_OPTIONS.spell:format("ej7645"),
-	warnDusk		= DBM_CORE_AUTO_ANNOUNCE_OPTIONS.spell:format("ej7633"),
-	timerDayCD		= DBM_CORE_AUTO_TIMER_OPTIONS.next:format("ej7645"),
-	timerDuskCD		= DBM_CORE_AUTO_TIMER_OPTIONS.next:format("ej7633"),
-	RangeFrame		= DBM_CORE_AUTO_RANGE_OPTION_TEXT_SHORT:format(5)
+	warnNight	= DBM_CORE_AUTO_ANNOUNCE_OPTIONS.spell:format("ej7641"),
+	warnDay		= DBM_CORE_AUTO_ANNOUNCE_OPTIONS.spell:format("ej7645"),
+	warnDusk	= DBM_CORE_AUTO_ANNOUNCE_OPTIONS.spell:format("ej7633"),
+	timerDayCD	= DBM_CORE_AUTO_TIMER_OPTIONS.next:format("ej7645"),
+	timerDuskCD	= DBM_CORE_AUTO_TIMER_OPTIONS.next:format("ej7633"),
+	RangeFrame	= DBM_CORE_AUTO_RANGE_OPTION_TEXT_SHORT:format(5)
 })
 
 L:SetMiscLocalization({
-	DuskPhase		= "Lu'lin! Lend me your strength!"
+	DuskPhase	= "Lu'lin! Lend me your strength!"
 })
 
 --------------
 -- Lei Shen --
 --------------
-L= DBM:GetModLocalization(832)
+L = DBM:GetModLocalization(832)
 
 L:SetWarningLocalization({
 	specWarnIntermissionSoon	= "Intermission soon",
@@ -284,7 +284,7 @@ L:SetWarningLocalization({
 })
 
 L:SetTimerLocalization({
-	timerConduitCD				= "First Conduit CD"
+	timerConduitCD	= "First Conduit CD"
 })
 
 L:SetOptionLocalization({
@@ -299,25 +299,25 @@ L:SetOptionLocalization({
 })
 
 L:SetMiscLocalization({
-	StaticYell		= "Static Shock on %s (%d)"
+	StaticYell	= "Static Shock on %s (%d)"
 })
 
 ------------
 -- Ra-den --
 ------------
-L= DBM:GetModLocalization(831)
+L = DBM:GetModLocalization(831)
 
 L:SetWarningLocalization({
-	specWarnUnstablVitaJump		= "Unstable Vita jumped to you!"
+	specWarnUnstablVitaJump	= "Unstable Vita jumped to you!"
 })
 
 L:SetOptionLocalization({
-	specWarnUnstablVitaJump		= "Show special warning when $spell:138297 jumps to you",
-	SetIconsOnVita				= "Set icons on $spell:138297 debuffed player and furthest player from them"
+	specWarnUnstablVitaJump	= "Show special warning when $spell:138297 jumps to you",
+	SetIconsOnVita			= "Set icons on $spell:138297 debuffed player and furthest player from them"
 })
 
 L:SetMiscLocalization({
-	Defeat						= "Wait!"
+	Defeat	= "Wait!"
 })
 
 -------------
@@ -326,9 +326,9 @@ L:SetMiscLocalization({
 L = DBM:GetModLocalization("ToTTrash")
 
 L:SetGeneralLocalization({
-	name =	"Throne of Thunder Trash"
+	name	= "Throne of Thunder Trash"
 })
 
 L:SetOptionLocalization({
-	RangeFrame		= DBM_CORE_AUTO_RANGE_OPTION_TEXT_SHORT:format(10)--For 3 different spells
+	RangeFrame	= DBM_CORE_AUTO_RANGE_OPTION_TEXT_SHORT:format(10)--For 3 different spells
 })

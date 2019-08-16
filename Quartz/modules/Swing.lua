@@ -170,32 +170,32 @@ function Swing:COMBAT_LOG_EVENT_UNFILTERED()
 	end
 end
 
-function Swing:UNIT_SPELLCAST_SUCCEEDED(event, unit, spell)
+function Swing:UNIT_SPELLCAST_SUCCEEDED(event, unit, guid, spell)
 	if unit ~= "player" then return end
 	if swingmode == 0 then
-		if spell == slam and slamstart then
+		if GetSpellInfo(spell) == slam and slamstart then
 			starttime = starttime + GetTime() - slamstart
 			slamstart = nil
 		end
 	elseif swingmode == 1 then
-		if spell == autoshotname then
+		if GetSpellInfo(spell) == autoshotname then
 			self:Shoot()
 		end
 	end
-	if resetautoshotspells[spell] then
+	if resetautoshotspells[GetSpellInfo(spell)] then
 		swingmode = 1
 		self:Shoot()
 	end
 end
 
-function Swing:UNIT_SPELLCAST_START(event, unit, spell) 
-	if unit == "player" and spell == slam then
+function Swing:UNIT_SPELLCAST_START(event, unit, guid, spell)
+	if unit == "player" and GetSpellInfo(spell) == slam then
 		slamstart = GetTime()
 	end
 end 
 
-function Swing:UNIT_SPELLCAST_INTERRUPTED(event, unit, spell) 
-	if unit == "player" and spell == slam and slamstart then 
+function Swing:UNIT_SPELLCAST_INTERRUPTED(event, unit, guid, spell)
+	if unit == "player" and GetSpellInfo(spell) == slam and slamstart then
 		slamstart = nil
 	end 
 end 

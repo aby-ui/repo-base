@@ -3,7 +3,7 @@ local L
 ------------
 -- The Stone Guard --
 ------------
-L= DBM:GetModLocalization(679)
+L = DBM:GetModLocalization(679)
 
 L:SetWarningLocalization({
 	SpecWarnOverloadSoon		= "%s soon!", -- prepare survival ablility or move boss. need more specific message.
@@ -24,7 +24,7 @@ L:SetMiscLocalization({
 ------------
 -- Feng the Accursed --
 ------------
-L= DBM:GetModLocalization(689)
+L = DBM:GetModLocalization(689)
 
 L:SetWarningLocalization({
 	WarnPhase			= "Phase %d",
@@ -34,29 +34,29 @@ L:SetWarningLocalization({
 L:SetOptionLocalization({
 	WarnPhase			= "Announce Phase transition",
 	specWarnBarrierNow	= "Show special warning when you're supposed to use $spell:115817 (only applies to LFR)",
-	RangeFrame	= DBM_CORE_AUTO_RANGE_OPTION_TEXT_SHORT:format("6") .. " during arcane phase",
-	SetIconOnWS	= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(116784),
-	SetIconOnAR	= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(116417)
+	RangeFrame			= DBM_CORE_AUTO_RANGE_OPTION_TEXT_SHORT:format("6") .. " during arcane phase",
+	SetIconOnWS			= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(116784),
+	SetIconOnAR			= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(116417)
 })
 
 L:SetMiscLocalization({
-	Fire		= "Oh exalted one! Through me you shall melt flesh from bone!",
-	Arcane		= "Oh sage of the ages! Instill to me your arcane wisdom!",
-	Nature		= "Oh great spirit! Grant me the power of the earth!",--I did not log this one, text is probably not right
-	Shadow		= "Great soul of champions past! Bear to me your shield!"
+	Fire	= "Oh exalted one! Through me you shall melt flesh from bone!",
+	Arcane	= "Oh sage of the ages! Instill to me your arcane wisdom!",
+	Nature	= "Oh great spirit! Grant me the power of the earth!",--I did not log this one, text is probably not right
+	Shadow	= "Great soul of champions past! Bear to me your shield!"
 })
 
 -------------------------------
 -- Gara'jal the Spiritbinder --
 -------------------------------
-L= DBM:GetModLocalization(682)
+L = DBM:GetModLocalization(682)
 
 L:SetOptionLocalization({
-	SetIconOnVoodoo		= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(122151)
+	SetIconOnVoodoo	= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(122151)
 })
 
 L:SetMiscLocalization({
-	Pull		= "It be dyin' time, now!"
+	Pull	= "It be dyin' time, now!"
 })
 
 ----------------------
@@ -65,7 +65,7 @@ L:SetMiscLocalization({
 L = DBM:GetModLocalization(687)
 
 L:SetWarningLocalization({
-	DarknessSoon		= "Shield of Darkness in %ds"
+	DarknessSoon	= "Shield of Darkness in %ds"
 })
 
 L:SetTimerLocalization({
@@ -90,7 +90,7 @@ L:SetWarningLocalization({
 })
 
 L:SetTimerLocalization({
-	timerDespawnFloor		= "Floor despawns"
+	timerDespawnFloor	= "Floor despawns"
 })
 
 L:SetOptionLocalization({
@@ -102,7 +102,7 @@ L:SetOptionLocalization({
 ------------
 -- Will of the Emperor --
 ------------
-L= DBM:GetModLocalization(677)
+L = DBM:GetModLocalization(677)
 
 L:SetOptionLocalization({
 	InfoFrame		= "Show info frame for players affected by $spell:116525",
