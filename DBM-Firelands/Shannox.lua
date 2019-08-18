@@ -3,7 +3,7 @@ local L		= mod:GetLocalizedStrings()
 local Riplimb	= DBM:EJ_GetSectionInfo(2581)
 local Rageface	= DBM:EJ_GetSectionInfo(2583)
 
-mod:SetRevision("20190808031548")
+mod:SetRevision("20190817195516")
 mod:SetCreatureID(53691)
 mod:SetEncounterID(1205)
 mod:SetZone()
@@ -15,16 +15,22 @@ mod:SetUsedIcons(6, 8) -- cross(7) is hard to see in redish environment?
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
-	"SPELL_AURA_APPLIED 100415 100167 99837 99937",
-	"SPELL_AURA_APPLIED_DOSE 99945 99937",
-	"SPELL_AURA_REMOVED 99945 99937",
 	"SPELL_CAST_START 100002 99840",
 	"SPELL_CAST_SUCCESS 99947",
 	"SPELL_SUMMON 99836 99839",
+	"SPELL_AURA_APPLIED 100415 100167 99837 99937",
+	"SPELL_AURA_APPLIED_DOSE 99945 99937",
+	"SPELL_AURA_REMOVED 99945 99937",
 	"UNIT_HEALTH boss1 boss2 boss3", -- probably needs just one (?)
 	"UNIT_DIED"
 )
 
+--[[
+(ability.id = 100002 or ability.id = 99840) and type = "begincast"
+ or ability.id = 99947 and type = "cast"
+ or (ability.id = 99836 or ability.id = 99839) and type = "summon"
+ or type = "death"
+--]]
 --TODO, this mod was the template for the original target scanner that eventually made it into core. Now, it's time to move this mod to either that object or the UnitTarget scanner before timewalking
 local warnFaceRage				= mod:NewTargetAnnounce(99947, 4)
 local warnRage					= mod:NewTargetAnnounce(100415, 3)
@@ -162,54 +168,6 @@ function mod:OnCombatStart(delay)
 	berserkTimer:Start(-delay)
 end
 
-function mod:SPELL_AURA_APPLIED(args)
-	local spellId = args.spellId
-	if spellId == 100415 then
-		warnRage:Show(args.destName)
-		timerRage:Start(args.destName)
-		if args:IsPlayer() then
-			specWarnRage:Show()
-		end
-		if self.Options.SetIconOnRage then
-			self:SetIcon(args.destName, 6, 15)
-		end
-	elseif spellId == 100167 then
-		warnWary:Show(args.destName)
-		timerWary:Start(args.destName)
-	elseif spellId == 99837 then--Filter when the dogs get it?
-		if args:IsDestTypePlayer() then
-			warnCrystalPrisonTrapped:Show(args.destName)
-		else--It's a trapped dog
-			timerCrystalPrison:Start(args.destName)--make a 10 second timer for how long dog is trapped.
-		end
-	elseif spellId == 99937 then
-		if (args.amount or 1) % 3 == 0 then	--Warn every 3 stacks
-			warnTears:Show(args.destName, args.amount or 1)
-		end
-		if args:IsPlayer() and (args.amount or 1) >= 8 then
-			specWarnTears:Show(args.amount)
-		end
-		if self:IsHeroic() then
-			timerTears:Start(30, args.destName)
-		else
-			timerTears:Start(args.destName)
-		end
-	end
-end
-
-mod.SPELL_AURA_APPLIED_DOSE = mod.SPELL_AURA_APPLIED
-
-function mod:SPELL_AURA_REMOVED(args)
-	local spellId = args.spellId
-	if spellId == 99945 then
-		if self.Options.SetIconOnFaceRage then
-			self:SetIcon(args.destName, 0)
-		end
-	elseif spellId == 99937 then
-		timerTears:Cancel(args.destName)
-	end
-end
-
 function mod:SPELL_CAST_START(args)
 	local spellId = args.spellId
 	if spellId == 100002 then
@@ -243,6 +201,49 @@ function mod:SPELL_SUMMON(args)
 	elseif spellId == 99839 then
 		trapScansDone = 0
 		self:TrapHandler(99839)
+	end
+end
+
+function mod:SPELL_AURA_APPLIED(args)
+	local spellId = args.spellId
+	if spellId == 100415 then
+		warnRage:Show(args.destName)
+		timerRage:Start(args.destName)
+		if args:IsPlayer() then
+			specWarnRage:Show()
+		end
+		if self.Options.SetIconOnRage then
+			self:SetIcon(args.destName, 6, 15)
+		end
+	elseif spellId == 100167 then
+		warnWary:Show(args.destName)
+		timerWary:Start(args.destName)
+	elseif spellId == 99837 then--Filter when the dogs get it?
+		if args:IsDestTypePlayer() then
+			warnCrystalPrisonTrapped:Show(args.destName)
+		else--It's a trapped dog
+			timerCrystalPrison:Start(args.destName)--make a 10 second timer for how long dog is trapped.
+		end
+	elseif spellId == 99937 then
+		if args:IsPlayer() and (args.amount or 1) >= 8 then
+			specWarnTears:Show(args.amount)
+		elseif (args.amount or 1) % 3 == 0 then	--Warn every 3 stacks
+			warnTears:Show(args.destName, args.amount or 1)
+		end
+		timerTears:Start(self:IsHeroic() and 30 or 26, args.destName)
+	end
+end
+
+mod.SPELL_AURA_APPLIED_DOSE = mod.SPELL_AURA_APPLIED
+
+function mod:SPELL_AURA_REMOVED(args)
+	local spellId = args.spellId
+	if spellId == 99945 then
+		if self.Options.SetIconOnFaceRage then
+			self:SetIcon(args.destName, 0)
+		end
+	elseif spellId == 99937 then
+		timerTears:Cancel(args.destName)
 	end
 end
 

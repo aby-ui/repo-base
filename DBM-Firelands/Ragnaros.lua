@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(198, "DBM-Firelands", nil, 78)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190808031548")
+mod:SetRevision("20190817195516")
 mod:SetCreatureID(52409)
 mod:SetEncounterID(1203)
 mod:SetZone()
@@ -13,11 +13,11 @@ mod:SetUsedIcons(1, 2)
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
+	"SPELL_CAST_START 98710 98951 98952 98953 99172 99235 99236 100646 100479",
+	"SPELL_CAST_SUCCESS 98237 98164 98263 100460 99268 100714 101110",
 	"SPELL_AURA_APPLIED 99399 100594 100171 100604",
 	"SPELL_AURA_APPLIED_DOSE 99399 100594",
 	"SPELL_AURA_REMOVED 99399",
-	"SPELL_CAST_START 98710 98951 98952 98953 99172 99235 99236 100646 100479",
-	"SPELL_CAST_SUCCESS 98237 98164 98263 100460 99268 100714 101110",
 	"SPELL_DAMAGE 98518 98175 98870 99144 100941 98981",
 	"SPELL_MISSED 98518 98175 98870 99144 100941 98981",
 	"CHAT_MSG_MONSTER_YELL",
@@ -29,6 +29,11 @@ mod:RegisterEventsInCombat(
 	"UNIT_DIED"
 )
 
+--[[
+(ability.id = 98710 or ability.id = 98951 or ability.id = 98952 or ability.id = 98953 or ability.id = 98951 or ability.id = 98952 or ability.id = 98953 or ability.id = 99172 or ability.id = 99235 or ability.id = 99236 or ability.id = 99172 or ability.id = 99235 or ability.id = 99236 or ability.id = 100646 or ability.id = 100479 and type = "begincast"
+ or (ability.id = 98237 or ability.id = 98164 or ability.id = 98263 or ability.id = 100460 or ability.id = 99268 or ability.id = 100714 or ability.id = 101110) and type = "cast"
+ or type = "death"
+--]]
 local warnRageRagnaros		= mod:NewTargetAnnounce(101110, 3)--Staff quest ability (normal only)
 local warnRageRagnarosSoon	= mod:NewAnnounce("warnRageRagnarosSoon", 4, 101109)--Staff quest ability (normal only)
 local warnHandRagnaros		= mod:NewSpellAnnounce(98237, 3, nil, "Melee")--Phase 1 only ability
@@ -252,43 +257,6 @@ function mod:OnCombatEnd()
 	end
 end
 
-function mod:SPELL_AURA_APPLIED(args)
-	local spellId = args.spellId
-	if spellId == 99399 then
-		local amount = args.amount or 1
-		warnBurningWound:Show(args.destName, amount)
-		if amount >= 4 and args:IsPlayer() then
-			specWarnBurningWound:Show(amount)
-		end
-		timerBurningWound:Start(args.destName)
-	elseif spellId == 100594 and args:IsPlayer() then
-		local amount = args.amount or 1
-		if amount >= 12 and amount % 4 == 0 then
-			specWarnSuperheated:Show(amount)
-		end
-	elseif spellId == 100171 then--World of Flames, heroic version for engulfing flames.
-		specWarnWorldofFlames:Show()
-		if self.vb.phase == 3 then
-			timerFlamesCD:Start(30)--30 second CD in phase 3
-		else
-			timerFlamesCD:Start(60)--60 second CD in phase 2
-		end
-	elseif spellId == 100604 then
-		warnEmpoweredSulf:Show(args.spellName)
-		specWarnEmpoweredSulf:Show()
-		timerEmpoweredSulf:Schedule(5)--Schedule 10 second bar to start when cast ends for buff active timer.
-		timerEmpoweredSulfCD:Start()
-	end
-end
-mod.SPELL_AURA_APPLIED_DOSE = mod.SPELL_AURA_APPLIED
-
-function mod:SPELL_AURA_REMOVED(args)
-	local spellId = args.spellId
-	if spellId == 99399 then
-		timerBurningWound:Stop(args.destName)
-	end
-end
-
 function mod:SPELL_CAST_START(args)
 	local spellId = args.spellId
 	if spellId == 98710 then
@@ -438,6 +406,43 @@ function mod:SPELL_CAST_SUCCESS(args)
 		if self.Options.RangeFrame and args:IsPlayer() then
 			DBM.RangeCheck:Show(8)
 		end
+	end
+end
+
+function mod:SPELL_AURA_APPLIED(args)
+	local spellId = args.spellId
+	if spellId == 99399 then
+		local amount = args.amount or 1
+		warnBurningWound:Show(args.destName, amount)
+		if amount >= 4 and args:IsPlayer() then
+			specWarnBurningWound:Show(amount)
+		end
+		timerBurningWound:Start(args.destName)
+	elseif spellId == 100594 and args:IsPlayer() then
+		local amount = args.amount or 1
+		if amount >= 12 and amount % 4 == 0 then
+			specWarnSuperheated:Show(amount)
+		end
+	elseif spellId == 100171 then--World of Flames, heroic version for engulfing flames.
+		specWarnWorldofFlames:Show()
+		if self.vb.phase == 3 then
+			timerFlamesCD:Start(30)--30 second CD in phase 3
+		else
+			timerFlamesCD:Start(60)--60 second CD in phase 2
+		end
+	elseif spellId == 100604 then
+		warnEmpoweredSulf:Show(args.spellName)
+		specWarnEmpoweredSulf:Show()
+		timerEmpoweredSulf:Schedule(5)--Schedule 10 second bar to start when cast ends for buff active timer.
+		timerEmpoweredSulfCD:Start()
+	end
+end
+mod.SPELL_AURA_APPLIED_DOSE = mod.SPELL_AURA_APPLIED
+
+function mod:SPELL_AURA_REMOVED(args)
+	local spellId = args.spellId
+	if spellId == 99399 then
+		timerBurningWound:Stop(args.destName)
 	end
 end
 

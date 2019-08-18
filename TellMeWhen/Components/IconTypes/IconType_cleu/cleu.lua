@@ -318,7 +318,7 @@ local function CLEU_OnEvent(icon, _, t, event, h, sourceGUID, sourceName, source
 			spellName = L["CLEU_DIED"]
 			tex = "Interface\\Icons\\Ability_Rogue_FeignDeath"
 			if not sourceUnit then
-			--	sourceUnit = destUnit -- clone it (wait, why? commenting this out because its stupid)
+				sourceUnit = destUnit -- clone it so that UNIT_DIED can be filtered by sourceUnit
 			end
 		else
 			spellID = arg1

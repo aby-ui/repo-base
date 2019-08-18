@@ -126,6 +126,8 @@ do
 				autosearch_cooldown = 600,
 				autosearch_share = false,
 			},
+			
+			raredetected = {},
 
 			world_map_config = {
 				onmap_show = true,

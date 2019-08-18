@@ -342,16 +342,16 @@ ns.points = {
         [39804930] = {quest=55956, minimap=true, achievement=13549, label=CHEST_AR},
         [38006060] = {quest=55957, minimap=true, achievement=13549, label=CHEST_AR},
 
-        [61502290] = {quest=55958, minimap=true, achievement=13549, label=AR_TRUNK, note="Inside Cave"}, [61401990] = path{quest=55958}, -- game quest id: 55359
+        [61502290] = {quest=55958, minimap=true, achievement=13549, label="Arcane Pylon", note="Inside Cave"}, [61401990] = path{quest=55958}, -- game quest id: 55359
         [37900604] = {quest=55959, minimap=true, achievement=13549, label=AR_TRUNK, note="Inside Cave"}, [39351005] = path{quest=55959},
         [55701440] = {quest=55961, minimap=true, achievement=13549, label=AR_TRUNK}, -- game quest id: 55998
         [64202850] = {quest=55962, minimap=true, achievement=13549, label=AR_TRUNK, note="Click Arcane device on the side on the right"}, -- game quest id: 55996
         [43901680] = {quest=55963, minimap=true, achievement=13549, label=AR_TRUNK},
-        [37900650] = {quest=55960, minimap=true, achievement=13549, label=AR_TRUNK, note="Underwater Cave"}, [39701000] = path{quest=55960},
-        [24803520] = {quest=56912, minimap=true, achievement=13549, label=AR_TRUNK, note="Inside Cave"}, [26703380] = path{quest=56912}, -- game quest id: 56913
-        [80503190] = {quest=56547, minimap=true, achievement=13549, label=AR_TRUNK, note="Up the building"}, [83003380] = path{quest=56547}, -- game quest id: 56913
+        [37191919] = {quest=55960, minimap=true, achievement=13549, label=AR_TRUNK, note="Underwater Cave"},
+        [24803520] = {quest=56912, minimap=true, achievement=13549, label="Arcane Pylon", note="Inside Cave"}, [26703380] = path{quest=56912}, -- game quest id: 56913
+        [80503190] = {quest=56547, minimap=true, achievement=13549, label="Arcane Pylon", note="Up the building"}, [83003380] = path{quest=56547}, -- game quest id: 56913
         -- Cats!
-        [28802910] = {quest=56983, minimap=true, achievement=13836, label=KITTY, atlas="Warfront-AllianceHero-Silver", scale=1.2},
+        [28802910] = {quest=56983, minimap=true, achievement=13836, label=KITTY, note="Underwater cave", atlas="Warfront-AllianceHero-Silver", scale=1.2},
         [61102680] = {quest=56984, minimap=true, achievement=13836, label=KITTY, atlas="Warfront-AllianceHero-Silver", scale=1.2},
         [59103040] = {quest=56985, minimap=true, achievement=13836, label=KITTY, atlas="Warfront-AllianceHero-Silver", scale=1.2},
         [55302720] = {quest=56986, minimap=true, achievement=13836, label=KITTY, atlas="Warfront-AllianceHero-Silver", scale=1.2},

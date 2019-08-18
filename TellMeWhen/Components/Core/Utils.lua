@@ -769,6 +769,15 @@ end
 -- Table Utilities
 ---------------------------------
 
+function TMW.map(t, func)
+	local new = {}
+	for k, v in pairs(t) do
+		local newV, newK = func(v, k, t)
+		new[newK or k] = newV or v
+	end
+	return new
+end
+
 function TMW.approachTable(t, ...)
 	for i=1, select("#", ...) do
 		local k = select(i, ...)

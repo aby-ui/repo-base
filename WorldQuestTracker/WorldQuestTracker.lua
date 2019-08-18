@@ -210,6 +210,12 @@ function WorldQuestTracker:OnInit()
 		end
 	end
 	
+	if (WorldQuestTracker.db.profile.raredetected and WorldQuestTracker.MapData.RaresToScan) then
+		for npcId, _ in pairs (WorldQuestTracker.db.profile.raredetected) do
+			WorldQuestTracker.MapData.RaresToScan [npcId] = true
+		end
+	end
+	
 	function WorldQuestTracker:CleanUpJustBeforeGoodbye()
 		WorldQuestTracker.AllCharactersQuests_CleanUp()
 	end

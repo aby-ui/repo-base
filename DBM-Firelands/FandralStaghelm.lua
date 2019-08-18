@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(197, "DBM-Firelands", nil, 78)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190808031548")
+mod:SetRevision("20190817195516")
 mod:SetCreatureID(52571)
 mod:SetEncounterID(1185)
 mod:SetZone()
@@ -13,13 +13,18 @@ mod:SetUsedIcons(8)
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
+	"SPELL_CAST_START 98451",
+	"SPELL_CAST_SUCCESS 98476",
 	"SPELL_AURA_APPLIED 98374 98379 97238 97235 98535 98584 98450",
 	"SPELL_AURA_APPLIED_DOSE 97238 97235 98584",
-	"SPELL_AURA_REMOVED 98450",
-	"SPELL_CAST_START 98451",
-	"SPELL_CAST_SUCCESS 98476"
+	"SPELL_AURA_REMOVED 98450"
 )
 
+--[[
+ability.id = 98451 and type = "begincast"
+ or ability.id = 98476 and type = "cast"
+ or (ability.id = 98374 or ability.id = 98379 or ability.id = 97238) and (type = "applybuff" or type ="applybuffdose")
+--]]
 local warnAdrenaline			= mod:NewStackAnnounce(97238, 3)
 local warnFury					= mod:NewStackAnnounce(97235, 3)
 local warnLeapingFlames			= mod:NewTargetAnnounce(98476, 3)
@@ -50,7 +55,7 @@ local leap, swipe, seedsDebuff = DBM:GetSpellInfo(98535), DBM:GetSpellInfo(98474
 
 local abilityTimers = {
 	[0] = 17.3,--Still The same baseline.
-	[1] = 14.4,--Everything here onward nerfed in 4.3
+	[1] = 14.4,--Everything here onward nerfed in 4.3+
 	[2] = 12,
 	[3] = 10.9,
 	[4] = 9.6,
@@ -104,6 +109,21 @@ end
 function mod:OnCombatEnd()
 	if self.Options.RangeFrameSeeds or self.Options.RangeFrameCat then
 		DBM.RangeCheck:Hide()
+	end
+end
+
+function mod:SPELL_CAST_START(args)
+	local spellId = args.spellId
+	if spellId == 98451 then
+		warnOrbs:Show()
+		timerOrbActive:Start()
+	end
+end
+
+function mod:SPELL_CAST_SUCCESS(args)
+	local spellId = args.spellId
+	if spellId == 98476 then
+		self:BossTargetScanner(args.sourceGUID, "LeapingFlamesTarget", 0.05, 16, true, nil, nil, nil, true)
 	end
 end
 
@@ -165,20 +185,5 @@ function mod:SPELL_AURA_REMOVED(args)
 		if self.Options.RangeFrameSeeds then
 			DBM.RangeCheck:Hide()
 		end
-	end
-end
-
-function mod:SPELL_CAST_START(args)
-	local spellId = args.spellId
-	if spellId == 98451 then
-		warnOrbs:Show()
-		timerOrbActive:Start()
-	end
-end
-
-function mod:SPELL_CAST_SUCCESS(args)
-	local spellId = args.spellId
-	if spellId == 98476 then
-		self:BossTargetScanner(args.sourceGUID, "LeapingFlamesTarget", 0.05, 16, true, nil, nil, nil, true)
 	end
 end

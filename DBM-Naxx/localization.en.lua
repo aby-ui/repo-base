@@ -175,18 +175,6 @@ L:SetGeneralLocalization({
 	name = "Grobbulus"
 })
 
-L:SetOptionLocalization({
-	SpecialWarningInjection		= "Show special warning when you are affected by Mutating Injection",
-	SetIconOnInjectionTarget	= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(28169)
-})
-
-L:SetWarningLocalization({
-	SpecialWarningInjection	= "Mutating Injection on you"
-})
-
-L:SetTimerLocalization({
-})
-
 -------------
 --  Gluth  --
 -------------
@@ -361,7 +349,7 @@ L:SetWarningLocalization({
 L:SetTimerLocalization({
 	TimerAir		= "Air phase",
 	TimerLanding	= "Landing",
-	TimerIceBlast	= "Frost Breath"	
+	TimerIceBlast	= "Frost Breath"
 })
 
 ------------------
@@ -377,11 +365,7 @@ L:SetGeneralLocalization({
 L:SetOptionLocalization({
 	TimerPhase2			= "Show timer for Phase 2",
 	specwarnP2Soon		= "Show special warning 10 seconds before Kel'Thuzad engages",
-	warnAddsSoon		= "Show pre-warning for Guardians of Icecrown",
-	SetIconOnMC			= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(28410),
-	SetIconOnManaBomb	= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(27819),
-	SetIconOnFrostTomb	= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(27808),
-	ShowRange			= "Show range frame when Phase 2 starts"
+	warnAddsSoon		= "Show pre-warning for Guardians of Icecrown"
 })
 
 L:SetMiscLocalization({

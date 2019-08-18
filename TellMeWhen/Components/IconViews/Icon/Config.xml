@@ -1,7 +1,7 @@
 <Ui>
 
 	<Frame name="TellMeWhen_GM_IconView" inherits="TellMeWhen_OptionsModuleContainer" virtual="true">
-		<Size y="39"/>
+		<Size y="70"/>
 		<Frames>
 
 			<Slider parentKey="BorderIcon" inherits="TellMeWhen_SliderTemplate">
@@ -44,6 +44,21 @@
 					</OnLoad>
 				</Scripts>
 			</Button>
+
+			<CheckButton parentKey="BorderInset" inherits="TellMeWhen_CheckTemplate">
+				<Anchors>
+					<Anchor point="TOP" relativeKey="$parent.BorderIcon" relativePoint="BOTTOM" y="-5" />
+					<Anchor point="LEFT"  x="5" y="-1"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						TMW:CInit(self)
+
+						self:SetTexts(TMW.L["UIPANEL_BAR_ICONBORDERINSET"], TMW.L["UIPANEL_BAR_ICONBORDERINSET_DESC"])
+						self:SetSetting("BorderInset")
+					</OnLoad>
+				</Scripts>
+			</CheckButton>
 
 		</Frames>
 		<Scripts>

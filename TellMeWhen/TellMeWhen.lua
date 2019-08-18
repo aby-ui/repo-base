@@ -1,4 +1,4 @@
--- ---------------------------------
+﻿-- ---------------------------------
 -- TellMeWhen
 -- Originally by Nephthys of Hyjal <lieandswell@yahoo.com>
 
@@ -15,10 +15,28 @@
 -- ADDON GLOBALS AND LOCALS
 -- ---------------------------------
 
-TELLMEWHEN_VERSION = "8.6.6"
+local wow_classic = WOW_PROJECT_ID and WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
+if wow_classic then
+	StaticPopupDialogs["TMW_PROJECT_MISMATCH"] = {
+		-- This is not localizable, because AceLocale might not have loaded
+		-- (this is why we don't bother to load AceLocale until after these checks).
+		text = "You've installed TellMeWhen for retail WoW, but this is Classic WoW. Please double-check which version of TMW you downloaded.", 
+		button1 = EXIT_GAME,
+		button2 = CANCEL,
+		OnAccept = ForceQuit,
+		timeout = 0,
+		showAlert = true,
+		whileDead = true,
+		preferredIndex = 3, -- http://forums.wowace.com/showthread.php?p=320956
+	}
+	StaticPopup_Show("TMW_PROJECT_MISMATCH")
+	return
+end
+
+TELLMEWHEN_VERSION = "8.6.7"
 
 TELLMEWHEN_VERSION_MINOR = ""
-local projectVersion = "8.6.6" -- comes out like "6.2.2-21-g4e91cee"
+local projectVersion = "8.6.7" -- comes out like "6.2.2-21-g4e91cee"
 if projectVersion:find("project%-version") then
 	TELLMEWHEN_VERSION_MINOR = "dev"
 elseif strmatch(projectVersion, "%-%d+%-") then
@@ -26,7 +44,7 @@ elseif strmatch(projectVersion, "%-%d+%-") then
 end
 
 TELLMEWHEN_VERSION_FULL = TELLMEWHEN_VERSION .. " " .. TELLMEWHEN_VERSION_MINOR
-TELLMEWHEN_VERSIONNUMBER = 86606 -- NEVER DECREASE THIS NUMBER (duh?).  IT IS ALSO ONLY INTERNAL (for versioning of)
+TELLMEWHEN_VERSIONNUMBER = 86701 -- NEVER DECREASE THIS NUMBER (duh?).  IT IS ALSO ONLY INTERNAL (for versioning of)
 
 TELLMEWHEN_FORCECHANGELOG = 86005 -- if the user hasn't seen the changelog until at least this version, show it to them.
 

@@ -1,4 +1,4 @@
---[[ Credit for these translations goes to:
+﻿--[[ Credit for these translations goes to:
 	lsjyzjl
 	wowuicn
 --]]
@@ -2270,4 +2270,3 @@ L["WARN_DRMISMATCH"] = [=[警告!你正在检测递减的法术来自两个不�
 检测到下列你所使用的法术及其分类:]=]
 L["WATER"] = "水之图腾"
 L["worldboss"] = "首领"
-

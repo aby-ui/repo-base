@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("Sapphiron", "DBM-Naxx", 5)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190417005949")
+mod:SetRevision("20190817015124")
 mod:SetCreatureID(15989)
 mod:SetEncounterID(1119)
 mod:SetModelID(16033)
@@ -38,7 +38,7 @@ local function resetIsFlying(self)
 	self.vb.isFlying = false
 end
 
-function mod:Landing()
+local function Landing()
 	warnAirPhaseSoon:Schedule(56)
 	warnLanded:Show()
 	timerAirPhase:Start()
@@ -105,7 +105,7 @@ function mod:OnSync(event)
 	if event == "DeepBreath" then
 		timerIceBlast:Start()
 		timerLanding:Update(14)
-		self:ScheduleMethod(14.5, "Landing")
+		self:Schedule(14.5, Landing, self)
 		warnDeepBreath:Show()
 		warnDeepBreath:Play("findshelter")
 	end

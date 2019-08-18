@@ -173,18 +173,6 @@ L:SetGeneralLocalization({
 	name 				= "格罗布鲁斯"
 })
 
-L:SetOptionLocalization({
-	SpecialWarningInjection		= "当你中了变异注射时显示特别警报",
-	SetIconOnInjectionTarget	= "设定标记给中了变异注射的玩家"
-})
-
-L:SetWarningLocalization({
-	SpecialWarningInjection		= "你中了变异注射 - 快跑开"
-})
-
-L:SetTimerLocalization({
-})
-
 -------------
 --  Gluth  --
 -------------
@@ -361,7 +349,7 @@ L:SetWarningLocalization({
 L:SetTimerLocalization({
 	TimerAir			= "空中阶段",
 	TimerLanding			= "降落",
-	TimerIceBlast			= "冰霜吐息"	
+	TimerIceBlast			= "冰霜吐息"
 })
 
 ------------------
@@ -377,8 +365,7 @@ L:SetGeneralLocalization({
 L:SetOptionLocalization({
 	TimerPhase2			= "为第二阶段显示计时条",
 	specwarnP2Soon			= "为克尔苏加德攻击前10秒显示特别警报",
-	warnAddsSoon			= "为寒冰皇冠卫士显示提前警报",
-	ShowRange			= "当第二阶段开始时显示距离监视框"
+	warnAddsSoon			= "为寒冰皇冠卫士显示提前警报"
 })
 
 L:SetMiscLocalization({

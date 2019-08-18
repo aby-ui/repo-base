@@ -1,17 +1,17 @@
 local mod	= DBM:NewMod("FirelandsTrash", "DBM-Firelands")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190417005904")
+mod:SetRevision("20190817195516")
 mod:SetModelID(38765)
 mod:SetZone()
 mod.isTrashMod = true
 
 mod:RegisterEvents(
+	"SPELL_CAST_START 100094 99629 99503 100724",
 	"SPELL_CAST_SUCCESS 99579 99575",
 	"SPELL_AURA_APPLIED 99532 100767",
 	"SPELL_AURA_APPLIED_DOSE 99532 100767",
 	"SPELL_AURA_REMOVED 99532 100767",
-	"SPELL_CAST_START 100094 99629 99503 100724",
 	"UNIT_DIED"
 )
 
@@ -20,15 +20,14 @@ local warnDruidLeap			= mod:NewTargetAnnounce(99629, 3, nil, false)--Probably sp
 local warnRaiselava			= mod:NewSpellAnnounce(99503, 3)
 local warnMoltenBolt		= mod:NewSpellAnnounce(99579, 3)
 local warnLavaSpawn			= mod:NewSpellAnnounce(99575, 3)
-local warnEarthquake		= mod:NewSpellAnnounce(100724, 3)
 
-local specWarnFieroblast	= mod:NewSpecialWarningInterrupt(100094, false)
-local specWarnMoltenArmor	= mod:NewSpecialWarningStack(99532, "Tank", 4)
-local specWarnDruidLeap		= mod:NewSpecialWarningYou(99629)
+local specWarnFieroblast	= mod:NewSpecialWarningInterrupt(100094, "HasInterrupt", nil, nil, 1, 2)
+local specWarnMoltenArmor	= mod:NewSpecialWarningStack(99532, nil, 4, nil, nil, 1, 6)
+local specWarnDruidLeap		= mod:NewSpecialWarningYou(99629, nil, nil, nil, 1, 2)
 local yelldruidLeap			= mod:NewYell(99629)
-local specWarnDruidLeapNear	= mod:NewSpecialWarningClose(99629)
-local specWarnEarthQuake	= mod:NewSpecialWarningCast(100724, "Ranged")
-local specWarnLava			= mod:NewSpecialWarningMove(99510)
+local specWarnDruidLeapNear	= mod:NewSpecialWarningClose(99629, nil, nil, nil, 1, 2)
+local specWarnEarthQuake	= mod:NewSpecialWarningCast(100724, "SpellCaster", nil, nil, 1, 2)
+local specWarnLava			= mod:NewSpecialWarningMove(99510, nil, nil, nil, 1, 2)
 
 local timerMoltenArmor		= mod:NewTargetTimer(15, 99532, nil, "Tank|Healer", nil, 5)
 local timerRaiseLavaCD		= mod:NewNextTimer(17, 99503, nil, nil, nil, 3)--Every 15 sec + 2 sec cast.
@@ -46,9 +45,9 @@ function mod:LeapTarget(sGUID)
 		end
 	end
 	if targetname and self:AntiSpam(2, targetname) then--Sometimes mod bugs, multiple leaps too close to same time, and it results in double or even tripple announces on one person (and no announce for 1-2 of the real targets). this will at least filter 1 target spam
-		warnDruidLeap:Show(targetname)
 		if targetname == UnitName("player") then
 			specWarnDruidLeap:Show()
+			specWarnDruidLeap:Play("targetyou")
 			yelldruidLeap:Yell()
 		else
 			local uId = DBM:GetRaidUnitId(targetname)
@@ -56,34 +55,19 @@ function mod:LeapTarget(sGUID)
 				local inRange = CheckInteractDistance(uId, 2)
 				if inRange then
 					specWarnDruidLeapNear:Show(targetname)
+					specWarnDruidLeapNear:Play("runaway")
+				else
+					warnDruidLeap:Show(targetname)
 				end
 			end
 		end
 	end
 end
 
-function mod:SPELL_AURA_APPLIED(args)
-	if args:IsSpellID(99532, 100767) and args:IsDestTypePlayer() then
-		warnMoltenArmor:Show(args.destName, args.amount or 1)
-		if args:IsPlayer() and (args.amount or 1) >= 4 then
-			specWarnMoltenArmor:Show(args.amount)
-		end
-		timerMoltenArmor:Start(args.destName)
-	end
-end
-mod.SPELL_AURA_APPLIED_DOSE = mod.SPELL_AURA_APPLIED
-
-function mod:SPELL_AURA_REMOVED(args)
-	if args:IsSpellID(99532, 100767) then
-		timerMoltenArmor:Cancel(args.destName)
-	end
-end
-
 function mod:SPELL_CAST_START(args)
-	if args.spellId == 100094 then--Trash version of Fieroblast, different from boss version
-		if args.sourceGUID == UnitGUID("target") then
-			specWarnFieroblast:Show(args.sourceName)
-		end
+	if args.spellId == 100094 and self:CheckInterruptFilter(args.sourceGUID, false, true) then--Trash version of Fieroblast, different from boss version
+		specWarnFieroblast:Show(args.sourceName)
+		specWarnFieroblast:Play("kickcast")
 	elseif args.spellId == 99629 then--Druid of the Flame Leaping
 		self:ScheduleMethod(1, "LeapTarget", args.sourceGUID)
 	elseif args.spellId == 99503 then
@@ -97,8 +81,8 @@ function mod:SPELL_CAST_START(args)
 			lavaRunning = true
 		end
 	elseif args.spellId == 100724 then
-		warnEarthquake:Show()
 		specWarnEarthQuake:Show()
+		specWarnEarthQuake:Play("stopcast")
 	end
 end
 
@@ -112,13 +96,33 @@ function mod:SPELL_CAST_SUCCESS(args)
 	end
 end
 
+function mod:SPELL_AURA_APPLIED(args)
+	if args:IsSpellID(99532, 100767) and args:IsDestTypePlayer() then
+		if args:IsPlayer() and (args.amount or 1) >= 4 then
+			specWarnMoltenArmor:Show(args.amount)
+			specWarnMoltenArmor:Play("stackhigh")
+		else
+			warnMoltenArmor:Show(args.destName, args.amount or 1)
+		end
+		timerMoltenArmor:Start(args.destName)
+	end
+end
+mod.SPELL_AURA_APPLIED_DOSE = mod.SPELL_AURA_APPLIED
+
+function mod:SPELL_AURA_REMOVED(args)
+	if args:IsSpellID(99532, 100767) then
+		timerMoltenArmor:Cancel(args.destName)
+	end
+end
+
 function mod:SPELL_DAMAGE(_, _, _, _, destGUID, _, _, _, spellId)
 	if spellId == 99510 and destGUID == UnitGUID("player") and self:AntiSpam(3) then
 		specWarnLava:Show()
+		specWarnLava:Play("watchfeet")
 	end
 end
 mod.SPELL_MISSED = mod.SPELL_DAMAGE
-		
+
 function mod:UNIT_DIED(args)
 	local cid = self:GetCIDFromGUID(args.destGUID)
 	if cid == 53575 then
@@ -131,5 +135,5 @@ function mod:UNIT_DIED(args)
 		timerLavaSpawnCD:Cancel()
 	elseif cid == 53619 then
 		self:UnscheduleMethod("LeapTarget", args.destGUID)
-	end	
+	end
 end

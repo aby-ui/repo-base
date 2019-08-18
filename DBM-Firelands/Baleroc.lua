@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(196, "DBM-Firelands", nil, 78)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190808031548")
+mod:SetRevision("20190817195516")
 mod:SetCreatureID(53494)
 mod:SetEncounterID(1200)
 mod:SetZone()
@@ -21,6 +21,11 @@ mod:RegisterEventsInCombat(
 	"SPELL_MISSED 99353 99351"
 )
 
+--[[
+(ability.id = 99352 or ability.id = 99350 or ability.id = 99259) and type = "begincast"
+ or (ability.id = 99516 or abililty.id = 99352 or ability.id = 99350) and (type = "applybuff" or type = "applydebuff")
+ or (ability.id = 99352 or ability.id = 99352) and (type = "applybuff" or type = "applydebuff")
+--]]
 local warnStrike			= mod:NewAnnounce("warnStrike", 4, 99353, "Tank|Healer")
 local warnInfernoBlade		= mod:NewSpellAnnounce(99350, 3, nil, "Tank")
 local warnCountdown			= mod:NewTargetAnnounce(99516, 4)
@@ -132,8 +137,10 @@ function mod:SPELL_AURA_APPLIED(args)
 	local spellId = args.spellId
 	if spellId == 99516 then
 		countdownTargets[#countdownTargets + 1] = args.destName
-		timerCountdown:Start()
-		timerCountdownCD:Start()
+		if self:AntiSpam(3, 1) then
+			timerCountdown:Start()
+			timerCountdownCD:Start()
+		end
 		if self.Options.SetIconOnCountdown then
 			self:SetIcon(args.destName, #countdownTargets, 8)
 		end

@@ -108,15 +108,15 @@ View:ImplementsModule("IconModule_IconContainer_Masque", 1, function(Module, ico
 	
 	Module.container:ClearAllPoints()
 
-	Module:SetBorder(gspv.BorderIcon, gspv.BorderColor)
+	Module:SetBorder(gspv.BorderIcon, gspv.BorderColor, gspv.BorderInset)
 
-	local inset = gspv.BorderIcon
+	local inset = gspv.BorderInset and 0 or gspv.BorderIcon
 
 	if gspv.Icon then
 		Module:Enable()
 
 		Module.container:SetSize(gspv.SizeX - 2*inset, gspv.SizeX - 2*inset)
-		Module.container:SetPoint(gspv.Flip and "TOPLEFT" or "BOTTOMLEFT", inset, -inset)
+		Module.container:SetPoint(gspv.Flip and "TOPLEFT" or "BOTTOMLEFT", inset, gspv.Flip and -inset or inset)
 	end
 end)
 
@@ -166,6 +166,7 @@ View:ImplementsModule("IconModule_TimerBar_BarDisplay", 50, function(Module, ico
 	Module.bar:SetFrameLevel(icon:GetFrameLevel())
 
 	local inset = gspv.BorderBar
+	local iconInset = gspv.BorderInset and 0 or gspv.BorderIcon
 	
 
 	Module.bar:ClearAllPoints()
@@ -176,12 +177,12 @@ View:ImplementsModule("IconModule_TimerBar_BarDisplay", 50, function(Module, ico
 	elseif gspv.Flip then
 		Module.bar:SetPoint("BOTTOMLEFT", inset, inset)
 		Module.bar:SetPoint("BOTTOMRIGHT", -inset, inset)
-		Module.bar:SetPoint("TOP", IconContainer.container, "BOTTOM", 0, -gspv.Padding - inset - gspv.BorderIcon)
+		Module.bar:SetPoint("TOP", IconContainer.container, "BOTTOM", 0, -gspv.Padding - inset - iconInset)
 
 	elseif not gspv.Flip then
 		Module.bar:SetPoint("TOPLEFT", inset, -inset)
 		Module.bar:SetPoint("TOPRIGHT", -inset, -inset)
-		Module.bar:SetPoint("BOTTOM", IconContainer.container, "TOP", 0, gspv.Padding + inset + gspv.BorderIcon)
+		Module.bar:SetPoint("BOTTOM", IconContainer.container, "TOP", 0, gspv.Padding + inset + iconInset)
 	end
 
 	-- We can only query the size of the bar if the icon has had its position set.

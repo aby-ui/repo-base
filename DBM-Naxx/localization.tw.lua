@@ -171,17 +171,6 @@ L:SetGeneralLocalization({
 	name = "葛羅巴斯"
 })
 
-L:SetOptionLocalization({
-	SpecialWarningInjection		= "當你中了突變注射時顯示特別警告"
-})
-
-L:SetWarningLocalization({
-	SpecialWarningInjection	= "你中了突變注射 - 快跑開"
-})
-
-L:SetTimerLocalization({
-})
-
 -------------
 --  Gluth  --
 -------------
@@ -356,7 +345,7 @@ L:SetWarningLocalization({
 L:SetTimerLocalization({
 	TimerAir		= "空中階段",
 	TimerLanding	= "降落",
-	TimerIceBlast	= "冰息術"	
+	TimerIceBlast	= "冰息術"
 })
 
 ------------------
@@ -372,8 +361,7 @@ L:SetGeneralLocalization({
 L:SetOptionLocalization({
 	TimerPhase2			= "為第二階段顯示計時器",
 	specwarnP2Soon		= "為科爾蘇加德攻擊前10秒顯示特別警告",
-	warnAddsSoon		= "為寒冰皇冠守護者顯示預先警告",
-	ShowRange			= "當第二階段開始時顯示距離監視框"
+	warnAddsSoon		= "為寒冰皇冠守護者顯示預先警告"
 })
 
 L:SetMiscLocalization({

@@ -51,10 +51,12 @@ function IconContainer:OnDisableDelayed()
 	self.container:Hide()
 end
 
-function IconContainer:SetBorder(size, color)
+function IconContainer:SetBorder(size, color, inset)
 	if not self.border and size ~= 0 then
 		self.border = CreateFrame("Frame", nil, self.container, "TellMeWhen_GenericBorder")
 	end
+
+	if inset then size = -size end
 
 	if self.border then
 		self.border:SetBorderSize(size)

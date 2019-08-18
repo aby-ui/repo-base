@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(194, "DBM-Firelands", nil, 78)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190808031548")
+mod:SetRevision("20190817195516")
 mod:SetCreatureID(52530)
 mod:SetEncounterID(1206)
 mod:SetZone()
@@ -12,11 +12,11 @@ mod:SetZone()
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
+	"SPELL_CAST_SUCCESS 99464",
 	"SPELL_AURA_APPLIED 99362 99359 99308 99432 99844",
 	"SPELL_AURA_APPLIED_DOSE 99844",
 	"SPELL_AURA_REFRESH 99359",
 	"SPELL_AURA_REMOVED 100744 99432 99362 99359 99844",
-	"SPELL_CAST_SUCCESS 99464",
 	"CHAT_MSG_RAID_BOSS_EMOTE",
 	"CHAT_MSG_MONSTER_YELL"
 )
@@ -26,6 +26,12 @@ mod:RegisterEvents(
 	"SPELL_CAST_START 101223 102111 100761 100744 100559"
 )
 
+--[[
+(ability.id = 101223 or ability.id = 102111 or ability.id = 100761 or ability.id = 100744 or ability.id = 100559) and type = "begincast"
+ or ability.id = 99464 and type = "cast"
+ or ability.id = 99432 and type = "applybuff"
+ or ability.id = 100744 and type = "removebuff"
+--]]
 local warnMolting				= mod:NewCountAnnounce(99464, 3)
 local warnFirestormSoon			= mod:NewPreWarnAnnounce(100744, 10, 3)
 local warnCataclysm				= mod:NewCastAnnounce(102111, 3)
@@ -56,7 +62,6 @@ mod:AddInfoFrameOption(98734, false)
 mod.vb.initiatesSpawned = 0
 mod.vb.cataCast = 0
 mod.vb.moltCast = 0
-local initiate = DBM:EJ_GetSectionInfo(2834)
 local PowerLevel = DBM:GetSpellInfo(98734)
 
 function mod:OnCombatStart(delay)
@@ -84,66 +89,6 @@ end
 function mod:OnCombatEnd()
 	if self.Options.InfoFrame then
 		DBM.InfoFrame:Hide()
-	end
-end
-
-function mod:SPELL_AURA_APPLIED(args)
-	local spellId = args.spellId
-	if spellId == 99362 and ((args.sourceGUID == UnitGUID("target") and self:IsTank()) or not self:IsTank() and (args.sourceGUID == UnitGUID("targettarget") or args.sourceGUID == UnitGUID("focustargettarget"))) then--Only give warning if it's mob you're targeting and you're a tank, or you're targeting the tank it's on and he's targeting the bird.
-		specWarnTantrum:Show()
-		specWarnTantrum:Play("moveboss")
-		timerTantrum:Start()
-	elseif spellId == 99359 and ((args.sourceGUID == UnitGUID("target") and self:IsTank()) or not self:IsTank() and (args.sourceGUID == UnitGUID("targettarget") or args.sourceGUID == UnitGUID("focustargettarget"))) then--^^ Same as above only with diff spell
-		timerSatiated:Start(self:IsHeroic() and 10 or 15)
-	elseif spellId == 99308 then--Gushing Wound
-		if args:IsPlayer() then
-			specWarnGushingWoundSelf:Show()
-		else
-			specWarnGushingWoundOther:Show(args.destName)
-			specWarnGushingWoundOther:Play("stopheal")
-		end
-	elseif spellId == 99432 then--Burnout applied (0 energy)
-		warnPhase:Show(3)
-	elseif spellId == 99844 and args:IsDestTypePlayer() then
-		timerBlazingClaw:Start(args.destName)
-	end
-end
-
-function mod:SPELL_AURA_APPLIED_DOSE(args)
-	local spellId = args.spellId
-	if spellId == 99844 and args:IsDestTypePlayer() then
-		timerBlazingClaw:Start(args.destName)
-	end
-end
-
-function mod:SPELL_AURA_REFRESH(args)
-	local spellId = args.spellId
-	if spellId == 99359 and ((args.sourceGUID == UnitGUID("target") and self:IsTank()) or not self:IsTank() and args.sourceGUID == UnitGUID("targettarget")) then--^^ Same as above only with diff spell
-		if self:IsHeroic() then
-			timerSatiated:Start(10)
-		else
-			timerSatiated:Start()
-		end
-	end
-end
-
-function mod:SPELL_AURA_REMOVED(args)
-	local spellId = args.spellId
-	if spellId == 100744 then--Firestorm removed from boss. No reason for a heroic check here, this shouldn't happen on normal.
-		timerHatchEggs:Start(16)
-		if self.vb.cataCast < 3 then
-			timerCataclysmCD:Start(10)--10 seconds after first firestorm ends
-		else
-			timerCataclysmCD:Start(20)--20 seconds after second one ends. (or so i thought, my new logs show only 4 cataclysms not 5. wtf. I hate inconsistencies
-		end
-	elseif spellId == 99432 and self:IsInCombat() then--Burnout removed (50 energy)
-		warnPhase:Show(4)
-	elseif spellId == 99362 and ((args.sourceGUID == UnitGUID("target") and self:IsTank()) or not self:IsTank() and args.sourceGUID == UnitGUID("targettarget")) then
-		timerTantrum:Stop()
-	elseif spellId == 99359 and ((args.sourceGUID == UnitGUID("target") and self:IsTank()) or not self:IsTank() and args.sourceGUID == UnitGUID("targettarget")) then--^^ Same as above only with diff spell
-		timerSatiated:Stop()
-	elseif spellId == 99844 then
-		timerBlazingClaw:Stop(args.destName)
 	end
 end
 
@@ -185,7 +130,64 @@ function mod:SPELL_CAST_SUCCESS(args)
 	end
 end
 
+function mod:SPELL_AURA_APPLIED(args)
+	local spellId = args.spellId
+	if spellId == 99362 and ((args.sourceGUID == UnitGUID("target") and self:IsTank()) or not self:IsTank() and (args.sourceGUID == UnitGUID("targettarget") or args.sourceGUID == UnitGUID("focustargettarget"))) then--Only give warning if it's mob you're targeting and you're a tank, or you're targeting the tank it's on and he's targeting the bird.
+		specWarnTantrum:Show()
+		specWarnTantrum:Play("moveboss")
+		timerTantrum:Start()
+	elseif spellId == 99359 and ((args.sourceGUID == UnitGUID("target") and self:IsTank()) or not self:IsTank() and (args.sourceGUID == UnitGUID("targettarget") or args.sourceGUID == UnitGUID("focustargettarget"))) then--^^ Same as above only with diff spell
+		timerSatiated:Start(self:IsHeroic() and 10 or 15)
+	elseif spellId == 99308 then--Gushing Wound
+		if args:IsPlayer() then
+			specWarnGushingWoundSelf:Show()
+		else
+			specWarnGushingWoundOther:Show(args.destName)
+			specWarnGushingWoundOther:Play("stopheal")
+		end
+	elseif spellId == 99432 then--Burnout applied (0 energy)
+		warnPhase:Show(3)
+	elseif spellId == 99844 and args:IsDestTypePlayer() then
+		timerBlazingClaw:Start(args.destName)
+	end
+end
+
+function mod:SPELL_AURA_APPLIED_DOSE(args)
+	local spellId = args.spellId
+	if spellId == 99844 and args:IsDestTypePlayer() then
+		timerBlazingClaw:Start(args.destName)
+	end
+end
+
+function mod:SPELL_AURA_REFRESH(args)
+	local spellId = args.spellId
+	if spellId == 99359 and ((args.sourceGUID == UnitGUID("target") and self:IsTank()) or not self:IsTank() and args.sourceGUID == UnitGUID("targettarget")) then--^^ Same as above only with diff spell
+		timerSatiated:Start(self:IsHeroic() and 10 or 15)
+	end
+end
+
+function mod:SPELL_AURA_REMOVED(args)
+	local spellId = args.spellId
+	if spellId == 100744 then--Firestorm removed from boss. No reason for a heroic check here, this shouldn't happen on normal.
+		timerHatchEggs:Start(16)
+		if self.vb.cataCast < 3 then
+			timerCataclysmCD:Start(10)--10 seconds after first firestorm ends
+		else
+			timerCataclysmCD:Start(20)--20 seconds after second one ends. (or so i thought, my new logs show only 4 cataclysms not 5. wtf. I hate inconsistencies
+		end
+	elseif spellId == 99432 and self:IsInCombat() then--Burnout removed (50 energy)
+		warnPhase:Show(4)
+	elseif spellId == 99362 and ((args.sourceGUID == UnitGUID("target") and self:IsTank()) or not self:IsTank() and args.sourceGUID == UnitGUID("targettarget")) then
+		timerTantrum:Stop()
+	elseif spellId == 99359 and ((args.sourceGUID == UnitGUID("target") and self:IsTank()) or not self:IsTank() and args.sourceGUID == UnitGUID("targettarget")) then--^^ Same as above only with diff spell
+		timerSatiated:Stop()
+	elseif spellId == 99844 then
+		timerBlazingClaw:Stop(args.destName)
+	end
+end
+
 do
+	local initiate = DBM:EJ_GetSectionInfo(2834)
 	local intiateTimers = {27, 31, 31, 21, 21, 21}
 	local intiateHeroicTimers = {27, 22, 63, 21, 21, 40}
 	local initiateSpawns = {

@@ -121,10 +121,6 @@ View:ImplementsModule("IconModule_CooldownSweep", 20, function(Module, icon)
 end)
 View:ImplementsModule("IconModule_Texture_Colored", 30, function(Module, icon)
 	Module:Enable()
-	
-	Module.texture:ClearAllPoints()
-	Module.texture:SetSize(ICON_SIZE, ICON_SIZE)
-	Module.texture:SetPoint("CENTER", icon)
 end)
 View:ImplementsModule("IconModule_PowerBar_Overlay", 40, function(Module, icon)
 	if icon.ShowPBar then
@@ -143,9 +139,9 @@ View:ImplementsModule("IconModule_IconContainer_Masque", 100, function(Module, i
 	local group = icon.group
 	local gspv = group:GetSettingsPerView()
 
-	Module:SetBorder(gspv.BorderIcon, gspv.BorderColor)
+	Module:SetBorder(gspv.BorderIcon, gspv.BorderColor, gspv.BorderInset)
 	
-	local inset = gspv.BorderIcon
+	local inset = gspv.BorderInset and 0 or gspv.BorderIcon
 	local sizeX, sizeY = icon:GetSize()
 	
 	Module.container:ClearAllPoints()
@@ -175,6 +171,10 @@ View:ImplementsModule("IconModule_IconContainer_Masque", 100, function(Module, i
 	
 	local insets = isDefaultSkin and 1.5 or 0
 	local anchorTo = IconModule_Texture_Colored and IconModule_Texture_Colored.texture or icon
+
+	if IconModule_Texture_Colored then
+		IconModule_Texture_Colored.texture:SetAllPoints(Module.container)
+	end
 	
 	if TimerBar_Overlay then
 		TimerBar_Overlay.bar:SetFrameLevel(icon:GetFrameLevel() + 1 + frameLevelOffset)

@@ -1,5 +1,5 @@
 local MAJOR_VERSION = "LibDogTag-Unit-3.0"
-local MINOR_VERSION = 90000 + (tonumber(("@file-date-integer@"):match("%d+")) or 33333333333333)
+local MINOR_VERSION = 90000 + (tonumber(("20190812014218"):match("%d+")) or 33333333333333)
 
 if MINOR_VERSION > _G.DogTag_Unit_MINOR_VERSION then
 	_G.DogTag_Unit_MINOR_VERSION = MINOR_VERSION
@@ -20,7 +20,7 @@ local UnitGUID = UnitGUID
 local IsNormalUnit = DogTag.IsNormalUnit
 
 local wow_ver = select(4, GetBuildInfo())
-local wow_classic = wow_ver < 20000 and wow_ver > 11300
+local wow_classic = WOW_PROJECT_ID and WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
 local wow_800 = wow_ver >= 80000
 
 local playerGuid = nil

@@ -23,7 +23,7 @@
 ## X-DBM-Mod-MinCoreRevision: 14002
 ## X-Curse-Project-ID: 43971
 ## X-WoWI-ID: 21469
-## Version: r200-4-g450d026
+## Version: r200-5-ga0473e3
 
 localization.en.lua
 localization.de.lua

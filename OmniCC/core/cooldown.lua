@@ -81,18 +81,20 @@ function Cooldown:Initialize()
 end
 
 function Cooldown:ShowText()
-    local newDisplay = Addon.Display:GetOrCreate(self:GetParent() or self)
     local oldDisplay = self._occ_display
+    local newDisplay = Addon.Display:GetOrCreate(self:GetParent() or self)
 
-    if oldDisplay and oldDisplay ~= newDisplay then
-        oldDisplay:RemoveCooldown(self)
+    if oldDisplay ~= newDisplay then
+        self._occ_display = newDisplay
+
+        if oldDisplay then
+            oldDisplay:RemoveCooldown(self)
+        end
     end
 
     if newDisplay then
         newDisplay:AddCooldown(self)
     end
-
-    self._occ_display = newDisplay
 end
 
 function Cooldown:HideText()
@@ -109,6 +111,28 @@ function Cooldown:UpdateText()
         Cooldown.ShowText(self)
     else
         Cooldown.HideText(self)
+    end
+end
+
+do
+    local pending = {}
+
+    local updater = Addon:CreateHiddenFrame('Frame')
+
+    updater:SetScript("OnUpdate", function(self)
+        for cooldown in pairs(pending) do
+            Cooldown.UpdateText(cooldown)
+            pending[cooldown] = nil
+        end
+
+        self:Hide()
+    end)
+
+    function Cooldown:RequestUpdateText()
+        if not pending[self] then
+            pending[self] = true
+            updater:Show()
+        end
     end
 end
 
@@ -138,7 +162,7 @@ function Cooldown:SetTimer(start, duration)
     self._occ_show = Cooldown.CanShow(self)
     self._occ_priority = Cooldown.GetPriority(self)
 
-    Cooldown.UpdateText(self)
+    Cooldown.RequestUpdateText(self)
 end
 
 function Cooldown:SetNoCooldownCount(disable, owner)
@@ -181,13 +205,12 @@ end
 function Cooldown:OnVisibilityUpdated()
     if self.noCooldownCount or self:IsForbidden() then return end
 
-    Cooldown.UpdateText(self)
+    Cooldown.RequestUpdateText(self)
 end
 
 -- misc
 function Cooldown:SetupHooks()
-    local hooksecurefunc = _G.hooksecurefunc
-    local Cooldown_MT = getmetatable(_G.ActionButton1Cooldown).__index
+    local Cooldown_MT = getmetatable(ActionButton1Cooldown).__index
 
     hooksecurefunc(Cooldown_MT, "SetCooldown", Cooldown.OnSetCooldown)
     hooksecurefunc(Cooldown_MT, "SetCooldownDuration", Cooldown.OnSetCooldownDuration)

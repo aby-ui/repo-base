@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(192, "DBM-Firelands", nil, 78)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190808031548")
+mod:SetRevision("20190817195516")
 mod:SetCreatureID(52498)
 mod:SetEncounterID(1197)
 mod:SetZone()
@@ -9,14 +9,18 @@ mod:SetZone()
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
-	"SPELL_AURA_APPLIED 99506 99526",
 	"SPELL_CAST_START 99052",
 	"SPELL_CAST_SUCCESS 99476 98934 99859",
+	"SPELL_AURA_APPLIED 99506 99526",
 	"SPELL_DAMAGE 99278",
 	"SPELL_MISSED 99278",
 	"CHAT_MSG_RAID_BOSS_EMOTE"
 )
 
+--[[
+ability.id = 99052 and type = "begincast"
+ or (ability.id = 99476 or ability.id = 98934 or ability.id = 99859) and type = "cast"
+--]]
 local warnSmolderingDevastation		= mod:NewCountAnnounce(99052, 4)--Use count announce, cast time is pretty obvious from the bar, but it's useful to keep track how many of these have been cast.
 local warnPhase2Soon				= mod:NewPrePhaseAnnounce(2, 3)
 local warnFixate					= mod:NewTargetAnnounce(99526, 4)--Heroic ability
@@ -67,33 +71,6 @@ function mod:OnCombatEnd()
 	end
 end
 
-function mod:SPELL_AURA_APPLIED(args)
-	local spellId = args.spellId
-	if spellId == 99506 then--Applied debuff after cast. Used to announce special warnings and start target timer, only after application confirmed and not missed.
-		timerWidowKiss:Start(args.destName)
-	elseif spellId == 99526 then--99526 is on player, 99559 is on drone
-		timerFixate:Start(args.destName)
-		if args:IsPlayer() then
-			specWarnFixate:Show()
-			specWarnFixate:Play("justrun")
-		else
-			warnFixate:Show(args.destName)
-		end
-	end
-end
-
-function mod:SPELL_AURA_REMOVED(args)
-	local spellId = args.spellId
-	if spellId == 99506 then
-		timerWidowKiss:Stop(args.destName)
-		if args:IsPlayer() then
-			if self.Options.RangeFrame then
-				DBM.RangeCheck:Hide()
-			end
-		end
-	end
-end
-
 function mod:SPELL_CAST_START(args)
 	local spellId = args.spellId
 	if spellId == 99052 then
@@ -140,6 +117,33 @@ function mod:SPELL_CAST_SUCCESS(args)
 	--Phase 2 ember flares. Show for everyone
 	elseif spellId == 99859 then
 		timerEmberFlareCD:Start()
+	end
+end
+
+function mod:SPELL_AURA_APPLIED(args)
+	local spellId = args.spellId
+	if spellId == 99506 then--Applied debuff after cast. Used to announce special warnings and start target timer, only after application confirmed and not missed.
+		timerWidowKiss:Start(args.destName)
+	elseif spellId == 99526 then--99526 is on player, 99559 is on drone
+		timerFixate:Start(args.destName)
+		if args:IsPlayer() then
+			specWarnFixate:Show()
+			specWarnFixate:Play("justrun")
+		else
+			warnFixate:Show(args.destName)
+		end
+	end
+end
+
+function mod:SPELL_AURA_REMOVED(args)
+	local spellId = args.spellId
+	if spellId == 99506 then
+		timerWidowKiss:Stop(args.destName)
+		if args:IsPlayer() then
+			if self.Options.RangeFrame then
+				DBM.RangeCheck:Hide()
+			end
+		end
 	end
 end
 

@@ -502,7 +502,9 @@ function rf.IsTargetARare()
 				if (WorldQuestTracker.IsNewEXPZone (WorldQuestTracker.GetCurrentMapAreaID())) then
 					local unitClassification = UnitClassification ("target")
 					if (unitClassification == "rareelite") then
-						print ("|cFFFF9900[WQT]|r " .. L["S_RAREFINDER_NPC_NOTREGISTERED"] .. ":", UnitName ("target"), "NpcID:", npcId)
+						WorldQuestTracker.db.profile.raredetected [npcId or 0] = true
+						WorldQuestTracker.MapData.RaresToScan [npcId] = true
+						--print ("|cFFFF9900[WQT]|r " .. L["S_RAREFINDER_NPC_NOTREGISTERED"] .. ":", UnitName ("target"), "NpcID:", npcId)
 					end
 				end
 			end

@@ -1,10 +1,10 @@
 local mod	= DBM:NewMod("Grobbulus", "DBM-Naxx", 2)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190417005949")
+mod:SetRevision("20190817015124")
 mod:SetCreatureID(15931)
 mod:SetEncounterID(1111)
-mod:SetUsedIcons(5, 6, 7, 8)
+mod:SetUsedIcons(1, 2, 3, 4)
 
 mod:RegisterCombat("combat")
 mod:SetModelID(16035)
@@ -18,19 +18,19 @@ mod:RegisterEventsInCombat(
 local warnInjection		= mod:NewTargetAnnounce(28169, 2)
 local warnCloud			= mod:NewSpellAnnounce(28240, 2)
 
-local specWarnInjection	= mod:NewSpecialWarning("SpecialWarningInjection", nil, nil, nil, 1, 2)
+local specWarnInjection	= mod:NewSpecialWarningYou(28169, nil, nil, nil, 1, 2)
 
 local timerInjection	= mod:NewTargetTimer(10, 28169, nil, nil, nil, 3)
 local timerCloud		= mod:NewNextTimer(15, 28240, nil, nil, nil, 3)
 local enrageTimer		= mod:NewBerserkTimer(720)
 
-mod:AddBoolOption("SetIconOnInjectionTarget", true)
+mod:AddSetIconOption("SetIconOnInjectionTarget", 28169, false, false, {1, 2, 3, 4})
 
 local mutateIcons = {}
 
 local function addIcon(self)
 	for i,j in ipairs(mutateIcons) do
-		local icon = 9 - i
+		local icon = 0 + i
 		self:SetIcon(j, icon)
 	end
 end
@@ -68,7 +68,7 @@ function mod:SPELL_AURA_APPLIED(args)
 			table.insert(mutateIcons, args.destName)
 			addIcon()
 		end
-	end	
+	end
 end
 
 function mod:SPELL_AURA_REMOVED(args)
@@ -84,5 +84,5 @@ function mod:SPELL_CAST_SUCCESS(args)
 	if args.spellId == 28240 then
 		warnCloud:Show()
 		timerCloud:Start()
-	end	
+	end
 end

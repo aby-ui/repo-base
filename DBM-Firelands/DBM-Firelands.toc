@@ -17,21 +17,12 @@
 ## X-DBM-Mod: 1
 ## X-DBM-Mod-Type: RAID
 ## X-DBM-Mod-Category: CATA
-## X-DBM-Mod-Name: Firelands
-## X-DBM-Mod-Name-deDE: Feuerlande
-## X-DBM-Mod-Name-esES: Tierras de Fuego
-## X-DBM-Mod-Name-koKR: 불의 땅
-## X-DBM-Mod-Name-ruRU: Огненные Просторы
-## X-DBM-Mod-Name-zhTW: 火源之界
-## X-DBM-Mod-Name-zhCN: 火焰之地
-## X-DBM-Mod-Name-frFR: Terres de Feu
-## X-DBM-Mod-Name-ptBR: Terras do Fogo
 ## X-DBM-Mod-Sort: 802
 ## X-DBM-Mod-MapID: 720,951
 ## X-DBM-Mod-MinCoreRevision: 14002
 ## X-Curse-Project-ID: 43971
 ## X-WoWI-ID: 21469
-## Version: r200-4-g450d026
+## Version: r200-5-ga0473e3
 
 localization.en.lua
 localization.de.lua

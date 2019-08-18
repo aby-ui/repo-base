@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("Kel'Thuzad", "DBM-Naxx", 5)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190516165414")
+mod:SetRevision("20190817015124")
 mod:SetCreatureID(15990)
 mod:SetEncounterID(1114)
 --mod:SetModelID(15945)--Doesn't work at all, doesn't even render.
@@ -37,9 +37,9 @@ local timerMC				= mod:NewBuffActiveTimer(20, 28410, nil, nil, nil, 3)
 --local timerMCCD			= mod:NewCDTimer(90, 28410, nil, nil, nil, 3)--actually 60 second cdish but its easier to do it this way for the first one.
 local timerPhase2			= mod:NewTimer(218, "TimerPhase2", "136116", nil, nil, 6)
 
-mod:AddBoolOption("SetIconOnMC", true)
-mod:AddBoolOption("SetIconOnManaBomb", false)
-mod:AddBoolOption("SetIconOnFrostTomb", true)
+mod:AddSetIconOption("SetIconOnMC", 28410, true, false, {1, 2, 3})
+mod:AddSetIconOption("SetIconOnManaBomb", 27819, false, false, {8})
+mod:AddSetIconOption("SetIconOnFrostTomb", 28169, true, false, {1, 2, 3, 4, 5, 6, 7, 8})
 mod:AddRangeFrameOption(10, 27819)
 
 mod.vb.phase = 1
@@ -81,7 +81,7 @@ function mod:OnCombatStart(delay)
 end
 
 function mod:OnCombatEnd()
-	if self.Options.ShowRange then
+	if self.Options.RangeFrame then
 		DBM.RangeCheck:Hide()
 	end
 end
@@ -152,7 +152,7 @@ function mod:UNIT_TARGETABLE_CHANGED()
 		self.vb.phase = 2
 		warnPhase2:Show()
 		warnPhase2:Play("ptwo")
-		if self.Options.ShowRange then
+		if self.Options.RangeFrame then
 			DBM.RangeCheck:Show(10)
 		end
 	end

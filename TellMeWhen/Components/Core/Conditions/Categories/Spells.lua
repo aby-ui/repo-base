@@ -1,4 +1,4 @@
--- --------------------
+﻿-- --------------------
 -- TellMeWhen
 -- Originally by Nephthys of Hyjal <lieandswell@yahoo.com>
 
@@ -772,11 +772,13 @@ local function CASTCOUNT_COMBAT_LOG_EVENT_UNFILTERED()
 		
 		castsForGUID[spellName] = spellID
 		castsForGUID[spellID] = (castsForGUID[spellID] or 0) + 1
+		TMW:Fire("TMW_CNDT_CASTCOUNT_UPDATE")
 	
 	elseif cleuEvent == "UNIT_DIED" then
 		if destFlags then
 			if bit_band(destFlags, COMBATLOG_OBJECT_TYPE_PLAYER) ~= COMBATLOG_OBJECT_TYPE_PLAYER then
 				CastCounts[destGUID] = nil
+				TMW:Fire("TMW_CNDT_CASTCOUNT_UPDATE")
 			end
 		end
 	end
@@ -825,6 +827,6 @@ ConditionCategory:RegisterCondition(32,	 "CASTCOUNT", {
 	events = function(ConditionObject, c)
 		return
 			ConditionObject:GetUnitChangedEventString(CNDT:GetUnit(c.Unit)),
-			ConditionObject:GenerateNormalEventString("COMBAT_LOG_EVENT_UNFILTERED", nil, "SPELL_CAST_SUCCESS")
+			ConditionObject:GenerateNormalEventString("TMW_CNDT_CASTCOUNT_UPDATE")
 	end,
 })

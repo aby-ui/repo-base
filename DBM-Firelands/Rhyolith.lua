@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(193, "DBM-Firelands", nil, 78)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190808031548")
+mod:SetRevision("20190817195516")
 mod:SetCreatureID(52558)--or does 53772 die instead?didn't actually varify this fires right unit_died event yet so we'll see tonight
 mod:SetEncounterID(1204)
 mod:SetZone()
@@ -12,14 +12,20 @@ mod:SetZone()
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
-	"SPELL_AURA_APPLIED 99846",
-	"SPELL_AURA_APPLIED_DOSE 98255",
 	"SPELL_CAST_START 98034 97282",
 	"SPELL_CAST_SUCCESS 98493 97225",
 	"SPELL_SUMMON 98136 98552",
+	"SPELL_AURA_APPLIED 99846",
+	"SPELL_AURA_APPLIED_DOSE 98255",
 	"UNIT_HEALTH boss1"
 )
 
+--[[
+(ability.id = 98034 or ability.id = 97282) and type = "begincast"
+ or (ability.id = 98493 or ability.id = 97225) and type = "cast"
+ or (ability.id = 98136 or ability.id = 98552) and type = "summon"
+ or ability.id = 99846 and type = "applybuff"
+--]]
 local warnHeatedVolcano		= mod:NewSpellAnnounce(98493, 3)
 local warnFlameStomp		= mod:NewSpellAnnounce(97282, 3, nil, "Melee")--According to journal only hits players within 20 yards of him, so melee by default?
 local warnMoltenArmor		= mod:NewStackAnnounce(98255, 4, nil, "Tank|Healer")	-- Would this be nice if we could show this in the infoFrame? (changed defaults to tanks/healers, if you aren't either it doesn't concern you unless you find stuff to stand in)
@@ -58,27 +64,6 @@ function mod:OnCombatStart(delay)
 	self.vb.sparkCount = 0
 	self.vb.fragmentCount = 1--Fight starts out 1 cycle in so only 1 more spawns before pattern reset.
 	self.vb.prewarnedPhase2 = false
-end
-
-function mod:SPELL_AURA_APPLIED(args)
-	local spellId = args.spellId
-	if spellId == 99846 and not self.vb.phase2Started then
-		self.vb.phase2Started = true
-		warnPhase2:Show()
-		if timerFlameStomp:GetTime() > 0 then--This only happens if it was still on CD going into phase
-			timerFlameStomp:Cancel()
-			timerFlameStomp:Start(7)
-		else--Else, he uses it right away
-			timerFlameStomp:Start(1)
-		end
-	end
-end
-
-function mod:SPELL_AURA_APPLIED_DOSE(args)
-	local spellId = args.spellId
-	if spellId == 98255 and self:GetCIDFromGUID(args.destGUID) == 52558 and args.amount > 10 and self:AntiSpam(5, 1) then
-		warnMoltenArmor:Show(args.destName, args.amount)
-	end
 end
 
 function mod:SPELL_CAST_START(args)
@@ -127,6 +112,27 @@ function mod:SPELL_SUMMON(args)
 		self.vb.sparkCount = self.vb.sparkCount + 1
 		warnShard:Show(self.vb.sparkCount)
 		timerFragmentCD:Start()
+	end
+end
+
+function mod:SPELL_AURA_APPLIED(args)
+	local spellId = args.spellId
+	if spellId == 99846 and not self.vb.phase2Started then
+		self.vb.phase2Started = true
+		warnPhase2:Show()
+		if timerFlameStomp:GetTime() > 0 then--This only happens if it was still on CD going into phase
+			timerFlameStomp:Cancel()
+			timerFlameStomp:Start(7)
+		else--Else, he uses it right away
+			timerFlameStomp:Start(1)
+		end
+	end
+end
+
+function mod:SPELL_AURA_APPLIED_DOSE(args)
+	local spellId = args.spellId
+	if spellId == 98255 and self:GetCIDFromGUID(args.destGUID) == 52558 and args.amount > 10 and self:AntiSpam(5, 1) then
+		warnMoltenArmor:Show(args.destName, args.amount)
 	end
 end
 
