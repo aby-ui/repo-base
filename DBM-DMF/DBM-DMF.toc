@@ -7,6 +7,7 @@
 ## Title-deDE:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Dunkelmond-Jahrmarkt|r
 ## Title-frFR:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Foire de Sombrelune|r
 ## Title-zhTW:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0暗月馬戲團|r
+## Title-itIT:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Fiera di Lunacupa|r
 ## Author: MysticalOS
 ## LoadOnDemand: 1
 ## RequiredDeps: DBM-Core
@@ -20,14 +21,8 @@
 ## X-DBM-Mod-Sort: 419
 ## X-DBM-Mod-MinCoreRevision: 12473
 localization.en.lua
-localization.ru.lua
-localization.fr.lua
 localization.tw.lua
-localization.kr.lua
-localization.de.lua
-localization.es.lua
 localization.cn.lua
-localization.br.lua
 Cannon.lua
 Gnoll.lua
 Shot.lua

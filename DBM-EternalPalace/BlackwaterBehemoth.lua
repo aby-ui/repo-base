@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2347, "DBM-EternalPalace", nil, 1179)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190719221715")
+mod:SetRevision("20190820002905")
 mod:SetCreatureID(150653)
 mod:SetEncounterID(2289)
 mod:SetZone()
@@ -53,7 +53,6 @@ local berserkTimer						= mod:NewBerserkTimer(720)
 
 mod:AddRangeFrameOption(5, 292247)
 mod:AddInfoFrameOption(292133, true)
---mod:AddSetIconOption("SetIconOnEyeBeam", 264382, true)
 
 mod.vb.phase = 1
 mod.vb.cloudCount = 0

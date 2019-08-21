@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(192, "DBM-Firelands", nil, 78)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190817195516")
+mod:SetRevision("20190819030152")
 mod:SetCreatureID(52498)
 mod:SetEncounterID(1197)
 mod:SetZone()
@@ -41,6 +41,8 @@ local timerFixate					= mod:NewTargetTimer(10, 99526, nil, false)
 local timerWidowsKissCD				= mod:NewCDTimer(32, 99476, nil, "Tank|Healer", nil, 5, nil, DBM_CORE_TANK_ICON)
 local timerWidowKiss				= mod:NewTargetTimer(23, 99476, nil, "Tank|Healer", nil, 5, nil, DBM_CORE_TANK_ICON)
 
+local berserkTimer						= mod:NewBerserkTimer(600)
+
 mod.vb.smolderingCount = 0
 
 mod:AddRangeFrameOption(10, 99476)
@@ -63,6 +65,7 @@ function mod:OnCombatStart(delay)
 	timerDrone:Start(45-delay)
 	self:ScheduleMethod(45-delay, "repeatDrone")
 	self.vb.smolderingCount = 0
+	berserkTimer:Start(600-delay)
 end
 
 function mod:OnCombatEnd()

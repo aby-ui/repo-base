@@ -1,4 +1,4 @@
---[[ Credit for these translations goes to:
+﻿--[[ Credit for these translations goes to:
 	lsjyzjl
 	szp1222
 --]]

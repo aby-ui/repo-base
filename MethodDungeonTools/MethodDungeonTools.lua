@@ -205,7 +205,7 @@ local affixWeeks = { --affixID as used in C_ChallengeMode.GetAffixInfo(affixID)
     [1] = {[1]=5,[2]=3,[3]=9,[4]=119},
     [2] = {[1]=7,[2]=2,[3]=10,[4]=119},
     [3] = {[1]=11,[2]=4,[3]=9,[4]=119},
-    [4] = {[1]=5,[2]=14,[3]=10,[4]=119},
+    [4] = {[1]=8,[2]=14,[3]=10,[4]=119},
     [5] = {[1]=11,[2]=2,[3]=9,[4]=119},
     [6] = {[1]=8,[2]=4,[3]=10,[4]=119},
     [7] = {[1]=11,[2]=3,[3]=9,[4]=119},
@@ -330,6 +330,7 @@ local dungeonSubLevels = {
     },
     [19] = {
         [1] = "Siege of Boralus",
+        [2] = "Siege of Boralus (Upstairs)",
     },
     [20] = {
         [1] = "Temple of Sethraliss",
@@ -467,6 +468,7 @@ MethodDungeonTools.dungeonMaps = {
     [19] = {
         [0] = "SiegeOfBoralus",
         [1] = "SiegeOfBoralus",
+        [2] = "SiegeOfBoralus",
     },
     [20] = {
         [0] = "TempleOfSethralissA",
@@ -1009,8 +1011,8 @@ function MethodDungeonTools:MakeSidePanel(frame)
         --MethodDungeonTools:DungeonEnemies_UpdateReaping()
         MethodDungeonTools:UpdateFreeholdSelector(key)
         MethodDungeonTools:DungeonEnemies_UpdateBlacktoothEvent(key)
-        MethodDungeonTools:DungeonEnemies_UpdateBoralusFaction(MethodDungeonTools:GetCurrentPreset().faction)
         MethodDungeonTools:DungeonEnemies_UpdateBeguiling()
+        MethodDungeonTools:DungeonEnemies_UpdateBoralusFaction(MethodDungeonTools:GetCurrentPreset().faction)
         MethodDungeonTools:POI_UpdateAll()
         if not ignoreUpdateProgressBar then
             MethodDungeonTools:UpdateProgressbar()
@@ -1125,7 +1127,7 @@ function MethodDungeonTools:DisplayMDISelector()
         MethodDungeonTools.MDISelector:SetWidth(120)
         MethodDungeonTools.MDISelector:SetHeight(90)
         MethodDungeonTools.MDISelector.frame:ClearAllPoints()
-        MethodDungeonTools.MDISelector.frame:SetPoint("TOPRIGHT",MethodDungeonTools.main_frame,"TOPRIGHT",0,0)
+        MethodDungeonTools.MDISelector.frame:SetPoint("BOTTOMRIGHT",MethodDungeonTools.main_frame,"BOTTOMRIGHT",0,0)
 
         local label = AceGUI:Create("Label")
         label:SetText("MDI Mode")
@@ -1140,6 +1142,7 @@ function MethodDungeonTools:DisplayMDISelector()
             local preset = MethodDungeonTools:GetCurrentPreset()
             preset.mdi.beguiling = key
             MethodDungeonTools:DungeonEnemies_UpdateBeguiling()
+            MethodDungeonTools:DungeonEnemies_UpdateBoralusFaction(MethodDungeonTools:GetCurrentPreset().faction)
             MethodDungeonTools:UpdateProgressbar()
             MethodDungeonTools:ReloadPullButtons()
         end)
@@ -1182,6 +1185,7 @@ function MethodDungeonTools:DisplayMDISelector()
         preset.mdi.beguiling = preset.mdi.beguiling or 1
         MethodDungeonTools.MDISelector.BeguilingDropDown:SetValue(preset.mdi.beguiling)
         MethodDungeonTools:DungeonEnemies_UpdateBeguiling()
+        MethodDungeonTools:DungeonEnemies_UpdateBoralusFaction(MethodDungeonTools:GetCurrentPreset().faction)
         --freehold
         preset.mdi.freehold = preset.mdi.freehold or 1
         MethodDungeonTools.MDISelector.FreeholdDropDown:SetValue(preset.mdi.freehold)
@@ -1195,6 +1199,7 @@ function MethodDungeonTools:DisplayMDISelector()
         MethodDungeonTools:ToggleFreeholdSelector(false)
     else
         MethodDungeonTools:DungeonEnemies_UpdateBeguiling()
+        MethodDungeonTools:DungeonEnemies_UpdateBoralusFaction(MethodDungeonTools:GetCurrentPreset().faction)
         MethodDungeonTools:UpdateFreeholdSelector(MethodDungeonTools:GetCurrentPreset().week)
         MethodDungeonTools:DungeonEnemies_UpdateBlacktoothEvent()
         MethodDungeonTools:UpdateProgressbar()
@@ -1550,7 +1555,7 @@ end
 ---Returns if the current week has an affix week set that inlcludes the teeming affix
 function MethodDungeonTools:IsWeekTeeming(week)
     if not week then week = MethodDungeonTools:GetCurrentAffixWeek() or 1 end
-    return week == 1 or week == 4 or week == 8
+    return affixWeeks[week][1] == 5
 end
 
 ---IsPresetTeeming

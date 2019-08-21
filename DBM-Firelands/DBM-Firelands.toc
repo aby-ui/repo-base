@@ -22,17 +22,11 @@
 ## X-DBM-Mod-MinCoreRevision: 14002
 ## X-Curse-Project-ID: 43971
 ## X-WoWI-ID: 21469
-## Version: r200-5-ga0473e3
+## Version: r200-6-gfd5661e
 
 localization.en.lua
-localization.de.lua
-localization.es.lua
-localization.fr.lua
-localization.kr.lua
-localization.ru.lua
 localization.tw.lua
 localization.cn.lua
-localization.br.lua
 Bethtilac.lua
 Rhyolith.lua
 Alysrazor.lua
