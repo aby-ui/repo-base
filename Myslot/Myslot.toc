@@ -1,10 +1,10 @@
 ## Interface: 80200
 ## Title: Myslot
-## Notes: Myslot is for transfering settings between accounts. Feedback farmer1992@gmail.com
+## Notes: Myslot is for transferring settings between accounts. Feedback farmer1992@gmail.com
 ## Notes-zhCN: Myslot可以帮助你在账号之间共享配置。反馈：farmer1992@gmail.com
 ## Notes-zhTW: Myslot可以跨帳號綁定技能與按鍵設置。反饋通道：farmer1992@gmail.com
 ## Author: tg123
-## Version: v5.2.8
+## Version: v5.2.8-4-gaee1f37
 
 libs\base64.lua
 libs\crc32.lua

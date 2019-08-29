@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(194, "DBM-Firelands", nil, 78)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190817195516")
+mod:SetRevision("20190821185238")
 mod:SetCreatureID(52530)
 mod:SetEncounterID(1206)
 mod:SetZone()
@@ -42,7 +42,7 @@ local specWarnFirestorm			= mod:NewSpecialWarningSpell(100744, nil, nil, nil, 2,
 local specWarnFieroblast		= mod:NewSpecialWarningInterrupt(101223, "HasInterrupt", nil, 2, 1, 2)
 local specWarnGushingWoundSelf	= mod:NewSpecialWarningYou(99308, false, nil, nil, 1, 2)
 local specWarnTantrum			= mod:NewSpecialWarningSpell(99362, "Tank", nil, nil, 1, 2)
-local specWarnGushingWoundOther	= mod:NewSpecialWarningTarget(99308, false)--There is no voice that really fits this
+local specWarnGushingWoundOther	= mod:NewSpecialWarningTarget(99308, false, nil, nil, 1, 2)--There is no voice that really fits this
 
 local timerCombatStart			= mod:NewCombatTimer(33)
 local timerFieryVortexCD		= mod:NewNextTimer(179, 99794, nil, nil, nil, 6)
@@ -141,6 +141,7 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif spellId == 99308 then--Gushing Wound
 		if args:IsPlayer() then
 			specWarnGushingWoundSelf:Show()
+			specWarnGushingWoundSelf:Play("defensive")
 		else
 			specWarnGushingWoundOther:Show(args.destName)
 			specWarnGushingWoundOther:Play("stopheal")

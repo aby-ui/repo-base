@@ -1,3 +1,5 @@
+if not WeakAuras.IsCorrectVersion() then return end
+
 local L = WeakAuras.L;
 
 local event_types = WeakAuras.event_types;
@@ -169,7 +171,7 @@ local function GetCustomTriggerOptions(data, optionTriggerChoices, trigger)
               end
             elseif trueEvent:match("^UNIT_") then
               local unit = string.lower(i)
-              if not WeakAuras.baseUnitId[unit] then
+              if not WeakAuras.baseUnitId[unit] and not WeakAuras.multiUnitId[unit] then
                 return "|cFFFF0000"..L["Unit %s is not a valid unit for RegisterUnitEvent"]:format(unit)
               end
             end

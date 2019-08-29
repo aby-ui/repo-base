@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(198, "DBM-Firelands", nil, 78)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190817195516")
+mod:SetRevision("20190821185238")
 mod:SetCreatureID(52409)
 mod:SetEncounterID(1203)
 mod:SetZone()
@@ -22,7 +22,6 @@ mod:RegisterEventsInCombat(
 	"SPELL_MISSED 98518 98175 98870 99144 100941 98981",
 	"CHAT_MSG_MONSTER_YELL",
 	"RAID_BOSS_EMOTE",
-	"RAID_BOSS_WHISPER",
 	"UNIT_HEALTH boss1",
 	"UNIT_AURA player",
 	"UNIT_SPELLCAST_SUCCEEDED boss1",
@@ -57,26 +56,24 @@ local warnEntrappingRoots	= mod:NewSpellAnnounce(100646, 3)--Heroic phase 4 abil
 local warnEmpoweredSulf		= mod:NewAnnounce("warnEmpoweredSulf", 4, 100604)--Heroic phase 4 ability
 local warnDreadFlame		= mod:NewSpellAnnounce(100675, 3, nil, false)--Heroic phase 4 ability
 
-local specWarnScorchedGround= mod:NewSpecialWarningMove(98870)--Fire on ground left by Sulfuras Smash
-local specWarnMagmaTrap		= mod:NewSpecialWarningMove(98164)
-local specWarnMagmaTrapNear	= mod:NewSpecialWarningClose(98164)
+local specWarnMagmaTrap		= mod:NewSpecialWarningMove(98164, nil, nil, nil, 1, 2)
+local specWarnMagmaTrapNear	= mod:NewSpecialWarningClose(98164, nil, nil, nil, 1, 2)
 local yellMagmaTrap			= mod:NewYell(98164)--May Return false tank yells
-local specWarnBurningWound	= mod:NewSpecialWarningStack(99399, "Tank", 4)
-local specWarnSplittingBlow	= mod:NewSpecialWarningSpell(98951)
+local specWarnBurningWound	= mod:NewSpecialWarningStack(99399, nil, 4, nil, nil, 1, 6)
+local specWarnSplittingBlow	= mod:NewSpecialWarningSpell(98951, nil, nil, nil, 1, 2)
 local specWarnBlazingHeat	= mod:NewSpecialWarningYou(100460)--Debuff on you
 local yellBlazingHeat		= mod:NewYell(100460)
-local specWarnBlazingHeatMV	= mod:NewSpecialWarningMove(99144)--Standing in it
-local specWarnMoltenSeed	= mod:NewSpecialWarningSpell(98495, nil, nil, nil, 2)
-local specWarnEngulfing		= mod:NewSpecialWarningMove(99171)
-local specWarnMeteor		= mod:NewSpecialWarningMove(99268)--Spawning on you
-local specWarnMeteorNear	= mod:NewSpecialWarningClose(99268)--Spawning on you
+local specWarnMoltenSeed	= mod:NewSpecialWarningDodge(98495, nil, nil, nil, 2, 2)
+local specWarnEngulfing		= mod:NewSpecialWarningMove(99171, nil, nil, nil, 1, 2)
+local specWarnMeteor		= mod:NewSpecialWarningMove(99268, nil, nil, nil, 1, 2)--Spawning on you
+local specWarnMeteorNear	= mod:NewSpecialWarningClose(99268, nil, nil, nil, 1, 2)--Spawning near you
 local yellMeteor			= mod:NewYell(99268)
-local specWarnFixate		= mod:NewSpecialWarningRun(99849, nil, nil, nil, 4)--Chasing you after it spawned
+local specWarnFixate		= mod:NewSpecialWarningRun(99849, nil, nil, nil, 4, 2)--Chasing you after it spawned
 local yellFixate			= mod:NewYell(99849)
-local specWarnWorldofFlames	= mod:NewSpecialWarningSpell(100171, nil, nil, nil, true)
-local specWarnDreadFlame	= mod:NewSpecialWarningMove(100941)--Standing in dreadflame
-local specWarnEmpoweredSulf	= mod:NewSpecialWarningSpell(100604, "Tank", nil, nil, 3)--Heroic ability Asuming only the tank cares about this? seems like according to tooltip 5 seconds to hide him into roots?
-local specWarnSuperheated	= mod:NewSpecialWarningStack(100593, true, 12)
+local specWarnWorldofFlames	= mod:NewSpecialWarningDodge(100171, nil, nil, nil, 2, 2)
+local specWarnEmpoweredSulf	= mod:NewSpecialWarningSpell(100604, "Tank", nil, nil, 3, 2)--Heroic ability Asuming only the tank cares about this? seems like according to tooltip 5 seconds to hide him into roots?
+local specWarnSuperheated	= mod:NewSpecialWarningStack(100593, true, 12, nil, nil, 1, 6)
+local specWarnGTFO			= mod:NewSpecialWarningGTFO(98870, nil, nil, nil, 1, 8)
 
 local timerRageRagnaros		= mod:NewTimer(5, "timerRageRagnaros", 101110)
 local timerRageRagnarosCD	= mod:NewNextTimer(60, 101110)
@@ -184,9 +181,9 @@ local function TransitionEnded(self)
 end
 
 function mod:MagmaTrapTarget(targetname)
-	warnMagmaTrap:Show(targetname)
 	if targetname == UnitName("player") then
 		specWarnMagmaTrap:Show()
+		specWarnMagmaTrap:Play("runaway")
 		yellMagmaTrap:Yell()
 	else
 		local uId = DBM:GetRaidUnitId(targetname)
@@ -194,15 +191,18 @@ function mod:MagmaTrapTarget(targetname)
 			local inRange = DBM.RangeCheck:GetDistance("player", uId)
 			if inRange and inRange < 6 then
 				specWarnMagmaTrapNear:Show(targetname)
+				specWarnMagmaTrapNear:Play("runaway")
+			else
+				warnMagmaTrap:Show(targetname)
 			end
 		end
 	end
 end
 
 function mod:LivingMeteorTarget(targetname)
-	warnLivingMeteor:Show(targetname)
 	if targetname == UnitName("player") then
 		specWarnMeteor:Show()
+		specWarnMeteor:Play("targetyou")
 		yellMeteor:Yell()
 	else
 		local uId = DBM:GetRaidUnitId(targetname)
@@ -210,6 +210,9 @@ function mod:LivingMeteorTarget(targetname)
 			local inRange = DBM.RangeCheck:GetDistance("player", uId)
 			if inRange and inRange < 12 then
 				specWarnMeteorNear:Show(targetname)
+				specWarnMeteorNear:Play("runaway")
+			else
+				warnLivingMeteor:Show(targetname)
 			end
 		end
 	end
@@ -217,6 +220,7 @@ end
 
 local function warnSeeds()
 	specWarnMoltenSeed:Show()
+	specWarnMoltenSeed:Play("watchstep")
 	timerMoltenSeedCD:Start()
 end
 
@@ -303,6 +307,7 @@ function mod:SPELL_CAST_START(args)
 			timerPhaseSons:Start(47)--45 sec plus the 2 or so seconds he takes to actually come up and yell.
 		end
 		specWarnSplittingBlow:Show()
+		specWarnSplittingBlow:Play("phasechange")
 		timerInvokeSons:Start()
 		timerLavaBoltCD:Start(17.3)--9.3 seconds + cast time for splitting blow
 		if spellId == 98951 then--West
@@ -326,6 +331,7 @@ function mod:SPELL_CAST_START(args)
 			warnEngulfingFlame:Show(args.spellName, L.North)
 			if self:IsMelee() or self.vb.seedsActive then--Always warn melee classes if it's in melee (duh), warn everyone if seeds are active since 90% of strats group up in melee
 				specWarnEngulfing:Show()
+				specWarnEngulfing:Play("watchstep")
 			end
 		elseif spellId == 99235 then--Middle
 			if not self.Options.WarnEngulfingFlameHeroic and self:IsHeroic() then return end
@@ -374,11 +380,13 @@ function mod:SPELL_CAST_SUCCESS(args)
 			end
 		end
 	elseif spellId == 100460 then	-- Blazing heat
-		warnBlazingHeat:Show(args.destName)
 		timerBlazingHeatCD:Start(args.sourceGUID)--args.sourceGUID is to support multiple cds when more then 1 is up at once
 		if args:IsPlayer() then
 			specWarnBlazingHeat:Show()
+			specWarnBlazingHeat:Play("targetyou")
 			yellBlazingHeat:Yell()
+		else
+			warnBlazingHeat:Show(args.destName)
 		end
 		if self.Options.BlazingHeatIcons then
 			self:SetIcon(args.destName, self.vb.blazingHeatIcon, 8)
@@ -413,26 +421,33 @@ function mod:SPELL_AURA_APPLIED(args)
 	local spellId = args.spellId
 	if spellId == 99399 then
 		local amount = args.amount or 1
-		warnBurningWound:Show(args.destName, amount)
 		if amount >= 4 and args:IsPlayer() then
 			specWarnBurningWound:Show(amount)
+			specWarnBurningWound:Play("stackhigh")
+		else
+			warnBurningWound:Show(args.destName, amount)
 		end
 		timerBurningWound:Start(args.destName)
 	elseif spellId == 100594 and args:IsPlayer() then
 		local amount = args.amount or 1
 		if amount >= 12 and amount % 4 == 0 then
 			specWarnSuperheated:Show(amount)
+			specWarnSuperheated:Play("stackhigh")
 		end
 	elseif spellId == 100171 then--World of Flames, heroic version for engulfing flames.
 		specWarnWorldofFlames:Show()
+		specWarnWorldofFlames:Play("watchstep")
 		if self.vb.phase == 3 then
 			timerFlamesCD:Start(30)--30 second CD in phase 3
 		else
 			timerFlamesCD:Start(60)--60 second CD in phase 2
 		end
 	elseif spellId == 100604 then
-		warnEmpoweredSulf:Show(args.spellName)
-		specWarnEmpoweredSulf:Show()
+		if self.Options.SpecWarn100604spell then
+			specWarnEmpoweredSulf:Show()
+		else
+			warnEmpoweredSulf:Show(args.spellName)
+		end
 		timerEmpoweredSulf:Schedule(5)--Schedule 10 second bar to start when cast ends for buff active timer.
 		timerEmpoweredSulfCD:Start()
 	end
@@ -446,7 +461,7 @@ function mod:SPELL_AURA_REMOVED(args)
 	end
 end
 
-function mod:SPELL_DAMAGE(sourceGUID, _, _, _, destGUID, _, _, _, spellId)
+function mod:SPELL_DAMAGE(sourceGUID, _, _, _, destGUID, _, _, _, spellId, spellName)
 	if spellId == 98518 and not elementalsGUID[sourceGUID] then--Molten Inferno. elementals cast this on spawn.
 		elementalsGUID[sourceGUID] = true--Add unit GUID's to ignore
 		self.vb.elementalsSpawned = self.vb.elementalsSpawned + 1--Add up the total elementals
@@ -456,12 +471,9 @@ function mod:SPELL_DAMAGE(sourceGUID, _, _, _, destGUID, _, _, _, spellId)
 		if self.vb.magmaTrapSpawned == 0 and self.Options.InfoHealthFrame and not self.vb.seedsActive then--All traps are gone hide the health frame.
 			DBM.InfoFrame:Hide()
 		end
-	elseif spellId == 98870 and destGUID == UnitGUID("player") and self:AntiSpam(5, 2) then
-		specWarnScorchedGround:Show()
-	elseif spellId == 99144 and destGUID == UnitGUID("player") and self:AntiSpam(5, 2) then
-		specWarnBlazingHeatMV:Show()
-	elseif spellId == 100941 and destGUID == UnitGUID("player") and self:AntiSpam(5, 2) and not DBM:UnitBuff("player", deluge) then
-		specWarnDreadFlame:Show()
+	elseif (spellId == 98870 or spellId == 99144 or spellId == 100941) and destGUID == UnitGUID("player") and self:AntiSpam(5, 2) then
+		specWarnGTFO:Show(spellName)
+		specWarnGTFO:Play("watchfeet")
 	elseif spellId == 98981 and self:AntiSpam(3, 1) then--Reuse anti spam ID 1 again because lava bolts and wraths are never near eachother.
 		timerLavaBoltCD:Start()
 	end
@@ -487,9 +499,12 @@ function mod:RAID_BOSS_EMOTE(msg)
 	end
 end
 
-function mod:RAID_BOSS_WHISPER(msg)
-	if msg:find(staffDebuff) then--Only person with staff sees this.
-		self:SendSync("RageOfRagnaros", UnitName("player"))--Send it out so others can get notice too.
+function mod:OnTranscriptorSync(msg, targetName)
+	if msg:find(staffDebuff) and targetName then
+		targetName = Ambiguate(targetName, "none")
+		warnRageRagnarosSoon:Show(staffDebuff, targetName)
+		timerRageRagnaros:Start(5, staffDebuff, targetName)
+		timerRageRagnarosCD:Start()
 	end
 end
 
@@ -521,6 +536,7 @@ end
 function mod:UNIT_AURA(uId)
 	if DBM:UnitDebuff("player", meteorTarget) and not meteorWarned then--Warn you that you have a meteor
 		specWarnFixate:Show()
+		specWarnFixate:Play("justrun")
 		yellFixate:Yell()
 		meteorWarned = true
 	elseif not DBM:UnitDebuff("player", meteorTarget) and meteorWarned then--reset warned status if you don't have debuff
@@ -564,7 +580,7 @@ function mod:UNIT_DIED(args)
 			DBM.InfoFrame:Hide()
 			if self.vb.magmaTrapSpawned >= 1 and self.Options.InfoHealthFrame then--If traps are still up we restore the health frame (why on earth traps would still up in phase 4 is beyond me).
 				DBM.InfoFrame:SetHeader(L.HealthInfo)
-				DBM.InfoFrame:Show(5, "health", 100000)
+				DBM.InfoFrame:Show(5, "health", 200000)
 			end
 		end
 	elseif cid == 53189 then--Molten elemental
@@ -573,7 +589,7 @@ function mod:UNIT_DIED(args)
 			DBM.InfoFrame:Hide()
 			if self.vb.magmaTrapSpawned >= 1 and self.Options.InfoHealthFrame then--If traps are still up we restore the health frame.
 				DBM.InfoFrame:SetHeader(L.HealthInfo)
-				DBM.InfoFrame:Show(5, "health", 100000)
+				DBM.InfoFrame:Show(5, "health", 200000)
 			end
 		end
 	elseif cid == 53231 then--Lava Scion

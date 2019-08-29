@@ -25,8 +25,23 @@ function Config:GetDefaults()
 				artifact = {1, 0.75, 0.45, 0.81},
 				azerite = {0.601, 0.8, 0.901, 1}
 			}
+		},
+
+		char = {
+			bars = {
+				["**"] = {
+				}
+			}
 		}
 	}
+end
+
+function Config:SetBarMode(barId, mode)
+	self.db.char.bars[barId] = mode
+end
+
+function Config:GetBarMode(barId)
+	return self.db.char.bars[barId]
 end
 
 function Config:SetOneBarMode(enable)

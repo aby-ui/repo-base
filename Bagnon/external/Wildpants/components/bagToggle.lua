@@ -36,36 +36,10 @@ function BagToggle:OnClick(button)
 	if button == 'LeftButton' then
 		local profile = self:GetProfile()
 		profile.showBags = not profile.showBags
+
 		self:SendFrameSignal('BAG_FRAME_TOGGLED')
 	else
-		local menu = {}
-		local function addLine(id, name, addon, owner)
-			if id ~= self:GetFrameID() and (not addon or GetAddOnEnableState(UnitName('player'), addon) >= 2) then
-				tinsert(menu, {
-					text = name,
-					notCheckable = 1,
-					func = function()
-						self:OpenFrame(id, addon, owner)
-					end
-				})
-			end
-		end
-
-		addLine('inventory', INVENTORY_TOOLTIP)
-		addLine('bank', BANK)
-		addLine('vault', VOID_STORAGE, ADDON .. '_VoidStorage')
-
-		local guild = self:GetOwnerInfo().guild
-		if guild then
-			addLine('guild', GUILD_BANK, ADDON .. '_GuildBank', guild)
-		end
-
-		if #menu > 1 then
-			EasyMenu(menu, Dropdown, self, 0, 0, 'MENU')
-		else
-			self:OpenFrame(self:GetFrameID() == 'inventory' and 'bank' or 'inventory')
-		end
-
+		self:ToggleDropdown()
 		self:Update()
 	end
 end
@@ -92,6 +66,37 @@ end
 
 
 --[[ API ]]--
+
+function BagToggle:ToggleDropdown()
+	local menu = {}
+	local function addLine(id, name, addon, owner)
+		if id ~= self:GetFrameID() then
+			tinsert(menu, {
+				text = name,
+				notCheckable = 1,
+				func = function() self:OpenFrame(id, addon, owner) end
+			})
+		end
+	end
+
+	addLine('inventory', INVENTORY_TOOLTIP)
+	addLine('bank', BANK)
+
+	if Addon.HasVault then
+		addLine('vault', VOID_STORAGE, ADDON .. '_VoidStorage')
+	end
+
+	local guild = Addon.HasGuild and self:GetOwnerInfo().guild
+	if guild then
+		addLine('guild', GUILD_BANK, ADDON .. '_GuildBank', guild)
+	end
+
+	if #menu > 1 then
+		EasyMenu(menu, Dropdown, self, 0, 0, 'MENU')
+	else
+		menu[1].func()
+	end
+end
 
 function BagToggle:OpenFrame(id, addon, owner)
 	if not addon or LoadAddOn(addon) then

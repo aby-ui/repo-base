@@ -28,6 +28,19 @@ local min, type, format, unpack, setmetatable = math.min, type, string.format, u
 local CreateFrame, GetTime, UIParent = CreateFrame, GetTime, UIParent
 local UnitName, UnitCastingInfo, UnitChannelInfo = UnitName, UnitCastingInfo, UnitChannelInfo
 
+local WoWClassic = (WOW_PROJECT_ID == WOW_PROJECT_CLASSIC)
+if WoWClassic then
+	UnitCastingInfo = function(unit)
+		if unit ~= "player" then return end
+		return CastingInfo()
+	end
+
+	UnitChannelInfo = function(unit)
+		if unit ~= "player" then return end
+		return ChannelInfo()
+	end
+end
+
 local CastBarTemplate = CreateFrame("Frame")
 local CastBarTemplate_MT = {__index = CastBarTemplate}
 
@@ -231,7 +244,7 @@ function CastBarTemplate:UNIT_SPELLCAST_START(event, unit, guid, spellID)
 
 	self.Spark:Show()
 
-	if icon == "Interface\\Icons\\Temp" and Quartz3.db.profile.hidesamwise then
+	if (icon == "Interface\\Icons\\Temp" or icon == 136235) and Quartz3.db.profile.hidesamwise then
 		icon = nil
 	end
 	self.Icon:SetTexture(icon)
@@ -484,6 +497,14 @@ function CastBarTemplate:ApplySettings()
 	self.Spark:SetBlendMode("ADD")
 	self.Spark:SetWidth(20)
 	self.Spark:SetHeight(db.h*2.2)
+
+	if self.Shield then
+		local scale = (db.h/25)
+		self.Shield:SetWidth(36 * scale)
+		self.Shield:SetHeight(64 * scale)
+		self.Shield:ClearAllPoints()
+		self.Shield:SetPoint("CENTER", self.Icon, "CENTER", -2 * scale, -1 * scale)
+	end
 end
 
 function CastBarTemplate:RegisterEvents()

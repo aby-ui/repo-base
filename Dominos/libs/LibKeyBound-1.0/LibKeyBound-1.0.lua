@@ -1,6 +1,6 @@
 --[[
 Name: LibKeyBound-1.0
-Revision: $Rev: 109 $
+Revision: $Rev: 115 $
 Author(s): Gello, Maul, Toadkiller, Tuller
 Website: http://www.wowace.com/wiki/LibKeyBound-1.0
 Documentation: http://www.wowace.com/wiki/LibKeyBound-1.0
@@ -10,7 +10,7 @@ Dependencies: CallbackHandler-1.0
 --]]
 
 local MAJOR = 'LibKeyBound-1.0'
-local MINOR = tonumber(("$Revision: 109 $"):match("(%d+)")) + 90000
+local MINOR = 100000 + 1
 
 --[[
 	LibKeyBound-1.0
@@ -33,7 +33,6 @@ if not LibKeyBound then return end -- no upgrade needed
 
 local _G = _G
 local NUM_MOUSE_BUTTONS = 31
-local SaveBindings = SaveBindings or AttemptToSaveBindings
 
 -- CallbackHandler
 LibKeyBound.events = LibKeyBound.events or _G.LibStub('CallbackHandler-1.0'):New(LibKeyBound)
@@ -42,6 +41,8 @@ local L = LibKeyBoundLocale10
 LibKeyBound.L = L
 -- ToDo delete global LibKeyBoundLocale10 at some point
 LibKeyBound.Binder = LibKeyBound.Binder or {}
+
+local SaveBindings = SaveBindings or AttemptToSaveBindings
 
 -- #NODOC
 function LibKeyBound:Initialize()
@@ -64,11 +65,11 @@ function LibKeyBound:Initialize()
 		}
 		f:SetPoint('TOP', 0, -24)
 		f:Hide()
-		f:SetScript('OnShow', function() PlaySound(SOUNDKIT.IG_MAINMENU_OPEN) end)
-		f:SetScript('OnHide', function() PlaySound(SOUNDKIT.IG_MAINMENU_CLOSE) end)
+		f:SetScript('OnShow', function() PlaySound(SOUNDKIT and SOUNDKIT.IG_MAINMENU_OPTION or 'igMainMenuOption') end)
+		f:SetScript('OnHide', function() PlaySound(SOUNDKIT and SOUNDKIT.GS_TITLE_OPTION_EXIT or 'gsTitleOptionExit') end)
 
 		f:RegisterForDrag('LeftButton')
-		f:SetScript('OnDragStart', function(f) f:StartMoving() end)
+		f:SetScript('OnDragStart', function(f) f:StartMoving() end) 
 		f:SetScript('OnDragStop', function(f) f:StopMovingOrSizing() end)
 
 		local header = f:CreateTexture(nil, 'ARTWORK')
@@ -87,7 +88,7 @@ function LibKeyBound:Initialize()
 		desc:SetJustifyH('LEFT')
 		desc:SetPoint('TOPLEFT', 18, -32)
 		desc:SetPoint('BOTTOMRIGHT', -18, 48)
-		desc:SetText(format(L.BindingsHelp, GetBindingText('ESCAPE', 'KEY_')))
+		desc:SetText(format(L.BindingsHelp, GetBindingText('ESCAPE')))
 
 		-- Per character bindings checkbox
 		local perChar = CreateFrame('CheckButton', 'KeyboundDialogCheck', f, 'OptionsCheckButtonTemplate')
@@ -435,7 +436,7 @@ function LibKeyBound.Binder:Create()
 	end
 
 	local bg = binder:CreateTexture()
-	bg:SetTexture(0, 0, 0, 0.5)
+	bg:SetColorTexture(0, 0, 0, 0.5)
 	bg:SetAllPoints(binder)
 
 	local text = binder:CreateFontString('OVERLAY')
@@ -461,7 +462,7 @@ end
 
 function LibKeyBound.Binder:OnKeyDown(key)
 	local button = self.button
-	if not button then return end
+	if not button or not button:IsMouseOver()then return end
 
 	if (key == 'UNKNOWN' or key == 'LSHIFT' or key == 'RSHIFT' or
 		key == 'LCTRL' or key == 'RCTRL' or key == 'LALT' or key == 'RALT') then
@@ -476,7 +477,7 @@ function LibKeyBound.Binder:OnKeyDown(key)
 
 	local openChatKey = GetBindingKey('OPENCHAT')
 	if openChatKey and key == openChatKey then
-		ChatFrameEditBox:Show()
+		ChatFrame_OpenChat("")
 		return
 	end
 
@@ -515,10 +516,8 @@ function LibKeyBound.Binder:OnKeyDown(key)
 		end
 	end
 
-	if button:IsMouseOver() then
-		self:SetKey(button, key)
-		LibKeyBound:Set(button)
-	end
+	self:SetKey(button, key)
+	LibKeyBound:Set(button)
 end
 
 function LibKeyBound.Binder:OnMouseWheel(arg1)
@@ -545,7 +544,7 @@ function LibKeyBound.Binder:OnEnter()
 		end
 
 		local bindings = self:GetBindings(button)
-		if bindings then
+		if bindings and bindings ~= "" then
 			GameTooltip:AddLine(bindings, 0, 1, 0)
 			GameTooltip:AddLine(L.ClearTip)
 		else
@@ -574,12 +573,12 @@ function LibKeyBound.Binder:FreeKey(button, key)
 	if button.FreeKey then
 		local action = button:FreeKey(key)
 		if button:FreeKey(key) then
-			msg = format(L.UnboundKey, GetBindingText(key, 'KEY_'), action)
+			msg = format(L.UnboundKey, GetBindingText(key), action)
 		end
 	else
 		local action = GetBindingAction(key)
 		if action and action ~= '' and action ~= self:ToBinding(button) then
-			msg = format(L.UnboundKey, GetBindingText(key, 'KEY_'), action)
+			msg = format(L.UnboundKey, GetBindingText(key), action)
 		end
 	end
 
@@ -602,9 +601,9 @@ function LibKeyBound.Binder:SetKey(button, key)
 
 		local msg
 		if button.GetActionName then
-			msg = format(L.BoundKey, GetBindingText(key, 'KEY_'), button:GetActionName())
+			msg = format(L.BoundKey, GetBindingText(key), button:GetActionName())
 		else
-			msg = format(L.BoundKey, GetBindingText(key, 'KEY_'), button:GetName())
+			msg = format(L.BoundKey, GetBindingText(key), button:GetName())
 		end
 		UIErrorsFrame:AddMessage(msg, 1, 1, 1, 1, UIERRORS_HOLD_TIME)
 	end
@@ -643,9 +642,9 @@ function LibKeyBound.Binder:GetBindings(button)
 	for i = 1, select('#', GetBindingKey(binding)) do
 		local hotKey = select(i, GetBindingKey(binding))
 		if keys then
-			keys = keys .. ', ' .. GetBindingText(hotKey, 'KEY_')
+			keys = keys .. ', ' .. GetBindingText(hotKey)
 		else
-			keys = GetBindingText(hotKey, 'KEY_')
+			keys = GetBindingText(hotKey)
 		end
 	end
 

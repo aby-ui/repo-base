@@ -6,12 +6,12 @@
 		Bagnon:ToggleFrame('bank')
 	</Binding>
 	<Binding name="BAGNON_GUILD_TOGGLE" category="ADDONS">
-		if LoadAddOn('Bagnon_GuildBank') then
+		if Bagnon.HasGuild and LoadAddOn('Bagnon_GuildBank') then
 			Bagnon:ToggleFrame('guild')
 		end
 	</Binding>
 	<Binding name="BAGNON_VAULT_TOGGLE" category="ADDONS">
-		if LoadAddOn('Bagnon_VoidStorage') then
+		if Bagnon.HasVault and LoadAddOn('Bagnon_VoidStorage') then
 			Bagnon:ToggleFrame('vault')
 		end
 	</Binding>

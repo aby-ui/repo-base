@@ -23,8 +23,8 @@ GTFO = {
 		TrivialDamagePercent = 2; -- Minimum % of HP lost required for an alert to be trivial
 		SoundOverrides = { }; -- Override table for GTFO sounds
 	};
-	Version = "4.48.10"; -- Version number (text format)
-	VersionNumber = 44810; -- Numeric version number for checking out-of-date clients
+	Version = "4.49"; -- Version number (text format)
+	VersionNumber = 44900; -- Numeric version number for checking out-of-date clients
 	DataLogging = nil; -- Indicate whether or not the addon needs to run the datalogging function (for hooking)
 	DataCode = "4"; -- Saved Variable versioning, change this value to force a reset to default
 	CanTank = nil; -- The active character is capable of tanking
@@ -1388,12 +1388,14 @@ function GTFO_CheckTankMode()
 				--GTFO_DebugPrint("Bear Form found - tank mode activated");
 				return true;
 			end
-		elseif (class == "MONK" or class == "DEMONHUNTER" or class == "WARRIOR" or class == "DEATHKNIGHT" or class == "PALADIN") then
+		elseif ((not GTFO.ClassicMode) and (class == "MONK" or class == "DEMONHUNTER" or class == "WARRIOR" or class == "DEATHKNIGHT" or class == "PALADIN")) then
 			local spec = GetSpecialization();
 			if (spec and GetSpecializationRole(spec) == "TANK") then
 				--GTFO_DebugPrint("Tank spec found - tank mode activated");
 				return true;
 			end
+		elseif ((GTFO.ClassicMode) and (class == "WARRIOR" or class == "PALADIN")) then
+			GTFO.CanTank = true;
 		else
 			--GTFO_DebugPrint("Failed Tank Mode - This code shouldn't have ran");
 			GTFO.CanTank = nil;
@@ -1411,23 +1413,30 @@ function GTFO_CheckCasterMode()
 			return true;
 		end
 
-		local spec = GetSpecialization();
-		if (spec) then
-			local role = GetSpecializationRole(spec);
-			if (role == "TANK") then
-				return nil;
+		if not (GTFO.ClassicMode) then
+			local spec = GetSpecialization();
+			if (spec) then
+				local role = GetSpecializationRole(spec);
+				if (role == "TANK") then
+					return nil;
+				end
+				if (role == "HEALER") then
+					return true;
+				end
+			
+				local id, _ = GetSpecializationInfo(spec);
+				if (id == 102) then
+					-- Balance Druid
+					return true;
+				end
+				if (id == 262) then
+					-- Elemental Shaman
+					return true;
+				end
 			end
-			if (role == "HEALER") then
-				return true;
-			end
-		
-			local id, _ = GetSpecializationInfo(spec);
-			if (id == 102) then
-				-- Balance Druid
-				return true;
-			end
-			if (id == 262) then
-				-- Elemental Shaman
+		else
+			if (class == "DRUID" or class == "PALADIN" or class == "SHAMAN") then
+				-- Classic Detection (check for caster mode)
 				return true;
 			end
 		end

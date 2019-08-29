@@ -2,9 +2,11 @@
 ## Interface: 80200
 ## Notes: Modular casting bar.
 ## Author: Nevcairiel, Nymbia
-## Version: 3.4.1
+## Version: 3.5.1
 ## X-License: GPL v2
 ## X-Credits: Ammo (some code based on PitBull_CastBar), kergoth (Tradeskill Merge module idea), Roartindon (Lag Embed mode for Latency module)
+## X-Curse-Project-ID: 4558
+## X-WoWI-ID: 7158
 
 ## Title-ruRU: Кварц
 ## Notes-ruRU: Модульная полоса применений.
@@ -15,7 +17,6 @@
 ## SavedVariables: Quartz3DB
 ## OptionalDeps: Ace3, LibSharedMedia-3.0, AceGUI-3.0-SharedMediaWidgets, SharedMedia, FlightMap
 
-#@no-lib-strip@
 libs\LibStub\LibStub.lua
 libs\CallbackHandler-1.0\CallbackHandler-1.0.xml
 libs\AceAddon-3.0\AceAddon-3.0.xml
@@ -32,7 +33,6 @@ libs\AceHook-3.0\AceHook-3.0.xml
 
 libs\LibSharedMedia-3.0\lib.xml
 libs\AceGUI-3.0-SharedMediaWidgets\widget.xml
-#@end-no-lib-strip@
 
 locale\locale.xml
 

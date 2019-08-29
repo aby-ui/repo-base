@@ -4,12 +4,12 @@ local HiddenFrame = CreateFrame("Frame", nil, UIParent)
 HiddenFrame:SetAllPoints(UIParent)
 HiddenFrame:Hide()
 
-local function apply(func, frame, ...)
+local function apply(func, arg, ...)
     if select("#", ...) > 0 then
-        return func(frame), apply(func, ...)
+        return func(arg), apply(func, ...)
     end
 
-    return func(frame)
+    return func(arg)
 end
 
 local function hide(frame)
@@ -42,7 +42,7 @@ end
 apply(hide,
     ActionBarDownButton,
     ActionBarUpButton,
-    --MainMenuBarPerformanceBar,
+    --MainMenuBarPerformanceBarFrame,
     MicroButtonAndBagsBar,
     MultiBarBottomLeft,
     MultiBarBottomRight,

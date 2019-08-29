@@ -1,5 +1,8 @@
+if not WeakAuras.IsCorrectVersion() then return end
+
 local SharedMedia = LibStub("LibSharedMedia-3.0");
 local L = WeakAuras.L;
+if WeakAuras.IsClassic() then return end -- Models disabled for classic
 
 -- Default settings
 local default = {
@@ -69,6 +72,9 @@ local function GetProperties(data)
   return properties;
 end
 
+local regionFunctions = {
+  Update = function() end
+}
 
 -- Called when first creating a new region/display
 local function create(parent)
@@ -90,6 +96,10 @@ local function create(parent)
   region.model = model;
 
   WeakAuras.regionPrototype.create(region);
+
+  for k, v in pairs (regionFunctions) do
+    region[k] = v
+  end
 
   -- Return complete region
   return region;
@@ -170,14 +180,14 @@ local function modify(parent, region, data)
   -- Enable model animation
   if(data.advance) then
     local elapsed = 0;
-    model:SetScript("OnUpdate", function(self, elaps)
+    model.FrameTick = function(self, elaps)
       WeakAuras.StartProfileSystem("model");
       elapsed = elapsed + (elaps * 1000);
       model:SetSequenceTime(data.sequence, elapsed);
       WeakAuras.StopProfileSystem("model");
-    end);
+    end
   else
-    model:SetScript("OnUpdate", nil);
+    model.FrameTick = nil
   end
 
   -- Rescale model display
@@ -256,6 +266,7 @@ local function modify(parent, region, data)
     model:SetKeepModelOnHide(false)
   end
 
+  WeakAuras.regionPrototype.modifyFinish(parent, region, data);
 end
 
 --- Work around for movies and world map hiding all models

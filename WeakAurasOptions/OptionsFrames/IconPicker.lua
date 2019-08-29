@@ -1,3 +1,5 @@
+if not WeakAuras.IsCorrectVersion() then return end
+
 -- Lua APIs
 local pairs  = pairs
 
@@ -105,7 +107,7 @@ local function ConstructIconPicker(frame)
   iconLabel:SetPoint("RIGHT", input, "LEFT", -50, 0);
 
   function group.Pick(self, texturePath)
-    if(self.data.controlledChildren) then
+    if(not self.groupIcon and self.data.controlledChildren) then
       for index, childId in pairs(self.data.controlledChildren) do
         local childData = WeakAuras.GetData(childId);
         if(childData) then
@@ -129,10 +131,11 @@ local function ConstructIconPicker(frame)
     end
   end
 
-  function group.Open(self, data, field)
+  function group.Open(self, data, field, groupIcon)
     self.data = data;
     self.field = field;
-    if(data.controlledChildren) then
+    self.groupIcon = groupIcon
+    if(not groupIcon and data.controlledChildren) then
       self.givenPath = {};
       for index, childId in pairs(data.controlledChildren) do
         local childData = WeakAuras.GetData(childId);
@@ -160,7 +163,7 @@ local function ConstructIconPicker(frame)
   end
 
   function group.CancelClose()
-    if(group.data.controlledChildren) then
+    if(not group.groupIcon and group.data.controlledChildren) then
       for index, childId in pairs(group.data.controlledChildren) do
         local childData = WeakAuras.GetData(childId);
         if(childData) then

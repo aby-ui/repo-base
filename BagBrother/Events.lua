@@ -66,7 +66,7 @@ function BagBrother:BANKFRAME_CLOSED()
 			self:SaveBag(i)
 		end
 
-		if IsReagentBankUnlocked() then
+		if Reagents and IsReagentBankUnlocked() then
 			self:SaveBag(Reagents, true)
 		end
 

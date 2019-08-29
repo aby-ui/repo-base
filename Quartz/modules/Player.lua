@@ -22,11 +22,26 @@ local L = LibStub("AceLocale-3.0"):GetLocale("Quartz3")
 local MODNAME = "Player"
 local Player = Quartz3:NewModule(MODNAME)
 
+local UnitCastingInfo, UnitChannelInfo = UnitCastingInfo, UnitChannelInfo
+
+local WoWClassic = (WOW_PROJECT_ID == WOW_PROJECT_CLASSIC)
+if WoWClassic then
+	UnitCastingInfo = function(unit)
+		if unit ~= "player" then return end
+		return CastingInfo()
+	end
+
+	UnitChannelInfo = function(unit)
+		if unit ~= "player" then return end
+		return ChannelInfo()
+	end
+end
+
 ----------------------------
 -- Upvalues
 -- GLOBALS: CastingBarFrame
 local unpack = unpack
-local UnitChannelInfo = UnitChannelInfo
+
 
 local db, getOptions, castBar
 
@@ -188,7 +203,27 @@ local function setBarTicks(ticknum, duration, ticks)
 	end
 end
 
-local channelingTicks = {
+local channelingTicks = WoWClassic and {
+	-- druid
+	[GetSpellInfo(740)] = 5, -- tranquility
+	[GetSpellInfo(16914)] = 10, -- hurricane
+	-- hunter
+	[GetSpellInfo(136)] = 5, -- mend pet
+	[GetSpellInfo(1510)] = 6, -- volley
+	-- mage
+	[GetSpellInfo(10)] = 8, -- blizzard
+	[GetSpellInfo(5143)] = 3, -- arcane missiles
+	-- priest
+	[GetSpellInfo(15407)] = 3, -- mind flay
+	[GetSpellInfo(10797)] = 6, -- star shards
+	-- warlock
+	[GetSpellInfo(1949)] = 15, -- hellfire
+	[GetSpellInfo(5740)] = 4, -- rain of fire
+	[GetSpellInfo(5138)] = 5, -- drain mana
+	[GetSpellInfo(689)] = 5, -- drain life
+	[GetSpellInfo(1120)] = 5, -- drain soul
+	[GetSpellInfo(755)] = 10, -- health funnel
+} or {
 	-- warlock
 	[GetSpellInfo(234153)] = 6, -- drain life
 	[GetSpellInfo(193440)] = 3, -- demonwrath

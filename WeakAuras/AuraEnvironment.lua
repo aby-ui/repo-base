@@ -1,3 +1,5 @@
+if not WeakAuras.IsCorrectVersion() then return end
+
 local WeakAuras = WeakAuras
 local L = WeakAuras.L
 local prettyPrint = WeakAuras.prettyPrint
@@ -42,9 +44,19 @@ end
 
 -- Wrapping a unit's name in its class colour is very common in custom Auras
 local WA_ClassColorName = function(unit)
-  local _, class = UnitClass(unit)
-  if not class then return end
-  return RAID_CLASS_COLORS[class]:WrapTextInColorCode(UnitName(unit))
+  if unit and UnitExists(unit) then
+    local name = UnitName(unit)
+    local _, class = UnitClass(unit)
+    if not class then
+      return name
+    else
+      local classData = RAID_CLASS_COLORS[class]
+      local coloredName = ("|c%s%s|r"):format(classData.colorStr, name)
+      return coloredName
+    end
+  else
+    return "" -- ¯\_(ツ)_/¯
+  end
 end
 
 local helperFunctions = {
@@ -58,6 +70,9 @@ local helperFunctions = {
 local LCG = LibStub("LibCustomGlow-1.0")
 WeakAuras.ShowOverlayGlow = LCG.ButtonGlow_Start
 WeakAuras.HideOverlayGlow = LCG.ButtonGlow_Stop
+
+local LGF = LibStub("LibGetFrame-1.0")
+WeakAuras.GetUnitFrame = LGF.GetUnitFrame
 
 local function forbidden()
   prettyPrint(L["A WeakAura just tried to use a forbidden function but has been blocked from doing so. Please check your auras!"])
@@ -122,7 +137,7 @@ function WeakAuras.ClearAuraEnvironment(id)
   environment_initialized[id] = false;
 end
 
-function WeakAuras.ActivateAuraEnvironment(id, cloneId, state)
+function WeakAuras.ActivateAuraEnvironment(id, cloneId, state, states)
   local data = WeakAuras.GetData(id)
   local region = WeakAuras.GetRegion(id, cloneId)
   if not data then
@@ -136,6 +151,7 @@ function WeakAuras.ActivateAuraEnvironment(id, cloneId, state)
       current_aura_env.id = id
       current_aura_env.cloneId = cloneId
       current_aura_env.state = state
+      current_aura_env.states = states
       current_aura_env.region = WeakAuras.GetRegion(id, cloneId)
       -- Push the new environment onto the stack
       tinsert(aura_env_stack, current_aura_env)
@@ -147,6 +163,7 @@ function WeakAuras.ActivateAuraEnvironment(id, cloneId, state)
       current_aura_env.id = id
       current_aura_env.cloneId = cloneId
       current_aura_env.state = state
+      current_aura_env.states = states
       current_aura_env.region = region
       -- push new environment onto the stack
       tinsert(aura_env_stack, current_aura_env)

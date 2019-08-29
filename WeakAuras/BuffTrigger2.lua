@@ -56,16 +56,25 @@ Returns the tooltip text for additional properties.
 GetTriggerConditions(data, triggernum)
 Returns the potential conditions for a trigger
 ]]--
+if not WeakAuras.IsCorrectVersion() then return end
 
 -- Lua APIs
 local tinsert, wipe = table.insert, wipe
 local pairs, next, type = pairs, next, type
+
+local LCD
+if WeakAuras.IsClassic() then
+  LCD = LibStub("LibClassicDurations")
+  LCD:RegisterFrame("WeakAuras")
+end
 
 local WeakAuras = WeakAuras
 local L = WeakAuras.L
 local timer = WeakAuras.timer
 local BuffTrigger = {}
 local triggerInfos = {}
+
+local UnitGroupRolesAssigned = not WeakAuras.IsClassic() and UnitGroupRolesAssigned or function() return "DAMAGER" end
 
 -- keyed on unit, debuffType, spellname, with a scan object value
 -- scan object: id, triggernum, scanFunc
@@ -475,7 +484,6 @@ local function UpdateStateWithMatch(time, bestMatch, triggerStates, cloneId, mat
 
     if state.expirationTime ~= bestMatch.expirationTime then
       state.expirationTime = bestMatch.expirationTime
-      state.resort = true
       changed = true
     end
 
@@ -618,7 +626,6 @@ local function UpdateStateWithNoMatch(time, triggerStates, triggerInfo, cloneId,
 
     if state.expirationTime ~= math.huge then
       state.expirationTime = math.huge
-      state.resort = true
       changed = true
     end
 
@@ -866,8 +873,8 @@ local function FormatAffectedUnaffected(triggerInfo, matchedUnits)
       unaffected = unaffected .. (GetUnitName(unit, false) or unit) .. ", "
     end
   end
-  unaffected = unaffected == "" and L["None"] or unaffected:sub(0, -3)
-  affected = affected == "" and L["None"] or affected:sub(0, -3)
+  unaffected = unaffected == "" and L["None"] or unaffected:sub(1, -3)
+  affected = affected == "" and L["None"] or affected:sub(1, -3)
 
   return affected, unaffected
 end
@@ -1066,10 +1073,6 @@ local function UpdateTriggerState(time, id, triggernum)
     end
   end
 
-  if updated then
-    WeakAuras.UpdatedTriggerState(id)
-  end
-
   if nextCheck then
     if triggerInfo.nextScheduledCheck ~= nextCheck then
       if triggerInfo.nextScheduledCheckHandle then
@@ -1083,6 +1086,8 @@ local function UpdateTriggerState(time, id, triggernum)
     triggerInfo.nextScheduledCheckHandle = nil
     triggerInfo.nextScheduledCheck = nil
   end
+
+  return updated
 end
 
 recheckTriggerInfo = function(triggerInfo)
@@ -1100,6 +1105,15 @@ local function PrepareMatchData(unit, filter)
       local name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId = UnitAura(unit, index, filter)
       if not name then
         break
+      end
+
+      -- If we are on classic try to get duration from LibClassicDurations
+      if LCD then
+        local durationNew, expirationTimeNew = LCD:GetAuraDurationByUnit(unit, spellId, unitCaster, name)
+        if duration == 0 and durationNew then
+            duration = durationNew
+            expirationTime = expirationTimeNew
+        end
       end
 
       if debuffClass == nil then
@@ -1193,6 +1207,15 @@ local function ScanUnitWithFilter(matchDataChanged, time, unit, filter,
       break
     end
 
+    -- If we are on classic try to get duration from LibClassicDurations
+    if LCD then
+      local durationNew, expirationTimeNew = LCD:GetAuraDurationByUnit(unit, spellId, unitCaster, name)
+      if duration == 0 and durationNew then
+          duration = durationNew
+          expirationTime = expirationTimeNew
+      end
+    end
+
     if debuffClass == nil then
       debuffClass = "none"
     elseif debuffClass == "" then
@@ -1223,8 +1246,12 @@ end
 local function UpdateStates(matchDataChanged, time)
   for id, auraData in pairs(matchDataChanged) do
     WeakAuras.StartProfileAura(id)
+    local updated = false
     for triggernum in pairs(auraData) do
-      UpdateTriggerState(time, id, triggernum)
+      updated = UpdateTriggerState(time, id, triggernum) or updated
+    end
+    if updated then
+      WeakAuras.UpdatedTriggerState(id)
     end
     WeakAuras.StopProfileAura(id)
   end
@@ -1442,17 +1469,19 @@ local frame = CreateFrame("FRAME")
 WeakAuras.frames["WeakAuras Buff2 Frame"] = frame
 frame:RegisterEvent("UNIT_AURA")
 frame:RegisterUnitEvent("UNIT_PET", "player")
-frame:RegisterEvent("PLAYER_FOCUS_CHANGED")
+if not WeakAuras.IsClassic() then
+  frame:RegisterEvent("PLAYER_FOCUS_CHANGED")
+  frame:RegisterEvent("ARENA_OPPONENT_UPDATE")
+  frame:RegisterEvent("UNIT_ENTERED_VEHICLE")
+  frame:RegisterEvent("UNIT_EXITED_VEHICLE")
+end
 frame:RegisterEvent("PLAYER_TARGET_CHANGED")
 frame:RegisterEvent("ENCOUNTER_START")
 frame:RegisterEvent("ENCOUNTER_END")
 frame:RegisterEvent("INSTANCE_ENCOUNTER_ENGAGE_UNIT")
 frame:RegisterEvent("NAME_PLATE_UNIT_ADDED")
 frame:RegisterEvent("NAME_PLATE_UNIT_REMOVED")
-frame:RegisterEvent("ARENA_OPPONENT_UPDATE")
 frame:RegisterEvent("GROUP_ROSTER_UPDATE")
-frame:RegisterEvent("UNIT_ENTERED_VEHICLE")
-frame:RegisterEvent("UNIT_EXITED_VEHICLE")
 frame:RegisterEvent("PLAYER_ENTERING_WORLD")
 frame:SetScript("OnEvent", function (frame, event, arg1, arg2, ...)
   WeakAuras.StartProfileSystem("bufftrigger2")
@@ -2281,19 +2310,18 @@ end
 function BuffTrigger.GetAdditionalProperties(data, triggernum)
   local trigger = data.triggers[triggernum].trigger
 
-  local ret = "\n\n" .. L["Additional Trigger Replacements"] .. "\n"
-  ret = ret .. "|cFFFF0000%spellId|r - " .. L["Spell ID"] .. "\n"
-  ret = ret .. "|cFFFF0000%debuffClass|r - " .. L["Debuff Class"] .. "\n"
-  ret = ret .. "|cFFFF0000%debuffClassIcon|r - " .. L["Debuff Class Icon"] .. "\n"
-  ret = ret .. "|cFFFF0000%unitCaster|r - " .. L["Caster Unit"] .. "\n"
-  ret = ret .. "|cFFFF0000%casterName|r - " .. L["Caster Name"] .. "\n"
-  ret = ret .. "|cFFFF0000%unitName|r - " .. L["Unit Name"] .. "\n"
-  ret = ret .. "|cFFFF0000%matchCount|r - " .. L["Match Count"] .. "\n"
-  ret = ret .. "|cFFFF0000%matchCountPerUnit|r - " .. L["Match Count per Unit"] .. "\n"
-  ret = ret .. "|cFFFF0000%unitCount|r - " .. L["Units Affected"] .. "\n"
+  local ret =  "|cFFFF0000%".. triggernum .. ".spellId|r - " .. L["Spell ID"] .. "\n"
+  ret = ret .. "|cFFFF0000%".. triggernum .. ".debuffClass|r - " .. L["Debuff Class"] .. "\n"
+  ret = ret .. "|cFFFF0000%".. triggernum .. ".debuffClassIcon|r - " .. L["Debuff Class Icon"] .. "\n"
+  ret = ret .. "|cFFFF0000%".. triggernum .. ".unitCaster|r - " .. L["Caster Unit"] .. "\n"
+  ret = ret .. "|cFFFF0000%".. triggernum .. ".casterName|r - " .. L["Caster Name"] .. "\n"
+  ret = ret .. "|cFFFF0000%".. triggernum .. ".unitName|r - " .. L["Unit Name"] .. "\n"
+  ret = ret .. "|cFFFF0000%".. triggernum .. ".matchCount|r - " .. L["Match Count"] .. "\n"
+  ret = ret .. "|cFFFF0000%".. triggernum .. ".matchCountPerUnit|r - " .. L["Match Count per Unit"] .. "\n"
+  ret = ret .. "|cFFFF0000%".. triggernum .. ".unitCount|r - " .. L["Units Affected"] .. "\n"
 
   if trigger.unit ~= "multi" then
-    ret = ret .. "|cFFFF0000%maxUnitCount|r - " .. L["Total Units"] .. "\n"
+    ret = ret .. "|cFFFF0000%".. triggernum .. ".maxUnitCount|r - " .. L["Total Units"] .. "\n"
   end
 
   if not IsSingleMissing(trigger) and trigger.unit ~= "multi" and trigger.fetchTooltip then
@@ -2316,7 +2344,7 @@ function BuffTrigger.GetTriggerConditions(data, triggernum)
   local result = {}
 
   result["debuffClass"] = {
-    display = WeakAuras.newFeatureString .. L["Debuff Type"],
+    display = L["Debuff Type"],
     type = "select",
     values = WeakAuras.debuff_class_types
   }
@@ -2408,6 +2436,9 @@ function BuffTrigger.CreateFallbackState(data, triggernum, state)
   state.progressType = "timed"
   state.duration = 0
   state.expirationTime = math.huge
+  local name, icon = BuffTrigger.GetNameAndIconSimple(data, triggernum)
+  state.name = name
+  state.icon = icon
 end
 
 function BuffTrigger.GetName(triggerType)
@@ -2822,6 +2853,15 @@ local function AugmentMatchDataMulti(matchData, unit, filter, sourceGUID, nameKe
       return false
     end
 
+    -- If we are on classic try to get duration from LibClassicDurations
+    if LCD then
+      local durationNew, expirationTimeNew = LCD:GetAuraDurationByUnit(unit, spellId, unitCaster, name)
+      if duration == 0 and durationNew then
+          duration = durationNew
+          expirationTime = expirationTimeNew
+      end
+    end
+
     if debuffClass == nil then
       debuffClass = "none"
     elseif debuffClass == "" then
@@ -2912,6 +2952,16 @@ local function CheckAurasMulti(base, unit, filter)
     if not name then
       return false
     end
+
+    -- If we are on classic try to get duration from LibClassicDurations
+    if LCD then
+      local durationNew, expirationTimeNew = LCD:GetAuraDurationByUnit(unit, spellId, unitCaster, name)
+      if duration == 0 and durationNew then
+          duration = durationNew
+          expirationTime = expirationTimeNew
+      end
+    end
+
     if debuffClass == nil then
       debuffClass = "none"
     elseif debuffClass == "" then
@@ -2962,7 +3012,9 @@ function BuffTrigger.InitMultiAura()
     multiAuraFrame:RegisterEvent("UNIT_TARGET")
     multiAuraFrame:RegisterEvent("UNIT_AURA")
     multiAuraFrame:RegisterEvent("PLAYER_TARGET_CHANGED")
-    multiAuraFrame:RegisterEvent("PLAYER_FOCUS_CHANGED")
+    if not WeakAuras.IsClassic() then
+      multiAuraFrame:RegisterEvent("PLAYER_FOCUS_CHANGED")
+    end
     multiAuraFrame:RegisterEvent("NAME_PLATE_UNIT_ADDED")
     multiAuraFrame:RegisterEvent("NAME_PLATE_UNIT_REMOVED")
     multiAuraFrame:RegisterEvent("PLAYER_LEAVING_WORLD")
@@ -3041,6 +3093,29 @@ function BuffTrigger.GetTriggerDescription(data, triggernum, namestable)
 
       local icon = select(3, GetSpellInfo(spellId)) or "Interface\\Icons\\INV_Misc_QuestionMark"
       tinsert(namestable, {left, spellId, icon})
+    end
+  end
+end
+
+function BuffTrigger.CreateFakeStates(id, triggernum)
+  local allStates = WeakAuras.GetTriggerStateForTrigger(id, triggernum);
+  local data = WeakAuras.GetData(id)
+  local state = {}
+  BuffTrigger.CreateFallbackState(data, triggernum, state)
+  state.expirationTime = GetTime() + 60
+  state.duration = 65
+  state.progressType = "timed"
+  state.stacks = 1
+  allStates[""] = state
+  if BuffTrigger.CanHaveClones(data, triggernum) then
+    for i = 1, 2 do
+      local state = {}
+      BuffTrigger.CreateFallbackState(data, triggernum, state)
+      state.expirationTime = GetTime() + 60 + i * 20
+      state.duration = 100
+      state.progressType = "timed"
+      state.stacks = 1
+      allStates[i] = state
     end
   end
 end

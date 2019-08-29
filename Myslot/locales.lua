@@ -29,7 +29,7 @@ L["Close"] = true
 L["Export"] = true
 L["Feedback"] = true
 L["Force Import"] = true
-L["Ignore unactived pet[id=%s], %s"] = true
+L["Ignore unattained pet[id=%s], %s"] = true
 L["Ignore unlearned skill [id=%s], %s"] = true
 L["Import"] = true
 L["Import and Export settings below"] = true
@@ -43,9 +43,9 @@ L["Skip CRC32, version and any other validation before importing. May cause unkn
 L["Skip unsupported version"] = true
 L["Spell"] = true
 L["Time"] = true
-L["TOC_NOTES"] = "Myslot is for transfering settings between accounts. Feedback farmer1992@gmail.com"
+L["TOC_NOTES"] = "Myslot is for transferring settings between accounts. Feedback farmer1992@gmail.com"
 L["Try force importing"] = true
-L["Use random mount instead of an unactived mount"] = true
+L["Use random mount instead of an unattained mount"] = true
 
 elseif locale == 'deDE' then
 --[[Translation missing --]]
@@ -68,7 +68,7 @@ L["Feedback"] = "Rückmeldung"
 --[[Translation missing --]]
 --[[ L["Force Import"] = "Force Import"--]] 
 --[[Translation missing --]]
---[[ L["Ignore unactived pet[id=%s], %s"] = "Ignore unactived pet[id=%s], %s"--]] 
+--[[ L["Ignore unattained pet[id=%s], %s"] = "Ignore unattained pet[id=%s], %s"--]] 
 --[[Translation missing --]]
 --[[ L["Ignore unlearned skill [id=%s], %s"] = "Ignore unlearned skill [id=%s], %s"--]] 
 --[[Translation missing --]]
@@ -96,11 +96,11 @@ L["Feedback"] = "Rückmeldung"
 --[[Translation missing --]]
 --[[ L["Time"] = "Time"--]] 
 --[[Translation missing --]]
---[[ L["TOC_NOTES"] = "Myslot is for transfering settings between accounts. Feedback farmer1992@gmail.com"--]] 
+--[[ L["TOC_NOTES"] = "Myslot is for transferring settings between accounts. Feedback farmer1992@gmail.com"--]] 
 --[[Translation missing --]]
 --[[ L["Try force importing"] = "Try force importing"--]] 
 --[[Translation missing --]]
---[[ L["Use random mount instead of an unactived mount"] = "Use random mount instead of an unactived mount"--]] 
+--[[ L["Use random mount instead of an unattained mount"] = "Use random mount instead of an unattained mount"--]] 
 
 elseif locale == 'esES' then
 --[[Translation missing --]]
@@ -125,7 +125,7 @@ L["Feedback"] = "Realimentación"
 --[[Translation missing --]]
 --[[ L["Force Import"] = "Force Import"--]] 
 --[[Translation missing --]]
---[[ L["Ignore unactived pet[id=%s], %s"] = "Ignore unactived pet[id=%s], %s"--]] 
+--[[ L["Ignore unattained pet[id=%s], %s"] = "Ignore unattained pet[id=%s], %s"--]] 
 --[[Translation missing --]]
 --[[ L["Ignore unlearned skill [id=%s], %s"] = "Ignore unlearned skill [id=%s], %s"--]] 
 --[[Translation missing --]]
@@ -153,11 +153,11 @@ L["Feedback"] = "Realimentación"
 --[[Translation missing --]]
 --[[ L["Time"] = "Time"--]] 
 --[[Translation missing --]]
---[[ L["TOC_NOTES"] = "Myslot is for transfering settings between accounts. Feedback farmer1992@gmail.com"--]] 
+--[[ L["TOC_NOTES"] = "Myslot is for transferring settings between accounts. Feedback farmer1992@gmail.com"--]] 
 --[[Translation missing --]]
 --[[ L["Try force importing"] = "Try force importing"--]] 
 --[[Translation missing --]]
---[[ L["Use random mount instead of an unactived mount"] = "Use random mount instead of an unactived mount"--]] 
+--[[ L["Use random mount instead of an unattained mount"] = "Use random mount instead of an unattained mount"--]] 
 
 elseif locale == 'esMX' then
 --[[Translation missing --]]
@@ -183,7 +183,7 @@ elseif locale == 'esMX' then
 --[[Translation missing --]]
 --[[ L["Force Import"] = "Force Import"--]] 
 --[[Translation missing --]]
---[[ L["Ignore unactived pet[id=%s], %s"] = "Ignore unactived pet[id=%s], %s"--]] 
+--[[ L["Ignore unattained pet[id=%s], %s"] = "Ignore unattained pet[id=%s], %s"--]] 
 --[[Translation missing --]]
 --[[ L["Ignore unlearned skill [id=%s], %s"] = "Ignore unlearned skill [id=%s], %s"--]] 
 --[[Translation missing --]]
@@ -211,11 +211,11 @@ elseif locale == 'esMX' then
 --[[Translation missing --]]
 --[[ L["Time"] = "Time"--]] 
 --[[Translation missing --]]
---[[ L["TOC_NOTES"] = "Myslot is for transfering settings between accounts. Feedback farmer1992@gmail.com"--]] 
+--[[ L["TOC_NOTES"] = "Myslot is for transferring settings between accounts. Feedback farmer1992@gmail.com"--]] 
 --[[Translation missing --]]
 --[[ L["Try force importing"] = "Try force importing"--]] 
 --[[Translation missing --]]
---[[ L["Use random mount instead of an unactived mount"] = "Use random mount instead of an unactived mount"--]] 
+--[[ L["Use random mount instead of an unattained mount"] = "Use random mount instead of an unattained mount"--]] 
 
 elseif locale == 'frFR' then
 --[[Translation missing --]]
@@ -241,7 +241,7 @@ elseif locale == 'frFR' then
 --[[Translation missing --]]
 --[[ L["Force Import"] = "Force Import"--]] 
 --[[Translation missing --]]
---[[ L["Ignore unactived pet[id=%s], %s"] = "Ignore unactived pet[id=%s], %s"--]] 
+--[[ L["Ignore unattained pet[id=%s], %s"] = "Ignore unattained pet[id=%s], %s"--]] 
 --[[Translation missing --]]
 --[[ L["Ignore unlearned skill [id=%s], %s"] = "Ignore unlearned skill [id=%s], %s"--]] 
 --[[Translation missing --]]
@@ -269,11 +269,11 @@ elseif locale == 'frFR' then
 --[[Translation missing --]]
 --[[ L["Time"] = "Time"--]] 
 --[[Translation missing --]]
---[[ L["TOC_NOTES"] = "Myslot is for transfering settings between accounts. Feedback farmer1992@gmail.com"--]] 
+--[[ L["TOC_NOTES"] = "Myslot is for transferring settings between accounts. Feedback farmer1992@gmail.com"--]] 
 --[[Translation missing --]]
 --[[ L["Try force importing"] = "Try force importing"--]] 
 --[[Translation missing --]]
---[[ L["Use random mount instead of an unactived mount"] = "Use random mount instead of an unactived mount"--]] 
+--[[ L["Use random mount instead of an unattained mount"] = "Use random mount instead of an unattained mount"--]] 
 
 elseif locale == 'itIT' then
 --[[Translation missing --]]
@@ -299,7 +299,7 @@ elseif locale == 'itIT' then
 --[[Translation missing --]]
 --[[ L["Force Import"] = "Force Import"--]] 
 --[[Translation missing --]]
---[[ L["Ignore unactived pet[id=%s], %s"] = "Ignore unactived pet[id=%s], %s"--]] 
+--[[ L["Ignore unattained pet[id=%s], %s"] = "Ignore unattained pet[id=%s], %s"--]] 
 --[[Translation missing --]]
 --[[ L["Ignore unlearned skill [id=%s], %s"] = "Ignore unlearned skill [id=%s], %s"--]] 
 --[[Translation missing --]]
@@ -327,11 +327,11 @@ elseif locale == 'itIT' then
 --[[Translation missing --]]
 --[[ L["Time"] = "Time"--]] 
 --[[Translation missing --]]
---[[ L["TOC_NOTES"] = "Myslot is for transfering settings between accounts. Feedback farmer1992@gmail.com"--]] 
+--[[ L["TOC_NOTES"] = "Myslot is for transferring settings between accounts. Feedback farmer1992@gmail.com"--]] 
 --[[Translation missing --]]
 --[[ L["Try force importing"] = "Try force importing"--]] 
 --[[Translation missing --]]
---[[ L["Use random mount instead of an unactived mount"] = "Use random mount instead of an unactived mount"--]] 
+--[[ L["Use random mount instead of an unattained mount"] = "Use random mount instead of an unattained mount"--]] 
 
 elseif locale == 'koKR' then
 --[[Translation missing --]]
@@ -357,7 +357,7 @@ elseif locale == 'koKR' then
 --[[Translation missing --]]
 --[[ L["Force Import"] = "Force Import"--]] 
 --[[Translation missing --]]
---[[ L["Ignore unactived pet[id=%s], %s"] = "Ignore unactived pet[id=%s], %s"--]] 
+--[[ L["Ignore unattained pet[id=%s], %s"] = "Ignore unattained pet[id=%s], %s"--]] 
 --[[Translation missing --]]
 --[[ L["Ignore unlearned skill [id=%s], %s"] = "Ignore unlearned skill [id=%s], %s"--]] 
 --[[Translation missing --]]
@@ -385,11 +385,11 @@ elseif locale == 'koKR' then
 --[[Translation missing --]]
 --[[ L["Time"] = "Time"--]] 
 --[[Translation missing --]]
---[[ L["TOC_NOTES"] = "Myslot is for transfering settings between accounts. Feedback farmer1992@gmail.com"--]] 
+--[[ L["TOC_NOTES"] = "Myslot is for transferring settings between accounts. Feedback farmer1992@gmail.com"--]] 
 --[[Translation missing --]]
 --[[ L["Try force importing"] = "Try force importing"--]] 
 --[[Translation missing --]]
---[[ L["Use random mount instead of an unactived mount"] = "Use random mount instead of an unactived mount"--]] 
+--[[ L["Use random mount instead of an unattained mount"] = "Use random mount instead of an unattained mount"--]] 
 
 elseif locale == 'ptBR' then
 --[[Translation missing --]]
@@ -415,7 +415,7 @@ elseif locale == 'ptBR' then
 --[[Translation missing --]]
 --[[ L["Force Import"] = "Force Import"--]] 
 --[[Translation missing --]]
---[[ L["Ignore unactived pet[id=%s], %s"] = "Ignore unactived pet[id=%s], %s"--]] 
+--[[ L["Ignore unattained pet[id=%s], %s"] = "Ignore unattained pet[id=%s], %s"--]] 
 --[[Translation missing --]]
 --[[ L["Ignore unlearned skill [id=%s], %s"] = "Ignore unlearned skill [id=%s], %s"--]] 
 --[[Translation missing --]]
@@ -443,11 +443,11 @@ elseif locale == 'ptBR' then
 --[[Translation missing --]]
 --[[ L["Time"] = "Time"--]] 
 --[[Translation missing --]]
---[[ L["TOC_NOTES"] = "Myslot is for transfering settings between accounts. Feedback farmer1992@gmail.com"--]] 
+--[[ L["TOC_NOTES"] = "Myslot is for transferring settings between accounts. Feedback farmer1992@gmail.com"--]] 
 --[[Translation missing --]]
 --[[ L["Try force importing"] = "Try force importing"--]] 
 --[[Translation missing --]]
---[[ L["Use random mount instead of an unactived mount"] = "Use random mount instead of an unactived mount"--]] 
+--[[ L["Use random mount instead of an unattained mount"] = "Use random mount instead of an unattained mount"--]] 
 
 elseif locale == 'ruRU' then
 --[[Translation missing --]]
@@ -473,7 +473,7 @@ elseif locale == 'ruRU' then
 --[[Translation missing --]]
 --[[ L["Force Import"] = "Force Import"--]] 
 --[[Translation missing --]]
---[[ L["Ignore unactived pet[id=%s], %s"] = "Ignore unactived pet[id=%s], %s"--]] 
+--[[ L["Ignore unattained pet[id=%s], %s"] = "Ignore unattained pet[id=%s], %s"--]] 
 --[[Translation missing --]]
 --[[ L["Ignore unlearned skill [id=%s], %s"] = "Ignore unlearned skill [id=%s], %s"--]] 
 --[[Translation missing --]]
@@ -501,11 +501,11 @@ elseif locale == 'ruRU' then
 --[[Translation missing --]]
 --[[ L["Time"] = "Time"--]] 
 --[[Translation missing --]]
---[[ L["TOC_NOTES"] = "Myslot is for transfering settings between accounts. Feedback farmer1992@gmail.com"--]] 
+--[[ L["TOC_NOTES"] = "Myslot is for transferring settings between accounts. Feedback farmer1992@gmail.com"--]] 
 --[[Translation missing --]]
 --[[ L["Try force importing"] = "Try force importing"--]] 
 --[[Translation missing --]]
---[[ L["Use random mount instead of an unactived mount"] = "Use random mount instead of an unactived mount"--]] 
+--[[ L["Use random mount instead of an unattained mount"] = "Use random mount instead of an unattained mount"--]] 
 
 elseif locale == 'zhCN' then
 L["[WARN] Ignore slot due to an unknown error DEBUG INFO = [S=%s T=%s I=%s] Please send Importing Text and DEBUG INFO to %s"] = "[WARN] 忽略出错技能 DEBUG INFO = [S=%s T=%s I=%s] 请将出错的字符和 DEBUG INFO 发给作者 %s"
@@ -519,7 +519,7 @@ L["Close"] = "关闭"
 L["Export"] = "导出"
 L["Feedback"] = "问题/建议"
 L["Force Import"] = "强制导入"
-L["Ignore unactived pet[id=%s], %s"] = "忽略未开启的战斗宠物[id=%s]：%s"
+L["Ignore unattained pet[id=%s], %s"] = "忽略未开启的战斗宠物[id=%s]：%s"
 L["Ignore unlearned skill [id=%s], %s"] = "忽略未掌握技能[id=%s]：%s"
 L["Import"] = "导入"
 L["Import and Export settings below"] = "导入和到处以下配置"
@@ -535,7 +535,7 @@ L["Spell"] = "魔法"
 L["Time"] = "时间"
 L["TOC_NOTES"] = "Myslot可以帮助你在账号之间共享配置。反馈：farmer1992@gmail.com"
 L["Try force importing"] = "尝试强制导入"
-L["Use random mount instead of an unactived mount"] = "使用随机坐骑代替没有的坐骑"
+L["Use random mount instead of an unattained mount"] = "使用随机坐骑代替没有获得的坐骑"
 
 elseif locale == 'zhTW' then
 L["[WARN] Ignore slot due to an unknown error DEBUG INFO = [S=%s T=%s I=%s] Please send Importing Text and DEBUG INFO to %s"] = "[WARN] 忽略出錯的欄位：DEBUG INFO = [S=%s T=%s I=%s] 請將出錯的字串與DEBUG INFO發給作者 %s。"
@@ -548,9 +548,8 @@ L["Bad importing text [TEXT]"] = "錯誤的導入字串[TEXT]"
 L["Close"] = "關閉"
 L["Export"] = "導出"
 L["Feedback"] = "反饋"
---[[Translation missing --]]
---[[ L["Force Import"] = "Force Import"--]] 
-L["Ignore unactived pet[id=%s], %s"] = "忽略沒有的寵物 [id=%s]：%s"
+L["Force Import"] = "強制導入"
+L["Ignore unattained pet[id=%s], %s"] = "忽略沒有的寵物 [id=%s]：%s"
 L["Ignore unlearned skill [id=%s], %s"] = "忽略未習得技能 [id=%s], %s"
 L["Import"] = "導入"
 --[[Translation missing --]]
@@ -559,22 +558,20 @@ L["Import is not allowed when you are in combat"] = "請在非戰鬥狀態時使
 L["Importing text [ver:%s] is not compatible with current version"] = "導入的字串版本與當前版本不相容。(字串版本號：%s)"
 --[[Translation missing --]]
 --[[ L["Keys Binding"] = "Keys Binding"--]] 
---[[Translation missing --]]
---[[ L["Macro"] = "Macro"--]] 
+L["Macro"] = "巨集"
 L["Macro %s was ignored, check if there is enough space to create"] = "忽略巨集 [%s] ，請檢查是否有足夠的欄位創建新巨集"
 --[[Translation missing --]]
 --[[ L["Skip bad CRC32"] = "Skip bad CRC32"--]] 
 --[[Translation missing --]]
 --[[ L["Skip CRC32, version and any other validation before importing. May cause unknown behavior"] = "Skip CRC32, version and any other validation before importing. May cause unknown behavior"--]] 
---[[Translation missing --]]
---[[ L["Skip unsupported version"] = "Skip unsupported version"--]] 
+L["Skip unsupported version"] = "忽略不相容的版本"
 --[[Translation missing --]]
 --[[ L["Spell"] = "Spell"--]] 
 L["Time"] = "時間"
 L["TOC_NOTES"] = "Myslot可以跨帳號綁定技能與按鍵設置。反饋通道：farmer1992@gmail.com"
 --[[Translation missing --]]
 --[[ L["Try force importing"] = "Try force importing"--]] 
-L["Use random mount instead of an unactived mount"] = "使用隨機座騎代替沒有的座騎"
+L["Use random mount instead of an unattained mount"] = "使用隨機座騎代替沒有獲得的座騎"
 
 end
 

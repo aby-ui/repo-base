@@ -1,6 +1,6 @@
 --[[
 Name: LibRangeCheck-2.0
-Revision: $Revision: 192 $
+Revision: $Revision: 198 $
 Author(s): mitch0
 Website: http://www.wowace.com/projects/librangecheck-2-0/
 Description: A range checking library based on interact distances and spell ranges
@@ -41,12 +41,14 @@ License: Public Domain
 -- @class file
 -- @name LibRangeCheck-2.0
 local MAJOR_VERSION = "LibRangeCheck-2.0"
-local MINOR_VERSION = tonumber(("$Revision: 192 $"):match("%d+")) + 100000
+local MINOR_VERSION = tonumber(("$Revision: 198 $"):match("%d+")) + 100000
 
 local lib, oldminor = LibStub:NewLibrary(MAJOR_VERSION, MINOR_VERSION)
 if not lib then
     return
 end
+
+local IsClassic = (WOW_PROJECT_ID == WOW_PROJECT_CLASSIC)
 
 -- << STATIC CONFIG
 
@@ -1046,7 +1048,9 @@ function lib:activate()
         self.frame = frame
         frame:RegisterEvent("LEARNED_SPELL_IN_TAB")
         frame:RegisterEvent("CHARACTER_POINTS_CHANGED")
-        frame:RegisterEvent("PLAYER_TALENT_UPDATE")
+        if not IsClassic then
+            frame:RegisterEvent("PLAYER_TALENT_UPDATE")
+        end
         frame:RegisterEvent("SPELLS_CHANGED")
         local _, playerClass = UnitClass("player")
         if playerClass == "MAGE" or playerClass == "SHAMAN" then

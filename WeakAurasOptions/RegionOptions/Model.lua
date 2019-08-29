@@ -1,4 +1,7 @@
+if not WeakAuras.IsCorrectVersion() then return end
+
 local L = WeakAuras.L;
+if WeakAuras.IsClassic() then return end -- Models disabled for classic
 
 local function createOptions(id, data)
   local options = {
@@ -184,6 +187,11 @@ local function createOptions(id, data)
       order = 26,
       hidden = function() return not data.api end
     },
+    endHeader = {
+      type = "header",
+      order = 100,
+      name = "",
+    },
   };
 
   if WeakAuras.BuildInfo > 80100 then
@@ -209,10 +217,13 @@ local function createOptions(id, data)
     }
   end
 
+  for k, v in pairs(WeakAuras.BorderOptions(id, data, nil, nil, 70)) do
+    options[k] = v
+  end
+
   return {
     model = options,
-    border = WeakAuras.BorderOptions(id, data);
-    position = WeakAuras.PositionOptions(id, data),
+    position = WeakAuras.PositionOptions(id, data, nil, nil, nil, true),
   };
 end
 

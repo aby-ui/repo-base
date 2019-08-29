@@ -1,8 +1,10 @@
+if not WeakAuras.IsCorrectVersion() then return end
+
 local tinsert, tconcat, tremove, wipe = table.insert, table.concat, table.remove, wipe
 local select, pairs, next, type, unpack = select, pairs, next, type, unpack
 local tostring, error = tostring, error
 
-local Type, Version = "WeakAurasDisplayButton", 50
+local Type, Version = "WeakAurasDisplayButton", 51
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
@@ -26,6 +28,11 @@ local ignoreForCopyingDisplay = {
   uid = true,
   authorOptions = true,
   config = true,
+  url = true,
+  semver = true,
+  version = true,
+  internalVersion = true,
+  tocbuild = true
 }
 
 local function copyAuraPart(source, destination, part)
@@ -95,10 +102,11 @@ clipboard.pasteMenuEntry = {
       WeakAuras.Add(clipboard.current);
     end
 
-    WeakAuras.ScanForLoads();
+    WeakAuras.ScanForLoads({[clipboard.current.id] = true});
     WeakAuras.SortDisplayButtons();
     WeakAuras.PickDisplay(clipboard.current.id);
     WeakAuras.UpdateDisplayButton(clipboard.current.id);
+    WeakAuras.ReloadOptions(clipboard.current.id);
   end
 }
 
@@ -221,8 +229,8 @@ local function UpdateClipboardMenuEntry(data)
     clipboard.copyLoadEntry.text = L["Load"];
     clipboard.copyActionsEntry.text = L["Actions"];
     clipboard.copyAnimationsEntry.text = L["Animations"];
-    clipboard.copyAuthorOptionsEntry = WeakAuras.newFeatureString .. L["Author Options"];
-    clipboard.copyUserConfigEntry = WeakAuras.newFeatureString .. L["Custom Configuration"];
+    clipboard.copyAuthorOptionsEntry = L["Author Options"];
+    clipboard.copyUserConfigEntry = L["Custom Configuration"];
     clipboard.copyGroupEntry.text = nil;
   end
 end
@@ -507,7 +515,11 @@ local methods = {
         if(editbox) then
           if (not fullName) then
             local name, realm = UnitFullName("player")
-            fullName = name.."-"..realm
+            if realm then
+              fullName = name.."-"..realm
+            else
+              fullName = name
+            end
           end
           editbox:Insert("[WeakAuras: "..fullName.." - "..data.id.."]");
         elseif not data.controlledChildren then
@@ -608,12 +620,10 @@ local methods = {
           WeakAuras.DuplicateAura(childData, new_idGroup)
         end
         WeakAuras.SortDisplayButtons()
-        WeakAuras.DoConfigUpdate()
         WeakAuras.PickAndEditDisplay(new_idGroup)
       else
         local new_id = WeakAuras.DuplicateAura(data)
         WeakAuras.SortDisplayButtons()
-        WeakAuras.DoConfigUpdate()
         WeakAuras.PickAndEditDisplay(new_id)
       end
     end
@@ -857,14 +867,6 @@ local methods = {
 
     function self.frame.terribleCodeOrganizationHackTable.SetNormalTooltip()
       self:SetNormalTooltip();
-    end
-
-    function self.frame.terribleCodeOrganizationHackTable.OnShow()
-      WeakAuras.UpdateCloneConfig(data);
-    end
-
-    function self.frame.terribleCodeOrganizationHackTable.OnHide()
-      WeakAuras.CollapseAllClones(data.id);
     end
 
     local copyEntries = {};
@@ -1783,8 +1785,7 @@ local function Constructor()
     if(priority >= self.visibility) then
       self.visibility = priority;
       if(self.region and self.region.Expand) then
-        button.terribleCodeOrganizationHackTable.OnShow();
-        self.region:Expand();
+        WeakAuras.FakeStatesFor(self.region.id, true)
         if (WeakAuras.personalRessourceDisplayFrame) then
           WeakAuras.personalRessourceDisplayFrame:expand(self.region.id);
         end
@@ -1804,8 +1805,7 @@ local function Constructor()
     if(priority >= self.visibility) then
       self.visibility = 0;
       if(self.region and self.region.Collapse) then
-        button.terribleCodeOrganizationHackTable.OnHide();
-        self.region:Collapse();
+        WeakAuras.FakeStatesFor(self.region.id, false)
         if (WeakAuras.personalRessourceDisplayFrame) then
           WeakAuras.personalRessourceDisplayFrame:collapse(self.region.id);
         end

@@ -31,7 +31,7 @@ If enabled, this panel will automatically position
 itself as the standard ones do, such as the |cffffffffSpellbook|r
 or the |cffffffffDungeon Finder|r, and will not be movable.]]
 
-L.BagFrame = 'Bag List'
+L.BagToggle = 'Bags Toggle'
 L.Money = 'Money'
 L.Broker = 'Databroker Plugins'
 L.Sort = 'Sort Button'

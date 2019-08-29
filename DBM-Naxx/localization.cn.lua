@@ -1,6 +1,7 @@
-﻿-- author: callmejames @《凤凰之翼》 一区藏宝海湾
+-- author: callmejames @《凤凰之翼》 一区藏宝海湾
 -- commit by: yaroot <yaroot AT gmail.com>
-
+-- Mini Dragon(projecteurs AT gmail.com) Brilla@金色平原
+-- Last update: 2019/08/22
 
 if GetLocale() ~= "zhCN" then return end
 
@@ -15,19 +16,15 @@ L:SetGeneralLocalization({
 	name 				= "阿努布雷坎"
 })
 
-L:SetWarningLocalization({
-	SpecialLocust			= "虫群风暴",
-	WarningLocustFaded		= "虫群风暴结束"
-})
-
 L:SetOptionLocalization({
-	SpecialLocust			= "为虫群风暴显示特别警报",
-	WarningLocustFaded		= "当虫群风暴结束时显示警报",
 	ArachnophobiaTimer		= "为蜘蛛克星(成就)显示计时条"
 })
 
 L:SetMiscLocalization({
-	ArachnophobiaTimer		= "蜘蛛克星"
+	ArachnophobiaTimer		= "蜘蛛克星",
+	Pull1					= "对，跑吧！那样伤口出血就更多了！",
+	Pull2					= "一些小点心……",
+	Pull3					= "你们逃不掉的。"
 })
 
 ----------------------------
@@ -49,13 +46,16 @@ L:SetOptionLocalization({
 	WarningEmbraceExpired		= "为黑女巫的拥抱结束显示警报"
 })
 
+L:SetMiscLocalization({
+	Pull					= "跪下求饶吧，诺夫！"--Not actually pull trigger, but often said on pull
+})
 ---------------
 --  Maexxna  --
 ---------------
 L = DBM:GetModLocalization("Maexxna")
 
 L:SetGeneralLocalization({
-	name 				= "迈克斯纳"
+	name 					= "迈克斯纳"
 })
 
 L:SetWarningLocalization({
@@ -64,17 +64,16 @@ L:SetWarningLocalization({
 })
 
 L:SetTimerLocalization({
-	TimerSpider			= "下一次 迈克斯纳之子"
+	TimerSpider				= "下一次 迈克斯纳之子"
 })
 
 L:SetOptionLocalization({
 	WarningSpidersSoon		= "为迈克斯纳之子显示提前警报",
 	WarningSpidersNow		= "为迈克斯纳之子显示警报",
-	TimerSpider			= "为下一次迈克斯纳之子显示计时条"
+	TimerSpider				= "为下一次迈克斯纳之子显示计时条"
 })
 
 L:SetMiscLocalization({
-	YellWebWrap			= "我被缠绕住了！救我！",
 	ArachnophobiaTimer		= "蜘蛛克星"
 })
 
@@ -84,7 +83,7 @@ L:SetMiscLocalization({
 L = DBM:GetModLocalization("Noth")
 
 L:SetGeneralLocalization({
-	name 				= "瘟疫使者诺斯"
+	name 					= "瘟疫使者诺斯"
 })
 
 L:SetWarningLocalization({
@@ -99,11 +98,16 @@ L:SetTimerLocalization({
 
 L:SetOptionLocalization({
 	WarningTeleportNow		= "为传送显示警报",
-	WarningTeleportSoon		= "为传送显示提前警报",
+	WarningTeleportSoon		= "为传送显示预警",
 	TimerTeleport			= "为传送显示计时条",
 	TimerTeleportBack		= "为传送回来显示计时条"
 })
 
+L:SetMiscLocalization({
+	Pull				= "我要没收你的生命!", --TBD
+	Adds				= "召唤出骷髅战士！",
+	AddsTwo				= "召唤出更多的骷髅！"
+})
 --------------------------
 --  Heigan the Unclean  --
 --------------------------
@@ -126,6 +130,10 @@ L:SetOptionLocalization({
 	WarningTeleportNow		= "为传送显示警报",
 	WarningTeleportSoon		= "为传送显示提前警报",
 	TimerTeleport			= "为传送显示计时条"
+})
+
+L:SetMiscLocalization({
+	Pull				= "你是我的了。"
 })
 
 ---------------
@@ -171,6 +179,18 @@ L = DBM:GetModLocalization("Grobbulus")
 
 L:SetGeneralLocalization({
 	name 				= "格罗布鲁斯"
+})
+
+L:SetOptionLocalization({
+	SpecialWarningInjection		= "当你中了变异注射时显示特别警报",
+	SetIconOnInjectionTarget	= "设定标记给中了变异注射的玩家"
+})
+
+L:SetWarningLocalization({
+	SpecialWarningInjection		= "你中了变异注射 - 快跑开"
+})
+
+L:SetTimerLocalization({
 })
 
 -------------
@@ -349,7 +369,7 @@ L:SetWarningLocalization({
 L:SetTimerLocalization({
 	TimerAir			= "空中阶段",
 	TimerLanding			= "降落",
-	TimerIceBlast			= "冰霜吐息"
+	TimerIceBlast			= "冰霜吐息"	
 })
 
 ------------------
@@ -364,8 +384,9 @@ L:SetGeneralLocalization({
 
 L:SetOptionLocalization({
 	TimerPhase2			= "为第二阶段显示计时条",
-	specwarnP2Soon			= "为克尔苏加德攻击前10秒显示特别警报",
-	warnAddsSoon			= "为寒冰皇冠卫士显示提前警报"
+	specwarnP2Soon		= "为克尔苏加德攻击前10秒显示特别警报",
+	warnAddsSoon		= "为寒冰皇冠卫士显示提前警报",
+	ShowRange			= "当第二阶段开始时显示距离监视框"
 })
 
 L:SetMiscLocalization({

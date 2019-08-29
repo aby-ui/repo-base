@@ -1660,3 +1660,9 @@ GTFO.SpellID["303963"] = {
   sound = 3;
   tankSound = 0;
 };
+
+GTFO.SpellID["303729"] = {
+  --desc = "Crackling Tornado (Rak'sha the Swift)";
+  sound = 3;
+};
+

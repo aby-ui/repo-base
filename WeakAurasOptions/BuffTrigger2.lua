@@ -1,3 +1,5 @@
+if not WeakAuras.IsCorrectVersion() then return end
+
 local L = WeakAuras.L
 
 local operator_types = WeakAuras.operator_types
@@ -130,7 +132,7 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
     use_debuffClass = {
       type = "toggle",
       width = WeakAuras.normalWidth,
-      name = WeakAuras.newFeatureString..L["Debuff Type"],
+      name = L["Debuff Type"],
       order = 11.2,
       hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and not IsSingleMissing(trigger)) end
     },
@@ -571,11 +573,6 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       width = WeakAuras.doubleWidth,
       set = function(info, v)
         trigger.showClones = v
-        if v == true then
-          WeakAuras.UpdateCloneConfig(data)
-        else
-          WeakAuras.CollapseAllClones(data.id)
-        end
         WeakAuras.Add(data)
       end
     },

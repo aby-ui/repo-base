@@ -2,7 +2,7 @@
 ## Title: GTFO
 ## Notes: GTFO, you're dying!
 ## Author: Zensunim of Dragonblight
-## Version: 4.48.10
+## Version: 4.49
 ## DefaultState: Enabled
 ## SavedVariables: GTFOData
 Libs\LibUIDropDownMenu\LibUIDropDownMenu.xml

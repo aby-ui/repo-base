@@ -66,9 +66,9 @@ function MoneyFrame:OnEnter()
 	-- Total
 	local total = 0
 	for name in Cache:IterateOwners() do
-		local player = Cache:GetOwnerInfo(name)
-		if not player.isguild and player.money then
-			total = total + player.money
+		local owner = Cache:GetOwnerInfo(name)
+		if not owner.isguild and owner.money then
+			total = total + owner.money
 		end
 	end
 
@@ -76,15 +76,15 @@ function MoneyFrame:OnEnter()
 	GameTooltip:AddDoubleLine(L.Total, GetMoneyString(total, true), nil,nil,nil, 1,1,1)
 	GameTooltip:AddLine(' ')
 
-	-- Each player
+	-- Each owner
 	for name in Cache:IterateOwners() do
-		local player = Cache:GetOwnerInfo(name)
-		if not player.isguild and player.money then
-			local icon = format('|T%s:12:12|t ', Addon:GetOwnerIcon(player))
-			local coins = GetMoneyString(player.money, true)
-			local color = Addon:GetOwnerColor(player)
+		local owner = Cache:GetOwnerInfo(name)
+		if not owner.isguild and owner.money then
+			local icon = Addon:GetOwnerIconString(owner, 12,0,0)
+			local coins = GetMoneyString(owner.money, true)
+			local color = Addon:GetOwnerColor(owner)
 
-			GameTooltip:AddDoubleLine(icon .. player.name, coins, color.r, color.g, color.b, 1,1,1)
+			GameTooltip:AddDoubleLine(icon .. ' ' .. owner.name, coins, color.r, color.g, color.b, 1,1,1)
 		end
 	end
 	--[==[ --TODO aby8 只显示几个

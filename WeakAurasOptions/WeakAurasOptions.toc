@@ -1,7 +1,7 @@
 ## Interface: 80200
 ## Title: WeakAuras Options
 ## Author: Mirrored and the WeakAuras Team
-## Version: 2.13.4
+## Version: 2.14.5
 ## Notes: Options for WeakAuras
 ## Notes-esES: Opciones para WeakAuras
 ## Notes-deDE: Optionen für WeakAuras
@@ -18,8 +18,6 @@ locales.xml
 
 ForAllIndentsAndPurposes.lua
 
-# If you add files here, you have to add them to babelfish.lua as well
-
 RegionOptions\AuraBar.lua
 RegionOptions\Texture.lua
 RegionOptions\Icon.lua
@@ -28,6 +26,10 @@ RegionOptions\Group.lua
 RegionOptions\DynamicGroup.lua
 RegionOptions\Model.lua
 RegionOptions\ProgressTexture.lua
+
+SubRegionOptions\SubRegionCommon.lua
+SubRegionOptions\SubText.lua
+SubRegionOptions\Border.lua
 
 Cache.lua
 

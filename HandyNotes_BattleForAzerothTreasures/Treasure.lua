@@ -106,8 +106,8 @@ ns.points = {
         [76826220] = {quest=50045, achievement=12771, criteria=40865, note="Underwater cave",}, -- Swallowed Naga Chest
         [35455498] = {quest=49313, achievement=12771, criteria=40866, note="In cave",}, -- Wunja's Trove
         -- Hoppin' Sad (Lost Spawn of Krag'wa)
-        [65605090] = {quest=53417, achievement=13028, minimap=true, atlas="WildBattlePetCapturable",}, --verify
-        [69105790] = {quest=53418, achievement=13028, minimap=true, atlas="WildBattlePetCapturable",}, --verify
+        [69105790] = {quest=53417, achievement=13028, minimap=true, atlas="WildBattlePetCapturable",}, --verify
+        [65605090] = {quest=53418, achievement=13028, minimap=true, atlas="WildBattlePetCapturable",}, --verify
         [56106490] = {quest=53419, achievement=13028, minimap=true, atlas="WildBattlePetCapturable",},
         [52804290] = {quest=53420, achievement=13028, minimap=true, atlas="WildBattlePetCapturable",}, --verify
         [33506160] = {quest=53421, achievement=13028, minimap=true, atlas="WildBattlePetCapturable",},

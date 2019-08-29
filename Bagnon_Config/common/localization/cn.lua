@@ -24,7 +24,7 @@ L.Enabled = '启用窗口整合'
 --L.CharacterSpecific = 'Character Specific Settings'
 L.ExclusiveReagent = '单独显示材料银行（通过点击背包按钮切换）'
 
-L.BagFrame = '启用背包按钮'
+L.BagToggle = '启用背包按钮'
 L.Money = '启用货币窗口'
 L.Broker = '启用信息窗口'
 L.Sort = '启用整理按钮'

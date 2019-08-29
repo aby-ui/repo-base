@@ -153,7 +153,7 @@ function Frame:HasBagToggle()
 end
 
 function Frame:HasSortButton()
-	return self.profile.sort
+	return SortBags and self.profile.sort
 end
 
 function Frame:CreateOwnerSelector()

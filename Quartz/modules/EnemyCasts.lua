@@ -23,8 +23,8 @@ local MODNAME = "EnemyCasts"
 local Enemy = Quartz3:NewModule(MODNAME, "AceEvent-3.0")
 
 local Player = Quartz3:GetModule("Player")
-local Focus = Quartz3:GetModule("Focus")
-local Target = Quartz3:GetModule("Target")
+local Focus = Quartz3:GetModule("Focus", true)
+local Target = Quartz3:GetModule("Target", true)
 
 local TimeFmt = Quartz3.Util.TimeFormat
 
@@ -273,9 +273,9 @@ do
 			if i == 1 then
 				local anchorframe
 				local anchor = db.anchor
-				if anchor == "focus" and Focus.Bar then
+				if anchor == "focus" and Focus and Focus.Bar then
 					anchorframe = Focus.Bar
-				elseif anchor == "target" and Target.Bar then
+				elseif anchor == "target" and Target and Target.Bar then
 					anchorframe = Target.Bar
 				else -- L["Player"]
 					anchorframe = Player.Bar

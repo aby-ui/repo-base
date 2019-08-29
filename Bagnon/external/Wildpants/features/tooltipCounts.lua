@@ -89,7 +89,10 @@ local function AddOwners(tooltip, link)
 					for i = FIRST_BANK_SLOT, LAST_BANK_SLOT do
 						bank = bank + FindItemCount(owner, i, itemID)
 					end
-					bank = bank + FindItemCount(owner, REAGENTBANK_CONTAINER, itemID)
+
+					if REAGENTBANK_CONTAINER then
+						bank = bank + FindItemCount(owner, REAGENTBANK_CONTAINER, itemID)
+					end
 				else
 					local owned = GetItemCount(itemID, true)
 					local carrying = GetItemCount(itemID)
@@ -119,7 +122,7 @@ local function AddOwners(tooltip, link)
 		end
 
 		if count > 0 then
-			tooltip:AddDoubleLine(format('|T%s:12:12|t ', Addon:GetOwnerIcon(info)) .. color:format(info.name), text)
+			tooltip:AddDoubleLine(Addon:GetOwnerIconString(info, 12,0,0) .. ' ' .. color:format(info.name), text)
 			total = total + count
 			players = players + 1
 		end
@@ -144,11 +147,7 @@ local function OnItem(tooltip)
 end
 
 local function OnTradeSkill(tooltip, recipe, reagent)
-    if reagent then
-        AddOwners(tooltip, C_TradeSkillUI.GetRecipeReagentItemLink(recipe, reagent))
-    else
-        AddOwners(tooltip, C_TradeSkillUI.GetRecipeItemLink(recipe))
-    end
+    AddOwners(tooltip, reagent and C_TradeSkillUI.GetRecipeReagentItemLink(recipe, reagent) or C_TradeSkillUI.GetRecipeItemLink(recipe))
 end
 
 local function OnQuest(tooltip, type, quest)
@@ -163,10 +162,13 @@ local function HookTip(tooltip)
 	tooltip:HookScript('OnTooltipCleared', OnClear)
 	tooltip:HookScript('OnTooltipSetItem', OnItem)
 
-  hooksecurefunc(tooltip, 'SetRecipeReagentItem', OnTradeSkill)
-  hooksecurefunc(tooltip, 'SetRecipeResultItem', OnTradeSkill)
 	hooksecurefunc(tooltip, 'SetQuestItem', OnQuest)
 	hooksecurefunc(tooltip, 'SetQuestLogItem', OnQuest)
+
+	if C_TradeSkillUI then
+		hooksecurefunc(tooltip, 'SetRecipeReagentItem', OnTradeSkill)
+		hooksecurefunc(tooltip, 'SetRecipeResultItem', OnTradeSkill)
+	end
 end
 
 

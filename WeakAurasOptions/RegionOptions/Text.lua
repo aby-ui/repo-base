@@ -1,3 +1,5 @@
+if not WeakAuras.IsCorrectVersion() then return end
+
 local SharedMedia = LibStub("LibSharedMedia-3.0");
 local L = WeakAuras.L;
 
@@ -11,9 +13,7 @@ local function createOptions(id, data)
       type = "input",
       width = WeakAuras.doubleWidth,
       desc = function()
-        local ret = L["Dynamic text tooltip"];
-        ret = ret .. WeakAuras.GetAdditionalProperties(data);
-        return ret
+        return L["Dynamic text tooltip"] .. WeakAuras.GetAdditionalProperties(data)
       end,
       multiline = true,
       name = L["Display Text"],
@@ -128,13 +128,18 @@ local function createOptions(id, data)
       order = 48,
       values = WeakAuras.font_flags
     },
+    endHeader = {
+      type = "header",
+      order = 100,
+      name = "",
+    },
   };
 
   WeakAuras.AddCodeOption(options, data, L["Custom Function"], "customText", 37, function() return not WeakAuras.ContainsCustomPlaceHolder(data.displayText) end, {"customText"}, false);
 
   return {
     text = options;
-    position = WeakAuras.PositionOptions(id, data, nil, true);
+    position = WeakAuras.PositionOptions(id, data, nil, true, nil, true);
   };
 end
 
@@ -210,19 +215,10 @@ local function modifyThumbnail(parent, borderframe, data, fullModify, size)
   end
 
   function borderframe:SetIcon(path)
-    local icon = (
-      WeakAuras.CanHaveAuto(data)
-      and path ~= ""
-      and path
-      or data.displayIcon
-      or "Interface\\Icons\\INV_Misc_QuestionMark"
-      );
-    borderframe.values.icon = "|T"..icon..":12:12:0:0:64:64:4:60:4:60|t";
     UpdateText();
   end
 
   function borderframe:SetName(name)
-    borderframe.values.name = WeakAuras.CanHaveAuto(data) and name or data.id;
     UpdateText();
   end
 

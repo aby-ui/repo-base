@@ -47,21 +47,24 @@ function Brother:StartupCache()
 end
 
 function Brother:SetupEvents()
+	self:RegisterEvent('BAG_UPDATE')
+	self:RegisterEvent('PLAYER_MONEY')
+	self:RegisterEvent('GUILD_ROSTER_UPDATE')
 	self:RegisterEvent('UNIT_INVENTORY_CHANGED')
     self:RegisterEvent('PLAYER_EQUIPMENT_CHANGED')
-	self:RegisterEvent('PLAYER_MONEY')
-	self:RegisterEvent('BAG_UPDATE')
-
 	self:RegisterEvent('BANKFRAME_OPENED')
 	self:RegisterEvent('BANKFRAME_CLOSED')
 
-	self:RegisterEvent('VOID_STORAGE_OPEN')
-	self:RegisterEvent('VOID_STORAGE_CLOSE')
+	if CanUseVoidStorage then
+		self:RegisterEvent('VOID_STORAGE_OPEN')
+		self:RegisterEvent('VOID_STORAGE_CLOSE')
+	end
 
-	self:RegisterEvent('GUILD_ROSTER_UPDATE')
-	self:RegisterEvent('GUILDBANKFRAME_OPENED')
-	self:RegisterEvent('GUILDBANKFRAME_CLOSED')
-	self:RegisterEvent('GUILDBANKBAGSLOTS_CHANGED')
+	if CanGuildBankRepair then
+		self:RegisterEvent('GUILDBANKFRAME_OPENED')
+		self:RegisterEvent('GUILDBANKFRAME_CLOSED')
+		self:RegisterEvent('GUILDBANKBAGSLOTS_CHANGED')
+	end
 end
 
 function Brother:UpdateData()

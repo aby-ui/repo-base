@@ -158,13 +158,13 @@ end
 
 function ProgressBar:SetMode(mode, force)
 	if self:GetMode() ~= mode or force then
-		self.sets.mode = mode
+		Addon.Config:SetBarMode(self.id, mode)
 		self:OnModeChanged(self:GetMode())
 	end
 end
 
 function ProgressBar:GetMode()
-	return self.sets.mode or self.modes[1]
+	return Addon.Config:GetBarMode(self.id) or self.modes[1]
 end
 
 function ProgressBar:OnModeChanged(mode)

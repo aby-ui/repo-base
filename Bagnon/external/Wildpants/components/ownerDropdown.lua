@@ -38,7 +38,7 @@ local function ListOwner(name)
 	local info = Cache:GetOwnerInfo(name)
 	if not info.isguild or canguild then
 		UIDropDownMenu_AddButton {
-			text = format('|T%s:14:14:-5:0|t', Addon:GetOwnerIcon(info)) .. Addon:GetOwnerColorString(info):format(info.name),
+			text = Addon:GetOwnerIconString(info, 14,-5,0) .. Addon:GetOwnerColorString(info):format(info.name),
 	    checked = name == CurrentFrame:GetOwner(),
 			hasArrow = info.cached,
 			func = OpenOwner,

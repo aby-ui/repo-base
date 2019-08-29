@@ -22,13 +22,15 @@ local L = LibStub("AceLocale-3.0"):GetLocale("Quartz3")
 local MODNAME = "Buff"
 local Buff = Quartz3:NewModule(MODNAME, "AceEvent-3.0", "AceBucket-3.0", "AceTimer-3.0")
 local Player = Quartz3:GetModule("Player")
-local Focus = Quartz3:GetModule("Focus")
-local Target = Quartz3:GetModule("Target")
+local Focus = Quartz3:GetModule("Focus", true)
+local Target = Quartz3:GetModule("Target", true)
 
 local TimeFmt = Quartz3.Util.TimeFormat
 
 local media = LibStub("LibSharedMedia-3.0")
 local lsmlist = AceGUIWidgetLSMlists
+
+local WoWClassic = (WOW_PROJECT_ID == WOW_PROJECT_CLASSIC)
 
 ----------------------------
 -- Upvalues
@@ -780,7 +782,9 @@ end
 function Buff:OnEnable()
 	self:RegisterBucketEvent("UNIT_AURA", 0.5)
 	self:RegisterEvent("PLAYER_TARGET_CHANGED", "UpdateBars")
-	self:RegisterEvent("PLAYER_FOCUS_CHANGED", "UpdateBars")
+	if not WoWClassic then
+		self:RegisterEvent("PLAYER_FOCUS_CHANGED", "UpdateBars")
+	end
 	media.RegisterCallback(self, "LibSharedMedia_SetGlobal", function(mtype, override)
 		if mtype == "statusbar" then
 			for i, v in pairs(targetbars) do
@@ -1158,9 +1162,9 @@ do
 		else
 			if i == 1 then
 				local anchorframe
-				if anchor == "focus" and Focus.Bar then
+				if anchor == "focus" and Focus and Focus.Bar then
 					anchorframe = Focus.Bar
-				elseif anchor == "target" and Target.Bar then
+				elseif anchor == "target" and Target and Target.Bar then
 					anchorframe = Target.Bar
 				else -- L["Player"]
 					anchorframe = Player.Bar

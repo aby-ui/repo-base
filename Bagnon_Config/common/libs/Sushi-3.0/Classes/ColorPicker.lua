@@ -81,8 +81,7 @@ function Color:OnClick ()
 		self:SaveColor(r, g, b, a)
 	end
 
-	ColorPickerFrame:Show()
-	--ShowUIPanel(ColorPickerFrame)
+	ColorPickerFrame:Show() --ShowUIPanel(ColorPickerFrame)
 	PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
 end
 

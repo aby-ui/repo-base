@@ -1,3 +1,5 @@
+if not WeakAuras.IsCorrectVersion() then return end
+
 if not(GetLocale() == "zhTW") then
   return
 end
@@ -100,6 +102,7 @@ local L = WeakAuras.L
 	L["Show Only if on Cooldown"] = "只有在冷卻中時顯示"
 	L["Show Totem and Charge Information"] = "顯示圖騰和次數資訊"
 	L["Specific Azerite Traits"] = "專用艾澤萊特長"
+	L["Stance"] = "姿勢形態"
 	L["Track the charge and proc, highlight while proc is active, turns red when out of range, blue on insufficient resources."] = "監控次數和機率觸發，觸發時顯著標示，超出範圍時變成紅色，資源不足時變成藍色。"
 	L["Tracks the charge and the buff, highlight while the buff is active, blue on insufficient resources."] = "追蹤次數和增益，有增益作用時顯著標示，資源不足時變成藍色。"
 	L["Tracks the charge and the debuff, highlight while the debuff is active, blue on insufficient resources."] = "追蹤次數和減益，有減益作用時顯著標示，資源不足時變成藍色。"

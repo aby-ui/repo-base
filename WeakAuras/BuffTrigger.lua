@@ -56,11 +56,14 @@ GetTriggerConditions(data, triggernum)
 Returns the potential conditions for a trigger
 ]]--
 
+if not WeakAuras.IsCorrectVersion() then return end
+
 -- Lua APIs
 local tinsert, wipe = table.insert, wipe
 local pairs, next, type = pairs, next, type
 local BUFF_MAX_DISPLAY = 255 -- Do tell when you find the real value.
 local CombatLogGetCurrentEventInfo = CombatLogGetCurrentEventInfo
+local UnitGroupRolesAssigned = not WeakAuras.IsClassic() and UnitGroupRolesAssigned or function() return "DAMAGER" end
 
 local WeakAuras = WeakAuras;
 local L = WeakAuras.L;
@@ -338,7 +341,6 @@ function WeakAuras.SetAuraVisibility(id, triggernum, cloneId, buffShowOn, unitEx
     end
 
     if (state.expirationTime ~= expirationTime) then
-      state.resort = true;
       state.expirationTime = expirationTime;
       state.changed = true;
     end
@@ -431,17 +433,17 @@ function WeakAuras.ScanAuras(unit)
   -- Link corresponding display (and aura cache)
   local aura_object;
   wipe(aura_lists);
-  if(unit:sub(0, 4) == "raid") then
+  if(unit:sub(1, 4) == "raid") then
     if(aura_cache.players[uGUID]) then
       aura_lists[1] = loaded_auras["group"];
       aura_object = aura_cache;
     end
-  elseif(unit:sub(0, 5) == "party") then
+  elseif(unit:sub(1, 5) == "party") then
     aura_lists[1] = loaded_auras["group"];
     aura_object = aura_cache;
   elseif(specificBosses[unit]) then
     aura_lists[1] = loaded_auras["boss"];
-  elseif(unit:sub(0,5) == "arena") then
+  elseif(unit:sub(1,5) == "arena") then
     aura_lists[1] = loaded_auras["arena"];
   else
     if(unit == "player" and loaded_auras["group"]) then
@@ -761,13 +763,13 @@ function WeakAuras.ScanAuras(unit)
                       name = "";
                       for affected_name, _ in pairs(affected) do
                         local space = affected_name:find(" ");
-                        name = name..(space and affected_name:sub(0, space - 1).."*" or affected_name)..", ";
+                        name = name..(space and affected_name:sub(1, space - 1).."*" or affected_name)..", ";
                         num = num + 1;
                       end
                       if(num == 0) then
                         name = WeakAuras.L["None"];
                       else
-                        name = name:sub(0, -3);
+                        name = name:sub(1, -3);
                       end
                       -- Process unaffected players
                     elseif(data.name_info == "nonplayers") then
@@ -776,13 +778,13 @@ function WeakAuras.ScanAuras(unit)
                       name = "";
                       for unaffected_name, _ in pairs(unaffected) do
                         local space = unaffected_name:find(" ");
-                        name = name..(space and unaffected_name:sub(0, space - 1).."*" or unaffected_name)..", ";
+                        name = name..(space and unaffected_name:sub(1, space - 1).."*" or unaffected_name)..", ";
                         num = num + 1;
                       end
                       if(num == 0) then
                         name = WeakAuras.L["None"];
                       else
-                        name = name:sub(0, -3);
+                        name = name:sub(1, -3);
                       end
                     end
 
@@ -986,7 +988,6 @@ do
       end
 
       if (state.expirationTime ~= auradata.expirationTime) then
-        state.resort = state.expirationTime ~= auradata.expirationTime;
         state.expirationTime = auradata.expirationTime;
         state.changed = true;
       end
@@ -1302,10 +1303,10 @@ end
 local function LoadAura(id, triggernum, data)
   local unit;
   if(data.specificUnit) then
-    if(data.unit:lower():sub(0,4) == "boss") then
+    if(data.unit:lower():sub(1,4) == "boss") then
       specificBosses[data.unit] = true;
       unit = "boss";
-    elseif(data.unit:lower():sub(0,5) == "arena") then
+    elseif(data.unit:lower():sub(1,5) == "arena") then
       unit = "arena";
     else
       specificUnits[data.unit] = true;
@@ -1362,14 +1363,16 @@ end
 local frame = CreateFrame("FRAME");
 WeakAuras.frames["WeakAuras Buff Frame"] = frame;
 frame:RegisterEvent("PLAYER_ENTERING_WORLD");
-frame:RegisterEvent("PLAYER_FOCUS_CHANGED");
+if not WeakAuras.IsClassic() then
+  frame:RegisterEvent("PLAYER_FOCUS_CHANGED");
+end
 frame:RegisterEvent("PLAYER_TARGET_CHANGED");
 frame:RegisterEvent("INSTANCE_ENCOUNTER_ENGAGE_UNIT");
 frame:RegisterEvent("UNIT_AURA");
 frame:RegisterUnitEvent("UNIT_PET", "player")
 frame:SetScript("OnEvent", function (frame, event, arg1, arg2, ...)
-  WeakAuras.StartProfileSystem("bufftrigger");
   if (WeakAuras.IsPaused()) then return end;
+  WeakAuras.StartProfileSystem("bufftrigger");
   if (event == "PLAYER_ENTERING_WORLD") then
     BuffTrigger.ScanAll();
   elseif(event == "PLAYER_TARGET_CHANGED") then
@@ -1388,18 +1391,18 @@ frame:SetScript("OnEvent", function (frame, event, arg1, arg2, ...)
       or (
       loaded_auras["group"]
       and (
-      arg1:sub(0, 4) == "raid"
-      or arg1:sub(0, 5) == "party"
+      arg1:sub(1, 4) == "raid"
+      or arg1:sub(1, 5) == "party"
       or arg1 == "player"
       )
       )
       or (
       loaded_auras["boss"]
-      and arg1:sub(0,4) == "boss"
+      and arg1:sub(1,4) == "boss"
       )
       or (
       loaded_auras["arena"]
-      and arg1:sub(0,5) == "arena"
+      and arg1:sub(1,5) == "arena"
       )
       ) then
       -- This throttles aura scans to only happen at most once per frame per unit
@@ -1755,9 +1758,9 @@ function BuffTrigger.SetToolTip(trigger, state)
           local _,space,class,classColor;
           for playerName, _ in pairs(players) do
             space = playerName:find(" ");
-            _, class = UnitClass((space and playerName:sub(0, space - 1) or playerName));
+            _, class = UnitClass((space and playerName:sub(1, space - 1) or playerName));
             classColor = WeakAuras.class_color_types[class];
-            playersString = playersString..(classColor or "")..(space and playerName:sub(0, space - 1).."*" or playerName)..(classColor and "|r" or "")..(next(players, playerName) and ", " or "");
+            playersString = playersString..(classColor or "")..(space and playerName:sub(1, space - 1).."*" or playerName)..(classColor and "|r" or "")..(next(players, playerName) and ", " or "");
           end
           GameTooltip:AddLine(playersString);
         end
@@ -1767,9 +1770,9 @@ function BuffTrigger.SetToolTip(trigger, state)
         local _,space,class,classColor;
         for playerName, _ in pairs(playerList) do
           space = playerName:find(" ");
-          _, class = UnitClass((space and playerName:sub(0, space - 1) or playerName));
+          _, class = UnitClass((space and playerName:sub(1, space - 1) or playerName));
           classColor = WeakAuras.class_color_types[class];
-          playersString = playersString..(classColor or "")..(space and playerName:sub(0, space - 1).."*" or playerName)..(classColor and "|r" or "")..(next(playerList, playerName) and (", "..(num % 5 == 4 and "\n" or "")) or "");
+          playersString = playersString..(classColor or "")..(space and playerName:sub(1, space - 1).."*" or playerName)..(classColor and "|r" or "")..(next(playerList, playerName) and (", "..(num % 5 == 4 and "\n" or "")) or "");
           num = num + 1;
         end
         GameTooltip:AddLine(playersString);
@@ -1832,9 +1835,8 @@ end
 -- @param triggernum
 -- @return string of additional properties
 function BuffTrigger.GetAdditionalProperties(data, triggernum)
-  local ret = "\n\n" .. L["Additional Trigger Replacements"] .. "\n";
-  ret = ret .. "|cFFFF0000%spellId|r -" .. L["Spell ID"] .. "\n";
-  ret = ret .. "|cFFFF0000%unitCaster|r -" .. L["Caster"] .. "\n";
+  local ret =  "|cFFFF0000%".. triggernum .. ".spellId|r -" .. L["Spell ID"] .. "\n";
+  ret = ret .. "|cFFFF0000%".. triggernum .. ".unitCaster|r -" .. L["Caster"] .. "\n";
 
   return ret;
 end
@@ -1888,6 +1890,9 @@ function BuffTrigger.CreateFallbackState(data, triggernum, state)
   state.progressType = "timed";
   state.duration = 0;
   state.expirationTime = math.huge;
+  local name, icon = GetNameAndIconFromTrigger(data, triggernum)
+  state.name = name
+  state.icon = icon
 end
 
 function BuffTrigger.GetName(triggerType)
@@ -1914,6 +1919,27 @@ function BuffTrigger.GetTriggerDescription(data, triggernum, namestable)
       end
       local icon = WeakAuras.spellCache.GetIcon(name) or "Interface\\Icons\\INV_Misc_QuestionMark";
       tinsert(namestable, {left, name, icon});
+    end
+  end
+end
+
+function BuffTrigger.CreateFakeStates(id, triggernum)
+  local allStates = WeakAuras.GetTriggerStateForTrigger(id, triggernum);
+  local data = WeakAuras.GetData(id)
+  local state = {}
+  BuffTrigger.CreateFallbackState(data, triggernum, state)
+  state.expirationTime = GetTime() + 60
+  state.duration = 65
+  state.progressType = "timed"
+  allStates[""] = state
+  if BuffTrigger.CanHaveClones(data, triggernum) then
+    for i = 1, 2 do
+      local state = {}
+      BuffTrigger.CreateFallbackState(data, triggernum, state)
+      state.expirationTime = GetTime() + 60 + i * 20
+      state.duration = 100
+      state.progressType = "timed"
+      allStates[i] = state
     end
   end
 end

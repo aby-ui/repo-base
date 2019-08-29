@@ -58,5 +58,8 @@ end
 --[[ Update ]]--
 
 function OwnerSelector:Update()
-	self.Icon:SetTexture(Addon:GetOwnerIcon(self:GetOwnerInfo()))
+	local icon, coords = Addon:GetOwnerIcon(self:GetOwnerInfo())
+
+	self.Icon:SetTexture(icon)
+	self.Icon:SetTexCoord(unpack(coords))
 end

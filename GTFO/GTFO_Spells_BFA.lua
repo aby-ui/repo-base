@@ -759,7 +759,7 @@ GTFO.SpellID["285479"] = {
 GTFO.SpellID["284470"] = {
   --desc = "Hex of Lethargy (Opulence)";
   sound = 2;
-  minimumDamage = 1;
+  damageMinimum = 1;
   test = true;
 };
 
@@ -1010,8 +1010,7 @@ GTFO.SpellID["303958"] = {
 GTFO.SpellID["298192"] = {
   --desc = "Dark Beyond (Za'qul)";
   sound = 1;
-  minimumDamage = 1;
-  test = true;
+  damageMinimum = 1;
 };
 
 GTFO.SpellID["303819"] = {
@@ -1028,3 +1027,9 @@ GTFO.SpellID["303981"] = {
   --desc = "Nether Portal (Queen Azshara)";
   sound = 1;
 };
+
+GTFO.SpellID["303422"] = {
+  --desc = "Blizzard";
+  sound = 1;
+};
+

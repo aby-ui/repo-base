@@ -1,5 +1,7 @@
-local L = WeakAuras.L;
+if not WeakAuras.IsCorrectVersion() then return end
 
+local L = WeakAuras.L;
+local GetAtlasInfo = WeakAuras.IsClassic() and GetAtlasInfo or C_Texture.GetAtlasInfo
 local function createOptions(id, data)
   local options = {
     __title = L["Progress Texture Settings"],
@@ -221,13 +223,6 @@ local function createOptions(id, data)
       bigStep = 0.01,
       isPercent = true
     },
-    stickyDuration = {
-      type = "toggle",
-      width = WeakAuras.normalWidth,
-      name = L["Sticky Duration"],
-      desc = L["Prevents duration information from decreasing when an aura refreshes. May cause problems if used with multiple auras with different durations."],
-      order = 55
-    },
     smoothProgress = {
       type = "toggle",
       width = WeakAuras.normalWidth,
@@ -278,6 +273,11 @@ local function createOptions(id, data)
       type = "header",
       name = "",
       order = 56
+    },
+    endHeader = {
+      type = "header",
+      order = 100,
+      name = "",
     },
   };
   options = WeakAuras.regionPrototype.AddAdjustedDurationOptions(options, data, 57);
@@ -416,7 +416,7 @@ local function createThumbnail(parent)
   local OrgSetTexture = foreground.SetTexture;
   -- WORKAROUND, setting the same texture with a different wrap mode does not change the wrap mode
   foreground.SetTexture = function(self, texture, horWrapMode, verWrapMode)
-    if (C_Texture.GetAtlasInfo(texture)) then
+    if (GetAtlasInfo(texture)) then
       self:SetAtlas(texture);
     else
       local needToClear = (self.horWrapMode and self.horWrapMode ~= horWrapMode) or (self.verWrapMode and self.verWrapMode ~= verWrapMode);
@@ -721,7 +721,8 @@ end
 
 local function createIcon()
   local data = {
-    foregroundTexture = "450915", -- "Textures\\SpellActivationOverlays\\Eclipse_Sun"
+    foregroundTexture = "Interface\\Addons\\WeakAuras\\PowerAurasMedia\\Auras\\Aura3",
+    backgroundTexture = "Interface\\Addons\\WeakAuras\\PowerAurasMedia\\Auras\\Aura3",
     sameTexture = true,
     backgroundOffset = 2,
     blendMode = "BLEND",
@@ -817,4 +818,12 @@ local templates = {
   },
 }
 
-WeakAuras.RegisterRegionOptions("progresstexture", createOptions, createIcon, L["Progress Texture"], createThumbnail, modifyThumbnail, L["Shows a texture that changes based on duration"], templates);
+if WeakAuras.IsClassic() then
+  table.remove(templates, 2)
+end
+
+local function GetAnchors(data)
+  return WeakAuras.default_types_for_anchor
+end
+
+WeakAuras.RegisterRegionOptions("progresstexture", createOptions, createIcon, L["Progress Texture"], createThumbnail, modifyThumbnail, L["Shows a texture that changes based on duration"], templates, GetAnchors);
