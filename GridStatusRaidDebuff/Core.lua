@@ -39,6 +39,14 @@ local debuff_list = {}
 local refreshEventScheduled = false
 local refreshTimer
 
+local function IsClassicWow()
+	local gameVersion = GetBuildInfo()
+	if (gameVersion:match ("%d") == "1") then
+		return true
+	end
+	return false
+end
+
 local colorMap = {
 	["Curse"] = { r = .6, g =  0, b = 1},
 	["Magic"] = { r = .2, g = .6, b = 1},
@@ -70,6 +78,11 @@ local colorMap = {
 -- Detox: Poison, Disease, and Magic (Mistweaver)
 
 -- Cannot do GetSpecialization != 3 for priest, unspeced is also an option (nil)
+if not GetSpecialization then
+    function GetSpecialization()
+        return false
+    end
+end
 local dispelMap = {
 	["PRIEST"] = {["Magic"] = true, ["Disease"] = ((GetSpecialization() == 1) or (GetSpecialization() == 2))},
 	["PALADIN"] = {["Disease"] = true, ["Poison"] = true, ["Magic"] = (GetSpecialization() == 1)},
@@ -93,6 +106,7 @@ local ignore_ids = {
     [197509] = true, -- Bloodworm DK Debuff
     [5215] = true, -- Prowl Druid Debuff
     [115191] = true, -- Stealth Rogue Debuff
+    [304851] = true, -- 纳沙塔尔之战参战者
 }
 
 local clientVersion
@@ -105,12 +119,19 @@ end
 ---------------------------------------------------------
 --	Core
 ---------------------------------------------------------
-
 GridStatusRaidDebuff = Grid:NewStatusModule("GridStatusRaidDebuff", "AceTimer-3.0")
 GridStatusRaidDebuff.menuName = L["Raid Debuff"]
 
-local GridFrame = Grid:GetModule("GridFrame")
-local GridRoster = Grid:GetModule("GridRoster")
+if (IsAddOnLoaded("Grid")) then
+GridFrame = Grid:GetModule("GridFrame")
+GridRoster = Grid:GetModule("GridRoster")
+end
+
+if (IsAddOnLoaded("Plexus")) then
+GridFrame = Grid:GetModule("PlexusFrame")
+GridRoster = Grid:GetModule("PlexusRoster")
+end
+
 local GridStatusRaidDebuff = GridStatusRaidDebuff
 
 local GetSpellInfo = GetSpellInfo
@@ -426,10 +447,12 @@ function GridStatusRaidDebuff:ZoneCheck()
 	self:UpdateAllUnits()
 	self:CheckDetectZone()
 
+if not IsClassicWow() then
 	if myClass == "PALADIN" or myClass == "DRUID" or myClass == "SHAMAN" or myClass == "PRIEST" or
 	   myClass == "MONK" then
 		self:RegisterEvent("PLAYER_TALENT_UPDATE")
 	end
+end
 
 	if debuff_list[realzone] then
 		if not refreshEventScheduled then

@@ -105,11 +105,13 @@ function BaudErrorFrame_OnLoad(self)
         EventFuncs[event](...);
     end);
     seterrorhandler(BaudErrorFrameHandler);
-    hooksecurefunc("DisplayInterfaceActionBlockedMessage", function()
-        if Config.Taint then
-            BaudErrorFrameAdd(date("%H:%M:%S") .. " 插件导致界面行为失效", 4);
-        end
-    end)
+    if DisplayInterfaceActionBlockedMessage then
+        hooksecurefunc("DisplayInterfaceActionBlockedMessage", function()
+            if Config.Taint then
+                BaudErrorFrameAdd(date("%H:%M:%S") .. " 插件导致界面行为失效", 4);
+            end
+        end)
+    end
 
     UIParent:UnregisterEvent("MACRO_ACTION_BLOCKED");
     UIParent:UnregisterEvent("ADDON_ACTION_BLOCKED");

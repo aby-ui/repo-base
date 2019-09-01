@@ -10,13 +10,9 @@ function RuleFilter:New(parent)
 	local f = self:Bind(CreateFrame('Frame', nil, parent))
 	f.buttons = {[-1] = f}
 	f:SetSize(10, 30)
-
-	for _, signal in pairs(f.Signals) do
-		f:RegisterFrameSignal(signal, 'Update')
-	end
-
 	f:RegisterFrameSignal('RULES_UPDATED', 'Update')
 	f:RegisterSignal('UPDATE_ALL', 'Update')
+	f:Startup()
 	f:Update()
 
 	return f
@@ -51,11 +47,13 @@ end
 --[[ Side Filter ]]--
 
 local SideFilter = Addon:NewClass('SideFilter', 'Frame', RuleFilter)
-SideFilter.Signals = {}
 SideFilter.Button = Addon.SideTab
 SideFilter.X, SideFilter.Y = 0, -17
 SideFilter.FromPoint = 'TOPLEFT'
 SideFilter.ToPoint = 'BOTTOMLEFT'
+
+function SideFilter:Startup()
+end
 
 function SideFilter:IsShowning(rule)
 	return not rule.id:find('/')
@@ -65,12 +63,16 @@ end
 --[[ Bottom Filter ]]--
 
 local BottomFilter = Addon:NewClass('BottomFilter', 'Frame', RuleFilter)
-BottomFilter.Signals = {'RULE_CHANGED'}
 BottomFilter.Button = Addon.BottomTab
 BottomFilter.X, BottomFilter.Y = -10, 0
 BottomFilter.FromPoint = 'LEFT'
 BottomFilter.ToPoint = 'RIGHT'
 
+function BottomFilter:Startup()
+	self:RegisterFrameSignal('RULE_CHANGED', 'Update')
+end
+
 function BottomFilter:IsShowning(rule)
-	return rule.id:match(self:GetFrame().rule .. '/.+')
+	local parent = self:GetFrame().rule
+	return rule.id == parent or rule.id:match('^' .. parent .. '/.+')
 end

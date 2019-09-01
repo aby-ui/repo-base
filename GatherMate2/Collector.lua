@@ -7,6 +7,8 @@ local Display = nil
 -- gatherevents if a flag for wether we are listening to events
 local prevSpell, curSpell, foundTarget, gatherEvents, ga
 
+local WoWClassic = (WOW_PROJECT_ID == WOW_PROJECT_CLASSIC)
+
 --[[
 Convert for 2.4 spell IDs
 ]]
@@ -24,7 +26,16 @@ local archSpell = (GetSpellInfo(73979)) -- Searching for Artifacts spell
 local sandStormSpell = (GetSpellInfo(93473)) -- Sandstorm spell cast by the camel
 local loggingSpell = (GetSpellInfo(167895))
 
-local spells = { -- spellname to "database name"
+local spells = WoWClassic and {
+	[miningSpell] = "Mining",
+	[herbSpell] = "Herb Gathering",
+	[fishSpell] = "Fishing",
+	[openSpell] = "Treasure",
+	[openNoTextSpell] = "Treasure",
+	[pickSpell] = "Treasure",
+}
+or
+{ -- spellname to "database name"
 	[miningSpell] = "Mining",
 	[miningSpell2] = "Mining",
 	[herbSpell] = "Herb Gathering",
@@ -181,7 +192,7 @@ end
 function Collector:UIError(event,token,msg)
 	local what = tooltipLeftText1:GetText();
 	if not what then return end
-	if strfind(msg, miningSpell) or strfind(msg, miningSpell2) then
+	if strfind(msg, miningSpell) or (miningSpell2 and strfind(msg, miningSpell2)) then
 		self:addItem(miningSpell,what)
 	elseif strfind(msg, herbSkill) then
 		self:addItem(herbSpell,what)

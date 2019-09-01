@@ -19,6 +19,7 @@ function ItemFrame:New(parent, bags, title)
 	f.Title = f:CreateFontString(nil, nil, 'GameFontHighlight')
 	f.Title:SetPoint('BOTTOMLEFT', f, 'TOPLEFT', 0, 5)
 	f.Title:SetText(title)
+	f.Transposed = f:GetType() == 'vault'
 
 	return f
 end
@@ -31,7 +32,7 @@ function ItemFrame:RegisterEvents()
 	if self:IsCached() then
 		self:RegisterEvent('VOID_STORAGE_OPEN', 'RegisterEvents')
 	else
-		local type = self:Type()
+		local type = self:GetType()
 		if type == DEPOSIT then
 			self:RegisterEvent('VOID_STORAGE_DEPOSIT_UPDATE', 'RequestLayout')
 		elseif type == WITHDRAW then
@@ -40,7 +41,6 @@ function ItemFrame:RegisterEvents()
 			self:RegisterEvent('VOID_STORAGE_CONTENTS_UPDATE', 'ForAll', 'Update')
 			self:RegisterEvent('VOID_STORAGE_UPDATE', 'ForAll', 'Update')
 			self:RegisterEvent('VOID_TRANSFER_DONE', 'ForAll', 'Update')
-			self.Transposed = true
 		end
 	end
 end
@@ -59,15 +59,15 @@ end
 --[[ Properties ]]--
 
 function ItemFrame:NumSlots()
-	if self:Type() == DEPOSIT then
+	if self:GetType() == DEPOSIT then
 		return GetNumVoidTransferDeposit()
-	elseif self:Type() == WITHDRAW then
+	elseif self:GetType() == WITHDRAW then
 		return GetNumVoidTransferWithdrawal()
 	else
 		return 160
 	end
 end
 
-function ItemFrame:Type()
+function ItemFrame:GetType()
 	return self.bags[1]
 end

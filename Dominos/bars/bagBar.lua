@@ -88,6 +88,10 @@ function BagBarController:OnInitialize()
 end
 
 function BagBarController:OnEnable()
+	-- for _, button in pairs(bagButtons) do
+	-- 	button:Hide()
+	-- end
+
 	for _, button in pairs(bagButtons) do
 		Addon:GetModule('ButtonThemer'):Register(button, 'Bag Bar', {
 			Icon = button.icon,
@@ -112,11 +116,13 @@ end
 
 function BagBarController:RegisterButton(name)
 	local button = _G[name]
+	if not button then return end
 
+	button:Hide()
 	resize(button, 36)
 	resize(button.IconBorder, 37)
 	resize(button.IconOverlay, 37)
 	resize(_G[button:GetName() .. "NormalTexture"], 64)
 
-	table.insert(bagButtons, button)
+	tinsert(bagButtons, button)
 end

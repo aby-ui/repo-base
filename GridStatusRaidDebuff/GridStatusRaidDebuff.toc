@@ -5,10 +5,9 @@
 ## Notes-zhCN: [Grid] 在 Grid 添加团队减益状态提示。
 ## Notes-zhTW: [Grid] 在 Grid 添加團隊減益狀態提示。
 ## Author: Azelkeeber(KR-Tirion),Toadkiller,Stassart,tptbk(Doadin-Malorne-US)
-## Version: 8.2.0.0
+## Version: 8.2.1.0
 ## Grid Author: Pastamancer & Maia
-## Dependencies: Grid
-## OptionalDeps: LibBabble-Zone-3.0, LibBabble-Boss-3.0, AceLocale-3.0
+## OptionalDeps: LibBabble-Zone-3.0, LibBabble-Boss-3.0, AceLocale-3.0, Grid, Plexus
 ## X-Category: UnitFrame
 ## X-GridStatusModule: GridStatusRaidDebuff
 

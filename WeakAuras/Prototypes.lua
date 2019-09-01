@@ -2009,7 +2009,7 @@ WeakAuras.event_prototypes = {
       },
       {
         enable = function(trigger)
-          return WeakAuras.IsClassic() and not (trigger.subeventPrefix and (trigger.subeventPrefix:find("SPELL") or trigger.subeventPrefix == "RANGE" or trigger.subeventPrefix:find("DAMAGE")))
+          return WeakAuras.IsClassic() and trigger.subeventPrefix and (trigger.subeventPrefix:find("SPELL") or trigger.subeventPrefix == "RANGE" or trigger.subeventPrefix:find("DAMAGE"))
         end
       }, -- spellId ignored on classic
       {
@@ -4014,12 +4014,12 @@ WeakAuras.event_prototypes = {
         local ret = [[
           local tier = %s;
           local column = %s;
-          local active
+          local active, _, activeName, activeIcon, selected, known, rank
           if WeakAuras.IsClassic() then
-            local _, _, _, _, rank  = GetTalentInfo(tier, column)
+            _, _, _, _, rank  = GetTalentInfo(tier, column)
             active = rank > 0
           else
-            local _, activeName, activeIcon, selected, _, _, _, _, _, _, known  = GetTalentInfo(tier, column, 1)
+            _, activeName, activeIcon, selected, _, _, _, _, _, _, known  = GetTalentInfo(tier, column, 1)
             active = selected or known;
           end
         ]]
@@ -4376,7 +4376,7 @@ WeakAuras.event_prototypes = {
         local form
         local active = false
       ]]
-      if trigger.use_form and trigger.form.single then
+      if trigger.use_form and trigger.form and trigger.form.single then
         -- Single selection
         ret = ret .. [[
           local trigger_form = %d

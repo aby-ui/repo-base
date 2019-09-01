@@ -24,7 +24,7 @@ L.Enabled = '啟用框架'
 --L.CharacterSpecific = 'Character Specific Settings'
 L.ExclusiveReagent = '分離材料銀行'
 
-L.BagFrame = '背包列表'
+L.BagToggle = '背包列表'
 L.Money = '金錢'
 L.Broker = 'Databroker外掛'
 L.Sort = '排序按鈕'

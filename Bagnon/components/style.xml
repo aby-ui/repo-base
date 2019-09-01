@@ -20,6 +20,7 @@
 	<CheckButton name="BagnonMenuCheckButtonTemplate" inherits="BagnonMenuButtonTemplate" virtual="true">
 		<CheckedTexture file="Interface\Buttons\CheckButtonHilight" alphaMode="ADD"/>
 	</CheckButton>
+	<Button name="BagnonOwnerSelectorTemplate" inherits="BagnonMenuButtonTemplate" virtual="true"/>
 
 	<Button name="BagnonSortButtonTemplate" inherits="BagnonMenuButtonTemplate" virtual="true">
         <Size x="23" y="23"/>

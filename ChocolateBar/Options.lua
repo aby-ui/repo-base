@@ -1,6 +1,6 @@
 local LibStub = LibStub
 local ChocolateBar = LibStub("AceAddon-3.0"):GetAddon("ChocolateBar")
-local Debug = ChocolateBar.Debug
+local debug = ChocolateBar and ChocolateBar.Debug or function() end
 local AceCfgDlg = LibStub("AceConfigDialog-3.0")
 local Drag = ChocolateBar.Drag
 local broker = LibStub("LibDataBroker-1.1")
@@ -64,573 +64,513 @@ local aceoptions = {
 	type='group',
 	desc = "ChocolateBar",
     args = {
-		general={
-			name = L["Look and Feel"],
-			type="group",
-			order = 0,
-			args={
-				general = {
-					inline = true,
-					name = L["General"],
-					type="group",
-					order = 3,
-					args={
-						locked = {
-							type = 'toggle',
-							order = 1,
-							name = L["Lock Plugins"],
-							desc = L["Hold alt key to drag a plugin."],
-							get = function(info, value)
-									return db.locked
-							end,
-							set = function(info, value)
-									db.locked = value
-							end,
-						},
-						gap = {
-							type = 'range',
-							order = 2,
-							name = L["Gap"],
-							desc = L["Set the gap between the plugins."],
-							min = 0,
-							max = 50,
-							step = 1,
-							get = function(name)
-								return db.gap
-							end,
-							set = function(info, value)
-								db.gap = value
-								ChocolateBar.ChocolatePiece:UpdateGap(value)
-								ChocolateBar:UpdateChoclates("updateSettings")
-							end,
-						},
-						textOffset = {
-							type = 'range',
-							order = 2,
-							name = L["Text Offset"],
-							desc = L["Set the distance between the icon and the text."],
-							min = -5,
-							max = 15,
-							step = 1,
-							get = function(name)
-								return db.textOffset
-							end,
-							set = function(info, value)
-								db.textOffset = value
-								--ChocolateBar.ChocolatePiece:UpdateGap(value)
-								ChocolateBar:UpdateChoclates("updateSettings")
-							end,
-						},
-						size = {
-							type = 'range',
-							order = 3,
-							name = L["Bar Size"],
-							desc = L["Bar Size"],
-							min = 12,
-							max = 30,
-							step = 1,
-							get = function(name)
-								return db.height
-							end,
-							set = function(info, value)
-								db.height = value
-								ChocolateBar:UpdateBarOptions("UpdateHeight")
-							end,
-						},
-						iconSize = {
-							type = 'range',
-							order = 3,
-							name = L["Icon Size"],
-							desc = L["Icon size in relation to the bar height."],
-							min = 0,
-							max = 1,
-							step = 0.001,
-							bigStep = 0.05,
-							isPercent = true,
-							get = function(name)
-								return db.iconSize
-							end,
-							set = function(info, value)
-								if value > 1 then
-									value = 1
-								elseif value < 0.01 then
-									value = 0.001
-								end
-								db.iconSize = value
-								ChocolateBar:UpdateBarOptions("UpdateHeight")
-							end,
-						},
-						strata = {
-							type = 'select',
-							values = {FULLSCREEN_DIALOG="Fullscreen_Dialog",FULLSCREEN="Fullscreen",
-										DIALOG="Dialog",HIGH="High",MEDIUM="Medium",LOW="Low",BACKGROUND="Background"},
-							order = 6,
-							name = L["Bar Strata"],
-							desc = L["Bar Strata"],
-							get = function()
-								return db.strata
-							end,
-							set = function(info, value)
-								db.strata = value
-								ChocolateBar:UpdateBarOptions("UpdateStrata")
-							end,
-						},
-						moveFrames = {
-							type = 'toggle',
-							--width = "double",
-							order = 7,
-							name = L["Adjust Blizzard Frames"],
-							desc = L["Move Blizzard frames above/below bars"],
-							get = function(info, value)
-									return db.moveFrames
-							end,
-							set = function(info, value)
-									db.moveFrames = value
-									ChocolateBar:UpdateBarOptions("UpdateAutoHide")
-							end,
-						},
-						barRightClick = {
-							type = 'select',
-							values = {NONE=L["none"],OPTIONS=L["ChocolateBar Options"],
-										BLIZZ=L["Blizzard Options"], ["163UI"]="爱不易控制台", },
-							order = 8,
-							name = L["Bar Right Click"],
-							desc = L["Select the action when right clicking on a bar."],
-							get = function()
-								return db.barRightClick
-							end,
-							set = function(info, value)
-								db.barRightClick = value
-							end,
-						},
-						adjustCenter = {
-							type = 'toggle',
-							width = "double",
-							order = 9,
-							name = L["Update Center Position"],
-							desc = L["Always adjust the center group based on the current width of the plugins. Disable this to align the center group based only on the number of plugins."],
-							get = function(info, value)
-									return db.adjustCenter
-							end,
-							set = function(info, value)
-									db.adjustCenter = value
-									ChocolateBar:UpdateBarOptions("UpdateBar")
-							end,
-						},
-						hideBarsPetBattle = {
-							type = 'toggle',
-							order = 10,
-							name = L["Hide Bars in Pet Battle"],
-							desc = L["Hide Bars during a Pet Battle."],
-							get = function(info, value)
-									return db.petBattleHideBars
-							end,
-							set = function(info, value)
-									db.petBattleHideBars = value
-							end,
-						},
-						hideOrderHallCommandBar = {
-							type = 'toggle',
-							order = 11,
-							name = L["Hide Order Hall Bar"],
-							desc = L["Hides the command bar displayed at the Class/Order Hall."],
-							get = function(info, value)
-									return db.hideOrderHallCommandBar
-							end,
-							set = function(info, value)
-									db.hideOrderHallCommandBar = value
-									ChocolateBar:ToggleOrderHallCommandBar()
-							end,
-						},
-						colorizedDragging = {
-							type = 'toggle',
-							order = 12,
-							name = L["Colorized Dragging"],
-							desc = L["Colorize frames during drag & drop."],
-							get = function(info, value)
-									return db.colorizedDragging
-							end,
-							set = function(info, value)
-									db.colorizedDragging = value
-							end,
-						},
-					},
-				},
-				defaults = {
-					inline = true,
-					name= L["Defaults"],
-					type="group",
-					order = 4,
-					args={
-						label = {
-							order = 0,
-							type = "description",
-							name = L["Automatically disable new plugins of type:"],
-						},
-						dataobjects = {
-							type = 'toggle',
-							order = 1,
-							name = L["Data Source"],
-							desc = L["If enabled new plugins of type data source will automatically be disabled."],
-							get = function()
-									return db.autodissource
-							end,
-							set = function(info, value)
-									db.autodissource = value
-							end,
-						},
-						launchers = {
-							type = 'toggle',
-							order = 2,
-							name = L["Launcher"],
-							desc = L["If enabled new plugins of type launcher will automatically be disabled."],
-							get = function()
-									return db.autodislauncher
-							end,
-							set = function(info, value)
-									db.autodislauncher = value
-							end,
-						},
-					},
-				},
-				combat = {
-					--inline = true,
-					name= L["In Combat"],
-					type="group",
-					order = 0,
-					args={
-						combat = {
-							inline = true,
-							name= L["In Combat"],
-							type="group",
-							order = 0,
-							args={
-								hidetooltip = {
-									type = 'toggle',
-									order = 1,
-									name = L["Disable Tooltips"],
-									desc = L["Disable Tooltips"],
-									get = function(info, value)
-											return db.combathidetip
-									end,
-									set = function(info, value)
-											db.combathidetip = value
-									end,
-								},
-								hidebars = {
-									type = 'toggle',
-									order = 2,
-									name = L["Hide Bars"],
-									desc = L["Hide Bars"],
-									get = function(info, value)
-											return db.combathidebar
-									end,
-									set = function(info, value)
-											db.combathidebar = value
-									end,
-								},
-								disablebar = {
-									type = 'toggle',
-									order = 2,
-									name = L["Disable Clicking"],
-									desc = L["Disable Clicking"],
-									get = function(info, value)
-											return db.combatdisbar
-									end,
-									set = function(info, value)
-											db.combatdisbar = value
-									end,
-								},
-								disableoptons = {
-									type = 'toggle',
-									order = 2,
-									name = L["Disable Options"],
-									desc = L["Disable options dialog on right click"],
-									get = function(info, value)
-											return db.disableoptons
-									end,
-									set = function(info, value)
-											db.disableoptons = value
-									end,
-								},
-								combatopacity = {
-									type = 'range',
-									order = 3,
-									name = L["Opacity"],
-									desc = L["Set the opacity of the bars during combat."],
-									min = 0,
-									max = 1,
-									step = 0.001,
-									bigStep = 0.05,
-									isPercent = true,
-									get = function(name)
-										return db.combatopacity
-									end,
-									set = function(info, value)
-										if value > 1 then
-											value = 1
-										elseif value < 0.01 then
-											value = 0.001
-										end
-										db.combatopacity = value
-										--ChocolateBar:UpdateBarOptions("UpdateOpacity")
-										for name,bar in pairs(ChocolateBar:GetBars()) do
-											bar.tempHide = bar:GetAlpha()
-											bar:SetAlpha(db.combatopacity)
-										end
-									end,
-								},
-							},
-						},
-					},
-				},
-				background = {
-					--inline = true,
-					name = L["Fonts and Textures"],
-					type = "group",
-					order = 4,
-					args ={
-						backbround = {
-							inline = true,
-							name = L["Textures"],
-							type = "group",
-							order = 2,
-							args ={
-								textureStatusbar = {
-									type = 'select',
-									dialogControl = 'LSM30_Statusbar',
-									values = AceGUIWidgetLSMlists.statusbar,
-									order = 1,
-									name = L["Background Texture"],
-									desc = L["Some of the textures may depend on other addons."],
-									get = function()
-										return db.background.textureName
-									end,
-									set = function(info, value)
-										db.background.texture = LSM:Fetch("statusbar", value)
-										db.background.textureName = value
-										db.background.tile = false
-										ChocolateBar:UpdateBarOptions("UpdateTexture")
-									end,
-								},
-								colour = {
-									type = "color",
-									order = 5,
-									name = L["Texture Color/Alpha"],
-									desc = L["Texture Color/Alpha"],
-									hasAlpha = true,
-									get = function(info)
-										local t = db.background.color
-										return t.r, t.g, t.b, t.a
-									end,
-									set = function(info, r, g, b, a)
-										local t = db.background.color
-										t.r, t.g, t.b, t.a = r, g, b, a
-										ChocolateBar:UpdateBarOptions("UpdateColors")
-									end,
-								},
-								bordercolour = {
-									type = "color",
-									order = 6,
-									name = L["Border Color/Alpha"],
-									desc = L["Border Color/Alpha"],
-									hasAlpha = true,
-									get = function(info)
-										local t = db.background.borderColor
-										return t.r, t.g, t.b, t.a
-									end,
-									set = function(info, r, g, b, a)
-										local t = db.background.borderColor
-										t.r, t.g, t.b, t.a = r, g, b, a
-										ChocolateBar:UpdateBarOptions("UpdateColors")
-									end,
-								},
-							},
-						},
-						background1 = {
-							inline = true,
-							name = L["Advanced Textures"],
-							type = "group",
-							order = 3,
-							args ={
-								textureBackground = {
-									type = 'select',
-									dialogControl = 'LSM30_Background',
-									values = AceGUIWidgetLSMlists.background,
-									order = 2,
-									name = L["Background Texture"],
-									desc = L["Some of the textures may depend on other addons."],
-									get = function()
-										return db.background.textureName
-									end,
-									set = function(info, value)
-										db.background.texture = LSM:Fetch("background", value)
-										db.background.textureName = value
-										db.background.tile = true
-										local t = db.background.color
-										t.r, t.g, t.b, t.a = 1, 1, 1, 1
-										ChocolateBar:UpdateBarOptions("UpdateTexture")
-									end,
-								},
-								textureTile = {
-									type = 'toggle',
-									order = 3,
-									name = L["Tile"],
-									desc = L["Tile the Texture. Disable to stretch the Texture."],
-									get = function()
-											return db.background.tile
-									end,
-									set = function(info, value)
-											db.background.tile = value
-											ChocolateBar:UpdateBarOptions("UpdateTexture")
-									end,
-								},
-								textureTileSize = {
-									type = 'range',
-									order = 4,
-									name = L["Tile Size"],
-									desc = L["Adjust the size of the tiles."],
-									min = 1,
-									max = 256,
-									step = 1,
-									bigStep = 5,
-									isPercent = false,
-									get = function(name)
-										return db.background.tileSize
-									end,
-									set = function(info, value)
-										if value > 256 then
-											value = 256
-										elseif value < 1 then
-											value = 1
-										end
-										db.background.tileSize = value
-										ChocolateBar:UpdateBarOptions("UpdateTexture")
-									end,
-								},
-							},
-						},
-						fonts = {
-							inline = true,
-							name = L["Font"],
-							type = "group",
-							order = 1,
-							args ={
-								font = {
-								type = 'select',
-								dialogControl = 'LSM30_Font',
-								values = AceGUIWidgetLSMlists.font,
+			lookAndFeel = {
+				name = L["Look and Feel"],
+				type="group",
+				order = 0,
+				args={
+					general = {
+						inline = true,
+						name = L["General"],
+						type="group",
+						order = 3,
+						args={
+							locked = {
+								type = 'toggle',
 								order = 1,
-								name = L["Font"],
-								desc = L["Some of the fonts may depend on other addons."],
-								get = function()
-									return db.fontName
+								name = L["Lock Plugins"],
+								desc = L["Hold alt key to drag a plugin."],
+								get = function(info, value)
+										return db.locked
 								end,
 								set = function(info, value)
-									db.fontPath = LSM:Fetch("font", value)
-									db.fontName = value
-									ChocolateBar:UpdateChoclates("updatefont")
+										db.locked = value
 								end,
-								},
-								fontSize = {
-									type = 'range',
-									order = 2,
-									name = L["Font Size"],
-									desc = L["Font Size"],
-									min = 8,
-									max = 20,
-									step = .5,
-									get = function(name)
-										return db.fontSize
-									end,
-									set = function(info, value)
-										db.fontSize = value
-										ChocolateBar:UpdateChoclates("updatefont")
-									end,
-								},
-								textcolour = {
-									type = "color",
-									order = 3,
-									name = L["Text color"],
-									desc = L["Default text color of a plugin. This will not overwrite plugins that use own colors."],
-									hasAlpha = true,
-									get = function(info)
-										local t = db.textColor or {r = 1, g = 1, b = 1, a = 1}
-										return t.r, t.g, t.b, t.a
-									end,
-									set = function(info, r, g, b, a)
-										db.textColor = db.textColor or {r = 1, g = 1, b = 1, a = 1}
-										local t = db.textColor
-										t.r, t.g, t.b, t.a = r, g, b, a
-										ChocolateBar:UpdateChoclates("updateSettings")
-									end,
-								},
-								iconcolour = {
-									type = "toggle",
-									order = 4,
-									name = L["Desaturated Icons"],
-									desc = L["Show icons in gray scale mode (This will not affect icons embedded in the text of a plugin)."],
-									get = function(info)
-										return db.desaturated
-									end,
-									set = function(info, vale)
-										db.desaturated = vale
-										for name, obj in broker:DataObjectIterator() do
-											if db.objSettings[name] then
-												if db.objSettings[name].enabled then
-													local choco = ChocolateBar:GetChocolate(name)
-													if choco then
-														choco:Update(choco, "iconR", nil)
-													end
-												end
+							},
+							adjustBlizzardFrames = {
+								type = 'toggle',
+								order = 2,
+								name = L["Adjust Blizzard Frames"],
+								desc = L["Move Blizzard frames above/below bars"],
+								get = function(info, value)
+										return db.moveFrames
+								end,
+								set = function(info, value)
+										db.moveFrames = value
+										ChocolateBar:UpdateBarOptions("UpdateAutoHide")
+								end,
+							},
+							hideBarsPetBattle = {
+								type = 'toggle',
+								order = 3,
+								name = L["Hide Bars in Pet Battle"],
+								desc = L["Hide Bars during a Pet Battle."],
+								get = function(info, value)
+										return db.petBattleHideBars
+								end,
+								set = function(info, value)
+										db.petBattleHideBars = value
+								end,
+							},
+							hideOrderHallCommandBar = {
+								type = 'toggle',
+								order = 4,
+								name = L["Hide Order Hall Bar"],
+								desc = L["Hides the command bar displayed at the Class/Order Hall."],
+								get = function(info, value)
+										return db.hideOrderHallCommandBar
+								end,
+								set = function(info, value)
+										db.hideOrderHallCommandBar = value
+										ChocolateBar:ToggleOrderHallCommandBar()
+								end,
+							},
+							--[[
+							adjustCenter = {
+								type = 'toggle',
+								order = 5,
+								width = "double",
+								name = L["Update Center Position"],
+								desc = L["Always adjust the center group based on the current width of the plugins. Disable this to align the center group based only on the number of plugins."],
+								get = function(info, value)
+										return db.adjustCenter
+								end,
+								set = function(info, value)
+										db.adjustCenter = value
+										ChocolateBar:UpdateBarOptions("UpdateBar")
+								end,
+							},]]--
+							gap = {
+								type = 'range',
+								order = 10,
+								name = L["Gap"],
+								desc = L["Set the gap between the plugins."],
+								min = 0,
+								max = 50,
+								step = 1,
+								get = function(name)
+									return db.gap
+								end,
+								set = function(info, value)
+									db.gap = value
+									ChocolateBar.ChocolatePiece:UpdateGap(value)
+									ChocolateBar:UpdateChoclates("updateSettings")
+								end,
+							},
+							textOffset = {
+								type = 'range',
+								order = 11,
+								name = L["Text Offset"],
+								desc = L["Set the distance between the icon and the text."],
+								min = -5,
+								max = 15,
+								step = 1,
+								get = function(name)
+									return db.textOffset
+								end,
+								set = function(info, value)
+									db.textOffset = value
+									--ChocolateBar.ChocolatePiece:UpdateGap(value)
+									ChocolateBar:UpdateChoclates("updateSettings")
+								end,
+							},
+							size = {
+								type = 'range',
+								order = 12,
+								name = L["Bar Size"],
+								desc = L["Bar Size"],
+								min = 12,
+								max = 30,
+								step = 1,
+								get = function(name)
+									return db.height
+								end,
+								set = function(info, value)
+									db.height = value
+									ChocolateBar:UpdateBarOptions("UpdateHeight")
+								end,
+							},
+							iconSize = {
+								type = 'range',
+								order = 13,
+								name = L["Icon Size"],
+								desc = L["Icon size in relation to the bar height."],
+								min = 0,
+								max = 1,
+								step = 0.001,
+								bigStep = 0.05,
+								isPercent = true,
+								get = function(name)
+									return db.iconSize
+								end,
+								set = function(info, value)
+									if value > 1 then
+										value = 1
+									elseif value < 0.01 then
+										value = 0.001
+									end
+									db.iconSize = value
+									ChocolateBar:UpdateBarOptions("UpdateHeight")
+								end,
+							},
+							strata = {
+								type = 'select',
+								values = {FULLSCREEN_DIALOG="Fullscreen_Dialog",FULLSCREEN="Fullscreen",
+											DIALOG="Dialog",HIGH="High",MEDIUM="Medium",LOW="Low",BACKGROUND="Background"},
+								order = 14,
+								name = L["Bar Strata"],
+								desc = L["Bar Strata"],
+								get = function()
+									return db.strata
+								end,
+								set = function(info, value)
+									db.strata = value
+									ChocolateBar:UpdateBarOptions("UpdateStrata")
+								end,
+							},
+							barRightClick = {
+								type = 'select',
+								values = {NONE=L["none"],OPTIONS=L["ChocolateBar Options"],
+											BLIZZ=L["Blizzard Options"], ["163UI"]="爱不易控制台",},
+								order = 16,
+								name = L["Bar Right Click"],
+								desc = L["Select the action when right clicking on a bar."],
+								get = function()
+									return db.barRightClick
+								end,
+								set = function(info, value)
+									db.barRightClick = value
+								end,
+							},
+							--colorizedDragging = {
+							--	type = 'toggle',
+							--	order = 12,
+							--	name = L["Colorized Dragging"],
+							--	desc = L["Colorize frames during drag & drop."],
+							--	get = function(info, value)
+							--			return db.colorizedDragging
+							--	end,
+							--	set = function(info, value)
+							--	-		db.colorizedDragging = value
+							--	end,
+							--},
+						},
+					},
+					defaults = {
+						inline = true,
+						name= L["Defaults"],
+						type="group",
+						order = 4,
+						args={
+							label = {
+								order = 0,
+								type = "description",
+								name = L["Automatically disable new plugins of type:"],
+							},
+							dataobjects = {
+								type = 'toggle',
+								order = 1,
+								name = L["Data Source"],
+								desc = L["If enabled new plugins of type data source will automatically be disabled."],
+								get = function()
+										return db.autodissource
+								end,
+								set = function(info, value)
+										db.autodissource = value
+								end,
+							},
+							launchers = {
+								type = 'toggle',
+								order = 2,
+								name = L["Launcher"],
+								desc = L["If enabled new plugins of type launcher will automatically be disabled."],
+								get = function()
+										return db.autodislauncher
+								end,
+								set = function(info, value)
+										db.autodislauncher = value
+								end,
+							},
+						},
+					},
+					combat = {
+						--inline = true,
+						name= L["In Combat"],
+						type="group",
+						order = 0,
+						args={
+							combat = {
+								inline = true,
+								name= L["In Combat"],
+								type="group",
+								order = 0,
+								args={
+									hidetooltip = {
+										type = 'toggle',
+										order = 1,
+										name = L["Disable Tooltips"],
+										desc = L["Disable Tooltips"],
+										get = function(info, value)
+												return db.combathidetip
+										end,
+										set = function(info, value)
+												db.combathidetip = value
+										end,
+									},
+									hidebars = {
+										type = 'toggle',
+										order = 2,
+										name = L["Hide Bars"],
+										desc = L["Hide Bars"],
+										get = function(info, value)
+												return db.combathidebar
+										end,
+										set = function(info, value)
+												db.combathidebar = value
+										end,
+									},
+									disablebar = {
+										type = 'toggle',
+										order = 2,
+										name = L["Disable Clicking"],
+										desc = L["Disable Clicking"],
+										get = function(info, value)
+												return db.combatdisbar
+										end,
+										set = function(info, value)
+												db.combatdisbar = value
+										end,
+									},
+									disableoptons = {
+										type = 'toggle',
+										order = 2,
+										name = L["Disable Options"],
+										desc = L["Disable options dialog on right click"],
+										get = function(info, value)
+												return db.disableoptons
+										end,
+										set = function(info, value)
+												db.disableoptons = value
+										end,
+									},
+									combatopacity = {
+										type = 'range',
+										order = 3,
+										name = L["Opacity"],
+										desc = L["Set the opacity of the bars during combat."],
+										min = 0,
+										max = 1,
+										step = 0.001,
+										bigStep = 0.05,
+										isPercent = true,
+										get = function(name)
+											return db.combatopacity
+										end,
+										set = function(info, value)
+											if value > 1 then
+												value = 1
+											elseif value < 0.01 then
+												value = 0.001
 											end
-										end
-									end,
-								},
-								forceColor = {
-									type = 'toggle',
-									width = "double",
-									order = 9,
-									name = L["Force Text Color"],
-									desc = L["Remove custom colors from plugins."],
-									get = function(info, value)
-										return db.forceColor
-									end,
-									set = function(info, value)
-										db.forceColor = value
-										for name, obj in broker:DataObjectIterator() do
-											if db.objSettings[name] then
-												if db.objSettings[name].enabled then
-													local choco = ChocolateBar:GetChocolate(name)
-													if choco then
-														choco:Update(choco, "text", obj.text)
-													end
-												end
+											db.combatopacity = value
+											--ChocolateBar:UpdateBarOptions("UpdateOpacity")
+											for name,bar in pairs(ChocolateBar:GetBars()) do
+												bar.tempHide = bar:GetAlpha()
+												bar:SetAlpha(db.combatopacity)
 											end
-										end
-									end,
+										end,
+									},
 								},
 							},
 						},
 					},
+					fontAndTextures = {
+						--inline = true,
+						name = L["Fonts and Textures"],
+						type = "group",
+						order = 4,
+						args = {
+							textures = {
+								inline = true,
+								name = L["Textures"],
+								type = "group",
+								order = 2,
+								args = {
+									colour = {
+										type = "color",
+										order = 5,
+										name = L["Texture Color/Alpha"],
+										desc = L["Texture Color/Alpha"],
+										hasAlpha = true,
+										get = function(info)
+											local t = db.background.color
+											return t.r, t.g, t.b, t.a
+										end,
+										set = function(info, r, g, b, a)
+											local t = db.background.color
+											t.r, t.g, t.b, t.a = r, g, b, a
+											ChocolateBar:UpdateBarOptions("UpdateColors")
+										end,
+									},
+									bordercolour = {
+										type = "color",
+										order = 6,
+										name = L["Border Color/Alpha"],
+										desc = L["Border Color/Alpha"],
+										hasAlpha = true,
+										get = function(info)
+											local t = db.background.borderColor
+											return t.r, t.g, t.b, t.a
+										end,
+										set = function(info, r, g, b, a)
+											local t = db.background.borderColor
+											t.r, t.g, t.b, t.a = r, g, b, a
+											ChocolateBar:UpdateBarOptions("UpdateColors")
+										end,
+									},
+									textureTile = {
+										type = 'toggle',
+										order = 3,
+										name = L["Tile"],
+										desc = L["Tile the Texture. Disable to stretch the Texture."],
+										get = function()
+												return db.background.tile
+										end,
+										set = function(info, value)
+												db.background.tile = value
+												ChocolateBar:UpdateBarOptions("UpdateTexture")
+										end,
+									},
+									textureTileSize = {
+										type = 'range',
+										order = 4,
+										name = L["Tile Size"],
+										desc = L["Adjust the size of the tiles."],
+										min = 1,
+										max = 256,
+										step = 1,
+										bigStep = 5,
+										isPercent = false,
+										get = function(name)
+											return db.background.tileSize
+										end,
+										set = function(info, value)
+											if value > 256 then
+												value = 256
+											elseif value < 1 then
+												value = 1
+											end
+											db.background.tileSize = value
+											ChocolateBar:UpdateBarOptions("UpdateTexture")
+										end,
+									},
+								},
+							},
+							font = {
+								inline = true,
+								name = L["Font"],
+								type = "group",
+								order = 1,
+								args ={
+									fontSize = {
+										type = 'range',
+										order = 2,
+										name = L["Font Size"],
+										desc = L["Font Size"],
+										min = 8,
+										max = 20,
+										step = .5,
+										get = function(name)
+											return db.fontSize
+										end,
+										set = function(info, value)
+											db.fontSize = value
+											ChocolateBar:UpdateChoclates("updatefont")
+										end,
+									},
+									textcolour = {
+										type = "color",
+										order = 3,
+										name = L["Text color"],
+										desc = L["Default text color of a plugin. This will not overwrite plugins that use own colors."],
+										hasAlpha = true,
+										get = function(info)
+											local t = db.textColor or {r = 1, g = 1, b = 1, a = 1}
+											return t.r, t.g, t.b, t.a
+										end,
+										set = function(info, r, g, b, a)
+											db.textColor = db.textColor or {r = 1, g = 1, b = 1, a = 1}
+											local t = db.textColor
+											t.r, t.g, t.b, t.a = r, g, b, a
+											ChocolateBar:UpdateChoclates("updateSettings")
+										end,
+									},
+									iconcolour = {
+										type = "toggle",
+										order = 4,
+										name = L["Desaturated Icons"],
+										desc = L["Show icons in gray scale mode (This will not affect icons embedded in the text of a plugin)."],
+										get = function(info)
+											return db.desaturated
+										end,
+										set = function(info, vale)
+											db.desaturated = vale
+											for name, obj in broker:DataObjectIterator() do
+												if db.objSettings[name] then
+													if db.objSettings[name].enabled then
+														local choco = ChocolateBar:GetChocolate(name)
+														if choco then
+															choco:Update(choco, "iconR", nil)
+														end
+													end
+												end
+											end
+										end,
+									},
+									forceColor = {
+										type = 'toggle',
+										width = "double",
+										order = 9,
+										name = L["Force Text Color"],
+										desc = L["Remove custom colors from plugins."],
+										get = function(info, value)
+											return db.forceColor
+										end,
+										set = function(info, value)
+											db.forceColor = value
+											for name, obj in broker:DataObjectIterator() do
+												if db.objSettings[name] then
+													if db.objSettings[name].enabled then
+														local choco = ChocolateBar:GetChocolate(name)
+														if choco then
+															choco:Update(choco, "text", obj.text)
+														end
+													end
+												end
+											end
+										end,
+									},
+								},
+							},
+						},
+					},
+					--[===[@debug@
+					debug = {
+						type = 'toggle',
+						--width = "half",
+						order = 20,
+						name = "Debug",
+						desc = "This one is for me, not for you :P",
+						get = function(info, value)
+								return ChocolateBar.db.char.debug
+						end,
+						set = function(info, value)
+								ChocolateBar.db.char.debug = value
+						end,
+					},
+					--@end-debug@]===]
 				},
-				--[===[@debug@
-				debug = {
-					type = 'toggle',
-					--width = "half",
-					order = 20,
-					name = "Debug",
-					desc = "This one is for me, not for you :P",
-					get = function(info, value)
-							return ChocolateBar.db.char.debug
-					end,
-					set = function(info, value)
-							ChocolateBar.db.char.debug = value
-					end,
-				},
-				--@end-debug@]===]
 			},
-		},
 		bars={
 			name = L["Bars"],
 			type ="group",
@@ -714,6 +654,70 @@ local aceoptions = {
 		},
 	},
 }
+
+aceoptions.args.lookAndFeel.args.fontAndTextures.args.textures.args.textureStatusbar = {
+	type = 'select',
+	dialogControl = 'LSM30_Statusbar',
+	values = AceGUIWidgetLSMlists and AceGUIWidgetLSMlists.statusbar or {},
+	order = 1,
+	name = L["Background Texture"],
+	desc = L["Some of the textures may depend on other addons."],
+	get = function()
+		return db.background.textureName
+	end,
+	set = function(info, value)
+		db.background.texture = LSM:Fetch("statusbar", value)
+		db.background.textureName = value
+		db.background.tile = false
+		ChocolateBar:UpdateBarOptions("UpdateTexture")
+	end,
+}
+
+aceoptions.args.lookAndFeel.args.fontAndTextures.args.textures.args.background1 = {
+	inline = true,
+	name = L["Advanced Textures"],
+	type = "group",
+	order = 3,
+	args ={
+		textureBackground = {
+			type = 'select',
+			dialogControl = 'LSM30_Background',
+			values = AceGUIWidgetLSMlists and AceGUIWidgetLSMlists.background or {},
+			order = 2,
+			name = L["Background Texture"],
+			desc = L["Some of the textures may depend on other addons."],
+			get = function()
+				return db.background.textureName
+			end,
+			set = function(info, value)
+				db.background.texture = LSM:Fetch("background", value)
+				db.background.textureName = value
+				db.background.tile = true
+				local t = db.background.color
+				t.r, t.g, t.b, t.a = 1, 1, 1, 1
+				ChocolateBar:UpdateBarOptions("UpdateTexture")
+			end,
+		}
+	}
+}
+				
+aceoptions.args.lookAndFeel.args.fontAndTextures.args.font.args.font = {
+	type = 'select',
+	dialogControl = 'LSM30_Font',
+	values = AceGUIWidgetLSMlists and AceGUIWidgetLSMlists.font or {},
+	order = 1,
+	name = L["Font"],
+	desc = L["Some of the fonts may depend on other addons."],
+	get = function()
+		return db.fontName
+	end,
+	set = function(info, value)
+		db.fontPath = LSM:Fetch("font", value)
+		db.fontName = value
+		ChocolateBar:UpdateChoclates("updatefont")
+	end,
+}
+
 local chocolateOptions = aceoptions.args.chocolates.args
 local barOptions = aceoptions.args.bars.args
 local moduleOptions = aceoptions.args.modules.args
@@ -1051,6 +1055,19 @@ local function GetName(info)
 	return cleanName
 end
 
+local function GetObjectText(info)
+	local cleanName = info[#info]
+	local name = chocolateOptions[cleanName].desc
+	local dataobj = broker:GetDataObjectByName(name)
+	
+	local text = dataobj.text
+	if text and text == "" then
+		text = string.format("(%s)", dataobj.label)
+	end
+	
+	return text
+end
+
 local function GetType(info)
 	local cleanName = info[#info-2]
 	local name = chocolateOptions[cleanName].desc
@@ -1106,6 +1123,34 @@ local function SetIcon(info, value)
 	local cleanName = info[#info-2]
 	local name = chocolateOptions[cleanName].desc
 	db.objSettings[name].showIcon = value
+	ChocolateBar:AttributeChanged(nil, name, "updateSettings", value)
+end
+
+
+
+local function GetCustomLabel(info, value)
+	local cleanName = info[#info-2]
+	local name = chocolateOptions[cleanName].desc
+	return db.objSettings[name].customLabel
+end
+
+local function SetCustomLabel(info, value)
+	local cleanName = info[#info-2]
+	local name = chocolateOptions[cleanName].desc
+	db.objSettings[name].customLabel = value
+	ChocolateBar:AttributeChanged(nil, name, "updateSettings", value)
+end
+
+local function GetLabel(info, value)
+	local cleanName = info[#info-2]
+	local name = chocolateOptions[cleanName].desc
+	return db.objSettings[name].showLabel
+end
+
+local function SetLabel(info, value)
+	local cleanName = info[#info-2]
+	local name = chocolateOptions[cleanName].desc
+	db.objSettings[name].showLabel = value
 	ChocolateBar:AttributeChanged(nil, name, "updateSettings", value)
 end
 
@@ -1280,7 +1325,6 @@ local function GetHeaderImage(info)
 end
 
 local function cancelTimer()
-		ChocolateBar:Debug("cancelTimer")
 		pointer:Hide()
 end
 
@@ -1329,7 +1373,7 @@ function ChocolateBar:RegisterOptions(data, chocolateBars, modules)
 
 	LibStub("AceConfig-3.0"):RegisterOptionsTable("ChocolateBar", aceoptions)
 	aceoptions.args.profile = LibStub("AceDBOptions-3.0"):GetOptionsTable(self.db)
-	AceCfgDlg:SetDefaultSize("ChocolateBar", 600, 600)
+	AceCfgDlg:SetDefaultSize("ChocolateBar", 700, 600)
 
 	self.db.RegisterCallback(self, "OnProfileChanged", "OnProfileChanged")
 	self.db.RegisterCallback(self, "OnProfileCopied", "OnProfileChanged")
@@ -1503,6 +1547,7 @@ function ChocolateBar:AddObjectOptions(name,obj)
 
 	--use cleanName of name because aceconfig does not like some characters in the plugin names
 	chocolateOptions[cleanName] = {
+		--name = GetObjectText,
 		name = GetName,
 		desc = name,
 		icon = GetIconImage,
@@ -1532,7 +1577,7 @@ function ChocolateBar:AddObjectOptions(name,obj)
 					},
 					enabled = {
 						type = 'toggle',
-						--width "half",
+						--width = "double",
 						order = 3,
 						name = L["Enabled"],
 						desc = L["Enabled"],
@@ -1547,6 +1592,15 @@ function ChocolateBar:AddObjectOptions(name,obj)
 						desc = L["Show Text"],
 						get = GetText,
 						set = SetText,
+					},
+					label = {
+						type = 'toggle',
+						--width = "half",
+						order = 4,
+						name = L["Show Label"],
+						desc = L["Show Label"],
+						get = GetLabel,
+						set = SetLabel,
 					},
 					icon = {
 						type = 'toggle',
@@ -1587,6 +1641,15 @@ function ChocolateBar:AddObjectOptions(name,obj)
 						get = GetWidth,
 						set = SetWidth,
 						disabled = IsDisabledTextWidth,
+					},
+					customLabel = {
+						type = 'input',
+						order = 2,
+						name = L["Custom Label"],
+						desc = L["Change the label of this plugin."],
+						width = "full",
+						get = GetCustomLabel,
+						set = SetCustomLabel,
 					},
 				},
 			},
@@ -1684,13 +1747,13 @@ function ChocolateBar:UpdateBarOptions(updatekey, value)
 		if func then
 			func(bar, db)
 		else
-			Debug("UpdateBarOptions: invalid updatekey", updatekey)
+			debug("UpdateBarOptions: invalid updatekey", updatekey)
 		end
 	end
 end
 
 function ChocolateBar:OnProfileChanged(event, database, newProfileKey)
-	Debug("OnProfileChanged", event, database, newProfileKey)
+	debug("OnProfileChanged", event, database, newProfileKey)
 	db = database.profile
 	self:UpdateDB(db)
 

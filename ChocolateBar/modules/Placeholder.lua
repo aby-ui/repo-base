@@ -1,3 +1,5 @@
+if true then return end
+
 local ChocolateBar = LibStub("AceAddon-3.0"):GetAddon("ChocolateBar")
 local L = LibStub("AceLocale-3.0"):GetLocale("ChocolateBar")
 
@@ -13,9 +15,13 @@ end
 local function createPlaceholder()
 	local placeholderNames = placeholderNames
 	local count = tablelength(placeholderNames) > 0 or 1
-	local name = L["Placeholder"]..tablelength(placeholderNames)
+	local name = "CB_"..L["Placeholder"]..tablelength(placeholderNames)
 	placeholderNames[name] = true
 	ChocolateBar:AddObjectOptions(name, module:NewPlaceholder(name))
+end
+
+local function deleteAllPlaceholder()
+	
 end
 
 local options = {
@@ -35,6 +41,13 @@ local options = {
 				name = L["Create Placeholder"],
 				desc = L["Creates a new plugin to use as a placeholder."],
 				func = createPlaceholder,
+			},
+			delPlaceholder = {
+				type = 'execute',
+				order = 3,
+				name = L["Delete Placeholders"],
+				desc = L["Removes all placeholders"],
+				func = deleteAllPlaceholder,
 			},
 			label2 = {
 				order = 3,

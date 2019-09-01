@@ -25,8 +25,8 @@ function ItemFrame:New(parent, bags)
 end
 
 function ItemFrame:Update()
-	self:RequestLayout()
 	self:RegisterEvents()
+	self:RequestLayout()
 end
 
 

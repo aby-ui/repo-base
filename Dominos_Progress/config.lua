@@ -37,11 +37,11 @@ function Config:GetDefaults()
 end
 
 function Config:SetBarMode(barId, mode)
-	self.db.char.bars[barId] = mode
+	self.db.char.bars[barId].mode = mode
 end
 
 function Config:GetBarMode(barId)
-	return self.db.char.bars[barId]
+	return self.db.char.bars[barId].mode
 end
 
 function Config:SetOneBarMode(enable)

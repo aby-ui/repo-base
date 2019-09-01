@@ -5,6 +5,7 @@ local Drag = ChocolateBar.Drag
 local ldb = LibStub:GetLibrary("LibDataBroker-1.1",true)
 local LibQTip = LibStub('LibQTip-1.0')
 local L = LibStub("AceLocale-3.0"):GetLocale("ChocolateBar")
+local debug = ChocolateBar and ChocolateBar.debug or function() end
 
 local _G, floor, string, GetNetStats, GetFramerate  = _G, floor, string, GetNetStats, GetFramerate
 local delay, counter = 1,0
@@ -15,25 +16,13 @@ local _
 local launcherFrame
 local chocolates = {}
 
-
-local function Debug(...)
-	--[===[@debug@
-	local s = addonName.." Debug:"
-	for i=1,_G.select("#", ...) do
-		local x = _G.select(i, ...)
-		s = _G.strjoin(" ",s,_G.tostring(x))
-	end
-	_G.DEFAULT_CHAT_FRAME:AddMessage(s)
-	--@end-debug@]===]
-end
-
 dataobj = ldb:NewDataObject(addonName, {
 	type = "data source",
 	icon = path.."green.tga",
 	label = "CB_MoreChocolate",
 	text  = "More Chocolate",
 	OnClick = function(self, button, ...)
-    Debug(self)
+    debug(self)
     if button == "RightButton" then
 			if _G.IsModifierKeyDown() then
 				mainmenu(self, button, ...)
@@ -77,15 +66,14 @@ end
 
 function dataobj:OnLeave()
 	local frame = GetMouseFocus()
-	--Debug("dataobj:OnLeave()", frame:GetName())
 	if frame and not frame.isOwn then
-    --Debug("dataobj:OnLeave() Hide", frame:GetName(), frame.isOwn)
+    --debug("dataobj:OnLeave() Hide", frame:GetName(), frame.isOwn)
 		launcherFrame:Hide()
 	end
 end
 
 local function MouseHandler(self, ...)
-  Debug("MouseHandler", self, choco, dataobj.frame, ...)
+  --debug("MouseHandler", self, choco, dataobj.frame, ...)
   launcherFrame:Hide()
 
 	if self.obj.OnClick then
@@ -117,7 +105,7 @@ local function getLauncherFrame()
 end
 
 local function OnDragStart(self)
-		Debug(OnDragStart, self:GetName())
+	
 
 		self:StartMoving()
 		self.isMoving = true
@@ -127,7 +115,7 @@ local function OnDragStart(self)
 end
 
 local function OnDragStop(self)
-	Debug(OnDragStop, self:GetName())
+	debug(OnDragStop, self:GetName())
 end
 
 local function addChocolate(name, obj)
@@ -170,10 +158,7 @@ function dataobj:OnEnter()
   if not launcherFrame then
 	  launcherFrame = getLauncherFrame()
 	  PrepareTooltip(launcherFrame, self)
-	  --launcherFrame.lastY = launcherFrame:GetTop()
-
-	   --Debug("dataobj:OnEnter()", #ChocolateBar:GetChocolates())
-
+	  
      dataobj.frame = self
 
     local count = 0

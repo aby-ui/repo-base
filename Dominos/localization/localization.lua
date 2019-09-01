@@ -47,22 +47,22 @@ L.AvailableProfiles = 'Available Profiles'
 L.PrintVersionDesc = 'Prints the current version'
 
 --dragFrame tooltips
-L.ShowConfig = '<Right Click> to configure'
-L.HideBar = '<Middle Click or Shift-Right Click> to hide'
-L.ShowBar = '<Middle Click or Shift-Right Click> to show'
-L.SetAlpha = '<Mousewheel> to set opacity (|cffffffff%d|r)'
+L.ShowConfig = 'Right Click to configure'
+L.HideBar = 'Middle Click or Shift-Right Click to hide'
+L.ShowBar = 'Middle Click or Shift-Right Click to show'
+L.SetAlpha = 'Mousewheel to set opacity (|cffffffff%d|r)'
 
 --minimap button stuff
-L.ConfigEnterTip = '<Left Click> to enter configuration mode'
-L.ConfigExitTip = '<Left Click> to exit configuration mode'
-L.BindingEnterTip = '<Shift Left Click> to enter binding mode'
-L.BindingExitTip = '<Shift Left Click> to exit binding mode'
-L.ShowOptionsTip = '<Right Click> to show the options menu'
+L.ConfigEnterTip = 'Left Click to enter configuration mode'
+L.ConfigExitTip = 'Left Click to exit configuration mode'
+L.BindingEnterTip = 'Shift-Left Click to enter binding mode'
+L.BindingExitTip = 'Shift-Left Click to exit binding mode'
+L.ShowOptionsTip = 'Right Click to show the options menu'
 
 --helper dialog stuff
 L.ConfigMode = 'Configuration Mode'
 L.ConfigModeExit = 'Exit Config Mode'
-L.ConfigModeHelp = '<Drag> any bar to move it.  <Right Click> to configure.  <Middle Click> or <Shift-Right Click> to toggle visibility'
+L.ConfigModeHelp = 'Drag any bar to move it. Right Click to configure. Middle Click or Shift-Right Click to toggle visibility.'
 
 --bar tooltips
 L.TipRollBar = 'Displays frames for rolling on items, when in a group.'

@@ -25,8 +25,8 @@ function ItemFrame:New(parent, bags)
 end
 
 function ItemFrame:Update()
-	self:RequestLayout()
 	self:RegisterEvents()
+	self:RequestLayout()
 end
 
 
@@ -45,14 +45,18 @@ function ItemFrame:RegisterEvents()
 		self:RegisterEvent('UNIT_QUEST_LOG_CHANGED')
 		self:RegisterEvent('ITEM_LOCK_CHANGED')
 
+        self:RegisterEvent('PLAYER_EQUIPMENT_CHANGED', 'ForAll', 'UpdateUpgradeIcon')
+		self:RegisterEvent('UNIT_INVENTORY_CHANGED', 'ForAll', 'UpdateUpgradeIcon')
 		self:RegisterEvent('BAG_UPDATE_COOLDOWN', 'ForAll', 'UpdateCooldown')
 		self:RegisterEvent('BAG_NEW_ITEMS_UPDATED', 'ForAll', 'UpdateBorder')
-		self:RegisterEvent('EQUIPMENT_SETS_CHANGED', 'ForAll', 'UpdateBorder')
 		self:RegisterEvent('QUEST_ACCEPTED', 'ForAll', 'UpdateBorder')
 
-		self:RegisterEvent('PLAYER_SPECIALIZATION_CHANGED', 'ForAll', 'UpdateUpgradeIcon')
-        self:RegisterEvent('UNIT_INVENTORY_CHANGED', 'ForAll', 'UpdateUpgradeIcon')
-        self:RegisterEvent('PLAYER_EQUIPMENT_CHANGED', 'ForAll', 'UpdateUpgradeIcon')
+		if C_EquipmentSet then
+			self:RegisterEvent('EQUIPMENT_SETS_CHANGED', 'ForAll', 'UpdateBorder')
+		end
+		if C_SpecializationInfo then
+			self:RegisterEvent('PLAYER_SPECIALIZATION_CHANGED', 'ForAll', 'UpdateUpgradeIcon')
+		end
 	else
 		self:RegisterMessage('CACHE_BANK_OPENED', 'RegisterEvents')
 	end

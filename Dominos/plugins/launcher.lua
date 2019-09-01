@@ -49,22 +49,39 @@ function Launcher:CreateDataBrokerObject()
 		OnTooltipShow = function(tooltip)
 			if not tooltip or not tooltip.AddLine then return end
 
-			tooltip:AddLine(AddonName)
+			GameTooltip_SetTitle(tooltip, AddonName)
 
 			if Addon:Locked() then
-				tooltip:AddLine(L.ConfigEnterTip)
+				GameTooltip_AddInstructionLine(tooltip, L.ConfigEnterTip)
 			else
-				tooltip:AddLine(L.ConfigExitTip)
+				GameTooltip_AddInstructionLine(tooltip, L.ConfigExitTip)
 			end
 
 			if Addon:IsBindingModeEnabled() then
-				tooltip:AddLine(L.BindingExitTip)
+				GameTooltip_AddInstructionLine(tooltip, L.BindingExitTip)
 			else
-				tooltip:AddLine(L.BindingEnterTip)
+				GameTooltip_AddInstructionLine(tooltip, L.BindingEnterTip)
 			end
 
 			if Addon:IsConfigAddonEnabled() then
-				tooltip:AddLine(L.ShowOptionsTip)
+				GameTooltip_AddInstructionLine(tooltip, L.ShowOptionsTip)
+			end
+
+			if Addon:IsBuild("Classic") then
+				GameTooltip_AddBlankLinesToTooltip(tooltip, 1)
+
+				local _, _, latencyHome, latencyWorld = GetNetStats()
+				local latency = latencyHome > latencyWorld and latencyHome or latencyWorld
+				local latencyColor
+				if (latency > PERFORMANCEBAR_MEDIUM_LATENCY) then
+					latencyColor = CreateColor(1, 0, 0)
+				elseif (latency > PERFORMANCEBAR_LOW_LATENCY) then
+					latencyColor = CreateColor(1, 1, 0)
+				else
+					latencyColor = CreateColor(0, 1, 0)
+				end
+
+				GameTooltip_AddNormalLine(tooltip, ("%s |c%s%s%s|r"):format(MAINMENUBAR_LATENCY_LABEL, latencyColor:GenerateHexColor(), latency, MILLISECONDS_ABBR))
 			end
 		end
 	})

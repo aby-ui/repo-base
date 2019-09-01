@@ -11,6 +11,9 @@ local Mixins = {
 }
 
 LibStub('AceAddon-3.0'):NewAddon(Addon, ADDON, 'AceEvent-3.0')
+Addon.IsRetail = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE
+Addon.HasVault = CanUseVoidStorage and GetAddOnEnableState(nil, ADDON .. '_VoidStorage') >= 2
+Addon.HasGuild = CanGuildBankRepair and GetAddOnEnableState(nil, ADDON .. '_GuildBank') >= 2
 _G[ADDON] = Addon
 
 

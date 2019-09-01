@@ -3,7 +3,7 @@
 local ChocolateBar = LibStub("AceAddon-3.0"):GetAddon("ChocolateBar")
 local Drag = ChocolateBar.Drag
 local frameslist = {}
-local Debug = ChocolateBar.Debug
+local debug = ChocolateBar and ChocolateBar.Debug or function() end
 local DragUpdate = CreateFrame("Frame")
 local GetCursorPosition, pairs = GetCursorPosition, pairs
 local counter = 0
@@ -56,7 +56,7 @@ function Drag:RegisterFrame(frame)
 	if name and not frameslist[name] then
 		frameslist[name] = frame
 	else
-		Debug("Drag:RegisterFrame(frame) no name or already registred")
+		debug("Drag:RegisterFrame(frame) no name or already registred")
 	end
 end
 

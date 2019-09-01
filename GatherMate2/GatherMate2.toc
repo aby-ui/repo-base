@@ -13,7 +13,7 @@
 ## X-Credits: OttoDeFe for the launher icon.
 ## SavedVariables: GatherMate2DB, GatherMate2HerbDB, GatherMate2MineDB, GatherMate2FishDB, GatherMate2GasDB, GatherMate2TreasureDB, GatherMate2ArchaeologyDB, GatherMate2LoggingDB
 ## X-Category: Map
-## Version: 1.44.4
+## Version: 1.45
 ## X-License: ARR
 ## OptionalDeps: Ace3, LibDataBroker-1.1, HereBeDragons
 ## LoadManagers: AddonLoader
@@ -21,31 +21,9 @@
 ## X-Curse-Project-ID: 26120
 ## X-WoWI-ID: 21293
 
-Libs\LibStub\LibStub.lua
-Libs\CallbackHandler-1.0\CallbackHandler-1.0.xml
-Libs\AceAddon-3.0\AceAddon-3.0.xml
-Libs\AceEvent-3.0\AceEvent-3.0.xml
-Libs\AceDB-3.0\AceDB-3.0.xml
-Libs\AceLocale-3.0\AceLocale-3.0.xml
-Libs\AceGUI-3.0\AceGUI-3.0.xml
-Libs\AceConsole-3.0\AceConsole-3.0.xml
-Libs\AceConfig-3.0\AceConfig-3.0.xml
-Libs\AceDBOptions-3.0\AceDBOptions-3.0.xml
-
-Libs\HereBeDragons\HereBeDragons-2.0.lua
-Libs\HereBeDragons\HereBeDragons-Migrate.lua
-
 Locales\GatherMate2-enUS.lua
-Locales\GatherMate2-esES.lua
-Locales\GatherMate2-esMX.lua
-Locales\GatherMate2-frFR.lua
-Locales\GatherMate2-deDE.lua
-Locales\GatherMate2-koKR.lua
 Locales\GatherMate2-zhCN.lua
 Locales\GatherMate2-zhTW.lua
-Locales\GatherMate2-ruRU.lua
-Locales\GatherMate2-ptBR.lua
-Locales\GatherMate2-itIT.lua
 
 ## Order is important
 GatherMate2.lua

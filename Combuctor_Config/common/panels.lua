@@ -8,10 +8,12 @@ local ADDON, Addon = Config.addon, _G[Config.addon]
 local L = LibStub('AceLocale-3.0'):GetLocale(CONFIG)
 local LADDON = (LibStub('AceLocale-3.0'):GetLocale(Config.addon))[Config.addon]
 
-local PATRONS = {{title='Jenkins',people={'Sembiance ','Gnare ','Eitrigg A. Runefire','Lars Romeijn'}},{},{title='Ambassador',people={'Fernando Bandeira','Michael Irving','Julia Frizzell','Peggy Webb','Lolari ','Craig Falb','Mary Barrentine','Grey Sample'}}} -- generated patron list
+local PATRONS = {{title='Jenkins',people={'Sembiance','Gnare','Eitrigg A. Runefire','SirZooro'}},{},{title='Ambassador',people={'Fernando Bandeira','Michael Irving','Julia Frizzell','Peggy Webb','Lolari','Craig Falb','Mary Barrentine','Grey Sample','Demonthumper','Patryk Kaliś','Lifeprayer'}}} -- generated patron list
 local SLOT_COLOR_TYPES = {}
 for id, name in pairs(Addon.BAG_TYPES) do
-	tinsert(SLOT_COLOR_TYPES, name)
+	if not tContains(SLOT_COLOR_TYPES, name) then
+		tinsert(SLOT_COLOR_TYPES, name)
+	end
 end
 
 sort(SLOT_COLOR_TYPES)
@@ -30,13 +32,16 @@ end
 Addon.GeneralOptions = Addon.Options:NewPanel(nil, LADDON, L.GeneralDesc, function(self)
 	self:CreateCheck('locked')
 	self:CreateCheck('tipCount')
-	self:CreateSmallCheck('tipCount', 'countGuild')
-	self:CreateCheck('flashFind')
+
+	if CanGuildBankRepair then
+		self:CreateSmallCheck('tipCount', 'countGuild')
+	end
 
 	if Config.fading then
 		self:CreateCheck('fading')
 	end
 
+	self:CreateCheck('flashFind')
 	self:CreateCheck('displayBlizzard', ReloadUI)
 
 	local global = self:CreateChild('Check')
@@ -63,15 +68,16 @@ Addon.FrameOptions = Addon.Options:NewPanel(LADDON, L.FrameSettings, L.FrameSett
 	self:CreateCheck('enabled'):SetDisabled(self.frameID ~= 'inventory' and self.frameID ~= 'bank')
 
 	if self.sets.enabled then
-		self:CreateCheck('actPanel')
-
 		-- Display
 		self:CreateHeader(DISPLAY, 'GameFontHighlight', true)
 		self:CreateRow(Config.displayRowHeight, function(row)
 			if Config.components then
 				if self.frameID ~= 'guild' then
 					row:CreateCheck('bagToggle')
-					row:CreateCheck('sort')
+
+					if SortBags then
+						row:CreateCheck('sort')
+					end
 				end
 
 				row:CreateCheck('search')
@@ -100,7 +106,7 @@ Addon.FrameOptions = Addon.Options:NewPanel(LADDON, L.FrameSettings, L.FrameSett
 			row:CreateCheck('reverseSlots')
 			row:CreateCheck('bagBreak')
 
-			if self.frameID == 'bank' then
+			if REAGENTBANK_CONTAINER and self.frameID == 'bank' then
 				row:CreateCheck('exclusiveReagent')
 			end
 		end)
@@ -164,7 +170,7 @@ Addon.ColorOptions = Addon.Options:NewPanel(LADDON, L.ColorSettings, L.ColorSett
 	self:CreateCheck('colorSlots').bottom = 11
 
 	if self.sets.colorSlots then
-		self:CreateRow(140, function(self)
+		self:CreateRow(180, function(self)
 			for i, name in ipairs(SLOT_COLOR_TYPES) do
 				self:CreateColor(name .. 'Color').right = 144
 			end

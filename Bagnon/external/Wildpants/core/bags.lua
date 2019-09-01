@@ -36,6 +36,12 @@ end
 --[[ Bag Type ]]--
 
 Addon.BAG_TYPES = {
+	[-0x0001] = 'reagent',
+	[0x00001] = 'quiver',
+	[0x00002] = 'quiver',
+	[0x00003] = 'soul',
+	[0x00006] = 'herb',
+	[0x00007] = 'enchant',
 	[0x00008] = 'leather',
 	[0x00010] = 'inscribe',
 	[0x00020] = 'herb',
@@ -44,8 +50,7 @@ Addon.BAG_TYPES = {
 	[0x00200] = 'gem',
 	[0x00400] = 'mine',
  	[0x08000] = 'tackle',
- 	[0x10000] = 'refrige',
- 	[-1] = 'reagent'
+ 	[0x10000] = 'refrige'
 }
 
 function Addon:GetBagType(...)

@@ -67,12 +67,12 @@ function Options:CreateFramesDropdown()
 		self.frameID = v
 	end)
 
-	if GetAddOnEnableState(UnitName('player'), ADDON .. '_GuildBank') >= 2 then
-		drop:AddLine('guild', GUILD_BANK)
-	end
-
-	if GetAddOnEnableState(UnitName('player'), ADDON .. '_VoidStorage') >= 2 then
+	if Addon.HasVault then
 		drop:AddLine('vault', VOID_STORAGE)
+	end
+	
+	if Addon.HasGuild then
+		drop:AddLine('guild', GUILD_BANK)
 	end
 
 	return drop

@@ -54,6 +54,14 @@ function ProgressBar:Create(...)
 	return bar
 end
 
+function ProgressBar:Free(...)
+	self.value = nil
+	self.max = nil
+	self.bonus = nil
+
+	return ProgressBar.proto.Free(self, ...)
+end
+
 function ProgressBar:GetDefaults()
 	return {
 		point = 'BOTTOM',

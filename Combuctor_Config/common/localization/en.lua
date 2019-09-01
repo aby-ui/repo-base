@@ -31,7 +31,7 @@ If enabled, this panel will automatically position
 itself as the standard ones do, such as the |cffffffffSpellbook|r
 or the |cffffffffDungeon Finder|r, and will not be movable.]]
 
-L.BagFrame = 'Bag List'
+L.BagToggle = 'Bags Toggle'
 L.Money = 'Money'
 L.Broker = 'Databroker Plugins'
 L.Sort = 'Sort Button'
@@ -94,6 +94,9 @@ L.GlowAlpha = 'Glow Brightness'
 L.EmptySlots = 'Display Background'
 L.ColorSlots = 'Color by Bag Type'
 L.NormalColor = 'Normal Color'
+L.QuiverColor = 'Quiver Color'
+L.SoulColor = 'Soul Bag Color'
+L.ReagentColor = 'Reagent Bank Color'
 L.LeatherColor = 'Leatherworking Color'
 L.InscribeColor = 'Inscription Color'
 L.HerbColor = 'Herbalism Color'
@@ -103,7 +106,6 @@ L.GemColor = 'Gem Color'
 L.MineColor = 'Mining Color'
 L.TackleColor = 'Tackle Box Color'
 L.RefrigeColor = 'Refrigerator Color'
-L.ReagentColor = 'Reagent Bank Color'
 
 -- rulesets
 L.RuleSettings = 'Item Rulesets'

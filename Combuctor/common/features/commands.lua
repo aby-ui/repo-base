@@ -37,9 +37,9 @@ function Addon:OnSlashCommand(cmd)
 		self:ToggleFrame('bank')
 	elseif cmd == 'bags' or cmd == 'inventory' then
 		self:ToggleFrame('inventory')
-	elseif cmd == 'guild' and LoadAddOn(ADDON .. '_GuildBank')then
+	elseif cmd == 'guild' and Addon.HasGuild and LoadAddOn(ADDON .. '_GuildBank')then
 		self:ToggleFrame('guild')
-	elseif cmd == 'vault' and LoadAddOn(ADDON .. '_VoidStorage') then
+	elseif cmd == 'vault' and Addon.HasVault and LoadAddOn(ADDON .. '_VoidStorage') then
 		self:ToggleFrame('vault')
 	elseif cmd == 'version' then
 		print('|cff33ff99' .. ADDON .. '|r version ' .. GetAddOnMetadata(ADDON, 'Version'))

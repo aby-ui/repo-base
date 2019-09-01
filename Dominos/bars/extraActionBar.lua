@@ -1,12 +1,9 @@
-if not _G['ExtraActionBarFrame'] then return end
+if not ExtraActionBarFrame then return end
 
---[[ Globals ]]--
-
-local AddonName, Addon = ...
+local _, Addon = ...
 local KeyBound = LibStub('LibKeyBound-1.0')
 local Tooltips = Addon:GetModule('Tooltips')
 local Bindings = Addon.BindingsController
-
 
 --[[ buttons ]]--
 
@@ -63,7 +60,6 @@ do
 		KeyBound:Set(self)
 	end
 end
-
 
 --[[ bar ]]--
 
@@ -152,7 +148,7 @@ end
 local ExtraBarController = Addon:NewModule('ExtraBar')
 
 function ExtraBarController:OnInitialize()
-	_G['ExtraActionBarFrame'].ignoreFramePositionManager = true
+	ExtraActionBarFrame.ignoreFramePositionManager = true
 end
 
 function ExtraBarController:Load()

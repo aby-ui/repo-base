@@ -7,7 +7,6 @@ local ChocolateBar = LibStub("AceAddon-3.0"):GetAddon("ChocolateBar")
 local bar
 local L = LibStub("AceLocale-3.0"):GetLocale("ChocolateBar")
 local wipe, pairs = wipe, pairs
---GLOBALS: InterfaceOptionsFrame_OpenToCategory
 
 local moreChocolate = LibStub("LibDataBroker-1.1"):NewDataObject("MoreChocolate", {
 	type = "launcher",

@@ -68,7 +68,7 @@ local function showRealDate(curseDate)
 end
 
 DBM = {
-	Revision = parseCurseDate("20190822220150"),
+	Revision = parseCurseDate("20190901011616"),
 	DisplayVersion = "8.2.16 alpha", -- the string that is shown as version
 	ReleaseRevision = releaseDate(2019, 8, 21) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 }
@@ -1017,18 +1017,24 @@ do
 	end
 
 	function DBM:RegisterShortTermEvents(...)
-		if self.shortTermEventsRegistered then
-			return
-		end
-		self.shortTermRegisterEvents = {...}
-		for k, v in pairs(self.shortTermRegisterEvents) do
+		local _shortTermRegisterEvents = {...}
+		for k, v in pairs(_shortTermRegisterEvents) do
 			if v:sub(0, 5) == "UNIT_" and v:sub(v:len() - 10) ~= "_UNFILTERED" and not v:find(" ") and v ~= "UNIT_DIED" and v ~= "UNIT_DESTROYED" then
 				-- legacy event, oh noes
-				self.shortTermRegisterEvents[k] = v .. " boss1 boss2 boss3 boss4 boss5 target focus"
+				_shortTermRegisterEvents[k] = v .. " boss1 boss2 boss3 boss4 boss5 target focus"
 			end
 		end
 		self.shortTermEventsRegistered = 1
-		self:RegisterEvents(unpack(self.shortTermRegisterEvents))
+		self:RegisterEvents(unpack(_shortTermRegisterEvents))
+		-- Fix so we can register multiple short term events. Use at your own risk, as unsucribing will cause
+		-- all short term events to unregister.
+		if not self.shortTermRegisterEvents then
+			self.shortTermRegisterEvents = {}
+		end
+		for k, v in pairs(_shortTermRegisterEvents) do
+			self.shortTermRegisterEvents[k] = v
+		end
+		-- End fix
 	end
 
 	function DBM:UnregisterShortTermEvents()

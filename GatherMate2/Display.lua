@@ -2,6 +2,8 @@ local GatherMate = LibStub("AceAddon-3.0"):GetAddon("GatherMate2")
 local Display = GatherMate:NewModule("Display","AceEvent-3.0")
 local L = LibStub("AceLocale-3.0"):GetLocale("GatherMate2")
 
+local WoWClassic = (WOW_PROJECT_ID == WOW_PROJECT_CLASSIC)
+
 -- Current minimap pin set
 local minimapPins, minimapPinCount = {}, 0
 -- Current worldmap pin set
@@ -245,7 +247,11 @@ function Display:OnEnable()
 	self:RegisterEvent("MINIMAP_UPDATE_TRACKING")
 	self:RegisterEvent("PLAYER_ENTERING_WORLD","UpdateMaps")
 	GatherMate.HBD.RegisterCallback(self, "PlayerZoneChanged")
-	self:SKILL_LINES_CHANGED()
+	if WoWClassic then
+		ExpandSkillHeader(0)
+	else
+		self:SKILL_LINES_CHANGED()
+	end
 	self:MINIMAP_UPDATE_TRACKING()
 	self:PlayerZoneChanged()
 	self:DigsitesChanged()
@@ -299,30 +305,47 @@ function Display:PlayerZoneChanged()
 end
 
 function Display:SKILL_LINES_CHANGED()
-	local skillname, isHeader
 	for k,v in pairs(have_prof_skill) do
 		have_prof_skill[k] = nil
 	end
 
-	for index, key in pairs({GetProfessions()}) do
-		local name, icon, rank, maxrank, numspells, spelloffset, skillline = GetProfessionInfo(key)
-		if profession_to_skill[name] then
-			have_prof_skill[profession_to_skill[name]] = true
+	if WoWClassic then
+		local numSkills = GetNumSkillLines()
+		for i = 1, numSkills do
+			local skillName, header = GetSkillLineInfo(i)
+				if profession_to_skill[skillName] then
+					have_prof_skill[profession_to_skill[skillName]] = true
+				end
+		end
+	else
+		for index, key in pairs({GetProfessions()}) do
+			local name, icon, rank, maxrank, numspells, spelloffset, skillline = GetProfessionInfo(key)
+			if profession_to_skill[name] then
+				have_prof_skill[profession_to_skill[name]] = true
+			end
 		end
 	end
 	self:UpdateMaps()
 end
 
 function Display:MINIMAP_UPDATE_TRACKING()
-	local count = GetNumTrackingTypes();
-	local info;
-	for id=1, count do
-		local name, texture, active, category  = GetTrackingInfo(id);
-		if tracking_spells[name] and active then
-			active_tracking[tracking_spells[name]] = true
-		else
-			if tracking_spells[name] and not active then
-				active_tracking[tracking_spells[name]] = false
+	if WoWClassic then
+		table.wipe(active_tracking)
+		local texture = GetTrackingTexture()
+		if tracking_spells[texture] then
+			active_tracking[tracking_spells[texture]] = true
+		end
+	else
+		local count = GetNumTrackingTypes();
+		local info;
+		for id=1, count do
+			local name, texture, active, category  = GetTrackingInfo(id);
+			if tracking_spells[name] and active then
+				active_tracking[tracking_spells[name]] = true
+			else
+				if tracking_spells[name] and not active then
+					active_tracking[tracking_spells[name]] = false
+				end
 			end
 		end
 	end
@@ -332,6 +355,7 @@ end
 local digSites = {}
 
 function Display:DigsitesChanged()
+	if WoWClassic then return end
 	table.wipe(digSites)
 	for continent in pairs(continentZoneList) do
 		local digSites = C_ResearchInfo.GetDigSitesForMap(continent)
@@ -360,7 +384,7 @@ function Display:UpdateVisibility()
 			visible = have_prof_skill[v]
 		elseif state == "active" then
 			visible = active_tracking[v] == true
-			if v == "Archaeology" then
+			if not WoWClassic and v == "Archaeology" then
 				visible = IsActiveDigSite()
 			end
 		end
@@ -375,7 +399,7 @@ function Display:UpdateVisibility()
 			visible = have_prof_skill[v]
 		elseif state == "active" then
 			visible = (active_tracking[v] == true)
-			if v == "Archaeology" then
+			if not WoWClassic and v == "Archaeology" then
 				visible = IsActiveDigSite()
 			end
 		end
@@ -384,7 +408,13 @@ function Display:UpdateVisibility()
 end
 
 function Display:SetTrackingSpell(skill,spell)
-	tracking_spells[(GetSpellInfo(spell))] = skill
+	local spellName, _, texture = GetSpellInfo(spell)
+	if not spellName then return end
+	if WoWClassic then
+		tracking_spells[texture] = skill
+	else
+		tracking_spells[spellName] = skill
+	end
 	if fullInit then self:MINIMAP_UPDATE_TRACKING() end
 end
 

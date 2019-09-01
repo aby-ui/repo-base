@@ -51,8 +51,6 @@ function Mapster:OnInitialize()
 end
 
 function Mapster:OnEnable()
-	self:SetupMapButton()
-
 	LibWindow.RegisterConfig(WorldMapFrame, db)
 
 	-- remove from UI panel system
@@ -127,6 +125,10 @@ function Mapster:OnEnable()
 	self:SetPOIScale()
 	self:SetScale()
 	self:SetPosition()
+
+	if not db.hideMapButton then
+		self:SetupMapButton()
+	end
 end
 
 function Mapster:Refresh()
@@ -152,12 +154,15 @@ function Mapster:Refresh()
 	self:SetScale()
 	self:SetPosition()
 
-	if self.optionsButton then
-		if db.hideMapButton then
+	if db.hideMapButton then
+		if self.optionsButton then
 			self.optionsButton:Hide()
-		else
-			self.optionsButton:Show()
 		end
+	else
+		if not self.optionsButton then
+			self:SetupMapButton()
+		end
+		self.optionsButton:Show()
 	end
 end
 

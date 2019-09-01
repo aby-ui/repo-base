@@ -31,18 +31,16 @@ end
 
 function BottomTab:Setup(id, name)
 	self.id = id
-	self:SetText(name or id)
+	self:SetText(id:find('/') and (name or id) or ALL)
 	self:UpdateHighlight()
 	self:Show()
-	PanelTemplates_TabResize(self, 3)
 
-	if not Addon.Rules:Get(self:GetFrame().subrule) then
-		self:OnClick() -- if no valid selection so far, select
-	end
+	PanelTemplates_TabResize(self, 3)
 end
 
 function BottomTab:UpdateHighlight()
-	if self:GetFrame().subrule == self.id then
+	local frame = self:GetFrame()
+	if self.id == frame.subrule or self.id == frame.rule and not frame.subrule then
 		PanelTemplates_SelectTab(self)
 	else
 		PanelTemplates_DeselectTab(self)

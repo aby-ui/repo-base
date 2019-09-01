@@ -3,9 +3,10 @@ local Jostle = ChocolateBar.Jostle
 local bottomFrames = {}
 local topFrames = {}
 Jostle.hooks = {}
-local Debug = ChocolateBar.Debug
+local debug = ChocolateBar and ChocolateBar.Debug or function() end
 local JostleUpdate = CreateFrame("Frame")
 local _G, pairs = _G, pairs
+local UnitHasVehicleUI = UnitHasVehicleUI and UnitHasVehicleUI or function() end 
 
 local blizzardFrames = {
 	'PlayerFrame',
@@ -52,7 +53,7 @@ JostleFrame:SetScript("OnUpdate", function(this, elapsed)
 		this:SetScript("OnUpdate", function(this, elapsed)
 			if GetTime() >= nextTime then
 				Jostle:Refresh()
-				this:Hide()
+				--this:Hide()
 			end
 		end)
 	end
@@ -72,8 +73,11 @@ JostleFrame:RegisterEvent("PLAYER_REGEN_DISABLED")
 JostleFrame:RegisterEvent("PLAYER_REGEN_ENABLED")
 JostleFrame:RegisterEvent("PLAYER_CONTROL_GAINED")
 JostleFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
-JostleFrame:RegisterEvent("UNIT_ENTERING_VEHICLE")
-JostleFrame:RegisterEvent("UNIT_EXITED_VEHICLE")
+
+if not ChocolateBar.isClassicWoW then
+	JostleFrame:RegisterEvent("UNIT_ENTERING_VEHICLE")
+	JostleFrame:RegisterEvent("UNIT_EXITED_VEHICLE")
+end
 
 if not Jostle.hooks.WorldMapFrame_Hide then
 	Jostle.hooks.WorldMapFrame_Hide = true
@@ -167,7 +171,6 @@ end
 local function GetScreenTop()
 	local bottom = GetScreenHeight()
 	for _,frame in pairs(topFrames) do
-    Debug(frame)
 		if frame.IsShown and frame:IsShown() and frame.GetBottom and frame:GetBottom() and frame:GetBottom() < bottom then
 			bottom = frame:GetBottom()
 		end
@@ -206,7 +209,6 @@ function Jostle:RegisterBottom(frame)
 end
 
 function Jostle:RegisterTop(frame)
-  Debug("RegisterTop")
 	if frame and not topFrames[frame] then
 		topFrames[frame] = frame
 		JostleFrame:Schedule()

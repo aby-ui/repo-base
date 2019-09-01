@@ -12,17 +12,7 @@ local color = true
 local path = "Interface\\AddOns\\Broker_MicroMenu\\media\\"
 local _
 
-
-local function Debug(...)
-	--[===[@debug@
-	local s = addonName.." Debug:"
-	for i=1,_G.select("#", ...) do
-		local x = _G.select(i, ...)
-		s = _G.strjoin(" ",s,_G.tostring(x))
-	end
-	_G.DEFAULT_CHAT_FRAME:AddMessage(s)
-	--@end-debug@]===]
-end
+local debug = ChocolateBar and ChocolateBar.Debug or function() end or function() end
 
 local function RGBToHex(r, g, b)
 	return ("%02x%02x%02x"):format(r*255, g*255, b*255)
@@ -37,7 +27,7 @@ dataobj = ldb:NewDataObject(addonName, {
 	label = "Launchers",
 	text  = "Launchers",
 	OnClick = function(self, button, ...)
-    Debug(self)
+  
     if button == "RightButton" then
 			if _G.IsModifierKeyDown() then
 				mainmenu(self, button, ...)
@@ -76,7 +66,6 @@ function cellPrototype:ReleaseCell()
 end
 
 local function MouseHandler(event, choco, button, ...)
-  Debug("MouseHandler", event, choco, dataobj.frame, ...)
   LibQTip:Release(tooltip)
 	tooltip = nil
 
@@ -84,7 +73,6 @@ local function MouseHandler(event, choco, button, ...)
 end
 
 function dataobj:OnEnter()
-  Debug("dataobj:OnEnter()", self)
   if tooltip then
 		LibQTip:Release(tooltip)
 	end

@@ -10,7 +10,9 @@ local L = LibStub('AceLocale-3.0'):GetLocale(CONFIG)
 local PATRONS = {{title='Jenkins',people={'Sembiance','Gnare','Eitrigg A. Runefire','SirZooro'}},{},{title='Ambassador',people={'Fernando Bandeira','Michael Irving','Julia Frizzell','Peggy Webb','Lolari','Craig Falb','Mary Barrentine','Grey Sample','Demonthumper','Patryk Kaliś','Lifeprayer'}}} -- generated patron list
 local SLOT_COLOR_TYPES = {}
 for id, name in pairs(Addon.BAG_TYPES) do
-	tinsert(SLOT_COLOR_TYPES, name)
+	if not tContains(SLOT_COLOR_TYPES, name) then
+		tinsert(SLOT_COLOR_TYPES, name)
+	end
 end
 
 sort(SLOT_COLOR_TYPES)
@@ -167,7 +169,7 @@ Addon.ColorOptions = Addon.Options:NewPanel(ADDON, L.ColorSettings, L.ColorSetti
 	self:CreateCheck('colorSlots').bottom = 11
 
 	if self.sets.colorSlots then
-		self:CreateRow(140, function(self)
+		self:CreateRow(180, function(self)
 			for i, name in ipairs(SLOT_COLOR_TYPES) do
 				self:CreateColor(name .. 'Color').right = 144
 			end

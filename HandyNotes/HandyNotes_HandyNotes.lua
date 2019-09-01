@@ -331,10 +331,10 @@ end
 function HN.OnCanvasClicked(mapCanvas, button, cursorX, cursorY)
 	local self = HN
 	if button == "RightButton" and IsAltKeyDown() and not IsControlKeyDown() and not IsShiftKeyDown() then
-		
+
 		local coord = HandyNotes:getCoord(cursorX, cursorY)
 		local x, y = HandyNotes:getXY(coord)
-		
+
 		-- Pass the data to the edit note frame
 		local HNEditFrame = self.HNEditFrame
 		HNEditFrame.x = x
@@ -436,14 +436,14 @@ function HN:OnInitialize()
 
 	-- migrate data, if neccessary
 	local HBDMigrate = LibStub("HereBeDragons-Migrate")
-	
+
 	local migration = {}
 	for zone in pairs(dbdata) do
 		if type(zone) == "string" then
 			migration[zone] = true
 		end
 	end
-	
+
 	for zone in pairs(migration) do
 		local data = dbdata[zone]
 		dbdata[zone] = nil
@@ -459,7 +459,7 @@ function HN:OnInitialize()
 				dbdata[newzone][coord] = info
 			end
 		end
-		
+
 	end
 	HNData = dbdata
 

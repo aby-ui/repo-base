@@ -8,10 +8,13 @@ local ADDON, Addon = ...
 
 local Normal = VOICE_CHAT_NORMAL
 local Reagents = MINIMAP_TRACKING_VENDOR_REAGENT
+local Key = GetItemClassInfo(LE_ITEM_CLASS_KEY)
+local Quiver = GetItemClassInfo(LE_ITEM_CLASS_QUIVER)
 local Equipment = BAG_FILTER_EQUIPMENT
 local Weapon = GetItemClassInfo(LE_ITEM_CLASS_WEAPON)
 local Armor = GetItemClassInfo(LE_ITEM_CLASS_ARMOR)
 local Trinket = INVTYPE_TRINKET
+local Projectile = GetItemClassInfo(LE_ITEM_CLASS_PROJECTILE)
 local Container = GetItemClassInfo(LE_ITEM_CLASS_CONTAINER)
 local Consumable = GetItemClassInfo(LE_ITEM_CLASS_CONSUMABLE)
 local ItemEnhance = GetItemClassInfo(LE_ITEM_CLASS_ITEM_ENHANCEMENT)
@@ -35,7 +38,6 @@ local function ClassRule(id, name, icon, classes)
 	end
 
 	Addon.Rules:New(id, name, icon, filter)
-	Addon.Rules:New(id..'/all', ALL, nil, filter)
 end
 
 local function ClassSubrule(id, class)
@@ -55,10 +57,15 @@ end
 --[[ Bag Types ]]--
 
 Addon.Rules:New('all', ALL, 'Interface/Icons/INV_Misc_EngGizmos_17')
-Addon.Rules:New('all/all', ALL)
-Addon.Rules:New('all/normal', Normal, nil, function(_, bag,_, info) return Addon:IsBasicBag(bag) or not Addon:IsReagents(bag) and GetBagFamily(info) == 0 end)
-Addon.Rules:New('all/trade', TRADE, nil, function(_,_,_, info) return GetBagFamily(info) > 0 end)
-Addon.Rules:New('all/reagent', Reagents, nil, function(_, bag) return Addon:IsReagents(bag) end)
+Addon.Rules:New('all/normal', Normal, nil, function(_, bag,_, info,item) return Addon:IsBasicBag(bag) or not Addon:IsReagents(bag) and GetBagFamily(info) == 0 end)
+Addon.Rules:New('all/trade', TRADE, nil, function(_,_,_, info) return GetBagFamily(info) > 3 end)
+
+if Addon.IsRetail then
+	Addon.Rules:New('all/reagent', Reagents, nil, function(_, bag) return Addon:IsReagents(bag) end)
+else
+	Addon.Rules:New('all/quiver', Quiver, nil, function(_,_,_, info) return Addon.BAG_TYPES[GetBagFamily(info)] == 'quiver' end)
+	Addon.Rules:New('all/souls', SOUL_SHARDS, nil, function(_,_,_, info) return GetBagFamily(info) == 3 end)
+end
 
 
 --[[ Simple Categories ]]--
@@ -69,18 +76,21 @@ ClassRule('misc', Misc, 'Interface/Icons/INV_Misc_Rune_01', {Misc})
 
 ClassRule('use', USABLE_ITEMS, 'Interface/Icons/INV_Potion_93', {Consumable, ItemEnhance})
 ClassSubrule('use/consume', Consumable)
-ClassSubrule('use/enhance', ItemEnhance)
 
 ClassRule('trade', TRADE, 'Interface/Icons/INV_Fabric_Silk_02', {TradeGoods, Recipe, Gem, Glyph})
 ClassSubrule('trade/goods', TradeGoods)
 ClassSubrule('trade/recipe', Recipe)
-ClassSubrule('trade/gem', Gem)
-ClassSubrule('trade/glyph', Glyph)
+
+if Addon.IsRetail then
+	ClassSubrule('trade/glyph', Glyph)
+	ClassSubrule('trade/gem', Gem)
+	ClassSubrule('use/enhance', ItemEnhance)
+end
 
 
 --[[ Equipment ]]--
 
-ClassRule('equip', Equipment, 'Interface/Icons/INV_Chest_Chain_04', {Armor, Weapon})
+ClassRule('equip', Equipment, 'Interface/Icons/INV_Chest_Chain_04', {Armor, Weapon, Projectile})
 ClassSubrule('equip/weapon', Weapon)
 
 Addon.Rules:New('equip/armor', Armor, nil, function(_,_,_,_, item)
@@ -96,3 +106,7 @@ Addon.Rules:New('equip/trinket', Trinket, nil, function(_,_,_,_, item)
 		return equipSlot == 'INVTYPE_TRINKET'
 	end
 end)
+
+if not Addon.IsRetail then
+	ClassSubrule('equip/ammo', Projectile)
+end

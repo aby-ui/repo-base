@@ -25,14 +25,10 @@ local frame = LL.frame
 
 local next, type, error, tonumber, format, match = next, type, error, tonumber, string.format, string.match
 local Ambiguate, GetTime, GetNetStats, IsInGroup, IsInRaid = Ambiguate, GetTime, GetNetStats, IsInGroup, IsInRaid
-local SendAddonMessage = C_ChatInfo and C_ChatInfo.SendAddonMessage or SendAddonMessage -- XXX 8.0
+local SendAddonMessage = C_ChatInfo.SendAddonMessage
 local pName = UnitName("player")
 
-if C_ChatInfo then -- XXX 8.0
-	C_ChatInfo.RegisterAddonMessagePrefix("Lag")
-else
-	RegisterAddonMessagePrefix("Lag")
-end
+C_ChatInfo.RegisterAddonMessagePrefix("Lag")
 frame:SetScript("OnEvent", function(_, _, prefix, msg, channel, sender)
 	if prefix == "Lag" and throttleTable[channel] then
 		if msg == "R" then

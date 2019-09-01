@@ -51,7 +51,7 @@ function ProgressBarModule:Load()
 		self:RegisterEvent("AZERITE_ITEM_EXPERIENCE_CHANGED")
 	end
 
-	self:RegisterEvent("ADDON_LOADED")
+	self:UpdateAllBars()
 end
 
 function ProgressBarModule:UpdateAllBars()
@@ -118,6 +118,10 @@ function ProgressBarModule:ADDON_LOADED(event, addonName)
 		self:AddOptionsPanel()
 		self:UnregisterEvent("ADDON_LOADED")
 	end
+end
+
+function ProgressBarModule:OnMediaUpdated(event, ...)
+	self:UpdateAllBars()
 end
 
 function ProgressBarModule:AddOptionsPanel()

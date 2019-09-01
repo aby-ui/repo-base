@@ -22,11 +22,18 @@ function Frame:New(id)
 	f:SetScript('OnHide', self.OnHide)
 	f:FindRules()
 
-	f.sortButton = Addon.SortButton:New(f)
-	f.sortButton:SetPoint('LEFT', f.searchBox, 'RIGHT', 9, -1)
+	f.ownerSelector = Addon.OwnerSelector:New(f)
+	f.ownerSelector:SetPoint('TOPLEFT', -3, 4)
 
 	f.bagToggle = Addon.BagToggle:New(f)
-	f.bagToggle:SetPoint('LEFT', f.sortButton, 'RIGHT', 7, 0)
+	f.bagToggle:SetPoint('TOPRIGHT', -10, -27)
+
+	if SortBags then
+		f.sortButton = Addon.SortButton:New(f)
+		f.sortButton:SetPoint('RIGHT', f.bagToggle, 'LEFT', -7, 0)
+	else
+		f.searchBox:SetPoint('TOPRIGHT', -49, -32)
+	end
 
 	f.moneyFrame = Addon.MoneyFrame:New(f)
 	f.moneyFrame:SetPoint('BOTTOMRIGHT', -8, 4)

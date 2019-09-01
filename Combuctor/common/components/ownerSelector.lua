@@ -11,7 +11,8 @@ local OwnerSelector = Addon:NewClass('OwnerSelector', 'Button')
 --[[ Constructor ]]--
 
 function OwnerSelector:New(parent)
-	local b = self:Bind(CreateFrame('Button', nil, parent, ADDON .. 'MenuButtonTemplate'))
+	local b = self:Bind(CreateFrame('Button', nil, parent, ADDON .. 'OwnerSelectorTemplate'))
+  b:RegisterEvent('UNIT_PORTRAIT_UPDATE', 'Update')
 	b:RegisterFrameSignal('OWNER_CHANGED', 'Update')
 	b:SetScript('OnClick', b.OnClick)
 	b:SetScript('OnEnter', b.OnEnter)
@@ -41,7 +42,6 @@ function OwnerSelector:OnEnter()
 		GameTooltip:SetOwner(self, 'ANCHOR_RIGHT')
 	end
 
-	local current = self:GetFrame():GetOwner()
 	GameTooltip:SetText(CHARACTER)
 	GameTooltip:AddLine(L.TipChangePlayer, 1, 1, 1)
 	GameTooltip:AddLine(L.TipResetPlayer, 1, 1, 1)
@@ -58,8 +58,17 @@ end
 --[[ Update ]]--
 
 function OwnerSelector:Update()
-	local icon, coords = Addon:GetOwnerIcon(self:GetOwnerInfo())
+  local info = self:GetOwnerInfo()
+  if info.cached or not self.Portrait then
+  	local icon, coords = Addon:GetOwnerIcon(info)
+    local a, b, c, d = unpack(coords)
+    local s = (b - a) * 0.06
 
-	self.Icon:SetTexture(icon)
-	self.Icon:SetTexCoord(unpack(coords))
+  	self.Icon:SetTexCoord(a+s, b-s, c+s, d-s)
+    self.Icon:SetTexture(icon)
+    self.Icon:Show()
+  else
+    SetPortraitTexture(self.Portrait, 'player')
+    self.Icon:Hide()
+  end
 end

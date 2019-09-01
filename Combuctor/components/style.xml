@@ -1,6 +1,8 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/">
-	<Button name="CombuctorSortButtonTemplate" inherits="BankAutoSortButtonTemplate" virtual="true">
+	<Button name="CombuctorSortButtonTemplate" virtual="true">
 		<Size x="22" y="22"/>
+		<NormalTexture atlas="bags-button-autosort-up"/>
+		<PushedTexture atlas="bags-button-autosort-down"/>
 		<HighlightTexture file="Interface\Buttons\ButtonHilight-Square" alphaMode="ADD">
 			<Size x="18" y="18"/>
 			<Anchors>

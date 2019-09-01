@@ -1,59 +1,50 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/">
-	<Button name="CombuctorPortraitButtonTemplate" virtual="true">
-		<Size x="64" y="64"/>
-		<Anchors>
-			<Anchor point="TOPLEFT">
-				<Offset x="-8" y="8"/>
-			</Anchor>
-		</Anchors>
+	<Button name="CombuctorOwnerSelectorTemplate" virtual="true">
+		<Size x="54" y="54"/>
+
+		<Layers>
+			<Layer level="BORDER">
+				<Texture parentKey="Portrait">
+					<Size x="62" y="62"/>
+					<Anchors>
+						<Anchor point="CENTER"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<Texture parentKey="Icon">
+					<Size x="56" y="56"/>
+					<Anchors>
+						<Anchor point="CENTER"/>
+					</Anchors>
+				</Texture>
+				<MaskTexture parentKey="Mask" file="Interface\CharacterFrame\TempPortraitAlphaMask" hWrapMode="CLAMPTOBLACKADDITIVE" vWrapMode="CLAMPTOBLACKADDITIVE"> setAllPoints="true">
+					<MaskedTextures>
+						<MaskedTexture childKey="Portrait"/>
+						<MaskedTexture childKey="Icon"/>
+					</MaskedTextures>
+				</MaskTexture>
+			</Layer>
+		</Layers>
 
 		<Scripts>
 			<OnLoad>
-				self:RegisterForClicks("anyUp")
-				self.portrait = self:GetParent().portrait
-				self.portrait:ClearAllPoints()
-				self.portrait:SetPoint("CENTER", self)
+				self.Mask:SetAlpha(1)
 			</OnLoad>
-			<OnEvent>
-				if (self:IsShown() and arg1 == "player") then
-					SetPortraitTexture(self.portrait, arg1)
-				end
-			</OnEvent>
-			<OnShow>
-				SetPortraitTexture(self.portrait, "player")
-				self:RegisterEvent("UNIT_PORTRAIT_UPDATE")
-			</OnShow>
-			<OnHide>
-				self:UnregisterEvent("UNIT_PORTRAIT_UPDATE")
-			</OnHide>
 			<OnMouseDown>
-				self.portrait:SetSize(56, 56)
-				self.portrait:SetTexCoord(0.075, 0.925, 0.075, 0.925)
+				self.Portrait:SetScale(0.95)
+				self.Icon:SetScale(0.95)
 			</OnMouseDown>
 			<OnMouseUp>
-				self.portrait:SetSize(62, 62)
-				self.portrait:SetTexCoord(0, 1, 0, 1)
+				self.Portrait:SetScale(1)
+				self.Icon:SetScale(1)
 			</OnMouseUp>
-			<OnClick>
-				Combuctor:ToggleOwnerDropdown(self, self:GetParent(), 15, 10)
-			</OnClick>
-			<OnEnter>
-				if Combuctor:MultipleOwnersFound() then
-					GameTooltip:SetOwner(self, 'ANCHOR_RIGHT')
-					GameTooltip:SetText(self:GetParent():GetOwner(), 1, 1, 1)
-					GameTooltip:AddLine(LibStub('AceLocale-3.0'):GetLocale('Combuctor').TipChangePlayer)
-					GameTooltip:Show()
-				end
-			</OnEnter>
-			<OnLeave>
-				GameTooltip:Hide()
-			</OnLeave>
 		</Scripts>
 
 		<HighlightTexture alphaMode="ADD" file="Interface\Minimap\UI-Minimap-ZoomButton-Highlight">
-			<Size x="78" y="78"/>
+			<Size x="72" y="74"/>
 			<Anchors>
-				<Anchor point="CENTER"/>
+				<Anchor point="CENTER" x="0" y="-3"/>
 			</Anchors>
 		</HighlightTexture>
 	</Button>
@@ -62,12 +53,8 @@
 		<Size x="0" y="20"/>
 
 		<Anchors>
-			<Anchor point="TOPLEFT">
-				<Offset x="70" y="-32"/>
-			</Anchor>
-			<Anchor point="TOPRIGHT">
-				<Offset x="-80" y="-32"/>
-			</Anchor>
+			<Anchor point="TOPLEFT" x="70" y="-32"/>
+			<Anchor point="TOPRIGHT" x="-80" y="-32"/>
 		</Anchors>
 
 		<Scripts>
@@ -121,6 +108,32 @@
 		<HighlightFont style="GameFontHighlight"/>
 	</Button>
 
+	<Button name="CombuctorResizeButtonTemplate" virtual="true">
+		<Size x="16" y="16"/>
+
+		<Anchors>
+			<Anchor point="BOTTOMRIGHT" x="-7" y="4"/>
+		</Anchors>
+
+		<Scripts>
+			<OnLoad>
+				self:SetFrameLevel(self:GetFrameLevel() + 4)
+				self:GetNormalTexture():SetVertexColor(1, 0.82, 0, .8)
+				self:GetNormalTexture():SetAlpha(.5)
+			</OnLoad>
+			<OnMouseDown>
+				self:GetParent():StartSizing()
+			</OnMouseDown>
+			<OnMouseUp>
+				self:GetParent():StopMovingOrSizing()
+			</OnMouseUp>
+		</Scripts>
+
+		<NormalTexture file="Interface\ChatFrame\UI-ChatIM-SizeGrabber-Up" setAllPoints="true"/>
+		<PushedTexture file="Interface\ChatFrame\UI-ChatIM-SizeGrabber-Down" setAllPoints="true"/>
+		<HighlightTexture file="Interface\ChatFrame\UI-ChatIM-SizeGrabber-Highlight" alphaMode="ADD" setAllPoints="true"/>
+	</Button>
+
 	<Frame name="CombuctorFrameTemplate" resizable="true" clampedToScreen="true" enableMouse="true" movable="true" topLevel="true" hidden="true" inherits="ButtonFrameTemplate" virtual="true">
 		<Size x="300" y="400"/>
 
@@ -132,9 +145,7 @@
 			<Layer level="OVERLAY">
 				<Texture inherits="UI-Frame-BtnDivMiddle"> <!-- Separator -->
 					<Anchors>
-						<Anchor point="BOTTOMLEFT">
-							<Offset x="145" y="2"/>
-						</Anchor>
+						<Anchor point="BOTTOMLEFT" x="145" y="2"/>
 					</Anchors>
 				</Texture>
 			</Layer>
@@ -168,37 +179,9 @@
 		</Layers>
 
 		<Frames>
-			<Button parentKey="titleText" name="$parentTitle" inherits="CombuctorDragFrameTemplate"/>
 			<EditBox parentKey="searchBox" name="$parentSearchBox" inherits="CombuctorSearchBoxTemplate"/>
-			<Button parentKey="portraitButton" name="$parentPortraitButton" inherits="CombuctorPortraitButtonTemplate"/>
-
-			<Button name="$parentResize">
-				<Size x="16" y="16"/>
-
-				<Anchors>
-					<Anchor point="BOTTOMRIGHT">
-						<Offset x="-7" y="4"/>
-					</Anchor>
-				</Anchors>
-
-				<Scripts>
-					<OnLoad>
-						self:SetFrameLevel(self:GetFrameLevel() + 4)
-						self:GetNormalTexture():SetVertexColor(1, 0.82, 0, .8)
-						self:GetNormalTexture():SetAlpha(.5)
-					</OnLoad>
-					<OnMouseDown>
-						self:GetParent():StartSizing()
-					</OnMouseDown>
-					<OnMouseUp>
-						self:GetParent():StopMovingOrSizing()
-					</OnMouseUp>
-				</Scripts>
-
-				<NormalTexture file="Interface\ChatFrame\UI-ChatIM-SizeGrabber-Up" setAllPoints="true"/>
-				<PushedTexture file="Interface\ChatFrame\UI-ChatIM-SizeGrabber-Down" setAllPoints="true"/>
-				<HighlightTexture file="Interface\ChatFrame\UI-ChatIM-SizeGrabber-Highlight" alphaMode="ADD" setAllPoints="true"/>
-			</Button>
+			<Button parentKey="resizeButton" inherits="CombuctorResizeButtonTemplate"/>
+			<Button parentKey="titleText" inherits="CombuctorDragFrameTemplate"/>
 		</Frames>
 	</Frame>
 </Ui>
