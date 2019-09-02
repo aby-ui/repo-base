@@ -16,6 +16,7 @@ local dataobj = LibStub("LibDataBroker-1.1"):NewDataObject("PlayedTime", {
 	--icon = "Interface\\AddOns\\ChocolateBar\\pics\\ChocolatePiece",
 	label = "Played Time",
 	text  = "---",
+	enabled = true,
 })
 
 acetimer:ScheduleTimer(function()

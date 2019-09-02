@@ -686,4 +686,6 @@ function Addon:IsBuild(...)
 end
 
 -- exports
+-- luacheck: push ignore 122
 _G[AddonName] = Addon
+-- luacheck: pop

@@ -1545,6 +1545,8 @@ function ChocolateBar:AddObjectOptions(name,obj)
 	cleanName = string.gsub(cleanName, "\|r", "")
 	cleanName = string.gsub(cleanName, "[%c \127]", "")
 
+	--if obj.enabled then self:AddDefaultModuleOptions(name, obj) end
+
 	--use cleanName of name because aceconfig does not like some characters in the plugin names
 	chocolateOptions[cleanName] = {
 		--name = GetObjectText,
@@ -1713,6 +1715,42 @@ function ChocolateBar:AddObjectOptions(name,obj)
 			},
 		},
 	}
+end
+
+local function GetModuleEnabled(info)
+	local name = info[#info-2]
+	return ChocolateBar.db.moduleOptions[name].enabled 
+end
+
+local function SetModuleEnabled(info, value)
+	local name = info[#info-2]
+	ChocolateBar.db.moduleOptions[name].enabled = value
+end
+
+function ChocolateBar:AddDefaultModuleOptions(name, obj)
+	self.db.moduleOptions[name] = {}
+	local moduleOptions = {
+		inline = true,
+		name=name,
+		type="group",
+		order = 0,
+		args={
+			label = {
+				order = 2,
+				type = "description",
+				name = "description",
+			},
+			enabled = {
+				type = 'toggle',
+				order = 3,
+				name = L["Enabled"],
+				desc = L["Enabled"],
+				get = GetModuleEnabled,
+				set = SetModuleEnabled,
+			},
+		},
+	}
+	self:AddModuleOptions(name, moduleOptions)
 end
 
 function ChocolateBar:AddCustomPluginOptions(pluginName, customOptions)
