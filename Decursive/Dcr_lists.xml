@@ -3,7 +3,7 @@
     <!--
     This file is part of Decursive.
 
-    Decursive (v 2.7.6.3) add-on for World of Warcraft UI
+    Decursive (v 2.7.6.4-beta_1) add-on for World of Warcraft UI
     Copyright (C) 2006-2018 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Starting from 2009-10-31 and until said otherwise by its author, Decursive
@@ -19,7 +19,7 @@
     Decursive is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY.
 
-    This file was last updated on 2018-07-18T0:42:34Z
+    This file was last updated on 2019-09-03T00:06:47Z
     -->
     <Script>
 
@@ -55,9 +55,9 @@
 
         <ButtonText name="$parentText" justifyH="LEFT" />
 
-        <NormalFont inherits="GameFontNormal" style="GameFontNormal" justifyH="LEFT" />
-        <HighlightFont inherits="GameFontHighlight" style="GameFontHighlight" justifyH="LEFT" />
-        <DisabledFont inherits="GameFontDisable" style="GameFontDisable" justifyH="LEFT" />
+        <NormalFont style="GameFontNormal" />
+        <HighlightFont style="GameFontHighlight" />
+        <DisabledFont style="GameFontDisable" />
 
     </Button>
 
@@ -87,7 +87,7 @@
     <!-- }}} -->
 
     <!--  Dcr_ListFrameTemplate {{{ -->
-    <Frame name="Dcr_ListFrameTemplate" frameStrata="LOW" toplevel="true" enableMouse="true" EnableMouseWheel="true" movable="true" clampedToScreen="true" hidden="true" virtual="true" parent="UIParent">
+    <Frame name="Dcr_ListFrameTemplate" frameStrata="LOW" toplevel="true" enableMouse="true" movable="true" clampedToScreen="true" hidden="true" virtual="true" parent="UIParent">
         <Size>
             <AbsDimension x="170" y="210" />
         </Size>
@@ -1037,6 +1037,6 @@
     <Script>
         local T = DecursiveRootTable or {};
 
-        T._LoadedFiles["Dcr_lists.xml"] = "2.7.6.3";
+        T._LoadedFiles["Dcr_lists.xml"] = "2.7.6.4-beta_1";
     </Script>
 </Ui>

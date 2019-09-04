@@ -10,7 +10,7 @@ end
 local mod	= DBM:NewMod(dungeonID, "DBM-ZuldazarRaid", 1, 1176)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190719021921")
+mod:SetRevision("20190720002633")
 mod:SetCreatureID(creatureID)
 mod:SetEncounterID(2263, 2284)--2263 Alliance, 2284 Horde
 --mod:DisableESCombatDetection()

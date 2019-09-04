@@ -4,11 +4,9 @@
 ## Notes: Single window display for your void storage
 ## RequiredDeps: Bagnon
 ## LoadOnDemand: 1
-## Version: 8.2.5
 
-localization\localization.xml
-main.lua
-components\components.xml
+..\Bagnon\modules\vault.xml
+
 
 ## Title: |cff880303[爱不易]|r Bagnon 虚空银行整合
 ## Notes: 在一个窗口中显示所有虚空银行内的物品

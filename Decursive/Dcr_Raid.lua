@@ -1,7 +1,7 @@
 --[[
     This file is part of Decursive.
 
-    Decursive (v 2.7.6.3) add-on for World of Warcraft UI
+    Decursive (v 2.7.6.4-beta_1) add-on for World of Warcraft UI
     Copyright (C) 2006-2018 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Starting from 2009-10-31 and until said otherwise by its author, Decursive
@@ -17,7 +17,7 @@
     Decursive is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY.
 
-    This file was last updated on 2018-07-18T0:42:34Z
+    This file was last updated on 2019-09-02T04:11:14Z
 --]]
 -------------------------------------------------------------------------------
 
@@ -223,6 +223,11 @@ do
 
     local FakeRoles = {}; local roles = {"HEALER", "TANK", "DAMAGER", "NONE"};
     local function _UnitGroupRolesAssigned(unit)
+
+        if DC.WOWC then
+            return "NONE";
+        end
+
         if not TestMode then
             return UnitGroupRolesAssigned(unit);
         elseif not FakeRoles[unit] then
@@ -659,7 +664,7 @@ end
 
 
 -------------------------------------------------------------------------------
-T._LoadedFiles["Dcr_Raid.lua"] = "2.7.6.3";
+T._LoadedFiles["Dcr_Raid.lua"] = "2.7.6.4-beta_1";
 
 -- "Your God is dead and no one cares"
 -- "If there is a Hell I'll see you there"

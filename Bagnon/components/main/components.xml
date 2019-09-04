@@ -1,0 +1,14 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+	<Include file="style.xml"/>
+
+	<Script file="optionsToggle.lua"/>
+	<Script file="searchFrame.lua"/>
+	<Script file="searchToggle.lua"/>
+	<Script file="titleFrame.lua"/>
+
+	<Script file="brokerPlugin.lua"/>
+	<Script file="brokerDisplay.lua"/>
+
+	<Script file="itemFrame.lua"/>
+	<Script file="frame.lua"/>
+</Ui>

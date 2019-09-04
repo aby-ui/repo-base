@@ -4,10 +4,8 @@
 ## Notes: An options menu for Bagnon
 ## Dependencies: Bagnon
 ## LoadOnDemand: 1
-## Version: 8.2.5
 
-main.lua
-common\Wildpants_Config.xml
+..\Bagnon\modules\config.xml
 
 
 ## Title-zhCN: |cff880303[爱不易]|r Bagnon 整合背包配置

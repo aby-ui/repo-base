@@ -4,7 +4,7 @@
         An embeddable library providing an abstraction layer for tracking and
         querying Blizzard's Nameplate frames with ease and efficiency.
 
-        Copyright (c) 2013-2018 by John Wellesz (LibNameplateRegistry@2072productions.com)
+        Copyright (c) 2013-2019 by John Wellesz (LibNameplateRegistry@2072productions.com)
         
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser Public License as published by
@@ -19,7 +19,7 @@
     You should have received a copy of the GNU Lesser Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-This file was last updated on 2018-07-18T1:05:43Z by John Wellesz
+This file was last updated on 2019-09-02T13:51:45Z by Archarodim
 
 --]]
 

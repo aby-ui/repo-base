@@ -4,12 +4,10 @@
 ## Notes: Single window displays for your inventory and bank
 ## SavedVariables: Bagnon_Sets
 ## OptionalDeps: BagBrother, WoWUnit
-## Version: 8.2.5
+## Version: 8.2.8
 
-main.lua
+modules\main.xml
 
-external\external.xml
-components\components.xml
 
 ## Title-zhCN: |cff880303[爱不易]|r Bagnon 背包整合
 ## X-Vendor: AbyUI

@@ -6,7 +6,7 @@
 ## X-Category: Library
 ## X-License: BSD
 ## X-Website: http://www.wowace.com/addons/herebedragons/
-## Version: 2.01-release-5-gcd7e0dd
+## Version: 2.02-release
 ## X-Curse-Project-ID: 94348
 
 LibStub\LibStub.lua

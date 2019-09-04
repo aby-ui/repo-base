@@ -207,10 +207,10 @@ local affixWeeks = { --affixID as used in C_ChallengeMode.GetAffixInfo(affixID)
     [3] = {[1]=11,[2]=4,[3]=9,[4]=119},
     [4] = {[1]=8,[2]=14,[3]=10,[4]=119},
     [5] = {[1]=7,[2]=13,[3]=9,[4]=119},
-    [6] = {[1]=8,[2]=4,[3]=10,[4]=119},
-    [7] = {[1]=11,[2]=3,[3]=9,[4]=119},
-    [8] = {[1]=5,[2]=13,[3]=10,[4]=119},
-    [9] = {[1]=6,[2]=14,[3]=9,[4]=119},
+    [6] = {[1]=11,[2]=3,[3]=10,[4]=119},
+    [7] = {[1]=0,[2]=0,[3]=9,[4]=119},--unknown
+    [8] = {[1]=0,[2]=0,[3]=10,[4]=119},--unknown
+    [9] = {[1]=0,[2]=0,[3]=9,[4]=119},--unknown
     [10] = {[1]=7,[2]=12,[3]=10,[4]=119},
     [11] = {[1]=6,[2]=13,[3]=9,[4]=119},
     [12] = {[1]=8,[2]=12,[3]=10,[4]=119},
@@ -837,12 +837,19 @@ function MethodDungeonTools:MakeSidePanel(frame)
 	frame.sidePanelDeleteButton.frame:SetHighlightFontObject(fontInstance)
 	frame.sidePanelDeleteButton.frame:SetDisabledFontObject(fontInstance)
 	frame.sidePanelDeleteButton:SetCallback("OnClick",function(widget,callbackName,value)
-		MethodDungeonTools:HideAllDialogs()
-        frame.DeleteConfirmationFrame:ClearAllPoints()
-		frame.DeleteConfirmationFrame:SetPoint("CENTER",MethodDungeonTools.main_frame,"CENTER",0,50)
-		local currentPresetName = db.presets[db.currentDungeonIdx][db.currentPreset[db.currentDungeonIdx]].text
-		frame.DeleteConfirmationFrame.label:SetText(L"Delete "..currentPresetName.."?")
-		frame.DeleteConfirmationFrame:Show()
+        if IsAltKeyDown() and IsShiftKeyDown() and IsControlKeyDown() then
+            --delete all profiles
+            local numPresets = self:CountPresets()
+            local prompt = "!!WARNING!!\nDo you wish to delete ALL presets of the current dungeon?\nYou are about to delete "..numPresets.." preset(s).\nThis cannot be undone\n\n"
+            MethodDungeonTools:OpenConfirmationFrame(450,150,"Delete ALL presets","Delete",prompt, MethodDungeonTools.DeleteAllPresets)
+        else
+            MethodDungeonTools:HideAllDialogs()
+            frame.DeleteConfirmationFrame:ClearAllPoints()
+            frame.DeleteConfirmationFrame:SetPoint("CENTER",MethodDungeonTools.main_frame,"CENTER",0,50)
+            local currentPresetName = db.presets[db.currentDungeonIdx][db.currentPreset[db.currentDungeonIdx]].text
+            frame.DeleteConfirmationFrame.label:SetText(L"Delete "..currentPresetName.."?")
+            frame.DeleteConfirmationFrame:Show()
+        end
 	end)
 
 	frame.LinkToChatButton = AceGUI:Create("Button")
@@ -941,6 +948,8 @@ function MethodDungeonTools:MakeSidePanel(frame)
         local sep = ""
         for _,affixID in ipairs(affixes) do
             local name, _, filedataid = C_ChallengeMode.GetAffixInfo(affixID)
+            name = name or "Unknown"
+            filedataid = filedataid or 134400 --questionmark
             if longText then
                 ret = ret or ""
                 ret = ret..sep..name
@@ -1694,6 +1703,7 @@ function MethodDungeonTools:HideAllDialogs()
 	MethodDungeonTools.main_frame.RenameFrame:Hide()
 	MethodDungeonTools.main_frame.ClearConfirmationFrame:Hide()
 	MethodDungeonTools.main_frame.DeleteConfirmationFrame:Hide()
+    if MethodDungeonTools.main_frame.ConfirmationFrame then MethodDungeonTools.main_frame.ConfirmationFrame:Hide() end
 end
 
 function MethodDungeonTools:OpenImportPresetDialog()
@@ -1926,6 +1936,24 @@ function MethodDungeonTools:DeletePreset(index)
 	db.currentPreset[db.currentDungeonIdx] = index-1
 	MethodDungeonTools:UpdatePresetDropDown()
 	MethodDungeonTools:UpdateMap()
+end
+
+---CountPresets
+---Counts the number of presets of the current dungeon
+function MethodDungeonTools:CountPresets()
+    return #db.presets[db.currentDungeonIdx]-2
+end
+
+---DeleteAllPresets
+---Deletes all presets from the current dungeon
+function MethodDungeonTools:DeleteAllPresets()
+    local countPresets = #db.presets[db.currentDungeonIdx]-1
+    for i=countPresets,2,-1 do
+        tremove(db.presets[db.currentDungeonIdx],i)
+        db.currentPreset[db.currentDungeonIdx] = i-1
+    end
+    MethodDungeonTools:UpdatePresetDropDown()
+    MethodDungeonTools:UpdateMap()
 end
 
 function MethodDungeonTools:ClearPreset(index)
@@ -2800,6 +2828,48 @@ function MethodDungeonTools:MakeClearConfirmationFrame(frame)
 
 end
 
+---OpenConfirmationFrame
+---Creates a generic dialog that pops up when a user wants needs confirmation for an action
+function MethodDungeonTools:OpenConfirmationFrame(width,height,title,buttonText,prompt,callback)
+    local f = MethodDungeonTools.main_frame.ConfirmationFrame
+    if not f then
+        MethodDungeonTools.main_frame.ConfirmationFrame = AceGUI:Create("Frame")
+        f = MethodDungeonTools.main_frame.ConfirmationFrame
+        f:EnableResize(false)
+        f:SetLayout("Flow")
+        f:SetCallback("OnClose", function(widget) end)
+
+        f.label = AceGUI:Create("Label")
+        f.label:SetWidth(390)
+        f.label:SetHeight(10)
+        f:AddChild(f.label)
+
+        f.OkayButton = AceGUI:Create("Button")
+        f.OkayButton:SetWidth(100)
+        f:AddChild(f.OkayButton)
+
+        f.CancelButton = AceGUI:Create("Button")
+        f.CancelButton:SetText("Cancel")
+        f.CancelButton:SetWidth(100)
+        f.CancelButton:SetCallback("OnClick",function()
+            f:Hide()
+        end)
+        f:AddChild(f.CancelButton)
+    end
+    f:SetWidth(width or 250)
+    f:SetHeight(height or 120)
+    f:SetTitle(title)
+    f.OkayButton:SetText(buttonText)
+    f.OkayButton:SetCallback("OnClick",function()callback();MethodDungeonTools:HideAllDialogs() end)
+
+    MethodDungeonTools:HideAllDialogs()
+    f:ClearAllPoints()
+    f:SetPoint("CENTER",MethodDungeonTools.main_frame,"CENTER",0,50)
+    f.label:SetText(prompt)
+    f:Show()
+
+end
+
 
 ---CreateTutorialButton
 ---Creates the tutorial button and sets up the help plate frames
@@ -3140,6 +3210,38 @@ function MethodDungeonTools:GetCurrentAffixWeek()
         end
     end
     return 1
+end
+
+---PrintCurrentAffixes
+---Helper function to print out current affixes with their ids and their names
+function MethodDungeonTools:PrintCurrentAffixes()
+    --run this once so blizz stuff is loaded
+    MethodDungeonTools:GetCurrentAffixWeek()
+    --https://www.wowhead.com/affixes
+    local affixNames = {
+        [1] ="Overflowing",
+        [2] ="Skittish",
+        [3] ="Volcanic",
+        [4] ="Necrotic",
+        [5] ="Teeming",
+        [6] ="Raging",
+        [7] ="Bolstering",
+        [8] ="Sanguine",
+        [9] ="Tyrannical",
+        [10] ="Fortified",
+        [11] ="Bursting",
+        [12] ="Grievous",
+        [13] ="Explosive",
+        [14] ="Quaking",
+        [15] ="Relentless",
+        [16] ="Infested",
+        [117] ="Reaping",
+        [119] ="Beguiling",
+    }
+    local affixIds = C_MythicPlus.GetCurrentAffixes()
+    for idx,data in ipairs(affixIds) do
+        print(data.id,affixNames[data.id])
+    end
 end
 
 ---IsPlayerInGroup

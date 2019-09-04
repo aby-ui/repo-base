@@ -1,7 +1,7 @@
 --[[
     This file is part of Decursive.
 
-    Decursive (v 2.7.6.3) add-on for World of Warcraft UI
+    Decursive (v 2.7.6.4-beta_1) add-on for World of Warcraft UI
     Copyright (C) 2006-2018 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Starting from 2009-10-31 and until said otherwise by its author, Decursive
@@ -161,13 +161,13 @@ function LiveList:DisplayItem (ID, UnitID, Debuff) -- {{{
     --D:Debug("XXXX => Updating ll item %d for %s", ID, UnitID);
 
     if not LVItem.IsShown then
-        --[===[@debug@--[===[
+        --[===[@debug@--
         D:Debug("(LiveList) Showing LVItem %d", ID);
         --@end-debug@]===]
 
         LVItem.Frame:Show();
 
-        --[===[@debug@--[===[
+        --[===[@debug@--
         D:Debug("(LiveList) done", ID);
         --@end-debug@]===]
 
@@ -586,4 +586,4 @@ function LiveList:Onclick() -- {{{
     D:Println(L["HLP_LL_ONCLICK_TEXT"]);
 end -- }}}
 
-T._LoadedFiles["Dcr_LiveList.lua"] = "2.7.6.3";
+T._LoadedFiles["Dcr_LiveList.lua"] = "2.7.6.4-beta_1";

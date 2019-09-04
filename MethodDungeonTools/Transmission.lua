@@ -135,7 +135,8 @@ local function filterFunc(_, event, msg, player, l, cs, t, flag, channelId, ...)
             characterName = characterName:gsub("|c[Ff][Ff]......", ""):gsub("|r", "")
             displayName = displayName:gsub("|c[Ff][Ff]......", ""):gsub("|r", "")
             newMsg = newMsg..remaining:sub(1, start-1)
-            newMsg = newMsg.."|HMethodDungeonTools-"..characterName.."|h|cFFF49D38[".."|r|cFFF49D38"..displayName.."]|h|r"
+            --newMsg = newMsg.."|HMethodDungeonTools-"..characterName.."|h|cFFF49D38[".."|r|cFFF49D38"..displayName.."]|h|r"
+            newMsg = "|cfff49d38|HMethodDungeonTools-"..characterName.."|h["..displayName.."]|h|r"
             remaining = remaining:sub(finish + 1)
         elseif (characterNameLive and displayNameLive) then
             characterNameLive = characterNameLive:gsub("|c[Ff][Ff]......", ""):gsub("|r", "")
@@ -209,6 +210,7 @@ function MDTcommsObject:OnCommReceived(prefix, message, distribution, sender)
         We append our realm if there is no realm
     ]]
     local name, realm = UnitFullName(sender)
+    if not name then return end
     if not realm or string.len(realm)<3 then
         local _,r = UnitFullName("player")
         realm = r

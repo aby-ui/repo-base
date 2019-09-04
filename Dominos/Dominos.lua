@@ -158,6 +158,10 @@ function Addon:GetDatabaseDefaults()
 		profile = {
 			possessBar = 1,
 
+			-- if true, applies a default dominos skin to buttons
+			-- when masque is not enabled
+			applyButtonTheme = true,
+
 			sticky = true,
 			linkedOpacity = false,
 			showMacroText = true,
@@ -666,6 +670,17 @@ end
 
 function Addon:IsLinkedOpacityEnabled()
 	return self.db.profile.linkedOpacity
+end
+
+-- button theming toggle
+function Addon:ThemeButtons()
+	return self.db.profile.applyButtonTheme
+end
+
+function Addon:SetThemeButtons(enable)
+	self.db.profile.applyButtonTheme = enable or false
+
+	self:GetModule("ButtonThemer"):Reskin()
 end
 
 -- build test

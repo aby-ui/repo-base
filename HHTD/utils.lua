@@ -3,7 +3,7 @@ H.H.T.D. World of Warcraft Add-on
 Copyright (c) 2009-2018 by John Wellesz (hhtd@2072productions.com)
 All rights reserved
 
-Version 2.4.9.2
+Version 2.4.9.3
 
 In World of Warcraft healers have to die. This is a cruel truth that you're
 taught very early in the game. This add-on helps you influence this unfortunate
@@ -86,13 +86,20 @@ function HHTD:GetClassHexColor(englishClass) -- {{{
     return HHTD_C.HexClassColor[englishClass];
 end -- }}}
 
+local NON_CLASSIC_CLASSES = {
+    ["DEMONHUNTER"]    = true,
+    ["DEATHKNIGHT"]    = true,
+    ["MONK"]           = true
+
+};
+
 function HHTD:CreateClassColorTables () -- {{{
     if RAID_CLASS_COLORS then
         local class, colors;
         for class in pairs(RAID_CLASS_COLORS) do
             if LC[class] then -- thank to a wonderful add-on that adds the wrong translation "Death Knight" to the global RAID_CLASS_COLORS....
                 HHTD:GetClassHexColor(class);
-            else
+            elseif not (HHTD_C.WOWC and NON_CLASSIC_CLASSES[class]) then
                 RAID_CLASS_COLORS[class] = nil; -- Eat that!
                 self:Print("|cFFFF0000Stupid value found in _G.RAID_CLASS_COLORS table|r\nThis will cause many issues (tainting), HHTD will display this message until the culprit add-on is fixed or removed, the Stupid value is: '", class, "'");
             end

@@ -1,7 +1,7 @@
 --[[
     This file is part of Decursive.
 
-    Decursive (v 2.7.6.3) add-on for World of Warcraft UI
+    Decursive (v 2.7.6.4-beta_1) add-on for World of Warcraft UI
     Copyright (C) 2006-2018 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Starting from 2009-10-31 and until said otherwise by its author, Decursive
@@ -17,7 +17,7 @@
     Decursive is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY.
 
-    This file was last updated on 2019-07-07T17:17:02Z
+    This file was last updated on 2019-09-02T04:11:14Z
 --]]
 -------------------------------------------------------------------------------
 
@@ -89,7 +89,7 @@ local DebugTextTable    = T._DebugTextTable;
 local Reported          = {};
 
 local UNPACKAGED = "@pro" .. "ject-version@";
-local VERSION = "2.7.6.3";
+local VERSION = "2.7.6.4-beta_1";
 
 T._LoadedFiles = {};
 T._LoadedFiles["Dcr_DIAG.lua"] = false; -- here for consistency but useless in this particular file
@@ -292,7 +292,7 @@ do
         _Debug(unpack(TIandBI));
 
 
-        DebugHeader = ("%s\n2.7.6.3  %s(%s)  CT: %0.4f D: %s %s %s BDTHFAd: %s nDrE: %d Embeded: %s W: %d (LA: %d TAMU: %d) TA: %d NDRTA: %d BUIE: %d TI: [dc:%d, lc:%d, y:%d, LEBY:%d, LB:%d, TTE:%u] (%s, %s, %s, %s)"):format(instructionsHeader, -- "%s\n
+        DebugHeader = ("%s\n2.7.6.4-beta_1  %s(%s)  CT: %0.4f D: %s %s %s BDTHFAd: %s nDrE: %d Embeded: %s W: %d (LA: %d TAMU: %d) TA: %d NDRTA: %d BUIE: %d TI: [dc:%d, lc:%d, y:%d, LEBY:%d, LB:%d, TTE:%u] (%s, %s, %s, %s)"):format(instructionsHeader, -- "%s\n
         tostring(DC.MyClass), tostring(UnitLevel("player") or "??"), NiceTime(), date(), GetLocale(), -- %s(%s)  CT: %0.4f D: %s %s
         BugGrabber and "BG" .. (T.BugGrabber and "e" or "") or "NBG", -- %s
         tostring(T._BDT_HotFix1_applyed), -- BDTHFAd: %s
@@ -328,6 +328,7 @@ do
         local ACsuccess, actionsConfiguration = pcall(T._ExportActionsConfiguration);
 
         local CSCsuccess, customSpellConfiguration = pcall(T._ExportCustomSpellConfiguration);
+        local STPsuccess, spellTable = pcall(T._PrintSpellTable);
 
         local SRTOLEsuccess, SRTOLErrors =
             pcall(function() return "Script ran too long errors:\n" .. T.Dcr:tAsString(T.Dcr.db.global.SRTLerrors) end);
@@ -344,6 +345,7 @@ do
         .. table.concat(T._DebugTextTable, "")
         .. "\n\n-- --\n" .. actionsConfiguration .. "\n-- --"
         .. customSpellConfiguration .. "\n-- --"
+        .. spellTable .. "\n-- --"
         .. SRTOLErrors .. "\n-- --"
         .. "\n\nLoaded Addons:\n\n" .. loadedAddonList .. "\n-- --";
 
@@ -572,7 +574,10 @@ local _, _, _, tocversion = GetBuildInfo();
 T._CatchAllErrors = false;
 T._tocversion = tocversion;
 
-DC.WOW8 = (tocversion >= 80000)
+DC.WOWC = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
+DC.WOW8 = (tocversion >= 80000) or DC.WOWC
+
+
 
 function T._DecursiveErrorHandler(err, ...)
 
@@ -800,6 +805,21 @@ do
         end
 
         return table.concat(customSpellConfText, "\n");
+    end
+    function T._PrintSpellTable() -- (use pcall with this) -- {{{
+
+        local errorPrefix = function (message)
+            return "_PrintSpellTable: " .. message;
+        end
+
+        local customSpellConfText = {};
+        local D = T.Dcr;
+
+        if not T._C or not T._C.DSI then
+            return errorPrefix("T._C.DSI not available");
+        end
+
+        return "\nDecursive known spells:\n(left and right side should be 'matching')\n" .. D:tAsString(D:tMap(T._C.DSI, GetSpellInfo));
     end
     function T._ExportActionsConfiguration () -- (use pcall with this) -- {{{
 
@@ -1074,4 +1094,4 @@ do
     end
 end
 
-T._LoadedFiles["Dcr_DIAG.lua"] = "2.7.6.3";
+T._LoadedFiles["Dcr_DIAG.lua"] = "2.7.6.4-beta_1";

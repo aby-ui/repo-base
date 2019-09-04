@@ -1,0 +1,4 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+	<Include file="Poncho-1.0\Poncho-1.0.xml"/>
+	<Include file="Sushi-3.0\Sushi-3.0.xml"/>
+</Ui>

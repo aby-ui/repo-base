@@ -7,6 +7,8 @@ local select, strjoin, CreateFrame = select, strjoin, CreateFrame
 local _, _, _, tocversion = GetBuildInfo()
 if tocversion < 80200 then ChocolateBar.isClassicWoW = true end
 
+local addonVersion = GetAddOnMetadata("ChocolateBar", "Version")
+
 ChocolateBar.Jostle = {}
 ChocolateBar.Bar = {}
 ChocolateBar.ChocolatePiece = {}
@@ -39,13 +41,13 @@ function ChocolateBar:Debug(...)
 	debug(self, ...)
 end
 
-local defaults = {
+local oldDefaults = {
 	profile = {
 		petBattleHideBars = true, combatopacity = 1, scale = 1,
 		height = 21, iconSize = 0.75, moveFrames = true, adjustCenter = true,
 		strata = "BACKGROUND", barRightClick = "163UI",
 		gap = 5, textOffset = 1, moreBar = "none", moreBarDelay = 4,
-		fontPath = " ", fontSize = 12, labelColor = "ffffd200",
+		fontPath = " ", fontSize = 12, labelColor = {r=1, g=0.82, b=0, a=1},
 		background = {
 			textureName = "BantoBar",
 			texture = "Interface\\Addons\\!!!163UI!!!\\Textures\\statusbar\\BantoBar",
@@ -78,13 +80,63 @@ local defaults = {
 	}
 }
 
+local newDefaults = {
+	profile = {
+		petBattleHideBars = true, combatopacity = 1, scale = 1,
+		height = 21, iconSize = 0.75, moveFrames = true, adjustCenter = true,
+		strata = "BACKGROUND", barRightClick = "OPTIONS",
+		gap = 30, textOffset = 1, moreBar = "none", moreBarDelay = 4,
+		fontPath = " ", fontSize = 12, labelColor = {r=1, g=0.82, b=0, a=1},
+		background = {
+			textureName = "ChocolateBar Gray",
+			texture = "Interface\\AddOns\\ChocolateBar\\pics\\chocolatebargray",
+			borderTexture = "Tooltip-Border",
+			color = {r = 0.38, g = 0.36, b = 0.4, a = .94,},
+			borderColor = {r = 0, g = 0, b = 0, a = 0,},
+			tileSize = 130,
+			edgeSize = 8,
+			barInset = 3,
+		},
+		moduleOptions = {
+		},
+		barSettings = {
+			['*'] = {
+				barName = "ChocolateBar1", align = "top", enabled = true, index = 10, width = 0,
+			},
+			['ChocolateBar1'] = {
+				barName = "ChocolateBar1", align = "top", enabled = true, index = 1, width = 0,
+			},
+		},
+		objSettings = {
+			['*'] = {
+				barName = "", align = "left", enabled = true, showText = true,  showLabel = true,
+				showIcon = true, index = 500, width = 0,
+			},
+		},
+	},
+	char = {
+		debug = false,
+	}
+}
+
+
+function ChocolateBar:getDefaults()
+	return self:isNewInstall() and newDefaults or oldDefaults
+end
 --------
 -- Ace3 callbacks
 --------
 function ChocolateBar:OnInitialize()
-	self.db = LibStub("AceDB-3.0"):New("ChocolateBarDB", defaults, "Default")
+	
+	
+	self.db = LibStub("AceDB-3.0"):New("ChocolateBarDB", self:getDefaults(), "Default")
+	self.db.RegisterCallback(self, "OnDatabaseShutdown", "OnDatabaseShutdown")
+	
 	self:RegisterChatCommand("chocolatebar", "ChatCommand")
 	db = self.db.profile
+
+	debug("addonVersion=", addonVersion)
+	debug("isNewInstall()=", self:isNewInstall())
 	
 	local AceCfgDlg = LibStub("AceConfigDialog-3.0")
 	AceCfgDlg:AddToBlizOptions("ChocolateBar", "ChocolateBar")
@@ -104,6 +156,7 @@ function ChocolateBar:OnInitialize()
 	--self:RegisterEvent("PET_BATTLE_OPENING_START","OnPetBattleOpen")
 	--self:RegisterEvent("PET_BATTLE_CLOSE","OnPetBattleOver")
 	self:RegisterEvent("ADDON_LOADED",function(event, addonName)
+	
 	if self[addonName] then self[addonName](self) end
 	end)
 
@@ -151,11 +204,16 @@ function ChocolateBar:OnEnable()
 	end
 end
 
+function ChocolateBar:OnDatabaseShutdown()
+	ChocolateBarDB.addonVersion = addonVersion
+end
+ 
+
 function ChocolateBar:NewModule(name, moduleDefaults, options, optionsKey)
 	local module = self.modules[name] or {}
-	module.default = defaults
+	module.default = self:getDefaults()
 	module.options = options
-	defaults.profile.moduleOptions[name] = moduleDefaults
+	self:getDefaults().profile.moduleOptions[name] = moduleDefaults
 	self.modules[name] = module
 	return module
 end
@@ -178,6 +236,11 @@ function ChocolateBar:UpdateJostle()
 	for name, bar in pairs(chocolateBars) do
 		bar:UpdateJostle(db)
 	end
+end
+
+function ChocolateBar:isNewInstall()
+	--return ChocolateBarDB.addonVersion and true or false
+	return false
 end
 
 function ChocolateBar:ToggleOrderHallCommandBar()

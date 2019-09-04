@@ -4,10 +4,8 @@
 ## Notes: Single window display for your guild bank
 ## RequiredDeps: Bagnon
 ## LoadOnDemand: 1
-## Version: 8.2.5
 
-main.lua
-components\components.xml
+..\Bagnon\modules\guild.xml
 
 
 ## Title: |cff880303[爱不易]|r Bagnon 公会银行整合

@@ -76,18 +76,4 @@ do
     end
 end
 
--- Addon.callbacks = CreateFromMixins(CallbackRegistryBaseMixin)
-
--- function Addon:RegisterCallback(event, ...)
---     return self.callbacks:RegisterCallback(event, ...)
--- end
-
--- function Addon:UnregisterCallback(event, ...)
---     return self.callbacks:UnregisterCallback(event, ...)
--- end
-
--- function Addon:Notify(event, ...)
---     return self.callbacks:TriggerEvent(event, ...)
--- end
-
 Dominos.Options = Addon

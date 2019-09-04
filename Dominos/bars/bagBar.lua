@@ -119,10 +119,13 @@ function BagBarController:RegisterButton(name)
 	if not button then return end
 
 	button:Hide()
-	resize(button, 36)
-	resize(button.IconBorder, 37)
-	resize(button.IconOverlay, 37)
-	resize(_G[button:GetName() .. "NormalTexture"], 64)
+
+	if Addon:IsBuild("Retail") then
+		resize(button, 36)
+		resize(button.IconBorder, 37)
+		resize(button.IconOverlay, 37)
+		resize(_G[button:GetName() .. "NormalTexture"], 64)
+	end
 
 	tinsert(bagButtons, button)
 end

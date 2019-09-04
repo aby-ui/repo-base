@@ -1,7 +1,7 @@
 --[[
     This file is part of Decursive.
 
-    Decursive (v 2.7.6.3) add-on for World of Warcraft UI
+    Decursive (v 2.7.6.4-beta_1) add-on for World of Warcraft UI
     Copyright (C) 2006-2018 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Starting from 2009-10-31 and until said otherwise by its author, Decursive
@@ -17,7 +17,7 @@
     Decursive is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY.
 
-    This file was last updated on 2018-07-20T1:08:26Z
+    This file was last updated on 2019-09-03T00:05:19Z
 --]]
 -------------------------------------------------------------------------------
 
@@ -635,7 +635,6 @@ do -- Combat log event handling {{{1
         ["SPELL_AURA_APPLIED"]      = 1,
         ["SPELL_AURA_APPLIED_DOSE"] = 1,
         ["SPELL_AURA_REMOVED"]      = 0,
-        ["SPELL_AURA_APPLIED_DOSE"] = 1,
         ["SPELL_AURA_REMOVED_DOSE"] = 0,
         ["UNIT_DIED"] = 0, -- Special! Base parameters are not compatible
         --["SPELL_DISPEL"] = 0, -- we don't use it because it just means that someone is dispelling something, the aura is not removed yet
@@ -1110,23 +1109,24 @@ do
 
         local playerLevel = UnitLevel("player");
 
-        -- no talents before level 15, so if we know the level (>0) and it's
-        -- <15, we know there is no talent.
-        if playerLevel > 0 and playerLevel < 15 then
+        -- no talents before level 10
+        if playerLevel > 0 and playerLevel < 10 then
             return true;
         end
 
         -- if we know that there are unspet talents, it means we can check for
         -- them
-        if GetNumUnspentTalents() then
+        if _G.GetNumUnspentTalents and GetNumUnspentTalents() then
             return true;
         end
 
-        -- else, let's check for the first 3 talents, one of them ought to be
-        -- 'available' (6th returned value of GetTalentInfo) if not selected.
-        for talent=1,3 do
-            if (select(6, GetTalentInfo(talent))) then
-                return true;
+        if (DC.WOWC) then
+            -- local name, iconTexture, tier, column, rank, maxRank, isExceptional, available = GetTalentInfo
+            -- On loading the 8th value (available) is nil
+            for talent=1, (GetNumTalentTabs and GetNumTalentTabs() or 3) do
+                if (select(8, GetTalentInfo(talent, 1))) then
+                    return true;
+                end
             end
         end
 
@@ -1175,6 +1175,6 @@ do
     end
 end
 
-T._LoadedFiles["Dcr_Events.lua"] = "2.7.6.3";
+T._LoadedFiles["Dcr_Events.lua"] = "2.7.6.4-beta_1";
 
 -- The Great Below

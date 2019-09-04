@@ -77,10 +77,15 @@ local function getLabelFromObjOrSettings(frame, value)
 	end
 end
 
+local function tableToHex(t)
+	local r,g,b = t.r, t.g, t.b
+	return ("%02x%02x%02x%02x"):format(1*255,r*255, g*255, b*255)
+end
+
 local function LabelUpdater(frame, value)
 	if frame.settings.showLabel then
 		local delimiter = frame.settings.showText and ":" or ""
-		frame.labelText = string.format("|c%s%s%s|r ", db.labelColor, getLabelFromObjOrSettings(frame, value), delimiter)
+		frame.labelText = string.format("|c%s%s%s|r ", tableToHex(db.labelColor), getLabelFromObjOrSettings(frame, value), delimiter)
 	else 
 		frame.labelText = ""
 	end
@@ -369,6 +374,10 @@ local function highlightBackground(frame, r, g, b, a)
 		frame:SetBackdropColor(r, g, b, a)
 end
 
+local function isLauncherAndHasNoText(obj)
+	return obj.type and obj.type == "launcher" and (obj.text == nil or obj.text == "")
+end
+
 function ChocolatePiece:New(name, obj, settings, database)
 	db = database
 
@@ -389,6 +398,10 @@ function ChocolatePiece:New(name, obj, settings, database)
 	chocolate.text = chocolate:CreateFontString(nil, nil, "GameFontHighlight")
 	chocolate.text:SetFont(fontPath, db.fontSize)
 	chocolate.text:SetJustifyH("LEFT")
+
+	if isLauncherAndHasNoText(obj) then
+		obj.text = obj.label and obj.label or name
+	end
 
 	if icon then
 		CreateIcon(chocolate, icon)

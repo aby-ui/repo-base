@@ -1,18 +1,13 @@
 ## Interface: 80200
 ## Title: Combuctor
 ## Author: Tuller & Jaliborc (João Cardoso)
-## Notes: Pants are a dangerous foe
-## SavedVariables: Combuctor_Sets
-
+## Notes: Single window displays for your inventory and bank
 ## OptionalDeps: BagBrother, WoWUnit
-## Version: 8.2.4
+## SavedVariables: Combuctor_Sets
+## Version: 8.2.6
 
-main.lua
+modules\main.xml
 
-common\Wildpants.xml
-components\components.xml
-
-legacy.lua
 
 ## Title: |cff880303[爱不易]|r Combuctor 背包整合
 ## Notes-zhCN: 可以按照类型过滤的背包&银行整合插件，标签风格。可按任务物品，装备，消耗品、物品品质等分类查看，让你查询物品更直观方便。

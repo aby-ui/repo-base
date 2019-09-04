@@ -1,0 +1,4 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+	<Script file="guild.lua"/>
+  <Include file="..\components\guild\components.xml"/>
+</Ui>

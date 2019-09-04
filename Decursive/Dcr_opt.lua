@@ -1,7 +1,7 @@
 --[[
     This file is part of Decursive.
 
-    Decursive (v 2.7.6.3) add-on for World of Warcraft UI
+    Decursive (v 2.7.6.4-beta_1) add-on for World of Warcraft UI
     Copyright (C) 2006-2018 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Starting from 2009-10-31 and until said otherwise by its author, Decursive
@@ -17,7 +17,7 @@
     Decursive is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY.
 
-    This file was last updated on 2018-07-18T0:42:34Z
+    This file was last updated on 2019-09-02T04:11:14Z
 --]]
 -------------------------------------------------------------------------------
 
@@ -321,10 +321,10 @@ function D:GetDefaultsSettings()
             BuffDebuff = {
                 [DS["DREAMLESSSLEEP"]]          = true,
                 [DS["GDREAMLESSSLEEP"]]         = true,
-                [DS["MDREAMLESSSLEEP"]]         = true,
+                [(not DC.WOWC) and DS["MDREAMLESSSLEEP"] or "NONE"]         = (not DC.WOWC) and true or nil,
                 [DS["DCR_LOC_MINDVISION"]]      = true,
                 [DS["MUTATINGINJECTION"]]       = true,
-                [DS["Arcane Blast"]]            = true,
+                [(not DC.WOWC) and DS["Arcane Blast"] or "NONE"]            = (not DC.WOWC) and true or nil,
             },
 
             DebuffAlwaysSkipList = {
@@ -1723,7 +1723,7 @@ local function GetStaticOptions ()
                                     "\n\n|cFFDDDD00 %s|r:\n   %s"..
                                     "\n\n|cFFDDDD00 %s|r:\n   %s\n\n   %s"
                                 ):format(
-                                    "2.7.6.3", "John Wellesz", ("2019-07-07T17:43:02Z"):sub(1,10),
+                                    "2.7.6.4-beta_1", "John Wellesz", ("2019-09-03T17:57:07Z"):sub(1,10),
                                     L["ABOUT_NOTES"],
                                     L["ABOUT_LICENSE"],         GetAddOnMetadata("Decursive", "X-License") or 'All Rights Reserved',
                                     L["ABOUT_SHAREDLIBS"],      GetAddOnMetadata("Decursive", "X-Embeds")  or 'GetAddOnMetadata() failure',
@@ -2962,6 +2962,7 @@ end
 
 -- to test on 2.3 : /script D:PrintLiteral(GetBindingAction(D.db.global.MacroBind));
 -- to test on 2.3 : /script D:PrintLiteral(GetBindingKey(D.CONF.MACROCOMMAND));
+local SaveBindings = _G.SaveBindings or _G.AttemptToSaveBindings; -- was renamed for WOW Classic, it might happen too on retail...
 
 function D:SetMacroKey ( key )
 
@@ -3090,6 +3091,6 @@ function D:QuickAccess (CallingObject, button) -- {{{
 end -- }}}
 
 
-T._LoadedFiles["Dcr_opt.lua"] = "2.7.6.3";
+T._LoadedFiles["Dcr_opt.lua"] = "2.7.6.4-beta_1";
 
 -- Closer

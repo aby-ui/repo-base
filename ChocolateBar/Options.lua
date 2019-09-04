@@ -505,6 +505,23 @@ local aceoptions = {
 											ChocolateBar:UpdateChoclates("updateSettings")
 										end,
 									},
+									labelColor = {
+										type = "color",
+										order = 3,
+										name = L["Label color"],
+										desc = L["Default label color of a plugin."],
+										hasAlpha = true,
+										get = function(info)
+											local t = db.labelColor or {r=1, g=0.82, b=0, a=1}
+											return t.r, t.g, t.b, t.a
+										end,
+										set = function(info, r, g, b, a)
+											db.labelColor = db.labelColor or {r=1, g=0.82, b=0, a=1}
+											local t = db.labelColor
+											t.r, t.g, t.b, t.a = r, g, b, a
+											ChocolateBar:UpdateChoclates("updateSettings")
+										end,
+									},
 									iconcolour = {
 										type = "toggle",
 										order = 4,

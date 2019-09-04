@@ -3,7 +3,7 @@ H.H.T.D. World of Warcraft Add-on
 Copyright (c) 2009-2018 by John Wellesz (hhtd@2072productions.com)
 All rights reserved
 
-Version 2.4.9.2
+Version 2.4.9.3
 
 In World of Warcraft healers have to die. This is a cruel truth that you're
 taught very early in the game. This add-on helps you influence this unfortunate
@@ -37,7 +37,7 @@ local INFO      = 3;
 local INFO2     = 4;
 
 local UNPACKAGED = "@pro" .. "ject-version@";
-local VERSION = "2.4.9.2";
+local VERSION = "2.4.9.3";
 
 local ADDON_NAME, T = ...;
 
@@ -108,7 +108,8 @@ local L = HHTD.Localized_Text;
 
 HHTD.Constants = {};
 local HHTD_C = HHTD.Constants;
-HHTD_C.WOW8 = (tocversion >= 80000);
+HHTD_C.WOWC = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
+HHTD_C.WOW8 = (tocversion >= 80000) or HHTD_C.WOWC
 
 --[=[
 HHTD_C.Healing_Classes = { -- unused
@@ -128,28 +129,33 @@ do
     -- /spew _HHTD_DEBUG.Constants.CLASS_SPEC_TO_ROLE
     HHTD_C.CLASS_SPEC_TO_ROLE = {}
 
-    local classID, classTag, userSpecNum, specID, specName, role
+    local classInfo, classTag, userSpecNum, specID, specName, role
+    local foundClass = 0;
+    local classID = 0;
+    while foundClass < MAX_CLASSES do -- in WOWC class ids are not continuous
+        classID = classID + 1;
+        classInfo = C_CreatureInfo.GetClassInfo(classID)
 
-    for classID = 1, MAX_CLASSES do
-        if not HHTD_C.WOW8 then
-            classTag = select(2, GetClassInfoByID(classID))
-        else
-            classTag = C_CreatureInfo.GetClassInfo(classID).classFile
-        end
+        if classInfo then
+            classTag = classInfo.classFile
+            foundClass = foundClass + 1;
 
-        HHTD_C.CLASS_SPEC_TO_ROLE[classTag] = {}
+            HHTD_C.CLASS_SPEC_TO_ROLE[classTag] = {}
 
-        userSpecNum = 1
+            if not HHTD_C.WOWC then -- disable for now since WOWC has no easy way to do that... We are back to hardcoded localized values *sigh*
+                userSpecNum = 1
 
-        repeat
-            specID, specName = GetSpecializationInfoForClassID(classID, userSpecNum)
-            role = specID and GetSpecializationRoleByID(specID) or nil
+                repeat
+                    specID, specName = GetSpecializationInfoForClassID(classID, userSpecNum)
+                    role = specID and GetSpecializationRoleByID(specID) or nil
 
-            if role then
-                HHTD_C.CLASS_SPEC_TO_ROLE[classTag][specName] = role
-                userSpecNum = userSpecNum + 1
+                    if role then
+                        HHTD_C.CLASS_SPEC_TO_ROLE[classTag][specName] = role
+                        userSpecNum = userSpecNum + 1
+                    end
+                until not role
             end
-        until not role
+        end
         
     end
 
@@ -258,7 +264,7 @@ function HHTD:HHTD_HEALER_BORN(selfevent, isFriend, healer)
     --@end-alpha@]===]
 
     -- if the player is human and friendly and is part of our group, set his/her role to HEALER
-    if self.db.global.SetFriendlyHealersRole then
+    if self.db.global.SetFriendlyHealersRole and not HHTD_C.WOWC then
 
         if isFriend and healer.isHuman and (UnitInRaid(healer.fullName) or UnitInParty(healer.fullName)) and UnitGroupRolesAssigned(healer.fullName) == 'NONE' then
             if (select(2, GetRaidRosterInfo(UnitInRaid("player") or 1))) > 0 then
@@ -349,23 +355,44 @@ local function REGISTER_HEALERS_ONLY_SPELLS_ONCE ()
         --@end-debug@]===]
     };
 
+    if HHTD_C.WOWC then
+
+        Healers_Only_Spells_ByID = {
+            -- Druid Restoration
+            [18562] = "DRUID",   -- SwiftMend
+
+            -- Priest Holy
+            [00724] = "PRIEST", -- Lightwell
+
+            -- Shaman Restoration
+            [16178] = "SHAMAN", -- Purification
+            [29206] = "SHAMAN", -- Healing way
+        }
+
+        -- OK, this feature makes no sense in WoW classic...
+        
+
+    end
+
     HHTD_C.Healers_Only_Spells_ByName = {};
 
 
     -- /spew _HHTD_DEBUG.Constants.Healers_Only_Spells_ByName
     -- /spew GetSpellInfo(077485)
 
+    local debug_SpellNumber = 0;
     for spellID, class in pairs(Healers_Only_Spells_ByID) do
 
         if (GetSpellInfo(spellID)) then
             HHTD_C.Healers_Only_Spells_ByName[(GetSpellInfo(spellID))] = class;
+            debug_SpellNumber = debug_SpellNumber + 1;
         else
             HHTD:Debug(ERROR, "Missing spell:", spellID);
         end
 
     end
 
-    HHTD:Debug(INFO, "Spells registered!");
+    HHTD:Debug(INFO, ("%d spells registered!"):format(debug_SpellNumber));
 end -- }}}
 
 -- Modules standards configurations {{{
@@ -527,7 +554,7 @@ do
                 name = L["OPT_VERSION"],
                 desc = L["OPT_VERSION_DESC"],
                 guiHidden = true,
-                func = function () HHTD:Print(L["VERSION"], '2.4.9.2,', L["RELEASE_DATE"], '2019-07-07T17:47:50Z') end,
+                func = function () HHTD:Print(L["VERSION"], '2.4.9.3,', L["RELEASE_DATE"], '2019-09-03T17:51:25Z') end,
                 order = -5,
             },
             ShowGUI = {
@@ -545,7 +572,7 @@ do
                 args = {
                     Info_Header = {
                         type = 'header',
-                        name = L["VERSION"] .. ' 2.4.9.2 -- ' .. L["RELEASE_DATE"] .. ' 2019-07-07T17:47:50Z',
+                        name = L["VERSION"] .. ' 2.4.9.3 -- ' .. L["RELEASE_DATE"] .. ' 2019-09-03T17:51:25Z',
                         order = 1,
                     },
                     Pve = {
@@ -559,6 +586,7 @@ do
                         width = 'double',
                         name = L["OPT_PVPHEALERSSPECSONLY"],
                         desc = L["OPT_PVPHEALERSSPECSONLY_DESC"],
+                        disabled = function() return HHTD_C.WOWC end,
                         order = 300,
                     },
                     Log = {
@@ -674,6 +702,7 @@ do
                         width = 'double',
                         name = L["OPT_SET_FRIENDLY_HEALERS_ROLE"],
                         desc = L["OPT_SET_FRIENDLY_HEALERS_ROLE_DESC"],
+                        disabled = function () return HHTD_C.WOWC end,
                         order = 660,
                     },
                     HealerUnderAttackAlerts = {
@@ -810,7 +839,7 @@ local DEFAULT__CONFIGURATION = {
         UHMHAP = true,
         HMHAP = 0.5,
         PHMDAP = 0.20,
-        SetFriendlyHealersRole = true,
+        SetFriendlyHealersRole = (not HHTD_C.WOWC) and true or false,
         HealerUnderAttackAlerts = true,
         ShowChatCommandReminder = true,
     },
@@ -967,6 +996,11 @@ do
             -- that we found no reason to auto-disable make sure not to find
             -- one in the future
             self.db.global.settingsMigrated = false;
+        end
+
+        if HHTD_C.WOWC then
+            self.db.global.PvpHSpecsOnly = false;
+            self.db.global.SetFriendlyHealersRole = false;
         end
     end
 
@@ -1128,6 +1162,16 @@ do
 
     local WIPRBSD = {false, nil, 0};
 
+    local WOWC_CANT_HEAL_CLASSES = {
+        ["MAGE"] = true,
+        ["WARRIOR"] = true,
+        ["HUNTER"] = true,
+        ["ROGUE"] = true,
+        ["WARLOCK"] = true,
+        ["DEATHKNIGHT"] = true, -- not wowc but still presents in RAID_CLASS_COLORS...
+        ["DEMONHUNTER"] = true, -- not wowc but still presents in RAID_CLASS_COLORS...
+    };
+
     function HHTD:UPDATE_BATTLEFIELD_SCORE()
         --[===[@alpha@
         self:Debug(INFO, "UPDATE_BATTLEFIELD_SCORE")
@@ -1271,8 +1315,23 @@ do
             return nil
         end
 
-        local spec = select(16, GetBattlefieldScore(playerIndex))
         local classTag = select(9, GetBattlefieldScore(playerIndex)) -- 2016-05-22 seen as nil in one bug report...
+
+
+        if HHTD_C.WOWC then
+
+            if WOWC_CANT_HEAL_CLASSES[classTag] then
+                HHTD:Debug(ERROR, "(HHTD-classic update required) Bad spell class for:", spellName, '(removed) detected:', HHTD_C.Healers_Only_Spells_ByName[spellName], 'real:', classTag)
+
+                HHTD_C.Healers_Only_Spells_ByName[spellName] = nil
+                return false;
+            else
+                return true;
+            end
+
+        end
+
+        local spec = select(16, GetBattlefieldScore(playerIndex))
 
         -- since GetBattlefieldScore() returns so many values, we can be sure it won't
         -- stay stable so make sure it won't break HHTD
@@ -1303,7 +1362,7 @@ do
             end
         else
             -- got a few error reports getting here where the classTag was nil on a Paladin... not sure what to do yet, seems rare.
-            HHTD:Debug(ERROR, "(HHTD update required) GetBattlefieldScore() API changed", GetBattlefieldScore(playerIndex))
+            HHTD:Debug(ERROR, "(HHTD update required) GetBattlefieldScore() API changed", spec, classTag, GetBattlefieldScore(playerIndex))
             
             return nil
         end

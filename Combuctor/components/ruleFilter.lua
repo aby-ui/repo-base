@@ -8,7 +8,7 @@ local RuleFilter = Addon:NewClass('RuleFilter', 'Frame')
 
 function RuleFilter:New(parent)
 	local f = self:Bind(CreateFrame('Frame', nil, parent))
-	f.buttons = {[-1] = f}
+	f.buttons = {[0] = f}
 	f:SetSize(10, 30)
 	f:RegisterFrameSignal('RULES_UPDATED', 'Update')
 	f:RegisterSignal('UPDATE_ALL', 'Update')
@@ -19,7 +19,7 @@ function RuleFilter:New(parent)
 end
 
 function RuleFilter:Update()
-	local n = 0
+	local n = 1
 
 	for i, id in ipairs(self:GetFrame().profile.rules) do
 		local rule = Addon.Rules:Get(id)
@@ -33,8 +33,8 @@ function RuleFilter:Update()
 		end
 	end
 
-	if n == 1 then -- if one filter, hide all
-		n = 0
+	if n == 2 then -- if one filter, hide all
+		n = 1
 	end
 
 	for k = n, #self.buttons do
@@ -74,5 +74,5 @@ end
 
 function BottomFilter:IsShowning(rule)
 	local parent = self:GetFrame().rule
-	return rule.id == parent or rule.id:match('^' .. parent .. '/.+')
+	return parent and (rule.id == parent or rule.id:match('^' .. parent .. '/.+'))
 end

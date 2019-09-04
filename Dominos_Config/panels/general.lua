@@ -117,6 +117,14 @@ do
 	})
 	showTooltipsInCombatToggle:SetPoint('TOP', showTooltipsToggle, 'BOTTOM', 8, -2)
 
+	-- theme action bttons
+	local themeButtons = GeneralPanel:Add('CheckButton', {
+		name = L.ThemeActionButtons,
+		get = function() return ParentAddon:ThemeButtons() end,
+		set = function(_, enable) ParentAddon:SetThemeButtons(enable) end
+	})
+	themeButtons:SetPoint('TOP', showTooltipsInCombatToggle, 'BOTTOM', -8, -10)
+
 	--show override ui
 	if ParentAddon:IsBuild("retail") then
 		local useBlizzardOverrideUIToggle = GeneralPanel:Add('CheckButton', {
@@ -124,7 +132,7 @@ do
 			get = function() return ParentAddon:UsingOverrideUI() end,
 			set = function(_, enable) ParentAddon:SetUseOverrideUI(enable) end
 		})
-		useBlizzardOverrideUIToggle:SetPoint('TOP', showTooltipsInCombatToggle, 'BOTTOM', -8, -10)
+		useBlizzardOverrideUIToggle:SetPoint('TOP', themeButtons, 'BOTTOM', 0, -10)
 	end
 
 	--right click unit

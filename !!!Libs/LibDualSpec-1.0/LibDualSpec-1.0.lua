@@ -31,6 +31,9 @@ NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --]]
 
+-- just bail out on classic, there is no DualSpec there
+if WOW_PROJECT_ID == WOW_PROJECT_CLASSIC then return end
+
 local MAJOR, MINOR = "LibDualSpec-1.0", 17
 assert(LibStub, MAJOR.." requires LibStub")
 local lib, minor = LibStub:NewLibrary(MAJOR, MINOR)
@@ -433,5 +436,4 @@ if IsLoggedIn() then
 else
 	lib.eventFrame:RegisterEvent("PLAYER_LOGIN")
 end
-
 

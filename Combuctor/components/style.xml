@@ -1,4 +1,43 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/">
+	<Button name="CombuctorOwnerSelectorTemplate" virtual="true">
+		<Size x="54" y="54"/>
+
+		<Layers>
+			<Layer level="ARTWORK">
+				<Texture parentKey="Icon">
+					<Size x="56" y="56"/>
+					<Anchors>
+						<Anchor point="CENTER"/>
+					</Anchors>
+				</Texture>
+				<MaskTexture parentKey="Mask" file="Interface\CharacterFrame\TempPortraitAlphaMask" hWrapMode="CLAMPTOBLACKADDITIVE" vWrapMode="CLAMPTOBLACKADDITIVE"> setAllPoints="true">
+					<MaskedTextures>
+						<MaskedTexture childKey="Icon"/>
+					</MaskedTextures>
+				</MaskTexture>
+			</Layer>
+		</Layers>
+
+		<Scripts>
+			<OnLoad>
+				self.Mask:SetAlpha(1)
+			</OnLoad>
+			<OnMouseDown>
+				self.Icon:SetScale(0.95)
+			</OnMouseDown>
+			<OnMouseUp>
+				self.Icon:SetScale(1)
+			</OnMouseUp>
+		</Scripts>
+
+		<HighlightTexture alphaMode="ADD" file="Interface\Minimap\UI-Minimap-ZoomButton-Highlight">
+			<Size x="72" y="74"/>
+			<Anchors>
+				<Anchor point="CENTER" x="0" y="-3"/>
+			</Anchors>
+		</HighlightTexture>
+	</Button>
+
 	<Button name="CombuctorSortButtonTemplate" virtual="true">
 		<Size x="22" y="22"/>
 		<NormalTexture atlas="bags-button-autosort-up"/>

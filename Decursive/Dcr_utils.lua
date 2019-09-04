@@ -1,7 +1,7 @@
 --[[
     This file is part of Decursive.
 
-    Decursive (v 2.7.6.3) add-on for World of Warcraft UI
+    Decursive (v 2.7.6.4-beta_1) add-on for World of Warcraft UI
     Copyright (C) 2006-2018 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Starting from 2009-10-31 and until said otherwise by its author, Decursive
@@ -17,7 +17,7 @@
     Decursive is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY.
 
-    This file was last updated on 2018-08-09T22:29:16Z
+    This file was last updated on 2019-09-02T04:11:14Z
 --]]
 -------------------------------------------------------------------------------
 
@@ -239,6 +239,14 @@ function D:tremovebyval(tab, val) -- {{{
     return false;
 end -- }}}
 
+function D:tMap(t, f)
+    local mapped_t = {};
+    for k,v in pairs(t) do
+        mapped_t[k] = f(v);
+    end
+    return mapped_t;
+end
+
 function D:tAsString(t, indent) -- debugging function
 
     if type(t) ~= 'table' then
@@ -249,9 +257,9 @@ function D:tAsString(t, indent) -- debugging function
         indent = "  ";
     end
 
-    local s = "\n" .. indent .. "{"
+    local s = "\n" .. indent .. "{" .. "\n"
     for k,v in pairs(t) do
-        s = s .. "\n" .. indent .. indent .. ("[%s] = [%s],\n"):format(tostring(k), self:tAsString(v, indent .. "  "))
+        s = s .. indent .. indent .. ("[%s] = [%s],\n"):format(tostring(k), self:tAsString(v, indent .. "  "))
     end
     return s .. indent .. "}"
 end
@@ -475,6 +483,13 @@ do
 
     local RAID_CLASS_COLORS = CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS;
 
+    local NON_CLASSIC_CLASSES = {
+        ["DEMONHUNTER"]    = true,
+        ["DEATHKNIGHT"]    = true,
+        ["MONK"]           = true
+    
+    };
+
     function D:GetClassColor (EnglishClass, noCache)
         if not DC.ClassesColors[EnglishClass] or noCache then
             if RAID_CLASS_COLORS and RAID_CLASS_COLORS[EnglishClass] then
@@ -507,7 +522,7 @@ do
                 if LC[class] then -- Some badly coded add-ons are modifying RAID_CLASS_COLORS causing multiple problems...
                     D:GetClassColor(class, true);
                     D:GetClassHexColor(class, true);
-                else
+                elseif not (DC.WOWC and NON_CLASSIC_CLASSES[class]) then
                     D:AddDebugText("Strange class found in RAID_CLASS_COLORS:", class, 'maxClass:', CLASS_SORT_ORDER and #CLASS_SORT_ORDER or 'CLASS_SORT_ORDER unavailable...');
                     print("Decursive: |cFFFF0000Unexpected value found in _G.RAID_CLASS_COLORS table|r\nThis may cause many issues, Decursive will display this message until the culprit add-on is fixed or removed, the unexpected value is: '", class, "'");
                 end
@@ -900,4 +915,4 @@ do
 end
 
 
-T._LoadedFiles["Dcr_utils.lua"] = "2.7.6.3";
+T._LoadedFiles["Dcr_utils.lua"] = "2.7.6.4-beta_1";

@@ -766,6 +766,7 @@ U1STAFF={["邦桑廸-奥杜尔"]="爱不易开发者",["心耀-冰风岗"]="爱�
     ["水之记忆-冰风岗"]="爱不易虚空大师姐",
     ["北极星姐姐-罗宁"]="来自星星的你",
     ["香菇跑跑-罗宁"]="啊呜~~~",
+    ["Funnel-冰风岗"]="爱不易幽灵虎饲养员",
 }
 RunOnNextFrame(function()
     CoreRegisterEvent("INIT_COMPLETED", { INIT_COMPLETED = function()
