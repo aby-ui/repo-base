@@ -11,7 +11,7 @@ local Range = {
 		["PALADIN"] = GetSpellInfo(19750), -- Flash of Light
 		["SHAMAN"] = GetSpellInfo(8004), -- Healing Surge
 		["WARLOCK"] = GetSpellInfo(5697), -- Unending Breath
-		["DEATHKNIGHT"] = GetSpellInfo(47541), -- Death Coil
+		--["DEATHKNIGHT"] = GetSpellInfo(47541), -- Death Coil
 		["MONK"] = GetSpellInfo(115450), -- Detox
 	},
 	hostile = {

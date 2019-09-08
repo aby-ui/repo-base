@@ -4,16 +4,17 @@
 --]]
 
 local ADDON, Addon = ...
-local Cache = LibStub('LibItemCache-2.0')
-local ItemSlot = Addon:NewClass('ItemSlot', Addon.IsRetail and 'ItemButton' or 'Button')
+local FRAME_TYPE = Addon.IsRetail and 'ItemButton' or 'Button'
+local QUEST = GetItemClassInfo(LE_ITEM_CLASS_QUESTITEM)
+local QUEST_LOWER = QUEST:lower()
+
+local ItemSlot = Addon:NewClass('ItemSlot', FRAME_TYPE)
 ItemSlot.unused = {}
 ItemSlot.nextID = 0
 
 local ItemSearch = LibStub('LibItemSearch-1.2')
+local Cache = LibStub('LibItemCache-2.0')
 local Unfit = LibStub('Unfit-1.0')
-
-local QUEST = GetItemClassInfo(LE_ITEM_CLASS_QUESTITEM)
-local QUEST_LOWER = QUEST:lower()
 
 
 --[[ Constructor ]]--
@@ -84,7 +85,7 @@ function ItemSlot:GetNextID()
 end
 
 function ItemSlot:Construct(id)
-    return CreateFrame('ItemButton', ADDON..self.Name..id, nil, 'ContainerFrameItemButtonTemplate')
+    return CreateFrame(FRAME_TYPE, ADDON..self.Name..id, nil, 'ContainerFrameItemButtonTemplate')
 end
 
 function ItemSlot:GetBlizzard(id)

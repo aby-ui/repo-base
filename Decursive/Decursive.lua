@@ -1,7 +1,7 @@
 --[[
     This file is part of Decursive.
 
-    Decursive (v 2.7.6.4-beta_1) add-on for World of Warcraft UI
+    Decursive (v 2.7.6.4-beta_2) add-on for World of Warcraft UI
     Copyright (C) 2006-2018 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Starting from 2009-10-31 and until said otherwise by its author, Decursive
@@ -17,7 +17,7 @@
     Decursive is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY.
 
-    This file was last updated on 2019-07-07T17:17:02Z
+    This file was last updated on 2019-09-04T16:29:01Z
 --]]
 -------------------------------------------------------------------------------
 
@@ -159,7 +159,7 @@ function D:ShowHidePriorityListUI() --{{{
 end --}}}
 
 function D:ShowHideSkipListUI() --{{{
-    
+
     if not D.DcrFullyInitialized then
         return;
     end
@@ -302,7 +302,7 @@ function D:SaveLLPos () -- {{{
         self.profile.MainBarX = DecursiveMainBar:GetEffectiveScale() * DecursiveMainBar:GetLeft();
         self.profile.MainBarY = DecursiveMainBar:GetEffectiveScale() * DecursiveMainBar:GetTop() - UIParent:GetHeight() * UIParent:GetEffectiveScale();
 
-        
+
         if self.profile.MainBarX < 0 then
             self.profile.MainBarX = 0;
         end
@@ -316,7 +316,7 @@ end -- }}}
 
 -- set the scaling of the LIVELIST container according to the user settings
 function D:SetLLScale (NewScale) -- {{{
-    
+
     -- save the current position without any scaling
     D:SaveLLPos ();
     -- Set the new scale
@@ -324,7 +324,7 @@ function D:SetLLScale (NewScale) -- {{{
     DcrLiveList:SetScale(NewScale);
     -- Place the frame adapting its position to the news cale
     D:PlaceLL ();
-    
+
 end -- }}}
 -- }}}
 
@@ -435,7 +435,7 @@ do
 
     local DcrC = T._C; -- for faster access
 
-    
+
 
 
     -- This is the core debuff scanning function of Decursive
@@ -483,7 +483,7 @@ do
                 end
             end
 
-        
+
             -- test for a type (Magic Curse Disease or Poison)
             if TypeName and TypeName ~= "" then
                 Type = DC.NameToTypes[TypeName];
@@ -627,11 +627,11 @@ do
             continue_ = true;
 
             -- test if we have to ignore this debuf  {{{ --
-           
+
             if UnitFilteringTest(Unit, self.Status.UnitFilteringTypes[Debuff.Type]) then
                 continue_ = false; -- == skip this debuff
             end
-           
+
             if self.profile.DebuffsToIgnore[Debuff.Name] then -- XXX not sure it has any actual use nowadays (2013-06-18)
                 -- these are the BAD ones... the ones that make the target immune... abort this unit
                 --D:Debug("UnitCurableDebuffs(): %s is ignored", Debuff.Name);
@@ -658,7 +658,7 @@ do
                         if not self.profile.DebuffAlwaysSkipList[Debuff.Name] then
                             self:AddDelayedFunctionCall("ReScan"..Unit, D.MicroUnitF.UpdateMUFUnit, D.MicroUnitF, Unit);
                         end
-                        
+
                         D:Debug("UnitCurableDebuffs(): %s is configured to be skipped", Debuff.Name);
                         continue_ = false;
                     end
@@ -667,7 +667,7 @@ do
 
             -- }}}
 
-            
+
             if continue_ then
                 --      self:Debug("Debuffs matters");
                 -- If we are still here it means that this Debuff is something not to be ignored...
@@ -838,7 +838,7 @@ do
         if type(BuffNamesToCheck) == "string" then
 
             return (UnitBuff(unit, BuffNamesToCheck)) and true or false;
-         
+
         else
             for buff in pairs(BuffNamesToCheck) do
 
@@ -867,6 +867,6 @@ end
 
 
 
-T._LoadedFiles["Decursive.lua"] = "2.7.6.4-beta_1";
+T._LoadedFiles["Decursive.lua"] = "2.7.6.4-beta_2";
 
 -- Sin

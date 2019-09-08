@@ -747,14 +747,16 @@ protection area
 
 U1STAFF={["邦桑廸-奥杜尔"]="爱不易开发者",["心耀-冰风岗"]="爱不易开发者",
     ["Majere-冰风岗"]="爱不易开发者的会长",
+    ["利爪-冰风岗"]="爱不易小狼狗",
+    ["尬疗者-冰风岗"]="熊猫人爱好者",
     ["小倍倍猪-冰风岗"]="爱不易老板娘",
     ["乄阿蛮乄-冰风岗"]="Banshee元素领主",
     ["咬住欧气冲天-冰风岗"]="爱不易御用菜猎人",
     ["咬住不撒嘴-冰风岗"]="爱不易御用瞎子",
     ["糖门欧洲人-冰风岗"]="爱不易龙虾供应商",
     ["Yakee-冰风岗"]="爱不易God-Y",
-    ["浮云丶天际-冰风岗"]="爱不易大学断电僧",
-    ["北风丶烈-凤凰之神"]="爱不易大股东",
+    ["浮云丶天际-冰风岗"]="爱不易大学僧",
+    ["北风丶烈-冰风岗"]="爱不易大股东",
     ["无尘大师-冰风岗"]="Banshee熊猫人领导",
     ["绯流琥-冰风岗"]="爱不易大股东",
     ["欧灬若拉-冰风岗"]="Banshee部落老兵典范",
@@ -912,13 +914,13 @@ do
             return func(self, ...)
         end
     end
-    local function replaceUpdateTooltipWithWrapper(self)
+    local function replaceUpdateTooltipWithWrapper(self, interval)
         if self.UpdateTooltip == self._abyNewUT then return end
         self._abyOldUT = self.UpdateTooltip
-        self.UpdateTooltip = AbyUpdateTooltipWrapperFunc(self.UpdateTooltip, 1, self)
+        self.UpdateTooltip = AbyUpdateTooltipWrapperFunc(self.UpdateTooltip, interval or 1, self)
         self._abyNewUT = self.UpdateTooltip
     end
-    hooksecurefunc("PaperDollItemSlotButton_OnEnter", replaceUpdateTooltipWithWrapper)
+    hooksecurefunc("PaperDollItemSlotButton_OnEnter", function(self) replaceUpdateTooltipWithWrapper(self) end)
     CoreDependCall("Blizzard_EncounterJournal", function()
         hooksecurefunc("EncounterJournal_SetLootButton", function(self)
             self.UpdateTooltip = AbyUpdateTooltipWrapperFunc(self:GetScript("OnEnter"), 2)
@@ -926,7 +928,7 @@ do
     end)
     hooksecurefunc("EquipmentFlyout_Show", function()
         for _, v in pairs(EquipmentFlyoutFrame.buttons) do
-            replaceUpdateTooltipWithWrapper(v)
+            replaceUpdateTooltipWithWrapper(v, 0.25)
         end
     end)
     --bagnon and combuctor see components/item.lua

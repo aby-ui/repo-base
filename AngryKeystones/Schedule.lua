@@ -5,23 +5,29 @@ local rowCount = 3
 
 local requestPartyKeystones
 
--- 1: Overflowing, 2: Skittish, 3: Volcanic, 4: Necrotic, 5: Teeming, 6: Raging, 7: Bolstering, 8: Sanguine, 9: Tyrannical, 10: Fortified, 11: Bursting, 12: Grievous, 13: Explosive, 14: Quaking
 -- 1溢出 2无常 3火山 4死疽 5繁盛 6暴怒 7激励 8血池 9残暴 10坚韧 11崩裂 12重伤 13易爆 14震荡 15冷酷
-local affixSchedule = {
-	{ 10, 7, 2 },
-	{ 9, 6, 4 },
-	{ 10, 5, 14 },
-	{ 9, 11, 2 },
-	{ 10, 8, 4 },
-	{ 9, 7, 12 },
-	{ 10, 5, 13 },
-	{ 9, 6, 3 },
-	{ 10, 11, 3 },
-	{ 9, 7, 13 },
-	{ 10, 8, 12 },
-	{ 9, 5, 3 },
+-- 1: Overflowing, 2: Skittish, 3: Volcanic, 4: Necrotic, 5: Teeming, 6: Raging, 7: Bolstering, 8: Sanguine, 9: Tyrannical, 10: Fortified, 11: Bursting, 12: Grievous, 13: Explosive, 14: Quaking
+local affixScheduleText = {
+	{"Fortified", "Bolstering", "Grievous"},
+	{"Tyrannical", "Raging", "Explosive"},
+	{"Fortified", "Sanguine", "Grievous"},
+	{"Tyrannical", "Teeming", "Volcanic"},
+	{"Fortified", "Bolstering", "Skittish"},
+	{"Tyrannical", "Bursting", "Necrotic"},
+	{"Fortified", "Sanguine", "Quaking"},
+	{"Tyrannical", "Bolstering", "Explosive"},
+	{"Fortified", "Bursting", "Volcanic"},
+	{"Tyrannical", "Raging", "Necrotic"},
+    {"Fortified", "Teeming", "Quaking"},
+    {"Tyrannical", "Bursting", "Skittish"},
 }
-local affixScheduleUnknown = true
+local affixScheduleKeys = {["Overflowing"]=1, ["Skittish"]=2, ["Volcanic"]=3, ["Necrotic"]=4, ["Teeming"]=5, ["Raging"]=6, ["Bolstering"]=7, ["Sanguine"]=8, ["Tyrannical"]=9, ["Fortified"]=10, ["Bursting"]=11, ["Grievous"]=12, ["Explosive"]=13, ["Quaking"]=14 }
+local affixSchedule = {}
+for i,v in ipairs(affixScheduleText) do
+	affixSchedule[i] = { affixScheduleKeys[v[1]], affixScheduleKeys[v[2]], affixScheduleKeys[v[3]] }
+end
+
+local affixScheduleUnknown = false
 local currentWeek
 local currentKeystoneMapID
 local currentKeystoneLevel

@@ -69,32 +69,39 @@ end
 
 -- class
 do
-	local class = select(2, UnitClass("player"))
+    local class = select(2, UnitClass("player"))
+
+    local function newFormConditionLookup(spellID)
+        return function()
+            for i = 1, GetNumShapeshiftForms() do
+                local _, _, _, formSpellID = GetShapeshiftFormInfo(i)
+
+                if spellID == formSpellID then
+                    return ("[form:%d]"):format(i)
+                end
+            end
+        end
+    end
 
 	if class == "DRUID" then
 		if Addon:IsBuild("classic") then
 			addState(
 				"class",
-				"moonkin",
-				function()
-					return ("[form:%d]"):format(GetNumShapeshiftForms())
-				end,
+                "moonkin",
+                newFormConditionLookup(24858),
 				GetSpellInfo(24858)
 			)
 		else
 			addState("class", "moonkin", "[bonusbar:4]", GetSpellInfo(24858))
 			addState(
 				"class",
-				"tree",
-				function()
-					return ("[form:%d]"):format(GetNumShapeshiftForms() + 1)
-				end,
+                "tree",
+                newFormConditionLookup(33891),
 				GetSpellInfo(33891)
 			)
 		end
 
 		addState("class", "bear", "[bonusbar:3]", GetSpellInfo(5487))
-
 		addState("class", "prowl", "[bonusbar:1,stealth]", GetSpellInfo(5215))
 		addState("class", "cat", "[bonusbar:1]", GetSpellInfo(768))
 	elseif class == "ROGUE" then

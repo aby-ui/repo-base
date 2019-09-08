@@ -1,7 +1,7 @@
 --[[
     This file is part of Decursive.
 
-    Decursive (v 2.7.6.4-beta_1) add-on for World of Warcraft UI
+    Decursive (v 2.7.6.4-beta_2) add-on for World of Warcraft UI
     Copyright (C) 2006-2018 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Starting from 2009-10-31 and until said otherwise by its author, Decursive
@@ -18,7 +18,7 @@
     but WITHOUT ANY WARRANTY.
 
 
-    This file was last updated on 2019-01-07T17:13:09Z
+    This file was last updated on 2019-09-04T16:29:01Z
 --]]
 -------------------------------------------------------------------------------
 
@@ -381,7 +381,7 @@ function MicroUnitF:MFsDisplay_Update () -- {{{
                 --D:Debug("|cFF88AA00Show schedule for MUF", Unit, "UnitShown:", self.UnitShown);
             end
         else
-            --D:errln("showhide: no muf for", Unit); -- call delay display up 
+            --D:errln("showhide: no muf for", Unit); -- call delay display up
             self:Delayed_MFsDisplay_Update ();
         end
 
@@ -595,7 +595,7 @@ do
             end
         end
 
-        -- y 
+        -- y
         if y_out_arrays[1] then
             if y_out_arrays[1] < 0 then
                 Handle_y_offset = -  y_out_arrays[1];
@@ -913,7 +913,7 @@ do
         end
 
         if D.profile.DebuffsFrameShowHelp then
-            D:DisplayLQTGameTooltip(keyHelp, frame);            
+            D:DisplayLQTGameTooltip(keyHelp, frame);
         end;
     end
 end
@@ -965,7 +965,7 @@ function MicroUnitF.OnPreClick(frame, Button) -- {{{
     elseif (frame.Object.UnitStatus == AFFLICTED and frame.Object.Debuffs[1]) then
         local NeededPrio = D:GiveSpellPrioNum(frame.Object.Debuffs[1].Type);
         local Unit = frame.Object.CurrUnit; -- shortcut
-        
+
 
         -- there is no spell for the requested prio ? (no spell registered to this modifier+mousebutton)
         if modifier and RequestedPrio and not D:tcheckforval(D.Status.CuringSpellsPrio, RequestedPrio) then
@@ -1611,7 +1611,7 @@ do
                     Status.SoundPlayed = false;
                 end
             end
-            
+
             if band(self.UnitStatus, AFFLICTED)~=0 then
                 MicroUnitF.UnitsDebuffedInRange =  MicroUnitF.UnitsDebuffedInRange + 1;
                 D:Debug("SetColor(): UnitsDebuffedInRange INCREASED:",  MicroUnitF.UnitsDebuffedInRange);
@@ -1858,6 +1858,6 @@ local MF_Textures = { -- unused
 
 -- }}}
 
-T._LoadedFiles["Dcr_DebuffsFrame.lua"] = "2.7.6.4-beta_1";
+T._LoadedFiles["Dcr_DebuffsFrame.lua"] = "2.7.6.4-beta_2";
 
 -- Heresy

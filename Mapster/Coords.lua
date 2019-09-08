@@ -145,6 +145,7 @@ function MouseXY()
 	local left, top = WorldMapScrollChild:GetLeft(), WorldMapScrollChild:GetTop()
 	local width, height = WorldMapScrollChild:GetWidth(), WorldMapScrollChild:GetHeight()
 	local scale = WorldMapScrollChild:GetEffectiveScale()
+	if not left or not top then return end -- this can occur while the map is being moved
 
 	local x, y = GetCursorPosition()
 	local cx = (x/scale - left) / width

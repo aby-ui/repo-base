@@ -1,7 +1,7 @@
 --[[
     This file is part of Decursive.
 
-    Decursive (v 2.7.6.4-beta_1) add-on for World of Warcraft UI
+    Decursive (v 2.7.6.4-beta_2) add-on for World of Warcraft UI
     Copyright (C) 2006-2018 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Starting from 2009-10-31 and until said otherwise by its author, Decursive
@@ -17,7 +17,7 @@
     Decursive is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY.
 
-    This file was last updated on 2018-07-18T00:42:34Z
+    This file was last updated on 2019-09-04T16:29:01Z
 --]]
 -------------------------------------------------------------------------------
 
@@ -65,10 +65,10 @@ local LDB = LibStub("LibDataBroker-1.1"):NewDataObject("Decursive", {
         OnClick = function(Frame, button)
             D:QuickAccess(Frame, button);
         end,
-        
+
         text = "Decursive",
         label = "Decursive",
-        
+
         icon = DC.IconOFF,
 });
 
@@ -87,10 +87,10 @@ local function ShowToolTip (frame)
     local HeadFont = D:CreateLQTHFonts();
 
     local tooltip = LibQTip:Acquire("DecursiveGenInfo", 2, "LEFT", "RIGHT");
-    frame.tooltip = tooltip 
+    frame.tooltip = tooltip
 
     tooltip:SetHeaderFont(HeadFont);
-    
+
     local x, y;
     -- 1
     x, y = tooltip:AddLine();
@@ -127,7 +127,7 @@ local function ShowToolTip (frame)
         tooltip:AddLine("Afflicted units count in range:", D.MicroUnitF.UnitsDebuffedInRange);
 
         tooltip:AddLine("Max Concurrent update events:", D.Status.MaxConcurentUpdateDebuff);
-        
+
         tooltip:AddLine("Live timers:", ("Dcr: |cf0d09000%d|r, Lib: |cf0d09000%d|r, Yields: |cf0f06000%d|r, Longest batch: |cf0e07000%dms|r, Largest batch: |cf0d07000%d|r, TotalRun: |cf0d07000%u|r"):format(D:GetTimersInfo()));
 
         tooltip:AddLine("Version annouces received:", T.VersionAnnounceReceived);
@@ -155,7 +155,7 @@ local function ShowToolTip (frame)
 
 end
 
-LDB.OnEnter = function(frame) 
+LDB.OnEnter = function(frame)
     ShowToolTip(frame);
 end
 
@@ -182,4 +182,4 @@ function D:HideMiniMapIcon()
     icon:Hide();
 end
 
-T._LoadedFiles["Dcr_LDB.lua"] = "2.7.6.4-beta_1";
+T._LoadedFiles["Dcr_LDB.lua"] = "2.7.6.4-beta_2";

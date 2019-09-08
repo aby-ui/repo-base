@@ -166,7 +166,7 @@ function ActionBar:UpdateStateDriver()
 			condition = state.value
 		end
 
-		if self:GetOffset(stateId) then
+		if condition and self:GetOffset(stateId) then
 			header = header .. condition .. 'S' .. i .. ';'
 		end
 	end
@@ -193,9 +193,15 @@ do
 
 		for i, state in Addon.BarStates:getAll() do
 			local offset = self:GetOffset(state.id)
-			local actionId = nil
+			local condition
+			if type(state.value) == 'function' then
+				condition = state.value()
+			else
+				condition = state.value
+			end
 
-			if offset then
+			local actionId = nil
+			if condition and offset then
 				actionId = ToValidID(button:GetAttribute('action--base') + offset * maxSize)
 			end
 

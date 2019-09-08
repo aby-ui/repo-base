@@ -1,7 +1,7 @@
 --[[
     This file is part of Decursive.
 
-    Decursive (v 2.7.6.4-beta_1) add-on for World of Warcraft UI
+    Decursive (v 2.7.6.4-beta_2) add-on for World of Warcraft UI
     Copyright (C) 2006-2018 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Starting from 2009-10-31 and until said otherwise by its author, Decursive
@@ -17,7 +17,7 @@
     Decursive is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY.
 
-    This file was last updated on 2019-09-03T00:05:19Z
+    This file was last updated on 2019-09-04T16:29:01Z
 --]]
 -------------------------------------------------------------------------------
 
@@ -57,7 +57,7 @@ local DC = T._C;
 
 D.DebuffUpdateRequest = 0;
 
---[===[@alpha@  
+--[===[@alpha@
 D.DetectHistory = {};
 --@end-alpha@]===]
 
@@ -103,7 +103,7 @@ do
     end
 
     local Grouped = false;
-    function D:GroupChanged (reason) 
+    function D:GroupChanged (reason)
 
         if not D.DcrFullyInitialized then
             D:Debug("|cFFFF0000D:GroupChanged aborted, init uncomplete!|r");
@@ -222,7 +222,7 @@ function D:PLAYER_FOCUS_CHANGED () -- {{{
     end
 
     -- we need to rescan if the focus is not in our group and it's nice or if we already have a focus unit registered
- 
+
     local FocusCurrent_ElligStatus = (
         not self.Status.Unit_Array_GUIDToUnit[UnitGUID("focus")]    -- it's not already in the unit array
         ) and ( UnitExists("focus") and (not UnitCanAttack("focus", "player") or UnitIsFriend("focus", "player"))) -- and it is (or used to) be nice
@@ -353,8 +353,8 @@ end--}}}
     -- the called function must return a non false value when it does something to prevent UI lagging
 function D:AddDelayedFunctionCall(CallID,functionLink, ...)
 
-    
-    if (not self.Status.DelayedFunctionCalls[CallID]) then 
+
+    if (not self.Status.DelayedFunctionCalls[CallID]) then
         self.Status.DelayedFunctionCalls[CallID] =  {["func"] = functionLink, ["args"] =  {...}};
         self.Status.DelayedFunctionCallsCount = self.Status.DelayedFunctionCallsCount + 1;
     elseif select("#",...) > 1 then -- if we had more than the function reference and its object
@@ -398,7 +398,7 @@ function D:PLAYER_TARGET_CHANGED()
         D.Status.TargetExists = true;
 
         self.LiveList:DelayedGetDebuff("target");
-        
+
 
         if self:CheckUnitStealth("target") then
             self.Stealthed_Units["target"] = true;
@@ -505,7 +505,7 @@ do
         local unitguid = UnitGUID(UnitID);
 
         --[===[@debug@
-        
+
 
         --D:Debug("UNIT_AURA", ..., UnitID, GetTime() + (GetTime() % 1));
 
@@ -653,7 +653,7 @@ do -- Combat log event handling {{{1
 
     function D:DummyDebuff (UnitID)
         local PLAYER = bit.bor (COMBATLOG_OBJECT_CONTROL_PLAYER   , COMBATLOG_OBJECT_TYPE_PLAYER  , COMBATLOG_OBJECT_REACTION_FRIENDLY  ); -- still used
-        
+
         D:COMBAT_LOG_EVENT_UNFILTERED("COMBAT_LOG_EVENT_UNFILTERED", 0, "SPELL_AURA_APPLIED", false, nil, nil, COMBATLOG_OBJECT_NONE, 0, UnitGUID(UnitID), (UnitName(UnitID)), PLAYER, 0, 0, "Test item", 0x32, "DEBUFF");
     end
 
@@ -662,7 +662,7 @@ do -- Combat log event handling {{{1
         [59868] = "SPELL_DAMAGE", -- Dark Matter ( http://www.wowhead.com/spell=59868 )
     };
 
-    
+
     function D:COMBAT_LOG_EVENT_UNFILTERED(selfevent, timestamp, event, hideCaster, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destFlags, destRaidFlags, spellID, spellNAME, _spellSCHOOL, auraTYPE_failTYPE)
 
         if event == nil then
@@ -821,7 +821,7 @@ do -- Communication event handling and broadcasting {{{1
 
 
     local function GetDistributionChanel()
-       
+
         -- if we are in a battle ground or a LFG/R instance
         if GetNumGroupMembers(LE_PARTY_CATEGORY_INSTANCE) > 0 then
             return "INSTANCE_CHAT";
@@ -1139,7 +1139,7 @@ do
     --[===[@alpha@
     local player_is_almost_alive = false; -- I'm trying to figure out why sometimes talents are not detected while PLAYER_ALIVE event fired
     --@end-alpha@]===]
- 
+
     local function PollTalentsAvaibility() -- {{{
 
         D:Debug("Polling talents...");
@@ -1175,6 +1175,6 @@ do
     end
 end
 
-T._LoadedFiles["Dcr_Events.lua"] = "2.7.6.4-beta_1";
+T._LoadedFiles["Dcr_Events.lua"] = "2.7.6.4-beta_2";
 
 -- The Great Below

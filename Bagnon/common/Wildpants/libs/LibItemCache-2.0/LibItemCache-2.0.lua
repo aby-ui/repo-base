@@ -133,18 +133,16 @@ function Lib:GetBagInfo(owner, bag)
 
 	if isguild then
 		item.count = 98
-	elseif bag == REAGENTBANK_CONTAINER or bag == BACKPACK_CONTAINER or bag == BANK_CONTAINER then
-		item.count = GetContainerNumSlots(bag)
 	elseif bag == 'vault' then
 		item.count = 160
+	elseif bag == 'equip' then
+		item.count = INVSLOT_LAST_EQUIPPED
+	elseif bag == REAGENTBANK_CONTAINER or bag == BACKPACK_CONTAINER or bag == BANK_CONTAINER then
+		item.count = GetContainerNumSlots(bag)
 	end
 
 	if cached then
 		item.cached = true
-	elseif bag == 'equip' then
-		item.count = INVSLOT_LAST_EQUIPPED
-	elseif bag == 'vault' then
-		item.count = 160
 	elseif isguild then
 		local name, icon, view, deposit, withdraw, remaining = GetGuildBankTabInfo(bag)
 		if not query then
@@ -152,7 +150,7 @@ function Lib:GetBagInfo(owner, bag)
 		end
 
 		item.name, item.icon, item.viewable = name, icon, view
-	else
+	elseif tonumber(bag) then
 		item.free = GetContainerNumFreeSlots(bag)
 
 		if bag == REAGENTBANK_CONTAINER then

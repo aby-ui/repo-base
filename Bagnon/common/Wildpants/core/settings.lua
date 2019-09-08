@@ -40,7 +40,7 @@ local FrameDefaults = {
 	color = {0, 0, 0, 0.5},
 	x = 0, y = 0,
 
-	itemScale = Addon.ItemScale or 1,
+	itemScale =1,
 	spacing = 2,
 
 	brokerObject = 'Broker Currency', --163ui ADDON .. 'Launcher',
