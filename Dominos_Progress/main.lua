@@ -145,6 +145,20 @@ function ProgressBarModule:AddOptionsPanel()
 
 	oneBarModeToggle:SetPoint("TOPLEFT", 0, -2)
 
+	local skipInactiveModesToggle = panel:Add("CheckButton", {
+		name = L.SkipInactiveModes,
+
+		get = function()
+			return Addon.Config:SkipInactiveModes()
+		end,
+
+		set = function(_, enable)
+			Addon.Config:SetSkipInactiveModes(enable)
+		end
+	})
+
+	skipInactiveModesToggle:SetPoint("TOPLEFT", oneBarModeToggle, "BOTTOMLEFT", 0, -2)
+
 	for _, key in ipairs {"xp", "xp_bonus", "honor", "artifact", "azerite"} do
 		local picker = panel:Add("ColorPicker", {
 			name = L["Color_" .. key],
@@ -164,7 +178,7 @@ function ProgressBarModule:AddOptionsPanel()
 			end
 		})
 
-		picker:SetPoint("TOP", prev or oneBarModeToggle, "BOTTOM", 0, -6)
+		picker:SetPoint("TOP", prev or skipInactiveModesToggle, "BOTTOM", 0, -6)
 		prev = picker
 	end
 end

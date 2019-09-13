@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("Onyxia", "DBM-Onyxia")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190720220117")
+mod:SetRevision("20190911042519")
 mod:SetCreatureID(10184)
 mod:SetEncounterID(1084)
 mod:SetZone()
@@ -14,19 +14,21 @@ mod:RegisterEvents(
 )
 
 mod:RegisterEventsInCombat(
-	"SPELL_CAST_START 68958 17086 18351 18564 18576 18584 18596 18609 18617 18435 68959",
+	"SPELL_CAST_START 68958 17086 18351 18564 18576 18584 18596 18609 18617 18435 68959 18431 18500",
 	"SPELL_DAMAGE 68867",
 	"UNIT_DIED",
 	"UNIT_HEALTH boss1"
 )
 
 --local warnWhelpsSoon		= mod:NewAnnounce("WarnWhelpsSoon", 1, 69004)
+local warnWingBuffet		= mod:NewSpellAnnounce(18500, 2, nil, "Tank")
 local warnPhase2			= mod:NewPhaseAnnounce(2)
 local warnPhase3			= mod:NewPhaseAnnounce(3)
 local warnPhase2Soon		= mod:NewPrePhaseAnnounce(2)
 local warnPhase3Soon		= mod:NewPrePhaseAnnounce(3)
 
 local specWarnBreath		= mod:NewSpecialWarningSpell(18584, nil, nil, nil, 2, 2)
+local specWarnBellowingRoar	= mod:NewSpecialWarningSpell(18431, nil, nil, nil, 2, 2)
 local specWarnBlastNova		= mod:NewSpecialWarningRun(68958, "Melee", nil, nil, 4, 2)
 local specWarnAdds			= mod:NewSpecialWarningAdds(68959, "-Healer", nil, nil, 1, 2)
 
@@ -55,7 +57,7 @@ function mod:OnCombatStart(delay)
 	end
 end
 
---70, 60, 
+--70, 60,
 function mod:Whelps()--Not right, need to fix
 	if self:IsInCombat() then
 --		self.vb.whelpsCount = self.vb.whelpsCount + 1
@@ -117,6 +119,11 @@ function mod:SPELL_CAST_START(args)
 		specWarnAdds:Show()
 		specWarnAdds:Play("bigmob")
 		timerBigAddCD:Start()
+	elseif args.spellId == 18431 then
+		specWarnBellowingRoar:Show()
+		specWarnBellowingRoar:Play("fearsoon")
+	elseif args.spellId == 18500 then
+		warnWingBuffet:Show()
 	end
 end
 
@@ -135,9 +142,9 @@ end
 function mod:UNIT_HEALTH(uId)
 	if self.vb.phase == 1 and not self.vb.warned_preP2 and self:GetUnitCreatureId(uId) == 10184 and UnitHealth(uId) / UnitHealthMax(uId) <= 0.70 then
 		self.vb.warned_preP2 = true
-		warnPhase2Soon:Show()	
+		warnPhase2Soon:Show()
 	elseif self.vb.phase == 2 and not self.vb.warned_preP3 and self:GetUnitCreatureId(uId) == 10184 and UnitHealth(uId) / UnitHealthMax(uId) <= 0.45 then
 		self.vb.warned_preP3 = true
-		warnPhase3Soon:Show()	
+		warnPhase3Soon:Show()
 	end
 end

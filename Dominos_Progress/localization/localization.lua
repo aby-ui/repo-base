@@ -30,3 +30,4 @@ L.Color_azerite = 'Azerite Color'
 
 L.Paragon = 'Paragon'
 L.Azerite = 'Azerite Power'
+L.SkipInactiveModes = "Skip Inactive Modes"

@@ -95,6 +95,7 @@ function ActionButton:Create(id)
 		button:ClearAllPoints()
 		button:SetAttribute('useparent-actionpage', nil)
 		button:SetAttribute('useparent-unit', true)
+		button:SetAttribute("statehidden", nil)
 		button:EnableMouseWheel(true)
 		button:HookScript('OnEnter', self.OnEnter)
 
@@ -132,6 +133,7 @@ do
 		Addon:GetModule('Tooltips'):Unregister(self)
 		Addon.BindingsController:Unregister(self)
 
+		self:SetAttribute("statehidden", true)
 		self:SetParent(HiddenActionButtonFrame)
 		self:Hide()
 
@@ -151,6 +153,23 @@ end
 
 --override the old update hotkeys function
 hooksecurefunc('ActionButton_UpdateHotkeys', ActionButton.UpdateHotkey)
+
+-- add inventory counts in classic
+if Addon:IsBuild("classic") then
+	hooksecurefunc("ActionButton_UpdateCount", function(self)
+		local action = self.action;
+		if IsConsumableAction(action) or IsStackableAction(action)  then
+			local count = GetActionCount(action)
+			if count > (self.maxDisplayCount or 9999) then
+				self.Count:SetText("*")
+			elseif count > 0 then
+				self.Count:SetText(count)
+			else
+				self.Count:SetText("")
+			end
+		end
+	end)
+end
 
 --button visibility
 if Addon:IsBuild("classic") then

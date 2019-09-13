@@ -1,8 +1,8 @@
 --[[
     This file is part of Decursive.
 
-    Decursive (v 2.7.6.4-beta_2) add-on for World of Warcraft UI
-    Copyright (C) 2006-2018 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
+    Decursive (v 2.7.6.4-beta_4) add-on for World of Warcraft UI
+    Copyright (C) 2006-2019 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Starting from 2009-10-31 and until said otherwise by its author, Decursive
     is no longer free software, all rights are reserved to its author (John Wellesz).
@@ -17,7 +17,7 @@
     Decursive is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY.
 
-    This file was last updated on 2019-09-07T23:17:30Z
+    This file was last updated on 2019-09-11T21:07:42Z
 --]]
 -------------------------------------------------------------------------------
 
@@ -66,7 +66,7 @@ local function RegisterDecursive_Once() -- {{{
     --@end-debug@]===]
 
     D.name = "Decursive";
-    D.version = "2.7.6.4-beta_2";
+    D.version = "2.7.6.4-beta_4";
     D.author = "John Wellesz";
 
     D.DcrFullyInitialized = false;
@@ -434,84 +434,93 @@ local function SetRuntimeConstants_Once () -- {{{
 
         -- SPELL TABLE -- must be parsed after spell translations have been loaded {{{
         DC.SpellsToUse = {
-            -- Mages
-            [DSI["SPELL_REMOVE_LESSER_CURSE"]] = {
+            -- Mage
+            [DSI["SPELL_REMOVE_LESSER_CURSE"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=475/remove-lesser-curse
                 Types = {DC.CURSE},
                 Better = 0,
                 Pet = false,
             },
-            [DSI["SPELL_REMOVE_CURSE"]] = {
+            -- Druid
+            [DSI["SPELL_REMOVE_CURSE"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=2782/remove-curse
                 Types = {DC.CURSE},
                 Better = 0,
                 Pet = false,
             },
-            [DSI["SPELL_HEX"]] = {
-                Types = {DC.CHARMED},
-                Better = 0,
-                Pet = false,
-            },
-            -- Shamans
-            [DSI["SPELL_PURGE"]] = {
+            -- Shaman
+            [DSI["SPELL_PURGE"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=370/purge
                 Types = {DC.ENEMYMAGIC},
                 Better = 0,
                 Pet = false,
             },
-            [DSI["SPELL_CLEANSE"]] = {
+            -- Paladin
+            [DSI["SPELL_CLEANSE"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=4987/cleanse
                 Types = {DC.MAGIC, DC.DISEASE, DC.POISON},
                 Better = 2,
                 Pet = false,
             },
             -- Warlock
-            [DSI["SPELL_FEAR"]] = {
+            [DSI["SPELL_FEAR"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=5782/fear
                 Types = {DC.CHARMED},
                 Better = 0,
                 Pet = false,
             },
              -- Mages
-            [DSI["SPELL_POLYMORPH"]] = {
+            [DSI["SPELL_POLYMORPH"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=118/polymorph
                 Types = {DC.CHARMED},
                 Better = 0,
                 Pet = false,
             },
             -- Priests (global)
-            [DSI["SPELL_DISPELL_MAGIC"]] = {
-                Types = {DC.ENEMYMAGIC},
+            [DSI["SPELL_DISPELL_MAGIC"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=527/dispel-magic
+                Types = {DC.MAGIC, DC.ENEMYMAGIC},
                 Better = 0,
                 Pet = false,
             },
-            -- Priests (Discipline, Holy)
-            [DSI["SPELL_PURIFY"]] = {
+            -- Paladin
+            [DSI["SPELL_PURIFY"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=1152/purify
                 Types = {DC.POISON, DC.DISEASE},
                 Better = 1,
                 Pet = false,
             },
-            [DSI["SPELL_ABOLISH_DISEASE"]] = {
+            -- Priest
+            [DSI["SPELL_ABOLISH_DISEASE"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=552/abolish-disease
                 Types = {DC.DISEASE},
                 Better = 2,
                 Pet = false,
             },
-            [DSI["SPELL_CURE_DISEASE"]] = {
+            -- Priest
+            [DSI["SPELL_CURE_DISEASE_PRIEST"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=528/cure-disease
                 Types = {DC.DISEASE},
                 Better = 0,
                 Pet = false,
             },
-            [DSI["SPELL_ABOLISH_POISON"]] = {
+            -- Priest
+            [DSI["SPELL_CURE_DISEASE_SHAMAN"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=2870/cure-disease
+                Types = {DC.DISEASE},
+                Better = 0,
+                Pet = false,
+            },
+            -- Druid
+            [DSI["SPELL_ABOLISH_POISON"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=2893/abolish-poison
                 Types = {DC.POISON},
                 Better = 2,
                 Pet = false,
             },
-            [DSI["SPELL_CURE_POISON_SHAMAN"]] = {
+            -- Shaman
+            [DSI["SPELL_CURE_POISON_SHAMAN"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=526/cure-poison
                 Types = {DC.POISON},
                 Better = 0,
                 Pet = false,
             },
-            [DSI["SPELL_CURE_POISON_DRUID"]] = {
+            -- Druid
+            [DSI["SPELL_CURE_POISON_DRUID"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=8946/cure-poison
                 Types = {DC.POISON},
                 Better = 0,
                 Pet = false,
             },
-            [DSI["PET_DEVOUR_MAGIC"]] = {
-                Types = {DC.ENEMYMAGIC},
+            -- Warlock
+            [DSI["PET_DEVOUR_MAGIC"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=19505/devour-magic
+                Types = {DC.MAGIC, DC.ENEMYMAGIC},
                 Better = 0,
                 Pet = true,
             },
@@ -538,12 +547,12 @@ local function InitVariables_Once() -- {{{
     -- A table UnitID=>IsDebuffed (boolean)
     D.UnitDebuffed = {};
 
-    D.Revision = "465545c"; -- not used here but some other add-on may request it from outside
-    D.date = "2019-09-07T23:35:25Z";
-    D.version = "2.7.6.4-beta_2";
+    D.Revision = "b6e8b17"; -- not used here but some other add-on may request it from outside
+    D.date = "2019-09-12T16:38:07Z";
+    D.version = "2.7.6.4-beta_4";
 
     if D.date ~= "@project".."-date-iso@" then
-        -- 1567899325 doesn't work
+        -- 1568306287 doesn't work
 
         --local example =  "2008-05-01T12:34:56Z";
 
@@ -609,7 +618,7 @@ function D:VersionWarnings(forceDisplay) -- {{{
 
             if time() - self.db.global.LastExpirationAlert > 48 * 3600 or forceDisplay then
 
-                T._ShowNotice ("|cff00ff00Decursive version: 2.7.6.4-beta_2|r\n\n" .. "|cFFFFAA66" .. L["TOC_VERSION_EXPIRED"] .. "|r");
+                T._ShowNotice ("|cff00ff00Decursive version: 2.7.6.4-beta_4|r\n\n" .. "|cFFFFAA66" .. L["TOC_VERSION_EXPIRED"] .. "|r");
 
                 self.db.global.LastExpirationAlert = time();
             end
@@ -618,7 +627,7 @@ function D:VersionWarnings(forceDisplay) -- {{{
         self.db.global.TocExpiredDetection = false;
     end
 
-    if (("2.7.6.4-beta_2"):lower()):find("beta") or ("2.7.6.4-beta_2"):find("RC") or ("2.7.6.4-beta_2"):find("Candidate") or alpha then
+    if (("2.7.6.4-beta_4"):lower()):find("beta") or ("2.7.6.4-beta_4"):find("RC") or ("2.7.6.4-beta_4"):find("Candidate") or alpha then
 
         D.RunningADevVersion = true;
 
@@ -631,7 +640,7 @@ function D:VersionWarnings(forceDisplay) -- {{{
                 DC.DevVersionExpired = true;
                 -- Display the expiration notice only once evry 48 hours
                 if time() - self.db.global.LastExpirationAlert > 48 * 3600 or forceDisplay then
-                    --T._ShowNotice ("|cff00ff00Decursive version: 2.7.6.4-beta_2|r\n\n" .. "|cFFFFAA66" .. L["DEV_VERSION_EXPIRED"] .. "|r");
+                    --T._ShowNotice ("|cff00ff00Decursive version: 2.7.6.4-beta_4|r\n\n" .. "|cFFFFAA66" .. L["DEV_VERSION_EXPIRED"] .. "|r");
 
                     self.db.global.LastExpirationAlert = time();
                 end
@@ -642,16 +651,16 @@ function D:VersionWarnings(forceDisplay) -- {{{
         end
 
         -- display a warning if this is a developpment version (avoid insults from people who don't know what they're doing)
-        if self.db.global.NonRelease ~= "2.7.6.4-beta_2" then
-            self.db.global.NonRelease = "2.7.6.4-beta_2";
-            --T._ShowNotice ("|cff00ff00Decursive version: 2.7.6.4-beta_2|r\n\n" .. "|cFFFFAA66" .. L["DEV_VERSION_ALERT"] .. "|r");
+        if self.db.global.NonRelease ~= "2.7.6.4-beta_4" then
+            self.db.global.NonRelease = "2.7.6.4-beta_4";
+            --T._ShowNotice ("|cff00ff00Decursive version: 2.7.6.4-beta_4|r\n\n" .. "|cFFFFAA66" .. L["DEV_VERSION_ALERT"] .. "|r");
         end
     end
 
     --[===[@debug@
     fromCheckOut = true;
     if time() - self.db.global.LastUnpackagedAlert > 24 * 3600  then
-        T._ShowNotice ("|cff00ff00Decursive version: 2.7.6.4-beta_2|r\n\n" .. "|cFFFFAA66" ..
+        T._ShowNotice ("|cff00ff00Decursive version: 2.7.6.4-beta_4|r\n\n" .. "|cFFFFAA66" ..
         [[
         |cFFFF0000You're using an unpackaged version of Decursive.|r
         Decursive is not meant to be used this way.
@@ -689,7 +698,7 @@ function D:VersionWarnings(forceDisplay) -- {{{
         if D.db.global.NewerVersionDetected > D.VersionTimeStamp and D.db.global.NewerVersionName ~= D.version then -- it's still newer than this one
             if time() - D.db.global.NewerVersionAlert > 3600 * 24 * 4 then -- it's been more than 4 days since the new version alert was shown
                 if not D.db.global.NewVersionsBugMeNot then -- the user did not disable new version alerts
-                    T._ShowNotice ("|cff55ff55Decursive version: 2.7.6.4-beta_2|r\n\n" .. "|cFF55FFFF" .. (L["NEW_VERSION_ALERT"]):format(D.db.global.NewerVersionName or "none", date("%Y-%m-%d", D.db.global.NewerVersionDetected)) .. "|r");
+                    T._ShowNotice ("|cff55ff55Decursive version: 2.7.6.4-beta_4|r\n\n" .. "|cFF55FFFF" .. (L["NEW_VERSION_ALERT"]):format(D.db.global.NewerVersionName or "none", date("%Y-%m-%d", D.db.global.NewerVersionDetected)) .. "|r");
                     D.db.global.NewerVersionAlert = time();
                 end
             end
@@ -1428,8 +1437,9 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
 
     if not T._C.DS then
         T._C.DS = {};
+        T._C.EXPECTED_DUPLICATES = {};
 
-        T._C.DSI = {
+        T._C.DSI = { -- Main spell table for WoW Retail {{{
             ["SPELL_POLYMORPH"]             =  118,
             ["SPELL_COUNTERSPELL"]          =  2139,
             ["SPELL_CYCLONE"]               =  33786,
@@ -1487,72 +1497,81 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
             ['Greater Invisibility']        =  110959,
             ['SPELL_MENDINGBANDAGE']        =  212640,
             ['SPELL_REVERSEMAGIC']          =  205604,
-        };
+        }; --- }}}
 
+        T._C.EXPECTED_DUPLICATES = {
+            {"SPELL_DETOX_1", "SPELL_DETOX_2"},
+            {"PET_SINGE_MAGIC", "PET_SINGE_MAGIC_PVP"},
+        }
 
-
+        -- if running in WoW Classic, we need to adjust the main spell table
         if DC.WOWC then
+            local DSI_REMOVED_OR_CHANGED_IN_CLASSIC = { -- {{{
+                ['Invisibility']            = 66,
+                ['Shadowmeld']              = 58984,
+                ["SPELL_DISPELL_MAGIC"]     = 528,
+                ["SPELL_PURIFY"]            = 527,
+                ["Fluidity"]	            = 138002,
+                ["SPELL_SPELLSTEAL"]	    = 30449,
+                ["SPELL_CONSUME_MAGIC"]	    = 278326,
+                ["PET_TORCH_MAGIC"]	        = 171021,
+                ["SPELL_HEX"]	            = 51514,
+                ["SPELL_CYCLONE"]	        = 33786,
+                ["SPELL_DETOX_1"]	        = 115450,
+                ["Unstable Affliction"]	    = 30108,
+                ["SPELL_REVERSEMAGIC"]	    = 205604,
+                ["PET_SEAR_MAGIC"]	        = 115276,
+                ["SPELL_COMMAND_DEMON"]	    = 119898,
+                ["Greater Invisibility"]    = 110959,
+                ["SPELL_MENDINGBANDAGE"]    = 212640,
+                ["CRIPLES"]	                = 33787,
+                ["Arcane Blast"]	        = 30451,
+                ["SPELL_DETOX_2"]	        = 218164,
+                ["MDREAMLESSSLEEP"]	        = 28504,
+                ["PURIFY_SPIRIT"]	        = 77130,
+                ["SONICBURST"]	            = 39052,
+                ["SPELL_PURIFY_DISEASE"]    = 213634,
+                ["Vampiric Touch"]	        = 34914,
+                ["CLEANSE_SPIRIT"]	        = 51886,
+                ["SPELL_NATURES_CURE"]	    = 88423,
+                ["PET_SINGE_MAGIC"]	        = 89808,
+                ["PET_SINGE_MAGIC_PVP"]	    = 212623,
+                ["SPELL_CLEANSE_TOXINS"]    = 213644,
+                ["SPELL_DIFFUSEMAGIC"]	    = 122783,
+                ["SPELL_REMOVE_CORRUPTION"] = 2782,
+            } -- }}}
 
-            local DSI_NOT_OR_CHANGED_IN_CLASSIC = {
-                ['Invisibility']        =  66,
-                ['Shadowmeld']          =  58984,
-                ["SPELL_DISPELL_MAGIC"] =  528,
-                ["SPELL_PURIFY"]        =  527,
-                ["Fluidity"]	        = 138002,
-                ["SPELL_SPELLSTEAL"]	= 30449,
-                ["SPELL_CONSUME_MAGIC"]	= 278326,
-                ["PET_TORCH_MAGIC"]	= 171021,
-                ["SPELL_HEX"]	        = 51514,
-                ["SPELL_CYCLONE"]	= 33786,
-                ["SPELL_DETOX_1"]	= 115450,
-                ["Unstable Affliction"]	= 30108,
-                ["SPELL_REVERSEMAGIC"]	= 205604,
-                ["PET_SEAR_MAGIC"]	= 115276,
-                ["SPELL_COMMAND_DEMON"]	= 119898,
-                ["Greater Invisibility"]= 110959,
-                ["SPELL_MENDINGBANDAGE"]= 212640,
-                ["CRIPLES"]	        = 33787,
-                ["Arcane Blast"]	= 30451,
-                ["SPELL_DETOX_2"]	= 218164,
-                ["MDREAMLESSSLEEP"]	= 28504,
-                ["PURIFY_SPIRIT"]	= 77130,
-                ["SONICBURST"]	        = 39052,
-                ["SPELL_PURIFY_DISEASE"]= 213634,
-                ["Vampiric Touch"]	= 34914,
-                ["CLEANSE_SPIRIT"]	= 51886,
-                ["SPELL_NATURES_CURE"]	= 88423,
-                ["PET_SINGE_MAGIC"]	= 89808,
-                ["PET_SINGE_MAGIC_PVP"]	= 212623,
-                ["SPELL_CLEANSE_TOXINS"]= 213644,
-                ["SPELL_DIFFUSEMAGIC"]	= 122783,
-                ["SPELL_REMOVE_CORRUPTION"]     =  2782,
-            }
-
-            for name, sid in pairs(DSI_NOT_OR_CHANGED_IN_CLASSIC) do
+            -- remove invalid spells from the spell table
+            for name, sid in pairs(DSI_REMOVED_OR_CHANGED_IN_CLASSIC) do
                 T._C.DSI[name] = nil;
             end
 
-            -- the spells in classic
+            -- reassign the proper spells
+            -- The new and changed spells in classic {{{
             T._C.DSI["SPELL_REMOVE_LESSER_CURSE"] = 475;
             T._C.DSI["SPELL_REMOVE_CURSE"]        = 2782;
-            T._C.DSI["SPELL_HEX"]                 = 16707;
             T._C.DSI["SPELL_PURGE"]               = 370;
             T._C.DSI["SPELL_CLEANSE"]             = 4987;
             T._C.DSI["SPELL_FEAR"]                = 5782;
-            T._C.DSI["SPELL_POLYMORPH"]           = 13323;
+            T._C.DSI["SPELL_POLYMORPH"]           = 118;
             T._C.DSI["SPELL_DISPELL_MAGIC"]       = 527;
             T._C.DSI["SPELL_PURIFY"]              = 1152;
             T._C.DSI["SPELL_ABOLISH_DISEASE"]     = 552;
             T._C.DSI["SPELL_ABOLISH_POISON"]      = 2893;
-            T._C.DSI["SPELL_CURE_DISEASE"]        = 528;
+            T._C.DSI["SPELL_CURE_DISEASE_PRIEST"] = 528;
+            T._C.DSI["SPELL_CURE_DISEASE_SHAMAN"] = 2870;
             T._C.DSI["SPELL_CURE_POISON_SHAMAN"]  = 526;
             T._C.DSI["SPELL_CURE_POISON_DRUID"]   = 8946;
-            T._C.DSI["PET_DEVOUR_MAGIC"]          = 19505;
             T._C.DSI["PET_DEVOUR_MAGIC"]          = 19505;
             T._C.DSI["SONICBURST"]                = 8281;
             T._C.DSI["CRIPLES"]                   = 11443;
             T._C.DSI["Shadowmeld"]                = 20580;
+            -- }}}
 
+            T._C.EXPECTED_DUPLICATES = {
+                {"SPELL_CURE_DISEASE_PRIEST", "SPELL_CURE_DISEASE_SHAMAN"},
+                {"SPELL_CURE_POISON_SHAMAN", "SPELL_CURE_POISON_DRUID"},
+            }
 
         end
     end
@@ -1564,7 +1583,7 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
 
     -- Note to self: The truth is not unique, there can be several truths. The world is not binary. (epiphany on 2011-02-25)
 
-    local dubs = {};
+    local duplicates = {};
     local alpha = false;
     --[===[@alpha@
     alpha = true;
@@ -1576,11 +1595,12 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
         DS[Sname] = (GetSpellInfo(Sid));
 
         if FromDIAG and DS[Sname] then
-            if not dubs[DS[Sname]] then
-                dubs[DS[Sname]] = {Sname};
+            if not duplicates[DS[Sname]] then
+                duplicates[DS[Sname]] = {Sname};
             else
-                dubs[DS[Sname]][#dubs[DS[Sname]] + 1] = Sname;
+                duplicates[DS[Sname]][#duplicates[DS[Sname]] + 1] = Sname;
             end
+
         end
 
         if not DS[Sname] then
@@ -1593,14 +1613,41 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
     end
 
     if FromDIAG then
-        for spell, ids in pairs(dubs) do
+        -- Do not report expected duplicates {{{
+        local compareDuplicates = function (d1, d2)
+            if #d1 ~= #d2 then
+                return false;
+            end
+            table.sort(d1);
+            table.sort(d2);
+
+            for i, _ in ipairs(d1) do
+                if d1[i] ~= d2[i] then
+                    return false;
+                end
+            end
+
+            return true;
+        end
+        for _, Snames in ipairs(T._C.EXPECTED_DUPLICATES) do
+            if DS[Snames[1]] and duplicates[DS[Snames[1]]] then
+                if compareDuplicates(Snames, duplicates[DS[Snames[1]]]) then
+                    duplicates[DS[Snames[1]]] = nil;
+                else
+                    D:AddDebugText("Expected duplicates diverges for", Snames[1]);
+                end
+            else
+                D:AddDebugText("Expected duplicates not found for", Snames[1]);
+            end
+        end -- }}}
+        for spell, ids in pairs(duplicates) do
             if #ids > 1 then
                 local dub = "";
 
                 for _, id in ipairs(ids) do
                     dub = dub .. ", " .. id;
                 end
-                D:AddDebugText("|cffffAA22dubs found for", spell, ':|r ', dub);
+                D:AddDebugText("|cffffAA22Unexpected duplicates found for", spell, ':|r ', dub);
             end
         end
     end
@@ -1705,7 +1752,7 @@ end -- }}}
 
 
 
-T._LoadedFiles["DCR_init.lua"] = "2.7.6.4-beta_2";
+T._LoadedFiles["DCR_init.lua"] = "2.7.6.4-beta_4";
 
 -------------------------------------------------------------------------------
 
@@ -1714,42 +1761,42 @@ TEST to see what keyword substitutions are actually working....
 
 Simple replacements
 
-147
+149
     Turns into the current revision of the file in integer form. e.g. 1234
     Note: does not work for git
 150
     Turns into the highest revision of the entire project in integer form. e.g. 1234
     Note: does not work for git
-e52510ac9dc2023e51edcb6941dc8b6e40185efc
+77b444366fab13cf3631ca5f5796acd462cb1a8e
     Turns into the hash of the file in hex form. e.g. 106c634df4b3dd4691bf24e148a23e9af35165ea
     Note: does not work for svn
-465545cc2a12a20df2b9c92540599fdcad9558e2
+b6e8b175f62edb51b388d7006b989abdfe2a22ba
     Turns into the hash of the entire project in hex form. e.g. 106c634df4b3dd4691bf24e148a23e9af35165ea
     Note: does not work for svn
-e52510a
+77b4443
     Turns into the abbreviated hash of the file in hex form. e.g. 106c63 Note: does not work for svn
-465545c
+b6e8b17
     Turns into the abbreviated hash of the entire project in hex form. e.g. 106c63
     Note: does not work for svn
 Archarodim
     Turns into the last author of the file. e.g. ckknight
 Archarodim
     Turns into the last author of the entire project. e.g. ckknight
-2019-09-07T23:17:30Z
+2019-09-11T21:07:42Z
     Turns into the last changed date (by UTC) of the file in ISO 8601. e.g. 2008-05-01T12:34:56Z
-2019-09-07T23:35:25Z
+2019-09-12T16:38:07Z
     Turns into the last changed date (by UTC) of the entire project in ISO 8601. e.g. 2008-05-01T12:34:56Z
-20190907231730
+20190911210742
     Turns into the last changed date (by UTC) of the file in a readable integer fashion. e.g. 20080501123456
-20190907233525
+20190912163807
     Turns into the last changed date (by UTC) of the entire project in a readable integer fashion. e.g. 2008050123456
-1567898250
+1568236062
     Turns into the last changed date (by UTC) of the file in POSIX timestamp. e.g. 1209663296
     Note: does not work for git
-1567899325
+1568306287
     Turns into the last changed date (by UTC) of the entire project in POSIX timestamp. e.g. 1209663296
     Note: does not work for git
-2.7.6.4-beta_2
+2.7.6.4-beta_4
     Turns into an approximate version of the project. The tag name if on a tag, otherwise it's up to the repo.
     :SVN returns something like "r1234"
     :Git returns something like "v0.1-873fc1"

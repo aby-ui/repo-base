@@ -41,6 +41,7 @@ function Config:GetDefaults()
 	return {
 		profile = {
 			one_bar = false,
+			skip_inactive_modes = false,
 			colors = {
 				xp = {0.58, 0, 0.55, 1},
 				xp_bonus = {0, 0.39, 0.88},
@@ -60,11 +61,25 @@ function Config:GetDefaults()
 end
 
 function Config:SetBarMode(barId, mode)
-	self.db.char.bars[barId].mode = mode
+	local barSettings = self.db.char.bars[barId]
+
+	if type(barSettings) == "table" then
+		barSettings.mode = mode
+	else
+		self.db.char.bars[barId] = {
+			["mode"] = mode
+		}
+	end
 end
 
 function Config:GetBarMode(barId)
-	return self.db.char.bars[barId].mode
+	local barSettings = self.db.char.bars[barId]
+
+	if type(barSettings) == "table" then
+		return barSettings.mode
+	else
+		return barSettings
+	end
 end
 
 function Config:SetOneBarMode(enable)
@@ -73,6 +88,14 @@ end
 
 function Config:OneBarMode()
 	return self.db.profile.one_bar
+end
+
+function Config:SetSkipInactiveModes(skip)
+	self.db.profile.skip_inactive_modes = skip or false
+end
+
+function Config:SkipInactiveModes()
+	return self.db.profile.skip_inactive_modes
 end
 
 function Config:SetColor(key, ...)

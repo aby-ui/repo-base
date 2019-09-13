@@ -449,12 +449,12 @@ function GSA:OnOptionCreate()
 								desc = L["In arena, alert when enemy is drinking"],
 								order = 20,
 							},
-							tankTauntsON = { -- AuraApplied
-								type = 'toggle',
-								name = L["TankTauntsON"],
-								desc = L["TankTauntsON_Desc"],
-								order = 25,
-							},
+							--tankTauntsON = { -- AuraApplied
+								--type = 'toggle',
+								--name = L["TankTauntsON"],
+								--desc = L["TankTauntsON_Desc"],
+								--order = 25,
+							--},
 							generalaura = { --AuraApplied
 								type = 'group',
 								inline = true,
@@ -568,13 +568,13 @@ function GSA:OnOptionCreate()
 								desc = L["Alert works only when your current target or focus gains the buff effect or use the ability"],
 								order = 1,
 							},
-							tankTauntsOFF = { -- AuraRemoved
-								type = 'toggle',
-								name = L["TankTauntsOFF"],
-								desc = L["TankTauntsOFF_Desc"],
-								disabled = function() return not gsadb.tankTauntsON or gsadb.aruaRemoved end,
-								order = 2,
-							},
+							--tankTauntsOFF = { -- AuraRemoved
+							--	type = 'toggle',
+							--	name = L["TankTauntsOFF"],
+							--	desc = L["TankTauntsOFF_Desc"],
+							--	disabled = function() return not gsadb.tankTauntsON or gsadb.aruaRemoved end,
+							--	order = 2,
+							--},
 							generalauradown = { --AuraRemoved
 								type = 'group',
 								inline = true,
@@ -629,7 +629,7 @@ function GSA:OnOptionCreate()
 								inline = true,
 								name = L["|cffF58CBAPaladin|r"],
 								order = 10,
-								args = listOption({1022,642,31850,205191,184662,86659,228049,25771,216331,204018},"auraRemoved"),
+								args = listOption({1022,642,31850,205191,184662,86659,228049,25771,216331,204018,210294},"auraRemoved"),
 							},
 							priest	= { -- AuraRemoved
 								type = 'group',
@@ -657,7 +657,7 @@ function GSA:OnOptionCreate()
 								inline = true,
 								name = L["|cff9482C9Warlock|r"],
 								order = 14,
-								args = listOption({212295},"auraRemoved"),
+								args = listOption({212295,104773},"auraRemoved"),
 							},
 							warrior	= { -- AuraRemoved
 								type = 'group',
@@ -768,7 +768,7 @@ function GSA:OnOptionCreate()
 								inline = true,
 								name = L["|cff9482C9Warlock|r"],
 								order = 140,
-								args = listOption({5782,710,152108,691,712,697,112866,112867,112870,112868,112869,30146,157757,157898,688,30108,116858,30283,115268,6358,265187},"castStart"),
+								args = listOption({5782,710,152108,691,712,697,112866,112867,112870,112868,112869,30146,157757,157898,688,30108,116858,30283,115268,6358,265187,29893,183601,6201},"castStart"),
 							},
 							--warrior = { -- CastStart
 							--	type = 'group',

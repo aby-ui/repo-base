@@ -187,16 +187,17 @@ function ProgressBar:UpdateMode(force)
 	if self:IsModeLocked() then
 		self:SetMode(self:GetMode(), force)
 	else
-		local newModeId = nil
-
+		-- update to the first active mode we have, in reverse order
+		local modeId = 1
 		for i = #self.modes, 1, -1 do
-			newModeId = self.modes[i]
-			if Addon.progressBarModes[newModeId]:IsModeActive() then
+			local mode = self.modes[i]
+			if Addon.progressBarModes[mode]:IsModeActive() then
+				modeId = i
 				break
 			end
 		end
 
-		self:SetMode(newModeId, force)
+		self:SetMode(modeId, force)
 	end
 end
 
@@ -218,15 +219,19 @@ end
 
 function ProgressBar:NextMode()
 	local currentIndex = self:GetModeIndex()
-	local nextIndex = currentIndex
-	local nextMode
 
-	repeat
-		nextIndex = Wrap(nextIndex + 1, #self.modes)
-		nextMode = self.modes[nextIndex]
-	until (currentIndex == nextIndex or Addon.progressBarModes[nextMode]:IsModeActive())
-
-	self:SetMode(nextMode)
+	if Addon.Config:SkipInactiveModes() then
+		for i = 1, #self.modes do
+			local nextIndex = Wrap(currentIndex + i, #self.modes)
+			local nextMode = self.modes[nextIndex]
+			if Addon.progressBarModes[nextMode]:IsModeActive() then
+				self:SetMode(nextMode)
+			end
+		end
+	else
+		local nextIndex = Wrap(currentIndex + 1, #self.modes)
+		self:SetMode(self.modes[nextIndex])
+	end
 end
 
 function ProgressBar:GetCurrentModeIndex()

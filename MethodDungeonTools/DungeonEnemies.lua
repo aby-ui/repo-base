@@ -225,6 +225,7 @@ function MethodDungeonTools:DungeonEnemies_UpdateReapingPulls()
 end
 
 function MDTDungeonEnemyMixin:DisplayPatrol(shown)
+    local scale = MethodDungeonTools:GetScale()
 
     --Hide all points/line
     for _,point in pairs(patrolPoints) do point:Hide() end
@@ -240,10 +241,10 @@ function MDTDungeonEnemyMixin:DisplayPatrol(shown)
 
             patrolPoints[patrolIdx]:SetDrawLayer("OVERLAY", 2)
             patrolPoints[patrolIdx]:SetTexture("Interface\\Worldmap\\X_Mark_64Grey")
-            patrolPoints[patrolIdx]:SetSize(4,4)
+            patrolPoints[patrolIdx]:SetSize(4*scale,4*scale)
             patrolPoints[patrolIdx]:SetVertexColor(0,0.2,0.5,0.6)
             patrolPoints[patrolIdx]:ClearAllPoints()
-            patrolPoints[patrolIdx]:SetPoint("CENTER",MethodDungeonTools.main_frame.mapPanelTile1,"TOPLEFT",waypoint.x,waypoint.y)
+            patrolPoints[patrolIdx]:SetPoint("CENTER",MethodDungeonTools.main_frame.mapPanelTile1,"TOPLEFT",waypoint.x*scale,waypoint.y*scale)
             patrolPoints[patrolIdx].x = waypoint.x
             patrolPoints[patrolIdx].y = waypoint.y
             patrolPoints[patrolIdx]:Show()
@@ -258,7 +259,7 @@ function MDTDungeonEnemyMixin:DisplayPatrol(shown)
             if oldWaypointBlip then
                 local startPoint, startRelativeTo, startRelativePoint, startX, startY = patrolPoints[patrolIdx]:GetPoint()
                 local endPoint, endRelativeTo, endRelativePoint, endX, endY = oldWaypointBlip:GetPoint()
-                DrawLine(patrolLines[patrolIdx], MethodDungeonTools.main_frame.mapPanelTile1, startX, startY, endX, endY, 1, 1,"TOPLEFT")
+                DrawLine(patrolLines[patrolIdx], MethodDungeonTools.main_frame.mapPanelTile1, startX, startY, endX, endY, 1*scale, 1,"TOPLEFT")
                 patrolLines[patrolIdx]:Show()
             else
                 firstWaypointBlip = patrolPoints[patrolIdx]
@@ -269,7 +270,7 @@ function MDTDungeonEnemyMixin:DisplayPatrol(shown)
         if firstWaypointBlip and oldWaypointBlip then
             local startPoint, startRelativeTo, startRelativePoint, startX, startY = firstWaypointBlip:GetPoint()
             local endPoint, endRelativeTo, endRelativePoint, endX, endY = oldWaypointBlip:GetPoint()
-            DrawLine(patrolLines[1], MethodDungeonTools.main_frame.mapPanelTile1, startX, startY, endX, endY, 1, 1,"TOPLEFT")
+            DrawLine(patrolLines[1], MethodDungeonTools.main_frame.mapPanelTile1, startX, startY, endX, endY, 1*scale, 1,"TOPLEFT")
             patrolLines[1]:Show()
         end
 
@@ -371,6 +372,9 @@ local function blipDevModeSetup(blip)
     local xOffset,yOffset
     blip:SetScript("OnMouseDown",function()
         local x,y = MethodDungeonTools:GetCursorPosition()
+        local scale = MethodDungeonTools:GetScale()
+        x = x*(1/scale)
+        y = y*(1/scale)
         local nx = MethodDungeonTools.dungeonEnemies[db.currentDungeonIdx][blip.enemyIdx].clones[blip.cloneIdx].x
         local ny = MethodDungeonTools.dungeonEnemies[db.currentDungeonIdx][blip.enemyIdx].clones[blip.cloneIdx].y
         xOffset = x-nx
@@ -383,20 +387,24 @@ local function blipDevModeSetup(blip)
     blip:SetScript("OnDragStop", function()
         if not db.devModeBlipsMovable then return end
         local x,y = MethodDungeonTools:GetCursorPosition()
+        local scale = MethodDungeonTools:GetScale()
+        x = x*(1/scale)
+        y = y*(1/scale)
         x = x-xOffset
         y = y-yOffset
         blip:StopMovingOrSizing()
         blip:ClearAllPoints()
-        blip:SetPoint("CENTER",MethodDungeonTools.main_frame.mapPanelTile1,"TOPLEFT",x,y)
+        blip:SetPoint("CENTER",MethodDungeonTools.main_frame.mapPanelTile1,"TOPLEFT",x*scale,y*scale)
         MethodDungeonTools.dungeonEnemies[db.currentDungeonIdx][blip.enemyIdx].clones[blip.cloneIdx].x = x
         MethodDungeonTools.dungeonEnemies[db.currentDungeonIdx][blip.enemyIdx].clones[blip.cloneIdx].y = y
     end)
 end
 
 function MDTDungeonEnemyMixin:SetUp(data,clone)
+    local scale = MethodDungeonTools:GetScale()
     self:ClearAllPoints()
-    self:SetPoint("CENTER",MethodDungeonTools.main_frame.mapPanelTile1,"TOPLEFT",clone.x,clone.y)
-    self.normalScale = data.scale*(data.isBoss and 1.7 or 1)*(MethodDungeonTools.scaleMultiplier[db.currentDungeonIdx] or 1)
+    self:SetPoint("CENTER",MethodDungeonTools.main_frame.mapPanelTile1,"TOPLEFT",clone.x*scale,clone.y*scale)
+    self.normalScale = data.scale*(data.isBoss and 1.7 or 1)*(MethodDungeonTools.scaleMultiplier[db.currentDungeonIdx] or 1)*scale
     self.normalScale = self.normalScale * 0.6
     self:SetSize(self.normalScale*13,self.normalScale*13)
     self:updateSizes(1)
@@ -430,6 +438,20 @@ function MDTDungeonEnemyMixin:SetUp(data,clone)
     self.texture_Indicator:Hide()
 
     if db.devMode then blipDevModeSetup(self) end
+end
+
+---DungeonEnemies_PositionAllBlips
+---Used to position during scaling changes to the map
+function MethodDungeonTools:DungeonEnemies_PositionAllBlips(scale)
+    for _,blip in pairs(blips) do
+        self:DungeonEnemies_PositionBlip(blip,scale)
+    end
+end
+
+---DungeonEnemies_PositionBlip
+---Used to position during scaling changes to the map
+function MethodDungeonTools:DungeonEnemies_PositionBlip(blip, scale)
+    blip:SetPoint("CENTER",self.main_frame.mapPanelTile1,"TOPLEFT",blip.clone.x*scale,blip.clone.y*scale)
 end
 
 function MethodDungeonTools:DungeonEnemies_UpdateEnemies()

@@ -6,7 +6,7 @@
  local LSM = LibStub("LibSharedMedia-3.0")
  local self, GSA, PlaySoundFile = GladiatorlosSA, GladiatorlosSA, PlaySoundFile
  local GSA_TEXT = "|cff69CCF0GladiatorlosSA2|r (|cffFFF569/gsa|r)"
- local GSA_VERSION = "|cffFF7D0A B12 |r(|cFF00FF968.2 Battle for Azeroth|r)"
+ local GSA_VERSION = "|cffFF7D0A 2.0 |r(|cFF00FF968.2 Battle for Azeroth|r)"
  local GSA_AUTHOR = " "
  local gsadb
  local soundz,sourcetype,sourceuid,desttype,destuid = {},{},{},{},{}
@@ -100,61 +100,6 @@
 		drinking = false,
 		class = false,
 		interruptedfriendly = true,
-		
-		-- Unrecorded abilities
-		_PHDragonCharge = false,
-		_PHheroicLeap = false,
-		aimedShot = false,
-		beastWithin = false,
-		BeastWithinDown = false,
-		boomTrap = false,
-		BullRush = false,
-		CurseOfFragility = false,
-		CurseOfTongues = false,
-		CurseOfWeakness = false,
-		dancingRuneWeapon = false,
-		DeathChain = false,
-		DeathPact = false,
-		DeathsAdvance = false,
-		DemonicTyrant = false,
-		divineProtection = false,
-		doubleBarrel = false,
-		DragonBreath = false,
-		ExecutionSentence = false,
-		Feint = false,
-		FeintDown = false,
-		Fireblood = false,
-		Flourish = false,
-		holyWordSalvation = false,
-		Healthstone = false,
-		hibernate = false,
-		Icefury = false,
-		Interlope = false,
-		intimidation = false,
-		lastStand = false,
-		MightyOxKick = false,
-		Neurotoxin = false,
-		NimbleBrew = false,
-		Overrun = false,
-		Premonition = false,
-		RaiseDead = false,
-		safeguard = false,
-		safeguardDown = false,
-		secondWind = false,
-		ShieldOfVirtue = false,
-		soothe = false,
-		SpatialRift = false,
-		SpatialRift2 = false,
-		Spellwarding = false,
-		SpellwardingDown = false,
-		survivalTactics = false,
-		sweepingStrikes = false,
-		SweepingStrikesDown = false,
-		UrsolsVortex = false,
-		warpath = false,
-		
-		--purge = false,
-		--spellSteal = false,
 		
 		custom = {},
 	}	

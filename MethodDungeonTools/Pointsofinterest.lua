@@ -1,9 +1,10 @@
 --- DateTime: 23.06.2018 17:18
 local MethodDungeonTools = MethodDungeonTools
 local db
-local tonumber,tinsert,slen,pairs,ipairs,tostring,next,type,sformat,tremove = tonumber,table.insert,string.len,pairs,ipairs,tostring,next,type,string.format,table.remove
+local tonumber,tinsert,slen,pairs,ipairs,tostring,next,type,sformat,tremove,twipe = tonumber,table.insert,string.len,pairs,ipairs,tostring,next,type,string.format,table.remove,table.wipe
 local UnitName,UnitGUID,UnitCreatureType,UnitHealthMax,UnitLevel = UnitName,UnitGUID,UnitCreatureType,UnitHealthMax,UnitLevel
 
+local points = {}
 
 function MethodDungeonTools:POI_CreateFramePools()
     MethodDungeonTools.poi_framePools = MethodDungeonTools.poi_framePools or CreatePoolCollection()
@@ -32,6 +33,9 @@ local function POI_SetDevOptions(frame,poi)
             self.isMoving = false;
             self:StopMovingOrSizing();
             local newx,newy = MethodDungeonTools:GetCursorPosition()
+            local scale = MethodDungeonTools:GetScale()
+            newx = newx*(1/scale)
+            newy = newy*(1/scale)
             local pois = MethodDungeonTools.mapPOIs[db.currentDungeonIdx][MethodDungeonTools:GetCurrentSubLevel()]
             pois[self.poiIdx].x = newx
             pois[self.poiIdx].y = newy
@@ -332,15 +336,28 @@ local function POI_SetOptions(frame,type,poi)
             GameTooltip:Hide()
         end)
     end
+    --fullscreen sizes
+    local scale = MethodDungeonTools:GetScale()
+    frame:SetSize(frame:GetWidth()*scale,frame:GetHeight()*scale)
+    if frame.Texture then frame.Texture:SetSize(frame.Texture:GetWidth()*scale,frame.Texture:GetHeight()*scale) end
+    if frame.HighlightTexture then frame.HighlightTexture:SetSize(frame.HighlightTexture:GetWidth()*scale,frame.HighlightTexture:GetHeight()*scale) end
+
     if db.devMode then POI_SetDevOptions(frame,poi) end
 end
 
-
-
+---POI_PositionAllPoints
+---Used to position during scaling changes to the map
+function MethodDungeonTools:POI_PositionAllPoints(scale)
+    for _,poiFrame in pairs(points) do
+        poiFrame:ClearAllPoints()
+        poiFrame:SetPoint("CENTER",self.main_frame.mapPanelTile1,"TOPLEFT",poiFrame.x*scale,poiFrame.y*scale)
+    end
+end
 
 
 ---POI_UpdateAll
 function MethodDungeonTools:POI_UpdateAll()
+    twipe(points)
     db = MethodDungeonTools:GetDB()
     local framePools = MethodDungeonTools.poi_framePools
     framePools:ReleaseAll()
@@ -349,15 +366,19 @@ function MethodDungeonTools:POI_UpdateAll()
     if not pois then return end
     local preset = MethodDungeonTools:GetCurrentPreset()
     local teeming = MethodDungeonTools:IsPresetTeeming(preset)
+    local scale = MethodDungeonTools:GetScale()
     for poiIdx,poi in pairs(pois) do
         local poiFrame = framePools:Acquire(poi.template)
         poiFrame.poiIdx = poiIdx
         POI_SetOptions(poiFrame,poi.type,poi)
+        poiFrame.x = poi.x
+        poiFrame.y = poi.y
         poiFrame:ClearAllPoints()
-        poiFrame:SetPoint("CENTER",MethodDungeonTools.main_frame.mapPanelTile1,"TOPLEFT",poi.x,poi.y)
+        poiFrame:SetPoint("CENTER",MethodDungeonTools.main_frame.mapPanelTile1,"TOPLEFT",poi.x*scale,poi.y*scale)
         poiFrame:Show()
         if not teeming and poiFrame.teeming then
             poiFrame:Hide()
         end
+        tinsert(points,poiFrame)
     end
 end

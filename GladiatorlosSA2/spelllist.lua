@@ -219,7 +219,7 @@
 			[199086] = "warpath", -- Warpath
 			
 			-- Tank Taunts (Aura Applied)
-			[206891] = "tankTauntsON", -- Tank Taunts On
+			--[206891] = "tankTauntsON", -- Tank Taunts On
 		},
 		auraRemoved = {					-- aura removed [spellid] = ".mp3 file name",
 			[642] = "bubbleDown",				--Divine Shield
@@ -284,6 +284,7 @@
 			[15286] = "vampiricEmbraceDown",	--Vampiric Embrace
 			--[203727] = "thornsDown",			--Thorns (Resto)
 			[236696] = "thornsDown",			--Thorns (Feral)
+			[305497] = "thornsDown",			--Thorns 8.2
 			[209584] = "zenFocusTeaDown",		--Zen Focus Tea
 			[216890] = "SpellreflectionDown", 		-- Arms/Fury
 			[23920] = "SpellreflectionDown",			-- Protection
@@ -300,8 +301,10 @@
 			[204018] = "SpellwardingDown",	-- Blessing of Spellwarding
 			[212704] = "BeastWithinDown",	-- The Beast Within; Beastial Wrath Fear/Horror Immunity Honor Talent
 			[1966] = "FeintDown",			-- Feint
+			[210294] = "DivineFavorDown", -- Divine Favor
+			[104773] = "UnendingResolveDown", -- Unending Resolve
 		--TANK TAUNTS
-			[206891] = "tankTauntsOFF", 			-- Tank Taunts Down
+			--[206891] = "tankTauntsOFF", 			-- Tank Taunts Down
 			},
 		castStart = {					-- cast start [spellid] = ".mp3 file name",
 		
@@ -434,6 +437,9 @@
 			[115268] = "seduction",
 			--[211714] = "_PHthalkiel",
 			[265187] = "DemonicTyrant", -- Summon Demonic Tyrant
+			[29893] = "CreateHealthstone",
+			[183601] = "CreateHealthstone",
+			[6201] = "CreateHealthstone",
 
 			-- Warrior (Spell Casting)
 				--None! :D
@@ -819,8 +825,8 @@
 			[236077] = "disarm",
 			[236236] = "disarm",
 			[236320] = "warBanner",
-			[6544] = "_PHheroicLeap",
-			[206572] = "_PHDragonCharge", -- Dragon Charge
+			[6544] = "heroicLeap",
+			[206572] = "DragonCharge", -- Dragon Charge
 		},
 		friendlyInterrupt = {			--friendly interrupt [spellid] = ".mp3 file name",
 			[19647] = "lockout", -- Spell Lock

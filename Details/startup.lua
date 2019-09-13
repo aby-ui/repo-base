@@ -3,7 +3,6 @@ local UnitGroupRolesAssigned = DetailsFramework.UnitGroupRolesAssigned
 
 --> check unloaded files:
 if (
-	-- version 1.21.0
 	not _G._detalhes.atributo_custom.damagedoneTooltip or
 	not _G._detalhes.atributo_custom.healdoneTooltip
 	) then
@@ -1881,7 +1880,7 @@ function _G._detalhes:Start()
 	if (not DetailsFramework.IsClassicWow()) then
 		--print ("|CFFFFFF00[Details!]: Details! now has a separated version for Classic, Twitch app should give the right version, any issues report at Discord (/details discord).")
 	else
-		print ("|CFFFFFF00[Details!]: you're not using using the wrong version of Details!, please get the classic version, if you need help see our Discord (/details discord).")
+		print ("|CFFFFFF00[Details!]: you're using using the wrong version of Details!, please get the classic version, if you need help see our Discord (/details discord).")
 	end
 
 end

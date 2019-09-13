@@ -117,7 +117,7 @@ local L = namespace.L 				--localization
 			"        aenerv7, xlfd2008, y123ao6" .. "|n" ..																--(Simplified Chinese) Continued Simplified Chinese list
 			"|cff0094c4    Traditional Chinese:|r BNSSNB, killsophia," .. "|n" ..					--(Traditional Chinese)
 			"        konraddo, y123ao6" .. "|n" ..														--(Traditional Chinese) Continued Traditional Chinese list
-			"|n" ..																					--(Spacer)
+			-- "|n" ..																					--(Spacer)
 			"|cff0094c4Special Thanks:|r" .. "|n" ..
 			"|cff0094c4    Communities:|r Blizzard, Curse, ElvUI," .. "|n" .. 
 			"        WoWInterface, and Reddit's /r/wow" .. "|n" ..
@@ -133,7 +133,7 @@ local L = namespace.L 				--localization
 		DCSAboutDCS_ThanksFS:SetShadowColor(0, 0, 0, 1)
 		DCSAboutDCS_ThanksFS:SetFont("Fonts\\FRIZQT__.TTF", 25)
 		DCSAboutDCS_ThanksFS:SetJustifyH("CENTER")
-		DCSAboutDCS_ThanksFS:SetPoint("BOTTOM", 0, 100)
+		DCSAboutDCS_ThanksFS:SetPoint("BOTTOM", 0, 90)
 		DCSAboutDCS_ThanksFS:Show();
 
 		DCSAboutDCS_ThanksFS:SetText("Thank You!");

@@ -1,10 +1,12 @@
 ## Interface: 80200
+## Version: v8.2.1.1
 ## Title: GridStatusRaidDebuff(WoD)
 ## Notes: Debuff List for WoD
 ## Author: tptbk(Doadin-Malorne-US)
-## Version: 8.2.0.0
 ## Grid Author: Pastamancer & Maia
 ## Dependencies: GridStatusRaidDebuff
+## OptionalDeps: Grid, Plexus
+## X-Curse-Project-ID: 85975
 
 
 CheckCompat.lua

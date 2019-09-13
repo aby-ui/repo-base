@@ -107,6 +107,7 @@ local ignore_ids = {
     [5215] = true, -- Prowl Druid Debuff
     [115191] = true, -- Stealth Rogue Debuff
     [304851] = true, -- 纳沙塔尔之战参战者
+    [97821] = true, --虚空之触
 }
 
 local clientVersion
