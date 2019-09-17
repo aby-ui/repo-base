@@ -165,8 +165,9 @@ local function BuildHubPanel(panel)
     panel.WidgetsHostileBuff = CreateQuickCheckbutton(objectName.."WidgetsHostileBuff", "包括敌对NPC的Buffs", AlignmentColumn, panel.WidgetsMyDebuff, 16)
     panel.WidgetsHostilePlayerBuff = CreateQuickCheckbutton(objectName.."WidgetsHostilePlayerBuff", "也显示敌对玩家的Buffs（会比较乱）", AlignmentColumn, panel.WidgetsHostileBuff, 32)
     panel.WidgetsHostileBuffStealableOnly2 = CreateQuickCheckbutton(objectName.."WidgetsHostileBuffStealableOnly2", "仅包括可进攻驱散或可偷取的", AlignmentColumn, panel.WidgetsHostilePlayerBuff, 32)
+    panel.WidgetsOnlyListDebuff = CreateQuickCheckbutton(objectName.."WidgetsOnlyListDebuff", "仅显示下面列出的Debuffs(白名单方式)", AlignmentColumn, panel.WidgetsHostileBuffStealableOnly2, 16)
 
-	panel.WidgetsDebuffListLabel = CreateQuickItemLabel(nil, "额外的光环:", AlignmentColumn, panel.WidgetsHostileBuffStealableOnly2, 16)
+	panel.WidgetsDebuffListLabel = CreateQuickItemLabel(nil, "额外的光环:", AlignmentColumn, panel.WidgetsOnlyListDebuff, 16)
 	panel.WidgetsDebuffTrackList = CreateQuickEditbox(objectName.."WidgetsDebuffTrackList", AlignmentColumn, panel.WidgetsDebuffListLabel, 16)
 
 	panel.WidgetsDebuffStyle =  CreateQuickDropdown(objectName.."WidgetsDebuffStyle", "图标样式:", DebuffStyles, 1, AlignmentColumn, panel.WidgetsDebuffTrackList, 16)

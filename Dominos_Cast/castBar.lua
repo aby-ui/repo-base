@@ -19,6 +19,11 @@ local UnitChannelInfo = _G.UnitChannelInfo or _G.ChannelInfo
 local IsHarmfulSpell = _G.IsHarmfulSpell
 local IsHelpfulSpell = _G.IsHelpfulSpell
 
+local ICON_OVERRIDES = {
+	-- replace samwise with cog
+	[136235] = 136243
+}
+
 --[[ constants ]]--
 
 local LATENCY_BAR_ALPHA = 0.7
@@ -333,7 +338,7 @@ function CastBar:time_update(text)
 end
 
 function CastBar:icon_update(texture)
-	self.icon:SetTexture(texture)
+	self.icon:SetTexture(texture and ICON_OVERRIDES[texture] or texture)
 end
 
 function CastBar:spell_update(spellID)
@@ -520,7 +525,6 @@ function CastBar:UpdateCasting(reset)
 	self.OnValueChanged = self.OnCastingValueChanged
 
 	local name, text, texture, startTime, endTime, _, _, _, spellID = UnitCastingInfo(self:GetProperty("unit"))
-
 	if name then
 		self:SetProperty('mode', 'cast')
 		self:SetProperty('label', text)

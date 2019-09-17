@@ -3,7 +3,7 @@
 		a frame that contains buttons
 --]]
 
-local AddonName, Addon = ...
+local _, Addon = ...
 local ButtonBar = Addon:CreateClass('Frame', Addon.Frame)
 
 function ButtonBar:New(...)
@@ -191,7 +191,7 @@ function ButtonBar:Layout()
 	local isTopToBottom = self:GetTopToBottom()
 
 	-- grab base button sizes
-	local l, r, t, b = self:GetButtonInsets()
+	local l, _, t, _ = self:GetButtonInsets()
 	local bW, bH = self:GetButtonSize()
 	local pW, pH = self:GetPadding()
 	local spacing = self:GetSpacing()

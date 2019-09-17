@@ -81,6 +81,7 @@ local initFrames
 local defaultSavedVars = {
 	global = {
 		currentExpansion = 2,
+        scale = 1,
         enemyForcesFormat = 2,
         enemyStyle = 1,
 		currentDungeonIdx = 15,
@@ -213,8 +214,8 @@ local affixWeeks = { --affixID as used in C_ChallengeMode.GetAffixInfo(affixID)
     [5] = {[1]=7,[2]=13,[3]=9,[4]=119},
     [6] = {[1]=11,[2]=3,[3]=10,[4]=119},
     [7] = {[1]=6,[2]=4,[3]=9,[4]=119},
-    [8] = {[1]=0,[2]=0,[3]=10,[4]=119},--unknown
-    [9] = {[1]=0,[2]=0,[3]=9,[4]=119},--unknown
+    [8] = {[1]=5,[2]=14,[3]=10,[4]=119},
+    [9] = {[1]=11,[2]=2,[3]=9,[4]=119},
     [10] = {[1]=7,[2]=12,[3]=10,[4]=119},
     [11] = {[1]=6,[2]=13,[3]=9,[4]=119},
     [12] = {[1]=8,[2]=12,[3]=10,[4]=119},
@@ -627,6 +628,7 @@ end
 ---GetScale
 ---Returns scale factor stored in db
 function MethodDungeonTools:GetScale()
+    if not db.scale then db.scale = 1 end
     return db.scale
 end
 
@@ -646,7 +648,6 @@ end
 ---SetScale
 ---Scales the map frame and it's sub frames to a factor and stores the scale in db
 function MethodDungeonTools:SetScale(scale)
-    db.scale = scale
     local f = self.main_frame
     local newSizex = sizex*scale
     local newSizey = sizey*scale
@@ -3315,6 +3316,7 @@ function MethodDungeonTools:DrawAllPresetObjects()
                 local text = obj.d[5]
                 MethodDungeonTools:DrawNote(x,y,text,objectIndex)
             else
+                obj.d[1] = obj.d[1] or 5 --safety check
                 color.r,color.g,color.b = MethodDungeonTools:HexToRGB(obj.d[5])
                 --lines
                 local x1,y1,x2,y2

@@ -18,7 +18,7 @@ function ProgressBar:New(id, modes, ...)
 	bar:SetFrameStrata(bar.sets.strata or 'BACKGROUND')
 	bar:UpdateFont()
 	bar:UpdateAlwaysShowText()
-	bar:UpdateMode(true)
+	bar:UpdateMode()
 
 	return bar
 end
@@ -164,15 +164,25 @@ end
 
 --[[ mode ]]--
 
-function ProgressBar:SetMode(mode, force)
-	if self:GetMode() ~= mode or force then
-		Addon.Config:SetBarMode(self.id, mode)
-		self:OnModeChanged(self:GetMode())
-	end
+function ProgressBar:SetMode(mode)
+	Addon.Config:SetBarMode(self.id, mode)
+	self:OnModeChanged(self:GetMode())
 end
 
 function ProgressBar:GetMode()
 	return Addon.Config:GetBarMode(self.id) or self.modes[1]
+end
+
+function ProgressBar:GetModeIndex()
+	local currentMode = self:GetMode()
+
+	for i, mode in pairs(self.modes) do
+		if mode == currentMode then
+			return i
+		end
+	end
+
+	return 1
 end
 
 function ProgressBar:OnModeChanged(mode)
@@ -183,59 +193,68 @@ function ProgressBar:OnModeChanged(mode)
 	end
 end
 
-function ProgressBar:UpdateMode(force)
+function ProgressBar:UpdateMode()
+	local mode
 	if self:IsModeLocked() then
-		self:SetMode(self:GetMode(), force)
+		mode = self:GetMode()
 	else
-		-- update to the first active mode we have, in reverse order
-		local modeId = 1
-		for i = #self.modes, 1, -1 do
-			local mode = self.modes[i]
-			if Addon.progressBarModes[mode]:IsModeActive() then
-				modeId = i
-				break
-			end
-		end
-
-		self:SetMode(modeId, force)
+		mode = self:GetLastActiveMode()
 	end
+
+	self:SetMode(mode)
 end
 
 function ProgressBar:IsModeActive()
 	return false
 end
 
-function ProgressBar:GetModeIndex()
-	local mode = self:GetMode()
+-- iterates through all modes in reverse order
+-- and finds the first one that's active
+-- if no active modes are found, retrieves the first mode from the list
+function ProgressBar:GetLastActiveMode()
+	local modes = self.modes
 
-	for i, availableMode in ipairs(self.modes) do
-		if availableMode == mode then
-			return i
+	for i = #modes, 2, -1 do
+		local mode = modes[i]
+		if Addon.progressBarModes[mode]:IsModeActive() then
+			return mode
 		end
 	end
 
-	return 1
+	return modes[1]
 end
 
 function ProgressBar:NextMode()
-	local currentIndex = self:GetModeIndex()
+	local mode
 
 	if Addon.Config:SkipInactiveModes() then
-		for i = 1, #self.modes do
-			local nextIndex = Wrap(currentIndex + i, #self.modes)
-			local nextMode = self.modes[nextIndex]
-			if Addon.progressBarModes[nextMode]:IsModeActive() then
-				self:SetMode(nextMode)
-			end
-		end
+		mode = self:GetNextActiveMode()
 	else
-		local nextIndex = Wrap(currentIndex + 1, #self.modes)
-		self:SetMode(self.modes[nextIndex])
+		mode = self:GetNextMode()
 	end
+
+	self:SetMode(mode)
 end
 
-function ProgressBar:GetCurrentModeIndex()
-	return self.modeIndex or 1
+function ProgressBar:GetNextMode()
+	local modes = self.modes
+	return modes[Wrap(self:GetModeIndex() + 1, #modes)]
+end
+
+function ProgressBar:GetNextActiveMode()
+	local currentIndex = self:GetModeIndex()
+	local modes = self.modes
+
+	for offset = 1, #modes - 1 do
+		local index = Wrap(currentIndex + offset, #modes)
+		local mode = modes[index]
+
+		if Addon.progressBarModes[mode]:IsModeActive() then
+			return mode
+		end
+	end
+
+	return modes[currentIndex]
 end
 
 function ProgressBar:SetLockMode(lock)
@@ -258,8 +277,8 @@ end
 
 function ProgressBar:SetValues(value, max, bonus)
 	local valueChanged = false
-
 	local maxChanged = false
+	local bonusChanged = false
 
 	max = math.max(tonumber(max) or 0, 1)
 	if self.max ~= max then
@@ -267,13 +286,11 @@ function ProgressBar:SetValues(value, max, bonus)
 		maxChanged = true
 	end
 
-	value = math.min(math.max(tonumber(value) or 0, 0), max)
+	value = Clamp(tonumber(value) or 0, 0, max)
 	if self.value ~= value then
 		self.value = value
 		valueChanged = true
 	end
-
-	local bonusChanged = false
 
 	bonus = tonumber(bonus) or 0
 	if self.bonus ~= bonus then
@@ -302,7 +319,7 @@ function ProgressBar:UpdateValue()
 
 	local segmentValue = max / self:GetSegmentCount()
 	local lastFilledIndex = floor(value / segmentValue)
-	local remainder = floor(100 * (value % segmentValue) / (segmentValue * 1.0) + 0.5)
+	local remainder = Round(100 * (value % segmentValue) / (segmentValue * 1.0))
 
 	for i, segment in pairs(self.buttons) do
 		if i <= lastFilledIndex then
@@ -322,7 +339,7 @@ function ProgressBar:UpdateBonusValue()
 
 	local segmentValue = max / self:GetSegmentCount()
 	local lastFilledIndex = floor(bonus / segmentValue)
-	local remainder = floor(100 * (bonus % segmentValue) / (segmentValue * 1.0) + 0.5)
+	local remainder = Round(100 * (bonus % segmentValue) / (segmentValue * 1.0))
 
 	for i, segment in pairs(self.buttons) do
 		if i <= lastFilledIndex then
@@ -334,8 +351,6 @@ function ProgressBar:UpdateBonusValue()
 		end
 	end
 end
-
-
 
 --[[ text display ]]--
 
@@ -633,7 +648,6 @@ do
 			bonus:SetValue(0)
 			bonus:EnableMouse(false)
 			bonus:SetAllPoints(segment)
-
 			segment.bonus = bonus
 
 			local value = CreateFrame('StatusBar', nil, bonus)
@@ -641,7 +655,6 @@ do
 			value:SetValue(0)
 			value:EnableMouse(false)
 			value:SetAllPoints(bonus)
-
 			segment.value = value
 		end
 

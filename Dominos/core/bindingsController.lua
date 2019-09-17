@@ -9,7 +9,7 @@
 
 --[[ globals ]]--
 
-local AddonName, Addon = ...
+local _, Addon = ...
 local Timer_After = _G.C_Timer.After
 
 
@@ -349,7 +349,7 @@ end
 function BindingsController:UpdateCastOnKeyPress()
 	local castingOnKeyPress = self:CastingOnKeyPress()
 
-	for button, surrogate in pairs(self.surrogates) do
+	for _, surrogate in pairs(self.surrogates) do
 		surrogate:SetCastOnKeyPress(castingOnKeyPress)
 	end
 end

@@ -65,7 +65,7 @@ Donators.lua
 RunLast.lua
 
 PluginCore\BlizzBugsSuck.lua
-PluginCore\MasqueDummy.lua
+#PluginCore\MasqueDummy.lua
 ..\!!!Libs\LibSharedMedia-3.0\LibSharedMedia-3.0\LibSharedMedia-3.0.lua
 PluginCore\SharedMedia.lua
 ..\!!!Libs\LibItemUpgradeInfo-1.0\Core.lua

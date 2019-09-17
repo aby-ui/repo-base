@@ -1,4 +1,4 @@
-local AddonName, Addon = ...
+local _, Addon = ...
 local OverrideController = Addon:CreateHiddenFrame('Frame', nil, UIParent, 'SecureHandlerStateTemplate')
 
 local overrideBarStates = {
@@ -12,11 +12,8 @@ local overrideBarStates = {
 }
 
 function OverrideController:Load()
- 	--[[
-		Override UI Detection
-	--]]
-
-	local overrideUIWatcher = CreateFrame('Frame', nil, _G['OverrideActionBar'], 'SecureHandlerShowHideTemplate')
+	-- Override UI Detection
+	local overrideUIWatcher = CreateFrame('Frame', nil, OverrideActionBar, 'SecureHandlerShowHideTemplate')
 	overrideUIWatcher:SetFrameRef('controller', self)
 	self.overrideUIWatcher = overrideUIWatcher
 

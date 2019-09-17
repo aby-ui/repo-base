@@ -5,6 +5,19 @@ local _, Addon = ...
 
 --[[ The Bar ]]--
 
+local function header_UpdateExitButton(self)
+	if self:GetAttribute('state-display') == 'show' then
+		VehicleLeaveButton:Show()
+		VehicleLeaveButton:Enable()
+	else
+		VehicleLeaveButton:Hide()
+		VehicleLeaveButton:Disable()
+		VehicleLeaveButton:UnlockHighlight()
+	end
+end
+
+
+
 local VehicleBar = Addon:CreateClass('Frame', Addon.ButtonBar)
 
 function VehicleBar:New()
@@ -32,16 +45,7 @@ function VehicleBar:Create(...)
 		self:CallMethod('UpdateExitButton')
 	]])
 
-	function bar.header:UpdateExitButton()
-		if self:GetAttribute('state-display') == 'show' then
-			VehicleLeaveButton:Show()
-			VehicleLeaveButton:Enable()
-		else
-			VehicleLeaveButton:Hide()
-			VehicleLeaveButton:Disable()
-			VehicleLeaveButton:UnlockHighlight()
-		end
-	end
+	bar.header.UpdateExitButton = header_UpdateExitButton
 
 	RegisterStateDriver(bar.header, 'canexitvehicle', '[canexitvehicle]1;0')
 

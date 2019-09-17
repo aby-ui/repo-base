@@ -3,10 +3,10 @@
 		Handles fading out frames when not moused over
 		Necessary since using the blizzard fading functions can cause issues in combat
 --]]
+local _, Addon = ...
+local After = C_Timer.After
 
-local AddonName, Addon = ...
 local MouseOverWatcher = {}
-local Timer_After = _G['C_Timer'].After
 local watched = {}
 
 function MouseOverWatcher:Update()
@@ -39,7 +39,7 @@ function MouseOverWatcher:RequestUpdate()
 
 	if not self.__Waiting then
 		self.__Waiting = true
-		Timer_After(0.15, self.__Update)
+		After(0.15, self.__Update)
 	end
 end
 
@@ -63,6 +63,5 @@ function MouseOverWatcher:Remove(f)
 	end
 end
 
---[[ exports ]]--
-
+-- exports
 Addon.MouseOverWatcher = MouseOverWatcher

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(318, "DBM-DragonSoul", nil, 187)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190625143316")
+mod:SetRevision("20190913151156")
 mod:SetCreatureID(53879)
 mod:SetEncounterID(1291)
 mod:SetZone()
@@ -153,7 +153,7 @@ end
 -- not needed guid check. This is residue creation step.
 function mod:SPELL_CAST_SUCCESS(args)
 	local spellId = args.spellId
-	if spellId == 105219 then 
+	if spellId == 105219 then
 		residueNum = residueNum + 1
 		diedOozeGUIDS[args.sourceGUID] = GetTime()
 		self:Unschedule(warningResidue)
@@ -193,7 +193,7 @@ function mod:SPELL_AURA_APPLIED(args)
 			DBM.InfoFrame:Show(6, "playerabsorb", args.spellName, select(16, DBM:UnitDebuff(args.destName, args.spellName)))
 		end
 	end
-end		
+end
 
 function mod:SPELL_AURA_APPLIED_DOSE(args)
 	local spellId = args.spellId
@@ -219,7 +219,7 @@ function mod:SPELL_AURA_REMOVED(args)
 			DBM.InfoFrame:Hide()
 		end
 	end
-end	
+end
 
 --Damage event that indicates an ooze is taking damage
 --we check its GUID to see if it's a resurrected ooze and if so remove it from table.
@@ -244,6 +244,7 @@ function mod:RAID_BOSS_EMOTE(msg)
 			specWarnRoll:Show()--Warn you right away.
 		end
 		self:Schedule(3, checkTendrils)--After 3 seconds of roll starting, check tendrals, you should have leveled him out by now if this wasn't on purpose.
+		timerBarrelRoll:Cancel()
 		if numberOfPlayers > 1 then
 			timerBarrelRoll:Start(5)
 			self:Schedule(8, clearTendrils)--Clearing 3 seconds after the roll should be sufficent

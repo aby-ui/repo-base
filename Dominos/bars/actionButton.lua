@@ -21,7 +21,10 @@ end
 local function GetOrCreateActionButton(id)
 	if id <= 12 then
 		local b = _G[('ActionButton%d'):format(id)]
+
+		-- luacheck: push ignore 122
 		b.buttonType = 'ACTIONBUTTON'
+		-- luacheck: pop
 		return b
 	elseif id <= 24 then
 		return CreateActionButton(id - 12)
@@ -72,6 +75,7 @@ function ActionButton:New(id)
 		end
 
 		button:UpdateMacro()
+		button:UpdateCount()
 		button:UpdateShowEquippedItemBorders()
 
 		self.active[id] = button
@@ -111,9 +115,7 @@ function ActionButton:Restore(id)
 	if button then
 		self.unused[id] = nil
 
-		button:LoadEvents()
-		ActionButton_UpdateAction(button)
-		button:Show()
+		button:SetAttribute("statehidden", nil)
 
 		self.active[id] = button
 		return button
@@ -141,11 +143,6 @@ do
 	end
 end
 
---these are all events that are registered OnLoad for action buttons
-function ActionButton:LoadEvents()
-	ActionBarActionEventsFrame_RegisterFrame(self)
-end
-
 --keybound support
 function ActionButton:OnEnter()
 	KeyBound:Set(self)
@@ -169,6 +166,14 @@ if Addon:IsBuild("classic") then
 			end
 		end
 	end)
+end
+
+function ActionButton:UpdateCount()
+	if Addon:ShowCounts() then
+		self.Count:Show()
+	else
+		self.Count:Hide()
+	end
 end
 
 --button visibility

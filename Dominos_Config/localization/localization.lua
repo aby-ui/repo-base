@@ -37,6 +37,7 @@ L.SelfcastKey = 'Selfcast Key'
 L.QuickMoveKey = 'Quick Move Key'
 L.ShowMacroText = 'Show Macro Text'
 L.ShowBindingText = 'Show Binding Text'
+L.ShowCountText = "Show Count Text"
 L.ShowEmptyButtons = 'Show Empty Buttons'
 L.LockActionButtons = 'Lock Action Button Positions'
 L.EnterBindingMode = 'Bind Keys...'

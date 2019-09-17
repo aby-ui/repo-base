@@ -4,16 +4,10 @@
 		on both the stock blizzard bindings, and click bindings
 --]]
 
---[[ Globals ]]--
-
 local _, Addon = ...
 local KeyBound = LibStub('LibKeyBound-1.0')
 
-
---[[ Class ]]--
-
 local BindableButton = Addon:CreateClass('CheckButton')
-Addon.BindableButton = BindableButton
 
 -- there's a nice assumption here: all hotkey text will use the same naming
 -- convention the call here is wacky because this functionality is actually
@@ -100,3 +94,7 @@ do
 		clearBindings(self:GetClickBindings())
 	end
 end
+
+
+-- exports
+Addon.BindableButton = BindableButton

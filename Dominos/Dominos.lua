@@ -166,6 +166,7 @@ function Addon:GetDatabaseDefaults()
 			linkedOpacity = false,
 			showMacroText = true,
 			showBindingText = true,
+			showCounts = true,
 			showEquippedItemBorders = true,
 			showTooltips = true,
 			showTooltipsCombat = true,
@@ -521,7 +522,7 @@ end
 function Addon:SetShowMacroText(enable)
 	self.db.profile.showMacroText = enable or false
 
-	for _,f in self.Frame:GetAll() do
+	for _, f in self.Frame:GetAll() do
 		if f.buttons then
 			for _,b in pairs(f.buttons) do
 				if b.UpdateMacro then
@@ -682,6 +683,26 @@ function Addon:SetThemeButtons(enable)
 
 	self:GetModule("ButtonThemer"):Reskin()
 end
+
+-- show counts toggle
+function Addon:ShowCounts()
+	return self.db.profile.showCounts
+end
+
+function Addon:SetShowCounts(enable)
+	self.db.profile.showCounts = enable or false
+
+	for _, f in self.Frame:GetAll() do
+		if f.buttons then
+			for _,b in pairs(f.buttons) do
+				if b.UpdateCount then
+					b:UpdateCount()
+				end
+			end
+		end
+	end
+end
+
 
 -- build test
 function Addon:GetBuild()

@@ -3,7 +3,7 @@
 		Handle showing/hiding frame tooltips in a secure manner
 --]]
 
-local AddonName, Addon = ...
+local _, Addon = ...
 local TooltipController = Addon:NewModule('Tooltips')
 
 function TooltipController:OnInitialize()

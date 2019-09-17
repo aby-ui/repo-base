@@ -1,20 +1,12 @@
---[[
-Things to do
- Lump close dungeon/raids into one, (nexus/oculus/eoe) (DONE)
- Maybe implement lockout info on tooltip (Don't know if I want too, better addons for tracking it exist) (DONE anyway)
-]]--
-
-local DEBUG = false
-
 local HandyNotes = LibStub("AceAddon-3.0"):GetAddon("HandyNotes", true)
 if not HandyNotes then return end
 local L = LibStub("AceLocale-3.0"):GetLocale("HandyNotes_DungeonLocations")
 
-local iconDefault = "Interface\\Icons\\TRADE_ARCHAEOLOGY_CHESTOFTINYGLASSANIMALS"
-local iconDungeon = "Interface\\MINIMAP\\Dungeon"
-local iconRaid = "Interface\\MINIMAP\\Raid"
-local iconMixed = "Interface\\Addons\\HandyNotes_DungeonLocations\\merged.tga"
-local iconGray = "Interface\\Addons\\HandyNotes_DungeonLocations\\gray.tga"
+icons = { }
+icons["Dungeon"] = "Interface\\MINIMAP\\Dungeon"
+icons["Raid"] = "Interface\\MINIMAP\\Raid"
+icons["Mixed"] = "Interface\\Addons\\HandyNotes_DungeonLocations\\merged.tga"
+icons["Locked"] = "Interface\\Addons\\HandyNotes_DungeonLocations\\gray.tga"
 
 local db
 local mapToContinent = { }
@@ -23,20 +15,12 @@ local minimap = { } -- For nodes that need precise minimap locations but would l
 local alterName = { }
 local extraInfo = { }
 local legionInstancesDiscovered = { } -- Extrememly bad juju, needs fixing in BfA
-local coordToDungeon = { } -- If it isn't obvious by now, I have no idea how to actually program
-
-if (DEBUG) then
-	HNDL_NODES = nodes
-	HNDL_MINIMAP = minimap
-	HNDL_ALTERNAME = alterName
-	--HNDL_LOCKOUTS = lockouts
-end
 
 local LOCKOUTS = { }
 local function updateLockouts()
  table.wipe(LOCKOUTS)
  for i=1,GetNumSavedInstances() do
-  local name, id, reset, difficulty, locked, extended, instanceIDMostSig, isRaid, maxPlayers, difficultyName, numEncounters, encounterProgress = GetSavedInstanceInfo(i)
+  local name, _, _, _, locked, _, _, _, _, difficultyName, numEncounters, encounterProgress = GetSavedInstanceInfo(i)
   if (locked) then
    --print(name, difficultyName, numEncounters, encounterProgress)
    if (not LOCKOUTS[name]) then
@@ -48,21 +32,15 @@ local function updateLockouts()
 end
 
 local pluginHandler = { }
-function pluginHandler:OnEnter(uiMapId, coord) -- Copied from handynotes
- --GameTooltip:AddLine("text" [, r [, g [, b [, wrap]]]])
- -- Maybe check for situations where minimap and node coord overlaps
+function pluginHandler:OnEnter(uiMapId, coord)
+ -- Maybe check for situations where minimap and node coord overlaps (Would that even matter)
     local nodeData = nil
-	
-    --if (not nodes[mapFile][coord]) then return end
-	if (coordToDungeon[coord]) then
-		nodeData = coordToDungeon[coord]
+
+	if (minimap[uiMapId] and minimap[uiMapId][coord]) then
+	 nodeData = minimap[uiMapId][coord]
 	end
-	
-	if (minimap[mapFile] and minimap[mapFile][coord]) then
-	 nodeData = minimap[mapFile][coord]
-	end
-	if (nodes[mapFile] and nodes[mapFile][coord]) then
-	 nodeData = nodes[mapFile][coord]
+	if (nodes[uiMapId] and nodes[uiMapId][coord]) then
+	 nodeData = nodes[uiMapId][coord]
 	end
 	
 	if (not nodeData) then return end
@@ -140,19 +118,7 @@ do
 		local state, value = next(data, prestate)
 
 		if value then
-			if (not coordToDungeon[state]) then
-				coordToDungeon[state] = value
-			end
-			local icon, alpha
-			if (value.type == "Dungeon") then
-				icon = iconDungeon
-			elseif (value.type == "Raid") then
-				icon = iconRaid
-			elseif (value.type == "Mixed") then
-				icon = iconMixed
-			else
-				icon = iconDefault
-			end
+			local alpha
 			
 			local allLocked = true
 			local anyLocked = false
@@ -165,10 +131,10 @@ do
 					anyLocked = true
 				end
 			end
-
+			local icon = icons[value.type]
 			-- I feel like this inverted lockout thing could be done far better
 			if ((anyLocked and db.invertlockout) or (allLocked and not db.invertlockout) and db.lockoutgray) then   
-				icon = iconGray
+				icon = icons["Locked"]
 			end
 			if ((anyLocked and db.invertlockout) or (allLocked and not db.invertlockout) and db.uselockoutalpha) then
 				alpha = db.lockoutalpha
@@ -177,7 +143,7 @@ do
 			end
 			
 			--print('Minimap', t.minimapUpdate, legionInstancesDiscovered[value.id])
-			if not legionInstancesDiscovered[value.id] or t.minimapUpdate then
+			if not legionInstancesDiscovered[value.id] and db.show[value.type] or t.minimapUpdate then
 			 return state, nil, icon, db.zoneScale, alpha
 			end
 			state, value = next(data, state)
@@ -199,20 +165,9 @@ do
 			if data then -- Only if there is data for this zone
 				state, value = next(data, prestate)
 				while state do -- Have we reached the end of this zone?
-					if (not coordToDungeon[state]) then
-						coordToDungeon[state] = value
-					end
 					local icon, alpha
 
-					if (value.type == "Dungeon") then
-						icon = iconDungeon
-					elseif (value.type == "Raid") then
-						icon = iconRaid
-					elseif (value.type == "Mixed") then
-						icon = iconMixed
-					else
-						icon = iconDefault
-					end
+					icon = icons[value.type]
 					local allLocked = true
 					local anyLocked = false
 					local instances = { strsplit("\n", value.name) }
@@ -226,15 +181,16 @@ do
 	  
 					-- I feel like this inverted lockout thing could be done far better
 					if ((anyLocked and db.invertlockout) or (allLocked and not db.invertlockout) and db.lockoutgray) then   
-						icon = iconGray
+						icon = icons["Locked"]
 					end
 					if ((anyLocked and db.invertlockout) or (allLocked and not db.invertlockout) and db.uselockoutalpha) then
 						alpha = db.lockoutalpha
 					else
 						alpha = db.continentAlpha
 					end
-					
-					if not value.hideOnContinent or zone == t.contId then -- Show on continent?
+					--print(not value.hideOnContinent,db.continent, db.show[value.type], zone == t.contId)
+					-- or zone == t.contId
+					if not value.hideOnContinent and db.continent and db.show[value.type] then -- Show on continent?
 						return state, zone, icon, db.continentScale, alpha
 					end
 					state, value = next(data, state) -- Get next data
@@ -299,11 +255,11 @@ local function setWaypoint(mapFile, coord)
 	})
 end
 
-function pluginHandler:OnClick(button, pressed, mapFile, coord)
+function pluginHandler:OnClick(button, pressed, uiMapId, coord)
  if (not pressed) then return end
- --print(button, pressed, mapFile, coord)
+
  if (button == "RightButton" and db.tomtom and TomTom) then
-  setWaypoint(mapFile, coord)
+  setWaypoint(uiMapId, coord)
   return
  end
  if (button == "LeftButton" and db.journal) then
@@ -311,19 +267,14 @@ function pluginHandler:OnClick(button, pressed, mapFile, coord)
    UIParentLoadAddOn('Blizzard_EncounterJournal')
   end
   local dungeonID
-  --[[if (type(nodes[mapFile][coord].id) == "table") then
-   dungeonID = nodes[mapFile][coord].id[1]
+  if (type(nodes[uiMapId][coord].id) == "table") then
+   dungeonID = nodes[uiMapId][coord].id[1]
   else
-   dungeonID = nodes[mapFile][coord].id
-  end]]--
-  if (coordToDungeon[coord] and type(coordToDungeon[coord].id) == "table") then
-   dungeonID = coordToDungeon[coord].id[1]
-  else
-   dungeonID = coordToDungeon[coord].id
+   dungeonID = nodes[uiMapId][coord].id
   end
   
   if (not dungeonID) then return end
-  --dungeonID)
+
   local name, _, _, _, _, _, _, link = EJ_GetInstanceInfo(dungeonID)
   if not link then return end
   local difficulty = string.match(link, 'journal:.-:.-:(.-)|h') 
@@ -2148,10 +2099,6 @@ end
 function Addon:ProcessExtraInfo() -- Could use this to add required levels and things, may do later or not
  table.wipe(extraInfo)
  if (true) then return end
- 
---[[ for i=1,2000 do -- Do this less stupidly
-  local name, typeID, subtypeID, minLevel, maxLevel, recLevel, minRecLevel, maxRecLevel, expansionLevel, groupID, textureFilename, difficulty, maxPlayers, description, isHoliday, bonusRepAmount, minPlayers, isTimeWalker, name2, minGearLevel = GetLFGDungeonInfo(i)
- end]]
 end
 
 function Addon:FullUpdate()
