@@ -1,4 +1,4 @@
-## Interface: 80200
+## Interface: 80205
 ## Title: XLoot Options
 ## Notes: Configuration interface for XLoot
 ## Version: 8.1-1

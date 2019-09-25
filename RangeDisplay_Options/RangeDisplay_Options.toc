@@ -1,4 +1,4 @@
-## Interface: 80200
+## Interface: 80205
 ## Title: RangeDisplay Options
 ## Author: mitch0
 ## Version: v4.9.1

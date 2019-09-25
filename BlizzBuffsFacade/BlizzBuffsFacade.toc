@@ -1,4 +1,4 @@
-## Interface: 80200
+## Interface: 80205
 ## Title: Masque Skinner: Blizz Buffs
 ## Version: 5.1.0
 ## Author: Cybeloras of Detheroc/Mal'Ganis

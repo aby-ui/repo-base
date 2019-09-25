@@ -1,4 +1,4 @@
-## Interface: 80200
+## Interface: 80205
 # Title: GridQuickHealth
 # Notes: 团队框体中的快速治疗功能
 ## Author: yleaf, warbaby

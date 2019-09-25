@@ -2,7 +2,7 @@ U1PLUG["FriendsGuildTab"] = function()
 
 local tabs = FriendsFrame.numTabs
 local name = "FriendsFrameTab_OpenGuild"
-WW:Button(name, FriendsFrame, "FriendsFrameTabTemplate"):SetText(GUILD):LEFT("$parentTab"..tabs, "RIGHT", 2, 0)
+WW:Button(name, FriendsFrame, "FriendsFrameTabTemplate"):SetText("会"):LEFT("$parentTab"..tabs, "RIGHT", -14, 0)
 :SetScript("OnClick", function()
     if not GuildFrame or not GuildFrame:IsVisible() then
         ToggleFriendsFrame()

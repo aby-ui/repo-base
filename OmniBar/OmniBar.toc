@@ -1,4 +1,4 @@
-## Interface: 80200
+## Interface: 80205
 ## Title: OmniBar
 ## Notes: Tracks enemy cooldowns
 ## Version: v9.5

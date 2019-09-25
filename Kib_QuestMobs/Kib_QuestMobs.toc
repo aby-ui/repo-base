@@ -1,4 +1,4 @@
-## Interface: 80200
+## Interface: 80205
 ## Title: Kib: Quest Mobs
 ## Author: Tosaido
 ## Version: 1.15

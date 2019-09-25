@@ -1,4 +1,4 @@
-## Interface: 80200
+## Interface: 80205
 ## LoadOnDemand: 0
 ## Title: TradeLog
 ## Notes: 交易日志，最近交易情况

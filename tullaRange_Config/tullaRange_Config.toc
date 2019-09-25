@@ -1,4 +1,4 @@
-## Interface: 80200
+## Interface: 80205
 ## Title: tullaRange Config
 ## Notes: GUI based configuration for tullaRange
 ## Author: Tuller

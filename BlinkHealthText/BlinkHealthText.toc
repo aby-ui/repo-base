@@ -1,4 +1,4 @@
-﻿## Interface: 80200
+﻿## Interface: 80205
 ## Title: BlinkHealthText
 ## Notes: BlinkHealthText 2.1
 ## Author: Kill & dugu @ Duowan

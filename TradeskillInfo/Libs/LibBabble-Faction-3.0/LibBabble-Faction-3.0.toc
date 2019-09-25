@@ -1,4 +1,4 @@
-﻿## Interface: 80200
+﻿## Interface: 80205
 ## LoadOnDemand: 1
 ## Title: Lib: Babble-Faction-3.0
 ## Notes: A library to help with localization of factions.

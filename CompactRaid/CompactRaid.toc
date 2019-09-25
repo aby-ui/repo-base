@@ -1,4 +1,4 @@
-## Interface: 80200
+## Interface: 80205
 ## Title: CompactRaid
 ## Version: 5.09
 ## Author: Abin

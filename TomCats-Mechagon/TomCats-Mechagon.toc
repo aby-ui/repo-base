@@ -1,4 +1,4 @@
-## Interface: 80200
+## Interface: 80205
 ## Title: TomCat's Tours: Rares of Mechagon
 ## Author: TomCat
 ## X-Website: http://www.tomcatstours.com

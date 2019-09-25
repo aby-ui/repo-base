@@ -1,4 +1,4 @@
-## Interface: 80200
+## Interface: 80205
 ## Title: World Quest Tracker
 ## Notes: Make more easy to see world quests
 ## SavedVariables: WQTrackerDB

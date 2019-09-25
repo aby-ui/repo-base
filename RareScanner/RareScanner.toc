@@ -1,4 +1,4 @@
-﻿## Interface: 80200
+﻿## Interface: 80205
 ## Title: RareScanner
 ## Notes: Minimap scanner. Warns you visually with a button and a miniature and plays a sound everytime a rare NPC, treasure/chest or event shows up in your minimap
 ## Notes-esES: Escaner del minimapa. Avisa con un mensaje, una miniatura y reproduce un sonido cada vez que un NPC raro, tesoro o evento aparece en tu minimapa.

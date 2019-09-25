@@ -1,4 +1,4 @@
-## Interface: 80200
+## Interface: 80205
 ## Title: Masque_CleanUI
 ## Author: Seharad
 ## Version: 8.2.0

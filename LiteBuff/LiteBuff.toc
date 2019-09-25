@@ -1,4 +1,4 @@
-## Interface: 80200
+## Interface: 80205
 ## Title: LiteBuff
 ## Version: 4.60
 ## Author: Abin

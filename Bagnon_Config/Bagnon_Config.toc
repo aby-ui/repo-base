@@ -1,4 +1,4 @@
-## Interface: 80200
+## Interface: 80205
 ## Title: Bagnon Config
 ## Author: Tuller and Jaliborc (João Cardoso)
 ## Notes: An options menu for Bagnon

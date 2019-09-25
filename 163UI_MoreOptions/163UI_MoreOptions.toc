@@ -1,4 +1,4 @@
-## Interface: 80200
+## Interface: 80205
 
 ## Title: |cff880303[爱不易]|r AbyUI 额外参数设置
 ## X-Vendor: AbyUI

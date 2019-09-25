@@ -1,4 +1,4 @@
-## Interface: 80200
+## Interface: 80205
 ## Title: HandyNotes_DungeonLocations
 ## Version: 1.48
 ## Notes: Shows locations of old world dungeon and raid entrances

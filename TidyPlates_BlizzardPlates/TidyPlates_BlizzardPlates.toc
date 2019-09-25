@@ -1,4 +1,4 @@
-## Interface: 80200
+## Interface: 80205
 ## Title: Tidy Plates: |cFF3782D1BlizzardPlates
 ## Notes: Blizzard Vanilla´s Plates.
 ## Author: delabarra.

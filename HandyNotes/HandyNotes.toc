@@ -1,4 +1,4 @@
-## Interface: 80200
+## Interface: 80205
 ## Title: HandyNotes
 ## Notes: Handy notes for your maps
 ## Notes-frFR: Notes pratiques pour vos cartes.

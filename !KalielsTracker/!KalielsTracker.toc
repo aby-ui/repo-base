@@ -1,4 +1,4 @@
-## Interface: 80200
+## Interface: 80205
 ## Title: Kaliel's Tracker
 ## Notes: Improved Blizzard Objective Tracker
 ## Version: 3.1.10

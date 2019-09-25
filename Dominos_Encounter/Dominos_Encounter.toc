@@ -1,4 +1,4 @@
-## Interface: 80200
+## Interface: 80205
 ## Title: Dominos Encounter
 ## Notes: Makes the PlayerPowerBarAlt movable
 ## Author: Tuller (with help from Goranaws)

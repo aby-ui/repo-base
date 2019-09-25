@@ -1,4 +1,4 @@
-## Interface: 80200
+## Interface: 80205
 ## Version: v8.2.0.3
 ## Title: GridStatusRaidDebuff(BfA)
 ## Notes: Debuff List for Battle for Azeroth

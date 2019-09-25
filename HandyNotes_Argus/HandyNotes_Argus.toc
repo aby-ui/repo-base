@@ -1,4 +1,4 @@
-## Interface: 80200
+## Interface: 80205
 ## Title: HandyNotes_Argus
 ## Version: 0.20.0
 ## Notes: Shows location of treasures and rares in Argus & more
