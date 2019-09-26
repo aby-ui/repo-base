@@ -1,5 +1,5 @@
 ## Interface: 80205
-## Version: v8.2.1.1
+## Version: v8.2.5.0
 ## Title: GridStatusRaidDebuff(Legion)
 ## Notes: Debuff List for Legion
 ## Author: Stassart (Treliss-Sargeras-US),tptbk(Doadin-Malorne-US)

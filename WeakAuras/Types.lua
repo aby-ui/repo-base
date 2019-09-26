@@ -1564,6 +1564,9 @@ end)
 -- register options font
 LSM:Register("font", "Fira Mono Medium", "Interface\\Addons\\WeakAuras\\Media\\Fonts\\FiraMono-Medium.ttf", LSM.LOCALE_BIT_western + LSM.LOCALE_BIT_ruRU)
 
+-- register plain white border
+LSM:Register("border", "Square Full White", [[Interface\AddOns\WeakAuras\Media\Textures\Square_FullWhite.tga]])
+
 WeakAuras.duration_types = {
   seconds = L["Seconds"],
   relative = L["Relative"]
@@ -2129,6 +2132,12 @@ WeakAuras.dbm_types = {
   [7] = L["Important"]
 }
 
+WeakAuras.weapon_enchant_types = {
+  showOnActive = L["Enchant Found"],
+  showOnMissing = L["Enchant Missing"],
+  showAlways = L["Always"],
+}
+
 WeakAuras.EJIcons = {
   tank =      "|TInterface\\EncounterJournal\\UI-EJ-Icons:::::256:64:7:25:7:25|t",
   dps =       "|TInterface\\EncounterJournal\\UI-EJ-Icons:::::256:64:39:57:7:25|t",
@@ -2145,7 +2154,14 @@ WeakAuras.EJIcons = {
 }
 
 WeakAuras.reset_swing_spells = {}
-WeakAuras.reset_ranged_swing_spells = {}
+WeakAuras.reset_ranged_swing_spells = {
+  [2480] = true, -- Shoot Bow
+  [7919] = true, -- Shoot Crossbow
+  [7918] = true, -- Shoot Gun
+  [2764] = true, -- Throw
+  [5019] = true, -- Shoot Wands
+  [75] = true, -- Auto Shot
+}
 
 if WeakAuras.IsClassic() then
   WeakAuras.baseUnitId.focus = nil
@@ -2172,10 +2188,5 @@ if WeakAuras.IsClassic() then
     WeakAuras.reset_swing_spells[spellid] = true
   end
 
-  WeakAuras.reset_ranged_swing_spells[2480] = true -- Shoot Bow
-  WeakAuras.reset_ranged_swing_spells[7919] = true -- Shoot Crossbow
-  WeakAuras.reset_ranged_swing_spells[7918] = true -- Shoot Gun
-  WeakAuras.reset_ranged_swing_spells[2764] = true -- Throw
-  WeakAuras.reset_ranged_swing_spells[5019] = true -- Shoot Wands
-  WeakAuras.reset_ranged_swing_spells[75] = true -- Auto Shot
+  WeakAuras.glow_types.ACShine = nil
 end

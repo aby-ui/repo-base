@@ -809,6 +809,7 @@
 			[199954] = "CurseOfFragility", -- Curse of Fragility
 			[199892] = "CurseOfWeakness", -- Curse of Weakness
 			[199890] = "CurseOfTongues", -- Curse of Tongues
+			[80240] = "havoc",
 
 			-- Warrior (Cast Success)
 			[97462] = "commandingShout",

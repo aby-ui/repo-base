@@ -1,10 +1,10 @@
 --[[
 	main.lua
-		Sets up the configuration panels specifics for Bagnon
+		Sets up the configuration panels specifics for the addon
 --]]
 
 local CONFIG, Config = ...
-Config.addon = 'Bagnon'
+
 Config.displayRowHeight = 70
 Config.components = true
 Config.colors = true

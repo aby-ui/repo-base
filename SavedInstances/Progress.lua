@@ -9,7 +9,7 @@ local pairs, type = pairs, type
 local C_PvP_GetWeeklyChestInfo = C_PvP.GetWeeklyChestInfo
 local C_QuestLog_IsOnQuest = C_QuestLog.IsOnQuest
 local GetQuestObjectiveInfo = GetQuestObjectiveInfo
-local IsQuestFlaggedCompleted = IsQuestFlaggedCompleted
+local IsQuestFlaggedCompleted = C_QuestLog and C_QuestLog.IsQuestFlaggedCompleted or IsQuestFlaggedCompleted
 local QuestUtils_GetCurrentQuestLineQuest = QuestUtils_GetCurrentQuestLineQuest
 local UnitLevel = UnitLevel
 

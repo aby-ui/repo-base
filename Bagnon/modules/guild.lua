@@ -1,6 +1,6 @@
 --[[
 	main.lua
-		Starts the guild bank frame for Bagnon on demand
+		Starts the guild bank frame on demand
 --]]
 
 local MODULE, Module =  ...

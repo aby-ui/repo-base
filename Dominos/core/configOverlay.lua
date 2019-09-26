@@ -519,7 +519,7 @@ do
 
 	function ConfigOverlay:OnInitialize()
 		-- create overlay background
-		local overlay = CreateFrame('Frame', nil, _G['UIParent'], 'SecureHandlerStateTemplate')
+		local overlay = CreateFrame('Frame', nil, UIParent, 'SecureHandlerStateTemplate')
 
 		overlay:SetFrameStrata('BACKGROUND')
 		overlay:Hide()

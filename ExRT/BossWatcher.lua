@@ -5,7 +5,7 @@ local ceil = ceil
 local UnitCombatlogname = ExRT.F.UnitCombatlogname
 local UnitHealth = UnitHealth
 local UnitHealthMax = UnitHealthMax
-local UnitGetTotalAbsorbs = UnitGetTotalAbsorbs
+local UnitGetTotalAbsorbs = ExRT.isClassic and ExRT.NULLfunc or UnitGetTotalAbsorbs
 local UnitPower = UnitPower
 local UnitPowerMax = UnitPowerMax
 local UnitGUID = UnitGUID
@@ -27,6 +27,7 @@ local tremove = tremove
 local strsplit = strsplit
 local CombatLogGetCurrentEventInfo = CombatLogGetCurrentEventInfo
 local type = type
+local UnitGroupRolesAssigned = ExRT.isClassic and ExRT.NULLfunc or UnitGroupRolesAssigned
 
 local VExRT = nil
 
@@ -1675,6 +1676,24 @@ local EnvironmentalTypeToSpellID = {
 	-- UnkEnvDamage = 48360,
 }
 
+local DeathLogBlackList = {
+	[154420] = true, --Azshara encounter
+}
+
+if ExRT.isClassic then
+	local _CombatLogGetCurrentEventInfo = CombatLogGetCurrentEventInfo
+	function CombatLogGetCurrentEventInfo()
+		local timestamp,event,hideCaster,sourceGUID,sourceName,sourceFlags,sourceFlags2,destGUID,destName,destFlags,destFlags2,
+		val1,val2,val3,val4,val5,val6,val7,val8,val9,val10,val11,val12,val13,val14
+				= _CombatLogGetCurrentEventInfo()
+		if event ~= "SWING_DAMAGE" and event ~= "SWING_MISSED" then
+			val1 = val2
+		end
+		return timestamp,event,hideCaster,sourceGUID,sourceName,sourceFlags,sourceFlags2,destGUID,destName,destFlags,destFlags2,
+		val1,val2,val3,val4,val5,val6,val7,val8,val9,val10,val11,val12,val13,val14
+	end
+end
+
 local function CLEUParser(self,_,timestamp,event,hideCaster,sourceGUID,sourceName,sourceFlags,sourceFlags2,destGUID,destName,destFlags,destFlags2,val1,val2,val3,val4,val5,val6,val7,val8,val9,val10,val11,val12,val13,val14)
 	if not timestamp then
 		timestamp,event,hideCaster,sourceGUID,sourceName,sourceFlags,sourceFlags2,destGUID,destName,destFlags,destFlags2,
@@ -1779,40 +1798,42 @@ local function CLEUParser(self,_,timestamp,event,hideCaster,sourceGUID,sourceNam
 		
 		
 		--------------> Add death
-		activeTable2 = deathLog[destGUID]	--destData
-		if not activeTable2 then
-			activeTable2 = {}
-			for i=1,deathMaxEvents do
-				activeTable2[i] = {}
+		local mobID = GUIDtoID(destGUID)
+		if not DeathLogBlackList[mobID] then
+			activeTable2 = deathLog[destGUID]	--destData
+			if not activeTable2 then
+				activeTable2 = {}
+				for i=1,deathMaxEvents do
+					activeTable2[i] = {}
+				end
+				activeTable2.c = 0
+				deathLog[destGUID] = activeTable2
 			end
-			activeTable2.c = 0
-			deathLog[destGUID] = activeTable2
+			local tmpVar = activeTable2.c + 1
+			if tmpVar > deathMaxEvents then
+				tmpVar = 1
+			end
+			activeTable2.c = tmpVar
+			activeTable = activeTable2[tmpVar]
+			activeTable.t = 1
+			activeTable.s = sourceGUID
+			activeTable.ti = timestamp
+			activeTable.sp = val1
+			activeTable.a = val4
+			activeTable.o = val5
+			activeTable.sc = val6
+			activeTable.b = val8
+			activeTable.ab = val9
+			activeTable.c = val10
+			activeTable.ia = nil
+			activeTable.sm = sourceFlags2
+			activeTable.dm = destFlags2
+			tmpVar = raidGUIDs[ destGUID ]
+			if tmpVar then
+				activeTable.h = UnitHealth( tmpVar )
+				activeTable.hm = UnitHealthMax( tmpVar )
+			end
 		end
-		local tmpVar = activeTable2.c + 1
-		if tmpVar > deathMaxEvents then
-			tmpVar = 1
-		end
-		activeTable2.c = tmpVar
-		activeTable = activeTable2[tmpVar]
-		activeTable.t = 1
-		activeTable.s = sourceGUID
-		activeTable.ti = timestamp
-		activeTable.sp = val1
-		activeTable.a = val4
-		activeTable.o = val5
-		activeTable.sc = val6
-		activeTable.b = val8
-		activeTable.ab = val9
-		activeTable.c = val10
-		activeTable.ia = nil
-		activeTable.sm = sourceFlags2
-		activeTable.dm = destFlags2
-		tmpVar = raidGUIDs[ destGUID ]
-		if tmpVar then
-			activeTable.h = UnitHealth( tmpVar )
-			activeTable.hm = UnitHealthMax( tmpVar )
-		end
-		
 		
 		
 		--------------> Add reduction
@@ -1921,6 +1942,7 @@ local function CLEUParser(self,_,timestamp,event,hideCaster,sourceGUID,sourceNam
 					end
 				end
 			end
+		--[[
 		elseif val1 == 186439 then	-- Shadow Mend
 			local spellTable = spellFix_SM[destGUID]
 			if spellTable then
@@ -1932,6 +1954,7 @@ local function CLEUParser(self,_,timestamp,event,hideCaster,sourceGUID,sourceNam
 					spellTable.amount = amount - damageTaken
 				end
 			end
+		]]
 		end
 	
 	
@@ -1957,6 +1980,7 @@ local function CLEUParser(self,_,timestamp,event,hideCaster,sourceGUID,sourceNam
 			val6	absorbed
 			val7	critical
 		]]
+		if val6 < 0 then return end	--Fix 8.2 boss
 		
 		--------------> Add heal
 		local activeTable = fightData_heal[sourceGUID]	--sourceTable
@@ -2560,13 +2584,15 @@ local function CLEUParser(self,_,timestamp,event,hideCaster,sourceGUID,sourceNam
 	------ dies
 	---------------------------------	
 	elseif event == "UNIT_DIED" or event == "UNIT_DESTROYED" then
-		
 		if destName and UnitIsFeignDeath(destName) then
 			return
 		end
-		
+
 		fightData.dies[#fightData.dies+1] = {destGUID,destFlags,timestamp,destFlags2,s = active_segment}
 		
+		if DeathLogBlackList[GUIDtoID(destGUID)] then
+			return
+		end
 		--[[
 		Death line type:
 		1: damage
@@ -2923,6 +2949,21 @@ function BWInterfaceFrameLoad()
 	-- Some upvaules
 	local ipairs,pairs,tonumber,tostring,format,date,min,sort,table = ipairs,pairs,tonumber,tostring,format,date,min,sort,table
 	local GetSpellInfo = GetSpellInfo
+	if ExRT.isClassic then
+		local _GetSpellInfo = GetSpellInfo
+		function GetSpellInfo(spellID)
+			if type(spellID) == 'string' then
+				local sN = _GetSpellInfo(spellID)
+				if sN then
+					return _GetSpellInfo(spellID)
+				else
+					return spellID,false,"Interface\\Icons\\INV_MISC_QUESTIONMARK"
+				end
+			else
+				return _GetSpellInfo(spellID)
+			end
+		end
+	end
 	
 	local CurrentFight = nil
 	
@@ -3030,13 +3071,17 @@ function BWInterfaceFrameLoad()
 			if _type == 0 then
 				return ""
 			elseif _type == 3 or _type == 5 then
-				local mobSpawnID = nil
+				local mobSpawnID,mobSpawnID1,mobSpawnID2,mobSpawnID3 = nil
 				local spawnID = GUID:match("%-([^%-]+)$")
 				if spawnID then
 					mobSpawnID = tonumber(spawnID, 16)
+					mobSpawnID1 = tonumber(spawnID:sub(1,5), 16) or 0
+					mobSpawnID2 = tonumber(spawnID:sub(6,8), 16) or 0
+					mobSpawnID3 = tonumber(spawnID:sub(9), 16) or 0
 				end
 				if mobSpawnID then
-					return format(patt,tostring(mobSpawnID))
+					--return format(patt,tostring(mobSpawnID)..", "..mobSpawnID2.."-"..mobSpawnID1)
+					return format(patt,mobSpawnID2.."-"..mobSpawnID3.."-"..mobSpawnID1)
 				else
 					return format(patt,GUID)
 				end
@@ -3230,7 +3275,7 @@ function BWInterfaceFrameLoad()
 			local isInRecording = not fightData.isEnded
 			if isInRecording then
 				fightData.encounterEnd = GetTime()
-				print(L.BossWatcherCombatError)
+				--print(L.BossWatcherCombatError)
 				--return
 			end
 			self.nowFightID = fightID
@@ -3401,10 +3446,10 @@ function BWInterfaceFrameLoad()
 	---- Settings tab-button
 	BWInterfaceFrame.tab.tabs[11]:SetScript("OnShow",function (self)
 		if not module.options.isLoaded then
-			if InCombatLockdown() then
-				print(L.SetErrorInCombat)
-				return
-			end
+			--if InCombatLockdown() then
+			--	print(L.SetErrorInCombat)
+			--	return
+			--end
 			module.options:Load()
 			module.options:SetScript("OnShow",nil)
 			module.options.isLoaded = true
@@ -4377,7 +4422,7 @@ function BWInterfaceFrameLoad()
 			if isSpell then
 				local spellID = key
 				local isPet = 1
-				if spellID < -1 then
+				if (not ExRT.isClassic) and spellID < -1 then
 					isPet = -1
 					spellID = -spellID
 				end
@@ -4390,7 +4435,7 @@ function BWInterfaceFrameLoad()
 					spellName = spellID
 				end
 				newData = {
-					info_spellID = spellID*isPet,
+					info_spellID = type(spellID)=='number' and spellID*isPet or spellID,
 					name = spellName,
 					total_damage = 0,
 					hide = true,
@@ -4779,7 +4824,7 @@ function BWInterfaceFrameLoad()
 			local isPetAbility = damageLine.info == "pet"
 			local spellID = damageLine.spell
 
-			local isDoT = spellID < 0
+			local isDoT = (not ExRT.isClassic) and spellID < 0
 			if isDoT then
 				spellID = -spellID
 			end
@@ -6532,6 +6577,18 @@ function BWInterfaceFrameLoad()
 				sourceList[sourceGUID] = true
 				destList[destGUID] = true
 			end
+			if ((_F_sourceFriendly and sourceData[4]) or (_F_sourceHostile and not sourceData[4])) and
+				((_F_destFriendly and sourceData[5]) or (_F_destHostile and not sourceData[5])) and
+				(not buffsFilterStatus[1] or sourceData[7] == 'BUFF') and
+				(not buffsFilterStatus[2] or sourceData[7] == 'DEBUFF') and
+				(not buffsFilterStatus[4] or (module.db.buffsFilters[3][spellID] or buffsFunc_findStringInArray(module.db.buffsFilters[4],strlower(spellName)))) and
+				filterStatus then
+
+				local sourceGUID = sourceData[2] or 0
+				local destGUID = sourceData[3] or 0
+				sourceList[sourceGUID] = true
+				destList[destGUID] = true
+			end			
 		end
 		
 		sort(buffTable,function(a,b) return a[2] < b[2] end)
@@ -6951,7 +7008,7 @@ function BWInterfaceFrameLoad()
 		local mobsList = {}
 		for mobGUID,mobData in pairs(CurrentFight.damage) do
 			for destReaction,destReactData in pairs(mobData) do
-				if ExRT.F.GetUnitInfoByUnitFlag(destReaction,2) == 512 then
+				if (ExRT.F.GetUnitInfoByUnitFlag(destReaction,2) == 512) and not ExRT.F.table_find(mobsList,mobGUID,3) then
 					mobsList[#mobsList+1] = {GetGUID(mobGUID),CurrentFight.damage_seen[mobGUID],mobGUID}
 					for i=1,#CurrentFight.dies do
 						if CurrentFight.dies[i][1]==mobGUID then
@@ -8459,7 +8516,7 @@ function BWInterfaceFrameLoad()
 						local destMarker = module.db.raidTargets[ isBroke and line[8] or line[7] or 0 ]
 						
 						resultData[#resultData+1] = {
-							"[".. date("%M:%S", timestampToFightTime(line[5])).."] |c".. ExRT.F.classColorByGUID(line[1]) ..(sourceMarker and "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_".. sourceMarker  ..":0|t" or "") .. GetGUID(line[1]) .. GUIDtoText(" (%s)",line[1]) .. "|r "..dispelOrInterrupt.." |c" ..  ExRT.F.classColorByGUID(line[2])..(destMarker and "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_".. destMarker  ..":0|t" or "").. GetGUID(line[2]) .. "'s" .. GUIDtoText(" (%s)",line[2]) .. "|r |Hspell:" .. (line[4] or 0) .. "|h" .. format("%s%s",spellDestTexture and "|T"..spellDestTexture..":0|t " or "",spellDestName or "???") .. "|h"..(brokeType or "").." "..L.BossWatcherByText.." |Hspell:" .. (line[3] or 0) .. "|h" .. format("%s%s",spellSourceTexture and "|T"..spellSourceTexture..":0|t " or "",spellSourceName or "???") .. "|h",
+							"[".. date("%M:%S", timestampToFightTime(line[5])) .. format(".%03d",timestampToFightTime(line[5]) * 1000 % 1000).."] |c".. ExRT.F.classColorByGUID(line[1]) ..(sourceMarker and "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_".. sourceMarker  ..":0|t" or "") .. GetGUID(line[1]) .. GUIDtoText(" (%s)",line[1]) .. "|r "..dispelOrInterrupt.." |c" ..  ExRT.F.classColorByGUID(line[2])..(destMarker and "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_".. destMarker  ..":0|t" or "").. GetGUID(line[2]) .. "'s" .. GUIDtoText(" (%s)",line[2]) .. "|r |Hspell:" .. (line[4] or 0) .. "|h" .. format("%s%s",spellDestTexture and "|T"..spellDestTexture..":0|t " or "",spellDestName or "???") .. "|h"..(brokeType or "").." "..L.BossWatcherByText.." |Hspell:" .. (line[3] or 0) .. "|h" .. format("%s%s",spellSourceTexture and "|T"..spellSourceTexture..":0|t " or "",spellSourceName or "???") .. "|h",
 							line,
 							line[5],
 							i,
@@ -8477,7 +8534,7 @@ function BWInterfaceFrameLoad()
 							local destMarker = module.db.raidTargets[ PlayerCastData[5] or 0 ]
 							subCount = subCount +1
 							resultData[#resultData+1] = {
-								"|cffff9999[".. date("%M:%S", timestampToFightTime(PlayerCastData[1])).."] |TInterface\\AddOns\\ExRT\\media\\DiesalGUIcons16x256x128:16:16:0:0:256:128:128:144:64:80|t |c".. ExRT.F.classColorByGUID(GUID) ..(sourceMarker and "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_".. sourceMarker  ..":0|t" or "") .. GetGUID(GUID) .. GUIDtoText(" (%s)",GUID) .. "|r "..L.BossWatcherTimeLineCast.." |Hspell:" .. (PlayerCastData[3] or 0) .. "|h" .. format("%s%s",spellSourceTexture and "|T"..spellSourceTexture..":0|t " or "",spellSourceName or "???") .. "|h"..(PlayerCastData[4] and PlayerCastData[4] ~= "" and (" > |c".. ExRT.F.classColorByGUID(PlayerCastData[4]) ..(destMarker and "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_".. destMarker  ..":0|t" or "") .. GetGUID(PlayerCastData[4]) .. GUIDtoText(" (%s)",PlayerCastData[4]) .. "|r") or ""),
+								"|cffff9999[".. date("%M:%S", timestampToFightTime(PlayerCastData[1])).. format(".%03d",timestampToFightTime(PlayerCastData[1]) * 1000 % 1000).."] |TInterface\\AddOns\\ExRT\\media\\DiesalGUIcons16x256x128:16:16:0:0:256:128:128:144:64:80|t |c".. ExRT.F.classColorByGUID(GUID) ..(sourceMarker and "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_".. sourceMarker  ..":0|t" or "") .. GetGUID(GUID) .. GUIDtoText(" (%s)",GUID) .. "|r "..L.BossWatcherTimeLineCast.." |Hspell:" .. (PlayerCastData[3] or 0) .. "|h" .. format("%s%s",spellSourceTexture and "|T"..spellSourceTexture..":0|t " or "",spellSourceName or "???") .. "|h"..(PlayerCastData[4] and PlayerCastData[4] ~= "" and (" > |c".. ExRT.F.classColorByGUID(PlayerCastData[4]) ..(destMarker and "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_".. destMarker  ..":0|t" or "") .. GetGUID(PlayerCastData[4]) .. GUIDtoText(" (%s)",PlayerCastData[4]) .. "|r") or ""),
 								{nil,nil,nil,PlayerCastData[2],PlayerCastData[1]},
 								PlayerCastData[1],
 								subCount,
@@ -8506,7 +8563,7 @@ function BWInterfaceFrameLoad()
 							if not findEm then
 								subCount = subCount + 1
 								resultData[#resultData+1] = {
-									"|cffff9999[".. date("%M:%S", timestampToFightTime(PlayerCastData[1])).."] |TInterface\\AddOns\\ExRT\\media\\DiesalGUIcons16x256x128:16:16:0:0:256:128:128:144:64:80|t |c".. ExRT.F.classColorByGUID(GUID) ..(sourceMarker and "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_".. sourceMarker  ..":0|t" or "") .. GetGUID(GUID) .. GUIDtoText(" (%s)",GUID) .. "|r "..L.BossWatcherTimeLineCast.." |Hspell:" .. (PlayerCastData[3] or 0) .. "|h" .. format("%s%s",spellSourceTexture and "|T"..spellSourceTexture..":0|t " or "",spellSourceName or "???") .. "|h" ..(PlayerCastData[4] and PlayerCastData[4] ~= "" and (" > |c".. ExRT.F.classColorByGUID(PlayerCastData[4]) ..(destMarker and "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_".. destMarker  ..":0|t" or "") .. GetGUID(PlayerCastData[4]) .. GUIDtoText(" (%s)",PlayerCastData[4]) .. "|r") or ""),
+									"|cffff9999[".. date("%M:%S", timestampToFightTime(PlayerCastData[1])).. format(".%03d",timestampToFightTime(PlayerCastData[1]) * 1000 % 1000).."] |TInterface\\AddOns\\ExRT\\media\\DiesalGUIcons16x256x128:16:16:0:0:256:128:128:144:64:80|t |c".. ExRT.F.classColorByGUID(GUID) ..(sourceMarker and "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_".. sourceMarker  ..":0|t" or "") .. GetGUID(GUID) .. GUIDtoText(" (%s)",GUID) .. "|r "..L.BossWatcherTimeLineCast.." |Hspell:" .. (PlayerCastData[3] or 0) .. "|h" .. format("%s%s",spellSourceTexture and "|T"..spellSourceTexture..":0|t " or "",spellSourceName or "???") .. "|h" ..(PlayerCastData[4] and PlayerCastData[4] ~= "" and (" > |c".. ExRT.F.classColorByGUID(PlayerCastData[4]) ..(destMarker and "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_".. destMarker  ..":0|t" or "") .. GetGUID(PlayerCastData[4]) .. GUIDtoText(" (%s)",PlayerCastData[4]) .. "|r") or ""),
 									{nil,nil,nil,PlayerCastData[2],PlayerCastData[1]},
 									PlayerCastData[1],
 									subCount,
@@ -8715,7 +8772,7 @@ function BWInterfaceFrameLoad()
 			if isSpell then
 				local spellID = key
 				local isPet = 1
-				if spellID < -1 then
+				if (not ExRT.isClassic) and spellID < -1 then
 					isPet = -1
 					spellID = -spellID
 				end
@@ -8728,7 +8785,7 @@ function BWInterfaceFrameLoad()
 					spellName = spellID
 				end
 				newData = {
-					info_spellID = spellID*isPet,
+					info_spellID = type(spellID)=='number' and spellID*isPet or spellID,
 					name = spellName,
 					total_healing = 0,
 					hide = true,
@@ -9527,7 +9584,7 @@ function BWInterfaceFrameLoad()
 			local healLine = heal[i]
 			local isPetAbility = healLine.info == "pet"
 			local spellID = healLine.spell
-			local isHoT = spellID < 0
+			local isHoT = (not ExRT.isClassic) and spellID < 0
 			if isHoT then
 				spellID = -spellID
 			end
@@ -10924,7 +10981,7 @@ function BWInterfaceFrameLoad()
 		for destGUID,destData in pairs(PositionsTab_Variables.HPList) do
 			local curHP = 0
 			for seg,hp in pairs(destData.res) do
-				if (CurrentFight.segments[seg].t - CurrentFight.encounterStart) > time then
+				if CurrentFight.segments[seg] and (CurrentFight.segments[seg].t - CurrentFight.encounterStart) > time then
 					break
 				end
 				curHP = hp
@@ -11242,7 +11299,7 @@ function BWInterfaceFrameLoad()
 			return
 		end
 		self.hp:Show()
-		self.hp:SetWidth(max(hpNow / hpMax * 95,1))
+		self.hp:SetWidth(max(hpNow / hpMax * 195,1))
 		
 		self.hp_text:SetFormattedText("%.1f",hpNow / hpMax * 100)
 	end
@@ -11324,12 +11381,12 @@ function BWInterfaceFrameLoad()
 	for i=1,6 do
 		local frame = CreateFrame("Button",nil,tab.scroll)
 		tab.unitFrames[i] = frame
-		frame:SetSize(95,20)
+		frame:SetSize(195,20)
 		frame:SetPoint("TOPLEFT",tab.scroll,5,-200-(i-1)*23)	
-		frame.text = ELib:Text(frame,UnitName('player'),10):Size(55,20):Point(2,0):Color()
+		frame.text = ELib:Text(frame,UnitName('player'),10):Size(155,20):Point(2,0):Color()
 		frame.text:SetDrawLayer("ARTWORK", 0)
 
-		frame.hp_text = ELib:Text(frame,"99.9%",10):Size(36,20):Point(57,0):Right():Color()
+		frame.hp_text = ELib:Text(frame,"99.9%",10):Size(36,20):Point(157,0):Right():Color()
 		frame.hp_text:SetDrawLayer("ARTWORK", 0)
 		
 		frame.bordertop = frame:CreateTexture(nil, "BORDER")
@@ -11355,12 +11412,12 @@ function BWInterfaceFrameLoad()
 		frame.borderright:SetColorTexture(0,0,0,1)
 		
 		frame.back = frame:CreateTexture(nil, "BACKGROUND",nil,-5)
-		frame.back:SetSize(95,20)
+		frame.back:SetSize(195,20)
 		frame.back:SetPoint("LEFT",0,0)
 		frame.back:SetColorTexture(.05,.05,.05,1)
 
 		frame.hp = frame:CreateTexture(nil, "BACKGROUND",nil,0)
-		frame.hp:SetSize(95,20)
+		frame.hp:SetSize(195,20)
 		frame.hp:SetPoint("LEFT",0,0)
 		frame.hp:SetColorTexture(.3,.3,.3,1)
 		

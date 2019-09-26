@@ -16,7 +16,7 @@ local GetQuestLogRewardInfo = GetQuestLogRewardInfo
 local GetQuestLogRewardMoney = GetQuestLogRewardMoney
 local GetQuestLogTitle = GetQuestLogTitle
 local GetQuestObjectiveInfo = GetQuestObjectiveInfo
-local IsQuestFlaggedCompleted = IsQuestFlaggedCompleted
+local IsQuestFlaggedCompleted = C_QuestLog and C_QuestLog.IsQuestFlaggedCompleted or IsQuestFlaggedCompleted
 local QuestUtils_GetBestQualityItemRewardIndex = QuestUtils_GetBestQualityItemRewardIndex
 
 local Emissaries = {

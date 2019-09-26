@@ -8,8 +8,11 @@ local ADDON, Addon = ...
 local Cache = LibStub('LibItemCache-2.0')
 local L = LibStub('AceLocale-3.0'):GetLocale(ADDON)
 local Frame = Addon:NewClass('Frame', 'Frame')
+
 Frame.OpenSound = SOUNDKIT.IG_BACKPACK_OPEN
 Frame.CloseSound = SOUNDKIT.IG_BACKPACK_CLOSE
+Frame.SortEvent = 'ITEM_UNLOCKED'
+
 
 --[[ Frame Events ]]--
 
@@ -109,8 +112,8 @@ end
 
 --[[ Shared ]]--
 
-function Frame:IsBank()
-	return false
+function Frame:SortItems()
+	Addon.Sorting:Start(self:GetOwner(), self.Bags, self.SortEvent)
 end
 
 function Frame:IsShowingBag(bag)

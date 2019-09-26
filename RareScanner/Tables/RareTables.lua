@@ -2563,4 +2563,13 @@ private.RARE_LIST = {
 	155841, --Shadowbinder Athissa
 	155836, --Theurgist Nitara
 	155840, --Warlord Zalzjar
+
+	-- Build 8.2.5
+	155173, --Honeyback Usurper
+	155055, --Gurg the Hivethief
+	155176, --Old Nasha
+	158111, --Trialmaster
+	155171, --The Hivekiller
+	155172, --Trapdoor Bee Hunter
+	155059, --Yorag the Jelly Feaster
 }

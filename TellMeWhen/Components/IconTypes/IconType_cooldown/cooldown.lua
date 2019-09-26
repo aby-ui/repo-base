@@ -66,6 +66,9 @@ Type:RegisterIconDefaults{
 	-- True to cause the icon to act as unusable when the ability lacks power to be used.
 	ManaCheck				= false,
 
+	-- True to treat the spell as unusable if it is on the GCD.
+	GCDAsUnusable			= false,
+
 	-- True to prevent rune cooldowns from causing the ability to be deemed unusable.
 	IgnoreRunes				= false,
 }
@@ -110,6 +113,10 @@ Type:RegisterConfigPanel_ConstructorFunc(150, "TellMeWhen_CooldownSettings", fun
 		function(check)
 			check:SetTexts(L["ICONMENU_MANACHECK"], L["ICONMENU_MANACHECK_DESC"])
 			check:SetSetting("ManaCheck")
+		end,
+		function(check)
+			check:SetTexts(L["ICONMENU_GCDASUNUSABLE"], L["ICONMENU_GCDASUNUSABLE_DESC"])
+			check:SetSetting("GCDAsUnusable")
 		end,
 		pclass == "DEATHKNIGHT" and function(check)
 			check:SetTexts(L["ICONMENU_IGNORERUNES"], L["ICONMENU_IGNORERUNES_DESC"])
@@ -168,8 +175,8 @@ local usableData = {}
 local unusableData = {}
 local function SpellCooldown_OnUpdate(icon, time)    
 	-- Upvalue things that will be referenced a lot in our loops.
-	local IgnoreRunes, RangeCheck, ManaCheck, NameArray, NameStringArray =
-	icon.IgnoreRunes, icon.RangeCheck, icon.ManaCheck, icon.Spells.Array, icon.Spells.StringArray
+	local IgnoreRunes, RangeCheck, ManaCheck, GCDAsUnusable, NameArray, NameStringArray =
+	icon.IgnoreRunes, icon.RangeCheck, icon.ManaCheck, icon.GCDAsUnusable, icon.Spells.Array, icon.Spells.StringArray
 
 	local usableAlpha = icon.States[STATE_USABLE].Alpha
 	local runeCD = IgnoreRunes and GetRuneCooldownDuration()
@@ -217,7 +224,7 @@ local function SpellCooldown_OnUpdate(icon, time)
 					-- If the spell has charges and they aren't all depeleted, its usable
 					or (charges and charges > 0)
 					-- If we're just on a GCD, its usable
-					or OnGCD(duration)
+					or (not GCDAsUnusable and OnGCD(duration))
 				)
 			then --usable
 				if not usableFound then

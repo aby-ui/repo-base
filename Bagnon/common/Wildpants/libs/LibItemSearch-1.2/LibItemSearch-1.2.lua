@@ -5,7 +5,7 @@
 
 local Search = LibStub('CustomSearch-1.0')
 local Unfit = LibStub('Unfit-1.0')
-local Lib = LibStub:NewLibrary('LibItemSearch-1.2', 17)
+local Lib = LibStub:NewLibrary('LibItemSearch-1.2', 19)
 if Lib then
 	Lib.Scanner = LibItemSearchTooltipScanner or CreateFrame('GameTooltip', 'LibItemSearchTooltipScanner', UIParent, 'GameTooltipTemplate')
 	Lib.Filters = {}
@@ -26,6 +26,14 @@ end
 
 function Lib:TooltipPhrase(link, search)
 	return link and self.Filters.tipPhrases:match(link, nil, search)
+end
+
+function Lib:ForQuest(link)
+	return self:Tooltip(link, GetItemClassInfo(LE_ITEM_CLASS_QUESTITEM):lower())
+end
+
+function Lib:IsReagent(link)
+	return self:TooltipPhrase(link, PROFESSIONS_USED_IN_COOKING)
 end
 
 function Lib:InSet(link, search)
@@ -94,7 +102,7 @@ else
 end
 
 
---[[ General ]]--
+--[[ General Filters ]]--
 
 Lib.Filters.name = {
   tags = {'n', 'name'},
@@ -216,7 +224,7 @@ Lib.Filters.usable = {
 }
 
 
---[[ Modern Keywords ]]--
+--[[ Retail Keywords ]]--
 
 if C_ArtifactUI then
 	Lib.Filters.artifact = {

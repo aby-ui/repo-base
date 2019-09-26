@@ -50,8 +50,7 @@ function Brother:SetupEvents()
 	self:RegisterEvent('BAG_UPDATE')
 	self:RegisterEvent('PLAYER_MONEY')
 	self:RegisterEvent('GUILD_ROSTER_UPDATE')
-	self:RegisterEvent('UNIT_INVENTORY_CHANGED')
-    self:RegisterEvent('PLAYER_EQUIPMENT_CHANGED')
+	self:RegisterEvent('PLAYER_EQUIPMENT_CHANGED')
 	self:RegisterEvent('BANKFRAME_OPENED')
 	self:RegisterEvent('BANKFRAME_CLOSED')
 
@@ -72,7 +71,10 @@ function Brother:UpdateData()
 		self:BAG_UPDATE(i)
 	end
 
-	self:UNIT_INVENTORY_CHANGED('player')
+	for i = 1, INVSLOT_LAST_EQUIPPED do
+		self:PLAYER_EQUIPMENT_CHANGED(i)
+	end
+
 	self:GUILD_ROSTER_UPDATE()
 	self:PLAYER_MONEY()
 end

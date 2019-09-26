@@ -50,6 +50,12 @@ module.db.otherIconsList = {
 	--{"{D}","|TInterface\\LFGFrame\\UI-LFG-ICON-PORTRAITROLES:16:16:0:0:64:64:20:39:22:41|t","Interface\\LFGFrame\\UI-LFG-ICON-ROLES",0.26171875,0.5234375,0.26171875,0.5234375},
 }
 
+if ExRT.isClassic then
+	tremove(module.db.otherIconsList,12)
+	tremove(module.db.otherIconsList,10)
+	tremove(module.db.otherIconsList,6)
+end
+
 module.db.iconsLocalizatedNames = {
 	L.raidtargeticon1,L.raidtargeticon2,L.raidtargeticon3,L.raidtargeticon4,L.raidtargeticon5,L.raidtargeticon6,L.raidtargeticon7,L.raidtargeticon8,
 }
@@ -237,7 +243,7 @@ local IsUpdateNoteByEncounterFromMe = nil
 function module.options:Load()
 	self:CreateTilte()
 
-	module.db.otherIconsAdditionalList = {
+	module.db.otherIconsAdditionalList = ExRT.isClassic and {} or {
 		31821,62618,97462,98008,115310,64843,740,265202,108280,204150,31884,196718,15286,64901,47536,246287,0,
 		47788,33206,6940,102342,114030,1022,116849,633,204018,207399,0,
 		2825,32182,80353,0,
@@ -282,7 +288,7 @@ function module.options:Load()
 	/run function P(s)local i=GetSpellTexture(s)if not U[i]then U[i]=1 return true end end for i=1,8 do L,U={},{} local f=F(i) C(f)local s="" for q,w in pairs(L)do s=s..q.."," end print(s..'0,')JJBox(s..'0,') end
 	]]
 	
-	module.db.encountersList = {
+	module.db.encountersList = ExRT.isClassic and {} or {
 		{1512,2298,2305,2289,2304,2303,2311,2293,2299},
 		{L.S_ZoneT23Storms,2269,2273},
 		{1358,2265,2263,2284,2266,2285,2271,2268,2272,2276,2280,2281},
@@ -655,6 +661,9 @@ function module.options:Load()
 				}
 			end
 		end
+	end
+	if ExRT.isClassic then
+		self.autoLoadDropdown:Hide()
 	end
 
 	local IsFormattingOn = VExRT.Note.OptionsFormatting

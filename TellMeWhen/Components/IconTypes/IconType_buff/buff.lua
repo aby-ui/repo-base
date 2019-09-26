@@ -64,11 +64,11 @@ Type:RegisterIconDefaults{
 	StackSort				= false,
 
 	-- The unit(s) to check for auras
-	Unit					= "player", 
+	Unit					= "player",
 
 	-- What type of aura to check for. Values are "HELPFUL", "HARMFUL", or "EITHER".
 	-- EITHER is handled specially by TMW by having looping a second time for a second filter (FilterH in the code).
-	BuffOrDebuff			= "HELPFUL", 
+	BuffOrDebuff			= "HELPFUL",
 
 	-- Only check stealable auras. This DOES function for non-mages.
 	Stealable				= false,
@@ -261,12 +261,12 @@ local huge = math.huge
 local function Buff_OnUpdate(icon, time)
 	
 	-- Upvalue things that will be referenced a lot in our loops.
-	local Units, NameArray, NameStringArray, Hash, Filter, Filterh, DurationSort, StackSort
-	= icon.Units, icon.Spells.Array, icon.Spells.StringArray, icon.Spells.Hash, icon.Filter, icon.Filterh, icon.Sort, icon.StackSort
+	local Units, Hash, Filter, Filterh, DurationSort, StackSort
+	= icon.Units, icon.Spells.Hash, icon.Filter, icon.Filterh, icon.Sort, icon.StackSort
 	local NotStealable = not icon.Stealable
 
 	-- These variables will hold all the attributes that we pass to YieldInfo().
-	local buffName, iconTexture, duration, expirationTime, caster, count, canSteal, id, v1, v2, v3, useUnit, _
+	local iconTexture, duration, expirationTime, caster, count, id, v1, v2, v3, useUnit, _
 
 	local doesSort = DurationSort or StackSort
 
@@ -300,7 +300,7 @@ local function Buff_OnUpdate(icon, time)
 				if not _buffName then
 					-- If we reached the end of auras found for Filter, and icon.BuffOrDebuff == "EITHER", switch to Filterh
 					-- iff we sort or haven't found anything yet.
-					if stage == 1 and Filterh and (doesSort or not buffName) then
+					if stage == 1 and Filterh and (doesSort or not id) then
 						index, stage = 1, 2
 						useFilter = Filterh
 					else
@@ -312,25 +312,25 @@ local function Buff_OnUpdate(icon, time)
 					if DurationSort then
 						local remaining = (_expirationTime == 0 and huge) or _expirationTime - time
 
-						if not buffName or curSortDur*DurationSort < remaining*DurationSort then
+						if not id or curSortDur*DurationSort < remaining*DurationSort then
 							-- DurationSort is either 1 or -1, so multiply by it to get the correct ordering. (multiplying by a negative flips inequalities)
 							-- If we haven't found anything yet, or if this aura beats the previous by sort order, then use it.
-							buffName,  iconTexture,  count,  duration,  expirationTime,  caster,  id,  v1,  v2,  v3, useUnit, curSortDur =
-							_buffName, _iconTexture, _count, _duration, _expirationTime, _caster, _id, _v1, _v2, _v3, unit,    remaining
+							iconTexture,  count,  duration,  expirationTime,  caster,  id,  v1,  v2,  v3, useUnit, curSortDur =
+							_iconTexture, _count, _duration, _expirationTime, _caster, _id, _v1, _v2, _v3, unit,    remaining
 						end
 					elseif StackSort then
 						local stack = _count or 0
 
-						if not buffName or curSortStacks*StackSort < stack*StackSort then
+						if not id or curSortStacks*StackSort < stack*StackSort then
 							-- StackSort is either 1 or -1, so multiply by it to get the correct ordering. (multiplying by a negative flips inequalities)
 							-- If we haven't found anything yet, or if this aura beats the previous by sort order, then use it.
-								buffName,  iconTexture,  count,  duration,  expirationTime,  caster,  id,  v1,  v2,  v3, useUnit, curSortStacks =
-							_buffName, _iconTexture, _count, _duration, _expirationTime, _caster, _id, _v1, _v2, _v3, unit,    stack
+							iconTexture,  count,  duration,  expirationTime,  caster,  id,  v1,  v2,  v3, useUnit, curSortStacks =
+							_iconTexture, _count, _duration, _expirationTime, _caster, _id, _v1, _v2, _v3, unit,    stack
 						end
 					else
 						-- We aren't sorting, and we haven't found anything yet, so record this
-							buffName,  iconTexture,  count,  duration,  expirationTime,  caster,  id,  v1,  v2,  v3, useUnit =
-						_buffName, _iconTexture, _count, _duration, _expirationTime, _caster, _id, _v1, _v2, _v3, unit
+						iconTexture,  count,  duration,  expirationTime,  caster,  id,  v1,  v2,  v3, useUnit =
+						_iconTexture, _count, _duration, _expirationTime, _caster, _id, _v1, _v2, _v3, unit
 
 						-- We don't need to look for anything else. Stop looking.
 						break
@@ -339,13 +339,13 @@ local function Buff_OnUpdate(icon, time)
 			end
 
 
-			if buffName and not doesSort then
+			if id and not doesSort then
 				break --  break unit loop
 			end
 		end
 	end
 	
-	icon:YieldInfo(true, useUnit, buffName, iconTexture, count, duration, expirationTime, caster, id, v1, v2, v3)
+	icon:YieldInfo(true, useUnit, iconTexture, count, duration, expirationTime, caster, id, v1, v2, v3)
 end
 
 local function Buff_OnUpdate_Controller(icon, time)
@@ -376,7 +376,7 @@ local function Buff_OnUpdate_Controller(icon, time)
 				if not buffName then
 					-- If we reached the end of auras found for filter, and icon.BuffOrDebuff == "EITHER", switch to Filterh
 					-- iff we sort or haven't found anything yet.
-					if stage == 1 and Filterh and not buffName then
+					if stage == 1 and Filterh then
 						index, stage = 1, 2
 						filter = Filterh
 					else
@@ -387,7 +387,7 @@ local function Buff_OnUpdate_Controller(icon, time)
 					and (NotStealable or (canSteal and not NOT_ACTUALLY_SPELLSTEALABLE[id]))
 				then
 					
-					if not icon:YieldInfo(true, unit, buffName, iconTexture, count, duration, expirationTime, caster, id, v1, v2, v3) then
+					if not icon:YieldInfo(true, unit, iconTexture, count, duration, expirationTime, caster, id, v1, v2, v3) then
 						-- YieldInfo returns true if we need to keep harvesting data. Otherwise, it returns false.
 						return
 					end
@@ -399,7 +399,7 @@ local function Buff_OnUpdate_Controller(icon, time)
 	-- Signal the group controller that we are at the end of our data harvesting.
 	icon:YieldInfo(false)
 end
-function Type:HandleYieldedInfo(icon, iconToSet, unit, buffName, iconTexture, count, duration, expirationTime, caster, id, v1, v2, v3)
+function Type:HandleYieldedInfo(icon, iconToSet, unit, iconTexture, count, duration, expirationTime, caster, id, v1, v2, v3)
 	local Units = icon.Units
 
 	-- Check that unit is defined here in order to determine if we found something.
@@ -522,7 +522,8 @@ Processor:RegisterDogTag("TMW", "AuraSource", {
 	events = TMW:CreateDogTagEventString("BUFF_SOURCEUNIT"),
 	ret = "string",
 	doc = L["DT_DOC_AuraSource"] .. "\r\n \r\n" .. L["DT_INSERTGUID_GENERIC_DESC"],
-	example = ('[AuraSource] => "target"; [AuraSource:Name] => "Kobold"; [AuraSource(icon="TMW:icon:1I7MnrXDCz8T")] => %q; [AuraSource(icon="TMW:icon:1I7MnrXDCz8T"):Name] => %q'):format(UnitName("player"), TMW.NAMES and TMW.NAMES:TryToAcquireName("player", true) or "???"),
+	example = ('[AuraSource] => "target"; [AuraSource:Name] => "Kobold"; [AuraSource(icon="TMW:icon:1I7MnrXDCz8T")] => %q; [AuraSource(icon="TMW:icon:1I7MnrXDCz8T"):Name] => %q')
+		:format(UnitName("player"), TMW.NAMES and TMW.NAMES:TryToAcquireName("player", true) or "???"),
 	category = L["ICON"],
 })
 

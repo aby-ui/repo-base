@@ -366,6 +366,7 @@ NL["Ionized Minnows"] = true
 NL["Iron Deposit"] = true
 NL["Jade Lungfish School"] = true
 NL["Jawless Skulker School"] = true
+NL["Jelly Deposit"] = true
 NL["Jewel Danio School"] = true
 NL["Khadgar's Whisker"] = true
 NL["Khorium Vein"] = true

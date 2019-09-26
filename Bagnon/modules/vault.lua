@@ -1,6 +1,6 @@
 --[[
 	vault.lua
-		Starts the vault frame for Bagnon on demand
+		Starts the vault frame on demand
 --]]
 
 local MODULE, Module =  ...

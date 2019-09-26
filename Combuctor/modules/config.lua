@@ -6,4 +6,5 @@
 local CONFIG, Config = ...
 Config.addon = 'Combuctor'
 Config.displayRowHeight = 35
+Config.supportRules = true
 Config.tabs = true

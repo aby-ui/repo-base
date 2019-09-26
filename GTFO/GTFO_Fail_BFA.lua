@@ -487,6 +487,11 @@ GTFO.SpellID["301774"] = {
   sound = 3;
 };
 
+GTFO.SpellID["302305"] = {
+  --desc = "Twilight Barrage (Void Horror)";
+  sound = 3;
+};
+
 -- ***********************
 -- * Shrine of the Storm *
 -- ***********************

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2361, "DBM-EternalPalace", nil, 1179)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190906034846")
+mod:SetRevision("20190919151548")
 mod:SetCreatureID(152910)
 mod:SetEncounterID(2299)
 mod:SetZone()
@@ -158,6 +158,7 @@ local timerGreaterReversalCD			= mod:NewCDCountTimer(70, 297372, 297371, nil, ni
 local timerVoidTouchedCD				= mod:NewCDTimer(6.9, 300743, nil, nil, nil, 5, nil, DBM_CORE_TANK_ICON)
 local timerNetherPortalCD				= mod:NewCDCountTimer(35, 303980, nil, nil, nil, 3)--35 unless delayed by spell queue
 local timerOverloadCD					= mod:NewCDCountTimer(54.9, 301431, nil, nil, nil, 5, nil, DBM_CORE_IMPORTANT_ICON)
+local timerMassiveEnergySpike			= mod:NewCastTimer(42, 301518, nil, nil, nil, 5, nil, DBM_CORE_DEADLY_ICON)
 local timerPiercingGazeCD				= mod:NewCDCountTimer(65, 300768, nil, nil, nil, 3)
 
 local berserkTimer						= mod:NewBerserkTimer(600)
@@ -185,12 +186,14 @@ mod.vb.arcaneDetonation = 0
 mod.vb.overloadCount = 0
 mod.vb.netherCount = 0
 mod.vb.piercingCount = 0
+mod.vb.controlledBurst = 0
 mod.vb.painfulMemoriesActive = false
 local drainedSoulStacks = {}
 local playerSoulDrained = false
 local shieldName = DBM:GetSpellInfo(300620)
 local seenAdds = {}
 local castsPerGUID = {}
+local text = ""
 local playerDecreeCount = 0
 local playerDecreeYell = 0--100s 2-Stack/1-Solo, 10s 2-Moving/1-Stay, 1s 2-Soak/1-NoSoak
 --Extend add timers to be by phase as well so P2 adds can be in it as well, if ever see more than one in a single difficulty, ever
@@ -377,6 +380,7 @@ function mod:OnCombatStart(delay)
 end
 
 function mod:OnCombatEnd()
+	self:UnregisterShortTermEvents()
 	if self.Options.InfoFrame then
 		DBM.InfoFrame:Hide()
 	end
@@ -427,11 +431,10 @@ function mod:SPELL_CAST_START(args)
 		end
 		castsPerGUID[args.sourceGUID] = castsPerGUID[args.sourceGUID] + 1
 		warnGroundPound:Show(castsPerGUID[args.sourceGUID])
-	elseif (spellId == 300478 or spellId == 300480 or spellId == 307331 or spellId == 307332) and self:AntiSpam(4, 10) then
+	elseif (spellId == 300478 or spellId == 300480 or spellId == 307331 or spellId == 307332) and self:AntiSpam(10, 4) then
 		specWarnDivideandConquer:Show()
 		timerDivideandConquerCD:Start(self.vb.phase == 4 and 87.5 or self.vb.phase == 3 and 59.8 or 65)
 	elseif spellId == 299250 and self:AntiSpam(4, 5) then--In rare cases she stutter casts it, causing double warnings
-		playerDecreeCount = 0
 		warnQueensDecree:Show()
 	elseif spellId == 299178 and self.vb.phase < 2 then--Ward of Power
 		self.vb.phase = 2
@@ -462,6 +465,7 @@ function mod:SPELL_CAST_START(args)
 		specWarnArcaneDetonation:Play("findshelter")
 		timerArcaneDetonationCD:Start(self:IsMythic() and 69.9 or self:IsHeroic() and 75 or 80, self.vb.arcaneDetonation+1)
 	elseif spellId == 301431 then
+		self.vb.controlledBurst = 0
 		self.vb.overloadCount = self.vb.overloadCount + 1
 		if self.Options.SpecWarn301431count then
 			specWarnOverload:Show(self.vb.overloadCount)
@@ -472,6 +476,9 @@ function mod:SPELL_CAST_START(args)
 		local timer = self:IsLFR() and phase4LFROverloadTimers[self.vb.overloadCount+1] or self:IsHeroic() and phase4HeroicOverloadTimers[self.vb.overloadCount+1] or self:IsNormal() and 54.9 or self:IsMythic() and 56
 		if timer then
 			timerOverloadCD:Start(timer, self.vb.overloadCount+1)--Mythic same as normal, heroic only one that's shorter (so far, LFR unknown)
+		end
+		if self:IsMythic() then
+			timerMassiveEnergySpike:Start()
 		end
 	elseif spellId == 299094 or spellId == 302141 or spellId == 303797 or spellId == 303799 then--299094 Phase 1, 302141 phase 2, 303797 phase 3, 303799 Phase 4
 		self.vb.beckonCast = self.vb.beckonCast + 1
@@ -618,13 +625,12 @@ function mod:SPELL_AURA_APPLIED(args)
 		warnCrushingDepths:CombinedShow(1, args.destName)
 	--Suffer (soak Orb), Obey (don't soak orb), Stand Together (group up), Stand Alone (don't group up), March (keep moving), Stay (stop moving)
 	elseif spellId == 299249 or spellId == 299251 or spellId == 299254 or spellId == 299255 or spellId == 299252 or spellId == 299253 then
-		--Temp, remove if cast event works
 		if args:IsPlayer() then
 			if self:AntiSpam(10, 1) then
+				text = ""
 				playerDecreeCount = 0
 				playerDecreeYell = 0
 			end
-			local text = ""
 			if spellId == 299249 then--Soak Orbs
 				specWarnQueensDecree:ScheduleVoiceOverLap(0+playerDecreeCount, "helpsoak")
 				if text == "" then
@@ -667,10 +673,10 @@ function mod:SPELL_AURA_APPLIED(args)
 				playerDecreeYell = playerDecreeYell + 20--100s 2-Stack/1-Solo, 10s 2-Moving/1-Stay, 1s 2-Soak/1-NoSoak
 			elseif spellId == 299253 then--Stop Moving
 				specWarnQueensDecree:ScheduleVoiceOverLap(0+playerDecreeCount, "stopmove")
-				if text then
-					text = text..", "..L.DontMove
-				else
+				if text == "" then
 					text = L.DontMove
+				else
+					text = text..", "..L.DontMove
 				end
 				playerDecreeYell = playerDecreeYell + 10--100s 2-Stack/1-Solo, 10s 2-Moving/1-Stay, 1s 2-Soak/1-NoSoak
 			end
@@ -778,7 +784,7 @@ function mod:SPELL_AURA_REMOVED(args)
 		if self.Options.SetIconOnArcaneBurst then
 			self:SetIcon(args.destName, 0)
 		end
-	elseif spellId == 304267 and self:AntiSpam(3, 4) then
+	elseif spellId == 304267 and self:AntiSpam(3, 7) then
 		self.vb.painfulMemoriesActive = false
 		warnPainfulMemoriesOver:Show(DBM_CORE_RESTORE_LOS)
 		warnPainfulMemoriesOver:Play("moveboss")
@@ -803,8 +809,18 @@ function mod:SPELL_AURA_REMOVED(args)
 	end
 end
 
+function mod:SPELL_DAMAGE(_, _, _, _, destGUID, _, _, _, spellId)
+	if spellId == 301425 and self:AntiSpam(2, 2) then
+		self.vb.controlledBurst = self.vb.controlledBurst + 1
+		if (self.vb.overloadCount == 1 and self.vb.controlledBurst == 3) or self.vb.controlledBurst == 4 then
+			timerMassiveEnergySpike:Stop()
+		end
+	end
+end
+mod.SPELL_MISSED = mod.SPELL_DAMAGE
+
 function mod:SPELL_PERIODIC_DAMAGE(_, _, _, _, destGUID, _, _, _, spellId, spellName)
-	if (spellId == 303981 or spellId == 297907) and destGUID == UnitGUID("player") and self:AntiSpam(2, 2) then
+	if (spellId == 303981 or spellId == 297907) and destGUID == UnitGUID("player") and self:AntiSpam(2, 8) then
 		specWarnGTFO:Show(spellName)
 		specWarnGTFO:Play("watchfeet")
 	end
@@ -885,7 +901,7 @@ function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg, npc, _, _, target)
 		specWarnArcaneOrbs:Show(self.vb.arcaneOrbCount)
 		specWarnArcaneOrbs:Play("watchorb")
 		timerArcaneOrbsCD:Start(self:IsMythic() and 59.9 or (self.vb.arcaneOrbCount == 1 and 65 or 74.8), self.vb.arcaneOrbCount+1)
-	elseif msg:find("spell:300522") then--Divide and Conquer
+	elseif msg:find("spell:300522") and self:AntiSpam(10, 4) then--Divide and Conquer
 		specWarnDivideandConquer:Show()
 		timerDivideandConquerCD:Start(self.vb.phase == 4 and 87.5 or self.vb.phase == 3 and 59.8 or 65)
 	end
@@ -1025,6 +1041,11 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 			timerPiercingGazeCD:Start(51.5, 1)
 			timerGreaterReversalCD:Start(64, 1)
 			timerBeckonCD:Start(72.8, 1)--START
+			--Register burst damage events for the massive energy spike tracking timer
+			self:RegisterShortTermEvents(
+				"SPELL_DAMAGE 301425",
+				"SPELL_MISSED 301425"
+			)
 		elseif self:IsHeroic() then
 			timerNetherPortalCD:Start(23.9, 1)
 			timerPiercingGazeCD:Start(43.9, 1)

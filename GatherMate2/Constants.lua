@@ -237,7 +237,7 @@ local node_ids = {
 		[NL["Golden Sansam"]] 					= 425,
 		[NL["Dreamfoil"]] 						= 426,
 		[NL["Mountain Silversage"]] 			= 427,
-		--[NL["Plaguebloom"]] 					= 428,
+		[NL["Plaguebloom"]] 					= 428,
 		[NL["Icecap"]] 							= 429,
 		--[NL["Bloodvine"]] 					= 430, -- zg bush loot
 		[NL["Black Lotus"]] 					= 431,
@@ -373,6 +373,8 @@ local node_ids = {
 		[NL["Mechanized Chest"]]				= 560,
 		[NL["Glimmering Chest"]]				= 561,
 		[NL["Prismatic Crystal"]]				= 562,
+		-- 8.2.5
+		[NL["Jelly Deposit"]]					= 563,
 	},
 	["Archaeology"] = {
 		-- cata archeolgy objects
@@ -704,7 +706,7 @@ local node_textures = {
 		[425] = icon_path.."Herb\\golden_sansam.tga",
 		[426] = icon_path.."Herb\\dreamfoil.tga",
 		[427] = icon_path.."Herb\\mountain_silversage.tga",
-		--[428] = icon_path.."Herb\\plaguebloom.tga",
+		[428] = icon_path.."Herb\\plaguebloom.tga",
 		[429] = icon_path.."Herb\\icecap.tga",
 		--[430] = icon_path.."Herb\\purple_lotus.tga",
 		[431] = icon_path.."Herb\\black_lotus.tga",
@@ -833,6 +835,7 @@ local node_textures = {
 		[560] = icon_path.."Treasure\\treasure.tga",
 		[561] = icon_path.."Treasure\\treasure.tga",
 		[562] = icon_path.."Treasure\\ancient_mana.tga",
+		[563] = icon_path.."Treasure\\honey.tga",
 	},
 	["Archaeology"] = {
 		[601] = icon_path.."Archaeology\\shovel.tga",
@@ -976,7 +979,7 @@ local node_expansion = {
 		[425] = CLASSIC,
 		[426] = CLASSIC,
 		[427] = CLASSIC,
-		--[428] = CLASSIC,
+		[428] = CLASSIC,
 		[429] = CLASSIC,
 		--[430] = CLASSIC,
 		[431] = CLASSIC,

@@ -48,9 +48,9 @@ function SearchToggle:OnEnter()
 	end
 
 	if self:GetChecked() then
-		GameTooltip:SetText(L.TipHideSearch)
+		GameTooltip:SetText(L.TipHideSearch:format(L.Click))
 	else
-		GameTooltip:SetText(L.TipShowSearch)
+		GameTooltip:SetText(L.TipShowSearch:format(L.Click))
 	end
 end
 

@@ -4,6 +4,7 @@
 --]]
 
 local ADDON, Addon = ...
+local Cache = LibStub('LibItemCache-2.0')
 local Mixins = {
 	'RegisterEvent', 'UnregisterEvent', 'UnregisterAllEvents',
 	'RegisterMessage', 'UnregisterMessage', 'UnregisterAllMessages', 'SendMessage',
@@ -11,9 +12,9 @@ local Mixins = {
 }
 
 LibStub('AceAddon-3.0'):NewAddon(Addon, ADDON, 'AceEvent-3.0')
-Addon.IsRetail = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE
 Addon.HasVault = CanUseVoidStorage and GetAddOnEnableState(nil, ADDON .. '_VoidStorage') >= 2
 Addon.HasGuild = CanGuildBankRepair and GetAddOnEnableState(nil, ADDON .. '_GuildBank') >= 2
+Addon.IsRetail = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE
 _G[ADDON] = Addon
 
 
@@ -86,7 +87,7 @@ function Addon:NewClass(name, type, parent)
 		end
 
 		class.GetOwnerInfo = function(self)
-			return LibStub('LibItemCache-2.0'):GetOwnerInfo(self:GetOwner())
+			return Cache:GetOwnerInfo(self:GetOwner())
 		end
 
 		class.IsCached = function(self)
@@ -104,6 +105,18 @@ function Addon:NewClass(name, type, parent)
 				self.frame = parent
 			end
 			return self.frame
+		end
+
+		class.After = function(self, time, method, ...)
+			if not self.timers or not self.timers[method] then
+				C_Timer.After(time, function()
+					self[method](self, unpack(self.timers[method]))
+					self.timers[method] = nil
+				end)
+			end
+
+			self.timers = self.timers or {}
+			self.timers[method] = {...}
 		end
 
 		for i, func in ipairs(Mixins) do

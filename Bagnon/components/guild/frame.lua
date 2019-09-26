@@ -1,6 +1,6 @@
 --[[
 	frame.lua
-		A specialized version of the bagnon frame for guild banks
+		A specialized version of the window frame for guild banks
 --]]
 
 local MODULE =  ...

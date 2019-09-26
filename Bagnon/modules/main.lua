@@ -1,10 +1,9 @@
 --[[
 	main.lua
-		Starts Bagnon per say
+		Starts the addon per say
 --]]
 
 local ADDON, Addon = ...
-Addon.ItemScale = 1
 
 function Addon:OnEnable()
 	self:StartupSettings()

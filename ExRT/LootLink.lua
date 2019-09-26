@@ -1,6 +1,6 @@
 local GlobalAddonName, ExRT = ...
 
-local module = ExRT:New("LootLink",ExRT.L.LootLink,true)
+local module = ExRT:New("LootLink",ExRT.L.LootLink,not ExRT.isClassic)
 local ELib,L = ExRT.lib,ExRT.L
 
 local VExRT = nil
@@ -8,12 +8,53 @@ local VExRT = nil
 module.db.cache = {}
 
 function module.main:ADDON_LOADED()
+	VExRT = _G.VExRT
+	VExRT.LootLink = VExRT.LootLink or {}
+
+	if VExRT.LootLink.enabled then
+		module:Enable()
+	end
 	module:RegisterSlash()
 end
 
 local bannedItems = {
 	["124442"] = true,	--Chaos Crystal
 }
+
+if ExRT.isClassic then
+	function module.options:Load()
+		self:CreateTilte()
+	
+		self.enableChk = ELib:Check(self,L.LootLinkEnable,VExRT.LootLink.enabled):Point(5,-30):OnClick(function(self) 
+			if self:GetChecked() then
+				VExRT.LootLink.enabled = true
+				module:Enable()
+			else
+				VExRT.LootLink.enabled = nil
+				module:Disable()
+			end
+		end)
+		
+		self.ilvlChk = ELib:Check(self,SHOW_ITEM_LEVEL,VExRT.LootLink.ilvl):Point(5,-55):OnClick(function(self) 
+			if self:GetChecked() then
+				VExRT.LootLink.ilvl = true
+			else
+				VExRT.LootLink.ilvl = nil
+			end
+		end)
+		
+		self.shtml1 = ELib:Text(self,L.LootLinkSlashHelp,12):Size(650,0):Point("TOP",0,-95):Top()
+	end
+end
+
+function module:Enable()
+	if ExRT.isClassic then
+		module:RegisterEvents('LOOT_OPENED')
+	end
+end
+function module:Disable()
+	module:UnregisterEvents('LOOT_OPENED')
+end
 
 local function LootLink(linkAnyway)
 	local lootMethod = GetLootMethod()
@@ -22,6 +63,9 @@ local function LootLink(linkAnyway)
 		return
 	end
 	local isFutureRaid = zoneType == 'raid' and (mapID or 0) > 1450
+	if ExRT.isClassic and zoneType == "raid" then
+		isFutureRaid = true
+	end
 	if linkAnyway then
 		isFutureRaid = false
 	end
@@ -54,6 +98,9 @@ local function LootLink(linkAnyway)
 	end
 end
 
+function module.main:LOOT_OPENED()
+	LootLink()
+end
 function module:slash(arg)
 	if arg == "loot" then
 		LootLink(true)

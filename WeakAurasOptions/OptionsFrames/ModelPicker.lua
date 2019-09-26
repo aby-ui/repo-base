@@ -210,24 +210,31 @@ local function ConstructModelPicker(frame)
       self.data.model_st_ry = model_ry;
       self.data.model_st_rz = model_rz;
       self.data.model_st_us = model_us;
-      WeakAuras.Add(self.data);
-      WeakAuras.SetThumbnail(self.data);
-      WeakAuras.SetIconNames(self.data);
+      if self.parentData then
+        WeakAuras.Add(self.parentData);
+      else
+        WeakAuras.Add(self.data);
+        WeakAuras.SetThumbnail(self.data);
+        WeakAuras.SetIconNames(self.data);
+      end
     end
   end
 
   function group.Pick(self, model_path, model_fileId, model_z, model_x, model_y)
     model_path = model_path or self.data.model_path;
     model_fileId = model_fileId or self.data.model_fileId;
+
     model_z = model_z or self.data.model_z;
     model_x = model_x or self.data.model_x;
     model_y = model_y or self.data.model_y;
 
     WeakAuras.SetModel(self.model, model_path, model_fileId)
+
     self.model:ClearTransform();
     self.model:SetPosition(model_z, model_x, model_y);
     self.model:SetFacing(rad(self.data.rotation));
-    if(self.data.controlledChildren) then
+
+    if(not self.parentData and self.data.controlledChildren) then
       for index, childId in pairs(self.data.controlledChildren) do
         local childData = WeakAuras.GetData(childId);
         if(childData) then
@@ -247,14 +254,20 @@ local function ConstructModelPicker(frame)
       self.data.model_z = model_z;
       self.data.model_x = model_x;
       self.data.model_y = model_y;
-      WeakAuras.Add(self.data);
-      WeakAuras.SetThumbnail(self.data);
-      WeakAuras.SetIconNames(self.data);
+
+      if self.parentData then
+        WeakAuras.Add(self.parentData)
+      else
+        WeakAuras.Add(self.data);
+        WeakAuras.SetThumbnail(self.data);
+        WeakAuras.SetIconNames(self.data);
+      end
     end
   end
 
-  function group.Open(self, data)
+  function group.Open(self, data, parentData)
     self.data = data;
+    self.parentData = parentData
     WeakAuras.SetModel(self.model, data.model_path, data.model_fileId)
     if (data.api) then
       self.model:SetTransform(data.model_st_tx / 1000, data.model_st_ty / 1000, data.model_st_tz / 1000,
@@ -314,7 +327,7 @@ local function ConstructModelPicker(frame)
       modelPickerUS.frame:Hide();
     end
 
-    if(data.controlledChildren) then
+    if(not parentData and data.controlledChildren) then
       self.givenModel = {};
       self.givenApi = {};
       self.givenZ = {};
@@ -381,7 +394,7 @@ local function ConstructModelPicker(frame)
   end
 
   function group.CancelClose(self)
-    if(group.data.controlledChildren) then
+    if(not group.parentData and group.data.controlledChildren) then
       for index, childId in pairs(group.data.controlledChildren) do
         local childData = WeakAuras.GetData(childId);
         if(childData) then

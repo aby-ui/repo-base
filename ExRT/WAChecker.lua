@@ -11,6 +11,8 @@ function module.options:Load()
 	
 	local UpdatePage
 
+	local Filter
+
 	local errorNoWA = ELib:Text(self,L.WACheckerWANotFound):Point("TOP",0,-30)
 	errorNoWA:Hide()
 	
@@ -65,17 +67,21 @@ function module.options:Load()
 		elseif type == 4 then
 			self:SetTexCoord(0.875,0.9375,0.5,0.625)
 			self:SetVertexColor(.8,.8,0,1)
+		elseif type == -1 or type < 0 then
+			if module.SetIconExtra then
+				module.SetIconExtra(self,type)
+			end
 		end		
 	end
 	
 	self.helpicons = {}
 	for i=0,2 do
 		local icon = self:CreateTexture(nil,"ARTWORK")
-		icon:SetPoint("TOPLEFT",2,-25-i*16)
-		icon:SetSize(16,16)
+		icon:SetPoint("TOPLEFT",2,-20-i*12)
+		icon:SetSize(14,14)
 		icon:SetTexture("Interface\\AddOns\\"..GlobalAddonName.."\\media\\DiesalGUIcons16x256x128")
 		SetIcon(icon,i+1)
-		local t = ELib:Text(self,"",11):Point("LEFT",icon,"RIGHT",2,0):Size(0,16):Color(1,1,1)
+		local t = ELib:Text(self,"",10):Point("LEFT",icon,"RIGHT",2,0):Size(0,16):Color(1,1,1)
 		if i==0 then
 			t:SetText(L.WACheckerMissingAura)
 		elseif i==1 then
@@ -85,6 +91,18 @@ function module.options:Load()
 		end
 		self.helpicons[i+1] = {icon,t}
 	end
+
+	self.filterEdit = ELib:Edit(self):Size(LINE_NAME_WIDTH,16):Point("BOTTOMLEFT",mainScroll,"TOPLEFT",-1,4):Tooltip(FILTER):OnChange(function(self,isUser)
+		if not isUser then
+			return
+		end
+		if self:GetText() == "" then
+			Filter = nil
+		else
+			Filter = self:GetText():lower()
+		end
+		UpdatePage()
+	end)
 
 	local function LineName_OnClick(self,_,_,force)
 		if IsShiftKeyDown() or force then
@@ -102,23 +120,45 @@ function module.options:Load()
 		end
 	end
 	local function LineName_ShareButton_OnEnter(self)
-		ELib.Tooltip.Show(self,nil,SOCIAL_SHARE_TEXT,module.ExportWA and L.WACheckerShareTooltip or nil)
+		if module.ShareButtonHover then
+			module.ShareButtonHover(self)
+		end
 		self.background:SetVertexColor(1,1,0,1)
 	end	
 	local function LineName_ShareButton_OnLeave(self)
-		ELib.Tooltip.Hide()
+		if module.ShareButtonLeave then
+			module.ShareButtonLeave(self)
+		end
 		self.background:SetVertexColor(1,1,1,0.7)
 	end
-	local function LineName_ShareButton_OnClick(self)
+	local function LineName_ShareButton_OnClick(self,...)
 		if not module.ExportWA then
 			LineName_OnClick(self:GetParent().name,nil,nil,true)
 		else
-			local id = self:GetParent().db.data.id
-			if id then
-				module:ExportWA(id)
+			module.ShareButtonClick(self,...)
+		end
+	end	
+
+	local function LineName_Icon_OnEnter(self)
+		if self.HOVER_TEXT then
+			ELib.Tooltip.Show(self,nil,self.HOVER_TEXT)
+		end
+		if module.IconHoverFunctions then
+			for i=1,#module.IconHoverFunctions do
+				module.IconHoverFunctions[i](self,true)
 			end
 		end
-	end		
+	end	
+	local function LineName_Icon_OnLeave(self)
+		if self.HOVER_TEXT then
+			ELib.Tooltip.Hide()
+		end
+		if module.IconHoverFunctions then
+			for i=1,#module.IconHoverFunctions do
+				module.IconHoverFunctions[i](self,false)
+			end
+		end
+	end	
 
 	local lines = {}
 	self.lines = lines
@@ -138,6 +178,7 @@ function module.options:Load()
 		line.share:SetScript("OnEnter",LineName_ShareButton_OnEnter)
 		line.share:SetScript("OnLeave",LineName_ShareButton_OnLeave)
 		line.share:SetScript("OnClick",LineName_ShareButton_OnClick)
+		line.share:RegisterForClicks("LeftButtonUp","RightButtonUp")
 		
 		line.share.background = line.share:CreateTexture(nil,"ARTWORK")
 		line.share.background:SetPoint("CENTER")
@@ -155,6 +196,12 @@ function module.options:Load()
 			icon:SetSize(iconSize,iconSize)
 			icon:SetTexture("Interface\\AddOns\\"..GlobalAddonName.."\\media\\DiesalGUIcons16x256x128")
 			SetIcon(icon,(i+j)%4)
+
+			icon.hoverFrame = CreateFrame("Frame",nil,line)
+			icon.hoverFrame:Hide()
+			icon.hoverFrame:SetAllPoints(icon)
+			icon.hoverFrame:SetScript("OnEnter",LineName_Icon_OnEnter)
+			icon.hoverFrame:SetScript("OnLeave",LineName_Icon_OnLeave)
 		end
 		
 		line.t=line:CreateTexture(nil,"BACKGROUND")
@@ -259,6 +306,7 @@ function module.options:Load()
 			end
 			UpdateButton:Hide()
 			raidNames:Hide()
+			self.filterEdit:Hide()
 			self.allIsHidden = true
 			return
 		end
@@ -286,21 +334,37 @@ function module.options:Load()
 					data = WA_data,
 				}
 			end
-			local parent = WA_data.parent
-			if parent then
-				local a = auras2[parent] or {}
-				auras2[parent] = a
-				a[#a+1] = aura
-			else
-				auras[#auras+1] = aura
+			if not Filter or WA_name:lower():find(Filter) then
+				local parent = WA_data.parent
+				if parent then
+					local a = auras2[parent] or {}
+					auras2[parent] = a
+					a[#a+1] = aura
+				else
+					auras[#auras+1] = aura
+				end
 			end
 			auras2[WA_name] = aura
+		end
+		if Filter then
+			local inList = {}
+			for i=1,#auras do
+				inList[ auras[i] ] = true
+			end
+			for k,v in pairs(auras2) do
+				if #v > 0 and not inList[v] and v.name then
+					auras[#auras+1] = v
+				end
+			end
 		end
 		sort(auras,sortByName)
 		for i=1,#auras do
 			sort(auras[i],sortByName)
 		end
 		local sortedTable = {}
+		if not Filter then
+			sortedTable[#sortedTable+1] = {name="VERSION"}
+		end
 		for i=1,#auras do
 			sortedTable[#sortedTable+1] = auras[i]
 			for j=1,#auras[i] do
@@ -368,6 +432,9 @@ function module.options:Load()
 		
 		local lineNum = 1
 		local backgroundLineStatus = (prevTopLine % 2) == 1
+
+		local myWAVER = WeakAuras.versionString
+
 		for i=prevTopLine+1,#sortedTable do
 			local aura = sortedTable[i]
 			local line = lines[lineNum]
@@ -388,17 +455,34 @@ function module.options:Load()
 						break
 					end
 				end
+
+				local hoverText
 				
 				if not db then
 					SetIcon(line.icons[j],0)
 				elseif db.noWA then
 					SetIcon(line.icons[j],3)
+				elseif aura.name == "VERSION" then
+					hoverText = db.wa_ver or "NO DATA"
+					SetIcon(line.icons[j],myWAVER == db.wa_ver and 2 or (db.wa_ver and 1) or 3)
 				elseif type(db[ aura.name ]) == 'number' then
 					SetIcon(line.icons[j],db[ aura.name ])
 				elseif db[ aura.name ] then
 					SetIcon(line.icons[j],2)
 				else
 					SetIcon(line.icons[j],1)
+				end
+
+				if module.ShowHoverIcons then
+					line.icons[j].hoverFrame.HOVER_TEXT = nil
+					line.icons[j].hoverFrame.name = pname
+					line.icons[j].hoverFrame:Show()
+				elseif hoverText then
+					line.icons[j].hoverFrame.HOVER_TEXT = hoverText
+					line.icons[j].hoverFrame:Show()
+				else
+					line.icons[j].hoverFrame.HOVER_TEXT = nil
+					line.icons[j].hoverFrame:Hide()
 				end
 			end
 			backgroundLineStatus = not backgroundLineStatus
@@ -452,6 +536,8 @@ function module:SendResp()
 		ExRT.F.SendExMsg("wachk", ExRT.F.CreateAddonMsg("R","NOWA"))
 		return
 	end
+	ExRT.F.SendExMsg("wachk", ExRT.F.CreateAddonMsg("R","DATA",tostring(WeakAuras.versionString)))
+
 	local isChanged = true
 	local buffer,bufferStart = {},0
 	local r,rNow = 0,0
@@ -521,6 +607,14 @@ function module:addonMessage(sender, prefix, prefix2, ...)
 			module.db.responces[ sender ] = module.db.responces[ sender ] or {}
 			if str1 == "NOWA" then
 				module.db.responces[ sender ].noWA = true
+				return
+			elseif str1 == "DATA" then
+				local _, wa_ver = ...
+				module.db.responces[ sender ].wa_ver = wa_ver
+
+				if module.options:IsVisible() and module.options.UpdatePage then
+					module.options.UpdatePage()
+				end
 				return
 			end
 			local start = tonumber(str1 or "?")

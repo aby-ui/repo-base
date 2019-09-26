@@ -32,7 +32,7 @@ local C_Calendar_GetDate
 if ExRT.clientVersion >= 80100 then
 	C_Calendar_GetDate = C_DateAndTime.GetCurrentCalendarTime
 elseif ExRT.isClassic then
-	C_Calendar_GetDate = ExRT.NULLfunc
+	C_Calendar_GetDate = C_DateAndTime.GetTodaysDate
 else
 	C_Calendar_GetDate = C_Calendar.GetDate
 end
@@ -796,8 +796,11 @@ function module.options:Load()
 		[1] = { ButtonPos = { x = 150,	y = -65 },  	HighLightBox = { x = 0, y = -0, width = 560, height = 180 },		ToolTipDir = "RIGHT",	ToolTipText = L.AttendanceHelpTop },
 		[2] = { ButtonPos = { x = 150,	y = -475 },  	HighLightBox = { x = 0, y = -410, width = 560, height = 200 },		ToolTipDir = "RIGHT",	ToolTipText = L.AttendanceHelpNames },
 	}
-	self.HELPButton = ExRT.lib.CreateHelpButton(self,self.HelpPlate)
-	self.HELPButton:SetPoint("CENTER",self,"TOPLEFT",0,15)
+
+	if not ExRT.isClassic then
+		self.HELPButton = ExRT.lib.CreateHelpButton(self,self.HelpPlate)
+		self.HELPButton:SetPoint("CENTER",self,"TOPLEFT",0,15)
+	end
 	
 	function self:UpdatePageData()
 		UpdateData()

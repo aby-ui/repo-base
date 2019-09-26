@@ -84,7 +84,7 @@ L.CloseMap = 'Opening the World Map'
 -- colors
 L.ColorSettings = 'Color Settings'
 L.ColorSettingsDesc = 'These settings allow you to change how item slots are presented on ADDON frames for easier identification.'
-L.GlowQuality = 'Color Items by Quality'
+L.GlowQuality = 'Color by Quality'
 L.GlowQuest = 'Color Quest Items'
 L.GlowUnusable = 'Color Unusable Items'
 L.GlowSets = 'Color Equipment Sets'

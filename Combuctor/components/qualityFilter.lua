@@ -1,5 +1,5 @@
 --[[
-	qualityFilter.lua 
+	qualityFilter.lua
 		A set of buttons to choose what quality of items to show
 --]]
 
@@ -12,15 +12,17 @@ QualityFilter.Button = Addon.QualityButton
 
 function QualityFilter:New(parent)
 	local f = self:Bind(CreateFrame('Frame', nil, parent))
-	f:SetSize(self.Button.SIZE * 7, self.Button.SIZE)
-
+	f:SetSize(self.Button.SIZE * (Addon.IsRetail and 7 or 6), self.Button.SIZE)
 	f:AddQualityButton(0)
 	f:AddQualityButton(1)
 	f:AddQualityButton(2)
 	f:AddQualityButton(3)
 	f:AddQualityButton(4)
 	f:AddQualityButton(5)
-	f:AddQualityButton(7, 6)
+
+	if Addon.IsRetail then
+		f:AddQualityButton(7, 6)
+	end
 
 	return f
 end

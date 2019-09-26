@@ -55,6 +55,10 @@ if AL then
 	AL["DISPLAY_BUTTON_CONTAINERS"] = "切換是否顯示寶箱的按鈕"
 	AL["DISPLAY_BUTTON_CONTAINERS_DESC"] = "切換是否顯示寶箱的按鈕。不會影響警報聲和聊天通知"
 	AL["DISPLAY_BUTTON_DESC"] = "取消按鈕與小圖像後不會再次顯示。它不影響通告聲音和聊天通知。"
+	--[[Translation missing --]]
+	AL["DISPLAY_BUTTON_SCALE"] = "Scale of the button and miniature"
+	--[[Translation missing --]]
+	AL["DISPLAY_BUTTON_SCALE_DESC"] = "This will adjust the scale of the button and miniature, being the value of 0.85 the original size"
 	AL["DISPLAY_CONTAINER_ICONS"] = "世界地圖顯示寶箱圖示開關"
 	AL["DISPLAY_CONTAINER_ICONS_DESC"] = "當停用時，寶箱的圖示不會顯示在世界地圖上。"
 	AL["DISPLAY_EVENT_ICONS"] = "世界地圖顯示事件圖示開關"
@@ -92,6 +96,10 @@ if AL then
 	AL["ENABLE_SCAN_RARES"] = "搜尋稀有NPC"
 	AL["ENABLE_SCAN_RARES_DESC"] = "啟用時，每當你的小地圖上有稀有NPC出現，都會有視覺警告與聲音提醒。"
 	AL["ENABLE_SEARCHING_RARE_TOOLTIP"] = "啟用這個稀有NPC的通知"
+	--[[Translation missing --]]
+	AL["ENABLE_TOMTOM_SUPPORT"] = "Toggle Tomtom's support"
+	--[[Translation missing --]]
+	AL["ENABLE_TOMTOM_SUPPORT_DESC"] = "When this is activated it will add a Tomtom's waypoint at the entitie's found coordinates"
 	AL["ENABLED_SEARCHING_RARE"] = "已啟用通知的稀有NPC:"
 	AL["EVENT"] = "事件"
 	AL["FILTER"] = "過濾NPC"

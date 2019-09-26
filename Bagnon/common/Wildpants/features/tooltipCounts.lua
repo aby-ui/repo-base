@@ -93,6 +93,8 @@ local function AddOwners(tooltip, link)
 					if REAGENTBANK_CONTAINER then
 						bank = bank + FindItemCount(owner, REAGENTBANK_CONTAINER, itemID)
 					end
+
+					bank = bank + FindItemCount(owner, BANK_CONTAINER, itemID)
 				else
 					local owned = GetItemCount(itemID, true)
 					local carrying = GetItemCount(itemID)

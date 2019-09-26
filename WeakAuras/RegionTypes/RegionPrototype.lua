@@ -560,21 +560,21 @@ function WeakAuras.regionPrototype.AddSetDurationInfo(region)
     -- WeakAuras no longer calls SetDurationInfo, but some people do that,
     -- In that case we also need to overwrite TimerTick
     region.SetDurationInfo = function(self, duration, expirationTime, customValue, inverse)
-      self.duration = self.duration or 0
-      if duration <= 0 or duration > self.duration or true then
-        self.duration = duration;
-      end
+      self.duration = duration or 0
       self.expirationTime = expirationTime;
       self.inverse = inverse;
 
       if customValue then
         SetProgressValue(region, duration, expirationTime);
+        region.TimerTick = nil
+        region:UpdateRegionHasTimerTick()
       else
         local adjustMin = region.adjustedMin or 0;
         region:SetTime((duration ~= 0 and region.adjustedMax or duration) - adjustMin, expirationTime - adjustMin, inverse);
-      end
 
-      region.TimerTick = TimerTick
+        region.TimerTick = TimerTick
+        region:UpdateRegionHasTimerTick()
+      end
     end
   elseif (region.generatedSetDurationInfo) then
     region.generatedSetDurationInfo = nil;
@@ -665,6 +665,15 @@ function WeakAuras.regionPrototype.AddExpandFunction(data, region, cloneId, pare
       if(region.PreShow) then
         region:PreShow();
       end
+
+      if region.subRegions then
+        for index, subRegion in pairs(region.subRegions) do
+          if subRegion.PreShow then
+            subRegion:PreShow()
+          end
+        end
+      end
+
       region.justCreated = nil;
       WeakAuras.ApplyFrameLevel(region)
       region:Show();
@@ -711,6 +720,15 @@ function WeakAuras.regionPrototype.AddExpandFunction(data, region, cloneId, pare
       if(region.PreShow) then
         region:PreShow();
       end
+
+      if region.subRegions then
+        for index, subRegion in pairs(region.subRegions) do
+          if subRegion.PreShow then
+            subRegion:PreShow()
+          end
+        end
+      end
+
       WeakAuras.ApplyFrameLevel(region)
       region:Show();
       WeakAuras.PerformActions(data, "start", region);

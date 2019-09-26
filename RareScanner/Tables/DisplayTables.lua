@@ -2560,4 +2560,11 @@ private.NPC_DISPLAY_IDS = {
 	[155660] = 31174, --General Purpose Bunny JMF
 	[150342] = 160, --Earthbreaker Gulroc
 	[151308] = 11611, --Boggac Skullbash
+	[155173] = 81965, --Honeyback Usurper
+	[155055] = 68061, --Gurg the Hivethief
+	[155176] = 77271, --Old Nasha
+	[158111] = 91518, --Trialmaster
+	[155171] = 92246, --The Hivekiller
+	[155172] = 2537, --Trapdoor Bee Hunter
+	[155059] = 79522, --Yorag the Jelly Feaster
 }

@@ -86,11 +86,6 @@
 
 	<Frame name="CombuctorFrameTemplate" resizable="true" clampedToScreen="true" enableMouse="true" movable="true" topLevel="true" hidden="true" inherits="ButtonFrameTemplate" virtual="true">
 		<Size x="300" y="400"/>
-
-		<HitRectInsets>
-			<AbsInset left="0" right="35" top="0" bottom="75"/>
-		</HitRectInsets>
-
 		<Layers>
 			<Layer level="OVERLAY">
 				<Texture inherits="UI-Frame-BtnDivMiddle"> <!-- Separator -->

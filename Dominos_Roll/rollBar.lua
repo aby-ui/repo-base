@@ -3,6 +3,7 @@
 		A dominos frame for rolling on items when in a party
 --]]
 
+local Dominos = LibStub("AceAddon-3.0"):GetAddon("Dominos")
 local L = LibStub('AceLocale-3.0'):GetLocale('Dominos')
 
 local ContainerFrame = Dominos:CreateClass('Frame', Dominos.Frame)
@@ -42,9 +43,9 @@ do
 
 	function ContainerFrame:CreateMenu()
 		local menu = Dominos:NewMenu(self.id)
-		local L = LibStub('AceLocale-3.0'):GetLocale('Dominos-Config')
+		local l = LibStub('AceLocale-3.0'):GetLocale('Dominos-Config')
 
-		local panel = menu:NewPanel(L.Layout)
+		local panel = menu:NewPanel(l.Layout)
 
 		panel.opacitySlider = panel:NewOpacitySlider()
 		panel.fadeSlider = panel:NewFadeSlider()
@@ -55,13 +56,15 @@ do
 	end
 end
 
-
-local ContainerFrameModule = Dominos:NewModule('ContainerFrames')
+local ContainerFrameModule = Dominos:NewModule('RollBars')
 
 do
 	function ContainerFrameModule:OnInitialize()
-		_G['GroupLootContainer'].ignoreFramePositionManager = true
-		_G['AlertFrame'].ignoreFramePositionManager = true
+		-- exports
+		-- luacheck: push ignore 122
+		GroupLootContainer.ignoreFramePositionManager = true
+		AlertFrame.ignoreFramePositionManager = true
+		-- luacheck: pop
 	end
 
 	function ContainerFrameModule:Load()
@@ -75,7 +78,7 @@ do
 	end
 
 	function ContainerFrameModule:Unload()
-		for i, frame in pairs(self.frames) do
+		for _, frame in pairs(self.frames) do
 			frame:Free()
 		end
 	end

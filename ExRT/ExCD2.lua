@@ -6,8 +6,9 @@ local UnitIsDeadOrGhost, UnitIsConnected, UnitName, UnitCreatureFamily, UnitIsDe
 
 local RaidInCombat, ClassColorNum, GetDifficultyForCooldownReset, DelUnitNameServer, NumberInRange = ExRT.F.RaidInCombat, ExRT.F.classColorNum, ExRT.F.GetDifficultyForCooldownReset, ExRT.F.delUnitNameServer, ExRT.F.NumberInRange
 local GetEncounterTime, UnitCombatlogname, GetUnitInfoByUnitFlag, ScheduleTimer, CancelTimer, GetRaidDiffMaxGroup, round, table_wipe2, dtime = ExRT.F.GetEncounterTime, ExRT.F.UnitCombatlogname, ExRT.F.GetUnitInfoByUnitFlag, ExRT.F.ScheduleTimer, ExRT.F.CancelTimer, ExRT.F.GetRaidDiffMaxGroup, ExRT.F.Round, ExRT.F.table_wipe, ExRT.F.dtime
+local CheckInteractDistance, CanInspect = CheckInteractDistance, CanInspect
 
-local GetSpellLevelLearned, GetInspectSpecialization, GetNumSpecializationsForClassID = GetSpellLevelLearned, GetInspectSpecialization, GetNumSpecializationsForClassID, GetTalentInfo
+local GetSpellLevelLearned, GetInspectSpecialization, GetNumSpecializationsForClassID, GetTalentInfo = GetSpellLevelLearned, GetInspectSpecialization, GetNumSpecializationsForClassID, GetTalentInfo
 local C_SpecializationInfo_GetInspectSelectedPvpTalent
 if ExRT.isClassic then
 	GetSpellLevelLearned = function () return 1 end
@@ -83,6 +84,27 @@ module.db.spellDB = {
 {80353,	"MAGE",		{80353,	300,	40},	nil,			nil,			nil,			},	--Искажение времени
 --{id,	class,		all specs,		spec1,			spec2={spellid,cd,duration},spec3,spec4		},	--name
 }
+
+if ExRT.isClassic then
+	module.db.spellDB = {
+		{29166,	"DRUID",	{29166,	360,	20}},	--Озарение
+		{20748,	"DRUID",	{20748,	1800,	0}},	--BR
+		{6795,	"DRUID",	{6795,	10,	0}},	--Taunt
+		{9863,	"DRUID",	{9863,	300,	10}},	--Tranq
+
+		{355,	"WARRIOR",	{355,	10,	0}},	--Taunt
+		{12975,	"WARRIOR",	{12975,	600,	20}},	--Last stand
+		{871,	"WARRIOR",	{871,	1800,	10}},	--SW
+
+		{11958,	"MAGE",		{11958,	480,	40}},	--IB
+
+		{1020,	"PALADIN",	{1020,	300,	12}},	--DS
+		{10310,	"PALADIN",	{10310,	3600,	0}},	--LoH
+		{19752,	"PALADIN",	{19752,	3600,	0}},	--DI
+
+		{17359,	"SHAMAN",	{17359,	300,	12}},	--MTT
+	}
+end
 
 module.db.Cmirror = module._C
 module.db.dbCountDef = #module.db.spellDB
@@ -241,6 +263,16 @@ do
 		end
 		e[spellID] = pos
 	end
+	if ExRT.isClassic then
+		function cdsNav_set(playerName,spellID,pos)
+			local e = cdsNavData[playerName]
+			if not e then
+				e = {}
+				cdsNavData[playerName] = e
+			end
+			e[pos.spellName] = pos
+		end
+	end
 end
 
 do
@@ -384,7 +416,7 @@ module.db.spell_durationByTalent_fix = {	--Изменение длительно
 	[52174] = {202163,3},
 	[1719] = {202751,4},
 	[5246] = {275338,4},
-	[31184] = {53376,"*1.25"},
+	[31884] = {286229,5,53376,"*1.25"},
 	[13877] = {272026,3},
 	[185313] = {108208,1},
 	[48707] = {205727,"*1.3",207321,5},
@@ -413,7 +445,7 @@ module.db.spell_cdByTalent_fix = {		--Изменение кд талантом\�
 	[8122] = {196704,-30},
 	[15286] = {199855,-45},
 	[15487] = {263716,-15},
-	[51533] = {262624,-30},
+	[51533] = {262624,-30,296320,"*0.80"},
 	[79206] = {192088,-60},
 	[48707] = {205727,-15},
 	[108199] = {206970,-30},
@@ -427,9 +459,9 @@ module.db.spell_cdByTalent_fix = {		--Изменение кд талантом\�
 	[109132] = {115173,-5},
 	[119381] = {264348,-10},
 	[22812] = {203965,"*0.67"},
-	[61336] = {203965,"*0.67"},
+	[61336] = {203965,"*0.67",296320,"*0.80"},
 	[18562] = {200383,-3},
-	[740] = {197073,-60},
+	[740] = {197073,-60,296320,"*0.80"},
 	[102342] = {197061,-15},
 	[48792] = {288424,-15},
 	[106898] = {288826,-60},
@@ -438,9 +470,40 @@ module.db.spell_cdByTalent_fix = {		--Изменение кд талантом\�
 	[109304] = {287938,-15},
 	[116849] = {277667,-20},
 
-	[296320] = {34433,"*0.85",123040,"*0.85",64843,"*0.85",31884,"*0.862",108280,"*0.877",51533,"*0.877",198067,"*0.877",192249,"*0.877",115203,"*0.9",115203,"*0.9",115310,"*0.9",137639,"*0.9",152173,"*0.9",194223,"*0.9",106951,"*0.9",61336,"*0.9",740,"*0.9",190319,"*0.9",12042,"*0.9",12472,"*0.9",191427,"*0.9",187827,"*0.9",55233,"*0.9",47568,"*0.9",275699,"*0.9",288613,"*0.9",193530,"*0.9",266779,"*0.9",205180,"*0.9",265187,"*0.9",1122,"*0.9",79140,"*0.9",13750,"*0.9",121471,"*0.9",227847,"*0.9",1719,"*0.9",107574,"*0.9"},
-	--[299367] = {34433,"*0.85",123040,"*0.85",64843,"*0.85",31884,"*0.862",108280,"*0.877",51533,"*0.877",198067,"*0.877",192249,"*0.877",115203,"*0.9",115203,"*0.9",115310,"*0.9",137639,"*0.9",152173,"*0.9",194223,"*0.9",106951,"*0.9",61336,"*0.9",740,"*0.9",190319,"*0.9",12042,"*0.9",12472,"*0.9",191427,"*0.9",187827,"*0.9",55233,"*0.9",47568,"*0.9",275699,"*0.9",288613,"*0.9",193530,"*0.9",266779,"*0.9",205180,"*0.9",265187,"*0.9",1122,"*0.9",79140,"*0.9",13750,"*0.9",121471,"*0.9",227847,"*0.9",1719,"*0.9",107574,"*0.9"},
-	--[299369] = {34433,"*0.85",123040,"*0.85",64843,"*0.85",31884,"*0.862",108280,"*0.877",51533,"*0.877",198067,"*0.877",192249,"*0.877",115203,"*0.9",115203,"*0.9",115310,"*0.9",137639,"*0.9",152173,"*0.9",194223,"*0.9",106951,"*0.9",61336,"*0.9",740,"*0.9",190319,"*0.9",12042,"*0.9",12472,"*0.9",191427,"*0.9",187827,"*0.9",55233,"*0.9",47568,"*0.9",275699,"*0.9",288613,"*0.9",193530,"*0.9",266779,"*0.9",205180,"*0.9",265187,"*0.9",1122,"*0.9",79140,"*0.9",13750,"*0.9",121471,"*0.9",227847,"*0.9",1719,"*0.9",107574,"*0.9"},
+	[34433] = {296320,"*0.80"},
+	[123040] = {296320,"*0.80"},
+	[64843] = {296320,"*0.80"},
+	[31884] = {296320,"*0.80"},
+	[108280] = {296320,"*0.80"},
+	[198067] = {296320,"*0.80"},
+	[192249] = {296320,"*0.80"},
+	[115203] = {296320,"*0.80"},
+	[115310] = {296320,"*0.80"},
+	[137639] = {296320,"*0.80"},
+	[152173] = {296320,"*0.80"},
+	[194223] = {296320,"*0.80"},
+	[106951] = {296320,"*0.80"},
+	[190319] = {296320,"*0.80"},
+	[12042] = {296320,"*0.80"},
+	[12472] = {296320,"*0.80"},
+	[191427] = {296320,"*0.80"},
+	[187827] = {296320,"*0.80"},
+	[55233] = {296320,"*0.80"},
+	[47568] = {296320,"*0.80"},
+	[275699] = {296320,"*0.80"},
+	[288613] = {296320,"*0.80"},
+	[193530] = {296320,"*0.80"},
+	[266779] = {296320,"*0.80"},
+	[205180] = {296320,"*0.80"},
+	[265187] = {296320,"*0.80"},
+	[1122] = {296320,"*0.80"},
+	[79140] = {296320,"*0.80"},
+	[13750] = {296320,"*0.80"},
+	[121471] = {296320,"*0.80"},
+	[227847] = {296320,"*0.80"},
+	[1719] = {296320,"*0.80"},
+	[107574] = {296320,"*0.80"},
+
 	--Priest, Paladin, Shaman, Monk, Druid, Mage, DH, DK, Hunter, Warlock, Rogue, Warrior
 	[293019] = {298080,-15},
 	[294926] = {300002,-30},
@@ -451,6 +514,16 @@ module.db.spell_cdByTalent_fix = {		--Изменение кд талантом\�
 	[297108] = {298273,-30},
 	[298452] = {299376,-15},
 
+}
+
+module.db.spell_cdByTalent_scalable_data = {
+	[296320] = {
+		[1] = "*0.80",
+	},
+}
+
+module.db.spell_cdByTalent_isScalable = {
+	[296320] = true,
 }
 
 module.db.tierSetsSpells = {}	--[specID.tierID.tierMark] = {2P Bonus Spell ID, 4P Bonus Spell ID}
@@ -1029,6 +1102,21 @@ module.db.differentIcons = {	--Другие иконки заклинаниям
 	[295271] = 1003587,
 }
 
+if ExRT.isClassic then
+	module.db.findspecspells = {}
+	module.db.spell_isTalent = {}
+	module.db.spell_autoTalent = {}
+	module.db.spell_charge_fix = {}
+	module.db.spell_talentReplaceOther = {}
+	module.db.spell_aura_list = {}
+	module.db.spell_speed_list = {}
+	module.db.spell_afterCombatReset = {}
+	module.db.spell_afterCombatNotReset = {}
+	module.db.spell_reduceCdByHaste = {}
+	module.db.spell_resetOtherSpells = {}
+	module.db.spell_reduceCdCast = {}
+end
+
 module.db.playerName = nil
 
 module.db.plugin = {}
@@ -1229,6 +1317,10 @@ local function BarUpdateText(self)
 	self.textLeft:SetText(string_trim(textLeft))
 	self.textRight:SetText(string_trim(textRight))
 	self.textCenter:SetText(string_trim(textCenter))
+
+	if barParent.optionIconName then
+		self.textIcon:SetText(barData.name)
+	end
 end
 
 local function BarAnimation(self)
@@ -1901,6 +1993,8 @@ local function UpdateBarStyle(self)
 	self:SetAlpha(1)
 	
 	self.cooldown:Hide()
+	self.cooldown:SetHideCountdownNumbers(parent.optionCooldownHideNumbers and true or false)
+	self.cooldown:SetDrawEdge(parent.optionCooldownShowSwipe and true or false)
 
 	self.textIcon:SetText("")
 	
@@ -2033,6 +2127,9 @@ local function CreateBar(parent)
 	cooldown:SetDrawEdge(false)
 	--cooldown:SetAllPoints()
 	cooldown:SetPoint("CENTER")
+	cooldown:SetHideCountdownNumbers(false)
+	cooldown:SetDrawEdge(false)
+	cooldown:SetDrawSwipe(true)
 	self.cooldown = cooldown
 	
 	local background = self:CreateTexture(nil, "BACKGROUND", nil, -7)
@@ -2044,6 +2141,7 @@ local function CreateBar(parent)
 	self.textCenter = ELib:Text(self.statusbar,nil,nil,"GameFontNormal"):Size(0,0):Point(0,0):Center():Color()
 	self.textIcon = ELib:Text(icon,nil,nil,"GameFontNormal"):Size(0,0):Point(0,0):Center():Bottom():Color()
 	
+	self.textIcon:SetDrawLayer("ARTWORK",3)
 	--[[
 	self.textLeft = self.statusbar:CreateFontString(nil,"ARTWORK")
 	self.textLeft:SetJustifyH("LEFT")
@@ -2235,19 +2333,21 @@ do
 end
 
 local function AfterCombatResetFunction(isArena)
-	for i=1,#_C do
-		local unitSpellData = _C[i]
-		local uSpecID = module.db.specInDBase[globalGUIDs[unitSpellData.fullName] or 0]
-		if not unitSpellData.db[uSpecID] and unitSpellData.db[3] then
-			uSpecID = 3
-		end
-
-		if (unitSpellData.cd > 0 and (module.db.spell_afterCombatReset[unitSpellData.db[1]] or (unitSpellData.db[uSpecID] and unitSpellData.db[uSpecID][2] >= (isArena and 0 or 180) or unitSpellData.cd >= (isArena and 0 or 180)))) and (not module.db.spell_afterCombatNotReset[unitSpellData.db[1]] or isArena) then
-			unitSpellData.lastUse = 0 
-			unitSpellData.charge = nil 
-			
-			if unitSpellData.bar and unitSpellData.bar.data == unitSpellData then
-				unitSpellData.bar:UpdateStatus()
+	if not ExRT.isClassic then
+		for i=1,#_C do
+			local unitSpellData = _C[i]
+			local uSpecID = module.db.specInDBase[globalGUIDs[unitSpellData.fullName] or 0]
+			if not unitSpellData.db[uSpecID] and unitSpellData.db[3] then
+				uSpecID = 3
+			end
+	
+			if (unitSpellData.cd > 0 and (module.db.spell_afterCombatReset[unitSpellData.db[1]] or (unitSpellData.db[uSpecID] and unitSpellData.db[uSpecID][2] >= (isArena and 0 or 180) or unitSpellData.cd >= (isArena and 0 or 180)))) and (not module.db.spell_afterCombatNotReset[unitSpellData.db[1]] or isArena) then
+				unitSpellData.lastUse = 0 
+				unitSpellData.charge = nil 
+				
+				if unitSpellData.bar and unitSpellData.bar.data == unitSpellData then
+					unitSpellData.bar:UpdateStatus()
+				end
 			end
 		end
 	end
@@ -2906,7 +3006,7 @@ local function UpdateRoster()
 						
 						for l=3,7 do
 							if spellData[l] then
-								local h = module.db.cdsNav[name][spellData[l][1]]
+								local h = ExRT.isClassic and module.db.cdsNav[name][GetSpellInfo(spellData[l][1])] or module.db.cdsNav[name][spellData[l][1]]
 								if h then
 									h.db = spellData
 									if lastUse ~= 0 and nowCd ~= 0 and h.lastUse == 0 and h.cd == 0 then
@@ -2951,7 +3051,7 @@ local function UpdateRoster()
 		end
 		
 		--WOD Raid resurrect
-		do
+		if not ExRT.isClassic then
 			local findResSpell = ExRT.F.table_find(module.db.spellDB,161642,1)
 			if findResSpell then
 				local spellData = module.db.spellDB[findResSpell]
@@ -3126,12 +3226,18 @@ do
 			for j=1,#cdTable,2 do
 				local talentSpellID = cdTable[j]
 				if module.db.session_gGUIDs[fullName][talentSpellID] and (not module.db.spell_isPvpTalent[talentSpellID] or module.IsPvpTalentsOn(fullName)) then
-					local timeReduce = cdTable[j+1]
-					if type(timeReduce) == 'table' then
-						if IsAuraActive(fullName,timeReduce[2]) then
-							timeReduce = timeReduce[1]
-						else
-							timeReduce = 0
+					local timeReduce
+					if module.db.spell_cdByTalent_isScalable[talentSpellID] then
+						local scale_data = module.db.spell_cdByTalent_scalable_data[talentSpellID]
+						timeReduce = scale_data[fullName] or scale_data[1]
+					else
+						timeReduce = cdTable[j+1]
+						if type(timeReduce) == 'table' then
+							if IsAuraActive(fullName,timeReduce[2]) then
+								timeReduce = timeReduce[1]
+							else
+								timeReduce = 0
+							end
 						end
 					end
 					if tonumber(timeReduce) then
@@ -3517,6 +3623,19 @@ do
 		end
 		--dtime(ExRT.Debug,'ExCD2',event)
 	end
+	if ExRT.isClassic then
+		function module.main:COMBAT_LOG_EVENT_UNFILTERED()
+			--dtime()
+			local _,event,_,sourceGUID,sourceName,sourceFlags,_,destGUID,destName,destFlags,_,spellID,spellName,_,missType,overhealing,_,_,_,_,critical = CombatLogGetCurrentEventInfo()
+	
+			local func = eventsView[event]
+			if func then
+				func(self,sourceGUID,sourceName,sourceFlags,destGUID,destName,destFlags,spellName,critical,missType,overhealing)
+			end
+			--dtime(ExRT.Debug,'ExCD2',event)
+		end
+	end
+
 	function module.main:SPELL_AURA_APPLIED(sourceGUID,sourceName,sourceFlags,destGUID,destName,destFlags,spellID)
 		if sourceName then
 			local CDspellID = spell_startCDbyAuraApplied[spellID]
@@ -4369,6 +4488,7 @@ function module.options:Load()
 		local newVal = current == max_ and max(current-SPELL_LINE_HEIGHT,1) or current
 		if newVal ~= current then
 			module.options.ScrollBar:SetValue(newVal)
+			module.options:ReloadSpellsPage()
 		else
 			module.options.ReloadSpellsPage()
 		end
@@ -4465,6 +4585,12 @@ function module.options:Load()
 	end) 
 	self.butSpellsFrame:Hide()
 	self.butSpellsFrame.Texture:SetGradientAlpha("VERTICAL",0.05,0.26,0.09,1, 0.20,0.41,0.25,1)
+
+	if ExRT.isClassic then
+		self.butSpellsFrame:Disable()
+		self.butSpellsFrame:Hide()
+		self.butSpellsFrame.Show = ExRT.NULLfunc
+	end
 	
 	self.spellsModifyFrame = ELib:Popup():Size(560,180)
 	self.spellsModifyFrame.isDefaultSpell = nil
@@ -4483,6 +4609,9 @@ function module.options:Load()
 
 		local specByClassTable = module.db.specByClass[self.class] or {0}
 		local specsCount = #specByClassTable
+		if ExRT.isClassic then
+			specsCount = math.min(specsCount,1)
+		end
 		for i=1,specsCount do
 			local specID = specByClassTable[i]
 			local icon = ""
@@ -5238,6 +5367,7 @@ function module.options:Load()
 		module.options.ScrollBar:UpdateRange()
 		if not doNotScroll then
 			module.options.ScrollBar:SetValue(sbmax+31)
+			module.options:ReloadSpellsPage()
 		end
 		SyncUserDB()
 		UpdateRoster()
@@ -5480,6 +5610,8 @@ function module.options:Load()
 		module.options.optColSet.sliderHeight:SetValue(VExRT.ExCD2.colSet[i].iconSize or module.db.colsDefaults.iconSize)
 		module.options.optColSet.chkGray:SetChecked(VExRT.ExCD2.colSet[i].iconGray)
 		module.options.optColSet.chkCooldown:SetChecked(VExRT.ExCD2.colSet[i].methodsCooldown)	
+		module.options.optColSet.chkCooldownHideNumbers:SetChecked(VExRT.ExCD2.colSet[i].iconCooldownHideNumbers)	
+		module.options.optColSet.chkCooldownShowSwipe:SetChecked(VExRT.ExCD2.colSet[i].iconCooldownShowSwipe)	
 		module.options.optColSet.chkShowTitles:SetChecked(VExRT.ExCD2.colSet[i].iconTitles)	
 		module.options.optColSet.chkHideBlizzardEdges:SetChecked(VExRT.ExCD2.colSet[i].iconHideBlizzardEdges)	
 		module.options.optColSet.chkGeneralIcons:SetChecked(VExRT.ExCD2.colSet[i].iconGeneral)
@@ -5768,8 +5900,26 @@ function module.options:Load()
 		end
 		module:ReloadAllSplits()
 	end)
+
+	self.optColSet.chkCooldownHideNumbers = ELib:Check(self.optColSet.superTabFrame.tab[2],L.BattleResHideTime):Point("TOPLEFT",self.optColSet.chkCooldown,25,-25):Tooltip(L.BattleResHideTimeTooltip):OnClick(function(self) 
+		if self:GetChecked() then
+			VExRT.ExCD2.colSet[module.options.optColTabs.selected].iconCooldownHideNumbers = true
+		else
+			VExRT.ExCD2.colSet[module.options.optColTabs.selected].iconCooldownHideNumbers = nil
+		end
+		module:ReloadAllSplits()
+	end)
+
+	self.optColSet.chkCooldownShowSwipe = ELib:Check(self.optColSet.superTabFrame.tab[2],"Show edge"):Point("TOPLEFT",self.optColSet.chkCooldownHideNumbers,0,-25):OnClick(function(self) 
+		if self:GetChecked() then
+			VExRT.ExCD2.colSet[module.options.optColTabs.selected].iconCooldownShowSwipe = true
+		else
+			VExRT.ExCD2.colSet[module.options.optColTabs.selected].iconCooldownShowSwipe = nil
+		end
+		module:ReloadAllSplits()
+	end)
 	
-	self.optColSet.chkShowTitles = ELib:Check(self.optColSet.superTabFrame.tab[2],L.cd2ColSetShowTitles):Point(10,-160):OnClick(function(self) 
+	self.optColSet.chkShowTitles = ELib:Check(self.optColSet.superTabFrame.tab[2],L.cd2ColSetShowTitles):Point("TOPLEFT",self.optColSet.chkCooldown,0,-75):OnClick(function(self) 
 		if self:GetChecked() then
 			VExRT.ExCD2.colSet[module.options.optColTabs.selected].iconTitles = true
 		else
@@ -5778,7 +5928,7 @@ function module.options:Load()
 		module:ReloadAllSplits()
 	end)
 	
-	self.optColSet.chkHideBlizzardEdges = ELib:Check(self.optColSet.superTabFrame.tab[2],L.cd2ColSetIconHideBlizzardEdges):Point(10,-185):OnClick(function(self) 
+	self.optColSet.chkHideBlizzardEdges = ELib:Check(self.optColSet.superTabFrame.tab[2],L.cd2ColSetIconHideBlizzardEdges):Point("TOPLEFT",self.optColSet.chkShowTitles,0,-25):OnClick(function(self) 
 		if self:GetChecked() then
 			VExRT.ExCD2.colSet[module.options.optColTabs.selected].iconHideBlizzardEdges = true
 		else
@@ -5797,7 +5947,7 @@ function module.options:Load()
 		self:doAlphas()
 	end)
 	function self.optColSet.chkGeneralIcons:doAlphas()
-		ExRT.lib.SetAlphas(VExRT.ExCD2.colSet[module.options.optColTabs.selected].iconGeneral and module.options.optColTabs.selected ~= (module.db.maxColumns + 1) and 0.5 or 1,module.options.optColSet.chkGray,module.options.optColSet.sliderHeight,module.options.optColSet.dropDownIconPos,module.options.optColSet.chkCooldown,module.options.optColSet.chkShowTitles,module.options.optColSet.chkHideBlizzardEdges)
+		ExRT.lib.SetAlphas(VExRT.ExCD2.colSet[module.options.optColTabs.selected].iconGeneral and module.options.optColTabs.selected ~= (module.db.maxColumns + 1) and 0.5 or 1,module.options.optColSet.chkGray,module.options.optColSet.sliderHeight,module.options.optColSet.dropDownIconPos,module.options.optColSet.chkCooldown,module.options.optColSet.chkShowTitles,module.options.optColSet.chkHideBlizzardEdges,module.options.optColSet.chkCooldownShowSwipe,module.options.optColSet.chkCooldownHideNumbers)
 	end
 	
 	--> Texture and colors Options
@@ -7248,6 +7398,7 @@ function module.options:Load()
 			
 			local spellID = DiffSpellData and DiffSpellData.spells[j] or self.optColSet.templateData.spells[j]
 			local spellName,_,spellTexture = GetSpellInfo(spellID or 0)
+			spellName = spellName or "unk"
 			
 			local spellClass = DiffSpellData and DiffSpellData.spellsClass[j] or self.optColSet.templateData.spellsClass[j]
 		
@@ -7642,6 +7793,8 @@ function module:ReloadAllSplits(argScaleFix)
 		columnFrame.optionStyleAnimation = (not VExRT_ColumnOptions[i].methodsGeneral and VExRT_ColumnOptions[i].methodsStyleAnimation) or (VExRT_ColumnOptions[i].methodsGeneral and VExRT_ColumnOptions[module.db.maxColumns+1].methodsStyleAnimation) or module.db.colsDefaults.methodsStyleAnimation
 		columnFrame.optionTimeLineAnimation = (not VExRT_ColumnOptions[i].methodsGeneral and VExRT_ColumnOptions[i].methodsTimeLineAnimation) or (VExRT_ColumnOptions[i].methodsGeneral and VExRT_ColumnOptions[module.db.maxColumns+1].methodsTimeLineAnimation) or module.db.colsDefaults.methodsTimeLineAnimation
 		columnFrame.optionCooldown = (not VExRT_ColumnOptions[i].iconGeneral and VExRT_ColumnOptions[i].methodsCooldown) or (VExRT_ColumnOptions[i].iconGeneral and VExRT_ColumnOptions[module.db.maxColumns+1].methodsCooldown)
+		columnFrame.optionCooldownHideNumbers = (not VExRT_ColumnOptions[i].iconGeneral and VExRT_ColumnOptions[i].iconCooldownHideNumbers) or (VExRT_ColumnOptions[i].iconGeneral and VExRT_ColumnOptions[module.db.maxColumns+1].iconCooldownHideNumbers)
+		columnFrame.optionCooldownShowSwipe = (not VExRT_ColumnOptions[i].iconGeneral and VExRT_ColumnOptions[i].iconCooldownShowSwipe) or (VExRT_ColumnOptions[i].iconGeneral and VExRT_ColumnOptions[module.db.maxColumns+1].iconCooldownShowSwipe)
 		columnFrame.optionIconName = (not VExRT_ColumnOptions[i].textGeneral and VExRT_ColumnOptions[i].textIconName) or (VExRT_ColumnOptions[i].textGeneral and VExRT_ColumnOptions[module.db.maxColumns+1].textIconName)
 		columnFrame.optionHideSpark = (not VExRT_ColumnOptions[i].textureGeneral and VExRT_ColumnOptions[i].textureHideSpark) or (VExRT_ColumnOptions[i].textureGeneral and VExRT_ColumnOptions[module.db.maxColumns+1].textureHideSpark)
 		columnFrame.optionIconTitles = (not VExRT_ColumnOptions[i].iconGeneral and VExRT_ColumnOptions[i].iconTitles) or (VExRT_ColumnOptions[i].iconGeneral and VExRT_ColumnOptions[module.db.maxColumns+1].iconTitles)
@@ -8515,6 +8668,26 @@ module.db.allClassSpells = {
 },
 }
 ]]
+if ExRT.isClassic then
+module.db.AllClassSpellsInText = [[
+local module = GExRT.A.ExCD2
+module.db.allClassSpells = {
+["WARRIOR"] = {},
+["PALADIN"] = {},
+["HUNTER"] = {},
+["ROGUE"] = {},
+["PRIEST"] = {},
+["DEATHKNIGHT"] = {},
+["SHAMAN"] = {},
+["MAGE"] = {},
+["WARLOCK"] = {},
+["MONK"] = {},
+["DRUID"] = {},
+["DEMONHUNTER"] = {},
+["PET"] = {},
+}
+]]
+end
 
 
 -------------------------------------------
@@ -8530,6 +8703,7 @@ moduleInspect.db.inspectDB = {}
 moduleInspect.db.inspectDBAch = {}
 moduleInspect.db.inspectQuery = {}
 moduleInspect.db.inspectItemsOnly = {}
+moduleInspect.db.inspectNotItemsOnly = {}
 moduleInspect.db.inspectID = nil
 moduleInspect.db.inspectCleared = nil
 
@@ -8609,7 +8783,7 @@ do
 		[22] = {296325,296320,296325,296320, 296326,296321,299368,299367, 303342,296322,299370,299369, 296328,296324,299370,299369},
 		[23] = {297108,297147,297108,297147, 297120,297177,298273,298274, 297122,297178,298277,298275, 298182,298183,298277,298275},
 	}
-	moduleInspect.db.essenceSpellsData = dbcData
+	moduleInspect.db.essenceSpellsData = {}
 	local CURRENT_MAX,CURRENT_MIN = 32,2
 
 	function moduleInspect:GetEssenceData()
@@ -8626,13 +8800,17 @@ do
 					}
 					essenceData[#essenceData+1] = currData
 
+					local essData = C_AzeriteEssence.GetEssenceInfo(i)
+
 					for j=1,4 do
 						for k=0,1 do
 							local spellID = dbcData[i][(j-1)*4+3+k]
 							local spellName,_,spellTexture = GetSpellInfo(spellID)
 
+							moduleInspect.db.essenceSpellsData[spellID] = true
+
 							currData[j*(k == 0 and 1 or -1)] = {
-								icon = spellTexture,
+								icon = essData and essData.icon or spellTexture,
 								spellID = spellID,
 								previewSpellID = dbcData[i][(j-1)*4+1+k],
 								name = ess,
@@ -8650,6 +8828,12 @@ do
 	end
 end
 
+local function CheckForSuccesInspect(name)
+	if not moduleInspect.db.inspectDB[name] then
+		moduleInspect.db.inspectQuery[name] = true
+	end
+end
+
 local inspectLastTime = 0
 local function InspectNext()
 	if RaidInCombat() or (InspectFrame and InspectFrame:IsShown()) then
@@ -8657,10 +8841,10 @@ local function InspectNext()
 	end
 	local nowTime = GetTime()
 	for name,timeAdded in pairs(moduleInspect.db.inspectQuery) do
-		if name and CanInspect(name) then--and CheckInteractDistance(name,1) then
+		if name and (not ExRT.isClassic or CheckInteractDistance(name,1)) and CanInspect(name) then
 			NotifyInspect(name)
 			
-			if (VExRT and VExRT.InspectViewer and VExRT.InspectViewer.EnableA4ivs) and not moduleInspect.db.inspectDBAch[name] then
+			if (VExRT and VExRT.InspectViewer and VExRT.InspectViewer.EnableA4ivs) and not moduleInspect.db.inspectDBAch[name] and not ExRT.isClassic then
 				if AchievementFrameComparison then
 					AchievementFrameComparison:UnregisterEvent("INSPECT_ACHIEVEMENT_READY")
 					ExRT.F.Timer(AchievementFrameComparison.RegisterEvent, inspectForce and 1 or 2.5, AchievementFrameComparison, "INSPECT_ACHIEVEMENT_READY")
@@ -8670,20 +8854,25 @@ local function InspectNext()
 			end
 			
 			moduleInspect.db.inspectQuery[name] = nil
+			ExRT.F.Timer(CheckForSuccesInspect,10,name)	--Try later if failed
 			return
-		elseif (timeAdded + 300) < nowTime or not UnitName(name) then
+		elseif not UnitName(name) then
 			moduleInspect.db.inspectQuery[name] = nil
 		end
 	end
 end
 
 local function InspectQueue()
+	if ExRT.isClassic then	--Temp fix for 'Unknown unit' or 'Out of Range' errors
+		return
+	end
 	local n = GetNumGroupMembers() or 0
 	local timeAdded = GetTime()
 	for j=1,n do
 		local name,_,subgroup,_,_,_,_,online = GetRaidRosterInfo(j)
 		if name and not moduleInspect.db.inspectDB[name] and online then
 			moduleInspect.db.inspectQuery[name] = timeAdded
+			moduleInspect.db.inspectNotItemsOnly[name] = true
 		end
 	end
 end
@@ -8691,6 +8880,7 @@ end
 function moduleInspect:AddToQueue(name) 
 	if not moduleInspect.db.inspectQuery[name] then
 		moduleInspect.db.inspectQuery[name] = GetTime()
+		moduleInspect.db.inspectNotItemsOnly[name] = true
 	end
 end
 
@@ -8749,10 +8939,8 @@ do
 		for spellID,_ in pairs(module.db.spell_isAzeriteTalent) do
 			module.db.session_gGUIDs[name] = -spellID
 		end
-		for _,v in pairs(moduleInspect.db.essenceSpellsData) do
-			for _,spellID in pairs(v) do
-				module.db.session_gGUIDs[name] = -spellID
-			end
+		for spellID,_ in pairs(moduleInspect.db.essenceSpellsData) do
+			module.db.session_gGUIDs[name] = -spellID
 		end
 
 		
@@ -8865,6 +9053,12 @@ do
 							elseif itemSlotID == 17 then
 								offHandSlot = ilvl
 								ArtifactIlvlSlot2 = ilvl
+							elseif itemSlotID == 2 and select(3,GetItemInfo(itemLink)) == 6 then
+								module.db.spell_cdByTalent_scalable_data[296320][name] = "*"..(1 - ((ilvl - 465) * 0.15 + 19.8) / 100)
+								--[[
+									63: 18.9
+									66: 19.8
+								]]
 							end
 						end
 						
@@ -8917,6 +9111,16 @@ do
 								end
 							end
 						end
+					end
+				end
+
+				if not inspectData['items_ilvl'][itemSlotID] then
+					local ilvl = select(4,GetItemInfo(itemLink))
+					if ilvl then
+						inspectData['ilvl'] = inspectData['ilvl'] + ilvl
+						ilvl_count = ilvl_count + 1
+						
+						inspectData['items_ilvl'][itemSlotID] = ilvl
 					end
 				end
 				
@@ -9041,7 +9245,7 @@ if not ExRT.isClassic then
 end
 
 do
-	local tmr = 0
+	local tmr = -5
 	local queueTimer = 0
 	function moduleInspect:timer(elapsed)
 		tmr = tmr + elapsed
@@ -9056,25 +9260,23 @@ do
 		end
 	end
 	function moduleInspect:ResetTimer() tmr = 0 end
-	function moduleInspect:AddonLoaded() tmr = -5 end
 end
 
 function moduleInspect:Enable()
 	moduleInspect:RegisterTimer()
-	moduleInspect:RegisterEvents('PLAYER_SPECIALIZATION_CHANGED','INSPECT_READY','UNIT_INVENTORY_CHANGED','PLAYER_EQUIPMENT_CHANGED','GROUP_ROSTER_UPDATE','ZONE_CHANGED_NEW_AREA','INSPECT_ACHIEVEMENT_READY')
+	moduleInspect:RegisterEvents('PLAYER_SPECIALIZATION_CHANGED','INSPECT_READY','UNIT_INVENTORY_CHANGED','PLAYER_EQUIPMENT_CHANGED','GROUP_ROSTER_UPDATE','ZONE_CHANGED_NEW_AREA','INSPECT_ACHIEVEMENT_READY','CHALLENGE_MODE_START')
 end
 function moduleInspect:Disable()
 	moduleInspect:UnregisterTimer()
-	moduleInspect:UnregisterEvents('PLAYER_SPECIALIZATION_CHANGED','INSPECT_READY','UNIT_INVENTORY_CHANGED','PLAYER_EQUIPMENT_CHANGED','GROUP_ROSTER_UPDATE','ZONE_CHANGED_NEW_AREA','INSPECT_ACHIEVEMENT_READY')	
+	moduleInspect:UnregisterEvents('PLAYER_SPECIALIZATION_CHANGED','INSPECT_READY','UNIT_INVENTORY_CHANGED','PLAYER_EQUIPMENT_CHANGED','GROUP_ROSTER_UPDATE','ZONE_CHANGED_NEW_AREA','INSPECT_ACHIEVEMENT_READY','CHALLENGE_MODE_START')	
 end
 
 function moduleInspect.main:ADDON_LOADED()
 	if ExRT.SDB.charName then
 		moduleInspect.db.inspectQuery[ExRT.SDB.charName] = GetTime()
+		moduleInspect.db.inspectNotItemsOnly[ExRT.SDB.charName] = true
 	end
 	moduleInspect:Enable()
-	moduleInspect:AddonLoaded()
-	moduleInspect:RegisterAddonMessage()
 	
 	if VExRT.Addon.Version < 3875 and VExRT.InspectArtifact and VExRT.InspectArtifact.players then
 		wipe(VExRT.InspectArtifact.players)
@@ -9103,6 +9305,7 @@ function moduleInspect.main:PLAYER_SPECIALIZATION_CHANGED(arg)
 		--------> / ExCD2
 		
 		moduleInspect.db.inspectQuery[name] = GetTime()
+		moduleInspect.db.inspectNotItemsOnly[name] = true
 	end
 end
 
@@ -9120,7 +9323,7 @@ do
 
 
 	local prevDiff = nil
-	function moduleInspect.main:ZONE_CHANGED_NEW_AREA()
+	local function ZoneCheck()
 		local _,_,difficulty = GetInstanceInfo()
 		if difficulty == 8 or prevDiff == 8 then
 			local n = GetNumGroupMembers() or 0
@@ -9129,7 +9332,7 @@ do
 				for j=1,n do
 					local name,_,subgroup = GetRaidRosterInfo(j)
 					if name and subgroup == 1 then
-						moduleInspect.db.inspectItemsOnly[name] = true
+						moduleInspect.db.inspectNotItemsOnly[name] = true
 						moduleInspect.db.inspectQuery[name] = GetTime()
 					end
 				end
@@ -9141,13 +9344,23 @@ do
 					end
 					local name = UnitCombatlogname(uid)
 					if name then
-						moduleInspect.db.inspectItemsOnly[name] = true
+						moduleInspect.db.inspectNotItemsOnly[name] = true
 						moduleInspect.db.inspectQuery[name] = GetTime()
 					end
 				end
 			end
 		end
 		prevDiff = difficulty
+	end
+	function moduleInspect.main:ZONE_CHANGED_NEW_AREA()
+		ExRT.F.Timer(ZoneCheck,2)
+		
+		if not scheludedQueue then
+			scheludedQueue = ScheduleTimer(funcScheduledUpdate,4)
+		end
+	end
+	function moduleInspect.main:CHALLENGE_MODE_START()
+		ExRT.F.Timer(ZoneCheck,2)
 		
 		if not scheludedQueue then
 			scheludedQueue = ScheduleTimer(funcScheduledUpdate,4)
@@ -9160,13 +9373,14 @@ do
 	function moduleInspect.main:INSPECT_READY(arg)
 		if not moduleInspect.db.inspectCleared then
 			ExRT.F.dprint('INSPECT_READY',arg)
-			local time_ = GetTime()
-			if arg and lastInspectTime[arg] and (time_ - lastInspectTime[arg]) < 0.2 then
+			if not arg then 
 				return
 			end
-			if arg then
-				lastInspectTime[arg] = time_
+			local currTime = GetTime()
+			if lastInspectTime[arg] and (currTime - lastInspectTime[arg]) < 0.2 then
+				return
 			end
+			lastInspectTime[arg] = currTime
 			local _,_,_,race,_,name,realm = GetPlayerInfoByGUID(arg)
 			if name then
 				if realm and realm ~= "" then name = name.."-"..realm end
@@ -9179,7 +9393,7 @@ do
 				moduleInspect:ResetTimer()
 				local _,class,classID = UnitClass(inspectedName)
 				
-				for i,slotID in ipairs(moduleInspect.db.itemsSlotTable) do
+				for i,slotID in pairs(moduleInspect.db.itemsSlotTable) do
 					local link = GetInventoryItemLink(inspectedName, slotID)
 				end
 				ScheduleTimer(InspectItems, inspectForce and 0.65 or 1.3, name, inspectedName, moduleInspect.db.inspectID)
@@ -9187,11 +9401,12 @@ do
 					--ScheduleTimer(InspectItems, 2.3, name, inspectedName, moduleInspect.db.inspectID)
 				end
 	
-				if moduleInspect.db.inspectDB[name] and moduleInspect.db.inspectItemsOnly[name] then
+				if moduleInspect.db.inspectDB[name] and moduleInspect.db.inspectItemsOnly[name] and not moduleInspect.db.inspectNotItemsOnly[name] then
 					moduleInspect.db.inspectItemsOnly[name] = nil
 					return
 				end
 				moduleInspect.db.inspectItemsOnly[name] = nil
+				moduleInspect.db.inspectNotItemsOnly[name] = nil
 				
 				if moduleInspect.db.inspectDB[name] then
 					wipe(moduleInspect.db.inspectDB[name])
@@ -9210,6 +9425,8 @@ do
 				data.race = race
 				data.time = time()
 				data.GUID = UnitGUID(inspectedName)
+				data.lastUpdate = currTime
+				data.lastUpdateTime = time()
 				
 				local specIndex = 1
 				for i=1,GetNumSpecializationsForClassID(classID) do
@@ -9351,6 +9568,9 @@ do
 end
 
 function moduleInspect.main:UNIT_INVENTORY_CHANGED(arg)
+	if ExRT.isClassic then	--Temp fix for 'Unknown unit' or 'Out of Range' errors
+		return
+	end
 	if arg=='player' then return end
 	local name = UnitCombatlogname(arg or "?")
 	if name and name ~= ExRT.SDB.charName then
@@ -9365,19 +9585,3 @@ function moduleInspect.main:PLAYER_EQUIPMENT_CHANGED(arg)
 	moduleInspect.db.inspectQuery[name] = GetTime()
 end
 
-
--------------------------------------------
--------------                --------------
--------------    Artifact    --------------
--------------                --------------
--------------------------------------------
-
-function moduleInspect:ArtifactAddToQueue() end
-
-function moduleInspect:addonMessage(sender, prefix, prefix2, ...)
-	if prefix == "inspect" then
-		if prefix2 == "art" then
-
-		end
-	end
-end

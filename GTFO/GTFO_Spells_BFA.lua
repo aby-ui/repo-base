@@ -263,6 +263,17 @@ GTFO.SpellID["273178"] = {
   sound = 1;
 };
 
+GTFO.SpellID["302524"] = {
+  --desc = "Dark Orb (Grip of Horror)";
+  sound = 1;
+};
+
+GTFO.SpellID["302521"] = {
+  --desc = "Dark Orb (Grip of Horror)";
+  sound = 1;
+};
+
+
 -- ***********************
 -- * Shrine of the Storm *
 -- ***********************
@@ -1031,5 +1042,18 @@ GTFO.SpellID["303981"] = {
 GTFO.SpellID["303422"] = {
   --desc = "Blizzard";
   sound = 1;
+};
+
+GTFO.SpellID["299276"] = {
+  --desc = "Sanction (Queen Azshara)";
+  applicationOnly = true;
+  sound = 1;
+};
+
+GTFO.SpellID["298569"] = {
+  --desc = "Drained Soul (Queen Azshara)";
+  applicationOnly = true;
+  sound = 1;
+  minimumStacks = 5;
 };
 

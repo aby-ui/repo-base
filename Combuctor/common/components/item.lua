@@ -4,16 +4,15 @@
 --]]
 
 local ADDON, Addon = ...
-local Cache = LibStub('LibItemCache-2.0')
-local ItemSlot = Addon:NewClass('ItemSlot', Addon.IsRetail and 'ItemButton' or 'Button')
+local FRAME_TYPE = Addon.IsRetail and 'ItemButton' or 'Button'
+
+local ItemSlot = Addon:NewClass('ItemSlot', FRAME_TYPE)
 ItemSlot.unused = {}
 ItemSlot.nextID = 0
 
-local ItemSearch = LibStub('LibItemSearch-1.2')
+local Search = LibStub('LibItemSearch-1.2')
+local Cache = LibStub('LibItemCache-2.0')
 local Unfit = LibStub('Unfit-1.0')
-
-local QUEST = GetItemClassInfo(LE_ITEM_CLASS_QUESTITEM)
-local QUEST_LOWER = QUEST:lower()
 
 
 --[[ Constructor ]]--
@@ -84,7 +83,7 @@ function ItemSlot:GetNextID()
 end
 
 function ItemSlot:Construct(id)
-    return CreateFrame('ItemButton', ADDON..self.Name..id, nil, 'ContainerFrameItemButtonTemplate')
+    return CreateFrame(FRAME_TYPE, ADDON..self.Name..id, nil, 'ContainerFrameItemButtonTemplate')
 end
 
 function ItemSlot:GetBlizzard(id)
@@ -149,7 +148,7 @@ function ItemSlot:OnPreClick(button)
 
 	if REAGENTBANK_CONTAINER and Cache.AtBank then
 		if IsReagentBankUnlocked() and GetContainerNumFreeSlots(REAGENTBANK_CONTAINER) > 0 then
-			if not Addon:IsReagents(self:GetBag()) and ItemSearch:TooltipPhrase(self.info.link, PROFESSIONS_USED_IN_COOKING) then
+			if not Addon:IsReagents(self:GetBag()) and Search:IsReagent(self.info.link) then
 				local maxstack = select(8, GetItemInfo(self.info.id))
 
 				for _, bag in ipairs {BANK_CONTAINER, 5, 6, 7, 8, 9, 10, 11} do
@@ -246,13 +245,15 @@ function ItemSlot:UpdateLocked()
 end
 
 function ItemSlot:UpdateSecondary()
-	self:UpdateFocus()
-	self:UpdateSearch()
-	self:UpdateCooldown()
-	self:UpdateUpgradeIcon()
+	if self:GetFrame() then
+		self:UpdateFocus()
+		self:UpdateSearch()
+		self:UpdateCooldown()
+		self:UpdateUpgradeIcon()
 
-	if GameTooltip:IsOwned(self) then
-		self:UpdateTooltip()
+		if GameTooltip:IsOwned(self) then
+			self:UpdateTooltip()
+		end
 	end
 end
 
@@ -276,7 +277,7 @@ function ItemSlot:UpdateBorder()
 			r, g, b = 1, .82, .2
 		elseif Addon.sets.glowUnusable and Unfit:IsItemUnusable(id) then
 			r, g, b = RED_FONT_COLOR.r, RED_FONT_COLOR.g, RED_FONT_COLOR.b
-		elseif Addon.sets.glowSets and ItemSearch:InSet(self.info.link) then
+		elseif Addon.sets.glowSets and Search:InSet(self.info.link) then
 	  	r, g, b = .1, 1, 1
 		elseif Addon.sets.glowQuality and type(quality) == "number" and quality > 1 then
 			r, g, b = GetItemQualityColor(quality)
@@ -333,7 +334,7 @@ end
 
 function ItemSlot:UpdateSearch()
 	local search = Addon.canSearch and Addon.search or ''
-	local matches = search == '' or ItemSearch:Matches(self.info.link, search)
+	local matches = search == '' or Search:Matches(self.info.link, search)
 
 	self:SetAlpha(matches and 1 or 0.3)
 	self:SetLocked(not matches or self.info.locked)
@@ -402,8 +403,14 @@ function ItemSlot:IsQuestItem()
 			local isQuest, questID, isActive = GetContainerItemQuestInfo(self:GetBag(), self:GetID())
 			return isQuest, (questID and not isActive)
 		else
-			return select(12, GetItemInfo(self.info.id)) == LE_ITEM_CLASS_QUESTITEM or ItemSearch:Tooltip(self.info.link, QUEST_LOWER), false
+			return select(12, GetItemInfo(self.info.id)) == LE_ITEM_CLASS_QUESTITEM or Search:ForQuest(self.info.link)
 		end
+	end
+end
+
+function ItemSlot:IsUpgrade()
+	if IsContainerItemAnUpgrade then -- difference bettween nil and false
+		return IsContainerItemAnUpgrade(self:GetBag(), self:GetID())
 	end
 end
 
@@ -413,10 +420,6 @@ end
 
 function ItemSlot:IsPaid()
 	return IsBattlePayItem(self:GetBag(), self:GetID())
-end
-
-function ItemSlot:IsUpgrade()
-	return IsContainerItemAnUpgrade and IsContainerItemAnUpgrade(self:GetBag(), self:GetID())
 end
 
 function ItemSlot:IsSlot(bag, slot)
@@ -441,25 +444,6 @@ end
 
 function ItemSlot:GetEmptyItemIcon()
 	return Addon.sets.emptySlots and 'Interface/PaperDoll/UI-Backpack-EmptySlot'
-end
-
-
---[[ Extra ]]--
-
-function ItemSlot:After(time, action)
-	local lock = 'scheduled' .. action
-	if self[lock] then
-		return
-	end
-
-	C_Timer.After(time, function()
-		if self:GetFrame() then -- might have been released meanwhile
-			self[action](self)
-		end
-		self[lock] = false
-	end)
-
-	self[lock] = true
 end
 
 

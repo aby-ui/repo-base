@@ -167,8 +167,8 @@ container:SetScript("OnUpdate", function(self, elapsed)
 	local unitWidth = addon.db.width
 	local unitHeight = addon.db.height
 
-	local width = cols * (unitWidth + spacing) - spacing
-	local height = rows * (unitHeight + spacing) - spacing
+	local width = cols * (unitWidth or 64 + spacing) - spacing
+	local height = rows * (unitHeight or 36 + spacing) - spacing
 
 	self:SetSize(width, height)
 	frame:SetClampRectInsets(0, width - 48, 0, 16 - height) -- Is this function protected? Currently not, but it should be...

@@ -1,6 +1,6 @@
 --[[
 	bank.lua
-		A specialized version of the bagnon frame for the bank
+		A specialized version of the wildpants frame for the bank
 --]]
 
 local ADDON, Addon = ...
@@ -8,17 +8,25 @@ local Frame = Addon:NewClass('BankFrame', 'Frame', Addon.Frame)
 Frame.Title = LibStub('AceLocale-3.0'):GetLocale(ADDON).TitleBank
 Frame.Bags = {BANK_CONTAINER}
 
+for slot = 1, NUM_BANKBAGSLOTS do
+	tinsert(Frame.Bags, slot + NUM_BAG_SLOTS)
+end
+
 function Frame:OnHide()
 	CloseBankFrame()
 	Addon.Frame.OnHide(self)
 end
 
-function Frame:IsBank()
-	return true
+function Frame:SortItems()
+	if SortReagentBankBags then
+		self:After(.3, 'SortReagents')
+	end
+
+	return (SortBankBags or self.__super.SortItems)(self)
 end
 
-for slot = 1, NUM_BANKBAGSLOTS do
-	tinsert(Frame.Bags, slot + NUM_BAG_SLOTS)
+function Frame:SortReagents()
+	SortReagentBankBags()
 end
 
 if REAGENTBANK_CONTAINER then

@@ -43,7 +43,7 @@ L.TipShowBags = '<左鍵點擊>顯示背包顯示。'
 L.TipShowMenu = '<右鍵點擊>設定視窗。'
 L.TipShowSearch = '點擊搜尋。'
 L.TipShowFrameConfig = '開啟設定視窗。'
-L.TipDoubleClickSearch = '<Alt-拖動>移動。\n<右鍵點擊>設定。\n<兩次點擊>搜尋。'
+L.TipDoubleClickSearch = '<拖動>移動。\n<右鍵點擊>設定。\n<兩次點擊>搜尋。'
 L.Total = '總共'
 
 --itemcount tooltips

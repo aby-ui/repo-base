@@ -1,5 +1,5 @@
 ## Interface: 80205
-## Version: v8.2.1.1
+## Version: v8.2.5.0
 ## Title: GridStatusRaidDebuff(WoD)
 ## Notes: Debuff List for WoD
 ## Author: tptbk(Doadin-Malorne-US)

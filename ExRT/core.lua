@@ -1,65 +1,31 @@
---	12.06.2019
+--	25.09.2019
 
 --[[
-3930
-* BFA Update
-
-3940
-* Raid Cooldowns: Some tweak for quick setup spells
-* Raid Cooldowns: fixes for test mode
-* Invite tools: removed loot method options
+4040
+* Raid Cooldowns: Fixed Vision of perfection essence
+* Timers: Added new skin
+* Fight log: fixed The Queen's Court encounter healing
+* Invite tools: guild ranks for mass invite can be selected manually
+* Classic: fixed bug with game talents tab
+* Raid Inspect: added new ench/gems
+* WeakAuras checks: added filter
 * Minor fixes
 
-3950
-* Raid Inspect: ilvl fix
+4060
+* 8.2.5 toc update
+
+4055-Classic
+* Readded Loot link module
+* Fixed mass invite
+* Fixed "Out of range" error for inspect module
+
+4060-Classic
 * Minor fixes
 
-3970
-* New module: Visual note [test mode]
-* Note: parts of note can be shown only for specific role. Use {D}...{/D},{H}...{/H},{T}...{/T} format
-* Note: parts of note can be shown only for specific players. Use {p:PlayerName,OtherPlayerName}...{/p} format
-* Note: autoload removed
-* Note: added option for text colors in edit mode
-* Raid Inspect: You can check all alternate azerite choices in tier if you hover azerite icon
-* Fight log: fixed calculations for players in mind control
-* Removed outdated modules
-* Minor fixes
-
-3975
-* Fixes for note editing
-
-3990
-* Note: copy-pasting with colors must be much easier
-* Note: added button "Duplicate"
-* Note: added 5ppl dungeons to bosses list
-* Note: added highlighting drafts for nearest bosses
-* Note: added {icon:PATH} format for any ingame icon (older format for spells still works ({spell:SPELL_ID}))
-* Visual note: fixes
-* Visual note: outdated versions no longer supports
-* Raid Inspect: added bfa achievements (BFA 5ppl, Uldir)
-* Raid Inspect: fixed weapon enchants for dk & hunters
-
-4000
-* 8.1 Update
-* Note: added ability to move notes position in list
-* Note: added "{time:2:45}" template for dynamic timer
-* Visual note: added movement tool
-* Fight log: short boss pulls are not recorded
-
-4010
-* toc update
-* Removed combat restrictions for loading for some modules
-
-4030
-* 8.2.0 Update
-* Raid check: added support for new food/flasks
-* Raid Cooldowns: Added essences
-* Raid Inspect: Added essences
-* Can be launched on classic (1.12.1/1.13) client
 ]]
 local GlobalAddonName, ExRT = ...
 
-ExRT.V = 4030
+ExRT.V = 4060
 ExRT.T = "R"
 
 ExRT.OnUpdate = {}		--> таймеры, OnUpdate функции
@@ -94,6 +60,7 @@ do
 end
 if ExRT.clientVersion < 20000 then
 	ExRT.isClassic = true
+	ExRT.T = "Classic"
 end
 -------------> smart DB <-------------
 ExRT.SDB = {}

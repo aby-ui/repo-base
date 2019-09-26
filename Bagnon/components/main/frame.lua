@@ -1,6 +1,6 @@
 --[[
 	frame.lua
-		The bagnon frame object
+		The window frame object
 --]]
 
 local ADDON, Addon = ...
@@ -153,7 +153,7 @@ function Frame:HasBagToggle()
 end
 
 function Frame:HasSortButton()
-	return SortBags and self.profile.sort
+	return self.profile.sort
 end
 
 function Frame:CreateOwnerSelector()

@@ -39,7 +39,7 @@ Env.GetItemCooldown = GetItemCooldown
 
 
 local GetSpellCooldown = GetSpellCooldown
-function Env.CooldownDuration(spell)
+function Env.CooldownDuration(spell, gcdAsUnusable)
 	if spell == "gcd" then
 		local start, duration = GetSpellCooldown(TMW.GCDSpell)
 		return duration == 0 and 0 or (duration - (TMW.time - start))
@@ -47,7 +47,7 @@ function Env.CooldownDuration(spell)
 
 	local start, duration = GetSpellCooldown(spell)
 	if duration then
-		return ((duration == 0 or OnGCD(duration)) and 0) or (duration - (TMW.time - start))
+		return ((duration == 0 or (not gcdAsUnusable and OnGCD(duration))) and 0) or (duration - (TMW.time - start))
 	end
 	return 0
 end
@@ -81,12 +81,15 @@ ConditionCategory:RegisterCondition(1,	 "SPELLCD", {
 	name = function(editbox)
 		editbox:SetTexts(L["SPELLTOCHECK"], L["CNDT_ONLYFIRST"])
 	end,
+	check = function(check)
+		check:SetTexts(L["ICONMENU_GCDASUNUSABLE"], L["ICONMENU_GCDASUNUSABLE_DESC"])
+	end,
 	useSUG = "spellWithGCD",
 	unit = PLAYER,
 	formatter = TMW.C.Formatter.TIME_0USABLE,
 	icon = "Interface\\Icons\\spell_holy_divineintervention",
 	tcoords = CNDT.COMMON.standardtcoords,
-	funcstr = [[CooldownDuration(c.NameFirst) c.Operator c.Level]],
+	funcstr = [[CooldownDuration(c.NameFirst, c.Checked) c.Operator c.Level]],
 	events = function(ConditionObject, c)
 		return
 			ConditionObject:GenerateNormalEventString("SPELL_UPDATE_COOLDOWN"),
@@ -103,14 +106,20 @@ ConditionCategory:RegisterCondition(2,	 "SPELLCDCOMP", {
 	name = function(editbox)
 		editbox:SetTexts(L["SPELLTOCOMP1"], L["CNDT_ONLYFIRST"])
 	end,
+	check = function(check)
+		check:SetTexts(L["ICONMENU_GCDASUNUSABLE"], L["ICONMENU_GCDASUNUSABLE_DESC"])
+	end,
 	name2 = function(editbox)
 		editbox:SetTexts(L["SPELLTOCOMP2"], L["CNDT_ONLYFIRST"])
+	end,
+	check2 = function(check)
+		check:SetTexts(L["ICONMENU_GCDASUNUSABLE"], L["ICONMENU_GCDASUNUSABLE_DESC"])
 	end,
 	useSUG = "spellWithGCD",
 	unit = PLAYER,
 	icon = "Interface\\Icons\\spell_holy_divineintervention",
 	tcoords = CNDT.COMMON.standardtcoords,
-	funcstr = [[CooldownDuration(c.NameFirst) c.Operator CooldownDuration(c.NameFirst2)]],
+	funcstr = [[CooldownDuration(c.NameFirst, c.Checked) c.Operator CooldownDuration(c.NameFirst2, c.Checked2)]],
 	events = function(ConditionObject, c)
 		return
 			ConditionObject:GenerateNormalEventString("SPELL_UPDATE_COOLDOWN"),

@@ -2,7 +2,7 @@
 ## Title: tullaRange
 ## Author: Tuller
 ## Notes: Out of range coloring based on RedRange
-## Version: 8.2.2
+## Version: 8.2.5
 ## SavedVariables: TULLARANGE_COLORS
 tullaRange.lua
 

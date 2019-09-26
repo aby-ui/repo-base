@@ -1,6 +1,6 @@
 --[[
 	frame.lua
-		A specialized version of the bagnon frame for void storage
+		A specialized version of the window frame for void storage
 --]]
 
 local MODULE =  ...
@@ -10,12 +10,13 @@ local Frame = Addon:NewClass('VaultFrame', 'Frame', Addon.Frame)
 Frame.Title = LibStub('AceLocale-3.0'):GetLocale(ADDON).TitleVault
 Frame.ItemFrame = Addon.VaultItemFrame
 Frame.MoneyFrame = Addon.TransferButton
-Frame.Bags = {'vault'}
 
 Frame.OpenSound = SOUNDKIT.UI_ETHEREAL_WINDOW_OPEN
 Frame.CloseSound = SOUNDKIT.UI_ETHEREAL_WINDOW_CLOSE
+Frame.SortEvent =  'VOID_STORAGE_CONTENTS_UPDATE'
 Frame.MoneySpacing = 30
 Frame.BrokerSpacing = 2
+Frame.Bags = {'vault'}
 
 
 --[[ Modifications ]]--
@@ -81,7 +82,7 @@ function Frame:GetItemInfo(bag, slot)
 end
 
 function Frame:IsBagFrameShown() end
-function Frame:HasSortButton() end
+--function Frame:HasSortButton() end
 function Frame:HasBagToggle() end
 function Frame:HasMoneyFrame()
 	return true

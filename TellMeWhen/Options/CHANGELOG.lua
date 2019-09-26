@@ -3,6 +3,22 @@ if not TMW then return end
 TMW.CHANGELOG_LASTVER="7.4.0"
 
 TMW.CHANGELOG = [==[
+## v8.7.0
+* The Missing Buffs/Debuffs icon type now sorts by lowest duration first.
+* Switched to DRList-1.0 (from DRData-1.0) for DR category data.
+* Added events to the Combat Event icon type for swing & spell dodges/blocks/parries.
+* Added an option to Spell Cooldown icons and Cooldown conditions to prevent the GCD from being ignored.
+
+### Bug Fixes
+* Fixed an uncommon issue that could cause some event-driven icons to not update correctly after one of the units being tracked by an icon stops existing.
+
+## v8.6.9
+### Bug Fixes
+* Fixed an issue with Unit Conditions where the initial state of the conditions sometimes wouldn't be taken into account.
+* Changed the Slowed equivalency to track Crippling Poison by ID to prevent it from picking up the Rogue buff by the same name.
+* When scrolling with the mousewheel, sliders that happen to land under your mouse will no longer be adjusted as long as your cursor does not move.
+* Fixed an issue where the Artificial Maximum setting for Bar groups was not properly saving its value as a number.
+
 ## v8.6.8
 * Re-releasing TellMeWhen for Retail WoW as 8.6.8 so it will be the latest file for people with out-of-date Twitch apps.
  * IMPORTANT: If your Twitch app was installing TellMeWhen Classic into your Retail WoW installation, that means your Twitch app is out of date and needs to be updated.

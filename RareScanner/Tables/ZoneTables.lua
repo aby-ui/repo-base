@@ -2617,6 +2617,15 @@ private.ZONE_IDS = {
 	[155840] = { zoneID = 1355, artID = 1186, x = 0.4742978811264038, y = 0.3220067024230957 }; --Warlord Zalzjar
 	[150342] = { zoneID = 1462, artID = 1276, x = 0.6408148407936096, y = 0.2405987530946732 }; --Earthbreaker Gulroc
 	[151308] = { zoneID = 1462, artID = 1276, x = 0.5309227108955383, y = 0.3358480930328369 }; --Boggac Skullbash
+	
+	-- Build 8.2.5
+	[155173] = { zoneID = 0 }; --Honeyback Usurper
+	[155055] = { zoneID = 0 }; --Gurg the Hivethief
+	[155176] = { zoneID = 0 }; --Old Nasha
+	[158111] = { zoneID = 0 }; --Trialmaster
+	[155171] = { zoneID = 0 }; --The Hivekiller
+	[155172] = { zoneID = 0 }; --Trapdoor Bee Hunter
+	[155059] = { zoneID = 0 }; --Yorag the Jelly Feaster
 }
 
 private.CONTAINER_ZONE_IDS = {

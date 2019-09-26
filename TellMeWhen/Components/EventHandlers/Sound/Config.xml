@@ -134,7 +134,7 @@
 							elseif not (strfind(strlower(soundFile), "%.ogg$") or strfind(strlower(soundFile), "%.mp3$")) then
 								-- Only ogg and mp3 are supported.
 								warningText = TMW.L["SOUNDERROR3"]
-							elseif not strfind(strlower(soundFile), "interface[\\/]") then
+							elseif not strfind(strlower(soundFile), "^interface[\\/]") then
 								-- Since wow 8.2, custom sounds must be in the interface directory.
 								warningText = TMW.L["SOUNDERROR4"]
 							end

@@ -4,7 +4,7 @@
 --]]
 
 local CONFIG, Config = ...
-local ADDON, Addon = Config.addon, _G[Config.addon]
+local ADDON, Addon = CONFIG:match('[^_]+'), _G[CONFIG:match('[^_]+')]
 local L = LibStub('AceLocale-3.0'):GetLocale(CONFIG)
 
 local Options = LibStub('Poncho-1.0')(nil, CONFIG, nil, nil, SushiMagicGroup)
@@ -70,7 +70,7 @@ function Options:CreateFramesDropdown()
 	if Addon.HasVault then
 		drop:AddLine('vault', VOID_STORAGE)
 	end
-	
+
 	if Addon.HasGuild then
 		drop:AddLine('guild', GUILD_BANK)
 	end

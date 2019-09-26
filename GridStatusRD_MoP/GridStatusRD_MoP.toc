@@ -5,6 +5,7 @@
 ## Version: 8.2.0.0
 ## Grid Author: Pastamancer & Maia
 ## Dependencies: GridStatusRaidDebuff
+## OptionalDeps: Grid, Plexus, GridStatusRaidDebuff
 
 CheckCompat.lua
 MogushanVaults.lua

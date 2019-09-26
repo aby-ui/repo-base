@@ -29,12 +29,12 @@ local CL_CONTROL_PLAYER = COMBATLOG_OBJECT_CONTROL_PLAYER
 -- GLOBALS: TellMeWhen_ChooseName
 
 
-local DRData = LibStub("DRData-1.0")
+local DRList = LibStub("DRList-1.0")
 
-local DRSpells = DRData.spells
+local DRSpells = DRList:GetSpells()
 local PvEDRs = {}
 for spellID, category in pairs(DRSpells) do
-	if DRData.pveDR[category] then
+	if DRList:IsPvECategory(category) then
 		PvEDRs[spellID] = 1
 	end
 end
@@ -163,9 +163,9 @@ end)
 
 
 TMW:RegisterCallback("TMW_EQUIVS_PROCESSING", function()
-	-- Create our own DR equivalencies in TMW using the data from DRData-1.0
+	-- Create our own DR equivalencies in TMW using the data from DRList-1.0
 
-	if DRData then
+	if DRList then
 		local myCategories = {
 			stun			= "DR-Stun",
 			silence			= "DR-Silence",
@@ -173,6 +173,7 @@ TMW:RegisterCallback("TMW_EQUIVS_PROCESSING", function()
 			root			= "DR-Root", 
 			incapacitate	= "DR-Incapacitate",
 			taunt 			= "DR-Taunt",
+			disarm 			= "DR-Disarm",
 		}
 
 		local ignored = {
@@ -189,7 +190,7 @@ TMW:RegisterCallback("TMW_EQUIVS_PROCESSING", function()
 		
 		TMW.BE.dr = {}
 		local dr = TMW.BE.dr
-		for spellID, category in pairs(DRData.spells) do
+		for spellID, category in pairs(DRList:GetSpells()) do
 			local k = myCategories[category]
 
 			if k then

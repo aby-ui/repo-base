@@ -200,7 +200,7 @@ U1RegisterAddon("Dominos_Cast", { title = "美化施法条模块", defaultEnable
         end
     end,
 });
-U1RegisterAddon("Dominos_Roll", { title = "拾取提示模块", defaultEnable = 1, load="NORMAL", dominoModule = 'ContainerFrames', toggle = dominoModuleToggle, desc = "让装备掷骰界面和提示获取装备的框体可以移动的多米诺模块", });
+U1RegisterAddon("Dominos_Roll", { title = "拾取提示模块", defaultEnable = 1, load="NORMAL", dominoModule = 'RollBars', toggle = dominoModuleToggle, desc = "让装备掷骰界面和提示获取装备的框体可以移动的多米诺模块", });
 U1RegisterAddon("Dominos_Encounter", { title = "特殊能量条模块", defaultEnable = 1, load="NORMAL", dominoModule = 'EncounterBar', toggle = dominoModuleToggle, desc = "移动某些BOSS战斗时玩家特殊能量槽的多米诺模块", });
 U1RegisterAddon("Dominos_Progress", { title = "经验和神器进度模块", defaultEnable = 1, load="NORMAL", dominoModule = 'ProgressBars', toggle = dominoModuleToggle, desc = "一个可移动的进度条，右键点击可以切换经验/声望/荣誉。7.0新增指示神器能量的进度条。", });
 U1RegisterAddon("Dominos_ActionSets", {title = "动作条保存模块", defaultEnable = 1, load="NORMAL", desc = "可以在配置方案中保存动作条上的技能" });

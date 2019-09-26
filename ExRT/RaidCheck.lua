@@ -1,5 +1,9 @@
 local GlobalAddonName, ExRT = ...
 
+if ExRT.isClassic then
+	return
+end
+
 local IsEncounterInProgress, GetTime, CombatLogGetCurrentEventInfo = IsEncounterInProgress, GetTime, CombatLogGetCurrentEventInfo
 
 local VExRT = nil

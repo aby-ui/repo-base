@@ -21,19 +21,31 @@ module.db.demotedPlayers = {}
 module.db.sessionInRaid = nil
 
 local GetNumFriends, GetFriendInfo
-if ExRT.clientVersion >= 80100 then
-	function GetNumFriends()
-		return C_FriendList.GetNumFriends(), C_FriendList.GetNumOnlineFriends()
+
+function GetNumFriends()
+	return C_FriendList.GetNumFriends(), C_FriendList.GetNumOnlineFriends()
+end
+function GetFriendInfo(friend)
+	local info = C_FriendList.GetFriendInfoByIndex(friend)
+	if info then
+		return info.name
 	end
-	function GetFriendInfo(friend)
-		local info = C_FriendList.GetFriendInfoByIndex(friend)
-		if info then
-			return info.name
+end
+
+local BNGetFriendInfo = BNGetFriendInfo
+if not BNGetFriendInfo then	-- 8.3.0
+	BNGetFriendInfo = function(friendIndex)
+		local accountInfo = C_BattleNet.GetAccountInfoByFriendIndex(friendIndex);
+		if accountInfo then
+			local wowProjectID = accountInfo.wowProjectID or 0;
+			local clientProgram = accountInfo.clientProgram ~= "" and accountInfo.clientProgram or nil;
+
+			return	accountInfo.bnetAccountID, accountInfo.accountName, accountInfo.battleTag, accountInfo.isBattleTagFriend,
+					accountInfo.characterName, accountInfo.gameAccountID, clientProgram,
+					accountInfo.isOnline, accountInfo.lastOnlineTime, accountInfo.isAFK, accountInfo.isDND, accountInfo.customMessage, accountInfo.note, true,
+					accountInfo.customMessageTime, wowProjectID, accountInfo.isRecruitAFriend, accountInfo.canSummon, accountInfo.isFavorite, accountInfo.isWowMobile;
 		end
 	end
-else
-	GetNumFriends = _G.GetNumFriends
-	GetFriendInfo = _G.GetFriendInfo
 end
 
 hooksecurefunc("DemoteAssistant", function (unit)
@@ -75,7 +87,7 @@ local function InviteBut()
 	for i=1,gplayers do
 		local name,_,rankIndex,level,_,_,_,_,online,_,_,_,_,isMobile = GetGuildRosterInfo(i)
 		local sName = ExRT.F.delUnitNameServer(name)
-		if name and rankIndex < VExRT.InviteTool.Rank and online and (ExRT.SDB.charLevel == 120 and level == 120 or level >= 110) and not isMobile and not CheckUnitInRaid(name,sName) and sName ~= module.db.playerFullName then
+		if name and rankIndex and VExRT.InviteTool.Ranks[rankIndex+1] and online and (ExRT.SDB.charLevel >= 120 and level >= 120 or ExRT.isClassic and level >= 60 or level >= 110) and not isMobile and not CheckUnitInRaid(name,sName) and sName ~= module.db.playerFullName then
 			if inRaid then
 				InviteUnit(name)
 			elseif nowinvnum < 5 then
@@ -207,11 +219,10 @@ function module.options:Load()
 	self.dropDown = ELib:DropDown(self,205,10):Point(5,-30):Size(220)
 	
 	function self.dropDown:SetValue(newValue)
-		VExRT.InviteTool.Rank = newValue
-		module.options.dropDown:SetText( L.inviterank.." " .. GuildControlGetRankName(newValue) or "")
-		ELib:DropDownClose()
+		VExRT.InviteTool.Ranks[newValue] = self.checkButton:GetChecked()
+		module.options.dropDown:SetText( L.inviterank )
 		for i=1,#module.options.dropDown.List do
-			module.options.dropDown.List[i].checkState = VExRT.InviteTool.Rank == module.options.dropDown.List[i].arg1
+			module.options.dropDown.List[i].checkState = VExRT.InviteTool.Ranks[ module.options.dropDown.List[i].arg1 ]
 		end
 	end
 
@@ -220,8 +231,8 @@ function module.options:Load()
 		for i=granks,1,-1 do
 			self.dropDown.List[#self.dropDown.List + 1] = {
 				text = GuildControlGetRankName(i) or "",
-				checkState = VExRT.InviteTool.Rank == i,
-				radio = true,
+				checkState = VExRT.InviteTool.Ranks[i],
+				checkable = true,
 				func = self.dropDown.SetValue,
 				arg1 = i,
 			}
@@ -362,7 +373,12 @@ function module.options:Load()
 	end
 	
 	self.dropDownRaidDiffText = ELib:Text(self,L.InviteRaidDiff,11):Size(150,20):Point("TOPLEFT",self.dropDownRaidDiff,-180,0)
-	
+
+	if ExRT.isClassic then
+		self.chkRaidDiff:Hide()
+		self.dropDownRaidDiff:Hide()
+		self.dropDownRaidDiffText:Hide()
+	end	
 
 	
 	self.HelpPlate = {
@@ -377,7 +393,7 @@ function module.options:Load()
 		self.HELPButton:SetPoint("CENTER",self,"TOPLEFT",0,15)
 	end
 
-	self.dropDown:SetText( L.inviterank.." " .. GuildControlGetRankName(VExRT.InviteTool.Rank) or "")
+	self.dropDown:SetText( L.inviterank )
 	self.dropDownAutoPromote:SetText( L.inviterank.." " .. (VExRT.InviteTool.PromoteRank == 0 and L.inviteAutoPromoteDontUseGuild or GuildControlGetRankName(VExRT.InviteTool.PromoteRank) or ""))
 end
 
@@ -432,6 +448,15 @@ function module.main:ADDON_LOADED()
 	VExRT = _G.VExRT
 	VExRT.InviteTool = VExRT.InviteTool or {OnlyGuild=true,InvByChat=true}
 	VExRT.InviteTool.Rank = VExRT.InviteTool.Rank or 1
+
+	if not VExRT.InviteTool.Ranks then
+		VExRT.InviteTool.Ranks = {}
+		if type(VExRT.InviteTool.Rank)=='number' then
+			for i=1,VExRT.InviteTool.Rank do
+				VExRT.InviteTool.Ranks[i] = true
+			end
+		end
+	end
 	
 	VExRT.InviteTool.Words = VExRT.InviteTool.Words or "инв inv byd штм 123"
 	createInvWordsArray()
@@ -516,10 +541,12 @@ local function AutoRaidSetup()
 				module.db.sessionInRaid = true
 				module.db.sessionInRaidLoot = true
 				
-				SetRaidDifficultyID(VExRT.InviteTool.RaidDiff)
-				--SetLootMethod(VExRT.InviteTool.LootMethod,UnitName("player"),nil)
-				--SetLootThreshold(VExRT.InviteTool.LootThreshold)	--http://us.battle.net/wow/en/forum/topic/14610481537
-				--ExRT.F.ScheduleTimer(SetLootThreshold, 2, VExRT.InviteTool.LootThreshold)
+				if not ExRT.isClassic then
+					SetRaidDifficultyID(VExRT.InviteTool.RaidDiff)
+					--SetLootMethod(VExRT.InviteTool.LootMethod,UnitName("player"),nil)
+					--SetLootThreshold(VExRT.InviteTool.LootThreshold)	--http://us.battle.net/wow/en/forum/topic/14610481537
+					--ExRT.F.ScheduleTimer(SetLootThreshold, 2, VExRT.InviteTool.LootThreshold)
+				end
 			end
 		elseif not inRaid and module.db.sessionInRaid then
 			module.db.sessionInRaid = nil

@@ -7,7 +7,7 @@ local default = function(parentType)
   local options = {
     border_visible = true,
     border_color = {1, 1, 1, 1},
-    border_edge = "1 Pixel",
+    border_edge = "Square Full White",
     border_offset = 0,
     border_size = 2,
   }
@@ -21,7 +21,8 @@ local properties = {
   border_visible = {
     display = L["Show Border"],
     setter = "SetVisible",
-    type = "bool"
+    type = "bool",
+    defaultProperty = true
   },
   border_color = {
     display = L["Border Color"],

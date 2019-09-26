@@ -11,7 +11,7 @@ local _G = _G
 -- WoW API / Variables
 local GetCurrencyInfo = GetCurrencyInfo
 local GetMoney = GetMoney
-local IsQuestFlaggedCompleted = IsQuestFlaggedCompleted
+local IsQuestFlaggedCompleted = C_QuestLog and C_QuestLog.IsQuestFlaggedCompleted or IsQuestFlaggedCompleted
 
 function CurrencyModule:OnEnable()
   self:RegisterBucketEvent("CURRENCY_DISPLAY_UPDATE", 0.25, function() addon:UpdateCurrency() end)

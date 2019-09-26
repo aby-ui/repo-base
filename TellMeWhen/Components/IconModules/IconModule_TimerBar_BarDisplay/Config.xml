@@ -60,6 +60,10 @@
 								self:SetTexts(TMW.L["ICONMENU_FAKEMAX"], TMW.L["ICONMENU_FAKEMAX_DESC"])
 								self:SetSetting("BarDisplay_FakeMax")
 
+								self:CScriptAdd("ModifyValueForSave", function(self, value)
+									return tonumber(self:GetText():trim()) or 0
+								end)
+
 								self:CScriptAdd("ReloadRequested", function()
 									self:SetShown(TMW.CI.icon.typeData.barIsTimer == false)
 									local settings = self:GetSettingTable()

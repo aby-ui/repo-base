@@ -238,7 +238,7 @@ function module.options:Load()
 		VExRT.Timers.DisableRW = self:GetChecked()
 	end)
 	
-	self.TabTimerFrame = ELib:OneTab(self):Size(650,95):Point("TOP",0,-190)
+	self.TabTimerFrame = ELib:OneTab(self):Size(650,110):Point("TOP",0,-190)
 	
 	self.chkEnable = ELib:Check(self.TabTimerFrame,L.timerTimerFrame,VExRT.Timers.enabled):Point(10,-10):OnClick(function(self) 
 		if self:GetChecked() then
@@ -328,8 +328,28 @@ function module.options:Load()
 			func = TimerFrameStrataDropDown_SetVaule,
 		}
 	end
+
+	self.setTypeText = ELib:Text(self.TabTimerFrame,TYPE..":",11):Point(10,-85):Size(0,25)
 	
-	self.chkDPT = ELib:Check(self,L.TimerUseDptInstead,VExRT.Timers.useDPT):Point(5,-295):OnClick(function(self) 
+	self.setType1 = ELib:Radio(self.TabTimerFrame,"1",VExRT.Timers.Type == 1 or not VExRT.Timers.Type):Point("LEFT",self.setTypeText,"RIGHT", 15, 0):OnClick(function(self) 
+		self:SetChecked(true)
+		module.options.setType2:SetChecked(false)
+		VExRT.Timers.Type = 1
+		if VExRT.Timers.enabled then
+			module.frame:SetScript("OnUpdate", module.frame.OnUpdateFunc)
+		end
+	end)
+	
+	self.setType2 = ELib:Radio(self.TabTimerFrame,"2",VExRT.Timers.Type == 2):Point("LEFT",self.setType1,"RIGHT", 75, 0):OnClick(function(self) 
+		self:SetChecked(true)
+		module.options.setType1:SetChecked(false)
+		VExRT.Timers.Type = 2
+		if VExRT.Timers.enabled then
+			module.frame:SetScript("OnUpdate", module.frame.OnUpdateFunc)
+		end
+	end)
+	
+	self.chkDPT = ELib:Check(self,L.TimerUseDptInstead,VExRT.Timers.useDPT):Point(5,-310):OnClick(function(self) 
 		if self:GetChecked() then
 			VExRT.Timers.useDPT = true
 		else
@@ -482,21 +502,52 @@ module.frame.tmr = 0
 module.frame.killTmr = 0
 module.frame.txt = ELib:Text(module.frame,"00:00.0"):Size(77,27):Point("LEFT",11,0):Left():Font(ExRT.F.defFont,16):Color():Shadow():Outline()
 module.frame.killTime = ELib:Text(module.frame,""):Size(77,27):Point("TOP",module.frame,"BOTTOM",0,0):Top():Center():Font(ExRT.F.defFont,14):Color():Shadow():Outline()
+module.frame.txt_ms = ELib:Text(module.frame,""):Size(77,27):Point("LEFT",11,0):Left():Font(ExRT.F.defFont,16):Color():Shadow():Outline()
+module.frame.txt_s = ELib:Text(module.frame,""):Size(77,27):Point("LEFT",11,0):Left():Font(ExRT.F.defFont,16):Color():Shadow():Outline()
 module:RegisterHideOnPetBattle(module.frame)
 
 module.db.TTK = {}
+
+function module:UpdateView(t)
+	local self = module.frame
+	if t == 1 then
+		self:SetSize(77,27)
+		self:SetBackdrop({bgFile = "Interface/Tooltips/UI-Tooltip-Background",edgeFile = ExRT.F.defBorder,tile = false,edgeSize = 4})
+		self:SetBackdropBorderColor(0.1,0.1,0.1,0.7)
+		self:SetBackdropColor(0,0,0,0.7)
+
+		self.txt:SetText("00:00.0")
+		self.txt_ms:SetText("")
+		self.txt_s:SetText("")
+		self.txt:Size(77,27):Point("LEFT",11,0):Left():Font(ExRT.F.defFont,16):Color():Shadow():Outline()
+		self.killTime:Size(77,27):Point("TOP",self,"BOTTOM",0,0):Top():Center():Font(ExRT.F.defFont,14):Color():Shadow():Outline()
+	elseif t == 2 then
+		self:SetSize(77,27)
+		self:SetBackdropBorderColor(0.1,0.1,0.1,0)
+		self:SetBackdropColor(0,0,0,0)
+
+		self.txt:SetText("0:")
+		self.txt_s:SetText("00")
+		self.txt_ms:SetText(".0")
+		self.txt:Size(29+4,27):Point("LEFT",-4,0):Right():Font(ExRT.F.defFont,20):Color():Shadow():Outline()
+		self.txt_s:Size(25,27):Point("LEFT",25,0):Left():Font(ExRT.F.defFont,20):Color():Shadow():Outline()
+		self.txt_ms:Size(0,27):Point("LEFT",45,-3):Left():Font(ExRT.F.defFont,12):Color():Shadow():Outline()
+		self.killTime:Size(77,27):Point("TOP",self,"BOTTOM",0,0):Top():Center():Font(ExRT.F.defFont,14):Color():Shadow():Outline()
+		
+	end
+end
 
 do
 	local hpSnapshots,timeSnapshots,iSnapshot,guidSnapshot = {},{},0
 	local tmr = 0
 	local tmr2 = 0
 	local MAX_SEGMENTS = 90
-	
-	function module.frame.OnUpdateFunc(self,elapsed)
+
+	local function timerType1(self,elapsed)
 		tmr2 = tmr2 + elapsed
 		if tmr2 > 0.05 and (self.inCombat or self.encounter or self.total < 0) then
 			self.total = self.total + tmr2
-			module.frame.txt:SetFormattedText("%2.2d:%2.2d\.%1.1d",abs(self.total)/60,abs(self.total)%60,(abs(self.total)*10)%10)
+			self.txt:SetFormattedText("%2.2d:%2.2d\.%1.1d",abs(self.total)/60,abs(self.total)%60,(abs(self.total)*10)%10)
 			tmr2 = 0
 		elseif tmr2 > 0.05 then
 			tmr2 = 0
@@ -556,6 +607,86 @@ do
 				end
 			end
 		end
+	end
+
+	local function timerType2(self,elapsed)
+		tmr2 = tmr2 + elapsed
+		if tmr2 > 0.05 and (self.inCombat or self.encounter or self.total < 0) then
+			self.total = self.total + tmr2
+			self.txt:SetFormattedText("%1.1d:",abs(self.total)/60)
+			self.txt_s:SetFormattedText("%2.2d",abs(self.total)%60)
+			self.txt_ms:SetFormattedText("\.%1.1d",(abs(self.total)*10)%10)
+			tmr2 = 0
+		elseif tmr2 > 0.05 then
+			tmr2 = 0
+		end
 		
+		if timeToKillEnabled then
+			tmr = tmr + elapsed
+			if tmr > 0.5 then
+				tmr = 0
+				iSnapshot = iSnapshot + 1
+				if iSnapshot > MAX_SEGMENTS then
+					iSnapshot = 1
+				end
+				local currHp,maxHP = UnitHealth('target'),UnitHealthMax('target')
+				local targetGUID = UnitGUID('target')
+				if guidSnapshot ~= targetGUID then
+					--wipe(hpSnapshots)
+					for i=1,MAX_SEGMENTS do
+						if not hpSnapshots[i] then
+							break
+						end
+						hpSnapshots[i] = nil
+					end
+					iSnapshot = 1
+					guidSnapshot = targetGUID
+				end
+				hpSnapshots[ iSnapshot ] = maxHP > 0 and currHp/maxHP or 0
+				timeSnapshots[ iSnapshot ] = GetTime()
+				if iSnapshot % 2 == 0 then
+					local prevSnapshot = iSnapshot - (VExRT.Timers.timeToKillAnalyze * 2)
+					if prevSnapshot < 1 then
+						prevSnapshot = prevSnapshot + MAX_SEGMENTS
+					end
+					local prevHP = hpSnapshots[ prevSnapshot ]
+					if not prevHP and iSnapshot > 1 then
+						prevSnapshot = 1
+						prevHP = hpSnapshots[1]
+					end
+
+					local nowHP = hpSnapshots[ iSnapshot ]
+					if nowHP and nowHP > 0 and prevHP and prevHP > 0 then
+						local diff = prevHP - nowHP
+						local time = timeSnapshots[ iSnapshot ] - timeSnapshots[ prevSnapshot ]
+						local dps = diff / time
+						
+						local t = dps ~= 0 and nowHP / dps or 0
+						if t < 0 or t > 600 then
+							module.frame.killTime:SetText("")
+						elseif t >= 60 then
+							module.frame.killTime:SetFormattedText("%d:%02d",floor(t/60),t % 60)
+						else
+							module.frame.killTime:SetFormattedText("%d",t)
+						end
+					else
+						module.frame.killTime:SetText("")
+					end
+				end
+			end
+		end
+	end
+	
+	function module.frame.OnUpdateFunc(self,elapsed)
+		if not VExRT.Timers.Type or VExRT.Timers.Type == 1 then
+			module:UpdateView(1)
+			self:SetScript("OnUpdate",timerType1)
+			return
+		elseif VExRT.Timers.Type == 2 then
+			module:UpdateView(2)
+			self:SetScript("OnUpdate",timerType2)
+			return
+		end
+		self:SetScript("OnUpdate",nil)
 	end
 end

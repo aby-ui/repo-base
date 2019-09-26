@@ -124,37 +124,46 @@ local function BuffCheck_OnUpdate(icon, time)
 	= icon.Units, icon.Spells.Array, icon.Spells.StringArray, icon.Spells.Hash, icon.Filter
 	
 	local AbsentAlpha = icon.States[STATE_ABSENT].Alpha
+	local PresentAlpha = icon.States[STATE_PRESENT].Alpha
 
 	-- These variables will hold all the attributes that we pass to YieldInfo().
-	local iconTexture, id, count, duration, expirationTime, caster, useUnit, _
-	
+	local iconTexture, id, count, duration, expirationTime, caster, useUnit
+	local curSortDur = huge
+
 	for u = 1, #Units do
 		local unit = Units[u]
 		-- UnitSet:UnitExists(unit) is an improved UnitExists() that returns early if the unit
 		-- is known by TMW.UNITS to definitely exist.
-		-- Also don't check dead units since the point of this icon type is to check for 
+		-- Also don't check dead units since the point of this icon type is to check for
 		-- raid members that are missing raid buffs.
 		if icon.UnitSet:UnitExists(unit) and not UnitIsDeadOrGhost(unit) then
 			
-			local _iconTexture, _id, _count, _duration, _expirationTime, _buffName, _caster
-			
+			local foundOnUnit = false
 			for index = 1, huge do
-				_buffName, _iconTexture, _count, _, _duration, _expirationTime, _caster, _, _, _id = UnitAura(unit, index, Filter)
-				if not _id or NameHash[_id] or NameHash[strlowerCache[_buffName]] then
-					-- We ran our of auras, or we found what we are looking for. Break spell loop.
+				local _buffName, _iconTexture, _count, _, _duration, _expirationTime, _caster, _, _, _id = UnitAura(unit, index, Filter)
+				if not _id then
+					-- No more auras on the unit. Break spell loop.
 					break
+				elseif NameHash[_id] or NameHash[strlowerCache[_buffName]] then
+					foundOnUnit = true
+					local remaining = (_expirationTime == 0 and huge) or _expirationTime - time
+
+					-- This icon type automatically sorts by lowest duration.
+					if not id or remaining < curSortDur then
+						-- If we haven't found anything yet, or if this aura beats the previous by sort order, then use it.
+						iconTexture,  count,  duration,  expirationTime,  caster,  id,  useUnit, curSortDur =
+						_iconTexture, _count, _duration, _expirationTime, _caster, _id,  unit,    remaining
+					end
+
+					if PresentAlpha == 0 then
+						-- We aren't displaying present auras,
+						-- so don't bother continuing to look after we've found something.
+						break
+					end
 				end
 			end
 
-			if _id and not useUnit then
-				-- We found a matching aura, and we haven't recorded one to be used yet, 
-				-- so save it into our final variables to report something present if we
-				-- don't end up finding anything missing.
-
-				iconTexture, id, count, duration, expirationTime, caster, useUnit =
-				_iconTexture, _id, _count, _duration, _expirationTime, _caster, unit
-
-			elseif not _id and AbsentAlpha > 0 and not icon:YieldInfo(true, unit) then
+			if not foundOnUnit and AbsentAlpha > 0 and not icon:YieldInfo(true, unit) then
 				-- If we didn't find a matching aura, and the icon is set to show when we don't find something
 				-- then report what unit it was. This is the primary point of the icon - to find units that are missing everything.
 				-- If icon:YieldInfo() returns false, it means we don't need to keep harvesting data.
@@ -164,7 +173,7 @@ local function BuffCheck_OnUpdate(icon, time)
 	end
 
 	-- We didn't find any units that were missing all the auras being checked.
-	-- So, report the first unit that we found that has an aura.
+	-- So, report the lowest duration aura that we did find.
 	icon:YieldInfo(false, useUnit, iconTexture, count, duration, expirationTime, caster, id)
 end
 

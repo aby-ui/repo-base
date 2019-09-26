@@ -43,8 +43,8 @@ function OwnerSelector:OnEnter()
 	end
 
 	GameTooltip:SetText(CHARACTER)
-	GameTooltip:AddLine(L.TipChangePlayer, 1, 1, 1)
-	GameTooltip:AddLine(L.TipResetPlayer, 1, 1, 1)
+	GameTooltip:AddLine(L.TipChangePlayer:format(L.LeftClick), 1, 1, 1)
+	GameTooltip:AddLine(L.TipResetPlayer:format(L.RightClick), 1, 1, 1)
 	GameTooltip:Show()
 end
 

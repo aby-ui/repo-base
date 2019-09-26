@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2139, "DBM-Azeroth-BfA", 2, 1028)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190728021954")
+mod:SetRevision("20190925025307")
 mod:SetCreatureID(132701)
 --mod:SetEncounterID(1880)
 mod:SetReCombatTime(20)
@@ -23,7 +23,6 @@ local specWarnCrushingSlam			= mod:NewSpecialWarningDefensive(262004, nil, nil, 
 local specWarnCrushingSlamOther		= mod:NewSpecialWarningTaunt(262004, nil, nil, nil, 1, 2)
 local specWarnCoalescedEssence		= mod:NewSpecialWarningDodge(261600, nil, nil, nil, 2, 2)
 local specWarnConsumingSpirits		= mod:NewSpecialWarningMoveAway(261605, nil, nil, nil, 1, 2)
-local yellConsumingSpirits			= mod:NewYell(261605)
 local specWarnTerrorWall			= mod:NewSpecialWarningDodge(261552, nil, nil, nil, 3, 2)
 
 --local specWarnGTFO				= mod:NewSpecialWarningGTFO(238028, nil, nil, nil, 1, 8)
@@ -87,7 +86,6 @@ function mod:SPELL_AURA_APPLIED(args)
 		if args:IsPlayer() then
 			specWarnConsumingSpirits:Show()
 			specWarnConsumingSpirits:Play("runout")
-			yellConsumingSpirits:Yell()
 			if self.Options.RangeFrame then
 				DBM.RangeCheck:Show(8)
 			end

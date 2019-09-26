@@ -724,6 +724,11 @@ function module.options:Load()
 		{L.S_ZoneT22Uldir,9,8,11,7,6,5,4,2,3},
 		{DUNGEONS,41,42,43,44,12,13,14,15,16,17,18,19},
 	}
+	if ExRT.isClassic then
+		for i=#mapsSorted,3,-1 do 
+			tremove(mapsSorted,i)
+		end
+	end
 	for i=1,#mapsSorted do
 		local p = mapsSorted[i]
 		if type(p)=='table' then

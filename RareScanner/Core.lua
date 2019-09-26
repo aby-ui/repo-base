@@ -28,8 +28,8 @@ local ETERNAL_COMPLETED = -1
 local DEBUG_MODE = false
 
 -- Config constants
-local CURRENT_DB_VERSION = 5
-local CURRENT_LOOT_DB_VERSION = 16
+local CURRENT_DB_VERSION = 6
+local CURRENT_LOOT_DB_VERSION = 17
 
 -- Hard reset versions
 local CURRENT_ADDON_VERSION = 600
@@ -1125,7 +1125,18 @@ function scanner_button:ShowButton()
 
 	-- Sets the name
 	self.Title:SetText(self.name)
-	
+			
+	-- show loot bar
+	if (private.db.loot.displayLoot) then
+		self:LoadLootBar()
+		-- call a second time just in case the game took
+		-- too long to fetch their data and they rendered 
+		-- acuardly
+		C_Timer.After(2, function() 
+			self:LoadLootBar()
+		end)
+	end
+
 	-- Show button, model and loot panel
 	if (self.npcID and (self.iconid == RareScanner.NPC_VIGNETTE or self.iconid == RareScanner.NPC_LEGION_VIGNETTE or self.iconid == RareScanner.NPC_VIGNETTE_ELITE)) then
 		self.Description_text:SetText(AL["CLICK_TARGET"])
@@ -1152,17 +1163,6 @@ function scanner_button:ShowButton()
 				
 		-- Show filter button
 		self.FilterDisabledButton:Show()
-		
-		-- show loot bar
-		if (private.db.loot.displayLoot) then
-			self:LoadLootBar()
-			-- call a second time just in case the game took
-			-- too long to fetch their data and they rendered 
-			-- acuardly
-			C_Timer.After(2, function() 
-				self:LoadLootBar()
-			end)
-		end
 	else
 		self.Description_text:SetText(AL["NOT_TARGETEABLE"])
 		
@@ -1174,9 +1174,6 @@ function scanner_button:ShowButton()
 		-- hide filter button if displayed
 		self.FilterDisabledButton:Hide()
 		self.FilterEnabledButton:Hide()
-		
-		-- hide loot items
-		self:LoadLootBar()
 		
 		-- show button
 		self:Show()

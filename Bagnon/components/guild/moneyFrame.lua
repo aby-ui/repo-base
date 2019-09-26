@@ -58,11 +58,11 @@ end
 function MoneyFrame:OnEnter()
 	GameTooltip:SetOwner(self, self:GetTop() > (GetScreenHeight() / 2) and 'ANCHOR_BOTTOM' or 'ANCHOR_TOP')
 	GameTooltip:SetText(L.GuildFunds)
-	GameTooltip:AddLine(L.TipDeposit, 1, 1, 1)
+	GameTooltip:AddLine(L.TipDeposit:format(L.LeftClick), 1, 1, 1)
 
 	if CanWithdrawGuildBankMoney() then
 		local money = min(GetGuildBankWithdrawMoney(), GetGuildBankMoney())
-		GameTooltip:AddLine(L.TipWithdrawRemaining:format(money > 0 and GetMoneyString(money, true) or NONE:lower()), 1,1,1)
+		GameTooltip:AddLine(L.TipWithdraw:format(L.RightClick, money > 0 and GetMoneyString(money, true) or NONE:lower()), 1,1,1)
 	end
 
 	GameTooltip:Show()

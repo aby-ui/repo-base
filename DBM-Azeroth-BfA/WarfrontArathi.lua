@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("WarfrontArathi", "DBM-Azeroth-BfA", 3)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190731020149")
+mod:SetRevision("20190925025307")
 --mod:SetModelID(47785)
 mod:SetZone()
 
@@ -16,6 +16,7 @@ mod:RegisterEvents(
 --	"UNIT_SPELLCAST_SUCCEEDED"
 )
 
+--TODO, see if chat yells permitted in a warfront.
 --General
 local warnTownPortal				= mod:NewSpellAnnounce(302809, 1)
 --Alliance - Rokhan

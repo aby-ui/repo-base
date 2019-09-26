@@ -33,7 +33,7 @@ end
 
 function OptionsToggle:OnEnter()
 	GameTooltip:SetOwner(self, (self:GetRight() > (GetScreenWidth() / 2)) and 'ANCHOR_LEFT' or 'ANCHOR_RIGHT')
-	GameTooltip:SetText(L.TipShowFrameConfig)
+	GameTooltip:SetText(L.TipConfigure:format(L.Click))
 end
 
 function OptionsToggle:OnLeave()

@@ -69,7 +69,10 @@ function TitleFrame:OnEnter()
 		GameTooltip:SetOwner(self, 'ANCHOR_RIGHT')
 	end
 
-	GameTooltip:SetText(L.TipDoubleClickSearch)
+	GameTooltip:SetText(self:GetText())
+	GameTooltip:AddLine(L.TipConfigure:format(L.RightClick), 1,1,1)
+	GameTooltip:AddLine(L.TipShowSearch:format(L.DoubleClick), 1,1,1)
+	GameTooltip:AddLine(L.TipMove:format(L.Drag), 1,1,1)
 	GameTooltip:Show()
 end
 

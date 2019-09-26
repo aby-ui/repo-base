@@ -4,7 +4,6 @@ local Addon = LibStub('AceAddon-3.0'):NewAddon(AddonTable, AddonName, 'AceEvent-
 local L = LibStub('AceLocale-3.0'):GetLocale(AddonName)
 
 local ADDON_VERSION = GetAddOnMetadata(AddonName, 'Version')
-local ADDON_BUILD = (select(4, GetBuildInfo())) < 20000 and "Classic" or "Retail"
 local CONFIG_ADDON_NAME = AddonName .. '_Config'
 local CONFIG_VERSION = 1
 
@@ -16,7 +15,7 @@ function Addon:OnInitialize()
 	self:UpgradeDatabase()
 
 	-- create a loader for the options menu
-	local f = CreateFrame('Frame', nil, _G.InterfaceOptionsFrame)
+	local f = CreateFrame('Frame', nil, InterfaceOptionsFrame)
 	f:SetScript('OnShow', function()
 		f:SetScript('OnShow', nil)
 		LoadAddOn(CONFIG_ADDON_NAME)
@@ -50,7 +49,7 @@ function Addon:OnUpgradeDatabase(oldVersion, newVersion)
 end
 
 function Addon:OnUpgradeAddon(oldVersion, newVersion)
-	self:Printf(L.Updated, ADDON_VERSION, ADDON_BUILD)
+	self:Printf(L.Updated, ADDON_VERSION, self:GetBuild())
 end
 
 -- keybound events
@@ -72,7 +71,6 @@ end
 
 -- profile events
 function Addon:OnNewProfile(msg, db, name)
-	self.isNewProfile = true
 	self:Printf(L.ProfileCreated, name)
 end
 
@@ -96,14 +94,19 @@ end
 -- Load is called when the addon is first enabled, and also whenever a profile
 -- is loaded
 function Addon:Load()
-	local module_load = function(module)
-		if module.Load then
-			module:Load()
+	local function module_load(module, id)
+		if not self.db.profile.modules[id] then
+			return
+		end
+
+		local f = module.Load
+		if type(f) == "function"  then
+			f(module)
 		end
 	end
 
-	for _, module in self:IterateModules() do
-		local success, msg = pcall(module_load, module)
+	for id, module in self:IterateModules() do
+		local success, msg = pcall(module_load, module, id)
 		if not success then
 			self:Printf('Failed to load %s\n%s', module:GetName(), msg)
 		end
@@ -115,15 +118,20 @@ end
 
 -- unload is called when we're switching profiles
 function Addon:Unload()
-	local module_unload = function(module)
-		if module.Unload then
-			module:Unload()
+	local function module_unload(module, id)
+		if not self.db.profile.modules[id] then
+			return
+		end
+
+		local f = module.Unload
+		if type(f) == "function"  then
+			f(module)
 		end
 	end
 
 	-- unload any module stuff
-	for _, module in self:IterateModules() do
-		local success, msg = pcall(module_unload, module)
+	for id, module in self:IterateModules() do
+		local success, msg = pcall(module_unload, module, id)
 		if not success then
 			self:Printf('Failed to unload %s\n%s', module:GetName(), msg)
 		end
@@ -182,7 +190,13 @@ function Addon:GetDatabaseDefaults()
 				showgrid = true,
 			},
 
-			frames = {}
+			frames = {},
+
+			-- what modules are enabled
+			-- module[id] = enabled
+			modules = {
+				["**"] = true
+			}
 		}
 	}
 end
@@ -208,7 +222,6 @@ function Addon:SaveProfile(name)
 		self:Unload()
 		self.db:SetProfile(name)
 		self.db:CopyProfile(toCopy)
-		self.isNewProfile = nil
 		self:Load()
 	end
 end
@@ -218,7 +231,6 @@ function Addon:SetProfile(name)
 	if profile and profile ~= self.db:GetCurrentProfile() then
 		self:Unload()
 		self.db:SetProfile(profile)
-		self.isNewProfile = nil
 		self:Load()
 	else
 		self:Printf(L.InvalidProfile, name or 'null')
@@ -238,7 +250,6 @@ function Addon:CopyProfile(name)
 	if name and name ~= self.db:GetCurrentProfile() then
 		self:Unload()
 		self.db:CopyProfile(name)
-		self.isNewProfile = nil
 		self:Load()
 	end
 end
@@ -246,7 +257,6 @@ end
 function Addon:ResetProfile()
 	self:Unload()
 	self.db:ResetProfile()
-	self.isNewProfile = true
 	self:Load()
 end
 
@@ -319,7 +329,7 @@ end
 
 -- miscellanous actions
 function Addon:PrintVersion()
-	self:Printf("%s-%s", ADDON_VERSION, ADDON_BUILD)
+	self:Printf("%s-%s", ADDON_VERSION, self:GetBuild())
 end
 
 
@@ -706,14 +716,22 @@ end
 
 -- build test
 function Addon:GetBuild()
-	return ADDON_BUILD
+	local project = WOW_PROJECT_ID
+
+	if project == WOW_PROJECT_CLASSIC then
+		return "classic"
+	elseif project == WOW_PROJECT_MAINLINE then
+		return "retail"
+	else
+		return "unknown"
+	end
 end
 
 function Addon:IsBuild(...)
-	local build = ADDON_BUILD:upper()
+	local build = self:GetBuild()
 
-	for i = 1, select('#', ...) do
-		if build == select(i, ...):upper() then
+	for i = 1, select("#", ...) do
+		if build == select(i, ...):lower() then
 			return true
 		end
 	end

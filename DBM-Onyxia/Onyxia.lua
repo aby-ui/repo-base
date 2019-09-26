@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("Onyxia", "DBM-Onyxia")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190911042519")
+mod:SetRevision("20190921192929")
 mod:SetCreatureID(10184)
 mod:SetEncounterID(1084)
 mod:SetZone()
@@ -14,7 +14,8 @@ mod:RegisterEvents(
 )
 
 mod:RegisterEventsInCombat(
-	"SPELL_CAST_START 68958 17086 18351 18564 18576 18584 18596 18609 18617 18435 68959 18431 18500",
+	"SPELL_CAST_START 68958 17086 18351 18564 18576 18584 18596 18609 18617 18435 68959 18431 18500 18392",
+	"SPELL_CAST_SUCCESS 19633",
 	"SPELL_DAMAGE 68867",
 	"UNIT_DIED",
 	"UNIT_HEALTH boss1"
@@ -22,13 +23,16 @@ mod:RegisterEventsInCombat(
 
 --local warnWhelpsSoon		= mod:NewAnnounce("WarnWhelpsSoon", 1, 69004)
 local warnWingBuffet		= mod:NewSpellAnnounce(18500, 2, nil, "Tank")
+local warnKnockAway			= mod:NewTargetNoFilterAnnounce(19633, 2, nil, false)
 local warnPhase2			= mod:NewPhaseAnnounce(2)
+local warnFireball			= mod:NewTargetNoFilterAnnounce(18392, 2, nil, false)
 local warnPhase3			= mod:NewPhaseAnnounce(3)
 local warnPhase2Soon		= mod:NewPrePhaseAnnounce(2)
 local warnPhase3Soon		= mod:NewPrePhaseAnnounce(3)
 
 local specWarnBreath		= mod:NewSpecialWarningSpell(18584, nil, nil, nil, 2, 2)
 local specWarnBellowingRoar	= mod:NewSpecialWarningSpell(18431, nil, nil, nil, 2, 2)
+local yellFireball				= mod:NewYell(18392)
 local specWarnBlastNova		= mod:NewSpecialWarningRun(68958, "Melee", nil, nil, 4, 2)
 local specWarnAdds			= mod:NewSpecialWarningAdds(68959, "-Healer", nil, nil, 1, 2)
 
@@ -72,35 +76,21 @@ function mod:Whelps()--Not right, need to fix
 	end
 end
 
+function mod:FireballTarget(targetname, uId)
+	if not targetname then return end
+	warnFireball:Show(targetname)
+	if targetname == UnitName("player") then
+		yellFireball:Yell()
+	end
+end
+
 function mod:CHAT_MSG_MONSTER_YELL(msg)
 	if msg == L.YellPull and not self:IsInCombat() then
 		DBM:StartCombat(self, 0)
 	elseif msg == L.YellP2 or msg:find(L.YellP2) then
-		self.vb.phase = 2
-		self.vb.whelpsCount = 0
-		warnPhase2:Show()
-		timerBigAddCD:Start(65)
-		timerNextDeepBreath:Start(67)
-		timerNextFlameBreath:Cancel()
-		self:ScheduleMethod(5, "Whelps")
-		if self.Options.SoundWTF3 then
-			self:Schedule(10, DBM.PlaySoundFile, DBM, "Interface\\AddOns\\DBM-Onyxia\\sounds\\throw-more-dots.ogg")
-			self:Schedule(17, DBM.PlaySoundFile, DBM, "Interface\\AddOns\\DBM-Onyxia\\sounds\\whelps-left-side-even-side-handle-it.ogg")
-		end
+		self:SendSync("Phase2")
 	elseif msg == L.YellP3 or msg:find(L.YellP3) then
-		self.vb.phase = 3
-		warnPhase3:Show()
-		self:UnscheduleMethod("Whelps")
-		--timerWhelps:Stop()
-		timerNextDeepBreath:Stop()
-		timerBigAddCD:Stop()
-		--warnWhelpsSoon:Cancel()
-		if self.Options.SoundWTF3 then
-			self:Schedule(20, DBM.PlaySoundFile, DBM, "Interface\\AddOns\\DBM-Onyxia\\sounds\\now-hit-it-very-hard-and-fast.ogg")
-   			self:Schedule(35, DBM.PlaySoundFile, DBM, "Interface\\AddOns\\DBM-Onyxia\\sounds\\i-dont-see-enough-dots.ogg")
-			self:Schedule(50, DBM.PlaySoundFile, DBM, "Interface\\AddOns\\DBM-Onyxia\\sounds\\hit-it-like-you-mean-it.ogg")
-			self:Schedule(65, DBM.PlaySoundFile, DBM, "Interface\\AddOns\\DBM-Onyxia\\sounds\\throw-more-dots.ogg")
-		end
+		self:SendSync("Phase3")
 	end
 end
 
@@ -124,6 +114,15 @@ function mod:SPELL_CAST_START(args)
 		specWarnBellowingRoar:Play("fearsoon")
 	elseif args.spellId == 18500 then
 		warnWingBuffet:Show()
+	elseif args.spellId == 18392 then
+		self:BossTargetScanner(args.sourceGUID, "FireballTarget", 0.15, 12)
+	end
+end
+
+function mod:SPELL_CAST_SUCCESS(args)
+	local spellName = args.spellId
+	if spellId == 19633 then
+		warnKnockAway:Show(args.destName)
 	end
 end
 
@@ -146,5 +145,43 @@ function mod:UNIT_HEALTH(uId)
 	elseif self.vb.phase == 2 and not self.vb.warned_preP3 and self:GetUnitCreatureId(uId) == 10184 and UnitHealth(uId) / UnitHealthMax(uId) <= 0.45 then
 		self.vb.warned_preP3 = true
 		warnPhase3Soon:Show()
+	end
+end
+
+function mod:OnSync(msg)
+	if not self:IsInCombat() then return end
+	if msg == "Phase2" then
+		self.vb.phase = 2
+		self.vb.whelpsCount = 0
+		warnPhase2:Show()
+		--timerBigAddCD:Start(65)
+		--timerNextDeepBreath:Start(67)
+		timerNextFlameBreath:Cancel()
+		self:ScheduleMethod(5, "Whelps")
+		if self.Options.SoundWTF3 then
+			self:Schedule(10, DBM.PlaySoundFile, DBM, "Interface\\AddOns\\DBM-Onyxia\\sounds\\throw-more-dots.ogg")
+			self:Schedule(17, DBM.PlaySoundFile, DBM, "Interface\\AddOns\\DBM-Onyxia\\sounds\\whelps-left-side-even-side-handle-it.ogg")
+		end
+		if self.Options.RangeFrame then
+			DBM.RangeCheck:Show(8)
+		end
+	elseif msg == "Phase3" then
+		self.vb.phase = 3
+		warnPhase3:Show()
+		self:UnscheduleMethod("Whelps")
+		--timerWhelps:Stop()
+		--timerNextDeepBreath:Stop()
+		--timerBigAddCD:Stop()
+		--warnWhelpsSoon:Cancel()
+		if self.Options.SoundWTF3 then
+			DBM:PlaySoundFile("Interface\\AddOns\\DBM-Onyxia\\sounds\\dps-very-very-slowly.ogg")
+			self:Schedule(30, DBM.PlaySoundFile, DBM, "Interface\\AddOns\\DBM-Onyxia\\sounds\\now-hit-it-very-hard-and-fast.ogg")
+   			self:Schedule(40, DBM.PlaySoundFile, DBM, "Interface\\AddOns\\DBM-Onyxia\\sounds\\i-dont-see-enough-dots.ogg")
+			self:Schedule(50, DBM.PlaySoundFile, DBM, "Interface\\AddOns\\DBM-Onyxia\\sounds\\hit-it-like-you-mean-it.ogg")
+			self:Schedule(65, DBM.PlaySoundFile, DBM, "Interface\\AddOns\\DBM-Onyxia\\sounds\\throw-more-dots.ogg")
+		end
+		if self.Options.RangeFrame then
+			DBM.RangeCheck:Hide()
+		end
 	end
 end

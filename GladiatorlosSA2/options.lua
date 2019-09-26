@@ -50,11 +50,16 @@ local function spellOption(order, spellID, ...)
 	if (spellname ~= nil) then
 		return {
 			type = 'toggle',
-			name = "\124T" .. icon .. ":24\124t" .. spellname,							
-			desc = function () 
-				GameTooltip:SetHyperlink(GetSpellLink(spellID));
-				--GameTooltip:Show();
-			end,
+			name = "\124T" .. icon .. ":24\124t" .. spellname,			
+			desc = function ()
+				--GameTooltip:SetOwner(UIParent, "ANCHOR_CURSOR")				
+				--GameTooltip:SetHyperlink(GetSpellLink(spellID))			
+				--Fix this.
+				
+				--GameToolTip:Show(GetSpellLink(spellID))
+				--GameTooltip:Show(descr)
+				--GameToolTip:Hide()
+			end, -- https://i.imgur.com/ChzUb.jpg
 			descStyle = "custom",
 					order = order,
 		}
@@ -530,7 +535,7 @@ function GSA:OnOptionCreate()
 								inline = true,
 								name = L["|cffFFF569Rogue|r"],
 								order = 130,
-								args = listOption({2983,31224,5277,51690,121471,185313,185422,199754,31230,45182,1833,1330,6770,207736},"auraApplied"), 
+								args = listOption({2983,31224,5277,51690,121471,185313,185422,199754,31230,45182,1833,1330,6770,207736,1966},"auraApplied"), 
 							},
 							shaman	= { -- AuraApplied
 								type = 'group',
@@ -643,7 +648,7 @@ function GSA:OnOptionCreate()
 								inline = true,
 								name = L["|cffFFF569Rogue|r"],
 								order = 12,
-								args = listOption({31224,5277,74001,51690,199754},"auraRemoved"),
+								args = listOption({31224,5277,74001,51690,199754,1966},"auraRemoved"),
 							},
 							shaman	= { -- AuraRemoved
 								type = 'group',
@@ -920,7 +925,7 @@ function GSA:OnOptionCreate()
 								inline = true,
 								name = L["|cff9482C9Warlock|r"],
 								order = 150,
-								args = listOption({6789,48020,111859,111895,111896,111897,111898,1122,205180,201996,199954,199892,199890},"castSuccess"),
+								args = listOption({6789,48020,111859,111895,111896,111897,111898,1122,205180,201996,199954,199892,199890,80240},"castSuccess"),
 							},
 							warrior	= { -- CastSuccess
 								type = 'group',

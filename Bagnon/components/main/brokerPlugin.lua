@@ -1,6 +1,6 @@
 --[[
 	brokerDisplay.lua
-		A databroker plugin for Bagnon
+		A databroker plugin
 --]]
 
 local ADDON, Addon = ...
@@ -13,12 +13,10 @@ local Plugin = LDB:NewDataObject(ADDON .. 'Launcher', {
 	label = ADDON,
 
 	OnClick = function(self, button)
-		if button == 'LeftButton' then
-			if IsShiftKeyDown() then
-				Addon:ShowOptions()
-			else
-				Addon:ToggleFrame('inventory')
-			end
+		if IsShiftKeyDown() then
+			Addon:ShowOptions()
+		elseif button == 'LeftButton' then
+			Addon:ToggleFrame('inventory')
 		elseif button == 'RightButton' then
 			Addon:ToggleFrame('bank')
 		end
@@ -26,9 +24,9 @@ local Plugin = LDB:NewDataObject(ADDON .. 'Launcher', {
 
 	OnTooltipShow = function(tooltip)
 		tooltip:AddLine(ADDON)
-		tooltip:AddLine(L.TipShowInventory, 1, 1, 1)
-		tooltip:AddLine(L.TipShowBank, 1, 1, 1)
-		tooltip:AddLine(L.TipShowOptions, 1, 1, 1)
+		tooltip:AddLine(L.TipShowInventory:format(L.LeftClick), 1, 1, 1)
+		tooltip:AddLine(L.TipShowBank:format(L.RightClick), 1, 1, 1)
+		tooltip:AddLine(L.TipShowOptions:format(L.ShiftClick), 1, 1, 1)
 	end,
 
 	OnUpdate = function(self)

@@ -581,6 +581,16 @@ typeControlAdders = {
   end,
   range = function(options, args, data, order, prefix, i)
     local option = options[i]
+    local min, max, softMin, softMax, step, bigStep
+    softMax = option.softMax
+    softMin = option.softMin
+    bigStep = option.bigStep
+    min = option.min
+    max = option.max
+    if max and min then
+      max = math.max(min, max)
+    end
+    step = option.step
     args[prefix .. "default"] = {
       type = "range",
       width = WeakAuras.normalWidth,
@@ -588,7 +598,13 @@ typeControlAdders = {
       desc = desc(option, "default"),
       order = order(),
       get = get(option, "default"),
-      set = set(data, option, "default")
+      set = set(data, option, "default"),
+      min = min,
+      max = max,
+      step = step,
+      softMin = softMin,
+      softMax = softMax,
+      bigStep = bigStep,
     }
 
     args[prefix .. "min"] = {
@@ -1892,11 +1908,12 @@ local function addUserModeOption(options, args, data, order, prefix, i)
   -- convert from weakauras option type to ace option type
   if optionClass == "simple" then
     -- toggle and input don't need any extra love
-    if optionType == "number" then
+    if optionType == "input" then
+      userOption.multiline = option.multiline
+    elseif optionType == "number" then
       userOption.type = "input"
       userOption.get = getUserNumAsString(option)
       userOption.set = setUserNum(data, option, true)
-      userOption.multiline = option.multiline
     elseif optionType == "range" then
       userOption.softMax = option.softMax
       userOption.softMin = option.softMin
@@ -2292,7 +2309,7 @@ function WeakAuras.GetAuthorOptions(data, args, startorder)
       type = "execute",
       width = WeakAuras.normalWidth,
       name = L["Enter Author Mode"],
-      desc = L["Configure what options appear on this pannel."],
+      desc = L["Configure what options appear on this panel."],
       order = order(),
       func = function()
         if data.controlledChildren then

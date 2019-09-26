@@ -23,17 +23,13 @@ function Frame:New(id)
 	f:FindRules()
 
 	f.ownerSelector = Addon.OwnerSelector:New(f)
-	f.ownerSelector:SetPoint('TOPLEFT', -3, 4)
+	f.ownerSelector:SetPoint('TOPLEFT', -4, 5)
 
 	f.bagToggle = Addon.BagToggle:New(f)
 	f.bagToggle:SetPoint('TOPRIGHT', -10, -27)
 
-	if SortBags then
-		f.sortButton = Addon.SortButton:New(f)
-		f.sortButton:SetPoint('RIGHT', f.bagToggle, 'LEFT', -7, 0)
-	else
-		f.searchBox:SetPoint('TOPRIGHT', -49, -32)
-	end
+	f.sortButton = Addon.SortButton:New(f)
+	f.sortButton:SetPoint('RIGHT', f.bagToggle, 'LEFT', -7, 0)
 
 	f.moneyFrame = Addon.MoneyFrame:New(f)
 	f.moneyFrame:SetPoint('BOTTOMRIGHT', -8, 4)

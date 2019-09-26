@@ -8,7 +8,7 @@ local pairs, type = pairs, type
 -- WoW API / Variables
 local C_ContributionCollector_GetName = C_ContributionCollector.GetName
 local C_ContributionCollector_GetState = C_ContributionCollector.GetState
-local IsQuestFlaggedCompleted = IsQuestFlaggedCompleted
+local IsQuestFlaggedCompleted = C_QuestLog and C_QuestLog.IsQuestFlaggedCompleted or IsQuestFlaggedCompleted
 local UnitLevel = UnitLevel
 
 local FONT_COLOR_CODE_CLOSE = FONT_COLOR_CODE_CLOSE

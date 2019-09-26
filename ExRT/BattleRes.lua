@@ -1,5 +1,9 @@
 local GlobalAddonName, ExRT = ...
 
+if ExRT.isClassic then
+	return
+end 
+
 local VExRT = nil
 
 local GetSpellCharges, GetTime, floor = GetSpellCharges, GetTime, floor

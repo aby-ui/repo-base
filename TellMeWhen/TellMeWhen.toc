@@ -19,7 +19,7 @@
 ## X-Curse-Project-ID: 8025
 ## X-WoWI-ID: 10855
 
-## Version: 8.6.8
+## Version: 8.7.0
 ## Author: Cybeloras of Aerie Peak
 
 ## Notes: Provides visual, auditory, and textual notifications about cooldowns, buffs, and pretty much every other element of combat.
@@ -30,15 +30,30 @@
 ## Notes-ruRU: Визуальные, звуковые и текстовые оповещения о готовности заклинаний, способностей, наличии баффов\дебаффов и многого другого.
 ## Notes-esES: Proporciona notificaciones visuales, auditivas y textuales sobre tiempos de reutilización, ventajas y básicamente cualquier otra cosa. 
 
-## OptionalDeps: Masque, Ace3, OmniCC, tullaCC, sct, sctd, MikScrollingBattleText, Parrot, DRData-1.0, LibDogTag-3.0, LibDogTag-Unit-3.0, LibDogTag-Stats-3.0, LibSpellRange-1.0, LibOO-1.0, LibRangeCheck-2.0, LibBabble-CreatureType-3.0, LibBabble-Race-3.0, ElvUI, DBM-Core, BigWigs
+## OptionalDeps: Masque, Ace3, OmniCC, tullaCC, sct, sctd, MikScrollingBattleText, Parrot, DRList-1.0, LibDogTag-3.0, LibDogTag-Unit-3.0, LibDogTag-Stats-3.0, LibSpellRange-1.0, LibOO-1.0, LibRangeCheck-2.0, LibBabble-CreatureType-3.0, LibBabble-Race-3.0, ElvUI, DBM-Core, BigWigs
 # The per character settings are the old settings, but we still need them to upgrade to the new ones. If they aren't defined, then they will be deleted immediately
 ## SavedVariablesPerCharacter: TellMeWhen_Settings
 ## SavedVariables: TellMeWhenDB
-## X-Embeds: LibStub, Ace3, LibSharedMedia-3.0, LibDataBroker-1.1, DRData-1.0, LibDogTag-3.0, LibDogTag-Unit-3.0, LibDogTag-Stats-3.0, LibSpellRange-1.0, LibOO-1.0, LibRangeCheck-2.0, LibBabble-CreatureType-3.0, LibBabble-Race-3.0
+## X-Embeds: LibStub, Ace3, LibSharedMedia-3.0, LibDataBroker-1.1, DRList-1.0, LibDogTag-3.0, LibDogTag-Unit-3.0, LibDogTag-Stats-3.0, LibSpellRange-1.0, LibOO-1.0, LibRangeCheck-2.0, LibBabble-CreatureType-3.0, LibBabble-Race-3.0
 ## X-Category: Combat
 
+#Lib\LibStub\LibStub.lua
+#Lib\CallbackHandler-1.0\CallbackHandler-1.0.xml
 Lib\LibOO-1.0\LibOO-1.0.lua
-Lib\DRData-1.0\DRData-1.0.lua
+#Lib\AceAddon-3.0\AceAddon-3.0.xml
+#Lib\AceConsole-3.0\AceConsole-3.0.xml
+#Lib\AceEvent-3.0\AceEvent-3.0.xml
+#Lib\AceTimer-3.0\AceTimer-3.0.xml
+#Lib\AceLocale-3.0\AceLocale-3.0.xml
+#Lib\AceDB-3.0\AceDB-3.0.xml
+#Lib\AceComm-3.0\AceComm-3.0.xml
+#Lib\AceSerializer-3.0\AceSerializer-3.0.xml
+#Lib\LibSharedMedia-3.0\lib.xml
+#Lib\libdatabroker-1-1\LibDataBroker-1.1.lua
+
+# DRList-1.0 uses an unconventional folder layout, requiring the double nesting.
+Lib\DRList-1.0\DRList-1.0\DRList-1.0.xml
+
 Lib\LibDogTag-3.0\lib.xml
 Lib\LibDogTag-Unit-3.0\lib.xml
 Lib\LibDogTag-Stats-3.0\lib.xml

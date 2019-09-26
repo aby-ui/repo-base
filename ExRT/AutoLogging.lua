@@ -72,6 +72,16 @@ function module.options:Load()
 			VExRT.Logging.enableLFR = nil
 		end
 	end)
+
+	if ExRT.isClassic then
+		self.shtml1:SetText(RAID)
+		self.enable3ppScenario:Hide()
+		self.enable5ppLegion:Hide()
+		self.raidMythic:Hide()
+		self.raidHeroic:Hide()
+		self.raidNormal:Hide()
+		self.raidLFR:Hide()
+	end
 end
 
 
@@ -103,6 +113,8 @@ local function GetCurrentMapForLogging()
 			else
 				return false
 			end
+		elseif ExRT.isClassic and zoneType == 'raid' then
+			return true 
 		elseif zoneType == 'raid' and (tonumber(mapID) and mapID >= module.db.minRaidMapID) and ((difficulty == 16 and not VExRT.Logging.disableMythic) or (difficulty == 15 and not VExRT.Logging.disableHeroic) or (difficulty == 14 and not VExRT.Logging.disableNormal) or (difficulty ~= 14 and difficulty ~= 15 and difficulty ~= 16)) then
 			return true
 		elseif VExRT.Logging.enable5ppLegion and (difficulty == 8 or difficulty == 23) and (tonumber(mapID) and mapID >= module.db.minPartyMapID) then

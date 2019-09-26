@@ -1,4 +1,4 @@
-local Lib = LibStub:NewLibrary('LibItemCache-2.0', 16)
+local Lib = LibStub:NewLibrary('LibItemCache-2.0', 20)
 if not Lib then
 	return
 end
@@ -137,8 +137,12 @@ function Lib:GetBagInfo(owner, bag)
 		item.count = 160
 	elseif bag == 'equip' then
 		item.count = INVSLOT_LAST_EQUIPPED
-	elseif bag == REAGENTBANK_CONTAINER or bag == BACKPACK_CONTAINER or bag == BANK_CONTAINER then
-		item.count = GetContainerNumSlots(bag)
+	else
+		if bag == REAGENTBANK_CONTAINER or bag == BACKPACK_CONTAINER or bag == BANK_CONTAINER then
+			item.count = GetContainerNumSlots(bag)
+		end
+
+		item.owned = item.owned or (bag >= KEYRING_CONTAINER and bag <= NUM_BAG_SLOTS) or item.id or item.link
 	end
 
 	if cached then
@@ -154,12 +158,18 @@ function Lib:GetBagInfo(owner, bag)
 		item.free = GetContainerNumFreeSlots(bag)
 
 		if bag == REAGENTBANK_CONTAINER then
+			item.cost = GetReagentBankCost()
 			item.owned = IsReagentBankUnlocked()
 		elseif bag ~= BACKPACK_CONTAINER and bag ~= BANK_CONTAINER then
 			item.slot = ContainerIDToInventoryID(bag)
 			item.link = GetInventoryItemLink('player', item.slot)
 			item.icon = GetInventoryItemTexture('player', item.slot)
 			item.count = GetContainerNumSlots(bag)
+
+			if bag > NUM_BAG_SLOTS then
+				item.owned = (bag - NUM_BAG_SLOTS) <= GetNumBankSlots()
+				item.cost = GetBankSlotCost()
+			end
 		end
 	end
 
@@ -208,6 +218,23 @@ function Lib:GetItemID(owner, bag, slot)
 		return GetVoidItemInfo(1, slot)
 	else
 		return GetContainerItemID(bag, slot)
+	end
+end
+
+function Lib:PickupItem(owner, bag, slot)
+	local realm, name, isguild = self:GetOwnerAddress(owner)
+	local cached = self:IsBagCached(realm, name, isguild, bag)
+
+	if not cached then
+		if isguild then
+			PickupGuildBankItem(slot)
+		elseif bag == 'equip' then
+			PickupInventoryItem(slot)
+		elseif bag == 'vault' then
+			ClickVoidStorageSlot(1, slot)
+		else
+			PickupContainerItem(bag, slot)
+		end
 	end
 end
 

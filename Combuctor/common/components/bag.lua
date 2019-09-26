@@ -78,15 +78,15 @@ end
 --[[ Interaction ]]--
 
 function Bag:OnClick(button)
-	if button == 'RightButton' then
-		if not self:IsReagents() and not self:IsPurchasable() then
+	if button == 'RightButton' and ContainerFrame1FilterDropDown then
+		if not self:IsReagents() and self:GetInfo().owned then
 			ContainerFrame1FilterDropDown:SetParent(self)
 			PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
 			ToggleDropDownMenu(1, nil, ContainerFrame1FilterDropDown, self, 0, 0)
 		end
 	elseif self:IsPurchasable() then
 		self:Purchase()
-	elseif CursorHasItem() and not self:IsCached() then
+	elseif CursorHasItem() and not self:GetInfo().cached then
 		if self:IsBackpack() then
 			PutItemInBackpack()
 		else
@@ -100,7 +100,7 @@ function Bag:OnClick(button)
 end
 
 function Bag:OnDrag()
-	if self:IsCustomSlot() and not self:IsCached() then
+	if self:IsCustomSlot() and not self:GetInfo().cached then
 		PlaySound(SOUNDKIT.IG_BACKPACK_OPEN)
 		PickupBagFromSlot(self:GetInfo().slot)
 	end
@@ -143,7 +143,7 @@ function Bag:RegisterEvents()
 	end
 
 	if self:IsCustomSlot() then
-		if self:IsCached() then
+		if self:GetInfo().cached then
 			self:RegisterEvent('GET_ITEM_INFO_RECEIVED', 'Update')
 		else
 			self:RegisterEvent('ITEM_LOCK_CHANGED', 'UpdateLock')
@@ -213,25 +213,28 @@ function Bag:UpdateCursor()
 end
 
 function Bag:UpdateToggle()
-	self:SetChecked(not self:IsHidden())
+	self:SetChecked(self:IsToggled())
 end
 
 function Bag:UpdateTooltip()
 	GameTooltip:ClearLines()
 
-	-- title
+	-- title/item
 	if self:IsPurchasable() then
 		GameTooltip:SetText(self:IsReagents() and REAGENT_BANK or BANK_BAG_PURCHASE, 1, 1, 1)
-		GameTooltip:AddLine(L.TipPurchaseBag)
-		SetTooltipMoney(GameTooltip, self:GetCost())
+		GameTooltip:AddLine(L.TipPurchaseBag:format(L.Click))
+
+		SetTooltipMoney(GameTooltip, self:GetInfo().cost)
 	elseif self:IsBackpack() then
 		GameTooltip:SetText(BACKPACK_TOOLTIP, 1,1,1)
 	elseif self:IsBank() then
 		GameTooltip:SetText(BANK, 1,1,1)
 	elseif self:IsReagents() then
 		GameTooltip:SetText(REAGENT_BANK, 1,1,1)
-	elseif self.link then
+	elseif self.link and self:GetInfo().cached then
 		GameTooltip:SetHyperlink(self.link)
+	elseif self.link then
+		GameTooltip:SetInventoryItem('player', ContainerIDToInventoryID(self:GetID()))
 	elseif self:IsBankBag() then
 		GameTooltip:SetText(BANK_BAG, 1, 1, 1)
 	else
@@ -240,7 +243,7 @@ function Bag:UpdateTooltip()
 
 	-- instructions
 	if self:CanToggle() then
-		GameTooltip:AddLine(self:IsHidden() and L.TipShowBag or L.TipHideBag)
+		GameTooltip:AddLine((self:IsToggled() and L.TipHideBag or L.TipShowBag):format(L.Click))
 	end
 
 	GameTooltip:Show()
@@ -291,7 +294,7 @@ function Bag:SetFocus(focus)
 end
 
 function Bag:SetIcon(icon)
-	local color = self:IsPurchasable() and .1 or 1
+	local color = self:GetInfo().owned and 1 or .1
 	SetItemButtonTexture(self, icon)
 	SetItemButtonTextureVertexColor(self, 1, color, color)
 end
@@ -324,28 +327,19 @@ function Bag:IsCustomSlot()
 end
 
 function Bag:CanToggle()
-	return self:IsBackpack() or self:IsBank() or not self:IsPurchasable()
+	return self:IsBackpack() or self:IsBank() or self:GetInfo().owned
 end
 
 
 --[[ Info ]]--
 
-function Bag:IsCached()
- 	return self:GetInfo().cached
-end
-
-function Bag:GetCost()
-	return self:IsReagents() and GetReagentBankCost() or GetBankSlotCost(GetNumBankSlots())
-end
-
 function Bag:IsPurchasable()
-	if not self:IsCached() then
-		return self:IsBankBag() and (self:GetSlot() - NUM_BAG_SLOTS) > GetNumBankSlots() or self:IsReagents() and not IsReagentBankUnlocked()
-	end
+	local info = self:GetInfo()
+	return not info.cached and not info.owned
 end
 
-function Bag:IsHidden()
-	return not self:GetFrame():IsShowingBag(self:GetSlot())
+function Bag:IsToggled()
+	return self:GetFrame():IsShowingBag(self:GetSlot()) and self:GetInfo().owned
 end
 
 function Bag:GetInfo()

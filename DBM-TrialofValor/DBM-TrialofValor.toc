@@ -19,7 +19,7 @@
 ## X-DBM-Mod-MinCoreRevision: 14737
 ## X-Curse-Project-ID: 301324
 ## X-WoWI-ID: 24905
-## Version: r14
+## Version: r15
 
 localization.en.lua
 localization.de.lua

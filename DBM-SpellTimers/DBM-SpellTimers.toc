@@ -18,7 +18,7 @@
 ## Author: Nitram and Tandanu
 ## URL: http://www.deadlybossmods.com
 ## SavedVariables: DBM_SpellTimers_Settings
-## Version: fd7cd5f
+## Version: e4be750
 localization.en.lua
 localization.cn.lua
 localization.tw.lua

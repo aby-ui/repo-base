@@ -237,9 +237,7 @@ function IE:OnInitialize()
 		-- GLOBALS: StaticPopupDialogs, StaticPopup_Show, EXIT_GAME, CANCEL, ForceQuit
 		StaticPopupDialogs["TMWOPT_RESTARTNEEDED"] = {
 			text = L["ERROR_MISSINGFILE_OPT"], 
-			button1 = EXIT_GAME,
-			button2 = CANCEL,
-			OnAccept = ForceQuit,
+			button1 = OKAY,
 			timeout = 0,
 			showAlert = true,
 			whileDead = true,
@@ -252,9 +250,7 @@ function IE:OnInitialize()
 	elseif not TMW.DOGTAG then
 		StaticPopupDialogs["TMWOPT_RESTARTNEEDED"] = {
 			text = L["ERROR_MISSINGFILE_OPT_NOREQ"], 
-			button1 = EXIT_GAME,
-			button2 = CANCEL,
-			OnAccept = ForceQuit,
+			button1 = OKAY,
 			timeout = 0,
 			showAlert = true,
 			whileDead = true,
@@ -1103,7 +1099,7 @@ CScriptProvider = TMW:NewClass("CScriptProvider"){
 	end,
 
 	CScriptRemoveAll = function(self)
-		self.__CScripts = null
+		self.__CScripts = nil
 	end,
 
 	CScriptCall = function(self, script, ...)
@@ -1690,6 +1686,7 @@ TMW:NewClass("Config_ScrollFrame", "ScrollFrame", "Config_Frame"){
 
 	OnNewInstance_ScrollFrame = function(self)
 		self:EnableMouseWheel(true)
+		self:CScriptAdd("BeforeMouseWheelHandled", self.BeforeMouseWheelHandled)
 	end,
 
 	SetEdgeScrollEnabled = function(self, enabled, range, dps)
@@ -1794,7 +1791,24 @@ TMW:NewClass("Config_ScrollFrame", "ScrollFrame", "Config_Frame"){
 			newScroll = self:GetVerticalScrollRange()
 		end
 
+		self.LastWheelScrollX, self.LastWheelScrollY = GetCursorPosition()
+
 		self:SetVerticalScroll(newScroll)
+	end,
+
+	BeforeMouseWheelHandled = function(self, delta)
+		local x, y = GetCursorPosition()
+		if self.LastWheelScrollX == x and self.LastWheelScrollY == y then
+			-- Mouse is in the same position as it was the last time the user
+			-- scrolled with their mouse wheel. It could be a total coincidence,
+			-- but most likely, the user is trying to scroll down and some other
+			-- mouse-wheel handling frame has landed under their cursor.
+			-- They probably wanted to keep scrolling
+			-- and not adjust the slider, so lets not adjust the slider.
+
+			self:OnMouseWheel(delta)
+			return 1
+		end
 	end,
 
 	OnUpdate = function(self, elapsed)
@@ -2465,23 +2479,27 @@ TMW:NewClass("Config_Slider", "Slider", "Config_Frame")
 	end,
 	
 	OnMouseWheel = function(self, delta)
-		if self:IsEnabled() then
-			if IsShiftKeyDown() then
-				delta = delta*10
-			end
-			if IsControlKeyDown() then
-				delta = delta*60
-			end
-			if delta == 1 or delta == -1 then
-				delta = delta*(self:GetWheelStep() or 1)
-			end
+		if not self:IsEnabled() then return end
 
-			local level = self:GetValue() + delta
-
-			self:SetValue(level)
-
-			self:SaveSetting()
+		if self:CScriptBubbleGet("BeforeMouseWheelHandled", delta) then
+			return
 		end
+		
+		if IsShiftKeyDown() then
+			delta = delta*10
+		end
+		if IsControlKeyDown() then
+			delta = delta*60
+		end
+		if delta == 1 or delta == -1 then
+			delta = delta*(self:GetWheelStep() or 1)
+		end
+
+		local level = self:GetValue() + delta
+
+		self:SetValue(level)
+
+		self:SaveSetting()
 	end,
 
 	-- Methods

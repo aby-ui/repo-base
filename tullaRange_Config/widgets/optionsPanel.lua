@@ -4,7 +4,7 @@
 --]]
 
 local _, Addon = ...
-local OptionsPanel = Addon.Classy:New('Frame'); Addon.OptionsPanel = OptionsPanel
+local OptionsPanel = Addon.Classy:New('Frame')
 
 function OptionsPanel:New(name, parent, title, subtitle, icon)
 	local f = self:Bind(CreateFrame('Frame', name))
@@ -32,3 +32,5 @@ function OptionsPanel:New(name, parent, title, subtitle, icon)
 
 	return f
 end
+
+Addon.OptionsPanel = OptionsPanel

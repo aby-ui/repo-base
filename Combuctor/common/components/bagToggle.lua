@@ -49,12 +49,12 @@ function BagToggle:OnEnter()
 	GameTooltip:SetText(BAGSLOTTEXT)
 
 	if self:IsBagFrameShown() then
-		GameTooltip:AddLine(L.TipHideBags, 1,1,1)
+		GameTooltip:AddLine(L.TipHideBags:format(L.LeftClick), 1,1,1)
 	else
-		GameTooltip:AddLine(L.TipShowBags, 1,1,1)
+		GameTooltip:AddLine(L.TipShowBags:format(L.LeftClick), 1,1,1)
 	end
 
-	GameTooltip:AddLine(L.TipFrameToggle, 1,1,1)
+	GameTooltip:AddLine(L.TipFrameToggle:format(L.RightClick), 1,1,1)
 	GameTooltip:Show()
 end
 

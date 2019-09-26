@@ -90,7 +90,7 @@ function Tab:UpdateTooltip()
 
 		local remaining = info.remaining
 		if info.viewable and remaining and remaining >= 0 then
-			GameTooltip:AddLine(L.WithdrawalsRemaining:format(remaining > 0 and remaining or remaining == 0 and NONE or UNLIMITED), 1,1,1)
+			GameTooltip:AddLine(L.NumRemainingWithdrawals:format(remaining > 0 and remaining or remaining == 0 and NONE or UNLIMITED), 1,1,1)
 		end
 
 		GameTooltip:Show()
