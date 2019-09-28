@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(655, "DBM-Party-MoP", 4, 303)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 96 $"):sub(12, -3))
+mod:SetRevision("20190421035925")
 mod:SetCreatureID(56906)
 mod:SetEncounterID(1397)
 mod:SetZone()
@@ -26,7 +26,7 @@ local timerSabotage				= mod:NewTargetTimer(5, 107268)
 local timerSabotageCD			= mod:NewNextTimer(12, 107268, nil, nil, nil, 3)
 --local timerThrowExplosiveCD	= mod:NewNextTimer(22, 102569)
 
-mod:AddBoolOption("IconOnSabotage", true)
+mod:AddSetIconOption("IconOnSabotage", 107268, true, false, {8})
 
 function mod:OnCombatStart(delay)
 --	timerSabotageCD:Start(-delay)--Unknown, tank pulled before log got started, will need a fresh log.

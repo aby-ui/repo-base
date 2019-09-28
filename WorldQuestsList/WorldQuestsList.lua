@@ -1,4 +1,4 @@
-local VERSION = 89
+local VERSION = 90
 
 --[[
 Special icons for rares, pvp or pet battle quests in list
@@ -274,6 +274,10 @@ Added Calligraphy game helper for alliance
 
 8.2.0 Update
 Added icon for quests for achievements (can be disabled via option)
+
+8.2.5 toc update
+Fixed arrow for regular quests in Nazjatar
+Fixed Nazjatar WQs for azeroth map
 ]]
 
 local GlobalAddonName, WQLdb = ...
@@ -1038,6 +1042,7 @@ if WQLdb.ToMain then
 		end
 	end
 end
+WorldQuestList.Arrow = WQLdb.Arrow
 
 WorldQuestList:SetScript("OnHide",function(self)
 	WorldQuestList.IsSoloRun = false
@@ -1802,16 +1807,18 @@ do
 			return unpack(cache[questID])
 		end
 		for mapID,mapCoord in pairs(mapCoords) do
-			local xMin,xMax,yMin,yMax = C_Map.GetMapRectOnMap(questMapID,mapID)
-			if xMin ~= xMax and yMin ~= yMax then
-				x = xMin + x * (xMax - xMin)
-				y = yMin + y * (yMax - yMin)
-				
-				cache[questID] = {
-					mapCoord[1] + (x or -1) * (mapCoord[3]-mapCoord[1]),
-					mapCoord[2] + (y or -1) * (mapCoord[4]-mapCoord[2]),
-				}
-				return unpack(cache[questID])				
+			if questMapID ~= 1355 or mapID == 1355 then
+				local xMin,xMax,yMin,yMax = C_Map.GetMapRectOnMap(questMapID,mapID)
+				if xMin ~= xMax and yMin ~= yMax then
+					x = xMin + x * (xMax - xMin)
+					y = yMin + y * (yMax - yMin)
+					
+					cache[questID] = {
+						mapCoord[1] + (x or -1) * (mapCoord[3]-mapCoord[1]),
+						mapCoord[2] + (y or -1) * (mapCoord[4]-mapCoord[2]),
+					}
+					return unpack(cache[questID])				
+				end
 			end
 		end	
 	end
@@ -1830,6 +1837,19 @@ do
 		end
 	end	
 	
+	function WorldQuestList:GetMapCoordAdj(x,y,MapID)
+		for mapID,mapCoord in pairs(mapCoords) do
+			if MapID ~= 1355 or mapID == 1355 then
+				local xMin,xMax,yMin,yMax = C_Map.GetMapRectOnMap(MapID,mapID)
+				if xMin ~= xMax and yMin ~= yMax then
+					x = xMin + x * (xMax - xMin)
+					y = yMin + y * (yMax - yMin)
+					
+					return mapCoord[1] + (x or -1) * (mapCoord[3]-mapCoord[1]), mapCoord[2] + (y or -1) * (mapCoord[4]-mapCoord[2])			
+				end
+			end
+		end
+	end
 end
 
 do
@@ -3006,9 +3026,7 @@ do
 	list[#list+1] = {text = LOCALE.expulsom,		func = SetFilterType,	arg1 = "expulsom",				checkable = true,	shownFunc = NOT_LEGION	}
 	list[#list+1] = {text = GetCurrencyInfo(1508),		func = SetIgnoreFilter,	arg1 = "arguniteFilter",	arg2 = true,	checkable = true,	shownFunc = LEGION	}
 	list[#list+1] = {text = GetCurrencyInfo(1533),		func = SetIgnoreFilter,	arg1 = "wakeningessenceFilter",	arg2 = true,	checkable = true,	shownFunc = LEGION	}
-	if is82 then
-		list[#list+1] = {text = GetCurrencyInfo(1721),	func = SetFilterType,	arg1 = "manapearl",				checkable = true,	shownFunc = NOT_LEGION	}
-	end
+	list[#list+1] = {text = GetCurrencyInfo(1721),		func = SetFilterType,	arg1 = "manapearl",				checkable = true,	shownFunc = NOT_LEGION	}
 	list[#list+1] = {text = LOCALE.gold,			func = SetFilter,	arg1 = 5,					checkable = true,				}
 	list[#list+1] = {text = LOCALE.invasionPoints,		func = SetIgnoreFilter,	arg1 = "invasionPointsFilter",	arg2 = true,	checkable = true,	shownFunc = LEGION	}
 	list[#list+1] = {text = REPUTATION,			func = SetFilterType,	arg1 = "rep",					checkable = true,				}
@@ -3033,9 +3051,7 @@ do
 	list[#list+1] = {text = LOCALE.bountyIgnoreFilter,		func = SetIgnoreFilter,	arg1 = "bountyIgnoreFilter",		checkable = true,				}
 	list[#list+1] = {text = LE.ARTIFACT_POWER,			func = SetIgnoreFilter,	arg1 = "apIgnoreFilter",		checkable = true,	shownFunc = LEGION	}	
 	list[#list+1] = {text = LE.AZERITE,				func = SetIgnoreFilter,	arg1 = "azeriteIgnoreFilter",		checkable = true,	shownFunc = NOT_LEGION	}
-	if is82 then
-		list[#list+1] = {text = GetCurrencyInfo(1721),		func = SetIgnoreFilter,	arg1 = "manapearlIgnoreFilter",		checkable = true,	shownFunc = NOT_LEGION	}
-	end	
+	list[#list+1] = {text = GetCurrencyInfo(1721),			func = SetIgnoreFilter,	arg1 = "manapearlIgnoreFilter",		checkable = true,	shownFunc = NOT_LEGION	}
 	list[#list+1] = {text = LOCALE.honorIgnoreFilter,		func = SetIgnoreFilter,	arg1 = "honorIgnoreFilter",		checkable = true,				}
 	list[#list+1] = {text = SHOW_PET_BATTLES_ON_MAP_TEXT,		func = SetIgnoreFilter,	arg1 = "petIgnoreFilter",		checkable = true,				}
 	list[#list+1] = {text = LOCALE.wantedIgnoreFilter,		func = SetIgnoreFilter,	arg1 = "wantedIgnoreFilter",		checkable = true,				}
@@ -3055,11 +3071,9 @@ do
 	list[#list+1] = {text = GetFaction(2160),	func = SetIgnoreFilter,	arg1 = "faction2160IgnoreFilter",	checkable = true,	shownFunc = function() return WorldQuestList:IsFactionAvailable(2160) and not WorldQuestList:IsLegionZone() end	}
 	list[#list+1] = {text = GetFaction(2162),	func = SetIgnoreFilter,	arg1 = "faction2162IgnoreFilter",	checkable = true,	shownFunc = function() return WorldQuestList:IsFactionAvailable(2162) and not WorldQuestList:IsLegionZone() end	}
 	list[#list+1] = {text = GetFaction(2161),	func = SetIgnoreFilter,	arg1 = "faction2161IgnoreFilter",	checkable = true,	shownFunc = function() return WorldQuestList:IsFactionAvailable(2161) and not WorldQuestList:IsLegionZone() end	}
-	if is82 then
-		list[#list+1] = {text = GetFaction(2391),	func = SetIgnoreFilter,	arg1 = "faction2391IgnoreFilter",	checkable = true,	shownFunc = function() return WorldQuestList:IsFactionAvailable(2391) and not WorldQuestList:IsLegionZone() end	}
-		list[#list+1] = {text = GetFaction(2400),	func = SetIgnoreFilter,	arg1 = "faction2400IgnoreFilter",	checkable = true,	shownFunc = function() return WorldQuestList:IsFactionAvailable(2400) and not WorldQuestList:IsLegionZone() end	}
-		list[#list+1] = {text = GetFaction(2373),	func = SetIgnoreFilter,	arg1 = "faction2373IgnoreFilter",	checkable = true,	shownFunc = function() return WorldQuestList:IsFactionAvailable(2373) and not WorldQuestList:IsLegionZone() end	}
-	end	
+	list[#list+1] = {text = GetFaction(2391),	func = SetIgnoreFilter,	arg1 = "faction2391IgnoreFilter",	checkable = true,	shownFunc = function() return WorldQuestList:IsFactionAvailable(2391) and not WorldQuestList:IsLegionZone() end	}
+	list[#list+1] = {text = GetFaction(2400),	func = SetIgnoreFilter,	arg1 = "faction2400IgnoreFilter",	checkable = true,	shownFunc = function() return WorldQuestList:IsFactionAvailable(2400) and not WorldQuestList:IsLegionZone() end	}
+	list[#list+1] = {text = GetFaction(2373),	func = SetIgnoreFilter,	arg1 = "faction2373IgnoreFilter",	checkable = true,	shownFunc = function() return WorldQuestList:IsFactionAvailable(2373) and not WorldQuestList:IsLegionZone() end	}
 	
 	list[#list+1] = {text = CLOSE,			func = function() ELib.ScrollDropDown.Close() end,		padding = 16,	}
 
@@ -4093,15 +4107,6 @@ WorldQuestList.oppositeContinentButton.Update = function(self)
 		self.Button5.t:SetAtlas("worldquest-icon-engineering")
 		self.Button5.t:SetTexCoord(0,1,0,1)
 
-		if not is82 then
-			self.Button6:Disable()
-			self.Button6.t:SetDesaturated(true)
-			self.Button6:SetAlpha(.5)
-			self.Button5:Disable()
-			self.Button5.t:SetDesaturated(true)
-			self.Button5:SetAlpha(.5)
-		end
-		
 		self.Button4.mapID = 62
 		self.Button4.t:SetTexture("")
 		self.Button4.t2:SetTexture("Interface\\FriendsFrame\\PlusManz-Alliance")
@@ -4400,7 +4405,7 @@ function WQL_AreaPOIDataProviderMixin:RefreshAllData()
 					pin.Overlay:SetAtlas("worldquest-questmarker-questbang")
 					pin.Overlay:SetSize(3,8)
 				elseif tType == 4 then
-					pin.Overlay:SetTexture("133778")
+					pin.Overlay:SetTexture(treasureData[i].icon or "133778")
 					pin.Overlay:SetSize(12,12)
 				else
 					pin.Overlay:SetTexture()
@@ -5068,28 +5073,7 @@ do
 		end
 	end
 	function WorldQuestList:IsAzeriteItemAtMaxLevel()
-		if is82 then 
-			return C_AzeriteItem.IsAzeriteItemAtMaxLevel()
-		else
-			if C_AzeriteItem.HasActiveAzeriteItem() then
-				local currTime = GetTime()
-				if currTime - lastCheck > 5 then
-					azeriteItemLocation = C_AzeriteItem.FindActiveAzeriteItem()
-					lastCheck = currTime
-				end
-				
-				if azeriteItemLocation then		
-					local isEx, isAzeriteItem = pcall(C_AzeriteItem.IsAzeriteItem,azeriteItemLocation)	--C_AzeriteItem.IsAzeriteItem spams errors if you put neck into the bank
-					if isEx and isAzeriteItem then		
-						local currentLevel = C_AzeriteItem.GetPowerLevel(azeriteItemLocation)
-						
-						if currentLevel == 50 then
-							return true
-						end
-					end
-				end
-			end			
-		end
+		return C_AzeriteItem.IsAzeriteItemAtMaxLevel()
 	end
 end
 
@@ -5315,7 +5299,8 @@ function WorldQuestList_Update(preMapID,forceUpdate)
 				info.dX,info.dY,info.dMap = info.x,info.y,mapAreaID == 875 and 876 or 875
 				info.x,info.y = nil
 			end
-		elseif not VWQL.OppositeContinentArgus and (mapAreaID == 619 or mapAreaID == 947) then
+		end
+		if not VWQL.OppositeContinentArgus and (mapAreaID == 619 or mapAreaID == 947) then
 			for _,mapID in pairs(ArgusZonesList) do
 				local oppositeMapQuests = C_TaskQuest.GetQuestsForPlayerByMapID(mapID)
 				for _,info in pairs(oppositeMapQuests) do
@@ -5324,12 +5309,21 @@ function WorldQuestList_Update(preMapID,forceUpdate)
 					info.x,info.y = mapAreaID == 619 and 0.87,mapAreaID == 619 and 0.165
 				end
 			end
-		elseif not VWQL.OppositeContinentNazjatar and (mapAreaID == 875 or mapAreaID == 876) then
+		end
+		if not VWQL.OppositeContinentNazjatar and (mapAreaID == 875 or mapAreaID == 876) then
 			local oppositeMapQuests = C_TaskQuest.GetQuestsForPlayerByMapID(1355)
 			for _,info in pairs(oppositeMapQuests or WorldQuestList.NULLTable) do
 				taskInfo[#taskInfo+1] = info
 				info.dX,info.dY,info.dMap = info.x,info.y,1355
 				info.x,info.y = 0.87, 0.12
+			end
+		end
+		if (mapAreaID == 947) then
+			local oppositeMapQuests = C_TaskQuest.GetQuestsForPlayerByMapID(1355)
+			for _,info in pairs(oppositeMapQuests or WorldQuestList.NULLTable) do
+				taskInfo[#taskInfo+1] = info
+				info.dX,info.dY,info.dMap = info.x,info.y,1355
+				info.x,info.y = nil
 			end
 		end
 	end
@@ -6169,7 +6163,7 @@ function WorldQuestList_Update(preMapID,forceUpdate)
 		end end
 	end
 	
-	if taskInfo.poi then
+	if taskInfo and taskInfo.poi then
 		for i=1,#taskInfo.poi do
 			local name, description, x, y, poiID, atlasIcon, poiWQLType, zoneID, dX, dY = unpack(taskInfo.poi[i])
 			if poiWQLType == 1 and not VWQL[charKey].invasionPointsFilter then	--invasion points
@@ -6685,7 +6679,7 @@ SlashCmdList["WQLSlash"] = function(arg)
 		print("Icons scale set to "..(VWQL.MapIconsScale * 100).."%")
 		return		
 	elseif argL:find("^way ") then 
-		local x,y = argL:match("([%d%.,]+) ([%d%.,]+)")
+		local x,y = argL:match("([%d%.,%-]+) ([%d%.,%-]+)")
 		if x and y then
 			x = tonumber( x:gsub(",$",""):gsub(",","."),nil )
 			y = tonumber( y:gsub(",$",""):gsub(",","."),nil )
@@ -6704,8 +6698,13 @@ SlashCmdList["WQLSlash"] = function(arg)
 							wX = wX,
 							wY = wY,
 						}
-						WQLdb.Arrow:ShowRunTo(wX,wY,5,nil,true,nil,waypoint)
-						WorldQuestList.Waypoints[1] = waypoint
+						if WorldQuestList.MultiArrow then
+							WQLdb.Arrow:AddPoint(wX,wY,5,nil,nil,waypoint)
+							WorldQuestList.Waypoints[#WorldQuestList.Waypoints+1] = waypoint
+						else
+							WQLdb.Arrow:ShowRunTo(wX,wY,5,nil,true,nil,waypoint)
+							WorldQuestList.Waypoints[1] = waypoint
+						end
 					end
 				end
 			end

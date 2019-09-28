@@ -63,6 +63,7 @@ if Lib.gameExpansion == "retail" then
         [211010]  = "incapacitate",    -- Hex (Snake)
         [211015]  = "incapacitate",    -- Hex (Cockroach)
         [269352]  = "incapacitate",    -- Hex (Skeletal Hatchling)
+        [309328]  = "incapacitate",    -- Hex (Living Honey)
         [277778]  = "incapacitate",    -- Hex (Zandalari Tendonripper)
         [277784]  = "incapacitate",    -- Hex (Wicker Mongrel)
         [197214]  = "incapacitate",    -- Sundering

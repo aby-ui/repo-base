@@ -44,8 +44,8 @@ local Trinket = Gladius:NewModule("Trinket", false, true, {
 })
 
 function Trinket:OnEnable()
-	--self:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")
-	--self:RegisterEvent("ARENA_OPPONENT_UPDATE")
+	self:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")
+	self:RegisterEvent("ARENA_OPPONENT_UPDATE")
 	self:RegisterEvent("ARENA_COOLDOWNS_UPDATE")
 	self:RegisterEvent("ARENA_CROWD_CONTROL_SPELL_UPDATE")
 	LSM = Gladius.LSM
@@ -144,14 +144,14 @@ function Trinket:ARENA_CROWD_CONTROL_SPELL_UPDATE(event, unit, spellID)
 	end
 end
 
---[[function Trinket:ARENA_OPPONENT_UPDATE(event, unit, type)
+function Trinket:ARENA_OPPONENT_UPDATE(event, unit, type)
 	if not Gladius:IsValidUnit(unit) then
 		return
 	end
 	self:UpdateTrinket(unit)
-end]]
+end
 
---[[function Trinket:UNIT_SPELLCAST_SUCCEEDED(event, unit, spell, rank)
+function Trinket:UNIT_SPELLCAST_SUCCEEDED(event, unit, spell, rank)
 	local _, instanceType = IsInInstance()
 	if instanceType ~= "arena" or not strfind(unit, "arena") or strfind(unit, "pet") then
 		return
@@ -184,7 +184,7 @@ end]]
 	if spell == GetSpellInfo(7744) then
 		self:UpdateTrinket(unit, 30)
 	end
-end]]
+end
 
 function Trinket:UpdateTrinket(unit, testduration)
 	if not self.frame[unit] then

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1904, "DBM-Party-Legion", 12, 900)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 2 $"):sub(12, -3))
+mod:SetRevision("20190625143517")
 mod:SetCreatureID(119542)--119883 Fel Portal Guardian 118834
 mod:SetEncounterID(2053)
 mod:SetZone()
@@ -26,10 +26,8 @@ local specWarnChaoticEnergy			= mod:NewSpecialWarningMoveTo(234107, nil, nil, ni
 local specWarnAdds					= mod:NewSpecialWarningAdds(200597, "-Healer", nil, nil, 1, 2)
 
 local timerFelsoulCleaveCD			= mod:NewCDTimer(20, 236543, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON)
-local timerChaoticEnergyCD			= mod:NewCDTimer(30, 234107, nil, nil, nil, 2)
+local timerChaoticEnergyCD			= mod:NewCDTimer(30, 234107, nil, nil, nil, 2, nil, nil, nil, 1, 4)
 local timerApproachingDoom			= mod:NewCastTimer(20, 241622, nil, nil, nil, 1)
-
-local countdownChaosEnergy			= mod:NewCountdown(5, 234107)
 
 mod:AddInfoFrameOption(238410, true)
 
@@ -59,7 +57,6 @@ function mod:SPELL_CAST_START(args)
 	elseif spellId == 234107 then
 		specWarnChaoticEnergy:Show(shield)
 		specWarnChaoticEnergy:Play("findshield")
-		countdownChaosEnergy:Start()
 	elseif spellId == 241622 then
 		if self:AntiSpam(2, 1) then
 			warnApproachingDoom:Show()

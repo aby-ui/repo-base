@@ -4,7 +4,7 @@
 --]]
 
 local ADDON, Addon = ...
-local LDB = LibStub:GetLibrary('LibDataBroker-1.1', true)
+local LDB = LibStub('LibDataBroker-1.1')
 local BrokerDisplay = Addon:NewClass('BrokerDisplay', 'Button')
 
 
@@ -37,6 +37,7 @@ function BrokerDisplay:New(parent)
 	text:SetFontObject('NumberFontNormalRight')
 	text:SetJustifyH('LEFT')
 
+	f.objects = {}
 	f.icon, f.text = icon, text
 	f.left, f.right = left, right
 	f:SetHeight(26)
@@ -79,39 +80,37 @@ end
 --[[ Frame Events ]]--
 
 function BrokerDisplay:OnEnter()
-	local dbo = self:GetObject()
-	if not dbo then return end
+	local object = self:GetObject()
+	if not object then
+		return
+	end
 
-	if dbo.OnEnter then
-		dbo.OnEnter(self)
-	elseif dbo.OnTooltipShow then
-		GameTooltip:SetOwner(self, 'ANCHOR_TOPLEFT')
-		dbo.OnTooltipShow(GameTooltip)
+	if object.OnEnter then
+		object.OnEnter(self)
+	elseif object.OnTooltipShow then
+		GameTooltip:SetOwner(self, self:GetRight() > (GetScreenWidth() / 2) and 'ANCHOR_TOPLEFT' or 'ANCHOR_TOPRIGHT')
+		object.OnTooltipShow(GameTooltip)
 		GameTooltip:Show()
 	else
-		GameTooltip:SetOwner(self, 'ANCHOR_TOPLEFT')
+		GameTooltip:SetOwner(self, self:GetRight() > (GetScreenWidth() / 2) and 'ANCHOR_TOPLEFT' or 'ANCHOR_TOPRIGHT')
 		GameTooltip:SetText(self:GetObjectName())
 		GameTooltip:Show()
 	end
 end
 
 function BrokerDisplay:OnLeave()
-	local dbo = self:GetObject()
-	if not dbo then return end
-
-	if dbo.OnLeave then
-		dbo.OnLeave(self)
-	else
-		if GameTooltip:IsOwned(self) then
-			GameTooltip:Hide()
-		end
+	local object = self:GetObject()
+	if object and object.OnLeave then
+		object.OnLeave(self)
+	elseif GameTooltip:IsOwned(self) then
+		GameTooltip:Hide()
 	end
 end
 
 function BrokerDisplay:OnClick(...)
-	local dbo = self:GetObject()
-	if dbo and dbo.OnClick then
-		dbo.OnClick(self, ...)
+	local object = self:GetObject()
+	if object and object.OnClick then
+		object.OnClick(self, ...)
 	end
 end
 
@@ -227,17 +226,13 @@ function BrokerDisplay:GetObjectName()
 	return self:GetProfile().brokerObject
 end
 
-do
-	local objects = {}
+function BrokerDisplay:GetAvailableObjects()
+	wipe(self.objects)
 
-	function BrokerDisplay:GetAvailableObjects()
-		wipe(objects)
-
-		for name, obj in LDB:DataObjectIterator() do
-			tinsert(objects, name)
-		end
-		sort(objects)
-
-		return objects
+	for name, obj in LDB:DataObjectIterator() do
+		tinsert(self.objects, name)
 	end
+
+	sort(self.objects)
+	return self.objects
 end

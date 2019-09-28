@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1133, "DBM-Party-WoD", 3, 536)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 35 $"):sub(12, -3))
+mod:SetRevision("20190417010024")
 mod:SetCreatureID(80005)
 mod:SetEncounterID(1736)
 mod:SetZone()
@@ -16,14 +16,13 @@ mod:RegisterEventsInCombat(
 )
 
 local warnFreezingSnare			= mod:NewTargetAnnounce(162066, 3)
-local warnSpinningSpear			= mod:NewSpellAnnounce(162058, 3)
 local warnMark					= mod:NewTargetAnnounce(163447, 3)
 
 local specWarnFreezingSnare		= mod:NewSpecialWarningYou(162066, nil, nil, nil, 1, 2)
 local specWarnFreezingSnareNear	= mod:NewSpecialWarningClose(162066, nil, nil, nil, 1, 2)
 local yellFreezingSnare			= mod:NewYell(162066)
-local specWarnDiffusedEnergy	= mod:NewSpecialWarningMove(161588, nil, nil, nil, 1, 2)
-local specWarnSpinningSpear		= mod:NewSpecialWarningDodge(162058, "Tank", nil, 2)
+local specWarnDiffusedEnergy	= mod:NewSpecialWarningMove(161588, nil, nil, nil, 1, 8)
+local specWarnSpinningSpear		= mod:NewSpecialWarningDodge(162058, nil, nil, 3, 2, 2)
 local specWarnMark				= mod:NewSpecialWarningMoveAway(163447, nil, nil, nil, 1, 2)
 local yellMark					= mod:NewYell(163447)
 
@@ -44,7 +43,6 @@ end
 
 function mod:FreezingSnareTarget(targetname, uId)
 	if not targetname then return end
-	warnFreezingSnare:Show(targetname)
 	if targetname == UnitName("player") then
 		specWarnFreezingSnare:Show()
 		yellFreezingSnare:Yell()
@@ -52,6 +50,8 @@ function mod:FreezingSnareTarget(targetname, uId)
 	elseif self:CheckNearby(8, targetname) then
 		specWarnFreezingSnareNear:Show(targetname)
 		specWarnFreezingSnareNear:Play("watchstep")
+	else
+		warnFreezingSnare:Show(targetname)
 	end
 end
   
@@ -67,13 +67,14 @@ end
 
 function mod:SPELL_AURA_APPLIED(args)
 	if args.spellId == 163447 then
-		warnMark:Show(args.destName)
 		timerMark:Start(args.destName)
 		timerMarkCD:Start()
 		if args:IsPlayer() then
 			specWarnMark:Show()
-			yellMark:Yell()
 			specWarnMark:Play("runout")
+			yellMark:Yell()
+		else
+			warnMark:Show(args.destName)
 		end
 		if self.Options.RangeFrame then
 			if DBM:UnitDebuff("player", debuffCheck) then--You have debuff, show everyone
@@ -84,7 +85,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		end
 	elseif args.spellId == 161588 and args:IsPlayer() and self:AntiSpam() then
 		specWarnDiffusedEnergy:Show()
-		specWarnDiffusedEnergy:Play("runaway")
+		specWarnDiffusedEnergy:Play("watchfeet")
 	end
 end
 mod.SPELL_AURA_APPLIED_DOSE = mod.SPELL_AURA_APPLIED
@@ -104,8 +105,8 @@ function mod:SPELL_CAST_START(args)
 		self:BossTargetScanner(80005, "FreezingSnareTarget", 0.04, 15)
 		timerFreezingSnareCD:Start()
 	elseif spellId == 162058 then
-		warnSpinningSpear:Show()
 		specWarnSpinningSpear:Show()
+		specWarnSpinningSpear:Play("shockwave")
 		timerSpinningSpearCD:Start()
 	end
 end

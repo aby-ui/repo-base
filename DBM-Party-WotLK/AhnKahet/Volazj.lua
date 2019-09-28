@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(584, "DBM-Party-WotLK", 1, 271)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 280 $"):sub(12, -3))
+mod:SetRevision("20190417010024")
 mod:SetCreatureID(29311)
 mod:SetEncounterID(215, 263, 1968)
 mod:SetZone()
@@ -23,8 +23,8 @@ local specWarnShadowCrash		= mod:NewSpecialWarningDodge(60848, nil, nil, nil, 1,
 local specWarnShadowCrashNear	= mod:NewSpecialWarningClose(60848, nil, nil, nil, 1, 2)
 local yellShadowCrash			= mod:NewYell(62660)
 
-local timerInsanity				= mod:NewCastTimer(5, 57496, nil, nil, nil, 6)--Not currently working, no CLEU for it
-local timerAchieve				= mod:NewAchievementTimer(120, 1862, "TimerSpeedKill")
+local timerInsanity				= mod:NewCastTimer(5, 57496, nil, nil, nil, 6)
+local timerAchieve				= mod:NewAchievementTimer(120, 1862)
 
 function mod:OnCombatStart(delay)
 	if not self:IsDifficulty("normal5") then

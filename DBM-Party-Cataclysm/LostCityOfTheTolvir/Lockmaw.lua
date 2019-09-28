@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(118, "DBM-Party-Cataclysm", 5, 69)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 174 $"):sub(12, -3))
+mod:SetRevision("20190417010024")
 mod:SetCreatureID(43614)
 --mod:SetEncounterID(1054)--Disabled because it's likely not correct since him and augh are split.
 mod:SetZone()
@@ -15,15 +15,15 @@ mod:RegisterEventsInCombat(
 	"SPELL_CAST_SUCCESS 81642"
 )
 
-local warnScentBlood	= mod:NewTargetAnnounce(81690, 3)
-local warnPoison		= mod:NewTargetAnnounce(81630, 3)
+local warnScentBlood	= mod:NewTargetNoFilterAnnounce(81690, 3)
+local warnPoison		= mod:NewTargetNoFilterAnnounce(81630, 3, nil, "RemovePoison", 2)
 local warnDustFlail		= mod:NewSpellAnnounce(81642, 3)
 local warnEnrage		= mod:NewSpellAnnounce(81706, 4)
 
 local yellScentBlood	= mod:NewYell(81690)
 
 local timerScentBlood	= mod:NewTargetTimer(30, 81690, nil, nil, nil, 3)
-local timerDustFlail	= mod:NewBuffActiveTimer(5, 81642)
+local timerDustFlail	= mod:NewBuffActiveTimer(5, 81642, nil, nil, nil, 3)
 
 mod:AddBoolOption("RangeFrame")
 

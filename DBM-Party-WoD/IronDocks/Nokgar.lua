@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1235, "DBM-Party-WoD", 4, 558)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 35 $"):sub(12, -3))
+mod:SetRevision("20190625143517")
 mod:SetCreatureID(81297, 81305)
 mod:SetEncounterID(1749)
 mod:SetZone()
@@ -16,10 +16,10 @@ mod:RegisterEventsInCombat(
 	"UNIT_TARGETABLE_CHANGED"
 )
 
-local warnNokgar						= mod:NewSpellAnnounce("ej10433", 3, "Interface\\ICONS\\INV_Misc_Head_Orc_01.blp")
+local warnNokgar						= mod:NewSpellAnnounce("ej10433", 3, "134170")
 
 local specWarnBurningArrows				= mod:NewSpecialWarningSpell(164635, nil, nil, nil, 2, 2)
-local specWarnBurningArrowsMove			= mod:NewSpecialWarningMove(164635, nil, nil, nil, 1, 2)
+local specWarnBurningArrowsMove			= mod:NewSpecialWarningMove(164635, nil, nil, nil, 1, 8)
 local specWarnRecklessProvocation		= mod:NewSpecialWarningReflect(164426, nil, nil, nil, 1, 2)
 local specWarnRecklessProvocationEnd	= mod:NewSpecialWarningEnd(164426, nil, nil, nil, 1, 2)
 local specWarnEnrage					= mod:NewSpecialWarningDispel(164835, "RemoveEnrage", nil, nil, 1, 2)
@@ -30,14 +30,14 @@ local timerRecklessProvocation			= mod:NewBuffActiveTimer(5, 164426)
 function mod:SPELL_AURA_APPLIED(args)
 	if args.spellId == 164426 then
 		specWarnRecklessProvocation:Show(args.destName)
-		timerRecklessProvocation:Start()
 		specWarnRecklessProvocation:Play("stopattack")
+		timerRecklessProvocation:Start()
 	elseif args.spellId == 164835 and self:AntiSpam(2, 1) then
 		specWarnEnrage:Show(args.destName)
-		specWarnEnrage:Play("trannow") --multi sound
+		specWarnEnrage:Play("enrage") --multi sound
 	elseif args.spellId == 164632 and args:IsPlayer() and self:AntiSpam(2, 2) then
 		specWarnBurningArrowsMove:Show()
-		specWarnBurningArrowsMove:Play("runaway")
+		specWarnBurningArrowsMove:Play("watchfeet")
 	end
 end
 
@@ -52,7 +52,7 @@ end
 function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 	if spellId == 164635 then
 		specWarnBurningArrows:Show()
-		specWarnBurningArrows:Play("watchstep")
+		specWarnBurningArrows:Play("watchfeet")
 		--timerBurningArrowsCD:Start()
 	end
 end

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(625, "DBM-Party-WotLK", 9, 282)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 236 $"):sub(12, -3))
+mod:SetRevision("20190417010024")
 mod:SetCreatureID(27656)
 mod:SetEncounterID(534, 535, 2013)
 mod:SetZone()
@@ -9,14 +9,15 @@ mod:SetZone()
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
-	"SPELL_AURA_APPLIED"
+	"SPELL_AURA_APPLIED 51162 51170"
 )
 
 local warningShift		= mod:NewSpellAnnounce(51162, 4)
 local warningShiftEnd	= mod:NewEndAnnounce(51162, 1)
 local warningEnraged	= mod:NewSpellAnnounce(51170, 3)
-local timerEnraged		= mod:NewBuffActiveTimer(12, 51170)
-local timerShift		= mod:NewBuffActiveTimer(18, 51162)
+
+local timerEnraged		= mod:NewBuffActiveTimer(12, 51170, nil, nil, nil, 6)
+local timerShift		= mod:NewBuffActiveTimer(18, 51162, nil, nil, nil, 6)
 
 
 function mod:OnCombatEnd(wipe)

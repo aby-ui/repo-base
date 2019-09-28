@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1228, "DBM-Party-WoD", 8, 559)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 35 $"):sub(12, -3))
+mod:SetRevision("20190625143517")
 mod:SetCreatureID(79912, 80098)--80098 is mount(Ironbarb Skyreaver), 79912 is boss
 mod:SetEncounterID(1759)
 mod:SetZone()
@@ -20,13 +20,13 @@ mod:RegisterEventsInCombat(
 )
 
 --Chi blast warns very spammy. and not useful.
-local warnTharbek			= mod:NewSpellAnnounce("ej10276", 3, "Interface\\ICONS\\INV_Misc_Head_Orc_01.blp")
-local warnIronReaver		= mod:NewTargetAnnounce(161989, 3)
+local warnTharbek			= mod:NewSpellAnnounce("ej10276", 3, "134170")
+local warnIronReaver		= mod:NewTargetNoFilterAnnounce(161989, 3)
 local warnImbuedIronAxe		= mod:NewTargetAnnounce(162090, 4)
 
 local specWarnImbuedIronAxe	= mod:NewSpecialWarningYou(162090, nil, nil, nil, 1, 2)
 local yellImbuedIronAxe		= mod:NewYell(162090)
-local specWarnNoxiousSpit	= mod:NewSpecialWarningMove(161833, nil, nil, nil, 1, 2)
+local specWarnNoxiousSpit	= mod:NewSpecialWarningMove(161833, nil, nil, nil, 1, 8)
 
 local timerIronReaverCD		= mod:NewCDTimer(20.5, 161989, nil, nil, nil, 3)--Not enough data to really verify this
 local timerImbuedIronAxeCD	= mod:NewCDTimer(29, 162090, nil, nil, nil, 3)--29-37sec variation
@@ -63,7 +63,7 @@ end
 function mod:SPELL_PERIODIC_DAMAGE(_, _, _, _, destGUID, _, _, _, spellId)
 	if spellId == 161833 and destGUID == UnitGUID("player") and self:AntiSpam(3, 1) then--Goriona's Void zones
 		specWarnNoxiousSpit:Show()
-		specWarnNoxiousSpit:Play("runaway")
+		specWarnNoxiousSpit:Play("watchfeet")
 	end
 end
 mod.SPELL_ABSORBED = mod.SPELL_PERIODIC_DAMAGE

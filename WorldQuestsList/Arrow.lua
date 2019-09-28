@@ -28,6 +28,9 @@ local function GetPlayerFacing()
 	return GGetPlayerFacing() or 0
 end
 
+local points = {}
+local currPoint
+
 --------------------
 --  Create Frame  --
 --------------------
@@ -54,7 +57,19 @@ frame:SetScript("OnDragStop", function(self)
 	VWQL.Arrow_PointY = y
 end)
 frame:SetScript("OnClick", function(self)
-	self:Hide()
+	if currPoint then
+		for i=#points,1,-1 do
+			if points[i] == currPoint then
+				if points[i].waypoint then
+					WorldQuestList:WaypointRemove(points[i].waypoint)
+				end
+				tremove(points,i)
+				return
+			end
+		end
+	else
+		self:Hide()
+	end
 end)
 frame:SetClampedToScreen(true)
 local arrow = frame:CreateTexture(nil, "OVERLAY")
@@ -77,7 +92,7 @@ txttime:SetText("")
 ------------------------
 --  Update the arrow  --
 ------------------------
-local updateArrow,IsArrowDown
+local updateArrow,IsArrowDown,updateArrowPoint
 do
 	local currentCell
 	local count = 0
@@ -166,6 +181,43 @@ do
 			end
 		end
 	end
+	function updateArrowPoint(direction, distance)
+		if showDownArrow then
+			frame:SetHeight(42)
+			frame:SetWidth(56)
+			arrow:SetTexture(textureArrow)
+			showDownArrow = false
+			currentCell = nil
+		end
+		local cell = floor(direction / pi2 * 108 + 0.5) % 108
+		if cell ~= currentCell then
+			currentCell = cell
+			local column = cell % 9
+			local row = floor(cell / 9)
+			local xStart = (column * 56) / 512
+			local yStart = (row * 42) / 512
+			local xEnd = ((column + 1) * 56) / 512
+			local yEnd = ((row + 1) * 42) / 512
+			arrow:SetTexCoord(xStart, xEnd, yStart, yEnd)
+		end
+		if distance then
+			local perc = distance > 2000 and 2000 or distance
+			if perc >= 500 then
+				local green = 1 - ((perc-500) / 1500)
+				arrow:SetVertexColor(1, green, 0)
+				txtrng:SetTextColor(1, green, 0)
+			else
+				perc = perc < 40 and 0 or perc - 40
+				local red = perc / 460
+				arrow:SetVertexColor(red, 1, 0)
+				txtrng:SetTextColor(red, 1, 0)
+			end
+			txtrng:SetFormattedText("%d",distance)
+			txttime.d = distance
+		else
+			arrow:SetVertexColor(1, 1, 0)
+		end
+	end
 	function IsArrowDown()
 		return showDownArrow
 	end
@@ -228,6 +280,74 @@ do
 		
 		updateArrow(angle - player, sqrt(dX * dX + dY * dY))
 	end
+
+	function functionOnUpdateWorldPoint(self, elapsed)
+		currPoint = nil
+		local y, x = UnitPosition'player'
+		if not y or not x then
+			self:Hide() 
+			return
+		end
+
+		local targetX, targetY
+		local currTime, point, dX, dY, dist = GetTime()
+		local nearest, curr
+		for i=#points,1,-1 do
+			point = points[i]
+			if point.hideTime and point.hideTime > currTime then
+				if point.waypoint then
+					WorldQuestList:WaypointRemove(point.waypoint)
+				end
+				tremove(points,i)
+			else
+				dX = (x - point.x)
+				dY = (y - point.y)
+				
+				dist = sqrt(dX * dX + dY * dY)
+
+				if dist < point.hideDistance then
+					if point.waypoint then
+						WorldQuestList:WaypointRemove(point.waypoint)
+					end
+					tremove(points,i)
+				elseif not nearest or nearest > dist then
+					targetX, targetY = point.x, point.y
+					nearest = dist
+					curr = point
+				end
+			end
+		end
+
+		if not targetX or not targetY then
+			self:Hide() 
+			return
+		end
+
+		currPoint = curr
+
+		local angle = atan2(x - targetX, targetY - y)
+		if angle <= 0 then -- -pi < angle < pi but we need/want a value between 0 and 2 pi
+			if runAwayArrow then
+				angle = -angle -- 0 < angle < pi
+			else
+				angle = pi - angle -- pi < angle < 2pi
+			end
+		elseif runAwayArrow then
+			angle = pi2 - angle -- pi < angle < 2pi
+		else
+			angle = pi - angle  -- 0 < angle < pi
+		end
+		
+		local player = GetPlayerFacing() - pi
+		if player < 0 then
+			player = pi2 + player
+		end
+		
+		local dX = (x - targetX)
+		local dY = (y - targetY)
+		
+		updateArrowPoint(angle - player, sqrt(dX * dX + dY * dY))
+	end
 		
 	function functionOnUpdateStatic(self, elapsed)
 		if hideTime and GetTime() > hideTime then
@@ -249,6 +369,7 @@ end
 ----------------------
 local function show(runAway, x, y, distance, time, world, hide, waypoint)
 	local player
+	currPoint = nil
 	frame:Hide()
 	if x == "_static" then
 		frame:SetScript("OnUpdate", functionOnUpdateStatic)
@@ -293,6 +414,29 @@ end
 
 function arrowFrame:ShowRunAway(...)
 	return show(true, ...)
+end
+
+--waypoints
+
+local function showPoint(x, y, distance, time, hide, waypoint)
+	currPoint = nil
+	frame:Hide()
+	frame:SetScript("OnUpdate", functionOnUpdateWorldPoint)
+
+	points[#points+1] = {
+		x = x,
+		y = y,
+		hideTime = time and time + GetTime() or nil,
+		hideDistance = distance or 3,
+		waypoint = waypoint,
+		keepShow = hide,
+	}
+
+	frame:Show()
+end
+
+function arrowFrame:AddPoint(...)
+	return showPoint(...)
 end
 
 -- shows a static arrow

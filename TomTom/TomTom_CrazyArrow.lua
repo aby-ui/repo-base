@@ -190,7 +190,7 @@ local function OnUpdate(self, elapsed)
 		end
 
 		local angle = TomTom:GetDirectionToWaypoint(active_point)
-		local player = GetPlayerFacing()
+		local player = GetPlayerFacing() or 0
 
 		angle = angle - player
 
@@ -475,7 +475,7 @@ local function wayframe_OnEvent(self, event, arg1, ...)
 					self:Hide()
 				end
 				local angle = TomTom:GetDirectionToWaypoint(active_point)
-				local player = GetPlayerFacing()
+				local player = GetPlayerFacing() or 0
 				if not angle or not player then
 					feed_crazy.iconCoords = texcoords["1:1"]
 					feed_crazy.iconR = 0.2

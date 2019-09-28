@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1657, "DBM-Party-Legion", 2, 762)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 2 $"):sub(12, -3))
+mod:SetRevision("20190421035925")
 mod:SetCreatureID(99192)
 mod:SetEncounterID(1839)
 mod:SetZone()
@@ -35,7 +35,7 @@ local timerNightmareCD				= mod:NewCDTimer(17, 200243, nil, nil, nil, 3)--17-25
 local timerParanoiaCD				= mod:NewCDTimer(18, 200359, nil, nil, nil, 3)--18-28
 --local timerApocNightmareCD			= mod:NewCDTimer(18, 200050, nil, nil, nil, 2)
 
-mod:AddSetIconOption("SetIconOnNightmare", 200243)
+mod:AddSetIconOption("SetIconOnNightmare", 200243, true, false, {1, 2})
 
 mod.vb.nightmareIcon = 1
 

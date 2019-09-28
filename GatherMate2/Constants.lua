@@ -225,7 +225,7 @@ local node_ids = {
 		[NL["Fadeleaf"]] 						= 413,
 		[NL["Goldthorn"]] 						= 414,
 		[NL["Khadgar's Whisker"]] 				= 415,
-		--[NL["Wintersbite"]] 					= 416,
+		[NL["Wintersbite"]] 					= 416,
 		[NL["Firebloom"]] 						= 417,
 		[NL["Purple Lotus"]] 					= 418,
 		--[NL["Wildvine"]] 						= 419, -- found in purple lotus nodes
@@ -375,6 +375,7 @@ local node_ids = {
 		[NL["Prismatic Crystal"]]				= 562,
 		-- 8.2.5
 		[NL["Jelly Deposit"]]					= 563,
+		[NL["Large Jelly Deposit"]]				= 564,
 	},
 	["Archaeology"] = {
 		-- cata archeolgy objects
@@ -461,6 +462,7 @@ local rare_spawns = {
 	[268] = {[267]=true}, -- rich storm silver deposit
 	[486] = {[485]=true,[487]=true,[488]=true,[491]=true,[492]=true}, -- anchor weed
 	[271] = {[270]=true}, -- rich osmenite deposit
+	[564] = {[563]=true}, -- large jelly deposit
 }
 Collector.rareNodes = rare_spawns
 -- Format zone = { "Database", "new node id"}
@@ -694,7 +696,7 @@ local node_textures = {
 		[413] = icon_path.."Herb\\fadeleaf.tga",
 		[414] = icon_path.."Herb\\goldthorn.tga",
 		[415] = icon_path.."Herb\\khadgars_whisker.tga",
-		--[416] = icon_path.."Herb\\wintersbite.tga",
+		[416] = icon_path.."Herb\\wintersbite.tga",
 		[417] = icon_path.."Herb\\firebloom.tga",
 		[418] = icon_path.."Herb\\purple_lotus.tga",
 		[419] = icon_path.."Herb\\purple_lotus.tga",
@@ -836,6 +838,7 @@ local node_textures = {
 		[561] = icon_path.."Treasure\\treasure.tga",
 		[562] = icon_path.."Treasure\\ancient_mana.tga",
 		[563] = icon_path.."Treasure\\honey.tga",
+		[564] = icon_path.."Treasure\\honey.tga",
 	},
 	["Archaeology"] = {
 		[601] = icon_path.."Archaeology\\shovel.tga",
@@ -967,7 +970,7 @@ local node_expansion = {
 		[413] = CLASSIC,
 		[414] = CLASSIC,
 		[415] = CLASSIC,
-		--[416] = CLASSIC,
+		[416] = CLASSIC,
 		[417] = CLASSIC,
 		[418] = CLASSIC,
 		[419] = CLASSIC,

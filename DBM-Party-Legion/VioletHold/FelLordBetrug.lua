@@ -1,10 +1,11 @@
 local mod	= DBM:NewMod(1711, "DBM-Party-Legion", 9, 777)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 2 $"):sub(12, -3))
+mod:SetRevision("20190421035925")
 mod:SetCreatureID(102446)
 mod:SetEncounterID(1856)
 mod:SetZone()
+mod:SetUsedIcons(1, 2, 3)--3 icons?
 
 mod.imaspecialsnowflake = true
 
@@ -32,7 +33,7 @@ local timerMightySmashCD		= mod:NewCDTimer(50, 202328, nil, nil, nil, 2)--50-57
 local timerSeedsCD				= mod:NewCDTimer(21.8, 210879, nil, nil, nil, 3, nil, DBM_CORE_HEROIC_ICON)--22-40
 local timerExecute				= mod:NewTargetTimer(20, 205233, nil, nil, nil, 3, nil, DBM_CORE_DEADLY_ICON)--22-40
 
-mod:AddSetIconOption("SetIconOnSeeds", 210879, true)
+mod:AddSetIconOption("SetIconOnSeeds", 210879, true, false, {1, 2, 3})
 
 function mod:SlashTarget(targetname, uId)
 	if not targetname then return end

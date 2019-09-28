@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1500, "DBM-Party-Legion", 6, 726)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 2 $"):sub(12, -3))
+mod:SetRevision("20190421035925")
 mod:SetCreatureID(98207)
 mod:SetEncounterID(1826)
 mod:SetZone()
@@ -36,7 +36,7 @@ local timerBlinkCD				= mod:NewNextTimer(30, 199811, nil, nil, nil, 3)
 local timerWebCD				= mod:NewCDTimer(21.8, 200227, nil, nil, nil, 3)--21-26
 local timerVenomCD				= mod:NewCDTimer(30, 200024, nil, nil, nil, 3)--30-33
 
-mod:AddSetIconOption("SetIconOnWeb", 200284)
+mod:AddSetIconOption("SetIconOnWeb", 200284, true, false, {1, 2})
 
 mod.vb.blinkCount = 0
 

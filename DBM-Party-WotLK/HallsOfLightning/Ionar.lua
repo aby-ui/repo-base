@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(599, "DBM-Party-WotLK", 6, 275)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 248 $"):sub(12, -3))
+mod:SetRevision("20190421035925")
 mod:SetCreatureID(28546)
 mod:SetEncounterID(559, 560, 1984)
 mod:SetZone()
@@ -22,10 +22,10 @@ local warningOverload		= mod:NewTargetAnnounce(52658, 2)
 
 local specWarnOverload		= mod:NewSpecialWarningMoveAway(52658, nil, nil, nil, 1, 2)
 
-local timerOverload			= mod:NewTargetTimer(10, 52658)
+local timerOverload			= mod:NewTargetTimer(10, 52658, nil, nil, nil, 3)
 
 mod:AddRangeFrameOption(10, 52658)
-mod:AddBoolOption("SetIconOnOverloadTarget", true)
+mod:AddSetIconOption("SetIconOnOverloadTarget", 59795, true, false, {8})
 
 local warnedDisperse = false
 

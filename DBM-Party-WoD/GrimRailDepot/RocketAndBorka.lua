@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1138, "DBM-Party-WoD", 3, 536)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 29 $"):sub(12, -3))
+mod:SetRevision("20190417010024")
 mod:SetCreatureID(77803, 77816)
 mod:SetEncounterID(1715)
 mod:SetZone()
@@ -16,30 +16,28 @@ mod:RegisterEventsInCombat(
 )
 
 local warnVX18B					= mod:NewCountAnnounce(162500, 2)--Cast twice, 3rd cast is X2101, then repeats
-local warnX2101AMissile			= mod:NewSpellAnnounce(162407, 4)
-local warnMadDash				= mod:NewSpellAnnounce(161090, 3)
 
-local specWarnX2101AMissile		= mod:NewSpecialWarningSpell(162407, nil, nil, nil, 2)--Large AOE damage
-local specWarnMadDash			= mod:NewSpecialWarningSpell(161090, nil, nil, nil, 2)--DPS version of this warning
-local specWarnMadDashInterrupt	= mod:NewSpecialWarningInterrupt(161090, true, false)--It's actually an interrupt warning for OTHER boss, not caster of this spell
-local specWarnSlam				= mod:NewSpecialWarningCast(162617, "SpellCaster", nil, nil, nil, 2)
+local specWarnX2101AMissile		= mod:NewSpecialWarningSpell(162407, nil, nil, nil, 2, 2)--Large AOE damage
+local specWarnMadDash			= mod:NewSpecialWarningSpell(161090, nil, nil, nil, 2, 2)--DPS version of this warning
+local specWarnMadDashInterrupt	= mod:NewSpecialWarningMoveTo(161090, nil, nil, nil, 3, 1)--It's actually an interrupt warning for OTHER boss, not caster of this spell
+local specWarnSlam				= mod:NewSpecialWarningCast(162617, "SpellCaster", nil, nil, 1, 2)
 
-local timerVX18BCD				= mod:NewCDTimer(33, 162500)
+local timerVX18BCD				= mod:NewCDTimer(33, 162500, nil, nil, nil, 3)
 local timerX2101AMissileCD		= mod:NewCDTimer(40, 162407, nil, nil, nil, 4, nil, DBM_CORE_INTERRUPT_ICON..DBM_CORE_TANK_ICON)
 local timerMadDashCD			= mod:NewCDTimer(40, 161090, nil, nil, nil, 5, nil, DBM_CORE_TANK_ICON)
-local timerSlamCD				= mod:NewCDTimer(15, 162617, nil, "SpellCaster")
-local timerSlam					= mod:NewCastTimer(1.5, 162617, nil, "SpellCaster")
-local timerRecovering			= mod:NewBuffActiveTimer(6, 163947)
+local timerSlamCD				= mod:NewCDTimer(15, 162617, nil, "SpellCaster", nil, 5)
+local timerSlam					= mod:NewCastTimer(1.5, 162617, nil, "SpellCaster", nil, 5)
+local timerRecovering			= mod:NewBuffActiveTimer(6, 163947, nil, nil, nil, 5)
 
 local rocketsName = DBM:EJ_GetSectionInfo(9430)
 local borkaID = nil
 mod.vb.VXCast = 0
 mod.vb.SlamCast = 0
 
-local function getBorkaID()
+local function getBorkaID(self)
 	for i = 1, 2 do
 		local uId = "boss"..i
-		if mod:GetUnitCreatureId(uId) == 77816 then
+		if self:GetUnitCreatureId(uId) == 77816 then
 			borkaID = uId
 			return
 		end
@@ -49,7 +47,7 @@ end
 function mod:OnCombatStart(delay)
 	self.vb.VXCast = 0
 	self.vb.SlamCast = 0
-	getBorkaID()
+	getBorkaID(self)
 	timerSlamCD:Start(9-delay)
 	timerX2101AMissileCD:Start(18.5-delay)
 end
@@ -66,18 +64,20 @@ function mod:SPELL_CAST_START(args)
 		end
 	elseif spellId == 162407 then
 		self.vb.VXCast = 0
-		warnX2101AMissile:Show()
 		specWarnX2101AMissile:Show()
+		specWarnX2101AMissile:Play("aesoon")
 		timerX2101AMissileCD:Start()
 	elseif spellId == 161090 then
 		self.vb.SlamCast = 0
 		if not borkaID then--failsafe 1
-			getBorkaID()
+			getBorkaID(self)
 		end
 		if borkaID and self:IsTanking("player", borkaID) then--failsafe 2
 			specWarnMadDashInterrupt:Show(rocketsName)
+			specWarnMadDashInterrupt:Play("targetyou")--bleh voice choice
 		else
 			specWarnMadDash:Show()
+			specWarnMadDash:Play("farfromline")
 		end
 		timerMadDashCD:Start()
 	elseif spellId == 162617 then
@@ -103,7 +103,7 @@ function mod:SPELL_AURA_APPLIED(args)
 			end
 		end
 		if unitid then
-			local _, _, _, _, _, duration, expires, _, _ = UnitBuff(unitid, args.spellName)
+			local _, _, _, _, duration, expires, _, _ = DBM:UnitBuff(unitid, args.spellName)
 			if expires then
 				timerRecovering:Start(expires-GetTime())
 			end

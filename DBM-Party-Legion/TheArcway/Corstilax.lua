@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1498, "DBM-Party-Legion", 6, 726)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 2 $"):sub(12, -3))
+mod:SetRevision("20190421035925")
 mod:SetCreatureID(98205)
 mod:SetEncounterID(1825)
 mod:SetZone()
@@ -31,7 +31,7 @@ local timerSupressionCD				= mod:NewNextTimer(46, 196070, nil, nil, nil, 3)
 local timerQuarantineCD				= mod:NewNextTimer(46, 195804, nil, nil, nil, 3)
 local timerCleansingCD				= mod:NewNextTimer(46, 196115, nil, nil, nil, 2)
 
-mod:AddSetIconOption("SetIconOnQuarantine", 195791)
+mod:AddSetIconOption("SetIconOnQuarantine", 195791, true, false, {1})
 
 function mod:OnCombatStart(delay)
 	timerSupressionCD:Start(5-delay)

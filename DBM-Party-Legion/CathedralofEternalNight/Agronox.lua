@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1905, "DBM-Party-Legion", 12, 900)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 2 $"):sub(12, -3))
+mod:SetRevision("20190625143517")
 mod:SetCreatureID(117193)
 mod:SetEncounterID(2055)
 mod:SetZone()
@@ -29,17 +29,14 @@ local specWarnSucculentLashers		= mod:NewSpecialWarningSwitch(236639, "-Healer",
 local specWarnFixate				= mod:NewSpecialWarningRun(238674, nil, nil, nil, 4, 2)
 local yellFixate					= mod:NewYell(238674)
 
-local timerTimberSmashCD			= mod:NewCDTimer(21.7, 235751, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON)
+local timerTimberSmashCD			= mod:NewCDTimer(21.7, 235751, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON, nil, 2, 4)
 local timerChokingVinesCD			= mod:NewCDTimer(30, 238598, nil, nil, nil, 3)
 local timerFulminatingLashersCD		= mod:NewCDTimer(30, 236527, nil, nil, nil, 1)
 local timerSucculentLashersCD		= mod:NewCDTimer(16.5, 236639, nil, nil, nil, 1)
 local timerSporesCD					= mod:NewCDTimer(20.5, 236524, nil, nil, nil, 2)
 
-local countdownTimberSmash			= mod:NewCountdown("Alt21", 235751, "Tank")
-
 function mod:OnCombatStart(delay)
 	timerTimberSmashCD:Start(6-delay)
-	countdownTimberSmash:Start(6-delay)
 	timerSporesCD:Start(12-delay)
 	timerFulminatingLashersCD:Start(17.5-delay)
 	timerChokingVinesCD:Start(24.2-delay)
@@ -54,7 +51,6 @@ function mod:SPELL_CAST_START(args)
 		specWarnTimberSmash:Show()
 		specWarnTimberSmash:Play("carefly")
 		timerTimberSmashCD:Start()
-		countdownTimberSmash:Start()
 	end
 end
 

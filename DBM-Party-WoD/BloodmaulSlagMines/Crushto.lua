@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(888, "DBM-Party-WoD", 2, 385)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 24 $"):sub(12, -3))
+mod:SetRevision("20190417010024")
 mod:SetCreatureID(74787)
 mod:SetEncounterID(1653)
 mod:SetZone()
@@ -13,7 +13,7 @@ mod:RegisterEventsInCombat(
 	"SPELL_CAST_START 150759 150801 153679 150753"
 )
 
-local warnCrushingLeap			= mod:NewTargetAnnounce(150751, 3)
+local warnCrushingLeap			= mod:NewTargetNoFilterAnnounce(150751, 3)
 
 local specWarnFerociousYell		= mod:NewSpecialWarningInterrupt(150759, "HasInterrupt", nil, 2, 1, 2)
 local specWarnRaiseMiners		= mod:NewSpecialWarningSwitch(150801, "Tank", nil, nil, 1, 2)
@@ -30,18 +30,14 @@ function mod:SPELL_AURA_APPLIED(args)
 	if args.spellId == 150751 then
 		warnCrushingLeap:Show(args.destName)
 		timerCrushingLeapCD:Start()
-		if self:IsTank() then
-			specWarnFerociousYell:Play("kickcast")
-		else
-			specWarnFerociousYell:Play("helpkick")
-		end
 	end
 end
 
 function mod:SPELL_CAST_START(args)
 	local spellId = args.spellId
-	if spellId == 150759 then
+	if spellId == 150759 and self:CheckInterruptFilter(args.sourceGUID, false, true) then
 		specWarnFerociousYell:Show(args.sourceName)
+		specWarnFerociousYell:Play("kickcast")
 	elseif spellId == 150801 then
 		specWarnRaiseMiners:Show()
 		specWarnRaiseMiners:Play("mobsoon")

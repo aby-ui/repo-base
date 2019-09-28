@@ -7,15 +7,8 @@
 ## SavedVariablesPerCharacter: wMarkerDB, wFlaresDB
 
 Localization\enUS.lua
-Localization\esES.lua
-Localization\deDE.lua
-Localization\esMX.lua
-Localization\frFR.lua
-Localization\koKR.lua
-Localization\ruRU.lua
 Localization\zhCN.lua
 Localization\zhTW.lua
-Localization\itIT.lua
 
 wMarker.lua
 config.lua

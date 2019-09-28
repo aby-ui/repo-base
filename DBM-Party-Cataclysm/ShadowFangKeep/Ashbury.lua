@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(96, "DBM-Party-Cataclysm", 6, 64)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 194 $"):sub(12, -3))
+mod:SetRevision("20190417010024")
 mod:SetCreatureID(46962)
 mod:SetEncounterID(1069)
 mod:SetZone()
@@ -18,7 +18,7 @@ local warnPain				= mod:NewTargetAnnounce(93581, 3)
 local warnWracking			= mod:NewSpellAnnounce(93720, 2)
 local warnArchangel			= mod:NewSpellAnnounce(93757, 4)
 
-local specWarnStayExec		= mod:NewSpecialWarningInterrupt(93468, "HasInterrupt")
+local specWarnStayExec		= mod:NewSpecialWarningInterrupt(93468, "HasInterrupt", nil, nil, 1, 2)
 
 local timerAsphyxiate		= mod:NewCDTimer(45, 93423, nil, nil, nil, 2)
 
@@ -37,6 +37,7 @@ function mod:SPELL_CAST_START(args)
 		warnArchangel:Show()
 	elseif args.spellId == 93468 and self:CheckInterruptFilter(args.sourceGUID, false, true, true) then
 		specWarnStayExec:Show(args.sourceName)
+		specWarnStayExec:Play("kickcast")
 	end
 end
 

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(587, "DBM-Party-WotLK", 2, 272)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 236 $"):sub(12, -3))
+mod:SetRevision("20190417010024")
 mod:SetCreatureID(29120)
 mod:SetEncounterID(218, 266, 1973)
 mod:SetZone()
@@ -9,14 +9,15 @@ mod:SetZone()
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
-	"SPELL_CAST_START"
+	"SPELL_CAST_START 53472 59433"
 )
 
 local warningPound		= mod:NewSpellAnnounce(53472, 3)
-local timerAchieve		= mod:NewAchievementTimer(240, 1860, "TimerSpeedKill") 
+
+local timerAchieve		= mod:NewAchievementTimer(240, 1860) 
 
 function mod:OnCombatStart(delay)
-	if self:IsDifficulty("heroic5") then
+	if not self:IsDifficulty("normal5") then
 		timerAchieve:Start(-delay)
 	end
 end

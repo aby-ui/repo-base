@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(672, "DBM-Party-MoP", 1, 313)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 111 $"):sub(12, -3))
+mod:SetRevision("20190421035925")
 mod:SetCreatureID(56448)
 mod:SetEncounterID(1418)
 mod:SetZone()
@@ -29,7 +29,7 @@ local timerLivingWater			= mod:NewCastTimer(5.5, 106526)
 --local timerLivingWaterCD		= mod:NewCDTimer(13, 106526, nil, nil, nil, 1)
 local timerWashAway				= mod:NewNextTimer(8, 106334)
 
-mod:AddBoolOption("SetIconOnAdds", false)
+mod:AddSetIconOption("SetIconOnAdds", "ej5616", false, true, {8})
 
 mod.vb.addsRemaining = 4--Also 4 on heroic?
 mod.vb.firstAdd = false

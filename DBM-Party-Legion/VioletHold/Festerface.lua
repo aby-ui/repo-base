@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1693, "DBM-Party-Legion", 9, 777)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 2 $"):sub(12, -3))
+mod:SetRevision("20190625143517")
 mod:SetCreatureID(101995)
 mod:SetEncounterID(1848)
 mod:SetZone()
@@ -21,9 +21,7 @@ local specWarnOozes					= mod:NewSpecialWarningSwitch("ej12646", "-Healer", nil,
 local specWarnBlackBile				= mod:NewSpecialWarningSwitch("ej12651", nil, nil, nil, 3, 2)
 local specWarnOozeGTFO				= mod:NewSpecialWarningMove(202266, nil, nil, nil, 1, 2)
 
-local timerOozesCD					= mod:NewNextTimer(51, 201598, nil, nil, nil, 1)
-
-local countdownOozes				= mod:NewCountdown(51, 201598)
+local timerOozesCD					= mod:NewNextTimer(51, 201598, nil, nil, nil, 1, nil, nil, nil, 1, 4)
 
 function mod:OnCombatStart(delay)
 --	timerOozesCD:Start(3.7-delay)--Too variable on pull, 3-6, pretty much right away anyways so no need for timer
@@ -35,7 +33,6 @@ function mod:SPELL_CAST_START(args)
 		specWarnOozes:Show()
 		specWarnOozes:Play("mobsoon")
 		timerOozesCD:Start()
-		countdownOozes:Start()
 	elseif spellId == 201729 then
 		specWarnBlackBile:Show()
 		specWarnBlackBile:Play("mobsoon")

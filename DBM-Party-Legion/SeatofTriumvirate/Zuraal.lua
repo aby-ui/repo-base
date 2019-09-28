@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1979, "DBM-Party-Legion", 13, 945)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 2 $"):sub(12, -3))
+mod:SetRevision("20190625143517")
 mod:SetCreatureID(124871)
 mod:SetEncounterID(2065)
 mod:SetZone()
@@ -38,9 +38,7 @@ local timerCoalescedVoidCD				= mod:NewCDTimer(12.1, 244579, nil, nil, nil, 1, n
 local timerUmbraShiftCD					= mod:NewCDTimer(12, 244433, nil, nil, nil, 6)
 local timerVoidTear						= mod:NewBuffActiveTimer(20, 244621, nil, nil, nil, 6)
 
---local countdownBreath					= mod:NewCountdown(22, 227233)
-
-mod:AddSetIconOption("SetIconOnFixate", 244657, true)
+mod:AddSetIconOption("SetIconOnFixate", 244657, true, false, {1})
 
 function mod:OnCombatStart(delay)
 	timerNullPalmCD:Start(10-delay)

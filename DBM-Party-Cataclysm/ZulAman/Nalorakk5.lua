@@ -1,7 +1,7 @@
 ﻿local mod	= DBM:NewMod(187, "DBM-Party-Cataclysm", 10, 77)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 190 $"):sub(12, -3))
+mod:SetRevision("20190417010024")
 mod:SetCreatureID(23576)
 mod:SetEncounterID(1190)
 mod:SetZone()
@@ -9,7 +9,7 @@ mod:SetZone()
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
-	"SPELL_AURA_APPLIED",
+	"SPELL_AURA_APPLIED 42398 42402",
 	"CHAT_MSG_MONSTER_YELL"
 )
 mod.onlyHeroic = true
@@ -19,11 +19,11 @@ local warnBearSoon		= mod:NewAnnounce("WarnBearSoon", 3, 39414)
 local warnNormal		= mod:NewAnnounce("WarnNormal", 4, 39414)
 local warnNormalSoon	= mod:NewAnnounce("WarnNormalSoon", 3, 39414)
 local warnSilence		= mod:NewSpellAnnounce(42398, 3)
-local warnSurge			= mod:NewTargetAnnounce(42402)
+local warnSurge			= mod:NewTargetNoFilterAnnounce(42402)
 
-local timerSurgeCD		= mod:NewNextTimer(8, 42402)
-local timerBear			= mod:NewTimer(30, "TimerBear", 39414)
-local timerNormal		= mod:NewTimer(30, "TimerNormal", 39414)
+local timerSurgeCD		= mod:NewNextTimer(8, 42402, nil, nil, nil, 3)
+local timerBear			= mod:NewTimer(30, "TimerBear", 39414, nil, nil, 6)
+local timerNormal		= mod:NewTimer(30, "TimerNormal", 39414, nil, nil, 6)
 
 local berserkTimer		= mod:NewBerserkTimer(600)
 

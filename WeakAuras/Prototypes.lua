@@ -1672,7 +1672,7 @@ WeakAuras.event_prototypes = {
         name = "powertype",
         display = L["Power Type"],
         type = "select",
-        values = function() return WeakAuras.IsClassic() and WeakAuras.power_types_with_stagger or WeakAuras.power_types end,
+        values = function() return WeakAuras.IsClassic() and WeakAuras.power_types or WeakAuras.power_types_with_stagger end,
         init = "unitPowerType",
         test = "true",
         store = true,
@@ -3941,7 +3941,7 @@ WeakAuras.event_prototypes = {
         test = "true",
         conditionType = "bool",
         conditionTest = function(state, needle)
-          return state and state.show and (UnitExists('target') and state.spellname and WeakAuras.IsSpellInRange(state.spellName, 'target') == needle)
+          return state and state.show and (UnitExists('target') and state.spellName and WeakAuras.IsSpellInRange(state.spellName, 'target') == needle)
         end,
         conditionEvents = {
           "PLAYER_TARGET_CHANGED",

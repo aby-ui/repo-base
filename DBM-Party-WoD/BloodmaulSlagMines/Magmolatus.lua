@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(893, "DBM-Party-WoD", 2, 385)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 29 $"):sub(12, -3))
+mod:SetRevision("20190417010024")
 mod:SetCreatureID(74366, 74475)--74366 Forgemaster Gog'duh, 74475 Magmolatus
 mod:SetEncounterID(1655)
 mod:SetMainBossID(74475)
@@ -16,17 +16,17 @@ mod:RegisterEventsInCombat(
 	"SPELL_ABSORBED 150011"
 )
 
-local warnDancingFlames			= mod:NewTargetAnnounce(149975, 3, nil, "Healer")
+local warnDancingFlames			= mod:NewTargetNoFilterAnnounce(149975, 3, nil, "Healer")
 
-local specWarnMagmaBarrage		= mod:NewSpecialWarningMove(150011)
-local specWarnRoughSmash		= mod:NewSpecialWarningDodge(149941, "Melee")
+local specWarnMagmaBarrage		= mod:NewSpecialWarningMove(150011, nil, nil, nil, 1, 8)
+local specWarnRoughSmash		= mod:NewSpecialWarningDodge(149941, "Melee", nil, nil, 4, 2)
 local specWarnRuination			= mod:NewSpecialWarningSwitch("ej8622", "-Healer", nil, nil, 1, 2)
 local specWarnCalamity			= mod:NewSpecialWarningSwitch("ej8626", "-Healer", nil, nil, 1, 2)
 local specWarnFirestorm			= mod:NewSpecialWarningInterrupt(149997, "HasInterrupt", nil, 2, 1, 2)
 local specWarnDancingFlames		= mod:NewSpecialWarningDispel(149975, "Healer", nil, nil, 1, 2)
 local specWarnMagmolatus		= mod:NewSpecialWarningSwitch("ej8621", nil, nil, 2, 1, 2)--Dps can turn this on too I suppose but 5 seconds after boss spawns they are switching to add anyways, so this is mainly for tank to pick it up
-local specWarnSlagSmash			= mod:NewSpecialWarningDodge(150023, "Melee", nil, nil, 1, 2)
-local specWarnMoltenImpact		= mod:NewSpecialWarningSpell(150038, nil, nil, nil, 2)
+local specWarnSlagSmash			= mod:NewSpecialWarningDodge(150023, "Melee", nil, nil, 4, 2)
+local specWarnMoltenImpact		= mod:NewSpecialWarningSpell(150038, nil, nil, nil, 2, 2)
 local specWarnWitheringFlames	= mod:NewSpecialWarningDispel(150032, "Healer", nil, nil, 1, 2)
 
 local timerMoltenImpactCD		= mod:NewNextTimer(21.5, 150038, nil, nil, nil, 1)
@@ -70,7 +70,7 @@ end
 
 function mod:SPELL_AURA_APPLIED(args)
 	local spellId = args.spellId
-	if spellId == 149997 then
+	if spellId == 149997 and self:CheckInterruptFilter(args.sourceGUID, false, true) then
 		specWarnFirestorm:Show(args.sourceName)
 		if self:IsTank() then
 			specWarnFirestorm:Play("kickcast")
@@ -78,12 +78,13 @@ function mod:SPELL_AURA_APPLIED(args)
 			specWarnFirestorm:Play("helpkick")
 		end
 	elseif spellId == 149975 then
-		warnDancingFlames:CombinedShow(0.3, args.destName)--heroic is 2 targets so combined.
 		if self:CheckDispelFilter() then--only show once. (prevent loud sound)
 			specWarnDancingFlames:CombinedShow(0.3, args.destName)
 			if self:AntiSpam(2, 2) then
 				specWarnDancingFlames:Play("dispelnow")
 			end
+		else
+			warnDancingFlames:CombinedShow(0.3, args.destName)--heroic is 2 targets so combined.
 		end
 	elseif spellId == 150032 and self:CheckDispelFilter() then
 		specWarnWitheringFlames:Show(args.destName)
@@ -95,18 +96,21 @@ function mod:SPELL_CAST_START(args)
 	local spellId = args.spellId
 	if spellId == 149941 then
 		specWarnRoughSmash:Show()
+		specWarnRoughSmash:Play("justrun")
 	elseif spellId == 150038 then
 		specWarnMoltenImpact:Show()
+		specWarnMoltenImpact:Play("watchstep")
 		timerMoltenImpactCD:Start()
 	elseif spellId == 150023 then
 		specWarnSlagSmash:Show()
-		specWarnSlagSmash:Play("runaway")
+		specWarnSlagSmash:Play("justrun")
 	end
 end
 
 function mod:SPELL_PERIODIC_DAMAGE(_, _, _, _, destGUID, _, _, _, spellId)
 	if spellId == 15011 and destGUID == UnitGUID("player") and self:AntiSpam(2, 1) then--need to check spell ids again
 		specWarnMagmaBarrage:Show()
+		specWarnMagmaBarrage:Play("watchfeet")
 	end
 end
 mod.SPELL_ABSORBED = mod.SPELL_PERIODIC_DAMAGE

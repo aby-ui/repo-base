@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1672, "DBM-Party-Legion", 1, 740)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 2 $"):sub(12, -3))
+mod:SetRevision("20190625143517")
 mod:SetCreatureID(98965, 98970)
 mod:SetEncounterID(1835)
 mod:SetZone()
@@ -28,14 +28,12 @@ local specWarnSwarm					= mod:NewSpecialWarningYou(201733)
 local specWarnShadowBolt			= mod:NewSpecialWarningDefensive(202019, nil, nil, nil, 3, 2)
 
 local timerDarkBlastCD				= mod:NewCDTimer(18, 198820, nil, nil, nil, 3)
-local timerUnerringShearCD			= mod:NewCDTimer(12, 198635, nil, "Tank", nil, 5)
+local timerUnerringShearCD			= mod:NewCDTimer(12, 198635, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON, nil, mod:IsTank() and 2, 4)
 local timerGuileCD					= mod:NewCDTimer(39, 199193, nil, nil, nil, 6)
 local timerGuile					= mod:NewBuffFadesTimer(24, 199193, nil, nil, nil, 6)
 local timerCloudCD					= mod:NewCDTimer(32.8, 199143, nil, nil, nil, 3)
 local timerSwarmCD					= mod:NewCDTimer(32.8, 201733, nil, nil, nil, 3)
 local timerShadowBoltVolleyCD		= mod:NewCDTimer(8, 202019, nil, nil, nil, 2)
-
-local countdownShear				= mod:NewCountdown(12, 198635, "Tank")
 
 mod.vb.phase = 1
 mod.vb.shadowboltCount = 0
@@ -44,7 +42,6 @@ function mod:OnCombatStart(delay)
 	self.vb.phase = 1
 	self.vb.shadowboltCount = 0
 	timerUnerringShearCD:Start(5.5-delay)
-	countdownShear:Start(5.5-delay)
 	timerDarkBlastCD:Start(10-delay)
 end
 
@@ -81,7 +78,6 @@ function mod:SPELL_CAST_SUCCESS(args)
 	local spellId = args.spellId
 	if spellId == 198635 then
 		timerUnerringShearCD:Start()
-		countdownShear:Start()
 	elseif spellId == 201733 then
 		timerSwarmCD:Start()
 	end
@@ -117,7 +113,6 @@ function mod:UNIT_DIED(args)
 		self.vb.phase = 2
 		timerDarkBlastCD:Stop()
 		timerUnerringShearCD:Stop()
-		countdownShear:Cancel()
 		if not self:IsNormal() then
 			timerSwarmCD:Start(9)
 		end

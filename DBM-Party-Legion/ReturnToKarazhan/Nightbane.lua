@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("Nightbane", "DBM-Party-Legion", 11)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 2 $"):sub(12, -3))
+mod:SetRevision("20190625143517")
 mod:SetCreatureID(114895)
 mod:SetEncounterID(2031)
 mod:SetZone()
@@ -48,9 +48,7 @@ local timerFearCD					= mod:NewCDTimer(43, 228837, nil, nil, nil, 2)--43-46
 
 --local berserkTimer				= mod:NewBerserkTimer(300)
 
-local countdownIngiteSoul			= mod:NewCountdownFades("AltTwo9", 228796)
-
-mod:AddSetIconOption("SetIconOnIgnite", 228796, true)
+mod:AddSetIconOption("SetIconOnIgnite", 228796, true, false, {1})
 mod:AddInfoFrameOption(228829, true)
 
 mod.vb.phase = 1
@@ -120,12 +118,11 @@ end
 function mod:SPELL_AURA_APPLIED(args)
 	local spellId = args.spellId
 	if spellId == 228796 then
-		countdownIngiteSoul:Start()
 		if args:IsPlayer() then
 			specWarnIgniteSoul:Show(charredEarth)
 			specWarnIgniteSoul:Play("targetyou")
 			--Yes a 5 count (not typical 3). This debuff is pretty much EVERYTHING
-			yellIgniteSoul:Countdown(9, 5)
+			yellIgniteSoul:Countdown(spellId, 5)
 		else
 			warnIgniteSoul:Show(args.destName)
 		end
@@ -141,7 +138,6 @@ function mod:SPELL_AURA_REMOVED(args)
 		if args:IsPlayer() then
 			yellIgniteSoul:Cancel()
 		end
-		countdownIngiteSoul:Cancel()
 		if self.Options.SetIconOnIgnite then
 			self:SetIcon(args.destName, 0)
 		end

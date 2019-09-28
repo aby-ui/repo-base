@@ -318,6 +318,7 @@ function HandyNotes.WorldMapDataProvider:RefreshAllData(fromOnShow)
 end
 
 function HandyNotes.WorldMapDataProvider:RefreshPlugin(pluginName)
+	if not self:GetMap() then return end
 	for pin in self:GetMap():EnumeratePinsByTemplate("HandyNotesWorldMapPinTemplate") do
 		if pin.pluginName == pluginName then
 			self:GetMap():RemovePin(pin)

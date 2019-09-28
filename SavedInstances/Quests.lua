@@ -150,8 +150,13 @@ local QuestExceptions = {
   -- Nazjatar
   [55121] = "Weekly", -- The Laboratory of Mardivas
   [56969] = "Weekly", -- Ancient Reefwalker Bark
+  [56648] = "Weekly", -- Call to Arms: Nazjatar (Alliance)
+  [56148] = "Weekly", -- Call to Arms: Nazjatar (Horde)
+  [56050] = "Weekly", -- PvP Event: Battle for Nazjatar
   -- Mechagon
   [56116] = "Regular", -- Even More Recycling
+  [56649] = "Weekly", -- Call to Arms: Mechagon (Alliance)
+  [56650] = "Weekly", -- Call to Arms: Mechagon (Horde)
 
   -- General
   -- Darkmoon Faire

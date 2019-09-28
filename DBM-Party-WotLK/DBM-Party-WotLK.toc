@@ -1,6 +1,6 @@
 ﻿## Interface: 80205
 ## X-Min-Interface: 80000
-## Title:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Party-WotLK|r
+## Title:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Dungeons (WotLK)|r
 ## Title-frFR:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Groupe-WotLK|r
 ## Title-deDE:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Gruppe-WotLK|r
 ## Title-esES:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Mazmorras (WotLK)|r
@@ -26,7 +26,7 @@
 ## X-DBM-Mod-SubCategories-koKR: 안카헤트: 고대 왕국,아졸네룹,시간의 동굴: 옛 스트라솔름,드락타론 성채,군드락,번개의 전당,돌의 전당,마력의 탑,마력의 눈,우트가드 성채,우트가드 첨탑,보랏빛 요새,용사의 시험장,영혼의 제련소,사론의 구덩이,투영의 전당
 ## X-DBM-Mod-SubCategories-esES: Ahn'kahlet,Azjol-Nerub,La Matanza de Stratholme,Fortaleza de Drak'Tharon,Gundrak,Cámaras de Relámpagos,Camaras de Piedra,El Nexo,El Oculus,Fortaleza de Utgarde,Pinaculo de Utgarde,El Bastión Violeta,Prueba del Campeón,La Forja de Almas,Foso de Saron,Cámaras de Reflexión
 ## X-DBM-Mod-SubCategories-esMX: Ahn'kahlet,Azjol-Nerub,La Matanza de Stratholme,Fortaleza de Drak'Tharon,Gundrak,Cámaras de Relámpagos,Camaras de Piedra,El Nexo,El Oculus,Fortaleza de Utgarde,Pinaculo de Utgarde,El Bastión Violeta,Prueba del Campeón,La Forja de Almas,Foso de Saron,Cámaras de Reflexión
-## X-DBM-Mod-Name: Party-WotLK
+## X-DBM-Mod-Name: Dungeons (WotLK)
 ## X-DBM-Mod-Name-frFR: Groupe-WotLK
 ## X-DBM-Mod-Name-deDE: Gruppe (WotLK)
 ## X-DBM-Mod-Name-ruRU: Групповые подземелья-WotLK
@@ -38,14 +38,13 @@
 ## X-DBM-Mod-Sort: 915
 ## X-DBM-Mod-MapID: 619,601,595,600,604,602,599,576,578,574,575,608,658,632,668,650
 ## X-DBM-Mod-MinCoreRevision: 14002
+## X-Curse-Project-ID: 314994
+## X-WoWI-ID: 24904
+## Version: r12
+
 localization.en.lua
 localization.cn.lua
-localization.ru.lua
-localization.fr.lua
 localization.tw.lua
-localization.kr.lua
-localization.de.lua
-localization.es.lua
 AhnKahet\Taldaram.lua
 AhnKahet\Nadox.lua
 AhnKahet\JedogaShadowseeker.lua

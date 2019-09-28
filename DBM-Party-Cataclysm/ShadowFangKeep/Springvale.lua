@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(98, "DBM-Party-Cataclysm", 6, 64)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 194 $"):sub(12, -3))
+mod:SetRevision("20190417010024")
 mod:SetCreatureID(4278)
 mod:SetEncounterID(1071)
 mod:SetZone()
@@ -21,11 +21,11 @@ local warnMaleficStrike		= mod:NewSpellAnnounce(93685, 2, nil, false)
 local warnShield			= mod:NewSpellAnnounce(93693, 4)
 local warnWordShame			= mod:NewTargetAnnounce(93852, 3)
 
-local specWarnDesecration	= mod:NewSpecialWarningMove(93691)
-local specWarnEmpowerment	= mod:NewSpecialWarningInterrupt(93844, "HasInterrupt")
+local specWarnDesecration	= mod:NewSpecialWarningMove(93691, nil, nil, nil, 1, 8)
+local specWarnEmpowerment	= mod:NewSpecialWarningInterrupt(93844, "HasInterrupt", nil, nil, 1, 2)
 
 local timerAdds				= mod:NewTimer(40, "TimerAdds", 48000, nil, nil, 1)
-local timerMaleficStrike	= mod:NewNextTimer(6, 93685, nil, false)
+local timerMaleficStrike	= mod:NewNextTimer(6, 93685, nil, false, nil, 5, nil, DBM_CORE_TANK_ICON)
 
 function mod:OnCombatStart(delay)
 	timerAdds:Start(-delay)
@@ -42,6 +42,7 @@ end
 function mod:SPELL_CAST_START(args)
 	if args.spellId == 93844 and self:CheckInterruptFilter(args.sourceGUID, false, true) then
 		specWarnEmpowerment:Show(args.sourceName)
+		specWarnEmpowerment:Play("kickcast")
 	end
 end
 
@@ -57,6 +58,7 @@ end
 function mod:SPELL_DAMAGE(_, _, _, _, destGUID, _, _, _, spellId)
 	if spellId == 93691 and destGUID == UnitGUID("player") and self:AntiSpam(4) then
 		specWarnDesecration:Show()
+		specWarnDesecration:Play("watchfeet")
 	end
 end
 

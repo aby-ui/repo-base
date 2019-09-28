@@ -89,7 +89,6 @@ function RareScannerDataProviderMixin:RefreshAllData(fromOnShow)
 		return
 	end
 	
-	local vignetteGUIDs = C_VignetteInfo.GetVignettes();
 	local mapID = self:GetMap():GetMapID();
 	RareScanner:PrintDebugMessage("DEBUG: MAPID actual "..mapID.." ARTID actual "..C_Map.GetMapArtID(mapID))
 
@@ -142,6 +141,26 @@ function RareScannerDataProviderMixin:OnMapChanged()
 end
  
 function RareScannerDataProviderMixin:AddPin(npcID, npcInfo, mapID)
+	local npcInfoBak = nil
+	
+	-- If its an npc that can show up in more than one place, we adjust its data so it displays in other available places
+	if (npcInfo.mapID ~= mapID and private.ZONE_IDS[npcID] and type(private.ZONE_IDS[npcID].zoneID) == "table") then
+		for zoneID, zoneInfo in pairs (private.ZONE_IDS[npcID].zoneID) do
+			if (zoneID == mapID) then
+				npcInfoBak = {}
+				npcInfoBak.coordX  = private.dbglobal.rares_found[npcID].coordX
+				npcInfoBak.coordY  = private.dbglobal.rares_found[npcID].coordY
+				npcInfoBak.mapID  = private.dbglobal.rares_found[npcID].mapID
+				npcInfoBak.artID  = private.dbglobal.rares_found[npcID].artID
+				npcInfo.mapID = mapID
+				npcInfo.coordX = zoneInfo.x
+				npcInfo.coordY = zoneInfo.y
+				npcInfo.artID = C_Map.GetMapArtID(mapID)
+				break;
+			end
+		end
+	end
+
 	-- if belongs to another map
 	if (npcInfo.mapID ~= mapID) then
 		--RareScanner:PrintDebugMessage("DEBUG: Ignorado por pertenecer a otro mapa")
@@ -162,10 +181,9 @@ function RareScannerDataProviderMixin:AddPin(npcID, npcInfo, mapID)
 
 	---If its an NPC
 	if (npcInfo.atlasName == RareScanner.NPC_VIGNETTE or npcInfo.atlasName == RareScanner.NPC_LEGION_VIGNETTE) then
-		-- If the NPC doesnt exist
+		-- If the NPC doesnt exist delete it
 		local npcName = RareScanner:GetNpcName(npcID)
 		if (not npcName) then
-			-- and delete it
 			private.dbglobal.rares_found[npcID] = nil
 			--RareScanner:PrintDebugMessage("DEBUG: Eliminado de la tabla de rares_found el NPC con ID "..npcID.." dado que no existe en nuestra base de datos")
 			return false
@@ -270,6 +288,15 @@ function RareScannerDataProviderMixin:AddPin(npcID, npcInfo, mapID)
 
 	local pin = self:GetMap():AcquirePin("RSRarePinTemplate", npcID, npcInfo);
 	self.rareNpcToPins[npcID] = pin;
+	
+	-- Avoids overriding the recorded value
+	if (npcInfoBak) then
+		private.dbglobal.rares_found[npcID].coordX = npcInfoBak.coordX
+		private.dbglobal.rares_found[npcID].coordY = npcInfoBak.coordY
+		private.dbglobal.rares_found[npcID].mapID = npcInfoBak.mapID
+		private.dbglobal.rares_found[npcID].artID = npcInfoBak.artID
+		npcInfoBak = nil
+	end
 	
 	return true
 end

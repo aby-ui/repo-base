@@ -43,10 +43,6 @@ L= DBM:GetModLocalization(108)
 -----------------------------
 L= DBM:GetModLocalization(109)
 
-L:SetOptionLocalization({
-	SetIconOnBoss	= "Put an icon on the boss after $spell:76200 "
-})
-
 ---------------------
 --  The Deadmines  --
 ---------------------
@@ -379,7 +375,6 @@ L:SetOptionLocalization{
 L= DBM:GetModLocalization(186)
 
 L:SetOptionLocalization{
-	StormIcon	= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(43648),
 	RangeFrame	= "Show range frame (10 yards)"
 }
 
@@ -495,10 +490,6 @@ L:SetMiscLocalization{
 -------------------------
 L= DBM:GetModLocalization(175)
 
-L:SetOptionLocalization{
-	SetIconOnToxicLink	= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(96477)
-}
-
 ------------------------
 -- Bloodlord Mandokir --
 ------------------------
@@ -553,8 +544,7 @@ L:SetWarningLocalization{
 
 L:SetOptionLocalization{
 	SpecWarnToxic	= "Show special warning when you are missing $spell:96328 debuff",
-	InfoFrame		= "Show info frame for players not affected by $spell:96328",
-	SetIconOnGaze	= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(96342)
+	InfoFrame		= "Show info frame for players not affected by $spell:96328"
 }
 
 L:SetMiscLocalization{
@@ -741,10 +731,6 @@ L = DBM:GetModLocalization("JulakDoom")
 
 L:SetGeneralLocalization{
 	name = "Julak-Doom"
-}
-
-L:SetOptionLocalization{
-	SetIconOnMC	= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(93621)
 }
 
 -----------

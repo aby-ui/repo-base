@@ -1,43 +1,44 @@
 local mod	= DBM:NewMod(191, "DBM-Party-Cataclysm", 10, 77)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 190 $"):sub(12, -3))
+mod:SetRevision("20190421035925")
 mod:SetCreatureID(23863)
 mod:SetEncounterID(1194)
 mod:SetZone()
+mod:SetUsedIcons(8)
 
 mod:RegisterCombat("combat")
 mod:RegisterEventsInCombat(
-	"SPELL_AURA_APPLIED",
-	"SPELL_AURA_REMOVED",
-	"SPELL_CAST_START",
-	"SPELL_CAST_SUCCESS",
-	"SPELL_DAMAGE",
-	"SPELL_MISSED"
+	"SPELL_AURA_APPLIED 43093 17207 43150 97497 42402",
+	"SPELL_AURA_REMOVED 43093 42594 42606 42607 42608",
+	"SPELL_CAST_START 42594 42606 42607 42608 97930",
+	"SPELL_CAST_SUCCESS 43095",
+	"SPELL_DAMAGE 43217",
+	"SPELL_MISSED 43217"
 )
 mod.onlyHeroic = true
 
-local warnThrow				= mod:NewTargetAnnounce(43093, 3)
+local warnThrow				= mod:NewTargetNoFilterAnnounce(43093, 3)
 local warnWhirlwind			= mod:NewSpellAnnounce(17207, 3)
 local warnBear				= mod:NewSpellAnnounce(42594, 3)
 local warnEagle				= mod:NewSpellAnnounce(42606, 3)
 local warnLynx				= mod:NewSpellAnnounce(42607, 3)
 local warnDragonhawk		= mod:NewSpellAnnounce(42608, 3)
 local warnParalysis			= mod:NewSpellAnnounce(43095, 4)--Bear Form
-local warnSurge				= mod:NewTargetAnnounce(42402, 3)--Bear Form
-local warnClawRage			= mod:NewTargetAnnounce(43150, 3)--Lynx Form
+local warnSurge				= mod:NewTargetNoFilterAnnounce(42402, 3)--Bear Form
+local warnClawRage			= mod:NewTargetNoFilterAnnounce(43150, 3)--Lynx Form
 local warnLightningTotem	= mod:NewSpellAnnounce(97930, 4)--Eagle Form
 
-local specWarnFlameBreath	= mod:NewSpecialWarningMove(97497)
-local specWarnBurn			= mod:NewSpecialWarningMove(43217)
+local specWarnFlameBreath	= mod:NewSpecialWarningMove(97497, nil, nil, nil, 1, 2)
+local specWarnBurn			= mod:NewSpecialWarningMove(43217, nil, nil, nil, 1, 2)
 
-local timerThrow			= mod:NewNextTimer(15, 43093)
-local timerParalysisCD		= mod:NewNextTimer(27, 43095)
-local timerSurgeCD			= mod:NewNextTimer(8.5, 42402)--Bear Form Ability, same mechanic as bear boss, cannot soak more than 1 before debuff fades or you will die.
-local timerLightningTotemCD	= mod:NewNextTimer(17, 97930)--Eagle Form Ability.
+local timerThrow			= mod:NewNextTimer(15, 43093, nil, nil, nil, 5, nil, DBM_CORE_HEALER_ICON)
+local timerParalysisCD		= mod:NewNextTimer(27, 43095, nil, nil, nil, 5, nil, DBM_CORE_HEALER_ICON..DBM_CORE_MAGIC_ICON)
+local timerSurgeCD			= mod:NewNextTimer(8.5, 42402, nil, nil, nil, 3)--Bear Form Ability, same mechanic as bear boss, cannot soak more than 1 before debuff fades or you will die.
+local timerLightningTotemCD	= mod:NewNextTimer(17, 97930, nil, nil, nil, 1, nil, DBM_CORE_DAMAGE_ICON)--Eagle Form Ability.
 
-mod:AddBoolOption("ThrowIcon", false)
-mod:AddBoolOption("ClawRageIcon", false)
+mod:AddSetIconOption("ThrowIcon", 43093, false, false, {8})
+mod:AddSetIconOption("ClawRageIcon", 43150, false, false, {8})
 mod:AddBoolOption("InfoFrame")
 
 local surgeDebuff = DBM:GetSpellInfo(42402)
@@ -64,6 +65,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		end
 	elseif args.spellId == 97497 and args:IsPlayer() and self:IsInCombat() and self:AntiSpam(3, 1) then
 		specWarnFlameBreath:Show()
+		specWarnFlameBreath:Play("watchfeet")
 	elseif args.spellId == 42402 then
 		warnSurge:Show(args.destName)
 		timerSurgeCD:Start()
@@ -125,6 +127,7 @@ end
 function mod:SPELL_DAMAGE(_, _, _, _, destGUID, _, _, _, spellId)
 	if spellId == 43217 and destGUID == UnitGUID("player") and self:AntiSpam(3, 2) then
 		specWarnBurn:Show()
+		specWarnBurn:Play("watchfeet")
 	end
 end
 mod.SPELL_MISSED = mod.SPELL_DAMAGE

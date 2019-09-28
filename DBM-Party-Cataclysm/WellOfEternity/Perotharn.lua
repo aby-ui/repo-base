@@ -1,39 +1,40 @@
 local mod	= DBM:NewMod(290, "DBM-Party-Cataclysm", 13, 185)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 174 $"):sub(12, -3))
+mod:SetRevision("20190417010024")
 mod:SetCreatureID(55085)
 mod:SetEncounterID(1272)
---mod:SetMinSyncRevision(6792)
-mod:SetMinSyncRevision(19)--Could break if someone is running out of date version with higher revision
 mod:SetZone()
 
 mod:RegisterCombat("say", L.Pull)
 
 mod:RegisterEventsInCombat(
-	"SPELL_CAST_START",
-	"SPELL_AURA_APPLIED",
-	"SPELL_AURA_REMOVED"
+	"SPELL_CAST_START 108141",
+	"SPELL_CAST_SUCCESS 104905",
+	"SPELL_AURA_APPLIED 105544 105526",
+	"SPELL_AURA_REMOVED 105544"
 )
 mod.onlyHeroic = true
 
-local warnFelFlames			= mod:NewTargetAnnounce(108141, 3)
-local warnDecay				= mod:NewTargetAnnounce(105544, 3, nil, "Healer")
-local warnFelQuickening		= mod:NewTargetAnnounce(104905, 3, nil, "Tank|Healer")
+local warnFelFlames			= mod:NewTargetNoFilterAnnounce(108141, 3)
+local warnDecay				= mod:NewTargetNoFilterAnnounce(105544, 3, nil, "Healer")
+local warnFelQuickening		= mod:NewTargetNoFilterAnnounce(104905, 3, nil, "Tank|Healer")
 
-local specWarnFelFlames		= mod:NewSpecialWarningMove(108141)
+local specWarnFelFlames		= mod:NewSpecialWarningMove(108141, nil, nil, nil, 1, 2)
 
-local timerFelFlamesCD		= mod:NewNextTimer(8.4, 108141)
-local timerDecay			= mod:NewTargetTimer(10, 105544, nil, "Healer")
-local timerDecayCD			= mod:NewNextTimer(17, 105544, nil, "Healer")
-local timerFelQuickening	= mod:NewBuffActiveTimer(15, 104905, nil, "Tank|Healer")
+local timerFelFlamesCD		= mod:NewNextTimer(8.4, 108141, nil, nil, nil, 3)
+local timerDecay			= mod:NewTargetTimer(10, 105544, nil, "Healer", nil, 5, nil, DBM_CORE_HEALER_ICON)
+local timerDecayCD			= mod:NewNextTimer(17, 105544, nil, "Healer", nil, 5, nil, DBM_CORE_HEALER_ICON)
+local timerFelQuickening	= mod:NewBuffActiveTimer(15, 104905, nil, "Tank|Healer", nil, 5, nil, DBM_CORE_TANK_ICON..DBM_CORE_HEALER_ICON)
 
 local function showFelFlamesWarning()
 	local targetname = mod:GetBossTarget(55085)
 	if not targetname then return end
-	warnFelFlames:Show(targetname)
 	if targetname == UnitName("player") then
 		specWarnFelFlames:Show()
+		specWarnFelFlames:Play("watchstep")
+	else
+		warnFelFlames:Show(targetname)
 	end
 end
 

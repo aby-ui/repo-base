@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1838, "DBM-Party-Legion", 11, 860)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 2 $"):sub(12, -3))
+mod:SetRevision("20190711011719")
 mod:SetCreatureID(114790)
 mod:SetEncounterID(2017)
 mod:SetZone()
@@ -34,7 +34,7 @@ local warnPhase3					= mod:NewPhaseAnnounce(3, 2)
 
 --ALL
 local specWarnChaoticShadows		= mod:NewSpecialWarningYou(229159, nil, nil, nil, 1, 2)
-local yellChaoticShadows			= mod:NewPosYell(229159, DBM_CORE_AUTO_YELL_CUSTOM_POSITION)
+local yellChaoticShadows			= mod:NewPosYell(229159, DBM_CORE_AUTO_YELL_CUSTOM_POSITION2)
 local specWarnBurningBlast			= mod:NewSpecialWarningInterruptCount(229083, "HasInterrupt", nil, nil, 1, 2)
 --Phase 1
 local specWarnFelBeam				= mod:NewSpecialWarningRun(229242, nil, nil, nil, 1, 2)
@@ -49,9 +49,7 @@ local timerBombardmentCD			= mod:NewCDTimer(25, 229284, 229287, nil, nil, 3)
 
 --local berserkTimer					= mod:NewBerserkTimer(300)
 
---local countdownFocusedGazeCD		= mod:NewCountdown(40, 198006)
-
-mod:AddSetIconOption("SetIconOnShadows", 229159, true)
+mod:AddSetIconOption("SetIconOnShadows", 229159, true, false, {1, 2, 3})
 mod:AddRangeFrameOption(6, 230066)
 --mod:AddInfoFrameOption(198108, false)
 

@@ -1,6 +1,6 @@
 ﻿## Interface: 80205
 ## X-Min-Interface: 80000
-## Title:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Party-MoP|r
+## Title:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Dungeons (MoP)|r
 ## Title-koKR:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf05인던전-판다리아의 안개|r
 ## Title-deDE:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Gruppe-MoP|r
 ## Title-esES:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Mazmorras (MoP)|r
@@ -18,7 +18,7 @@
 ## X-DBM-Mod-Has-Challenge: 1
 ## X-DBM-Mod-Has-TimeWalker: 1
 ## X-DBM-Mod-SubCategoriesID: 960, 961, 959, 962, 994, 1011, 1007, 1001, 1004
-## X-DBM-Mod-Name: Party (MoP)
+## X-DBM-Mod-Name: Dungeons (MoP)
 ## X-DBM-Mod-Name-koKR: 5인 던전(판다리아의 안개)
 ## X-DBM-Mod-Name-deDE: Gruppe (MoP)
 ## X-DBM-Mod-Name-ruRU: Групповые подземелья (MoP)
@@ -31,15 +31,13 @@
 ## X-DBM-Mod-Sort: 715
 ## X-DBM-Mod-MapID: 960,961,959,962,994,1011,1007,1001,1004
 ## X-DBM-Mod-MinCoreRevision: 14002
+## X-Curse-Project-ID: 314994
+## X-WoWI-ID: 24904
+## Version: r12
+
 localization.en.lua
-localization.de.lua
-localization.es.lua
-localization.fr.lua
-localization.kr.lua
-localization.ru.lua
 localization.tw.lua
 localization.cn.lua
-localization.br.lua
 JadeSerpentTemple\WiseMari.lua
 JadeSerpentTemple\LibraryEvent.lua
 JadeSerpentTemple\LiuFlameheart.lua

@@ -136,8 +136,9 @@ If the animation's duration is set to |cFF00CC0010%|r, and the display's trigger
 	L["Bottom Right"] = "右下"
 	L["Bracket Matching"] = "括號配對符合"
 	L["Button Glow"] = "按鈕發光"
-	L["Can be a name or a UID (e.g., party1). A name only works on friendly players in your group."] = "可以是名字或是 UID (例如 party1)，名字只對隊伍中的友方玩家有效。"
 	L["Can be a Name or a Unit ID (e.g. party1). A name only works on friendly players in your group."] = "可以是名字或單位 ID (例如 party1)。只有同隊伍中的友方玩家才能使用名字。"
+	--[[Translation missing --]]
+	L["Can be a UID (e.g., party1)."] = "Can be a UID (e.g., party1)."
 	L["Cancel"] = "取消"
 	L["Center"] = "中"
 	L["Channel Number"] = "頻道編號"

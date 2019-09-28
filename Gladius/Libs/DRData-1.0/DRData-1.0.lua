@@ -369,6 +369,14 @@ local spellsAndProvidersByCategory = {
 		[  6360] = true, -- Whiplash
 		[115770] = true, -- Fellash
 	},
+
+	--[[ DISARM ]]--
+	disarm = {
+		[207777] = true, -- Dismantle
+		[209749] = true, -- Faerie Swarm
+		[233759] = true, -- Grapple Weapon
+		[236077] = true, -- Disarm
+	},
 }
 
 -- Map deprecatedCategories to the new ones
@@ -382,7 +390,7 @@ local deprecatedCategories = {
 	fear           = true,
 	horror         = true,
 	mc             = true,
-	disarm         = true,
+	--disarm         = true,
 }
 
 Data.categoryNames = {
@@ -393,6 +401,7 @@ Data.categoryNames = {
 	taunt          = L["Taunts"],
 	incapacitate   = L["Incapacitates"],
 	knockback      = L["Knockbacks"],
+	disarm         = L["Disarms"],
 }
 
 Data.pveDR = {

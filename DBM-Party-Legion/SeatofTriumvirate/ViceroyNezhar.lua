@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1981, "DBM-Party-Legion", 13, 945)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 2 $"):sub(12, -3))
+mod:SetRevision("20190625143517")
 mod:SetCreatureID(124874)
 mod:SetEncounterID(2067)
 mod:SetZone()
@@ -30,10 +30,8 @@ local specWarnAdds						= mod:NewSpecialWarningAdds(249336, "-Healer", nil, nil,
 local timerUmbralTentaclesCD			= mod:NewCDTimer(30.4, 244769, nil, nil, nil, 1)
 local timerHowlingDarkCD				= mod:NewCDTimer(28.0, 244751, nil, nil, nil, 4, nil, DBM_CORE_INTERRUPT_ICON)
 local timerEntropicForceCD				= mod:NewCDTimer(28.0, 246324, nil, nil, nil, 2)--28-38
-local timerEternalTwilight				= mod:NewCastTimer(10, 248736, nil, nil, nil, 2, nil, DBM_CORE_DEADLY_ICON)
+local timerEternalTwilight				= mod:NewCastTimer(10, 248736, nil, nil, nil, 2, nil, DBM_CORE_DEADLY_ICON, nil, 2, 4)
 local timerAddsCD						= mod:NewAddsTimer(61.9, 249336, nil, "-Healer")
-
-local countdownEternalTwilight			= mod:NewCountdown("AltTwo10", 248736)
 
 mod.vb.guardsActive = 0
 
@@ -56,7 +54,6 @@ function mod:SPELL_CAST_START(args)
 	elseif spellId == 248736 and self:AntiSpam(3, 1) then
 		warnEternalTwilight:Show()
 		timerEternalTwilight:Start()
-		countdownEternalTwilight:Start()
 	end
 end
 

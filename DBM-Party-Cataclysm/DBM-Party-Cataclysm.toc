@@ -1,6 +1,6 @@
 ﻿## Interface: 80205
 ## X-Min-Interface: 80000
-## Title:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Party-Cataclysm|r
+## Title:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Dungeons (Cataclysm)|r
 ## Title-frFR:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Groupe-Cataclysm|r
 ## Title-deDE:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Gruppe-Cataclysm|r
 ## Title-zhTW:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0隊伍首領-浩劫與重生|r
@@ -27,7 +27,7 @@
 ## X-DBM-Mod-SubCategories-zhTW: 黑石洞穴, 死亡礦坑, 格瑞姆巴托, 起源大廳, 托維爾的失落之城, 影牙城堡, 石岩之心, 旋渦尖塔, 海湖王座, 祖阿曼 (5人英雄), 祖爾格拉布 (5人英雄), 終焉之刻, 永恆之井, 暮光之時, 世界首領 (浩劫與重生)
 ## X-DBM-Mod-SubCategories-zhCN: 黑石岩窟, 死亡矿井, 格瑞姆巴托, 起源大厅, 托维尔失落之城, 影牙城堡, 巨石之核, 旋云之巅, 潮汐王座, 祖阿曼（5人）, 祖尔格拉布（5人）, 时光之末, 永恒之井, 暮光审判, 世界首领
 ## X-DBM-Mod-SubCategories-ptBR: Caverna Rocha Negra, Minas Mortas, Grim Batol, Salões Primordiais, Cidade Perdida dos Tol'vir, Bastilha da Presa Negra, Litocerne, Pináculo do Vórtice, Trono das Marés, Zul'Aman (Masmorra), Zul'Gurub (Masmorra), Fim dos Tempos, Nascente da Eternidade, Hora do Crepúsculo, Chefes do Mundo
-## X-DBM-Mod-Name: Party (Cataclysm)
+## X-DBM-Mod-Name: Dungeons (Cataclysm)
 ## X-DBM-Mod-Name-frFR: Groupe (Cataclysm)
 ## X-DBM-Mod-Name-deDE: Gruppe (Cataclysm)
 ## X-DBM-Mod-Name-ruRU: Групповые подземелья (Катаклизм)
@@ -41,15 +41,13 @@
 ## X-DBM-Mod-MapID: 755,645,36,670,644,33,643,725,657,309,859,568,938,940,939,1,0,646
 ## X-DBM-Mod-LoadCID: 50063,50056,50089,50009,50061
 ## X-DBM-Mod-MinCoreRevision: 14755
+## X-Curse-Project-ID: 314994
+## X-WoWI-ID: 24904
+## Version: r12
+
 localization.en.lua
-localization.de.lua
-localization.es.lua
-localization.fr.lua
-localization.kr.lua
-localization.ru.lua
 localization.tw.lua
 localization.cn.lua
-localization.br.lua
 BlackrockCaverns\RomoggBonecrusher.lua
 BlackrockCaverns\Corla.lua
 BlackrockCaverns\KarshSteelBender.lua

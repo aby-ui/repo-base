@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(341, "DBM-Party-Cataclysm", 14, 186)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 174 $"):sub(12, -3))
+mod:SetRevision("20190417010024")
 mod:SetCreatureID(54938)
 mod:SetEncounterID(1339)
 mod:SetZone()
@@ -21,24 +21,23 @@ mod:RegisterEvents(
 )
 mod.onlyHeroic = true
 
-local warnRighteousShear		= mod:NewTargetAnnounce(103151, 2)
+local warnRighteousShear		= mod:NewTargetNoFilterAnnounce(103151, 2, nil, "Healer", 2)
 local warnPurifyingLight		= mod:NewSpellAnnounce(103565, 3)
-local warnWaveVirtue			= mod:NewSpellAnnounce(103678, 4, nil, false)	-- blizzard warning
 local prewarnPhase2				= mod:NewPrePhaseAnnounce(2, 2)
-local warnTwilightShear			= mod:NewTargetAnnounce(103363, 2)
+local warnTwilightShear			= mod:NewTargetNoFilterAnnounce(103363, 2, nil, "Healer", 2)
 local warnCorruptingTwilight	= mod:NewSpellAnnounce(103767, 3)
-local warnWaveTwilight			= mod:NewSpellAnnounce(103780, 4, nil, false)	-- blizzard warning
 
-local specwarnPurified			= mod:NewSpecialWarningMove(103653)
-local specwarnWaveVirtue		= mod:NewSpecialWarningSpell(103678, nil, nil, nil, true)
-local specwarnTwilight			= mod:NewSpecialWarningMove(103775)
-local specwarnWaveTwilight		= mod:NewSpecialWarningSpell(103780, nil, nil, nil, true)
+local specwarnPurified			= mod:NewSpecialWarningMove(103653, nil, nil, nil, 1, 8)
+local specwarnWaveVirtue		= mod:NewSpecialWarningMoveTo(103678, nil, nil, nil, 2)
+local specwarnTwilight			= mod:NewSpecialWarningMove(103775, nil, nil, nil, 1, 8)
+local specwarnWaveTwilight		= mod:NewSpecialWarningMoveTo(103780, nil, nil, nil, 2)
 
 local timerCombatStart			= mod:NewTimer(51.5, "TimerCombatStart", 2457)
-local timerWaveVirtueCD			= mod:NewNextTimer(30, 103678)--Will he do it more then once? if you are terrible and take > 30 sec to push him?
-local timerWaveTwilightCD		= mod:NewNextTimer(30, 103780)--^
+local timerWaveVirtueCD			= mod:NewNextTimer(30, 103678, nil, nil, nil, 2)--Will he do it more then once? if you are terrible and take > 30 sec to push him?
+local timerWaveTwilightCD		= mod:NewNextTimer(30, 103780, nil, nil, nil, 2)--^
 
 local warnedP2 = false
+local waterShellName = DBM:GetSpellInfo(103744)
 
 function mod:OnCombatStart(delay)
 	warnedP2 = false
@@ -51,15 +50,15 @@ function mod:SPELL_CAST_SUCCESS(args)
 	elseif args.spellId == 103565 then
 		warnPurifyingLight:Show()
 	elseif args:IsSpellID(103677, 103680, 103681) then--Spellids are locationsal. So figure out which one is switch could announce wave direction?
-		warnWaveVirtue:Show()
-		specwarnWaveVirtue:Show()
+		specwarnWaveVirtue:Show(waterShellName)
+		specwarnWaveVirtue:Play("findshelter")
 	elseif args.spellId == 103363 then
 		warnTwilightShear:Show(args.destName)
 	elseif args.spellId == 103767 then
 		warnCorruptingTwilight:Show()
 	elseif args:IsSpellID(103782, 103783, 103784) then--Same as virtue
-		warnWaveTwilight:Show()
-		specwarnWaveTwilight:Show()
+		specwarnWaveTwilight:Show(waterShellName)
+		specwarnWaveTwilight:Play("findshelter")
 	end
 end
 
@@ -73,8 +72,10 @@ end
 function mod:SPELL_DAMAGE(_, _, _, _, destGUID, _, _, _, spellId)
 	if spellId == 103653 and destGUID == UnitGUID("player") and self:AntiSpam(5) then
 		specwarnPurified:Show()
+		specwarnPurified:Play("watchfeet")
 	elseif spellId == 103775 and destGUID == UnitGUID("player") and self:AntiSpam(5) then
 		specwarnTwilight:Show()
+		specwarnTwilight:Play("watchfeet")
 	end
 end
 mod.SPELL_MISSED = mod.SPELL_DAMAGE

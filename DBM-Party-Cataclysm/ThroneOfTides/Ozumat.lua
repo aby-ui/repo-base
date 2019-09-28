@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(104, "DBM-Party-Cataclysm", 9, 65)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 190 $"):sub(12, -3))
+mod:SetRevision("20190417010024")
 mod:SetCreatureID(40792)
 mod:SetEncounterID(1047)
 mod:SetMainBossID(42172)--42172 is Ozumat, but we need Neptulon for engage trigger.
@@ -20,24 +20,24 @@ local warnPhase3		= mod:NewPhaseAnnounce(3)
 local warnBlightSpray	= mod:NewSpellAnnounce(83985, 2)
 
 local timerPhase		= mod:NewTimer(95, "TimerPhase", nil, nil, nil, 6)
-local timerBlightSpray	= mod:NewBuffActiveTimer(4, 83985)
+local timerBlightSpray	= mod:NewBuffActiveTimer(4, 83985, nil, nil, nil, 3)
 
-local warnedPhase2 = false
-local warnedPhase3 = false
+mod.vb.warnedPhase2 = false
+mod.vb.warnedPhase3 = false
 
 function mod:OnCombatStart(delay)
-	warnedPhase2 = false
-	warnedPhase3 = false
+	self.vb.warnedPhase2 = false
+	self.vb.warnedPhase3 = false
 	timerPhase:Start()--Can be done right later once consistency is confirmed.
 end
 
 function mod:SPELL_AURA_APPLIED(args)
-	if args.spellId == 83463 and not warnedPhase2 then
+	if args.spellId == 83463 and not self.vb.warnedPhase2 then
 		warnPhase2:Show(2)
-		warnedPhase2 = true
-	elseif args.spellId == 76133 and not warnedPhase3 then
+		self.vb.warnedPhase2 = true
+	elseif args.spellId == 76133 and not self.vb.warnedPhase3 then
 		warnPhase3:Show(3)
-		warnedPhase3 = true
+		self.vb.warnedPhase3 = true
 	end
 end
 

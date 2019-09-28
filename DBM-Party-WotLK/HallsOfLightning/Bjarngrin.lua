@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(597, "DBM-Party-WotLK", 6, 275)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 248 $"):sub(12, -3))
+mod:SetRevision("20190417010024")
 mod:SetCreatureID(28586)
 mod:SetEncounterID(555, 556, 1987)
 mod:SetZone()
@@ -9,7 +9,7 @@ mod:SetZone()
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
-	"SPELL_CAST_START"
+	"SPELL_CAST_START 52027 52028"
 )
 
 local warningWhirlwind		= mod:NewSpellAnnounce(52027, 3)

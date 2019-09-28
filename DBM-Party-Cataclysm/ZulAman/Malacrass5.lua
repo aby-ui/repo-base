@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(190, "DBM-Party-Cataclysm", 10, 77)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 194 $"):sub(12, -3))
+mod:SetRevision("20190417010024")
 mod:SetCreatureID(24239)
 mod:SetEncounterID(1193)
 mod:SetZone()
@@ -10,80 +10,58 @@ mod:RegisterCombat("combat")
 mod:SetMinCombatTime(30)	-- Prevent pre-maturely combat-end in cases where none targets the boss?
 
 mod:RegisterEventsInCombat(
-	"SPELL_CAST_START",
-	"SPELL_CAST_SUCCESS",
-	"SPELL_AURA_APPLIED",
-	"SPELL_PERIODIC_DAMAGE",
-	"SPELL_PERIODIC_MISSED"
+	"SPELL_CAST_START 43451 43431 43548",
+	"SPELL_CAST_SUCCESS 43436",
+	"SPELL_AURA_APPLIED 43501 43383 43421",
+	"SPELL_PERIODIC_DAMAGE 43429 43440 61603",
+	"SPELL_PERIODIC_MISSED 43429 43440 61603"
 )
 mod.onlyHeroic = true
 
-local warnSiphon			= mod:NewTargetAnnounce(43501, 3)
+local warnSiphon			= mod:NewTargetNoFilterAnnounce(43501, 3)
 local warnSpiritBolts		= mod:NewSpellAnnounce(43383, 3)
 local warnSpiritBoltsSoon	= mod:NewSoonAnnounce(43383, 5, 2)
-local warnFireNovaTotem		= mod:NewSpellAnnounce(43436, 3)
-local warnLifebloom			= mod:NewTargetAnnounce(43421, 4)
 
-local specWarnFireNovaTotem	= mod:NewSpecialWarningSpell(43436, false)
+local specWarnFireNovaTotem	= mod:NewSpecialWarningSwitch(43436, "Dps", nil, nil, 1, 2)
 local specWarnHolyLight		= mod:NewSpecialWarningInterrupt(43451, "HasInterrupt", nil, 2, 1, 2)
 local specWarnFlashHeal		= mod:NewSpecialWarningInterrupt(43431, "HasInterrupt", nil, 2, 1, 2)
 local specWarnHealingWave	= mod:NewSpecialWarningInterrupt(43548, "HasInterrupt", nil, 2, 1, 2)
-local specWarnLifebloom		= mod:NewSpecialWarningDispel(43421, "MagicDispeller")
-local specWarnConsecration	= mod:NewSpecialWarningMove(43429)
-local specWarnRainofFire	= mod:NewSpecialWarningMove(43440)
-local specWarnDeathNDecay	= mod:NewSpecialWarningMove(61603)
+local specWarnLifebloom		= mod:NewSpecialWarningDispel(43421, "MagicDispeller", nil, nil, 1, 2)
+local specWarnGTFO			= mod:NewSpecialWarningGTFO(43440, nil, nil, nil, 1, 8)
 
-local timerSiphon			= mod:NewTimer(30, "TimerSiphon", 43501)
-local timerSpiritBolts		= mod:NewBuffActiveTimer(5, 43383)
-local timerSpiritBoltsNext	= mod:NewNextTimer(36, 43383)
-
-local function getClass(name)
-	local class
-	if UnitName("player") == name then
-		class = select(2, UnitClass("player"))
-	else
-		local nameString = "%s-%s"	-- "PlayerName-RealmName"
-		for uId, i in DBM:GetGroupMembers() do
-			local n, r = UnitName(uId)	-- PlayerName, RealmName
-			if n == name or (n and r and nameString:format(n,r) == name) then
-				class = select(2, UnitClass("party"..i))
-				break
-			end
-		end
-	end
-	if class then
-		class = class:sub(0, 1):upper()..class:sub(2):lower()
-	end
-	return class or "unknown"
-end
+local timerSiphon			= mod:NewTimer(30, "TimerSiphon", 43501, nil, nil, 3)
+local timerSpiritBolts		= mod:NewBuffActiveTimer(5, 43383, nil, nil, nil, 2)
+local timerSpiritBoltsNext	= mod:NewNextTimer(36, 43383, nil, nil, nil, 2)
 
 function mod:OnCombatStart(delay)
 	timerSpiritBoltsNext:Start(15-delay)
 end
 
 function mod:SPELL_CAST_START(args)
-	if args.spellId == 43451 and self:CheckInterruptFilter(args.sourceGUID, false, true, true) then					--Paladin Heal (Holy Light)
+	if args.spellId == 43451 and self:CheckInterruptFilter(args.sourceGUID, false, true, true) then
 		specWarnHolyLight:Show(args.sourceName)
 		specWarnHolyLight:Play("kickcast")
-	elseif args.spellId == 43431 and self:CheckInterruptFilter(args.sourceGUID, false, true, true) then				--Priest Heal (Flash Heal)
+	elseif args.spellId == 43431 and self:CheckInterruptFilter(args.sourceGUID, false, true, true) then
 		specWarnFlashHeal:Show(args.sourceName)
 		specWarnFlashHeal:Play("kickcast")
-	elseif args.spellId == 43548 and self:CheckInterruptFilter(args.sourceGUID, false, true, true) then				--Shaman Heal (Healing Wave)
+	elseif args.spellId == 43548 and self:CheckInterruptFilter(args.sourceGUID, false, true, true) then
 		specWarnHealingWave:Show(args.sourceName)
 		specWarnHealingWave:Play("kickcast")
 	end
 end
 
 function mod:SPELL_CAST_SUCCESS(args)
-	if args.spellId == 43436 then					--Shaman (Fire Nova Totem)
-		warnFireNovaTotem:Show()
+	if args.spellId == 43436 then
 		specWarnFireNovaTotem:Show()
+		specWarnFireNovaTotem:Play("attacktotem")
 	end
 end
 
 function mod:SPELL_AURA_APPLIED(args)
 	if args.spellId == 43501 then
-		local class = getClass(args.destName)
+		local uId = DBM:GetRaidUnitId(args.destName)
+		local class = select(2, UnitClass(uId)) or "unknown"
+		class = class:sub(0, 1):upper()..class:sub(2):lower()
 		warnSiphon:Show(args.destName)
 		timerSiphon:Start(args.spellName, class)
 	elseif args.spellId == 43383 then
@@ -91,19 +69,22 @@ function mod:SPELL_AURA_APPLIED(args)
 		warnSpiritBoltsSoon:Schedule(31)
 		timerSpiritBolts:Start()
 		timerSpiritBoltsNext:Start()
-	elseif args.spellId == 43421 then
-		warnLifebloom:Show(args.destName)
+	elseif args.spellId == 43421 and self:CheckDispelFilter() then
 		specWarnLifebloom:Show(args.destName)
+		specWarnLifebloom:Play("dispelboss")
 	end
 end
 
 function mod:SPELL_PERIODIC_DAMAGE(_, _, _, _, destGUID, _, _, _, spellId)
-	if spellId == 43429 and destGUID == UnitGUID("player") and self:AntiSpam(3) then		--Paladin (Consecration)
-		specWarnConsecration:Show()
-	elseif spellId == 43440 and destGUID == UnitGUID("player") and self:AntiSpam(3) then	--Warlock(Rain of Fire)
-		specWarnRainofFire:Show()
-	elseif spellId == 61603 and destGUID == UnitGUID("player") and self:AntiSpam(3) then	--Death Knight(Death and Decay)
-		specWarnDeathNDecay:Show()
+	if spellId == 43429 and destGUID == UnitGUID("player") and self:AntiSpam(3) then
+		specWarnGTFO:Show()
+		specWarnGTFO:Play("watchfeet")
+	elseif spellId == 43440 and destGUID == UnitGUID("player") and self:AntiSpam(3) then
+		specWarnGTFO:Show()
+		specWarnGTFO:Play("watchfeet")
+	elseif spellId == 61603 and destGUID == UnitGUID("player") and self:AntiSpam(3) then
+		specWarnGTFO:Show()
+		specWarnGTFO:Play("watchfeet")
 	end
 end
 mod.SPELL_PERIODIC_MISSED = mod.SPELL_PERIODIC_DAMAGE

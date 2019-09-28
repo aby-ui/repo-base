@@ -7,6 +7,7 @@ local L = LibStub("AceLocale-3.0"):GetLocale("GatherMate2", false)
 local DataBroker = LibStub:GetLibrary("LibDataBroker-1.1",true)
 
 local WoWClassic = (WOW_PROJECT_ID == WOW_PROJECT_CLASSIC)
+local SaveBindings = SaveBindings or AttemptToSaveBindings
 
 --[[
 	Code here for configuring the mod, and making the minimap button

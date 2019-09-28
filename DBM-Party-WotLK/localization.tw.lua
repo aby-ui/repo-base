@@ -1,4 +1,4 @@
-﻿if GetLocale() ~= "zhTW" then return end
+if GetLocale() ~= "zhTW" then return end
 local L
 
 ----------------------------------
@@ -43,11 +43,7 @@ L = DBM:GetModLocalization(586)
 -------------------------
 --  Anub'arak (Party)  --
 -------------------------
-L = DBM:GetModLocalization("Anubarak")
-
-L:SetGeneralLocalization({
-	name = "阿努巴拉克(隊伍)"
-})
+L = DBM:GetModLocalization(587)
 
 ---------------------------------------
 --  Caverns of Time: Old Stratholme  --
@@ -112,7 +108,6 @@ L:SetMiscLocalization({
 	Wave3		= "%d %s，%d %s 及 %d %s",
 	Wave4		= "%d %s，%d %s，%d %s 及 %d %s",
 	WaveBoss	= "%s",
-	WaveCheck	= "天譴軍波數 = (%d+)/10",
 	Roleplay	= "真高興你趕到了，烏瑟。",
 	Roleplay2	= "大家看來都準備好了。記得，這些人受到恐怖瘟疫所感染，不久人世。我們得淨化斯坦索姆以保護其他百姓免受天譴軍的威脅。出發吧。"
 })
@@ -449,8 +444,7 @@ L:SetOptionLocalization({
 })
 
 L:SetMiscLocalization({
-	Sealbroken	= "我們攻破了監獄大門!通往達拉然的通道已經暢通了!現在我們終於可以終結奧核戰爭了!",
-	WavePortal	= "傳送門開啟:(%d+)/18"
+	Sealbroken	= "我們攻破了監獄大門!通往達拉然的通道已經暢通了!現在我們終於可以終結奧核戰爭了!"
 })
 
 -----------------------------
@@ -492,14 +486,6 @@ L:SetMiscLocalization({
 --  Eadric the Pure  --
 -----------------------
 L = DBM:GetModLocalization(635)
-
-L:SetWarningLocalization({
-	specwarnRadiance	= "烈光 - 背對王"
-})
-
-L:SetOptionLocalization({
-	specwarnRadiance	= "為$spell:66935顯示特別警告"
-})
 
 L:SetMiscLocalization({
 	YellCombatEnd	= "我認輸了!我投降。幹得好。我現在可以離場了嗎?"
@@ -589,10 +575,6 @@ L:SetOptionLocalization({
 	ShowAllWaveWarnings	= "為所有波數顯示警告",
 	TimerNextWave		= "為下一波顯示計時器 (擊敗首領後)",
 	ShowAllWaveTimers	= "為所有波數顯示計時器及預先警告 (不準確)"
-})
-
-L:SetMiscLocalization({
-	WaveCheck	= "靈魂波數 = (%d+)/10"
 })
 
 --------------

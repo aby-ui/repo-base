@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1980, "DBM-Party-Legion", 13, 945)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 2 $"):sub(12, -3))
+mod:SetRevision("20190625143517")
 mod:SetCreatureID(124872)
 mod:SetEncounterID(2066)
 mod:SetZone()
@@ -34,8 +34,6 @@ local timerOverloadTrapCD				= mod:NewCDTimer(20.6, 247206, nil, nil, nil, 3)
 local timerRavagingDarknessCD			= mod:NewCDTimer(8.8, 245802, nil, nil, nil, 3)
 local timerUmbralFlankingCD				= mod:NewCDTimer(35.2, 247245, nil, nil, nil, 3)
 local timerScreechCD					= mod:NewCDTimer(15.4, 248831, nil, nil, nil, 3, nil, DBM_CORE_HEROIC_ICON)
-
---local countdownBreath					= mod:NewCountdown(22, 227233)
 
 function mod:OnCombatStart(delay)
 	timerRavagingDarknessCD:Start(5.5-delay)

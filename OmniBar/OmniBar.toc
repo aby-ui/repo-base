@@ -8,7 +8,7 @@
 ## OptionalDeps: Masque, LibStub, CallbackHandler-1.0, Ace3, LibDualSpec-1.0
 
 #@no-lib-strip@
-embeds.xml
+#embeds.xml
 #@end-no-lib-strip@
 
 locale\locale.xml

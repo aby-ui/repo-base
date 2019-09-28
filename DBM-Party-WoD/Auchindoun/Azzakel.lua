@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1216, "DBM-Party-WoD", 1, 547)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 35 $"):sub(12, -3))
+mod:SetRevision("20190625143517")
 mod:SetCreatureID(75927)
 mod:SetEncounterID(1678)
 mod:SetZone()
@@ -20,29 +20,24 @@ mod:RegisterEventsInCombat(
 
 local warnCurtainOfFlame			= mod:NewTargetAnnounce(153396, 4)
 local warnFelLash					= mod:NewTargetAnnounce(153234, 3, nil, "Tank|Healer", 2)
-local warnFelStomp					= mod:NewCastAnnounce(157173, 3, nil, nil, "Tank")
-local warnSummonFelguard			= mod:NewSpellAnnounce(164081, 3, 56285, "-Healer")
 local warnFelPool					= mod:NewSpellAnnounce(153616, 1)
 
 local specWarnCurtainOfFlame		= mod:NewSpecialWarningMoveAway(153396, nil, nil, nil, 1, 2)
 local specWarnCurtainOfFlameNear	= mod:NewSpecialWarningClose(153396, nil, nil, nil, 1, 2)
 local yellWarnCurtainOfFlame		= mod:NewYell(153396)
-local specWarnFelLash				= mod:NewSpecialWarningYou(153234, nil, nil, 2)
-local specWarnFelStomp				= mod:NewSpecialWarningDodge(157173, "Melee", nil, 2)
+local specWarnFelLash				= mod:NewSpecialWarningYou(153234, nil, nil, 2, 1, 2)
+local specWarnFelStomp				= mod:NewSpecialWarningDodge(157173, "Melee", nil, 2, 1, 2)
 local specWarnClawsOfArgus			= mod:NewSpecialWarningSpell(153764, nil, nil, nil, 1, 2)
 local specWarnClawsOfArgusEnd		= mod:NewSpecialWarningEnd(153764, nil, nil, nil, 1, 2)
-local specWarnSummonFelguard		= mod:NewSpecialWarningSwitch(164081, "Tank")
+local specWarnSummonFelguard		= mod:NewSpecialWarningSwitch(164081, "Tank", nil, nil, 1, 2)
 local specWarnFelblast				= mod:NewSpecialWarningInterrupt(154221, "HasInterrupt", nil, 2, 1, 2)--Very spammy
-local specWarnFelPool				= mod:NewSpecialWarningMove(153616, nil, nil, nil, 1, 2)
-local specWarnFelSpark				= mod:NewSpecialWarningMove(153726, nil, nil, nil, 1, 2)
+local specWarnFelPool				= mod:NewSpecialWarningMove(153616, nil, nil, nil, 1, 8)
+local specWarnFelSpark				= mod:NewSpecialWarningMove(153726, nil, nil, nil, 1, 8)
 
-local timerCurtainOfFlameCD			= mod:NewNextTimer(20, 153396, nil, nil, nil, 3)--20sec cd but can be massively delayed by adds phases
+local timerCurtainOfFlameCD			= mod:NewNextTimer(20, 153396, nil, nil, nil, 3, nil, nil, nil, 2, 4)--20sec cd but can be massively delayed by adds phases
 local timerFelLash					= mod:NewTargetTimer(7.5, 153234, nil, "Tank|Healer", 2, 5)
-local timerClawsOfArgus				= mod:NewBuffActiveTimer(20, 153764)
-local timerClawsOfArgusCD			= mod:NewNextTimer(70, 153764, nil, nil, nil, 6)
-
-local countdownClawsOfArgus			= mod:NewCountdown(70, 153764)
-local countdownCurtainOfFlame		= mod:NewCountdown("Alt20", 153396)
+local timerClawsOfArgus				= mod:NewBuffActiveTimer(20, 153764, nil, nil, nil, 6)
+local timerClawsOfArgusCD			= mod:NewNextTimer(70, 153764, nil, nil, nil, 6, nil, nil, nil, 1, 4)
 
 mod:AddRangeFrameOption(5, 153396)
 
@@ -60,9 +55,7 @@ function mod:OnCombatStart(delay)
 	self.vb.debuffCount = 0
 	self.vb.flamesCast = 2--Set to 2 on pull to offset first argus
 	timerCurtainOfFlameCD:Start(16-delay)
-	countdownCurtainOfFlame:Start(16-delay)
 	timerClawsOfArgusCD:Start(34-delay)
-	countdownClawsOfArgus:Start(34-delay)
 	specWarnClawsOfArgus:ScheduleVoice(27.5-delay, "mobsoon")
 end
 
@@ -77,7 +70,6 @@ function mod:SPELL_CAST_SUCCESS(args)
 		self.vb.flamesCast = self.vb.flamesCast + 1
 		if self.vb.flamesCast < 3 then
 			timerCurtainOfFlameCD:Start()
-			countdownCurtainOfFlame:Start()
 		end
 	end
 end
@@ -106,10 +98,12 @@ function mod:SPELL_AURA_APPLIED(args)
 			end
 		end
 	elseif spellId == 153234 then
-		warnFelLash:Show(args.destName)
 		timerFelLash:Start(args.destName)
 		if args:IsPlayer() then
 			specWarnFelLash:Show()
+			specWarnFelLash:Play("targetyou")
+		else
+			warnFelLash:Show(args.destName)
 		end
 	end
 end
@@ -127,7 +121,6 @@ function mod:SPELL_AURA_REMOVED(args)
 		specWarnClawsOfArgusEnd:Play("phasechange")
 		timerCurtainOfFlameCD:Start(7)
 		timerClawsOfArgusCD:Start()
-		countdownClawsOfArgus:Start()
 		specWarnClawsOfArgus:ScheduleVoice(63.5, "mobsoon")
 	end
 end
@@ -138,7 +131,7 @@ function mod:SPELL_CAST_START(args)
 		specWarnClawsOfArgus:Show()
 		specWarnClawsOfArgus:Play("killmob")
 		timerClawsOfArgus:Start()
-	elseif spellId == 154221 then
+	elseif spellId == 154221 and self:CheckInterruptFilter(args.sourceGUID, false, true) then
 		specWarnFelblast:Show(args.sourceName)
 		if self:IsTank() then
 			specWarnFelblast:Play("kickcast")
@@ -146,26 +139,26 @@ function mod:SPELL_CAST_START(args)
 			specWarnFelblast:Play("helpkick")
 		end
 	elseif spellId == 157173 then
-		warnFelStomp:Show()
 		specWarnFelStomp:Show()
+		specWarnFelStomp:Play("shockwave")
 	end
 end
 
 function mod:SPELL_PERIODIC_DAMAGE(_, _, _, _, destGUID, _, _, _, spellId)
 	if spellId == 153616 and destGUID == UnitGUID("player") and self:AntiSpam(2, 1) then
 		specWarnFelPool:Show()
-		specWarnFelPool:Play("runaway")
+		specWarnFelPool:Play("watchfeet")
 	elseif spellId == 153726 and destGUID == UnitGUID("player") and self:AntiSpam(2, 2) then
 		specWarnFelSpark:Show()
-		specWarnFelSpark:Play("runaway")
+		specWarnFelSpark:Play("watchfeet")
 	end
 end
 mod.SPELL_ABSORBED = mod.SPELL_PERIODIC_DAMAGE
 
 function mod:SPELL_SUMMON(args)
 	if args.spellId == 164081 then
-		warnSummonFelguard:Show()
 		specWarnSummonFelguard:Show()
+		specWarnSummonFelguard:Play("bigmob")
 	end
 end
 

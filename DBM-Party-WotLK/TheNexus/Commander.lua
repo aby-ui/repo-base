@@ -1,7 +1,7 @@
 local mod = DBM:NewMod("Commander", "DBM-Party-WotLK", 8)
 local L = mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 248 $"):sub(12, -3))
+mod:SetRevision("20190417010024")
 --mod:SetEncounterID(519)--FIXME in 7.1
 
 if UnitFactionGroup("player") == "Alliance" then
@@ -24,8 +24,8 @@ local warningWhirlwind	= mod:NewSpellAnnounce(38619, 3)
 
 local specWarnWW		= mod:NewSpecialWarningRun(38619, "MeleeDps", nil, nil, 4, 2)
 
-local timerFearCD		= mod:NewCDTimer(20, 19134)--Correct?
-local timerWhirlwindCD	= mod:NewCDTimer(15, 38619)--Correct?
+local timerFearCD		= mod:NewCDTimer(20, 19134, nil, nil, nil, 2)--Correct?
+local timerWhirlwindCD	= mod:NewCDTimer(15, 38619, nil, nil, nil, 2)--Correct?
 
 function mod:SPELL_CAST_SUCCESS(args)
 	if args.spellId == 19134 then

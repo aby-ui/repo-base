@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(594, "DBM-Party-WotLK", 5, 274)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 248 $"):sub(12, -3))
+mod:SetRevision("20190417010024")
 mod:SetCreatureID(29305)
 mod:SetEncounterID(387, 388, 1980)
 --mod:SetZone()
@@ -15,7 +15,7 @@ mod:RegisterEventsInCombat(
 
 local specWarnTransform		= mod:NewSpecialWarningInterruptCount(55098, nil, nil, nil, 1, 2)
 
-local timerTransform		= mod:NewCDTimer(10, 55098)--experimental
+local timerTransform		= mod:NewCDTimer(10, 55098, nil, nil, nil, 4, nil, DBM_CORE_INTERRUPT_ICON)--experimental
 
 mod.vb.lowHealth = false
 mod.vb.kickCount = 0

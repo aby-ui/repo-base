@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(968, "DBM-Party-WoD", 7, 476)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 35 $"):sub(12, -3))
+mod:SetRevision("20190421035925")
 mod:SetCreatureID(76266)
 mod:SetEncounterID(1701)
 mod:SetZone()
@@ -19,20 +19,20 @@ mod:RegisterEventsInCombat(
 )
 
 --TODO, had bugged transcriptor so no IEEU events. See if IEEU is better for adds joining fight.
-local warnCastDown			= mod:NewTargetAnnounce(153954, 4)
-local warnShielding			= mod:NewTargetAnnounce(154055, 2)
+local warnCastDown			= mod:NewTargetNoFilterAnnounce(153954, 4)
+local warnShielding			= mod:NewTargetNoFilterAnnounce(154055, 2)
 
-local specWarnCastDownSoon	= mod:NewSpecialWarningSoon(153954)--Everyone, becaus it can grab healer too, which affects healer/tank
+local specWarnCastDownSoon	= mod:NewSpecialWarningSoon(153954, nil, nil, nil, 1, 2)--Everyone, becaus it can grab healer too, which affects healer/tank
 local specWarnCastDown		= mod:NewSpecialWarningSwitch(153954, "Dps", nil, nil, 3, 2)--Only dps, because it's their job to stop it.
 local specWarnLensFlareCast	= mod:NewSpecialWarningSpell(154032, nil, nil, nil, 2, 2)--If there is any way to find actual target, like maybe target scanning, this will be changed.
-local specWarnLensFlare		= mod:NewSpecialWarningMove(154043, nil, nil, nil, 1, 2)
+local specWarnLensFlare		= mod:NewSpecialWarningMove(154043, nil, nil, nil, 1, 8)
 local specWarnAdd			= mod:NewSpecialWarning("specWarnAdd", "Dps", nil, nil, 1, 2)
 local specWarnShielding		= mod:NewSpecialWarningInterrupt(154055, "HasInterrupt", nil, 2, 1, 2)
 
 local timerLenseFlareCD		= mod:NewCDTimer(38, 154032, nil, nil, nil, 3)
 local timerCastDownCD		= mod:NewCDTimer(28, 153954, nil, nil, nil, 1, nil, DBM_CORE_DAMAGE_ICON)
 
-mod:AddSetIconOption("SetIconOnCastDown", 153954)
+mod:AddSetIconOption("SetIconOnCastDown", 153954, true, false, {1})
 
 mod.vb.lastGrab = nil
 local skyTrashMod = DBM:GetModByName("SkyreachTrash")
@@ -63,7 +63,7 @@ function mod:SPELL_AURA_APPLIED(args)
 end
 
 function mod:SPELL_CAST_START(args)
-	if args.spellId == 154055 then
+	if args.spellId == 154055 and self:CheckInterruptFilter(args.sourceGUID, false, true) then
 		specWarnShielding:Show(args.sourceName)
 		specWarnShielding:Play("kickcast")
 	end
@@ -72,7 +72,7 @@ end
 function mod:SPELL_PERIODIC_DAMAGE(_, _, _, _, destGUID, _, _, _, spellId, _, _, _, overkill)
 	if spellId == 154043 and destGUID == UnitGUID("player") and self:AntiSpam(2) then
 		specWarnLensFlare:Show()
-		specWarnLensFlare:Play("runaway")
+		specWarnLensFlare:Play("watchfeet")
 	end
 end
 mod.SPELL_ABSORBED = mod.SPELL_PERIODIC_DAMAGE
@@ -94,10 +94,12 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 		specWarnCastDownSoon:Play("mobsoon")
 	elseif spellId == 165834 then--Force Demon Creator to Ride Me
 		--TODO, see if victom detectable here instead
-		specWarnCastDown:Show()
 		timerCastDownCD:Start()
-		specWarnCastDown:Play("helpme")
-		specWarnCastDown:ScheduleVoice(2, "helpme2")
+		if self.vb.lastGrab and self.vb.lastGrab ~= UnitName("player") then
+			specWarnCastDown:Show()
+			specWarnCastDown:Play("helpme")
+			specWarnCastDown:ScheduleVoice(2, "helpme2")
+		end
 	elseif spellId == 154049 then-- Call Adds
 		specWarnAdd:Show()
 		specWarnAdd:Play("killmob")

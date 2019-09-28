@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(889, "DBM-Party-WoD", 2, 385)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 24 $"):sub(12, -3))
+mod:SetRevision("20190625143517")
 mod:SetCreatureID(74790)
 mod:SetEncounterID(1654)
 mod:SetZone()
@@ -20,24 +20,21 @@ local warnMoltenCore			= mod:NewTargetAnnounce(150678, 2)
 
 local specWarnMoltenBlast		= mod:NewSpecialWarningInterrupt(150677, "HasInterrupt", nil, 3, 1, 2)
 local specWarnUnstableSlag		= mod:NewSpecialWarningSwitch(150755, "Dps", nil, 2, 1, 2)
-local specWarnMagmaEruptionCast	= mod:NewSpecialWarningSpell(150784, nil, nil, nil, 2)
-local specWarnMagmaEruption		= mod:NewSpecialWarningMove(150784, nil, nil, nil, 1, 2)
+local specWarnMagmaEruptionCast	= mod:NewSpecialWarningSpell(150784, nil, nil, nil, 2, 2)
+local specWarnMagmaEruption		= mod:NewSpecialWarningMove(150784, nil, nil, nil, 1, 8)
 local specWarnMoltenCore		= mod:NewSpecialWarningDispel(150678, "MagicDispeller", nil, nil, 1, 2)
 
 local timerMagmaEruptionCD		= mod:NewCDTimer(20, 150784)
-local timerUnstableSlagCD		= mod:NewCDTimer(20, 150755, nil, nil, nil, 1)
-
-local countdownUnstableSlag		= mod:NewCountdown(20, 150755)
+local timerUnstableSlagCD		= mod:NewCDTimer(20, 150755, nil, nil, nil, 1, nil, DBM_CORE_DAMAGE_ICON, nil, 1, 4)
 
 function mod:OnCombatStart(delay)
 --	timerMagmaEruptionCD:Start(8-delay)--Poor sample size
 	timerUnstableSlagCD:Start(-delay)--Also poor sample size but more likely to be correct.
-	countdownUnstableSlag:Start(-delay)
 end
 
 function mod:SPELL_CAST_START(args)
 	local spellId = args.spellId
-	if spellId == 150677 then
+	if spellId == 150677 and self:CheckInterruptFilter(args.sourceGUID, false, true) then
 		specWarnMoltenBlast:Show(args.sourceName)
 		if self:IsTank() then
 			specWarnMoltenBlast:Play("kickcast")
@@ -46,11 +43,11 @@ function mod:SPELL_CAST_START(args)
 		end
 	elseif spellId == 150784 then
 		specWarnMagmaEruptionCast:Show()
+		specWarnMagmaEruptionCast:Play("watchstep")
 		timerMagmaEruptionCD:Start()
 	elseif spellId == 150755 then
 		specWarnUnstableSlag:Show()
 		timerUnstableSlagCD:Start()
-		countdownUnstableSlag:Start()
 		specWarnUnstableSlag:Play("mobkill")
 	end
 end
@@ -70,7 +67,7 @@ end
 function mod:SPELL_PERIODIC_DAMAGE(_, _, _, _, destGUID, _, _, _, spellId)
 	if spellId == 150784 and destGUID == UnitGUID("player") and self:AntiSpam(2, 1) then
 		specWarnMagmaEruption:Show()
-		specWarnMagmaEruption:Play("runaway")
+		specWarnMagmaEruption:Play("watchfeet")
 	end
 end
 mod.SPELL_ABSORBED = mod.SPELL_PERIODIC_DAMAGE

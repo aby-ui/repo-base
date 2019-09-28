@@ -1,7 +1,7 @@
 ﻿local mod	= DBM:NewMod(186, "DBM-Party-Cataclysm", 10, 77)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 195 $"):sub(12, -3))
+mod:SetRevision("20190421035925")
 mod:SetCreatureID(23574)
 mod:SetEncounterID(1189)
 mod:SetZone()
@@ -10,25 +10,24 @@ mod:SetUsedIcons(1, 8)
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
-	"SPELL_AURA_APPLIED",
-	"SPELL_CAST_SUCCESS"
+	"SPELL_AURA_APPLIED 97318",
+	"SPELL_CAST_SUCCESS 43648"
 )
 mod.onlyHeroic = true
 
-local warnStorm			= mod:NewTargetAnnounce(43648, 4)
 local warnStormSoon		= mod:NewSoonAnnounce(43648, 5, 3)
-local warnPlucked		= mod:NewTargetAnnounce(97318, 3)
+local warnPlucked		= mod:NewTargetNoFilterAnnounce(97318, 3)
 
-local specWarnStorm		= mod:NewSpecialWarningSpell(43648)
+local specWarnStorm		= mod:NewSpecialWarningMoveTo(43648, nil, nil, nil, 2, 1)
 
-local timerStorm		= mod:NewCastTimer(8, 43648)
-local timerStormCD		= mod:NewCDTimer(55, 43648)
+local timerStorm		= mod:NewCastTimer(8, 43648, nil, nil, nil, 2)
+local timerStormCD		= mod:NewCDTimer(55, 43648, nil, nil, nil, 3)
 
 local berserkTimer		= mod:NewBerserkTimer(600)
 
 mod:AddBoolOption("RangeFrame", true)
-mod:AddBoolOption("StormIcon", true)
-mod:AddSetIconOption("SetIconOnEagle", 97318, true, true)
+mod:AddSetIconOption("StormIcon", 43648, true, false, {1})
+mod:AddSetIconOption("SetIconOnEagle", 97318, true, true, {8})
 
 function mod:OnCombatStart(delay)
 	warnStormSoon:Schedule(43)
@@ -57,8 +56,8 @@ end
 
 function mod:SPELL_CAST_SUCCESS(args)
 	if args.spellId == 43648 then
-		warnStorm:Show(args.destName)
-		specWarnStorm:Show()
+		specWarnStorm:Show(args.destName)
+		specWarnStorm:Play("gather")
 		timerStorm:Start()
 		warnStormSoon:Schedule(50)
 		timerStormCD:Start()

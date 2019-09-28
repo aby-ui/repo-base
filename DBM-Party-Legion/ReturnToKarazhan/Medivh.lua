@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1817, "DBM-Party-Legion", 11, 860)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 2 $"):sub(12, -3))
+mod:SetRevision("20190625143517")
 mod:SetCreatureID(114350)
 mod:SetEncounterID(1965)
 mod:SetZone()
@@ -34,11 +34,9 @@ local specWarnFlameWreath			= mod:NewSpecialWarningYou(228261, nil, nil, nil, 3,
 local yellFlameWreath				= mod:NewYell(228261)
 local specWarnGuardiansImage		= mod:NewSpecialWarningSwitch(228334, nil, nil, nil, 1, 2)
 
-local timerSpecialCD				= mod:NewCDSpecialTimer(30)
+local timerSpecialCD				= mod:NewCDSpecialTimer(30, 228582, nil, nil, nil, nil, nil, nil, nil, 1, 4)
 
-local countdownSpecial				= mod:NewCountdown(30, 228582)
-
-mod:AddSetIconOption("SetIconOnWreath", 228261, true)
+mod:AddSetIconOption("SetIconOnWreath", 228261, true, false, {1, 2})
 --mod:AddInfoFrameOption(198108, false)
 
 mod.vb.playersFrozen = 0
@@ -49,7 +47,6 @@ function mod:OnCombatStart(delay)
 	self.vb.playersFrozen = 0
 	self.vb.imagesActive = false
 	timerSpecialCD:Start(33.5)
-	countdownSpecial:Start(33.5)
 end
 
 function mod:SPELL_CAST_START(args)
@@ -64,11 +61,9 @@ function mod:SPELL_CAST_START(args)
 		specWarnCeaselessWinter:Show()
 		specWarnCeaselessWinter:Play("keepjump")
 		timerSpecialCD:Start(32.5)
-		countdownSpecial:Start(32.5)
 	elseif spellId == 228269 then
 		warnFlameWreath:Show()
 		timerSpecialCD:Start(31.5)
-		countdownSpecial:Start(31.5)
 	elseif spellId == 228334 then
 		self.vb.imagesActive = true
 		specWarnGuardiansImage:Show()
@@ -124,6 +119,5 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, bfaSpellId, _, legacySpellId)
 	if spellId == 228582 and self.vb.imagesActive then--Mana Regen
 		self.vb.imagesActive = false
 		timerSpecialCD:Start()
-		countdownSpecial:Start()
 	end
 end

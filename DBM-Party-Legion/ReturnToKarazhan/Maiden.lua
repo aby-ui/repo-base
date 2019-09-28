@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1825, "DBM-Party-Legion", 11, 860)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 2 $"):sub(12, -3))
+mod:SetRevision("20190625143517")
 mod:SetCreatureID(113971)
 mod:SetEncounterID(1954)
 mod:SetZone()
@@ -34,11 +34,9 @@ local specWarnHolyWrath				= mod:NewSpecialWarningInterrupt(227823, "HasInterrup
 local timerSacredGroundCD			= mod:NewCDTimer(19, 227789, nil, nil, nil, 3)--19-35 (delayed by bulwarks and what nots)
 local timerHolyShockCD				= mod:NewCDTimer(13.3, 227800, nil, nil, nil, 4, nil, DBM_CORE_INTERRUPT_ICON)
 local timerRepentanceCD				= mod:NewCDTimer(51, 227508, nil, nil, nil, 2)
-local timerHolyWrath				= mod:NewCastTimer(10, 227823, nil, nil, nil, 4, nil, DBM_CORE_INTERRUPT_ICON)
+local timerHolyWrath				= mod:NewCastTimer(10, 227823, nil, nil, nil, 4, nil, DBM_CORE_INTERRUPT_ICON, nil, 1, 4)
 
 --local berserkTimer				= mod:NewBerserkTimer(300)
-
-local countdownHolyWrath			= mod:NewCountdown(10, 227823)
 
 mod:AddRangeFrameOption(8, 227809)--TODO, keep looking for a VALID 6 yard item/spell
 mod:AddInfoFrameOption(227817, true)
@@ -75,7 +73,6 @@ function mod:SPELL_CAST_START(args)
 	elseif spellId == 227823 then
 		warnHolyWrath:Show()
 		timerHolyWrath:Start()
-		countdownHolyWrath:Start()
 	elseif spellId == 227789 then
 		timerSacredGroundCD:Start()
 	end
@@ -107,7 +104,6 @@ end
 function mod:SPELL_INTERRUPT(args)
 	if type(args.extraSpellId) == "number" and args.extraSpellId == 227823 then
 		timerHolyWrath:Stop()
-		countdownHolyWrath:Cancel()
 	end
 end
 

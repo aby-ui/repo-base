@@ -1,33 +1,29 @@
 local mod	= DBM:NewMod(624, "DBM-Party-WotLK", 9, 282)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 236 $"):sub(12, -3))
+mod:SetRevision("20190417010024")
 mod:SetCreatureID(27655)
 mod:SetEncounterID(532, 533, 2014)
-mod:SetMinSyncRevision(7)--Could break if someone is running out of date version with higher revision
 
 mod:RegisterCombat("yell", L.CombatStart)--Why using yell instead of "Combat". I do not remember.
 
 mod:RegisterEventsInCombat(
-	"SPELL_AURA_APPLIED",
-	"SPELL_CAST_START"
+	"SPELL_AURA_APPLIED 51121 59376",
+	"SPELL_CAST_START 51110 59377"
 )
 
-local warningTimeBomb		= mod:NewTargetAnnounce(51121, 2)
-local warningExplosion		= mod:NewCastAnnounce(51110, 3)
+local warningTimeBomb		= mod:NewTargetNoFilterAnnounce(51121, 4)
 
-local specWarnBombYou		= mod:NewSpecialWarningYou(51121)
+local specWarnExplosion		= mod:NewSpecialWarningMoveTo(51110, nil, nil, nil, 3, 2)
 
-local timerTimeBomb			= mod:NewTargetTimer(6, 51121)
-local timerExplosion		= mod:NewTargetTimer(8, 51110)
+local timerTimeBomb			= mod:NewTargetTimer(6, 51121, nil, nil, nil, 5, nil, DBM_CORE_HEALER_ICON)
+local timerExplosion		= mod:NewCastTimer(8, 51110, nil, nil, nil, 2, nil, DBM_CORE_DEADLY_ICON)
 
 function mod:SPELL_CAST_START(args)
 	if args:IsSpellID(51110, 59377) then
-		warningExplosion:Show()
-		timerExplosion:Start(args.destName)
-		if args:IsPlayer() then
-			specWarnBombYou:Show()
-		end
+		specWarnExplosion:Show(DBM_CORE_BREAK_LOS)
+		specWarnExplosion:Play("findshelter")
+		timerExplosion:Start()
 	end
 end
 

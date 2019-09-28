@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1836, "DBM-Party-Legion", 11, 860)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 2 $"):sub(12, -3))
+mod:SetRevision("20190625143517")
 mod:SetCreatureID(114462)
 mod:SetEncounterID(1964)
 mod:SetZone()
@@ -30,18 +30,15 @@ local specWarnPowerDischarge		= mod:NewSpecialWarningMove(227465, nil, nil, nil,
 
 local timerSummonAddCD				= mod:NewNextTimer(9.7, 227267, nil, nil, nil, 1)
 local timerPowerDischargeCD			= mod:NewCDTimer(12.2, 227279, nil, nil, nil, 3)
-local timerEvoCD					= mod:NewNextTimer(70, 227254, nil, nil, nil, 6)
-local timerEvo						= mod:NewBuffActiveTimer(20, 227254, nil, nil, nil, 6)
+local timerEvoCD					= mod:NewNextTimer(70, 227254, nil, nil, nil, 6, nil, nil, nil, 1, 4)
+local timerEvo						= mod:NewBuffActiveTimer(20, 227254, nil, nil, nil, 6, nil, nil, nil, 1, 4)
 
 --local berserkTimer					= mod:NewBerserkTimer(300)
-
-local countdownEvo					= mod:NewCountdown(70, 227254)
 
 function mod:OnCombatStart(delay)
 	timerSummonAddCD:Start(6-delay)
 	timerPowerDischargeCD:Start(13.5)
 	timerEvoCD:Start(68-delay)
-	countdownEvo:Start(68)
 end
 
 function mod:OnCombatEnd()
@@ -63,7 +60,6 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerPowerDischargeCD:Stop()
 		warnEvo:Show()
 		timerEvo:Start()
-		countdownEvo:Start(20)
 	end
 end
 
@@ -72,7 +68,6 @@ function mod:SPELL_AURA_REMOVED(args)
 	if spellId == 227254 then
 		warnEvoOver:Show()
 		timerEvoCD:Start()
-		countdownEvo:Start()
 	end
 end
 

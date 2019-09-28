@@ -2,10 +2,7 @@
 ..\FrameXML\UI.xsd">
 
 <Script file="Locale-enUS.lua"/>
-<Script file="Locale-deDE.lua"/>
-<Script file="Locale-frFR.lua"/>
 <Script file="Locale-zhCN.lua"/>
 <Script file="Locale-zhTW.lua"/>
-<Script file="Locale-koKR.lua"/>
 
 </Ui>

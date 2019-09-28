@@ -1,11 +1,10 @@
 local mod	= DBM:NewMod(609, "DBM-Party-WotLK", 15, 278)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 280 $"):sub(12, -3))
+mod:SetRevision("20190421035925")
 mod:SetCreatureID(36476)
 mod:SetEncounterID(835, 836, 2001)
 mod:SetUsedIcons(8)
-mod:SetMinSyncRevision(7)--Could break if someone is running out of date version with higher revision
 
 mod:RegisterCombat("combat")
 
@@ -19,7 +18,7 @@ mod:RegisterEventsInCombat(
 )
 
 local warnPursuitCast			= mod:NewCastAnnounce(68987, 3)
-local warnPursuit				= mod:NewTargetAnnounce(68987, 4)--TODO, just switch to UNIT_AURA, syncing not reliable especially with older zones.
+local warnPursuit				= mod:NewTargetNoFilterAnnounce(68987, 4)
 
 local specWarnToxic				= mod:NewSpecialWarningMove(69024, nil, nil, nil, 1, 2)
 local specWarnMines				= mod:NewSpecialWarningSpell(69015, nil, nil, nil, 2, 2)
@@ -31,7 +30,7 @@ local timerPursuitCast			= mod:NewCastTimer(5, 68987)
 local timerPursuitConfusion		= mod:NewBuffActiveTimer(12, 69029)
 local timerPoisonNova			= mod:NewCastTimer(5, 68989, nil, "Melee", 2, 2)
 
-mod:AddBoolOption("SetIconOnPursuitTarget", true)
+mod:AddSetIconOption("SetIconOnPursuitTarget", 68987, true, false, {8})
 
 local pursuit = DBM:GetSpellInfo(68987)
 local pursuitTable = {}

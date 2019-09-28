@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(965, "DBM-Party-WoD", 7, 476)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 24 $"):sub(12, -3))
+mod:SetRevision("20190417010024")
 mod:SetCreatureID(75964)
 mod:SetEncounterID(1698)
 mod:SetZone()
@@ -18,13 +18,13 @@ mod:RegisterEventsInCombat(
 
 local warnSpinningBlade		= mod:NewSpellAnnounce(153544, 3)
 local warnWindFall			= mod:NewSpellAnnounce(153315, 2)
-local warnPiercingRush		= mod:NewTargetAnnounce(165731, 2)--EJ shows tank warning but in my encounter it could target anyone. If this changes I'll tweak the default to tank/healer
+local warnPiercingRush		= mod:NewTargetNoFilterAnnounce(165731, 2)--EJ shows tank warning but in my encounter it could target anyone. If this changes I'll tweak the default to tank/healer
 local warnLensFlare			= mod:NewSpellAnnounce(154043, 3)
 
 local specWarnFourWinds		= mod:NewSpecialWarningSpell(156793, nil, nil, nil, 2, 2)
-local specWarnWindFallMove	= mod:NewSpecialWarningMove(153315, nil, nil, nil, 1, 2)
+local specWarnWindFallMove	= mod:NewSpecialWarningMove(153315, nil, nil, nil, 1, 8)
 local specWarnLensFlare		= mod:NewSpecialWarningSpell(154043, nil, nil, nil, 2)
-local specWarnLensFlareMove	= mod:NewSpecialWarningMove(154043, nil, nil, nil, 1, 2)
+local specWarnLensFlareMove	= mod:NewSpecialWarningMove(154043, nil, nil, nil, 1, 8)
 
 local timerFourWinds		= mod:NewBuffActiveTimer(18, 156793)
 local timerFourWindsCD		= mod:NewCDTimer(30, 156793)
@@ -67,10 +67,10 @@ end
 function mod:SPELL_PERIODIC_DAMAGE(_, _, _, _, destGUID, _, _, _, spellId, _, _, _, overkill)
 	if spellId == 154043 and destGUID == UnitGUID("player") and self:AntiSpam(2, 1) then
 		specWarnLensFlareMove:Show()
-		specWarnLensFlareMove:Play("runaway")
+		specWarnLensFlareMove:Play("watchfeet")
 	elseif spellId == 153759 and destGUID == UnitGUID("player") and self:AntiSpam(2, 2) then
 		specWarnWindFallMove:Show()
-		specWarnWindFallMove:Play("runaway")
+		specWarnWindFallMove:Play("watchfeet")
 	end
 end
 mod.SPELL_ABSORBED = mod.SPELL_PERIODIC_DAMAGE

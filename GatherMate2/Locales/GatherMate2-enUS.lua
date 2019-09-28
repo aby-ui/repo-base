@@ -378,6 +378,7 @@ NL["Lane Snapper School"] = true
 NL["Large Battered Chest"] = true
 NL["Large Darkwood Chest"] = true
 NL["Large Iron Bound Chest"] = true
+NL["Large Jelly Deposit"] = true
 NL["Large Mithril Bound Chest"] = true
 NL["Large Obsidian Chunk"] = true
 NL["Large Solid Chest"] = true

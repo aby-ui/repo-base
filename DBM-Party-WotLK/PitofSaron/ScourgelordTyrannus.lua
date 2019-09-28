@@ -1,11 +1,10 @@
 local mod	= DBM:NewMod(610, "DBM-Party-WotLK", 15, 278)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 248 $"):sub(12, -3))
+mod:SetRevision("20190421035925")
 mod:SetCreatureID(36658, 36661)
 mod:SetEncounterID(837, 838, 2000)
 mod:DisableESCombatDetection()
-mod:SetMinSyncRevision(105)
 mod:SetUsedIcons(8)
 
 mod:RegisterCombat("combat")
@@ -37,12 +36,12 @@ local specWarnUnholyPower		= mod:NewSpecialWarningSpell(69167, "Tank", nil, nil,
 
 local timerCombatStart			= mod:NewCombatTimer(31)
 local timerOverlordsBrandCD		= mod:NewCDTimer(12, 69172, nil, nil, nil, 3, nil, DBM_CORE_DEADLY_ICON)
-local timerOverlordsBrand		= mod:NewBuffFadesTimer(8, 69172)
+local timerOverlordsBrand		= mod:NewTargetTimer(8, 69172, nil, nil, nil, 5)
 local timerUnholyPower			= mod:NewBuffActiveTimer(10, 69167, nil, "Tank|Healer", 2, 5)
 local timerHoarfrostCD			= mod:NewCDTimer(25.5, 69246, nil, nil, nil, 3)
 local timerForcefulSmash		= mod:NewCDTimer(40, 69155, nil, "Tank", 2, 5, nil, DBM_CORE_TANK_ICON)--Highly Variable. 40-50
 
-mod:AddBoolOption("SetIconOnHoarfrostTarget", true)
+mod:AddSetIconOption("SetIconOnHoarfrostTarget", 69246, true, false, {8})
 mod:AddRangeFrameOption(8, 69246)
 
 function mod:OnCombatStart(delay)
@@ -75,13 +74,19 @@ end
 function mod:SPELL_AURA_APPLIED(args)
 	if args.spellId == 69172 then							-- Overlord's Brand
 		timerOverlordsBrandCD:Start()
+		timerOverlordsBrand:Start(args.destName)
 		if args:IsPlayer() then
 			specWarnOverlordsBrand:Show(args.sourceName)
 			specWarnOverlordsBrand:Play("stopattack")
-			timerOverlordsBrand:Start()
 		else
 			warnOverlordsBrand:Show(args.destName)
 		end
+	end
+end
+
+function mod:SPELL_AURA_REMOVED(args)
+	if args.spellId == 69172 then							-- Overlord's Brand
+		timerOverlordsBrand:Stop(args.destName)
 	end
 end
 

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("SkyreachTrash", "DBM-Party-WoD", 7)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 35 $"):sub(12, -3))
+mod:SetRevision("20190417010024")
 --mod:SetModelID(47785)
 mod:SetZone()
 

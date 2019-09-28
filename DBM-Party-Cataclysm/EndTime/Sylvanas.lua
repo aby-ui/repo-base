@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(323, "DBM-Party-Cataclysm", 12, 184)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 195 $"):sub(12, -3))
+mod:SetRevision("20190417010024")
 mod:SetCreatureID(54123)
 mod:SetEncounterID(1882)
 mod:SetZone()
@@ -27,7 +27,7 @@ function mod:OnCombatStart(delay)
 end
 
 function mod:SPELL_AURA_APPLIED(args)
-	if args.spellId == 101412 then
+	if args.spellId == 101412 and self:CheckDispelFilter() then
 		specWarnShriek:Show(args.destName)
 		specWarnShriek:Play("helpdispel")
 	end

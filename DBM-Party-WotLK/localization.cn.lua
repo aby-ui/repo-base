@@ -505,14 +505,6 @@ L:SetMiscLocalization({
 -----------------------
 L = DBM:GetModLocalization(635)
 
-L:SetWarningLocalization({
-	specwarnRadiance		= "光芒耀眼 - 快转身背对"
-})
-
-L:SetOptionLocalization({
-	specwarnRadiance		= "为$spell:66935显示特别警报"
-})
-
 L:SetMiscLocalization({
 	YellCombatEnd	= "I yield! I submit. Excellent work. May I run away now?"
 })
@@ -572,8 +564,7 @@ L:SetWarningLocalization({
 
 L:SetOptionLocalization({
 	specwarnMirroredSoul	= "Show special warning to stop damage on $spell:69051",
-	specwarnWailingSouls	= "Show special warning when $spell:68899 is cast",
-	SetIconOnMirroredTarget	= "Set icons on $spell:69051 targets"
+	specwarnWailingSouls	= "Show special warning when $spell:68899 is cast"
 })
 
 

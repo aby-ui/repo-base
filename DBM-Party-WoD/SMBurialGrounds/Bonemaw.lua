@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1140, "DBM-Party-WoD", 6, 537)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 35 $"):sub(12, -3))
+mod:SetRevision("20190417010024")
 mod:SetCreatureID(75452)
 mod:SetEncounterID(1679)
 
@@ -24,11 +24,11 @@ mod:RegisterEventsInCombat(
 local warnBodySlam				= mod:NewTargetAnnounce(154175, 4)
 local warnCorpseBreath			= mod:NewSpellAnnounce(165578, 2)
 local warnSubmerge				= mod:NewSpellAnnounce(177694, 1)
+local warnInhaleEnd				= mod:NewEndAnnounce(153804, 1)
 
 local specWarnBodySlam			= mod:NewSpecialWarningDodge(154175, nil, nil, nil, 2, 2)
-local specWarnInhale			= mod:NewSpecialWarningSpell(153804, nil, nil, 2, 4, 2)
-local specWarnInhaleEnd			= mod:NewSpecialWarningEnd(153804)
-local specWarnNecroticPitch		= mod:NewSpecialWarningMove(153692)
+local specWarnInhale			= mod:NewSpecialWarningRun(153804, nil, nil, 2, 4, 2)
+local specWarnNecroticPitch		= mod:NewSpecialWarningMove(153692, nil, nil, nil, 1, 8)
 
 local timerBodySlamCD			= mod:NewCDSourceTimer(30, 154175, nil, nil, nil, 3)
 local timerInhaleCD				= mod:NewCDTimer(35, 153804, nil, nil, nil, 6, nil, DBM_CORE_DEADLY_ICON)
@@ -75,7 +75,7 @@ function mod:SPELL_AURA_REMOVED(args)
 	local spellId = args.spellId
 	if spellId == 153804 then
 		self.vb.inhaleActive = false
-		specWarnInhaleEnd:Show()
+		warnInhaleEnd:Show()
 	end
 end
 
@@ -90,8 +90,8 @@ function mod:RAID_BOSS_EMOTE(msg)
 	if msg:find("spell:153804") then--Slightly faster than combat log
 		self.vb.inhaleActive = true
 		specWarnInhale:Show()
+		specWarnInhale:Play("153804")
 		timerInhaleCD:Start()
-		specWarnInhale:Play("153804") 
 	end
 end
 
@@ -106,6 +106,7 @@ end
 function mod:SPELL_PERIODIC_DAMAGE(_, _, _, _, destGUID, destName, _, _, spellId)
 	if spellId == 153692 and not self.vb.inhaleActive and destGUID == UnitGUID("player") and self:AntiSpam(2, 1) then
 		specWarnNecroticPitch:Show()
+		specWarnNecroticPitch:Play("watchfeet")
 	end
 end
 mod.SPELL_ABSORBED = mod.SPELL_PERIODIC_DAMAGE

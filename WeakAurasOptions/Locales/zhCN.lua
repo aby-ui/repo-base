@@ -134,8 +134,9 @@ local L = WeakAuras.L
 	L["Bottom Right"] = "右下"
 	L["Bracket Matching"] = "括号自动匹配"
 	L["Button Glow"] = "按钮发光"
-	L["Can be a name or a UID (e.g., party1). A name only works on friendly players in your group."] = "可以是玩家名字或者 UID (例如：小队1)。只能使用你的团队中友方玩家的名字。"
 	L["Can be a Name or a Unit ID (e.g. party1). A name only works on friendly players in your group."] = "可以是名字或单位 ID（例如 party1），只有在团队中的友方玩家名字是有效的。"
+	--[[Translation missing --]]
+	L["Can be a UID (e.g., party1)."] = "Can be a UID (e.g., party1)."
 	L["Cancel"] = "取消"
 	L["Center"] = "中间"
 	L["Channel Number"] = "频道索引"

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(107, "DBM-Party-Cataclysm", 1, 66)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 174 $"):sub(12, -3))
+mod:SetRevision("20190417010024")
 mod:SetCreatureID(39698)
 mod:SetEncounterID(1039)
 mod:SetZone()
@@ -9,16 +9,16 @@ mod:SetZone()
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
-	"SPELL_AURA_APPLIED",
-	"SPELL_AURA_APPLIED_DOSE"	
+	"SPELL_AURA_APPLIED 75842 75846",
+	"SPELL_AURA_APPLIED_DOSE 75846"	
 )
 
 local warnObsidianArmor		= mod:NewSpellAnnounce(75842, 2)
 local warnSuperheated		= mod:NewCountAnnounce(75846, 3)
 
-local timerSuperheated		= mod:NewTimer(17, "TimerSuperheated", 75846)
+local specWarnSuperheated	= mod:NewSpecialWarningStack(75846, "Tank", 5, nil, nil, 1, 6)
 
-local specWarnSuperheated	= mod:NewSpecialWarningStack(75846, "Tank", 5)
+local timerSuperheated		= mod:NewTimer(17, "TimerSuperheated", 75846, nil, nil, 5)
 
 function mod:OnCombatStart(delay)
 end
@@ -33,6 +33,7 @@ function mod:SPELL_AURA_APPLIED(args)
 			warnSuperheated:Show(args.amount or 1)
 			if args.amount and args.amount >= 5 then
 				specWarnSuperheated:Show(args.amount)
+				specWarnSuperheated:Play("stackhigh")
 			end
 		end
 	end

@@ -1,5 +1,5 @@
 local MAJOR_VERSION = "LibDogTag-Unit-3.0"
-local MINOR_VERSION = 90000 + (tonumber(("20190906162849"):match("%d+")) or 33333333333333)
+local MINOR_VERSION = 90000 + (tonumber(("20190917021642"):match("%d+")) or 33333333333333)
 
 if MINOR_VERSION > _G.DogTag_Unit_MINOR_VERSION then
 	_G.DogTag_Unit_MINOR_VERSION = MINOR_VERSION
@@ -457,7 +457,7 @@ DogTag:AddTag("Unit", "IsFeignedDeath", {
 })
 
 -- Parnic: pet happiness removed in 4.1
-if not wow_401 and not wow_classic then
+if not wow_401 then
 DogTag:AddTag("Unit", "HappyNum", {
 	code = function()
 		return GetPetHappiness() or 0
@@ -935,7 +935,7 @@ DogTag:AddTag("Unit", "StatusColor", {
 })
 
 -- Parnic: pet happiness removed in 4.1
-if not wow_401 and not wow_classic then
+if not wow_401 then
 DogTag:AddTag("Unit", "HappyColor", {
 	code = function(value)
 		local x = GetPetHappiness()

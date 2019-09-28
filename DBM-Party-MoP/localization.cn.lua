@@ -271,10 +271,6 @@ L= DBM:GetModLocalization(688)
 -----------------------
 L= DBM:GetModLocalization(671)
 
-L:SetOptionLocalization({
-	KickArrow	= "DBM箭头：$spell:114487接近你时"
-})
-
 -----------------------
 -- Durand/High Inquisitor Whitemane --
 -----------------------

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1209, "DBM-Party-WoD", 5, 556)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 24 $"):sub(12, -3))
+mod:SetRevision((string.sub("20190625143517", 1, -5)):sub(12, -3))
 mod:SetCreatureID(84550)
 mod:SetEncounterID(1752)--TODO: VERIFY, "Boss 4" isn't descriptive enough
 mod:SetZone()
@@ -18,14 +18,14 @@ mod:RegisterEventsInCombat(
 )
 
 --TODO, figure out why the hell emote pull doesn't work. Text is correct.
-local warnToxicSpiderling			= mod:NewAddsLeftAnnounce("ej10492", 2, "Interface\\ICONS\\Spell_Nature_Web")
+local warnToxicSpiderling			= mod:NewAddsLeftAnnounce("ej10492", 2, "136113")
 --local warnVenomCrazedPaleOne		= mod:NewSpellAnnounce("ej10502", 3)--I can't find a way to detect these, at least not without flat out scanning all DAMAGE events but that's too much work.
 local warnInhale					= mod:NewSpellAnnounce(169233, 3)
 local warnPhase2					= mod:NewPhaseAnnounce(2, 2, nil, nil, nil, nil, nil, 2)
 
-local specWarnVenomCrazedPaleOne	= mod:NewSpecialWarningSwitch("ej10502", "-Healer")
+local specWarnVenomCrazedPaleOne	= mod:NewSpecialWarningSwitch("ej10502", "-Healer", nil, nil, 1, 2)
 local specWarnGaseousVolley			= mod:NewSpecialWarningSpell(169382, nil, nil, nil, 2, 2)
-local specWarnToxicGas				= mod:NewSpecialWarningMove(169223, nil, nil, nil, 1, 2)
+local specWarnToxicGas				= mod:NewSpecialWarningMove(169223, nil, nil, nil, 1, 8)
 
 mod.vb.spiderlingCount = 4
 mod.vb.phase = 1
@@ -51,7 +51,7 @@ end
 function mod:SPELL_PERIODIC_DAMAGE(_, _, _, _, destGUID, _, _, _, spellId)
 	if spellId == 169223 and destGUID == UnitGUID("player") and self:AntiSpam(2) then
 		specWarnToxicGas:Show()
-		specWarnToxicGas:Play("runaway")
+		specWarnToxicGas:Play("watchfeet")
 	end
 end
 mod.SPELL_ABSORBED = mod.SPELL_PERIODIC_DAMAGE

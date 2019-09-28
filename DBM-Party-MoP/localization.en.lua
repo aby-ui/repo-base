@@ -8,10 +8,6 @@ local L
 -----------------------
 L= DBM:GetModLocalization(672)
 
-L:SetOptionLocalization({
-	SetIconOnAdds	= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format("ej5616")
-})
-
 -----------------------
 -- Lorewalker Stonestep --
 -----------------------
@@ -290,10 +286,6 @@ L= DBM:GetModLocalization(688)
 -- Korlof --
 -----------------------
 L= DBM:GetModLocalization(671)
-
-L:SetOptionLocalization({
-	KickArrow	= "Show DBM arrow when $spell:114487 is near you"
-})
 
 -----------------------
 -- Durand/High Inquisitor Whitemane --

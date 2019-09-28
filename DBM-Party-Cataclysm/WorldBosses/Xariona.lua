@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("Xariona", "DBM-Party-Cataclysm", 15)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 190 $"):sub(12, -3))
+mod:SetRevision((string.sub("20190414033732", 1, -5)):sub(12, -3))
 mod:SetCreatureID(50061)
 mod:SetModelID(32229)
 mod:SetZone()
@@ -9,39 +9,41 @@ mod:SetZone()
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
-	"SPELL_CAST_START",
-	"SPELL_CAST_SUCCESS",
-	"SPELL_AURA_APPLIED",
-	"SPELL_AURA_REMOVED",
+	"SPELL_CAST_START 93556 93546",
+	"SPELL_CAST_SUCCESS 93553",
+	"SPELL_AURA_APPLIED 93551",
+	"SPELL_AURA_REMOVED 93551",
 	"UNIT_POWER_FREQUENT",
 	"UNIT_SPELLCAST_SUCCEEDED"
 )
 mod.onlyNormal = true
 
 local warnTwilightZone			= mod:NewSpellAnnounce(93553, 2)--Used for protection against UnleashedMagic
-local warnTwilightFissure		= mod:NewTargetAnnounce(93546, 3)--Typical void zone.
-local warnTwilightBuffet		= mod:NewTargetAnnounce(93551, 3)
+local warnTwilightFissure		= mod:NewTargetNoFilterAnnounce(93546, 3)--Typical void zone.
+local warnTwilightBuffet		= mod:NewTargetNoFilterAnnounce(93551, 3, nil, "Healers", 2)
 local warnUnleashedMagicSoon	= mod:NewPreWarnAnnounce(93556, 10, 3)
-local warnUnleashedMagic		= mod:NewCastAnnounce(93556, 4)--An attack that one shots anyone not in a twilight zone.
 
-local specWarnUnleashedMagic	= mod:NewSpecialWarningSpell(93556, nil, nil, nil, 2)
-local specWarnTwilightFissure	= mod:NewSpecialWarningYou(93546)
+local specWarnUnleashedMagic	= mod:NewSpecialWarningMoveTo(93556, nil, nil, nil, 3, 2)
+local specWarnTwilightFissure	= mod:NewSpecialWarningYou(93546, nil, nil, nil, 1, 2)
 
-local timerTwilightFissureCD	= mod:NewCDTimer(23, 93546)
-local timerTwilightZoneCD		= mod:NewNextTimer(30, 93553)
-local timerTwilightBuffetCD		= mod:NewCDTimer(20, 93551)
-local timerTwilightBuffet		= mod:NewTargetTimer(10, 93551)
-local timerUnleashedMagicCD		= mod:NewCDTimer(66, 93556)--66 Cd but least priority spell, she will cast breath, fissure zone or buffet before this, so overlapping CDs often delay this upwards to 5 seconds late
+local timerTwilightFissureCD	= mod:NewCDTimer(23, 93546, nil, nil, nil, 3)
+local timerTwilightZoneCD		= mod:NewNextTimer(30, 93553, nil, nil, nil, 3)
+local timerTwilightBuffetCD		= mod:NewCDTimer(20, 93551, nil, nil, nil, 3, nil, DBM_CORE_MAGIC_ICON)
+local timerTwilightBuffet		= mod:NewTargetTimer(10, 93551, nil, "Healer", nil, 5, nil, DBM_CORE_HEALER_ICON..DBM_CORE_MAGIC_ICON)
+local timerUnleashedMagicCD		= mod:NewCDTimer(66, 93556, nil, nil, nil, 2)--66 Cd but least priority spell, she will cast breath, fissure zone or buffet before this, so overlapping CDs often delay this upwards to 5 seconds late
 
 local specialCharging = false
 local hasPower = false
+local zoneName = DBM:GetSpellInfo(93553)
 
 function mod:FissureTarget()
 	local targetname = self:GetBossTarget(50061)
 	if not targetname then return end
-	warnTwilightFissure:Show(targetname)
 	if targetname == UnitName("player") then
 		specWarnTwilightFissure:Show()
+		specWarnTwilightFissure:Play("targetyou")
+	else
+		warnTwilightFissure:Show(targetname)
 	end
 end
 
@@ -55,8 +57,8 @@ end
 
 function mod:SPELL_CAST_START(args)
 	if args.spellId == 93556 then
-		warnUnleashedMagic:Show()
-		specWarnUnleashedMagic:Show()
+		specWarnUnleashedMagic:Show(zoneName)
+		specWarnUnleashedMagic:Play("findshelter")
 		timerUnleashedMagicCD:Start()
 	elseif args.spellId == 93546 then
 		self:ScheduleMethod(0.2, "FissureTarget")

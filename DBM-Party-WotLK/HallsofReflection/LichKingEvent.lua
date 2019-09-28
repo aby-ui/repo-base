@@ -1,11 +1,11 @@
 local mod = DBM:NewMod(603, "DBM-Party-WotLK", 16, 276)
 local L = mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 280 $"):sub(12, -3))
+mod:SetRevision("20190417010024")
 --mod:SetEncounterID(843, 844, 1990)
 
 mod:RegisterEvents(
-	"SPELL_AURA_REMOVED",
+	"SPELL_AURA_REMOVED 69708",
 	"UNIT_SPELLCAST_SUCCEEDED boss1"
 )
 

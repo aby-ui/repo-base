@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(127, "DBM-Party-Cataclysm", 4, 70)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 174 $"):sub(12, -3))
+mod:SetRevision("20190417010024")
 mod:SetCreatureID(39587)
 mod:SetEncounterID(1077)
 mod:SetZone()
@@ -16,11 +16,12 @@ mod:RegisterEventsInCombat(
 
 local warnAstralRain	= mod:NewSpellAnnounce(74134, 3)
 local warnVeilSky		= mod:NewSpellAnnounce(74133, 3)
-local warnSupernova		= mod:NewCastAnnounce(74136, 4)
 local warnSplitSoon		= mod:NewAnnounce("WarnSplitSoon", 3)
 
-local timerAstralRain	= mod:NewBuffActiveTimer(8, 74134)
-local timerSupernova	= mod:NewCastTimer(3, 74136)
+local specWarnSupernova	= mod:NewSpecialWarningLookAway(74136, nil, nil, nil, 1, 2)
+
+local timerAstralRain	= mod:NewBuffActiveTimer(8, 74134, nil, nil, nil, 2)
+local timerSupernova	= mod:NewCastTimer(3, 74136, nil, nil, nil, 2)
 
 local warnedSplit
 
@@ -39,7 +40,8 @@ end
 
 function mod:SPELL_CAST_START(args)
 	if args.spellId == 74136 then
-		warnSupernova:Show()
+		specWarnSupernova:Show()
+		specWarnSupernova:Play("turnaway")
 		timerSupernova:Start()
 	end
 end

@@ -8,7 +8,7 @@
 ## X-Embeds: Ace3, LibSharedMedia-3.0, LibSink-2.0
 ## X-Category: Interface Enhancements
 
-embeds.xml 
+#embeds.xml
 
 Locales\Local_enUS.lua
 Locales\Local_zhCN.lua

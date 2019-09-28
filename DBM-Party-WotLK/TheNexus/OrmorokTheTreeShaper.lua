@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(620, "DBM-Party-WotLK", 8, 281)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 248 $"):sub(12, -3))
+mod:SetRevision("20190417010024")
 mod:SetCreatureID(26794)
 mod:SetEncounterID(524, 525, 2012)
 mod:SetZone()
@@ -33,8 +33,8 @@ end
 function mod:SPELL_CAST_SUCCESS(args)
 	if args:IsSpellID(47958, 57082, 57083) then
 		specWarnSpikes:Show()
-		timerSpikesCD:Start()
 		specWarnSpikes:Play("watchstep")
+		timerSpikesCD:Start()
 	elseif args:IsSpellID(48017, 57086) then
 		warningFrenzy:Show()
 	end
@@ -42,10 +42,10 @@ end
 
 function mod:SPELL_AURA_APPLIED(args)
 	if args.spellId == 47981 then
-		timerReflection:Start()
 		specWarnReflection:Show(args.sourceName)
-		timerReflectionCD:Start()
 		specWarnReflection:Play("stopattack")
+		timerReflection:Start()
+		timerReflectionCD:Start()
 	end
 end
 

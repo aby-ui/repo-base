@@ -619,23 +619,22 @@ local tomtom_waypoint
 function RareScanner:ProcessKill(npcID, forzed)
 	-- Mark as killed
 	if (npcID and private.dbglobal.rares_found[npcID] and private.ZONE_IDS[npcID]) then
-		-- If its a world quest reseteable rare
-		if ((private.RESETABLE_KILLS_ZONE_IDS[private.ZONE_IDS[npcID].zoneID] and RS_tContains(private.RESETABLE_KILLS_ZONE_IDS[private.ZONE_IDS[npcID].zoneID], "all") or RS_tContains(private.RESETABLE_KILLS_ZONE_IDS[private.ZONE_IDS[npcID].zoneID], C_Map.GetMapArtID(private.ZONE_IDS[npcID].zoneID)))
-			or (private.RESETABLE_KILLS_ZONE_IDS[private.dbglobal.rares_found[npcID].mapID] and RS_tContains(private.RESETABLE_KILLS_ZONE_IDS[private.dbglobal.rares_found[npcID].mapID], "all") or RS_tContains(private.RESETABLE_KILLS_ZONE_IDS[private.dbglobal.rares_found[npcID].mapID], C_Map.GetMapArtID(private.dbglobal.rares_found[npcID].mapID)))) then
-			RareScanner:PrintDebugMessage("DEBUG: Se ha detectado que el rare matado con ID "..npcID.." pertenece a una zona reseteable con las misiones del mundo")
-			private.dbchar.rares_killed[npcID] = time() + GetQuestResetTime()
-		-- If its a warfront reseteable rare
-		elseif ((private.RESETABLE_WARFRONT_KILLS_ZONE_IDS[private.ZONE_IDS[npcID].zoneID] and RS_tContains(private.RESETABLE_WARFRONT_KILLS_ZONE_IDS[private.ZONE_IDS[npcID].zoneID], "all") or RS_tContains(private.RESETABLE_WARFRONT_KILLS_ZONE_IDS[private.ZONE_IDS[npcID].zoneID], C_Map.GetMapArtID(private.ZONE_IDS[npcID].zoneID)))
-			or (private.RESETABLE_WARFRONT_KILLS_ZONE_IDS[private.dbglobal.rares_found[npcID].mapID] and RS_tContains(private.RESETABLE_WARFRONT_KILLS_ZONE_IDS[private.dbglobal.rares_found[npcID].mapID], "all") or RS_tContains(private.RESETABLE_WARFRONT_KILLS_ZONE_IDS[private.dbglobal.rares_found[npcID].mapID], C_Map.GetMapArtID(private.dbglobal.rares_found[npcID].mapID)))) then
-			RareScanner:PrintDebugMessage("DEBUG: Se ha detectado que el rare matado con ID "..npcID.." pertenece a una zona reseteable cada 2 semanas")
-			private.dbchar.rares_killed[npcID] = RareScanner:GetWarFrontResetTime()
-		-- If it wont ever be a rare anymore
-		elseif ((private.PERMANENT_KILLS_ZONE_IDS[private.ZONE_IDS[npcID].zoneID] and RS_tContains(private.PERMANENT_KILLS_ZONE_IDS[private.ZONE_IDS[npcID].zoneID], "all") or RS_tContains(private.PERMANENT_KILLS_ZONE_IDS[private.ZONE_IDS[npcID].zoneID], C_Map.GetMapArtID(private.ZONE_IDS[npcID].zoneID)))
-			or (private.PERMANENT_KILLS_ZONE_IDS[private.dbglobal.rares_found[npcID].mapID] and RS_tContains(private.PERMANENT_KILLS_ZONE_IDS[private.dbglobal.rares_found[npcID].mapID], "all") or RS_tContains(private.PERMANENT_KILLS_ZONE_IDS[private.dbglobal.rares_found[npcID].mapID], C_Map.GetMapArtID(private.dbglobal.rares_found[npcID].mapID)))) then
-			RareScanner:PrintDebugMessage("DEBUG: Se ha detectado que el rare matado deja de ser rare eternamente")
-			private.dbchar.rares_killed[npcID] = ETERNAL_DEATH
+		-- If the npc belongs to several zones we have to use the players zone
+		if (type(private.ZONE_IDS[npcID].zoneID) == "table") then
+			local playerZoneID = C_Map.GetBestMapForUnit("player")
+			if (not playerZoneID) then
+				return
+			end
+			
+			for zoneID, zoneInfo in pairs (private.ZONE_IDS[npcID].zoneID) do
+				if (playerZoneID == zoneID) then
+					RareScanner:ProcessKillByZone(npcID, zoneID)
+					break
+				end
+			end
+		else
+			RareScanner:ProcessKillByZone(npcID, private.ZONE_IDS[npcID].zoneID)
 		end
-		-- If it respawns after a while we dont need to keep track of death
 		
 		-- Extracts quest id if we don't have it
 		-- Avoids shift-left-click events
@@ -693,6 +692,31 @@ function RareScanner:ProcessKill(npcID, forzed)
 	-- We can ignore this ones
 	elseif (npcID) then
 		private.dbchar.rares_killed[npcID] = ETERNAL_DEATH
+	end
+end
+
+function RareScanner:ProcessKillByZone(npcID, zoneID)
+	-- If its a world quest reseteable rare
+	if ((private.RESETABLE_KILLS_ZONE_IDS[zoneID] and RS_tContains(private.RESETABLE_KILLS_ZONE_IDS[zoneID], "all") or RS_tContains(private.RESETABLE_KILLS_ZONE_IDS[zoneID], C_Map.GetMapArtID(zoneID)))
+		or (private.RESETABLE_KILLS_ZONE_IDS[private.dbglobal.rares_found[npcID].mapID] and RS_tContains(private.RESETABLE_KILLS_ZONE_IDS[private.dbglobal.rares_found[npcID].mapID], "all") or RS_tContains(private.RESETABLE_KILLS_ZONE_IDS[private.dbglobal.rares_found[npcID].mapID], C_Map.GetMapArtID(private.dbglobal.rares_found[npcID].mapID)))) then
+		RareScanner:PrintDebugMessage("DEBUG: Se ha detectado que el rare matado con ID "..npcID.." pertenece a una zona reseteable con las misiones del mundo")
+		private.dbchar.rares_killed[npcID] = time() + GetQuestResetTime()
+	-- If its a warfront reseteable rare
+	elseif ((private.RESETABLE_WARFRONT_KILLS_ZONE_IDS[zoneID] and RS_tContains(private.RESETABLE_WARFRONT_KILLS_ZONE_IDS[zoneID], "all") or RS_tContains(private.RESETABLE_WARFRONT_KILLS_ZONE_IDS[zoneID], C_Map.GetMapArtID(zoneID)))
+		or (private.RESETABLE_WARFRONT_KILLS_ZONE_IDS[private.dbglobal.rares_found[npcID].mapID] and RS_tContains(private.RESETABLE_WARFRONT_KILLS_ZONE_IDS[private.dbglobal.rares_found[npcID].mapID], "all") or RS_tContains(private.RESETABLE_WARFRONT_KILLS_ZONE_IDS[private.dbglobal.rares_found[npcID].mapID], C_Map.GetMapArtID(private.dbglobal.rares_found[npcID].mapID)))) then
+		RareScanner:PrintDebugMessage("DEBUG: Se ha detectado que el rare matado con ID "..npcID.." pertenece a una zona reseteable cada 2 semanas")
+		private.dbchar.rares_killed[npcID] = RareScanner:GetWarFrontResetTime()
+	-- If it wont ever be a rare anymore
+	elseif ((private.PERMANENT_KILLS_ZONE_IDS[zoneID] and RS_tContains(private.PERMANENT_KILLS_ZONE_IDS[zoneID], "all") or RS_tContains(private.PERMANENT_KILLS_ZONE_IDS[zoneID], C_Map.GetMapArtID(zoneID)))
+		or (private.PERMANENT_KILLS_ZONE_IDS[private.dbglobal.rares_found[npcID].mapID] and RS_tContains(private.PERMANENT_KILLS_ZONE_IDS[private.dbglobal.rares_found[npcID].mapID], "all") or RS_tContains(private.PERMANENT_KILLS_ZONE_IDS[private.dbglobal.rares_found[npcID].mapID], C_Map.GetMapArtID(private.dbglobal.rares_found[npcID].mapID)))) then
+		RareScanner:PrintDebugMessage("DEBUG: Se ha detectado que el rare matado deja de ser rare eternamente")
+		private.dbchar.rares_killed[npcID] = ETERNAL_DEATH
+	end
+	-- If it respawns after a while we dont need to keep track of death
+	RareScanner:PrintDebugMessage("DEBUG: Se ha detectado que el rare matado con ID "..npcID.." pertenece a una zona donde permanece siendo rare")
+	
+	if (private.dbglobal.recentlySeen[npcID]) then
+		private.dbglobal.recentlySeen[npcID] = nil
 	end
 end
 
@@ -968,8 +992,11 @@ function RareScanner:UpdateRareFound(npcID, vignetteInfo, coordinates)
 		-- If it shows up in different places, be sure that we got a good one
 		elseif (private.ZONE_IDS[npcID] and type(private.ZONE_IDS[npcID].zoneID) == "table") then
 			local playerCurrentMap = C_Map.GetBestMapForUnit("player")
-			if (RS_tContains(private.ZONE_IDS[npcID], playerCurrentMap)) then
-				currentMap = playerCurrentMap
+			for zoneID, zoneInfo in pairs (private.ZONE_IDS[npcID].zoneID) do
+				if (zoneID == playerCurrentMap) then
+					currentMap = playerCurrentMap
+					break
+				end
 			end
 		-- If we dont have it in our database gets the players map
 		else
@@ -999,12 +1026,6 @@ function RareScanner:UpdateRareFound(npcID, vignetteInfo, coordinates)
 	if (not currentMap or currentMap == 0) then
 		return
 	end
-	
-	-- If we got a list of zones, get the first one
-	if (type (currentMap) == "table") then
-		local i, v = next(currentMap, nil)
-		currentMap = v
-	end
 
 	local vignettePosition = nil
 	if (coordinates and coordinates.x and coordinates.y) then
@@ -1027,14 +1048,11 @@ function RareScanner:UpdateRareFound(npcID, vignetteInfo, coordinates)
 		private.dbglobal.rares_found[npcID].foundTime = time()
 		private.dbglobal.rares_found[npcID].coordX = mapX
 		private.dbglobal.rares_found[npcID].coordY = mapY
-		
-		-- If we don't have artID add it
-		if (not private.dbglobal.rares_found[npcID].artID) then
-			private.dbglobal.rares_found[npcID].artID = art
-		end
+		private.dbglobal.rares_found[npcID].mapID = currentMap
+		private.dbglobal.rares_found[npcID].artID = art
 			
 		RareScanner:PrintDebugMessage("DEBUG: Detectado NPC que ya habiamos localizado, se actualiza la fecha y sus coordenadas")
-	else		
+	else	
 		private.dbglobal.rares_found[npcID] = { mapID = currentMap, coordX = mapX, coordY = mapY, atlasName = atlas, artID = art, foundTime = time() }
 		RareScanner:PrintDebugMessage("DEBUG: Guardado en private.dbglobal.rares_found (ID: "..npcID.." MAPID: "..currentMap.." COORDX: "..mapX.." COORDY: "..mapY.." TIMESTAMP: "..time().." ATLASNAME: "..atlas.." ARTID: "..art)
 	end
@@ -1566,14 +1584,29 @@ end
 
 function RareScanner:LoadNotDiscoveredList(originList, destinyList)
 	for k, v in pairs (originList) do
-		if (v.zoneID ~= 0 and v.x and v.y and not private.dbglobal.rares_found[k] and (not private.dbglobal.rares_not_discovered_ignored or not private.dbglobal.rares_not_discovered_ignored[k])) then
-			if (not destinyList[v.zoneID]) then
-				destinyList[v.zoneID] = {}
+		-- if the entity has a list of zones associated
+		if (v.zoneID and type(v.zoneID) == "table") then
+			for zoneID, zoneInfo in pairs (v.zoneID) do
+				if (not private.dbglobal.rares_found[k] and (not private.dbglobal.rares_not_discovered_ignored or not private.dbglobal.rares_not_discovered_ignored[k])) then
+					if (not destinyList[zoneID]) then
+						destinyList[zoneID] = {}
+					end
+					
+					destinyList[zoneID][k] = {}
+					destinyList[zoneID][k].x = zoneInfo.x
+					destinyList[zoneID][k].y = zoneInfo.y
+				end
 			end
-			
-			destinyList[v.zoneID][k] = {}
-			destinyList[v.zoneID][k].x = v.x
-			destinyList[v.zoneID][k].y = v.y
+		else
+			if (v.zoneID ~= 0 and v.x and v.y and not private.dbglobal.rares_found[k] and (not private.dbglobal.rares_not_discovered_ignored or not private.dbglobal.rares_not_discovered_ignored[k])) then
+				if (not destinyList[v.zoneID]) then
+					destinyList[v.zoneID] = {}
+				end
+				
+				destinyList[v.zoneID][k] = {}
+				destinyList[v.zoneID][k].x = v.x
+				destinyList[v.zoneID][k].y = v.y
+			end
 		end
 	end
 end

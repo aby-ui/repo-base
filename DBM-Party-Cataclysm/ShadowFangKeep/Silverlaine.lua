@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(97, "DBM-Party-Cataclysm", 6, 64)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 174 $"):sub(12, -3))
+mod:SetRevision("20190417010024")
 mod:SetCreatureID(3887)
 mod:SetEncounterID(1070)
 mod:SetZone()
@@ -9,15 +9,15 @@ mod:SetZone()
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
-	"SPELL_AURA_APPLIED 93956 93956",
-	"SPELL_AURA_REMOVED",
+	"SPELL_AURA_APPLIED 93956",
+	"SPELL_AURA_REMOVED 93956",
 	"SPELL_CAST_START 93857"
 )
 
 local warnVeilShadow	= mod:NewSpellAnnounce(93956, 3)
 local warnWorgenSpirit	= mod:NewSpellAnnounce(93857, 3)
 
-local timerVeilShadow	= mod:NewBuffFadesTimer(8, 93956)
+local timerVeilShadow	= mod:NewBuffFadesTimer(8, 93956, nil, nil, nil, 5, nil, DBM_CORE_MAGIC_ICON)
 
 local veilShadowCast = 0
 

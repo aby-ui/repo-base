@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(340, "DBM-Party-Cataclysm", 12, 184)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 174 $"):sub(12, -3))
+mod:SetRevision("20190417010024")
 mod:SetCreatureID(54431)
 mod:SetEncounterID(1881)
 mod:SetZone()
@@ -25,16 +25,9 @@ local warnPulverize		= mod:NewSpellAnnounce(101625, 3)
 local timerTotem		= mod:NewNextTimer(25, 101614, nil, nil, nil, 5)
 local timerPulverize	= mod:NewNextTimer(40, 101625, nil, nil, nil, 3)
 
-local spamBlast = 0
-local spamPulverize = 0
-local totemCount = 0
-
 function mod:OnCombatStart(delay)
 	timerTotem:Start(10-delay)
 	timerPulverize:Start(30-delay)
-	spamBlast = 0
-	spamPulverize = 0
-	totemCount = 0
 end
 
 function mod:SPELL_AURA_APPLIED(args)

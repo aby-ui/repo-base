@@ -1,6 +1,6 @@
 ﻿--[[
 Name: LibWindow-1.1
-Revision: $Rev: 8 $
+Revision: $Rev: 18 $
 Author(s): Mikk (dpsgnome@mail.com)
 Website: http://old.wowace.com/wiki/LibWindow-1.1
 Documentation: http://old.wowace.com/wiki/LibWindow-1.1
@@ -11,7 +11,7 @@ License: Public Domain
 ]]
 
 local MAJOR = "LibWindow-1.1"
-local MINOR = tonumber(("$Revision: 8 $"):match("(%d+)"))
+local MINOR = tonumber(("$Revision: 18 $"):match("(%d+)"))
 
 local lib = LibStub:NewLibrary(MAJOR,MINOR)
 if not lib then return end
@@ -125,6 +125,7 @@ function lib.SavePosition(frame)
 	local parent = frame:GetParent() or nilParent
 	-- No, this won't work very well with frames that aren't parented to nil or UIParent
 	local s = frame:GetScale()
+	if not s then return end
 	local left,top = frame:GetLeft()*s, frame:GetTop()*s
 	local right,bottom = frame:GetRight()*s, frame:GetBottom()*s
 	local pwidth, pheight = parent:GetWidth(), parent:GetHeight()

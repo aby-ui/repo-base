@@ -466,15 +466,14 @@ end
 end
 
 function srti.IsNameplateUnderMouse()
-	--do return end --163ui fix 7.2
+	do return end --163ui fix 7.2
 	local numch = WorldFrame:GetNumChildren();
 	if numch > 0 then
 		for i=1,numch do
 			local f=select(i,WorldFrame:GetChildren());
-			x = f:IsForbidden()  -- Check for forbidden frames
-			if x then
+			if f:IsForbidden() then
 			else
-				if f:IsShown() and f:IsMouseOver() then
+				if f:IsShown() and select(2, pcall(f.IsMouseOver, f)) then
 					-- 3rd party nameplate addons
 					if f.aloftData then -- Aloft
 						return 1;

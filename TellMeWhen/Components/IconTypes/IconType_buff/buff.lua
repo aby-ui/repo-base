@@ -538,7 +538,7 @@ function Type:Setup(icon)
 
 	-- Setup the filters for UnitAura.
 	-- Filterh is used as the filter in a second loop through if the icon is checking both buffs and debuffs.
-	icon.Filter = icon.BuffOrDebuff
+	icon.Filter = icon.BuffOrDebuff == "EITHER" and "HELPFUL" or icon.BuffOrDebuff
 	icon.Filterh = icon.BuffOrDebuff == "EITHER" and "HARMFUL"
 	if icon.OnlyMine then
 		icon.Filter = icon.Filter .. "|PLAYER"

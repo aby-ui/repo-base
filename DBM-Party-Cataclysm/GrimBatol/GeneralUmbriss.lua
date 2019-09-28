@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(131, "DBM-Party-Cataclysm", 3, 71)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 194 $"):sub(12, -3))
+mod:SetRevision("20190417010024")
 mod:SetCreatureID(39625)
 mod:SetEncounterID(1051)
 mod:SetZone()
@@ -19,7 +19,6 @@ mod:RegisterEventsInCombat(
 --TODO, ground siege? 21-31 variation, too much to add timer at this time
 local warnBleedingWound		= mod:NewTargetAnnounce(74846, 4, nil, "Tank|Healer")
 local warnMalady			= mod:NewTargetAnnounce(74837, 2)
-local warnMalice			= mod:NewSpellAnnounce(90170, 4, nil, "Tank|Healer")
 local warnFrenzySoon		= mod:NewSoonAnnounce(74853, 2, nil, "Tank|Healer")
 local warnFrenzy			= mod:NewSpellAnnounce(74853, 3, nil, "Tank|Healer")
 local warnBlitz				= mod:NewTargetAnnounce(74670, 3)
@@ -35,10 +34,10 @@ local timerBleedingWoundCD	= mod:NewCDTimer(20.5, 74846, nil, "Tank|Healer", nil
 local timerBlitz			= mod:NewCDTimer(21.8, 74670, nil, nil, nil, 3)
 local timerMalice			= mod:NewBuffActiveTimer(20, 90170, nil, "Tank|Healer", 2, 5)
 
-local warnedFrenzy = false
+mod.vb.warnedFrenzy = false
 
 function mod:OnCombatStart(delay)
-	warnedFrenzy = false
+	self.vb.warnedFrenzy = false
 end
 
 function mod:SPELL_AURA_APPLIED(args)
@@ -51,7 +50,6 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif spellId == 74837 then
 		warnMalady:CombinedShow(0.3, args.destName)
 	elseif spellId == 90170 then
-		warnMalice:Show()
 		specWarnMalice:Show()
 		specWarnMalice:Play("defensive")
 		timerMalice:Start()
@@ -85,9 +83,9 @@ end
 
 function mod:UNIT_HEALTH(uId)
 	local h = UnitHealth(uId) / UnitHealthMax(uId) * 100
-	if h > 33 and h < 38 and not warnedFrenzy then
+	if h > 33 and h < 38 and not self.vb.warnedFrenzy then
 		warnFrenzySoon:Show()
-		warnedFrenzy = true
+		self.vb.warnedFrenzy = true
 	end
 end
 

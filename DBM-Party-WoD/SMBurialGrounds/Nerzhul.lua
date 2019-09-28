@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1160, "DBM-Party-WoD", 6, 537)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 35 $"):sub(12, -3))
+mod:SetRevision("20190417010024")
 mod:SetCreatureID(76407)
 mod:SetEncounterID(1682)
 
@@ -28,8 +28,8 @@ function mod:OmenOfDeathTarget(targetname, uId)
 	if not targetname then return end
 	if targetname == UnitName("player") then
 		specWarnOmenOfDeath:Show()
-		yellOmenOfDeath:Yell()
 		specWarnOmenOfDeath:Play("runaway")
+		yellOmenOfDeath:Yell()
 	elseif self:CheckNearby(8, targetname) then
 		specWarnOmenOfDeathNear:Show(targetname)
 		specWarnOmenOfDeathNear:Play("watchstep")
@@ -61,7 +61,7 @@ end
 function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 	if spellId == 154671 then
 		specWarnRitualOfBones:Show()
-		timerRitualOfBonesCD:Start()
 		specWarnRitualOfBones:ScheduleVoice(48.5, "specialsoon")
+		timerRitualOfBonesCD:Start()
 	end
 end

@@ -1,12 +1,11 @@
 local mod	= DBM:NewMod(1826, "DBM-Party-Legion", 11, 860)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 2 $"):sub(12, -3))
+mod:SetRevision("20190625143517")
 mod:SetCreatureID(114261, 114260, 999999)--Remove 9s if phase 1 and 2 don't fire UNIT_DIED events
 mod:SetEncounterID(1957)--Shared (so not used for encounter START since it'd fire 3 mods)
 mod:DisableESCombatDetection()--However, with ES disabled, EncounterID can be used for BOSS_KILL/ENCOUNTER_END
 mod:SetZone()
---mod:SetUsedIcons(1)
 --mod:SetHotfixNoticeRev(14922)
 mod:SetBossHPInfoToHighest()
 --mod.respawnTime = 30
@@ -40,9 +39,6 @@ local timerWashAwayCD				= mod:NewAITimer(40, 227783, nil, nil, nil, 3)
 
 --local berserkTimer				= mod:NewBerserkTimer(300)
 
---local countdownFocusedGazeCD		= mod:NewCountdown(40, 198006)
-
---mod:AddSetIconOption("SetIconOnCharge", 198006, true)
 --mod:AddInfoFrameOption(198108, false)
 mod:AddRangeFrameOption(5, 227777)
 

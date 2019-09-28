@@ -1,7 +1,7 @@
 local mod = DBM:NewMod("HoRWaveTimer", "DBM-Party-WotLK", 16)
 local L = mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 280 $"):sub(12, -3))
+mod:SetRevision("20190417010024")
 mod:SetCreatureID(30658)
 mod:SetZone()
 
@@ -13,7 +13,8 @@ mod.noStatistics = true
 
 local warnNewWaveSoon	= mod:NewAnnounce("WarnNewWaveSoon", 2)
 local warnNewWave		= mod:NewAnnounce("WarnNewWave", 3)
-local timerNextWave		= mod:NewTimer(150, "TimerNextWave")
+
+local timerNextWave		= mod:NewTimer(150, "TimerNextWave", 57687, nil, nil, 1)
 
 mod:AddBoolOption("ShowAllWaveWarnings", true, "announce")
 mod:AddBoolOption("ShowAllWaveTimers", false, "timer")
