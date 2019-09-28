@@ -179,6 +179,6 @@ function Kib_TransConfigsTo163()
     local cfgs = {}
     transConfigs(cfgs, GeneralConfigElements)
     transConfigs(cfgs, IndicatorConfigElements)
-    transConfigs(cfgs, TasksConfigElements)
+    --transConfigs(cfgs, TasksConfigElements)
     return cfgs
 end
