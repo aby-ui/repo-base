@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 ## Interface: 80205
 ## Title: BagBrother
 ## Notes: Stores data about your characters inventory, bank, vault and guild bank, so that you may view them from anywhere.
@@ -14,20 +13,3 @@ Interface.lua
 ## Title-zhCN: |cff880303[爱不易]|r BagBrother 离线背包
 ## Notes-zhCN: 储存银行、背包的离线信息
 ## X-Vendor: AbyUI
-=======
-## Interface: 80205
-## Title: BagBrother
-## Notes: Stores data about your characters inventory, bank, vault and guild bank, so that you may view them from anywhere.
-## Author: Jaliborc (João Cardoso)
-## SavedVariables: BrotherBags
-## OptionalDeps: LibStub, WoWUnit
-
-Startup.lua
-Events.lua
-API.lua
-Interface.lua
-
-## Title-zhCN: |cff880303[爱不易]|r BagBrother 离线背包
-## Notes-zhCN: 储存银行、背包的离线信息
-## X-Vendor: AbyUI
->>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4

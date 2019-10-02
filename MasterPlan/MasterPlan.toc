@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 ## Interface: 80205
 ## Title: Master Plan
 ## Notes: Garrision missions UI tweaks.
@@ -29,35 +28,3 @@ LandingAlts.lua
 ## Notes-zhCN: 修改并简化追随者任务面板的操作
 ## Notes-zhTW: 修改并簡化追隨者任務面板的操作
 ## X-Vendor: AbyUI
-=======
-## Interface: 80205
-## Title: Master Plan
-## Notes: Garrision missions UI tweaks.
-## Author: foxlit
-## X-Website: https://www.townlong-yak.com/master-plan/
-## LoadOnDemand: 1
-## RequiredDeps: Blizzard_GarrisonUI, MasterPlanA
-## SavedVariablesPerCharacter: MasterPlanPC
-## Version: 0.116
-## X-Version-Key: reach
-Libs/Evie.lua
-Libs/Reframe.lua
-Locale.lua
-Mark-50.lua
-GarrisonAPI-Data.lua
-GarrisonAPI.lua
-MasterPlan.lua
-MissionsUI.lua
-GarrisonMissions.lua
-GarrisonFollowers.lua
-FollowerSummary.lua
-ShipMoI.lua
-LandingCache.lua
-LandingAlts.lua
-
-## Title-zhCN: |cff880303[爱不易]|r MasterPlan 要塞任务大师
-## Title-zhTW: |cff880303[爱不易]|r MasterPlan 要塞任務大師
-## Notes-zhCN: 修改并简化追随者任务面板的操作
-## Notes-zhTW: 修改并簡化追隨者任務面板的操作
-## X-Vendor: AbyUI
->>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4

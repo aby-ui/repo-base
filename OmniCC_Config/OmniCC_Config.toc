@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 ## Interface: 80205
 ## Title: OmniCC Config
 ## Notes: OmniCC's configuration menu
@@ -14,20 +13,3 @@ panels\panels.xml
 ## Title-zhCN: |cff880303[爱不易]|r OmniCC 配置界面
 ## Notes-zhCN: 技能冷却计时-配置界面模块
 ## X-Vendor: AbyUI
-=======
-## Interface: 80205
-## Title: OmniCC Config
-## Notes: OmniCC's configuration menu
-## Notes-koKR: OmniCC의 설정 메뉴
-## Author: Tuller
-## Dependencies: OmniCC
-## LoadOnDemand: 1
-localization\localization.xml
-widgets\widgets.xml
-mainPanel.lua
-panels\panels.xml
-
-## Title-zhCN: |cff880303[爱不易]|r OmniCC 配置界面
-## Notes-zhCN: 技能冷却计时-配置界面模块
-## X-Vendor: AbyUI
->>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4

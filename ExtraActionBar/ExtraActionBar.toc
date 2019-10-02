@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 ## Interface: 80205
 ## Notes: 顯示額外動作條
 ## SavedVariablesPerCharacter: MOGUBar_Info
@@ -13,19 +12,3 @@ MOGUBar.xml
 ## Title:  |cff880303[爱不易]|r ExtraAct 额外动作条
 ## Notes-zhCN: 显示额外动作条
 ## X-Vendor: AbyUI
-=======
-## Interface: 80205
-## Notes: 顯示額外動作條
-## SavedVariablesPerCharacter: MOGUBar_Info
-Library\MoguLibrary.lua
-Library\MoguEvent.lua
-Library\MoguScale.lua
-
-toggle.lua
-Bindings.lua
-MOGUBar.xml
-
-## Title:  |cff880303[爱不易]|r ExtraAct 额外动作条
-## Notes-zhCN: 显示额外动作条
-## X-Vendor: AbyUI
->>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4

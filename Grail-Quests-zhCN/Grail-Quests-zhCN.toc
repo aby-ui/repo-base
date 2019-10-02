@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 ## Interface: 80205
 ## Title: Grail |r|cff69ccf0Quests zhCN|r
 ## Author: Scott M Harrison
@@ -13,19 +12,3 @@ Grail-Quests-zhCN.lua
 ## X-Vendor: AbyUI
 
 
-=======
-## Interface: 80205
-## Title: Grail |r|cff69ccf0Quests zhCN|r
-## Author: Scott M Harrison
-## Notes: Provides localized zhCN quest names to Grail
-## Version: 25901
-## Dependencies: Grail
-## LoadOnDemand: 1
-
-Grail-Quests-zhCN.lua
-
-## Title: |cff880303[爱不易]|r Grail 任务名简体中文
-## X-Vendor: AbyUI
-
-
->>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4

@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 ## Interface: 80205
 ## Title: DuowanChat
 # Title-zhCN: 聊天增强
@@ -18,24 +17,3 @@ frame.xml
 ## Title: |cff880303[爱不易]|r DWChat 聊天增强
 ## Notes-zhCN: 聊天增加插件，提供快捷切换频道和聊天表情等。
 ## X-Vendor: AbyUI
-=======
-## Interface: 80205
-## Title: DuowanChat
-# Title-zhCN: 聊天增强
-# Title-zhTW: 聊天增强
-## Author: Terry, dugu@bigfoot
-## Version: 0.1
-## X-DuowanAddon: 介面聊天
-## SavedVariables: DuowanChatDB, DuowanChatPlayerDB
-### SavedVariablesPerCharacter: DuowanChatPerDB
-## LoadOnDemand: 
-
-locale\locale.en.lua
-locale\locale.cn.lua
-locale\locale.tw.lua
-frame.xml
-
-## Title: |cff880303[爱不易]|r DWChat 聊天增强
-## Notes-zhCN: 聊天增加插件，提供快捷切换频道和聊天表情等。
-## X-Vendor: AbyUI
->>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4

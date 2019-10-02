@@ -1,8 +1,3 @@
-<<<<<<< HEAD
 ﻿<Ui>
 	<Include file = "Libs\DRData-1.0\DRData-1.0.xml"/>
-=======
-﻿<Ui>
-	<Include file = "Libs\DRData-1.0\DRData-1.0.xml"/>
->>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4
 </Ui>

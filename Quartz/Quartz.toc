@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 ## Title: Quartz
 ## Interface: 80205
 ## Notes: Modular casting bar.
@@ -46,52 +45,3 @@ modules\EnemyCasts.lua
 ## Title: |cff880303[爱不易]|r Quartz 美化施法条
 ## Notes-zhCN: 美化和增强施法条，支持延迟显示等贴心功能
 ## X-Vendor: AbyUI
-=======
-## Title: Quartz
-## Interface: 80205
-## Notes: Modular casting bar.
-## Author: Nevcairiel, Nymbia
-## Version: 3.5.2
-## X-License: GPL v2
-## X-Credits: Ammo (some code based on PitBull_CastBar), kergoth (Tradeskill Merge module idea), Roartindon (Lag Embed mode for Latency module)
-## X-Curse-Project-ID: 4558
-## X-WoWI-ID: 7158
-
-## Title-ruRU: Кварц
-## Notes-ruRU: Модульная полоса применений.
-## Notes-frFR: Barres d'incantation modulaires.
-## Notes-zhCN: 模块化施法条。
-## Notes-zhTW: 模組化施法條。
-
-## SavedVariables: Quartz3DB
-## OptionalDeps: Ace3, LibSharedMedia-3.0, AceGUI-3.0-SharedMediaWidgets, SharedMedia, FlightMap
-
-locale\locale.xml
-
-Quartz.lua
-Config.lua
-
-QuartzStatusBar.lua
-
-CastBarTemplate.lua
-
-modules\Player.lua
-modules\Target.lua
-modules\Focus.lua
-modules\Pet.lua
-modules\Latency.lua
-modules\Tradeskill.lua
-modules\GCD.lua
-modules\Buff.lua
-modules\Mirror.lua
-modules\Timer.lua
-modules\Swing.lua
-modules\Interrupt.lua
-modules\Range.lua
-modules\Flight.lua
-modules\EnemyCasts.lua
-
-## Title: |cff880303[爱不易]|r Quartz 美化施法条
-## Notes-zhCN: 美化和增强施法条，支持延迟显示等贴心功能
-## X-Vendor: AbyUI
->>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4

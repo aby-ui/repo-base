@@ -8,12 +8,6 @@
 ## OptionalDeps: Masque, LibStub, CallbackHandler-1.0, Ace3, LibDualSpec-1.0
 ## X-Curse-Project-ID: 85814
 
-<<<<<<< HEAD
-=======
-#@no-lib-strip@
-#embeds.xml
-#@end-no-lib-strip@
->>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4
 
 Locales\Locales.xml
 OmniBar.xml

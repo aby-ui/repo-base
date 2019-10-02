@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 ## Interface: 80205
 ## Version: 1.0
 ## Title: GridBorderStyle
@@ -10,16 +9,3 @@
 GBSLocal-enUS.lua
 GBSLocal-zhCN.lua
 GridBorderStyle.lua
-=======
-## Interface: 80205
-## Version: 1.0
-## Title: GridBorderStyle
-## Notes: Add Border Style to Grid Frames
-## Author: hokohuang@ngacn
-## Version: 0.9
-## Dependencies: Grid, GridManaBars
-
-GBSLocal-enUS.lua
-GBSLocal-zhCN.lua
-GridBorderStyle.lua
->>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4

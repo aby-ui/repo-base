@@ -1,14 +1,6 @@
-<<<<<<< HEAD
 ## Interface: 80205
 ## X-Vendor: AbyUI
 ## LoadOnDemand: 1
 
 ## Title: |cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r 旧版-德拉诺之王
-=======
-## Interface: 80205
-## X-Vendor: AbyUI
-## LoadOnDemand: 1
-
-## Title: |cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r 旧版-德拉诺之王
->>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4
 ## Notes: 虚拟插件，用来放置DBM一个资料片的模块

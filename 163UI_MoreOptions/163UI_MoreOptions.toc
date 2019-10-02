@@ -1,13 +1,5 @@
-<<<<<<< HEAD
 ## Interface: 80205
 
 ## Title: |cff880303[爱不易]|r AbyUI 额外参数设置
 ## X-Vendor: AbyUI
 
-=======
-## Interface: 80205
-
-## Title: |cff880303[爱不易]|r AbyUI 额外参数设置
-## X-Vendor: AbyUI
-
->>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4

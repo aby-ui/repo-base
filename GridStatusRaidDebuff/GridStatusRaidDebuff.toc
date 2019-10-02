@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 ## Interface: 80205
 ## Title: GridStatusRaidDebuff
 ## Notes: Adds a status to Grid for debuffs applied by Raid Bosses.
@@ -23,29 +22,3 @@ Core.lua
 
 ## Title: |cff880303[爱不易]|r Grid 团队减益
 ## X-Vendor: AbyUI
-=======
-## Interface: 80205
-## Title: GridStatusRaidDebuff
-## Notes: Adds a status to Grid for debuffs applied by Raid Bosses.
-## Notes-ruRU: Дополнительный модуль для Gridа, отображает дебаффы рейдовых боссов.
-## Notes-zhCN: [Grid] 在 Grid 添加团队减益状态提示。
-## Notes-zhTW: [Grid] 在 Grid 添加團隊減益狀態提示。
-## Author: Azelkeeber(KR-Tirion),Toadkiller,Stassart,tptbk(Doadin-Malorne-US)
-## Version: 8.2.1.0
-## Grid Author: Pastamancer & Maia
-## Dependencies: Grid
-## OptionalDeps: LibBabble-Zone-3.0, LibBabble-Boss-3.0, AceLocale-3.0, Grid, Plexus
-## X-Category: UnitFrame
-## X-GridStatusModule: GridStatusRaidDebuff
-
-#@no-lib-strip@
-..\!!!Libs\!External\LibBabble-Boss-3.0\lib.xml
-#@end-no-lib-strip@
-
-Locale\Locale.xml
-
-Core.lua
-
-## Title: |cff880303[爱不易]|r Grid 团队减益
-## X-Vendor: AbyUI
->>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4

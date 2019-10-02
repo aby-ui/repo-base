@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 ## Interface: 80205
 ## Title: Kaliel's Tracker
 ## Notes: Improved Blizzard Objective Tracker
@@ -24,30 +23,3 @@ Modules.xml
 ## Title: |cff880303[爱不易]|r !KalTracker 任务追踪增强
 ## X-Vendor: AbyUI
 
-=======
-## Interface: 80205
-## Title: Kaliel's Tracker
-## Notes: Improved Blizzard Objective Tracker
-## Version: 3.1.10
-## Author: Kaliel (Marouan Sabbagh)
-
-## SavedVariables: KalielsTrackerDB
-## Dependencies: Blizzard_ObjectiveTracker
-## OptionalDeps: Ace3, LibSharedMedia-3.0, AceGUI-3.0-SharedMediaWidgets, LibSink-2.0, MSA-DropDownMenu-1.0, Masque, PetTracker, TomTom
-
-Locales.lua
-Libs.xml
-Media.lua
-Utils.lua
-
-KalielsTracker.lua
-KalielsTracker.xml
-Options.lua
-
-Modules.xml
-
-
-## Title: |cff880303[爱不易]|r !KalTracker 任务追踪增强
-## X-Vendor: AbyUI
-
->>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4

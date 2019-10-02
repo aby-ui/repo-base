@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 ## Interface: 80205
 ## Title: GTFO
 ## Notes: GTFO, you're dying!
@@ -48,54 +47,3 @@ GTFO.xml
 ## Notes-zhCN: 自动声音提示站位危险插件.
 ## Notes-zhTW: 自動聲音提示站位危險插件.
 ## X-Vendor: AbyUI
-=======
-## Interface: 80205
-## Title: GTFO
-## Notes: GTFO, you're dying!
-## Author: Zensunim of Dragonblight
-## Version: 4.49.4
-## DefaultState: Enabled
-## SavedVariables: GTFOData
-Libs\LibUIDropDownMenu\LibUIDropDownMenu.xml
-Localization\enUS.lua
-Localization\zhCN.lua
-Localization\zhTW.lua
-Localization\Boss.lua
-GTFO_PowerAuras.lua
-GTFO_WeakAuras.lua
-GTFO_Recount.lua
-GTFO_Skada.lua
-GTFO.lua
-GTFO_Ignore.lua
-GTFO_Spells_Generic.lua
-GTFO_Spells_Classic.lua
-GTFO_Spells_BC.lua
-GTFO_Spells_LK.lua
-GTFO_Spells_CAT.lua
-GTFO_Spells_MP.lua
-GTFO_Spells_LGN.lua
-GTFO_Spells_BFA.lua
-GTFO_Spells_Special.lua
-GTFO_Fail_Generic.lua
-GTFO_Fail_Classic.lua
-GTFO_Fail_BC.lua
-GTFO_Fail_LK.lua
-GTFO_Fail_CAT.lua
-GTFO_Fail_MP.lua
-GTFO_Fail_LGN.lua
-GTFO_Fail_BFA.lua
-GTFO_FF_BC.lua
-GTFO_FF_LK.lua
-GTFO_FF_CAT.lua
-GTFO_FF_MP.lua
-GTFO_FF_LGN.lua
-GTFO_FF_BFA.lua
-GTFO_Mobs.lua
-GTFO.xml
-
-## Title-zhCN: |cff880303[爱不易]|r GTFO 站位提醒
-## Title-zhTW: |cff880303[爱不易]|r GTFO 站位提醒
-## Notes-zhCN: 自动声音提示站位危险插件.
-## Notes-zhTW: 自動聲音提示站位危險插件.
-## X-Vendor: AbyUI
->>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4

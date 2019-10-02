@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 ## Interface: 80205
 ## Title: Bagnon Config
 ## Author: Tuller and Jaliborc (João Cardoso)
@@ -11,17 +10,3 @@
 
 ## Title-zhCN: |cff880303[爱不易]|r Bagnon 整合背包配置
 ## X-Vendor: AbyUI
-=======
-## Interface: 80205
-## Title: Bagnon Config
-## Author: Tuller and Jaliborc (João Cardoso)
-## Notes: An options menu for Bagnon
-## Dependencies: Bagnon
-## LoadOnDemand: 1
-
-..\Bagnon\modules\config.xml
-
-
-## Title-zhCN: |cff880303[爱不易]|r Bagnon 整合背包配置
-## X-Vendor: AbyUI
->>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4

@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 ## Interface: 80205
 ## Title: Masque_Parabole
 ## Notes: Parabole skin for Masque
@@ -19,25 +18,3 @@
 skin.lua
 ## Title: |cff880303[爱不易]|r Masque 皮肤Parabole
 ## X-Vendor: AbyUI
-=======
-## Interface: 80205
-## Title: Masque_Parabole
-## Notes: Parabole skin for Masque
-## Author: Kelly Crabbé AKA MoonWitch
-## Version: 6.0.0.1
-## Dependencies: Masque
-## X-Website: http://www.wowace.com/projects/masque_parabole
-## X-Category: Interface Enhancements
-## X-Email: kelly.crabbe@gmail.com
-## X-Curse-Project-Name: Masque_Parabole
-## X-Curse-Project-ID: masque_parabole
-## X-Curse-Repository-ID: wow/masque_parabole/mainline
-## X-Curse-Packaged-Version: 6.0.0.1-stable
-## X-Curse-Project-Name: Masque_Parabole
-## X-Curse-Project-ID: masque_parabole
-## X-Curse-Repository-ID: wow/masque_parabole/mainline
-
-skin.lua
-## Title: |cff880303[爱不易]|r Masque 皮肤Parabole
-## X-Vendor: AbyUI
->>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4

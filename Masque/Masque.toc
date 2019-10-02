@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 ## Interface: 80205
 ## Title: Masque
 ## Version: 8.0.1
@@ -39,45 +38,3 @@ Core\Core.xml
 
 ## Title-zhCN: |cff880303[爱不易]|r Masque 按钮美化
 ## X-Vendor: AbyUI
-=======
-## Interface: 80205
-## Title: Masque
-## Version: 8.0.1
-## Author: StormFX, JJSheets
-## Notes: A dynamic button-skinning engine.
-## Notes-deDE: Ein Addon zur dynamischen Änderung der Buttonoptiken.
-## Notes-esES: Cambiar dinamicamente la aparencia de botones.
-## Notes-esMX: Cambiar dinamicamente la aparencia de botones.
-## Notes-frFR: Un add-on de skinnage dynamique des boutons.
-## Notes-itIT: Un'add-on per lo skinning dinamico dei pulsanti.
-## Notes-koKR: 동적인 버튼 스킨 입히기 애드온 입니다.
-## Notes-ptBR: Um add-on de skin dinâmico de botões.
-## Notes-ruRU: Аддон для добавления скинов к панелям команд.
-## Notes-zhCN: 一个动态按钮皮肤插件。
-## Notes-zhTW: 動態套用按鈕佈景主題的插件。
-## OptionalDeps: Ace3, LibDBIcon-1.0, LibDualSpec-1.0
-## SavedVariables: MasqueDB
-## X-Website: https://www.wowace.com/projects/masque
-## X-Category: Interface Enhancements
-## X-Curse-Project-ID: 13592
-## X-WoWI-ID: 12097
-
-# Libraries
-#Libs\Libs.xml
-
-# Locales
-Locales\Locales.xml
-
-# Add-On
-Masque.lua
-
-# Skins
-Skins\Skins.xml
-
-# Core
-Core\Core.xml
-
-
-## Title-zhCN: |cff880303[爱不易]|r Masque 按钮美化
-## X-Vendor: AbyUI
->>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4

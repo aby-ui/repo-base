@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 ## Interface: 80205
 ## Author: p3lim
 ## Version: 70300.29-Release
@@ -15,21 +14,3 @@ Broker_Equipment.lua
 ## Title: |cff880303[爱不易]|r Broker 套装菜单
 ## Notes-zhCN: 快捷显示套装名称
 ## X-Vendor: AbyUI
-=======
-## Interface: 80205
-## Author: p3lim
-## Version: 70300.29-Release
-## Title: Broker Equipment
-## Notes: LDB Equipment Manager plug-in
-## SavedVariables: Broker_EquipmentDB
-
-## OptionalDeps: LibStub, CallbackHandler-1.0, LibDataBroker-1.1
-
-Localization.lua
-Config.lua
-Broker_Equipment.lua
-
-## Title: |cff880303[爱不易]|r Broker 套装菜单
-## Notes-zhCN: 快捷显示套装名称
-## X-Vendor: AbyUI
->>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4

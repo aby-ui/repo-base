@@ -1,12 +1,5 @@
-<<<<<<< HEAD
 <Ui xmlns="http://www.blizzard.com/wow/ui/">
 	<Script file="en.lua"/>
 	<Script file="cn.lua"/>
 	<Script file="tw.lua"/>
-=======
-<Ui xmlns="http://www.blizzard.com/wow/ui/">
-	<Script file="en.lua"/>
-	<Script file="cn.lua"/>
-	<Script file="tw.lua"/>
->>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4
 </Ui>

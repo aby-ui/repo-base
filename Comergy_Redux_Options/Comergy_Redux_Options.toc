@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 ## Interface: 80205
 ## Title: Comergy Redux Options
 ## Notes: Options module for Comergy Redux
@@ -21,27 +20,3 @@ comergyopt.xml
 ## Notes-zhCN: 轻量美观能量值及资源点数监视的插件
 ## X-Vendor: AbyUI
 
-=======
-## Interface: 80205
-## Title: Comergy Redux Options
-## Notes: Options module for Comergy Redux
-## Version: r32
-## Author: Asymptote
-## Dependencies: Comergy_Redux
-## LoadOnDemand: 1
-## X-Curse-Packaged-Version: r32
-## X-Curse-Project-Name: Comergy Redux
-## X-Curse-Project-ID: comergy-redux
-## X-Curse-Repository-ID: wow/comergy-redux/mainline
-
-locales\localization.enUS.lua
-locales\localization.zhCN.lua
-locales\localization.zhTW.lua
-
-comergyopt.xml
-
-## Title-zhCN: |cff880303[爱不易]|r Comergy 配置选项
-## Notes-zhCN: 轻量美观能量值及资源点数监视的插件
-## X-Vendor: AbyUI
-
->>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4

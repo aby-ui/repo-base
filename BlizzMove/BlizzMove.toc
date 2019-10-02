@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 ## Interface: 80205
 ## Title: Blizzmove
 ## Notes: Move those blizzard windows
@@ -18,24 +17,3 @@ Blizzmove.lua
 ## Notes-zhCN: 方便快捷的移动游戏内某些原生的框体.比如游戏原生头像框体.
 ## X-Vendor: AbyUI
 
-=======
-## Interface: 80205
-## Title: Blizzmove
-## Notes: Move those blizzard windows
-## Author: yess
-## Version: v1.2.2
-## X-Email: starfire@fantasymail.de
-## X-Curse-Packaged-Version: v1.2.2
-## X-Curse-Project-Name: BlizzMove
-## X-Curse-Project-ID: blizzmove
-## X-Curse-Repository-ID: wow/blizzmove/mainline
-
-## SavedVariables: BlizzMoveDB
-
-Blizzmove.lua
-
-## Title: |cff880303[爱不易]|r BlizzMove 框架移动
-## Notes-zhCN: 方便快捷的移动游戏内某些原生的框体.比如游戏原生头像框体.
-## X-Vendor: AbyUI
-
->>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4

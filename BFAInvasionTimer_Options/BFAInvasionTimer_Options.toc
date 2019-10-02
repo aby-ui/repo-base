@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 ## Interface: 80205
 ## Title: BFAInvasionTimer_Options
 ## Author: Funkydude
@@ -29,35 +28,3 @@ Options.lua
 
 ## Title: |cff880303[爱不易]|r Bfa 入侵计时选项
 ## X-Vendor: AbyUI
-=======
-## Interface: 80205
-## Title: BFAInvasionTimer_Options
-## Author: Funkydude
-## Notes: BFAInvasionTimer Configuration Options.
-## Notes-esES: Opciones de configuración de BFAInvasionTimer.
-## Notes-esMX: Opciones de configuración de BFAInvasionTimer.
-## Notes-zhCN: BFAInvasionTimer 配置选项。
-## Notes-zhTW: BFAInvasionTimer 配置選項。
-## Notes-deDE: BFAInvasionTimer Einstellungen.
-## Notes-frFR: Options de configuration de BFAInvasionTimer.
-## Notes-itIT: BFAInvasionTimer Configuration Options.
-## Notes-koKR: BFAInvasionTimer|1을;를; 설정하는 옵션입니다.
-## Notes-ptBR: BFAInvasionTimer Opções de Configuração.
-## Notes-ruRU: BFAInvasionTimer параметры настроек.
-## Version: v8.2.5
-## LoadOnDemand: 1
-## Dependencies: BFAInvasionTimer
-
-## X-Category: Miscellaneous
-## X-Website: https://github.com/funkydude/BFAInvasionTimer
-## X-License: All Rights Reserved: You are free to fork and modify on GitHub, please ask us about anything else.
-## X-Curse-Project-ID: 309055
-## X-WoWI-ID: 24870
-
-embeds.xml
-locales.xml
-Options.lua
-
-## Title: |cff880303[爱不易]|r Bfa 入侵计时选项
-## X-Vendor: AbyUI
->>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4

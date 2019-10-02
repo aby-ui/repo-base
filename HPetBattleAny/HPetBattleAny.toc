@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 ## Interface: 80205
 ## Title:|cFFBF00FF[H]|r Something About Pet Battle
 ## Notes:Something About Pet Battle,Type /hpq to config
@@ -30,36 +29,3 @@ modules\Ability.lua
 ## Title-zhCN: |cff880303[爱不易]|r HPetBattle 宠物对战增强
 ## Title-zhTW: |cff880303[爱不易]|r HPetBattle 寵物對戰增強
 ## X-Vendor: AbyUI
-=======
-## Interface: 80205
-## Title:|cFFBF00FF[H]|r Something About Pet Battle
-## Notes:Something About Pet Battle,Type /hpq to config
-## Title-zhCN: |cFFBF00FF[H]|r 宠物对战增强
-## Notes-zhCN: 提醒野生宠物品质等,输入/hpq设置
-## Title-zhTW: |cFFBF00FF[H]|r 寵物對戰增強
-## Notes-zhTW: 提醒野生寵物品質等,輸入/hpq設置
-## Author: Qshine
-## Author-zhCN: 上官晓雾
-## Author-zhTW: 上官曉霧
-
-## X-Date: 2017-09-07
-## Version: 2.2.12
-
-## SavedVariables: HPetSaves
-
-Localization.lua
-
-HPetBattleAny.lua
-modules\PetData.lua
-modules\PetDataFrame.lua
-modules\Config.lua
-modules\Hook.lua
-modules\Search.lua
-modules\Ability.lua
-#modules\AutoSelectPet.lua
-#modules\WatchPetBattle.lua
-
-## Title-zhCN: |cff880303[爱不易]|r HPetBattle 宠物对战增强
-## Title-zhTW: |cff880303[爱不易]|r HPetBattle 寵物對戰增強
-## X-Vendor: AbyUI
->>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4

@@ -4,17 +4,10 @@
 		_ = nil
 		_detalhes = LibStub("AceAddon-3.0"):NewAddon("_detalhes", "AceTimer-3.0", "AceComm-3.0", "AceSerializer-3.0", "NickTag-1.0")
 		
-<<<<<<< HEAD
 		_detalhes.build_counter = 7203
 		_detalhes.alpha_build_counter = 7203 --if this is higher than the regular counter, use it instead
 		_detalhes.game_version = "v8.2.5"
 		_detalhes.userversion = "v8.2.5." .. _detalhes.build_counter
-=======
-		_detalhes.build_counter = 7183
-		_detalhes.alpha_build_counter = 7183 --if this is higher than the regular counter, use it instead
-		_detalhes.game_version = "v8.2.0"
-		_detalhes.userversion = "v8.2.0." .. _detalhes.build_counter
->>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4
 		_detalhes.realversion = 140 --core version, this is used to check API version for scripts and plugins (see alias below)
 		_detalhes.APIVersion = _detalhes.realversion --core version
 		_detalhes.version = _detalhes.userversion .. " (core " .. _detalhes.realversion .. ")" --simple stirng to show to players

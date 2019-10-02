@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 ## Interface: 80205
 ## Title: Enigma Unit Frames
 ## Notes: Enhanced Unit Frames including HP/MP values, class, race, level tag, and more ...
@@ -15,21 +14,3 @@ SBuff_Buffs.lua
 ## Notes-zhCN: 增强显示头像，显示目标的目标的目标，小队头像显示队员职业等级，并显示生命值及法力值
 ## Notes-zhTW: 增強顯示頭像，顯示目標的目標的目標，小隊頭像顯示隊員職業等級，並顯示生命值及法力值
 ## X-Vendor: AbyUI
-=======
-## Interface: 80205
-## Title: Enigma Unit Frames
-## Notes: Enhanced Unit Frames including HP/MP values, class, race, level tag, and more ...
-## Version: 3.1.1
-## Author: Enigma
-## SavedVariables: mg_EUF_Options
-## LoadOnDemand:
-
-EN_UnitFrames.xml
-
-SBuff_Buffs.lua
-## Title: |cff880303[爱不易]|r EN_UnitF 头像增强
-## Title-zhCN: |cff880303[爱不易]|r EN _UnitFrames头像增强
-## Notes-zhCN: 增强显示头像，显示目标的目标的目标，小队头像显示队员职业等级，并显示生命值及法力值
-## Notes-zhTW: 增強顯示頭像，顯示目標的目標的目標，小隊頭像顯示隊員職業等級，並顯示生命值及法力值
-## X-Vendor: AbyUI
->>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4

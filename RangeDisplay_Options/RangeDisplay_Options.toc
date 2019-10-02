@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 ## Interface: 80205
 ## Title: RangeDisplay Options
 ## Author: mitch0
@@ -26,32 +25,3 @@ Options.lua
 ## Notes-zhCN: 距离显示设置模块
 ## Notes-zhTW: 目標距離 設置模組
 ## X-Vendor: AbyUI
-=======
-## Interface: 80205
-## Title: RangeDisplay Options
-## Author: mitch0
-## Version: v4.9.1
-## Notes: Configuration options for RangeDisplay
-## X-Repple: 辅助
-## OptionalDeps: AceGUI-3.0-SharedMediaWidgets
-## Dependencies: RangeDisplay
-## LoadOnDemand: 1
-## X-License: Public Domain
-## X-RelSite-WoWI: 7297
-
-#@no-lib-strip@
-libs\Ace3\AceGUI-3.0\AceGUI-3.0.xml
-libs\Ace3\AceConfig-3.0\AceConfigRegistry-3.0\AceConfigRegistry-3.0.xml
-libs\Ace3\AceConfig-3.0\AceConfigDialog-3.0\AceConfigDialog-3.0.xml
-libs\Ace3\AceDBOptions-3.0\AceDBOptions-3.0.xml
-libs\AceGUI-3.0-SharedMediaWidgets\widget.xml
-#@end-no-lib-strip@
-
-localizations.lua
-Options.lua
-
-## Title: |cff880303[爱不易]|r RangeDis 距离显示设置
-## Notes-zhCN: 距离显示设置模块
-## Notes-zhTW: 目標距離 設置模組
-## X-Vendor: AbyUI
->>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4

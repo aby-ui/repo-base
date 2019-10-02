@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 ## Title: TargetNameplateIndicator
 ## Interface: 80205
 ## Notes: Puts a texture on your target's nameplate to make them stand out. Configure by editing the options in config.lua.
@@ -16,22 +15,3 @@ core.lua
 ## Title: |cff880303[爱不易]|r TargetNamepl 目标姓名版标记
 ## X-Vendor: AbyUI
 
-=======
-## Title: TargetNameplateIndicator
-## Interface: 80205
-## Notes: Puts a texture on your target's nameplate to make them stand out. Configure by editing the options in config.lua.
-## Author: Choonster
-## Version: 1.21-1-g91443a9
-## OptionalDeps: LibNameplateRegistry-1.0
-## X-Embeds: LibNameplateRegistry-1.0
-
-#@no-lib-strip@
-#@end-no-lib-strip@
-
-config.lua
-core.lua
-
-## Title: |cff880303[爱不易]|r TargetNamepl 目标姓名版标记
-## X-Vendor: AbyUI
-
->>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4

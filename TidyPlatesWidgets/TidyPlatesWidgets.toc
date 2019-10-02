@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 ## Interface: 80205
 ## Title: Tidy Plates Widgets
 ## Notes: Library of Widgets
@@ -11,17 +10,3 @@ Widgets.xml
 ## Notes-zhCN: 强大到爆的多功能姓名版美化插件-设置模块。
 ## Notes-zhTW: 強大到爆的多功能姓名版美化插件-設置模塊。
 ## X-Vendor: AbyUI
-=======
-## Interface: 80205
-## Title: Tidy Plates Widgets
-## Notes: Library of Widgets
-## Dependencies: TidyPlates
-
-Widgets.xml
-
-## Title-zhCN: |cff880303[爱不易]|r Tidy 姓名板界面组件
-## Title-zhTW: |cff880303[爱不易]|r Tidy 姓名板界面组件
-## Notes-zhCN: 强大到爆的多功能姓名版美化插件-设置模块。
-## Notes-zhTW: 強大到爆的多功能姓名版美化插件-設置模塊。
-## X-Vendor: AbyUI
->>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4

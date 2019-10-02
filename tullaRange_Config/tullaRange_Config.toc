@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 ## Interface: 80205
 ## Title: tullaRange Config
 ## Notes: GUI based configuration for tullaRange
@@ -12,18 +11,3 @@ colorOptions.lua
 ## Title-zhCN: |cff880303[爱不易]|r tullaRange 配置界面
 ## Notes-zhCN: 技能超距提示-配置界面
 ## X-Vendor: AbyUI
-=======
-## Interface: 80205
-## Title: tullaRange Config
-## Notes: GUI based configuration for tullaRange
-## Author: Tuller
-## Dependencies: tullaRange
-## LoadOnDemand: 1
-localization\localization.xml
-widgets\widgets.xml
-colorOptions.lua
-
-## Title-zhCN: |cff880303[爱不易]|r tullaRange 配置界面
-## Notes-zhCN: 技能超距提示-配置界面
-## X-Vendor: AbyUI
->>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4

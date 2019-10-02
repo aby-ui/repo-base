@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 <Ui xmlns="http://www.blizzard.com/wow/ui/">
 	<Include file="libs\main.xml"/>
 	<Include file="localization\main\localization.xml"/>
@@ -6,12 +5,3 @@
 	<Include file="components\components.xml"/>
 	<Include file="features\features.xml"/>
 </Ui>
-=======
-<Ui xmlns="http://www.blizzard.com/wow/ui/">
-	<Include file="libs\main.xml"/>
-	<Include file="localization\main\localization.xml"/>
-	<Include file="core\core.xml"/>
-	<Include file="components\components.xml"/>
-	<Include file="features\features.xml"/>
-</Ui>
->>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4

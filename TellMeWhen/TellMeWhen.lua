@@ -33,17 +33,10 @@ if wow_classic then
 	return
 end
 
-<<<<<<< HEAD
 TELLMEWHEN_VERSION = "8.7.2"
 
 TELLMEWHEN_VERSION_MINOR = ""
 local projectVersion = "8.7.2" -- comes out like "6.2.2-21-g4e91cee"
-=======
-TELLMEWHEN_VERSION = "8.7.1"
-
-TELLMEWHEN_VERSION_MINOR = ""
-local projectVersion = "8.7.1" -- comes out like "6.2.2-21-g4e91cee"
->>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4
 if projectVersion:find("project%-version") then
 	TELLMEWHEN_VERSION_MINOR = "dev"
 elseif strmatch(projectVersion, "%-%d+%-") then
@@ -51,11 +44,7 @@ elseif strmatch(projectVersion, "%-%d+%-") then
 end
 
 TELLMEWHEN_VERSION_FULL = TELLMEWHEN_VERSION .. " " .. TELLMEWHEN_VERSION_MINOR
-<<<<<<< HEAD
 TELLMEWHEN_VERSIONNUMBER = 87203 -- NEVER DECREASE THIS NUMBER (duh?).  IT IS ALSO ONLY INTERNAL (for versioning of)
-=======
-TELLMEWHEN_VERSIONNUMBER = 87101 -- NEVER DECREASE THIS NUMBER (duh?).  IT IS ALSO ONLY INTERNAL (for versioning of)
->>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4
 
 TELLMEWHEN_FORCECHANGELOG = 86005 -- if the user hasn't seen the changelog until at least this version, show it to them.
 

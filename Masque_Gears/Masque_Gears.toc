@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 ## Interface: 80205
 ## Title: Masque: |cffff8000Gears|r
 ## Version: 8.0.0
@@ -18,24 +17,3 @@
 Gears.lua
 ## Title-zhCN: |cff880303[爱不易]|r Masque 皮肤Gears
 ## X-Vendor: AbyUI
-=======
-## Interface: 80205
-## Title: Masque: |cffff8000Gears|r
-## Version: 8.0.0
-## Author: StormFX
-## Dependencies: Masque
-## Notes: Gears skins for Masque.
-## Notes-deDE: Gears-Skin für Masque.
-## Notes-esES: Skin Gears para Masque.
-## Notes-esMX: Skin Gears para Masque.
-## Notes-itIT: Skin Gears per Masque.
-## Notes-ruRU: Скин Gears для Masque.
-## Notes-zhTW: Masque的Gears皮膚。
-## X-Website: https://www.wowace.com/projects/masque-gears
-## X-Category: Interface Enhancements
-## X-WoWI-ID: 8918
-
-Gears.lua
-## Title-zhCN: |cff880303[爱不易]|r Masque 皮肤Gears
-## X-Vendor: AbyUI
->>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4

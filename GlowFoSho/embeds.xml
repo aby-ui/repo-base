@@ -1,14 +1,6 @@
-<<<<<<< HEAD
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\FrameXML\UI.xsd">
 
 <Include file="Libs\LibDropDown-1.0\LibDropDown-1.0\LibDropdown-1.0.lua" />
 
-=======
-<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
-..\FrameXML\UI.xsd">
-
-<Include file="Libs\LibDropDown-1.0\LibDropDown-1.0\LibDropdown-1.0.lua" />
-
->>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4
 </Ui>

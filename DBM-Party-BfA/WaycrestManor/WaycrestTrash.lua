@@ -1,11 +1,7 @@
 local mod	= DBM:NewMod("WaycrestTrash", "DBM-Party-BfA", 10)
 local L		= mod:GetLocalizedStrings()
 
-<<<<<<< HEAD
 mod:SetRevision("20190929024030")
-=======
-mod:SetRevision("20190806183534")
->>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4
 --mod:SetModelID(47785)
 mod:SetZone()
 

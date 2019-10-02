@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
     http://wowprogramming.com/FrameXML/UI.xsd">
 
@@ -30,36 +29,3 @@
     </Script>
 
 </Ui>
-=======
-<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
-    http://wowprogramming.com/FrameXML/UI.xsd">
-
-    <Script>
-        DecursiveInEmbeddedMode = false;
-        DecursiveEmbedsxmlCheck = false;
-    </Script>
-
-    <!--@no-lib-strip@-->
-
-
-
-    <!--Include file="Libs\BugGrabber\load.xml" /-->
-
-    <Script>
-        DecursiveInEmbeddedMode = true;
-    </Script>
-
-    <!--@end-no-lib-strip@-->
-
-
-
-    <!--@no-lib-strip@-->
-    <!--@end-no-lib-strip@-->
-
-
-    <Script>
-        DecursiveEmbedsxmlCheck = "2.7.6.4";
-    </Script>
-
-</Ui>
->>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4

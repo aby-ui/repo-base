@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 ## Interface: 80205
 ## Title: TradeSkillInfo UI
 ## Notes: Complete tradeskill information browser module.
@@ -20,26 +19,3 @@ TradeskillInfoUI.xml
 ## Notes-zhCN: 商业技能资料库设置窗口
 ## Notes-zhTW: 商業技能資料庫設置窗口
 ## X-Vendor: AbyUI
-=======
-## Interface: 80205
-## Title: TradeSkillInfo UI
-## Notes: Complete tradeskill information browser module.
-## Notes-zhCN: 商业技能资料库设置窗口
-## Notes-zhTW: 商業技能資料庫設置窗口
-## Notes-esES: UI con Info Completa de las Habilidades de Comercio
-## Notes-koKR: 전문기술 정보 UI
-## Author: Ethan Centaurai
-## Version: v2.3.11-27-gc4ba23d
-## Dependencies: TradeskillInfo
-## LoadOnDemand: 1
-## X-Icon: Interface\Icons\INV_Elemental_SpiritOfHarmony_2
-## X-Category: Professions
-
-TradeskillInfoUI.lua
-TradeskillInfoUI.xml
-
-## Title: |cff880303[爱不易]|r TradeSkill 设置
-## Notes-zhCN: 商业技能资料库设置窗口
-## Notes-zhTW: 商業技能資料庫設置窗口
-## X-Vendor: AbyUI
->>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4

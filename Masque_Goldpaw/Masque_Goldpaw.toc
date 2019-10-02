@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 ## Interface: 80205
 ## Name: Masque_Goldpaw
 ## Title: Masque: |cffff7d0aGoldpaw|r
@@ -19,25 +18,3 @@ main.lua
 
 ## Title: |cff880303[爱不易]|r Masque 皮肤Goldpaw
 ## X-Vendor: AbyUI
-=======
-## Interface: 80205
-## Name: Masque_Goldpaw
-## Title: Masque: |cffff7d0aGoldpaw|r
-## Version: 1.0-Release
-## Author: Lars "Goldpaw" Norberg
-## Notes: Various Masque skins to match |cffff7d0aGoldpaw's UI|r.|n|n|cff4488ffPayPal|r|cffffffff:|r |n|cffffffffazerite@cogwerkz.org|r|n|n|cff4488ffPatreon|r|cffffffff:|r |n|cffffffffwww.patreon.com/AzeriteUI|rcogwerkz|rcogwerkz|r
-## DefaultState: Enabled
-## Dependencies: Masque
-## X-Discord: https://discord.gg/MUSfWXd
-## X-Twitter: https://twitter.com/azeriteui
-## X-Donate: https://www.paypal.me/azeriteui
-## X-Website: https://www.patreon.com/azeriteui
-## X-License: All Rights Reserved
-## X-Category: Artwork
-
-main.lua
-
-
-## Title: |cff880303[爱不易]|r Masque 皮肤Goldpaw
-## X-Vendor: AbyUI
->>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4

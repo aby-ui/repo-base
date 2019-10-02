@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 ## Interface: 80205
 ## Title: AzeriteTooltip
 ## Version: 1.92
@@ -12,18 +11,3 @@ AzeriteTooltip.lua
 ## Title-zhCN: |cff880303[爱不易]|r AzeriteTooltip 装备特质显示
 ## Notes-zhCN: 在艾泽里特装备的鼠标提示中显示特质信息，不需要打开查看
 ## X-Vendor: AbyUI
-=======
-## Interface: 80205
-## Title: AzeriteTooltip
-## Version: 1.92
-## Author: jokair9
-## Notes: Lightweight addon that shows azerite traits in the tooltip.
-## SavedVariables: AzeriteTooltipDB
-
-Locales.lua
-AzeriteTooltip.lua
-
-## Title-zhCN: |cff880303[爱不易]|r AzeriteTooltip 装备特质显示
-## Notes-zhCN: 在艾泽里特装备的鼠标提示中显示特质信息，不需要打开查看
-## X-Vendor: AbyUI
->>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4

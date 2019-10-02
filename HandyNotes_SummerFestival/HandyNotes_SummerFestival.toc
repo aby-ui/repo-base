@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 ## Interface: 80205
 ## Title: HandyNotes_SummerFestival
 ## Notes: Displays the locations of Summer Festival bonfires.
@@ -16,22 +15,3 @@ Horde.lua
 ## Title-zhCN: |cff880303[爱不易]|r HandyNotes 仲夏节篝火
 ## X-Vendor: AbyUI
 
-=======
-## Interface: 80205
-## Title: HandyNotes_SummerFestival
-## Notes: Displays the locations of Summer Festival bonfires.
-## Author: Ethan Centaurai
-## Version: v1.6.1
-## X-Category: Map & Minimap
-## SavedVariables: HandyNotes_SummerFestivalDB
-## RequiredDeps: HandyNotes
-
-Core.lua
-
-Alliance.lua
-Horde.lua
-
-## Title-zhCN: |cff880303[爱不易]|r HandyNotes 仲夏节篝火
-## X-Vendor: AbyUI
-
->>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4

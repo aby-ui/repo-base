@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 ## Interface: 80205
 ## Title: Broker: DurabilityInfo
 ## Notes: Displays item durability and repair cost.
@@ -25,31 +24,3 @@ Broker_DurabilityInfo.lua
 ## Title-zhCN: |cff880303[爱不易]|r Broker 装备耐久信息
 ## Notes-zhCN: 在信息条中显示人物装备耐久信息.
 ## X-Vendor: AbyUI
-=======
-## Interface: 80205
-## Title: Broker: DurabilityInfo
-## Notes: Displays item durability and repair cost.
-## Version: v1.29
-## Author: iceeagle
-## OptionalDeps: Ace3, LibDataBroker-1.1, LibDialog-1.0, LibCrayon-3.0
-## SavedVariables: Broker_DurabilityInfoDB
-## DefaultState: enabled
-
-## LoadManagers: AddonLoader
-## X-LoadOn-Always: Delayed
-
-#@no-lib-strip@
-embeds.xml
-#@end-no-lib-strip@
-
-Locales\enUS.lua
-Locales\zhCN.lua
-Locales\zhTW.lua
-
-Broker_DurabilityInfo.lua
-
-
-## Title-zhCN: |cff880303[爱不易]|r Broker 装备耐久信息
-## Notes-zhCN: 在信息条中显示人物装备耐久信息.
-## X-Vendor: AbyUI
->>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4

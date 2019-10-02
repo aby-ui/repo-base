@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 ## Interface: 80205
 ## Title: ErrorFilter
 ## Notes: Filters the errors displayed in the UIErrorsFrame.
@@ -17,23 +16,3 @@ ErrorFilter.xml
 ## Title: |cff880303[爱不易]|r ErrorFilter 错误过滤
 ## Notes-zhCN: 自动过滤掉屏幕上方的红色提示文字.
 ## X-Vendor: AbyUI
-=======
-## Interface: 80205
-## Title: ErrorFilter
-## Notes: Filters the errors displayed in the UIErrorsFrame.
-## Version: v3.7
-## Author: iceeagle
-## OptionalDeps: Ace3, LibSink-2.0
-## SavedVariables: ErrorFilterDB
-## DefaultState: enabled
-
-## LoadManagers: AddonLoader
-## X-LoadOn-Always: Delayed
-
-ErrorFilter.xml
-
-
-## Title: |cff880303[爱不易]|r ErrorFilter 错误过滤
-## Notes-zhCN: 自动过滤掉屏幕上方的红色提示文字.
-## X-Vendor: AbyUI
->>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4

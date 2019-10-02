@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 ## Interface: 80205
 ## Title: WeakAuras Model Paths
 ## Author: Mirrored and the WeakAuras Team
@@ -18,24 +17,3 @@ ModelPaths.lua
 
 ## Title-zhCN: |cff880303[爱不易]|r WeakAuras 模型库
 ## X-Vendor: AbyUI
-=======
-## Interface: 80205
-## Title: WeakAuras Model Paths
-## Author: Mirrored and the WeakAuras Team
-## Version: 2.15.1
-## Notes: Model paths for WeakAuras
-## Notes-esES: Las rutas de archivos de modelos en 3D para WeakAuras
-## Notes-deDE: 3D-Model Pfade für WeakAuras
-## Notes-ruRU: Ссылки на файлы моделей WeakAuras
-## Notes-zhTW: WeakAuras的模組路徑
-## X-Category: Interface Enhancements
-## Globe-Main: WeakAuras
-## DefaultState: Enabled
-## LoadOnDemand: 1
-## Dependencies: WeakAuras, WeakAurasOptions
-
-ModelPaths.lua
-
-## Title-zhCN: |cff880303[爱不易]|r WeakAuras 模型库
-## X-Vendor: AbyUI
->>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4

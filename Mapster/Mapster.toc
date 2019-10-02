@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 ## Interface: 80205
 ## Notes: Simple Map Mod
 ## Notes-zhCN: 简单实用的地图模块
@@ -31,37 +30,3 @@ Scaling.lua
 ## Notes-zhCN: 简单实用的地图显示、未探索区域显示、副本地图、NPC位置插件.
 ## Notes-zhTW: 簡單實用的地圖顯示、未探索區域顯示、副本地圖、NPC位置插件.
 ## X-Vendor: AbyUI
-=======
-## Interface: 80205
-## Notes: Simple Map Mod
-## Notes-zhCN: 简单实用的地图模块
-## Notes-frFR: Simples modifications de la carte.
-## Title: Mapster
-## Author: Nevcairiel
-## SavedVariables: MapsterDB
-## X-Category: Map
-## Version: 1.8.5
-## X-License: All rights reserved.
-## X-Curse-Project-ID: 14376
-## X-WoWI-ID: 8306
-
-## OptionalDeps: Ace3, LibWindow-1.1
-
-
-Locale\locale.xml
-
-Mapster.lua
-Config.lua
-
-Coords.lua
-# GroupIcons.lua
-# BattleMap.lua
-FogClear.lua
-Scaling.lua
-
-
-## Title: |cff880303[爱不易]|r Mapster 地图增强
-## Notes-zhCN: 简单实用的地图显示、未探索区域显示、副本地图、NPC位置插件.
-## Notes-zhTW: 簡單實用的地圖顯示、未探索區域顯示、副本地圖、NPC位置插件.
-## X-Vendor: AbyUI
->>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4

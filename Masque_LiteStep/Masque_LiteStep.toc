@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 ## Interface: 80205
 ## Title: Masque: |cffff8000LiteStep|r
 ## Version: 8.0.0
@@ -21,27 +20,3 @@ LiteStep.lua
 
 ## Title-zhCN: |cff880303[爱不易]|r Masque 皮肤LiteStep
 ## X-Vendor: AbyUI
-=======
-## Interface: 80205
-## Title: Masque: |cffff8000LiteStep|r
-## Version: 8.0.0
-## Author: StormFX
-## Dependencies: Masque
-## Notes: LiteStep skins for Masque.
-## Notes-deDE: LiteStep-Skin für Masque.
-## Notes-esES: Skin LiteStep para Masque.
-## Notes-esMX: Skin LiteStep para Masque.
-## Notes-itIT: Skin LiteStep per Masque.
-## Notes-ruRU: Скин LiteStep для Masque.
-## Notes-zhTW: Masque的LiteStep皮膚。
-## X-Website: https://www.wowace.com/projects/masque-litestep
-## X-Category: Interface Enhancements
-## X-Credits: Saynt
-## X-WoWI-ID: 8882
-
-LiteStep.lua
-
-
-## Title-zhCN: |cff880303[爱不易]|r Masque 皮肤LiteStep
-## X-Vendor: AbyUI
->>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4
