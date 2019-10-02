@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ## Interface: 80205
 ## Title: |cff880303[爱不易]|r AbyUI 小功能集合
 ## X-Vendor: AbyUI
@@ -39,3 +40,46 @@ yClassColors\who.lua
 7.0\EncounterJournalPlus_InstanceInfo.lua
 7.0\HideQuickJoin.lua
 7.0\ExaltedPlus.lua
+=======
+## Interface: 80205
+## Title: |cff880303[爱不易]|r AbyUI 小功能集合
+## X-Vendor: AbyUI
+
+163UI_Plugins.lua
+163UI_Quest.lua
+AlreadyKnown.lua
+BattleField.lua
+CopyFriendList.lua
+ChatFrameAddMessage.lua
+ExtraActionButton.lua
+FriendsGuildTab.lua
+GuildRosterButtons.lua
+MerchantFilterButtons.lua
+PingPing.lua
+ProfessionTabs.lua
+QuestFont.lua
+SlashCommands.lua
+Simc.xml
+Simc.lua
+FiveCombo.lua
+8.0\ChallengesGuildBest.xml
+
+yClassColors\core.lua
+yClassColors\battlefield.lua
+yClassColors\friends.lua
+#blizzard already colored yClassColors\guild.lua
+yClassColors\lfr.lua
+yClassColors\who.lua
+
+7.0\CloudyTradeSkill.lua
+7.0\CompletedTip.lua
+7.0\FixArchievementUIFreeze.lua
+7.0\QuestWatchSort.lua
+7.0\SpecSwitchButtons.lua
+7.0\ReplaceTalentSpell.lua
+7.0\BattlePetCurrentStats.lua
+7.0\GarrisonMinimapButton.lua
+7.0\EncounterJournalPlus_InstanceInfo.lua
+7.0\HideQuickJoin.lua
+7.0\ExaltedPlus.lua
+>>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4

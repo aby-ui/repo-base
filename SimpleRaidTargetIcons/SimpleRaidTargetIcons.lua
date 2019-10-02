@@ -471,7 +471,17 @@ function srti.IsNameplateUnderMouse()
 	if numch > 0 then
 		for i=1,numch do
 			local f=select(i,WorldFrame:GetChildren());
+<<<<<<< HEAD
+			x = f:IsForbidden()  -- Check for forbidden frames
+			-- filter out NamePlate%d before IsMouseOver call - 8.2.5
+			local fname = f:GetName();
+			if fname and string.find(fname, "NamePlate%d+") then
+				return 1;
+			end
+			if x then
+=======
 			if f:IsForbidden() then
+>>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4
 			else
 				if f:IsShown() and select(2, pcall(f.IsMouseOver, f)) then
 					-- 3rd party nameplate addons
@@ -491,12 +501,6 @@ function srti.IsNameplateUnderMouse()
 						return 1;
 					end
 					if f.NPAHooked then -- NPA (NamePlatesAdvanced)
-						return 1;
-					end
-					-- default nameplates
-					-- 4.1
-					local fname = f:GetName();
-					if fname and string.find(fname, "NamePlate%d+") then
 						return 1;
 					end
 				end

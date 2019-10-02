@@ -197,7 +197,7 @@ hooksecurefunc("ChatEdit_UpdateHeader", function(editBox)
         editBox.nametip.icon:SetPoint("LEFT", 8, 0)
         editBox.nametip.icon:SetTexture("Interface\\TargetingFrame\\UI-Classes-Circles")
         editBox.nametip.name = editBox.nametip:CreateFontString(nil, "ARTWORK")
-        editBox.nametip.name:SetFont(UNIT_NAME_FONT, 14, "OUTLINE")
+        editBox.nametip.name:SetFont(UNIT_NAME_FONT, 16, "OUTLINE")
         editBox.nametip.name:SetPoint("LEFT", editBox.nametip, "LEFT", 25, 0)
         editBox.nametip.name:SetJustifyH("LEFT")
         editBox.nametip.name:SetSize(128, 16)
@@ -216,7 +216,7 @@ hooksecurefunc("ChatEdit_UpdateHeader", function(editBox)
         for i = 1, numBNetOnline do
             _, accountName, _, _, _, bnetIDGameAccount, client = BNGetFriendInfo(i)
             if (bname == accountName and client == "WoW" and bnetIDGameAccount) then
-                _, name, _, _, _, faction, _, class, _, area, level = BNGetGameAccountInfo(bnetIDGameAccount)
+                _, name, _, _, _, faction, _, class, _, area, level = AbyBNGetGameAccountInfo(i)
                 info = LOCAL_CLASS_INFO[class]
                 editBox.nametip.name:SetText(name)
                 editBox.nametip.level:SetText(level)

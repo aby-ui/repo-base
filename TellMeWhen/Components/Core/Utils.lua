@@ -508,7 +508,13 @@ function TMW:CleanString(text)
 	text = replace(text, "[^:] ;", "; ") -- remove all spaces before semicolons
 	text = replace(text, "; ", ";") -- remove all spaces after semicolons
 	text = replace(text, ";;", ";") -- remove all double semicolons
-	text = replace(text, " :", ":") -- remove all single spaces before colons
+
+	-- Don't do this on the French client.
+	-- https://www.iwillteachyoualanguage.com/learn/french/french-tips/french-punctuation
+	if GetLocale() ~= "frFR" then
+		text = replace(text, " :", ":") -- remove all single spaces before colons
+	end
+
 	text = replace(text, ":  ", ": ") -- remove all double spaces after colons (DONT REMOVE ALL DOUBLE SPACES EVERYWHERE, SOME SPELLS HAVE TYPO'd NAMES WITH 2 SPACES!)
 	text = gsub(text, ";", "; ") -- add spaces after all semicolons. Never used to do this, but it just looks so much better (DONT USE replace!).
 	if frame then

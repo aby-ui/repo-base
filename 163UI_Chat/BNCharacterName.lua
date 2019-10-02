@@ -19,9 +19,10 @@ local addMessageReplace = function(self, msg, ...)
         local _, _, _, _, charName, gameAccountId, gameId = BNGetFriendInfoByID(bnId)
         if gameId and gameId:lower() == "wow" then
             --{   true,   "CHAR_NAME",   "WoW",   "奥特兰克",   850,   "Alliance",   "人类",   "牧师",   "",   "艾萨拉",   "100",   "艾萨拉 - 奥特兰克",   "",   0,   true,   72,   6,   true,   false, }
-            local _, _, _, realmName, _, _, _, class = BNGetGameAccountInfo(gameAccountId)
-            if class then
-                local color = CLASS_LOC_STR[class]
+            --local _, _, _, realmName, _, _, _, class = BNGetGameAccountInfo(gameAccountId)
+            local gameAccountInfo = C_BattleNet.GetGameAccountInfoByID(gameAccountId) --8.2
+            if gameAccountInfo and gameAccountInfo.className then
+                local color = CLASS_LOC_STR[gameAccountInfo.className]
                 msg = format("%s\124HBNplayer:%s:%d:%d:BN_WHISPER%s:%s\124h[%s]\124h%s", text1, name1, bnId, bnId2, chatType, name2, format("%s-|c%s%s|r", name3, color, charName), text2)
             end
         end
@@ -47,10 +48,10 @@ local function OnHyperlinkEnter(self, playerString)
         for i=1, BNGetNumFriends() do
             local testId = BNGetFriendInfo(i)
             if testId == bnId then
-                local fake = FAKE_FRAME or CreateFrame("Frame")
+                local fake = FAKE_FRAME or CreateFrame("Frame", "FAKE_FRAME")
                 fake.id = i
                 fake.buttonType = FRIENDS_BUTTON_TYPE_BNET
-                FriendsTooltip:SetParent(UIParent) FriendsFrameTooltip_Show(fake)
+                FriendsTooltip:SetParent(UIParent) FriendsListButtonMixin.OnEnter(fake)
                 FriendsTooltip.hasBroadcast = nil
                 local x, y = GetCursorPosition();
                 local effScale = FriendsTooltip:GetEffectiveScale();
@@ -71,4 +72,10 @@ WithAllChatFrame(function(cf)
     if cf:GetID() == 2 then return end
     SetOrHookScript(cf, "OnHyperlinkEnter", OnHyperlinkEnter);
     SetOrHookScript(cf, "OnHyperlinkLeave", OnHyperlinkLeave);
+    hooksecurefunc(cf, "SetScript", function(self, name, func)
+        local hook = name == "OnHyperlinkEnter" and OnHyperlinkEnter or name == "OnHyperlinkLeave" and OnHyperlinkLeave
+        if hook and func ~= hook then
+            SetOrHookScript(cf, name, hook)
+        end
+    end)
 end)

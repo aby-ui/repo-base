@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ## Interface: 80205
 ## Title: AuctionLite
 ## Notes: A lightweight addon that tracks auction house data and improves the auction house interface.
@@ -41,3 +42,48 @@ Util.lua
 ## Notes-zhCN: 拍卖行批量拍卖助手，一次性拍卖N件同样物品，Alt点击自动添加物品.
 ## Notes-zhTW: 拍賣行批量拍賣助手，一次性拍賣N件同樣物品，Alt點擊自動添加物品.
 ## X-Vendor: AbyUI
+=======
+## Interface: 80205
+## Title: AuctionLite
+## Notes: A lightweight addon that tracks auction house data and improves the auction house interface.
+## Author: merial.kilrogg@gmail.com
+## Version: 1.9.1
+## OptionalDeps: Ace3
+## SavedVariables: AuctionLiteDB
+## X-Category: Interface Enhancements
+
+Locale\enUS.lua
+Locale\zhCN.lua
+Locale\zhTW.lua
+
+AuctionLite.lua
+AuctionFrame.lua
+
+Config.lua
+ListBox.lua
+
+Templates.xml
+
+BuyFrame.lua
+BuyFrame.xml
+
+SellFrame.lua
+SellFrame.xml
+
+CancelAuctions.lua
+CreateAuctions.lua
+QueryAuctions.lua
+
+Disenchant.lua
+External.lua
+History.lua
+Tooltip.lua
+
+Util.lua
+
+## Title-zhCN: |cff880303[爱不易]|r AuctionLite 拍卖助手
+## Title-zhTW: |cff880303[爱不易]|r AuctionLite 拍賣助手
+## Notes-zhCN: 拍卖行批量拍卖助手，一次性拍卖N件同样物品，Alt点击自动添加物品.
+## Notes-zhTW: 拍賣行批量拍賣助手，一次性拍賣N件同樣物品，Alt點擊自動添加物品.
+## X-Vendor: AbyUI
+>>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ## Interface: 80205
 ## Title: Details!: Vanguard (plugin)
 ## Notes: Show the health and debuffs for tanks in your group.
@@ -11,3 +12,18 @@ Details_Vanguard.lua
 
 
 ## X-Vendor: AbyUI
+=======
+## Interface: 80205
+## Title: Details!: Vanguard (plugin)
+## Notes: Show the health and debuffs for tanks in your group.
+## SavedVariablesPerCharacter: _detalhes_databaseVanguard
+## RequiredDeps: Details
+## OptionalDeps: Ace3
+
+enUS.lua
+
+Details_Vanguard.lua
+
+
+## X-Vendor: AbyUI
+>>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4

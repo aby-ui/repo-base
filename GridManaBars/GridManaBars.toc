@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ## Interface: 80205
 ## Title: GridManaBars
 ## Notes: Adds manabars to the sides of Grid frames.
@@ -26,3 +27,33 @@ GridBorderStyle\GridBorderStyle.lua
 
 ## Title: |cff880303[爱不易]|r Grid 法力条与美化
 ## X-Vendor: AbyUI
+=======
+## Interface: 80205
+## Title: GridManaBars
+## Notes: Adds manabars to the sides of Grid frames.
+## Notes-ruRU: Добовляет полоски маны в фрейм Gridа.
+## Notes-zhTW: [Grid] 在 Grid 框架旁邊顯示法力條。
+## Notes-zhCN: [Grid] 在 Grid 框体内设置法力条。
+## Author: Adelea@EU-Bronzebeard, Julith
+## Version: 1.11
+## Grid Author: Pastamancer & Maia
+## X-Website: http://wowace.com/wiki/Grid
+## Dependencies: Grid
+## X-Curse-Packaged-Version: v1.1b
+## X-Curse-Project-Name: GridManaBars
+## X-Curse-Project-ID: grid-mana-bars
+## X-Curse-Repository-ID: wow/grid-mana-bars/mainline
+
+GMBLocale-enUS.lua
+GMBLocale-zhCN.lua
+GMBLocale-zhTW.lua
+GridManaBar.lua
+GridStatusMana.lua
+
+GridBorderStyle\GBSLocal-enUS.lua
+GridBorderStyle\GBSLocal-zhCN.lua
+GridBorderStyle\GridBorderStyle.lua
+
+## Title: |cff880303[爱不易]|r Grid 法力条与美化
+## X-Vendor: AbyUI
+>>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4

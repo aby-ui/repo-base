@@ -158,7 +158,7 @@ local function ScanForAura(GUID, spellName, spellID)
 		if GUID == UnitGUID(unit) then
 			local buffName, duration, expirationTime, id, _
 			local index, stage = 1, 1
-			local filter = "PLAYER"
+			local filter = "HELPFUL|PLAYER"
 
 			while true do
 				buffName, _, _, _, duration, expirationTime, _, _, _, id = UnitAura(unit, index, filter)
@@ -198,7 +198,7 @@ local function VerifyAll()
 			local auras
 
 			local index, stage = 1, 1
-			local filter = "PLAYER"
+			local filter = "HELPFUL|PLAYER"
 
 			while true do
 				local buffName, _, count, _, duration, expirationTime, _, _, _, spellID = UnitAura(unit, index, filter)

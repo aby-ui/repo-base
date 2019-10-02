@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ## Interface: 80205
 ## Title: CompactRaid
 ## Version: 5.09
@@ -39,3 +40,46 @@ Modules\embeds.xml
 ## Notes-zhCN: 增强和美化暴雪自带的团队框架。包括点击施法、减益DEBUFF显示等功能。
 ## Notes-zhTW: 增强和美化暴雪自带的团队框架。包括点击施法、减益DEBUFF显示等功能。
 ## X-Vendor: AbyUI
+=======
+## Interface: 80205
+## Title: CompactRaid
+## Version: 5.09
+## Author: Abin
+## SavedVariables: CompactRaidDB
+## OptionalDeps: Clique, TomTom
+## X-Category: UnitFrame
+## X-eMail: abinn32@yahoo.com
+## X-Curse-Packaged-Version: v5.09
+## X-Curse-Project-Name: CompactRaid
+## X-Curse-Project-ID: compactraid
+## X-Curse-Repository-ID: wow/compactraid/mainline
+
+Includes\LibAddonManager.lua
+Includes\Pre80API.lua
+Includes\utf8.lua
+Includes\InterfaceOptionPage-1.0.lua
+Includes\VirtualScrollList-1.0.lua
+Includes\TabFrame-1.0.lua
+Includes\LibAuraGroups-1.0.lua
+Includes\ModularOptionFrame.lua
+Includes\LibPlayerSpells-1.0.lua
+Includes\UnitAuraEx.lua
+
+Locales\enUS.lua
+Locales\zhCN.lua
+Locales\zhTW.lua
+
+Core.lua
+Supports\embeds.xml
+UnitFrames\embeds.xml
+ToolFrames\embeds.xml
+OptionFrames\embeds.xml
+Modules\embeds.xml
+
+## Title: |cff880303[爱不易]|r CompactRaid 团队框架
+## Title-zhCN: |cff880303[爱不易]|r CompactRaid 团队框架
+## Title-zhTW: |cff880303[爱不易]|r CompactRaid 團隊框架
+## Notes-zhCN: 增强和美化暴雪自带的团队框架。包括点击施法、减益DEBUFF显示等功能。
+## Notes-zhTW: 增强和美化暴雪自带的团队框架。包括点击施法、减益DEBUFF显示等功能。
+## X-Vendor: AbyUI
+>>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4

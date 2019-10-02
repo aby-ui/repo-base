@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ## Interface: 80205
 ## Title: Masque: |cffff8000Onyx|r
 ## Version: 8.0.0
@@ -19,3 +20,26 @@ Onyx.lua
 
 ## Title-zhCN: |cff880303[爱不易]|r Masque 皮肤Onyx
 ## X-Vendor: AbyUI
+=======
+## Interface: 80205
+## Title: Masque: |cffff8000Onyx|r
+## Version: 8.0.0
+## Author: StormFX
+## Dependencies: Masque
+## Notes: Onyx skins for Masque.
+## Notes-deDE: Onyx-Skin für Masque.
+## Notes-esES: Skin Onyx para Masque.
+## Notes-esMX: Skin Onyx para Masque.
+## Notes-itIT: Skin Onyx per Masque.
+## Notes-ruRU: Скин Onyx для Masque.
+## Notes-zhTW: Masque的Onyx皮膚。
+## X-Website: https://www.wowace.com/projects/masque-onyx
+## X-Category: Interface Enhancements
+## X-WoWI-ID: 8900
+
+Onyx.lua
+
+
+## Title-zhCN: |cff880303[爱不易]|r Masque 皮肤Onyx
+## X-Vendor: AbyUI
+>>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4

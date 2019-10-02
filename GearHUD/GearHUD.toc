@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ## Interface: 80205
 ## SavedVariablesPerCharacter: GearHudSettings
 GearHUD.xml
@@ -5,3 +6,12 @@ GearHUD.xml
 ## Title: |cff880303[爱不易]|r GearHud 齿轮血量提示
 ## Notes-zhCN: 模仿战争机器的齿轮血量提示, 在不同的阶段显示不同的材质。
 ## X-Vendor: AbyUI
+=======
+## Interface: 80205
+## SavedVariablesPerCharacter: GearHudSettings
+GearHUD.xml
+
+## Title: |cff880303[爱不易]|r GearHud 齿轮血量提示
+## Notes-zhCN: 模仿战争机器的齿轮血量提示, 在不同的阶段显示不同的材质。
+## X-Vendor: AbyUI
+>>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4

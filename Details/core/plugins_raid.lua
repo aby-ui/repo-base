@@ -260,8 +260,10 @@
 		elseif (channel == "PRINT") then
 			print (msg)
 		
-		else
-			SendChatMessage (msg, channel)
+		else --say channel?
+			if (IsInInstance()) then --patch 80205 cannot use 'say' channel outside instances
+				SendChatMessage (msg, channel)
+			end
 		
 		--elseif (channel == "SAY" or channel == "YELL" or channel == "RAID_WARNING" or channel == "OFFICER" or channel == "GUILD" or channel == "EMOTE") then
 		

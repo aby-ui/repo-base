@@ -19,7 +19,11 @@
 ## X-Curse-Project-ID: 8025
 ## X-WoWI-ID: 10855
 
+<<<<<<< HEAD
+## Version: 8.7.2
+=======
 ## Version: 8.7.1
+>>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4
 ## Author: Cybeloras of Aerie Peak
 
 ## Notes: Provides visual, auditory, and textual notifications about cooldowns, buffs, and pretty much every other element of combat.

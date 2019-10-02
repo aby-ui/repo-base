@@ -1,4 +1,17 @@
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD:Combuctor/common/libs/config.xml
+>>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4
 <Ui xmlns="http://www.blizzard.com/wow/ui/">
 	<Include file="Poncho-1.0\Poncho-1.0.xml"/>
 	<Include file="Sushi-3.0\Sushi-3.0.xml"/>
 </Ui>
+<<<<<<< HEAD
+=======
+=======
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+	<Include file="Poncho-1.0\Poncho-1.0.xml"/>
+	<Include file="Sushi-3.0\Sushi-3.0.xml"/>
+</Ui>
+>>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4:Bagnon/common/Wildpants/libs/config.xml
+>>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4

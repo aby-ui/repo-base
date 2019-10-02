@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2347, "DBM-EternalPalace", nil, 1179)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190820002905")
+mod:SetRevision("20190928170115")
 mod:SetCreatureID(150653)
 mod:SetEncounterID(2289)
 mod:SetZone()
@@ -29,7 +29,7 @@ mod:RegisterEventsInCombat(
  or type = "interrupt"
 --]]
 local warnBioluminescentCloud			= mod:NewSpellAnnounce(292205, 2)
-local warnToxicSpine					= mod:NewTargetNoFilterAnnounce(292167, 2, nil, "Healer")
+local warnToxicSpine					= mod:NewTargetNoFilterAnnounce(292167, 2, nil, false, 2)--Too spammy for my liking, and mostly just ignored by healers anyways, so now off by default
 local warnPiercingBarb					= mod:NewTargetNoFilterAnnounce(301494, 2)
 
 local specWarnGazefromBelow				= mod:NewSpecialWarningYou(292307, nil, nil, nil, 3, 2)
@@ -199,7 +199,7 @@ function mod:SPELL_AURA_APPLIED(args)
 			end
 		end
 	elseif spellId == 292167 then
-		warnToxicSpine:CombinedShow(0.3, args.destName)
+		warnToxicSpine:CombinedShow(1, args.destName)
 	elseif spellId == 301494 then
 		if args:IsPlayer() then
 			specWarnPiercingBarb:Show()

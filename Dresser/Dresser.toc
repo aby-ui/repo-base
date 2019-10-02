@@ -2,8 +2,9 @@
 ## Title: Dresser
 ## Notes: Adds functionality to the dressing room!
 ## Author: Vladinator
-## Version: 8.0.1.180804
+## Version: 8.2.5.190929
 ## SavedVariables: DresserDB
+#libs\!NoTaint_UIDropDownMenu\UIDropDownMenu.xml
 locale.lua
 core.lua
 

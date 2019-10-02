@@ -981,7 +981,7 @@ local TrackerOnTick = function (self, deltaTime)
 
 	if (self.NextArrowUpdate < 0) then
 		local questYaw = (FindLookAtRotation (_, currentPlayerX, currentPlayerY, self.questX, self.questY) + p)%pipi
-		local playerYaw = GetPlayerFacing()
+		local playerYaw = GetPlayerFacing() or 0
 		local angle = (((questYaw + playerYaw)%pipi)+pi)%pipi
 		local imageIndex = 1+(floor (MapRangeClamped (_, 0, pipi, 1, 144, angle)) + 48)%144 --48� quadro � o que aponta para o norte
 		local line = ceil (imageIndex / 12)

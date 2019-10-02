@@ -1,6 +1,15 @@
+<<<<<<< HEAD
 <Ui xmlns="http://www.blizzard.com/wow/ui/">
 	<Script file="main.lua"/>
 
   <Include file="..\common\Wildpants\Wildpants.xml"/>
   <Include file="..\components\main\components.xml"/>
 </Ui>
+=======
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+	<Script file="main.lua"/>
+
+  <Include file="..\common\Wildpants\Wildpants.xml"/>
+  <Include file="..\components\main\components.xml"/>
+</Ui>
+>>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4

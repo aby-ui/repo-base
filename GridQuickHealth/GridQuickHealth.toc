@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ## Interface: 80205
 # Title: GridQuickHealth
 # Notes: 团队框体中的快速治疗功能
@@ -8,3 +9,15 @@ GridQuickHealth.lua
 
 ## Title: |cff880303[爱不易]|r Grid 快速血条变化
 ## X-Vendor: AbyUI
+=======
+## Interface: 80205
+# Title: GridQuickHealth
+# Notes: 团队框体中的快速治疗功能
+## Author: yleaf, warbaby
+## Dependencies: Grid
+
+GridQuickHealth.lua
+
+## Title: |cff880303[爱不易]|r Grid 快速血条变化
+## X-Vendor: AbyUI
+>>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ## Interface: 80205
 ## Title: Masque: |cffff8000Cainyx|r
 ## Version: 7.0.0
@@ -17,4 +18,25 @@
 
 Cainyx.lua
 ## Title: |cff880303[爱不易]|r Masque 皮肤Cainyx
+=======
+## Interface: 80205
+## Title: Masque: |cffff8000Cainyx|r
+## Version: 7.0.0
+## Author: WoWLoreConfusedMe
+## Notes: Cainyx skins for Masque.
+## Notes-deDE: Cainyx-Skin für Masque.
+## Notes-esES: Skin Cainyx para Masque.
+## Notes-esMX: Skin Cainyx para Masque.
+## Notes-itIT: Skin Cainyx per Masque.
+## Notes-zhTW: Masque的Cainyx皮膚。
+## Dependencies: Masque
+## X-Website: http://www.wowinterface.com/downloads/info18682-ButtonFacadeCainyx.html
+## X-Category: Interface Enhancements
+## X-Credits: WoWLoreConfusedMe
+## X-WoWI-ID: 8888
+
+
+Cainyx.lua
+## Title: |cff880303[爱不易]|r Masque 皮肤Cainyx
+>>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4
 ## X-Vendor: AbyUI

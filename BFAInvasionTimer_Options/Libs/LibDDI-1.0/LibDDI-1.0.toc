@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ## Interface: 80205
 ## LoadOnDemand: 1
 ## Title: Lib: Dropdown Items
@@ -10,3 +11,17 @@
 
 lib.xml
 
+=======
+## Interface: 80205
+## LoadOnDemand: 1
+## Title: Lib: Dropdown Items
+## Notes: Simple AceGUI3 dropdown item classes for font/statusbar/sound/etc.
+## Author: Funkydude
+## X-Credits: Rabbit
+## X-Category: Library
+## X-License: LGPLv2.1 or later
+## OptionalDeps: Ace3, LibSharedMedia-3.0
+
+lib.xml
+
+>>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4

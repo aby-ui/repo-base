@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\FrameXML\UI.xsd">
 
@@ -5,4 +6,13 @@
 <Script file="Locale-zhCN.lua"/>
 <Script file="Locale-zhTW.lua"/>
 
+=======
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+
+<Script file="Locale-enUS.lua"/>
+<Script file="Locale-zhCN.lua"/>
+<Script file="Locale-zhTW.lua"/>
+
+>>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4
 </Ui>

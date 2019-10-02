@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
  http://wowprogramming.com/FrameXML/UI.xsd">
     <!--
@@ -350,3 +351,357 @@
 
 
 </Ui>
+=======
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+ http://wowprogramming.com/FrameXML/UI.xsd">
+    <!--
+    This file is part of Decursive.
+
+    Decursive (v 2.7.6.4) add-on for World of Warcraft UI
+    Copyright (C) 2006-2019 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
+
+    Starting from 2009-10-31 and until said otherwise by its author, Decursive
+    is no longer free software, all rights are reserved to its author (John Wellesz).
+
+    The only official and allowed distribution means are www.2072productions.com, www.wowace.com and curse.com.
+    To distribute Decursive through other means a special authorization is required.
+
+
+    Decursive is inspired from the original "Decursive v1.9.4" by Patrick Bohnet (Quu).
+    The original "Decursive 1.9.4" is in public domain ( www.quutar.com )
+
+    Decursive is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY.
+
+    This file was last updated on 2019-09-09T00:15:26Z
+    -->
+    <Script>
+
+        local T = DecursiveRootTable or {};
+
+        -- big ugly scary fatal error message display function {{{
+        if not T._FatalError then
+        -- the beautiful error popup : {{{ -
+        StaticPopupDialogs["DECURSIVE_ERROR_FRAME"] = {
+        text = "|cFFFF0000Decursive Error:|r\n%s",
+        button1 = "OK",
+        OnAccept = function()
+        return false;
+        end,
+        timeout = 0,
+        whileDead = 1,
+        hideOnEscape = 1,
+        showAlert = 1,
+        }; -- }}}
+        T._FatalError = function (TheError) StaticPopup_Show ("DECURSIVE_ERROR_FRAME", TheError); end
+        end
+        -- }}}
+        if not T._LoadedFiles or not T._LoadedFiles["Decursive.lua"] then
+        if not DecursiveInstallCorrupted then T._FatalError("Decursive installation is corrupted! (Decursive.lua not loaded)"); end;
+        DecursiveInstallCorrupted = true;
+        end
+        T._LoadedFiles["Decursive.xml"] = false;
+
+    </Script>
+
+
+    <Frame name="DecursiveMainBar" clampedToScreen="true" frameStrata="LOW" toplevel="true" enableMouse="true" movable="true" hidden="true" parent="UIParent"> <!-- {{{ -->
+        <Size>
+            <AbsDimension x="80" y="25" />
+        </Size>
+
+        <Anchors>
+            <Anchor point="TOP">
+                <Offset>
+                    <AbsDimension x="0" y="-50"/>
+                </Offset>
+            </Anchor>
+        </Anchors>
+
+        <Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
+            <EdgeSize>
+                <AbsValue val="16"/>
+            </EdgeSize>
+            <TileSize>
+                <AbsValue val="16"/>
+            </TileSize>
+            <BackgroundInsets>
+                <AbsInset left="5" right="5" top="5" bottom="5"/>
+            </BackgroundInsets>
+        </Backdrop>
+
+        <Layers>
+            <Layer level="OVERLAY">
+                <FontString name="$parentText" inherits="GameFontNormal" text="BINDING_HEADER_DECURSIVE">
+                    <Anchors>
+                        <Anchor point="TOP" relativePoint="TOP">
+                            <Offset>
+                                <AbsDimension x="0" y="-5"/>
+                            </Offset>
+                        </Anchor>
+                    </Anchors>
+                </FontString>
+            </Layer>
+        </Layers>
+
+        <Scripts>
+            <OnEnter>
+                local T = DecursiveRootTable or {};
+
+                if T._SelfDiagnostic() ~= 2 then
+
+                T.Dcr:DisplayTooltip(
+                string.format(
+                "|cFF0055AA%s|r %s by %s|r\n" ..
+                --"|cFF11FF11%s|r: %s\n" ..
+                "|cFF11FF11%s|r / |cFF11FF11%s|r-|cFF11FF11%s|r: %s"
+                , T.Dcr.name, T.Dcr.version, T.Dcr.author,
+                --T.Dcr.L["HLP_RIGHTCLICK"], T.Dcr.L["STR_OPTIONS"],
+                T.Dcr.L["HLP_MIDDLECLICK"], T.Dcr.L["SHIFT"], T.Dcr.L["HLP_LEFTCLICK"],
+                T.Dcr.L["HIDESHOW_BUTTONS"]
+                )
+                , self);
+                end
+            </OnEnter>
+            <OnLeave>
+                DcrDisplay_Tooltip:Hide();
+            </OnLeave>
+
+            <OnMouseUp>
+                if ( self.isMoving ) then
+                self:StopMovingOrSizing();
+                self.isMoving = false;
+                end
+                DecursiveRootTable.Dcr:SaveLLPos();
+            </OnMouseUp>
+            <OnMouseDown>
+                if ( ( ( not self.isLocked ) or ( self.isLocked == 0 ) or IsAltKeyDown()) and ( button == "LeftButton" ) ) then
+                self:StartMoving();
+                self.isMoving = true;
+                end
+                if (button == "MiddleButton" or button == "LeftButton" and IsShiftKeyDown()) then
+                DecursiveRootTable.Dcr:ShowHideButtons();
+                end
+            </OnMouseDown>
+            <OnHide>
+                if ( self.isMoving ) then
+                self:StopMovingOrSizing();
+                self.isMoving = false;
+                end
+            </OnHide>
+            <OnLOad>
+                self:RegisterEvent("ADDON_LOADED");
+            </OnLOad>
+            <OnEvent>
+                if event == "ADDON_LOADED" and (...) == "Decursive" then
+                local T = DecursiveRootTable or {};
+
+                T._SelfDiagnostic();
+                self:UnregisterEvent("ADDON_LOADED");
+                end
+            </OnEvent>
+        </Scripts>
+
+        <Frames>
+            <Button name="$parentPriority" inherits="GameMenuButtonTemplate" text="P"> <!-- {{{ -->
+                <Size>
+                    <AbsDimension x="20" y="20" />
+                </Size>
+                <Anchors>
+                    <Anchor point="LEFT" relativePoint="RIGHT" relativeTo="$parent">
+                        <Offset>
+                            <AbsDimension x="0" y="0" />
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+                <Scripts>
+                    <OnLoad>
+                        if DecursiveInstallCorrupted then return end
+                        self:SetText(DecursiveRootTable.Dcr.L["PRIORITY_SHOW"]);
+                    </OnLoad>
+                    <OnClick>
+                        local T = DecursiveRootTable or {};
+
+                        if T._SelfDiagnostic(true) ~= 2 then
+                        T.Dcr:ShowHidePriorityListUI();
+                        end
+                    </OnClick>
+                    <OnEnter>
+                        local T = DecursiveRootTable or {};
+
+                        if T._SelfDiagnostic() ~= 2 then
+                        T.Dcr:DisplayTooltip(T.Dcr.L["PRIORITY_LIST"], self);
+                        end
+                    </OnEnter>
+                    <OnLeave>
+                        DcrDisplay_Tooltip:Hide();
+                    </OnLeave>
+                </Scripts>
+            </Button>  <!-- }}} -->
+
+            <Button name="$parentSkip" inherits="GameMenuButtonTemplate" text="S">  <!-- {{{ -->
+                <Size>
+                    <AbsDimension x="20" y="20" />
+                </Size>
+                <Anchors>
+                    <Anchor point="LEFT" relativePoint="RIGHT" relativeTo="$parentPriority">
+                        <Offset>
+                            <AbsDimension x="0" y="0" />
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+                <Scripts>
+                    <OnLoad>
+                        if DecursiveInstallCorrupted then return end
+                        self:SetText(DecursiveRootTable.Dcr.L["SKIP_SHOW"]);
+                    </OnLoad>
+                    <OnClick>
+                        local T = DecursiveRootTable or {};
+
+                        if T._SelfDiagnostic(true) ~= 2 then
+                        T.Dcr:ShowHideSkipListUI();
+                        end
+                    </OnClick>
+                    <OnEnter>
+                        local T = DecursiveRootTable or {};
+
+                        if T._SelfDiagnostic() ~= 2 then
+                        T.Dcr:DisplayTooltip(T.Dcr.L["SKIP_LIST_STR"], self);
+                        end
+                    </OnEnter>
+                    <OnLeave>
+                        DcrDisplay_Tooltip:Hide();
+                    </OnLeave>
+                </Scripts>
+            </Button>  <!-- }}} -->
+
+            <Button name="$parentHide" inherits="GameMenuButtonTemplate" text="X">  <!-- {{{ -->
+                <Size>
+                    <AbsDimension x="20" y="20" />
+                </Size>
+                <Anchors>
+                    <Anchor point="LEFT" relativePoint="RIGHT" relativeTo="$parentSkip">
+                        <Offset>
+                            <AbsDimension x="2" y="0" />
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+                <Scripts>
+                    <OnClick>
+                        local T = DecursiveRootTable or {};
+
+                        if T._SelfDiagnostic(true) ~= 2 then
+                        T.Dcr:HideBar(false);
+                        end
+                    </OnClick>
+                    <OnEnter>
+                        local T = DecursiveRootTable or {};
+
+                        if T._SelfDiagnostic() ~= 2 then
+                        T.Dcr:DisplayTooltip(T.Dcr.L["HIDE_MAIN"], self);
+                        end
+                    </OnEnter>
+                    <OnLeave>
+                        DcrDisplay_Tooltip:Hide();
+                    </OnLeave>
+                </Scripts>
+            </Button>  <!-- }}} -->
+        </Frames>
+
+    </Frame> <!-- }}} -->
+
+    <!-- ================================================================== -->
+
+    <Frame name="DecursiveAnchor" frameStrata="HIGH" toplevel="true" enableMouse="true" movable="true" hidden="true" parent="UIParent"> <!-- {{{ -->
+        <Size>
+            <AbsDimension x="180" y="25"/>
+        </Size>
+
+        <Anchors>
+            <Anchor point="TOP" relativeTo="UIErrorsFrame" relativePoint="BOTTOM">
+                <Offset>
+                    <AbsDimension x="0" y="0"/>
+                </Offset>
+            </Anchor>
+        </Anchors>
+
+        <Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
+            <EdgeSize>
+                <AbsValue val="16"/>
+            </EdgeSize>
+            <TileSize>
+                <AbsValue val="16"/>
+            </TileSize>
+            <BackgroundInsets>
+                <AbsInset left="5" right="5" top="5" bottom="5"/>
+            </BackgroundInsets>
+        </Backdrop>
+
+        <Layers>
+            <Layer level="BACKGROUND">
+                <FontString name="$parentText" inherits="GameFontNormal" text="ANCHOR">
+                    <Anchors>
+                        <Anchor point="TOP">
+                            <Offset>
+                                <AbsDimension x="0" y="-5"/>
+                            </Offset>
+                        </Anchor>
+                    </Anchors>
+                </FontString>
+            </Layer>
+        </Layers>
+        <Frames>
+            <Button name="$parentDirection" inherits="GameMenuButtonTemplate" text=".">
+                <Size>
+                    <AbsDimension x="20" y="17" />
+                </Size>
+                <Anchors>
+                    <Anchor point="TOPRIGHT" relativePoint="TOPRIGHT" relativeTo="$parent">
+                        <Offset>
+                            <AbsDimension x="-10" y="-4" />
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+                <Scripts>
+
+                    <OnClick>
+                        DecursiveRootTable.Dcr.profile.CustomeFrameInsertBottom = (not DecursiveRootTable.Dcr.profile.CustomeFrameInsertBottom);
+                        DecursiveRootTable.Dcr:ChangeTextFrameDirection(DecursiveRootTable.Dcr.profile.CustomeFrameInsertBottom);
+
+                        DecursiveRootTable.Dcr:Println("|cFFAAAAAATEST");
+
+                    </OnClick>
+                    <OnShow>
+                        DecursiveRootTable.Dcr:ThisSetParentText(self, DecursiveRootTable.Dcr.L["ANCHOR"]);
+                    </OnShow>
+                </Scripts>
+            </Button>
+        </Frames>
+    </Frame> <!-- }}} -->
+
+    <MessageFrame name="DecursiveTextFrame" insertMode="TOP" parent="UIParent" frameStrata="HIGH" toplevel="true" > <!-- {{{ -->
+        <Size>
+            <AbsDimension x="600" y="140"/>
+        </Size>
+        <Anchors>
+            <Anchor point="TOP" relativeTo="DecursiveAnchor" relativePoint="BOTTOM">
+                <Offset>
+                    <AbsDimension x="0" y="0"/>
+                </Offset>
+            </Anchor>
+        </Anchors>
+
+        <FontString inherits="GameFontNormal" justifyH="CENTER"/>
+    </MessageFrame> <!-- }}} -->
+
+    <GameTooltip name="DcrDisplay_Tooltip" hidden="true" inherits="GameTooltipTemplate" parent="UIParent" />
+
+    <Script>
+        local T = DecursiveRootTable or {};
+
+        T._LoadedFiles["Decursive.xml"] = "2.7.6.4";
+    </Script>
+
+
+</Ui>
+>>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4

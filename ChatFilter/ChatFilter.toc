@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ﻿## Interface: 80205
 ## Title: ChatFilter
 ## Notes: 简单的聊天过滤插件，过滤重复及广告信息，过滤多行宏，合并显示切换天赋时的学会/忘却技能，合并显示获得成就，合并显示制造物品。
@@ -16,4 +17,24 @@ BadBoy_Levels.lua
 #NoGoldSeller.lua
 
 ## Title: |cff880303[爱不易]|r ChatFilter 聊天过滤
+=======
+﻿## Interface: 80205
+## Title: ChatFilter
+## Notes: 简单的聊天过滤插件，过滤重复及广告信息，过滤多行宏，合并显示切换天赋时的学会/忘却技能，合并显示获得成就，合并显示制造物品。
+## Author: aliluya555
+## Version: 70000.06
+## SavedVariables: CF_LevelTable
+## SavedVariablesPerCharacter: CF_IgnoreTable
+# http://bbs.ngacn.cc/read.php?tid=4585342
+
+localization.lua
+config-mine.lua
+config.lua
+core.lua
+
+BadBoy_Levels.lua
+#NoGoldSeller.lua
+
+## Title: |cff880303[爱不易]|r ChatFilter 聊天过滤
+>>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4
 ## X-Vendor: AbyUI

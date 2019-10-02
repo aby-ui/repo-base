@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ## Interface: 80205
 ## Title: Details!: Streamer (plugin)
 ## Notes: Show which spells you are casting, viewers can see what are you doing and follow your steps.
@@ -8,3 +9,15 @@ Details_Streamer.lua
 
 
 ## X-Vendor: AbyUI
+=======
+## Interface: 80205
+## Title: Details!: Streamer (plugin)
+## Notes: Show which spells you are casting, viewers can see what are you doing and follow your steps.
+## RequiredDeps: Details
+## SavedVariables: Details_StreamerDB
+
+Details_Streamer.lua
+
+
+## X-Vendor: AbyUI
+>>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4

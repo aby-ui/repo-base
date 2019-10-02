@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ## Interface: 80205
 ## LoadOnDemand: 1
 ## Title: Lib: Babble-SubZone-3.0
@@ -21,3 +22,28 @@
 LibStub\LibStub.lua
 lib.xml
 
+=======
+## Interface: 80205
+## LoadOnDemand: 1
+## Title: Lib: Babble-SubZone-3.0
+## Title-frFR: Lib: Babble-SubZone-3.0
+## Title-itIT: Lib: Babble-SubZone-3.0
+## Title-koKR: Lib: Babble-SubZone-3.0
+## Title-zhCN: Lib: Babble-SubZone-3.0
+## Notes: A library to help with localization of in-game subzone names.
+## Notes-deDE: Eine Bibliothek, die dabei hilft, die Untergebiete des Spiels zu übersetzen.
+## Notes-itIT: Una libreria per aiutare con la localizzazione delle sotto-zone in gioco.
+## Notes-koKR: 게임 내 세부 지역 이름의 지역화로 도움을 주는 라이브러리 입니다.
+## Notes-zhCN: 一个帮助游戏内子区域名称本地化的库。
+## Notes-zhTW: 為本地化服務的函式庫 [副區域名稱]
+## Author: Arith
+## X-eMail: arithmandarjp at yahoo.co.jp
+## X-Category: Library
+## X-License: MIT
+## X-Date: @project-date-iso@
+## X-Website: http://www.wowace.com/addons/libbabble-subzone-3-0/
+
+LibStub\LibStub.lua
+lib.xml
+
+>>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4

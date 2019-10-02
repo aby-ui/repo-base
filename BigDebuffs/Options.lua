@@ -1,6 +1,6 @@
 local BigDebuffs = LibStub("AceAddon-3.0"):GetAddon("BigDebuffs")
 local L = LibStub("AceLocale-3.0"):GetLocale("BigDebuffs")
-local SM = LibStub("LibSharedMedia-3.0")
+local LibSharedMedia = LibStub("LibSharedMedia-3.0")
 
 local WarningDebuffs = {}
 if WOW_PROJECT_ID ~= WOW_PROJECT_CLASSIC then
@@ -298,7 +298,7 @@ function BigDebuffs:SetupOptions()
                         desc = L["Select font for cd timers"],
                         order = 6,
                         values = function()
-                            local fonts, newFonts = SM:List("font"), {}
+                            local fonts, newFonts = LibSharedMedia:List("font"), {}
                             for k, v in pairs(fonts) do
                                 newFonts[v] = v
                             end
@@ -525,7 +525,7 @@ function BigDebuffs:SetupOptions()
                         desc = L["Select font for cd timers"],
                         order = 3,
                         values = function()
-                            local fonts, newFonts = SM:List("font"), {}
+                            local fonts, newFonts = LibSharedMedia:List("font"), {}
                             for k, v in pairs(fonts) do
                                 newFonts[v] = v
                             end

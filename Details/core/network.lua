@@ -428,6 +428,7 @@
 					
 					local from = UnitName ("player")
 					local realm = GetRealmName()
+					--todo: need to check if the target is still online
 					_detalhes:SendCommMessage (CONST_DETAILS_PREFIX, _detalhes:Serialize (CONST_GUILD_SYNC, from, realm, _detalhes.realversion, "A", data), "WHISPER", task.Target)
 					
 					if (_detalhes.debug) then

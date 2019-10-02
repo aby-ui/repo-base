@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ## Interface: 80205
 ## Title: !!!|cff880303[爱不易]|r 控制台和基本库
 ## Author: AbyUI (warbaby & yleaf)
@@ -71,4 +72,79 @@ PluginCore\SharedMedia.lua
 ..\!!!Libs\LibItemUpgradeInfo-1.0\Core.lua
 PluginCore\InventoryLevel.lua
 
+=======
+## Interface: 80205
+## Title: !!!|cff880303[爱不易]|r 控制台和基本库
+## Author: AbyUI (warbaby & yleaf)
+
+## SavedVariables: U1DBG
+#--fix7 ,NGSwordsUI,NGSSymbolsUI
+## SavedVariablesPerCharacter: U1DB
+
+#file order is very important: DEBUG > Core > RunFirst > AceEvent > 163UI
+
+#U1DBG 23K, U1DB.addons=25K, configs=3K, tags=2K, frames=3K,
+
+SoundKitMap.lua
+RunFirst.lua
+
+locale.en.lua
+locale.cn.lua
+locale.tw.lua
+
+#273K
+Libs\CoreLibs.xml
+Core\copy\copy.xml
+Core\Core.lua
+Core\UI\UI.xml
+
+Deprecated_8.0.lua
+
+#4K
+RunSecond.lua
+
+#--- 非UI部分587K ---
+
+#32K
+Pinyin.lua
+
+#273K
+163UI.lua
+
+Tags.lua
+
+#27K 必须在Configs之前调用，因为要U1_MMBAddDefaultCollect
+Minimap.lua
+
+#259K
+Configs\Cfg!!!163UI!!!.lua
+Configs\Configs.xml
+ConfigsLoaded.lua
+
+#--- UI部分277K ---
+
+#50K
+Controls\Controls.xml
+#0K
+163UIUI.xml
+#84K, with minimap 140
+QuickMenus.lua
+163UIUI.lua
+
+#--- 其他 ---
+Profiles.lua
+ProfilesUI.lua
+
+Donators.lua
+
+RunLast.lua
+
+PluginCore\BlizzBugsSuck.lua
+#PluginCore\MasqueDummy.lua
+..\!!!Libs\LibSharedMedia-3.0\LibSharedMedia-3.0\LibSharedMedia-3.0.lua
+PluginCore\SharedMedia.lua
+..\!!!Libs\LibItemUpgradeInfo-1.0\Core.lua
+PluginCore\InventoryLevel.lua
+
+>>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4
 ## X-Vendor: AbyUI

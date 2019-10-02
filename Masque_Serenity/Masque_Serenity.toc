@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ## Interface: 80205
 ## Title: Masque: |cffff8000Serenity|r
 ## Version: 8.0.0
@@ -19,3 +20,26 @@ Serenity.lua
 
 ## Title: |cff880303[爱不易]|r Masque 皮肤Serenity
 ## X-Vendor: AbyUI
+=======
+## Interface: 80205
+## Title: Masque: |cffff8000Serenity|r
+## Version: 8.0.0
+## Author: StormFX
+## Dependencies: Masque
+## Notes: Serenity skins for Masque.
+## Notes-deDE: Serenity-Skin für Masque.
+## Notes-esES: Skin Serenity para Masque.
+## Notes-esMX: Skin Serenity para Masque.
+## Notes-itIT: Skin Serenity per Masque.
+## Notes-ruRU: Скин Serenity для Masque.
+## Notes-zhTW: Masque的Serenity皮膚。
+## X-Website: https://www.wowace.com/projects/masque-serenity
+## X-Category: Interface Enhancements
+## X-Credits: Sairen
+## X-WoWI-ID: 8875
+
+Serenity.lua
+
+## Title: |cff880303[爱不易]|r Masque 皮肤Serenity
+## X-Vendor: AbyUI
+>>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4

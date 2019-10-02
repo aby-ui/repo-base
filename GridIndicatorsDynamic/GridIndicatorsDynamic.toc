@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ﻿## Interface: 80205
 ## Title: GridIndicatorsDynamic
 ## Notes: Additional indicators for Grid
@@ -17,3 +18,24 @@ Box.lua
 
 ## Title: |cff880303[爱不易]|r Grid 边角文字图标
 ## X-Vendor: AbyUI
+=======
+﻿## Interface: 80205
+## Title: GridIndicatorsDynamic
+## Notes: Additional indicators for Grid
+## Dependencies: Grid
+## Author: Vincent
+## Version: v7.0.3.10
+## X-Curse-Packaged-Version: v7.0.3.10
+## X-Curse-Project-Name: GridIndicatorsDynamic
+## X-Curse-Project-ID: gridindicatorsdynamic
+## X-Curse-Repository-ID: wow/gridindicatorsdynamic/mainline
+
+Locales.lua
+Options.lua
+Texts.lua
+Icons.lua
+Box.lua
+
+## Title: |cff880303[爱不易]|r Grid 边角文字图标
+## X-Vendor: AbyUI
+>>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4

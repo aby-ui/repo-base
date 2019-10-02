@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
  http://wowprogramming.com/FrameXML/UI.xsd">
     <!--
@@ -172,3 +173,179 @@
         T._LoadedFiles["Dcr_DebuffsFrame.xml"] = "2.7.6.4";
     </Script>
 </Ui>
+=======
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+ http://wowprogramming.com/FrameXML/UI.xsd">
+    <!--
+    This file is part of Decursive.
+
+    Decursive (v 2.7.6.4) add-on for World of Warcraft UI
+    Copyright (C) 2006-2019 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
+
+    Starting from 2009-10-31 and until said otherwise by its author, Decursive
+    is no longer free software, all rights are reserved to its author (John Wellesz).
+
+    The only official and allowed distribution means are www.2072productions.com, www.wowace.com and curse.com.
+    To distribute Decursive through other means a special authorization is required.
+
+
+    Decursive is inspired from the original "Decursive v1.9.4" by Patrick Bohnet (Quu).
+    The original "Decursive 1.9.4" is in public domain ( www.quutar.com )
+
+    Decursive is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY.
+
+    This file was last updated on 2019-09-09T00:15:26Z
+    -->
+    <Script>
+
+        local T = DecursiveRootTable or {};
+
+        -- big ugly scary fatal error message display function {{{
+        if not T._FatalError then
+        -- the beautiful error popup : {{{ -
+        StaticPopupDialogs["DECURSIVE_ERROR_FRAME"] = {
+        text = "|cFFFF0000Decursive Error:|r\n%s",
+        button1 = "OK",
+        OnAccept = function()
+        return false;
+        end,
+        timeout = 0,
+        whileDead = 1,
+        hideOnEscape = 1,
+        showAlert = 1,
+        }; -- }}}
+        T._FatalError = function (TheError) StaticPopup_Show ("DECURSIVE_ERROR_FRAME", TheError); end
+        end
+        -- }}}
+        if not T._LoadedFiles or not T._LoadedFiles["Dcr_DebuffsFrame.lua"] then
+        if not DecursiveInstallCorrupted then T._FatalError("Decursive installation is corrupted! (Dcr_DebuffsFrame.lua not loaded)"); end;
+        DecursiveInstallCorrupted = true;
+        return;
+        end
+        T._LoadedFiles["Dcr_DebuffsFrame.xml"] = false;
+
+    </Script>
+
+    <Frame name="DcrMUFsContainer" clampedToScreen="true" frameStrata="MEDIUM" toplevel="true" enableMouse="true" movable="true" hidden="true" parent="UIParent">
+        <Size>
+            <AbsDimension x="20" y="20" />
+        </Size>
+        <Anchors>
+            <Anchor point="BOTTOMLEFT" relativePoint="BOTTOMLEFT">
+                <Offset>
+                    <AbsDimension x="200" y="250"/>
+                </Offset>
+            </Anchor>
+        </Anchors>
+        <Scripts>
+            <OnLoad>
+                self.UpdateYourself = true;
+                self.MaxUnit = 5;
+                self.UnitShown = 0;
+            </OnLoad>
+        </Scripts>
+        <Frames>
+            <Button name="$parentDragButton" clampedToScreen="true" >
+                <Size>
+                    <AbsDimension x="20" y="20" />
+                </Size>
+                <Anchors>
+                    <Anchor point="BOTTOMLEFT" relativePoint="TOPLEFT">
+                        <Offset>
+                            <AbsDimension x="0" y="0"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+                <HighlightTexture file="Interface\Buttons\UI-Common-MouseHilight" alphaMode="ADD" />
+
+                <Scripts>
+                    <OnMouseUp>
+                        if ( self.isMoving ) then
+                            self:GetParent():StopMovingOrSizing();
+                            self.isMoving = false;
+                            DecursiveRootTable.Dcr.MicroUnitF.DraggingHandle = false;
+                            DecursiveRootTable.Dcr.MicroUnitF:SavePos();
+                            DecursiveRootTable.Dcr.MicroUnitF:Place();
+                            DecursiveRootTable.Dcr.MicroUnitF:SavePos();
+                        elseif DecursiveRootTable.Dcr.Status.MouseOveringCorner then
+                            DecursiveRootTable.Dcr:QuickAccess(self, button);
+                        end
+                    </OnMouseUp>
+                    <OnMouseDown>
+                        if (   button == "LeftButton" and IsAltKeyDown() ) then
+                            self.isMoving = true;
+                            DecursiveRootTable.Dcr.MicroUnitF.DraggingHandle = true;
+                            self:GetParent():StartMoving();
+                        end
+                    </OnMouseDown>
+
+                    <OnHide>
+                        if ( self.isMoving ) then
+                            self:GetParent():StopMovingOrSizing();
+                            self.isMoving = false;
+                            DecursiveRootTable.Dcr.MicroUnitF.DraggingHandle = false;
+                        end
+                    </OnHide>
+                    <OnEnter>
+                        DecursiveRootTable.Dcr.Status.MouseOveringCorner = true;
+                        DecursiveRootTable.Dcr.MicroUnitF:OnCornerEnter(self);
+                    </OnEnter>
+                    <OnLeave>
+                        DecursiveRootTable.Dcr.Status.MouseOveringCorner = false;
+                        DecursiveRootTable.Dcr.MicroUnitF:OnCornerLeave(self);
+                    </OnLeave>
+                </Scripts>
+            </Button>
+
+        </Frames>
+    </Frame>
+
+    <!-- Templates -->
+    <Cooldown name="DcrMicroUnitCDTemplate" inherits="CooldownFrameTemplate" virtual="true" hidden="true" setAllPoints="false">
+        <Size>
+            <AbsDimension x="16" y="16"/>
+        </Size>
+        <Anchors>
+            <Anchor point="CENTER" relativePoint="CENTER">
+                <Offset>
+                    <AbsDimension x="0" y="0"/>
+                </Offset>
+            </Anchor>
+        </Anchors>
+    </Cooldown>
+
+    <Button name="DcrMicroUnitTemplateSecure" inherits="SecureUnitButtonTemplate" virtual="true" hidden="true">
+        <Size>
+            <AbsDimension x="20" y="20"/>
+        </Size>
+
+        <Scripts>
+            <OnLoad>
+                DecursiveRootTable.Dcr.MicroUnitF:OnLoad(self);
+            </OnLoad>
+            <OnEnter>
+                DecursiveRootTable.Dcr.MicroUnitF:OnEnter(self);
+            </OnEnter>
+            <OnLeave>
+                DecursiveRootTable.Dcr.MicroUnitF:OnLeave(self);
+            </OnLeave>
+        </Scripts>
+    </Button>
+
+    <Font name="DcrMicroUnitChronoFont" inherits="NumberFontNormalSmall" justifyH="CENTER" virtual="true">
+        <Shadow>
+            <offset>
+                <AbsDimension x="0.5" y="-0.5" />
+            </offset>
+            <Color r=".2" g=".2" b=".2" a=".5"/>
+        </Shadow>
+    </Font>
+
+    <Script>
+        local T = DecursiveRootTable or {};
+
+        T._LoadedFiles["Dcr_DebuffsFrame.xml"] = "2.7.6.4";
+    </Script>
+</Ui>
+>>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4

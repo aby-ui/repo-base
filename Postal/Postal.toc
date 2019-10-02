@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ## Interface: 80205
 ## Title: Postal
 ## Version: v3.6.0
@@ -38,3 +39,45 @@ Modules\CarbonCopy.lua
 ## Title-zhCN: |cff880303[爱不易]|r Postal 邮箱助手
 ## Notes-zhCN: 邮箱功能增强助手
 ## X-Vendor: AbyUI
+=======
+## Interface: 80205
+## Title: Postal
+## Version: v3.6.0
+## X-Build: 409
+## X-ReleaseDate: 2018-07-20T8:41:50Z
+## X-Revision: $Revision: 409 $
+## Author: Xinhuan
+## X-Credits: Ammo, Rabbit, Grennon, Mikk, oscarucb
+## X-Category: Mail
+## Notes: Postal: Enhanced Mailbox support
+## Notes-ruRU: Postal: Расширенная поддержка почтового ящика
+## Notes-frFR: Postal: améliorations diverses de l'interface d'envoi/réception de courriers.
+## Notes-esES: Postal: soporte mejorado para el buzon
+## Notes-zhTW: Postal: 強化信箱功能。
+## Notes-zhCN: Postal: 增强信箱功能
+## Notes-ptBR: Postal: Apoio caixa reforçada
+## OptionalDeps: Ace3, !BlizzBugsSuck, !ClassColors
+## SavedVariables: Postal3DB
+
+## LoadManagers: AddonLoader
+## X-LoadOn-Mailbox: true
+## X-Email: xinhuan AT gmail DOT com
+
+Localization.lua
+Postal.lua
+
+# Users can comment out any module (or delete the .lua) of any module they do not wish to load
+Modules\Express.lua
+Modules\OpenAll.lua
+Modules\Wire.lua
+Modules\Select.lua
+Modules\TradeBlock.lua
+Modules\Rake.lua
+Modules\BlackBook.lua
+Modules\DoNotWant.lua
+Modules\CarbonCopy.lua
+
+## Title-zhCN: |cff880303[爱不易]|r Postal 邮箱助手
+## Notes-zhCN: 邮箱功能增强助手
+## X-Vendor: AbyUI
+>>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4

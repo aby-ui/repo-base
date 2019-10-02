@@ -5211,225 +5211,354 @@ end
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --> ~header
 
+--mixed functions
 DF.HeaderFunctions = {
 	AddFrameToHeaderAlignment = function (self, frame)
 		self.FramesToAlign = self.FramesToAlign or {}
 		tinsert (self.FramesToAlign, frame)
 	end,
 
+	--@self: an object like a line
+	--@headerFrame: the main header frame
+	--@anchor: which side the columnHeaders are attach
 	AlignWithHeader = function (self, headerFrame, anchor)
-		local headerFrames = headerFrame.HeadersCreated
+		local columnHeaderFrames = headerFrame.columnHeadersCreated
 		anchor = anchor or "topleft"
 		
 		for i = 1, #self.FramesToAlign do
 			local frame = self.FramesToAlign [i]
 			frame:ClearAllPoints()
 			
-			local headerFrame = headerFrames [i]
+			local columnHeader = columnHeaderFrames [i]
 			local offset = 0
 			
-			if (headerFrame.columnAlign == "right") then
-				offset = headerFrame:GetWidth()
+			if (columnHeader.columnAlign == "right") then
+				offset = columnHeader:GetWidth()
 				if (frame:GetObjectType() == "FontString") then
 					frame:SetJustifyH ("right")
 				end
 			end
 			
-			frame:SetPoint (headerFrame.columnAlign, self, anchor, headerFrame.XPosition + headerFrame.columnOffset + offset, 0)
+			frame:SetPoint (columnHeader.columnAlign, self, anchor, columnHeader.XPosition + columnHeader.columnOffset + offset, 0)
+		end
+	end,
+
+	--@self: column header button
+	OnClick = function (self, buttonClicked)
+		
+		--get the header main frame
+		local headerFrame = self:GetParent()		
+
+		--if this header does not have a clickable header, just ignore
+		if (not headerFrame.columnSelected) then
+			return
+		end
+
+		--get the latest column header selected
+		local previousColumnHeader = headerFrame.columnHeadersCreated [headerFrame.columnSelected]
+		previousColumnHeader.Arrow:Hide()
+		headerFrame:ResetColumnHeaderBackdrop (previousColumnHeader)
+		headerFrame:SetBackdropColorForSelectedColumnHeader (self)
+
+		if (headerFrame.columnSelected == self.columnIndex) then
+			self.order = self.order ~= "ASC" and "ASC" or "DESC"
+		end
+		headerFrame.columnOrder = self.order
+
+		--set the new column header selected
+		headerFrame.columnSelected = self.columnIndex
+
+		headerFrame:UpdateSortArrow (self)
+
+		if (headerFrame.options.header_click_callback) then
+			--callback with the main header frame, column header, column index and column order as payload
+			local okay, errortext = pcall (headerFrame.options.header_click_callback, headerFrame, self, self.columnIndex, self.order)
+			if (not okay) then
+				print ("DF: Header onClick callback error:", errortext)
+			end
 		end
 	end,
 }
 
 DF.HeaderCoreFunctions = {
 	SetHeaderTable = function (self, newTable)
-		self.HeadersCreated = self.HeadersCreated or {}
+		self.columnHeadersCreated = self.columnHeadersCreated or {}
 		self.HeaderTable = newTable
 		self.NextHeader = 1
 		self.HeaderWidth = 0
 		self.HeaderHeight = 0
 		self:Refresh()
 	end,
+
+	--return which header is current selected and the the order ASC DESC
+	GetSelectedColumn = function (self)
+		return self.columnSelected, self.columnHeadersCreated [self.columnSelected or 1].order
+	end,
 	
+	--clean up and rebuild the header following the header options
+	--@self: main header frame
 	Refresh = function (self)
-	
 		--> refresh background frame
 		self:SetBackdrop (self.options.backdrop)
 		self:SetBackdropColor (unpack (self.options.backdrop_color))
 		self:SetBackdropBorderColor (unpack (self.options.backdrop_border_color))
 	
 		--> reset all header frames
-		for i = 1, #self.HeadersCreated do
-			self.HeadersCreated [i].InUse = false
-			self.HeadersCreated [i]:Hide()
+		for i = 1, #self.columnHeadersCreated do
+			local columnHeader = self.columnHeadersCreated [i]
+			columnHeader.InUse = false
+			columnHeader:Hide()
 		end
 	
-		local previousHeaderFrame
+		local previousColumnHeader
 		local growDirection = string.lower (self.options.grow_direction)
 	
 		--> update header frames
 		local headerSize = #self.HeaderTable
 		for i = 1, headerSize do
-			local headerFrame = self:GetNextHeader()
-			self:UpdateHeaderFrame (headerFrame, i)
+
+			--> get the header button, a new one is created if it doesn't exists yet
+			local columnHeader = self:GetNextHeader()
+			self:UpdateColumnHeader (columnHeader, i)
 			
 			--> grow direction
-			if (not previousHeaderFrame) then
-				headerFrame:SetPoint ("topleft", self, "topleft", 0, 0)
+			if (not previousColumnHeader) then
+				columnHeader:SetPoint ("topleft", self, "topleft", 0, 0)
 				
 				if (growDirection == "right") then
 					if (self.options.use_line_separators) then
-						headerFrame.Separator:Show()
-						headerFrame.Separator:SetWidth (self.options.line_separator_width)
-						headerFrame.Separator:SetColorTexture (unpack (self.options.line_separator_color))
+						columnHeader.Separator:Show()
+						columnHeader.Separator:SetWidth (self.options.line_separator_width)
+						columnHeader.Separator:SetColorTexture (unpack (self.options.line_separator_color))
 						
-						headerFrame.Separator:ClearAllPoints()
+						columnHeader.Separator:ClearAllPoints()
 						if (self.options.line_separator_gap_align) then
-							headerFrame.Separator:SetPoint ("topleft", headerFrame, "topright", 0, 0)
+							columnHeader.Separator:SetPoint ("topleft", columnHeader, "topright", 0, 0)
 						else
-							headerFrame.Separator:SetPoint ("topright", headerFrame, "topright", 0, 0)
+							columnHeader.Separator:SetPoint ("topright", columnHeader, "topright", 0, 0)
 						end
-						headerFrame.Separator:SetHeight (self.options.line_separator_height)
+						columnHeader.Separator:SetHeight (self.options.line_separator_height)
 					end
 				end
 				
 			else
 				if (growDirection == "right") then
-					headerFrame:SetPoint ("topleft", previousHeaderFrame, "topright", self.options.padding, 0)
+					columnHeader:SetPoint ("topleft", previousColumnHeader, "topright", self.options.padding, 0)
 
 					if (self.options.use_line_separators) then
-						headerFrame.Separator:Show()
-						headerFrame.Separator:SetWidth (self.options.line_separator_width)
-						headerFrame.Separator:SetColorTexture (unpack (self.options.line_separator_color))
+						columnHeader.Separator:Show()
+						columnHeader.Separator:SetWidth (self.options.line_separator_width)
+						columnHeader.Separator:SetColorTexture (unpack (self.options.line_separator_color))
 						
-						headerFrame.Separator:ClearAllPoints()
+						columnHeader.Separator:ClearAllPoints()
 						if (self.options.line_separator_gap_align) then
-							headerFrame.Separator:SetPoint ("topleft", headerFrame, "topright", 0, 0)
+							columnHeader.Separator:SetPoint ("topleft", columnHeader, "topright", 0, 0)
 						else
-							headerFrame.Separator:SetPoint ("topleft", headerFrame, "topright", 0, 0)
+							columnHeader.Separator:SetPoint ("topleft", columnHeader, "topright", 0, 0)
 						end
-						headerFrame.Separator:SetHeight (self.options.line_separator_height)
+						columnHeader.Separator:SetHeight (self.options.line_separator_height)
 						
 						if (headerSize == i) then
-							headerFrame.Separator:Hide()
+							columnHeader.Separator:Hide()
 						end
 					end
 					
 				elseif (growDirection == "left") then
-					headerFrame:SetPoint ("topright", previousHeaderFrame, "topleft", -self.options.padding, 0)
+					columnHeader:SetPoint ("topright", previousColumnHeader, "topleft", -self.options.padding, 0)
 					
 				elseif (growDirection == "bottom") then
-					headerFrame:SetPoint ("topleft", previousHeaderFrame, "bottomleft", 0, -self.options.padding)
+					columnHeader:SetPoint ("topleft", previousColumnHeader, "bottomleft", 0, -self.options.padding)
 					
 				elseif (growDirection == "top") then
-					headerFrame:SetPoint ("bottomleft", previousHeaderFrame, "topleft", 0, self.options.padding)
+					columnHeader:SetPoint ("bottomleft", previousColumnHeader, "topleft", 0, self.options.padding)
 				end
 			end
 			
-			previousHeaderFrame = headerFrame
+			previousColumnHeader = columnHeader
 		end
 		
 		self:SetSize (self.HeaderWidth, self.HeaderHeight)
 
 	end,
 	
-	UpdateHeaderFrame = function (self, headerFrame, headerIndex)
+	--@self: main header frame
+	UpdateSortArrow = function (self, columnHeader, defaultShown, defaultOrder)
+
+		local options = self.options
+		local order = defaultOrder or columnHeader.order
+		local arrowIcon = columnHeader.Arrow
+		
+		if (type (defaultShown) ~= "boolean") then
+			arrowIcon:Show()
+		else
+			arrowIcon:SetShown (defaultShown)
+			if (defaultShown) then
+				self:SetBackdropColorForSelectedColumnHeader (columnHeader)
+			end
+		end
+
+		arrowIcon:SetAlpha (options.arrow_alpha)
+
+		if (order == "ASC") then
+			arrowIcon:SetTexture (options.arrow_up_texture)
+			arrowIcon:SetTexCoord (unpack (options.arrow_up_texture_coords))
+			arrowIcon:SetSize (unpack (options.arrow_up_size))
+
+		elseif (order == "DESC") then
+			arrowIcon:SetTexture (options.arrow_down_texture)
+			arrowIcon:SetTexCoord (unpack (options.arrow_down_texture_coords))
+			arrowIcon:SetSize (unpack (options.arrow_down_size))
+		end
+
+	end,
+
+	--@self: main header frame
+	UpdateColumnHeader = function (self, columnHeader, headerIndex)
 		local headerData = self.HeaderTable [headerIndex]
 		
 		if (headerData.icon) then
-			headerFrame.Icon:SetTexture (headerData.icon)
+			columnHeader.Icon:SetTexture (headerData.icon)
 			
 			if (headerData.texcoord) then
-				headerFrame.Icon:SetTexCoord (unpack (headerData.texcoord))
+				columnHeader.Icon:SetTexCoord (unpack (headerData.texcoord))
 			else
-				headerFrame.Icon:SetTexCoord (0, 1, 0, 1)
+				columnHeader.Icon:SetTexCoord (0, 1, 0, 1)
 			end
 			
-			headerFrame.Icon:SetPoint ("left", headerFrame, "left", self.options.padding, 0)
-			headerFrame.Icon:Show()
+			columnHeader.Icon:SetPoint ("left", columnHeader, "left", self.options.padding, 0)
+			columnHeader.Icon:Show()
 		end
 		
 		if (headerData.text) then
-			headerFrame.Text:SetText (headerData.text)
+			columnHeader.Text:SetText (headerData.text)
 			
 			--> text options
-			DF:SetFontColor (headerFrame.Text, self.options.text_color)
-			DF:SetFontSize (headerFrame.Text, self.options.text_size)
-			DF:SetFontOutline (headerFrame.Text, self.options.text_shadow)
+			DF:SetFontColor (columnHeader.Text, self.options.text_color)
+			DF:SetFontSize (columnHeader.Text, self.options.text_size)
+			DF:SetFontOutline (columnHeader.Text, self.options.text_shadow)
 			
 			--> point
 			if (not headerData.icon) then
-				headerFrame.Text:SetPoint ("left", headerFrame, "left", self.options.padding, 0)
+				columnHeader.Text:SetPoint ("left", columnHeader, "left", self.options.padding, 0)
 			else
-				headerFrame.Text:SetPoint ("left", headerFrame.Icon, "right", self.options.padding, 0)
+				columnHeader.Text:SetPoint ("left", columnHeader.Icon, "right", self.options.padding, 0)
 			end
 			
-			headerFrame.Text:Show()
+			columnHeader.Text:Show()
+		end
+
+		--column header index
+		columnHeader.columnIndex = headerIndex
+
+		if (headerData.canSort) then
+			columnHeader.order = "DESC"
+			columnHeader.Arrow:SetTexture (self.options.arrow_up_texture)
+		else
+			columnHeader.Arrow:Hide()
+		end
+
+		if (headerData.selected) then
+			columnHeader.Arrow:Show()
+			columnHeader.Arrow:SetAlpha (.843)
+			self:UpdateSortArrow (columnHeader, true, columnHeader.order)
+			self.columnSelected = headerIndex
+		else
+			if (headerData.canSort) then
+				self:UpdateSortArrow (columnHeader, false, columnHeader.order)
+			end
 		end
 		
 		--> size
 		if (headerData.width) then
-			headerFrame:SetWidth (headerData.width)
+			columnHeader:SetWidth (headerData.width)
 		end
 		if (headerData.height) then
-			headerFrame:SetHeight (headerData.height)
+			columnHeader:SetHeight (headerData.height)
 		end
 		
-		headerFrame.XPosition = self.HeaderWidth-- + self.options.padding
-		headerFrame.YPosition = self.HeaderHeight-- + self.options.padding
+		columnHeader.XPosition = self.HeaderWidth-- + self.options.padding
+		columnHeader.YPosition = self.HeaderHeight-- + self.options.padding
 		
-		headerFrame.columnAlign = headerData.align or "left"
-		headerFrame.columnOffset = headerData.offset or 0
+		columnHeader.columnAlign = headerData.align or "left"
+		columnHeader.columnOffset = headerData.offset or 0
 		
 		--> add the header piece size to the total header size
 		local growDirection = string.lower (self.options.grow_direction)
 		
 		if (growDirection == "right" or growDirection == "left") then
-			self.HeaderWidth = self.HeaderWidth + headerFrame:GetWidth() + self.options.padding
-			self.HeaderHeight = math.max (self.HeaderHeight, headerFrame:GetHeight())
+			self.HeaderWidth = self.HeaderWidth + columnHeader:GetWidth() + self.options.padding
+			self.HeaderHeight = math.max (self.HeaderHeight, columnHeader:GetHeight())
 			
 		elseif (growDirection == "top" or growDirection == "bottom") then
-			self.HeaderWidth =  math.max (self.HeaderWidth, headerFrame:GetWidth())
-			self.HeaderHeight = self.HeaderHeight + headerFrame:GetHeight() + self.options.padding
+			self.HeaderWidth =  math.max (self.HeaderWidth, columnHeader:GetWidth())
+			self.HeaderHeight = self.HeaderHeight + columnHeader:GetHeight() + self.options.padding
 		end
 
-		headerFrame:Show()
-		headerFrame.InUse = true
+		columnHeader:Show()
+		columnHeader.InUse = true
 	end,
 	
-	RefreshHeader = function (self, headerFrame)
-		headerFrame:SetSize (self.options.header_width, self.options.header_height)
-		headerFrame:SetBackdrop (self.options.header_backdrop)
-		headerFrame:SetBackdropColor (unpack (self.options.header_backdrop_color))
-		headerFrame:SetBackdropBorderColor (unpack (self.options.header_backdrop_border_color))
+	--reset column header backdrop
+	--@self: main header frame
+	ResetColumnHeaderBackdrop = function (self, columnHeader)
+		columnHeader:SetBackdrop (self.options.header_backdrop)
+		columnHeader:SetBackdropColor (unpack (self.options.header_backdrop_color))
+		columnHeader:SetBackdropBorderColor (unpack (self.options.header_backdrop_border_color))
+	end,
+
+	--@self: main header frame
+	SetBackdropColorForSelectedColumnHeader = function (self, columnHeader)
+		columnHeader:SetBackdropColor (unpack (self.options.header_backdrop_color_selected))
+	end,
+
+	--clear the column header
+	--@self: main header frame
+	ClearColumnHeader = function (self, columnHeader)
+		columnHeader:SetSize (self.options.header_width, self.options.header_height)
+		self:ResetColumnHeaderBackdrop (columnHeader)
 		
-		headerFrame:ClearAllPoints()
+		columnHeader:ClearAllPoints()
 		
-		headerFrame.Icon:SetTexture ("")
-		headerFrame.Icon:Hide()
-		headerFrame.Text:SetText ("")
-		headerFrame.Text:Hide()
+		columnHeader.Icon:SetTexture ("")
+		columnHeader.Icon:Hide()
+		columnHeader.Text:SetText ("")
+		columnHeader.Text:Hide()
 	end,
 	
+	--get the next column header, create one if doesn't exists
+	--@self: main header frame
 	GetNextHeader = function (self)
 		local nextHeader = self.NextHeader
-		local headerFrame = self.HeadersCreated [nextHeader]
+		local columnHeader = self.columnHeadersCreated [nextHeader]
 		
-		if (not headerFrame) then
-			local newHeader = CreateFrame ("frame", "$parentHeaderIndex" .. nextHeader, self)
-			
+		if (not columnHeader) then
+			--create a new column header
+			local newHeader = CreateFrame ("button", "$parentHeaderIndex" .. nextHeader, self)
+			newHeader:SetScript ("OnClick", DF.HeaderFunctions.OnClick)
+
+			--header icon
 			DF:CreateImage (newHeader, "", self.options.header_height, self.options.header_height, "ARTWORK", nil, "Icon", "$parentIcon")
+			--header separator
 			DF:CreateImage (newHeader, "", 1, 1, "ARTWORK", nil, "Separator", "$parentSeparator")
+			--header name text
 			DF:CreateLabel (newHeader, "", self.options.text_size, self.options.text_color, "GameFontNormal", "Text", "$parentText", "ARTWORK")
-			
+			--header selected and order icon
+			DF:CreateImage (newHeader, self.options.arrow_up_texture, 12, 12, "ARTWORK", nil, "Arrow", "$parentArrow")
+
+			newHeader.Arrow:SetPoint ("right", newHeader, "right", -1, 0)
+
 			newHeader.Separator:Hide()
+			newHeader.Arrow:Hide()
+
+			self:UpdateSortArrow (newHeader, false, "DESC")
 			
-			tinsert (self.HeadersCreated, newHeader)
-			headerFrame = newHeader
+			tinsert (self.columnHeadersCreated, newHeader)
+			columnHeader = newHeader
 		end
 		
-		self:RefreshHeader (headerFrame)
+		self:ClearColumnHeader (columnHeader)
 		self.NextHeader = self.NextHeader + 1
-		return headerFrame
+		return columnHeader
 	end,
 	
 	NextHeader = 1,
@@ -5451,10 +5580,19 @@ local default_header_options = {
 	--each piece of the header
 	header_backdrop = {bgFile = [[Interface\Tooltips\UI-Tooltip-Background]], tileSize = 64, tile = true},
 	header_backdrop_color = {0, 0, 0, 0.5},
+	header_backdrop_color_selected = {0.3, 0.3, 0.3, 0.5},
 	header_backdrop_border_color = {0, 0, 0, 0},
 	header_width = 120,
 	header_height = 20,
-	
+
+	arrow_up_texture = [[Interface\Buttons\Arrow-Up-Down]],
+	arrow_up_texture_coords = {0, 1, 6/16, 1},
+	arrow_up_size = {12, 11},
+	arrow_down_texture = [[Interface\Buttons\Arrow-Down-Down]],
+	arrow_down_texture_coords = {0, 1, 0, 11/16},
+	arrow_down_size = {12, 11},
+	arrow_alpha = 0.659,
+
 	use_line_separators = false,
 	line_separator_color = {.1, .1, .1, .6},
 	line_separator_width = 1,
@@ -5462,8 +5600,8 @@ local default_header_options = {
 	line_separator_gap_align = false,
 }
 
-function DF:CreateHeader (parent, headerTable, options)
-	local f = CreateFrame ("frame", "$parentHeaderLine", parent)
+function DF:CreateHeader (parent, headerTable, options, frameName)
+	local f = CreateFrame ("frame", frameName or "$parentHeaderLine", parent)
 	
 	DF:Mixin (f, DF.OptionsFunctions)
 	DF:Mixin (f, DF.HeaderCoreFunctions)
@@ -5475,7 +5613,7 @@ function DF:CreateHeader (parent, headerTable, options)
 	f:SetBackdropBorderColor (unpack (f.options.backdrop_border_color))
 	
 	f:SetHeaderTable (headerTable)
-	
+
 	return f
 end
 

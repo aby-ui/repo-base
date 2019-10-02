@@ -1218,14 +1218,14 @@
 		
 		local PotionUsed = {
 			name = Loc ["STRING_CUSTOM_POT_DEFAULT"],
-			icon = [[Interface\ICONS\Trade_Alchemy_PotionD4]],
+			icon = [[Interface\ICONS\INV_Potion_03]],
 			attribute = false,
 			spellid = false,
 			author = "Details!",
 			desc = Loc ["STRING_CUSTOM_POT_DEFAULT_DESC"],
 			source = false,
 			target = false,
-			script_version = 4,
+			script_version = 5,
 			script = [[
 				--init:
 				local combat, instance_container, instance = ...
@@ -1438,7 +1438,7 @@
 
 			local Healthstone = {
 			name = Loc ["STRING_CUSTOM_HEALTHSTONE_DEFAULT"],
-			icon = [[Interface\ICONS\warlock_ healthstone]],
+			icon = [[Interface\ICONS\INV_Stone_04]],
 			attribute = false,
 			spellid = false, 
 			author = "Details! Team",
@@ -1508,7 +1508,7 @@
 			]],
 			percent_script = false,
 			total_script = false,
-			script_version = 14,
+			script_version = 15,
 		}
 --	/run _detalhes:AddDefaultCustomDisplays()
 		local have = false
@@ -1533,14 +1533,14 @@
 		
 		local DamageActivityTime = {
 			name = Loc ["STRING_CUSTOM_ACTIVITY_DPS"],
-			icon = [[Interface\ICONS\Achievement_PVP_H_06]],
+			icon = [[Interface\Buttons\UI-MicroStream-Red]],
 			attribute = false,
 			spellid = false,
 			author = "Details!",
 			desc = Loc ["STRING_CUSTOM_ACTIVITY_DPS_DESC"],
 			source = false,
 			target = false,
-			script_version = 1,
+			script_version = 3,
 			total_script = [[
 				local value, top, total, combat, instance = ...
 				local minutos, segundos = math.floor (value/60), math.floor (value%60)
@@ -1597,14 +1597,14 @@
 
 		local HealActivityTime = {
 			name = Loc ["STRING_CUSTOM_ACTIVITY_HPS"],
-			icon = [[Interface\ICONS\Achievement_PVP_G_06]],
+			icon = [[Interface\Buttons\UI-MicroStream-Green]],
 			attribute = false,
 			spellid = false,
 			author = "Details!",
 			desc = Loc ["STRING_CUSTOM_ACTIVITY_HPS_DESC"],
 			source = false,
 			target = false,
-			script_version = 1,
+			script_version = 2,
 			total_script = [[
 				local value, top, total, combat, instance = ...
 				local minutos, segundos = math.floor (value/60), math.floor (value%60)
@@ -1769,14 +1769,14 @@
 		
 		local CC_Received = {
 			name = Loc ["STRING_CUSTOM_CC_RECEIVED"],
-			icon = [[Interface\ICONS\Spell_Mage_IceNova]],
+			icon = [[Interface\ICONS\Spell_Frost_ChainsOfIce]],
 			attribute = false,
 			spellid = false,
 			author = "Details!",
 			desc = "Show the amount of crowd control received for each player.",
 			source = false,
 			target = false,
-			script_version = 2,
+			script_version = 3,
 			script = [[
 				local combat, instance_container, instance = ...
 				local total, top, amt = 0, 0, 0
@@ -1903,14 +1903,14 @@
 		
 		local MySpells = {
 			name = Loc ["STRING_CUSTOM_MYSPELLS"],
-			icon = [[Interface\ICONS\ABILITY_MAGE_ARCANEBARRAGE]],
+			icon = [[Interface\CHATFRAME\UI-ChatIcon-Battlenet]],
 			attribute = false,
 			spellid = false,
 			author = "Details!",
 			desc = Loc ["STRING_CUSTOM_MYSPELLS_DESC"],
 			source = false,
 			target = false,
-			script_version = 6,
+			script_version = 7,
 			script = [[
 				--get the parameters passed
 				local combat, instance_container, instance = ...
@@ -2411,14 +2411,14 @@
 		
 		local DynamicOverallDamage = {
 			name = Loc ["STRING_CUSTOM_DYNAMICOVERAL"], --"Dynamic Overall Damage",
-			icon = [[Interface\ICONS\Achievement_Quests_Completed_08]],
+			icon = [[Interface\Buttons\Spell-Reset]],
 			attribute = false,
 			spellid = false,
 			author = "Details!",
 			desc = "Show overall damage done on the fly.",
 			source = false,
 			target = false,
-			script_version = 4,
+			script_version = 5,
 			script = [[
 				--init:
 				local combat, instance_container, instance = ...
@@ -2485,9 +2485,11 @@
 
 				--current
 				local player = CurrentCombat [1]:GetActor (actor.nome)
-				local playerSpells = player:GetSpellList()
-				for spellID, spellTable in pairs (playerSpells) do
-				    AllSpells [spellID] = (AllSpells [spellID] or 0) + (spellTable.total or 0)
+				if (player) then
+					local playerSpells = player:GetSpellList()
+					for spellID, spellTable in pairs (playerSpells) do
+						AllSpells [spellID] = (AllSpells [spellID] or 0) + (spellTable.total or 0)
+					end
 				end
 
 				local sortedList = {}

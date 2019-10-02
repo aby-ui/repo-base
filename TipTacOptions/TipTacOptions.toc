@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ## Interface: 80205
 ## Version: 18.07.24
 ## Title: TipTacOptions
@@ -12,4 +13,20 @@ DropDowns.lua
 ttOptions.lua
 
 ## Title-zhCN: |cff880303[爱不易]|r TipTac 配置模块
+=======
+## Interface: 80205
+## Version: 18.07.24
+## Title: TipTacOptions
+## Author: Aezay (Earthen Ring EU)
+## Author-zhCN: Aezay (Earthen Ring EU), Localized by springsnow (Feathermoon CN)
+## Notes: Option Dialog for TipTac
+## Dependencies: TipTac
+## LoadOnDemand: 1
+Libs\AzDropDown.lua
+Libs\AzOptionsFactory.lua
+DropDowns.lua
+ttOptions.lua
+
+## Title-zhCN: |cff880303[爱不易]|r TipTac 配置模块
+>>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4
 ## X-Vendor: AbyUI

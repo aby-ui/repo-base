@@ -1,3 +1,0 @@
-local GlobalAddonName, ExRT = ...
-
---Currently in ExCD2.lua:~8700

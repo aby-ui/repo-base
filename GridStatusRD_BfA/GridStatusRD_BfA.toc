@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ## Interface: 80205
 ## Version: v8.2.5.0
 ## Title: GridStatusRaidDebuff(BfA)
@@ -18,3 +19,25 @@ TheEternalPalace.lua
 
 ## Title: |cff880303[爱不易]|r Grid 团队减益BfA
 ## X-Vendor: AbyUI
+=======
+## Interface: 80205
+## Version: v8.2.5.0
+## Title: GridStatusRaidDebuff(BfA)
+## Notes: Debuff List for Battle for Azeroth
+## Author: tptbk(Doadin-Malorne-US)
+## Grid Author: Pastamancer & Maia
+## Dependencies: GridStatusRaidDebuff
+## OptionalDeps: Grid, Plexus
+## X-Curse-Project-ID: 300448
+
+CheckCompat.lua
+Uldir.lua
+Azeroth.lua
+BattleofDazaralor.lua
+CrucibleofStorms.lua
+TheEternalPalace.lua
+
+
+## Title: |cff880303[爱不易]|r Grid 团队减益BfA
+## X-Vendor: AbyUI
+>>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4

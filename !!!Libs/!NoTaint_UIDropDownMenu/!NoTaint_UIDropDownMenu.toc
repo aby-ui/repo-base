@@ -1,0 +1,27 @@
+<<<<<<< HEAD:!!!Libs/!NoTaint_UIDropDownMenu/!NoTaint_UIDropDownMenu.toc
+## Interface: 80205
+## Title: Lib: NoTaint_UIDropDownMenu
+## Notes: Replacement for standard UIDropDownMenu
+## Version: 7.2.0.24015-r3
+## X-Category: Libraries
+## OptionalDeps: LibStub
+
+# ## Check out the following page for more details: 
+## X-Website: http://www.wowinterface.com/downloads/info22630-NoTaintUIDropDownMenu.html
+
+LibStub\LibStub.lua
+UIDropDownMenu.xml
+=======
+## Interface: 80205
+## Title: Lib: NoTaint_UIDropDownMenu
+## Notes: Replacement for standard UIDropDownMenu
+## Version: 7.2.0.24015-r3
+## X-Category: Libraries
+## OptionalDeps: LibStub
+
+# ## Check out the following page for more details: 
+## X-Website: http://www.wowinterface.com/downloads/info22630-NoTaintUIDropDownMenu.html
+
+LibStub\LibStub.lua
+UIDropDownMenu.xml
+>>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4:AutoTurnIn/libs/DropDownMenu/!NoTaint_UIDropDownMenu.toc

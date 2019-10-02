@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
  http://wowprogramming.com/FrameXML/UI.xsd">
     <!--
@@ -137,3 +138,144 @@
         T._LoadedFiles["Dcr_DIAG.xml"] = "2.7.6.4";
     </Script>
 </Ui>
+=======
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+ http://wowprogramming.com/FrameXML/UI.xsd">
+    <!--
+    This file is part of Decursive.
+
+    Decursive (v 2.7.6.4) add-on for World of Warcraft UI
+    Copyright (C) 2006-2019 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
+
+    Starting from 2009-10-31 and until said otherwise by its author, Decursive
+    is no longer free software, all rights are reserved to its author (John Wellesz).
+
+    The only official and allowed distribution means are www.2072productions.com, www.wowace.com and curse.com.
+    To distribute Decursive through other means a special authorization is required.
+
+
+    Decursive is inspired from the original "Decursive v1.9.4" by Patrick Bohnet (Quu).
+    The original "Decursive 1.9.4" is in public domain ( www.quutar.com )
+
+    Decursive is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY.
+    -->
+
+    <Script>
+
+        local T = DecursiveRootTable or {};
+
+        -- big ugly scary fatal error message display function {{{
+
+
+        if not T._FatalError then
+        -- the beautiful error popup : {{{ -
+        StaticPopupDialogs["DECURSIVE_ERROR_FRAME"] = {
+        text = "|cFFFF0000Decursive Error:|r\n%s",
+        button1 = "OK",
+        OnAccept = function()
+        return false;
+        end,
+        timeout = 0,
+        whileDead = 1,
+        hideOnEscape = 1,
+        showAlert = 1,
+        }; -- }}}
+        T._FatalError = function (TheError) StaticPopup_Show ("DECURSIVE_ERROR_FRAME", TheError); end
+        end
+        -- }}}
+        if not T._LoadedFiles or not T._LoadedFiles["Dcr_DIAG.lua"] then
+            if not DecursiveInstallCorrupted then T._FatalError("Decursive installation is corrupted! (Dcr_DIAG.lua not loaded)"); end;
+            DecursiveInstallCorrupted = true;
+            return;
+        end
+    </Script>
+
+    <!-- =================The DEBUGGING FRAME======================= {{{ -->
+    <!-- Inspired from BugSack error report frame-->
+
+    <Frame name="DecursiveDebuggingFrame" parent="UIParent" inherits="DialogBoxFrame" hidden="true">
+        <Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
+            <BackgroundInsets>
+                <AbsInset left="5" right="5" top="5" bottom="5"/>
+            </BackgroundInsets>
+            <TileSize>
+                <AbsValue val="16"/>
+            </TileSize>
+            <EdgeSize>
+                <AbsValue val="16"/>
+            </EdgeSize>
+        </Backdrop>
+        <Size>
+            <AbsDimension x="500" y="400"/>
+        </Size>
+        <Layers>
+            <Layer level="ARTWORK">
+                <FontString name="DecursiveDEBUGtext" inherits="GameFontHighlight">
+                    <Anchors>
+                        <Anchor point="TOP">
+                            <Offset> <AbsDimension x="5" y="-5" /> </Offset>
+                        </Anchor>
+                    </Anchors>
+                </FontString>
+            </Layer>
+        </Layers>
+        <Frames>
+            <ScrollFrame name="DecursiveDebuggingFrameScroll" inherits="UIPanelScrollFrameTemplate" toplevel="true">
+                <Anchors>
+                    <Anchor point="TOP" relativePoint="BOTTOM" relativeTo="DecursiveDEBUGtext">
+                        <Offset>
+                            <AbsDimension x="0" y="-10"/>
+                        </Offset>
+                    </Anchor>
+                    <Anchor point="BOTTOM" relativePoint="TOP" relativeTo="DecursiveDebuggingFrameButton">
+                        <Offset>
+                            <AbsDimension x="0" y="10"/>
+                        </Offset>
+                    </Anchor>
+                    <Anchor point="LEFT">
+                        <Offset>
+                            <AbsDimension x="5" y="0"/>
+                        </Offset>
+                    </Anchor>
+                    <Anchor point="RIGHT">
+                        <Offset>
+                            <AbsDimension x="-30" y="0"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+                <ScrollChild>
+                    <EditBox name="DecursiveDebuggingFrameText" letters="99999" multiLine="true" autoFocus="true" enableMouse="true" >
+                        <Size>
+                            <AbsDimension x="450" y="314"/>
+                        </Size>
+                        <FontString inherits="ChatFontNormal"/>
+                        <Scripts>
+                            <OnLoad>
+                                self:SetAutoFocus(false)
+                            </OnLoad>
+                            <OnShow>
+                                self:SetFocus()
+                            </OnShow>
+                            <OnTextChanged>
+                                DecursiveRootTable._DebugFrameOnTextChanged(self)
+                            </OnTextChanged>
+                            <OnEscapePressed>
+                                self:ClearFocus()
+                            </OnEscapePressed>
+                        </Scripts>
+                    </EditBox>
+                </ScrollChild>
+            </ScrollFrame>
+        </Frames>
+    </Frame>
+
+    <!-- ================================================================== }}} -->
+
+    <Script>
+        local T = DecursiveRootTable or {};
+
+        T._LoadedFiles["Dcr_DIAG.xml"] = "2.7.6.4";
+    </Script>
+</Ui>
+>>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4

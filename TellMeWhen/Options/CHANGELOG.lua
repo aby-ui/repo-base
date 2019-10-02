@@ -3,6 +3,14 @@ if not TMW then return end
 TMW.CHANGELOG_LASTVER="7.4.0"
 
 TMW.CHANGELOG = [==[
+<<<<<<< HEAD
+## v8.7.2
+### Bug Fixes
+* Fixed handling of spell names in French that have a space before a colon.
+* More fixes for Blizzard's weird change in 8.2.5 that prevented UnitAura from defaulting to buffs unless explicitly told to.
+
+=======
+>>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4
 ## v8.7.1
 ### Bug Fixes
 * Fixed the buff/debuff "Either" setting for WoW 8.2.5.

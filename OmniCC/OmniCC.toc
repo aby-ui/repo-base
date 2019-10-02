@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ## Interface: 80205
 ## Title: OmniCC
 ## Notes: Cooldown count for everything
@@ -15,3 +16,22 @@ effects\effects.xml
 ## Title-zhCN: |cff880303[爱不易]|r OmniCC 冷却文字
 ## Notes-zhCN: 给所有的技能冷却动画添加文字显示及冷却后的效果。
 ## X-Vendor: AbyUI
+=======
+## Interface: 80205
+## Title: OmniCC
+## Notes: Cooldown count for everything
+## Notes-koKR: 모든 것을 위한 쿨다운 카운트
+## Author: Tuller
+## Version: 8.2.5
+## SavedVariables: OmniCC4Config
+libs\libs.xml
+localization\localization.xml
+main.lua
+core\core.xml
+settings\settings.xml
+effects\effects.xml
+
+## Title-zhCN: |cff880303[爱不易]|r OmniCC 冷却文字
+## Notes-zhCN: 给所有的技能冷却动画添加文字显示及冷却后的效果。
+## X-Vendor: AbyUI
+>>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ## Interface: 80205
 ## Title: GridClickSets
 
@@ -18,3 +19,25 @@ SetupCompactUnitFrame.lua
 
 ## Title: |cff880303[爱不易]|r Grid 点击施法
 ## X-Vendor: AbyUI
+=======
+## Interface: 80205
+## Title: GridClickSets
+
+## Author: Warbaby
+## OptionalDeps: Grid
+## SavedVariablesPerCharacter: GridClickSetsForTalents
+
+locale-enUS.lua
+locale-zhCN.lua
+locale-zhTW.lua
+
+DefaultClickSets.lua
+UIDropDownTooltipFunc.lua
+GridClickSetsFrame.xml
+SetupGrid.lua
+SetupGrid2.lua
+SetupCompactUnitFrame.lua
+
+## Title: |cff880303[爱不易]|r Grid 点击施法
+## X-Vendor: AbyUI
+>>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4

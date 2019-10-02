@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ## Interface: 80205
 ## Title: TrinketMenu |cFF99CC01rev|r |cFFFF00007.3.2|r
 ## Version: 7.3.2
@@ -17,3 +18,24 @@ localization.lua
 ## Title: |cff880303[爱不易]|r TrinketMenu 饰品管理
 ## Notes-zhCN: 便捷更换和监视饰品
 ## X-Vendor: AbyUI
+=======
+## Interface: 80205
+## Title: TrinketMenu |cFF99CC01rev|r |cFFFF00007.3.2|r
+## Version: 7.3.2
+## Author: Gello, Resike
+## Notes: Addon to manage trinkets.
+## SavedVariables: TrinketMenuOptions
+## SavedVariablesPerCharacter: TrinketMenuPerOptions, TrinketMenuQueue
+
+TrinketMenu.lua
+TrinketMenu.xml
+TrinketMenuOpt.lua
+TrinketMenuOpt.xml
+TrinketMenuQueue.lua
+TrinketMenuQueue.xml
+localization.lua
+
+## Title: |cff880303[爱不易]|r TrinketMenu 饰品管理
+## Notes-zhCN: 便捷更换和监视饰品
+## X-Vendor: AbyUI
+>>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4

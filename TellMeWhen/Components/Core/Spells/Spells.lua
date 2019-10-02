@@ -40,7 +40,9 @@ local _, pclass = UnitClass("player")
 
 
 local function splitSpellAndDuration(str)
-	local spell, duration = strmatch(str, "(.-):([%d:%s%.]*)$")
+	-- A space is optionally allowed before the semicolon 
+	-- to support French, which likes spaces around semicolons.
+	local spell, duration = strmatch(str, "(.-)%s?:([%d:%s%.]*)$")
 	if not spell then
 		return str, 0
 	end
@@ -50,7 +52,7 @@ local function splitSpellAndDuration(str)
 		duration = tonumber( TMW.toSeconds(duration:trim(" :;.")) )
 	end
 
-	return spell, duration
+	return spell:trim(" "), duration
 end
 
 local function parseSpellsString(setting, doLower, keepDurations)

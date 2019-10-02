@@ -331,7 +331,7 @@ local function cria_drop_down (este_gump)
 		{Loc ["STRING_REPORTFRAME_OFFICERS"], "OFFICER", _IsInGuild, {iconsize = iconsize, icon = [[Interface\FriendsFrame\UI-Toast-ToastIcons]], coords = {0.8046875, 0.96875, 0.125, 0.390625}, color = {0.25, 0.74, 0.25}}}, 
 		{Loc ["STRING_REPORTFRAME_WHISPER"], "WHISPER", nil, {iconsize = iconsize, icon = [[Interface\FriendsFrame\UI-Toast-ToastIcons]], coords = {0.0546875, 0.1953125, 0.625, 0.890625}, color = {1, 0.49, 1}}}, 
 		{Loc ["STRING_REPORTFRAME_WHISPERTARGET"], "WHISPER2", nil, {iconsize = iconsize, icon = [[Interface\FriendsFrame\UI-Toast-ToastIcons]], coords = {0.0546875, 0.1953125, 0.625, 0.890625}, color = {1, 0.49, 1}}}, 
-		{Loc ["STRING_REPORTFRAME_SAY"], "SAY", nil, {iconsize = iconsize, icon = [[Interface\FriendsFrame\UI-Toast-ToastIcons]], coords = {0.0390625, 0.203125, 0.09375, 0.375}, color = {1, 1, 1}}},
+		{Loc ["STRING_REPORTFRAME_SAY"], "SAY", IsInInstance, {iconsize = iconsize, icon = [[Interface\FriendsFrame\UI-Toast-ToastIcons]], coords = {0.0390625, 0.203125, 0.09375, 0.375}, color = {1, 1, 1}}},
 		{Loc ["STRING_REPORTFRAME_COPY"], "COPY", nil, {iconsize = iconsize, icon = [[Interface\Buttons\UI-GuildButton-PublicNote-Disabled]], coords = {0, 1, 0, 1}, color = {1, 1, 1}}},
 	}
 

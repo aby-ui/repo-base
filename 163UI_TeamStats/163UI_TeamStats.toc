@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ## Interface: 80205
 ## Notes: 自动获取全团成员的平均装备等级/韧性/副本击杀次数统计,以列表的方式集中呈现。
 
@@ -14,3 +15,21 @@ TeamStatsUI.lua
 
 ## Title: |cff880303[爱不易]|r AbyUI 团员信息统计
 ## X-Vendor: AbyUI
+=======
+## Interface: 80205
+## Notes: 自动获取全团成员的平均装备等级/韧性/副本击杀次数统计,以列表的方式集中呈现。
+
+## SavedVariables: TeamStatsDB
+## SavedVariablesPerCharacter: TeamStatsPCDB
+
+RequestProtection.lua
+
+Localization.lua
+Local.TABS.lua
+
+TeamStats.lua
+TeamStatsUI.lua
+
+## Title: |cff880303[爱不易]|r AbyUI 团员信息统计
+## X-Vendor: AbyUI
+>>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4

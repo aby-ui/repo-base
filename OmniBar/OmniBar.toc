@@ -1,18 +1,23 @@
 ## Interface: 80205
 ## Title: OmniBar
 ## Notes: Tracks enemy cooldowns
-## Version: v9.5
+## Version: v10.0
 ## Author: Jordon
 ## DefaultState: Enabled
 ## SavedVariables: OmniBarDB
 ## OptionalDeps: Masque, LibStub, CallbackHandler-1.0, Ace3, LibDualSpec-1.0
+## X-Curse-Project-ID: 85814
 
+<<<<<<< HEAD
+=======
 #@no-lib-strip@
 #embeds.xml
 #@end-no-lib-strip@
+>>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4
 
-locale\locale.xml
+Locales\Locales.xml
 OmniBar.xml
+Retail.lua
 OmniBar.lua
 Options.lua
 

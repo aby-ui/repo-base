@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ## Interface: 80205
 ## Title: HandyNotes_Arathi
 ## Version: 0.1.0
@@ -17,4 +18,25 @@ localization\zhTW.lua
 HandyNotes_Arathi.lua
 
 ## Title-zhCN: |cff880303[爱不易]|r HandyNotes 阿拉希稀有
+=======
+## Interface: 80205
+## Title: HandyNotes_Arathi
+## Version: 0.1.0
+## Notes: Arathi Rares
+## OptionalDeps: Ace3
+## RequiredDeps: HandyNotes
+## X-Embeds: Ace3
+## SavedVariables: HandyNotesArathiDB
+
+localization\enUS.lua
+#localization\deDE.lua
+#localization\esES.lua
+localization\zhCN.lua
+localization\zhTW.lua
+#localization\koKR.lua
+#localization\ruRU.lua
+HandyNotes_Arathi.lua
+
+## Title-zhCN: |cff880303[爱不易]|r HandyNotes 阿拉希稀有
+>>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4
 ## X-Vendor: AbyUI

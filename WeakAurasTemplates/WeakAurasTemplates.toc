@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ## Interface: 80205
 ## Title: WeakAuras Templates
 ## Author: The WeakAuras Team
@@ -18,3 +19,25 @@ AceGUI-Widgets\AceGUIContainer-WeakAurasTemplateGroup.lua
 
 ## Title-zhCN: |cff880303[爱不易]|r WeakAuras 模板
 ## X-Vendor: AbyUI
+=======
+## Interface: 80205
+## Title: WeakAuras Templates
+## Author: The WeakAuras Team
+## Version: 2.15.1
+## Notes: Templates for WeakAuras
+## X-Category: Interface Enhancements
+## Globe-Main: WeakAuras
+## DefaultState: Enabled
+## LoadOnDemand: 1
+## Dependencies: WeakAuras, WeakAurasOptions
+
+locales.xml
+
+TriggerTemplates.lua
+TriggerTemplatesData.lua
+
+AceGUI-Widgets\AceGUIContainer-WeakAurasTemplateGroup.lua
+
+## Title-zhCN: |cff880303[爱不易]|r WeakAuras 模板
+## X-Vendor: AbyUI
+>>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4

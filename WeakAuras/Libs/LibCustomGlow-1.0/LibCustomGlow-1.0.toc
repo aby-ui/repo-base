@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ## Interface: 80205
 ## Title: Lib: CustomGlow
 ## Notes: Creates custom glow functions
@@ -10,3 +11,17 @@
 LibStub\LibStub.lua
 
 LibCustomGlow-1.0.xml
+=======
+## Interface: 80205
+## Title: Lib: CustomGlow
+## Notes: Creates custom glow functions
+## Author: deezo
+## X-Category: Library
+## X-License: BSD
+## Version: 1.0.3
+## OptionalDeps: Masque
+
+LibStub\LibStub.lua
+
+LibCustomGlow-1.0.xml
+>>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4

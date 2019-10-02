@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ## Interface: 80205
 ## Title: HandyNotes_DungeonLocations
 ## Version: 1.48
@@ -11,3 +12,18 @@ HandyNotes_DungeonLocations.lua
 
 ## Title-zhCN: |cff880303[爱不易]|r HandyNotes 老地图副本入口
 ## X-Vendor: AbyUI
+=======
+## Interface: 80205
+## Title: HandyNotes_DungeonLocations
+## Version: 1.48
+## Notes: Shows locations of old world dungeon and raid entrances
+## Author: Caliaha of Cairne
+## RequiredDeps: HandyNotes
+## SavedVariables: HandyNotes_DungeonLocationsDB
+
+locales\Locales.xml
+HandyNotes_DungeonLocations.lua
+
+## Title-zhCN: |cff880303[爱不易]|r HandyNotes 老地图副本入口
+## X-Vendor: AbyUI
+>>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4

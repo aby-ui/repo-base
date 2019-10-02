@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ## Interface: 80205
 ## Title: Bagnon
 ## Author: Tuller & Jaliborc (João Cardoso)
@@ -11,3 +12,18 @@ modules\main.xml
 
 ## Title-zhCN: |cff880303[爱不易]|r Bagnon 背包整合
 ## X-Vendor: AbyUI
+=======
+## Interface: 80205
+## Title: Bagnon
+## Author: Tuller & Jaliborc (João Cardoso)
+## Notes: Single window displays for your inventory and bank
+## SavedVariables: Bagnon_Sets
+## OptionalDeps: BagBrother, WoWUnit
+## Version: 8.2.15
+
+modules\main.xml
+
+
+## Title-zhCN: |cff880303[爱不易]|r Bagnon 背包整合
+## X-Vendor: AbyUI
+>>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4

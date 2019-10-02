@@ -41,7 +41,7 @@ local function GetNameForKeystone(keystoneMapID, keystoneLevel)
 end
 
 local function UpdatePartyKeystones()
-	Mod:CheckCurrentKeystone()
+	Mod:CheckCurrentKeystone(false)
 	if requestPartyKeystones then
 		Mod:SendPartyKeystonesRequest()
 	end
@@ -342,7 +342,7 @@ function Mod:CHAT_MSG_LOOT(...)
 	local lootString, _, _, _, unit = ...
 	if string.match(lootString, "|Hitem:158923:") then
 		if UnitName("player") == unit then
-			self:CheckCurrentKeystone()
+			self:CheckCurrentKeystone(false)
 		else
 			self:SetPartyKeystoneRequest()
 		end

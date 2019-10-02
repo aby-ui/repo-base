@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ## Interface: 80205
 ## Title: |cFEFF0000[Z]|rDeathAnnounce
 ## SavedVariables: DEATH_ANNOUNCE, DEATH_ANNOUNCE_OFF
@@ -15,3 +16,22 @@ Localization.lua
 ## Notes-zhCN: 在队员死亡时显示最终致死的技能、伤害量、攻击者、死亡时间、以及死亡时目标的血量百分比。` `'/da on'开启或'/da off'关闭自动发送功能。另外放弃战斗后，可以通过/da命令临时屏蔽自动发送，防止无意义的刷屏。
 ## X-Vendor: AbyUI
 
+=======
+## Interface: 80205
+## Title: |cFEFF0000[Z]|rDeathAnnounce
+## SavedVariables: DEATH_ANNOUNCE, DEATH_ANNOUNCE_OFF
+## Notes: announces death of friendly units in raidchat
+## Author: Wingus
+## X-Curse-Packaged-Version: r30
+## X-Curse-Project-Name: DeathAnnouncer
+## X-Curse-Project-ID: deathannouncer
+## X-Curse-Repository-ID: wow/deathannouncer/mainline
+DeathAnnounce.lua
+DeathAnnounce.xml
+Localization.lua
+
+## Title: |cff880303[爱不易]|r DeathAnn 阵亡通知
+## Notes-zhCN: 在队员死亡时显示最终致死的技能、伤害量、攻击者、死亡时间、以及死亡时目标的血量百分比。` `'/da on'开启或'/da off'关闭自动发送功能。另外放弃战斗后，可以通过/da命令临时屏蔽自动发送，防止无意义的刷屏。
+## X-Vendor: AbyUI
+
+>>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4

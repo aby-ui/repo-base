@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ## Interface: 80205
 ## Title: Details!: Storage
 ## Notes: Stores information for Details! Damage Meter
@@ -10,3 +11,17 @@ Details_DataStorage.lua
 
 
 ## X-Vendor: AbyUI
+=======
+## Interface: 80205
+## Title: Details!: Storage
+## Notes: Stores information for Details! Damage Meter
+## DefaultState: Enabled
+## LoadOnDemand: 1
+## Dependencies: Details
+## SavedVariables: DetailsDataStorage
+
+Details_DataStorage.lua
+
+
+## X-Vendor: AbyUI
+>>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4

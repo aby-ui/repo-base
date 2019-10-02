@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ## Interface: 80205
 ## Version: 18.07.22
 ## Title: TipTacItemRef
@@ -13,4 +14,21 @@ LibItemString.lua
 ttItemRef.lua
 
 ## Title-zhCN: |cff880303[爱不易]|r TipTac 物品提示模块
+=======
+## Interface: 80205
+## Version: 18.07.22
+## Title: TipTacItemRef
+## Author: Aezay (Earthen Ring EU)
+## Author-zhCN: Aezay (Earthen Ring EU), Localized by springsnow (Feathermoon CN)
+## Notes: Improved ItemRefTooltip
+## OptionalDeps: TipTac
+Local_enUS.lua
+Local_zhCN.lua
+Local_zhTW.lua
+LibItemString.lua
+
+ttItemRef.lua
+
+## Title-zhCN: |cff880303[爱不易]|r TipTac 物品提示模块
+>>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4
 ## X-Vendor: AbyUI

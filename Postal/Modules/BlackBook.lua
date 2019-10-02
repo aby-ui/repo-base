@@ -58,11 +58,11 @@ function Postal_BlackBook:OnEnable()
 
 	local exclude = bit.bor(db.AutoCompleteFriends and AUTOCOMPLETE_FLAG_NONE or AUTOCOMPLETE_FLAG_FRIEND,
 		db.AutoCompleteGuild and AUTOCOMPLETE_FLAG_NONE or AUTOCOMPLETE_FLAG_IN_GUILD)
-	Postal_BlackBook_Autocomplete_Flags.include = bit.bxor(
-        (true or db.ExcludeRandoms) and (bit.bor(AUTOCOMPLETE_FLAG_FRIEND, AUTOCOMPLETE_FLAG_IN_GUILD)) or AUTOCOMPLETE_FLAG_ALL, exclude)
+	local include = bit.bxor(
+        (false and db.ExcludeRandoms) and (bit.bor(AUTOCOMPLETE_FLAG_FRIEND, AUTOCOMPLETE_FLAG_IN_GUILD, AUTO_COMPLETE_ACCOUNT_CHARACTER)) or AUTOCOMPLETE_FLAG_ALL, exclude)
 
 	-- apply new flag filter to the editbox
-	AutoCompleteEditBox_SetAutoCompleteSource(SendMailNameEditBox, GetAutoCompleteResults, Postal_BlackBook_Autocomplete_Flags.include, Postal_BlackBook_Autocomplete_Flags.exclude)
+    -- AutoCompleteEditBox_SetAutoCompleteSource(SendMailNameEditBox, GetAutoCompleteResults, include, exclude) --abyui just use blizzard
 
 	-- Delete Real ID database. Patch 4.0.1 onwards no longer allows addons to obtain Real ID information.
 	Postal.db.global.BlackBook.realID = nil
@@ -297,7 +297,8 @@ function Postal_BlackBook:OnChar(editbox, ...)
 		local numBNetTotal, numBNetOnline = BNGetNumFriends()
 		for i = 1, numBNetOnline do
 			local presenceID, presenceName, battleTag, isBattleTagPresence, toonName, toonID, client, isOnline, lastOnline, isAFK, isDND, messageText, noteText, isRIDFriend, messageTime, canSoR = BNGetFriendInfo(i)
-			if (toonName and client == BNET_CLIENT_WOW and CanCooperateWithGameAccount(toonID)) then
+            local accountInfo = C_BattleNet.GetFriendAccountInfo(i);
+			if (toonName and client == BNET_CLIENT_WOW and CanCooperateWithGameAccount(accountInfo)) then
 				if strfind(strupper(toonName), text, 1, 1) == 1 then
 					newname = toonName
 					break
@@ -367,7 +368,8 @@ function Postal_BlackBook:SortAndCountNumFriends()
 		local numBNetTotal, numBNetOnline = BNGetNumFriends()
 		for i= 1, numBNetOnline do
 			local presenceID, presenceName, battleTag, isBattleTagPresence, toonName, toonID, client, isOnline, lastOnline, isAFK, isDND, messageText, noteText, isRIDFriend, messageTime, canSoR = BNGetFriendInfo(i)
-			if (toonName and client == BNET_CLIENT_WOW and CanCooperateWithGameAccount(toonID)) then
+            local accountInfo = C_BattleNet.GetFriendAccountInfo(i);
+			if (toonName and client == BNET_CLIENT_WOW and CanCooperateWithGameAccount(accountInfo)) then
 				-- Check if already on friends list
 				local alreadyOnList = false
 				for j = 1, numFriends do
@@ -694,8 +696,8 @@ function Postal_BlackBook.SaveFriendGuildOption(dropdownbutton, arg1, arg2, chec
 	local db = Postal.db.profile.BlackBook
 	local exclude = bit.bor(db.AutoCompleteFriends and AUTOCOMPLETE_FLAG_NONE or AUTOCOMPLETE_FLAG_FRIEND,
 		db.AutoCompleteGuild and AUTOCOMPLETE_FLAG_NONE or AUTOCOMPLETE_FLAG_IN_GUILD)
-	Postal_BlackBook_Autocomplete_Flags.include = bit.bxor(
-		(true or db.ExcludeRandoms) and (bit.bor(AUTOCOMPLETE_FLAG_FRIEND, AUTOCOMPLETE_FLAG_IN_GUILD)) or AUTOCOMPLETE_FLAG_ALL, exclude)
+	local include = bit.bxor(
+		(false and db.ExcludeRandoms) and (bit.bor(AUTOCOMPLETE_FLAG_FRIEND, AUTOCOMPLETE_FLAG_IN_GUILD, AUTO_COMPLETE_ACCOUNT_CHARACTER)) or AUTOCOMPLETE_FLAG_ALL, exclude)
 end
 
 function Postal_BlackBook.SetAutoComplete(dropdownbutton, arg1, arg2, checked)
@@ -730,6 +732,7 @@ function Postal_BlackBook.ModuleMenu(self, level)
 		info.keepShownOnClick = 1
 		info.func = self.UncheckHack
 		info.checked = nil
+        info.disabled = true
 		info.arg1 = nil
 		info.arg2 = nil
 		info.text = L["Name auto-completion options"]

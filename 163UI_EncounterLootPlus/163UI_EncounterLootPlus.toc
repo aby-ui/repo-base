@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ## Interface: 80205
 ## Title: |cff880303[爱不易]|r AbyUI 手册装备搜索
 ## Notes: 增强冒险指南里副本掉落装备的筛选功能
@@ -8,3 +9,15 @@ EncounterLootPlus.lua
 Items.lua
 HookMenu.lua
 HookScroll.lua
+=======
+## Interface: 80205
+## Title: |cff880303[爱不易]|r AbyUI 手册装备搜索
+## Notes: 增强冒险指南里副本掉落装备的筛选功能
+## SavedVariables: ELPDATA
+## X-Vendor: AbyUI
+
+EncounterLootPlus.lua
+Items.lua
+HookMenu.lua
+HookScroll.lua
+>>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4

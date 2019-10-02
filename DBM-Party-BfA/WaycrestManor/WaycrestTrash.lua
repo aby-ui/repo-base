@@ -1,7 +1,11 @@
 local mod	= DBM:NewMod("WaycrestTrash", "DBM-Party-BfA", 10)
 local L		= mod:GetLocalizedStrings()
 
+<<<<<<< HEAD
+mod:SetRevision("20190929024030")
+=======
 mod:SetRevision("20190806183534")
+>>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4
 --mod:SetModelID(47785)
 mod:SetZone()
 
@@ -55,10 +59,10 @@ function mod:SPELL_CAST_START(args)
 	elseif spellId == 265881 then
 		specWarnDecayingTouch:Show()
 		specWarnDecayingTouch:Play("defensive")
-	elseif spellId == 265759 and self:AntiSpam(3, 1) then
+	elseif spellId == 265759 and self:AntiSpam(5, 1) then
 		specWarnSplinterSpike:Show()
 		specWarnSplinterSpike:Play("watchstep")
-	elseif spellId == 264038 and self:AntiSpam(3, 1) then
+	elseif spellId == 264038 and self:AntiSpam(5, 1) then
 		specWarnUproot:Show()
 		specWarnUproot:Play("watchstep")
 	elseif spellId == 263905 and self:AntiSpam(2.5, 2) then

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ## Interface: 80205
 ## Title: TargetButton
 ## Notes: This little improvement adds buttons to the targeting frame when a friendly player is selected. 
@@ -8,4 +9,16 @@ TargetButton.xml
 ## Title: |cff880303[爱不易]|r TargetB 目标快捷按钮
 ## Notes-zhCN: 当你的目标是友好玩家时在目标框上加交易和查看装备的按钮
 ## Notes-zhTW: 當你的目標是友好玩家時在目標框上加交易和查看裝備的按鈕
+=======
+## Interface: 80205
+## Title: TargetButton
+## Notes: This little improvement adds buttons to the targeting frame when a friendly player is selected. 
+## X-Repple: 辅助
+## SavedVariables: 
+TargetButton.xml
+
+## Title: |cff880303[爱不易]|r TargetB 目标快捷按钮
+## Notes-zhCN: 当你的目标是友好玩家时在目标框上加交易和查看装备的按钮
+## Notes-zhTW: 當你的目標是友好玩家時在目標框上加交易和查看裝備的按鈕
+>>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4
 ## X-Vendor: AbyUI

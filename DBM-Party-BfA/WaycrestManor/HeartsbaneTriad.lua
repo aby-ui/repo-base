@@ -1,7 +1,11 @@
 local mod	= DBM:NewMod(2125, "DBM-Party-BfA", 10, 1001)
 local L		= mod:GetLocalizedStrings()
 
+<<<<<<< HEAD
+mod:SetRevision("20190808015842")
+=======
 mod:SetRevision("20190806183534")
+>>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4
 mod:SetCreatureID(135358, 135359, 135360, 131823, 131824, 131825)--All versions so we can pull boss
 mod:SetEncounterID(2113)
 mod:DisableESCombatDetection()--ES fires For entryway trash pull sometimes, for some reason.

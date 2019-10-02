@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ## Interface: 80205
 ## Title: Tidy Plates
 ## Notes: Enjoys long walks on Darkshore
@@ -11,3 +12,18 @@ TidyPlates.xml
 ## Notes-zhCN: 强大到爆的多功能姓名版美化插件。
 ## Notes-zhTW: 強大到爆的多功能姓名版美化插件。
 ## X-Vendor: AbyUI
+=======
+## Interface: 80205
+## Title: Tidy Plates
+## Notes: Enjoys long walks on Darkshore
+## Author: Binbwen and Friends
+## Version: 6.19.3
+## SavedVariablesPerCharacter: TidyPlatesOptions
+
+TidyPlates.xml
+## Title-zhCN: |cff880303[爱不易]|r TidyPlates 姓名版增强
+## Title-zhTW: |cff880303[爱不易]|r TidyPlates 姓名板增强
+## Notes-zhCN: 强大到爆的多功能姓名版美化插件。
+## Notes-zhTW: 強大到爆的多功能姓名版美化插件。
+## X-Vendor: AbyUI
+>>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4

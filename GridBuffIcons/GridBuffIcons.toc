@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ## Interface: 80205
 ## Title: GridBuffIcons
 
@@ -11,3 +12,18 @@ GridBuffIcons.lua
 
 ## Title: |cff880303[爱不易]|r Grid 状态图标
 ## X-Vendor: AbyUI
+=======
+## Interface: 80205
+## Title: GridBuffIcons
+
+## Author: warbaby @ 爱不易
+## Grid Author: Pastamancer & Maia
+## Dependencies: Grid
+
+localization.zhCN.lua
+localization.zhTW.lua
+GridBuffIcons.lua
+
+## Title: |cff880303[爱不易]|r Grid 状态图标
+## X-Vendor: AbyUI
+>>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4

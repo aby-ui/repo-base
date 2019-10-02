@@ -300,3 +300,33 @@ if LFGListUtil_GetQuestCategoryData then
         end
     end)
 end
+
+--[[------------------------------------------------------------
+8.2.5
+---------------------------------------------------------------]]
+--- 注意参数含义和blz的不一样,是好友序号
+AbyBNGetGameAccountInfo = function(friendIndex, accountIndex)
+    local accountInfo = C_BattleNet.GetFriendAccountInfo(friendIndex);
+    local gameAccountInfo = C_BattleNet.GetGameAccountInfoByID(accountInfo.gameAccountInfo.gameAccountID, accountIndex);
+    local accountInfo = C_BattleNet.GetAccountInfoByID(accountInfo.bnetAccountID);
+    if gameAccountInfo and accountInfo then
+        local wowProjectID = gameAccountInfo.wowProjectID or 0;
+        local characterName = gameAccountInfo.characterName or "";
+        local realmName = gameAccountInfo.realmName or "";
+        local realmID = gameAccountInfo.realmID or 0;
+        local factionName = gameAccountInfo.factionName or "";
+        local raceName = gameAccountInfo.raceName or "";
+        local className = gameAccountInfo.className or "";
+        local areaName = gameAccountInfo.areaName or "";
+        local characterLevel = gameAccountInfo.characterLevel or "";
+        local richPresence = gameAccountInfo.richPresence or "";
+        local gameAccountID = gameAccountInfo.gameAccountID or 0;
+        local playerGuid = gameAccountInfo.playerGuid or 0;
+
+        return	gameAccountInfo.hasFocus, characterName, gameAccountInfo.clientProgram,
+        realmName, realmID, factionName, raceName, className, "", areaName, characterLevel,
+        richPresence, accountInfo.customMessage, accountInfo.customMessageTime,
+        gameAccountInfo.isOnline, gameAccountID, accountInfo.bnetAccountID, gameAccountInfo.isGameAFK, gameAccountInfo.isGameBusy,
+        playerGuid, wowProjectID, gameAccountInfo.isWowMobile;
+    end
+end

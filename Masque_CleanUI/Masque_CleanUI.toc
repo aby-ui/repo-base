@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ## Interface: 80205
 ## Title: Masque_CleanUI
 ## Author: Seharad
@@ -11,3 +12,18 @@ Masque_CleanUI.lua
 
 ## Title: |cff880303[爱不易]|r Masque 皮肤CleanUI
 ## X-Vendor: AbyUI
+=======
+## Interface: 80205
+## Title: Masque_CleanUI
+## Author: Seharad
+## Version: 8.2.0
+## Notes: Masque Skin for the CleanUI look and feel
+## Notes-zhTW: Masque的CleanUI皮膚。
+## Notes-zhCN: Masque的CleanUI皮肤。
+## Dependencies: Masque
+
+Masque_CleanUI.lua
+
+## Title: |cff880303[爱不易]|r Masque 皮肤CleanUI
+## X-Vendor: AbyUI
+>>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4

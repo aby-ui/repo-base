@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ﻿## Interface: 80205
 ## LoadOnDemand: 1
 ## Title: Lib: Babble-Faction-3.0
@@ -16,3 +17,23 @@
 LibStub\LibStub.lua
 lib.xml
 
+=======
+﻿## Interface: 80205
+## LoadOnDemand: 1
+## Title: Lib: Babble-Faction-3.0
+## Notes: A library to help with localization of factions.
+## Notes-zhCN: 为本地化服务的支持库[声望阵营]
+## Notes-zhTW: 為本地化服務的函式庫[聲望陣營]
+## Notes-deDE: BabbleLib ist eine Bibliothek, die bei der Lokalisierung helfen soll.
+## Notes-frFR: Une bibliothèque d'aide à la localisation.
+## Notes-esES: Una biblioteca para ayudar con las localizaciones.
+## Notes-ruRU: Библиотека для локализации аддонов.
+## Author: Daviesh
+## X-eMail: oma_daviesh@hotmail.com
+## X-Category: Library
+## X-License: MIT
+
+LibStub\LibStub.lua
+lib.xml
+
+>>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4

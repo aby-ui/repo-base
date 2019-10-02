@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ## Interface: 80205
 ## Title: LiteBuff
 ## Version: 4.60
@@ -31,3 +32,38 @@ Options.lua
 ## Title-zhCN: |cff880303[爱不易]|r LiteBuff 职业快捷按钮
 ## Notes-zhCN: 针对每个职业配置的快捷施法条
 ## X-Vendor: AbyUI
+=======
+## Interface: 80205
+## Title: LiteBuff
+## Version: 4.60
+## Author: Abin
+## SavedVariables: LiteBuffDB
+## SavedVariablesPerCharacter: LiteBuffCharDB
+## OptionalDeps: LiteBless, Masque
+## X-Category: Buffs
+## X-eMail: abinn32@yahoo.com
+## X-Curse-Packaged-Version: v4.60
+## X-Curse-Project-Name: LiteBuff
+## X-Curse-Project-ID: LiteBuff
+## X-Curse-Repository-ID: wow/litebuff/mainline
+
+Includes\InterfaceOptionPage-1.0.lua
+Includes\LibScanTip.lua
+Includes\LibAuraGroups-1.0.lua
+Includes\LibPlayerSpells-1.0.lua
+Includes\LibItemQuery.lua
+
+Locales\enUS.lua
+Locales\zhCN.lua
+Locales\zhTW.lua
+
+Core.lua
+Templates\embeds.xml
+Buttons\embeds.xml
+Options.lua
+
+
+## Title-zhCN: |cff880303[爱不易]|r LiteBuff 职业快捷按钮
+## Notes-zhCN: 针对每个职业配置的快捷施法条
+## X-Vendor: AbyUI
+>>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4

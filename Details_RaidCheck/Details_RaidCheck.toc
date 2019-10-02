@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ## Interface: 80205
 ## Title: Details!: Raid Check (plugin)
 ## Notes: Show talents and item level for all members in your group, also shows food and flask state.
@@ -7,3 +8,14 @@ Details_RaidCheck.lua
 
 
 ## X-Vendor: AbyUI
+=======
+## Interface: 80205
+## Title: Details!: Raid Check (plugin)
+## Notes: Show talents and item level for all members in your group, also shows food and flask state.
+## RequiredDeps: Details
+
+Details_RaidCheck.lua
+
+
+## X-Vendor: AbyUI
+>>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4

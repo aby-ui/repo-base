@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ## Interface: 80205
 ## Version: 2.0
 ## Author: Abin
@@ -18,3 +19,25 @@ OptionFrame.lua
 ## Title: |cff880303[爱不易]|r MerchantEx 自动修理贩卖
 ## Notes-zhCN: 自动出售灰色物品/修理装备/购买指定物品
 ## X-Vendor: AbyUI
+=======
+## Interface: 80205
+## Version: 2.0
+## Author: Abin
+## Title: MerchantEx
+## SavedVariables: MerchantExDB
+
+Includes\InterfaceOptionPage-1.0.lua
+Includes\VirtualScrollList-1.0.lua
+Includes\TabFrame-1.0.lua
+
+Locales\enUS.lua
+Locales\zhCN.lua
+Locales\zhTW.lua
+
+Core.lua
+OptionFrame.lua
+
+## Title: |cff880303[爱不易]|r MerchantEx 自动修理贩卖
+## Notes-zhCN: 自动出售灰色物品/修理装备/购买指定物品
+## X-Vendor: AbyUI
+>>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4

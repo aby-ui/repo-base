@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ## Interface: 80205
 ## Title: Shadowed UF (Options)
 ## Notes: Configuration for Shadowed Unit Frames.
@@ -9,3 +10,16 @@ config.lua
 
 ## Title:  |cff880303[爱不易]|r SUF 配置选项
 ## X-Vendor: AbyUI
+=======
+## Interface: 80205
+## Title: Shadowed UF (Options)
+## Notes: Configuration for Shadowed Unit Frames.
+## Author: Shadowed
+## LoadOnDemand: true
+## Dependencies: ShadowedUnitFrames
+
+config.lua
+
+## Title:  |cff880303[爱不易]|r SUF 配置选项
+## X-Vendor: AbyUI
+>>>>>>> 0c4c352d04b9b16e45411ea8888c232424c574e4
