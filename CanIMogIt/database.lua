@@ -382,11 +382,15 @@ local function TransmogCollectionUpdated(event, sourceID, ...)
         if event == "TRANSMOG_COLLECTION_SOURCE_ADDED" then
             local itemLink = CanIMogIt:GetItemLinkFromSourceID(sourceID)
             local appearanceID = CanIMogIt:GetAppearanceIDFromSourceID(sourceID)
-            CanIMogIt:DBAddItem(itemLink, appearanceID, sourceID)
+            if itemLink and appearanceID then
+                CanIMogIt:DBAddItem(itemLink, appearanceID, sourceID)
+            end
         elseif event == "TRANSMOG_COLLECTION_SOURCE_REMOVED" then
             local itemLink = CanIMogIt:GetItemLinkFromSourceID(sourceID)
             local appearanceID = CanIMogIt:GetAppearanceIDFromSourceID(sourceID)
-            CanIMogIt:DBRemoveItem(appearanceID, sourceID, itemLink)
+            if itemLink and appearanceID then
+                CanIMogIt:DBRemoveItem(appearanceID, sourceID, itemLink)
+            end
         end
         if sourceID then
             CanIMogIt.cache:RemoveItemBySourceID(sourceID)

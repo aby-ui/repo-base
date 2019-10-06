@@ -367,11 +367,17 @@ function Mod:CheckCurrentKeystone(announce)
 	local keystoneMapID = C_MythicPlus.GetOwnedKeystoneChallengeMapID()
 	local keystoneLevel = C_MythicPlus.GetOwnedKeystoneLevel()
 
+    if not keystoneMapID or keystoneMapID <= 0 or not keystoneLevel or keystoneLevel <= 1 then return end
+
+
 	if keystoneMapID ~= currentKeystoneMapID or keystoneLevel ~= currentKeystoneLevel then
+        if currentKeystoneLevel and (currentKeystoneLevel < keystoneLevel - 1 or currentKeystoneLevel > keystoneLevel + 3) then return end
+        if DEBUG_MODE then print("AngryKeystone", hadKeystone, keystoneMapID, keystoneLevel, currentKeystoneMapID, currentKeystoneLevel) end
 		currentKeystoneMapID = keystoneMapID
 		currentKeystoneLevel = keystoneLevel
 
 		if hadKeystone and announce ~= false and Addon.Config.announceKeystones then
+            if DEBUG_MODE then pdebug() end
 			local itemLink = self:GetInventoryKeystone()
 			if itemLink and IsInGroup(LE_PARTY_CATEGORY_HOME) then
 				SendChatMessage(string.format(Addon.Locale.newKeystoneAnnounce, itemLink), "PARTY")

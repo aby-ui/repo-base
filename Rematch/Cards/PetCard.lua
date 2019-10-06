@@ -36,7 +36,7 @@ rematch:InitModule(function()
    -- UnwrapPet will only attempt to unwrap wrapped pets
    if not settings.DebugNoModels then
 
-		card.Front.Middle.ModelScene = CreateFrame("ModelScene",nil,card.Front.Middle,"ModelSceneMixinTemplate")
+		card.Front.Middle.ModelScene = CreateFrame("ModelScene",nil,card.Front.Middle,"WrappedAndUnwrappedModelScene")
 		local model = card.Front.Middle.ModelScene
 		model.normalIntensity = 0.75
 		model.highlightIntensity = 1.2
@@ -252,7 +252,7 @@ function rematch:ShowPetCard(parent,petID,force)
 			end
 			card.forceSceneChange = nil
 			-- only PrepareForFanfare if fanfare ever observed to avoid loading Blizzard_Collections
-			if rematch:WasFanfareObserved(petInfo.needsFanfare) then
+			if petInfo.needsFanfare then
 				middle.ModelScene:PrepareForFanfare(petInfo.needsFanfare)
 			end
 		end
@@ -849,17 +849,17 @@ end
 -- fanfare model stuff requires mixins from the load-on-demand journal
 -- returns true if there was ever a need for fanfare stuff (and handles
 -- necessary loading and mixin on that first attempt)
-local fanfareObserved = nil
-function rematch:WasFanfareObserved(needsFanfare)
-	if needsFanfare and not fanfareObserved then
-		LoadAddOn("Blizzard_Collections")
-		if card.Front.Middle.ModelScene then
-			Mixin(card.Front.Middle.ModelScene,CollectionsWrappedModelSceneMixin)
-		end
-		fanfareObserved = true
-	end
-	return fanfareObserved
-end
+-- local fanfareObserved = nil
+-- function rematch:WasFanfareObserved(needsFanfare)
+-- 	if needsFanfare and not fanfareObserved then
+-- 		--LoadAddOn("Blizzard_Collections")
+-- 		if card.Front.Middle.ModelScene then
+-- 			--Mixin(card.Front.Middle.ModelScene,CollectionsWrappedModelSceneMixin)
+-- 		end
+-- 		fanfareObserved = true
+-- 	end
+-- 	return fanfareObserved
+-- end
 
 -- call to unwrap a pet (the locked pet card must be up when this is called!)
 function card:UnwrapPet()
@@ -868,14 +868,12 @@ function card:UnwrapPet()
 	if petInfo.needsFanfare then
 		local modelScene = card.Front.Middle.ModelScene
 		if modelScene then
-			if rematch:WasFanfareObserved(true) then -- just in case; load Blizzard_Collections and mixins
-				if not modelScene:IsUnwrapAnimating() then -- only run if animation not happening
-					local function OnFinishedCallback()
-						C_PetJournal.ClearFanfare(petID)
-						rematch:UpdateUI()
-					end
-					modelScene:StartUnwrapAnimation(OnFinishedCallback)
+			if not modelScene:IsUnwrapAnimating() then -- only run if animation not happening
+				local function OnFinishedCallback()
+					C_PetJournal.ClearFanfare(petID)
+					rematch:UpdateUI()
 				end
+				modelScene:StartUnwrapAnimation(OnFinishedCallback)
 			end
 		else
 			C_PetJournal.ClearFanfare(petID)

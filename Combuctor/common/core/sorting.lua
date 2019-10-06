@@ -54,7 +54,7 @@ function Sort:Iterate()
         local other = from.item
 
         if item.id == other.id and stackable(other) then
-          todo = todo or not self:Move(from, target)
+          todo = not self:Move(from, target) or todo
         end
       end
     end
@@ -66,7 +66,7 @@ function Sort:Iterate()
     for index = 1, min(#spaces, #order) do
       local goal, item = spaces[index], order[index]
       if item.space ~= goal then
-        todo = todo or not self:Move(item.space, goal)
+        todo = not self:Move(item.space, goal) or todo
       else
         item.placed = true
       end

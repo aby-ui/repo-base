@@ -166,6 +166,15 @@ function OmniBar:CopyCooldown(cooldown)
 	return copy
 end
 
+-- create a lookup table since CombatLogGetCurrentEventInfo() returns 0 for spellId
+local spellIdByName
+if WOW_PROJECT_ID == WOW_PROJECT_CLASSIC then
+	spellIdByName = {}
+	for id, value in pairs(cooldowns) do
+		if not value.parent then spellIdByName[GetSpellInfo(id)] = id end
+	end
+end
+
 function OmniBar:AddCustomSpells()
 	-- Restore any overrides
 	for k,v in pairs(self.BackupCooldowns) do
@@ -179,6 +188,7 @@ function OmniBar:AddCustomSpells()
 			self.BackupCooldowns[k] = self:CopyCooldown(cooldowns[k])
 		end
 		cooldowns[k] = v
+		if spellIdByName then spellIdByName[GetSpellInfo(k)] = k end
 	end
 
 	-- Populate cooldowns with spell names and icons
@@ -440,9 +450,10 @@ end
 
 function OmniBar_OnEvent(self, event)
 	if event == "COMBAT_LOG_EVENT_UNFILTERED" then
-		local _, event, _, sourceGUID, sourceName, sourceFlags, _,_,_,_,_, spellID = CombatLogGetCurrentEventInfo()
+		local _, event, _, sourceGUID, sourceName, sourceFlags, _,_,_,_,_, spellID, spellName = CombatLogGetCurrentEventInfo()
 		if self.disabled then return end
 		if (event == "SPELL_CAST_SUCCESS" or event == "SPELL_AURA_APPLIED") and bit.band(sourceFlags, COMBATLOG_OBJECT_REACTION_HOSTILE) ~= 0 then
+			if spellID == 0 and spellIdByName then spellID = spellIdByName[spellName] end
 			if cooldowns[spellID] then
 				OmniBar_UpdateArenaSpecs(self)
 				OmniBar_AddIcon(self, spellID, sourceGUID, sourceName)
@@ -563,9 +574,12 @@ end
 function OmniBar_LoadPosition(self)
 	self:ClearAllPoints()
 	if self.settings.position then
-		local relativeTo = self.settings.position.relativeTo and self.settings.position.relativeTo or "UIParent"
-		self:SetPoint(self.settings.position.point, self.settings.position.relativeTo, self.settings.position.relativePoint,
-			self.settings.position.xOfs, self.settings.position.yOfs)
+		local point = self.settings.position.point or "CENTER"
+		local relativeTo = self.settings.position.relativeTo or "UIParent"
+		local relativePoint = self.settings.position.relativePoint or "CENTER"
+		local xOfs = self.settings.position.xOfs or 0
+		local yOfs = self.settings.position.yOfs or 0
+		self:SetPoint(point, relativeTo, relativePoint, xOfs, yOfs)
 		if not self.settings.position.frameStrata then self.settings.position.frameStrata = "MEDIUM" end
 		self:SetFrameStrata(self.settings.position.frameStrata)
 	else

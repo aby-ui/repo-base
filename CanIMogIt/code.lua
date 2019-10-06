@@ -378,12 +378,27 @@ local appearanceCount = 0
 local buffer = 0
 local sourcesAdded = 0
 local sourcesRemoved = 0
+local loadingScreen = true
 
 
 local appearancesTable = {}
 local removeAppearancesTable = nil
 local appearancesTableGotten = false
 local doneAppearances = {}
+
+
+local function LoadingScreenStarted(event)
+    if event ~= "LOADING_SCREEN_ENABLED" then return end
+    loadingScreen = true
+end
+CanIMogIt.frame:AddEventFunction(LoadingScreenStarted)
+
+
+local function LoadingScreenEnded(event)
+    if event ~= "LOADING_SCREEN_DISABLED" then return end
+    loadingScreen = false
+end
+CanIMogIt.frame:AddEventFunction(LoadingScreenEnded)
 
 
 local function GetAppearancesTable()
@@ -478,8 +493,10 @@ end
 local timer = 0
 local function GetAppearancesOnUpdate(self, elapsed)
     -- OnUpdate function with a reset timer to throttle getting appearances.
+    -- We also don't run things if the loading screen is currently up, as some
+    -- functions don't return values when loading.
     timer = timer + elapsed
-    if timer >= CanIMogIt.throttleTime then
+    if timer >= CanIMogIt.throttleTime and not loadingScreen then
         _GetAppearances()
         timer = 0
     end

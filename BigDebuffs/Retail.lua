@@ -162,7 +162,9 @@ addon.Spells = {
     [202425] = { type = BUFF_OFFENSIVE }, -- Warrior of Elune
     [204399] = { type = CROWD_CONTROL }, -- Earthfury
     [204437] = { type = CROWD_CONTROL }, -- Lightning Lasso
-
+        [305483] = { parent = 204437 },
+        [305484] = { parent = 204437 },
+        [305485] = { parent = 204437 },
     [209749] = { type = CROWD_CONTROL }, -- Faerie Swarm (Slow/Disarm)
     [209753] = { type = CROWD_CONTROL, priority = true }, -- Cyclone
         [33786] = { type = CROWD_CONTROL, parent = 209753 }, -- Cyclone

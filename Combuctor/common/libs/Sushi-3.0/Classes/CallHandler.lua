@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with Sushi. If not, see <http://www.gnu.org/licenses/>.
 --]]
 
-local Handler = MakeSushi(3, nil, 'CallHandler', UIParent)
+local Handler = MakeSushi(4, nil, 'CallHandler', UIParent)
 if not Handler then
 	return
 end
@@ -34,8 +34,7 @@ end
 function Handler:OnRelease ()
 	self:SetParent(UIParent)
 	self:ClearAllPoints()
-	self:SetPoint('TOP', UIParent, 'BOTTOM') -- outside of screen
-	self:Hide()
+	self:SetPoint('BOTTOM', UIParent, 'TOP', 0, GetScreenHeight()) -- twice outside of screen
 end
 
 

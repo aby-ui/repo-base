@@ -1,34 +1,35 @@
 ﻿--SkinNames = {} for skinName in next, LibStub('Masque'):GetSkins() do SkinNames[skinName] = skinName end wowluacopy(SkinNames)
 local names = {
     Apathy = "缩小",
-    ["Apathy - No Shadow"] = "缩小: 无阴影",
-    Blizzard = "暴雪默认",
-    Cainyx = "稍微放大",
+    Classic = "暴雪经典",
+    Cainyx = "圆角灰边框",
     ["Cainyx Raven Highlights"] = false,
     Caith = "灰边框",
-    ["Caith - No Shadow"] = "灰边框: 无阴影",
+    Cirque = "圆圈",
+    ["Cirque - Simple"] = false,
     CleanUI = "清爽",
     ["CleanUI Black"] = "清爽: 黑",
     ["CleanUI Black and White"] = false,
     ["CleanUI Edged"] = false,
-    ["CleanUI Gray"] = "清爽: 放大高亮",
+    ["CleanUI Gray"] = false, --"清爽: 放大高亮",
     ["CleanUI Thin"] = "清爽: 放大",
-    ["CleanUI White"] = "清爽: 白",
+    ["CleanUI White"] = false, --"清爽: 白",
     ["CleanUI White and Black"] = false,
+    Default = "默认",
+    Dominos = "多米诺默认",
     Dream = "无边框",
     ["Entropy - Adamantite"] = false, --"质感: 精金",
-    ["Entropy - Bronze"] = "质感: 青铜",
-    ["Entropy - Cobalt"] = "质感: 钴",
+    ["Entropy - Bronze"] = false, --"质感: 青铜",
+    ["Entropy - Cobalt"] = false, --"质感: 钴",
     ["Entropy - Copper"] = "质感: 铜",
     ["Entropy - Fel Iron"] = false, --"质感: 魔铁",
     ["Entropy - Gold"] = "质感: 金",
-    ["Entropy - Iron"] = "质感: 铁",
-    ["Entropy - Khorium"] = "质感: 氪金",
-    ["Entropy - Obsidium"] = "质感: 黑曜石",
+    ["Entropy - Iron"] = false, --"质感: 铁",
+    ["Entropy - Khorium"] = false, --"质感: 氪金",
+    ["Entropy - Obsidium"] = false, --"质感: 黑曜石",
     ["Entropy - Saronite"] = false, --"质感: 萨隆邪铁",
     ["Entropy - Silver"] = "质感: 银",
     ["Entropy - Titanium"] = false, --"质感: 泰坦神铁"
-    ["Entropy - Copper"] = "质感: 铜",
     ["Entropy - Fel Iron"] = false, --"质感: 魔铁",
     Gears = "齿轮",
     ["Gears - Black"] = "齿轮: 黑",
@@ -36,22 +37,21 @@ local names = {
     ["Gears - Random"] = "齿轮: 随机",
     ["Goldpaw's UI: Normal"] = "浮雕",
     ["Goldpaw's UI: Normal Bright"] = "浮雕: 高亮",
-    ["Goldpaw's UI: PetBar"] = "浮雕: 中",
+    ["Goldpaw's UI: PetBar"] = false, --"浮雕: 中",
     ["Goldpaw's UI: Small"] = "浮雕: 小",
     ["Goldpaw's UI: Small Bright"] = "浮雕: 小高亮",
-    LiteStep = "LiteStep",
-    ["LiteStep XLT"] = "LiteStep: 窄边",
-    Onyx = "Onyx",
-    ["Onyx Redux"] = "Onyx Redux",
-    Parabole = "Parabole",
+    Onyx = "三角指示标",
+    ["Onyx Redux"] = false,
+    Parabole = "双线边框",
     ["Serenity"] = false,
     ["Serenity Redux"] = "圆形白边框",
     ["Serenity - Square"] = false,
     ["Serenity Redux - Square"] = "方形白边框",
-    Zoomed = "无边框",
-    kenzo = "圆角",
+    Zoomed = "无边框放大",
+    kenzo = "圆角细黑边",
 }
 
+local orders = { ["Default"] = 1, ["Classic"] = 2, ["Dream"] = 3, ["Zoomed"] = 4, ["Dominos"] = -1, }
 local SkinOptions = {}
 local SkinNames = {}
 local CoreGroup
@@ -66,7 +66,20 @@ local function get_option()
             for skinName in next, Skins do
                 table.insert(SkinNames, skinName)
             end
-            table.sort(SkinNames)
+            table.sort(SkinNames, function(s1, s2)
+                local o1, o2 = orders[s1], orders[s2]
+                if o1 and o2 then
+                    if o1 > 0 and o2 < 0 then return true end
+                    if o1 < 0 and o2 > 0 then return false end
+                    return o1 < o2 -- 1,2 -2,-1
+                elseif not o1 and not o2 then
+                    return s1 < s2
+                elseif o1 and not o2 then
+                    return o1 > 0
+                elseif o2 and not o1 then
+                    return o2 < 0
+                end
+            end)
             for _, skinName in ipairs(SkinNames) do
                 local localeName = names[skinName]
                 if(localeName ~= false) then
@@ -91,7 +104,7 @@ end
 local function getGlobal()
     if(not CoreGroup) then
         local Core = U1GetMasqueCore()
-        CoreGroup = Core and Core:Group()
+        CoreGroup = Core and Core.GetGroup()
     end
     return CoreGroup
 end
@@ -109,7 +122,7 @@ U1RegisterAddon("Masque", {
     desc = "为动作条按钮提供样式切换，拥有众多的皮肤类扩展，是此类美化插件的第一选择。`爱不易在原版的基础上整合了玩家增益美化，并精选了几种有代表性的皮肤样式，可以用控制台轻松选择。当然，您也可以下载任意皮肤包放到插件目录里，爱不易对此提供良好的兼容。",
 
     toggle = function(name, info, enable, justload)
-        local Masque = LibStub("AceAddon-3.0"):GetAddon("Masque").Core
+        local Masque = U1GetMasqueCore()
         local v;
         v = nil if not enable then v = false end
         U1CfgCallBack(U1CfgFindChild("masque", "hidecap"), v)
@@ -117,13 +130,23 @@ U1RegisterAddon("Masque", {
         U1CfgCallBack(U1CfgFindChild("masque", "hidebg"), v)
 
         if U1IsInitComplete() then
-            Masque:Group():ToggleWithoutSave(enable)
+            getGlobal():ToggleWithoutSave(enable)
+        end
+
+        if not U1DBG.reset_masque then
+            U1DBG.reset_masque = "201910"
+            getGlobal():__Reset()
         end
     end,
 
     {
         text = "配置选项",
         callback = function() SlashCmdList["MASQUE"]() end,
+    },
+    {
+        text = "重置皮肤",
+        confirm = "会把所有皮肤的设置（比如颜色，光泽等）恢复到默认值，您确定吗？",
+        callback = function() getGlobal():__Reset() end,
     },
     {
         type = 'radio',
@@ -137,7 +160,7 @@ U1RegisterAddon("Masque", {
         callback = function(cfg, v, loading)
             if loading then return end --会覆盖所有设置，只有手动设置时才调用
             if v~='NONE' and not loading then
-                getGlobal():SetOption('SkinID', v)
+                getGlobal():__Set('SkinID', v)
             end
         end,
     },
@@ -260,6 +283,7 @@ U1RegisterAddon("Masque_LiteStep", { load = "NORMAL", protected = 1, hide = 1, }
 U1RegisterAddon("Masque_Onyx", { load = "NORMAL", protected = 1, hide = 1, });
 U1RegisterAddon("Masque_Parabole", { load = "NORMAL", protected = 1, hide = 1, });
 U1RegisterAddon("Masque_Serenity", { load = "NORMAL", protected = 1, hide = 1, });
+U1RegisterAddon("Masque_Cirque", { load = "NORMAL", protected = 1, hide = 1, });
 
 --支持暴雪默认动作条
 CoreDependCall("Masque", function()
@@ -281,7 +305,6 @@ CoreDependCall("Masque", function()
             if not InCombatLockdown() then btn:SetFrameStrata'HIGH' end
         end)
         --AddButtonToGroup('BonusActionButton%d', NUM_BONUS_ACTION_SLOTS, '额外动作条')
-        --AddButtonToGroup('ShapeshiftButton%d', NUM_SHAPESHIFT_SLOTS,  '姿态动作条')
         AddButtonToGroup('PetActionButton%d', NUM_PET_ACTION_SLOTS, '宠物动作条')
         AddButtonToGroup('MultiBarLeftButton%d', NUM_MULTIBAR_BUTTONS, '右侧动作条1')
         AddButtonToGroup('MultiBarRightButton%d', NUM_MULTIBAR_BUTTONS, '右侧动作条2')
@@ -308,9 +331,10 @@ end)
 --hooksecurefunc("PaperDollItemSlotButton_Update", function(self) print(666) if(self:GetName()=="CharacterBag0Slot") then print(111) end end)--[[ 这个不行，会造成开启角色面板时的严重卡顿
 local reskin = function()
     if (IsAddOnLoaded("Masque")) then
-        if U1GetMasqueCore():ListAddons()["Dominos"] then
-            if U1GetMasqueCore():ListGroups("Dominos")["Dominos_Bag Bar"] then
-                local group = U1GetMasqueCore():Group("Dominos", "Bag Bar")
+        local domino = U1GetMasqueCore().Groups["Dominos"]
+        if domino then
+            local group = domino.SubList["Dominos_Bag Bar"]
+            if group then
                 if not group.db.Disabled then
                     group:ReSkin()
                 end

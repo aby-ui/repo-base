@@ -24,13 +24,21 @@ L.Updated = '已更新到 v%s'
 --frames
 L.TitleBags = '%s的背包'
 L.TitleBank = '%s的銀行'
+L.TitleVault = '%s的虛空倉庫'
+--interactions
+L.Click = '點擊'
+L.Drag = '<拖動>'
+L.LeftClick = '<右鍵點擊>'
+L.RightClick = '<右鍵點擊>'
+L.DoubleClick = '<連按兩下>'
+L.ShiftClick = '<shift鍵+點擊>'
 
 --tooltips
 L.TipBags = '背包'
 L.TipChangePlayer = '點擊檢視其他角色的物品。'
 L.TipCleanBags = '點擊整理背包。'
 L.TipCleanBank = '<右鍵點擊>整理銀行。'
-L.TipDepositReagents = '<左鍵點擊>全部存放到材料銀行。'
+L.TipDepositReagents = '<右鍵點擊>全部存放到材料銀行。'
 L.TipFrameToggle = '<右鍵點擊>切換其它視窗。'
 L.TipGoldOnRealm = '%s上的總資產'
 L.TipHideBag = '點擊隱藏背包。'
@@ -41,28 +49,27 @@ L.PurchaseBag = '點擊購買銀行槽。'
 L.TipShowBag = '點擊顯示背包。'
 L.TipShowBags = '<左鍵點擊>顯示背包顯示。'
 L.TipShowMenu = '<右鍵點擊>設定視窗。'
-L.TipShowSearch = '點擊搜尋。'
 L.TipShowFrameConfig = '開啟設定視窗。'
 L.TipDoubleClickSearch = '<拖動>移動。\n<右鍵點擊>設定。\n<兩次點擊>搜尋。'
 L.Total = '總共'
+L.TipResetPlayer = '%s返回現時角色'
+L.TipCleanItems = '%s整理物品'
+L.TipMove = '%s移動'
+L.TipShowSearch = '%s搜尋'
+L.TipConfigure = '%s設定這框架'
+
+L.GuildFunds = '工會資金'
+L.NumWithdraw = '%d 提款'
+L.NumDeposit = '%d 存款'
+L.NumRemainingWithdrawals = '%d 剩餘提款'
 
 --itemcount tooltips
 L.TipCountEquip = '已裝備: %d'
 L.TipCountBags = '背包: %d'
 L.TipCountBank = '銀行: %d'
-L.TipCountVault = '虛空倉庫:%d'
-L.TipCountGuild = '公會銀行:%d'
-L.TipCount4 = '價值: %d'
+L.TipCountVault = '虛空倉庫: %d'
+L.TipCountGuild = '工會銀行: %d'
 L.TipDelimiter = '|'
-
-L.ConfirmTransfer = '存放這些物品會移除所有變形並且變得無法交易和退還。|n|n你想要繼續？'
-L.PurchaseDialog = '你想要解鎖虛空倉庫服務？|n|n|cffffd200花費:|r %s'
-L.CannotPurchaseDialog = '你沒有足夠的錢來解鎖虛空倉庫服務|n|n|cffff2020花費: %s|r'
-L.AskMafia = '詢問黑手黨'
-
-L.Title = [[%s的虛空倉庫]]
-L.NumDeposit = '%d存放'
-L.NumWithdraw = '%d視窗'
 
 --databroker plugin tooltips
 L.TipShowInventory = '<左鍵點擊>切換背包。'

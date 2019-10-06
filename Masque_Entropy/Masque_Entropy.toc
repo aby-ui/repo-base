@@ -1,8 +1,6 @@
 ## Interface: 80205
-## Title: Masque: |cffff8000Entropy|r
-## Version: 8.0.0
-## Author: StormFX
-## Dependencies: Masque
+## Title: Masque: Entropy
+
 ## Notes: Entropy skins for Masque.
 ## Notes-deDE: Entropy-Skin für Masque.
 ## Notes-esES: Skin Entropy para Masque.
@@ -10,12 +8,22 @@
 ## Notes-itIT: Skin Entropy per Masque.
 ## Notes-ruRU: Скин Entropy для Masque.
 ## Notes-zhTW: Masque的Entropy皮膚。
-## X-Website: https://www.wowace.com/projects/masque_entropy
+
+## Version: 8.2.5
+## Author: StormFX
+## Dependencies: Masque
+
+## X-Website: https://github.com/StormFX/Masque_Entropy
 ## X-Category: Interface Enhancements
 ## X-Credits: Zeal
+## X-Curse-Project-ID: 13595
 ## X-WoWI-ID: 8873
 
-Entropy.lua
+# Locales
+Locales.lua
+
+# Skins
+Skins.lua
 
 
 ## Title-zhCN: |cff880303[爱不易]|r Masque 皮肤Entropy

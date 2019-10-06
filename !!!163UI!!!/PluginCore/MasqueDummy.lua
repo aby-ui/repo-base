@@ -1,9 +1,11 @@
+-- 因为TMW和WA都用了非常多的MasqueGroupAPI,所以实时加载太困难,基本等于重写一个了,所以此代码已经从!!!163UI!!!引用里去掉了
 do
     if select(5, GetAddOnInfo("Masque"))=="MISSING" then return end
     if GetAddOnEnableState(U1PlayerName,"TellMeWhen")>=2 then return end
+    if GetAddOnEnableState(U1PlayerName,"WeakAuras")>=2 then return end
 end
 
-local Masque = LibStub:NewLibrary("Masque", -1);
+local Masque = LibStub:NewLibrary("Masque", 80199);
 if not Masque then return end
 
 --local function AddButton(self, Button, ButtonData)

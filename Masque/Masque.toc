@@ -1,21 +1,17 @@
 ## Interface: 80205
 ## Title: Masque
-## Version: 8.0.1
+
+## Notes: A skinning engine for button-based add-ons.
+## Notes-ruRU: Основа для аддонов, изменяющих внешний вид кнопок.
+## Notes-zhCN: 一款基于按钮的外观美化插件。
+## Notes-zhTW: 一個基於按鈕的外觀美化插件。
+
+## Version: 8.2.7
 ## Author: StormFX, JJSheets
-## Notes: A dynamic button-skinning engine.
-## Notes-deDE: Ein Addon zur dynamischen Änderung der Buttonoptiken.
-## Notes-esES: Cambiar dinamicamente la aparencia de botones.
-## Notes-esMX: Cambiar dinamicamente la aparencia de botones.
-## Notes-frFR: Un add-on de skinnage dynamique des boutons.
-## Notes-itIT: Un'add-on per lo skinning dinamico dei pulsanti.
-## Notes-koKR: 동적인 버튼 스킨 입히기 애드온 입니다.
-## Notes-ptBR: Um add-on de skin dinâmico de botões.
-## Notes-ruRU: Аддон для добавления скинов к панелям команд.
-## Notes-zhCN: 一个动态按钮皮肤插件。
-## Notes-zhTW: 動態套用按鈕佈景主題的插件。
-## OptionalDeps: Ace3, LibDBIcon-1.0, LibDualSpec-1.0
 ## SavedVariables: MasqueDB
-## X-Website: https://www.wowace.com/projects/masque
+## OptionalDeps: Ace3, LibDBIcon-1.0, LibDualSpec-1.0
+
+## X-Website: https://github.com/StormFX/Masque
 ## X-Category: Interface Enhancements
 ## X-Curse-Project-ID: 13592
 ## X-WoWI-ID: 12097
@@ -34,6 +30,9 @@ Skins\Skins.xml
 
 # Core
 Core\Core.xml
+
+# Options
+Options\Options.xml
 
 
 ## Title-zhCN: |cff880303[爱不易]|r Masque 按钮美化

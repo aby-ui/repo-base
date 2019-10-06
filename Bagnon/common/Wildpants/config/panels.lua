@@ -7,7 +7,7 @@ local CONFIG, Config = ...
 local ADDON, Addon = CONFIG:match('[^_]+'), _G[CONFIG:match('[^_]+')]
 local L = LibStub('AceLocale-3.0'):GetLocale(CONFIG)
 
-local PATRONS = {{title='Jenkins',people={'Gnare','Arriana Sylvester','SirZooro','ProfessahX'}},{},{title='Ambassador',people={'Sembiance','Fernando Bandeira','Michael Irving','Julia F','Peggy Webb','Lolari','Craig Falb','Mary Barrentine','Grey Sample','Patryk Kalis','Lifeprayer','Steve Lund'}}} -- generated patron list
+local PATRONS = {{title='Jenkins',people={'Gnare','Arriana Sylvester','ProfessahX'}},{},{title='Ambassador',people={'Sembiance','Fernando Bandeira','Michael Irving','Julia F','Peggy Webb','Lolari','Craig Falb','Mary Barrentine','Grey Sample','Patryk Kalis','Lifeprayer','Steve Lund','Grimmcanuck'}}} -- generated patron list
 local SLOT_COLOR_TYPES = {}
 for id, name in pairs(Addon.BAG_TYPES) do
 	if not tContains(SLOT_COLOR_TYPES, name) then

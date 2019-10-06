@@ -1,6 +1,6 @@
 --[[
 Name: LibRangeCheck-2.0
-Revision: $Revision: 198 $
+Revision: $Revision: 202 $
 Author(s): mitch0
 Website: http://www.wowace.com/projects/librangecheck-2-0/
 Description: A range checking library based on interact distances and spell ranges
@@ -26,7 +26,7 @@ License: Public Domain
 --     print("target is between " .. minRange .. " and " .. maxRange .. " yards")
 -- end
 -- 
--- local meleeChecker = rc:GetFriendMaxChecker(rc.MeleeRange) -- 5 yds
+-- local meleeChecker = rc:GetFriendMaxChecker(rc.MeleeRange) or rc:GetFriendMinChecker(rc.MeleeRange) -- use the closest checker (MinChecker) if no valid Melee checker is found
 -- for i = 1, 4 do
 --     -- TODO: check if unit is valid, etc
 --     if meleeChecker("party" .. i) then
@@ -41,7 +41,7 @@ License: Public Domain
 -- @class file
 -- @name LibRangeCheck-2.0
 local MAJOR_VERSION = "LibRangeCheck-2.0"
-local MINOR_VERSION = tonumber(("$Revision: 198 $"):match("%d+")) + 100000
+local MINOR_VERSION = tonumber(("$Revision: 202 $"):match("%d+")) + 100000
 
 local lib, oldminor = LibStub:NewLibrary(MAJOR_VERSION, MINOR_VERSION)
 if not lib then
@@ -76,7 +76,7 @@ local InteractLists = {
     },
 }
 
-local MeleeRange = 5
+local MeleeRange = 2
 
 -- list of friendly spells that have different ranges
 local FriendSpells = {}
@@ -104,7 +104,7 @@ HarmSpells["DRUID"] = {
     339, -- ["Entangling Roots"], -- 35
     6795, -- ["Growl"], -- 30
     33786, -- ["Cyclone"], -- 20
-    22568, -- ["Ferocious Bite"], -- 5
+    22568, -- ["Ferocious Bite"], -- Melee
 }
 
 FriendSpells["HUNTER"] = {}
@@ -126,7 +126,7 @@ FriendSpells["MONK"] = {
 HarmSpells["MONK"] = {
     115546, -- ["Provoke"], -- 30
     115078, -- ["Paralysis"], -- 20
-    100780, -- ["Tiger Palm"], -- 5
+    100780, -- ["Tiger Palm"], -- Melee
 }
 
 FriendSpells["PALADIN"] = {
@@ -136,7 +136,7 @@ HarmSpells["PALADIN"] = {
     62124, -- ["Reckoning"], -- 30
     20271, -- ["Judgement"], -- 30
     853, -- ["Hammer of Justice"], -- 10
-    35395, -- ["Crusader Strike"], -- 5
+    35395, -- ["Crusader Strike"], -- Melee
 } 
 
 FriendSpells["PRIEST"] = {
@@ -161,7 +161,7 @@ FriendSpells["SHAMAN"] = {
 HarmSpells["SHAMAN"] = {
     403, -- ["Lightning Bolt"], -- 40
     370, -- ["Purge"], -- 30
-    73899, -- ["Primal Strike"],. -- 5
+    73899, -- ["Primal Strike"],. -- Melee
 }
 
 FriendSpells["WARRIOR"] = {}
@@ -704,7 +704,7 @@ end
 -- @field
 lib.CHECKERS_CHANGED = "CHECKERS_CHANGED"
 -- "export" it, maybe someone will need it for formatting
---- Constant for Melee range (5yd).
+--- Constant for Melee range (2yd).
 -- @field
 lib.MeleeRange = MeleeRange
 
@@ -888,7 +888,7 @@ function lib:GetSmartMinChecker(range)
         getMinChecker(self.miscRC, range))
 end
 
---- Return a checker suitable for in-of-range checking that checks the unit type and calls the appropriate checker (friend/harm/misc).
+--- Return a checker suitable for in-range checking that checks the unit type and calls the appropriate checker (friend/harm/misc).
 -- @param range the range to check for.
 -- @return **checker** function.
 function lib:GetSmartMaxChecker(range)
@@ -1247,7 +1247,11 @@ local function logMeasurementChange(t, t0, key, last, curr)
     print(MAJOR_VERSION .. ": t=" .. ("%.4f"):format(t.stamp) .. ": d=" .. ("%.4f"):format(d) .. ": " .. tostring(key) .. ": " .. tostring(last) .. " ->  " .. tostring(curr))
 end
 
-local GetPlayerMapPosition = GetPlayerMapPosition
+local GetPlayerMapPosition = GetPlayerMapPosition or function(unit)
+    local map = C_Map.GetBestMapForUnit(unit)
+    local pos = C_Map.GetPlayerMapPosition(map, unit)
+    return pos:GetXY()
+end
 function lib:updateMeasurements()
     local now = GetTime() - self.measurementStart
     local x, y = GetPlayerMapPosition("player")

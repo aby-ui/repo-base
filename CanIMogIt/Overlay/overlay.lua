@@ -134,6 +134,8 @@ CIMIEvents = {
     ["GUILDBANKBAGSLOTS_CHANGED"] = true,
     ["PLAYERREAGENTBANKSLOTS_CHANGED"] = true,
     ["CHAT_MSG_LOOT"] = true,
+    ["LOADING_SCREEN_ENABLED"] = true,
+    ["LOADING_SCREEN_DISABLED"] = true,
 }
 
 

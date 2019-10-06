@@ -960,7 +960,7 @@ function scanner_button:CheckNotificationCache(self, vignetteInfo)
 			TomTom:RemoveWaypoint(tomtom_waypoint)
 		end
 		local npcInfo = private.dbglobal.rares_found[npcID]
-		if (npcInfo.coordX and npcInfo.coordY) then
+		if (npcInfo and npcInfo.coordX and npcInfo.coordY) then
 			tomtom_waypoint = TomTom:AddWaypoint(npcInfo.mapID, tonumber(npcInfo.coordX), tonumber(npcInfo.coordY), {
 				title = name,                
 				persistent = false,
@@ -1336,7 +1336,7 @@ function RareScanner:OnInitialize()
 	-- Load completed quests
 	RareScanner:LoadCompletedQuestTracking()
 
-	self:PrintMessage("loaded")
+	--self:PrintMessage("loaded")
 end
 
 function RareScanner:InitializeDataBase()
