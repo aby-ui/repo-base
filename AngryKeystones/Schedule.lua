@@ -17,9 +17,9 @@ local affixScheduleText = {
 	{"Fortified", "Sanguine", "Quaking"},
 	{"Tyrannical", "Bolstering", "Explosive"},
 	{"Fortified", "Bursting", "Volcanic"},
+	{"Tyrannical", "Raging", "Volcanic"},
+	{"Fortified", "Teeming", "Quaking"},
 	{"Tyrannical", "Raging", "Necrotic"},
-    {"Fortified", "Teeming", "Quaking"},
-    {"Tyrannical", "Bursting", "Skittish"},
 }
 local affixScheduleKeys = {["Overflowing"]=1, ["Skittish"]=2, ["Volcanic"]=3, ["Necrotic"]=4, ["Teeming"]=5, ["Raging"]=6, ["Bolstering"]=7, ["Sanguine"]=8, ["Tyrannical"]=9, ["Fortified"]=10, ["Bursting"]=11, ["Grievous"]=12, ["Explosive"]=13, ["Quaking"]=14 }
 local affixSchedule = {}
