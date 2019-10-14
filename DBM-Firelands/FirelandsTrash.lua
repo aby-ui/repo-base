@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("FirelandsTrash", "DBM-Firelands")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190817195516")
+mod:SetRevision("20191011130309")
 mod:SetModelID(38765)
 mod:SetZone()
 mod.isTrashMod = true
@@ -9,9 +9,9 @@ mod.isTrashMod = true
 mod:RegisterEvents(
 	"SPELL_CAST_START 100094 99629 99503 100724",
 	"SPELL_CAST_SUCCESS 99579 99575",
-	"SPELL_AURA_APPLIED 99532 100767",
-	"SPELL_AURA_APPLIED_DOSE 99532 100767",
-	"SPELL_AURA_REMOVED 99532 100767",
+	"SPELL_AURA_APPLIED 99532",
+	"SPELL_AURA_APPLIED_DOSE 99532",
+	"SPELL_AURA_REMOVED 99532",
 	"UNIT_DIED"
 )
 
@@ -97,7 +97,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 end
 
 function mod:SPELL_AURA_APPLIED(args)
-	if args:IsSpellID(99532, 100767) and args:IsDestTypePlayer() then
+	if args.spellId == 99532 and args:IsDestTypePlayer() then
 		if args:IsPlayer() and (args.amount or 1) >= 4 then
 			specWarnMoltenArmor:Show(args.amount)
 			specWarnMoltenArmor:Play("stackhigh")
@@ -110,7 +110,7 @@ end
 mod.SPELL_AURA_APPLIED_DOSE = mod.SPELL_AURA_APPLIED
 
 function mod:SPELL_AURA_REMOVED(args)
-	if args:IsSpellID(99532, 100767) then
+	if args.spellId == 99532 then
 		timerMoltenArmor:Cancel(args.destName)
 	end
 end

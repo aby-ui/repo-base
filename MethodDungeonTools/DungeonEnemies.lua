@@ -268,6 +268,12 @@ function MethodDungeonTools:DisplayBlipTooltip(blip,shown)
 
     local text = upstairs..data.name.." "..occurence..group.."\n等级 "..data.level.." "..data.creatureType.."\n血量 "..MethodDungeonTools:FormatEnemyHealth(health).."\n"
     text = text ..L"Forces: "..MethodDungeonTools:FormatEnemyForces(data.count)
+    local reapingText
+    if blip.data.reaping and db.MDI.enabled and preset.mdi.beguiling == 13 then
+        local reapingIcon = CreateTextureMarkup(MethodDungeonTools.reapingStatic[tostring(blip.data.reaping)].iconTexture, 32, 32, 16, 16, 0, 1, 0, 1,0,0) or ""
+        reapingText = "Reaping: "..reapingIcon.." "..MethodDungeonTools.reapingStatic[tostring(blip.data.reaping)].name .. "\n"
+    end
+    if reapingText then text = text .. "\n" .. reapingText end
     text = text ..L"\n\n[Right click for more info]"
     tooltip.String:SetText(text)
 

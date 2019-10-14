@@ -103,6 +103,8 @@ function Mapster:OnEnable()
 		break
 	end
 
+	self:SecureHook("ShowUIPanel", "ShowUIPanelHook")
+
 	-- classic compat stuff
 	if WoWClassic then
 		self:RawHook(WorldMapFrame, "HandleUserActionToggleSelf", function(frame) if frame:IsShown() then frame:Hide() else frame:Show() end end, true)
@@ -268,6 +270,12 @@ function Mapster:SetPOIScale()
 	end
 	for pin in WorldMapFrame:EnumeratePinsByTemplate("QuestPinTemplate") do
 		self:QuestPOI_OnAcquired(pin)
+	end
+end
+
+function Mapster:ShowUIPanelHook(frame)
+	if frame == WorldMapFrame and InCombatLockdown() and not frame:IsShown() then
+		frame:Show()
 	end
 end
 

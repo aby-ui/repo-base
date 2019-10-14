@@ -1797,6 +1797,12 @@ nodes[1165] = { } -- Dazar'alor
 nodes[1169] = { } -- Tol Dagor
 nodes[875] = { } -- Zandalar
 nodes[876] = { } --Kul'Tiras
+nodes[1355] = {} -- Nazjatar
+
+nodes[1355][50431199] = { -- The Eternal Palace
+	id = 1179,
+	type = "Raid",
+} 
 
 nodes[862][43323947] = {
  id = 968,
@@ -1862,6 +1868,11 @@ nodes[942][78932647] = {
  id = 1036,
  type = "Dungeon",
 } -- Shrine of Storm
+
+nodes[876][19872697] = { -- Operation: Mechagon
+	id = 1178,
+	type = "Dungeon",
+}
 
 nodes[876][68262354] = {
  id = 1177,

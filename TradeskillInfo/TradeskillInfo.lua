@@ -100,11 +100,11 @@ local function getItemLink(id, combineName)
 end
 
 
-local GetTradeSkillLine = C_TradeSkillUI.GetTradeSkillLine
-local IsTradeSkillReady = C_TradeSkillUI.IsTradeSkillReady
-local IsTradeSkillLinked = C_TradeSkillUI.IsTradeSkillLinked
-local IsTradeSkillGuild = C_TradeSkillUI.IsTradeSkillGuild
-local IsNPCCrafting = C_TradeSkillUI.IsNPCCrafting
+local GetTradeSkillLine
+local IsTradeSkillReady
+local IsTradeSkillLinked
+local IsTradeSkillGuild
+local IsNPCCrafting
 
 
 function TradeskillInfo:OnInitialize()
@@ -168,6 +168,19 @@ function TradeskillInfo:OnInitialize()
 			},
 		},
 	}, "Default")
+
+	-- disable on Classic.
+	if WOW_PROJECT_ID == WOW_PROJECT_CLASSIC then
+		self:Print("WoW Classic detected. TradeSkillInfo is designed for Retail servers and will not work on Classic servers. Please download TradeSkillInfo_Classic when it becomes available.")
+		self:SetEnabledState(false)
+		return
+	else
+		GetTradeSkillLine = C_TradeSkillUI.GetTradeSkillLine
+		IsTradeSkillReady = C_TradeSkillUI.IsTradeSkillReady
+		IsTradeSkillLinked = C_TradeSkillUI.IsTradeSkillLinked
+		IsTradeSkillGuild = C_TradeSkillUI.IsTradeSkillGuild
+		IsNPCCrafting = C_TradeSkillUI.IsNPCCrafting
+	end
 
 	self:RegisterChatCommand("tsi", "ChatCommand")
 	self:RegisterChatCommand("tradeskillinfo", "ChatCommand")

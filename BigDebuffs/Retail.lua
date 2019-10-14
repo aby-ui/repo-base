@@ -172,6 +172,7 @@ addon.Spells = {
         [203123] = { type = CROWD_CONTROL, parent = 22570 }, -- Maim
         [236025] = { type = CROWD_CONTROL, parent = 22570 }, -- Enraged Maim (Feral Honor Talent)
     [236696] = { type = BUFF_DEFENSIVE }, -- Thorns (PvP Talent)
+        [305497] = { parent = 236696 },
 
     -- Hunter
 

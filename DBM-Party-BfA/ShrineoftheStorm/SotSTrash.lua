@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("SotSTrash", "DBM-Party-BfA", 4)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190812040831")
+mod:SetRevision("20191010030825")
 --mod:SetModelID(47785)
 mod:SetZone()
 
@@ -85,7 +85,7 @@ function mod:SPELL_CAST_START(args)
 	elseif spellId == 268184 and self:AntiSpam(4, 7) then
 		specWarnMinorSwiftness:Show()
 		specWarnMinorSwiftness:Play("moveboss")
-	elseif spellId == 276292 and self:AntiSpam(4, 8) then
+	elseif spellId == 276292 and self:AntiSpam(5, 8) then
 		specWarnWhirlingSlam:Show()
 		specWarnWhirlingSlam:Play("justrun")
 	elseif spellId == 268211 and self:AntiSpam(4, 10) then
