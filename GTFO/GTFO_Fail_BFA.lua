@@ -3,10 +3,9 @@
 --------------------------------------------------------------------------
 --[[
 GTFO Fail List - Battle for Azeroth
-Author: Zensunim of Malygos
 ]]--
 
-
+if (not GTFO.ClassicMode) then
 --- ******************************
 --- * Battle for Azeroth (World) *
 --- ******************************
@@ -1671,3 +1670,4 @@ GTFO.SpellID["303729"] = {
   sound = 3;
 };
 
+end

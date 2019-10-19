@@ -3,9 +3,9 @@
 --------------------------------------------------------------------------
 --[[
 GTFO Spell List - Battle for Azeroth
-Author: Zensunim of Malygos
 ]]--
 
+if (not GTFO.ClassicMode) then
 
 --- ******************************
 --- * Battle for Azeroth (World) *
@@ -1057,3 +1057,4 @@ GTFO.SpellID["298569"] = {
   minimumStacks = 5;
 };
 
+end

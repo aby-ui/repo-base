@@ -3,8 +3,9 @@
 --------------------------------------------------------------------------
 --[[
 GTFO Fail List - Burning Crusade
-Author: Zensunim of Malygos
 ]]--
+
+if (not GTFO.ClassicMode) then
 
 -- *****************
 -- * Blood Furnace *
@@ -290,3 +291,5 @@ GTFO.SpellID["40904"] = {
   sound = 3;
   tankSound = 0;
 };
+
+end

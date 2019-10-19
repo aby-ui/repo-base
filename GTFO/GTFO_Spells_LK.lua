@@ -3,8 +3,9 @@
 --------------------------------------------------------------------------
 --[[
 GTFO Spell List - Lich King
-Author: Zensunim of Malygos
 ]]--
+
+if (not GTFO.ClassicMode) then
 
 GTFO.SpellID["62548"] = {
 	--desc = "Scorch (Ignis-10)";
@@ -1237,3 +1238,5 @@ GTFO.SpellID["59323"] = {
 	--desc = "Whirlwind (Skadi the Ruthless - Utgarde Pinnacle)";
 	sound = 1;
 };
+
+end

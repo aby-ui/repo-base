@@ -1,47 +1,22 @@
 --------------------------------------------------------------------------
--- GTFO_Fail_Classic.lua 
+-- GTFO_Fail_GenericRetail.lua 
 --------------------------------------------------------------------------
 --[[
-GTFO Fail List - Classic
+GTFO Fail List - Generic (Retail version)
 ]]--
 
-if (GTFO.ClassicMode) then
+if (not GTFO.ClassicMode) then
 
-GTFO.SpellID["20476"] = {
-	--desc = "Explosion (Baron Geddon, Molten Core)";
-	sound = 4;
-	ignoreSelfInflicted = true;
+GTFO.SpellID["82691"] = {
+	--desc = "Ring of Frost (PvP)";
+	sound = 3;
 };
 
-GTFO.SpellID["9435"] = {
-	--desc = "Detonation (Arcanist Doan - Scarlet Monastery)";
-	sound = 3;
+GTFO.SpellID["19983"] = {
+	--desc = "Cleave (Dragon Bosses)";
 	tankSound = 0;
-};
-
-GTFO.SpellID["19272"] = {
-	--desc = "Lava Breath (Magmadar - Molten Core)";
 	sound = 3;
-	tankSound = 0;
-};
-
-GTFO.SpellID["19272"] = {
-	--desc = "Flame Breath (Gyth - Blackrock Spire)";
-	sound = 3;
-	tankSound = 0;
-};
-
-GTFO.SpellID["19272"] = {
-	--desc = "Acid Breath (Drakes - Sunken Temple)";
-	sound = 3;
-	tankSound = 0;
-	applicationOnly = true;
-};
-
-GTFO.SpellID["25656"] = {
-	--desc = "Sand Trap (Kurinnaxx, AQ10)";
-	sound = 3;
-	applicationOnly = true;
+	trivialPercent = .5;
 };
 
 GTFO.SpellID["15284"] = {
@@ -76,6 +51,15 @@ GTFO.SpellID["15284"] = {
 		19512, -- Nethervine Reaper, Bot
 		10366, -- Rage Talon Dragon Guard, UBRS
 		9200, -- Spirestone Reaver, LBRS
+	};
+};
+
+GTFO.SpellID["15496"] = {
+	--desc = "Cleave";
+	tankSound = 0;
+	sound = 3;
+	trivialPercent = 3;
+	specificMobs = { 
 		20923, -- Blood Guard Porung, SH
 		7267, -- Chief Ukorz Sandscalp, ZF
 		3975, -- Herod, SM
@@ -101,6 +85,15 @@ GTFO.SpellID["15284"] = {
 		16699, -- Shattered Hand Reaver, SH
 		17800, -- Coilfang Myrmidon, SV
 		17819, -- Durnholde Sentry, CoT:OH
+	};
+};
+
+GTFO.SpellID["40504"] = {
+	--desc = "Cleave";
+	tankSound = 0;
+	sound = 3;
+	trivialPercent = 5;
+	specificMobs = { 
 		17881, -- Aeonus, BM
 		9037, -- Gloom'rel, BRD
 		9028, -- Grizzle, BRD
@@ -130,6 +123,15 @@ GTFO.SpellID["15284"] = {
 		15229, -- Vekniss Soldier, AQ40
 		26624, -- Wretched Belcher, DTK
 		54499, -- The Abominable Greench, Winter Veil
+	};
+};
+
+GTFO.SpellID["40505"] = {
+	--desc = "Cleave";
+	tankSound = 0;
+	sound = 3;
+	trivialPercent = 5;
+	specificMobs = { 
 		11517, -- Oggleflint, RFC
 		23223, -- Bonechewer Spectator, BT
 		7347, -- Boneflayer Ghoul, RFD
@@ -138,15 +140,55 @@ GTFO.SpellID["15284"] = {
 		37069, -- Lumbering Abomination, HoR
 		42975, -- Plague Ghoul, Strat
 		10405, -- Plague Ghoul, Strat
+	};
+};
+
+GTFO.SpellID["42724"] = {
+	--desc = "Cleave";
+	tankSound = 0;
+	sound = 3;
+	trivialPercent = 5;
+	specificMobs = { 
 		23954, -- Ingvar the Plunderer, Utgarde Keep
 		27983, -- Dark Rune Protector, HoS
 		27960, -- Dark Rune Warrior, HoS
 		26550, -- Dragonflayer Deathseeker, UP
 		24080, -- Dragonflayer Weaponsmith, UK
 		28578, -- Hardened Steel Reaver, HoS
-		59746, -- Scarlet Centurion,
-		15989, -- Sapphiron
+		33125, -- Iron Honor Guard, Ulduar
+		32875, -- Iron Honor Guard, Ulduar
+	};
+	trivialLevel = 85;
+};
+
+GTFO.SpellID["15576"] = {
+	--desc = "Whirlwind";
+	sound = 3;
+	tankSound = 0;
+	trivialPercent = 5;
+	specificMobs = { 
+		23863, -- Daakara, Zul'Aman
 	};
 };
+
+GTFO.SpellID["115519"] = {
+	--desc = "Cleave";
+	tankSound = 0;
+	sound = 3;
+	trivialPercent = 5;
+	specificMobs = { 
+		59746, -- Scarlet Centurion
+	};
+};
+
+GTFO.SpellID["79860"] = {
+	--desc = "Blizzard";
+	sound = 2;
+	trivialPercent = 1;
+	specificMobs = { 
+		65444, -- Captain Mousson, Theramore's Fall
+	};
+};
+
 
 end

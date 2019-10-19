@@ -3,8 +3,9 @@
 --------------------------------------------------------------------------
 --[[
 GTFO Spell List - Mists of Pandaria
-Author: Zensunim of Malygos
 ]]--
+
+if (not GTFO.ClassicMode) then
 
 -- ***************
 -- * Scholomance *
@@ -2483,3 +2484,5 @@ GTFO.SpellID["131831"] = {
 	--desc = "Fiery Keg Smash (Master Cheng)";
 	sound = 1;
 };
+
+end

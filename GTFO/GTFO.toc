@@ -1,8 +1,8 @@
 ## Interface: 80205
 ## Title: GTFO
 ## Notes: GTFO, you're dying!
-## Author: Zensunim of Dragonblight
-## Version: 4.49.4
+## Author: Zensunim of Dragonblight/Myzrael
+## Version: 4.51
 ## DefaultState: Enabled
 ## SavedVariables: GTFOData
 Libs\LibUIDropDownMenu\LibUIDropDownMenu.xml
@@ -16,7 +16,9 @@ GTFO_Recount.lua
 GTFO_Skada.lua
 GTFO.lua
 GTFO_Ignore.lua
-GTFO_Spells_Generic.lua
+GTFO_Spells_GenericRetail.lua
+GTFO_Spells_GenericClassic.lua
+GTFO_Spells_Vanilla.lua
 GTFO_Spells_Classic.lua
 GTFO_Spells_BC.lua
 GTFO_Spells_LK.lua
@@ -25,7 +27,9 @@ GTFO_Spells_MP.lua
 GTFO_Spells_LGN.lua
 GTFO_Spells_BFA.lua
 GTFO_Spells_Special.lua
-GTFO_Fail_Generic.lua
+GTFO_Fail_GenericRetail.lua
+GTFO_Fail_GenericClassic.lua
+GTFO_Fail_Vanilla.lua
 GTFO_Fail_Classic.lua
 GTFO_Fail_BC.lua
 GTFO_Fail_LK.lua

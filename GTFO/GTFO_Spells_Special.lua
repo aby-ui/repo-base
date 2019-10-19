@@ -3,8 +3,9 @@
 --------------------------------------------------------------------------
 --[[
 GTFO Spell List - Special Events
-Author: Zensunim of Malygos
 ]]--
+
+if (not GTFO.ClassicMode) then
 
 GTFO.SpellID["68947"] = {
 	--desc = "Irresistible Cologne (Love is in the Air)";
@@ -288,3 +289,5 @@ GTFO.SpellID["244954"] = {
   --desc = "Wailing Wall (Death Metal Knight - Darkmoon Faire)";
   sound = 3;
 };
+
+end

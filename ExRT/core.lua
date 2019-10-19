@@ -1,4 +1,4 @@
---	25.09.2019
+--	17.10.2019
 
 --[[
 4040
@@ -22,10 +22,22 @@
 4060-Classic
 * Minor fixes
 
+4080
+* Raid Check: reworked ready check frame
+* Raid Check: added option for ready check frame only for raid leaders
+* Raid Check: ready check frame option switched to enabled for raid leaders
+* Marks Bar: added raid check button
+* Minor fixes
+
+4080-Classic
+* Raid Check: Readded module
+* Marks Bar: added raid check button
+* Minor fixes
+
 ]]
 local GlobalAddonName, ExRT = ...
 
-ExRT.V = 4060
+ExRT.V = 4080
 ExRT.T = "R"
 
 ExRT.OnUpdate = {}		--> таймеры, OnUpdate функции

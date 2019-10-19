@@ -723,6 +723,7 @@ function WeakAuras.CheckChargesDirection(direction, triggerDirection)
 end
 
 function WeakAuras.CheckCombatLogFlags(flags, flagToCheck)
+  if type(flags) ~= "number" then return end
   if (flagToCheck == "InGroup") then
     return bit.band(flags, 7) > 0;
   elseif (flagToCheck == "NotInGroup") then
@@ -1168,7 +1169,7 @@ WeakAuras.load_prototype = {
       display = L["Zone Name"],
       type = "string",
       init = "arg",
-      events = {"ZONE_CHANGED", "ZONE_CHANGED_INDOORS", "ZONE_CHANGED_NEW_AREA"}
+      events = {"ZONE_CHANGED", "ZONE_CHANGED_INDOORS", "ZONE_CHANGED_NEW_AREA", "VEHICLE_UPDATE"}
     },
     {
       name = "zoneId",
@@ -1179,7 +1180,7 @@ WeakAuras.load_prototype = {
       test = "WeakAuras.CheckNumericIds(%q, zoneId)",
       enable = not WeakAuras.IsClassic(),
       hidden = WeakAuras.IsClassic(),
-      events = {"ZONE_CHANGED", "ZONE_CHANGED_INDOORS", "ZONE_CHANGED_NEW_AREA"}
+      events = {"ZONE_CHANGED", "ZONE_CHANGED_INDOORS", "ZONE_CHANGED_NEW_AREA", "VEHICLE_UPDATE"}
     },
     {
       name = "zonegroupId",
@@ -1190,7 +1191,7 @@ WeakAuras.load_prototype = {
       test = "WeakAuras.CheckNumericIds(%q, zonegroupId)",
       enable = not WeakAuras.IsClassic(),
       hidden = WeakAuras.IsClassic(),
-      events = {"ZONE_CHANGED", "ZONE_CHANGED_INDOORS", "ZONE_CHANGED_NEW_AREA"}
+      events = {"ZONE_CHANGED", "ZONE_CHANGED_INDOORS", "ZONE_CHANGED_NEW_AREA", "VEHICLE_UPDATE"}
     },
     {
       name = "encounterid",
@@ -5148,24 +5149,23 @@ WeakAuras.event_prototypes = {
         AddUnitEventForEvents(result, trigger.unit, "NAME_PLATE_UNIT_ADDED")
         AddUnitEventForEvents(result, trigger.unit, "NAME_PLATE_UNIT_REMOVED")
       end
-      if not (WeakAuras.IsClassic() and trigger.unit ~= "player") then
-        AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_CHANNEL_START")
-        AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_START")
-        AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_STOP")
-        AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_DELAYED")
-        AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_CHANNEL_UPDATE")
-        AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_INTERRUPTIBLE")
-        AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_NOT_INTERRUPTIBLE")
-        AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_CHANNEL_STOP")
-        AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_INTERRUPTED")
-      else
-        LibClassicCasterino:RegisterCallback("PLAYER_TARGET_CHANGED", WeakAuras.ScanEvents)
-        LibClassicCasterino:RegisterCallback("UNIT_SPELLCAST_START", WeakAuras.ScanEvents)
-        LibClassicCasterino:RegisterCallback("UNIT_SPELLCAST_STOP", WeakAuras.ScanEvents)
-        LibClassicCasterino:RegisterCallback("UNIT_SPELLCAST_FAILED", WeakAuras.ScanEvents)
-        LibClassicCasterino:RegisterCallback("UNIT_SPELLCAST_CHANNEL_START", WeakAuras.ScanEvents)
-        LibClassicCasterino:RegisterCallback("UNIT_SPELLCAST_CHANNEL_STOP", WeakAuras.ScanEvents)
-        LibClassicCasterino:RegisterCallback("UNIT_SPELLCAST_INTERRUPTED", WeakAuras.ScanEvents)
+      AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_START")
+      AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_DELAYED")
+      AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_STOP")
+      AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_CHANNEL_START")
+      AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_CHANNEL_UPDATE")
+      AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_CHANNEL_STOP")
+      AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_INTERRUPTIBLE")
+      AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_NOT_INTERRUPTIBLE")
+      AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_INTERRUPTED")
+      if WeakAuras.IsClassic() and trigger.unit ~= "player" then
+        LibClassicCasterino:RegisterCallback("UNIT_SPELLCAST_START", WeakAuras.ScanUnitEvents)
+        LibClassicCasterino:RegisterCallback("UNIT_SPELLCAST_DELAYED", WeakAuras.ScanUnitEvents) -- only for player
+        LibClassicCasterino:RegisterCallback("UNIT_SPELLCAST_STOP", WeakAuras.ScanUnitEvents)
+        LibClassicCasterino:RegisterCallback("UNIT_SPELLCAST_CHANNEL_START", WeakAuras.ScanUnitEvents)
+        LibClassicCasterino:RegisterCallback("UNIT_SPELLCAST_CHANNEL_UPDATE", WeakAuras.ScanUnitEvents) -- only for player
+        LibClassicCasterino:RegisterCallback("UNIT_SPELLCAST_CHANNEL_STOP", WeakAuras.ScanUnitEvents)
+        LibClassicCasterino:RegisterCallback("UNIT_SPELLCAST_INTERRUPTED", WeakAuras.ScanUnitEvents)
       end
       AddUnitEventForEvents(result, trigger.unit, "UNIT_TARGET")
       if trigger.use_destUnit and trigger.destUnit and trigger.destUnit ~= "" then

@@ -3,8 +3,9 @@
 --------------------------------------------------------------------------
 --[[
 GTFO Friendly Fire List - Mists of Pandaria
-Author: Zensunim of Malygos
 ]]--
+
+if (not GTFO.ClassicMode) then
 
 -- ***************
 -- * Scholomance *
@@ -71,3 +72,5 @@ GTFO.FFSpellID["142928"] = {
 	--desc = "Displaced Energy (Malkorok)";
 	sound = 3;
 };
+
+end

@@ -3,8 +3,9 @@
 --------------------------------------------------------------------------
 --[[
 GTFO Spell List - Warlords of Draenor
-Author: Zensunim of Malygos
 ]]--
+
+if (not GTFO.ClassicMode) then
 
 -- ***********
 -- * Draenor *
@@ -1355,3 +1356,6 @@ GTFO.SpellID["189550"] = {
 	--desc = "Rain of Fire (Azgalor)";
 	sound = 1;
 };
+
+
+end

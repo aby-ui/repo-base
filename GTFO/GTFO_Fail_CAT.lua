@@ -3,8 +3,9 @@
 --------------------------------------------------------------------------
 --[[
 GTFO Fail List - Cataclysm (New areas)
-Author: Zensunim of Malygos
 ]]--
+
+if (not GTFO.ClassicMode) then
 
 GTFO.SpellID["80564"] = {
 	--desc = "Fungal Spores (Throne of the Tides)";
@@ -1821,3 +1822,5 @@ GTFO.SpellID["109563"] = {
 	--desc = "Storm Pillar (Hagara the Stormbinder, DS H)";
 	sound = 3;
 };
+
+end

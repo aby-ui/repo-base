@@ -3,8 +3,9 @@
 --------------------------------------------------------------------------
 --[[
 GTFO Friendly Fire List - Legion
-Author: Zensunim of Malygos
 ]]--
+
+if (not GTFO.ClassicMode) then
 
 -- *********************
 -- * The Emerald Dream *
@@ -48,3 +49,5 @@ GTFO.FFSpellID["249297"] = {
   --desc = "Flames of Reorigination";
   sound = 1;
 };
+
+end

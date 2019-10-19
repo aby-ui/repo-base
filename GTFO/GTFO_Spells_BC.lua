@@ -3,8 +3,9 @@
 --------------------------------------------------------------------------
 --[[
 GTFO Spell List - Burning Crusade
-Author: Zensunim of Malygos
 ]]--
+
+if (not GTFO.ClassicMode) then
 
 GTFO.SpellID["40611"] = {
 	--desc = "Blaze (Illidan)";
@@ -434,3 +435,5 @@ GTFO.SpellID["40841"] = {
   --desc = "Flame Crash (Black Temple)";
   sound = 1;
 };
+
+end

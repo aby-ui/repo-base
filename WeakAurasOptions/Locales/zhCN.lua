@@ -135,8 +135,7 @@ local L = WeakAuras.L
 	L["Bracket Matching"] = "括号自动匹配"
 	L["Button Glow"] = "按钮发光"
 	L["Can be a Name or a Unit ID (e.g. party1). A name only works on friendly players in your group."] = "可以是名字或单位 ID（例如 party1），只有在团队中的友方玩家名字是有效的。"
-	--[[Translation missing --]]
-	L["Can be a UID (e.g., party1)."] = "Can be a UID (e.g., party1)."
+	L["Can be a UID (e.g., party1)."] = "可以是 UID（例如：party1）"
 	L["Cancel"] = "取消"
 	L["Center"] = "中间"
 	L["Channel Number"] = "频道索引"
@@ -430,6 +429,8 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	L["None"] = "无"
 	L["Not all children have the same value for this option"] = "并非所有子元素都拥有相同的此选项的值"
 	L["Not Loaded"] = "未载入"
+	--[[Translation missing --]]
+	L["Note: Automated Messages to SAY and YELL are blocked outside of Instances."] = "Note: Automated Messages to SAY and YELL are blocked outside of Instances."
 	L["Number of Entries"] = "条目数"
 	L["Offer a guided way to create auras for your character"] = "提供为角色创建光环的指导"
 	L["Okay"] = "好"

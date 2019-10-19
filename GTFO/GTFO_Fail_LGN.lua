@@ -3,8 +3,9 @@
 --------------------------------------------------------------------------
 --[[
 GTFO Fail List - Legion
-Author: Zensunim of Malygos
 ]]--
+
+if (not GTFO.ClassicMode) then
 
 --- ********************
 --- * The Broken Isles *
@@ -2427,3 +2428,4 @@ GTFO.SpellID["250007"] = {
   test = true;
 };
 
+end

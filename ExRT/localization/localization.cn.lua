@@ -218,6 +218,12 @@ L.RaidCheckMinFlaskExp = "显示快到期的合剂: "
 L.RaidCheckMinFlaskExpNo = "无"
 L.RaidCheckMinFlaskExpMin = "分钟."
 L.RaidCheckDisableInLFR = "忽略随机难度"
+L.RaidCheckHeadFood = "食物"
+L.RaidCheckHeadFlask = "合剂"
+L.RaidCheckHeadRune = "符文"
+L.RaidCheckHeadVantus = "凡图斯"
+L.RaidCheckOnlyRL = "仅团长可见"
+
 
 L.marksbarstart = "取消标记"
 L.marksbardel = "解除锁定"

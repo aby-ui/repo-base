@@ -3,7 +3,6 @@
 --------------------------------------------------------------------------
 --[[
 GTFO & Skada Integration
-Author: Zensunim of Malygos
 
 Change Log:
 	v4.6

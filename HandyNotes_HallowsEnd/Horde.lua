@@ -64,12 +64,6 @@ points[50] = { -- "StranglethornJungle"
 	[37385178] = 12382, -- Grom'gol Base Camp
 }
 
-points[224] = { -- "StranglethornVale"
-	[42213359] = 12382, -- Grom'gol Base Camp, Northern Stranglethorn
-	[37907993] = 12397, -- Booty Bay, Southern Stranglethorn
-	[34365192] = 28969, -- Hardwrench Hideaway, Southern Stranglethorn
-}
-
 points[51] = { -- "SwampOfSorrows"
 	[46875692] = 12384, -- Stonard
 	[71651410] = 28967, -- Bogpaddle

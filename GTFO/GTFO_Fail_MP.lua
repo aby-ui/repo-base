@@ -3,8 +3,9 @@
 --------------------------------------------------------------------------
 --[[
 GTFO Fail List - Mists of Pandaria
-Author: Zensunim of Malygos
 ]]--
+
+if (not GTFO.ClassicMode) then
 
 -- ***************
 -- * Scholomance *
@@ -2203,3 +2204,5 @@ GTFO.SpellID["147335"] = {
 	--desc = "Furious Splash (Zesqua)";
 	sound = 3;
 };
+
+end

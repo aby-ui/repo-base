@@ -1307,6 +1307,17 @@ module.frame:SetScript("OnSizeChanged", function (self, width, height)
 end)
 module.frame:Hide() 
 
+module.frame:SetScript("OnUpdate",function(self,elapsed)
+	if elapsed > .3 then
+		return
+	end
+	if VExRT then
+		module.frame.text:SetFont(GameFontWhite:GetFont(),11)
+		module.frame:UpdateFont()
+		self:SetScript("OnUpdate",nil)
+	end
+end)
+
 function module.frame:UpdateFont()
 	local font = VExRT and VExRT.Note and VExRT.Note.FontName or ExRT.F.defFont
 	local size = VExRT and VExRT.Note and VExRT.Note.FontSize or 12

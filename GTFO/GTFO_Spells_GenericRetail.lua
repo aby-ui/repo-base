@@ -1,9 +1,8 @@
 --------------------------------------------------------------------------
--- GTFO_Spells_Generic.lua 
+-- GTFO_Spells_GenericRetail.lua 
 --------------------------------------------------------------------------
 --[[
-GTFO Spell List - Generic List
-Author: Zensunim of Malygos
+GTFO Spell List - Generic List (Retail version)
 
 Sample:
 	GTFO.SpellID["12345"] = {
@@ -38,6 +37,8 @@ Sample:
 	};
 		
 ]]--
+
+if (not GTFO.ClassicMode) then
 
 GTFO.SpellID["46264"] = {
 	--desc = "Void Zone Effect (Generic - Unknown)";
@@ -244,3 +245,4 @@ GTFO.SpellID["114919"] = {
 	sound = 2;
 };
 
+end

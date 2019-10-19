@@ -3,8 +3,9 @@
 --------------------------------------------------------------------------
 --[[
 GTFO Spell List - Cataclysm (New areas)
-Author: Zensunim of Malygos
 ]]--
+
+if (not GTFO.ClassicMode) then
 
 GTFO.SpellID["76628"] = {
 	--desc = "Lava Drool (Blackrock Caverns)";
@@ -2683,3 +2684,4 @@ GTFO.SpellID["108787"] = {
 	sound = 4;
 };
 
+end

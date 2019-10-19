@@ -16,6 +16,8 @@ GTFO.MobID["12345"] = {
 
 ]]--
 
+if (not GTFO.ClassicMode) then
+
 GTFO.MobID["38508"] = {
 	--desc = "Blood Beast - Valithria Dreamwalker - ICC";
 	sound = 1;
@@ -76,3 +78,4 @@ GTFO.MobID["67664"] = {
 	sound = 3;		
 }
 
+end

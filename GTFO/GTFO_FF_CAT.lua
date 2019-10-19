@@ -3,8 +3,9 @@
 --------------------------------------------------------------------------
 --[[
 GTFO Friendly Fire List - Cataclysm
-Author: Zensunim of Malygos
 ]]--
+
+if (not GTFO.ClassicMode) then
 
 GTFO.FFSpellID["86631"] = {
 	--desc = "Engulfing Magic (Theralion, BoT)";
@@ -163,3 +164,4 @@ GTFO.FFSpellID["108787"] = {
 	sound = 1;
 };
 
+end

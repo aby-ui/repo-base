@@ -3,7 +3,6 @@
 --------------------------------------------------------------------------
 --[[
 GTFO & Recount Integration
-Author: Zensunim of Malygos
 
 Change Log:
 	v4.1

@@ -3,8 +3,9 @@
 --------------------------------------------------------------------------
 --[[
 GTFO Spell List - Legion
-Author: Zensunim of Malygos
 ]]--
+
+if (not GTFO.ClassicMode) then
 
 --- ********************
 --- * The Broken Isles *
@@ -1967,3 +1968,4 @@ GTFO.SpellID["245916"] = {
   sound = 1;
 };
 
+end

@@ -175,12 +175,21 @@ module.frame.start:SetScript("OnClick", function(self)
 	end
 end)
 
-module.frame.start.html = module.frame.start:CreateFontString(nil,"ARTWORK")
+module.frame.start.html = module.frame.start:CreateFontString(nil,"ARTWORK","GameFontWhite")
 module.frame.start.html:SetFont(ExRT.F.defFont, 10)
 module.frame.start.html:SetAllPoints()
 module.frame.start.html:SetJustifyH("CENTER")
 module.frame.start.html:SetText(L.marksbarstart)
 module.frame.start.html:SetShadowOffset(1,-1)
+
+module.frame.start:SetScript("OnUpdate",function(self,elapsed)
+	if elapsed > .3 then
+		return
+	end
+	self.html:SetFont(GameFontWhite:GetFont(), 8)
+	self.html:SetFont(ExRT.F.defFont, 10)
+	self:SetScript("OnUpdate",nil)
+end)
 
 module.frame.del = CreateFrame("Button",nil,module.frame)
 module.frame.del:SetBackdrop({bgFile = ExRT.F.barImg,edgeFile = ExRT.F.defBorder,tile = false,edgeSize = 6})
@@ -204,12 +213,21 @@ module.frame.del:SetScript("OnClick", function(self)
 	ExRT.A.Marks:Disable()
 end)
 
-module.frame.del.html = module.frame.del:CreateFontString(nil,"ARTWORK")
+module.frame.del.html = module.frame.del:CreateFontString(nil,"ARTWORK","GameFontWhite")
 module.frame.del.html:SetFont(ExRT.F.defFont, 10)
 module.frame.del.html:SetAllPoints()
 module.frame.del.html:SetJustifyH("CENTER")
 module.frame.del.html:SetText(L.marksbardel)
 module.frame.del.html:SetShadowOffset(1,-1)
+
+module.frame.del:SetScript("OnUpdate",function(self,elapsed)
+	if elapsed > .3 then
+		return
+	end
+	self.html:SetFont(GameFontWhite:GetFont(), 8)
+	self.html:SetFont(ExRT.F.defFont, 10)
+	self:SetScript("OnUpdate",nil)
+end)
 
 module.frame.edges[3] = CreateEdge(3,383)
 
@@ -326,12 +344,21 @@ module.frame.readyCheck:SetScript("OnClick", function(self)
 	DoReadyCheck()
 end)
 
-module.frame.readyCheck.html = module.frame.readyCheck:CreateFontString(nil,"ARTWORK")
+module.frame.readyCheck.html = module.frame.readyCheck:CreateFontString(nil,"ARTWORK","GameFontWhite")
 module.frame.readyCheck.html:SetFont(ExRT.F.defFont, 10)
 module.frame.readyCheck.html:SetAllPoints()
 module.frame.readyCheck.html:SetJustifyH("CENTER")
 module.frame.readyCheck.html:SetText(L.marksbarrc)
 module.frame.readyCheck.html:SetShadowOffset(1,-1)
+
+module.frame.readyCheck:SetScript("OnUpdate",function(self,elapsed)
+	if elapsed > .3 then
+		return
+	end
+	self.html:SetFont(GameFontWhite:GetFont(), 8)
+	self.html:SetFont(ExRT.F.defFont, 10)
+	self:SetScript("OnUpdate",nil)
+end)
 
 module.frame.pull = CreateFrame("Button",nil,module.frame)
 module.frame.pull:SetSize(40,12)
@@ -349,12 +376,53 @@ module.frame.pull:SetScript("OnClick", function(self)
 	ExRT.F:DoPull(VExRT.MarksBar.pulltimer)
 end)
 
-module.frame.pull.html = module.frame.pull:CreateFontString(nil,"ARTWORK")
+module.frame.pull.html = module.frame.pull:CreateFontString(nil,"ARTWORK","GameFontWhite")
 module.frame.pull.html:SetFont(ExRT.F.defFont, 10)
 module.frame.pull.html:SetAllPoints()
 module.frame.pull.html:SetJustifyH("CENTER")
 module.frame.pull.html:SetText(L.marksbarpull)
 module.frame.pull.html:SetShadowOffset(1,-1)
+
+module.frame.pull:SetScript("OnUpdate",function(self,elapsed)
+	if elapsed > .3 then
+		return
+	end
+	self.html:SetFont(GameFontWhite:GetFont(), 8)
+	self.html:SetFont(ExRT.F.defFont, 10)
+	self:SetScript("OnUpdate",nil)
+end)
+
+do
+	local markbuts_backdrop = {bgFile = ExRT.F.barImg,edgeFile = ExRT.F.defBorder,tile = false,edgeSize = 8}
+
+	local frame = CreateFrame("Frame",nil,module.frame)
+	module.frame.raidcheck = frame
+	frame:SetSize(26,26)
+	frame:SetBackdrop(markbuts_backdrop)
+	frame:SetBackdropColor(0,0,0,0)
+	frame:SetBackdropBorderColor(0.4,0.4,0.4,1)
+
+	frame:Hide()
+
+	frame.but = CreateFrame("Button",nil,frame)
+	frame.but:SetSize(20,20)
+	frame.but:SetPoint("TOPLEFT",  3, -3)
+	frame.but.t = frame.but:CreateTexture(nil, "BACKGROUND")
+	frame.but.t:SetTexture(609902)
+	frame.but.t:SetPoint("TOPLEFT",-1,1)
+	frame.but.t:SetPoint("BOTTOMRIGHT",1,-1)
+	frame.but.t:SetTexCoord(.1,.9,.1,.9)
+	
+	frame.but:SetScript("OnEnter",function(self) self:GetParent():SetBackdropBorderColor(0.7,0.7,0.7,1) end)
+	frame.but:SetScript("OnLeave",function(self) self:GetParent():SetBackdropBorderColor(0.4,0.4,0.4,1) end)
+
+	frame.but:RegisterForClicks("RightButtonDown","LeftButtonDown")
+	frame.but:SetScript("OnClick", function()
+		if ExRT.A.RaidCheck then
+			ExRT.A.RaidCheck:ReadyCheckWindow(nil,nil,true)
+		end
+	end)
+end
 
 local function modifymarkbars()
 	local mainFrame = module.frame
@@ -461,7 +529,18 @@ local function modifymarkbars()
 			posX = posX + 40
 			totalWidth = totalWidth + 40
 		end
-		if not (VExRT.MarksBar.Show[1] or VExRT.MarksBar.Show[2] or VExRT.MarksBar.Show[3] or VExRT.MarksBar.Show[4]) or not VExRT.MarksBar.enabled then
+
+		mainFrame.raidcheck:SetPoint("TOPLEFT",posX,-4)
+		if VExRT.MarksBar.Show[5] then
+			mainFrame.raidcheck:Show()
+
+			posX = posX + 26
+			totalWidth = totalWidth + 26
+		else
+			mainFrame.raidcheck:Hide()
+		end
+
+		if not (VExRT.MarksBar.Show[1] or VExRT.MarksBar.Show[2] or VExRT.MarksBar.Show[3] or VExRT.MarksBar.Show[4] or VExRT.MarksBar.Show[5]) or not VExRT.MarksBar.enabled then
 			mainFrame:Hide()
 		else
 			mainFrame:Show()
@@ -571,7 +650,18 @@ local function modifymarkbars()
 			posX = posX + 26
 			totalWidth = totalWidth + 26
 		end
-		if not (VExRT.MarksBar.Show[1] or VExRT.MarksBar.Show[2] or VExRT.MarksBar.Show[3] or VExRT.MarksBar.Show[4]) or not VExRT.MarksBar.enabled then
+
+		mainFrame.raidcheck:SetPoint("TOPLEFT",4,-posX)
+		if VExRT.MarksBar.Show[5] then
+			mainFrame.raidcheck:Show()
+
+			posX = posX + 26
+			totalWidth = totalWidth + 26
+		else
+			mainFrame.raidcheck:Hide()
+		end
+
+		if not (VExRT.MarksBar.Show[1] or VExRT.MarksBar.Show[2] or VExRT.MarksBar.Show[3] or VExRT.MarksBar.Show[4] or VExRT.MarksBar.Show[5]) or not VExRT.MarksBar.enabled then
 			mainFrame:Hide()
 		else
 			mainFrame:Show()
@@ -583,6 +673,7 @@ local function modifymarkbars()
 		module:GroupRosterUpdate()
 	end
 end
+module.modifymarkbars = modifymarkbars
 
 local function EnableMarksBar()
 	VExRT.MarksBar.enabled = true
@@ -643,7 +734,7 @@ function module.options:Load()
 		end
 	end)
 	
-	self.TabViewOptions = ELib:OneTab(self):Size(648,105):Point("TOP",0,-135)
+	self.TabViewOptions = ELib:OneTab(self):Size(648,130):Point("TOP",0,-135)
 	
 	self.chkEnable1 = ELib:Check(self.TabViewOptions,L.marksbarshowmarks,VExRT.MarksBar.Show[1]):Point(5,-5):OnClick(function(self)
 		if self:GetChecked() then
@@ -715,8 +806,17 @@ function module.options:Load()
 		end
 		modifymarkbars()
 	end)
+
+	self.chkEnable5 = ELib:Check(self.TabViewOptions,L.raidcheck,VExRT.MarksBar.Show[5]):Point(5,-105):OnClick(function(self)
+		if self:GetChecked() then
+			VExRT.MarksBar.Show[5]=true
+		else
+			VExRT.MarksBar.Show[5]=nil
+		end
+		modifymarkbars()
+	end)
 	
-	self.SliderScale = ELib:Slider(self,L.marksbarscale):Size(640):Point("TOP",0,-290):Range(5,200):SetTo(VExRT.MarksBar.Scale or 100):OnChange(function(self,event) 
+	self.SliderScale = ELib:Slider(self,L.marksbarscale):Size(640):Point("TOP",0,-315):Range(5,200):SetTo(VExRT.MarksBar.Scale or 100):OnChange(function(self,event) 
 		event = event - event%1
 		VExRT.MarksBar.Scale = event
 		ExRT.F.SetScaleFix(module.frame,event/100)
@@ -724,7 +824,7 @@ function module.options:Load()
 		self:tooltipReload(self)
 	end)
 	
-	self.SliderAlpha = ELib:Slider(self,L.marksbaralpha):Size(640):Point("TOP",0,-320):Range(0,100):SetTo(VExRT.MarksBar.Alpha or 100):OnChange(function(self,event) 
+	self.SliderAlpha = ELib:Slider(self,L.marksbaralpha):Size(640):Point("TOP",0,-345):Range(0,100):SetTo(VExRT.MarksBar.Alpha or 100):OnChange(function(self,event) 
 		event = event - event%1
 		VExRT.MarksBar.Alpha = event
 		module.frame:SetAlpha(event/100)
@@ -733,13 +833,13 @@ function module.options:Load()
 	end)
 	
 	
-	self.htmlTimer = ELib:Text(self,L.marksbartmr,11):Size(150,20):Point(5,-250)
+	self.htmlTimer = ELib:Text(self,L.marksbartmr,11):Size(150,20):Point(5,-275)
 
-	self.editBoxTimer = ELib:Edit(self,6,true):Size(120,20):Point(145,-250):Text(VExRT.MarksBar.pulltimer or "10"):OnChange(function(self)
+	self.editBoxTimer = ELib:Edit(self,6,true):Size(120,20):Point(145,-275):Text(VExRT.MarksBar.pulltimer or "10"):OnChange(function(self)
 		VExRT.MarksBar.pulltimer = tonumber(self:GetText()) or 10
 	end)  
 	
-	self.frameStrataDropDown = ELib:DropDown(self,275,8):Point(5,-350):Size(260):SetText(L.S_Strata)
+	self.frameStrataDropDown = ELib:DropDown(self,275,8):Point(5,-375):Size(260):SetText(L.S_Strata)
 	local function FrameStrataDropDown_SetVaule(_,arg)
 		VExRT.MarksBar.Strata = arg
 		ELib:DropDownClose()
@@ -758,7 +858,7 @@ function module.options:Load()
 		}
 	end
 	
-	self.ButtonToCenter = ELib:Button(self,L.MarksBarResetPos):Size(260,22):Point(5,-375):Tooltip(L.MarksBarResetPosTooltip):OnClick(function()
+	self.ButtonToCenter = ELib:Button(self,L.MarksBarResetPos):Size(260,22):Point(5,-400):Tooltip(L.MarksBarResetPosTooltip):OnClick(function()
 		VExRT.MarksBar.Left = nil
 		VExRT.MarksBar.Top = nil
 
@@ -766,7 +866,7 @@ function module.options:Load()
 		module.frame:SetPoint("CENTER",UIParent, "CENTER", 0, 0)
 	end) 
 	
-	self.shtml1 = ELib:Text(self,L.MarksBarHelp,12):Size(650,200):Point(5,-405):Top()
+	self.shtml1 = ELib:Text(self,L.MarksBarHelp,12):Size(650,200):Point(5,-430):Top()
 end
 
 function module.main:ADDON_LOADED()
@@ -778,7 +878,7 @@ function module.main:ADDON_LOADED()
 		module.frame:SetPoint("TOPLEFT",UIParent,"BOTTOMLEFT",VExRT.MarksBar.Left,VExRT.MarksBar.Top)
 	end
 
-	VExRT.MarksBar.Show = VExRT.MarksBar.Show or {true,true,true,true}
+	VExRT.MarksBar.Show = VExRT.MarksBar.Show or {true,true,true,true,true}
 
 	modifymarkbars()
 

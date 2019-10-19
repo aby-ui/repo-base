@@ -3,8 +3,9 @@
 --------------------------------------------------------------------------
 --[[
 GTFO Fail List - Wrath of the Lich King
-Author: Zensunim of Malygos
 ]]--
+
+if (not GTFO.ClassicMode) then
 
 GTFO.SpellID["63987"] = {
   --desc = "Trespasser!";
@@ -823,3 +824,5 @@ GTFO.SpellID["73805"] = {
 	--desc = "Explosion (Lich King - ICC 25H)";
 	sound = 3;
 };
+
+end

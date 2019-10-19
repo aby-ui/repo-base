@@ -8,6 +8,10 @@ local ELib,L = ExRT.lib,ExRT.L
 module.db.minRaidMapID = 1520
 module.db.minPartyMapID = 1456
 
+module.db.mapsToLog = not ExRT.isClassic and {} or {
+	[249] = true,
+}
+
 function module.options:Load()
 	self:CreateTilte()
 
@@ -113,6 +117,8 @@ local function GetCurrentMapForLogging()
 			else
 				return false
 			end
+		elseif mapID and module.db.mapsToLog[mapID] then
+			return true 
 		elseif ExRT.isClassic and zoneType == 'raid' then
 			return true 
 		elseif zoneType == 'raid' and (tonumber(mapID) and mapID >= module.db.minRaidMapID) and ((difficulty == 16 and not VExRT.Logging.disableMythic) or (difficulty == 15 and not VExRT.Logging.disableHeroic) or (difficulty == 14 and not VExRT.Logging.disableNormal) or (difficulty ~= 14 and difficulty ~= 15 and difficulty ~= 16)) then

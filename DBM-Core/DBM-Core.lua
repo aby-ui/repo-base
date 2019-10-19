@@ -68,9 +68,9 @@ local function showRealDate(curseDate)
 end
 
 DBM = {
-	Revision = parseCurseDate("20191013204412"),
-	DisplayVersion = "8.2.23", -- the string that is shown as version
-	ReleaseRevision = releaseDate(2019, 10, 10) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+	Revision = parseCurseDate("20191019005322"),
+	DisplayVersion = "8.2.25 alpha", -- the string that is shown as version
+	ReleaseRevision = releaseDate(2019, 10, 16) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 }
 DBM.HighestRelease = DBM.ReleaseRevision --Updated if newer version is detected, used by update nags to reflect critical fixes user is missing on boss pulls
 
@@ -564,39 +564,28 @@ local function removeEntry(t, val)
 	return existed
 end
 
+--Whisper/Whisper Sync filter function
 local function checkForSafeSender(sender, checkFriends, checkGuild, filterRaid, isRealIdMessage)
 	if checkFriends then
 		--Check Battle.net friends
 		if isRealIdMessage then
-			--Then sender is already presence ID, we only need to check ONE bnet friend
-			local accountInfo = C_BattleNet.GetAccountInfoByID(sender)
-			if accountInfo then
-				local presenceID = accountInfo.bnetAccountID
-				--Check if it's a bnet friend sending a bnet whisper
-				if presenceID and presenceID == sender then
-					return true
-				end
-				--Check if it's a bnet friend sending a non bnet whisper
-				if accountInfo.gameAccountInfo then--game account info means they are logged into a bnet game
+			if filterRaid then
+				--Since filterRaid is true, we need to get tooninfo to see if they are in raid
+				local accountInfo = C_BattleNet.GetAccountInfoByID(sender)
+				if accountInfo and accountInfo.gameAccountInfo then--game account info means they are logged into a bnet game
 					local toonName, client = accountInfo.gameAccountInfo.characterName, accountInfo.gameAccountInfo.clientProgram or ""
-					if toonName and client == BNET_CLIENT_WOW then--Check if toon name exists and if client is wow. If yes to both, we found right client
-						if toonName == sender then--Now simply see if this is sender
-							if filterRaid and DBM:GetRaidUnitId(toonName) then--Person is in raid group and filter raid enabled
-								return false--just set sender as unsafe
-							else
-								return true
-							end
-						end
+					if toonName and client == BNET_CLIENT_WOW and DBM:GetRaidUnitId(toonName) then--Check if toon name exists and if client is wow and if toonName is in raid.
+						return false--just set sender as unsafe
 					end
 				end
 			end
-		else
+			return true--Basically, if not trying to filter someone who's in raid with us, always return true. Non friends can't send realid/battle.net messages
+		else--Non battle.net message
 			--We still need to see if it's a bnet friend, even if it's not a realID message, just have to iterate over entire friendslist to find matching toonname
 			local _, numBNetOnline = BNGetNumFriends()
 			for i = 1, numBNetOnline do
 				local accountInfo = C_BattleNet.GetFriendAccountInfo(i)
 				if accountInfo and accountInfo.gameAccountInfo then
-					local presenceID = accountInfo.bnetAccountID
 					local toonName, client = accountInfo.gameAccountInfo.characterName, accountInfo.gameAccountInfo.clientProgram or ""
 					--Check if it's a bnet friend sending a non bnet whisper
 					if toonName and client == BNET_CLIENT_WOW then--Check if toon name exists and if client is wow. If yes to both, we found right client
@@ -2602,6 +2591,10 @@ do
 		end
 		if GetAddOnEnableState(playerName, "DPMCore") >= 1 then
 			self:AddMsg(DBM_CORE_DPMCORE)
+			return
+		end
+		if GetAddOnEnableState(playerName, "DBM-VictorySound") >= 1 then
+			self:AddMsg(DBM_CORE_VICTORYSOUND)
 			return
 		end
 		if not dbmIsEnabled then
@@ -5328,6 +5321,7 @@ do
 		if not checkEntry(inCombat, mob) then
 			buildTargetList()
 			if targetList[mob] then
+				if mod.noFriendlyEngagement and UnitIsFriend("player", targetList[mob]) then return end
 				if delay > 0 and UnitAffectingCombat(targetList[mob]) and not (UnitPlayerOrPetInRaid(targetList[mob]) or UnitPlayerOrPetInParty(targetList[mob])) then
 					DBM:StartCombat(mod, delay, "PLAYER_REGEN_DISABLED")
 				elseif (delay == 0) then
@@ -5971,6 +5965,7 @@ do
 				if combatInfo[LastInstanceMapID] then
 					for i, v in ipairs(combatInfo[LastInstanceMapID]) do
 						if v.mod.Options.Enabled and not v.mod.disableHealthCombat and v.type:find("combat") and (v.multiMobPullDetection and checkEntry(v.multiMobPullDetection, cId) or v.mob == cId) then
+							if v.mod.noFriendlyEngagement and UnitIsFriend("player", uId) then return end
 							-- Delay set, > 97% = 0.5 (consider as normal pulling), max dealy limited to 20s.
 							self:StartCombat(v.mod, health > 97 and 0.5 or mmin(GetTime() - lastCombatStarted, 20), "UNIT_HEALTH", nil, health)
 						end
@@ -11202,6 +11197,9 @@ function bossModPrototype:RegisterCombat(cType, ...)
 	if self.noEEDetection then
 		info.noEEDetection = self.noEEDetection
 	end
+	if self.noFriendlyEngagement then
+		info.noFriendlyEngagement = self.noFriendlyEngagement
+	end
 	if self.noRegenDetection then
 		info.noRegenDetection = self.noRegenDetection
 	end
@@ -11302,6 +11300,13 @@ function bossModPrototype:DisableEEKillDetection()
 	self.noEEDetection = true
 	if self.combatInfo then
 		self.combatInfo.noEEDetection = true
+	end
+end
+
+function bossModPrototype:DisableFriendlyDetection()
+	self.noFriendlyEngagement = true
+	if self.combatInfo then
+		self.combatInfo.noFriendlyEngagement = true
 	end
 end
 

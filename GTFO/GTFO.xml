@@ -7,8 +7,10 @@
   <Script file="GTFO_PowerAuras.lua" />
   <Script file="GTFO_WeakAuras.lua" />
   <Script file="GTFO.lua" />
-	<Script file="GTFO_Ignore.lua" />
-  <Script file="GTFO_Spells_Generic.lua" />
+  <Script file="GTFO_Ignore.lua" />
+  <Script file="GTFO_Spells_GenericRetail.lua" />
+  <Script file="GTFO_Spells_GenericClassic.lua" />
+  <Script file="GTFO_Spells_Vanilla.lua" />
   <Script file="GTFO_Spells_Classic.lua" />
   <Script file="GTFO_Spells_BC.lua" />
   <Script file="GTFO_Spells_LK.lua" />
@@ -18,7 +20,9 @@
   <Script file="GTFO_Spells_LGN.lua" />
   <Script file="GTFO_Spells_BFA.lua" />
   <Script file="GTFO_Spells_Special.lua" />
-  <Script file="GTFO_Fail_Generic.lua" />
+  <Script file="GTFO_Fail_GenericRetail.lua" />
+  <Script file="GTFO_Fail_GenericClassic.lua" />
+  <Script file="GTFO_Fail_Vanilla.lua" />
   <Script file="GTFO_Fail_Classic.lua" />
   <Script file="GTFO_Fail_BC.lua" />
   <Script file="GTFO_Fail_LK.lua" />

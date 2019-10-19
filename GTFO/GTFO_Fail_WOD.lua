@@ -3,8 +3,9 @@
 --------------------------------------------------------------------------
 --[[
 GTFO Fail List - Warlords of Draenor
-Author: Zensunim of Malygos
 ]]--
+
+if (not GTFO.ClassicMode) then
 
 -- ***********
 -- * Draenor *
@@ -1232,3 +1233,5 @@ GTFO.SpellID["184422"] = {
 	test = true;
 	applicationOnly = true;
 };
+
+end

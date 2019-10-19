@@ -3,8 +3,9 @@
 --------------------------------------------------------------------------
 --[[
 GTFO Friendly Fire List - Wrath of the Lich King
-Author: Zensunim of Malygos
 ]]--
+
+if (not GTFO.ClassicMode) then
 
 GTFO.FFSpellID["71447"] = {
 	--desc = "Bloodbolt Splash (Blood Queen Lana'thel - 10)";
@@ -35,3 +36,5 @@ GTFO.SpellID["71046"] = {
 	--desc = "Backlash (Sindragosa - 25H)";
 	sound = 1;
 };
+
+end

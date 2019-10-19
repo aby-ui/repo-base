@@ -3,8 +3,9 @@
 --------------------------------------------------------------------------
 --[[
 GTFO Friendly Fire List - Warlords of Draenor
-Author: Zensunim of Malygos
 ]]--
+
+if (not GTFO.ClassicMode) then
 
 -- *********************
 -- * Blackrock Foundry *
@@ -45,3 +46,5 @@ GTFO.SpellID["187632"] = {
 	sound = 3;
 	ignoreSelfInflicted = true;
 };
+
+end

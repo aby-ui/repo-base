@@ -3,7 +3,7 @@
 --------------------------------------------------------------------------
 --[[
 GTFO & Power Auras Integration
-Author: Zensunim of Malygos, Smacker
+Author: Zensunim of Dragonblight, Smacker
 
 Change Log:
 	v2.1

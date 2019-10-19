@@ -137,8 +137,7 @@ If the animation's duration is set to |cFF00CC0010%|r, and the display's trigger
 	L["Bracket Matching"] = "括號配對符合"
 	L["Button Glow"] = "按鈕發光"
 	L["Can be a Name or a Unit ID (e.g. party1). A name only works on friendly players in your group."] = "可以是名字或單位 ID (例如 party1)。只有同隊伍中的友方玩家才能使用名字。"
-	--[[Translation missing --]]
-	L["Can be a UID (e.g., party1)."] = "Can be a UID (e.g., party1)."
+	L["Can be a UID (e.g., party1)."] = "可以是單位 ID (例如 party1) 。"
 	L["Cancel"] = "取消"
 	L["Center"] = "中"
 	L["Channel Number"] = "頻道編號"
@@ -434,6 +433,7 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	L["None"] = "無"
 	L["Not all children have the same value for this option"] = "並非所有子項目的這個設定都使用相同的數值"
 	L["Not Loaded"] = "未載入"
+	L["Note: Automated Messages to SAY and YELL are blocked outside of Instances."] = "注意：自動說與大喊的訊息在副本外是會被阻擋的。"
 	L["Number of Entries"] = "項目數量"
 	L["Offer a guided way to create auras for your character"] = "用步驟導引的方式替角色建立提醒效果"
 	L["Okay"] = "確認"

@@ -3,7 +3,7 @@
 --------------------------------------------------------------------------
 --[[
 GTFO
-Author: Zensunim of Dragonblight
+Author: Zensunim of Dragonblight [Retail], Myzrael [Classic]
 
 Usage: /GTFO or go to Interface->Add-ons->GTFO
 ]]--
@@ -23,15 +23,15 @@ GTFO = {
 		TrivialDamagePercent = 2; -- Minimum % of HP lost required for an alert to be trivial
 		SoundOverrides = { }; -- Override table for GTFO sounds
 	};
-	Version = "4.49.4"; -- Version number (text format)
-	VersionNumber = 44904; -- Numeric version number for checking out-of-date clients
+	Version = "4.51"; -- Version number (text format)
+	VersionNumber = 45100; -- Numeric version number for checking out-of-date clients
 	DataLogging = nil; -- Indicate whether or not the addon needs to run the datalogging function (for hooking)
 	DataCode = "4"; -- Saved Variable versioning, change this value to force a reset to default
 	CanTank = nil; -- The active character is capable of tanking
 	CanCast = nil; -- The active character is capable of casting
 	TankMode = nil; -- The active character is a tank
 	CasterMode = nil; -- The active character is a caster
-	SpellName = { }; -- List of spells (legacy placeholder, not supported)
+	SpellName = { }; -- List of spells (for Classic only since Spell IDs are not available in the combat log)
 	SpellID = { }; -- List of spell IDs
 	FFSpellID = { }; -- List of friendly fire spell IDs
 	IgnoreSpellCategory = { }; -- List of spell groups to ignore
@@ -233,6 +233,11 @@ function GTFO_OnEvent(self, event, ...)
 		GTFO.TankMode = GTFO_CheckTankMode();
 		GTFO.CasterMode = GTFO_CheckCasterMode();
 		GTFO_SendUpdateRequest();
+		
+		if (GTFO.ClassicMode) then
+			GTFO_ScanSpells();
+		end
+		
 		return;
 	end
 	if (event == "COMBAT_LOG_EVENT_UNFILTERED") then
@@ -270,7 +275,13 @@ function GTFO_OnEvent(self, event, ...)
 						local SpellID = tonumber(misc1);
 						local SpellName = tostring(misc2);
 						local SpellSourceGUID = tostring(sourceGUID);
-						SpellID = tostring(SpellID);
+						
+						if (GTFO.ClassicMode) then
+							SpellID = tostring(GTFO.SpellName[SpellName] or SpellID or 0)
+						else
+							SpellID = tostring(SpellID);
+						end
+						
 						--GTFO_ScanPrint(SpellType.." - "..SpellID.." - "..SpellName.." - "..SpellSourceName.." ("..GTFO_GetMobId(sourceGUID)..") >"..tostring(destName));
 						if (GTFO.FFSpellID[SpellID]) then
 							-- Friendly fire alerts
@@ -369,8 +380,12 @@ function GTFO_OnEvent(self, event, ...)
 				SpellID = 17086;
 			end
 			
-			SpellID = tostring(SpellID);
-
+			if (GTFO.ClassicMode) then
+				SpellID = tostring(GTFO.SpellName[SpellName] or SpellID or 0)
+			else
+				SpellID = tostring(SpellID);
+			end
+						
 			if (GTFO.Settings.ScanMode and not GTFO.IgnoreScan[SpellID]) then
 				if (vehicle) then
 					GTFO_ScanPrint("V: "..SpellType.." - "..SpellID.." - "..GetSpellLink(SpellID).." - "..SpellSourceName.." ("..GTFO_GetMobId(sourceGUID)..") >"..tostring(destName));
@@ -381,7 +396,11 @@ function GTFO_OnEvent(self, event, ...)
 					else
 						GTFO_ScanPrint(SpellType.." - "..SpellID.." - "..GetSpellLink(SpellID).." - "..SpellSourceName.." ("..GTFO_GetMobId(sourceGUID)..") >"..tostring(destName).." for "..tostring(misc4));
 					end
-					GTFO_SpellScan(SpellID, SpellSourceName, tostring(misc4));
+					if (GTFO.ClassicMode) then
+						GTFO_SpellScanName(SpellName, SpellSourceName, tostring(misc4));
+					else
+						GTFO_SpellScan(SpellID, SpellSourceName, tostring(misc4));
+					end
 				end
 			end
 			if (GTFO.SpellID[SpellID]) then
@@ -1897,6 +1916,26 @@ function GTFO_SpellScan(spellId, spellOrigin, spellDamage)
 	end
 end
 
+function GTFO_SpellScanName(spellName, spellOrigin, spellDamage)
+	if (GTFO.Settings.ScanMode) then
+		local damage = tonumber(spellDamage) or 0;
+		if not (GTFO.Scans[spellName] or GTFO.SpellName[spellName] or GTFO.IgnoreScan[spellName]) then
+			GTFO.Scans[spellName] = {
+				TimeAdded = GetTime();
+				Times = 1;
+				SpellID = 0;
+				SpellName = spellName;
+				SpellOrigin = tostring(spellOrigin);
+				IsDebuff = (spellDamage == "DEBUFF");
+				Damage = damage;
+			};
+		elseif (GTFO.Scans[spellName]) then
+			GTFO.Scans[spellName].Times = GTFO.Scans[spellName].Times + 1;
+			GTFO.Scans[spellName].Damage = GTFO.Scans[spellName].Damage + damage;
+		end
+	end
+end
+
 function GTFO_Command_Data()
 	if (next(GTFO.Scans) == nil) then
 		GTFO_ErrorPrint("No scan data available.");
@@ -1945,4 +1984,20 @@ end
 function GTFO_Command_ClearData()
 	GTFO.Scans = { };
 	return;
+end
+
+function GTFO_ScanSpells()
+	GTFO.SpellName = { };
+	for spellId, record in pairs(GTFO.SpellID) do
+		local spellName = GetSpellInfo(spellId);
+		if (spellName or "" ~= "") then
+			if (GTFO.SpellName[spellName] ~= nil) then
+			GTFO_ErrorPrint("Duplicate spell "..spellName.." from ID #"..tostring(spellId));
+			else
+				GTFO.SpellName[spellName] = spellId;
+			end
+		else
+			GTFO_ErrorPrint("Unknown or invalid spell ID #"..tostring(spellId));
+		end
+	end		
 end

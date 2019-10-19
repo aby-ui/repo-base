@@ -1,10 +1,11 @@
 --------------------------------------------------------------------------
--- GTFO_Fail_Generic.lua 
+-- GTFO_Fail_Vanilla.lua 
 --------------------------------------------------------------------------
 --[[
-GTFO Fail List - Generic
-Author: Zensunim of Malygos
+GTFO Fail List - Vanilla
 ]]--
+
+if (not GTFO.ClassicMode) then
 
 GTFO.SpellID["82691"] = {
 	--desc = "Ring of Frost (PvP)";
@@ -188,3 +189,6 @@ GTFO.SpellID["79860"] = {
 		65444, -- Captain Mousson, Theramore's Fall
 	};
 };
+
+
+end
