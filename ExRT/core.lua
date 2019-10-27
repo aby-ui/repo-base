@@ -1,43 +1,8 @@
---	17.10.2019
+--	26.10.2019
 
---[[
-4040
-* Raid Cooldowns: Fixed Vision of perfection essence
-* Timers: Added new skin
-* Fight log: fixed The Queen's Court encounter healing
-* Invite tools: guild ranks for mass invite can be selected manually
-* Classic: fixed bug with game talents tab
-* Raid Inspect: added new ench/gems
-* WeakAuras checks: added filter
-* Minor fixes
-
-4060
-* 8.2.5 toc update
-
-4055-Classic
-* Readded Loot link module
-* Fixed mass invite
-* Fixed "Out of range" error for inspect module
-
-4060-Classic
-* Minor fixes
-
-4080
-* Raid Check: reworked ready check frame
-* Raid Check: added option for ready check frame only for raid leaders
-* Raid Check: ready check frame option switched to enabled for raid leaders
-* Marks Bar: added raid check button
-* Minor fixes
-
-4080-Classic
-* Raid Check: Readded module
-* Marks Bar: added raid check button
-* Minor fixes
-
-]]
 local GlobalAddonName, ExRT = ...
 
-ExRT.V = 4080
+ExRT.V = 4101
 ExRT.T = "R"
 
 ExRT.OnUpdate = {}		--> таймеры, OnUpdate функции

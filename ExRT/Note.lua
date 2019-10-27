@@ -1307,14 +1307,11 @@ module.frame:SetScript("OnSizeChanged", function (self, width, height)
 end)
 module.frame:Hide() 
 
-module.frame:SetScript("OnUpdate",function(self,elapsed)
-	if elapsed > .3 then
-		return
-	end
+ELib:FixPreloadFont(module.frame,function() 
 	if VExRT then
 		module.frame.text:SetFont(GameFontWhite:GetFont(),11)
-		module.frame:UpdateFont()
-		self:SetScript("OnUpdate",nil)
+		module.frame:UpdateFont() 
+		return true
 	end
 end)
 

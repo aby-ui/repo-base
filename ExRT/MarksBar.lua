@@ -182,14 +182,7 @@ module.frame.start.html:SetJustifyH("CENTER")
 module.frame.start.html:SetText(L.marksbarstart)
 module.frame.start.html:SetShadowOffset(1,-1)
 
-module.frame.start:SetScript("OnUpdate",function(self,elapsed)
-	if elapsed > .3 then
-		return
-	end
-	self.html:SetFont(GameFontWhite:GetFont(), 8)
-	self.html:SetFont(ExRT.F.defFont, 10)
-	self:SetScript("OnUpdate",nil)
-end)
+ELib:FixPreloadFont(module.frame.start,module.frame.start.html,ExRT.F.defFont, 10)
 
 module.frame.del = CreateFrame("Button",nil,module.frame)
 module.frame.del:SetBackdrop({bgFile = ExRT.F.barImg,edgeFile = ExRT.F.defBorder,tile = false,edgeSize = 6})
@@ -220,14 +213,8 @@ module.frame.del.html:SetJustifyH("CENTER")
 module.frame.del.html:SetText(L.marksbardel)
 module.frame.del.html:SetShadowOffset(1,-1)
 
-module.frame.del:SetScript("OnUpdate",function(self,elapsed)
-	if elapsed > .3 then
-		return
-	end
-	self.html:SetFont(GameFontWhite:GetFont(), 8)
-	self.html:SetFont(ExRT.F.defFont, 10)
-	self:SetScript("OnUpdate",nil)
-end)
+ELib:FixPreloadFont(module.frame.del,module.frame.del.html,ExRT.F.defFont, 10)
+
 
 module.frame.edges[3] = CreateEdge(3,383)
 
@@ -351,14 +338,7 @@ module.frame.readyCheck.html:SetJustifyH("CENTER")
 module.frame.readyCheck.html:SetText(L.marksbarrc)
 module.frame.readyCheck.html:SetShadowOffset(1,-1)
 
-module.frame.readyCheck:SetScript("OnUpdate",function(self,elapsed)
-	if elapsed > .3 then
-		return
-	end
-	self.html:SetFont(GameFontWhite:GetFont(), 8)
-	self.html:SetFont(ExRT.F.defFont, 10)
-	self:SetScript("OnUpdate",nil)
-end)
+ELib:FixPreloadFont(module.frame.readyCheck,module.frame.readyCheck.html,ExRT.F.defFont, 10)
 
 module.frame.pull = CreateFrame("Button",nil,module.frame)
 module.frame.pull:SetSize(40,12)
@@ -383,14 +363,7 @@ module.frame.pull.html:SetJustifyH("CENTER")
 module.frame.pull.html:SetText(L.marksbarpull)
 module.frame.pull.html:SetShadowOffset(1,-1)
 
-module.frame.pull:SetScript("OnUpdate",function(self,elapsed)
-	if elapsed > .3 then
-		return
-	end
-	self.html:SetFont(GameFontWhite:GetFont(), 8)
-	self.html:SetFont(ExRT.F.defFont, 10)
-	self:SetScript("OnUpdate",nil)
-end)
+ELib:FixPreloadFont(module.frame.pull,module.frame.pull.html,ExRT.F.defFont, 10)
 
 do
 	local markbuts_backdrop = {bgFile = ExRT.F.barImg,edgeFile = ExRT.F.defBorder,tile = false,edgeSize = 8}
@@ -408,7 +381,7 @@ do
 	frame.but:SetSize(20,20)
 	frame.but:SetPoint("TOPLEFT",  3, -3)
 	frame.but.t = frame.but:CreateTexture(nil, "BACKGROUND")
-	frame.but.t:SetTexture(609902)
+	frame.but.t:SetTexture(ExRT.isClassic and 134833 or 609902)
 	frame.but.t:SetPoint("TOPLEFT",-1,1)
 	frame.but.t:SetPoint("BOTTOMRIGHT",1,-1)
 	frame.but.t:SetTexCoord(.1,.9,.1,.9)

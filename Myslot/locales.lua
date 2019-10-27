@@ -81,8 +81,7 @@ L["Feedback"] = "Rückmeldung"
 --[[ L["Importing text [ver:%s] is not compatible with current version"] = "Importing text [ver:%s] is not compatible with current version"--]] 
 --[[Translation missing --]]
 --[[ L["Keys Binding"] = "Keys Binding"--]] 
---[[Translation missing --]]
---[[ L["Macro"] = "Macro"--]] 
+L["Macro"] = "Makro"
 --[[Translation missing --]]
 --[[ L["Macro %s was ignored, check if there is enough space to create"] = "Macro %s was ignored, check if there is enough space to create"--]] 
 --[[Translation missing --]]
@@ -370,8 +369,7 @@ elseif locale == 'koKR' then
 --[[ L["Importing text [ver:%s] is not compatible with current version"] = "Importing text [ver:%s] is not compatible with current version"--]] 
 --[[Translation missing --]]
 --[[ L["Keys Binding"] = "Keys Binding"--]] 
---[[Translation missing --]]
---[[ L["Macro"] = "Macro"--]] 
+L["Macro"] = "매크로"
 --[[Translation missing --]]
 --[[ L["Macro %s was ignored, check if there is enough space to create"] = "Macro %s was ignored, check if there is enough space to create"--]] 
 --[[Translation missing --]]

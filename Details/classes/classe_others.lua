@@ -26,6 +26,8 @@ local _UnitAura = UnitAura
 local _UnitGUID = UnitGUID
 local _UnitName = UnitName
 
+local UnitIsUnit = UnitIsUnit
+
 local _string_replace = _detalhes.string.replace --details api
 
 local _detalhes = 		_G._detalhes
@@ -1297,10 +1299,12 @@ function _detalhes:CatchRaidDebuffUptime (in_or_out) -- "DEBUFF_UPTIME_IN"
 						if (name and unitCaster) then
 							local playerGUID = _UnitGUID (unitCaster)
 							if (playerGUID) then
+
 								local playerName, realmName = _UnitName (unitCaster)
 								if (realmName and realmName ~= "") then
 									playerName = playerName .. "-" .. realmName
 								end
+
 								_detalhes.parser:add_debuff_uptime (nil, cacheGetTime, playerGUID, playerName, 0x00000417, his_target, _UnitName (target), 0x842, nil, spellid, name, in_or_out)
 							end
 						end
@@ -1378,12 +1382,14 @@ function _detalhes:CatchRaidDebuffUptime (in_or_out) -- "DEBUFF_UPTIME_IN"
 	end
 end
 
+--> this shouldn't be hardcoded
 local runes_id = {
 	[175457] = true, -- focus
 	[175456] = true, --hyper
 	[175439] = true, --stout
 }
 
+--called from control on leave / enter combat
 function _detalhes:CatchRaidBuffUptime (in_or_out)
 
 	if (_IsInRaid()) then
@@ -1407,11 +1413,13 @@ function _detalhes:CatchRaidBuffUptime (in_or_out)
 			
 				for buffIndex = 1, 41 do
 					local name, _, _, _, _, _, unitCaster, _, _, spellid  = _UnitAura (RaidIndex, buffIndex, nil, "HELPFUL")
-					if (name and unitCaster == RaidIndex) then
+					if (name and unitCaster and UnitExists (unitCaster) and UnitExists (RaidIndex) and UnitIsUnit (unitCaster, RaidIndex)) then
 						_detalhes.parser:add_buff_uptime (nil, cacheGetTime, playerGUID, playerName, 0x00000514, playerGUID, playerName, 0x00000514, 0x0, spellid, name, in_or_out)
+
 						if (in_or_out == "BUFF_UPTIME_IN") then
 							if (_detalhes.PotionList [spellid]) then
 								pot_usage [playerName] = spellid
+
 							elseif (runes_id [spellid]) then
 								focus_augmentation [playerName] = true
 							end
@@ -1420,59 +1428,7 @@ function _detalhes:CatchRaidBuffUptime (in_or_out)
 				end
 			end
 		end
-		
---		/run print (GetNumSubgroupMembers());for i=1,GetNumSubgroupMembers()do print (UnitName("party"..i))end
-		
-		--> player sub group
-		for partyIndex = 1, _GetNumSubgroupMembers() do
-			local PartyIndex = "party" .. partyIndex
-			local playerGUID = _UnitGUID (PartyIndex)
-			
-			if (playerGUID) then
-			
-				local playerName, realmName = _UnitName (PartyIndex)
-				if (realmName and realmName ~= "") then
-					playerName = playerName .. "-" .. realmName
-				end
-			
-				for buffIndex = 1, 41 do
-					local name, _, _, _, _, _, unitCaster, _, _, spellid  = _UnitAura (PartyIndex, buffIndex, nil, "HELPFUL")
-					if (name and unitCaster == PartyIndex) then
-						_detalhes.parser:add_buff_uptime (nil, cacheGetTime, playerGUID, playerName, 0x00000514, playerGUID, playerName, 0x00000514, 0x0, spellid, name, in_or_out)
-						
-						if (in_or_out == "BUFF_UPTIME_IN") then
-							if (_detalhes.PotionList [spellid]) then
-								pot_usage [playerName] = spellid
-							elseif (runes_id [spellid]) then
-								focus_augmentation [playerName] = true
-							end
-						end
-					end
-				end
-			end
-		end
-		
-		--> unitCaster return player instead of raidIndex
-		for buffIndex = 1, 41 do
-			local name, _, _, _, _, _, unitCaster, _, _, spellid  = _UnitAura ("player", buffIndex, nil, "HELPFUL")
-			if (name and unitCaster == "player") then
-				local playerName = _UnitName ("player")
-				local playerGUID = _UnitGUID ("player")
-				
-				if (playerGUID) then
-					if (in_or_out == "BUFF_UPTIME_IN") then
-						if (_detalhes.PotionList [spellid]) then
-							pot_usage [playerName] = spellid
-						elseif (runes_id [spellid]) then
-							focus_augmentation [playerName] = true
-						end
-					end
-					
-					_detalhes.parser:add_buff_uptime (nil, cacheGetTime, playerGUID, playerName, 0x00000514, playerGUID, playerName, 0x00000514, 0x0, spellid, name, in_or_out)
-				end
-			end
-		end
-		
+
 		if (in_or_out == "BUFF_UPTIME_IN") then
 			local string_output = "pre-potion: " --> localize-me
 
@@ -1496,10 +1452,11 @@ function _detalhes:CatchRaidBuffUptime (in_or_out)
 		local pot_usage = {}
 		local focus_augmentation = {}
 		
-		for groupIndex = 1, _GetNumGroupMembers()-1 do 
+		--party members
+		for groupIndex = 1, _GetNumGroupMembers() - 1 do
 			for buffIndex = 1, 41 do
 				local name, _, _, _, _, _, unitCaster, _, _, spellid  = _UnitAura ("party"..groupIndex, buffIndex, nil, "HELPFUL")
-				if (name and unitCaster == "party"..groupIndex) then
+				if (name and unitCaster and UnitExists (unitCaster) and UnitExists ("party" .. groupIndex) and UnitIsUnit (unitCaster, "party" .. groupIndex)) then
 				
 					local playerName, realmName = _UnitName ("party"..groupIndex)
 					local playerGUID = _UnitGUID ("party"..groupIndex)
@@ -1512,6 +1469,7 @@ function _detalhes:CatchRaidBuffUptime (in_or_out)
 						if (in_or_out == "BUFF_UPTIME_IN") then
 							if (_detalhes.PotionList [spellid]) then
 								pot_usage [playerName] = spellid
+
 							elseif (runes_id [spellid]) then
 								focus_augmentation [playerName] = true
 							end
@@ -1523,9 +1481,10 @@ function _detalhes:CatchRaidBuffUptime (in_or_out)
 			end
 		end
 		
+		--player it self
 		for buffIndex = 1, 41 do
 			local name, _, _, _, _, _, unitCaster, _, _, spellid  = _UnitAura ("player", buffIndex, nil, "HELPFUL")
-			if (name and unitCaster == "player") then
+			if (name and unitCaster and UnitExists (unitCaster) and UnitIsUnit (unitCaster, "player")) then
 				local playerName = _UnitName ("player")
 				local playerGUID = _UnitGUID ("player")
 				if (playerGUID) then
@@ -1566,7 +1525,7 @@ function _detalhes:CatchRaidBuffUptime (in_or_out)
 		
 		for buffIndex = 1, 41 do
 			local name, _, _, _, _, _, unitCaster, _, _, spellid  = _UnitAura ("player", buffIndex, nil, "HELPFUL")
-			if (name and unitCaster == "player") then
+			if (name and unitCaster and UnitExists (unitCaster) and UnitIsUnit (unitCaster, "player")) then
 				local playerName = _UnitName ("player")
 				local playerGUID = _UnitGUID ("player")
 				

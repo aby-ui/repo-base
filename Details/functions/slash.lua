@@ -825,32 +825,40 @@ function SlashCmdList.DETAILS (msg, editbox)
 		
 		_detalhes:ApplyProfile (profile, false)
 	
-	elseif (msg == "users") then
-		_detalhes.users = {}
+	elseif (msg == "users" or msg == "version" or msg == "versioncheck") then
+		_detalhes.users = {{UnitName("player"), GetRealmName(), (_detalhes.userversion or "") .. " (" .. _detalhes.APIVersion .. ")"}}
 		_detalhes.sent_highfive = GetTime()
 		_detalhes:SendRaidData (_detalhes.network.ids.HIGHFIVE_REQUEST)
-		print (Loc ["STRING_DETAILS1"] .. "highfive sent.")
+
+		print (Loc ["STRING_DETAILS1"] .. "highfive sent, HI!")
 	
-	elseif (command == "showusers") then
-		local users = _detalhes.users
-		if (not users) then
-			return _detalhes:Msg ("there is no users.")
-		end
-		
-		local f = _detalhes.ListPanel
-		if (not f) then
-			f = _detalhes:CreateListPanel()
-		end
-		
-		local i = 0
-		for _, t in ipairs (users) do 
-			i = i + 1
-			f:add (t [1] .. " | " .. t [2] .. " | " .. t [3] , i)
-		end
-		
-		print (i, "users found.")
-	
-		f:Show()
+		C_Timer.After (0.3, function()
+			Details.RefreshUserList()
+		end)
+		C_Timer.After (0.6, function()
+			Details.RefreshUserList (true)
+		end)
+		C_Timer.After (0.9, function()
+			Details.RefreshUserList (true)
+		end)
+		C_Timer.After (1.3, function()
+			Details.RefreshUserList (true)
+		end)
+		C_Timer.After (1.6, function()
+			Details.RefreshUserList (true)
+		end)
+		C_Timer.After (3, function()
+			Details.RefreshUserList (true)
+		end)
+		C_Timer.After (4, function()
+			Details.RefreshUserList (true)
+		end)	
+		C_Timer.After (5, function()
+			Details.RefreshUserList (true)
+		end)
+		C_Timer.After (8, function()
+			Details.RefreshUserList (true)
+		end)
 	
 	elseif (command == "names") then
 		local t, filter = rest:match("^(%S*)%s*(.-)$")
@@ -1535,17 +1543,10 @@ Damage Update Status: @INSTANCEDAMAGESTATUS
 			--Interface\Cooldown\star4
 			--efeito de batida?
 			--Interface\Artifacts\ArtifactAnim2
-			
-			
-			
-			local DF = _detalhes.gump
-			
-			local animationHub = DF:CreateAnimationHub (f, function() f:Show() end)
+			local animationHub = DetailsFramework:CreateAnimationHub (f, function() f:Show() end)
 
-			DF:CreateAnimation (animationHub, "Scale", 1, .10, .9, .9, 1.1, 1.1)
-			DF:CreateAnimation (animationHub, "Scale", 2, .10, 1.2, 1.2, 1, 1)
-			
-			
+			DetailsFramework:CreateAnimation (animationHub, "Scale", 1, .10, .9, .9, 1.1, 1.1)
+			DetailsFramework:CreateAnimation (animationHub, "Scale", 2, .10, 1.2, 1.2, 1, 1)
 		end
 	
 	--BFA BETA
@@ -1692,12 +1693,177 @@ Damage Update Status: @INSTANCEDAMAGESTATUS
 	end
 end
 
+function Details.RefreshUserList (ignoreIfHidden)
+
+	if (ignoreIfHidden and DetailsUserPanel and not DetailsUserPanel:IsShown()) then
+		return
+	end
+
+	local newList = DetailsFramework.table.copy ({}, _detalhes.users or {})
+
+	table.sort (newList, function(t1, t2)
+		return t1[3] > t2[3]
+	end)
+
+	--search for people that didn't answered
+	if (IsInRaid()) then
+		for i = 1, GetNumGroupMembers() do
+			local playerName = UnitName ("raid" .. i)
+			local foundPlayer
+
+			for o = 1, #newList do
+				if (newList[o][1]:find (playerName)) then
+					foundPlayer = true
+					break
+				end
+			end
+
+			if (not foundPlayer) then
+				tinsert (newList, {playerName, "--", "--"})
+			end
+		end
+	end
+
+	Details:UpdateUserPanel (newList)
+end
+
+function Details:UpdateUserPanel (usersTable)
+
+	if (not Details.UserPanel) then
+		DetailsUserPanel = DetailsFramework:CreateSimplePanel (UIParent)
+		DetailsUserPanel:SetSize (707, 505)
+		DetailsUserPanel:SetTitle ("Details! Version Check")
+		DetailsUserPanel.Data = {}
+		DetailsUserPanel:ClearAllPoints()
+		DetailsUserPanel:SetPoint ("left", UIParent, "left", 10, 0)
+		DetailsUserPanel:Hide()
+
+		Details.UserPanel = DetailsUserPanel
+		
+		local scroll_width = 675
+		local scroll_height = 450
+		local scroll_lines = 21
+		local scroll_line_height = 20
+		
+		local backdrop_color = {.2, .2, .2, 0.2}
+		local backdrop_color_on_enter = {.8, .8, .8, 0.4}
+		local backdrop_color_is_critical = {.4, .4, .2, 0.2}
+		local backdrop_color_is_critical_on_enter = {1, 1, .8, 0.4}
+		
+		local y = -15
+		local headerY = y - 15
+		local scrollY = headerY - 20
+
+		--header
+		local headerTable = {
+			{text = "User Name", width = 200},
+			{text = "Realm", width = 200},
+			{text = "Version", width = 200},
+		}
+
+		local headerOptions = {
+			padding = 2,
+		}
+		
+		DetailsUserPanel.Header = DetailsFramework:CreateHeader (DetailsUserPanel, headerTable, headerOptions)
+		DetailsUserPanel.Header:SetPoint ("topleft", DetailsUserPanel, "topleft", 5, headerY)
+		
+		local scroll_refresh = function (self, data, offset, total_lines)
+			for i = 1, total_lines do
+				local index = i + offset
+				local userTable = data [index]
+				
+				if (userTable) then
+				
+					local line = self:GetLine (i)
+					local userName, userRealm, userVersion = unpack (userTable)
+
+					line.UserNameText.text = userName
+					line.RealmText.text = userRealm
+					line.VersionText.text = userVersion
+				end
+			end
+		end		
+		
+		local lineOnEnter = function (self)
+			if (self.IsCritical) then
+				self:SetBackdropColor (unpack (backdrop_color_is_critical_on_enter))
+			else
+				self:SetBackdropColor (unpack (backdrop_color_on_enter))
+			end
+		end
+		
+		local lineOnLeave = function (self)
+			if (self.IsCritical) then
+				self:SetBackdropColor (unpack (backdrop_color_is_critical))
+			else
+				self:SetBackdropColor (unpack (backdrop_color))
+			end
+			
+			GameTooltip:Hide()
+		end
+		
+		local scroll_createline = function (self, index)
+			local line = CreateFrame ("button", "$parentLine" .. index, self)
+			line:SetPoint ("topleft", self, "topleft", 3, -((index-1)*(scroll_line_height+1)) - 1)
+			line:SetSize (scroll_width - 2, scroll_line_height)
+			
+			line:SetBackdrop ({bgFile = [[Interface\Tooltips\UI-Tooltip-Background]], tileSize = 64, tile = true})
+			line:SetBackdropColor (unpack (backdrop_color))
+			
+			DetailsFramework:Mixin (line, DetailsFramework.HeaderFunctions)
+			
+			line:SetScript ("OnEnter", lineOnEnter)
+			line:SetScript ("OnLeave", lineOnLeave)
+			
+			--username
+			local userNameText = DetailsFramework:CreateLabel (line)
+			
+			--realm
+			local realmText = DetailsFramework:CreateLabel (line)
+			
+			--version
+			local versionText = DetailsFramework:CreateLabel (line)
+			
+			line:AddFrameToHeaderAlignment (userNameText)
+			line:AddFrameToHeaderAlignment (realmText)
+			line:AddFrameToHeaderAlignment (versionText)
+			
+			line:AlignWithHeader (DetailsUserPanel.Header, "left")
+
+			line.UserNameText = userNameText
+			line.RealmText = realmText
+			line.VersionText = versionText
+
+			return line
+		end
+		
+		local usersScroll = DetailsFramework:CreateScrollBox (DetailsUserPanel, "$parentUsersScroll", scroll_refresh, DetailsUserPanel.Data, scroll_width, scroll_height, scroll_lines, scroll_line_height)
+		DetailsFramework:ReskinSlider (usersScroll)
+		usersScroll:SetPoint ("topleft", DetailsUserPanel, "topleft", 5, scrollY)
+		Details.UserPanel.ScrollBox = usersScroll
+		
+		--create lines
+		for i = 1, scroll_lines do 
+			usersScroll:CreateLine (scroll_createline)
+		end
+		
+		DetailsUserPanel:SetScript ("OnShow", function()
+		end)
+
+		DetailsUserPanel:SetScript ("OnHide", function()
+		end)
+	end
+
+	Details.UserPanel.ScrollBox:SetData (usersTable)
+	Details.UserPanel.ScrollBox:Refresh()
+	DetailsUserPanel:Show()
+end
+
 function _detalhes:CreateListPanel()
 
-	local f = _detalhes.ListPanel
-	if (f) then
-		return f
-	end
+
+
 
 	_detalhes.ListPanel = _detalhes.gump:NewPanel (UIParent, nil, "DetailsActorsFrame", nil, 300, 600)
 	_detalhes.ListPanel:SetPoint ("center", UIParent, "center", 300, 0)

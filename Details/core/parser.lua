@@ -1904,6 +1904,7 @@
 	--> not yet well know about unnamed buff casters
 		if (not alvo_name) then
 			alvo_name = "[*] Unknown shield target"
+
 		elseif (not who_name) then 
 			--> no actor name, use spell name instead
 			who_name = "[*] " .. spellname
@@ -1933,6 +1934,7 @@
 					if (who_name == alvo_name and raid_members_cache [who_serial] and _in_combat) then
 						--> call record buffs uptime
 						parser:add_buff_uptime (token, time, who_serial, who_name, who_flags, alvo_serial, alvo_name, alvo_flags, alvo_flags2, spellid, spellname, "BUFF_UPTIME_IN")
+						
 					elseif (container_pets [who_serial] and container_pets [who_serial][2] == alvo_serial) then
 						--um pet colocando uma aura do dono
 						parser:add_buff_uptime (token, time, alvo_serial, alvo_name, alvo_flags, alvo_serial, alvo_name, alvo_flags, alvo_flags2, spellid, spellname, "BUFF_UPTIME_IN")

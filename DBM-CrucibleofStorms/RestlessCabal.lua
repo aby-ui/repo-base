@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2328, "DBM-CrucibleofStorms", nil, 1177)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190901011616")
+mod:SetRevision("20191025202124")
 mod:SetCreatureID(144755, 144754)--144755 Zaxasj, 144754 Fa'thuul
 mod:SetEncounterID(2269)
 mod:SetZone()
@@ -445,14 +445,6 @@ function mod:SPELL_AURA_REMOVED(args)
 		playerWitness = false
 	elseif spellId == 282566 and args:IsPlayer() then
 		playerPromise = false
-	end
-end
-
-function mod:SPELL_INTERRUPT(args)
-	if type(args.extraSpellId) == "number" and args.extraSpellId == 290084 then
-		if self.Options.NPAuraOnWaterBolt then
-			DBM.Nameplate:Hide(true, args.destGUID)
-		end
 	end
 end
 

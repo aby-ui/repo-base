@@ -708,7 +708,7 @@ function module.options:Load()
 			for i=1,GetNumGroupMembers() do
 				local name = GetRaidRosterInfo(i)
 				if name and not ExRT.F.table_find(db,name,1) then
-					db[#db + 1] = {name,nil,true}
+					db[#db + 1] = {name,nil,true,class = 100}
 				end
 			end
 		else
@@ -718,7 +718,7 @@ function module.options:Load()
 					name = name .. "-" .. realm
 				end
 				if name and not ExRT.F.table_find(db,name,1) then
-					db[#db + 1] = {name,nil,true}
+					db[#db + 1] = {name,nil,true,class = 100}
 				end
 			end
 		end
@@ -727,16 +727,16 @@ function module.options:Load()
 	function module.options.ReloadPage()
 		local nowDB = {}
 		for name,data in pairs(module.db.inspectDB) do
-			table.insert(nowDB,{name,data})
+			table.insert(nowDB,{name,data,class = data.classID or 100})
 		end
 		for name,_ in pairs(module.db.inspectQuery) do
 			if not module.db.inspectDB[name] then
-				table.insert(nowDB,{name})
+				table.insert(nowDB,{name,class = 100})
 			end
 		end
 		ReloadPage_CreateNowDB(nowDB)
 		
-		table.sort(nowDB,function(a,b) return a[1] < b[1] end)
+		table.sort(nowDB,function(a,b) if a.class == b.class then return a[1] < b[1] else return a.class < b.class end end)
 
 		local scrollNow = ExRT.F.Round(module.options.ScrollBar:GetValue())
 		local counter = 0
@@ -799,6 +799,7 @@ function module.options:Load()
 						item.border:Hide()
 						item.azerite = nil
 						item.azeriteExtra = nil
+						item.star:Hide()
 					end
 					line.perksData = nil
 					
@@ -995,7 +996,7 @@ function module.options:Load()
 
 						line.ilvl:SetText("")
 						
-						local it = -1
+						local it = -2
 
 						local db = data.essence					
 						if db then
@@ -1015,6 +1016,9 @@ function module.options:Load()
 								icon.sid = nil
 								local tier = power.link:gsub("%[.-%]","T"..power.tier..(power.isMajor and "+" or ""))
 								icon.text:SetText(tier or "")
+								if power.isMajor then
+									icon.star:Show()
+								end
 								icon:Show()
 								
 								it = it + 1
@@ -1112,7 +1116,7 @@ function module.options:Load()
 						line.back:SetGradientAlpha("HORIZONTAL", cR,cG,cB, 0, cR,cG,cB, 0.5)
 					end
 				else
-					for j=0,18 do
+					for j=-1,18 do
 						line.items[j]:Hide()
 					end
 					line.time:Show()
@@ -1411,7 +1415,7 @@ function module.options:Load()
 		line.ilvl = ELib:Text(line,"630.52",11):Color():Point(160,0):Size(50,30):Shadow()
 		
 		line.items = {}
-		for j=0,18 do
+		for j=-1,18 do
 			local item = ELib:Icon(line,nil,21,true):Point("LEFT",210+(24*(j-1)),0)
 			line.items[j] = item
 			item:SetScript("OnEnter",Lines_ItemIcon_OnEnter)
@@ -1440,7 +1444,15 @@ function module.options:Load()
 			item.border.background = item.border:CreateTexture(nil,"OVERLAY")
 			item.border.background:SetPoint("TOPLEFT")
 			item.border.background:SetPoint("BOTTOMRIGHT")
-			
+
+			item.star = item:CreateTexture(nil,"ARTWORK")
+			item.star:SetPoint("CENTER",item,"TOPLEFT",2,-2)
+			item.star:SetSize(18,18)
+			item.star:SetTexture([[Interface\AddOns\ExRT\media\star]])
+			item.star:Hide()
+
+			--3176475
+
 			--item.ilvl = ELib:Text(item,"",11):Color():Point("RIGHT",item,"LEFT",-2,0):Size(0,30):Outline()
 			
 			item.border:Hide()

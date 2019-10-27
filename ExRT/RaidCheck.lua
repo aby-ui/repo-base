@@ -167,6 +167,7 @@ module.db.minFoodLevelToActual = {
 	[125] = 130,
 }
 
+module.db.durability = {}
 
 local IsSendFoodByMe,IsSendFlaskByMe,IsSendRunesByMe,IsSendBuffsByMe = nil
 
@@ -328,7 +329,12 @@ local vruneName
 local function GetVRunes(checkType)
 	if not vruneName then
 		local kjrunename = GetSpellInfo(237825)
-		vruneName = "^"..kjrunename:match("^(.-):")
+		if kjrunename then
+			kjrunename = kjrunename:match("^(.-)[:%-：]")
+			if kjrunename then
+				vruneName = "^"..kjrunename
+			end
+		end
 	end
 	local f = {[0]={},[1]={}}
 	local gMax = ExRT.F.GetRaidDiffMaxGroup()
@@ -340,7 +346,7 @@ local function GetVRunes(checkType)
 				local auraName = UnitAura(name, i,"HELPFUL")
 				if type(auraName)~='string' then
 					break
-				else
+				elseif vruneName then
 					local isRune = auraName:find(vruneName)
 					if isRune then
 						f[1][ #f[1]+1 ] = name
@@ -355,7 +361,7 @@ local function GetVRunes(checkType)
 		end
 	end
 	
-	PublicResults(vruneName:gsub("%^",""),checkType)
+	PublicResults((vruneName or ""):gsub("%^",""),checkType)
 	for stats,name in pairs({[0]=L.NoText,[1]=L.YesText}) do
 		local result = format("|cff00ff00%s (%d):|r ",name,#f[stats])
 		for i=1,#f[stats] do
@@ -673,12 +679,8 @@ function module.options:Load()
 	self.chkSlak = ELib:Check(self,L.raidcheckslak,VExRT.RaidCheck.ReadyCheck):Point("TOPLEFT",self.level2optLine,7,0):OnClick(function(self) 
 		if self:GetChecked() then
 			VExRT.RaidCheck.ReadyCheck = true
-			module:RegisterEvents('READY_CHECK')
 		else
 			VExRT.RaidCheck.ReadyCheck = nil
-			if not VExRT.RaidCheck.ReadyCheckFrame then
-				module:UnregisterEvents('READY_CHECK')
-			end
 		end
 	end)
 	
@@ -813,13 +815,10 @@ function module.options:Load()
 
 	self.chkReadyCheckFrameEnable = ELib:Check(self.optReadyCheckFrame,L.senable,VExRT.RaidCheck.ReadyCheckFrame):Point(15,-10):OnClick(function(self) 
 		if self:GetChecked() then
-			module:RegisterEvents('READY_CHECK','READY_CHECK_FINISHED','READY_CHECK_CONFIRM')
+			module:RegisterEvents('READY_CHECK_FINISHED','READY_CHECK_CONFIRM')
 			VExRT.RaidCheck.ReadyCheckFrame = true
 		else
 			module:UnregisterEvents('READY_CHECK_FINISHED','READY_CHECK_CONFIRM')
-			if not VExRT.RaidCheck.ReadyCheck then
-				module:UnregisterEvents('READY_CHECK')
-			end
 			VExRT.RaidCheck.ReadyCheckFrame = nil
 		end
 	end)
@@ -842,7 +841,7 @@ function module.options:Load()
 
 	self.chkReadyCheckFrameButTest = ELib:Button(self.optReadyCheckFrame,L.raidcheckReadyCheckTest):Size(280,22):Point(310,-10):OnClick(function(self) 
 		module.main:READY_CHECK("raid1",35,"TEST")
-		for i=2,25 do
+		for i=2,30 do
 			local y = math.random(1,30000)
 			local r = math.random(1,2)
 			ExRT.F.ScheduleTimer(function() module.main:READY_CHECK_CONFIRM("raid"..i,r==1,"TEST") end, y/1000)
@@ -932,6 +931,36 @@ local function CheckPotionsOnPull()
 	end
 end
 
+do
+	local charItemSlotsTable = not ExRT.isClassic and {
+		CharacterHeadSlot,CharacterNeckSlot,CharacterShoulderSlot,CharacterBackSlot,CharacterChestSlot,CharacterWristSlot,
+		CharacterHandsSlot,CharacterWaistSlot,CharacterLegsSlot,CharacterFeetSlot,CharacterFinger0Slot,CharacterFinger1Slot,CharacterTrinket0Slot,CharacterTrinket1Slot,
+		CharacterMainHandSlot,CharacterSecondaryHandSlot
+	} or {
+		CharacterHeadSlot,CharacterNeckSlot,CharacterShoulderSlot,CharacterBackSlot,CharacterChestSlot,CharacterWristSlot,
+		CharacterHandsSlot,CharacterWaistSlot,CharacterLegsSlot,CharacterFeetSlot,
+		CharacterFinger0Slot,CharacterFinger1Slot,CharacterTrinket0Slot,CharacterTrinket1Slot,
+		CharacterMainHandSlot,CharacterSecondaryHandSlot,CharacterRangedSlot,
+	}
+	function module:DurabilityCheck()
+		local totalCurrent, totalMax = 0,0
+		for _,v in pairs(charItemSlotsTable) do
+			local slotId = v:GetID()
+			local current, maximum = GetInventoryItemDurability(slotId)
+
+			if current and maximum then
+				totalCurrent = totalCurrent + current
+				totalMax = totalMax + maximum
+			end
+		end
+		if totalMax == 0 then
+			return 100
+		else
+			return totalCurrent / totalMax * 100
+		end
+	end
+end
+
 function module:timer(elapsed)
 	if VExRT.RaidCheck.PotionCheck then
 		if not module.db.isEncounter and IsEncounterInProgress() then
@@ -995,13 +1024,13 @@ function module:slash(arg)
 	end
 end
 
-local RCW_iconsList = {'food','flask','rune','vantus','int','ap','stam'}
-local RCW_iconsListHeaders = {L.RaidCheckHeadFood,L.RaidCheckHeadFlask,L.RaidCheckHeadRune,L.RaidCheckHeadVantus,SPELL_STAT4_NAME or "Int",ATTACK_POWER_TOOLTIP or "AP",SPELL_STAT3_NAME or "Stamina"}
-local RCW_iconsListDebugIcons = {136000,967549,840006,1058937,135932,132333,135987}
+local RCW_iconsList = {'food','flask','rune','vantus','int','ap','stam','dur'}
+local RCW_iconsListHeaders = {L.RaidCheckHeadFood,L.RaidCheckHeadFlask,L.RaidCheckHeadRune,L.RaidCheckHeadVantus,SPELL_STAT4_NAME or "Int",ATTACK_POWER_TOOLTIP or "AP",SPELL_STAT3_NAME or "Stamina",DURABILITY or "Durability"}
+local RCW_iconsListDebugIcons = {136000,967549,840006,1058937,135932,132333,135987,132281}
 local RCW_liveToClassicDiff = 0
 
 if ExRT.isClassic then
-	RCW_liveToClassicDiff = (#module.db.classicBuffs + 2) - #RCW_iconsList
+	RCW_liveToClassicDiff = (#module.db.classicBuffs + 2) - #RCW_iconsList + 1
 	RCW_iconsListDebugIcons[2] = 134877
 	for i=3,#RCW_iconsList do
 		RCW_iconsList[i] = nil
@@ -1013,10 +1042,13 @@ if ExRT.isClassic then
 		RCW_iconsListHeaders[#RCW_iconsList] = module.db.classicBuffs[i][2]
 		RCW_iconsListDebugIcons[#RCW_iconsList] = module.db.classicBuffs[i][3]
 	end
+	RCW_iconsList[#RCW_iconsList+1] = "dur"
+	RCW_iconsListHeaders[#RCW_iconsList] = DURABILITY or "Durability"
+	RCW_iconsListDebugIcons[#RCW_iconsList] = 132281
 end
 
 module.frame = ELib:Template("ExRTDialogModernTemplate",UIParent)
-module.frame:SetSize(400+(ExRT.isClassic and 30*RCW_liveToClassicDiff or 0),100)
+module.frame:SetSize(430+(ExRT.isClassic and 30*RCW_liveToClassicDiff or 0),100)
 module.frame:SetPoint("CENTER",UIParent,"CENTER",0,0)
 module.frame:SetFrameStrata("TOOLTIP")
 module.frame:EnableMouse(true)
@@ -1052,7 +1084,9 @@ module.frame.timer:SetScript("OnUpdate", function(self,elapsed)
 end)
 module.frame:SetScript("OnHide", function(self) 
 	self:UnregisterAllEvents()
-	module.frame.anim:Stop()
+	if module.frame.anim:IsPlaying() then
+		module.frame.anim:Stop()
+	end
 end)
 
 module.frame.lines = {}
@@ -1092,7 +1126,7 @@ for i=1,40 do
 	else
 		line:SetPoint("TOPLEFT", module.frame.lines[i-1], "BOTTOMLEFT", 0, -0)
 	end
-	line:SetSize(390+(ExRT.isClassic and 30*RCW_liveToClassicDiff or 0),14)
+	line:SetSize(420+(ExRT.isClassic and 30*RCW_liveToClassicDiff or 0),14)
 
 	line.name = ELib:Text(line,"raid"..i):Size(130,12):Point("LEFT",20,0):Font(ExRT.F.defFont,12):Color():Shadow()
 
@@ -1112,6 +1146,15 @@ for i=1,40 do
 
 		line[key].texture:SetTexCoord(.1,.9,.1,.9)
 		line[key].text = ELib:Text(line[key],"100",8):Point("BOTTOMRIGHT",4,0):Right():Color(0,1,0)
+		line[key].bigText = ELib:Text(line[key],"",10):Point("CENTER",0,0):Center():Color(1,1,1)
+
+		line[key].subIcon = line[key]:CreateTexture(nil, "BORDER")
+		line[key].subIcon:SetPoint("CENTER",line[key],"TOPRIGHT",-2,-2)
+		line[key].subIcon:SetSize(10,10)
+		line[key].subIcon:SetTexture([[Interface\AddOns\ExRT\media\DiesalGUIcons16x256x128]])
+		line[key].subIcon:SetTexCoord(0.125,0.1875,0.5,0.625)
+		line[key].subIcon:SetVertexColor(1,0,0)
+		line[key].subIcon:Hide()
 
 		line[key.."2"] = ELib:Icon(line,RCW_iconsListDebugIcons[i],14)
 		line[key.."2"]:Point("LEfT",line[key],"RIGHT",0,0)
@@ -1119,7 +1162,17 @@ for i=1,40 do
 		line[key.."2"]:SetScript("OnLeave",RCW_LineOnLeave)
 		line[key.."2"].texture:SetTexCoord(.1,.9,.1,.9)
 		line[key.."2"].text = ELib:Text(line[key.."2"],"100",8):Point("BOTTOMRIGHT",4,0):Right():Color(0,1,0)
+		line[key.."2"].bigText = ELib:Text(line[key.."2"],"",10):Point("CENTER",0,0):Center():Color(1,1,1)
 		line[key.."2"]:Hide()
+
+		line[key.."2"].subIcon = line[key.."2"]:CreateTexture(nil, "BORDER")
+		line[key.."2"].subIcon:SetPoint("CENTER",line[key.."2"],"TOPRIGHT",-2,-2)
+		line[key.."2"].subIcon:SetSize(10,10)
+		line[key.."2"].subIcon:SetTexture([[Interface\AddOns\ExRT\media\DiesalGUIcons16x256x128]])
+		line[key.."2"].subIcon:SetTexCoord(0.125,0.1875,0.5,0.625)
+		line[key.."2"].subIcon:SetVertexColor(1,0,0)
+		line[key.."2"].subIcon:Hide()
+
 	end
 
 	if i%2 == 0 then
@@ -1147,6 +1200,146 @@ for i=1,40 do
 end
 
 do
+	local line = CreateFrame("Frame",nil,module.frame)
+	module.frame.timeLeftLine = line
+
+	local cR1,cG1,cB1 = 1,.2,.2	--Started
+	local cR3,cG3,cB3 = .6,.6,.2	--Mid
+	local cR2,cG2,cB2 = .2,.7,.2	--Finished
+
+	local WIDTH,WIDTH2 = 430,18
+
+	line:SetSize(WIDTH,18)
+	--line:SetPoint("BOTTOMLEFT",module.frame,"TOPLEFT",0,-50)
+	line:SetPoint("TOPLEFT",module.frame,"TOPLEFT",0,0)
+
+	line.back = line:CreateTexture(nil,"BACKGROUND")
+	line.back:SetSize(110,18)
+	line.back:SetPoint("LEFT")
+	line.back:SetColorTexture(cR1,cG1,cB1)
+
+	line.back2 = line:CreateTexture(nil,"BACKGROUND")
+	line.back2:SetSize(WIDTH2,18)
+	line.back2:SetPoint("LEFT",line.back,"RIGHT")
+	line.back2:SetColorTexture(1,1,1)
+	line.back2:SetGradientAlpha("HORIZONTAL",cR1,cG1,cB1,1,cR1,cG1,cB1,0)
+
+	line.time = ELib:Text(line,"40"):Point("TOPLEFT",5,-34):Font(ExRT.F.defFont,12):Color():Shadow()
+ 
+ 	local currR,currG,currB = 1,.2,.2
+
+	local stop = nil
+	local end_time,duration = 0,30
+	line:SetScript("OnUpdate",function(self)
+		if stop then
+			return
+		end
+		local t = end_time - GetTime()
+		if t < 0 then
+			self:Stop()
+			return
+		end
+		local width = t / duration * (WIDTH - WIDTH2)
+		if width <= 1 then
+			width = 1
+		end
+		line.back:SetWidth(width)
+		--line.time:SetFormattedText("%d",t)
+	end)
+	line.Stop = function(self)
+		stop = true
+		if line:GetAlpha() > 0 then
+			line.anim_alpha:Play()
+		end
+
+		self:Color(cR2,cG2,cB2)
+	end
+	line.Start = function(self,timer)
+		end_time = GetTime() + timer
+		duration = timer
+
+		line.time:SetText("")
+		line.back:SetColorTexture(cR1,cG1,cB1)
+		line.back2:SetGradientAlpha("HORIZONTAL",cR1,cG1,cB1,1,cR1,cG1,cB1,0)
+		line.back:SetWidth(WIDTH - WIDTH2)
+
+		currR,currG,currB = cR1,cG1,cB1
+
+		line.anim_alpha:Stop()
+		line:SetAlpha(1)
+		stop = nil
+		self:Show()
+	end
+
+	line.anim_alpha = line:CreateAnimationGroup()
+	line.anim_alpha.color = line.anim_alpha:CreateAnimation()
+	line.anim_alpha.color:SetDuration(1)
+	line.anim_alpha.color:SetScript("OnUpdate", function(self,elapsed) 
+		line:SetAlpha(1 - self:GetProgress())
+	end)
+	line.anim_alpha.color:SetScript("OnFinished", function() 
+		line.anim_alpha:Stop() 
+	end)
+
+	local cfR,cfG,cfB = 1,1,1
+	local ctR,ctG,ctB = 1,1,1
+
+	line.anim = line:CreateAnimationGroup()
+	line.anim.color = line.anim:CreateAnimation()
+	line.anim.color:SetDuration(1)
+	line.anim.color:SetScript("OnUpdate", function(self,elapsed) 
+		local r,g,b = cfR - (cfR - ctR) * self:GetProgress(),cfG - (cfG - ctG) * self:GetProgress(),cfB - (cfB - ctB) * self:GetProgress()
+
+		line.back:SetColorTexture(r,g,b)
+		line.back2:SetGradientAlpha("HORIZONTAL",r,g,b,1,r,g,b,0)
+
+		currR,currG,currB = r,g,b
+	end)
+
+	line.Color = function(self,r,g,b)
+		if self.anim:IsPlaying() then
+			line.anim:Stop()
+		end
+		cfR,cfG,cfB = currR,currG,currB
+		ctR,ctG,ctB = r,g,b
+		line.anim:Play()
+	end
+
+	line.SetProgress = function(self,total,totalResponced)
+		local progress = totalResponced / max(total,1)
+		if progress == 0 then
+			self.time:SetText(totalResponced.."/"..total)
+			return
+		end
+		local fR,fG,fB
+		local tR,tG,tB
+		if progress >= .66 then
+			fR,fG,fB = cR3,cG3,cB3
+			tR,tG,tB = cR2,cG2,cB2
+			progress = (progress - 0.66) / (1 - 0.66)
+		else
+			fR,fG,fB = cR1,cG1,cB1
+			tR,tG,tB = cR3,cG3,cB3
+			progress = progress * (1 / 0.66)
+		end
+
+		--self.time:SetText(progress < 1 and totalResponced.."/"..total or "")
+		self.time:SetText(totalResponced.."/"..total)
+
+		local r,g,b = fR - (fR - tR) * progress,fG - (fG - tG) * progress,fB - (fB - tB) * progress
+		self:Color(r,g,b)
+	end
+
+
+	--Fix header strata
+	local frame = CreateFrame("Frame",nil,module.frame)
+	frame:SetPoint("TOP")
+	frame:SetSize(1,1)
+
+	module.frame.title:SetParent(frame)
+end
+
+do
 	local headers = CreateFrame("Frame",nil,module.frame)
 	module.frame.headers = headers
 
@@ -1170,10 +1363,16 @@ do
 end
 
 function module.frame:PrepToHide()
-	local delay = (tonumber(VExRT.RaidCheck.ReadyCheckFrameTimerFade or "4") or 4) - 2
-	C_Timer.After(max(0.1,delay),function()
+	if not module.frame:IsShown() then
+		return
+	end
+
+	local delay = tonumber(VExRT.RaidCheck.ReadyCheckFrameTimerFade or "4") or 4
+	module.frame.hideTimer = C_Timer.NewTimer(max(0.01,delay),function()
+		module.frame.hideTimer = nil
 		module.frame.anim:Play()
 	end)
+	module.frame.timeLeftLine:Stop()
 end
 
 local RCW_UnitToLine = {}
@@ -1188,29 +1387,34 @@ function module.frame:UpdateLinesSize(large)
 	local size1 = large and 20 or 14
 	local size2 = large and 18 or 14
 	local size3 = large and 8 or 6
+	local size4 = large and 10 or 8
 	for i=1,#self.lines do 
 		local line = self.lines[i]
 		line:SetHeight(size1)
 		for i,key in pairs(RCW_iconsList) do
 			line[key]:SetSize(size2,size2)
 			line[key].text:SetFont(line[key].text:GetFont(),size3,"OUTLINE")
+			line[key].bigText:SetFont(line[key].bigText:GetFont(),size4,"OUTLINE")
+			line[key].subIcon:SetSize(size4,size4)
 
 			line[key.."2"]:SetSize(size2,size2)
 			line[key.."2"].text:SetFont(line[key.."2"].text:GetFont(),size3,"OUTLINE")
+			line[key.."2"].bigText:SetFont(line[key.."2"].bigText:GetFont(),size4,"OUTLINE")
+			line[key.."2"].subIcon:SetSize(size4,size4)
 		end
 	end
 end
 
-local testRandomNames = {
-"Dredd",
-"Tygar","Lexk","Zoot","Creams","Critcapped","Dragonaut","Kimence","Raarticuno","Tek","Vodia","Waffles","Bovice","Katbus","Sassuke","Thriser","Variety","Xennov","Drshockalu","Illson","Ushnark","Angelista","Beezy","Blankies","Bujusima","Creamydee","Cutemeatball","Dmb","Garwyn","Sharoon","Shrode","Zhava",
-"Inkline","Fog","Lukn","Vanq","Coziness","Detore","Mcdoogal","Scubastevee",
-"Brath",
-"Elron","Palyu","Ravage","Andyxo","Dean","Dee","Emlis","Manglz","Rhuku","Thance","Verruckt","Zeki","Dane","Blurs","Perry","Smy","Soylent","Earl","Hedral","Jiyun","Xelectra","Bloodrusher","Ej","Execute","Lyger","Musclemommyx","Retrofresh","Rodcockulous",
-"Swimmies","Bixr","Buffcheck","Lightbox","Riggered","Stonka","Yim","Pigg","Poom","Vish",
-"Loue",
-"Cheely","Exora","Hoh","Perilla","Asuna","Devi","Empty","Klikey","Rtm","Sammie","Trashy","Kame","Legs","Ordi","Rising","Seyera","Arafei","Dikken","Lillefod","Abbotts","Dumpy","Feron","Fungi","Kolonelkunt","Pahstee","Tyba","Yvraine","Zela",
-"Krageth","Lunaris","Aestalux","Delmaree","Kutsal","Odoac","Shadyshade","Dokiecry","El","Elyvilon","Samm",
+local testRandomNames = {	--Top parses on WCL :)
+	"Dredd",
+	"Tygar","Lexk","Zoot","Creams","Critcapped","Dragonaut","Kimence","Raarticuno","Tek","Vodia","Waffles","Bovice","Katbus","Sassuke","Thriser","Variety","Xennov","Drshockalu","Illson","Ushnark","Angelista","Beezy","Blankies","Bujusima","Creamydee","Cutemeatball","Dmb","Garwyn","Sharoon","Shrode","Zhava",
+	"Inkline","Fog","Lukn","Vanq","Coziness","Detore","Mcdoogal","Scubastevee",
+	"Brath",
+	"Elron","Palyu","Ravage","Andyxo","Dean","Dee","Emlis","Manglz","Rhuku","Thance","Verruckt","Zeki","Dane","Blurs","Perry","Smy","Soylent","Earl","Hedral","Jiyun","Xelectra","Bloodrusher","Ej","Execute","Lyger","Musclemommyx","Retrofresh","Rodcockulous",
+	"Swimmies","Bixr","Buffcheck","Lightbox","Riggered","Stonka","Yim","Pigg","Poom","Vish",
+	"Loue",
+	"Cheely","Exora","Hoh","Perilla","Asuna","Devi","Empty","Klikey","Rtm","Sammie","Trashy","Kame","Legs","Ordi","Rising","Seyera","Arafei","Dikken","Lillefod","Abbotts","Dumpy","Feron","Fungi","Kolonelkunt","Pahstee","Tyba","Yvraine","Zela",
+	"Krageth","Lunaris","Aestalux","Delmaree","Kutsal","Odoac","Shadyshade","Dokiecry","El","Elyvilon","Samm",
 }
 
 function module.frame:UpdateRoster()
@@ -1258,6 +1462,7 @@ function module.frame:UpdateRoster()
 
 				line.name:SetText(name)
 				line.unit = unit
+				line.unit_name = name
 				line.name:SetTextColor(1,1,1,1)
 
 				local classColor = classColorsTable[class]
@@ -1282,180 +1487,245 @@ function module.frame:UpdateRoster()
 	self:SetHeight(55 + (count <= 20 and 20 or 14) * count)
 end
 
-function module.frame:UpdateData()
+function module.frame:UpdateData(onlyLine)
 	if not vruneName and not ExRT.isClassic then
 		local kjrunename = GetSpellInfo(237825)
-		vruneName = "^"..kjrunename:match("^(.-):")
+		if kjrunename then
+			kjrunename = kjrunename:match("^(.-)[:%-：]")
+			if kjrunename then
+				vruneName = "^"..kjrunename
+			end
+		end
 	end
 	local total,totalResponced = 0,0
+	local currTime,currTime2 = time(),GetTime()
 	for i=1,#self.lines do 
 		local line = self.lines[i]
 		if line.unit then
-			local buffCount = 0
-			local flaskCount = 0
-
-			line.icon.texture:SetTexture(RCW_RCStatusToIcon[line.rc_status] or "")
 			total = total + 1
 			if line.rc_status == 2 or line.rc_status == 3 then
 				totalResponced = totalResponced + 1
 			end
 
-			for i,key in pairs(RCW_iconsList) do
-				line[key].texture:SetTexture("")
-				line[key].text:SetText("")
-				line[key].tooltip = nil
-
-				line[key.."2"].texture:SetTexture("")
-				line[key.."2"].text:SetText("")
-				line[key.."2"].tooltip = nil
-				line[key.."2"]:Hide()
-			end
-			for i=1,40 do
-				local name,icon,_,_,_,_,_,_,_,spellId,_,_,_,_,_,val1 = UnitAura(line.unit, i,"HELPFUL")
-				if not spellId then
-					break
-				elseif module.db.tableFood[spellId] then
-					local val = module.db.tableFood[spellId]
-					
-					line.food.texture:SetTexture(136000)
-					if type(val)~="number" then
-						val = ""
-					elseif val >= 100 then
-						line.food.text:SetTextColor(0,1,0)
-					else
-						line.food.text:SetTextColor(1,0,0)
-					end
-					line.food.text:SetText(val)
-					line.food.tooltip = i
-
-					buffCount = buffCount + 1
-				elseif icon == 134062 or icon == 132805 then
-					line.food.texture:SetTexture(134062)
-					line.food.text:SetText("")
-				elseif icon == 136000 then
-					line.food.texture:SetTexture(136000)
-					line.food.text:SetTextColor(1,1,1)
-					if val1 == 0 then val1 = nil end
-					line.food.text:SetText(val1 or "")
-					line.food.tooltip = i
-
-					buffCount = buffCount + 1
-				elseif module.db.tableFlask[spellId] then
-					local val = module.db.tableFlask[spellId]
-
-					local frame = flaskCount == 0 and line.flask or line.flask2
-					flaskCount = flaskCount + 1
-					
-					frame.texture:SetTexture(icon)
-					if type(val)=='number' then
-						if val >= 360 then
-							frame.text:SetTextColor(0,1,0)
-						else
-							frame.text:SetTextColor(1,1,0)
-						end
-						frame.text:SetText(val)
-					else
-						frame.text:SetText("")
-
-						frame.tooltip = "spell:"..spellId
-					end
-
-					frame:Show()
-
-					buffCount = buffCount + 1
-				elseif module.db.tableVantus[spellId] then
-					local val = module.db.tableVantus[spellId]
-					
-					line.vantus.texture:SetTexture(icon)
-					line.vantus.text:SetTextColor(1,1,1)
-					line.vantus.text:SetText(val)
-
-					line.vantus.tooltip = "spell:"..spellId
-				elseif name and not ExRT.isClassic and name:find(vruneName) then
-					line.vantus.texture:SetTexture(icon)
-					line.vantus.text:SetText("")
-					
-					line.vantus.tooltip = "spell:"..spellId
-				elseif module.db.tableRunes[spellId] then
-					local val = module.db.tableRunes[spellId]
-					
-					line.rune.texture:SetTexture(spellId == 270058 and 840006 or icon)
-					if val >= 60 then
-						line.rune.text:SetTextColor(0,1,0)
-						line.rune.text:SetText("")
-					else
-						line.rune.text:SetTextColor(1,0,0)
-						line.rune.text:SetText(val)
-					end
-				elseif module.db.tableInt[spellId] and not ExRT.isClassic then
-					line.int.texture:SetTexture(icon)
-					line.int.text:SetText("")
-
-					buffCount = buffCount + 1
-				elseif module.db.tableAP[spellId] and not ExRT.isClassic then
-					line.ap.texture:SetTexture(icon)
-					line.ap.text:SetText("")
-
-					buffCount = buffCount + 1
-				elseif module.db.tableStamina[spellId] and not ExRT.isClassic then
-					line.stam.texture:SetTexture(icon)
-					line.stam.text:SetText("")
-
-					buffCount = buffCount + 1
-				elseif ExRT.isClassic and module.db.tableClassicBuff[spellId] then
-					local data = module.db.tableClassicBuff[spellId]
-
-					local key = data[1]
-					line[key].texture:SetTexture(icon)
-
-					local val = data[4][spellId]
-					line[key].text:SetText(val or "")
-
-					line[key].tooltip = "spell:"..spellId
-				end
-			end
-			if self.isTest and line.pos <= 15 then
-				local hideOne = self.testData[line.pos] or math.random(1,#RCW_iconsList)
-				self.testData[line.pos] = hideOne
-			
+			if not onlyLine or line == onlyLine then
+				local buffCount = 0
+				local flaskCount = 0
+	
+				line.icon.texture:SetTexture(RCW_RCStatusToIcon[line.rc_status] or "")
+	
 				for i,key in pairs(RCW_iconsList) do
-					if line.pos <= 5 or i ~= hideOne then
-						line[key].texture:SetTexture(RCW_iconsListDebugIcons[i])
-						line[key].text:SetText("")
+					line[key].texture:SetTexture("")
+					line[key].texture:SetAlpha(1)
+					line[key].text:SetText("")
+					line[key].bigText:SetText("")
+					line[key].tooltip = nil
+					line[key].subIcon:Hide()
+	
+					line[key.."2"].texture:SetTexture("")
+					line[key.."2"].texture:SetAlpha(1)
+					line[key.."2"].text:SetText("")
+					line[key.."2"].bigText:SetText("")
+					line[key.."2"].tooltip = nil
+					line[key.."2"]:Hide()
+					line[key.."2"].subIcon:Hide()
+				end
+				for i=1,40 do
+					local name,icon,_,_,duration,expirationTime,_,_,_,spellId,_,_,_,_,_,val1 = UnitAura(line.unit, i,"HELPFUL")
+					if not spellId then
+						break
+					elseif module.db.tableFood[spellId] then
+						local val = module.db.tableFood[spellId]
+						
+						line.food.texture:SetTexture(136000)
+						if type(val)~="number" then
+							val = ""
+						elseif val >= 100 then
+							line.food.text:SetTextColor(0,1,0)
+						else
+							line.food.text:SetTextColor(1,0,0)
+						end
+						line.food.text:SetText(val)
+						line.food.tooltip = i
+	
+						if expirationTime and expirationTime - currTime2 < 600 and expirationTime ~= 0 then
+							line.food.subIcon:Show()
+							line.food.texture:SetAlpha(.6)
+						end
+	
+						buffCount = buffCount + 1
+					elseif icon == 134062 or icon == 132805 then
+						line.food.texture:SetTexture(134062)
+						line.food.text:SetText("")
+					elseif icon == 136000 then
+						line.food.texture:SetTexture(136000)
+						line.food.text:SetTextColor(1,1,1)
+						if val1 == 0 then val1 = nil end
+						line.food.text:SetText(val1 or "")
+						line.food.tooltip = i
+	
+						buffCount = buffCount + 1
+					elseif module.db.tableFlask[spellId] then
+						local val = module.db.tableFlask[spellId]
+	
+						local frame = flaskCount == 0 and line.flask or line.flask2
+						flaskCount = flaskCount + 1
+						
+						frame.texture:SetTexture(icon)
+						if type(val)=='number' then
+							if val >= 360 then
+								frame.text:SetTextColor(0,1,0)
+							else
+								frame.text:SetTextColor(1,1,0)
+							end
+							frame.text:SetText(val)
+						else
+							frame.text:SetText("")
+						end
+						frame.tooltip = i
+	
+						if expirationTime and expirationTime - currTime2 < 600 and expirationTime ~= 0 then
+							frame.subIcon:Show()
+							frame.texture:SetAlpha(.6)
+						end
+	
+						frame:Show()
+	
+						buffCount = buffCount + 1
+					elseif module.db.tableVantus[spellId] then
+						local val = module.db.tableVantus[spellId]
+						
+						line.vantus.texture:SetTexture(icon)
+						line.vantus.text:SetTextColor(1,1,1)
+						line.vantus.text:SetText(val)
+	
+						line.vantus.tooltip = "spell:"..spellId
+					elseif name and not ExRT.isClassic and vruneName and name:find(vruneName) then
+						line.vantus.texture:SetTexture(icon)
+						line.vantus.text:SetText("")
+						
+						line.vantus.tooltip = "spell:"..spellId
+					elseif module.db.tableRunes[spellId] then
+						local val = module.db.tableRunes[spellId]
+						
+						line.rune.texture:SetTexture(spellId == 270058 and 840006 or icon)
+						if val >= 60 then
+							line.rune.text:SetTextColor(0,1,0)
+							line.rune.text:SetText("")
+						else
+							line.rune.text:SetTextColor(1,0,0)
+							line.rune.text:SetText(val)
+						end
+					elseif module.db.tableInt[spellId] and not ExRT.isClassic then
+						line.int.texture:SetTexture(icon)
+						line.int.text:SetText("")
+	
+						buffCount = buffCount + 1
+					elseif module.db.tableAP[spellId] and not ExRT.isClassic then
+						line.ap.texture:SetTexture(icon)
+						line.ap.text:SetText("")
+	
+						buffCount = buffCount + 1
+					elseif module.db.tableStamina[spellId] and not ExRT.isClassic then
+						line.stam.texture:SetTexture(icon)
+						line.stam.text:SetText("")
+	
+						buffCount = buffCount + 1
+					elseif ExRT.isClassic and module.db.tableClassicBuff[spellId] then
+						local data = module.db.tableClassicBuff[spellId]
+	
+						local key = data[1]
+						line[key].texture:SetTexture(icon)
+	
+						local val = data[4][spellId]
+						line[key].text:SetText(val or "")
+	
+						line[key].tooltip = "spell:"..spellId
 					end
 				end
-
-				buffCount = self.testData[-line.pos] or math.random(4,5)
-				self.testData[-line.pos] = buffCount				
-			end
-
-			if line.rc_status == 3 then
-				line.name:SetTextColor(1,.5,.5)
-				line.name:SetAlpha(1)
-			elseif line.rc_status == 2 and (buffCount >= 5 or ExRT.isClassic) then
-				line.name:SetTextColor(1,1,1)
-				line.name:SetAlpha(.3)	
-			elseif line.rc_status == 2 then
-				line.name:SetTextColor(1,1,.5)
-				line.name:SetAlpha(1)
-			else
-				line.name:SetTextColor(1,1,1)
-				line.name:SetAlpha(1)
+				if line.dur and not self.isTest then
+					local durTab, dur = module.db.durability[line.unit_name]
+					if durTab and (durTab.time + (line.rc_status ~= 4 and 60 or 600) > currTime) then
+						dur = durTab.dur
+					end
+					line.dur.bigText:SetText(dur and format("%d",dur).."%" or "-")
+					if dur and dur <= 20 then
+						line.dur.bigText:SetTextColor(1,0,0)
+					elseif dur and dur <= 50 then
+						line.dur.bigText:SetTextColor(1,1,0)
+					else
+						line.dur.bigText:SetTextColor(1,1,1)
+					end
+				end
+	
+				if self.isTest and line.pos <= 15 then
+					self.testData[line.pos] = self.testData[line.pos] or {}
+	
+					local hideOne = self.testData[line.pos].hideOne or math.random(1,#RCW_iconsList)
+					self.testData[line.pos].hideOne = hideOne
+				
+					for i,key in pairs(RCW_iconsList) do
+						if line.pos <= 5 or i ~= hideOne then
+							line[key].texture:SetTexture(RCW_iconsListDebugIcons[i])
+							line[key].text:SetText("")
+						end
+					end
+	
+					local lowFlask = self.testData[line.pos].lowFlask or math.random(1,60)
+					self.testData[line.pos].lowFlask = lowFlask
+					if lowFlask <= 10 and line.flask.texture:GetTexture() then
+						line.flask.subIcon:Show()
+						line.flask.texture:SetAlpha(.6)
+					end
+	
+					if line.dur then
+						line.dur.texture:SetTexture("")
+						local dur = self.testData[line.pos].dur or math.random(1,10000) / 100
+						self.testData[line.pos].dur = dur
+	
+						line.dur.bigText:SetText(dur and format("%d",dur).."%" or "-")
+						if dur and dur <= 20 then
+							line.dur.bigText:SetTextColor(1,0,0)
+						elseif dur and dur <= 50 then
+							line.dur.bigText:SetTextColor(1,1,0)
+						else
+							line.dur.bigText:SetTextColor(1,1,1)
+						end
+					end
+	
+					buffCount = self.testData[line.pos].buffCount or math.random(4,5)
+					self.testData[line.pos].buffCount = buffCount				
+				end
+	
+				if line.rc_status == 3 then
+					line.name:SetTextColor(1,.5,.5)
+					line.name:SetAlpha(1)
+				elseif line.rc_status == 2 and (buffCount >= 5 or ExRT.isClassic) then
+					line.name:SetTextColor(1,1,1)
+					line.name:SetAlpha(.3)	
+				elseif line.rc_status == 2 then
+					line.name:SetTextColor(1,1,.5)
+					line.name:SetAlpha(1)
+				else
+					line.name:SetTextColor(1,1,1)
+					line.name:SetAlpha(1)
+				end
 			end
 		end
 	end
 	if total == totalResponced then
 		self:PrepToHide()
 	end
+	self.timeLeftLine:SetProgress(total,totalResponced)
 end
 
 module.frame:SetScript("OnEvent",function(self,event,unit)
+	--This can stop updating after UI hiding (Alt+Z)
 	if not self:IsVisible() then
 		self:UnregisterAllEvents()
 		return
 	end
 	if unit and RCW_UnitToLine[unit] then
-		module.frame:UpdateData()
+		module.frame:UpdateData(RCW_UnitToLine[unit])
 	end
 end)
 
@@ -1478,6 +1748,12 @@ function module:ReadyCheckWindow(starter,isTest,manual)
 	self.frame:UpdateData()
 
 	self.frame.headText:SetText("ExRT")
+
+	self.frame.timeLeftLine:Hide()
+
+	if self.frame.hideTimer then
+		self.frame.hideTimer:Cancel()
+	end
 
 	self.frame.anim:Stop()
 	self.frame:SetAlpha(1)
@@ -1516,12 +1792,10 @@ function module.main:ADDON_LOADED()
 	if VExRT.RaidCheck.ReadyCheckFrame then
 		module:RegisterEvents('READY_CHECK_FINISHED','READY_CHECK_CONFIRM')
 	end
-	if VExRT.RaidCheck.ReadyCheck or VExRT.RaidCheck.ReadyCheckFrame then
-		module:RegisterEvents('READY_CHECK')	
-	end
 	if VExRT.RaidCheck.PotionCheck then
 		--module:RegisterEvents('COMBAT_LOG_EVENT_UNFILTERED')
 	end
+	module:RegisterEvents('READY_CHECK')
 		
 	module:RegisterSlash()
 	module:RegisterTimer()
@@ -1598,7 +1872,11 @@ do
 			module.db.RaidCheckReadyCheckHideSchedule = ExRT.F.ScheduleTimer(ScheduledReadyCheckFinish, timer or 35)
 			module:ReadyCheckWindow(starter,isTest)
 			module.db.RaidCheckReadyCheckTime = GetTime() + (timer or 35)
+			module.frame.timeLeftLine:Start(timer or 35)
 			module.main:READY_CHECK_CONFIRM(ExRT.F.delUnitNameServer(starter),true,isTest)
+		end
+		if not isTest then
+			ExRT.F.SendExMsg("raidcheck","DUR\t"..ExRT.V.."\t"..format("%.2f",module:DurabilityCheck()))
 		end
 	end
 end
@@ -1616,7 +1894,7 @@ function module.main:READY_CHECK_CONFIRM(unit,response,isTest)
 		local line = RCW_UnitToLine[unit]
 		line.rc_status = response == true and 2 or 3
 
-		module.frame:UpdateData()
+		module.frame:UpdateData(line)
 	end
 end
 
@@ -1634,7 +1912,7 @@ do
 	end
 end
 
-function module:addonMessage(sender, prefix, type, ver)
+function module:addonMessage(sender, prefix, type, ver, ...)
 	if prefix == "raidcheck" then
 		if sender then
 			ver = max(tonumber(ver or "0") or 0,3910)	--set min ver to 3910
@@ -1649,6 +1927,21 @@ function module:addonMessage(sender, prefix, type, ver)
 					IsSendBuffsByMe = nil
 				end
 				return
+			end
+			if type == "DUR" then
+				local val = ...
+				val = tonumber(val or "100") or 100
+				module.db.durability[sender] = {
+					time = time(),
+					dur = val,
+				}
+				local shortName = ExRT.F.delUnitNameServer(sender)
+				module.db.durability[shortName] = module.db.durability[sender]
+
+				local line = RCW_UnitToLine[shortName]
+				if line then
+					module.frame:UpdateData(line)
+				end
 			end
 			if ExRT.F.IsPlayerRLorOfficer(ExRT.SDB.charName) == 2 then
 				return

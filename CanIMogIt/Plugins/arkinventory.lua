@@ -157,7 +157,8 @@ if IsAddOnLoaded("ArkInventory") then
 
         function CIMI_ArkInventoryAddFrame(frame,loc_id)
             -- Add to item frame
-            CIMI_AddToFrame(frame, ArkInventoryItemButton_CIMIUpdateIcon)
+            -- Added a C_Timer, since CanIMogItOptions aren't loaded yet.
+            C_Timer.After(.1, function() CIMI_AddToFrame(frame, ArkInventoryItemButton_CIMIUpdateIcon) end)
         end
 
         hooksecurefunc( ArkInventory.API, "ItemFrameLoaded", CIMI_ArkInventoryAddFrame )

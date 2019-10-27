@@ -152,7 +152,7 @@ CheckButton	ExRTRadioButtonModernTemplate
 local GlobalAddonName, ExRT = ...
 local isExRT = GlobalAddonName == "ExRT"
 
-local libVersion = 33
+local libVersion = 34
 
 if type(ELib)=='table' and type(ELib.V)=='number' and ELib.V > libVersion then return end
 
@@ -199,6 +199,7 @@ do
 	end
 	local function Widget_OnShow(self,func,disableFirstRun)
 		if not func then
+			self:SetScript("OnShow",nil)
 			return self
 		end
 		self:SetScript("OnShow",func)
@@ -283,6 +284,9 @@ do
 		return GlobalAddonName.."UIGlobal"..tostring(GlobalIndexNow)
 	end
 end
+
+local UIDropDownMenu_StartCounting = UIDropDownMenu_StartCounting or ExRT.NULLfunc or function()end
+local UIDropDownMenu_StopCounting = UIDropDownMenu_StopCounting or ExRT.NULLfunc or function()end
 
 --=======================================================================
 --=======================================================================
@@ -6166,4 +6170,27 @@ do
 		self:UpdateText()
 		return self
 	end
+end
+
+function ELib:FixPreloadFont(parent,fontObj,font,size,params)
+	local frame = CreateFrame("Frame",nil,parent)
+	frame:SetPoint("TOPLEFT")
+	frame:SetSize(1,1)
+
+	frame:SetScript("OnUpdate",function(self,elapsed)
+		if elapsed > .3 then
+			return
+		end
+		if type(fontObj) == "function" then
+			if fontObj(parent) then
+				self:SetScript("OnUpdate",nil)
+				self:Hide()
+			end
+		else
+			fontObj:SetFont(GameFontWhite:GetFont(), size - 1)
+			fontObj:SetFont(font, size, params)
+			self:SetScript("OnUpdate",nil)
+			self:Hide()
+		end
+	end)
 end

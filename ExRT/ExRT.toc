@@ -3,7 +3,7 @@
 ## Author: ykiigor
 ## Notes: Exorsus Raid Tools
 ## SavedVariables: VExRT
-## Version: 4080
+## Version: 4101
 core.lua
 Functions.lua
 embeds.xml
@@ -38,7 +38,8 @@ Bindings.lua
 Bindings.xml
 Blank.lua
 Profiles.lua
+Changelog.lua
+
 
 ## Title: |cff880303[爱不易]|r ExRT 团长工具
 ## X-Vendor: AbyUI
-

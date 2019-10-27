@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(679, "DBM-MogushanVaults", nil, 317)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190814211345")
+mod:SetRevision("20191024191342")
 mod:SetCreatureID(60051, 60043, 59915, 60047)--Cobalt: 60051, Jade: 60043, Jasper: 59915, Amethyst: 60047
 mod:SetEncounterID(1395)
 mod:SetZone()
@@ -42,7 +42,6 @@ local timerAmethystPoolCD			= mod:NewCDTimer(6, 130774, nil, false)
 
 local berserkTimer					= mod:NewBerserkTimer(420)
 
-mod:AddBoolOption("ArrowOnJasperChains")
 mod:AddBoolOption("InfoFrame")
 
 local expectedBosses = 3
@@ -151,10 +150,7 @@ function mod:OnCombatEnd()
 	if self.Options.InfoFrame then
 		DBM.InfoFrame:Hide()
 	end
-	if self.Options.ArrowOnJasperChains then
-		DBM.Arrow:Hide()
-	end
-end 
+end
 
 function mod:SPELL_AURA_APPLIED(args)
 	local spellId = args.spellId
@@ -164,12 +160,10 @@ function mod:SPELL_AURA_APPLIED(args)
 		self:Unschedule(warnJasperChainsTargets)
 		self:Schedule(0.3, warnJasperChainsTargets)
 		if activePetrification ~= "Jasper" then
-			if self.Options.ArrowOnJasperChains and #jasperChainsTargets == 2 then
+			if #jasperChainsTargets == 2 then
 				if jasperChainsTargets[1] == UnitName("player") then
-					DBM.Arrow:ShowRunTo(jasperChainsTargets[2])
 					specWarnJasperChains:Show(jasperChainsTargets[2])
 				elseif jasperChainsTargets[2] == UnitName("player") then
-					DBM.Arrow:ShowRunTo(jasperChainsTargets[1])
 					specWarnJasperChains:Show(jasperChainsTargets[1])
 				end
 			end
@@ -182,7 +176,6 @@ function mod:SPELL_AURA_APPLIED(args)
 			local uId = DBM:GetBossUnitId(Jasper)
 			if uId and UnitPower(uId) <= 50 and activePetrification == "Jasper" then--Make sure his energy isn't already high, otherwise breaking chains when jasper will only be active for a few seconds is bad
 				specWarnBreakJasperChains:Show()
-				DBM.Arrow:Hide()
 			end
 		end
 	elseif spellId == 130774 and args:IsPlayer() then
@@ -194,9 +187,6 @@ function mod:SPELL_AURA_REMOVED(args)
 	local spellId = args.spellId
 	if spellId == 130395 and args:IsPlayer() then
 		playerHasChains = false
-		if self.Options.ArrowOnJasperChains then
-			DBM.Arrow:Hide()
-		end
 	end
 end
 
@@ -248,7 +238,7 @@ function mod:RAID_BOSS_EMOTE(msg, boss)
 end
 
 function mod:OnSync(msg, boss)
-	-- if boss aprats from 10 yard and get Solid Stone, power no longer increase. If this, overlord not casts. So timer can be confusing. Disabled for find better way. 
+	-- if boss aprats from 10 yard and get Solid Stone, power no longer increase. If this, overlord not casts. So timer can be confusing. Disabled for find better way.
 	if msg == "Overload" and boss ~= activePetrification then
 		specWarnOverloadSoon:Show(Overload[boss])
 	end
@@ -290,7 +280,6 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 			local uId = DBM:GetBossUnitId(Jasper)
 			if uId and UnitPower(uId) <= 50 then--Make sure his energy isn't already high, otherwise breaking chains when jasper will only be active for a few seconds is bad
 				specWarnBreakJasperChains:Show()
-				DBM.Arrow:Hide()
 			end
 		end
 	elseif spellId == 116057 then

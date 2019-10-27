@@ -59,7 +59,7 @@ local function OnEncounterJournalLoaded(event, addonName, ...)
     for i=1,CanIMogIt.NUM_ENCOUNTER_JOURNAL_ENCOUNTER_LOOT_FRAMES do
         local frame = _G["EncounterJournalEncounterFrameInfoLootScrollFrameButton"..i]
         if frame then
-            CIMI_AddToFrame(frame, EncounterJournalFrame_CIMIUpdateIcon)
+            CIMI_AddToFrame(frame, EncounterJournalFrame_CIMIUpdateIcon, nil, "TOPRIGHT")
         end
     end
     encounterJournalLoaded = true

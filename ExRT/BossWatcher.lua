@@ -1688,6 +1688,8 @@ if ExRT.isClassic then
 				= _CombatLogGetCurrentEventInfo()
 		if event ~= "SWING_DAMAGE" and event ~= "SWING_MISSED" then
 			val1 = val2
+			if event == "SPELL_PERIODIC_DAMAGE" then event = "SPELL_DAMAGE"
+			elseif event == "SPELL_PERIODIC_HEAL" then event = "SPELL_HEAL" end
 		end
 		return timestamp,event,hideCaster,sourceGUID,sourceName,sourceFlags,sourceFlags2,destGUID,destName,destFlags,destFlags2,
 		val1,val2,val3,val4,val5,val6,val7,val8,val9,val10,val11,val12,val13,val14

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2343, "DBM-ZuldazarRaid", 3, 1176)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190901011616")
+mod:SetRevision("20191026001821")
 mod:SetCreatureID(146409)
 mod:SetEncounterID(2281)
 mod:SetZone()
@@ -171,7 +171,6 @@ local graspActive = false
 local castsPerGUID = {}
 local rangeThreshold = 1
 local fixStupid = {}
---1 2178508, 2 2178501, 3 2178502, 4 2178503, 2178500 (none)--Not best icons, better ones needed
 local interruptTextures = {[1] = 2178508, [2] = 2178501, [3] = 2178502, [4] = 2178503, [5] = 2178504, [6] = 2178505, [7] = 2178506, [8] = 2178507,}--Fathoms Deck
 local CVAR1, CVAR2 = nil, nil
 
@@ -409,6 +408,7 @@ function mod:SPELL_CAST_START(args)
 			end
 		end
 		if self.Options.NPAuraOnWaterBolt then
+			DBM.Nameplate:Hide(true, args.sourceGUID)--In case spell interrupt check still isn't working
 			DBM.Nameplate:Show(true, args.sourceGUID, spellId, interruptTextures[count])
 		end
 	elseif spellId == 288619 then

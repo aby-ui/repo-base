@@ -76,9 +76,6 @@ function OmniBar:OnEnable()
 		profile = { bars = {} }
 	}, true)
 
-	-- import older version cooldowns
-	self.db.global.cooldowns = OmniBarDB.cooldowns and OmniBarDB.cooldowns or {}
-
 	self.index = 1
 
 	for i = #self.bars, 1, -1 do

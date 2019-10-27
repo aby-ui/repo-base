@@ -1017,6 +1017,7 @@ function WorldQuestTracker.SetupWorldQuestButton (self, worldQuestType, rarity, 
 			self.questTypeBlip:SetTexture (WorldQuestTracker.MapData.QuestTypeIcons [WQT_QUESTTYPE_PETBATTLE].icon)
 			self.questTypeBlip:SetTexCoord (unpack (WorldQuestTracker.MapData.QuestTypeIcons [WQT_QUESTTYPE_PETBATTLE].coords))
 			self.questTypeBlip:SetAlpha (1)
+			self.QuestType = QUESTTYPE_PET
 			
 		elseif (worldQuestType == LE_QUEST_TAG_TYPE_PROFESSION) then
 			
@@ -1025,7 +1026,7 @@ function WorldQuestTracker.SetupWorldQuestButton (self, worldQuestType, rarity, 
 		else
 			self.questTypeBlip:Hide()
 		end
-		
+
 		-- tempo restante
 		local timeLeft = WorldQuestTracker.GetQuest_TimeLeft (questID)
 		if (timeLeft < 1) then
@@ -1157,6 +1158,10 @@ function WorldQuestTracker.SetupWorldQuestButton (self, worldQuestType, rarity, 
 				okay = true
 			end
 			
+			if (worldQuestType == LE_QUEST_TAG_TYPE_PET_BATTLE) then
+				self.QuestType = QUESTTYPE_PET
+			end
+
 			if (not okay) then
 				if (UpdateDebug) then print ("NeedUpdate 4") end
 				WorldQuestTracker.ScheduleZoneMapUpdate()

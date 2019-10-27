@@ -95,7 +95,7 @@ local function AddAndUpdateQuestFrames(frameName)
     for i=1,totalRewards do
         local frame = _G[frameName..i]
         if frame then
-            local cimiFrame = CIMI_AddToFrame(frame, QuestFrameUpdateIcon)
+            local cimiFrame = CIMI_AddToFrame(frame, QuestFrameUpdateIcon, nil, "TOPRIGHT")
             if frame.CanIMogItOverlay then
                 index, doingChoices = AddIndexInfoToCIMIFrame(frame.CanIMogItOverlay,
                     numChoices, index, doingChoices)

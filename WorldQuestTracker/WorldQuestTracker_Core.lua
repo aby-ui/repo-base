@@ -4347,6 +4347,7 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 
 				if (mapType == "zone") then
 					local qType = self.QuestType
+
 					if (qType == "gold") then
 						qType = QUESTTYPE_GOLD
 						
@@ -4355,21 +4356,16 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 						
 					elseif (qType == "apower") then
 						qType = QUESTTYPE_ARTIFACTPOWER
-						
+
 					elseif (qType == "petbattle") then
 						qType = QUESTTYPE_PET
-						
 					end
-					
+
 					local widgets = WorldQuestTracker.Cache_ShownWidgetsOnZoneMap
 					for _, widget in ipairs (widgets) do
 						if (widget.QuestType == qType) then
-							--WorldQuestTracker.AddQuestToTracker (widget)
 							tinsert (questTableToTrack, widget)
-							--[=[
-
-							--]=]
-						end
+						end	
 					end
 
 					if (WorldQuestTracker.db.profile.sound_enabled) then

@@ -277,6 +277,8 @@ L.InviteRaidDiffCheck = "Autochange raid difficulty"
 L.InviteRaidDiff = "Raid Difficulty:"
 L.InviteMasterlooters = "Masterlooters:"
 PH.InviteMasterlootersTooltip = "Names of masterlooters separated by a space"
+PH.InviteListButton = "Invite by list"
+PH.InviteListTip = "Each name on a new line"
 
 L.cd2fix = "Lock"
 L.cd2alpha = "Alpha"

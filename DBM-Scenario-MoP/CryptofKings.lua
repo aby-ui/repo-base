@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("d504", "DBM-Scenario-MoP")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190814211345")
+mod:SetRevision("20191024191342")
 mod:SetZone()
 
 mod:RegisterCombat("scenario", 1030)
@@ -76,7 +76,7 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif args.spellId == 120215 then
 		warnDarkforce:Show()
 		specWarnDarkforce:Show()
-		timerDarkforce:Start(self:IsDifficulty("heroic5") and 3.5 or 5)
+		timerDarkforce:Start(self:IsHeroic() and 3.5 or 5)
 		timerDarkforceCD:Start()
 	end
 end

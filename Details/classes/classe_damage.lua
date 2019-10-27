@@ -2972,7 +2972,12 @@ function atributo_damage:ToolTip_DamageDone (instancia, numero, barra, keydown)
 				
 					local nome_magia, _, icone_magia = _GetSpellInfo (spellID)
 					if (petName) then
-						nome_magia = nome_magia .. " (|cFFCCBBBB" .. petName .. "|r)"
+						if (not nome_magia) then
+							spellID = spellID or "spellId?"
+							nome_magia = "|cffffaa00" .. spellID .. " " .. " (|cFFCCBBBB" .. petName .. "|r)"
+						else
+							nome_magia = nome_magia .. " (|cFFCCBBBB" .. petName .. "|r)"
+						end
 					end
 					
 					if (instancia.sub_atributo == 1 or instancia.sub_atributo == 6) then

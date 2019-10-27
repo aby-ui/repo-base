@@ -554,7 +554,7 @@ function module:SendResp()
 			if #buffer == 19 then
 				ExRT.F.SendExMsg("wachk", ExRT.F.CreateAddonMsg("R",bufferStart,unpack(buffer)))
 				wipe(buffer)
-				bufferStart = i + 1
+				bufferStart = i
 				isChanged = false
 			end
 		end

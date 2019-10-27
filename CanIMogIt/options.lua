@@ -35,7 +35,9 @@ function CanIMogIt.CreateMigrationPopup(dialogName, onAcceptFunc)
 end
 
 
-CanIMogIt_OptionsVersion = "1.9"
+-- OptionsVersion: Keep this as an integer, so comparison is easy.
+CanIMogIt_OptionsVersion = "20"
+
 
 CanIMogItOptions_Defaults = {
     ["options"] = {
@@ -51,6 +53,7 @@ CanIMogItOptions_Defaults = {
         ["showVerboseText"] = false,
         ["showSourceLocationTooltip"] = false,
         ["printDatabaseScan"] = true,
+        ["iconLocation"] = "TOPRIGHT",
     },
 }
 
@@ -95,6 +98,10 @@ CanIMogItOptions_DisplayData = {
     ["printDatabaseScan"] = {
         ["displayName"] = L["Database Scanning chat messages"],
         ["description"] = L["Shows chat messages on login about the database scan."]
+    },
+    ["iconLocation"] = {
+        ["displayName"] = L["Location: "],
+        ["description"] = L["Move the icon to a different location on all frames."]
     },
 }
 
@@ -254,6 +261,59 @@ local function newCheckbox(parent, variableName, onClickFunction)
 end
 
 
+local function newDropDown(parent, variableName)
+    local displayData = CanIMogItOptions_DisplayData[variableName]
+    local frame = CreateFrame("Frame", "CanIMogItDropDownFrame" .. variableName, parent)
+    local dropDown = CreateFrame("Frame", "CanIMogItDropDown" .. variableName,
+            frame, "UIDropDownMenuTemplate")
+    UIDropDownMenu_SetWidth(dropDown, 150)
+    UIDropDownMenu_SetText(dropDown, CanIMogIt.LOCATIONS_TEXT[CanIMogItOptions[variableName]])
+
+    UIDropDownMenu_Initialize(dropDown, function(self, level, menuList)
+        local info = UIDropDownMenu_CreateInfo()
+        info.func = self.SetValue
+        -- TODO: This is hard-coded to locations, and will need to be changed for other dropdowns.
+        for _, value in ipairs(CanIMogIt.LOCATIONS_ORDER) do
+            name = CanIMogIt.LOCATIONS_TEXT[value]
+            info.text, info.arg1, info.checked = name, value, CanIMogItOptions[variableName] == value
+            UIDropDownMenu_AddButton(info)
+        end
+    end)
+
+    dropDown.SetValue = function(self, newValue)
+        CanIMogItOptions[variableName] = newValue
+        -- TODO: This is hard-coded to locations, and will need to be changed for other dropdowns.
+        UIDropDownMenu_SetText(dropDown, CanIMogIt.LOCATIONS_TEXT[CanIMogItOptions[variableName]])
+        CloseDropDownMenus()
+    end
+
+    -- TODO: This is hard-coded to locations, and will need to be changed for other dropdowns.
+
+
+    local title = frame:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
+    title:SetText(L["Icon Location"])
+
+    local text = frame:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
+    text:SetText("- " .. L["Requires /reload to take effect."])
+    local text2 = frame:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
+    text2:SetText("- " .. L["Does not affect Quests or Adventure Journal."])
+
+    frame:SetSize(300, 85)
+
+    title:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, -5)
+    dropDown:SetPoint("TOPLEFT", title, "BOTTOMLEFT", 0, -5)
+    text:SetPoint("TOPLEFT", dropDown, "BOTTOMLEFT", 30, 0)
+    text2:SetPoint("TOPLEFT", text, "BOTTOMLEFT", 0, -4)
+
+    -- Use this to show the bottom of the frame.
+    -- local sample = frame:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
+    -- sample:SetText("exmaple.")
+    -- sample:SetPoint("TOPLEFT", frame, "BOTTOMLEFT")
+
+    return frame
+end
+
+
 local function createOptionsMenu()
     -- define the checkboxes
     CanIMogIt.frame.debug =  newCheckbox(CanIMogIt.frame, "debug", debugCheckboxOnClick)
@@ -266,6 +326,7 @@ local function createOptionsMenu()
     CanIMogIt.frame.showVerboseText = newCheckbox(CanIMogIt.frame, "showVerboseText")
     CanIMogIt.frame.showSourceLocationTooltip = newCheckbox(CanIMogIt.frame, "showSourceLocationTooltip")
     CanIMogIt.frame.printDatabaseScan = newCheckbox(CanIMogIt.frame, "printDatabaseScan")
+    CanIMogIt.frame.iconLocation = newDropDown(CanIMogIt.frame, "iconLocation")
 
     -- position the checkboxes
     CanIMogIt.frame.debug:SetPoint("TOPLEFT", 16, -16)
@@ -278,6 +339,7 @@ local function createOptionsMenu()
     CanIMogIt.frame.showVerboseText:SetPoint("TOPLEFT", CanIMogIt.frame.showItemIconOverlay, "BOTTOMLEFT")
     CanIMogIt.frame.showSourceLocationTooltip:SetPoint("TOPLEFT", CanIMogIt.frame.showVerboseText, "BOTTOMLEFT")
     CanIMogIt.frame.printDatabaseScan:SetPoint("TOPLEFT", CanIMogIt.frame.showSourceLocationTooltip, "BOTTOMLEFT")
+    CanIMogIt.frame.iconLocation:SetPoint("TOPLEFT", CanIMogIt.frame.printDatabaseScan, "BOTTOMLEFT")
 end
 
 
