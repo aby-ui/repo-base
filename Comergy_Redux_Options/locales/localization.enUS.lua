@@ -9,6 +9,7 @@ if (true) then
     COMERGY_CHI = CHI
     COMERGY_COMBO = COMBO_POINTS
     COMERGY_HOLY_POWER = HOLY_POWER
+    COMERGY_ARCANE_CHARGES = POWER_TYPE_ARCANE_CHARGES
     COMERGY_INSANITY = INSANITY
     COMERGY_SOUL_SHARD = SOUL_SHARDS
     COMERGY_RUNE = RUNES
@@ -91,6 +92,12 @@ if (true) then
         ["ChiDiff"] = "Fancy holy power bars",
     }
 
+    COMERGY_SLIDERINFO_ARCANE_CHARGES = {
+        ["ChiHeight"] = "Arcane charges bar thickness",
+        ["ChiBGAlpha"] = "Arcane charges BG alpha",
+        ["ChiDiff"] = "Fancy arcane charges bars",
+    }
+
     COMERGY_SLIDERINFO_RUNE = {
         ["RuneHeight"] = "Rune bar thickness",
         ["RuneBGAlpha"] = "Rune cd alpha",
@@ -171,6 +178,12 @@ if (true) then
         ["ChiText"] = "Holy power text",
         ["UnifiedChiColor"] = "Unified holy power color",
         ["ChiFlash"] = "Flash holy power when full holy power",
+    }
+
+    COMERGY_CHECKOPTINFO_ARCANE_CHARGES = {
+        ["ChiText"] = "Arcane charges text",
+        ["UnifiedChiColor"] = "Unified arcane charges color",
+        ["ChiFlash"] = "Flash arcane charges when full",
     }
 
     COMERGY_CHECKOPTINFO_RUNE = {

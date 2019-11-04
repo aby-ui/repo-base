@@ -2,7 +2,10 @@
 -- Licensed under the terms of the LGPL2
 -- modified to support byte seq table and World of Warcraft by Boshi Lian <farmer1992@gmail.com> 2010 Oct 24
 
-local base64 = LibStub:NewLibrary("BASE64-1.0", 1)
+local _, ADDONSELF = ...
+ADDONSELF.base64 = {}
+
+local base64 = ADDONSELF.base64 
 
 local CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
 

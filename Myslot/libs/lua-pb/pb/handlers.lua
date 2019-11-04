@@ -1,6 +1,8 @@
 -- Copyright (c) 2011, Robert G. Jakabosky <bobby@sharedrealm.com> All rights reserved.
+local _, ADDONSELF = ...
+ADDONSELF.luapb.handlers = {}
 
-local _M = LibStub:NewLibrary("pblua.handlers", 1)
+local _M = ADDONSELF.luapb.handlers
 
 local setmetatable = setmetatable
 local rawset = rawset

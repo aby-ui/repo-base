@@ -448,7 +448,7 @@ end
 
 OptionsFrame.Changelog = ELib:ScrollFrame(OptionsFrame):Size(620,160):Point(15,-325):OnShow(function(self)
 	local isFind
-	local text = ExRT.Changelog:gsub("^[ \t\n]*","|cff99ff99"):gsub("v%.(%d+)",function(ver)
+	local text = ExRT.Options.Changelog:gsub("^[ \t\n]*","|cff99ff99"):gsub("v%.(%d+)",function(ver)
 		if not isFind and ver ~= tostring(ExRT.V) then
 			isFind = true
 			return "|rv."..ver
@@ -574,7 +574,19 @@ CreateDataBrokerPlugin()
 
 -- Changelog
 
-ExRT.Changelog = [=[
+ExRT.Options.Changelog = [=[
+v.4110
+* Invite tools: fixed bug with massinvite/invites by list
+* Raid check: added closing on right click
+* Raid check: added minimize button
+
+v.4110-Classic
+* Invite tools: fixed bug with massinvite/invites by list
+* Raid check: more icon slots for flasks
+* Raid check: added closing on right click
+* Raid check: added minimize button
+* Minor fixes
+
 v.4101
 * Bugfixes
 

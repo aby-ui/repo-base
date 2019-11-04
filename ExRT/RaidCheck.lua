@@ -1027,11 +1027,20 @@ end
 local RCW_iconsList = {'food','flask','rune','vantus','int','ap','stam','dur'}
 local RCW_iconsListHeaders = {L.RaidCheckHeadFood,L.RaidCheckHeadFlask,L.RaidCheckHeadRune,L.RaidCheckHeadVantus,SPELL_STAT4_NAME or "Int",ATTACK_POWER_TOOLTIP or "AP",SPELL_STAT3_NAME or "Stamina",DURABILITY or "Durability"}
 local RCW_iconsListDebugIcons = {136000,967549,840006,1058937,135932,132333,135987,132281}
+local RCW_iconsListWide = {}
 local RCW_liveToClassicDiff = 0
 
 if ExRT.isClassic then
+	local wideDiff = 0
+	for k,v in pairs(RCW_iconsListWide) do 
+		if v then
+			wideDiff = wideDiff - 1
+		end
+	end
+
 	RCW_liveToClassicDiff = (#module.db.classicBuffs + 2) - #RCW_iconsList + 1
 	RCW_iconsListDebugIcons[2] = 134877
+	RCW_iconsListWide[2] = true
 	for i=3,#RCW_iconsList do
 		RCW_iconsList[i] = nil
 		RCW_iconsListHeaders[i] = nil
@@ -1045,6 +1054,13 @@ if ExRT.isClassic then
 	RCW_iconsList[#RCW_iconsList+1] = "dur"
 	RCW_iconsListHeaders[#RCW_iconsList] = DURABILITY or "Durability"
 	RCW_iconsListDebugIcons[#RCW_iconsList] = 132281
+
+	for k,v in pairs(RCW_iconsListWide) do 
+		if v then
+			wideDiff = wideDiff + 1
+		end
+	end
+	RCW_liveToClassicDiff = RCW_liveToClassicDiff + wideDiff
 end
 
 module.frame = ELib:Template("ExRTDialogModernTemplate",UIParent)
@@ -1062,6 +1078,11 @@ module.frame:SetScript("OnDragStop", function(self)
 	self:StopMovingOrSizing()
 	VExRT.RaidCheck.ReadyCheckLeft = self:GetLeft()
 	VExRT.RaidCheck.ReadyCheckTop = self:GetTop()
+end)
+module.frame:SetScript("OnMouseDown", function(self,button) 
+	if button == "RightButton" then
+		self:Hide()
+	end
 end)
 module.frame:Hide()
 
@@ -1089,7 +1110,79 @@ module.frame:SetScript("OnHide", function(self)
 	end
 end)
 
+do
+	local button = CreateFrame("Button",nil,module.frame)
+	module.frame.mimimize = button
+	button.TC = {
+		up = {0.3125,0.375,0.5,0.625},
+		down = {0.25,0.3125,0.5,0.625},
+	}
+	button:SetPoint("TOPRIGHT",-20,0)
+	button:SetSize(18,18)
+	button:SetScript("OnClick",function(self)
+		if self.isMinimized then
+			self.isMinimized = nil
+
+			module.frame.minimized:Hide()
+			module.frame.maximized:Show()
+	
+			self.NormalTexture:SetTexCoord(unpack(self.TC.up))
+			self.HighlightTexture:SetTexCoord(unpack(self.TC.up))
+			self.PushedTexture:SetTexCoord(unpack(self.TC.up))
+
+			module.frame:SetHeight(module.frame.SizeMaximized)
+		else
+			self.isMinimized = true
+
+			module.frame.minimized:Show()
+			module.frame.maximized:Hide()
+	
+			self.NormalTexture:SetTexCoord(unpack(self.TC.down))
+			self.HighlightTexture:SetTexCoord(unpack(self.TC.down))
+			self.PushedTexture:SetTexCoord(unpack(self.TC.down))
+
+			module.frame:SetHeight(module.frame.SizeMinimized)
+		end
+	end)
+	
+	button.NormalTexture = button:CreateTexture(nil,"ARTWORK")
+	button.NormalTexture:SetTexture("Interface\\AddOns\\ExRT\\media\\DiesalGUIcons16x256x128")
+	button.NormalTexture:SetPoint("TOPLEFT")
+	button.NormalTexture:SetPoint("BOTTOMRIGHT")
+	button.NormalTexture:SetVertexColor(1,1,1,.7)
+	button.NormalTexture:SetTexCoord(unpack(button.TC.up))
+	button:SetNormalTexture(button.NormalTexture)
+	
+	button.HighlightTexture = button:CreateTexture(nil,"ARTWORK")
+	button.HighlightTexture:SetTexture("Interface\\AddOns\\ExRT\\media\\DiesalGUIcons16x256x128")
+	button.HighlightTexture:SetPoint("TOPLEFT")
+	button.HighlightTexture:SetPoint("BOTTOMRIGHT")
+	button.HighlightTexture:SetVertexColor(1,1,0,1)
+	button.HighlightTexture:SetTexCoord(unpack(button.TC.up))	
+	button:SetHighlightTexture(button.HighlightTexture)
+
+	button.PushedTexture = button:CreateTexture(nil,"ARTWORK")
+	button.PushedTexture:SetTexture("Interface\\AddOns\\ExRT\\media\\DiesalGUIcons16x256x128")
+	button.PushedTexture:SetPoint("TOPLEFT")
+	button.PushedTexture:SetPoint("BOTTOMRIGHT")
+	button.PushedTexture:SetVertexColor(1,1,1,1)
+	button.PushedTexture:SetTexCoord(unpack(button.TC.up))	
+	button:SetPushedTexture(button.PushedTexture)
+
+end
+
+module.frame.minimized = CreateFrame('Frame',nil,module.frame)
+module.frame.minimized:SetPoint("TOPLEFT")
+module.frame.minimized:SetSize(1,1)
+module.frame.minimized:Hide()
+
+module.frame.maximized = CreateFrame('Frame',nil,module.frame)
+module.frame.maximized:SetPoint("TOPLEFT")
+module.frame.maximized:SetSize(1,1)
+
+
 module.frame.lines = {}
+module.frame.lines_mini = {}
 
 local function RCW_LineOnUpdate(self)
 	if self:IsMouseOver(self) and not self.hoverShow then
@@ -1117,86 +1210,113 @@ local function RCW_LineOnLeave(self)
 	end
 end
 
-for i=1,40 do
-	local line = CreateFrame("FRAME",nil,module.frame)
-	module.frame.lines[i] = line
-	line.pos = i
-	if i==1 then
-		line:SetPoint("TOPLEFT", 5, -50)
-	else
-		line:SetPoint("TOPLEFT", module.frame.lines[i-1], "BOTTOMLEFT", 0, -0)
+local function RCW_AddIcon(parent,texture)
+	local icon = ELib:Icon(parent,texture,14)
+
+	icon:SetScript("OnEnter",RCW_LineOnEnter)
+	icon:SetScript("OnLeave",RCW_LineOnLeave)
+
+	icon.texture:SetTexCoord(.1,.9,.1,.9)
+	icon.text = ELib:Text(icon,"100",8):Point("BOTTOMRIGHT",4,0):Right():Color(0,1,0)
+	icon.bigText = ELib:Text(icon,"",10):Point("CENTER",0,0):Center():Color(1,1,1)
+
+	icon.subIcon = icon:CreateTexture(nil, "BORDER")
+	icon.subIcon:SetPoint("CENTER",icon,"TOPRIGHT",-2,-2)
+	icon.subIcon:SetSize(10,10)
+	icon.subIcon:SetTexture([[Interface\AddOns\ExRT\media\DiesalGUIcons16x256x128]])
+	icon.subIcon:SetTexCoord(0.125,0.1875,0.5,0.625)
+	icon.subIcon:SetVertexColor(1,0,0)
+	icon.subIcon:Hide()
+
+	return icon
+end
+
+function module.frame:Create()
+	if self.isCreated then
+		return
 	end
-	line:SetSize(420+(ExRT.isClassic and 30*RCW_liveToClassicDiff or 0),14)
+	self.isCreated = true
 
-	line.name = ELib:Text(line,"raid"..i):Size(130,12):Point("LEFT",20,0):Font(ExRT.F.defFont,12):Color():Shadow()
+	local miniWidth = (module.frame:GetWidth() - 10) / 4
 
-	line.icon = ELib:Icon(line,"Interface\\RaidFrame\\ReadyCheck-Waiting",14):Point("LEFT",0,0)
-
-	for i,key in pairs(RCW_iconsList) do
-		line[key] = ELib:Icon(line,RCW_iconsListDebugIcons[i],14)
-
+	for i=1,40 do
+		local line = CreateFrame("FRAME",nil,module.frame.maximized)
+		module.frame.lines[i] = line
+		line.pos = i
 		if i==1 then
-			line[key]:Point("CENTER",line.name,"RIGHT",15,0)
+			line:SetPoint("TOPLEFT", 5, -50)
 		else
-			line[key]:Point("CENTER",line[ RCW_iconsList[i-1] ],"CENTER",30,0)
+			line:SetPoint("TOPLEFT", module.frame.lines[i-1], "BOTTOMLEFT", 0, -0)
 		end
+		line:SetSize(420+(ExRT.isClassic and 30*RCW_liveToClassicDiff or 0),14)
+	
+		line.name = ELib:Text(line,"raid"..i):Size(130,12):Point("LEFT",20,0):Font(ExRT.F.defFont,12):Color():Shadow()
+	
+		line.icon = ELib:Icon(line,"Interface\\RaidFrame\\ReadyCheck-Waiting",14):Point("LEFT",0,0)
+	
+		for i,key in pairs(RCW_iconsList) do
+			line[key.."pointer"] = CreateFrame("Frame",nil,line)
+			line[key.."pointer"]:SetSize(RCW_iconsListWide[i] and 60 or 30,14)
+	
+			if i==1 then
+				line[key.."pointer"]:SetPoint("CENTER",line.name,"RIGHT",15 - 5,0)
+			else
+				line[key.."pointer"]:SetPoint("CENTER",line[ RCW_iconsList[i-1].."pointer" ],"CENTER",30+(RCW_iconsListWide[i-1] and 15 or 0)+(RCW_iconsListWide[i] and 15 or 0),0)
+			end
+	
+			line[key] = RCW_AddIcon(line,RCW_iconsListDebugIcons[i])
+			line[key]:Point("CENTER",line[key.."pointer"],"CENTER",0,0)
+	
+			for j=2,4 do
+				line[key..j] = RCW_AddIcon(line,RCW_iconsListDebugIcons[i])
+				line[key..j]:Point("LEfT",line[key..((j-1) == 1 and "" or tostring(j-1))],"RIGHT",0,0)
+				line[key..j]:Hide()
+			end
+		end
+	
+		if i%2 == 0 then
+			line.back = line:CreateTexture(nil,"BACKGROUND")
+			line.back:SetPoint("TOPLEFT",-5,0)
+			line.back:SetPoint("BOTTOMRIGHT",5,0)
+			line.back:SetColorTexture(1,1,1,.05)
+		end
+	
+		line.hover = line:CreateTexture(nil,"BACKGROUND")
+		line.hover:SetPoint("TOPLEFT",-5,0)
+		line.hover:SetPoint("BOTTOMRIGHT",5,0)
+		line.hover:SetColorTexture(1,1,1,1)
+		line.hover:SetAlpha(0)
+	
+		line.classLeft = line:CreateTexture(nil,"BACKGROUND",nil,5)
+		line.classLeft:SetPoint("TOPLEFT",-5,0)
+		line.classLeft:SetPoint("BOTTOMLEFT",-5,0)
+		--line.classLeft:SetWidth(160)
+		line.classLeft:SetPoint("RIGHT",5,0)
+		line.classLeft:SetColorTexture(1,1,1,1)
+		line.classLeft:SetGradientAlpha("VERTICAL",.24,.25,.30,1,.27,.28,.33,1)
+	
+		line:SetScript("OnUpdate",RCW_LineOnUpdate)
 
-		line[key]:SetScript("OnEnter",RCW_LineOnEnter)
-		line[key]:SetScript("OnLeave",RCW_LineOnLeave)
 
-		line[key].texture:SetTexCoord(.1,.9,.1,.9)
-		line[key].text = ELib:Text(line[key],"100",8):Point("BOTTOMRIGHT",4,0):Right():Color(0,1,0)
-		line[key].bigText = ELib:Text(line[key],"",10):Point("CENTER",0,0):Center():Color(1,1,1)
+		local line_mini = CreateFrame("FRAME",nil,module.frame.minimized)
+		module.frame.lines_mini[i] = line_mini
+		line_mini.pos = i
+		
+		if i==1 then
+			line_mini:SetPoint("TOPLEFT", 5, -20)
+		elseif i % 4 == 1 then
+			line_mini:SetPoint("TOPLEFT", module.frame.lines_mini[i-4], "BOTTOMLEFT", 0, -0)
+		else
+			line_mini:SetPoint("TOPLEFT", module.frame.lines_mini[i-1], "TOPRIGHT", 0, -0)
+		end
+		line_mini:SetSize(miniWidth,14)
+	
+		line_mini.name = ELib:Text(line_mini,"raid"..i):Size(miniWidth-16,12):Point("LEFT",16,0):Font(ExRT.F.defFont,12):Color():Shadow()
+	
+		line_mini.icon = ELib:Icon(line_mini,"Interface\\RaidFrame\\ReadyCheck-Waiting",14):Point("LEFT",0,0)
 
-		line[key].subIcon = line[key]:CreateTexture(nil, "BORDER")
-		line[key].subIcon:SetPoint("CENTER",line[key],"TOPRIGHT",-2,-2)
-		line[key].subIcon:SetSize(10,10)
-		line[key].subIcon:SetTexture([[Interface\AddOns\ExRT\media\DiesalGUIcons16x256x128]])
-		line[key].subIcon:SetTexCoord(0.125,0.1875,0.5,0.625)
-		line[key].subIcon:SetVertexColor(1,0,0)
-		line[key].subIcon:Hide()
-
-		line[key.."2"] = ELib:Icon(line,RCW_iconsListDebugIcons[i],14)
-		line[key.."2"]:Point("LEfT",line[key],"RIGHT",0,0)
-		line[key.."2"]:SetScript("OnEnter",RCW_LineOnEnter)
-		line[key.."2"]:SetScript("OnLeave",RCW_LineOnLeave)
-		line[key.."2"].texture:SetTexCoord(.1,.9,.1,.9)
-		line[key.."2"].text = ELib:Text(line[key.."2"],"100",8):Point("BOTTOMRIGHT",4,0):Right():Color(0,1,0)
-		line[key.."2"].bigText = ELib:Text(line[key.."2"],"",10):Point("CENTER",0,0):Center():Color(1,1,1)
-		line[key.."2"]:Hide()
-
-		line[key.."2"].subIcon = line[key.."2"]:CreateTexture(nil, "BORDER")
-		line[key.."2"].subIcon:SetPoint("CENTER",line[key.."2"],"TOPRIGHT",-2,-2)
-		line[key.."2"].subIcon:SetSize(10,10)
-		line[key.."2"].subIcon:SetTexture([[Interface\AddOns\ExRT\media\DiesalGUIcons16x256x128]])
-		line[key.."2"].subIcon:SetTexCoord(0.125,0.1875,0.5,0.625)
-		line[key.."2"].subIcon:SetVertexColor(1,0,0)
-		line[key.."2"].subIcon:Hide()
-
+		line.mini = line_mini
 	end
-
-	if i%2 == 0 then
-		line.back = line:CreateTexture(nil,"BACKGROUND")
-		line.back:SetPoint("TOPLEFT",-5,0)
-		line.back:SetPoint("BOTTOMRIGHT",5,0)
-		line.back:SetColorTexture(1,1,1,.05)
-	end
-
-	line.hover = line:CreateTexture(nil,"BACKGROUND")
-	line.hover:SetPoint("TOPLEFT",-5,0)
-	line.hover:SetPoint("BOTTOMRIGHT",5,0)
-	line.hover:SetColorTexture(1,1,1,1)
-	line.hover:SetAlpha(0)
-
-	line.classLeft = line:CreateTexture(nil,"BACKGROUND",nil,5)
-	line.classLeft:SetPoint("TOPLEFT",-5,0)
-	line.classLeft:SetPoint("BOTTOMLEFT",-5,0)
-	--line.classLeft:SetWidth(160)
-	line.classLeft:SetPoint("RIGHT",5,0)
-	line.classLeft:SetColorTexture(1,1,1,1)
-	line.classLeft:SetGradientAlpha("VERTICAL",.24,.25,.30,1,.27,.28,.33,1)
-
-	line:SetScript("OnUpdate",RCW_LineOnUpdate)	
 end
 
 do
@@ -1224,7 +1344,8 @@ do
 	line.back2:SetColorTexture(1,1,1)
 	line.back2:SetGradientAlpha("HORIZONTAL",cR1,cG1,cB1,1,cR1,cG1,cB1,0)
 
-	line.time = ELib:Text(line,"40"):Point("TOPLEFT",5,-34):Font(ExRT.F.defFont,12):Color():Shadow()
+	line.time = ELib:Text(module.frame.maximized,"40"):Point("TOPLEFT",line,5,-34):Font(ExRT.F.defFont,12):Color():Shadow()
+	line.time:Hide()
  
  	local currR,currG,currB = 1,.2,.2
 
@@ -1267,15 +1388,21 @@ do
 
 		line.anim_alpha:Stop()
 		line:SetAlpha(1)
+		line.time:SetAlpha(1)
 		stop = nil
 		self:Show()
+		self.time:Show()
 	end
+	line:SetScript("OnHide",function(self)
+		line.time:Hide()
+	end)
 
 	line.anim_alpha = line:CreateAnimationGroup()
 	line.anim_alpha.color = line.anim_alpha:CreateAnimation()
 	line.anim_alpha.color:SetDuration(1)
 	line.anim_alpha.color:SetScript("OnUpdate", function(self,elapsed) 
 		line:SetAlpha(1 - self:GetProgress())
+		line.time:SetAlpha(1 - self:GetProgress())
 	end)
 	line.anim_alpha.color:SetScript("OnFinished", function() 
 		line.anim_alpha:Stop() 
@@ -1340,7 +1467,7 @@ do
 end
 
 do
-	local headers = CreateFrame("Frame",nil,module.frame)
+	local headers = CreateFrame("Frame",nil,module.frame.maximized)
 	module.frame.headers = headers
 
 	for i,key in pairs(RCW_iconsListHeaders) do
@@ -1348,7 +1475,7 @@ do
 		if i == 1 then
 			headers[i]:Point("BOTTOMLEFT",module.frame,"TOPLEFT",155,-48)
 		else
-			headers[i]:Point("BOTTOMLEFT",headers[i-1],"BOTTOMLEFT",30,0)
+			headers[i]:Point("BOTTOMLEFT",headers[i-1],"BOTTOMLEFT",30+(RCW_iconsListWide[i-1] and 15 or 0)+(RCW_iconsListWide[i] and 15 or 0),0)
 		end
 	end
 
@@ -1392,15 +1519,14 @@ function module.frame:UpdateLinesSize(large)
 		local line = self.lines[i]
 		line:SetHeight(size1)
 		for i,key in pairs(RCW_iconsList) do
-			line[key]:SetSize(size2,size2)
-			line[key].text:SetFont(line[key].text:GetFont(),size3,"OUTLINE")
-			line[key].bigText:SetFont(line[key].bigText:GetFont(),size4,"OUTLINE")
-			line[key].subIcon:SetSize(size4,size4)
-
-			line[key.."2"]:SetSize(size2,size2)
-			line[key.."2"].text:SetFont(line[key.."2"].text:GetFont(),size3,"OUTLINE")
-			line[key.."2"].bigText:SetFont(line[key.."2"].bigText:GetFont(),size4,"OUTLINE")
-			line[key.."2"].subIcon:SetSize(size4,size4)
+			for j=1,4 do
+				local icon = line[key..(j == 1 and "" or tostring(j))]
+				icon:SetSize(size2,size2)
+				icon.size = size2
+				icon.text:SetFont(icon.text:GetFont(),size3,"OUTLINE")
+				icon.bigText:SetFont(icon.bigText:GetFont(),size4,"OUTLINE")
+				icon.subIcon:SetSize(size4,size4)
+			end
 		end
 	end
 end
@@ -1465,12 +1591,16 @@ function module.frame:UpdateRoster()
 				line.unit_name = name
 				line.name:SetTextColor(1,1,1,1)
 
+				line.mini.name:SetText(name)
+				line.mini.name:SetTextColor(1,1,1,1)
+
 				local classColor = classColorsTable[class]
 				local r,g,b = classColor and classColor.r or .7,classColor and classColor.g or .7,classColor and classColor.b or .7
 
 				line.classLeft:SetGradientAlpha("HORIZONTAL",r,g,b,.4,r,g,b,0)
 
 				line:Show()
+				line.mini:Show()
 
 				line.rc_status = 1
 	
@@ -1482,9 +1612,13 @@ function module.frame:UpdateRoster()
 	for i=count+1,#self.lines do 
 		self.lines[i].unit = nil
 		self.lines[i]:Hide()
+
+		self.lines[i].mini:Hide()
 	end
 	self:UpdateLinesSize(count <= 20)
-	self:SetHeight(55 + (count <= 20 and 20 or 14) * count)
+	self.SizeMaximized = 55 + (count <= 20 and 20 or 14) * count
+	self.SizeMinimized = 25 + math.ceil((count-1) / 4) * 14
+	self:SetHeight(self.SizeMaximized)
 end
 
 function module.frame:UpdateData(onlyLine)
@@ -1509,9 +1643,10 @@ function module.frame:UpdateData(onlyLine)
 
 			if not onlyLine or line == onlyLine then
 				local buffCount = 0
-				local flaskCount = 0
+				local flaskCount = 1
 	
 				line.icon.texture:SetTexture(RCW_RCStatusToIcon[line.rc_status] or "")
+				line.mini.icon.texture:SetTexture(RCW_RCStatusToIcon[line.rc_status] or "")
 	
 				for i,key in pairs(RCW_iconsList) do
 					line[key].texture:SetTexture("")
@@ -1520,14 +1655,17 @@ function module.frame:UpdateData(onlyLine)
 					line[key].bigText:SetText("")
 					line[key].tooltip = nil
 					line[key].subIcon:Hide()
+					line[key]:Point("CENTER",line[key.."pointer"],"CENTER",0,0)
 	
-					line[key.."2"].texture:SetTexture("")
-					line[key.."2"].texture:SetAlpha(1)
-					line[key.."2"].text:SetText("")
-					line[key.."2"].bigText:SetText("")
-					line[key.."2"].tooltip = nil
-					line[key.."2"]:Hide()
-					line[key.."2"].subIcon:Hide()
+					for j=2,4 do
+						line[key..j].texture:SetTexture("")
+						line[key..j].texture:SetAlpha(1)
+						line[key..j].text:SetText("")
+						line[key..j].bigText:SetText("")
+						line[key..j].tooltip = nil
+						line[key..j]:Hide()
+						line[key..j].subIcon:Hide()
+					end
 				end
 				for i=1,40 do
 					local name,icon,_,_,duration,expirationTime,_,_,_,spellId,_,_,_,_,_,val1 = UnitAura(line.unit, i,"HELPFUL")
@@ -1567,8 +1705,12 @@ function module.frame:UpdateData(onlyLine)
 					elseif module.db.tableFlask[spellId] then
 						local val = module.db.tableFlask[spellId]
 	
-						local frame = flaskCount == 0 and line.flask or line.flask2
+						local frame = line["flask"..(flaskCount == 1 and "" or tostring(flaskCount))]
+						line.flask:Point("CENTER",line.flaskpointer,"CENTER",-(line.flask.size or 18)*((flaskCount-1)/2),0)
 						flaskCount = flaskCount + 1
+						if flaskCount > 4 then
+							flaskCount = 4
+						end
 						
 						frame.texture:SetTexture(icon)
 						if type(val)=='number' then
@@ -1657,7 +1799,7 @@ function module.frame:UpdateData(onlyLine)
 					end
 				end
 	
-				if self.isTest and line.pos <= 15 then
+				if self.isTest and line.pos <= (ExRT.isClassic and 30 or 15) then
 					self.testData[line.pos] = self.testData[line.pos] or {}
 	
 					local hideOne = self.testData[line.pos].hideOne or math.random(1,#RCW_iconsList)
@@ -1668,6 +1810,18 @@ function module.frame:UpdateData(onlyLine)
 							line[key].texture:SetTexture(RCW_iconsListDebugIcons[i])
 							line[key].text:SetText("")
 						end
+					end
+
+					if ExRT.isClassic then
+						local flaskNum = self.testData[line.pos].flaskNum or math.random(0,4)
+						self.testData[line.pos].flaskNum = flaskNum
+				
+						line.flask:Point("CENTER",line.flaskpointer,"CENTER",-(line.flask.size or 18)*((flaskNum-1)/2),0)
+
+						if flaskNum >= 1 then line.flask.texture:SetTexture(RCW_iconsListDebugIcons[2]) else line.flask.texture:SetTexture("") end
+						if flaskNum >= 2 then line.flask2.texture:SetTexture(RCW_iconsListDebugIcons[2]) line.flask2:Show() end
+						if flaskNum >= 3 then line.flask3.texture:SetTexture(RCW_iconsListDebugIcons[2]) line.flask3:Show() end
+						if flaskNum >= 4 then line.flask4.texture:SetTexture(RCW_iconsListDebugIcons[2]) line.flask4:Show() end
 					end
 	
 					local lowFlask = self.testData[line.pos].lowFlask or math.random(1,60)
@@ -1709,6 +1863,17 @@ function module.frame:UpdateData(onlyLine)
 					line.name:SetTextColor(1,1,1)
 					line.name:SetAlpha(1)
 				end
+
+				if line.rc_status == 3 then
+					line.mini.name:SetTextColor(1,.5,.5)
+					line.mini.name:SetAlpha(1)
+				elseif line.rc_status == 2 then
+					line.mini.name:SetTextColor(1,1,1)
+					line.mini.name:SetAlpha(.3)	
+				else
+					line.mini.name:SetTextColor(1,1,1)
+					line.mini.name:SetAlpha(1)
+				end
 			end
 		end
 	end
@@ -1731,6 +1896,8 @@ end)
 
 
 function module:ReadyCheckWindow(starter,isTest,manual)
+	self.frame:Create()
+
 	module.db.RaidCheckReadyCheckTime = nil
 
 	self.frame.isTest = isTest
@@ -1750,6 +1917,8 @@ function module:ReadyCheckWindow(starter,isTest,manual)
 	self.frame.headText:SetText("ExRT")
 
 	self.frame.timeLeftLine:Hide()
+
+	self.frame.mimimize:Hide()
 
 	if self.frame.hideTimer then
 		self.frame.hideTimer:Cancel()
@@ -1873,6 +2042,7 @@ do
 			module:ReadyCheckWindow(starter,isTest)
 			module.db.RaidCheckReadyCheckTime = GetTime() + (timer or 35)
 			module.frame.timeLeftLine:Start(timer or 35)
+			module.frame.mimimize:Show()
 			module.main:READY_CHECK_CONFIRM(ExRT.F.delUnitNameServer(starter),true,isTest)
 		end
 		if not isTest then

@@ -1,6 +1,6 @@
 --[[
 Name: LibRangeCheck-2.0
-Revision: $Revision: 202 $
+Revision: $Revision: 204 $
 Author(s): mitch0
 Website: http://www.wowace.com/projects/librangecheck-2-0/
 Description: A range checking library based on interact distances and spell ranges
@@ -41,7 +41,7 @@ License: Public Domain
 -- @class file
 -- @name LibRangeCheck-2.0
 local MAJOR_VERSION = "LibRangeCheck-2.0"
-local MINOR_VERSION = tonumber(("$Revision: 202 $"):match("%d+")) + 100000
+local MINOR_VERSION = tonumber(("$Revision: 204 $"):match("%d+")) + 100000
 
 local lib, oldminor = LibStub:NewLibrary(MAJOR_VERSION, MINOR_VERSION)
 if not lib then
@@ -416,6 +416,7 @@ local UnitIsVisible = UnitIsVisible
 
 -- temporary stuff
 
+local pendingItemRequest
 local itemRequestTimeoutAt
 local foundNewItems
 local cacheAllItems
@@ -976,6 +977,17 @@ function lib:UNIT_AURA(event, unit)
     end
 end
 
+function lib:GET_ITEM_INFO_RECEIVED(event, item, success)
+    -- print("### GET_ITEM_INFO_RECEIVED: " .. tostring(item) .. ", " .. tostring(success))
+    if item == pendingItemRequest then
+        pendingItemRequest = nil
+        if not success then
+            self.failedItemRequests[item] = true
+        end
+        lastUpdate = UpdateDelay
+    end
+end
+
 function lib:processItemRequests(itemRequests)
     while true do
         local range, items = next(itemRequests)
@@ -986,11 +998,17 @@ function lib:processItemRequests(itemRequests)
                 itemRequests[range] = nil
                 break
             elseif self.failedItemRequests[item] then
+                -- print("### processItemRequests: failed: " .. tostring(item))
                 tremove(items, i)
+            elseif item == pendingItemRequest and GetTime() < itemRequestTimeoutAt then
+                return true; -- still waiting for server response
             elseif GetItemInfo(item) then
+                -- print("### processItemRequests: found: " .. tostring(item))
                 if itemRequestTimeoutAt then
+                    -- print("### processItemRequests: new: " .. tostring(item))
                     foundNewItems = true
                     itemRequestTimeoutAt = nil
+                    pendingItemRequest = nil
                 end
                 if not cacheAllItems then
                     itemRequests[range] = nil
@@ -998,14 +1016,21 @@ function lib:processItemRequests(itemRequests)
                 end
                 tremove(items, i)   
             elseif not itemRequestTimeoutAt then
+                -- print("### processItemRequests: waiting: " .. tostring(item))
                 itemRequestTimeoutAt = GetTime() + ItemRequestTimeout
+                pendingItemRequest = item
+                if not self.frame:IsEventRegistered("GET_ITEM_INFO_RECEIVED") then
+                    self.frame:RegisterEvent("GET_ITEM_INFO_RECEIVED")
+                end
                 return true
-            elseif GetTime() > itemRequestTimeoutAt then
+            elseif GetTime() >= itemRequestTimeoutAt then
+                -- print("### processItemRequests: timeout: " .. tostring(item))
                 if cacheAllItems then
                     print(MAJOR_VERSION .. ": timeout for item: " .. tostring(item))
                 end
                 self.failedItemRequests[item] = true
                 itemRequestTimeoutAt = nil
+                pendingItemRequest = nil
                 tremove(items, i)
             else
                 return true -- still waiting for server response
@@ -1033,6 +1058,7 @@ function lib:initialOnUpdate()
         cacheAllItems = nil
     end
     self.frame:Hide()
+    self.frame:UnregisterEvent("GET_ITEM_INFO_RECEIVED")
 end
 
 function lib:scheduleInit()

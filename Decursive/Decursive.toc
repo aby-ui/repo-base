@@ -1,5 +1,5 @@
 ## Interface: 80205
-## X-Max-Interface: 80200
+## X-Max-Interface: 80205
 ## X-Min-Interface: 80000
 
 ## Title: Decursive |cffff00ff -Ace3-|r
@@ -18,7 +18,7 @@
 
 ## SavedVariables: DecursiveDB
 
-## Version: 2.7.6.4
+## Version: 2.7.6.5
 ## Author: John Wellesz
 
 ## X-License: All Rights Reserved
@@ -32,7 +32,7 @@
 
 ## X-Embeds: Ace3, LibQTip-1.0, LibDataBroker-1.1, LibDBIcon-1.0, !BugGrabber
 
-## X-ReleaseDate: "2019-09-13T15:15:25Z"
+## X-ReleaseDate: "2019-10-28T15:22:14Z"
 ## X-Category: Combat
 ## X-Website: http://www.2072productions.com/to/decursive.php
 ## X-Credits: Sylvin (Full french translation), Peter Sun, Ananhaid (ZhTW and zhCN translation), Fenlis, Chkid (koKR translation), Hemathio, Swix, Athariel, StingerSoft (Russian Translation), Freydis88, Floyddotnet, Vilogity, Dessa, Farook (German translation)

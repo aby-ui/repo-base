@@ -17,8 +17,8 @@ module.db.itemsSlotTable = parentModule.db.itemsSlotTable
 module.db.classIDs = ExRT.GDB.ClassID
 module.db.glyphsIDs = {8,9,10,11,12,13}
 
-module.db.statsList = {'intellect','agility','strength','haste','mastery','crit','spellpower','multistrike','versatility','armor','leech','avoidance','speed'}
-module.db.statsListName = {L.InspectViewerInt,L.InspectViewerAgi,L.InspectViewerStr,L.InspectViewerHaste,L.InspectViewerMastery,L.InspectViewerCrit,L.InspectViewerSpd, L.InspectViewerMS, L.InspectViewerVer, L.InspectViewerBonusArmor, L.InspectViewerLeech, L.InspectViewerAvoidance, L.InspectViewerSpeed}
+module.db.statsList = {'intellect','agility','strength','haste','mastery','crit','spellpower','multistrike','versatility','armor','leech','avoidance','speed','corruption'}
+module.db.statsListName = {L.InspectViewerInt,L.InspectViewerAgi,L.InspectViewerStr,L.InspectViewerHaste,L.InspectViewerMastery,L.InspectViewerCrit,L.InspectViewerSpd, L.InspectViewerMS, L.InspectViewerVer, L.InspectViewerBonusArmor, L.InspectViewerLeech, L.InspectViewerAvoidance, L.InspectViewerSpeed,ITEM_MOD_CORRUPTION}
 
 module.db.baseStats = {	--By class IDs
 	strength =  {	1467,	1467,	0,	0,	0,	1467,	0,	0,	0,	0,	0,	0,	},

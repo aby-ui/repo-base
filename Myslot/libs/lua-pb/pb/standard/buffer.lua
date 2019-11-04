@@ -1,6 +1,9 @@
 -- Copyright (c) 2010, Robert G. Jakabosky <bobby@sharedrealm.com> All rights reserved.
 
-local _M = LibStub:NewLibrary("pblua.buffer", 1)
+local _, ADDONSELF = ...
+ADDONSELF.luapb.buffer = {}
+
+local _M = ADDONSELF.luapb.buffer
 
 local concat = table.concat
 local setmetatable = setmetatable

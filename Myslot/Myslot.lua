@@ -3,10 +3,10 @@ _G["_163ui_MySlot"] = MySlot
 
 local L = MySlot.L
 
-local crc32 = LibStub:GetLibrary('CRC32-1.0')
-local base64 = LibStub:GetLibrary('BASE64-1.0')
+local crc32 = MySlot.crc32
+local base64 = MySlot.base64
 
-local pblua = LibStub:GetLibrary('pblua')
+local pblua = MySlot.luapb
 local _MySlot = pblua.load_proto_ast(MySlot.ast)
 
 

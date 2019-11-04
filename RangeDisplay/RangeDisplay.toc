@@ -1,7 +1,7 @@
 ## Interface: 80205
 ## Title: RangeDisplay
 ## Author: mitch0
-## Version: v4.9.2
+## Version: v4.9.3
 ## Notes: Estimated range display. Type /rangedisplay for config
 ## Notes-ruRU: Дисплей с указанием расстояния до цели. Введите /rangedisplay для справки
 ## LoadManagers: AddonLoader

@@ -7683,7 +7683,7 @@ DF.CastFrameFunctions = {
 		--> check max value
 		if (not isFinished and not self.finished) then
 			if (self.casting) then
-				if (self.value >= self.maxValue or self.value < 0) then
+				if (self.value >= self.maxValue) then
 					isFinished = true
 				end
 				
@@ -8287,8 +8287,10 @@ DF.CastFrameFunctions = {
 		self.spellStartTime = startTime / 1000
 		self.spellEndTime = endTime / 1000
 		self.value = GetTime() - self.spellStartTime
+		if self.value < 0 then self.value = 0 end
 		self.maxValue = self.spellEndTime - self.spellStartTime
 		self:SetMinMaxValues (0, self.maxValue)
+		self:SetValue (self.value)
 	end,
 
 	UNIT_SPELLCAST_CHANNEL_UPDATE = function (self, unit, ...)

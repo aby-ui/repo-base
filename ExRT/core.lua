@@ -1,8 +1,8 @@
---	26.10.2019
+--	29.10.2019
 
 local GlobalAddonName, ExRT = ...
 
-ExRT.V = 4101
+ExRT.V = 4110
 ExRT.T = "R"
 
 ExRT.OnUpdate = {}		--> таймеры, OnUpdate функции
@@ -38,6 +38,9 @@ end
 if ExRT.clientVersion < 20000 then
 	ExRT.isClassic = true
 	ExRT.T = "Classic"
+end
+if ExRT.clientVersion >= 80300 then
+	ExRT.is83 = true
 end
 -------------> smart DB <-------------
 ExRT.SDB = {}

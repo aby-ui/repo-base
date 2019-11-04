@@ -14,9 +14,11 @@ U1RegisterAddon("MySlot", {
 
 --保存之前先检查合法性
 local function valid(s)
-    local crc32 = LibStub:GetLibrary('CRC32-1.0')
-    local base64 = LibStub:GetLibrary('BASE64-1.0')
+    local private = _G["_163ui_MySlot"]
+    local crc32 = private.crc32
+    local base64 = private.base64
     s = string.gsub(s,"(@.[^\n]*\n)","")
+    s = string.gsub(s,"(#.[^\n]*\n)","")
     s = string.gsub(s,"\n","")
     s = string.gsub(s,"\r","")
     s = base64.dec(s)

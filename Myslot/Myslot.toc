@@ -3,33 +3,18 @@
 ## Notes: Myslot is for transferring settings between accounts. Feedback farmer1992@gmail.com
 ## Notes-zhCN: Myslot可以帮助你在账号之间共享配置。反馈：farmer1992@gmail.com
 ## Notes-zhTW: Myslot可以跨帳號綁定技能與按鍵設置。反饋通道：farmer1992@gmail.com
-## Author: tg123
-## Version: v5.2.8.80205-5-gce20ba3
+## Author: Boshi Lian
+## Version: v5.2.8.80205-10-g635317d
 
 libs\base64.lua
 libs\crc32.lua
+libs\lua-pb\lua-pb.xml
 
-libs\lua-pb\pb\fakerequire.lua
-libs\lua-pb\pb\utils.lua
-libs\lua-pb\pb\handlers.lua
-libs\lua-pb\pb\standard\buffer.lua
-libs\lua-pb\pb\standard\unknown.lua
-libs\lua-pb\pb\standard\repeated.lua
-
-libs\lua-pb\pb\standard\dump.lua
-libs\lua-pb\pb\standard\message.lua
-
-libs\lua-pb\pb\standard\pack.lua
-libs\lua-pb\pb\standard\unpack.lua
-libs\lua-pb\pb\standard.lua
-
-libs\lua-pb\pb-wow.lua
+protobuf\Myslot.lua
 
 locales.lua
 keys.lua
 Myslot.xml
-
-PbMyslot.lua
 Myslot.lua
 
 

@@ -6,13 +6,13 @@ local _
 	--> install skin function:
 	function _detalhes:InstallSkin (skin_name, skin_table)
 		if (not skin_name) then
-			return false -- sem nome
+			return false -- skin without a name
 		elseif (_detalhes.skins [skin_name]) then
-			return false -- ja existe
+			return false -- skin with this name already exists
 		end
 		
 		if (not skin_table.file) then
-			return false -- sem arquivo
+			return false -- no skin file
 		end
 		
 		skin_table.author = skin_table.author or ""

@@ -3,7 +3,7 @@ H.H.T.D. World of Warcraft Add-on
 Copyright (c) 2009-2018 by John Wellesz (hhtd@2072productions.com)
 All rights reserved
 
-Version 2.4.9.3
+Version 2.4.9.4
 
 In World of Warcraft healers have to die. This is a cruel truth that you're
 taught very early in the game. This add-on helps you influence this unfortunate
@@ -469,7 +469,7 @@ function CM:OnEnable() -- {{{
 
     self:LNR_RegisterCallback("LNR_ERROR_FATAL_INCOMPATIBILITY");
 
- 
+
     for unitName, id in pairs(playerNamesToMark) do
         for plate, plateData in self:EachPlateByName(unitName) do
             self:AddMarkerToPlate(plate, self:GetPlateName(plate), false);
@@ -606,7 +606,7 @@ do
         texture:SetTexture("Interface\\TargetingFrame\\UI-RaidTargetingIcons");
         AdjustTexCoord(texture);
         SetTextureParams(texture);
-        
+
         PlateAdditions.texture = texture;
         PlateAdditions.texture:Show();
         PlateAdditions.IsShown = true; -- set it as soon as we show something
@@ -664,7 +664,7 @@ do
 
         self.DisplayedPlates_byFrameTID[plate] = plate; -- used later to update what was created above
 
-        
+
     end -- }}}
 
     function CM:UpdateTextures ()
@@ -683,7 +683,7 @@ do
 
         end
 
-       
+
     end
 
 

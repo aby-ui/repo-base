@@ -18,11 +18,11 @@
 -- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 -- THE SOFTWARE.
 
+local _, ADDONSELF = ...
+local require = ADDONSELF.luapb.require
+ADDONSELF.luapb.standardmod = {}
 
-local _require = LibStub:GetLibrary('pblua.require')
-local require = _require.require
-
-local _M = LibStub:NewLibrary("pblua.standardmod", 1)
+local _M = ADDONSELF.luapb.standardmod
 
 local assert = assert
 local error = error
@@ -240,6 +240,8 @@ function defines.message(parent, name, ast)
 	local pub = setmetatable({
 	['.type'] = ast['.type'],
 	['.parent'] = parent,
+	['.filename'] = parent['.filename'],
+	['.fullname'] = mt.fullname,
 	},{
 	-- make the 'public' table callable as the Message contructor.
 	__call = function(tab, data)
@@ -371,6 +373,7 @@ function _M.compile(ast)
 	local proto = {
 		['.package'] = ast.package,
 		['.imports'] = ast.imports,
+		['.filename'] = ast.filename,
 	}
 	-- phaze one: define types.
 	define_types(proto, ast.types)
@@ -379,5 +382,9 @@ function _M.compile(ast)
 	-- phaze three: compile fields.
 	compile_types(proto, ast.types)
 	return proto
+end
+
+function set_make_int64(func)
+	return funpack.set_make_int64(func)
 end
 

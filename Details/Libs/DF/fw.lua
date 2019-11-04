@@ -1,5 +1,5 @@
 
-local dversion = 153
+local dversion = 155
 local major, minor = "DetailsFramework-1.0", dversion
 local DF, oldminor = LibStub:NewLibrary (major, minor)
 
@@ -21,7 +21,7 @@ SMALL_NUMBER = 0.000001
 ALPHA_BLEND_AMOUNT = 0.8400251
 
 DF.AuthorInfo = {
-	Name = "Tercioo",
+	Name = "Terciob",
 	Discord = "https://discord.gg/AGSzAZX",
 }
 

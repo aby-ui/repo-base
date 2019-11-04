@@ -1,4 +1,12 @@
 
+--default values for instances (windows)
+--if a new value is added here and it does not exists (nil) in the instance, it'll be copied into it
+--the value added can be overwritten in the skins.lua file or /run Details:GetWindow(1).<value> =
+--or thought a new option in the options panel
+
+--values added into 'instance_skin_ignored_values' won't be passed when the user exports the profile or exports the skin individually.
+
+
 local _detalhes = 		_G._detalhes
 local SharedMedia = LibStub:GetLibrary("LibSharedMedia-3.0")
 
@@ -197,6 +205,8 @@ _detalhes.instance_defaults = {
 				textR_separator = ",",
 			--left text bar number
 				textL_show_number = true,
+			--translit text by Vardex (https://github.com/Vardex May 22, 2019)
+				textL_translit_text = false,
 			--if text class color are false, this color will be used
 				fixed_text_color = {1, 1, 1},
 			--left text outline effect

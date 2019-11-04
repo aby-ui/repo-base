@@ -17,17 +17,18 @@
 -- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 -- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 -- THE SOFTWARE.
+local _, ADDONSELF = ...
+local require = ADDONSELF.luapb.require
+ADDONSELF.luapb.dump = {}
 
-local _require = LibStub:GetLibrary('pblua.require')
-local require = _require.require
-
-local _M = LibStub:NewLibrary("pblua.dump", 1)
+local _M = ADDONSELF.luapb.dump
 
 local assert = assert
 local pairs = pairs
 local print = print
 local error = error
 local tostring = tostring
+local tonumber = tonumber
 local setmetatable = setmetatable
 local type = type
 local sformat = string.format
@@ -37,6 +38,9 @@ local mod_path = string.match(...,".*%.") or ''
 
 local buffer = require(mod_path .. "buffer")
 local new_buffer = buffer.new
+
+local bit = require'bit'
+local tohex = bit.tohex
 
 local function append(buf, off, data)
 	off = off + 1
@@ -71,6 +75,11 @@ local function safe_string(data)
 	return data:gsub([[([^%w ])]], escapes)
 end
 
+local to_hex = {}
+for i=0,255 do
+	to_hex[char(i)] = sformat('%02X', i)
+end
+
 --module(...)
 
 ----------------------------------------------------------------------------------
@@ -79,25 +88,41 @@ end
 --
 ----------------------------------------------------------------------------------
 
+local function append_raw64(buf, off, fmt, val)
+	local t = type(val)
+	if t == 'number' then
+		return append(buf, off, sformat(fmt, val))
+	end
+	-- 64bit integer encoded in a string
+	if t == 'string' then
+		off = append(buf, off, "0x")
+		return append(buf, off, val:gsub('.', to_hex))
+	end
+	-- LuaJIT (u)int64_t.  split into two 32-bit values.
+	off = append(buf, off, "0x")
+	off = append(buf, off, tohex(tonumber(val / 0x100000000), -8))
+	return append(buf, off, tohex(tonumber(val % 0x100000000), -8))
+end
+
 local basic = {
 -- varint types
 int32 = function(buf, off, val)
 	return append(buf, off, sformat("%d", val))
 end,
 int64 = function(buf, off, val)
-	return append(buf, off, sformat("%d", val))
+	return append_raw64(buf, off, "%d", val)
 end,
 sint32 = function(buf, off, val)
 	return append(buf, off, sformat("%d", val))
 end,
 sint64 = function(buf, off, val)
-	return append(buf, off, sformat("%d", val))
+	return append_raw64(buf, off, "%d", val)
 end,
 uint32 = function(buf, off, val)
 	return append(buf, off, sformat("%u", val))
 end,
 uint64 = function(buf, off, val)
-	return append(buf, off, sformat("%u", val))
+	return append_raw64(buf, off, "%u", val)
 end,
 bool = function(buf, off, val)
 	return append(buf, off, (val == 0) and "false" or "true")
@@ -107,10 +132,10 @@ enum = function(buf, off, val)
 end,
 -- 64-bit fixed
 fixed64 = function(buf, off, val)
-	return append(buf, off, sformat("%u", val))
+	return append_raw64(buf, off, "%u", val)
 end,
 sfixed64 = function(buf, off, val)
-	return append(buf, off, sformat("%d", val))
+	return append_raw64(buf, off, "%d", val)
 end,
 double = function(buf, off, val)
 	return append(buf, off, tostring(val))
@@ -143,7 +168,7 @@ local dump_unknown_fields
 
 local wire_types = {
 [0] = function(buf, off, val, depth)
-	return append(buf, off, sformat(": %u", val))
+	return append(buf, off, sformat(": %d", val))
 end,
 [1] = function(buf, off, val, depth)
 	return append(buf, off, sformat(": 0x%016x", val))
@@ -272,13 +297,13 @@ local function get_type_dump(mt)
 			dump = function(buf, off, msg, depth)
 				return message(buf, off, msg, fields, depth)
 			end
-			register_fields(mt, fields)
+			register_fields(mt, fields, dump)
 		elseif mt.is_group then
 			local fields = mt.fields
 			dump = function(buf, off, msg, depth)
 				return group(buf, off, msg, fields, depth)
 			end
-			register_fields(mt, fields)
+			register_fields(mt, fields, dump)
 		end
 		-- cache dump function.
 		mt.dump = dump
@@ -286,9 +311,10 @@ local function get_type_dump(mt)
 	return dump
 end
 
-function register_fields(mt, fields)
+function register_fields(mt, fields, dump)
 	-- check if the fields where already registered.
 	if mt.dump then return end
+	mt.dump = dump
 	for i=1,#fields do
 		local field = fields[i]
 		-- check if the field is a user type

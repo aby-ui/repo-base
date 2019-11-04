@@ -1,5 +1,5 @@
 local MAJOR_VERSION = "LibGetFrame-1.0"
-local MINOR_VERSION = 7
+local MINOR_VERSION = 8
 if not LibStub then error(MAJOR_VERSION .. " requires LibStub.") end
 local lib = LibStub:NewLibrary(MAJOR_VERSION, MINOR_VERSION)
 if not lib then return end
@@ -86,11 +86,16 @@ local function ScanFrames(depth, frame, ...)
     ScanFrames(depth, ...)
 end
 
-local function ScanForUnitFrames()
-    C_Timer.After(1, function()
+local function ScanForUnitFrames(noDelay)
+    if noDelay then
         wipe(GetFramesCache)
         ScanFrames(0, UIParent)
-    end)
+    else
+        C_Timer.After(1, function()
+            wipe(GetFramesCache)
+            ScanFrames(0, UIParent)
+        end)
+    end
 end
 
 local function isFrameFiltered(name, ignoredFrames)
@@ -150,7 +155,7 @@ local defaultOptions = {
 }
 
 local GetFramesCacheListener
-lib.Init = function()
+lib.Init = function(noDelay)
     GetFramesCacheListener = CreateFrame("Frame")
     GetFramesCacheListener:RegisterEvent("PLAYER_REGEN_DISABLED")
     GetFramesCacheListener:RegisterEvent("PLAYER_REGEN_ENABLED")
@@ -158,11 +163,11 @@ lib.Init = function()
     GetFramesCacheListener:RegisterEvent("GROUP_ROSTER_UPDATE")
     GetFramesCacheListener:SetScript("OnEvent", ScanForUnitFrames)
 
-    ScanForUnitFrames()
+    ScanForUnitFrames(noDelay)
 end
 
 function lib.GetUnitFrame(target, opt)
-    if not GetFramesCacheListener then lib.Init() end
+    if not GetFramesCacheListener then lib.Init(true) end
     opt = opt or {}
     setmetatable(opt, { __index = defaultOptions })
 

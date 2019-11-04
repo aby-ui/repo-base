@@ -3,7 +3,7 @@ H.H.T.D. World of Warcraft Add-on
 Copyright (c) 2009-2018 by John Wellesz (hhtd@2072productions.com)
 All rights reserved
 
-Version 2.4.9.3
+Version 2.4.9.4
 
 In World of Warcraft healers have to die. This is a cruel truth that you're
 taught very early in the game. This add-on helps you influence this unfortunate
@@ -393,7 +393,7 @@ function NPH:HHTD_HEALER_GONE(selfevent, isFriend, healer)
     end
     --]=]
 
-    
+
     local plateByGuid;
     if self.db.global.sPve then
         plateByGuid = self:GetPlateByGUID(healer.guid);
@@ -453,7 +453,7 @@ end
 -- }}}
 
 --[===[@alpha@
-local callbacks_consisistency_check = {};    
+local callbacks_consisistency_check = {};
 --@end-alpha@]===]
 
 
@@ -494,7 +494,7 @@ function NPH:LNR_ON_NEW_PLATE(selfevent, plate, data)
 
     -- Check if this name plate is of interest -- XXX
     if HHTD.Registry_by_Name[isFriend][plateName] then
-       
+
         if not self.db.global.sPve or HHTD.Registry_by_GUID[isFriend][data.GUID] then
             self:AddCrossToPlate(plate, isFriend, plateName, data.GUID, HHTD.Registry_by_Name[isFriend][plateName]);
         end
@@ -671,9 +671,9 @@ do
     local function MakeFontString() -- ONCE
         local f = Plate:CreateFontString();
         f:SetFont(SmallFontName, 12.2, "THICKOUTLINE, MONOCHROME");
-        
+
         f:SetTextColor(1, 1, 1, 1);
-        
+
         return f;
     end
 
@@ -718,7 +718,7 @@ do
     end
 
     local function AddElements () -- ONCEx
-        
+
         PlateAdditions.texture, PlateAdditions.rankFont = Plate:CreateTexture(), MakeFontString();
 
         SetTextureParams(PlateAdditions);
@@ -849,7 +849,7 @@ do
 
             Plate           = plate;
             PlateAdditions  = plate.HHTD and plate.HHTD.NPH;
-            
+
             PopulatePlateData(plate);
             SetRank();
 

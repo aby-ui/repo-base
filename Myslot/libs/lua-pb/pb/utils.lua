@@ -18,7 +18,10 @@
 -- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 -- THE SOFTWARE.
 
-local _M = LibStub:NewLibrary("pblua.utils", 1)
+local _, ADDONSELF = ...
+ADDONSELF.luapb.utils = {}
+
+local _M = ADDONSELF.luapb.utils
 
 local type = type
 local pairs = pairs

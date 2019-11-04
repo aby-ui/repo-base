@@ -3,7 +3,7 @@ H.H.T.D. World of Warcraft Add-on
 Copyright (c) 2009-2018 by John Wellesz (hhtd@2072productions.com)
 All rights reserved
 
-Version 2.4.9.3
+Version 2.4.9.4
 
 In World of Warcraft healers have to die. This is a cruel truth that you're
 taught very early in the game. This add-on helps you influence this unfortunate
@@ -37,7 +37,7 @@ local INFO      = 3;
 local INFO2     = 4;
 
 local UNPACKAGED = "@pro" .. "ject-version@";
-local VERSION = "2.4.9.3";
+local VERSION = "2.4.9.4";
 
 local ADDON_NAME, T = ...;
 
@@ -156,7 +156,7 @@ do
                 until not role
             end
         end
-        
+
     end
 
 end
@@ -278,7 +278,7 @@ function HHTD:HHTD_HEALER_BORN(selfevent, isFriend, healer)
             end
         end
 
-    end 
+    end
 
 end
 
@@ -370,7 +370,7 @@ local function REGISTER_HEALERS_ONLY_SPELLS_ONCE ()
         }
 
         -- OK, this feature makes no sense in WoW classic...
-        
+
 
     end
 
@@ -515,7 +515,7 @@ do
                 desc = L["OPT_ON_DESC"],
                 set = function(info) HHTD.db.global.Enabled = true; HHTD:Enable(); return HHTD.db.global.Enabled; end,
                 get = function(info) return HHTD:IsEnabled(); end,
-                hidden = function() return HHTD:IsEnabled(); end, 
+                hidden = function() return HHTD:IsEnabled(); end,
 
                 disabled = false,
                 order = 1,
@@ -527,7 +527,7 @@ do
                 set = function(info) HHTD.db.global.Enabled = not HHTD:Disable(); return not HHTD.db.global.Enabled; end,
                 get = function(info) return not HHTD:IsEnabled(); end,
                 guiHidden = true,
-                hidden = function() return not HHTD:IsEnabled(); end, 
+                hidden = function() return not HHTD:IsEnabled(); end,
                 order = -1,
             },
             Debug = {
@@ -548,13 +548,13 @@ do
                 disabled = false,
                 order = -3,
             },
-            
+
             Version = {
                 type = 'execute',
                 name = L["OPT_VERSION"],
                 desc = L["OPT_VERSION_DESC"],
                 guiHidden = true,
-                func = function () HHTD:Print(L["VERSION"], '2.4.9.3,', L["RELEASE_DATE"], '2019-09-03T17:51:25Z') end,
+                func = function () HHTD:Print(L["VERSION"], '2.4.9.4,', L["RELEASE_DATE"], '2019-10-28T15:27:28Z') end,
                 order = -5,
             },
             ShowGUI = {
@@ -572,7 +572,7 @@ do
                 args = {
                     Info_Header = {
                         type = 'header',
-                        name = L["VERSION"] .. ' 2.4.9.3 -- ' .. L["RELEASE_DATE"] .. ' 2019-09-03T17:51:25Z',
+                        name = L["VERSION"] .. ' 2.4.9.4 -- ' .. L["RELEASE_DATE"] .. ' 2019-10-28T15:27:28Z',
                         order = 1,
                     },
                     Pve = {
@@ -627,7 +627,7 @@ do
                             ["disabled"] = function () return not HHTD:IsEnabled(); end,
 
                             ["get"] = function (handler, info) return (HHTD:GetModule(info[#info])):IsEnabled(); end,
-                            ["set"] = function (handler, info, value) 
+                            ["set"] = function (handler, info, value)
 
                                 HHTD.db.global.Modules[info[#info]].Enabled = value;
                                 local result;
@@ -748,7 +748,7 @@ do
                         type = 'execute',
                         name = L["OPT_CLEAR_LOGS"],
                         confirm = true,
-                        func = function () 
+                        func = function ()
                             HHTD.LOGS[true]  = {};
                             HHTD.LOGS[false] = {};
                         end,
@@ -782,12 +782,12 @@ do
             self:Print(HHTD:ColorText(HHTD:GetOPtionPath(info), "FF00DD00"), "=>", HHTD:ColorText(value, "FF3399EE"));
         end
     end
-    
+
 
     local Enable_Module_CheckBox = {
         type = 'toggle',
         name = function (info) return L[info[#info]] end, -- it should be the localized module name
-        desc = function (info) return L[info[#info] .. "_DESC"] end, 
+        desc = function (info) return L[info[#info] .. "_DESC"] end,
         get = "get",
         set = "set",
         disabled = "disabled",
@@ -852,7 +852,7 @@ do
     local oldAce3Name = "Healers Have To Die"
     local oldSV   = "Healers_Have_To_Die"
 
-    local function transmuteSettings() 
+    local function transmuteSettings()
 
         -- I've chosen to rename this add-on, let's handle this decision properly
         -- so that it'll be transparent to the users.
@@ -973,7 +973,7 @@ do
             self:SetEnabledState(false);
             DisableAddOn(ADDON_NAME, true); -- disable globaly as the oldName was
             self:Debug(WARNING, "globally disabled");
-        elseif oldNameGState ~= "DISABLED" and oldNameLState == 0 and self.db.char.settingsMigrated == nil 
+        elseif oldNameGState ~= "DISABLED" and oldNameLState == 0 and self.db.char.settingsMigrated == nil
             -- and there was actually a per character emable/disable setting
             and self.db.global.oldNameEnableState == 1 then
             -- The oldName was already disabled for this specific character
@@ -1035,7 +1035,7 @@ function HHTD:OnEnable()
     self:RegisterEvent("PLAYER_ALIVE"); -- talents SHOULD be available
     self:RegisterEvent("ADDON_LOADED");
     -- self:RegisterEvent("PARTY_MEMBER_DISABLE"); -- useless event, no argument...
-   
+
     if not T._DiagStatus and self.db.global.ShowChatCommandReminder then
         --self:Print(L["ENABLED"]);
     end
@@ -1142,7 +1142,7 @@ do
                 LastDetectedGUID = unitGuid;
             end
         end
-        
+
     end
 end -- }}}
 
@@ -1150,7 +1150,7 @@ end -- }}}
 do
 
     --up values
-    
+
     local str_match                   = _G.string.match;
     local GetTime                     = _G.GetTime;
     local RequestBattlefieldScoreData = _G.RequestBattlefieldScoreData;
@@ -1309,7 +1309,13 @@ do
                 RequestBattlefieldScoreData()
                 WIPRBSD[3] = GetTime();
 
+                -- I got a few reports where this block is triggered, it seems
+                -- to happen randomly but quite rarely. Letting this for
+                -- unpackaged debug mode only.
+
+                --[===[@debug@
                 HHTD:Debug(ERROR, "Still waiting for UPDATE_BATTLEFIELD_SCORE after 30s...")
+                --@end-debug@]===]
             end
 
             return nil
@@ -1363,7 +1369,7 @@ do
         else
             -- got a few error reports getting here where the classTag was nil on a Paladin... not sure what to do yet, seems rare.
             HHTD:Debug(ERROR, "(HHTD update required) GetBattlefieldScore() API changed", spec, classTag, GetBattlefieldScore(playerIndex))
-            
+
             return nil
         end
     end
@@ -1668,7 +1674,7 @@ do
 
 
             if event == "SWING_DAMAGE" then
-               _amount = _spellID 
+               _amount = _spellID
             end
 
             if (_amount and event:sub(-7) == "_DAMAGE") then
@@ -1754,7 +1760,7 @@ do
         -- Esacpe if it's a heal spell toward a unit hostile to the source
         if isHealSpell and ( Source_Is_Friendly and band(destFlags, HOSTILE)~=0 or not Source_Is_Friendly and band(destFlags, FRIENDLY)~=0 ) then
             --[===[@debug@
-            self:Debug(INFO2, "Spell", spellNAME, "source and destination awkwardness", sourceName, destName, 
+            self:Debug(INFO2, "Spell", spellNAME, "source and destination awkwardness", sourceName, destName,
                 (Source_Is_Friendly and band(destFlags, HOSTILE)),
                 (not Source_Is_Friendly and band(destFlags, FRIENDLY)));
             --@end-debug@]===]
@@ -1817,4 +1823,4 @@ do
      end
  end -- }}}
 
- 
+

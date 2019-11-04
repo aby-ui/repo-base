@@ -1,9 +1,10 @@
 -- Copyright (c) 2011, Robert G. Jakabosky <bobby@sharedrealm.com> All rights reserved.
+local _, ADDONSELF = ...
+local require = ADDONSELF.luapb.require
+ADDONSELF.luapb.message = {}
 
-local _require = LibStub:GetLibrary('pblua.require')
-local require = _require.require
+local _M = ADDONSELF.luapb.message
 
-local _M = LibStub:NewLibrary("pblua.message", 1)
 
 local error = error
 local assert = assert
@@ -15,9 +16,6 @@ local mod_path = string.match(...,".*%.") or ''
 
 local repeated = require(mod_path .. "repeated")
 local new_repeated = repeated.new
-
-local buffer = require(mod_path .. "buffer")
-local new_buffer = buffer.new
 
 local unknown = require(mod_path .. "unknown")
 local new_unknown = unknown.new
@@ -72,8 +70,14 @@ function _M.def(parent, name, ast)
 
 	-- create Metatable for Message/Group.
 	local is_group = (ast['.type'] == 'group')
+	local filename = parent['.filename']
+	filename = (filename and filename .. '.proto') or ''
+	local package = parent['.package'] or parent['.fullname']
+	local fullname = (package and package .. '.' .. name or name)
 	local mt = {
 	name = name,
+	filename = filename,
+	fullname = fullname,
 	is_message = not is_group,
 	is_group = is_group,
 	fields = fields,
@@ -165,13 +169,13 @@ function _M.def(parent, name, ast)
 			end
 			return encode(self, depth)
 		end
-		function methods:Merge(data, format, off)
+		function methods:Merge(data, format, off, len)
 			format = format or 'binary'
 			local decode = mt.decode[format]
 			if not decode then
 				return false, "Unsupported serialization format: " .. format
 			end
-			return decode(self, data, off or 1)
+			return decode(self, data, off or 1, len or #data)
 		end
 		function methods:Serialize(format, depth)
 			-- validate message before serialization.
@@ -180,17 +184,17 @@ function _M.def(parent, name, ast)
 			-- now serialize message
 			return self:SerializePartial(format, depth)
 		end
-		function methods:ParsePartial(data, format, off)
+		function methods:ParsePartial(data, format, off, len)
 			-- Clear message before parsing it.
 			self:Clear()
 			-- Merge message data into empty message.
-			return self:Merge(data, format, off)
+			return self:Merge(data, format, off, len)
 		end
-		function methods:Parse(data, format, off)
+		function methods:Parse(data, format, off, len)
 			-- Clear message before parsing it.
 			self:Clear()
 			-- Merge message data into empty message.
-			local msg, off_err = self:Merge(data, format, off)
+			local msg, off_err = self:Merge(data, format, off, len)
 			if not msg then return msg, off_err end
 			-- validate message.
 			local init, errmsg = self:IsInitialized()
@@ -200,6 +204,23 @@ function _M.def(parent, name, ast)
 	end
 
 	-- common methods.
+		-- FileName()
+	function methods:FileName()
+		return filename
+	end
+		-- FullName()
+	function methods:FullName()
+		return fullname
+	end
+		-- Name()
+	function methods:Name()
+		return name
+	end
+		-- HasField()
+	function methods:HasField(name)
+		local data = rawget(self, '.data') -- field data.
+		return not not data[name]
+	end
 		-- Clear()
 	function methods:Clear()
 		local data = rawget(self, '.data') -- field data.
@@ -215,7 +236,7 @@ function _M.def(parent, name, ast)
 			local field = fields[i]
 			local name = field.name
 			local val = data[name]
-			if val then
+			if val ~= nil then
 				-- check if group/message/repeated fields are intializied
 				if field.is_complex then
 					local init, errmsg = val:IsInitialized()
@@ -268,8 +289,6 @@ function _M.compile(node, mt, fields)
 	local tags = mt.tags
 	for i=1,#fields do
 		local field = fields[i]
-		-- packed arrays have a length
-		field.has_length = field.is_packed
 		-- get field tag
 		local tag = field.tag
 		-- check if the field is a user type

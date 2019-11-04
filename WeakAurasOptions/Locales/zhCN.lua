@@ -429,8 +429,7 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	L["None"] = "无"
 	L["Not all children have the same value for this option"] = "并非所有子元素都拥有相同的此选项的值"
 	L["Not Loaded"] = "未载入"
-	--[[Translation missing --]]
-	L["Note: Automated Messages to SAY and YELL are blocked outside of Instances."] = "Note: Automated Messages to SAY and YELL are blocked outside of Instances."
+	L["Note: Automated Messages to SAY and YELL are blocked outside of Instances."] = "注意：自动发送“大喊”和“说话”功能在副本外会被屏蔽。"
 	L["Number of Entries"] = "条目数"
 	L["Offer a guided way to create auras for your character"] = "提供为角色创建光环的指导"
 	L["Okay"] = "好"

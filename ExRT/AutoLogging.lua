@@ -91,10 +91,16 @@ end
 
 function module:Enable()
 	module:RegisterEvents('ZONE_CHANGED_NEW_AREA','CHALLENGE_MODE_START')
+	if ExRT.isClassic then
+		module:RegisterEvents('LOADING_SCREEN_DISABLED')
+	end
 	module.main:ZONE_CHANGED_NEW_AREA()
 end
 function module:Disable()
 	module:UnregisterEvents('ZONE_CHANGED_NEW_AREA','CHALLENGE_MODE_START')
+	if ExRT.isClassic then
+		module:UnregisterEvents('LOADING_SCREEN_DISABLED')
+	end
 	module.main:ZONE_CHANGED_NEW_AREA()
 end
 
@@ -152,6 +158,8 @@ end
 function module.main:ZONE_CHANGED_NEW_AREA()
 	ExRT.F.ScheduleTimer(ZoneNewFunction, 2)
 end
+module.main.LOADING_SCREEN_DISABLED = module.main.ZONE_CHANGED_NEW_AREA
+
 function module.main:CHALLENGE_MODE_START()
 	ExRT.F.ScheduleTimer(ZoneNewFunction, 1)
 end

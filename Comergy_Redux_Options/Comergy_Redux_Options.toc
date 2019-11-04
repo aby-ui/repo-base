@@ -12,7 +12,7 @@
 
 locales\localization.enUS.lua
 locales\localization.zhCN.lua
-locales\localization.zhTW.lua
+#locales\localization.zhTW.lua
 
 comergyopt.xml
 

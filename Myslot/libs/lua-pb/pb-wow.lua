@@ -1,12 +1,10 @@
+local ADDONNAME, ADDONSELF = ...
 
-local _require = LibStub:GetLibrary('pblua.require')
-local require = _require.require
+local require = ADDONSELF.luapb.require
 
-local _M = LibStub:NewLibrary("pblua", 1)
+local LUAPB_VER = 101000
 
 local mod = require"standardmod"
-local name = 'pblua'
-
 
 local function new_backend(name, compile, encode, decode)
 	local backend = {compile = compile, encode = encode, decode = decode, cache = {}}
@@ -23,4 +21,9 @@ local function load_proto_ast(ast)
 	return proto
 end
 
-_M.load_proto_ast = load_proto_ast
+ADDONSELF.luapb.load_proto_ast = load_proto_ast
+
+if ADDONNAME == "lua-pb" and LibStub then
+	local _M = LibStub:NewLibrary("luapb", LUAPB_VER)
+	_M.load_proto_ast = load_proto_ast
+end

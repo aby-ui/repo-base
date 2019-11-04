@@ -1,8 +1,8 @@
 -- damage object
---2672
 
 	local _detalhes = 		_G._detalhes
 	local Loc = LibStub ("AceLocale-3.0"):GetLocale ( "Details" )
+	local Translit = LibStub ("LibTranslit-1.0")
 	local gump = 			_detalhes.gump
 	local _
 
@@ -2672,6 +2672,11 @@ local InBarIconPadding = 6
 		bar_number = bar.colocacao .. ". "
 	end
 
+	--translate cyrillic alphabet to western alphabet by Vardex (https://github.com/Vardex May 22, 2019)
+	if (instance.row_info.textL_translit_text) then
+		self.displayName = Translit:Transliterate(self.displayName, "!")
+	end
+
 	if (enemy) then
 		if (arena_enemy) then
 			if (_detalhes.show_arena_role_icon) then
@@ -5158,11 +5163,7 @@ end
 			if (not no_refresh) then
 				_detalhes.refresh:r_atributo_damage (actor, shadow)
 			end
-			
-			--a refer�ncia do .owner pode ter sido apagada?
-			--os 2 segmentos foram juntados por�m a refer�ncia do owner de um pet criado ali em cima deve ser nula?
-			--teria que analisar se o novo objecto � de um pet e colocar a refer�ncia do owner no pet novamente, ou pelo menos verificar se a refer�ncia � valida
-			
+
 			--> tempo decorrido (captura de dados)
 				local end_time = actor.end_time
 				if (not actor.end_time) then

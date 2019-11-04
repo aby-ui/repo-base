@@ -1,4 +1,4 @@
--- Copyright (c) 2010-2011 by Robert G. Jakabosky <bobby@neoawareness.com>
+-- Copyright (c) 2010-2014 by Robert G. Jakabosky <bobby@neoawareness.com>
 --
 -- Permission is hereby granted, free of charge, to any person obtaining a copy
 -- of this software and associated documentation files (the "Software"), to deal
@@ -18,10 +18,11 @@
 -- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 -- THE SOFTWARE.
 
-local _require = LibStub:GetLibrary('pblua.require')
-local require = _require.require
+local _, ADDONSELF = ...
+local require = ADDONSELF.luapb.require
+ADDONSELF.luapb.pack = {}
 
-local _M = LibStub:NewLibrary("pblua.pack", 1)
+local _M = ADDONSELF.luapb.pack
 
 local assert = assert
 local pairs = pairs
@@ -31,36 +32,27 @@ local tostring = tostring
 local setmetatable = setmetatable
 local type = type
 local rawset = rawset
+local char = string.char
+local floor = math.floor
 
 local mod_path = string.match(...,".*%.") or ''
 
 local buffer = require(mod_path .. "buffer")
 local new_buffer = buffer.new
 
+local zigzag = require(mod_path .. "zigzag")
+local zigzag64 = zigzag.zigzag64
+local zigzag32 = zigzag.zigzag32
+local normalize_number = zigzag.normalize_number
+
 local struct = require"struct"
+local sunpack = struct.unpack
 local spack = struct.pack
 
 local bit = require"bit"
 local band = bit.band
 local bor = bit.bor
-local bxor = bit.bxor
-local lshift = bit.lshift
 local rshift = bit.rshift
-local arshift = bit.arshift
-
-local char = string.char
-
--- ZigZag encode/decode
-local function zigzag64(num)
-	num = num * 2
-	if num < 0 then
-		num = (-num) - 1
-	end
-	return num
-end
-local function zigzag32(num)
-	return bxor(lshift(num, 1), arshift(num, 31))
-end
 
 local function varint_next_byte(num)
 	if num >= 0 and num < 128 then return num end
@@ -68,10 +60,66 @@ local function varint_next_byte(num)
 	return (b), varint_next_byte(rshift(num, 7))
 end
 
+local function varint64_next_byte_h_l(h, l)
+	if h ~= 0 then
+		-- encode lower 28 bits.
+		local b1 = bor(band(l, 0x7F), 0x80)
+		local b2 = bor(band(rshift(l, 7), 0x7F), 0x80)
+		local b3 = bor(band(rshift(l, 14), 0x7F), 0x80)
+		local b4 = bor(band(rshift(l, 21), 0x7F), 0x80)
+		-- encode 4 bits from low 32-bits and 3 bits from high 32-bits
+		local b5 = bor(band(rshift(l, 28), 0xF) + (band(h, 0x7) * 16), 0x80)
+		h = rshift(h, 3)
+		-- Use variable length encoding of 
+		return b1, b2, b3, b4, b5, varint_next_byte(h)
+	end
+	-- No high bits.  Use variable length encoding of low bits.
+	return varint_next_byte(l)
+end
+
+local function pack_varint64_raw(num)
+	local h,l = sunpack('>I4I4', num)
+	return char(varint64_next_byte_h_l(h, l))
+end
+
+local function pack_varint64_cdata(num)
+	return char(varint64_next_byte_h_l(tonumber(num / 0x100000000), tonumber(num % 0x100000000)))
+end
+
+-- convert number to unsigned int32
+local function uint32(num)
+	return num % 0x100000000
+end
+
+local function pack_varint64_num(num)
+	if num >= 0 and num <= 0xFFFFFFFF then
+		return char(varint_next_byte(num))
+	end
+	local h, l = uint32(floor(num / 0x100000000)), uint32(num)
+	return char(varint64_next_byte_h_l(h, l))
+end
+
 local function append(buf, off, len, data)
 	off = off + 1
 	buf[off] = data
 	return off, len + #data
+end
+
+local function append_raw64(buf, off, len, num, t)
+	if t == 'string' then
+		local b8,b7,b6,b5,b4,b3,b2,b1 = num:byte(1, 8)
+		return append(buf, off, len, char(b1,b2,b3,b4,b5,b6,b7,b8))
+	else
+		off = off + 1; buf[off] = char(tonumber(num % 0x100)); num = num / 0x100
+		off = off + 1; buf[off] = char(tonumber(num % 0x100)); num = num / 0x100
+		off = off + 1; buf[off] = char(tonumber(num % 0x100)); num = num / 0x100
+		off = off + 1; buf[off] = char(tonumber(num % 0x100)); num = num / 0x100
+		off = off + 1; buf[off] = char(tonumber(num % 0x100)); num = num / 0x100
+		off = off + 1; buf[off] = char(tonumber(num % 0x100)); num = num / 0x100
+		off = off + 1; buf[off] = char(tonumber(num % 0x100)); num = num / 0x100
+		off = off + 1; buf[off] = char(tonumber(num % 0x100))
+		return off, len + 8
+	end
 end
 
 --module(...)
@@ -83,11 +131,32 @@ end
 ----------------------------------------------------------------------------------
 
 local function pack_varint64(num)
-	return char(varint_next_byte(num))
+	local num, t = normalize_number(num)
+	if t == 'number' then
+		return pack_varint64_num(num)
+	end
+	if t == 'string' then
+		return pack_varint64_raw(num)
+	end
+	return pack_varint64_cdata(num)
 end
 
 local function pack_varint32(num)
-	return char(varint_next_byte(num))
+	local num, t = normalize_number(num)
+	if t == 'string' then
+		if #num > 4 then
+			num = num:sub(-4) -- only use the lowest 32-bits (4bytes)
+		end
+		return pack_varint64_raw(num)
+	end
+	-- only use the lowest 32-bits
+	if num >= 0x100000000 then
+		num = num % 0x100000000
+	end
+	if t == 'number' then
+		return pack_varint64_num(num)
+	end
+	return pack_varint64_cdata(num)
 end
 
 local basic = {
@@ -106,12 +175,27 @@ svarint32 = function(buf, off, len, num)
 	return append(buf, off, len, pack_varint32(zigzag32(num)))
 end,
 
+bool = function(buf, off, len, bool)
+	local b = '\0'
+	-- check for true.  Make zero false.
+	if bool and bool ~= 0 then b = '\1' end
+	return append(buf, off, len, b)
+end,
+
 fixed64 = function(buf, off, len, num)
-	return append(buf, off, len, spack('<I8', num))
+	local t = type(num)
+	if t == 'number' then
+		return append(buf, off, len, spack('<I8', num))
+	end
+	return append_raw64(buf, off, len, num, t)
 end,
 
 sfixed64 = function(buf, off, len, num)
-	return append(buf, off, len, spack('<i8', num))
+	local t = type(num)
+	if t == 'number' then
+		return append(buf, off, len, spack('<i8', num))
+	end
+	return append_raw64(buf, off, len, num, t)
 end,
 
 double = function(buf, off, len, num)
@@ -236,16 +320,16 @@ local function pack_length_field(buf, off, len, field, val)
 	return off, len + field_len + #len_data
 end
 
-local function pack_repeated(buf, off, len, field, arr)
+local function pack_repeated(buf, off, len, field, arr, arr_len)
 	local pack = field.pack
 	local tag = field.tag_type
 	if field.has_length then
-		for i=1, #arr do
+		for i=1, arr_len do
 			-- pack length-delimited field
 			off, len = pack_length_field(buf, off, len, field, arr[i])
 		end
 	else
-		for i=1, #arr do
+		for i=1, arr_len do
 			-- pack field tag.
 			off, len = append(buf, off, len, tag)
 
@@ -278,14 +362,16 @@ local function pack_fields(buf, off, len, msg, fields)
 		local field = fields[i]
 		local val = data[field.name]
 		if val then
-			if val ~= field.default then
+			if val ~= field.default or field.is_required then
 				if field.is_repeated then
-					if field.is_packed then
+					local val_len = #val
+					-- only use packed encoding when there is more then one element.
+					if field.is_packed and val_len > 1 then
 						-- pack length-delimited field
 						off, len = pack_length_field(buf, off, len, field, val)
 					else
 						-- pack repeated field
-						off, len = pack_repeated(buf, off, len, field, val)
+						off, len = pack_repeated(buf, off, len, field, val, val_len)
 					end
 				elseif field.has_length then
 					-- pack length-delimited field
@@ -331,7 +417,6 @@ local map_types = {
 -- varints
 int32  = "varint32",
 uint32 = "varint32",
-bool   = "varint32",
 enum   = "varint32",
 int64  = "varint64",
 uint64 = "varint64",
@@ -381,7 +466,7 @@ local function get_type_pack(mt)
 			pack = function(buf, off, len, msg)
 				return message(buf, off, len, msg, fields)
 			end
-			register_fields(mt, fields)
+			register_fields(mt, fields, pack)
 		elseif mt.is_group then
 			local fields = mt.fields
 			-- encode group end tag.
@@ -389,7 +474,7 @@ local function get_type_pack(mt)
 			pack = function(buf, off, len, msg)
 				return group(buf, off, len, msg, fields, end_tag)
 			end
-			register_fields(mt, fields)
+			register_fields(mt, fields, pack)
 		end
 		-- cache pack function.
 		mt.pack = pack
@@ -397,10 +482,10 @@ local function get_type_pack(mt)
 	return pack
 end
 
-function register_fields(mt, fields)
+function register_fields(mt, fields, pack)
 	-- check if the fields where already registered.
 	if mt.pack then return end
-	local tags = mt.tags
+	mt.pack = pack
 	for i=1,#fields do
 		local field = fields[i]
 		local tag = field.tag

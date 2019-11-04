@@ -4135,7 +4135,7 @@ function gump:CriaNovaBarra (instancia, index)
 	return new_row
 end
 
-function _detalhes:SetBarTextSettings (size, font, fixedcolor, leftcolorbyclass, rightcolorbyclass, leftoutline, rightoutline, customrighttextenabled, customrighttext, percentage_type, showposition, customlefttextenabled, customlefttext, smalloutline_left, smalloutlinecolor_left, smalloutline_right, smalloutlinecolor_right)
+function _detalhes:SetBarTextSettings (size, font, fixedcolor, leftcolorbyclass, rightcolorbyclass, leftoutline, rightoutline, customrighttextenabled, customrighttext, percentage_type, showposition, customlefttextenabled, customlefttext, smalloutline_left, smalloutlinecolor_left, smalloutline_right, smalloutlinecolor_right, translittext)
 	
 	--> size
 	if (size) then
@@ -4218,6 +4218,11 @@ function _detalhes:SetBarTextSettings (size, font, fixedcolor, leftcolorbyclass,
 	--> show position number
 	if (type (showposition) == "boolean") then
 		self.row_info.textL_show_number = showposition
+	end
+
+	--> translit text by Vardex (https://github.com/Vardex May 22, 2019)
+	if (type (translittext) == "boolean") then
+		self.row_info.textL_translit_text = translittext
 	end
 	
 	self:InstanceReset()

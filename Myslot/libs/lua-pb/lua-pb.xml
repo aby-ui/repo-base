@@ -1,0 +1,22 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+
+<Script file="fakerequire.lua" />
+
+<Script file="pb\utils.lua" />
+<Script file="pb\handlers.lua" />
+
+<Script file="pb\standard\buffer.lua" />
+<Script file="pb\standard\unknown.lua" />
+<Script file="pb\standard\repeated.lua" />
+<Script file="pb\standard\dump.lua" />
+<Script file="pb\standard\message.lua" />
+<Script file="pb\standard\zigzag.lua" />
+<Script file="pb\standard\pack.lua" />
+<Script file="pb\standard\unpack.lua" />
+
+<Script file="pb\standard.lua" />
+
+<Script file="pb-wow.lua" />
+
+</Ui>

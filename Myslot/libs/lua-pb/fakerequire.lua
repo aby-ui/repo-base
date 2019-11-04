@@ -1,6 +1,7 @@
-local adepter = LibStub:NewLibrary("pblua.require", 1)
+local _, ADDONSELF = ...
+ADDONSELF.luapb = {} -- init
 
-adepter.require = function(modname)
+ADDONSELF.luapb.require = function(modname)
 	if modname == 'bit' then
 		return bit
 	elseif modname == 'struct' then
@@ -9,5 +10,5 @@ adepter.require = function(modname)
 	end
 
 	modname = string.gsub(modname, '.*%.', '')
-	return LibStub:GetLibrary('pblua.' .. modname)
+	return ADDONSELF.luapb[modname]
 end

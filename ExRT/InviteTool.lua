@@ -84,8 +84,10 @@ local function InviteBut()
 	local gplayers = GetNumGuildMembers() or 0
 	local nowinvnum = 1
 	local inRaid = IsInRaid()
-	module.db.converttoraid = true
-	module.db.massinv = true
+	if not inRaid then
+		module.db.converttoraid = true
+		module.db.massinv = true
+	end
 	for i=1,gplayers do
 		local name,_,rankIndex,level,_,_,_,_,online,_,_,_,_,isMobile = GetGuildRosterInfo(i)
 		local sName = ExRT.F.delUnitNameServer(name)
@@ -105,10 +107,10 @@ end
 local function InviteList(list,noNewList)
 	local nowinvnum = 1
 	local inRaid = IsInRaid()
-	if #list > 5 then
+	if #list > 5 and not inRaid then
 		module.db.converttoraid = true
 	end
-	if not noNewList then
+	if not noNewList and not inRaid then
 		module.db.listinv = list
 	end
 	for i=1,#list do
@@ -660,7 +662,7 @@ function module.main:GROUP_ROSTER_UPDATE()
 	end
 	if module.db.listinv and inRaid then
 		InviteList(module.db.listinv,true)
-		module.db.massinv = nil
+		module.db.listinv = nil
 	end
 	if inRaid and UnitIsGroupLeader("player") then
 		promoteRosterUpdate()

@@ -2,7 +2,10 @@
 -- http://forums.curseforge.com/showpost.php?p=252484&postcount=8
 -- modified to support World of Warcraft by Boshi Lian <farmer1992@gmail.com>
 
-local crc32 = LibStub:NewLibrary("CRC32-1.0", 1)
+local _, ADDONSELF = ...
+ADDONSELF.crc32 = {}
+
+local crc32 = ADDONSELF.crc32
 
 local bit_band, bit_bxor, bit_rshift = bit.band, bit.bxor, bit.rshift
 local consts = {

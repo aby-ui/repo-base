@@ -1,6 +1,10 @@
 -- Copyright (c) 2011, Robert G. Jakabosky <bobby@sharedrealm.com> All rights reserved.
 
-local _M = LibStub:NewLibrary("pblua.repeated", 1)
+local _, ADDONSELF = ...
+local require = ADDONSELF.luapb.require
+ADDONSELF.luapb.repeated = {}
+
+local _M = ADDONSELF.luapb.repeated
 
 local concat = table.concat
 local setmetatable = setmetatable

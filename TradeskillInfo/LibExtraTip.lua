@@ -3,7 +3,7 @@ LibExtraTip
 
 LibExtraTip is a library of API functions for manipulating additional information into GameTooltips by either adding information to the bottom of existing tooltips (embedded mode) or by adding information to an extra "attached" tooltip construct which is placed to the bottom of the existing tooltip.
 
-Copyright (C) 2008, by the respective below authors.
+Copyright (C) 2008-2019, by the respective below authors.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -28,7 +28,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 local LIBNAME = "LibExtraTip"
 local VERSION_MAJOR = 1
-local VERSION_MINOR = 346
+local VERSION_MINOR = 347
 -- Minor Version cannot be a SVN Revison in case this library is used in multiple repositories
 -- Should be updated manually with each (non-trivial) change
 
@@ -38,6 +38,14 @@ local lib = LibStub:NewLibrary(LIBNAME.."-"..VERSION_MAJOR, VERSION_MINOR)
 if not lib then return end
 
 LibStub("LibRevision"):Set("$URL$","$Rev$","5.15.DEV.", 'auctioneer', 'libs')
+
+-- need to know early if we're using Classic or Modern version
+local MINIMUM_CLASSIC = 11300
+local MAXIMUM_CLASSIC = 19999
+-- version, build, date, tocversion = GetBuildInfo()
+local _,_,_,tocVersion = GetBuildInfo()
+lib.Classic = (tocVersion > MINIMUM_CLASSIC and tocVersion < MAXIMUM_CLASSIC)
+
 
 -- Call function to deactivate any outdated version of the library.
 -- (calls the OLD version of this function, NOT the one defined in this
@@ -74,6 +82,8 @@ local defaultEnable = {
 	SetTradeTargetItem = true,
 	SetRecipeReagentItem = true,
 	SetRecipeResultItem = true,
+    SetTradeSkillItem = true,
+    SetCraftItem = true,
 	SetHyperlink = true,
 	SetHyperlinkAndCount = true, -- Creating a tooltip via lib:SetHyperlinkAndCount()
 	SetBattlePet = true,
@@ -122,6 +132,7 @@ end
 -- Function that gets run when an item is set on a registered tooltip.
 local function OnTooltipSetItem(tooltip)
 	local self = lib
+    -- DebugPrintQuick("OnTooltipSetItem called" ) -- DEBUGGING
 	local reg = self.tooltipRegistry[tooltip]
 	if not reg then return end
 
@@ -129,6 +140,7 @@ local function OnTooltipSetItem(tooltip)
 		tooltip:Show()
 
 		local testname, item = tooltip:GetItem()
+        --DebugPrintQuick("OnTooltipSetItem GetItem", testname, item ) -- DEBUGGING -- enchanting window always returns nil
 		if not item then
 			item = reg.item or reg.additional.link
 		elseif testname == "" then
@@ -143,6 +155,7 @@ local function OnTooltipSetItem(tooltip)
 		end
 
 		if item and not reg.hasItem then
+            -- DebugPrintQuick("OnTooltipSetItem has item" ) -- DEBUGGING
 			local name,link,quality,ilvl,minlvl,itype,isubtype,stack,equiploc,texture = GetItemInfo(item)
 			if link then
 				name = name or "unknown" -- WotLK bug
@@ -168,6 +181,7 @@ local function OnTooltipSetItem(tooltip)
 				reg.additional.equipLocation = equiploc
 				reg.additional.texture = texture
 
+                --DebugPrintQuick("OnTooltipSetItem callback called" ) -- DEBUGGING
 				ProcessCallbacks(reg, "item", tooltip, item,quantity,name,link,quality,ilvl,minlvl,itype,isubtype,stack,equiploc,texture)
 				tooltip:Show()
 				if reg.extraTipUsed then
@@ -181,6 +195,7 @@ end
 
 -- Function that gets run when a spell is set on a registered tooltip.
 local function OnTooltipSetSpell(tooltip)
+    --DebugPrintQuick("OnTooltipSetSpell called" ) -- DEBUGGING
 	local self = lib
 	local reg = self.tooltipRegistry[tooltip]
 	if not reg then return end
@@ -240,6 +255,7 @@ end
 
 -- Function that gets run when a registered tooltip's item is cleared.
 local function OnTooltipCleared(tooltip)
+    --DebugPrintQuick("OnTooltipCleared called ")   -- DEBUGGING
 	local reg = lib.tooltipRegistry[tooltip]
 	if not reg then return end
 
@@ -765,21 +781,35 @@ function lib:GetMoneyText(money, concise)
 	local s = floor(money % 10000 / 100)
 	local c = floor(money % 100)
 
+    local colorBlindEnabled = GetCVar("colorblindMode") == "1"
+
 	local moneyText = ""
 
 	local sep, fmt = "", "%d"
 	if g > 0 then
-		moneyText = goldicon:format(g)
+        if colorBlindEnabled then
+		    moneyText = format("%.0f",g) .. GOLD_AMOUNT_SYMBOL
+        else
+		    moneyText = goldicon:format(g)
+        end
 		sep, fmt = " ", "%02d"
 	end
 
 	if s > 0 or (money >= 10000 and (concise and c > 0) or not concise) then
-		moneyText = moneyText..sep..silvericon:format(fmt):format(s)
+        if colorBlindEnabled then
+		    moneyText = moneyText .. sep .. format(fmt,s) .. SILVER_AMOUNT_SYMBOL
+        else
+		    moneyText = moneyText..sep..silvericon:format(fmt):format(s)
+        end
 		sep, fmt = " ", "%02d"
 	end
 
 	if not concise or c > 0 or money < 100 then
-		moneyText = moneyText..sep..coppericon:format(fmt):format(c)
+        if colorBlindEnabled then
+		    moneyText = moneyText .. sep .. format(fmt,c) .. COPPER_AMOUNT_SYMBOL
+        else
+            moneyText = moneyText..sep..coppericon:format(fmt):format(c)
+        end
 	end
 
 	return moneyText
@@ -830,6 +860,7 @@ end
 	@since 1.0
 ]]
 function lib:SetHyperlinkAndCount(tooltip, link, quantity, detail)
+    --DebugPrintQuick("SetHyperlinkAndCount", link, quantity, detail ) -- DEBUGGING
 	local reg = self.tooltipRegistry[tooltip]
 	if not reg or reg.NoColumns then return end -- NoColumns tooltips can't handle :SetHyperlink
 
@@ -1238,16 +1269,99 @@ function lib:GenerateTooltipMethodTable() -- Sets up hooks to give the quantity 
 		end,
 
 		SetRecipeReagentItem = function(self, recipeID, reagentIndex)
+            -- used on Current WoW only
 			OnTooltipCleared(self)
 			local reg = tooltipRegistry[self]
 			reg.ignoreOnCleared = true
 			reg.additional.event = "SetRecipeReagentItem"
 			reg.additional.eventIndex = recipeID
 			reg.additional.eventSubIndex = reagentIndex
-			local _,_,q,rc = C_TradeSkillUI.GetRecipeReagentInfo(recipeID, reagentIndex)
-			reg.quantity = q
-			reg.additional.playerReagentCount = rc
-			reg.additional.link = C_TradeSkillUI.GetRecipeReagentItemLink(recipeID, reagentIndex) -- Workaround [LTT-56], Remove when fixed by Blizzard
+            local _,_,q,rc = C_TradeSkillUI.GetRecipeReagentInfo(recipeID, reagentIndex)
+            reg.quantity = q
+            reg.additional.playerReagentCount = rc
+            reg.additional.link = C_TradeSkillUI.GetRecipeReagentItemLink(recipeID, reagentIndex) -- Workaround [LTT-56], Remove when fixed by Blizzard
+		end,
+
+--[[
+Old Classic Crafting APIs (removed in 3.0)
+REMOVED - CloseCraft
+REMOVED - CollapseCraftSkillLine
+REMOVED - CraftIsEnchanting
+REMOVED - CraftIsPetTraining
+REMOVED - CraftOnlyShowMakeable
+REMOVED - DoCraft
+REMOVED - ExpandCraftSkillLine
+REMOVED - GetNumCrafts
+REMOVED - GetCraftButtonToken
+REMOVED - GetCraftCooldown
+REMOVED - GetCraftDescription
+REMOVED - GetCraftDisplaySkillLine
+REMOVED - GetCraftFilter
+REMOVED - GetCraftIcon
+REMOVED - GetCraftInfo
+REMOVED - GetCraftItemLink
+REMOVED - GetCraftItemNameFilter
+REMOVED - GetCraftName
+REMOVED - GetCraftNumMade
+REMOVED - GetCraftNumReagents
+REMOVED - GetCraftReagentInfo
+REMOVED - GetCraftReagentItemLink
+REMOVED - GetCraftRecipeLink
+REMOVED - GetCraftSelectionIndex
+REMOVED - GetCraftSkillLine
+REMOVED - GetCraftSlots
+REMOVED - GetCraftSpellFocus
+REMOVED - SelectCraft
+REMOVED - SetCraftFilter
+REMOVED - SetCraftItemNameFilter
+]]
+		SetCraftItem = function(self, recipeID, reagentIndex)
+            -- used on Classic only
+            --DebugPrintQuick("SetCraftItem called", recipeID, reagentIndex ) -- DEBUGGING
+			OnTooltipCleared(self)
+			local reg = tooltipRegistry[self]
+			reg.ignoreOnCleared = true
+			reg.additional.event = "SetCraftItem"
+			reg.additional.eventIndex = recipeID
+			reg.additional.eventSubIndex = reagentIndex
+            if reagentIndex then
+                local _,_,q,rc = GetCraftReagentInfo(recipeID, reagentIndex)
+                reg.quantity = q
+                reg.additional.playerReagentCount = rc
+                reg.additional.link = GetCraftReagentItemLink(recipeID, reagentIndex)
+                --DebugPrintQuick("SetCraftItem reagents1", q, rc, reg.additional.link ) -- DEBUGGING
+            else
+				local link = GetCraftItemLink(recipeID)
+				reg.additional.link = link
+                --DebugPrintQuick("SetCraftItem reagents2", link ) -- DEBUGGING
+				reg.quantity = GetCraftNumMade(recipeID)
+				if link and link:match("spell:%d") then
+					SetSpellDetail(reg, link)
+				end
+            end
+		end,
+
+		SetTradeSkillItem = function(self, recipeID, reagentIndex)
+            -- used on Classic only
+			OnTooltipCleared(self)
+			local reg = tooltipRegistry[self]
+			reg.ignoreOnCleared = true
+			reg.additional.event = "SetTradeSkillItem"
+			reg.additional.eventIndex = recipeID
+			reg.additional.eventSubIndex = reagentIndex
+            if reagentIndex then
+                local _,_,q,rc = GetTradeSkillReagentInfo(recipeID, reagentIndex)
+                reg.quantity = q
+                reg.additional.playerReagentCount = rc
+                reg.additional.link = GetTradeSkillReagentItemLink(recipeID, reagentIndex)
+            else
+				local link = GetTradeSkillItemLink(recipeID)
+				reg.additional.link = link
+				reg.quantity = GetTradeSkillNumMade(recipeID)
+				if link and link:match("spell:%d") then
+					SetSpellDetail(reg, link)
+				end
+            end
 		end,
 
 		SetRecipeResultItem = function(self, recipeID)
@@ -1256,22 +1370,39 @@ function lib:GenerateTooltipMethodTable() -- Sets up hooks to give the quantity 
 			reg.ignoreOnCleared = true
 			reg.additional.event = "SetRecipeResultItem"
 			reg.additional.eventIndex = recipeID
-			local recipeInfo = C_TradeSkillUI.GetRecipeInfo(recipeID) -- returns a table with a ton of info
-			reg.additional.recipeInfo = recipeInfo -- for now just attach whole table to reg.additional
-			local minMade, maxMade = C_TradeSkillUI.GetRecipeNumItemsProduced(recipeID)
-			reg.additional.minMade = minMade
-			reg.additional.maxMade = maxMade
-			if minMade and maxMade then -- protect against nil values
-				reg.quantity = (minMade + maxMade) / 2 -- ### todo: may not be an integer, if this causes problems may need to math.floor it
-			elseif maxMade then
-				reg.quantity = maxMade
-			else
-				reg.quantity = minMade -- note: may still be nil
-			end
-			reg.additional.link = C_TradeSkillUI.GetRecipeItemLink(recipeID) -- Workaround [LTT-56], Remove when fixed by Blizzard
+
+            if (lib.Classic) then
+                reg.additional.recipeInfo = nil     -- don't have a match for GetRecipeInfo in classic
+                local minMade, maxMade = GetTradeSkillNumMade(recipeID)
+                reg.additional.minMade = minMade
+                reg.additional.maxMade = maxMade
+                if minMade and maxMade then -- protect against nil values
+                    reg.quantity = (minMade + maxMade) / 2 -- ### todo: may not be an integer, if this causes problems may need to math.floor it
+                elseif maxMade then
+                    reg.quantity = maxMade
+                else
+                    reg.quantity = minMade -- note: may still be nil
+                end
+                reg.additional.link = GetTradeSkillRecipeLink(recipeID) -- Workaround [LTT-56], Remove when fixed by Blizzard
+            else
+                local recipeInfo = C_TradeSkillUI.GetRecipeInfo(recipeID) -- returns a table with a ton of info
+                reg.additional.recipeInfo = recipeInfo -- for now just attach whole table to reg.additional
+                local minMade, maxMade = C_TradeSkillUI.GetRecipeNumItemsProduced(recipeID)
+                reg.additional.minMade = minMade
+                reg.additional.maxMade = maxMade
+                if minMade and maxMade then -- protect against nil values
+                    reg.quantity = (minMade + maxMade) / 2 -- ### todo: may not be an integer, if this causes problems may need to math.floor it
+                elseif maxMade then
+                    reg.quantity = maxMade
+                else
+                    reg.quantity = minMade -- note: may still be nil
+                end
+                reg.additional.link = C_TradeSkillUI.GetRecipeItemLink(recipeID) -- Workaround [LTT-56], Remove when fixed by Blizzard
+            end
 		end,
 
 		SetHyperlink = function(self,link)
+            -- DebugPrintQuick("SetHyperlink called ", link )   -- DEBUGGING
 			local reg = tooltipRegistry[self]
 			if reg.ignoreSetHyperlink then return end
 			OnTooltipCleared(self)
@@ -1440,6 +1571,8 @@ function lib:GenerateTooltipMethodTable() -- Sets up hooks to give the quantity 
 		SetTradeTargetItem = posthookClearIgnore,
 		SetRecipeReagentItem = posthookClearIgnore,
 		SetRecipeResultItem = posthookClearIgnore,
+        SetTradeSkillItem = posthookClearIgnore,
+        SetCraftItem = posthookClearIgnore,
 
 		SetHyperlink = function(self)
 			local reg = tooltipRegistry[self]
