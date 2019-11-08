@@ -43,7 +43,6 @@ L:SetWarningLocalization({
 
 L:SetOptionLocalization({
 	specwarnUnder	= "當你在紫色圓圈範圍內顯示特別警告",
-	countdownCrush	= DBM_CORE_AUTO_COUNTDOWN_OPTION_TEXT:format(122774).." (只有英雄模式)"
 })
 
 L:SetMiscLocalization({

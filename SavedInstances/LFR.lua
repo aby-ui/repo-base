@@ -94,6 +94,11 @@ local LFRInstances = {
   [2009] = { total=3, base=1,  parent=2016, minLvl=120, remap={ 1, 2, 3 } }, -- The Eternal Palace: The Grand Reception
   [2010] = { total=3, base=4,  parent=2016, minLvl=120, remap={ 1, 2, 3 } }, -- The Eternal Palace: Depths of the Devoted
   [2011] = { total=2, base=7,  parent=2016, minLvl=120, remap={ 1, 2 } }, -- The Eternal Palace: The Circle of Stars
+
+  -- 15th Anniversary, 1911 is fake LFDID used by Escape from Tol Dagor
+  [2004] = { total=1, base=1,  parent=1911, minLvl=120, remap={ 1 } }, -- Memories of Azeroth: Burning Crusade
+  [2017] = { total=1, base=2,  parent=1911, minLvl=120, remap={ 1 } }, -- Memories of Azeroth: Wrath of the Lich King
+  [2018] = { total=1, base=3,  parent=1911, minLvl=120, remap={ 1 } }, -- Memories of Azeroth: Cataclysm
 }
 
 local tbl = {}

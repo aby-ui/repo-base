@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2114, "DBM-Party-BfA", 7, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190908173933")
+mod:SetRevision("20190909224302")
 mod:SetCreatureID(129227)
 mod:SetEncounterID(2106)
 mod:DisableESCombatDetection()--ES fires for nearby trash even if boss isn't pulled

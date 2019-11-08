@@ -42,19 +42,18 @@ end
 CoreDependCall("MySlot", function()
 	MYSLOT_ReportFrame:SetHeight(370)
 	MYSLOT_ScrollFrame:SetHeight(300)
-	MYSLOT_ScrollFrame_Child:SetHeight(300)
-	MYSLOT_ReportFrame_EditBox:SetAutoFocus(false)
+	--MYSLOT_ScrollFrame_Child:SetHeight(300)
 	MYSLOT_ReportFrame_EditBox:SetHeight(270)
 	MYSLOT_ReportFrame_EditBox:SetScript("OnEditFocusGained", function(self) self:HighlightText() end)
 	MYSLOT_ReportFrame_EditBox:SetScript("OnEditFocusLost", function(self) self:HighlightText(0, 0) end)
 
     MYSLOT_ScrollFrame:HookScript("OnScrollRangeChanged", function(self) self:SetVerticalScroll(0) end);
 
-	CoreUICreateMover(MYSLOT_ReportFrame, 26, 0, 0, 0)
-    MYSLOT_ReportFrame:EnableMouse(false)
+	--CoreUICreateMover(MYSLOT_ReportFrame, 26, 0, 0, 0)
+    --MYSLOT_ReportFrame:EnableMouse(false)
 
 	local private = _G["_163ui_MySlot"]
-	hooksecurefunc(private, "Export", function() MYSLOT_ReportFrame_EditBox:SetFocus() end)
+	hooksecurefunc(private, "Export", function() MYSLOT_ReportFrame_EditBox:SetFocus() CoreScheduleTimer(false, 0.1, function() MYSLOT_ScrollFrame:SetVerticalScroll(0) end) end)
 
     local ct = WW:Frame("$parent_ct", MYSLOT_ReportFrame):Size(1,1):TL("$parent", "BL", 0, 0):un()
     for i = 1, 3 do
@@ -76,7 +75,7 @@ CoreDependCall("MySlot", function()
             MYSLOT_ReportFrame_EditBox:SetText(U1LoadDBValue(providedCfg) or "");
             MYSLOT_ReportFrame_EditBox:SetFocus();
             MYSLOT_ReportFrame_EditBox:HighlightText();
-            MYSLOT_ScrollFrame:SetVerticalScroll(0);
+            CoreScheduleTimer(false, 0.1, function() MYSLOT_ScrollFrame:SetVerticalScroll(0) end)
         end):un()
     end
 end)

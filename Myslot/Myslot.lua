@@ -212,7 +212,7 @@ end
 -- }}}
 
 
-function MySlot:Export()
+function MySlot:Export(opt)
     -- ver nop nop nop crc32 crc32 crc32 crc32
 
     local msg = _MySlot.Charactor()
@@ -275,18 +275,18 @@ function MySlot:Export()
     for i = 1, d:len(), LINE_LEN do
         s = s .. d:sub(i, i + LINE_LEN - 1) .. MYSLOT_LINE_SEP
     end
-    MYSLOT_ReportFrame_EditBox:SetText(s)
-    MYSLOT_ReportFrame_EditBox:HighlightText()
+
+    return s
     -- }}}
 end
 
-function MySlot:Import()
+function MySlot:Import(text, opt)
     if InCombatLockdown() then
         MySlot:Print(L["Import is not allowed when you are in combat"])
         return
     end
 
-    local s = MYSLOT_ReportFrame_EditBox:GetText() or ""
+    local s = text or ""
     s = string.gsub(s,"(@.[^\n]*\n)","")
     s = string.gsub(s,"(#.[^\n]*\n)","")
     s = string.gsub(s,"\n","")
@@ -298,7 +298,7 @@ function MySlot:Import()
         return
     end
 
-    local force = _G['MYSLOT_ReportFrameForceImport']:GetChecked()
+    local force = opt.force
 
     local ver = s[1]
     local crc = s[5] * 2^24 + s[6] * 2^16 + s[7] * 2^8 + s[8]
@@ -329,12 +329,7 @@ function MySlot:Import()
     ct = TableToString(ct)
     
     local msg = _MySlot.Charactor():Parse(ct)
-
-    StaticPopupDialogs["MYSLOT_MSGBOX"].OnAccept = function()
-        StaticPopup_Hide("MYSLOT_MSGBOX")
-        MySlot:RecoverData(msg)
-    end
-    StaticPopup_Show("MYSLOT_MSGBOX")
+    return msg
 end
 
 -- {{{ FindOrCreateMacro
@@ -628,54 +623,3 @@ function MySlot:Clear(what)
         SaveBindings(GetCurrentBindingSet())
     end
 end
-
-SlashCmdList["MYSLOT"] = function(msg, editbox)
-    local cmd, what = msg:match("^(%S*)%s*(%S*)%s*$")
-
-    if cmd == "clear" then
-        MySlot:Clear(what)
-    else
-        MYSLOT_ReportFrame:Show() 
-    end
-end
-SLASH_MYSLOT1 = "/MYSLOT"
-
-StaticPopupDialogs["MYSLOT_MSGBOX"] = {
-    text = L["Are you SURE to import ?"],
-    button1 = ACCEPT,
-    button2 = CANCEL,
-    timeout = 0,
-    whileDead = 1,
-    hideOnEscape = 1,
-    multiple = 0,
-}
-
-local f = CreateFrame('Frame')
-f:RegisterEvent('ADDON_LOADED')
-
-f:SetScript("OnEvent", function()
-    -- TODO clean up code
-    local FRAMENAME = 'MYSLOT_ReportFrame'
-    _G[FRAMENAME .. 'CloseButton']:SetText(L["Close"])
-    _G[FRAMENAME .. 'CloseButton']:SetScript('OnClick', function()
-        MYSLOT_ReportFrame:Hide()
-    end)
-
-    _G[FRAMENAME .. 'ImportButton']:SetText(L["Import"])
-    _G[FRAMENAME .. 'ImportButton']:SetScript('OnClick', function()
-        MySlot:Import()
-    end)
-
-    _G[FRAMENAME .. 'ExportButton']:SetText(L["Export"])
-    _G[FRAMENAME .. 'ExportButton']:SetScript('OnClick', function()
-        MySlot:Export()
-    end)
-
-    _G[FRAMENAME .. 'ForceImportText']:SetText(L["Force Import"])
-    _G[FRAMENAME .. 'ForceImport'].tooltip = L["Skip CRC32, version and any other validation before importing. May cause unknown behavior"]
-
-    -- _G[FRAMENAME .. 'OptionFrameOptionBarText']:SetText(L["Import and Export settings below"])
-    -- _G[FRAMENAME .. 'OptionFrameActionText']:SetText(L["Spell"])
-    -- _G[FRAMENAME .. 'OptionFrameMacroText']:SetText(L["Macro"])
-    -- _G[FRAMENAME .. 'OptionFrameBindingText']:SetText(L["Keys Binding"])
-end)

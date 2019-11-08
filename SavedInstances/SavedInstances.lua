@@ -850,6 +850,7 @@ addon.transInstance = {
   [545] = 185, -- The Steamvault: issue #143 esES
   [1530] = 1353, -- The Nighthold: issue #186 frFR
   [585] = 1154, -- Magisters' Terrace: issue #293 frFR
+  [2235] = 1911, -- Caverns of Time - Anniversary: issue #315 (fake LFDID used by Escape from Tol Dagor)
 }
 
 -- some instances (like sethekk halls) are named differently by GetSavedInstanceInfo() and LFGGetDungeonInfoByID()
@@ -1397,6 +1398,10 @@ function addon:UpdateInstance(id)
     isHoliday = false
     typeID = TYPEID_DUNGEON
     subtypeID = LFG_SUBTYPEID_HEROIC
+  elseif id == 1911 then -- Caverns of Time - Anniversary: issue #315 (fake LFDID used by Escape from Tol Dagor)
+    local _
+    _, typeID, subtypeID, _, _, recLevel, _, _, expansionLevel, _,
+      _,  difficulty, maxPlayers, _, isHoliday, _, _, _, name = GetLFGDungeonInfo(2004)
   end
   if subtypeID == LFG_SUBTYPEID_SCENARIO and typeID ~= TYPEID_RANDOM_DUNGEON then -- ignore non-random scenarios
     return nil, nil, true
@@ -2553,7 +2558,7 @@ end
 function core:OnInitialize()
   local versionString = GetAddOnMetadata(addonName, "version")
   --[===[@debug@
-  if versionString == "8.2.3-1-g7fefb76" then
+  if versionString == "8.2.4" then
     versionString = "Dev"
   end
   --@end-debug@]===]

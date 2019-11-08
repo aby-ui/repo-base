@@ -1,6 +1,10 @@
 local addonName, addon = ...
 local hbd = LibStub("HereBeDragons-2.0")
 
+if addon.CLASSIC then
+    return
+end
+
 local enableClicks = true       -- True if waypoint-clicking is enabled to set points
 local enableClosest = true      -- True if 'Automatic' quest waypoints are enabled
 local modifier                  -- A string representing click-modifiers "CAS", etc.
@@ -139,10 +143,9 @@ local function ObjectivesChanged()
 end
 
 local eventFrame = CreateFrame("Frame")
-if not addon.CLASSIC then
-    eventFrame:RegisterEvent("QUEST_POI_UPDATE")
-    eventFrame:RegisterEvent("QUEST_LOG_UPDATE")
-end
+eventFrame:RegisterEvent("QUEST_POI_UPDATE")
+eventFrame:RegisterEvent("QUEST_LOG_UPDATE")
+
 
 eventFrame:SetScript("OnEvent", function(self, event, ...)
     if event == "QUEST_POI_UPDATE" then
@@ -237,11 +240,11 @@ local function poi_OnClick(self, button)
     SetCVar("questPOI", cvar and 1 or 0)
 end
 
-if not addon.CLASSIC then
-    hooksecurefunc("QuestPOIButton_OnClick", function(self, button)
-        poi_OnClick(self, button)
-    end)
-end
+
+hooksecurefunc("QuestPOIButton_OnClick", function(self, button)
+    poi_OnClick(self, button)
+end)
+
 
 function TomTom:EnableDisablePOIIntegration()
     enableClicks= TomTom.profile.poi.enable

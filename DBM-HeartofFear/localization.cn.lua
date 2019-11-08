@@ -50,7 +50,6 @@ L:SetWarningLocalization({
 
 L:SetOptionLocalization({
 	specwarnUnder	= "特殊警报：当你在首领身体下方时",
-	countdownCrush	= DBM_CORE_AUTO_COUNTDOWN_OPTION_TEXT:format(122774).."（仅英雄难度）"
 })
 
 L:SetMiscLocalization({

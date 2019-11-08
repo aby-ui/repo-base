@@ -192,6 +192,19 @@ local function OnUpdate(self, elapsed)
 		local angle = TomTom:GetDirectionToWaypoint(active_point)
 		local player = GetPlayerFacing() or 0
 
+		if not player then
+			if not TomTom:IsValidWaypoint(active_point) then
+				active_point = nil
+				-- Change the crazy arrow to point at the closest waypoint
+				if TomTom.profile.arrow.setclosest then
+					TomTom:SetClosestWaypoint()
+					return
+				end
+			end
+			self:Hide()
+			return
+        end
+
 		angle = angle - player
 
 		local perc = math.abs((math.pi - math.abs(angle)) / math.pi)
@@ -325,6 +338,12 @@ local dropdown_info = {
 			isTitle = 1,
 		},
 		{
+			-- Send waypoint
+			text = L["Send waypoint to"],
+			hasArrow = true,
+			value = "send",
+		},
+		{
 			-- Clear waypoint from crazy arrow
 			text = L["Clear waypoint from crazy arrow"],
 			func = function()
@@ -373,7 +392,54 @@ local dropdown_info = {
 				end
 			end,
 		},
-	}
+		{
+			-- Lock Arrow
+			text = L["Arrow locked"],
+			checked = function () return TomTom.db.profile.arrow.lock; end,
+			func = function ()
+				TomTom.db.profile.arrow.lock = not TomTom.db.profile.arrow.lock
+				TomTom:ShowHideCrazyArrow()
+			end,
+			isNotRadio = true,
+		}
+	},
+    [2] = {
+        send = {
+            {
+                -- Title
+                text = L["Waypoint communication"],
+                isTitle = true,
+            },
+            {
+                -- Party
+                text = L["Send to party"],
+                func = function()
+                    TomTom:SendWaypoint(TomTom.dropdown.uid, "PARTY")
+                end
+            },
+            {
+                -- Raid
+                text = L["Send to raid"],
+                func = function()
+                    TomTom:SendWaypoint(TomTom.dropdown.uid, "RAID")
+                end
+            },
+            {
+                -- Battleground
+                text = L["Send to battleground"],
+                func = function()
+                    TomTom:SendWaypoint(TomTom.dropdown.uid, "BATTLEGROUND")
+                end
+            },
+            {
+                -- Guild
+                text = L["Send to guild"],
+                func = function()
+                    TomTom:SendWaypoint(TomTom.dropdown.uid, "GUILD")
+                end
+            },
+        },
+    },
 }
 
 local function init_dropdown(self, level)
@@ -406,6 +472,7 @@ end
 local function WayFrame_OnClick(self, button)
 	if active_point then
 		if TomTom.db.profile.arrow.menu then
+			TomTom.dropdown.uid = active_point
 			UIDropDownMenu_Initialize(TomTom.dropdown, init_dropdown)
 			ToggleDropDownMenu(1, nil, TomTom.dropdown, "cursor", 0, 0)
 		end

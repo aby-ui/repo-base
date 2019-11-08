@@ -77,6 +77,7 @@ function TomTom:Initialize(event, addon)
                 setclosest = true,
 				closestusecontinent = false,
                 enablePing = false,
+                pingChannel = "SFX",
 				hideDuringPetBattles = true,
             },
             minimap = {
@@ -240,7 +241,9 @@ function TomTom:ReloadOptions()
     self:ShowHideWorldCoords()
     self:ShowHideCoordBlock()
     self:ShowHideCrazyArrow()
-    self:EnableDisablePOIIntegration()
+    if not TomTom.CLASSIC then
+        self:EnableDisablePOIIntegration()
+    end
 end
 
 function TomTom:ClearAllWaypoints()
@@ -294,6 +297,7 @@ function TomTom:ReloadWaypoints()
 				world = world,
 				callbacks = nil,
 				silent = true,
+				from = "Anon",
 			}
 
 			-- Override options with what is stored in the profile
@@ -471,7 +475,7 @@ local function WorldMap_OnClick (self, ...)
             return false
         end
 
-        local uid = TomTom:AddWaypoint(m, x, y, { title = L["TomTom waypoint"],})
+        local uid = TomTom:AddWaypoint(m, x, y, { title = L["TomTom waypoint"], from="TomTom/wm"})
         return true
     else
         return false
@@ -489,6 +493,7 @@ local function WaypointCallback(event, arg1, arg2, arg3)
         if arg3 then
             tooltip:SetText(L["TomTom waypoint"])
             tooltip:AddLine(string.format(L["%s yards away"], math.floor(arg2)), 1, 1 ,1)
+            tooltip:AddLine(string.format(L["From: %s"], data.from or "?"))
             tooltip:Show()
         else
             tooltip.lines[2]:SetFormattedText(L["%s yards away"], math.floor(arg2), 1, 1, 1)
@@ -700,7 +705,7 @@ function TomTom:CHAT_MSG_ADDON(event, prefix, data, channel, sender)
     y = tonumber(y)
 
     local zoneName = hbd:GetLocalizedMap(m)
-    self:AddWaypoint(m, x, y, {title = title})
+    self:AddWaypoint(m, x, y, {title = title, from=("TomTom/"..sender)})
     local msg = string.format(L["|cffffff78TomTom|r: Added '%s' (sent from %s) to zone %s"], title, sender, zoneName)
     ChatFrame1:AddMessage(msg)
 end
@@ -735,6 +740,7 @@ local function _both_tooltip_show(event, tooltip, uid, dist)
     local zoneName = hbd:GetLocalizedMap(m)
 
     tooltip:AddLine(string.format(L["%s (%.2f, %.2f)"], zoneName, x*100, y*100), 0.7, 0.7, 0.7)
+    tooltip:AddLine(string.format(L["From: %s"], data.from or "?"))
     tooltip:Show()
 end
 
@@ -771,7 +777,7 @@ end
 
 local function _both_ping_arrival(event, uid, range, distance, lastdistance)
     if TomTom.profile.arrow.enablePing then
-        PlaySoundFile("Interface\\AddOns\\TomTom\\Media\\ping.mp3")
+        PlaySoundFile("Interface\\AddOns\\TomTom\\Media\\ping.mp3", TomTom.profile.arrow.pingChannel)
     end
 end
 
@@ -819,7 +825,7 @@ function TomTom:AddWaypointToCurrentZone(x, y, desc)
         return
     end
 
-    return self:AddWaypoint(m, x/100, y/100, {title = desc})
+    return self:AddWaypoint(m, x/100, y/100, {title = desc, from="TomTom/AWTCZ"})
 end
 
 -- Return a set of default callbacks that can be used by addons to provide
@@ -913,7 +919,7 @@ function TomTom:AddWaypoint(m, x, y, opts)
     end
 
     -- uid is the 'new waypoint' called this for historical reasons
-    local uid = {m, x, y, title = opts.title}
+    local uid = {m, x, y, title = opts.title, from=(opts.from or "?")}
 
     -- Copy over any options, so we have them
     for k,v in pairs(opts) do
@@ -1058,11 +1064,14 @@ do
 
     function Block_OnClick(self, button, down)
         local m,x,y = TomTom:GetCurrentPlayerPosition()
-        local zoneName = hbd:GetLocalizedMap(m)
-        local desc = string.format("%s: %.2f, %.2f", zoneName, x*100, y*100)
-        TomTom:AddWaypoint(m, x, y, {
-            title = desc,
-        })
+        if m and x and y then
+            local zoneName = hbd:GetLocalizedMap(m)
+            local desc = string.format("%s: %.2f, %.2f", zoneName, x*100, y*100)
+            TomTom:AddWaypoint(m, x, y, {
+                title = desc,
+                from = "TomTom/Block"
+            })
+        end
     end
 
     function Block_OnEvent(self, event, ...)
@@ -1109,11 +1118,16 @@ function TomTom:DebugListAllWaypoints()
 end
 
 local function usage()
-    ChatFrame1:AddMessage(L["|cffffff78TomTom |r/way |cffffff78Usage:|r"])
+    ChatFrame1:AddMessage(L["|cffffff78TomTom |r/way /tway /tomtomway /cway /tomtom |cffffff78Usage:|r"])
+    ChatFrame1:AddMessage(L["|cffffff78/tomtom |r - Open the TomTom options panel"])
+    ChatFrame1:AddMessage(L["|cffffff78/cway |r - Activate the closest waypoint"])
+    ChatFrame1:AddMessage(L["|cffffff78/way /tway /tomtomway |r - Commands to set a waypoint: one should work."])
     ChatFrame1:AddMessage(L["|cffffff78/way <x> <y> [desc]|r - Adds a waypoint at x,y with descrtiption desc"])
     ChatFrame1:AddMessage(L["|cffffff78/way <zone> <x> <y> [desc]|r - Adds a waypoint at x,y in zone with description desc"])
     ChatFrame1:AddMessage(L["|cffffff78/way reset all|r - Resets all waypoints"])
+    ChatFrame1:AddMessage(L["|cffffff78/way reset away|r - Resets all waypoints not in current zone"])
     ChatFrame1:AddMessage(L["|cffffff78/way reset <zone>|r - Resets all waypoints in zone"])
+    ChatFrame1:AddMessage(L["|cffffff78/way reset not <zone>|r - Resets all waypoints not in zone"])
     ChatFrame1:AddMessage(L["|cffffff78/way local|r - Lists active waypoints in current zone"])
     ChatFrame1:AddMessage(L["|cffffff78/way list|r - Lists all active waypoints"])
     ChatFrame1:AddMessage(L["|cffffff78/way arrow|r - Prints status of the Crazy Arrow"])
@@ -1264,6 +1278,7 @@ SlashCmdList["TOMTOM_WAYBACK"] = function(msg)
     local backm,backx,backy = TomTom:GetCurrentPlayerPosition()
     TomTom:AddWaypoint(backm,backx, backy, {
         title = title,
+        from = "TomTom/wayb"
     })
 end
 
@@ -1364,10 +1379,31 @@ SlashCmdList["TOMTOM_WAY"] = function(msg)
                 StaticPopupDialogs["TOMTOM_REMOVE_ALL_CONFIRM"].OnAccept()
                 return
             end
-
+        elseif ltoken2 == "away" then
+            local m, x, y = TomTom:GetCurrentPlayerPosition()
+            for map, map_waypoints in pairs(waypoints) do
+                if map ~= m then
+                    local numRemoved = 0
+                    for key, uid in pairs(waypoints[map]) do
+                        TomTom:RemoveWaypoint(uid)
+                        numRemoved = numRemoved + 1
+                    end
+                    local zoneName = hbd:GetLocalizedMap(map)
+                    if numRemoved > 0 then
+                        ChatFrame1:AddMessage(L["Removed %d waypoints from %s"]:format(numRemoved, zoneName))
+                    end
+                end
+            end
         elseif tokens[2] then
             -- Reset the named zone
-            local zone = table.concat(tokens, " ", 2)
+            local notHere = false
+            local zone = ""
+            if lowergsub(tokens[2]) == "not" then
+                notHere = true
+                zone = table.concat(tokens, " ", 3)
+            else
+                zone = table.concat(tokens, " ", 2)
+            end
             -- Find a fuzzy match for the zone
 
             local matches = {}
@@ -1401,6 +1437,23 @@ SlashCmdList["TOMTOM_WAY"] = function(msg)
 
             local zoneName = matches[1]
             local mapId = NameToMapId[zoneName]
+
+            if notHere then
+                for map, map_waypoints in pairs(waypoints) do
+                    if map ~= mapId then
+                        local numRemoved = 0
+                        for key, uid in pairs(waypoints[map]) do
+                            TomTom:RemoveWaypoint(uid)
+                            numRemoved = numRemoved + 1
+                        end
+                        local zoneName = hbd:GetLocalizedMap(map)
+                        if numRemoved > 0 then
+                            ChatFrame1:AddMessage(L["Removed %d waypoints from %s"]:format(numRemoved, zoneName))
+                        end
+                    end
+                end
+                return
+            end
 
             local numRemoved = 0
             if waypoints[mapId] then
@@ -1489,6 +1542,7 @@ SlashCmdList["TOMTOM_WAY"] = function(msg)
         y = tonumber(y)
         TomTom:AddWaypoint(mapId, x/100, y/100, {
             title = desc or L["TomTom waypoint"],
+            from = "TomTom/way",
         })
     elseif tonumber(tokens[1]) then
         -- A vanilla set command
@@ -1508,6 +1562,7 @@ SlashCmdList["TOMTOM_WAY"] = function(msg)
         if m and x and y then
             TomTom:AddWaypoint(m, x/100, y/100, {
                 title = desc or L["TomTom waypoint"],
+                from = "TomTom/way",
             })
         end
     else
