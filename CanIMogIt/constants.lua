@@ -169,30 +169,6 @@ CanIMogIt.DATABASE_DONE_UPDATE_TEXT = L["Items updated: "] -- followed by a numb
 -- Location constants                     --
 --------------------------------------------
 
-CanIMogIt.LOCATIONS_ORDER = {
-    "TOPLEFT",
-    "TOP",
-    "TOPRIGHT",
-    "LEFT",
-    "CENTER",
-    "RIGHT",
-    "BOTTOMLEFT",
-    "BOTTOM",
-    "BOTTOMRIGHT",
-}
-
-CanIMogIt.LOCATIONS_TEXT = {
-    ["TOPLEFT"] = L["Top Left"],
-    ["TOP"] = L["Top"],
-    ["TOPRIGHT"] = L["Top Right (default)"],
-    ["LEFT"] = L["Left"],
-    ["CENTER"] = L["Center"],
-    ["RIGHT"] = L["Right"],
-    ["BOTTOMLEFT"] = L["Bottom Left"],
-    ["BOTTOM"] = L["Bottom"],
-    ["BOTTOMRIGHT"] = L["Bottom Right"],
-}
-
 CanIMogIt.ICON_LOCATIONS = {
     ["TOPLEFT"] = {"TOPLEFT", 2, -2},
     ["TOPRIGHT"] = {"TOPRIGHT", -2, -2},

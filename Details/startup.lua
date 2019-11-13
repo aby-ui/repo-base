@@ -1269,7 +1269,7 @@ function _G._detalhes:Start()
 					C_Timer.After (10, function()
 						if (lower_instance:IsEnabled()) then
 							lower_instance:InstanceAlert (Loc ["STRING_VERSION_UPDATE"], {[[Interface\GossipFrame\AvailableQuestIcon]], 16, 16, false}, 60, {_detalhes.OpenNewsWindow}, true)
-							Details:Msg ("A new version has been installed: /details news")
+							Details:Msg ("伤害统计更新了 /details news 查看更新内容（英文）")
 						end
 					end)
 				end

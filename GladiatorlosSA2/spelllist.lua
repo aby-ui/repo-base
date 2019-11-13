@@ -794,6 +794,7 @@
 			[251523] = "spellLock",
 			[251922] = "spellLock",
 			[288047] = "spellLock",
+			[119898] = "spellLock", -- OH LOOK ANOTHER ONE
 			[48020] = "demonicCircleTeleport",
 			[111859] = "grimoireOfService",
 			[111895] = "grimoireOfService",
@@ -836,6 +837,7 @@
 			[212619] = "lockout", -- Spell Lock
 			[119910] = "lockout", -- Spell Lock
 			[115781] = "lockout", -- Spell Lock (Optical Blast)
+			[119898] = "lockout", -- Spell Lock YET AGAIN
 			[2139] = "lockout", -- Counterspell
 			[1766] = "lockout", -- Kick
 			[6552] = "lockout", -- Pummel
@@ -856,6 +858,7 @@
 			[212619] = "interrupted", -- Spell Lock
 			[119910] = "interrupted", -- Spell Lock
 			[115781] = "interrupted", -- Spell Lock (Optical Blast)
+			[119898] = "interrupted", -- Spell Lock YET AGAIN
 			[2139] = "interrupted", -- Counterspell
 			[1766] = "interrupted", -- Kick
 			[6552] = "interrupted", -- Pummel

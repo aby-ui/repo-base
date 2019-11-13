@@ -20,7 +20,7 @@
 ## X-Website: http://www.deadlybossmods.com
 ## X-Curse-Project-ID: 3358
 ## X-WoWI-ID: 8814
-## Version: 8.2.26-1-g76f43e0
+## Version: 8.2.27-6-g83d477a
 
 Libs\LibLatency\LibLatency.xml
 Libs\LibDurability\LibDurability.xml

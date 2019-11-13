@@ -68,9 +68,9 @@ local function showRealDate(curseDate)
 end
 
 DBM = {
-	Revision = parseCurseDate("20191108035921"),
-	DisplayVersion = "8.2.26", -- the string that is shown as version
-	ReleaseRevision = releaseDate(2019, 11, 6) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+	Revision = parseCurseDate("20191112212029"),
+	DisplayVersion = "8.2.28 alpha", -- the string that is shown as version
+	ReleaseRevision = releaseDate(2019, 11, 9) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 }
 DBM.HighestRelease = DBM.ReleaseRevision --Updated if newer version is detected, used by update nags to reflect critical fixes user is missing on boss pulls
 
@@ -4375,10 +4375,8 @@ do
 					end
 					--Find min revision.
 					updateNotificationDisplayed = 2
-					if not DBM.Options.DontShowReminders then
-						AddMsg(DBM, DBM_CORE_UPDATEREMINDER_HEADER:match("([^\n]*)"))
-						AddMsg(DBM, DBM_CORE_UPDATEREMINDER_HEADER:match("\n(.*)"):format(displayVersion, version))
-					end
+					AddMsg(DBM, DBM_CORE_UPDATEREMINDER_HEADER:match("([^\n]*)"))
+					AddMsg(DBM, DBM_CORE_UPDATEREMINDER_HEADER:match("\n(.*)"):format(displayVersion, version))
 					showConstantReminder = 1
 				elseif not noRaid and #newerVersionPerson == 3 and updateNotificationDisplayed < 3 then--The following code requires at least THREE people to send that higher revision. That should be more than adaquate
 					--Disable if revision grossly out of date even if not major patch.
@@ -4387,13 +4385,14 @@ do
 						if revDifference > 100000000 then--Approx 1 month old 20190416172622
 							if updateNotificationDisplayed < 3 then
 								updateNotificationDisplayed = 3
-								AddMsg(DBM, DBM_CORE_UPDATEREMINDER_NODISABLE)
+								AddMsg(DBM, DBM_CORE_UPDATEREMINDER_DISABLE)
+								DBM:Disable(true)
 							end
 						end
 					--Disable if out of date and it's a major patch.
 					elseif not testBuild and dbmToc < wowTOC then
 						updateNotificationDisplayed = 3
-						AddMsg(DBM, DBM_CORE_UPDATEREMINDER_MAJORPATCH)--Major patches will ALWAYS ignore DontShowReminders
+						AddMsg(DBM, DBM_CORE_UPDATEREMINDER_MAJORPATCH)
 						DBM:Disable(true)
 					end
 				end

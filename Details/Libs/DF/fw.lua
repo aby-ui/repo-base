@@ -1,5 +1,6 @@
 
-local dversion = 155
+local dversion = 161
+
 local major, minor = "DetailsFramework-1.0", dversion
 local DF, oldminor = LibStub:NewLibrary (major, minor)
 
@@ -1654,6 +1655,7 @@ DF.GlobalWidgetControlNames = {
 	slider = "DF_SliderMetaFunctions",
 	split_bar = "DF_SplitBarMetaFunctions",
 	aura_tracker = "DF_AuraTracker",
+	healthBar = "DF_healthBarMetaFunctions",
 }
 
 function DF:AddMemberForWidget (widgetName, memberType, memberName, func)

@@ -6,7 +6,7 @@
  local LSM = LibStub("LibSharedMedia-3.0")
  local self, GSA, PlaySoundFile = GladiatorlosSA, GladiatorlosSA, PlaySoundFile
  local GSA_TEXT = "|cff69CCF0GladiatorlosSA2|r (|cffFFF569/gsa|r)"
- local GSA_VERSION = "|cffFF7D0A 2.1 |r(|cFF00FF968.2 Battle for Azeroth|r)"
+ local GSA_VERSION = "|cffFF7D0A 2.1.1 |r(|cFF00FF968.2.5 Battle for Azeroth|r)"
  local GSA_AUTHOR = " "
  local gsadb
  local soundz,sourcetype,sourceuid,desttype,destuid = {},{},{},{},{}
@@ -286,7 +286,8 @@ function GSA:CheckForEpicBG(instanceMapID)
 		instanceMapID == 30 or		-- Alterac Valley
 		instanceMapID == 628 or		-- Isle of Conquest
 		instanceMapID == 1280 or	-- Southshore vs Tarren Mill
-		instanceMapID == 1191 then	-- Trashcan
+		instanceMapID == 1191 or	-- Trashcan
+		instanceMapID == 2197 then	-- Korrak's Revenge		
 		return true
 	end
 end

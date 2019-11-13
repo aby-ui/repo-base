@@ -40,6 +40,7 @@ L["Only show on items that can be equipped."] = "Only show on items that can be 
 L["Only show on items that can be transmoggrified."] = "Only show on items that can be transmoggrified."
 L["Only show on items that you haven't learned."] = "Only show on items that you haven't learned."
 L["Please note that this may not always be correct as Blizzard's information is incomplete."] = "Please note that this may not always be correct as Blizzard's information is incomplete."
+L["Reload to apply"] = "Reload to apply"
 L["Requires /reload to take effect."] = "Requires /reload to take effect."
 L["Right"] = "Right"
 L["Show Bag Icons"] = "Show Bag Icons"
