@@ -1790,7 +1790,6 @@ La["Are you sure you want to remove %s from the SavedInstances character databas
 La["Are you sure you want to reset the SavedInstances character database? Characters will be re-populated as you log into them."] = "Sei sicuro di voler azzerae il database personaggi di SavedInstances? I personaggi saranno ricalcolati non appena ci entri"
 La["Attempt to recover completed daily quests for this character. Note this may recover some additional, linked daily quests that were not actually completed today."] = "Cerca di ripristinare le missioni giornaliere completate per questo personaggio. Nota che questo puo' recuperare alcune missioni aggiuntive, collegate alle giornaliere, che non sono ancora state completate oggi"
 La["Automatically shrink the tooltip to fit on the screen"] = "Adatta automaticamente la finestra per adeguarsi allo schermo"
---[[Translation missing --]]
 La["Azuregos"] = "Azuregos"
 La["Battleground Deserter"] = "Disertore di campi di battaglia"
 La["Bind a key to toggle the SavedInstances tooltip"] = "Abbina un tasto per mostrare la finestra di SavedInstances "
@@ -1813,16 +1812,14 @@ La["Combine World Bosses"] = "Unisci i boss mondiali"
 La["Connected Realms"] = "Reami connessi"
 La["Currency settings"] = "Impostazioni delle valute"
 La["Daily Quests"] = "Missioni giornaliere"
---[[Translation missing --]]
-La["Day"] = "Day"
+La["Day"] = "Giorno"
 --[[Translation missing --]]
 La["Debug Mode"] = "Debug Mode"
 La["Disable mouseover"] = "Disabilita movimento del mouse"
 La["Disable tooltip display on icon mouseover"] = "Disattiva i tooltip quando vai sull'icona"
 La["Display instances in order of recommended level from lowest to highest"] = "Mostra istanze in ordine del livello raccomandato dal piu' basso al piu' alto"
 La["Display instances with space inserted between categories"] = "Mostra le istanze con uno spazio tra le varie categorie"
---[[Translation missing --]]
-La["Dragon of Nightmare"] = "Dragon of Nightmare"
+La["Dragon of Nightmare"] = "Drago dell'Incubo"
 --[[Translation missing --]]
 La["Dump quest debugging information"] = "Dump quest debugging information"
 La["Dump time debugging information"] = "Inserisci l'orario nelle informazioni di debug"
@@ -1860,8 +1857,7 @@ La["LFG cooldown"] = "Tempo rimanente ricerca delle spedizioni"
 La["LFR"] = "Ricerca spedizioni"
 La["List categories from the current expansion pack first"] = "Elenca categorie partendo dall'espansione attuale"
 La["List raid categories before dungeon categories"] = "Elenca le incursioni prima delle spedizioni"
---[[Translation missing --]]
-La["Lord Kazzak"] = "Lord Kazzak"
+La["Lord Kazzak"] = "Sire Kazzak"
 La["Manage"] = "Gestisci"
 La["Miscellaneous Tracking"] = "Tracciature varie"
 --[[Translation missing --]]
@@ -1917,13 +1913,11 @@ La["Show Random"] = "Mostra causale"
 La["Show random dungeon bonus reward"] = "Mostra ricompensa bonus per spedizione casuale"
 La["Show self always"] = "Mostra sempre questo pg"
 La["Show self first"] = "Mostra questo pg per primo"
---[[Translation missing --]]
-La["Show server name"] = "Show server name"
+La["Show server name"] = "Mostra il nome del server"
 La["Show the SavedInstances minimap button"] = "Mostra il bottone di SavedInstances nella minimappa"
 La["Show tooltip hints"] = "Mostra suggerimenti"
 La["Show When"] = "Mostra quando"
---[[Translation missing --]]
-La["Show when completed"] = "Show when completed"
+La["Show when completed"] = "Mostra quando completato"
 La["Show when saved"] = "Mostra quando e' salvato"
 La["Show/Hide the SavedInstances tooltip"] = "Mostra/nascondi la finestra di SavedInstances"
 --[[Translation missing --]]
@@ -1960,8 +1954,7 @@ La["Type"] = "Tipo"
 --[[Translation missing --]]
 La["UNDR"] = "UNDR"
 La["Use class color"] = "Usa colori delle classi"
---[[Translation missing --]]
-La["Warfronts"] = "Warfronts"
+La["Warfronts"] = "Fronti di Guerra"
 --[[Translation missing --]]
 La["Warn about instance limit"] = "Warn about instance limit"
 La["Warning: You've entered about %i instances recently and are approaching the %i instance per hour limit for your account. More instances should be available in %s."] = "Attenzione: Sei entrato in circa %i istanze, recentemente e ti stai avvicinando al limite orario di %i istanze per account. Altre istanze saranno disponibili in %s."

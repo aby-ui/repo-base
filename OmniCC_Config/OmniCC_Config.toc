@@ -5,10 +5,8 @@
 ## Author: Tuller
 ## Dependencies: OmniCC
 ## LoadOnDemand: 1
-localization\localization.xml
-widgets\widgets.xml
-mainPanel.lua
-panels\panels.xml
+..\OmniCC\config\config.xml
+
 
 ## Title-zhCN: |cff880303[爱不易]|r OmniCC 配置界面
 ## Notes-zhCN: 技能冷却计时-配置界面模块

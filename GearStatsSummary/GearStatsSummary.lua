@@ -81,7 +81,7 @@ local function ScanItemTooltip(unit, slot)
                 if ( texture ) then
                     --if string.find(texture, "gem") then
                     GemsSlotCount = GemsSlotCount + 1
-                    if string.find(texture, "EmptySocket") then
+                    if string.find(texture, "EmptySocket") or texture == 458977 then
                         GemsEmptyCount = GemsEmptyCount + 1
                     end
                     --end

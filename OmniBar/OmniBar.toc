@@ -1,7 +1,7 @@
 ## Interface: 80205
 ## Title: OmniBar
 ## Notes: Tracks enemy cooldowns
-## Version: v10.5
+## Version: v10.6
 ## Author: Jordon
 ## DefaultState: Enabled
 ## SavedVariables: OmniBarDB
@@ -12,6 +12,7 @@
 Locales\Locales.xml
 OmniBar.xml
 Retail.lua
+Classic.lua
 OmniBar.lua
 Options.lua
 

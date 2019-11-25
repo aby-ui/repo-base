@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(198, "DBM-Firelands", nil, 78)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190821185238")
+mod:SetRevision("20191118191715")
 mod:SetCreatureID(52409)
 mod:SetEncounterID(1203)
 mod:SetZone()
@@ -147,7 +147,7 @@ local function TransitionEnded(self)
 	if self.vb.phase == 2 then
 		if self:IsHeroic() then
 			timerSulfurasSmash:Start(6)
-			if mod.Options.warnSeedsLand then
+			if self.Options.warnSeedsLand then
 				timerMoltenSeedCD:Start(17.5)
 			else
 				timerMoltenSeedCD:Start(15)--14.8-16 variation. We use earliest time for safety.

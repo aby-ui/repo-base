@@ -18,10 +18,10 @@
 
 ## SavedVariables: DecursiveDB
 
-## Version: 2.7.6.5
+## Version: 2.7.6.6
 ## Author: John Wellesz
 
-## X-License: All Rights Reserved
+## X-License: GNU GPL V3
 
 ## OptionalDeps: Ace3, LibQTip-1.0, LibDataBroker-1.1, LibDBIcon-1.0, !BugGrabber
 
@@ -32,7 +32,7 @@
 
 ## X-Embeds: Ace3, LibQTip-1.0, LibDataBroker-1.1, LibDBIcon-1.0, !BugGrabber
 
-## X-ReleaseDate: "2019-10-28T15:22:14Z"
+## X-ReleaseDate: "2019-11-18T15:00:06Z"
 ## X-Category: Combat
 ## X-Website: http://www.2072productions.com/to/decursive.php
 ## X-Credits: Sylvin (Full french translation), Peter Sun, Ananhaid (ZhTW and zhCN translation), Fenlis, Chkid (koKR translation), Hemathio, Swix, Athariel, StingerSoft (Russian Translation), Freydis88, Floyddotnet, Vilogity, Dessa, Farook (German translation)

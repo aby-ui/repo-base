@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2343, "DBM-ZuldazarRaid", 3, 1176)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20191026001821")
+mod:SetRevision("20191117233333")
 mod:SetCreatureID(146409)
 mod:SetEncounterID(2281)
 mod:SetZone()
@@ -126,7 +126,7 @@ local timerIcefallCD					= mod:NewCDCountTimer(42.8, 288475, nil, nil, nil, 3, n
 --local timerIcefall						= mod:NewCastTimer(55, 288475, nil, nil, nil, 3)
 --Intermission 2
 mod:AddTimerLine(DBM_CORE_INTERMISSION)
-local timerHeartofFrostCD				= mod:NewCDTimer(8.5, 289220, nil, nil, nil, 3)
+local timerHeartofFrostCD				= mod:NewCDTimer(6, 289220, nil, nil, nil, 3)
 local timerWaterBoltVolleyCD			= mod:NewCDCountTimer(7.2, 290084, nil, nil, nil, 4, nil, DBM_CORE_INTERRUPT_ICON)
 --Stage 3
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(19624))

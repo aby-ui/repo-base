@@ -1,0 +1,9 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+	<!--Include file="..\libs\main.xml"/-->
+
+	<Include file="localization\localization.xml"/>
+	<Script file="main.lua"/>
+  <Include file="core\core.xml"/>
+  <Include file="settings\settings.xml"/>
+  <Include file="effects\effects.xml"/>
+</Ui>

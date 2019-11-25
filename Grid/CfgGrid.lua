@@ -115,44 +115,100 @@ function U1CfgGridConfigOmniCC()
     end
 end
 CoreDependCall("OmniCC", function()
-    local KEY = '163UI_Grid'
-    local VERSION = "20160728"
-    hooksecurefunc(OmniCC, "StartupSettings", function()
-        local gid = OmniCC:GetGroupIndex(KEY)
-        if not gid then
-            OmniCC:AddGroup('163UI_Grid')
-            gid = OmniCC:GetGroupIndex(KEY)
-        end
-        if OmniCC.sets.groups[gid].version ~= VERSION then
-            OmniCC.sets.groups[gid].version = VERSION
-            OmniCC.sets.groups[gid].rules = {
-                "GridLayoutHeader"
-            }
-            OmniCC.sets.groupSettings[KEY] = {
-                enabled = true,
-                scaleText = true,
-                spiralOpacity = 0.6,
-                fontFace = STANDARD_TEXT_FONT,
-                fontSize = 26,
-                fontOutline = 'OUTLINE',
-                minDuration = 3,
-                minSize = 0.1,
-                effect = 'none',
-                tenthsDuration = 0,
-                mmSSDuration = 0,
-                minEffectDuration=30,
-                xOff = 10,
-                yOff = 5,
-                anchor = 'TOPRIGHT',
-                styles = {
-                    soon = { r = 1, g = .1, b = .1, a = 1, scale = 1 },
-                    seconds = { r = 1, g = 1, b = .1, a = .9, scale = 1 },
-                    minutes = { r = 1, g = 1, b = 1, a = .8, scale = 1 },
-                    hours = { r = .7, g = .7, b = .7, a = .7, scale = 1 },
-                    charging = { r = 0.8, g = 1, b = .3, a = .9, scale = 1 },
-                    controlled = { r = 1, g = .1, b = .1, a = 1, scale = 1 },
+    local OLD_KEY = '163UI_Grid'
+    local VERSION = "20191126"
+    if OmniCC.StartupSettings then
+        hooksecurefunc(OmniCC, "StartupSettings", function()
+            local gid = OmniCC:GetGroupIndex(OLD_KEY)
+            if not gid then
+                OmniCC:AddGroup('163UI_Grid')
+                gid = OmniCC:GetGroupIndex(OLD_KEY)
+            end
+            if OmniCC.sets.groups[gid].version ~= VERSION then
+                OmniCC.sets.groups[gid].version = VERSION
+                OmniCC.sets.groups[gid].rules = {
+                    "GridLayoutHeader"
                 }
-            }
-        end
-    end)
+                OmniCC.sets.groupSettings[OLD_KEY] = {
+                    enabled = true,
+                    scaleText = true,
+                    spiralOpacity = 0.6,
+                    fontFace = STANDARD_TEXT_FONT,
+                    fontSize = 26,
+                    fontOutline = 'OUTLINE',
+                    minDuration = 3,
+                    minSize = 0.1,
+                    effect = 'none',
+                    tenthsDuration = 0,
+                    mmSSDuration = 0,
+                    minEffectDuration=30,
+                    xOff = 10,
+                    yOff = 5,
+                    anchor = 'TOPRIGHT',
+                    styles = {
+                        soon = { r = 1, g = .1, b = .1, a = 1, scale = 1 },
+                        seconds = { r = 1, g = 1, b = .1, a = .9, scale = 1 },
+                        minutes = { r = 1, g = 1, b = 1, a = .8, scale = 1 },
+                        hours = { r = .7, g = .7, b = .7, a = .7, scale = 1 },
+                        charging = { r = 0.8, g = 1, b = .3, a = .9, scale = 1 },
+                        controlled = { r = 1, g = .1, b = .1, a = 1, scale = 1 },
+                    }
+                }
+            end
+        end)
+    else
+        hooksecurefunc(OmniCC, "InitializeDB", function()
+            local NEW_KEY = "Aby_Grid"
+            local theme = OmniCC:HasTheme(NEW_KEY)
+            theme = theme or OmniCC:AddTheme(NEW_KEY)
+            if theme.version ~= VERSION then
+                theme.version = VERSION
+                copy({
+                    enableText = true,
+                    scaleText = true,
+                    spiralOpacity = 0.6,
+                    fontFace = STANDARD_TEXT_FONT,
+                    fontSize = 26,
+                    fontOutline = 'OUTLINE',
+                    minDuration = 3,
+                    minSize = 0.1,
+                    effect = 'none',
+                    tenthsDuration = 0,
+                    mmSSDuration = 0,
+                    minEffectDuration=30,
+                    xOff = 10,
+                    yOff = 5,
+                    anchor = 'TOPRIGHT',
+                    textStyles = {
+                        soon = { r = 1, g = .1, b = .1, a = 1, scale = 1 },
+                        seconds = { r = 1, g = 1, b = .1, a = .9, scale = 1 },
+                        minutes = { r = 1, g = 1, b = 1, a = .8, scale = 1 },
+                        hours = { r = .7, g = .7, b = .7, a = .7, scale = 1 },
+                        charging = { r = 0.8, g = 1, b = .3, a = .9, scale = 1 },
+                        controlled = { r = 1, g = .1, b = .1, a = 1, scale = 1 },
+                    }
+                }, theme)
+            end
+
+            local rule
+            for _, one in pairs(OmniCC.db.profile.rules) do
+                if one.id == NEW_KEY then
+                    rule = one
+                    break
+                end
+            end
+            if not rule then
+                rule = OmniCC:AddRule(NEW_KEY, NEW_KEY)
+            end
+            if rule.version ~= VERSION then
+                rule.version = VERSION
+                copy({
+                    enabled = true,
+                    patterns = { "GridLayoutHeader" },
+                    priority = 1,
+                    theme = NEW_KEY,
+                }, rule)
+            end
+        end)
+    end
 end)

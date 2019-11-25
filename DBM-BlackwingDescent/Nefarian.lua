@@ -3,7 +3,7 @@ local L		= mod:GetLocalizedStrings()
 local Nefarian	= DBM:EJ_GetSectionInfo(3279)
 local Onyxia	= DBM:EJ_GetSectionInfo(3283)
 
-mod:SetRevision("20190625143316")
+mod:SetRevision("20191118191715")
 mod:SetCreatureID(41376, 41270)
 mod:SetEncounterID(1026) -- ES fires when Nefarian engaged.
 mod:SetZone()
@@ -39,7 +39,7 @@ local warnShadowBlaze			= mod:NewSpellAnnounce(81031, 4)--May be quirky
 local warnShadowblazeSoon		= mod:NewAnnounce("warnShadowblazeSoon", 2, 81031, "Tank", nil, true)--Back to on by default for tanks until option isn't tied to sound.
 
 local specWarnElectrocute		= mod:NewSpecialWarningSpell(81198, nil, nil, nil, true)
-local specWarnBlastsNova		= mod:NewSpecialWarningInterrupt(80734)
+local specWarnBlastsNova		= mod:NewSpecialWarningInterrupt(80734, nil, nil, nil, 1, 2)
 local specWarnDominion			= mod:NewSpecialWarningYou(79318)
 local specWarnStolenPower		= mod:NewSpecialWarningStack(80627, nil, 150)
 local specWarnCinder			= mod:NewSpecialWarningYou(79339)

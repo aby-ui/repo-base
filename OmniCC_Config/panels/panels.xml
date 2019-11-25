@@ -1,6 +1,0 @@
-<Ui xmlns="http://www.blizzard.com/wow/ui/">
-	<Script file="general.lua"/>
-	<Script file="font.lua"/>
-	<Script file="position.lua"/>
-	<Script file="rules.lua"/>
-</Ui>

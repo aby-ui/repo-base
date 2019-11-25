@@ -297,10 +297,10 @@ do
 	end
 	do
 		local function OnEnter(self, motion)
-			UIDropDownMenu_StopCounting(self, motion)
+			--UIDropDownMenu_StopCounting(self, motion)
 		end
 		local function OnLeave(self, motion)
-			UIDropDownMenu_StartCounting(self, motion)
+			--UIDropDownMenu_StartCounting(self, motion)
 		end
 		local function OnClick(self)
 			self:Hide()
@@ -312,7 +312,7 @@ do
 			end
 		end
 		local function OnHide(self)
-			UIDropDownMenu_StopCounting(self)
+			--UIDropDownMenu_StopCounting(self)
 		end
 		local function OnUpdate(self, elapsed)
 			ELib.ScrollDropDown.Update(self, elapsed)
@@ -372,7 +372,7 @@ do
 	do
 		local function OnEnter(self)
 			self.Highlight:Show()
-			UIDropDownMenu_StopCounting(self:GetParent())
+			--UIDropDownMenu_StopCounting(self:GetParent())
 			if ( self.tooltipTitle ) then
 				if ( self.tooltipOnButton ) then
 					GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
@@ -392,7 +392,7 @@ do
 		end
 		local function OnLeave(self)
 			self.Highlight:Hide()
-			UIDropDownMenu_StartCounting(self:GetParent())
+			--UIDropDownMenu_StartCounting(self:GetParent())
 			GameTooltip:Hide()
 			ELib.ScrollDropDown.OnButtonLeave(self)
 		end
@@ -609,10 +609,10 @@ do
 			end
 		end
 		local function CheckButtonOnEnter(self)
-			UIDropDownMenu_StopCounting(self:GetParent():GetParent())
+			--UIDropDownMenu_StopCounting(self:GetParent():GetParent())
 		end
 		local function CheckButtonOnLeave(self)
-			UIDropDownMenu_StartCounting(self:GetParent():GetParent())
+			--UIDropDownMenu_StartCounting(self:GetParent():GetParent())
 		end
 		function ELib.ScrollDropDown.CreateButton(i,level)
 			level = level or 1

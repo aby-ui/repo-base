@@ -314,6 +314,7 @@ do
 	local ShellGameIsCreated
 	
 	local UpdatePos,ResizeFrame,CenterFrame,OkButton,pointsFrames,CloseButton
+	local modelsFrame
 	
 	local function CreateShellGame()
 		if ShellGameIsCreated then
@@ -321,7 +322,7 @@ do
 		end
 		ShellGameIsCreated = true
 		local function SmallModelOnMouseDown(self)
-			self:GetParent().M:SetDisplayInfo(self.modelID)
+			self:GetParent().P.M:SetDisplayInfo(self.modelID)
 		end
 		local function SmallModelOnEnter(self)
 			self.b:SetColorTexture(0.74,0.74,0.74,.2)
@@ -329,20 +330,55 @@ do
 		local function SmallModelOnLeave(self)
 			self.b:SetColorTexture(0.04,0.04,0.04,0)
 		end
-		local function PuzzleFrameOnUpdate(self)
+		
+		modelsFrame = CreateFrame("Frame",nil,UIParent)
+		modelsFrame.m = {}
+		for j=1,#modelIDs do
+			local m=CreateFrame("PlayerModel",nil,modelsFrame)
+			modelsFrame.m[j] = m
+			m:SetDisplayInfo(modelIDs[j])
+			m.modelID = modelIDs[j]
+			if j==1 then
+				m:SetPoint("TOPLEFT")
+			elseif j == 5 then
+				m:SetPoint("TOPRIGHT")
+			else
+				m:SetPoint("TOP",modelsFrame.m[j-1],"BOTTOM")
+			end
+			m:Hide()
+			m:SetScript("OnMouseDown",SmallModelOnMouseDown)
+			m:SetScript("OnEnter",SmallModelOnEnter)
+			m:SetScript("OnLeave",SmallModelOnLeave)
+			
+			m.b = m:CreateTexture(nil,"BACKGROUND")
+			m.b:SetAllPoints()
+		end	
+		modelsFrame:Hide()
+
+		local function ModelsFrameOnUpdate(self)
 			if MouseIsOver(self) and not self.Mstatus then
 				self.Mstatus = true
 				for j=1,8 do
-					self.m[j]:Show()
+					modelsFrame.m[j]:Show()
 				end
 			elseif not MouseIsOver(self) and self.Mstatus then
 				self.Mstatus = false
 				for j=1,8 do
-					self.m[j]:Hide()
+					modelsFrame.m[j]:Hide()
 				end
 			end
 		end
-		
+		modelsFrame:SetScript("OnUpdate",ModelsFrameOnUpdate)
+
+		local function PuzzleFrameOnUpdate(self)
+			if MouseIsOver(self) and modelsFrame.P ~= self then
+				modelsFrame.P = self
+				modelsFrame:ClearAllPoints()
+				modelsFrame:SetPoint("CENTER",self)
+				modelsFrame:Show()		
+			end
+		end
+
 		pointsFrames = {}
 		for i=1,16 do
 			local frame = CreateFrame("Frame",nil,UIParent)
@@ -352,28 +388,6 @@ do
 			frame.M:SetPoint("TOP")
 			frame.M:SetMouseClickEnabled(false)
 			frame.M:SetMouseMotionEnabled(false)
-			
-			frame.m = {}
-			for j=1,8 do
-				local m=CreateFrame("PlayerModel",nil,frame)
-				frame.m[j] = m
-				m:SetDisplayInfo(modelIDs[j])
-				m.modelID = modelIDs[j]
-				if j==1 then
-					m:SetPoint("TOPLEFT")
-				elseif j == 5 then
-					m:SetPoint("TOPRIGHT")
-				else
-					m:SetPoint("TOP",frame.m[j-1],"BOTTOM")
-				end
-				m:Hide()
-				m:SetScript("OnMouseDown",SmallModelOnMouseDown)
-				m:SetScript("OnEnter",SmallModelOnEnter)
-				m:SetScript("OnLeave",SmallModelOnLeave)
-				
-				m.b = m:CreateTexture(nil,"BACKGROUND")
-				m.b:SetAllPoints()
-			end
 			
 			frame:SetScript("OnUpdate",PuzzleFrameOnUpdate)	
 			
@@ -437,11 +451,12 @@ do
 					frame:ClearAllPoints()
 					frame:SetPoint("TOPLEFT",UIParent,"CENTER",j==1 and -size or j==2 and -size/2 or j==3 and 0 or j==4 and size/2,(i==1 and size or i==2 and size/2 or i==3 and 0 or i==4 and -size/2)+center)
 					frame:SetSize(size/2,size/2)
-					for k=1,8 do
-						frame.m[k]:SetSize(size/4/2,size/4/2)
-					end
 					frame.M:SetSize(size/4,size/4)
 				end
+			end
+			modelsFrame:SetSize(size/2,size/2)
+			for k=1,#modelIDs do
+				modelsFrame.m[k]:SetSize(size/4/2,size/4/2)
 			end
 			OkButton:SetPoint("TOPRIGHT",UIParent,"CENTER",size,center-size)
 		end
@@ -551,6 +566,7 @@ do
 	end
 		
 	local function ShellGameEnable()
+		do return end
 		CreateShellGame()
 		print("世界任务列表：龟壳游戏助手已加载，拖动两根粗线缩放")
 		size,center = VWQL.ShellGameSize or size,VWQL.ShellGameCenter or center
@@ -570,6 +586,7 @@ do
 		CloseButton:Show()
 	end
 	function ShellGameDisable()
+		do return end	
 		CreateShellGame()
 		ResizeFrame:Hide()
 		CenterFrame:Hide()
@@ -578,6 +595,7 @@ do
 		end
 		OkButton:Hide()
 		CloseButton:Hide()
+		modelsFrame:Hide()
 	end
 	
 	WQLdb.ToMain = WQLdb.ToMain or {}
