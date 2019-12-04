@@ -95,6 +95,7 @@ Ld["List categories from the current expansion pack first"] = "List categories f
 Ld["List raid categories before dungeon categories"] = "List raid categories before dungeon categories"
 Ld["Lord Kazzak"] = "Lord Kazzak"
 Ld["Manage"] = "Manage"
+Ld["Mechanized Chest"] = "Mechanized Chest"
 Ld["Miscellaneous Tracking"] = "Miscellaneous Tracking"
 Ld["ML"] = "ML"
 Ld["Most recent first"] = "Most recent first"
@@ -261,6 +262,8 @@ La["List raid categories before dungeon categories"] = "Liste les catégories de
 --[[Translation missing --]]
 La["Lord Kazzak"] = "Lord Kazzak"
 La["Manage"] = "Gérer "
+--[[Translation missing --]]
+La["Mechanized Chest"] = "Mechanized Chest"
 La["Miscellaneous Tracking"] = "Suivis divers "
 --[[Translation missing --]]
 La["ML"] = "ML"
@@ -441,6 +444,8 @@ La["List raid categories before dungeon categories"] = "Schlachtzugskategorien v
 --[[Translation missing --]]
 La["Lord Kazzak"] = "Lord Kazzak"
 La["Manage"] = "Verwalten"
+--[[Translation missing --]]
+La["Mechanized Chest"] = "Mechanized Chest"
 La["Miscellaneous Tracking"] = "Verschiedenes"
 --[[Translation missing --]]
 La["ML"] = "ML"
@@ -612,6 +617,7 @@ La["List categories from the current expansion pack first"] = "현재 확장팩�
 La["List raid categories before dungeon categories"] = "던전 카테고리 앞에 공격대 카테고리 나열"
 La["Lord Kazzak"] = "군주 카자크"
 La["Manage"] = "관리"
+La["Mechanized Chest"] = "기계 상자"
 La["Miscellaneous Tracking"] = "기타"
 La["ML"] = "왕노"
 La["Most recent first"] = "최근 것을 첫번째로"
@@ -788,6 +794,8 @@ La["List raid categories before dungeon categories"] = "Mostrar categorías de b
 --[[Translation missing --]]
 La["Lord Kazzak"] = "Lord Kazzak"
 La["Manage"] = "gestionar"
+--[[Translation missing --]]
+La["Mechanized Chest"] = "Mechanized Chest"
 La["Miscellaneous Tracking"] = "Seguimiento Misceláneo"
 --[[Translation missing --]]
 La["ML"] = "ML"
@@ -970,6 +978,7 @@ La["List categories from the current expansion pack first"] = "Сортиров�
 La["List raid categories before dungeon categories"] = "Список категорий рейда до категорий подземелий"
 La["Lord Kazzak"] = "Владыка Каззак"
 La["Manage"] = "Управление"
+La["Mechanized Chest"] = "Механизированный сундук"
 La["Miscellaneous Tracking"] = "Разнообразное отслеживание"
 La["ML"] = "ЗЖ"
 La["Most recent first"] = "Сначала новые"
@@ -1127,6 +1136,7 @@ La["List categories from the current expansion pack first"] = "从目前的资�
 La["List raid categories before dungeon categories"] = "先显示团队副本，再显示地下城"
 La["Lord Kazzak"] = "卡扎克"
 La["Manage"] = "管理"
+La["Mechanized Chest"] = "机械化的宝箱"
 La["Miscellaneous Tracking"] = "杂项"
 La["ML"] = "暴富"
 La["Most recent first"] = "当前的资料片优先"
@@ -1303,6 +1313,8 @@ La["List raid categories before dungeon categories"] = "Mostrar categorías de b
 --[[Translation missing --]]
 La["Lord Kazzak"] = "Lord Kazzak"
 La["Manage"] = "Gestionar"
+--[[Translation missing --]]
+La["Mechanized Chest"] = "Mechanized Chest"
 La["Miscellaneous Tracking"] = "Seguimiento misceláneo"
 --[[Translation missing --]]
 La["ML"] = "ML"
@@ -1485,6 +1497,8 @@ La["List categories from the current expansion pack first"] = "優先列出目�
 La["List raid categories before dungeon categories"] = "在地城分類之前列出團隊分類"
 La["Lord Kazzak"] = "卡扎克領主"
 La["Manage"] = "管理"
+--[[Translation missing --]]
+La["Mechanized Chest"] = "Mechanized Chest"
 La["Miscellaneous Tracking"] = "其他追蹤"
 La["ML"] = "晶喜"
 La["Most recent first"] = "最近的優先"
@@ -1660,6 +1674,8 @@ La["List raid categories before dungeon categories"] = "Categorias de raide ante
 --[[Translation missing --]]
 La["Lord Kazzak"] = "Lord Kazzak"
 La["Manage"] = "Gerenciar"
+--[[Translation missing --]]
+La["Mechanized Chest"] = "Mechanized Chest"
 La["Miscellaneous Tracking"] = "Diversos"
 --[[Translation missing --]]
 La["ML"] = "ML"
@@ -1859,6 +1875,8 @@ La["List categories from the current expansion pack first"] = "Elenca categorie 
 La["List raid categories before dungeon categories"] = "Elenca le incursioni prima delle spedizioni"
 La["Lord Kazzak"] = "Sire Kazzak"
 La["Manage"] = "Gestisci"
+--[[Translation missing --]]
+La["Mechanized Chest"] = "Mechanized Chest"
 La["Miscellaneous Tracking"] = "Tracciature varie"
 --[[Translation missing --]]
 La["ML"] = "ML"

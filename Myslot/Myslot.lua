@@ -356,6 +356,7 @@ function MySlot:FindOrCreateMacro(macroInfo)
     local body = macroInfo["body"]
 
     local localIndex = localMacro[ name .. "_" .. body ] or localMacro[ body ]
+    print(macroInfo.oldid, macroInfo.name, localIndex)
 
     if localIndex then
         return localIndex
@@ -373,6 +374,7 @@ function MySlot:FindOrCreateMacro(macroInfo)
         local testallow = bit.bor( numglobal < MAX_ACCOUNT_MACROS and 1 or 0 , numperchar < MAX_CHARACTER_MACROS and 2 or 0)
         perchar = bit.band( perchar, testallow)
         perchar = perchar == 0 and testallow or perchar
+        print(numglobal, numperchar, perchar)
                 
         if perchar ~= 0 then
             -- fix icon using #showtooltip

@@ -145,19 +145,20 @@ local spellsAndProvidersByCategory = {
 		-- Death Knight
 		[ 56222] = true, -- Dark Command
 		[ 57603] = true, -- Death Grip
-		-- I have also seen this spellID used for the Death Grip debuff in MoP:
-		[ 51399] = true, -- Death Grip
 		-- Demon Hunter
 		[185245] = true, -- Torment
 		-- Druid
 		[  6795] = true, -- Growl
 		-- Hunter
+		[  2649] = true, -- Growl (Hunter Pet)
 		[ 20736] = true, -- Distracting Shot
 		-- Monk
 		[116189] = 115546, -- Provoke
-		[118635] = 115546, -- Provoke via the Black Ox Statue -- NEED TESTING
+		[118635] = 115546, -- Provoke (Black Ox Statue)
+		[196727] = 115546, -- Provoke (Niuzao)
 		-- Paladin
-		[ 62124] = true, -- Reckoning
+		[ 62124] = true, -- Hand of Reckoning
+		[204079] = true, -- Final Stand
 		-- Warlock
 		[ 17735] = true, -- Suffering (Voidwalker)
 		-- Warrior
@@ -168,53 +169,59 @@ local spellsAndProvidersByCategory = {
 
 	--[[ INCAPACITATES ]]--
 	incapacitate = {
+		-- Demon Hunter
+		[217832] = true, -- Imprison
+		[221527] = true, -- Imprison (Honor Talent)
 		-- Druid
+		[    99] = true, -- Incapacitating Roar
+		[  2637] = true, -- Hibernate
 		[236025] = true, -- Maim incap
 		-- Hunter
 		[  3355] = 187650, -- Freezing Trap
-		[203337] = 187650, -- Freezing Trap talented
+		[203337] = 187650, -- Freezing Trap (Honor Talent)
 		[213691] = true, -- Scatter Shot
 		-- Mage
 		[   118] = true, -- Polymorph
-		[ 28272] = true, -- Polymorph (pig)
-		[ 28271] = true, -- Polymorph (turtle)
-		[ 61305] = true, -- Polymorph (black cat)
-		[ 61721] = true, -- Polymorph (rabbit)
-		[ 61780] = true, -- Polymorph (turkey)
-		[126819] = true, -- Polymorph (procupine)
-		[161353] = true, -- Polymorph (bear cub)
-		[161354] = true, -- Polymorph (monkey)
-		[161355] = true, -- Polymorph (penguin)
-		[161372] = true, -- Polymorph (peacock)
-		[277787] = true, -- Polymorph (direhorn)
-		[277792] = true, -- Polymorph (bumblebee)
+		[ 28271] = true, -- Polymorph (Turtle)
+		[ 28272] = true, -- Polymorph (Pig)
+		[ 61305] = true, -- Polymorph (Black Cat)
+		[ 61721] = true, -- Polymorph (Rabbit)
+		[ 61780] = true, -- Polymorph (Turkey)
+		[126819] = true, -- Polymorph (Procupine)
+		[161353] = true, -- Polymorph (Polar Bear Cub)
+		[161354] = true, -- Polymorph (Monkey)
+		[161355] = true, -- Polymorph (Penguin)
+		[161372] = true, -- Polymorph (Peacock)
+		[277787] = true, -- Polymorph (Direhorn)
+		[277792] = true, -- Polymorph (Bumblebee)
 		[ 82691] = 113724, -- Ring of Frost
 		-- Monk
 		[115078] = true, -- Paralysis
 		-- Paladin
 		[ 20066] = true, -- Repentance
 		-- Priest
-		[ 200196] = 88625, -- Holy Word: Chastise incap
+		[   9484] = true, -- Shackle Undead
+		[ 200196] = 88625, -- Holy Word: Chastise
 		-- Rogue
 		[  1776] = true, -- Gouge
 		[  6770] = true, -- Sap
 		-- Shaman
 		[ 51514] = true, -- Hex
-		[211004] = true, -- Hex (spider)
-		[210873] = true, -- Hex (raptor)
-		[211015] = true, -- Hex (cockroach)
-		[211010] = true, -- Hex
-		[277784] = true, -- Hex
-		[277778] = true, -- Hex
-		[269352] = true, -- Hex
+		[196942] = true, -- Hex (Voodoo Totem)
+		[210873] = true, -- Hex (Raptor)
+		[211004] = true, -- Hex (Spider)
+		[211010] = true, -- Hex (Snake)
+		[211015] = true, -- Hex (Cockroach)
+		[269352] = true, -- Hex (Skeletal Hatchling)
+		[277784] = true, -- Hex (Wicker Mongrel)
+		[277778] = true, -- Hex (Zandalari Tendonripper)
+		[309328] = true, -- Hex (Living Honey)
 		[197214] = true, -- Sundering
 		-- Warlock
+		[   710] = true, -- Banish
 		[  6789] = true, -- Mortal Coil
 		-- Pandaren
-		[107079] = true, -- Quaking Palm
-		-- Demon Hunter
-		[217832] = true, -- Imprison
-		[221527] = true, -- Imprison talented
+		[107079] = true, -- Quaking Palm (Racial)
 	},
 
 	--[[ SILENCES ]]--
@@ -224,16 +231,17 @@ local spellsAndProvidersByCategory = {
 		-- Demon Hunter
 		[204490] = 202137, -- Sigil of Silence
 		-- Druid
-		[81261] = true, -- Solar Beam
+		--[81261] = true, -- Solar Beam (No DR)
 		-- Hunter
 		[202933] = 202914, -- Spider Sting
-		-- Mage
 		-- Paladin
-		[217824] = 31935, -- Prot pala silence
+		[217824] = 31935, -- Shield of Virtue
 		-- Priest
 		[ 15487] = true, -- Silence
 		-- Rogue
 		[  1330] = 703, -- Garrote
+		-- Warlock
+		[196364] = true, -- Unstable Affliction
 	},
 
 	--[[ DISORIENTS ]]--
@@ -243,11 +251,8 @@ local spellsAndProvidersByCategory = {
 		-- Demon Hunter
 		[207685] = 207684, -- Sigil of Misery
 		-- Druid
-		[  2637] = true, -- Hibernate
-		[ 33786] = true, -- Cyclone (rdruid/feral)
-		[209753] = true, -- Cyclone (Balance)
-		[236748] = true, -- Disorienting Roar
-		-- Hunter
+		[ 33786] = true, -- Cyclone
+		[209753] = true, -- Cyclone (Balance Honor Talent)
 		-- Mage
 		[ 31661] = true, -- Dragon's Breath
 		-- Monk
@@ -256,15 +261,15 @@ local spellsAndProvidersByCategory = {
 		-- Paladin
 		[105421] = 115750, -- Blinding Light
 		-- Priest
+		[   605] = true, -- Mind Control
 		[  8122] = true, -- Psychic Scream
-		[   605] = true, -- Dominate Mind
 		[226943] = 205369, -- Mind Bomb
 		-- Rogue
 		[  2094] = true, -- Blind
 		-- Warlock
-		[118699] = 5782, -- Fear
 		[  6358] = true, -- Seduction (Succubus)
-		[261589] = 261589, -- Seduction (Player)
+		[118699] = 5782, -- Fear
+		[261589] = 261589, -- Seduction (Grimoire of Sacrifice)
 		-- Warrior
 		[  5246] = true, -- Intimidating Shout
 	},
@@ -272,52 +277,50 @@ local spellsAndProvidersByCategory = {
 	--[[ STUNS ]]--
 	stun = {
 		-- Death Knight
-		[108194] = true, -- Asphyxiate (unholy/frost)
-		[221562] = true, -- Asphyxiate (blood)
-		[ 91800] = 47481, -- Gnaw
-		[ 91797] = 47481, -- Gnaw (transformed)
+		[ 91797] = 47481, -- Monstrous Blow (Mutated Ghoul)
+		[ 91800] = 47481, -- Gnaw (Ghoul)
+		[108194] = true, -- Asphyxiate (Unholy/Frost)
+		[221562] = true, -- Asphyxiate (Blood)
 		[210141] = 210128, -- Zombie Explosion
-		[235612] = 279302, -- frost dk stun
-		[287254] = 196770, -- remorseless winter stun
+		[287254] = 196770, -- Dead of Winter
 		-- Demon Hunter
 		[179057] = true, -- Chaos Nova
-		[205630] = 205630, -- Illidan's Grasp, primary effect
-		[208618] = 208173, -- Illidan's Grasp, secondary effect
+		[205630] = true, -- Illidan's Grasp (Primary effect)
+		[208618] = true, -- Illidan's Grasp (Secondary effect)
 		[211881] = true, -- Fel Eruption
 		-- Druid
-		[203123] = true, -- Maim stun
 		[  5211] = true, -- Mighty Bash
-		[163505] = 1822, -- Rake (Stun from Prowl)
-		[202244] = 202246, -- Overrun bear stun
+		[203123] = true, -- Maim
+		[163505] = 1822, -- Rake (Prowl)
+		[202244] = 202246, -- Overrun
 		-- Hunter
-		[117526] = 109248, -- Binding Shot
 		[ 24394] = 19577, -- Intimidation
-		-- Mage
-
 		-- Monk
-		[202346] = 121253, -- Keg stun
-		[119381] =   true, -- Leg Sweep
+		[119381] = true, -- Leg Sweep
+		[202346] = 121253, -- Double Barrel
 		-- Paladin
 		[   853] = true, -- Hammer of Justice
 		-- Priest
-		[200200] = 88625, -- Holy word: Chastise stun
-		[ 64044] = true, -- Psychic Horror stun
+		[ 64044] = true, -- Psychic Horror
+		[200200] = 88625, -- Holy word: Chastise Censure
 		-- Rogue
-		[  1833] = true, -- Cheap Shot
 		[   408] = true, -- Kidney Shot
+		[  1833] = true, -- Cheap Shot
 		[199804] = true, -- Between the Eyes
 		-- Shaman
 		[118345] = true, -- Pulverize (Primal Earth Elemental)
 		[118905] = 192058, -- Static Charge (Capacitor Totem)
-		[204437] = true, -- Lightning Lasso
+		[305485] = true, -- Lightning Lasso
 		-- Warlock
-		[ 89766] = 111898, -- Axe Toss (Felguard)
-		[ 89766] = 89766, -- Axe Toss (Felguard) 2
 		[ 30283] = true, -- Shadowfury
+		[ 89766] = true, -- Axe Toss (Felguard)
+		[171017] = true, -- Meteor Strike (Infernal)
+        [171018] = true, -- Meteor Strike (Abyssal)
 		-- Warrior
-		[132168] = 46968, -- Shockwave
+		[46968] = true, -- Shockwave
+		[132168] = 46968, -- Shockwave (Protection)
 		[132169] = 107570, -- Storm Bolt
-		[199085] = 6544, -- Heroic Leap stun
+		[199085] = 6544, -- Warpath
 		-- Tauren
 		[ 20549] = true, -- War Stomp
 		[255723] = true, -- Bull Rush
@@ -328,31 +331,32 @@ local spellsAndProvidersByCategory = {
 	--[[ ROOTS ]]--
 	root = {
 		-- Death Knight
-		[204085] = 45524, -- Deathchill root
-		[198121] = true, -- Frostbite
-		[233395] = 196770, -- Frozen Center
+		[204085] = 45524, -- Deathchill (Chains of Ice)
+		[233395] = 196770, -- Deathchill (Remorseless Winter)
 		-- Druid
 		[   339] = true, -- Entangling Roots
-		[235963] = true, -- Entangling Roots undispellable
-		[170855] = 102342, -- Entangling Roots ironbark
+		[170855] = 102342, -- Entangling Roots (Nature's Grasp)
 		[102359] = true, -- Mass Entanglement
 		[ 45334] = 16979, -- Immobilized (wild charge, bear form)
 		-- Hunter
-		[162480] = 162488, -- Steel Trap root
+		[162480] = 162488, -- Steel Trap
+		[117526] = 109248, -- Binding Shot
 		[190927] = 190925, -- Harpoon
-		[212638] = true, -- tracker's net
+		[201158] = true, -- Super Sticky Tar
+		[212638] = true, -- Tracker's Net
 		-- Mage
 		[   122] = true, -- Frost Nova
 		[ 33395] = true, -- Freeze (Water Elemental)
-		[228600] = 199786, -- Glacial spike
+		[198121] = true, -- Frostbite
+		[220107] = true, -- Frostbite (Water Elemental)
+		[228600] = 199786, -- Glacial Spike
 		-- Monk
 		[116706] = 116095, -- Disable
 		-- Priest
 		-- Warlock
-		[233582] = 17962, -- Destro root
+		[233582] = 17962, -- Entrenched in Flame
 		-- Shaman
 		[ 64695] = 51485, -- Earthgrab Totem
-		[285515] = 196840, -- frost shock root (talent)
 	},
 
 	--[[ KNOCKBACK ]]--
@@ -363,6 +367,12 @@ local spellsAndProvidersByCategory = {
 		[102793] = true, -- Ursol's Vortex
 		[132469] = true, -- Typhoon
 		-- Hunter
+		[186387] = true, -- Bursting Shot
+		[236775] = true, -- Hi-Explosive Trap
+		-- Mage
+		[157981] = true, -- Blast Wave
+		-- Priest
+		[204263] = true, -- Shining Force
 		-- Shaman
 		[ 51490] = true, -- Thunderstorm
 		-- Warlock
@@ -373,7 +383,7 @@ local spellsAndProvidersByCategory = {
 	--[[ DISARM ]]--
 	disarm = {
 		[207777] = true, -- Dismantle
-		[209749] = true, -- Faerie Swarm
+		[209749] = true, -- Faerie Swarm (Balance Honor Talent)
 		[233759] = true, -- Grapple Weapon
 		[236077] = true, -- Disarm
 	},

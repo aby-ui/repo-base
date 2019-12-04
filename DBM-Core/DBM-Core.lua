@@ -68,7 +68,7 @@ local function showRealDate(curseDate)
 end
 
 DBM = {
-	Revision = parseCurseDate("20191124011030"),
+	Revision = parseCurseDate("20191129194617"),
 	DisplayVersion = "8.2.30 alpha", -- the string that is shown as version
 	ReleaseRevision = releaseDate(2019, 11, 22) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 }
@@ -7513,6 +7513,8 @@ function bossModPrototype:IsValidWarning(sourceGUID, customunitID)
 		for uId in DBM:GetGroupMembers() do
 			local target = uId.."target"
 			if UnitExists(target) and UnitGUID(target) == sourceGUID and UnitAffectingCombat(target) then return true end
+			local targettwo = uId.."targettarget"
+			if UnitExists(targettwo) and UnitGUID(targettwo) == sourceGUID and UnitAffectingCombat(targettwo) then return true end
 		end
 	end
 	return false

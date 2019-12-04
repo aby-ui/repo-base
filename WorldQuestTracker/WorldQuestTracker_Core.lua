@@ -3295,7 +3295,39 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 					WorldQuestTracker.UpdateZoneWidgets()
 				end
 			end
+
+			local toggle_filters_all_on = function()
+				for filterType, canShow in pairs (WorldQuestTracker.db.profile.filters) do
+					local questType = filterType
+					WorldQuestTracker.db.profile.filters [questType] = true
+				end
+
+				GameCooltip:ExecFunc (filterButton)
+
+				--update quest on current map shown
+				if (WorldQuestTrackerAddon.GetCurrentZoneType() == "world") then
+					WorldQuestTracker.UpdateWorldQuestsOnWorldMap (true)
+				elseif (WorldQuestTrackerAddon.GetCurrentZoneType() == "zone") then
+					WorldQuestTracker.UpdateZoneWidgets()
+				end	
+			end
 			
+			local toggle_filters_all_off = function()
+				for filterType, canShow in pairs (WorldQuestTracker.db.profile.filters) do				
+					local questType = filterType
+					WorldQuestTracker.db.profile.filters [questType] = false
+				end
+
+				GameCooltip:ExecFunc (filterButton)
+
+				--update quest on current map shown
+				if (WorldQuestTrackerAddon.GetCurrentZoneType() == "world") then
+					WorldQuestTracker.UpdateWorldQuestsOnWorldMap (true)
+				elseif (WorldQuestTrackerAddon.GetCurrentZoneType() == "zone") then
+					WorldQuestTracker.UpdateZoneWidgets()
+				end	
+			end
+
 			local BuildFilterMenu = function()
 				GameCooltip:Preset (2)
 				GameCooltip:SetOption ("TextSize", 10)
@@ -3327,6 +3359,14 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 					GameCooltip:AddMenu (1, filter_quest_type, filterType)
 				end
 				
+				GameCooltip:AddLine ("$div")
+
+				GameCooltip:AddLine ("Select All")
+				GameCooltip:AddMenu (1, toggle_filters_all_on)
+
+				GameCooltip:AddLine ("Select None")
+				GameCooltip:AddMenu (1, toggle_filters_all_off)
+
 				GameCooltip:AddLine ("$div")
 				
 				local l, r, t, b = unpack (WorldQuestTracker.MapData.GeneralIcons.CRITERIA.coords)

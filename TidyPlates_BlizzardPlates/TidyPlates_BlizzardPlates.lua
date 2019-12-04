@@ -33,11 +33,12 @@ StyleDefault.healthborder = {
 
 StyleDefault.healthbar = {
 	texture =					"Interface\\TARGETINGFRAME\\UI-StatusBar",
-	backdrop = 					EMPTY_TEXTURE,
+	backdrop = 					path.."backdrop",
 	height = 9.5,
 	width = 103,
 	x = -9,
 	y = 0,
+	orientation = "HORIZONTAL",
 }
 
 StyleDefault.eliteicon = {

@@ -161,6 +161,7 @@ local function UpdateWidgetContext(frame, unit)
 		--CombatWidgetFrame:SetParent(frame)
         CombatWidgetFrame:ClearAllPoints()
 		CombatWidgetFrame:SetParent(WorldFrame)
+		CombatWidgetFrame:ClearAllPoints() 
 		CombatWidgetFrame:SetPoint("CENTER", frame, "CENTER")
 
 		CombatWidgetFrame.nameplateUnitID = unit.unitid

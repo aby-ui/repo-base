@@ -1062,6 +1062,10 @@ L["STRING_OPTIONS_TEXT_LOUTILINE"] = "文本阴影"
 L["STRING_OPTIONS_TEXT_LOUTILINE_DESC"] = "启用或禁用左边文字的下划线。"
 L["STRING_OPTIONS_TEXT_LPOSITION"] = "显示数字"
 L["STRING_OPTIONS_TEXT_LPOSITION_DESC"] = "显示位置编号在玩家的名字左边。"
+--[[Translation missing --]]
+--[[ L["STRING_OPTIONS_TEXT_LTRANSLIT"] = ""--]] 
+--[[Translation missing --]]
+--[[ L["STRING_OPTIONS_TEXT_LTRANSLIT_DESC"] = ""--]] 
 L["STRING_OPTIONS_TEXT_RIGHT_ANCHOR"] = "右文本："
 L["STRING_OPTIONS_TEXT_ROUTILINE_DESC"] = "启用或禁用右边文字的下划线。"
 L["STRING_OPTIONS_TEXT_ROWICONS_ANCHOR"] = "图标："

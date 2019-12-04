@@ -2,7 +2,7 @@
 ## Title: Tidy Plates: |cFF3782D1BlizzardPlates
 ## Notes: Blizzard Vanilla´s Plates.
 ## Author: delabarra.
-## Version: 1.6
+## Version: 1.7
 ## Dependencies: TidyPlates, TidyPlatesHub
 
 TidyPlates_BlizzardPlates.lua
