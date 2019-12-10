@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("Brawlers", "DBM-Brawlers")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190928170115")
+mod:SetRevision("20190929024030")
 --mod:SetCreatureID(60491)
 --mod:SetModelID(41448)
 mod:SetZone(DBM_DISABLE_ZONE_DETECTION)

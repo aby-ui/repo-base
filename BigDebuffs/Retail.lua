@@ -200,6 +200,7 @@ addon.Spells = {
         [233022] = { type = CROWD_CONTROL, parent = 202914 }, -- Spider Sting (Silenced)
     [209790] = { type = CROWD_CONTROL }, -- Freezing Arrow
     [209997] = { type = BUFF_DEFENSIVE }, -- Play Dead
+    [212638] = { type = ROOT }, -- Tracker's Net
     [213691] = { type = CROWD_CONTROL }, -- Scatter Shot
     [272682] = { type = BUFF_DEFENSIVE }, -- Master's Call
 

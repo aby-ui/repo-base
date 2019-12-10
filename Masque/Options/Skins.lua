@@ -451,7 +451,7 @@ end
 
 -- Updates the skin options for the group.
 function Core:UpdateSkinOptions(obj, Delete)
-	if not self.OptionsLoaded then return end
+	if Setup.Skins then return end
 
 	local ID, Addon, Group = obj.ID, obj.Addon, obj.Group
 	local args = self.Options.args.Skins.args

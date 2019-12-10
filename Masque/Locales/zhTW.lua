@@ -115,7 +115,7 @@ L["Use a resizable, stand-alone options window."] = "使用可調整大小的獨
 -- LDB Launcher
 ---
 
-L["Click to open Masque's settings."] = "點擊以開啟Masque的設置。"
+L["Click to open Masque's settings."] = "點一下開啟按鈕外觀的設定選項。"
 
 ----------------------------------------
 -- Performance Settings
