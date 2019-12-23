@@ -86,3 +86,7 @@ L.CopyProfile = 'Copy Profile...'
 L.ConfirmResetProfile = 'Are you sure you want to reset your profile?'
 L.ConfirmCopyProfile = 'Copy contents from %s into the current profile?'
 L.ConfirmDeleteProfile = 'Delete profile %s?'
+
+-- bag bar
+L.BagBarShowKeyRing = "Show Keyring"
+L.BagBarShowBags = "Show Bag Slots"

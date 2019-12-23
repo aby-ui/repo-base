@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("UndermineTrash", "DBM-Party-BfA", 7)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190929024030")
+mod:SetRevision("20191011015519")
 --mod:SetModelID(47785)
 mod:SetZone()
 

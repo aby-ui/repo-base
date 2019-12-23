@@ -2,7 +2,7 @@
 	bagBar -  A bar for holding container buttons
 --]]
 
-local Addon = select(2, ...)
+local AddonName, Addon = ...
 
 -- register buttons for use later
 local bagButtons = {}
@@ -19,41 +19,70 @@ end
 function BagBar:GetDefaults()
 	return {
 		point = 'BOTTOMRIGHT',
+		oneBag = false,
+		keyRing = true,
 		spacing = 2,
 	}
 end
 
-function BagBar:SetOneBag(enable)
-	self.sets.oneBag = enable or nil
-
+function BagBar:SetShowBags(enable)
+	self.sets.oneBag = not enable
 	self:ReloadButtons()
 end
 
-function BagBar:OneBag()
-	return self.sets.oneBag
+function BagBar:ShowBags()
+	return not self.sets.oneBag
+end
+
+function BagBar:SetShowKeyRing(enable)
+	self.sets.keyRing = enable or false
+	self:ReloadButtons()
+end
+
+function BagBar:ShowKeyRing()
+	if Addon:IsBuild("classic") then
+		return self.sets.keyRing
+	end
 end
 
 
 --[[ Frame Overrides ]]--
 
 function BagBar:GetButton(index)
-	if self:OneBag() then
-		if index == 1 then
-			return bagButtons[#bagButtons]
-		end
-
+	if index < 1 then
 		return nil
 	end
 
-	return bagButtons[index]
+	local keyRingIndex = self:ShowKeyRing() and 1 or 0
+
+	local backpackIndex
+	if self:ShowBags() then
+		backpackIndex = keyRingIndex + NUM_BAG_SLOTS + 1
+	else
+		backpackIndex = keyRingIndex + 1
+	end
+
+	if index == keyRingIndex then
+		return _G[AddonName .. 'KeyRingButton']
+	elseif index == backpackIndex then
+		return MainMenuBarBackpackButton
+	elseif index > keyRingIndex and index < backpackIndex then
+		return _G[('CharacterBag%dSlot'):format(NUM_BAG_SLOTS - (index - keyRingIndex))]
+	end
 end
 
 function BagBar:NumButtons()
-	if self:OneBag() then
-		return 1
+	local count = 1
+
+	if self:ShowKeyRing() then
+		count = count + 1
 	end
 
-	return #bagButtons
+	if self:ShowBags() then
+		count = count + NUM_BAG_SLOTS
+	end
+
+	return count
 end
 
 function BagBar:CreateMenu()
@@ -63,10 +92,18 @@ function BagBar:CreateMenu()
 	local layoutPanel = menu:NewPanel(L.Layout)
 
 	layoutPanel:NewCheckButton{
-		name = L.OneBag,
-		get = function() return layoutPanel.owner:OneBag() end,
-		set = function(_, enable) return layoutPanel.owner:SetOneBag(enable) end,
+		name = L.BagBarShowBags,
+		get = function() return layoutPanel.owner:ShowBags() end,
+		set = function(_, enable) return layoutPanel.owner:SetShowBags(enable) end,
 	}
+
+	if Addon:IsBuild("Classic") then
+		layoutPanel:NewCheckButton{
+			name = L.BagBarShowKeyRing,
+			get = function() return layoutPanel.owner:ShowKeyRing() end,
+			set = function(_, enable) return layoutPanel.owner:SetShowKeyRing(enable) end,
+		}
+	end
 
 	layoutPanel:AddLayoutOptions()
 
@@ -84,14 +121,52 @@ function BagBarController:OnInitialize()
 		self:RegisterButton(('CharacterBag%dSlot'):format(slot))
 	end
 
+	if Addon:IsBuild("Classic") then
+		local keyring = CreateFrame('CheckButton', AddonName .. 'KeyRingButton', UIParent, 'ItemButtonTemplate')
+		keyring:RegisterForClicks('LeftButtonUp', 'RightButtonUp')
+		keyring:SetID(KEYRING_CONTAINER)
+
+		keyring:SetScript('OnClick', function(_, button)
+			if CursorHasItem() then
+				PutKeyInKeyRing()
+			else
+				ToggleBag(KEYRING_CONTAINER)
+			end
+		end)
+
+		keyring:SetScript('OnReceiveDrag', function(_)
+			if CursorHasItem() then
+				PutKeyInKeyRing()
+			end
+		end)
+
+		keyring:SetScript('OnEnter', function(self)
+			GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
+
+			local color = HIGHLIGHT_FONT_COLOR
+			GameTooltip:SetText(KEYRING, color.r, color.g, color.b)
+			GameTooltip:AddLine()
+		end)
+
+		keyring:SetScript('OnLeave', function()
+			GameTooltip:Hide()
+		end)
+
+		keyring.icon:SetTexture([[Interface\Icons\INV_Misc_Bag_16]])
+
+		self:RegisterButton(keyring:GetName())
+
+		MainMenuBarBackpackButton:HookScript("OnClick", function(_, button)
+			if IsControlKeyDown() then
+				ToggleBag(KEYRING_CONTAINER)
+			end
+		end)
+	end
+
 	self:RegisterButton('MainMenuBarBackpackButton')
 end
 
 function BagBarController:OnEnable()
-	-- for _, button in pairs(bagButtons) do
-	-- 	button:Hide()
-	-- end
-
 	for _, button in pairs(bagButtons) do
 		Addon:GetModule('ButtonThemer'):Register(button, 'Bag Bar', {
 			Icon = button.icon,

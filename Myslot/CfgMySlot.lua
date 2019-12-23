@@ -40,10 +40,11 @@ local function valid(s)
 end
 
 CoreDependCall("MySlot", function()
-	MYSLOT_ReportFrame:SetHeight(370)
-	MYSLOT_ScrollFrame:SetHeight(300)
+    RunOnNextFrame(function()
+	--MYSLOT_ReportFrame:SetHeight(370)
+	--MYSLOT_ScrollFrame:SetHeight(300)
 	--MYSLOT_ScrollFrame_Child:SetHeight(300)
-	MYSLOT_ReportFrame_EditBox:SetHeight(270)
+	--MYSLOT_ReportFrame_EditBox:SetHeight(270)
 	MYSLOT_ReportFrame_EditBox:SetScript("OnEditFocusGained", function(self) self:HighlightText() end)
 	MYSLOT_ReportFrame_EditBox:SetScript("OnEditFocusLost", function(self) self:HighlightText(0, 0) end)
 
@@ -78,4 +79,5 @@ CoreDependCall("MySlot", function()
             CoreScheduleTimer(false, 0.1, function() MYSLOT_ScrollFrame:SetVerticalScroll(0) end)
         end):un()
     end
+end)
 end)

@@ -1497,8 +1497,7 @@ La["List categories from the current expansion pack first"] = "優先列出目�
 La["List raid categories before dungeon categories"] = "在地城分類之前列出團隊分類"
 La["Lord Kazzak"] = "卡扎克領主"
 La["Manage"] = "管理"
---[[Translation missing --]]
-La["Mechanized Chest"] = "Mechanized Chest"
+La["Mechanized Chest"] = "機械箱"
 La["Miscellaneous Tracking"] = "其他追蹤"
 La["ML"] = "晶喜"
 La["Most recent first"] = "最近的優先"

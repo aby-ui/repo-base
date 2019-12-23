@@ -5,7 +5,7 @@
 --  None of these functions should be called directly by addons if they want
 --  the waypoints to obey normal TomTom options and behavior.  In otherwords
 --  don't call TomTom:SetWaypoint() or TomTom:ClearWaypoint(), use the public
---  TomTom:AddZWaypoint() and TomTom:RemoveWaypoint() instead.
+--  TomTom:AddWaypoint() and TomTom:RemoveWaypoint() instead.
 ----------------------------------------------------------------------------]]
 
 local addon_name, addon = ...

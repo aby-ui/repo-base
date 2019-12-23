@@ -1,4 +1,4 @@
-if not _G.C_ArtifactUI then return end
+if not (C_ArtifactUI and select(4, GetBuildInfo()) < 80000) then return end
 
 local Addon = select(2, ...)
 local Dominos = _G.Dominos

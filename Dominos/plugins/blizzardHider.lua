@@ -95,6 +95,11 @@ if ReputationWatchBar then
     hide(ReputationWatchBar)
 end
 
+if KeyRingButton then
+    KeyRingButton:UnregisterAllEvents()
+    hide(KeyRingButton)
+end
+
 if VerticalMultiBarsContainer then
     VerticalMultiBarsContainer:UnregisterAllEvents()
     hide(VerticalMultiBarsContainer)

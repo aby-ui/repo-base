@@ -6,7 +6,7 @@
 		
 	
 	2016/7/18 New translations by 彩虹ui https://www.facebook.com/rainbowui/
-	
+	2019/10/5 New translations by Kal.L
 	Triditional Chinese 繁體中文
 ]]
 
@@ -66,7 +66,8 @@ L.DisableMenuButtons = '停用按鈕'
 L.ShowOverrideUI = '使用遊戲預設的載具介面'
 L.ShowInOverrideUI = '顯示載具介面'
 L.ShowInPetBattleUI = '顯示寵物戰鬥介面'
-L.ShowEquippedItemBorders = '動作條上已裝備物品顯示邊框'
+L.ShowEquippedItemBorders = '顯示已裝備物品的邊界'
+L.ThemeActionButtons = '套用主題到快捷鍵按鈕 (需要重載)'
 
 L.ALT_KEY_TEXT = 'ALT'
 

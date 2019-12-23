@@ -190,7 +190,14 @@ function Addon:GetDatabaseDefaults()
 				showgrid = true,
 			},
 
-			frames = {},
+			frames = {
+				bags = {
+					point = 'BOTTOMRIGHT',
+					oneBag = false,
+					keyRing = true,
+					spacing = 2,
+				}
+			},
 
 			-- what modules are enabled
 			-- module[id] = enabled

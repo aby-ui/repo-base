@@ -1,7 +1,7 @@
 ## Interface: 80205
 ## Title: OmniBar
 ## Notes: Tracks enemy cooldowns
-## Version: v10.6
+## Version: v10.7
 ## Author: Jordon
 ## DefaultState: Enabled
 ## SavedVariables: OmniBarDB

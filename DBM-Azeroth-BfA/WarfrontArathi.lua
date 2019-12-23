@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("WarfrontArathi", "DBM-Azeroth-BfA", 3)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190929024030")
+mod:SetRevision("20191011015519")
 --mod:SetModelID(47785)
 mod:SetZone()
 

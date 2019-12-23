@@ -1617,9 +1617,9 @@ if (bountyBoard) then
 				bountyBoard:SetPoint ("bottomright", WorldQuestTrackerToggleQuestsButton, "bottomright", 0, 45)
 			end)
 		end
-	
+		
 		self:SetAlpha (WQT_WORLDWIDGET_ALPHA + 0.02) -- + 0.06
-	
+		
 		local tabs = self.bountyTabPool
 		
 		for bountyIndex, bounty in ipairs(self.bounties) do
@@ -1673,6 +1673,7 @@ if (bountyBoard) then
 				rewardPreviewBorder:SetAlpha (ALPHA_BLEND_AMOUNT)
 				
 				bountyButton.RewardPreview = rewardPreview
+				bountyButton.rewardPreviewBorder = rewardPreviewBorder
 				
 			end
 			
@@ -1683,17 +1684,23 @@ if (bountyBoard) then
 					bountyButton.objectiveCompletedText:SetText (numCompleted .. "/" .. numTotal)
 					bountyButton.objectiveCompletedText:SetAlpha (.92)
 					bountyButton.objectiveCompletedBackground:SetAlpha (.4)
-					
+					bountyButton.RewardPreview:SetAlpha (.96)
+					bountyButton.rewardPreviewBorder:SetAlpha (.96)
+
 					if (not bountyButton.objectiveCompletedText:IsShown()) then
 						bountyButton.objectiveCompletedAnimation:Play()
 					end
 				else
 					bountyButton.objectiveCompletedText:SetText ("")
 					bountyButton.objectiveCompletedBackground:SetAlpha (0)
+					bountyButton.RewardPreview:SetAlpha (0)
+					bountyButton.rewardPreviewBorder:SetAlpha (0)
 				end
 			else
 				bountyButton.objectiveCompletedText:SetText ("")
 				bountyButton.objectiveCompletedBackground:SetAlpha (0)
+				bountyButton.RewardPreview:SetAlpha (0)
+				bountyButton.rewardPreviewBorder:SetAlpha (0)
 			end
 			
 			

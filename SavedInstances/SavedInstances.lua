@@ -745,7 +745,7 @@ do
 end
 
 function addon:QuestIgnored(questID)
-  if (TimewalkingItemQuest[questID]) then
+  if (TimewalkingItemQuest[questID]) and addon.activeHolidays then
     -- Timewalking Item Quests
     if addon.activeHolidays[TimewalkingItemQuest[questID]] then
       -- Timewalking Weedend Event ONGOING
@@ -2529,7 +2529,7 @@ end
 function core:OnInitialize()
   local versionString = GetAddOnMetadata(addonName, "version")
   --[===[@debug@
-  if versionString == "8.2.6-1-g73eff4a" then
+  if versionString == "8.2.7" then
     versionString = "Dev"
   end
   --@end-debug@]===]

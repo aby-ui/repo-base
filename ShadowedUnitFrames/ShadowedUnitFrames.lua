@@ -5,7 +5,7 @@
 ShadowUF = select(2, ...)
 
 local L = ShadowUF.L
-ShadowUF.dbRevision = 60
+ShadowUF.dbRevision = 61
 ShadowUF.playerUnit = "player"
 ShadowUF.enabledUnits = {}
 ShadowUF.modules = {}
@@ -112,6 +112,13 @@ end
 
 function ShadowUF:CheckUpgrade()
 	local revision = self.db.profile.revision or self.dbRevision
+	if (revision <= 60 ) then
+		for unit, config in pairs(self.db.profile.units) do
+			if( unit == "player" or unit == "party" or unit == "target" or unit == "raid" or unit == "focus" or unit == "mainassist" or unit == "maintank" ) then
+				config.indicators.sumPending = {enabled = true, anchorPoint = "C", size = 40, x = 0, y = 0, anchorTo = "$parent"}
+			end
+		end
+	end
 	if (revision <= 59 ) then
 		self.db.profile.font.shadowX = 1.0
 		self.db.profile.font.shadowY = -1.0
@@ -316,6 +323,7 @@ function ShadowUF:LoadUnitDefaults()
 			self.defaults.profile.units[unit].indicators.role = {enabled = true, size = 0}
 			self.defaults.profile.units[unit].indicators.status = {enabled = false, size = 19}
 			self.defaults.profile.units[unit].indicators.resurrect = {enabled = true}
+			self.defaults.profile.units[unit].indicators.sumPending = {enabled = true}
 
 			if( unit ~= "focus" and unit ~= "target" ) then
 				self.defaults.profile.units[unit].indicators.ready = {enabled = true, size = 0}

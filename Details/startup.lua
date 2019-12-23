@@ -1880,7 +1880,7 @@ function _G._detalhes:Start()
 	if (not DetailsFramework.IsClassicWow()) then
 		--print ("|CFFFFFF00[Details!]: Details! now has a separated version for Classic, Twitch app should give the right version, any issues report at Discord (/details discord).")
 	else
-		print ("|CFFFFFF00[Details!]: you're using using the wrong version of Details!, please get the classic version, if you need help see our Discord (/details discord).")
+		print ("|CFFFFFF00[Details!]: you're using Details! for RETAIL on Classic WOW, please get the classic version (Details! Damage Meter Classic WoW), if you need help see our Discord (/details discord).")
 	end
 
 end

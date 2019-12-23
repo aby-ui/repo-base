@@ -2,7 +2,24 @@ local _, Addon = ...
 local Dominos = LibStub('AceAddon-3.0'):GetAddon('Dominos')
 local ProgressBar = Dominos:CreateClass('Frame', Dominos.ButtonBar)
 
+-- remove any modes from a list that are not currently loaded
+local function cleanupModes(modes)
+	for i = #modes, 1, -1 do
+		local mode = modes[i]
+		if not Addon.progressBarModes[mode] then
+			tremove(modes, i)
+		end
+	end
+
+	return modes
+end
+
 function ProgressBar:New(id, modes, ...)
+	modes = cleanupModes(modes)
+	if #modes == 0 then
+		return
+	end
+
 	local bar = ProgressBar.proto.New(self, id, ...)
 
 	if not bar.sets.display then
@@ -170,7 +187,14 @@ function ProgressBar:SetMode(mode)
 end
 
 function ProgressBar:GetMode()
-	return Addon.Config:GetBarMode(self.id) or self.modes[1]
+	local mode = Addon.Config:GetBarMode(self.id)
+
+	-- ensure the selected mode has a progress bar display
+	if mode and Addon.progressBarModes[mode] then
+		return mode
+	end
+
+	return self.modes[1]
 end
 
 function ProgressBar:GetModeIndex()

@@ -10,7 +10,8 @@ local pblua = MySlot.luapb
 local _MySlot = pblua.load_proto_ast(MySlot.ast)
 
 
-local MYSLOT_AUTHOR = "T.G. <farmer1992@gmail.com>"
+local MYSLOT_AUTHOR = "Boshi Lian <farmer1992@gmail.com>"
+
 
 local MYSLOT_VER = 25
 local MYSLOT_ALLOW_VER = {MYSLOT_VER, 24, 23, 22}
@@ -271,10 +272,13 @@ function MySlot:Export(opt)
     s = "@ Myslot (V" .. MYSLOT_VER .. ")" .. MYSLOT_LINE_SEP .. s
 
     local d = base64.enc(t)
-    local LINE_LEN = 80
+    local LINE_LEN = 60
     for i = 1, d:len(), LINE_LEN do
         s = s .. d:sub(i, i + LINE_LEN - 1) .. MYSLOT_LINE_SEP
     end
+    s = strtrim(s)
+    s = s .. MYSLOT_LINE_SEP .. "@ --------------------"
+    s = s .. MYSLOT_LINE_SEP .. "@ END OF MYSLOT"
 
     return s
     -- }}}
@@ -287,8 +291,8 @@ function MySlot:Import(text, opt)
     end
 
     local s = text or ""
-    s = string.gsub(s,"(@.[^\n]*\n)","")
-    s = string.gsub(s,"(#.[^\n]*\n)","")
+    s = string.gsub(s,"(@.[^\n]*\n*)","")
+    s = string.gsub(s,"(#.[^\n]*\n*)","")
     s = string.gsub(s,"\n","")
     s = string.gsub(s,"\r","")
     s = base64.dec(s)
@@ -356,7 +360,6 @@ function MySlot:FindOrCreateMacro(macroInfo)
     local body = macroInfo["body"]
 
     local localIndex = localMacro[ name .. "_" .. body ] or localMacro[ body ]
-    print(macroInfo.oldid, macroInfo.name, localIndex)
 
     if localIndex then
         return localIndex
@@ -374,7 +377,6 @@ function MySlot:FindOrCreateMacro(macroInfo)
         local testallow = bit.bor( numglobal < MAX_ACCOUNT_MACROS and 1 or 0 , numperchar < MAX_CHARACTER_MACROS and 2 or 0)
         perchar = bit.band( perchar, testallow)
         perchar = perchar == 0 and testallow or perchar
-        print(numglobal, numperchar, perchar)
                 
         if perchar ~= 0 then
             -- fix icon using #showtooltip

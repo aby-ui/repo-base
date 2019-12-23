@@ -26,7 +26,7 @@
 --    * Share Alike. If you alter, transform, or build upon this work, you may distribute the resulting work only under the same or similar license to this one.
 --
 
-local Revision = "2019081550422"
+local Revision = "20191210204503"
 
 local IsInRaid = IsInRaid
 local IsInInstance = IsInInstance
@@ -301,6 +301,7 @@ do
 	}
 	mainframe:SetScript("OnEvent", function(self, event, ...)
 		if event == "ADDON_LOADED" and select(1, ...) == "DBM-SpellTimers" then
+			self:UnregisterEvent("ADDON_LOADED")
 			self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 			self:RegisterEvent("PLAYER_ENTERING_BATTLEGROUND")
 			self:RegisterEvent("ENCOUNTER_START")
