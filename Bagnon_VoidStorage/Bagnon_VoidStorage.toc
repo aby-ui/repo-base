@@ -5,7 +5,7 @@
 ## RequiredDeps: Bagnon
 ## LoadOnDemand: 1
 
-..\Bagnon\addons\vault\vault.xml
+..\Bagnon\modules\vault.xml
 
 
 ## Title: |cff880303[爱不易]|r Bagnon 虚空银行整合
