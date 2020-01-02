@@ -631,6 +631,7 @@ L["AIR"] = "Air"
 L["MUSHROOM"] = "Mushroom %d"
 L["RUNEOFPOWER"] = "Rune %d"
 L["GENERICTOTEM"] = "Totem %d"
+L["GENERICTOTEM_ANY"] = "Any Totem"
 L["RUNES"] = "Rune(s) to check"
 
 
@@ -1827,7 +1828,7 @@ L["GROUPSELECT_TOOLTIP"] = [[|cff7fffffClick|r to edit.
 |cff7fffffClick-and-drag|r to reorder or change domain.]]
 
 L["GROUP_UNAVAILABLE"] = "|TInterface/PaperDollInfoFrame/UI-GearManager-LeaveItem-Transparent:20|t This group cannot be shown due to its overly-restrictive spec/role settings."
-L["GROUP_CANNOT_INTERACTIVELY_POSITION"] = "Could not reposition group because the anchor target is restricted. Use the manual position controls in the group settings."
+L["GROUP_CANNOT_INTERACTIVELY_POSITION"] = "Cannot interactively reposition %s because the anchor target is restricted. Use the manual position controls in the group settings."
 
 --[=[L["CNDT_SLIDER_DESC_BASE"] = [[|cff7fffffMousewheel|r to adjust.
 |cff7fffffShift-Mousewheel|r to adjust x10.
@@ -2294,6 +2295,7 @@ L["ANN_STICKY"] = "Sticky"
 L["ANN_SHOWICON"] = "Show icon texture"
 L["ANN_SHOWICON_DESC"] = "Some text destinations can show a texture along with the text. Check this to enable that feature."
 L["ANN_SUB_CHANNEL"] = "Sub section"
+L["ANN_INSTANCE_RESTRICTED"] = [[Due to Blizzard restrictions, this method only works when inside an instance or when used with a Click trigger.]]
 L["ANN_WHISPERTARGET"] = "Whisper target"
 L["ANN_WHISPERTARGET_DESC"] = [[Input the name of the player that you would like to whisper.
 

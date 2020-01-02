@@ -253,7 +253,6 @@
 							<OnLoad>
 								self:SetText(TMW.L["SUG_FINISHHIM"])
 								TMW:TT(self, "SUG_FINISHHIM", "SUG_FINISHHIM_DESC")
-								self:RegisterEvent("UNIT_FLAGS") -- accurately detects changes to InCombatLockdown
 							</OnLoad>
 							<OnUpdate>
 								-- Don't allow this when in combat because of Blizzard's new throttling system in Mists of Pandaria

@@ -228,10 +228,18 @@ Announcements:RegisterEventHandlerDataNonSpecific(0, "", {
 Announcements:RegisterEventHandlerDataNonSpecific(10, "SAY", {
 	text = CHAT_MSG_SAY,
 	isBlizz = 1,
+
+	ConfigFrames = {
+		"InstanceRestricted",
+	},
 })
 Announcements:RegisterEventHandlerDataNonSpecific(12, "YELL", {
 	text = CHAT_MSG_YELL,
 	isBlizz = 1,
+	
+	ConfigFrames = {
+		"InstanceRestricted",
+	},
 })
 Announcements:RegisterEventHandlerDataNonSpecific(14, "WHISPER", {
 	text = WHISPER,
@@ -291,7 +299,10 @@ Announcements:RegisterEventHandlerDataNonSpecific(40, "CHANNEL", {
 	text = L["CHAT_MSG_CHANNEL"],
 	desc = L["CHAT_MSG_CHANNEL_DESC"],
 	isBlizz = 1, -- flagged to not use override %t and %f substitutions, and also not to try and color any names
-
+	
+	-- No longer usable by addons since WoW 8.2.5 (and in Classic) when Blizzard broke ClassicLFG.
+	hidden = true,
+	
 	ConfigFrames = {
 		"Location",
 	},

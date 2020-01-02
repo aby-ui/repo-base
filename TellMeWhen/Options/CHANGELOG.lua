@@ -3,6 +3,13 @@ if not TMW then return end
 TMW.CHANGELOG_LASTVER="7.4.0"
 
 TMW.CHANGELOG = [==[
+## v8.7.3
+* Added a new "Any Totem" condition that will check all totem slots.
+
+### Bug Fixes
+* Fix #1742 - Errors related to improper escaping of user input for the suggestion list.
+* Fix #1755 - Swing Timer conditions with durations other than zero seconds were not triggering updates at the proper moment.
+
 ## v8.7.2
 ### Bug Fixes
 * Fixed handling of spell names in French that have a space before a colon.

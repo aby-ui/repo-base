@@ -186,7 +186,7 @@ View:ImplementsModule("IconModule_TimerBar_BarDisplay", 50, function(Module, ico
 	end
 
 	-- We can only query the size of the bar if the icon has had its position set.
-	if not icon:GetPoint() or Module.bar:GetHeight() > 0 then
+	if icon:GetNumPoints() == 0 or Module.bar:GetHeight() > 0 then
 		Module:Enable()
 	end
 end)
@@ -203,7 +203,7 @@ View:ImplementsModule("IconModule_Backdrop", 51, function(Module, icon)
 	Module.container:SetFrameLevel(icon:GetFrameLevel() - 2)
 
 	-- We can only query the size of the bar if the icon has had its position set.
-	if not icon:GetPoint() or Module.container:GetHeight() > 0 then
+	if icon:GetNumPoints() == 0 or Module.container:GetHeight() > 0 then
 		Module:Enable()
 	end
 end)

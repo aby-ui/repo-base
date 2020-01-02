@@ -756,8 +756,8 @@ local InitialismCache = TMW:NewClass("InitialismCache") {
 	end,
 
 	GetLookup = function(self, firstLetterLookup, initialism)
-		if self.Lookups[initialism] then 
-			return self.Lookups[initialism] 
+		if self.Lookups[initialism] then
+			return self.Lookups[initialism]
 		end
 
 		local sourceData = firstLetterLookup
@@ -771,7 +771,13 @@ local InitialismCache = TMW:NewClass("InitialismCache") {
 		end
 
 		-- To form the pattern, put ".- " after each letter except the last. Also, match string starts only.
-		local pattern = "^" .. initialism:gsub("(.)", "%1.- "):trim("-. ")
+		local pattern = "^" .. initialism
+			-- Escape pattern special characters
+			:gsub("([%(%)%%%[%]%-%+%.%*])", "%%%1")
+			-- put ".- " after each letter
+			:gsub("(.)", "%1.- ")
+			-- except the last
+			:trim("-. ")
 
 		local newData = {}
 		for id, name in pairs(sourceData) do
@@ -890,7 +896,8 @@ function Module:Table_GetNormalSuggestions(suggestions, tbl)
 
 			local initialism
 			if shouldWordMatch then
-				-- Convert "foo bar test" to "fbt"
+				-- Convert "foo bar test" to "fbt" so we can get a reduced-size
+				-- lookup of things that might also look like "foo* bar* test*"
 				initialism = SUG.lastName:gsub("(%f[%a].).-%f[%A].?", "%1"):gsub(" ", "")
 			elseif shouldLetterMatch then
 				-- Input already is the initialism to look for (it doesn't contain spaces and is just a few characters.)

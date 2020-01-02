@@ -251,7 +251,7 @@ function GroupPosition:UpdatePositionAfterMovement(wasMove)
 		-- Non-moves happen when a user changes the target/point/relativePoint
 		-- in the settings UI. We don't want to warn that we can't "fix up" the position,
 		-- since not being able to do that is fairly harmless.
-		TMW:Print(L["GROUP_CANNOT_INTERACTIVELY_POSITION"])
+		TMW:Print(L["GROUP_CANNOT_INTERACTIVELY_POSITION"]:format(group:GetGroupName()))
 	end
 	
 	self:SetPos()
@@ -279,10 +279,16 @@ function GroupPosition:SetNewScale(newScale)
 end
 
 function GroupPosition:CanMove()
+
 	local canQuerySize = pcall(self.group.GetLeft, self.group)
 	if not canQuerySize then
 		return false
 	end
+
+	-- Reset this to true. Blizzard sets it false when a frame becomes restricted.
+	self.group:SetMovable(true)
+
+	if not self.group:IsMovable() then return false end
 
 	return not self.group:GetSettings().Locked
 end

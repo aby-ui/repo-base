@@ -17,8 +17,8 @@ local function valid(s)
     local private = _G["_163ui_MySlot"]
     local crc32 = private.crc32
     local base64 = private.base64
-    s = string.gsub(s,"(@.[^\n]*\n)","")
-    s = string.gsub(s,"(#.[^\n]*\n)","")
+    s = string.gsub(s,"(@.[^\n]*\n*)","")
+    s = string.gsub(s,"(#.[^\n]*\n*)","")
     s = string.gsub(s,"\n","")
     s = string.gsub(s,"\r","")
     s = base64.dec(s)

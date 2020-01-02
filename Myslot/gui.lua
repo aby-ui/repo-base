@@ -26,6 +26,8 @@ f:SetScript("OnDragStart", f.StartMoving)
 f:SetScript("OnDragStop", f.StopMovingOrSizing)
 f:Hide()
 
+MySlot.MainFrame = f
+
 -- title
 do
     local t = f:CreateTexture(nil, "ARTWORK")
@@ -70,6 +72,57 @@ do
     forceImportCheckbox = b
 end
 
+local ignoreActionCheckbox
+local ignoreBindingCheckbox
+local ignoreMacroCheckbox
+
+do
+    do
+        local b = CreateFrame("CheckButton", nil, f, "UICheckButtonTemplate")
+        b.text = b:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+        b.text:SetPoint("LEFT", b, "RIGHT", 0, 1)
+        b:SetPoint("BOTTOMLEFT", 38, 95)
+        b.text:SetText(L["Ignore Import/Export Action"])
+        -- b:SetScript("OnEnter", function(self)
+        --     GameTooltip:SetOwner(self, "ANCHOR_TOP");
+        --     GameTooltip:SetText(L[""], nil, nil, nil, nil, true);
+        --     GameTooltip:Show();
+        -- end)
+        -- b:SetScript("OnLeave", GameTooltip_Hide)
+        ignoreActionCheckbox = b
+    end
+
+    do
+        local b = CreateFrame("CheckButton", nil, f, "UICheckButtonTemplate")
+        b.text = b:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+        b.text:SetPoint("LEFT", b, "RIGHT", 0, 1)
+        b:SetPoint("BOTTOMLEFT", 38, 70)
+        b.text:SetText(L["Ignore Import/Export Key Binding"])
+        -- b:SetScript("OnEnter", function(self)
+        --     GameTooltip:SetOwner(self, "ANCHOR_TOP");
+        --     GameTooltip:SetText(L[""], nil, nil, nil, nil, true);
+        --     GameTooltip:Show();
+        -- end)
+        -- b:SetScript("OnLeave", GameTooltip_Hide)
+        ignoreBindingCheckbox = b
+    end
+
+    do
+        local b = CreateFrame("CheckButton", nil, f, "UICheckButtonTemplate")
+        b.text = b:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+        b.text:SetPoint("LEFT", b, "RIGHT", 0, 1)
+        b:SetPoint("BOTTOMLEFT", 38, 45)
+        b.text:SetText(L["Ignore Import/Export Macro"])
+        -- b:SetScript("OnEnter", function(self)
+        --     GameTooltip:SetOwner(self, "ANCHOR_TOP");
+        --     GameTooltip:SetText(L[""], nil, nil, nil, nil, true);
+        --     GameTooltip:Show();
+        -- end)
+        -- b:SetScript("OnLeave", GameTooltip_Hide)
+        ignoreMacroCheckbox = b
+    end
+end
+
 -- import
 do
     local b = CreateFrame("Button", nil, f, "GameMenuButtonTemplate")
@@ -79,16 +132,20 @@ do
     b:SetText(L["Import"])
     b:SetScript("OnClick", function()
         local msg = MySlot:Import(exportEditbox:GetText(), {
-            force = forceImportCheckbox:GetChecked()
+            force = forceImportCheckbox:GetChecked(),
         })
 
         if not msg then
             return
         end
-        
+
         StaticPopupDialogs["MYSLOT_MSGBOX"].OnAccept = function()
             StaticPopup_Hide("MYSLOT_MSGBOX")
-            MySlot:RecoverData(msg)
+            MySlot:RecoverData(msg, {
+                ignoreAction = ignoreActionCheckbox:GetChecked(),
+                ignoreBinding = ignoreBindingCheckbox:GetChecked(),
+                ignoreMacro = ignoreMacroCheckbox:GetChecked(),
+            })
         end
         StaticPopup_Show("MYSLOT_MSGBOX")
     end)
@@ -104,13 +161,15 @@ do
     b:SetPoint("BOTTOMLEFT", 40, 15)
     b:SetText(L["Export"])
     b:SetScript("OnClick", function()
-        local s = MySlot:Export()
+        local s = MySlot:Export({
+            ignoreAction = ignoreActionCheckbox:GetChecked(),
+            ignoreBinding = ignoreBindingCheckbox:GetChecked(),
+            ignoreMacro = ignoreMacroCheckbox:GetChecked(),
+        })
         exportEditbox:SetText(s)
         infolabel.ShowUnsaved()
     end)
 end
-
-
 
 RegEvent("ADDON_LOADED", function()
     do
@@ -340,7 +399,9 @@ SlashCmdList["MYSLOT"] = function(msg, editbox)
     local cmd, what = msg:match("^(%S*)%s*(%S*)%s*$")
 
     if cmd == "clear" then
-        MySlot:Clear(what)
+        -- MySlot:Clear(what)
+        InterfaceOptionsFrame_OpenToCategory(L["Myslot"])
+        InterfaceOptionsFrame_OpenToCategory(L["Myslot"])
     else
         f:Show()
     end

@@ -1,5 +1,5 @@
 local MAJOR_VERSION = "LibDogTag-Unit-3.0"
-local MINOR_VERSION = 90000 + (tonumber(("20190917021642"):match("%d+")) or 33333333333333)
+local MINOR_VERSION = 90000 + (tonumber(("20191207035733"):match("%d+")) or 33333333333333)
 
 if MINOR_VERSION > _G.DogTag_Unit_MINOR_VERSION then
 	_G.DogTag_Unit_MINOR_VERSION = MINOR_VERSION
@@ -473,7 +473,7 @@ DogTag:AddTag("Unit", "HappyText", {
 	code = function()
 		return _G["PET_HAPPINESS" .. (GetPetHappiness() or 0)]
 	end,
-	ret = "number",
+	ret = "string;nil",
 	events = petHappinessEvent,
 	doc = L["Return a description of how happy your pet is"],
 	example = ('[HappyText] => %q'):format(_G.PET_HAPPINESS3),

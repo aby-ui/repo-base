@@ -67,8 +67,18 @@ Module:SetScriptHandler("OnEnter", function(Module, icon)
 		
 			
 		local GroupPosition = icon.group:GetModuleOrModuleChild("GroupModule_GroupPosition")
-		if GroupPosition and not GroupPosition:CanMove() then
-			GameTooltip:AddLine(L["LOCKED2"], NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, true)
+		if GroupPosition then 
+			if not GroupPosition:CanMove() then
+				GameTooltip:AddLine(L["LOCKED2"], NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, true)
+			end
+
+			if not pcall(icon.GetLeft, icon) then
+				GameTooltip:AddLine(
+					L["GROUP_CANNOT_INTERACTIVELY_POSITION"]:format(icon.group:GetGroupName()),
+					NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, true
+				)
+				GameTooltip:AddLine(" ")
+			end
 		end
 		
 		if icon:IsControlled() then

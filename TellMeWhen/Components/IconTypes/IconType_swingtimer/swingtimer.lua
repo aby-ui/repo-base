@@ -88,10 +88,6 @@ local function SwingTimer_OnEvent(icon, event, unit, _, _, _, spellID)
 		-- Update the icon's texture when the player changes weapons.
 		local wpnTexture = GetInventoryItemTexture("player", icon.Slot)
 		icon:SetInfo("texture", wpnTexture or GetSpellTexture(15590))
-
-	elseif event == "TMW_COMMON_SWINGTIMER_CHANGED" then
-		-- Queue an icon update when the swing timer updates.
-		icon.NextUpdateTime = 0
 	end
 end
 
@@ -129,7 +125,7 @@ function Type:Setup(icon)
 	
 	
 	-- Register events and setup update functions.
-	TMW:RegisterCallback("TMW_COMMON_SWINGTIMER_CHANGED", SwingTimer_OnEvent, icon)
+	icon:RegisterSimpleUpdateEvent("TMW_COMMON_SWINGTIMER_CHANGED")
 	icon:RegisterEvent("UNIT_INVENTORY_CHANGED")
 	
 	icon:SetScript("OnEvent", SwingTimer_OnEvent)

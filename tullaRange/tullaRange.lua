@@ -51,54 +51,28 @@ end
 	The main thing
 --]]
 
-function Addon:Load()
+function Addon:OnLoad()
 	self.buttonColors = {}
 	self.buttonsToUpdate = {}
 
-	-- create a frame for watching for the options menu to show up
-	-- when it does, load the options menu
-	do
-		local optionsWatcher = CreateFrame('Frame', nil, InterfaceOptionsFrame)
+	-- create a frame for handling events, and parent it to the options menu
+	local eventHandler = CreateFrame('Frame', nil, InterfaceOptionsFrame)
 
-		optionsWatcher:SetScript('OnShow', function(watcher)
-			watcher:SetScript('OnShow', nil)
-			LoadAddOn(AddonName .. '_Config')
-		end)
-	end
+	-- when the options frame is first shown, load the config addon
+	eventHandler:SetScript('OnShow', function(watcher)
+		watcher:SetScript('OnShow', nil)
+		LoadAddOn(AddonName .. '_Config')
+	end)
 
+	-- handle events
+	eventHandler:SetScript('OnEvent', function(handler, ...)
+		self:OnEvent(...)
+	end)
 
-	-- create a frame for handling events and throttling timer updates
-	do
-		local eventHandler = CreateFrame('Frame', nil); eventHandler:Hide()
+	eventHandler:RegisterEvent('PLAYER_LOGIN')
+	eventHandler:RegisterEvent('PLAYER_LOGOUT')
 
-		eventHandler.remain = UPDATE_DELAY
-
-		eventHandler:SetScript('OnEvent', function(handler, ...)
-			self:OnEvent(...)
-		end)
-
-		eventHandler:SetScript('OnUpdate', function(handler, elapsed)
-			local remain = handler.remain - elapsed
-
-			if remain > 0 then
-				handler.remain = remain
-			else
-				handler.remain = UPDATE_DELAY
-
-				if not self:UpdateButtons(UPDATE_DELAY - remain) then
-					handler:Hide()
-				end
-			end
-		end)
-
-		eventHandler:RegisterEvent('PLAYER_LOGIN')
-		eventHandler:RegisterEvent('PLAYER_LOGOUT')
-
-		self.updater = eventHandler
-	end
-
-	--make thyself global
-	_G[AddonName] = self
+	self.OnLoad = nil
 end
 
 
@@ -161,10 +135,24 @@ end
 	Actions
 --]]
 
-function Addon:RequestUpdate()
-	if next(self.buttonsToUpdate) then
-		self.updater:Show()
+local After = C_Timer.After
+
+local function handleUpdate()
+	if Addon:UpdateButtons(GetTime() - Addon.updating) then
+		Addon.updating = GetTime()
+		After(UPDATE_DELAY, handleUpdate)
+	else
+		Addon.updating = nil
 	end
+end
+
+function Addon:RequestUpdate()
+	if self.updating ~= nil then
+		return
+	end
+
+	Addon.updating = GetTime()
+	After(UPDATE_DELAY, handleUpdate)
 end
 
 function Addon:UpdateButtons(elapsed)
@@ -320,5 +308,8 @@ function Addon:ForceColorUpdate()
 end
 
 
---[[ Load The Thing ]]--
-Addon:Load()
+-- load the addon
+Addon:OnLoad()
+
+-- make the addon accessible via other addons
+_G[AddonName] = Addon

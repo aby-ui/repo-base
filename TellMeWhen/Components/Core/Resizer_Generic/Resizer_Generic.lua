@@ -131,6 +131,7 @@ TMW:NewClass("Resizer_Generic"){
 	
 	StartSizing = function(resizeButton, button)
 		local self = resizeButton.module
+		if not self.IsEnabled then return end
 		local parent = self.parent
 		
 		self.std_oldLeft, self.std_oldRight, self.std_oldTop, self.std_oldBottom = self:GetStandardizedCoordinates()

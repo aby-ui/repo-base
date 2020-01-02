@@ -621,8 +621,16 @@ function DD:Toggle(level, value, anchorName, xOffset, yOffset, menuList, button,
 
 		-- Check to see if the dropdownlist is off the screen, if it is anchor it to the top of the dropdown button
 		listFrame:Show();
+
+		local success, left, bottom, width, height = pcall(listFrame.GetRect, listFrame)
+		if not success then
+			-- Anchor target is restricted. Just do our best.
+			width, height = listFrame:GetSize()
+			left, bottom = GetCursorPosition()
+		end
+
 		-- Hack since GetCenter() is returning coords relative to 1024x768
-		local x, y = listFrame:GetCenter();
+		local x, y = left + (width/2), bottom + (height/2);
 		-- Hack will fix this in next revision of dropdowns
 		if ( not x or not y ) then
 			listFrame:Hide();
@@ -636,10 +644,10 @@ function DD:Toggle(level, value, anchorName, xOffset, yOffset, menuList, button,
 		if level == 1 then
 			local scale = TMWDropDowns:GetScale()
 
-			local offLeft = listFrame:GetLeft() -- / scale
-			local offRight = (GetScreenWidth() - listFrame:GetRight() * scale) / scale
-			local offTop = (GetScreenHeight() - listFrame:GetTop() * scale) / scale
-			local offBottom = listFrame:GetBottom() -- * scale
+			local offLeft = left -- / scale
+			local offRight = (GetScreenWidth() - (left + width) * scale) / scale
+			local offTop = (GetScreenHeight() - (bottom + height) * scale) / scale
+			local offBottom = bottom -- * scale
 			
 			local xAddOffset, yAddOffset = 0, 0;
 			if ( offLeft < 0 ) then
@@ -659,10 +667,10 @@ function DD:Toggle(level, value, anchorName, xOffset, yOffset, menuList, button,
 		else
 			-- Determine whether the menu is off the screen or not
 			local offscreenY, offscreenX;
-			if (y - listFrame:GetHeight()/2) < 0 then
+			if (y - height/2) < 0 then
 				offscreenY = true;
 			end
-			if listFrame:GetRight() > GetScreenWidth() then
+			if (left + width) > GetScreenWidth() then
 				offscreenX = true;	
 			end
 

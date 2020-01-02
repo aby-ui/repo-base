@@ -77,7 +77,9 @@ ConditionCategory:RegisterCondition(2,    "ALIVE", {
 		return
 			ConditionObject:GetUnitChangedEventString(CNDT:GetUnit(c.Unit)),
 			-- UNIT_FLAGS is probably good enough, but fires much less than _HEALTH
-			ConditionObject:GenerateNormalEventString("UNIT_FLAGS", CNDT:GetUnit(c.Unit))
+			ConditionObject:GenerateNormalEventString("UNIT_FLAGS", CNDT:GetUnit(c.Unit)),
+			ConditionObject:GenerateNormalEventString("PLAYER_UNGHOST"),
+			ConditionObject:GenerateNormalEventString("PLAYER_DEAD")
 			-- ConditionObject:GenerateNormalEventString("UNIT_HEALTH", CNDT:GetUnit(c.Unit))
 	end,
 })

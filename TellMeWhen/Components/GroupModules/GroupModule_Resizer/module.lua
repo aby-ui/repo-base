@@ -55,6 +55,23 @@ TMW:NewClass("GroupModule_Resizer", "GroupModule", "Resizer_Generic"){
 			end
 		end,
 	},
+
+	METHOD_EXTENSIONS_PRE = {
+		StartSizing = function(resizeButton)
+			local self = resizeButton.module
+			self:UpdateEnabledState()
+		end,
+	},
+
+	UpdateEnabledState = function(self) 
+		local group = self.group
+		local GroupPosition = group:GetModuleOrModuleChild("GroupModule_GroupPosition")
+		if TMW.Locked or not GroupPosition:CanMove() then
+			self:Disable()
+		else
+			self:Enable()
+		end
+	end,
 	
 	OnEnable = function(self)
 		self:Show()

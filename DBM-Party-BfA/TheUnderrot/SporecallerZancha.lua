@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2130, "DBM-Party-BfA", 8, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20191011015519")
+mod:SetRevision("20191229142908")
 mod:SetCreatureID(131383)
 mod:SetEncounterID(2112)
 mod:SetZone()
@@ -51,11 +51,11 @@ function mod:SPELL_AURA_APPLIED(args)
 			specWarnUpheaval:Play("runout")
 			yellUpheaval:Yell()
 			yellUpheavalFades:Countdown(6)
-		elseif self:CheckNearby(8, args.destName) then
-			specWarnUpheavalNear:Show(args.destName)
-			specWarnUpheavalNear:Play("runaway")
+		elseif self:CheckNearby(8, args.destName) and not DBM:UnitDebuff("player", spellId) then
+			specWarnUpheavalNear:CombinedShow(0.3, args.destName)
+			specWarnUpheavalNear:ScheduleVoice(0.3, "runaway")
 		else
-			warnUpheaval:Show(args.destName)
+			warnUpheaval:CombinedShow(0.3, args.destName)
 		end
 	end
 end

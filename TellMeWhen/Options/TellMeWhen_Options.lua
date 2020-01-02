@@ -655,6 +655,9 @@ function IE:PositionPanels(parentPageName, panelList)
 	for _, panelColumn in ipairs(panelColumns) do
 		for _, panel in TMW:Vararg(panelColumn:GetChildren()) do
 			panel:Hide()
+
+			-- Reset the top anchor so we don't have accidental circular anchorings while iterating below
+			panel:SetPoint("TOP") 
 		end
 		wipe(panelColumn.currentPanels)
 	end

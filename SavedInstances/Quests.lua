@@ -48,6 +48,9 @@ local _specialQuests = {
 
   -- Mechagon
   [57081] = { name=L["Mechanized Chest"] }, -- Mechanized Chest
+  [56139] = { daily=true, zid=1462, }, -- Junkyard Treasures
+  [55901] = { daily=true, zid=1462, }, -- Rustbolt Rebellion
+  [56141] = { daily=true, zid=1462, }, -- Security First
 
   -- Old Vanilla Bosses during Anniversary Event
   [47461] = { daily=true, name=L["Lord Kazzak"] },          -- Lord Kazzak

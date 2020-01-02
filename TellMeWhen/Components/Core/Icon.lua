@@ -17,8 +17,8 @@ local TMW = TMW
 local L = TMW.L
 local print = TMW.print
 
-local next, pairs, error, rawget, next, wipe, tinsert, sort, strsplit, table, assert, loadstring, ipairs, tostring, assert
-	= next, pairs, error, rawget, next, wipe, tinsert, sort, strsplit, table, assert, loadstring, ipairs, tostring, assert
+local next, pairs, error, rawget, next, wipe, tinsert, sort, strsplit, table, assert, loadstring, ipairs, tostring, assert, strmatch
+	= next, pairs, error, rawget, next, wipe, tinsert, sort, strsplit, table, assert, loadstring, ipairs, tostring, assert, strmatch
 
 
 --- [[api/icon/api-documentation/|Icon]] is the class of all Icons.
@@ -350,6 +350,13 @@ function Icon.IsBeingEdited(icon)
 	end
 end
 
+function Icon.IsMouseOver(icon)
+	-- Ignore mouseover checks that fail due to the frame being restricted.
+	local success, isOver = pcall(UIParent.IsMouseOver, icon)
+	if not success then return false end
+	return isOver
+end
+
 --- Returns a string that contains the texture of the icon plus the name of the group and the ID of the icon.
 -- @name Icon:GetIconName
 -- @paramsig texture
@@ -608,7 +615,7 @@ IconEventUpdateEngine.UpdateEvents = setmetatable({}, {__index = function(self, 
 	self[event] = {}
 	return self[event]
 end})
-IconEventUpdateEngine:SetScript("OnEvent", function(self, event, arg1)
+function IconEventUpdateEngine:OnEvent(event, arg1)
 	if TMW.profilingEnabled then
 		
 		-- We start outside the loop so that we can include the loop execution time in our costs.
@@ -640,8 +647,8 @@ IconEventUpdateEngine:SetScript("OnEvent", function(self, event, arg1)
 			end
 		end
 	end
-
-end)
+end
+IconEventUpdateEngine:SetScript("OnEvent", IconEventUpdateEngine.OnEvent)
 
 --- Registers a Blizzard event that will, upon being fired, trigger the icon to schedule a manual update for the next TMW update cycle.
 -- @name Icon:RegisterSimpleUpdateEvent
@@ -661,7 +668,11 @@ function Icon.RegisterSimpleUpdateEvent(icon, event, arg1)
 		error("Can't change the arg that you are checking for an event without unregistering first", 2)
 	end
 	iconsForEvent[icon] = arg1
-	IconEventUpdateEngine:RegisterEvent(event)
+	if strmatch(event, "^TMW_") then
+		TMW:RegisterCallback(event, IconEventUpdateEngine, "OnEvent")
+	else
+		IconEventUpdateEngine:RegisterEvent(event)
+	end
 end
 
 --- Unregisters a simple update event that has been registed for the icon with Icon:RegisterSimpleUpdateEvent().
@@ -673,7 +684,11 @@ function Icon.UnregisterSimpleUpdateEvent(icon, event)
 	if iconsForEvent then
 		iconsForEvent[icon] = nil
 		if not next(iconsForEvent) then
-			IconEventUpdateEngine:UnregisterEvent(event)
+			if strmatch(event, "^TMW_") then
+				TMW:UnregisterCallback(event, IconEventUpdateEngine, "OnEvent")
+			else
+				IconEventUpdateEngine:UnregisterEvent(event)
+			end
 		end
 	end
 end
@@ -687,7 +702,11 @@ function Icon.UnregisterAllSimpleUpdateEvents(icon)
 	for event, iconsForEvent in pairs(IconEventUpdateEngine.UpdateEvents) do
 		iconsForEvent[icon] = nil
 		if not next(iconsForEvent) then
-			IconEventUpdateEngine:UnregisterEvent(event)
+			if strmatch(event, "^TMW_") then
+				TMW:UnregisterCallback(event, IconEventUpdateEngine, "OnEvent")
+			else
+				IconEventUpdateEngine:UnregisterEvent(event)
+			end
 		end
 	end
 end

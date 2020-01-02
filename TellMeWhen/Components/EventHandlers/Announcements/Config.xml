@@ -116,6 +116,28 @@
 						</Scripts>
 					</Frame>
 
+					<Frame parentKey="InstanceRestricted" >
+						<Size y="100" />
+
+						<Anchors>
+							<Anchor point="LEFT" x="10" />
+							<Anchor point="RIGHT" x="-10" />
+						</Anchors>
+
+						<Layers>
+							<Layer level="OVERLAY">
+								<FontString parentKey="Text" inherits="GameFontHighlight" justifyV="TOP" justifyH="LEFT" setAllPoints="true">
+								</FontString>
+							</Layer>
+						</Layers>
+
+						<Scripts>
+							<OnLoad>
+								self.Text:SetText(TMW.L["ANN_INSTANCE_RESTRICTED"])
+							</OnLoad>
+						</Scripts>
+					</Frame>
+
 					<EditBox parentKey="WhisperTarget" name="$parentWhisperTarget" inherits="TellMeWhen_InputBoxTemplate" autoFocus="false">
 						<Size x="135" y="15"/>
 						<Anchors>
