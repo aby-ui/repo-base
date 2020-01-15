@@ -596,7 +596,7 @@ do
 						local dps = diff / time
 						
 						local t = dps ~= 0 and nowHP / dps or 0
-						if t < 0 or t > 600 then
+						if t <= 0 or t > 600 then
 							module.frame.killTime:SetText("")
 						elseif t >= 60 then
 							module.frame.killTime:SetFormattedText("%d:%02d",floor(t/60),t % 60)
@@ -664,7 +664,7 @@ do
 						local dps = diff / time
 						
 						local t = dps ~= 0 and nowHP / dps or 0
-						if t < 0 or t > 600 then
+						if t <= 0 or t > 600 then
 							module.frame.killTime:SetText("")
 						elseif t >= 60 then
 							module.frame.killTime:SetFormattedText("%d:%02d",floor(t/60),t % 60)

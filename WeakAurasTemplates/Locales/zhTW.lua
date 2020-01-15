@@ -45,7 +45,6 @@ local L = WeakAuras.L
 	L["Create Auras"] = "建立提醒效果"
 	L["debuff"] = "減益"
 	L["Debuffs"] = "減益 DEBUFF/DOT"
-	L["debuiff"] = "減益"
 	L["Enchants"] = "附魔"
 	L["General"] = "一般"
 	L["General Azerite Traits"] = "一般艾澤萊特長"

@@ -1,7 +1,7 @@
 ## Interface: 80300
 ## Title: XLoot Master
 ## Notes: Configurable Master Looter interface
-## Version: 8.1-1
+## Version: 8.2-1
 ## Author: Xuerian, Dridzt
 ## X-Category: Inventory
 

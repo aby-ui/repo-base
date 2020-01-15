@@ -710,14 +710,29 @@ function module.options:Load()
 		{L.S_ZoneT24Eternal..": "..L.bossName[2293],{1519,0.17,0.48,4}},	--Za'qul
 		{L.S_ZoneT24Eternal..": "..L.bossName[2299],{1520,0.47,0.53,1.1}},	--Queen Azshara
 
-		--41-51
+		--41-50
 		{L.EJInstanceName[1178].." [1]",{1490,0.6,nil,0.3}},
 		{L.EJInstanceName[1178].." [2]",{1491,nil,nil,0.9}},
 		{L.EJInstanceName[1178].." [3]",{1494,nil,nil,0.9}},
 		{L.EJInstanceName[1178].." [4]",{1497,nil,nil,0.9}},
+		{L.S_ZoneT25Nyalotha..": "..L.bossName[2329],{1581,0.51,0.83,5}},	--Wrathion
+		{L.S_ZoneT25Nyalotha..": "..L.bossName[2327],{1581,0.22,0.60,5}},	--Maut
+		{L.S_ZoneT25Nyalotha..": "..L.bossName[2334],{1581,0.78,0.60,4}},	--Prophet Skitra
+		{L.S_ZoneT25Nyalotha..": "..L.bossName[2328],{1592,0.48,0.47,2.3}},	--Dark Inquisitor Xanesh
+		{L.S_ZoneT25Nyalotha..": "..L.bossName[2336],{1593,0.39,0.55,1.7}},	--Vexiona
+		{L.S_ZoneT25Nyalotha..": "..L.bossName[2333],{1590,0.55,0.58,2.5}},	--The Hivemind
+
+		--51-60
+		{L.S_ZoneT25Nyalotha..": "..L.bossName[2331],{1591,0.61,0.64,1.7}},	--Ra-den the Despoiled
+		{L.S_ZoneT25Nyalotha..": "..L.bossName[2335],{1594,0.52,0.73,3}},	--Shad'har the Insatiable
+		{L.S_ZoneT25Nyalotha..": "..L.bossName[2343],{1595,0.33,0.57,1.5}},	--Drest'agath
+		{L.S_ZoneT25Nyalotha..": "..L.bossName[2345],{1596,0.48,0.31,3}},	--Il'gynoth, Corruption Reborn
+		{L.S_ZoneT25Nyalotha..": "..L.bossName[2337],{1597,0.48,0.5,1.2}},	--Carapace of N'Zoth
+		{L.S_ZoneT25Nyalotha..": "..L.bossName[2344],{1597,0.48,0.26,4}},	--N'Zoth the Corruptor
 	}
 	local mapsSorted = {
 		1,10,
+		{L.S_ZoneT25Nyalotha,45,46,47,48,49,50,51,52,53,54,55,56},
 		{L.S_ZoneT24Eternal,40,39,38,37,36,35,34,33},
 		{L.S_ZoneT23Storms,32,31},
 		{L.S_ZoneT23Siege,30,29,28,27,26,25,24,23,22,21,20},
@@ -762,6 +777,9 @@ function module.options:Load()
 			SetBackground(unpack(maps[pos][2]))
 			curr_map = pos
 		end
+	end
+	function self:SetDebugMap(...)
+		SetBackground(...)
 	end
 
 

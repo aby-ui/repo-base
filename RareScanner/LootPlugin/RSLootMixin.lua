@@ -66,20 +66,22 @@ function RSLootMixin:OnLoad()
 end
 
 function RSLootMixin:OnEnter()
-	--local itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, iconFileDataID, itemSellPrice, itemClassID, itemSubClassID, bindType, expacID, itemSetID, isCraftingReagent = GetItemInfo(self.itemID)
-	local itemLink, itemRarity, itemEquipLoc, iconFileDataID, itemClassID, itemSubClassID = RareScanner:RSGetItemInfo(self.itemID)
-	--print("itemName "..(itemName or "nil")..", itemLink "..(itemLink or "nil")..", itemRarity "..(itemRarity or "nil")..", itemLevel "..(itemLevel or "nil")..", itemMinLevel "..(itemMinLevel or "nil")..", itemType "..(itemType or "nil")..", itemSubType "..(itemSubType or "nil")..", itemStackCount "..(itemStackCount or "nil")..", itemEquipLoc "..(itemEquipLoc or "nil")..", iconFileDataID "..(iconFileDataID or "nil")..", itemSellPrice "..(itemSellPrice or "nil")..", itemClassID "..(itemClassID or "nil")..", itemSubClassID "..(itemSubClassID or "nil")..", bindType "..(bindType or "nil")..", expacID "..(expacID or "nil")..", itemSetID "..(itemSetID or "nil")..", isCraftingReagent "..(isCraftingReagent and "true" or "false"))
-	--RareScanner:PrintDebugMessage("DEBUG: itemID "..self.itemID..", itemEquipLoc "..(itemEquipLoc or "nil")..", itemClassID "..(itemClassID or "nil")..", itemSubClassID "..(itemSubClassID or "nil"))
+	if (self:GetParent() and self:GetParent():GetParent()) then
+		--local itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, iconFileDataID, itemSellPrice, itemClassID, itemSubClassID, bindType, expacID, itemSetID, isCraftingReagent = GetItemInfo(self.itemID)
+		local itemLink, itemRarity, itemEquipLoc, iconFileDataID, itemClassID, itemSubClassID = RareScanner:RSGetItemInfo(self.itemID)
+		--print("itemName "..(itemName or "nil")..", itemLink "..(itemLink or "nil")..", itemRarity "..(itemRarity or "nil")..", itemLevel "..(itemLevel or "nil")..", itemMinLevel "..(itemMinLevel or "nil")..", itemType "..(itemType or "nil")..", itemSubType "..(itemSubType or "nil")..", itemStackCount "..(itemStackCount or "nil")..", itemEquipLoc "..(itemEquipLoc or "nil")..", iconFileDataID "..(iconFileDataID or "nil")..", itemSellPrice "..(itemSellPrice or "nil")..", itemClassID "..(itemClassID or "nil")..", itemSubClassID "..(itemSubClassID or "nil")..", bindType "..(bindType or "nil")..", expacID "..(expacID or "nil")..", itemSetID "..(itemSetID or "nil")..", isCraftingReagent "..(isCraftingReagent and "true" or "false"))
+		--RareScanner:PrintDebugMessage("DEBUG: itemID "..self.itemID..", itemEquipLoc "..(itemEquipLoc or "nil")..", itemClassID "..(itemClassID or "nil")..", itemSubClassID "..(itemSubClassID or "nil"))
 
-	local toolTip = self:GetParent().LootBarToolTip
-	toolTip:SetOwner(self:GetParent():GetParent(), private.db.loot.lootTooltipPosition)
-	toolTip:SetHyperlink(self.itemLink)
-	toolTip:SetParent(self)
-	toolTip:AddLine("RareScanner: "..AL["LOOT_TOGGLE_FILTER"], 1,1,0)
-	toolTip:AddDoubleLine(GetItemClassInfo(self.itemClassID), GetItemSubClassInfo(self.itemClassID, self.itemSubClassID), 1, 1, 0, 1 ,1, 0);
-	toolTip:Show()
-	
-	self.Icon.Anim:Play();
+		local toolTip = self:GetParent().LootBarToolTip
+		toolTip:SetOwner(self:GetParent():GetParent(), private.db.loot.lootTooltipPosition)
+		toolTip:SetHyperlink(self.itemLink)
+		toolTip:SetParent(self)
+		toolTip:AddLine("RareScanner: "..AL["LOOT_TOGGLE_FILTER"], 1,1,0)
+		toolTip:AddDoubleLine(GetItemClassInfo(self.itemClassID), GetItemSubClassInfo(self.itemClassID, self.itemSubClassID), 1, 1, 0, 1 ,1, 0);
+		toolTip:Show()
+		
+		self.Icon.Anim:Play();
+	end
 end
  
 function RSLootMixin:OnLeave()

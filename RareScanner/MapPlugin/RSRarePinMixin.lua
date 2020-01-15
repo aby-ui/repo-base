@@ -59,7 +59,7 @@ function RSRarePinMixin:OnAcquired(npcID, npcInfo)
 	self.mapID = npcInfo.mapID
 	self.isNpc = npcInfo.atlasName == RareScanner.NPC_VIGNETTE or npcInfo.atlasName == RareScanner.NPC_LEGION_VIGNETTE or npcInfo.atlasName == RareScanner.NPC_VIGNETTE_ELITE
 	self.isContainer = npcInfo.atlasName == RareScanner.CONTAINER_VIGNETTE or npcInfo.atlasName == RareScanner.CONTAINER_ELITE_VIGNETTE
-	self.isEvent = npcInfo.atlasName == RareScanner.EVENT_VIGNETTE
+	self.isEvent = npcInfo.atlasName == RareScanner.EVENT_VIGNETTE or npcInfo.atlasName == RareScanner.EVENT_ELITE_VIGNETTE
 	self.notDiscovered = npcInfo.notDiscovered
 	
 	if (self.isNpc) then

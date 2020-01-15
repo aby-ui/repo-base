@@ -6,12 +6,12 @@ WeakAuras.halfWidth = WeakAuras.normalWidth / 2
 WeakAuras.doubleWidth = WeakAuras.normalWidth * 2
 
 local versionStringFromToc = GetAddOnMetadata("WeakAuras", "Version")
-local versionString = "2.15.5"
-local buildTime = "20191027154224"
+local versionString = "2.16.0"
+local buildTime = "20200114231225"
 
 local isDevVersion = false
 --[===[@debug@
-if versionStringFromToc == "2.15.5" then
+if versionStringFromToc == "2.16.0" then
   versionStringFromToc = "Dev"
   buildTime = "Dev"
   isDevVersion = true
@@ -48,7 +48,8 @@ end
 WeakAuras.wrongTargetMessage = "This version of WeakAuras was packaged for World of Warcraft " ..
                               (intendedWoWProject == WOW_PROJECT_MAINLINE and "Retail" or "Classic") ..
                               ". Please install the " .. (WOW_PROJECT_ID == WOW_PROJECT_MAINLINE and "Retail" or "Classic") ..
-                              " version instead."
+                              " version instead.\nIf you are using the Twitch Client, then " ..
+                              " please contact the twitch support for further assistance."
 
 if not WeakAuras.IsCorrectVersion() then
   C_Timer.After(1, function() WeakAuras.prettyPrint(WeakAuras.wrongTargetMessage) end)

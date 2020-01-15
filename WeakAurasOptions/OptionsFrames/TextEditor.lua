@@ -167,6 +167,29 @@ local function ConstructTextEditor(frame)
   settings_frame:SetText(L["Settings"])
   settings_frame:RegisterForClicks("LeftButtonUp")
 
+  local helpButton = CreateFrame("Button", nil, group.frame, "UIPanelButtonTemplate")
+  helpButton:SetPoint("BOTTOMLEFT", 12, 13)
+  helpButton:SetFrameLevel(cancel:GetFrameLevel() + 1)
+  helpButton:SetHeight(20);
+  helpButton:SetWidth(100);
+  helpButton:SetText(L["Help"]);
+
+  local urlText = CreateFrame("editbox", nil, group.frame)
+  urlText:SetFrameLevel(cancel:GetFrameLevel() + 1)
+  urlText:SetFont(STANDARD_TEXT_FONT, 12);
+  urlText:EnableMouse(true);
+  urlText:SetAutoFocus(false);
+  urlText:SetCountInvisibleLetters(false);
+  urlText:Hide()
+
+  local urlCopyLabel = urlText:CreateFontString(nil, "BACKGROUND", "GameFontHighlightSmall");
+  urlCopyLabel:SetPoint("BOTTOMLEFT", group.frame, "BOTTOMLEFT", 12, 18)
+  urlCopyLabel:SetText(L["Press Ctrl+C to copy"]);
+  urlCopyLabel:Hide()
+
+  urlText:SetPoint("TOPLEFT", urlCopyLabel, "TOPRIGHT", 12, 13)
+  urlText:SetPoint("RIGHT", settings_frame, "LEFT")
+
   local dropdown = CreateFrame("Frame", "SettingsMenuFrame", settings_frame, "UIDropDownMenuTemplate")
   UIDropDownMenu_Initialize(dropdown, settings_dropdown_initialize, "MENU")
 
@@ -201,12 +224,12 @@ local function ConstructTextEditor(frame)
   end)
 
   local editorError = group.frame:CreateFontString(nil, "OVERLAY");
-  editorError:SetFont(STANDARD_TEXT_FONT, 10)
+  editorError:SetFont(STANDARD_TEXT_FONT, 12)
   editorError:SetJustifyH("LEFT");
   editorError:SetJustifyV("TOP");
   editorError:SetTextColor(1, 0, 0);
-  editorError:SetPoint("TOPLEFT", editor.frame, "BOTTOMLEFT", 5, 25);
-  editorError:SetPoint("BOTTOMRIGHT", close, "BOTTOMLEFT");
+  editorError:SetPoint("LEFT", helpButton, "RIGHT", 0, 4);
+  editorError:SetPoint("RIGHT", close, "LEFT");
 
   local editorLine = CreateFrame("Editbox", nil, group.frame);
   -- Set script on enter pressed..
@@ -217,6 +240,25 @@ local function ConstructTextEditor(frame)
   editorLine:SetHeight(20);
   editorLine:SetNumeric(true);
   editorLine:SetTextInsets(10, 10, 0, 0);
+
+
+  urlText:SetScript("OnChar", function(self) self:SetText(group.url); self:HighlightText(); end);
+  urlText:SetScript("OnEscapePressed", function()
+    urlText:ClearFocus()
+    urlText:Hide()
+    urlCopyLabel:Hide()
+    helpButton:Show()
+    editor:SetFocus()
+  end)
+
+  helpButton:SetScript("OnClick", function()
+    urlText:Show()
+    urlText:SetFocus()
+    urlText:HighlightText()
+    urlCopyLabel:Show()
+    helpButton:Hide()
+    editorError:Hide()
+  end)
 
   local oldOnCursorChanged = editor.editBox:GetScript("OnCursorChanged");
   editor.editBox:SetScript("OnCursorChanged", function(...)
@@ -245,21 +287,24 @@ local function ConstructTextEditor(frame)
     end
   end);
 
-  function group.Open(self, data, path, enclose, multipath, reloadOptions, setOnParent)
+  function group.Open(self, data, path, enclose, multipath, reloadOptions, setOnParent, url)
     self.data = data;
     self.path = path;
     self.multipath = multipath;
     self.reloadOptions = reloadOptions;
     self.setOnParent = setOnParent;
+    self.url = url
+    urlText:SetText(url)
+    urlText:Hide()
+    urlCopyLabel:Hide()
+    helpButton:Show()
     if(frame.window == "texture") then
       frame.texturePicker:CancelClose();
     elseif(frame.window == "icon") then
       frame.iconPicker:CancelClose();
     end
-    frame.container.frame:Hide();
-    frame.buttonsContainer.frame:Hide();
-    self.frame:Show();
     frame.window = "texteditor";
+    frame:UpdateFrameVisible()
     local title = (type(data.id) == "string" and data.id or L["Temporary Group"]).." -";
     if (not multipath) then
       for index, field in pairs(path) do
@@ -283,7 +328,15 @@ local function ConstructTextEditor(frame)
         else
           _, errorString = loadstring("return "..str);
         end
-        editorError:SetText(errorString or "");
+        if errorString then
+          urlText:Hide()
+          urlCopyLabel:Hide()
+          helpButton:Show()
+          editorError:Show()
+          editorError:SetText(errorString);
+        else
+          editorError:SetText("");
+        end
       end
       self.oldOnTextChanged(...);
     end);
@@ -326,10 +379,8 @@ local function ConstructTextEditor(frame)
   function group.CancelClose(self)
     editor.editBox:SetScript("OnTextChanged", self.oldOnTextChanged);
     editor:ClearFocus();
-    self.frame:Hide();
-    frame.container.frame:Show();
-    frame.buttonsContainer.frame:Show();
     frame.window = "default";
+    frame:UpdateFrameVisible()
   end
 
   local function extractTexts(input, ids)
@@ -392,10 +443,8 @@ local function ConstructTextEditor(frame)
 
     editor.editBox:SetScript("OnTextChanged", self.oldOnTextChanged);
     editor:ClearFocus();
-    self.frame:Hide();
-    frame.container.frame:Show();
-    frame.buttonsContainer.frame:Show();
     frame.window = "default";
+    frame:UpdateFrameVisible()
 
     frame:RefreshPick();
   end

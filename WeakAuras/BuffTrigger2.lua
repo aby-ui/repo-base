@@ -61,11 +61,13 @@ if not WeakAuras.IsCorrectVersion() then return end
 -- Lua APIs
 local tinsert, wipe = table.insert, wipe
 local pairs, next, type = pairs, next, type
+local UnitAura = UnitAura
 
 local LCD
 if WeakAuras.IsClassic() then
   LCD = LibStub("LibClassicDurations")
-  LCD:RegisterFrame("WeakAuras")
+  LCD:Register("WeakAuras")
+  UnitAura = LCD.UnitAuraWithBuffs
 end
 
 local WeakAuras = WeakAuras
@@ -1117,15 +1119,6 @@ local function PrepareMatchData(unit, filter)
         break
       end
 
-      -- If we are on classic try to get duration from LibClassicDurations
-      if LCD then
-        local durationNew, expirationTimeNew = LCD:GetAuraDurationByUnit(unit, spellId, unitCaster, name)
-        if duration == 0 and durationNew then
-            duration = durationNew
-            expirationTime = expirationTimeNew
-        end
-      end
-
       if debuffClass == nil then
         debuffClass = "none"
       elseif debuffClass == "" then
@@ -1218,15 +1211,6 @@ local function ScanUnitWithFilter(matchDataChanged, time, unit, filter,
       local name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId = UnitAura(unit, index, filter)
       if not name then
         break
-      end
-
-      -- If we are on classic try to get duration from LibClassicDurations
-      if LCD then
-        local durationNew, expirationTimeNew = LCD:GetAuraDurationByUnit(unit, spellId, unitCaster, name)
-        if duration == 0 and durationNew then
-            duration = durationNew
-            expirationTime = expirationTimeNew
-        end
       end
 
       if debuffClass == nil then
@@ -1477,23 +1461,8 @@ end
 
 local frame = CreateFrame("FRAME")
 WeakAuras.frames["WeakAuras Buff2 Frame"] = frame
-frame:RegisterEvent("UNIT_AURA")
-frame:RegisterUnitEvent("UNIT_PET", "player")
-if not WeakAuras.IsClassic() then
-  frame:RegisterEvent("PLAYER_FOCUS_CHANGED")
-  frame:RegisterEvent("ARENA_OPPONENT_UPDATE")
-  frame:RegisterEvent("UNIT_ENTERED_VEHICLE")
-  frame:RegisterEvent("UNIT_EXITED_VEHICLE")
-end
-frame:RegisterEvent("PLAYER_TARGET_CHANGED")
-frame:RegisterEvent("ENCOUNTER_START")
-frame:RegisterEvent("ENCOUNTER_END")
-frame:RegisterEvent("INSTANCE_ENCOUNTER_ENGAGE_UNIT")
-frame:RegisterEvent("NAME_PLATE_UNIT_ADDED")
-frame:RegisterEvent("NAME_PLATE_UNIT_REMOVED")
-frame:RegisterEvent("GROUP_ROSTER_UPDATE")
-frame:RegisterEvent("PLAYER_ENTERING_WORLD")
-frame:SetScript("OnEvent", function (frame, event, arg1, arg2, ...)
+
+local function EventHandler(frame, event, arg1, arg2, ...)
   WeakAuras.StartProfileSystem("bufftrigger2")
   local time = GetTime()
   if event == "PLAYER_TARGET_CHANGED" then
@@ -1540,7 +1509,29 @@ frame:SetScript("OnEvent", function (frame, event, arg1, arg2, ...)
     end
   end
   WeakAuras.StopProfileSystem("bufftrigger2")
-end)
+end
+
+frame:RegisterEvent("UNIT_AURA")
+frame:RegisterUnitEvent("UNIT_PET", "player")
+if not WeakAuras.IsClassic() then
+  frame:RegisterEvent("PLAYER_FOCUS_CHANGED")
+  frame:RegisterEvent("ARENA_OPPONENT_UPDATE")
+  frame:RegisterEvent("UNIT_ENTERED_VEHICLE")
+  frame:RegisterEvent("UNIT_EXITED_VEHICLE")
+else
+  LCD.RegisterCallback("WeakAuras", "UNIT_BUFF", function(event, unit)
+    EventHandler(frame, "UNIT_AURA", unit)
+  end)
+end
+frame:RegisterEvent("PLAYER_TARGET_CHANGED")
+frame:RegisterEvent("ENCOUNTER_START")
+frame:RegisterEvent("ENCOUNTER_END")
+frame:RegisterEvent("INSTANCE_ENCOUNTER_ENGAGE_UNIT")
+frame:RegisterEvent("NAME_PLATE_UNIT_ADDED")
+frame:RegisterEvent("NAME_PLATE_UNIT_REMOVED")
+frame:RegisterEvent("GROUP_ROSTER_UPDATE")
+frame:RegisterEvent("PLAYER_ENTERING_WORLD")
+frame:SetScript("OnEvent", EventHandler)
 
 frame:SetScript("OnUpdate", function()
   if WeakAuras.IsPaused() then
@@ -1918,14 +1909,25 @@ local function createScanFunc(trigger)
   local use_debuffClass = not isSingleMissing and not isMulti and trigger.use_debuffClass
   local use_tooltip = not isSingleMissing and not isMulti and trigger.fetchTooltip and trigger.use_tooltip
   local use_tooltipValue = not isSingleMissing and not isMulti and trigger.fetchTooltip and trigger.use_tooltipValue
+  local use_total = not isSingleMissing and not isMulti and trigger.useTotal and trigger.total
 
-  if not useStacks and use_stealable == nil and not use_debuffClass and trigger.ownOnly == nil and not use_tooltip and not use_tooltipValue and not trigger.useNamePattern then
+  if not useStacks and use_stealable == nil and not use_debuffClass and trigger.ownOnly == nil
+       and not use_tooltip and not use_tooltipValue and not trigger.useNamePattern and not use_total then
     return nil
   end
 
   local ret = [[
     return function(time, matchData)
   ]]
+
+  if use_total then
+    local ret2 = [[
+      if not(matchData.duration %s %s) then
+        return false
+      end
+    ]]
+    ret = ret .. ret2:format(trigger.totalOperator or ">=", tonumber(trigger.total) or 0)
+  end
 
   if useStacks then
     local ret2 = [[
@@ -2868,15 +2870,6 @@ local function AugmentMatchDataMulti(matchData, unit, filter, sourceGUID, nameKe
       return false
     end
 
-    -- If we are on classic try to get duration from LibClassicDurations
-    if LCD then
-      local durationNew, expirationTimeNew = LCD:GetAuraDurationByUnit(unit, spellId, unitCaster, name)
-      if duration == 0 and durationNew then
-          duration = durationNew
-          expirationTime = expirationTimeNew
-      end
-    end
-
     if debuffClass == nil then
       debuffClass = "none"
     elseif debuffClass == "" then
@@ -2899,7 +2892,6 @@ local function HandleCombatLog(scanFuncsName, scanFuncsSpellId, filter, event, s
   if scanFuncsName and scanFuncsName[spellName] or scanFuncsSpellId and scanFuncsSpellId[spellId] then
     ScheduleMultiCleanUp(destGUID, time + 60)
     matchDataMulti[destGUID] = matchDataMulti[destGUID] or {}
-    matchDataMulti[destGUID][sourceGUID] = matchDataMulti[destGUID][sourceGUID] or {}
 
     if scanFuncsSpellId and scanFuncsSpellId[spellId] then
       local updatedSpellId = UpdateMatchDataMulti(time, matchDataMulti[destGUID], spellId, event, sourceGUID, sourceName, destGUID, destName, spellId, spellName, amount)
@@ -2966,15 +2958,6 @@ local function CheckAurasMulti(base, unit, filter)
     local name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId = UnitAura(unit, index, filter)
     if not name then
       return false
-    end
-
-    -- If we are on classic try to get duration from LibClassicDurations
-    if LCD then
-      local durationNew, expirationTimeNew = LCD:GetAuraDurationByUnit(unit, spellId, unitCaster, name)
-      if duration == 0 and durationNew then
-          duration = durationNew
-          expirationTime = expirationTimeNew
-      end
     end
 
     if debuffClass == nil then
@@ -3055,6 +3038,13 @@ function BuffTrigger.HandleMultiEvent(frame, event, ...)
     ReleaseUID(unit)
     unit = unit.."target"
     ReleaseUID(unit)
+  elseif event == "UNIT_AURA" then
+    local unit = ...
+    local guid = UnitGUID(unit)
+    if matchDataMulti[guid] then
+      CheckAurasMulti(matchDataMulti[guid], unit, "HELPFUL")
+      CheckAurasMulti(matchDataMulti[guid], unit, "HARMFUL")
+    end
   elseif event == "PLAYER_LEAVING_WORLD" then
     -- Remove everything..
     for GUID, GUIDData  in pairs(matchDataMulti) do

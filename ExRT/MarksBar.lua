@@ -352,8 +352,8 @@ end)
 module.frame.pull:SetScript("OnLeave", function(self)    
 	self:SetBackdropBorderColor(0.4,0.4,0.4,1)
 end)
-module.frame.pull:SetScript("OnClick", function(self)    
-	ExRT.F:DoPull(VExRT.MarksBar.pulltimer)
+module.frame.pull:SetScript("OnMouseDown", function(self,button) 
+	ExRT.F:DoPull(button == "RightButton" and VExRT.MarksBar.pulltimer_right or VExRT.MarksBar.pulltimer)
 end)
 
 module.frame.pull.html = module.frame.pull:CreateFontString(nil,"ARTWORK","GameFontWhite")
@@ -808,8 +808,11 @@ function module.options:Load()
 	
 	self.htmlTimer = ELib:Text(self,L.marksbartmr,11):Size(150,20):Point(5,-275)
 
-	self.editBoxTimer = ELib:Edit(self,6,true):Size(120,20):Point(145,-275):Text(VExRT.MarksBar.pulltimer or "10"):OnChange(function(self)
+	self.editBoxTimer = ELib:Edit(self,6,true):Size(120,20):Point(190,-275):Text(VExRT.MarksBar.pulltimer or "10"):LeftText(L.MarksBarTimerLeftClick):OnChange(function(self)
 		VExRT.MarksBar.pulltimer = tonumber(self:GetText()) or 10
+	end)  
+	self.editBoxTimer_right = ELib:Edit(self,6,true):Size(120,20):Point("LEFT",self.editBoxTimer,"RIGHT",80,0):Text(VExRT.MarksBar.pulltimer_right or "10"):LeftText(L.MarksBarTimerRightClick):OnChange(function(self)
+		VExRT.MarksBar.pulltimer_right = tonumber(self:GetText()) or 10
 	end)  
 	
 	self.frameStrataDropDown = ELib:DropDown(self,275,8):Point(5,-375):Size(260):SetText(L.S_Strata)
@@ -860,6 +863,7 @@ function module.main:ADDON_LOADED()
 	end
 
 	VExRT.MarksBar.pulltimer = VExRT.MarksBar.pulltimer or 10
+	VExRT.MarksBar.pulltimer_right = VExRT.MarksBar.pulltimer_right or VExRT.MarksBar.pulltimer
 
 	if VExRT.MarksBar.Fix then ExRT.F.LockMove(module.frame,nil,nil,1) end
 

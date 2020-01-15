@@ -63,8 +63,6 @@ local function onRelease(subRegion)
   subRegion:Hide()
 end
 
-local noop = function() end
-
 local funcs = {
   SetVisible = function(self, visible)
     if visible then
@@ -76,8 +74,6 @@ local funcs = {
   SetAlpha = function(self, alpha)
     self.model:SetModelAlpha(alpha)
   end,
-  UpdateAnchor = noop,
-  Update = noop
 }
 
 local function modify(parent, region, parentData, data, first)
@@ -118,6 +114,7 @@ local function modify(parent, region, parentData, data, first)
             region.model:ClearTransform();
             region.model:SetPosition(data.model_z, data.model_x, data.model_y);
           end
+          region:SetAlpha(data.bar_model_alpha)
         end)
     end
   end
@@ -128,6 +125,8 @@ local function modify(parent, region, parentData, data, first)
 
   region:SetVisible(data.bar_model_visible)
   region:SetAlpha(data.bar_model_alpha)
+
+  parent.subRegionEvents:AddSubscriber("PreShow", region)
 end
 
 local function supports(regionType)

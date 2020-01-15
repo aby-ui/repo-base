@@ -56,7 +56,7 @@ All functions:
 	:Tooltip(str)		-> [add tooltip]
 	:OnChange(func)		-> SetScript("OnTextChanged",func)
 -> ELib:ScrollFrame(parent,isOld)
-	:Height(px)		-> [set heeight]
+	:Height(px)		-> [set height]
 -> ELib:Button(parent,text,template)
 	:Tooltip(str)		-> [add tooltip]
 -> ELib:Icon(parent,textureIcon,size,isButton)
@@ -152,7 +152,7 @@ CheckButton	ExRTRadioButtonModernTemplate
 local GlobalAddonName, ExRT = ...
 local isExRT = GlobalAddonName == "ExRT"
 
-local libVersion = 34
+local libVersion = 35
 
 if type(ELib)=='table' and type(ELib.V)=='number' and ELib.V > libVersion then return end
 
@@ -2932,6 +2932,14 @@ do
 			end
 		end
 	end
+	local function Widget_SetFontSize(self,size)
+		local obj = self:GetFontString()
+		obj:SetFont(obj:GetFont(),size)
+
+		return self
+	end
+
+
 		
 	function ELib:Button(parent,text,template)
 		if template == 0 then
@@ -2949,6 +2957,7 @@ do
 		)
 		self._Disable = self.Disable	self.Disable = Widget_Disable
 		self.GetTextObj = Widget_GetTextObj
+		self.FontSize = Widget_SetFontSize
 		
 		return self
 	end
@@ -3289,6 +3298,9 @@ do
 		
 		if not self.T then
 			line.text = ELib:Text(line,"List"..tostring(i),self.fontSize or 12):Point("TOPLEFT",self.isCheckList and 24 or 3,0):Point("TOPRIGHT",-3,0):Size(0,16):Color():Shadow()
+			if self.fontName then
+				line.text:Font(self.fontName,self.fontSize or 12)
+			end
 			line:SetFontString(line.text)
 			line:SetPushedTextOffset(2, -1)
 		else
@@ -3296,6 +3308,9 @@ do
 			for j=1,#self.T do
 				local width = self.T[j]
 				local textObj = ELib:Text(line,"List",self.fontSize or 12):Size(width,16):Color():Shadow():Left()
+				if self.fontName then
+					textObj:Font(self.fontName,self.fontSize or 12)
+				end
 				line['text'..j] = textObj
 				if width == 0 then
 					zeroWidth = j
@@ -3482,6 +3497,22 @@ do
 		end
 		return self
 	end
+	local function Widget_Font(self,fontName,fontSize)
+		self.fontSize = fontSize
+		self.fontName = fontName
+		if not self.T then
+			for i=1,#self.List do
+				self.List[i].text:SetFont(fontName,size)
+			end
+		else
+			for i=1,#self.List do
+				for j=1,#self.T do
+					self.List[i]['text'..j]:SetFont(fontName,size)
+				end
+			end
+		end
+		return self
+	end
 	local function CreateScrollList(parent,list)
 		local self = CreateFrame("Frame",nil,parent)
 		self.Frame = ELib:ScrollFrame(self):Point(0,0)
@@ -3495,7 +3526,8 @@ do
 		
 		Mod(self,
 			'Update',Widget_Update,
-			'FontSize',Widget_FontSize
+			'FontSize',Widget_FontSize,
+			'Font',Widget_Font
 		)
 		self._Size = self.Size	self.Size = Widget_SetSize
 		
@@ -5601,6 +5633,9 @@ do
 			end
 			return
 		end
+		if self.parent:GetHighlight() and self.ctrl then
+			self:GetScript("OnKeyDown")(self,"BACKSPACE")
+		end
 		if text == "\n" then
 			self:SetText("")
 			return
@@ -5735,6 +5770,22 @@ do
 		self.highlightFY = fY
 		for i=c+1,#self.HighlightsTextures do
 			self.HighlightsTextures[i]:Hide()
+		end
+	end
+
+	local function GetHighlight(self)
+		if self.EditBox.highlightSX then
+			local text = ""
+			if self.EditBox.highlightSY == self.EditBox.highlightFY then
+				text = self.Lines[self.EditBox.highlightSY]:sub(self.EditBox.highlightSX,self.EditBox.highlightFX)
+			else
+				text = self.Lines[self.EditBox.highlightSY]:sub(self.EditBox.highlightSX)
+				for i=self.EditBox.highlightSY+1,self.EditBox.highlightFY-1 do
+					text = text .. "\n" .. self.Lines[i]
+				end
+				text = text .. "\n" .. self.Lines[self.highlightFY]:sub(1,self.EditBox.highlightFX)
+			end
+			return text
 		end
 	end
 	
@@ -6035,7 +6086,7 @@ do
 		if parent.isHighlight then
 			self.isHighlight = nil
 			local x,y = MouseToCursor(parent)
-	
+
 			if x then
 				if x ~= parent.highlightStartX or y ~= parent.highlightStartY then
 					Highlight(self,parent.highlightStartX,parent.highlightStartY,x,y)
@@ -6159,6 +6210,7 @@ do
 		self.OnChange = Widget_OnChange
 		self.OnCursorChanged = Widget_OnCursorChanged
 		self.Highlight = Widget_Highlight
+		self.GetHighlight = GetHighlight
 		self.SetFocus = Widget_SetFocus
 		self.Insert = Widget_Insert
 
@@ -6193,4 +6245,207 @@ function ELib:FixPreloadFont(parent,fontObj,font,size,params)
 			self:Hide()
 		end
 	end)
+end
+
+
+do
+	local function Widget_Size(self,width,height)
+		self.axisX:SetWidth(width-10)
+		self.axisY:SetHeight(height-20+2)
+
+		self:SetSize(width,height)
+
+		self.width = width-10
+		self.height = height-20
+
+		return self
+	end
+	local function Widget_Update(self)
+		local maxX = #self.data
+		local maxY = 0
+		for i=1,maxX do
+			for j=1,#self.data[i] do
+				if type(self.data[i][j]) == 'table' then
+					local sum = 0
+					for k=1,#self.data[i][j] do
+						sum = sum + self.data[i][j][k]
+					end
+					maxY = max(maxY,sum)
+				else
+					maxY = max(maxY,self.data[i][j])
+				end
+			end
+		end
+		local col_media_count = 0
+		local textX_media_count = 0
+		local textX_skip = 0
+		local per_col = self.width / max(maxX,1)
+		for i=1,maxX do
+			local d = self.data[i]
+
+			local width = per_col * 0.8
+			local sub_width = width / #d
+
+			for j=1,#d do
+				local sub_d = d[j]
+				local is_sub_d
+				if type(sub_d) == 'table' then
+					sub_d = sub_d[1]
+					is_sub_d = true
+				end
+				col_media_count = col_media_count + 1
+				local media = self.media.cols[col_media_count]
+				if not media then
+					media = self:CreateTexture()
+					self.media.cols[col_media_count] = media
+				end
+
+				local height, heightFix = sub_d/maxY*self.height, 0
+				if height < 1 then
+					height = 1
+					heightFix = -1
+					media:SetAlpha(0)
+					media.skip = true
+				else
+					media:SetAlpha(1)
+					media.skip = false
+				end
+				media:ClearAllPoints()
+				media:SetPoint("BOTTOMLEFT",self.axisX,"TOPLEFT",per_col*(i-1)+per_col*0.1+(j-1)*sub_width,heightFix)
+				media:SetSize(sub_width,height)
+				local color = self.data["c"..j] or self.data["c"..j.."_"..1] or self.media.colors[j]
+				media:SetColorTexture(unpack(color))
+				media:Show()
+
+				media.dataX = d.x or i
+				media.dataY = sub_d
+				media.dataT = self.data["t"..j] or self.data["t"..j.."_"..1]
+
+				if is_sub_d then
+					sub_d = d[j]
+					local prev = media
+					for k=2,#sub_d do
+						col_media_count = col_media_count + 1
+						local media = self.media.cols[col_media_count]
+						if not media then
+							media = self:CreateTexture()
+							self.media.cols[col_media_count] = media
+						end
+		
+						local height, heightFix = sub_d[k]/maxY*self.height, 0
+						if height < 1 then
+							height = 1
+							heightFix = -1
+							media:SetAlpha(0)
+							media.skip = true
+						else
+							media:SetAlpha(1)
+							media.skip = false
+						end
+						media:ClearAllPoints()
+						media:SetPoint("BOTTOM",prev,"TOP",0,heightFix)
+						media:SetSize(sub_width,height)
+						local color = self.data["c"..j.."_"..k] or self.media.colors[#self.media.colors - k + 2]
+						media:SetColorTexture(unpack(color))
+						media:Show()
+
+						media.dataX = d.x or i
+						media.dataY = sub_d[k]
+						media.dataT = self.data["t"..j.."_"..k]
+					end
+				end
+			end
+
+			if textX_skip <= 0 then
+				textX_media_count = textX_media_count + 1
+				local media = self.media.textX[textX_media_count]
+				if not media then
+					media = self:CreateFontString(nil,"ARTWORK","GameFontWhite")
+					self.media.textX[textX_media_count] = media
+				end
+	
+				media:SetPoint("TOP",self.axisX,"BOTTOMLEFT",(i-1)*per_col + per_col/2,-2)
+				local textX = self.TextX and self:TextX(i,d) or i 
+				media:SetText(textX)
+				media:Show()
+
+				local text_width = media:GetStringWidth()
+				if (text_width + 5) > per_col then
+					textX_skip = floor((text_width + 5) / per_col)
+				end
+			else
+				textX_skip = textX_skip - 1
+			end
+		end
+		for i=col_media_count+1,#self.media.cols do
+			self.media.cols[i]:Hide()
+		end
+		for i=textX_media_count+1,#self.media.textX do
+			self.media.textX[i]:Hide()
+		end
+
+		return self
+	end
+	local function Widget_OnUpdate(self)
+		local tip, c
+		for i=1,#self.media.cols do
+			c = self.media.cols[i]
+			if not c:IsShown() then
+				break
+			end
+			if c:IsMouseOver() then
+				if not c.skip then
+					tip = c
+				end
+				break
+			end
+		end
+		if tip then
+			if self.tip_IsShown ~= tip then
+				GameTooltip:SetOwner(tip,"ANCHOR_RIGHT")
+				local text = self.TooltipText and self:TooltipText(tip) or tip.dataY
+				GameTooltip:SetText(text)
+				GameTooltip:Show()
+				self.tip_IsShown = tip
+			end
+		elseif self.tip_IsShown then
+			GameTooltip_Hide()
+			self.tip_IsShown = nil
+		end
+	end
+	function ELib:GraphCol(parent)
+		local self = CreateFrame("Frame",nil,parent)
+		
+		self.axisX = self:CreateTexture(nil, "BACKGROUND")
+		self.axisX:SetHeight(2)
+		self.axisX:SetPoint("TOPLEFT",self,"BOTTOMLEFT",10,20)
+		self.axisX:SetColorTexture(0.6, 0.6, 1, 1)
+		
+		self.axisY = self:CreateTexture(nil, "BACKGROUND")
+		self.axisY:SetWidth(2)
+		self.axisY:SetPoint("BOTTOMRIGHT",self,"BOTTOMLEFT",10,20-2)
+		self.axisY:SetColorTexture(0.6, 0.6, 1, 1)
+		
+		self.data = {}
+		self.media = {
+			cols = {},
+			textX = {},
+			colors = {
+				{.8,0,0},
+				{0,.8,0},
+				{.8,.8,0},
+				{0,0,.8},
+				{0,.8,.8},
+				{.8,0,.8},
+			}
+		}
+
+		Mod(self)
+		self.Size = Widget_Size
+		self.Update = Widget_Update
+
+		self:SetScript("OnUpdate",Widget_OnUpdate)
+			
+		return self
+	end
 end

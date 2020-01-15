@@ -1,4 +1,4 @@
-local VERSION = 91
+local VERSION = 92
 
 --[[
 Special icons for rares, pvp or pet battle quests in list
@@ -281,8 +281,10 @@ Fixed Nazjatar WQs for azeroth map
 
 Added "Priority options" for rewards sorting
 Redone sorting by time (time>rewards), sorting by zone(zone>time>rewards)
-8.3 updates
+Fixed dead lock while shell game
 Fixed emissary highlights for Broken Isles map
+
+8.3 Update
 ]]
 
 local GlobalAddonName, WQLdb = ...
@@ -395,70 +397,70 @@ local LOCALE =
 		rewardSortItemOther = "Другие предметы",
 	} or
 	locale == "deDE" and {    --by Sunflow72
-	        gear = "Ausrüstung",
-	        gold = "Gold",
-	        blood = "Blut von Sargeras",
-	        knowledgeTooltip = "** Kann nach dem Erreichen des nächsten Artefaktwissens abgeschlossen werden",
-	        disableArrow = "Deaktiviert den Pfeil",
-	        anchor = "Anker",
-	        totalap = "Artefaktmacht insgesamt: ",
-	        totalapdisable = 'Deaktiviert "Gesamt-Artefaktmacht"',
-	        timeToComplete = "Zeit zum Abschließen: ",
-	        bountyIgnoreFilter = "Abgesandten Quests",
-	        enigmaHelper = "Aktiviert Rätsel Helfer",
-	        barrelsHelper = "Aktiviert Fässer Helfer",
-	        honorIgnoreFilter = "PVP Quests",
-	        ignoreFilter = "Filter ignorieren für",
-	        epicIgnoreFilter = '"ELITE" Quests',
-	        wantedIgnoreFilter = "GESUCHT:... Quests",    
-	        apFormatSetup = "Artefaktmacht Format",
-	        headerEnable = "Aktiviert die Kopfzeile",
-	        disabeHighlightNewQuests = "Deaktiviert die Markierung für neue Quests",
-	        distance = "Entfernung",
-	        disableBountyIcon = "Deaktiviert die Fraktionssymbole für Abgesandten Quests",
-	        arrow = "Pfeil",
-	        invasionPoints = "Invasions-Punkte",
-	        argusMap = "Aktiviert Argus Karte",
-	        ignoreList = "Ignorier-Liste",
-	        addQuestsOpposite = "Fügt Quests von anderen Kontinent hinzu",
-	        hideLegion = "Verbergt Quests von Legion",
-	        disableArrowMove = "Deaktiviert das Verschieben",
-	        shellGameHelper = "Aktiviert Panzer-Spiel Helfer",
-	        iconsOnMinimap = "Aktiviert Symbole auf Kontinentkarten",
-	        addQuestsArgus = "Fügt Quests von Argus hinzu",
-	        lfgSearchOption = "Aktiviert die LFG-Suche",
-	        lfgAutoinvite = "Aktiviert die automatische Einladungsoption",
-	        lfgTypeText = "Gib die Quest-ID in das Eingabefeld ein",
-	        lfgLeftButtonClick = "Linksklick - Gruppe finden",
-	        lfgLeftButtonClick2 = "Linksklick + Shift - Gruppe finden nach Namen",
-	        lfgRightButtonClick = "Rechtsklick - Gruppe erstellen",
-	        lfgDisablePopup = "Deaktiviert Popup im Questbereich",
-	        lfgDisableRightClickIcons = "Deaktiviert die rechte Maustaste auf Symbole der Karte",
-	        disableRewardIcons = "Aktiviert die Belohnungssymbole auf Karten",
-	        mapIconsScale = "Kartensymbole skalieren",
-	        disableRibbon = "Deaktiviert die Bandgrafiken",
-	        enableRibbonGeneralMap = "Aktiviert die Bandgrafik auf Kontinentkarten",
-	        enableArrowQuests = "Aktiviert den Pfeil für normale Quests",
-	        tryWithQuestID = "Suche nach Quest-ID",
-	        lfgDisableAll = "Deaktiviert alle, außer LFG",
-	        lfgDisableAll2 = "Alle Add-In Einstellungen werden zurückgesetzt. Deaktiviert alle Optionen, außer LFG?",
-	        lfgDisableEyeRight = "Deaktiviert Augenknopf bei Quest-Ziele auf der rechten Seite",
-	        lfgDisableEyeList = "Augenknopf in Liste ausblenden",
-	        listSize = "Listengröße",
-	        topLine = "Obere Zeile",
-	        bottomLine = "Untere Zeile",
-	        unlimited = "Unbegrenzt",
-	        maxLines = "maximale Anzahl an Zeilen",
-	        lfgDisablePopupLeave = "Deaktiviert Popup nach Abschluss der Quest (Gruppe verlassen)",
-	        expulsom = "Expulsom",
-	        expulsomReplace = "Ersetzt Schmuckstücke durch Expulsom",
-	        enableBountyColors = "Aktiviert die Farben der Kopfgeldquests",
-	        calligraphyGameHelper = "Aktiviert Kalligraphie-Helfer",
-		addQuestsNazjatar = "Add quests from Nazjatar",
-		questsForAchievements = "Show quests for achievements",
-		rewardSortOption = "Priority options",
-		rewardSortCurrOther = "Other currencies",
-		rewardSortItemOther = "Other items",
+		gear = "Ausrüstung",
+		gold = "Gold",
+		blood = "Blut von Sargeras",
+		knowledgeTooltip = "** Kann nach dem Erreichen des nächsten Artefaktwissens abgeschlossen werden",
+		disableArrow = "Deaktiviert den Pfeil",
+		anchor = "Anker",
+		totalap = "Artefaktmacht insgesamt: ",
+		totalapdisable = 'Deaktiviert "Gesamt-Artefaktmacht"',
+		timeToComplete = "Zeit zum Abschließen: ",
+		bountyIgnoreFilter = "Abgesandten Quests",
+		enigmaHelper = "Aktiviert Rätsel Helfer",
+		barrelsHelper = "Aktiviert Fässer Helfer",
+		honorIgnoreFilter = "PVP Quests",
+		ignoreFilter = "Filter ignorieren für",
+		epicIgnoreFilter = '"ELITE" Quests',
+		wantedIgnoreFilter = "GESUCHT:... Quests",   
+		apFormatSetup = "Artefaktmacht Format",
+		headerEnable = "Aktiviert die Kopfzeile",
+		disabeHighlightNewQuests = "Deaktiviert die Markierung für neue Quests",
+		distance = "Entfernung",
+		disableBountyIcon = "Deaktiviert die Fraktionssymbole für Abgesandten Quests",
+		arrow = "Pfeil",
+		invasionPoints = "Invasions-Punkte",
+		argusMap = "Aktiviert Argus Karte",
+		ignoreList = "Ignorier-Liste",
+		addQuestsOpposite = "Fügt Quests von anderen Kontinent hinzu",
+		hideLegion = "Verbergt Quests von Legion",
+		disableArrowMove = "Deaktiviert das Verschieben",
+		shellGameHelper = "Aktiviert Panzer-Spiel Helfer",
+		iconsOnMinimap = "Aktiviert Symbole auf Kontinentkarten",
+		addQuestsArgus = "Fügt Quests von Argus hinzu",
+		lfgSearchOption = "Aktiviert die LFG-Suche",
+		lfgAutoinvite = "Aktiviert die automatische Einladungsoption",
+		lfgTypeText = "Gib die Quest-ID in das Eingabefeld ein",
+		lfgLeftButtonClick = "Linksklick - Gruppe finden",
+		lfgLeftButtonClick2 = "Linksklick + Shift - Gruppe finden nach Namen",
+		lfgRightButtonClick = "Rechtsklick - Gruppe erstellen",
+		lfgDisablePopup = "Deaktiviert Popup im Questbereich",
+		lfgDisableRightClickIcons = "Deaktiviert die rechte Maustaste auf Symbole der Karte",
+		disableRewardIcons = "Aktiviert die Belohnungssymbole auf Karten",
+		mapIconsScale = "Kartensymbole skalieren",
+		disableRibbon = "Deaktiviert die Bandgrafiken",
+		enableRibbonGeneralMap = "Aktiviert die Bandgrafik auf Kontinentkarten",
+		enableArrowQuests = "Aktiviert den Pfeil für normale Quests",
+		tryWithQuestID = "Suche nach Quest-ID",
+		lfgDisableAll = "Deaktiviert alle, außer LFG",
+		lfgDisableAll2 = "Alle Add-In Einstellungen werden zurückgesetzt. Deaktiviert alle Optionen, außer LFG?",
+		lfgDisableEyeRight = "Deaktiviert Augenknopf bei Quest-Ziele auf der rechten Seite",
+		lfgDisableEyeList = "Augenknopf in Liste ausblenden",
+		listSize = "Listengröße",
+		topLine = "Obere Zeile",
+		bottomLine = "Untere Zeile",
+		unlimited = "Unbegrenzt",
+		maxLines = "maximale Anzahl an Zeilen",
+		lfgDisablePopupLeave = "Deaktiviert Popup nach Abschluss der Quest (Gruppe verlassen)",
+		expulsom = "Expulsom",
+		expulsomReplace = "Ersetzt Schmuckstücke durch Expulsom",
+		enableBountyColors = "Aktiviert die Farben der Kopfgeldquests",
+		calligraphyGameHelper = "Aktiviert Kalligraphie-Helfer",
+		addQuestsNazjatar = "Fügt Quests von Nazjatar hinzu",
+		questsForAchievements = "Zeigt Quests für Erfolge",
+		rewardSortOption = "Prioritätsoptionen",
+		rewardSortCurrOther = "Andere Währungen",
+		rewardSortItemOther = "Andere Gegenstände",
 	} or
 	locale == "frFR" and {
 		gear = "Équipement",
@@ -1030,6 +1032,7 @@ if SECOND_NUMBER then
 end
 
 local defSortPrio = {
+	bounty_cache = 0.6,
 	azerite = 1,
 	curr1560 = 2,
 	curr1721 = 3,
@@ -1620,6 +1623,14 @@ do
 					end
 				end
 			end
+			if WorldMapFrame.pinPools.ThreatObjectivePinTemplate and WorldMapFrame.pinPools.ThreatObjectivePinTemplate.activeObjects then
+				for button,_ in pairs(WorldMapFrame.pinPools.ThreatObjectivePinTemplate.activeObjects) do
+					if not hooked[button] then
+						button:HookScript("OnMouseUp",hookQuestFunc)
+						hooked[button] = true
+					end
+				end
+			end
 		end
 	
 	end
@@ -1823,6 +1834,7 @@ do
 		[13] = {18174.75,11172.79,-22571.59,-15971.07},	--Eastern Kingdoms
 		[113] = {9762.67,11106.09,-9077.17,-1453.98},	--Northrend
 		[424] = {8753.04,6679.51,-6762.53,-3664.92},	--Pandaria
+		[572] = {12244.10,11192.62,-10494.56,-3962.45},	--Дренор
 		
 		[882] = {11545.8,6622.92,8287.5,4450},		--macari
 		[830] = {3772.92,2654.17,58.334,177.084},	--krokun
@@ -3130,8 +3142,10 @@ do
 	list[#list+1] = {text = LOCALE.gold,			func = SetFilter,	arg1 = 5,					checkable = true,				}
 	list[#list+1] = {text = LOCALE.invasionPoints,		func = SetIgnoreFilter,	arg1 = "invasionPointsFilter",	arg2 = true,	checkable = true,	shownFunc = LEGION	}
 	list[#list+1] = {text = REPUTATION,			func = SetFilterType,	arg1 = "rep",					checkable = true,				}
+	list[#list+1] = {text = "8.3 Chest",			func = SetFilterType,	arg1 = "bounty_cache",				checkable = true,				}
 	--list[#list+1] = {text = GetCurrencyInfo(UnitFactionGroup("player") == "Alliance" and 1717 or 1716),		func = SetIgnoreFilter,	arg1 = "servicemedalFilter",	arg2 = true,	checkable = true,				}
 	list[#list+1] = {text = OTHER,				func = SetFilter,	arg1 = 6,					checkable = true,				}
+
 
 
 
@@ -4165,8 +4179,23 @@ for i=1,6 do
 		button:SetPoint("LEFT",WorldQuestList.oppositeContinentButton["Button"..(i-1)],"RIGHT",1,0)
 	end
 	button:SetScript("OnClick",function(self)
-		WorldMapFrame:SetMapID(self.mapID or 875)
-		WorldQuestList.SoloMapID = self.mapID or 875
+		local mapID = self.mapID or 875
+		if type(mapID) == 'table' then
+			local curr = (self.prev or 1) - 1
+			if curr < 1 then
+				curr = #mapID
+			end
+			if GetCurrentMapID() == mapID[curr] then
+				curr = curr - 1
+				if curr < 1 then
+					curr = #mapID
+				end
+			end
+			mapID = mapID[curr]
+			self.prev = curr
+		end
+		WorldMapFrame:SetMapID(mapID)
+		WorldQuestList.SoloMapID = mapID
 		if WorldQuestList.IsSoloRun then
 			WorldQuestList_Update()	
 		end
@@ -4198,7 +4227,33 @@ end
 
 WorldQuestList.oppositeContinentButton.Update = function(self) 
 	local level = UnitLevel'player'
-	if level > 110 and self.State ~= 120 then
+	if is83 and level > 110 and self.State ~= 120 then
+		self.Button6.mapID = {1527,1530}
+		self.Button6.t:SetAtlas("worldquest-icon-nzoth")
+		self.Button6.t:SetTexCoord(0,1,0,1)
+
+		self.Button5.mapID = 1355
+		self.Button5.t:SetAtlas("Mobile-Inscription")
+		self.Button5.t:SetTexCoord(0,1,0,1)
+
+		self.Button4.mapID = 62
+		self.Button4.t:SetTexture("")
+		self.Button4.t2:SetTexture("Interface\\FriendsFrame\\PlusManz-Alliance")
+		self.Button4.t3:SetAtlas("worldquest-icon-pvp-ffa")
+
+		self.Button3.mapID = 14
+		self.Button3.t:SetTexture("")
+		self.Button3.t2:SetTexture("Interface\\FriendsFrame\\PlusManz-Horde")
+		self.Button3.t3:SetAtlas("worldquest-icon-pvp-ffa")
+
+		self.Button2.mapID = 876
+		self.Button2.t:SetTexture("Interface\\FriendsFrame\\PlusManz-Alliance")
+
+		self.Button1.mapID = 875
+		self.Button1.t:SetTexture("Interface\\FriendsFrame\\PlusManz-Horde")
+
+		self.State = 120
+	elseif level > 110 and self.State ~= 120 then
 		self.Button6.mapID = 1355
 		self.Button6.t:SetAtlas("Mobile-Inscription")
 		self.Button6.t:SetTexCoord(0,1,0,1)
@@ -5935,7 +5990,7 @@ function WorldQuestList_Update(preMapID,forceUpdate)
 						elseif currencyID == 1721 then	--Prismatic Manapearl
 							hasRewardFiltered = true
 							for j=1,#RewardListStrings-1 do
-								if RewardListType[j] == 30.1721 then
+								if RewardListType[j] == (VWQL.SortPrio.curr1721 or defSortPrio.curr1721) then
 									RewardListStrings[j] = RewardListStrings[j]:gsub("|t(%d+)",function(val)
 										return "|t"..tostring( tonumber(val)+(numItems or 0) )
 									end)
@@ -6055,6 +6110,13 @@ function WorldQuestList_Update(preMapID,forceUpdate)
 							end
 							RewardListType[#RewardListStrings] = (VWQL.SortPrio.rep or defSortPrio.rep) + (itemID == 152960 and 0.2170 or 0.2165)
 							RewardListColor[#RewardListStrings] = WorldQuestList.ColorYellow
+						elseif itemID == 173372 or itemID == 174960 or itemID == 174961 or itemID == 174958 or itemID == 174959 then
+							hasRewardFiltered = true
+							RewardListSort[#RewardListStrings] = numItems or 0
+							if ActiveFilterType.bounty_cache then 
+								isValidLine = 0 
+							end
+							RewardListType[#RewardListStrings] = (VWQL.SortPrio.bounty_cache or defSortPrio.bounty_cache)
 						end
 
 						if (quality or 0) >= 3 and VWQL.ExpulsomReplace then
@@ -7129,6 +7191,7 @@ WorldQuestList.SortPriorWindow:SetScript("OnShow", function(self)
 		end
 
 		local list = {
+			{"bounty_cache","8.3 Chest",133572},
 			{"azerite",C_CurrencyInfo.GetBasicCurrencyInfo(1553).name,C_CurrencyInfo.GetCurrencyContainerInfo(1553, 3000).icon},
 			{"curr1560","|T"..C_CurrencyInfo.GetBasicCurrencyInfo(1560).icon..":18|t "..C_CurrencyInfo.GetBasicCurrencyInfo(1560).name.." / ".."|T"..C_CurrencyInfo.GetBasicCurrencyInfo(1220).icon..":18|t "..C_CurrencyInfo.GetBasicCurrencyInfo(1220).name},	--War Resources
 			{"curr1508",C_CurrencyInfo.GetBasicCurrencyInfo(1508).name,C_CurrencyInfo.GetBasicCurrencyInfo(1508).icon},	--Veiled Argunite

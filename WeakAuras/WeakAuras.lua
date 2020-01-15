@@ -1,4 +1,4 @@
-local internalVersion = 24;
+local internalVersion = 26;
 
 -- WoW APIs
 local GetTalentInfo, IsAddOnLoaded, InCombatLockdown = GetTalentInfo, IsAddOnLoaded, InCombatLockdown
@@ -24,8 +24,14 @@ WeakAurasTimers = setmetatable({}, {__tostring=function() return "WeakAuras" end
 LibStub("AceTimer-3.0"):Embed(WeakAurasTimers)
 
 WeakAuras.maxTimerDuration = 604800; -- A week, in seconds
+WeakAuras.maxUpTime = 4294967; -- 2^32 / 1000
+
 function WeakAurasTimers:ScheduleTimerFixed(func, delay, ...)
   if (delay < WeakAuras.maxTimerDuration) then
+    if delay + GetTime() > WeakAuras.maxUpTime then
+      WeakAuras.prettyPrint(WeakAuras.L["Can't schedule timer with %i, due to a World of Warcraft Bug with high computer uptime. (Uptime: %i). Please restart your Computer."]:format(delay, GetTime()))
+      return
+    end
     return self:ScheduleTimer(func, delay, ...);
   end
 end
@@ -457,12 +463,34 @@ function WeakAuras.RegisterRegionOptions(name, createFunction, icon, displayName
   elseif(regionOptions[name]) then
     error("Improper arguments to WeakAuras.RegisterRegionOptions - region type \""..name.."\" already defined", 2);
   else
+    if (type(icon) == "function") then
+      -- We only want to create one icon and reparent it as needed
+      icon = icon()
+      icon:Hide()
+    end
+
+    local acquireThumbnail, releaseThumbnail
+    if createThumbnail and modifyThumbnail then
+      local thumbnailPool = CreateObjectPool(createThumbnail)
+      acquireThumbnail = function(parent, data)
+        local thumbnail, newObject = thumbnailPool:Acquire()
+        thumbnail:Show()
+        modifyThumbnail(parent, thumbnail, data)
+        return thumbnail
+      end
+      releaseThumbnail = function(thumbnail)
+        thumbnail:Hide()
+        thumbnailPool:Release(thumbnail)
+      end
+    end
     regionOptions[name] = {
       create = createFunction,
       icon = icon,
       displayName = displayName,
       createThumbnail = createThumbnail,
       modifyThumbnail = modifyThumbnail,
+      acquireThumbnail = acquireThumbnail,
+      releaseThumbnail = releaseThumbnail,
       description = description,
       templates = templates,
       getAnchors = getAnchors
@@ -624,6 +652,12 @@ function WeakAuras.ConstructFunction(prototype, trigger, skipOptional)
               else
                 test = name;
               end
+            end
+          elseif (arg.type == "spell") then
+            if arg.showExactOption then
+              test = "("..arg.test:format(trigger[name], tostring(trigger["use_exact_" .. name]) or "false") ..")";
+            else
+              test = "("..arg.test:format(trigger[name])..")";
             end
           elseif(arg.test) then
             test = "("..arg.test:format(trigger[name])..")";
@@ -1897,6 +1931,39 @@ function WeakAuras.IsOptionsProcessingPaused()
   return pausedOptionsProcessing;
 end
 
+function WeakAuras.GroupType()
+  if (IsInRaid()) then
+    return "raid";
+  end
+  if (IsInGroup()) then
+    return "group";
+  end
+  return "solo";
+end
+
+local function GetInstanceTypeAndSize()
+  local size, difficulty
+  local inInstance, Type = IsInInstance()
+  local _, instanceType, difficultyIndex, _, _, _, _, ZoneMapID = GetInstanceInfo()
+  if (inInstance) then
+    size = Type
+    local difficultyInfo = WeakAuras.difficulty_info[difficultyIndex]
+    if difficultyInfo then
+      size, difficulty = difficultyInfo.size, difficultyInfo.difficulty
+    end
+    return size, difficulty, instanceType, ZoneMapID
+  end
+  return "none", "none", nil, nil
+end
+
+function WeakAuras.InstanceType()
+  return GetInstanceTypeAndSize(), nil
+end
+
+function WeakAuras.InstanceDifficulty()
+  return select(2, GetInstanceTypeAndSize())
+end
+
 local toLoad = {}
 local toUnload = {};
 local function scanForLoadsImpl(toCheck, event, arg1, ...)
@@ -1942,9 +2009,7 @@ local function scanForLoadsImpl(toCheck, event, arg1, ...)
   local role = WeakAuras.IsClassic() and "none" or select(5, GetSpecializationInfo(spec));
 
   local _, class = UnitClass("player");
-  -- 0:none 1:5N 2:5H 3:10N 4:25N 5:10H 6:25H 7:LFR 8:5CH 9:40N
-  local inInstance, Type = IsInInstance()
-  local size, difficulty
+
   local incombat = UnitAffectingCombat("player") -- or UnitAffectingCombat("pet");
   local inencounter = encounter_id ~= 0;
   local inpetbattle, vehicle, vehicleUi = false, false, false
@@ -1954,19 +2019,8 @@ local function scanForLoadsImpl(toCheck, event, arg1, ...)
     vehicleUi = UnitHasVehicleUI('player') or HasOverrideActionBar()
   end
 
-  local _, instanceType, difficultyIndex, _, _, _, _, ZoneMapID = GetInstanceInfo()
-  if (inInstance) then
-    WeakAuras.UpdateCurrentInstanceType(instanceType)
-    size = Type
-    local difficultyInfo = WeakAuras.difficulty_info[difficultyIndex]
-    if difficultyInfo then
-      size, difficulty = difficultyInfo.size, difficultyInfo.difficulty
-    end
-  else
-    WeakAuras.UpdateCurrentInstanceType();
-    size = "none"
-    difficulty = "none"
-  end
+  local size, difficulty, instanceType, ZoneMapID = GetInstanceTypeAndSize()
+  WeakAuras.UpdateCurrentInstanceType(instanceType)
 
   if (WeakAuras.CurrentEncounter) then
     if (ZoneMapID ~= WeakAuras.CurrentEncounter.zone_id and not incombat) then
@@ -1979,14 +2033,7 @@ local function scanForLoadsImpl(toCheck, event, arg1, ...)
     WeakAuras.LoadEncounterInitScripts();
   end
 
-  local group = nil;
-  if (IsInRaid()) then
-    group = "raid";
-  elseif (IsInGroup()) then
-    group = "group";
-  else
-    group = "solo";
-  end
+  local group = WeakAuras.GroupType()
 
   local affixes, warmodeActive, effectiveLevel = 0, false, 0
   if not WeakAuras.IsClassic() then
@@ -2283,16 +2330,23 @@ function WeakAuras.Delete(data)
     end
   end
 
-  animations[tostring(regions[id].region)] = nil
 
   regions[id].region:Collapse()
+  WeakAuras.CollapseAllClones(id);
+
+  WeakAuras.CancelAnimation(WeakAuras.regions[id].region, true, true, true, true, true, true)
+
+  if clones[id] then
+    for cloneId, region in pairs(clones[id]) do
+      WeakAuras.CancelAnimation(region, true, true, true, true, true, true)
+    end
+  end
 
   regions[id].region:SetScript("OnUpdate", nil);
   regions[id].region:SetScript("OnShow", nil);
   regions[id].region:SetScript("OnHide", nil);
   regions[id].region:Hide();
 
-  WeakAuras.CollapseAllClones(id);
   db.registered[id] = nil;
   if(WeakAuras.importDisplayButtons and WeakAuras.importDisplayButtons[id]) then
     local button = WeakAuras.importDisplayButtons[id];
@@ -2472,12 +2526,16 @@ function WeakAuras.Convert(data, newType)
   regions[id].region:Hide();
   WeakAuras.EndEvent(id, 0, true);
 
+  WeakAuras.FakeStatesFor(id, false)
+
   regions[id].region = nil;
   regions[id] = nil;
 
   data.regionType = newType;
   WeakAuras.Add(data);
   WeakAuras.ResetCollapsed(id)
+
+  WeakAuras.FakeStatesFor(id, true)
 
   local parentRegion = WeakAuras.GetRegion(data.parent)
   if parentRegion and parentRegion.ReloadControlledChildren then
@@ -2658,15 +2716,14 @@ end
 
 StaticPopupDialogs["WEAKAURAS_CONFIRM_REPAIR"] = {
   text = "",
-  button1 = L["Run the repair tool"],
-  button2 = L["Continue Without Repairing"],
+  button1 = L["Repair"],
+  button2 = L["Cancel"],
   OnAccept = function(self)
      WeakAuras.RepairDatabase()
   end,
   OnShow = function(self)
     if self.data.reason == "user" then
       self.text:SetText(L["Manual Repair Confirmation Dialog"]:format(WeakAuras.LastUpgrade()))
-      self.button2:SetText(L["Cancel"])
     else
       self.text:SetText(L["Automatic Repair Confirmation Dialog"]:format(WeakAuras.LastUpgrade()))
     end
@@ -3588,6 +3645,98 @@ function WeakAuras.Modernize(data)
     end
   end
 
+  if data.internalVersion < 25 then
+    if data.regionType == "icon" then
+      data.subRegions = data.subRegions or {}
+      -- Need to check if glow is needed
+
+      local prefix = "sub.".. #data.subRegions + 1 .. "."
+      -- For Conditions
+      local propertyRenames = {
+        glow = prefix .. "glow",
+        useGlowColor = prefix .. "useGlowColor",
+        glowColor = prefix .. "glowColor",
+        glowType = prefix .. "glowType",
+        glowLines = prefix .. "glowLines",
+        glowFrequency = prefix .. "glowFrequency",
+        glowLength = prefix .. "glowLength",
+        glowThickness = prefix .. "glowThickness",
+        glowScale = prefix .. "glowScale",
+        glowBorder = prefix .. "glowBorder",
+        glowXOffset = prefix .. "glowXOffset",
+        glowYOffset = prefix .. "glowYOffset",
+      }
+
+      local needsGlow = data.glow
+      if (not needsGlow and data.conditions) then
+        for conditionIndex, condition in ipairs(data.conditions) do
+          for changeIndex, change in ipairs(condition.changes) do
+            if propertyRenames[change.property] then
+              needsGlow = true
+              break
+            end
+          end
+        end
+      end
+
+      if needsGlow then
+        local glow = {
+          ["type"] = "subglow",
+          glow = data.glow,
+          useGlowColor = data.useGlowColor,
+          glowColor = data.glowColor,
+          glowType = data.glowType,
+          glowLines = data.glowLines,
+          glowFrequency = data.glowFrequency,
+          glowLength = data.glowLength,
+          glowThickness = data.glowThickness,
+          glowScale = data.glowScale,
+          glowBorder = data.glowBorder,
+          glowXOffset = data.glowXOffset,
+          glowYOffset = data.glowYOffset,
+        }
+        tinsert(data.subRegions, glow)
+      end
+
+      data.glow = nil
+      data.useglowColor = nil
+      data.useGlowColor = nil
+      data.glowColor = nil
+      data.glowType = nil
+      data.glowLines = nil
+      data.glowFrequency = nil
+      data.glowLength = nil
+      data.glowThickness = nil
+      data.glowScale = nil
+      data.glowBorder = nil
+      data.glowXOffset = nil
+      data.glowYOffset = nil
+
+      if (data.conditions) then
+        for conditionIndex, condition in ipairs(data.conditions) do
+          for changeIndex, change in ipairs(condition.changes) do
+            if propertyRenames[change.property] then
+              change.property = propertyRenames[change.property]
+            end
+          end
+        end
+      end
+    end
+  end
+
+  if data.internalVersion < 26 then
+    if data.conditions then
+      for conditionIndex, condition in ipairs(data.conditions) do
+        for changeIndex, change in ipairs(condition.changes) do
+          if change.property == "xOffset" or change.property == "yOffset" then
+            change.value = (change.value or 0) - (data[change.property] or 0)
+            change.property = change.property .. "Relative"
+          end
+        end
+      end
+    end
+  end
+
   for _, triggerSystem in pairs(triggerSystems) do
     triggerSystem.Modernize(data);
   end
@@ -4076,14 +4225,12 @@ function WeakAuras.PreAdd(data)
   data.expanded = nil
 end
 
-local function pAdd(data)
+local function pAdd(data, simpleChange)
   local id = data.id;
   if not(id) then
     error("Improper arguments to WeakAuras.Add - id not defined");
     return;
   end
-
-  db.displays[id] = data;
 
   data.uid = data.uid or WeakAuras.GenerateUniqueID()
   local otherID = UIDtoID[data.uid]
@@ -4095,97 +4242,111 @@ local function pAdd(data)
     UIDtoID[data.uid] = id
   end
 
-  WeakAuras.ClearAuraEnvironment(id);
-  if data.parent then
-    WeakAuras.ClearAuraEnvironment(data.parent);
-  end
-  if (data.controlledChildren) then
-    WeakAuras.SetRegion(data);
+  if simpleChange then
+    db.displays[id] = data
+    WeakAuras.SetRegion(data)
   else
-    if (not data.triggers.activeTriggerMode or data.triggers.activeTriggerMode > #data.triggers) then
-      data.triggers.activeTriggerMode = WeakAuras.trigger_modes.first_active;
+    WeakAuras.ClearAuraEnvironment(id);
+    if data.parent then
+      WeakAuras.ClearAuraEnvironment(data.parent);
     end
-
-    for _, triggerSystem in pairs(triggerSystems) do
-      triggerSystem.Add(data);
-    end
-
-    local loadFuncStr, events = WeakAuras.ConstructFunction(load_prototype, data.load);
-    for event, eventData in pairs(loadEvents) do
-      eventData[id] = nil
-    end
-    for event in pairs(events) do
-      loadEvents[event] = loadEvents[event] or {}
-      loadEvents[event][id] = true
-    end
-    loadEvents["SCAN_ALL"] = loadEvents["SCAN_ALL"] or {}
-    loadEvents["SCAN_ALL"][id] = true
-
-    local loadForOptionsFuncStr = WeakAuras.ConstructFunction(load_prototype, data.load, true);
-    local loadFunc = WeakAuras.LoadFunction(loadFuncStr, id, "load");
-    local loadForOptionsFunc = WeakAuras.LoadFunction(loadForOptionsFuncStr, id, "options load");
-    local triggerLogicFunc;
-    if data.triggers.disjunctive == "custom" then
-      triggerLogicFunc = WeakAuras.LoadFunction("return "..(data.triggers.customTriggerLogic or ""), id, "trigger combination");
-    end
-    WeakAuras.LoadCustomActionFunctions(data);
-    WeakAuras.LoadConditionPropertyFunctions(data);
-    local checkConditionsFuncStr = WeakAuras.ConstructConditionFunction(data);
-    local checkCondtionsFunc = checkConditionsFuncStr and WeakAuras.LoadFunction(checkConditionsFuncStr, id, "condition checks");
-    debug(id.." - Load", 1);
-    debug(loadFuncStr);
-
-    loadFuncs[id] = loadFunc;
-    loadFuncsForOptions[id] = loadForOptionsFunc;
-    checkConditions[id] = checkCondtionsFunc;
-    clones[id] = clones[id] or {};
-
-    if (timers[id]) then
-      for _, trigger in pairs(timers[id]) do
-        for _, record in pairs(trigger) do
-          if (record.handle) then
-            timer:CancelTimer(record.handle);
-          end
+    if (data.controlledChildren) then
+      db.displays[id] = data;
+      WeakAuras.SetRegion(data);
+    else
+      local visible
+      if (WeakAuras.IsOptionsOpen()) then
+        visible = WeakAuras.FakeStatesFor(id, false)
+      else
+        if (WeakAuras.regions[id] and WeakAuras.regions[id].region) then
+          WeakAuras.regions[id].region:Collapse()
+        else
+          WeakAuras.CollapseAllClones(id)
         end
       end
-      timers[id] = nil;
-    end
 
-    triggerState[id] = {
-      disjunctive = data.triggers.disjunctive or "all",
-      numTriggers = #data.triggers,
-      activeTriggerMode = data.triggers.activeTriggerMode or WeakAuras.trigger_modes.first_active,
-      triggerLogicFunc = triggerLogicFunc,
-      triggers = {},
-      triggerCount = 0,
-      activatedConditions = {},
-    };
+      db.displays[id] = data;
 
-    local region = WeakAuras.SetRegion(data);
-    if (WeakAuras.clones[id]) then
-      for cloneId, _ in pairs(WeakAuras.clones[id]) do
-        WeakAuras.SetRegion(data, cloneId);
+      if (not data.triggers.activeTriggerMode or data.triggers.activeTriggerMode > #data.triggers) then
+        data.triggers.activeTriggerMode = WeakAuras.trigger_modes.first_active;
+      end
+
+      for _, triggerSystem in pairs(triggerSystems) do
+        triggerSystem.Add(data);
+      end
+
+      local loadFuncStr, events = WeakAuras.ConstructFunction(load_prototype, data.load);
+      for event, eventData in pairs(loadEvents) do
+        eventData[id] = nil
+      end
+      for event in pairs(events) do
+        loadEvents[event] = loadEvents[event] or {}
+        loadEvents[event][id] = true
+      end
+      loadEvents["SCAN_ALL"] = loadEvents["SCAN_ALL"] or {}
+      loadEvents["SCAN_ALL"][id] = true
+
+      local loadForOptionsFuncStr = WeakAuras.ConstructFunction(load_prototype, data.load, true);
+      local loadFunc = WeakAuras.LoadFunction(loadFuncStr, id, "load");
+      local loadForOptionsFunc = WeakAuras.LoadFunction(loadForOptionsFuncStr, id, "options load");
+      local triggerLogicFunc;
+      if data.triggers.disjunctive == "custom" then
+        triggerLogicFunc = WeakAuras.LoadFunction("return "..(data.triggers.customTriggerLogic or ""), id, "trigger combination");
+      end
+      WeakAuras.LoadCustomActionFunctions(data);
+      WeakAuras.LoadConditionPropertyFunctions(data);
+      local checkConditionsFuncStr = WeakAuras.ConstructConditionFunction(data);
+      local checkCondtionsFunc = checkConditionsFuncStr and WeakAuras.LoadFunction(checkConditionsFuncStr, id, "condition checks");
+      debug(id.." - Load", 1);
+      debug(loadFuncStr);
+
+      loadFuncs[id] = loadFunc;
+      loadFuncsForOptions[id] = loadForOptionsFunc;
+      checkConditions[id] = checkCondtionsFunc;
+      clones[id] = clones[id] or {};
+
+      if (timers[id]) then
+        for _, trigger in pairs(timers[id]) do
+          for _, record in pairs(trigger) do
+            if (record.handle) then
+              timer:CancelTimer(record.handle);
+            end
+          end
+        end
+        timers[id] = nil;
+      end
+
+      local region = WeakAuras.SetRegion(data);
+
+      triggerState[id] = {
+        disjunctive = data.triggers.disjunctive or "all",
+        numTriggers = #data.triggers,
+        activeTriggerMode = data.triggers.activeTriggerMode or WeakAuras.trigger_modes.first_active,
+        triggerLogicFunc = triggerLogicFunc,
+        triggers = {},
+        triggerCount = 0,
+        activatedConditions = {},
+      };
+
+      WeakAuras.LoadEncounterInitScripts(id);
+
+      if (WeakAuras.IsOptionsOpen()) then
+        WeakAuras.FakeStatesFor(id, visible)
+      end
+
+      if not(paused) then
+        WeakAuras.ScanForLoads({[id] = true});
       end
     end
-
-    WeakAuras.LoadEncounterInitScripts(id);
-
-    WeakAuras.UpdateFakeStatesFor(id)
-
-    if not(paused) then
-      region:Collapse();
-      WeakAuras.ScanForLoads({[id] = true});
-    end
   end
-
 end
 
-function WeakAuras.Add(data, takeSnapshot)
+function WeakAuras.Add(data, takeSnapshot, simpleChange)
   if takeSnapshot then
     WeakAuras.SetMigrationSnapshot(data.uid, CopyTable(data))
   end
   WeakAuras.PreAdd(data)
-  pAdd(data);
+  pAdd(data, simpleChange);
 end
 
 function WeakAuras.SetRegion(data, cloneId)
@@ -4252,7 +4413,7 @@ function WeakAuras.SetRegion(data, cloneId)
         end
       end
       local loginFinished = WeakAuras.IsLoginFinished();
-      local anim_cancelled = loginFinished and WeakAuras.CancelAnimation(region, true, true, true, true, true);
+      local anim_cancelled = loginFinished and WeakAuras.CancelAnimation(region, true, true, true, true, true, true);
 
       regionTypes[regionType].modify(parent, region, data);
       WeakAuras.regionPrototype.AddSetDurationInfo(region);
@@ -5045,7 +5206,7 @@ function WeakAuras.GetTriggerConditions(data)
         display = L["Active"],
         type = "bool",
         test = function(state, needle)
-          return (state and triggerState[state.id].triggers[i] or false) == (needle == 1);
+          return (state and state.id and triggerState[state.id].triggers[i] or false) == (needle == 1);
         end
       }
     end
@@ -5518,7 +5679,7 @@ do
 
   function WeakAuras.FakeStatesFor(id, visible)
     if visibleFakeStates[id] == visible then
-      return
+      return visibleFakeStates[id]
     end
     if visible then
       visibleFakeStates[id] = true
@@ -5534,8 +5695,11 @@ do
           WeakAuras.UpdatedTriggerState(id)
         end
       end
-      RestoreAlpha(WeakAuras.regions[id].region)
+      if WeakAuras.regions[id] and WeakAuras.regions[id].region then
+        RestoreAlpha(WeakAuras.regions[id].region)
+      end
     end
+    return not visibleFakeStates[id]
   end
 
   function WeakAuras.UpdateFakeStatesFor(id)
@@ -5550,8 +5714,13 @@ do
           end
         end
         WeakAuras.UpdatedTriggerState(id)
+        if WeakAuras.GetMoverSizerId() == id then
+          WeakAuras.SetMoverSizer(id)
+        end
 
-        ApplyFakeAlpha(WeakAuras.regions[id].region)
+        if WeakAuras.regions[id] and WeakAuras.regions[id].region then
+          ApplyFakeAlpha(WeakAuras.regions[id].region)
+        end
       end
     end
   end
@@ -5611,11 +5780,7 @@ end
 local function ApplyStateToRegion(id, cloneId, region, parent)
   region:Update();
 
-  if region.subRegions then
-    for index, subRegion in ipairs(region.subRegions) do
-      subRegion:Update()
-    end
-  end
+  region.subRegionEvents:Notify("Update")
 
   WeakAuras.UpdateMouseoverTooltip(region);
   region:Expand();
@@ -5688,7 +5853,7 @@ local function ApplyStatesToRegions(id, activeTrigger, states)
           triggerState = state
         else
           local triggerStates = WeakAuras.GetTriggerStateForTrigger(id, triggernum)
-          triggerState = triggerStates[cloneId] or triggerStates[""]
+          triggerState = triggerStates[cloneId] or triggerStates[""] or {}
         end
         applyChanges = applyChanges or region.states[triggernum] ~= triggerState or (triggerState and triggerState.changed)
         region.states[triggernum] = triggerState
@@ -5722,7 +5887,7 @@ function WeakAuras.UpdatedTriggerState(id)
     local anyStateShown = false;
 
     for cloneId, state in pairs(triggerState[id][triggernum]) do
-      state.trigger = db.displays[id].triggers[triggernum].trigger;
+      state.trigger = db.displays[id].triggers[triggernum] and db.displays[id].triggers[triggernum].trigger;
       state.triggernum = triggernum;
       state.id = id;
 
@@ -6666,4 +6831,92 @@ end
 function WeakAuras.SafeToNumber(input)
   local nr = tonumber(input)
   return nr and (nr < 2147483648 and nr > -2147483649) and nr or nil
+end
+
+local textSymbols = {
+  ["{rt1}"]      = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_1:0|t",
+  ["{rt2}"]      = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_2:0|t ",
+  ["{rt3}"]      = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_3:0|t ",
+  ["{rt4}"]      = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_4:0|t ",
+  ["{rt5}"]      = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_5:0|t ",
+  ["{rt6}"]      = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_6:0|t ",
+  ["{rt7}"]      = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_7:0|t ",
+  ["{rt8}"]      = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_8:0|t "
+}
+
+function WeakAuras.ReplaceRaidMarkerSymbols(txt)
+  local start = 1
+
+  while true do
+    local firstChar = txt:find("{", start, true)
+    if not firstChar then
+      return txt
+    end
+    local lastChar = txt:find("}", firstChar, true)
+    if not lastChar then
+      return txt
+    end
+    local replace = textSymbols[txt:sub(firstChar, lastChar)]
+    if replace then
+      txt = txt:sub(1, firstChar - 1) .. replace .. txt:sub(lastChar + 1)
+      start = firstChar + #replace
+    else
+      start = lastChar
+    end
+  end
+end
+
+function WeakAuras.ReplaceLocalizedRaidMarkers(txt)
+  local start = 1
+
+  while true do
+    local firstChar = txt:find("{", start, true)
+    if not firstChar then
+      return txt
+    end
+    local lastChar = txt:find("}", firstChar, true)
+    if not lastChar then
+      return txt
+    end
+
+    local symbol = strlower(txt:sub(firstChar + 1, lastChar - 1))
+    if ICON_TAG_LIST[symbol] then
+      local replace = "rt" .. ICON_TAG_LIST[symbol]
+      if replace then
+        txt = txt:sub(1, firstChar) .. replace .. txt:sub(lastChar)
+        start = firstChar + #replace
+      else
+        start = lastChar
+      end
+    end
+  end
+end
+
+local trackableUnits = {}
+trackableUnits["player"] = true
+trackableUnits["target"] = true
+trackableUnits["focus"] = true
+trackableUnits["pet"] = true
+trackableUnits["vehicle"] = true
+
+for i = 1, 5 do
+  trackableUnits["arena" .. i] = true
+  trackableUnits["arenapet" .. i] = true
+end
+
+for i = 1, 4 do
+  trackableUnits["boss" .. i] = true
+  trackableUnits["party" .. i] = true
+  trackableUnits["partypet" .. i] = true
+end
+
+for i = 1, 40 do
+  trackableUnits["raid" .. i] = true
+  trackableUnits["raidpet" .. i] = true
+  trackableUnits["nameplate" .. i] = true
+end
+
+
+function WeakAuras.UntrackableUnit(unit)
+  return not trackableUnits[unit]
 end

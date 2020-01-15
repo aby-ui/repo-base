@@ -2,6 +2,7 @@ if not WeakAuras.IsCorrectVersion() then return end
 
 local WeakAuras = WeakAuras
 local SharedMedia = LibStub("LibSharedMedia-3.0")
+local LGF = LibStub("LibGetFrame-1.0")
 
 local default = {
   controlledChildren = {},
@@ -40,6 +41,7 @@ local default = {
 
 local controlPointFunctions = {
   ["SetAnchorPoint"] = function(self, point, relativeFrame, relativePoint, offsetX, offsetY)
+    self:ClearAllPoints();
     self.point, self.relativeFrame, self.relativePoint, self.offsetX, self.offsetY = point, relativeFrame, relativePoint, offsetX, offsetY
     self.totalOffsetX = (self.animOffsetX or 0) + (self.offsetX or 0)
     self.totalOffsetY = (self.animOffsetY or 0) + (self.offsetY or 0)
@@ -51,7 +53,6 @@ local controlPointFunctions = {
   end,
   ["ClearAnchorPoint"] = function(self)
     self.point, self.relativeFrame, self.relativePoint, self.offsetX, self.offsetY = nil, nil, nil, nil, nil
-    self:ClearAllPoints();
   end,
   ["SetOffsetAnim"] = function(self, x, y)
     self.animOffsetX, self.animOffsetY = x, y
@@ -762,6 +763,11 @@ local function modify(parent, region, data)
     region.controlledChildren[childID] = region.controlledChildren[childID] or {}
     region.controlledChildren[childID][cloneID] = controlPoint
     childRegion:SetAnchor(data.selfPoint, controlPoint, data.selfPoint)
+    if(childData.frameStrata == 1) then
+      childRegion:SetFrameStrata(region:GetFrameStrata());
+    else
+      childRegion:SetFrameStrata(WeakAuras.frame_strata_types[childData.frameStrata]);
+    end
     return regionData
   end
 
@@ -940,6 +946,14 @@ local function modify(parent, region, data)
     else
       self.needToPosition = true
     end
+  end
+
+  if data.useAnchorPerUnit and data.anchorPerUnit == "UNITFRAME" then
+    LGF.RegisterCallback("WeakAuras" .. data.uid, "GETFRAME_REFRESH", function()
+      region:PositionChildren()
+    end)
+  else
+    LGF.UnregisterCallback("WeakAuras" .. data.uid, "GETFRAME_REFRESH")
   end
 
   function region:DoPositionChildrenPerFrame(frame, positions)

@@ -1,8 +1,11 @@
 local MAJOR_VERSION = "LibGetFrame-1.0"
-local MINOR_VERSION = 8
+local MINOR_VERSION = 9
 if not LibStub then error(MAJOR_VERSION .. " requires LibStub.") end
 local lib = LibStub:NewLibrary(MAJOR_VERSION, MINOR_VERSION)
 if not lib then return end
+
+lib.callbacks = lib.callbacks or LibStub("CallbackHandler-1.0"):New(lib)
+local callbacks = lib.callbacks
 
 local GetPlayerInfoByGUID, UnitExists, IsAddOnLoaded, C_Timer, UnitIsUnit, SecureButton_GetUnit = GetPlayerInfoByGUID, UnitExists, IsAddOnLoaded, C_Timer, UnitIsUnit, SecureButton_GetUnit
 local tinsert, CopyTable, wipe = tinsert, CopyTable, wipe
@@ -86,14 +89,19 @@ local function ScanFrames(depth, frame, ...)
     ScanFrames(depth, ...)
 end
 
+local wait = false
 local function ScanForUnitFrames(noDelay)
     if noDelay then
         wipe(GetFramesCache)
         ScanFrames(0, UIParent)
-    else
+        callbacks:Fire("GETFRAME_REFRESH")
+    elseif not wait then
+        wait = true
         C_Timer.After(1, function()
             wipe(GetFramesCache)
             ScanFrames(0, UIParent)
+            wait = false
+            callbacks:Fire("GETFRAME_REFRESH")
         end)
     end
 end
@@ -155,19 +163,18 @@ local defaultOptions = {
 }
 
 local GetFramesCacheListener
-lib.Init = function(noDelay)
+local function Init(noDelay)
     GetFramesCacheListener = CreateFrame("Frame")
     GetFramesCacheListener:RegisterEvent("PLAYER_REGEN_DISABLED")
     GetFramesCacheListener:RegisterEvent("PLAYER_REGEN_ENABLED")
     GetFramesCacheListener:RegisterEvent("PLAYER_ENTERING_WORLD")
     GetFramesCacheListener:RegisterEvent("GROUP_ROSTER_UPDATE")
-    GetFramesCacheListener:SetScript("OnEvent", ScanForUnitFrames)
-
+    GetFramesCacheListener:SetScript("OnEvent", function() ScanForUnitFrames(false) end)
     ScanForUnitFrames(noDelay)
 end
 
 function lib.GetUnitFrame(target, opt)
-    if not GetFramesCacheListener then lib.Init(true) end
+    if type(GetFramesCacheListener) ~= "table" then Init(true) end
     opt = opt or {}
     setmetatable(opt, { __index = defaultOptions })
 

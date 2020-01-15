@@ -71,6 +71,11 @@ local function createOptions(parentData, data, index, subIndex)
       end,
       name = L["Display Text"],
       order = 11,
+      set = function(info, v)
+        data.text_text = WeakAuras.ReplaceLocalizedRaidMarkers(v)
+        WeakAuras.Add(parentData)
+        WeakAuras.ReloadOptions2(parentData.id, parentData)
+      end
     },
     text_font = {
       type = "select",
@@ -424,7 +429,8 @@ local function createOptions(parentData, data, index, subIndex)
     },
   }
 
-  WeakAuras.AddCodeOption(commonTextOptions, parentData, L["Custom Function"], "customText", 4,  hideCustomTextOption, {"customText"}, false)
+  WeakAuras.AddCodeOption(commonTextOptions, parentData, L["Custom Function"], "customText", "https://github.com/WeakAuras/WeakAuras2/wiki/Text-Replacements",
+                          4,  hideCustomTextOption, {"customText"}, false)
 
   return options, commonTextOptions
 end

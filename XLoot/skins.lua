@@ -180,7 +180,7 @@ do
 	function lib:Gradient(frame)
 		local g = frame:CreateTexture(nil, 'BORDER')
 		frame.gradient = g
-		g:SetTexture[[Interface\ChatFrame\ChatFrameBackground]]
+		g:SetTexture([[Interface\ChatFrame\ChatFrameBackground]])
 		g:SetPoint('TOPLEFT', 3, -3)
 		g:SetPoint('BOTTOMRIGHT', -3, 3)
 		-- g:SetBlendMode'ADD'

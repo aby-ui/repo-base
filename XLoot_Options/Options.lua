@@ -532,7 +532,19 @@ function addon:OnEnable() -- Construct addon option tables here
 					{ "OFFICER", CHAT_MSG_OFFICER },
 					{ "RAID", CHAT_MSG_RAID },
 					{ "RAID_WARNING", RAID_WARNING },
-				}}
+					{ 'INSTANCE_CHAT', INSTANCE_CHAT},
+				}},
+				{ "linkall_channel_secondary", {
+					{ "SAY", CHAT_MSG_SAY },
+					{ "PARTY", CHAT_MSG_PARTY },
+					{ "GUILD", CHAT_MSG_GUILD },
+					{ "OFFICER", CHAT_MSG_OFFICER },
+					{ "RAID", CHAT_MSG_RAID },
+					{ "RAID_WARNING", RAID_WARNING },
+					{ 'INSTANCE_CHAT', INSTANCE_CHAT},
+					{ 'NONE', NONE },
+				}},
+				{ "linkall_first_only" }
 			}},
 			{ "autolooting", "group", {
 				{ "autolooting_text", "description" },
@@ -692,6 +704,7 @@ function addon:OnEnable() -- Construct addon option tables here
 			{ "awardannounce", "group", {
 				{ "award_qualitythreshold", item_qualities },
 				{ "award_channel", channels },
+				{ "award_channel_secondary", channels },
 				{ "award_guildannounce" },
 				{ "award_special" },
 			}},

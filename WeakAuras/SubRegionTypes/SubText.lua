@@ -72,6 +72,7 @@ local properties = {
   }
 }
 
+
 -- Rotate object around its origin
 local function animRotate(object, degrees, anchor)
   if (not anchor) then
@@ -135,6 +136,14 @@ local function create()
   local text = region:CreateFontString(nil, "OVERLAY");
   region.text = text;
 
+  -- WOW's layout system works best if frames and all their parents are anchored
+  -- In this case, it appears that a text doesn't get the right size on the initial
+  -- load with a custom font. (Though it works if the font is non-custom or after
+  -- a reloadui). Just moving the normal AnchorSubRegion to the start of modify was not enough
+  -- But anchoring the text to UIParent before reanchoring it correctly does seem to fix
+  -- the issue. Also see #1778
+  text:SetPoint("CENTER", UIParent, "CENTER")
+
   return region;
 end
 
@@ -174,7 +183,7 @@ local function modify(parent, region, parentData, data, first)
     text:SetFont(STANDARD_TEXT_FONT, data.text_fontSize, data.text_fontType);
   end
   if text:GetFont() then
-    text:SetText(data.text_text);
+    text:SetText(WeakAuras.ReplaceRaidMarkerSymbols(data.text_text));
   end
 
   text:SetTextHeight(data.text_fontSize);
@@ -212,7 +221,7 @@ local function modify(parent, region, parentData, data, first)
       textStr = WeakAuras.ReplacePlaceHolders(textStr, parent, nil)
 
       if text:GetFont() then
-        WeakAuras.regionPrototype.SetTextOnText(text, textStr)
+        WeakAuras.regionPrototype.SetTextOnText(text, WeakAuras.ReplaceRaidMarkerSymbols(textStr))
       end
       region:UpdateAnchor()
     end
@@ -231,7 +240,7 @@ local function modify(parent, region, parentData, data, first)
       end
     end
   else
-    Update = UpdateText or function() end
+    Update = UpdateText
   end
 
   local TimerTick
@@ -263,9 +272,21 @@ local function modify(parent, region, parentData, data, first)
   region.FrameTick = FrameTick
   region.TimerTick = TimerTick
 
+  if Update then
+    parent.subRegionEvents:AddSubscriber("Update", region)
+  end
+
+  if FrameTick then
+    parent.subRegionEvents:AddSubscriber("FrameTick", region)
+  end
+
+  if TimerTick then
+    parent.subRegionEvents:AddSubscriber("TimerTick", region)
+  end
+
   if not UpdateText then
     if text:GetFont() then
-      WeakAuras.regionPrototype.SetTextOnText(text, data.text_text);
+      WeakAuras.regionPrototype.SetTextOnText(text, WeakAuras.ReplaceRaidMarkerSymbols(data.text_text))
     end
   end
 

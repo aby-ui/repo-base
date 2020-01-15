@@ -15,6 +15,7 @@ module.db.masterlootersArray = {}
 module.db.reInvite = {}
 module.db.reInviteR = nil
 module.db.reInviteFrame = nil
+module.db.lastGRcall = 0
 
 module.db.demotedPlayers = {}
 
@@ -82,6 +83,15 @@ end
 
 local function InviteBut()
 	local gplayers = GetNumGuildMembers() or 0
+	local t = GetTime()
+	if gplayers == 0 then
+		if t > module.db.lastGRcall then
+			module.db.lastGRcall = t + 10
+			module.db.inviteGRwait = true
+			C_GuildInfo.GuildRoster()
+		end
+		return
+	end
 	local nowinvnum = 1
 	local inRaid = IsInRaid()
 	if not inRaid then
@@ -536,7 +546,7 @@ function module.main:ADDON_LOADED()
 	VExRT.InviteTool.LootThreshold = VExRT.InviteTool.LootThreshold or 2
 	createMastelootersArray()
 	
-	module:RegisterEvents('GROUP_ROSTER_UPDATE')
+	module:RegisterEvents('GROUP_ROSTER_UPDATE','GUILD_ROSTER_UPDATE')
 	if VExRT.InviteTool.InvByChat then
 		module:RegisterEvents('CHAT_MSG_WHISPER','CHAT_MSG_BN_WHISPER')
 	end
@@ -549,13 +559,18 @@ function module.main:ADDON_LOADED()
 	module.db.playerFullName = ExRT.F.UnitCombatlogname("player")
 end
 
-function module.main:CHAT_MSG_WHISPER(msg, user)
+function module.main:CHAT_MSG_WHISPER(msg, user, special)
 	msg = string.lower(msg)
 	if (msg and module.db.invWordsArray[msg]) and (not VExRT.InviteTool.OnlyGuild or UnitInGuild(user)) then
 		if not IsInRaid() and GetNumGroupMembers() == 5 then 
 			ConvertToRaid()
 		end
 		InviteUnit(user)
+	elseif (msg and module.db.invWordsArray[msg]) and VExRT.InviteTool.OnlyGuild and (GetNumGuildMembers() or 0) == 0 and special ~= -578 then
+		C_GuildInfo.GuildRoster()
+		C_Timer.After(2,function()
+			module.main:CHAT_MSG_WHISPER(msg, user, -578)
+		end)
 	end
 end
 
@@ -671,6 +686,15 @@ function module.main:GROUP_ROSTER_UPDATE()
 	if VExRT.InviteTool.AutoRaidDiff then
 		if not scheludedRaidUpdate then
 			scheludedRaidUpdate = ExRT.F.ScheduleTimer(AutoRaidSetup, .5)
+		end
+	end
+end
+
+function module.main:GUILD_ROSTER_UPDATE()
+	if module.db.inviteGRwait then
+		module.db.inviteGRwait = nil
+		if IsInGuild() then
+			InviteBut()
 		end
 	end
 end

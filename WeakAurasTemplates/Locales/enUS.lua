@@ -41,7 +41,6 @@ local L = WeakAuras.L
 	L["Create Auras"] = "Create Auras"
 	L["debuff"] = "debuff"
 	L["Debuffs"] = "Debuffs"
-	L["debuiff"] = "debuiff"
 	L["Enchants"] = "Enchants"
 	L["General"] = "General"
 	L["General Azerite Traits"] = "General Azerite Traits"

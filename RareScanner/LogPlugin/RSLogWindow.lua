@@ -179,7 +179,7 @@ function RareScanner:RegisterPreviousButton(npcID, name, iconid)
 	end
 	
 	-- It its a container or event skip
-	if (iconid == RareScanner.CONTAINER_VIGNETTE or iconid == RareScanner.CONTAINER_ELITE_VIGNETTE or iconid == RareScanner.EVENT_VIGNETTE) then
+	if (iconid == RareScanner.CONTAINER_VIGNETTE or iconid == RareScanner.CONTAINER_ELITE_VIGNETTE or iconid == RareScanner.EVENT_VIGNETTE or iconid == RareScanner.EVENT_ELITE_VIGNETTE) then
 		return
 	end
 

@@ -31,8 +31,6 @@ WeakAuras.displayButtons = displayButtons;
 local optionReloads = {};
 local optionTriggerChoices = {};
 WeakAuras.optionTriggerChoices = optionTriggerChoices;
-WeakAuras.thumbnails = {};
-local thumbnails = WeakAuras.thumbnails;
 local displayOptions = {};
 WeakAuras.displayOptions = displayOptions;
 local loaded = WeakAuras.loaded;
@@ -322,7 +320,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
               WeakAuras.ScheduleReloadOptions(data);
             end
             WeakAuras.ScanForLoads({[data.id] = true});
-            WeakAuras.SetThumbnail(data);
+            WeakAuras.UpdateThumbnail(data);
             WeakAuras.SetIconNames(data);
             WeakAuras.UpdateDisplayButton(data);
             WeakAuras.SortDisplayButtons();
@@ -372,7 +370,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
               WeakAuras.ScheduleReloadOptions(data);
             end
             WeakAuras.ScanForLoads({[data.id] = true});
-            WeakAuras.SetThumbnail(data);
+            WeakAuras.UpdateThumbnail(data);
             WeakAuras.SetIconNames(data);
             WeakAuras.UpdateDisplayButton(data);
             WeakAuras.SortDisplayButtons();
@@ -421,7 +419,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
               WeakAuras.ScheduleReloadOptions(data);
             end
             WeakAuras.ScanForLoads({[data.id] = true});
-            WeakAuras.SetThumbnail(data);
+            WeakAuras.UpdateThumbnail(data);
             WeakAuras.SetIconNames(data);
             WeakAuras.UpdateDisplayButton(data);
             WeakAuras.SortDisplayButtons();
@@ -462,7 +460,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
                 WeakAuras.ScheduleReloadOptions(data);
               end
               WeakAuras.ScanForLoads({[data.id] = true});
-              WeakAuras.SetThumbnail(data);
+              WeakAuras.UpdateThumbnail(data);
               WeakAuras.SetIconNames(data);
               WeakAuras.UpdateDisplayButton(data);
               WeakAuras.SortDisplayButtons();
@@ -502,7 +500,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
               WeakAuras.ScheduleReloadOptions(data);
             end
             WeakAuras.ScanForLoads({[data.id] = true});
-            WeakAuras.SetThumbnail(data);
+            WeakAuras.UpdateThumbnail(data);
             WeakAuras.SetIconNames(data);
             WeakAuras.UpdateDisplayButton(data);
             WeakAuras.SortDisplayButtons();
@@ -540,7 +538,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
               WeakAuras.ScheduleReloadOptions(data);
             end
             WeakAuras.ScanForLoads({[data.id] = true});
-            WeakAuras.SetThumbnail(data);
+            WeakAuras.UpdateThumbnail(data);
             WeakAuras.SetIconNames(data);
             WeakAuras.UpdateDisplayButton(data);
             WeakAuras.SortDisplayButtons();
@@ -588,7 +586,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
               WeakAuras.ScheduleReloadOptions(data);
             end
             WeakAuras.ScanForLoads({[data.id] = true});
-            WeakAuras.SetThumbnail(data);
+            WeakAuras.UpdateThumbnail(data);
             WeakAuras.SetIconNames(data);
             WeakAuras.UpdateDisplayButton(data);
             WeakAuras.SortDisplayButtons();
@@ -626,7 +624,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
               WeakAuras.ScheduleReloadOptions(data);
             end
             WeakAuras.ScanForLoads({[data.id] = true});
-            WeakAuras.SetThumbnail(data);
+            WeakAuras.UpdateThumbnail(data);
             WeakAuras.SetIconNames(data);
             WeakAuras.UpdateDisplayButton(data);
             WeakAuras.SortDisplayButtons();
@@ -664,7 +662,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
                 trigger["use_exact_"..realname] = v;
                 WeakAuras.Add(data);
                 WeakAuras.ScanForLoads({[data.id] = true});
-                WeakAuras.SetThumbnail(data);
+                WeakAuras.UpdateThumbnail(data);
                 WeakAuras.SetIconNames(data);
                 WeakAuras.UpdateDisplayButton(data);
                 WeakAuras.SortDisplayButtons();
@@ -760,7 +758,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
                 WeakAuras.ScheduleReloadOptions(data);
               end
               WeakAuras.ScanForLoads({[data.id] = true});
-              WeakAuras.SetThumbnail(data);
+              WeakAuras.UpdateThumbnail(data);
               WeakAuras.SetIconNames(data);
               WeakAuras.UpdateDisplayButton(data);
               WeakAuras.SortDisplayButtons();
@@ -812,7 +810,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
               WeakAuras.ScheduleReloadOptions(data);
             end
             WeakAuras.ScanForLoads({[data.id] = true});
-            WeakAuras.SetThumbnail(data);
+            WeakAuras.UpdateThumbnail(data);
             WeakAuras.SetIconNames(data);
             WeakAuras.UpdateDisplayButton(data);
             WeakAuras.SortDisplayButtons();
@@ -837,7 +835,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
               WeakAuras.ScheduleReloadOptions(data);
             end
             WeakAuras.ScanForLoads({[data.id] = true});
-            WeakAuras.SetThumbnail(data);
+            WeakAuras.UpdateThumbnail(data);
             WeakAuras.SetIconNames(data);
             WeakAuras.UpdateDisplayButton(data);
             WeakAuras.SortDisplayButtons();
@@ -911,7 +909,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
               WeakAuras.ScheduleReloadOptions(data);
             end
             WeakAuras.ScanForLoads({[data.id] = true});
-            WeakAuras.SetThumbnail(data);
+            WeakAuras.UpdateThumbnail(data);
             WeakAuras.SetIconNames(data);
             WeakAuras.UpdateDisplayButton(data);
             WeakAuras.SortDisplayButtons();
@@ -926,7 +924,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
               WeakAuras.ScheduleReloadOptions(data);
             end
             WeakAuras.ScanForLoads({[data.id] = true});
-            WeakAuras.SetThumbnail(data);
+            WeakAuras.UpdateThumbnail(data);
             WeakAuras.SetIconNames(data);
             WeakAuras.UpdateDisplayButton(data);
             WeakAuras.SortDisplayButtons();
@@ -959,7 +957,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
               WeakAuras.ScheduleReloadOptions(data);
             end
             WeakAuras.ScanForLoads({[data.id] = true});
-            WeakAuras.SetThumbnail(data);
+            WeakAuras.UpdateThumbnail(data);
             WeakAuras.SetIconNames(data);
             WeakAuras.UpdateDisplayButton(data);
             WeakAuras.SortDisplayButtons();
@@ -982,7 +980,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
               WeakAuras.ScheduleReloadOptions(data);
             end
             WeakAuras.ScanForLoads({[data.id] = true});
-            WeakAuras.SetThumbnail(data);
+            WeakAuras.UpdateThumbnail(data);
             WeakAuras.SetIconNames(data);
             WeakAuras.UpdateDisplayButton(data);
             WeakAuras.SortDisplayButtons();
@@ -1105,6 +1103,15 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
           end
         end
       end
+
+      if odb.magnetAlign == nil then
+        odb.magnetAlign = true
+      end
+
+      if db.import_disabled then
+        db.import_disabled = nil
+      end
+
       savedVars.db = db;
       savedVars.odb = odb;
     end
@@ -1288,8 +1295,6 @@ function WeakAuras.DeleteOption(data, massDelete)
   frame:ClearPicks();
   WeakAuras.Delete(data);
   frame.buttonsScroll:DeleteChild(displayButtons[id]);
-  thumbnails[id].region:Hide();
-  thumbnails[id] = nil;
   displayButtons[id] = nil;
 
   if(parentData and parentData.controlledChildren and not massDelete) then
@@ -1416,6 +1421,17 @@ function WeakAuras.ShowOptions(msg)
     WeakAuras.personalRessourceDisplayFrame:OptionsOpened();
   end
 
+  if not(firstLoad) then
+    -- Show what was last shown
+    WeakAuras.PauseAllDynamicGroups();
+    for id, button in pairs(displayButtons) do
+      if (button:GetVisibility() > 0) then
+        button:PriorityShow(button:GetVisibility());
+      end
+    end
+    WeakAuras.ResumeAllDynamicGroups();
+  end
+
   if (frame.pickedDisplay) then
     if (WeakAuras.IsPickedMultiple()) then
       local children = {}
@@ -1427,17 +1443,7 @@ function WeakAuras.ShowOptions(msg)
       WeakAuras.PickDisplay(frame.pickedDisplay);
     end
   else
-    frame:PickOption("New");
-  end
-  if not(firstLoad) then
-    -- Show what was last shown
-    WeakAuras.PauseAllDynamicGroups();
-    for id, button in pairs(displayButtons) do
-      if (button:GetVisibility() > 0) then
-        button:PriorityShow(button:GetVisibility());
-      end
-    end
-    WeakAuras.ResumeAllDynamicGroups();
+    frame:NewAura();
   end
 
   if (frame.window == "codereview") then
@@ -1460,9 +1466,8 @@ function WeakAuras.IsOptionsOpen()
 end
 
 function WeakAuras.SetIconNames(data)
-  if (not thumbnails[data.id]) then return end;
   WeakAuras.SetIconName(data, WeakAuras.regions[data.id].region);
-  WeakAuras.SetIconName(data, thumbnails[data.id].region);
+
   if(WeakAuras.clones[data.id]) then
     for index, cloneRegion in pairs(WeakAuras.clones[data.id]) do
       WeakAuras.SetIconName(data, cloneRegion);
@@ -1528,9 +1533,7 @@ function WeakAuras.GetSortedOptionsLists()
 end
 
 function WeakAuras.BuildOptions(list, callback)
-  frame.loadProgress:Show();
-  frame.filterInput:Hide();
-  frame.filterInputClear:Hide();
+  frame:SetLoadProgressVisible(true)
 
   local total = 0;
   for _,_ in pairs(list) do
@@ -1552,9 +1555,7 @@ function WeakAuras.BuildOptions(list, callback)
     end
 
     callback();
-    frame.loadProgress:Hide();
-    frame.filterInput:Show();
-    frame.filterInputClear:Show();
+    frame:SetLoadProgressVisible(false)
   end
 
   local co = coroutine.create(func);
@@ -1569,11 +1570,11 @@ function WeakAuras.LayoutDisplayButtons(msg)
 
   local loadedSorted, unloadedSorted = WeakAuras.GetSortedOptionsLists();
 
-  frame.loadProgress:Show();
-  frame.buttonsScroll:AddChild(frame.newButton);
-  if(frame.addonsButton) then
-    frame.buttonsScroll:AddChild(frame.addonsButton);
-  end
+  frame:SetLoadProgressVisible(true)
+  --frame.buttonsScroll:AddChild(frame.newButton);
+  --if(frame.addonsButton) then
+  --  frame.buttonsScroll:AddChild(frame.addonsButton);
+  --end
   frame.buttonsScroll:AddChild(frame.loadedButton);
   frame.buttonsScroll:AddChild(frame.unloadedButton);
 
@@ -1622,9 +1623,7 @@ function WeakAuras.LayoutDisplayButtons(msg)
     end
     WeakAuras.ResumeAllDynamicGroups();
 
-    frame.loadProgress:Hide();
-    frame.filterInput:Show();
-    frame.filterInputClear:Show();
+    frame:SetLoadProgressVisible(false)
   end
 
   local func1 = function()
@@ -2310,12 +2309,12 @@ end
 -- TODO: find a paradigm which doesn't have five million flags for AddCodeOption so that calls to it don't always go off the screen
 -- a table of settings is the obvious option to pack the flags.
 -- alternatively, we could create a "code" type option which then gets processed before sending to AceConfig
-function WeakAuras.AddCodeOption(args, data, name, prefix, order, hiddenFunc, path, encloseInFunction, multipath, extraSetFunction, extraFunctions, reloadOptions, setOnParent)
+function WeakAuras.AddCodeOption(args, data, name, prefix, url, order, hiddenFunc, path, encloseInFunction, multipath, extraSetFunction, extraFunctions, reloadOptions, setOnParent)
   extraFunctions = extraFunctions or {};
   tinsert(extraFunctions, 1, {
     buttonLabel = L["Expand"],
     func = function()
-      WeakAuras.OpenTextEditor(data, path, encloseInFunction, multipath, reloadOptions, setOnParent)
+      WeakAuras.OpenTextEditor(data, path, encloseInFunction, multipath, reloadOptions, setOnParent, url)
     end
   });
 
@@ -2736,13 +2735,12 @@ function WeakAuras.AddOption(id, data)
             base[property] = (v ~= "" and v) or nil;
           end
           WeakAuras.Add(data);
-          WeakAuras.SetThumbnail(data);
+          WeakAuras.UpdateThumbnail(data);
           WeakAuras.SetIconNames(data);
           if(data.parent) then
             local parentData = WeakAuras.GetData(data.parent);
             if(parentData) then
               WeakAuras.Add(parentData);
-              WeakAuras.SetThumbnail(parentData);
             end
           end
           WeakAuras.ResetMoverSizer();
@@ -2769,7 +2767,7 @@ function WeakAuras.AddOption(id, data)
         set = function(info, v)
           data.load[info[#info]] = (v ~= "" and v) or nil;
           WeakAuras.Add(data);
-          WeakAuras.SetThumbnail(data);
+          WeakAuras.UpdateThumbnail(data);
           WeakAuras.ScanForLoads({[data.id] = true});
           WeakAuras.SortDisplayButtons();
         end,
@@ -3090,7 +3088,7 @@ function WeakAuras.ReloadTriggerOptions(data)
       set = function(info, v)
         data.triggers.activeTriggerMode = v;
         WeakAuras.Add(data);
-        WeakAuras.SetThumbnail(data);
+        WeakAuras.UpdateThumbnail(data);
         WeakAuras.SetIconNames(data);
         WeakAuras.UpdateDisplayButton(data);
       end,
@@ -3329,7 +3327,7 @@ function WeakAuras.ReloadTriggerOptions(data)
           end
         end
         WeakAuras.Add(data);
-        WeakAuras.SetThumbnail(data);
+        WeakAuras.UpdateThumbnail(data);
         WeakAuras.SetIconNames(data);
         WeakAuras.UpdateDisplayButton(data);
         WeakAuras.ReloadTriggerOptions(data);
@@ -3340,7 +3338,8 @@ function WeakAuras.ReloadTriggerOptions(data)
   local function hideTriggerCombiner()
     return not (data.triggers.disjunctive == "custom")
   end
-  WeakAuras.AddCodeOption(trigger_options, data, L["Custom"], "custom_trigger_combination", 0.1, hideTriggerCombiner, {"triggers", "customTriggerLogic"}, false);
+  WeakAuras.AddCodeOption(trigger_options, data, L["Custom"], "custom_trigger_combination", "https://github.com/WeakAuras/WeakAuras2/wiki/Aura-Activation-and-Deactivation",
+                          0.1, hideTriggerCombiner, {"triggers", "customTriggerLogic"}, false);
 
   local order = 81;
 
@@ -3348,7 +3347,7 @@ function WeakAuras.ReloadTriggerOptions(data)
     local function options_set(info, ...)
       setAll(data, info, ...);
       WeakAuras.Add(data);
-      WeakAuras.SetThumbnail(data);
+      WeakAuras.UpdateThumbnail(data);
       WeakAuras.SetIconNames(data);
       WeakAuras.UpdateDisplayButton(data);
       WeakAuras.ReloadTriggerOptions(data);
@@ -3394,7 +3393,7 @@ function WeakAuras.ReloadTriggerOptions(data)
       setAll(data, info, ...);
       if(type(id) == "string") then
         WeakAuras.Add(data);
-        WeakAuras.SetThumbnail(data);
+        WeakAuras.UpdateThumbnail(data);
         WeakAuras.ResetMoverSizer();
       end
     end
@@ -3453,7 +3452,7 @@ function WeakAuras.ReloadTriggerOptions(data)
           base[property] = (v ~= "" and v) or nil;
         end
         WeakAuras.Add(data);
-        WeakAuras.SetThumbnail(data);
+        WeakAuras.UpdateThumbnail(data);
         WeakAuras.SetIconNames(data);
         WeakAuras.ResetMoverSizer();
       end,
@@ -3482,7 +3481,7 @@ function WeakAuras.ReloadTriggerOptions(data)
     local function options_set(info, v)
       trigger[info[#info]] = v;
       WeakAuras.Add(data);
-      WeakAuras.SetThumbnail(data);
+      WeakAuras.UpdateThumbnail(data);
       WeakAuras.SetIconNames(data);
       WeakAuras.UpdateDisplayButton(data);
       WeakAuras.ReloadTriggerOptions(data);
@@ -3552,7 +3551,7 @@ function WeakAuras.ReloadTriggerOptions(data)
       end
 
       WeakAuras.Add(data);
-      WeakAuras.SetThumbnail(data);
+      WeakAuras.UpdateThumbnail(data);
       WeakAuras.SetIconNames(data);
       WeakAuras.UpdateDisplayButton(data);
       WeakAuras.ReloadTriggerOptions(data);
@@ -3735,13 +3734,12 @@ function WeakAuras.PositionOptions(id, data, _, hideWidthHeight, disableSelfPoin
       set = function(info, v)
         data.xOffset = v;
         WeakAuras.Add(data);
-        WeakAuras.SetThumbnail(data);
+        WeakAuras.UpdateThumbnail(data);
         WeakAuras.ResetMoverSizer();
         if(data.parent) then
           local parentData = WeakAuras.GetData(data.parent);
           if(parentData) then
             WeakAuras.Add(parentData);
-            WeakAuras.SetThumbnail(parentData);
           end
         end
       end
@@ -3758,13 +3756,12 @@ function WeakAuras.PositionOptions(id, data, _, hideWidthHeight, disableSelfPoin
       set = function(info, v)
         data.yOffset = v;
         WeakAuras.Add(data);
-        WeakAuras.SetThumbnail(data);
+        WeakAuras.UpdateThumbnail(data);
         WeakAuras.ResetMoverSizer();
         if(data.parent) then
           local parentData = WeakAuras.GetData(data.parent);
           if(parentData) then
             WeakAuras.Add(parentData);
-            WeakAuras.SetThumbnail(parentData);
           end
         end
       end
@@ -3889,236 +3886,9 @@ function WeakAuras.PositionOptions(id, data, _, hideWidthHeight, disableSelfPoin
       end
     },
   };
-  WeakAuras.AddCodeOption(positionOptions, data, L["Custom Anchor"], "custom_anchor", 72.1, function() return not(data.anchorFrameType == "CUSTOM" and not IsParentDynamicGroup()) end, {"customAnchor"}, nil, nil, nil, nil, nil, true)
+  WeakAuras.AddCodeOption(positionOptions, data, L["Custom Anchor"], "custom_anchor", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Anchor",
+                          72.1, function() return not(data.anchorFrameType == "CUSTOM" and not IsParentDynamicGroup()) end, {"customAnchor"}, nil, nil, nil, nil, nil, true)
   return positionOptions;
-end
-
-function WeakAuras.GlowOptions(id, data, order)
-  local hiddenGlowExtra = function()
-    return WeakAuras.IsCollapsed("glow", "glow", "glowextra", true);
-  end
-
-  local indentWidth = 0.15
-
-  local glowOptions = {
-    glowHeader = {
-      type = "header",
-      order = order,
-      name = L["Glow Settings"]
-    },
-    glow = {
-      type = "toggle",
-      width = WeakAuras.normalWidth,
-      name = L["Show Glow"],
-      order = order + 0.02,
-    },
-    glowType = {
-      type = "select",
-      width = WeakAuras.normalWidth,
-      name = L["Type"],
-      order = order + 0.03,
-      values = WeakAuras.glow_types,
-    },
-    glowExtraDescription = {
-      type = "description",
-      name = function()
-        local line = L["|cFFffcc00Extra Options:|r"]
-        local color = L["Default Color"]
-        if data.useGlowColor then
-          color = L["|c%02x%02x%02x%02xColor|r"]:format(
-            data.glowColor[4] * 255,
-            data.glowColor[1] * 255,
-            data.glowColor[2] * 255,
-            data.glowColor[3] * 255
-          )
-        end
-        if data.glowType == "buttonOverlay" then
-          line = ("%s %s"):format(line, color)
-        elseif data.glowType == "ACShine" then
-          line = L["%s %s, Particles: %d, Frequency: %0.2f, Scale: %0.2f"]:format(
-            line,
-            color,
-            data.glowLines,
-            data.glowFrequency,
-            data.glowScale
-          )
-          if data.glowXOffset ~= 0 or data.glowYOffset ~= 0 then
-            line = L["%s, offset: %0.2f;%0.2f"]:format(line, data.glowXOffset, data.glowYOffset)
-          end
-        elseif data.glowType == "Pixel" then
-          line = L["%s %s, Lines: %d, Frequency: %0.2f, Length: %d, Thickness: %d"]:format(
-            line,
-            color,
-            data.glowLines,
-            data.glowFrequency,
-            data.glowLength,
-            data.glowThickness
-          )
-          if data.glowXOffset ~= 0 or data.glowYOffset ~= 0 then
-            line = L["%s, Offset: %0.2f;%0.2f"]:format(line, data.glowXOffset, data.glowYOffset)
-          end
-          if data.glowBorder then
-            line = L["%s, Border"]:format(line)
-          end
-        end
-        return line
-      end,
-      width = WeakAuras.doubleWidth - 0.15,
-      order = order + 1,
-      fontSize = "medium"
-    },
-    glowExpand = {
-      type = "execute",
-      name = function()
-        local collapsed = WeakAuras.IsCollapsed("glow", "glow", "glowextra", true)
-        return collapsed and L["Show Extra Options"] or L["Hide Extra Options"]
-      end,
-      order = order + 1.01,
-      width = 0.15,
-      image = function()
-        local collapsed = WeakAuras.IsCollapsed("glow", "glow", "glowextra", true);
-        return collapsed and "Interface\\AddOns\\WeakAuras\\Media\\Textures\\edit" or "Interface\\AddOns\\WeakAuras\\Media\\Textures\\editdown"
-      end,
-      imageWidth = 24,
-      imageHeight = 24,
-      func = function()
-        local collapsed = WeakAuras.IsCollapsed("glow", "glow", "glowextra", true);
-        WeakAuras.SetCollapsed("glow", "glow", "glowextra", not collapsed);
-      end,
-      control = "WeakAurasIcon"
-    },
-    glow_space1 = {
-      type = "description",
-      name = "",
-      width = indentWidth,
-      order = order + 1.10,
-      hidden = hiddenGlowExtra,
-    },
-    useGlowColor = {
-      type = "toggle",
-      width = WeakAuras.normalWidth - indentWidth,
-      name = L["Color"],
-      desc = L["If unchecked, then a default color will be used (usually yellow)"],
-      order = order + 1.11,
-      hidden = hiddenGlowExtra
-    },
-    glowColor = {
-      type = "color",
-      width = WeakAuras.normalWidth,
-      name = L["Color"],
-      order = order + 1.12,
-      disabled = function() return not data.useGlowColor end,
-      hidden = hiddenGlowExtra
-    },
-    glow_space2 = {
-      type = "description",
-      name = "",
-      width = indentWidth,
-      order = order + 1.20,
-      hidden = hiddenGlowExtra,
-    },
-    glowLines = {
-      type = "range",
-      width = WeakAuras.normalWidth - indentWidth,
-      name = L["Lines & Particles"],
-      order = order + 1.21,
-      min = 1,
-      softMax = 30,
-      step = 1,
-      hidden = function() return hiddenGlowExtra() or data.glowType == "buttonOverlay" end,
-    },
-    glowFrequency = {
-      type = "range",
-      width = WeakAuras.normalWidth,
-      name = L["Frequency"],
-      order = order + 1.22,
-      softMin = -2,
-      softMax = 2,
-      step = 0.05,
-      hidden = function() return hiddenGlowExtra() or data.glowType == "buttonOverlay" end,
-    },
-    glow_space3 = {
-      type = "description",
-      name = "",
-      width = indentWidth,
-      order = order + 1.30,
-      hidden = function() return hiddenGlowExtra() or data.glowType ~= "Pixel" end,
-    },
-    glowLength = {
-      type = "range",
-      width = WeakAuras.normalWidth - indentWidth,
-      name = L["Length"],
-      order = order + 1.31,
-      min = 1,
-      softMax = 20,
-      step = 0.05,
-      hidden = function() return hiddenGlowExtra() or data.glowType ~= "Pixel" end,
-    },
-    glowThickness = {
-      type = "range",
-      width = WeakAuras.normalWidth,
-      name = L["Thickness"],
-      order = order + 1.32,
-      min = 0.05,
-      softMax = 20,
-      step = 0.05,
-      hidden = function() return hiddenGlowExtra() or data.glowType ~= "Pixel" end,
-    },
-    glow_space4 = {
-      type = "description",
-      name = "",
-      width = indentWidth,
-      order = order + 1.40,
-      hidden = hiddenGlowExtra,
-    },
-    glowXOffset = {
-      type = "range",
-      width = WeakAuras.normalWidth - indentWidth,
-      name = L["X-Offset"],
-      order = order + 1.41,
-      softMin = -100,
-      softMax = 100,
-      step = 0.5,
-      hidden = function() return hiddenGlowExtra() or data.glowType == "buttonOverlay" end,
-    },
-    glowYOffset = {
-      type = "range",
-      width = WeakAuras.normalWidth,
-      name = L["Y-Offset"],
-      order = order + 1.42,
-      softMin = -100,
-      softMax = 100,
-      step = 0.5,
-      hidden = function() return hiddenGlowExtra() or data.glowType == "buttonOverlay" end,
-    },
-    glow_space5 = {
-      type = "description",
-      name = "",
-      width = indentWidth,
-      order = order + 1.50,
-      hidden = hiddenGlowExtra,
-    },
-    glowScale = {
-      type = "range",
-      width = WeakAuras.normalWidth - indentWidth,
-      name = L["Scale"],
-      order = order + 1.52,
-      min = 0.05,
-      softMax = 10,
-      step = 0.05,
-      isPercent = true,
-      hidden = function() return hiddenGlowExtra() or data.glowType ~= "ACShine" end,
-    },
-    glowBorder = {
-      type = "toggle",
-      width = WeakAuras.normalWidth - indentWidth,
-      name = L["Border"],
-      order = order + 1.53,
-      hidden = function() return hiddenGlowExtra() or data.glowType ~= "Pixel" end,
-    }
-  }
-
-  return glowOptions
 end
 
 -- TODO: update this function to not have an unused parameter
@@ -4250,9 +4020,6 @@ end
 
 function WeakAuras.ConvertDisplay(data, newType)
   local id = data.id;
-  -- thumbnails[id].region:SetScript("OnUpdate", nil);
-  thumbnails[id].region:Hide();
-  thumbnails[id] = nil;
   local visibility = displayButtons[id]:GetVisibility();
   displayButtons[id]:PriorityHide(0);
 
@@ -4267,8 +4034,9 @@ function WeakAuras.ConvertDisplay(data, newType)
   WeakAuras.AddOption(id, data);
   frame:FillOptions(displayOptions[id]);
   WeakAuras.UpdateDisplayButton(data);
-  frame.mover.moving.region = WeakAuras.regions[id].region;
+  WeakAuras.SetMoverSizer(id)
   WeakAuras.ResetMoverSizer();
+  WeakAuras.SortDisplayButtons()
 end
 
 function WeakAuras.NewDisplayButton(data)
@@ -4276,9 +4044,6 @@ function WeakAuras.NewDisplayButton(data)
   WeakAuras.ScanForLoads({[id] = true});
   WeakAuras.EnsureDisplayButton(db.displays[id]);
   WeakAuras.UpdateDisplayButton(db.displays[id]);
-  if(WeakAuras.regions[id].region.SetStacks) then
-    WeakAuras.regions[id].region:SetStacks(1);
-  end
   frame.buttonsScroll:AddChild(displayButtons[id]);
   WeakAuras.AddOption(id, data);
   WeakAuras.SetIconNames(data);
@@ -4317,22 +4082,25 @@ function WeakAuras.SortDisplayButtons(filter, overrideReset, id)
   filter = filter:lower();
 
   wipe(frame.buttonsScroll.children);
-  tinsert(frame.buttonsScroll.children, frame.newButton);
-  if(frame.addonsButton) then
-    tinsert(frame.buttonsScroll.children, frame.addonsButton);
-  end
+  --tinsert(frame.buttonsScroll.children, frame.newButton);
+  --if(frame.addonsButton) then
+  --  tinsert(frame.buttonsScroll.children, frame.addonsButton);
+  --end
   tinsert(frame.buttonsScroll.children, frame.loadedButton);
   local numLoaded = 0;
   local to_sort = {};
   local children = {};
   local containsFilter = false;
+
+  local visible = {}
+
   for id, child in pairs(displayButtons) do
-    containsFilter = false;
+    containsFilter = not filter or filter == "";
     local data = WeakAuras.GetData(id);
     if not(data) then
       print("|cFF8800FFWeakAuras|r: No data for", id);
     else
-      if(filter and data.controlledChildren) then
+      if(not containsFilter and data.controlledChildren) then
         for index, childId in pairs(data.controlledChildren) do
           if(childId:lower():find(filter, 1, true)) then
             containsFilter = true;
@@ -4344,9 +4112,10 @@ function WeakAuras.SortDisplayButtons(filter, overrideReset, id)
         frame.loadedButton:GetExpanded()
         and (not filter or id:lower():find(filter, 1, true) or containsFilter)
         ) then
-        child.frame:Show();
+
         local group = child:GetGroup();
         if(group) then
+          -- In a Group
           if(loaded[group]) then
             if(loaded[id]) then
               child:EnableLoaded();
@@ -4354,47 +4123,57 @@ function WeakAuras.SortDisplayButtons(filter, overrideReset, id)
               child:DisableLoaded();
             end
             children[group] = children[group] or {};
-            tinsert(children[group], child);
+            visible[id] = true
+            tinsert(children[group], id);
           end
         else
+          -- Top Level
           if(loaded[id] ~= nil) then
             if(loaded[id]) then
               child:EnableLoaded();
             else
               child:DisableLoaded();
             end
+            visible[id] = true
             tinsert(to_sort, child);
           end
         end
-      else
-        child.frame:Hide();
       end
     end
   end
   table.sort(to_sort, function(a, b) return a:GetTitle() < b:GetTitle() end);
+
   for _, child in ipairs(to_sort) do
+    child.frame:Show();
+    if child.AcquireThumnail then
+      child:AcquireThumnail()
+    end
     tinsert(frame.buttonsScroll.children, child);
     local controlledChildren = children[child:GetTitle()];
     if(controlledChildren) then
-      table.sort(controlledChildren, function(a, b) return (a:GetGroupOrder() or 1) < (b:GetGroupOrder() or 1); end);
+      table.sort(controlledChildren, function(a, b) return displayButtons[a]:GetGroupOrder() <  displayButtons[b]:GetGroupOrder(); end);
       for _, groupchild in ipairs(controlledChildren) do
-        if(child:GetExpanded()) then
-          tinsert(frame.buttonsScroll.children, groupchild);
-        else
-          groupchild.frame:Hide();
+        if(child:GetExpanded() and visible[groupchild]) then
+          displayButtons[groupchild].frame:Show();
+          if displayButtons[groupchild].AcquireThumnail then
+            displayButtons[groupchild]:AcquireThumnail()
+          end
+          tinsert(frame.buttonsScroll.children, displayButtons[groupchild]);
         end
       end
     end
   end
 
+  -- Now handle unloaded auras
   tinsert(frame.buttonsScroll.children, frame.unloadedButton);
   local numUnloaded = 0;
   wipe(to_sort);
   wipe(children);
+
   for id, child in pairs(displayButtons) do
-    containsFilter = false;
+    containsFilter = not filter or filter == "";
     local data = WeakAuras.GetData(id);
-    if(filter and data.controlledChildren) then
+    if(not containsFilter and data.controlledChildren) then
       for index, childId in pairs(data.controlledChildren) do
         if(childId:lower():find(filter, 1, true)) then
           containsFilter = true;
@@ -4415,30 +4194,49 @@ function WeakAuras.SortDisplayButtons(filter, overrideReset, id)
             child:DisableLoaded();
           end
           children[group] = children[group] or {};
-          tinsert(children[group], child);
+          visible[id] = true
+          tinsert(children[group], id);
         end
       else
         if(loaded[id] == nil) then
           child:DisableLoaded();
+          visible[id] = true
           tinsert(to_sort, child);
         end
       end
-    else
-      child.frame:Hide();
     end
   end
   table.sort(to_sort, function(a, b) return a:GetTitle() < b:GetTitle() end);
+
   for _, child in ipairs(to_sort) do
+    child.frame:Show();
+    if child.AcquireThumnail then
+      child:AcquireThumnail()
+    end
     tinsert(frame.buttonsScroll.children, child);
     local controlledChildren = children[child:GetTitle()];
     if(controlledChildren) then
-      table.sort(controlledChildren, function(a, b) return a:GetGroupOrder() < b:GetGroupOrder(); end);
+      table.sort(controlledChildren, function(a, b) return  displayButtons[a]:GetGroupOrder() <  displayButtons[b]:GetGroupOrder(); end);
       for _, groupchild in ipairs(controlledChildren) do
-        if(child:GetExpanded()) then
-          tinsert(frame.buttonsScroll.children, groupchild);
-        else
-          groupchild.frame:Hide();
+        if(child:GetExpanded() and visible[groupchild]) then
+          displayButtons[groupchild].frame:Show();
+          if displayButtons[groupchild].AcquireThumnail then
+            displayButtons[groupchild]:AcquireThumnail()
+          end
+          tinsert(frame.buttonsScroll.children, displayButtons[groupchild]);
         end
+      end
+    end
+  end
+
+  -- Hiding the other buttons
+  for id, child in pairs(displayButtons) do
+    local group = child:GetGroup();
+    local groupVisible = not group or visible[group] and displayButtons[group]:GetExpanded()
+    if(not groupVisible or not visible[id]) then
+      child.frame:Hide();
+      if child.ReleaseThumnail then
+        child:ReleaseThumnail()
       end
     end
   end
@@ -4685,7 +4483,7 @@ function WeakAuras.UpdateDisplayButton(data)
   local id = data.id;
   local button = displayButtons[id];
   if (button) then
-    button:SetIcon(WeakAuras.SetThumbnail(data));
+    button:UpdateThumbnail()
     if WeakAurasCompanion and button:IsGroup() then
       button:RefreshUpdate()
     end
@@ -4694,37 +4492,13 @@ function WeakAuras.UpdateDisplayButton(data)
   end
 end
 
-function WeakAuras.SetThumbnail(data)
-  local regionType = data.regionType;
-  local regionTypes = WeakAuras.regionTypes;
-  if not(regionType) then
-    error("Improper arguments to WeakAuras.SetThumbnail - regionType not defined");
-  else
-    local id = data.id;
-    local button = displayButtons[id];
-    if (not button) then return end;
-    local thumbnail;
-    if((not thumbnails[id]) or (not thumbnails[id].region) or thumbnails[id].regionType ~= regionType) then
-      if(regionOptions[regionType] and regionOptions[regionType].createThumbnail and regionOptions[regionType].modifyThumbnail) then
-        thumbnail = regionOptions[regionType].createThumbnail(button.frame, regionTypes[regionType].create);
-      else
-        thumbnail = button.frame:CreateTexture();
-        thumbnail:SetTexture("Interface\\Icons\\INV_Misc_QuestionMark");
-      end
-      thumbnails[id] = {
-        regionType = regionType,
-        region = thumbnail
-      };
-    end
-
-    thumbnail = thumbnails[id].region;
-    if(regionOptions[regionType] and regionOptions[regionType].modifyThumbnail) then
-      WeakAuras.validate(data, regionTypes[regionType].default);
-      regionOptions[regionType].modifyThumbnail(button.frame, thumbnail, data, regionTypes[regionType].modify);
-    end
-    thumbnail:Show();
-    return thumbnail;
+function WeakAuras.UpdateThumbnail(data)
+  local id = data.id
+  local button = displayButtons[id]
+  if (not button) then
+    return
   end
+  button:UpdateThumbnail()
 end
 
 function WeakAuras.OpenTexturePicker(data, field, textures, stopMotion)
@@ -4774,6 +4548,23 @@ function WeakAuras.ResetMoverSizer()
   if(frame and frame.mover and frame.moversizer and frame.mover.moving.region and frame.mover.moving.data) then
     frame.moversizer:SetToRegion(frame.mover.moving.region, frame.mover.moving.data);
   end
+end
+
+function WeakAuras.SetMoverSizer(id)
+  if WeakAuras.regions[id].region.toShow then
+    frame.moversizer:SetToRegion(WeakAuras.regions[id].region, db.displays[id])
+  else
+    if WeakAuras.clones[id] then
+      local cloneId, clone = next(WeakAuras.clones[id])
+      if clone then
+        frame.moversizer:SetToRegion(clone, db.displays[id])
+      end
+    end
+  end
+end
+
+function WeakAuras.GetMoverSizerId()
+  return frame.moversizer:GetCurrentId()
 end
 
 function WeakAuras.ShowCloneDialog(data)

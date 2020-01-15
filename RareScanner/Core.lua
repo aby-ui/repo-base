@@ -12,6 +12,7 @@ RareScanner.NPC_LEGION_VIGNETTE = "DemonInvasion5"
 RareScanner.CONTAINER_VIGNETTE = "VignetteLoot"
 RareScanner.CONTAINER_ELITE_VIGNETTE = "VignetteLootElite"
 RareScanner.EVENT_VIGNETTE = "VignetteEvent"
+RareScanner.EVENT_ELITE_VIGNETTE = "VignetteEventElite"
 local RESCAN_TIMER = 120; -- 2 minutes to rescan for the same NPC
 
 -- Timers
@@ -28,8 +29,8 @@ local ETERNAL_COMPLETED = -1
 local DEBUG_MODE = false
 
 -- Config constants
-local CURRENT_DB_VERSION = 6
-local CURRENT_LOOT_DB_VERSION = 17
+local CURRENT_DB_VERSION = 7
+local CURRENT_LOOT_DB_VERSION = 18
 
 -- Hard reset versions
 local CURRENT_ADDON_VERSION = 600
@@ -49,6 +50,12 @@ local CMD_TOGGLE_TREASURES = "treasures"
 local CMD_TOGGLE_RARES_SHORT = "tr"
 local CMD_TOGGLE_EVENTS_SHORT = "te"
 local CMD_TOGGLE_TREASURES_SHORT = "tt"
+
+-- Textures
+local NORMAL_NEXT_ARROW_TEXTURE = "Interface\\AddOns\\RareScanner\\Media\\Icons\\RightArrowBlue.blp"
+local HIGHLIGHT_NEXT_ARROW_TEXTURE = "Interface\\AddOns\\RareScanner\\Media\\Icons\\RightArrowYellow.blp"
+local NORMAL_BACK_ARROW_TEXTURE = "Interface\\AddOns\\RareScanner\\Media\\Icons\\LeftArrowBlue.blp"
+local HIGHLIGHT_BACK_ARROW_TEXTURE = "Interface\\AddOns\\RareScanner\\Media\\Icons\\LeftArrowYellow.blp"
 
 -- Locales
 local AL = LibStub("AceLocale-3.0"):GetLocale("RareScanner");
@@ -85,7 +92,9 @@ local PROFILE_DEFAULTS = {
 			displayRaidWarning = true,
 			displayChatMessage = true,
 			displayLogWindow = false,
-			autoHideLogWindow = 0
+			autoHideLogWindow = 0,
+			enableNavigation = true,
+			navigationLockEntity = false
 		},
 		rareFilters = {
 			filtersToggled = true,
@@ -127,9 +136,9 @@ local PROFILE_DEFAULTS = {
 }
 
 -- Main button
-local scanner_button = _G.CreateFrame("Button", "scanner_button", WorldFrame, "SecureActionButtonTemplate")
+local scanner_button = _G.CreateFrame("Button", "scanner_button", nil, "SecureActionButtonTemplate")
 scanner_button:Hide();
-scanner_button:SetFrameStrata("HIGH")
+scanner_button:SetFrameStrata("MEDIUM")
 scanner_button:SetSize(200, 50)
 scanner_button:SetScale(0.85)
 scanner_button:SetAttribute("type", "macro")
@@ -157,13 +166,15 @@ end)
 scanner_button:SetScript("OnHide", function(self)
 	self.npcID = nil
 	self.name = nil
+	self.NextButton:Reset()
+	self.PreviousButton:Reset()
 end)
 
 -- Model view
 scanner_button.ModelView = _G.CreateFrame("PlayerModel", "mxpplayermodel", scanner_button)
-scanner_button.ModelView:SetPoint("BOTTOMLEFT", scanner_button, "TOPLEFT", 0, -2) -- bottom left corner 2px separation from scanner_button's top left corner
-scanner_button.ModelView:SetPoint("RIGHT")
-scanner_button.ModelView:SetHeight(120)
+scanner_button.ModelView:ClearAllPoints()
+scanner_button.ModelView:SetPoint("TOP", 0 , 122) -- bottom left corner 2px separation from scanner_button's top left corner
+scanner_button.ModelView:SetSize(120, 120)
 scanner_button.ModelView:SetScale(1.25)
 
 local Background = scanner_button:GetNormalTexture()
@@ -270,6 +281,12 @@ scanner_button.LootBar.LootBarToolTipComp1:SetScale(0.8)
 scanner_button.LootBar.LootBarToolTipComp2 = _G.CreateFrame("GameTooltip", "LootBarToolTipComp2", nil, "GameTooltipTemplate")
 scanner_button.LootBar.LootBarToolTipComp2:SetScale(0.8)
 scanner_button.LootBar.LootBarToolTip.shoppingTooltips = { scanner_button.LootBar.LootBarToolTipComp1, scanner_button.LootBar.LootBarToolTipComp2 }
+
+-- Show navigation buttons
+scanner_button.NextButton = _G.CreateFrame("Frame", "NextButton", scanner_button, "RSRightNavTemplate")
+scanner_button.NextButton:Hide()
+scanner_button.PreviousButton = _G.CreateFrame("Frame", "PreviousButton", scanner_button, "RSLeftNavTemplate")
+scanner_button.PreviousButton:Hide()
 
 -- Player login
 scanner_button:RegisterEvent("PLAYER_LOGIN")
@@ -484,55 +501,55 @@ scanner_button:SetScript("OnEvent", function(self, event, ...)
 						end
 					end
 				else
-					-- if (DEBUG_MODE) then
-						-- StaticPopupDialogs["RS_CHECK_NEW"] = {
-							-- text = "¿Quieres procesar el NPC/contenedor que acabas de localizar?",
-							-- button1 = "Si",
-							-- button2 = "No",
-							-- OnAccept = function()
-								-- -- Emulate vignette found
-								-- if (not private.dbglobal.rares_found[npcID]) then
-									-- RareScanner:PrintDebugMessage("DEBUG: Detectado contenedor que tenemos en base de datos pero no tiene vignette "..npcID.. ". Añadido a la lista de rares_found.")
-									-- if (private.CONTAINER_ZONE_IDS[npcID]) then
-										-- private.dbglobal.rares_found[npcID] = { artID = C_Map.GetMapArtID(private.CONTAINER_ZONE_IDS[npcID].zoneID), mapID = private.CONTAINER_ZONE_IDS[npcID].zoneID, coordX = private.CONTAINER_ZONE_IDS[npcID].x, coordY = private.CONTAINER_ZONE_IDS[npcID].y, atlasName = RareScanner.CONTAINER_VIGNETTE, foundTime = time() }
-									-- else
-										-- local xx, yy = C_Map.GetPlayerMapPosition(C_Map.GetBestMapForUnit("player"), "player"):GetXY()
-										-- private.dbglobal.rares_found[npcID] = { artID = C_Map.GetMapArtID(C_Map.GetBestMapForUnit("player")), mapID = C_Map.GetBestMapForUnit("player"), coordX = xx, coordY = yy, atlasName = RareScanner.CONTAINER_VIGNETTE, foundTime = time() }
-									-- end
-								-- end
+					if (DEBUG_MODE) then
+						StaticPopupDialogs["RS_CHECK_NEW"] = {
+							text = "¿Quieres procesar el NPC/contenedor que acabas de localizar?",
+							button1 = "Si",
+							button2 = "No",
+							OnAccept = function()
+								-- Emulate vignette found
+								if (not private.dbglobal.rares_found[npcID]) then
+									RareScanner:PrintDebugMessage("DEBUG: Detectado contenedor que tenemos en base de datos pero no tiene vignette "..npcID.. ". Añadido a la lista de rares_found.")
+									if (private.CONTAINER_ZONE_IDS[npcID]) then
+										private.dbglobal.rares_found[npcID] = { artID = C_Map.GetMapArtID(private.CONTAINER_ZONE_IDS[npcID].zoneID), mapID = private.CONTAINER_ZONE_IDS[npcID].zoneID, coordX = private.CONTAINER_ZONE_IDS[npcID].x, coordY = private.CONTAINER_ZONE_IDS[npcID].y, atlasName = RareScanner.CONTAINER_VIGNETTE, foundTime = time() }
+									else
+										local xx, yy = C_Map.GetPlayerMapPosition(C_Map.GetBestMapForUnit("player"), "player"):GetXY()
+										private.dbglobal.rares_found[npcID] = { artID = C_Map.GetMapArtID(C_Map.GetBestMapForUnit("player")), mapID = C_Map.GetBestMapForUnit("player"), coordX = xx, coordY = yy, atlasName = RareScanner.CONTAINER_VIGNETTE, foundTime = time() }
+									end
+								end
 								
-								-- -- If its a cointainer check it as opened
-								-- if (private.dbglobal.rares_found[npcID].atlasName == RareScanner.CONTAINER_VIGNETTE or private.dbglobal.rares_found[npcID].atlasName == RareScanner.CONTAINER_ELITE_VIGNETTE) then
-									-- RareScanner:ProcessOpenContainer(npcID)
-								-- end
-							-- end,
-							-- timeout = 0,
-							-- whileDead = true,
-							-- hideOnEscape = true,
-							-- preferredIndex = 3,
-						-- }
-						-- StaticPopup_Show("RS_CHECK_NEW")
+								-- If its a cointainer check it as opened
+								if (private.dbglobal.rares_found[npcID].atlasName == RareScanner.CONTAINER_VIGNETTE or private.dbglobal.rares_found[npcID].atlasName == RareScanner.CONTAINER_ELITE_VIGNETTE) then
+									RareScanner:ProcessOpenContainer(npcID)
+								end
+							end,
+							timeout = 0,
+							whileDead = true,
+							hideOnEscape = true,
+							preferredIndex = 3,
+						}
+						StaticPopup_Show("RS_CHECK_NEW")
 						
-						-- if (not private.dbglobal.temp_loot) then
-							-- private.dbglobal.temp_loot = {}
-						-- end
+						if (not private.dbglobal.temp_loot) then
+							private.dbglobal.temp_loot = {}
+						end
 									
-						-- RareScanner:PrintDebugMessage("DEBUG: Obtenido loot de "..destGUID)
-						-- local itemLink = GetLootSlotLink(i)
-						-- if (itemLink) then
-							-- local _, _, _, ltype, id, _, _, _, _, _, _, _, _, _, name = string.find(itemLink, "|?c?f?f?(%x*)|?H?([^:]*):?(%d+):?(%d*):?(%d*):?(%d*):?(%d*):?(%d*):?(%-?%d*):?(%-?%d*):?(%d*):?(%d*)|?h?%[?([^%[%]]*)%]?|?h?|?r?")
-							-- if (ltype == "item") then
-								-- local itemID = id and tonumber(id) or nil
-								-- if (itemID and (not private.dbglobal.temp_loot[npcID] or not RS_tContains(private.dbglobal.temp_loot[npcID], itemID)) and (not private.LOOT_TABLE_IDS[npcID] or not RS_tContains(private.LOOT_TABLE_IDS[npcID], itemID))) then
-									-- RareScanner:PrintDebugMessage("DEBUG: Añadido nuevo botin "..itemID.." para el npcID "..npcID)
-									-- if (not private.dbglobal.temp_loot[npcID]) then
-										-- private.dbglobal.temp_loot[npcID] = {}
-									-- end
-									-- tinsert(private.dbglobal.temp_loot[npcID], itemID)
-								-- end
-							-- end
-						-- end
-					-- end
+						RareScanner:PrintDebugMessage("DEBUG: Obtenido loot de "..destGUID)
+						local itemLink = GetLootSlotLink(i)
+						if (itemLink) then
+							local _, _, _, ltype, id, _, _, _, _, _, _, _, _, _, name = string.find(itemLink, "|?c?f?f?(%x*)|?H?([^:]*):?(%d+):?(%d*):?(%d*):?(%d*):?(%d*):?(%d*):?(%-?%d*):?(%-?%d*):?(%d*):?(%d*)|?h?%[?([^%[%]]*)%]?|?h?|?r?")
+							if (ltype == "item") then
+								local itemID = id and tonumber(id) or nil
+								if (itemID and (not private.dbglobal.temp_loot[npcID] or not RS_tContains(private.dbglobal.temp_loot[npcID], itemID)) and (not private.LOOT_TABLE_IDS[npcID] or not RS_tContains(private.LOOT_TABLE_IDS[npcID], itemID))) then
+									RareScanner:PrintDebugMessage("DEBUG: Añadido nuevo botin "..itemID.." para el npcID "..npcID)
+									if (not private.dbglobal.temp_loot[npcID]) then
+										private.dbglobal.temp_loot[npcID] = {}
+									end
+									tinsert(private.dbglobal.temp_loot[npcID], itemID)
+								end
+							end
+						end
+					end
 				end
 			end
 		end
@@ -615,7 +632,6 @@ scanner_button:SetScript("OnEvent", function(self, event, ...)
 	end
 end)
 
-local tomtom_waypoint
 function RareScanner:ProcessKill(npcID, forzed)
 	-- Mark as killed
 	if (npcID and private.dbglobal.rares_found[npcID] and private.ZONE_IDS[npcID]) then
@@ -711,9 +727,10 @@ function RareScanner:ProcessKillByZone(npcID, zoneID)
 		or (private.PERMANENT_KILLS_ZONE_IDS[private.dbglobal.rares_found[npcID].mapID] and RS_tContains(private.PERMANENT_KILLS_ZONE_IDS[private.dbglobal.rares_found[npcID].mapID], "all") or RS_tContains(private.PERMANENT_KILLS_ZONE_IDS[private.dbglobal.rares_found[npcID].mapID], C_Map.GetMapArtID(private.dbglobal.rares_found[npcID].mapID)))) then
 		RareScanner:PrintDebugMessage("DEBUG: Se ha detectado que el rare matado deja de ser rare eternamente")
 		private.dbchar.rares_killed[npcID] = ETERNAL_DEATH
-	end
 	-- If it respawns after a while we dont need to keep track of death
-	RareScanner:PrintDebugMessage("DEBUG: Se ha detectado que el rare matado con ID "..npcID.." pertenece a una zona donde permanece siendo rare")
+	else
+		RareScanner:PrintDebugMessage("DEBUG: Se ha detectado que el rare matado con ID "..npcID.." pertenece a una zona donde permanece siendo rare")
+	end
 	
 	if (private.dbglobal.recentlySeen[npcID]) then
 		private.dbglobal.recentlySeen[npcID] = nil
@@ -792,32 +809,41 @@ end
 
 -- Checks if the rare has been found already in the last 5 minutes
 local already_notified = {}
-function scanner_button:CheckNotificationCache(self, vignetteInfo)	
-	local iconid = vignetteInfo.atlasName
+function scanner_button:CheckNotificationCache(self, vignetteInfo, isNavigating)
+	local zone_id = C_Map.GetBestMapForUnit("player")
+	
+	-- In Uldum and Valley of eternal Blossoms the icon for elite NPC is used for events
+	if (zone_id and vignetteInfo.atlasName == RareScanner.NPC_VIGNETTE_ELITE and (zone_id == 1530 or zone_id == 1527)) then
+		vignetteInfo.atlasName = RareScanner.EVENT_VIGNETTE
+	end
+	
+	local iconid = vignetteInfo.atlasName	
 	local name = vignetteInfo.name
 	local _, _, _, _, _, npcID, _ = strsplit("-", vignetteInfo.objectGUID);
 	
 	if (npcID) then
 		npcID = tonumber(npcID)
-		if (vignetteInfo.x and vignetteInfo.y) then
-			local coordinates = {}
-			coordinates.x = vignetteInfo.x
-			coordinates.y = vignetteInfo.y
-			RareScanner:UpdateRareFound(npcID, vignetteInfo, coordinates)
-		else
-			RareScanner:UpdateRareFound(npcID, vignetteInfo)
-		end
 		
-		-- If we have it as dead but we got a notification it means that the restart time is wrong (this happends mostly with war fronts)
-		if (private.dbchar.rares_killed[npcID]) then
-			RareScanner:PrintDebugMessage("DEBUG: Detectado rare como muerto en base de datos, pero que hemos encontrado al pasar cerca de el")
-			private.dbchar.rares_killed[npcID] = nil
-		end		
+		if (not isNavigating) then
+			if (vignetteInfo.x and vignetteInfo.y) then
+				local coordinates = {}
+				coordinates.x = vignetteInfo.x
+				coordinates.y = vignetteInfo.y
+				RareScanner:UpdateRareFound(npcID, vignetteInfo, coordinates)
+			else
+				RareScanner:UpdateRareFound(npcID, vignetteInfo)
+			end
+			
+			-- If we have it as dead but we got a notification it means that the restart time is wrong (this happends mostly with war fronts)
+			if (private.dbchar.rares_killed[npcID]) then
+				RareScanner:PrintDebugMessage("DEBUG: Detectado rare como muerto en base de datos, pero que hemos encontrado al pasar cerca de el")
+				private.dbchar.rares_killed[npcID] = nil
+			end
+		end
 	end
 	
 	-- Options disabled/enabled
-	if (iconid) then
-		local zone_id = C_Map.GetBestMapForUnit("player")
+	if (iconid) then	
 		-- disable ALL alerts in instances
 		local isInstance, instanceType = IsInInstance()
 		if (isInstance == true and not private.db.general.scanInstances) then
@@ -826,7 +852,7 @@ function scanner_button:CheckNotificationCache(self, vignetteInfo)
 		elseif (UnitOnTaxi("player") and not private.db.general.scanOnTaxi) then
 			return
 		-- disable every iconid that is not treasure, event or rare
-		elseif (iconid ~= RareScanner.CONTAINER_VIGNETTE and iconid ~= RareScanner.CONTAINER_ELITE_VIGNETTE and iconid ~= RareScanner.NPC_VIGNETTE and iconid ~= RareScanner.NPC_VIGNETTE_ELITE and iconid ~= RareScanner.EVENT_VIGNETTE and iconid ~= RareScanner.NPC_LEGION_VIGNETTE) then
+		elseif (iconid ~= RareScanner.CONTAINER_VIGNETTE and iconid ~= RareScanner.CONTAINER_ELITE_VIGNETTE and iconid ~= RareScanner.NPC_VIGNETTE and iconid ~= RareScanner.NPC_VIGNETTE_ELITE and iconid ~= RareScanner.EVENT_ELITE_VIGNETTE and iconid ~= RareScanner.EVENT_VIGNETTE and iconid ~= RareScanner.NPC_LEGION_VIGNETTE) then
 			return
 		-- disable ALL alerts for containers
 		elseif ((iconid == RareScanner.CONTAINER_VIGNETTE or iconid == RareScanner.CONTAINER_ELITE_VIGNETTE) and not private.db.general.scanContainers) then
@@ -835,7 +861,7 @@ function scanner_button:CheckNotificationCache(self, vignetteInfo)
 		elseif ((iconid == RareScanner.NPC_VIGNETTE or iconid == RareScanner.NPC_LEGION_VIGNETTE or iconid == RareScanner.NPC_VIGNETTE_ELITE) and not private.db.general.scanRares) then
 			return
 		-- disable alerts for events
-		elseif (iconid == RareScanner.EVENT_VIGNETTE and not private.db.general.scanEvents) then
+		elseif ((iconid == RareScanner.EVENT_VIGNETTE or iconid == RareScanner.EVENT_ELITE_VIGNETTE) and not private.db.general.scanEvents) then
 			return
 		-- disable zones alerts if the player is in that zone
 		elseif (not private.db.zoneFilters.filterOnlyMap and next(private.db.general.filteredZones) ~= nil and private.db.general.filteredZones[zone_id] == false) then
@@ -856,7 +882,15 @@ function scanner_button:CheckNotificationCache(self, vignetteInfo)
 			
 			-- disable button alert for containers
 			if (not private.db.display.displayButtonContainers) then
-				if already_notified[vignetteInfo.id] then
+				-- sets recently seen
+				private.dbglobal.recentlySeen[npcID] = true
+				
+				-- If navigation disabled, control Tomtom waypoint externally
+				if (not private.db.display.enableNavigation) then
+					RareScanner:AddTomtomWaypoint(vignetteInfo)
+				end
+	
+				if (already_notified[vignetteInfo.id]) then
 					return
 				else
 					already_notified[vignetteInfo.id] = true
@@ -882,7 +916,7 @@ function scanner_button:CheckNotificationCache(self, vignetteInfo)
 			end
 			
 		-- saves event name
-		elseif (iconid == RareScanner.EVENT_VIGNETTE) then
+		elseif (iconid == RareScanner.EVENT_VIGNETTE or iconid == RareScanner.EVENT_ELITE_VIGNETTE) then
 			-- check just in case its an NPC
 			if (not RareScanner:GetNpcName(npcID)) then
 				RareScanner:SetEventName(npcID, name)
@@ -893,10 +927,12 @@ function scanner_button:CheckNotificationCache(self, vignetteInfo)
 	end
 	
 	-- Check if we have found the NPC in the last 5 minutes
-	if (already_notified[vignetteInfo.id]) then
-		return
-	else
-		already_notified[vignetteInfo.id] = true
+	if (not isNavigating) then
+		if (already_notified[vignetteInfo.id]) then
+			return
+		else
+			already_notified[vignetteInfo.id] = true
+		end
 	end
 
 	-- Filters NPC by zone just in case it belong to a different are from the current player's position
@@ -912,64 +948,78 @@ function scanner_button:CheckNotificationCache(self, vignetteInfo)
 	---------------------------------------
 	-- log previous button if it was a NPC
 	---------------------------------------
-	if (self.npcID and self.npcID ~= npcID) then
+	if (self.npcID and self.npcID ~= npcID and not isNavigating) then
 		RareScanner:RegisterPreviousButton(self.npcID, self.name, self.iconid)
 	end
 	
 	--------------------------------
 	-- show messages and play alarm
 	--------------------------------
-	self:DisplayMessages(name)
-	self:PlaySoundAlert(iconid)
+	if (not isNavigating) then
+		self:DisplayMessages(name)
+		self:PlaySoundAlert(iconid)
+	end
 	
 	------------------------
 	-- set up new button
 	------------------------
 	if (private.db.display.displayButton) then
-		self.npcID = npcID
-		self.name = name
-		self.iconid = iconid
+		-- Adds the new NPCID to the navigation list
+		if (private.db.display.enableNavigation and not isNavigating) then
+			self.NextButton:AddNext(vignetteInfo)
+		end
 		
-		-- If NPC identified properly load its model
-		if (npcID) then			
-			local displayID = private.NPC_DISPLAY_IDS[npcID]
-			if (displayID and displayID ~= 0) then
-				self.displayID = displayID
+		-- Show the button
+		if (not self:IsShown() or isNavigating or not private.db.display.enableNavigation or not private.db.display.navigationLockEntity) then		
+			self.npcID = npcID
+			self.name = name
+			self.iconid = iconid
+			
+			-- If NPC identified properly load its model
+			if (npcID) then			
+				local displayID = private.NPC_DISPLAY_IDS[npcID]
+				if (displayID and displayID ~= 0) then
+					self.displayID = displayID
+				else
+					self.displayID = nil
+				end
 			else
 				self.displayID = nil
 			end
-		else
-			self.displayID = nil
-		end
-
-		-- Show button / miniature / loot bar if not in combat
-		if (not InCombatLockdown()) then	
-			-- Wow API doesnt allow to call Show() (protected function) if you are under attack, so
-			-- we check if this is the situation to avoid it and show the frames
-			-- once the battle is over (pendingToShow)
-			self:ShowButton()
-		else
-			-- Mark to show after combat
-			self.pendingToShow = true
+			
+			-- Show button / miniature / loot bar if not in combat
+			if (not InCombatLockdown()) then
+				-- Wow API doesnt allow to call Show() (protected function) if you are under attack, so
+				-- we check if this is the situation to avoid it and show the frames
+				-- once the battle is over (pendingToShow)
+				self:ShowButton()
+			else
+				-- Mark to show after combat
+				self.pendingToShow = true
+			end
+		elseif (private.db.display.enableNavigation and private.db.display.navigationLockEntity) then
+			-- reset the time to auto hide (so it takes into account the new entity found)
+			self:StartHideTimer()
+	
+			-- Refresh the navigation arrows
+			if (self.NextButton:EnableNextButton()) then
+				self.NextButton:Show()
+			else
+				self.NextButton:Hide()
+			end
+			
+			if (self.PreviousButton:EnablePreviousButton()) then
+				self.PreviousButton:Show()
+			else
+				self.PreviousButton:Hide()
+			end
 		end
 	end
 	
-	-- Tomtom support
-    if (TomTom and private.db.general.enableTomtomSupport) then
-		if (tomtom_waypoint) then
-			TomTom:RemoveWaypoint(tomtom_waypoint)
-		end
-		local npcInfo = private.dbglobal.rares_found[npcID]
-		if (npcInfo and npcInfo.coordX and npcInfo.coordY) then
-			tomtom_waypoint = TomTom:AddWaypoint(npcInfo.mapID, tonumber(npcInfo.coordX), tonumber(npcInfo.coordY), {
-				title = name,                
-				persistent = false,
-				minimap = false,
-				world = false,
-				cleardistance = 25
-			})
-		end
-    end
+	-- If navigation disabled, control Tomtom waypoint externally
+	if (not private.db.display.enableNavigation) then
+		RareScanner:AddTomtomWaypoint(vignetteInfo)
+	end
 	
 	-- sets recently seen
 	private.dbglobal.recentlySeen[npcID] = true
@@ -986,6 +1036,8 @@ function RareScanner:UpdateRareFound(npcID, vignetteInfo, coordinates)
 	
 	-- If its a NPC
 	if (vignetteInfo.atlasName == RareScanner.NPC_VIGNETTE or vignetteInfo.atlasName == RareScanner.NPC_LEGION_VIGNETTE or vignetteInfo.atlasName == RareScanner.NPC_VIGNETTE_ELITE) then
+		vignetteInfo.atlasName = RareScanner.NPC_VIGNETTE
+	
 		-- Extracts zoneID from database that its more accurate
 		if (private.ZONE_IDS[npcID] and type(private.ZONE_IDS[npcID].zoneID) == "number" and private.ZONE_IDS[npcID].zoneID ~= 0) then
 			currentMap = private.ZONE_IDS[npcID].zoneID
@@ -1004,6 +1056,8 @@ function RareScanner:UpdateRareFound(npcID, vignetteInfo, coordinates)
 		end
 	-- If its a container
 	elseif (vignetteInfo.atlasName == RareScanner.CONTAINER_VIGNETTE or vignetteInfo.atlasName == RareScanner.CONTAINER_ELITE_VIGNETTE) then 
+		vignetteInfo.atlasName = RareScanner.CONTAINER_VIGNETTE
+		
 		-- Extracts zoneID from database that its more accurate
 		if (private.CONTAINER_ZONE_IDS[npcID]) then
 			currentMap = private.CONTAINER_ZONE_IDS[npcID].zoneID
@@ -1012,7 +1066,9 @@ function RareScanner:UpdateRareFound(npcID, vignetteInfo, coordinates)
 			currentMap = C_Map.GetBestMapForUnit("player")
 		end
 	-- If its an event
-	elseif (vignetteInfo.atlasName == RareScanner.EVENT_VIGNETTE) then 
+	elseif (vignetteInfo.atlasName == RareScanner.EVENT_VIGNETTE or vignetteInfo.atlasName == RareScanner.EVENT_ELITE_VIGNETTE) then 
+		vignetteInfo.atlasName = RareScanner.EVENT_VIGNETTE
+		
 		-- Extracts zoneID from database that its more accurate
 		if (private.EVENT_ZONE_IDS[npcID]) then
 			currentMap = private.EVENT_ZONE_IDS[npcID].zoneID
@@ -1050,6 +1106,7 @@ function RareScanner:UpdateRareFound(npcID, vignetteInfo, coordinates)
 		private.dbglobal.rares_found[npcID].coordY = mapY
 		private.dbglobal.rares_found[npcID].mapID = currentMap
 		private.dbglobal.rares_found[npcID].artID = art
+		private.dbglobal.rares_found[npcID].atlasName = atlas
 			
 		RareScanner:PrintDebugMessage("DEBUG: Detectado NPC que ya habiamos localizado, se actualiza la fecha y sus coordenadas")
 	else	
@@ -1097,7 +1154,7 @@ end
 
 function scanner_button:PlaySoundAlert(iconid)
 	if (not private.db.sound.soundDisabled) then
-		if (iconid == RareScanner.CONTAINER_VIGNETTE or iconid == RareScanner.EVENT_VIGNETTE or iconid == RareScanner.CONTAINER_ELITE_VIGNETTE) then
+		if (iconid == RareScanner.CONTAINER_VIGNETTE or iconid == RareScanner.EVENT_VIGNETTE or iconid == RareScanner.CONTAINER_ELITE_VIGNETTE or iconid == RareScanner.EVENT_ELITE_VIGNETTE) then
 			--PlaySoundFile(string.gsub(private.SOUNDS[private.db.sound.soundObjectPlayed], "-4", "-"..private.db.sound.soundVolume), "Master")
             PlaySound(private.SOUNDS[private.db.sound.soundObjectPlayed], "Master", false)
 		else
@@ -1153,6 +1210,21 @@ function scanner_button:ShowButton()
 		C_Timer.After(2, function() 
 			self:LoadLootBar()
 		end)
+	end
+	
+	-- show navigation arrows
+	if (private.db.display.enableNavigation) then
+		if (self.NextButton:EnableNextButton()) then
+			self.NextButton:Show()
+		else
+			self.NextButton:Hide()
+		end
+		
+		if (self.PreviousButton:EnablePreviousButton()) then
+			self.PreviousButton:Show()
+		else
+			self.PreviousButton:Hide()
+		end
 	end
 
 	-- Show button, model and loot panel
@@ -1925,4 +1997,32 @@ function RareScanner:GetWarFrontResetTime()
 	end
 
 	return nightlyReset + (7 * 24 * 60 * 60) -- every 2 weeks
+end
+
+-- Tomtom support
+local tomtom_waypoint
+function RareScanner:AddTomtomWaypoint(vignetteInfo)
+	if (TomTom and private.db.general.enableTomtomSupport and vignetteInfo) then
+		local _, _, _, _, _, npcID, _ = strsplit("-", vignetteInfo.objectGUID);
+		
+		if (npcID) then
+			npcID = tonumber(npcID)
+		else
+			return
+		end
+		
+		if (tomtom_waypoint) then
+			TomTom:RemoveWaypoint(tomtom_waypoint)
+		end
+		local npcInfo = private.dbglobal.rares_found[npcID]
+		if (npcInfo and npcInfo.coordX and npcInfo.coordY) then
+			tomtom_waypoint = TomTom:AddWaypoint(npcInfo.mapID, tonumber(npcInfo.coordX), tonumber(npcInfo.coordY), {
+				title = vignetteInfo.name,                
+				persistent = false,
+				minimap = false,
+				world = false,
+				cleardistance = 25
+			})
+		end
+    end
 end

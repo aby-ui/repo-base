@@ -180,6 +180,13 @@ WeakAuras.threat_unit_types = {
   none = L["At Least One Enemy"]
 }
 
+WeakAuras.unit_types_range_check = {
+  target = L["Target"],
+  focus = L["Focus"],
+  pet = L["Pet"],
+  member = L["Specific Unit"]
+}
+
 WeakAuras.unit_threat_situation_types = {
   [-1] = L["Not On Threat Table"],
   [0] = "|cFFB0B0B0"..L["Lower Than Tank"],
@@ -305,6 +312,13 @@ end
 WeakAuras.default_types_for_anchor["ALL"] = {
   display = L["Whole Area"],
   type = "area"
+}
+
+WeakAuras.aurabar_anchor_areas = {
+  icon = L["Icon"],
+  fg = L["Foreground"],
+  bg = L["Background"],
+  bar = L["Bar"],
 }
 
 WeakAuras.inverse_point_types = {
@@ -504,6 +518,20 @@ WeakAuras.environmental_types = {
 WeakAuras.combatlog_flags_check_type = {
   InGroup = L["In Group"],
   NotInGroup = L["Not in Group"]
+}
+
+WeakAuras.combatlog_flags_check_reaction = {
+  Hostile = L["Hostile"],
+  Neutral = L["Neutral"],
+  Friendly = L["Friendly"]
+}
+
+WeakAuras.combatlog_flags_check_object_type = {
+  Object = L["Object"],
+  Guardian = L["Guardian"],
+  Pet = L["Pet"],
+  NPC = L["NPC"],
+  Player = L["Player"]
 }
 
 WeakAuras.combatlog_raid_mark_check_type = {
@@ -1589,6 +1617,11 @@ WeakAuras.pet_behavior_types = {
   assist = PET_MODE_ASSIST
 }
 
+if WeakAuras.IsClassic() then
+  WeakAuras.pet_behavior_types.aggressive = PET_MODE_AGGRESSIVE
+  WeakAuras.pet_behavior_types.assist = nil
+end
+
 if not WeakAuras.IsClassic() then
   WeakAuras.pet_spec_types = {
     [1] = select(2, GetSpecializationInfoByID(74)), -- Ferocity
@@ -1833,15 +1866,24 @@ WeakAuras.update_categories = {
   },
 }
 
+-- fields that are handled as special cases when importing
+-- mismatch of internal fields is not counted as a difference
 WeakAuras.internal_fields = {
   uid = true,
-  controlledChildren = true,
-  parent = true,
   internalVersion = true,
   sortHybridTable = true,
+}
+
+-- fields that are not included in exported data
+-- these represent information which is only meaningful inside the db,
+-- or are represented in other ways in exported
+WeakAuras.non_transmissable_fields = {
+  controlledChildren = true,
+  parent = true,
   authorMode = true,
   skipWagoUpdate = true,
-  ignoreWagoUpdate = true
+  ignoreWagoUpdate = true,
+  preferToUpdate = true,
 }
 
 WeakAuras.data_stub = {
@@ -1985,8 +2027,24 @@ WeakAuras.author_option_fields = {
     collapse = false,
     limitType = "none",
     size = 10,
+    nameSource = 0,
+    hideReorder = true,
+    entryNames = nil, -- handled as a special case in code
     subOptions = {},
   }
+}
+
+WeakAuras.array_entry_name_types = {
+  [-1] = L["Fixed Names"],
+  [0] = L["Entry Order"],
+  -- the rest is auto-populated with indices which are valid entry name sources
+}
+
+WeakAuras.name_source_option_types = {
+  -- option types which can be used to generate entry names on arrays
+  input = true,
+  number = true,
+  range = true,
 }
 
 WeakAuras.group_limit_types = {
@@ -2045,7 +2103,7 @@ WeakAuras.difficulty_info = {
     size = "scenario",
     difficulty = "normal",
   },
-  nil, -- 13 is unused
+  -- 13 is unused
   [14] = {
     size = "flexible",
     difficulty = "normal",
@@ -2171,6 +2229,7 @@ if WeakAuras.IsClassic() then
   WeakAuras.actual_unit_types_with_specific.focus = nil
   WeakAuras.actual_unit_types_cast.focus = nil
   WeakAuras.actual_unit_types.focus = nil
+  WeakAuras.unit_types_range_check.focus = nil
   WeakAuras.item_slot_types[0] = AMMOSLOT
   WeakAuras.item_slot_types[16] = MAINHANDSLOT
   WeakAuras.item_slot_types[17] = SECONDARYHANDSLOT

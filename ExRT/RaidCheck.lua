@@ -41,6 +41,7 @@ module.db.tableFlask =  not ExRT.isClassic and {
 	[16326]=true,	[16325]=true,	[15233]=true,	[15279]=true,	[5665]=true,
 	[17549]=true,	[17543]=true,	[17544]=true,	[17546]=true,	[17548]=true,
 	[17545]=true,	[17537]=true,
+	[11334]=true,
 }
 module.db.tableFlask_headers = {0,238,360}
 module.db.tablePotion = {
@@ -1108,11 +1109,46 @@ module.frame:SetScript("OnHide", function(self)
 	if module.frame.anim:IsPlaying() then
 		module.frame.anim:Stop()
 	end
+	if module.frame.hideTimer then
+		module.frame.hideTimer:Cancel()
+		module.frame.hideTimer = nil
+	end
 end)
 
 do
 	local button = CreateFrame("Button",nil,module.frame)
 	module.frame.mimimize = button
+
+	function module.frame:SetMaximized()
+		button.isMinimized = nil
+
+		self.minimized:Hide()
+		self.maximized:Show()
+
+		button.NormalTexture:SetTexCoord(unpack(button.TC.up))
+		button.HighlightTexture:SetTexCoord(unpack(button.TC.up))
+		button.PushedTexture:SetTexCoord(unpack(button.TC.up))
+
+		self:SetHeight(self.SizeMaximized)
+	end
+	function module.frame:SetMinimized()
+		button.isMinimized = true
+
+		self.minimized:Show()
+		self.maximized:Hide()
+
+		button.NormalTexture:SetTexCoord(unpack(button.TC.down))
+		button.HighlightTexture:SetTexCoord(unpack(button.TC.down))
+		button.PushedTexture:SetTexCoord(unpack(button.TC.down))
+
+		self:SetHeight(module.frame.SizeMinimized)
+	end
+	function module.frame:SetMinimizedFromOptions()
+		if VExRT.RaidCheck.RCW_Mini and not button.isMinimized then
+			self:SetMinimized()
+		end
+	end
+
 	button.TC = {
 		up = {0.3125,0.375,0.5,0.625},
 		down = {0.25,0.3125,0.5,0.625},
@@ -1121,29 +1157,16 @@ do
 	button:SetSize(18,18)
 	button:SetScript("OnClick",function(self)
 		if self.isMinimized then
-			self.isMinimized = nil
+			module.frame:SetMaximized()
 
-			module.frame.minimized:Hide()
-			module.frame.maximized:Show()
-	
-			self.NormalTexture:SetTexCoord(unpack(self.TC.up))
-			self.HighlightTexture:SetTexCoord(unpack(self.TC.up))
-			self.PushedTexture:SetTexCoord(unpack(self.TC.up))
-
-			module.frame:SetHeight(module.frame.SizeMaximized)
+			VExRT.RaidCheck.RCW_Mini = false
 		else
-			self.isMinimized = true
+			module.frame:SetMinimized()
 
-			module.frame.minimized:Show()
-			module.frame.maximized:Hide()
-	
-			self.NormalTexture:SetTexCoord(unpack(self.TC.down))
-			self.HighlightTexture:SetTexCoord(unpack(self.TC.down))
-			self.PushedTexture:SetTexCoord(unpack(self.TC.down))
-
-			module.frame:SetHeight(module.frame.SizeMinimized)
+			VExRT.RaidCheck.RCW_Mini = true
 		end
 	end)
+
 	
 	button.NormalTexture = button:CreateTexture(nil,"ARTWORK")
 	button.NormalTexture:SetTexture("Interface\\AddOns\\ExRT\\media\\DiesalGUIcons16x256x128")
@@ -1490,7 +1513,7 @@ do
 end
 
 function module.frame:PrepToHide()
-	if not module.frame:IsShown() then
+	if (not module.frame:IsShown()) or (self.isManual) then
 		return
 	end
 
@@ -1617,8 +1640,8 @@ function module.frame:UpdateRoster()
 	end
 	self:UpdateLinesSize(count <= 20)
 	self.SizeMaximized = 55 + (count <= 20 and 20 or 14) * count
-	self.SizeMinimized = 25 + math.ceil((count-1) / 4) * 14
-	self:SetHeight(self.SizeMaximized)
+	self.SizeMinimized = 25 + math.ceil(count / 4) * 14
+	self:SetHeight(self.maximized:IsShown() and self.SizeMaximized or self.SizeMinimized)
 end
 
 function module.frame:UpdateData(onlyLine)
@@ -1740,12 +1763,12 @@ function module.frame:UpdateData(onlyLine)
 						line.vantus.text:SetTextColor(1,1,1)
 						line.vantus.text:SetText(val)
 	
-						line.vantus.tooltip = "spell:"..spellId
+						line.vantus.tooltip = i
 					elseif name and not ExRT.isClassic and vruneName and name:find(vruneName) then
 						line.vantus.texture:SetTexture(icon)
 						line.vantus.text:SetText("")
 						
-						line.vantus.tooltip = "spell:"..spellId
+						line.vantus.tooltip = i
 					elseif module.db.tableRunes[spellId] then
 						local val = module.db.tableRunes[spellId]
 						
@@ -1900,6 +1923,8 @@ function module:ReadyCheckWindow(starter,isTest,manual)
 
 	module.db.RaidCheckReadyCheckTime = nil
 
+	self.frame.isManual = manual
+
 	self.frame.isTest = isTest
 	if not self.frame.testData then
 		self.frame.testData = {}
@@ -1919,6 +1944,7 @@ function module:ReadyCheckWindow(starter,isTest,manual)
 	self.frame.timeLeftLine:Hide()
 
 	self.frame.mimimize:Hide()
+	self.frame:SetMaximized()
 
 	if self.frame.hideTimer then
 		self.frame.hideTimer:Cancel()
@@ -2043,6 +2069,7 @@ do
 			module.db.RaidCheckReadyCheckTime = GetTime() + (timer or 35)
 			module.frame.timeLeftLine:Start(timer or 35)
 			module.frame.mimimize:Show()
+			module.frame:SetMinimizedFromOptions()
 			module.main:READY_CHECK_CONFIRM(ExRT.F.delUnitNameServer(starter),true,isTest)
 		end
 		if not isTest then

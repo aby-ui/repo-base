@@ -586,7 +586,15 @@ GTFO.SpellID["302456"] = {
   sound = 3;
 };
 
+GTFO.SpellID["315894"] = {
+  --desc = "Glowing Fragment (Sun King Nahkotep)";
+  sound = 3;
+};
 
+GTFO.SpellID["314722"] = {
+  --desc = "Solar Detonation (Watcher Rehu)";
+  sound = 3;
+};
 
 -- ******************
 -- * Waycrest Manor *

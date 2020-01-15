@@ -310,6 +310,16 @@ GTFO.SpellID["302390"] = {
   sound = 1;
 };
 
+GTFO.SpellID["313017"] = {
+  --desc = "Solar Orb";
+  sound = 1;
+};
+
+GTFO.SpellID["314718"] = {
+  --desc = "Concentrated Sunlight (Watcher Rehu)";
+  sound = 1;
+};
+
 
 -- ***********************
 -- * Shrine of the Storm *

@@ -256,6 +256,8 @@ PH.MarksBarHelp = "Right click on mark button sets \"permanent\" mark on target.
 PH.MarksBarDisableInRaid = "Hide outside party or raid"
 L.MarksBarVertical = "Vertical"
 L.MarksBarReverse = "Reverse Order"
+L.MarksBarTimerLeftClick = "Left click"
+L.MarksBarTimerRightClick = "Right click"
 
 L.inviterank = "Rank:"
 L.inviteinv = "Invite"

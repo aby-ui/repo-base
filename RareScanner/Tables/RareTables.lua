@@ -2572,4 +2572,166 @@ private.RARE_LIST = {
 	155171, --The Hivekiller
 	155172, --Trapdoor Bee Hunter
 	155059, --Yorag the Jelly Feaster
+	
+	-- Build 8.3.0
+	152757, --Atekhramun
+	157153, --Ha-Li
+	160970, --Vuk'laz the Earthbreaker
+	160532, --Shoth the Darkened
+	151883, --Anaua
+	152040, --Scoutmaster Moswen
+	157266, --Kilxl the Gaping Maw
+	154333, --Voidtender Malketh
+	151878, --Sun King Nahkotep
+	157120, --Fangtaker Orsa
+	151948, --Senbu the Pridefather
+	157160, --Houndlord Ren
+	157466, --Anh-De the Loyal
+	158633, --Gaze of N'Zoth
+	156083, --Sanguifang
+	157176, --The Forgotten
+	154332, --Voidtender Malketh
+	157164, --Zealot Tekem
+	154559, --Deeplord Zrihj
+	158595, --Thoughtstealer Vos
+	157170, --Acolyte Taspu
+	157167, --Champion Sen-mat
+	157146, --Rotfeaster
+	157287, --Dokani Obliterator
+	157267, --Escaped Mutation
+	154106, --Quid
+	157162, --Rei Lun
+	154490, --Rijz'x the Devourer
+	151897, --Sun Priestess Nubitt
+	154394, --Veskan the Fallen
+	151852, --Watcher Rehu
+	154087, --Zror'um the Infinite
+	154467, --Chief Mek-mek
+	158632, --Corrupted Fleshbeast
+	151995, --Hik-ten the Taskmaster
+	160968, --Jade Colossus
+	152657, --Tat the Bonechewer
+	157468, --Tisiphon
+	158557, --Actiss the Deceiver
+	158706, --Corrupted Putrefaction
+	158531, --Corrupted Neferset Guard
+	157171, --Heixi the Stonelord
+	160631, --Hungering Miasma
+	157134, --Ishak of the Four Winds
+	159103, --Manipulator Shrog'lth
+	160126, --Manipulator Yggshoth
+	152677, --Nebet the Ascended
+	161033, --Shadowmaw
+	154578, --Aqir Flayer
+	154447, --Brother Meller
+	158597, --High Executor Yothrim
+	155180, --Obscuron
+	154006, --Rythas the Oracle
+	157291, --Spymaster Hul'ach
+	157279, --Stormhowl
+	154600, --Teng the Awakened
+	158284, --Craggle Wobbletop
+	154115, --Grula the Beastmother
+	154005, --Heimir of the Black Fist
+	160623, --Hungering Miasma
+	154495, --Will of N'Zoth
+	144650, --Ava
+	160893, --Captain Vor'lek
+	154076, --Vengeful Earth
+	157593, --Amalgamation of Flesh
+	160127, --Darkspeaker Shath'gul
+	157995, --Ivory Destroyer
+	157290, --Jade Watcher
+	160867, --Kzit'kovok
+	161451, --Manipulator Yar'shath
+	154007, --Oktel Dragonblood
+	154650, --Seething Ancient Horror
+	159318, --Shadow-Walker Yash'gth
+	160906, --Skiver
+	144632, --Velaris
+	154576, --Aqir Titanus
+	160878, --Buh'gzaki the Blasphemous
+	156451, --Darkspeaker Thul'grsh
+	158528, --High Guard Reshef
+	160920, --Kal'tik the Blight
+	152431, --Kaneb-ti
+	156655, --Korzaran the Slaughterer
+	156299, --R'khuzj the Unfathomable
+	160341, --Sewer Beastling
+	156654, --Shol'thoss the Doomspeaker
+	158636, --The Grand Executor
+	152788, --Uat-ka the Sun's Wrath
+	154072, --Vog'reth the Insatiable
+	157443, --Xiln the Mountain
+	152110, --Corrupter
+	161463, --Depthcaller Velshen
+	158594, --Doomsayer Vathiris
+	160874, --Drone Keeper Ak'thet
+	160876, --Enraged Amber Elemental
+	160868, --Harrier Nir'verash
+	154604, --Lord Aj'qirai
+	160708, --Mail Muncher
+	161199, --Vaultkeeper Jazra
+	142604, --Beach Strider
+	159087, --Corrupted Bonestripper
+	154089, --Ludin the Beastbreaker
+	160825, --Amber-Shaper Esh'ri
+	158491, --Falconer Amenophis
+	160810, --Harbinger Il'koxik
+	161467, --Portalkeeper Jin'tashal
+	154651, --Putrid Ancient Horror
+	144651, --Bertie
+	156709, --Corrupted Sanity Despoiler
+	144648, --Fewz
+	144636, --Lou
+	144631, --Malto
+	160922, --Needler Zhesalla
+	157188, --The Tomb Widow
+	144652, --Urk
+	144649, --Wick
+	160841, --Blubbery Blobule
+	157183, --Coagulated Anima
+	156820, --Dod
+	152086, --Faceless Arbiter
+	160805, --Gloopy Globule
+	160826, --Hive-Guard Naz'ruzek
+	160930, --Infused Amber Ooze
+	161150, --Lesser Amber Elemental
+	155274, --Tideskorn Champion
+	155301, --Tideskorn Gladiator
+	154192, --Unblinking Watcher
+	
+	-- Build 8.3.0 32305
+	155958, --Tashara
+	157157, --Muminah the Incandescent
+	151609, --Sun Prophet Epaphos
+	162141, --Zuythiz
+	155703, --Anq'uri the Titanic
+	157472, --Aphrom the Guise of Madness
+	160872, --Destroyer Krox'tazar
+	155531, --Infested Wastewander Captain
+	156078, --Magus Rehleth
+	157470, --R'aas the Anima Devourer
+	157390, --R'oyolok the Reality Eater
+	157476, --Shugshul the Flesh Gorger
+	157473, --Yiphrim the Will Ravager
+	157469, --Zoth'rum the Intellect Pillager
+	161683, --Antak'shal
+	162142, --Qho
+	162170, --Warcaster Xeshro
+	162171, --Captain Dunewalker
+	162163, --High Priest Ytaessis
+	162196, --Obsidian Annihilator
+	162198, --Obsidian Annihilator
+	162172, --Aqir Warcaster
+	162147, --Corpse Eater
+	162173, --R'krox the Runt
+	162140, --Skikx'traz
+	
+	-- Build 8.3.0 32978
+	162370, --Armagedillo
+	162352, --Spirit of Dark Ritualist Zakahn
+	163534, --Pet Training Dummy
+	162372, --Spirit of Cyrus the Black
+	162619, --Void Wraith
 }

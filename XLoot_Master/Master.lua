@@ -27,6 +27,7 @@ local defaults = {
 		confirm_qualitythreshold = MASTER_LOOT_THREHOLD,
 		award_qualitythreshold = 2,
 		award_channel = 'AUTO',
+		award_channel_secondary = 'NONE',
 		award_guildannounce = false,
 		award_special = true,
 	}
@@ -115,6 +116,10 @@ function addon.AnnounceAward(data)
 		end
 		if out then
 			pcall(SendChatMessage, text, out)
+		end
+		local secondary = OutChannel(opt.award_channel_secondary)
+		if secondary then
+			pcall(SendChatMessage, text, secondary)
 		end
 		if opt.award_guildannounce and IsInGuild() then
 			SendChatMessage(text, "GUILD")

@@ -208,7 +208,7 @@ function ToyPlus:Broker(self)
 	tooltip:AddLine(L'Left-click menu icon to toggle toy buttons.')
 	tooltip:AddLine(L'Right-click menu icon for configuration.')
 	tooltip:AddSeparator(1,0,0.5,1)
-	if not C_ToyBox.GetIsFavorite(ToyPlusToyDB.itemID[1]) then
+	if not ToyPlusToyDB.itemID[1] or not C_ToyBox.GetIsFavorite(ToyPlusToyDB.itemID[1]) then
 		tooltip:AddLine(L'No favourites found. Add some via the toy list.')
 	else
 		for i = 1, 40 do

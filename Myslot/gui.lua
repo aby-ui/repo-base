@@ -311,6 +311,7 @@ RegEvent("ADDON_LOADED", function()
             if c and exports[c] then
                 self.editBox:SetText(exports[c].name or "")
             end
+            self.editBox:SetFocus()
         end
 
 
@@ -362,15 +363,19 @@ RegEvent("ADDON_LOADED", function()
                 local c = UIDropDownMenu_GetSelectedValue(t)
 
                 if c then
-                    table.remove( exports, c)
-                end
-
-                if #exports == 0 then
-                    UIDropDownMenu_SetSelectedValue(t, nil)
-                    UIDropDownMenu_SetText(t, "")
-                    exportEditbox:SetText("")
-                else
-                    onclick({value = #exports})
+                    StaticPopupDialogs["MYSLOT_CONFIRM_DELETE"].OnAccept = function()
+                        StaticPopup_Hide("MYSLOT_CONFIRM_DELETE")
+                        table.remove(exports, c)
+                        
+                        if #exports == 0 then
+                            UIDropDownMenu_SetSelectedValue(t, nil)
+                            UIDropDownMenu_SetText(t, "")
+                            exportEditbox:SetText("")
+                        else
+                            onclick({value = #exports})
+                        end
+                    end
+                    StaticPopup_Show("MYSLOT_CONFIRM_DELETE", exports[c].name)
                 end
             end)
         end
@@ -433,3 +438,12 @@ StaticPopupDialogs["MYSLOT_EXPORT_TITLE"] = {
     end,
 }
 
+StaticPopupDialogs["MYSLOT_CONFIRM_DELETE"] = {
+    text = L["Are you SURE to delete '%s'?"],
+    button1 = ACCEPT,
+    button2 = CANCEL,
+    timeout = 0,
+    whileDead = 1,
+    hideOnEscape = 1,
+    multiple = 0,
+}

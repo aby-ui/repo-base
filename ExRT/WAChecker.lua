@@ -445,6 +445,11 @@ function module.options:Load()
 			line.name:SetText((aura.isChild and "- " or "")..aura.name)
 			line.db = aura
 			line.t:SetShown(backgroundLineStatus)
+			if i == 1 and aura.name == "VERSION" then
+				line.share:Hide()
+			else
+				line.share:Show()
+			end
 			for j=1,VERTICALNAME_COUNT do
 				local pname = namesList2[j] or "-"
 				

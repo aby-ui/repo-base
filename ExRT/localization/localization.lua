@@ -252,12 +252,26 @@ local zoneEJids = {
 	S_ZoneT23Siege = 1176,
 	S_ZoneT23Storms = 1177,
 	S_ZoneT24Eternal = 1179,
+	S_ZoneT25Nyalotha = 1180,
 }
 for prefix,eID in pairs(zoneEJids) do
 	L[prefix] = EJ_GetInstanceInfo(eID)
 end
 
 local encounterIDtoEJidData = {
+	[2329] = 2368,	--Wrathion
+	[2327] = 2365,	--Maut
+	[2334] = 2369,	--Prophet Skitra
+	[2328] = 2377,	--Dark Inquisitor Xanesh
+	[2336] = 2370,	--Vexiona
+	[2333] = 2372,	--The Hivemind
+	[2331] = 2364,	--Ra-den the Despoiled
+	[2335] = 2367,	--Shad'har the Insatiable
+	[2343] = 2373,	--Drest'agath
+	[2345] = 2374,	--Il'gynoth, Corruption Reborn
+	[2337] = 2366,	--Carapace of N'Zoth
+	[2344] = 2374,	--N'Zoth the Corruptor
+
 	[2298] = 2352,	--Abyssal Commander Sivara
 	[2305] = 2353,	--Radiance of Azshara
 	[2289] = 2347,	--Blackwater Behemoth

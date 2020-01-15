@@ -42,14 +42,13 @@ local function moveOnePxl(direction)
       elseif direction == "right" then
         data.xOffset = data.xOffset + 1
       end
-      WeakAuras.Add(data)
-      WeakAuras.SetThumbnail(data)
+      WeakAuras.Add(data, nil, true)
+      WeakAuras.UpdateThumbnail(data)
       WeakAuras.ResetMoverSizer()
       if data.parent then
         local parentData = WeakAuras.GetData(data.parent)
         if parentData then
           WeakAuras.Add(parentData)
-          WeakAuras.SetThumbnail(parentData)
         end
       end
       WeakAuras.ReloadOptions(data.id)
@@ -115,12 +114,14 @@ local function ConstructMover(frame)
   lineX:SetStartPoint("BOTTOMLEFT", UIParent)
   lineX:SetEndPoint("BOTTOMRIGHT", UIParent)
   lineX:Hide()
+  lineX:SetIgnoreParentAlpha(true)
 
   local lineY = frame:CreateLine(nil, "OVERLAY", 7)
   lineY:SetThickness(2)
   lineY:SetColorTexture(1,1,0)
   lineY:SetStartPoint("TOPLEFT", UIParent)
   lineY:SetEndPoint("BOTTOMLEFT", UIParent)
+  lineY:SetIgnoreParentAlpha(true)
   lineY:Hide()
 
   return lineX, lineY
@@ -457,7 +458,12 @@ local function ConstructMoverSizer(parent)
     end
   end
 
+  frame.GetCurrentId = function(self)
+    return self.currentId
+  end
+
   frame.SetToRegion = function(self, region, data)
+    frame.currentId = data.id
     local scale = region:GetEffectiveScale() / UIParent:GetEffectiveScale()
     mover.moving.region = region
     mover.moving.data = data
@@ -517,7 +523,10 @@ local function ConstructMoverSizer(parent)
       mover.isMoving = false
       mover.text:Hide()
 
-      if not IsShiftKeyDown() and (mover.alignXFrom or mover.alignYFrom) then
+      local align = (WeakAurasOptionsSaved.magnetAlign and not IsShiftKeyDown())
+                    or (not WeakAurasOptionsSaved.magnetAlign and IsShiftKeyDown())
+
+      if align and (mover.alignXFrom or mover.alignYFrom) then
         if mover.alignXFrom == "LEFT" then
           local left = region:GetLeft() * scale
           local selfPoint, anchor, anchorPoint, xOff, yOff = region:GetPoint(1)
@@ -580,8 +589,8 @@ local function ConstructMoverSizer(parent)
         data.yOffset = dY / scale
       end
       region:ResetPosition()
-      WeakAuras.Add(data)
-      WeakAuras.SetThumbnail(data)
+      WeakAuras.Add(data, nil, true)
+      WeakAuras.UpdateThumbnail(data)
       local xOff, yOff
       mover.selfPoint, mover.anchor, mover.anchorPoint, xOff, yOff = region:GetPoint(1)
       mover:ClearAllPoints()
@@ -598,7 +607,6 @@ local function ConstructMoverSizer(parent)
         local parentData = db.displays[data.parent]
         if parentData then
           WeakAuras.Add(parentData)
-          WeakAuras.SetThumbnail(parentData)
         end
       end
       AceConfigDialog:Open("WeakAuras", parent.container)
@@ -654,7 +662,7 @@ local function ConstructMoverSizer(parent)
             end
           end
           region:ResetPosition()
-          WeakAuras.Add(data)
+          WeakAuras.Add(data, nil, true)
           frame:ScaleCorners(region:GetWidth(), region:GetHeight())
           AceConfigDialog:Open("WeakAuras", parent.container)
         end)
@@ -669,26 +677,29 @@ local function ConstructMoverSizer(parent)
 
         local width = region:GetWidth()
         local height = region:GetHeight()
-        local shiftDown = IsShiftKeyDown()
+
+        local align = (WeakAurasOptionsSaved.magnetAlign and not IsShiftKeyDown())
+                      or (not WeakAurasOptionsSaved.magnetAlign and IsShiftKeyDown())
+
         if not IsControlKeyDown() then
           if point:find("RIGHT") then
-            if mover.alignXFrom and not shiftDown then
+            if mover.alignXFrom and align then
               width = math.abs(region:GetLeft() * scale - mover.alignXOf) / scale
             end
             data.xOffset = region.xOffset + (width - data.width) / 2
           elseif point:find("LEFT") then
-            if mover.alignXFrom and not shiftDown then
+            if mover.alignXFrom and align then
               width = math.abs(mover.alignXOf - region:GetRight() * scale) / scale
             end
             data.xOffset = region.xOffset - (width - data.width) / 2
           end
           if point:find("TOP") then
-            if mover.alignYFrom and not shiftDown then
+            if mover.alignYFrom and align then
               height = math.abs(region:GetBottom() * scale - mover.alignYOf) / scale
             end
             data.yOffset = region.yOffset + (height - data.height) / 2
           elseif point:find("BOTTOM") then
-            if mover.alignYFrom and not shiftDown then
+            if mover.alignYFrom and align then
               height = math.abs(mover.alignYOf - region:GetTop() * scale) / scale
             end
             data.yOffset = region.yOffset - (height - data.height) / 2
@@ -698,8 +709,8 @@ local function ConstructMoverSizer(parent)
         data.height = height
 
         region:ResetPosition()
-        WeakAuras.Add(data)
-        WeakAuras.SetThumbnail(data)
+        WeakAuras.Add(data, nil, true)
+        WeakAuras.UpdateThumbnail(data)
 
         frame:ScaleCorners(region:GetWidth(), region:GetHeight())
         local xOff, yOff
@@ -785,10 +796,10 @@ local function ConstructMoverSizer(parent)
   end
 
   mover:SetScript("OnUpdate", function(self, elaps)
-    if IsShiftKeyDown() then
-      self.goalAlpha = 0.1
-    else
+    if not IsShiftKeyDown() then
       self.goalAlpha = 1
+    else
+      self.goalAlpha = 0.1
     end
 
     if self.currentAlpha ~= self.goalAlpha then
@@ -798,6 +809,23 @@ local function ConstructMoverSizer(parent)
       mover:SetAlpha(newAlpha)
       frame:SetAlpha(newAlpha)
       self.currentAlpha = newAlpha
+    end
+
+    local align = (WeakAurasOptionsSaved.magnetAlign and not IsShiftKeyDown())
+                  or (not WeakAurasOptionsSaved.magnetAlign and IsShiftKeyDown())
+    if align then
+      self.alignGoalAlpha = 1
+    else
+      self.alignGoalAlpha = 0.1
+    end
+
+    if self.alignCurrentAlpha ~= self.alignGoalAlpha then
+      self.alignCurrentAlpha = self.alignCurrentAlpha or self:GetAlpha()
+      local newAlpha = (self.alignCurrentAlpha < self.alignGoalAlpha) and self.alignCurrentAlpha + (elaps * 4) or self.alignCurrentAlpha - (elaps * 4)
+      newAlpha = (newAlpha > 1 and 1) or (newAlpha < 0.1 and 0.1) or newAlpha
+      frame.lineX:SetAlpha(newAlpha)
+      frame.lineY:SetAlpha(newAlpha)
+      self.alignCurrentAlpha = newAlpha
     end
 
     local db = savedVars.db

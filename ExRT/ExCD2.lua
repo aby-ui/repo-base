@@ -280,14 +280,31 @@ do
 				e = {}
 				sessionData[k] = e
 			end
+			local reason = true
+			if type(v) == 'table' then
+				reason = v[2]
+				v = v[1]
+			end
 			if v > 0 then
-				e[v] = true
+				e[v] = reason
 			else
 				e[-v] = nil
 			end
 		end
 	})	
 	module.db.session_gGUIDs_DEBUG = sessionData
+
+	function module:ClearSessionDataReason(name,reason1,reason2,reason3,reason4)
+		local e = sessionData[name]
+		if not e then
+			return
+		end
+		for k,v in pairs(e) do
+			if v == reason1 or v == reason2 or v == reason3 or v == reason4 then
+				e[k] = nil
+			end
+		end
+	end
 end
 
 module.db.session_Pets = {}
@@ -3592,6 +3609,7 @@ function module.main:ENCOUNTER_END(encounterID, encounterName, difficultyID, gro
 end
 
 
+
 do
 	local eventsView = nil
 	--upvaules
@@ -3789,8 +3807,8 @@ do
 		if spell_isTalent[spellID] then
 			if not session_gGUIDs[sourceName][spellID] then
 				forceUpdateAllData = true
+				session_gGUIDs[sourceName] = {spellID,"talent"}
 			end
-			session_gGUIDs[sourceName] = spellID
 		end
 		
 		local modifData = spell_resetOtherSpells[spellID]

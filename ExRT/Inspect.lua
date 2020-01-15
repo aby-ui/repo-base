@@ -85,7 +85,7 @@ local inspectScantip = CreateFrame("GameTooltip", "ExRTInspectScanningTooltip", 
 inspectScantip:SetOwner(UIParent, "ANCHOR_NONE")
 
 do
-	local essenceData = nil
+	local essenceData,essenceDataByKey = nil
 	local dbcData = {
 		[36] = {311203,311210,311203,311210, 311206,311211,311302,311304, 311207,311212,311303,311306, 311209,311213,311303,311306},
 		[37] = {312725,312771,312725,312771, 312764,312773,313921,313919, 312768,312774,313922,313920, 312770,312775,313922,313920},
@@ -159,6 +159,16 @@ do
 		end
 		return essenceData
 	end
+	function module:GetEssenceDataByKey()
+		if not essenceDataByKey then
+			essenceDataByKey = {}
+			local e = module:GetEssenceData()
+			for k,v in pairs(e) do
+				essenceDataByKey[v.id] = v
+			end
+		end
+		return essenceDataByKey
+	end
 end
 
 local function CheckForSuccesInspect(name)
@@ -218,36 +228,6 @@ function module:AddToQueue(name)
 end
 
 
-local function ExCD2_ClearTierSetsInfoFromUnit(name)
-	for tierUID,tierData in pairs(cooldownsModule.db.tierSetsSpells) do
-		if tierData[1] then
-			if type(tierData[1]) ~= "table" then
-				cooldownsModule.db.session_gGUIDs[name] = -tierData[1]
-			else
-				for _,sID in pairs(tierData[1]) do
-					if type(sID)=='number' then
-						cooldownsModule.db.session_gGUIDs[name] = -sID
-					end
-				end
-			end
-		end
-		if tierData[2] then
-			if type(tierData[2]) ~= "table" then
-				cooldownsModule.db.session_gGUIDs[name] = -tierData[2]
-			else
-				for _,sID in pairs(tierData[2]) do
-					if type(sID)=='number' then
-						cooldownsModule.db.session_gGUIDs[name] = -sID
-					end
-				end
-			end
-		end
-	end
-	for itemID,spellID in pairs(cooldownsModule.db.itemsToSpells) do
-		cooldownsModule.db.session_gGUIDs[name] = -spellID
-	end
-end
-
 local InspectItems = nil
 do
 	local ITEM_LEVEL = (ITEM_LEVEL or "NO DATA FOR ITEM_LEVEL"):gsub("%%d","(%%d+)")
@@ -269,17 +249,10 @@ do
 		for stateName,stateData in pairs(module.db.statsNames) do
 			inspectData[stateName] = 0
 		end
-		for spellID,_ in pairs(cooldownsModule.db.spell_isAzeriteTalent) do
-			cooldownsModule.db.session_gGUIDs[name] = -spellID
-		end
-		for spellID,_ in pairs(module.db.essenceSpellsData) do
-			cooldownsModule.db.session_gGUIDs[name] = -spellID
-		end
 
-		
+		cooldownsModule:ClearSessionDataReason(name,"azerite","essence","tier","item")
+	
 		local ilvl_count = 0
-		
-		ExCD2_ClearTierSetsInfoFromUnit(name)	--------> ExCD2
 		
 		local isArtifactEqipped = 0
 		local ArtifactIlvlSlot1,ArtifactIlvlSlot2 = 0,0
@@ -400,7 +373,7 @@ do
 								if text:find(AzeritePowers[k].name.."$") == 3 then
 									inspectData.azerite[#inspectData.azerite + 1] = AzeritePowers[k]
 
-									cooldownsModule.db.session_gGUIDs[name] = AzeritePowers[k].spellID
+									cooldownsModule.db.session_gGUIDs[name] = {AzeritePowers[k].spellID,"azerite"}
 								end
 							end
 						end
@@ -424,10 +397,10 @@ do
 										local ess = EssencePowers[k][tier]
 										inspectData.essence[#inspectData.essence + 1] = ess
 	
-										cooldownsModule.db.session_gGUIDs[name] = ess.spellID
+										cooldownsModule.db.session_gGUIDs[name] = {ess.spellID,"essence"}
 										for l=tier-1,1,-1 do
 											local ess = EssencePowers[k][l]
-											cooldownsModule.db.session_gGUIDs[name] = ess.spellID
+											cooldownsModule.db.session_gGUIDs[name] = {ess.spellID,"essence"}
 										end
 									end
 
@@ -436,10 +409,10 @@ do
 										inspectData.essence[#inspectData.essence + 1] = ess
 									end
 
-									cooldownsModule.db.session_gGUIDs[name] = ess.spellID
+									cooldownsModule.db.session_gGUIDs[name] = {ess.spellID,"essence"}
 									for l=tier-1,1,-1 do
 										local ess = EssencePowers[k][l*(-1)]
-										cooldownsModule.db.session_gGUIDs[name] = ess.spellID
+										cooldownsModule.db.session_gGUIDs[name] = {ess.spellID,"essence"}
 									end
 								end
 							end
@@ -466,7 +439,7 @@ do
 				end
 				local isTrinket = cooldownsModule.db.itemsToSpells[itemID]
 				if isTrinket then
-					cooldownsModule.db.session_gGUIDs[name] = isTrinket
+					cooldownsModule.db.session_gGUIDs[name] = {isTrinket,"item"}
 				end
 				
 				
@@ -546,21 +519,21 @@ do
 			local p4 = cooldownsModule.db.tierSetsSpells[tierUID][2]
 			if p2 and count >= 2 then
 				if type(p2) ~= "table" then
-					cooldownsModule.db.session_gGUIDs[name] = p2
+					cooldownsModule.db.session_gGUIDs[name] = {p2,"tier"}
 				else
 					local sID = p2[ inspectData.specIndex or 0 ]
 					if sID then
-						cooldownsModule.db.session_gGUIDs[name] = sID
+						cooldownsModule.db.session_gGUIDs[name] = {sID,"tier"}
 					end
 				end
 			end
 			if p4 and count >= 4 then
 				if type(p4) ~= "table" then
-					cooldownsModule.db.session_gGUIDs[name] = p4
+					cooldownsModule.db.session_gGUIDs[name] = {p4,"tier"}
 				else
 					local sID = p4[ inspectData.specIndex or 0 ]
 					if sID then
-						cooldownsModule.db.session_gGUIDs[name] = sID
+						cooldownsModule.db.session_gGUIDs[name] = {sID,"tier"}
 					end
 				end
 			end
@@ -597,11 +570,13 @@ end
 
 function module:Enable()
 	module:RegisterTimer()
-	module:RegisterEvents('PLAYER_SPECIALIZATION_CHANGED','INSPECT_READY','UNIT_INVENTORY_CHANGED','PLAYER_EQUIPMENT_CHANGED','GROUP_ROSTER_UPDATE','ZONE_CHANGED_NEW_AREA','INSPECT_ACHIEVEMENT_READY','CHALLENGE_MODE_START')
+	module:RegisterEvents('PLAYER_SPECIALIZATION_CHANGED','INSPECT_READY','UNIT_INVENTORY_CHANGED','PLAYER_EQUIPMENT_CHANGED','GROUP_ROSTER_UPDATE','ZONE_CHANGED_NEW_AREA','INSPECT_ACHIEVEMENT_READY','CHALLENGE_MODE_START','ENCOUNTER_START')
+	module:RegisterAddonMessage()
 end
 function module:Disable()
 	module:UnregisterTimer()
-	module:UnregisterEvents('PLAYER_SPECIALIZATION_CHANGED','INSPECT_READY','UNIT_INVENTORY_CHANGED','PLAYER_EQUIPMENT_CHANGED','GROUP_ROSTER_UPDATE','ZONE_CHANGED_NEW_AREA','INSPECT_ACHIEVEMENT_READY','CHALLENGE_MODE_START')	
+	module:UnregisterEvents('PLAYER_SPECIALIZATION_CHANGED','INSPECT_READY','UNIT_INVENTORY_CHANGED','PLAYER_EQUIPMENT_CHANGED','GROUP_ROSTER_UPDATE','ZONE_CHANGED_NEW_AREA','INSPECT_ACHIEVEMENT_READY','CHALLENGE_MODE_START','ENCOUNTER_START')	
+	module:UnregisterAddonMessage()
 end
 
 function module.main:ADDON_LOADED()
@@ -620,6 +595,7 @@ function module.main:PLAYER_SPECIALIZATION_CHANGED(arg)
 		
 		--------> ExCD2
 		VExRT.ExCD2.gnGUIDs[name] = nil		
+
 		local _,class = UnitClass(name)
 		if cooldownsModule.db.spell_talentsList[class] then
 			for specID,specTalents in pairs(cooldownsModule.db.spell_talentsList[class]) do
@@ -630,6 +606,8 @@ function module.main:PLAYER_SPECIALIZATION_CHANGED(arg)
 				end
 			end
 		end
+
+		cooldownsModule:ClearSessionDataReason(name,"talent","pvptalent","autotalent")
 		
 		cooldownsModule:UpdateAllData()
 		--------> / ExCD2
@@ -780,9 +758,11 @@ do
 						end
 					end
 				end
+				cooldownsModule:ClearSessionDataReason(name,"talent","pvptalent","autotalent")
+
 				for spellID,specID in pairs(cooldownsModule.db.spell_autoTalent) do
 					if specID == data.spec then
-						cooldownsModule.db.session_gGUIDs[name] = spellID
+						cooldownsModule.db.session_gGUIDs[name] = {spellID,"autotalent"}
 					end
 				end
 				
@@ -807,7 +787,7 @@ do
 						
 						list[specIndex][i+1] = spellID
 						if selected or grantedByAura then
-							cooldownsModule.db.session_gGUIDs[name] = spellID
+							cooldownsModule.db.session_gGUIDs[name] = {spellID,"talent"}
 						end
 						
 						cooldownsModule.db.spell_isTalent[spellID] = true
@@ -833,7 +813,7 @@ do
 							
 							list[-1][spellID] = spellID
 							
-							cooldownsModule.db.session_gGUIDs[name] = spellID
+							cooldownsModule.db.session_gGUIDs[name] = {spellID,"pvptalent"}
 							
 							--cooldownsModule.db.spell_isTalent[spellID] = true
 							cooldownsModule.db.spell_isPvpTalent[spellID] = true
@@ -913,4 +893,159 @@ function module.main:PLAYER_EQUIPMENT_CHANGED(arg)
 	local name = UnitCombatlogname("player")
 	module.db.inspectItemsOnly[name] = true
 	module.db.inspectQuery[name] = GetTime()
+end
+
+
+function module.main:ENCOUNTER_START()
+	if ExRT.isClassic then
+		return
+	end
+	local str = ""
+
+	local essTiers,essList = "",""
+	local milestones,milestone = C_AzeriteEssence.GetMilestones()
+	for i,milestone in ipairs(milestones) do
+		local eID = C_AzeriteEssence.GetMilestoneEssence(milestone.ID)
+		if eID then
+			local ess = C_AzeriteEssence.GetEssenceInfo(eID)
+			if milestone.ID == 115 then	--Major
+				essTiers =  ess.rank .. essTiers
+				essList = eID .. essList
+			else
+				essTiers = essTiers .. ess.rank
+				essList = essList .. ":" .. eID
+			end
+		end
+	end
+	if essTiers ~= "" then
+		if essList:find("^:") then
+			essList = "0"..essList
+			essTiers = "0"..essTiers
+		end
+		str = str .. (str ~= "" and "^" or "") .. "E:" .. essTiers ..":" .. essList
+	end
+
+	local tal = ""
+	for tier=1,7 do
+		local tierSpellID
+		for col=1,3 do
+			local talentID, _, _, selected, available, spellID, _, _, _, _, grantedByAura = GetTalentInfo(tier,col,1)
+			if selected then
+				tierSpellID = spellID
+				break
+			end
+		end
+
+		tal = tal .. ":" .. (tierSpellID or 0)
+	end
+	if tal ~= "" then
+		str = str .. (str ~= "" and "^" or "") .. "T" .. tal
+	end
+
+	local azerite = ""
+	local powerID
+	local itemLocation = ItemLocation:CreateEmpty()
+	local equipSlotIndex = EQUIPPED_FIRST
+	while equipSlotIndex <= EQUIPPED_LAST do
+		itemLocation:SetEquipmentSlot(equipSlotIndex)
+
+		if C_Item.DoesItemExist(itemLocation) and C_AzeriteEmpoweredItem.IsAzeriteEmpoweredItem(itemLocation) then
+			local powers = C_AzeriteEmpoweredItem.GetAllTierInfo(itemLocation)
+			for i,tier in ipairs(powers) do
+				for j=1,#tier.azeritePowerIDs do
+					powerID = tier.azeritePowerIDs[j]
+					if C_AzeriteEmpoweredItem.IsPowerSelected(itemLocation,powerID) and powerID ~= 13 then
+						azerite = azerite .. ":" .. powerID
+					end
+				end
+			end
+		end
+
+		equipSlotIndex = equipSlotIndex + 1;
+	end
+	if azerite ~= "" then
+		str = str .. (str ~= "" and "^" or "") .. "A" .. azerite
+	end
+
+	if str ~= "" then
+		ExRT.F.SendExMsg("inspect","R\t"..str)
+	end
+end
+
+function module:addonMessage(sender, prefix, subPrefix, ...)
+	if prefix == "inspect" then
+		if subPrefix == "R" then
+			local str = ...
+			while str do
+				local main,next = strsplit("^",str,2)
+				str = next
+				
+				local key = main:sub(1,1)
+				if key == "E" then
+					cooldownsModule:ClearSessionDataReason(sender,"essence")
+					
+					local essencePowers = module:GetEssenceDataByKey()
+					
+					local _,tiers,list = strsplit(":",main,3)
+					local count = 0					
+					while list do
+						local now,on = strsplit(":",list,2)
+						list = on
+						count = count + 1
+						local tier = tiers:sub(count,count)
+						now = tonumber(now)
+						tier = tonumber(tier)
+						local e = essencePowers[now]
+						if e then
+							if count == 1 then	--major
+								for l=tier,1,-1 do
+									local ess = e[l]
+									cooldownsModule.db.session_gGUIDs[sender] = {ess.spellID,"essence"}
+								end
+							end
+							for l=tier,1,-1 do
+								local ess = e[l*(-1)]
+								cooldownsModule.db.session_gGUIDs[sender] = {ess.spellID,"essence"}
+							end
+							--print(sender,'added essence',e.id,e.name)
+						end
+					end
+				elseif key == "T" then
+					cooldownsModule:ClearSessionDataReason(sender,"talent")
+
+					local _,list = strsplit(":",main,2)
+					while list do
+						local spellID,on = strsplit(":",list,2)
+						list = on
+
+						spellID = tonumber(spellID or "?")
+						if spellID and spellID ~= 0 then
+							cooldownsModule.db.session_gGUIDs[sender] = {spellID,"talent"}
+							cooldownsModule.db.spell_isTalent[spellID] = true
+							--print(sender,'added talent',spellID)
+						end
+					end					
+				elseif key == "A" then
+					cooldownsModule:ClearSessionDataReason(sender,"azerite")
+
+					local _,list = strsplit(":",main,2)
+					while list do
+						local powerID,on = strsplit(":",list,2)
+						list = on
+
+						powerID = tonumber(powerID or "?")
+						if powerID and powerID ~= 0 then
+							local powerData = C_AzeriteEmpoweredItem.GetPowerInfo(powerID)
+							if powerData then
+								local spellID = powerData.spellID
+								cooldownsModule.db.session_gGUIDs[sender] = {spellID,"azerite"}
+								cooldownsModule.db.spell_isAzeriteTalent[spellID] = true
+								--print(sender,'added azerite',powerID)
+							end
+						end
+					end
+				end
+			end
+		end
+	end
 end

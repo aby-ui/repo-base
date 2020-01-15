@@ -234,6 +234,38 @@ WorldQuestTracker.OnMapHasChanged = function (self)
 		end
 	end
 
+	C_Timer.After (0.05, function()
+		if (C_QuestLog.HasActiveThreats()) then
+			local eyeFrame = WorldQuestTracker.GetOverlay ("Eye") --REMOVE ON 9.0
+			if (WorldQuestTracker.DoubleTapFrame:IsShown()) then
+				eyeFrame:Refresh()
+				eyeFrame:Show()
+				eyeFrame:SetScale (0.5)
+				eyeFrame:ClearAllPoints()
+				eyeFrame:SetPoint("bottomleft", WorldMapFrame, "bottomleft", 0, 40)
+
+				eyeFrame.Background:Show()
+				eyeFrame.Eye:Show()
+				eyeFrame.ModelSceneTop:SetShown(true)
+				eyeFrame.ModelSceneBottom:SetShown(true)
+				eyeFrame:RefreshModels();
+
+			else
+				eyeFrame:Refresh()
+				eyeFrame:Show()
+				eyeFrame:SetScale (0.5)
+				eyeFrame:ClearAllPoints()
+				eyeFrame:SetPoint("bottomleft", WorldMapFrame, "bottomleft", 0, 0)
+				
+				eyeFrame.Background:Show()
+				eyeFrame.Eye:Show()
+				eyeFrame.ModelSceneTop:SetShown(true)
+				eyeFrame.ModelSceneBottom:SetShown(true)
+				eyeFrame:RefreshModels();
+			end
+		end
+	end)
+
 end
 
 hooksecurefunc (WorldMapFrame, "OnMapChanged", WorldQuestTracker.OnMapHasChanged)
@@ -4888,7 +4920,19 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 	if (WorldQuestTracker.db.profile.map_frame_scale_enabled) then
 		WorldQuestTracker.UpdateWorldMapFrameScale()
 	end
-	
+
+	-- ~eye on 8.3 patch - REMOVE ON 9.0
+	local eyeFrame = WorldQuestTracker.GetOverlay ("Eye")
+	if (not WorldQuestTracker.eyeFrameBuilt and eyeFrame) then
+		eyeFrame:SetScale (0.5)
+		eyeFrame:ClearAllPoints()
+		eyeFrame:SetPoint("bottomleft", WorldMapFrame, "bottomleft", 0, 32)
+		WorldQuestTracker.eyeFrameBuilt = true
+
+		--hook the hover over script and show all details about the quest
+	end	
+
+	eyeFrame:Refresh()
 end
 
 hooksecurefunc ("ToggleWorldMap", WorldQuestTracker.OnToggleWorldMap)

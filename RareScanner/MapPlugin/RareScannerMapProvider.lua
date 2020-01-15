@@ -264,7 +264,7 @@ function RareScannerDataProviderMixin:AddPin(npcID, npcInfo, mapID)
 			end
 		end
 	-- If its an event
-	elseif (npcInfo.atlasName == RareScanner.EVENT_VIGNETTE) then
+	elseif (npcInfo.atlasName == RareScanner.EVENT_VIGNETTE or npcInfo.atlasName == RareScanner.EVENT_ELITE_VIGNETTE) then
 		-- If compelted ignore it
 		if (private.dbchar.events_completed[npcID]) then
 			--RareScanner:PrintDebugMessage("DEBUG: Ignorado por estar completado")

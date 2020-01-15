@@ -1,7 +1,7 @@
 ## Interface: 80300
 ## Title: WeakAuras Options
 ## Author: Mirrored and the WeakAuras Team
-## Version: 2.15.5
+## Version: 2.16.0
 ## Notes: Options for WeakAuras
 ## Notes-esES: Opciones para WeakAuras
 ## Notes-deDE: Optionen für WeakAuras
@@ -30,6 +30,7 @@ RegionOptions\ProgressTexture.lua
 SubRegionOptions\SubRegionCommon.lua
 SubRegionOptions\SubText.lua
 SubRegionOptions\Border.lua
+SubRegionOptions\Glow.lua
 SubRegionOptions\BarModel.lua
 
 Cache.lua
@@ -68,8 +69,12 @@ AceGUI-Widgets\AceGUIWidget-WeakAurasMultiLineEditBox.lua
 AceGUI-Widgets\AceGUIWidget-WeakAurasNewButton.lua
 AceGUI-Widgets\AceGUIWidget-WeakAurasImportButton.lua
 AceGUI-Widgets\AceGUIWidget-WeakAurasSortedDropDown.lua
+AceGUI-Widgets\AceGUIWidget-WeakAurasToolbarButton.lua
 AceGUI-Widgets\AceGUIWidget-WeakAurasTwoColumnDropDown.lua
 AceGUI-Widgets\AceGUIContainer-WeakAurasTreeGroup.lua
 
+
 ## Title-zhCN: |cff880303[爱不易]|r WeakAuras 配置
 ## X-Vendor: AbyUI
+
+

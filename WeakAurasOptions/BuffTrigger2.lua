@@ -112,6 +112,15 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       desc = L["A Unit ID (e.g., party1)."],
       hidden = function() return not (trigger.type == "aura2" and trigger.unit == "member") end
     },
+    warnSpecifcUnit = {
+      type = "description",
+      width = WeakAuras.doubleWidth,
+      name = function()
+        return L["|cFFFF0000Note:|r The unit '%s' is not a trackable unit."]:format(trigger.specificUnit or "")
+      end,
+      order = 10.4,
+      hidden = function() return not (trigger.type == "aura2" and trigger.unit == "member" and WeakAuras.UntrackableUnit(trigger.specificUnit)) end
+    },
     useDebuffType = {
       type = "toggle",
       width = WeakAuras.normalWidth,
@@ -281,6 +290,39 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       name = "",
       order = 61.3,
       hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and not IsSingleMissing(trigger) and not trigger.useRem) end
+    },
+    useTotal = {
+      type = "toggle",
+      width = WeakAuras.normalWidth,
+      name = L["Total Time"],
+      hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and not IsSingleMissing(trigger)) end,
+      order = 61.4
+    },
+    totalOperator = {
+      type = "select",
+      name = L["Operator"],
+      order = 61.5,
+      width = WeakAuras.halfWidth,
+      values = operator_types,
+      disabled = function() return not trigger.useTotal end,
+      hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and not IsSingleMissing(trigger) and trigger.useTotal) end,
+      get = function() return trigger.useTotal and trigger.totalOperator or nil end
+    },
+    total = {
+      type = "input",
+      name = L["Total Time"],
+      validate = ValidateNumeric,
+      order = 61.6,
+      width = WeakAuras.halfWidth,
+      hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and not IsSingleMissing(trigger) and trigger.useTotal) end,
+      get = function() return trigger.useTotal and trigger.total or nil end
+    },
+    useTotalSpace = {
+      type = "description",
+      width = WeakAuras.normalWidth,
+      name = "",
+      order = 61.7,
+      hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and not IsSingleMissing(trigger) and not trigger.useTotal) end
     },
     fetchTooltip = {
       type = "toggle",
@@ -732,7 +774,7 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
         end
 
         WeakAuras.Add(data)
-        WeakAuras.SetThumbnail(data)
+        WeakAuras.UpdateThumbnail(data)
         WeakAuras.SetIconNames(data)
         WeakAuras.UpdateDisplayButton(data)
         WeakAuras.ReloadTriggerOptions(data)
@@ -788,7 +830,7 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
           trigger.auraspellids[i] = v
         end
         WeakAuras.Add(data)
-        WeakAuras.SetThumbnail(data)
+        WeakAuras.UpdateThumbnail(data)
         WeakAuras.SetIconNames(data)
         WeakAuras.UpdateDisplayButton(data)
         WeakAuras.ReloadTriggerOptions(data)

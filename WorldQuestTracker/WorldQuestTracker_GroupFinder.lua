@@ -921,9 +921,17 @@ ff:SetScript ("OnEvent", function (self, event, arg1, questID, arg3)
 		local title, factionID, capped = C_TaskQuest.GetQuestInfoByQuestID (questID)
 		
 		-->  do the regular checks
-		if (isInArea and HaveQuestData (questID)) then
-			local isWorldQuest = QuestMapFrame_IsQuestWorldQuest (questID)
-			if (isWorldQuest) then
+		if ((isInArea or isOnMap) and HaveQuestData (questID)) then
+
+			--get all quests from 8.3 assault stuff
+			local allAssaultQuests = {}
+			for _, questId in ipairs(C_TaskQuest.GetThreatQuests()) do
+				--put all into a table where the hash is the key and true is the value
+				allAssaultQuests [questId] = true
+			end
+
+			--if the quest is a worldquest OR the quest is listed as an 8.3 assault quest
+			if ((isWorldQuest and isInArea) or allAssaultQuests[questID]) then
 				--FlashClientIcon()
 				--WorldQuestTracker.FindGroupForQuest (questID)
 				
