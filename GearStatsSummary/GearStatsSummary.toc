@@ -1,4 +1,4 @@
-## Interface: 80205
+## Interface: 80300
 ## Notes: Compare your equipments bonus of all status with other players.
 ## Notes-zhCN: 与观察目标的装备属性进行比较
 ## Notes-zhTW: 與觀察目標的裝備屬性進行比較

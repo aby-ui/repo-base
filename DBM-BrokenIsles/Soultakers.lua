@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1756, "DBM-BrokenIsles", nil, 822)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190417005925")
+mod:SetRevision("20200110163156")
 mod:SetCreatureID(106981, 106982, 106984)--Captain Hring, Reaver Jdorn, Soultrapper Mevra
 mod:SetEncounterID(1879)
 mod:SetReCombatTime(20)
@@ -19,25 +19,23 @@ mod:RegisterEventsInCombat(
 --TODO, review warnings and promote/demote as needed. Especially MaraudingMists
 --TODO, do these get boss unit IDs? if so fix UNIT_SPELLCAST_INTERRUPTED
 --TODO, see how scuttle works exactly and get some hud charge lines in there.
---Captain Hring 
+--Captain Hring
 local warnTentacleBash				= mod:NewCastAnnounce(213420, 2)
 local warnShatterCrew				= mod:NewCastAnnounce(213532, 3)
 --Reaver Jdorn
 local warnMaraudingMists			= mod:NewCastAnnounce(213665, 3)
 --Soultrapper Mevra
 
---Captain Hring 
+--Captain Hring
 local specWarnCursedCrew			= mod:NewSpecialWarningSwitch(213522, "-Healer", nil, nil, 1, 2)
 --Reaver Jdorn
 local specWarnScuttle				= mod:NewSpecialWarningYou(213584, nil, nil, nil, 1, 2)
-local yellScuttle					= mod:NewYell(213584)
 local specWarnExpelSoul				= mod:NewSpecialWarningMoveAway(213625, 1, nil, nil, 1, 2)
-local yellExpelSoul					= mod:NewYell(213625)
 local specWarnMaraudingMists		= mod:NewSpecialWarningRun(213665, "Melee", nil, nil, 4, 2)
 --Soultrapper Mevra
 local specWarnSoulRend				= mod:NewSpecialWarningDodge(213606, nil, nil, nil, 2, 2)
 
---Captain Hring 
+--Captain Hring
 local timerTentacleBashCD			= mod:NewCDTimer(15.9, 213420, nil, nil, nil, 3)--15.9-31.8
 --local timerCursedCrewCD				= mod:NewAITimer(51, 213522, nil, nil, nil, 1)
 --local timerShatterCrew			= mod:NewCastTimer(8, 213532, nil, nil, nil, 2)
@@ -91,12 +89,10 @@ function mod:SPELL_AURA_APPLIED(args)
 	if spellId == 213584 then
 		if args:IsPlayer() then
 			specWarnScuttle:Show()
-			yellScuttle:Yell()
 		end
 	elseif spellId == 213625 and args:IsPlayer() then
 		specWarnExpelSoul:Show()
 		specWarnExpelSoul:Play("runout")
-		yellExpelSoul:Yell()
 		if self.Options.RangeFrame then
 			DBM.RangeCheck:Show(8)
 		end

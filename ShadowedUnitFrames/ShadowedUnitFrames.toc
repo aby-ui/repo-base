@@ -1,4 +1,4 @@
-## Interface: 80205
+## Interface: 80300
 ## Title: Shadowed Unit Frames
 ## Notes: Moooooooooooooooooo
 ## Author: Shadowed

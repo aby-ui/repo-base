@@ -1,4 +1,4 @@
-## Interface: 80205
+## Interface: 80300
 ## Title: TrinketMenu |cFF99CC01rev|r |cFFFF00007.3.2|r
 ## Version: 7.3.2
 ## Author: Gello, Resike

@@ -1,7 +1,13 @@
 local mod	= DBM:NewMod(1153, "DBM-Highmaul", nil, 477)
 local L		= mod:GetLocalizedStrings()
 
+<<<<<<<<<<< C:\code\lua\163ui.beta\fetch-merge\DBM-WOD\DBM-WOD-r45.163ui.zip!/DBM-Highmaul/Koragh.lua
 mod:SetRevision("20190625143352")
+||||||||||| C:\code\lua\163ui.beta\fetch-merge\DBM-WOD\DBM-WOD-r45.zip!/DBM-Highmaul/Koragh.lua
+mod:SetRevision("20190814112014")
+===========
+mod:SetRevision("20200110131705")
+>>>>>>>>>>> C:\code\lua\163ui.beta\fetch-merge\DBM-WOD\DBM-WOD-r46.zip!/DBM-Highmaul/Koragh.lua
 mod:SetCreatureID(79015)
 mod:SetEncounterID(1723)
 mod:SetZone()
@@ -13,8 +19,8 @@ mod:RegisterCombat("combat")
 mod:RegisterEventsInCombat(
 	"SPELL_CAST_START 162185 162184 172747 163517 162186 172895",
 	"SPELL_CAST_SUCCESS 161612",
-	"SPELL_AURA_APPLIED 156803 162186 161242 163472 172895 172917",
-	"SPELL_AURA_REMOVED 162186 163472 172895 156803",
+	"SPELL_AURA_APPLIED 156803 162186 161242 172895 172917",
+	"SPELL_AURA_REMOVED 162186 172895 156803",
 	"SPELL_DAMAGE 161612 161576",
 	"SPELL_ABSORBED 161612 161576",
 	"SPELL_MISSED 161612 161576",
@@ -27,7 +33,7 @@ local warnExpelMagicFrost			= mod:NewTargetAnnounce(161411, 3)
 local warnExpelMagicArcane			= mod:NewTargetAnnounce(162186, 4)
 local warnBallsSoon					= mod:NewPreWarnAnnounce(161612, 6.5, 2)
 local warnBallsHit					= mod:NewCountAnnounce(161612, 2)
-local warnMC						= mod:NewTargetAnnounce(163472, 4)--Mythic
+--local warnMC						= mod:NewTargetAnnounce(163472, 4)--Mythic
 local warnForfeitPower				= mod:NewCastAnnounce(163517, 4, nil, nil, false, 2)--Definitely Spammy (can have 8 up at once)
 local warnExpelMagicFel				= mod:NewTargetAnnounce(172895, 4)
 
@@ -44,7 +50,7 @@ local specWarnExpelMagicArcaneYou	= mod:NewSpecialWarningMoveAway(162186, nil, n
 local specWarnExpelMagicArcane		= mod:NewSpecialWarningTaunt(162186, nil, nil, nil, nil, 2)
 local yellExpelMagicArcane			= mod:NewYell(162186)
 local specWarnBallsSoon				= mod:NewSpecialWarningPreWarn(161612, nil, 6.5, nil, nil, nil, 2)
-local specWarnMC					= mod:NewSpecialWarningSwitch(163472, "Dps", nil, nil, 1, 2)
+--local specWarnMC					= mod:NewSpecialWarningSwitch(163472, "Dps", nil, nil, 1, 2)
 local specWarnForfeitPower			= mod:NewSpecialWarningInterrupt(163517)--Spammy?
 local specWarnExpelMagicFel			= mod:NewSpecialWarningYou(172895)--Maybe needs "do not move" warning or at very least "try not to move" since sometimes you have to move for trample.
 local specWarnExpelMagicFelFades	= mod:NewSpecialWarning("specWarnExpelMagicFelFades", nil, nil, nil, 3, 2)--No generic that describes this
@@ -66,10 +72,10 @@ local timerExpelMagicFelCD			= mod:NewCDTimer(15.5, 172895, nil, "-Tank", 2, 3, 
 local timerExpelMagicFel			= mod:NewBuffFadesTimer(12, 172895, nil, nil, nil, 5, nil, nil, nil, 3, 4)--Mythic
 
 mod:AddRangeFrameOption("5")
-mod:AddSetIconOption("SetIconOnMC", 163472, false)
+--mod:AddSetIconOption("SetIconOnMC", 163472, false)
 mod:AddSetIconOption("SetIconOnFel", 172895, false)
 mod:AddArrowOption("FelArrow", 172895, true, 3)
-mod:AddHudMapOption("HudMapOnMC", 163472)
+--mod:AddHudMapOption("HudMapOnMC", 163472)
 mod:AddHudMapOption("HudMapForFel", 172895)
 
 mod.vb.ballsCount = 0
@@ -255,7 +261,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		end
 	elseif spellId == 161242 and self:AntiSpam(23, args.destName) and not self:IsLFR() then--Players may wabble in and out of it and we don't want to spam warnings.
 		warnCausticEnergy:CombinedShow(1, args.destName)--Two targets on mythic, which is why combinedshow. (10 on LFR. too much spam and not important, so disabled in LFR)
-	elseif spellId == 163472 then
+	--[[elseif spellId == 163472 then
 		warnMC:CombinedShow(0.5, args.destName)
 		if self:AntiSpam(3, 1) then
 			specWarnMC:Show()
@@ -266,7 +272,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		end
 		if self.Options.HudMapOnMC then
 			DBMHudMap:RegisterRangeMarkerOnPartyMember(spellId, "highlight", args.destName, 3.5, 0, 1, 0, 0, 0.5, nil, true, 1):Pulse(0.5, 0.5)
-		end
+		end--]]
 	elseif spellId == 172895 then
 		warnExpelMagicFel:CombinedShow(0.5, args.destName)
 		if args:IsPlayer() then
@@ -293,13 +299,13 @@ function mod:SPELL_AURA_REMOVED(args)
 	local spellId = args.spellId
 	if spellId == 162186 and args:IsPlayer() and self.Options.RangeFrame and not self.vb.fireActive then
 		DBM.RangeCheck:Hide()
-	elseif spellId == 163472 then
+	--[[elseif spellId == 163472 then
 		if self.Options.SetIconOnMC then
 			self:SetIcon(args.destName, 0)
 		end
 		if self.Options.HudMapOnMC then
 			DBMHudMap:FreeEncounterMarkerByTarget(spellId, args.destName)
-		end
+		end--]]
 	elseif spellId == 172895 then
 		if args:IsPlayer() then
 			lastX, LastY = nil, nil
@@ -367,7 +373,7 @@ function mod:SPELL_AURA_REMOVED(args)
 			DBM:Debug("timerBallsCD is extending by 23 seconds due to shield phase")
 		else
 			DBM:Debug("remaining less than 5, no action taken")
-		end	
+		end
 	end
 end
 

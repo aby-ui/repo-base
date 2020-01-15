@@ -1,11 +1,11 @@
-## Interface: 80205
+## Interface: 80300
 ## Title: Postal
-## Version: v3.6.0
-## X-Build: 409
-## X-ReleaseDate: 2018-07-20T8:41:50Z
-## X-Revision: $Revision: 409 $
+## Version: v3.6.1
+## X-Build: 411
+## X-ReleaseDate: 2020-01-04T15:39:23Z
+## X-Revision: $Revision: 411 $
 ## Author: Xinhuan
-## X-Credits: Ammo, Rabbit, Grennon, Mikk, oscarucb
+## X-Credits: Ammo, Rabbit, Grennon, Mikk, oscarucb, Jonny aka The_Original_Manbot
 ## X-Category: Mail
 ## Notes: Postal: Enhanced Mailbox support
 ## Notes-ruRU: Postal: Расширенная поддержка почтового ящика
@@ -19,7 +19,7 @@
 
 ## LoadManagers: AddonLoader
 ## X-LoadOn-Mailbox: true
-## X-Email: xinhuan AT gmail DOT com
+## X-Email: jonny AT jmbg DOT net
 
 Localization.lua
 Postal.lua

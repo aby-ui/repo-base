@@ -1,4 +1,4 @@
-## Interface: 80205
+## Interface: 80300
 ## Title: SimpleRaidTargetIcons
 ## Author: Driizt
 ## X-Credits: ghostduke, Brodrick (aka Kirov), Qzot

@@ -1,4 +1,4 @@
-## Interface: 80205
+## Interface: 80300
 ## Title: GridStatusRaidDebuff
 ## Notes: Adds a status to Grid for debuffs applied by Raid Bosses.
 ## Notes-ruRU: Дополнительный модуль для Gridа, отображает дебаффы рейдовых боссов.

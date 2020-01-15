@@ -1,79 +1,88 @@
 local L
 
 ------------------------
--- White TIger Temple --
+-- White Tiger Temple --
 ------------------------
 L= DBM:GetModLocalization("d640")
 
 L:SetMiscLocalization({
-	Endless				= "Endless",--Could not find a global for this one.
-	ReplyWhisper		= "<Deadly Boss Mods> %s is busy in Proving Grounds (Mode: %s Wave: %d)"
+	Endless			= "Endless",--Could not find a global for this one.
+	ReplyWhisper	= "<Deadly Boss Mods> %s is busy in Proving Grounds (Mode: %s Wave: %d)"
 })
 
 ------------------------
 -- Mage Tower: TANK --
 ------------------------
-L= DBM:GetModLocalization("Kruul")
+L = DBM:GetModLocalization("Kruul")
 
 L:SetGeneralLocalization({
-	name =	"The Highlord's Return"
+	name	= "The Highlord's Return"
 })
 
 ------------------------
 -- Mage Tower: Healer --
 ------------------------
-L= DBM:GetModLocalization("ArtifactHealer")
+L = DBM:GetModLocalization("ArtifactHealer")
 
 L:SetGeneralLocalization({
-	name =	"End of the Risen Threat"
+	name	= "End of the Risen Threat"
 })
 
 ------------------------
 -- Mage Tower: DPS --
 ------------------------
-L= DBM:GetModLocalization("ArtifactFelTotem")
+L = DBM:GetModLocalization("ArtifactFelTotem")
 
 L:SetGeneralLocalization({
-	name =	"Feltotem's Fall"
+	name	= "Feltotem's Fall"
 })
 
 ------------------------
 -- Mage Tower: DPS --
 ------------------------
-L= DBM:GetModLocalization("ArtifactImpossibleFoe")
+L = DBM:GetModLocalization("ArtifactImpossibleFoe")
 
 L:SetGeneralLocalization({
-	name =	"An Impossible Foe"
+	name	= "An Impossible Foe"
 })
 
 L:SetMiscLocalization({
-	impServants =	"Kill the Imp Servants before they energize Agatha!"
+	impServants	= "Kill the Imp Servants before they energize Agatha!"
 })
 
 ------------------------
 -- Mage Tower: DPS --
 ------------------------
-L= DBM:GetModLocalization("ArtifactQueen")
+L = DBM:GetModLocalization("ArtifactQueen")
 
 L:SetGeneralLocalization({
-	name =	"The God-Queen's Fury"
+	name	= "The God-Queen's Fury"
 })
 
 ------------------------
 -- Mage Tower: DPS --
 ------------------------
-L= DBM:GetModLocalization("ArtifactTwins")
+L = DBM:GetModLocalization("ArtifactTwins")
 
 L:SetGeneralLocalization({
-	name =	"Thwarting the Twins"
+	name	= "Thwarting the Twins"
 })
 
 ------------------------
 -- Mage Tower: DPS --
 ------------------------
-L= DBM:GetModLocalization("ArtifactXylem")
+L = DBM:GetModLocalization("ArtifactXylem")
 
 L:SetGeneralLocalization({
-	name =	"Closing the Eye"
+	name	= "Closing the Eye"
 })
 
+------------------------
+-- N'Zoth Visions: Stormwind --
+------------------------
+L= DBM:GetModLocalization("d1993")
+
+------------------------
+-- N'Zoth Visions: Orgrimmar --
+------------------------
+L= DBM:GetModLocalization("d1995")

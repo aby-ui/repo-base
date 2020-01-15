@@ -1,4 +1,4 @@
-## Interface: 80205
+## Interface: 80300
 ## Title: XLoot
 ## Notes: Core module for Loot and Looting-related UI improvements
 ## Version: 8.1-1

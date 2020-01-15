@@ -1,4 +1,4 @@
-## Interface: 80205
+## Interface: 80300
 ## Title: AuctionLite
 ## Notes: A lightweight addon that tracks auction house data and improves the auction house interface.
 ## Author: merial.kilrogg@gmail.com
@@ -7,34 +7,34 @@
 ## SavedVariables: AuctionLiteDB
 ## X-Category: Interface Enhancements
 
-Locale\enUS.lua
-Locale\zhCN.lua
-Locale\zhTW.lua
-
-AuctionLite.lua
-AuctionFrame.lua
-
-Config.lua
-ListBox.lua
-
-Templates.xml
-
-BuyFrame.lua
-BuyFrame.xml
-
-SellFrame.lua
-SellFrame.xml
-
-CancelAuctions.lua
-CreateAuctions.lua
-QueryAuctions.lua
-
-Disenchant.lua
-External.lua
-History.lua
-Tooltip.lua
-
-Util.lua
+#Locale\enUS.lua
+#Locale\zhCN.lua
+#Locale\zhTW.lua
+#
+#AuctionLite.lua
+#AuctionFrame.lua
+#
+#Config.lua
+#ListBox.lua
+#
+#Templates.xml
+#
+#BuyFrame.lua
+#BuyFrame.xml
+#
+#SellFrame.lua
+#SellFrame.xml
+#
+#CancelAuctions.lua
+#CreateAuctions.lua
+#QueryAuctions.lua
+#
+#Disenchant.lua
+#External.lua
+#History.lua
+#Tooltip.lua
+#
+#Util.lua
 
 ## Title-zhCN: |cff880303[爱不易]|r AuctionLite 拍卖助手
 ## Title-zhTW: |cff880303[爱不易]|r AuctionLite 拍賣助手

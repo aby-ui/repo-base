@@ -40,6 +40,7 @@ mail.hook = function() hooksecurefunc("SendMail", function(...) tdHookSendMail(.
 mail.profile = "SendMailNameEditBox"
 mail.over = true
 
+--[[ --abyui830
 local ah = {}
 ah.profile = "BrowseName"
 ah.event = "ADDON_LOADED"
@@ -60,6 +61,7 @@ auctionLite.hook = function()
 end
 auctionLite.func = function(arg1) return arg1 == "AuctionLite" end
 auctionLite.click = O.Search and function() AuctionLite:AuctionFrameBuy_Search() end
+--]]
 
 local trade = {}
 trade.profile = "TradeSkillFrame.SearchBox"
@@ -107,7 +109,7 @@ if false and U1_FRAME_NAME then
 end
 
 if O.Mail then  tdCreateDropDown(mail) end
-if O.AH then tdCreateDropDown(ah) tdCreateDropDown(auctionLite) end
+--if O.AH then tdCreateDropDown(ah) tdCreateDropDown(auctionLite) end
 if O.Trade then tdCreateDropDown(trade) end
 --if O.Glyph then tdCreateDropDown(glyph) end
 if O.EJ then tdCreateDropDown(ej) end

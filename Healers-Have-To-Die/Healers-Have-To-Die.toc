@@ -1,4 +1,4 @@
-## Interface: 80205
+## Interface: 80300
 ## Title: Healers Have To... (see H.H.T.D.)
 ## Notes: This version is deprecated see the add-on H.H.T.D. Just load this item to transfer your settings automatically.
 ## Version: 2.4.5-deprecated

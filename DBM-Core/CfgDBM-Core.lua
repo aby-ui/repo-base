@@ -94,6 +94,7 @@ U1RegisterAddon("DBM-Uldir", { title = "奥迪尔副本模块", });
 U1RegisterAddon("DBM-ZuldazarRaid", { title = "达萨罗之战模块", });
 U1RegisterAddon("DBM-CrucibleofStorms", { title = "风暴熔炉模块", });
 U1RegisterAddon("DBM-EternalPalace", { title = "永恒王宫模块", });
+U1RegisterAddon("DBM-Nyalotha", { title = "尼奥罗萨模块", });
 
 --第三方开发的
 U1RegisterAddon("DBM-SpellTimers", { title = "冷却监控", load = "NORMAL", defaultEnable = 0 });

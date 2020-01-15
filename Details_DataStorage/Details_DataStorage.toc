@@ -1,4 +1,4 @@
-## Interface: 80205
+## Interface: 80300
 ## Title: Details!: Storage
 ## Notes: Stores information for Details! Damage Meter
 ## DefaultState: Enabled

@@ -292,15 +292,14 @@ function Postal_BlackBook:OnChar(editbox, ...)
 		end
 	end
 
-	-- Check RealID friends that are online
+	-- Check RealID friends that are online :: rewrite  due to API changes - Jonny
 	if not newname and db.AutoCompleteFriends then
 		local numBNetTotal, numBNetOnline = BNGetNumFriends()
 		for i = 1, numBNetOnline do
-			local presenceID, presenceName, battleTag, isBattleTagPresence, toonName, toonID, client, isOnline, lastOnline, isAFK, isDND, messageText, noteText, isRIDFriend, messageTime, canSoR = BNGetFriendInfo(i)
-            local accountInfo = C_BattleNet.GetFriendAccountInfo(i);
-			if (toonName and client == BNET_CLIENT_WOW and CanCooperateWithGameAccount(accountInfo)) then
-				if strfind(strupper(toonName), text, 1, 1) == 1 then
-					newname = toonName
+			local accountInfo = C_BattleNet.GetFriendAccountInfo(i)
+			if (accountInfo.gameAccountInfo.characterName and accountInfo.gameAccountInfo.clientProgram == BNET_CLIENT_WOW and CanCooperateWithGameAccount(accountInfo) and accountInfo.gameAccountInfo.wowProjectID == 1 ) then
+				if strfind(strupper(accountInfo.gameAccountInfo.characterName), text, 1, 1) == 1 then
+					newname = accountInfo.gameAccountInfo.characterName
 					break
 				end
 			end
@@ -363,28 +362,7 @@ function Postal_BlackBook:SortAndCountNumFriends()
 		sorttable[i] = GetFriendInfo(i)
 	end
 
-	-- Battle.net friends
-	if BNGetNumFriends then -- For pre 3.3.5 backwards compat
-		local numBNetTotal, numBNetOnline = BNGetNumFriends()
-		for i= 1, numBNetOnline do
-			local presenceID, presenceName, battleTag, isBattleTagPresence, toonName, toonID, client, isOnline, lastOnline, isAFK, isDND, messageText, noteText, isRIDFriend, messageTime, canSoR = BNGetFriendInfo(i)
-            local accountInfo = C_BattleNet.GetFriendAccountInfo(i);
-			if (toonName and client == BNET_CLIENT_WOW and CanCooperateWithGameAccount(accountInfo)) then
-				-- Check if already on friends list
-				local alreadyOnList = false
-				for j = 1, numFriends do
-					if sorttable[j] == toonName then
-						alreadyOnList = true
-						break
-					end
-				end
-				if not alreadyOnList then
-					numFriends = numFriends + 1
-					sorttable[numFriends] = toonName
-				end
-			end
-		end
-	end
+	-- removed lines causing issues
 
 	-- Sort the list
 	if numFriends > 0 and not ignoresortlocale[GetLocale()] then table.sort(sorttable) end

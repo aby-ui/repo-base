@@ -1,4 +1,4 @@
-## Interface: 80205
+## Interface: 80300
 ## Title: QuakeAssist
 ## Version: 1.10
 ## Author: Abin

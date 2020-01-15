@@ -330,3 +330,9 @@ AbyBNGetGameAccountInfo = function(friendIndex, accountIndex)
         playerGuid, wowProjectID, gameAccountInfo.isWowMobile;
     end
 end
+
+--[[------------------------------------------------------------
+8.3.0
+---------------------------------------------------------------]]
+if not UIDropDownMenu_StopCounting then UIDropDownMenu_StopCounting = noop end
+if not UIDropDownMenu_StartCounting then UIDropDownMenu_StartCounting = noop end

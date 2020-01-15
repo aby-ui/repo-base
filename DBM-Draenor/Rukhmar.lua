@@ -1,7 +1,13 @@
 local mod	= DBM:NewMod(1262, "DBM-Draenor", nil, 557)
 local L		= mod:GetLocalizedStrings()
 
+<<<<<<<<<<< C:\code\lua\163ui.beta\fetch-merge\DBM-WOD\DBM-WOD-r45.163ui.zip!/DBM-Draenor/Rukhmar.lua
 mod:SetRevision("20190417005938")
+||||||||||| C:\code\lua\163ui.beta\fetch-merge\DBM-WOD\DBM-WOD-r45.zip!/DBM-Draenor/Rukhmar.lua
+mod:SetRevision("20190814112014")
+===========
+mod:SetRevision("20200110163341")
+>>>>>>>>>>> C:\code\lua\163ui.beta\fetch-merge\DBM-WOD\DBM-WOD-r46.zip!/DBM-Draenor/Rukhmar.lua
 mod:SetCreatureID(83746)
 mod:SetEncounterID(1755)
 mod:SetReCombatTime(20)
@@ -20,7 +26,7 @@ mod:RegisterEventsInCombat(
 --TODO, timers.
 --TODO, health percents feathers/glory happen at. Add warnings if cast detectable too.
 --TODO, add warnings for fixates birds do if they fixate.
-local warnPiercedArmor			= mod:NewStackAnnounce(167615, 3, nil, "Tank|Healer", 2)
+local warnPiercedArmor		= mod:NewStackAnnounce(167615, 3, nil, "Tank|Healer", 2)
 
 local specWarnLooseQuills		= mod:NewSpecialWarningSpell(167647, nil, nil, nil, 2)
 local specWarnSolarBreath		= mod:NewSpecialWarningSpell(167679, "Tank")

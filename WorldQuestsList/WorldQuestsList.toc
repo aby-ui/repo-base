@@ -1,4 +1,4 @@
-## Interface: 80205
+## Interface: 80300
 ## Title: World Quests List
 ## Author: ykiigor
 ## Version: 91

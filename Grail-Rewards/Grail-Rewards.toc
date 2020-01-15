@@ -1,4 +1,4 @@
-## Interface: 80205
+## Interface: 80300
 ## Title: Grail |r|cff69ccf0Rewards|r
 ## Author: Scott M Harrison
 ## Notes: Provides (non-reputation) reward award information to Grail

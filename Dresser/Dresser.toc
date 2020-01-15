@@ -1,4 +1,4 @@
-## Interface: 80205
+## Interface: 80300
 ## Title: Dresser
 ## Notes: Adds functionality to the dressing room!
 ## Author: Vladinator

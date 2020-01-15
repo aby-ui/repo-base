@@ -1,4 +1,4 @@
-## Interface: 80205
+## Interface: 80300
 ## Title: Lib: GetFrame
 ## Notes: Get unit frame for a unit
 ## Author: Buds

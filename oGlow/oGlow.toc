@@ -1,4 +1,4 @@
-## Interface: 80205
+## Interface: 80300
 ## Title: oGlow
 ## Author: Haste
 ## Version: 2.2.2

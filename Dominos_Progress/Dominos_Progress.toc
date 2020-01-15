@@ -1,4 +1,4 @@
-﻿## Interface: 80205
+﻿## Interface: 80300
 ## Title: Dominos Progress
 ## Notes: Progress bars of all sorts
 ## Author: Tuller

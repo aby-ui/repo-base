@@ -1,4 +1,4 @@
-## Interface: 80205
+## Interface: 80300
 ## Title: TomCat's Tours: Rares of Nazjatar
 ## Author: TomCat
 ## X-Website: http://www.tomcatstours.com

@@ -1,4 +1,4 @@
-﻿## Interface: 80205
+﻿## Interface: 80300
 ## X-Min-Interface: 80000
 ## Title:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Hellfire Citadel|r
 ## Title-deDE:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Höllenfeuerzitadelle|r
@@ -22,7 +22,7 @@
 ## X-DBM-Mod-MinCoreRevision: 15211
 ## X-Curse-Project-ID: 101956
 ## X-WoWI-ID: 24535
-## Version: r45
+## Version: r46
 
 localization.en.lua
 localization.de.lua

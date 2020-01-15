@@ -1,4 +1,4 @@
-﻿## Interface: 80205
+﻿## Interface: 80300
 ## X-Min-Interface: 80000
 ## Title:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Dungeons (Cataclysm)|r
 ## Title-frFR:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Groupe-Cataclysm|r
@@ -43,7 +43,7 @@
 ## X-DBM-Mod-MinCoreRevision: 14755
 ## X-Curse-Project-ID: 314994
 ## X-WoWI-ID: 24904
-## Version: r12
+## Version: r13
 
 localization.en.lua
 localization.tw.lua

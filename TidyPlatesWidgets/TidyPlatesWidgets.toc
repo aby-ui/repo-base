@@ -1,4 +1,4 @@
-## Interface: 80205
+## Interface: 80300
 ## Title: Tidy Plates Widgets
 ## Notes: Library of Widgets
 ## Dependencies: TidyPlates

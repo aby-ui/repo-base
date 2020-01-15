@@ -78,7 +78,11 @@ local function UpdateQuestsDistance()
         -- force update
         if ObjectiveTrackerFrame and ObjectiveTrackerFrame:IsVisible() and not InCombatLockdown() then
             ObjectiveTracker_Update(OBJECTIVE_TRACKER_UPDATE_MODULE_QUEST);
-            QuestObjectiveTracker_UpdatePOIs()
+            if QuestObjectiveTracker_UpdatePOIs then
+                QuestObjectiveTracker_UpdatePOIs()
+            else
+                QUEST_TRACKER_MODULE:UpdatePOIs()
+            end
         end
     end
 end

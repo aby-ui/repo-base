@@ -1,4 +1,4 @@
-## Interface: 80205
+## Interface: 80300
 ## Title: Details! Damage Meter
 ## Notes: Essential tool to impress that chick in your raid.
 ## SavedVariables: _detalhes_global

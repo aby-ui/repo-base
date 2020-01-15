@@ -1,4 +1,4 @@
-## Interface: 80205
+## Interface: 80300
 ## Notes: 显示副本boss的简易攻略。
 
 AbyBossGuide.lua

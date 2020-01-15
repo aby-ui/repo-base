@@ -1,4 +1,4 @@
-## Interface: 80205
+## Interface: 80300
 ## Title: Rematch
 ## Notes: A pet journal alternative for managing pets and teams.
 ## Author: Gello

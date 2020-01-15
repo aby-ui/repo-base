@@ -1,4 +1,4 @@
-## Interface: 80205
+## Interface: 80300
 ## X-Min-Interface: 80000
 ## Title:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Ulduar|r
 ## Title-ruRU:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Ульдуар|r
@@ -20,7 +20,7 @@
 ## X-DBM-Mod-MinCoreRevision: 14002
 ## X-Curse-Project-ID: 43970
 ## X-WoWI-ID: 21522
-## Version: r290-1-gadb0dff
+## Version: r291
 
 localization.en.lua
 localization.de.lua

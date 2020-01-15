@@ -1,5 +1,5 @@
 ﻿## Author: Shinisuryu
-## Interface: 80205
+## Interface: 80300
 ## Notes: Enhances shift-click interface at vendors.
 ## Title: BuyEmAll
 ## Version: 3.5.4

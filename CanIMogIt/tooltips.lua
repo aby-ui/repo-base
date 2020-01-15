@@ -277,22 +277,22 @@ hooksecurefunc(GameTooltip, "SetBagItem",
 )
 
 
-hooksecurefunc(GameTooltip, "SetAuctionItem",
-    function(tooltip, type, index)
-        addToTooltip(tooltip, GetAuctionItemLink(type, index))
-        VVDebugPrint(tooltip, "SetAuctionItem")
-    end
-)
+-- hooksecurefunc(GameTooltip, "SetAuctionItem",
+--     function(tooltip, type, index)
+--         addToTooltip(tooltip, GetAuctionItemLink(type, index))
+--         VVDebugPrint(tooltip, "SetAuctionItem")
+--     end
+-- )
 
 
-hooksecurefunc(GameTooltip, "SetAuctionSellItem",
-    function(tooltip)
-        local name = GetAuctionSellItemInfo()
-        local _, link = GetItemInfo(name)
-        addToTooltip(tooltip, link)
-        VVDebugPrint(tooltip, "SetAuctionSellItem")
-    end
-)
+-- hooksecurefunc(GameTooltip, "SetAuctionSellItem",
+--     function(tooltip)
+--         local name = GetAuctionSellItemInfo()
+--         local _, link = GetItemInfo(name)
+--         addToTooltip(tooltip, link)
+--         VVDebugPrint(tooltip, "SetAuctionSellItem")
+--     end
+-- )
 
 
 hooksecurefunc(GameTooltip, "SetLootItem",

@@ -550,6 +550,43 @@ GTFO.SpellID["265495"] = {
   test = true;
 };
 
+GTFO.SpellID["300660"] = {
+  --desc = "Solar Beam (Watcher Statue)";
+  sound = 3;
+};
+
+GTFO.SpellID["317595"] = {
+  --desc = "Gaze of Judgment (Watcher Aum-ka)";
+  sound = 3;
+};
+
+GTFO.SpellID["280462"] = {
+  --desc = "Holy Wave (Watcher Aum-ka)";
+  sound = 3;
+  applicationOnly = true;
+};
+
+GTFO.SpellID["312854"] = {
+  --desc = "Concentric Reverberations (Shoth the Darkened)";
+  sound = 3;
+};
+
+GTFO.SpellID["312856"] = {
+  --desc = "Concentric Reverberations (Shoth the Darkened)";
+  sound = 3;
+};
+
+GTFO.SpellID["302454"] = {
+  --desc = "Corrupted Frost Fragment (Vexiona)";
+  sound = 3;
+};
+
+GTFO.SpellID["302456"] = {
+  --desc = "Corrupted Flame Fragment (Vexiona)";
+  sound = 3;
+};
+
+
 
 -- ******************
 -- * Waycrest Manor *
@@ -1532,6 +1569,31 @@ GTFO.SpellID["291915"] = {
 
 GTFO.SpellID["291856"] = {
   --desc = "Recalibrate (King Mechagon)";
+  sound = 3;
+};
+
+GTFO.SpellID["295183"] = {
+  --desc = "Capacitor Discharge (Blastatron X-81)";
+  sound = 3;
+};
+
+GTFO.SpellID["295168"] = {
+  --desc = "Capacitor Discharge (Blastatron X-81)";
+  sound = 3;
+};
+
+GTFO.SpellID["295169"] = {
+  --desc = "Capacitor Discharge (Blastatron X-81)";
+  sound = 3;
+};
+
+GTFO.SpellID["295170"] = {
+  --desc = "Capacitor Discharge (Blastatron X-81)";
+  sound = 3;
+};
+
+GTFO.SpellID["295182"] = {
+  --desc = "Capacitor Discharge (Blastatron X-81)";
   sound = 3;
 };
 

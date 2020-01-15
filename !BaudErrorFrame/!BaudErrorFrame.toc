@@ -1,4 +1,4 @@
-## Interface: 80205
+## Interface: 80300
 ## Title: !BaudErrorFrame
 ## Notes: 收集和汇总错误信息
 ## Author: Baudzilla

@@ -1,4 +1,4 @@
-## Interface: 80205
+## Interface: 80300
 ## Title: Masque
 
 ## Notes: A skinning engine for button-based add-ons.

@@ -1,4 +1,4 @@
-## Interface: 80205
+## Interface: 80300
 ## Title: Combuctor Config
 ## Author: Tuller and Jaliborc (João Cardoso)
 ## Notes: An options menu for Combuctor

@@ -1,4 +1,4 @@
-## Interface: 80205
+## Interface: 80300
 ## Title: RangeDisplay
 ## Author: mitch0
 ## Version: v4.9.3

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1956, "DBM-BrokenIsles", nil, 822)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190417005925")
+mod:SetRevision("20200110163156")
 mod:SetCreatureID(121124)
 --mod:SetEncounterID(1880)
 mod:SetReCombatTime(20)
@@ -17,7 +17,6 @@ local warnFelfireMissiles				= mod:NewTargetAnnounce(241498, 2)
 
 local specWarnQuake						= mod:NewSpecialWarningSpell(241458, nil, nil, nil, 2, 2)
 local specWarnFelfireMissiles			= mod:NewSpecialWarningMoveAway(241498, nil, nil, nil, 1, 2)
-local yellFelfireMissiles				= mod:NewYell(241498)
 local specWarnFelfireMissilesNear		= mod:NewSpecialWarningClose(241498, nil, nil, nil, 1, 2)
 local specWarnSear						= mod:NewSpecialWarningDefensive(241518, "Tank", nil, nil, 1, 2)
 
@@ -32,7 +31,6 @@ function mod:MissilesTarget(targetname, uId)
 	if targetname == UnitName("player") then
 		specWarnFelfireMissiles:Show()
 		specWarnFelfireMissiles:Play("runout")
-		yellFelfireMissiles:Yell()
 	elseif self:CheckNearby(10, targetname) then
 		specWarnFelfireMissilesNear:Show(targetname)
 		specWarnFelfireMissilesNear:Play("watchstep")

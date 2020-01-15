@@ -1,4 +1,4 @@
-## Interface: 80205
+## Interface: 80300
 ## Title: WorldFlightMap
 ## Notes: Replaces the regular flight map with the world map
 ## Author: Semlar

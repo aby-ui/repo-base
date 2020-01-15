@@ -96,6 +96,9 @@ end
 ---------------------------
 
 function Postal:OnInitialize()
+
+	--print("Postal is Active and Running");
+
 	-- Version number
 	if not self.version then self.version = GetAddOnMetadata("Postal", "Version") end
 
@@ -506,9 +509,9 @@ function Postal.About()
 		tinsert(t, "")
 	end
 	tinsert(t, "-----")
-	tinsert(t, L["Please post bugs or suggestions at the wowace forums thread at |cFF00FFFFhttp://forums.wowace.com/showthread.php?t=3909|r. When posting bugs, indicate your locale and Postal's version number v%s."]:format(version))
+	tinsert(t, L["Please post bugs or suggestions on the curseforge Postal page |cFF00FFFFhttps://www.curseforge.com/wow/addons/postal/issues|r. When posting bugs, indicate your locale and Postal's version number v%s."]:format(version))
 	tinsert(t, "")
-	tinsert(t, "- Xinhuan (Blackrock/Barthilas US Alliance)")
+	tinsert(t, "- Abaton (Wyrmrest Accord US Alliance)")
 	tinsert(t, "")
 	Postal.aboutFrame.editBox:SetText(table.concat(t, "\n"))
 	Postal.aboutFrame:Show()

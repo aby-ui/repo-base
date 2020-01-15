@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1749, "DBM-BrokenIsles", nil, 822)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190417005925")
+mod:SetRevision("20200110163156")
 mod:SetCreatureID(107023)
 mod:SetEncounterID(1880)
 mod:SetReCombatTime(20)
@@ -12,7 +12,7 @@ mod:RegisterCombat("combat")
 mod:RegisterEventsInCombat(
 	"SPELL_CAST_START 212867 212852",
 	"SPELL_CAST_SUCCESS 212887",
-	"SPELL_AURA_APPLIED 212887 212943 212852 212884",
+	"SPELL_AURA_APPLIED 212943 212852 212884",
 	"RAID_BOSS_WHISPER",
 	"UNIT_SPELLCAST_SUCCEEDED target focus mouseover"
 )
@@ -22,10 +22,8 @@ local warnStaticCharge				= mod:NewTargetAnnounce(212887, 3)
 local warnLightningRod				= mod:NewTargetAnnounce(212943, 2)
 
 local specWarnCracklingJolt			= mod:NewSpecialWarningDodge(212841, nil, nil, nil, 1, 2)
-local yellCracklingJolt				= mod:NewYell(212841, nil, false)
 local specWarnCracklingJoltNear		= mod:NewSpecialWarningClose(212841, nil, nil, nil, 1, 2)
 local specWarnStaticCharge			= mod:NewSpecialWarningYou(212887, nil, nil, nil, 1, 2)
-local yellStaticCharge				= mod:NewFadesYell(212887)
 local specWarnLightningRod			= mod:NewSpecialWarningRun(212943, nil, nil, nil, 4, 2)
 local specWarnBreath				= mod:NewSpecialWarningDefensive(212852, nil, nil, nil, 1, 2)
 local specWarnBreathSwap			= mod:NewSpecialWarningTaunt(212852, nil, nil, nil, 1, 2)
@@ -77,9 +75,6 @@ function mod:SPELL_AURA_APPLIED(args)
 		if args:IsPlayer() then
 			specWarnStaticCharge:Show()
 			specWarnStaticCharge:Play("runout")
-			yellStaticCharge:Schedule(2, 3)
-			yellStaticCharge:Schedule(3, 2)
-			yellStaticCharge:Schedule(4, 1)
 		else
 			warnStaticCharge:Show(args.destName)
 		end
@@ -101,19 +96,9 @@ function mod:SPELL_AURA_APPLIED(args)
 	end
 end
 
-function mod:SPELL_AURA_APPLIED(args)
-	local spellId = args.spellId
-	if spellId == 212887 and args:IsPlayer() then
-		if args:IsPlayer() then
-			yellStaticCharge:Cancel()
-		end
-	end
-end
-
 function mod:RAID_BOSS_WHISPER(msg)
 	if msg:find("spell:212841") then
 		specWarnCracklingJolt:Show()
-		yellCracklingJolt:Yell()
 		specWarnCracklingJolt:Play("watchstep")
 	end
 end

@@ -1,4 +1,4 @@
-## Interface: 80205
+## Interface: 80300
 ## Version: v8.2.5.0
 ## Title: GridStatusRaidDebuff(Legion)
 ## Notes: Debuff List for Legion

@@ -1,4 +1,4 @@
-## Interface: 80205
+## Interface: 80300
 ## Title: XLoot Frame
 ## Notes: A customizable, skinnable loot frame.
 ## Version: 8.1-1

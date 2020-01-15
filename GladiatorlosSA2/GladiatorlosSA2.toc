@@ -1,4 +1,4 @@
-## Interface: 80205
+## Interface: 80300
 ## Title: GladiatorlosSA
 ## Notes: PvP Sound Alerter
 ## Notes-zhTW: PVP技能語音提示

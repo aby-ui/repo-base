@@ -1,4 +1,4 @@
-## Interface: 80205
+## Interface: 80300
 ## Title: Combuctor
 ## Author: Tuller & Jaliborc (João Cardoso)
 ## Notes: Single window displays for your inventory and bank

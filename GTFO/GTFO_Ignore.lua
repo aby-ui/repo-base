@@ -27,6 +27,12 @@ if (not GTFO.ClassicMode) then
 		tooltip = "Alert from the Desecrated Axe from Garrosh Hellscream (Phase 1 & 2)",
 		override = true
 	}
+	
+	GTFO.IgnoreSpellCategory["EyeOfCorruption"] = {
+		-- 8.3 Corruption
+		spellID = 315161,
+		desc = "Eye of Corruption"
+	}
 
 end
 

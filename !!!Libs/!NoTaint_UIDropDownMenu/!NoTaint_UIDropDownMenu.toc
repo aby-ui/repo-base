@@ -1,4 +1,4 @@
-## Interface: 80205
+## Interface: 80300
 ## Title: Lib: NoTaint_UIDropDownMenu
 ## Notes: Replacement for standard UIDropDownMenu
 ## Version: 7.2.0.24015-r3

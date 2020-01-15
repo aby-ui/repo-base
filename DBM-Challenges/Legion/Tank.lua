@@ -1,7 +1,7 @@
-local mod	= DBM:NewMod("Kruul", "DBM-Challenges", 2)
+﻿local mod	= DBM:NewMod("Kruul", "DBM-Challenges", 2)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190625143134")
+mod:SetRevision("20200110224153")
 mod:SetCreatureID(117933, 117198)--Variss, Kruul
 mod:SetZone()
 mod:SetBossHPInfoToHighest()
@@ -74,7 +74,7 @@ function mod:SPELL_CAST_START(args)
 		warnHolyWard:Show()
 		timerHolyWard:Start()
 		timerHolyWardCD:Start()
-	elseif (spellId == 234631 or spellId == 241717) and self:AntiSpam(2.5, 1) then --163ui 小猛击 or spellId == 236537 then
+	elseif (spellId == 234631 or spellId == 241717 or spellId == 236537) and self:AntiSpam(2.5, 1) then
 		specWarnSmash:Show()
 		specWarnSmash:Play("shockwave")
 	elseif spellId == 236572 then
@@ -97,7 +97,7 @@ function mod:SPELL_AURA_APPLIED(args)
 	local spellId = args.spellId
 	if spellId == 234422 then
 		local amount = args.amount or 1
-		if amount >= 6 then
+		if amount >= 5 then
 			specWarnDecay:Show(amount)
 			if amount > 10 then
 				specWarnDecay:Play("runout")

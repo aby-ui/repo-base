@@ -273,6 +273,43 @@ GTFO.SpellID["302521"] = {
   sound = 1;
 };
 
+GTFO.SpellID["318391"] = {
+  --desc = "Great Worm's Foul Stench (Great Worm From Beyond)";
+  applicationOnly = true;
+  sound = 1;
+};
+
+GTFO.SpellID["315161"] = {
+  --desc = "Eye of Corruption";
+  sound = 2;
+  category = "EyeOfCorruption";
+};
+
+GTFO.SpellID["315197"] = {
+  --desc = "Grand Delusions (Thing From Beyond)";
+  sound = 3;
+};
+
+GTFO.SpellID["314579"] = {
+  --desc = "Shadow Wreath (Shadowy Nexus)";
+  sound = 1;
+};
+
+GTFO.SpellID["312687"] = {
+  --desc = "Shadow Crash (Black Warden Rhothkozz)";
+  sound = 1;
+};
+
+GTFO.SpellID["314956"] = {
+  --desc = "Fragmented Halo (Black Warden Rhothkozz)";
+  sound = 1;
+};
+
+GTFO.SpellID["302390"] = {
+  --desc = "Twilight Flames (Vexiona)";
+  sound = 1;
+};
+
 
 -- ***********************
 -- * Shrine of the Storm *

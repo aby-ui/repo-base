@@ -1,4 +1,4 @@
-## Interface: 80205
+## Interface: 80300
 ## Title: Masque: |cffff8000Serenity|r
 ## Version: 8.0.0
 ## Author: StormFX

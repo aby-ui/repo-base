@@ -1,4 +1,4 @@
-## Interface: 80205
+## Interface: 80300
 ## Title: GTFO
 ## Notes: GTFO, you're dying!
 ## Author: Zensunim of Dragonblight/Myzrael

@@ -1,7 +1,7 @@
-local mod	= DBM:NewMod("ArtifactXylem", "DBM-Challenges", 2)
+﻿local mod	= DBM:NewMod("ArtifactXylem", "DBM-Challenges", 2)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190625143134")
+mod:SetRevision("20200110224153")
 mod:SetCreatureID(115244)
 mod:SetZone()--Healer (1710), Tank (1698), DPS (1703-The God-Queen's Fury), DPS (Fel Totem Fall)
 mod.soloChallenge = true
@@ -102,6 +102,5 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 		--timerShadowBarrageCD:Start(11)
 		timerDrawPowerCD:Start(27)--27-42
 	elseif spellId == 164393 then--Cancel Channeling (Successfully interrupted Arcane Annihilation)
-		
 	end
 end

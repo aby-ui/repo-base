@@ -1,4 +1,4 @@
-## Interface: 80205
+## Interface: 80300
 ## Title: Bagnon Guild Bank
 ## Author: Tuller & Jaliborc (João Cardoso)
 ## Notes: Single window display for your guild bank

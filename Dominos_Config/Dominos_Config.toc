@@ -1,4 +1,4 @@
-## Interface: 80205
+## Interface: 80300
 ## Title: Dominos Config
 ## Title-zhCN: Dominos 设置
 ## Title-zhTW: Dominos 設置
