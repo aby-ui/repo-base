@@ -374,6 +374,7 @@ end
 LibEvent:attachEvent("ADDON_LOADED", function(self, addonName)
     if (addonName == "Blizzard_Communities" or addonName == "Blizzard_GuildUI") then
         GuildNewsItemCache = GuildNewsItemCache or {}
+        local stats = {}
         hooksecurefunc(addonName == "Blizzard_Communities" and CommunitiesGuildNewsButton_SetText and "CommunitiesGuildNewsButton_SetText" or "GuildNewsButton_SetText", function(button, text_color, text, text1, text2, ...)
             if (not TinyInspectDB or 
                 not TinyInspectDB.EnableItemLevel or 
@@ -385,13 +386,28 @@ LibEvent:attachEvent("ADDON_LOADED", function(self, addonName)
                 if (link) then
                     local level = GuildNewsItemCache[link] or select(2, LibItemInfo:GetItemInfo(link))
                     if (level > 0) then
-                        GuildNewsItemCache[link] = level
+                        local power = 10e6
+                        local gem
+                        if level > power then
+                            gem = level / power >= 2
+                            level = level % power
+                        else
+                            local n = 0 wipe(stats) GetItemStats(link, stats)
+                            for key, num in pairs(stats) do
+                                if (string.find(key, "EMPTY_SOCKET_")) then
+                                    gem = true
+                                    break
+                                end
+                            end
+                        end
+                        GuildNewsItemCache[link] = level + (gem and 2 or 1) * power
+                        gem = gem and "|TInterface\\ItemSocketingFrame\\UI-EmptySocket-Prismatic:0|t" or ""
                         if level > 220 then
                             local r,g,b = U1GetInventoryLevelColor(level)
                             local hex = ("%.2x%.2x%.2x"):format(r*255, g*255, b*255)
-                            text2 = text2:gsub("%|cff......(%|Hitem:%d+:.-%|h%[)(.-)(%]%|h)", "|cff" .. hex .. "%1"..level..":%2%3")
+                            text2 = text2:gsub("%|cff......(%|Hitem:%d+:.-%|h%[)(.-)(%]%|h)", gem .. "|cff" .. hex .. "%1"..level..":%2%3")
                         elseif level >= 192 then
-                            text2 = text2:gsub("(%|Hitem:%d+:.-%|h%[)(.-)(%]%|h)", "%1"..level..":%2%3")
+                            text2 = text2:gsub("(%|Hitem:%d+:.-%|h%[)(.-)(%]%|h)", gem .. "%1"..level..":%2%3")
                         end
                         button.text:SetFormattedText(text, text1, text2, ...)
                     end
