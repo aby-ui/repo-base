@@ -35,6 +35,8 @@ local factionID = {
   2373, -- The Unshackled
   2391, -- Rustbolt Resistance
   2400, -- Waveblade Ankoan
+  2415, -- Rajani
+  2417, -- Uldum Accord
 }
 
 function P:OnEnable()

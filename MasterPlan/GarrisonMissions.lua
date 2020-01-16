@@ -452,7 +452,7 @@ local lfgButton do
 	hi:SetAtlas("groupfinder-eye-highlight", true)
 	hi:SetBlendMode("ADD")
 	hi:SetAlpha(0.25)
-	local border = lfgButton:CreateTexture("OVERLAY")
+	local border = lfgButton:CreateTexture(nil, "OVERLAY")
 	border:SetSize(52, 52)
 	border:SetPoint("TOPLEFT", 1, -1.5)
 	border:SetTexture("Interface\\Minimap\\MiniMap-TrackingBorder")

@@ -54,7 +54,7 @@ local currency = {
   1508, -- Veiled Argunite
   1533, -- Wakening Essence
 
-  --Battle for Azeroth
+  -- Battle for Azeroth
   1710, -- Seafarer's Dubloon
   1580, -- Seal of Wartorn Fate
   1560, -- War Resources
@@ -63,6 +63,8 @@ local currency = {
   1717, -- 7th Legion Service Medal
   1718, -- Titan Residuum
   1721, -- Prismatic Manapearl
+  1719, -- Corrupted Memento
+  1755, -- Coalescing Visions
 }
 addon.currency = currency
 

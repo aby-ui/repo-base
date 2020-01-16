@@ -177,8 +177,10 @@ Ld["Warning: You've entered about %i instances recently and are approaching the 
 Ld["Weekly Quests"] = "Weekly Quests"
 Ld["Wild Transmute"] = "Wild Transmute"
 Ld["WM"] = "WM"
+Ld["WORK"] = "WORK"
 Ld["World Boss"] = "World Boss"
 Ld["World Bosses"] = "World Bosses"
+Ld["YARD"] = "YARD"
 Ld["You can combine icons and text in a single indicator if you wish. Simply choose an icon, and insert the word ICON into the text field. Anywhere the word ICON is found, the icon you chose will be substituted in."] = "You can combine icons and text in a single indicator if you wish. Simply choose an icon, and insert the word ICON into the text field. Anywhere the word ICON is found, the icon you chose will be substituted in."
 
 
@@ -359,8 +361,12 @@ La["Weekly Quests"] = "Quêtes hebdomadaires"
 La["Wild Transmute"] = "Transmutation sauvage"
 --[[Translation missing --]]
 La["WM"] = "WM"
+--[[Translation missing --]]
+La["WORK"] = "WORK"
 La["World Boss"] = "Boss extérieur"
 La["World Bosses"] = "Boss extérieurs"
+--[[Translation missing --]]
+La["YARD"] = "YARD"
 La["You can combine icons and text in a single indicator if you wish. Simply choose an icon, and insert the word ICON into the text field. Anywhere the word ICON is found, the icon you chose will be substituted in."] = "Si vous le souhaitez, vous pouvez combiner les icônes et le texte en un seul indicateur. Il vous suffit de choisir une icône et d'insérer le mot ICON dans la zone de texte. Partout où le mot ICON sera trouvé, l'icône que vous avez choisi sera mise à la place."
 
 elseif locale == "deDE" then
@@ -542,8 +548,12 @@ La["Weekly Quests"] = "Wöchentliche Quests"
 La["Wild Transmute"] = "Wilde Transmutation"
 --[[Translation missing --]]
 La["WM"] = "WM"
+--[[Translation missing --]]
+La["WORK"] = "WORK"
 La["World Boss"] = "Weltboss"
 La["World Bosses"] = "Weltbosse"
+--[[Translation missing --]]
+La["YARD"] = "YARD"
 La["You can combine icons and text in a single indicator if you wish. Simply choose an icon, and insert the word ICON into the text field. Anywhere the word ICON is found, the icon you chose will be substituted in."] = "Nach Wunsch können Icons und Text in einem einzelnen Indikator kombiniert werden. Wähle ein Icon und gebe das Wort ICON in das Textfeld ein. Wo auch immer das Wort ICON gefunden wird, wird das gewählte Icon angefügt."
 
 elseif locale == "koKR" then
@@ -699,8 +709,12 @@ La["Warning: You've entered about %i instances recently and are approaching the 
 La["Weekly Quests"] = "주간 퀘스트"
 La["Wild Transmute"] = "거친 변환"
 La["WM"] = "저택"
+--[[Translation missing --]]
+La["WORK"] = "WORK"
 La["World Boss"] = "월드보스"
 La["World Bosses"] = "야외 우두머리"
+--[[Translation missing --]]
+La["YARD"] = "YARD"
 La["You can combine icons and text in a single indicator if you wish. Simply choose an icon, and insert the word ICON into the text field. Anywhere the word ICON is found, the icon you chose will be substituted in."] = "원할 경우 단일 표시기에 아이콘과 문자를 조합하여 사용이 가능합니다. 단순히 아이콘을 선택하면 문자 영역에 문자열 아이콘을 삽입합니다. 어디에서든 문자열 아이콘을 찾을 수 있으며, 선택한 아이콘으로 대체됩니다."
 
 elseif locale == "esMX" then
@@ -902,8 +916,12 @@ La["Weekly Quests"] = "Misiones semanales"
 La["Wild Transmute"] = "Transmutación Salvaje"
 --[[Translation missing --]]
 La["WM"] = "WM"
+--[[Translation missing --]]
+La["WORK"] = "WORK"
 La["World Boss"] = "Jefe del mundo"
 La["World Bosses"] = "Jefes de Mundo"
+--[[Translation missing --]]
+La["YARD"] = "YARD"
 La["You can combine icons and text in a single indicator if you wish. Simply choose an icon, and insert the word ICON into the text field. Anywhere the word ICON is found, the icon you chose will be substituted in."] = "Puedes unirse a los iconos y texto en un solo indicador. Seleccione un icono y escribe \"ICON\" en el cuadro de texto para indicar dónde deseas que aparezca el icono."
 
 elseif locale == "ruRU" then
@@ -1060,8 +1078,12 @@ La["Warning: You've entered about %i instances recently and are approaching the 
 La["Weekly Quests"] = "Еженедельные задания"
 La["Wild Transmute"] = "Дикая трансмутация"
 La["WM"] = "УУ"
+--[[Translation missing --]]
+La["WORK"] = "WORK"
 La["World Boss"] = "Мировой босс"
 La["World Bosses"] = "Мировые боcсы"
+--[[Translation missing --]]
+La["YARD"] = "YARD"
 La["You can combine icons and text in a single indicator if you wish. Simply choose an icon, and insert the word ICON into the text field. Anywhere the word ICON is found, the icon you chose will be substituted in."] = "Если хотите, то вы можете комбинировать иконки и текст в одном индикаторе. Просто выберите иконку и вставьте слово ICON в текстовое поле. Везде где слово ICON будет найдено, вместо него будет ваш выбранный значок."
 
 elseif locale == "zhCN" then
@@ -1218,8 +1240,10 @@ La["Warning: You've entered about %i instances recently and are approaching the 
 La["Weekly Quests"] = "周常任务"
 La["Wild Transmute"] = "狂野转化"
 La["WM"] = "庄园"
+La["WORK"] = "车间"
 La["World Boss"] = "世界首领"
 La["World Bosses"] = "世界首领"
+La["YARD"] = "垃圾场"
 La["You can combine icons and text in a single indicator if you wish. Simply choose an icon, and insert the word ICON into the text field. Anywhere the word ICON is found, the icon you chose will be substituted in."] = "你可以在指示器上同时显示图标和文字。先选择一个图标，然后在文本中插入“ICON”到想要图标被展示的位置，显示时将被替换为指定图标。"
 
 elseif locale == "esES" then
@@ -1421,8 +1445,12 @@ La["Weekly Quests"] = "Misiones semanales"
 La["Wild Transmute"] = "Transmutación Salvaje"
 --[[Translation missing --]]
 La["WM"] = "WM"
+--[[Translation missing --]]
+La["WORK"] = "WORK"
 La["World Boss"] = "Jefe del mundo"
 La["World Bosses"] = "Jefes del mundo"
+--[[Translation missing --]]
+La["YARD"] = "YARD"
 La["You can combine icons and text in a single indicator if you wish. Simply choose an icon, and insert the word ICON into the text field. Anywhere the word ICON is found, the icon you chose will be substituted in."] = "Puedes combinar iconos y texto en un mismo indicador. Selecciona un icono y escribe \"ICON\" en el cuadro de texto para indicar dónde deseas que aparezca el icono."
 
 elseif locale == "zhTW" then
@@ -1579,8 +1607,12 @@ La["Warning: You've entered about %i instances recently and are approaching the 
 La["Weekly Quests"] = "每週任務"
 La["Wild Transmute"] = "狂野塑形"
 La["WM"] = "莊園"
+--[[Translation missing --]]
+La["WORK"] = "WORK"
 La["World Boss"] = "世界首領"
 La["World Bosses"] = "世界首領"
+--[[Translation missing --]]
+La["YARD"] = "YARD"
 La["You can combine icons and text in a single indicator if you wish. Simply choose an icon, and insert the word ICON into the text field. Anywhere the word ICON is found, the icon you chose will be substituted in."] = "如果想要的話，可以在同個指標上顯示圖示與文字。首先選擇一個圖示，並在文字框中插入「ICON」到想要出現圖示的位置，就會自動替換成你選擇的圖示。"
 
 elseif locale == "ptBR" then
@@ -1782,8 +1814,12 @@ La["Weekly Quests"] = "Missões Semanais"
 La["Wild Transmute"] = "Wild Transmute"
 --[[Translation missing --]]
 La["WM"] = "WM"
+--[[Translation missing --]]
+La["WORK"] = "WORK"
 La["World Boss"] = "Chefes de Mundo"
 La["World Bosses"] = "Chefes de Mundo"
+--[[Translation missing --]]
+La["YARD"] = "YARD"
 La["You can combine icons and text in a single indicator if you wish. Simply choose an icon, and insert the word ICON into the text field. Anywhere the word ICON is found, the icon you chose will be substituted in."] = "Você pode combinar os ícones e texto em um único indicador, se desejar. Basta escolher um ícone, e inserir o ícone no campo de texto. Em qualquer lugar do ícone for encontrado, o ícone que você escolheu será substituída dentro"
 
 elseif locale == "itIT" then
@@ -1979,8 +2015,12 @@ La["Weekly Quests"] = "Missioni settimanali"
 La["Wild Transmute"] = "Trasmutazione selvaggia"
 --[[Translation missing --]]
 La["WM"] = "WM"
+--[[Translation missing --]]
+La["WORK"] = "WORK"
 La["World Boss"] = "Boss mondiale"
 La["World Bosses"] = "Boss mondiali"
+--[[Translation missing --]]
+La["YARD"] = "YARD"
 La["You can combine icons and text in a single indicator if you wish. Simply choose an icon, and insert the word ICON into the text field. Anywhere the word ICON is found, the icon you chose will be substituted in."] = "Puoi unire icone e testo in un unico indicatore se vuoi. Basta scegliere una icona, e inserire la parola ICON nel campo testo. Ovunque viene trovata la parola ICON, l'icona che hai scelto la sostituira'."
 
 end

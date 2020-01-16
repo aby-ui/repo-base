@@ -99,6 +99,11 @@ local LFRInstances = {
   [2004] = { total=1, base=1,  parent=1911, minLvl=120, remap={ 1 } }, -- Memories of Azeroth: Burning Crusade
   [2017] = { total=1, base=2,  parent=1911, minLvl=120, remap={ 1 } }, -- Memories of Azeroth: Wrath of the Lich King
   [2018] = { total=1, base=3,  parent=1911, minLvl=120, remap={ 1 } }, -- Memories of Azeroth: Cataclysm
+
+  [2036] = { total=3, base=1,   parent=2035, minLvl=120, remap={ 1, 2, 3 } }, -- Ny'alotha: Vision of Destiny
+  [2037] = { total=4, base=4,   parent=2035, minLvl=120, remap={ 1, 2, 3, 4 } }, -- Ny'alotha: Halls of Devotion
+  [2038] = { total=3, base=8,   parent=2035, minLvl=120, remap={ 1, 2, 3 } }, -- Ny'alotha: Gift of Flesh
+  [2039] = { total=2, base=11,  parent=2035, minLvl=120, remap={ 1, 2 } }, -- Ny'alotha: The Waking Dream
 }
 
 local tbl = {}

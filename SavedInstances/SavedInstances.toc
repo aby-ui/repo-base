@@ -1,9 +1,9 @@
-## Interface: 80300
+## Interface: 80205
 ## Title: SavedInstances
 ## Notes: Tracks Raid, Instance, World Boss lockouts for all your characters, daily/weekly quests, currencies, trade cooldowns, and more!
 ## Author: oscarucb and the Saved Instances Community
-## Version: 8.2.7-1-gab34fb1
-## X-ReleaseDate: 2019-12-25T2:21:25Z
+## Version: 8.3.0
+## X-ReleaseDate: 2019-11-13T7:41:23Z
 ## X-License: All Rights Reserved
 ## X-Category: Raid
 ## OptionalDeps: Ace3, CallbackHandler-1.0, LibDataBroker-1.1, LibDBIcon-1.0, LibQTip-1.0

@@ -320,6 +320,48 @@ GTFO.SpellID["314718"] = {
   sound = 1;
 };
 
+GTFO.SpellID["313190"] = {
+  --desc = "Deep Water (Depths Monstrosity)";
+  sound = 1;
+};
+
+GTFO.SpellID["313281"] = {
+  --desc = "Hurled Void (Squidtail Screamer)";
+  sound = 1;
+};
+
+GTFO.SpellID["303864"] = {
+  --desc = "Electrified";
+  sound = 1;
+};
+
+GTFO.SpellID["303867"] = {
+  --desc = "Burning";
+  applicationOnly = true;
+  sound = 1;
+};
+
+GTFO.SpellID["310832"] = {
+  --desc = "Void Tear";
+  sound = 1;
+  alwaysAlert = true;
+};
+
+GTFO.SpellID["296733"] = {
+  --desc = "Dark Smash (Faceless Destroyer)";
+  sound = 1;
+};
+
+GTFO.SpellID["301516"] = {
+  --desc = "Unsettling Mist";
+  sound = 1;
+  alwaysAlert = true;
+};
+
+GTFO.SpellID["312682"] = {
+  --desc = "Shadow Crash (Faceless Ruiner)";
+  sound = 1;
+};
 
 -- ***********************
 -- * Shrine of the Storm *

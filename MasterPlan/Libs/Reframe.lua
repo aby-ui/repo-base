@@ -33,21 +33,30 @@ do
 	end)
 end
 
-hooksecurefunc("UIDropDownMenu_StopCounting", function(self)
-	local mf = self and T.GetMouseFocus()
-	if mf and mf.tooltipTitle == nil and mf.tooltipText == nil and type(mf.tooltipOnButton) == "function" and
-	   mf:GetParent() == self then
-		self.tooltipOwner, self.tooltipOnLeave = mf, securecall(mf.tooltipOnButton, mf, mf.arg1, mf.arg2)
-	else
-		self.tooltipOwner, self.tooltipOnLeave = nil
+do
+	local function DropDownMenuButton_OnEnter(self)
+		if self and self.tooltipTitle == nil and self.tooltipText == nil and type(self.tooltipOnButton) == "function" then
+			self.tooltipOwner, self.tooltipOnLeave = self, securecall(self.tooltipOnButton, self, self.arg1, self.arg2)
+		else
+			self.tooltipOwner, self.tooltipOnLeave = nil
+		end
 	end
-end)
-hooksecurefunc("UIDropDownMenu_StartCounting", function(self)
-	if self and self.tooltipOwner and type(self.tooltipOnLeave) == "function" then
-		securecall(self.tooltipOnLeave, self.tooltipOwner)
-		self.tooltipOnLeave, self.tooltipOwner = nil
+	local function DropDownMenuButton_OnLeave(self)
+		if self and self.tooltipOwner and type(self.tooltipOnLeave) == "function" then
+			securecall(self.tooltipOnLeave, self.tooltipOwner)
+			self.tooltipOnLeave, self.tooltipOwner = nil
+		end
 	end
-end)
+	hooksecurefunc("UIDropDownMenuButton_OnEnter", DropDownMenuButton_OnEnter)
+	hooksecurefunc("UIDropDownMenuButton_OnLeave", DropDownMenuButton_OnLeave)
+	for i=1,UIDROPDOWNMENU_MAXLEVELS do
+		for j=1,UIDROPDOWNMENU_MAXBUTTONS do
+			local b = _G["DropDownList" .. i .. "Button" .. j]
+			b:HookScript("OnEnter", DropDownMenuButton_OnEnter)
+			b:HookScript("OnLeave", DropDownMenuButton_OnLeave)
+		end
+	end
+end
 
 local CreateLazyItemButton do
 	local itemIDs, OnEnter = {}

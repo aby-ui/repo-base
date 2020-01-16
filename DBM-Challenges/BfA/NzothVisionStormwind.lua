@@ -1,7 +1,7 @@
 ﻿local mod	= DBM:NewMod("d1993", "DBM-Challenges", 3)--1993 Stormwind 1995 Org
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200113022752")
+mod:SetRevision("20200115220526")
 mod:SetZone()
 mod.onlyNormal = true
 
@@ -12,7 +12,7 @@ mod:RegisterEvents(
 )
 mod:RegisterEventsInCombat(
 	"SPELL_CAST_START 308278 309819 309648 298691 308669 308366 308406 311456 296911",
-	"SPELL_AURA_APPLIED 311390 306955 315385 316481 311641 308380 308366 308265",
+	"SPELL_AURA_APPLIED 311390 315385 316481 311641 308380 308366 308265",
 	"SPELL_AURA_APPLIED_DOSE 311390",
 	"SPELL_CAST_SUCCESS 309035",
 	"SPELL_PERIODIC_DAMAGE 312121 296674 308807",
@@ -41,7 +41,7 @@ local warnChaosBreath			= mod:NewCastAnnounce(296911, 3)
 --General (GTFOs and Affixes)
 local specWarnGTFO				= mod:NewSpecialWarningGTFO(312121, nil, nil, nil, 1, 8)
 local specWarnEntomophobia		= mod:NewSpecialWarningJump(311389, nil, nil, nil, 1, 6)
-local specWarnDarkDelusions		= mod:NewSpecialWarningRun(306955, nil, nil, nil, 4, 2)
+--local specWarnDarkDelusions		= mod:NewSpecialWarningRun(306955, nil, nil, nil, 4, 2)
 local specWarnScorchedFeet		= mod:NewSpecialWarningYou(315385, nil, nil, nil, 1, 2)
 local yellScorchedFeet			= mod:NewYell(315385)
 local specWarnSplitPersonality	= mod:NewSpecialWarningYou(316481, nil, nil, nil, 1, 2)
@@ -149,9 +149,9 @@ function mod:SPELL_AURA_APPLIED(args)
 			specWarnEntomophobia:Show()
 			specWarnEntomophobia:Play("keepjump")
 		end
-	elseif spellId == 306955 and args:IsPlayer() then
-		specWarnDarkDelusions:Show()
-		specWarnDarkDelusions:Play("justrun")
+--	elseif spellId == 306955 and args:IsPlayer() then
+--		specWarnDarkDelusions:Show()
+--		specWarnDarkDelusions:Play("justrun")
 	elseif spellId == 315385 and args:IsPlayer() then
 		specWarnScorchedFeet:Show()
 		specWarnScorchedFeet:Play("targetyou")

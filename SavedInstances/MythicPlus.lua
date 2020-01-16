@@ -17,16 +17,18 @@ local GetContainerNumSlots = GetContainerNumSlots
 local GetItemQualityColor = GetItemQualityColor
 
 local KeystoneAbbrev = {
-  [244] = L["AD"],
-  [245] = L["FH"],
-  [246] = L["TD"],
-  [247] = L["ML"],
-  [248] = L["WM"],
-  [249] = L["KR"],
-  [250] = L["TOS"],
-  [251] = L["UNDR"],
-  [252] = L["SOTS"],
-  [353] = L["SIEGE"],
+  [244] = L["AD"],    -- Atal'Dazar
+  [245] = L["FH"],    -- Freehold
+  [246] = L["TD"],    -- Tol Dagor
+  [247] = L["ML"],    -- The MOTHERLODE!!
+  [248] = L["WM"],    -- Waycrest Manor
+  [249] = L["KR"],    -- Kings' Rest
+  [250] = L["TOS"],   -- Temple of Sethraliss
+  [251] = L["UNDR"],  -- The Underrot
+  [252] = L["SOTS"],  -- Shrine of the Storm
+  [353] = L["SIEGE"], -- Siege of Boralus
+  [369] = L["YARD"],  -- Operation: Mechagon - Junkyard
+  [370] = L["WORK"],  -- Operation: Mechagon - Workshop
 }
 addon.KeystoneAbbrev = KeystoneAbbrev
 

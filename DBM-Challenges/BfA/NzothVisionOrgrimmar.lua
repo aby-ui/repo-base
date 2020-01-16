@@ -1,7 +1,7 @@
 ﻿local mod	= DBM:NewMod("d1995", "DBM-Challenges", 3)--1993 Stormwind 1995 Org
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200115022325")
+mod:SetRevision("20200116020317")
 mod:SetZone()
 mod.onlyNormal = true
 
@@ -11,20 +11,17 @@ mod:RegisterEvents(
 	"ZONE_CHANGED_NEW_AREA"
 )
 mod:RegisterEventsInCombat(
-	"SPELL_CAST_START 297822 297746 304976 297574 304251 306726 299055 299110 307863 300351 300412 304101 304282 306001 306199 303589 305875 306828 306617",
-	"SPELL_AURA_APPLIED 311390 306955 315385 316481 311641",
+	"SPELL_CAST_START 297822 297746 304976 297574 304251 306726 299055 299110 307863 300351 300388 304101 304282 306001 306199 303589 305875 306828 306617 300388 296537 305378",
+	"SPELL_AURA_APPLIED 311390 315385 316481 311641",
 	"SPELL_AURA_APPLIED_DOSE 311390",
---	"SPELL_CAST_SUCCESS",
+	"SPELL_CAST_SUCCESS 297237",
 	"SPELL_PERIODIC_DAMAGE 303594",
 	"SPELL_PERIODIC_MISSED 303594",
 	"UNIT_DIED",
 	"ENCOUNTER_START"
 )
 
---TODO, detect engaging of end bosses for start timers
 --TODO, notable trash or affix warnings
---TODO, detect hard modes on end boss
---TODO, verify if scenario is appropriate combat tactic for this mod
 --TODO, maybe add https://ptr.wowhead.com/spell=298510/aqiri-mind-toxin
 --TODO, improve https://ptr.wowhead.com/spell=306001/explosive-leap warning if can get throw target
 --TODO, can https://ptr.wowhead.com/spell=305875/visceral-fluid be dodged? If so upgrade the warning
@@ -34,14 +31,14 @@ local warnVoidQuills				= mod:NewCastAnnounce(304251, 3)
 --Other notable abilities by mini bosses/trash
 local warnDarkForce					= mod:NewSpellAnnounce(299055, 3)
 local warnVoidTorrent				= mod:NewCastAnnounce(307863, 3)
-local warnSurgingFist				= mod:NewCastAnnounce(300351, 3)
 local warnExplosiveLeap				= mod:NewCastAnnounce(306001, 3)
 local warnVisceralFluid				= mod:NewCastAnnounce(305875, 3)
+local warnEndlessHungerTotem		= mod:NewSpellAnnounce(297237, 4)
 
 --General (GTFOs and Affixes)
 local specWarnGTFO					= mod:NewSpecialWarningGTFO(303594, nil, nil, nil, 1, 8)
 local specWarnEntomophobia			= mod:NewSpecialWarningJump(311389, nil, nil, nil, 1, 6)
-local specWarnDarkDelusions			= mod:NewSpecialWarningRun(306955, nil, nil, nil, 4, 2)
+--local specWarnDarkDelusions			= mod:NewSpecialWarningRun(306955, nil, nil, nil, 4, 2)
 local specWarnScorchedFeet			= mod:NewSpecialWarningYou(315385, nil, nil, nil, 1, 2)
 local yellScorchedFeet				= mod:NewYell(315385)
 local specWarnSplitPersonality		= mod:NewSpecialWarningYou(316481, nil, nil, nil, 1, 2)
@@ -49,12 +46,14 @@ local specWarnWaveringWill			= mod:NewSpecialWarningReflect(311641, "false", nil
 --local specWarnHauntingShadows		= mod:NewSpecialWarningDodge(310173, nil, nil, nil, 2, 2)--Not detectable apparently
 --Thrall
 local specWarnSurgingDarkness		= mod:NewSpecialWarningDodge(297822, nil, nil, nil, 2, 2)
-local specWarnSeismicSlam			= mod:NewSpecialWarningDodge(297746, nil, nil, nil, 2, 2)--Can this be dodged?
+local specWarnSeismicSlam			= mod:NewSpecialWarningDodge(297746, nil, nil, nil, 2, 2)
+local yellSeismicSlam				= mod:NewYell(297746)
 --Extra Abilities (used by Thrall and the area LTs)
 local specWarnHopelessness			= mod:NewSpecialWarningMoveTo(297574, nil, nil, nil, 1, 2)
 local specWarnDefiledGround			= mod:NewSpecialWarningDodge(306726, nil, nil, nil, 2, 2)--Can this be dodged?
 --Other notable abilities by mini bosses/trash
 local specWarnOrbofAnnihilation		= mod:NewSpecialWarningDodge(299110, nil, nil, nil, 2, 2)
+local specWarnSurgingFist			= mod:NewSpecialWarningDodge(300351, nil, nil, nil, 2, 2)
 local specWarnDecimator				= mod:NewSpecialWarningDodge(300412, nil, nil, nil, 2, 2)
 local specWarnDesperateRetching		= mod:NewSpecialWarningYou(304165, nil, nil, nil, 1, 2)
 local yellDesperateRetching			= mod:NewYell(304165)
@@ -65,9 +64,11 @@ local specWarnHowlinginPain			= mod:NewSpecialWarningCast(306199, "SpellCaster",
 local specWarnSanguineResidue		= mod:NewSpecialWarningDodge(303589, nil, nil, nil, 2, 2)
 local specWarnDefiledGround			= mod:NewSpecialWarningDodge(306828, nil, nil, nil, 2, 2)
 local specWarnRingofChaos			= mod:NewSpecialWarningDodge(306617, nil, nil, nil, 2, 2)
+local specWarnHorrifyingShout		= mod:NewSpecialWarningInterrupt(305378, "HasInterrupt", nil, nil, 1, 2)
+local specWarnMentalAssault			= mod:NewSpecialWarningInterrupt(296537, "HasInterrupt", nil, nil, 1, 2)
 
 --Thrall
-local timerSurgingDarknessCD	= mod:NewCDTimer(23.2, 297822, nil, nil, nil, 3)
+local timerSurgingDarknessCD	= mod:NewCDTimer(23.1, 297822, nil, nil, nil, 3)
 local timerSeismicSlamCD		= mod:NewCDTimer(12.1, 297746, nil, nil, nil, 3)
 --Extra Abilities (used by Thrall and the area LTs)
 local timerCriesoftheVoidCD		= mod:NewAITimer(21, 304976, nil, nil, nil, 3, nil, DBM_CORE_DAMAGE_ICON)
@@ -79,6 +80,13 @@ local started = false
 local playerName = UnitName("player")
 mod.vb.GnshalCleared = false
 mod.vb.VezokkCleared = false
+
+function mod:SeismicSlamTarget(targetname, uId)
+	if not targetname then return end
+	if targetname == UnitName("player") then
+		yellSeismicSlam:Yell()
+	end
+end
 
 function mod:OnCombatStart(delay)
 	self.vb.GnshalCleared = false
@@ -105,6 +113,9 @@ function mod:SPELL_CAST_START(args)
 		specWarnSeismicSlam:Show()
 		specWarnSeismicSlam:Play("shockwave")
 		timerSeismicSlamCD:Start()
+		if IsInGroup() then
+			self:BossTargetScanner(args.sourceGUID, "SeismicSlamTarget", 0.2, 8)
+		end
 	elseif spellId == 304976 then
 		warnCriesoftheVoid:Show()
 		timerCriesoftheVoidCD:Start()
@@ -125,8 +136,9 @@ function mod:SPELL_CAST_START(args)
 	elseif spellId == 307863 then
 		warnVoidTorrent:Show()
 	elseif spellId == 300351 then
-		warnSurgingFist:Show()
-	elseif spellId == 300412 then
+		specWarnSurgingFist:Show()
+		specWarnSurgingFist:Play("chargemove")
+	elseif spellId == 300388 then
 		specWarnDecimator:Show()
 		specWarnDecimator:Play("watchorb")
 	elseif spellId == 304101 then
@@ -151,18 +163,21 @@ function mod:SPELL_CAST_START(args)
 	elseif spellId == 306617 then
 		specWarnRingofChaos:Show()
 		specWarnRingofChaos:Play("watchorb")
+	elseif spellId == 296537 and self:CheckInterruptFilter(args.sourceGUID, false, true) then
+		specWarnMentalAssault:Show(args.sourceName)
+		specWarnMentalAssault:Play("kickcast")
+	elseif spellId == 305378 and self:CheckInterruptFilter(args.sourceGUID, false, true) then
+		specWarnHorrifyingShout:Show(args.sourceName)
+		specWarnHorrifyingShout:Play("kickcast")
 	end
 end
 
---[[
 function mod:SPELL_CAST_SUCCESS(args)
 	local spellId = args.spellId
-	if spellId == 310173 then
-		specWarnHauntingShadows:Show()
-		specWarnHauntingShadows:Play("watchstep")
+	if spellId == 297237 then
+		warnEndlessHungerTotem:Show()
 	end
 end
---]]
 
 function mod:SPELL_AURA_APPLIED(args)
 	local spellId = args.spellId
@@ -172,9 +187,9 @@ function mod:SPELL_AURA_APPLIED(args)
 			specWarnEntomophobia:Show()
 			specWarnEntomophobia:Play("keepjump")
 		end
-	elseif spellId == 306955 and args:IsPlayer() then
-		specWarnDarkDelusions:Show()
-		specWarnDarkDelusions:Play("justrun")
+--	elseif spellId == 306955 and args:IsPlayer() then
+--		specWarnDarkDelusions:Show()
+--		specWarnDarkDelusions:Play("justrun")
 	elseif spellId == 315385 and args:IsPlayer() then
 		specWarnScorchedFeet:Show()
 		specWarnScorchedFeet:Play("targetyou")
@@ -247,11 +262,11 @@ end
 
 function mod:ENCOUNTER_START(encounterID)
 	if encounterID == 2332 and self:IsInCombat() then
-		timerSurgingDarknessCD:Start(11.2)
+		timerSurgingDarknessCD:Start(11.1)
 		if self.vb.VezokkCleared then
 			timerDefiledGroundCD:Start(1)
 		else
-			timerSeismicSlamCD:Start(5.1)
+			timerSeismicSlamCD:Start(4.6)
 		end
 		if self.vb.GnshalCleared then
 			timerCriesoftheVoidCD:Start(1)

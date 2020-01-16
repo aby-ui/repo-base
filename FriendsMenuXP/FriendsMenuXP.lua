@@ -169,9 +169,19 @@ function FriendsMenuXP_OnLoad(self)
     self:RegisterEvent("PLAYER_REGEN_ENABLED");
 
     if UIDropDownMenu_HandleGlobalMouseEvent then
+        local function UIDropDownMenu_ContainsMouse()
+        	for i = 1, UIDROPDOWNMENU_MAXLEVELS do
+        		local dropdown = _G["DropDownList"..i];
+        		if dropdown:IsShown() and dropdown:IsMouseOver() then
+        			return true;
+        		end
+        	end
+
+        	return false;
+        end
         hooksecurefunc("UIDropDownMenu_HandleGlobalMouseEvent", function(button, event)
             if event == "GLOBAL_MOUSE_DOWN" and (button == "LeftButton" or button == "RightButton") then
-           		if not (FriendsMenuXP:IsShown() and FriendsMenuXP:IsMouseOver()) and not (FriendsMenuXPSecure:IsShown() and FriendsMenuXPSecure:IsMouseOver()) then
+           		if not (FriendsMenuXP:IsShown() and FriendsMenuXP:IsMouseOver()) and not (FriendsMenuXPSecure:IsShown() and FriendsMenuXPSecure:IsMouseOver()) and not UIDropDownMenu_ContainsMouse() then
                     FriendsMenuXP_HideBoth();
            		end
            	end

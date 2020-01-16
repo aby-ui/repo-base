@@ -2977,7 +2977,7 @@ do -- interestMissionsHandle
 		b:SetSize(21, 21)
 		local t = b:CreateTexture(nil, "ARTWORK")
 		t:SetAllPoints()
-		t, b.Icon = b:CreateTexture(nil, "ARWORK", nil, 1), t
+		t, b.Icon = b:CreateTexture(nil, "ARTWORK", nil, 1), t
 		t:SetAtlas("GarrMission_EncounterAbilityBorder-Lg")
 		t:SetSize(34.5, 34.5)
 		t:SetPoint("CENTER")
@@ -3414,13 +3414,13 @@ do -- Ships
 		local f = CreateFrame("FRAME", nil, parent)
 		f:SetAllPoints()
 		for i=1,2 do
-			local t = f:CreateTexture(nil, "ARWORK", nil, i)
+			local t = f:CreateTexture(nil, "ARTWORK", nil, i)
 			t:SetSize(22-5*i, 22-5*i)
 			t:SetTexture("Interface\\CharacterFrame\\TempPortraitAlphaMaskSmall")
 			t:SetPoint("CENTER", f, "TOPRIGHT", -12, -12)
 			f[i == 1 and "outer" or "inner"] = t
 		end
-		local t = f:CreateTexture(nil, "ARWORK", nil, 3)
+		local t = f:CreateTexture(nil, "ARTWORK", nil, 3)
 		t:SetSize(12, 5)
 		t:SetTexture("Interface\\CharacterFrame\\TempPortraitAlphaMaskSmall")
 		t:SetTexCoord(0, 1, 7/12, 1)

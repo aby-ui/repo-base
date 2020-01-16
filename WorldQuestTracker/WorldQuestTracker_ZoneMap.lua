@@ -104,8 +104,8 @@ function WorldQuestTracker.CreateZoneWidget (index, name, parent, pinTemplate) -
 	
 	button:SetSize (20, 20)
 	
-	button:SetScript ("OnEnter", TaskPOI_OnEnter)
-	button:SetScript ("OnLeave", TaskPOI_OnLeave)
+	button:SetScript ("OnEnter", function() TaskPOI_OnEnter(button) end)
+	button:SetScript ("OnLeave", function() TaskPOI_OnLeave(button) end)
 	button:SetScript ("OnClick", WorldQuestTracker.OnQuestButtonClick)
 	
 	button:RegisterForClicks ("LeftButtonDown", "MiddleButtonDown", "RightButtonDown")

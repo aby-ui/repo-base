@@ -1,13 +1,13 @@
 ## Interface: 80300
 ## Title: Master Plan
-## Notes: Garrision missions UI tweaks.
+## Notes: Garrison missions UI tweaks.
 ## Author: foxlit
 ## X-Website: https://www.townlong-yak.com/master-plan/
 ## LoadOnDemand: 1
 ## RequiredDeps: Blizzard_GarrisonUI, MasterPlanA
 ## SavedVariablesPerCharacter: MasterPlanPC
-## Version: 0.116
-## X-Version-Key: reach
+## Version: 0.117
+## X-Version-Key: crystal
 Libs/Evie.lua
 Libs/Reframe.lua
 Locale.lua

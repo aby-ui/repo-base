@@ -55,7 +55,7 @@ local moiHandle do
 		b:SetSize(21, 21)
 		local t = b:CreateTexture(nil, "ARTWORK")
 		t:SetAllPoints()
-		t, b.Icon = b:CreateTexture(nil, "ARWORK", nil, 1), t
+		t, b.Icon = b:CreateTexture(nil, "ARTWORK", nil, 1), t
 		t:SetSize(34.5, 34.5)
 		t:SetPoint("CENTER")
 		b.Border, b.info = t, {}

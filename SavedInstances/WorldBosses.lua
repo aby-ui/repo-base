@@ -60,6 +60,10 @@ addon.WorldBosses = {
   -- Nazjatar
   [2362] = { quest=56057, expansion=7, level=120 }, -- Ulmath, the Soulbinder
   [2363] = { quest=56056, expansion=7, level=120 }, -- Wekemara
+  -- Vale of Eternal Blossoms
+  [2378] = { quest=58705, expansion=7, level=120 }, -- Grand Empress Shek'zara
+  -- Uldum
+  [2381] = { quest=55466, expansion=7, level=120 }, -- Vuk'laz the Earthbreaker
 
   -- bosses with no EJ entry (eid is a placeholder)
   [9001] = { quest=38276, name=GARRISON_LOCATION_TOOLTIP.." "..BOSS, expansion=5, level=100 },
