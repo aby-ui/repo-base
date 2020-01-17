@@ -1,0 +1,115 @@
+<Ui>
+	<Button name="CombuctorOwnerSelectorTemplate" virtual="true">
+		<Size x="56" y="56"/>
+
+		<Layers>
+			<Layer level="ARTWORK">
+				<Texture parentKey="Icon">
+					<Size x="56" y="56"/>
+					<Anchors>
+						<Anchor point="CENTER"/>
+					</Anchors>
+				</Texture>
+				<MaskTexture parentKey="Mask" file="Interface\CharacterFrame\TempPortraitAlphaMask" hWrapMode="CLAMPTOBLACKADDITIVE" vWrapMode="CLAMPTOBLACKADDITIVE"> setAllPoints="true">
+					<MaskedTextures>
+						<MaskedTexture childKey="Icon"/>
+					</MaskedTextures>
+				</MaskTexture>
+			</Layer>
+		</Layers>
+
+		<Scripts>
+			<OnLoad>
+				self.Mask:SetAlpha(1)
+			</OnLoad>
+			<OnMouseDown>
+				self.Icon:SetScale(0.95)
+			</OnMouseDown>
+			<OnMouseUp>
+				self.Icon:SetScale(1)
+			</OnMouseUp>
+		</Scripts>
+
+		<HighlightTexture alphaMode="ADD" file="Interface\Minimap\UI-Minimap-ZoomButton-Highlight">
+			<Size x="72" y="74"/>
+			<Anchors>
+				<Anchor point="CENTER" x="0" y="-3"/>
+			</Anchors>
+		</HighlightTexture>
+	</Button>
+
+	<Button name="CombuctorSortButtonTemplate" virtual="true">
+		<Size x="22" y="22"/>
+		<NormalTexture atlas="bags-button-autosort-up"/>
+		<PushedTexture atlas="bags-button-autosort-down"/>
+		<HighlightTexture file="Interface\Buttons\ButtonHilight-Square" alphaMode="ADD">
+			<Size x="18" y="18"/>
+			<Anchors>
+				<Anchor point="CENTER" x="0" y="0"/>
+			</Anchors>
+		</HighlightTexture>
+	</Button>
+
+	<Button name="CombuctorBagToggleTemplate" virtual="true">
+		<Size x="32" y="32"/>
+		<HighlightTexture alphaMode="ADD" file="Interface\Minimap\UI-Minimap-ZoomButton-Highlight"/>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture parentKey="Icon" file="Interface\Buttons\Button-Backpack-Up">
+					<Size x="20" y="20"/>
+
+					<Anchors>
+						<Anchor point="TOPLEFT">
+							<Offset x="7" y="-6"/>
+						</Anchor>
+					</Anchors>
+					<TexCoords left="0.075" right="0.925" top="0.075" bottom="0.925"/>
+				</Texture>
+			</Layer>
+
+			<Layer level="OVERLAY">
+				<Texture parentKey="Border" file="Interface\Minimap\MiniMap-TrackingBorder">
+					<Size x="54" y="54"/>
+
+					<Anchors>
+						<Anchor point="TOPLEFT"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+
+		<Scripts>
+			<OnLoad>
+				self:RegisterForClicks("anyUp")
+				self.Border:SetDesaturated(true)
+				self.Border:SetAlpha(0.6)
+			</OnLoad>
+			<OnMouseDown>
+				self.Icon:SetTexCoord(0,1,0,1)
+			</OnMouseDown>
+			<OnMouseUp>
+				self.Icon:SetTexCoord(0.075,0.925,0.075,0.925)
+			</OnMouseUp>
+		</Scripts>
+	</Button>
+
+	<CheckButton name="CombuctorSideTabTemplate" virtual="true" hidden="true">
+		<Size x="32" y="32"/>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture parentKey="border" file="Interface\SpellBook\SpellBook-SkillLineTab">
+					<Size x="64" y="64"/>
+					<Anchors>
+						<Anchor point="TOPLEFT">
+							<Offset x="-3" y="11"/>
+						</Anchor>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<NormalTexture/>
+		<HighlightTexture file="Interface\Buttons\ButtonHilight-Square" alphaMode="ADD"/>
+		<CheckedTexture file="Interface\Buttons\CheckButtonHilight" alphaMode="ADD"/>
+	</CheckButton>
+	<Button name="CombuctorBottomTabTemplate" inherits="CharacterFrameTabButtonTemplate" virtual="true"></Button>
+</Ui>

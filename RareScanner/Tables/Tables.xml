@@ -7,4 +7,5 @@
 	<Script file="AchievementTables.lua"/>
 	<Script file="Quests.lua"/>
 	<Script file="LootQuests.lua"/>
+	<Script file="EventQuests.lua"/>
 </Ui>

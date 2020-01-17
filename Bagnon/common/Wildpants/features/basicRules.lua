@@ -27,10 +27,9 @@ local Misc = GetItemClassInfo(LE_ITEM_CLASS_MISCELLANEOUS)
 
 local function ClassRule(id, name, icon, classes)
 	local filter = function(_,_,_,_, item)
-		if item.link then
-			local _,_,_,_,_, itemType = GetItemInfo(item.link)
+		if item.class then
 			for i, class in ipairs(classes) do
-				if itemType == class then
+				if itemType == item.class then
 					return true
 				end
 			end
@@ -42,29 +41,23 @@ end
 
 local function ClassSubrule(id, class)
 	Addon.Rules:New(id, class, nil, function(_,_,_,_, item)
-		if item.link then
-			local _,_,_,_,_, itemType = GetItemInfo(item.link)
-			return itemType == class
-		end
+		return item.class and item.class == class
 	end)
-end
-
-local function GetBagFamily(bag)
-	return bag.link and GetItemFamily(bag.link) or 0
 end
 
 
 --[[ Bag Types ]]--
 
 Addon.Rules:New('all', ALL, 'Interface/Icons/INV_Misc_EngGizmos_17')
-Addon.Rules:New('all/normal', Normal, nil, function(_, bag,_, info,item) return Addon:IsBasicBag(bag) or not Addon:IsReagents(bag) and GetBagFamily(info) == 0 end)
-Addon.Rules:New('all/trade', TRADE, nil, function(_,_,_, info) return GetBagFamily(info) > 3 end)
+Addon.Rules:New('all/normal', Normal, nil, function(_,_,_, bag) return bag.family == 0 end)
+Addon.Rules:New('all/trade', TRADE, nil, function(_,_,_, bag) return bag.family > 3 end)
 
 if Addon.IsRetail then
-	Addon.Rules:New('all/reagent', Reagents, nil, function(_, bag) return Addon:IsReagents(bag) end)
+	Addon.Rules:New('all/reagent', Reagents, nil, function(_,_,_, bag) return bag.family == -3 end)
 else
-	Addon.Rules:New('all/quiver', Quiver, nil, function(_,_,_, info) return Addon.BAG_TYPES[GetBagFamily(info)] == 'quiver' end)
-	Addon.Rules:New('all/souls', SOUL_SHARDS, nil, function(_,_,_, info) return GetBagFamily(info) == 3 end)
+	--Addon.Rules:New('all/keys', KEYRING, nil, function(_,_,_, bag) return bag.family == -2 end)
+	Addon.Rules:New('all/quiver', Quiver, nil, function(_,_,_, bag) return bag.family == 1 or bag.family == 2 end)
+	Addon.Rules:New('all/souls', SOUL_SHARDS, nil, function(_,_,_, bag) return bag.family == 3 end)
 end
 
 
@@ -94,17 +87,11 @@ ClassRule('equip', Equipment, 'Interface/Icons/INV_Chest_Chain_04', {Armor, Weap
 ClassSubrule('equip/weapon', Weapon)
 
 Addon.Rules:New('equip/armor', Armor, nil, function(_,_,_,_, item)
-	if item.link then
-		local _,_,_,_,_, class, _,_, equipSlot = GetItemInfo(item.link)
-		return class == Armor and equipSlot ~= 'INVTYPE_TRINKET'
-	end
+	return item.class == Armor and item.equip ~= 'INVTYPE_TRINKET'
 end)
 
 Addon.Rules:New('equip/trinket', Trinket, nil, function(_,_,_,_, item)
-	if item.link then
-		local _,_,_,_,_,_,_,_, equipSlot = GetItemInfo(item.link)
-		return equipSlot == 'INVTYPE_TRINKET'
-	end
+	return item.equip == 'INVTYPE_TRINKET'
 end)
 
 if not Addon.IsRetail then

@@ -30,7 +30,7 @@ local DEBUG_MODE = false
 
 -- Config constants
 local CURRENT_DB_VERSION = 7
-local CURRENT_LOOT_DB_VERSION = 18
+local CURRENT_LOOT_DB_VERSION = 19
 
 -- Hard reset versions
 local CURRENT_ADDON_VERSION = 600
@@ -622,6 +622,15 @@ scanner_button:SetScript("OnEvent", function(self, event, ...)
 		local questID, xpReward, moneyReward = ...
 		private.dbchar.quests_completed[questID] = true
 		RareScanner:PrintDebugMessage("DEBUG: Mision completada "..questID)	
+		--print("DEBUG: Mision completada "..questID)
+		
+		-- Checks if its an event
+		for npcID, questsID in pairs (private.EVENT_QUEST_IDS) do
+			if (RS_tContains(questsID, questID)) then
+				RareScanner:ProcessCompletedEvent(npcID)
+				return
+			end
+		end
 	-- Others
 	elseif (event == "CINEMATIC_START") then
 		if (self:IsVisible()) then
@@ -1540,6 +1549,15 @@ function RareScanner:InitializeDataBase()
 			for i, questID in ipairs(questsID) do
 				if (IsQuestFlaggedCompleted(questID) and not private.dbchar.rares_killed[npcID]) then
 					self:ProcessKill(npcID, true)
+				end
+			end
+		end
+		
+		-- Set already completed EVENTS checking quest id
+		for npcID, questsID in pairs (private.EVENT_QUEST_IDS) do
+			for i, questID in ipairs(questsID) do
+				if (IsQuestFlaggedCompleted(questID) and not private.dbchar.events_completed[npcID]) then
+					self:ProcessCompletedEvent(npcID)
 				end
 			end
 		end

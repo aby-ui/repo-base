@@ -5,7 +5,7 @@
 ## RequiredDeps: Bagnon
 ## LoadOnDemand: 1
 
-..\Bagnon\modules\guild.xml
+..\Bagnon\addons\guild\guild.xml
 
 
 ## Title: |cff880303[爱不易]|r Bagnon 公会银行整合

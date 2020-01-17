@@ -1,0 +1,20 @@
+<Ui>
+	<Script file="base.lua"/>
+	<Script file="parented.lua"/>
+	<Script file="tipped.lua"/>
+
+	<Script file="item.lua"/>
+	<Script file="itemGroup.lua"/>
+	<Script file="bag.lua"/>
+	<Script file="bagGroup.lua"/>
+	<Script file="bagToggle.lua"/>
+
+	<Script file="ownerSelector.lua"/>
+	<Script file="dropButton.lua"/>
+	<Script file="sortButton.lua"/>
+	<Script file="moneyFrame.lua"/>
+
+	<Script file="frame.lua"/>
+	<Script file="inventory.lua"/>
+	<Script file="bank.lua"/>
+</Ui>

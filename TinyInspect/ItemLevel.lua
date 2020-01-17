@@ -321,9 +321,9 @@ end
 -- ForAddons: Bagnon Combuctor LiteBag ArkInventory
 LibEvent:attachEvent("PLAYER_LOGIN", function()
     -- For Bagnon
-    if (Bagnon and Bagnon.ItemSlot and Bagnon.ItemSlot.Update) then
-        hooksecurefunc(Bagnon.ItemSlot, "Update", function(self)
-            SetItemLevel(self, self:GetItem(), "Bag", self:GetBag(), self:GetID())
+    if (Bagnon and Bagnon.Item and Bagnon.Item.Update) then
+        hooksecurefunc(Bagnon.Item, "Update", function(self)
+            SetItemLevel(self, self.info and self.info.link, "Bag", self:GetBag(), self:GetID())
         end)
     end
     -- For Combuctor
@@ -333,7 +333,7 @@ LibEvent:attachEvent("PLAYER_LOGIN", function()
         end)
     elseif (Combuctor and Combuctor.Item and Combuctor.Item.Update) then
         hooksecurefunc(Combuctor.Item, "Update", function(self)
-            SetItemLevel(self, self.hasItem, "Bag", self.bag, self.GetID and self:GetID())
+            SetItemLevel(self, self.info and self.info.link, "Bag", self.bag, self.GetID and self:GetID())
         end)
     end
     -- For LiteBag

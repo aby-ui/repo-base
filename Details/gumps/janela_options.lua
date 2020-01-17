@@ -10943,6 +10943,14 @@ function window:CreateFrame12()
 				GameCooltip:Show()
 			end
 		end
+
+		if (self.hasDesc) then
+			GameCooltip:Preset (2)
+			GameCooltip:AddLine (self.hasDesc)
+			GameCooltip:SetType ("tooltip")
+			GameCooltip:SetOwner (self, "bottomleft", "topleft", 150, -2)
+			GameCooltip:Show()
+		end
  	end
 	
 	local on_leave = function (self)
@@ -10961,7 +10969,7 @@ function window:CreateFrame12()
 	
 	local y = -20
 	
-	--toolbar
+	--> toolbar
 	g:NewLabel (frame4, _, "$parentToolbarPluginsLabel", "toolbarLabel", Loc ["STRING_OPTIONS_PLUGINS_TOOLBAR_ANCHOR"], "GameFontNormal", 16)
 	frame4.toolbarLabel:SetPoint ("topleft", frame4, "topleft", 10, y)
 	
@@ -10986,8 +10994,32 @@ function window:CreateFrame12()
 	
 	y = y - 30
 	
+	--> toolbar plugins loop
 	local i = 1
-	local allplugins_toolbar = _detalhes.ToolBar.NameTable
+	local allplugins_toolbar = _detalhes.ToolBar.NameTable --where is store all plugins for the title bar
+
+	--first loop and see which plugins isn't installed
+	--then add a 'ghost' plugin so the player can download
+
+	local allExistentToolbarPlugins = {
+		{"DETAILS_PLUGIN_CHART_VIEWER", "Details_ChartViewer", "Chart Viewer", "View combat data in handsome charts.", "https://www.curseforge.com/wow/addons/details-chart-viewer-plugin"},
+		{"DETAILS_PLUGIN_DEATH_GRAPHICS", "Details_DeathGraphs", "Advanced Death Logs", "Encounter endurance per player (who's dying more), deaths timeline by enemy spells and regular death logs.", "https://www.curseforge.com/wow/addons/details-advanced-death-logs-plug"},
+		--{"Details_RaidPowerBars", "Raid Power Bars", "Alternate power bar in a details! window", "https://www.curseforge.com/wow/addons/details_raidpowerbars/"},
+		--{"Details_TargetCaller", "Target Caller", "Show raid damage done to an entity since you targetted it.", "https://www.curseforge.com/wow/addons/details-target-caller-plugin"},
+		{"DETAILS_PLUGIN_TIME_LINE", "Details_TimeLine", "Time Line", "View raid cooldowns usage, debuff gain, boss casts in a fancy time line.", "https://www.curseforge.com/wow/addons/details_timeline"},
+	}
+
+	local allExistentRaidPlugins = {
+		--{"DETAILS_PLUGIN_CHART_VIEWER", "Details_ChartViewer", "Chart Viewer", "View combat data in handsome charts.", "https://www.curseforge.com/wow/addons/details-chart-viewer-plugin"},
+		--{"DETAILS_PLUGIN_DEATH_GRAPHICS", "Details_DeathGraphs", "Advanced Death Logs", "Encounter endurance per player (who's dying more), deaths timeline by enemy spells and regular death logs.", "https://www.curseforge.com/wow/addons/details-advanced-death-logs-plug"},
+		{"DETAILS_PLUGIN_RAID_POWER_BARS", "Details_RaidPowerBars", "Raid Power Bars", "Alternate power bar in a details! window", "https://www.curseforge.com/wow/addons/details_raidpowerbars/"},
+		{"DETAILS_PLUGIN_TARGET_CALLER", "Details_TargetCaller", "Target Caller", "Show raid damage done to an entity since you targetted it.", "https://www.curseforge.com/wow/addons/details-target-caller-plugin"},
+		--{"DETAILS_PLUGIN_TIME_LINE", "Details_TimeLine", "Time Line", "View raid cooldowns usage, debuff gain, boss casts in a fancy time line.", "https://www.curseforge.com/wow/addons/details_timeline"},
+	}	
+
+	local installedToolbarPlugins = {}
+	local installedRaidPlugins = {}
+
 	for absName, pluginObject in pairs (allplugins_toolbar) do 
 	
 		local bframe = CreateFrame ("frame", "OptionsPluginToolbarBG", frame4)
@@ -11037,11 +11069,64 @@ function window:CreateFrame12()
 			window:CreateLineBackground2 (bframe, "OptionsButton"..i, "OptionsButton"..i, nil, nil, {1, 0.8, 0}, button_color_rgb)
 			bframe ["OptionsButton"..i]:SetTextColor (button_color_rgb)
 			bframe ["OptionsButton"..i]:SetIcon ([[Interface\Buttons\UI-OptionsButton]], 14, 14, nil, {0, 1, 0, 1}, nil, 3)
-			
 		end
 		
 		i = i + 1
 		y = y - 20
+
+		--plugins installed, adding their abs name
+		DetailsFramework.table.addunique (installedToolbarPlugins, absName)
+	
+	end
+
+	local notInstalledColor = "gray"
+
+	for o = 1, #allExistentToolbarPlugins do
+		local pluginAbsName = allExistentToolbarPlugins [o] [1]
+		if (not DetailsFramework.table.find (installedToolbarPlugins, pluginAbsName)) then
+
+			local absName = pluginAbsName
+			local pluginObject = {
+				__icon = "",
+				__name = allExistentToolbarPlugins [o] [3],
+				__author = "Not Installed",
+				__version = "",
+				OpenOptionsPanel = false,
+			}
+
+			local bframe = CreateFrame ("frame", "OptionsPluginToolbarBG", frame4)
+			bframe:SetSize (640, 20)
+			bframe:SetPoint ("topleft", frame4, "topleft", 10, y)
+			bframe:SetBackdrop ({bgFile = "Interface\\Tooltips\\UI-Tooltip-Background", tile = true, tileSize = 16, insets = {left = 1, right = 1, top = 0, bottom = 1}})
+			bframe:SetBackdropColor (.3, .3, .3, .3)
+			bframe:SetScript ("OnEnter", on_enter)
+			bframe:SetScript ("OnLeave", on_leave)
+			--bframe.plugin = pluginObject
+			bframe.id = i
+			bframe.hasDesc = allExistentToolbarPlugins [o] [4]
+			
+			g:NewImage (bframe, pluginObject.__icon, 18, 18, nil, nil, "toolbarPluginsIcon"..i, "$parentToolbarPluginsIcon"..i)
+			bframe ["toolbarPluginsIcon"..i]:SetPoint ("topleft", frame4, "topleft", 10, y)
+		
+			g:NewLabel (bframe, _, "$parentToolbarPluginsLabel"..i, "toolbarPluginsLabel"..i, pluginObject.__name)
+			bframe ["toolbarPluginsLabel"..i]:SetPoint ("left", bframe ["toolbarPluginsIcon"..i], "right", 2, 0)
+			bframe ["toolbarPluginsLabel"..i].color = notInstalledColor
+			
+			g:NewLabel (bframe, _, "$parentToolbarPluginsLabel2"..i, "toolbarPluginsLabel2"..i, pluginObject.__author)
+			bframe ["toolbarPluginsLabel2"..i]:SetPoint ("topleft", frame4, "topleft", 180, y-4)
+			bframe ["toolbarPluginsLabel2"..i].color = notInstalledColor
+			
+			g:NewLabel (bframe, _, "$parentToolbarPluginsLabel3"..i, "toolbarPluginsLabel3"..i, pluginObject.__version)
+			bframe ["toolbarPluginsLabel3"..i]:SetPoint ("topleft", frame4, "topleft", 290, y-4)
+			bframe ["toolbarPluginsLabel3"..i].color = notInstalledColor
+
+			local installButton = DetailsFramework:CreateButton (bframe, function() Details:CopyPaste (allExistentToolbarPlugins [o] [5]) end, 120, 20, "Install")
+			installButton:SetTemplate (options_button_template)
+			installButton:SetPoint ("topleft", frame4, "topleft", 510, y-0)
+			
+			i = i + 1
+			y = y - 20			
+		end
 	end
 	
 	y = y - 10
@@ -11129,10 +11214,61 @@ function window:CreateFrame12()
 			bframe ["OptionsButton"..i]:SetTextColor (button_color_rgb)
 			bframe ["OptionsButton"..i]:SetIcon ([[Interface\Buttons\UI-OptionsButton]], 14, 14, nil, {0, 1, 0, 1}, nil, 3)
 		end
+
+		--plugins installed, adding their abs name
+		DetailsFramework.table.addunique (installedRaidPlugins, absName)
 		
 		i = i + 1
 		y = y - 20
 	end
+
+	for o = 1, #allExistentRaidPlugins do
+		local pluginAbsName = allExistentRaidPlugins [o] [1]
+		if (not DetailsFramework.table.find (installedRaidPlugins, pluginAbsName)) then
+
+			local absName = pluginAbsName
+			local pluginObject = {
+				__icon = "",
+				__name = allExistentRaidPlugins [o] [3],
+				__author = "Not Installed",
+				__version = "",
+				OpenOptionsPanel = false,
+			}
+
+			local bframe = CreateFrame ("frame", "OptionsPluginToolbarBG", frame4)
+			bframe:SetSize (640, 20)
+			bframe:SetPoint ("topleft", frame4, "topleft", 10, y)
+			bframe:SetBackdrop ({bgFile = "Interface\\Tooltips\\UI-Tooltip-Background", tile = true, tileSize = 16, insets = {left = 1, right = 1, top = 0, bottom = 1}})
+			bframe:SetBackdropColor (.3, .3, .3, .3)
+			bframe:SetScript ("OnEnter", on_enter)
+			bframe:SetScript ("OnLeave", on_leave)
+			--bframe.plugin = pluginObject
+			bframe.id = i
+			bframe.hasDesc = allExistentRaidPlugins [o] [4]
+			
+			g:NewImage (bframe, pluginObject.__icon, 18, 18, nil, nil, "toolbarPluginsIcon"..i, "$parentToolbarPluginsIcon"..i)
+			bframe ["toolbarPluginsIcon"..i]:SetPoint ("topleft", frame4, "topleft", 10, y)
+		
+			g:NewLabel (bframe, _, "$parentToolbarPluginsLabel"..i, "toolbarPluginsLabel"..i, pluginObject.__name)
+			bframe ["toolbarPluginsLabel"..i]:SetPoint ("left", bframe ["toolbarPluginsIcon"..i], "right", 2, 0)
+			bframe ["toolbarPluginsLabel"..i].color = notInstalledColor
+			
+			g:NewLabel (bframe, _, "$parentToolbarPluginsLabel2"..i, "toolbarPluginsLabel2"..i, pluginObject.__author)
+			bframe ["toolbarPluginsLabel2"..i]:SetPoint ("topleft", frame4, "topleft", 180, y-4)
+			bframe ["toolbarPluginsLabel2"..i].color = notInstalledColor
+			
+			g:NewLabel (bframe, _, "$parentToolbarPluginsLabel3"..i, "toolbarPluginsLabel3"..i, pluginObject.__version)
+			bframe ["toolbarPluginsLabel3"..i]:SetPoint ("topleft", frame4, "topleft", 290, y-4)
+			bframe ["toolbarPluginsLabel3"..i].color = notInstalledColor
+
+			local installButton = DetailsFramework:CreateButton (bframe, function() Details:CopyPaste (allExistentRaidPlugins [o] [5]) end, 120, 20, "Install")
+			installButton:SetTemplate (options_button_template)
+			installButton:SetPoint ("topleft", frame4, "topleft", 510, y-0)
+			
+			i = i + 1
+			y = y - 20			
+		end
+	end	
 	
 	y = y - 10
 

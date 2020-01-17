@@ -1,0 +1,11 @@
+<Ui>
+	<Script file="WildAddon-1.0\WildAddon-1.0.lua"/>
+	<Script file="MutexDelay-1.0\MutexDelay-1.0.lua"/>
+	<Include file="Poncho-2.0\Poncho-2.0.xml"/>
+	<Include file="Sushi-3.1\Sushi-3.1.xml"/>
+
+	<Include file="Unfit-1.0\Unfit-1.0.xml"/>
+	<Script file="CustomSearch-1.0\CustomSearch-1.0.lua"/>
+	<Script file="LibItemCache-2.0\LibItemCache-2.0.lua"/>
+	<Include file="LibItemSearch-1.2\LibItemSearch-1.2.xml"/>
+</Ui>

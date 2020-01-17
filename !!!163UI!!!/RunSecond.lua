@@ -465,7 +465,7 @@ end)
 8.0 recursive
 ---------------------------------------------------------------]]
 hooksecurefunc(GameTooltip, "SetOwner", function(self, parent, anchor)
-    if parent == UIParent and anchor == "NONE" then
+    if parent == UIParent and anchor == "ANCHOR_NONE" then
         local tip
         tip = ShoppingTooltip1; if select(2, tip:GetPoint()) == self then tip:ClearAllPoints() end
         tip = ShoppingTooltip2; if select(2, tip:GetPoint()) == self then tip:ClearAllPoints() end

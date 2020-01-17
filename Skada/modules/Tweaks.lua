@@ -10,32 +10,23 @@ Skada:AddLoadableModule("Tweaks", "Various tweaks to get around deficiences and 
 	local check_pet = {}
 
 	local orig = Skada.cleuHandler
-	local function cleuHandler(timestamp, eventtype, hideCaster, srcGUID, srcName, srcFlags, srcRaidFlags, dstGUID, dstName, dstFlags, dstRaidFlags, ...)
+	local function cleuHandler(timestamp, eventtype, hideCaster, srcGUID, srcName, srcFlags, srcRaidFlags, dstGUID, dstName, dstFlags, dstRaidFlags, spellId, ...)
 		-- Only perform these modifications if we are already in combat
 		if Skada.current then
-			local firstArg = ...
-
-			-- Handle the Animal Companion Hunter pet (Hati 2.0)
-			if firstArg == 34026 then -- SPELL_CAST_SUCCESS Kill Command
+			-- Handle the Animal Companion Hunter pet (BM talent)
+			if spellId == 34026 then -- SPELL_CAST_SUCCESS Kill Command (player)
 				check_pet.timestamp = timestamp
 				check_pet.name = srcName
 				check_pet.guid = srcGUID
-			elseif firstArg == 83381 and check_pet.timestamp == timestamp and not Skada:GetPetOwner(srcGUID) then -- SPELL_DAMAGE Kill Command
+			elseif spellId == 83381 and check_pet.timestamp == timestamp and not Skada:GetPetOwner(srcGUID) then -- SPELL_DAMAGE Kill Command (pets)
 				Skada:AssignPet(check_pet.guid, check_pet.name, srcGUID)
-			end
-
-			-- Akaari's Soul (7.0, Sub Rogue artifact)
-			if firstArg == 220893 and band(srcFlags, MINE_FLAG) ~= 0 then
-				srcGUID = UnitGUID("player")
-				srcName = UnitName("player")
-				srcFlags = 0x517 -- COMBATLOG_FILTER_ME + party + raid
 			end
 		end
 
-		orig(timestamp, eventtype, hideCaster, srcGUID, srcName, srcFlags, srcRaidFlags, dstGUID, dstName, dstFlags, dstRaidFlags, ...)
+		orig(timestamp, eventtype, hideCaster, srcGUID, srcName, srcFlags, srcRaidFlags, dstGUID, dstName, dstFlags, dstRaidFlags, spellId, ...)
 	end
 
 	Skada.cleuFrame:SetScript("OnEvent", function()
-			cleuHandler(CombatLogGetCurrentEventInfo())
+		cleuHandler(CombatLogGetCurrentEventInfo())
 	end)
 end)

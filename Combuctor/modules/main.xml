@@ -1,8 +1,0 @@
-<Ui xmlns="http://www.blizzard.com/wow/ui/">
-	<Script file="main.lua"/>
-
-  <Include file="..\common\Wildpants.xml"/>
-  <Include file="..\components\components.xml"/>
-
-  <Script file="legacy.lua"/>
-</Ui>

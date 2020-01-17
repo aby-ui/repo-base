@@ -1,0 +1,14 @@
+<Ui>
+	<Script file="guild.lua"/>
+
+	<Script file="tab.lua"/>
+	<Script file="item.lua"/>
+	<Script file="itemGroup.lua"/>
+	<Script file="moneyFrame.lua"/>
+
+	<Script file="editFrame.lua"/>
+	<Script file="logFrame.lua"/>
+	<Script file="logToggle.lua"/>
+
+	<Script file="frame.lua"/>
+</Ui>

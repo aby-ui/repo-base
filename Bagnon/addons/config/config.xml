@@ -1,0 +1,4 @@
+<Ui>
+	<Script file="config.lua"/>
+	<Include file="..\..\common\Wildpants\Wildpants_Config.xml"/>
+</Ui>

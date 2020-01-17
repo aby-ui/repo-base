@@ -26,6 +26,11 @@ L.TitleBags = '%s\'s Inventory'
 L.TitleBank = '%s\'s Bank'
 L.TitleVault = '%s\'s Void Storage'
 
+--dropdowns
+L.TitleFrames = '%s Frames'
+L.SelectCharacter = 'Select Character'
+L.ConfirmDelete = 'Are you sure you want to delete   %s\'s cached data?'
+
 --interactions
 L.Click = 'Click'
 L.Drag = '<Drag>'
@@ -72,7 +77,7 @@ L.TipCountGuild = 'Guild: %d'
 L.TipDelimiter = '|'
 
 --dialogs
-L.ConfirmTransfer = 'Depositing these items will remove all modifications and make them non-tradeable and non-refundable.|n|nDo you wish to continue?'
-L.PurchaseVault = 'Would you like to unlock the Void Storage service?|n|n|cffffd200Cost:|r %s'
-L.CannotPurchaseVault = 'You do not have enough money to unlock the Void Storage service|n|n|cffff2020Cost: %s|r'
 L.AskMafia = 'Ask Mafia'
+L.ConfirmTransfer = 'Depositing any items will remove all modifications and make them non-tradeable and non-refundable.|n|nDo you wish to continue?'
+L.CannotPurchaseVault = 'You do not have enough money to unlock the Void Storage service|n|n|cffff2020Cost: %s|r'
+L.PurchaseVault = 'Would you like to unlock the Void Storage service?|n|n|cffffd200Cost:|r %s'

@@ -12,20 +12,19 @@ local LAST_BANK_SLOT = NUM_BAG_SLOTS + NUM_BANKBAGSLOTS
 local FIRST_BANK_SLOT = NUM_BAG_SLOTS + 1
 local TOTAL = SILVER:format(L.Total)
 
-local Cache = LibStub('LibItemCache-2.0')
-local ItemText, ItemCount, Hooked = {}, {}
+local ItemText, ItemCount
 
 
 --[[ Adding Text ]]--
 
 local function FindItemCount(owner, bag, itemID)
 	local count = 0
-	local info = Cache:GetBagInfo(owner, bag)
+	local info = Addon:GetBagInfo(owner, bag)
 
 	for slot = 1, (info.count or 0) do
-		local id = Cache:GetItemID(owner, bag, slot)
+		local id = Addon:GetItemID(owner, bag, slot)
 		if id == itemID then
-			count = count + (Cache:GetItemInfo(owner, bag, slot).count or 1)
+			count = count + (Addon:GetItemInfo(owner, bag, slot).count or 1)
 		end
 	end
 
@@ -68,9 +67,9 @@ local function AddOwners(tooltip, link)
 	local players = 0
 	local total = 0
 
-	for owner in Cache:IterateOwners() do
-		local info = Cache:GetOwnerInfo(owner)
-		local color = Addon:GetOwnerColorString(info)
+	for owner in Addon:IterateOwners() do
+		local info = Addon:GetOwnerInfo(owner)
+		local color = Addon.Owners:GetColorString(info)
 		local count, text = ItemCount[owner] and ItemCount[owner][itemID]
 
 		if count then
@@ -124,7 +123,7 @@ local function AddOwners(tooltip, link)
 		end
 
 		if count > 0 then
-			tooltip:AddDoubleLine(Addon:GetOwnerIconString(info, 12,0,0) .. ' ' .. color:format(info.name), text)
+			tooltip:AddDoubleLine(Addon.Owners:GetIconString(info, 12,0,0) .. ' ' .. color:format(info.name), text)
 			total = total + count
 			players = players + 1
 		end
@@ -178,10 +177,11 @@ end
 
 function TooltipCounts:OnEnable()
 	if Addon.sets.tipCount then
-		if not Hooked then
+		if not ItemText then
+			ItemText, ItemCount = {}, {}
+			
 			HookTip(GameTooltip)
 			HookTip(ItemRefTooltip)
-			Hooked = true
 		end
 	end
 end

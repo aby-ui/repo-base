@@ -1,4 +1,9 @@
-<Ui xmlns="http://www.blizzard.com/wow/ui/">
-  <Script file="group.lua"/>
-	<Script file="panels.lua"/>
+<Ui>
+  <Script file="shared.lua"/>
+	<Script file="general.lua"/>
+  <Script file="display.lua"/>
+  <Script file="frames.lua"/>
+  <Script file="color.lua"/>
+  <Script file="rules.lua"/>
+  <Script file="credits.lua"/>
 </Ui>

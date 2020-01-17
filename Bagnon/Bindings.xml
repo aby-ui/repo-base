@@ -1,18 +1,20 @@
 <Bindings>
 	<Binding name="BAGNON_TOGGLE" header="BAGNON" category="ADDONS">
-		Bagnon:ToggleFrame('inventory')
+		Bagnon.Frames:Toggle('inventory')
 	</Binding>
 	<Binding name="BAGNON_BANK_TOGGLE" category="ADDONS">
-		Bagnon:ToggleFrame('bank')
+		Bagnon.Frames:Toggle('bank')
 	</Binding>
 	<Binding name="BAGNON_GUILD_TOGGLE" category="ADDONS">
-		if Bagnon.HasGuild and LoadAddOn('Bagnon_GuildBank') then
-			Bagnon:ToggleFrame('guild')
+		if Bagnon.LoadGuild then
+			Bagnon:LoadGuild()
+			Bagnon.Frames:Toggle('guild')
 		end
 	</Binding>
 	<Binding name="BAGNON_VAULT_TOGGLE" category="ADDONS">
-		if Bagnon.HasVault and LoadAddOn('Bagnon_VoidStorage') then
-			Bagnon:ToggleFrame('vault')
+		if Bagnon.LoadVault then
+			Bagnon:LoadVault()
+			Bagnon.Frames:Toggle('vault')
 		end
 	</Binding>
 </Bindings>

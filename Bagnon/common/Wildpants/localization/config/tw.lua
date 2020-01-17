@@ -3,12 +3,12 @@
 		***
 --]]
 
-local CONFIG, Config = ...
+local CONFIG = ...
 local L = LibStub('AceLocale-3.0'):NewLocale(CONFIG, 'zhTW')
 if not L then return end
 
 -- general
-L.GeneralDesc = '根據你的喜好來切換一般功能設定。'
+L.GeneralOptionsDesc = '根據你的喜好來切換一般功能設定。'
 L.Locked = '鎖定框架'
 L.Fading = '框架淡化'
 L.TipCount = '物品統計提示'
@@ -18,8 +18,8 @@ L.EmptySlots = '在空的槽位顯示背景顏色'
 L.DisplayBlizzard = '隱藏的背包顯示為內建框架'
 
 -- frame
-L.FrameSettings = '框架設定'
-L.FrameSettingsDesc = '設定ADDON框架。'
+L.FrameOptions = '框架設定'
+L.FrameOptionsDesc = '設定%s框架。'
 L.Frame = '框架'
 L.Enabled = '啟用框架'
 L.CharacterSpecific = '角色個別設定'
@@ -51,8 +51,8 @@ L.Spacing = '間距'
 L.Alpha = '透明度'
 
 -- auto display
-L.DisplaySettings = '自動顯示'
-L.DisplaySettingsDesc = '讓你設定在遊戲事件中背包自動開啟或關閉。'
+L.DisplayOptions = '自動顯示'
+L.DisplayOptionsDesc = '讓你設定在遊戲事件中背包自動開啟或關閉。'
 L.DisplayInventory = '顯示背包'
 L.CloseInventory = '關閉背包'
 
@@ -73,9 +73,9 @@ L.CloseVendor = '離開商人'
 L.CloseMap = '打開世界地圖'
 
 -- colors
-L.ColorSettings = '顏色設定'
-L.ColorSettingsDesc = '讓你設定在ADDON框架裡較簡單辨識物品槽位。'
-L.GlowQuality = '根據品質高亮物品' 
+L.ColorOptions = '顏色設定'
+L.ColorOptionsDesc = '讓你設定在%s框架裡較簡單辨識物品槽位。'
+L.GlowQuality = '根據品質高亮物品'
 L.GlowNew = '高亮新物品'
 L.GlowQuest = '高亮任務物品'
 L.GlowUnusable = '高亮無法使用的物品'

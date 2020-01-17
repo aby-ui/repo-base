@@ -35,7 +35,7 @@ if IsAddOnLoaded("Bagnon") then
         BagnonItemButton_CIMIUpdateIcon(self.CanIMogItOverlay)
     end
 
-    hooksecurefunc(Bagnon.ItemSlot, "Update", CIMI_BagnonUpdate)
-    CanIMogIt:RegisterMessage("ResetCache", function () Bagnon:UpdateFrames() end)
+    hooksecurefunc(Bagnon.Item, "Update", CIMI_BagnonUpdate)
+    CanIMogIt:RegisterMessage("ResetCache", function () Bagnon.Frames:Update() end)
 
 end

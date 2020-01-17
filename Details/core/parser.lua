@@ -178,6 +178,9 @@
 		[233499] = 233490, --warlock Unstable Affliction
 		
 		[261947] = 261977, --monk fist of the white tiger talent
+
+		[32175] = 17364, -- shaman Stormstrike (from Turkar on github)
+		[32176] = 17364, -- shaman Stormstrike
 		
 	}
 	
@@ -247,6 +250,7 @@
 		local _in_combat = false
 		local _current_encounter_id
 		local _is_storing_cleu = false
+		local _in_resting_zone = false
 		
 	--> deathlog
 		local _death_event_amt = 16
@@ -485,7 +489,7 @@
 				end
 			end
 			
-			if (who_serial) then
+			if (who_serial) then --which exp was this?
 				local npcid = _select (6, _strsplit ("-", who_serial))
 				if (npcid == "125828") then --soulrend add
 					who_name = "Soulrend Add"
@@ -1575,7 +1579,7 @@
 		
 		--[[statistics]]-- _detalhes.statistics.absorbs_calls = _detalhes.statistics.absorbs_calls + 1
 		
-		if (not shieldname) then
+		if (_type(shieldname) == "boolean") then
 			owner_serial, owner_name, owner_flags, owner_flags2, shieldid, shieldname, shieldtype, amount = spellid, spellname, spellschool, owner_serial, owner_name, owner_flags, owner_flags2, shieldid
 		end
 	
@@ -1620,7 +1624,9 @@
 	
 		--> only capture heal if is in combat
 		if (not _in_combat) then
-			return
+			if (not _in_resting_zone) then
+				return
+			end
 		end
 	
 		--> check invalid serial against pets
@@ -4080,6 +4086,8 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 		_detalhes.zone_type = zoneType
 		_detalhes.zone_id = zoneMapID
 		_detalhes.zone_name = zoneName
+
+		_in_resting_zone = IsResting()
 		
 		parser:WipeSourceCache()
 		

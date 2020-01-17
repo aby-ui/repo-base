@@ -4,7 +4,7 @@
 ## Author: Vardex
 ## X-Category: Library
 ## X-License: BSD
-## Version: v8.2.5.7229.140
+## Version: v8.2.5.7229.140-4-gbaf7d2f
 ## DefaultState: Enabled
 ## LoadOnDemand: 0
 

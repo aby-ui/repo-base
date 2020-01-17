@@ -5,7 +5,7 @@
 ## Dependencies: Combuctor
 ## LoadOnDemand: 1
 
-..\Combuctor\modules\config.xml
+..\Combuctor\addons\config\config.xml
 
 
 ## Title: |cff880303[爱不易]|r Combuctor 配置

@@ -309,7 +309,7 @@ function RSRarePinMixin:OnMouseEnter()
 		
 		line = tooltip:AddLine()
 		tooltip:SetCell(line, 1, self:TextColor(AL["MAP_TOOLTIP_IGNORE_ICON"], "00FF00"), nil, "LEFT", 10, nil, nil, nil, TOOLTIP_MAX_WIDTH)
-	elseif (not private.dbchar.rares_killed[self.npcID] and not private.dbchar.containers_opened[self.npcID]) then
+	elseif ((self.isNpc and not private.dbchar.rares_killed[self.npcID]) or (self.isContainer and not private.dbchar.containers_opened[self.npcID]) or (self.isEvent and not private.dbchar.events_completed[self.npcID])) then
 		-- Separator
 		line = tooltip:AddSeparator(1, 1)
 		line = tooltip:AddLine()
@@ -329,22 +329,30 @@ function RSRarePinMixin:OnMouseEnter()
 		line = tooltip:AddSeparator(1, 1)
 		line = tooltip:AddLine()
 		
-		local rareKilledTime = private.dbchar.rares_killed[self.npcID]  
+		local rareKilledTime = private.dbchar.rares_killed[self.npcID]
 		local containerOpenedTime = private.dbchar.containers_opened[self.npcID]
+		local eventCompletedTime = private.dbchar.events_completed[self.npcID]
 		
-		if (rareKilledTime) then
+		if (rareKilledTime and self.isNpc) then
 			local rareKilledTimeLeft = rareKilledTime - time()
 			if (rareKilledTimeLeft > 0) then
 				tooltip:SetCell(line, 1, self:TextColor(string.format(AL["MAP_TOOLTIP_ALREADY_KILLED"], self:TimeStampToClock(rareKilledTimeLeft)), "FF0000"), nil, "LEFT", 10, nil, nil, nil, TOOLTIP_MAX_WIDTH)
 			else
 				tooltip:SetCell(line, 1, self:TextColor(string.format(AL["MAP_TOOLTIP_ALREADY_KILLED"], AL["MAP_NEVER"]), "FF0000"), nil, "LEFT", 10, nil, nil, nil, TOOLTIP_MAX_WIDTH)
 			end
-		else
+		elseif (containerOpenedTime and self.isContainer) then
 			local containerOpenedTimeLeft = containerOpenedTime - time()
 			if (containerOpenedTime > 0) then
 				tooltip:SetCell(line, 1, self:TextColor(string.format(AL["MAP_TOOLTIP_ALREADY_OPENED"], self:TimeStampToClock(containerOpenedTimeLeft)), "FF0000"), nil, "LEFT", 10, nil, nil, nil, TOOLTIP_MAX_WIDTH)
 			else
 				tooltip:SetCell(line, 1, self:TextColor(string.format(AL["MAP_TOOLTIP_ALREADY_OPENED"], AL["MAP_NEVER"]), "FF0000"), nil, "LEFT", 10, nil, nil, nil, TOOLTIP_MAX_WIDTH)
+			end
+		elseif (eventCompletedTime and self.isEvent) then
+			local eventOpenedTimeLeft = eventCompletedTime - time()
+			if (eventCompletedTime > 0) then
+				tooltip:SetCell(line, 1, self:TextColor(string.format(AL["MAP_TOOLTIP_ALREADY_COMPLETED"], self:TimeStampToClock(eventOpenedTimeLeft)), "FF0000"), nil, "LEFT", 10, nil, nil, nil, TOOLTIP_MAX_WIDTH)
+			else
+				tooltip:SetCell(line, 1, self:TextColor(string.format(AL["MAP_TOOLTIP_ALREADY_COMPLETED"], AL["MAP_NEVER"]), "FF0000"), nil, "LEFT", 10, nil, nil, nil, TOOLTIP_MAX_WIDTH)
 			end
 		end
 	end

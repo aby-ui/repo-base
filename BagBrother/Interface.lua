@@ -1,5 +1,5 @@
 --[[
-Copyright 2011-2019 João Cardoso
+Copyright 2011-2020 João Cardoso
 BagBrother is distributed under the terms of the GNU General Public License (Version 3).
 As a special exception, the copyright holders of this addon do not give permission to
 redistribute and/or modify it.
@@ -86,9 +86,19 @@ end
 --[[ Bags ]]--
 
 function Interface:GetBag(realm, player, bag)
-  local slot = tonumber(bag) and bag > 0 and ContainerIDToInventoryID(bag)
-  if slot then
-    return Interface:GetItem(realm, player, 'equip', slot)
+  if tonumber(bag) then
+    local slot = bag > 0 and ContainerIDToInventoryID(bag)
+    if slot then
+      return Interface:GetItem(realm, player, 'equip', slot)
+    else
+      realm = BrotherBags[realm]
+      player = realm and realm[player]
+      bag = player and player[bag]
+
+      return bag and {
+        owned = true,
+        count = bag.size }
+    end
   end
 end
 

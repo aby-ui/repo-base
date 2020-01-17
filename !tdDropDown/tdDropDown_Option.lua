@@ -1,4 +1,3 @@
-
 local O = tdDropDown_Option
 
 O.Mail = true		-- 开启/关闭收件人列表			(true:开启  nil:关闭)
@@ -40,28 +39,16 @@ mail.hook = function() hooksecurefunc("SendMail", function(...) tdHookSendMail(.
 mail.profile = "SendMailNameEditBox"
 mail.over = true
 
---[[ --abyui830
 local ah = {}
 ah.profile = "BrowseName"
 ah.event = "ADDON_LOADED"
 ah.short = true
-function tdHookAuctionSearch(...) if BrowseName:IsVisible() then tdInsertValueIfNotExist("BrowseName", BrowseName:GetText()); end end
+function tdHookAuctionSearch(...) if AuctionHouseFrame.SearchBar.SearchBox:IsVisible() then tdInsertValueIfNotExist("BrowseName", AuctionHouseFrame.SearchBar.SearchBox:GetText()); end end
 ah.hook = function()
-    hooksecurefunc("AuctionFrameBrowse_Search", function(...) tdHookAuctionSearch(...) end)
+    hooksecurefunc(AuctionHouseFrame.SearchBar, "StartSearch", function(...) tdHookAuctionSearch(...) end)
 end
-ah.func = function(arg1) return arg1 == "Blizzard_AuctionUI" end
-ah.click = O.Search and function() AuctionFrameBrowse_Search() end
-
-local auctionLite = {}
-auctionLite.profile = "BuyName"
-auctionLite.event = "ADDON_LOADED"
-auctionLite.over = true
-auctionLite.hook = function()
-    hooksecurefunc(AuctionLite, "AuctionFrameBuy_Search", function(...) if BuyName:IsVisible() then tdInsertValueIfNotExist("BuyName", BuyName:GetText()); end end)
-end
-auctionLite.func = function(arg1) return arg1 == "AuctionLite" end
-auctionLite.click = O.Search and function() AuctionLite:AuctionFrameBuy_Search() end
---]]
+ah.func = function(arg1) return arg1 == "Blizzard_AuctionHouseUI" end
+ah.click = O.Search and function() AuctionHouseFrame.SearchBar:StartSearch() end
 
 local trade = {}
 trade.profile = "TradeSkillFrame.SearchBox"
@@ -109,7 +96,7 @@ if false and U1_FRAME_NAME then
 end
 
 if O.Mail then  tdCreateDropDown(mail) end
---if O.AH then tdCreateDropDown(ah) tdCreateDropDown(auctionLite) end
+if O.AH then tdCreateDropDown(ah) end
 if O.Trade then tdCreateDropDown(trade) end
 --if O.Glyph then tdCreateDropDown(glyph) end
 if O.EJ then tdCreateDropDown(ej) end

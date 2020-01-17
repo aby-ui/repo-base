@@ -77,10 +77,10 @@ Options:SetScript("OnEvent", function(self, event, ...)
 end)
 
 CoreDependCall("Bagnon", function(self)
-    hooksecurefunc(Bagnon.ItemSlot, "Update", function(self) AzeriteTooltip_SetContainerAzerite(self) end)
+    hooksecurefunc(Bagnon.Item, "Update", function(self) AzeriteTooltip_SetContainerAzerite(self) end)
 end)
 CoreDependCall("Combuctor", function(self)
-    hooksecurefunc(Combuctor.ItemSlot, "Update", function(self) AzeriteTooltip_SetContainerAzerite(self) end)
+    hooksecurefunc(Combuctor.Item, "Update", function(self) AzeriteTooltip_SetContainerAzerite(self) end)
 end)
 
 Options:Hide()

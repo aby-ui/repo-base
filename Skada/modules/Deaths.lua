@@ -11,26 +11,26 @@ Skada:AddLoadableModule("Deaths", nil, function(Skada, L)
 	local function log_deathlog(set, playerid, playername, srcname, spellid, spellname, amount, absorb, timestamp, logoverride, healthoverride)
 		local player = Skada:get_player(set, playerid, playername)
 		local log = logoverride or player.deathlog
-        if log then
-            local pos = log.pos or 1
+		if log then
+			local pos = log.pos or 1
 
-            local entry = log[pos] 
-            if not entry then
-              entry = {}
-              log[pos] = entry
-            end
-            entry.srcname =   srcname
-            entry.spellid =   spellid
-            entry.spellname = spellname
-            entry.amount =	  amount
-            entry.absorb =	  absorb
-            entry.ts = 	  timestamp
-            entry.hp = 	  healthoverride or UnitHealth(playername)
+			local entry = log[pos]
+			if not entry then
+				entry = {}
+				log[pos] = entry
+			end
+			entry.srcname =   srcname
+			entry.spellid =   spellid
+			entry.spellname = spellname
+			entry.amount =	  amount
+			entry.absorb =	  absorb
+			entry.ts = 	  timestamp
+			entry.hp = 	  healthoverride or UnitHealth(playername)
 
-            pos = pos + 1
-            if pos > 15 then pos = 1 end
-            log.pos = pos
-        end
+			pos = pos + 1
+			if pos > 15 then pos = 1 end
+			log.pos = pos
+		end
 	end
 
 	local function log_death(set, playerid, playername, timestamp)
@@ -44,25 +44,25 @@ Skada:AddLoadableModule("Deaths", nil, function(Skada, L)
 			log_deathlog(set, playerid, playername, nil, spellid, spellname, nil, nil, timestamp, nil, 0)
 			local deathlog = player.deathlog
 
-            if deathlog then
-                for i,entry in ipairs(deathlog) do
-                    -- sometimes multiple close events arrive with the same timestamp
-                    -- add a small bias to ensure we preserve the order in which we recorded them
-                    -- this ensures sort stability (to prevent oscillation on :Update())
-                    -- and makes it more likely the health bar progression is correct
-                    entry.ts = entry.ts + i*0.00001 + (i < (deathlog.pos or 1) and 0.001 or 0)
-                    if entry.spellid == death_spell then deathts = entry.ts end
-                end
+			if deathlog then
+				for i,entry in ipairs(deathlog) do
+					-- sometimes multiple close events arrive with the same timestamp
+					-- add a small bias to ensure we preserve the order in which we recorded them
+					-- this ensures sort stability (to prevent oscillation on :Update())
+					-- and makes it more likely the health bar progression is correct
+					entry.ts = entry.ts + i*0.00001 + (i < (deathlog.pos or 1) and 0.001 or 0)
+					if entry.spellid == death_spell then deathts = entry.ts end
+				end
 
-                -- Change to a new deathlog.
-                player.deathlog = {}
+				-- Change to a new deathlog.
+				player.deathlog = {}
 
-                -- Do our best to determine maxhp for the segment where death occurred
-                local cplayer = Skada:get_player(Skada.current, playerid, playername)
-                local maxhp = (cplayer and cplayer.maxhp) or player.maxhp
+				-- Do our best to determine maxhp for the segment where death occurred
+				local cplayer = Skada:get_player(Skada.current, playerid, playername)
+				local maxhp = (cplayer and cplayer.maxhp) or player.maxhp
 
-                return deathts, deathlog, maxhp
-            end
+				return deathts, deathlog, maxhp
+			end
 		end
 	end
 
@@ -72,7 +72,7 @@ Skada:AddLoadableModule("Deaths", nil, function(Skada, L)
 		if player then
 			-- Add a death along with it's timestamp.
 			player.deaths = player.deaths or {}
-			
+
 			table.insert(player.deaths, 1, {["ts"] = deathts, ["log"] = deathlog, ["maxhp"] = maxhp})
 
 			-- Also add to set deaths.
@@ -108,13 +108,14 @@ Skada:AddLoadableModule("Deaths", nil, function(Skada, L)
 
 	local function UnitDied(timestamp, eventtype, srcGUID, srcName, srcFlags, dstGUID, dstName, dstFlags, ...)
 		local SORtime = SORtime[dstGUID] or 0
-		if timestamp > SORtime + 1 and 
-                   timestamp < SORtime + 20 then -- Spirit of Redemption lasts 15 sec, allow some padding for latency
+		if timestamp > SORtime + 1 and timestamp < SORtime + 20 then
+			-- Spirit of Redemption lasts 15 sec, allow some padding for latency
 			log_SORdeath(Skada.total,   dstGUID, dstName, timestamp)
 		elseif not UnitIsFeignDeath(dstName) then	-- Those pesky hunters
 			local deathts, deathlog, maxhp = log_death(Skada.total, dstGUID, dstName, timestamp)
-			if deathlog then -- save the finalized death log to both sets. 
-			        -- This log is deliberately aliased, both to save memory and capture post-death updates
+			-- save the finalized death log to both sets.
+			if deathlog then
+				-- This log is deliberately aliased, both to save memory and capture post-death updates
 				save_death(Skada.total,   dstGUID, dstName, deathts, deathlog, maxhp)
 				save_death(Skada.current, dstGUID, dstName, deathts, deathlog, maxhp)
 			end
@@ -131,28 +132,28 @@ Skada:AddLoadableModule("Deaths", nil, function(Skada, L)
 			-- insert a short delay before closing the deathlog to increase the chances we capture the killing blow
 			local args = { select(2,...) } -- sigh, ... cannot be an upvalue
 			mod:ScheduleTimer(function()
-                           UnitDied((timestamp+0.01), unpack(args)) -- add a ts bias for display of "simultaneous" killing blow
-                        end, 0.01)
+				UnitDied((timestamp+0.01), unpack(args)) -- add a ts bias for display of "simultaneous" killing blow
+			end, 0.01)
 		end
 	end
 
-    local function Missed(timestamp, eventtype, srcGUID, srcName, srcFlags, dstGUID, dstName, dstFlags, ...)
+	local function Missed(timestamp, eventtype, srcGUID, srcName, srcFlags, dstGUID, dstName, dstFlags, ...)
 		local spellId, misstype, _, samount
 		if eventtype == "SWING_MISSED" then
 			spellId = 88163
-			misstype, _, _, samount = ...
+			misstype, _, samount = ...
 		else
 			spellId = ...
-			misstype, _, _, samount = select(3,...)
+			misstype, _, samount = select(3,...)
 		end
 		if dstGUID and timestamp == SORtime[dstGUID] then -- this is actually the killing blow for the SOR we just recorded
-			Skada:Debug("SOR Miss killing blow: ",dstName, spellid, samount)
+			Skada:Debug("SOR Miss killing blow: ",dstName, spellId, samount)
 			-- for an SOR miss/IMMUNE, the amount is SOMETIMES the amount of the killing blow, but is often nil
 			log_deathlog(Skada.total, dstGUID, dstName, srcName, spellId, nil, samount and -samount, nil, timestamp, nil, 0)
 		elseif misstype == "ABSORB" then -- for a miss/ABSORB, the amount is the full absorb value
 			log_deathlog(Skada.total, dstGUID, dstName, srcName, spellId, nil, nil, samount and -samount, timestamp)
 		end
-        end
+	end
 
 	local function Resurrect(timestamp, eventtype, srcGUID, srcName, srcFlags, dstGUID, dstName, dstFlags, ...)
 		-- Resurrection.
@@ -201,7 +202,7 @@ Skada:AddLoadableModule("Deaths", nil, function(Skada, L)
 		log_deathlog(Skada.total, dstGUID, dstName, (srcName_modified or srcName), spellId, nil, samount, absorbed, timestamp)
 	end
 
-	local function cmp_order_dataset(a,b) 
+	local function cmp_order_dataset(a,b)
 		return (a and a.id and a.order or 0) > (b and b.id and b.order or 0)
 	end
 
@@ -254,12 +255,12 @@ Skada:AddLoadableModule("Deaths", nil, function(Skada, L)
 						end
 					end
 				end
-				
+
 				d.id = player.id
 				d.value = #player.deaths
 				if spellid then
 					d.label = player.name .. ": " .. (spellname or GetSpellInfo(spellid))
-				else 
+				else
 					d.label = player.name
 				end
 				d.class = player.class
@@ -284,8 +285,8 @@ Skada:AddLoadableModule("Deaths", nil, function(Skada, L)
 	local green = {r = 0, g = 255, b = 0, a = 1}
 	local red = {r = 255, g = 0, b = 0, a = 1}
 
-	local function cmp_ts(a,b) 
-		return a and b and a.ts > b.ts 
+	local function cmp_ts(a,b)
+		return a and b and a.ts > b.ts
 	end
 
 	-- Death log.
@@ -320,7 +321,7 @@ Skada:AddLoadableModule("Deaths", nil, function(Skada, L)
 						if spellid == death_spell then
 							rspellname = spellname -- nicely formatted death message
 						else
-							rspellname = GetSpellLink(spellid) or spellname	
+							rspellname = GetSpellLink(spellid) or spellname
 						end
 						local label
 						if log.ts >= death.ts then
@@ -328,7 +329,7 @@ Skada:AddLoadableModule("Deaths", nil, function(Skada, L)
 						else
 							label = ("%2.2f"):format(diff) .. ": "
 						end
-						if log.srcname then 
+						if log.srcname then
 							label = label..log.srcname..L["'s "]
 						end
 						d.label =       label..spellname
@@ -352,7 +353,7 @@ Skada:AddLoadableModule("Deaths", nil, function(Skada, L)
 							amt = amt..change
 						end
 						if absorb ~= 0 and self.metadata.columns.Absorb then
-						  	amt = amt.." ("..Skada:FormatNumber(math.abs(absorb)).." "..ABSORB..")"
+							amt = amt.." ("..Skada:FormatNumber(math.abs(absorb)).." "..ABSORB..")"
 						end
 
 						if log.ts >= death.ts then
@@ -411,7 +412,7 @@ Skada:AddLoadableModule("Deaths", nil, function(Skada, L)
 		Skada:RegisterForCL(Missed, 'SPELL_MISSED', {dst_is_interesting_nopets = true})
 		Skada:RegisterForCL(Missed, 'RANGE_MISSED', {dst_is_interesting_nopets = true})
 
- 		Skada:AddMode(self)
+		Skada:AddMode(self)
 	end
 
 	function mod:OnDisable()

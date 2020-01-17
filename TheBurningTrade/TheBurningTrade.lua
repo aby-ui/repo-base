@@ -57,10 +57,17 @@ local function tcontains(onetable, onevalue)
 end
 
 function TBT_ContainerItemPreClick(self, button)
+    -- 如果不处理，则暴雪按钮无法输入文字
+    if button == "LeftButton" and IsShiftKeyDown() then
+        if AuctionHouseFrame and AuctionHouseFrame:IsVisible() then
+            AuctionHouseFrameBuyTab:Click()
+        end
+    end
+
     if(button=="RightButton" and not IsModifierKeyDown()) then
         if(InboxFrame and InboxFrame:IsVisible()) then
             MailFrameTab_OnClick(MailFrameTab2);
-        elseif AuctionFrame and AuctionFrame:IsVisible() then
+        --[[elseif AuctionFrame and AuctionFrame:IsVisible() then
             if(AuctionFrameTab5 and SellItemButton) then
                 AuctionFrameTab_OnClick(AuctionFrameTab3); --or UseContainerItem will use the item!
                 AuctionFrameTab_OnClick(AuctionFrameTab5)
@@ -72,7 +79,7 @@ function TBT_ContainerItemPreClick(self, button)
                 end
             else
                 AuctionFrameTab_OnClick(AuctionFrameTab3);
-            end
+            end--]]
         end
     end
 end
@@ -136,58 +143,37 @@ function TBTFrame_OnLoad(self)
 
     CoreDependCall("Bagnon", function()
         for i=1, 1000 do
-            local f = _G["BagnonItemSlot"..i]
+            local f = _G["BagnonItem"..i]
             if not f then break end
             SetOrHookScript(f, "PreClick", TBT_ContainerItemPreClick);
         end
-        local constructID
-        hooksecurefunc(Bagnon.ItemSlot, "Create", function()
-            local f = constructID and _G["BagnonItemSlot"..constructID]
-            if(f) then
-                return f:HookScript('PreClick', TBT_ContainerItemPreClick)
-            end
-        end)
-        if Bagnon.ItemSlot.Construct then
-            hooksecurefunc(Bagnon.ItemSlot, "Construct", function(self, id)
-                constructID = self.nextID or id
-            end)
-        elseif Bagnon.ItemSlot.ConstructNewItemSlot then
-            hooksecurefunc(Bagnon.ItemSlot, "ConstructNewItemSlot", function(self, id)
-                constructID = self.nextID or id
-            end)
+        local origin = Bagnon.Item.Construct
+        Bagnon.Item.Construct = function(...)
+            local b = origin(...)
+            SetOrHookScript(b, "PreClick", TBT_ContainerItemPreClick)
+            return b
         end
     end)
 
     CoreDependCall("Combuctor", function()
         for i=1, 1000 do
-            local f = _G["CombuctorItemSlot"..i]
+            local f = _G["CombuctorItem"..i]
             if not f then break end
             SetOrHookScript(f, "PreClick", TBT_ContainerItemPreClick);
         end
-        local constructID
-        hooksecurefunc(Combuctor.ItemSlot, "Create", function()
-            local f = constructID and _G["CombuctorItemSlot"..constructID]
-            if(f) then
-                return f:HookScript('PreClick', TBT_ContainerItemPreClick)
-            end
-        end)
-        if Combuctor.ItemSlot.Construct then
-            hooksecurefunc(Combuctor.ItemSlot, "Construct", function(self, id)
-                constructID = self.nextID or id
-            end)
-        elseif Combuctor.ItemSlot.ConstructNewItemSlot then
-            hooksecurefunc(Combuctor.ItemSlot, "ConstructNewItemSlot", function(self, id)
-                constructID = self.nextID or id
-            end)
+        local origin = Combuctor.Item.Construct
+        Combuctor.Item.Construct = function(...)
+            local b = origin(...)
+            SetOrHookScript(b, "PreClick", TBT_ContainerItemPreClick)
+            return b
         end
     end)
 
     hooksecurefunc("HandleModifiedItemClick",function(link)
         if IsShiftKeyDown() then
-            if IsAddOnLoaded("Blizzard_AuctionUI") then
-                if  AuctionFrameBrowse:IsVisible() then
-                    AuctionFrameBrowse_Search();
-                end
+            if AuctionHouseFrame and AuctionHouseFrame:IsVisible() then
+                AuctionHouseFrameBuyTab:Click()
+                AuctionHouseFrame.SearchBar.SearchButton:Click()
             end
         end
     end)
@@ -198,15 +184,13 @@ function TBTFrame_OnLoad(self)
         local texture, itemCount, locked, quality, readable = GetContainerItemInfo(bag, item);
         if texture and not locked then
             if(button == "LeftButton" and IsAltKeyDown() ) then
-                if AuctionFrame and AuctionFrame:IsVisible() then
-                    if(AuctionFrameTab5 and SellItemButton) then
-                        AuctionFrameTab_OnClick(AuctionFrameTab5)
-                    else
-                        AuctionFrameTab_OnClick(AuctionFrameTab3);
-                    end
+                if AuctionHouseFrame and AuctionHouseFrame:IsVisible() then
+                    AuctionHouseFrameSellTab:Click()
+                    PickupContainerItem(bag, item)
+                    AuctionHouseFrame.ItemSellFrame.ItemDisplay:Click()
                 end
                 if(TradeFrame:IsVisible() and not InCombatLockdown()) then
-                    PickupContainerItem(self:GetParent():GetID(), self:GetID());
+                    PickupContainerItem(bag, item);
                     StackSplitFrame:Hide();
                     TradeFrame_OnMouseUp();
                     return
@@ -215,14 +199,14 @@ function TBTFrame_OnLoad(self)
                     MailFrameTab_OnClick(nil, 2);
                 end
                 if(SendMailAttachment1 and SendMailAttachment1:IsVisible()) then
-                    UseContainerItem(self:GetParent():GetID(), self:GetID());
+                    UseContainerItem(bag, item);
                 elseif(SellItemButton and SellItemButton:IsVisible()) then
-                    PickupContainerItem(self:GetParent():GetID(), self:GetID());
+                    PickupContainerItem(bag, item);
                     SellItemButton:Click();
                     AuctionsFrameAuctions_ValidateAuction();
                     if(CursorHasItem()) then ClearCursor(); end;
                 elseif(AuctionsItemButton and AuctionsItemButton:IsVisible()) then
-                    PickupContainerItem(self:GetParent():GetID(), self:GetID());
+                    PickupContainerItem(bag, item);
                     ClickAuctionSellItemButton();
                     AuctionsFrameAuctions_ValidateAuction();
                     if(CursorHasItem()) then ClearCursor(); end;
@@ -233,7 +217,7 @@ function TBTFrame_OnLoad(self)
             if(button == "LeftButton" and IsShiftKeyDown() and AuctionFrame and AuctionFrame:IsVisible() and AuctionFrameBrowse:IsVisible()) then
                 --AuctionFrameTab_OnClick(AuctionFrameTab1, 1);
                 BrowseResetButton:GetScript("OnClick")(BrowseResetButton);
-                ChatEdit_InsertLink(GetContainerItemLink(self:GetParent():GetID(), self:GetID()));
+                ChatEdit_InsertLink(GetContainerItemLink(bag, item));
                 AuctionFrameBrowse_Search();
             end
 

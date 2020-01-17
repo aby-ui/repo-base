@@ -3,28 +3,28 @@
 		Credits: Diablohu, yleaf@cwdg, 狂飙@cwdg, 天下牧@萨格拉斯, ananhaid
 --]]
 
-local CONFIG, Config = ...
+local CONFIG = ...
 local L = LibStub('AceLocale-3.0'):NewLocale(CONFIG, 'zhCN')
 if not L then return end
 
--- global
-L.ConfirmGlobals = '确定要禁用特定此角色的特定设置？所有特定设置将丢失。'
-
 -- general
-L.GeneralDesc = '这些通用功能可以依据配置切换。'
+L.GeneralOptionsDesc = '这些通用功能可以依据配置切换。'
 L.Locked = '锁定框架'
 L.Fading = '渐隐效果'
 L.TipCount = '提示物品数目'
 L.CountGuild = '包含公会银行'
 L.FlashFind = '闪烁搜索'
-L.DisplayBlizzard = '禁用的背包使用暴雪默认框体'
+L.DisplayBlizzard = '显示暴雪框架隐藏背包'
+L.DisplayBlizzardTip = '如果启用，隐藏背包或银行容器将显示默认暴雪用户界面背包面板。\n\n|cffff1919需要重载用户界面。|r'
+L.ConfirmGlobals = '确定要禁用特定此角色的特定设置？所有特定设置将丢失。'
+L.CharacterSpecific = '角色特定设置'
 
 -- frame
-L.FrameSettings = '显示设置'
-L.FrameSettingsDesc = '背包/银行/虚空银行等各窗口显示设置'
-L.Frame = '窗口'
-L.Enabled = '启用窗口整合'
-L.CharacterSpecific = '角色特定设置'
+L.FrameOptions = '框架设置'
+L.FrameOptionsDesc = '此配置设置特定到一个%s框架。'
+L.Frame = '框架'
+L.Enabled = '启用框架'
+L.EnabledTip = '如果禁用，默认暴雪用户界面不会替换此框架。\n\n|cffff1919需要重载用户界面。|r'
 L.ActPanel = '作为标准面板'
 L.ActPanelTip = [[
 如启用，此面板将自动定位
@@ -60,8 +60,8 @@ L.Spacing = '间距'
 L.Alpha = '透明度'
 
 -- auto display
-L.DisplaySettings = '自动显示'
-L.DisplaySettingsDesc = '此设置允许配置游戏事件时自动打开或关闭背包。'
+L.DisplayOptions = '自动显示'
+L.DisplayOptionsDesc = '此设置允许配置游戏事件时自动打开或关闭背包。'
 L.DisplayInventory = '打开背包'
 L.CloseInventory = '关闭背包'
 
@@ -82,18 +82,19 @@ L.CloseVendor = '离开商人时'
 L.CloseMap = '打开世界地图时'
 
 -- colors
-L.ColorSettings = '颜色设置'
-L.ColorSettingsDesc = '设置物品按钮的呈现效果，以便更好的区分.'
-L.GlowQuality = '按物品品质对物品染色'
-L.GlowQuest = '对任务物品染色'
-L.GlowUnusable = '对无法使用的物品染色'
-L.GlowSets = '对已经保存为套装的物品染色' 
-L.GlowNew = '新物品发光' 
+L.ColorOptions = '颜色设置'
+L.ColorOptionsDesc = '此设置允许更改物品在%s框架上的染色以便于识别。'
+L.GlowQuality = '按物品品质染色'
+L.GlowQuest = '任务物品染色'
+L.GlowUnusable = '无用品染色'
+L.GlowSets = '套装染色'
+L.GlowNew = '新物品发光'
 L.GlowAlpha = '发光亮度'
 
 L.EmptySlots = '显示空格背景材质'
 L.ColorSlots = '按背包类型对空格染色'
 L.NormalColor = '一般颜色'
+L.KeyColor = '钥匙颜色'
 L.QuiverColor = '箭袋颜色'
 L.SoulColor = '灵魂袋颜色'
 L.ReagentColor = '材料银行颜色'
@@ -105,8 +106,8 @@ L.EngineerColor = '工程颜色'
 L.GemColor = '宝石颜色'
 L.MineColor = '矿石颜色'
 L.TackleColor = '工具箱颜色'
-L.RefrigeColor = '烹饪颜色'
+L.FridgeColor = '烹饪颜色'
 
 -- rulesets
-L.RuleSettings = '物品规则'
-L.RuleSettingsDesc = '这项设置允许选择按照类型显示和排列物品的规则。'
+L.RuleOptions = '物品规则'
+L.RuleOptionsDesc = '这项设置允许选择按照类型显示和排列物品的规则。'

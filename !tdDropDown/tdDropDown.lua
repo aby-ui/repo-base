@@ -148,7 +148,7 @@ end
 local function CreateDropDown(profile, short, move, click, over)
 	if not profile then return end
 
-	local editbox = GetObjectByPath(profile)
+	local editbox = GetObjectByPath(profile == "BrowseName" and "AuctionHouseFrame.SearchBar.SearchBox" or profile)
 	if not editbox then return end
 
 	tdDropDownDB[profile] = tdDropDownDB[profile] or {}

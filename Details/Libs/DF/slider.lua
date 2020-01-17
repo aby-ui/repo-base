@@ -286,6 +286,17 @@ local DFSliderMetaFunctions = _G [DF.GlobalWidgetControlNames ["slider"]]
 		end
 	end
 	
+-- clear focus
+	function DFSliderMetaFunctions:ClearFocus()
+		local editbox = DFSliderMetaFunctions.editbox_typevalue
+		if editbox and self.typing_value then
+			editbox:ClearFocus()
+			editbox:Hide()
+			editbox:GetParent().MyObject.typing_value = false
+			editbox:GetParent().MyObject.value = self.typing_value_started
+		end
+	end
+	
 -- enabled
 	function DFSliderMetaFunctions:IsEnabled()
 		return not _rawget (self, "lockdown")
@@ -312,6 +323,7 @@ local DFSliderMetaFunctions = _G [DF.GlobalWidgetControlNames ["slider"]]
 	
 	function DFSliderMetaFunctions:Disable()
 	
+		self:ClearFocus()
 		self.slider:Disable()
 		self.slider.amt:Hide()
 		self:SetAlpha (.4)

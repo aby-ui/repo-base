@@ -1,4 +1,0 @@
-<Ui xmlns="http://www.blizzard.com/wow/ui/">
-	<Script file="vault.lua"/>
-  <Include file="..\components\vault\components.xml"/>
-</Ui>

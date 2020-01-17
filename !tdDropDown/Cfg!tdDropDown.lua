@@ -11,7 +11,7 @@ U1RegisterAddon("!tdDropDown", {
 
     toggle = function(name, info, enable, justload)
         if enable then
-            --if IsAddOnLoaded("Blizzard_AuctionUI") then U1SimulateEvent("ADDON_LOADED", "Blizzard_AuctionUI"); end
+            if IsAddOnLoaded("Blizzard_AuctionHouseUI") then U1SimulateEvent("ADDON_LOADED", "Blizzard_AuctionHouseUI"); end
             if IsAddOnLoaded("Blizzard_TradeSkillUI") then U1SimulateEvent("ADDON_LOADED", "Blizzard_TradeSkillUI"); end
             --if IsAddOnLoaded("Blizzard_GlyphUI") then U1SimulateEvent("ADDON_LOADED", "Blizzard_GlyphUI"); end
             if IsAddOnLoaded("Blizzard_EncounterJournal") then U1SimulateEvent("ADDON_LOADED", "Blizzard_EncounterJournal"); end
@@ -19,7 +19,6 @@ U1RegisterAddon("!tdDropDown", {
         return true;
     end,
     ------- Options --------
-    --[[ --abyui830
     {
         var = "autoauction",
         default = 1,
@@ -30,7 +29,6 @@ U1RegisterAddon("!tdDropDown", {
             togglehook(nil, "tdHookAuctionSearch", noop, not v);
         end,
     },
-    --]]
     {
         var = "automail",
         default = 1,

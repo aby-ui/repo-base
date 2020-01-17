@@ -1,5 +1,5 @@
 
-local dversion = 161
+local dversion = 164
 
 local major, minor = "DetailsFramework-1.0", dversion
 local DF, oldminor = LibStub:NewLibrary (major, minor)
@@ -942,6 +942,10 @@ end
 				label:SetPoint (cur_x, cur_y)
 				tinsert (parent.widget_list, label)
 				line_widgets_created = line_widgets_created + 1
+
+				if (widget_table.id) then
+					parent.widgetids [widget_table.id] = label
+				end
 			
 			elseif (widget_table.type == "select" or widget_table.type == "dropdown") then
 				local dropdown = DF:NewDropDown (parent, nil, "$parentWidget" .. index, nil, 140, 18, widget_table.values, widget_table.get(), dropdown_template)
@@ -962,6 +966,10 @@ end
 					for hookName, hookFunc in pairs (widget_table.hooks) do
 						dropdown:SetHook (hookName, hookFunc)
 					end
+				end
+
+				if (widget_table.id) then
+					parent.widgetids [widget_table.id] = dropdown
 				end
 				
 				local size = label.widget:GetStringWidth() + 140 + 4
@@ -996,8 +1004,17 @@ end
 				end
 				
 				local label = DF:NewLabel (parent, nil, "$parentLabel" .. index, nil, widget_table.name .. (use_two_points and ": " or ""), "GameFontNormal", widget_table.text_template or text_template or 12)
-				switch:SetPoint ("left", label, "right", 2)
-				label:SetPoint (cur_x, cur_y)
+				if (widget_table.boxfirst) then
+					switch:SetPoint (cur_x, cur_y)
+					label:SetPoint ("left", switch, "right", 2)
+				else
+					label:SetPoint (cur_x, cur_y)
+					switch:SetPoint ("left", label, "right", 2)
+				end
+
+				if (widget_table.id) then
+					parent.widgetids [widget_table.id] = switch
+				end
 				
 				local size = label.widget:GetStringWidth() + 60 + 4
 				if (size > max_x) then
@@ -1037,6 +1054,10 @@ end
 				slider:SetPoint ("left", label, "right", 2)
 				label:SetPoint (cur_x, cur_y)
 				
+				if (widget_table.id) then
+					parent.widgetids [widget_table.id] = slider
+				end
+
 				local size = label.widget:GetStringWidth() + 140 + 6
 				if (size > max_x) then
 					max_x = size
@@ -1074,6 +1095,10 @@ end
 				colorpick:SetPoint ("left", label, "right", 2)
 				label:SetPoint (cur_x, cur_y)
 				
+				if (widget_table.id) then
+					parent.widgetids [widget_table.id] = colorpick
+				end
+
 				local size = label.widget:GetStringWidth() + 60 + 4
 				if (size > max_x) then
 					max_x = size
@@ -1102,6 +1127,10 @@ end
 						button:SetHook (hookName, hookFunc)
 					end
 				end				
+
+				if (widget_table.id) then
+					parent.widgetids [widget_table.id] = button
+				end
 				
 				local size = button:GetWidth() + 4
 				if (size > max_x) then
@@ -1132,6 +1161,10 @@ end
 					for hookName, hookFunc in pairs (widget_table.hooks) do
 						textentry:SetHook (hookName, hookFunc)
 					end
+				end
+
+				if (widget_table.id) then
+					parent.widgetids [widget_table.id] = textentry
 				end
 				
 				local size = label.widget:GetStringWidth() + 60 + 4
@@ -1296,9 +1329,15 @@ end
 		end
 	end
 	
+	local get_frame_by_id = function (self, id)
+		return self.widgetids [id]
+	end
+
 	function DF:SetAsOptionsPanel (frame)
 		frame.RefreshOptions = refresh_options
 		frame.widget_list = {}
+		frame.widgetids = {}
+		frame.GetWidgetById = get_frame_by_id
 	end
 	
 	function DF:CreateOptionsFrame (name, title, template)

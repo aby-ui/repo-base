@@ -3,7 +3,7 @@
 ## Title:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Challenges|r
 ## Title-deDE:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Herausforderungen|r
 ## Title-esES:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Terreno de Pruebas|r
-## Title-koKR:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0수련의 장|r
+## Title-koKR:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0도전 컨텐츠|r
 ## Title-zhTW:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0挑戰|r
 ## Title-zhCN:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0白虎试练场|r
 ## Title-ruRU:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Арена испытаний|r
@@ -17,10 +17,11 @@
 ## X-DBM-Mod-Category: BFA
 ## X-DBM-Mod-SubCategories: Proving Grounds,Legion Artifacts, BfA Visions
 ## X-DBM-Mod-SubCategories-deDE: Feuerprobe,Legion Artefakte, BfA Visions
+## X-DBM-Mod-SubCategories-koKR: 수련의 장,군단 유물, 격아 환영
 ## X-DBM-Mod-Name: Challenges
 ## X-DBM-Mod-Name-deDE: Herausforderungen
 ## X-DBM-Mod-Name-esES: Terreno de Pruebas
-## X-DBM-Mod-Name-koKR: 수련의 장
+## X-DBM-Mod-Name-koKR: 도전 컨텐츠
 ## X-DBM-Mod-Name-zhTW: 挑戰
 ## X-DBM-Mod-Name-zhCN: 个人挑战
 ## X-DBM-Mod-Name-ruRU: Арена испытаний
@@ -28,7 +29,7 @@
 ## X-DBM-Mod-MapID: 1148, 1698, 1710, 1703, 1702, 1684, 1673, 1616, 2212, 2213, 2215
 ## X-DBM-Mod-MinCoreRevision: 16130
 ## X-Curse-Project-ID: 61621
-## Version: r113
+## Version: r113-4-g193caf2
 
 localization.en.lua
 localization.tw.lua

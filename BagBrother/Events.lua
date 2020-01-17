@@ -1,5 +1,5 @@
 --[[
-Copyright 2011-2019 João Cardoso
+Copyright 2011-2020 João Cardoso
 BagBrother is distributed under the terms of the GNU General Public License (Version 3).
 As a special exception, the copyright holders of this addon do not give permission to
 redistribute and/or modify it.
@@ -15,23 +15,16 @@ along with the addon. If not, see <http://www.gnu.org/licenses/gpl-3.0.txt>.
 This file is part of BagBrother.
 --]]
 
-local BagSlots = NUM_BAG_SLOTS
-local BankSlots = NUM_BANKBAGSLOTS
-local VaultSlots = 80 * 2
-
-local FirstBankSlot = 1 + BagSlots
-local LastBankSlot = BankSlots + BagSlots
-local Backpack = BACKPACK_CONTAINER
-local Bank = BANK_CONTAINER
-local Reagents = REAGENTBANK_CONTAINER
+local NUM_VAULT_SLOTS = 80 * 2
+local FIRST_BANK_SLOT = 1 + NUM_BAG_SLOTS
+local LAST_BANK_SLOT = NUM_BANKBAGSLOTS + NUM_BAG_SLOTS
 
 
 --[[ Continuous Events ]]--
 
 function BagBrother:BAG_UPDATE(bag)
-	local isBag = bag > Bank and bag <= BagSlots
-	if isBag then
-  		self:SaveBag(bag, bag == Backpack)
+	if bag <= NUM_BAG_SLOTS then
+  	self:SaveBag(bag, bag <= BACKPACK_CONTAINER, bag == KEYRING_CONTAINER and HasKey and HasKey())
 	end
 end
 
@@ -52,15 +45,15 @@ end
 
 function BagBrother:BANKFRAME_CLOSED()
 	if self.atBank then
-		for i = FirstBankSlot, LastBankSlot do
+		for i = FIRST_BANK_SLOT, LAST_BANK_SLOT do
 			self:SaveBag(i)
 		end
 
-		if Reagents and IsReagentBankUnlocked() then
-			self:SaveBag(Reagents, true)
+		if REAGENTBANK_CONTAINER and IsReagentBankUnlocked() then
+			self:SaveBag(REAGENTBANK_CONTAINER, true)
 		end
 
-		self:SaveBag(Bank, true)
+		self:SaveBag(BANK_CONTAINER, true)
 		self.atBank = nil
 	end
 end
@@ -77,7 +70,7 @@ function BagBrother:VOID_STORAGE_CLOSE()
 		self.Player.vault = {}
 		self.atVault = nil
 
-		for i = 1, VaultSlots do
+		for i = 1, NUM_VAULT_SLOTS do
 			local id = GetVoidItemInfo(1, i)
     		self.Player.vault[i] = id and tostring(id) or nil
   		end

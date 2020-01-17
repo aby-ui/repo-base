@@ -1,0 +1,132 @@
+<Ui>
+	<EditBox name="CombuctorSearchBoxTemplate" autoFocus="false" inherits="SearchBoxTemplate" virtual="true">
+		<Size x="0" y="20"/>
+
+		<Anchors>
+			<Anchor point="TOPLEFT" x="70" y="-32"/>
+			<Anchor point="TOPRIGHT" x="-80" y="-32"/>
+		</Anchors>
+
+		<Scripts>
+			<OnEnterPressed>
+				self:ClearFocus()
+			</OnEnterPressed>
+			<OnTextChanged>
+				local text = self:GetText()
+
+				if not self:HasFocus() then
+					SearchBoxTemplate_OnEditFocusLost(self)
+					self.Instructions:SetShown(text == '')
+				end
+
+				self:GetParent():OnSearchTextChanged(text ~= '' and text:lower() or nil)
+			</OnTextChanged>
+			<OnEditFocusLost>
+				self:HighlightText(0, 0)
+				self.Instructions:SetShown(self:GetText() == '')
+				SearchBoxTemplate_OnEditFocusLost(self)
+			</OnEditFocusLost>
+			<OnEditFocusGained>
+				self:HighlightText()
+				self.Instructions:Hide()
+				SearchBoxTemplate_OnEditFocusGained(self)
+			</OnEditFocusGained>
+		</Scripts>
+	</EditBox>
+
+	<Button name="CombuctorDragFrameTemplate" virtual="true" text="TITLE">
+		<Size x="262" y="14"/>
+		<Scripts>
+			<OnLoad>
+				self:RegisterForDrag('LeftButton')
+				self:SetPoint('TOP', self:GetParent().TitleText)
+			</OnLoad>
+			<OnMouseDown>
+				local parent = self:GetParent()
+				if not parent.profile.managed and (not Combuctor.sets.locked or IsAltKeyDown()) then
+					parent:StartMoving()
+				end
+			</OnMouseDown>
+			<OnMouseUp>
+				local parent = self:GetParent()
+				parent:StopMovingOrSizing()
+				parent:RecomputePosition()
+			</OnMouseUp>
+		</Scripts>
+
+		<NormalFont style="GameFontNormal"/>
+		<HighlightFont style="GameFontHighlight"/>
+	</Button>
+
+	<Button name="CombuctorResizeButtonTemplate" virtual="true">
+		<Size x="16" y="16"/>
+
+		<Anchors>
+			<Anchor point="BOTTOMRIGHT" x="-7" y="4"/>
+		</Anchors>
+
+		<Scripts>
+			<OnLoad>
+				self:SetFrameLevel(self:GetFrameLevel() + 4)
+				self:GetNormalTexture():SetVertexColor(1, 0.82, 0, .8)
+				self:GetNormalTexture():SetAlpha(.5)
+			</OnLoad>
+			<OnMouseDown>
+				self:GetParent():StartSizing()
+			</OnMouseDown>
+			<OnMouseUp>
+				self:GetParent():StopMovingOrSizing()
+			</OnMouseUp>
+		</Scripts>
+
+		<NormalTexture file="Interface\ChatFrame\UI-ChatIM-SizeGrabber-Up" setAllPoints="true"/>
+		<PushedTexture file="Interface\ChatFrame\UI-ChatIM-SizeGrabber-Down" setAllPoints="true"/>
+		<HighlightTexture file="Interface\ChatFrame\UI-ChatIM-SizeGrabber-Highlight" alphaMode="ADD" setAllPoints="true"/>
+	</Button>
+
+	<Frame name="CombuctorFrameTemplate" resizable="true" clampedToScreen="true" enableMouse="true" movable="true" topLevel="true" hidden="true" inherits="ButtonFrameTemplate" virtual="true">
+		<Size x="300" y="400"/>
+		<Layers>
+			<Layer level="OVERLAY">
+				<Texture inherits="UI-Frame-BtnDivMiddle"> <!-- Separator -->
+					<Anchors>
+						<Anchor point="BOTTOMLEFT" x="145" y="2"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+
+			<Layer level="ARTWORK">
+				<Texture file="Interface\MerchantFrame\UI-Merchant-BotLeft"> <!-- Left -->
+					<Size x="64" y="24"/>
+					<Anchors>
+						<Anchor point="BOTTOMLEFT" x="156" y="2"/>
+					</Anchors>
+					<TexCoords left="0.72" right="1" top="0.675" bottom=".754"/>
+				</Texture>
+
+				<Texture file="Interface\MerchantFrame\UI-Merchant-BotRight">
+					<Size x="64" y="24"/>
+					<Anchors>
+						<Anchor point="BOTTOMRIGHT" x="-30" y="2"/>
+						<Anchor point="BOTTOMLEFT" x="220" y="2"/>
+					</Anchors>
+					<TexCoords left="0" right="0.5" top="0.675" bottom=".754"/>
+				</Texture>
+
+				<Texture file="Interface\MerchantFrame\UI-Merchant-BotRight"> <!-- Right -->
+					<Size x="64" y="24"/>
+					<Anchors>
+						<Anchor point="BOTTOMRIGHT" x="34" y="2"/>
+					</Anchors>
+					<TexCoords left="0.5" right="1" top="0.675" bottom=".754"/>
+				</Texture>
+			</Layer>
+		</Layers>
+
+		<Frames>
+			<EditBox parentKey="searchBox" name="$parentSearchBox" inherits="CombuctorSearchBoxTemplate"/>
+			<Button parentKey="resizeButton" inherits="CombuctorResizeButtonTemplate"/>
+			<Button parentKey="titleText" inherits="CombuctorDragFrameTemplate"/>
+		</Frames>
+	</Frame>
+</Ui>

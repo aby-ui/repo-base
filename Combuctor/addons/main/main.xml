@@ -1,0 +1,17 @@
+<Ui>
+  <Script file="main.lua"/>
+
+  <Include file="style.xml"/>
+  <Include file="frame.xml"/>
+  <Include file="..\..\common\Wildpants.xml"/>
+
+	<Script file="qualityButton.lua"/>
+	<Script file="qualityFilter.lua"/>
+	<Script file="sideTab.lua"/>
+	<Script file="bottomTab.lua"/>
+	<Script file="ruleFilters.lua"/>
+	<Script file="itemFrame.lua"/>
+	<Script file="frame.lua"/>
+
+  <Script file="legacy.lua"/>
+</Ui>

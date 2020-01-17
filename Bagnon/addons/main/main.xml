@@ -1,0 +1,17 @@
+<Ui>
+	<Include file="style.xml"/>
+	<Include file="..\..\common\Wildpants\Wildpants.xml"/>
+
+	<Script file="brokerPlugin.lua"/>
+	<Script file="brokerDisplay.lua"/>
+
+	<Script file="optionsToggle.lua"/>
+	<Script file="searchFrame.lua"/>
+	<Script file="searchToggle.lua"/>
+	<Script file="title.lua"/>
+
+	<Script file="itemGroup.lua"/>
+	<Script file="frame.lua"/>
+
+	<Script file="main.lua"/>
+</Ui>

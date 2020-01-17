@@ -5009,11 +5009,18 @@ DF.IconRowFunctions = {
 			cooldownFrame:SetFrameLevel (newIconFrame:GetFrameLevel()+1)
 			
 			newIconFrame.CountdownText = cooldownFrame:CreateFontString (nil, "overlay", "GameFontNormal")
-			newIconFrame.CountdownText:SetPoint ("center")
+			--newIconFrame.CountdownText:SetPoint ("center")
+			newIconFrame.CountdownText:SetPoint (self.options.text_anchor or "center", newIconFrame, self.options.text_rel_anchor or "center", self.options.text_x_offset or 0, self.options.text_y_offset or 0)
 			newIconFrame.CountdownText:Hide()
 			
+			newIconFrame.StackText = cooldownFrame:CreateFontString (nil, "overlay", "GameFontNormal")
+			--newIconFrame.StackText:SetPoint ("bottomright")
+			newIconFrame.StackText:SetPoint (self.options.stack_text_anchor or "center", newIconFrame, self.options.stack_text_rel_anchor or "bottomright", self.options.stack_text_x_offset or 0, self.options.stack_text_y_offset or 0)
+			newIconFrame.StackText:Hide()
+			
 			newIconFrame.Desc = newIconFrame:CreateFontString (nil, "overlay", "GameFontNormal")
-			newIconFrame.Desc:SetPoint ("bottom", newIconFrame, "top", 0, 2)
+			--newIconFrame.Desc:SetPoint ("bottom", newIconFrame, "top", 0, 2)
+			newIconFrame.Desc:SetPoint(self.options.desc_text_anchor or "bottom", newIconFrame, self.options.desc_text_rel_anchor or "top", self.options.desc_text_x_offset or 0, self.options.desc_text_y_offset or 2)
 			newIconFrame.Desc:Hide()
 			
 			newIconFrame.Cooldown = cooldownFrame
@@ -5051,7 +5058,7 @@ DF.IconRowFunctions = {
 		return iconFrame
 	end,
 	
-	SetIcon = function (self, spellId, borderColor, startTime, duration, forceTexture, descText)
+	SetIcon = function (self, spellId, borderColor, startTime, duration, forceTexture, descText, count, debuffType, caster, canStealOrPurge)
 	
 		local spellName, _, spellIcon
 	
@@ -5090,6 +5097,7 @@ DF.IconRowFunctions = {
 						formattedTime = floor (formattedTime)
 					end
 					
+					iconFrame.CountdownText:SetPoint (self.options.text_anchor or "center", iconFrame, self.options.text_rel_anchor or "center", self.options.text_x_offset or 0, self.options.text_y_offset or 0)
 					iconFrame.CountdownText:SetText (formattedTime)
 					iconFrame.Cooldown:SetHideCountdownNumbers (true)
 				else
@@ -5104,9 +5112,20 @@ DF.IconRowFunctions = {
 				iconFrame.Desc:Show()
 				iconFrame.Desc:SetText (descText.text)
 				iconFrame.Desc:SetTextColor (DF:ParseColors (descText.text_color or self.options.desc_text_color))
+				iconFrame.Desc:SetPoint(self.options.desc_text_anchor or "bottom", iconFrame, self.options.desc_text_rel_anchor or "top", self.options.desc_text_x_offset or 0, self.options.desc_text_y_offset or 2)
 				DF:SetFontSize (iconFrame.Desc, descText.text_size or self.options.desc_text_size)
 			else
 				iconFrame.Desc:Hide()
+			end
+			
+			if (count and count > 1 and self.options.stack_text) then
+				iconFrame.StackText:Show()
+				iconFrame.StackText:SetText (count)
+				iconFrame.StackText:SetTextColor (DF:ParseColors (self.options.desc_text_color))
+				iconFrame.StackText:SetPoint (self.options.stack_text_anchor or "center", iconFrame, self.options.stack_text_rel_anchor or "bottomright", self.options.stack_text_x_offset or 0, self.options.stack_text_y_offset or 0)
+				DF:SetFontSize (iconFrame.StackText, self.options.stack_text_size)
+			else
+				iconFrame.StackText:Hide()
 			end
 			
 			PixelUtil.SetSize (iconFrame, self.options.icon_width, self.options.icon_height)
@@ -5115,6 +5134,15 @@ DF.IconRowFunctions = {
 			--> update the size of the frame
 			self:SetWidth ((self.options.left_padding * 2) + (self.options.icon_padding * (self.NextIcon-2)) + (self.options.icon_width * (self.NextIcon - 1)))
 			self:SetHeight (self.options.icon_height + (self.options.top_padding * 2))
+
+			--> make information available
+			iconFrame.spellId = spellId
+			iconFrame.startTime = startTime
+			iconFrame.duration = duration
+			iconFrame.count = count
+			iconFrame.debuffType = debuffType
+			iconFrame.caster = caster
+			iconFrame.canStealOrPurge = canStealOrPurge
 
 			--> show the frame
 			self:Show()
@@ -5175,9 +5203,24 @@ local default_icon_row_options = {
 	texcoord = {.1, .9, .1, .9},
 	show_text = true,
 	text_color = {1, 1, 1, 1},
+	text_anchor = "center",
+	text_rel_anchor = "center",
+	text_x_offset = 0,
+	text_y_offset = 0,
 	desc_text = true,
 	desc_text_color = {1, 1, 1, 1},
 	desc_text_size = 7,
+	desc_text_anchor = "bottom",
+	desc_text_rel_anchor = "top",
+	desc_text_x_offset = 0,
+	desc_text_y_offset = 2,
+	stack_text = true,
+	stack_text_color = {1, 1, 1, 1},
+	stack_text_size = 10,
+	stack_text_anchor = "center",
+	stack_text_rel_anchor = "bottomright",
+	stack_text_x_offset = 0,
+	stack_text_y_offset = 0,
 	left_padding = 1, --distance between right and left
 	top_padding = 1, --distance between top and bottom 
 	icon_padding = 1, --distance between each icon
@@ -9276,7 +9319,7 @@ DF.TimeLineBlockFunctions = {
 				if (isAura) then
 					block.auraLength:Show()
 					block.auraLength:SetWidth (pixelPerSecond * isAura)
-					block:SetWidth (pixelPerSecond * isAura)
+					block:SetWidth (max (pixelPerSecond * isAura, 16))
 				else
 					block.auraLength:Hide()
 				end
@@ -9284,7 +9327,7 @@ DF.TimeLineBlockFunctions = {
 				block.background:SetVertexColor (0, 0, 0, 0)
 			else
 				block.background:SetVertexColor (unpack (color))
-				PixelUtil.SetSize (block, width, self:GetHeight())
+				PixelUtil.SetSize (block, max (width, 16), self:GetHeight())
 				block.auraLength:Hide()
 			end
 		end
@@ -9521,7 +9564,12 @@ function DF:CreateTimeLineFrame (parent, name, options, timelineOptions)
 		horizontalSlider:SetMinMaxValues (0, scrollWidth)
 		horizontalSlider:SetValue (0)
 		horizontalSlider:SetScript ("OnValueChanged", function (self)
-			frameCanvas:SetHorizontalScroll (self:GetValue())
+			local _, maxValue = horizontalSlider:GetMinMaxValues()
+			local stepValue = ceil (ceil(self:GetValue() * maxValue)/maxValue)
+			if (stepValue ~= horizontalSlider.currentValue) then
+				horizontalSlider.currentValue = stepValue
+				frameCanvas:SetHorizontalScroll (stepValue)
+			end
 		end)
 		
 		frameCanvas.horizontalSlider = horizontalSlider
@@ -9552,9 +9600,12 @@ function DF:CreateTimeLineFrame (parent, name, options, timelineOptions)
 		scaleSlider:SetValue (DF:GetRangeValue (frameCanvas.options.scale_min, frameCanvas.options.scale_max, 0.5))
 
 		scaleSlider:SetScript ("OnValueChanged", function (self)
-			local current = scaleSlider:GetValue()
-			frameCanvas.currentScale = current
-			frameCanvas:RefreshTimeLine()
+			local stepValue = ceil(self:GetValue() * 100)/100
+			if (stepValue ~= frameCanvas.currentScale) then
+				local current = stepValue
+				frameCanvas.currentScale = stepValue
+				frameCanvas:RefreshTimeLine()
+			end
 		end)
 
 	--create vertical slider
@@ -9734,6 +9785,38 @@ function DF:ShowErrorMessage (errorMessage, titleText)
 	DF.ErrorMessagePanel.FlashAnimation:Play()
 end
 
+--[[
+	DF:SetPointOffsets(frame, xOffset, yOffset)
 
+	Set an offset into the already existing offset of the frame
+	If passed xOffset:1 and yOffset:1 and the frame has 1 -1,  the new offset will be 2 -2
+	This function is great to create a 1 knob for distance
 
---functionn falsee truee breakk elsea endz 
+	@frame: a frame to have the offsets changed
+	@xOffset: the amount to apply into the x offset
+	@yOffset: the amount to apply into the y offset
+--]]
+function DF:SetPointOffsets(frame, xOffset, yOffset)
+	for i = 1, frame:GetNumPoints() do
+		local anchor1, anchorTo, anchor2, x, y = frame:GetPoint(i)
+		x = x or 0
+		y = y or 0
+
+		if (x >= 0) then
+			xOffset = x + xOffset
+
+		elseif (x < 0) then
+			xOffset = x - xOffset
+		end
+
+		if (y >= 0) then
+			yOffset = y + yOffset
+		
+		elseif (y < 0) then
+			yOffset = y - yOffset
+		end
+
+		frame:SetPoint(anchor1, anchorTo, anchor2, xOffset, yOffset)
+	end
+end
+

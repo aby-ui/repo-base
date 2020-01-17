@@ -4,27 +4,27 @@
 		***
 --]]
 
-local CONFIG, Config = ...
+local CONFIG = ...
 local L = LibStub('AceLocale-3.0'):NewLocale(CONFIG, 'enUS', true, 'raw')
 
--- global
-L.ConfirmGlobals = 'Are you sure you want to disable specific settings for this character? All specific settings will be lost.'
-
 -- general
-L.GeneralDesc = 'These are general features that can be toggled depending on your preferences.'
+L.GeneralOptionsDesc = 'These are general features that can be toggled depending on your preferences.'
 L.Locked = 'Lock Frames'
 L.Fading = 'Fading Effects'
 L.TipCount = 'Tooltip Item Count'
 L.CountGuild = 'Include Guild Banks'
 L.FlashFind = 'Flash Find'
-L.DisplayBlizzard = 'Display Blizzard Frames for Hidden Bags'
+L.DisplayBlizzard = 'Fallback Hidden Bags'
+L.DisplayBlizzardTip = 'If enabled, the default Blizzard UI bag panels will be displayed for hidden inventory or bank containers.\n\n|cffff1919Requires UI reload.|r'
+L.ConfirmGlobals = 'Are you sure you want to disable specific settings for this character? All specific settings will be lost.'
+L.CharacterSpecific = 'Character Specific Settings'
 
 -- frame
-L.FrameSettings = 'Frame Settings'
-L.FrameSettingsDesc = 'These are configuration settings specific to a ADDON frame.'
+L.FrameOptions = 'Frame Settings'
+L.FrameOptionsDesc = 'These are configuration settings specific to a %s frame.'
 L.Frame = 'Frame'
 L.Enabled = 'Enable Frame'
-L.CharacterSpecific = 'Character Specific Settings'
+L.EnabledTip = 'If disabled, the default Blizzard UI will not be replaced for this frame.\n\n|cffff1919Requires UI reload.|r'
 L.ActPanel = 'Act as Standard Panel'
 L.ActPanelTip = [[
 If enabled, this panel will automatically position
@@ -60,8 +60,8 @@ L.Spacing = 'Spacing'
 L.Alpha = 'Opacity'
 
 -- auto display
-L.DisplaySettings = 'Automatic Display'
-L.DisplaySettingsDesc = 'These settings allow you to configure when your inventory automatically opens or closes due to game events.'
+L.DisplayOptions = 'Automatic Display'
+L.DisplayOptionsDesc = 'These settings allow you to configure when your inventory automatically opens or closes due to game events.'
 L.DisplayInventory = 'Display Inventory'
 L.CloseInventory = 'Close Inventory'
 
@@ -82,18 +82,20 @@ L.CloseVendor = 'Leaving a Vendor'
 L.CloseMap = 'Opening the World Map'
 
 -- colors
-L.ColorSettings = 'Color Settings'
-L.ColorSettingsDesc = 'These settings allow you to change how item slots are presented on ADDON frames for easier identification.'
+L.ColorOptions = 'Color Settings'
+L.ColorOptionsDesc = 'These settings allow you to change how item slots are presented on %s frames for easier identification.'
 L.GlowQuality = 'Color by Quality'
 L.GlowQuest = 'Color Quest Items'
 L.GlowUnusable = 'Color Unusable Items'
 L.GlowSets = 'Color Equipment Sets'
 L.GlowNew = 'Flash New Items'
+L.GlowPoor = 'Mark Poor Items'
 L.GlowAlpha = 'Glow Brightness'
 
 L.EmptySlots = 'Display Background'
 L.ColorSlots = 'Color by Bag Type'
 L.NormalColor = 'Normal Color'
+L.KeyColor = 'Key Color'
 L.QuiverColor = 'Quiver Color'
 L.SoulColor = 'Soul Bag Color'
 L.ReagentColor = 'Reagent Bank Color'
@@ -105,8 +107,8 @@ L.EngineerColor = 'Engineering Color'
 L.GemColor = 'Gem Color'
 L.MineColor = 'Mining Color'
 L.TackleColor = 'Tackle Box Color'
-L.RefrigeColor = 'Refrigerator Color'
+L.FridgeColor = 'Refrigerator Color'
 
 -- rulesets
-L.RuleSettings = 'Item Rulesets'
-L.RuleSettingsDesc = 'These settings allow you to choose which item rulesets to display and in which order.'
+L.RuleOptions = 'Item Rulesets'
+L.RuleOptionsDesc = 'These settings allow you to choose which item rulesets to display and in which order.'
