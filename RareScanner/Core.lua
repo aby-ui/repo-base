@@ -30,7 +30,7 @@ local DEBUG_MODE = false
 
 -- Config constants
 local CURRENT_DB_VERSION = 7
-local CURRENT_LOOT_DB_VERSION = 19
+local CURRENT_LOOT_DB_VERSION = 20
 
 -- Hard reset versions
 local CURRENT_ADDON_VERSION = 600
@@ -115,8 +115,10 @@ local PROFILE_DEFAULTS = {
 			keepShowingAfterDead = false,
 			keepShowingAfterDeadReseteable = false,
 			keepShowingAfterCollected = false,
+			keepShowingAfterCompleted = false,
 			maxSeenTime = 0,
 			maxSeenTimeContainer = 5,
+			maxSeenTimeEvent = 5,
 			scale = 1.0
 		},
 		loot = {
@@ -129,6 +131,7 @@ local PROFILE_DEFAULTS = {
 			showOnlyTransmogItems = false,
 			filterCollectedItems = true,
 			filterItemsCompletedQuest = true,
+			filterNotMatchingClass = false,
 			numItems = 10,
 			numItemsPerRow = 10
 		}
@@ -501,55 +504,55 @@ scanner_button:SetScript("OnEvent", function(self, event, ...)
 						end
 					end
 				else
-					if (DEBUG_MODE) then
-						StaticPopupDialogs["RS_CHECK_NEW"] = {
-							text = "¿Quieres procesar el NPC/contenedor que acabas de localizar?",
-							button1 = "Si",
-							button2 = "No",
-							OnAccept = function()
-								-- Emulate vignette found
-								if (not private.dbglobal.rares_found[npcID]) then
-									RareScanner:PrintDebugMessage("DEBUG: Detectado contenedor que tenemos en base de datos pero no tiene vignette "..npcID.. ". Añadido a la lista de rares_found.")
-									if (private.CONTAINER_ZONE_IDS[npcID]) then
-										private.dbglobal.rares_found[npcID] = { artID = C_Map.GetMapArtID(private.CONTAINER_ZONE_IDS[npcID].zoneID), mapID = private.CONTAINER_ZONE_IDS[npcID].zoneID, coordX = private.CONTAINER_ZONE_IDS[npcID].x, coordY = private.CONTAINER_ZONE_IDS[npcID].y, atlasName = RareScanner.CONTAINER_VIGNETTE, foundTime = time() }
-									else
-										local xx, yy = C_Map.GetPlayerMapPosition(C_Map.GetBestMapForUnit("player"), "player"):GetXY()
-										private.dbglobal.rares_found[npcID] = { artID = C_Map.GetMapArtID(C_Map.GetBestMapForUnit("player")), mapID = C_Map.GetBestMapForUnit("player"), coordX = xx, coordY = yy, atlasName = RareScanner.CONTAINER_VIGNETTE, foundTime = time() }
-									end
-								end
+					-- if (DEBUG_MODE) then
+						-- StaticPopupDialogs["RS_CHECK_NEW"] = {
+							-- text = "¿Quieres procesar el NPC/contenedor que acabas de localizar?",
+							-- button1 = "Si",
+							-- button2 = "No",
+							-- OnAccept = function()
+								-- -- Emulate vignette found
+								-- if (not private.dbglobal.rares_found[npcID]) then
+									-- RareScanner:PrintDebugMessage("DEBUG: Detectado contenedor que tenemos en base de datos pero no tiene vignette "..npcID.. ". Añadido a la lista de rares_found.")
+									-- if (private.CONTAINER_ZONE_IDS[npcID]) then
+										-- private.dbglobal.rares_found[npcID] = { artID = C_Map.GetMapArtID(private.CONTAINER_ZONE_IDS[npcID].zoneID), mapID = private.CONTAINER_ZONE_IDS[npcID].zoneID, coordX = private.CONTAINER_ZONE_IDS[npcID].x, coordY = private.CONTAINER_ZONE_IDS[npcID].y, atlasName = RareScanner.CONTAINER_VIGNETTE, foundTime = time() }
+									-- else
+										-- local xx, yy = C_Map.GetPlayerMapPosition(C_Map.GetBestMapForUnit("player"), "player"):GetXY()
+										-- private.dbglobal.rares_found[npcID] = { artID = C_Map.GetMapArtID(C_Map.GetBestMapForUnit("player")), mapID = C_Map.GetBestMapForUnit("player"), coordX = xx, coordY = yy, atlasName = RareScanner.CONTAINER_VIGNETTE, foundTime = time() }
+									-- end
+								-- end
 								
-								-- If its a cointainer check it as opened
-								if (private.dbglobal.rares_found[npcID].atlasName == RareScanner.CONTAINER_VIGNETTE or private.dbglobal.rares_found[npcID].atlasName == RareScanner.CONTAINER_ELITE_VIGNETTE) then
-									RareScanner:ProcessOpenContainer(npcID)
-								end
-							end,
-							timeout = 0,
-							whileDead = true,
-							hideOnEscape = true,
-							preferredIndex = 3,
-						}
-						StaticPopup_Show("RS_CHECK_NEW")
+								-- -- If its a cointainer check it as opened
+								-- if (private.dbglobal.rares_found[npcID].atlasName == RareScanner.CONTAINER_VIGNETTE or private.dbglobal.rares_found[npcID].atlasName == RareScanner.CONTAINER_ELITE_VIGNETTE) then
+									-- RareScanner:ProcessOpenContainer(npcID)
+								-- end
+							-- end,
+							-- timeout = 0,
+							-- whileDead = true,
+							-- hideOnEscape = true,
+							-- preferredIndex = 3,
+						-- }
+						-- StaticPopup_Show("RS_CHECK_NEW")
 						
-						if (not private.dbglobal.temp_loot) then
-							private.dbglobal.temp_loot = {}
-						end
+						-- if (not private.dbglobal.temp_loot) then
+							-- private.dbglobal.temp_loot = {}
+						-- end
 									
-						RareScanner:PrintDebugMessage("DEBUG: Obtenido loot de "..destGUID)
-						local itemLink = GetLootSlotLink(i)
-						if (itemLink) then
-							local _, _, _, ltype, id, _, _, _, _, _, _, _, _, _, name = string.find(itemLink, "|?c?f?f?(%x*)|?H?([^:]*):?(%d+):?(%d*):?(%d*):?(%d*):?(%d*):?(%d*):?(%-?%d*):?(%-?%d*):?(%d*):?(%d*)|?h?%[?([^%[%]]*)%]?|?h?|?r?")
-							if (ltype == "item") then
-								local itemID = id and tonumber(id) or nil
-								if (itemID and (not private.dbglobal.temp_loot[npcID] or not RS_tContains(private.dbglobal.temp_loot[npcID], itemID)) and (not private.LOOT_TABLE_IDS[npcID] or not RS_tContains(private.LOOT_TABLE_IDS[npcID], itemID))) then
-									RareScanner:PrintDebugMessage("DEBUG: Añadido nuevo botin "..itemID.." para el npcID "..npcID)
-									if (not private.dbglobal.temp_loot[npcID]) then
-										private.dbglobal.temp_loot[npcID] = {}
-									end
-									tinsert(private.dbglobal.temp_loot[npcID], itemID)
-								end
-							end
-						end
-					end
+						-- RareScanner:PrintDebugMessage("DEBUG: Obtenido loot de "..destGUID)
+						-- local itemLink = GetLootSlotLink(i)
+						-- if (itemLink) then
+							-- local _, _, _, ltype, id, _, _, _, _, _, _, _, _, _, name = string.find(itemLink, "|?c?f?f?(%x*)|?H?([^:]*):?(%d+):?(%d*):?(%d*):?(%d*):?(%d*):?(%d*):?(%-?%d*):?(%-?%d*):?(%d*):?(%d*)|?h?%[?([^%[%]]*)%]?|?h?|?r?")
+							-- if (ltype == "item") then
+								-- local itemID = id and tonumber(id) or nil
+								-- if (itemID and (not private.dbglobal.temp_loot[npcID] or not RS_tContains(private.dbglobal.temp_loot[npcID], itemID)) and (not private.LOOT_TABLE_IDS[npcID] or not RS_tContains(private.LOOT_TABLE_IDS[npcID], itemID))) then
+									-- RareScanner:PrintDebugMessage("DEBUG: Añadido nuevo botin "..itemID.." para el npcID "..npcID)
+									-- if (not private.dbglobal.temp_loot[npcID]) then
+										-- private.dbglobal.temp_loot[npcID] = {}
+									-- end
+									-- tinsert(private.dbglobal.temp_loot[npcID], itemID)
+								-- end
+							-- end
+						-- end
+					-- end
 				end
 			end
 		end
@@ -622,15 +625,20 @@ scanner_button:SetScript("OnEvent", function(self, event, ...)
 		local questID, xpReward, moneyReward = ...
 		private.dbchar.quests_completed[questID] = true
 		RareScanner:PrintDebugMessage("DEBUG: Mision completada "..questID)	
-		--print("DEBUG: Mision completada "..questID)
 		
 		-- Checks if its an event
+		local foundDebug = false
 		for npcID, questsID in pairs (private.EVENT_QUEST_IDS) do
 			if (RS_tContains(questsID, questID)) then
 				RareScanner:ProcessCompletedEvent(npcID)
-				return
+				foundDebug = true
+				return	
 			end
 		end
+		
+		if (DEBUG_MODE and not foundDebug) then
+			RareScanner:PrintDebugMessage("DEBUG: Mision completada que no existe en EVENT_QUEST_IDS "..questID)
+		end		
 	-- Others
 	elseif (event == "CINEMATIC_START") then
 		if (self:IsVisible()) then

@@ -185,10 +185,16 @@ function RareScanner:ApplyLootFilters(itemID, itemLink, itemRarity, itemEquipLoc
 			--RareScanner:PrintDebugMessage("DEBUG: Filtrado el objeto "..itemID.." por ser un objeto de mision que ya esta completada (IsQuestFlaggedCompleted)")
 			return false
 		end
-		-- Equipable filter
+	-- Equipable filter
 	elseif (private.db.loot.filterNotEquipableItems and (itemClassID == 2 or itemClassID == 4)) then --weapons or armor
 		if (not IsEquipable(itemClassID, itemSubClassID, itemEquipLoc)) then
 			--RareScanner:PrintDebugMessage("DEBUG: Filtrado el objeto "..itemID.." por no ser equipable. Categoria "..itemClassID..", subcategoria "..itemSubClassID)
+			return false;
+		end
+	-- Character class filter
+	elseif (private.db.loot.filterNotMatchingClass and ScanToolTipFor(itemLink, string.gsub(ITEM_CLASSES_ALLOWED, ": %%s", ""))) then
+		local localizedClass, _, _ = UnitClass("player")
+		if (not ScanToolTipFor(itemLink, localizedClass)) then
 			return false;
 		end
 	-- Transmog filter

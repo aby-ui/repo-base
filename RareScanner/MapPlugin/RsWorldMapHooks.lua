@@ -15,6 +15,8 @@ local SHOW_EVENT_ICONS = "rsHideEvents"
 local SHOW_NOT_DISCOVERED_ICONS = "rsHideNotDiscovered"
 local SHOW_NOT_DISCOVERED_ICONS_OLD = "rsHideNotDiscoveredOld"
 local DISABLE_LAST_SEEN_FILTER = "rsDisableLastSeenFilter"
+local DISABLE_LAST_SEEN_CONTAINER_FILTER = "rsDisableLastSeenContainerFilter"
+local DISABLE_LAST_SEEN_EVENT_FILTER = "rsDisableLastSeenEventFilter"
 
 function RareScanner:HookDropDownMenu()
 	for _, overlayFrame in next, WorldMapFrame.overlayFrames do
@@ -60,6 +62,16 @@ function RareScanner:HookDropDownMenu()
 				info.value = DISABLE_LAST_SEEN_FILTER;
 				info.checked = private.db.map.disableLastSeenFilter
 				UIDropDownMenu_AddButton(info);
+
+				info.text = AL["MAP_MENU_DISABLE_LAST_SEEN_CONTAINER_FILTER"];
+				info.value = DISABLE_LAST_SEEN_CONTAINER_FILTER;
+				info.checked = private.db.map.disableLastSeenContainerFilter
+				UIDropDownMenu_AddButton(info);
+
+				info.text = AL["MAP_MENU_DISABLE_LAST_SEEN_EVENT_FILTER"];
+				info.value = DISABLE_LAST_SEEN_EVENT_FILTER;
+				info.checked = private.db.map.disableLastSeenEventFilter
+				UIDropDownMenu_AddButton(info);
 				 
 				info.text = AL["MAP_MENU_SHOW_NOT_DISCOVERED"];
 				info.value = SHOW_NOT_DISCOVERED_ICONS;
@@ -93,6 +105,26 @@ function RareScanner:HookDropDownMenu()
 						private.db.map.maxSeenTime = 0
 					else
 						private.db.map.maxSeenTime = private.db.map.maxSeenTimeBak 
+					end
+				elseif (value == DISABLE_LAST_SEEN_CONTAINER_FILTER) then
+					if (not private.db.map.maxSeenContainerTimeBak) then
+						private.db.map.maxSeenContainerTimeBak = private.db.map.maxSeenTimeContainer
+					end
+					private.db.map.disableLastSeenContainerFilter = checked
+					if (private.db.map.disableLastSeenContainerFilter) then
+						private.db.map.maxSeenTimeContainer = 0
+					else
+						private.db.map.maxSeenTimeContainer = private.db.map.maxSeenContainerTimeBak 
+					end
+				elseif (value == DISABLE_LAST_SEEN_EVENT_FILTER) then
+					if (not private.db.map.maxSeenEventTimeBak) then
+						private.db.map.maxSeenEventTimeBak = private.db.map.maxSeenTimeEvent
+					end
+					private.db.map.disableLastSeenEventFilter = checked
+					if (private.db.map.disableLastSeenEventFilter) then
+						private.db.map.maxSeenTimeEvent = 0
+					else
+						private.db.map.maxSeenTimeEvent = private.db.map.maxSeenEventTimeBak 
 					end
 				end
 				origOverlayFrame_onSelection(self, value, checked)

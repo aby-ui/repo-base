@@ -160,8 +160,6 @@ private.QUEST_IDS = {
 	[69843] = nil; --Zao'cho
 	[72245] = nil; --Zesqua
 	[71919] = nil; --Zhu-Gon the Sour
-
-	-- Rares Draenor
 	[77140] = nil; --Amaukwa
 	[82899] = nil; --Ancient Blademaster
 	[86213] = nil; --Aqualir
@@ -446,8 +444,6 @@ private.QUEST_IDS = {
 	[51015] = nil; --Silthide
 	[50883] = nil; --Pathrunner
 	[81001] = nil; --Nok-Karosh
-	
-	-- Rares Draenor 6.2
 	[91871] = nil; --Argosh the Destroyer
 	[92552] = nil; --Belgork
 	[90884] = nil; --Bilkor the Thrower
@@ -520,8 +516,6 @@ private.QUEST_IDS = {
 	[95054] = nil; --Vengeance
 	[91921] = nil; --Wyrmple
 	[96235] = nil; --Xemirkol
-	
-	-- Rares Draenor 6.2.1
 	[98200] = nil; --Guk
 	[98199] = nil; --Pugg
 	[98198] = nil; --Rukdug
@@ -531,8 +525,6 @@ private.QUEST_IDS = {
 	[98408] = nil; --Fel Overseer Mudlump
 	[96323] = nil; --Arachnis
 	[97209] = nil; --Eraakis
-
-	-- Rares Legion
 	[110378] = nil; --Drugon the Frostblood
 	[99929] = nil; --Flotsam
 	[108879] = nil; --Humongris
@@ -882,8 +874,6 @@ private.QUEST_IDS = {
 	[97589] = nil; --Rotten Egg
 	[97387] = nil; --Mana Seeper
 	[97381] = nil; --Screek
-	
-	-- Rares Legion 7.1.0
 	[115847] = nil; --Ariadne
 	[116185] = nil; --Attendant Keeper
 	[115853] = nil; --Doomlash
@@ -900,12 +890,8 @@ private.QUEST_IDS = {
 	[116159] = nil; --Wily Sycophant
 	[89407] = nil; --Wrymtongue Hoarder
 	[116041] = nil; --Treasure Goblin
-	
-	-- Rares Legion 7.1.5
 	[118244] = nil; --Lightning Paw
 	[115537] = nil; --Lorthalium
-	
-	-- Rares Legion 7.2.0
 	[121124] = nil; --Apocron
 	[117303] = nil; --Malificus
 	[117470] = nil; --Si'vash
@@ -974,8 +960,6 @@ private.QUEST_IDS = {
 	[117090] = nil; --Xorogun the Flamecarver
 	[116316] = nil; --Zirux
 	[112712] = nil; --Gilded Guardian
-	
-	-- Rares Legion 7.2.5
 	[123087] = nil; --Al'Abas
 	[122524] = nil; --Bloodfeast
 	[122521] = nil; --Bonesunder
@@ -984,8 +968,6 @@ private.QUEST_IDS = {
 	[122520] = nil; --Icefist
 	[122522] = nil; --Iceshatter
 	[122609] = nil; --Xavinox
-	
-	-- Rares Legion 7.3.0
 	[127090] = { 48817 }; --Admiral Rel'var
 	[127096] = { 48818 }; --All-Seer Xanarian
 	[126887] = { 48709 }; --Ataxon
@@ -1060,8 +1042,6 @@ private.QUEST_IDS = {
 	[126338] = { 48814 }; --Wrath-Lord Yarez
 	[126908] = { 48719 }; --Zul'tan the Numerous
 	[124680] = nil; --Zul'zoloth
-	
-	-- Rares Legion 7.3.5
 	[133044] = nil; --Grand Marshal Tremblade
 	[133043] = nil; --High Warlord Volrath
 	[125951] = nil; --Obsidian Deathwarder
@@ -1070,8 +1050,6 @@ private.QUEST_IDS = {
 	[133042] = nil; --Sky Marshall Gabriel
 	[132580] = nil; --Ssinkrix
 	[132584] = nil; --Xaarshej
-	
-	-- Rares BFA 8.0.1
 	[136385] = nil; --Azurethos
 	[140252] = nil; --Hailstone Construct
 	[132253] = nil; --Ji'arak
@@ -1079,7 +1057,6 @@ private.QUEST_IDS = {
 	[140163] = nil; --Warbringer Yenajz
 	[139767] = nil; --"Spyglass" Marie
 	[134798] = nil; --Abyss Crawler
-	[138279] = nil; --Adhara White
 	[140474] = nil; --Adherent of the Abyss
 	[135852] = { 51058 }; --Ak'tar
 	[138948] = nil; --Akakakoo
@@ -1358,7 +1335,6 @@ private.QUEST_IDS = {
 	[123347] = nil; --Earthcaller Malan
 	[140760] = nil; --Earthliving Giant
 	[140842] = nil; --Ebb
-	[141668] = nil; --Echo of Myzrael
 	[139026] = nil; --Eclipse-Caller
 	[139877] = nil; --Egg-Tender Kahasz
 	[140371] = nil; --Egg-Tender Ny'xik
@@ -1408,7 +1384,6 @@ private.QUEST_IDS = {
 	[132127] = { 50137 }; --Foxhollow Skyterror
 	[126462] = nil; --Fozruk
 	[140757] = nil; --Fozruk
-	[142433] = nil; --Fozruk
 	[139768] = nil; --Freebooter Dan
 	[132448] = nil; --Frostbeard the Candlekeeper
 	[140763] = nil; --Frosthill Giant
@@ -1658,7 +1633,6 @@ private.QUEST_IDS = {
 	[140248] = nil; --Moonchaser the Swift
 	[135723] = nil; --Moonclaw
 	[139025] = nil; --Moonsong
-	[134694] = nil; --Mor'fani the Exile
 	[139694] = nil; --Mordshell
 	[139670] = nil; --Morgok
 	[140828] = nil; --Morningdew
@@ -1746,7 +1720,6 @@ private.QUEST_IDS = {
 	[140452] = nil; --Pikehorn the Sleeper
 	[140093] = nil; --Pinegraze Fawnmother
 	[139298] = { 51959 }; --Pinku'shon
-	[142435] = nil; --Plaguefeather
 	[142361] = nil; --Plaguefeather
 	[141286] = { 52469 }; --Poacher Zane
 	[143313] = nil; --Portakillo
@@ -1783,7 +1756,6 @@ private.QUEST_IDS = {
 	[128580] = nil; --Razorjaw
 	[140343] = nil; --Razorwing
 	[137983] = nil; --Rear Admiral Hainsworth
-	[132047] = nil; --Reinforced Hullbreaker
 	[136340] = { 51126 }; --Relic Hunter Hazaak
 	[135643] = nil; --Ren'kiri
 	[140593] = nil; --Restless Horror
@@ -1807,7 +1779,6 @@ private.QUEST_IDS = {
 	[140765] = nil; --Rumbling Goliath
 	[141620] = nil; --Rumbling Goliath
 	[140273] = nil; --Runehoof Denkeeper
-	[142683] = nil; --Ruul Onestone
 	[139335] = nil; --Sabertron
 	[139328] = { 51956 }; --Sabertron
 	[139356] = nil; --Sabertron
@@ -1873,7 +1844,6 @@ private.QUEST_IDS = {
 	[138863] = { 51748 }; --Sister Martha
 	[126508] = nil; --Skethik
 	[143316] = nil; --Skullcap
-	[142437] = nil; --Skullripper
 	[142312] = nil; --Skullripper
 	[139602] = nil; --Skur the Unbroken
 	[125816] = nil; --Sky Queen
@@ -2029,7 +1999,6 @@ private.QUEST_IDS = {
 	[130401] = { 49674 }; --Vathikur
 	[134795] = nil; --Veiled Hermit
 	[136837] = nil; --Venomancer Ant'su
-	[142438] = nil; --Venomarus
 	[142301] = nil; --Venomarus
 	[139210] = nil; --Venombulb
 	[126926] = { 48626 }; --Venomjaw
@@ -2072,25 +2041,17 @@ private.QUEST_IDS = {
 	[134048] = { 50508 }; --Vukuba
 	[138649] = nil; --Vulf Stormshore
 	[140329] = nil; --Vy'lix the Corpse-Mauler
-
-	-- Build 8.0.1 26032
 	[133842] = { 50438 }; --Warcrawler Karkithiss
 	[127831] = nil; --Warmother Zug
 	[129411] = { 48319 }; --Zunashi the Exile
-
-	-- Build 8.0.1 26131
 	[126095] = nil; --Vyliss
 	[134805] = nil; --Wandering Behemoth
 	[123282] = nil; --Warlord Mo'gosh
 	[134766] = nil; --Wavespitter
 	[134651] = nil; --Witch Doctor Habra'du
 	[131476] = { 49972 }; --Zayoos
-
-	-- Build 8.0.1 26175
 	[136838] = nil; --Zgordo the Brutalizer
 	[136840] = nil; --Zoga
-
-	-- Build 8.0.1 26231
 	[130079] = { 50819 }; --Wagga Snarltusk
 	[129180] = { 49373 }; --Warbringer Hozzik
 	[123189] = nil; --Warcaller Mog'ra
@@ -2106,15 +2067,11 @@ private.QUEST_IDS = {
 	[133812] = { 50423 }; --Zanxib
 	[131717] = nil; --Zayolin the Lifedrainer
 	[128578] = nil; --Zujothgul
-
-	-- Build 8.0.1 26367
 	[138513] = nil; --Vyrantion
 	[138507] = nil; --Warlord Ultriss
 	[138442] = nil; --Wavebreaker
 	[138843] = nil; --Wingleader Srak'ik
 	[138844] = nil; --Ya'vik the Imperial Blade
-
-	-- Build 8.0.1 26433
 	[139220] = nil; --Vya Crystalbloom
 	[139538] = nil; --Wall-Breaker Ha'vik
 	[139405] = nil; --Wavebringer Sezzes'an
@@ -2124,28 +2081,18 @@ private.QUEST_IDS = {
 	[139430] = nil; --Zaliz' Eternal Hound
 	[139388] = nil; --Zess'ez
 	[139469] = nil; --Zu-Xan of Thunder
-
-	-- Build 8.0.1 26476
 	[140100] = nil; --Warsnort
 	[139676] = nil; --Wave-Speaker Ormrg
 	[139668] = nil; --Wavebinder Gorgl
 	[140123] = nil; --Weaponmaster Halu
 	[140270] = nil; --Wilderbuck
 	[140398] = nil; --Zeritarj
-
-	-- Build 8.0.1 26530
 	[140975] = nil; --Youngercraw
 	[140844] = nil; --Zephis
-
-	-- Build 8.0.1 26567
 	[142088] = { 52457 }; --Whirlwing
-
-	-- Build 8.0.1 26629
 	[142251] = nil; --Yogursa
 	[142440] = nil; --Yogursa
 	[142682] = nil; --Zalas Witherbark
-
-	-- Build 8.1.0.28366
 	[149355] = nil; --Aberrant Azergem Crystalback
 	[148154] = nil; --Agathe Wyrmwood
 	[149517] = nil; --Agathe Wyrmwood
@@ -2406,18 +2353,12 @@ private.QUEST_IDS = {
 	[147664] = nil; --Zim'kaga
 	[148146] = nil; --Zul'aki the Headhunter
 	[145287] = nil; --Zunjo of Sen'jin
-
-	-- Build 8.1.0.27934
 	[148295] = nil; --Ivus the Decayed
 	[144946] = nil; --Ivus the Forest Lord
-
-	-- Build 8.1.5.28938
 	[149873] = nil; --Stanley
 	[149886] = nil; --Stanley
 	[149887] = nil; --Stanley
 	[152557] = nil; --Trialmaster
-
-	-- Build 8.2.0
 	[152697] = nil; --Ulmath
 	[153314] = nil; --Aldrantiss
 	[152415] = { 56279 }; --Alga the Eyeless
@@ -2451,7 +2392,6 @@ private.QUEST_IDS = {
 	[151854] = nil; --Deathseeker Loshok
 	[152291] = { 56272 }; --Deepglider
 	[151569] = { 55514 }; --Deepwater Maw
-	[153315] = nil; --Eldanar
 	[152414] = { 56284 }; --Elder Unu
 	[152555] = { 56285 }; --Elderspawn Nalaada
 	[154153] = { 56207 }; --Enforcer KX-T57
@@ -2547,60 +2487,34 @@ private.QUEST_IDS = {
 	[151719] = { 56300 }; --Voice in the Deeps
 	[153303] = nil; --Voidblade Kassar
 	[150468] = { 55603 }; --Vor'koth
-	[153313] = nil; --Vyz'olgo the Mind-Taker
 	[152671] = nil; --Wekemara
 	[151916] = nil; --Zaegra Sharpaxe
 	[153305] = nil; --Zanj'ir Brutalizer
 	[154949] = nil; --Zanj'ir Brutalizer
 	[150342] = { 55814 }; --Earthbreaker Gulroc
 	[151308] = { 55539 }; --Boggac Skullbash
-	
-	-- Build 8.2.0 30430
-	[155811] = nil; --Commander Minzera
 	[155838] = nil; --Incantatrix Vazina
 	[155583] = { 56737 }; --Scrapclaw
-	[155841] = nil; --Shadowbinder Athissa
-	[155836] = nil; --Theurgist Nitara
-	[155840] = nil; --Warlord Zalzjar
-	
-	-- Build 8.3.0
 	[152757] = nil; --Atekhramun
 	[157153] = nil; --Ha-Li
 	[160970] = nil; --Vuk'laz the Earthbreaker
 	[160532] = nil; --Shoth the Darkened
-	[151883] = nil; --Anaua
-	[152040] = nil; --Scoutmaster Moswen
 	[157266] = nil; --Kilxl the Gaping Maw
 	[154333] = nil; --Voidtender Malketh
-	[151878] = nil; --Sun King Nahkotep
 	[157120] = { 57258 }; --Fangtaker Orsa
 	[151948] = nil; --Senbu the Pridefather
 	[157160] = nil; --Houndlord Ren
 	[157466] = { 57363 }; --Anh-De the Loyal
 	[158633] = { 57680 }; --Gaze of N'Zoth
 	[156083] = nil; --Sanguifang
-	[157176] = nil; --The Forgotten
 	[154332] = nil; --Voidtender Malketh
-	[157164] = nil; --Zealot Tekem
 	[154559] = nil; --Deeplord Zrihj
 	[158595] = { 57673 }; --Thoughtstealer Vos
-	[157170] = nil; --Acolyte Taspu
-	[157167] = nil; --Champion Sen-mat
-	[157146] = nil; --Rotfeaster
 	[157287] = nil; --Dokani Obliterator
-	[157267] = nil; --Escaped Mutation
-	[154106] = nil; --Quid
 	[157162] = nil; --Rei Lun
-	[154490] = nil; --Rijz'x the Devourer
-	[151897] = nil; --Sun Priestess Nubitt
-	[154394] = nil; --Veskan the Fallen
-	[151852] = nil; --Watcher Rehu
-	[154087] = nil; --Zror'um the Infinite
-	[154467] = nil; --Chief Mek-mek
 	[158632] = nil; --Corrupted Fleshbeast
 	[151995] = nil; --Hik-ten the Taskmaster
 	[160968] = nil; --Jade Colossus
-	[152657] = nil; --Tat the Bonechewer
 	[157468] = { 57364 }; --Tisiphon
 	[158557] = { 58448 }; --Actiss the Deceiver
 	[158706] = nil; --Corrupted Putrefaction
@@ -2613,7 +2527,6 @@ private.QUEST_IDS = {
 	[152677] = nil; --Nebet the Ascended
 	[161033] = nil; --Shadowmaw
 	[154578] = nil; --Aqir Flayer
-	[154447] = nil; --Brother Meller
 	[158597] = nil; --High Executor Yothrim
 	[155180] = nil; --Obscuron
 	[154006] = nil; --Rythas the Oracle
@@ -2624,7 +2537,6 @@ private.QUEST_IDS = {
 	[154115] = nil; --Grula the Beastmother
 	[154005] = nil; --Heimir of the Black Fist
 	[160623] = nil; --Hungering Miasma
-	[154495] = nil; --Will of N'Zoth
 	[144650] = nil; --Ava
 	[160893] = nil; --Captain Vor'lek
 	[154076] = nil; --Vengeful Earth
@@ -2690,8 +2602,6 @@ private.QUEST_IDS = {
 	[155274] = nil; --Tideskorn Champion
 	[155301] = nil; --Tideskorn Gladiator
 	[154192] = nil; --Unblinking Watcher
-	
-	-- Build 8.3.0 32305
 	[155958] = nil; --Tashara
 	[157157] = nil; --Muminah the Incandescent
 	[151609] = nil; --Sun Prophet Epaphos
@@ -2717,10 +2627,6 @@ private.QUEST_IDS = {
 	[162147] = nil; --Corpse Eater
 	[162173] = nil; --R'krox the Runt
 	[162140] = nil; --Skikx'traz
-	
-	-- Build 8.3.0 32978
-	[162370] = nil; --Armagedillo
-	[162352] = nil; --Spirit of Dark Ritualist Zakahn
 	[163534] = nil; --Pet Training Dummy
 	[162372] = nil; --Spirit of Cyrus the Black
 	[162619] = nil; --Void Wraith

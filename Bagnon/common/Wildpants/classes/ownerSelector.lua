@@ -87,11 +87,16 @@ function OwnerSelector:Update()
   local info = self:GetOwnerInfo()
   if info.cached then
   	local icon, coords = Addon.Owners:GetIcon(info)
-    local a, b, c, d = unpack(coords)
-    local s = (b - a) * 0.06
+		if coords then
+	    local u,v,w,z = unpack(coords)
+	    local s = (v-u) * 0.06
 
-  	self.Icon:SetTexCoord(a+s, b-s, c+s, d-s)
-    self.Icon:SetTexture(icon)
+			self.Icon:SetTexCoord(u+s, v-s, w+s, z-s)
+	    self.Icon:SetTexture(icon)
+		else
+			self.Icon:SetTexCoord(0,1,0,1)
+	    self.Icon:SetAtlas(icon)
+		end
   else
 		SetPortraitTexture(self.Icon, 'player')
 		self.Icon:SetTexCoord(.05,.95,.05,.95)

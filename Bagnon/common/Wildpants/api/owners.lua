@@ -8,58 +8,12 @@ local Owners = Addon:NewModule('Owners')
 
 local DEFAULT_COORDS = {0, 1, 0, 1}
 local CLASS_COLOR = '|cff%02x%02x%02x'
-
-local HORDE_BANNER = 'Interface/Icons/inv_bannerpvp_01'
 local ALLIANCE_BANNER = 'Interface/Icons/inv_bannerpvp_02'
-local RACE_TEXTURE = 'Interface/Glues/CharacterCreate/UI-CharacterCreate-Races'
-local RACE_COORDS
+local HORDE_BANNER = 'Interface/Icons/inv_bannerpvp_01'
+local RACE_TEXTURE, RACE_COORDS
 
-if Addon.IsRetail then
-	RACE_COORDS = {
-		HUMAN_MALE		= {0, 0.125, 0, 0.25},
-		DWARF_MALE		= {0.125, 0.25, 0, 0.25},
-		GNOME_MALE		= {0.25, 0.375, 0, 0.25},
-		NIGHTELF_MALE	= {0.375, 0.5, 0, 0.25},
-		TAUREN_MALE		= {0, 0.125, 0.25, 0.5},
-		SCOURGE_MALE	= {0.125, 0.25, 0.25, 0.5},
-		TROLL_MALE		= {0.25, 0.375, 0.25, 0.5},
-		ORC_MALE		= {0.375, 0.5, 0.25, 0.5},
-		HUMAN_FEMALE	= {0, 0.125, 0.5, 0.75},
-		DWARF_FEMALE	= {0.125, 0.25, 0.5, 0.75},
-		GNOME_FEMALE	= {0.25, 0.375, 0.5, 0.75},
-		NIGHTELF_FEMALE	= {0.375, 0.5, 0.5, 0.75},
-		TAUREN_FEMALE	= {0, 0.125, 0.75, 1.0},
-		SCOURGE_FEMALE	= {0.125, 0.25, 0.75, 1.0},
-		TROLL_FEMALE	= {0.25, 0.375, 0.75, 1.0},
-		ORC_FEMALE		= {0.375, 0.5, 0.75, 1.0},
-		BLOODELF_MALE	= {0.5, 0.625, 0.25, 0.5},
-		BLOODELF_FEMALE	= {0.5, 0.625, 0.75, 1.0},
-		DRAENEI_MALE	= {0.5, 0.625, 0, 0.25},
-		DRAENEI_FEMALE	= {0.5, 0.625, 0.5, 0.75},
-		GOBLIN_MALE		= {0.629, 0.750, 0.25, 0.5},
-		GOBLIN_FEMALE	= {0.629, 0.750, 0.75, 1.0},
-		WORGEN_MALE		= {0.629, 0.750, 0, 0.25},
-		WORGEN_FEMALE	= {0.629, 0.750, 0.5, 0.75},
-		PANDAREN_MALE	= {0.756, 0.881, 0, 0.25},
-		PANDAREN_FEMALE	= {0.756, 0.881, 0.5, 0.75},
-		NIGHTBORNE_MALE	= {0.375, 0.5, 0, 0.25},
-		NIGHTBORNE_FEMALE	= {0.375, 0.5, 0.5, 0.75},
-		HIGHMOUNTAINTAUREN_MALE		= {0, 0.125, 0.25, 0.5},
-		HIGHMOUNTAINTAUREN_FEMALE	= {0, 0.125, 0.75, 1.0},
-		VOIDELF_MALE	= {0.5, 0.625, 0.25, 0.5},
-		VOIDELF_FEMALE	= {0.5, 0.625, 0.75, 1.0},
-		LIGHTFORGEDDRAENEI_MALE	= {0.5, 0.625, 0, 0.25},
-		LIGHTFORGEDDRAENEI_FEMALE	= {0.5, 0.625, 0.5, 0.75},
-		DARKIRONDWARF_MALE		= {0.125, 0.25, 0, 0.25},
-		DARKIRONDWARF_FEMALE	= {0.125, 0.25, 0.5, 0.75},
-		MAGHARORC_MALE			= {0.375, 0.5, 0.25, 0.5},
-		MAGHARORC_FEMALE		= {0.375, 0.5, 0.75, 1.0},
-		ZANDALARITROLL_MALE		= {0.25, 0.375, 0, 0.25},
-		ZANDALARITROLL_FEMALE	= {0.25, 0.375, 0.5, 0.75},
-		KULTIRAN_MALE		= {0, 0.125, 0, 0.25},
-		KULTIRAN_FEMALE		= {0, 0.125, 0.5, 0.75},
-	}
-else
+if not Addon.IsRetail then
+	RACE_TEXTURE = 'Interface/Glues/CharacterCreate/UI-CharacterCreate-Races'
 	RACE_COORDS = {
 		HUMAN_MALE		= {0, 0.25, 0, 0.25},
 		DWARF_MALE		= {0.25, 0.5, 0, 0.25},
@@ -81,27 +35,32 @@ else
 end
 
 function Owners:MultipleFound()
-	local owners = Addon:IterateOwners()
-	return owners() and owners() -- more than one
+	local iter = Addon:IterateOwners()
+	return iter() and iter() -- more than one
 end
 
 function Owners:GetIconString(owner, size, x, y)
-	local texture, coords = self:GetIcon(owner)
-	local a, b, c, d = unpack(coords)
-	
-	return CreateTextureMarkup(texture, 128,128, size,size, a,b,c,d, x,y)
-	--return format('|T%s:%s:%s:%s:%s:128:128:%s:%s:%s:%s|t', texture, size, size, x, y, a*128,b*128,c*128,d*128)
+	local icon, coords = self:GetIcon(owner)
+	if coords then
+		local u,v,w,z = unpack(coords)
+		return CreateTextureMarkup(icon, 128,128, size,size, u,v,w,z, x,y)
+	else
+		return CreateAtlasMarkup(icon, size,size, x,y)
+	end
 end
 
 function Owners:GetIcon(owner)
 	if owner.race then
-		local gender = owner.gender == 3 and 'FEMALE' or 'MALE'
-		local race = strupper(owner.race)
+		if RACE_TEXTURE then
+			local gender = owner.gender == 3 and 'FEMALE' or 'MALE'
+			return RACE_TEXTURE, RACE_COORDS[owner.race:upper() .. '_' .. gender]
+		end
 
-		return RACE_TEXTURE, RACE_COORDS[race .. '_' .. gender]
-	else
-		return owner.faction == 'Alliance' and ALLIANCE_BANNER or HORDE_BANNER, DEFAULT_COORDS
+		local race = owner.race ~= 'Scourge' and owner.race:lower() or 'undead'
+		return format('raceicon-%s-%s', race, owner.gender == 3 and 'female' or 'male')
 	end
+
+	return owner.faction == 'Alliance' and ALLIANCE_BANNER or HORDE_BANNER, DEFAULT_COORDS
 end
 
 function Owners:GetColorString(owner)

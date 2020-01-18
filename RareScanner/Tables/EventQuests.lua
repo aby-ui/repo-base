@@ -16,6 +16,8 @@ private.EVENT_QUEST_IDS = {
 	[154187] = { 56163 }; --Guardian vinculado
 	[157525] = { 57375 }; --Túmulo palpitante
 	[154328] = { 56180 }; --Guardian vinculado
+	[327554] = { 56178 }; --Conducto del Vacío
+	[154095] = { 56090 }; --Proteger al robusto
 	
 	-- Events 8.3.0 Uldum
 	[156865] = { 57219 }; --Centinela desenterrado
@@ -23,4 +25,14 @@ private.EVENT_QUEST_IDS = {
 	[156993] = { 57235 }; --Recolector solar
 	[156648] = { 55354 }; --El frente de Vir'naal
 	[164358] = { 55356 }; --Baliza del Rey del Sol
+	[156614] = { 55355 }; --Campo de entrenamiento de hoja de luz
+	[163120] = { 57215 }; --Motor de ascensión
+	[163132] = { 57243 }; --Campamento de esclavos amathet
+	[152628] = { 55670 }; --Flota de asalto amathet
+	[152439] = { 55360 }; --La tumba abierta
+	[164361] = { 55358 }; --Baliza del Rey del Sol
+	[152227] = { 55359 }; --Ritual de ascensión
+	[152398] = { 55357 }; --Baliza del Rey del Sol
+	[156956] = { 57234 }; --Recolector solar
+	[156849] = { 57217 }; --Centinela desenterrado
 }

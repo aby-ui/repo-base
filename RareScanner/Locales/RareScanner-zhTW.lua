@@ -14,36 +14,21 @@ if AL then
 	AL["CLEAR_FILTERS_SEARCH"] = "顯示全部"
 	AL["CLEAR_FILTERS_SEARCH_DESC"] = "重設之前的搜尋並且顯示完整的清單"
 	AL["CLICK_TARGET"] = "點一下將NPC設為目標"
-	--[[Translation missing --]]
-	AL["CMD_HELP1"] = "List of commands"
-	--[[Translation missing --]]
-	AL["CMD_HELP2"] = "- Type \"/rarescanner show\" to show all the icons on the world map"
-	--[[Translation missing --]]
-	AL["CMD_HELP3"] = "- Type \"/rarescanner hide\" to hide all the icons on the world map"
-	--[[Translation missing --]]
-	AL["CMD_HELP4"] = "- Type \"/rarescanner toggle\" to show/hide all the icons on the world map"
-	--[[Translation missing --]]
-	AL["CMD_HELP5"] = "- Type \"/rarescanner toggle rares\" or \"/rarescanner tr\" to show/hide icons of NPCs on the world map"
-	--[[Translation missing --]]
-	AL["CMD_HELP6"] = "- Type \"/rarescanner toggle events\" or \"/rarescanner te\" to show/hide icons of events on the world map"
-	--[[Translation missing --]]
-	AL["CMD_HELP7"] = "- Type \"/rarescanner toggle treasures\" or \"/rarescanner tt\" to show/hide icons of treasures on the world map"
-	--[[Translation missing --]]
-	AL["CMD_HIDE"] = "Hiding RareScanner icons in the world map"
-	--[[Translation missing --]]
-	AL["CMD_HIDE_EVENTS"] = "Hiding RareScanner event icons in the world map"
-	--[[Translation missing --]]
-	AL["CMD_HIDE_RARES"] = "Hiding RareScanner rare icons in the world map"
-	--[[Translation missing --]]
-	AL["CMD_HIDE_TREASURES"] = "Hiding RareScanner treasure icons in the world map"
-	--[[Translation missing --]]
-	AL["CMD_SHOW"] = "Showing RareScanner icons in the world map"
-	--[[Translation missing --]]
-	AL["CMD_SHOW_EVENTS"] = "Showing RareScanner event icons in the world map"
-	--[[Translation missing --]]
-	AL["CMD_SHOW_RARES"] = "Showing RareScanner rare icons in the world map"
-	--[[Translation missing --]]
-	AL["CMD_SHOW_TREASURES"] = "Showing RareScanner treasure icons in the world map"
+	AL["CMD_HELP1"] = "命令列表"
+	AL["CMD_HELP2"] = "- 輸入 \"/rarescanner show\" 在世界地圖上顯示所有圖示"
+	AL["CMD_HELP3"] = "- 輸入 \"/rarescanner hide\" 在世界地圖上隱藏所有圖示"
+	AL["CMD_HELP4"] = "- 輸入 \"/rarescanner toggle\" 切換顯示/隱藏世界地圖上的圖示"
+	AL["CMD_HELP5"] = "- 輸入 \"/rarescanner toggle rares\" 或 \"/rarescanner tr\" 切換顯示/隱藏世界地圖上的NPC圖示"
+	AL["CMD_HELP6"] = "- 輸入 \"/rarescanner toggle events\" 或 \"/rarescanner te\" 切換顯示/隱藏世界地圖上的事件圖示"
+	AL["CMD_HELP7"] = "- 輸入 \"/rarescanner toggle treasures\" 或 \"/rarescanner tt\" 切換顯示/隱藏世界地圖上的寶箱圖示"
+	AL["CMD_HIDE"] = "隱藏世界地圖上所有 RareScanner 圖示"
+	AL["CMD_HIDE_EVENTS"] = "隱藏世界地圖上 RareScanner 事件圖示"
+	AL["CMD_HIDE_RARES"] = "隱藏世界地圖上 RareScanner 稀有NPC圖示"
+	AL["CMD_HIDE_TREASURES"] = "隱藏世界地圖上 RareScanner 寶箱圖示"
+	AL["CMD_SHOW"] = "顯示世界地圖上所有的 RareScanner 圖示"
+	AL["CMD_SHOW_EVENTS"] = "顯示世界地圖上 RareScanner 事件圖示"
+	AL["CMD_SHOW_RARES"] = "顯示世界地圖上 RareScanner 稀有NPC圖示"
+	AL["CMD_SHOW_TREASURES"] = "顯示世界地圖上 RareScanner 寶箱圖示"
 	AL["CONTAINER"] = "箱子"
 	AL["DATABASE_HARD_RESET"] = "由於最近的資料片以及最新版的RareScanner在數據庫上發生很大的變化，這需要重置數據庫以避免矛盾。 抱歉給你帶來不便。"
 	AL["DISABLE_SEARCHING_RARE_TOOLTIP"] = "停用這個稀有NPC的通知"
@@ -55,10 +40,8 @@ if AL then
 	AL["DISPLAY_BUTTON_CONTAINERS"] = "切換是否顯示寶箱的按鈕"
 	AL["DISPLAY_BUTTON_CONTAINERS_DESC"] = "切換是否顯示寶箱的按鈕。不會影響警報聲和聊天通知"
 	AL["DISPLAY_BUTTON_DESC"] = "取消按鈕與小圖像後不會再次顯示。它不影響通告聲音和聊天通知。"
-	--[[Translation missing --]]
-	AL["DISPLAY_BUTTON_SCALE"] = "Scale of the button and miniature"
-	--[[Translation missing --]]
-	AL["DISPLAY_BUTTON_SCALE_DESC"] = "This will adjust the scale of the button and miniature, being the value of 0.85 the original size"
+	AL["DISPLAY_BUTTON_SCALE"] = "按鈕和微縮模型縮放"
+	AL["DISPLAY_BUTTON_SCALE_DESC"] = "調整按鈕和微縮模型縮放，0.85為原始尺寸"
 	AL["DISPLAY_CONTAINER_ICONS"] = "世界地圖顯示寶箱圖示開關"
 	AL["DISPLAY_CONTAINER_ICONS_DESC"] = "當停用時，寶箱的圖示不會顯示在世界地圖上。"
 	AL["DISPLAY_EVENT_ICONS"] = "世界地圖顯示事件圖示開關"
@@ -96,10 +79,8 @@ if AL then
 	AL["ENABLE_SCAN_RARES"] = "搜尋稀有NPC"
 	AL["ENABLE_SCAN_RARES_DESC"] = "啟用時，每當你的小地圖上有稀有NPC出現，都會有視覺警告與聲音提醒。"
 	AL["ENABLE_SEARCHING_RARE_TOOLTIP"] = "啟用這個稀有NPC的通知"
-	--[[Translation missing --]]
-	AL["ENABLE_TOMTOM_SUPPORT"] = "Toggle Tomtom's support"
-	--[[Translation missing --]]
-	AL["ENABLE_TOMTOM_SUPPORT_DESC"] = "When this is activated it will add a Tomtom's waypoint at the entitie's found coordinates"
+	AL["ENABLE_TOMTOM_SUPPORT"] = "Tomtom功能支持開關"
+	AL["ENABLE_TOMTOM_SUPPORT_DESC"] = "啟用後會添加Tomtom插件的坐標點"
 	AL["ENABLED_SEARCHING_RARE"] = "已啟用通知的稀有NPC:"
 	AL["EVENT"] = "事件"
 	AL["FILTER"] = "過濾NPC"
@@ -132,12 +113,14 @@ if AL then
 	AL["LOOT_DISPLAY_OPTIONS_DESC"] = "顯示戰利品列的選項"
 	AL["LOOT_FILTER_COLLECTED"] = "過濾已收藏的寵物、坐騎以及玩具。"
 	AL["LOOT_FILTER_COLLECTED_DESC"] = "啟用以後，只有您尚未收集的坐騎、寵物和玩具才會顯示在戰利品欄上。此過濾器不會影響任何其他類別的戰利品。"
-	--[[Translation missing --]]
-	AL["LOOT_FILTER_COMPLETED_QUEST"] = "Filter quest items that don't begin a new quest"
-	--[[Translation missing --]]
-	AL["LOOT_FILTER_COMPLETED_QUEST_DESC"] = "When activated, any item that is a requirement for a quest, or that begins an already completed quest, won't show up on the loot bar."
+	AL["LOOT_FILTER_COMPLETED_QUEST"] = "過濾無法開始新任務的任務物品"
+	AL["LOOT_FILTER_COMPLETED_QUEST_DESC"] = "啟用時，任務物品開啟的任務如果已完成，不會在掉落物品條中顯示。"
 	AL["LOOT_FILTER_NOT_EQUIPABLE"] = "過濾不可裝備物品"
 	AL["LOOT_FILTER_NOT_EQUIPABLE_DESC"] = "取消以後，此角色無法裝備的護甲與武器不會出現在戰利品欄上。此過濾器不會影響其他類別任何的戰利品。"
+	--[[Translation missing --]]
+	AL["LOOT_FILTER_NOT_MATCHING_CLASS"] = "Filter items that require a different class than yours"
+	--[[Translation missing --]]
+	AL["LOOT_FILTER_NOT_MATCHING_CLASS_DESC"] = "When activated, any item that requires a specific class to be used that doesn't match yours, won't show up on the loot bar."
 	AL["LOOT_FILTER_NOT_TRANSMOG"] = "只顯示可塑形的護甲與武器"
 	AL["LOOT_FILTER_NOT_TRANSMOG_DESC"] = "啟用以後，只有你尚未收集外觀的護甲與武器才會顯示在戰利品欄上。此過濾器不會影響任何其他類別的戰利品。"
 	AL["LOOT_FILTER_SUBCATEGORY_DESC"] = "切換是否在戰利品欄上顯示這類戰利品。停用以後，當您找到稀有NPC時不會看見與此類別匹配的任何物品。"
@@ -172,15 +155,14 @@ if AL then
 	AL["MAP_SHOW_ICON_AFTER_COLLECTED_DESC"] = "停用以後，在拾取箱子之後圖示將會消失。"
 	AL["MAP_SHOW_ICON_AFTER_DEAD"] = "在擊殺後仍然顯示圖示"
 	AL["MAP_SHOW_ICON_AFTER_DEAD_DESC"] = "停用後，圖示將在殺死NPC後消失。再次找到NPC後，圖標就會出現。這個選項只適用於在殺死它們後繼續進行追蹤的NPC。"
-	--[[Translation missing --]]
-	AL["MAP_SHOW_ICON_AFTER_DEAD_RESETEABLE"] = "Keep showing NPC icons after death (only in resetable zones)"
-	--[[Translation missing --]]
-	AL["MAP_SHOW_ICON_AFTER_DEAD_RESETEABLE_DESC"] = "When disabled the icon will disappear after you kill the NPC. The icon will reappear as soon as you find the NPC again. This option only works with NPCs that keep being rares after killing them in zones that reset with world quests."
+	AL["MAP_SHOW_ICON_AFTER_DEAD_RESETEABLE"] = "在NPC死亡後持續顯示圖示（僅在可重置區域）"
+	AL["MAP_SHOW_ICON_AFTER_DEAD_RESETEABLE_DESC"] = "禁用時，當你擊殺NPC後圖示會隱藏。圖示會在你再次發現該NPC時出現。本選項只在NPC擊殺後依然為精英的區域（隨世界任務重置）生效"
 	AL["MAP_SHOW_ICON_CONTAINER_MAX_SEEN_TIME"] = "隱藏箱子圖示的計時器(以分計)"
 	AL["MAP_SHOW_ICON_CONTAINER_MAX_SEEN_TIME_DESC"] = "設置自從你看到箱子以來最大的分鐘數。在此時間之後，再次找到箱子以前，圖示不再顯示在世界地圖上。如果你選擇0分鐘，則不論你看過箱子有多長時間都會顯示圖示，此過濾器不適用於包含於成就的箱子。"
 	AL["MAP_SHOW_ICON_MAX_SEEN_TIME"] = "自從你遇見稀有NPC以來的最長時間"
 	AL["MAP_SHOW_ICON_MAX_SEEN_TIME_DESC"] = "設置您看過NPC後的最長小時數。 在那之後，圖示將不會顯示在世界地圖上，直到您再次找到NPC。 如果您選擇零小時，則無論您看到稀有NPC以來多長時間，都會顯示圖示。"
 	AL["MAP_TOOLTIP_ACHIEVEMENT"] = "這是成就 %s 的一個目標"
+	AL["MAP_TOOLTIP_ALREADY_COMPLETED"] = "此事件已經完成過。重新開始在：%s"
 	AL["MAP_TOOLTIP_ALREADY_KILLED"] = "此NPC已經擊殺過。重新開始在：%s"
 	AL["MAP_TOOLTIP_ALREADY_OPENED"] = "此箱子已經開啟過。重新開始在：%s"
 	AL["MAP_TOOLTIP_CONTAINER_LOOTED"] = "Shift-左鍵點擊來設置為已拾取。"
@@ -194,17 +176,22 @@ if AL then
 	AL["MARKER_DESC"] = "點擊主按鈕，選擇目標頂部的標記。"
 	AL["MESSAGE_OPTIONS"] = "訊息選項"
 	AL["MIDDLE_BUTTON"] = "中鍵點擊"
+	AL["NAVIGATION_ENABLE"] = "切換導航"
+	AL["NAVIGATION_ENABLE_DESC"] = "啟用後，導航箭頭將顯示在主按鈕旁邊，以允許您訪問找到的新舊單位"
+	AL["NAVIGATION_LOCK_ENTITY"] = "如果已經顯示新單位，則阻止顯示"
+	AL["NAVIGATION_LOCK_ENTITY_DESC"] = "啟用後，如果主按鈕在螢幕上顯示一個單位，它將不會自動更新為較新的單位。 準備就緒後，將出現一個箭頭，允許您訪問新單位。"
+	AL["NAVIGATION_OPTIONS"] = "導航選項"
+	AL["NAVIGATION_SHOW_NEXT"] = "顯示找到的下一個單位"
+	AL["NAVIGATION_SHOW_PREVIOUS"] = "顯示找到的先前單位"
 	AL["NOT_TARGETEABLE"] = "無法設為目標"
 	AL["NOTE_130350"] = "你必須沿著這個位置右邊的路徑騎上稀有到此箱子。"
 	AL["NOTE_131453"] = "你必須騎上[春天守護者-暫譯]到這個位置，這匹馬是友善的稀有怪，通常可在箱子左邊的路徑找到。"
 	AL["NOTE_135497"] = "僅在蜜露恩發放日常任務[來自諾達希爾的援助]時有效。該日常要求你在樹底下找蘑菇，當你點擊一個蘑菇時它會停滯，你需要在它消失前再點2個蘑菇，NPC才會出現"
-	--[[Translation missing --]]
-	AL["NOTE_149847"] = "When you aproach to him, he will tell you a colour that he hates. Once you know what colour it is, you have to go to the coordinates 63.41 where you will be painted that colour. When you will come back to his position, he will attack you."
+	AL["NOTE_149847"] = "你靠近他時他會告訴你一個他討厭的顏色，你要到坐標63.41被染成這個顏色，然後回來找他，他就會攻擊你。"
 	AL["NOTE_150342"] = "在事件[鑽探機 DR-TR35]進行期間可用"
 	AL["NOTE_150394"] = "你需要把他帶到坐標63.38，那裡有一個藍色閃電裝置，當NPC觸碰到閃電時他會爆炸，然後你就可以拾取戰利品。"
 	AL["NOTE_151124"] = "你需要在事件[鑽探機 DR-JD99]進行期間（坐標59.67）從小怪身上拾取[砸壞的運輸繼電器]，然後在這個機器上使用"
-	--[[Translation missing --]]
-	AL["NOTE_151159"] = "He is available only when [Oglethorpe Obnoticus] is in Mechagon (coordinates 72.37). He wanders around Mechagon, so check in every street. Killing him makes [OOX-Avenger/MG] to spawn."
+	AL["NOTE_151159"] = "他只在NPC[奧格索普·奧布諾提斯]探訪機械岡（坐標72.37）時存在。他會在機械岡游蕩，所以你需要沿著每條路尋找。擊殺他會召喚[OOX-復仇者/MG]"
 	AL["NOTE_151202"] = "你需要在岸邊用水里的電線塔連接電線才能召喚他"
 	--[[Translation missing --]]
 	AL["NOTE_151296"] = "First check if [Oglethorpe Obnoticus] is in Mechagon (coordinates 72.37). If he is there, then you have to find and kill [OOX-Fleetfoot/MG] (it is a chicken robot wandering around Mechagon). Once you find him and kill him, come back to this icon's coordinates."
@@ -215,17 +202,30 @@ if AL then
 	AL["NOTE_152007"] = "它會在這個區域遊蕩，所以坐標可能不太精確。"
 	AL["NOTE_152113"] = "在事件[鑽探機 DR-CC88]進行期間可用"
 	AL["NOTE_152569"] = "你靠近他時他會告訴你一個他討厭的顏色，你要到坐標63.41被染成這個顏色，然後回來找他，他就會攻擊你。"
-	--[[Translation missing --]]
-	AL["NOTE_152570"] = "When you aproach to him, he will tell you a colour that he hates. Once you know what colour it is, you have to go to the coordinates 63.41 where you will be painted that colour. When you will come back to his position, he will attack you."
+	AL["NOTE_152570"] = "你靠近他時他會告訴你一個他討厭的顏色，你要到坐標63.41被染成這個顏色，然後回來找他，他就會攻擊你。"
 	AL["NOTE_153000"] = "它會在這個區域遊蕩，所以坐標可能不太精確。"
 	AL["NOTE_153200"] = "在事件[鑽探機 DR-JD41]進行期間可用"
 	AL["NOTE_153205"] = "在事件[鑽探機 DR-JD99]進行期間可用"
 	AL["NOTE_153206"] = "在事件[鑽探機 DR-TR28]進行期間可用"
 	AL["NOTE_153228"] = "需要擊殺很多[升級版哨衛]才會在這個區域出現"
 	AL["NOTE_154225"] = "需要使用[個人時光轉移裝置]訪問他的接口，這個物品是克羅米發放日常任務[另一個地方]的獎勵品"
+	AL["NOTE_154332"] = "在一個山洞裡。入口位於坐標57,38。"
+	AL["NOTE_154333"] = "在一個山洞裡。 入口位於坐標57,38。"
 	AL["NOTE_154342"] = "需要使用[個人時光轉移裝置]訪問他的接口，這個物品是克羅米發放日常任務[另一個地方]的獎勵品"
+	AL["NOTE_154559"] = "在山洞裡。入口位於坐標70,58處。"
+	AL["NOTE_154604"] = "在一個山洞裡。 入口位於坐標36,20。"
 	AL["NOTE_154701"] = "在事件[鑽探機 DR-CC61]進行期間可用"
 	AL["NOTE_154739"] = "在事件[鑽探機 DR-CC73]進行期間可用"
+	AL["NOTE_155531"] = "您必須使用他上面的球（太陽精華）來獲得[太陽光環]並能夠攻擊他。"
+	AL["NOTE_156709"] = "您必須殺死無面Despoiler（普通NPC），才能迫使它出生。"
+	AL["NOTE_157162"] = "在廟裡。 入口位於坐標22,24處。"
+	AL["NOTE_158531"] = "您必須殺死虛空扭曲的納弗塞特（普通NPC）才能迫使它出生。"
+	AL["NOTE_158632"] = "您必須殺死Burbling Fleshbeast（普通NPC）才能迫使它出生。"
+	AL["NOTE_158706"] = "您必須殺死腐爛軟泥（普通NPC）才能強制其出生。"
+	AL["NOTE_159087"] = "您必須殺死恩若司剝骨者（普通NPC）才能迫使它出生。"
+	AL["NOTE_160968"] = "在廟裡。 入口位於坐標22,24處。"
+	AL["NOTE_162171"] = "在一個山洞裡。 入口位於坐標45,58處。"
+	AL["NOTE_162352"] = "它在山洞裡。入口在水下52,40處。"
 	AL["NOTE_280951"] = "沿著鐵路走直到你找到推車，然後騎上他來發現財寶。"
 	AL["NOTE_287239"] = "如果您是部落，您必須完成沃魯敦活動才能進入神殿。"
 	AL["NOTE_289647"] = "財寶在洞穴內。入口位於座標65.11，介於快到山頂的一些樹中間。"

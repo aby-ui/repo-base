@@ -89,6 +89,7 @@ L.GlowQuest = '任务物品染色'
 L.GlowUnusable = '无用品染色'
 L.GlowSets = '套装染色'
 L.GlowNew = '新物品发光'
+L.GlowPoor = '标记垃圾物品'
 L.GlowAlpha = '发光亮度'
 
 L.EmptySlots = '显示空格背景材质'

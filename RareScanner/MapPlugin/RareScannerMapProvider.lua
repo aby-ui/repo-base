@@ -265,9 +265,19 @@ function RareScannerDataProviderMixin:AddPin(npcID, npcInfo, mapID)
 		end
 	-- If its an event
 	elseif (npcInfo.atlasName == RareScanner.EVENT_VIGNETTE or npcInfo.atlasName == RareScanner.EVENT_ELITE_VIGNETTE) then
-		-- If compelted ignore it
-		if (private.dbchar.events_completed[npcID]) then
+		-- If completed ignore it
+		local keepShowingAfterCompleted = false
+		if (private.dbchar.events_completed[npcID] and not private.db.map.keepShowingAfterCompleted) then
 			--RareScanner:PrintDebugMessage("DEBUG: Ignorado por estar completado")
+			return false
+		elseif (private.dbchar.events_completed[npcID] and private.db.map.keepShowingAfterCompleted) then
+			keepShowingAfterCompleted = true
+		end
+		
+		-- If its been seen after our max show time
+		-- Ignore if its completed and we want to keep showing its icon
+		if (not npcInfo.notDiscovered and not keepShowingAfterCompleted and private.db.map.maxSeenTimeEvent ~= 0 and time() - npcInfo.foundTime > private.db.map.maxSeenTimeEvent * 60) then
+			--RareScanner:PrintDebugMessage("DEBUG: Ignorado evento por haberle visto hace mas tiempo del configurado")
 			return false
 		end
 	end

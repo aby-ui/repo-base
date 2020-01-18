@@ -826,16 +826,16 @@ do
             ["show1533"] = false,  --觉醒精华
             ["show1560"] = true,  --8.0物资
             ["show1580"] = true,  --8.0印记
-            ["show1718"] = true,  --8.1泰坦
+            ["show1718"] = false,  --8.1泰坦
             ["show1716"] = true,  --8.1PVP
             ["show1717"] = true,  --8.1PVP
-            ["show1721"] = true,  --8.1PVP
+            ["show1721"] = false,  --8.2珍珠
+            ["show1755"] = true,  --8.3凝结幻象
 			["summary1560"] = true,
             ["summary1580"] = true,
-            ["summary1718"] = true,
             ["summary1716"] = true,
             ["summary1717"] = true,
-            ["summary1721"] = true,
+            ["summary1755"] = true,
 			summaryColorDark = { r = 0, g = 0, b = 0, a = 0 },
 			summaryColorLight = { r = 1, g = 1, b = 1, a = .3 },
             update810 = true,
@@ -865,6 +865,16 @@ do
             Broker_CurrencyCharDB.show1721 = true
             Broker_CurrencyCharDB["summary1721"] = true
         end
+        if not Broker_CurrencyCharDB.update830 then
+            Broker_CurrencyCharDB.update830 = true
+            Broker_CurrencyCharDB.show1755 = true
+            Broker_CurrencyCharDB["summary1755"] = true
+            Broker_CurrencyCharDB.show1721 = false
+            Broker_CurrencyCharDB["summary1721"] = false
+            Broker_CurrencyCharDB.show1718 = false
+            Broker_CurrencyCharDB["summary1718"] = false
+        end
+
 
 		-- ----------------------------------------------------------------------------
 		-- Initialize the configuration options.

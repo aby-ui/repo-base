@@ -263,9 +263,9 @@ function Frame:PlaceTitle()
 	end
 
 	if self:HasOptionsToggle() then
-		frame:SetPoint('RIGHT', self.optionsToggle, 'LEFT', -4, 0)
+		frame:SetPoint('RIGHT', self.optionsToggle, 'LEFT', -4 - 20, 0)
 	else
-		frame:SetPoint('RIGHT', self.closeButton, 'LEFT', -4, 0)
+		frame:SetPoint('RIGHT', self.closeButton, 'LEFT', -4 - 20, 0)
 	end
 	frame:SetHeight(20)
 

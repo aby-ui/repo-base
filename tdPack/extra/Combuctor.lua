@@ -1,4 +1,3 @@
-do return end --TODO aby8
 local tdPack = tdCore(...)
 
 CoreDependCall("Combuctor", function()
@@ -32,12 +31,22 @@ CoreDependCall("Combuctor", function()
         icon:SetTexture([[Interface\Icons\INV_Misc_Bag_10_Green]])
     end
 
-    if CombuctorFrameinventorySearch then CombuctorFrameinventorySearch:SetPoint('TOPLEFT', 70 + 22, -32) end
-    if CombuctorFramebankSearch then CombuctorFramebankSearch:SetPoint('TOPLEFT', 70 + 22, -32) end
-    local inv = PackButton:GetPackButton(CombuctorFrameinventory)
-    local bnk = PackButton:GetPackButton(CombuctorFramebank)
-    inv:ClearAllPoints()
-    inv:SetPoint("TOPLEFT", 62, -32)
-    bnk:ClearAllPoints()
-    bnk:SetPoint("TOPLEFT", 62, -32)
+    local anchor = function(self, id)
+        if CombuctorInventoryFrame1SearchBox and not CombuctorInventoryFrame1SearchBox.tdPackButton then
+            CombuctorInventoryFrame1SearchBox.frameID = CombuctorInventoryFrame1SearchBox:GetParent().frameID
+            CombuctorInventoryFrame1SearchBox:SetPoint('TOPLEFT', 70 + 30, -32)
+            local inv = PackButton:GetPackButton(CombuctorInventoryFrame1SearchBox)
+            inv:ClearAllPoints()
+            inv:SetPoint("TOPLEFT", -30, 0)
+        end
+        if CombuctorBankFrame1SearchBox and not CombuctorBankFrame1SearchBox.tdPackButton then
+            CombuctorBankFrame1SearchBox.frameID = CombuctorBankFrame1SearchBox:GetParent().frameID
+            CombuctorBankFrame1SearchBox:SetPoint('TOPLEFT', 70 + 30, -32)
+            local bnk = PackButton:GetPackButton(CombuctorBankFrame1SearchBox)
+            bnk:ClearAllPoints()
+            bnk:SetPoint("TOPLEFT", -30, 0)
+        end
+    end
+    anchor()
+    hooksecurefunc(Combuctor.Frame, "New", anchor)
 end)

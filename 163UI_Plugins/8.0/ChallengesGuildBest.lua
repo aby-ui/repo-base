@@ -72,6 +72,7 @@ CoreDependCall("Blizzard_ChallengesUI", function()
     CoreOnEvent("CHALLENGE_MODE_LEADERS_UPDATE", update)
     -- hooksecurefunc("ChallengesFrame_Update", update)
 
+    --[=[ --abyui830
     local levels = { nil, 410, 415, 420, 420, 425, 430, 430, 435, 440, 440, 440, 440, 440, 440, 440, 440, 440, 440, 440, 440, 440, 440, 440, 440 }
     local titans = { nil, nil, nil, nil, nil, nil, nil, nil, nil, 17000, 17900, 18800, 19700, 20600, 21500, 22400, 23300, 24200, 25100, 26000, 26650,27300,27950,28500,29150}
     ChallengesFrame.WeeklyInfo.Child.WeeklyChest:HookScript("OnEnter", function(self)
@@ -106,4 +107,5 @@ CoreDependCall("Blizzard_ChallengesUI", function()
             GameTooltip:Show()
         end
     end)
+    --]=]
 end)

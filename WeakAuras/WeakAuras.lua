@@ -4246,11 +4246,11 @@ local function pAdd(data, simpleChange)
     db.displays[id] = data
     WeakAuras.SetRegion(data)
   else
-    WeakAuras.ClearAuraEnvironment(id);
-    if data.parent then
-      WeakAuras.ClearAuraEnvironment(data.parent);
-    end
     if (data.controlledChildren) then
+      WeakAuras.ClearAuraEnvironment(id);
+      if data.parent then
+        WeakAuras.ClearAuraEnvironment(data.parent);
+      end
       db.displays[id] = data;
       WeakAuras.SetRegion(data);
     else
@@ -4263,6 +4263,11 @@ local function pAdd(data, simpleChange)
         else
           WeakAuras.CollapseAllClones(id)
         end
+      end
+
+      WeakAuras.ClearAuraEnvironment(id);
+      if data.parent then
+        WeakAuras.ClearAuraEnvironment(data.parent);
       end
 
       db.displays[id] = data;
@@ -6888,6 +6893,8 @@ function WeakAuras.ReplaceLocalizedRaidMarkers(txt)
       else
         start = lastChar
       end
+    else
+      start  = lastChar
     end
   end
 end

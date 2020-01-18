@@ -409,7 +409,7 @@ function Item:CreateDummy()
 	return slot
 end
 
-if AbyUpdateTooltipWrapperFunc then Item.UpdateTooltip = AbyUpdateTooltipWrapperFunc(Item.UpdateTooltip, 2) end
+if AbyUpdateTooltipWrapperFunc then Item.UpdateTooltip = AbyUpdateTooltipWrapperFunc(Item.UpdateTooltip, .5) end
 
 --[[ Data ]]--
 

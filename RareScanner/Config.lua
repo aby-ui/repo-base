@@ -1265,6 +1265,18 @@ local function GetLootFilterOptions()
 							width = "full",
 							disabled = function() return (not private.db.loot.displayLoot and not private.db.loot.displayLootOnMap) end,
 						},
+						filterNotMatchingClass = {
+							order = 6,
+							type = "toggle",
+							name = AL["LOOT_FILTER_NOT_MATCHING_CLASS"],
+							desc = AL["LOOT_FILTER_NOT_MATCHING_CLASS_DESC"],
+							get = function() return private.db.loot.filterNotMatchingClass end,
+							set = function(_, value)
+								private.db.loot.filterNotMatchingClass = value
+							end,
+							width = "full",
+							disabled = function() return (not private.db.loot.displayLoot and not private.db.loot.displayLootOnMap) end,
+						},
 					},
 					disabled = function() return (not private.db.loot.displayLoot and not private.db.loot.displayLootOnMap) end,
 				}
@@ -1401,8 +1413,20 @@ local function GetMapOptions()
 					width = "full",
 					disabled = function() return (not private.db.map.displayNpcIcons and not private.db.map.displayContainerIcons and not private.db.map.displayEventIcons) end,
 				},
-				maxSeenTime = {
+				keepShowingAfterCompleted = {
 					order = 11,
+					type = "toggle",
+					name = AL["MAP_SHOW_ICON_AFTER_COMPLETED"],
+					desc = AL["MAP_SHOW_ICON_AFTER_COMPLETED_DESC"],
+					get = function() return private.db.map.keepShowingAfterCompleted end,
+					set = function(_, value)
+						private.db.map.keepShowingAfterCompleted = value
+					end,
+					width = "full",
+					disabled = function() return (not private.db.map.displayNpcIcons and not private.db.map.displayContainerIcons and not private.db.map.displayEventIcons) end,
+				},
+				maxSeenTime = {
+					order = 12,
 					type = "range",
 					name = AL["MAP_SHOW_ICON_MAX_SEEN_TIME"],
 					desc = AL["MAP_SHOW_ICON_MAX_SEEN_TIME_DESC"],
@@ -1419,7 +1443,7 @@ local function GetMapOptions()
 					disabled = function() return ((not private.db.map.displayNpcIcons and not private.db.map.displayContainerIcons and not private.db.map.displayEventIcons) or private.db.map.disableLastSeenFilter) end,	
 				},
 				maxSeenTimeContainer = {
-					order = 12,
+					order = 13,
 					type = "range",
 					name = AL["MAP_SHOW_ICON_CONTAINER_MAX_SEEN_TIME"],
 					desc = AL["MAP_SHOW_ICON_CONTAINER_MAX_SEEN_TIME_DESC"],
@@ -1430,6 +1454,22 @@ local function GetMapOptions()
 					get = function() return private.db.map.maxSeenTimeContainer end,
 					set = function(_, value)
 						private.db.map.maxSeenTimeContainer = value
+					end,
+					width = "full",
+					disabled = function() return (not private.db.map.displayNpcIcons and not private.db.map.displayContainerIcons and not private.db.map.displayEventIcons) end,	
+				},
+				maxSeenTimeEvent = {
+					order = 14,
+					type = "range",
+					name = AL["MAP_SHOW_ICON_EVENT_MAX_SEEN_TIME"],
+					desc = AL["MAP_SHOW_ICON_EVENT_MAX_SEEN_TIME_DESC"],
+					min	= 0,
+					max	= 15,
+					step = 1,
+					bigStep = 1,
+					get = function() return private.db.map.maxSeenTimeEvent end,
+					set = function(_, value)
+						private.db.map.maxSeenTimeEvent = value
 					end,
 					width = "full",
 					disabled = function() return (not private.db.map.displayNpcIcons and not private.db.map.displayContainerIcons and not private.db.map.displayEventIcons) end,	
