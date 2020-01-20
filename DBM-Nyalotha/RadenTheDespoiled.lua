@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2364, "DBM-Nyalotha", nil, 1180)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20191215174316")
+mod:SetRevision("20200120030400")
 mod:SetCreatureID(156866)
 mod:SetEncounterID(2331)
 mod:SetZone()
@@ -98,7 +98,7 @@ local timerUnstableVita						= mod:NewTargetTimer(5, 306257, nil, nil, nil, 5)
 ------Vita Add
 --mod:AddTimerLine(DBM:EJ_GetSectionInfo(20546))
 --local timerChainLightningCD					= mod:NewCDTimer(4.8, 306874, nil, nil, nil, 3)
-----Void
+----Nightmare
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(20529))
 local timerCallVoidHunterCD					= mod:NewCDTimer(30.1, 306866, nil, nil, nil, 1, nil, DBM_CORE_DAMAGE_ICON)
 local timerUnstableVoidCD					= mod:NewNextCountTimer(5.9, 306634, nil, nil, nil, 5)
@@ -155,6 +155,7 @@ do
 			local mapId = GetBestMapForUnit(uId) or 0
 			--Covers all bases, exists, same map, not self, not dead, and not DCed
 			if UnitExists(uId) and playerMapId == mapId and not UnitIsUnit(uId, "player") and not UnitIsDeadOrGhost(uId) and UnitIsConnected(uId) then
+				--This is a bit ugly, but only way to determine most approximate range of a unit from player
 				if IsItemInRange(90175, uId) then entireRaidDistancetable[uId] = 4
 				elseif IsItemInRange(37727, uId) then entireRaidDistancetable[uId] = 6
 				elseif IsItemInRange(8149, uId) then entireRaidDistancetable[uId] = 8

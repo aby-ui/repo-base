@@ -6,7 +6,7 @@
  local LSM = LibStub("LibSharedMedia-3.0")
  local self, GSA, PlaySoundFile = GladiatorlosSA, GladiatorlosSA, PlaySoundFile
  local GSA_TEXT = "|cff69CCF0GladiatorlosSA2|r (|cffFFF569/gsa|r)"
- local GSA_VERSION = "|cffFF7D0A 2.1.1 |r(|cFF00FF968.2.5 Battle for Azeroth|r)"
+ local GSA_VERSION = "|cffFF7D0A 2.2 |r(|cFF00FF968.3 Battle for Azeroth|r)"
  local GSA_AUTHOR = " "
  local gsadb
  local soundz,sourcetype,sourceuid,desttype,destuid = {},{},{},{},{}
@@ -281,7 +281,7 @@
 	end
 end
 
-function GSA:CheckForEpicBG(instanceMapID)
+function GSA:CheckForEpicBG(instanceMapID)	-- Determines if battleground is in list of epic bgs.
 	if instanceMapID == 2118 or		-- Wintergrasp [Epic]
 		instanceMapID == 30 or		-- Alterac Valley
 		instanceMapID == 628 or		-- Isle of Conquest
@@ -292,21 +292,32 @@ function GSA:CheckForEpicBG(instanceMapID)
 	end
 end
 
- function GladiatorlosSA:COMBAT_LOG_EVENT_UNFILTERED(event , ...)
+-- Checks settings and world location to determine if alerts should occur.
+function GSA:CanTalkHere()
 	--Disable By Location
 	local _,currentZoneType = IsInInstance()
 	local _,_,_,_,_,_,_,instanceMapID = GetInstanceInfo()
-	if (not ((currentZoneType == "none" and gsadb.field) or 												-- World
+	local isPvP = UnitIsWarModeDesired("player")
+	if (not ((currentZoneType == "none" and gsadb.field and not gsadb.onlyFlagged) or 												-- World
+		--(currentZoneType == "none" and gsadb.field and (gsadb.onlyFlagged and UnitIsWarModeDesired("player"))) or
 		(currentZoneType == "pvp" and gsadb.battleground and not self:CheckForEpicBG(instanceMapID)) or 	-- Battleground
 		(currentZoneType == "pvp" and gsadb.epicbattleground and self:CheckForEpicBG(instanceMapID)) or		-- Epic Battleground
 		(currentZoneType == "arena" and gsadb.arena) or 													-- Arena
 		(currentZoneType == "scenario" and gsadb.arena) or 													-- Scenario
 		gsadb.all)) then																					-- Anywhere
+		return false
+	end
+	return true
+end
+	
+
+ function GladiatorlosSA:COMBAT_LOG_EVENT_UNFILTERED(event , ...)
+	-- Checks if alerts should occur here.
+	if (not self:CanTalkHere()) then
 		return
 	end
-	--if ((currentZoneType == "none") and (gsadb.onlyflagged and not UnitIsPVP("player"))) then -- PvP Flag checking (Note, seems buggy)
-	--	return
-	--end
+
+	
 	local timestamp,event,hideCaster,sourceGUID,sourceName,sourceFlags,sourceFlags2,destGUID,destName,destFlags,destFlags2,spellID = CombatLogGetCurrentEventInfo()
 	--select ( 1 , ... );
 	if not GSA_EVENT[event] then return end

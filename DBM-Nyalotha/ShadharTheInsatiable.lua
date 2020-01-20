@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2367, "DBM-Nyalotha", nil, 1180)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200113013939")
+mod:SetRevision("20200119032702")
 mod:SetCreatureID(157231)
 mod:SetEncounterID(2335)
 mod:SetZone()
@@ -30,6 +30,7 @@ mod:RegisterEventsInCombat(
 --TODO, see if seenAdds solved the fixate timer issue, or if something else wonky still going on with it
 --TODO, first fixate Still 31 on heroic? Or is the extra one mythic exclusive for Tasty mechanic
 --TODO, see if timer adjustments around phase transitions are possible to improve timers for things when boss changes phases
+--TODO, breath timers stll need more work to figure out their sequence or why they spell queue/variate
 --[[
 (ability.id = 312528 or ability.id = 306928 or ability.id = 312529 or ability.id = 306929 or ability.id = 307260 or ability.id = 306953) and type = "begincast"
  or (ability.id = 307471 or ability.id = 312530 or ability.id = 306930) and type = "cast"
@@ -154,14 +155,14 @@ end
 
 function mod:SPELL_CAST_START(args)
 	local spellId = args.spellId
-	if spellId == 312528 or spellId == 306928 or spellId == 312529 or spellId == 306929 then
+	if spellId == 312528 or spellId == 306928 or spellId == 312529 or spellId == 306929 then--Umbral and Bubbling Breaths
 		specWarnSlurryBreath:Show()
 		specWarnSlurryBreath:Play("breathsoon")
 		local timer
 		if self:IsMythic() then
-			timer = (self.vb.phase == 1) and 23.9 or 21
+			timer = (self.vb.phase == 1) and 23.4 or 19.8
 		elseif self:IsHeroic() then
-			timer = (self.vb.phase == 1) and 23.9 or 18.2
+			timer = (self.vb.phase == 1) and 23.9 or 17
 		else--Normal, LFR assumed
 			timer = 29.2
 		end
@@ -180,9 +181,9 @@ function mod:SPELL_CAST_SUCCESS(args)
 	local spellId = args.spellId
 	if spellId == 307471 then
 		timerCrushCD:Start()
-	elseif spellId == 312530 or spellId == 306930 then
+	elseif spellId == 312530 or spellId == 306930 then--Entropic Breaths
 		warnEntropicBreath:Show()
-		local timer = self:IsHard() and 17 or 24.4
+		local timer = self:IsMythic() and 13.3 or self:IsHeroic() and 17 or 24.4
 		timerSlurryBreathCD:Start(timer)
 	end
 end

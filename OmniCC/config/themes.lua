@@ -46,7 +46,7 @@ local function createStateOptionsForTheme(theme, id, order)
                         style.b = b
                         style.a = a
 
-                        OmniCC.Display:ForAll("UpdateCooldownTextSizeAndColor")
+                        OmniCC.Display:ForAll("UpdateCooldownTextPositionSizeAndColorSizeAndColor")
                     end
                 },
                 scale = {
@@ -61,7 +61,7 @@ local function createStateOptionsForTheme(theme, id, order)
                     end,
                     set = function(_, val)
                         theme.textStyles[state].scale = val
-                        OmniCC.Display:ForAll("UpdateCooldownTextSizeAndColor")
+                        OmniCC.Display:ForAll("UpdateCooldownTextPositionSizeAndColorSizeAndColor")
                     end
                 }
             }
@@ -214,7 +214,7 @@ local function createTextOptionsForTheme(theme, id, order)
                         end,
                         set = function(_, val)
                             theme.anchor = val
-                            OmniCC.Display:ForAll("UpdateCooldownTextPosition")
+                            OmniCC.Display:ForAll("UpdateCooldownTextPositionSizeAndColor")
                         end,
                         values = {
                             TOPLEFT = L.Anchor_TOPLEFT,
@@ -240,7 +240,7 @@ local function createTextOptionsForTheme(theme, id, order)
                         end,
                         set = function(_, val)
                             theme.xOff = val
-                            OmniCC.Display:ForAll("UpdateCooldownTextPosition")
+                            OmniCC.Display:ForAll("UpdateCooldownTextPositionSizeAndColor")
                         end
                     },
                     y = {
@@ -255,7 +255,7 @@ local function createTextOptionsForTheme(theme, id, order)
                         end,
                         set = function(_, val)
                             theme.yOff = -val
-                            OmniCC.Display:ForAll("UpdateCooldownTextPosition")
+                            OmniCC.Display:ForAll("UpdateCooldownTextPositionSizeAndColor")
                         end
                     }
                 }
@@ -310,7 +310,7 @@ local function addThemeOptions(owner, theme, id)
                                 end,
                                 set = function(_, scale)
                                     theme.scaleText = scale
-                                    OmniCC.Display:ForActive("OnSizeChanged")
+                                    OmniCC.Display:ForActive("UpdateSize")
                                 end
                             },
                             minSize = {
@@ -327,7 +327,7 @@ local function addThemeOptions(owner, theme, id)
                                 end,
                                 set = function(_, val)
                                     theme.minSize = val / 100
-                                    OmniCC.Display:ForAll("UpdateCooldownTextShown")
+                                    OmniCC.Display:ForAll("UpdateCooldownTextPositionSizeAndColorSizeAndColor")
                                 end
                             },
                             minDuration = {

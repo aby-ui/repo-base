@@ -48,6 +48,7 @@
 				FriendsMenuXPButton_OnClick(self);
 			</OnClick>
 			<OnEnter>
+                self.HandlesGlobalMouseEvent = FriendsMenuXP_HandlesGlobalMouseEvent
 				getglobal(self:GetName().."Highlight"):Show();
 				FriendsMenuXP_StopCounting(self:GetParent());
 				if ( self.tooltipText ) then

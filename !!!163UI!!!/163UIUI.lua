@@ -635,7 +635,9 @@ function UUI.Top.Create(main)
         :EnableMouse(true)
         :SetScript("OnEnter", UIDropDownMenu_StopCounting):SetScript("OnLeave", UIDropDownMenu_StartCounting)
         :un()
-        main.setting.soundPanel.parent = DropDownList1; --stopCounting
+        main.setting.soundPanel.HandlesGlobalMouseEvent = function(self, button, event)
+            return self:IsShown() and (self:IsMouseOver() or self:GetParent():IsMouseOver() or DropDownList1:IsMouseOver())
+        end
 
         local soundSlider = TplSlider(main.setting.soundPanel, nil, VOLUME, 1, "%d%%", 0, 100, 5):Size(12,128):TOP(-10, -35)
         :SetScript("OnEnter", UIDropDownMenu_StopCounting):SetScript("OnLeave", UIDropDownMenu_StartCounting)
@@ -644,6 +646,9 @@ function UUI.Top.Create(main)
         soundSlider.func = function(self, v) BlizzardOptionsPanel_SetCVarSafe("Sound_MasterVolume", v/100) PlaySound(SOUNDKIT.IG_MAINMENU_OPEN) end
         soundSlider.parent = DropDownList1; --StopCounting
         DropDownList1:HookScript("OnHide", function() main.setting.soundPanel:Hide() end)
+        soundSlider.HandlesGlobalMouseEvent = function(self, button, event)
+            return self:IsShown() and (self:IsMouseOver() or self:GetParent():IsMouseOver())
+        end
     end
 
     main.reload = TplPanelButton(main,nil, UUI.PANEL_BUTTON_HEIGHT):Set3Fonts(UUI.FONT_PANEL_BUTTON)

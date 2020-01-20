@@ -1,42 +1,36 @@
-if not _G.PlayerPowerBarAlt then return end
+local PlayerPowerBarAlt = _G.PlayerPowerBarAlt
+if not PlayerPowerBarAlt then return end
 
-local AddonName, Addon = ...
-local EncounterBarModule = Dominos:NewModule('EncounterBar', 'AceEvent-3.0')
+local _, Addon = ...
+local EncounterBarModule = _G.Dominos:NewModule('EncounterBar', 'AceEvent-3.0')
 
 function EncounterBarModule:OnInitialize()
-	_G['PlayerPowerBarAlt'].ignoreFramePositionManager = true
+	-- the standard UI will check to see if the power bar is user placed before
+	-- doing anything to its position, so mark as user placed to prevent that
+	-- from ahppening
+	PlayerPowerBarAlt:SetMovable(true)
+	PlayerPowerBarAlt:SetUserPlaced(true)
 
-	local timer = Dominos:CreateHiddenFrame('Frame')
+	-- tell blizzard that we don't it to manage this frame's position
+	PlayerPowerBarAlt.ignoreFramePositionManager = true
 
-	timer:SetScript('OnUpdate', function()
-		self:RepositionBar()
-		timer:Hide()
-	end)
+	-- onshow/hide call UpdateManagedFramePositions on the blizzard end so turn
+	-- that bit off
+	PlayerPowerBarAlt:SetScript("OnShow", nil)
+	PlayerPowerBarAlt:SetScript("OnHide", nil)
 
-	-- grr
-	hooksecurefunc('UIParent_ManageFramePosition', function()
-		timer:Show()
-	end)
+	self:RegisterEvent("PLAYER_LOGOUT")
+end
+
+function EncounterBarModule:PLAYER_LOGOUT()
+	-- SetUserPlaced is persistent, so revert upon logout
+	PlayerPowerBarAlt:SetUserPlaced(false)
 end
 
 function EncounterBarModule:Load()
 	self.frame = Addon.EncounterBar:New()
-	self:RegisterEvent('PLAYER_REGEN_ENABLED')
 end
 
 function EncounterBarModule:Unload()
 	self.frame:Free()
-	self:UnregisterEvent('PLAYER_REGEN_ENABLED')
-end
-
-function EncounterBarModule:PLAYER_REGEN_ENABLED()
-	if self.__NeedToRepositionBar then
-		self:RepositionBar()
-	end
-end
-
-function EncounterBarModule:RepositionBar()
-	if self.frame then
-		self.frame:Layout()
-	end
 end

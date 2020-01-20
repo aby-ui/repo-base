@@ -174,3 +174,6 @@ L["TankTauntsOFF"] = true
 L["TankTauntsOFF_Desc"] = true
 L["TankTauntsON"] = true
 L["TankTauntsON_Desc"] = true
+
+L["Connected"] = true
+L["Connected_Desc"] = true

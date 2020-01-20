@@ -550,6 +550,13 @@ function SUG:EnableEditBox(editbox, inputType, onlyOneEntry, inline, parent)
 		for k, v in pairs(EditBoxHooks) do
 			editbox:HookScript(k, v)
 		end
+
+		function editbox:HasStickyFocus()
+			if SUG.Box == self and IsMouseButtonDown("LeftButton") then
+				return true
+			end
+		end
+
 		editbox.SUG_hooked = 1
 	end
 

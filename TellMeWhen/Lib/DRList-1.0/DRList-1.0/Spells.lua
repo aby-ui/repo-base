@@ -273,6 +273,7 @@ else
         [GetSpellInfo(5530)]    = { category = "random_stun", spellID = 5530 },    -- Mace Stun Effect (Mace Specialization)
         [GetSpellInfo(15283)]   = { category = "random_stun", spellID = 15283 },   -- Stunning Blow (Weapon Proc)
         [GetSpellInfo(56)]      = { category = "random_stun", spellID = 56 },      -- Stun (Weapon Proc)
+        [GetSpellInfo(21152)]   = { category = "random_stun", spellID = 21152 },   -- Earthshaker (Weapon Proc)
 
         -- Silences (TODO: confirm category exists)
         [GetSpellInfo(18469)]   = { category = "silence", spellID = 18469 },      -- Counterspell - Silenced

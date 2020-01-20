@@ -3,7 +3,7 @@ Name: DRList-1.0
 Description: Diminishing returns database. Fork of DRData-1.0.
 Website: https://www.curseforge.com/wow/addons/drlist-1-0
 Documentation: https://wardz.github.io/DRList-1.0/
-Version: 66d7242
+Version: v1.1.1
 Dependencies: LibStub
 License: MIT
 ]]
@@ -123,7 +123,6 @@ Lib.categoriesPvE = {
     classic = {
         ["stun"] = L.STUNS,
         ["kidney_shot"] = L.KIDNEY_SHOT,
-        -- TODO: banish/MC?
     },
 }
 

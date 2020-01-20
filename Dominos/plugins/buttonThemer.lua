@@ -11,6 +11,13 @@ local function theme(button)
 
     button.icon:SetTexCoord(0.06, 0.94, 0.06, 0.94)
 
+    -- reposition the cooldown on the extra action button
+    -- to handle the cooldown not properly covering the icon
+    if button.buttonType == 'EXTRAACTIONBUTTON' then
+        button.cooldown:ClearAllPoints()
+        button.cooldown:SetAllPoints(button.icon)
+    end
+
     local r = round(button:GetWidth()) / ActionButtonWidth
 
     local nt = button:GetNormalTexture()
