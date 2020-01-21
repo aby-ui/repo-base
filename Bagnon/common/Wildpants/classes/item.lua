@@ -322,8 +322,8 @@ end
 --[[ Tooltip ]]--
 
 function Item:UpdateTooltip()
-	if self.info.link then
-		if self.info.cached then
+    if self.info.link or self.info.id then
+   		if self.info.link and self.info.cached then
 			self:ShowCachedTooltip()
 		else
 			self:ShowTooltip()
